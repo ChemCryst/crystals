@@ -8,6 +8,16 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.13  2001/03/27 15:15:00  richard
+//   Added a timer to the main window that is activated as the main window is
+//   created.
+//   The timer fires every half a second and causes any messages in the
+//   CRYSTALS message queue to be processed. This is not the main way that messages
+//   are found and processed, but sometimes the program just seemed to freeze and
+//   would stay that way until you moved the mouse. This should (and in fact, does
+//   seem to) remedy that problem.
+//   Good good good.
+//
 //   Revision 1.12  2001/03/08 15:46:00  richard
 //   Re-written sizing and resizing code. DISABLEIF= and ENABLEIF= flags let
 //   you disable a whole non-modal window based on current status.
@@ -77,6 +87,7 @@ class   CrWindow : public CrGUIElement
     Boolean m_Keep;
     Boolean mIsSizeable;
     Boolean mIsModal;
+    Boolean mStayOpen;
     CrMenuBar* mMenuPtr;
     CcList mWindowsWantingSysKeys;
     int    wEnableFlags, wDisableFlags;
@@ -110,7 +121,8 @@ private:
 #define kSBelow     "BELOW"
 #define kSCascade   "CASCADE"
 #define kSCentred   "CENTRED"
-#define kSKeep                "KEEP"
+#define kSKeep      "KEEP"
+#define kSStayOpen  "STAYOPEN"
 
 enum
 {
@@ -130,7 +142,8 @@ enum
  kTBelow,
  kTCascade,
  kTCentred,
- kTKeep
+ kTKeep,
+ kTStayOpen
 };
 
 

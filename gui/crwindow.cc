@@ -8,6 +8,16 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.24  2001/03/27 15:15:00  richard
+//   Added a timer to the main window that is activated as the main window is
+//   created.
+//   The timer fires every half a second and causes any messages in the
+//   CRYSTALS message queue to be processed. This is not the main way that messages
+//   are found and processed, but sometimes the program just seemed to freeze and
+//   would stay that way until you moved the mouse. This should (and in fact, does
+//   seem to) remedy that problem.
+//   Good good good.
+//
 //   Revision 1.23  2001/03/08 15:46:00  richard
 //   Re-written sizing and resizing code. DISABLEIF= and ENABLEIF= flags let
 //   you disable a whole non-modal window based on current status.
@@ -39,6 +49,7 @@ CrWindow::CrWindow( )
     mTabGroup = new CcList();
     mTabStop = false;
     mIsModal = false;
+    mStayOpen = false;
     mIsSizeable = false;
     mCancelSet  = false;
     mCommitSet  = false;
@@ -92,7 +103,7 @@ CrWindow::~CrWindow()
     if ( ptr_to_cxObject != nil )
     {
           ((CxWindow*)ptr_to_cxObject)->CxPreDestroy();  //my function
-          ((CxWindow*)ptr_to_cxObject)->DestroyWindow(); //MFC function.
+          ((CxWindow*)ptr_to_cxObject)->CxDestroyWindow(); //MFC function.
 // CxWindow is derived from CFrameWnd which is "auto-cleanup"
 // which means it deletes itself. No need for this next line:
 //        delete (CxWindow*)ptr_to_cxObject;
@@ -206,12 +217,17 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
                   }
                   break;
                 }
-
-
                 case kTKeep:
                 {
                     tokenList->GetToken();
                     m_Keep = true;
+                    break;
+                }
+                case kTStayOpen:
+                {
+                    tokenList->GetToken(); // Remove that token!
+                    mStayOpen = true;
+                    LOGSTAT( "Setting Window to stay open on script exit" );
                     break;
                 }
                 default:
@@ -821,4 +837,3 @@ void CrWindow::TimerFired()
 {
   CcController::theController->TimerFired();
 }
-
