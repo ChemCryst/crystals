@@ -286,6 +286,7 @@ void RunParameters::readParamFile()
                 }
                 else if (iUnitCell.init(tLine))
                 {
+                    iUnitCell.guessCrystalSystem();
                 }
                 else if (regexec(tCommentSO, tLine, 13, tMatchs, 0) == 0)
                 {
