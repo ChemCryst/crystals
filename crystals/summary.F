@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.40  2003/02/25 15:32:50  rich
+C Don't clear IERFLG on exit from summary routines - the script wants
+C to know.
+C
 C Revision 1.39  2003/02/17 13:28:43  djw
 C Remove writes to .mon from FOURIER, save Rho and positions in LIST 30 CIFEXTRA (was in REFINEMENT), adjust output of 30
 C
@@ -2368,7 +2372,7 @@ C
      * /
       DATA (CKEY(I,3),I=1,MAXKEY)/
      1 'R', 'Rw', 'No. param last cycle', 'Sigma Cutoff', 'S',
-     2 '*','*','max RMS shift','Reflections used',
+     2 'Del rho min','Del rho max','max RMS shift','Reflections used',
      3 'Fo min function', 'Restraint min func', 'Total min func',
      4  7*'*'
      * /
@@ -2392,7 +2396,7 @@ C
      1 'Sigma Calc', 'No. Calc', 'R Calc', 'Rw Calc',
      2 'Sigma All', 'No. All', 'R All', 'Rw All', 'Extn-su',
      4 'Completeness' , 'Theta-full', 'Cmpltnss-full', 'Pressure kPa',
-     5 'Del rho min','Del rho max','x','y','z','*' /
+     5 '*','*','x','y','z','*' /
 C
 C
 C

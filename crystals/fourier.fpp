@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2003/02/17 13:28:43  djw
+C Remove writes to .mon from FOURIER, save Rho and positions in LIST 30 CIFEXTRA (was in REFINEMENT), adjust output of 30
+C
 C Revision 1.15  2003/02/14 17:09:02  djw
 C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
 C recine have the parameter ityp06, which corresponds to the types
@@ -694,8 +697,8 @@ C----- STORE IN LIST30 IF DIFFERENCE MAP
 C--DIFFERENCE MAP  -  PRINT THE AVERAGE ELECTRON DENSITY AT AN ATOMIC SI
         CALL XFAL30
 CFEB03 - WAS STORED AT L30RF
-        STORE(L30CF+13) = MIN (DENMIN, DENMAX)
-        STORE(L30CF+14) = MAX (DENMIN, DENMAX)
+        STORE(L30RF+5) = MIN (DENMIN, DENMAX)
+        STORE(L30RF+6) = MAX (DENMIN, DENMAX)
         STORE(L30CF+15) = FXMIN
         STORE(L30CF+16) = FYMIN
         STORE(L30CF+17) = FZMIN

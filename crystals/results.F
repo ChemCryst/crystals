@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.51  2003/02/20 16:05:21  rich
+C Ridiculous number of changes - mainly additions apropos the HTML output.
+C
 C Revision 1.50  2003/02/19 13:35:25  djw
 C Add Oxford Diffraction to list of known instruments for Jean Claude
 C
@@ -4559,8 +4562,8 @@ C----- RELECTION LIMITS IN DATA COLLECTION
 
            CBUF(1:21)='_refine_diff_density_'
            J=1
-           IF( ( ABS(STORE(L30CF+13)) .LT. 0.000001 ) .AND.
-     1       ( ABS(STORE(L30CF+14)) .LT. 0.000001 ) ) THEN
+           IF( ( ABS(STORE(L30RF+5)) .LT. 0.000001 ) .AND.
+     1       ( ABS(STORE(L30RF+5)) .LT. 0.000001 ) ) THEN
              DO K=1,2
                WRITE (CLINE,'(A, A,1X,A)') CBUF(1:21),CSIZE(J), '?'
                CALL XPCIF (CLINE)
@@ -4569,7 +4572,7 @@ C----- RELECTION LIMITS IN DATA COLLECTION
            ELSE
              DO K=1,2
                WRITE (CLINE,'(A, A, F10.2)') CBUF(1:21),CSIZE(J),
-     1         (STORE(L30CF+12+K))
+     1         (STORE(L30RF+4+K))
                CALL XPCIF (CLINE)
                J=J+2
              END DO
