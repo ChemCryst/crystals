@@ -37,7 +37,9 @@
 #ifndef __CRYSTAL_SYSTEM_H__
 #define __CRYSTAL_SYSTEM_H__
 #include "Matrices.h"
+#include "BaseTypes.h"
 #include "Collections.h"
+#include "SpaceGroups.h"
 #include "HKLData.h"
 #include <fstream>
 
@@ -150,13 +152,6 @@ class Indexs:public MyObject
 
 std::ostream& operator<<(std::ostream& pStream, Indexs& pIndexs);
 
-class Column:public MyObject
-{
-    public:
-        void setHeading(char* pHeading);
-        int length();
-};
-
 class ConditionColumn:virtual public Column
 {
     private:
@@ -177,46 +172,18 @@ class ConditionColumn:virtual public Column
         std::ostream& output(std::ostream& pStream, Headings* pHeadings, Conditions* pConditions);
 };
 
-class SpaceGroup:public MyObject
-{
-    private:
-        char* iSymbols;
-    public:
-        SpaceGroup(char* pSymbols);
-        ~SpaceGroup();
-        char* getSymbol();
-        std::ostream& output(std::ostream& pStream);
-};
-
-std::ostream& operator<<(std::ostream& pStream, SpaceGroup& pSpaceGroup);
-
-class SpaceGroups:virtual public Column
-{
-    private:
-        char* iPointGroup;
-        ArrayList<SpaceGroup>* iSpaceGroups;
-    public:
-        SpaceGroups();
-        ~SpaceGroups();
-        void add(char* pSpaceGroup, int pRow);
-        SpaceGroup* get(int pIndex);
-        int length();
-        void setHeading(char* pHeading);
-        char* getPointGroup();
-};
-
 class Table:public MyObject
 {
     private:
         char* iName;
         ArrayList<ConditionColumn>* iColumns;	//The conditions. Null means that there is no condition.
-        ArrayList<SpaceGroups>* iSpaceGroups;	//Columns of space groups.
+        ArrayList<SGColumn>* iSGColumn;	//Columns of space groups.
         Headings* iHeadings;
         Conditions* iConditions;
 	void columnHeadings(char* pHeadings, int pColumn);
         void addLine(char* pLine, int pColumn);
         void addCondition(char* pCondition, ConditionColumn* pColumn, int pRow);
-        void addSpaceGroup(char* pSpaceGroup, SpaceGroups* pSpaceGroups, int pRow);
+        void addSpaceGroup(char* pSpaceGroup, SGColumn* pSGColumn, int pRow);
     public:
         Table(char* pName, Headings* pHeadings, Conditions* pConditions, int pNumColumns, int pNumPointGroups);
         ~Table();

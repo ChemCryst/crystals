@@ -745,83 +745,6 @@ std::ostream& ConditionColumn::output(std::ostream& pStream, Headings* pHeadings
     }
     return pStream;
 }
-        
-SpaceGroup::SpaceGroup(char* pSymbols)
-{
-    iSymbols = new char[strlen(pSymbols)+1];
-    strcpy(iSymbols, pSymbols);
-}
-
-SpaceGroup::~SpaceGroup()
-{
-    delete[] iSymbols;
-}
-
-char* SpaceGroup::getSymbol()
-{
-    return iSymbols;
-}
-
-std::ostream& SpaceGroup::output(std::ostream& pStream)
-{
-    return pStream << iSymbols;
-}
-
-std::ostream& operator<<(std::ostream& pStream, SpaceGroup& pSpaceGroup)
-{
-    return pSpaceGroup.output(pStream);
-}
-
-SpaceGroups::SpaceGroups()
-{
-    iPointGroup = NULL;
-    iSpaceGroups = new ArrayList<SpaceGroup>(1);
-}
-
-SpaceGroups::~SpaceGroups()
-{
-    int tSize = iSpaceGroups->length();
-    
-    for (int i = 0; i < tSize; i++)
-    {
-        SpaceGroup* tSpace = iSpaceGroups->get(i);
-        if (tSpace)
-        {
-            delete tSpace;
-        }
-    }
-    delete iSpaceGroups;
-}
-
-void SpaceGroups::add(char* pSpaceGroup,  int pRow)
-{
-    iSpaceGroups->setWithAdd(new SpaceGroup(pSpaceGroup), pRow);
-}
-
-SpaceGroup* SpaceGroups::get(int pIndex)
-{
-    return iSpaceGroups->get(pIndex);
-}
-
-int SpaceGroups::length()
-{
-    return iSpaceGroups->length();
-}
-
-void SpaceGroups::setHeading(char* pHeading)
-{
-    if (iPointGroup)
-    {
-        delete[] iPointGroup;
-    }
-    iPointGroup = new char[strlen(pHeading)+1];
-    strcpy(iPointGroup, pHeading);
-}
-
-char* SpaceGroups::getPointGroup()
-{
-    return iPointGroup;
-}
 
 Table::Table(char* pName, Headings* pHeadings, Conditions* pConditions, int pNumColumns, int pNumPointGroups)
 {
@@ -835,10 +758,10 @@ Table::Table(char* pName, Headings* pHeadings, Conditions* pConditions, int pNum
     {
         iColumns->add(new ConditionColumn());	//Allocate and initalise the condition columns
     }
-    iSpaceGroups = new ArrayList<SpaceGroups>(pNumPointGroups);  //Allocate the space for the space group columns of the table
+    iSGColumn = new ArrayList<SGColumn>(pNumPointGroups);  //Allocate the space for the space group columns of the table
     for (int i = 0; i < pNumPointGroups; i++)
     {
-        iSpaceGroups->add(new SpaceGroups());	//Allocate and initalise the space group columns
+        iSGColumn->add(new SGColumn());	//Allocate and initalise the space group columns
     }
 }
         
@@ -846,10 +769,10 @@ Table::~Table()
 {
     delete[] iName;	//Release the space used by the name
     
-    int tSize = iSpaceGroups->length();	//Find the number of space group columns
+    int tSize = iSGColumn->length();	//Find the number of space group columns
     for (int i = 0; i<tSize; i++)	//Go though each deallocating the memory which they use up
     {
-        SpaceGroups* tGroups = iSpaceGroups->remove(i);
+        SGColumn* tGroups = iSGColumn->remove(i);
         if (tGroups)	//Make sure that there is some memory to be deallocated
         {
             delete tGroups;
@@ -865,7 +788,7 @@ Table::~Table()
         }
     }
     delete iColumns;	//Deallocate the arrays which stored the columns
-    delete iSpaceGroups;  //Deallocate the arrays which stored the columns
+    delete iSGColumn;  //Deallocate the arrays which stored the columns
 }
 
 void Table::columnHeadings(char* pHeadings, int pColumn)
@@ -889,11 +812,11 @@ void Table::columnHeadings(char* pHeadings, int pColumn)
     {
         int tSpaceGroupLen = pColumn-iColumns->length();
         
-        if (iSpaceGroups->length()<=tSpaceGroupLen)
+        if (iSGColumn->length()<=tSpaceGroupLen)
         {
             throw MyException(kUnknownException, "Table heading has bad format.");
         }
-        iSpaceGroups->get(tSpaceGroupLen)->setHeading(tString);
+        iSGColumn->get(tSpaceGroupLen)->setHeading(tString);
     }
     delete[] tString;
     if (tMatch[2].rm_so==-1)
@@ -932,7 +855,7 @@ void Table::addLine(char* pLine, int pColumn)
     }
     else
     {
-        addSpaceGroup(tString, iSpaceGroups->get(pColumn-iColumns->length()), pRow);
+        addSpaceGroup(tString, iSGColumn->get(pColumn-iColumns->length()), pRow);
     }
     addLine(pLine+(int)tMatch[1].rm_eo , pColumn+1);
 }
@@ -959,9 +882,9 @@ void Table::addCondition(char* pCondition, ConditionColumn* pColumn, int pRow)
     addCondition(tNextNumber+1, pColumn, pRow);
 }
 
-void Table::addSpaceGroup(char* pSpaceGroup, SpaceGroups* pSpaceGroups, int pRow)
+void Table::addSpaceGroup(char* pSpaceGroup, SGColumn* pSGColumn, int pRow)
 {
-    pSpaceGroups->add(pSpaceGroup, pRow);
+    pSGColumn->add(pSpaceGroup, pRow);
 }
         
 void Table::addLine(char* pLine)
@@ -991,12 +914,12 @@ char* Table::getName()
 
 int Table::getNumPointGroups()
 {
-    return iSpaceGroups->length();
+    return iSGColumn->length();
 }
 
 SpaceGroup* Table::getSpaceGroup(int pLineNum, int pPointGroupNum)
 {
-    SpaceGroups* tGroups = iSpaceGroups->get(pPointGroupNum);
+    SGColumn* tGroups = iSGColumn->get(pPointGroupNum);
     if (tGroups)
     {
             return tGroups->get(pLineNum);
@@ -1029,7 +952,7 @@ void Table::readFrom(filebuf& pFile)
 std::ofstream& Table::outputLine(int pLineNum, std::ofstream& pStream)
 {
     int tLengthConditions = iColumns->length();
-    int tLengthSpaceGroup = iSpaceGroups->length();
+    int tLengthSpaceGroup = iSGColumn->length();
     for (int i = 0; i < tLengthConditions; i++)
     {
         Indexs* tIndexs = iColumns->get(i)->getConditions(pLineNum);
@@ -1044,8 +967,8 @@ std::ofstream& Table::outputLine(int pLineNum, std::ofstream& pStream)
     }
     for (int i = 0; i < tLengthSpaceGroup; i++)
     {
-        SpaceGroups* tSpaceGroups = iSpaceGroups->get(i);
-        SpaceGroup* tSpaceGroup = tSpaceGroups->get(pLineNum);
+        SGColumn* tSGColumn = iSGColumn->get(i);
+        SpaceGroup* tSpaceGroup = tSGColumn->get(pLineNum);
         pStream << *(tSpaceGroup) << "\n";
     }
     return pStream;
@@ -1068,8 +991,8 @@ std::ofstream& Table::outputLine(int pLineNum, std::ofstream& pStream, int tPoin
     }
     for (int i = 0; tPointGroups[i]!=-1; i++)
     {
-        SpaceGroups* tSpaceGroups = iSpaceGroups->get(tPointGroups[i]);
-        SpaceGroup* tSpaceGroup = tSpaceGroups->get(pLineNum);
+        SGColumn* tSGColumn = iSGColumn->get(tPointGroups[i]);
+        SpaceGroup* tSpaceGroup = tSGColumn->get(pLineNum);
         pStream << *(tSpaceGroup) << "\n";
     }
     return pStream;
@@ -1078,7 +1001,7 @@ std::ofstream& Table::outputLine(int pLineNum, std::ofstream& pStream, int tPoin
 std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, int pColumnSize)
 {
     int tLengthConditions = iColumns->length();
-    int tLengthSpaceGroup = iSpaceGroups->length();
+    int tLengthSpaceGroup = iSGColumn->length();
     for (int i = 0; i < tLengthConditions; i++)
     {
         Indexs* tIndexs = iColumns->get(i)->getConditions(pLineNum);
@@ -1093,8 +1016,8 @@ std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, int pColumn
     }
     for (int i = 0; i < tLengthSpaceGroup; i++)
     {
-        SpaceGroups* tSpaceGroups = iSpaceGroups->get(i);
-        SpaceGroup* tSpaceGroup = tSpaceGroups->get(pLineNum);
+        SGColumn* tSGColumn = iSGColumn->get(i);
+        SpaceGroup* tSpaceGroup = tSGColumn->get(pLineNum);
         pStream << setw(pColumnSize) << *(tSpaceGroup) << " ";
     }
     pStream << "\n";
@@ -1118,8 +1041,8 @@ std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, int tPointG
     }
     for (int i = 0; tPointGroups[i]!=-1; i++)
     {
-        SpaceGroups* tSpaceGroups = iSpaceGroups->get(tPointGroups[i]);
-        SpaceGroup* tSpaceGroup = tSpaceGroups->get(pLineNum);
+        SGColumn* tSGColumn = iSGColumn->get(tPointGroups[i]);
+        SpaceGroup* tSpaceGroup = tSGColumn->get(pLineNum);
         pStream << setw(pColumnSize) << *(tSpaceGroup) << " ";
     }
     pStream << "\n";
@@ -1129,7 +1052,7 @@ std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, int tPointG
 std::ostream& Table::output(std::ostream& pStream)
 {	
     int tLengthConditions = iColumns->length();
-    int tLengthSpaceGroup = iSpaceGroups->length();
+    int tLengthSpaceGroup = iSGColumn->length();
     
     pStream << iName << "\n";
     for (int i = 0; i < tLengthConditions; i++)
@@ -1142,7 +1065,7 @@ std::ostream& Table::output(std::ostream& pStream)
     }
     for (int i = 0; i < tLengthSpaceGroup; i++)
     {
-        pStream << iSpaceGroups->get(i)->getPointGroup() << "\t";
+        pStream << iSGColumn->get(i)->getPointGroup() << "\t";
         pStream << "\t";
     }
     pStream << "\n";
@@ -1174,7 +1097,7 @@ int Table::numberOfColumns()
 
 int Table::numberOfRows()
 {
-    return iSpaceGroups->get(0)->length();
+    return iSGColumn->get(0)->length();
 }
 
 int Table::chiralPointGroups(int pPointGroupIndeces[])
@@ -1183,7 +1106,7 @@ int Table::chiralPointGroups(int pPointGroupIndeces[])
 	int tIndecesPoint = 0;
 	for (int i = 0; i< tPointGroups; i++)
 	{
-		char* tPointGroup = iSpaceGroups->get(i)->getPointGroup();
+		char* tPointGroup = iSGColumn->get(i)->getPointGroup();
 		//Is it a chiral point group
 		if (tPointGroup != NULL && strchr(tPointGroup, '-')==NULL && strchr(tPointGroup, 'm')==NULL)
 		{
