@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  2000/01/20 16:56:22  ckp2
+C djw  remove old diagnostic
+C
 C Revision 1.17  1999/12/23 17:29:31  ckp2
 C djw  fix unwanted output in Monitor file
 C
@@ -884,7 +887,7 @@ C
        WRITE(NCWU,1006) IFLIND, NCUFU(IFLIND) , CRFILE
 1006   FORMAT(' Opening File index=',I10, ' Unit =',I10,1X,A)
       ENDIF
-      I = KFLOPN ( NCUFU(IFLIND) , CRFILE , ISSOLD , ISSREA , 1 )
+      I = KFLOPN ( NCUFU(IFLIND), CRFILE, ISSOLD, ISSREA, 1, ISSSEQ )
         IF ( I .GT. 0 ) THEN
 C -- DISPLAY THE CURRENT CARD BEFORE WE LOSE THE CHANCE
           CALL XMONTR ( -1 )
@@ -2112,7 +2115,7 @@ C----- GENERATE NAME IF NECESSARY - NOT FOR D/A FILES
       IF (ISSGEN .GE. 1)
      1 CALL XGENNM ( IDEV, NEWFIL, OLDFIL, IRDWRI, ISTTUS )
 CDJWMAR99        ISTAT = KFLOPN ( IDEV , NEWFIL , ISTTUS , IRDWRI , IFORMT )
-        ISTAT = KFLOPN ( IDEV , NEWFIL , ISTTUS , IRWOPN , IFORMT )
+        ISTAT = KFLOPN ( IDEV, NEWFIL, ISTTUS, IRWOPN, IFORMT, ISSSEQ )
         IF ( ISTAT .LE. 0 ) GO TO 9980
       ELSE IF ( IACCSS .EQ. 2 ) THEN
 &PPC        IF ( IDEV .EQ. NCDFU ) THEN
@@ -3671,7 +3674,7 @@ C
       ENDIF
 C
 C------ THIS IS ONE OF THE FEW FILES NOT HANDLED BY XRDOPN
-        I = KFLOPN ( NUSRQ , ' ' , ISSSCR , ISSWRI , 1 )
+        I = KFLOPN ( NUSRQ , ' ' , ISSSCR , ISSWRI , 1, ISSSEQ )
         IF ( I .GT. 0 ) THEN
           IRDCPY(IFLIND) = 0
           IRDLOG(IFLIND) = 2

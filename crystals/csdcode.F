@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2000/07/04 13:42:16  ckp2
+C Better formatting of output. Angle checks included. Bug with ordering of
+C descriptors fixed.
+C
 C Revision 1.8  1999/06/03 17:26:09  dosuser
 C RIC: Added linux graphical interface support (GIL)
 C
@@ -331,7 +335,7 @@ C If it is not present write out a file for obtaining the data.
 &LIN            CFILEN = 'CRYSDIR:/script/bonddata.cdb'
 &GIL            CFILEN = 'CRYSDIR:/script/bonddata.cdb'
             CALL MTRNLG(CFILEN,'OLD',ILENG)
-            IF (KFLOPN (NCFPU1, CFILEN(1:ILENG), ISSOLD, ISSREA,1)
+            IF (KFLOPN (NCFPU1,CFILEN(1:ILENG),ISSOLD,ISSREA,1,ISSSEQ)
      1        .LE. -1) GOTO 650
             
 C Search for this bond type in that file. 
@@ -348,7 +352,7 @@ C Check for a .tab file with information about this bond.
             NCHAR = NCHAR - 1
             CFILEN = CCODE(1:NCHAR)//'.tab'
             CALL MTRNLG(CFILEN,'OLD',ILENG)
-            IF (KFLOPN (NCFPU1, CFILEN(1:ILENG), ISSOLD, ISSREA,1)
+            IF (KFLOPN (NCFPU1, CFILEN(1:ILENG),ISSOLD,ISSREA,1,ISSSEQ)
      1        .LE. -1) GOTO 670
 C Starting from the 9th line, read value every 4 lines.
             DO 660 K=1,8
@@ -385,7 +389,7 @@ C Write this info to the cdb file for future use.
 &LIN            CFILEN = 'CRYSDIR:/script/bonddata.cdb'
 &GIL            CFILEN = 'CRYSDIR:/script/bonddata.cdb'
             CALL MTRNLG(CFILEN,'UNKNOWN',ILENG)
-            IF (KFLOPN (NCFPU1, CFILEN(1:ILENG), ISSCIF, ISSWRI,1)
+            IF (KFLOPN (NCFPU1,CFILEN(1:ILENG),ISSCIF,ISSWRI,1,ISSSEQ)
      1        .LE. -1) GOTO 9920
 C Read to the end.
 665       CONTINUE
@@ -408,7 +412,7 @@ C Write a quest input file to generate bond data.
             NCHAR=NCHAR-1
             CFILEN = CCODE(1:NCHAR)//'.if'
             CALL MTRNLG(CFILEN,'UNKNOWN',ILENG)
-            IF (KFLOPN (NCFPU1, CFILEN(1:ILENG), ISSCIF, ISSWRI,1)
+            IF (KFLOPN (NCFPU1,CFILEN(1:ILENG),ISSCIF,ISSWRI,1,ISSSEQ)
      1        .LE. -1) GOTO 9920
             WRITE(NCFPU1,'(A)')'T1 *CONN'
             WRITE(NCFPU1,'(A)')'ELDEF Q= AA'
@@ -900,7 +904,7 @@ C If it is not present write out a file for obtaining the data.
 &LIN                CFILEN = 'CRYSDIR:/script/angldata.cdb'
 &GIL                CFILEN = 'CRYSDIR:/script/angldata.cdb'
                 CALL MTRNLG(CFILEN,'OLD',ILENG)
-                IF (KFLOPN (NCFPU1, CFILEN(1:ILENG), ISSOLD, ISSREA,1)
+                IF(KFLOPN(NCFPU1,CFILEN(1:ILENG),ISSOLD,ISSREA,1,ISSSEQ)
      1              .LE. -1) GOTO 1650
             
 C Search for this angle type in that file. 
@@ -917,7 +921,7 @@ C Check for a .tab file with information about this bond.
                 NCHAR = NCHAR - 1
                 CFILEN = CCODE(1:NCHAR)//'.tab'
                 CALL MTRNLG(CFILEN,'OLD',ILENG)
-                IF (KFLOPN (NCFPU1, CFILEN(1:ILENG), ISSOLD, ISSREA,1)
+                IF(KFLOPN(NCFPU1,CFILEN(1:ILENG),ISSOLD,ISSREA,1,ISSSEQ)
      1              .LE. -1) GOTO 1670
 1660            CONTINUE
 C Starting from the 9th line, read value every 4 lines.
@@ -1007,7 +1011,7 @@ C Write this info to the cdb file for future use.
 &LIN                CFILEN = 'CRYSDIR:/script/angldata.cdb'
 &GIL                CFILEN = 'CRYSDIR:/script/angldata.cdb'
                 CALL MTRNLG(CFILEN,'UNKNOWN',ILENG)
-                IF (KFLOPN (NCFPU1, CFILEN(1:ILENG), ISSCIF, ISSWRI,1)
+                IF(KFLOPN(NCFPU1,CFILEN(1:ILENG),ISSCIF,ISSWRI,1,ISSSEQ)
      1              .LE. -1) GOTO 9920
 C Read to the end.
 1665            CONTINUE
@@ -1031,7 +1035,7 @@ C Write a quest input file to generate bond data.
                 NCHAR=NCHAR-1
                 CFILEN = CCODE(1:NCHAR)//'.if'
                 CALL MTRNLG(CFILEN,'UNKNOWN',ILENG)
-                IF (KFLOPN (NCFPU1, CFILEN(1:ILENG), ISSCIF, ISSWRI,1)
+                IF(KFLOPN(NCFPU1,CFILEN(1:ILENG),ISSCIF,ISSWRI,1,ISSSEQ)
      1              .LE. -1) GOTO 9920
                 WRITE(NCFPU1,'(A)')'T1 *CONN'
                 WRITE(NCFPU1,'(A)')'ELDEF Q= AA'
@@ -1521,8 +1525,8 @@ C in common, so only needs loading once.
                  NATINF = NATINF + 6
                  GOTO 90
              ENDIF
-             IF (KFLOPN (NCARU, CFILEN(1:ILENG), ISSOLD, ISSREA,
-     1       1) .LE. -1) GOTO 9900
+             IF(KFLOPN(NCARU,CFILEN(1:ILENG),ISSOLD,ISSREA,
+     1       1,ISSSEQ) .LE. -1) GOTO 9900
 85           CONTINUE
                READ(NCARU,'(A80)',END=89) WCLINE
              IF((WCLINE(1:3).EQ.'CON').OR.(WCLINE(1:3).EQ.'   '))
@@ -1537,7 +1541,7 @@ C in common, so only needs loading once.
                   INQUIRE(FILE=CFILEN(1:ILENG),EXIST=WEXIST)
                   IF(.NOT.WEXIST) GOTO 89
                   IF (KFLOPN (NCARU, CFILEN(1:ILENG), ISSOLD, ISSREA,
-     1            1) .LE. -1) GOTO 9900
+     1            1,ISSSEQ) .LE. -1) GOTO 9900
 95                CONTINUE
                   READ(NCARU,'(A21)',END=89) WCLINE
                         IF(CCOL.EQ.WCLINE(1:6))THEN
@@ -1870,7 +1874,7 @@ C         -- Read file from fixed location for now (!).
 
           CFILEN = 'guess.dat'
           CALL MTRNLG(CFILEN,'OLD',ILENG)
-          IF (KFLOPN (NCFPU1, CFILEN(1:ILENG), ISSOLD, ISSREA,1)
+          IF (KFLOPN (NCFPU1, CFILEN(1:ILENG), ISSOLD, ISSREA,1,ISSSEQ)
      1        .LE. -1) GOTO 9010
                     
 100       CONTINUE

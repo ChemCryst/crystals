@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2000/07/04 13:43:32  ckp2
+C RIC: Better colours for bond deviations using csd checks.
+C
 C Revision 1.24  2000/02/23 12:22:06  ckp2
 C djw abortive attempt to trap NaN values
 C
@@ -866,7 +869,7 @@ C Now get the colour definition for this colour from colour.cmn
                   INQUIRE(FILE=CFILEN(1:ILENG),EXIST=WEXIST)
                   IF(.NOT.WEXIST) GOTO 88
                   IF (KFLOPN (NCARU, CFILEN(1:ILENG), ISSOLD, ISSREA,
-     1            1) .EQ. -1) GOTO 9900
+     1            1, ISSSEQ) .EQ. -1) GOTO 9900
 95                CONTINUE
                   READ(NCARU,'(A21)',END=88) WCLINE
                         IF(CCOL.EQ.WCLINE(1:6))THEN
