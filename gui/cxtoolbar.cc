@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.17  2004/11/08 16:48:36  stefan
+//   1. Replaces some #ifdef (__WXGTK__) with #if defined(__WXGTK__) || defined(__WXMAC) to make the code compile correctly on the mac version.
+//
 //   Revision 1.16  2004/10/12 12:11:45  rich
 //   Remove extra slashes from paths.
 //
@@ -217,7 +220,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
       m_ToolBar->AddTool(newTool->CxID, mycon, newTool->tText.c_str());
       m_ToolBar->Realize();
       m_ImageIndex++;
-      m_totWidth += 23;
+      m_totWidth += 28;
     }
     else
     {
@@ -353,7 +356,7 @@ int CxToolBar::GetIdealWidth()
 //   LOGSTAT ( "m_ImageIndex = " + string ( m_ImageIndex ) );
 //   return (( 18 + 5 ) * m_ImageIndex ) ;
 //   LOGSTAT ("CxToolbar: Returning ideal width: " + string(m_totWidth) );
-   return ( m_totWidth ) ;
+   return ( m_totWidth ) + 50;
 #endif
 }
 

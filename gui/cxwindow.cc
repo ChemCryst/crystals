@@ -9,6 +9,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.37  2004/11/08 16:48:36  stefan
+//   1. Replaces some #ifdef (__WXGTK__) with #if defined(__WXGTK__) || defined(__WXMAC) to make the code compile correctly on the mac version.
+//
 //   Revision 1.36  2004/10/08 09:02:22  rich
 //   Fix window sizing bug. Now uses system metrics.
 //
@@ -630,13 +633,13 @@ void CxWindow::AdjustSize(CcRect * size)
 #endif
 #ifdef __BOTHWX__
 // The system metrics aren't implemented yet!
-//       int mN = ( GetMenuBar() ) ? 20 : 0;
-//       int cH = 15;
-//       int bT = 4;
+       int mN = ( GetMenuBar() ) ? 20 : 0;
+       int cH = 15;
+       int bT = 4;
 // They are now:
-      int mN = ( GetMenuBar() != NULL ) ? wxSystemSettings::GetMetric(wxSYS_MENU_Y) : 0;
-      int cH = wxSystemSettings::GetMetric(wxSYS_CAPTION_Y);
-      int bT = wxSystemSettings::GetMetric(wxSYS_FRAMESIZE_X);
+//      int mN = ( GetMenuBar() != NULL ) ? wxSystemSettings::GetMetric(wxSYS_MENU_Y) : 0;
+//      int cH = wxSystemSettings::GetMetric(wxSYS_CAPTION_Y);
+//      int bT = wxSystemSettings::GetMetric(wxSYS_FRAMESIZE_X);
 #endif
  
     size->mRight  = size->Right()  + (2*bT);

@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.35  2004/11/09 09:45:02  rich
+// Removed some old stuff. Don't use displaylists on the Mac version.
+//
 // Revision 1.34  2004/07/02 09:21:18  rich
 // Prevent thread deadlock.
 //
@@ -527,36 +530,39 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
    nRes = CRMAX ( 4,  nRes );
    style->normal_res = nRes;
 
+#if !defined(__WXMAC__)
    if ( !feedback ) {
       glDeleteLists(ATOMLIST,1);
       glNewList( ATOMLIST, GL_COMPILE);
    }
+#endif
 
    retval |= RenderAtoms(style, feedback);
-
+#if !defined(__WXMAC__)
    if ( !feedback )
    {
       glEndList();
       glDeleteLists(BONDLIST,1);
       glNewList( BONDLIST, GL_COMPILE);
    }
+#endif
 
    retval |= RenderBonds(style, feedback);
-
+#if !defined(__WXMAC__)
    if ( !feedback )
    {
       glEndList();
       glDeleteLists(XOBJECTLIST,1);
       glNewList( XOBJECTLIST, GL_COMPILE);
    }
-
+#endif
    retval |= RenderExcluded(style, feedback);
-
+#if !defined(__WXMAC__)
    if ( !feedback )
    {
       glEndList();
    }
-
+#endif
    return retval;
 }
 
