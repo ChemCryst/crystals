@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.4  2004/12/20 11:41:05  rich
+C Added WXS support.
+C
 C Revision 1.3  2004/12/17 10:03:46  rich
 C Oops - extra line. Removed executable.
 C
@@ -182,12 +185,20 @@ C----- DOS OPENS
         WRITE(6,'(A)')'Usage: EDITOR <src> <output> ' //
      1   'code=<XXX> '//
      1   '[macro=macrofil.mac] [incl=&] [excl=#] '//
-#if defined(_DOS_) || defined(_GID_) 
+
+#if defined(_DOS_) || defined(_GID_)
+
      2   '[comm=CC] [subs=\] [strip]'
+
 #endif
+
+
 #if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) || defined (_WXS_)
+
      2   '[comm=CC] [subs=\\] [strip]'
+
 #endif
+
         STOP 'Error'
       ENDIF
 
