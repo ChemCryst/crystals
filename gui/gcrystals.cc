@@ -3,23 +3,27 @@
 
 #ifdef __WINDOWS__
 #include "stdafx.h"
-#include "crystals.h"
+#endif
+#ifdef __LINUX__
+#include <wx/event.h>
+#include <wx/app.h>
 #endif
 
+#include "crystals.h"
 #include "crystalsinterface.h"
 #include "crapp.h"
 #include "cccontroller.h"
 
-
+#ifdef __WINDOWS__
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
+#endif
 /////////////////////////////////////////////////////////////////////////////
 // CCrystalsApp
-
+#ifdef __WINDOWS__
 BEGIN_MESSAGE_MAP(CCrystalsApp, CWinApp)
 	//{{AFX_MSG_MAP(CCrystalsApp)
 	//}}AFX_MSG_MAP
@@ -76,7 +80,7 @@ BOOL CCrystalsApp::InitInstance()
 
 	// Dispatch commands specified on the command line
 //	if (!ProcessShellCommand(cmdInfo))
-//		return FALSE;
+//          return false;
 
 
 	theCrApp = new CrApp(NULL,NULL);
@@ -90,7 +94,7 @@ BOOL CCrystalsApp::InitInstance()
 //	m_pMainWnd->ShowWindow(SW_SHOW);
 //	m_pMainWnd->UpdateWindow();
 
-	return TRUE;
+      return true;
 }
 
 
@@ -137,3 +141,88 @@ int CCrystalsApp::ExitInstance()
 
 	return CWinApp::ExitInstance();
 }
+#endif
+
+#ifdef __LINUX__
+
+CCrystalsApp::CCrystalsApp()
+{
+	// TODO: add construction code here,
+	// Place all significant initialization in InitInstance
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// The one and only CCrystalsApp object
+
+IMPLEMENT_APP(CCrystalsApp)
+
+/////////////////////////////////////////////////////////////////////////////
+// CCrystalsApp initialization
+
+BEGIN_EVENT_TABLE( CCrystalsApp, wxApp )
+      EVT_IDLE ( CCrystalsApp::OnIdle )
+END_EVENT_TABLE()
+
+bool CCrystalsApp::OnInit()
+{
+
+      theCrApp = new CrApp(0,(char**)nil);
+      return true;
+}
+
+
+
+void CCrystalsApp::OnIdle(wxIdleEvent & event) 
+{
+	// TODO: Add your specialized code here and/or call the base class
+      wxApp::OnIdle(event);
+	bool sysret = event.MoreRequested();
+	bool appret = false;
+
+      cerr << "idling... \n";
+
+	char theLine[255];
+
+	if(theCrApp->mController->GetInterfaceCommand(theLine))
+	{
+            cerr << "idling, but what's this, a line " << theLine << "\n";
+		appret = true;
+
+		int theLength = 0;
+
+		if(theLength = strlen( theLine )) //Assignment within conditional (OK)
+		{
+			theLine[theLength+1]='\0';
+			theCrApp->mController->Tokenize(theLine);
+		}
+	}
+
+	//Only stop idle processing if:
+	// 1. appret is false (no more interface commands)
+	// 2. sysret is false (no more idle processing needed by framework).
+	if((!appret) && (!sysret)) 
+      {
+            cerr << "Fed up idling... \n";
+            cerr << "but let me idle more anyway. \n";
+		event.RequestMore();
+		return;
+      }
+      else
+      {
+            cerr << "Let me idle more... \n";
+		event.RequestMore();
+      }
+	return;
+}
+
+
+int CCrystalsApp::OnExit() 
+{
+
+	delete theCrApp;
+//	delete (CFrameWnd*)m_pMainWnd;
+
+	return wxApp::OnExit();
+}
+#endif
+
