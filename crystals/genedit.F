@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2002/02/20 14:15:28  ckp2
+C RIC: Fixed ancient bug in GENERALEDIT 'INSERT' which, as far as I can see will
+C have always prevented it from working, unless you happen to be extrememly lucky.
+C RIC: Don't write "END" into log files as if the user doesn't issue 'end' then
+C it appears after the next instruction making the log fairly useless.
+C
 C Revision 1.7  2001/09/11 08:23:17  ckp2
 C Small fix. Only log "Generaledit cannot be logged" comments, if logging
 C is turned on in the first place.
@@ -386,8 +392,10 @@ C
 3000  CONTINUE
 C -- 'WRITE' DIRECTIVE
       IF(INLOG.NE.0)WRITE(NCLU,'(A)')'# An update (WRITE) occured'
-      IOWF = 0
-      INEW = 1
+      IOWF = ISTORE(ICOMBL)
+      INEW = ISTORE(ICOMBL+1)
+C      IOWF = 0
+C      INEW = 1
       CALL XWLSTD ( ILTYPE , ISTORE(ILSTCM) , LLSTCM , IOWF , INEW )
       GO TO 8000
 C
