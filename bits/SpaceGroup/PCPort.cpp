@@ -3,7 +3,7 @@
 #include "PCPort.h"
 #include <sys/types.h>
 #include <sys/timeb.h>
-//#include <WinSock.h>
+#include <WinSock.h>
 
 void bzero(void* pPoint, size_t pBytes)
 {
