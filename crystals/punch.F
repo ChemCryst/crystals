@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2001/11/23 08:58:08  Administrator
+C Patches to facilitate link to SQUEEZE
+C
 C Revision 1.24  2001/10/16 11:52:05  ckp2
 C Fix punching of very old (MD5=14) list 5's.
 C
@@ -364,10 +367,17 @@ C
 C---- OPEN THE .XYZ FILE
       CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
       CALL XRDOPN(6, KDEV , 'PUBLISH.PDB', 11)
-
+C----- CELL PARAMETERS
       WRITE(NCFPU1,9100) (STORE(I),I=L1P1,L1P1+2)
      1 ,(RTD*STORE(I),I=L1P1+3,L1P1+5)
-9100  format('CRYST1',3F9.3,3F7.2)
+9100  FORMAT('CRYST1',3F9.3,3F7.2)
+C----- RECIPROCAL ORTHOGONALISATION MATRIX
+      K=L1O2
+      DO 1 J=1,3
+      WRITE(NCFPU1,9150) J,(STORE(I),I=K,K+2)
+      K=K+3
+1     CONTINUE
+9150  FORMAT('SCALE',I1,3F12.4) 
       M5 = L5
       DO 100 I = 1, N5
 C--COMPUTE THE ORTHOGONAL COORDINATES OF THE ATOM
