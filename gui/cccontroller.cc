@@ -11,6 +11,31 @@
 //   Modified:  30.3.1998 12:23 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.12  1999/06/13 16:31:57  dosuser
+// RIC: Added GetInputPlace(), SetInputPlace() and RemoveInputPlace()
+// for dynamically changing the Input Window. Check for TEXTINPUT on
+// SET command and look up the relevant object using GetInputPlace().
+// Added RedirectInput token, to change the input object. Probably
+// not needed though, as the token INPUT on an EDITBOX command will
+// do the trick.
+// Changed char * to CcString for AddCrystalsCommand and AddInterfaceCommand.
+// No longer necessary to check for _MAINTEXTINPUT in AddCrystalsCommand,
+// since the CrEditBox now knows if it is the input source and will send
+// text and clear itself as appropriate.
+// All references to mInputWindow changed to GetInputPlace().
+// RemoveTextOutputPlace() and RemoveProgressOutputPlace() changed so
+// that they search for the object being destroyed and remove it from
+// the appropriate list. This is better then popping it off the end
+// of the list as it allows the text to be redirected back to the
+// main window before the new window is destroyed, without leaking
+// memory. See #SCRIPT XHELP1 and 2 for an example of this.
+// OutputToScreen function never used, removed.
+// Added StoreSize routine to store a key and a rectangle in the
+// winsizes.ini file in the script directory.
+// Added GetSize routine to get a rectangle from the winsizes.ini
+// file given a key.
+// CcController specific tokens moved into the header file.
+//
 // Revision 1.11  1999/06/07 19:51:00  dosuser
 // RIC: The ChangeDir function that used to be a member function of CxApp,
 // is now a global function.
@@ -73,6 +98,7 @@
 #include	"ccmodeldoc.h"
 #include	"ccquickdata.h"
 #include	"ccchartobject.h"
+#include    "crprogress.h"
 #include <iostream.h>
 #include <iomanip.h>
 
@@ -241,9 +267,6 @@ Boolean	CcController::ParseInput( CcTokenList * tokenList )
 						delete wPtr;
 				}
 				break;
-#ifdef __LINUX__
-                        cerr << "Back in cccontroller::parseinput\n";
-#endif
 			}
 			case kTDisposeWindow:
 			{
@@ -492,10 +515,26 @@ Boolean	CcController::ParseInput( CcTokenList * tokenList )
                               LOGWARN( "CcController:ParseInput:RedirectInput couldn't find object with name '" + inputWindow + "'");
 				break;
 			}
+                  case kTGetKeyValue:
+			{
+				tokenList->GetToken();
+                        CcString val = GetKey( tokenList->GetToken() );
+                        SendCommand(val);
+                        break;
+			}
+                  case kTSetKeyValue:
+			{
+				tokenList->GetToken();
+                        CcString key = tokenList->GetToken();
+                        CcString val = tokenList->GetToken();
+                        StoreKey( key, val );
+                        break;
+			}
 			case kTSetStatus:
 			{
 				tokenList->GetToken();
 				status.ParseInput(mCurTokenList);
+                        break;
 			}
 
 /*			case kTUnknown:
@@ -1379,19 +1418,19 @@ void CcController::GetValue(CcTokenList * tokenList)
 }
 
 
-void  CcController::SetProgressText(CcString theText)
+void  CcController::SetProgressText(CcString * theText)
 {
-      CrGUIElement* theElement = nil;
-      theElement = GetProgressOutputPlace();
+      CrProgress* theElement = nil;
+      theElement = (CrProgress*) GetProgressOutputPlace();
       if (theElement != nil)
       {
-            theElement->SetText( theText );
+            theElement->SwitchText( theText );
       }
 
 }
 
 
-void CcController::StoreSize( CcString key, CcRect size )
+void CcController::StoreKey( CcString key, CcString value )
 {
 	FILE * file;
       FILE * tempf;
@@ -1445,25 +1484,22 @@ void CcController::StoreSize( CcString key, CcRect size )
                   LOGERR ( "Could not get open temp file: " + CcString ( tempn )  );
                   return;
             }
-            CcTokenList * old  = mCurTokenList;
 // Copy winsizes
 // to the temp
 // file.
             while ( ! feof( file ) )
             {
-                  CcTokenList * temp = new CcTokenList();
-                  mCurTokenList = temp;
                   if ( fgets( buffer, 256, file ) != NULL )
                   {
-                        ParseLine(buffer);
-                        CcString rkey = temp->GetToken();
-                        if  ( (!( rkey == key)) && ( rkey.Length() > 0 ) )
-                        {
+                        CcString ccbuf = buffer;
+                        if ( ccbuf.Length() > key.Length() )
+						{
+							if (!(key == ccbuf.Sub( 1, key.Length() )))
+							{
                               fputs ( buffer, tempf);
-                        }
-                  }
-                  mCurTokenList = old;
-                  delete temp;
+							}
+						}
+				  }
             }
             fclose( file );
             rewind( tempf );
@@ -1485,16 +1521,14 @@ void CcController::StoreSize( CcString key, CcRect size )
                   }
             }
             fclose ( tempf );
+            remove ( tempn );
       }
 // Add this key
 // on to the
 // end.
-      sprintf(buffer, "%s %d %d %d %d",
+      sprintf(buffer, "%s %s",
                       key.ToCString(),
-                      size.mTop,
-                      size.mLeft,
-                      size.mBottom,
-                      size.mRight );
+                      value.ToCString());
       fputs ( buffer, file );
       fputs ( "\n", file );
       fclose ( file );
@@ -1503,11 +1537,11 @@ void CcController::StoreSize( CcString key, CcRect size )
 
 }
 
-CcRect CcController::GetSize( CcString key )
+CcString CcController::GetKey( CcString key )
 {
-      CcRect size(0,0,0,0);
 	FILE * file;
       char buffer[256];
+      CcString value;
 
       char* crysdir = getenv("CRYSDIR") ;
       if ( crysdir == nil )
@@ -1528,29 +1562,26 @@ CcRect CcController::GetSize( CcString key )
 
       if( file = fopen( buffer, "r" ) ) //Assignment witin conditional - OK
 	{
-            CcTokenList * old  = mCurTokenList;
 		while ( ! feof( file ) )
 		{
-                  CcTokenList * temp = new CcTokenList();
-                  mCurTokenList = temp;
 			if ( fgets( buffer, 256, file ) != NULL )
                   {
-                        ParseLine(buffer);
-                        if ( temp->GetToken() == key )
-                        {
-                              size.mTop   = atoi ( temp->GetToken().ToCString() ) ;
-                              size.mLeft  = atoi ( temp->GetToken().ToCString() ) ;
-                              size.mBottom= atoi ( temp->GetToken().ToCString() ) ;
-                              size.mRight = atoi ( temp->GetToken().ToCString() ) ;
-                        }
+                        CcString ccbuf = buffer;
+						if ( key.Length() < ccbuf.Length() )
+						{
+							if ( key == ccbuf.Sub( 1, key.Length() ) )
+							{
+		                          value = ccbuf.Chop(1,key.Length()+1);
+// NB value includes the new line, chop it off.
+			                      value = value.Chop( value.Length(), value.Length() );
+				            }
+						}
                   }
-                  mCurTokenList = old;
-                  delete temp;
 		}
 		fclose( file );
 	}
 
-      return size;
+      return value;
 
 }
 

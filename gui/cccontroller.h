@@ -78,12 +78,12 @@ class	CcController
 		Boolean	GetInterfaceCommand( char * line );
             Boolean     GetInterfaceCommand( CcString * line );
 		void	LogError( CcString errString , int level);
-            void  SetProgressText(CcString theText);       
+            void  SetProgressText(CcString * theText);       
             void CompleteProcessing();
             void ProcessingComplete();
 
-            void StoreSize( CcString key, CcRect size );
-            CcRect GetSize( CcString key );
+            void StoreKey( CcString key, CcString value );
+            CcString GetKey( CcString key );
 
 		// attributes
 		
@@ -139,6 +139,9 @@ class	CcController
 #define kSRenameObject     "RENAME"
 #define kSGetValue	   "GETVALUE"
 #define	kSTitleOnly	   "TITLEONLY"
+#define kSGetKeyValue      "GETKEY"
+#define kSSetKeyValue      "SETKEY"
+
 #define kSWindowSelector	"WI"
 #define kSChartSelector		"CH"
 #define kSOneCommand		"CO"
@@ -169,8 +172,10 @@ enum
  kTControlSelector,	
  kTModelSelector,		
  kTStatusSelector,	
- kTQuerySelector
-};		
+ kTQuerySelector,
+ kTGetKeyValue,
+ kTSetKeyValue
+};
 
 
 
