@@ -48,6 +48,8 @@ private:
     float iSEA, iSEB, iSEC, iSEAlpha, iSEBeta, iSEGamma;    
 public:
     UnitCell();
+	UnitCell(const UnitCell& pUnitCell);
+	UnitCell(const Matrix<float> &pUnitCellTensor);
     bool init(char* pLine);
     void setA(float pA);
     void setB(float pB);
@@ -73,10 +75,13 @@ public:
     float getSEAlpha() const;
     float getSEBeta() const;
     float getSEGamma() const;
-    Matrix<float> metricTensor()const;
+    Matrix<float>& metricTensor(Matrix<float>& pResult)const;
     float volume() const;
+	bool zero() const;
     float calcMaxIndex(const int pMaxNumRef, const float pAxisLength) const;
     std::ostream& output(std::ostream& pStream)const;
+	UnitCell operator=(const UnitCell& pUnitCell);
+	UnitCell transform(Matrix<float>& pTrasformation);
 };
 
 SystemID getCrystalSystem(SystemID pDefault);
