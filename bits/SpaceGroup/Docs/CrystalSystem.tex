@@ -2,9 +2,9 @@
 {\footnotesize CrystalSystem.h modified  30/04/2003 \\ CrystalSystem.cpp modified 30/04/2003}
 
 \subsubsection{Heading}
-\emph{Publicly extends MyObject}\\
 \begin{table}[h]
 \begin{tabular}{|l|}\hline
+$<<$MyObject$>>$\\
 \textbf{Heading}\\ \hline
 -iMatrix:Matrix$<$float$>$\\
 -iName:char*\\
@@ -21,9 +21,9 @@
 \end{table}
 
 \subsubsection{Headings}
-\emph{Publicly extends MyObject}\\
 \begin{table}[h]
 \begin{tabular}{|l|}\hline
+$<<$MyObject$>>$\\
 \textbf{Headings}\\ \hline
 -iHeadings:ArrayList$<$Heading$>$*\\
 \hline
@@ -43,9 +43,9 @@
 This class should just extends the arraylist$<$Heading$>$ class and not have it as one of it's member variables. This is to be done.
 
 \subsubsection{Condition}
-\emph{Publicly extends MyObject}\\
 \begin{table}[h]
 \begin{tabular}{|l|}\hline
+$<<$MyObject$>>$\\
 \textbf{Condition}\\ \hline
 -iMatrix:Matrix$<$float$>$\\
 -iName:char*\\
@@ -64,9 +64,9 @@ This class should just extends the arraylist$<$Heading$>$ class and not have it 
 \end{table}
 
 \subsubsection{Conditions}
-\emph{Publicly extends MyObject}\\
 \begin{table}[h]
 \begin{tabular}{|l|}\hline
+$<<$MyObject$>>$\\
 \textbf{Conditions}\\ \hline
 -Conditions:ArrayList$<$Condition$>$*\\
 \hline
@@ -86,9 +86,9 @@ This class should just extends the arraylist$<$Heading$>$ class and not have it 
 This class should just extends the arraylist$<$Condition$>$ class and not have it as one of it's member variables. This is to be done.
 
 \subsubsection{Index}
-\emph{Publicly extends MyObject}\\
 \begin{table}[h]
 \begin{tabular}{|l|}\hline
+$<<$MyObject$>>$\\
 \textbf{Index}\\ \hline
 -iValue:int\\
 \hline
@@ -106,9 +106,9 @@ output(std::ostream\ands\xspace pStream):std::ostream\ands\\
 \end{table}
 
 \subsubsection{Indexs}
-\emph{Publicly extends MyObject}\\
 \begin{table}[h]
 \begin{tabular}{|l|}\hline
+$<<$MyObject$>>$\\
 \textbf{Indexs}\\ \hline
 -iIndexs:ArrayList$<$Index$>$\\
 \hline
@@ -124,9 +124,9 @@ output(std::ostream\ands\xspace pStream):std::ostream\ands\\
 \end{table}
 
 \subsubsection{Column}
-\emph{Publicly extends MyObject}\\
 \begin{table}[h]
 \begin{tabular}{|l|}\hline
+$<<$MyObject$>>$\\
 \textbf{Column}\\ \hline
 \\
 \hline
@@ -136,9 +136,9 @@ output(std::ostream\ands\xspace pStream):std::ostream\ands\\
 \end{table}
 
 \subsubsection{ConditionColumn}
-\emph{Virtually publicly extends Column}\\
 \begin{table}[h]
 \begin{tabular}{|l|}\hline
+$<<$Virtually Column$>>$\\
 \textbf{ConditionColumn}\\ \hline
 -iHeadingConditions:ArrayList$<$Index$>$*\\
 -iConditions:ArrayList$<$Indexs$>$*\\
@@ -160,9 +160,9 @@ output(std::ostream\ands\xspace pStream):std::ostream\ands\\
 \end{table}
 
 \subsubsection{SpaceGroup}
-\emph{Publicly extends MyObject}\\
 \begin{table}[h]
 \begin{tabular}{|l|}\hline
+$<<$MyObject$>>$\\
 \textbf{SpaceGroup}\\ \hline
 -iSymbol:char*\\
 \hline
@@ -175,9 +175,9 @@ output(std::ostream\ands\xspace pStream):std::ostream\ands\\
 \end{table}
 
 \subsubsection{SpaceGroups}
-\emph{Virtually publicly extends Column}\\
 \begin{table}[h]
 \begin{tabular}{|l|}\hline
+$<<$Virtually Column$>>$\\
 \textbf{SpaceGroups}\\ \hline
 -iPointGroup:char*\\
 -iSpaceGroups:ArrayList$<$SpaceGroup$>$*\\
@@ -194,9 +194,9 @@ output(std::ostream\ands\xspace pStream):std::ostream\ands\\
 \end{table}
 
 \subsubsection{Table}
-\emph{Publicly extends MyObject}\\
 \begin{table}[h]
 \begin{tabular}{|l|}\hline
+$<<$MyObject$>>$\\
 \textbf{Table}\\ \hline
 -iName:char*\\
 -iColumns:ArrayList$<$ConditionColumn$>$*\\
@@ -217,6 +217,68 @@ output(std::ostream\ands\xspace pStream):std::ostream\ands\\
 +getHeadings(int pI):ArrayList$<$Index$>$\\
 +output(std::ostream\ands\xspace pStream):std::ostream\ands\\
 +output(int pLineNumstd::ostream\ands\xspace pStream):std::ostream\ands\\
++getNumPointGroups):int\\
++getConditions(int pRow, int pColumn):Indexs*\\
++numberOfColumns():int\\
++numberOfRows():int\\
 \hline
 \end{tabular}
 \end{table}
+
+\subsubsection{Tables}
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{Tables}\\ \hline
+$<<$MyObject$>>$\\
+-iTables:ArrayList<Table>*\\
+-iHeadings:Headings*\\
+-iConditons:Conditons*\\
+\hline
++Tables(char* pFileName):\\
++\til Tables():\\
++getHeadings():Headings*\\
++getConditions():Conditions*\\
++addTable(Table* pTable):void\\
++readFrom(filebuf\ands\xspace pFile):void\\
++findTable(char* pName):Table*\\
++output(std::ostream\ands\xspace pStream):std::pstream\ands\xspace\\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{RowRating}
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{RowRating}\\ \hline
+iRowNum:int\\
+iTotNumVal:int\\
+iSumRat1:float\\
+iSumRat2:float\\
+iSumSqrRat1:float\\
+iSumSqrRat2:float\\
+iMean:float\\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{RankedSpaceGroups}
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+$<<$MyObject$>>$\\
+\textbf{RankedSpaceGroups}\\ \hline
+iRatingList:LList$<$RowRating$>$\\
+iRatings:RowRating*\\
+iTable:Table*\\
+\hline
++RankedSpaceGroups(Table\ands\xspace pTable, Stats\ands\xspace pStats, bool pChiral):\\
++\til RankedSpaceGroups():
++output(std::ostream\ands\xspace pStream):std::ostream\ands\\
+-static calcRowRating(RowRating* pRating, int pRow, Table\ands\xspace pTable, Stats\ands\xspace pStats):void\\
+-static addConditionRatings(RowRating pRating, Stats\ands\xspace pStats,\\
+\xspace Index* tIndexs, Index* pHeadingIndex):void\\
+-static void addRating(RowRating* pRating, float pRating1, float pRating2):void\\
+-addToList(RowRating* pRating):void\\
+\hline
+\end{tabular}
+\end{table}
+

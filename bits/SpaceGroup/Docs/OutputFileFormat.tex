@@ -104,21 +104,45 @@ NTESTS 3
 \subsection{Stats Table}
 \begin{table}[h]
 \begin{tabular}{|l|l|}\hline
-DATA \hash  \hash & First number is the number or sets of stats. The second number is the number of stats give. Currently this is set to 7.\\
+DATA \hash  \hash & First number is the number or sets of stats N. The second number is the number of stats give. Currently this is set to 7.\\
 \hline
+N sets of Stats data &\\\hline
+\end{tabular}
+\end{table}
+\subsubsection{Stats data}
+\begin{table}[h]
+\begin{tabular}{|l|l|}\hline
 \hash & The number of reflections which matched the condition.\\\hline
 \hash.\hash & The average intensity of the reflections which match the conditon.\\\hline
 \hash & The number of reflections which didn't matched the condition.\\\hline
 \hash.\hash & The average intensity of the reflections which didn't match the conditon.\\\hline
-\hash.\hash & Percentage of reflections didn't match which where I < 3*u(I)\\\hline
-\hash.\hash & \\\hline
-\hash.\hash & \\\hline
+\hash.\hash & Percentage of reflections didn't match which where I < 3*u(I).\\\hline
+\hash.\hash & Score 1 also called ratio 1. See math's reference for further details.\\\hline
+\hash.\hash & Score 2 also called ratio 1. See math's reference for further details.\\\hline
 \hline
 \end{tabular}
 \end{table}
 e.g.\\
-NTESTS 3
-0 1 0 0 2 h == 2n
-1 0 1 0 2 k == 2n
-8 0 0 1 4 l == 4n
+DATA 21 7\\
+6710\\
+78.0809\\
+6680\\
+55.9501\\
+38.8174\\
+-0.31918\\
+-0.45224\\
+6705\\
+78.17\\
+6685\\
+55.8772\\
+38.5639\\
+-0.31918\\
+-0.4562\\
+6702\\
+78.2019\\
+6688\\
+55.8553\\
+38.6812\\
+-0.31561\\
+-0.4562\\
  \end{document}
