@@ -75,7 +75,7 @@
 %     EVALUATE BUTTXX = '&No, cancel'
 %     COPY '#SCRIPT XQUESTIO'
 %     IF ANSWER = TRUE THEN
-%      COPY '#USE SIR92.INS'
+%      COPY '#USE SIR9X.INS'
 %      COPY '#EDIT'
 %      COPY 'MON OFF'
 %      COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0'
@@ -83,7 +83,7 @@
 %      COPY 'END'
 %     END IF
 %    ELSE
-%     COPY '#USE SIR92.INS'
+%     COPY '#USE SIR9X.INS'
 %     COPY '#EDIT'
 %     COPY 'MON OFF'
 %     COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0'

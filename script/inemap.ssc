@@ -144,7 +144,7 @@ A SCRIPT to help you input a new trial model
 %      COPY 'END'
 %    ELSE
 %      EVALUATE SOLVEFLAG = 3
-%      COPY '#USE SIR92.INS'
+%      COPY '#USE SIR9X.INS'
 %    END IF
 %    COPY '#EDIT'
 %    COPY 'MON OFF'

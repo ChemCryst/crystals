@@ -75,7 +75,7 @@
 %      IF ( IRUN .EQ. 2 ) THEN
 %           FINISH
 %      END IF
-%      COPY '#SPAWN  COMMAND.COM /c CRYSDIR:SIR92.BAT'
+%      COPY '#SPAWN  COMMAND.COM /e:2048 /c CRYSDIR:SIR92.BAT'
 %   END BLOCK
 %   BLOCK
 %      EVALUATE QTITLE = 'Sir92 Results'
@@ -97,7 +97,7 @@
 %%
 %% Get the results back...
 %%
-%      COPY '#USE SIR92.INS'
+%      COPY '#USE SIR9X.INS'
 %      COPY '#EDIT'
 %      COPY 'MON OFF'
 %      COPY 'REFORMAT ALL'

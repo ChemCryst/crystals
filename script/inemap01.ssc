@@ -137,7 +137,7 @@ A SCRIPT to help you input a new trial model
 %      COPY 'MINIMA RATIO=3'
 %      COPY 'END'
 %    ELSE
-%      COPY '#USE SIR92.INS'
+%      COPY '#USE SIR9X.INS'
 %    END IF
 %    COPY '#EDIT'
 %    COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0'
