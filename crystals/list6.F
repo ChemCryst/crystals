@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2002/03/29 00:10:38  richard
+C Reduce number of steps in progress bar output (from 50 to 20).
+C
 C Revision 1.6  2001/05/31 16:39:48  richard
 C RIC: New processing of SLICES and CONDITIONS in KALLOW.
 C
@@ -1287,13 +1290,12 @@ C -- PRODUCE DISPLAY IF REQUIRED
 C
       IF ( DISPL6 ) THEN
         IF ( N6R .GE. (N6D-1) ) THEN
-&GID          WRITE ( CMON,1505)
-&GID          CALL XPRVDU(NCVDU, 1, 0)
+#GID          WRITE ( CMON,1505)
+#GID          CALL XPRVDU(NCVDU, 1, 0)
 #GID          WRITE(NCVDU,1505)
 1505      FORMAT ( 15X , '0', 12X, 'Processing reflections ',
      2    11X , '100%')
-C          CALL VGACOL ( 'BOL', 'YEL', 'BLA' )
-           CALL OUTCOL(6)
+          CALL OUTCOL(6)
 #GID          WRITE(NCVDU,'(15X,''^'',$)')
           NSTAR = 1
           NXTLVL = ( NSTAR * N6D ) / NINTER
