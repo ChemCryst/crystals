@@ -43,6 +43,31 @@ std::ostream& SpaceGroup::output(std::ostream& pStream)
     return pStream << iSymbols;
 }
 
+std::ostream& SpaceGroup::crystalsOutput(std::ostream& pStream)
+{
+    const long tSize = strlen(iSymbols);
+    char* tSymbol = new char[tSize*2];	//The end result shouldn't be any begger than double the original
+    long tUpto = 0;
+    char tPrevChar = ' ';
+    for (int i = 0; i < tSize; i++)
+    {
+        if (strchr("12346abcdmnABCIFPR-", iSymbols[i])!=NULL && strchr("12346abcdmnABCIFPR", tPrevChar)!=NULL)
+        {
+            tSymbol[tUpto] = ' ';
+            tUpto++;
+        }
+        else if (iSymbols[i] == '_')
+        {
+            i++;
+        }
+        tSymbol[tUpto] = iSymbols[i];
+        tPrevChar = iSymbols[i];
+        tUpto ++;
+    }
+    tSymbol[tUpto] = '\0';
+    return pStream << tSymbol;
+}
+
 std::ostream& operator<<(std::ostream& pStream, SpaceGroup& pSpaceGroup)
 {
     return pSpaceGroup.output(pStream);
@@ -52,15 +77,19 @@ std::ostream& operator<<(std::ostream& pStream, SpaceGroup& pSpaceGroup)
 //These are here to save allocation time. You have to make sure that you don't try and uses them where they might get over written.
 static regex_t * gSpaceGroupsFSO =NULL;
 static regex_t * gSGBraketsFSO =NULL;
-const size_t gMatches = 8;
+const size_t gMatches = 10;
 regmatch_t gMatch[gMatches];
 
 SpaceGroups::SpaceGroups(char* pSpaceGroups)
 {
     iBrackets = NULL;
     if (gSpaceGroupsFSO == NULL)
-    {
-        char tSGBraketsRE[] = "(^([^\\[\\{].*[^]}])$)|(^\\[(.+)\\]$)|(^\\{(.+)\\}$)|(-)";
+    {//(([^\\[\\{].+[^\\]\\}]))
+        #if defined(_WIN32)
+		char tSGBraketsRE[] = "^(([^\[{].*[^\]}])|(\\[(.+)\\])|(\\{(.+)\\})|(-))$";
+        #else
+                char tSGBraketsRE[] = "(^([^\\[\\{].*[^]}])|(\\[(.+)\\])|(\\{(.+)\\})|(-)$)";
+        #endif
         char tSpaceGroupsRE[] = "([PABCIRF][-123456abcdnm_/]+)(,[[:space:]]+([PABCIRF][-123456abcnm_/]+))?";
         gSGBraketsFSO = new regex_t;
         gSpaceGroupsFSO = new regex_t;
@@ -70,8 +99,6 @@ SpaceGroups::SpaceGroups(char* pSpaceGroups)
     
     if (regexec(gSGBraketsFSO, pSpaceGroups, gMatches, gMatch, 0))
     {
-        cout << pSpaceGroups << "\n";
-        cout.flush();
         throw MyException(kUnknownException, "SpaceGroups where in bad format.");
     }
     if (gMatch[2].rm_so > -1)
@@ -114,8 +141,6 @@ void SpaceGroups::addSpaceGroups(char* pSpaceGroups)
     
     if (regexec(gSpaceGroupsFSO, pSpaceGroups, gMatches, gMatch, 0))
     {
-         cout << pSpaceGroups << "\n";
-        cout.flush();
         throw MyException(kUnknownException, "Space groups where in bad format.");
     }
     tSpaceGroup = new char[gMatch[1].rm_eo - gMatch[1].rm_so+1];
@@ -132,18 +157,17 @@ void SpaceGroups::addSpaceGroups(char* pSpaceGroups)
 
 long SpaceGroups::count()
 {
-    return size();
+    return (long)size();
 }
 
 std::ostream& SpaceGroups::output(std::ostream& pStream)
 {
-    int tNumber = size();
+    long tNumber = this->size();
     
     if (iBrackets)
         pStream << iBrackets[0];
     for (int i = 0; i < tNumber; i++)
     {
-        
         pStream << (*this)[i];
         if (i+1 < tNumber)
             pStream << ", ";
@@ -155,11 +179,12 @@ std::ostream& SpaceGroups::output(std::ostream& pStream)
 
 std::ofstream& SpaceGroups::output(std::ofstream& pStream)
 {
-    int tNumber = size();
+    long tNumber = this->size();
     
     for (int i = 0; i < tNumber; i++)
     {
-        pStream << (*this)[i];
+        (*this)[i].crystalsOutput(pStream);
+       //pStream << (*this)[i];
         if (i+1 < tNumber)
             pStream << "\n";
     }
