@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.33  2004/06/25 12:49:38  rich
+// Avoid deadlocks in mutex.
+//
 // Revision 1.32  2004/06/25 09:29:18  rich
 // Pass strings more efficiently. Fix bug in FlagFrag.
 //
@@ -360,8 +363,8 @@ void CcModelDoc::DisableAllAtoms(bool select)
             (*sphere).Disable(select);
   for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
             (*donut).Disable(select);
-  DrawViews();
   m_thread_critical_section.Leave();
+  DrawViews();
 
 }
 
@@ -409,13 +412,14 @@ void CcModelDoc::SelectAllAtoms(bool select)
             (*sphere).Select(select);
   for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
             (*donut).Select(select);
+  m_thread_critical_section.Leave();
+
   DrawViews();
 
   if ( select )
     (CcController::theController)->status.SetNumSelectedAtoms( mAtomList.size() + mSphereList.size() + mDonutList.size() );
   else
     (CcController::theController)->status.SetNumSelectedAtoms( 0 );
-  m_thread_critical_section.Leave();
 
 }
 
@@ -455,9 +459,9 @@ void CcModelDoc::InvertSelection()
             if ( (*sphere).Select() ) i++;
   for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
             if ( (*donut).Select() ) i++;
+  m_thread_critical_section.Leave();
   (CcController::theController)->status.SetNumSelectedAtoms( i );
   DrawViews();
-  m_thread_critical_section.Leave();
 
 }
 
