@@ -2,6 +2,16 @@
 @if "%1" == "clean" goto clean
 @if "%1" == "tidy" goto tidy
 
+@echo Copying datafiles
+@FOR %%I IN ( ..\datafiles\*.ssr ) DO ..\editor\cryseditor %%I %%~nI.srt code=%COMPCODE% incl=+ excl=- comm=# strip
+
+@echo Copying precompiled stuff
+echo CVS > cvs.txt
+xcopy ..\precomp\all . /S /D /F /EXCLUDE:cvs.txt
+xcopy ..\precomp\%COMPCODE% . /S /D /F /EXCLUDE:cvs.txt
+del cvs.txt
+
+@echo Creating COMMANDS.DSC file.
 SETLOCAL
 if not exist ..\editor\cryseditor cd ..\editor&&call make_w32.bat&&cd ..
 ENDLOCAL
@@ -17,9 +27,6 @@ set CRYSDIR=./
 cd ..
 ENDLOCAL
 copy dscbuild\commands.dsc .
-@FOR %%I IN ( ..\datafiles\*.ssr ) DO ..\editor\cryseditor %%I %%~nI.srt code=%COMPCODE% incl=+ excl=- comm=# strip
-xcopy ..\precomp\all . /S /D /F
-xcopy ..\precomp\%COMPCODE% . /S /D /F
 @goto exit
 
 :clean
@@ -32,6 +39,7 @@ del *.dll
 del Tables.txt oshell.bat contour.exe guide92.txt
 
 :tidy
+rmdir /q /s dscbuild
 rmdir /q /s nket\cvs
 rmdir /q /s mce\cvs
 rmdir /q /s example\cvs
