@@ -35,9 +35,8 @@ PUNCH              1    0
    1.PUNCH              2    1    0    0
          1    3
      LIST               1   -1    1    0    0
-     CLASS              2    0    1    6   -1 A
+     CLASS              2    0    1    5   -1 A
      A              B              C              D              E
-     F
 LIST 1             9    2
    1   40960 CRYSTALSINPUT
    20   30
@@ -196,12 +195,12 @@ THE ATOMIC SCATTERING FACTORS IN EXPONENTIAL FORMAT
 LIST 4             4    0
    4   40960 CRYSTALSINPUT
    1.SCHEME            10    1    0    0
-         1    1    3    1    1    3    3    2    2    2
+         1    1    3    2    1    3    3    2    2    2
     .NUMBER             1    0    1    0    0         9
     .NPARAMETERS        8    0    1    0    0         0
     .TYPE               2    0    1    4    0 CHOOSE
      NORMAL         1/2FO          /FO/**2        CHOOSE
-    .WEIGHT             3    0    1    0    0         2
+    .WEIGHT             3    0    1    0    0         2.
     .MAXIMUM            4    0    1    0    0     10000
     .ROBUST            17    0    1    2    0 NO
      NO             YES
@@ -284,7 +283,7 @@ ATOMIC PARAMETERS
     .SPARE              0    0    1    0    0 0.0
     .PART               0    0    1    0    0         0
     .REF                0    0    1    0    0         0
-    .RESIDUE            0    0    1    0    0         0
+    .FRAGMENT           0    0    1    0    0         0
     .NEW                0    0    1    0    0                            
    4.INDEX              5    1    0    0    5    1  103    9    5
          1    1    1    1    1    1    0    0    0    0
@@ -644,7 +643,7 @@ THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP
     .HEIGHT             0    0    1    0    0 0.0
     .PART               0    0    1    0    0         0
     .REF                0    0    1    0    0         0
-    .RESIDUE            0    0    1    0    0         0
+    .FRAGMENT           0    0    1    0    0         0
     .NEW                0    0    1    0    0                    
    4.INDEX              5    1    0    0    5    1  103    9   10
          1    1    1    1    1    1    0    0    0    0
@@ -713,7 +712,7 @@ LIST 11            4    0
          1    1
     .LIST 5             0    0    0    0    0         5
     .LIST 12            0    0    0    0    0        12
-LIST 12           13    0
+LIST 12           11    0
   12   40960 CRYSTALSINPUT
    1.EQUIVALENCE        0 9999    0    3    0    0  101    5   12
          0    0    0    0    0    0    0    0    0    0
@@ -746,12 +745,6 @@ LIST 12           13    0
          0    0    0    0    0    0    0    0    0    0
          5    0    0    6    0    0    7    0    0
   11.GROUP              0 9999    0    3    0    0  111    5   12
-         0    0    0    0    0    0    0    0    0    0
-         5    0    0    6    0    0    7    0    0
-  12.SUMFIX             0 9999    0    3    0    0  112    5   12
-         0    0    0    0    0    0    0    0    0    0
-         5    0    0    6    0    0    7    0    0
-  13.REM                0 9999    0    3    0    0  113    5   12
          0    0    0    0    0    0    0    0    0    0
          5    0    0    6    0    0    7    0    0
 LIST 13            9    0
@@ -936,7 +929,7 @@ PATTERSON DIVISIONS FOR EACH OF THE AXES
 (1H ,6F10.2)
 LIST 15            0    0
   15   40960 CRYSTALSINPUT
-LIST 16           21    0
+LIST 16           19    0
   16   40960 CRYSTALSINPUT
    1.DEFINE             0 9999    0    0    0    0  101    5   16
          0    0    0    0    0    0    0    0    0    0
@@ -975,10 +968,6 @@ LIST 16           21    0
   18.NONBONDED          0 9999    0    0    0    0  118    5   16
          0    0    0    0    0    0    0    0    0    0
   19.ORIGIN             0 9999    0    0    0    0  119    5   16
-         0    0    0    0    0    0    0    0    0    0
-  20.REM                0 9999    0    0    0    0  120    5   16
-         0    0    0    0    0    0    0    0    0    0
-  21.SAME               0 9999    0    0    0    0  121    5   16
          0    0    0    0    0    0    0    0    0    0
 LIST 17           19    0
   17   40960 CRYSTALSINPUT
@@ -1192,9 +1181,9 @@ THE MATRICES THAT TRANSFORM THE STANDARD INDICES INTO EACH ELEMENT
          1    1    0    0    1    1    0    0    0    0
 THE INVERSE MATRICES FOR THE TWIN TRANSFORMATIONS
 (3(1H ,10X,3F10.3/))
-LIST 26            3    5
+LIST 26            3    4
    2    4096 CRYSTALSPROCESS
-    1    2    5   16   17
+    1    2   16   17
    1.DEPENDENCIES       4    0    0    0    4    2    1    5   26
          0    0    0    0    0    0    0    0    0    0
          1    1    1    1
@@ -1542,7 +1531,7 @@ New CIF extensions
     .THETA-FULL         0    0    1    0    1 0.
     .COMPL-FULL         0    0    1    0    1 0.
     .PRESSURE           0    0    1    0    1 0.
-    .NRESTUSED          0    0    1    0    1 0.
+    .ZZ14               0    0    1    0    1 0.
     .ZZ15               0    0    1    0    1 0.
     .XMIN               0    0    1    0    1 0.
     .YMIN               0    0    1    0    1 0.
@@ -2495,7 +2484,7 @@ EDIT              42    5
     .SPARE             25    0    1    0    0 0.0
     .PART              26    0    1    0    0         0
     .REF               27    0    1    0    0         0
-    .RESIDUE           28    0    1    0    0         0
+    .FRAGMENT          28    0    1    0    0         0
     .NEW               29    0    1    0    0                   
   23.SORT               0 9999    0    0    0    0  122    5  145
          0    0    0    0    0    0    0    0    0    0
@@ -2508,7 +2497,7 @@ EDIT              42    5
   27.INSERT             1 9999    0    0
          3
     .IDENTIFIER        10    0    1    5    1 ELECTRONS
-     ELECTRONS      WEIGHT         NCONNECTIONS   RELAX          RESIDUE
+     ELECTRONS      WEIGHT         NCONNECTIONS   RELAX          FRAGMENT
   28.SHIFT              0 9999    0    0    0    0  126    5  145
          0    0    0    0    0    0    0    0    0    0
   29.DEORTHOGONAL       0 9999    0    0    0    0  127    5  145
@@ -3242,6 +3231,30 @@ LP                 2    3
          1
     .INPUTLIST          1    0    1    2    1         6
               6    7
+THETABS            5    3
+  12    4096 CRYSTALSPROCESS6
+    1    6   13
+   1.STORE              2    1    0    0
+         3    3
+    .MEDIUM             2    0    1    3   -1 INPUT
+     FILE           INPUT          DISK
+    .F'S                3    0    1    2   -1 FO
+     FSQ            FO
+   2.THETA              1    1    0    0
+         1
+    .NTHETAVALUES       7    0    1    0    0         0
+   3.THETAVALUES        1    0    0    0   -7    1 4004    5  106
+         0    0    0    0    0    0    0    0    0    0
+         2
+    .THETA              0   -1    1    0    0
+   4.THETACURVE         1    0    0    0   -7    1 4005    9  106
+         0    0    0    0    0    0    0    0    0    0
+         2
+    .CORRECTION         0   -1    1    0    0
+   5.THETABS            1    1    0    0
+         1
+    .INPUTLIST          1    0    1    2    1         6
+              6    7
 SYSTEMATIC         2    3
    2    4096 CRYSTALSPROCESS6
     2    6   13
@@ -3890,7 +3903,7 @@ BONDCALC           1    4
          3
     .UPDATE             1    0    1    2    0 IFREQUIRED
      IFREQUIRED     FORCE
-MATRIX            15    
+MATRIX            13    
    9    4096 CRYSTALSINPUT
    1.A                  0 9999    0    0    0    0  101    5  115
          0    0    0    0    0    0    0    0    0    0
@@ -3916,11 +3929,7 @@ MATRIX            15
          0    0    0    0    0    0    0    0    0    0
   12.EXECUTE            0 9999    0    0    0    0  112    5  115
          0    0    0    0    0    0    0    0    0    0
-  13.SCR2A              0 9999    0    0    0    0  110    5  115
-         0    0    0    0    0    0    0    0    0    0
-  14.SCR2B              0 9999    0    0    0    0  111    5  115
-         0    0    0    0    0    0    0    0    0    0
-  15.MATRIX             0    1    0    0
+  13.MATRIX             0    1    0    0
 COPY               1    5
    5    4096 CRYSTALSINPUT6
     1    6    7   23   28
