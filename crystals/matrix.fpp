@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.3  2001/12/12 17:48:59  Administrator
+C matrix calculator
+C
 C Revision 1.2  2001/02/26 10:29:08  richard
 C Added changelog to top of file
 C
@@ -551,9 +554,28 @@ C
       CALL MTRANS(B)
       RETURN
       END
+CODE FOR XUNTM
+      SUBROUTINE XUNTM(AMAT, N)
+C--SET UP A UNIT MATRIX IN 'AMAT'
+C
+C  AMAT  THE MATRIX TO BE SET UP AS A UNIT MATRIX.
+C  N     DIMENSION OF SQUARE MATRIX
+C--
+C
+      DIMENSION AMAT(N*N)
+C
+C--ZERO THE MATRIX
+      CALL XZEROF(AMAT(1),N*N)
+      IZAP = 1
+      DO JZAP=1,N
+       AMAT(IZAP)=1.
+       IZAP=IZAP+N+1
+      ENDDO
+      RETURN
+      END
 CODE FOR XUNTM3
       SUBROUTINE XUNTM3(AMAT)
-C--SET UP A UNIT MATRIX IN 'AMAT'
+C--SET UP A 3*3 UNIT MATRIX IN 'AMAT'
 C
 C  AMAT  THE MATRIX TO BE SET UP AS A UNIT MATRIX.
 C

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2002/03/15 16:50:00  richard
+C Type #SET BONDTYPE OFF to suppress bond type calculation.
+C
 C Revision 1.18  2002/03/15 11:30:09  richard
 C Fix problem where bond types are not calculated on opening a new structure.
 C
@@ -952,10 +955,12 @@ C--CALCULATE THE ERROR CONTRIBUTIONS FOR ATOM ONE
 C--APPLY THE DERIVATIVE VECTOR TO THE TRANSFORMATION MATRIX
                 J1=JF
                 DO I1=1,3
-                  STORE(NY)=STORE(J1)*BPD(4)+STORE(J1+6)*BPD(5)
-     2                                      +STORE(J1+12)*BPD(6)
-                  STORE(NY+3)=-STORE(J1+21)*BPD(4)-STORE(J1+27)*BPD(5)
-     1                                            -STORE(J1+33)*BPD(6)
+                  STORE(NY)=   STORE(J1)*   BPD(4)+
+     1                         STORE(J1+6)* BPD(5)+
+     2                         STORE(J1+12)*BPD(6)
+                  STORE(NY+3)=-STORE(J1+21)*BPD(4)
+     1                        -STORE(J1+27)*BPD(5)
+     2                        -STORE(J1+33)*BPD(6)
                   NY=NY+1
                   J1=J1+1
                 END DO
@@ -3893,6 +3898,13 @@ C
       STORE(IC)=0.
       IC=IC+1
 1000  CONTINUE
+c
+cdjwjun2002
+c- to fix the problem of zero esds on bonds across
+c symmetry operators when atoms are on special
+c positions.
+c - initialise the diagonal weight matrix
+      call xuntm(store(ja), ns)
 C--FORM THE VARIANCE-COVARIANCE MATRIX
       DO 1600 I=1,NS
 C--CHECK THAT THIS PARAMETER HAS BEEN REFINED
@@ -3900,7 +3912,7 @@ C--CHECK THAT THIS PARAMETER HAS BEEN REFINED
 C--NOT REFINED
 1050  CONTINUE
       STORE(IA)=STORE(N+2)
-      STORE(IB)=STORE(N+3)
+cdjwjun2002      STORE(IB)=STORE(N+3)
       IA=IA+NS+1
       GOTO 1550
 1100  CONTINUE
