@@ -1,9 +1,10 @@
 %SCRIPT MOGULRES
-%     VARIABLE REAL ZMAX ZSUM ZNUM ZTOT ZAVE
+%     VARIABLE REAL ZMAX ZSUM ZNUM ZTOT ZAVE SERIAL
 %     VARIABLE REAL IDEAL ACTUAL DEV Z EFOM RCHK EMAX ESUM ENUM
 %     VARIABLE INTEGER ZB1 ZB2 ZB3 ZB4 ZB5 ZB6 ZB7 ZB8 ZB9 ZB10
 %     VARIABLE INTEGER NIN NFOM MAT1 MAT2 MAT3 MAT4 NUMOBS ZMISS
-%     VARIABLE INTEGER NOHIT NERROR DPVCOUNT ISER NINDEX CURSEL N
+%     VARIABLE INTEGER NOHIT NERROR DPVCOUNT ISER NINDEX
+%     VARIABLE INTEGER CURSEL N SERMAX
 %     VARIABLE CHARACTER CAT1 CAT2 CAT3 CAT4 RSVAL RSESD CLINE1
 %     VARIABLE CHARACTER CAT CELE CCHK
 %     EVALUATE ZMAX = 0.0
@@ -19,15 +20,22 @@
 %     COPY '#RELEASE PUNCH bfile.pch'
 %     COPY '#CLOSE SCPDATA'
 %     COPY '#OPEN SCPDATA mogul.stat'
-%% Wipe out spare:
+%%
+%% Wipe out spare and find max serial:
+%%
 %     COPY '#GENERALEDIT 5'
 %     COPY 'LOCATE RECORDTYPE=101'
 %     COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'
 %     COPY 'TOP'
 %     EVALUATE EFOM = 1.0
+%     EVALUATE SERMAX = 1
 %     LOOP
 %       ON EDITERROR TERMINATE
 %       COPY 'TRANSFER TO OFFSET=13 FROM EFOM'
+%       COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
+%       IF ( INTEGER ( SERIAL ) .GT. SERMAX ) THEN
+%         EVALUATE SERMAX = INTEGER ( SERIAL )
+%       END IF
 %       COPY 'NEXT'
 %     END LOOP
 ^^WI WINDOW MOGUL2 'Mogul Results' MODAL COMMIT='MR_BXX' CANCEL='MR_BXX'
@@ -72,7 +80,6 @@
 %      IF ( DPVCOUNT .GT. 5000 ) THEN
 %       COPY 'WRITE'
 %       COPY 'END'
-{S Directive count limitation: Starting a new command.
 %       COPY '#GENERALEDIT 5'
 %       COPY 'LOCATE RECORDTYPE=101'
 %       COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'
@@ -126,11 +133,15 @@
 %      CASE VALUE
 %       BLOCK    %NOHITS%
 %        EVALUATE NOHIT = NOHIT + 1
+%        EVALUATE NUMOBS = 0
+%        EVALUATE Z = 0.0
 %        INSERT "'No hits'  ''"
 %% Read the reason:
 %       END BLOCK
 %       BLOCK    %ERROR%
 %        EVALUATE NERROR = NERROR + 1
+%        EVALUATE NUMOBS = - 1
+%        EVALUATE Z = 0.0
 %        INSERT "'Error' ''"
 %% Read the error code:
 %% Read the reason:
@@ -187,7 +198,10 @@
 %%
 %% The atoms graph:
 %%
-%      IF NUMOBS .LT. 4 THEN
+%      IF NUMOBS .LT. 0 THEN
+%% No badness for errors (probably bonds to metals etc.):
+%        EVALUATE Z = 1.0
+%      ELSE IF NUMOBS .LT. 4 THEN
 %% Arbitrary badness for missing results:
 %        EVALUATE Z = 2.0
 %      ELSE IF Z .LT. 0.0 THEN
@@ -208,9 +222,10 @@
 %          EVALUATE ISER = FIRSTINT ( CAT ) 
 %          EVALUATE CELE = FIRSTSTR ( CAT )
 %          EVALUATE NINDEX = 0
-%          ON EDITERROR TERMINATE
-%          COPY 'TOP'
-%          EVALUATE DPVCOUNT = DPVCOUNT + 1
+%          IF ( ISER .LE. SERMAX ) THEN
+%            ON EDITERROR TERMINATE
+%            COPY 'TOP'
+%            EVALUATE DPVCOUNT = DPVCOUNT + 1
 % LOOP 
 %  ON EDITERROR TERMINATE
 %  COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
@@ -228,8 +243,9 @@
 %  COPY 'NEXT'
 %  EVALUATE DPVCOUNT = DPVCOUNT + 3
 % END LOOP
-%          IF ( NINDEX .EQ. 0 ) THEN
-%           TRANSFER '{E Atom not found. ' // CAT TO DISPLAY
+%            IF ( NINDEX .EQ. 0 ) THEN
+%              TRANSFER '{E Atom not found. ' // CAT TO DISPLAY
+%            END IF
 %          END IF
 %      END LOOP
 %%
