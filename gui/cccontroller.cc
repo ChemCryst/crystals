@@ -9,6 +9,12 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.41  2002/02/27 20:17:54  ckp2
+// RIC: Increase input line length to 256 chars max, but also trim line back to
+// last non-space.
+// RIC: Improve default set of GUI objects created when guimenu.srt is not found.
+// The program should now has an input line in these cases.
+//
 // Revision 1.40  2002/02/20 14:44:04  ckp2
 // Modified guexec to support quotes around the first thing on the line.
 //
@@ -2978,6 +2984,19 @@ extern "C" {
     {
 // Launch with ShellExecute function. Then wait for app.
 
+//Special case html files with a # anchor reference after file name:
+      int match = firstTok.Match('#');
+      if ( match ) {
+         char buf[MAX_PATH];
+         CcString tempfile = firstTok.Sub(1,match-1);
+         if ( (int)FindExecutable(tempfile.ToCString(),NULL,buf) >= 32) {
+            restLine = firstTok + restLine;
+            bRest = true;
+            firstTok = buf;
+         }
+      }
+
+
       SHELLEXECUTEINFO si;
 
       si.cbSize       = sizeof(si);
@@ -3069,7 +3088,19 @@ extern "C" {
     {
 // Launch with ShellExecute function. There is no waiting for apps to finish.
 
-       CcController::theController->ProcessOutput( "{I Starting " + firstTok + ", with args:" + restLine );
+//Special case html files with a # anchor reference after file name:
+      int match = firstTok.Match('#');
+      if ( match ) {
+         char buf[MAX_PATH];
+         CcString tempfile = firstTok.Sub(1,match-1);
+         if ( (int)FindExecutable(tempfile.ToCString(),NULL,buf) >= 32) {
+            restLine = firstTok + restLine;
+            bRest = true;
+            firstTok = buf;
+         }
+      }
+
+      CcController::theController->ProcessOutput( "{I Starting " + firstTok + ", with args:" + restLine );
 
       HINSTANCE ex = ShellExecute( GetDesktopWindow(),
                                    "open",
