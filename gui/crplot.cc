@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:20
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2002/02/21 15:23:12  DJWgroup
+//   SH: 1) Allocate memory for series individually (saves wasted memory if eg. straight line on Fo/Fc plot has only 2 points). 2) Fiddled with axis labels. Hopefully neater now.
+//
 //   Revision 1.9  2002/02/20 12:05:20  DJWgroup
 //   SH: Added class to allow easier passing of mouseover information from plot classes.
 //
@@ -341,4 +344,9 @@ void CrPlot::MenuSelected(int id)
 
     LOGERR("CrPlot:MenuSelected Plot cannot find menu item id = " + CcString(id));
     return;
+}
+
+void CrPlot::FlipGraph(bool flip)
+{
+	((CxPlot*)ptr_to_cxObject)->FlipGraph(flip);
 }

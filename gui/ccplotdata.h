@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   09.11.2001 23:47
 //   $Log: not supported by cvs2svn $
+//   Revision 1.13  2002/02/21 15:23:11  DJWgroup
+//   SH: 1) Allocate memory for series individually (saves wasted memory if eg. straight line on Fo/Fc plot has only 2 points). 2) Fiddled with axis labels. Hopefully neater now.
+//
 //   Revision 1.12  2002/02/20 12:05:19  DJWgroup
 //   SH: Added class to allow easier passing of mouseover information from plot classes.
 //
@@ -83,7 +86,7 @@ public:
 	int   m_AxisScaleType;			// auto / span / zoom
 	bool  m_AxisLog;				// log if true, linear if false
 
-	CcString m_Title;			// the title of this axis
+	CcString m_Title;				// the title of this axis
 };	
 
 class CcPlotAxes
@@ -97,15 +100,17 @@ public:
 	void CheckData(int axis, float data);	// check data against min/max, alter graph bounds if necessary
 	void DrawAxes(CrPlot* attachedPlot);	// draw lines, markers and text
 
-	CcString*		m_Labels;		// one label per data item (only for bar graphs)
-	int				m_NumberOfLabels; // amount of memory allocated for the labels
-	CcString		m_PlotTitle;	// graph title
+	CcString*		m_Labels;				// one label per data item (only for bar graphs)
+	int				m_NumberOfLabels;		// amount of memory allocated for the labels
+	CcString		m_PlotTitle;			// graph title
 
-	CcAxisData		m_AxisData[3];	// the axes themselves
+	CcAxisData		m_AxisData[3];			// the axes themselves
 
-	int		m_NumberOfYAxes;		// graph can have either one or two y axes (left and right sides)
-	int		m_GraphType;			//  bargraphs - only calculate axis divisions for y axis
-									//  scatter / line - calculate axis divisions for both axes
+	Boolean			m_Flipped;		// draw graph upsidedown?
+
+	int		m_NumberOfYAxes;				// graph can have either one or two y axes (left and right sides)
+	int		m_GraphType;					//  bargraphs - only calculate axis divisions for y axis
+											//  scatter / line - calculate axis divisions for both axes
 };
 
 class CcPlotData
@@ -135,7 +140,6 @@ public:
 
 protected:
     CcSeries**		m_Series;		// array of series
-//	int				m_SeriesLength; // length of the data series (IE the memory allocated so far...)
 	int				m_NextItem;		// number of data items added so far to the current series
 	int				m_MaxItem;		// the maximum number of data items present in any one series
 	CcPlotAxes		m_Axes;			// the graph axes
@@ -178,9 +182,6 @@ public:
 	int				m_SeriesLength; // how much memory has been allocated to this series
 
 	virtual void AllocateMemory()=0;// allocate space
-
-private:
-	int				m_Type;			// type of series - bar / scatter (defined above)
 };
 
 

@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:09
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.13  2002/02/21 15:23:14  DJWgroup
+//   SH: 1) Allocate memory for series individually (saves wasted memory if eg. straight line on Fo/Fc plot has only 2 points). 2) Fiddled with axis labels. Hopefully neater now.
+//
 //   Revision 1.12  2002/02/20 12:05:21  DJWgroup
 //   SH: Added class to allow easier passing of mouseover information from plot classes.
 //
@@ -92,7 +95,7 @@ class CxPlotKey : public BASEPlot
 public:
 		CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col);
 		~CxPlotKey();
-
+		int GetNumberOfSeries() {return m_NumberOfSeries;};
 		afx_msg void OnPaint();
 		DECLARE_MESSAGE_MAP()
 
@@ -143,7 +146,7 @@ class CxPlot : public BASEPlot
         int GetHeight();
         int GetIdealWidth();
         int GetIdealHeight();
-//		int GetMaxFontSize(int width, int height, CcString text, int param);
+
 		CcPoint GetTextArea(int size, CcString text, int param);
         void Focus();
         void Display();
@@ -153,6 +156,7 @@ class CxPlot : public BASEPlot
 		void DeleteKey();
 		void CreateKey(int numser, CcString* names, int** col);
 		void CreateKeyWindow(int x, int y);
+		void FlipGraph(bool flipped);
 
 		CcRect m_client;
         CrGUIElement *  ptr_to_crObject;
@@ -166,6 +170,7 @@ private:
 		CcPoint		moldPPos;	// popup position in last frame
 		CcString	moldText;	// popup text in the last frame
 		bool		mMouseCaptured;
+		Boolean		m_FlippedPlot;	// if the plot is flipped upside down (eg by ZOOM 4 0), change the LogicalToDevice() and vv. functions
 
 //Machine specific parts:
 #ifdef __CR_WIN__

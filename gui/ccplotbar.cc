@@ -7,6 +7,9 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.17  2002/02/21 15:23:11  DJWgroup
+// SH: 1) Allocate memory for series individually (saves wasted memory if eg. straight line on Fo/Fc plot has only 2 points). 2) Fiddled with axis labels. Hopefully neater now.
+//
 // Revision 1.16  2002/02/20 12:05:18  DJWgroup
 // SH: Added class to allow easier passing of mouseover information from plot classes.
 //
@@ -204,7 +207,7 @@ void CcPlotBar::ExtendSeriesLength(int ser)
 		// free the previously allocated memory, point to the new area
 		if(prevlabel) delete [] m_Axes.m_Labels;					
 		m_Axes.m_Labels = templabels;
-		m_Axes.m_NumberOfLabels *= 1.5;
+		m_Axes.m_NumberOfLabels = (int)(m_Axes.m_NumberOfLabels * 1.5);
 
 		return;
 	}
@@ -445,7 +448,7 @@ PlotDataPopup CcPlotBar::GetDataFromPoint(CcPoint *point)
 								ret.m_Valid = true;
 
 								point->y = m_YGapTop;
-								point->x = m_XGapLeft + (j+0.5)*bar;
+								point->x = (int)(m_XGapLeft + (j+0.5)*bar);
 							}
 						}
 					}

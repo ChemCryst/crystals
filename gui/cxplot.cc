@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.18  2002/02/21 15:23:13  DJWgroup
+//   SH: 1) Allocate memory for series individually (saves wasted memory if eg. straight line on Fo/Fc plot has only 2 points). 2) Fiddled with axis labels. Hopefully neater now.
+//
 //   Revision 1.17  2002/02/20 12:05:21  DJWgroup
 //   SH: Added class to allow easier passing of mouseover information from plot classes.
 //
@@ -140,6 +143,7 @@ CxPlot::CxPlot(CrPlot* container)
 {
 	m_TextPopup = 0;
 	m_Key = 0;
+	m_FlippedPlot = false;
 	mMouseCaptured = false;
     ptr_to_crObject = container;
 #ifdef __CR_WIN__
@@ -192,10 +196,16 @@ void CxPlot::SetText( char * text )
 
 }
 
+void CxPlot::FlipGraph(bool flip)
+{
+	m_FlippedPlot = flip;
+}
 
 CcPoint CxPlot::DeviceToLogical(int x, int y)
 {
      CcPoint      newpoint;
+
+//	 if(m_FlippedPlot) y = 2400 - y;
 
 #ifdef __CR_WIN__
 //     CRect       swindowext;
@@ -213,6 +223,7 @@ CcPoint CxPlot::DeviceToLogical(int x, int y)
      return newpoint;
 }
 
+// convert to a 0-2400 scale on both axes
 CcPoint CxPlot::LogicalToDevice(int x, int y)
 {
 	CcPoint newpoint;
@@ -229,6 +240,9 @@ CcPoint CxPlot::LogicalToDevice(int x, int y)
 
 	newpoint.x = (int)(2400*x / (windowext.mRight - windowext.mLeft));
 	newpoint.y = (int)(2400*y / (windowext.mBottom - windowext.mTop));
+
+//	if(m_FlippedPlot) newpoint.y = 2400-newpoint.y;
+
 	return newpoint;
 }
 
@@ -296,6 +310,7 @@ void CxPlot::Clear()
 }
 
 // STEVE added this function
+// sets the colour to be used for drawing.
 void CxPlot::SetColour(int r, int g, int b)
 {
 #ifdef __CR_WIN__
@@ -310,6 +325,13 @@ void CxPlot::SetColour(int r, int g, int b)
 void CxPlot::DrawLine(int thickness, int x1, int y1, int x2, int y2)
 {
     CcPoint cpoint1, cpoint2;
+
+	if(m_FlippedPlot) 
+	{
+		y1 = 2400-y1;
+		y2 = 2400-y2;
+	}
+
     cpoint1 = DeviceToLogical(x1,y1);
     cpoint2 = DeviceToLogical(x2,y2);
 
@@ -334,6 +356,11 @@ void CxPlot::DrawLine(int thickness, int x1, int y1, int x2, int y2)
 void CxPlot::DrawEllipse(int x, int y, int w, int h, Boolean fill)
 {
     //NB w and h are half diameters. (i.e. radii).
+
+	if(m_FlippedPlot) 
+	{
+		y = 2400-y;
+	}
 
     int x1 = x - w;
     int y1 = y - h;
@@ -382,6 +409,11 @@ void CxPlot::DrawEllipse(int x, int y, int w, int h, Boolean fill)
 //	All coordinates in the range 0 - 2400
 void CxPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
 {
+	if(m_FlippedPlot)
+	{
+		y = 2400-y;
+	}
+
 	CcPoint      coord = DeviceToLogical(x,y);
 
 #ifdef __CR_WIN__
@@ -453,7 +485,7 @@ void CxPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
 	}
 	if(param & TEXT_BOTTOM)
 	{
-		coord.y -= size.cy/2;
+		coord.y -= size.cy;
 	}
 
 	m_memDC->SetBkMode(TRANSPARENT);
@@ -537,6 +569,10 @@ void CxPlot::DrawPoly(int nVertices, int * vertices, Boolean fill)
         CcPoint*           points = new CcPoint[nVertices];
         for ( int j = 0; j < nVertices*2 ; j+=2 )
         {
+			if(m_FlippedPlot)
+			{
+				*(vertices+j+1) = 2400 - *(vertices+j+1);
+			}
             points[j/2] = DeviceToLogical( *(vertices+j), *(vertices+j+1) );
         }
         m_memDC->Polygon( (LPPOINT) points, nVertices );
@@ -556,7 +592,11 @@ void CxPlot::DrawPoly(int nVertices, int * vertices, Boolean fill)
         CcPoint*           points = new CcPoint[nVertices];
         for ( int j = 0; j < nVertices*2 ; j+=2 )
         {
-            points[j/2] = DeviceToLogical( *(vertices+j), *(vertices+j+1) );
+			if(m_FlippedPlot)
+			{
+				*(vertices+j+1) = 2400 - *(vertices+j+1);
+			}
+			points[j/2] = DeviceToLogical( *(vertices+j), *(vertices+j+1) );
         }
 
         m_memDC->Polyline( (LPPOINT) points, nVertices );
@@ -748,6 +788,8 @@ void CxPlot::OnMouseMove( wxMouseEvent & event )
 	  CcPoint point = LogicalToDevice( event.m_x, event.m_y );
 #endif
 
+	  if(m_FlippedPlot) point.y = 2400-point.y;
+
 	if(moldMPos.x != point.x || moldMPos.y != point.y)
 	{	
 		moldMPos = point;
@@ -837,8 +879,11 @@ void CxPlot::CreateKey(int numser, CcString* names, int** col)
 	}
 	else
 	{
-		DeleteKey();
-		m_Key = new CxPlotKey(this, numser, names, col);
+		if(m_Key->GetNumberOfSeries() != numser)
+		{
+			DeleteKey();
+			m_Key = new CxPlotKey(this, numser, names, col);
+		}
 	}
 }
 
