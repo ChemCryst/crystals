@@ -12,7 +12,6 @@
  * These could be input through a batch file or the command line.
  */
 
-//#include "stdafx.h"
 #include <iostream>
 #include <fstream>
 #include "RunParameters.h"
@@ -28,8 +27,9 @@
 #include <regex.h>
 #endif
 #include <errno.h>
-#include <unistd.h>
+#if !defined(_WIN32)
 #include <sys/param.h>
+#endif
 #include <stdlib.h>
 
 RunParameters::RunParameters()
@@ -54,7 +54,7 @@ RunParameters::RunParameters()
  * this function. The arguments are used to set up the way the 
  * program is to run.
  */
-bool RunParameters::handleArg(int *pPos, int pMax, _TCHAR * argv[])
+bool RunParameters::handleArg(int *pPos, int pMax, const char * argv[])
 {
     if (strcmp(argv[(*pPos)], "-c") == 0)
     {
@@ -152,7 +152,7 @@ bool RunParameters::handleArg(int *pPos, int pMax, _TCHAR * argv[])
  * All command line arguments are passed to this method to set up 
  * the object so that the program is run correctly.
  */
-void RunParameters::handleArgs(int pArgc, _TCHAR* argv[])
+void RunParameters::handleArgs(int pArgc, const char* argv[])
 {
     int tCount = 1;
     while (tCount < pArgc) //Run through all the arguments
