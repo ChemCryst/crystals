@@ -350,12 +350,10 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
 		}
 	}
 	return (retVal);
-//End of user code.         
 }
-// OPSignature: void CrGrid:SetGeometry( const CcRect *:rect ) 
+
 void	CrGrid::SetGeometry( const CcRect * rect )
 {
-//Insert your own code here.
 	((CxGrid*)mWidgetPtr)->SetGeometry(	rect->mTop,
 										rect->mLeft,
 										rect->mBottom,
@@ -366,24 +364,19 @@ void	CrGrid::SetGeometry( const CcRect * rect )
 										rect->mBottom - rect->mTop,
 										rect->mRight - rect->mLeft );
 	
-//End of user code.         
 }
-// OPSignature: CcRect CrGrid:GetGeometry() 
 CcRect	CrGrid::GetGeometry()
 {
-//Insert your own code here.
 	CcRect retVal( 
 			((CxGrid*)mWidgetPtr)->GetTop(), 
 			((CxGrid*)mWidgetPtr)->GetLeft(),
 			((CxGrid*)mWidgetPtr)->GetTop()+((CxGrid*)mWidgetPtr)->GetHeight(),
 			((CxGrid*)mWidgetPtr)->GetLeft()+((CxGrid*)mWidgetPtr)->GetWidth()   );
 	return retVal;
-//End of user code.         
 }
-// OPSignature: void CrGrid:CalcLayout() 
+
 void	CrGrid::CalcLayout()
 {
-//Insert your own code here.
 	LOGSTAT("CrGrid: CalcLayout Step 1: Calculating size of all children");
 	
 //STEP1 Call calclayout for child elements.
@@ -464,6 +457,23 @@ void	CrGrid::CalcLayout()
 	theRect.Set(0,0,runningTotalHeight,runningTotalWidth);		
 	SetGeometry( &theRect );
 
+}
+
+void  CrGrid::SetOriginalSizes()
+{
+// Call SetOriginalSizes() for child elements.
+	int xp, yp;
+	CrGUIElement *vtemp;
+	
+	for ( xp = 1; xp <= mColumns ; xp++)
+	{
+		for ( yp = 1; yp <= mRows ; yp++)
+		{
+			vtemp = GetPointer(xp,yp);
+			if (vtemp != nil)
+                        ((CrGUIElement*)vtemp)->SetOriginalSizes();
+		}
+	}
 }
 
 void	CrGrid::SetText( CcString item )
@@ -608,12 +618,10 @@ void	CrGrid::Align()
 			}
 		}
 	}
-//End of user code.         
 }
-// OPSignature: int CrGrid:GetHeightOfRow( int:row ) 
+
 int	CrGrid::GetHeightOfRow( int row )
 {
-//Insert your own code here.
 	CrGUIElement * elemPtr;
 	int maxHeight = EMPTY_CELL, xp;
 	for ( xp = 1; xp <= mColumns ; xp++)
@@ -626,12 +634,10 @@ int	CrGrid::GetHeightOfRow( int row )
 				maxHeight = rect.Height();
 	}
 	return maxHeight;
-//End of user code.         
 }
-// OPSignature: int CrGrid:GetWidthOfColumn( int:col ) 
+
 int	CrGrid::GetWidthOfColumn( int col )
 {
-//Insert your own code here.
 	CrGUIElement * elemPtr;
 	int maxWidth = EMPTY_CELL, yp;
 	for ( yp = 1; yp <= mRows ; yp++)
