@@ -190,7 +190,7 @@
 %  END BLOCK
 %  BLOCK               %LFONT%
 %    GET SILENT NOSTORE INTEGER ' '
-%% 8 9 10 12 16 20 24 36 48 72
+%% 8 9 10 12 16 20 24 28 36 48 72
 %    CASE VALUE
 %      COPY 'FONT 8 VIEW'
 %      COPY 'FONT 9 VIEW'
@@ -199,6 +199,7 @@
 %      COPY 'FONT 16 VIEW'
 %      COPY 'FONT 20 VIEW'
 %      COPY 'FONT 24 VIEW'
+%      COPY 'FONT 28 VIEW'
 %      COPY 'FONT 36 VIEW'
 %      COPY 'FONT 48 VIEW'
 %      COPY 'FONT 72 VIEW'
