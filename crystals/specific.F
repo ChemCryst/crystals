@@ -1967,10 +1967,12 @@ C
 &DOS      IF (IFAIL .EQ. 0) RETURN
 C&&DVFGID      IFAIL = SYSTEMQQ(COMMND)
 
-&&DVFGID      IFAIL = SYSTEM(COMMND)
-&&DVFGID      IF (IFAIL .EQ. 0 ) RETURN
-C&GID      CALL GDETCH(COMMND)
-C&GID      RETURN
+C&GID      IFAIL = SYSTEM(COMMND)
+C&GID      IF (IFAIL .EQ. 0 ) RETURN
+&GID      CALL GDETCH(COMMND)
+&GID      RETURN
+&DVF      IFAIL = SYSTEM(COMMND)
+&DVF      IF (IFAIL .EQ. 0 ) RETURN
 &&LINGIL      CALL SYSTEM(COMMND,IFAIL)
 &&LINGIL      IF (IFAIL .EQ. 0 ) RETURN
 
@@ -3158,7 +3160,7 @@ C
 &DOS        IF (CIOBUF(I:I) .EQ. CCRCHR(1:1)) THEN
 &DOS          K = MAX(J,I-1)
 &DOS       WRITE ( NCAWU , CFRMAT, IOSTAT = IOS ) CIOBUF(J:K)
-&DOS       IF ( IOS .NE. 0 ) WRITE ( NCEROR , '(1X,A,I4)' )
+&DOS       IF ( IOS .NE. 0 ) WRITE ( NCEROR , '(1X,A,I4)' )             
 &DOS     1  '*** OUTPUT ERROR! IOS = ',IOS
 &DOS          J = K + 3
 &DOS          IF (J .LT. IBFLEN ) GOTO 100
@@ -3302,8 +3304,10 @@ C---- MACHINE SPECIFIC WRITE TO THE SCREEN
 \XDRIVE
 \XSSVAL
 \CAMBLK
+\OUTCOL
 &&GIDGIL      CHARACTER *80 CTEMP
       CHARACTER*(*) CBUF(LINBUF)
+      CHARACTER*86 CEXTRA
       CHARACTER*1 CFIRST, CLAST
       CHARACTER*10 CFRMAT
       DATA CFRMAT /'(1X,A)'/
@@ -3324,7 +3328,17 @@ C                 SET N TO LAST NON-BLANK
                   N = MAX(1,N)
                   CFIRST = CBUF(J)(1:1)
                   CLAST = CBUF(J)(N:N)
-                  IF (CLAST .EQ. CHAR(13)) THEN
+&&GIDGIL                  IF (CBUF(J)(2:2).NE.'^') THEN
+&&GIDGIL                    IF ((IOFORE.EQ.-1).OR.(IOBACK.EQ.-1)) THEN
+&&GIDGIL                      WRITE( CEXTRA,'(A80)') CBUF(J)
+&&GIDGIL                    ELSE 
+&&GIDGIL                      WRITE( CEXTRA,'(2(A,I2.2),A80)')
+&&GIDGIL     1                '{', IOFORE, ',', IOBACK, CBUF(J)
+&&GIDGIL                    ENDIF 
+&&GIDGIL                  ELSE 
+&&GIDGIL                    WRITE( CEXTRA,'(A80)') CBUF(J)
+&&GIDGIL                  END IF 
+                        IF (CLAST .EQ. CHAR(13)) THEN
 C-----------------NO CARRIAGE RETURN OR LINE FEED
 C                       PAD OUT WITH BLANK
 C                       CBUF(J)(N:LENBUF) = ' '
@@ -3337,7 +3351,7 @@ C                       N = LENBUF
 &VAX                    CFRMAT = '(''+'',A)'
 &DOS                    IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
 ##GIDGIL                        WRITE(NCDEV ,CFRMAT) CBUF(J)(1:N)
-&&GIDGIL                        CALL CALLCCODE ( CBUF(J)(1:N))
+&&GIDGIL                        CALL CALLCCODE ( CEXTRA(1:N+6))
 &DOSC------             SWITCH ON LINE FEEDS
 &DOS                    JNL77 = 1
                   ELSEIF ( CFIRST .EQ. '+' ) THEN
@@ -3354,7 +3368,7 @@ Cdjw99]
 &DOS                    JNL77 = 1
 &&GIDGIL                          CTEMP = '^^CO SET TEXTOUTPUT BACKLINE'
 &&GIDGIL                          CALL CALLCCODE ( CTEMP )
-&&GIDGIL                    CALL CALLCCODE ( CBUF(J)(1:LENBUF) )
+&&GIDGIL                    CALL CALLCCODE ( CEXTRA(1:LENBUF+6) )
                   ELSEIF (CLAST .EQ. '$') THEN
 C-----------------LEAVE CURSOR AT CURRENT POSITION
 &DOSC------             SWITCH OFF LINE FEEDS
@@ -3362,7 +3376,7 @@ C-----------------LEAVE CURSOR AT CURRENT POSITION
                     CFRMAT = '(A,A1)'
 &DOS                    IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
 &DOS                    WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF),CHAR(13)
-&&GIDGIL                    CALL CALLCCODE ( CBUF(J)(1:LENBUF))
+&&GIDGIL                    CALL CALLCCODE ( CEXTRA(1:LENBUF+6))
 &VAX                    CFRMAT = '(A,$)'
 &VAX                    WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
 &DOSC------             SWITCH ON LINE FEEDS
@@ -3371,12 +3385,12 @@ C-----------------LEAVE CURSOR AT CURRENT POSITION
                         CFRMAT = '(/,A)'
 &DOS                    IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
 ##GIDGIL                  WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
-&&GIDGIL                    CALL CALLCCODE ( CBUF(J)(1:LENBUF))
+&&GIDGIL                    CALL CALLCCODE ( CEXTRA(1:LENBUF+6))
                   ELSE
                         CFRMAT = '(A)'
 ##GIDGIL                  WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
 &DOS                    IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
-&&GIDGIL                    CALL CALLCCODE ( CBUF(J)(1:LENBUF))
+&&GIDGIL                    CALL CALLCCODE ( CEXTRA(1:LENBUF+6))
                   ENDIF
 C
             CBUF(J) = ' '
@@ -3401,3 +3415,16 @@ C
 &GID
 &GID      RETURN
 &GID      END
+
+
+
+CODE FOR GETCWD
+      SUBROUTINE GETCWD ( CWORK )
+&GID      USE DFLIB
+      CHARACTER*(*) CWORK
+
+&GID      cwork = FILE$CURDRIVE
+&GID      K= GETDRIVEDIRQQ(cwork)
+#GID      CWORK='.' !For now
+      RETURN
+      END
