@@ -967,7 +967,26 @@ C--
         CALL XRSL
         CALL XCSAE
       END IF
-
+cdjwjan05
+        FOAV = STORE(L6DTL+3*MD6DTL + 2)
+        FCAV = STORE(L6DTL+5*MD6DTL + 2)
+        rscle=foav/fcav
+        if (store(l30dr+7) .le. zero) then
+            wscle = zero
+        else
+            wscle = sqrt(1./store(l30dr+7))
+        endif
+        write(cmon,'(3(a,f10.3,6x))') 
+     1  'SumFo/SumFc=', rscle, 
+     2  'LS-scale=', scale,
+     3  'Wilson Scale=', wscle
+        if (min(scale, rscle)/max(scale,rscle) .lt. 0.8) then
+          call outcol(9)
+        endif
+        call xprvdu(NCVDU,1,0)
+        call outcol(1)
+cdjwjan05
+c
 C--PRINT THE TERMINATION MESSAGES
       CALL XOPMSG(IOPSFS, IOPEND, IVERSN)
       CALL XTIME2(1)
