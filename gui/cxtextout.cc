@@ -947,7 +947,7 @@ void CxTextOut::OnLButtonUp( wxMouseEvent & event )
         CcString temp;
         if ( IsAHit ( temp, x, y ) )
         {
-          TEXTOUT ( CcString ( "Opening link: " + temp ) );
+//          TEXTOUT ( CcString ( "Opening link: " + temp ) );
           ((CrTextOut*)ptr_to_crObject)->ProcessLink( temp );
         }
 
