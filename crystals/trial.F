@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.4  2000/12/05 12:44:42  CKP2
+C make SLANT into subroutine
+C
 C Revision 1.3  2000/10/31 15:38:04  ckp2
 C Link to XVSLANT code.
 C
@@ -21,7 +24,8 @@ C         all coefficients are moduli
 C
 C--
 C      ST UP A DUMMY ARRAY SO THAT XSLANT CAN BE CALLED INTERNALLY
-      DIMENSION IDJW(1)
+      DIMENSION ADJW(1), IDJW(1)
+      EQUIVALENCE (ADJW(1), IDJW(1))
 \ISTORE
 C
 \STORE
@@ -50,7 +54,7 @@ C--'#TRIAL' INSTRUCTION
 C
 C--'#SLANT' INSTRUCTION
 2200  CONTINUE
-      IDJW(1) = -100
+      ADJW(1) = -100.
       CALL XSLANT(IDJW,1)
       GOTO 1000
 

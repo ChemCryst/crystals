@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2000/12/05 12:44:43  CKP2
+C make SLANT into subroutine
+C
 C Revision 1.8  2000/10/31 15:37:12  ckp2
 C New subroutine XVSLANT for slant void calculations...
 C
@@ -682,7 +685,8 @@ C
 C--INITIALISE THE TIMING FUNCTION
       CALL XTIME1(1)
 cdec2000 make internally callable
-      if (inproc(1) .le. -100) then
+      CALL XMOVEI(INPROC(1), APROC, 1)
+      if (APROC .le. -100.) then
 C--READ THE DATA
       ISTAT = KRDDPV ( PROCS, NPROCS)
       IF ( ISTAT .LT. 0 ) GO TO 9910
