@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.47  2003/07/03 10:41:04  rich
+C Bug fixed: When top level scripts were called, the status bar shows them
+C as being called from the last top level script that was run. Fix: Clear
+C variables in between script runs.
+C
 C Revision 1.46  2003/07/01 16:43:34  rich
 C Change IOR intrinsics to OR, similarly: IAND -> AND, INOT -> NOT. The "I"
 C prefix is for INTEGER*2 (16 bit) types only, so could overflow when fed
@@ -3118,7 +3123,10 @@ C For example 'C1', 'C(1)', 'C 1.0', or ' C(1)' will return '1'
 
       IECF = KCCNEQ(CWORK1(1:LEN1),1,' ') !Skip initial spaces
       IEC = 1
-      IF ( IECF .EQ. -1 ) GOTO 8000 !No chars found at all
+      IF ( IECF .EQ. -1 ) THEN    !No chars found at all
+        ICODE(JVALUE,IARG(1)) = 0
+        GOTO 8000 
+      END IF
 
 C Do an initial sweep for brackets
       IECOB = KCCEQL(CWORK1(1:LEN1),IECF+1,'(')
@@ -3168,7 +3176,11 @@ C Skip till we find not an integer, check explictly for space and -ve.
       END DO
 5115  CONTINUE
 
-      IF ( IEC2-1 .LT. IEC ) GOTO 8000
+      IF ( IEC2-1 .LT. IEC ) THEN ! No number found
+        ICODE(JVALUE,IARG(1)) = 0
+        GOTO 8000
+      END IF
+
       READ(CWORK1(IEC:IEC2-1),'(I4)')ICODE(JVALUE,IARG(1))
       GO TO 8000
 C
@@ -3391,6 +3403,13 @@ C
 C Some basic things to try to ensure that the H-M space
 C group read from an external source is correct:
       ISTAT = KSCSDC ( ICODE(JVALUE,IARG(1)) , CWORK1 , LEN1 )
+
+C Remove any initial spaces.
+      ISTA = KCCNEQ ( CWORK1 , 1 , ' ' )
+      IF ( ISTA .GT. 1 ) THEN
+        CWORK1 = CWORK1(ISTA:)
+      END IF
+
       CALL XCREMS( CWORK1, CWORK1, LEN1)
       LEN1 = MAX ( LEN1, 1 )
 
