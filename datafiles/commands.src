@@ -1094,9 +1094,10 @@ CONDITIONS THAT MUST BE MET BETWEEN EACH CYCLE IF REFINEMENT IS TO CONTINUE
     .MIN-DMINFUNC       0    0    1    0    0 0.0
     .MAX-DMINFUNC       0    0    1    0    0              1.0E15
    5.REFINE             6    1    0    0    6    1  106   21   23
-         1    1    1    1    0    0    0    0    0    0
+         1    1    1    1    1    1    0    0    0    0
 SPECIAL REFINEMENT CONDITIONS
 (1H ,8(3X,12A1))
+(1H ,8(I10,5X))
          3    3    3    3    3    2
     .SPECIAL            0    0    1    5   -1 CONSTRAIN
      NO             TEST           ORIGIN         RESTRAIN       CONSTRAIN
