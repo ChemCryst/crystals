@@ -9,6 +9,7 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  5.3.1998 16:45 Uhr
 
+
 #include	"crystalsinterface.h"
 #include	"cxwindow.h"
 #include	"cxapp.h"
@@ -24,15 +25,15 @@ int	CxWindow::mWindowCount = kWindowBase;
 CxWindow *	CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, int attributes )
 {
 
+	CxWindow	*theWindow = new CxWindow( container, attributes & kSize );
+
+#ifdef __WINDOWS__
 	const char* wndClass = AfxRegisterWndClass(
 									CS_HREDRAW|CS_VREDRAW,
 									NULL,
 									(HBRUSH)(COLOR_MENU+1),
 									NULL
 									);
-
-
-	CxWindow	*theWindow = new CxWindow( container, attributes & kSize );
 
 	theWindow->mParentWnd = (CWnd*) parentWindow;
 
@@ -42,27 +43,38 @@ CxWindow *	CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
 						WS_CAPTION|/*WS_POPUP|*/WS_SYSMENU,
 						CRect(0,0,10,10),
 						theWindow->mParentWnd);
+#endif
+#ifdef __LINUX__
+      theWindow->mParentWnd = (wxWindow*) parentWindow;
+      theWindow->Create( NULL, -1, "Window");
+
+#endif
 
 	//if the window is modal, disable the parent:
 	
 	if (theWindow->mParentWnd)
 	{
-		theWindow->mParentWnd->EnableWindow(FALSE);
-		theWindow->EnableWindow(TRUE);  //All child windows have been disabled, so re-enable this one.
+#ifdef __WINDOWS__
+            theWindow->mParentWnd->EnableWindow(false);
+            theWindow->EnableWindow(true);  //All child windows have been disabled, so re-enable this one.
+#endif
+#ifdef __LINUX__
+            theWindow->mParentWnd->Enable(false);
+            theWindow->Enable(true);  //All child windows have been disabled, so re-enable this one.
+#endif
 	}
-/*	theWindow->Create(	
-						IDD_DIALOG1,
-						NULL
-						);
-*/
 
+#ifdef __WINDOWS__
 	if ( attributes & kSize )
 		theWindow->ModifyStyle(NULL,WS_BORDER|WS_THICKFRAME,SWP_NOZORDER);
-
 	theWindow->ShowWindow(SW_SHOW);
 	theWindow->UpdateWindow();
+#endif
+#ifdef __LINUX__
+      theWindow->Show(true);
+#endif
 
-	
+
 	return (theWindow);
 
 }
@@ -83,51 +95,59 @@ CxWindow::~CxWindow()
 
 	mWindowCount--;
 	if (mParentWnd)
-		mParentWnd->EnableWindow(TRUE); //Re-enable the parent.
-
+#ifdef __WINDOWS__
+            mParentWnd->EnableWindow(true); //Re-enable the parent.
+#endif
+#ifdef __LINUX__
+            mParentWnd->Enable(true); //Re-enable the parent.
+#endif
 }
 
 void	CxWindow::SetText( char * text )
 {
 
-#ifdef __POWERPC__
-	Str255 descriptor;
-	
-	strcpy( reinterpret_cast<char *>(descriptor), text );
-	c2pstr( reinterpret_cast<char *>(descriptor) );
-	SetDescriptor( descriptor );
-#endif
 #ifdef __WINDOWS__
 	SetWindowText(text);
 #endif
-//End of user code.         
+#ifdef __LINUX__
+      SetTitle(text);
+#endif
 }
-// OPSignature: void CxWindow:ShowWindow() 
+
 void	CxWindow::CxShowWindow()
 {
-//Insert your own code here.
-//	FinishCreate();
-	ShowWindow(SW_SHOW);
+#ifdef __WINDOWS__
+      ShowWindow(SW_SHOW);
 	UpdateWindow();
-//End of user code.         
+#endif
+#ifdef __LINUX__
+      Show(true);
+#endif
 }
 
 void	CxWindow::SetGeometry( int top, int left, int bottom, int right )
 {
 	if(mProgramResizing)  //Only move the window, if the program is resizing it.
 	{
+#ifdef __WINDOWS__
 		MoveWindow(left, top, (right-left), (bottom-top),true);
+#endif
+#ifdef __LINUX__
+            SetSize(left,top,right-left,bottom-top);
+#endif
 	}
 	else // if the user is resizing, then the window is already the right size.
 	{
-		UpdateWindow();
-	}
+#ifdef __WINDOWS__
+            UpdateWindow();
+#endif
+      }
 }
 
-int	CxWindow::GetTop()
+int   CxWindow::GetTop()
 {
-	RECT windowRect;
-	RECT parentRect;
+#ifdef __WINDOWS__
+      RECT windowRect, parentRect;
 	GetWindowRect(&windowRect);
 	CWnd* parent = GetParent();
 	if(parent != nil)
@@ -136,11 +156,23 @@ int	CxWindow::GetTop()
 		windowRect.top -= parentRect.top;
 	}
 	return ( windowRect.top );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect, parentRect;
+      windowRect = GetRect();
+      wxWindow* parent = GetParent();
+	if(parent != nil)
+	{
+            parentRect = parent->GetRect();
+            windowRect.y -= parentRect.y;
+	}
+      return ( windowRect.y );
+#endif
 }
-int	CxWindow::GetLeft()
+int   CxWindow::GetLeft()
 {
-	RECT windowRect;
-	RECT parentRect;
+#ifdef __WINDOWS__
+      RECT windowRect, parentRect;
 	GetWindowRect(&windowRect);
 	CWnd* parent = GetParent();
 	if(parent != nil)
@@ -149,82 +181,73 @@ int	CxWindow::GetLeft()
 		windowRect.left -= parentRect.left;
 	}
 	return ( windowRect.left );
-}
-int	CxWindow::GetWidth()
-{
+#endif
+#ifdef __LINUX__
+      wxRect windowRect, parentRect;
+      windowRect = GetRect();
+      wxWindow* parent = GetParent();
+	if(parent != nil)
+	{
+            parentRect = parent->GetRect();
+            windowRect.x -= parentRect.x;
+	}
+      return ( windowRect.x );
+#endif
 
+}
+int   CxWindow::GetWidth()
+{
+#ifdef __WINDOWS__
 	CRect windowRect;
 	GetWindowRect(&windowRect);
 	return ( windowRect.Width() );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect;
+      windowRect = GetRect();
+      return ( windowRect.GetWidth() );
+#endif
 }
-int	CxWindow::GetHeight()
+int   CxWindow::GetHeight()
 {
+#ifdef __WINDOWS__
 	CRect windowRect;
 	GetWindowRect(&windowRect);
-	return ( windowRect.Height() );
+      return ( windowRect.Height() );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect;
+      windowRect = GetRect();
+      return ( windowRect.GetHeight() );
+#endif
 }
 
-// OPSignature: LTabGroup * CxWindow:GetTabCommander() 
-/*LTabGroup *	CxWindow::GetTabCommander()
-{
-//Insert your own code here.
-	return (mTabGroup);
-//End of user code.         
-}*/
-// OPSignature: void CxWindow:SetDefaultButton() 
+
 void	CxWindow::SetDefaultButton( CxButton * inButton )
 {
-//Insert your own code here.
 	mDefaultButton = inButton;
-//End of user code.         
 }
 
 
 // ---------------------------------------------------------------------------
-//		€ HandleKeyPress
+//          HandleKeyPress
 // ---------------------------------------------------------------------------
 //
 //		Default Button: Enter, Return
-/*
-Boolean
-CxWindow::HandleKeyPress(
-	const EventRecord	&inKeyEvent)
-{
-	Boolean		keyHandled = false;
-	LControl	*keyButton = nil;
-	
-	switch (inKeyEvent.message & charCodeMask) {
-	
-		case char_Enter:
-		case char_Return:
-			keyButton = dynamic_cast<LControl*>(mDefaultButton);
-			break;
-			
-		default:
-			break;
-	}
-			
-	if (keyButton != nil) {
-		keyButton->SimulateHotSpotClick(kControlButtonPart);
-		keyHandled = true;
-		
-	} else {
-		keyHandled = LWindow::HandleKeyPress(inKeyEvent);
-	}
-	
-	return keyHandled;
-}
-
-*/
 
 void CxWindow::Hide()
 {
 
+#ifdef __WINDOWS__
 	CFrameWnd::ShowWindow(SW_HIDE);
 	if (mParentWnd)
-		mParentWnd->EnableWindow(TRUE); //Re-enable the parent.
-
-//	CDialog::ShowWindow(SW_HIDE);
+            mParentWnd->EnableWindow(true); //Re-enable the parent.
+#endif
+#ifdef __LINUX__
+      Show(false);
+	if (mParentWnd)
+            mParentWnd->Enable(true); //Re-enable the parent.
+#endif
 }
 
 
@@ -234,7 +257,7 @@ void CxWindow::Hide()
 /////////////////////////////////////////////////////////////////////////////
 // CxWindow
 
-
+#ifdef __WINDOWS__
 BEGIN_MESSAGE_MAP(CxWindow, CFrameWnd)
 	ON_WM_CLOSE()
 	ON_WM_SIZE()
@@ -245,8 +268,21 @@ BEGIN_MESSAGE_MAP(CxWindow, CFrameWnd)
 	ON_UPDATE_COMMAND_UI_RANGE(kMenuBase,kMenuBase+1000,OnUpdateMenuItem)
       ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
+#endif
+#ifdef __LINUX__
+//wx Message Map
+BEGIN_EVENT_TABLE(CxWindow, wxFrame)
+      EVT_CLOSE( CxWindow::OnClose ) 
+      EVT_SIZE( CxWindow::OnSize )
+      EVT_CHAR( CxWindow::OnChar )
+      EVT_COMMAND_RANGE(kMenuBase, kMenuBase+1000, wxEVT_COMMAND_MENU_SELECTED, CxWindow::OnMenuSelected )
+      EVT_COMMAND_RANGE(kMenuBase, kMenuBase+1000, wxEVT_UPDATE_UI, CxWindow::OnUpdateMenuItem )
+      EVT_KEY_DOWN( CxWindow::OnKeyDown )
+END_EVENT_TABLE()
+#endif
 
 
+#ifdef __WINDOWS__
 void CxWindow::OnUpdateMenuItem(CCmdUI* pCmdUI)
 {
 	CxMenu* theXMenu = (CxMenu*) pCmdUI->m_pMenu;
@@ -257,16 +293,33 @@ void CxWindow::OnUpdateMenuItem(CCmdUI* pCmdUI)
 	if(theItem == nil) return;
 
 	if ( (CcController::theController)->status.ShouldBeEnabled( theItem->enable, theItem->disable ) )
-		pCmdUI->Enable(TRUE);
+            pCmdUI->Enable(true);
 	else
-		pCmdUI->Enable(FALSE);
+            pCmdUI->Enable(false);
 }
+#endif
+#ifdef __LINUX__
+void CxWindow::OnUpdateMenuItem(wxUpdateUIEvent & pCmdUI)
+{
+      CxMenu* theXMenu = (CxMenu*) pCmdUI.m_eventObject;
+	if(theXMenu == nil) return;
+      CrMenu* theRMenu = (CrMenu*) theXMenu->mWidget;
+	if(theRMenu == nil) return;
+      CcMenuItem* theItem = theRMenu->FindItembyID(pCmdUI.m_id);
+	if(theItem == nil) return;
+
+	if ( (CcController::theController)->status.ShouldBeEnabled( theItem->enable, theItem->disable ) )
+            pCmdUI.Enable(true);
+	else
+            pCmdUI.Enable(false);
+}
+#endif
 
 
 /////////////////////////////////////////////////////////////////////////////
 // CxWindow message handlers
 
-
+#ifdef __WINDOWS__
 void CxWindow::OnClose() 
 {
 	((CrWindow*)mWidget)->CloseWindow();
@@ -275,26 +328,45 @@ void CxWindow::OnClose()
 // ESC / CANCEL / CLOSE event has occured. The Controller will destroy the window, if it sees fit.
 //	CFrameWnd::OnClose();
 }
+#endif
+#ifdef __LINUX__
+void CxWindow::OnClose(wxCloseEvent & event) 
+{
+	((CrWindow*)mWidget)->CloseWindow();
+}
+#endif
 
-void CxWindow::OnSize(UINT nType, int cx, int cy) 
+
+
+#ifdef __WINDOWS__
+void CxWindow::OnSize(UINT nType, int cx, int cy)
 {
 	CFrameWnd::OnSize(nType, cx, cy);
-
 	mProgramResizing = false;
-
-        if ( nType == SIZE_MINIMIZED ) return;
-
+      if ( nType == SIZE_MINIMIZED ) return;
 	int mN = ( GetMenu() != NULL ) ? GetSystemMetrics(SM_CYMENU) : 0; //Height of the menu, if there is one. Otherwise zero.
 	int cH = GetSystemMetrics(SM_CYCAPTION);
 	int bT = GetSystemMetrics(SM_CXSIZEFRAME); //I think this is the maximum from SM_CXBORDER, SM_CXEDGE, SM_CXDLGFRAME...
+#endif
+#ifdef __LINUX__
+void CxWindow::OnSize(wxSizeEvent & event)
+{
+      int cx = event.GetSize().x;
+      int cy = event.GetSize().y;
+      wxSystemSettings ss;
+      int mN = ( GetMenuBar() != NULL ) ? ss.GetSystemMetric(wxSYS_MENU_Y) : 0;
+      int cH = ss.GetSystemMetric(wxSYS_CAPTION_Y);
+      int bT = ss.GetSystemMetric(wxSYS_FRAMESIZE_X);
+#endif
+
         ((CrWindow*)mWidget)->ResizeWindow( cx + (2*bT),
                                             cy + ( mN + cH + 2*bT ) );
 
 	mProgramResizing = true;
 }
 
-//Cosmetic: Stops the user being able to drag the frame smaller than the default window size.
-void CxWindow::OnGetMinMaxInfo(MINMAXINFO FAR* lpMMI) 
+#ifdef __WINDOWS__
+void CxWindow::OnGetMinMaxInfo(MINMAXINFO FAR* lpMMI)
 {
 	int mN = ( GetMenu() != NULL ) ? GetSystemMetrics(SM_CYMENU) : 0; //Height of the menu, if there is one. Otherwise zero.
 	int cH = GetSystemMetrics(SM_CYCAPTION);
@@ -308,15 +380,16 @@ void CxWindow::OnGetMinMaxInfo(MINMAXINFO FAR* lpMMI)
 
 	CFrameWnd::OnGetMinMaxInfo(lpMMI);
 }
+#endif
 
-
+#ifdef __WINDOWS__
 void CxWindow::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
 	NOTUSED(nRepCnt);
 	NOTUSED(nFlags);
 	switch(nChar)
 	{
-		case 9:
+		case 9:     //TAB. Shift focus back or forwards.
 		{
 			Boolean shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
 			mWidget->NextFocus(shifted);
@@ -325,9 +398,33 @@ void CxWindow::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 		default:
 		{
 			mWidget->FocusToInput((char)nChar);
+			break;
 		}
 	}
 }
+#endif
+#ifdef __LINUX__
+void CxWindow::OnChar( wxKeyEvent & event )
+{
+      switch(event.KeyCode())
+	{
+		case 9:     //TAB. Shift focus back or forwards.
+		{
+                  Boolean shifted = event.m_shiftDown;
+			mWidget->NextFocus(shifted);
+			break;
+		}
+		default:
+		{
+                  mWidget->FocusToInput((char)event.KeyCode());
+			break;
+		}
+	}
+}
+#endif
+
+
+
 
 void CxWindow::Focus()
 {
@@ -336,18 +433,31 @@ void CxWindow::Focus()
 
 void CxWindow::SetMainMenu(CxMenu * menu)
 {
-	int i = (int)SetMenu(menu);
+#ifdef __WINDOWS__
+      int i = (int)SetMenu(menu);
+#endif
+#ifdef __LINUX__
+      SetMenuBar( (wxMenuBar*) menu );
+#endif
 }
 
 
+#ifdef __WINDOWS__
 void CxWindow::OnMenuSelected(int nID)
 {
 	TRACE("Menu ID %d\n", nID);
+#endif
+#ifdef __LINUX__
+void CxWindow::OnMenuSelected(wxCommandEvent & event)
+{
+      int nID = event.m_id;
+#endif
 	((CrWindow*)mWidget)->MenuSelected( nID );
 	
 }
 
-BOOL CxWindow::PreCreateWindow(CREATESTRUCT& cs) 
+#ifdef __WINDOWS__
+BOOL CxWindow::PreCreateWindow(CREATESTRUCT& cs)
 {
 //	cs.style |= (WS_CLIPCHILDREN | WS_CLIPSIBLINGS);
 /*	if( (cs.style & WS_BORDER ) == WS_BORDER) TRACE("BORDER\n");
@@ -369,7 +479,6 @@ BOOL CxWindow::PreCreateWindow(CREATESTRUCT& cs)
 
 	return CFrameWnd::PreCreateWindow(cs);
 }
-
 
 LRESULT CxWindow::OnMyNcPaint(WPARAM wParam, LPARAM lParam) 
 {
@@ -429,17 +538,26 @@ LRESULT CxWindow::OnMyNcPaint(WPARAM wParam, LPARAM lParam)
 	return 0; //Indicate that the nc area has been painted.
 	
 }
-
+#endif
 
 
 void CxWindow::AdjustSize(CcRect * size)
 {
+#ifdef __WINDOWS__
 	int cH = GetSystemMetrics(SM_CYCAPTION);
 	int bT = GetSystemMetrics(SM_CXSIZEFRAME); //I think this is the maximum from SM_CXBORDER, SM_CXEDGE, SM_CXDLGFRAME...
 	int mN = ( GetMenu() != NULL ) ? GetSystemMetrics(SM_CYMENU) : 0; //Height of the menu, if there is one. Otherwise zero.
 //              This the test      ?       value if test is true : value if false
+#endif
+#ifdef __LINUX__
+      wxSystemSettings ss;
+      int mN = ( GetMenuBar() != NULL ) ? ss.GetSystemMetric(wxSYS_MENU_Y) : 0;
+      int cH = ss.GetSystemMetric(wxSYS_CAPTION_Y);
+      int bT = ss.GetSystemMetric(wxSYS_FRAMESIZE_X);
+#endif
 	size->mRight  = size->Right()  + (2*bT);
 	size->mBottom = size->Bottom() + ((2*bT)+cH+mN);
+
 	return;
 }
 

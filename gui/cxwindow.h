@@ -19,6 +19,7 @@
 #ifdef __LINUX__
 #include <wx/frame.h>
 #include <wx/window.h>
+#include <wx/settings.h>
 #define BASEWINDOW wxFrame
 #endif
 
@@ -33,7 +34,6 @@ class CxWindow : public BASEWINDOW
 {
 	public:
 		void AdjustSize( CcRect * clientSize );
-		void OnMenuSelected(int nID);
 		void SetMainMenu(CxMenu* menu);
 		void Focus();
 		void Hide();
@@ -68,6 +68,7 @@ class CxWindow : public BASEWINDOW
 	afx_msg void OnUpdateMenuItem(CCmdUI* pCmdUI);
 	afx_msg LRESULT OnMyNcPaint(WPARAM wparam, LPARAM lparam);
       afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+      afx_msg void OnMenuSelected(int nID);
      
 	DECLARE_MESSAGE_MAP()
 
@@ -75,7 +76,19 @@ protected:
 	CWnd* mParentWnd;
 #endif
 
+
 #ifdef __LINUX__
+
+      void OnClose( wxCloseEvent & event ); 
+      void OnSize ( wxSizeEvent & event );
+      void OnChar ( wxKeyEvent & event );
+      void OnMenuSelected(wxCommandEvent &event );
+      void OnUpdateMenuItem(wxUpdateUIEvent &event );
+      void OnKeyDown( wxKeyEvent & event );
+
+      DECLARE_EVENT_TABLE()
+
+
       protected:
       wxWindow* mParentWnd;
 #endif
