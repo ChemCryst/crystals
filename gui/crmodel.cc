@@ -365,10 +365,10 @@ int CrModel::GetIdealHeight()
 }
 
 
-void CrModel::Clear()
-{
-	((CxModel*)mWidgetPtr)->Clear();
-}
+//void CrModel::Clear()
+//{
+//      ((CxModel*)mWidgetPtr)->Clear();
+//}
 
 void CrModel::LMouseClick(int x, int y)
 {
