@@ -11,6 +11,15 @@
 //   Modified:  30.3.1998 12:23 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.10  1999/06/06 19:43:48  dosuser
+// RIC: Added new method of adding chart objects to the chartdoc. Objects
+// can be added by direct function calls rather than by passing ^^CH
+// commands to the interface. Another function, complete(), accessed from
+// the Fortran by calling GUWAIT() blocks until all ^^ commands have
+// been processed. This allows mixing of ^^CH commands with direct function
+// calls provided GUWAIT() is called after ^^CH commands. Cameron updates
+// pictures much much faster.
+//
 // Revision 1.9  1999/06/03 16:53:15  dosuser
 // RIC: Fixed an error that was lopping the last character off
 // any Interface command before it was processed.
@@ -975,6 +984,11 @@ Boolean	CcController::GetCrystalsCommand( char * line )
 	return (true);
 }
 
+
+// Introducing the global function ChangeDir:
+void ChangeDir(CcString dir);
+// Implemented in the CxApp source file.
+
 Boolean	CcController::GetInterfaceCommand( char * line )
 {
 	//This routine gets called repeatedly by the Idle loop.
@@ -1002,7 +1016,7 @@ Boolean	CcController::GetInterfaceCommand( char * line )
       {
             if ( m_restart )
             {
-                 mAppContext->ChangeDir( m_newdir );
+                 ChangeDir( m_newdir );
                  mAppContext->StartCrystalsThread();
                  m_restart = false;
                  return (false);
@@ -1069,7 +1083,7 @@ Boolean     CcController::GetInterfaceCommand( CcString * line )
       {
             if ( m_restart )
             {
-                 mAppContext->ChangeDir( m_newdir );
+                 ChangeDir( m_newdir );
                  mAppContext->StartCrystalsThread();
                  m_restart = false;
                  return (false);
