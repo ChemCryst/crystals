@@ -162,8 +162,12 @@ C
         IRDLIN = 0
         IF (ITYPFL .EQ. 1)  THEN
           CALL XPRMPT ( NCVDU , '!' )
+&GID          WRITE(CMON,'(A)')'^^CO SET MODEL01 MOUSEACTION=SELECTATOM'
+&GID          CALL XPRVDU(NCVDU,1,0)
           ELSE
           CALL XPRMPT ( NCVDU , '>' )
+&GID          WRITE(CMON,'(A)')'^^CO SET MODEL01 MOUSEACTION=APPENDATOM'
+&GID          CALL XPRVDU(NCVDU,1,0)
         ENDIF
 C If in script mode, set flag.
           INSTRC = .FALSE.
