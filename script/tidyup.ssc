@@ -5,7 +5,7 @@
 %  COPY 'MAP TYPE=DIFF'
 %  COPY 'PEAK HEIGHT=1 '
 %  COPY 'END'
-%  
+%
 %  VARIABLE REAL NREF NPARAM RHOMAX
 %
 %    IF ( EXISTS 30 .NE. 1 ) THEN
@@ -21,7 +21,7 @@ There in no LIST 30 with the general details available
 %
 %
 %  IF NPARAM .LE. 0.0 THEN
-You have changed something since the last refinement cycle. 
+You have changed something since the last refinement cycle.
 %    VERIFY YES NO
 %      GET NOSTORE FINAL ABBREVIATED  -
   'Do you want to run the final refinement' 'YES'
@@ -47,18 +47,23 @@ solvent or an absorption problem?
 %        COPY '#COLL 10 5'
 %        COPY 'SEL TYPE=PEAK'
 %        COPY 'END'
-%% RUN CAMERON
+%%       RUN CAMERON
 %        COPY '#SCRIPT PLOT'
 %      END IF
 %    VERIFY YES NO
 %      GET NOSTORE FINAL ABBREVIATED  -
   'Are you sure that the residuals peaks are not important?' 'YES'
 %      IF VALUE .EQ. 2 THEN
-The 'ROUTINE' script cannot handle this problem. Consult an experienced 
+The 'ROUTINE' script cannot handle this problem. Consult an experienced
 user or the Guide.
 %        COPY '#SCRIPT DIRECT'
+%      ELSE 
+%         COPY '#DISK'
+%         COPY 'RESET 5 0 -1'
+%         COPY 'END'
 %      END IF
 %  END IF
+%%
 %      VERIFY YES NO
 %      GET NOSTORE FINAL ABBREVIATED  -
   'Do you want to 6 final cycles of refinement' 'YES'
