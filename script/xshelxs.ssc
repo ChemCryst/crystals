@@ -106,6 +106,12 @@
 %      COPY '#EDIT'
 %      COPY 'TYPECHANGE TYPE EQ Q C'
 %      COPY 'END'
+%      COPY '#EDIT'
+%      COPY 'MON OFF'
+%      COPY 'REFORMAT ALL'
+%      COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0'
+%      COPY 'MON MEDIUM'
+%      COPY 'END'
 %%
 %      BLOCK
 %      EVALUATE QTITLE = 'Use Cameron?'
