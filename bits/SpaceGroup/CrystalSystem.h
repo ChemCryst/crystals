@@ -171,7 +171,7 @@ class ConditionColumn:virtual public Column
 {
     private:
         ArrayList<Index>* iHeadingConditions;
-        ArrayList<ConditionIndexs>* iConditions;	
+        ArrayList<Indexs>* iConditions;	
     public:
         ConditionColumn();
         ~ConditionColumn();
@@ -180,7 +180,7 @@ class ConditionColumn:virtual public Column
         int getHeading(const int pIndex);
         void addCondition(signed char pIndex, int pRow);
         void addEmptyCondition(int pRow);
-        ConditionIndexs* getCondition(int pIndex);
+        Indexs* getCondition(int pIndex);
         int countCondition();
         int countHeadings();
         void addReflection(Reflection* pReflection, Headings* pHeadings, Conditions* pConditions);
