@@ -245,7 +245,7 @@ class Matrix:public MyObject
         void resize(const short pXSize, const short pYSize)
         {
             short tSize = pXSize*pYSize;
-            float* tMatrix = (float*)malloc(sizeof(type) * tSize);
+            type* tMatrix = (type*)malloc(sizeof(type) * tSize);
             
             memcpy(tMatrix, iMatrix, sizeof(type)* (tSize < iSize?tSize:iSize));
             free(iMatrix);
@@ -263,7 +263,7 @@ class Matrix:public MyObject
             }
         }
         
-        bool operator ==(const Matrix<float>& pMatrix2)
+        bool operator ==(const Matrix<type>& pMatrix2)
         {
             if (pMatrix2.iXSize == iXSize && pMatrix2.iYSize == iYSize)
             {
@@ -534,7 +534,7 @@ std::ostream& operator<<(std::ostream& pStream, Matrix<type>& pMatrix)
  * this will later be expanded so that it can handle many diffrent types of
  * matrix.
  */
-class MatrixReader:public Matrix<float>
+class MatrixReader:public Matrix<short>
 {
     private:
         static int countMaxNumberOfColumns(char* pString);

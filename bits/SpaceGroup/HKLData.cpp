@@ -53,12 +53,6 @@
 /**********************************/
 #define kBadlyFormatedString "String wasn't formated as expected."
 
-/*class Reflection
-{
-public:
-    double h, k, l;
-    double i, iSE;*/
-    
 bool containsOnly(char* pString, char* pChars)
 {
     int tStringLength = (int)strlen(pString);
@@ -76,20 +70,20 @@ bool containsOnly(char* pString, char* pChars)
         char* tEndPointer;
         char tempString[10];
         
-        tHKL = new Matrix<float>(1, 3);
+        tHKL = new Matrix<short>(1, 3);
         if (containsOnly(pString, " 0123456789.-+"))
         {
             throw MyException(kBadlyFormatedStringN, kBadlyFormatedString);
         }
         strncpy(tempString, pString, 4);
         tempString[4] = 0;
-        tHKL->setValue((float)strtol(tempString, &tEndPointer, 10), 0);
+        tHKL->setValue((short)strtol(tempString, &tEndPointer, 10), 0);
         strncpy(tempString, pString+4, 4);
         tempString[4] = 0;
-        tHKL->setValue((float)strtol(tempString, &tEndPointer, 10), 1);
+        tHKL->setValue((short)strtol(tempString, &tEndPointer, 10), 1);
         strncpy(tempString, pString+8, 4);
         tempString[4] = 0;
-        tHKL->setValue((float)strtol(tempString, &tEndPointer, 10), 2);
+        tHKL->setValue((short)strtol(tempString, &tEndPointer, 10), 2);
         strncpy(tempString, pString+12, 8);
         tempString[8] = 0;
         i = strtod(tempString, &tEndPointer);
@@ -98,7 +92,7 @@ bool containsOnly(char* pString, char* pChars)
         iSE = strtod(tempString, &tEndPointer);
     }
     
-    Matrix<float>* Reflection::getHKL()
+    Matrix<short>* Reflection::getHKL()
     {
         return tHKL;
     }
@@ -132,7 +126,7 @@ HKLData::HKLData(char* pPath)
     bool tHadZeros = false;
     while (fgets(tLine, 255, tFile))
     {
-        Reflection* tReflection = new Reflection(tLine);
+        Reflection* tReflection= new Reflection(tLine);
         if (tReflection->getHKL()->getValue(0) == 0 && tReflection->getHKL()->getValue(1) == 0 && tReflection->getHKL()->getValue(2) == 0
         && tReflection->i == 0.0)	//We might have already reached the end of the file.        	
         {

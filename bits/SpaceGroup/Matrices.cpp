@@ -172,7 +172,7 @@ void MatrixReader::fillMatrix(char* pLine, int pX, int pY)
     {
         return;
     }
-    setValue((float)strtod(pLine+tMatch[1].rm_so, NULL), pX, pY);
+    setValue((short)strtod(pLine+tMatch[1].rm_so, NULL), pX, pY);
     if (tMatch[4].rm_so != -1)
     {
         fillMatrix(pLine+(int)tMatch[1].rm_eo, 0, pY+1);

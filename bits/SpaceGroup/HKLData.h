@@ -44,12 +44,12 @@
 class Reflection:public MyObject
 {
 public:
-    Matrix<float>* tHKL;
-    double i, iSE;
+    Matrix<short>* tHKL;
+    float i, iSE;
     
     Reflection(char* pString);
     ~Reflection();
-    Matrix<float>* getHKL();
+    Matrix<short>* getHKL();
 };
 
 class HKLData:public MyObject
