@@ -129,13 +129,24 @@ Conditions::~Conditions()
     delete iConditions;
 }
 
+int Conditions::getID(int pIndex)
+{
+    Condition* tCondition = iConditions->get(pIndex);
+    
+    if (!tCondition)
+    {
+        throw MyException(kUnknownException, "Condition with that index doesn't exist.");
+    }
+    return tCondition->getID();
+}
+
 char* Conditions::getName(int pIndex)
 {
     Condition* tCondition = iConditions->get(pIndex);
     
     if (!tCondition)
     {
-        throw MyException(kUnknownException, "Condition with that ID doesn't exist.");
+        throw MyException(kUnknownException, "Condition with that index doesn't exist.");
     }
     return tCondition->getName();
 }
@@ -146,7 +157,7 @@ Matrix<short>* Conditions::getMatrix(int pIndex)
     
     if (!tCondition)
     {
-        throw MyException(kUnknownException, "Condition with that ID doesn't exist.");
+        throw MyException(kUnknownException, "Condition with that index doesn't exist.");
     }
     return tCondition->getMatrix();
 }
