@@ -39,6 +39,7 @@
 #define __EXCEPTIONS_H__
 #include <exception>
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 /******************************************/
@@ -50,24 +51,32 @@ using namespace std;
 #endif
 #define kFileException 0x01
 
+/*!
+ * @class MyException 
+ * @description Not yet documented.
+ * @abstract
+*/
 class MyException : public exception
 {
     public:
-        char* iErrStr;
-        int iErrNum;
-
-        MyException(int pErrNum, const char* iErrStr);
-//		MyException(int pErrNum, const char* iErrFormat, ...);
+        MyException(int pErrNum, const string& iErrStr);
         MyException(const MyException& pException);
         virtual ~MyException() throw();
-        virtual void addError(char* pErrMsg);
-        virtual char* what();
+        virtual ostringstream& errorStream();
+		virtual const char* what() const throw();
         virtual int number();
-        MyException& operator=(const MyException& pMatrix);
+        MyException& operator=(const MyException& pException);
+		operator ostream&();
     protected:
-        void setString(const char* pString);
+		stringstream iErrorStream;
+        int iErrNum;
 };
 
+/*!
+ * @class FileException 
+ * @description Not yet documented.
+ * @abstract
+*/
 class FileException: public MyException
 {
     public:
@@ -75,5 +84,6 @@ class FileException: public MyException
 };
 
 std::ostream& operator<<(std::ostream& pStream, MyException& pExc);
+
 #endif
 
