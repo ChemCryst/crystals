@@ -14,53 +14,59 @@
 #else
 #include <regex.h>
 #endif
+#include "Symmetry.h"
 
-SpaceGroup::SpaceGroup(char* pSymbols)
+SpaceGroup::SpaceGroup(string& pSymbols):CrystSymmetry(pSymbols, 1), iCentering("P")
 {
-    iSymbols = new char[strlen(pSymbols)+1];
-    strcpy(iSymbols, pSymbols);
+	iCentering = pSymbols.substr(0, 1);
+   // iSymbols = new char[strlen(pSymbols)+1];
+   // strcpy(iSymbols, pSymbols);
+	
+	//string tSymbols = (iSymbols+1);
+	std::cout << getSymbol() << "\n";
 }
 
-SpaceGroup::SpaceGroup(const SpaceGroup& pSpaceGroup)
+SpaceGroup::SpaceGroup(const SpaceGroup& pSpaceGroup):CrystSymmetry(pSpaceGroup), iCentering(pSpaceGroup.iCentering)
 {
-    iSymbols = new char[strlen(pSpaceGroup.iSymbols)+1];
-    strcpy(iSymbols, pSpaceGroup.iSymbols);
+   // iSymbols = new char[strlen(pSpaceGroup.iSymbols)+1];
+    //strcpy(iSymbols, pSpaceGroup.iSymbols);
 }
 
 SpaceGroup::~SpaceGroup()
 {
-    delete[] iSymbols;
+    //delete[] iSymbols;
 }
 
-char* SpaceGroup::getSymbol()
+string SpaceGroup::getSymbol()
 {
-    return iSymbols;
+    return iCentering + (*this);
 }
 
 std::ostream& SpaceGroup::output(std::ostream& pStream)
 {
-    return pStream << iSymbols;
+    return pStream << getSymbol();
 }
 
 std::ostream& SpaceGroup::crystalsOutput(std::ostream& pStream)
 {
-    const long tSize = (long)strlen(iSymbols);
-    char* tSymbol = new char[tSize*2];	//The end result shouldn't be any begger than double the original
+	string tOldSymbol = getSymbol();
+    const size_t tSize = tOldSymbol.length();
+    char* tSymbol = new char[tSize*2];	//The end result shouldn't be any bigger than double the original
     long tUpto = 0;
     char tPrevChar = ' ';
-    for (int i = 0; i < tSize; i++)
+    for (size_t i = 0; i < tSize; i++)
     {
-        if (strchr("12346abcdmnABCIFPR-", iSymbols[i])!=NULL && strchr("12346abcdmnABCIFPR", tPrevChar)!=NULL)
+        if (strchr("12346abcdmnABCIFPR-", tOldSymbol[i])!=NULL && strchr("12346abcdmnABCIFPR", tPrevChar)!=NULL)
         {
             tSymbol[tUpto] = ' ';
             tUpto++;
         }
-        else if (iSymbols[i] == '_')
+        else if (tOldSymbol[i] == '_')
         {
             i++;
         }
-        tSymbol[tUpto] = iSymbols[i];
-        tPrevChar = iSymbols[i];
+        tSymbol[tUpto] = tOldSymbol[i];
+        tPrevChar = tOldSymbol[i];
         tUpto ++;
     }
     tSymbol[tUpto] = '\0';
@@ -141,7 +147,8 @@ void SpaceGroups::addSpaceGroups(char* pSpaceGroups)
     tSpaceGroup = new char[gMatch[1].rm_eo - gMatch[1].rm_so+1];
     tSpaceGroup[gMatch[1].rm_eo - gMatch[1].rm_so] = '\0';
     strncpy(tSpaceGroup, pSpaceGroups+(long)gMatch[1].rm_so, gMatch[1].rm_eo - gMatch[1].rm_so);
-    SpaceGroup tSpaceGroupObj(tSpaceGroup);
+	string tSymbols = tSpaceGroup;
+    SpaceGroup tSpaceGroupObj(tSymbols);
     insert(end(), tSpaceGroupObj);
     delete[] tSpaceGroup;
     if ((long)gMatch[2].rm_so > -1)
