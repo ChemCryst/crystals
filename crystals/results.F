@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.83  2004/06/10 07:52:24  djw
+C Tidy up loose ends in cif output for absorption correction.  NOTE that the keywords PSIMIN/MAX have been replaced by ANALMIN/MAX.
+C
 C Revision 1.82  2004/06/08 14:16:56  djw
 C Show given and found formulae in cif. Output given (as opposed to found) as data items.  Variable IEPROP set if L5 and L29 differ
 C
@@ -4224,16 +4227,18 @@ C
 C IF IEPROP -VE, THEN MIS-MATCH BETWEEN 5 AND 29.
          IEPROP=KCPROP(A)
 C----- SAVE THE GOODIES IN LIST 30
-C      LOAD VALUES FROM LIST 29
+C      LOAD VALUES FROM LIST 5
          IF (JLOAD(9).GE.1) THEN
-C            STORE(L30GE+1)=A(1)
-C            STORE(L30GE+2)=A(5)
-C            STORE(L30GE+3)=A(3)
-C            STORE(L30GE+4)=A(4)
-            STORE(L30GE+1)=A(6)
-            STORE(L30GE+2)=A(10)
-            STORE(L30GE+3)=A(8)
-            STORE(L30GE+4)=A(9)
+            STORE(L30GE+1)=A(1)
+            STORE(L30GE+2)=A(5)
+            STORE(L30GE+3)=A(3)
+            STORE(L30GE+4)=A(4)
+C
+C      LOAD VALUES FROM LIST 29
+C            STORE(L30GE+1)=A(6)
+C            STORE(L30GE+2)=A(10)
+C            STORE(L30GE+3)=A(8)
+C            STORE(L30GE+4)=A(9)
          END IF
       END IF
 C 
@@ -4273,6 +4278,83 @@ C----- CHECK IF LIST 5 LOADED
 C----- CHEMICAL FORMULA
 CDJWMAR99[
       IBASE=KSTALL(NTERM*NNAMES)
+C
+C  FORMULA FROM LIST 29
+cdjwjun04
+      call xzerof (store(ibase),nterm*nnames)
+      istore(ibase)=icarb
+      store(ibase+1)=0.0
+      istore(ibase+nterm)=ihyd
+      store(ibase+nterm+1)=0.0
+      nbase=2
+      do 1510 m29=l29,l29+(n29-1)*md29,md29
+c-----  get the character form of the name, as a unique code
+         write (ctype,'(a4)') istore(m29)
+         call xcras (ctype,nchar)
+         itext=100*index(upper,ctype(1:1))+index(upper,ctype(2:2))
+c 
+         do j=ibase,ibase+(nbase-1)*nterm,nterm
+            if (istore(j).eq.istore(m29)) then
+               store(j+1)=store(j+1)+store(m29+4)
+               istore(j+2)=j
+               istore(j+3)=itext
+               go to 1510
+            end if
+         end do
+         j=ibase+nbase*nterm
+         istore(j)=istore(m29)
+         store(j+1)=store(m29+4)
+         istore(j+2)=j
+         istore(j+3)=itext
+         nbase=nbase+1
+1510  continue
+c----- now sort on unique code, startting after (possible) h
+      i=ibase+2*nterm
+      j=max(0,nbase-2)
+      k=nterm
+      l=4
+      call ssorti (i,j,k,l)
+      j=1
+      cline=' '
+      jhtml=1
+      chline=' '
+      do 1720 i=ibase,ibase+(nbase-1)*nterm,nterm
+cdjwmar99]
+cDJW nov97
+         if (store(i+1).le.zero) go to 1720
+         itype=istore(i)
+         write (ctype,1550) itype
+         call xcras (ctype,length)
+         if (length.ge.2) then
+            cbuf=ctype(2:length)
+            call xcclwc (cbuf(1:length-1),ctype(2:length))
+         end if
+         sum=store(i+1) / zprime
+         nsum=nint(sum)
+         if (amod(sum,1.0).le.zero) then
+            write (ctemp,1600) nsum
+         else
+            write (ctemp,1650) sum
+         end if
+         call xcras (ctype,nchar)
+         call xcras (ctemp,length)
+         cline(j:)=' '//ctype(1:nchar)//ctemp(1:length)
+         chline(jhtml:)=' '//ctype(1:nchar)//'<SUB>'//
+     1                       ctemp(1:length)//'</SUB>'
+         call xcrems (cline,cline,j)
+         call xcrems (chline,chline,jhtml)
+         call xctrim (cline,j)
+         call xctrim (chline,jhtml)
+1720  continue
+      if (ipunch .eq. 0) then
+       write(ncfpu1,'(1x)')
+       write(ncfpu1,'(a,a)') '# Given Formula =', cline(1:j)
+       write(ncfpu1,'(4(a,f10.2))')
+     1 '# Dc =',a(6),' Fooo =', a(10), ' Mu =', a(8), ' M =', a(9)
+      endif
+C
+cdjwjun04
+C - FORMULA FROM LIST 5
       CALL XZEROF (STORE(IBASE),NTERM*NNAMES)
       ISTORE(IBASE)=ICARB
       STORE(IBASE+1)=0.0
@@ -4341,80 +4423,12 @@ Cdjw NOV97
          CALL XCTRIM (CLINE,J)
          CALL XCTRIM (CHLINE,JHTML)
 1700  CONTINUE
-      if (ipunch .eq. 0) then
-       write(ncfpu1,'(a,a)') '# Found Formula =', cline(1:j)
-      endif
-cdjwjun04
-      call xzerof (store(ibase),nterm*nnames)
-      istore(ibase)=icarb
-      store(ibase+1)=0.0
-      istore(ibase+nterm)=ihyd
-      store(ibase+nterm+1)=0.0
-      nbase=2
-      do 1510 m29=l29,l29+(n29-1)*md29,md29
-c-----  get the character form of the name, as a unique code
-         write (ctype,'(a4)') istore(m29)
-         call xcras (ctype,nchar)
-         itext=100*index(upper,ctype(1:1))+index(upper,ctype(2:2))
-c 
-         do j=ibase,ibase+(nbase-1)*nterm,nterm
-            if (istore(j).eq.istore(m29)) then
-               store(j+1)=store(j+1)+store(m29+4)
-               istore(j+2)=j
-               istore(j+3)=itext
-               go to 1510
-            end if
-         end do
-         j=ibase+nbase*nterm
-         istore(j)=istore(m29)
-         store(j+1)=store(m29+4)
-         istore(j+2)=j
-         istore(j+3)=itext
-         nbase=nbase+1
-1510  continue
-c----- now sort on unique code, startting after (possible) h
-      i=ibase+2*nterm
-      j=max(0,nbase-2)
-      k=nterm
-      l=4
-      call ssorti (i,j,k,l)
-      j=1
-      cline=' '
-      jhtml=1
-      chline=' '
-      do 1720 i=ibase,ibase+(nbase-1)*nterm,nterm
-cdjwmar99]
-cDJW nov97
-         if (store(i+1).le.zero) go to 1720
-         itype=istore(i)
-         write (ctype,1550) itype
-         call xcras (ctype,length)
-         if (length.ge.2) then
-            cbuf=ctype(2:length)
-            call xcclwc (cbuf(1:length-1),ctype(2:length))
-         end if
-         sum=store(i+1) / zprime
-         nsum=nint(sum)
-         if (amod(sum,1.0).le.zero) then
-            write (ctemp,1600) nsum
-         else
-            write (ctemp,1650) sum
-         end if
-         call xcras (ctype,nchar)
-         call xcras (ctemp,length)
-         cline(j:)=' '//ctype(1:nchar)//ctemp(1:length)
-         chline(jhtml:)=' '//ctype(1:nchar)//'<SUB>'//
-     1                       ctemp(1:length)//'</SUB>'
-         call xcrems (cline,cline,j)
-         call xcrems (chline,chline,jhtml)
-         call xctrim (cline,j)
-         call xctrim (chline,jhtml)
-1720  continue
-      if (ipunch .eq. 0) then
-       write(ncfpu1,'(a,a)') '# Given Formula =', cline(1:j)
-      endif
-
-cdjwjun04
+      IF (IPUNCH .EQ. 0) THEN
+       WRITE(NCFPU1,'(A,A)') '# Found Formula =', cline(1:j)
+       WRITE(NCFPU1,'(4(A,F10.2))')
+     1 '# Dc =',A(1),' FOOO =', A(5), ' Mu =', A(3), ' M =', A(4)
+       WRITE(NCFPU1,'(1x)')
+      ENDIF
 C
 
       IF ( IPUNCH .EQ. 0 ) THEN
