@@ -1,5 +1,9 @@
 
 c $Log: not supported by cvs2svn $
+c Revision 1.37  2004/12/09 13:09:01  rich
+c Fixed #match renumbering code after breaking it while improving
+c the match robustness.
+c
 c Revision 1.36  2004/11/24 11:41:00  rich
 c Improved molecule matching in #MATCH (regularise). Now bonding is considered
 c during the extension to a 3D match forcing a valid 2D match on the structures.
@@ -3688,11 +3692,13 @@ C          CALL XPRVDU(NCVDU,1,0)
 C Check for Q atoms amongst the fragments, if present, the use
 C the EQUALATOM approach.
         DO I = 0, N5-1         ! Loop over all the atoms, check for Q
-          IF ( ( ( ISTORE(1+LATVC+I*MDATVC) .EQ. 1 ) .OR.  
-     1           ( ISTORE(2+LATVC+I*MDATVC) .EQ. 1 ) ) .AND.
-     2         (  ISTORE(L5+I*MD5) .EQ. IPEAK        ) ) THEN
-            IEQATM = 1
-            EXIT
+          IF ( ( ISTORE(1+LATVC+I*MDATVC) .EQ. 1 ) .OR.  
+     1         ( ISTORE(2+LATVC+I*MDATVC) .EQ. 1 ) ) THEN
+            IF ( ISTORE(L5+I*MD5) .EQ. IPEAK ) THEN
+              IEQATM = 1
+            END IF
+          ELSE ! Atom not included in fragment
+            STORE(L5+13+I*MD5) = 0.0
           END IF
         END DO
       END IF
@@ -3700,7 +3706,12 @@ C the EQUALATOM approach.
 C EQUALATOM. Don't use element types.
       IF ( IEQATM .NE. 0 ) THEN
         DO I = 0,N5-1
-          STORE(L5+13+I*MD5) = 10
+          IF ( ( ISTORE(1+LATVC+I*MDATVC) .EQ. 1 ) .OR.  
+     1         ( ISTORE(2+LATVC+I*MDATVC) .EQ. 1 ) ) THEN
+            STORE(L5+13+I*MD5) = 10
+          ELSE
+            STORE(L5+13+I*MD5) = 0  ! Atom not part of fragments
+          ENDIF
         END DO
       END IF
 
@@ -3949,6 +3960,13 @@ C Sort each set of atoms into index order.
                STORE(L5+13+I*MD5) = 10
              END DO
            END IF
+
+           DO I = 0, N5-1         ! Loop over all the atoms
+             IF ( ( ISTORE(1+LATVC+I*MDATVC) .NE. 1 ) .AND.  
+     1            ( ISTORE(2+LATVC+I*MDATVC) .NE. 1 ) ) THEN
+               STORE(L5+13+I*MD5) = 0.0 ! Atom not included in fragments.
+             END IF
+           END DO
 
 
 C Triple the cardinality of the two found atoms.
@@ -4298,6 +4316,11 @@ C  Assign each atom the sum of all its neighbours' values of SPARE +
 C  its original value.
 C  Repeat until number of unique atoms stops increasing.
 C  A good initial value for SPARE would be the electron count.
+C
+C  This routine currently assumes it is looking at two identical molecules
+C  and fragments, and optimises the search speed by freezing out pairs
+C  of unique atoms once they have unique IDs. It will still work for
+C  multiple fragments, but not as efficiently.
 \STORE
 \ISTORE
 \XLST05
@@ -4378,8 +4401,15 @@ c          CALL XPRVDU(NCVDU,1,0)
         NCONSE = 2
         IDCOUN = -1
         IDUNIQ = 0
+        NATMS = N5
 
         DO I = 0, N5       ! Count number of unique ID's. (Over run by 1)
+
+          IF ( ISTORE(LTEMP+I) .EQ. 0 ) THEN
+            NATMS = NATMS - 1
+            CYCLE  ! Don't consider excluded atoms
+          END IF
+
           IF ((I.EQ.N5) .OR. ( ISTORE(LTEMP+I) .NE. LASTID)) THEN
             IF ( MOD(NCONSE,2) .EQ. 1 ) THEN
               WRITE(CMON,'(A,I8)')
@@ -4407,7 +4437,7 @@ c          CALL XPRVDU(NCVDU,1,0)
      1  IDCOUN,' unique IDs and ',IDUNIQ,' unique pairs of atoms.'
         CALL XPRVDU(NCVDU,1,0)
 
-        IF ( IDCOUN*2 .EQ. N5 ) THEN
+        IF ( IDCOUN*2 .EQ. NATMS ) THEN
           WRITE(CMON,'(A)') 'All pairs unique. Stopping.'
           CALL XPRVDU(NCVDU,1,0)
           DO I = 0, N5-1       ! Copy SPARE into BEST
