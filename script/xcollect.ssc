@@ -1,0 +1,67 @@
+%SCRIPT XCOLLECT
+% VARIABLE INTEGER DOCOLLECT 
+%%
+A SCRIPT to help collect atoms into a molecule, or bring new peaks close
+to existing atoms.
+%% check we have an atom list
+%  IF EXISTS 5 .NE. 1 THEN
+  You do not have an atom list.
+%  FINISH
+%  END IF
+%%
+^^WI WINDOW COLLECT 'Molecule Assembly' MODAL
+^^WI GRID MYMAIN NROWS=1 NCOLS=2
+^^WI {
+^^WI   @ 1,1 GRID GRIDL NROWS=5 NCOLS=3
+^^WI   {
+% CLEAR
+^^WI   @ 3,2 RADIOBUTTON XALL 'Collect all the atoms together.'
+^^WI                                           STATE=OFF IGNORE
+^^WI   @ 5,2 RADIOBUTTON XNEW 'Only Collect New Peaks.'
+^^WI                                           STATE=ON IGNORE
+^^WI   }
+^^WI   @ 1,2 GRID GRIDR NROWS=5 NCOLS=3
+^^WI   {
+^^WI     @ 2,2 BUTTON BTNOK '&Ok' DEFAULT
+^^WI     @ 4,2 BUTTON BTNXX '&Cancel'
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%    VERIFY BTNOK BTNXX
+^^WI    SET _MAINTEXTOUTPUT NOECHO
+^^CR
+%    GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%        CASE VALUE
+%             BLOCK                %BUTTONOK%
+%                 QUEUE REWIND
+%                 CLEAR
+^^WI              SET _MAINTEXTOUTPUT NOECHO
+^^WI              GETVALUE XNEW
+^^CR
+%                 VERIFY ON OFF
+%                 GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%                 EVALUATE DOCOLLECT = VALUE
+%                 IF DOCOLLECT .EQ. 1 THEN
+%                    INSERT 'SELECT TYPE = ALL'
+%                    QUEUE SEND
+%                    CLEAR
+%                 ELSE
+%                    INSERT 'SELECT TYPE = PEAKS'
+%                    QUEUE SEND
+%                    CLEAR
+%                 END IF
+^^WI              DISPOSE COLLECT
+^^CR
+%             END BLOCK
+%             BLOCK                %BUTTONXX%
+^^WI              DISPOSE COLLECT
+^^CR
+%                 FINISH
+%             END BLOCK
+%        END CASE
+%%
+%   COPY '#COLLECT'
+%   QUEUE PROCESS
+%   COPY 'END'
+%END SCRIPT
