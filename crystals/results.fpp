@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.76  2004/02/17 09:47:01  rich
+C Avoid putting assembly and group numbers in CIF if the PART entry appears to
+C be invalid (>999999). This can occur with OLD L5's since the xwrite5 script
+C used to use the PART slot as temporary storage space.
+C
 C Revision 1.75  2004/02/16 14:17:04  rich
 C Output list of missing reflections to GUI during #THLIM calculation, if
 C requested.
@@ -3736,7 +3741,8 @@ C----- CLEAR OUT THE PAGE BUFFER
         WRITE (NCFPU1,'(''_audit_creation_date  '',6X, 3(A2,A))')
      1         CBUF(7:8),'-',CBUF(4:5),'-',CBUF(1:2)
         WRITE (NCFPU1,
-     1   '(''_audit_creation_method CRYSTALS_ver_12-03-99'')')
+     1   '(''_audit_creation_method CRYSTALS_ver_'',F5.2)')
+     1    0.01*FLOAT(ISSVER)
 
 C----- OUTPUT A TITLE, FIRST 60 CHARACTERS ONLY
         WRITE (NCFPU1,'(''#  '',15A4)') (KTITL(I),I=1,15)

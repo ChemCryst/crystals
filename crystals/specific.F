@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.47  2004/02/18 12:08:23  rich
+C Added option \SET TIME SLOW which prevents output of DATE and TIME strings.
+C This is to be used by the new test_suite so that runs at different times
+C generate no significant differences. Also supresses timing functions, as
+C for \SET TIME OFF.
+C
 C Revision 1.46  2004/02/09 20:26:08  rich
 C Correct order of statements in XTIMER for compilation on WXS platform.
 C
@@ -1554,6 +1560,7 @@ C
 C
       CHARACTER*8 CDATE
 C
+&&DVFGID      CHARACTER*8 CDATE2
 &ICL      CHARACTER*8 CDATE2
 &VAX      CHARACTER*9 CDATE2
 &VAX      CHARACTER*36 CMONTH
@@ -1618,7 +1625,9 @@ C
 &H-P      CDATE=buf(9:10)//'-'//buf(5:7)//buf(23:24)
 C
 &DOS      CDATE = EDATE@()
-&&DVFGID      CDATE = DATE()
+&&DVFGID      CDATE2 = DATE()
+&&DVFGID      WRITE(CDATE,'(A,2(''/'',A))')
+&&DVFGID     1    CDATE2(4:5),CDATE2(1:2),CDATE2(7:8)
 C
 &XXX      CDATE = ' '
 C
