@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2001/01/17 11:04:11  richard
+C Default to logging everything. Initialisation doesn't log anyway.
+C
 C Revision 1.27  2001/01/11 17:36:41  richard
 C Initialise IOFORE and IOBACK, or no text appears to start with.
 C
@@ -131,7 +134,7 @@ C----- INITIALISE THE VMS SCREEN MANAGER
 C
       DATA IACC/-1/,MLSS/15/
 C
-      DATA ISIZST / 131072 /, ISIZ11 / 1048576 /
+      DATA ISIZST / 262144 /, ISIZ11 / 1048576 /
 C
 &PPCC      SET INTERACTIVE UNDER MAC OS
 &PPC      DATA IQUN /2/, JQUN/2/

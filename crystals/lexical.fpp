@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2001/02/26 10:26:49  richard
+C Added changelog to top of file
+C
 C
 CODE FOR XILEXP
       SUBROUTINE XILEXP(IULN,IFIRST)
@@ -172,6 +175,15 @@ C      NCARD       ( OUTPUT ) NUMBER OF CARDS READ
 C      ILAST       NUMBER OF LAST DIRECTIVE READ. THIS SHOULD BE SET TO
 C                  -1 BEFORE THE FIRST CALL TO THIS ROUTINE
 C
+C
+C ---- 2001. This routine forms an image of the input cards in store.
+C ---- so the size of the lexical lists is limited to approximately
+C ---- ( ISIZST / 80 ). Was 131072 (1634 lines) until Jun 19 2001, and
+C ---- 262144 thereafter (3278 lines). Ideally they could be compressed
+C ---- somehow (e.g. omitting trailing blanks), but this makes them
+C ---- difficult to store to disk. Also we must be able to guarantee that
+C ---- the list can be read BACK into store later, so the compressed
+C ---- format for lexical lists would have to be supported everywhere.
 C
 C
 C            VERSION 1      AUGUST 1983
