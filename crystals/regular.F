@@ -1,4 +1,8 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.23  2003/11/11 15:08:01  rich
+c Added OUTPUT PUNCH=RESULTS option to #MATCH to output results in tab delimited
+c format to the PUNCH file.
+c
 c Revision 1.22  2003/09/24 09:44:25  rich
 c Added routine XMXUIJ to matrix.src to apply a transformation to
 c a vector of Uijs. Added new vector to store Uijs for the "new"
@@ -1017,7 +1021,7 @@ C      GET THE DETERMINANT AND TRACE
          END IF
 C 
          DO 1150 J=1,3
-            ITEMP(J)=0
+            ITEMP(J)=10
             DO 1100 I=1,3
                IF (ABS(1.-ABS(WSPAC3(I,J))).LE.0.05) ITEMP(J)=I*
      1          INT(SIGN(1.,WSPAC3(I,J)))
