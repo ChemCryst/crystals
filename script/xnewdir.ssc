@@ -8,6 +8,7 @@
 %    IF CVALUE .NE. 'CANCEL' THEN
 ^^WI RESTART
 %      TRANSFER '^^WI ' // CVALUE TO DISPLAY
+^^WI NEWFILE=crfilev2.dsc
 ^^CR
 ^^WI SET _MAIN TEXT=
 % TRANSFER "^^WI 'Crystals - " // CVALUE // "'" TO DISPLAY
@@ -15,8 +16,9 @@
 %% MAKE SURE THE GUI HAS RECEIVED THESE COMMANDS
 %% BEFORE CLOSING DOWN!
 %% We query the value of any object by name.
-%% There won't be an object called _ANYTHING_ so the
-%% GUI returns FALSE.
+%% A value will not return until the GUI has caught up.
+%% FYI: There won't be an object called _ANYTHING_ so the
+%% GUI just returns FALSE.
 ^^WI GETVALUE _ANYTHING_
 ^^CR
 % GET NOSTORE TEXT 'Waiting to restart' ' '
