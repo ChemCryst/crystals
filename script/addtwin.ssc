@@ -70,5 +70,7 @@
 %  COPY '#SUM L 5'
 %  COPY 'END'
 {R Done.
+%% Empty input buffer
+%  GET NOPROMPT NOSTORE TEXT ' ' ' '
 %%
 %END SCRIPT
