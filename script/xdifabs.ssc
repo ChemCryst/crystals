@@ -1,5 +1,5 @@
 %SCRIPT XDIFABS
-This SCRIPT runs DISABS in test mode. Use the SCRIPT DIFABS
+This SCRIPT runs DIFABS in test mode. Use the SCRIPT DIFABS
 to apply the correction.
 % COPY "#STORE CSYS MAP 'DIFABS.FOU'"
 % COPY '#DIFABS TEST '
