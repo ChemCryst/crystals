@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.32  2004/06/25 09:29:18  rich
+// Pass strings more efficiently. Fix bug in FlagFrag.
+//
 // Revision 1.31  2004/06/24 09:12:01  rich
 // Replaced home-made strings and lists with Standard
 // Template Library versions.
@@ -717,6 +720,7 @@ void CcModelDoc::FlagFrag(const string & atomname)
 {
 // Set spare to false for all atoms
 
+   m_thread_critical_section.Enter();
    if ( ! mAtomList.empty() )
      for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     atom++)
         (*atom).spare = false;
@@ -728,6 +732,7 @@ void CcModelDoc::FlagFrag(const string & atomname)
    if ( ! mDonutList.empty() )
      for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
         (*donut).spare = false;
+   m_thread_critical_section.Leave();
 
    int nChanged=0;
 
@@ -740,6 +745,7 @@ void CcModelDoc::FlagFrag(const string & atomname)
 // Loop setting spare to true for any atoms bonded to other atoms
 // that also have spare true, until no more changes.
 
+   m_thread_critical_section.Enter();
    while ( nChanged )
    {
      nChanged = 0;
@@ -758,15 +764,16 @@ void CcModelDoc::FlagFrag(const string & atomname)
               nChanged++;
            }
    }
+   m_thread_critical_section.Leave();
 
 }
 
 
 void CcModelDoc::SelectFrag(const string & atomname, bool select)
 {
-   m_thread_critical_section.Enter();
    FlagFrag ( atomname );
 
+   m_thread_critical_section.Enter();
 // Select or unselect all spare-flagged atoms.
 
   for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     atom++)
@@ -783,16 +790,16 @@ void CcModelDoc::SelectFrag(const string & atomname, bool select)
 string CcModelDoc::FragAsString( const string & atomname, string delimiter )
 {
   string result;
-  m_thread_critical_section.Enter();
   FlagFrag ( atomname );
 
+  m_thread_critical_section.Enter();
   for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     atom++)
         if ( (*atom).spare ) result += (*atom).Label() + delimiter;
   for ( list<CcModelSphere>::iterator sphere=mSphereList.begin(); sphere != mSphereList.end(); sphere++)
         if ( (*sphere).spare ) result += (*sphere).Label() + delimiter;
   for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
         if ( (*donut).spare ) result += (*donut).Label() + delimiter;
-   m_thread_critical_section.Leave();
+  m_thread_critical_section.Leave();
   return result;
 }
 
