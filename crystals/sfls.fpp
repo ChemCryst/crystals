@@ -62,7 +62,7 @@ C
 C
 C
       EQUIVALENCE (IWORKA(1),JA)
-      DATA IVERSN /801/
+C      DATA IVERSN /801/
 C----- V 810 INCLUDES THE SPECIAL SHAPES
       DATA IVERSN /810/
       WRITE(CMON,'('' Version with Special Shapes'')')
