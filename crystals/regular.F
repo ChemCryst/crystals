@@ -1,4 +1,8 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.12  2002/11/06 12:02:49  rich
+c Regularise replace was putting weird values into PART, REFINE, NEW and HYBRID as
+c its new atoms array wasn't big enough.
+c
 c Revision 1.11  2001/10/10 16:05:11  Administrator
 c Remove excessive output from screen
 c
@@ -83,8 +87,8 @@ C                           OFFSET 35 IN THE LEXICAL SCANNER COMMON
 C                           BLOCK
 C                  VALUE ( ONE OF ) : 1          2          3
 C                                     (REPLACE)  (COMPARE)  (KEEP)
-C                                    4           5
-C                                    (AUGMENT)   (RENAME)
+C                                    4           5          6
+C                                    (AUGMENT)   (RENAME)   (CAMERON)
 C
 C
 C            IFLCMP         THE FLAG WHICH DETERMINES WHETHER THE
@@ -93,6 +97,8 @@ C                           ARE/REPLACE/KEEP OPERATION. ITS DEFAULT
 C                           VALUE IS 'ICMPDF'
 C                  VALUE ( ONE OF ) : THOSE FOR ICMPDF
 C                           THE VALUE 5 CAN ONLY BE SET BY A 'RENAME' 
+C                           COMMAND
+C                           THE VALUE 5 CAN ONLY BE SET BY A 'CAMERON' 
 C                           COMMAND
 C
 C
@@ -274,6 +280,7 @@ C -- SET UNIT MATRIX AND ZERO SHIFT
 C----- ALLOCATE SPACE FOR RENAMING
       MDRENM = 6
       LRENM = KSTALL(MDRENM*N5)
+c      CALL XZEROF(STORE(LRENM),MDRENM*N5)
 C -- ALLOCATE SPACE FOR A BUFFER FOR LEXICAL SCANNER
       LLXSPC = KSTALL(4000)
 C -- SET VALUES IN ATOM
@@ -329,7 +336,7 @@ C>DJWOCT96
       GO TO (
      1 2100,2200,2300,2400,2500,2600,2700,2800,2900,3000,
      2 3100,3200,3300,3400,3500,3600,3700,3800,3900,2200,
-     3 2300,2000,2050,2350,2250,2000), MG
+     3 2300,2000,2050,2350,2250,2051,2000), MG
 2000  CONTINUE
       CALL XERHND ( IERPRG )
       GOTO 8000
@@ -354,6 +361,25 @@ C -- SET ORIGIN FOR RE-NUMBERING
       CALL XRGGRP(2)
 C----- SET FLAG TO RENAME
       IFLCMP = 5
+      GOTO 8000
+
+2051  CONTINUE
+C----- 'CAMERON'
+CRICJAN03 - COMPUTE TRANSFORMATION FOR GROUP
+      IF (IERFLG.LT.0) GOTO 9250
+      IF (NATMD .GT. 0) THEN
+            CALL XRGCLC(IMATRIX)
+            IMATRIX = +2
+      ENDIF
+C     RE-INITIALISE THINGS
+      NATMD=0
+      NOLD=0
+      NNEW=0
+C -- IF ERROR DURING CALCULATION THEN END
+      IF (IERFLG.LT.0) GOTO 9250
+      CALL XRGGRP(2)
+C----- SET FLAG TO CAMERON
+      IFLCMP = 6
       GOTO 8000
 C
 2100  CONTINUE
@@ -499,7 +525,6 @@ C -- SET FLAG TO PRODUCE NO NEW LIST
 8100  CONTINUE
       WRITE(CMON,'(A)') 'No Matrix to use for renumbering'
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(A)') CMON(1)(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
       IERFLG = -1
       GOTO 9000
@@ -518,7 +543,6 @@ C -- CHECK IF A NEW LIST 5 IS TO BE PRODUCED
 C -- NO NEW LIST TO BE PRODUCED
       WRITE ( CMON,9110)
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(A)') CMON(1)(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
 9110  FORMAT (' No new list 5 will be created ')
       GO TO 9200
@@ -539,7 +563,6 @@ C -- STORE LIST 5
 C -- WRITE FINAL MESSAGES
       WRITE ( CMON,9155) N5
       CALL XPRVDU(NCVDU, 2,0)
-      WRITE(NCAWU, '(A)') (CMON(II)(:), II=1,2)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (CMON(II)(:),II=1,2)
 9155  FORMAT (' List 5 now contains ',I4,' atoms  ',/,
      2 ' list modification complete  ')
@@ -550,7 +573,6 @@ C -- FINISH ROUTINE
        CALL OUTCOL(9)
        CALL XPRVDU(NCVDU, 1,0)
        CALL OUTCOL(1)
-       WRITE(NCAWU, '(A)') CMON(1)(:)
        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
       ENDIF
 C -- RESTORE LAST CARD IMAGE READ IN
@@ -574,7 +596,6 @@ C    SUBROUTINE
 9500  CONTINUE
       WRITE ( CMON,9510)
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(A)') CMON(1)(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
 9510  FORMAT (' Errors detected by lexical scanner  ')
       CALL XERHND ( IERERR )
@@ -594,6 +615,7 @@ C    REGULARISE.
 C 
 C      IMATRIX -1 INITIAL CALL TO COMPUTE MATRICES
 C              +1 SECOND CALL IF RENUMBERING REQUIRED
+C              +2 SECOND CALL REQUIRING CAMERON OUTPUT
 C 
 C 
 C    DATA SHOULD HAVE BEEN STORED BY THE OTHER ROUTINES, AND THE BEST
@@ -670,11 +692,10 @@ C
 C 
 CDJWAPR2001
 C----- CHECK THE NUMBER OF NEW AND OLD ATOMS
-      IF (IMATRIX.EQ.1) THEN
+      IF (IMATRIX.GE.1) THEN
         WRITE(CMON,'(A,I4,A,I4)') 'Input: mapping ', NNEW ,
      1 ' atoms onto ', nold 
         CALL XPRVDU(NCVDU,1,0)
-        WRITE(NCAWU, '(A)') CMON(1)(:)
         IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
         IF (NOLD.EQ.NNEW) NATMD=NNEW
       END IF
@@ -729,7 +750,6 @@ C -- PRINT CENTROIDS AVERAGE, AND THE DIFFERENCE BETWEEN THEM
 Cdjwnov99      WRITE ( CMON , 2006 ) CENTO , CENTN
          WRITE (CMON,200) (CENTO(I),I=1,3),(CENTN(I),I=1,3)
          CALL XPRVDU (NCVDU,2,0)
-         WRITE (NCAWU,'(/A)') (CMON(II)(:),II=1,2)
 200      FORMAT (1X,'Centroids of old and new groups ',
      1 '( in crystal fractions ) ',/,1X,2(3F8.4,3X))
 C 
@@ -748,7 +768,6 @@ C-----
      1',//1X,2(10X,3F8.3),//)
          WRITE (CMON,300) ROOTO,ROOTN
          CALL XPRVDU (NCVDU,2,0)
-         WRITE (NCAWU,'(/A)') (CMON(II)(:),II=1,2)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') (CMON(II)(:),II=1,2)
 300      FORMAT (1X,'Principal moments of inertia of old and new groups'
      1    ,/1X,2(3F8.3,3X))
@@ -834,7 +853,6 @@ C -- ERROR
                NUMATM=((J-LNEW)/MDNEW)+1
                WRITE (CMON,600) CAXIS(I),NUMATM
                CALL XPRVDU (NCVDU,1,0)
-               WRITE (NCAWU,'(A)') CMON(1)(:)
                IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
 600            FORMAT (1X,'Rotation of ',A1,' coordinate is undefined ',
      1          ' for atom number ',I5)
@@ -872,7 +890,6 @@ C
 C 
          WRITE (CMON,900) AVCNT,DELCNT
          CALL XPRVDU (NCVDU,2,0)
-         WRITE (NCAWU,'(/A)') (CMON(II)(:),II=1,2)
 900      FORMAT (1X,'Average and difference of centroids ',
      1 '( in crystal fractions ) ',/,1X,2(3F8.4,3X))
 C 
@@ -898,7 +915,6 @@ C      GET THE DETERMINANT AND TRACE
             END IF
             WRITE (CMON,1050) CSYM(1:2)
             CALL XPRVDU (NCVDU,1,0)
-            WRITE (NCAWU,'(//A//)') CMON(1)(:)
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A/)') CMON(1)(:)
 1050        FORMAT (' Pseudo-symmetry element ',A2,' detected')
          END IF
@@ -923,7 +939,6 @@ C
 1200        CONTINUE
             WRITE (CMON,1250) (ATEMP(J),CTEMP(J),J=1,3)
             CALL XPRVDU (NCVDU,1,0)
-            WRITE (NCAWU,'(//A//)') CMON(1)(:)
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A/)') CMON(1)(:)
 1250        FORMAT (' Pseudo-symmetry operator of form :-  ',
      1       3(F6.2,A2,2X))
@@ -960,12 +975,14 @@ C -- PRINT THESE COORDINATES
 1400        FORMAT (1X,A4,3X,F5.0,5X,3(F8.4,5X))
 1450     CONTINUE
 Cdjwapr2001
-      ELSE
+      ELSE IF ( IMATRIX .EQ. 1 ) THEN
             CALL XRGRNM 
+      ELSE
+            CALL XRGCAM
       END IF
 C -- CHECK REPLACE/COMPARE FLAG, TO DETERMINE WHETHER LIST 5
 C    SHOULD BE CHANGED.
-      GO TO (1500,1750,1500,1500,1740),IFLCMP
+      GO TO (1500,1750,1500,1500,1740,1741),IFLCMP
 1500  CONTINUE
 C -- COPY COORDINATES BACK TO ATOM DEFINTION BLOCK
       DO 1550 I=1,NATMD
@@ -1061,6 +1078,9 @@ C
 C -- SET FLAG TO SHOW NEW LIST 5 IS TO BE PRODUCED
       NEWLIS=1
       GOTO 1800
+1741  CONTINUE
+C----- CAMERON - DO NOTHING
+      GOTO 1800
 C
 1750  CONTINUE
 C -- COMPARE ONLY
@@ -1073,7 +1093,6 @@ C -- FINISHED CALCULATION
 1850  FORMAT (1X,A,' of group number ',I3,' completed',/)
       CALL XPRVDU (NCVDU,2,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,1850) CFUNC(NFUNC),IGRPNO
-      WRITE (NCAWU,1850) CFUNC(NFUNC),IGRPNO
 1900  CONTINUE
 C -- FINAL TIDY UP
 C -- SET COUNTS TO ZERO
@@ -1088,7 +1107,6 @@ C
       WRITE (CMON,2000) NOLD
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
-      WRITE (NCAWU,'(A)') CMON(1)
 2000  FORMAT (' Too few old atom positions have been given -',I5)
       CALL XERHND (4)
       RETURN
@@ -1096,7 +1114,6 @@ C
       WRITE (CMON,2100) NNEW
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
-      WRITE (NCAWU,'(A)') CMON(1)
 2100  FORMAT (' Too few new atom positions have been given -',I5)
       CALL XERHND (4)
       RETURN
@@ -1108,7 +1125,6 @@ C
       WRITE (CMON,2200) IGRPNO
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
-      WRITE (NCAWU,'(A)') CMON(1)
 2200  FORMAT (1X,'Calculation abandoned for group number ',I3)
       GO TO 1800
 C 
@@ -1121,7 +1137,6 @@ C
       WRITE (CMON,2350)
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
-      WRITE (NCAWU,'(A)') CMON(1)
 2350  FORMAT (1X,'Attempt to change undefined coordinates')
       CALL XERHND (IERERR)
       GO TO 2150
@@ -1155,7 +1170,6 @@ C --
 C --
 C --
       IF (ISSPRT .EQ. 0) WRITE (NCWU,1100)
-      WRITE (NCAWU,1100)
 1100  FORMAT ( 1X , 'Calculation of rotation-dilation matrix ' ,
      2 'and decomposition into component parts' , / )
 C --
@@ -1180,7 +1194,6 @@ C
         WRITE(CMON,1300) ROTDIL(2,2)
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
-        WRITE (NCAWU,'(A)') CMON(1)
 1300    FORMAT(1X, 'One group is almost colinear - sigma(Y**2) = '
      1  ,F12.8)
         ROTDIL(2,2)=SIGN( SQRT(1.-ROTDIL(2,1)*ROTDIL(2,1)-
@@ -1191,7 +1204,6 @@ C
         WRITE(CMON,1200) ROTDIL(3,3)
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
-        WRITE (NCAWU,'(A)') CMON(1)
 1200    FORMAT(1X, 'One group is almost coplanar - sigma(Z**2) = '
      1  ,F12.8)
         ROTDIL(3,3)= SQRT(1.-ROTDIL(3,1)*ROTDIL(3,1)-
@@ -1445,7 +1457,6 @@ C -- ERROR
         WRITE(CMON,9510) NNEW
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
-        WRITE (NCAWU,'(A)') CMON(1)
 9510  FORMAT ( ' Too many new atom positions have been given -',I5 )
       CALL XERHND(4)
       RETURN
@@ -1524,6 +1535,15 @@ C -- SUBROUTINE TO READ ATOM SPECIFICATIONS
 C -- ICODE    1    OLD ATOM SPECIFICATIONS ARE TO BE READ
 C             2    NEW ATOM SPECIFICATIONS ARE TO BE READ
 C --
+C LRENM,MDRENM will contain the old atoms (MAP) followed by the
+C new atoms (ONTO). In this routine, the type and serial are set.
+C Form is:  0  TYPE  of old (ONTO) atom       NB. These aren't paired 
+C           1  SERIAL of old (ONTO) atom          yet. Just two lists
+C           2  TYPE of new (MAP) atom             held in the same 
+C           3  SERIAL of new (MAP) atom.          vector.
+C           4  L5 address of OLD, overwritten later if using for RENAME
+C           5  L5 address of NEW, overwritten later if using for RENAME
+C
       DIMENSION UNIT(3,3)
 \ISTORE
 \STORE
@@ -1538,30 +1558,21 @@ C --
 \XIOBUF
 CDJWapr2001
       MRENM = LRENM
-C -- SET UNIT MATRIX
-      CALL XUNTM3 (UNIT(1,1))
-C -- ALLOCATE WORK SPACE TO TEMPORARILY HOLD ATOMS
-      LATMP=KSTALL(MD5)
-C -- SAVE L5
-      L5SAVE=L5
-C -- SET ADDRESS FOR TEMPORARY STORAGE OF OLD ATOMS TO ZERO
-      IADR=0
+      CALL XUNTM3 (UNIT(1,1)) !SET UNIT MATRIX
+      LATMP=KSTALL(MD5)       !ALLOCATE WORK SPACE TO TEMPORARILY HOLD ATOMS
+      L5SAVE=L5               !SAVE L5
+      IADR=0     !SET ADDRESS FOR TEMPORARY STORAGE OF OLD ATOMS TO ZERO
+
 1500  CONTINUE
-C -- CHECK FOR END OF CARD OR '*'
-      IF ( KOP(4).LE.0) GO TO 9000
-C -- SET L5 TO ZERO TO INHIBIT SEARCHES OF LIST 5
-      L5=0
-C -- READ THE NEXT ITEM OF DATA AS AN UNTIL SEQUENCE
-      I=KATOMU(LN)
-C -- CHECK FOR ERRORS IN ATOM SPECIFICATIONS
-      IF (I) 9000,9800,3100
-3100  CONTINUE
-C -- SPECIFICATION IS OK
-C -- RESTORE L5
-      L5=L5SAVE
+      IF ( KOP(4).LE.0) GO TO 9000             !CHECK FOR END OF CARD OR '*'
+      L5=0                  !SET L5 TO ZERO TO INHIBIT SEARCHES OF LIST 5
+      I=KATOMU(LN)          !READ THE NEXT ITEM OF DATA AS AN UNTIL SEQUENCE
+      IF (I) 9000,9800,3100 !CHECK FOR ERRORS IN ATOM SPECIFICATIONS
+
+3100  CONTINUE                                !SPECIFICATION IS OK
+      L5=L5SAVE                               !RESTORE L5
 C -- SET ADDRESSES OF ATOM HEADERS
-C -- FIRST ATOM HEADER IS AT MQ
-      IHEADA=MQ
+      IHEADA=MQ                               !FIRST ATOM HEADER IS AT MQ
 C -- ASSUME NO UNTIL SEQUENCE, THEN SECOND ATOM HEADER IS THE SAME
 C    AS FIRST
       IHEADB=IHEADA
@@ -1576,16 +1587,14 @@ C -- SET POINTERS TO LIST 5
 C -- SEARCH FOR FIRST AND SECOND ATOMS IN LIST 5
       IA=KATOMF(STORE(IHEADA+2),MLST5A,NLST5A,MD5,0)
       IB=KATOMF(STORE(IHEADB+2),MLST5B,NLST5B,MD5,0)
-C -- CALCULATE NUMBER OF ATOMS IN SEQUENCE
-      NATOMA=NLST5A-NLST5B+1
-C -- BRANCH ON PRESENCE OF ATOMS IN LIST 5
-      IF (IA) 3500,3700,3450
+      NATOMA=NLST5A-NLST5B+1          !CALCULATE NUMBER OF ATOMS IN SEQUENCE
+      IF (IA) 3500,3700,3450          !BRANCH ON PRESENCE OF ATOMS IN LIST 5
+
 3450  CONTINUE
       CALL XERHND(7)
-3500  CONTINUE
-C -- FIRST ATOM NOT IN LIST 5
-C -- IF WE ARE NOT CONSIDERING OLD ATOMS THEN ERROR
-      IF (ICODE.NE.1) GO TO 9820
+
+3500  CONTINUE                           !FIRST ATOM NOT IN LIST 5
+      IF (ICODE.NE.1) GO TO 9820         !ERROR IF NOT CONSIDERING OLD ATOMS
 C -- IF SECOND ATOM IS IN LIST 5 THEN ERROR-MIXED SEQUENCES OF
 C    ABSENT AND PRESENT ATOMS ARE NOT ALLOWED
       IF (IB) 3520,9810,3510
@@ -1596,28 +1605,25 @@ C -- IF TYPES OF FIRST AND SECOND ATOM ARE DIFFERENT THEN ERROR
       IF (ABS(STORE(IHEADA+2)-STORE(IHEADB+2)) .GT. 0.01 ) GO TO 9830
 C -- CALCULATE NUMBER OF ATOMS TO BE CREATED
       NATOMA=NINT(STORE(IHEADB+3))-NINT(STORE(IHEADA+3))+1
-C -- ERROR IF THIS NUMBER IS ZERO OR LESS
-      IF (NATOMA .LE. 0) GO TO 9840
+      IF (NATOMA .LE. 0) GO TO 9840    !ERROR IF THIS NUMBER IS ZERO OR LESS
 C -- CREATE ATOM NAME DETAILS
-C -- RELEASE PREVIOUS WORK SPACE
-      CALL XSTRLL(IADR)
-C -- GET NEW SPACE
-      IADR=KSTALL(NATOMA*2)
+      CALL XSTRLL(IADR)                    !RELEASE PREVIOUS WORK SPACE
+      IADR=KSTALL(NATOMA*2)                !GET NEW SPACE
 CDJWMAY2001
       CALL XZEROF (STORE(IADR), 2*NATOMA)
       SERIAL=STORE(IHEADA+3)
       DO 3530 I=1,NATOMA
-      INDEXF=IADR+(I-1)*2
-      STORE(INDEXF)=STORE(IHEADA+2)
-      STORE(INDEXF+1)=SERIAL
-      SERIAL=SERIAL+1.
+         INDEXF=IADR+(I-1)*2
+         STORE(INDEXF)=STORE(IHEADA+2)
+         STORE(INDEXF+1)=SERIAL
+         SERIAL=SERIAL+1.
 3530  CONTINUE
 C -- SET DETAILS FOR CREATION OF ATOMS
       IADATM=IADR
       INCR=2
       WEIGHT=0.
-C -- CREATE ATOMS
-      GO TO 4000
+      GO TO 4000                           !CREATE ATOMS
+
 3700  CONTINUE
 C -- FIRST ATOM FOUND IN LIST 5
 C -- IF SECOND NOT FOUND THEN ERROR
@@ -1630,71 +1636,71 @@ C -- SET ADDRESSES
       IADATM=MLST5A
       INCR=MD5
       WEIGHT=1.
-C -- CREATE ATOMS
-4000  CONTINUE
+4000  CONTINUE                              !CREATE ATOMS
 C -- ATOM CREATION
-C -- CHECK FOR ONE OR MORE ATOMS
-      IF (NATOMA .LE. 0) GO TO 9840
+      IF (NATOMA .LE. 0) GO TO 9840         !CHECK FOR ONE OR MORE ATOMS
+
       DO 4900 I=1,NATOMA
-C -- APPLY SYMMETRY
-C    FIRST CHECK IF A VALID HEADER IS AVAILIBLE
-      IF (NINT(WEIGHT)) 4030,4030,4020
-4020  CONTINUE
-C -- APPLY SYMMETRY
-      J=KATOMS(IHEADA,IADATM,LATMP)
-      IF (J) 9870,4030,4030
-4030  CONTINUE
-C -- BRANCH ON OLD OR NEW ATOMS
-      GO TO (4400,4600), ICODE
-      CALL XERHND(7)
-4400  CONTINUE
-C -- OLD ATOMS
-C -- INCREASE COUNT OF OLD ATOMS
-      NOLD=NOLD+1
-C -- CHECK COUNT OF OLD ATOMS
+C -- CHECK IF A VALID HEADER IS AVAILIBLE
+         IF (NINT(WEIGHT)) 4030,4030,4020
+4020     CONTINUE
+         J=KATOMS(IHEADA,IADATM,LATMP)      !APPLY SYMMETRY
+         IF (J) 9870,4030,4030
+4030     CONTINUE
+         GO TO (4400,4600), ICODE           !BRANCH ON OLD OR NEW ATOMS
+         CALL XERHND(7)
+
+
+4400     CONTINUE                           !OLD ATOMS
+         NOLD=NOLD+1                        !INCREASE COUNT OF OLD ATOMS
 CDHWAPR2001
-      IF ((NATMD.NE.0) .AND. (NOLD.GT.NATMD)) GO TO 9850
+C -- CHECK COUNT OF OLD ATOMS
+         IF ((NATMD.NE.0) .AND. (NOLD.GT.NATMD)) GO TO 9850
 C -- CALCULATE DESTINATIONS FOR THIS ATOM
-      INDATM=LATMD+(NOLD-1)*MDATMD
-      INDOLD=LOLD+(NOLD-1)*MDOLD
+         INDATM=LATMD+(NOLD-1)*MDATMD
+         INDOLD=LOLD+(NOLD-1)*MDOLD
 C -- CHECK IF AN ATOM WITH THIS SERIAL AND TYPE IS ALREADY IN THE LIST
 C    IF NO ATOMS HAVE BEEN GIVEN BEFORE, SKIP THIS CHECK TO AVOID THE
 C    CONSEQUENCES (I.E. FINDING ATOMS BELONGING TO PREVIOUS GROUP)
-      IF (NOLD.LE.1) GO TO 4420
-      MLST5=LATMD
-      MDLST5 = MDATMD
+         IF (NOLD.LE.1) GO TO 4420
+         MLST5=LATMD
+         MDLST5 = MDATMD
 C -- CHECK FOR EACH OLD ATOM SPECIFICATION GIVEN SO FAR
-      NLST5=NOLD-1
-      J=KATOMF(STORE(IADATM),MLST5,NLST5,MDLST5,0)
-      IF (J) 4420,9860,4410
-4410  CONTINUE
-      CALL XERHND(7)
-4420  CONTINUE
-C -- ATOM IS NOT IN LIST ALREADY
-C----- CLEAR THE AREA
-      CALL XZEROF(STORE(INDATM+4), MDATMD-4)
-C -- COPY SERIAL AND TYPE
-      CALL XMOVE(STORE(IADATM),STORE(INDATM),2)
+         NLST5=NOLD-1
+         J=KATOMF(STORE(IADATM),MLST5,NLST5,MDLST5,0)
+         IF (J) 4420,9860,4410
+4410     CONTINUE
+         CALL XERHND(7)
+
+4420     CONTINUE                               !ATOM IS NOT IN LIST ALREADY
+         CALL XZEROF(STORE(INDATM+4), MDATMD-4)     !CLEAR THE AREA
+         CALL XMOVE(STORE(IADATM),STORE(INDATM),2)  !COPY SERIAL AND TYPE
 CDJWAPR2001
-      CALL XMOVE(STORE(IADATM),STORE(MRENM),2)
-      MRENM = MRENM + MDRENM
+         CALL XMOVE(STORE(IADATM),STORE(MRENM),2)
+CRICJAN2003
+         ISTORE(MRENM+4) = IADATM
+         MRENM = MRENM + MDRENM
 C -- COPY COORDINATES*WEIGHT
-      CALL XMULTR(STORE(LATMP+4),WEIGHT,STORE(INDOLD),3)
-C -- SET WEIGHT
-      STORE(INDOLD+3)=WEIGHT
-      GO TO 4800
-4600  CONTINUE
+         CALL XMULTR(STORE(LATMP+4),WEIGHT,STORE(INDOLD),3)
+         STORE(INDOLD+3)=WEIGHT             !SET WEIGHT
+         GO TO 4800
+
+
+4600     CONTINUE                           !NEW ATOMS
 CDJWAPR2001
-      CALL XMOVE(STORE(IADATM),STORE(MRENM+2),2)
-      MRENM = MRENM + MDRENM
-C -- NEW ATOMS
-      CALL XRGPLA (STORE(LATMP), MDATMD, UNIT(1,1) )
-4800  CONTINUE
-C -- SET ADDRESS OF NEXT ATOM
-      IADATM=IADATM+INCR
+         CALL XMOVE(STORE(IADATM),STORE(MRENM+2),2)
+         ISTORE(MRENM+5) = IADATM
+         MRENM = MRENM + MDRENM
+         CALL XRGPLA (STORE(LATMP), MDATMD, UNIT(1,1) ) !NEW ATOMS
+
+
+4800     CONTINUE
+         IADATM=IADATM+INCR               !SET ADDRESS OF NEXT ATOM
 4900  CONTINUE
+
 C -- REPEAT OPERATION FOR ANY SUBSEQUENT ATOM SPECIFICATIONS
       GOTO 1500
+
 9000  CONTINUE
 C -- THE NEXT ARGUMENT IS A STAR OR THIS IS THE END OF THE CARD
 C    RELEASE WORK SPACE
@@ -1708,7 +1714,6 @@ C -- RESTORE LIST 5
         WRITE(CMON,9801)
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
-        WRITE (NCAWU,'(A)') CMON(1)
 9801  FORMAT (' Error -- not an valid atom specification')
       CALL XERHND(4)
       RETURN
@@ -1716,7 +1721,6 @@ C -- RESTORE LIST 5
         WRITE(CMON,9811)
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
-        WRITE (NCAWU,'(A)') CMON(1)
 9811  FORMAT (' Until specification mixes atoms in and not in list 5')
       CALL XERHND(4)
       RETURN
@@ -1728,7 +1732,6 @@ C -- RESTORE LIST 5
         WRITE(CMON,9831)
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
-        WRITE (NCAWU,'(A)') CMON(1)
 9831  FORMAT (' Atoms have different types')
       CALL XERHND(4)
       RETURN
@@ -1736,7 +1739,6 @@ C -- RESTORE LIST 5
         WRITE(CMON,9841)
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
-        WRITE (NCAWU,'(A)') CMON(1)
 9841  FORMAT (' Atoms appear to be out of sequence')
       CALL XERHND(4)
       RETURN
@@ -1744,7 +1746,6 @@ C -- RESTORE LIST 5
         WRITE(CMON,9851) NOLD
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
-        WRITE (NCAWU,'(A)') CMON(1)
 9851  FORMAT (' Too many old atoms have been given -',I6)
       CALL XERHND(4)
       RETURN
@@ -1752,7 +1753,6 @@ C -- RESTORE LIST 5
         WRITE(CMON,9861)ISTORE(IADATM),NINT(STORE(IADATM+1))
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
-        WRITE (NCAWU,'(A)') CMON(1)
 9861  FORMAT (' An atom with this type and serial already given - ',
      1 A4,I6)
       CALL XERHND(4)
@@ -1761,7 +1761,6 @@ C -- RESTORE LIST 5
         WRITE(CMON,9871)
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
-        WRITE (NCAWU,'(A)') CMON(1)
 9871  FORMAT (' Error in applying symmetry operation')
       CALL XERHND(4)
       RETURN
@@ -1791,10 +1790,12 @@ C
 C
       CHARACTER*12 PRTTYP(2)
       CHARACTER*24 PRTUNT(2)
+      CHARACTER*12 CAMATM
 C
       DIMENSION DELTA(5)
       DIMENSION SUM(4)
       DIMENSION RMSDEV(4)
+      DIMENSION JFRN(4,2)
 C
 \ISTORE
 \STORE
@@ -1806,6 +1807,7 @@ C
 \XERVAL
 \XOPVAL
 \XIOBUF
+\XLST05
 C
 \QSTORE
 C
@@ -1813,6 +1815,7 @@ C
       DATA PRTTYP(1) / 'Coordinates ' / , PRTTYP(2) / 'Deviations  ' /
       DATA PRTUNT(1) / ' ( Crystal fractions )  ' /
       DATA PRTUNT(2) / ' ( Angstrom )           ' /
+      DATA JFRN /'F', 'R', 'N', '1', 'F', 'R', 'N', '2'/
 C
 C
 C -- CHECK INPUT VALUES
@@ -1847,7 +1850,6 @@ C
 1300  CONTINUE
       WRITE ( CMON , 1305 ) PRTTYP(ICODE) , PRTUNT(2)
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(A)') CMON(1 )(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 1305  FORMAT ( 1X , A12 , 'in best plane system after fitting' , A24 )
       GO TO 1700
@@ -1881,63 +1883,120 @@ C
      2 'old(x)',2X,'old(y)',2X, 'old(z)',7X, 'new(x)',2X,
      3 'new(y)',2X,'new(z)', 8X,'d(x)',4X,'d(y)',4X,'d(z)',
      4 7X,'Distance',4X,'Angle',/)
-      WRITE ( NCAWU , 1726 )
-1726  FORMAT ( /,1X , 'Position' , 2X , 'Type  Serial' ,
-     2 4X,'d(x)',4X,'d(y)',4X,'d(z)',
-     4 7X,'Distance',4X,'Angle',/)
       GO TO 1900
 C
 1900  CONTINUE
 C
+
+c      IPUNCH = 1
+c
+c      IF ( IPUNCH .EQ. 1 ) THEN
+c        CALL XRDOPN ( 5 , JFRN(1,1) , 'cameron.ini', 11)
+c        WRITE(NCFPU1,1002)
+c1002    FORMAT('$DATA'/'CELL    1.0000    1.0000    1.0000    90.000
+c     1 90.000    90.000'/'LIST5'/'REGULAR.L5I'/'$SYMM'/'NOCEN'/'$')
+c        CALL XRDOPN ( 7 , JFRN(1,1) , 'cameron.ini', 11)
+c        CALL XRDOPN ( 5 , JFRN(1,1) , 'regular.l5i', 11)
+c        WRITE(NCFPU1,1003)
+c1003    FORMAT('#'/'#  Written out from REGULARISE COMPARE'/'#'/
+c     1  '#LIST      5')
+c        WRITE(NCFPU1,1000)NOLD*2,0,0,0
+c1000    FORMAT(13HREAD NATOM = ,I6,11H, NLAYER = ,I4,13H, NELEMENT = ,
+c     2  I4, 11H, NBATCH = ,I4)
+c        WRITE(NCFPU1,1050) STORE(L5O),STORE(L5O+1),STORE(L5O+2),
+c     1  STORE(L5O+3),STORE(L5O+4),STORE(L5O+5)
+c1050    FORMAT(8HOVERALL ,F11.6,4(1X,F9.6),1X,F17.7)
+c        CALL XRDOPN ( 5 , JFRN(1,2) , 'regular.oby', 11)
+c        WRITE(NCFPU2,'(''DEFGROUP REG1 ATOMS'')')
+c        DO I=1,NOLD
+c         INDATM=LATMD+MDATMD*(I-1)
+c         WRITE(CAMATM,'(A,I5)')ISTORE(INDATM),NINT(STORE(INDATM+1))
+c         CALL XCRAS(CAMATM,LCAMA)
+c         WRITE(NCFPU2,'(A)')CAMATM
+c        END DO
+c        WRITE(NCFPU2,'(''DEFGROUP REG2 ATOMS'')')
+c        DO I=1,NOLD
+c         INDATM=LATMD+MDATMD*(I-1)
+c         WRITE(CAMATM,'(A,I5)')ISTORE(INDATM),1000+NINT(STORE(INDATM+1))
+c         CALL XCRAS(CAMATM,LCAMA)
+c         WRITE(NCFPU2,'(A)')CAMATM
+c        END DO
+c        WRITE(NCFPU2,'(''COLO GROUP REG1 BLUE COLO GROUP REG2 RED'')')
+c        CALL XRDOPN ( 7 , JFRN(1,2) , 'regular.oby', 11)
+c      ENDIF
+
+
       DO 2000 I=1,NOLD
-      INDOLD=LOLD+MDOLD*(I-1)
-      INDNEW=LNEW+MDNEW*(I-1)
-      INDATM=LATMD+MDATMD*(I-1)
+        INDOLD=LOLD+MDOLD*(I-1)
+        INDNEW=LNEW+MDNEW*(I-1)
+        INDATM=LATMD+MDATMD*(I-1)
+
 C -- PRINT APPROPRIATE DATA
-      IF ( ICODE .EQ. 1 ) THEN
-      IF (ISSPRT .EQ. 0) THEN
-            WRITE ( NCWU , 2005 ) I , ( STORE(J) , J =INDATM,INDATM+1),
-     2 ( STORE(J) , J=INDOLD,INDOLD+2) , ( STORE(J) ,J=INDNEW,INDNEW+2)
-      ENDIF
-2005        FORMAT ( 1X , I8 , 5X , A4 , 3X , F6.0 , 3X , 3F10.4 , 5X ,
-     2 3F10.4 )
-      ELSE IF ( ICODE .EQ. 2 ) THEN
-            IF ( ABS ( STORE(INDOLD+3) ) .LE. ZERO ) THEN
-      IF (ISSPRT .EQ. 0) THEN
-            WRITE ( NCWU , 2015 ) I , ( STORE(J) , J =INDATM,INDATM+1),
-     2 ( STORE(J) , J=INDOLD,INDOLD+2) , ( STORE(J) ,J=INDNEW,INDNEW+2)
-      ENDIF
+        IF ( ICODE .EQ. 1 ) THEN
+          IF (ISSPRT .EQ. 0) THEN
+            WRITE ( NCWU , 2005 ) I, (STORE(J),J=INDATM,INDATM+1),
+     2      (STORE(J),J=INDOLD,INDOLD+2),(STORE(J),J=INDNEW,INDNEW+2)
+          ENDIF
+2005      FORMAT ( 1X, I8, 5X, A4, 3X, F6.0, 3X, 3F10.4, 5X, 3F10.4 )
+        ELSE IF ( ICODE .EQ. 2 ) THEN
+          IF ( ABS ( STORE(INDOLD+3) ) .LE. ZERO ) THEN
+            IF (ISSPRT .EQ. 0) THEN
+               WRITE ( NCWU , 2015 ) I, (STORE(J), J=INDATM,INDATM+1),
+     2         (STORE(J),J=INDOLD,INDOLD+2),(STORE(J),J=INDNEW,INDNEW+2)
+            ENDIF
             GO TO 2020
-            ELSE
+          ELSE
             DISTSQ = 0.
             DO 2010 J = 1 , 3
-            DELTA(J) = STORE(INDNEW+J-1) - STORE(INDOLD+J-1)
-            DELTSQ = DELTA(J) ** 2
-            SUM(J) = SUM(J) + DELTSQ
-            DISTSQ = DISTSQ + DELTSQ
-            RBAR=0.5*(STORE(INDNEW+J-1)+STORE(INDOLD+J-1))
-            RADIUS=RADIUS+RBAR*RBAR
+               DELTA(J) = STORE(INDNEW+J-1) - STORE(INDOLD+J-1)
+               DELTSQ = DELTA(J) ** 2
+               SUM(J) = SUM(J) + DELTSQ
+               DISTSQ = DISTSQ + DELTSQ
+               RBAR=0.5*(STORE(INDNEW+J-1)+STORE(INDOLD+J-1))
+               RADIUS=RADIUS+RBAR*RBAR
 2010        CONTINUE
             DELTA(4) = SQRT ( DISTSQ )
             RADIUS=SQRT(RADIUS)
             DELTA(5)=RTD*ATAN2(DELTA(4),RADIUS)
-C
-      IF (ISSPRT .EQ. 0) THEN
-            WRITE ( NCWU , 2015 ) I , ( STORE(J) , J =INDATM,INDATM+1),
-     2 ( STORE(J) , J=INDOLD,INDOLD+2) , ( STORE(J) ,J=INDNEW,INDNEW+2),
-     3 DELTA
-      ENDIF
-            WRITE ( NCAWU , 2015 ) I , ( STORE(J) , J =INDATM,INDATM+1),
-     3 DELTA
+            IF (ISSPRT .EQ. 0) THEN
+               WRITE ( NCWU , 2015 ) I ,(STORE(J),J=INDATM,INDATM+1),
+     2         (STORE(J),J=INDOLD,INDOLD+2),
+     3         (STORE(J),J=INDNEW,INDNEW+2), DELTA
             ENDIF
-2015        FORMAT ( 1X,2X,I4, 4X,A4,2X, F6.0,2X, 4(3F8.3,5X))
-2020        CONTINUE
+          ENDIF
+
+c          IF ( IPUNCH .EQ. 1 ) THEN
+c            WRITE(NCFPU1,2016) (STORE(J),J=INDATM,INDATM+3),
+c     1      (STORE(J),J=INDOLD,INDOLD+2),
+c     2      (STORE(J),J=INDATM+7,INDATM+13),
+c     3      1,(ISTORE(J),J=INDATM+15,INDATM+17)
+c            WRITE(NCFPU1,2016) STORE(INDATM),STORE(INDATM+1)+1000.0,
+c     1      STORE(INDATM+2),STORE(INDATM+3),
+c     2      (STORE(J),J=INDNEW,INDNEW+2),
+c     3      (STORE(J),J=INDATM+7,INDATM+13),
+c     4      2,(ISTORE(J),J=INDATM+15,INDATM+17)
+c         END IF
+
+2015     FORMAT ( 1X,2X,I4, 4X,A4,2X, F6.0,2X, 4(3F8.3,5X))
+2016     FORMAT
+     1   ('ATOM ',A4,1X,6F11.6/
+     2    'CON U[11]=',6F11.6/
+     3    'CON SPARE=',F11.2,3I11,7X,A4)
+2020     CONTINUE
       ELSE
             GO TO 9910
       ENDIF
 C
 C
 2000  CONTINUE
+
+
+c      IF ( IPUNCH .EQ. 1 ) THEN
+cC Don't bother with element, layer scales etc. Punch End:
+c        WRITE(NCFPU1,'(''END''/''#USE LAST'')')
+c        CALL XRDOPN ( 7 , JFRN(1,1) , 'regular.l5i', 11)
+c      END IF
+
 C -- CHECK IF PRINT OF DEVIATIONS IS REQUIRED
 C
       IF ( ICODE .EQ. 2 ) THEN
@@ -1966,7 +2025,6 @@ C
      4      9X,'Distance')
             WRITE ( CMON , 2506 ) SUM , RMSDEV
             CALL XPRVDU(NCVDU, 2,0)
-            WRITE(NCAWU, '(/A)') (CMON( II)(:),II=1,2)
 2506  FORMAT (
      2 1X , 'Total squared deviations' , 3F8.3 ,
      3 1X , 'Total' , F8.3 , / ,
@@ -2051,7 +2109,6 @@ C----- COMPUTE GAMMA*
       IF (TEMP .LE. ZERO) THEN
           WRITE ( CMON, 2052)
           CALL XPRVDU(NCVDU, 1,0)
-          WRITE(NCAWU, 2052)
           IF (ISSPRT .EQ. 0) WRITE(NCWU,2052)
 2052  FORMAT( ' Angles not correctly specified on SYSTEM card')
           GOTO 2060
@@ -2086,7 +2143,6 @@ C --
         WRITE(CMON,9810)
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
-        WRITE (NCAWU,'(A)') CMON(1)
 9810  FORMAT ( ' Method number is not in allowed range ')
 9900  CONTINUE
 C -- SET DEFAULT METHOD NUMBER
@@ -2094,7 +2150,6 @@ C -- SET DEFAULT METHOD NUMBER
         WRITE(CMON,9910)
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
-        WRITE (NCAWU,'(A)') CMON(1)
 9910  FORMAT (' Method set to default value')
       RETURN
       END
@@ -2127,7 +2182,16 @@ CODE FOR XRGRNM
 C 
 C -- RENAME THE 'OLD' 'TARGET' 'ONTO' ATOMS BASED ON THE
 C    MAMES OF THE 'NEW' 'IDEAL' 'MAP' ATOMS
-C 
+C
+C   LNEW, start of new or map atoms:  MDNEW = 4: X Y Z W
+C   LOLD, start of old or onto atoms: MDOLD = 4: X Y Z W
+C   LRENM, start of rename list: 0 onto type
+C                                1 onto serial
+C                                2 map type
+C                                3 map serial
+C                                4 renamed type
+C                                5 renamed serial
+C
 C 
 \ISTORE
 \STORE
@@ -2143,7 +2207,6 @@ C
 \QSTORE
       WRITE(CMON,'(A,f6.1)') 'Offset = ', zorig
       CALL XPRVDU(NCVDU,1,0)
-      WRITE(NCAWU, '(A)') CMON(1)(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
       IF(SUMDEV .GE. 0.1)THEN
        NUMDEV =NUMDEV +1
@@ -2151,40 +2214,50 @@ C
        CALL OUTCOL(9)
        CALL XPRVDU(NCVDU,1,0)
        CALL OUTCOL(1)
-       WRITE(NCAWU, '(A)') CMON(1)(:)
        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
       ENDIF
 
       WRITE(CMON,'(1X,A,7X,A,8X,A,6X,A)')
      1 'Mapping','onto','giving', 'distance'
       IF(SUMDEV .GE. 0.1) CALL XPRVDU(NCVDU,1,0)
-      WRITE(NCAWU, '(A)') CMON(1)(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
 C 
       IF (NOLD.LE.0) GO TO 200
+
+C Could do better here:
+C * Don't match same atom twice (use an N5 vector to store
+C   ones that are already matched.
+C * Give extra weight to matches of the same type of atom,
+C   say a factor of 5 (may not be available.)
+C * Optionally only match atoms with matching SPARE values (though
+C   I think this info is lost by now.)
+C We might be able to store an L5 pointer in LOLD and LATMD, or -1
+C if they come from a SYSTEM / HEXAGON type directive.
       DO 150 I=1,NOLD
          INDOLD=LOLD+MDOLD*(I-1)
          INDATM=LATMD+MDATMD*(I-1)
          DISMIN=1000000.
          INDDIS=1
-         DO 100 J=1,NOLD
-            INDNEW=LNEW+MDNEW*(J-1)
-            DISTSQ=0.
-            DO 50 K=1,3
-               DELTA=STORE(INDNEW+K-1)-STORE(INDOLD+K-1)
-               DELTSQ=DELTA**2
-               DISTSQ=DISTSQ+DELTSQ
-50          CONTINUE
-            IF (DISTSQ.LT.DISMIN) THEN
-               DISMIN=DISTSQ
-               INDDIS=J
-            END IF
-100      CONTINUE
+         DO J=1,NOLD
+           INDNEW=LNEW+MDNEW*(J-1)
+           DISTSQ=0.
+C Only consider atom if it has not been matched already:
+           IF ( STORE(LRENM+(J-1)*MDRENM+3) .NE. 0.0 ) THEN
+             DO K=1,3
+                DELTA=STORE(INDNEW+K-1)-STORE(INDOLD+K-1)
+                DELTSQ=DELTA**2
+                DISTSQ=DISTSQ+DELTSQ
+             END DO
+             IF (DISTSQ.LT.DISMIN) THEN
+                DISMIN=DISTSQ
+                INDDIS=J
+             END IF
+           END IF
+         END DO
          J = INDDIS
          STORE(LRENM+(I-1)*MDRENM+4) = STORE(LRENM+(J-1)*MDRENM+2)
-         STORE(LRENM+(I-1)*MDRENM+5) = 
-     1   STORE(LRENM+(J-1)*MDRENM+3)+ZORIG
-c
+         STORE(LRENM+(I-1)*MDRENM+5) = STORE(LRENM+(J-1)*MDRENM+3)+ZORIG
+
         WRITE(CMON,
      1 '( A4,F6.1,3X,A4,F6.1,3X,A4,F6.1,3X,F7.4)')
      1   STORE(LRENM+(J-1)*MDRENM+2),STORE(LRENM+(J-1)*MDRENM+3),
@@ -2192,12 +2265,133 @@ c
      3   STORE(LRENM+(I-1)*MDRENM+4),STORE(LRENM+(I-1)*MDRENM+5),
      4   DISMIN
          IF(SUMDEV .GE. 0.1) CALL XPRVDU(NCVDU,1,0)
-         WRITE(NCAWU, '(A)') CMON(1)(:)
          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+C Indicate atom not to be matched again:
+         STORE(LRENM+(J-1)*MDRENM+3) = 0.0 
 150   CONTINUE
 C 
       RETURN
 C 
+200   CONTINUE
+      CALL XOPMSG (IOPREG,IOPINT,0)
+      RETURN
+      END
+
+CODE FOR XRGCAM
+      SUBROUTINE XRGCAM
+C 
+C -- RENAME THE 'OLD' 'TARGET' 'ONTO' ATOMS BASED ON THE
+C    MAMES OF THE 'NEW' 'IDEAL' 'MAP' ATOMS
+C
+C   LNEW, start of new or map atoms:  MDNEW = 4: X Y Z W
+C   LOLD, start of old or onto atoms: MDOLD = 4: X Y Z W
+C   LRENM, start of rename list: 0 onto type
+C                                1 onto serial
+C                                2 map type
+C                                3 map serial
+C                                4 renamed type
+C                                5 renamed serial
+C
+C 
+\ISTORE
+\STORE
+\XUNITS
+\XSSVAL
+\XRGCOM
+\XRGLST
+\XCONST
+\XERVAL
+\XOPVAL
+\XIOBUF
+\XLST05
+      CHARACTER*12 CAMATM
+      DIMENSION JFRN(4,2)
+C 
+\QSTORE
+      DATA JFRN /'F', 'R', 'N', '1', 'F', 'R', 'N', '2'/
+
+      IF(SUMDEV .GE. 0.1)THEN
+       NUMDEV =NUMDEV +1
+       WRITE(CMON,'(A)') 'WARNING - poor initial fit' 
+       CALL OUTCOL(9)
+       CALL XPRVDU(NCVDU,1,0)
+       CALL OUTCOL(1)
+       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+      ENDIF
+
+      IF (NOLD.LE.0) GO TO 200
+
+C Write cameron.ini for orthogonal coords:
+      CALL XRDOPN ( 5 , JFRN(1,1) , 'cameron.ini', 11)
+      WRITE(NCFPU1,1002)
+1002  FORMAT('$DATA'/'CELL    1.0000    1.0000    1.0000    90.000     9
+     10.000    90.000'/'LIST5'/'REGULAR.L5I'/'$SYMM'/'NOCEN'/'$')
+      CALL XRDOPN ( 7 , JFRN(1,1) , 'cameron.ini', 11)
+
+
+C Write regular.oby - may be used in cameron to colour the two
+C overlapping molecules separately.
+      CALL XRDOPN ( 5 , JFRN(1,2) , 'regular.oby', 11)
+      WRITE(NCFPU2,'(''DEFGROUP REG1 ATOMS'')')
+      DO I=1,NOLD
+         INDATM=LATMD+MDATMD*(I-1)
+         WRITE(CAMATM,'(A,I5)')ISTORE(LRENM+(I-1)*MDRENM),
+     1                     NINT(STORE(LRENM+(I-1)*MDRENM+1))
+         CALL XCRAS(CAMATM,LCAMA)
+         WRITE(NCFPU2,'(A)')CAMATM
+      END DO
+      WRITE(NCFPU2,'(''DEFGROUP REG2 ATOMS'')')
+      DO I=1,NOLD
+         INDATM=LATMD+MDATMD*(I-1)
+         WRITE(CAMATM,'(A,I5)')ISTORE(LRENM+(I-1)*MDRENM+2),
+     1                      NINT(STORE(LRENM+(I-1)*MDRENM+3))
+         CALL XCRAS(CAMATM,LCAMA)
+         WRITE(NCFPU2,'(A)')CAMATM
+      END DO
+      WRITE(NCFPU2,'(''COLO GROUP REG1 BLUE COLO GROUP REG2 RED'')')
+      WRITE(NCFPU2,'(''VIEW''//)')
+      CALL XRDOPN ( 7 , JFRN(1,2) , 'regular.oby', 11)
+
+
+C Write header for superimposed orthogonal atom lists:
+      CALL XRDOPN ( 5 , JFRN(1,1) , 'regular.l5i', 11)
+      WRITE(NCFPU1,1003)
+1003  FORMAT('#'/'#  Written out from REGULARISE CAMERON'/'#'/
+     1           '#LIST      5')
+      WRITE(NCFPU1,1000)NOLD*2,0,0,0
+1000  FORMAT(13HREAD NATOM = ,I6,11H, NLAYER = ,I4,13H, NELEMENT = ,
+     2I4, 11H, NBATCH = ,I4)
+      WRITE(NCFPU1,1050) STORE(L5O),STORE(L5O+1),STORE(L5O+2),
+     1STORE(L5O+3),STORE(L5O+4),STORE(L5O+5)
+1050  FORMAT(8HOVERALL ,F11.6,4(1X,F9.6),1X,F17.7)
+
+
+      DO I=1,NOLD
+         INDOLD=LOLD+MDOLD*(I-1)
+         INDNEW=LNEW+MDNEW*(I-1)
+         JOLD=ISTORE(LRENM+MDRENM*(I-1)+4)
+         JNEW=ISTORE(LRENM+MDRENM*(I-1)+5)
+         WRITE(NCFPU1,2016) (STORE(J),J=JOLD,JOLD+3),
+     1      (STORE(J),J=INDOLD,INDOLD+2),
+     2      (STORE(J),J=JOLD+7,JOLD+13),
+     3      1,(ISTORE(J),J=JOLD+15,JOLD+17)
+         WRITE(NCFPU1,2016) (STORE(J),J=JNEW,JNEW+3),
+     1      (STORE(J),J=INDNEW,INDNEW+2),
+     2      (STORE(J),J=JNEW+7,JNEW+13),
+     3      2,(ISTORE(J),J=JNEW+15,JNEW+17)
+      END DO
+
+2016     FORMAT
+     1   ('ATOM ',A4,1X,6F11.6/
+     2    'CON U[11]=',6F11.6/
+     3    'CON SPARE=',F11.2,3I11,7X,A4)
+
+C Don't bother with element, layer scales etc. Punch End:
+      WRITE(NCFPU1,'(''END''/''#USE LAST'')')
+      CALL XRDOPN ( 7 , JFRN(1,1) , 'regular.l5i', 11)
+
+      RETURN
+ 
 200   CONTINUE
       CALL XOPMSG (IOPREG,IOPINT,0)
       RETURN
