@@ -23,7 +23,7 @@
 %  END IF
 % END BLOCK
 %%
-{S * Clearing restraints, constraints and refinement directives.
+{S * Clearing old restraints, constraints and refinement directives.
 % BLOCK
 %  COPY '#CLEAR 12'
 %  COPY 'END'
@@ -40,7 +40,7 @@
 % END BLOCK
 %%
 %%
-{S * Synchronising refinement coefficient in L30 with that in L23.
+%%{S * Synchronising refinement coefficient in L30 with that in L23.
 % BLOCK
 %  VARIABLE INTEGER FOLD
 %  EVALUATE FOLD = 1
@@ -61,12 +61,12 @@
 % END BLOCK
 %%
 %%
-{S * Reset weighting scheme to unit weights.
+%%{S * Reset weighting scheme to unit weights.
 % COPY '#LIST 4'
 % COPY 'END'
 %%
 %%
-{S * Reset known facts for "The Guide"
+%%{S * Reset known facts for "The Guide"
 % BLOCK
 %  VARIABLE LOGICAL HMASK EMASK WMASK PMASK
 %  VARIABLE LOGICAL HDONE EDONE WDONE PDONE
