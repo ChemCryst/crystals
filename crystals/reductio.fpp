@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2003/02/14 17:09:02  djw
+C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
+C recine have the parameter ityp06, which corresponds to the types
+C pickedip for lists 6 and 7  from the command file
+C
 C Revision 1.15  2002/03/12 18:03:13  ckp2
 C Fix bug in absences output.
 C
@@ -796,8 +801,8 @@ C--PRINT THE CAPTIONS
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1500)
       ENDIF
-1500  FORMAT(4X,'H',3X,'K',3X,'L',2X,'F-squared',4X,'Sigma2',4X,
-     2 'Sigma1',8X,'F-squared',5X,'Sigma',5X,'Delta',3X,'E-param',4X,
+1500  FORMAT(4X,'H',3X,'K',3X,'L',2X,'F-squared',4X,'rmsdev',4X,
+     2 '<sigma>',7X,'F-squared',5X,'Sigma',5X,'Delta',3X,'E-param',4X,
      3 'Weight',3X,'JCODE',4X,'Serial'/)
 C
 C--CHECK IF THERE ARE ANY REFLECTIONS
@@ -1235,6 +1240,24 @@ C
 C  -1  REFLECTION HAS BEEN REJECTED/
 C   0  REFLECTION IS READY TO OUTPUT.
 C
+C--WORK5 = FO
+C--WORK9 = SIGMA
+C--WORK3 = SIGMA W* /FO/ **2
+C--WORK4 = SIGMA W
+C--WORK8 = WEIGHTED VARIANCE
+C--WORK7 = DELTA
+C--WORK6 = SIGMA W*DEL.SQ
+C--WORK8 = SIGMA W*VAR
+C--WORK25 =21= SIGMA /DELTA/
+C--WORK26 = 22 = SIGMA AVERAGE
+C--WORK27 = 23 = SIGMA W AV SQ
+C--WORK29 IS MINIMUM JCODE
+C--WORK28 = 24 = SIGMA W DELTA SQ
+C--WORK28 = 24 = SIGMA W DELTA SQ
+C--WORK28=WORK(28)+WORK(6)
+C--WEIGHTED AVERAGE
+C--WORK9=WEIGHTED AVERAGE=WORK(6)/WORK(4)
+C--WORK10=WEIGHTED AVERAGE=WORK(8)/WORK(4)
 C--
 \ISTORE
 C
@@ -1262,6 +1285,8 @@ C--CHECK FOR ONLY ONE REFLECTION
 C--ONLY ONE CONTRIBUTOR
 1000  CONTINUE
       JFO=IFO+IREF
+C--WORK(5) = FO
+C--WORK(9) = SIGMA
       WORK(5)=STORE(JFO)
       WORK(9)=AMAX1(0.01,STORE(IREF+12))
       WORK(10)=WORK(9)
