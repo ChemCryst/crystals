@@ -9,6 +9,16 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.59  2003/03/26 10:21:56  rich
+// Removed use of \windows\wincrys.ini and \wincrys\script\winsizes.ini
+// as places to store and retrieve application information. All information is
+// now stored in the registry. This will help people on NT and XP who have
+// no admin privileges.
+//
+// CAREFUL: Crystals should still work without registry info, provided that
+// CRYSDIR and USECRYSDIR environment variables are set (they should be already),
+// but look out for problems.
+//
 // Revision 1.58  2003/03/12 17:59:48  rich
 // Fix to yesterday's mods to SAFESET, it wasn't pulling new tokens from the queue, so
 // was looping infinitely in some situations.
@@ -1114,6 +1124,15 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
                               SetInputPlace(theElement);
                 else
                               LOGWARN( "CcController:ParseInput:RedirectInput couldn't find object with name '" + inputWindow + "'");
+                break;
+            }
+            case kTGetRegValue:
+            {
+                tokenList->GetToken();
+                CcString key = tokenList->GetToken();
+                CcString name = tokenList->GetToken();
+                CcString val = GetRegKey( key, name );
+                SendCommand(val);
                 break;
             }
             case kTGetKeyValue:
@@ -2312,6 +2331,49 @@ CcString CcController::GetKey( CcString key )
 #endif
   return value;
 
+}
+
+CcString CcController::GetRegKey( CcString key, CcString name )
+{
+
+// Fetch any key from the registry. It first looks in HKCU/key for name,
+// if not found, then it falls back to HKLM/key. The return value is
+// empty if the key isn't found.
+
+ CcString data;
+
+ HKEY hkey;
+ DWORD dwtype, dwsize;
+
+ int result = RegOpenKeyEx( HKEY_CURRENT_USER, key.ToCString(),
+                              0, KEY_READ, &hkey );
+                              
+ if ( result == ERROR_SUCCESS )
+ {
+    dwtype=REG_SZ;
+    dwsize = 1024; // NB limits max key size to 1K of text.
+    char buf [ 1024];
+    result = RegQueryValueEx( hkey, name.ToCString(), 0, &dwtype, (PBYTE)buf,&dwsize);
+    if ( result == ERROR_SUCCESS ) data = CcString(buf);
+    RegCloseKey(hkey);
+ }
+
+ if ( result != ERROR_SUCCESS )
+ {
+    result = RegOpenKeyEx( HKEY_LOCAL_MACHINE, key.ToCString(),
+                              0, KEY_READ, &hkey );
+                              
+    if ( result == ERROR_SUCCESS )
+    {
+       dwtype=REG_SZ;
+       dwsize = 1024; // NB limits max key size to 1K of text.
+       char buf [ 1024];
+       result = RegQueryValueEx( hkey, name.ToCString(), 0, &dwtype, (PBYTE)buf,&dwsize);
+       if ( result == ERROR_SUCCESS ) data = CcString(buf);
+       RegCloseKey(hkey);
+    }
+ }
+ return data;
 }
 
 void CcController::AddHistory( CcString theText )

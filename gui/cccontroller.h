@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 15:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.29  2003/02/25 15:34:29  rich
+//   For lines passed up from CRYSTALS (^^lines), allow "" and !!
+//   and <> to be delimiter pairs aswell as the trad ''.
+//
 //   Revision 1.28  2003/01/16 11:44:14  rich
 //   New "SAFESET [ objectname instructions ]" syntax introduced. If objectname
 //   doesn't exist, it ignores all the tokens between the square brackets, without
@@ -186,6 +190,7 @@ class   CcController
 
     void StoreKey( CcString key, CcString value );
     CcString GetKey( CcString key );
+    CcString GetRegKey( CcString key, CcString name );
 
 
     void OpenFileDialog(CcString* filename, CcString extensionFilter, CcString extensionDescription, Boolean titleOnly);
@@ -307,6 +312,7 @@ extern "C" {
 #define kSRenameObject     "RENAME"
 #define kSGetValue     "GETVALUE"
 #define kSTitleOnly    "TITLEONLY"
+#define kSGetRegValue      "GETREG"
 #define kSGetKeyValue      "GETKEY"
 #define kSSetKeyValue      "SETKEY"
 
@@ -349,7 +355,8 @@ enum
  kTFontSet,
  kTSafeSet,
  kTOpenGroup,
- kTCloseGroup
+ kTCloseGroup,
+ kTGetRegValue
 };
 
 
