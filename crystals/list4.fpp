@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.47  2003/06/09 13:44:50  rich
+C Preserve list4 auxilliary info (robust, dunitz etc.) on converting from scheme
+C 17 to 16, by not writing over all the existing values with zeroes.
+C
 C Revision 1.46  2003/03/05 16:53:18  rich
 C Removed dynamic arrays from weighting routine. There is no way all reflections
 C can be held in memory for large structures. Stack overflows.
@@ -276,7 +280,6 @@ C
 
         IULN=4                             ! SET THE LIST 4 TYPE
         ITYPEO = ITYPE4                    ! STORE ORIGINAL TYPE
-
         JTYPE=ICON41                 ! FIND THE TYPE OF THIS WEIGHTING SCHEME
 
         IF (JTYPE .EQ. 3) THEN     ! Auto Fo or FoSqrd set JTYPE automatically.
@@ -339,7 +342,6 @@ C--FSQ REFINEMENT CHECK IF WE MUST USE 1/2FO, OR /FO/SQ
           IF ( IERFLG .LT. 0 ) GO TO 9900
           A=STORE(L5O)                     ! GET THE SCALE FACTOR
         END IF
-
 C--CHECK IF LIST 6 EXISTS
         IF (KEXIST(IULN06) .LE. 0) GOTO 9990
 
@@ -554,7 +556,6 @@ C--WRITE THE NEW LIST OUT TO DISC
           ADW=0.    ! SET THE MAXIMUM CHEBYSHEV WEIGHT AS ZERO INITIALLY
           H=0.      !SET THE CHEBYSHEV MINIMISATION FUNCTION AS ZERO INITIALLY
           IF ( MD4 .LE. 1 ) GO TO 9910 !NEED AT LEAST TWO COEFFICIENTS
-
 C--CHECK IF WE CALCULATING OR JUST APPLYING CHEBYSHEV WEIGHTS
           IF ((ITYPE4 .EQ. 11).OR.(ITYPE4 .EQ. 15)) THEN ! APPLY WEIGHTS - SET UP LIST 6
             CALL XFAL06(IULN06, 1)
@@ -606,7 +607,6 @@ C--ASSIGN A FEW POINTERS
           ENDIF
           IF (IFTYPE .NE. 0)      E = LOG(E)  ! FC FITTING AGAINST LOG(FC)
           E=1.0/E  ! SET UP THE CORRECT DIVISOR
-
           IF ((ITYPE4 .EQ. 11).OR.(ITYPE4 .EQ. 15)) GOTO 5100  ! APPLY WEIGHTS
           CS = STORE(L4F)  ! SET UP THE WEIGHTING PARAMETER
           EW=(1.0/E)**CS
@@ -889,10 +889,9 @@ cdjw99              H=H+F*F*EW/(1.+FO**CS)
             AW = WMXINV
           ENDIF
           AW = 1. / AW                      !GET ACTUAL WEIGHT
-
           IF (ITYPE4 .EQ. 15)  THEN         !TUKEY-PRINCE SCHEME (SCHEME 15)
             CALL XMODWT (FSQ, AWI, WWT, JPRINT, jtype, 36.0) !APPLY WEIGHT MODIFIERS
-            IF (WWT .LT. XVALUE) THEN        !WRITE TO OUTLIER BUFFER
+            IF (WWT .LE. XVALUE) THEN        !WRITE TO OUTLIER BUFFER
               CALL XMOVE(STORE(M6), STORE(LTEMPE), 3)  !H,K,L,FO,FC,WWT
               STORE(LTEMPE+3) = FO
               STORE(LTEMPE+4) = FC
@@ -944,20 +943,25 @@ C -- Convert weight back onto scale of FO:
 
         END SELECT
 c
-
-
 C--APPLY ROBUST-RESISTANT TO ANY WEIGHTING SCHEME (except 15!)
         IF ((IROBUS .EQ. 1) .AND. (ITYPE4.NE.15)) THEN
            FSQ = (FO-FC)**2
-           IF (AW .LE. ZERO) THEN         !WEIGHT TOO SMALL
-             AWI = WMX                    !SET INV W TO WMX.
-           ELSE
-             AWI = 1./AW                  !GET ACTUAL INVERSE
-           ENDIF
-
+Cdjwjun03.  For Scheme 15, it is assumed that the computed
+c      weight is a better estimate of 1/signa than the onservation
+c      itself.  For other schemes, try to use observed sigma.
+c           IF (AW .LE. ZERO) THEN         !WEIGHT TOO SMALL
+c             AWI = WMX                    !SET INV W TO WMX.
+c           ELSE
+c             AWI = 1./AW                  !GET ACTUAL INVERSE
+c           ENDIF
+            if (store(m6+12) .gt. zero) then
+                  awi = store(m6+12)
+            else
+                  awi = 1.
+            endif
+c
            CALL XMODWT (FSQ, AWI, WWT, JPRINT, jtype, ROBTOL**2)
-
-           IF (WWT .LT. XVALUE) THEN       ! WRITE TO OUTLIER BUFFER
+           IF (WWT .LE. XVALUE) THEN       ! WRITE TO OUTLIER BUFFER
               CALL XMOVE(STORE(M6), STORE(LTEMPE), 3) ! H,K,L,FO,FC,WWT
               STORE(LTEMPE+3) = FO
               STORE(LTEMPE+4) = FC
@@ -1006,6 +1010,7 @@ C--APPLY DUNITZ-SEILER TO ANY WEIGHTING SCHEME (except 13!)
         ENDIF
 
         AW = AW * WWT   ! Modify for robust-resistantness.
+        wwt = 1.        ! Reset for next time
 
         IF (AW .GT. WMX) THEN   ! CHECK IF TOO LARGE
           AW  = WMX
@@ -1029,7 +1034,6 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C                                                                       C
 
 5150    CONTINUE  ! TIDY UP AND END
-
         IF (( ITYPE4 .EQ. 10 ) .OR. ( ITYPE4 .EQ. 14 ) ) GOTO 9975
         IF ( ITYPE4 .GT. 17 ) GOTO 9930
 
@@ -1073,7 +1077,6 @@ C-- RESTORE 'E' (AS F!)
           ISTORE(L4C)=ITYPE4 ! SET THE NEW WEIGHTING SCHEME TYPE
 \IDIM04
           CALL XWLSTD(IULN,ICOM04,IDIM04,-1,-1) ! WRITE NEW LIST OUT TO DISC
-
 C--PRINT THE PLOT OF PREDICTED W*DELTA**2 AGAINST /FO/
           CALL XPRTCN
           CALL XLINES
@@ -1194,8 +1197,11 @@ C--PRINT THE LINE FOR THIS /FO/
 
 C--FORM LIST 36 AND OUTPUT IT
 5560  CONTINUE
+cdjwjun03 SAVE THE OLDVALUE OF ITYPE4
+      ISAVE4 = ITYPE4
       CALL XCELST(36,ICOM04,4)
       CALL XWLSTD(36,ICOM04,4,-1,0)
+      ITYPE4 = ISAVE4
 C--PRINT THE FINAL CAPTION
 C----- WARN USER IF ANY WEIGHTS ARE NEGATIVE
 c----- write the buffers
@@ -1221,12 +1227,14 @@ C--For SCHEME 15 print outliers etc.
 6111      FORMAT (2('   h   k   l      Fo       Fc     N    '))
           CALL XPRVDU(NCVDU, 1,0)
           DO MENAN = LENAN, LENAN+(NENAN-1)*MDENAN, 2*MDENAN
-             IF (STORE(MENAN+13) .GT. ZERO) CYCLE
+             IF (STORE(MENAN+5) .lt. 100000000) then
+             IF (STORE(MENAN+12) .GE. 1000000) STORE(MENAN+12)=0.0
              WRITE ( CMON,'(3I4, 2F9.1, F7.2, 2X,3I4, 2F9.1, F7.2 )')
      1         ( (NINT(STORE(IXAP)), IXAP=JXAP, JXAP+2),
      2         (STORE(IXAP), IXAP= JXAP+3,JXAP+5),
      3         JXAP= MENAN, MENAN+MDENAN, MDENAN)
              CALL XPRVDU(NCVDU, 1,0)
+             endif
           END DO
       ENDIF
 
