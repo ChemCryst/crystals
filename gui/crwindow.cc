@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.26  2003/01/15 14:06:29  rich
+//   Some fail-safe code in the GUI. In the event of a creation of a window failing don't
+//   allow the rest of the windows to be corrupted.
+//
 //   Revision 1.25  2001/06/17 14:51:29  richard
 //   New stayopen property for windows.
 //
@@ -64,6 +68,7 @@ CrWindow::CrWindow( )
     m_relativeWinPtr = nil;
     mSafeClose=0;
     m_Keep = false;
+    m_Large = false;
     m_Shown = false;
     m_AddedToDisableAbleWindowList = false;
     wEnableFlags = 0;
@@ -227,6 +232,12 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
                     m_Keep = true;
                     break;
                 }
+                case kTLarge:
+                {
+                    tokenList->GetToken();
+                    m_Large = true;
+                    break;
+                }
                 case kTStayOpen:
                 {
                     tokenList->GetToken(); // Remove that token!
@@ -307,6 +318,7 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
         }
         case kTShowWindow:
         {
+            CcRect newPosn;
             tokenList->GetToken();
 
 // Never re-show the main window - it looks messy, and can easily happen
@@ -342,7 +354,6 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
                 CcRect winRect(m_relativeWinPtr->GetGeometry());
                 CcRect workRect((CcController::theController)->GetScreenArea());
                 CcRect thisRect(GetGeometry());
-                CcRect newPosn;
                 switch (m_relativePosition)
                 {
                     case kTRightOf:
@@ -445,6 +456,7 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
                                                                   newPosn.Right() );
             }
 
+            bool keep_no_info = true;
 
             if ( m_Keep )
             {
@@ -455,13 +467,50 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
                    oldSize = CcRect( cgeom );
 
                 if (( oldSize.Height() > 10) && ( oldSize.Width() > 10 ))
+                {
                    ((CxWindow*)ptr_to_cxObject)->SetGeometry(oldSize.mTop,
                                                              oldSize.mLeft,
                                                              oldSize.mBottom,
                                                              oldSize.mRight );
+                   keep_no_info = false;
+                }
 // NB Direct call to the CxWindow::SetGeometry, avoids the AdjustSize call
 // in CrWindow::SetGeometry which adds on height and width for borders and
 // menubars.
+
+            }
+
+// Only go large if there is no previous kept size in effect.
+            if ( m_Large && keep_no_info ) 
+            {
+// Make the size large - take up about 80% of the main CRYSTALS window.
+               CcRect mainSize(0,0,0,0);
+               CrGUIElement *main = (CcController::theController)->FindObject("_MAIN");
+               if ( main )
+               {
+                  mainSize = main->GetGeometry();
+
+                  if ( newPosn.Width() < (int)(0.8 * mainSize.Width()) )
+                  {
+                    mainSize.mLeft  += (int)(mainSize.Width() * 0.1);
+                    mainSize.mRight -= (int)(mainSize.Width() * 0.1);
+                  }
+                  if ( newPosn.Height() < (int)(0.8 * mainSize.Height()) )
+                  {
+                    mainSize.mTop    += (int)(mainSize.Height() * 0.1);
+                    mainSize.mBottom -= (int)(mainSize.Height() * 0.1);
+                  }
+
+                  
+                  if (( mainSize.Height() > 10) && ( mainSize.Width() > 10 ))
+                   ((CxWindow*)ptr_to_cxObject)->SetGeometry(mainSize.mTop,
+                                                             mainSize.mLeft,
+                                                             mainSize.mBottom,
+                                                             mainSize.mRight );
+// NB Direct call to the CxWindow::SetGeometry, avoids the AdjustSize call
+// in CrWindow::SetGeometry which adds on height and width for borders and
+// menubars.
+               }
 
             }
 

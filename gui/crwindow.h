@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.16  2003/01/15 14:06:29  rich
+//   Some fail-safe code in the GUI. In the event of a creation of a window failing don't
+//   allow the rest of the windows to be corrupted.
+//
 //   Revision 1.15  2001/10/10 12:44:50  ckp2
 //   The PLOT classes!
 //
@@ -91,6 +95,7 @@ class   CrWindow : public CrGUIElement
     int mSafeClose;
     int m_relativePosition;
     Boolean m_Keep;
+    Boolean m_Large;
     Boolean m_Shown;
     Boolean mIsSizeable;
     Boolean mIsModal;
@@ -130,6 +135,7 @@ private:
 #define kSCascade   "CASCADE"
 #define kSCentred   "CENTRED"
 #define kSKeep      "KEEP"
+#define kSLarge      "LARGE"
 #define kSStayOpen  "STAYOPEN"
 
 enum
@@ -151,6 +157,7 @@ enum
  kTCascade,
  kTCentred,
  kTKeep,
+ kTLarge,
  kTStayOpen,
  kTCreatePlotData
 };
