@@ -473,7 +473,7 @@
 %%
 %% Put crystallographic occupancy into 'SPARE' (offset 13)
 %%
-%             COPY '#SPEC TEST PARAMETER'
+%             COPY '#SPEC TEST PARAMETER .01'
 %             COPY 'END'
 %%
 %             ON EDITERROR TERMINATE
