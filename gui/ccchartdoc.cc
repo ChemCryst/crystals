@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.11  2002/04/30 20:13:43  richard
+// Get font size right and dependent on window/canvas size.
+//
 // Revision 1.10  2002/03/16 18:08:22  richard
 // Removed old CrGraph class (now obsolete given Steven's work).
 // Removed remains of "quickdata" interface (now obsolete, replaced by FASTPOLY etc.)
@@ -54,6 +57,10 @@ CcChartDoc::CcChartDoc( )
     attachedChart = nil;
     mSelfInitialised = false;
         (CcController::theController)->mChartList.AddItem(this);
+    current_r = -1;
+    current_g = -1;
+    current_b = -1;
+
 }
 
 CcChartDoc::~CcChartDoc()
@@ -336,6 +343,10 @@ void CcChartDoc::DrawView()
 
         attachedChart->Display();
     }
+    current_r = -1;
+    current_g = -1;
+    current_b = -1;
+
 }
 
 void CcChartDoc::ReadDirections(CcTokenList* tokenList,Boolean * north, Boolean * south, Boolean * east, Boolean * west)
@@ -438,6 +449,10 @@ void CcChartDoc::FastColour( int r, int g, int b )
             return;
       }
 
+      current_r = r;
+      current_g = g;
+      current_b = b;
+
       CcChartColour* item = new CcChartColour(r,g,b);
       mCommandList->AddItem(item);
 }
@@ -452,6 +467,12 @@ void CcChartDoc::Clear()
             delete theItem;
             theItem = (CcChartObject *)mCommandList->GetItem();
       }
+
+
+      current_r = -1;
+      current_g = -1;
+      current_b = -1;
+
 //Don't actually clear yet -- reduce flickering + not supposed to call GUI functions
 //from the crystals thread. (which we may be in right now...)
 //      if(attachedChart)
