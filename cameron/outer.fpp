@@ -699,18 +699,18 @@ CODE FOR ZCONTR
 \CAMBLK
 \XIOBUF
 \CAMIMN
-
+C
 CC THIS ACTS UPON THE VALUE OF IMENCN
 CC = 0 keyboard input
 CC = 1 first time menu input
 CC = 2 further menu input
-
-
+C
+C
 10    CONTINUE
 C CHECK FOR CRYSTALS ENTRY
       IF (ICAMER.EQ.-1) RETURN
-
-
+C
+C
 C Get a command from the right place (user or obey file)
       IF(IFOBEY.EQ.-1) THEN
             CALL ZINCH(LLINE(ILINE))
@@ -719,14 +719,15 @@ C   Read the line from the file
             READ (IFOBEY,'(A)',END=9999) LLINE(ILINE)
 C            CALL ZMORE(LLINE(ILINE),0)
       ENDIF
-
-C      CALL ZMORE(LLINE(ILINE),0)
-
+C
+C
+      CALL ZMORE(LLINE(ILINE),0)
+C
       IF (LINPMN) THEN
 C Initialising menus, pass line to ZMNINI
             CALL ZMNLOD
       ELSE
-
+C
 C Normal use, interpret the line
             CALL ZOBEY
             IF(IFOBEY.EQ.-1) THEN
@@ -741,14 +742,14 @@ C    Clear the input box.
                   IF(.NOT.LCLOSE)CALL ZMNINP
             ENDIF
       ENDIF
-
-
-
+C
+C
+C
 C Initialise the menus (read in data)
       IF (IMENCN.EQ.1) CALL ZMNINI
-
+C
       IF (IFOBEY.NE.-1) GOTO 10 !Reading from file. Don't return.
-
+C
       RETURN
 9999  CONTINUE
 C END OF OBEY FILE
@@ -759,12 +760,11 @@ C END OF OBEY FILE
         IFOBEY = -1
       ENDIF
       RETURN
-
       END
- 
- 
- 
- 
+C 
+C 
+C 
+C 
 CODE FOR ZINIT
       SUBROUTINE ZINIT
 C This routine initialises the variables to their starting values.
