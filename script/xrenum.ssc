@@ -186,8 +186,6 @@
 %       TRANSFER 'Skipping to serial ' // CHARACTER ( INEXTS ) TO DISPLAY
 %       STORE INTEGER ( INEXTS - 10 * N5 )
 %       INSERT ' '
-%       SEND
-%       INSERT 'CONTINUE '
 %      END IF
 %      STORE CHARACTER CATOM
 %      TRANSFER '^^CO SET MODEL01 DISABLEATOM ' // CATOM // ' YES' TO DISPLAY
