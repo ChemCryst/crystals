@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2003/07/01 16:43:34  rich
+C Change IOR intrinsics to OR, similarly: IAND -> AND, INOT -> NOT. The "I"
+C prefix is for INTEGER*2 (16 bit) types only, so could overflow when fed
+C data from CRYSTALS' store. The unprefixed versions take any type and return
+C the same type.
+C
 C Revision 1.5  2003/06/27 11:53:39  rich
 C
 C Set appropriate bit flags in L5's REF key depending on the types of
@@ -586,7 +592,9 @@ C Check types match.
      1         INMD(MIN(4,MOD(NGROUP,10))),'fragments',
      1         'have different element types: ',CATOM1(1:LATOM1),
      1         ' and ', CATOM2(1:LATOM2)
+              call outcol(9)
               CALL XPRVDU(NCVDU,2,0)
+              call outcol(1)
               GOTO 5850
             END IF
           END IF
