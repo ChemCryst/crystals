@@ -3,8 +3,7 @@
  For getting started, reporting bugs etc. see the CRYSTALS Wiki
  {&http://www.xtl.ox.ac.uk/wiki.html{& or check the manuals
  {&"crysdir:manual/primer-1.html"{& and FAQs {&"crysdir:manual/faq-1.html"{&
- Send problems or feedback to {&mailto:richard.cooper@chem.ox.ac.uk{& or
- {&mailto:david.watkin@chem.ox.ac.uk{&.
+ Send problems or feedback to {&mailto:david.watkin@chem.ox.ac.uk{&.
  ===================================================================
 % IF ( EXISTS  5 .NE. 1 ) THEN
 %% Make the model disappear in case we are restarting in a new directory.

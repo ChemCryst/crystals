@@ -887,9 +887,9 @@ sub htmlfooter {
 
 <DIV id="headfoot"><P>
 &copy; Copyright Chemical Crystallography Laboratory, Oxford, 2002<BR>
-Comments or queries to Richard Cooper -
-<A class="footer" HREF="mailto:richard.cooper\@chem.ox.ac.uk">
-richard.cooper\@chem.ox.ac.uk</A> Telephone +44 1865 270835<br>
+Comments or queries to David Watkin -
+<A class="footer" HREF="mailto:david.watkin\@chem.ox.ac.uk">
+david.watkin\@chem.ox.ac.uk</A> Telephone +44 1865 285019<br>
 
 <small>The manuals were re-generated on $date.</small>
 </p>

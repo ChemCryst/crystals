@@ -3,9 +3,9 @@
 ;
 ;Adjust the program names and version here as appropriate:
 ;
-AppVerName=CRYSTALS 12.80 (Jan 2005)
-AppVersion=12.80
-OutputBaseFilename=crystals-b1280-jan05-setup
+AppVerName=CRYSTALS 12.81 (Feb 2005)
+AppVersion=12.81
+OutputBaseFilename=crystals-b1281-feb05-setup
 
 AppName=CRYSTALS
 OutputDir=..\installer
@@ -40,8 +40,8 @@ Name: {app}\user\Script
 Name: {app}\demo
 
 [Files]                                                     
-Source: ..\build\*.*; DestDir: {app}\;                      
-Source: ..\build\script\*.*; DestDir: {app}\script\;        
+Source: ..\build\*.*; DestDir: {app}\; Excludes: "make*,buildfile.bat,code.bat";
+Source: ..\build\script\*.*; DestDir: {app}\script\;
 Source: ..\build\mce\*.*; DestDir: {app}\mce\;              
 Source: ..\build\manual\*.*; DestDir: {app}\manual\;
 Source: ..\build\demo\*; DestDir: {app}\demo\; Flags: recursesubdirs;

@@ -11,7 +11,7 @@ It is essential that problems and bugs are reported:
         http://www.xtl.ox.ac.uk/bug.html
  
 If you have any problems installing or using it then please
-drop me an email - richard.cooper@chem.ox.ac.uk
+drop an email to - david.watkin@chem.ox.ac.uk
 
 We appreciate feedback, good and bad, which can greatly
 enhance the development of the program, though we cannot
