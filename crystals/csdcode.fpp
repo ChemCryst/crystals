@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2000/09/20 12:21:56  ckp2
+C No more debugging output. Ignore H atoms.
+C
 C Revision 1.10  2000/07/11 11:04:03  ckp2
 C Extra argument to KFLOPN, for specifying SEQUENTIAL or DIRECT access
 C
@@ -419,6 +422,10 @@ C Write a quest input file to generate bond data.
             CALL MTRNLG(CFILEN,'UNKNOWN',ILENG)
             IF (KFLOPN (NCFPU1,CFILEN(1:ILENG),ISSCIF,ISSWRI,1,ISSSEQ)
      1        .LE. -1) GOTO 9920
+C Need this line for THOMAS.EXE to run on the PC, but it's my personal
+C serial number, so it's no good for release.
+c            WRITE(NCFPU1,'(A)')
+c     1              'COMM <0570-f173-00d1-f4d2 beb4-9530-f083-2635>'
             WRITE(NCFPU1,'(A)')'T1 *CONN'
             WRITE(NCFPU1,'(A)')'ELDEF Q= AA'
             WRITE(NCFPU1,'(A,A2,I4,A)')
