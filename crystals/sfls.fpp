@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.36  2004/10/01 08:25:39  rich
+C Fixed syntax errors (AlOl).
+C
 C Revision 1.35  2004/09/30 15:52:57  rich
 C Uh-oh. SFLS reorganised quite a lot.
 C
@@ -1930,16 +1933,19 @@ C----- ENATIOMER SENSITIVE REFLECTIONS
      2    ' Rt = 100x abs(F+ - F-)/<F+,F-> ')
           WRITE ( CMON, 6110) IENPRT
           CALL XPRVDU(NCVDU, 1,0)
+          IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') CMON(1)(:)
           WRITE(CMON,6111)
 6111      FORMAT
      1    (2('   h   k   l    F+     Fo     F-     Rt  '))
           CALL XPRVDU(NCVDU, 1,0)
+          IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') CMON(1)(:)
           DO MENAN = LENAN, LENAN+(NENAN-1)*MDENAN, 2*MDENAN
           WRITE ( CMON,'(3I4, 3F7.2, F6.2,2X,3I4, 3F7.2, F6.2)')
      1     ( (NINT(STORE(IXAP)), IXAP=JXAP, JXAP+2),
      2     (STORE(IXAP), IXAP= JXAP+3,JXAP+5), STORE(JXAP+6),
      3     JXAP= MENAN, MENAN+MDENAN, MDENAN)
           CALL XPRVDU(NCVDU, 1,0)
+          IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') CMON(1)(:)
           END DO
       ENDIF
 
@@ -1976,8 +1982,11 @@ C Only print disagreeable reflections during calc.
       IF( SFLS_TYPE .EQ. SFLS_CALC ) THEN
         WRITE (CMON ,'(/'' Target GOF ='',F6.2)') SQRT(AMINF/FLOAT(NT))
         CALL XPRVDU(NCVDU, 2,0)
+        IF(ISSPRT.EQ.0) WRITE(NCWU, '(//)')
+        IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') CMON(2)(:)
         WRITE ( CMON ,11)
         CALL XPRVDU(NCVDU, 1,0)
+        IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') CMON(1)(:)
 11      FORMAT(2('   h   k  l     Fo      Fc   GOF Fo/Fc','  '))
         DO MSORT = LSORT, LSORT+(NSORT-1)*MDSORT, 2*MDSORT
           WRITE ( CMON ,
