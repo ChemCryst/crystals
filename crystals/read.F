@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  1999/06/22 12:51:00  dosuser
+C RIC: Added some more informative text for the status bar. It now
+C distinguishes between waiting for commands, directives or script input.
+C
 C Revision 1.9  1999/06/03 17:23:42  dosuser
 C RIC: Added Linux Graphical Interface support.
 C
@@ -2374,7 +2378,8 @@ C
       PARAMETER ( JNUMER = 1 , JCHAR = 2 )
 C
 cdjwmay99
-      PARAMETER ( LADR = 1, NADR = 68)
+cRICjul99
+      PARAMETER ( LADR = 1, NADR = 69)
       DIMENSION ITRADR(NADR) , ITRAD2(NADR) , ITRLEN(NADR)
       CHARACTER*4 CADDR(NADR)
 C
@@ -2392,7 +2397,8 @@ C----- ICDDIM = 2 * NWK, IN COMMON BLOCK XLEXCH
       PARAMETER ( NDVLEN = 6  , NDVNAM = 384 )
 C----- NUMBER OF VARIABLES AND CHARACTERS IN COMMON /XSSCHR/
 cdjwmay99one more parameter length 64
-      PARAMETER (NSSLEN = 13, NSSCHR = 640 )
+cRICjul99and another length 64
+      PARAMETER (NSSLEN = 14, NSSCHR = 704 )
 C
 C
       DIMENSION ISSBLK(ISSDIM)
@@ -2480,9 +2486,10 @@ C----- UFIL   48 - 49
 C----- DEVI   50 - 55
      9 'HLPD', 'HLPE', 'INDD', 'INDE', 'SCPD', 'SCPE',
 cdjwmay99
-C----- CSYS   56 - 68
+cRICjul99
+C----- CSYS   56 - 69
      1 'MACH', 'OPER', 'DATE', 'PROG', 'CMND', 'NEWD', 'CSRT', 'DSRT',
-     2 'SCAT', 'ELEM', 'TT', 'LP', 'CIF' /
+     2 'SCAT', 'ELEM', 'TT', 'LP', 'CIF', 'MAP' /
 C
 C
       DATA ITRADR /
@@ -2502,7 +2509,9 @@ C----- DEVI   50 - 55
      * 1, 65, 129, 193, 257, 321,
 C----- CSYS   56 - 67
 cdjwmay99 change 448 to 449, add 577
-     * 1,   17,  33,  49,  65,  129, 193, 257, 321, 385, 449, 513, 577 /
+cRICjul99 add 641.
+     * 1,   17,  33,  49,  65,  129, 193, 257, 321, 385, 449, 513,
+     * 577, 641 /
 C
 C
       DATA ITRAD2 /
@@ -2519,8 +2528,9 @@ C----- UFIL   48 - 49
 C----- DEVI   50 - 55
      * 1, 2, 3, 4, 5, 6,
 cdjwmay99
-C----- CSYS   56 - 67
-     * 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 /
+cRICjul99
+C----- CSYS   56 - 69
+     * 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 /
 C
 C
       DATA ITRLEN /
@@ -2537,8 +2547,9 @@ C----- UFIL   48 - 49
 C----- DEVI   50 - 55
      * 64, 64, 64, 64, 64, 64,
 cdjwmay99
-C----- CSYS   56 - 68
-     * 16, 16, 16, 16, 64, 64, 64, 64, 64, 64, 64, 64, 64 /
+cRICjul99
+C----- CSYS   56 - 69
+     * 16, 16, 16, 16, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64 /
 C
 C
 C -- IDENTIFY BLOCK NAME
