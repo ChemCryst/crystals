@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.37  2004/10/11 10:37:10  djw
+C Output enantiomer & high GOF info to listinf file
+C
 C Revision 1.36  2004/10/01 08:25:39  rich
 C Fixed syntax errors (AlOl).
 C
@@ -187,6 +190,8 @@ C----- V 810 INCLUDES THE SPECIAL SHAPES
       DATA JFRN /'F', 'R', 'N', '1',
      1           'F', 'R', 'N', '2'/
       DATA IVERSN /811/
+      INTEGER PARAM_LIST_MAKE
+
 C----- ACCEPT -VE FLACK PARAMETER
 C----- USES DIFABS CORRECTION TO FC
 C----- THE CODE HAS BEEN REORGANISED SO THAT FOR NONTWINNED REFINEMENT
@@ -635,7 +640,6 @@ cdjw0302 - allow twin with extparam:  NA=-1
 
         CALL XFAL12(LJS,JQ,JR,JN)  ! LOAD LIST 12
         IF ( IERFLG .LT. 0 ) GO TO 9900
-
         ISO_ONLY = .TRUE. ! SET THE INITIAL DETAILS FOR LINKING LISTS 12 AND 5
         IF(KSET52(0,0).GE.0)THEN    ! LINK LIST 12 AND LIST 5
           IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -644,7 +648,6 @@ cdjw0302 - allow twin with extparam:  NA=-1
         IF ( IERFLG .LT. 0 ) GO TO 9900
 
         IF ( N12 .LE. 0 ) GO TO 9920  ! CHECK THERE ARE PARAMETERS TO REFINE
-
         JO=JR       ! SET UP THE STACK FOR THE COMPLETE PARTIAL DERIVATIVES
         JP=JO+N12-1
 
@@ -655,6 +658,19 @@ cdjw0302 - allow twin with extparam:  NA=-1
           IF(NEWLHS) THEN           ! SET UP A NEW MATRIX   MATRIX=NEW (default)
             CALL XSET11(-1,1,1)
             IF ( IERFLG .LT. 0 ) GO TO 9900
+            if (ISTORE(L33CD+13) .EQ. 0) then ! See if sparse is set to bond
+               if (n12b .gt. 1) then ! if there is more than 1 block
+                  write (cmon, 2350) 
+ 2350             format ('Sparse set to bond does not work',
+     1             'with multipule blocks of data')
+                  call XERHND(IERERR)
+                  goto 9900
+               endif
+               iresults = nfl
+               i = KCHNFL(N11)
+               NRESULTS = param_list_make(istore(IRESULTS), n11, JR, 
+     1              JQ)
+            END IF
           ELSE                       ! WE ONLY NEED THE R.H.S. MATRIX=OLD (Old LHS will be loaded later)
             CALL XSET11(0,0,1)
             IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -664,7 +680,7 @@ cdjw0302 - allow twin with extparam:  NA=-1
             END DO
           END IF
         END IF
-
+        
 C--CHECK THAT THERE IS ROOM TO OUTPUT THE MATRIX
         CALL XCL11(11)
 CC--INITIALISE THE MATRIX ACCUMULATION ROUTINES
@@ -767,7 +783,10 @@ C--CHECK IF WE SHOULD DUMP ANY OTHER GOODIES
             END IF
           END IF
         END IF
-        CALL XSFLSC ( STORE(JO), JP-JO+1 ) ! CALL THE CALCULATION LINK
+        call cpu_time(time_begin)
+        CALL XSFLSC ( STORE(JO), JP-JO+1, istore(iresults), nresults) ! CALL THE CALCULATION LINK
+        call cpu_time(time_end)
+        print *, (time_end - time_begin)
       ENDIF
 
       IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -980,8 +999,9 @@ C -- NOTHING TO REFINE
       END
 C
 CODE FOR XSFLSC
-      SUBROUTINE XSFLSC ( DERIVS, NDERIV )
+      SUBROUTINE XSFLSC ( DERIVS, NDERIV, IRESULTS, NRESULTS)
       DIMENSION DERIVS(NDERIV)
+      DIMENSION IRESULTS(NRESULTS)
 C--MAIN STRUCTURE FACTOR CALCULATION ROUTINE
 C
 C--USEAGE OF CONTROL VARIABLES :
@@ -1817,9 +1837,18 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
           IF(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
  
             IF (ISTORE(L33CD+12).EQ.0) THEN    ! Just a normal accumulation.
-               CALL XADLHS( STORE(JO), JP-JO+1, STR11(L11), N11,
-     1                      STORE(L12B), N12B*MD12B, MD12B )
-            ELSE                   ! No accumulation, compute leverages, Pii.
+               if (ISTORE(L33CD+13).EQ.0) THEN
+                  CALL PARM_PAIRS_XLHS(STORE(JO), JP-J0+1, STR11(L11), 
+     1             N11, istore(l12b+1), iresults, nresults)
+               else
+                  CALL XADLHS( STORE(JO), JP-JO+1, STR11(L11), N11,
+     1                 STORE(L12B), N12B*MD12B, MD12B )
+               end if
+            ELSE                    ! No accumulation, compute leverages, Pii.
+               if (ISTORE(L33CD+13).EQ.0) THEN
+                  write(CMON,
+     1                 'SPARSE IS NOT USED FOR LEVERAGE')
+               end if
                Pii = PDOLEV( ISTORE(L12B),MD12B*N12B,MD12B,
      1                    STR11(L11),N11,  STORE(JO),JP-JO+1,
      2                    ISTORE(L33CD+12), TIX, RED)
@@ -2669,7 +2698,6 @@ C  AP     A PART FOR EACH SYMMETRY POSITION FOR EACH ATOM
 C  BP     B PART FOR EACH SYMMETRY POSITION FOR EACH ATOM
 C  BT     TOTAL B PART FOR EACH ATOM
 C  AT     TOTAL A PART FOR EACH ATOM
-
 
 C--
 \ISTORE
