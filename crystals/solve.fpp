@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2001/02/26 10:29:07  richard
+C Added changelog to top of file
+C
 C
 CODE FOR XSFLSE
       SUBROUTINE XSFLSE
@@ -1532,7 +1535,7 @@ C----- SAVE SOME WORK SPACE
 C
 C----- CHECK AND RESET SOME OVERALL PARAMETERS
 C----- ENANTIOPOLE
-      STORE(L5O+4) = MAX (STORE(L5O+4), 0.0)
+CDJWJUN01      STORE(L5O+4) = MAX (STORE(L5O+4), 0.0)
 C----- EXTINCTION
       STORE(L5O+5) = MAX (STORE(L5O+5), -ZERO)
 C----- ELEMENT SCALES
