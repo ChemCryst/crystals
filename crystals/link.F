@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  1999/10/06 14:30:59  ckp2
+C djw pdates to SIR97 difficult jobs
+C
 C Revision 1.17  1999/10/01 12:30:49  ckp2
 C djw  patch to fix 'difficult' SIR92 files
 C
@@ -941,14 +944,6 @@ cdjw1999
       WRITE(NCFPU1,1945)
 1945  FORMAT( 8X,'reflection follow',/,
      1 8X, 'format (3i4, f10.3, f7.2)')
-       IF (ILINK .EQ. 6) THEN
-            CARROW = '>'
-       ELSE
-            CARROW = ' '
-       ENDIF
-       IF (IEFORT .EQ. 1) THEN
-      WRITE(NCFPU1,1941) CARROW,CARROW,CARROW,CARROW,
-     1 CARROW,CARROW,CARROW
 1941  FORMAT('>  rhomax 0.33'/
      1 A,'%normal'/
      2 A,'  pseudo'/
@@ -959,13 +954,20 @@ cdjw1999
      7 A,'  random'/
      8 A,'%fourier'/
      9   '>  recycle  n')
+            CARROW = '>'
+       IF (ILINK .EQ. 6) THEN
+       IF (IEFORT .EQ. 1) THEN
+      WRITE(NCFPU1,1941) CARROW,CARROW,CARROW,CARROW,
+     1 CARROW,CARROW,CARROW
       ELSE IF (IEFORT .EQ. 2) then 
        WRITE(NCFPU1, 1941) ' ', ' ',' ',
-     1 ' ',' ',' ',CARROW
+     1 ' ',' ',' ',' '
       ENDIF
-      If (ilink . eq. 7) then
+       ELSE IF (ILINK .EQ. 7) THEN
+       WRITE(NCFPU1, 1941) ' ', CARROW,' ',
+     1 ' ',' ',carrow,' '
           write(ncfpu1,'(''%menu''/''  crystals sir97.cry'')')
-      endif
+       endif
       WRITE(NCFPU1, '(''%continue'')' )
 C
       SCALE = 1.0
