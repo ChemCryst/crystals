@@ -8,6 +8,13 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 15:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.32  2003/05/12 11:13:20  rich
+//
+//   RIC: Introduce a "batch" mode which can be set as an attribute of the main CRYSTALS
+//   window. This prevents modal error messages if CRYSTALS fails, the program
+//   just shuts down with a non-zero exit code. This is used for the
+//   overnight rebuilds on galena.xtl.
+//
 //   Revision 1.31  2003/05/07 12:18:56  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -239,9 +246,9 @@ class   CcController
     CrGUIElement *  mTextWindow;
     CrGUIElement *  mProgressWindow;
     CcString m_newdir;
-    Boolean m_restart;
-    Boolean m_Wait;
-    Boolean m_BatchMode;
+    bool m_restart;
+    bool m_Wait;
+    bool m_BatchMode;
     int m_ExitCode;
     CcList  mChartList;
 

@@ -17,6 +17,12 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.24  2003/05/07 12:18:56  rich
+//
+// RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+// using only free compilers and libraries. Hurrah, but it isn't very stable
+// yet (CRYSTALS, not the compilers...)
+//
 // Revision 1.23  2002/10/02 13:42:00  rich
 // Support for more info from GUIBIT (e.g. UEQUIV).
 // Ability to act as a source of data for either a MODELWINDOW
@@ -647,7 +653,16 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 
       int nRes = (int) ( 1250.0 / mAtomList->ListSize() );
       nRes = min ( 15, nRes );
-      nRes = max ( 4,  nRes );
+      nRes = max ( 5,  nRes );
+
+    glEnable(GL_POINT_SMOOTH);
+    glEnable(GL_LINE_SMOOTH);
+    glEnable(GL_POLYGON_SMOOTH);
+    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+
+
       int qRes = (int) ( 500.0 / mAtomList->ListSize() );
       qRes = min ( 5, qRes );
       qRes = max ( 3,  qRes );
@@ -665,6 +680,15 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
         {
            glDeleteLists(ATOMLIST,1);
            glNewList( ATOMLIST, GL_COMPILE);
+
+    glEnable(GL_POINT_SMOOTH);
+    glEnable(GL_LINE_SMOOTH);
+    glEnable(GL_POLYGON_SMOOTH);
+    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+
+
         }
         {
           GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
@@ -815,6 +839,13 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 //High res normal bonds:
            glDeleteLists(BONDLIST,1);
            glNewList( BONDLIST, GL_COMPILE);
+    glEnable(GL_POINT_SMOOTH);
+    glEnable(GL_LINE_SMOOTH);
+    glEnable(GL_POLYGON_SMOOTH);
+    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+
         }
         {
           GLfloat Diffuse[] = { 0.2f,0.2f,0.2f,1.0f };
@@ -872,6 +903,8 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
            glEndList();
         }
       }
+
+/*
       else
       {
 //Low res (non-excluded) atoms
@@ -1055,6 +1088,7 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
            glEndList();
         }
       }
+*/
 
       m_glIDsok = true;
       return true;

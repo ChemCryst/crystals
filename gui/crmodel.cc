@@ -6,6 +6,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.28  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.27  2002/10/02 13:43:17  rich
 //   New ModList class added.
 //
@@ -446,9 +452,18 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
       case kTShading:
       {
         tokenList->GetToken();
-        bool shading = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-        tokenList->GetToken(); // Remove that token!
-        if ( ptr_to_cxObject ) ((CxModel*) ptr_to_cxObject)->SetShading( shading );
+        CcString theString;
+        theString = tokenList->GetToken();
+        float amb = ((float)atoi( theString.ToCString())) / 256.0f;
+        theString = tokenList->GetToken();
+        float dif = ((float)atoi( theString.ToCString())) / 256.0f ;
+        theString = tokenList->GetToken();
+        float spec = ((float)atoi( theString.ToCString())) / 256.0f ;
+        theString = tokenList->GetToken();
+        float exp = ((float)atoi( theString.ToCString())) / 256.0f   ;
+        theString = tokenList->GetToken();
+        float cut = ((float)atoi( theString.ToCString())) / 256.0f    ;
+        if ( ptr_to_cxObject ) ((CxModel*) ptr_to_cxObject)->SetShading( amb, dif, spec, exp, cut );
         else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
         break;
       }
@@ -649,7 +664,8 @@ int CrModel::GetSelectionAction()
 bool CrModel::RenderModel(bool detailed, bool feedback)
 {
 //    TEXTOUT ( "RenderModel" );
-    m_style.high_res = detailed;
+//    m_style.high_res = detailed;
+    m_style.high_res = true;
     if(m_ModelDoc) return m_ModelDoc->RenderModel(&m_style,feedback);
     return false;
 }

@@ -7,6 +7,12 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.31  2003/05/07 12:18:58  rich
+//
+//  RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//  using only free compilers and libraries. Hurrah, but it isn't very stable
+//  yet (CRYSTALS, not the compilers...)
+//
 //  Revision 1.30  2003/01/14 10:27:19  rich
 //  Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
 //
@@ -221,17 +227,24 @@ class CxModel : public BASEMODEL
 
     CcPoint m_ptLDown;       //  Last mouse position when rotating
     CcPoint m_ptMMove;       //  Last mouse position
+    bool m_RZoom;       //  Set if drag with right click, no menu then appears.
 
     CcList m_selectionPoints;
     CcRect m_selectRect;
     CcPoint m_movingPoint;
+
+    float m_fAmbient;
+    float m_fDiffuse;
+    float m_fSpecular;
+    float m_fSpotExp;
+    float m_fSpotCut;
 
     int m_mouseMode;
 
     void SetDrawStyle( int drawStyle );
     void SetAutoSize( bool size )  ;
     void SetHover( bool hover )    ;
-    void SetShading( bool shade )  ;
+    void SetShading( float amb, float dif, float spec, float exp, float cut );
 
     void SelectTool( int toolType );
 
@@ -249,12 +262,11 @@ class CxModel : public BASEMODEL
     int m_DrawStyle;         // Rendering style
     bool m_Autosize;      // Resize when rotating?
     bool m_Hover;         // Highlight atoms on hover?
-    bool m_Shading;       // Use fancy shading?
     bool m_bNeedReScale;
     bool m_bModelChanged;
     bool m_bOkToDraw;
     bool m_bFullListOk;
-    bool m_bQuickListOk;
+//    bool m_bQuickListOk;
     float m_stretchX ;
     float m_stretchY ;
     bool  m_bitmapok;
