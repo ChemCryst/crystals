@@ -35,7 +35,7 @@
  * };
  */
 
-
+//#include "stdafx.h"
 #include "Exceptions.h"
 #include <String>
 #include <errno.h>
@@ -92,7 +92,7 @@ MyException& MyException::operator=(const MyException& pException)
     return *this;
 }
 
-FileException::FileException(int pFileError):MyException::MyException(kFileException, "")
+FileException::FileException(int pFileError):MyException(kFileException, "")
 {
     switch (pFileError)
     {
@@ -104,8 +104,10 @@ FileException::FileException(int pFileError):MyException::MyException(kFileExcep
             break;
         case EACCES: setString("The required permissions (for reading and/or writing) are denied for the given flags.");
              break;
+#if !defined(_WIN32)
         case ELOOP: setString("Too many symbolic links were encountered in translating the pathname.");
              break;
+#endif
         case EISDIR: setString("The named file is a directory, and the arguments specify it is to be opened for writing.");
             break;
         case EROFS: setString("The named file resides on a read-only file system, and the file is to be modified.");
@@ -116,24 +118,35 @@ FileException::FileException(int pFileError):MyException::MyException(kFileExcep
              break;
         case EINTR: setString("The open() operation was interrupted by a signal.");
             break;
-        case ENOSPC: setString("O_CREAT is specified, the file does not exist, and the directory in which the entry for the new file is being placed cannot be extended because there is no space left on the file system containing the directory.");
-             break;        
+#if !defined(_WIN32)
+		case ENOSPC: setString("O_CREAT is specified, the file does not exist, and the directory in which the entry for the new file is being placed cannot be extended because there is no space left on the file system containing the directory.");
+             break; 
         case EDQUOT: setString("O_CREAT is specified, the file does not exist, and the directory in which the entry for the new file is being placed cannot be extended because the user's quota of disk blocks on the file system containing the directory has been exhausted.");
              break;
+#endif
         case EIO: setString("An I/O error occurred while making the directory entry or allocating the inode for O_CREAT.");
              break;
+#if !defined(_WIN32)
         case ETXTBSY: setString("The file is a pure procedure (shared text) file that is being executed and the open() call requests write access.");
              break;
         case EFAULT: setString("Path points outside the process's allocated address space.");
              break;
+#endif
         case EEXIST: setString("O_CREAT and O_EXCL were specified and the file exists.");
              break;
+#if !defined(_WIN32)
         case EOPNOTSUPP: setString("An attempt was made to open a socket (not currently implemented).");
         break;
+#endif
         default:	//If the error number isn't known then do this.
             char tString[255];
             
             sprintf(tString, "Unknown error: %d.", pFileError);
             setString(tString);
     }
+}
+
+std::ostream& operator<<(std::ostream& pStream, MyException& pExc)
+{
+	return pStream << "Here ";
 }

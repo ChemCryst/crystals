@@ -34,7 +34,7 @@
  * 	function name	
  * };
  */
-
+//#include "stdafx.h"
 #include "HKLData.h"
 #include "Collections.h"
 #include <stdio.h>
@@ -61,7 +61,7 @@ public:
     
 bool containsOnly(char* pString, char* pChars)
 {
-    int tStringLength = strlen(pString);
+    int tStringLength = (int)strlen(pString);
     bool tValid = true;
     
     for (int i = 0; i < tStringLength && tValid; i++)
@@ -167,7 +167,7 @@ typedef struct __CenteringType
     //Need to add	//The total intensity/sigma of the reflections
 }CenteringType;
 
-ostream& operator<<(ostream& pStream, CenteringType& pInfo)
+std::ostream& operator<<(std::ostream& pStream, CenteringType& pInfo)
 {
     return pStream << "N: " << pInfo.iTotalNumber << " N(Int<3*sigma): " << pInfo.iIntSigma << " Mean Int: " << pInfo.iIntTotal << "\n";
 }

@@ -38,10 +38,14 @@
 //#if defined(_WIN32)
 //#include "stdafx.h"
 //#endif
+#if defined(_WIN32)
+#include <direct.h>
+#endif
 
 #include <iostream>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "HKLData.h"
 #include "Exceptions.h"
 #include "CrystalSystem.h"
@@ -49,12 +53,22 @@
 #include "UnitCell.h"
 using namespace std;
 
+#if !defined(_WIN32)
+#define _TCHAR const char
+#define TCHAR char
+#define kDefaultTables "/Tables.txt"
+#else
+#define kDefaultTables "\\Tables.txt"
+#define PATH_MAX _MAX_PATH
+#endif
+
+
 typedef struct RunStruct
 {
     char* iFileName;		//File name for the hkl data.
     char* iTablesFile;		//The file name of the tables file.
     char* iOtherInfoFile;	//The name of a file for more informtion.
-    bool iChiral;		//false is not nessaseraly chiral. false chiral
+    bool  iChiral;			//false is not nessaseraly chiral. false chiral
     char* iCrystalSys;		//Crystal System
 }RunStruct;
 
@@ -85,16 +99,24 @@ void runTest(RunStruct *pRunData)
 
 void initRunStruct(RunStruct *pRunStruct)
 {
-    pRunStruct->iTablesFile = new char[strlen("./Tables.txt"+1)];
-    strcpy(pRunStruct->iTablesFile, "./Tables.txt");
-    pRunStruct->iFileName = new char[255];
+#if defined(_WIN32)
+	char * tWorkingPath = (char*)malloc(PATH_MAX);
+	_getcwd(tWorkingPath, PATH_MAX);
+#else
+	char * tWorkingPath = NULL;
+	tWorkingPath = getcwd(NULL, PATH_MAX);
+#endif
+    pRunStruct->iTablesFile = new char[strlen(tWorkingPath)+strlen(kDefaultTables)+1];
+    sprintf(pRunStruct->iTablesFile, "%s%s", tWorkingPath, kDefaultTables);
+	free(tWorkingPath);
+    pRunStruct->iFileName = new char[PATH_MAX];
     pRunStruct->iFileName[0] = 0;
     pRunStruct->iCrystalSys = new char[20];
     pRunStruct->iCrystalSys[0] = 0;
     pRunStruct->iChiral = false;
 }
 
-bool handleArg(int *pPos, int pMax, const char * argv[], RunStruct *pRunData)
+bool handleArg(int *pPos, int pMax, _TCHAR * argv[], RunStruct *pRunData)
 {
     if (strcmp(argv[(*pPos)], "-c") == 0)
     {
@@ -144,7 +166,7 @@ bool handleArg(int *pPos, int pMax, const char * argv[], RunStruct *pRunData)
     return false;
 }
 
-bool handleArgs(int pArgc, const char * argv[], RunStruct *pRunData)
+bool handleArgs(int pArgc, _TCHAR* argv[], RunStruct *pRunData)
 {
     int tCount = 1;
     while (tCount < pArgc)
@@ -172,8 +194,28 @@ bool handleArgs(int pArgc, const char * argv[], RunStruct *pRunData)
     return true;
 }
 
-int main(int argc, const char * argv[]) 
+void removeOutterQuotes(char* tPath)
 {
+	if (tPath[0] != 0)
+	{
+		if (tPath[0] = '\"')
+		{
+			strcpy(tPath, tPath+1);
+		}
+		if (tPath[strlen(tPath)-1] = '\"')
+		{
+			tPath[strlen(tPath)-1] = '\0';
+		}
+	}
+}
+
+#if !defined(_WIN32)
+int main(int argc, const char * argv[])
+#else
+int _tmain(int argc, _TCHAR* argv[])
+#endif
+{
+	std::cout << argv[0] << "\n";
     RunStruct tRunStruct;
     initRunStruct(&tRunStruct);
     if (!handleArgs(argc, argv, &tRunStruct))
@@ -183,7 +225,8 @@ int main(int argc, const char * argv[])
     if (tRunStruct.iFileName[0] == 0)
     {
         std::cout << "Enter hkl file path: ";
-        cin >> tRunStruct.iFileName;
+		std::cin.getline(tRunStruct.iFileName, PATH_MAX);
+		removeOutterQuotes(tRunStruct.iFileName);
     }
     try
     {
@@ -191,9 +234,10 @@ int main(int argc, const char * argv[])
     }
     catch (MyException eE)
     {
-        std::cout << eE.what() << "\n";
+        std::cout << "\n" << eE.what() << "\n";
     }   
     delete tRunStruct.iFileName;
     delete tRunStruct.iTablesFile;
     delete tRunStruct.iCrystalSys;
+	return 0;
 }

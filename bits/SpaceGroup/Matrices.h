@@ -40,7 +40,10 @@
 #include <stdio.h>
 #include <iostream.h>
 #include "Exceptions.h"
+
+#if !defined(_WIN32)
 #include <vecLib/vDSP.h>
+#endif
 
 //Error codes
 #define kDimensionErrorN -1
@@ -175,7 +178,7 @@ class Matrix
             iMatrix[pXIndex*iYSize+pYIndex] = pValue;
         }
         
-        ostream& output(ostream& pStream)
+        std::ostream& output(std::ostream& pStream)
         {
             for (int i = 0; i < iYSize; i++)
             {
@@ -243,13 +246,14 @@ class Matrix
         void resize(const short pXSize, const short pYSize)
         {
             short tSize = pXSize*pYSize;
-            float* tMatrix = malloc(sizeof(type) * tSize);
+            float* tMatrix = (float*)malloc(sizeof(type) * tSize);
             
             memcpy(tMatrix, iMatrix, sizeof(type)* (tSize < iSize?tSize:iSize));
             free(iMatrix);
             iMatrix = tMatrix;
             iXSize = pXSize;
             iYSize = pYSize;
+			iSize = iXSize * iYSize;
         }
         
         void fill(const type& pValue)
@@ -399,7 +403,7 @@ class Matrix<float>
             iMatrix[pXIndex*iYSize+pYIndex] = pValue;
         }
         
-        ostream& output(ostream& pStream)
+        std::ostream& output(std::ostream& pStream)
         {
             for (int i = 0; i < iYSize; i++)
             {
@@ -519,7 +523,7 @@ Matrix<type> operator*(Matrix<type>& pMatrix1, Matrix<type>& pMatrix2)
 }
 
 template <class type>
-ostream& operator<<(ostream& pStream, Matrix<type>& pMatrix)
+std::ostream& operator<<(std::ostream& pStream, Matrix<type>& pMatrix)
 {
     return pMatrix.output(pStream);
 }

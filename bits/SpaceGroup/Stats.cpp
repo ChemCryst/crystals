@@ -6,21 +6,21 @@
  *  Copyright (c) 2003 . All rights reserved.
  *
  */
-
+//#include "stdafx.h"
 #include "Stats.h"
 #include "MathFunctions.h"
 #include "Collections.h"
 
 //Average Int
-static float AbsentAIM = 0.00834789;
-static float AbsentAISD = 0.01289479;
-static float PresentAIM = 0.49585336;
-static float PresentAISD = 0.16645043;
+static float AbsentAIM = 0.00834789f;
+static float AbsentAISD = 0.01289479f;
+static float PresentAIM = 0.49585336f;
+static float PresentAISD = 0.16645043f;
 //Num Int < 3sigma
-static float Absent3SM = 0.00360566;
-static float Absent3SSD = 0.00859224;
-static float Present3SM = 0.63777005;
-static float Present3SSD = 0.21934966;
+static float Absent3SM = 0.00360566f;
+static float Absent3SSD = 0.00859224f;
+static float Present3SM = 0.63777005f;
+static float Present3SSD = 0.21934966f;
 
 float Stats::evaluationFunction(float pX, float AbsentM, float AbsentSD, float PresentM, float PresentSD)
 {
@@ -92,7 +92,6 @@ void Stats::addReflection(Reflection* pReflection)
         tMultiMat = iHeadings->getMatrix(i);
         Matrix<float> tResult(1, 3);
         tResult = (*tMultiMat)*(*tHKLMat);	//Multiply the two matrices to see if this reflection satisfy the condition
-   //     std::cout << (*tHKLMat) <<"\n" << tResult << "\n";
         if (tResult == (*tHKLMat))	//if this condition is satisfy then...
         {
             addReflectionRows(i, pReflection, tHKLMat);
@@ -105,7 +104,7 @@ void Stats::addReflection(Reflection* pReflection)
     }
 }
 
-void Stats::outputRow(int pRow, ostream& pStream)
+void Stats::outputRow(int pRow, std::ostream& pStream)
 {
     int tHCount = iHeadings->length();
     int tCCount = iConditions->length();
@@ -169,7 +168,7 @@ void Stats::outputRow(int pRow, ostream& pStream)
     }*/
 }
 
-void Stats::outputHeadings(ostream& pStream)
+void Stats::outputHeadings(std::ostream& pStream)
 {
     int tHCount = iHeadings->length();
     pStream << "\t";
@@ -198,7 +197,7 @@ void Stats::calProbs()
     }
 }
 
-ostream& Stats::output(ostream& pStream)
+std::ostream& Stats::output(std::ostream& pStream)
 {
     std::cout << "Total: " << iTotalNum <<"\n";
     std::cout << "Average Int: " << iTotalIntensity/iTotalNum << "\n";
@@ -214,7 +213,7 @@ ostream& Stats::output(ostream& pStream)
     return pStream;
 }
 
-ostream& operator<<(ostream& pStream, Stats& pStats)
+std::ostream& operator<<(std::ostream& pStream, Stats& pStats)
 {
     return pStats.output(pStream);
 }

@@ -38,11 +38,15 @@
 #ifndef __EXCEPTIONS_H__
 #define __EXCEPTIONS_H__
 #include <Exception>
-
+#include <iostream>
+using namespace std;
 /******************************************/
 /***	Error codes to identify what 	***/
 /***	type of exception is it is. 	***/
 /******************************************/
+#if defined(_WIN32)
+    #define kUnknownException 0x00
+#endif
 #define kFileException 0x01
 
 class MyException : public std::exception
@@ -66,4 +70,6 @@ class FileException: public MyException
     public:
         FileException(int pFileError);
 };
+
+std::ostream& operator<<(std::ostream& pStream, MyException& pExc);
 #endif

@@ -34,10 +34,14 @@
  * 	function name	
  * };
  */
-
+//#include "stdafx.h"
 #include "Matrices.h"
-#include <regex.h>
 #include "MathFunctions.h"
+#if defined(_WIN32)
+#include <Boost/regex.h>
+#else
+#include <regex.h>
+#endif
 
 MatrixException::MatrixException(int pErrNum, char* pErrType):MyException(pErrNum, pErrType)
 {
@@ -87,7 +91,7 @@ int MatrixReader::countNumberOfRows(char* pString)
     {
         return 0;
     }
-    return countNumberOfRows(pString+tMatch[0].rm_eo) +1;
+    return countNumberOfRows(pString+(int)tMatch[0].rm_eo) +1;
 }
 
 int MatrixReader::countNumberOfColumns(char** pString)	//Returns the place where it reached the end of the row
@@ -104,7 +108,7 @@ int MatrixReader::countNumberOfColumns(char** pString)	//Returns the place where
     {
         return 0;
     }
-    *pString+=tMatch[0].rm_eo;
+    *pString+=(int)tMatch[0].rm_eo;
     return countNumberOfColumns(pString) +1;
 }
 
@@ -145,11 +149,11 @@ void MatrixReader::fillMatrix(char* pLine, int pX, int pY)
     setValue((float)strtod(pLine+tMatch[1].rm_so, NULL), pX, pY);
     if (tMatch[4].rm_so != -1)
     {
-        fillMatrix(pLine+tMatch[1].rm_eo, 0, pY+1);
+        fillMatrix(pLine+(int)tMatch[1].rm_eo, 0, pY+1);
     }
     else
     {
-        fillMatrix(pLine+tMatch[1].rm_eo, pX+1, pY);
+        fillMatrix(pLine+(int)tMatch[1].rm_eo, pX+1, pY);
     }
 }
 

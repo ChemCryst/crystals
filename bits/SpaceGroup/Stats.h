@@ -32,8 +32,8 @@ class Stats
         int iTotalNum;
         float iTotalIntensity;
         ElemStats* iStats;	//Cells of the stats.
-	void outputHeadings(ostream& pStream);
-        void outputRow(int pRow, ostream& pStream);
+		void outputHeadings(std::ostream& pStream);
+        void outputRow(int pRow, std::ostream& pStream);
         static float evaluationFunction(float pX, float AbsentM, float AbsentSD, float PresentM, float PresentSD);
     public:
         Stats(Headings* pHeadings, Conditions* pConditions);
@@ -42,9 +42,9 @@ class Stats
         void addReflection(Reflection* tReflection);
         void calProbs();			//Calculates all the probabilites for all the cells.
         ElemStats* getElem(int pHeadIndex, int pCondIndex);
-        ostream& output(ostream& pStream);
+		std::ostream& output(std::ostream& pStream);
 };
 
-ostream& operator<<(ostream& pStream, Stats& pStats);
+std::ostream& operator<<(std::ostream& pStream, Stats& pStats);
 
 #endif

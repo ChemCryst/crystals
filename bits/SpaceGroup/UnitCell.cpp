@@ -34,7 +34,7 @@
  * 	function name	
  * };
 */
-
+//#include "stdafx.h"
 #include "UnitCell.h"
 #include <iostream.h>
 

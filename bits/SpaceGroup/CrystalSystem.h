@@ -54,7 +54,7 @@ class Heading
         Matrix<float>* getMatrix();
         char* getName();
         int getID();
-        ostream& Heading::output(ostream& pStream);
+        std::ostream& Heading::output(std::ostream& pStream);
 };
 
 class Headings
@@ -67,14 +67,14 @@ class Headings
         Matrix<float>* getMatrix(int pIndex);
         char* getName(int pIndex);
         int getID(int pIndex);
-        ostream& output(ostream& pStream);
+        std::ostream& output(std::ostream& pStream);
         char* addHeading(char* pLine);
         void readFrom(filebuf& pFile);
         int length();
 };
 
-ostream& operator<<(ostream& pStream, Heading& pHeader);
-ostream& operator<<(ostream& pStream, Headings& pHeaders);
+std::ostream& operator<<(std::ostream& pStream, Heading& pHeader);
+std::ostream& operator<<(std::ostream& pStream, Headings& pHeaders);
 
 class Condition
 {
@@ -90,10 +90,10 @@ class Condition
         Matrix<float>* getMatrix();
         float getMult();
         int getID();
-        ostream& output(ostream& pStream);
+        std::ostream& output(std::ostream& pStream);
 };
 
-ostream& operator<<(ostream& pStream, Condition& pCondition);
+std::ostream& operator<<(std::ostream& pStream, Condition& pCondition);
 
 class Conditions
 {
@@ -105,13 +105,13 @@ class Conditions
         char* getName(int pIndex);
         float getMult(int pIndex);
         Matrix<float>* getMatrix(int pIndex);
-        ostream& output(ostream& pStream);
+        std::ostream& output(std::ostream& pStream);
         char* addCondition(char* pLine);
         void readFrom(filebuf& pFile);
         int length();
 };
 
-ostream& operator<<(ostream& pStream, Conditions& pConditions);
+std::ostream& operator<<(std::ostream& pStream, Conditions& pConditions);
 
 //This is just my own rapper class for an integer type.
 class Index
@@ -127,10 +127,10 @@ class Index
         bool operator<(Index& pObject);
         bool operator>(Index& pObject);
         bool operator==(Index& pObject);
-        ostream& output(ostream& pStream);
+        std::ostream& output(std::ostream& pStream);
 };
 
-ostream& operator<<(ostream& pStream, Index& pIndex);
+std::ostream& operator<<(std::ostream& pStream, Index& pIndex);
 
 class Indexs
 {
@@ -143,10 +143,10 @@ class Indexs
         int number();
         Index* getIndex(int pIndex);
         int getValue(int pIndex);
-        ostream& output(ostream& pStream);
+        std::ostream& output(std::ostream& pStream);
 };
 
-ostream& operator<<(ostream& pStream, Indexs& pIndexs);
+std::ostream& operator<<(std::ostream& pStream, Indexs& pIndexs);
 
 class Column
 {
@@ -171,7 +171,7 @@ class ConditionColumn:virtual public Column
         Indexs* getConditions(int pIndex);
         int countCondition();
         int countHeadings();
-        ostream& output(ostream& pStream, Headings* pHeadings, Conditions* pConditions);
+        std::ostream& output(std::ostream& pStream, Headings* pHeadings, Conditions* pConditions);
 };
 
 class SpaceGroup
@@ -182,10 +182,10 @@ class SpaceGroup
         SpaceGroup(char* pSymbols);
         ~SpaceGroup();
         char* getSymbol();
-        ostream& output(ostream& pStream);
+        std::ostream& output(std::ostream& pStream);
 };
 
-ostream& operator<<(ostream& pStream, SpaceGroup& pSpaceGroup);
+std::ostream& operator<<(std::ostream& pStream, SpaceGroup& pSpaceGroup);
 
 class SpaceGroups:virtual public Column
 {
@@ -222,17 +222,17 @@ class Table
         void readFrom(filebuf& pFile);
         char* getName();
         ArrayList<Index>* getHeadings(int pI);
-        ostream& output(ostream& pStream);
-        ostream& outputLine(int pLineNum, ostream& pStream);
+        std::ostream& output(std::ostream& pStream);
+        std::ostream& outputLine(int pLineNum, std::ostream& pStream);
         int getNumPointGroups();	//Needs doing
         SpaceGroup* getSpaceGroup(int pLineNum, int pPointGroupNum);
-        ostream& outputColumn(ostream& pStream, int pColumn, Headings* pHeadings, Conditions* pConditions);
+        std::ostream& outputColumn(std::ostream& pStream, int pColumn, Headings* pHeadings, Conditions* pConditions);
         Indexs* getConditions(int pRow, int pColumn);
         int numberOfColumns();
         int numberOfRows();
 };
 
-ostream& operator<<(ostream& pStream, Table& pTable);
+std::ostream& operator<<(std::ostream& pStream, Table& pTable);
 
 class Tables
 {
@@ -249,10 +249,10 @@ class Tables
         void addTable(Table* pTable);
         void readFrom(filebuf& pFile);
         Table* findTable(char* pName);
-        ostream& output(ostream& pStream);
+        std::ostream& output(std::ostream& pStream);
 };
 
-ostream& operator <<(ostream& pStream, Tables& pTables);
+std::ostream& operator <<(std::ostream& pStream, Tables& pTables);
 
 class Stats;
 
@@ -280,8 +280,8 @@ class RankedSpaceGroups
     public:
         RankedSpaceGroups(Table& pTable, Stats& pStats, bool pChiral);
         ~RankedSpaceGroups();
-        ostream& output(ostream& pStream);
+        std::ostream& output(std::ostream& pStream);
 };
 
-ostream& operator<<(ostream& pStream, RankedSpaceGroups& pRank);
+std::ostream& operator<<(std::ostream& pStream, RankedSpaceGroups& pRank);
 #endif

@@ -34,9 +34,13 @@
  * 	function name	
  * };
  */
-
+//#include "stdafx.h"
 #include "CrystalSystem.h"
-#include "regex.h"
+#if defined(_WIN32)
+#include <Boost/regex.h>
+#else
+#include <regex.h>
+#endif
 #include <fstream>
 #include "StringClassses.h"
 #include "MathFunctions.h"
@@ -61,14 +65,14 @@ Heading::Heading(char* pLine)
     }
     iName = new char[(int)(tMatch[2].rm_eo - tMatch[2].rm_so +1)];
     iName[(int)(tMatch[2].rm_eo - tMatch[2].rm_so)] = 0;
-    strncpy(iName, tMatch[2].rm_so+pLine, tMatch[2].rm_eo - tMatch[2].rm_so);
+    strncpy(iName, tMatch[2].rm_so+pLine, (int)tMatch[2].rm_eo - tMatch[2].rm_so);
     char* tTempString = new char[(int)(tMatch[1].rm_eo - tMatch[1].rm_so +1)];
-    strncpy(tTempString, tMatch[1].rm_so+pLine, tMatch[1].rm_eo - tMatch[1].rm_so);
+    strncpy(tTempString, (int)tMatch[1].rm_so+pLine, tMatch[1].rm_eo - tMatch[1].rm_so);
     tTempString[(int)(tMatch[1].rm_eo - tMatch[1].rm_so)] = 0;
     iID = strtol(tTempString, NULL, 10);
     delete[] tTempString;
-    tTempString = new char[(tMatch[3].rm_eo - tMatch[3].rm_so +1)];
-    strncpy(tTempString, tMatch[3].rm_so+pLine, tMatch[3].rm_eo - tMatch[3].rm_so);
+    tTempString = new char[(int)(tMatch[3].rm_eo - tMatch[3].rm_so +1)];
+    strncpy(tTempString, (int)tMatch[3].rm_so+pLine, (int)tMatch[3].rm_eo - tMatch[3].rm_so);
     tTempString[(int)(tMatch[3].rm_eo - tMatch[3].rm_so)] = 0;
     iMatrix = new MatrixReader(tTempString);
     delete[] tTempString;
@@ -96,13 +100,13 @@ int Heading::getID()
     return iID;
 }
 
-ostream& Heading::output(ostream& pStream)
+std::ostream& Heading::output(std::ostream& pStream)
 {
     pStream << iID << "\t" << iName << "\t" << *iMatrix << "\n";
     return pStream;
 }
 
-ostream& operator<<(ostream& pStream, Heading& pHeader)
+std::ostream& operator<<(std::ostream& pStream, Heading& pHeader)
 {
     return pHeader.output(pStream);
 }
@@ -136,12 +140,12 @@ Condition::Condition(char* pLine)
     }
     char* tString = new char[(int)(tMatch[4].rm_eo-tMatch[4].rm_so+1)];	//Get the matrix for the condition
     tString[(int)(tMatch[4].rm_eo-tMatch[4].rm_so)] = 0;
-    strncpy(tString, pLine+tMatch[4].rm_so, tMatch[4].rm_eo-tMatch[4].rm_so);  
+    strncpy(tString, pLine+(int)tMatch[4].rm_so, (int)tMatch[4].rm_eo-tMatch[4].rm_so);  
     iMatrix = new MatrixReader(tString);
     delete[] tString;
     iName = new char[(int)(tMatch[2].rm_eo-tMatch[2].rm_so+1)];		//Get the name of the condition
     iName[(int)(tMatch[2].rm_eo-tMatch[2].rm_so)] = 0;
-    strncpy(iName, pLine+tMatch[2].rm_so, tMatch[2].rm_eo-tMatch[2].rm_so);  
+    strncpy(iName, pLine+(int)tMatch[2].rm_so, (int)tMatch[2].rm_eo-tMatch[2].rm_so);  
     iID = strtol((const char*)(pLine+tMatch[1].rm_so), NULL, 10);			//Get the id of the condition
     iMult = strtod((const char*)(pLine+tMatch[12].rm_so), NULL);			//Get the multiplier 
 }
@@ -172,13 +176,13 @@ int Condition::getID()
     return iID;
 }
 
-ostream& Condition::output(ostream& pStream)
+std::ostream& Condition::output(std::ostream& pStream)
 {
     pStream << iID << "\t" << iName << "\t" << *iMatrix << " " << iMult << "\n";
     return pStream;
 }
 
-ostream& operator<<(ostream& pStream, Condition& pCondition)
+std::ostream& operator<<(std::ostream& pStream, Condition& pCondition)
 {
     return pCondition.output(pStream);
 }
@@ -251,29 +255,16 @@ char* Conditions::addCondition(char* pLine)	//Returns the point which the line a
     Condition* tCondition;
     if (tNext == NULL)
     {
-        try
-        {
-            tCondition = new Condition(pLine);
-        }
-        catch (MyException e)
-        {
-             tNext = NULL;
-        }
+           tCondition = new Condition(pLine);
     }
     else
     {
-        try
-        {
-            char tString[(int)(tNext-pLine)+1];
-            tString[(int)(tNext-pLine)] = 0;
-            strncpy(tString, pLine, (int)(tNext-pLine));
-            tCondition = new Condition(tString);
-            tNext++;
-        }
-        catch (MyException e)
-        {
-             tNext = NULL;
-        }
+        char *tString = new char[(int)(tNext-pLine)+1];
+        tString[(int)(tNext-pLine)] = 0;
+        strncpy(tString, pLine, (int)(tNext-pLine));
+        tCondition = new Condition(tString);
+        tNext++;
+		delete[] tString;
     }
     iConditions->setWithAdd(tCondition, tCondition->getID());
     return tNext;
@@ -282,7 +273,7 @@ char* Conditions::addCondition(char* pLine)	//Returns the point which the line a
 void Conditions::readFrom(filebuf& pFile)
 {
     char tHeaderLine[] = "ID	Name	Vector	Multiplier";
-    istream tFile(&pFile);
+	std::istream tFile(&pFile);
     char tLine[255];
     
     do
@@ -294,7 +285,8 @@ void Conditions::readFrom(filebuf& pFile)
         tFile.getline(tLine, 255);
         try
         {
-            addCondition(tLine);
+			if (tLine[0] != '\0')
+				addCondition(tLine);
         }
         catch (MyException& e)
         {
@@ -309,7 +301,7 @@ int Conditions::length()
     return iConditions->length();
 }
 
-ostream& Conditions::output(ostream& pStream)
+std::ostream& Conditions::output(std::ostream& pStream)
 {
     int tSize = iConditions->length();
     for (int i = 0; i < tSize; i++)
@@ -328,7 +320,7 @@ ostream& Conditions::output(ostream& pStream)
 }
 
 
-ostream& operator<<(ostream& pStream, Conditions& pConditions)
+std::ostream& operator<<(std::ostream& pStream, Conditions& pConditions)
 {
     return pConditions.output(pStream);
 }
@@ -397,7 +389,7 @@ int Headings::getID(int pIndex)
     return tHeading->getID();
 }
 
-ostream& Headings::output(ostream& pStream)
+std::ostream& Headings::output(std::ostream& pStream)
 {
     int tSize = iHeadings->length();
     for (int i = 0; i < tSize; i++)
@@ -418,32 +410,19 @@ ostream& Headings::output(ostream& pStream)
 char* Headings::addHeading(char* pLine)	//Returns the point which the line at the start of this string finishs
 {
     char* tNext = strchr(pLine, '\n');
-    Heading* tHeading;
+    Heading* tHeading = NULL;
     if (tNext == NULL)
     {
-        try
-        {
-            tHeading = new Heading(pLine);
-        }
-        catch (MyException e)
-        {
-             tNext = NULL;
-        }
+		tHeading = new Heading(pLine);
     }
     else
     {
-        try
-        {
-            char tString[(int)(tNext-pLine)+1];
-            tString[(int)(tNext-pLine)] = 0;
-            strncpy(tString, pLine, (int)(tNext-pLine));
-            tHeading = new Heading(tString);
-            tNext++;
-        }
-        catch (MyException e)
-        {
-            tNext = NULL;
-        }
+        char *tString = new char[(int)(tNext-pLine)+1];
+        tString[(int)(tNext-pLine)] = 0;
+        strncpy(tString, pLine, (int)(tNext-pLine));
+        tHeading = new Heading(tString);
+        tNext++;
+		delete[] tString;
     }
     iHeadings->setWithAdd(tHeading, tHeading->getID());
     return tNext;
@@ -452,7 +431,7 @@ char* Headings::addHeading(char* pLine)	//Returns the point which the line at th
 void Headings::readFrom(filebuf& pFile)
 {
     char tHeaderLine[] = "ID	Name	Matrix";
-    istream tFile(&pFile);
+	std::istream tFile(&pFile);
     char tLine[255];
     
     do
@@ -464,7 +443,8 @@ void Headings::readFrom(filebuf& pFile)
         tFile.getline(tLine, 255);
         try
         {
-            addHeading(tLine);
+			if (tLine[0] != '\0')
+				addHeading(tLine);
         }
         catch (MyException& e)
         {
@@ -474,7 +454,7 @@ void Headings::readFrom(filebuf& pFile)
     while (!tFile.eof() && strlen(tLine)>0);
 }
 
-ostream& operator<<(ostream& pStream, Headings& pHeaders)
+std::ostream& operator<<(std::ostream& pStream, Headings& pHeaders)
 {
     return pHeaders.output(pStream);
 }
@@ -520,12 +500,12 @@ bool Index::operator==(Index& pObject)
     return iValue == pObject.iValue;
 }
 
-ostream& Index::output(ostream& pStream)
+std::ostream& Index::output(std::ostream& pStream)
 {
     return pStream << (int)iValue;
 }
 
-ostream& operator<<(ostream& pStream, Index& pIndex)
+std::ostream& operator<<(std::ostream& pStream, Index& pIndex)
 {
     return pIndex.output(pStream);
 }
@@ -570,7 +550,7 @@ Indexs::~Indexs()
     delete iIndexs;
 }
 
-ostream& Indexs::output(ostream& pStream)
+std::ostream& Indexs::output(std::ostream& pStream)
 {
     int tCount = iIndexs->length();
     for (int i = 0; i < tCount;  i++)
@@ -584,7 +564,7 @@ ostream& Indexs::output(ostream& pStream)
     return pStream;
 }
 
-ostream& operator<<(ostream& pStream, Indexs& pIndexs)
+std::ostream& operator<<(std::ostream& pStream, Indexs& pIndexs)
 {
     return pIndexs.output(pStream);
 }
@@ -660,7 +640,7 @@ void ConditionColumn::setHeading(char* pHeading)
     {
         int pIndex = strtol(pHeading+tOffset, NULL, 10);
         addHeading((signed char)pIndex);
-        tOffset += tMatch[0].rm_eo;
+        tOffset += (int)tMatch[0].rm_eo;
         bzero(tMatch, sizeof(regmatch_t)*3);
     }
 }
@@ -690,7 +670,7 @@ Indexs* ConditionColumn::getConditions(int pIndex)
     return iConditions->get(pIndex);
 }
 
-ostream& ConditionColumn::output(ostream& pStream, Headings* pHeadings, Conditions* pConditions)
+std::ostream& ConditionColumn::output(std::ostream& pStream, Headings* pHeadings, Conditions* pConditions)
 {
     int tNumConditions = iConditions->length();
     int tNumHeader = iHeadingConditions->length();
@@ -736,12 +716,12 @@ char* SpaceGroup::getSymbol()
     return iSymbols;
 }
 
-ostream& SpaceGroup::output(ostream& pStream)
+std::ostream& SpaceGroup::output(std::ostream& pStream)
 {
     return pStream << iSymbols;
 }
 
-ostream& operator<<(ostream& pStream, SpaceGroup& pSpaceGroup)
+std::ostream& operator<<(std::ostream& pStream, SpaceGroup& pSpaceGroup)
 {
     return pSpaceGroup.output(pStream);
 }
@@ -858,7 +838,7 @@ void Table::columnHeadings(char* pHeadings, int pColumn)
     }
     char* tString = new char[(int)(tMatch[1].rm_eo-tMatch[1].rm_so+1)];
     tString[(int)(tMatch[1].rm_eo-tMatch[1].rm_so)] = 0;
-    strncpy(tString, pHeadings+tMatch[1].rm_so, tMatch[1].rm_eo-tMatch[1].rm_so);	//get the first element on the line
+    strncpy(tString, pHeadings+(int)tMatch[1].rm_so, (int)tMatch[1].rm_eo-tMatch[1].rm_so);	//get the first element on the line
     if (pColumn < iColumns->length())
     {
         iColumns->get(pColumn)->setHeading(tString);
@@ -902,8 +882,8 @@ void Table::addLine(char* pLine, int pColumn)
         return;
     }
     char* tString = new char[(int)(tMatch[1].rm_eo-tMatch[1].rm_so+1)];
-    tString[tMatch[1].rm_eo-tMatch[1].rm_so] = 0;
-    strncpy(tString, pLine+tMatch[1].rm_so, tMatch[1].rm_eo-tMatch[1].rm_so);	//Get the first element in the line
+    tString[(int)tMatch[1].rm_eo-tMatch[1].rm_so] = 0;
+    strncpy(tString, pLine+(int)tMatch[1].rm_so, (int)tMatch[1].rm_eo-tMatch[1].rm_so);	//Get the first element in the line
     int pRow = iColumns->get(0)->countCondition();	//Get the row which we are at.
     if (pColumn != 0)
     {
@@ -917,7 +897,7 @@ void Table::addLine(char* pLine, int pColumn)
     {
         addSpaceGroup(tString, iSpaceGroups->get(pColumn-iColumns->length()), pRow);
     }
-    addLine(pLine+tMatch[1].rm_eo , pColumn+1);
+    addLine(pLine+(int)tMatch[1].rm_eo , pColumn+1);
 }
 
 
@@ -975,7 +955,7 @@ ArrayList<Index>* Table::getHeadings(int pI)
         
 void Table::readFrom(filebuf& pFile)
 {
-    istream tFile(&pFile);
+	std::istream tFile(&pFile);
     char tLine[255];
     do
     {
@@ -998,7 +978,7 @@ void Table::readFrom(filebuf& pFile)
     }
 }*/
         
-ostream& Table::outputLine(int pLineNum, ostream& pStream)
+std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream)
 {
     int tLengthConditions = iColumns->length();
     int tLengthSpaceGroup = iSpaceGroups->length();
@@ -1027,7 +1007,7 @@ ostream& Table::outputLine(int pLineNum, ostream& pStream)
 
 
 
-ostream& Table::output(ostream& pStream)
+std::ostream& Table::output(std::ostream& pStream)
 {	
     int tLengthConditions = iColumns->length();
     int tLengthSpaceGroup = iSpaceGroups->length();
@@ -1058,7 +1038,7 @@ ostream& Table::output(ostream& pStream)
     return pStream;
 }
 
-ostream& Table::outputColumn(ostream& pStream, int pColumn, Headings* pHeadings, Conditions* pConditions)
+std::ostream& Table::outputColumn(std::ostream& pStream, int pColumn, Headings* pHeadings, Conditions* pConditions)
 {
     if (pColumn < iColumns->length())
     {
@@ -1093,7 +1073,7 @@ int Table::numberOfRows()
     return iSpaceGroups->get(0)->length();
 }
 
-ostream& operator<<(ostream& pStream, Table& pTable)
+std::ostream& operator<<(std::ostream& pStream, Table& pTable)
 {
     return pTable.output(pStream);
 }
@@ -1172,12 +1152,12 @@ void tableAttributesLine(char* pLine, char* pSystemName, int *pNumOfCondCols, in
     *pNumOfCondCols = strtol(pLine+tMatch[2].rm_so, NULL, 10);
     *pNumOfSGCols = strtol(pLine+tMatch[3].rm_so, NULL, 10);
     pSystemName[(int)(tMatch[1].rm_eo-tMatch[1].rm_so)] = 0;
-    strncpy(pSystemName, pLine+tMatch[1].rm_so, tMatch[1].rm_eo-tMatch[1].rm_so);
+    strncpy(pSystemName, pLine+(int)tMatch[1].rm_so, (int)tMatch[1].rm_eo-tMatch[1].rm_so);
 }
 
 void Tables::readFrom(filebuf& pFile)
 {
-    istream tFile(&pFile);
+	std::istream tFile(&pFile);
     char tLine[255];
  
     while (!tFile.eof())
@@ -1230,7 +1210,7 @@ Table* Tables::findTable(char* pName)
     return tTable;
 }
 
-ostream& Tables::output(ostream& pStream)
+std::ostream& Tables::output(std::ostream& pStream)
 {
     int tNumTables = iTables->length();
     
@@ -1245,7 +1225,7 @@ ostream& Tables::output(ostream& pStream)
     return pStream;
 }
 
-ostream& operator <<(ostream& pStream, Tables& pTables)
+std::ostream& operator <<(std::ostream& pStream, Tables& pTables)
 {
     return pTables.output(pStream);
 };
@@ -1334,7 +1314,7 @@ RankedSpaceGroups::~RankedSpaceGroups()
     delete[] iRatings;
 }
 
-ostream& RankedSpaceGroups::output(ostream& pStream)
+std::ostream& RankedSpaceGroups::output(std::ostream& pStream)
 {
     RowRating* tCurrentRating;
     
@@ -1347,7 +1327,7 @@ ostream& RankedSpaceGroups::output(ostream& pStream)
     return pStream;
 }
 
-ostream& operator<<(ostream& pStream, RankedSpaceGroups& pRank)
+std::ostream& operator<<(std::ostream& pStream, RankedSpaceGroups& pRank)
 {
     return pRank.output(pStream);
 }
