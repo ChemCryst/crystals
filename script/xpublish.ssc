@@ -19,7 +19,7 @@
 ^^WI     @ 3,1 STATIC T2 'for a full listing.'
 ^^WI   }
 ^^WI   @ 2,4 LISTBOX AUTOLIST VISLINES=10 ADDTOLIST
-^^WI         'Cif' 'XYZ' 'Aniso' 'Distances' 'Reflections' 
+^^WI         'Cif' 'XYZ' 'Aniso' 'Distances' 'Chime' 'Reflections' 
 ^^WI         'Summary' 'Residuals' 'Save'
 ^^WI         NULL
 ^^WI   @ 2,6 GRID BTNS NROWS=7 NCOLS=1
