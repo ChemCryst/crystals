@@ -3948,7 +3948,7 @@ PERTURB            2    3
          3    
     .OVERWRITE         24    0    1    2   -1 NO
      YES            NO
-MATCH              4    4
+MATCH              6    4
   10    4096 CRYSTALSALTER5
     1    2    5   41
    1.OUTPUT             1    1    0    0
@@ -3959,7 +3959,11 @@ MATCH              4    4
          0    0    0    0    0    0    0    0    0    0
    3.ONTO               0 9999    0    0    0    0  102    5  175
          0    0    0    0    0    0    0    0    0    0
-   4.MATCH              1    1    0    0
+   4.RENAME             0 9999    0    0    0    0  103    5  175
+         0    0    0    0    0    0    0    0    0    0
+   5.EQUALATOMS         0 9999    0    0    0    0  104    5  175
+         0    0    0    0    0    0    0    0    0    0
+   6.MATCH              1    1    0    0
          1
     .INPUTLIST         10    0    1    2    1         5
               5        10

@@ -1,4 +1,9 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.14  2003/03/26 10:36:09  rich
+c Prototype #MATCH code. Syntax: #MATCH/MAP atoms/ONTO atoms/END
+c It does the match, refines it, prints stats and writes a cameron.ini
+c and regular.l5i which can be viewed by choosing "Graphics"->"Special"->"existing input files".
+c
 c Revision 1.13  2003/01/10 15:39:33  rich
 c Some enhancements to \REGULARISE:
 c 1) When using the RENAME facility, the program can no longer match the same
@@ -1093,19 +1098,23 @@ C -- SET FLAG TO SHOW NEW LIST 5 IS TO BE PRODUCED
 1740  CONTINUE
 CDJWMAY2001
 C----- RENAME - NOTE OFFSET OF 4 ABOVE
-      DO 1748 I = 1,N5
+c      DO  J = 1, NATMD
+c         WRITE(CMON,'(2A,I5,A,I5)') 'In RENM: ',
+c     1    STORE(LRENM+(J-1)*MDRENM),NINT(STORE(LRENM+(J-1)*MDRENM+1)),
+c     2    STORE(LRENM+(J-1)*MDRENM+4),NINT(STORE(LRENM+(J-1)*MDRENM+5))
+c         CALL XPRVDU(NCVDU,1,0)
+c      END DO
+
+      DO 1520 J = 1, NATMD
+        DO 1748 I = 1,N5
         TYPE = STORE(L5+(I-1)*MD5)
         SERIAL = STORE(L5+(I-1)*MD5+1)
-        DO 1520 J = 1, NATMD
-         IF(abs(TYPE-STORE(LRENM+(J-1)*MDRENM)) .GT. ZERO) 
-     1 GOTO 1520
-         IF(abs(SERIAL-STORE(LRENM+(J-1)*MDRENM+1)) .GT. ZERO)
-     1  GOTO 1520
-         CALL XMOVE (STORE(LRENM+(J-1)*MDRENM+4),
-     1   STORE(L5+(I-1)*MD5),2)
-1520    CONTINUE
-C
-1748  CONTINUE
+         IF(abs(TYPE-STORE(LRENM+(J-1)*MDRENM)) .GT. ZERO)     GOTO 1748
+         IF(abs(SERIAL-STORE(LRENM+(J-1)*MDRENM+1)) .GT. ZERO) GOTO 1748
+         CALL XMOVE (STORE(LRENM+(J-1)*MDRENM+4), STORE(L5+(I-1)*MD5),2)
+         GOTO 1520 !Only match once.
+1748    CONTINUE
+1520  CONTINUE
 C -- SET FLAG TO SHOW NEW LIST 5 IS TO BE PRODUCED
       NEWLIS=1
       GOTO 1800
@@ -2292,10 +2301,10 @@ C Only consider atom if it has not been matched already:
         WRITE(CMON,
      1 '( A4,F6.1,3X,A4,F6.1,3X,A4,F6.1,3X,F7.4)')
      1   STORE(LRENM+(J-1)*MDRENM+2),STORE(LRENM+(J-1)*MDRENM+3),
-     2   STORE(LRENM+(I-1)*MDRENM),STORE(LRENM+(I-1)*MDRENM+1),
+     2   STORE(LRENM+(I-1)*MDRENM),  STORE(LRENM+(I-1)*MDRENM+1),
      3   STORE(LRENM+(I-1)*MDRENM+4),STORE(LRENM+(I-1)*MDRENM+5),
      4   DISMIN
-         IF(SUMDEV .GE. 0.1) CALL XPRVDU(NCVDU,1,0)
+         CALL XPRVDU(NCVDU,1,0)
          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
 C Indicate atom not to be matched again:
          STORE(LRENM+(J-1)*MDRENM+3) = 0.0 
@@ -2353,6 +2362,7 @@ C
 
       LMBUF = KSTALL ( MDATVC )
       LNBUF = KSTALL ( MDNEW )
+c      LRBUF = KSTALL ( MDRENM )
 
       WRITE(CMON,'(1X,A,7X,A,8X,A,6X,A)')
      1 'Improving','onto','giving', 'distance'
@@ -2388,8 +2398,10 @@ C Only consider atom if spare matches when LSPARE is one.
          END DO
 
          J = INDDIS
+
 C Swap atoms at LNEW(I) and LNEW(J)
 C Swap atoms at LMAP(I) and LMAP(J)
+C Swap atoms at LRENM(I) and LRENM(J)
 
          IF ( J .GE. 0 ) THEN
 
@@ -2403,6 +2415,10 @@ C Swap atoms at LMAP(I) and LMAP(J)
 
           IOLD5 = L5 + (ISTORE(LONTO+I*MDATVC)) * MD5
           INEW5 = L5 + (ISTORE(LMAP+I*MDATVC)) * MD5
+
+          STORE(LRENM+I*MDRENM+4) = STORE(INEW5)
+          STORE(LRENM+I*MDRENM+5) = STORE(INEW5+1)+ZORIG
+
 
           WRITE(CMON,
      1    '( A4,I4,I10,3X,A4,I4,I10,3X,F7.4)')
@@ -2578,6 +2594,7 @@ C-- TO FIND THE BEST ONE.
 \XERVAL
 \XOPVAL
 \XIOBUF
+\XRGCOM
 C
 \QSTORE
 C
@@ -2600,7 +2617,8 @@ C
       JCOMBF = ICOMBF+JDIMBF      ! START OF ADDRESSED ARGS
 
       CALL XZEROF( ISTORE(ICOMBF), IDIMBF)  !  ZERO THE BUFFER
-
+      ZORIG=0.0
+      IEQATM=0
 C INSTRUCTION READING LOOP
       DO WHILE (.TRUE.)
         WRITE (CMON,'(A)') ' Reading instruction '
@@ -2613,7 +2631,7 @@ C INSTRUCTION READING LOOP
 
         CASE(1)     ! 'OUTPUT'
 
-        CASE(4)     ! 'MATCH'
+        CASE(6)     ! 'MATCH'
           WRITE (CMON,'(A)') ' Processing #MATCH optional args '
           CALL XPRVDU(NCVDU,1,0)
           IULN= ISTORE(JCOMBF+1)   
@@ -2660,6 +2678,12 @@ C INSTRUCTION READING LOOP
           KATV(5) = 0
           CALL XDSSEL ( ISTORE(LATVC) , MDATVC , NATVC , 1 , KATV)
 
+        CASE (4)    ! 'RENAME'
+          ZORIG=XLXRDV(100.)
+
+        CASE (5)    ! 'EQUALATOM'
+          IEQATM=1
+
         CASE DEFAULT   !ERROR
           GOTO 9910
 
@@ -2671,9 +2695,14 @@ C INSTRUCTION READING LOOP
 
       CALL XMOVE( STORE(JCOMBF), PROCS(1),IDIMN) ! RELOCATE COMMONBLOCK DATA
 
+      IF ( IEQATM .EQ. 0 ) THEN
+        IF (KELECN().LT.0) GO TO 9900    ! Put electron count into SPARE
+      ELSE
+        DO I = 0,N5-1
+          STORE(L5+13+I*MD5) = 10
+        END DO
+      END IF
 
-
-      IF (KELECN().LT.0) GO TO 9900    ! Put electron count into SPARE
       CALL XRELAX      ! GET CARDINALITY OF ATOMS BASED ON BONDING NETWORK
 
 c      WRITE (CMON,'(A)') ' Atom Serial  MAP ONTO SPARE'
@@ -2804,6 +2833,21 @@ c        CALL XPRVDU(NCVDU,1,0)
           JOBDON = 0
 
       END IF
+
+
+      IF ( NEWLIS .GT. 0 ) THEN       ! WRITE OUT NEW LIST
+         LN=5
+         IREC=101
+         I=KHUNTR(LN,IREC,IADDL,IADDR,IADDD,0) ! LOCATE RECORD 101
+         ISTORE(IADDR+3)=L5                    ! CHANGE ADDRESS
+         CALL XUDRH(LN,IREC,0,N5)              ! UPDATE RECORD HEADER
+         CALL XSTR05(5,0,1)                    ! STORE LIST 5
+         WRITE ( CMON,9155) N5
+         CALL XPRVDU(NCVDU, 2,0)
+9155  FORMAT (' List 5 now contains ',I4,' atoms  ',/,
+     2 ' list modification complete  ')
+      END IF
+
 
 
 C--TERMINATION MESSAGES
@@ -3071,15 +3115,18 @@ c      CALL XPRVDU(NCVDU,3,0)
 
       MNEW = LNEW
       MRENM = LRENM
+      MATMD = LATMD
       DO I = 0, NMAP-1
         IF ( ISTORE(4+LMAP+I*MDATVC) .EQ. 1 ) THEN
           I5 = L5 + ( (ISTORE(LMAP+I*MDATVC)) * MD5 )
           CALL XMOVE (STORE(I5+4),STORE(MNEW),3)
+          CALL XMOVE (STORE(I5),STORE(MATMD),MDATMD)
           STORE(MNEW+3) = 1.0
           CALL XMOVE (STORE(I5),STORE(MRENM+2),2)
           ISTORE(MRENM+5) = I5
           MNEW = MNEW + 4
           MRENM = MRENM + 6
+          MATMD = MATMD + MDATMD
         END IF
       END DO
 
@@ -3122,11 +3169,13 @@ C saw to that earlier).
 
       MNEW = LNEW
       MRENM = LRENM
+      MATMD = LATMD
       DO I = 0, NMAP-1
           I5 = L5 + ( (ISTORE(LMAP+I*MDATVC)) * MD5 )
 c          WRITE(CMON,'(2(A,I7))')'I5MAP:',I5,STORE(I5),NINT(STORE(I5+1))
 c          CALL XPRVDU(NCVDU,1,0)
           CALL XMOVE (STORE(I5+4),STORE(MNEW),3)
+          CALL XMOVE (STORE(I5),STORE(MATMD),MDATMD)
           STORE(MNEW+3) = 1.0
           CALL XMOVE (STORE(I5),STORE(MRENM+2),2)
           ISTORE(MRENM+5) = I5
@@ -3134,6 +3183,7 @@ c          WRITE(CMON,'(A,I10)')'MRENM+5: ',ISTORE(MRENM+5)
 c          CALL XPRVDU(NCVDU,1,0)
           MNEW = MNEW + 4
           MRENM = MRENM + 6
+          MATMD = MATMD + MDATMD
       END DO
 
       MOLD = LOLD
@@ -3165,6 +3215,7 @@ c      WRITE(CMON,'(A,I8)') 'XRGQCK, LRENM: ',LRENM
 c      CALL XPRVDU(NCVDU,1,0)
 
 C Improve the match:
+      IF ( ZORIG .NE. 0 ) IFLCMP = 5
       IMAT = 3
       CALL XRGCLC(IMAT,1)
 
@@ -3172,6 +3223,7 @@ C     Restore NFL and LFL
       NFL = IRNFL
       LFL = IRLFL
 
+      IF ( ZORIG .EQ. 0 ) THEN
 
       WRITE ( CMON,'(A)') 'Improving the matrix.'
       CALL XPRVDU(NCVDU, 1,0)
@@ -3192,15 +3244,16 @@ C Use the better match to get a better matrix.
       MDRENM = 6
       IFLCMP=2                    ! SET REPLACE/COMPARE FLAG TO COMPARE
 
-
       NATMD= NMAP
       NOLD = NMAP
       NNEW = NMAP
       MNEW = LNEW
       MRENM = LRENM
+      MATMD = LATMD
       DO I = 0, NMAP-1
           I5 = L5 + ( (ISTORE(LMAP+I*MDATVC)) * MD5 )
           CALL XMOVE (STORE(I5+4),STORE(MNEW),3)
+          CALL XMOVE (STORE(I5),STORE(MATMD),MDATMD)
           STORE(MNEW+3) = 1.0
           CALL XMOVE (STORE(I5),STORE(MRENM+2),2)
           ISTORE(MRENM+5) = I5
@@ -3210,6 +3263,7 @@ c          CALL XPRVDU(NCVDU,1,0)
 
           MNEW = MNEW + 4
           MRENM = MRENM + 6
+          MATMD = MATMD + MDATMD
       END DO
 
 
@@ -3233,23 +3287,27 @@ C     Restore NFL and LFL
       NFL = IRNFL
       LFL = IRLFL
 
-      WRITE ( CMON,'(A)') 'Do final mapping.'
-      CALL XPRVDU(NCVDU, 1,0)
+
+        WRITE ( CMON,'(A)') 'Do final mapping.'
+        CALL XPRVDU(NCVDU, 1,0)
 
 C Use the better matrix to do a final mapping:
-      NATMD= NMAP
+        NATMD= NMAP
       NOLD = NMAP
       NNEW = NMAP
       MNEW = LNEW
+      MATMD = LATMD
       MRENM = LRENM
       DO I = 0, NMAP-1
           I5 = L5 + ( (ISTORE(LMAP+I*MDATVC)) * MD5 )
           CALL XMOVE (STORE(I5+4),STORE(MNEW),3)
+          CALL XMOVE (STORE(I5),STORE(MATMD),MDATMD)
           STORE(MNEW+3) = 1.0
           CALL XMOVE (STORE(I5),STORE(MRENM+2),2)
           ISTORE(MRENM+5) = I5
           MNEW = MNEW + 4
           MRENM = MRENM + 6
+          MATMD = MATMD + MDATMD
       END DO
       MOLD = LOLD
       MRENM = LRENM
@@ -3264,6 +3322,8 @@ C Use the better matrix to do a final mapping:
       END DO
       IMAT = 2
       CALL XRGCLC(IMAT,1)
+
+      END IF
 
 C     Restore NFL and LFL
       NFL = IRNFL
