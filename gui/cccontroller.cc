@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.31  2001/07/03 13:24:27  ckp2
+// Fixed race condition in queue critical sections. CRYSTALS now waits (up to 1 second)
+// to be signalled that something has been added to the queue instead of looping frantically.
+//
 // Revision 1.30  2001/06/18 12:27:31  richard
 // Include errno.h for the linux version.
 //
@@ -1188,7 +1192,10 @@ void CcController::CompleteProcessing()
 
    m_Completing = true;
    LOGSTAT("Complete processing - waiting");
-   m_Wait_For_Processing_CS.Wait();
+   while ( m_Completing )
+   {
+      m_Wait_For_Processing_CS.Wait(1000);
+   }
    LOGSTAT("Complete processing - signal recieved.");
 
 /*
