@@ -1,4 +1,8 @@
+
 c $Log: not supported by cvs2svn $
+c Revision 1.35  2004/08/25 08:50:40  rich
+c Just some comments about the maths.
+c
 c Revision 1.34  2004/08/09 14:41:08  rich
 c Now EQUALATOM *forces* equal atom types during #MATCH. If not specified,
 c the program will attempt to use atom types unless it discovers Q atoms
@@ -1010,7 +1014,8 @@ Cdjwapr2001
       IF (IMATRIX.LE.-1) THEN
 C -- PRINT COORDINATES AFTER FITTING AND THE DEVIATIONS BETWEEN THEM
 C 
-         CALL XRGPCS (2,3)
+c         CALL XRGPCS (2,3)
+         CALL XRGPCS
 C 
 C----- WRITE THE IMPORTANT MATRICES AND VECTORS
          IF (ISSPRT.EQ.0) THEN
@@ -1038,11 +1043,6 @@ C
           CALL XCREMS(CPCH,CPCH,LENFIL)
          END IF
 C 
-         WRITE (NCAWU,950)
-950      FORMAT (/1X,'Tranformation matrix between new and old ',
-     1 'coordinates',/' in crystal system'/)
-         WRITE (NCAWU,1000) ((WSPAC3(I,J),I=1,3),J=1,3)
-1000     FORMAT (3(6X,3F10.6,/))
          IF (IPCHRE.GE.0)THEN
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(9(A,F9.4))')
      1    ((CHAR(9),WSPAC3(I,J),I=1,3),J=1,3)
@@ -2275,34 +2275,21 @@ C
 C --
 C
 CODE FOR XRGPCS
-      SUBROUTINE XRGPCS ( ICODE , IHDR )
+      SUBROUTINE XRGPCS 
 C
 C -- PRINT THE STORED COORDINATED DATA POINTED TO BY LOLD AND LNEW
 C
-C      VALUES FOR ICODE :-
-C
-C            1            PRINT COORDINATES
-C            2            PRINT DEVIATIONS ( FOR ATOMS FOR WHICH THIS
-C                           QUANTITY IS DEFINED )
-C
-C      VALUES FOR IHDR :-
-C
-C            0            NO HEADER
-C            1            ORIGINAL COORDINATES
-C            2            COORDINATES IN BEST PLANES FOR GROUP
-C            3            FITTED COORDINATES
-C            4            FINAL COORDINATES
-C
-C
-      CHARACTER*12 PRTTYP(2)
-      CHARACTER*24 PRTUNT(2)
-c      CHARACTER*21 CAMATM
 C
       DIMENSION DELTA(5)
       DIMENSION SUM(4)
       DIMENSION RMSDEV(4)
-      DIMENSION JFRN(4,2)
-C
+      DIMENSION XVEC(3)
+C Our torsion is C-A-B-D
+      DIMENSION ACVEC(3), ABVEC(3), BDVEC(3)
+      DIMENSION TEMPO(3), ROMAT(9)
+
+      CHARACTER*32 CATOM1
+
 \ISTORE
 \STORE
 \XUNITS
@@ -2313,154 +2300,52 @@ C
 \XERVAL
 \XOPVAL
 \XIOBUF
+\XLST01
 \XLST05
-C
+\XLST41
+\XCOMPD 
 \QSTORE
-C
-      DATA MAXCOD / 2 / , MAXHDR / 4 /
-      DATA PRTTYP(1) / 'Coordinates ' / , PRTTYP(2) / 'Deviations  ' /
-      DATA PRTUNT(1) / ' ( Crystal fractions )  ' /
-      DATA PRTUNT(2) / ' ( Angstrom )           ' /
-      DATA JFRN /'F', 'R', 'N', '1', 'F', 'R', 'N', '2'/
-C
-C
-C -- CHECK INPUT VALUES
-C
-      IF ( ICODE .LE. 0 ) GO TO 9910
-      IF ( ICODE .GT. MAXCOD ) GO TO 9910
-      IF ( IHDR .LT. 0 ) GO TO 9910
-      IF ( IHDR .GT. MAXHDR ) GO TO 9910
 C
       CALL XZEROF ( SUM(1) , 4 )
       RADIUS = 0.0
-C
+
+      MISMAT = 0
+
 C -- PRINT HEADER
-C
-      IF ( IHDR .LE. 0 ) GO TO 1900
-C
-      GO TO ( 1100 , 1200 , 1300 , 1400 , 9910 ) , IHDR
-      GO TO 9910
-C
-1100  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1105 ) PRTTYP(ICODE) , PRTUNT(1)
-      ENDIF
-1105  FORMAT ( 1X , A12 , 'in crystal system' , A24 )
-      GO TO 1700
-1200  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1205 ) PRTTYP(ICODE) , PRTUNT(2)
-      ENDIF
-1205  FORMAT ( 1X , A12 , 'in best plane system before fitting' , A24 )
-      GO TO 1700
-1300  CONTINUE
-      WRITE ( CMON , 1305 ) PRTTYP(ICODE) , PRTUNT(2)
+      WRITE ( CMON , 1305 )
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
-1305  FORMAT ( 1X , A12 , 'in best plane system after fitting' , A24 )
-      GO TO 1700
-1400  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1405 ) PRTTYP(ICODE) , PRTUNT(1)
-      ENDIF
-1405  FORMAT ( 1X , A12 , 'in crystal system after fitting' , A24 )
-      GO TO 1700
-C
-C
-1700  CONTINUE
-C -- WRITE NEXT LINE FOR EITHER COORDINATES OR DEVIATIONS
-      GO TO ( 1710 , 1720 , 9910 ) , ICODE
-      GO TO 9910
-C
-1710  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1715 )
-      ENDIF
-1715  FORMAT ( 1X , 44X , 'Old' , 35X , 'New'  , / ,
-     2 1X ,'Position' , 5X ,'Type   Serial   ' ,
-     3 2 ( 5X , 'x' , 9X , 'y' , 9X , 'z' , 9X ) )
-      GO TO 1900
-C
-1720  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1725 )
-      ENDIF
+1305  FORMAT ( 1X , 'Deviations  in best plane system after fitting' ,
+     1 ' ( Angstrom )           ' )
+
+      IF (ISSPRT .EQ. 0)  WRITE ( NCWU , 1725 )
 1725  FORMAT ( /,1X , 'Position' , 2X , 'Type  Serial' ,4X,
      2 'old(x)',2X,'old(y)',2X, 'old(z)',7X, 'new(x)',2X,
      3 'new(y)',2X,'new(z)', 8X,'d(x)',4X,'d(y)',4X,'d(z)',
      4 7X,'Distance',4X,'Angle',/)
-      GO TO 1900
-C
-1900  CONTINUE
-C
-
-c      IPUNCH = 1
-c
-c      IF ( IPUNCH .EQ. 1 ) THEN
-c        CALL XRDOPN ( 5 , JFRN(1,1) , 'CAMERON.INI', 11)
-c        WRITE(NCFPU1,1002)
-c1002    FORMAT('$DATA'/'CELL    1.0000    1.0000    1.0000    90.000
-c     1 90.000    90.000'/'LIST5'/'REGULAR.L5I'/'$SYMM'/'NOCEN'/'$')
-c        CALL XRDOPN ( 7 , JFRN(1,1) , 'CAMERON.INI', 11)
-c        CALL XRDOPN ( 5 , JFRN(1,1) , 'REGULAR.L5I', 11)
-c        WRITE(NCFPU1,1003)
-c1003    FORMAT('#'/'#  Written out from REGULARISE COMPARE'/'#'/
-c     1  '#LIST      5')
-c        WRITE(NCFPU1,1000)NOLD*2,0,0,0
-c1000    FORMAT(13HREAD NATOM = ,I6,11H, NLAYER = ,I4,13H, NELEMENT = ,
-c     2  I4, 11H, NBATCH = ,I4)
-c        WRITE(NCFPU1,1050) STORE(L5O),STORE(L5O+1),STORE(L5O+2),
-c     1  STORE(L5O+3),STORE(L5O+4),STORE(L5O+5)
-c1050    FORMAT(8HOVERALL ,F11.6,4(1X,F9.6),1X,F17.7)
-c        CALL XRDOPN ( 5 , JFRN(1,2) , 'REGULAR.OBY', 11)
-c        WRITE(NCFPU2,'(''DEFGROUP REG1 ATOMS'')')
-c        DO I=1,NOLD
-c         INDATM=LATMD+MDATMD*(I-1)
-c         WRITE(CAMATM,'(A,I5)')ISTORE(INDATM),NINT(STORE(INDATM+1))
-c         CALL XCRAS(CAMATM,LCAMA)
-c         WRITE(NCFPU2,'(A)')CAMATM
-c        END DO
-c        WRITE(NCFPU2,'(''DEFGROUP REG2 ATOMS'')')
-c        DO I=1,NOLD
-c         INDATM=LATMD+MDATMD*(I-1)
-c         WRITE(CAMATM,'(A,I5)')ISTORE(INDATM),1000+NINT(STORE(INDATM+1))
-c         CALL XCRAS(CAMATM,LCAMA)
-c         WRITE(NCFPU2,'(A)')CAMATM
-c        END DO
-c        WRITE(NCFPU2,'(''COLO GROUP REG1 BLUE COLO GROUP REG2 RED'')')
-c        CALL XRDOPN ( 7 , JFRN(1,2) , 'REGULAR.OBY', 11)
-c      ENDIF
 
 
-      DO 2000 I=1,NOLD
+      DO I=1,NOLD
         INDOLD=LOLD+MDOLD*(I-1)
         INDNEW=LNEW+MDNEW*(I-1)
         INDATM=LATMD+MDATMD*(I-1)
 
 C -- PRINT APPROPRIATE DATA
-        IF ( ICODE .EQ. 1 ) THEN
-          IF (ISSPRT .EQ. 0) THEN
-            WRITE ( NCWU , 2005 ) I, (STORE(J),J=INDATM,INDATM+1),
-     2      (STORE(J),J=INDOLD,INDOLD+2),(STORE(J),J=INDNEW,INDNEW+2)
-          ENDIF
-2005      FORMAT ( 1X, I8, 5X, A4, 3X, F6.0, 3X, 3F10.4, 5X, 3F10.4 )
-        ELSE IF ( ICODE .EQ. 2 ) THEN
-          IF ( ABS ( STORE(INDOLD+3) ) .LE. ZERO ) THEN
+        IF ( ABS ( STORE(INDOLD+3) ) .LE. ZERO ) THEN
             IF (ISSPRT .EQ. 0) THEN
                WRITE ( NCWU , 2015 ) I, (STORE(J), J=INDATM,INDATM+1),
      2         (STORE(J),J=INDOLD,INDOLD+2),(STORE(J),J=INDNEW,INDNEW+2)
             ENDIF
-            GO TO 2020
-          ELSE
+        ELSE
             DISTSQ = 0.
-            DO 2010 J = 1 , 3
+            DO J = 1 , 3
                DELTA(J) = STORE(INDNEW+J-1) - STORE(INDOLD+J-1)
                DELTSQ = DELTA(J) ** 2
                SUM(J) = SUM(J) + DELTSQ
                DISTSQ = DISTSQ + DELTSQ
                RBAR=0.5*(STORE(INDNEW+J-1)+STORE(INDOLD+J-1))
                RADIUS=RADIUS+RBAR*RBAR
-2010        CONTINUE
+            END DO
             DELTA(4) = SQRT ( DISTSQ )
             RADIUS=SQRT(RADIUS)
             DELTA(5)=RTD*ATAN2(DELTA(4),RADIUS)
@@ -2469,56 +2354,39 @@ C -- PRINT APPROPRIATE DATA
      2         (STORE(J),J=INDOLD,INDOLD+2),
      3         (STORE(J),J=INDNEW,INDNEW+2), DELTA
             ENDIF
-          ENDIF
+        ENDIF
 
-c          IF ( IPUNCH .EQ. 1 ) THEN
+
+c        IF ( IPUNCH .EQ. 1 ) THEN
+c
 c            WRITE(NCFPU1,2016) (STORE(J),J=INDATM,INDATM+3),
 c     1      (STORE(J),J=INDOLD,INDOLD+2),
 c     2      (STORE(J),J=INDATM+7,INDATM+13),
 c     3      1,(ISTORE(J),J=INDATM+15,INDATM+17)
+c
 c            WRITE(NCFPU1,2016) STORE(INDATM),STORE(INDATM+1)+1000.0,
 c     1      STORE(INDATM+2),STORE(INDATM+3),
 c     2      (STORE(J),J=INDNEW,INDNEW+2),
 c     3      (STORE(J),J=INDATM+7,INDATM+13),
 c     4      2,(ISTORE(J),J=INDATM+15,INDATM+17)
-c         END IF
-
+c
+c       END IF
 2015     FORMAT ( 1X,2X,I4, 4X,A4,2X, F6.0,2X, 4(3F8.3,5X))
-2016     FORMAT
-     1   ('ATOM ',A4,1X,6F11.6/
-     2    'CON U[11]=',6F11.6/
-     3    'CON SPARE=',F11.2,3I11,7X,A4)
-2020     CONTINUE
-      ELSE
-            GO TO 9910
-      ENDIF
-C
-C
-2000  CONTINUE
+c2016     FORMAT
+c     1   ('ATOM ',A4,1X,6F11.6/
+c     2    'CON U[11]=',6F11.6/
+c     3    'CON SPARE=',F11.2,3I11,7X,A4)
+      END DO
 
-
-c      IF ( IPUNCH .EQ. 1 ) THEN
-cC Don't bother with element, layer scales etc. Punch End:
-c        WRITE(NCFPU1,'(''END''/''#USE LAST'')')
-c        CALL XRDOPN ( 7 , JFRN(1,1) , 'regular.l5i', 11)
-c      END IF
-
-C -- CHECK IF PRINT OF DEVIATIONS IS REQUIRED
-C
-      IF ( ICODE .EQ. 2 ) THEN
-C
 C -- CALCULATE TOTAL SQUARED DEVIATION AND RMS DEVIATIONS
-C
-            SUM(4) = SUM(1) + SUM(2) + SUM(3)
-            SUMDEV  = SUM(4)/FLOAT(NATMD)
-C
-            DO 2500 I = 1,4
+
+      SUM(4) = SUM(1) + SUM(2) + SUM(3)
+      SUMDEV  = SUM(4)/FLOAT(NATMD)
+      DO I = 1,4
             RMSDEV(I) = SQRT ( SUM(I)/FLOAT(NATMD) )
-2500        CONTINUE
-C
-      IF (ISSPRT .EQ. 0) THEN
-            WRITE ( NCWU , 2505 ) SUM , RMSDEV
-      ENDIF
+      END DO
+
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2505 ) SUM , RMSDEV
 2505  FORMAT ( // ,
      2 1X,53X , 'Total squared deviations     ' , 3F8.3 ,
      3 1X , 'Total' , F8.3 , / ,
@@ -2537,22 +2405,354 @@ C
      4 1X , 'RMS deviations          ' , 3F8.3 ,
      5 2X , 'Mean' , F8.3 )
 
-            IF (IPCHRE.GE.0)THEN
-             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(8(A,F9.4))')
-     1       (CHAR(9),SUM(I),I=1,4),(CHAR(9),RMSDEV(I),I=1,4)
-             CALL XCREMS(CPCH,CPCH,LENFIL)
+
+C RMS deviation of bonds
+
+      JT = 12 ! Number of words per returned distance
+      BDEV = 0.0
+      NUMB = 0
+      BNDMAX = 0.0
+      BNDMIN = 1000.0
+
+      WRITE(CMON,'(/,A)')'Bond length deviations'
+      CALL XPRVDU(NCVDU,2,0)
+
+      DO I=1,NOLD
+        INDOLD=LOLD+MDOLD*(I-1)
+        INDNEW=LNEW+MDNEW*(I-1)
+        INDATM=LATMD+MDATMD*(I-1)
+        INDR = LRENM+MDRENM*(I-1)
+
+c        WRITE(CMON,'(A,2I10)')'Adrss: ',ISTORE(INDR+4),ISTORE(INDR+5)
+c        CALL XPRVDU(NCVDU,1,0)
+
+        MOPIV = ISTORE(INDR+4)  ! atom in old list.
+        MNPIV = ISTORE(INDR+5)  ! corresponding atom in new list.
+
+        M5A = MOPIV
+        M5=M5A  ! Find each bond once.
+
+        NFLORIG = NFL           ! SAVE THE NEXT FREE ADDRESS
+        MASTCK = NFL + 10*N5*JT ! Keep well clear 
+        NFL = MASTCK            ! Temp change NFL.
+        K = KDIST4( JS, JT, 0, 0)   ! Find the distances
+        NFL = NFLORIG       ! RESET NFL 
+
+        IF ( K .LT. 0 ) THEN
+           WRITE (CMON,'(A)')'"KDIST4" returned an error.'
+           CALL XPRVDU(NCVDU,1,0)
+           CYCLE
+        END IF
+
+C There is a stack at MASTCK of all the bonded contacts around the atom at M5A.
+C Find the pivot atom (M5A) in the first group.
+
+        DISTLOOP: DO J = MASTCK, JS-JT, JT
+          MOBND = ISTORE(J)  ! Get the address in L5 of this atom.
+          MNBND = -1
+          DO L=1,NOLD  !  Find the bonded atom in the old list.
+            LINDR = LRENM+MDRENM*(L-1)
+            IF ( ISTORE(LINDR+4) .EQ. MOBND ) THEN
+              MNBND = ISTORE(LINDR+5)
+              EXIT
             END IF
+          END DO
+          IF ( MNBND .LT. 0 ) CYCLE
+          D1 = XDSTN2(STORE(MOPIV+4),STORE(MOBND+4))
+          D2 = XDSTN2(STORE(MNPIV+4),STORE(MNBND+4))
+          DEV = ABS(SQRT(D1)-SQRT(D2))
+          BDEV = BDEV + DEV**2
+          BNDMIN = MIN(BNDMIN, DEV)
+          BNDMAX = MAX(BNDMAX, DEV)
+          NUMB = NUMB + 1
+
+          WRITE(CMON,'(4(1X,A,I4),F8.3)')
+     4                            ISTORE(MOPIV),NINT(STORE(MOPIV+1)),
+     2                            ISTORE(MOBNd),NINT(STORE(MOBND+1)),
+     1                            ISTORE(MNPIV),NINT(STORE(MNPIV+1)),
+     3                            ISTORE(MNBND),NINT(STORE(MNBND+1)),
+     1     DEV
+          CALL XPRVDU(NCVDU,1,0)
+C Really check if the bond MNBND - MNPIV is in the bond list.
+          
+          IFBND = 0
+          DO M41B = L41B+(N41B-1)*MD41B, L41B, -MD41B
+            I51 = L5 + ISTORE(M41B) * MD5
+            I52 = L5 + ISTORE(M41B+6) * MD5
+            IF ((( I51 .EQ. MNBND ) .AND. ( I52 .EQ. MNPIV )) .OR.
+     1          (( I52 .EQ. MNBND ) .AND. ( I51 .EQ. MNPIV ))) THEN
+               IFBND = 1
+               EXIT
+            END IF
+          END DO
+          IF ( IFBND .EQ. 0 ) THEN !  BOND not FOUND !
+            IF (IPCHRE.GE.0)THEN
+             IF ( MISMAT .EQ. 0 ) THEN
+              WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(2A)')
+     1        CHAR(9),'Bond mismatch'
+              CALL XCREMS(CPCH,CPCH,LENFIL)
+              WRITE(99,'(15A4,2A,4(1X,A,I4))')(KTITL(II),II=1,15),
+     1        CHAR(9),'Bond mismatch',
+     4                            ISTORE(MOPIV),NINT(STORE(MOPIV+1)),
+     2                            ISTORE(MOBNd),NINT(STORE(MOBND+1)),
+     1                            ISTORE(MNPIV),NINT(STORE(MNPIV+1)),
+     3                            ISTORE(MNBND),NINT(STORE(MNBND+1))
+              MISMAT = 1
+             END IF
+            END IF
+            WRITE (CMON,'(A)')'{E Warning: bond mismatch'
+            CALL XPRVDU(NCVDU,1,0)
+          END IF
+        END DO    DISTLOOP
+      END DO
+
+
+      WRITE(CMON,'(/,A)')'Torsion angle deviations'
+      CALL XPRVDU(NCVDU,2,0)
+
+C RMS deviation of torsions.
+C 1. Find next bond (a1-a2) in LOLD.
+C 2. Find equiv bond in LNEW (a1'-a2')
+C   3. Find another bond from atom 1 (a1-a3)
+C   4. Find equiv bond (a1'-a3')
+C     5. Find bond from a2 != a1 (a2-a4)
+C     6. Find equiv bond (a2'-a4')
+
+C Torsion will be MNC - MNA - MNB - MND
+C Old one will be MOC - MOA - MOB - MOD
+
+      JT = 12 ! Number of words per returned distance
+      TDEVP = 0.0
+      TDEVN = 0.0
+      TOR1MAX = 0.0
+      TOR1MIN = 1000.0
+      TOR2MAX = 0.0
+      TOR2MIN = 1000.0
+      NUMT = 0
+
+      DO I=1,NOLD
+        INDOLD=LOLD+MDOLD*(I-1)
+        INDNEW=LNEW+MDNEW*(I-1)
+        INDATM=LATMD+MDATMD*(I-1)
+        INDR = LRENM+MDRENM*(I-1)
+
+c        WRITE(CMON,'(A,2I10)')'Adrss: ',ISTORE(INDR+4),ISTORE(INDR+5)
+c        CALL XPRVDU(NCVDU,1,0)
+
+        MOA = ISTORE(INDR+4)  ! atom A in old list.
+        MNA = ISTORE(INDR+5)  ! corresponding atom A' in new list.
+
+        M5A = MOA        ! Atom A
+        M5  = L5A        ! Find all bonds to Atom A.
+        NFLORIG = NFL           ! SAVE THE NEXT FREE ADDRESS
+        MASTCK = NFL + 10*N5*JT ! Keep well clear 
+        NFL = MASTCK            ! Temp change NFL.
+        K = KDIST4( MAENDS, JT, 0, 0)   ! Find the distances
+        NFL = NFLORIG       ! RESET NFL 
+
+        IF ( K .LT. 0 ) THEN
+           WRITE (CMON,'(A)')'"KDIST4" returned an error.'
+           CALL XPRVDU(NCVDU,1,0)
+           CYCLE
+        END IF
+        IF ( K .LE. 1 ) CYCLE ! No torsions here.
+
+C There is a stack at MASTCK of all the bonded contacts around the atom at M5A.
+C Find the pivot atom (M5A) in the first group.
+
+        DLOOP: DO J = MASTCK, MAENDS-JT, JT
+          MOB = ISTORE(J)           ! Get the address in L5 of this atom.
+          IF ( MOB .LE. MOA ) CYCLE ! Only consider inner atoms once.
+          MNB = -1
+          DO L=1,NOLD  !  Find the bonded atom in the old list.
+            LINDR = LRENM+MDRENM*(L-1)
+            IF ( ISTORE(LINDR+4) .EQ. MOB ) THEN
+              MNB = ISTORE(LINDR+5)
+              EXIT
+            END IF
+          END DO
+          IF ( MNB .LT. 0 ) CYCLE  ! Atom not in new list. Err?
+
+C Find list of bonds around atom B. Keep well clear of current list.
+          M5A = MOB       ! Atom B
+          M5  = L5        ! Find each bond many times.
+          NFLORIG = NFL                 ! SAVE THE NEXT FREE ADDRESS
+          MBSTCK  = MAENDS + JT                 ! Keep well clear 
+          NFL     = MBSTCK                      ! Temp change NFL.
+          K       = KDIST4( MBENDS, JT, 0, 0)   ! Find the distances
+          NFL     = NFLORIG                     ! RESET NFL 
+
+          IF ( K .LT. 0 ) THEN
+           WRITE (CMON,'(A)')'"KDIST4" returned an error. In DLOOP.'
+           CALL XPRVDU(NCVDU,1,0)
+           CYCLE
+          END IF
+          IF ( K .LE. 1 ) CYCLE ! No torsions here.
+
+          ATOMALOOP: DO K = MASTCK, MAENDS-JT, JT
+
+            IF ( K .EQ. J ) CYCLE  ! MOC must not be MOB.
+            MOC = ISTORE(K)  ! Get the address in L5 of this atom.
+            MNC = -1
+            DO L=1,NOLD  !  Find the bonded atom in the old list.
+              LINDR = LRENM+MDRENM*(L-1)
+              IF ( ISTORE(LINDR+4) .EQ. MOC ) THEN
+                MNC = ISTORE(LINDR+5)
+                EXIT
+              END IF
+            END DO
+            IF ( MNC .LT. 0 ) CYCLE  ! Atom not in new list. Err?
+
+            ATOMBLOOP: DO KB = MBSTCK, MBENDS-JT, JT
+
+              MOD = ISTORE(KB)  ! Get the address in L5 of this atom.
+              IF ( MOD .EQ. MOA ) CYCLE  ! MOD must not be MOA.
+              MND = -1
+              DO L=1,NOLD  !  Find the bonded atom in the old list.
+                LINDR = LRENM+MDRENM*(L-1)
+                IF ( ISTORE(LINDR+4) .EQ. MOD ) THEN
+                  MND = ISTORE(LINDR+5)
+                  EXIT
+                END IF
+              END DO
+              IF ( MND .LT. 0 ) CYCLE  ! Atom not in new list. Err?
+
+C Vectors
+              CALL XSUBTR(STORE(MOC+4),STORE(MOA+4),ACVEC,3)
+              CALL XSUBTR(STORE(MOB+4),STORE(MOA+4),ABVEC,3)
+              CALL XSUBTR(STORE(MOD+4),STORE(MOB+4),BDVEC,3)
+C Orthogonal
+              CALL XMLTTM(STORE(L1O1),ACVEC,TEMPO,3,3,1)
+              CALL XMOVE(TEMPO,ACVEC,3)
+              CALL XMLTTM(STORE(L1O1),ABVEC,TEMPO,3,3,1)
+              CALL XMOVE(TEMPO,ABVEC,3)
+              CALL XMLTTM(STORE(L1O1),BDVEC,TEMPO,3,3,1)
+              CALL XMOVE(TEMPO,BDVEC,3)
+C Normalise
+              II= NORM3(ACVEC)
+              II= NORM3(ABVEC)
+              II= NORM3(BDVEC)
+              
+C Axis system for torsion C-A-B-D
+C Construct an orthogonal set of axes so that the 'z' direction points
+C along the AB bond, the 'y' direction is perpendicular to the CAB plane,
+C and the 'x' direction lies in the CAB plane, perpendicul to y and z.
+C NB Matrix transpose is formed for easy memory access.
+              CALL XMOVE(ABVEC,ROMAT(7),3)       ! z-direction
+              II = NCROP3(ABVEC,ACVEC,ROMAT(4))  ! y-direction
+              II = NCROP3(ROMAT(4),ROMAT(7),ROMAT(1))  ! x-direction
+
+C Transform BD vector to this new system
+              CALL XMLTTM(ROMAT,BDVEC,TEMPO,3,3,1)
+
+C Angle - imagine looking down the z direction (the BA bond):
 C
-      ENDIF
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9010 )
-      ENDIF
+C
+C       D
+C  y   /
+C     /
+C    /
+C   AB-----C
+C       x
+C
+C the sin of the angle between AC and BD is given by the y component of BD
+C and the cos by the x component.
+
+              T1 = ATAN2( TEMPO(2), TEMPO(1) ) * RTD  ! Ta-da.
+
+C The new atoms.
+C Vectors
+              CALL XSUBTR(STORE(MNC+4),STORE(MNA+4),ACVEC,3)
+              CALL XSUBTR(STORE(MNB+4),STORE(MNA+4),ABVEC,3)
+              CALL XSUBTR(STORE(MND+4),STORE(MNB+4),BDVEC,3)
+C Orthogonal
+              CALL XMLTTM(STORE(L1O1),ACVEC,TEMPO,3,3,1)
+              CALL XMOVE(TEMPO,ACVEC,3)
+              CALL XMLTTM(STORE(L1O1),ABVEC,TEMPO,3,3,1)
+              CALL XMOVE(TEMPO,ABVEC,3)
+              CALL XMLTTM(STORE(L1O1),BDVEC,TEMPO,3,3,1)
+              CALL XMOVE(TEMPO,BDVEC,3)
+C Normalise
+              II= NORM3(ACVEC)
+              II= NORM3(ABVEC)
+              II= NORM3(BDVEC)
+C Axis system for torsion C-A-B-D
+              CALL XMOVE(ABVEC,ROMAT(7),3)       ! z-direction
+              II = NCROP3(ABVEC,ACVEC,ROMAT(4))  ! y-direction
+              II = NCROP3(ROMAT(4),ROMAT(7),ROMAT(1))  ! x-direction
+C Transform BD vector to this new system
+              CALL XMLTTM(ROMAT,BDVEC,TEMPO,3,3,1)
+
+              T2 = ATAN2( TEMPO(2), TEMPO(1) ) * RTD  ! Ta-da.
+
+C If angles differ by more than 180, take 360 - diff.
+
+              TP = T1 - T2
+              IF ( TP .GT. 180.0 ) TP = 360. - TP
+              IF ( TP .LT. -180.0 ) TP = -360. - TP
+              TDEVP = TDEVP + TP**2
+              TOR1MAX = MAX(TOR1MAX,ABS(TP))
+              TOR1MIN = MIN(TOR1MIN,ABS(TP))
+
+
+              TN = T1 + T2
+              IF ( TN .GT. 180 ) TN = 360. - TN
+              IF ( TN .LT. -180 ) TN = -360. - TN
+              TDEVN = TDEVN + TN**2
+              TOR2MAX = MAX(TOR2MAX,ABS(TN))
+              TOR2MIN = MIN(TOR2MIN,ABS(TN))
+
+              NUMT = NUMT + 1
+
+              WRITE(CMON,'(8(1X,A,I4),F8.3)')
+     4                            ISTORE(MOC),NINT(STORE(MOC+1)),
+     2                            ISTORE(MOA),NINT(STORE(MOA+1)),
+     4                            ISTORE(MOB),NINT(STORE(MOB+1)),
+     2                            ISTORE(MOD),NINT(STORE(MOD+1)),
+     1                            ISTORE(MNC),NINT(STORE(MNC+1)),
+     3                            ISTORE(MNA),NINT(STORE(MNA+1)),
+     1                            ISTORE(MNB),NINT(STORE(MNB+1)),
+     3                            ISTORE(MND),NINT(STORE(MND+1)),
+     1                            TP
+              CALL XPRVDU(NCVDU,1,0)
+            END DO ATOMBLOOP
+          END DO ATOMALOOP
+        END DO DLOOP
+      END DO
+
+
+
+      SBDEV = SQRT(BDEV / NUMB)
+      STDEV = SQRT(MIN(TDEVP,TDEVN) / NUMT)
+
+      IF ( TDEVP .GT. TDEVN ) THEN
+        TORMAX = TOR2MAX
+        TORMIN = TOR2MIN
+      ELSE
+        TORMAX = TOR1MAX
+        TORMIN = TOR1MIN
+      END IF
+
+      WRITE(CMON,'(17X,A/A,3F12.4)')'rms pos    rms bond     rms tors',
+     1 ' Deviations  ',RMSDEV(4), SBDEV, STDEV
+      CALL XPRVDU(NCVDU,2,0)
+
+
+      IF (IPCHRE.GE.0)THEN
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(14(A,F9.4))')
+     1       (CHAR(9),SUM(I),I=1,4),(CHAR(9),RMSDEV(I),I=1,4),
+     1       CHAR(9),SBDEV,CHAR(9),STDEV,CHAR(9),BNDMIN,CHAR(9),BNDMAX,
+     1       CHAR(9),TORMIN,CHAR(9),TORMAX
+             CALL XCREMS(CPCH,CPCH,LENFIL)
+             IF ( MISMAT .EQ. 0 )
+     1        WRITE(99,'(15A4,3(A,F12.5))')(KTITL(I),I=1,15),
+     1       CHAR(9),RMSDEV(4),CHAR(9),SBDEV,CHAR(9),STDEV
+      END IF
+
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9010 )
 9010  FORMAT (//)
       RETURN
-C
-9910  CONTINUE
-      CALL XOPMSG ( IOPREG , IOPINT , 0 )
-      RETURN
+
       END
 C
 C --
@@ -2820,6 +3020,7 @@ C
 \XDSTNC
 C
 \QSTORE
+      
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
       IF(SUMDEV .GE. 0.1)THEN
        NUMDEV =NUMDEV +1
@@ -2834,6 +3035,7 @@ C
       LMBUF = KSTALL ( MDATVC )
       LNBUF = KSTALL ( MDNEW )
 c      LRBUF = KSTALL ( MDRENM )
+      NMATCHED = 0
 
       WRITE(CMON,'(1X,A,7X,A,8X,A,6X,A)')
      1 'Improving','onto','giving', 'distance'
@@ -2847,41 +3049,55 @@ C   I think this info is lost by now.)
       DO I=0,NOLD-1                     !Loop over old atoms.
          INDOLD=LOLD+MDOLD*I            !Address of XYZold
          IOLD5 = L5 + (ISTORE(LONTO+I*MDATVC)) * MD5
+         IONTO = LONTO+I*MDATVC
          DISMIN=1000000.            !Initialise
          INDDIS=-1
 
-c         WRITE(CMON,'(A,A4,3I9)')'Old atom: ',ISTORE(IOLD5),
-c     1   NINT(STORE(IOLD5+1)),NINT(STORE(IOLD5+13)), LSPARE
-c          CALL XPRVDU(NCVDU,1,0)
+         IF ( ( LSPARE .EQ. 0 ) .OR.
+     1        ( ISTORE(IONTO+4) .EQ. 1 ) .OR.
+     2        ( I .EQ. 0 ) ) THEN              !Just match it.
 
-         DO J=I,NNEW-1                      !Loop over unmatched new atoms.
-           INDNEW=LNEW+MDNEW*J            !Address of XYZnew
-           INEW5 = L5 + (ISTORE(LMAP+J*MDATVC)) * MD5
+           WRITE(CMON,'(A,A4,7I9)')'Old atom: ',ISTORE(IOLD5),
+     1     NINT(STORE(IOLD5+1)),NINT(STORE(IOLD5+13)), LSPARE,
+     2     ISTORE(IONTO+1),ISTORE(IONTO+2),
+     3     ISTORE(IONTO+3),ISTORE(IONTO+4)
 
-c           WRITE(CMON,'(A,A4,2I9)')'New atom: ',ISTORE(INEW5),
-c     1   NINT(STORE(INEW5+1)),NINT(STORE(INEW5+13))
-c           CALL XPRVDU(NCVDU,1,0)
+           CALL XPRVDU(NCVDU,1,0)
 
-           DISTSQ=0.
+           DO J=I,NNEW-1           !Loop over unmatched new atoms.
+             INDNEW=LNEW+MDNEW*J         !Address of XYZnew
+             INEW5 = L5 + (ISTORE(LMAP+J*MDATVC)) * MD5
+
+c             WRITE(CMON,'(A,A4,2I9)')'New atom: ',ISTORE(INEW5),
+c     1       NINT(STORE(INEW5+1)),NINT(STORE(INEW5+13))
+c             CALL XPRVDU(NCVDU,1,0)
+
+             DISTSQ=0.
 C Only consider atom if spare matches when LSPARE is one.
-           IF ( (LSPARE.EQ.0) .OR. ( (LSPARE.EQ.1) .AND.
+             IF ( (LSPARE.EQ.0) .OR. ( (LSPARE.EQ.1) .AND.
      1          (NINT(STORE(INEW5+13)).EQ.NINT(STORE(IOLD5+13)))))THEN
-             DO K=1,3
-               DELTA=STORE(INDNEW+K-1)-STORE(INDOLD+K-1)
-               DELTSQ=DELTA**2
-               DISTSQ=DISTSQ+DELTSQ
-             END DO
+               DO K=1,3
+                 DELTA=STORE(INDNEW+K-1)-STORE(INDOLD+K-1)
+                 DELTSQ=DELTA**2
+                 DISTSQ=DISTSQ+DELTSQ
+               END DO
 
-c           WRITE(CMON,'(A,A4,2I9,F15.8)')'Match: ',ISTORE(INEW5),
-c     1   NINT(STORE(INEW5+1)), J, DISTSQ
-c           CALL XPRVDU(NCVDU,1,0)
-
-             IF (DISTSQ.LT.DISMIN) THEN
-               DISMIN=DISTSQ
-               INDDIS=J
+               WRITE(CMON,'(A,A4,2I9,F15.8)')'Match: ',ISTORE(INEW5),
+     1         NINT(STORE(INEW5+1)), J, DISTSQ
+               CALL XPRVDU(NCVDU,1,0)
+             
+               IF (DISTSQ.LT.DISMIN) THEN
+                 DISMIN=DISTSQ
+                 INDDIS=J
+               END IF
              END IF
-           END IF
-         END DO
+           END DO
+
+         ELSE   ! This is not a unique atom. Use bonding.
+
+           EXIT
+
+         END IF
 
          J = INDDIS
 
@@ -2905,6 +3121,7 @@ C Swap atoms at LRENM(I) and LRENM(J)
           STORE(LRENM+I*MDRENM+4) = STORE(INEW5)
           STORE(LRENM+I*MDRENM+5) = STORE(INEW5+1)+ZORIG
 
+          NMATCHED = NMATCHED + 1
 
           WRITE(CMON,
      1    '( A4,I4,I10,3X,A4,I4,I10,3X,F7.4)')
@@ -2922,6 +3139,195 @@ C Swap atoms at LRENM(I) and LRENM(J)
           GOTO 200
          END IF
       END DO
+
+      WRITE(CMON,'(A)')'All unique atoms matched. Matching rest'
+      CALL XPRVDU(NCVDU,1,0)
+
+      JT = 12 ! Number of words per returned distance
+
+      DO WHILE ( NMATCHED .LT. NOLD )   ! Keep on looping.
+
+        WRITE(CMON,'(A)')'Matching rest '
+        CALL XPRVDU(NCVDU,1,0)
+
+
+        UNMLOOP: DO I=NMATCHED-1,0,-1     !Loop over old matched atoms.
+
+C Create a list of bond to this atom. (A)
+          IOLDP = L5 + (ISTORE(LONTO+I*MDATVC)) * MD5
+
+
+          M5A = IOLDP
+          M5=L5  ! Find all bonds.
+
+          NFLORIG = NFL           ! SAVE THE NEXT FREE ADDRESS
+          MASTCK = NFL + 10*N5*JT ! Keep well clear 
+          NFL = MASTCK            ! Temp change NFL.
+          K = KDIST4( JS, JT, 0, 0)   ! Find the distances
+          NFL = NFLORIG       ! RESET NFL 
+
+          IF ( K .LT. 0 ) THEN
+           WRITE (CMON,'(A)')'"KDIST4" returned an error.'
+           CALL XPRVDU(NCVDU,1,0)
+           CYCLE
+          END IF
+
+C There is a stack at MASTCK of all the bonded contacts around the atom at M5A.
+
+
+          DISTLOOP: DO J = MASTCK, JS-JT, JT
+            MOBND = ISTORE(J)    ! Get the address in L5 of this atom.
+            MOFND = 0
+            DO L=0,NOLD-1        !  Find the bonded atom in the old list.
+              IOLDB = L5 + (ISTORE(LONTO+L*MDATVC)) * MD5
+              IF ( IOLDB .EQ. MOBND ) THEN
+                MOFND = 1
+                IF ( L .GE. NMATCHED ) THEN          ! This atom is not matched.
+                  INDOLD=LOLD+MDOLD*L            !Address of XYZold
+C Find the corresponding matched atom.
+                  INEWP = L5 + (ISTORE(LMAP+I*MDATVC)) * MD5
+
+C Find list of bonds to this atom.
+                  M5A = INEWP
+                  NFLORIG = NFL           ! SAVE THE NEXT FREE ADDRESS
+                  MBSTCK = JS + JT ! Keep well clear 
+                  NFL = MBSTCK            ! Temp change NFL.
+                  K = KDIST4( JS2, JT, 0, 0)   ! Find the distances
+                  NFL = NFLORIG       ! RESET NFL 
+
+                  IF ( K .LT. 0 ) THEN
+                   WRITE (CMON,'(A)')'"KDIST4" returned an error.'
+                   CALL XPRVDU(NCVDU,1,0)
+                   CYCLE
+                  END IF
+
+C There is a stack at MBSTCK of all the bonded contacts around the atom at M5A.
+
+                  DISMIN = 999999.0
+                  INDDIS = -1
+
+                  DISTWOLOOP: DO JJ = MBSTCK, JS2-JT, JT
+                    MNBND = ISTORE(JJ)  ! Get the address in L5 of this atom.
+                    DO LL=NMATCHED,NNEW-1  !  Find the bonded atom in the new list.
+                     INEWB = L5 + (ISTORE(LMAP+LL*MDATVC)) * MD5
+                     IF ( INEWB .EQ. MNBND ) THEN
+                       WRITE(CMON,'(2(A,A4,I5))')'Matched atom: ',
+     1                   ISTORE(IOLDP), NINT(STORE(IOLDP+1)),
+     1                   ' is bonded to: ',ISTORE(IOLDB),
+     1                   NINT(STORE(IOLDB+1))
+                CALL XPRVDU(NCVDU,1,0)
+
+                       WRITE(CMON,'(2(A,A4,I5))')'and matches: ',
+     1                  ISTORE(INEWP), NINT(STORE(INEWP+1)),
+     1                  ' which is in turn bonded to: ',
+     1                  ISTORE(INEWB), NINT(STORE(INEWB+1))
+                       CALL XPRVDU(NCVDU,1,0)
+                       IF ( NINT( STORE(INEWB+13) ).EQ.
+     1                      NINT( STORE(IOLDB+13) )    ) THEN
+                         INDNEW=LNEW+MDNEW*LL   !Address of XYZnew
+                         DISTSQ = 0.0
+                         DO KK=1,3
+                          DELTA=STORE(INDNEW+KK-1)-STORE(INDOLD+KK-1)
+                          DELTSQ=DELTA**2
+                          DISTSQ=DISTSQ+DELTSQ
+                         END DO
+
+                         WRITE(CMON,'(A,2(A4,I9),F15.8)')'Match: ',
+     1                   ISTORE(INEWB), NINT(STORE(INEWB+1)),
+     1                   ISTORE(IOLDB), NINT(STORE(IOLDB+1)), DISTSQ
+                         CALL XPRVDU(NCVDU,1,0)
+             
+                         IF (DISTSQ.LT.DISMIN) THEN
+                           DISMIN=DISTSQ
+                           INDDIS=LL
+                         END IF
+                       ELSE
+                         WRITE(CMON,'(A,A4,I5)')
+     1                    'which has different SPARE.'
+                         CALL XPRVDU(NCVDU,1,0)
+                       END IF
+                     END IF
+                    END DO
+                  END DO DISTWOLOOP
+
+                  IF ( INDDIS .GE. 0 ) THEN
+
+C Rearrange the 'new' vectors:
+                    CALL XMOVE(STORE(LNEW+MDNEW*NMATCHED),
+     1                         STORE(LNBUF),MDNEW)
+                    CALL XMOVE(STORE(LNEW+MDNEW*INDDIS),
+     1               STORE(LNEW+MDNEW*NMATCHED), MDNEW)
+                    CALL XMOVE(STORE(LNBUF),
+     1               STORE(LNEW+MDNEW*INDDIS),MDNEW)
+
+                    CALL XMOVE(STORE(LMAP+MDATVC*NMATCHED),
+     1               STORE(LMBUF),MDATVC)
+                    CALL XMOVE(STORE(LMAP+MDATVC*INDDIS),
+     1               STORE(LMAP+MDATVC*NMATCHED),MDATVC)
+                    CALL XMOVE(STORE(LMBUF),
+     1               STORE(LMAP+MDATVC*INDDIS),MDATVC)
+
+C Rearrange the 'old' vectors:
+
+                    CALL XMOVE(STORE(LOLD+MDOLD*NMATCHED),
+     1                         STORE(LNBUF),MDOLD)
+                    CALL XMOVE(STORE(LOLD+MDOLD*L),
+     1               STORE(LOLD+MDOLD*NMATCHED), MDOLD)
+                    CALL XMOVE(STORE(LNBUF),
+     1               STORE(LOLD+MDOLD*L),MDOLD)
+
+                    CALL XMOVE(STORE(LONTO+MDATVC*NMATCHED),
+     1               STORE(LMBUF),MDATVC)
+                    CALL XMOVE(STORE(LONTO+MDATVC*L),
+     1               STORE(LONTO+MDATVC*NMATCHED),MDATVC)
+                    CALL XMOVE(STORE(LMBUF),
+     1               STORE(LONTO+MDATVC*L),MDATVC)
+
+
+                    IOLD5 = L5 + (ISTORE(LONTO+NMATCHED*MDATVC)) * MD5
+                    INEW5 = L5 + (ISTORE(LMAP+NMATCHED*MDATVC)) * MD5
+
+                    STORE(LRENM+NMATCHED*MDRENM+4)=STORE(INEW5)
+                    STORE(LRENM+NMATCHED*MDRENM+5)=STORE(INEW5+1)+ZORIG
+
+                    NMATCHED = NMATCHED + 1
+
+                    WRITE(CMON,
+     1              '( A4,I4,I10,3X,A4,I4,I10,3X,F7.4)')
+     1              STORE(IOLD5),NINT(STORE(IOLD5+1)),
+     1              NINT(STORE(IOLD5+13)), STORE(INEW5),
+     1              NINT(STORE(INEW5+1)),NINT(STORE(INEW5+13)),DISMIN
+                    CALL XPRVDU(NCVDU,1,0)
+
+                    EXIT UNMLOOP
+
+                  ELSE
+
+                    WRITE(CMON,'(A)')
+     1                '{E Programming error. No match found for:'
+                    CALL XPRVDU(NCVDU,1,0)
+                    WRITE(CMON,'( A4,2F6.1)')
+     1              STORE(IOLD5),STORE(IOLD5+1),STORE(IOLD5+13)
+                    CALL XPRVDU(NCVDU,1,0)
+                    GOTO 200
+                  END IF
+                END IF
+              END IF
+            END DO
+            IF ( MOFND .EQ. 0 ) THEN
+              WRITE(CMON,'(A)') '{E Pththerror. No match found for:'
+              CALL XPRVDU(NCVDU,1,0)
+              WRITE(CMON,'( A4,2F6.1)')
+     1        STORE(MOBND),STORE(MOBND+1),STORE(MOBND+13)
+              CALL XPRVDU(NCVDU,1,0)
+              GOTO 200
+            END IF
+          END DO DISTLOOP
+
+        END DO UNMLOOP
+
+      END DO
+
       RETURN
  
 200   CONTINUE
@@ -3364,6 +3770,11 @@ C Count to work out the uniqueness of each atom and store in 5th vector.
         ISTORE(4+LATVC+J*MDATVC) = INUM
       END DO
 
+C Sort each set of atoms into order of uniqueness.
+      CALL SSORTI(LMAP, NMAP, MDATVC,5)
+      CALL SSORTI(LONTO,NONTO,MDATVC,5)
+
+
 C Ensure fragments are 2D identical.
       IF ( ( NMAP .EQ. 0 ) .OR. ( NMAP .NE. NONTO ) ) THEN
         WRITE (CMON,'(A)') '{E Fragments are different sizes.'
@@ -3398,7 +3809,7 @@ c        CALL XPRVDU(NCVDU,1,0)
         END IF
       END DO
 
-      WRITE (CMON,'(/A,I5)') 'Unique matches: ',IUNIQ
+      WRITE (CMON,'(/A,I5)') 'Matches that are unique: ',IUNIQ
       CALL XPRVDU(NCVDU,2,0)
 
       JOBDON = 0
@@ -3694,7 +4105,7 @@ C Further ensure fragments are 2D identical.
               WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1        CHAR(9)//'Linear_matching_fragments'
               ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 10, 1 )
-              JOBDON = 1
+              GOTO 9900
             END IF
            ELSE IF (IPCHRE.GE.0)THEN
              WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
@@ -3707,18 +4118,22 @@ C Further ensure fragments are 2D identical.
                IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1         CHAR(9)//'More_Internal_symmetry_2'
                ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 12, 1 )
+               GOTO 9900
             ELSE IF ( ITRIP .GE. 1 ) THEN 
                IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1         CHAR(9)//'More_Internal_symmetry_3'
                ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 13, 1 )
+               GOTO 9900
             ELSE IF ( IQUAD .GE. 1 ) THEN
                IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1         CHAR(9)//'More_Internal_symmetry_4'
                ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 14, 1 )
+               GOTO 9900
             ELSE
                IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1         CHAR(9)//'Internal_symmetry_lots'
                ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 15, 1 )
+               GOTO 9900
             END IF
            END IF
          END DO
@@ -3727,16 +4142,19 @@ C Further ensure fragments are 2D identical.
         IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1   CHAR(9)//'Internal_symmetry_3'
         ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 16, 1 )
+          GOTO 9900
 
        ELSE IF ( IQUAD .GE. 1 ) THEN ! Try to break sym. Four times.
         IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1   CHAR(9)//'Internal_symmetry_4'
         ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 17, 1 )
+          GOTO 9900
 
        ELSE
         IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1   CHAR(9)//'Internal_symmetry_lots'
         ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 18, 1 )
+          GOTO 9900
 
        END IF
       END IF
@@ -3769,12 +4187,14 @@ C -- ERRORS
       CALL XOPMSG ( IOPDIS , IOPABN , 0 )
       IF ( IPCHRE .GE. 0 ) WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1 CHAR(9)//'errors'
+      IF ( IPCHRE .GE. 0 ) WRITE(99,'(A)')CPCH(1:LEN_TRIM(CPCH))
       GO TO 6050
 9910  CONTINUE
 C -- INPUT ERRORS
       CALL XOPMSG ( IOPDIS , IOPCMI , 0 )
       IF ( IPCHRE .GE. 0 ) WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1 CHAR(9)//'command_input_error'
+      IF ( IPCHRE .GE. 0 ) WRITE(99,'(A)')CPCH(1:LEN_TRIM(CPCH))
       ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 9, 1 )
       GO TO 9900
       END
@@ -3876,18 +4296,43 @@ C  A good initial value for SPARE would be the electron count.
 
       DO I = 0, N5-1    ! Copy original SPARE into STORE(LORIG)
         STORE(LORIG+I) = REAL(NINT( STORE(L5+13+I*MD5) ))
+        STORE(L5+13+I*MD5) = 1.0
       END DO
+
+      DO M41B = L41B, L41B+(N41B-1)*MD41B, MD41B ! Propagate values.
+          J51 = ISTORE(M41B)
+          J52 = ISTORE(M41B+6)
+          I51 = L5 + J51 * MD5
+          I52 = L5 + J52 * MD5
+          STORE(I51+13) = STORE(I51+13) * 2.0
+          STORE(I52+13) = STORE(I52+13) * 2.0
+      END DO
+
+      DO I = 0, N5-1    ! Copy original SPARE into STORE(LORIG)
+        STORE(L5+13+I*MD5) = STORE(L5+13+I*MD5) * STORE(LORIG+I)
+      END DO
+
 
       IDOCNT = -1
       NOIMPR = 0
       IMAXSP = 0
+      NCYCLE = 0
+
+
+C Once a pair of atoms have unique ID's, those ID's are set negative and
+C are not touched again.
 
       DO WHILE ( .TRUE. )
 
+        NCYCLE = NCYCLE + 1
+
         DO I = 0, N5-1    ! Copy existing SPARE into STORE(LTEMP)
-          STORE(LTEMP+I) = REAL(NINT( STORE(L5+13+I*MD5) ))
-          IF ( IMAXSP .GT. 9999 ) STORE(LTEMP+I) = STORE(LTEMP+I) / 10.0
-          STORE(L5+13+I*MD5) = STORE(LORIG+I) * 2.0
+          IF ( IMAXSP .GT. 999999 ) THEN
+            I51 = L5 + I * MD5
+            IF ( STORE(I51+13) .GT. 9999 )
+     1         STORE(I51+13) = NINT(STORE(I51+13) / 10.0)
+          END IF
+          STORE(LTEMP+I) = ABS(REAL(NINT( STORE(L5+13+I*MD5) )))
         END DO
 
         DO M41B = L41B, L41B+(N41B-1)*MD41B, MD41B ! Propagate values.
@@ -3895,30 +4340,64 @@ C  A good initial value for SPARE would be the electron count.
           J52 = ISTORE(M41B+6)
           I51 = L5 + J51 * MD5
           I52 = L5 + J52 * MD5
-          STORE(I51+13) = REAL(NINT( STORE(I51+13) + STORE(LTEMP+J52) ))
-          STORE(I52+13) = REAL(NINT( STORE(I52+13) + STORE(LTEMP+J51) ))
-c          WRITE(CMON,'(2(I6,F16.2))')J51,STORE(I51+13),J52,STORE(I52+13)
-c          CALL XPRVDU(NCVDU,1,0)
+          IF ( STORE(I51+13) .GE. 0.0 )
+     1       STORE(I51+13) = REAL(NINT(STORE(I51+13)+STORE(LTEMP+J52)))
+          IF ( STORE(I52+13) .GE. 0.0 )
+     1       STORE(I52+13) = REAL(NINT(STORE(I52+13)+STORE(LTEMP+J51)))
         END DO
 
         IMAXSP = 0
         DO I = 0, N5-1               ! Copy new SPARE into ISTORE(LTEMP)
-          ISTORE(LTEMP+I) = NINT( STORE(L5+13+I*MD5) )
+          ISTORE(LTEMP+I) = ABS(NINT( STORE(L5+13+I*MD5) ))
           IMAXSP = MAX ( IMAXSP, ISTORE(LTEMP+I) )
+c          WRITE(CMON,'(A,I5,F16.2))')ISTORE(L5+I*MD5),
+c     1        NINT(STORE(L5+I*MD5+1)),STORE(L5+I*MD5+13)
+c          CALL XPRVDU(NCVDU,1,0)
         END DO
+
         CALL SSORTI(LTEMP,N5,1,1) ! Sort data at LTEMP
  
         LASTID = -1
-        IDCOUN = 0
-        DO I = 0, N5-1       ! Count number of unique ID's.
-          IF ( ISTORE(LTEMP+I) .NE. LASTID) THEN
+        NCONSE = 2
+        IDCOUN = -1
+        IDUNIQ = 0
+
+        DO I = 0, N5       ! Count number of unique ID's. (Over run by 1)
+          IF ((I.EQ.N5) .OR. ( ISTORE(LTEMP+I) .NE. LASTID)) THEN
+            IF ( MOD(NCONSE,2) .EQ. 1 ) THEN
+              WRITE(CMON,'(A,I8)')
+     1          '{E Error. Odd # consecutive IDs',LASTID
+              CALL XPRVDU(NCVDU,1,0)
+            ELSE IF ( NCONSE .EQ. 2 ) THEN  ! Those were unique.
+              IF ( LASTID .GT. 0 ) THEN  ! Not first time
+                IDUNIQ = IDUNIQ + 1
+                DO J = 0,N5-1
+                  J51 = L5 + J * MD5
+                  IF (ABS(NINT(STORE(J51+13))).EQ.LASTID) 
+     1                STORE(J51+13) = - ABS(STORE(J51+13))
+                END DO
+              END IF
+            END IF
             IDCOUN = IDCOUN + 1
             LASTID = ISTORE(LTEMP+I)
+            NCONSE = 1
+          ELSE
+            NCONSE = NCONSE + 1
           END IF
         END DO
 
-        WRITE(CMON,'(A,I6)') 'Unique count: ',IDCOUN
+        WRITE(CMON,'(3(A,I6),A)')'ID Cycle ',NCYCLE,' has ',
+     1  IDCOUN,' unique IDs and ',IDUNIQ,' unique pairs of atoms.'
         CALL XPRVDU(NCVDU,1,0)
+
+        IF ( IDCOUN*2 .EQ. N5 ) THEN
+          WRITE(CMON,'(A)') 'All pairs unique. Stopping.'
+          CALL XPRVDU(NCVDU,1,0)
+          DO I = 0, N5-1       ! Copy SPARE into BEST
+            ISTORE(LBEST+I) = NINT( STORE(L5+13+I*MD5) )
+          END DO
+          EXIT
+        END IF
 
         IF ( IDCOUN .LE. IDOCNT ) THEN
            NOIMPR = NOIMPR + 1 ! No improvement.
@@ -3932,7 +4411,7 @@ c          CALL XPRVDU(NCVDU,1,0)
            END IF
         END IF
 
-        IF ( NOIMPR .GE. 3 ) EXIT  ! If # unique unimproved twice then break.
+        IF ( NOIMPR .GE. 10 ) EXIT  ! If # unique unimproved ten times then break.
 
         IDOCNT = MAX ( IDOCNT, IDCOUN ) ! Best # unique found so far.
       END DO
