@@ -38,13 +38,29 @@
 #define __UNIT_CELL_H__
 #include "ComClasses.h"
 #include "StringClasses.h"
-
+#include "Matrices.h"
+//include "ReflectionMerging.h"
+      
 class UnitCell:public MyObject
 {
 private:
     float iA, iB, iC, iAlpha, iBeta, iGamma;
     float iSEA, iSEB, iSEC, iSEAlpha, iSEBeta, iSEGamma;    
 public:
+    enum systemID
+    {
+      kTriclinic = 0,
+      kMonoclinicA,
+      kMonoclinicB,
+      kMonoclinicC,
+      kOrtharombic,
+      kTetragonal,
+      kTrigonal,
+      kTrigonalRhom,
+      kHexagonal,
+      kCubic,
+      };
+      
     UnitCell();
     bool init(char* pLine);
     void setA(float pA);
@@ -53,30 +69,33 @@ public:
     void setAlpha(float pAlpha);
     void setBeta(float pBeta);
     void setGamma(float pGamma);
-    float getA();
-    float getB();
-    float getC();
-    float getAlpha();
-    float getBeta();
-    float getGamma();
+    float getA() const;
+    float getB() const;
+    float getC() const;
+    float getAlpha() const;
+    float getBeta() const;
+    float getGamma() const;
     void setSEA(float pSEA);
     void setSEB(float pSEB);
     void setSEC(float pSEC);
     void setSEAlpha(float pSEAlpha);
     void setSEBeta(float pSEBeta);
     void setSEGamma(float pSEGamma);
-    float getSEA();
-    float getSEB();
-    float getSEC();
-    float getSEAlpha();
-    float getSEBeta();
-    float getSEGamma();
-    // char* guessCrystalSystem();
-    std::ostream& output(std::ostream& pStream);
+    float getSEA() const;
+    float getSEB() const;
+    float getSEC() const;
+    float getSEAlpha() const;
+    float getSEBeta() const;
+    float getSEGamma() const;
+    Matrix<float> metricTensor()const;
+    float volume() const;
+    float calcMaxIndex(const int pMaxNumRef, const float pAxisLength) const;
+    std::ostream& output(std::ostream& pStream)const;
 };
 
 char* getCrystalSystem();
-char* crystalSystemConst(int pIndex);
-int indexOfSystem(String& pSystem, String& pUnique);
-std::ostream& operator<<(std::ostream& pStream, UnitCell& pUnitCell);
+char* getCrystalSystem(const UnitCell::systemID pDefault);
+char* crystalSystemConst(UnitCell::systemID pIndex);
+UnitCell::systemID indexOfSystem(String& pSystem, String& pUnique);
+std::ostream& operator<<(std::ostream& pStream, const UnitCell& pUnitCell);
 #endif
