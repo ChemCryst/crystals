@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.48  2003/06/17 18:12:42  djw
+C Fix ITYPE4 being overwritten when new list 4 created, fix printing of outliers and except for scheme 14/15 make Robust/R use observed sigma
+C
 C Revision 1.47  2003/06/09 13:44:50  rich
 C Preserve list4 auxilliary info (robust, dunitz etc.) on converting from scheme
 C 17 to 16, by not writing over all the existing values with zeroes.
@@ -2280,13 +2283,13 @@ C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
       ENDIF
 
       IF ( PLHKL .EQ. 1 ) THEN
-        WRITE(CMON,'(A,I4,A,2F15.7,I8)')'^^PL LABEL ',NX,
-     2   ' DATA ', STORE(L+4), STORE(L+5), ISTORE(L+1)
+        WRITE(CMON,'(A,I4,A,2(1X,F15.7),I8)')'^^PL LABEL ',NX,
+     2   ' DATA', STORE(L+4), STORE(L+5), ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
         HKLMX = MAX (HKLMX, STORE(L+5), STORE(L+6) )
       ELSE IF ( PLHKL .EQ. 2 ) THEN
-        WRITE(CMON,'(A,I4,A,2F15.7,I8)')'^^PL LABEL ',NX,
-     2   ' DATA ', STORE(L+6), STORE(L+7), ISTORE(L+1)
+        WRITE(CMON,'(A,I4,A,2(1X,F15.7),I8)')'^^PL LABEL ',NX,
+     2   ' DATA', STORE(L+6), STORE(L+7), ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
 
@@ -2398,12 +2401,12 @@ C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
       CALL XCREMS(CNNN,COUT,LNNN)
 
       IF ( PLCLS .EQ. 1 ) THEN
-        WRITE(CMON,'(3A,2F15.7,I8)')'^^PL LABEL ''',
-     2   COUT(2:LNNN-1),''' DATA ', STORE(L+4), STORE(L+5), ISTORE(L+1)
+        WRITE(CMON,'(3A,2(1X,F15.7),I8)')'^^PL LABEL ''',
+     2   COUT(2:LNNN-1),''' DATA', STORE(L+4), STORE(L+5), ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
       ELSE IF ( PLCLS .EQ. 2 ) THEN
-        WRITE(CMON,'(3A,2F15.7,I8)')'^^PL LABEL ''',
-     2   COUT(2:LNNN-1),''' DATA ', STORE(L+6), STORE(L+7), ISTORE(L+1)
+        WRITE(CMON,'(3A,2(1X,F15.7),I8)')'^^PL LABEL ''',
+     2   COUT(2:LNNN-1),''' DATA', STORE(L+6), STORE(L+7), ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
 
@@ -2482,12 +2485,12 @@ C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
       CALL XCREMS(CNNN,COUT,LNNN)
 
       IF ( PLPAR .EQ. 1 ) THEN
-        WRITE(CMON,'(3A,2F15.7,I8)')'^^PL LABEL ''',
-     2   COUT(2:LNNN-1),''' DATA ', STORE(L+4), STORE(L+5), ISTORE(L+1)
+        WRITE(CMON,'(3A,2(1X,F15.7),I8)')'^^PL LABEL ''',
+     2   COUT(2:LNNN-1),''' DATA', STORE(L+4), STORE(L+5), ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
       ELSE IF ( PLPAR .EQ. 2 ) THEN
-        WRITE(CMON,'(3A,2F15.7,I8)')'^^PL LABEL ''',
-     2   COUT(2:LNNN-1),''' DATA ',STORE(L+6),  STORE(L+7), ISTORE(L+1)
+        WRITE(CMON,'(3A,2(1X,F15.7),I8)')'^^PL LABEL ''',
+     2   COUT(2:LNNN-1),''' DATA',STORE(L+6),  STORE(L+7), ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
 
