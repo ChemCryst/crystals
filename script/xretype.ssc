@@ -124,7 +124,7 @@
 %    END BLOCK
 %    BLOCK      %ATOM
 %      GET SILENT NOSTORE TEXT ' ' ' '
-^^CW
+%%^^CW
 %      EVALUATE CATOM = CVALUE
 %
 %      CLEAR
