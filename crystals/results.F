@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.101  2005/02/25 17:25:20  stefan
+C 1. Added some preprocessor if defined lines for the mac version.
+C
 C Revision 1.100  2005/02/01 15:43:06  djw
 C Extra dot.
 C
@@ -6041,9 +6044,9 @@ cdjw090804^
      1          .le. 0.0) then
                   write(ctext(2),'(a,f5.2,a,f5.2,a)')
 #if !defined(_GIL_) && !defined(_LIN_)  && !defined(_WXS_) && !defined(_MAC_)
-     1            ' w=1/[\s^2^(F^2^) +', store(l4),' +',
+     1            ' w=1/[\s^2^(F^2^) + (', store(l4),'P)^2^ +',
 #else
-     1            ' w=1/[\\s^2^(F^2^) +', store(l4),' +',
+     1            ' w=1/[\\s^2^(F^2^) + (', store(l4),'P)^2^ +',
 #endif
      2              store(l4+1),'P]'
                   ctext(3) = ' '
