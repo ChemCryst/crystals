@@ -93,7 +93,7 @@ SpaceGroups::SpaceGroups(char* pSpaceGroups):iBrackets(NULL)
     }
     if (regexec(gSGBraketsFSO, pSpaceGroups, gMatches, gMatch, 0))
     {
-        throw MyException(kUnknownException, "SpaceGroups where in bad format.");
+        throw MyException(kUnknownException, "SpaceGroups were in bad format.");
     }
     if (gMatch[2].rm_so > -1)  //Matches the cases where there aren't any []'s or {}'s
     {
