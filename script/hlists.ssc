@@ -1,5 +1,7 @@
 %SCRIPT HLISTS
-%COPY '#SCRIPT XHELP1'
+% VARIABLE INTEGER HELPSIZE
+% EVALUATE HELPSIZE = 2
+% COPY '#SCRIPT XHELP1'
 CRYSTALS' lists and their contents:
 
 LISTS marked * cannot be input by the User
@@ -27,6 +29,6 @@ LISTS marked * cannot be input by the User
 29    Contents of asymmetric unit and elemental properties
 31    Cell parameter E.S.D.'s
 33*   Internal - Refinement control
-%COPY '#SCRIPT XHELP2'
+% COPY '#SCRIPT XHELP2'
 %END SCRIPT
 
