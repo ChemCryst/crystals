@@ -918,7 +918,7 @@ int Table::getNumPointGroups()
     return iSGColumn->length();
 }
 
-SpaceGroup* Table::getSpaceGroup(int pLineNum, int pPointGroupNum)
+SpaceGroups* Table::getSpaceGroup(int pLineNum, int pPointGroupNum)
 {
     SGColumn* tGroups = iSGColumn->get(pPointGroupNum);
     if (tGroups)
@@ -966,11 +966,21 @@ std::ofstream& Table::outputLine(int pLineNum, std::ofstream& pStream)
            pStream << *(tIndexs) << "\n";
         }
     }
+    long tNumSGs = 0;
     for (int i = 0; i < tLengthSpaceGroup; i++)
     {
         SGColumn* tSGColumn = iSGColumn->get(i);
-        SpaceGroup* tSpaceGroup = tSGColumn->get(pLineNum);
-        pStream << *(tSpaceGroup) << "\n";
+        SpaceGroups* tSpaceGroups = tSGColumn->get(pLineNum);
+        tNumSGs += tSpaceGroups->count();
+    }
+    pStream << "SPACEGROUPS " << tNumSGs << "\n";
+
+    for (int i = 0; i < tLengthSpaceGroup; i++)
+    {
+        SGColumn* tSGColumn = iSGColumn->get(i);
+        SpaceGroups* tSpaceGroups = tSGColumn->get(pLineNum);
+        if (tSpaceGroups->count() > 0)
+            pStream << *(tSpaceGroups) << "\n";
     }
     return pStream;
 }
@@ -990,11 +1000,20 @@ std::ofstream& Table::outputLine(int pLineNum, std::ofstream& pStream, int tPoin
            pStream << *(tIndexs) << "\n";
         }
     }
+    long tNumSGs = 0;
     for (int i = 0; tPointGroups[i]!=-1; i++)
     {
         SGColumn* tSGColumn = iSGColumn->get(tPointGroups[i]);
-        SpaceGroup* tSpaceGroup = tSGColumn->get(pLineNum);
-        pStream << *(tSpaceGroup) << "\n";
+        SpaceGroups* tSpaceGroups = tSGColumn->get(pLineNum);
+        tNumSGs += tSpaceGroups->count();
+    }
+    pStream << "SPACEGROUPS " << tNumSGs << "\n";
+    for (int i = 0; tPointGroups[i]!=-1; i++)
+    {
+        SGColumn* tSGColumn = iSGColumn->get(tPointGroups[i]);
+        SpaceGroups* tSpaceGroups = tSGColumn->get(pLineNum);
+        if (tSpaceGroups->count() > 0)
+            pStream << *(tSpaceGroups) << "+ \n";
     }
     return pStream;
 }
@@ -1018,7 +1037,7 @@ std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, int pColumn
     for (int i = 0; i < tLengthSpaceGroup; i++)
     {
         SGColumn* tSGColumn = iSGColumn->get(i);
-        SpaceGroup* tSpaceGroup = tSGColumn->get(pLineNum);
+        SpaceGroups* tSpaceGroup = tSGColumn->get(pLineNum);
         pStream << setw(pColumnSize) << *(tSpaceGroup) << " ";
     }
     pStream << "\n";
@@ -1043,7 +1062,7 @@ std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, int tPointG
     for (int i = 0; tPointGroups[i]!=-1; i++)
     {
         SGColumn* tSGColumn = iSGColumn->get(tPointGroups[i]);
-        SpaceGroup* tSpaceGroup = tSGColumn->get(pLineNum);
+        SpaceGroups* tSpaceGroup = tSGColumn->get(pLineNum);
         pStream << setw(pColumnSize) << *(tSpaceGroup) << " ";
     }
     pStream << "\n";
@@ -1363,10 +1382,8 @@ bool hasChiralSpaceGroup(int pPGroupNumbers[], Table& pTable, int pRow)
     int i = 0;
     while (pPGroupNumbers[i] > -1)
     {
-        SpaceGroup* tSpaceGroup = pTable.getSpaceGroup(pRow, pPGroupNumbers[i]);
-        String tSymbol(tSpaceGroup->getSymbol());
-        tSymbol.trim();
-        if (tSymbol.cmp("-") != 0)
+        SpaceGroups* tSpaceGroups = pTable.getSpaceGroup(pRow, pPGroupNumbers[i]);
+        if (tSpaceGroups->count() == 0)
         {
             return true;
         }
@@ -1486,7 +1503,7 @@ std::ofstream& RankedSpaceGroups::output(std::ofstream& pStream)	//Used when out
     tRatingIter->reset();
     while ((tCurrentRating = tRatingIter->next()) != NULL)
     {
-        pStream << tCurrentRating->value() << "\n";
+        pStream << "SCORE " << tCurrentRating->value() << "\n";
         pStream << "PROMOTED ";
         if (tCurrentRating->iFiltered)
             pStream << "YES\n";
