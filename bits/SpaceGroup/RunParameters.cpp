@@ -6,7 +6,7 @@
  *  Copyright (c) 2003 __MyCompanyName__. All rights reserved.
  *
  */
-
+//#include "stdafx.h"
 #include <iostream>
 #include <fstream>
 #include "RunParameters.h"
@@ -174,11 +174,12 @@ void RunParameters::getParamsFromUser()
     while (iRequestChirality)
     {
         std::cout << "Is the crystal chiral? [y/n]";
-        std::cin.getline(tReply, 10);
+        std::cin >> tReply;
+        
         String::upcase(tReply);
+        
         if (strcmp(tReply, "NO")  == 0 || strcmp(tReply, "N") == 0 || 0 == tReply[0])
         {
-            cout << "No" << "\n";
             iChiral = false;
             iRequestChirality = false;
         }
@@ -201,11 +202,10 @@ void RunParameters::readParamFile()
         try
         {
             char tClassRE[] = "CLASS[[:space:]]+([[:alpha:]]+)";
-            char tUniqueRE[] = "UNIQUE[[:space:]]+([[:alpha:]]+)";
-            char tChiralRE[] = "CHIRAL[[:space:]]+((YES)|(UNKNOWN))";
-            char tOutputRE[] = "OUTPUT[[:space:]]+(\"[[:alpha:]]+\")";
-            char tHKLRE[] = "HKL[[:space:]]+(\"[[:alpha:]]+\")";
-            char tCellRE[] = "CELL[[:space:]]+([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)[[:space:]]+([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)[[:space:]]+([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)[[:space:]]+([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)[[:space:]]+([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)[[:space:]]+([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)";
+            char tUniqueRE[] = "UNIQUE[[:space:]]+(A|B|C|(UNKNOWN))";
+            char tChiralRE[] = "CHIRAL[[:space:]]+((YES)|(NONE/UNKNOWN))";
+            char tOutputRE[] = "OUTPUT[[:space:]]+\"([^\"]+)\"";
+            char tHKLRE[] = "HKL[[:space:]]+\"([^\"]+)\"";
             filebuf tParamFile;
             if (tParamFile.open(iParamFile.getCString(), std::ios::in) == NULL)
             {
@@ -217,43 +217,69 @@ void RunParameters::readParamFile()
             regex_t* tChiralFSO = new regex_t;
             regex_t* tOutputFSO = new regex_t;
             regex_t* tHKLFSO = new regex_t;
-            regex_t* tCellFSO = new regex_t;
             regcomp(tClassFSO, tClassRE, REG_EXTENDED | REG_ICASE);
             regcomp(tUniqueFSO, tUniqueRE, REG_EXTENDED | REG_ICASE);
             regcomp(tChiralFSO, tChiralRE, REG_EXTENDED | REG_ICASE);
             regcomp(tOutputFSO, tOutputRE, REG_EXTENDED | REG_ICASE);
             regcomp(tHKLFSO, tHKLRE, REG_EXTENDED | REG_ICASE);
-            regcomp(tCellFSO, tCellRE, REG_EXTENDED | REG_ICASE);
             regmatch_t tMatchs[13];
             char tLine[255];
             int tLineNum = 0;
-            while (tFileStream.eof())
+            String* tUniqueAxis = NULL;
+            String* tClass = NULL;
+            while (!tFileStream.eof())
             {
                 tFileStream.getline(tLine, 255);
+                String::trim(tLine);
                 tLineNum ++;
-                if (regexec(tClassFSO, tLine, 13, tMatchs, 0))
+                if (strlen(tLine) == 0)
+                {}
+                else if (regexec(tClassFSO, tLine, 13, tMatchs, 0) == 0)
                 {
-                    std::cout << "tClassFSO\n";
+                    tClass = new String(tLine, tMatchs[1].rm_so, tMatchs[1].rm_eo);
+                    if (tUniqueAxis)
+                    {
+                        int tClassIndex = indexOfClass(*tClass, *tUniqueAxis);
+                        if (tClassIndex < 0)
+                        {
+                            throw MyException(kUnknownException, "Unknown crystal class.");
+                        }
+                        iCrystalSys = crystalSystemConst(tClassIndex);
+                    }
                 }
-                else if (regexec(tUniqueFSO, tLine, 13, tMatchs, 0))
+                else if (regexec(tUniqueFSO, tLine, 13, tMatchs, 0) == 0)
                 {
-                    std::cout << "tUniqueFSO\n";
+                    tUniqueAxis = new String(tLine, tMatchs[1].rm_so, tMatchs[1].rm_eo);
+                    if (tClass)
+                    {
+                        int tClassIndex = indexOfClass(*tClass, *tUniqueAxis);
+                        if (tClassIndex < 0)
+                        {
+                            throw MyException(kUnknownException, "Unknown crystal class.");
+                        }
+                        iCrystalSys = crystalSystemConst(tClassIndex);
+                    }
                 }
-                else if (regexec(tChiralFSO, tLine, 13, tMatchs, 0))
+                else if (regexec(tChiralFSO, tLine, 13, tMatchs, 0) == 0)
                 {
-                    std::cout << "tChiralFSO\n";
+                    if (tMatchs[2].rm_so > 0)
+                        iChiral = true;
+                    else
+                        iChiral = false;
+                    iRequestChirality = false;
                 }
-                else if (regexec(tOutputFSO, tLine, 13, tMatchs, 0))
+                else if (regexec(tOutputFSO, tLine, 13, tMatchs, 0) == 0)
                 {
-                    std::cout << "tOutputFSO\n";
+                    String tTemp(tLine, tMatchs[1].rm_so, tMatchs[1].rm_eo);
+                    iOutputFile.copy(tTemp);
                 }
-                else if (regexec(tHKLFSO, tLine, 13, tMatchs, 0))
+                else if (regexec(tHKLFSO, tLine, 13, tMatchs, 0) == 0)
                 {
-                    std::cout << "tHKLFSO\n";
+                    String tTemp(tLine, tMatchs[1].rm_so, tMatchs[1].rm_eo);
+                    iFileName.copy(tTemp);
                 }
-                else if (regexec(tCellFSO, tLine, 13, tMatchs, 0))
+                else if (iUnitCell.init(tLine))
                 {
-                    std::cout << "tCellFSO\n";
                 }
                 else
                 {
@@ -263,7 +289,20 @@ void RunParameters::readParamFile()
                     throw MyException(kUnknownException, tMyString.getCString());
                 }
             }
+            if (tUniqueAxis)
+            {
+                delete tUniqueAxis;
+            }
+            if (tClass)
+            {
+                delete tClass;
+            }
             tParamFile.close();
+            delete tClassFSO;
+            delete tUniqueFSO;
+            delete tChiralFSO;
+            delete tOutputFSO;
+            delete tHKLFSO;
         }
         catch(MyException e)
         {
