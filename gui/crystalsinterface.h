@@ -5,6 +5,11 @@
 //   Created:   27.2.1998 14:11 Uhr
 //   Modified:  27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.11  2001/01/16 15:35:00  richard
+// wxWindows support.
+// Revamped some of CxTextout, Cr/Cx Menu and MenuBar. These changes must be
+// checked out in conjunction with changes to \bin\
+//
 // Revision 1.10  2000/12/13 18:03:08  richard
 // Linux(wxWindows) and Windows(wxWindows) support added.
 //
@@ -58,7 +63,8 @@ enum {
     kProgressBase       =   54000,
         kListCtrlBase           =       55000,
         kTextOutBase            =       56000,
-        kBitmapBase             =       57000
+        kBitmapBase             =       57000,
+        kTabBase                =       58000
 };
 
 #define kNoAlignment        0
@@ -134,32 +140,29 @@ typedef bool Boolean;
 
 
 #ifdef _DEBUG
-#ifdef __CR_WIN__
+ #ifdef __CR_WIN__
     #include <afxwin.h> //Needed for TRACE debugger macro.
     #define new DEBUG_NEW //Needed for debugger to track heap allocations.
-#endif
-#ifdef __BOTHWX__
+ #endif
+ #ifdef __BOTHWX__
     #include <wx/object.h>
-//#ifndef new
-//    #define new WXDEBUG_NEW //Needed for debugger to track heap allocations.
-//#endif
-#endif
+ #endif
 
-    #ifdef LOGERRORS
+ #ifdef LOGERRORS
         #define LOGERR(a) ( (CcController::theController)->LogError(a,0) )
-    #else
+ #else
         #define LOGERR(a)
-    #endif
-    #ifdef LOGWARNINGS
+ #endif
+ #ifdef LOGWARNINGS
         #define LOGWARN(a) ( (CcController::theController)->LogError(a,1) )
-    #else
+ #else
         #define LOGWARN(a)
-    #endif
-    #ifdef LOGSTATUS
+ #endif
+ #ifdef LOGSTATUS
         #define LOGSTAT(a) ( (CcController::theController)->LogError(a,2) )
-    #else
+ #else
         #define LOGSTAT(a)
-    #endif
+ #endif
 
       #define TEXTOUT(a) ( (CcController::theController)->Tokenize((char*)CcString(a).ToCString()) )
 #else
