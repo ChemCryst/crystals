@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.107  2005/01/23 10:20:24  rich
+// Reinstate CVS log history for C++ files and header files. Recent changes
+// are lost from the log, but not from the files!
+//
 // Revision 1.5  2005/01/13 17:56:20  rich
 // Fix spawning of shell commands (copying data to an pointer into exisiting string was bad).
 //
@@ -524,8 +528,6 @@
 //      display atom names in the current progress/status bar.
 //
 
-
-
 #include    "crystalsinterface.h"
 
 #ifdef __BOTHWX__
@@ -640,17 +642,12 @@ CFont* CcController::mp_inputfont = nil;
 
 bool bRedir = false;
 
-static CcLock m_Crystals_Commands_CS(true);
-static CcLock m_Interface_Commands_CS(true);
 static CcLock m_Crystals_Thread_Alive(true);
 
-static CcLock m_Crystals_Command_Added(false);
 static CcLock m_Complete_Signal(false);
 static CcLock m_wait_for_thread_start(false);
 
 static list<char*> stringlist;
-
-
 
 CcController* CcController::theController = nil;
 int CcController::debugIndent = 0;
@@ -672,21 +669,16 @@ CcController::CcController( const string & directory, const string & dscfile )
 //Things
     mErrorLog = nil;
     mThisThreadisDead = false;
-
     m_restart = false;
     mCrystalsThread = nil;
     m_AllowThreadKill = true;
     m_BatchMode = false;
     m_ExitCode = 0;
-
 //Current window pointers. Used to direct streams of input to the correct places (if for some reason the stream has been interuppted.)
     mCurrentWindow = nil;   //The current window. GetValue will search in this window first.
-
 //Token list pointers.
 //    mCurTokenList = nil;    //The current token list, could be for charts, model, windows etc.
 //    mTempTokenList = nil;   //Stores the current token list when 'quick' commands are jumping the input queue.
-
-
 // Initialize the static pointers in classes for accessing this controller object.
     CrGUIElement::mControllerPtr = this;
     CcController::theController = this;
@@ -735,7 +727,6 @@ CcController::CcController( const string & directory, const string & dscfile )
     {
       string dir = EnvVarExtract( crysdir, i );
       i++;
-
       string buffer = dir + "guimenu.srt" ;
 
       if( file = fopen( buffer.c_str(), "r" ) ) //Assignment witin conditional - OK
@@ -932,8 +923,7 @@ CcController::~CcController()       //The destructor. Delete all the heap object
 {
     int i = 0;
     ostringstream aaarg;
-
-    list<CcModelDoc*>::iterator moddoc;
+	    list<CcModelDoc*>::iterator moddoc;
     while( ! CcModelDoc::sm_ModelDocList.empty() )
     {
         i++;
@@ -1182,7 +1172,6 @@ bool CcController::ParseInput( deque<string> & tokenList )
 						(*rpd)->ParseInput( tokenList );
                         break;
 					}
-
 // Not found.
                     if ( safeSet )
                     {
@@ -1597,10 +1586,18 @@ void    CcController::Tokenize( const string & cText )
     }
 }
 
+string trim(const string& pString)
+{
+	string::size_type start = pString.find_first_not_of(" \t\r\n");
+	string::size_type end = pString.find_last_not_of(" \t\r\n");
+	if (start == string::npos || end == string::npos)
+		return string();
+	else
+		return pString.substr(start, end-(start-1));
+}
 
 void  CcController::AddCrystalsCommand(const string &line, bool jumpQueue)
 {
-
 //Pre check for commands which we should handle. (Useful as these can be handled while the crystals thread is busy...)
 // 1. Close the main window. (Close the program).
       if( line.length() > 10 )
@@ -1624,48 +1621,31 @@ void  CcController::AddCrystalsCommand(const string &line, bool jumpQueue)
       }
 
 // 3. Everything else.
-
 //Add this command to the queue to crystals.
-
-    m_Crystals_Commands_CS.Enter();
-
-//         mCrystalsCommandQueue.SetCommand( line, jumpQueue);
-
-      string::size_type stp;
-
-      string temp = line;
-	  
-      if ( jumpQueue )
-      {
-         stp = temp.rfind("_N");
-         while ( stp != string::npos )
-         {
-            mCrystalsCommandDeq.push_front ( temp.substr(stp+2,temp.length()-stp-2) );
-            m_Crystals_Command_Added.Signal();
-            temp = temp.substr(0,stp);
-            stp = temp.rfind("_N");
-         }
-         mCrystalsCommandDeq.push_front ( temp );
-         m_Crystals_Command_Added.Signal();
-      }
-      else
-      {
-         stp = temp.find("_N");
-         while ( stp != string::npos )
-         {
-            mCrystalsCommandDeq.push_back ( temp.substr(0,stp) );
-            m_Crystals_Command_Added.Signal();
-            temp.erase(0,stp+2);
-            stp = temp.find("_N");
-         }
-         mCrystalsCommandDeq.push_back ( temp );
-         m_Crystals_Command_Added.Signal();
-      }
-
-    m_Crystals_Commands_CS.Leave();
-
-
-
+	string temp = trim(line);
+	string::size_type stp;
+	if ( jumpQueue )
+	{
+		 stp = temp.rfind("_N");
+		 if (stp != string::npos)
+		 {
+			mCrystalsCommandDeq.push_front ( temp.substr(stp+2,temp.length()-stp-2) );   //Add the next command in the list to the command queue
+			AddCrystalsCommand(temp.substr(0,stp), jumpQueue);
+		 }
+		 else
+			mCrystalsCommandDeq.push_front ( temp );	//Add the next command in the list to the command queue
+	}
+	else
+	{
+		 stp = temp.find("_N");
+		 if (stp != string::npos)
+		 {
+			mCrystalsCommandDeq.push_back ( temp.substr(0,stp) );   //Add the next command in the list to the command queue
+			AddCrystalsCommand(temp.substr(stp+2,temp.length()-stp-2), jumpQueue);
+		 }
+		 else
+			mCrystalsCommandDeq.push_back ( temp );	//Add the next command in the list to the command queue
+	}
 }
 
 void  CcController::AddInterfaceCommand( const string &line, bool internal )
@@ -1680,14 +1660,10 @@ void  CcController::AddInterfaceCommand( const string &line, bool internal )
  *  nothing can be read from it, until the answer to the query
  *  is placed at the top of the queue.
  */
-
   bool lock = false;
-
-
-  int chop = 0;
+    int chop = 0;
   int clen = line.length();
-
-  if (clen >= 4 )
+    if (clen >= 4 )
   {
     if ( line[1] == '^' )
     {
@@ -1711,33 +1687,21 @@ void  CcController::AddInterfaceCommand( const string &line, bool internal )
       }
     }
   }
-
-  m_Interface_Commands_CS.Enter();
-
-       if(mThisThreadisDead) endthread(0);
-       mInterfaceCommandDeq.push_back(line);
-       LOGSTAT("-----------CRYSTALS has put: " + line );
-
-  m_Interface_Commands_CS.Leave();
+   
+   if(mThisThreadisDead) endthread(0);
+   mInterfaceCommandDeq.push_back(line);
+   LOGSTAT("-----------CRYSTALS has put: " + line );
 
 #ifdef __CR_WIN__
       if ( mGUIThread ) PostThreadMessage( mGUIThread->m_nThreadID, WM_STUFFTOPROCESS, NULL, NULL );
 #endif
-
-  bool comp = false;
-
-  if ( lock ) 
+	  bool comp = false;
+	    if ( lock ) 
   {
        m_Complete_Signal.Wait();
        LOGSTAT ("-----------Queue released");
   }
 }
-
-
-
-
-
-
 
 bool CcController::GetInterfaceCommand( string &line )
 //------------------------------------------------------
@@ -1746,7 +1710,6 @@ bool CcController::GetInterfaceCommand( string &line )
     //It needn't be highly optimised even though it is high on
     //the profile count list.
 //  LOGSTAT("GtIfCmd.");
-
   if( mCrystalsThread ) 
   {
     if ( ! (m_Crystals_Thread_Alive.IsLocked()) )
@@ -1761,7 +1724,6 @@ bool CcController::GetInterfaceCommand( string &line )
         m_restart = false;
         return (false);
       }
-
       mThisThreadisDead = true;
       LOGSTAT("Shutting down the main window of this (GUI) thread.");
       line = "^^CO DISPOSE _MAIN ";
@@ -1782,22 +1744,18 @@ bool CcController::GetInterfaceCommand( string &line )
       return (true);
 #endif
   }
-
-  m_Interface_Commands_CS.Enter();
-
-  if ( mInterfaceCommandDeq.empty() )
+  
+  try
+  {
+	string tCommand = mInterfaceCommandDeq.pop_front(0);
+	line = tCommand.c_str();
+    LOGSTAT("GUI gets: "+line);
+    return (true);
+  }
+  catch (const exception& e)
   {
     line = "" ;
-    m_Interface_Commands_CS.Leave();
     return (false);
-  }
-  else
-  {
-    line = string(mInterfaceCommandDeq.front());
-    mInterfaceCommandDeq.pop_front();
-    LOGSTAT("GUI gets: "+line);
-    m_Interface_Commands_CS.Leave();
-    return (true);
   }
 }
 
@@ -1858,7 +1816,6 @@ CrGUIElement* CcController::FindObject(const string & Name)
     }
     return nil;
 }
-
 void CcController::FocusToInput(char theChar)
 {
     int nChar = (int) theChar;
@@ -1875,7 +1832,6 @@ void CcController::FocusToInput(char theChar)
         GetInputPlace()->CrFocus();
     }
 }
-
 void CcController::SetTextOutputPlace(CrGUIElement * outputPane)
 {
     mTextOutputWindowList.push_back(outputPane);
@@ -1893,7 +1849,6 @@ void CcController::SetProgressOutputPlace(CrProgress * outputPane)
              mProgressOutputWindowList.back()->SetText(" ");
     mProgressOutputWindowList.push_back(outputPane);
 }
-
 CrGUIElement* CcController::GetProgressOutputPlace()
 {
     if (mProgressOutputWindowList.empty()) return nil;
@@ -1918,7 +1873,6 @@ void CcController::RemoveTextOutputPlace(CrGUIElement* output)
 {
       mTextOutputWindowList.remove(output);
 }
-
 void CcController::RemoveProgressOutputPlace(CrProgress* output)
 {
       mProgressOutputWindowList.remove(output);
@@ -2041,7 +1995,6 @@ void  CcController::SetProgressText(const string& theText)
 
 void CcController::StoreKey( string key, string value )
 {
-
 #ifdef __CR_WIN__
  // Use the registry to store keys.
 
@@ -2077,7 +2030,6 @@ void CcController::StoreKey( string key, string value )
   return;
 
 }
-
 string CcController::GetKey( string key )
 {
   string value;
@@ -2196,7 +2148,6 @@ void CcController::UpdateToolBars()
               (*mdbl)->Enable(status.ShouldBeEnabled((*mdbl)->bEnableFlags,(*mdbl)->bDisableFlags));
 
 }
-
 void CcController::ScriptsExited()
 {
   //Use this fact to close any modal windows that don't
@@ -2226,33 +2177,27 @@ void CcController::ScriptsExited()
   }
 }
 
-
 void CcController::AddDisableableWindow( CrWindow * aWindow )
 {
       mDisableableWindowsList.push_back( aWindow );
 }
-
 void CcController::RemoveDisableableWindow ( CrWindow * aWindow )
 {
    mDisableableWindowsList.remove( aWindow );
 }
-
 void CcController::AddDisableableButton( CrButton * aButton )
 {
       mDisableableButtonsList.push_back( aButton );
 }
-
 void CcController::RemoveDisableableButton ( CrButton * aButton )
 {
    mDisableableButtonsList.remove( aButton );
 }
-
 void CcController::ReLayout()
 {
   CcRect gridRect;
   list<CrWindow*>::iterator mw;
-
-  for ( mw = mWindowList.begin(); mw != mWindowList.end(); mw++ )
+    for ( mw = mWindowList.begin(); mw != mWindowList.end(); mw++ )
   {
     gridRect = (*mw) -> mGridPtr -> GetGeometry();
     (*mw) -> CalcLayout(true);
@@ -2261,7 +2206,6 @@ void CcController::ReLayout()
   }
   return;
 }
-
 
 
 
@@ -2307,14 +2251,12 @@ void CcController::ReLayout()
 
 void CcController::StartCrystalsThread()
 {
-
 //************************************************************//
 //                                                            //
 //    V.Important. Start the CRYSTALS (FORTRAN) thread.       //
 //    This returns a pointer which is stored so we can        //
 //             kill it later if we want!                      //
 //                                                            //
-
    int arg = 6;
 
 #ifdef __CR_WIN__
@@ -2343,9 +2285,7 @@ void CcController::StartCrystalsThread()
 //                                                            //
 //                                                            //
 //************************************************************//
-
 }
-
 
 //  Append the contents of the buffer to the output
 
@@ -2354,7 +2294,6 @@ void CcController::ProcessOutput( const string & line )
     CrGUIElement* element = GetTextOutputPlace();
     if( element != nil ) element->SetText(line);
 }
-
 
 string CcController::OpenFileDialog(const string &extensionFilter, 
                                   const string &extensionDescription, 
@@ -2554,7 +2493,6 @@ string CcController::OpenDirDialog()
         bi.lpfn = BrowseCallbackProc;
         bi.lParam = (LPARAM)(&lastPath);
       }
-
       chosen = ::SHBrowseForFolder( &bi );
 
       if ( chosen  )
@@ -2581,7 +2519,6 @@ string CcController::OpenDirDialog()
           {
              result = "CANCEL";
           }
-
       }
       else
       {
@@ -2589,7 +2526,6 @@ string CcController::OpenDirDialog()
       }
       return result;
 #endif
-
 #ifdef __BOTHWX__
     wxConfig * config = new wxConfig("Chem Cryst");
     wxString pathname;
@@ -2789,17 +2725,12 @@ string CcController::EnvVarExtract ( string & dir, int i )
       retS = retS.Sub(1,up-1) + userp + retS.Sub(up+12,-1);
    }
 */
-
    return retS;
-
 }
-
-
 void CcController::TimerFired()
 {
   DoCommandTransferStuff();
 }
-
 
 bool CcController::DoCommandTransferStuff()
 {
@@ -2848,13 +2779,15 @@ bool CcController::DoCommandTransferStuff()
         }
 
         LOGSTAT ("Really going now. Bye. " );
-
-        throw CcController::MyException();   // Leap right out of the Fortran
-                                             // to the top of the call stack. 
+		#if defined(__WXMAC__)
+			m_Crystals_Thread_Alive.Leave();
+			pthread_exit(0);
+		#else
+			throw CcController::MyException();   // Leap right out of the Fortran
+												 // to the top of the call stack. 
+		#endif
         LOGSTAT ("Thread ends. Execution should never get here. Odd. ");
   }
-
-
 
 
 void CcController::MakeTokens(const string& str,
@@ -3337,13 +3270,10 @@ extern "C" {
         WaitForSingleObject( si.hProcess, INFINITE );
         CcController::theController->AddInterfaceCommand( "                                                               {0,2 ... Done");
         CcController::theController->AddInterfaceCommand( " ");
-
       }
       else if ( (int)si.hInstApp <= 32 )
       {
-
 // Some other failure. Try another method of starting external programs.
-
         CcController::theController->AddInterfaceCommand( "{I Failed to start " + firstTok + ", (security or not found?) trying another method.");
         extern int errno;
         char * str = new char[257];
@@ -3411,15 +3341,12 @@ extern "C" {
         CcController::theController->AddInterfaceCommand( "                                                               {0,2 ... Done");
         CcController::theController->AddInterfaceCommand( " ");
       }
-
-
     }
     else if ( bRedir )
     {
       STARTUPINFO si;
       SECURITY_ATTRIBUTES sa;
       SECURITY_DESCRIPTOR sd;               //security information for pipes
-
       if (IsWinNT())        //initialize security descriptor (Windows NT)
       {
         InitializeSecurityDescriptor(&sd,SECURITY_DESCRIPTOR_REVISION);
@@ -3429,8 +3356,6 @@ extern "C" {
       else sa.lpSecurityDescriptor = NULL;
       sa.nLength = sizeof(SECURITY_ATTRIBUTES);
       sa.bInheritHandle = true;         //allow inheritable handles
-
-
       CcPipe inPipe(sa);
       if ( ! inPipe.CreateOK ) {
         CcController::theController->AddInterfaceCommand( "Error creating in pipe.");
@@ -3515,7 +3440,6 @@ extern "C" {
            WriteFile(inPipe.input,s.c_str(),s.length(),&bread,NULL); //send it to stdin
            WriteFile(inPipe.input,"\n",1,&bread,NULL); //send an extra newline char
         }
-
       }
 // Reenable all menus
       CcController::theController->AddInterfaceCommand( "^^ST STATUNSET IN");
@@ -3594,14 +3518,12 @@ extern "C" {
           if ( result != 0 ) { TEXTOUT ( strstrm.str() ); }
         }
         delete [] str;
-
-      }
-
-    }
+	}
+	
+	    }
 #endif
 
 #if defined(__WXGTK__) || defined(__WXMAC__)
-
 // Check if this might be a filename, and if so find application to
 // open it with.
 
@@ -3811,17 +3733,13 @@ extern "C" {
 
     delete [] str;
     delete [] cmd;
-
-    return;
-
+	    return;
 #endif
-
   }
 
   void FORCALL(cinextcommand) ( long *theStatus, char *theLine )
   {
       NOTUSED(theStatus);
-
       bool temp = true;
       if((CcController::theController)->GetCrystalsCommand( theLine, temp ))
       {
@@ -3848,7 +3766,6 @@ extern "C" {
          strstrm << "Thread ends1. Exit code is: " << theExitcode ;
          LOGSTAT (strstrm.str());
        }
-
        CcController::theController->endthread ( theExitcode );
   }
 
@@ -3862,58 +3779,45 @@ extern "C" {
     return ( o.dwPlatformId == VER_PLATFORM_WIN32_NT );
   }
 #endif
-
-
-
 } // end of C functions
 
 
 
 // Functions that are called from the CRYSTALS thread:
-
-
-
 bool CcController::GetCrystalsCommand( char * line, bool & bGuexec )
 //-----------------------------------------------------
 {
 //This is where the Crystals thread will spend most of its time.
 //Waiting for the user to do somethine.
-
-//Wait until the list is free for reading.
-
-  if (mThisThreadisDead) return false;
-
-  if ( bGuexec ) 
-     m_Crystals_Command_Added.Wait(); // Wait until queue is not empty
-  else {
-     if ( !m_Crystals_Command_Added.Wait(200) ) {  // Poll
-       bGuexec = false;
-       return true;
-     }
-     else {
-        bGuexec = true;
-     }
-  } 
-
-  m_Crystals_Commands_CS.Enter();  // Enter queue CS.
-
-     if ( mCrystalsCommandDeq.empty() ) {
-       LOGERR("-----------Crystals thread: Empty command buffer.");
-       strcpy( line, "" );
-       bGuexec = false;
-     }
-     else
-     {
-       strcpy( line, mCrystalsCommandDeq.front().c_str() );
-       mCrystalsCommandDeq.pop_front();
-     }
-
-     LOGSTAT("-----------Crystals thread: Got command: "+ string(line));
-
-  m_Crystals_Commands_CS.Leave();
-
+	if (mThisThreadisDead) return false;
+		string tNextCommand;
+	
+	strcpy( line, "" );
+	if ( bGuexec ) 
+		try
+		{
+			tNextCommand = mCrystalsCommandDeq.pop_front();		
+		}
+		catch (const exception& e)
+		{
+			std::cerr << "This shouldn't have happened. " << e.what() << endl;
+		}
+	else 
+	{
+		try
+		{
+			tNextCommand = mCrystalsCommandDeq.pop_front(200);
+			bGuexec = true;
+		}
+		catch (const semaphore_timeout& e)
+		{
+			bGuexec = false;
+			return true;
+		}
+	} 
+	strcpy( line, tNextCommand.c_str());
+	  LOGSTAT("-----------Crystals thread: Got command: "+ string(line));
   if (mThisThreadisDead) return false;
   return (true);
 }
-
 
