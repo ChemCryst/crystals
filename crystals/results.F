@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.89  2004/08/17 15:56:47  djw
+C Append H bonds to cif
+C
 C Revision 1.88  2004/08/09 16:37:08  djw
 C Output SHELX weights in compact form
 C
@@ -3625,7 +3628,7 @@ c
       endif
 c
       if (key .eq. 15) then
-      if (key .eq. 15) kkey = 2
+        kkey = 2
         write(cline,'(4A)') ctext(1),cgeom(4),cgeom(2),'_DHA'
         call xcras ( cline, n)
         write (ncfpu1, '(1x,a)') cline(1:n)
@@ -3643,6 +3646,8 @@ c
 C
 c----- reset kkey to point to 'H'
       if (key .eq. 15) kkey = 4
+      NO_HBOND = 0
+      if (key .eq. 15) NO_HBOND = 1
       REWIND (MTE)
 1000  CONTINUE
       CALL XZEROF(STORE(IPUB), 28)
@@ -3664,6 +3669,7 @@ C----- GET ADDRESS OF LAST USEFUL ITEM - UP TO 4
       ELSE
         KPUB=0
       ENDIF
+      NO_HBOND = 0
 c----- use temporary addresses since we may need to reverse order
       itmp = ipub
       ktmp = kpub
@@ -3759,6 +3765,9 @@ C
       GOTO 1000
 C
 2500  CONTINUE
+
+      IF ( NO_HBOND .EQ. 1 ) WRITE(NCFPU1,'(A)')'. . . . . . . . . .'
+
 3000  CONTINUE
 C
 9000  CONTINUE
