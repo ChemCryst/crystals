@@ -45,18 +45,11 @@ class Reflection
 {
 public:
     Matrix<float>* tHKL;
-    int h, k, l;
     double i, iSE;
     
     Reflection(char* pString);
     ~Reflection();
     Matrix<float>* getHKL();
-//    double intSigmaRatio();
-//    bool intLess3Sigma();
-//    bool kPlusLEven();	//A - centered
-//    bool hPlusLEven();	//B - centered
-//    bool hPlusKEven();	//C - centered
-//    bool hPlusKPlusL(); //Body centered
 };
 
 class HKLData
