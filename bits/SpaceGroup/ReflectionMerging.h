@@ -82,7 +82,7 @@ private:
     static LaueGroups::systemID unitCellID2LaueGroupID(const UnitCell::systemID pID);
     static UnitCell::systemID laueGroupID2UnitCellID(LaueGroups::systemID pID);
     LaueGroups::systemID getCrystalSystemFor(const SystemRef pSystemRef);
-    void mergeForAll(const HKLData& pHKLs, const bool pThrowRefl, const RunParameters& pRunParam)const;
+    bool mergeForAll(const HKLData& pHKLs, const bool pThrowRefl, const RunParameters& pRunParam)const;
     LaueGroups::systemID guessSystem(const HKLData& pHKLs, const RunParameters& pRunParam);
     size_t count();
     ~LaueGroups();
