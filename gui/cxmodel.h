@@ -5,22 +5,20 @@
 ////////////////////////////////////////////////////////////////////////
 
 //   Filename:  CxModel.h
-//   Authors:   Richard Cooper and Ludwig Macko
-//   Created:   22.2.1998 14:43 Uhr
-//   Modified:  5.3.1998 15:22 Uhr
+//   Author:   Richard Cooper 
 
 #ifndef		__CxModel_H__
 #define		__CxModel_H__
 //Insert your own code here.
 #include	"crguielement.h"
 
-#ifdef __LINUX__
-#include    <GL/gl.h>
-#include    <GL/glu.h>
-#include    "glcanvas.h"
-#include <wx/dcclient.h>
-#include <wx/event.h>
-#include    "glcanvas.h"
+#ifdef __BOTHWX__
+#include  <wx/defs.h>
+#include  <wx/app.h>
+#include  <wx/menu.h>
+#include  <wx/dcclient.h>
+#include  <wx/glcanvas.h>
+#include  <wx/event.h>
 #define BASEMODEL wxGLCanvas
 #endif
 
@@ -57,11 +55,19 @@ class CxModel : public BASEMODEL
             void NeedRedraw();
             void NewSize(int cx, int cy);
             void ChooseCursor( int cursor );
+#ifdef __WINDOWS__
             void PaintBannerInstead(CPaintDC *dc);
+#endif
 
 // The usual functions:
 		static CxModel *	CreateCxModel( CrModel * container, CxGrid * guiParent );
+#ifdef __WINDOWS__
 		CxModel(CrModel* container);
+#endif
+#ifdef __BOTHWX__
+		CxModel(wxWindow* parent, wxWindowID id = -1, const wxPoint& pos = wxDefaultPosition, 
+                       const wxSize& size = wxDefaultSize, long style = 0, const wxString& name = "GLWindow");
+#endif
 		~CxModel();
 		void	SetText( char * text );
 		void	SetGeometry( int top, int left, int bottom, int right );
@@ -86,7 +92,6 @@ class CxModel : public BASEMODEL
 //            GLuint mNormal;
 //            GLuint mHighlights;
 //            GLuint mLitatom;
-		int m_GLPixelIndex;									 //The pixel index member?
 
             CcModelAtom* m_LitAtom;  //  Mouse is over this atom
 
@@ -116,6 +121,7 @@ class CxModel : public BASEMODEL
             Boolean m_Shading;       // Use fancy shading?
 
 #ifdef __WINDOWS__
+		int m_GLPixelIndex;									 //The pixel index member?
 		HGLRC m_hGLContext;									 //The rendering context handle.
 		HDC hDC;
 
@@ -139,7 +145,7 @@ class CxModel : public BASEMODEL
 	
 		DECLARE_MESSAGE_MAP()
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
             void OnLButtonUp(wxMouseEvent & event);
             void OnLButtonDown(wxMouseEvent & event);
             void OnRButtonUp(wxMouseEvent & event);
