@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.48  2004/02/18 12:08:23  rich
+C Added option \SET TIME SLOW which prevents output of DATE and TIME strings.
+C This is to be used by the new test_suite so that runs at different times
+C generate no significant differences. Also supresses timing functions, as
+C for \SET TIME OFF.
+C
 C Revision 1.47  2004/02/17 13:37:21  rich
 C Extend some CSYS filenames to 256 characters. At the same time fix
 C wrong addresses of last four CSYS units since last week when the
@@ -375,7 +381,8 @@ C If in script mode, set flag.
           CLSTNM = ' '
         END IF
 C Update status information for GUI.
-        IF (ISSTML .EQ. 4) CALL MENUUP
+
+&&&GILGIDWXS        IF (ISSTML .EQ. 4) CALL MENUUP
       ENDIF
 
       IF ( IRDFND(IFLIND) .GT. 0 ) THEN
