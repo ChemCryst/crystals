@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.38  2002/12/16 18:21:58  rich
+C Now only outputs 'main' part of molecule.
+C
 C Revision 1.37  2002/10/31 13:21:17  rich
 C Changes to #FORE/MOL2 format for MOGUL.
 C
@@ -1872,7 +1875,8 @@ C
 C
 1000  CONTINUE
       CALL XRDOPN ( 5 , JFRN(1,JFILE) ,
-     1 CPATH(1:LPATH)// CFILE(IFILE)(1:LFILE(IFILE)),
+#GIL     1 CPATH(1:LPATH)// CFILE(IFILE)(1:LFILE(IFILE)),
+&GIL     1 CFILE(IFILE)(1:LFILE(IFILE)),
      2 LPATH+LFILE(IFILE))
 C------ EXIT ON ERROR
       IF (IERFLG .LE. 0) GOTO 9900
