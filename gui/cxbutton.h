@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2001/03/08 16:44:07  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 
 #ifndef     __CxButton_H__
 #define     __CxButton_H__
@@ -47,6 +51,7 @@ class CxButton : public BASEBUTTON
         static CxButton *   CreateCxButton( CrButton * container, CxGrid * guiParent );
         CxButton(CrButton* container);
         ~CxButton();
+        void CxDestroyWindow();
         void    SetText( char * text );
         void    SetGeometry( int top, int left, int bottom, int right );
         int GetTop();

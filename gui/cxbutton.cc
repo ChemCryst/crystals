@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2001/03/08 16:44:07  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 
 #include    "crystalsinterface.h"
 #include    "ccstring.h"
@@ -60,6 +64,17 @@ CxButton::~CxButton()
     mButtonCount--;
 }
 
+void CxButton::CxDestroyWindow()
+{
+#ifdef __CR_WIN__
+DestroyWindow();
+#endif
+#ifdef __BOTHWX__
+Destroy();
+#endif
+}
+
+
 void    CxButton::ButtonClicked()
 {
     ( (CrButton *)ptr_to_crObject)->ButtonClicked();
@@ -101,7 +116,7 @@ int CxButton::GetIdealWidth()
 #ifdef __BOTHWX__
       int cx,cy;
       GetTextExtent( GetLabel(), &cx, &cy );
-      return (cx+10); // nice width for buttons
+      return (cx+20); // nice width for buttons
 #endif
 
 }
@@ -121,7 +136,7 @@ int CxButton::GetIdealHeight()
 #ifdef __BOTHWX__
       int cx,cy;
       GetTextExtent( GetLabel(), &cx, &cy );
-      return (cy+5); // nice height for buttons
+      return (cy+10); // nice height for buttons
 #endif
 
 }
