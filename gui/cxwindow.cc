@@ -14,7 +14,7 @@
 #include	"cxapp.h"
 #include	"cxmenu.h"
 #include	"crmenu.h"
-#include	"ccmenuItem.h"
+#include    "ccmenuitem.h"
 #include	"cccontroller.h"
 
 
