@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 23:09
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2001/11/26 14:02:50  ckpgroup
+//   SH: Added mouse-over message support - display label and data value for the bar
+//   under the pointer.
+//
 //   Revision 1.2  2001/11/12 16:24:31  ckpgroup
 //   SH: Graphical agreement analysis
 //
@@ -96,6 +100,7 @@ class CxPlot : public BASEPlot
         static int mPlotCount;
         int mPolyMode;
 		CcPoint		moldMPos;
+		bool		mMouseCaptured;
 
 //Machine specific parts:
 #ifdef __CR_WIN__
@@ -109,6 +114,7 @@ class CxPlot : public BASEPlot
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
         afx_msg void OnPaint();
 		afx_msg void OnMouseMove( UINT nFlags, CPoint point );
+		afx_msg void OnMouseLeave();
         DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
@@ -124,6 +130,7 @@ class CxPlot : public BASEPlot
         void OnChar(wxKeyEvent & event );
         void OnPaint(wxPaintEvent & event );
 		void OnMouseMove(wxMouseEvent & event);
+		void OnMouseLeave();
         DECLARE_EVENT_TABLE()
 #endif
 };

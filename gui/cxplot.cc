@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2001/11/26 14:02:50  ckpgroup
+//   SH: Added mouse-over message support - display label and data value for the bar
+//   under the pointer.
+//
 //   Revision 1.4  2001/11/22 15:33:21  ckpgroup
 //   SH: Added different draw-styles (line / area / bar / scatter).
 //   Changed graph layout. Changed second series to blue for better contrast.
@@ -89,6 +93,7 @@ CxPlot::CxPlot(CrPlot* container)
 #endif
 {
 	m_TextPopup = 0;
+	mMouseCaptured = false;
     ptr_to_crObject = container;
 #ifdef __CR_WIN__
     mfgcolour = PALETTERGB(0,0,0);
@@ -706,6 +711,7 @@ BEGIN_MESSAGE_MAP(CxPlot, CWnd)
     ON_WM_LBUTTONUP()
     ON_WM_RBUTTONUP()
     ON_WM_MOUSEMOVE()
+	ON_MESSAGE(WM_MOUSELEAVE,   OnMouseLeave)
       ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 #endif
@@ -727,6 +733,12 @@ void CxPlot::Focus()
     SetFocus();
 }
 
+void CxPlot::OnMouseLeave()
+{
+	DeletePopup();
+	mMouseCaptured = false;
+}
+
 // the mouse-movement code
 #ifdef __CR_WIN__
 // windows stuff goes here
@@ -735,6 +747,17 @@ void CxPlot::OnMouseMove( UINT nFlags, CPoint wpoint )
  // bool leftDown = ( (nFlags & MK_LBUTTON) != 0 );
  // bool ctrlDown = ( (nFlags & MK_CONTROL) != 0 );
   CcPoint point = LogicalToDevice(wpoint.x,wpoint.y);
+
+  // now some stuff to find out when the mouse leaves the window (causes a WM_MOUSE_LEAVE message (?))
+  if(!mMouseCaptured)
+  {
+	TRACKMOUSEEVENT tme;
+	tme.cbSize = sizeof(tme);
+	tme.hwndTrack = m_hWnd;
+	tme.dwFlags = TME_LEAVE;
+	_TrackMouseEvent(&tme);
+	mMouseCaptured = true;
+  }
 
 #endif
 
@@ -756,7 +779,7 @@ void CxPlot::OnMouseMove( wxMouseEvent & event )
 
   if(!(text == "error"))
   {
-	  if(moldMPos.x != point.x)
+	  if(moldMPos.x != point.x || moldMPos.y != point.y)
 	  {
 		  CreatePopup(text, point);
 		  moldMPos = point;

@@ -7,6 +7,10 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.7  2001/11/26 14:02:47  ckpgroup
+// SH: Added mouse-over message support - display label and data value for the bar
+// under the pointer.
+//
 // Revision 1.6  2001/11/22 15:33:19  ckpgroup
 // SH: Added different draw-styles (line / area / bar / scatter).
 // Changed graph layout. Changed second series to blue for better contrast.
@@ -46,6 +50,7 @@
 CcPlotBar::CcPlotBar( )
 {
 	m_Axes.m_GraphType = Plot_GraphBar;
+	m_NumberOfBarSeries = 0;
 }
 
 CcPlotBar::~CcPlotBar()
@@ -222,12 +227,12 @@ void CcPlotBar::DrawView()
 		int offset = (2400-m_XGapLeft-m_XGapRight) / m_NextItem;
 
 		// now work out the number of *bar* graphs
-		int numbars = 0;
+		m_NumberOfBarSeries = 0;
 		for(i=0; i<m_NumberOfSeries; i++)
 			if(m_Series[i]->m_DrawStyle == Plot_SeriesBar)
-				numbars++;
+				m_NumberOfBarSeries++;
 
-		if(numbars > 0) xseroffset = offset / numbars;
+		if(m_NumberOfBarSeries > 0) xseroffset = offset / m_NumberOfBarSeries;
 		else xseroffset = 0;
 
 		int x1,y1,x2,y2;
@@ -299,7 +304,7 @@ CcString CcPlotBar::GetDataFromPoint(CcPoint point)
 		// now work out the specific bar...
 		// this is the lhs of the label...
 		int lowerlimit = num*width;	
-		int bar = m_NumberOfSeries*(point.x - m_XGapLeft - lowerlimit)/width;
+		int bar = m_NumberOfBarSeries*(point.x - m_XGapLeft - lowerlimit)/width;
 
 		if(num < (m_NextItem))
 		{

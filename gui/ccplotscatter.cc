@@ -11,6 +11,10 @@
 //BIG NOTICE: PlotScatter is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.5  2001/11/26 14:02:49  ckpgroup
+// SH: Added mouse-over message support - display label and data value for the bar
+// under the pointer.
+//
 // Revision 1.4  2001/11/22 15:33:20  ckpgroup
 // SH: Added different draw-styles (line / area / bar / scatter).
 // Changed graph layout. Changed second series to blue for better contrast.
@@ -271,9 +275,28 @@ void CcPlotScatter::DrawView()
 
 CcString CcPlotScatter::GetDataFromPoint(CcPoint point)
 {
-	// do nothing as yet...
-	CcString text = "error";
-	return text;
+	CcString ret = "error";
+
+	if((point.x < (2400 - m_XGapRight)) && (point.x > m_XGapLeft) && (point.y > m_YGapTop) && (point.y < (2400 - m_YGapBottom)))
+	{
+		// need to : interpolate between xmin,xmax to get the label at that point,
+		int axiswidth = 2400 - m_XGapLeft - m_XGapRight;
+		int axisheight = 2400 - m_YGapTop - m_YGapBottom;
+
+		// calculate x and y positions of the cursor
+		float x = m_Axes.m_AxisMin[Axis_X] + (m_Axes.m_AxisMax[Axis_X]-m_Axes.m_AxisMin[Axis_X])*(point.x - m_XGapLeft) / axiswidth;
+		float y = m_Axes.m_AxisMax[Axis_Y] + (m_Axes.m_AxisMin[Axis_Y]-m_Axes.m_AxisMax[Axis_Y])*(point.y - m_YGapTop) / axisheight;
+
+		ret = "(";
+		ret += x;
+		ret += ", ";
+		if(m_Axes.m_AxisLog[Axis_Y])
+			ret += pow(10,y);
+		else ret += y;
+		ret += ")";
+	}
+
+	return ret;
 }
 
 // create the data series
