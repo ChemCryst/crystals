@@ -8,6 +8,11 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2001/03/08 15:22:11  richard
+//   New flag signalling that the model window is in a ZOOMED in state.
+//   Call to UpdateToolbars, when status changes, updates toolbar buttons, normal
+//   buttons and windows with the DISABLEIF, ENABLEIF flags.
+//
 
 #include    "crystalsinterface.h"
 #include "ccstring.h"
@@ -186,6 +191,7 @@ void CcStatus::ParseInput(CcTokenList * tokenList)
             {
                 tokenList->GetToken();
                 int unSetFlags = CreateFlag(tokenList->GetToken());
+                if (( unSetFlags & 32 ) && ( ~statusFlags & 32 )) ScriptsExited();
                 statusFlags &= (~unSetFlags);
                 break;
             }
@@ -209,5 +215,15 @@ void CcStatus::UpdateToolBars()
 
   (CcController::theController)->UpdateToolBars();
 
+
+}
+
+void CcStatus::ScriptsExited()
+{
+  //Use this fact to close any modal windows that don't
+  //have the STAYOPEN property. (This means that the script
+  //has terminated incorrectly without closing the window).
+
+  (CcController::theController)->ScriptsExited();
 
 }

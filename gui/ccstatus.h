@@ -8,6 +8,11 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2001/03/08 15:22:11  richard
+//   New flag signalling that the model window is in a ZOOMED in state.
+//   Call to UpdateToolbars, when status changes, updates toolbar buttons, normal
+//   buttons and windows with the DISABLEIF, ENABLEIF flags.
+//
 
 #ifndef     __CcStatus_H__
 #define     __CcStatus_H__
@@ -90,6 +95,7 @@ class   CcStatus
     void UnSetBit(int i, int* theFlags);
     void SetBit(int i, int* theFlag);
     void UpdateToolBars();
+    void ScriptsExited();
 
 //attributes
     int statusFlags;
