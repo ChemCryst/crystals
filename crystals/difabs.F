@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2004/05/27 12:21:12  rich
+C Move DIFABS routines out of the harwell library source.
+C
 C Revision 1.6  2003/02/14 17:09:02  djw
 C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
 C recine have the parameter ityp06, which corresponds to the types
@@ -1695,6 +1698,7 @@ C
       COMMON /NORMAL/ ANORM(44,44),ATB(44),ROWJ(88),TERMS(44)
       COMMON /SOLVE/ NSIZE,FILTER,FILSTA,FILDEC,FILEND
       COMMON /DRVR/ LI,LD,LO,LF,LP,NCY,NSHAPE,NACOEF,NBCOEF,SFMU,TCOR
+     1 ,IMAP
 \XUNITS
 C   FOLLOWING EQUIVALENCING TO SAVE SOME SPACE
       EQUIVALENCE (WORK(1),RDASH(1)),(WORK(45),SDASH(1))
