@@ -336,7 +336,7 @@ C IDOUT WILL BE SET ONCE A DISTANCE HAS BEEN OUTPUTTED
         JJ =  IRLAST + (J-1)*4
         NAT = 0
 C DONT CALCULATE DISTANCES BETWEEN THE SAME ATOMS.
-        IF (NINT(RSTORE(II)).EQ.NINT(RSTORE(JJ))) GOTO 40
+C        IF (NINT(RSTORE(II)).EQ.NINT(RSTORE(JJ))) GOTO 40
 C GET COORDINATES
         DO 50 K = 1,3
           X1(K) = RSTORE (II + K)
@@ -440,6 +440,8 @@ C WORK OUT THE PACK LABEL FROM THE ATOM POSITION
             D = SQRT (D)
             IF (IPACK.EQ.0) THEN
             CALL ZSOUT (SYMM,SWORD,ISLEN)
+CRIC99 ISLEN is one char too long.
+            ISLEN=ISLEN-1
             ENDIF
             WRITE (CLINE,11) CLAB,CLAB1,D
             CALL ZMORE(CLINE,2)
@@ -450,7 +452,7 @@ C WORK OUT THE PACK LABEL FROM THE ATOM POSITION
             CALL ZMORE(CLINE,2)
             ENDIF
 cdjwjan99         CALL ZMORE(' ',2)
-12            FORMAT ('Operator ',A,' translations ',3I3)
+12            FORMAT ('Operator ',A,' trans ',3I3)
             IDOUT = 1
           ENDIF
 140         CONTINUE
@@ -522,6 +524,8 @@ C WE HAVE FOUND THE ATOM!
             D = SQRT (D)
             IF (IPACK.EQ.0) THEN
             CALL ZSOUT (SYMM,SWORD,ISLEN)
+CRIC99 ISLEN is one char too long.
+            ISLEN=ISLEN-1
             ENDIF
             WRITE (CLINE,11) CLAB,CLAB1,D
             CALL ZMORE(CLINE,2)
@@ -1139,6 +1143,8 @@ C INCREMENTED
      + 'Initial atoms are within PACK range. They are labelled 0.',0)
       ENDIF
       CALL ZSOUT (SYMM,SWORD,ISLEN)
+CRIC99 ISLEN is one char too long.
+      ISLEN=ISLEN-1
       IF (IORIG.NE.1) THEN
       NSCRAT = NSCRAT + 1
       WRITE (ISCRAT,REC=NSCRAT)
