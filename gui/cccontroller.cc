@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.88  2004/05/19 14:03:59  rich
+// On Unix, use wxConfig routines to store 'user' data rather than the old
+// winsizes.ini file. Winsizes.ini is now officially not used anywhere.
+//
 // Revision 1.87  2004/05/18 13:51:33  rich
 // Fixed shut down of Fortran thread in Linux - but requires the use
 // of exceptions. To exit properly the thread must return from the
@@ -1861,7 +1865,7 @@ bool CcController::GetInterfaceCommand( char * line )
     //This routine gets called repeatedly by the Idle loop.
     //It needn't be highly optimised even though it is high on
     //the profile count list.
-  LOGSTAT("GtIfCmd.");
+//  LOGSTAT("GtIfCmd.");
 
   if( mCrystalsThread ) // && !mThatThreadisDead)
   {
