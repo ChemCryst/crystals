@@ -1,4 +1,15 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2001/01/18 11:33:29  richard
+C Added new DISTANCE DIRECTIVES:
+C OUTPUT PUNCH=SCRIPT - outputs easily script-readable bond info to the punch file.
+C PIVOT atomspec - outputs all bonds and/or angles where atomspec is the PIVOT atom.
+C BONDED atomspec - output all bonds where atomspec is bonded to.
+C Both PIVOT and BONDED set ALLDIST to YES, the difference is in the output. PIVOT
+C atoms always appear first and at the centre of angles. If you say
+C #DIST / OUT PUNCH=SCRIPT / BONDED H / END - then the punch file will contain the pivot
+C atom, say C, followed by a list of H's bonded to it. Useful for constructing a
+C set of riding H instructions, I think.
+C
 C Revision 1.5  2000/10/31 15:35:48  ckp2
 C RIC: New subroutine XDIST3 sets up distance calculation for a box.
 C
@@ -248,6 +259,8 @@ C---- RESERVE A COMMAND LINE BUFFER OF 8 ELEMENTS
       JCOMBF = ICOMBF+JDIMBF
 C----- ZERO THE BUFFER
       CALL XZEROF( ISTORE(ICOMBF), IDIMBF)
+C----- RICJAN01 INDICATE NO L12 YET.
+      L12=-1
 C--READ THE INITIAL CONSTANTS
 C----- INSTRUCTION READING LOOP
 100   CONTINUE
