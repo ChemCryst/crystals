@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////
-//   CRYSTALS Interface      Class CxModel
+//  CRYSTALS Interface      Class CxModel
 ////////////////////////////////////////////////////////////////////////
 
 #include    "crystalsinterface.h"
@@ -38,39 +38,14 @@ CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
   CRect rect;
   CClientDC dc(theModel);
 
-  if ( theModel -> memDC.CreateCompatibleDC(&dc) == 0 )
-  {
-    ::MessageBox ( NULL, "CreateCompatibleDC in modelwindow failed", "Error", MB_OK) ;
-    delete theModel;
-    return nil;
-  }
-  theModel -> newMemDCBitmap = new CBitmap;
-  theModel -> GetClientRect ( &rect );
+  HDC hdc = ::GetDC(theModel->GetSafeHwnd());
 
-  if ( theModel -> newMemDCBitmap -> CreateCompatibleBitmap(&dc,rect.Width(),rect.Height()) == 0 )
-  {
-    ::MessageBox ( NULL, "CreateCompatibleDC in modelwindow failed", "Error", MB_OK) ;
-    delete theModel;
-    return nil;
-  }
-
-  theModel -> oldMemDCBitmap = theModel -> memDC.SelectObject ( theModel -> newMemDCBitmap );
-  if ( theModel -> memDC.PatBlt(0,0,rect.Width(),rect.Height(),WHITENESS) == 0 )
-  {
-    ::MessageBox ( NULL, "PatBlt in modelwindow failed", "Error", MB_OK) ;
-    delete theModel;
-    return nil;
-  }
-
-
-///  HDC hdc = ::GetDC(theModel->GetSafeHwnd());
-
-  if((theModel->SetWindowPixelFormat(&(theModel -> memDC) ))==false)
+  if( ( theModel->SetWindowPixelFormat(hdc) ) == false )
   {
     delete theModel;
     return nil;
   }
-  if((theModel->CreateViewGLContext(theModel -> memDC.m_hDC)) ==false)
+  if ( ( theModel->CreateViewGLContext( hdc ) ) == false )
   {
     delete theModel;
     return nil;
@@ -97,6 +72,8 @@ CxModel::CxModel(wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSi
                  long style, const wxString& name): wxGLCanvas(parent, id, pos, size, style, name)
 {
 
+    m_DoNotPaint = false;
+
 #endif
 #ifdef __CR_WIN__
 
@@ -105,19 +82,23 @@ CxModel::CxModel(CrModel* container)
 {
   ptr_to_crObject = container;
   m_hGLContext = NULL;
-  m_bitmapok = true;
-
 #endif
 
-  m_bNeedUpdate = true;
+  m_bitmapok = false;
+  m_bNeedReScale = true;
+  m_bModelChanged = true;
+  m_bFullListOk = false;
+  m_bQuickListOk = false;
   m_bOkToDraw = false;
-  m_radius = COVALENT;
-  m_radscale = 1.0f;
   m_fastrotate = false;
-  m_LitAtom = nil;
+  m_LitObject = nil;
   m_xTrans = 0.0f ;
   m_yTrans = 0.0f ;
   m_zTrans = 0.0f ;
+  m_stretchX = 1.0f ;
+  m_stretchY = 1.0f ;
+  m_fbsize = 2048;
+  m_sbsize = 256;
 
   mat = new float[16];
 
@@ -149,17 +130,22 @@ CxModel::~CxModel()
   DeletePopup();
 
 #ifdef __CR_WIN__
-
   wglMakeCurrent(NULL,NULL);
   wglDeleteContext(m_hGLContext);
-
 #endif
-  delete newMemDCBitmap;
 }
 
+void CxModel::CxDestroyWindow()
+{
+#ifdef __CR_WIN__
+  DestroyWindow();
+#endif
+#ifdef __BOTHWX__
+  Destroy();
+#endif
+}
 
 #ifdef __CR_WIN__
-
 BEGIN_MESSAGE_MAP(CxModel, CWnd)
    ON_WM_CHAR()
    ON_WM_PAINT()
@@ -170,7 +156,6 @@ BEGIN_MESSAGE_MAP(CxModel, CWnd)
    ON_WM_ERASEBKGND()
    ON_COMMAND_RANGE(kMenuBase, kMenuBase+1000, OnMenuSelected)
 END_MESSAGE_MAP()
-
 #endif
 
 #ifdef __BOTHWX__
@@ -201,7 +186,8 @@ CXONCHAR(CxModel)
 void CxModel::OnPaint()
 {
     CPaintDC dc(this); // device context for painting
-
+    HDC hdc = ::GetDC ( GetSafeHwnd() );
+    wglMakeCurrent(hdc, m_hGLContext);
 #endif
 
 #ifdef __BOTHWX__
@@ -209,36 +195,95 @@ void CxModel::OnPaint()
 void CxModel::OnPaint(wxPaintEvent &event)
 {
     wxPaintDC dc (this);
+    dc.SetUserScale( 1.0,1.0 );
+    SetCurrent();
+    if ( m_DoNotPaint )
+    {
+      TEXTOUT ( "OnPaint: Not painting" );
+      m_DoNotPaint = false;
+      return;
+    }
 #endif
 
-    if (m_bNeedUpdate)
+    TEXTOUT ( "OnPaint" );
+    Boolean ok_to_draw = true;
+
+    if (m_bModelChanged)
     {
-//      TEXTOUT ( "Redrawing" );
-      DoDrawingInMemory();
-      m_bNeedUpdate = false;
+// re-render the full detail model.
+      TEXTOUT ( "Redrawing model from scratch" );
+      DoDrawingLists();
+      ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderModel(true);
+      m_bFullListOk = true;
     }
 
-//    TEXTOUT ( "Bliting" );
+    if ( ok_to_draw )
+    {
+      TEXTOUT ( "Displaying model" );
+      if ( m_Autosize && m_bNeedReScale )
+      {
+        AutoScale();
+        m_bNeedReScale = false;
+      }
 
-    CRect rect;
-    GetClientRect(&rect);
+      glClearColor( 1.0f,1.0f,1.0f,0.0f);
+      glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-    if ( m_bOkToDraw ) dc.BitBlt(0,0,rect.Width(),rect.Height(),&memDC,0,0,SRCCOPY);
-    else               PaintBannerInstead ( &dc );
+      glMatrixMode ( GL_PROJECTION );
+      glLoadIdentity();
+      CameraSetup();
+      ModelSetup();
+      if ( m_fastrotate && !m_bModelChanged ) //If the model has changed, the QLISTS aren't ready yet.
+      {
+        glCallList( STYLIST );
+        glCallList( QATOMLIST );
+        glCallList( QBONDLIST );
+      }
+      else
+      {
+        glCallList( STYLIST );
+        glCallList( ATOMLIST );
+        glCallList( BONDLIST );
+        glCallList( XOBJECTLIST );
+      }
+      glMatrixMode ( GL_PROJECTION );
+      glPopMatrix();
+      glMatrixMode ( GL_MODELVIEW );
+
+//This is only needed while we draw directly onto the GDI
+      glFinish();
+// if we changed to GLUT fonts instead, we could just call glFlush(), which doesn't block.
+
+#ifdef __CR_WIN__
+      SwapBuffers(hdc);
+#endif
+#ifdef __BOTHWX__
+      SwapBuffers();
+#endif
+
+      if (m_bModelChanged)
+      {
+// Now that the display is out of the way, render the quick
+// model to the quick display lists.
+        TEXTOUT ( "Redrawing quick model from scratch" );
+        ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderModel(false);
+        m_bModelChanged = false;
+        m_bQuickListOk = true;
+      }
+
+
+    }
+    else
+    {
+      TEXTOUT ( "No model. Displaying banner instead" );
+      PaintBannerInstead ( &dc );
+    }
 }
 
 
-void CxModel::DoDrawingInMemory()
+void CxModel::DoDrawingLists()
 {
-#ifdef __CR_WIN__
-    wglMakeCurrent(memDC.m_hDC, m_hGLContext);
-#endif
-#ifdef __BOTHWX__
-    SetCurrent();
-#endif
-
-    glClearColor( 1.0f,1.0f,1.0f,0.0f);
-    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    glNewList( STYLIST, GL_COMPILE);
 
     if ( m_DrawStyle == MODELSMOOTH )
     {
@@ -272,28 +317,9 @@ void CxModel::DoDrawingInMemory()
     }
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHTING);
-    glLightModelf( GL_LIGHT_MODEL_TWO_SIDE, 1.0);
+    glEnable(GL_DEPTH_TEST);
 
-    if ( m_Autosize )
-    {
-           AutoScale();
-    }
-
-    glPushMatrix();
-
-    // translate and scale here if needed.
-    float degToRad = 3.1415926535f / 180.0f;
-
-    glTranslated ( m_xTrans, m_yTrans, m_zTrans );
-    glMultMatrixf ( mat );
-    glScalef     ( m_xScale, m_xScale, m_xScale );
-
-
-    m_bOkToDraw = ((CrModel*)ptr_to_crObject)->RenderModel(!m_fastrotate);
-
-
-    glPopMatrix();
-    glFinish();
+    glEndList();
 
 }
 
@@ -315,7 +341,12 @@ void CxModel::OnLButtonUp( wxMouseEvent & event )
   {
     case CXROTATE:
     {
+#ifdef __CR_WIN__
       ReleaseCapture();
+#endif
+#ifdef __BOTHWX__
+      ReleaseMouse();
+#endif
       if(m_fastrotate)
       {
         m_fastrotate = false;
@@ -325,9 +356,14 @@ void CxModel::OnLButtonUp( wxMouseEvent & event )
     }
     case CXRECTSEL:
     {
+#ifdef __CR_WIN__
       ReleaseCapture();
+#endif
+#ifdef __BOTHWX__
+      ReleaseMouse();
+#endif
       SelectBoxedAtoms(m_selectRect, true);
-      NeedRedraw();
+      ModelChanged();
       break;
     }
     case CXPOLYSEL:
@@ -339,12 +375,17 @@ void CxModel::OnLButtonUp( wxMouseEvent & event )
     case CXZOOM:
     {
       m_mouseMode = CXROTATE;
+#ifdef __CR_WIN__
       ReleaseCapture();
+#endif
+#ifdef __BOTHWX__
+      ReleaseMouse();
+#endif
       NeedRedraw();
       break;
     }
   }
-  
+
 }
 
 #ifdef __CR_WIN__
@@ -383,19 +424,29 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
   {
     case CXROTATE:
     {
+#ifdef __CR_WIN__
       SetCapture();
+#endif
+#ifdef __BOTHWX__
+      CaptureMouse();
+#endif
       CcString atomname;
-      CcModelAtom* atom;
-      if(IsAtomClicked(point.x, point.y, &atomname, &atom))
+      CcModelObject* object;
+      if( IsAtomClicked(point.x, point.y, &atomname, &object, true))
       {
-         ((CrModel*)ptr_to_crObject)->SendAtom(atom);
+         ((CcModelAtom*)object)->SendAtom( ((CrModel*)ptr_to_crObject)->GetSelectionAction() );
       }
       m_ptLDown = point;  //maybe start rotating from here.
       break;
     }
     case CXRECTSEL:
     {
+#ifdef __CR_WIN__
       SetCapture();
+#endif
+#ifdef __BOTHWX__
+      CaptureMouse();
+#endif
       m_selectRect.Set(point.y,point.x,point.y,point.x); //start dragging box from here.
       break;
     }
@@ -406,7 +457,12 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
     }
     case CXZOOM:
     {
+#ifdef __CR_WIN__
       SetCapture();
+#endif
+#ifdef __BOTHWX__
+      CaptureMouse();
+#endif
       m_ptLDown = point;  //zoom from here.
       break;
     }
@@ -502,7 +558,7 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
           if ( ( m_ptLDown.x - point.x ) || ( m_ptLDown.y - point.y ) )
           {
             m_ptLDown = point;
-            NeedRedraw();
+            NeedRedraw(true);
           }
         }
         else   //LBUTTONDOWN, but not rotating yet.
@@ -517,33 +573,34 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
         if( m_fastrotate ) //Was rotating, but now LBUTTON is up. Redraw. (MISSED LBUTTONUP message)
         {
           m_fastrotate = false;
-          NeedRedraw();
+          NeedRedraw(true);
         }
 // This bit involves checking the atom list. We should avoid calling
-// it if the mouse really hasn't moved. (I think this routine is called
+// it if the mouse really hasn't moved. (I think OnMouseMove is called
 // repeatedly when the ProgressBar is updated, for example.)
         if ( ( m_ptMMove.x - point.x ) || ( m_ptMMove.y - point.y ) )
         {
-          CcString atomname;
-          CcModelAtom* atom;
-          if(IsAtomClicked(point.x, point.y, &atomname, &atom))
+          CcString labelstring;
+          CcModelObject* object;
+          int objectType = IsAtomClicked(point.x, point.y, &labelstring, &object);
+          if(objectType)
           {
-            if(m_LitAtom != atom) //avoid excesive redrawing, it flickers.
+            if(m_LitObject != object) //avoid excesive redrawing, it flickers.
             {
-              m_LitAtom = atom;
-              if ( atomname.Length() && ( atomname.Sub(1,1) == "Q" ) )
+              m_LitObject = object;
+              if ( objectType == CC_ATOM && labelstring.Length() && ( labelstring.Sub(1,1) == "Q" ) )
               {
-                atomname = atomname + "  " + CcString ((float)atom->sparerad/1000.0);
+                labelstring += "  " + CcString ((float)((CcModelAtom*)object)->sparerad/1000.0);
               }
-              CreatePopup(atomname, point);
+              CreatePopup(labelstring, point);
               ChooseCursor(CURSORCOPY);
-              (CcController::theController)->SetProgressText(&atomname);
+              (CcController::theController)->SetProgressText(&labelstring);
               if ( m_Hover ) NeedRedraw();
             }
           }
-          else if (m_LitAtom) //Not over an atom anymore.
+          else if (m_LitObject) //Not over an atom anymore.
           {
-            m_LitAtom = nil;
+            m_LitObject = nil;
             (CcController::theController)->SetProgressText(NULL);
             ChooseCursor(CURSORNORMAL);
             DeletePopup();
@@ -563,12 +620,24 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
       ChooseCursor(CURSORCROSS);
       if (leftDown)
       {
+#ifdef __CR_WIN__
         CClientDC dc(this);
         CcRect newRect = m_selectRect;
         newRect.mBottom = point.y;
         newRect.mRight  = point.x;
         dc.DrawDragRect(&newRect.Sort().Native(), CSize(1,1), &m_selectRect.Sort().Native(), CSize(1,1),NULL,NULL);
         m_selectRect = newRect;
+#endif
+#ifdef __BOTHWX__
+        wxClientDC dc(this);
+        CcRect newRect = m_selectRect;
+        newRect.mBottom = point.y;
+        newRect.mRight  = point.x;
+        dc.SetLogicalFunction( wxINVERT );
+        dc.DrawRectangle(newRect.mLeft, newRect.mTop, newRect.Width(), newRect.Height() );
+        dc.DrawRectangle(m_selectRect.mLeft, m_selectRect.mTop, m_selectRect.Width(), m_selectRect.Height() );
+        m_selectRect = newRect;
+#endif
       }
       break;
     }
@@ -617,13 +686,16 @@ void CxModel::OnRButtonUp( wxMouseEvent & event )
 #endif
 
   CcString atomname;
+  CcModelObject* object;
   CcModelAtom* atom;
   CrModel* crModel = (CrModel*)ptr_to_crObject;
 
 //decide which menu to show
 
-  if(IsAtomClicked(point.x, point.y, &atomname, &atom))
+  if( IsAtomClicked(point.x, point.y, &atomname, &object, true) )
   {
+    atom = (CcModelAtom*)object;
+    
 #ifdef __CR_WIN__
 
     ClientToScreen(&wpoint); // change the coordinates of the click from window to screen coords so that the menu appears in the right place
@@ -633,13 +705,7 @@ void CxModel::OnRButtonUp( wxMouseEvent & event )
 
     if (atom->IsSelected()) // If it's selected pass the atom-clicked, and all the selected atoms.
     {
-      int nSelected;
-      CcModelAtomPtr* atoms = crModel->GetSelectedAtoms(&nSelected);
-      CcString* atomNames = new CcString[nSelected];
-      for (int i = 0; i < nSelected; i++) atomNames[i] = atoms[i].atom->Label();
-      ((CrModel*)ptr_to_crObject)->ContextMenu(point.x,point.y, atomname, nSelected, atomNames);
-      delete [] atomNames;
-      delete [] atoms;
+      ((CrModel*)ptr_to_crObject)->ContextMenu(point.x,point.y, atomname, true);
     }
     else //the atom is not selected show a menu applicable to a single atom.
     {
@@ -687,14 +753,22 @@ void CxModel::Setup()
             glLightfv(GL_LIGHT0, GL_AMBIENT, LightAmbient);
             glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse);
             glLightfv(GL_LIGHT0, GL_SPECULAR, LightSpecular);
-            glLightModelf( GL_LIGHT_MODEL_TWO_SIDE, 1.0);
+//            glLightModelf( GL_LIGHT_MODEL_TWO_SIDE, 1.0);
 
             glEnable(GL_LIGHT0);
             glEnable(GL_LIGHTING);
 
 
 // This is for the PaintBannerInstead() function.
+#ifdef __BOTHWX__
+        wxBitmap newbit(wxBITMAP(IDB_SPLASH));
+        m_bitmap = newbit;
+        m_bitmapok = m_bitmap.Ok();
+#endif
+
 #ifdef __CR_WIN__
+
+        m_bitmapok = true;
 
         LPCTSTR lpszResourceName = (LPCTSTR)IDB_SPLASH;
         HBITMAP hBmp = (HBITMAP)::LoadImage( AfxGetInstanceHandle(),
@@ -754,52 +828,61 @@ void CxModel::Setup()
 
 void CxModel::NewSize(int cx, int cy)
 {
-
-
+#ifdef __CR_WIN__
+    HDC hdc = ::GetDC ( GetSafeHwnd() );
+    wglMakeCurrent(hdc, m_hGLContext);
+#endif
 #ifdef __BOTHWX__
       SetCurrent();
 #endif
-    int icx = 5000;
-    int icy = 5000;
+    m_stretchX = 1.0f;
+    m_stretchY = 1.0f;
+
     glViewport(0,0,cx,cy);
-    if (cx > cy) icx = (int) ( ( 5000.0 * cx ) / cy );
-    else         icy = (int) ( ( 5000.0 * cy ) / cx );
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(-icx,icx,-icy,icy,-5000*m_xScale,5000*m_xScale);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glEnable(GL_LIGHTING);
-    glEnable(GL_DEPTH_TEST);
+    if ( cy > cx ) m_stretchY = (float)cy / (float)cx;
+    else           m_stretchX = (float)cx / (float)cy;
+}
 
+void CxModel::CameraSetup()
+{
+  int ic = 5000;
+  glOrtho(-ic * m_stretchX ,ic * m_stretchX ,
+          -ic * m_stretchY ,ic * m_stretchY ,
+          -ic * m_xScale   ,ic * m_xScale );
+}
+
+
+void CxModel::ModelSetup()
+{
+   glMatrixMode ( GL_MODELVIEW );
+   glLoadIdentity();
+   glTranslated ( m_xTrans, m_yTrans, m_zTrans );
+   glMultMatrixf ( mat );
+   glScalef     ( m_xScale, m_xScale, m_xScale );
 }
 
 #ifdef __CR_WIN__
 
-BOOL CxModel::SetWindowPixelFormat(CDC* cDC)
+BOOL CxModel::SetWindowPixelFormat(HDC hdc)
 {
-
-    CBitmap* pBitmap = cDC->GetCurrentBitmap() ;
-    BITMAP bmInfo ;
-    pBitmap->GetObject(sizeof(BITMAP), &bmInfo) ;
-
     PIXELFORMATDESCRIPTOR pixelDesc;
     memset(&pixelDesc, 0, sizeof(pixelDesc));
 
     pixelDesc.nSize = sizeof(PIXELFORMATDESCRIPTOR);
     pixelDesc.nVersion = 1;
 
-    pixelDesc.dwFlags = PFD_DRAW_TO_BITMAP |
+    pixelDesc.dwFlags = PFD_DRAW_TO_WINDOW |
                         PFD_SUPPORT_OPENGL |
-                        PFD_STEREO_DONTCARE;
+                        PFD_STEREO_DONTCARE|
+                        PFD_DOUBLEBUFFER;
 
     pixelDesc.iPixelType = PFD_TYPE_RGBA;
-    pixelDesc.cColorBits = (BYTE)bmInfo.bmBitsPixel ;
+    pixelDesc.cColorBits = 32;
     pixelDesc.cDepthBits = 32;
     pixelDesc.iLayerType = PFD_MAIN_PLANE;
 
-    int GLPixelIndex = ChoosePixelFormat (cDC->m_hDC, &pixelDesc);
+    int GLPixelIndex = ChoosePixelFormat (hdc, &pixelDesc);
 
     if (GLPixelIndex == 0 )
     {
@@ -810,7 +893,7 @@ BOOL CxModel::SetWindowPixelFormat(CDC* cDC)
       return false;
     }
 
-    if ( SetPixelFormat(cDC->m_hDC, GLPixelIndex, &pixelDesc) == FALSE)
+    if ( SetPixelFormat(hdc, GLPixelIndex, &pixelDesc) == FALSE)
     {
       CHAR sz[80];
       DWORD dw = GetLastError();
@@ -850,405 +933,287 @@ BOOL CxModel::CreateViewGLContext(HDC hDC)
 }
 #endif
 
-void CxModel::SetRadiusType( int radtype )
+int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject **outObject, Boolean atomsOnly)
 {
-    m_radius = radtype;
-    NeedRedraw();
-}
+   GLint viewport[4];
+   glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
 
-void CxModel::SetRadiusScale(int scale)
-{
-    m_radscale = (float)scale / 1000.0f;
-      NeedRedraw();
-}
+   GLuint selectbuf[400]; //space for 100 hits.
+   glSelectBuffer ( 400, selectbuf ); //Allocate space for 100 hit objects
+
+   bool repeat = true;
+   int tolerance = 0;
+   int hits = 0;
+  
+   while ( repeat )
+   {
+       
+//For debugging comment out next line and uncomment the SwapBuffers line below.
+     glRenderMode ( GL_SELECT ); //Instead of rendering, tell OpenGL to put stuff in the SelectBuffer.
+
+     glInitNames();  //Initialise names stack (names are just INTs, but will be unique for each atom and bond.)
+     glPushName( 0 ); //Push a value onto the stack, it is replaced by each LoadName call during rendering.
 
 
-
-
-
-bool CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelAtom **outAtom)
-{
-
-//This is called every time the mouse moves. It is important that it is very fast, since
-//it loops through *all* the atoms!
-
-//    TEXTOUT("IsAtomClicked?");
-    //Quicker algorithm ideas:
-    //
-    // 1. Use a square instead of circular radius for hit testing. (Since the atom
-    // lights up indicating when the mouse is near it, the user won't care about this).
-    //
-    // 2. Get coords for a box which projects through the model coordinates and
-    // hit test this box. (Need a good algorithm, also need to know which way up
-    // it is).
-
-// Account for difference between Windows (GDI) coordinates
-// and OpenGL coordinates
+     glMatrixMode ( GL_PROJECTION );
+     glPushMatrix();
+     glLoadIdentity();
+     gluPickMatrix ( xPos, viewport[3] - yPos, tolerance+1, tolerance+1, viewport );
+     CameraSetup();
+     ModelSetup();
+     glCallList( QATOMLIST );
+     if ( tolerance == 0 && !atomsOnly ) glCallList( BONDLIST ); // Only select bonds if right over them.
+     glMatrixMode ( GL_PROJECTION );
+     glPopMatrix();
+     glMatrixMode ( GL_MODELVIEW );
 
 #ifdef __CR_WIN__
-
-  CRect       wwindowext;
-  GetClientRect(&wwindowext);
-  CcRect rect( wwindowext.top, wwindowext.left, wwindowext.bottom, wwindowext.right);
-
-#endif
-#ifdef __BOTHWX__
-
-  wxRect wwindowext = GetRect();
-  CcRect rect( wwindowext.y, wwindowext.x, wwindowext.GetBottom(), wwindowext.GetRight());
-
+//For debug uncomment next line and comment the glRenderMode line above.
+//    HDC hdc = ::GetDC ( GetSafeHwnd() ); wglMakeCurrent(hdc, m_hGLContext); SwapBuffers (hdc);
 #endif
 
-  yPos = rect.Height() - yPos;
+     hits = glRenderMode ( GL_RENDER ); //Switching back to render mode, return value is number of objects hit.
 
-//Need scale between model and window in order to do radius calculation
+     if ( hits || tolerance )  repeat = false;
+     tolerance = 19; // If nothing under the mouse select things close by.
+   }
 
-  float scale = (float) min ( rect.Width(), rect.Height() ) / 10000.0f ;
+   if ( hits < 0 )
+   {
+     hits = -hits;
+     LOGERR ( "Hit test buffer overflow - contact richard.cooper@chem.ox.ac.uk");
+   }
 
-// NB This doesn't include the m_xScale part!
+//Hit records in selectbuf have the form:
+// uint Number of names (this will always be 1, because we are careful only to call PushName once.)
+// uint Min depth of hit primitive
+// uint Max depth of hit primitive
+// uint Name
 
-  CcModelAtom* topAtom = nil;
-  CcModelAtom* topAtomB = nil;
-  float topAtomZ = 0;
-  float topAtomBd = 0;
-  int centwx = rect.Width() / 2;
-  int centwy = rect.Height() / 2;
+   if ( hits )
+   {
+//     TEXTOUT ( CcString ( hits ) + " hits" );
+     GLuint highest_point = selectbuf[1];
+     GLuint highest_name = selectbuf[3];
+     for ( int i = 1; i<hits; i++ )
+     {
+       if ( selectbuf[ (i*4) + 2 ] < highest_point )
+       {
+         highest_point = selectbuf[ (i*4) + 1 ];
+         highest_name  = selectbuf[ (i*4) + 3 ];
+       }
+     }
 
-  CcModelAtom* atom;
-  CrModel* crModel = (CrModel*)ptr_to_crObject;
-
-  crModel->PrepareToGetAtoms();
-
-// Loop through the atoms...
-// find any that are within radius of (xPos,yPos)
-// store the one with the *lowest* z coord.
-// Top atomB stores atoms found in a wider search radius,
-// if one is not found within the normal search radius.
-
-  while ( (atom = crModel->GetModelAtom()))
-  {
-    if (atom->m_excluded) continue; //(Jumps to end of loop)
-
-    int radius = (int)(atom->R() * max(m_radscale,0.25) * scale * m_xScale ); //NB m_radscale doesn't go below 0.5 or it gets all fiddly trying to find atoms with the mouse.
-    int radsq = (int) (radius * radius);
-
-//Process the co-ordinates in the same way that OpenGL does:
-// 1. Rotate the scaled co-ordinates. ( ==eqv== Scale the rotated co-ordinates )
-// 2. Translate the rotated and scaled co-ords.
-// 3. Scale from -5000->5000 coords to pixel scale.
-// 4. Translate so that centred at centre of window.
-
-    int prjX = (int)( (
-                           ( (
-                                 mat[0] * atom->X()
-                               + mat[4] * atom->Y()
-                               + mat[8] * atom->Z()
-                              ) * m_xScale  ) + m_xTrans
-                         ) * scale ) + centwx ;
-
-    int prjY = (int)( (
-                           ( (
-                                 mat[1] * atom->X()
-                               + mat[5] * atom->Y()
-                               + mat[9] * atom->Z()
-                              ) * m_xScale ) + m_yTrans
-                         ) * scale  ) + centwy ;
-
-    int distsq = (int) ((xPos-prjX)*(xPos-prjX)
-                      + (yPos-prjY)*(yPos-prjY));
-
-    if ( distsq < radsq)
-    {
-// If there is more than one atom under the cursor,
-// we need the top one.
-
-      float prjZ = ( mat[2] * atom->X()
-                   + mat[6] * atom->Y()
-                   + mat[10]* atom->Z() );
-
-      if ( (topAtom == nil) || (topAtomZ < prjZ) )
-      {
-        topAtom = atom;
-        topAtomZ = prjZ;
-      }
-    }
-    else if ( ( topAtom == nil ) && ( distsq < ( radsq * 6 ) ) )
-    {
-// If there is no atom under the cursor,
-// we need the closest one ( within radsq*6 ).
-
-      if   ( (topAtomB == nil) || ( distsq < topAtomBd ) )
-      {
-        topAtomB = atom;
-        topAtomBd = (float)distsq;
-      }
-    }
-  } //end atom getting loop
-
-  if ( topAtom )
-  {
-    *atomname = topAtom->Label();
-    *outAtom = topAtom;
-    return true;
-  }
-  else if(topAtomB != nil)
-  {
-    *atomname = topAtomB->Label();
-    *outAtom = topAtomB;
-
-/*
-    crModel->PrepareToGetBonds();
-
-// Loop through the bonds...
-
-    while ( (bond = crModel->GetModelBond()) )
-    {
-
-//Process the co-ordinates in the same way that OpenGL does:
-// 1. Rotate the scaled co-ordinates. ( ==eqv== Scale the rotated co-ordinates )
-// 2. Translate the rotated and scaled co-ords.
-// 3. Scale from -5000->5000 coords to pixel scale.
-// 4. Translate so that centred at centre of window.
-
-      int prjX1 = (int)( (
-                           ( (
-                                 mat[0] * atom->X1()
-                               + mat[4] * atom->Y1()
-                               + mat[8] * atom->Z1()
-                              ) * m_xScale  ) + m_xTrans
-                         ) * scale ) + centwx ;
-
-      int prjY1 = (int)( (
-                           ( (
-                                 mat[1] * atom->X1()
-                               + mat[5] * atom->Y1()
-                               + mat[9] * atom->Z1()
-                              ) * m_xScale ) + m_yTrans
-                         ) * scale  ) + centwy ;
-      int prjX2 = (int)( (
-                           ( (
-                                 mat[0] * atom->X2()
-                               + mat[4] * atom->Y2()
-                               + mat[8] * atom->Z2()
-                              ) * m_xScale  ) + m_xTrans
-                         ) * scale ) + centwx ;
-
-      int prjY2 = (int)( (
-                           ( (
-                                 mat[1] * atom->X2()
-                               + mat[5] * atom->Y2()
-                               + mat[9] * atom->Z2()
-                              ) * m_xScale ) + m_yTrans
-                         ) * scale  ) + centwy ;
-
-
-// subtract x1,y1 from x2,y2 and from the cursor posn.
-      
-      int vecX = prjX2 - prjX1;
-      int vecY = prjY2 - prjY1;
-
-      int pX = xPos - prjX1;
-      int pY = yPos - prjY1;
-
-
-      int distsq = (int) ((xPos-prjX)*(xPos-prjX)
-                        + (yPos-prjY)*(yPos-prjY));
-
-      if ( distsq < radsq)
-      {
-// If there is more than one atom under the cursor,
-// we need the top one.
-
-        float prjZ = ( mat[2] * atom->X()
-                     + mat[6] * atom->Y()
-                     + mat[10]* atom->Z() );
-  
-        if ( (topAtom == nil) || (topAtomZ < prjZ) )
-        {
-          topAtom = atom;
-          topAtomZ = prjZ;
-        }
-      }
-    } //end atom getting loop
+     *outObject = ((CrModel*)ptr_to_crObject)->FindObjectByGLName ( highest_name );
 
 
 
-*/
+     if ( *outObject )
+     {
+       *atomname = (*outObject)->Label();
+       return (*outObject)->Type();
+     }
 
-
-
-    return true;
-  }
-  return false;
+   }
+   return 0;
 }
-
 
 
 void CxModel::SelectBoxedAtoms(CcRect rectangle, bool select)
 {
-// Account for difference between Windows (GDI) coordinates
-// and OpenGL coordinates
+   GLint viewport[4];
+   glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
 
-#ifdef __CR_WIN__
+   GLuint * selectbuf;
 
-    CRect       wwindowext;
-    GetClientRect(&wwindowext);
-    CcRect       rect( wwindowext.top, wwindowext.left, wwindowext.bottom, wwindowext.right);
+   bool repeat = true;
+   int hits = 0;
+  
+   while ( repeat )
+   {
+     selectbuf = new GLuint[m_sbsize];
+     glSelectBuffer ( m_sbsize, selectbuf );
+       
+     glRenderMode ( GL_SELECT ); //Instead of rendering, tell OpenGL to put stuff in the SelectBuffer.
 
-#endif
-#ifdef __BOTHWX__
+     glInitNames();  //Initialise names stack (names are just INTs, but will be unique for each atom and bond.)
+     glPushName( 0 ); //Push a value onto the stack, it is replaced by each LoadName call during rendering.
 
-    wxRect wwindowext = GetRect();
-    CcRect rect( wwindowext.y, wwindowext.x, wwindowext.GetBottom(), wwindowext.GetRight());
+     glMatrixMode ( GL_PROJECTION );
+     glPushMatrix();
+     glLoadIdentity();
+     gluPickMatrix ( rectangle.MidX(), viewport[3] - rectangle.MidY(), rectangle.Sort().Width(), rectangle.Sort().Height(), viewport );
+     CameraSetup();
+     ModelSetup();
+     glCallList( ATOMLIST );
+     glMatrixMode ( GL_PROJECTION );
+     glPopMatrix();
+     glMatrixMode ( GL_MODELVIEW );
 
-#endif
+     hits = glRenderMode ( GL_RENDER ); //Switching back to render mode, return value is number of objects hit.
 
-    rectangle.mBottom = rect.Height() - rectangle.mBottom;
-    rectangle.mTop    = rect.Height() - rectangle.mTop;
+     if ( hits >= 0 )
+     {
+       repeat = false;
+     }
+     else
+     {
+       repeat = true;
+       delete [] selectbuf;
+       m_sbsize = m_sbsize * 2;
+       LOGSTAT ( "Select buffer overflows, doubling size to " + CcString (m_sbsize) );
+     }
+   }
 
-    int winsc = min ( rect.Width(), rect.Height() );
+//Hit records in selectbuf have the form:
+// uint Number of names (this will always be 1, because we are careful only to call PushName once.)
+// uint Min depth of hit primitive
+// uint Max depth of hit primitive
+// uint Name
 
-//Need scale between model and window in order to do radius calculation
-
-    float scale = (float) winsc / 10000.0f ;
-
-// NB This doesn't include the m_xScale part!
-
-    int centwx = rect.Width() / 2;
-    int centwy = rect.Height() / 2;
-
-    CcModelAtom* atom;
-    CrModel* crModel = (CrModel*)ptr_to_crObject;
-
-    crModel->PrepareToGetAtoms();
-
-// Loop through the atoms...
-// find any that are within the rectangl
-
-    while ( (atom = crModel->GetModelAtom()) != nil )
-    {
-
-//Process the co-ordinates in the same way that OpenGL does:
-// 1. Rotate the scaled co-ordinates. ( ==eqv== Scale the rotated co-ordinates )
-// 2. Translate the rotated and scaled co-ords.
-// 3. Scale from -5000->5000 coords to pixel scale.
-// 4. Translate so that centred at centre of window.
-
-       int prjX = (int)((((
-                            mat[0] * atom->X()
-                          + mat[4] * atom->Y()
-                          + mat[8] * atom->Z()
-                       ) * m_xScale ) + m_xTrans
-                       ) * scale    ) + centwx ;
-
-       int prjY = (int)((((
-                            mat[1] * atom->X()
-                          + mat[5] * atom->Y()
-                          + mat[9] * atom->Z()
-                       ) * m_xScale ) + m_yTrans
-                         ) * scale  ) + centwy ;
-
-       if ( rectangle.Contains(prjX,prjY) ) atom->Select(); //invert selection state.
-    }
+   CcModelAtom* atom;
+   for ( int i = 0; i<hits; i++ )
+   {
+     atom = (CcModelAtom*)((CrModel*)ptr_to_crObject)->FindObjectByGLName(selectbuf[(i*4)+3]);
+     if ( atom ) atom->Select();
+   }
+   delete [] selectbuf;
 }
-
 
 void CxModel::AutoScale()
 {
-    //Quicker algorithm ideas:
-      // Work out enclosing ellipse for the atomic co-ordinates, and scale
-      // using these.
 
-#ifdef __CR_WIN__
+//   TEXTOUT ( "Autoscale" );
+   GLint viewport[4];
+   glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
 
-      CRect       wwindowext;
-      GetClientRect(&wwindowext);
-      CcRect       rect( wwindowext.top, wwindowext.left, wwindowext.bottom, wwindowext.right);
+   GLfloat *feedbuf;
 
-#endif
-#ifdef __BOTHWX__
+   Boolean bigger_buf_needed = true;
+   int hits = 0;
 
-      wxRect wwindowext = GetRect();
-      CcRect rect( wwindowext.y, wwindowext.x, wwindowext.GetBottom(), wwindowext.GetRight());
+   while ( bigger_buf_needed )
+   {
 
-#endif
+     feedbuf = new GLfloat[m_fbsize];
 
-//Need scale between model and window in order to do radius calculation
+     glFeedbackBuffer ( m_fbsize, GL_2D, feedbuf ); 
+  
+     glRenderMode ( GL_FEEDBACK ); //Instead of rendering, tell OpenGL to put stuff in the FeedBackBuffer.
 
-      float scale = (float) min ( rect.Width(), rect.Height() ) / 10000.0f ;
+//     glClearColor( 1.0f,1.0f,1.0f,0.0f);
+//     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+     glMatrixMode ( GL_PROJECTION );
+     glLoadIdentity();
+     CameraSetup();
+//Can't use ModelSetup() as it translates & scales the molecule!
+     glMatrixMode ( GL_MODELVIEW );
+     glLoadIdentity();
+     glMultMatrixf ( mat );
+     if ( m_bQuickListOk )
+     {
+       glCallList( QATOMLIST );
+       glCallList( QBONDLIST );
+     }
+     else
+     {
+       glCallList( ATOMLIST );
+       glCallList( BONDLIST );
+     }
+     glMatrixMode ( GL_PROJECTION );
+     glMatrixMode ( GL_MODELVIEW );
 
-// NB This doesn't include the m_xScale part!
+     hits = glRenderMode ( GL_RENDER ); //Switching back to render mode, return value is number of objects hit.
 
-      CcModelAtom* atom;
-      CrModel* crModel = (CrModel*)ptr_to_crObject;
+     if ( hits < 0 )
+     {
+       delete [] feedbuf;
+       m_fbsize = m_fbsize * 2;
+       LOGSTAT ( "Feedback buffer overflows, doubling size to " + CcString (m_fbsize) );
+       bigger_buf_needed = true;
+     }
+     else
+     {
+       bigger_buf_needed = false;
+     }        
+   }
 
-      int highest  = -999999;
-      int widest   = -999999;
-      int lowest   =  999999;
-      int leftmost =  999999;
-      
-      int prjX, prjY, radius;
+   CcRect enclosed;
+   enclosed.Set( viewport[3], viewport[2],
+                 viewport[1], viewport[0] );
 
-      crModel->PrepareToGetAtoms();
+   int point = hits, nVert, token;
+   while ( point > 0 )
+   {
+     token = (int)feedbuf [ hits - point ];
+     switch ( token ) {
+     case GL_PASS_THROUGH_TOKEN:
+       point--;
+       break;
+     case GL_POINT_TOKEN:
+     case GL_BITMAP_TOKEN:
+     case GL_DRAW_PIXEL_TOKEN:
+     case GL_COPY_PIXEL_TOKEN:
+       point--;
+       point -= AdjustEnclose( &enclosed, feedbuf, hits-point );
+       break;
+     case GL_LINE_TOKEN:
+     case GL_LINE_RESET_TOKEN:
+       point--;
+       point -= AdjustEnclose( &enclosed, feedbuf, hits-point );
+       point -= AdjustEnclose( &enclosed, feedbuf, hits-point );
+       break;
+     case GL_POLYGON_TOKEN:
+       point--;
+       nVert = (int)feedbuf[hits-point];
+       point--;
+       for (; nVert > 0; nVert--)
+         point -= AdjustEnclose( &enclosed, feedbuf, hits-point );
+       break;
+     default:
+       LOGERR ( "Unknown GL feedback token - contact richard.cooper@chem.ox.ac.uk");
+       point--;
+     }
+   }
 
-// Loop through the atoms...
 
-      while ( (atom = crModel->GetModelAtom()) )
-      {
-         if ( ! atom->m_excluded )
-         {
-            radius = (int)( m_radscale * scale * (float)atom->R() );
+   float wscale = (float)viewport[2] / (float)enclosed.Width() ;
+   float hscale = (float)viewport[3] / (float)enclosed.Height() ;
 
-            prjX = (int)(
-                           (
-                                 mat[0] * (float)atom->X()
-                               + mat[4] * (float)atom->Y()
-                               + mat[8] * (float)atom->Z()
-                           ) * scale
-                   );
+   m_xScale = min ( hscale , wscale ) * 0.9f; //Allow a margin.
 
-            widest   = max ( ( prjX  + radius) , widest );
-            leftmost = min ( ( prjX  - radius) , leftmost );
+   float xpoffset = ((float)viewport[2]/2.0f)-(float)enclosed.MidX();
+   float ypoffset = ((float)viewport[3]/2.0f)-(float)enclosed.MidY();
 
-            prjY = (int) (
-                           (
-                                 mat[1] * (float)atom->X()
-                               + mat[5] * (float)atom->Y()
-                               + mat[9] * (float)atom->Z()
-                           ) * scale
-                   );
+   float xmoffset = xpoffset * 10000.0f / (float) min ( viewport[2], viewport[3] );
+   float ymoffset = ypoffset * 10000.0f / (float) min ( viewport[2], viewport[3] );
 
-            highest = max ( ( prjY + radius) , highest );
-            lowest  = min ( ( prjY - radius) , lowest );
-         }
-      } //end atom getting loop
+   m_xTrans = xmoffset * m_xScale;
+   m_yTrans = ymoffset * m_xScale;
 
-      // widest etc. values are in PIXELS, centred in centre of window.
-
-      float wscale = (float)rect.Width() / (float)( widest - leftmost ) ;
-      float hscale = (float)rect.Height() / (float)( highest - lowest ) ;
-
-      m_xScale = min ( hscale , wscale );
-      m_xTrans = -m_xScale * ( widest + leftmost ) / (2.0f * scale);
-      m_yTrans = -m_xScale * ( highest + lowest ) / (2.0f * scale);
-      NewSize(rect.Width(),rect.Height());
-
+   delete [] feedbuf;
 }
 
 
 
-#ifdef __CR_WIN__
+int CxModel::AdjustEnclose( CcRect* enc, GLfloat* buf, int point )
+{
+  enc->mLeft   = min( (int)buf[point],   enc->mLeft );
+  enc->mRight  = max( (int)buf[point],   enc->mRight );
+  enc->mTop    = min( (int)buf[point+1], enc->mTop );
+  enc->mBottom = max( (int)buf[point+1], enc->mBottom );
+  return 2;
+}
 
+#ifdef __CR_WIN__
 void CxModel::OnMenuSelected(int nID)
 {
 
 #endif
 #ifdef __BOTHWX__
-
 void CxModel::OnMenuSelected(wxCommandEvent & event)
 {
       int nID = event.m_id;
-
 #endif
 
     ((CrModel*)ptr_to_crObject)->MenuSelected( nID );
@@ -1257,7 +1222,7 @@ void CxModel::OnMenuSelected(wxCommandEvent & event)
 
 void CxModel::Update()
 {
-      NeedRedraw();
+   ModelChanged();
 }
 
 
@@ -1268,7 +1233,7 @@ void CxModel::SetIdealHeight(int nCharsHigh)
     CClientDC cdc(this);
       cdc.SetBkColor ( RGB ( 255,255,255 ) );
     CFont* oldFont = cdc.SelectObject(CcController::mp_font);
-    TEXTMETRIC textMetric;
+    TEXTMETRIC textMetric;                                                                                       
     cdc.GetTextMetrics(&textMetric);
     cdc.SelectObject(oldFont);
     mIdealHeight = nCharsHigh * textMetric.tmHeight;
@@ -1305,23 +1270,13 @@ void  CxModel::SetGeometry( int top, int left, int bottom, int right )
 {
 #ifdef __CR_WIN__
   MoveWindow(left,top,right-left,bottom-top,true);
-  memDC.SelectObject(oldMemDCBitmap);
-  delete newMemDCBitmap;
-  CClientDC dc (this);
-  newMemDCBitmap = new CBitmap;
-  newMemDCBitmap -> CreateCompatibleBitmap(&dc, right-left, bottom-top);
-  oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
-  memDC.PatBlt(0,0,right-left,bottom-top, WHITENESS);
-  NewSize(right-left, bottom-top);
-  NeedRedraw();
 #endif
 #ifdef __BOTHWX__
   SetSize(left,top,right-left,bottom-top);
-  NewSize(right-left, bottom-top);
-  NeedRedraw();
 #endif
+  NewSize(right-left, bottom-top);
+  NeedRedraw(true);
 }
-
 
 CXGETGEOMETRIES(CxModel)
 
@@ -1335,23 +1290,26 @@ int   CxModel::GetIdealHeight()
     return mIdealHeight;
 }
 
-void CxModel::NeedRedraw()
+void CxModel::NeedRedraw(bool needrescale)
 {
-//  TEXTOUT ( "NeedRedraw" );
-
-  m_bNeedUpdate = true;
-
+  m_bNeedReScale = m_bNeedReScale || needrescale;
+  if ( needrescale) TEXTOUT ( "Need Redraw with Rescale" );
+  else TEXTOUT ( "Need Redraw without Rescale" );
 #ifdef __CR_WIN__
-
   InvalidateRect(NULL,false);
-
 #endif
 #ifdef __BOTHWX__
-
   Refresh();
-
 #endif
+}
 
+void CxModel::ModelChanged()
+{
+//  TEXTOUT ( "Model changed" );
+  m_bModelChanged = true;
+  m_bFullListOk = false;
+  m_bQuickListOk = false;
+  NeedRedraw(true);
 }
 
 void CxModel::ChooseCursor( int cursor )
@@ -1385,13 +1343,13 @@ void CxModel::ChooseCursor( int cursor )
 void CxModel::SetDrawStyle( int drawStyle )
 {
       m_DrawStyle = drawStyle;
-      NeedRedraw();
+      ModelChanged();
 }
 void CxModel::SetAutoSize( bool size )
 {
       m_Autosize = size;
       (CcController::theController)->status.SetZoomedFlag ( !m_Autosize );
-      NeedRedraw();
+      NeedRedraw(size);
 }
 void CxModel::SetHover( bool hover )
 {
@@ -1400,7 +1358,7 @@ void CxModel::SetHover( bool hover )
 void CxModel::SetShading( bool shade )
 {
       m_Shading = shade;
-      NeedRedraw();
+      ModelChanged();
 }
 
 
@@ -1408,6 +1366,8 @@ void CxModel::SetShading( bool shade )
 
 void CxModel::PaintBannerInstead( CPaintDC * dc )
 {
+  if ( m_bitmapok )
+  {
         // Create a memory DC compatible with the paint DC
         CDC banDC;
         banDC.CreateCompatibleDC( dc );
@@ -1437,6 +1397,7 @@ void CxModel::PaintBannerInstead( CPaintDC * dc )
 
         // Restore bitmap in banDC
         banDC.SelectObject( pBmpOld );
+  }
 }
 
 BOOL CxModel::OnEraseBkgnd( CDC* pDC )
@@ -1447,6 +1408,17 @@ BOOL CxModel::OnEraseBkgnd( CDC* pDC )
 #endif
 
 #ifdef __BOTHWX__
+
+void CxModel::PaintBannerInstead( wxPaintDC * dc )
+{
+  if ( m_bitmapok )
+  {
+    dc->SetUserScale( (double)GetWidth() / (double)m_bitmap.GetWidth(),
+                      (double)GetHeight()/ (double)m_bitmap.GetHeight()  );
+    dc->DrawBitmap(m_bitmap, 0, 0);
+  }
+}
+
 
 void CxModel::OnEraseBackground( wxEraseEvent& evt )
 {
@@ -1464,35 +1436,47 @@ void CxModel::DeletePopup()
 {
   if ( m_TextPopup )
   {
+#ifdef __CR_WIN__
     m_TextPopup->DestroyWindow();
     delete m_TextPopup;
+#endif
+#ifdef __BOTHWX__
+    m_TextPopup->Destroy();
+    m_DoNotPaint = false;
+#endif
     m_TextPopup=nil;
   }
 }
 
 void CxModel::CreatePopup(CcString atomname, CcPoint point)
 {
+#ifdef __BOTHWX__
+  m_DoNotPaint = true;
+#endif
+
   DeletePopup();
+
 #ifdef __CR_WIN__
-  m_TextPopup = new CStatic();
-  m_TextPopup->Create(atomname.ToCString(), SS_CENTER|WS_BORDER, CRect(0,0,20,20), this);
-  m_TextPopup->ModifyStyleEx(NULL,WS_EX_TOPMOST,0);
-  m_TextPopup->SetFont(CcController::mp_font);
-  CClientDC dc(m_TextPopup);
+  CClientDC dc(this);
   CFont* oldFont = dc.SelectObject(CcController::mp_font);
   SIZE size = dc.GetOutputTextExtent(atomname.ToCString());
   dc.SelectObject(oldFont);
-  m_TextPopup->MoveWindow(max(0,point.x-size.cx-4),max(0,point.y-size.cy-4),size.cx+4,size.cy+2,false);
+
+  m_TextPopup = new CStatic();
+  m_TextPopup->Create(atomname.ToCString(), SS_CENTER|WS_BORDER, CRect(CPoint(-size.cx-10,-size.cy-10),CSize(size.cx+4,size.cy+2)), this);
+  m_TextPopup->SetFont(CcController::mp_font);
+  m_TextPopup->ModifyStyleEx(NULL,WS_EX_TOPMOST,0);
   m_TextPopup->ShowWindow(SW_SHOW);
+  m_TextPopup->MoveWindow(max(0,point.x-size.cx-4),max(0,point.y-size.cy-4),size.cx+4,size.cy+2, FALSE);
+  m_TextPopup->InvalidateRect(NULL,false);
 #endif
 #ifdef __BOTHWX__
-  m_TextPopup = new wxStaticText();
-  m_TextPopup->Create(this, -1, atomname.ToCString(), wxPoint(0,0), wxSize(0,0), wxALIGN_CENTER|wxSIMPLE_BORDER);
-  m_TextPopup->Show(false);
   int cx,cy;
-  m_TextPopup->GetTextExtent( m_TextPopup->GetLabel(), &cx, &cy );
-  m_TextPopup->SetSize(max(0,point.x-cx-4),max(0,point.y-cy-4),cx+4,cy+4);
-  m_TextPopup->Show(true);
+  GetTextExtent( atomname.ToCString(), &cx, &cy ); //using cxmodel's DC to work out text extent before creation.
+                                                   //then can create in one step.
+  m_TextPopup = new wxStaticText(this, -1, atomname.ToCString(),
+                                 wxPoint(max(0,point.x-cx-4),max(0,point.y-cy-4)),
+                                 wxSize(cx+4,cy+4),
+                                 wxALIGN_CENTER|wxSIMPLE_BORDER) ;
 #endif
-
 }

@@ -7,6 +7,10 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.18  2001/03/12 13:53:26  richard
+//  Fixed pixel format when only 256 colours. Removed unused accumulation buffers from
+//  OpenGL window, speeding up drawing, I think.
+//
 //  Revision 1.17  2001/03/08 15:54:59  richard
 //  Stop using GL double buffers, and do this manually. (Draw to bitmap then
 //  bitblt to screen - some performance lost by looks of things, but also
@@ -24,6 +28,7 @@
 #include  <wx/app.h>
 #include  <wx/menu.h>
 #include  <wx/dcclient.h>
+#include <wx/dcmemory.h>
 #include  <wx/glcanvas.h>
 #include  <wx/event.h>
 #include <wx/stattext.h>
@@ -42,6 +47,7 @@
 class CrModel;
 class CxGrid;
 class CcModelAtom;
+class CcModelObject;
 
 #define CURSORNORMAL  0
 #define CURSORZOOMIN  1
@@ -58,23 +64,30 @@ class CcModelAtom;
 #define CXPOLYSEL     2
 #define CXZOOM        3
 
+#define ATOMLIST      1
+#define BONDLIST      2
+#define STYLIST       3
+#define QATOMLIST     4
+#define QBONDLIST     5
+#define XOBJECTLIST     6
 
 class CxModel : public BASEMODEL
 {
   public:
     void Update();
-    void DoDrawingInMemory();
-    bool IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelAtom **atom);
+    void DoDrawingLists();
+    int IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject **outObject, Boolean atomsOnly=false);
     void SelectBoxedAtoms(CcRect rectangle, bool select);
-    void SetRadiusScale(int scale);
-    void SetRadiusType(int radtype);
     void Setup();
-    void NeedRedraw();
+    void NeedRedraw(bool needrescale = false);
+    void ModelChanged();
     void NewSize(int cx, int cy);
     void ChooseCursor( int cursor );
-
 #ifdef __CR_WIN__
     void PaintBannerInstead(CPaintDC *dc);
+#endif
+#ifdef __BOTHWX__
+    void PaintBannerInstead(wxPaintDC *dc);
 #endif
 
 // The usual functions:
@@ -87,7 +100,9 @@ class CxModel : public BASEMODEL
                     const wxSize& size = wxDefaultSize, long style = 0, const wxString& name = "GLWindow");
 #endif
     ~CxModel();
-    void    SetGeometry( int top, int left, int bottom, int right );
+    void SetGeometry( int top, int left, int bottom, int right );
+    void CxDestroyWindow();
+
     int GetTop();
     int GetLeft();
     int GetWidth();
@@ -100,23 +115,26 @@ class CxModel : public BASEMODEL
     void SetIdealHeight(int nCharsHigh);
     void Focus();
     void AutoScale();
+    int  AdjustEnclose( CcRect* enc, GLfloat* buf, int point );
+    void CameraSetup();
+    void ModelSetup();
 
 
 
     CrGUIElement *  ptr_to_crObject;
     static int mModelCount;
 
-    CcModelAtom* m_LitAtom;  //  Mouse is over this atom
+    CcModelObject* m_LitObject;  //  Mouse is over this object
 
     float m_xTrans;          //
     float m_yTrans;          //  Translation
     float m_zTrans;          //
 
     float m_xScale;          //  Scaling
+    int   m_fbsize;
+    int   m_sbsize;
 
     float * mat;             //  Rotaion
-    float m_radscale;        //  Scales radius of all objects
-    int m_radius;            //  Type of radius to display
     bool m_fastrotate;    //  Detailed or quick drawing
 
     CcPoint m_ptLDown;       //  Last mouse position when rotating
@@ -142,19 +160,23 @@ class CxModel : public BASEMODEL
     bool m_Autosize;      // Resize when rotating?
     bool m_Hover;         // Highlight atoms on hover?
     bool m_Shading;       // Use fancy shading?
-    bool m_bNeedUpdate;
+    bool m_bNeedReScale;
+    bool m_bModelChanged;
+    bool m_bOkToDraw;
+    bool m_bFullListOk;
+    bool m_bQuickListOk;
+    float m_stretchX ;
+    float m_stretchY ;
+    bool  m_bitmapok;
 
 #ifdef __CR_WIN__
     CStatic* m_TextPopup;
 
     HGLRC m_hGLContext;                                  //The rendering context handle.
 
-    BOOL SetWindowPixelFormat(CDC* cDC);
+    BOOL SetWindowPixelFormat(HDC hDC);
     BOOL CreateViewGLContext(HDC hDC);
-    CBitmap *oldMemDCBitmap, *newMemDCBitmap;
-    CDC memDC;
     CBitmap m_bitmap;
-    bool m_bitmapok, m_bOkToDraw;
     CPalette m_pal;
 
     afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
@@ -169,16 +191,19 @@ class CxModel : public BASEMODEL
     DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
-            wxStaticText * m_TextPopup;
-            void OnEraseBackground(wxEraseEvent & evt);
-            void OnLButtonUp(wxMouseEvent & event);
-            void OnLButtonDown(wxMouseEvent & event);
-            void OnRButtonUp(wxMouseEvent & event);
-            void OnMouseMove(wxMouseEvent & event);
-            void OnChar(wxKeyEvent & event );
-            void OnPaint(wxPaintEvent & event );
-            void OnMenuSelected(wxCommandEvent &event );
-            DECLARE_EVENT_TABLE()
+    wxStaticText * m_TextPopup;
+    bool m_DoNotPaint;
+    wxBitmap m_bitmap;
+
+    void OnEraseBackground(wxEraseEvent & evt);
+    void OnLButtonUp(wxMouseEvent & event);
+    void OnLButtonDown(wxMouseEvent & event);
+    void OnRButtonUp(wxMouseEvent & event);
+    void OnMouseMove(wxMouseEvent & event);
+    void OnChar(wxKeyEvent & event );
+    void OnPaint(wxPaintEvent & event );
+    void OnMenuSelected(wxCommandEvent &event );
+    DECLARE_EVENT_TABLE()
 #endif
 
 };
