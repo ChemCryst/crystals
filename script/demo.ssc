@@ -34,7 +34,7 @@
 ^^WI   @ 2,1 LISTBOX CHSTR VISLINES=7
 ^^WI         ADDTOLIST
 ^^WI     'Cyclo'
-^^WI     'Quick & Slow'
+^^WI     'Very fast'
 ^^WI     'Edit examples'
 ^^WI     'Tin Twin'
 ^^WI     'Ylid'
@@ -74,6 +74,13 @@
 ^^??  CHSTR SELECTED
 %     GET NOSTORE SILENT INTEGER ' ' ' '
 %     EVALUATE CHOICE = VALUE
+^^??  XWIP STATE
+%     VERIFY ON OFF
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%     CASE VALUE
+%       EVALUATE CLEAN = 1
+%       EVALUATE CLEAN = 0
+%     END CASE
 ^^CO  DISPOSE QUERY
 %     CASE CHOICE
 %          EVALUATE CDIR = 'CRYSDIR:demo\cyclo\'
