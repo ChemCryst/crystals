@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 15:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.27  2003/01/14 10:27:18  rich
+//   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
+//
 //   Revision 1.26  2002/07/19 08:08:17  richard
 //   Remove backwards incompatibilty of new std C++ library.
 //
@@ -314,6 +317,10 @@ extern "C" {
 #define kSFocus               "FOCUS"
 #define kSFontSet             "FONT"
 
+#define kSSafeSet             "SAFESET"
+#define kSOpenGroup           "["
+#define kSCloseGroup           "]"
+
 enum
 {
  kTSysOpenFile = 400,
@@ -334,6 +341,9 @@ enum
  kTSetKeyValue,
  kTFocus,
  kTFontSet,
+ kTSafeSet,
+ kTOpenGroup,
+ kTCloseGroup
 };
 
 

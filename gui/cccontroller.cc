@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.52  2003/01/14 10:27:18  rich
+// Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
+//
 // Revision 1.51  2002/11/24 13:33:05  rich
 // (1) Fix serious bug that erased some keys during winsizes.ini writing.
 //
@@ -677,6 +680,7 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
             LOGWARN("CcController::ParseInput:infiniteLoopCheck Getting nowhere with this token: " + badToken);
         }
         infiniteLoopCheck2 = infiniteLoopCheck;
+        bool safeSet = false;
 
         switch ( tokenList->GetDescriptor( kInstructionClass ) )
         {
@@ -763,8 +767,25 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
                 break;
 
             }
+            case kTCloseGroup:
+            {
+                tokenList->GetToken(); // ]
+                break;
+            }
+            case kTSafeSet:
+            {
+                safeSet = true;
+                tokenList->GetToken(); // SAFESET
+                if ( tokenList->GetDescriptor( kInstructionClass ) != kTOpenGroup )
+                {
+                    LOGWARN( "CcController:ParseInput:SAFESET must be followed by opening and closing []");
+                    break;
+                }
+                //Continue into kTSet code.
+            }
             case kTSet:
             {
+              
                 // remove that token
                 tokenList->GetToken();
 
@@ -834,8 +855,38 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
                         break;
                     }
 
-
-                    LOGWARN( "CcController:ParseInput:Set couldn't find object with name '" + name + "'");
+                    if ( safeSet )
+                    {
+                      //Never mind - scan for closing ], but error if find
+                      //an InstructionClass first.
+                      int tok;
+                      while (true)
+                      {
+                         tok = tokenList->GetDescriptor( kInstructionClass );
+                         if ( tok == kTCloseGroup )
+                         {
+                            tokenList->GetToken();
+                            break;
+                         }
+                         else if ( tok == kTNoMoreToken )
+                         {
+                            LOGWARN( "CcController:ParseInput:SAFESET ran off end of input.");
+                            break;
+                         }
+                         else
+                         {
+                            if ( tokenList->GetToken().Len() == 0 )
+                            {
+                               LOGWARN( "CcController:ParseInput:SAFESET ran out of tokens.");
+                               break;
+                            }
+                         }
+                      }
+                    }
+                    else
+                    {
+                       LOGWARN( "CcController:ParseInput:Set couldn't find object with name '" + name + "'");
+                    }
                 }
                 break;
             }
