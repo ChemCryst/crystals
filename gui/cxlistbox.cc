@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.11  2001/06/17 14:39:59  richard
+// CxDestroyWindow function.
+//
 // Revision 1.10  2001/03/28 09:17:07  richard
 // Code to allow you to disable the listbox.
 //
@@ -253,6 +256,8 @@ void CxListBox::CxSetSelection( int select )
 
 CcString CxListBox::GetListBoxText(int index)
 {
+   index = min ( index, mItems );
+   index = max ( index, 1 );
 #ifdef __CR_WIN__
     CString temp;
       GetText(index-1, temp);
