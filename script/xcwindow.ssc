@@ -12,12 +12,12 @@
 ^^WI     @ 3,4  STATIC   TH 'to:'
 ^^WI     @ 5,1  STATIC   TH 'from c:'
 ^^WI     @ 5,4  STATIC   TH 'to:'
-^^WI     @ 1,2  EDITBOX  AN '0' CHARS=6 INTEGER 
-^^WI     @ 3,2  EDITBOX  BN '0' CHARS=6 INTEGER 
-^^WI     @ 5,2  EDITBOX  CN '0' CHARS=6 INTEGER 
-^^WI     @ 1,5  EDITBOX  AX '1' CHARS=6 INTEGER 
-^^WI     @ 3,5  EDITBOX  BX '1' CHARS=6 INTEGER 
-^^WI     @ 5,5  EDITBOX  CX '2' CHARS=6 INTEGER 
+^^WI     @ 1,2  EDITBOX  AN '0' CHARS=6 REAL
+^^WI     @ 3,2  EDITBOX  BN '0' CHARS=6 REAL
+^^WI     @ 5,2  EDITBOX  CN '0' CHARS=6 REAL
+^^WI     @ 1,5  EDITBOX  AX '1' CHARS=6 REAL
+^^WI     @ 3,5  EDITBOX  BX '1' CHARS=6 REAL
+^^WI     @ 5,5  EDITBOX  CX '2' CHARS=6 REAL
 ^^WI  }
 ^^WI  @ 2,4 GRID   GR NROWS=5 NCOLS=3
 ^^WI  {
@@ -39,17 +39,17 @@
 %                 CLEAR
 %                 INSERT 'PACK WINDOW '
 ^^??              AN TEXT
-%                 GET SILENT INTEGER ' '
+%                 GET SILENT REAL ' '
 ^^??              AX TEXT
-%                 GET SILENT INTEGER ' '
+%                 GET SILENT REAL ' '
 ^^??              BN TEXT
-%                 GET SILENT INTEGER ' '
+%                 GET SILENT REAL ' '
 ^^??              BX TEXT
-%                 GET SILENT INTEGER ' '
+%                 GET SILENT REAL ' '
 ^^??              CN TEXT
-%                 GET SILENT INTEGER ' '
+%                 GET SILENT REAL ' '
 ^^??              CX TEXT
-%                 GET SILENT INTEGER ' '
+%                 GET SILENT REAL ' '
 %                 INSERT 'VIEW'
 %                 SEND
 %                 COPY ' '
@@ -61,17 +61,17 @@
 %                 CLEAR
 %                 INSERT 'PACK WINDOW '
 ^^??              AN TEXT
-%                 GET SILENT INTEGER ' '
+%                 GET SILENT REAL ' '
 ^^??              AX TEXT
-%                 GET SILENT INTEGER ' '
+%                 GET SILENT REAL ' '
 ^^??              BN TEXT
-%                 GET SILENT INTEGER ' '
+%                 GET SILENT REAL ' '
 ^^??              BX TEXT
-%                 GET SILENT INTEGER ' '
+%                 GET SILENT REAL ' '
 ^^??              CN TEXT
-%                 GET SILENT INTEGER ' '
+%                 GET SILENT REAL ' '
 ^^??              CX TEXT
-%                 GET SILENT INTEGER ' '
+%                 GET SILENT REAL ' '
 %                 INSERT 'VIEW'
 %                 SEND
 %                 COPY ' '
