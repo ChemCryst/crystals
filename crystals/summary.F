@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2002/03/13 12:36:23  richard
+C Removed calls to XGDBUP (now obsolete).
+C
 C Revision 1.23  2002/03/08 11:44:19  ckp2
 C During #SIGMADIST, update L30 General, NAnalyse with the number of allowed reflections.
 C
@@ -897,6 +900,7 @@ C
 \XLST23
 \XLST30
 C
+\XLST01
 \XLST06
 \XUNITS
 \XSSVAL
@@ -918,6 +922,7 @@ C
 C
       DIMENSION X(N6D)
       DIMENSION Y(N6D)
+      IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
       IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL23
       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
@@ -2281,6 +2286,7 @@ CODE FOR XSGDST
 \ISTORE
 \STORE
 \XLST06
+\XLST01
 \ICOM30
 \XLST30
 \XUNITS
@@ -2308,6 +2314,7 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       IPLOT = ISTORE(ICOMBF)
 
       CALL XFAL06 (0)
+      IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
 
 
       DO I = 1,100
@@ -2321,7 +2328,7 @@ C -- SCAN LIST 6 FOR REFLECTIONS
       NALLOW = 0
 
       ISTAT = KLDRNR(0)
-      NALLOW = NALLOW + 1 + KALLOW(IN)
+      IF ( KALLOW(IN).EQ. 0 )NALLOW = NALLOW + 1 
 
       DO WHILE ( ISTAT .GE. 0 )
         N6ACC = N6ACC + 1
@@ -2330,7 +2337,8 @@ C -- SCAN LIST 6 FOR REFLECTIONS
         JSIGS = MAX(JSIGS,1)
         IF ( JSIGS .LE. 100 ) KSIGS(JSIGS) = KSIGS(JSIGS) + 1
         ISTAT = KLDRNR(0)
-        NALLOW = NALLOW + 1 + KALLOW(IN)
+        IF ( KALLOW (IN) .EQ. 0 ) NALLOW = NALLOW + 1
+
       END DO
 
       NTOT = N6ACC
