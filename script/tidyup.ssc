@@ -1,7 +1,7 @@
 %SCRIPT TIDYUP                                                                  
 %%                                                                              
-% VARIABLE LOGICAL TWINNED                                                      
-% EVALUATE TWINNED = FALSE                                                      
+%  VARIABLE LOGICAL TWINNED VALID11
+%  EVALUATE TWINNED = FALSE                                                      
 %  BLOCK                                                                        
 %    VARIABLE INTEGER ITMP                                                      
 %    IF ( EXISTS 13 .GT. 0 ) THEN                                               
@@ -15,7 +15,16 @@
 %        END IF                                                                 
 %        COPY 'END'                                                             
 %    END IF                                                                     
-%  END BLOCK                                                                    
+%  END BLOCK
+%  COPY '#SCRIPT VALID11'
+%  IF ( .NOT. VALID11 ) THEN
+{I     Forming and inverting normal matrix in order to 
+{I      recalculate parameter standard uncertainties.
+%    COPY '#SFLS'                                                               
+%    COPY 'REFINE'                                                              
+%    COPY 'SHIFT GENERAL=0.0'                                                   
+%    COPY 'END'                                                                 
+%  END IF
 %%                                                                              
 %% A penultimate difference map                                                 
 %  COPY '#SCRIPT PREFOUR'
@@ -25,7 +34,7 @@
 %  COPY '#SCRIPT POSTFOUR'
 {I Difference Fourier complete.
 %%                                                                              
-%  VARIABLE REAL NREF NPARAM RHOMAX                                             
+%  VARIABLE REAL NREF NPARAM RHOMAX SOESD
 %% The variables needed by XQUESTIO                                             
 %  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                        
 %  VARIABLE LOGICAL   ANSWER                                                    
@@ -39,9 +48,10 @@
 %  COPY 'LOCATE RECORDTYPE = 103'                                               
 %  COPY 'TRANSFER FROM OFFSET =  2 TO NPARAM'                                   
 %  COPY 'TRANSFER FROM OFFSET =  6 TO RHOMAX '                                  
+%  COPY 'TRANSFER FROM OFFSET =  7 TO SOESD'
 %  COPY 'TRANSFER FROM OFFSET =  8 TO NREF '                                    
 %  COPY 'END'                                                                   
-%%                                                                              
+%%
 %  IF ( NREF / NPARAM )  .LE. 5.0 THEN                                          
 {E You have {RFAR{E too few X-ray observations for the number of variables      
 {E you are trying to refine. Think again or seek help.                          
@@ -81,23 +91,18 @@
 %    END IF                                                                     
 %  END IF                                                                       
 %%                                                                              
-%  EVALUATE QTITLE = 'Tidy up'                                                  
-%  EVALUATE QLINE1 = 'Do you want to carry out 6 final cycles of refinement?'   
-%  EVALUATE QLINE2 = '(Grind the structure into a minimum!)'                    
-%  EVALUATE BUTTOK = '&Yes'                                                     
-%  EVALUATE BUTTXX = '&No'                                                      
-%  COPY '#SCRIPT XQUESTIO'                                                      
-%  IF ANSWER .EQ. TRUE THEN                                                     
-%    COPY '#SCRIPT SIXCYCLE'                                                    
-%  ELSE                                                                         
-{S You have requested no final cycles of refinement.                            
-{I This is one cycle of least squares with NO SHIFTS. Your model won't          
-{I be changed, it's just that the parameter su's need recalculating.            
-%    COPY '#SFLS'                                                               
-%    COPY 'REFINE'                                                              
-%    COPY 'SHIFT GENERAL=0.0'                                                   
-%    COPY 'END'                                                                 
-%  END IF                                                                       
+%  EVALUATE ANSWER = FALSE
+%  IF ( SOESD .GT. 0.01 ) .OR. ( .NOT. VALID11 ) THEN
+%    EVALUATE QTITLE = 'Tidy up - unconverged parameters'
+%    EVALUATE QLINE1 = 'Carry out 6 final cycles of refinement?'
+%    EVALUATE QLINE2 = '(Grind the structure into a minimum!)'
+%    EVALUATE BUTTOK = '&Yes'
+%    EVALUATE BUTTXX = '&No'
+%    COPY '#SCRIPT XQUESTIO'
+%    IF ANSWER .EQ. TRUE THEN
+%      COPY '#SCRIPT SIXCYCLE'
+%    END IF
+%  END IF
 %% A final difference map.                                                      
 %  COPY '#SCRIPT PREFOUR'
 %  COPY 'MAP TYPE=DIFF'

@@ -1,7 +1,8 @@
 %SCRIPT XCIF
 %% The variables needed by XQUESTIO
 %    VARIABLE CHARACTER CFILE
-%    VARIABLE LOGICAL JUSTRUNIT TWINNED HINCELL
+%    VARIABLE LOGICAL JUSTRUNIT TWINNED HINCELL VALID11
+%    VARIABLE REAL SOESD
 %%
 %    EVALUATE TWINNED = FALSE
 %    BLOCK
@@ -21,6 +22,15 @@
 %% Find out if  H is in list 29. This sets HINCELL to true or false.
 %    COPY '#SCRIPT CHECK29'
 %%
+%% Check shift/esd
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE=103'
+%    COPY 'TRANSFER FROM OFFSET =  7 TO SOESD'
+%    COPY 'END'
+%%
+%% Check list 11 is up to date
+%    COPY '#SCRIPT VALID11'
+%%
 %%
 ^^WI WINDOW XCIF 'Output CIF' MODAL COMMIT='CIFOK' CANCEL='CIFXX'
 ^^WI GRID   GRIDM NROWS=10 NCOLS=3
@@ -28,8 +38,19 @@
 ^^WI  @ 2,2 BUTTON GOODY 'Edit CIF Goodies...'
 ^^WI  @ 4,2 GRID GRIDA NROWS=1 NCOLS=3 OUTLINE='Recalculate'
 ^^WI  {
-^^WI    @ 1,1 CHECKBOX XREF 'Six final cycles' STATE=ON
+^^WI    @ 1,1 CHECKBOX XREF 'Six final cycles'
+%    IF ( SOESD .GT. 0.01 ) .OR. ( .NOT. VALID11 ) THEN
+^^WI      STATE=ON
+%    ELSE
+^^WI      STATE=OFF
+%    END IF
+%    IF ( .NOT. VALID11 ) THEN
+^^WI      DISABLED=YES
+%    END IF
 ^^WI    @ 1,3 CHECKBOX XFOU 'Difference Fourier map' STATE=ON
+%    IF ( .NOT. VALID11 ) THEN
+^^WI      DISABLED=YES
+%    END IF
 ^^WI  }
 ^^WI  @ 5,2 GRID GRIDA NROWS=1 NCOLS=2 OUTLINE='H-bonds'
 ^^WI  {
