@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2001/02/26 10:26:47  richard
+C Added changelog to top of file
+C
 C
 CODE FOR XFOURB
       SUBROUTINE XFOURB
@@ -1914,7 +1917,7 @@ C--PRINT THE NUMBER OF REFLECTIONS USED ON THIS SCAN
       WRITE(NCAWU,3250)N6D,NORFL,NV
       WRITE ( CMON ,3250)N6D,NORFL,NV
       CALL XPRVDU(NCVDU, 2,0)
-3250  FORMAT( ' Total number if reflections is ',I6,/,
+3250  FORMAT( ' Total number of reflections is ',I6,/,
      1        '                       of which ',I6,
      2 ' have been used for scan ',I3)
 C--CHECK IF THERE ARE ANY REFLECTIONS
