@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.37  2001/10/10 12:44:48  ckp2
+// The PLOT classes!
+//
 // Revision 1.36  2001/09/19 09:02:46  ckp2
 // Fix problem retreiving keys from winsizes.ini when the key also happened to
 // be the start of another key, e.g. "_VIS" and "_VISRSZ". (i.e. look for the space).
@@ -2474,12 +2477,19 @@ void CcController::OpenFileDialog(CcString* result, CcString extensionFilter, Cc
 
     CString extension = CString(extensionDescription.ToCString()) + "|" + CString(extensionFilter.ToCString()) + "||" ;
 
-      CFileDialog fileDialog (      true,                   //TRUE for open, FALSE for save
+    CFileDialog fileDialog (      true,                   //TRUE for open, FALSE for save
                                 NULL,               //The default extension for the filename
                                 NULL,               //The initial filename displayed
                                 OFN_HIDEREADONLY|OFN_NOCHANGEDIR|OFN_FILEMUSTEXIST, //some flags
                                 extension,    //all the extensions allowed
                                 NULL);              //The parent window of this window
+
+    char buffer[_MAX_PATH];
+
+// Get the current working directory:
+    if( _getcwd( buffer, _MAX_PATH ) )
+         fileDialog.m_ofn.lpstrInitialDir = buffer;
+
 
     if (fileDialog.DoModal() == IDOK )
     {
@@ -2549,12 +2559,19 @@ void CcController::SaveFileDialog(CcString* result, CcString defaultName, CcStri
     CString initName  = CString(defaultName.ToCString());
 
 
-      CFileDialog fileDialog (      false,                        //TRUE for open, FALSE for save
+    CFileDialog fileDialog (      false,                        //TRUE for open, FALSE for save
                                 NULL,               //The default extension for the filename
                                 initName,           //The initial filename displayed
                                 OFN_HIDEREADONLY|OFN_NOCHANGEDIR|OFN_OVERWRITEPROMPT, //some flags
                                 extension,    //all the extensions allowed
                                 NULL);              //The parent window of this window
+
+    char buffer[_MAX_PATH];
+
+// Get the current working directory:
+    if( _getcwd( buffer, _MAX_PATH ) )
+         fileDialog.m_ofn.lpstrInitialDir = buffer;
+
 
     if (fileDialog.DoModal() == IDOK )
     {
