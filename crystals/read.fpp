@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  1999/07/22 11:31:55  richard
+C RIC: Made sure that the 'Script running' message, (now 'Script Mode'), appears
+C after a read so that it doesn't replace useful Cameron status messages
+C such as distances and angles.
+C
 C Revision 1.13  1999/07/15 10:54:34  richard
 C RIC: Changed "Script waiting for input" message to "Script running", which
 C is more true, especially when the script isn't waiting for input.
@@ -521,41 +526,41 @@ ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 C This section is used to test the CSDCODE.
 C Typing '#BONDTY' generates a list of bonds and automatically assigns
 C their bond types.
-cC----- SPOT LINES BEGINNING WITH #BONDTY, AND CALL BONDTY
-c      IF (CLINE(1:7) .EQ. '#BONDTY') THEN                               
-c          LENUSE = 1
-c          CLINE = ' '
-c          CALL BONDTY
+C----- SPOT LINES BEGINNING WITH #BONDTY, AND CALL BONDTY
+      IF (CLINE(1:7) .EQ. '#BONDTY') THEN                               
+          LENUSE = 1
+          CLINE = ' '
+          CALL BONDTY
 C Typing '#BONDCK' compares bond lengths and angles to the CSD data.
 C It writes quest files if the data is not available..
 cC----- SPOT LINES BEGINNING WITH #BONDCK, AND CALL KBNDCH               
-c      ELSE IF (CLINE(1:7) .EQ. '#BONDCK') THEN                               
-c          LENUSE = 1
-c          CLINE = ' '
-c        IDV4 = KBNDCH ( RDV,  IDV, RDV2,
-c     1                  RDV3, IDV2, IDV3, RDV4,
-c     1                  1,    RDV5 )
-c
-c
+      ELSE IF (CLINE(1:7) .EQ. '#BONDCK') THEN                               
+          LENUSE = 1
+          CLINE = ' '
+        IDV4 = KBNDCH ( RDV,  IDV, RDV2,
+     1                  RDV3, IDV2, IDV3, RDV4,
+     1                  1,    RDV5 )
+
+
 C '#EMAP2' is put in the SRQ by '#EMAP' so that we can come back
 C and analyse the results of a #FIND.
 cC----- SPOT LINES BEGINNING WITH #EMAP2, AND CALL EMAP2D               
-c      ELSE IF (CLINE(1:6) .EQ. '#EMAP2') THEN                               
-c          LENUSE = 1
-c          CLINE = ' '
-c        ICODE = 2
-c        CALL EMAP2D(ICODE)
+      ELSE IF (CLINE(1:6) .EQ. '#EMAP2') THEN                               
+          LENUSE = 1
+          CLINE = ' '
+        ICODE = 2
+        CALL EMAP2D(ICODE)
 C '#EMAP2D' reads in a 'GUESS.DAT' file which describes the
 C bonding of a molecule (CSD quest format). It gets the relevant
 C bond length and angle data from the local database and then
 C checks the results of #FIND with this.
 cC----- SPOT LINES BEGINNING WITH #EMAP, AND CALL EMAP2D               
-c      ELSE IF (CLINE(1:5) .EQ. '#EMAP') THEN                               
-c          LENUSE = 1
-c          CLINE = ' '
-c        ICODE = 0
-c        CALL EMAP2D(ICODE)
-c      ENDIF
+      ELSE IF (CLINE(1:5) .EQ. '#EMAP') THEN                               
+          LENUSE = 1
+          CLINE = ' '
+        ICODE = 0
+        CALL EMAP2D(ICODE)
+      ENDIF
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 C -- CONVERT FIRST CHARACTER IF NECESSARY
       IPOS = INDEX ( CTRAN1 , CLINE(1:1) )
