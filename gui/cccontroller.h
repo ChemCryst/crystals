@@ -231,36 +231,7 @@ class CcPipe {
 
 
 #endif
-#if defined(__WXGTK__) || defined(__WXMAC__)
 
-class CcPipe {
-   public:
-     CcPipe() {
-        CreateOK = ( pipe(fd) > -1 );
-     };
-     ~CcPipe() {
-       if (CreateOK) {
-         if ( m_pid > 0 )
-           close ( fd[0] );
-         else
-           close ( fd[1] );
-       }
-     };
-     CloseUnusedEnds(int pid) {
-       if ( pid > 0 )
-         close (fd[1]);
-       else
-         close (fd[0]);
-       m_pid = pid;
-     };
-
-     int fd[2];
-     bool CreateOK;
-     int m_pid = 0;
-};
-
-
-#endif
 
 
 
@@ -330,6 +301,10 @@ enum
 
 
 //   $Log: not supported by cvs2svn $
+//   Revision 1.44  2004/11/15 13:27:10  rich
+//   Allow for possibility of running spawned processes in the CRYSTALS window.
+//   For example, type: #spawn % crysdir:kccdin.exe to run within the GUI.
+//
 //   Revision 1.43  2004/11/12 11:22:01  rich
 //   Tidied SPAWN code.
 //   Fixed bug where failing script could leave pointers to deleted windows

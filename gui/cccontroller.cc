@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.104  2004/11/15 13:27:10  rich
+// Allow for possibility of running spawned processes in the CRYSTALS window.
+// For example, type: #spawn % crysdir:kccdin.exe to run within the GUI.
+//
 // Revision 1.103  2004/11/12 11:22:01  rich
 // Tidied SPAWN code.
 // Fixed bug where failing script could leave pointers to deleted windows
@@ -600,9 +604,10 @@ wxFont* CcController::mp_inputfont = nil;
 #ifdef __CR_WIN__
 CFont* CcController::mp_font = nil;
 CFont* CcController::mp_inputfont = nil;
-#define bzero(a) memset(a,0,sizeof(a)) //easier -- shortcut
 #include <process.h>
 #endif
+
+#define BZERO(a) memset(a,0,sizeof(a)) //easier -- shortcut
 
 bool bRedir = false;
 
@@ -3411,14 +3416,14 @@ extern "C" {
       CcController::theController->m_AllowThreadKill = false;
 
       char buf[1024];           //i/o buffer
-      bzero(buf);
+      BZERO(buf);
       for(;;)      //main program loop
       {
         PeekNamedPipe(outPipe.output,buf,1023,&bread,&avail,NULL);
 
         while ( bread != 0 )
         {
-          bzero(buf);
+          BZERO(buf);
           ReadFile(outPipe.output,buf,1023,&bread,NULL);  //read the stdout pipe
           string s(buf);
           string::size_type i;
@@ -3436,7 +3441,7 @@ extern "C" {
             CcController::theController->AddInterfaceCommand("{0,1 " + s.substr(0,strim));
             s.erase(0,strim+1);
           }
-          bzero(buf);
+          BZERO(buf);
           PeekNamedPipe(outPipe.output,buf,1023,&bread,&avail,NULL);
         }
 
@@ -3549,8 +3554,6 @@ extern "C" {
 // Check if this might be a filename, and if so find application to
 // open it with.
 
-
-
     wxString fullname(firstTok.c_str());
     wxString path, name, extension, command;
     ::wxSplitPath(firstTok.c_str(),&path,&name,&extension);
@@ -3571,8 +3574,6 @@ extern "C" {
       (CcController::theController)->AddInterfaceCommand( "     {0,2 Starting {2,0 " + firstTok + " {0,2 ");
     }
 
-
-
     extern int errno;
     char * cmd = new char[257];
     char * str = new char[257];
@@ -3590,21 +3591,36 @@ extern "C" {
       token = strtok( NULL, seps );
       args[i] = token;
     }
-    delete [] str;
-    delete [] cmd;
 
 
     if ( bRedir )
     {
+      int ftoChild[2];
+      int ftoParent[2];
 
-      CcPipe inPipe(), outPipe();
+      if ( pipe(ftoChild) < 0 ) { 
+        std::cerr << "GUEXEC: Pipe 1 failed: " << "\n";
+        delete [] str;
+        delete [] cmd;
+        return;
+      }
+      if ( pipe(ftoParent) < 0 ) { 
+        std::cerr << "GUEXEC: Pipe 2 failed: " << "\n";
+        close(ftoChild[0]);
+        close(ftoChild[1]);
+        delete [] str;
+        delete [] cmd;
+        return;
+      }
+
+
       pid_t pid = fork();
 
       if ( pid == 0 ) {          //We're in the child process.
-       inPipe.CloseUnusedEnds(pid);
-       outPipe.CloseUnusedEnds(pid);
-       dup2(outPipe.fd[1],fileno(stdout));
-       dup2(inPipe.fd[1],fileno(stdin));
+       close(ftoChild[0]);
+       close(ftoParent[1]);
+       dup2(ftoParent[0],fileno(stdout));
+       dup2(ftoChild[1],fileno(stdin));
        std::cerr << "\nGUEXEC: Child. Execing...\n";
        int err = execvp( args[0], args );
        std::cerr << "GUEXEC: Something went wrong: " << err <<"\n";
@@ -3613,9 +3629,10 @@ extern "C" {
       }
 
 // We're in the parent process
-      inPipe.CloseUnusedEnds(pid);
-      outPipe.CloseUnusedEnds(pid);
+      close(ftoChild[1]);
+      close(ftoParent[0]);
       std::cerr << "GUEXEC: Parent.\n";
+
       unsigned long exit=0;  //process exit code
       unsigned long bread;   //bytes read
       unsigned long avail;   //bytes available
@@ -3626,14 +3643,14 @@ extern "C" {
       CcController::theController->m_AllowThreadKill = false;
 
       char buf[1024];           //i/o buffer
-      bzero(buf);
+      BZERO(buf);
       for(;;)      //main program loop
       {
         int bread = 0;
         while ( bread != 0 )
         {
-          bzero(buf);
-          bread = read(outPipe.fd[0],buf,1023);  //read the stdout pipe
+          BZERO(buf);
+          bread = read(ftoParent[1],buf,1023);  //read the stdout pipe
           string s(buf);
           string::size_type i;
           while ( ( i = s.find_first_of("\r") ) != string::npos ) {
@@ -3650,7 +3667,7 @@ extern "C" {
             CcController::theController->AddInterfaceCommand("{0,1 " + s.substr(0,strim));
             s.erase(0,strim+1);
           }
-          bzero(buf);
+          BZERO(buf);
         }
 
         int status;
@@ -3670,8 +3687,8 @@ extern "C" {
              break;
            }
            CcController::theController->AddInterfaceCommand("{0,1 " + s);
-           WriteFile(inPipe.fd[0],s.c_str(),s.length(),&bread,NULL); //send it to stdin
-           WriteFile(inPipe.fd[0],"\n",1,&bread,NULL); //send an extra newline char
+           write(ftoChild[0],s.c_str(),s.length()); //send it to stdin
+           write(ftoChild[0],"\n",1); //send an extra newline char
         }
       }
 // Reenable all menus
@@ -3689,6 +3706,7 @@ extern "C" {
       if ( pid == 0 ) {          //We're in the child process.
        std::cerr << "\nGUEXEC: Child. Execing...\n";
        int err = execvp( args[0], args );
+       std::cerr << "GUEXEC: Arg 0 was: " << args[0] << "\n";
        std::cerr << "GUEXEC: Something went wrong: " << err <<"\n";
        std::cerr << "GUEXEC: ERRNO: "<< errno << "\n";
        _exit(-1);
@@ -3708,6 +3726,10 @@ extern "C" {
       std::cerr << "\n\nGUEXEC: Done.\n";
 
     }
+
+    delete [] str;
+    delete [] cmd;
+
     return;
 
 #endif
