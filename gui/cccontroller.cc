@@ -11,6 +11,10 @@
 //   Modified:  30.3.1998 12:23 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.15  1999/07/02 17:59:10  richard
+// RIC: Added a boolean m_Wait which is true while CRYSTALS is off processing
+// things. It isn't actually used by anything though.
+//
 // Revision 1.14  1999/06/23 19:51:44  dosuser
 // RIC: Added code to postmessage on adding stuff to the interface command
 // queue. Didn't work very well, so I commented it out again.
@@ -405,6 +409,41 @@ Boolean	CcController::ParseInput( CcTokenList * tokenList )
 				}
 				break;
 			}
+                  case kTFocus:
+			{
+				// remove that token
+				tokenList->GetToken();
+				
+				CcString name = tokenList->GetToken();	// Get the name of the object
+				LOGSTAT("CcController: Setting Value of " + name);
+				CrGUIElement* theElement = nil;
+
+				if (name == "TEXTOUTPUT")
+				{
+					theElement = GetTextOutputPlace();
+                              theElement->CrFocus();
+				}
+				else if (name == "PROGOUTPUT")
+				{
+					theElement = GetProgressOutputPlace();
+                              theElement->CrFocus();
+				}
+                        else if (name == "TEXTINPUT")
+				{
+                              theElement = GetInputPlace();
+                              theElement->CrFocus();
+				}
+				else                // if ( mCurrentWindow != nil ) No search all windows.
+				{
+					// Look for the item
+					theElement = FindObject( name );
+					if(theElement)
+                                    theElement->CrFocus();
+					else
+                                    LOGWARN( "CcController:ParseInput:Focus couldn't find object with name '" + name + "'");
+				}
+				break;
+			}
                   case kTRenameObject:
 			{
 				// remove that token
@@ -558,6 +597,24 @@ Boolean	CcController::ParseInput( CcTokenList * tokenList )
 			{
 				tokenList->GetToken();
 				status.ParseInput(mCurTokenList);
+                        break;
+			}
+                  case kTFontIncrease:
+			{
+				tokenList->GetToken();
+                        Boolean increase = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+				tokenList->GetToken(); // Remove that token!
+
+                        int size = 100;
+                        CcString cgeom = GetKey( "FontSize" );
+                        if ( cgeom.Len() )
+                            size = atoi( cgeom.ToCString() );
+
+                        size = max ( size + ( increase? 10:-10 ), 0 );
+                        CrMultiEdit* theElement = (CrMultiEdit*)GetTextOutputPlace();
+                        if ( theElement !=nil )
+                            theElement->SetFontHeight( size );
+                        StoreKey( "FontSize", CcString ( size ) );
                         break;
 			}
 
@@ -1300,6 +1357,8 @@ void CcController::RemoveProgressOutputPlace(CrGUIElement* output)
       {
             mProgressOutputWindowList.RemoveItem();
       }
+      mProgressWindow = nil;
+
 }
 
 void CcController::RemoveInputPlace(CrGUIElement* input)

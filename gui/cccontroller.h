@@ -153,6 +153,9 @@ class	CcController
 #define kSStatusSelector	"ST"
 #define kSQuerySelector		"??"
 
+#define kSFocus               "FOCUS"
+#define kSFontIncrease        "INCFONTSIZE"
+
 enum
 {
  kTSysOpenFile = 400,
@@ -177,7 +180,10 @@ enum
  kTStatusSelector,	
  kTQuerySelector,
  kTGetKeyValue,
- kTSetKeyValue
+ kTSetKeyValue,
+ kTFocus,
+ kTFontIncrease
+
 };
 
 
