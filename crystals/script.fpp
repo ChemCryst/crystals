@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2001/03/02 12:26:25  richard
+C Added an exponentiation operator ** to scripts. Numerical types of both arguments
+C and the result must all be the same.
+C
 C Revision 1.27  2001/01/25 11:34:42  richard
 C RIC: FIxed bug. Array bounds error in FIRSTSTR and FIRSTINT if there was nothing
 C to read.
@@ -2372,10 +2376,12 @@ C       CHAR=GETEXTN(CHAR)
 CAUG00  1 NEW OPERATOR
 C       CHAR=GETCWD()
 CFEB01  1 NEW BINARY OPERATOR 'POWER'
-C       REAL = REAL ** REAL 
+C       REAL = REAL ** REAL
+CFEB01  1 NEW UNARY OP:
+C       REAL = RANDOM 
 C
-      PARAMETER ( NOPER = 47 , NUBASE = 25 )
-      PARAMETER ( NARGMX = 3 , NOTYPE = 13 )
+      PARAMETER ( NOPER = 48 , NUBASE = 25 )
+      PARAMETER ( NARGMX = 3 , NOTYPE = 14 )
 C
       PARAMETER ( JNONE = 0 )
       PARAMETER ( JINTEG = 1 , JREAL = 2 , JLOGIC = 3 )
@@ -2415,11 +2421,12 @@ C
      2              2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 5 , 5 ,
      3              6 , 7 , 11, 11, 2,
 CJAN99
-     4           8 , 9 ,  9 , 10 ,  8 , 10 ,  4 , 12 , 13 , 10 , 12,
-     5          12 , 12,  4 , 12 , 12 , 12 , 12 , 12 , 12 , 12 , 12 /
+     4           8 , 9 ,  9 , 10 ,  8 , 10 ,  4 , 12 , 13 , 10 ,
+     5          12 ,12 , 12,   4 , 12 , 12 , 12 , 12 , 12 , 12 ,
+     6          12 ,12 , 13 /
 C
-      DATA NARGS  / 0 , 2 , 2 , 1 , 2 , 2 , 3 , 1 , 1 , 1 , 2 , 1 , 1 /
-      DATA NRESLT / 0 , 1 , 1 , 1 , 1 , 2 , 1 , 1 , 1 , 1 , 1 , 1 , 1 /
+      DATA NARGS  /0 , 2 , 2 , 1 , 2 , 2 , 3 , 1 , 1 , 1 , 2 , 1 , 1, 0/
+      DATA NRESLT /0 , 1 , 1 , 1 , 1 , 2 , 1 , 1 , 1 , 1 , 1 , 1 , 1, 1/
 C
       DATA ITYPES /                 JNONE  , JNONE  , JNONE  ,
      2 JNUMER , JSAME  , JNONE  ,   JANY   , JSAME  , JNONE  ,
@@ -2427,7 +2434,8 @@ C
      4 JANY   , JLOGIC , JNONE  ,   JANY   , JSAME  , JLOGIC ,
      5 JLOGIC , JNONE  , JNONE  ,   JNUMER , JNONE  , JNONE  ,
      6 JINTEG , JNONE  , JNONE  ,     JCHAR  , JCHAR  , JNONE   ,
-     7 JCHAR  , JNONE  , JNONE  ,     JANY   , JNONE  , JNONE /
+     7 JCHAR  , JNONE  , JNONE  ,     JANY   , JNONE  , JNONE,
+     8 JREAL  , JNONE  , JNONE  /
 C
       DATA CDATAT / 'none' , 'integer' , 'real' , 'logical' ,
      2              'character' , 'any' , 'same' , 'numeric' /
@@ -2721,7 +2729,7 @@ C
 CJAN99
      3        5090 , 5100,  5110 , 5120 , 5130 ,
      3        5140 , 5150,  5160 , 5170 , 5180 , 
-     4        5190 , 5200,  9940 ) , IUOPER
+     4        5190 , 5200,  5210 , 9940 ) , IUOPER
       GO TO 9940
 C
 C
@@ -3076,6 +3084,15 @@ c      WRITE (99,'(A)') CWORK1
       ICODE(JVTYPE,IARG(1)) = 4
       GO TO 8000
 
+5210  CONTINUE
+C
+C -- 'RANDOM'
+C
+C Return a random number between 0 and 1.
+C
+      XCODE(JVALUE,IARG(1)) = FRAND()
+      ICODE(JVTYPE,IARG(1)) = 2
+      GO TO 8000
 
 C
 8000  CONTINUE
@@ -3327,7 +3344,7 @@ C
       PARAMETER ( IBASBR = 1               , NBROPR =  2 )
       PARAMETER ( IBASBI = IBASBR + NBROPR , NBOPER = 23 )
 CJAN99
-      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 22 )
+      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 23 )
       PARAMETER ( NOPER = IBASUN + NUOPER - 1 )
       PARAMETER ( LOPER = 10 )
 C
@@ -3370,7 +3387,7 @@ CJAN99
      *                'CHARACTER','KEYWORD','UPPERCASE','FIRSTSTR',!34-37
      1                'FIRSTINT','SQRT','GETPATH','GETFILE',       !38-41
      2                'GETTITLE','FILEEXISTS','FILEDELETE',        !42-44
-     3                'FILEISOPEN','GETEXTN','GETCWD'          /   !45-47
+     3                'FILEISOPEN','GETEXTN','GETCWD','RANDOM' /   !45-48
 C
       DATA IPRECD /      0    ,   200   ,    0    ,
      2                  100   ,   100   ,   120   ,   120   ,
@@ -3386,7 +3403,7 @@ CJAN99
      *                  180   ,   180   ,   180   ,   180   ,
      1                  180   ,   180   ,   180   ,   180   ,
      2                  180   ,   180   ,   180   ,   180   ,
-     3                  180   ,   180 /
+     3                  180   ,   180   ,   200 /
 C
       DATA CDATAT / '<invalid>', 'integer', 'real', 'logical',
      2             'character' /
@@ -3421,6 +3438,7 @@ C -- WE EXPECT THE NEXT ITEM TO BE '(' , NUMBER , VARIABLE , STRING ETC.
 C
 C -- CHECK FOR STRINGS FIRST. ( USE LOWERCASE COPY FOR ACTUAL DATA )
 C
+      IF ( ISTART .LE. 0 ) GOTO 9910
       IF ( INDEX ( CSTRNG , CTEXT(ISTART:ISTART)  ) .GT. 0 ) THEN
         LENARG = KCCARG ( CTEXT , ISTART , 2 , NARG , NEND )
         IF ( LENARG .LE. 0 ) GO TO 9910
