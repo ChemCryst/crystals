@@ -9,6 +9,13 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.84  2004/04/01 10:24:34  rich
+// Don't delete mCrystalsThread object when the thread ends, otherwise
+// the GUI thread can't query its exit status.
+// This means that the GUI thread is now responsible for deleting this
+// object when it discovers that it is dead.
+// This should fix the problems in Manchester.
+//
 // Revision 1.83  2004/02/16 16:39:11  rich
 // After waiting for a spawned application, print a message "Done" to indicate
 // no longer waiting.
@@ -1854,6 +1861,7 @@ bool CcController::GetInterfaceCommand( char * line )
     {
       LOGSTAT("The CRYSTALS thread has died.");
       delete mCrystalsThread;
+      mCrystalsThread = nil;
       if ( m_restart )
       {
         ChangeDir( m_newdir );
@@ -3388,7 +3396,16 @@ int __stdcall BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpD
 void CcController::ChangeDir (CcString newDir)
 {
 #ifdef __CR_WIN__
-      _chdir ( newDir.ToCString());
+//      _chdir ( newDir.ToCString());
+
+  if( _chdir( newDir.ToCString() )   )
+  {
+      char buffer[256];
+      sprintf( buffer, "Unable to locate the directory: %s\n", newDir.ToCString() );
+      AfxGetApp()->m_pMainWnd->MessageBox(buffer,"Change dir failed",MB_OK);
+  }
+
+
 #endif
 #ifdef __BOTHWX__
       chdir ( newDir.ToCString());
