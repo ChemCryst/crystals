@@ -1,4 +1,13 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.86  2004/07/08 15:23:28  rich
+C Added H-treatment options to the end of L30's CIF block. The default is
+C UNKNOWN, and if left unchanged, this will cause the CIF generator to
+C actually work out the appropriate keyword. It does this using the REFINE
+C flag (Offset 15 in List 5), and can distinguish between NONE (no H present),
+C CONSTR (for riding and rigid group refinement), REFALL, REFU, REFXYZ (for
+C those types), MIXED (if any H differs from any other), and NOREF (for
+C no refinement of any H). Happy Acta'ing.
+C
 C Revision 1.85  2004/06/17 10:30:01  rich
 C Comment out some unused routines.
 C
@@ -5482,7 +5491,7 @@ c 6 UNDEF    7 CONSTR  8 NONE
            IF ( IVAL .EQ. 0 ) THEN  ! Work it out from L5 flags.
               IHC = 0
               DO I5 = L5, L5+ (N5-1)*MD5, MD5
-                IF ( ISTORE(I5) .EQ. 'H   ' ) THEN
+                IF ( ISTORE(I5) .EQ. IHYD) THEN
                    IHC = IHC + 1
                    INEW = 5                                      !NoRef
                    IF ( AND(ISTORE(I5+15),KBREFB(3)) .GT. 0) THEN
