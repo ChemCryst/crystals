@@ -251,27 +251,41 @@
 ^^WI    DISPOSE FOURIER
 ^^CR
 %%
-%       IF DOSCALE .EQ. 1 THEN
-%           COPY '#SCRIPT XDELQ'
-%           COPY '#SCRIPT VALID12'
-%           COPY '#SFLS'
+{I Copying reflection list to temporary storage.
+%       COPY '#COPY 6 7'
+%       COPY 'END'
+{I Calculating unique reflections using Friedel's law.
+%       COPY '#SYST 7 FRIEDEL=YES FILTER=YES'
+%       COPY 'END'
+{I Sorting temporary reflection list.
+%       COPY '#SORT 7'
+%       COPY 'END'
+{I Merging temporary reflection list.
+%       COPY '#MERGE 7'
+%       COPY 'END'
+%       IF ( TWINNED ) THEN
+%         EVALUATE DOCALC = 1
+%       END IF
+%       IF ( DOSCALE .EQ. 1 .OR. DOCALC .EQ. 1 ) THEN
+%         COPY '#SCRIPT XDELQ'
+%         COPY '#SCRIPT VALID12'
+%         COPY '#SFLS 7'
+%         IF DOSCALE .EQ. 1 THEN
 %           IF TWINNED .EQ. TRUE THEN
 %             COPY 'SCALE /FO/=SCALED-/FOT/'
 %           ELSE
 %             COPY 'SCALE'
 %           END IF
 %           COPY 'END'
-%       END IF
-%       IF DOCALC .EQ. 1 .OR. TWINNED .EQ. TRUE THEN
-%           COPY '#SCRIPT XDELQ'
-%           COPY '#SCRIPT VALID12'
-%           COPY '#SFLS'
+%         END IF
+%         IF DOCALC .EQ. 1 THEN
 %           IF TWINNED .EQ. TRUE THEN
 %             COPY 'CALC /FO/=SCALED-/FOT/'
 %           ELSE
 %             COPY 'CALC'
 %           END IF
 %           COPY 'END'
+%         END IF
 %       END IF
 %       QUEUE REWIND
 %       CLEAR
@@ -339,9 +353,14 @@
 %       STORE FORMAT /(F7.2)/ LENGTH 7 REAL REJLIMIT
 %       QUEUE SEND
 %       CLEAR
-%       COPY '#FOURIER'
+%       COPY '#FOURIER 7'
 %       QUEUE PROCESS
 %       COPY 'END'
+%       COPY '#DISK'
+%       COPY 'DELETE 7'
+%       COPY '#PURGE LIST=7 MON=LOW'
+%       COPY 'END'
+{I Fourier calculation complete.
 %%
 %%
 %%

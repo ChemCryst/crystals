@@ -125,10 +125,11 @@
 % END IF                                                                        
 %%                                                                              
 ^^CO SET GFT1 TEXT 'Difference Fourier map.'
-% COPY '#FOUR'        
+% COPY '#SCRIPT PREFOUR'        
 % COPY 'MAP TYPE=DIFF'
 % COPY 'PEAK HEIGHT=1'
 % COPY 'END'
+% COPY '#SCRIPT POSTFOUR'
 ^^CO SET GFT1 TEXT 'Rejecting coincident peaks.'
 % COPY '#PEAKS 10 10'
 % COPY 'SEL TYPE=PEAK'

@@ -14,9 +14,10 @@
 %%
 %%   Re-calculate the electron density.
 {S * Recalculating min and max electron density.
-%  COPY '#FOURIER'
+%  COPY '#SCRIPT PREFOUR'
 %  COPY 'MAP TYPE=DIFF'
 %  COPY 'END'
+%  COPY '#SCRIPT POSTFOUR'
 {S * Recalculating R.
 %  EVALUATE ERRFLAG = 1
 %  BLOCK

@@ -18,17 +18,13 @@
 %  END BLOCK                                                                    
 %%                                                                              
 %% A penultimate difference map                                                 
-%  COPY '#SCRIPT VALID12'                                                       
-%  COPY '#SFLS'                                                                 
-%  IF TWINNED .EQ. TRUE THEN                                                    
-%     COPY 'CALC /FO/=SCALED-/FOT/'                                             
-%  ELSE                                                                         
-%     COPY 'CALC'                                                               
-%  END IF                                                                       
-%  COPY '#FOUR'                                                                 
-%  COPY 'MAP TYPE=DIFF'                                                         
-%  COPY 'PEAK HEIGHT=1 '                                                        
-%  COPY 'END'                                                                   
+%  COPY '#SCRIPT VALID12'
+%  COPY '#SCRIPT PREFOUR'
+%  COPY 'MAP TYPE=DIFF'
+%  COPY 'PEAK HEIGHT=1 '
+%  COPY 'END'
+%  COPY '#SCRIPT POSTFOUR'
+{I Difference Fourier complete.
 %%                                                                              
 %  VARIABLE REAL NREF NPARAM RHOMAX                                             
 %% The variables needed by XQUESTIO                                             
@@ -57,9 +53,9 @@
 {R The residual density is rather high. Could you have disorder,                
 {R missing solvent or an absorption problem?                                    
 %%                                                                              
-%    EVALUATE QTITLE = 'Tidy up'                                                
-%    EVALUATE QLINE1 = 'Do you want to view the residual peaks?'                
-%    EVALUATE QLINE2 = ' '                                                      
+%    EVALUATE QTITLE = 'Residual density high'                                                
+%    EVALUATE QLINE1 = 'Rho max =  ' // CHARACTER ( RHOMAX )
+%    EVALUATE QLINE2 = 'Do you want to view the residual peaks?'                
 %    EVALUATE BUTTOK = '&Yes'                                                   
 %    EVALUATE BUTTXX = '&No'                                                    
 %    COPY '#SCRIPT XQUESTIO'                                                    
@@ -104,15 +100,11 @@
 %    COPY 'END'                                                                 
 %  END IF                                                                       
 %% A final difference map.                                                      
-%  COPY '#SFLS'                                                                 
-%  IF TWINNED .EQ. TRUE THEN                                                    
-%     COPY 'CALC /FO/=SCALED-/FOT/'                                             
-%  ELSE                                                                         
-%     COPY 'CALC'                                                               
-%  END IF                                                                       
-%  COPY '#FOUR'                                                                 
-%  COPY 'MAP TYPE=DIFF'                                                         
-%  COPY 'PEAK HEIGHT=1 '                                                        
-%  COPY 'END'                                                                   
+%  COPY '#SCRIPT PREFOUR'
+%  COPY 'MAP TYPE=DIFF'
+%  COPY 'PEAK HEIGHT=1 '
+%  COPY 'END'
+%  COPY '#SCRIPT POSTFOUR'
+{I Final difference Fourier complete.
 %%                                                                              
 %END SCRIPT                                                                     
