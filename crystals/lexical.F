@@ -1255,6 +1255,8 @@ C--CHECK IF THIS IS A NORMAL PARAMETER
 1400  CONTINUE
       N=1
       I=KCOMP(NWKA,STORE(MF+2),ICOORD,NKA,LKA)
+      write ( cmon, '(''Kcomp = '',i5)') i
+      call xprvdu(nceror, 1,0)
 c----- save the true parameter index from coord
       lorig = i
 1430  continue
@@ -1397,6 +1399,8 @@ C--CHECK IF THIS IS A NORMAL PARAMETER
 1400  CONTINUE
       N=1
       I=KCOMP(NWKA,STORE(MF+2),ICOORD,NKA,LKA)
+      write ( cmon, '(''Kcomp = '',i5)') i
+      call xprvdu(nceror, 1,0)
 c----- save the true parameter index from coord
       lorig = i
 1430  continue
