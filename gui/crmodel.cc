@@ -143,13 +143,13 @@ Boolean CrModel::ParseInput( CcTokenList * tokenList )
                         tokenList->GetToken(); // Remove that token!
                         break;
                     }
-                              case kTThermal:
+                    case kTThermal:
                     {
                                     ((CxModel*)ptr_to_cxObject)->SetRadiusType( THERMAL );
                         tokenList->GetToken(); // Remove that token!
                         break;
                     }
-                              case kTSpare:
+                    case kTSpare:
                     {
                                     ((CxModel*)ptr_to_cxObject)->SetRadiusType( SPARE );
                         tokenList->GetToken(); // Remove that token!
