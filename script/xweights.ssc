@@ -38,7 +38,7 @@ A SCRIPT to assist with the weighting of least squares refinement
 ^^WI }
 ^^WI SHOW
 ^^CR
-^^CO SET XW_LIST SELECTION=4
+^^CO SET XW_LIST SELECTION=3
 %  LOOP
 %    VERIFY BXX BHH BAA BOK
 %    GET SILENT NOSTORE ABBREVIATED 'Option' 'BXX'
