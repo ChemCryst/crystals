@@ -46,22 +46,25 @@ std::ostream& operator<<(std::ostream& pStream, MergedData& tData);
 class LaueGroups
 {
 private:
-#define kTriclinicID 1
-#define kMonoclinicBID 2
-#define kOrtharombicID 3
-#define kTetragonalID 4
-#define kTrigonalID 5
-#define kHexagonalID 6
-#define kCubicID 7
-    
     class LaueGroup;
     Array<LaueGroup*>* iGroups;
     
     Array<unsigned short>& getGroupIndice(const unsigned int pSystemRef, const unsigned short pGroupNum) const;
  public:
+    enum systemID
+    {
+      kTriclinicID = 0,
+      kMonoclinicBID,
+      kOrtharombicID,
+      kTetragonalID,
+      kTrigonalID,
+      kHexagonalID,
+      kCubicID,
+      };
     LaueGroups();
     unsigned int getSystemRef(unsigned short* pNumGroup, const unsigned short pSystemID) const; //Returns a reference to the first system LaueGroup and the number of groups for that system in pNumGroups
     MergedData mergeSystemGroup(const HKLData& pHKLData, const unsigned short pSystem, const unsigned short pGroup) const;
     
     ~LaueGroups();
 };
+
