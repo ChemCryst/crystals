@@ -1,7 +1,7 @@
 
 #include "crystalsinterface.h"
 #include "crconstants.h"
-#include "ccchartlolour.h"
+#include "ccchartcolour.h"
 #include "cctokenlist.h"
 #include "crchart.h"
 
