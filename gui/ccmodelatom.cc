@@ -97,7 +97,7 @@ CcCoord CcModelAtom::ParseInput(CcTokenList* tokenList)
 
 void CcModelAtom::Draw(CrModel* ModelToDrawOn)
 {
-      ModelToDrawOn->DrawAtom(x,y,z,r,g,b,covrad,vdwrad,x11,x12,x13,x21,x22,x23,x31,x32,x33);
+      ModelToDrawOn->DrawAtom(this);
 }
 
 
