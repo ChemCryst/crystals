@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   23.1.2001 20:46
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2001/06/18 12:36:13  richard
+//   Moved CcTabData definition into header so it can be used by CxTab.
+//
 //   Revision 1.3  2001/06/17 15:14:12  richard
 //   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
 //
@@ -42,6 +45,16 @@ CrTab::CrTab( CrGUIElement * mParentPtr )
 
 CrTab::~CrTab()
 {
+
+#ifdef __BOTHWX__
+//The wxNotebook class likes to delete all of its own tabs,
+//we can't have this because we need to delete all the Cr classes
+//aswell, so before deleting anything, we simply remove all the
+//windows from the control of the wxNotebook, so that when it is
+//deleted, it has no child windows to delete.
+       ((CxTab*)ptr_to_cxObject)->LetGoOfTabs();
+#endif
+
     mTabsList.Reset();
     CrGUIElement * theItem = (CrGUIElement *)mTabsList.GetItem();
     while ( theItem != nil )
@@ -160,6 +173,8 @@ CcParse CrTab::ParseInput( CcTokenList * tokenList )
             tabData->tabGrid = gridPtr;
             mTabsList.AddItem( (void*) gridPtr );
             ((CxTab*)ptr_to_cxObject)->AddTab(tabData) ;
+#ifdef __CR_WIN__
+//NB- under Win32 we manage the tabs, under wx the framework manages them.
             if ( m_nTabs )
             {
               gridPtr->CrShowGrid(false);
@@ -171,7 +186,7 @@ CcParse CrTab::ParseInput( CcTokenList * tokenList )
               m_currentTab = gridPtr;
               LOGSTAT ("First grid in tab control: Showing");
             }
-
+#endif
             m_nTabs++;
 
           }

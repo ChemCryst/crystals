@@ -5,6 +5,12 @@
 //   Authors:   Richard Cooper
 //   Created:   23.1.2001 23:30
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2001/06/18 12:41:14  richard
+//   AddTab is now passed a CcTabData rather than just a text string. The wx base
+//   class (wxNoteBook) manages the child window for itself, (unlike windows where
+//   we just change the child window when the tabs are clicked), so CcTabData
+//   contains a pointer to the child.
+//
 //   Revision 1.2  2001/06/17 14:30:29  richard
 //
 //   wx support. CxDestroyWindow function.
@@ -58,10 +64,13 @@ class CxTab : public BASETAB
 
 #ifdef __CR_WIN__
         afx_msg void OnSelChange ( NMHDR * pNotifyStruct, LRESULT* result );
+        afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
         DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
+        void LetGoOfTabs();
         void OnSelChange ( wxNotebookEvent& tab );
+        void OnChar(wxKeyEvent & event);
         DECLARE_EVENT_TABLE()
 #endif
 

@@ -5,6 +5,12 @@
 //   Authors:   Richard Cooper
 //   Created:   23.1.2001 23:38
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2001/06/18 12:41:14  richard
+//   AddTab is now passed a CcTabData rather than just a text string. The wx base
+//   class (wxNoteBook) manages the child window for itself, (unlike windows where
+//   we just change the child window when the tabs are clicked), so CcTabData
+//   contains a pointer to the child.
+//
 //   Revision 1.3  2001/06/17 14:30:29  richard
 //
 //   wx support. CxDestroyWindow function.
@@ -69,6 +75,7 @@ void CxTab::CxDestroyWindow()
 #ifdef __CR_WIN__
 BEGIN_MESSAGE_MAP(CxTab, CTabCtrl)
    ON_NOTIFY_REFLECT(TCN_SELCHANGE, OnSelChange)
+   ON_WM_CHAR()
 END_MESSAGE_MAP()
 #endif
 
@@ -76,11 +83,12 @@ END_MESSAGE_MAP()
 //wx Message Map
 BEGIN_EVENT_TABLE(CxTab, wxNotebook)
       EVT_NOTEBOOK_PAGE_CHANGED( -1, CxTab::OnSelChange )
+      EVT_CHAR(CxTab::OnChar)
 END_EVENT_TABLE()
 #endif
 
+CXONCHAR(CxTab)
 CXSETGEOMETRY(CxTab)
-
 CXGETGEOMETRIES(CxTab)
 
 
@@ -103,7 +111,8 @@ void CxTab::AddTab(CcTabData * tab)
   InsertItem( m_tab++, &tctab );
 #endif
 #ifdef __BOTHWX__
-  AddPage ((wxWindow*)tab->tabGrid->GetWidget(), tab->tabText.ToCString() );
+  AddPage ( (wxWindow*)tab->tabGrid->GetWidget(), tab->tabText.ToCString() );
+  LOGSTAT ( "$$$$$$ Adding a page to notebook" );
 #endif
   return;
 }
@@ -122,7 +131,7 @@ int CxTab::GetTabsHeight()
   return -work.top + 2;
 #endif
 #ifdef __BOTHWX__
-  return 10;
+  return 20;
 #endif
 }
 
@@ -159,6 +168,18 @@ void CxTab::OnSelChange(wxNotebookEvent& tabevt)
     int nTab = GetSelection();
 //    ((CrTab*)ptr_to_crObject)->ChangeTab(nTab);
 }
+
+void CxTab::LetGoOfTabs()
+{
+  int pc = GetPageCount();
+  for ( int i = pc-1; i>=0; i-- )
+  {
+    RemovePage(i); //Removes page, but without deleting the
+                   //associated window.
+//NB. Remove pages last first as the index changes each time.
+  }
+}
+
 #endif
 
 void CxTab::RedrawTabs()
