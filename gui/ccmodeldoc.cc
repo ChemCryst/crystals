@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.37  2004/11/11 14:59:08  stefan
+// 1. Back to old version as I didn't mean to check these files in last time.
+//
 // Revision 1.35  2004/11/09 09:45:02  rich
 // Removed some old stuff. Don't use displaylists on the Mac version.
 //
@@ -560,6 +563,8 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
       glEndList();
    }
 
+   m_glIDsok = true;
+
    return retval;
 }
 
@@ -667,7 +672,6 @@ bool CcModelDoc::RenderAtoms( CcModelStyle * style, bool feedback)
      }
    }
 
-   m_glIDsok = true;
    m_thread_critical_section.Leave();
    return true;
 }
@@ -693,7 +697,6 @@ bool CcModelDoc::RenderBonds( CcModelStyle * style, bool feedback )
        (*bond).Render(style);
      }
    }
-   m_glIDsok = true;
    m_thread_critical_section.Leave();
    return true;
 }
@@ -727,7 +730,6 @@ bool CcModelDoc::RenderExcluded( CcModelStyle * style, bool feedback )
        (*bond).Render(style);
      }
    }
-   m_glIDsok = true;
    m_thread_critical_section.Leave();
    return true;
 }
