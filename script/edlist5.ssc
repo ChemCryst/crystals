@@ -9,7 +9,7 @@
       This SCRIPT puts you into a system editor to modify the atomic
       parameters.
 %%
-%    COPY '#RELEASE PUNCH SCPLST5.DAT'
+%    COPY '#RELEASE PUNCH scplst5.dat'
 %    COPY '#PUNCH 5'
 %    COPY 'END'
 %    COPY '#RELEASE PUNCH bfile.pch'
@@ -19,7 +19,7 @@
 +GIL%    INSERT '#use crysdir:script/edlist5.dat'
 %    SEND
 %    COPY '# Inputting new list5'
-%    COPY '#USE SCPLST5.DAT'
+%    COPY '#USE scplst5.dat'
 %    COPY '#DISP'
 %    COPY 'END'
 %%

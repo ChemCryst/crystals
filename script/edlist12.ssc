@@ -8,12 +8,12 @@
 %    COPY 'END'
 %  END IF
 %%
-%  COPY '#RELEASE PUNCH SCPORG12.DAT'
+%  COPY '#RELEASE PUNCH scporg12.dat'
 %  TRANSFER "# This file (ScpOrg12.dat) will be read by CRYSTALS" TO PUNCH
 %  TRANSFER "# if you abandon changes to the ScpLst12.dat." TO PUNCH
 %  COPY '#PUNCH 12'
 %  COPY 'END'
-%  COPY '#RELEASE PUNCH SCPLST12.DAT'
+%  COPY '#RELEASE PUNCH scplst12.dat'
 %  TRANSFER "# This file (ScpLst12.dat) will be read by CRYSTALS" TO PUNCH
 %  TRANSFER "# when you close it, so save any changes that you make." TO PUNCH
 %  TRANSFER "# To abandon changes: either don't save, or, delete all" TO PUNCH
@@ -50,7 +50,7 @@
 %    EVALUATE ISERR = TRUE
 %    BLOCK
 %      ON ERROR TERMINATE
-%      COPY '#USE SCPLST12.DAT'
+%      COPY '#USE scplst12.dat'
 %%
 %      EVALUATE ISERR = FALSE
 %%
@@ -86,7 +86,7 @@
 %          TRANSFER '{I Re-opening file' TO DISPLAY
 %        END BLOCK 
 %        BLOCK 
-%          COPY '#USE SCPORG12.DAT'
+%          COPY '#USE scporg12.dat'
 %          EVALUATE LOOPEND = LOOPCOUNTER
 %          COPY '#SUM L 12'
 %          COPY 'END'
@@ -138,7 +138,7 @@
 %            TRANSFER '{I Re-opening file' TO DISPLAY
 %          END BLOCK 
 %          BLOCK 
-%            COPY '#USE SCPORG12.DAT'
+%            COPY '#USE scporg12.dat'
 %            EVALUATE LOOPEND = LOOPCOUNTER
 %            COPY '#SUM L 12'
 %            COPY 'END'
@@ -190,7 +190,7 @@
 %              TRANSFER '{I Re-opening file' TO DISPLAY
 %            END BLOCK 
 %            BLOCK 
-%              COPY '#USE SCPORG12.DAT'
+%              COPY '#USE scporg12.dat'
 %              EVALUATE LOOPEND = LOOPCOUNTER
 %              COPY '#SUM L 12'
 %              COPY 'END'
