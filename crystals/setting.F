@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.2  2001/02/26 10:30:23  richard
+C Added changelog to top of file
+C
 C
 CODE FOR WSTUP
       SUBROUTINE WSTUP ( IBLOCK , IDIM0 )
@@ -345,7 +348,6 @@ C
 1400  CONTINUE
       WRITE ( CMON ,1500)
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(A)') CMON( 1)(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 1500  FORMAT(' Singular Matrix')
       RETURN
@@ -656,7 +658,6 @@ C
 1000  CONTINUE
       WRITE(CMON, 1100) A, S
       CALL XPRVDU(NCVDU, 2,0)
-      WRITE(NCAWU, '(A)') CMON( 1)(:),CMON( 2)(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON( 1)(:),CMON( 2)(:)
 1100  FORMAT(' Sin theta gt than 1',3F6.1,F8.4/
      1 'Check cell parameters and reflection file')
@@ -776,7 +777,6 @@ C
 1000  CONTINUE
       WRITE ( CMON ,1010)
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(A)') CMON( 1)(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 1010  FORMAT(' This geometry not available ')
       CALL XOPMSG (IOPABS,IOPINT,0)

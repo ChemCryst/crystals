@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  2003/12/02 11:55:38  rich
+C Code changes to \SLANT to output MapView data file.
+C
 C Revision 1.17  2003/02/14 17:09:02  djw
 C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
 C recine have the parameter ityp06, which corresponds to the types
@@ -145,7 +148,6 @@ C--CHECK THAT THERE ARE SOME REFLECTIONS
       CALL XERHDR(0)
       WRITE ( CMON , 1450)
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(/A)') CMON(1 )(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A)') CMON(1)(:)
 1450  FORMAT(/,' No reflections')
       GOTO 1050
@@ -774,7 +776,6 @@ C----- LOOK FOR SOME SORT OF MATRIX
       IF (ABS(XDETR3(PROCS(1))) .LE. ZERO) THEN
        WRITE ( CMON , 1060) (PROCS(I), I = 1,9)
        CALL XPRVDU(NCVDU, 4,0)
-       WRITE(NCAWU, '(A)') (CMON(II)(:),II=1,4)
        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (CMON(II)(:),II=1,4)
 1060   FORMAT (' Your matrix is probably invalid ', 3(/3F9.3))
        GOTO 9900
@@ -896,7 +897,6 @@ C--INCORRECT INTERVALS
 1400  CONTINUE
       WRITE ( CMON ,1450)
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(/A)') CMON(1 )(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A)') CMON(1 )(:)
 1450  FORMAT(' Illegal x or y divisions')
       GOTO 9910
@@ -927,7 +927,6 @@ C
 C----- START LOOPING OVER SECTIONS
       DO 3300, ISECT = 1, ISTORE(L8T+10)
       ZCOORD=STORE(L8T+9)
-      WRITE(NCAWU, '('' Section at z = '', F6.2)') ZCOORD
 C--CALCULATE THE COORDINATES OF THE FIRST POINT
       AMIN(1)=STORE(L8T)+STORE(L8RI)*STORE(L8T+3)+STORE(L8RI+1)
      2 *STORE(L8T+6)+STORE(L8RI+2)*STORE(L8T+9)
@@ -1255,7 +1254,6 @@ C -- INPUT ERROR
 C -- SINGULAR MATRIX
       WRITE ( CMON, 9925 )
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(A)') CMON(1 )(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON( 1)(:)
 9925  FORMAT ( 1X , 'Rotation matrix is singular' )
       CALL XERHND ( IERERR )
@@ -1388,8 +1386,6 @@ C----- MAXIMUM DISTANCE FOR A 1-3 CONTACT, AND ITS SQUARE
 C--INITIALISE THE TIMING FUNCTION
       CALL XTIME1(1)
 
-      WRITE(NCAWU,'(A)') 'This is "Slanting" VOIDS'
-
       JU = NFL
       NFL = NFL + 5
 
@@ -1439,7 +1435,6 @@ C----- LOOK FOR SOME SORT OF MATRIX
       IF (ABS(XDETR3(PROCS(1))) .LE. ZERO) THEN
         WRITE ( CMON , 1060) (PROCS(I), I = 1,9)
         CALL XPRVDU(NCVDU, 4,0)
-        WRITE(NCAWU, '(A)') (CMON(II)(:),II=1,4)
         IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (CMON(II)(:),II=1,4)
 1060    FORMAT (' Your matrix is probably invalid ', 3(/3F9.3))
         GOTO 9900
@@ -1487,7 +1482,6 @@ C--INCORRECT INTERVALS
 1400  CONTINUE
       WRITE ( CMON ,1450)
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(/A)') CMON(1 )(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A)') CMON(1 )(:)
 1450  FORMAT(' Illegal x or y divisions')
       GOTO 9910
@@ -1567,7 +1561,6 @@ C----- START LOOPING OVER SECTIONS
           WRITE(NCFPU1,2801) 'BLOCK'
           WRITE(NCFPU1,2802) NXNY
         ENDIF
-        WRITE(NCAWU, '('' Section at z = '', F6.2)') ZCOORD
         DO IXSECT = 0, ISTORE(L8T+4)-1
           XCOORD=STORE(L8T+3) + STORE(L8T+5) * IXSECT
           DO IYSECT = 0, ISTORE(L8T+7)-1
@@ -1735,7 +1728,6 @@ C -- INPUT ERROR
 C -- SINGULAR MATRIX
       WRITE ( CMON, 9925 )
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(A)') CMON(1 )(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON( 1)(:)
 9925  FORMAT ( 1X , 'Rotation matrix is singular' )
       CALL XERHND ( IERERR )
