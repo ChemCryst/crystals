@@ -2338,7 +2338,7 @@ c        iy1=iy-ivd+15
 #if defined(_DOS_) 
          call fill_ellipse@(ix,iy,iz1,iz,color)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_) || defined (_MAC_) 
          call fill_ellipse(ix,iy,iz1,iz,color)
 #endif
 #if defined(_DVF_) 
@@ -2354,7 +2354,7 @@ c        iy1=iy-ivd+15
          color=icol
       else if (ind.eq.13)then
          do i=1,iz
-#if defined(_DOS_) || defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_DOS_) || defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
             ixv2(i)=ixv(i)
             iyv2(i)=iyv(i)
 #endif
@@ -2367,7 +2367,7 @@ c        iy1=iy-ivd+15
 #if defined(_DOS_) 
          call polyline@(ixv2,iyv2,iz,icol)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
          call polyline(ixv2,iyv2,iz,icol)
 #endif
 #if defined(_DVF_) 
@@ -2380,7 +2380,7 @@ c        iy1=iy-ivd+15
 #endif
       else if (ind.eq.14)then
          do i=1,iz
-#if defined(_DOS_) || defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_DOS_) || defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
             ixv2(i)=ixv(i)
             iyv2(i)=iyv(i)
 #endif
@@ -2393,7 +2393,7 @@ c        iy1=iy-ivd+15
 #if defined(_DOS_) 
          call create_polygon@(ixv2,iyv2,iz,handle,err)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
          call fill_polygon(ixv2,iyv2,iz,icol)
 #endif
 #if defined(_DOS_) 
@@ -2418,7 +2418,7 @@ c        iy1=iy-ivd+15
 #if defined(_DOS_) 
          call fill_rectangle@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
          call fill_rectangle(ix,iy,ix1,iy1,icol)
 #endif
 #if defined(_DVF_) 
@@ -2428,7 +2428,7 @@ c        iy1=iy-ivd+15
 #if defined(_DOS_) 
          call draw_text@(string(1:iz),ix,iy,color)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
          call draw_text(string(1:iz),ix,iy,color)
 #endif
 #if defined(_DVF_) 
@@ -2447,7 +2447,7 @@ c        iy1=iy-ivd+15
 #if defined(_DOS_) 
                 CALL window_update@(GraphicsHandle)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
          call closedisplay
 #endif
       else
@@ -2599,7 +2599,7 @@ c
 #if defined(_DOS_) 
          call fill_rectangle@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
          call fill_rectangle(ix,iy,ix1,iy1,icol)
 #endif
 #if defined(_DVF_) 
@@ -2625,7 +2625,7 @@ c
 #if defined(_DOS_) 
          call draw_text@(messaggio(1:iiz),ix,iy,icol)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
          call draw_text(messaggio(1:iiz),ix,iy,icol)
 #endif
 #if defined(_DVF_) 
@@ -2658,7 +2658,7 @@ c
 #if defined(_DOS_) 
          call fill_rectangle@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
          call fill_rectangle(ix,iy,ix1,iy1,icol)
 #endif
 #if defined(_DVF_) 
@@ -2677,7 +2677,7 @@ c
 #if defined(_DOS_) 
          call rectangle@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
          call rectangle(ix,iy,ix1,iy1,icol)
 #endif
 #if defined(_DVF_) 
@@ -2692,7 +2692,7 @@ c
 #if defined(_DOS_) 
          call draw_text@(strbox(i)(1:iiz),ix,iy2,icol)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
          call draw_text(strbox(i)(1:iiz),ix,iy2,icol)
 #endif
 #if defined(_DVF_) 
@@ -2732,7 +2732,7 @@ c-----------------------------------------------------------------------
          icol2 = ColTast + 8
       endif
       iz=6
-#if defined(_DOS_) || defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_DOS_) || defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
       ixv(1) = ix
       iyv(1) = iy+heib
       ixv(2) = ix+ideep
@@ -2766,7 +2766,7 @@ c-----------------------------------------------------------------------
 #if defined(_DOS_) 
       call create_polygon@(ixv,iyv,iz,handle,err)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
       call fill_polygon(ixv,iyv,iz, icol1)
 #endif
 #if defined(_DOS_) 
@@ -2778,7 +2778,7 @@ c-----------------------------------------------------------------------
       res = POLYGON($GFILLINTERIOR, poly, iz)
 #endif
 
-#if defined(_DOS_) || defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_DOS_) || defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
       ixv(3) = ix+ideep
       iyv(3) = iy+ideep
       ixv(6) = ix
@@ -2794,7 +2794,7 @@ c-----------------------------------------------------------------------
 #if defined(_DOS_) 
       call create_polygon@(ixv,iyv,iz,handle,err)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
       call fill_polygon(ixv,iyv,iz,icol2)
 #endif
 #if defined(_DOS_) 
@@ -2885,7 +2885,7 @@ c
 #if defined(_DOS_) 
       call fill_rectangle@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
       call fill_rectangle(ix,iy,ix1,iy1,icol)
 #endif
 #if defined(_DVF_) 
@@ -2918,7 +2918,7 @@ c flush the mouse button buffer (if there is such a thing).
 #endif
 
       button_status=0
-#if defined(_LIN_) || defined (_GIL_) || defined(_MAC_)
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined(_MAC_)
   300 call waitonmousepress_(IX, IY, button_status)
 #endif
 
@@ -2933,7 +2933,7 @@ c flush the mouse button buffer (if there is such a thing).
   300 call get_mouse_position@(ix,iy,button_status)
       call temporary_yield@
 #endif
-#if defined(_DOS_) || defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_DOS_) || defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
       if (button_status.ne.1) go to 300
 #endif
       if (ix.gt.81.and.ix.lt.400 .and. iy.lt.21) then
@@ -2988,7 +2988,7 @@ c
 #if defined(_DOS_) 
       call clear_screen_area@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
       call clear_screen_area(ix,iy,ix1,iy1,icol)
 #endif
 #if defined(_DVF_) 
@@ -3014,7 +3014,7 @@ c
 #if defined(_DOS_) 
             call draw_text@(messaggio(1:iz),ix,iy,icol)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
             call draw_text(messaggio(1:iz),ix,iy,icol)
 #endif
 #if defined(_DVF_) 
@@ -3095,7 +3095,7 @@ c
 #if defined(_DOS_) 
       call fill_rectangle@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
       call fill_rectangle(ix,iy,ix1,iy1,icol)
 #endif
 #if defined(_DVF_) 
@@ -3113,7 +3113,7 @@ c
 #if defined(_DOS_) 
       call rectangle@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
       call rectangle(ix,iy,ix1,iy1,icol)
 #endif
 #if defined(_DVF_) 
@@ -3130,7 +3130,7 @@ c
 #if defined(_DOS_) 
          call draw_text@(strbox(i)(1:iiz),ix,iy2,icol)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
          call draw_text(strbox(i)(1:iiz),ix,iy2,icol)
 #endif
 #if defined(_DVF_) 
@@ -3196,7 +3196,7 @@ c
 #if defined(_DOS_) 
       call draw_text@(messaggio(1:Iz),ix,iy,icol)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
       call draw_text(messaggio(1:Iz),ix,iy,icol)
 #endif
 #if defined(_DVF_) 
@@ -3225,7 +3225,7 @@ c
 #if defined(_DOS_) 
             call draw_line@(ix,iy,ix1,iy1,color)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
             call draw_line(ix,iy,ix1,iy1,color)
 #endif
 #if defined(_DVF_) 
@@ -3237,7 +3237,7 @@ c
 #if defined(_DOS_) 
             call draw_line@(ix,iy,ix,iy,color)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
             call draw_line(ix,iy,ix,iy,color)
 #endif
 #if defined(_DVF_) 
@@ -3309,7 +3309,7 @@ c
 #if defined(_DOS_) 
          call draw_text@(messaggio(1:Iz),ix,iy,icol)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
          call draw_text(messaggio(1:Iz),ix,iy,icol)
 #endif
 #if defined(_DVF_) 
@@ -3395,7 +3395,7 @@ c--
       CALL GetArg(1,file1,optlen)
       CALL GetArg(2,file2,optlen)
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
       call GetArg(1, file1)
       call GetArg(2, file2)      
 #endif
@@ -3488,7 +3488,7 @@ c-- tranform this subroutine in a dummy one
 c-- leaving only the following lines
 c--
 C              character *(*) string
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
               lstring=0
 #endif
 c--              return
@@ -3538,7 +3538,7 @@ c-- tranform this subroutine in a dummy one
 c-- leaving only the following lines
 c--
 c--              character *(*) string
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
               lstring=0
 #endif
 c--              return
@@ -3610,7 +3610,7 @@ c----- allow screen updates while running.
 #if defined(_DOS_) 
      call temporary_yield@
 #endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_WXS_)  || defined (_MAC_) 
       call update   ! Update the screen output.
 CHANGE </RIC-OX-98>
 #endif
