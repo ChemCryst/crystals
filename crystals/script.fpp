@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.51  2004/02/24 15:49:09  rich
+C Don't crash if FILEDELETE function fails.
+C
 C Revision 1.50  2003/11/20 13:02:58  rich
 C Add new SCRIPT global character variable 'CTITLE' that evaluates
 C to the name of the experiment title set by \TITLE.
@@ -3027,6 +3030,13 @@ C
           WRITE ( CWORK1 , '(I12)' ) ICODE(JVALUE,IARG(1))
         ELSE IF ( IDTYPE .EQ. 2 ) THEN
           WRITE ( CWORK1 , '(F12.5)' ) XCODE(JVALUE,IARG(1))
+          DO IZ = 12,9,-1     ! Remove trailing zeroes, except the one after the point
+            IF ( CWORK1(IZ:IZ) .EQ. '0' ) THEN
+              CWORK1(IZ:IZ) = ' '
+            ELSE
+              EXIT
+            END IF
+          END DO
         ELSE IF ( IDTYPE .EQ. 3 ) THEN
           CWORK1 = CLOGIC(ICODE(JVALUE,IARG(1)))
         ENDIF
