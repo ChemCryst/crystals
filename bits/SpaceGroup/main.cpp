@@ -132,7 +132,7 @@ void runTest(RunParameters& pRunData)
     tStats->calProbs();
     gettimeofday(&time2, NULL);
     if (pRunData.iVerbose)
-	std::cout << *tStats << "\n";
+	tStats->output(std::cout, *tTable) << "\n";
     std::cout <<"\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
     std::cout << "\nRanking space groups...";
     gettimeofday(&time1, NULL);
