@@ -54,7 +54,53 @@ class CcChartDoc
             int current_r;
             int current_g;
             int current_b;
+};
 
+#define kSChartAttach		"ATTACH"
+#define kSChartShow		"SHOW"
+#define kSChartLine		"LINE"
+#define kSChartEllipseE		"ELLIE"
+#define kSChartEllipseF		"ELLIF"
+#define kSChartClear		"CLEAR"
+#define	kSChartPolyF		"POLYF"
+#define	kSChartPolyE		"POLYE"
+#define	kSChartFastPolyF	"FPOLYF"
+#define	kSChartFastPolyE	"FPOLYE"
+#define kSGraph			"GRAPH"
+#define	kSChartText		"TEXT"
+#define kSChartColour		"RGB"
+#define kSChartFlow		"FLOW"
+#define kSChartChoice		"CHOICE"
+#define kSChartLink		"LINK"
+#define kSChartAction		"ACTION"
+#define kSChartN		"N"
+#define kSChartS		"S"
+#define kSChartE		"E"
+#define kSChartW		"W"
+
+enum
+{
+ kTChartAttach = 300, 
+ kTChartShow,	
+ kTChartLine,	
+ kTChartEllipseE,
+ kTChartEllipseF,
+ kTChartClear,	
+ kTChartPolyF,	
+ kTChartPolyE,	
+ kTChartFastPolyF,
+ kTChartFastPolyE,
+ kTGraph,	
+ kTChartText,	
+ kTChartColour,	
+ kTChartFlow,	
+ kTChartChoice,	
+ kTChartLink,	
+ kTChartAction,	
+ kTChartN,	
+ kTChartS,	
+ kTChartE,	
+ kTChartW	
 };
 
 #endif
