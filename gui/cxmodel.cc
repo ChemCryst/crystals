@@ -805,7 +805,11 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
                 labelstring += " annulus occ:" + CcString ((float)((CcModelDonut*)object)->occ/1000.0);
               }
               CreatePopup(labelstring, point);
-              ChooseCursor(CURSORCOPY);
+              if ( objectType != CC_BOND )
+                 ChooseCursor(CURSORCOPY);
+              else
+                 ChooseCursor(CURSORNORMAL);
+
               (CcController::theController)->SetProgressText(&labelstring);
               if ( m_Hover ) NeedRedraw();
             }
@@ -1320,7 +1324,8 @@ int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject
    glSelectBuffer ( 400, selectbuf ); //Allocate space for 100 hit objects
 
 // Correct for strange "3 pixels out in the vertical" effect.
-   yPos += 3;
+// This effect seems to have fixed itself. Commented out correction.
+//   yPos += 3;
 
 /*   if (atomsOnly) {
       LOGERR( CcString((int)this) + "IAC? " + CcString(xPos) + " " + CcString (yPos)+
@@ -1561,7 +1566,7 @@ void CxModel::SetIdealHeight(int nCharsHigh)
 #ifdef __CR_WIN__
 
     CClientDC cdc(this);
-      cdc.SetBkColor ( RGB ( 255,255,255 ) );
+//      cdc.SetBkColor ( RGB ( 255,255,255 ) );
     CFont* oldFont = cdc.SelectObject(CcController::mp_font);
     TEXTMETRIC textMetric;                                                                                       
     cdc.GetTextMetrics(&textMetric);
@@ -1581,7 +1586,7 @@ void CxModel::SetIdealWidth(int nCharsWide)
 #ifdef __CR_WIN__
 
     CClientDC cdc(this);
-    cdc.SetBkColor ( RGB ( 255,255,255 ) );
+//    cdc.SetBkColor ( RGB ( 255,255,255 ) );
     CFont* oldFont = cdc.SelectObject(CcController::mp_font);
     TEXTMETRIC textMetric;
     cdc.GetTextMetrics(&textMetric);
@@ -1802,22 +1807,28 @@ void CxModel::CreatePopup(CcString atomname, CcPoint point)
   DeletePopup();
 
 #ifdef __CR_WIN__
+  CcString n = CcString(" ") + atomname + CcString(" ");
 
   m_TextPopup = new CStatic();
-  m_TextPopup->Create(atomname.ToCString(), SS_SIMPLE|SS_CENTER|WS_BORDER, CRect(CPoint(-size.cx-10,-size.cy-10),CSize(10,10), this);
+  m_TextPopup->Create(n.ToCString(), SS_SIMPLE|SS_CENTER|WS_BORDER, CRect(0,0,0,0), this);
   m_TextPopup->SetFont(CcController::mp_font);
 
   CClientDC dc(m_TextPopup);
-  SIZE size = dc.GetOutputTextExtent(atomname.ToCString());
+  CFont* oldFont = dc.SelectObject(CcController::mp_font);
+
+  SIZE size = dc.GetOutputTextExtent(n.ToCString(),n.Len());
+  size.cx += 3;
+  size.cy += 2;
 
   m_TextPopup->ModifyStyleEx(NULL,WS_EX_TOPMOST,0);
-  m_TextPopup->ShowWindow(SW_SHOW);
   int x = CRMIN(GetWidth() - size.cx, point.x + 20) ;
   x = CRMAX(0,x);
   int y = CRMIN(GetHeight() - size.cy,point.y);
   y = CRMAX(0,y);
   m_TextPopup->MoveWindow(x,y,size.cx,size.cy, FALSE);
-  m_TextPopup->InvalidateRect(NULL,false);
+  m_TextPopup->ShowWindow(SW_SHOW);
+  RedrawWindow();
+  dc.SelectObject(oldFont);
 #endif
 #ifdef __BOTHWX__
   int cx,cy;
