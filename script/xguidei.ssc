@@ -10,7 +10,7 @@
 %%  1 Run KCCDIN
 %%  2 Run RC93
 %%  3 Run DIPIN
-%%  4 Inport KCCDIN output.
+%%  4 Import KCCDIN output.
 %%  5 Import RC93 output
 %%  6 Import DIPIN output.
 %%  7 Import SHELX data.
@@ -87,6 +87,9 @@
 % IF FILEEXISTS ( 'kccd.ins' ) THEN
 {I   KCCDIN output file detected.
 %    EVALUATE KTDEFA = 4
+% ELSE IF FILEEXISTS ( 'import.cif' ) THEN
+{I   KCCDIN input file detected.
+%    EVALUATE KTDEFA = 1
 % ELSE IF EXISTS ( 1 ) .LT. 1 THEN
 {I   Cell dimension data is still required.
 %    EVALUATE KTDEFA = 7
@@ -109,6 +112,9 @@
 %END SCRIPT
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.9  2004/09/28 09:35:32  rich
+%%  Removed redundant output.
+%%
 %%  Revision 1.8  2002/05/15 08:02:56  richard
 %%  Little update using new HIDDENSTRING GUI control - the stem of the .ins
 %%  filename is remembered and used for the default .hkl filename if the file
