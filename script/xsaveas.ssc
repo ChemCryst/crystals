@@ -26,8 +26,9 @@
 %         FINISH
 %      END IF
 
-%      TRANSFER "#STORE CSYS NEWD '" // CVALUE // "'" TO CRYSTALS
-%      COPY '#PURGE DSC'
+%%      TRANSFER "#STORE CSYS NEWD '" // CVALUE // "'" TO CRYSTALS
+%      TRANSFER "#PURGE " // CTITLE TO CRYSTALS
+%%      COPY '#PURGE DSC'
 %      COPY 'END'
 ^^WI RESTART
 %      TRANSFER '^^WI ' // CPATH TO DISPLAY
