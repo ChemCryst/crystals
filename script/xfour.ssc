@@ -27,7 +27,7 @@
 % VARIABLE LOGICAL SCRIPTEXT
 % VARIABLE LOGICAL LCONTOUR LSECTION COLLECTNEW
 % VARIABLE LOGICAL PEAKCHANGE REDRAW XFCALLED 
-% VARIABLE INTEGER DOSCALE DOCALC DOMAP NPEAKS IMAP N5O N10 N5N
+% VARIABLE INTEGER DOSCALE DOCALC DOMAP NPEAKS IMAP IWEI N5O N10 N5N
 % VARIABLE INTEGER DOPEAKS DOCOLLECT MTYPE DOALL DOXPR
 %%
 %% The variables needed by XQUESTIO
@@ -104,13 +104,16 @@
 ^^WI   }
 ^^WI   @ 4,2 GRID GRIDAB NROWS=3 NCOLS=3 OUTLINE='Fourier map'
 ^^WI   {
-^^WI    @ 1,2 GRID GRIDABA NROWS=2 NCOLS=3
+^^WI    @ 1,2 GRID GRIDABA NROWS=2 NCOLS=7
 ^^WI    {
 ^^WI     @ 1,1 STATIC TEXT1 'Map type:'
 ^^WI     @ 1,3 DROPDOWN XFLIST INFORM=YES
 ^^WI           ADDTOLIST 'F-Obs' 'Difference' '2Fo-Fc'
 ^^WI                     'F-Calc' 'Optimal' 'Fo-Patterson'
 ^^WI                     'Fc-Patterson' 'NULL'
+^^WI     @ 1,5 STATIC TEXT1 'weights:'
+^^WI     @ 1,7 DROPDOWN XWLIST 
+^^WI           ADDTOLIST 'None' 'Sim' 'List-6' 'NULL'
 ^^WI    }
 ^^WI    @ 3,2 GRID GRIDABB NROWS=1 NCOLS=5
 ^^WI    {
@@ -210,6 +213,11 @@
 %       VERIFY 1 2 3 4 5 6 7
 %       GET SILENT FINAL NOSTORE ABBREVIATED ' '
 %       EVALUATE IMAP = VALUE
+%% map weight
+^^??    XWLIST SELECTED
+%       VERIFY 1 2 3
+%       GET SILENT FINAL NOSTORE ABBREVIATED ' '
+%       EVALUATE IWEI = VALUE
 %% min peak height
 ^^??    XFEDIT TEXT
 %       GET SILENT NOSTORE REAL ' '
@@ -347,6 +355,16 @@
                  "'" TO CRYSTALS
 %              END IF
 %           END BLOCK
+%       END IF
+%       QUEUE SEND
+%       CLEAR
+%       INSERT 'REFL WEIGHT = '
+%       IF IWEI .EQ. 1 THEN
+%           INSERT 'NO'
+%       ELSE IF IWEI .EQ. 2 THEN
+%           INSERT 'SIM'
+%       ELSE IF IWEI .EQ. 3 THEN
+%           INSERT 'LIST-6'
 %       END IF
 %       QUEUE SEND
 %       CLEAR
