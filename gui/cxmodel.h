@@ -64,7 +64,7 @@ class	CxModel : public CWnd
 		void SetRadiusScale(int scale);
 		void SetRadiusType(int radtype);
 		void Start();
-		void Clear();
+//            void Clear();
 		void Setup();
 		void PaintBuffer();
             void DrawAtom(CcModelAtom* anAtom, int style = 0);

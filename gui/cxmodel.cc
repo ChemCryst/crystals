@@ -34,14 +34,14 @@ CxModel *	CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 	theStdModel->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
 	theStdModel->SetFont(CxGrid::mp_font);
 
-	CClientDC	dc(theStdModel);
-	theStdModel->memDC.CreateCompatibleDC(&dc);
-	theStdModel->newMemDCBitmap = new CBitmap;
+//      CClientDC   dc(theStdModel);
+//      theStdModel->memDC.CreateCompatibleDC(&dc);
+//      theStdModel->newMemDCBitmap = new CBitmap;
 	CRect rect;
-	theStdModel->GetClientRect (&rect);
-	theStdModel->newMemDCBitmap->CreateCompatibleBitmap(&dc,rect.Width(),rect.Height());
-	theStdModel->oldMemDCBitmap = theStdModel->memDC.SelectObject(theStdModel->newMemDCBitmap);
-	theStdModel->memDC.PatBlt(0,0,rect.Width(),rect.Height(),WHITENESS);
+//      theStdModel->GetClientRect (&rect);
+//      theStdModel->newMemDCBitmap->CreateCompatibleBitmap(&dc,rect.Width(),rect.Height());
+//      theStdModel->oldMemDCBitmap = theStdModel->memDC.SelectObject(theStdModel->newMemDCBitmap);
+//      theStdModel->memDC.PatBlt(0,0,rect.Width(),rect.Height(),WHITENESS);
 
 	theStdModel->hDC = ::GetDC(theStdModel->GetSafeHwnd());
 	theStdModel->SetWindowPixelFormat(theStdModel->hDC);
@@ -84,7 +84,7 @@ CxModel::~CxModel()
 	HWND hWnd = GetSafeHwnd();
 	::ReleaseDC(hWnd,hDC);
 
-	delete newMemDCBitmap;	
+//      delete newMemDCBitmap; 
 	
 }
 
@@ -112,20 +112,20 @@ void	CxModel::SetGeometry( int top, int left, int bottom, int right )
 	else
 	{
 		MoveWindow(left,top,right-left,bottom-top,true);
-		if(memDC != NULL)
-		{
-			memDC.SelectObject(oldMemDCBitmap);
-			delete newMemDCBitmap;	
-
-			CClientDC	dc(this);
-			newMemDCBitmap = new CBitmap;
-			CRect rect;
-			newMemDCBitmap->CreateCompatibleBitmap(&dc, right-left, bottom-top);
-			oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
-			memDC.PatBlt(0, 0, right-left, bottom-top, WHITENESS);
-//                  mBackBufferReady = 0;
-			((CrModel*)mWidget)->ReDrawHighlights();
-		}
+//            if(memDC != NULL)
+//            {
+//                  memDC.SelectObject(oldMemDCBitmap);
+//                  delete newMemDCBitmap; 
+//
+//                  CClientDC   dc(this);
+//                  newMemDCBitmap = new CBitmap;
+//                  CRect rect;
+//                  newMemDCBitmap->CreateCompatibleBitmap(&dc, right-left, bottom-top);
+//                  oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
+//                  memDC.PatBlt(0, 0, right-left, bottom-top, WHITENESS);
+////                  mBackBufferReady = 0;
+//                  ((CrModel*)mWidget)->ReDrawHighlights();
+//            }
 
 //		Setup();
 //		PaintBuffer();
@@ -287,7 +287,7 @@ void CxModel::OnPaint()
 
     wglMakeCurrent(hDC, m_hGLContext);
 
-	CPaintDC dc(this); // device context for painting
+      CPaintDC dc(this); // device context for painting
 
 	Setup();
 	PaintBuffer();
@@ -296,9 +296,9 @@ void CxModel::OnPaint()
 //	if(m_LitAtom != nil)
 //		HighlightAtom(m_LitAtom,FALSE);
 
-	CRect rect;
-	GetClientRect (&rect);
-	dc.BitBlt(0,0,rect.Width(),rect.Height(),&memDC,0,0,SRCAND);
+//      CRect rect;
+//      GetClientRect (&rect);
+//      dc.BitBlt(0,0,rect.Width(),rect.Height(),&memDC,0,0,SRCAND);
 
 
     wglMakeCurrent(NULL,NULL);
@@ -326,12 +326,12 @@ void CxModel::SetIdealWidth(int nCharsWide)
 }
 
 
-void CxModel::Clear()
-{
-	CRect rect;
-	GetClientRect (&rect);
-	memDC.PatBlt(0, 0, rect.Width(), rect.Height(), WHITENESS);
-}
+//void CxModel::Clear()
+//{
+//      CRect rect;
+//      GetClientRect (&rect);
+//      memDC.PatBlt(0, 0, rect.Width(), rect.Height(), WHITENESS);
+//}
 
 
 void CxModel::OnLButtonUp( UINT nFlags, CPoint point )
