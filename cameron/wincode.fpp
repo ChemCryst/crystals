@@ -4,7 +4,7 @@ C
 C ---- this call-back function routine cleans up when the
 C      Graphics Window is closed using the system menu
 
-      include 'common1.inc'
+\CAMWIN
       call delete_tmp_files
 C      call EraseWindow(DialogHandle)
       f_close=0
@@ -13,13 +13,12 @@ C
 C----------------------------------------------------------------------C
 C
       subroutine CreateGraphicsWindow(ix,iy)
-      include 'common1.inc'
+\CAMWIN
       include <windows.ins>
       external f_close
       integer ix,iy,f_close
       GraphicsHandle=-1
       i=winio@('%ca[CAMERON Graphics Window]%ww[no_border]&')
-      i=winio@('%mi[camicon]&')
       i=winio@('%sp&',0,0)
       i=winio@('%cc&',f_close)
       i=winio@('%bg[grey]&')
@@ -97,7 +96,7 @@ C ---- updates the cursor for the graphics region
 C     icursor = 1 -> normal arrow cursor
 C     icursor = 2 -> cross-hair cursor
 C     icursor = 3 -> size-cursor
-      include 'common1.inc'
+\CAMWIN
       Cursor$Number=icursor
       call window_update@(Cursor$Number)
       end
@@ -107,7 +106,7 @@ C
       subroutine zmore1(text,iarg)
 C ---- updates text message in status bar - iarg is not used but kept
 C      for compatibility with CAMERON function ZMORE
-      include 'common1.inc'
+\CAMWIN
       character*(*) text
       Status$Text=text
       call window_update@(Status$Text)
