@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2002/07/29 13:01:41  richard
+C #THLIM calls completeness code, which inserts values into L30.
+C
 C Revision 1.6  2001/10/08 12:25:58  ckp2
 C
 C All program sub-units now RETURN to the main CRYSTL() function inbetween commands.
@@ -79,11 +82,10 @@ C
 
 CODE FOR XTHX
       SUBROUTINE XTHX
-\STORE
-\ISTORE
-\QSTORE
-C--READ THE REMAINING CONTROL CARDS
-      I=KRDDPV(ISTORE(NFL),1)
-      IF (I.GE.0) CALL XTHLIM(RICA,RICB,RICC,RICD,RICE)
+
+      CALL XCSAE
+      I = KRDDPV ( IPLOT , 1 )
+
+      IF (I.GE.0) CALL XTHLIM(RICA,RICB,RICC,RICD,RICE,IPLOT)
       RETURN
       END

@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.35  2002/11/07 17:35:12  rich
+C THLIM upgraded so that it works. (With Friedel unmerged data and data
+C that hasn't been SYSTEMATIC'd). It now also writes things to the listing
+C file (missing reflection indices) and draws graphs.
+C
 C Revision 1.34  2002/11/06 12:58:22  rich
 C If the theta_full value in L30 is negative, then the program will use its absolute
 C value as theta_full and compute the completeness, rather than trying to find
@@ -1271,7 +1276,7 @@ C will not be optimised.
          STORE(L30CF+10)=MAX(STORE(L30CF+10),-THMAX)
          THBEST = -STORE(L30CF+10)
          CALL XCOMPL(ITRSZ,IMINH,IMINK,IMINL,IMAXH,IMAXK,IMAXL,
-     1            THBEST, THBCMP, THDUM,THDUM2,IPLOT)
+     1            THBEST, THBCMP, THDUM,THDUM2,-1)
          STORE(L30CF+11)=THBCMP
          CALL XCOMPL(ITRSZ,IMINH,IMINK,IMINL,IMAXH,IMAXK,IMAXL,
      1            THMAX, THMCMP, THDUM,THDUM2,IPLOT)
@@ -1382,13 +1387,15 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
                     END DO
                   END IF
                   IF ( IFOUND .EQ. 0 ) THEN
-                    IF ( IMISSI .EQ. 0 ) THEN
+                    IF ((IPLOT.GE.0 ).AND.( IMISSI .EQ. 0)) THEN
                       WRITE (NCWU,'(A,F5.2,A/A)')
      1 ' The following reflections ( < ',THMAX, ' theta ) are missing:',
      2 '   H    K    L   Theta '
                     END IF
                     IMISSI = IMISSI + 1
-                    WRITE (NCWU,'(3I5,F8.3)') IH,IK,IL,XTHETA()
+                    IF ( IPLOT.GE.0 ) THEN
+                      WRITE (NCWU,'(3I5,F8.3)') IH,IK,IL,XTHETA()
+                    END IF
                   END IF
                 END IF
               END IF
@@ -1397,8 +1404,10 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
         END DO
       END DO
 
-      WRITE(NCWU,'(/A/2(A,I9)/)') ' Completeness of hkl data.',
+      IF ( IPLOT .GE. 0 ) THEN
+        WRITE(NCWU,'(/A/2(A,I9)/)') ' Completeness of hkl data.',
      1 ' Reflections expected: ', NALLWD, ' Reflections found: ', NFOUND
+      END IF
 
       THMCMP = FLOAT( NFOUND ) / FLOAT ( NALLWD )
 
@@ -1411,7 +1420,9 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
       THBCMP = 0.0
       CMPMIN  = 1.0
 
-      WRITE(NCWU,'(A)') ' Theta  Completeness% Expected  Found '
+      IF ( IPLOT .GE. 0 ) THEN
+        WRITE(NCWU,'(A)') ' Theta  Completeness% Expected  Found '
+      ENDIF
       DO I = 1,100
         IF ( ALLBIN(I) .EQ. 0 ) THEN
           COMP = 0.0
@@ -1420,8 +1431,10 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
           CMPMIN = MIN (CMPMIN,COMP)
         END IF
 
-        WRITE(NCWU,'(F6.2,F11.2,I11,I9)') THMAX*((I+300.0)/400.0),
+        IF ( IPLOT .GE. 0 ) THEN
+          WRITE(NCWU,'(F6.2,F11.2,I11,I9)') THMAX*((I+300.0)/400.0),
      1   COMP*100., NINT(ALLBIN(I)), NINT(FNDBIN(I))
+        END IF
 
         IF ( (COMP .GE. THBCMP) .OR. (COMP .GT. 0.995) ) THEN
           THBEST = THMAX*((I+300.0)/400.0)                       
@@ -1429,9 +1442,10 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
         END IF
       END DO
 
+      IF ( IPLOT .GE. 0 ) THEN
         WRITE(NCWU,'(/F6.2,F11.2,A)') THBEST, THBCMP,
      1   '< best theta_full'
-
+      END IF
 
       IF ( IPLOT .EQ. 1 ) THEN
         CMPMIN = 100.0 * MIN(0.99,CMPMIN)
@@ -1439,8 +1453,9 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
      1  '^^PL PLOTDATA _COMPL SCATTER ATTACH _VCOMPL',
      1  '^^PL XAXIS ZOOM ', .75*THMAX, THMAX,
      1  ' TITLE Theta NSERIES=1 LENGTH=100',
-     1  '^^PL YAXIS ZOOM ', CMPMIN, ' 100 TITLE Completeness'
-        CALL XPRVDU(NCVDU, 3,0)
+     1  '^^PL YAXIS ZOOM ', CMPMIN, ' 100.1 TITLE Completeness',
+     1  '^^PL SERIES 1 TYPE LINE'
+        CALL XPRVDU(NCVDU, 4,0)
 
         DO I = 1,100
 
@@ -1508,7 +1523,7 @@ C--SETUP A GRAPH HERE
         WRITE(CMON,'(A,/,A,/,A)')
      1  '^^PL PLOTDATA _FOFC SCATTER ATTACH _VFOFC',
      1  '^^PL XAXIS TITLE Fc NSERIES=1 LENGTH=2000',
-     1  '^^PL YAXIS TITLE Fo'
+     1  '^^PL YAXIS TITLE Fo SERIES 1 TYPE SCATTER'
         CALL XPRVDU(NCVDU, 3,0)
       END IF
 
@@ -1561,6 +1576,7 @@ C
 1100  CONTINUE
         ISTAT = KFNR ( 0 )
         IF ( ISTAT .LT. 0 ) GO TO 1200
+
         N6ACC = N6ACC + 1
         FO = STORE(M6+3)
         FC = SCALE * STORE(M6+5)
@@ -1574,9 +1590,7 @@ C
      1   '^^PL LABEL ''', HKLLAB(1:IHKLLEN), ''' DATA ', FC ,FO
           CALL XPRVDU(NCVDU, 1,0)
         ENDIF
-C - X AND Y VARIABLES FOR LEAST-SQUARES BELOW
-c        X(N6ACC) = (MAX(0.0, FO) + 2*FC)/3
-c        Y(N6ACC) = ABS(FO - FC) - STORE(M6+12)
+
 
         WT = STORE(M6+4)
         TOP = TOP + ABS (ABS(FO) - FC)
@@ -1593,24 +1607,44 @@ C - FSQ REFINENENT
         WTOP = WTOP + WDEL*WDEL
         WBOT = WBOT + WFO*WFO
       GO TO 1100
+1200  CONTINUE
+
+      IF ( LEVEL .EQ. 4 ) THEN      !Also output the omitted refls.
+
+        WRITE(CMON,'(A)')
+     1  '^^PL ADDSERIES Omitted TYPE SCATTER'
+        CALL XPRVDU(NCVDU,1,0)
+
+        CALL XFAL06 ( 0 )
+        DO WHILE ( KLDRNR ( 0 ) .GE. 0 )
+          IF (KALLOW(IN).LT.0) THEN
+            FO = STORE(M6+3)
+            FC = SCALE * STORE(M6+5)
+            FCMAX = MAX( FCMAX, FC )
+
+            WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
+     1      NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
+            CALL XCRAS(HKLLAB, IHKLLEN)
+            WRITE(CMON,'(3A,2F10.2)')
+     1     '^^PL LABEL ''', HKLLAB(1:IHKLLEN), ''' DATA ', FC ,FO
+c            WRITE(CMON,'(A,2F10.2)')
+c     1     '^^PL DATA ', FC ,FO
+            CALL XPRVDU(NCVDU, 1,0)
+          ENDIF
+        END DO
+
+c Also add A SERIES FOR STRAIGHT LINE (y=x) for extinction spotting.
+        WRITE(CMON,'(A/A,2F10.2)') '^^PL ADDSERIES ''Fo=Fc'' TYPE LINE',
+     1  '^^PL DATA 0 0 DATA ', FCMAX, FCMAX
+        CALL XPRVDU(NCVDU,2,0)
+
+      END IF
+
+
 C
 C
 C -- BEGIN OUTPUT
 C
-1200  CONTINUE
-
-c -- ADD A SERIES FOR STRAIGHT LINE
-      IF ( LEVEL .EQ. 4) THEN
-        WRITE(CMON,'(A)')
-     1  '^^PL ADDSERIES L TYPE LINE'
-        CALL XPRVDU(NCVDU,1,0)
-        WRITE(CMON, '(A)')
-     1  '^^PL DATA 0 0'
-        CALL XPRVDU(NCVDU, 1, 0)
-        WRITE(CMON, '(A, 2F10.2)')
-     1  '^^PL DATA ', FCMAX, FCMAX
-        CALL XPRVDU(NCVDU, 1, 0)
-      ENDIF
 
 
 C----- COMPUTE AND STORE R-VALUES
