@@ -36,6 +36,7 @@ class	CxMultiEdit : public CRichEditCtrl
 {
 	public:
 		void BackALine();
+            void Spew();
 		void SetFixedWidth(Boolean fixed);
 		void SetItalic(Boolean italic);
 		void SetUnderline(Boolean underline);

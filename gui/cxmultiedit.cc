@@ -333,3 +333,18 @@ void CxMultiEdit::BackALine()
 	SetSel(  LineIndex(GetLineCount()-2), GetTextLength());
 	Clear();
 }
+
+void CxMultiEdit::Spew()
+{
+//Send all text to crystals a line at a time.
+    char theLine[80];
+    int line = 0;
+    while ( LineIndex(line) >= 0 )
+    {
+       int cp = GetLine(line, theLine, 79);
+       theLine[cp]='\0';
+       ((CrMultiEdit*)mWidget)->SendCommand( CcString( theLine ));
+       line++;
+    }
+}
+

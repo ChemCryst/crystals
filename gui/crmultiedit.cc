@@ -196,6 +196,13 @@ Boolean	CrMultiEdit::ParseInput( CcTokenList * tokenList )
 				mNoEcho = true;
 				break;
 			}
+                  case kTSpew:
+                  {
+                        tokenList->GetToken(); //Remove kTSpew tokens.
+                        // Dump whole text window to Crystals input.
+                        ((CxMultiEdit*)mWidgetPtr)->Spew();
+                        break;
+                  }
 			default:
 			{
 				hasTokenForMe = false;
