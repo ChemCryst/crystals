@@ -1,4 +1,10 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.15  2003/04/04 09:05:51  rich
+c Changes for #MATCH: (1) directive EQUALATOMS makes it treat all atoms
+c as equal so that you can match structures onto Q peaks, or wrongly assigned
+c peaks. (2) directive RENAME 100, makes the ONTO atoms take the type and
+c serial+100 of the MAP atoms.
+c
 c Revision 1.14  2003/03/26 10:36:09  rich
 c Prototype #MATCH code. Syntax: #MATCH/MAP atoms/ONTO atoms/END
 c It does the match, refines it, prints stats and writes a cameron.ini
@@ -2497,7 +2503,9 @@ C Write cameron.ini for orthogonal coords:
 
 C Write regular.oby - may be used in cameron to colour the two
 C overlapping molecules separately.
+      CALL XRDOPN ( 5 , JFRN(1,1) , 'regular.dat', 11)
       CALL XRDOPN ( 5 , JFRN(1,2) , 'regular.oby', 11)
+      WRITE(NCFPU1,'(''Group1 '',I6)') NOLD
       WRITE(NCFPU2,'(''DEFGROUP REG1 ATOMS'')')
       DO I=1,NOLD
          INDATM=LATMD+MDATMD*(I-1)
@@ -2505,19 +2513,28 @@ C overlapping molecules separately.
      1                     NINT(STORE(LRENM+(I-1)*MDRENM+1))
          CALL XCRAS(CAMATM,LCAMA)
          WRITE(NCFPU2,'(A)')CAMATM
+         CALL CATSTR (STORE(LRENM+(I-1)*MDRENM  ),
+     1                STORE(LRENM+(I-1)*MDRENM+1), 1,1, 0,0,0,
+     2                CAMATM,LCAMA)
+         WRITE(NCFPU1,'(A)')CAMATM(1:LCAMA)
       END DO
       WRITE(NCFPU2,'(''DEFGROUP REG2 ATOMS'')')
+      WRITE(NCFPU1,'(''Group2 '',I6)') NOLD
       DO I=1,NOLD
          INDATM=LATMD+MDATMD*(I-1)
          WRITE(CAMATM,'(A,I5)')ISTORE(LRENM+(I-1)*MDRENM+2),
      1                      NINT(STORE(LRENM+(I-1)*MDRENM+3))
          CALL XCRAS(CAMATM,LCAMA)
          WRITE(NCFPU2,'(A)')CAMATM
+         CALL CATSTR (STORE(LRENM+(I-1)*MDRENM+2),
+     1                STORE(LRENM+(I-1)*MDRENM+3), 1,1, 0,0,0,
+     2                CAMATM,LCAMA)
+         WRITE(NCFPU1,'(A)')CAMATM(1:LCAMA)
       END DO
       WRITE(NCFPU2,'(''COLO GROUP REG1 BLUE COLO GROUP REG2 RED'')')
       WRITE(NCFPU2,'(''VIEW''//)')
       CALL XRDOPN ( 7 , JFRN(1,2) , 'regular.oby', 11)
-
+      CALL XRDOPN ( 7 , JFRN(1,1) , 'regular.dat', 11)
 
 C Write header for superimposed orthogonal atom lists:
       CALL XRDOPN ( 5 , JFRN(1,1) , 'regular.l5i', 11)
@@ -3225,32 +3242,32 @@ C     Restore NFL and LFL
 
       IF ( ZORIG .EQ. 0 ) THEN
 
-      WRITE ( CMON,'(A)') 'Improving the matrix.'
-      CALL XPRVDU(NCVDU, 1,0)
+        WRITE ( CMON,'(A)') 'Improving the matrix.'
+        CALL XPRVDU(NCVDU, 1,0)
 c      WRITE(CMON,'(A/3(3F10.3/))')'L1O1 XRG3:',(STORE(L1O1+I),I=0,8)
 c      CALL XPRVDU(NCVDU,3,0)
 
 
 
 C Use the better match to get a better matrix.
-      MDATMD = MD5
-      MDOLD = 4
-      MDNEW = 4
+        MDATMD = MD5
+        MDOLD = 4
+        MDNEW = 4
 
-      IMETHD=1       ! DEFAULT METHOD 1 (ROTATION COMPONENT OF ROTATION-DILATION MATRIX ONLY)
-      CALL XMOVE(STORE(L1O2),RGOM(1,1),9) ! SET DEFAULT COORDINATES SYSTEM TO (1. 1. 1. 90. 90. 90.)
-      CALL XZEROF(ORIGIN(1),3)   ! ZERO ORIGIN
-      CALL XUNTM3(RGMAT(1,1))    ! SET TO ZERO ROTATION
-      MDRENM = 6
-      IFLCMP=2                    ! SET REPLACE/COMPARE FLAG TO COMPARE
+        IMETHD=1       ! DEFAULT METHOD 1 (ROTATION COMPONENT OF ROTATION-DILATION MATRIX ONLY)
+        CALL XMOVE(STORE(L1O2),RGOM(1,1),9) ! SET DEFAULT COORDINATES SYSTEM TO (1. 1. 1. 90. 90. 90.)
+        CALL XZEROF(ORIGIN(1),3)   ! ZERO ORIGIN
+        CALL XUNTM3(RGMAT(1,1))    ! SET TO ZERO ROTATION
+        MDRENM = 6
+        IFLCMP=2                    ! SET REPLACE/COMPARE FLAG TO COMPARE
 
-      NATMD= NMAP
-      NOLD = NMAP
-      NNEW = NMAP
-      MNEW = LNEW
-      MRENM = LRENM
-      MATMD = LATMD
-      DO I = 0, NMAP-1
+        NATMD= NMAP
+        NOLD = NMAP
+        NNEW = NMAP
+        MNEW = LNEW
+        MRENM = LRENM
+        MATMD = LATMD
+        DO I = 0, NMAP-1
           I5 = L5 + ( (ISTORE(LMAP+I*MDATVC)) * MD5 )
           CALL XMOVE (STORE(I5+4),STORE(MNEW),3)
           CALL XMOVE (STORE(I5),STORE(MATMD),MDATMD)
@@ -3264,12 +3281,12 @@ c          CALL XPRVDU(NCVDU,1,0)
           MNEW = MNEW + 4
           MRENM = MRENM + 6
           MATMD = MATMD + MDATMD
-      END DO
+        END DO
 
 
-      MOLD = LOLD
-      MRENM = LRENM
-      DO I = 0, NONTO-1
+        MOLD = LOLD
+        MRENM = LRENM
+        DO I = 0, NONTO-1
           I5 = L5 + ( (ISTORE(LONTO+I*MDATVC)) * MD5 )
           CALL XMOVE (STORE(I5+4),STORE(MOLD),3)
           STORE(MOLD+3) = 1.0
@@ -3277,15 +3294,15 @@ c          CALL XPRVDU(NCVDU,1,0)
           ISTORE(MRENM+4) = I5
           MOLD = MOLD + 4
           MRENM = MRENM + 6
-      END DO
+        END DO
 
 
-      IMAT = -1
-      CALL XRGCLC(IMAT,0)
+        IMAT = -1
+        CALL XRGCLC(IMAT,0)
 
 C     Restore NFL and LFL
-      NFL = IRNFL
-      LFL = IRLFL
+        NFL = IRNFL
+        LFL = IRLFL
 
 
         WRITE ( CMON,'(A)') 'Do final mapping.'
@@ -3293,12 +3310,12 @@ C     Restore NFL and LFL
 
 C Use the better matrix to do a final mapping:
         NATMD= NMAP
-      NOLD = NMAP
-      NNEW = NMAP
-      MNEW = LNEW
-      MATMD = LATMD
-      MRENM = LRENM
-      DO I = 0, NMAP-1
+        NOLD = NMAP
+        NNEW = NMAP
+        MNEW = LNEW
+        MATMD = LATMD
+        MRENM = LRENM
+        DO I = 0, NMAP-1
           I5 = L5 + ( (ISTORE(LMAP+I*MDATVC)) * MD5 )
           CALL XMOVE (STORE(I5+4),STORE(MNEW),3)
           CALL XMOVE (STORE(I5),STORE(MATMD),MDATMD)
@@ -3308,10 +3325,10 @@ C Use the better matrix to do a final mapping:
           MNEW = MNEW + 4
           MRENM = MRENM + 6
           MATMD = MATMD + MDATMD
-      END DO
-      MOLD = LOLD
-      MRENM = LRENM
-      DO I = 0, NONTO-1
+        END DO
+        MOLD = LOLD
+        MRENM = LRENM
+        DO I = 0, NONTO-1
           I5 = L5 + ( (ISTORE(LONTO+I*MDATVC)) * MD5 )
           CALL XMOVE (STORE(I5+4),STORE(MOLD),3)
           STORE(MOLD+3) = 1.0
@@ -3319,9 +3336,9 @@ C Use the better matrix to do a final mapping:
           ISTORE(MRENM+4) = I5
           MOLD = MOLD + 4
           MRENM = MRENM + 6
-      END DO
-      IMAT = 2
-      CALL XRGCLC(IMAT,1)
+        END DO
+        IMAT = 2
+        CALL XRGCLC(IMAT,1)
 
       END IF
 
