@@ -125,10 +125,10 @@ void CxTextOut::Init()
         CcString temp;
         temp = (CcController::theController)->GetKey( "FontHeight" );
         if ( temp.Len() )
-          lf.lfHeight = max( 2, atoi( temp.ToCString() ) );
+          lf.lfHeight = atoi( temp.ToCString() ) ;
         temp = (CcController::theController)->GetKey( "FontWidth" );
         if ( temp.Len() )
-          lf.lfWidth = max( 2, atoi( temp.ToCString() ) );
+          lf.lfWidth = atoi( temp.ToCString() ) ;
         temp = (CcController::theController)->GetKey( "FontFace" );
         for (int i=0;i<32;i++)
         {
