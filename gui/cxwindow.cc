@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.25  2001/11/14 10:30:41  ckp2
+//   Various changes to the painting of the background of Windows as some of the
+//   dialogs suddenly went white under XP.
+//
 //   Revision 1.24  2001/07/16 07:38:38  ckp2
 //   Some system metrics missing from wx implementation on Linux, work around these.
 //   Also OnSize parameters are window size, not client size like MFC, so use a call to
@@ -44,6 +48,7 @@
 #include    "ccmenuitem.h"
 #include    "crtoolbar.h"
 #include    "cccontroller.h"
+#include    "crtextout.h"
 
 #ifdef __LINUX__
 #include "wincrys.xpm"
@@ -580,6 +585,7 @@ void CxWindow::AdjustSize(CcRect * size)
 void CxWindow::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
       int key = -1;
+      CrGUIElement * theElement;
       switch (nChar) {
            case VK_LEFT:
                   key = CRLEFT;
@@ -611,6 +617,17 @@ void CxWindow::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
            case VK_SHIFT:
                   key = CRSHIFT;
                   break;
+           case VK_PRIOR:
+                  theElement = (CcController::theController)->GetTextOutputPlace();
+                  if (theElement)
+                    ((CrTextOut*)theElement)->ScrollPage(true);
+                  break;
+           case VK_NEXT:
+                  theElement = (CcController::theController)->GetTextOutputPlace();
+                  if (theElement)
+                    ((CrTextOut*)theElement)->ScrollPage(false);
+                  break;
+
            default:
                   //Do nothing
                   break;
@@ -763,3 +780,21 @@ BOOL CxWindow::OnEraseBkgnd(CDC* pDC)
 {
   return TRUE;
 }
+
+
+BOOL CxWindow::PreTranslateMessage(MSG* pMsg)
+{
+ // TODO: Add your specialized code here and/or call the base class
+  if (pMsg->message == WM_MOUSEWHEEL)
+  {
+    CrGUIElement* theElement = (CcController::theController)->GetTextOutputPlace();
+    if (theElement)
+      ((CWnd*)theElement->ptr_to_cxObject)->SendMessage(WM_MOUSEWHEEL, pMsg->wParam, pMsg->lParam);
+    return TRUE;
+  }
+  return CWnd::PreTranslateMessage(pMsg);
+  // call the base class here
+}
+
+
+

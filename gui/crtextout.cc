@@ -151,3 +151,8 @@ void CrTextOut::ProcessLink( CcString aString )
 {
       SendCommand("$ " + aString,TRUE);
 }
+
+void CrTextOut::ScrollPage(bool up)
+{
+    ((CxTextOut*)ptr_to_cxObject)->ScrollPage(up);
+}

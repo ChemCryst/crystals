@@ -94,6 +94,7 @@ class CxTextOut : public BASETEXTOUT
         void  SetText( CcString cText );
         void  Empty();                      // Set the Head
         void  ChooseFont();
+    void ScrollPage(bool up);
 
 #ifdef __BOTHWX__
 #define COLORREF wxColour
@@ -148,6 +149,7 @@ class CxTextOut : public BASETEXTOUT
     int             m_nLinesDone;           // Actual number of lines we drew last-time
     void UpdateHScroll();
     void UpdateVScroll();
+    int             m_zDelta;
 
 #ifdef __CR_WIN__
 #define PlatformDC CDC
@@ -167,9 +169,11 @@ class CxTextOut : public BASETEXTOUT
     afx_msg void OnSize(UINT nType, int cx, int cy);
     afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
     afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
+    afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
     afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
     afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
     afx_msg void OnMouseMove( UINT nFlags, CPoint wpoint );
+    afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
     //}}AFX_MSG
     afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
     DECLARE_MESSAGE_MAP()

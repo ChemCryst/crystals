@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.16  2001/07/14 18:43:53  ckp2
+//   Bugfix: User could not enter - symbol into numerical input edit boxes. Oops.
+//
 //   Revision 1.15  2001/06/18 12:48:25  richard
 //   Exclude windows beep function from linux version, when editbox reaches
 //   its character limit.
@@ -27,6 +30,7 @@
 #include    "cxgrid.h"
 #include    "cxwindow.h"
 #include    "creditbox.h"
+#include    "crtextout.h"
 #ifdef __BOTHWX__
 #include <ctype.h> //for proto of iscntrl()
 #include <wx/utils.h> //for wxBell!
@@ -396,6 +400,7 @@ void CxEditBox::ClearBox()
 #ifdef __CR_WIN__
 void CxEditBox::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
+            CrGUIElement * theElement;
             switch (nChar)
             {
                   case VK_UP:
@@ -404,6 +409,16 @@ void CxEditBox::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
                   case VK_DOWN:
                         ((CrEditBox*)ptr_to_crObject)->SysKey( CRDOWN );
                         break;
+                  case VK_PRIOR:
+                       theElement = (CcController::theController)->GetTextOutputPlace();
+                       if (theElement)
+                          ((CrTextOut*)theElement)->ScrollPage(true);
+                       break;
+                  case VK_NEXT:
+                       theElement = (CcController::theController)->GetTextOutputPlace();
+                       if (theElement)
+                          ((CrTextOut*)theElement)->ScrollPage(false);
+                       break;
                   default:
                         CEdit::OnKeyDown( nChar, nRepCnt, nFlags );
                         break;

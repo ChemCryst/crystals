@@ -32,6 +32,7 @@ class CxTextOut;
         void    SetGeometry( const CcRect * rect );
         CcRect  GetGeometry ();
         CcRect CalcLayout(bool recalculate=false);
+        void   ScrollPage(bool up);
 
                 void ProcessLink( CcString aString );
         // attributes

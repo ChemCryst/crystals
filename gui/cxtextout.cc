@@ -73,6 +73,7 @@ CxTextOut::CxTextOut( CrTextOut * container )
     m_nMaxLines = 1900;     // Maximum of 500 entries ( default )
     m_nMaxWidth = 0;        // Greatest width done
     m_nFontHeight = 10;     // No Font Height
+    m_zDelta = 0;
 
     // Temporary...
 
@@ -269,6 +270,8 @@ BEGIN_MESSAGE_MAP(CxTextOut, CWnd)
     ON_WM_SETCURSOR()
     ON_WM_LBUTTONUP()
     ON_WM_MOUSEMOVE()
+    ON_WM_KEYDOWN()
+    ON_WM_MOUSEWHEEL()
 END_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
@@ -580,7 +583,7 @@ void CxTextOut::OnVScroll( UINT nSBCode,
                             UINT nPos,
                             CScrollBar* pScrollBar )
 {
-        int nUBound = max(GetLineCount() - 1, GetMaxViewableLines() - 1);
+    int nUBound = max(GetLineCount() - 1, GetMaxViewableLines() - 1);
     switch( nSBCode )
     {
     case SB_TOP:
@@ -1326,3 +1329,69 @@ void CxTextOut::ChooseFont()
 #endif
 
 }
+
+BOOL CxTextOut::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
+{
+// Accumulate delta's until 120 is reached in either direction.
+// Allows for finer grained mousewheels in "The Future".
+
+  m_zDelta += zDelta;
+
+  if (zDelta <= -120)
+  {
+    m_zDelta = 0;
+    ScrollPage(false);
+  }
+  else if ( zDelta >= 120 )
+  {
+    m_zDelta = 0;
+    ScrollPage(true);
+  }
+  return CWnd::OnMouseWheel(nFlags,zDelta,pt);
+
+
+}
+
+
+void CxTextOut::ScrollPage(bool up)
+{
+   if ( up )
+   {
+     if( m_nHead > GetMaxViewableLines() - 1 )
+     {
+        m_nHead -= GetMaxViewableLines()/2;
+        m_nHead = max(0,m_nHead);
+        SetHead( m_nHead );
+     }
+   }
+   else
+   {
+     int nUBound = max(GetLineCount() - 1, GetMaxViewableLines() - 1);
+     if( m_nHead < nUBound )
+     {
+        m_nHead += GetMaxViewableLines()/2;
+        m_nHead = min (m_nHead, nUBound);
+        SetHead( m_nHead );
+     }
+   }
+}
+
+
+#ifdef __CR_WIN__
+void CxTextOut::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
+{
+      CrGUIElement * theElement;
+      switch (nChar) {
+           case VK_PRIOR:
+                  ScrollPage(true);
+                  break;
+           case VK_NEXT:
+                  ScrollPage(false);
+                  break;
+           default:
+                  //Do nothing
+                  break;
+      }
+      CWnd::OnKeyDown( nChar, nRepCnt, nFlags );
+}
+#endif
