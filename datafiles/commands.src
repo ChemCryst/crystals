@@ -2669,8 +2669,8 @@ DISTANCES         10    7
 PEAKS              4    4
    2    4096 CRYSTALSDISTANCES
     1    2    5   10
-   1.SELECT             9    1    0    0
-         2    1    3    3    3    3    2    3    3
+   1.SELECT            10    1    0    0
+         2    1    3    3    3    3    2    3    3    3
     .REJECT             2    0    1    0    0 0.5
     .KEEP               8    0    1    0    0   1000000
     .MONITOR            9    0    1    4   -2 MEDIUM
@@ -2685,6 +2685,8 @@ PEAKS              4    4
     .SYMMETRY          14    0    1    3   -1 SPACEGROUP
      PATTERSON      SPACEGROUP     NONE
     .TRANSLATION       15    0    1    2   -1 YES
+     NO             YES
+    .GROUPNUMBER       16    0    1    2   -1 NO
      NO             YES
    2.REFINE             2    1    0    0
          2    2
@@ -2703,8 +2705,8 @@ PEAKS              4    4
 REGROUP            3    3
    5    4096 CRYSTALSDISTANCES
     1    2    5
-   1.SELECT             7    1    0    0
-         2    1    3    3    3    3    3
+   1.SELECT             8    1    0    0
+         2    1    3    3    3    3    3    3
     .MOVE               4    0    1    0    0 2.0
     .KEEP               8    0    1    0    0   1000000
     .MONITOR            9    0    1    4   -2 LOW
@@ -2716,6 +2718,8 @@ REGROUP            3    3
     .SYMMETRY          14    0    1    3   -1 SPACEGROUP
      PATTERSON      SPACEGROUP     NONE
     .TRANSLATION       15    0    1    2   -1 YES
+     NO             YES
+    .GROUPNUMBER       16    0    1    2   -1 NO
      NO             YES
    2.INITIALISE         6    0    0    0
          2    2    2    1    2    2    1
