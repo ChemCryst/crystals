@@ -54,7 +54,12 @@ CrWindow::~CrWindow()
       if ( m_Keep )
       { 
 // Store the old size in a file...
-           (CcController::theController)->StoreKey( mName, GetGeometry().AsString() );
+           CcRect currentSize = GetGeometry();
+           if ( ( currentSize.Height() > 30 ) &&
+                ( currentSize.Width()  > 30 ) )
+           {
+               (CcController::theController)->StoreKey( mName, currentSize.AsString() );
+           }
       }
 	if ( mGridPtr != nil )
 	{
