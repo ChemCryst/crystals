@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2001/03/18 10:34:47  richard
+C Sfls was updating wrong parameter in L30, overwriting structure soln with Rw.
+C
 C Revision 1.11  2001/03/16 16:54:55  CKP2
 C Update list 30
 C
@@ -744,7 +747,7 @@ C----- STORE THETA LIMITS
       STORE(L30IX+6) = RTD*ASIN(WAVE*SMIN)
       STORE(L30IX+7) = RTD*ASIN(WAVE*SMAX)
 C----- REFINEMENT TYPE
-        ISTORE(L30RF +17 ) = NV + 2
+        ISTORE(L30RF +12 ) = NV + 2
         CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
       ENDIF
 C--CLEAR THE CORE
