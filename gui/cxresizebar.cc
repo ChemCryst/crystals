@@ -7,6 +7,10 @@
 //   Filename:  CxResizeBar.cc
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2001/11/14 10:30:41  ckp2
+//   Various changes to the painting of the background of Windows as some of the
+//   dialogs suddenly went white under XP.
+//
 //   Revision 1.4  2001/08/14 10:20:35  ckp2
 //   Quirky new feature: Hold down CTRL and click on a resize-bar and the panes
 //   will swap sides. Hold down SHIFT and click, and the panes will rotate by 90
@@ -287,6 +291,10 @@ void CxResizeBar::OnLButtonDown( wxMouseEvent & event )
       if ( m_type == kTHorizontal ) m_startDrag = y;
       else                          m_startDrag = x;
 
+// turn off WS_CLIPCHILDREN
+      ModifyStyle(WS_CLIPCHILDREN, 0);
+
+
 #ifdef __CR_WIN__
       SetCapture();
 #endif
@@ -332,6 +340,10 @@ void CxResizeBar::OnLButtonUp( wxMouseEvent & event )
   int xoff = 0; //mainR.Left();
   int yoff = 0; //mainR.Top();
 #endif
+
+// turn on WS_CLIPCHILDREN
+  ModifyStyle(0, WS_CLIPCHILDREN);
+
 
  x = min(x,GetWidth()-SIZE_BAR);
  x = max(x,0);
