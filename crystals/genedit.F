@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2001/09/11 08:23:17  ckp2
+C Small fix. Only log "Generaledit cannot be logged" comments, if logging
+C is turned on in the first place.
+C
 C Revision 1.6  2001/09/07 14:27:47  ckp2
 C Turn off logging when running the GENERALEDIT command. The log file will now look
 C something like this:
@@ -343,10 +347,10 @@ C -- IF THERE IS NO MORE ROME HERE, CREATE SOME SPACE
 C -- MOVE EXISTING DATA
         NMOVE = LENGRP * NGRP
         IF ( NMOVE .GT. 0 ) THEN
-          CALL XMOVE ( ISTORE(LDATA) , ISTORE(ISPACE) , NMOVE )
+          CALL XMOVE ( ISTORE(LDATA) , ISTORE(NEWDAT) , NMOVE )
         ENDIF
-        ISHIFT = ISPACE - LDATA
-        LDATA = ISPACE
+        ISHIFT = NEWDAT - LDATA
+        LDATA = NEWDAT
         MDATA = MDATA + ISHIFT
         IRCADR = IRCADR + ISHIFT
 C -- CHANGE POINTER TO DATA
@@ -602,7 +606,9 @@ C
 C -- RELEASE RESOURCES
       CALL XSTRLL ( ICOMBL )
 
-      IF(INLOG.NE.0)WRITE(NCLU,'(A)')'END'
+Cric - do not write this END. Waste of space and often comes AFTER
+Cthe next command.
+c      IF(INLOG.NE.0)WRITE(NCLU,'(A)')'END'
       IRDLOG(IFLIND) = INLOG
 C
 C -- FINAL MESSAGE
