@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2001/07/13 15:01:53  ckp2
+C Bugfix: Line about outliers from chebychev weighting schemes had been lost
+C since GUI edits.
+C
 C Revision 1.11  2001/02/26 10:28:02  richard
 C RIC: Added changelog to top of file
 C
@@ -876,6 +880,8 @@ C--PRINT THE PLOT OF PREDICTED W*DELTA**2 AGAINST /FO/
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,6150)ITL,ITL
       ENDIF
+      WRITE(CMON,6150)ITL,ITL
+      CALL XPRVDU(NCVDU, 5,0)
       WRITE(NCAWU,6160) ITL
       WRITE(CMON,6160) ITL
       CALL XPRVDU(NCVDU, 1,0)
