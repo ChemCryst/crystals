@@ -59,7 +59,7 @@ CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
     return nil;
   }
 
-  theModel -> ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
+//  theModel -> ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
   theModel -> SetFont(CcController::mp_font);
 
   CRect rect;
@@ -270,7 +270,13 @@ void CxModel::OnPaint(wxPaintEvent &event)
       }
 
       glRenderMode ( GL_RENDER ); //Switching to render mode.
-      glClearColor( 1.0f,1.0f,1.0f,0.0f);
+
+      int col = GetSysColor(COLOR_3DFACE);
+
+      glClearColor( GetRValue(col)/256.0f,
+                    GetGValue(col)/256.0f,
+                    GetBValue(col)/256.0f,  0.0f);
+//      glClearColor( 1.0f,1.0f,1.0f,0.0f);
       glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
       glMatrixMode ( GL_PROJECTION );
       glLoadIdentity();
@@ -319,7 +325,10 @@ void CxModel::OnPaint(wxPaintEvent &event)
       if ( m_selectionPoints.ListSize() > 0 )
       {
 //Draw in polygon so far:
-         CcPoint* nextPoint, *fromPoint;
+         CcPoint* nextPoint;
+#ifdef __BOTHWX__
+         CcPoint *fromPoint;
+#endif
          m_selectionPoints.Reset();
          nextPoint = (CcPoint*)m_selectionPoints.GetItemAndMove();
 #ifdef __CR_WIN__
