@@ -96,6 +96,7 @@ typedef bool Boolean;
 #define COVALENT	1
 #define VDW       2
 #define THERMAL   3
+#define SPARE     4
 
 
 
