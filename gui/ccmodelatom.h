@@ -37,7 +37,8 @@ class CcModelAtom : public CcModelObject
 		int occ;
 		int covrad, vdwrad;
 		int uflag;
-		int u1, u2, u3, u4, u5, u6;
+//            int u1, u2, u3, u4, u5, u6;
+            int x11, x12, x13, x21, x22, x23, x31, x32, x33;
 		CcString label;
 		Boolean m_selected;
 };
