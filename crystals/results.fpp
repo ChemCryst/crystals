@@ -1,4 +1,17 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.35  2002/06/07 16:01:59  richard
+C Some things:
+C
+C (1) Tidied the CIF up, with spaces between groups of related items and that sort of thing.
+C
+C (2) Call XSFLSB at start to update L30 calc-R,Rw,sigma and number.
+C
+C (3) Calculate ZPRIME from L2 and L30 Z value, if L30 Z value is non-zero. Use this
+C to give desired formula.
+C
+C (4) Quote three groups of R-factors: _ref, _all and _gt. The _gt threshold is the
+C same as the L28 threshold if present, otherwise it is I>4u(I).
+C
 C Revision 1.34  2002/05/31 14:41:09  Administrator
 C Update SHELX SPECIAL output
 C
@@ -2387,6 +2400,7 @@ C-----  SET UP OCCUPANCIES
 cdjw feb2001
         iupdat = istore(l23sp+1)
         toler = store(l23sp+5)
+        inomo = ( istore(l23m) * -2 ) + 1 ! 1 for anom, 3 for no anom
         CALL XPRC17 (0, 0, toler, -1)
         IF (IERFLG .LE. 0) GOTO 1600
 C----- CLEAR THE CELL PROPERTY DETAILS
@@ -2419,27 +2433,27 @@ C----- MATCH
           WEIGHT = WEIGHT + CWGHT * STORE(M29+6)
           ABSN = ABSN + CABSN * STORE(M29+5)
 1521    CONTINUE
-C
+
         DO 1530 M5=L5,I5,MD5
 C----- CHECK LIST 3
-        DO 1525 M3 = L3, L3+(N3-1)*MD3, MD3
-          IF (ISTORE(M5) .EQ. ISTORE(M3)) THEN
-            F = 0.0
-            DO 1527 I = 1, 11, 2
-              F = F + STORE(M3+I)
-1527        CONTINUE
-            FREAL = FREAL + STORE(M5+2) * STORE(M5+13) * F
-            FIMAG = FIMAG + STORE(M5+2) * STORE(M5+13) * STORE(M3+2)
-            GOTO 1528
-          ENDIF
-1525    CONTINUE
-C    -----  NO MATCH -
-            JCHECK= JCHECK + 1
-        GOTO 1530
-1528    CONTINUE
-        F000 = SQRT( FREAL*FREAL + FIMAG*FIMAG)
+          DO M3 = L3, L3+(N3-1)*MD3, MD3
+            IF (ISTORE(M5) .EQ. ISTORE(M3)) THEN
+              F = 0.0
+              DO I = INOMO, 11, 2
+                F = F + STORE(M3+I)
+              END DO
+              FREAL = FREAL + STORE(M5+2) * STORE(M5+13) * F
+              IF(INOMO.EQ.1)FIMAG=STORE(M5+2)*STORE(M5+13)*STORE(M3+2)
+              GOTO 1528
+            ENDIF
+          END DO
+C----- NO MATCH -
+          JCHECK= JCHECK + 1
+          GOTO 1530
+1528      CONTINUE
+          F000 = SQRT( FREAL*FREAL + FIMAG*FIMAG)
 1530    CONTINUE
-C
+
 C----- COMPUTE MU AND M
         IF (ICHECK .NE. 0 ) THEN
           WRITE ( CMON, 1545) ICHECK, 29
@@ -2977,7 +2991,7 @@ CDJWMAR99      DATA JDEV /'H','K','L','I'/
 
 CDJWMAY99 - PREAPRE TO OPEN CIF OUTPUT ON FRN1
 
-      CALL XMOVEI (KEYFIL(1,23),KDEV,4)
+      CALL XMOVEI (KEYFIL(1,23),KDEV,4)        
       CALL XRDOPN (6,KDEV,CSSCIF,LSSCIF)
 
 C--READ THE REMAINING CONTROL CARDS
@@ -2998,6 +3012,8 @@ CRICJUN02 - Last minute SFLS calc to get threshold cutoffs into 30.
       ELSE
          CALL XSFLSB(-1)
       ENDIF
+
+      WRITE(99,'(A,2F15.6)')'Pre: ',STORE(L30CF+7),STORE(L30RF+1)
  
       CALL XRSL
       CALL XCSAE
@@ -3105,6 +3121,8 @@ C----- LOADED BY XFAL06          CALL XFAL28
             CALL XFAL29
          ELSE IF (LSTYPE.EQ.30) THEN
             CALL XFAL30
+      WRITE(99,'(A,2F15.6)')'Post:',STORE(L30CF+7),STORE(L30RF+1)
+ 
          ELSE IF (LSTYPE.EQ.31) THEN
 \IDIM31
          CALL XLDLST (31,ICOM31,IDIM31,0)
@@ -3327,7 +3345,30 @@ C             NEGATE IF REQUIRED
 1100           CONTINUE
 1150        CONTINUE
 1200     CONTINUE
-C 
+C
+         CALL XPCIF (' ')
+         WRITE(CLINE,'(A)')'# choose from:  rm (reference molecule of'
+         CALL XPCIF(CLINE)
+         WRITE(CLINE,'(A)')'# known chirality), ad (anomolous'
+         CALL XPCIF(CLINE)
+         WRITE(CLINE,'(A)')'# dispersion - ie. Flack param), rmad '
+         CALL XPCIF(CLINE)
+         WRITE(CLINE,'(A)')'# (both rm and ad), syn (known from'
+         CALL XPCIF(CLINE)
+         WRITE(CLINE,'(A)')'# synthetic pathway), unk (unknown)'
+         CALL XPCIF(CLINE)
+         WRITE(CLINE,'(A)')'# or . (not applicable).'
+         CALL XPCIF(CLINE)
+         CALL XPCIF (' ')
+
+         IF ( NINT ( STORE(L2C) ) .LE. 0 ) THEN
+           WRITE (CLINE,1201) 'unk'
+         ELSE
+           WRITE (CLINE,1201) '.'
+         END IF
+1201     FORMAT ('_chemical_absolute_configuration',T35,'''',A,'''')
+         CALL XPCIF(CLINE)
+
       END IF
 
       CALL XPCIF (' ')
@@ -3885,21 +3926,45 @@ C----- TRY FOR A FRIEDEL MERGE ESTIMATE
                WRITE (CLINE,'(A,I6)') '# Theoretical number of reflectio
      1ns is about',NINT(TMP)
                CALL XPCIF (CLINE)
-               TMP=MIN(1.,STORE(L30DR+I)/TMP)
-               WRITE (CLINE,'(''_diffrn_measured_fraction_theta_max ''  
-     1        , F10.3)') TMP
-               CALL XPCIF (CLINE)
+c               TMP=MIN(1.,STORE(L30DR+I)/TMP)
+c               WRITE (CLINE,'(''_diffrn_measured_fraction_theta_max ''  
+c     1        , F10.3)') TMP
+c               CALL XPCIF (CLINE)
             END IF
          END IF
 C 
          CALL XPCIF (' ')
          CALL XPCIF (' ')
+
+         CALL XTHLIM (THMIN,  THMAX,THMCMP,  THBEST,THBCMP)
+
+         CBUF(1:21)='_diffrn_reflns_theta_'
+         WRITE (CLINE,'(A,''min '', F10.3)') CBUF(1:21), THMIN
+         CALL XPCIF (CLINE)
+         WRITE (CLINE,'(A,''max '', F10.3)') CBUF(1:21), THMAX
+         CALL XPCIF (CLINE)
+         CBUF(9:32)='measured_fraction_theta_'
+         WRITE (CLINE,'(A,''max '',F10.3)') CBUF(1:32), THMCMP
+         CALL XPCIF (CLINE)
+
+         CALL XPCIF (' ')
+
+         CBUF(9:21)='reflns_theta_'
+         WRITE (CLINE,'(A,''full '', F10.3)') CBUF(1:21), THBEST
+         CALL XPCIF (CLINE)
+         CBUF(9:32)='measured_fraction_theta_'
+         WRITE (CLINE,'(A,''full '',F10.3)') CBUF(1:32), THBCMP
+         CALL XPCIF (CLINE)
+
+         CALL XPCIF (' ')
+         CALL XPCIF (' ')
+         CBUF(1:15)='_diffrn_reflns_'
 C 
-         DO 1950 J=1,3,2
-            WRITE (CLINE,'(A, ''theta_'',A, F10.2)') CBUF(1:15),CSIZE(J)
-     1       ,STORE(L30IX+(J+1)/2+5)
-            CALL XPCIF (CLINE)
-1950     CONTINUE
+c         DO 1950 J=1,3,2
+c            WRITE (CLINE,'(A, ''theta_'',A, F10.2)') CBUF(1:15),CSIZE(J)
+c     1       ,STORE(L30IX+(J+1)/2+5)
+c            CALL XPCIF (CLINE)
+c1950     CONTINUE
          WRITE (CPAGE(IDATA+3,2)(:),'(''Theta max '', 10X,              
      1   f10.2)') STORE(L30IX+7)
 C 
