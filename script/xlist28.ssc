@@ -1,5 +1,5 @@
-%SCRIPT XLIST28 s
-% VARIABLE LOGICAL LNEWRAT LNEWRHO
+%SCRIPT XLIST28 
+% VARIABLE LOGICAL LNEWRAT LNEWRHO 
 % VARIABLE REAL    NEWRAT  NEWRHO SIGMACUT
 % VARIABLE INTEGER NOMITS  NCONDS  FTYPE NINDCD OMU
 % VARIABLE CHARACTER CW
@@ -19,19 +19,22 @@
 %    COPY 'TRANSFER FROM OFFSET=1 TO FTYPE'
 %    COPY 'END'
 %    COPY '#LIST 28'
+%    CLEAR
+%    INSERT 'MINIMA '
 %    IF FTYPE .NE. 0 THEN
 {I For F refinement, a default I/u(I) minimum of 3.0 is recommended.
-%      COPY 'MINIMA RATIO=3.0'
+%      INSERT 'RATIO=3.0 '
 %    END IF
 {I A default sin(theta)/lambda minimum of 0.01 is recommended.
-%    COPY 'MINIMA SINT=0.01'
+%    INSERT 'SINT=0.01 '
+%    SEND
 %    COPY 'END'
 % END IF
 %%
 %%
 ^^WI WINDOW XLIST28 'Filter reflections' MODAL
 ^^WI COMMIT='BOK' CANCEL='BXX'
-^^WI GRID MAIN NROWS=7 NCOLS=3 
+^^WI GRID MAIN NROWS=9 NCOLS=3 
 ^^WI {
 ^^WI   @ 2,2 GRID M NROWS=10 NCOLS=9 COMMAND='UPDATE'
 ^^WI         OUTLINE='Min and max acceptable limits'
@@ -114,12 +117,12 @@
 %           COPY 'NEXT'
 %          END LOOP
 %          END BLOCK
-%          COPY 'END'
 %          IF NOMITS .GT. 0 THEN
 ^^WI        NULL
 %          ELSE
 ^^WI        '  0   0   0 ' NULL
 %          END IF
+%          COPY 'END'
 ^^WI       @ 3,1 GRID OMITB NROWS=1 NCOLS=3
 ^^WI       {
 ^^WI         @ 1,1 BUTTON BADD 'Add'
@@ -182,10 +185,10 @@
 %           COPY 'NEXT'
 %          END LOOP
 %          END BLOCK
-%          COPY 'END'
 %%          IF NINDCD .GT. 0 THEN
 ^^WI        'NULL'
 %%          END IF
+%          COPY 'END'
 ^^WI       @ 1,1 GRID OMITI NROWS=3 NCOLS=1
 ^^WI       {
 ^^WI         @ 1,1 GRID OMITC NROWS=1 NCOLS=10
@@ -214,7 +217,18 @@
 ^^WI       }
 ^^WI     }
 ^^WI   }
-^^WI   @ 6,2 GRID RIGHT NROWS=1 NCOLS=8
+^^WI   @ 6,2 GRID ADVISE NROWS=4 NCOLS=1 OUTLINE='Recommended settings'
+^^WI   {
+^^WI     @ 1,1 STATIC SBH
+^^WI 'I/sigma(I) should be at least 3.0 for initial F refinement.'
+^^WI     @ 2,1 STATIC SBH
+^^WI 'For F**2 refinement an I/sigma(I) cutoff is not required.'
+^^WI     @ 3,1 STATIC SBH
+^^WI '[Sin theta/lambda]**2 at least 0.01 helps to eliminate reflections'
+^^WI     @ 4,1 STATIC SBH
+^^WI 'that may be poorly measured in the vicinity of the beam stop.'
+^^WI   }
+^^WI   @ 8,2 GRID RIGHT NROWS=1 NCOLS=8
 ^^WI   {
 ^^WI     @ 1,1 STRETCH SSS HORIZONTAL
 ^^WI     @ 1,4 BUTTON BOK '&OK' COMMIT DEFAULT
