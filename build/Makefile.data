@@ -28,7 +28,7 @@ COPYDIRS = $(filter-out %CVS,$(TEMPTOP))
 all : commands.dsc $(CRYSEDIT) $(SRTFILES) $(COPYDEST)
 
 commands.dsc : $(BUILDDIR) $(SRCFILE) $(BUILDDIR)crystals.srt
-	cd $(BUILDDIR); export USECRYSDIR=TRUE; export CRYSDIR=./; ../crystals; cp commands.dsc ..
+        cd $(BUILDDIR); export CRYSDIR=./; ../crystals; cp commands.dsc ..
 
 $(BUILDDIR) :
 	mkdir -p $(BUILDDIR)

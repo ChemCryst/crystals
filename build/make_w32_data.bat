@@ -21,7 +21,6 @@ copy ..\datafiles\commands.src dscbuild\commands.src
 copy ..\datafiles\crysdef.srt dscbuild\crystals.srt
 SETLOCAL
 cd dscbuild
-set USECRYSDIR=TRUE
 set CRYSDIR=./
 ..\crystals.exe
 cd ..
