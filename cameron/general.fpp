@@ -102,9 +102,9 @@ C This function checks to see whether or not suffiecient space is
 C available in the STORE array to accomadate NROOM pieces of info.
 C IEND1, IEND2 are the first and last free addresses in STORE.
       IF (IEND2-IEND1.GE.NROOM) THEN
-	LROOM = 1
+      LROOM = 1
       ELSE
-	LROOM = -1
+      LROOM = -1
       ENDIF
       RETURN
       END
@@ -217,8 +217,8 @@ CODE FOR ZBLANK (N,L,M)
       SUBROUTINE ZBLANK (N,L,M)
       CHARACTER*(*) N(M)
       DO 10 I = 1,M
-	DO 10 J = 1,L
-	N(I)(J:J) = ' '
+      DO 10 J = 1,L
+      N(I)(J:J) = ' '
 10    CONTINUE
       RETURN
       END
@@ -249,9 +249,9 @@ C the answers in XSIN and XCOS.
 
       PI = ACOS(-1.0)
       DO 10 I = 0,360
-	ANG = (I)*PI/180.0
-	XCOS(I+1) = COS(ANG)
-	XSIN(I+1) = SIN(ANG)
+      ANG = (I)*PI/180.0
+      XCOS(I+1) = COS(ANG)
+      XSIN(I+1) = SIN(ANG)
 10    CONTINUE
       RETURN
       END
@@ -271,49 +271,49 @@ C ARISEN DUE TO ROUNDING PROBLEMS.
       REAL RLARG
       RLARG = MAX(ABS(WORK(1,1)),ABS(WORK(2,2)))
       IF (RLARG.LT.0.000001) THEN
-	EIG1 = 0.0
-	EIG2 = 0.0
-	  VEC2(1) = 0.0
-	  VEC2(2) = 0.0
-	  VEC3(1) = 0.0
-	  VEC3(2) = - 1.0 / SQRT ( EIG2 )
-	  P = 0.0
-	  VEC2(1) = -1.0 / SQRT ( EIG1 )
-	  VEC2(2) = 0.0
-	  VEC3(1) = 0.0
-	  VEC3(2) = 0.0
-	  RETURN
+      EIG1 = 0.0
+      EIG2 = 0.0
+        VEC2(1) = 0.0
+        VEC2(2) = 0.0
+        VEC3(1) = 0.0
+        VEC3(2) = - 1.0 / SQRT ( EIG2 )
+        P = 0.0
+        VEC2(1) = -1.0 / SQRT ( EIG1 )
+        VEC2(2) = 0.0
+        VEC3(1) = 0.0
+        VEC3(2) = 0.0
+        RETURN
       ENDIF
       IF (ABS(WORK(1,2)/RLARG).LT.0.00001) THEN
-	EIG1 = WORK(1,1)
-	EIG2 = WORK(2,2)
+      EIG1 = WORK(1,1)
+      EIG2 = WORK(2,2)
 C NOW CHECK FOR ZERO EIGENVALUES
-	IF (ABS(EIG2).LT.0.000001) THEN
-	  VEC2(1) = -1.0 / SQRT ( EIG1 )
-	  VEC2(2) = 0.0
-	  VEC3(1) = 0.0
-	  VEC3(2) = 0.0
-	  P = 0.0
-	ELSE IF (ABS(EIG1).LT.0.0001) THEN
+      IF (ABS(EIG2).LT.0.000001) THEN
+        VEC2(1) = -1.0 / SQRT ( EIG1 )
+        VEC2(2) = 0.0
+        VEC3(1) = 0.0
+        VEC3(2) = 0.0
+        P = 0.0
+      ELSE IF (ABS(EIG1).LT.0.0001) THEN
 C WE NEED TO SWAP OVER THE EIGENVALUES
-	  TEMP = EIG1
-	  EIG1 = EIG2
-	  EIG2 = TEMP
-	  VEC3(1) = 0.0
-	  VEC3(2) = 0.0
-	  VEC2(1) = -1.0/SQRT(EIG1)
-	  VEC2(2) = 0.0
-	  P = 3.14156/2.0
-	ELSE
-	  VEC2(1) = 1.0 / SQRT ( EIG1 )
-	  VEC2(2) = 0.0
-	  VEC3(1) = 0.0
-	  VEC3(2) = 1.0 / SQRT ( EIG2 )
-	  P = 0.0
-	ENDIF
-	VEC2(3) = 0.0
-	VEC3(3) = 0.0
-	RETURN
+        TEMP = EIG1
+        EIG1 = EIG2
+        EIG2 = TEMP
+        VEC3(1) = 0.0
+        VEC3(2) = 0.0
+        VEC2(1) = -1.0/SQRT(EIG1)
+        VEC2(2) = 0.0
+        P = 3.14156/2.0
+      ELSE
+        VEC2(1) = 1.0 / SQRT ( EIG1 )
+        VEC2(2) = 0.0
+        VEC3(1) = 0.0
+        VEC3(2) = 1.0 / SQRT ( EIG2 )
+        P = 0.0
+      ENDIF
+      VEC2(3) = 0.0
+      VEC3(3) = 0.0
+      RETURN
       ENDIF
 C OTHERWISE CALCULATE THE EIGENVALUES AND VECTORS AS NORMAL
       B = WORK(1,1) + WORK(2,2)
@@ -328,15 +328,15 @@ C OTHERWISE CALCULATE THE EIGENVALUES AND VECTORS AS NORMAL
       VEC2(2) = V*VEC2(1)
       VEC2(3) = 0.0
       IF (ABS(EIG2).LT.0.0000001) THEN
-	VEC3(1) = 0.0
-	VEC3(2) = 0.0
-	VEC3(3) = 0.0
+      VEC3(1) = 0.0
+      VEC3(2) = 0.0
+      VEC3(3) = 0.0
       ELSE
-	V = ( EIG2 - WORK ( 1,1) ) / WORK ( 2,1 )
-	V1 = 1.0/(EIG2*(V*V+1))
-	VEC3(1) = SQRT(V1)
-	VEC3(2) = V*VEC3(1)
-	VEC3(3) = 0.0
+      V = ( EIG2 - WORK ( 1,1) ) / WORK ( 2,1 )
+      V1 = 1.0/(EIG2*(V*V+1))
+      VEC3(1) = SQRT(V1)
+      VEC3(2) = V*VEC3(1)
+      VEC3(3) = 0.0
       ENDIF
       P = ATAN2 ( VEC2(2) , VEC2(1) )
       RETURN
@@ -366,12 +366,12 @@ Calculate the determinant first
      c    + A(1,3)*(A(2,1)*A(3,2)-A(3,1)*A(2,2))
 C Now obtain the inverse matrix
       DO 10 I = 1,3
-	DO 20 J = 1,3
-	  L = I+1 - 3*((I)/3)
-	  M = I+2 - 3*((I+1)/3)
-	  N = J+1 - 3*((J)/3)
-	  O = J+2 - 3*((J+1)/3)
-	  B(I,J) = (A(N,L)*A(O,M) - A(N,M)*A(O,L))/DET
+      DO 20 J = 1,3
+        L = I+1 - 3*((I)/3)
+        M = I+2 - 3*((I+1)/3)
+        N = J+1 - 3*((J)/3)
+        O = J+2 - 3*((J+1)/3)
+        B(I,J) = (A(N,L)*A(O,M) - A(N,M)*A(O,L))/DET
 20      CONTINUE
 10    CONTINUE
       RETURN
@@ -381,7 +381,7 @@ CODE FOR ZMATV4
       SUBROUTINE ZMATV4 (MAT,V,V1)
       REAL MAT(4,4),V(3),V1(3),V2(3)
       DO 10 I = 1,3
-	V2(I) = MAT(I,1)*V(1) + MAT(I,2)*V(2) + MAT(I,3)*V(3)
+      V2(I) = MAT(I,1)*V(1) + MAT(I,2)*V(2) + MAT(I,3)*V(3)
      c  + MAT(I,4)
 10      CONTINUE
       CALL ZMOVE (V2,V1,3)
@@ -404,8 +404,8 @@ C This routine puts a 3x3 matrix A into the top left hand corner of the
 C 4x4 matrix B
       REAL A(3,3),B(4,4)
       DO 10 I = 1,3
-	DO 20 J = 1,3
-	  B(I,J) = A(I,J)
+      DO 20 J = 1,3
+        B(I,J) = A(I,J)
 20      CONTINUE
 10    CONTINUE
       RETURN
@@ -585,44 +585,44 @@ C      CALL ZGTMPS(IMX,IMY)
       IMY = IY
 C FIRST CHECK THE MENUS
       IF (IMENCN.EQ.2) THEN
-	DO 1010 I = 1 , IBUTNO
-	  IF (IMX.LT.IBUTTS(1,I)) GOTO 1010
-	  IF (IMY.LT.IBUTTS(2,I)) GOTO 1010
-	  IF (IMX.GT.IBUTTS(3,I)) GOTO 1010
-	  IF (IMY.GT.IBUTTS(4,I)) GOTO 1010
-	  LMOUSE = I
-	  RETURN
+      DO 1010 I = 1 , IBUTNO
+        IF (IMX.LT.IBUTTS(1,I)) GOTO 1010
+        IF (IMY.LT.IBUTTS(2,I)) GOTO 1010
+        IF (IMX.GT.IBUTTS(3,I)) GOTO 1010
+        IF (IMY.GT.IBUTTS(4,I)) GOTO 1010
+        LMOUSE = I
+        RETURN
 1010    CONTINUE
       ENDIF
       IF (IDOKEY.EQ.1) THEN
 C CALCULATE THE CUT OFF POINT FOR THE KEY
-	IKMX = XCEN*2 - (NKEY/20)*ISQR - ISQR - 10
-	IF (IMX.GT.IKMX) THEN
+      IKMX = XCEN*2 - (NKEY/20)*ISQR - ISQR - 10
+      IF (IMX.GT.IKMX) THEN
 C POSSIBILITY OF KEY
-	  IM = 0
-	  IMM = 0
-	  IDIFF = IMX - IKMX
+        IM = 0
+        IMM = 0
+        IDIFF = IMX - IKMX
 C IS THE ELEMENT ON THE SECOND ROW?
-	  IF (IDIFF.GT.ISQR) THEN
-	    IMM = 1
-	  ENDIF
+        IF (IDIFF.GT.ISQR) THEN
+          IMM = 1
+        ENDIF
 C WHERE IS IT IN THE Y DIRECTION
-	  IM = (IMY-ISQR)/(ISQR*2)
+        IM = (IMY-ISQR)/(ISQR*2)
 C WORK OUT THE CENTRE COORDS OF THIS ELEMENT
-	  IXEL = IKMX + IMM*ISQR + ISQR/2
-	  IYEL = ISQR + IM*ISQR*2 + ISQR/2
-	  IF ( ((ABS(IMX-IXEL)).LT.ISQR) .AND.
+        IXEL = IKMX + IMM*ISQR + ISQR/2
+        IYEL = ISQR + IM*ISQR*2 + ISQR/2
+        IF ( ((ABS(IMX-IXEL)).LT.ISQR) .AND.
      c      ((ABS(IMY-IYEL)).LT.ISQR) ) THEN
 C YES!! PUT ELEMENT INTO COMMAND LINE!
-	    N = IM+1 + IMM*20
-	    IF (N.GT.NKEY) RETURN
-	    N = RSTORE (IKEY+(N-1)*2)
-	    N = N + ICELM - 1
-	    CC(1:ILEN) = CSTORE(N)
-	    LMOUSE = 0
-	    RETURN
-	  ENDIF
-	ENDIF
+          N = IM+1 + IMM*20
+          IF (N.GT.NKEY) RETURN
+          N = RSTORE (IKEY+(N-1)*2)
+          N = N + ICELM - 1
+          CC(1:ILEN) = CSTORE(N)
+          LMOUSE = 0
+          RETURN
+        ENDIF
+      ENDIF
       ENDIF
 
 C CONVERT THE COORDS TO ORTHOGONAL ONES WITHOUT SCALING ETC.
@@ -638,33 +638,33 @@ C IF MORE THAN ONE ATOM IS POSSIBLE THEN CHOOSE THE CLOSEST ONE.
       IM = 0
       DO 10 I = ISVIEW + IPACKT*8 ,IFVIEW-1,IPACKT
 C DON'T DO EXCLUDED ATOMS!
-	IF (RSTORE(I+IPCK+1).LT.0.0) GOTO 10
+      IF (RSTORE(I+IPCK+1).LT.0.0) GOTO 10
 C GET THE COORDS
-	ZZ = RSTORE(I+IXYZO+2)
-	IF (ZZ.LT.Z) GOTO 10
-	XX = (RSTORE(I+IXYZO)-XCP)*SCALE + XCEN + XOFF
-	YY = (RSTORE(I+IXYZO+1)-YCP)*SCALE + YCEN + YOFF
-	R = SCALE*RSTORE (I+IATTYP+4)
-	D = (X-XX)**2 + (Y-YY)**2
-	IF (D.LT.DSMALL) THEN
-	  DSMALL = D
-	  ISMALL = I
-	ENDIF
-	IF ((D.LT.R**2).AND.(ZZ.GT.Z)) THEN
+      ZZ = RSTORE(I+IXYZO+2)
+      IF (ZZ.LT.Z) GOTO 10
+      XX = (RSTORE(I+IXYZO)-XCP)*SCALE + XCEN + XOFF
+      YY = (RSTORE(I+IXYZO+1)-YCP)*SCALE + YCEN + YOFF
+      R = SCALE*RSTORE (I+IATTYP+4)
+      D = (X-XX)**2 + (Y-YY)**2
+      IF (D.LT.DSMALL) THEN
+        DSMALL = D
+        ISMALL = I
+      ENDIF
+      IF ((D.LT.R**2).AND.(ZZ.GT.Z)) THEN
 C WE HAVE CONTACT!
-	  Z = ZZ
-	  IM = I
-	ENDIF
+        Z = ZZ
+        IM = I
+      ENDIF
 10    CONTINUE
       IF (IM.EQ.0) THEN
 C DO WE HAVE A CLOSEST ATOM? - POINT MUST BE WITHIN
 C TWICE THE ATOMS RADIUS.
-	R = SCALE*RSTORE(ISMALL+IATTYP+4)
-	IF (DSMALL.LE.4.0*R**2) THEN
-	  IM = ISMALL
-	ELSE
-	  RETURN
-	ENDIF
+      R = SCALE*RSTORE(ISMALL+IATTYP+4)
+      IF (DSMALL.LE.4.0*R**2) THEN
+        IM = ISMALL
+      ELSE
+        RETURN
+      ENDIF
       ENDIF
 C HAVE FOUND AN ATOM - GET ITS CSTORE NUMBER
       IL = (IM-IRATOM)/IPACKT + ICATOM
@@ -672,26 +672,26 @@ C ADD IT INTO THE INPUT LINE
 C CHECK FOR PACK LABELLING
       IF (IPACK.GT.0) THEN
 C CONVERT THE PACK NUMBER
-	IPPACK = NINT(RSTORE(IM+IPCK))
-	ICLP = 1
+      IPPACK = NINT(RSTORE(IM+IPCK))
+      ICLP = 1
 C GET THE LABEL LENGTH
-	ILL = INDEX(CSTORE(IL),' ') - 1
+      ILL = INDEX(CSTORE(IL),' ') - 1
 1000    CONTINUE
-	IPN = MOD (IPPACK,10)
-	CLNUM(ICLP:ICLP) = CNUMS(IPN+1)
-	IPPACK = IPPACK/10
-	IF (IPPACK.GT.0) THEN
-	  ICLP = ICLP + 1
-	  GOTO 1000
-	ENDIF
+      IPN = MOD (IPPACK,10)
+      CLNUM(ICLP:ICLP) = CNUMS(IPN+1)
+      IPPACK = IPPACK/10
+      IF (IPPACK.GT.0) THEN
+        ICLP = ICLP + 1
+        GOTO 1000
+      ENDIF
 C MOVE OVER THE NUMBER
-	CC(1:ILL+1) = CSTORE(IL)(1:ILL)//'_'
-	DO 1100 J = ICLP , 1 , -1
-	  CC(ILL+2+ICLP-J:ILL+2+ICLP-J) = CLNUM(J:J)
+      CC(1:ILL+1) = CSTORE(IL)(1:ILL)//'_'
+      DO 1100 J = ICLP , 1 , -1
+        CC(ILL+2+ICLP-J:ILL+2+ICLP-J) = CLNUM(J:J)
 1100    CONTINUE
-	ILL = ILL + ICLP+1
+      ILL = ILL + ICLP+1
       ELSE
-	CC = CSTORE(IL)
+      CC = CSTORE(IL)
       ENDIF
       LMOUSE = 0
       RETURN
@@ -721,20 +721,20 @@ C       ORTEP MANUAL P75
       END
  
 CODE FOR ZTEKXY
-	SUBROUTINE Ztekxy (IX,IY,ITEK)
+      SUBROUTINE Ztekxy (IX,IY,ITEK)
 C THIS CONVERTS IX,IY PAIR OF COORDINATES INTO THE APPROPRIATE
 C ASCII EQUIVALENT FOR THE TEKTRONIC DRIVER. char(itek(n)) are the
 C characters that need to be sent. The order is:-
 C hi y, lo y, hi x, lo x.
-	INTEGER IX,IY
-	INTEGER ITEK(4)
+      INTEGER IX,IY
+      INTEGER ITEK(4)
  
-	ITEK(1) = (IY/32) + 32
-	ITEK(2) = MOD (IY,32) + 96
-	ITEK(3) = (IX/32) + 32
-	ITEK(4) = MOD (IX,32) + 64
-	RETURN
-	END
+      ITEK(1) = (IY/32) + 32
+      ITEK(2) = MOD (IY,32) + 96
+      ITEK(3) = (IX/32) + 32
+      ITEK(4) = MOD (IX,32) + 64
+      RETURN
+      END
  
 CODE FOR ZGTCOL
       SUBROUTINE ZGTCOL (COLOUR, NUM)
@@ -761,10 +761,10 @@ C THIS ROUTINE GETS THE EQUIVALENT COLOUR NUMBER FOR THE COLOUR TABLE
       CHARACTER*6 COLOUR
       NUM = 0
       DO 10 I = 1 , ICLMAX
-	IF (COLNAM(I).EQ.COLOUR) THEN
-	  NUM = I-1
-	  GOTO 20
-	ENDIF
+      IF (COLNAM(I).EQ.COLOUR) THEN
+        NUM = I-1
+        GOTO 20
+      ENDIF
 10    CONTINUE
 20    CONTINUE
       IF (NUM.EQ.0 .AND. COLOUR .NE. ' ') THEN
@@ -806,12 +806,12 @@ CODE FOR ZGTTXT
 C This routine gets the text from the array CTCOMD - NPOS items and
 C puts it into CTEXT.
       DO 10 I = 1 , NPOS
-	CTEXT((I-1)*12+1:I*12) = CTCOMD(ITCNT+I-1)
+      CTEXT((I-1)*12+1:I*12) = CTCOMD(ITCNT+I-1)
 10    CONTINUE
 C BLANK OFF THE END
       IF (N.GT.NPOS*12) THEN
-	DO 20 I = NPOS*12+1,N
-	  CTEXT(I:I) = ' '
+      DO 20 I = NPOS*12+1,N
+        CTEXT(I:I) = ' '
 20      CONTINUE
       ENDIF
       ITCNT = ITCNT + NPOS
@@ -861,15 +861,15 @@ C        = 0 - clear scratch file.
       CHARACTER*80 NEWLIN
       LOGICAL LFILES
       IF (IWFLAG.EQ.0 .OR. ILOG.NE.1 .OR. IFOBEY.NE.-1) THEN
-	IF (.NOT.LFILES (0,' ',ISCRLG)) THEN
-	  CALL ZMORE('Error on closing LOG scratch file.',0)
-	ENDIF
+      IF (.NOT.LFILES (0,' ',ISCRLG)) THEN
+        CALL ZMORE('Error on closing LOG scratch file.',0)
+      ENDIF
 C THE EFFECTS OF THE LOG FILE NOT BEING OPENED MUST BE CHECKED.
-	IF (.NOT.LFILES (9,' ',ISCRLG)) THEN
-	  CALL ZMORE('Error on opening LOG scratch file.',0)
-	  ILOG = 0
-	ENDIF
-	RETURN
+      IF (.NOT.LFILES (9,' ',ISCRLG)) THEN
+        CALL ZMORE('Error on opening LOG scratch file.',0)
+        ILOG = 0
+      ENDIF
+      RETURN
       ENDIF
       BACKSPACE (ISCRLG)
       READ (ISCRLG,'(A)') NEWLIN
@@ -882,11 +882,11 @@ C THE EFFECTS OF THE LOG FILE NOT BEING OPENED MUST BE CHECKED.
       GOTO 10
 20    CONTINUE
       IF (.NOT.LFILES (0,' ',ISCRLG)) THEN
-	CALL ZMORE('Error on closing log scratch file.',0)
+      CALL ZMORE('Error on closing log scratch file.',0)
       ENDIF
       IF (.NOT.LFILES (9,' ',ISCRLG)) THEN
-	CALL ZMORE('Error - log scratch file cannot be opened.',0)
-	ILOG = 0
+      CALL ZMORE('Error - log scratch file cannot be opened.',0)
+      ILOG = 0
       ENDIF
       RETURN
       END
@@ -938,62 +938,62 @@ C beginning of the true name. : characters are also allowed.
       CBUILD = ' '
 C Find the end of the filename
       DO 10 J = ILEN , 1 , -1
-	IF (FILENM(J:J).NE.' ') THEN
-	  INDEND = J
-	  GOTO 20
-	ENDIF
+      IF (FILENM(J:J).NE.' ') THEN
+        INDEND = J
+        GOTO 20
+      ENDIF
 10    CONTINUE
 20    CONTINUE
 C First look for the \ character - allow more than 1 of these.
 30    CONTINUE
-      INDDIR = INDEX (FILENM(IPOS:ILEN),'\')
+      INDDIR = INDEX (FILENM(IPOS:ILEN),'/')
       IF (INDDIR.NE.0) THEN
-	IPOS = IPOS + INDDIR
-	GOTO 30
+      IPOS = IPOS + INDDIR
+      GOTO 30
       ENDIF
       IF (IPOS.GE.2) THEN
 C WE HAVE FOUND A START POINT
-	INDDIR = IPOS-1
+      INDDIR = IPOS-1
       ELSE
 C LOOK FOR :
-	INDDIR = INDEX(FILENM,':')
-	IF (INDDIR.EQ.0) THEN
+      INDDIR = INDEX(FILENM,':')
+      IF (INDDIR.EQ.0) THEN
 C LOOK FOR ]
-	  INDDIR = INDEX(FILENM,']')
-	ENDIF
+        INDDIR = INDEX(FILENM,']')
+      ENDIF
       ENDIF
 C Now look for the .
       INDDOT = INDEX (FILENM,'.')
 C Begin to build the filename.
       IPOS = 1
       IF (INDDIR.GT.0) THEN
-	CBUILD = FILENM(IPOS:INDDIR)
-	IPOS = INDDIR+1
+      CBUILD = FILENM(IPOS:INDDIR)
+      IPOS = INDDIR+1
       ENDIF
       IF (INDDOT.LE.INDDIR+1 .AND. INDDOT.NE.0) THEN
 C THIS IS AN ERROR
-	IERR = 1
-	RETURN
+      IERR = 1
+      RETURN
       ENDIF
 C Now find the length of the filename
       IF (INDDOT-INDDIR.GE.9) THEN
-	CBUILD(IPOS:IPOS+8) = FILENM(INDDIR+1:INDDIR+9)
-	IPOS = IPOS + 8
+      CBUILD(IPOS:IPOS+8) = FILENM(INDDIR+1:INDDIR+9)
+      IPOS = IPOS + 8
       ELSE IF (INDDOT.GT.0) THEN
-	CBUILD(IPOS:IPOS+8) = FILENM(INDDIR+1:INDDOT-1)
-	IPOS = IPOS + INDDOT - INDDIR -1
+      CBUILD(IPOS:IPOS+8) = FILENM(INDDIR+1:INDDOT-1)
+      IPOS = IPOS + INDDOT - INDDIR -1
       ELSE IF (INDEND-INDDIR.GE.8) THEN
-	CBUILD(IPOS:IPOS+8) = FILENM(INDDIR+1:INDDIR+8)
+      CBUILD(IPOS:IPOS+8) = FILENM(INDDIR+1:INDDIR+8)
       ELSE
-	CBUILD(IPOS:IPOS+8) = FILENM(INDDIR+1:INDEND)
+      CBUILD(IPOS:IPOS+8) = FILENM(INDDIR+1:INDEND)
       ENDIF
 C NOW ADD ON THE EXTENSION
       IF (INDDOT.GT.0) THEN
-	IF (INDEND-INDDOT.GE.3) THEN
-	  CBUILD(IPOS:IPOS+4) = '.'//FILENM(INDDOT+1:INDDOT+3)
-	ELSE
-	  CBUILD(IPOS:IPOS+4) = '.'//FILENM(INDDOT+1:INDEND)
-	ENDIF
+      IF (INDEND-INDDOT.GE.3) THEN
+        CBUILD(IPOS:IPOS+4) = '.'//FILENM(INDDOT+1:INDDOT+3)
+      ELSE
+        CBUILD(IPOS:IPOS+4) = '.'//FILENM(INDDOT+1:INDEND)
+      ENDIF
       ENDIF
       RETURN
       END
