@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2002/01/08 12:42:43  ckpgroup
+C SH: Added Key value to Analyse command. Using '#Analyse Plot FO=KEY' displays a key in the FO Plot.
+C
 C Revision 1.27  2001/12/12 15:57:52  ckpgroup
 C Changed to the new script layout. See Plot.man.
 C
@@ -2737,12 +2740,13 @@ c--PLCLS IS EITHER 0 (OFF), 1 (ON) OR 2 (KEY). PLOT GRAPH IF 1 OR 2.
         WRITE(CMON,'(A,A,/,A,/,A,/,A,/,A,/,A,/,A)')
      1  '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VCLASS', CSHK(PLCLS),
      1  '^^PL XAXIS TITLE ''HKL Class''',
-     1	 '^^PL NSERIES=3 LENGTH=16 YAXIS LOG TITLE <Fo-Fc>**2',
+     1  '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
+     1  '^^PL NSERIES=3 LENGTH=16 YAXIS LOG TITLE <Fo-Fc>**2',
      1  '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
      1  '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
      1  '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1  '^^PL ZOOM 0.01 100 SERIES 3 TYPE LINE USERIGHTAXIS'
-        CALL XPRVDU(NCVDU, 7,0)
+        CALL XPRVDU(NCVDU, 8,0)
       END IF
 
       L=ICLS
@@ -2806,11 +2810,12 @@ C--AGREEEMNT ANALYSIS ON PARITY GROUPS
      1 '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VPAR', CSHK(PLPAR),
      1 '^^PL NSERIES=3 LENGTH=8 XAXIS TITLE ''Parity Group''',
      1 '^^PL YAXIS LOG TITLE <Fo-Fc>**2 ZOOM 0.01 100',
+     1 '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
      1  '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
      1  '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
      1  '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1 '^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
-        CALL XPRVDU(NCVDU, 7,0)
+        CALL XPRVDU(NCVDU, 8,0)
       ENDIF
 
       L=IPAR
@@ -2882,13 +2887,14 @@ C--- OUTPUT TO SCREEN
         WRITE(CMON,'(A,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A)') 
      1 '^^PL PLOTDATA _FO BARGRAPH ATTACH _VFO', CSHK(PLFOR),
      1 '^^PL NSERIES=3 LENGTH=20 XAXIS TITLE',
-     1'^^PL  ''<- Weak           Fo Range            Strong ->''',
+     1 '^^PL  ''<- Weak           Fo Range            Strong ->''',
      1 '^^PL YAXIS LOG TITLE <Fo-Fc>**2 ZOOM 0.01 100',
+     1 '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
      1 '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
      1 '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
      1 '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1 '^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
-        CALL XPRVDU(NCVDU, 8,0)
+        CALL XPRVDU(NCVDU, 9,0)
       ENDIF
 
       IF ( PLEXT .GE. 1 ) THEN
@@ -3032,11 +3038,12 @@ C--AGREEMENT ANALYSIS ON SIN(THETA)/LAMBDA RANGES
      1'^^PL YAXIS ZOOM 0.01 100 TITLE',
      1'^^PL  <Fo-Fc>**2 LOG NSERIES=3 LENGTH=10 XAXIS TITLE',
      1'^^PL ''<-Low angle    Sin(theta)/lambda   High angle->''',
+     1'^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
      1 '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
      1 '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
      1 '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1'^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
-        CALL XPRVDU(NCVDU, 8,0)
+        CALL XPRVDU(NCVDU, 9,0)
       ENDIF
 
       IF (MONIT .NE. 1) THEN

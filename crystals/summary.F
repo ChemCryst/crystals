@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2001/12/17 16:29:43  Administrator
+C Fix translational components 9/4 -> 5/4. An old but forgotten errror may be re-introduced
+C
 C Revision 1.10  2001/10/05 13:31:53  ckp2
 C
 C Implementation of Lists 40 and 41.
@@ -295,7 +298,7 @@ C
       ELSE IF ( LSTYPE .EQ. 5 ) THEN
         CALL XSUM05 ( LSTYPE , LEVEL )
       ELSE IF ( LSTYPE .EQ. 6 ) THEN
-        CALL XSUM06
+        CALL XSUM06 ( LEVEL )
       ELSE IF ( LSTYPE .EQ. 10 ) THEN
         CALL XSUM05 ( LSTYPE , LEVEL )
       ELSE IF ( LSTYPE .EQ. 12 ) THEN
@@ -825,7 +828,7 @@ C
 C
 C
 CODE FOR XSUM06
-      SUBROUTINE XSUM06
+      SUBROUTINE XSUM06 ( LEVEL )
 C
 C -- ROUTINE TO DISPLAY SUMMARY OF LIST 6
 C
@@ -861,6 +864,16 @@ C
       IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
       IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL23
       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
+
+C--SETUP A GRAPH HERE
+      IF (LEVEL .EQ. 4) THEN
+        WRITE(CMON,'(A,/,A,/,A)')
+     1  '^^PL PLOTDATA _FOFC SCATTER ATTACH _VFOFC',
+     1  '^^PL XAXIS TITLE Fc',
+     1  '^^PL NSERIES=1 LENGTH=2000 YAXIS TITLE Fo'
+        CALL XPRVDU(NCVDU, 3,0)
+      END IF
+
 C----- PRINT SOME OVER-ALL DETAILS
 C--PRINT THE DETAILS RECORD
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1550)
@@ -911,6 +924,12 @@ C
         N6ACC = N6ACC + 1
         FO = STORE(M6+3)
         FC = SCALE * STORE(M6+5)
+
+      IF ( LEVEL .EQ. 4 ) THEN
+        WRITE(CMON,'(A,2F15.7)')'^^PL DATA ', FC ,FO
+        CALL XPRVDU(NCVDU, 1,0)
+      ENDIF
+
         WT = STORE(M6+4)
         TOP = TOP + ABS (ABS(FO) - FC)
         BOTTOM = BOTTOM + ABS(FO)
@@ -958,6 +977,12 @@ C -- PRINT THE R VALUE ETC.
       WRITE ( NCAWU , 1235 ) J , ( STORE(I+1) , I=L6P,M6P )
       WRITE ( CMON , 1235 ) J , ( STORE(I+1) , I=L6P,M6P )
       CALL XPRVDU(NCVDU, 2,0)
+C -- FINISH THE GRAPH DEFINITION
+      IF ( LEVEL .EQ. 4 ) THEN
+        WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
+        CALL XPRVDU(NCVDU, 2,0)
+      ENDIF
+
 1235  FORMAT (1X , 'After ' , I5 ,
      2 ' structure factor/refinement calculations ' , / ,
      3 1X , 'R = ' , F6.2 , 5X , 'Weighted R = ' , F6.2 ,
