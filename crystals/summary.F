@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2002/02/12 12:56:53  Administrator
+C Fix problem with text version of symmetry operators - avoid /1 as a divisor
+C
 C Revision 1.15  2002/02/01 14:41:31  Administrator
 C Enable CALC to get additional R factors and display them in SUMMARY
 C
@@ -1673,8 +1676,8 @@ C
       DATA (CKEY(I,8),I=1,MAXKEY)/ 19*'*' /
       DATA (CKEY(I,9),I=1,MAXKEY)/ 
      1 'Sigma Calc', 'No. Calc', 'R Calc', 'Rw Calc',
-     2 'Sigma All', 'No. All', 'R All', 'Rw All',
-     * 11*'*' /
+     2 'Sigma All', 'No. All', 'R All', 'Rw All', 'Extn-su',
+     * 10*'*' /
 C
 C
 C

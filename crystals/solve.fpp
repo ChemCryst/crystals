@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2002/02/12 12:54:50  Administrator
+C Allow filtering of reflections in SFLS/CALC
+C
 C Revision 1.9  2002/01/09 14:59:18  Administrator
 C bound shifts, abandon ill-conditioned problem
 C
@@ -1716,16 +1719,20 @@ C------     AND FUDGE THE SHIFT AND ESD
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1400)MD5O
       ENDIF
+      IF (  KEXIST ( 30 ) .GE. 1 )   THEN
 C----- SAVE THE 'FLACK' INFORMATION IN LIST 30
-      IF (BPD(5) .GE. ZERO) THEN
-        IF (  KEXIST ( 30 ) .GE. 1 )   THEN
-          IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30
+        IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30
+        IF (BPD(5) .GE. ZERO) THEN
           IF( MD30GE .GE. 6) THEN
-          STORE(L30GE+6) = STORE(L5O+4)
-          STORE(L30GE+7) = BPD(5)
-          CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
+            STORE(L30GE+6) = STORE(L5O+4)
+            STORE(L30GE+7) = BPD(5)
           ENDIF
         ENDIF
+C----- SAVE THE 'EXTINCTION ESD' INFORMATION IN LIST 30
+        IF( MD30CF .GE. 8) THEN
+          STORE(L30CF+8) = BPD(6)
+        ENDIF
+        CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
       ENDIF
 C<DJWSEP96
 1400  FORMAT(///1X,I2,'  Overall parameter(s)'/)

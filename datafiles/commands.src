@@ -1491,7 +1491,7 @@ New CIF extensions
     .ALL-NREF           0    0    1    0    1 0.
     .ALL-R              0    0    1    0    1 0.
     .ALL-RW             0    0    1    0    1 0.
-    .ZZ9                0    0    1    0    1 0.
+    .EXTNCTN-SU         0    0    1    0    1 0.
     .ZZ10               0    0    1    0    1 0.
     .ZZ11               0    0    1    0    1 0.
     .ZZ12               0    0    1    0    1 0.
