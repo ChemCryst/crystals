@@ -1,0 +1,16 @@
+%SCRIPT XTLS
+%%
+%%
+%   COPY '#ANISO'
+%   COPY 'ATOM '
+%   LOOP
+%     CLEAR
+%     INSERT 'CONTINUE '
+%     ON END TERMINATE
+%     GET SILENT TEXT 'Plane defining atom labels (END to finish)'
+%     SEND
+%   END LOOP
+%   COPY 'TLS'
+%   COPY 'DISTANCE'
+%   COPY 'END'
+%END SCRIPT
