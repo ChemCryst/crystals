@@ -17,6 +17,10 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.16  2004/06/24 09:12:00  rich
+// Replaced home-made strings and lists with Standard
+// Template Library versions.
+//
 // Revision 1.15  2003/11/13 16:45:26  rich
 // Clear chart area before drawing. Gets rid of those bits of Cameron diagram
 // that overflowed the previous drawing.
@@ -513,7 +517,6 @@ void fasttext  ( int x,  int y,  char theText[80], int fs );
 void fastcolour( int r,  int g, int b );
 void fastclear     ( );
 void fastshow      ( );
-void complete      ( );
 #endif
 #ifdef __BOTHWX__
 void fastline_  ( int x1, int y1, int x2, int y2 );
@@ -525,7 +528,6 @@ void fasttext_  ( int x,  int y,  char theText[80], int fs );
 void fastcolour_( int r,  int g, int b );
 void fastclear_     ( );
 void fastshow_      ( );
-void complete_      ( );
 #endif
 
 #ifdef __CR_WIN__
@@ -647,17 +649,6 @@ void fastshow_ ( )
 #ifdef __BOTHWX__
       ::wxMutexGuiLeave();
 #endif
-}
-
-#ifdef __CR_WIN__
-void complete ( )
-#endif
-#ifdef __BOTHWX__
-void complete_ ( )
-#endif
-{
-// Make sure the command queue is emptied before returning.
-      (CcController::theController)->CompleteProcessing();
 }
 
 } //extern "C"
