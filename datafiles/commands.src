@@ -2981,9 +2981,12 @@ MERGE              7    2
 ROTAX              1    4
    5    4096 CRYSTALSPROCESS6
     1    5    6   28
-   1.PARAMETERS         1    1    0    0
-         2 
+   1.PARAMETERS         4    1    0    0
+         2    2    1    1
     .TOL                1    0    1    0    0 0.2
+    .REJ                2    0    1    0    0 4.0
+    .MINREJ             3    0    1    0    0         5
+    .MAXREJ             4    0    1    0    0        15
 REFLECTIONS        2    1
    1    4096 CRYSTALSPUBLISH
     6
