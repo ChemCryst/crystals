@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.27  2004/02/23 19:16:13  rich
+c Change CMPMAT function from cross-correlation to 1 - rmsdeviation.
+c
 c Revision 1.26  2004/02/13 12:15:35  rich
 c Re-written closed set symmetry testing for Anna's project.
 c
@@ -1097,7 +1100,13 @@ C Store potential new operator in OPN
             CALL XMOVE(WSPAC3(1,K2),OPN(1,K2),3)
             OPN(4,K2) = 0.0
           END DO
-          CALL XMOVE(DELCNT(1),OPN(1,4),3)
+
+C Anna: Work out translation part by applying rotation to the NEW centroid
+C (CENTN) and then subtracting from the OLD centroid (CENTO).
+C
+
+          CALL XMLTMM(WSPAC3,CENTN,ATEMP,3,3,1)
+          CALL XSUBTR (CENTO,ATEMP,OPN(1,4),3)
           OPN(4,4) = 1.0
 
 C Use OPM for building existing ops
@@ -1164,16 +1173,18 @@ C    store the worst of the best matches so far.
               DO K3 = LSGT,LSGT+(MLTPLY-1)*16,16             ! All generators
 
 C Shift trans bits of matrix in OPM so that they are as close as
-C poss to the entries at K3. (e.g. All values are 0<t<1 to start with,
+C poss to the entries at K3. (e.g. All values may be 0<t<1 to start with,
 C but 0.01 and 0.98 *should* be close)
 
                   DO K4 = 1,3
-                    DELTA = OPM(K4,4) - STORE(K3+11+K4)
-                    IF ( DELTA .LT. -0.5 ) THEN
-                      OPM(K4,4) = OPM(K4,4) + 1
-                    ELSE IF ( DELTA .GT. 0.5 ) THEN
-                      OPM(K4,4) = OPM(K4,4) - 1
-                    END IF
+
+                    DO WHILE ( OPM(K4,4) - STORE(K3+11+K4) .LT. -0.5 )
+                      OPM(K4,4) = OPM(K4,4) + 1.0
+                    END DO
+                    DO WHILE ( OPM(K4,4) - STORE(K3+11+K4) .GT. 0.5 )
+                      OPM(K4,4) = OPM(K4,4) - 1.0
+                    END DO
+
                   END DO
 C Do the comparison.
                   BEST = MAX(BEST,CMPMAT(STORE(K3),OPM(1,1),16)) 
