@@ -1,9 +1,15 @@
 %SCRIPT XFOUR
+% VARIABLE CHARACTER FNAME
 % VARIABLE LOGICAL SCRIPTEXT
 % VARIABLE LOGICAL LCONTOUR LSECTION COLLECTNEW
 % VARIABLE LOGICAL PEAKCHANGE REDRAW
 % VARIABLE INTEGER DOSCALE DOCALC DOMAP NPEAKS IMAP
 % VARIABLE INTEGER PEAKS ATOMS DOPEAKS DOCOLLECT MTYPE
+%%
+%% The variables needed by XQUESTIO
+% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
+% VARIABLE LOGICAL   ANSWER
+%%
 %% LSECT
 % VARIABLE REAL PEAKHEIGHT REJLIMIT
 % VARIABLE CHARACTER CDLINE
@@ -61,12 +67,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^WI   {
 ^^WI    @ 1,2 CHECKBOX XSCALE 'Recalculate scale factor' INFORM=NO
 ^^WI    @ 2,2 CHECKBOX XCALC 'Recalculate phases' INFORM=NO
-%%%^^WI    @ 3,2 CHECKBOX XSECT 'Set map ranges' INFORM = NO
-%      IF LSECTION .EQ. TRUE THEN
-^^WI      STATE = OFF
-%      ELSE
-^^WI      STATE = ON
-%      END IF
+^^WI                                              STATE = ON
 ^^WI   }
 ^^WI   @ 4,2 GRID GRIDAB NROWS=3 NCOLS=3 OUTLINE='Fourier map'
 ^^WI   {
@@ -245,14 +246,17 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %           INSERT ' FILE=YES'
 %           EVALUATE LCONTOUR = TRUE
 %           BLOCK
-%               VARIABLE CHARACTER FILENAME
 %               ON ERROR REPEAT
 ^^WI SYSSAVEFILE 'Map.fou' '*.fou' 'Fourier map ASCII file (*.fou)'
 ^^CR
 %               GET SILENT NOSTORE FILENAME 'Save as' 'MAP.FOU'
-%               EVALUATE FILENAME = CVALUE
-%               TRANSFER "#STORE CSYS MAP '" //  FILENAME  // -
-                "'" TO CRYSTALS
+%               EVALUATE FNAME = CVALUE
+%               IF ( FNAME .EQ. 'CANCEL' ) THEN
+%                 EVALUATE DOMAP = 0
+%               ELSE
+%                 TRANSFER "#STORE CSYS MAP '" //  FNAME  // -
+                  "'" TO CRYSTALS
+%               END IF
 %           END BLOCK
 %       END IF
 %       QUEUE SEND
@@ -268,6 +272,22 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %       COPY '#FOURIER'
 %       QUEUE PROCESS
 %       COPY 'END'
+%%
+%%
+%%
+%       IF ( DOMAP .EQ. 1 ) THEN
+%         EVALUATE QTITLE = 'Run CONTOUR'
+%         EVALUATE QLINE1 = 'Do you want to view the new map file'
+%         EVALUATE QLINE2 = 'in the CONTOUR program?'
+%         EVALUATE BUTTOK = '&Yes'
+%         EVALUATE BUTTXX = '&No'
+%         COPY '#SCRIPT XQUESTIO'
+%         IF ANSWER .EQ. TRUE THEN
+ * Starting Fourier map viewer.
+%               TRANSFER '#SPAWN START CRYSDIR:CONTOUR ' // -
+ FNAME TO CRYSTALS
+%         END IF
+%       END IF
 %% See if any atoms were found
 %       COPY '#GENERALEDIT 10'
 %       COPY 'LOCATE RECORDTYPE=101'
@@ -363,7 +383,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %                 EVALUATE DOCOLLECT = VALUE
 ^^WI              DISPOSE PEAKS
 ^^CR
-%                 COPY '#SCRIPT PEAKS'
+%                 COPY '#SCRIPT XPEAKS'
 %                 IF DOCOLLECT .EQ. 1 THEN
 %                     EVALUATE COLLECTNEW = TRUE
 %                     COPY '#SCRIPT XCOLLECT'
