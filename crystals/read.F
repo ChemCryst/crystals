@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.47  2004/02/17 13:37:21  rich
+C Extend some CSYS filenames to 256 characters. At the same time fix
+C wrong addresses of last four CSYS units since last week when the
+C character variables were extended, but the addresses were unchanged.
+C (Affecting MAP and CIF files).
+C
 C Revision 1.46  2003/09/29 15:38:34  rich
 C Added \DEFINE system instruction for building the command file. No
 C need for separate executable anymore. This command is \REMOVEd in
@@ -1690,7 +1696,7 @@ C----- NUMBER OF KEYWORDS PERMITTED
 C
       DATA NUMVAL(1)  /  3 / , NUMVAL(2)  /  2 / , NUMVAL(3)  /  2 /
       DATA NUMVAL(4)  /  0 / , NUMVAL(5)  /  4 / , NUMVAL(6)  /  2 /
-      DATA NUMVAL(7)  /  2 / , NUMVAL(8)  /  0 / , NUMVAL(9)  / 2 /
+      DATA NUMVAL(7)  /  3 / , NUMVAL(8)  /  0 / , NUMVAL(9)  / 2 /
       DATA NUMVAL(10) /  5/, NUMVAL(11) / 3/
       DATA NUMVAL(12) /  2/, NUMVAL(13) / 2/ , NUMVAL(14)  /  2 /
       DATA NUMVAL(15) /  2/, NUMVAL(16) / 0/ , NUMVAL(17)  /  2 /

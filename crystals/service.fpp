@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.34  2003/08/05 11:11:12  rich
+C Commented out unused routines - saves 50Kb off the executable.
+C
 C Revision 1.33  2003/07/09 16:58:49  rich
 C Shrink header printed on startup (less blank lines).
 C
@@ -1049,7 +1052,7 @@ C
       DATA A/0.0/,I/0/,J/0/,K/0/,L/0/
 C
 C -- IF TIMING IS DISABLED, RETURN IMMEDIATELY
-      IF ( ISSTIM .LE. 0 ) RETURN
+      IF ( ISSTIM .NE. 1 ) RETURN
 C
 C**MACHINE SPECIFIC
 C--CALCULATE THE MILL TIME

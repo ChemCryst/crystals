@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.46  2004/02/09 20:26:08  rich
+C Correct order of statements in XTIMER for compilation on WXS platform.
+C
 C Revision 1.45  2004/02/06 16:58:28  rich
 C Make #SET TIME OFF turn off all time routines.
 C
@@ -1473,7 +1476,7 @@ C
 &&LINGIL      DIMENSION ITIM(3)
 &WXS      DIMENSION ITIM(3)
 
-      IF ( ISSTIM .LE. 0 ) THEN
+      IF ( ISSTIM .EQ. 2 ) THEN
 &&DOSVAX        CTIME=' '
 ##DOSVAX        CTIME2=' '
         RETURN
@@ -1565,7 +1568,7 @@ C
 &WXS      DIMENSION IDAT(3)
 
 
-      IF ( ISSTIM .EQ. 0 ) THEN
+      IF ( ISSTIM .EQ. 2 ) THEN
          CDATE = ' '
          RETURN
       END IF
