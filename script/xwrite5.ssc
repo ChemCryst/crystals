@@ -63,6 +63,7 @@
 {I run '#SCRIPT XREFINE' to carry out the refinement.
 
 %      FINISH
+%    END IF
 %  END IF
 %%
 ^^WI WINDOW XRSETUP 'Least Squares Directives' MODAL

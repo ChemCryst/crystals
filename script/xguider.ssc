@@ -247,7 +247,7 @@
                    Check for extinction.
 %%___________________________________________________________________
 %%
-%  ELSE IF ( VALIDPASS )
+%  ELSE IF ( VALIDPASS ) THEN
 %      EVALUATE KTDEFA = 12
     Recommended:   Produce publication material.
     Other options: Validate.
@@ -257,7 +257,7 @@
                    Check for extinction.
                    Optimise least squares weights.
 
-%  ELSE IF ( VALIDFAIL )
+%  ELSE IF ( VALIDFAIL ) THEN
 %      EVALUATE KTDEFA = 11
     Recommended:   Fix the problems with the structure.
     Options:       Re-validate.
@@ -289,3 +289,11 @@
 % END SCRIPT
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.1  2001/03/08 14:00:23  richard
+%%  New GUIDE scripts. The main script, xguide, decides on the overall stage
+%%  and calls one of xguidei - for data import, xguides - for solving or
+%%  xguider - for refinement. These display a window recommending a course of
+%%  action and exit - thus allowing the user access to the full range of CRYSTALS
+%%  commands even while being guided. The window knows to call one of xguideic, xguidesc,
+%%  or xguiderc respectively when the user does something to it e.g. pushes a button.
+%%
