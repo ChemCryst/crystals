@@ -106,6 +106,16 @@ class Matrix:public MyObject
             delete[] iMatrix;
         }
         
+        short sizeX()
+        {
+            return iXSize;
+        }
+        
+        short sizeY()
+        {
+            return iYSize;
+        }
+        
         Matrix<type>& operator+=(const Matrix<type>& pMatrix)
         {
             if (iXSize != pMatrix.iXSize || iYSize != pMatrix.iYSize)
@@ -350,6 +360,16 @@ class Matrix<float>:public MyObject
         ~Matrix()
         {
             free(iMatrix);
+        }
+        
+        short sizeX()
+        {
+            return iXSize;
+        }
+        
+        short sizeY()
+        {
+            return iYSize;
         }
         
         Matrix<float>& operator+=(const Matrix<float>& pMatrix)
