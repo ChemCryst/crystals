@@ -49,6 +49,29 @@ tidy :
 	$(MAKE) -f Makefile.bits tidy
 	$(MAKE) -f Makefile.manual tidy
 
+ifeq ($(COMPCODE), MAC)
+app-package : ./Crystals.app crysexe data scripts bits documentation
+	$(MAKE) -f Makefile.script tidy
+	$(MAKE) -f Makefile.data tidy
+	$(MAKE) -f Makefile.crystals tidy
+	$(MAKE) -f Makefile.bits tidy
+	$(MAKE) -f Makefile.manual tidy
+	-rm -f crystals.pst cameron.pst
+	mkdir -p Crystals.app/Contents/Resources/Crystals_Resources
+	mkdir -p Crystals.app/Contents/MacOS
+	mkdir -p Crystals.app/Contents/Resources/Crystals_Resources/Libraries
+	cp -R `ls | grep -v obj | grep -v dscbuild | grep -v Crystals.app` Crystals.app/Contents/Resources/Crystals_Resources
+	cp ../gui/mac/Crystals.icns  Crystals.app/Contents/Resources/
+	cp ../gui/mac/Info.plist ../gui/mac/PkgInfo Crystals.app/Contents/
+	mv Crystals.app/Contents/Resources/Crystals_Resources/Crystals Crystals.app/Contents/MacOS/
+	rm -Rf `find Crystals.app/Contents/Resources/Crystals_Resources -name CVS`
+	cp ../bin/crystals.script Crystals.app/Contents/Resources/Crystals_Resources
+	python mac_scripts/LibMove.py
+
+./Crystals.app : 
+	mkdir $@
+endif
+
 ifeq ($(COMPCODE),WXS)
 dist : ../installer crysexe data scripts bits documentation
 	$(MAKE) -f Makefile.script tidy
@@ -75,6 +98,7 @@ dist : ../installer crystals crysexe data scripts bits documentation
 	$(INSTALL) -d ../rpmbuild/usr
 	$(INSTALL) -d ../rpmbuild/usr/bin
 	$(INSTALL) -d ../rpmbuild/usr/crystals
+	cp -R `ls | grep -v obj | grep dscbuild` ../rpmbuild/usr/crystals 
 	cp -R $(CURDIR)/* ../rpmbuild/usr/crystals
 	rm -Rf ../rpmbuild/usr/crystals/obj
 	rm -Rf ../rpmbuild/usr/crystals/dscbuild
