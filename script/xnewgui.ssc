@@ -24,6 +24,11 @@ WARNING: The Space Group is not available for the Model window
 %            COPY '#SUM L 5 LOW'
 %            COPY 'END'
 % ELSE
+%% Create an empty L5 so that the model will disappear if we
+%% are restarting in a new directory.
+%  COPY '#LIST 5'
+%  COPY 'READ NATOM=0'
+%  COPY 'END'
 
 WARNING: There are no atoms available for the Model window
 
