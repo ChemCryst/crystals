@@ -1,5 +1,5 @@
 %SCRIPT LLSQ
-%%  
+%%
 %%
 %% Internal only...
 %VARIABLE INTEGER N
@@ -26,7 +26,7 @@
 ^^WI      @ 6,1 STATIC METH 'Setting  = X`s,U(iso)  '
 ^^WI      @ 7,1 STATIC EXTI 'Extinction pending.'
 ^^WI    }
-%% THIS GRID IS THE CENTRE VERTICAL CELL it contains a listbox with QVLINES visible
+%% THIS GRID IS THE CENTRE VERTICAL CELL it contains a listbox with QVLINES visi
 ^^WI    @ 1,2 GRID GRLIST NROWS=1 NCOLS=3
 ^^WI    {
 ^^WI       @ 1,2 LISTBOX LIST01 VISLINES=4
@@ -48,8 +48,8 @@
 %% The only reason for using a grid is to add the outline to it.
 ^^WI   @ 4,2 GRID GRIDHLP NROWS=1 NCOLS=1 OUTLINE=''
 ^^WI   {
-^^WI     @ 1,1 STATIC LHELP 
-^^WI     'Define which parameters will be refined.                      ' 
+^^WI     @ 1,1 STATIC LHELP
+^^WI     'Define which parameters will be refined.                      '
 ^^WI   }
 ^^WI }
 ^^WI SHOW
@@ -67,11 +67,10 @@
 %     ON EDITERROR TERMINATE
 %     COPY 'TRANSFER FROM OFFSET=0 TO RVAL'
 %     CLEAR
-%     INSERT !%EVALUATE CDLINE = "^^WI SET RVAL TEXT='R-Factor = !
+%     INSERT !^^WI SET RVAL TEXT='R-Factor = !
 %     STORE FORMAT /(F6.2)/ LENGTH 6 REAL RVAL
-%     INSERT !'"!
-%     EXECUTE
-%     SHOW CDLINE
+%     INSERT !'!
+%     OUTPUT
 %  END BLOCK
 %     CASE LSETUP
 %      BLOCK
@@ -130,15 +129,15 @@
 %            COPY 'END'
 %            COPY '#SCRIPT LVIEW'
 %            COPY '#SCRIPT XDELQ'
-
+ 
  Any remaining 'Q' atoms have been removed from the stucture.
-
+ 
 %           END BLOCK
 %           BLOCK                                         %VIEW%
 %            COPY '#SCRIPT LVIEW'
 %           END BLOCK
 %          END CASE
-%          
+%
 %       END BLOCK
 %       BLOCK                       %CANCEL BUTTON%
 ^^WI       DISPOSE SELECTI
@@ -152,16 +151,16 @@
 %               GET NOSTORE FINAL ABBREVIATED ' ' ' '
 %               CASE VALUE
 % BLOCK
-^^WI SET LHELP TEXT='Define which parameters will be refined.' 
+^^WI SET LHELP TEXT='Define which parameters will be refined.'
 % END BLOCK
 % BLOCK
 ^^WI SET LHELP TEXT='Refine the parameters.'
 % END BLOCK
 % BLOCK
-^^WI SET LHELP TEXT='Add hydrogen atoms to the model.' 
+^^WI SET LHELP TEXT='Add hydrogen atoms to the model.'
 % END BLOCK
 % BLOCK
-^^WI SET LHELP TEXT='View the structure in a graphics package.' 
+^^WI SET LHELP TEXT='View the structure in a graphics package.'
 % END BLOCK
 %               END CASE
 ^^CR
