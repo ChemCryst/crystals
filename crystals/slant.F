@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.17  2003/02/14 17:09:02  djw
+C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
+C recine have the parameter ityp06, which corresponds to the types
+C pickedip for lists 6 and 7  from the command file
+C
 C Revision 1.16  2002/12/16 18:24:21  rich
 C Change calls to KDIST1
 C
@@ -652,9 +657,10 @@ C
       DIMENSION IPROCS(NPROCS)
       DIMENSION APD(13)
       DIMENSION A1(26)
-      DIMENSION AMIN(3)
+      DIMENSION AMIN(3),XYZ(3)
       CHARACTER*16 CMAPTP(5)
       CHARACTER*8  WTED
+      CHARACTER*24 CSERI
       DIMENSION KDEV(4)
 C
 \STORE
@@ -815,7 +821,7 @@ C----- WRITE THE M/T HEADER  DETAILS
            NXNY = ISTORE(L8T+4) * ISTORE(L8T+7)
       END IF
 
-      IF (IOUFIL .GT. 0 ) THEN
+      IF (IOUFIL .EQ. 1 ) THEN
            CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
            CALL XRDOPN(6, KDEV , CSSMAP, LSSMAP)
 1651       FORMAT(A)
@@ -835,6 +841,53 @@ C----- WRITE THE M/T HEADER  DETAILS
            NXNY = ISTORE(L8T+4) * ISTORE(L8T+7)
       ENDIF
 C
+
+      IF ( IOUFIL .EQ. 2 ) THEN
+          CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
+          CALL XRDOPN(7, KDEV , CSSMAP, LSSMAP)  !Close unit
+          OPEN ( UNIT   = NCFPU1,                !Special open
+     1         FILE = CSSMAP(1:LSSMAP),
+     1         STATUS = 'UNKNOWN' ,
+     1         ACCESS = 'DIRECT' ,
+     1         FORM   = 'UNFORMATTED' ,
+     1         RECL   = 1 ,
+     1         IOSTAT = IOS ,
+     1         ERR    = 9900 )
+
+C WRITE THE MAPVIEW HEADER DETAILS
+          DO I = 1,3
+            WRITE (NCFPU1,REC=I) ISTORE(L8T+1+I*3)   !NX,NY,NZ
+          END DO
+C STEPX,STEPY,STEPZ
+          WRITE (NCFPU1,REC=4) STORE(L8T+5)
+          WRITE (NCFPU1,REC=5) STORE(L8T+8)
+          WRITE (NCFPU1,REC=6) STORE(L8T+11)
+C MAP UNITS
+          DO I = 0,2
+            WRITE (NCFPU1,REC=I+7) ISTORE(L8T+4+I*3) * STORE(L8T+5+I*3)
+          END DO
+          DO I = 3,5
+            WRITE (NCFPU1,REC=I+7) 90.0
+          END DO
+C STARTX,Y,Z
+          WRITE (NCFPU1,REC=13) STORE(L8T+3)
+          WRITE (NCFPU1,REC=14) STORE(L8T+6) 
+          WRITE (NCFPU1,REC=15) STORE(L8T+9)
+C Projection axis 1=A*,2=B*,3=C*
+          WRITE (NCFPU1,REC=16) 3
+C Mode 1=3D, 2=Slant
+          WRITE (NCFPU1,REC=17) 2
+C Min max values
+          WRITE (NCFPU1,REC=18) -100.0
+          WRITE (NCFPU1,REC=19) 100.0
+          JPOINT = 19
+          DENMIN =  100000.
+          DENMAX =  -100000.
+          NXNY = ISTORE(L8T+4) * ISTORE(L8T+7)
+      ENDIF
+
+
+
 C--CHECK THAT THERE ARE SOME REASONABLE INTERVALS
       IF(ABS(STORE(L8T+5))-0.0001)1400,1400,1350
 1350  CONTINUE
@@ -1027,13 +1080,21 @@ C--MAIN MAP PRINTING ROUTINES
       IF (IOUTAP .GT. 0) THEN
         WRITE(MT1) NXNY, (STORE(I)*W, I= L8, L8+NXNY-1)
       ENDIF
-      IF (IOUFIL .GT. 0) THEN
+      IF (IOUFIL .EQ. 1) THEN             !MCE file
 2801    FORMAT (A)
 2802    FORMAT (I8)
 2803    FORMAT (F15.8)
         WRITE(NCFPU1,2801) 'BLOCK'
         WRITE(NCFPU1,2802) NXNY
         WRITE(NCFPU1,2803) (STORE(I)*W, I= L8, L8+NXNY-1)
+      ENDIF
+      IF ( IOUFIL .EQ. 2 ) THEN           !MapView file
+        DO I = L8,L8+NXNY-1
+          JPOINT = JPOINT + 1
+          WRITE(NCFPU1,REC=JPOINT) STORE(I)*W
+          DENMIN = MIN(DENMIN,STORE(I)*W)
+          DENMAX = MAX(DENMAX,STORE(I)*W)
+        END DO
       ENDIF
       JA=MINY
       JB=NY
@@ -1103,7 +1164,7 @@ C----- RESTORE NEW INDEX AREAS
             M5 = M5 + MD5
 3310    CONTINUE
       ENDIF
-      IF (IOUFIL .GT. 0) THEN
+      IF (IOUFIL .EQ. 1) THEN
         WRITE(NCFPU1,3301)'LIST5'
         WRITE(NCFPU1,3302)N5,MD5
         M5 = L5
@@ -1152,6 +1213,30 @@ C Close the fourier.map file
         CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
         CALL XRDOPN(7, KDEV , CSSMAP, LSSMAP)
       ENDIF
+      IF ( IOUFIL .EQ. 2 ) THEN
+        WRITE (NCFPU1,REC=18) DENMIN
+        WRITE (NCFPU1,REC=19) DENMAX
+        JPOINT = JPOINT + 1
+        WRITE (NCFPU1,REC=JPOINT) N5
+        JPOINT = JPOINT + 1
+        M5 = L5
+        DO K = 1, N5          
+          CALL CATSTR (STORE(M5),STORE(M5+1),1,1,0,0,0,CSERI,LSERI)
+          WRITE ( NCFPU1,REC=JPOINT) CSERI(1:4)
+          WRITE ( NCFPU1,REC=JPOINT+1) CSERI(5:8)
+          JPOINT = JPOINT + 2
+          CALL XSUBTR(STORE(M5+4),STORE(L8T),AMIN(1),3)
+          CALL XMLTTM(STORE(L8R),AMIN(1),XYZ(1),3,3,1)
+          WRITE ( NCFPU1,REC=JPOINT)   XYZ(1)
+          WRITE ( NCFPU1,REC=JPOINT+1) XYZ(2)
+          WRITE ( NCFPU1,REC=JPOINT+2) XYZ(3)
+          JPOINT = JPOINT + 3
+          M5 = M5 + MD5
+        END DO
+        CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
+        CALL XRDOPN(7, KDEV , CSSMAP, LSSMAP)
+      END IF
+
 C
 3350  CONTINUE
       CALL XOPMSG (IOPSLA, IOPEND, 201)
