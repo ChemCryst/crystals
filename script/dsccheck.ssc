@@ -31,7 +31,7 @@
 %  COPY 'END'
 %%
 %  IF ( OLDDSC ) THEN
-
+ 
   +------------------------------------------------+
   |                                                |
   |                 W A R N I N G                  |
@@ -44,10 +44,10 @@
   |  continue to use it with the new program.      |
   |                                                |
   +------------------------------------------------+
-
+ 
 % VERIFY NO YES
   You have two options:
-
+ 
   Ignore this warning - Carry on working with this
                         DSC file. Any calculation
                         using Uiso will be incorrect.
@@ -55,7 +55,7 @@
                         that its format is correct.
                         (Your old list 5 will be written
                          to disk for safety).
-
+ 
 %  GET NOSTORE FINAL ABBREVIATED 'Do you want me to -
 automatically reformat LIST 5 for you?' 'YES'
 %   IF VALUE .EQ. 2 THEN
@@ -63,23 +63,23 @@ automatically reformat LIST 5 for you?' 'YES'
 %    COPY '#PUNCH 5'
 %    COPY 'END'
 %    COPY '#RELEASE PUNCH CRFILE.PCH'
-
+ 
  A copy of your current atom list has been saved in
  the current directory as 'OLDLIST5.DAT'
-
+ 
  If you return to using a pre-December 1998 version
  of CRYSTALS, then type '#USE OLDLIST5.DAT' when
  you start up CRYSTALS.
-
+ 
 %%  REINPUT OLD LIST 5 TO GET CORRECT NUMBER OF ATOM KEYS
 %    COPY '#USE OLDLIST5.DAT'
 %    COPY '#EDIT'
 %    COPY 'REFORMAT ALL'
 %    COPY 'END'
-
+ 
  Your present LIST 5 has been converted to the new
  format. You may now continue safely.
-
+ 
 %   END IF
 %  END IF
 % END IF
@@ -97,28 +97,84 @@ automatically reformat LIST 5 for you?' 'YES'
 %  IF ( OLDDSC ) THEN
   +----------------------------------------------------------------+
   |                                                                |
-  | Your database knows nothing about colours schemes for elements.| 
+  | Your database knows nothing about colours schemes for elements.|
+  |                                                                |
+  +----------------------------------------------------------------+
+ 
+% VERIFY NO YES
+  You have two options:
+ 
+  Ignore this warning - Carry on working with this
+                        DSC file. Colour schemes may
+                        be weird.
+ 
+  Update the element properties. This requires you to re-input
+                        the empirical formula for the contents
+                        of the asymmetric unit.
+ 
+%  COPY '#SUM L 29'
+%  COPY 'END'
+ 
+%  GET NOSTORE FINAL ABBREVIATED 'Do you want to re-input the -
+ empirical formula?' 'YES'
+%   IF VALUE .EQ. 2 THEN
+%     COPY '#SCRIPT INLIST29'
+%   END IF
+%  END IF
+% END IF
+%%
+%%
+%%  CHECK LIST 30
+%%  LOOK FOR SHORT CIF RECORDS
+% IF ( EXISTS  30 .EQ. 1 ) THEN
+%  EVALUATE OLDDSC = FALSE
+%  COPY '#GENERALEDIT 30'
+%  CLEAR
+%  COPY 'TRANSHEAD FROM OFFSET = 34 TO MD '
+% SHOW MD
+%     IF ( MD .NE. 19 ) THEN
+%         EVALUATE OLDDSC = TRUE
+%     END IF
+%  COPY 'END'
+%  IF ( OLDDSC ) THEN
+  +----------------------------------------------------------------+
+  |                                                                |
+  | You have old-style cif information.                            | 
+  | CRYSTALS cannot continue safely.                               |
   |                                                                |
   +----------------------------------------------------------------+
 
 % VERIFY NO YES
   You have two options:
 
-  Ignore this warning - Carry on working with this
-                        DSC file. Colour schemes may
-                        be weird.
+1  Ignore this warning - Carry on working with this DSC file.
+                         CRYSTALS will eventually crash.
                         
-  Update the element properties. This requires you to re-input
-                        the empirical formula for the contents
-                        of the asymmetric unit.
+2  Delete the existing LIST 30, re-input any LIST 30 created by an
+   X-ray data pre-processor (DIPIN, KCCDIN, RC93), manually update
+   LIST 30 and then continue.
 
-%  COPY '#SUM L 29'
-%  COPY 'END'
 
-%  GET NOSTORE FINAL ABBREVIATED 'Do you want to re-input the -
- empirical formula?' 'YES'
+%  GET NOSTORE FINAL ABBREVIATED 'Do you want to re-input list -
+30?' 'YES'
 %   IF VALUE .EQ. 2 THEN
-%     COPY '#SCRIPT INLIST29'
+%    COPY '#SUM L 30'
+%    COPY 'END'
+%    VERIFY YES NO
+%    GET NOSTORE FINAL ABBREVIATED -
+ 'Do you a file containing LIST 30 information?' 'NO'
+%    IF VALUE .EQ. 1 THEN
+%      CLEAR
+%      GET FINAL KEYWORD -
+  'Please give the full name of the file containing LIST 30'
+%      VARIABLE CHARACTER FILENAME
+%      EVALUATE FILENAME = CVALUE
+%      TRANSFER '#USE ' //  FILENAME // ' ' TO CRYSTALS
+%    ELSE
+%     COPY '#LIST 30'
+%     COPY 'END'
+%    END IF
+%    COPY '#SCRIPT ED30'
 %   END IF
 %  END IF
 % END IF
