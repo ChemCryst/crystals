@@ -1,14 +1,13 @@
-//#include "stdafx.h"
-
 #if defined(_WIN32)
 #include <string.h>
 #include "PCPort.h"
 #include <sys/types.h>
 #include <sys/timeb.h>
+//#include <WinSock.h>
 
-void bzero(void* pPoint, long pBytes)
+void bzero(void* pPoint, size_t pBytes)
 {
-	for (long i = 0; i < pBytes; i++)
+	for (size_t i = 0; i < pBytes; i++)
 	{
 		((char*)pPoint)[i] = 0;
 	}
