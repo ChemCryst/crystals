@@ -10,10 +10,10 @@
 %  IF NES .GE. 2 THEN
 
 {E You already have two or more twin element scales being
-{E refined. This script is too confused to help you further.
-{R Try editing the list 5 manually to correct the confusion.
-{R I'd recommend removing any lines beginning 'ELEMENT', and
-{R setting NELEMENT = 0.
+{E refined. This script is too confused to help you automatically.
+
+{R If you are entering a different twin law, then it may be worth
+{R editing LIST 5 and setting the ELEMENTS to 0.5 and 0.5
 
 %    COPY '#SCRIPT EDLIST5'
 %    FINISH
