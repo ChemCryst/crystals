@@ -564,7 +564,7 @@ void CrModel::SendAtom(CcModelAtom * atom, Boolean output)
 		}
 		case CR_APPEND:
 		{
-			((CrEditBox*)(CcController::theController)->mInputWindow)->AddText(atomname);
+                  ((CrEditBox*)(CcController::theController)->mInputWindow)->AddText(" "+atomname+" ");
 			break;
 		}
 		case CR_SENDA:
