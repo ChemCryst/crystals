@@ -53,7 +53,7 @@
 %   EVALUATE SBE = SQRT ( SBE * MFAC ) * 57.29578
 %   EVALUATE SGA = SQRT ( SGA * MFAC ) * 57.29578
 %  END BLOCK
-^^WI WINDOW INLIST1 'Cell parameters' MODAL COMMIT='BOK' CANCEL='BXX'
+^^WI WINDOW INLIST1 'Cell parameters' MODAL COMMIT='CELLBOK' CANCEL='BXX'
 ^^WI GRID             GRIDM NROWS=1 NCOLS=2
 ^^WI {
 ^^WI  @ 1,1 GRID GRIDL NROWS=5 NCOLS=2
@@ -153,7 +153,7 @@
 ^^WI  }
 ^^WI  @ 1,2 GRID GRIDR NROWS=5 NCOLS=3
 ^^WI  {
-^^WI   @ 2,2 BUTTON BOK '&Ok' DEFAULT DISABLED=YES
+^^WI   @ 2,2 BUTTON CELLBOK '&Ok' DEFAULT DISABLED=YES
 ^^WI   @ 4,2 BUTTON BXX '&Cancel'
 ^^WI  }
 ^^WI }
@@ -164,7 +164,7 @@
 %  LOOP
 %   ON ERROR REPEAT
 %   ON END   TERMINATE
-%   VERIFY E1 E2 E3 E4 E5 E6 E1S E2S E3S E4S E5S E6S BXX BOK
+%   VERIFY E1 E2 E3 E4 E5 E6 E1S E2S E3S E4S E5S E6S BXX CELLBOK
 %   GET SILENT NOSTORE FINAL VERIFIED ' ' ' '
 %   EVALUATE SWITCH = VALUE
 %%
@@ -173,7 +173,7 @@
 %%
 %   IF ( SWITCH .LE. 12 ) THEN
 %     GET SILENT NOSTORE REAL ' '
-^^CO    SET BOK DISABLED=NO
+^^CO    SET CELLBOK DISABLED=NO
 %%
 %% This bit responds to BXX (Cancel or escape) and closes the window.
 %%
@@ -182,7 +182,7 @@
 %     EVALUATE LCANCEL = TRUE
 %     FINISH
 %%
-%% This bit responds to BOK (OK or return) and processes the information.
+%% This bit responds to CELLBOK (OK or return) and processes the information.
 %%
 %   ELSE
 %     CLEAR
