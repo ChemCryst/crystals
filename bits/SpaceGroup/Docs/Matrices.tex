@@ -1,0 +1,82 @@
+\subsection{Matrices}
+{\footnotesize Matrices.h modified  30/04/2003 \\
+ Matrices.cpp modified 30/04/2003}
+ 
+\subsubsection{MatrixException}
+\emph{Publicly extends Exception}
+
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{MatrixException}\\
+\hline
+\\
+\hline
++MatrixException(int pErrNum, char* pErrType)\\
+\hline
+\end{tabular}
+\end{table}
+
+This class is used for returning errors using the exception mechanisem provided in C++. The aim for this class is to return simple and standerdized error messages. This class needs to be improved upon.
+\subsubsection{Matrix$<$type$>$}
+\emph{Publicly extends MyObject}
+
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{Matrix$<$type$>$}\\
+\hline
+-iMatrix:type*\\
+-iXSize:short\\
+-iYSize:short\\
+-iSize:short\\
+\hline
++Matrix():\\
++Matrix(short pXSize, short pYSize):\\
++Matrix(short pXSize, short pYSize, type pC):\\
++Matrix(const Matrix$<$type$>$\ands pMatrix):\\
++\til Matrix():\\
++operator+=(const Matrix$<$type$>$\ands \xspace pMatrix):Matrix$<$type$>$\ands\\
++operator-=(const Matrix$<$type$>$\ands \xspace pMatrix):Matrix$<$type$>$\ands\\
++operator*=(const Matrix$<$type$>$\ands \xspace pMatrix):Matrix$<$type$>$\ands\\
++getValue(const short pIndex):type\\
++getValue(const short pXIndex, const short pYIndex):type\\
++setValue(const type pValue, const short pXIndex, const short pYIndex):void\\
++output(std::ostream\ands\xspace pStream):std::iostream\ands\\
++operator=(const Matrix$<$type$>$\ands\xspace pMatrix):Matrix$<$type$>$\ands\\
++add(Matrix$<$type$>$\ands\xspace pMatrix, Matrix$<$type$>$\ands\xspace pResult):void\\
++sub(Matrix$<$type$>$\ands\xspace pMatrix, Matrix$<$type$>$\ands\xspace pResult):void\\
++mul(Matrix$<$type$>$\ands\xspace pMatrix, Matrix$<$type$>$\ands\xspace pResult):void\\
++resize(const short pXSize, const pYSize):void\\
++fill(const type\ands\xspace pValue):void\\
++operator==(const Matrix$<$float$>$\ands\xspace pMatrix):bool\\
++transpose():void\\
++sum():type\\
+\hline
+\end{tabular}
+\end{table}
+
+This class is a gerneral use class for matrices. An extention of this class will to have a sparce matrix class.
+
+\subsubsection{Matrix$<$float$>$}
+This is a specialisation of the Matrix class. At the moment this is only applicable to Apple Macintoshs which use a G4 processor.
+				   
+\subsubsection{MatrixReader}
+
+This class was designed for the reading in of matrices from an ascii input. Where the elements have the type float.
+
+\emph{Publicly extends Matrix$<$float$>$}\\
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{MatrixReader}\\
+\hline\\
+\hline
+-static countMaxNumberOfColumns(char* pString):int\\
+-static countNumberOfRows(char* pString):int\\
+-static countNumberOfColumns(char** pString):int\\
+-fillMatrix(char* pLine, int pX, int pY):void\\
+-fillMatrix(char* pLine):void\\
++MatrixReader(char *pMatrixLine):\\
++\til MatrixReader():\\
+\hline
+\end{tabular}
+\end{table}
+

@@ -1,0 +1,36 @@
+\subsection{Exceptions}
+{\footnotesize Exceptions.h modified  30/04/2003\\ Exceptions.cpp modified 30/04/2003}
+
+\subsubsection{MyException}
+\emph{Publicly extends std::exception}\\
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{MyException}\\
+\hline
+-iErrStr:char*\\
+-iErrNum:int\\
+\hline
++MyException(int pErrNum, char* iErrStr):\\
++MyException(const MyException\ands\xspace pException):\\
++virtual \til MyException()\\
++virtual addError(char* pErrMsg):void\\
++virtual what():char*\\
++virtual number:int\\
++operator=(const MyExpception\ands \xspace pException):MyException\ands\\
+\hash setString(const char* pString)void\\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{FileException}
+\emph{Publicly extends MyException}\\
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{FileException}\\
+\hline
+\\
+\hline
++FileException(int pFileError)\\
+\hline
+\end{tabular}
+\end{table}

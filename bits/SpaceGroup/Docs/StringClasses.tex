@@ -1,0 +1,49 @@
+\subsection{StringClasses}
+{\footnotesize StringClasses.h modified  30/04/2003 \\ StringClasses.cpp modified 30/04/2003}
+
+\subsubsection{String}
+\emph{Publicly extends MyObject}\\
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{String}\\ \hline
+-iString:char* \\
+\hline
++String(char* pString): \\
++String(String\ands \xspace pString): \\
++String(int tLength):\\
++\til String():\\
++getCString():char*\\
++operator<(String\ands \xspace pString):bool\\
++operator>(String\ands \xspace pString):bool\\
++operator==(String\ands \xspace pString):bool\\
++operator=(String\ands  pStringToCopy):String\ands\\
++toString(pChars, long pSize):void\\
++toInteger():int\\
++toDouble():double\\
++toFloat():float\\
++toIntegerFromHex():int\\
++length():int\\
++cmp(const char* pString):int\\
++token(char* pString, const char* pDelimeter,\\
+char* pToken, int pMaxTokenLength,\\
+int pTokenIndex):void\\
+upcase():void\\
+trim():void\\
+static hex2l(char* pString):long\\
+static trimNumber(char* pString):void\\
+static upcase(char* pString):void\\
+static trim(char* pString ):void\\
+\hline
+\end{tabular}
+\end{table}
+
+The string class was first added to this file for the project RoboSim. This class was to take the same role as java.lang.String does in the Java language. When dealing with string this class should be used. Currently this class hasn't been used but should be. In the future this class will be moved the the StringClasses file.
+
+\subsection{Path}
+\emph{Publicly extends String}\\
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{Path}\\ \hline
+removeOutterQuotes(char* pString):void\\ \hline
+\end{tabular}
+\end{table}

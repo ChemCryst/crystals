@@ -1,0 +1,24 @@
+\subsection{ComClasses}
+{\footnotesize ComClasses.h modified  30/04/2003\\ 
+ComClasses.cpp modified 30/04/2003}
+
+This file was created for my third year undergraduate project and was used for classes which had a general use. Classes which cannot be obviously grouped together and can be used in any type of project should be up into this file.
+
+In ComClasses.h there is a preprocessor flag \verb|__DEBUGGING__|. This should be defined when the project is being debugged. (This will later be changed so that there will be a debug flag for each class.
+
+\subsubsection{MyObject}
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{MyObject}\\ \hline
+-iObjectNumber:long\\
+\hline
++MyObject():\\
+\textit{+\til MyObject():}\\
+\textit{+void toString(char* pChars, unsigned int pSize): void}\\
++static objectCount(): long\\
++static totalObjectNumber():long\\
+\hline
+\end{tabular}
+\end{table}
+
+This object should be used to extend from for every class made. This can be removed later. What this class is used for is to keep track of objects which have been allocated. It is possible to see if there are any objects which have been created and not released using this class.

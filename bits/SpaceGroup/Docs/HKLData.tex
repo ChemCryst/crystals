@@ -1,0 +1,36 @@
+\subsection{HKLData}
+{\footnotesize HKLData.h modified  30/04/2003 \\ HKLData.cpp modified 30/04/2003}
+
+\subsubsection{Reflection}
+\emph{Publicly extends MyObject}\\
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{Reflection}\\
+\hline
++tHKL:Matrix$<$float$>$*\\
++i:double\\
++iSE:double\\
+\hline
++Reflection(char* pString):\\
++\til Reflection():\\
++getHKL():Matrix$<$float$>$*\\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{HKLData}
+\emph{Publicly extends MyObject}\\
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{HKLData}\\
+\hline
+-iReflectionList:ArrayList$<$Reflection$>$*\\
+\hline
++HKLData(char* pPath):\\
++\til HKLData():\\
++numberOfReflections():int\\
++getReflection(int pIndex):Reflection*\\
++find(Reflection* pReflection):bool\\
+\hline
+\end{tabular}
+\end{table}
