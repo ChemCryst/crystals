@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.60  2003/06/27 11:56:17  rich
+C Add an atom_site_refinement_flags item to the atom list in the CIF. Use
+C the data in the REF slot of list 5 to fill in the details.
+C
 C Revision 1.59  2003/06/26 09:09:05  djw
 C Change P3 to P6 while thinking about other changes
 C
@@ -1358,7 +1362,7 @@ C Work out the _atom_site_refinement_flags for this atom.
             NASRF = 0
             WRITE(CASRF(1:1),'(A)') '.'  ! Default is '.'
             DO MASRF = 1,7
-              IF ( IAND (KBREFB(MASRF),ISTORE(M5+15)) .GT. 0 ) THEN
+              IF ( AND (KBREFB(MASRF),ISTORE(M5+15)) .GT. 0 ) THEN
                 NASRF=NASRF+1
                 WRITE(CASRF(NASRF:NASRF),'(A1)')KBCIFF(MASRF:MASRF)
               END IF

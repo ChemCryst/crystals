@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.45  2003/06/30 17:58:38  rich
+C On abandoning script due to CRYSTALS error, or due to a script syntax error,
+C print out the script source file line number where the failure occurred.
+C
 C Revision 1.44  2003/06/09 11:37:35  rich
 C
 C Two new unary operators for the CRYSTALS scripting language:
@@ -2808,10 +2812,10 @@ C
 C -- 'IOR'
 C
           IF ( ITYPE(1) .EQ. 1 ) THEN
-            ICODE(JVALUE,IARG(2)) = IOR ( ICODE(JVALUE,IARG(2)), 
+            ICODE(JVALUE,IARG(2)) = OR ( ICODE(JVALUE,IARG(2)), 
      2                                    ICODE(JVALUE,IARG(1)) )
           ELSE IF ( ITYPE(1) .EQ. 2 ) THEN
-            XCODE(JVALUE,IARG(2)) = IOR ( NINT(XCODE(JVALUE,IARG(2))), 
+            XCODE(JVALUE,IARG(2)) = OR ( NINT(XCODE(JVALUE,IARG(2))), 
      2                                    NINT(XCODE(JVALUE,IARG(1))) )
           ENDIF
 C

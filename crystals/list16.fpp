@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.5  2003/06/27 11:53:39  rich
+C
+C Set appropriate bit flags in L5's REF key depending on the types of
+C restraint being created. Used later for CIF generation.
+C
 C Revision 1.4  2003/06/24 12:48:38  rich
 C
 C RIC: The implementation of the SAME restraint. The first group on the card is the 'target'
@@ -367,9 +372,9 @@ c1050  CONTINUE
 C Load list 5 into core (allows checking during processing).
        CALL XFAL05
 C - Clear all the bits that restraints could possibly set.
-      IMASK = INOT ( KBREFB(4) +  KBREFB(6) )
+      IMASK = NOT ( OR ( KBREFB(4), KBREFB(6) ))
       DO I = 0, N5-1
-          ISTORE(L5+MD5*I+15) = IAND ( ISTORE(L5+MD5*I+15), IMASK )
+          ISTORE(L5+MD5*I+15) = AND ( ISTORE(L5+MD5*I+15), IMASK )
       END DO
 
 C Grab some space for three atom list vectors (for SAME restraint).
@@ -588,7 +593,7 @@ C Check types match.
 C Store this result.
           ISTORE(JATD) = INDATM+J
 C Set the relevant REF bit.
-          ISTORE(M5A+J*MD5+15) = IOR ( ISTORE(M5A+J*MD5+15), KBREFB(4) )
+          ISTORE(M5A+J*MD5+15) = OR ( ISTORE(M5A+J*MD5+15), KBREFB(4) )
           JATD = JATD - 1
         END DO
         JATOMS = JATOMS + N5A
@@ -1607,9 +1612,9 @@ C--CHECK THAT THERE ARE NO PARAMETERS SPECIFIED
 1850  CONTINUE
 C If this is a DIST/ANGLE or VIB restraint, the set the relevant REF bit.
       IF ( KBFLAG .EQ. 1 ) THEN
-        ISTORE(M5A+15) = IOR ( ISTORE(M5A+15), KBREFB(4) )
+        ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFB(4) )
       ELSE IF ( KBFLAG .EQ. 2 ) THEN
-        ISTORE(M5A+15) = IOR ( ISTORE(M5A+15), KBREFB(6) )
+        ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFB(6) )
       END IF
       IF(ISTORE(MCG+5))1800,1900,1800
 C--CHECK IF THIS IS THE FIRST ATOM

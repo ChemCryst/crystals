@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2003/06/27 11:52:37  rich
+C
+C Set appropriate flags in L5's REF key depedning on what's being done to
+C an atom by List 22. This data is used by the CIF generation routine.
+C
 C Revision 1.10  2003/06/20 09:04:29  rich
 C
 C The implementation of the SUMFIX constraint. Debugging left in place, commented
@@ -334,10 +339,15 @@ C------ FORM DERIVATIVE MATRICES FOR ALL AXES  L(-1) .R. L
 C----- LOAD LIST 5
       CALL XFAL05
 C - Clear all the bits that L22 could possibly set.
-      IMASK = INOT( KBREFB(1) +KBREFB(2) +KBREFB(3) +KBREFB(5)
-     1             +KBREFB(7) +KBREFX    +KBREFU )
+      IMASK = OR(KBREFB(1),KBREFB(2))
+      IMASK = OR(KBREFB(3),IMASK)
+      IMASK = OR(KBREFB(5),IMASK)
+      IMASK = OR(KBREFB(7),IMASK)
+      IMASK = OR(KBREFX,IMASK)
+      IMASK = OR(KBREFU,IMASK)
+      IMASK = NOT ( IMASK )
       DO I = 0, N5-1
-          ISTORE(L5+MD5*I+15) = IAND ( ISTORE(L5+MD5*I+15), IMASK )
+          ISTORE(L5+MD5*I+15) = AND ( ISTORE(L5+MD5*I+15), IMASK )
       END DO
 C
 C-----  LOAD LIST 2 AND INITIALISE SPECIAL POSITION CODE
@@ -1410,11 +1420,11 @@ C SET 'FIX' AND 'EXPLICIT'
               IF ( KS .GE. 1 .AND. KS .LE. 3 ) THEN
 C Set REF flag to indicate special position constraint (even if
 C it ends up being a restraint)
-                ISTORE(M5S+15) = IOR ( ISTORE(M5S+15), KBREFB(1) )
+                ISTORE(M5S+15) = OR ( ISTORE(M5S+15), KBREFB(1) )
               ELSE IF ( KS. GT. 3 ) THEN
 C Set REF flag to indicate thermal displacement constraint (even if
 C it ends up being a restraint)
-                ISTORE(M5S+15) = IOR ( ISTORE(M5S+15), KBREFB(5) )
+                ISTORE(M5S+15) = OR ( ISTORE(M5S+15), KBREFB(5) )
               END IF
 
 
@@ -1482,11 +1492,11 @@ C RELATED COORDS, BUT WE CANNOT SET UP CONSTRAINTS
                       IF ( KS .GE. 1 .AND. KS .LE. 3 ) THEN
 C Set REF flag to indicate special position constraint (even if
 C it ends up being a restraint)
-                        ISTORE(M5S+15) = IOR (ISTORE(M5S+15), KBREFB(1))
+                        ISTORE(M5S+15) = OR (ISTORE(M5S+15), KBREFB(1))
                       ELSE IF ( KS. GT. 3 ) THEN
 C Set REF flag to indicate thermal displacement constraint (even if
 C it ends up being a restraint)
-                        ISTORE(M5S+15) = IOR (ISTORE(M5S+15), KBREFB(5))
+                        ISTORE(M5S+15) = OR (ISTORE(M5S+15), KBREFB(5))
                       END IF
 
 
@@ -1684,7 +1694,7 @@ C----- PARAMETERS SHOULD BE SPECIFIED
         END IF
 C If it is an occupancy parameter, set the spare flag accordingly:
         IF(ISTORE(ISTORE(MQ+6)+MQ+1).EQ.3)THEN
-          ISTORE(M5A+15) = IOR ( ISTORE(M5A+15), KBREFB(7) )
+          ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFB(7) )
         END IF
 895     CONTINUE
 C----- CHECK FOR END OF CARD
@@ -1954,20 +1964,20 @@ CDJWOCT2000>
 CRICJUN03 If it is an occupancy, X or U parameter, set the ref flags accordingly.
       IF ( MG .NE. 2 ) THEN
         IF(ISTORE(MS+1).EQ.3)THEN
-          ISTORE(M5A+15) = IOR ( ISTORE(M5A+15), KBREFB(7) )
+          ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFB(7) )
         ELSE IF(ISTORE(MS+1).GE.7)THEN
-          ISTORE(M5A+15) = IOR ( ISTORE(M5A+15), KBREFU )
+          ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFU )
         ELSE IF(ISTORE(MS+1).GE.4)THEN
-          ISTORE(M5A+15) = IOR ( ISTORE(M5A+15), KBREFX )
+          ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFX )
         END IF
       ELSE
 C 'FIX' If it is an occupancy, X or U parameter, set the ref flags accordingly.
         IF(ISTORE(MS+1).EQ.3)THEN
-          ISTORE(M5A+15) = IOR ( ISTORE(M5A+15), KBREFB(7) )
+          ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFB(7) )
         ELSE IF(ISTORE(MS+1).GE.7)THEN
-          ISTORE(M5A+15) = IOR ( ISTORE(M5A+15), KBREFU )
+          ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFU )
         ELSE IF(ISTORE(MS+1).GE.4)THEN
-          ISTORE(M5A+15) = IOR ( ISTORE(M5A+15), KBREFX )
+          ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFX )
         END IF
       END IF
 
@@ -2041,7 +2051,7 @@ C----- RIDING MODEL - CHECK WE HAVE CORRECT NO OF PARAMETERS
             ENDIF
 CRICJUN03 Set the riding group flag if appropriate. (Hydrogen only).
             if (istore(m5a) .eq. ihyd) then
-               ISTORE(M5A+15) = IOR ( ISTORE(M5A+15), KBREFB(3) )
+               ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFB(3) )
             end if
 C----- SET INCREMENT FOR RIDE CARD
             IMR = MR
@@ -2053,7 +2063,7 @@ C----- SET INCREMENT FOR COMBINE CARD
             IMR = IMR + MR +MR
       ELSE IF (ML .EQ. 4) THEN
 C Set the rigid group flag accordingly.
-          ISTORE(M5A+15) = IOR ( ISTORE(M5A+15), KBREFB(2) )
+          ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFB(2) )
 C----- GROUP CARD
 C----- PHI,CHI,OMEGA,X0,Y0,Z0
             IMR = 6

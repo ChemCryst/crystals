@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.49  2003/06/27 11:55:03  rich
+C
+C  If an angle involves a riding hydrogen atom, zero the esd to supress PLATON
+C  warnings.
+C
 C Revision 1.48  2003/06/20 11:39:53  rich
 C
 C Increase maximum parts per parameter (MXPPP) from 10 to 50.
@@ -1781,11 +1786,11 @@ C--ADD THE THIRD ATOM (C) INTO THE STACK
 C Check if any of the atoms are hydrogens riding.
                 IZZ = ISTORE(NZ)
                 IXX = ISTORE(NA)
-                IF (  (IAND( ISTORE(M5A+15),KBREFB(3) ).GT.0).AND.
+                IF (  (AND( ISTORE(M5A+15),KBREFB(3) ).GT.0).AND.
      1                (ISTORE(M5A).EQ.KHYD)  ) LHFIXD(3) = .TRUE.
-                IF (  (IAND( ISTORE(IXX+15),KBREFB(3) ).GT.0).AND.
+                IF (  (AND( ISTORE(IXX+15),KBREFB(3) ).GT.0).AND.
      1                (ISTORE(IXX).EQ.KHYD)  ) LHFIXD(3) = .TRUE.
-                IF (  (IAND( ISTORE(IZZ+15),KBREFB(3) ).GT.0).AND.
+                IF (  (AND( ISTORE(IZZ+15),KBREFB(3) ).GT.0).AND.
      1                (ISTORE(IZZ).EQ.KHYD)  ) LHFIXD(3) = .TRUE.
 C--CALCULATE THE V/CV MATRIX FOR THE POSITIONAL ERRORS
                 CALL XCOVAR( JA, NWA, NWS, JD, JE, IPART, 3)
