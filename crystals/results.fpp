@@ -1,4 +1,12 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.67  2003/11/04 15:58:26  rich
+C 1) Move 'Sheldrick geometric definitions' to correct place
+C in the CIF.
+C
+C 2) Values with esd of (10) no longer displayed as (1).
+C
+C 3) Very small esds now checked against ZEROSQ instead of ZERO.
+C
 C Revision 1.66  2003/11/03 10:42:38  rich
 C Make \PARAM output a list of twin element scales if present,
 C along with their ESD's. Also output to CIF, but using the
@@ -4339,8 +4347,13 @@ C----- LIST 30
 C
           WRITE (CLINE,'(''# Non-dispersive F(000):'')')
           CALL XPCIF (CLINE)
-          WRITE (CLINE,'(A,''F_000'',T35,F13.3)')CBUF(1:15),
+          IF ( MOD(STORE(L30GE+2),1.0) .GT. ZERO ) THEN
+            WRITE (CLINE,'(A,''F_000'',T35,F13.3)')CBUF(1:15),
      1           STORE(L30GE+2)
+          ELSE
+            WRITE (CLINE,'(A,''F_000'',T35,I13)')CBUF(1:15),
+     1           NINT(STORE(L30GE+2))
+          ENDIF
           CALL XPCIF (CLINE)
         ELSE IF ( IPUNCH .EQ. 2 ) THEN
           WRITE (NCPU,'(''<TR><TD>F000</TD><TD>'',F13.3,
