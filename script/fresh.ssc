@@ -5,6 +5,8 @@
 %% It will clear out 12 and 16, make sure F or F2 is stored
 %% correctly in L30 and reset all the flags used by "The Guide".
 %%
+% VARIABLE LOGICAL L12SMASK
+% VARIABLE INTEGER L12SER
 % BLOCK
 %  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
 %  VARIABLE LOGICAL   ANSWER
@@ -24,6 +26,15 @@
 {S * Clearing restraints, constraints and refinement directives.
 % BLOCK
 %  COPY '#CLEAR 12'
+%  COPY 'END'
+%%
+%% Keep List 39 sweet.
+%%
+%  COPY '#GENERALEDIT 12'
+%  COPY 'GETSERIAL L12SER'
+%  COPY 'END'
+%  EVALUATE L12SMASK = TRUE
+%  COPY '#SCRIPT XPUTINFO'
 %  COPY '#CLEAR 16'
 %  COPY 'END'
 % END BLOCK
