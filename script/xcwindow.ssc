@@ -1,88 +1,90 @@
-%SCRIPT XCAMHKL  %Script for choosing view hkl plane%
-%%
-%%
-^^WI WINDOW XORIENT 'Pack cells' MODAL
-^^WI GRID G1 NROWS=3 NCOLS=5
-^^WI {
-^^WI  @ 2,2 GRID GB NROWS=5 NCOLS=8
-^^WI  {
-^^WI     @ 1,1  STATIC   TH 'from a:'
-^^WI     @ 1,4  STATIC   TH 'to:'
-^^WI     @ 3,1  STATIC   TH 'from b:'
-^^WI     @ 3,4  STATIC   TH 'to:'
-^^WI     @ 5,1  STATIC   TH 'from c:'
-^^WI     @ 5,4  STATIC   TH 'to:'
-^^WI     @ 1,2  EDITBOX  AN '0.0' CHARS=6 REAL
-^^WI     @ 3,2  EDITBOX  BN '0.0' CHARS=6 REAL
-^^WI     @ 5,2  EDITBOX  CN '0.0' CHARS=6 REAL
-^^WI     @ 1,5  EDITBOX  AX '1.0' CHARS=6 REAL
-^^WI     @ 3,5  EDITBOX  BX '1.0' CHARS=6 REAL
-^^WI     @ 5,5  EDITBOX  CX '0.5' CHARS=6 REAL
-^^WI  }
-^^WI  @ 2,4 GRID   GR NROWS=5 NCOLS=3
-^^WI  {
-^^WI    @ 1,2 BUTTON      BTOK 'Ok' DEFAULT COMMIT
-^^WI    @ 3,2 BUTTON      BTPP 'Apply'
-^^WI    @ 5,2 BUTTON      BTXX 'Cancel' CANCEL
-^^WI  }
-^^WI }
-^^WI SHOW
-^^CR
-%%
-%%
-%%
-% LOOP
-%  VERIFY BTOK BTPP BTXX
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%  CASE VALUE
-%   BLOCK        %BTNOK%
-%                 CLEAR
-%                 INSERT 'PACK WINDOW '
-^^??              AN TEXT
-%                 GET SILENT REAL ' '
-^^??              AX TEXT
-%                 GET SILENT REAL ' '
-^^??              BN TEXT
-%                 GET SILENT REAL ' '
-^^??              BX TEXT
-%                 GET SILENT REAL ' '
-^^??              CN TEXT
-%                 GET SILENT REAL ' '
-^^??              CX TEXT
-%                 GET SILENT REAL ' '
-%                 INSERT 'CUT '
+%SCRIPT XCAMHKL  %Script for choosing view hkl plane%                           
+%%                                                                              
+%%                                                                              
+^^WI WINDOW XORIENT 'Pack cells' MODAL                                          
+^^WI GRID G1 NROWS=3 NCOLS=5                                                    
+^^WI {                                                                          
+^^WI  @ 2,2 GRID GB NROWS=5 NCOLS=8                                             
+^^WI  {                                                                         
+^^WI     @ 1,1  STATIC   TH 'from a:'                                           
+^^WI     @ 1,4  STATIC   TH 'to:'                                               
+^^WI     @ 3,1  STATIC   TH 'from b:'                                           
+^^WI     @ 3,4  STATIC   TH 'to:'                                               
+^^WI     @ 5,1  STATIC   TH 'from c:'                                           
+^^WI     @ 5,4  STATIC   TH 'to:'                                               
+^^WI     @ 1,2  EDITBOX  AN '0.0' CHARS=6 REAL                                  
+^^WI     @ 3,2  EDITBOX  BN '0.0' CHARS=6 REAL                                  
+^^WI     @ 5,2  EDITBOX  CN '0.0' CHARS=6 REAL                                  
+^^WI     @ 1,5  EDITBOX  AX '1.0' CHARS=6 REAL                                  
+^^WI     @ 3,5  EDITBOX  BX '1.0' CHARS=6 REAL                                  
+^^WI     @ 5,5  EDITBOX  CX '1.0' CHARS=6 REAL                                  
+^^WI  }                                                                         
+^^WI  @ 2,4 GRID   GR NROWS=5 NCOLS=3                                           
+^^WI  {                                                                         
+^^WI    @ 1,2 BUTTON      BTOK 'Ok' DEFAULT COMMIT                              
+^^WI    @ 3,2 BUTTON      BTPP 'Apply'                                          
+^^WI    @ 5,2 BUTTON      BTXX 'Cancel' CANCEL                                  
+^^WI  }                                                                         
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+%%                                                                              
+%%                                                                              
+%%                                                                              
+% LOOP                                                                          
+%  VERIFY BTOK BTPP BTXX                                                        
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' '                                     
+%  CASE VALUE                                                                   
+%   BLOCK        %BTNOK%                                                        
+%                 CLEAR                                                         
+%                 INSERT 'PACK WINDOW '                                         
+^^??              AN TEXT                                                       
+%                 GET SILENT REAL ' '                                           
+^^??              AX TEXT                                                       
+%                 GET SILENT REAL ' '                                           
+^^??              BN TEXT                                                       
+%                 GET SILENT REAL ' '                                           
+^^??              BX TEXT                                                       
+%                 GET SILENT REAL ' '                                           
+^^??              CN TEXT                                                       
+%                 GET SILENT REAL ' '                                           
+^^??              CX TEXT                                                       
+%                 GET SILENT REAL ' '                                           
+%                 INSERT 'CUT '                                                 
 %                 SEND
-%                 COPY 'VIEW '
-%                 COPY ' '
-^^WI              DISPOSE XORIENT
-^^CR   
-%                 FINISH
-%   END BLOCK
-%   BLOCK        %BTNPP%
-%                 CLEAR
-%                 INSERT 'PACK WINDOW '
-^^??              AN TEXT
-%                 GET SILENT REAL ' '
-^^??              AX TEXT
-%                 GET SILENT REAL ' '
-^^??              BN TEXT
-%                 GET SILENT REAL ' '
-^^??              BX TEXT
-%                 GET SILENT REAL ' '
-^^??              CN TEXT
-%                 GET SILENT REAL ' '
-^^??              CX TEXT
-%                 GET SILENT REAL ' '
-%                 INSERT 'CUT '
-%                 SEND
-%                 COPY 'VIEW '
-%                 COPY ' '
-%   END BLOCK
-%   BLOCK   %XX%
-^^WI   DISPOSE XORIENT
-^^CR   
-%      FINISH
-%   END BLOCK
-%  END CASE
-% END LOOP
-%END SCRIPT
+%                 COPY 'INCL CELL LABEL CELL'                                                          
+%                 COPY 'VIEW '                                                  
+%                 COPY ' '                                                      
+^^WI              DISPOSE XORIENT                                               
+^^CR                                                                            
+%                 FINISH                                                        
+%   END BLOCK                                                                   
+%   BLOCK        %BTNPP%                                                        
+%                 CLEAR                                                         
+%                 INSERT 'PACK WINDOW '                                         
+^^??              AN TEXT                                                       
+%                 GET SILENT REAL ' '                                           
+^^??              AX TEXT                                                       
+%                 GET SILENT REAL ' '                                           
+^^??              BN TEXT                                                       
+%                 GET SILENT REAL ' '                                           
+^^??              BX TEXT                                                       
+%                 GET SILENT REAL ' '                                           
+^^??              CN TEXT                                                       
+%                 GET SILENT REAL ' '                                           
+^^??              CX TEXT                                                       
+%                 GET SILENT REAL ' '                                           
+%                 INSERT 'CUT '                                                 
+%                 SEND                                                          
+%                 COPY 'INCL CELL LABEL CELL'                                                          
+%                 COPY 'VIEW '                                                  
+%                 COPY ' '                                                      
+%   END BLOCK                                                                   
+%   BLOCK   %XX%                                                                
+^^WI   DISPOSE XORIENT                                                          
+^^CR                                                                            
+%      FINISH                                                                   
+%   END BLOCK                                                                   
+%  END CASE                                                                     
+% END LOOP                                                                      
+%END SCRIPT                                                                     
