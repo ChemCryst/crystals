@@ -88,7 +88,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %    ELSE
 ^^WI           '1.5'
 %    END IF
-^^WI           CHARS=5 REAL INFORM=YES
+^^WI           CHARS=9 REAL INFORM=YES
 ^^WI     @ 1,5 STATIC TEXT3 'electrons per cubic angstrom'
 ^^WI    }
 ^^WI   }
