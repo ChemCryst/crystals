@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.55  2003/05/23 15:00:14  djw
+C Full expression for weigting schemes 14&15
+C
 C Revision 1.54  2003/05/07 12:18:55  rich
 C
 C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -5014,7 +5017,8 @@ C------ SIGMA WEIGHTS
                 ival = 35
                 ctemp = crefmk(istore(lrefs), nrefs, mdrefs, ival)
                 call xctrim (ctemp,nchar)
-                write (cline,'(a,a )') 'Method, part 1, ', ctemp(1:nchar)
+                write (cline,'(a,a )') 'Method, part 1, ', 
+     1          ctemp(1:nchar)
                 call xpcif (cline)
                 write(cline,'(a,a)')  
      1 '[weight] = 1.0/[A~0~*T~0~(x)+A~1~*T~1~(x)',
