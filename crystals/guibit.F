@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2000/07/19 11:56:56  ckp2
+C RIC: Fixed bug where GUI hangs when structure explodes...
+C      I think.
+C
 C Revision 1.26  2000/07/11 11:04:08  ckp2
 C Extra argument to KFLOPN, for specifying SEQUENTIAL or DIRECT access
 C
@@ -869,7 +873,7 @@ C Read the properties file and extract cov, vdw and colour.
                   READ(WCLINE(13:16),'(F4.2)') COV
                   CLOSE(NCARU)
 C Now get the colour definition for this colour from colour.cmn
-                  CFILEN = 'CRYSDIR:COLOUR.CMN'
+                  CFILEN = 'CRYSDIR:SCRIPT\COLOUR.CMN'
                   CALL MTRNLG(CFILEN,'OLD',ILENG)
                   INQUIRE(FILE=CFILEN(1:ILENG),EXIST=WEXIST)
                   IF(.NOT.WEXIST) GOTO 88
