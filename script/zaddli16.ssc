@@ -1,0 +1,85 @@
+% SCRIPT ZADDLI16
+%%
+%% We must add in a bit to list 16 from the file
+%% new16bit.pch
+%%
+%% If KEYBREAK is set to a STRING, the new bit is inserted
+%% between the markers
+%%
+%%  REM string START
+%%  REM string END
+%%
+%% if they are present in the file. Otherwise they are added at the end.
+%%
+% VARIABLE LOGICAL ADD16BREAK
+% VARIABLE CHARACTER KEYBREAK
+% VARIABLE INTEGER BREAKSTART BREAKSTOP
+% EVALUATE BREAKSTART = 0
+% EVALUATE BREAKSTOP = 0
+% EVALUATE ADD16BREAK = TRUE
+%%
+%% YADDLI16 will:
+%% Release the punch file, leaving it open on bfile.pch
+%% Be reading from the SCPDATA.
+%% Be outputting to the SCPQUEUE.
+%%
+% COPY '#SCRIPT YADDLI16'
+%%
+%% We need to copy the data from new16bit.pch into SCPQUEUE
+%% at this point.
+%%
+% EXTRACT CLOSE
+% COPY '#OPEN SCPDATA new16bit.pch'
+% CLEAR
+% INSERT 'REM '
+% TRANSFER KEYBREAK TO BUFFER
+% INSERT ' START (do not remove this line)'
+% QUEUE SEND
+% LOOP
+%   ON ERROR TERMINATE
+%   CLEAR
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER COMMAND
+%   QUEUE SEND
+% END LOOP
+% CLEAR
+% INSERT 'REM '
+% TRANSFER KEYBREAK TO BUFFER
+% INSERT ' END (do not remove this line)'
+% QUEUE SEND
+%%
+%% Finish off the work of YAddLi16:
+%%
+% IF ( BREAKSTOP .GT. 0 ) THEN
+%   EXTRACT CLOSE
+%   COPY '#OPEN SCPDATA scplst16.dat'
+%   LOOP BREAKSTOP TIMES
+%     EXTRACT NEXT
+%   END LOOP
+%   LOOP
+%     ON ERROR TERMINATE
+%     CLEAR
+%     EXTRACT NEXT
+%     EXTRACT TRANSFER INPUT
+%     GET SILENT NOSTORE NOPROMPT KEYWORD ' ' ' '
+%     IF ( CVALUE .NE. 'REM' ) THEN
+%      EXTRACT TRANSFER COMMAND
+%      QUEUE SEND
+%     ELSE
+%      GET SILENT NOSTORE NOPROMPT KEYWORD ' ' ' '
+%      IF ( CVALUE .NE. KEYBREAK ) THEN
+%       EXTRACT TRANSFER COMMAND
+%       QUEUE SEND
+%      END IF
+%     END IF
+%     GET SILENT NOSTORE NOPROMPT TEXT ' ' ' '
+%   END LOOP
+% END IF
+%%
+% COPY '#RELEASE SCPQUEUE bfile.spq'
+% EXTRACT CLOSE
+% GET SILENT NOSTORE NOPROMPT TEXT ' ' ' '
+% COPY '#USE scplst16a.dat'
+% COPY 'END'
+% COPY '#SCRIPT EDLIST16'
+%END SCRIPT
