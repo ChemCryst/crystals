@@ -9,6 +9,12 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.61  2003/05/07 12:18:56  rich
+//
+// RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+// using only free compilers and libraries. Hurrah, but it isn't very stable
+// yet (CRYSTALS, not the compilers...)
+//
 // Revision 1.60  2003/03/27 14:57:54  rich
 // Added GUI command "GETREG string1 string2" to fetch string values from
 // the registry. Will be used to find latest Mogul location. string1 is the
@@ -447,6 +453,9 @@ CcController::CcController( CcString directory, CcString dscfile )
 
     mCrystalsThread = nil;
 
+    m_BatchMode = false;
+    m_ExitCode = 0;
+
 //Docs. (A doc is attached to a window (or vice versa), and holds and manages all the data)
     mCurrentChartDoc = nil;
 
@@ -564,7 +573,7 @@ CcController::CcController( CcString directory, CcString dscfile )
     {
       LOGERR ("Failed to get main window");
 #ifdef __CR_WIN__
-      MessageBox(NULL,"Failed to create and find main Window","CcController",MB_OK);
+      if ( !m_BatchMode ) MessageBox(NULL,"Failed to create and find main Window","CcController",MB_OK);
       ASSERT(0);
       return;
 #endif
@@ -588,7 +597,7 @@ CcController::CcController( CcString directory, CcString dscfile )
     {
       LOGERR("Failed to get main text output");
 #ifdef __CR_WIN__
-      MessageBox(NULL,"Failed to create main text output Window","CcController",MB_OK);
+      if ( !m_BatchMode ) MessageBox(NULL,"Failed to create main text output Window","CcController",MB_OK);
       ASSERT(0);
       return;
 #endif
@@ -605,7 +614,7 @@ CcController::CcController( CcString directory, CcString dscfile )
     {
       LOGERR("Failed to get progress window");
 #ifdef __CR_WIN__
-      MessageBox(NULL,"Failed to create progress Window","CcController",MB_OK);
+      if ( !m_BatchMode ) MessageBox(NULL,"Failed to create progress Window","CcController",MB_OK);
       ASSERT(0);
       return;
 #endif
@@ -985,6 +994,13 @@ bool CcController::ParseInput( CcTokenList * tokenList )
                     else
                         LOGWARN( "CcController:ParseInput:Focus couldn't find object with name '" + name + "'");
                 }
+                break;
+            }
+            case kTBatch:
+            {
+                // remove that token
+                tokenList->GetToken();
+                m_BatchMode = true;   //Stops blocking dialogs on error.
                 break;
             }
             case kTRenameObject:
@@ -1498,9 +1514,9 @@ void  CcController::AddCrystalsCommand( CcString line, bool jumpQueue)
       {
          if( line.Sub(1,11) == "_MAIN CLOSE")
          {
-        AddInterfaceCommand("^^CO DISPOSE _MAIN ");
-            mThisThreadisDead = true;
-        return; //Messy at the moment. Need to do this from crystals thread so it can exit cleanly.
+           AddInterfaceCommand("^^CO DISPOSE _MAIN ");
+           mThisThreadisDead = true;
+           return; //Messy at the moment. Need to do this from crystals thread so it can exit cleanly.
          }
       }
 // 2. Allow GUIelements to send commands directly to the interface. Trap them here.
@@ -3720,11 +3736,12 @@ extern "C" {
         }
         else if ( theExitcode != 0 )
         {
+           CcController::theController->m_ExitCode = theExitcode;
   #ifdef __CR_WIN__
-           MessageBox(NULL,"Closing","Crystals ends in error",MB_OK|MB_TOPMOST|MB_TASKMODAL|MB_ICONHAND);
+           if ( !CcController::theController->m_BatchMode ) MessageBox(NULL,"Closing","Crystals ends in error",MB_OK|MB_TOPMOST|MB_TASKMODAL|MB_ICONHAND);
   #endif
   #ifdef __BOTHWX__
-           wxMessageBox("Closing","Crystals ends in error",wxOK|wxICON_HAND|wxCENTRE);
+           if ( !CcController::theController->m_BatchMode ) wxMessageBox("Closing","Crystals ends in error",wxOK|wxICON_HAND|wxCENTRE);
   #endif
         }
 

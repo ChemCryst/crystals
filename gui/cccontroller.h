@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 15:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.31  2003/05/07 12:18:56  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.30  2003/03/27 14:57:55  rich
 //   Added GUI command "GETREG string1 string2" to fetch string values from
 //   the registry. Will be used to find latest Mogul location. string1 is the
@@ -233,8 +239,10 @@ class   CcController
     CrGUIElement *  mTextWindow;
     CrGUIElement *  mProgressWindow;
     CcString m_newdir;
-    bool m_restart;
-    bool m_Wait;
+    Boolean m_restart;
+    Boolean m_Wait;
+    Boolean m_BatchMode;
+    int m_ExitCode;
     CcList  mChartList;
 
 #ifdef __CR_WIN__
@@ -341,6 +349,7 @@ extern "C" {
 #define kSSafeSet             "SAFESET"
 #define kSOpenGroup           "["
 #define kSCloseGroup           "]"
+#define kSBatch               "BATCH"
 
 enum
 {
@@ -364,6 +373,7 @@ enum
  kTFontSet,
  kTSafeSet,
  kTOpenGroup,
+ kTBatch,
  kTCloseGroup,
  kTGetRegValue
 };

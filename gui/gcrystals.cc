@@ -218,10 +218,12 @@ LRESULT CCrystalsApp::OnStuffToProcess(WPARAM wp, LPARAM)
 int CCrystalsApp::ExitInstance()
 {
 
+    int exit = theControl->m_ExitCode;
+
     delete theControl;
     delete (CFrameWnd*)m_pMainWnd;
 
-    return CWinApp::ExitInstance();
+    return exit;
 }
 #endif
 
