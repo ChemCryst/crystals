@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.35  2002/03/16 19:07:47  richard
+C Removed #VISUALISE command - originally present as prototype for Steve, but
+C now graphs are built into other commands.
+C
 C Revision 1.34  2002/03/12 16:57:44  ckp2
 C Changed syntax of analysis/plot command added RFACTOR output as opposed to delta.
 C Added index option for plotting analysis by layer in h k and l.
@@ -2998,8 +3002,8 @@ C--- OUTPUT TO SCREEN
      1 '^^PL  ''<- Weak           Fo Range            Strong ->''',
      1 '^^PL YAXIS LOG TITLE <Fo-Fc>**2 ZOOM 0.01 100',
      1 '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
-     1 '^^PL SERIES 1 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
-     1 '^^PL SERIES 2 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
+     1 '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
+     1 '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
      1 '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1 '^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 9,0)
@@ -3010,8 +3014,8 @@ C--- OUTPUT TO SCREEN
      1 '^^PL  ''<- Weak           Fo Range            Strong ->''',
      1 '^^PL YAXIS TITLE ''R factor %''',
      1 '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
-     1 '^^PL SERIES 1 SERIESNAME ''Rw %''',
-     1 '^^PL SERIES 2 SERIESNAME ''R %''',
+     1 '^^PL SERIES 1 SERIESNAME ''R %''',
+     1 '^^PL SERIES 2 SERIESNAME ''Rw %''',
      1 '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1 '^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 9,0)
@@ -3099,11 +3103,11 @@ C--- OUTPUT TO SCREEN
       ENDIF
       IF ( PLFOR .EQ. 1 ) THEN
         WRITE(CMON,'(A,F7.0,A,2(1X,F15.7),I8)')'^^PL SET _FO LABEL ',
-     1    ACI,' DATA ',STORE(L+5),STORE(L+4),ISTORE(L+1)
+     1    ACI,' DATA ',STORE(L+4),STORE(L+5),ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
       ELSE IF ( PLFOR .EQ. 2 ) THEN
         WRITE(CMON,'(A,F7.0,A,2(1X,F15.7),I8)')'^^PL SET _FOR LABEL ',
-     1    ACI,' DATA ',STORE(L+7),STORE(L+6),ISTORE(L+1)
+     1    ACI,' DATA ',STORE(L+6),STORE(L+7),ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
       IF ( PLEXT .GT. 0 ) THEN
@@ -3170,8 +3174,8 @@ C--AGREEMENT ANALYSIS ON SIN(THETA)/LAMBDA RANGES
      1'^^PL  <Fo-Fc>**2 LOG NSERIES=3 LENGTH=10 XAXIS TITLE',
      1'^^PL ''<-Low angle    Sin(theta)/lambda   High angle->''',
      1'^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
-     1 '^^PL SERIES 1 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
-     1 '^^PL SERIES 2 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
+     1 '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
+     1 '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
      1 '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1'^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 9,0)
@@ -3182,8 +3186,8 @@ C--AGREEMENT ANALYSIS ON SIN(THETA)/LAMBDA RANGES
      1'^^PL NSERIES=3 LENGTH=10 XAXIS TITLE',
      1'^^PL ''<-Low angle    Sin(theta)/lambda   High angle->''',
      1'^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
-     1'^^PL SERIES 1 SERIESNAME ''Rw %''',
-     1'^^PL SERIES 2 SERIESNAME ''R %''',
+     1'^^PL SERIES 1 SERIESNAME ''R %''',
+     1'^^PL SERIES 2 SERIESNAME ''Rw %''',
      1'^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1'^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 9,0)
@@ -3242,11 +3246,11 @@ C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
       ENDIF
       IF ( PLTHE .EQ. 1 ) THEN
         WRITE(CMON,'(A,F7.3,A,2(1X,F15.7),I8)') '^^PL LABEL ',AC,
-     1               ' DATA ',STORE(L+5),STORE(L+4),ISTORE(L+1)
+     1               ' DATA ',STORE(L+4),STORE(L+5),ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
       ELSE IF ( PLTHE .EQ. 2 ) THEN
         WRITE(CMON,'(A,F7.3,A,2(1X,F15.7),I8)') '^^PL LABEL ',AC,
-     1               ' DATA ',STORE(L+7),STORE(L+6),ISTORE(L+1)
+     1               ' DATA ',STORE(L+6),STORE(L+7),ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
 C--- OUTPUT TO SCREEN
