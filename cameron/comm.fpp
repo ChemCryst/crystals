@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  1999/11/18 17:59:04  ckp2
+C djw  enable printing from within CAMERON
+C
 C Revision 1.8  1999/07/22 11:29:49  richard
 C RIC: Setting scale for postscript: Cameron multiplied the fixed scale by
 C 10.0 to get the post script value. For the GID version this should be 2.0
@@ -331,6 +334,9 @@ C      RESET THE SCALE
       SCALE  = OLDSCL 
       res = 1.
       CALL ZCLEAR
+cdjwdec99
+c 'copy' finished - close the file
+      I = LFILES ( 0 , CFORT , IFOUT )
       GOTO 9999
 103   CONTINUE
 C XROT
