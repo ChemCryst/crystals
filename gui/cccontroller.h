@@ -8,6 +8,16 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 15:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.19  2001/03/27 15:14:59  richard
+//   Added a timer to the main window that is activated as the main window is
+//   created.
+//   The timer fires every half a second and causes any messages in the
+//   CRYSTALS message queue to be processed. This is not the main way that messages
+//   are found and processed, but sometimes the program just seemed to freeze and
+//   would stay that way until you moved the mouse. This should (and in fact, does
+//   seem to) remedy that problem.
+//   Good good good.
+//
 //   Revision 1.18  2001/03/08 16:44:03  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -124,12 +134,13 @@ class   CcController
     Boolean GetCrystalsCommand( char * line );
     void  AddInterfaceCommand( CcString line );
     Boolean GetInterfaceCommand( char * line );
-    Boolean GetInterfaceCommand( CcString * line );
+//    Boolean GetInterfaceCommand( CcString * line );
 
     void LogError( CcString errString , int level);
     void CompleteProcessing();
     void ProcessingComplete();
     void UpdateToolBars();
+    void ScriptsExited();
 
     void StoreKey( CcString key, CcString value );
     CcString GetKey( CcString key );
@@ -175,16 +186,15 @@ class   CcController
 #ifdef __CR_WIN__
     static CWinThread *mCrystalsThread;
     static CWinThread *mGUIThread;
-#endif
-#ifdef __BOTHWX__
-    static CcThread *mCrystalsThread;
-#endif
-
-
-#ifdef __CR_WIN__
     static CFont* mp_font;
     static CFont* mp_inputfont;
 #endif
+#ifdef __BOTHWX__
+    static CcThread *mCrystalsThread;
+    static wxFont* mp_inputfont;
+#endif
+
+
 
   protected:
     CcTokenList *   mQuickTokenList;

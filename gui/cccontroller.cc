@@ -9,6 +9,16 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.28  2001/03/27 15:14:58  richard
+// Added a timer to the main window that is activated as the main window is
+// created.
+// The timer fires every half a second and causes any messages in the
+// CRYSTALS message queue to be processed. This is not the main way that messages
+// are found and processed, but sometimes the program just seemed to freeze and
+// would stay that way until you moved the mouse. This should (and in fact, does
+// seem to) remedy that problem.
+// Good good good.
+//
 // Revision 1.27  2001/03/23 11:35:07  richard
 // Don't set mCurrentWindow pointer if window fails to be created.
 //
@@ -168,6 +178,7 @@
 #include    "ccstring.h"
 #include    "crconstants.h"
 #include    "crgrid.h"
+#include    "cclock.h"
 #include    "cccontroller.h"
 #include    "crwindow.h"
 #include    "cxgrid.h" //to delete its static font pointer.
@@ -204,12 +215,24 @@
   #include <unistd.h>
   #define F77_STUB_REQUIRED
   #include "ccthread.h"
+  #include <wx/cmndata.h>
+  #include <wx/fontdlg.h>
+  #include <wx/filedlg.h>
+  #include <wx/dirdlg.h>
+  #include <wx/mimetype.h>
+  #include <wx/utils.h>
   CcThread * CcController::mCrystalsThread = nil;
 #endif
 
 #ifdef __WINMSW__
   #include <stdio.h>
   #include <direct.h>
+  #include <wx/cmndata.h>
+  #include <wx/fontdlg.h>
+  #include <wx/filedlg.h>
+  #include <wx/dirdlg.h>
+  #include <wx/mimetype.h>
+  #include <wx/utils.h>
   CcThread * CcController::mCrystalsThread = nil;
 #endif
 
@@ -222,21 +245,32 @@
 #ifdef __CR_WIN__
 CFont* CcController::mp_font = nil;
 CFont* CcController::mp_inputfont = nil;
+/*
 HANDLE mInterfaceCommandQueueMutex;
 HANDLE mCrystalsCommandQueueMutex;
 HANDLE mCrystalsCommandQueueEmptyEvent;
 HANDLE mLockCrystalsQueueDuringQueryMutex;
 HANDLE mCrystalsThreadIsLocked;
+*/
 #include <process.h>
 #endif
+
+static CcLock m_Crystals_Commands_CS(true);
+static CcLock m_Interface_Commands_CS(true);
+static CcLock m_Wait_For_Processing_CS(false);
+static CcLock m_Crystals_Thread_Alive(true);
+
+
 #ifdef __BOTHWX__
-#include <wx/thread.h>
 #include <wx/settings.h>
+wxFont* CcController::mp_inputfont = nil;
+/*
 static wxMutex mInterfaceCommandQueueMutex;
 static wxMutex mCrystalsCommandQueueMutex;
 static wxMutex mCrystalsCommandQueueEmptyEvent;
 static wxMutex mLockCrystalsQueueDuringQueryMutex;
 static wxMutex mCrystalsThreadIsLocked;
+*/
 #include <wx/msgdlg.h>
 #endif
 
@@ -259,7 +293,6 @@ CcController::CcController( CcString directory, CcString dscfile )
     m_next_tool_id_to_try = kToolButtonBase;
 
     mCrystalsThread = nil;
-    mGUIThread = AfxGetThread();
 
 //Docs. (A doc is attached to a window (or vice versa), and holds and manages all the data)
     mCurrentChartDoc = nil;
@@ -292,12 +325,15 @@ CcController::CcController( CcString directory, CcString dscfile )
 // ie. Only one thread at a time can access the command and interface queues to prevent corruption.
 // (as long as they use them!) See {Add/Get}InterfaceCommand and {Add/Get}CrystalsCommand.
 #ifdef __CR_WIN__
+/*
       mInterfaceCommandQueueMutex        = CreateMutex(NULL, false, NULL);
       mCrystalsCommandQueueMutex         = CreateMutex(NULL, false, NULL);
       mLockCrystalsQueueDuringQueryMutex = CreateMutex(NULL, false, NULL);
       mCrystalsThreadIsLocked            = CreateMutex(NULL, false, NULL);
       WaitForSingleObject( mLockCrystalsQueueDuringQueryMutex, INFINITE ); //We want this all the time.
       mCrystalsCommandQueueEmptyEvent    = CreateEvent(NULL, true, false, NULL);
+*/
+      mGUIThread = AfxGetThread();
 #endif
     mCrystalsCommandQueue.AddNewLines(true); //Make the crystals queue interpret _N as a new line.
     mCommandHistoryPosition = 0;
@@ -355,7 +391,7 @@ CcController::CcController( CcString directory, CcString dscfile )
         if ( i >= nEnv )
         {
           //Last resort, there is no external file. Default window defined here:
-          Tokenize("^^WI WINDOW _MAIN 'Crystals' MODAL SIZE CANCEL='_MAIN CLOSE' GRID ");
+          Tokenize("^^WI WINDOW _MAIN 'Crystals' MODAL STAYOPEN SIZE CANCEL='_MAIN CLOSE' GRID ");
           Tokenize("^^WI _MAINGRID NROWS=2 NCOLS=1 { @ 1,1 GRID _SUBGRID NROWS=1 NCOLS=3 ");
           Tokenize("^^WI { @ 1,2 TEXTOUT _MAINTEXTOUTPUT '(C)1999 CCL, Oxford.' NCOLS=95 ");
           Tokenize("^^WI NROWS=20 IGNORE DISABLED=YES FIXEDFONT=YES } @ 2,1 PROGRESS ");
@@ -464,8 +500,8 @@ CcController::CcController( CcString directory, CcString dscfile )
     }
 
     LOGSTAT( "Starting Crystals Thread" );
-
-    StartCrystalsThread();
+    
+	StartCrystalsThread();
 
     LOGSTAT ( "Crystals thread started.\n") ;
 }
@@ -656,9 +692,9 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
                 else if (name == "PROGOUTPUT")
                 {
                     theElement = GetProgressOutputPlace();
-                    theElement->ParseInput( tokenList );
+                    if ( theElement ) theElement->ParseInput( tokenList );
                 }
-                                else if (name == "TEXTINPUT")
+                else if (name == "TEXTINPUT")
                 {
                                         theElement = GetInputPlace();
                     theElement->ParseInput( tokenList );
@@ -1052,7 +1088,6 @@ Boolean     CcController::ParseLine( CcString text )
 void    CcController::SendCommand( CcString command , Boolean jumpQueue)
 {
     LOGSTAT("CcController:SendCommand received command '" + command + "'");
-//      TRACE("Sending command %s ",command.ToCString());
     char* theLine = (char*)command.ToCString();
     AddCrystalsCommand(theLine, jumpQueue);
 }
@@ -1100,6 +1135,7 @@ void    CcController::Tokenize( CcString cText )
         else if      ( selector == kSControlSelector )
         {
             while ( ParseInput( mCurTokenList ) );
+//            ProcessingComplete();
         }
         else if      ( selector == kSOneCommand )
         {                                                                                                                                //Avoids breaking up (and corrupting) the incoming streams from scripts.
@@ -1108,6 +1144,7 @@ void    CcController::Tokenize( CcString cText )
             ParseLine( cText.Chop(1,chop) );
             while ( ParseInput( mQuickTokenList ) );
             mCurTokenList  = mTempTokenList;
+//            ProcessingComplete();
         }
         else if      ( selector == kSQuerySelector )
         {
@@ -1137,29 +1174,39 @@ void CcController::CompleteProcessing()
 // will not return until the interface has processed all
 // pending commands in the command queue.
 
+   m_Completing = true;
+   LOGSTAT("Complete processing - waiting");
+   m_Wait_For_Processing_CS.Wait();
+   LOGSTAT("Complete processing - signal recieved.");
+
+/*
 #ifdef __CR_WIN__
             WaitForSingleObject( mCrystalsThreadIsLocked, INFINITE );
 #endif
+*/
 //This MUTEX is not normally owned. It stops the interface thread from
 //reclaiming the LockCrystalsQueue...Mutex before this thread gets it.
                   if(mThisThreadisDead) endthread(0);
 
-                  m_Completing = true;
 
 //We (CRYSTALS) must wait here until the answer to this query has been put at the front
 //of the command queue.
+/*
 #ifdef __CR_WIN__
             WaitForSingleObject( mLockCrystalsQueueDuringQueryMutex, INFINITE );
 #endif
+*/
 //This MUTEX is always held by the interface thread. It is released
 //temporarily by the interface thread after processing a ^^?? instruction.
 //It is reclaimed once the mCrystalsThreadIsLocked mutex is released by this thread.
-                  if(mThisThreadisDead) endthread(0);
+//                  if(mThisThreadisDead) endthread(0);
 
+/*
 #ifdef __CR_WIN__
             ReleaseMutex( mLockCrystalsQueueDuringQueryMutex ); //Release and continue
             ReleaseMutex( mCrystalsThreadIsLocked );            //Release to allow the interface thread to continue.
 #endif
+*/
 }
 
 
@@ -1169,7 +1216,14 @@ void CcController::ProcessingComplete()
 // This is called by the interface to signal that it has finished
 // processing all pending commands in the command queue.
 
-                  m_Completing=false;
+       m_Completing=false;
+
+       LOGSTAT("Processing complete - signalling");
+
+       m_Wait_For_Processing_CS.Signal();
+
+       LOGSTAT("Processing complete - signalled");
+/*
 #ifdef __CR_WIN__
                   ReleaseMutex( mLockCrystalsQueueDuringQueryMutex ); // (1) We always hold this. Crystals thread is waiting for it.
 
@@ -1179,6 +1233,7 @@ void CcController::ProcessingComplete()
 
                   ReleaseMutex( mCrystalsThreadIsLocked ); // (4) Crystals thread needs this next time.
 #endif
+*/
 
 // This is a complicated bit of thread handshaking!
 // CRYSTALS is paused in the function above, CompleteProcessing(),
@@ -1241,8 +1296,6 @@ void  CcController::AppendToken( CcString text  )
 
 void  CcController::AddCrystalsCommand( CcString line, Boolean jumpQueue)
 {
-//      CrEditBox * theInput = ( CrEditBox * ) GetInputPlace();
-//      CcString inpName = theInput->mName;
 
 //Pre check for commands which we should handle. (Useful as these can be handled while the crystals thread is busy...)
 // 1. Close the main window. (Close the program).
@@ -1268,19 +1321,23 @@ void  CcController::AddCrystalsCommand( CcString line, Boolean jumpQueue)
 // 3. Everything else.
 
 //Add this command to the queue to crystals.
-#ifdef __CR_WIN__
-    WaitForSingleObject( mCrystalsCommandQueueMutex, INFINITE );
-#endif
+
+    m_Crystals_Commands_CS.Enter();
 
       mCrystalsCommandQueue.SetCommand( line, jumpQueue);
 
+    m_Crystals_Commands_CS.Leave();
+
+/*
 #ifdef __CR_WIN__
     ReleaseMutex( mCrystalsCommandQueueMutex );
     PulseEvent(mCrystalsCommandQueueEmptyEvent );
 #endif
+*/
 }
 
 void  CcController::AddInterfaceCommand( CcString line )
+//------------------------------------------------------
 {
 /*  This is a critical section between the threads.
  *  If the interface thread has a lock on the section, then we
@@ -1292,67 +1349,87 @@ void  CcController::AddInterfaceCommand( CcString line )
  *  is placed at the top of the queue.
  */
 
-#ifdef __CR_WIN__
+  bool needComplete = false;
+
+  for ( int j = 1; j < min ( line.Length()-3, 6 ); j++ )
+  {
+    if ( line.Sub(j,j+3).Compare("^^??",4) )
+    {
+      needComplete = true;
+      break;
+    }
+  }
+
+//    if ( line.Sub(j,j+3) == "^^??" )
+//    {
+
+
+
+  m_Interface_Commands_CS.Enter();
+
+/*#ifdef __CR_WIN__
     WaitForSingleObject( mInterfaceCommandQueueMutex, INFINITE );
 #endif
-      if(mThisThreadisDead) endthread(0);
+*/
+    if(mThisThreadisDead) endthread(0);
 
-      mInterfaceCommandQueue.SetCommand( line );
+    mInterfaceCommandQueue.SetCommand( line );
 
-#ifdef __CR_WIN__
+  m_Interface_Commands_CS.Leave();
+
+/*#ifdef __CR_WIN__
     ReleaseMutex( mInterfaceCommandQueueMutex );
 #endif
-      LOGSTAT("CRYSTALS puts: " + line );
+*/
 
-      for ( int j = 1; j < min ( line.Length()-3, 6 ); j++ )
-      {
-            if ( line.Sub(j,j+3) == "^^??" )
-            {
-                  j = line.Length();
-                  LOGSTAT("!!!Crystals thread: CcController:AddInterfaceCommand: Crystals Output Queue Locked");
-                  CompleteProcessing();
-                  LOGSTAT("!!!Crystals thread: CcController:AddInterfaceCommand: Crystals Output Queue Unlocked");
-            }
-      }
+  if ( needComplete )
+  {
+    LOGSTAT("!!!Crystals thread: CcController:AddInterfaceCommand: Crystals Output Queue Locked");
+    CompleteProcessing();
+    LOGSTAT("!!!Crystals thread: CcController:AddInterfaceCommand: Crystals Output Queue Unlocked");
+  }
 
+  LOGSTAT("CRYSTALS puts: " + line );
+
+#ifdef __CR_WIN__
       if ( mGUIThread ) PostThreadMessage( mGUIThread->m_nThreadID, WM_STUFFTOPROCESS, NULL, NULL );
+#endif
 }
 
-//This is a list of commands for crystals to process
+
+
+
+
 Boolean CcController::GetCrystalsCommand( char * line )
+//-----------------------------------------------------
 {
 //This is where the Crystals thread will spend most of its time.
 //Waiting for the user to do somethine.
 
 //Wait until the list is free for reading.
-#ifdef __CR_WIN__
-      WaitForSingleObject( mCrystalsCommandQueueMutex, INFINITE );
-#endif
+
+    m_Crystals_Commands_CS.Enter();
+
     if (mThisThreadisDead) return false;
+
 
     while ( ! mCrystalsCommandQueue.GetCommand( line ) )
     {
 //The queue is empty, so wait efficiently. Release the mutex first, so that someone else can write to the queue!
-            m_Wait = false;
-#ifdef __CR_WIN__
-        ReleaseMutex( mCrystalsCommandQueueMutex );
-        //WaitForSingleObject( mCrystalsCommandQueueEmptyEvent, INFINITE ); //Sometimes we miss the pulseevent, so don't wait forever (just wait efficiently).
-        WaitForSingleObject( mCrystalsCommandQueueEmptyEvent, 500 ); //Wait for event, or for 500ms, whichever is sooner.
-#endif
-            if (mThisThreadisDead) return false;
-//The writer has signalled us (or we got bored of waiting) now get the mutex and read the queue.
-#ifdef __CR_WIN__
-        WaitForSingleObject( mCrystalsCommandQueueMutex, INFINITE );
-#endif
-            if (mThisThreadisDead) return false;
-    }
-#ifdef __CR_WIN__
-    ReleaseMutex( mCrystalsCommandQueueMutex );
-#endif
+        m_Wait = false;
+        m_Crystals_Commands_CS.Leave();
+        if (mThisThreadisDead) return false;
 
-    if (mThisThreadisDead) return false;
+//The writer has signalled us (or we got bored of waiting) now get the mutex and read the queue.
+
+        m_Crystals_Commands_CS.Enter();
+    }
 
     LOGSTAT("!!!Crystals thread: Got command: "+ CcString(line));
+
+    m_Crystals_Commands_CS.Leave();
+
+    if (mThisThreadisDead) return false;
 
     if (CcString(line) == "#DIENOW") endthread(0);
 
@@ -1363,7 +1440,9 @@ Boolean CcController::GetCrystalsCommand( char * line )
 
 
 
+
 Boolean CcController::GetInterfaceCommand( char * line )
+//------------------------------------------------------
 {
     //This routine gets called repeatedly by the Idle loop.
     //It needn't be highly optimised even though it is high on
@@ -1378,7 +1457,7 @@ Boolean CcController::GetInterfaceCommand( char * line )
     if(threadStatus != STILL_ACTIVE)
 #endif
 #ifdef __BOTHWX__
-    if ( ! (mCrystalsThread->IsAlive()) )
+    if ( ! (m_Crystals_Thread_Alive.IsLocked()) )
 #endif
     {
       if ( m_restart )
@@ -1395,83 +1474,75 @@ Boolean CcController::GetInterfaceCommand( char * line )
     }
   }
 
-#ifdef __CR_WIN__
-  WaitForSingleObject( mInterfaceCommandQueueMutex, INFINITE );
-#endif
+  m_Interface_Commands_CS.Enter();
 
   if ( ! mInterfaceCommandQueue.GetCommand( line ) )
   {
     strcpy( line, "" );
     if ( m_Completing ) ProcessingComplete();
 
-#ifdef __CR_WIN__
-    ReleaseMutex( mInterfaceCommandQueueMutex );
-#endif
+    m_Interface_Commands_CS.Leave();
     return (false);
   }
   else
   {
     CcString temp = CcString(line);
     LOGSTAT("GUI gets: "+temp);
-#ifdef __CR_WIN__
-    ReleaseMutex( mInterfaceCommandQueueMutex );
-#endif
+    m_Interface_Commands_CS.Leave();
     return (true);
   }
 }
 
-Boolean     CcController::GetInterfaceCommand( CcString * line )
-{
-    //This routine gets called repeatedly by the Idle loop.
-    //It needn't be highly optimised even though it is high on
-    //the profile count list.
-
-
-  if(mCrystalsThread)
-  {
-#ifdef __CR_WIN__
-    DWORD threadStatus;
-    GetExitCodeThread(mCrystalsThread->m_hThread,&threadStatus);
-    if(threadStatus != STILL_ACTIVE)
-#endif
-#ifdef __BOTHWX__
-    if ( ! (mCrystalsThread->IsAlive()) )
-#endif
-    {
-      if ( m_restart )
-      {
-        ChangeDir( m_newdir );
-        StartCrystalsThread();
-        m_restart = false;
-        return (false);
-      }
-
-      mThisThreadisDead = true;
-      *line = "^^CO DISPOSE _MAIN ";
-      return (true);
-    }
-  }
-#ifdef __CR_WIN__
-  WaitForSingleObject( mInterfaceCommandQueueMutex, INFINITE );
-#endif
-
-  if ( ! mInterfaceCommandQueue.GetCommand( line ) )
-  {
-    *line = "";
-#ifdef __CR_WIN__
-    ReleaseMutex( mInterfaceCommandQueueMutex );
-#endif
-    return (false);
-  }
-  else
-  {
-    LOGSTAT("CcController:GetInterfaceCommand Getting this command: "+ *line);
-#ifdef __CR_WIN__
-    ReleaseMutex( mInterfaceCommandQueueMutex );
-#endif
-    return (true);
-  }
-}
+/*
+//
+//Boolean CcController::GetInterfaceCommand( CcString * line )
+//{
+//    //This routine gets called repeatedly by the Idle loop.
+//    //It needn't be highly optimised even though it is high on
+//    //the profile count list.
+//
+//
+//  if(mCrystalsThread)
+//  {
+//#ifdef __CR_WIN__
+//    DWORD threadStatus;
+//    GetExitCodeThread(mCrystalsThread->m_hThread,&threadStatus);
+//    if(threadStatus != STILL_ACTIVE)
+//#endif
+//#ifdef __BOTHWX__
+//    if ( ! (mCrystalsThread->IsAlive()) )
+//#endif
+//    {
+//      if ( m_restart )
+//      {
+//        ChangeDir( m_newdir );
+//        StartCrystalsThread();
+//        m_restart = false;
+//        return (false);
+//      }
+//
+//      mThisThreadisDead = true;
+//      *line = "^^CO DISPOSE _MAIN ";
+//      return (true);
+//    }
+//  }
+//  m_Interface_Commands_CS.Enter();
+//
+//  if ( ! mInterfaceCommandQueue.GetCommand( line ) )
+//  {
+//    *line = "";
+//    if ( m_Completing ) ProcessingComplete();
+//    m_Interface_Commands_CS.Leave();
+//    return (false);
+//  }
+//  else
+//  {
+//    LOGSTAT("CcController:GetInterfaceCommand(ccstring version) Getting this command: "+ *line);
+//    m_Interface_Commands_CS.Leave();
+//    return (true);
+//  }
+//}
+*/
 
 void    CcController::LogError( CcString errString , int level )
 {
@@ -2301,6 +2372,30 @@ void CcController::UpdateToolBars()
 
 }
 
+void CcController::ScriptsExited()
+{
+  //Use this fact to close any modal windows that don't
+  //have the STAYOPEN property. (This means that the script
+  //has terminated incorrectly without closing the window).
+
+  CrWindow * theWindow;
+
+  mWindowList.Reset();
+  theWindow = (CrWindow *)mWindowList.GetItemAndMove();
+
+  while ( theWindow != nil )
+  {
+      if ( theWindow->mIsModal && !theWindow->mStayOpen )
+      {
+         delete theWindow;
+         mWindowList.RemoveItem();
+      }
+      theWindow = (CrWindow *)mWindowList.GetItemAndMove();
+  }
+
+}
+
+
 void CcController::AddDisableableWindow( CrWindow * aWindow )
 {
       mDisableableWindowsList.AddItem( (void*) aWindow );
@@ -2384,6 +2479,7 @@ UINT CrystalsThreadProc( LPVOID arg );
 SUBROUTINE CRYSTL();
 UINT CrystalsThreadProc( LPVOID arg )
 {
+    m_Crystals_Thread_Alive.Enter(); //Will be owned whole time crystals thread is running.
     CRYSTL();
     return 0;
 }
@@ -2394,6 +2490,7 @@ int CrystalsThreadProc( void* arg );
 SUBROUTINE_F77 crystl_();
 int CrystalsThreadProc( void * arg )
 {
+    m_Crystals_Thread_Alive.Enter(); //Will be owned whole time crystals thread is running.
     crystl_();
     return 0;
 }
@@ -2404,6 +2501,7 @@ UINT CrystalsThreadProc( void* arg );
 SUBROUTINE CRYSTL();
 UINT CrystalsThreadProc( void * arg )
 {
+    m_Crystals_Thread_Alive.Enter(); //Will be owned whole time crystals thread is running.
     CRYSTL();
     return 0;
 }
@@ -2487,7 +2585,43 @@ void CcController::OpenFileDialog(CcString* result, CcString extensionFilter, Cc
 
     *result = CcString(pathname.GetBuffer(256));
 #endif
+#ifdef __BOTHWX__
+    wxString pathname, filename, filetitle;
 
+    wxString extension = wxString(extensionDescription.ToCString()) + "|" + wxString(extensionFilter.ToCString())  ;
+
+    wxString cwd = wxGetCwd(); //This filedialog changes the working dir. Save it.
+
+    wxFileDialog fileDialog ( wxGetApp().GetTopWindow(),
+                              "Choose a file",
+                              "",
+                              "",
+                              extension,
+                              wxOPEN  );
+
+
+
+
+
+    if (fileDialog.ShowModal() == wxID_OK )
+    {
+        pathname = fileDialog.GetPath();
+
+        if(titleOnly)
+        {
+            wxString pathandtitle = pathname.BeforeLast('.');
+            pathname = pathandtitle;
+        }
+    }
+    else
+    {
+        pathname = "CANCEL";
+    }
+
+    wxSetWorkingDirectory(cwd);
+
+    *result = CcString(pathname.c_str());
+#endif
 }
 
 void CcController::SaveFileDialog(CcString* result, CcString defaultName, CcString extensionFilter, CcString extensionDescription)
@@ -2510,8 +2644,6 @@ void CcController::SaveFileDialog(CcString* result, CcString defaultName, CcStri
     if (fileDialog.DoModal() == IDOK )
     {
         pathname = fileDialog.GetPathName();
-//      filename = fileDialog.GetFileName();
-//      filetitle = fileDialog.GetFileTitle();
     }
     else
     {
@@ -2520,8 +2652,40 @@ void CcController::SaveFileDialog(CcString* result, CcString defaultName, CcStri
 
     *result = CcString(pathname.GetBuffer(256));
 #endif
-}
 
+#ifdef __BOTHWX__
+    wxString pathname, filename, filetitle;
+    wxString extension = wxString(extensionDescription.ToCString()) + "|" + wxString(extensionFilter.ToCString())  ;
+    wxString initName = wxString(defaultName.ToCString());
+
+    wxString cwd = wxGetCwd(); //This filedialog changes the working dir. Save it.
+
+    wxFileDialog fileDialog ( wxGetApp().GetTopWindow(),
+                              "Save file as",
+                              "",
+                              initName,
+                              extension,
+                              wxSAVE|wxOVERWRITE_PROMPT );
+
+
+
+
+
+    if (fileDialog.ShowModal() == wxID_OK )
+    {
+        pathname = fileDialog.GetPath();
+    }
+    else
+    {
+        pathname = "CANCEL";
+    }
+
+    wxSetWorkingDirectory(cwd);
+
+    *result = CcString(pathname.c_str());
+#endif
+
+}
 
 void CcController::OpenDirDialog(CcString* result)
 {
@@ -2561,6 +2725,23 @@ void CcController::OpenDirDialog(CcString* result)
       {
             *result = "CANCEL";
       }
+#endif
+#ifdef __BOTHWX__
+    wxString pathname;
+    wxString cwd = wxGetCwd(); //This dir dialog changes the working dir. Save it.
+
+    wxDirDialog dirDialog ( wxGetApp().GetTopWindow(),"Choose a directory");
+
+    if (dirDialog.ShowModal() == wxID_OK )
+    {
+        pathname = dirDialog.GetPath();
+    }
+    else
+    {
+        pathname = "CANCEL";
+    }
+    wxSetWorkingDirectory(cwd);
+    *result = CcString(pathname.c_str());
 #endif
 }
 
@@ -2631,7 +2812,9 @@ void CcController::ChooseFont()
 
    data.SetInitialFont(*pFont);
 
-   wxFontDialog fd( this, &data );
+   wxWindow* top = wxGetApp().GetTopWindow();
+
+   wxFontDialog fd( top, &data );
 
    if ( fd.ShowModal() == wxID_OK )
    {
@@ -2714,10 +2897,6 @@ bool CcController::DoCommandTransferStuff()
   }
   return appret;
 }
-
-
-
-
 
 
 
@@ -2812,7 +2991,7 @@ extern "C" {
       restLine = line.Sub(sRest,eRest);
     }
 
-
+#ifdef __CR_WIN__
 
     if ( bWait )
     {
@@ -2969,6 +3148,80 @@ extern "C" {
       }
 
     }
+#endif
+
+#ifdef __BOTHWX__
+
+// Attempt to launch as a command...
+
+    if ( bWait )
+    {
+        CcController::theController->ProcessOutput( " ");
+        CcController::theController->ProcessOutput( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
+        CcController::theController->ProcessOutput( " ");
+        wxEnableTopLevelWindows(FALSE);
+    }
+
+    long result = ::wxExecute(line.Sub(sFirst+1,eRest).ToCString(), bWait);
+
+    if ( bWait ) wxEnableTopLevelWindows(TRUE);
+
+    if ( bWait )
+    {
+      if ( result != -1 ) return;
+    }                                                              
+    else
+    {
+      if ( result != 0 ) return;
+    }
+
+    CcController::theController->ProcessOutput( "     {0,2 Failed. Retrying.              ");
+
+// FAILURE - maybe a filename, not a program
+// try getting the program associated with the filename.
+
+    wxString fullname(firstTok.ToCString());
+    wxString path;
+    wxString name;
+    wxString extension;
+    wxString command;
+    ::wxSplitPath(firstTok.ToCString(),&path,&name,&extension);
+
+    wxFileType * filetype = wxTheMimeTypesManager->GetFileTypeFromExtension(extension);
+
+    if ( filetype && filetype->GetOpenCommand(&command,
+                                  wxFileType::MessageParameters(fullname,_T("")) ) )
+    {
+        if ( bWait )
+        {
+            CcController::theController->ProcessOutput( " ");
+            CcController::theController->ProcessOutput( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
+            CcController::theController->ProcessOutput( " ");
+            wxEnableTopLevelWindows(FALSE);
+        }
+        long result = ::wxExecute(command, bWait);
+        if ( bWait )
+        {
+          wxEnableTopLevelWindows(TRUE);
+          if ( result != -1 ) return;
+        }                                                              
+        else
+        {
+          if ( result != 0 ) return;
+        }
+        CcController::theController->ProcessOutput( "     {0,2 Failed to execute associated command.      ");
+        return;
+    }
+
+    CcController::theController->ProcessOutput( "     {0,2 Failed to find associated command. Trying shell" );
+    CcController::theController->ProcessOutput( "     {0,2 "+line.Sub(sFirst+1,eRest) );
+
+    ::wxShell(line.Sub(sFirst+1,eRest).ToCString());
+
+    return;
+
+#endif
+
   }
 
 
@@ -3004,6 +3257,7 @@ extern "C" {
 
   void    FORCALL(ciendthread) (long theExitcode )
   {
+        m_Crystals_Thread_Alive.Leave(); //Will be owned whole time crystals thread is running.
         endthread ( theExitcode );
   }
 
