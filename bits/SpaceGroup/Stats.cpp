@@ -343,11 +343,11 @@ void Stats::handleFilteredData(int pColumns[], int pNumColumns)	//pColumns an ar
 
 std::ostream& outputMatrix(std::ostream& pStream, Matrix<short>* pMatrix)
 {
-    short tXMax = pMatrix->sizeX(), tYMax = pMatrix->sizeY();
+    size_t tXMax = pMatrix->sizeX(), tYMax = pMatrix->sizeY();
     
-    for (int i = 0; i < tYMax; i++)
+    for (size_t i = 0; i < tYMax; i++)
     {
-        for (int j = 0; j < tXMax; j++)
+        for (size_t j = 0; j < tXMax; j++)
         {
             pStream << pMatrix->getValue(j, i);
             if (j+1 < tXMax || i+1 < tYMax)
