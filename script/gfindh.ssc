@@ -48,6 +48,7 @@
 %   END IF
 % END IF
 %%
+% COPY '#SCRIPT XDELQ'
 % COPY '#SCRIPT VALID12'
 % COPY '#SFLS'
 % IF TWINNED .EQ. TRUE THEN
@@ -78,19 +79,19 @@
 ^^WI COMMIT='BOK' CANCEL='BXX' DISABLEIF='IN'
 ^^WI GRID MAIN NROWS=3 NCOLS=5
 ^^WI {
-^^WI   @ 2,2 GRID L NROWS=4 NCOLS=1
+^^WI   @ 2,2 GRID L NROWS=5 NCOLS=1
 ^^WI   {
-% IF ( XGRETURN ) THEN
-^^WI     @ 1,1 STATIC T0 'Choose "Continue" to carry on'
-^^WI     @ 2,1 STATIC T1 'with the guided refinement.'
-^^WI     @ 3,1 STATIC T2 '(You can still choose CAMERON'
-^^WI     @ 4,1 STATIC T3 ' and return here later)'
+^^WI     @ 1,1 STATIC T0 'Change QH peaks in good positions into'
+^^WI     @ 2,1 STATIC T1 'H atoms. You may use CAMERON to do this'
+^^WI     @ 3,1 STATIC T2 'if you prefer. Then click "Continue".'
+^^WI     @ 4,1 CHECKBOX FOUREF
+^^WI       'Advanced: Fourier refinement using peaks' STATE=OFF
+^^WI     @ 5,1 CHECKBOX AHFOUND
+^^WI       'All H atoms have been found' STATE=OFF
 ^^WI   }
+% IF ( XGRETURN ) THEN
 ^^WI   @ 2,4 GRID R NROWS=3 NCOLS=1 COMMAND='#SCRIPT GFINH_NAUTO'
 % ELSE
-^^WI     @ 1,1 STATIC T0 'Choose "Continue" to complete'
-^^WI     @ 2,1 STATIC T1 'the H positioning script.'
-^^WI   }
 ^^WI   @ 2,4 GRID R NROWS=3 NCOLS=1 COMMAND='#SCRIPT GFINH_NFIND'
 % END IF
 ^^WI   {
@@ -103,8 +104,9 @@
  
  * Rename any QH peaks that you wish to keep to 'H'.
 
- {2,15 Move the floating window out of the way of the model. The
- {2,15 WHITE atoms are geometrically placed on the carbon and nitrogen
+ {2,15 Move the floating window out of the way of the model.
+ 
+ {2,15 The WHITE atoms are geometrically placed on the carbon and nitrogen
  {2,15 skeleton, and the PINK atoms have been found in a Fourier map.
 
  {2,15 Where the atoms almost co-incide, you can get a qualitative idea
@@ -115,8 +117,7 @@
  {2,15 with the RIGHT mouse button and choosing "Change Type" from
  {2,15 the menu.
 
- {2,15 When you are finished, click "Continue" in the floating window
- {2,15 and when asked, keep the Geometrically placed H's (WHITE).
+ {2,15 When you are finished, click "Continue" in the floating window.
 
 % COPY '#SCRIPT DIRECT'
 %END SCRIPT
