@@ -46,7 +46,7 @@
 %   EVALUATE LNOTAT = FALSE
 %   EVALUATE LPEAK = FALSE
 %   GET NOSTORE NOPROMPT KEYWORD NULLSTRING ' '
-%   EVALUATE CLINE = CVALUE
+%   EVALUATE CLINE = UPPERCASE ( CVALUE )
 %%
 %% Check that the keyword starts with alpha-numeric chars.
 %%
