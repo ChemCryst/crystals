@@ -2090,6 +2090,7 @@ C      IMPLICIT NONE
 #if defined(_DVF_) || defined (_GID_)
       USE DFPORT
 #endif
+#include "RC93CM.INC"
       INTEGER MAXLVL
       PARAMETER (MAXLVL=30)
       CHARACTER*(*) FILNAM,STATUS
