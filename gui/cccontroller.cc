@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.40  2002/02/20 14:44:04  ckp2
+// Modified guexec to support quotes around the first thing on the line.
+//
 // Revision 1.39  2001/11/16 15:11:02  ckp2
 // Allow the SET command to find CcPlotData objects - reqd for switching between
 // PlotDatas when writing two graphs at once (e.g. <|Fo-Fc|> vs Fo and <Fo>-<Fc> vs Fo.)
@@ -408,7 +411,7 @@ CcController::CcController( CcString directory, CcString dscfile )
       i++;
 
 #ifdef __BOTHWIN__
-      CcString buffer = dir + "\\guimenu.srt" ;
+      CcString buffer = dir + "guimenu.srt" ;
 #endif
 #ifdef __LINUX__
       CcString buffer = dir + "guimenu.srt" ;
@@ -429,10 +432,11 @@ CcController::CcController( CcString directory, CcString dscfile )
         {
           //Last resort, there is no external file. Default window defined here:
           Tokenize("^^WI WINDOW _MAIN 'Crystals' MODAL STAYOPEN SIZE CANCEL='_MAIN CLOSE' GRID ");
-          Tokenize("^^WI _MAINGRID NROWS=2 NCOLS=1 { @ 1,1 GRID _SUBGRID NROWS=1 NCOLS=3 ");
+          Tokenize("^^WI _MAINGRID NROWS=3 NCOLS=1 { @ 1,1 GRID _SUBGRID NROWS=1 NCOLS=3 ");
           Tokenize("^^WI { @ 1,2 TEXTOUT _MAINTEXTOUTPUT '(C)1999 CCL, Oxford.' NCOLS=95 ");
-          Tokenize("^^WI NROWS=20 IGNORE DISABLED=YES FIXEDFONT=YES } @ 2,1 PROGRESS ");
-          Tokenize("^^WI _MAINPROGRESS 'guimenu.srt NOT FOUND' CHARS=20 } SHOW ");
+          Tokenize("^^WI NROWS=20 IGNORE DISABLED=YES FIXEDFONT=YES } @ 3,1 PROGRESS ");
+          Tokenize("^^WI _MAINPROGRESS 'guimenu.srt NOT FOUND' CHARS=20 @ 2,1 EDITBOX ");
+          Tokenize("^^WI _MAINTEXTINPUT '' NCOLS=45 LIMIT=80 SENDONRETURN=YES INPUT } SHOW ");
           Tokenize("^^CR  ");
           LOGSTAT ( "Back from tokenizing all \n") ;
           noLuck = false;
@@ -1837,7 +1841,7 @@ void CcController::StoreKey( CcString key, CcString value )
       dir += "script\\winsizes.ini";
 #endif
 #ifdef __LINUX__
-      dir += "/script/winsizes.ini";
+      dir += "script/winsizes.ini";
 #endif
       szfile = fopen( dir.ToCString(), "r" );
       if ( szfile != NULL )
@@ -1863,7 +1867,7 @@ void CcController::StoreKey( CcString key, CcString value )
       dir += "script\\winsizes.ini";
 #endif
 #ifdef __LINUX__
-      dir += "/script/winsizes.ini";
+      dir += "script/winsizes.ini";
 #endif
       szfile = fopen( dir.ToCString(), "a+" ); //Use "a+" as "w+" would empty file, and "r+" fails in no file.
       if ( szfile != NULL )
@@ -1991,10 +1995,10 @@ CcString CcController::GetKey( CcString key )
       CcString dir = EnvVarExtract( crysdir, i );
       i++;
 #ifdef __BOTHWIN__
-      dir += "\\script\\winsizes.ini";
+      dir += "script\\winsizes.ini";
 #endif
 #ifdef __LINUX__
-      dir += "/script/winsizes.ini";
+      dir += "script/winsizes.ini";
 #endif
       szfile = fopen( dir.ToCString(), "r" );
       if ( szfile != NULL )
@@ -2877,11 +2881,15 @@ extern "C" {
 
   void FORCALL(callccode) ( char* theLine)
   {
-      long thelength = 80;
-      char * str = new char[81];
-      memcpy(str,theLine,80);
-      *(str+80) = '\0';
-      ciflushbuffer(&thelength, str);
+      long thelength = 262;
+      char * str = new char[263];
+      memcpy(str,theLine,262);
+      *(str+262) = '\0';
+//      ciflushbuffer(&thelength, str);
+      CcString temp = CcString(theLine);
+      temp.Trim();
+      LOGSTAT("Temp, trimmed:"+temp);
+      (CcController::theController)->AddInterfaceCommand( temp );
       delete [] str;
   }
 
@@ -2891,6 +2899,8 @@ extern "C" {
 // Trim any weird characters off the end of the line. Where do
 // they come from?!
     line = line.Sub(1,line.Length()-5);
+
+    TEXTOUT ( "Guexec: " + line );
 
     bool bWait = false;
     bool bRest = false;
@@ -2936,7 +2946,7 @@ extern "C" {
     }
 
 // Find next non space 
-    for ( sRest = eFirst; sRest < line.Length(); sRest++ )
+    for ( sRest = eFirst+1; sRest < line.Length(); sRest++ )
     {
        if ( line [sRest] != ' ' ) break;
     }
@@ -3004,11 +3014,11 @@ extern "C" {
 
 // Some other failure. Try another method of starting external programs.
 
-//        CcController::theController->ProcessOutput( "{I Failed to start " + firstTok + ", (security or not found?) trying another method.");
+        CcController::theController->ProcessOutput( "{I Failed to start " + firstTok + ", (security or not found?) trying another method.");
         extern int errno;
-        char * str = new char[81];
-        memcpy(str,line.Sub(sFirst+1,-1).ToCString(),80);
-        *(str+80) = '\0';
+        char * str = new char[257];
+        memcpy(str,line.Sub(sFirst+1,-1).ToCString(),256);
+        *(str+256) = '\0';
 
         char* args[10];       // This allows a maximum of 9 command line arguments
 
@@ -3025,7 +3035,7 @@ extern "C" {
   
         if ( result == -1 )  //Start failed
         {
-//          CcController::theController->ProcessOutput( "{I Failed again to start " + firstTok + ", errno is:" + CcString(errno)+" trying a command shell.");
+          CcController::theController->ProcessOutput( "{I Failed again to start " + firstTok + ", errno is:" + CcString(errno)+" trying a command shell.");
           for (i = 7; i>=0; i--)
           {
              args[i+2] = args[i];
@@ -3058,6 +3068,9 @@ extern "C" {
     else
     {
 // Launch with ShellExecute function. There is no waiting for apps to finish.
+
+       CcController::theController->ProcessOutput( "{I Starting " + firstTok + ", with args:" + restLine );
+
       HINSTANCE ex = ShellExecute( GetDesktopWindow(),
                                    "open",
                                    firstTok.ToCString(),
@@ -3078,9 +3091,9 @@ extern "C" {
 // Some other failure. Try another method of starting external programs.
 //        CcController::theController->ProcessOutput( "{I Failed to start " + firstTok + ", (security or not found?) trying another method.");
         extern int errno;
-        char * str = new char[81];
-        memcpy(str,line.Sub(sFirst+1,-1).ToCString(),80);
-        *(str+80) = '\0';
+        char * str = new char[257];
+        memcpy(str,line.Sub(sFirst+1,-1).ToCString(),256);
+        *(str+256) = '\0';
 
         char* args[10];       // This allows a maximum of 9 command line arguments
 
@@ -3209,15 +3222,15 @@ extern "C" {
   {
       NOTUSED(theStatus);
 
-          if((CcController::theController)->GetCrystalsCommand( theLine ))
+      if((CcController::theController)->GetCrystalsCommand( theLine ))
       {
           int ilen = strlen(theLine);
 
-                  for (int j = ilen; j<80; j++)   //Pad with blanks.
+          for (int j = ilen; j<256; j++)   //Pad with blanks.
           {
               *(theLine + j) = ' ';
           }
-          *(theLine+80) = '\0';
+          *(theLine+256) = '\0';
 
       }
       else
