@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2001/08/23 15:18:43  Administrator
+C Evade singulrities
+C
 C Revision 1.11  2001/06/18 08:26:44  richard
 C Replace XPROCC common blocks with macro references. Two common block variables
 C (TOLER and ITRANS) were being set in two separate data statements. Fixed.
@@ -2576,7 +2579,7 @@ C
 CODE FOR SAPR
       SUBROUTINE SAPR
 C
-C
+C----- BUILD VALID ATOM LINE
       DIMENSION IH(1)
 \ISTORE
 C
@@ -2606,9 +2609,9 @@ C-C-C-SET FLAG TO ISOTROPIC
       STORE(JT+6)=STORE(JG+2)
 C-C-C-PUT U[ISO] RESP. UEQUIV ON NEW PLACE
       STORE(JT+7)=SY
-C--ZERO THE ANISO T.F.'S
+C--ZERO THE ANISO T.F.'S AND OTHER BITS
 C      CALL XZEROF(STORE(JT+7),6)
-      CALL XZEROF(STORE(JT+8),5)
+      CALL XZEROF(STORE(JT+8),MD5-8)
 C--PRINT THE RESULT
       JTEMP=JT+6
       IF (ISSPRT .EQ. 0) THEN
