@@ -36,8 +36,8 @@
 %    CLEAR
 %    ON ERROR TERMINATE
 %%
-^^WI WINDOW XGUIDES 'Supervisor' POSITION CENTRED 'MODEL01'
-^^WI COMMAND='#SCRIPT XGUIDESC' DISABLEIF='IN'
+^^WI WINDOW XGUIDES 'Supervisor' POSITION CASCADE '_MAINTEXTOUTPUT'
+^^WI COMMAND='#SCRIPT XGUIDESC' DISABLEIF='IN' CANCEL='GS_BXX'
 ^^WI GRID HO NROWS=5 NCOLS=3
 ^^WI {
 ^^WI  @ 2,2 GRID OUTER NROWS=1 NCOLS=5
@@ -72,6 +72,11 @@
 % END SCRIPT
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.2  2001/03/09 18:01:26  richard
+%%  Removed default actions for buttons, as these are now non-modal windows.
+%%  They were interfering with the user pressing RETURN in other scripts, while
+%%  the windows were open.
+%%
 %%  Revision 1.1  2001/03/08 14:00:23  richard
 %%  New GUIDE scripts. The main script, xguide, decides on the overall stage
 %%  and calls one of xguidei - for data import, xguides - for solving or

@@ -6,7 +6,7 @@
 %% to recommend a few cycles of refinement (if appropriate).
 %%
 %  VERIFY GR_BOK GR_BXX GR_BHELP GR_BRESET
-%  GET SILENT NOSTORE ABBREVIATED 'Continue?' ' '
+%  GET SILENT NOSTORE ABBREVIATED 'Continue?' 'GR_BXX'
 %  CASE VALUE
 %    BLOCK  %BOK%
 ^^?? AUTOLIST SELECTED
