@@ -716,7 +716,7 @@ C INTERPOLATION
             R(K)=AVR(ITEMP)
           END DO
 
-          CALL SOLVE(R,FLGW(J-1),FLGW(J),FLGW(J+1),FLGW(J+2),AW)
+          CALL NSOLVE(R,FLGW(J-1),FLGW(J),FLGW(J+1),FLGW(J+2),AW)
 C WILSON PLOT INTERPOLATION
   130     WVAL = AW(4)+ Q * ( AW(3) + Q * ( AW(2) + Q * AW(1) ) )
           IL=100.0*(WVAL-FN)/FD+16.5
@@ -727,7 +727,7 @@ C STORE K-CURVE
           DCV(I)=EXP(AW(4)+Q*(AW(3)+Q*(AW(2)+Q*AW(1))))
 
           IF ( E5 ) THEN
-            CALL SOLVE(R,FLGWC(J-1),FLGWC(J),FLGWC(J+1),FLGWC(J+2),AWC)
+            CALL NSOLVE(R,FLGWC(J-1),FLGWC(J),FLGWC(J+1),FLGWC(J+2),AWC)
             WCVAL = AWC(4) + Q * ( AWC(3) + Q * (AWC(2) + Q * AWC(1)) )
           ELSE
             WCVAL = 0.0
@@ -802,7 +802,7 @@ C     CROSSES IT.
       END                                                               
 C ------------------------------------------------------------------
 C FIT CURVE TO Y = A(1) * RHO**3 + A(2) * RHO**2 + A(3) * RHO + A(4)
-      SUBROUTINE SOLVE(R,Y1,Y2,Y3,Y4,A)                                 
+      SUBROUTINE NSOLVE(R,Y1,Y2,Y3,Y4,A)                                 
       DIMENSION R(4),A(4)                                               
       B2=R(4)*(R(4)+R(1))                                               
       B1=(Y4-Y1)/(R(4)-R(1))                                            
