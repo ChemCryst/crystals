@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.45  2002/12/03 13:55:48  rich
+C Remove debugging statement.
+C
 C Revision 1.44  2002/11/07 17:35:13  rich
 C THLIM upgraded so that it works. (With Friedel unmerged data and data
 C that hasn't been SYSTEMATIC'd). It now also writes things to the listing
@@ -3027,8 +3030,9 @@ C
 \QLST30
 \QLST31
 \QSTORE
-      V(A,B,C,AL,BE,GA)=A*B*C * SQRT(1-COS(AL)**2-COS(BE)**2-COS(GA)**2
-     1         + 2 * COS(AL) * COS(BE) * COS(GA))
+
+      V(CA,CB,CC,AL,BE,GA)=CA*CB*CC * SQRT(1-COS(AL)**2-COS(BE)**2-
+     1   COS(GA)**2 + 2 * COS(AL) * COS(BE) * COS(GA))
 C 
 C------ REFERENCE CODES FOR THE DIFFRACTOMETERS
       DATA IREFCD /4,5,6, 13,24,13, 13,24,13, 25,17,17, 15,17,17,
@@ -3796,7 +3800,7 @@ C RIC2001 New scan types. Use IVAL, not char string.
          ELSE IF ( IVAL .EQ. 4 ) THEN
 &&DOSVAX             CVALUE = '''\f & \w scans'''
 &&DVFGID             CVALUE = '''\f & \w scans'''
-&&LINGIL             CVALUE = '''\f & \w scans'''
+&&LINGIL             CVALUE = '''\\f & \\w scans'''
          ELSE
              CVALUE = '?'
          END IF
