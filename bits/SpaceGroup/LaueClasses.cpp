@@ -11,6 +11,7 @@
 #include "UnitCell.h"
 #include "RunParameters.h"
 #include <iterator>
+#include "MathFunctions.h"
 
 /*
  * returns whether the HKL pMat1 is greater then HKL pMat2
@@ -119,20 +120,18 @@ Matrix<short>& LaueClassMatrices::getMatrix(unsigned int pIndex) const
 /* LaueGroup										    */
 /********************************************************/
 
-LaueGroup::LaueGroup():iCrystalSystem(kTriclinicID), iLaueGroup(NULL), iLaueGroupMatrices(LaueClassMatrices::defaultInstance())
+LaueGroup::LaueGroup():CrystSymmetry(), iCrystalSystem(kTriclinicID), iLaueGroupMatrices(LaueClassMatrices::defaultInstance())
 {
 	iMatIndices = NULL;
 }
    
-LaueGroup::LaueGroup(const SystemID pSys, const char* pLaueGroup, const unsigned short pIndices[], const int pNumMat):iCrystalSystem(pSys),iLaueGroup(NULL), iLaueGroupMatrices(LaueClassMatrices::defaultInstance())
+LaueGroup::LaueGroup(const SystemID pSys, const string& pLaueGroup, const unsigned short pIndices[], const int pNumMat, const vector<CrystSymmetry>& pPointGroups):CrystSymmetry(pLaueGroup), iCrystalSystem(pSys),
+	iLaueGroupMatrices(LaueClassMatrices::defaultInstance()), iPointGroups(pPointGroups)
 {
 	iMatIndices = new vector<unsigned short>(pIndices, &pIndices[pNumMat]);
-	iLaueGroup = new char[strlen(pLaueGroup)+1];
-	strcpy(iLaueGroup, pLaueGroup);
-	
 }
 
-LaueGroup::LaueGroup(const LaueGroup& pLaueGroup):iCrystalSystem(pLaueGroup.iCrystalSystem), iLaueGroup(NULL), iLaueGroupMatrices(LaueClassMatrices::defaultInstance())
+LaueGroup::LaueGroup(const LaueGroup& pLaueGroup):CrystSymmetry(pLaueGroup), iCrystalSystem(pLaueGroup.iCrystalSystem), iLaueGroupMatrices(LaueClassMatrices::defaultInstance()), iPointGroups(pLaueGroup.iPointGroups)
 {
 	if (pLaueGroup.iMatIndices != NULL)
 	{
@@ -141,11 +140,6 @@ LaueGroup::LaueGroup(const LaueGroup& pLaueGroup):iCrystalSystem(pLaueGroup.iCry
 	else
 	{
 		iMatIndices = NULL;
-	}
-	if (pLaueGroup.iLaueGroup != NULL)
-	{
-		iLaueGroup = new char[strlen(pLaueGroup.iLaueGroup)+1];
-		strcpy(iLaueGroup, pLaueGroup.iLaueGroup);
 	}
 }
 
@@ -156,11 +150,20 @@ LaueGroup::~LaueGroup()
 		delete iMatIndices;
 		iMatIndices = NULL;
 	}
-	if (iLaueGroup != NULL)
+}
+
+bool LaueGroup::contains(const CrystSymmetry& pSymmetry)
+{
+	vector<CrystSymmetry>::iterator tIter;
+	
+	for (tIter = iPointGroups.begin(); tIter != iPointGroups.end(); tIter++)
 	{
-		delete[] iLaueGroup;
-		iLaueGroup = NULL;
+		if ((string)(*tIter) == (string)pSymmetry)
+		{
+			return true;
+		}
 	}
+	return false;
 }
 
 SystemID LaueGroup::crystalSystem() const
@@ -180,22 +183,42 @@ size_t LaueGroup::numberOfMatrices() const
 
 float LaueGroup::ratingForUnitCell(const UnitCell& pUnitCell)const
 {
-	Matrix<float> tMetricTensor(pUnitCell.metricTensor());
+	Matrix<float> tMetricTensor;
+	pUnitCell.metricTensor(tMetricTensor);
+	//UnitCell tUnitCell(tMetricTensor);
+	//std::cout << "\n-----------New UnitCell-----------\n" << tUnitCell << "\n";
 	Matrix<float> tDiff(3,3);
-	Matrix<float> tOperator(3, 3);
-	Matrix<float> tOperatorTranspose(3, 3);
-
+	Matrix<float> tOperator(3, 3);		//The current operator to be applied to the unit cell tensor. This is the inverse of the one used on the refelctions as it's i
+	Matrix<float> tOperatorTrans(3, 3); //Transpose of tOperator.
+	float tMaxElement = maximum(tMetricTensor, 0.0f, tDiff.sizeX()*tDiff.sizeY());
+	//std::cout << "\n-----------Matric tensor-----------\n" << tMetricTensor << "\n";
 	float tScalarDiff = 0;
-	for (size_t i = 0; i < iMatIndices->size(); i++) //Run through all the matrices.
-	{   // T-((O'*T)*O) where T :  Metric tensor O : Operators matrix
-		tOperator = getMatrix(i); //Get the current metrix operator.
-		tOperatorTranspose = tOperator;
-		tOperatorTranspose.transpose(); //Transpose the matrix
-		tOperatorTranspose.mul(tMetricTensor, tDiff); //Multiply the metric tensor by the current transpose of the matrix
-		tDiff.mul(tOperator, tOperatorTranspose); //Multiply the metric tensor by the current matrix
+	for (size_t i = 1; i < iMatIndices->size(); i++) //Run through all the matrices missing the first as it is the identity
+	{   // D = T-((O'*T)*O) where T :  Metric tensor O : Operators matrix
 		
-		tMetricTensor.sub(tOperatorTranspose, tDiff); 
-		tScalarDiff = max(tDiff.abssum(), tScalarDiff);
+		tOperator = getMatrix(i);		//Get the current metrix operator in reciprical space.
+		//std::cout << "\n-----------Operator-----------\n" << tOperator << "\n";
+		tOperator.inv();				//Convert it into real space.
+		tOperatorTrans = tOperator; 
+		tOperatorTrans.transpose(); //Transpose the matrix
+		tOperatorTrans.mul(tMetricTensor, tDiff); //Multiply the metric tensor by the current transpose of the matrix
+		tDiff.mul(tOperator, tOperatorTrans); //Multiply the metric tensor by the current matrix
+		
+		tOperatorTrans.sub(tMetricTensor, tDiff);
+		
+	//	tDiff.mul(tDiff, tOperatorTrans);
+		
+		
+		//
+		//std::cout << "\n-----------test-----------\n" << tDiff << "\n";
+		//tMetricTensor.sub(tOperator, tDiff); 
+		//std::cout << "\n-----------Matric tensor differences-----------\n" << tDiff << "\n";
+	//	float tMean = mean(tDiff, 0.0f, tDiff.sizeX()*tDiff.sizeY());
+		//std::cout << "Average difference: " << tMean << "\n";
+	//	tDiff.sub(tMean, tOperator); // D - \D\ = O     \D\ : is the mean of D
+		//std::cout << "differences from mean: \n" << tOperatorTrans << "\n" << tOperatorTrans.abssum();
+		//std::cout << "difference: " << tDiff.abssum() <<"\n";
+		tScalarDiff = max((tDiff.abssum()/tMaxElement), tScalarDiff);
 	}
 	return tScalarDiff;
 }
@@ -221,21 +244,16 @@ Matrix<short> LaueGroup::maxEquivilentHKL(const Matrix<short>& pHKL) const
 	return tCurHKL;
 }
 
-char* LaueGroup::laueGroup() const
-{
-	return iLaueGroup;
-}
-
-std::ostream& LaueGroup::output(std::ostream& pStream) const
+/*std::ostream& LaueGroup::output(std::ostream& pStream) const
 {
 	pStream.width(13);
-	return pStream << iLaueGroup;
-}
+	return pStream << (*this);
+}*/
 
-std::ostream& operator<<(std::ostream& pStream, const LaueGroup& pLaueGroup)
+/*std::ostream& operator<<(std::ostream& pStream, const LaueGroup& pLaueGroup)
 {
 	return pLaueGroup.output(pStream);
-}
+}*/
 
 /********************************************************/
 /* LaueGroups										    */
@@ -248,8 +266,8 @@ LaueGroups::LaueGroups():vector<LaueGroup*>()
                                        37, 3, //1 2/m 1
                                        37, 1, //1 1 2/m
 				       37, 4, 32, 1, //2/m 2/m 2/m
-				       37, 11, 1, 22, //4/m
-				       37, 12, 1, 4, 22, 28, 32, 8,//4/m m m
+				       37, 12, 1, 22, //4/m
+				       37, 12, 1, 22, 4, 28, 32, 8,//4/m m m
 				       37, 10, 5, //-3
 				       37, 10, 5, 7, 38, 8, //-3 m 1
 				       37, 10, 5, 28, 29, 0, //  -3 1 m
@@ -262,25 +280,78 @@ LaueGroups::LaueGroups():vector<LaueGroup*>()
 				       37, 26, 20, 36, 25, 19, 24, 15, 14, 3, 9, 31,//m -3
 				       37, 26, 20, 36, 25, 19, 24, 15, 14, 3, 9, 31, 28, 18, 35, 27, 17, 34, 13, 2, 33, 21, 16, 11};//m -3 m
 					   
-    /* The laue groups should always bin in order of symmetry as other methods rely this order on this*/
-	insert(end(), new LaueGroup(kTriclinicID, "-1", tIndices, 1)); //Triclinic
-	insert(end(), new LaueGroup(kMonoclinicAID, "2/m 1 1", &(tIndices[1]), 2)); //2/m 1 1
-	insert(end(), new LaueGroup(kMonoclinicBID, "1 2/m 1", &(tIndices[3]), 2)); //1 2/m 1
-	insert(end(), new LaueGroup(kMonoclinicCID, "1 1 2/m", &(tIndices[5]), 2)); //1 1 2/m
-	insert(end(), new LaueGroup(kOrtharombicID, "2/m 2/m 2/m", &(tIndices[7]), 4)); //2/m 2/m 2/m
-	insert(end(), new LaueGroup(kTetragonalID, "4/m", &(tIndices[11]), 3)); //4/m
-	insert(end(), new LaueGroup(kTetragonalID, "4/m m m", &(tIndices[15]), 8)); //4/m m m
-	insert(end(), new LaueGroup(kTrigonalID, "-3", &(tIndices[23]), 3)); //-3
-	insert(end(), new LaueGroup(kTrigonalID, "-3 m 1", &(tIndices[26]), 6)); //-3 m 1
-	insert(end(), new LaueGroup(kTrigonalID, "-3 1 m", &(tIndices[32]), 6)); //-3 1 m
-	
-	insert(end(), new LaueGroup(kTrigonalRhomID, "-3 rhom", &(tIndices[38]), 3)); //-3 rhom
-	insert(end(), new LaueGroup(kTrigonalRhomID, "-3 m 1 rhom", &(tIndices[41]), 6)); //-3 m 1 rhom
-		
-	insert(end(), new LaueGroup(kHexagonalID, "6/m", &(tIndices[47]), 6)); //6/m
-	insert(end(), new LaueGroup(kHexagonalID, "6/m m m", &(tIndices[53]), 12)); //6/m m m
-	insert(end(), new LaueGroup(kCubicID, "m -3", &(tIndices[65]), 12)); //m -3
-	insert(end(), new LaueGroup(kCubicID, "m -3 m", &(tIndices[77]), 24)); //m -3 
+    /* The laue groups should always be in order of symmetry as other methods rely this order*/
+	PointGroups t1;
+	vector<CrystSymmetry> tV1;
+	tV1.push_back(t1["1"]);
+	tV1.push_back(t1["-1"]);
+	insert(end(), new LaueGroup(kTriclinicID, "-1", tIndices, 1, tV1)); //Triclinic
+	tV1.clear();
+	tV1.push_back(t1["2"]);
+	tV1.push_back(t1["m"]);
+	tV1.push_back(t1["2/m"]);
+	insert(end(), new LaueGroup(kMonoclinicAID, "2/m11", &(tIndices[1]), 2, tV1)); //2/m 1 1
+	insert(end(), new LaueGroup(kMonoclinicBID, "12/m1", &(tIndices[3]), 2, tV1)); //1 2/m 1
+	insert(end(), new LaueGroup(kMonoclinicCID, "112/m", &(tIndices[5]), 2, tV1)); //1 1 2/m
+	tV1.clear();
+	tV1.push_back(t1["222"]);
+	tV1.push_back(t1["mm2"]);
+	tV1.push_back(t1["m2m"]);
+	tV1.push_back(t1["2mm"]);
+	tV1.push_back(t1["mmm"]);
+	insert(end(), new LaueGroup(kOrtharombicID, "2/m2/m2/m", &(tIndices[7]), 4, tV1)); //2/m 2/m 2/m
+	tV1.clear();
+	tV1.push_back(t1["4"]);
+	tV1.push_back(t1["-4"]);
+	tV1.push_back(t1["4/m"]);
+	insert(end(), new LaueGroup(kTetragonalID, "4/m", &(tIndices[11]), 3, tV1)); //4/m
+	tV1.clear();
+	tV1.push_back(t1["422"]);
+	tV1.push_back(t1["4mm"]);
+	tV1.push_back(t1["-42m"]);
+	tV1.push_back(t1["-4m2"]);
+	tV1.push_back(t1["4/mmm"]);
+	insert(end(), new LaueGroup(kTetragonalID, "4/mmm", &(tIndices[15]), 8, tV1)); //4/m m m
+	tV1.clear();
+	tV1.push_back(t1["3"]);
+	tV1.push_back(t1["-3"]);
+	insert(end(), new LaueGroup(kTrigonalID, "-3", &(tIndices[23]), 3, tV1)); //-3
+	insert(end(), new LaueGroup(kTrigonalRhomID, "-3 rhom", &(tIndices[38]), 3, tV1)); //-3 rhom
+	tV1.clear();
+	tV1.push_back(t1["32"]);
+	tV1.push_back(t1["3m"]);
+	tV1.push_back(t1["-3m"]);
+	insert(end(), new LaueGroup(kTrigonalRhomID, "-3m1 rhom", &(tIndices[41]), 6, tV1)); //-3 m 1 rhom
+	tV1.push_back(t1["321"]);
+	tV1.push_back(t1["3m1"]);
+	tV1.push_back(t1["-3m1"]);
+	insert(end(), new LaueGroup(kTrigonalID, "-3m1", &(tIndices[26]), 6, tV1)); //-3 m 1
+	tV1.clear();
+	tV1.push_back(t1["312"]);
+	tV1.push_back(t1["31m"]);
+	tV1.push_back(t1["-31m"]);
+	insert(end(), new LaueGroup(kTrigonalID, "-31m", &(tIndices[32]), 6, tV1)); //-3 1 m
+	tV1.clear();
+	tV1.push_back(t1["6"]);
+	tV1.push_back(t1["-6"]);
+	tV1.push_back(t1["6/m"]);
+	insert(end(), new LaueGroup(kHexagonalID, "6/m", &(tIndices[47]), 6, tV1)); //6/m
+	tV1.clear();
+	tV1.push_back(t1["622"]);
+	tV1.push_back(t1["6mm"]);
+	tV1.push_back(t1["-62m"]);
+	tV1.push_back(t1["-6m2"]);
+	tV1.push_back(t1["-6/mmm"]);
+	insert(end(), new LaueGroup(kHexagonalID, "6/mmm", &(tIndices[53]), 12, tV1)); //6/m m m
+	tV1.clear();
+	tV1.push_back(t1["23"]);
+	tV1.push_back(t1["m-3"]);
+	insert(end(), new LaueGroup(kCubicID, "m-3", &(tIndices[65]), 12, tV1)); //m -3
+	tV1.clear();
+	tV1.push_back(t1["432"]);
+	tV1.push_back(t1["-43m"]);
+	tV1.push_back(t1["m-3m"]);
+	insert(end(), new LaueGroup(kCubicID, "m-3m", &(tIndices[77]), 24, tV1)); //m -3m 
 }
 
 LaueGroups::~LaueGroups()
@@ -311,13 +382,13 @@ void LaueGroups::releaseDefault()
 	gLaueGroupsDefulatInstace = NULL;
 }		
 
-LaueGroup* LaueGroups::laueGroupWithSymbol(const char* pSymbol)
+LaueGroup* LaueGroups::laueGroupWithSymbol(const string& pSymbol)
 {
 	vector<LaueGroup*>::iterator tIterator = begin();
 	
 	do
 	{
-		if (strcmp((*tIterator)->laueGroup(), pSymbol) == 0)
+		if ( *((string*)(*tIterator)) == pSymbol)
 		{
 			return *tIterator;
 		}
@@ -403,7 +474,7 @@ std::ostream& laueGroupOptions(std::ostream& pOutputStream)
 	
 	for (tIter = tDefault->begin(); tIter != tDefault->end(); tIter++, i++)
 	{
-		pOutputStream << i << ": " << (*tIter)->laueGroup() << " " << crystalSystemConst((*tIter)->crystalSystem()) << "\n";
+		pOutputStream << i << ": " << (**tIter) << " " << crystalSystemConst((*tIter)->crystalSystem()) << "\n";
 	}
 	return pOutputStream;
 }
