@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   10.11.2001 10:19
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2001/11/29 15:46:08  ckpgroup
+//   SH: Update of script commands to support second y axis, general update.
+//
 //   Revision 1.5  2001/11/26 16:47:35  ckpgroup
 //   SH: More MouseOver changes. Scatterplots display the graph coordinates of the mouse pointer.
 //   Remove labels when mouse leaves window.
@@ -44,7 +47,7 @@ class CcPlotBar : public CcPlotData
         CcPlotBar();
         virtual ~CcPlotBar();
 
-		CcString GetDataFromPoint(CcPoint point);	
+		CcString GetDataFromPoint(CcPoint *point);	
 		void CreateSeries(int numser, int* type);		// creates all data series (type is a block of numser series types)
 		void AllocateMemory(int length);				// calls AllocateMemory for each series.
 		void AddSeries(int type);						// add a series to the graph

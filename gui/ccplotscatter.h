@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   10.11.2001 10:15
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2001/11/29 15:46:10  ckpgroup
+//   SH: Update of script commands to support second y axis, general update.
+//
 //   Revision 1.4  2001/11/26 14:02:49  ckpgroup
 //   SH: Added mouse-over message support - display label and data value for the bar
 //   under the pointer.
@@ -41,7 +44,7 @@ class CcPlotScatter : public CcPlotData
         CcPlotScatter();
         virtual ~CcPlotScatter();
 
-		CcString GetDataFromPoint(CcPoint point);
+		CcString GetDataFromPoint(CcPoint *point);
 		void CreateSeries(int numser, int* type);
 		void AllocateMemory(int length);
 		void AddSeries(int type);

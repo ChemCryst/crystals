@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   09.11.2001 23:47
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2001/11/29 15:46:09  ckpgroup
+//   SH: Update of script commands to support second y axis, general update.
+//
 //   Revision 1.5  2001/11/26 14:02:48  ckpgroup
 //   SH: Added mouse-over message support - display label and data value for the bar
 //   under the pointer.
@@ -86,7 +89,7 @@ public:
 class CcPlotData
 {
 public:
-    virtual void DrawView() = 0;
+    virtual void DrawView() =0;
     void Clear();
     virtual Boolean ParseInput( CcTokenList * tokenList );
     CcPlotData();
@@ -97,12 +100,13 @@ public:
     static CcList  sm_PlotList;
     static CcPlotData* sm_CurrentPlotData;
 
-	virtual CcString GetDataFromPoint(CcPoint point) = 0;
+	virtual CcString GetDataFromPoint(CcPoint* point) = 0;
 
 	virtual void CreateSeries(int numser, int* type) = 0;
 	virtual void AllocateMemory(int length) = 0;
 	virtual void AddSeries(int type) = 0;
 
+	void DrawKey();
 	int FindSeriesType(CcString textstyle);
 
     CcSeries**		m_Series;		// array of series
@@ -110,6 +114,8 @@ public:
 	int				m_NextItem;		// number of data items added so far to each series
 	CcPlotAxes		m_Axes;
 	Boolean			m_AxesOK;
+
+	Boolean			m_DrawKey;		// draw a key of the series names / colours?
 
 	int				m_CurrentSeries;// currently selected series (init as -1 = all)
 	int				m_CurrentAxis;	// currently selected axis (init as -1 = all)
@@ -120,9 +126,11 @@ public:
 	int				m_XGapRight;
 	int				m_YGapTop;
 	int				m_YGapBottom;
+
 	int				m_CompleteSeries;// number of series with all data present (eg to let ADDSERIES work...)
 	int				m_NewSeriesNextItem;// number of data items given to the new series
 	bool			m_NewSeries;	// true if there is an incomplete series present
+
 protected:
     CcString mName;					// internal name
     CrPlot* attachedPlot;
@@ -175,6 +183,7 @@ private:
 #define kSPlotYAxis		   "YAXIS"
 #define kSPlotYAxisRight   "YAXISRIGHT"
 #define kSPlotUseRightAxis "USERIGHTAXIS"
+#define kSPlotKey		   "KEY"
 enum
 {
  kTPlotAttach = 300,
@@ -199,7 +208,8 @@ enum
  kTPlotXAxis,
  kTPlotYAxis,
  kTPlotYAxisRight,
- kTPlotUseRightAxis
+ kTPlotUseRightAxis,
+ kTPlotKey
 };
 
 

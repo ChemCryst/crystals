@@ -7,6 +7,9 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.9  2001/11/29 15:46:08  ckpgroup
+// SH: Update of script commands to support second y axis, general update.
+//
 // Revision 1.8  2001/11/26 16:47:34  ckpgroup
 // SH: More MouseOver changes. Scatterplots display the graph coordinates of the mouse pointer.
 // Remove labels when mouse leaves window.
@@ -91,7 +94,7 @@ Boolean CcPlotBar::ParseInput( CcTokenList * tokenList )
 					if(m_SeriesLength == 0) m_SeriesLength = 10;
 
 					// allocate new memory 
-					CcString* templabels = new CcString[m_SeriesLength * 1.5];
+					CcString* templabels = new CcString[(int)(m_SeriesLength * 1.5)];
 					float *   tempdata = 0;
 					
 					// loop through the previous set of bar-labels, copying data to the new one
@@ -107,7 +110,7 @@ Boolean CcPlotBar::ParseInput( CcTokenList * tokenList )
 					// loop through the series, copy data to newly allocated memory
 					for(int i=0; i< m_NumberOfSeries; i++)
 					{
-						tempdata = new float[m_SeriesLength * 1.5];
+						tempdata = new float[(int)(m_SeriesLength * 1.5)];
 
 						for(j=0; j<m_SeriesLength; j++)
 						{
@@ -120,7 +123,7 @@ Boolean CcPlotBar::ParseInput( CcTokenList * tokenList )
 					}
 
 				// the series has now been extended
-				m_SeriesLength *= 1.5;
+				m_SeriesLength = (int)(m_SeriesLength*1.5);
 				}
 				
 				// copy this label to m_Label[n]
@@ -138,18 +141,18 @@ Boolean CcPlotBar::ParseInput( CcTokenList * tokenList )
 				for(int i=m_CompleteSeries; i< (m_NumberOfSeries); i++)
 				{
 					CcString ndata = tokenList->GetToken();
-					float tempdata = atof(ndata.ToCString());
+					float tempdata = (float)atof(ndata.ToCString());
 
 					// changes axis range if necessary
-					m_Axes.CheckData(Axis_YL, tempdata);			
+					m_Axes.CheckData(m_Series[i]->m_YAxis, tempdata);			
 				
-					if(m_Axes.m_AxisData[Axis_YL].m_AxisLog)
+					if(m_Axes.m_AxisData[m_Series[i]->m_YAxis].m_AxisLog)
 					{
 						if(tempdata <= 0)
 						{
 							LOGWARN("Negative data passed to a LOG plot...");
 						}
-						else tempdata = log10(tempdata);
+						else tempdata = (float)log10(tempdata);
 					}
 
 					// and copy this to m_Series[i]->m_Data[n]
@@ -187,7 +190,13 @@ Boolean CcPlotBar::ParseInput( CcTokenList * tokenList )
 void CcPlotBar::DrawView()
 {
     if(attachedPlot)
-    {
+	{
+		// if a key has been requested, create a block of names and colours...
+		if(m_DrawKey)
+		{
+			DrawKey();
+		}
+		
 		// setup variables for scaling / positioning of graphs
 
 		// if graph has a title, make top gap bigger
@@ -202,7 +211,7 @@ void CcPlotBar::DrawView()
 		if(!(m_Axes.m_AxisData[Axis_YL].m_Title == ""))
 			m_XGapLeft = 300;
 		if(!(m_Axes.m_AxisData[Axis_YR].m_Title == ""))
-			m_XGapRight = 200;
+			m_XGapRight = 300;
 
 		// variables used for loops
 		int i=0;
@@ -214,6 +223,8 @@ void CcPlotBar::DrawView()
 		// gap between division markers on x and y axes
 		int xdivoffset = (2400-m_XGapLeft-m_XGapRight) / (m_Axes.m_AxisData[Axis_X].m_NumDiv);			
 		int ydivoffset = (2400-m_YGapTop-m_YGapBottom) / (m_Axes.m_AxisData[Axis_YL].m_NumDiv);			
+		int yroffset   = 0;
+		if(m_Axes.m_NumberOfYAxes == 2) yroffset = (2400 - m_YGapTop - m_YGapBottom)/(m_Axes.m_AxisData[Axis_YR].m_NumDiv);
 
 		// axis dimensions after rounding
 		int axisheight = ydivoffset * (m_Axes.m_AxisData[Axis_YL].m_NumDiv);
@@ -222,8 +233,9 @@ void CcPlotBar::DrawView()
 		int xseroffset=0;
 
 		// take the axis height, work out where zero is...
-		int xorigin = 2400 - m_XGapLeft + ((axiswidth * m_Axes.m_AxisData[Axis_X].m_Min) / (m_Axes.m_AxisData[Axis_X].m_Max - m_Axes.m_AxisData[Axis_X].m_Min));
-		int yorigin = 2400 - m_YGapBottom + (axisheight * (m_Axes.m_AxisData[Axis_YL].m_AxisMin / (m_Axes.m_AxisData[Axis_YL].m_AxisMax- m_Axes.m_AxisData[Axis_YL].m_AxisMin)));
+		int xorigin	   = (int)(2400 - m_XGapLeft   + ((axiswidth *  m_Axes.m_AxisData[Axis_X].m_Min)     / (m_Axes.m_AxisData[Axis_X].m_Max      - m_Axes.m_AxisData[Axis_X].m_Min)));
+		int yorigin    = (int)(2400 - m_YGapBottom + (axisheight * (m_Axes.m_AxisData[Axis_YL].m_AxisMin / (m_Axes.m_AxisData[Axis_YL].m_AxisMax - m_Axes.m_AxisData[Axis_YL].m_AxisMin))));
+		int yorigright = (int)(2400 - m_YGapBottom + (axisheight * (m_Axes.m_AxisData[Axis_YR].m_AxisMin / (m_Axes.m_AxisData[Axis_YR].m_AxisMax - m_Axes.m_AxisData[Axis_YR].m_AxisMin))));
 
 		//this is the value of y at the origin (may be non-zero for span-graphs)
 		float yoriginvalue = 0;
@@ -232,7 +244,13 @@ void CcPlotBar::DrawView()
 			yorigin = 2400 - m_YGapBottom;
 			yoriginvalue = m_Axes.m_AxisData[Axis_YL].m_AxisDivisions[0];
 		}
-		
+		float yoriginvaluer = 0;
+		if(m_Axes.m_AxisData[Axis_YR].m_AxisScaleType == Plot_AxisSpan && m_Axes.m_AxisData[Axis_YR].m_AxisMin > 0)
+		{
+			yorigright = 2400 - m_YGapBottom;
+			yoriginvaluer = m_Axes.m_AxisData[Axis_YR].m_AxisDivisions[0];
+		}
+
 		// draw a grey background
 		attachedPlot->SetColour(200,200,200);
 		attachedPlot->DrawRect(m_XGapLeft, m_YGapTop, 2400-m_XGapRight, 2400-m_YGapBottom, true);
@@ -251,16 +269,34 @@ void CcPlotBar::DrawView()
 		if(m_NumberOfBarSeries > 0) xseroffset = offset / m_NumberOfBarSeries;
 		else xseroffset = 0;
 
-		int x1,y1,x2,y2;
+		int x1 = 0;
+		int y1 = 0;
+		int x2 = 0;
+		int y2 = 0;
+		int ysorig = 0;
+		float ysorigval = 0;
 
 		// loop first through the series
 		for(j=0; j<m_NumberOfSeries; j++)
 		{
 			// set to series colour
 			attachedPlot->SetColour(m_Colour[0][j],m_Colour[1][j],m_Colour[2][j]);	
+			
+			int justify = m_Series[j]->m_YAxis;
+
+			if(justify == Axis_YR)
+			{
+				ysorig = yorigright;
+				ysorigval = yoriginvaluer;
+			}
+			else
+			{
+				ysorig = yorigin;
+				ysorigval = yoriginvalue;
+			}
 
 			switch(m_Series[j]->m_DrawStyle)
-			{
+			{				
 				// draw this series as a set of vertical bars
 				case Plot_SeriesBar:
 				{
@@ -268,8 +304,8 @@ void CcPlotBar::DrawView()
 					{
 						x1 = m_XGapLeft + i*offset + j*xseroffset + 5;
 						x2 = x1 + xseroffset - 5;
-						y1 = yorigin;
-						y2 = yorigin - (axisheight * ((((CcSeriesBar*)m_Series[j])->m_Data[i] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax - m_Axes.m_AxisData[Axis_YL].m_AxisMin)));
+						y1 = ysorig;
+						y2 = ysorig - (int)((axisheight * ((((CcSeriesBar*)m_Series[j])->m_Data[i] - ysorigval) / (m_Axes.m_AxisData[justify].m_AxisMax - m_Axes.m_AxisData[justify].m_AxisMin))));
 
 						attachedPlot->DrawRect(x1,y1,x2,y2, true);
 					}
@@ -281,10 +317,10 @@ void CcPlotBar::DrawView()
 				{
 					for(i=0; i<m_NextItem-1; i++)
 					{
-						x1 = m_XGapLeft + (i+0.5)*offset;
+						x1 = m_XGapLeft + (int)((i+0.5)*offset);
 						x2 = x1 + offset;
-						y1 = yorigin - (axisheight * ((((CcSeriesBar*)m_Series[j])->m_Data[i] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax- m_Axes.m_AxisData[Axis_YL].m_AxisMin)));
-						y2 = yorigin - (axisheight * ((((CcSeriesBar*)m_Series[j])->m_Data[i+1] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax - m_Axes.m_AxisData[Axis_YL].m_AxisMin)));
+						y1 = ysorig - (int)((axisheight * ((((CcSeriesBar*)m_Series[j])->m_Data[i] - ysorigval) / (m_Axes.m_AxisData[justify].m_AxisMax- m_Axes.m_AxisData[justify].m_AxisMin))));
+						y2 = ysorig - (int)((axisheight * ((((CcSeriesBar*)m_Series[j])->m_Data[i+1] - ysorigval) / (m_Axes.m_AxisData[justify].m_AxisMax - m_Axes.m_AxisData[justify].m_AxisMin))));
 
 						attachedPlot->DrawLine(1, x1,y1,x2,y2);
 					}
@@ -302,33 +338,98 @@ void CcPlotBar::DrawView()
 }
 
 // create a text string describing the data point at a certain coordinate
-CcString CcPlotBar::GetDataFromPoint(CcPoint point)
+CcString CcPlotBar::GetDataFromPoint(CcPoint *point)
 {
+	// "error" is the default return string, detected by cxplot
 	CcString ret = "error";
 
-	if((point.x < (2400 - m_XGapRight)) && (point.x > m_XGapLeft) && (point.y > m_YGapTop) && (point.y < (2400 - m_YGapBottom)))
+	// point has not yet been found
+	bool pointfound = false;
+
+	// only calculate mouse-over when pointer is inside the graph itself
+	if((point->x < (2400 - m_XGapRight)) && (point->x > m_XGapLeft) && (point->y > m_YGapTop) && (point->y < (2400 - m_YGapBottom)))
 	{
-		// need to : interpolate between xmin,xmax to get the label at that point,
-		int axiswidth = 2400 - m_XGapLeft - m_XGapRight;
-		
-		// work out the width of each label...
-		int width = axiswidth / (m_NextItem);
-
-		// now work out the label which contains point.x
-		int num = (point.x - m_XGapLeft)/width;
-
-		// now work out the specific bar...
-		// this is the lhs of the label...
-		int lowerlimit = num*width;	
-		int bar = m_NumberOfBarSeries*(point.x - m_XGapLeft - lowerlimit)/width;
-
-		if(num < (m_NextItem))
+		// if there are non-bar data series (scatter or line), calculate for them first...
+		if(m_NumberOfBarSeries > 0)
 		{
-			ret = m_Axes.m_Labels[num];
-			ret += "; ";
-			if(m_Axes.m_AxisData[Axis_YL].m_AxisLog)
-				ret += pow(10,((CcSeriesBar*)m_Series[bar])->m_Data[num]);
-			else ret += ((CcSeriesBar*)m_Series[bar])->m_Data[num];
+			// search through all data points to find the one the pointer is over
+			for(int i=0; i<m_NumberOfSeries; i++)
+			{
+				if(m_Series[i]->m_DrawStyle != Plot_SeriesBar)
+				{
+					for(int j=0; j<m_SeriesLength; j++)
+					{
+						int axis = m_Series[i]->m_YAxis;
+
+						// need to : interpolate between xmin,xmax to get the label at that point,
+						int axiswidth = 2400 - m_XGapLeft - m_XGapRight;
+						int axisheight = 2400 - m_YGapTop - m_YGapBottom;
+		
+						// calculate x and y positions of the cursor
+						float y = m_Axes.m_AxisData[axis].m_AxisMax + (m_Axes.m_AxisData[axis].m_AxisMin-m_Axes.m_AxisData[axis].m_AxisMax)*(point->y - m_YGapTop) / axisheight;
+						int x = point->x - m_XGapLeft;
+
+						int bar = axiswidth / m_NextItem;
+
+						if((y > ((CcSeriesBar*)m_Series[i])->m_Data[j]-0.1) && (y < ((CcSeriesBar*)m_Series[i])->m_Data[j]+0.1))
+						{
+							if((x > (j+0.5)*bar-10) && (x < (j+0.5)*bar+10))
+							{
+								if(!(m_Series[i]->m_SeriesName == ""))
+								{
+									ret = m_Series[i]->m_SeriesName;
+									ret += "; ";
+								}
+								else ret = "";
+								ret += m_Axes.m_Labels[j];
+								ret += "; ";
+								ret += ((CcSeriesBar*)m_Series[i])->m_Data[j];
+								pointfound = true;
+
+								point->y = m_YGapTop;
+								point->x = m_XGapLeft + (j+0.5)*bar;
+							}
+						}
+					}
+				}
+			}
+		}
+		// if only bar-series present (or if point not found...) return the bar the pointer is over.
+		if(pointfound == false)
+		{
+			// need to : interpolate between xmin,xmax to get the label at that point,
+			int axiswidth = 2400 - m_XGapLeft - m_XGapRight;
+			
+			// work out the width of each label...
+			int width = axiswidth / (m_NextItem);
+
+			// now work out the label which contains point.x
+			int num = (point->x - m_XGapLeft)/width;
+
+			// now work out the specific bar...
+			// this is the lhs of the label...
+			int lowerlimit = num*width;	
+			int bar = m_NumberOfBarSeries*(point->x - m_XGapLeft - lowerlimit)/width;
+
+			if(num < (m_NextItem))
+			{
+				// put together a text string to describe the data under the mouse pointer
+				if(!(m_Series[bar]->m_SeriesName == ""))
+				{
+					ret = m_Series[bar]->m_SeriesName;
+					ret += "; ";
+				}
+				else ret = "";
+				ret += m_Axes.m_Labels[num];
+				ret += "; ";
+				if(m_Axes.m_AxisData[Axis_YL].m_AxisLog)
+					ret += pow(10,((CcSeriesBar*)m_Series[bar])->m_Data[num]);
+				else ret += ((CcSeriesBar*)m_Series[bar])->m_Data[num];
+
+				// change the popup position to better align with bars
+				point->x = m_XGapLeft + (num+1)*width;
+				point->y = m_YGapTop;
+			}
 		}
 	}
 

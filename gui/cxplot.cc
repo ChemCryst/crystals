@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2001/12/03 14:25:49  ckp2
+//   RIC: Bug fixes. Release version no longer crashes on mouse leave.
+//
 //   Revision 1.6  2001/11/26 16:47:36  ckpgroup
 //   SH: More MouseOver changes. Scatterplots display the graph coordinates of the mouse pointer.
 //   Remove labels when mouse leaves window.
@@ -97,6 +100,7 @@ CxPlot::CxPlot(CrPlot* container)
 #endif
 {
 	m_TextPopup = 0;
+	m_Key = 0;
 	mMouseCaptured = false;
     ptr_to_crObject = container;
 #ifdef __CR_WIN__
@@ -207,7 +211,16 @@ void CxPlot::OnPaint()
     m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
     dc.BitBlt(0,0,rect.Width(),rect.Height(),m_memDC,0,0,SRCCOPY);
     m_memDC->SelectObject(m_oldMemDCBitmap);
+	if(m_Key) 
+	{
+//		m_Key->BringWindowToTop();
+//		m_Key->SetFocus();
+//		m_Key->ShowWindow(SW_SHOW);
+//		m_Key->InvalidateRect(NULL,false);
+//		m_Key->OnPaint();
+	}
 }
+
 #endif
 
 #ifdef __BOTHWX__
@@ -216,7 +229,6 @@ void CxPlot::OnPaint(wxPaintEvent & event)
       wxPaintDC dc(this); // device context for painting
       wxRect rect = GetRect();
       dc.Blit( 0,0,rect.GetWidth(),rect.GetHeight(),m_memDC,0,0,wxCOPY,false);
-
 }
 #endif
 
@@ -317,6 +329,7 @@ void CxPlot::DrawEllipse(int x, int y, int w, int h, Boolean fill)
 //					TEXT_TOP		x is the top of the text
 //					TEXT_BOTTOM		x is the bottom of the text
 //					TEXT_VERTICAL   string is written one character above the next (for y axis label)
+//					TEXT_VERTICALDOWN and the other way up (rh axis title)
 //					TEXT_BOLD		text drawn in black (else grey)
 //					TEXT_ANGLE		text is drawn at an angle (for crowded axes...)
 //	All coordinates in the range 0 - 2400
@@ -344,22 +357,26 @@ void CxPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
 		CSize temp = m_memDC->GetTextExtent(text.ToCString(), text.Len());
 		CSize move;
 
-		move.cx = temp.cx/sqrt(2);			// must calculate effect of rotation manually. 45 deg -> 1/sqrt(2)
-		move.cy = temp.cx/sqrt(2);			//		for both sin and cos.
+		move.cx = (long)(temp.cx/sqrt(2));			// must calculate effect of rotation manually. 45 deg -> 1/sqrt(2)
+		move.cy = (long)(temp.cx/sqrt(2));			//		for both sin and cos.
 
 		coord.x -= move.cx + temp.cy/2;
 		coord.y += move.cy + temp.cy/2; 
 	}
 	else
 	{
-		if(param & TEXT_VERTICAL)
+		int down = 1;
+
+		if(param & TEXT_VERTICALDOWN)
+			down = -1;	// rotate the other way if text is to be facing left
+
+		if(param & TEXT_VERTICAL || param & TEXT_VERTICALDOWN)
 		{
-			theFont.CreateFont(fontsize, 0, 900,900, thickness, false, false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS,CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
+			theFont.CreateFont(fontsize, 0, down*900,down*900, thickness, false, false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS,CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
 			oldFont = m_memDC->SelectObject(&theFont);
 			int len = text.Len();
 			CSize temp = m_memDC->GetTextExtent(text.ToCString(), len);
-			coord.y = coord.y + temp.cx/2;		// nb swapping of cx and cy - GetTextEntent doesn't handle rotations
-		//	coord.x = coord.x + temp.cy;		//		90 degree so swap axes.
+			coord.y = coord.y + down*temp.cx/2;		// nb swapping of cx and cy - GetTextEntent doesn't handle rotations
 		}
 		else
 		{
@@ -428,8 +445,8 @@ CcPoint CxPlot::GetTextArea(int fontsize, CcString text, int param)
 
 		size = m_memDC->GetOutputTextExtent(text.ToCString(), text.Len());
 
-		tsize.x = size.cx/sqrt(2);
-		tsize.y = size.cx/sqrt(2);
+		tsize.x = (int)(size.cx/sqrt(2));
+		tsize.y = (int)(size.cx/sqrt(2));
 	}
 	else if(param & TEXT_VERTICAL)
 	{
@@ -476,8 +493,8 @@ int CxPlot::GetMaxFontSize(int width, int height, CcString text, int param)
 
 			size = m_memDC->GetOutputTextExtent(text.ToCString(), text.Len());
 
-			size.cx = size.cx/sqrt(2);//cos(size.cx*3.1415/180);
-			size.cy = size.cx/sqrt(2);//sin(size.cy*3.1415/180);
+			size.cx = (long)(size.cx/sqrt(2));
+			size.cy = (long)(size.cx/sqrt(2));
 
 			if ((size.cy < coord.y ))//&&(size.cx < coord.x))
 			{
@@ -712,13 +729,15 @@ int CxPlot::GetIdealHeight()
 BEGIN_MESSAGE_MAP(CxPlot, CWnd)
     ON_WM_CHAR()
     ON_WM_PAINT()
-    ON_WM_LBUTTONUP()
+//    ON_WM_LBUTTONUP()
     ON_WM_RBUTTONUP()
     ON_WM_MOUSEMOVE()
 	ON_MESSAGE(WM_MOUSELEAVE,   OnMouseLeave)
       ON_WM_KEYDOWN()
+//	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 #endif
+
 #ifdef __BOTHWX__
 //wx Message Table
 BEGIN_EVENT_TABLE(CxPlot, wxControl)
@@ -741,7 +760,7 @@ LRESULT CxPlot::OnMouseLeave(WPARAM wParam, LPARAM lParam)
 {
 	DeletePopup();
 	mMouseCaptured = false;
-        return TRUE;
+    return TRUE;
 }
 
 // the mouse-movement code
@@ -749,49 +768,51 @@ LRESULT CxPlot::OnMouseLeave(WPARAM wParam, LPARAM lParam)
 // windows stuff goes here
 void CxPlot::OnMouseMove( UINT nFlags, CPoint wpoint )
 {
- // bool leftDown = ( (nFlags & MK_LBUTTON) != 0 );
- // bool ctrlDown = ( (nFlags & MK_CONTROL) != 0 );
-  CcPoint point = LogicalToDevice(wpoint.x,wpoint.y);
+	// bool leftDown = ( (nFlags & MK_LBUTTON) != 0 );
+	// bool ctrlDown = ( (nFlags & MK_CONTROL) != 0 );
+	
+	// convert coord to 0-2400 range
+	CcPoint point = LogicalToDevice(wpoint.x,wpoint.y);
 
-  // now some stuff to find out when the mouse leaves the window (causes a WM_MOUSE_LEAVE message (?))
-  if(!mMouseCaptured)
-  {
-	TRACKMOUSEEVENT tme;
-	tme.cbSize = sizeof(tme);
-	tme.hwndTrack = m_hWnd;
-	tme.dwFlags = TME_LEAVE;
-	_TrackMouseEvent(&tme);
-	mMouseCaptured = true;
-  }
-
+	// now some stuff to find out when the mouse leaves the window (causes a WM_MOUSE_LEAVE message (?))
+	if(!mMouseCaptured)
+	{
+		TRACKMOUSEEVENT tme;
+		tme.cbSize = sizeof(tme);
+		tme.hwndTrack = m_hWnd;
+		tme.dwFlags = TME_LEAVE;
+		_TrackMouseEvent(&tme);
+		mMouseCaptured = true;
+	}
 #endif
 
 #ifdef __BOTHWX__
 // and now the Linux version
 void CxPlot::OnMouseMove( wxMouseEvent & event )
 {
-  CcPoint point = LogicalToDevice( event.m_x, event.m_y );
- // int nFlags = event.m_controlDown ? MK_CONTROL : 0 ;
- // nFlags = event.m_shiftDown ? MK_SHIFT : 0 ;
- // bool leftDown = event.m_leftDown;
- // bool ctrlDown = event.m_controlDown;
+	// convert to a coordinate from 0-2400 in both axes...
+	  CcPoint point = LogicalToDevice( event.m_x, event.m_y );
 #endif
 
-// now we have the mouse position, get the details of any bar / scatter point below it...
+	if(moldMPos.x != point.x || moldMPos.y != point.y)
+	{	
+		moldMPos = point;
+	  // now we have the mouse position, get the details of any bar / scatter point below it...
+	  CcString text = ((CrPlot*)ptr_to_crObject)->GetDataFromPoint(&point); //nb: point is changed now by GetData to align with top of graph
+	  point = DeviceToLogical(point.x, point.y);
 
-  CcString text = ((CrPlot*)ptr_to_crObject)->GetDataFromPoint(point);
-  point = DeviceToLogical(point.x, point.y);
-
-  if(!(text == "error"))
-  {
-	  if(moldMPos.x != point.x || moldMPos.y != point.y)
-	  {
-		  CreatePopup(text, point);
-		  moldMPos = point;
-	  }
-  }
-  // if mouse message is not valid, remove the popup (ie catch mouse leaving window...)
-  else DeletePopup();
+		if(!(text == "error"))
+		{
+			if((moldPPos.x != point.x || moldPPos.y != point.y) || !(text == moldText ))
+			{
+				CreatePopup(text, point);
+				moldPPos = point;
+				moldText = text;
+			}
+		}
+		// if mouse message is not valid, remove the popup (ie catch mouse leaving window...)
+		else DeletePopup();
+	}
 }
 
 // remove the previously created pop-up window
@@ -808,6 +829,8 @@ void CxPlot::DeletePopup()
     m_DoNotPaint = false;
 #endif
     m_TextPopup=nil;
+	moldPPos.x = 0;
+	moldPPos.y = 0;
   }
 }
 
@@ -817,7 +840,7 @@ void CxPlot::CreatePopup(CcString text, CcPoint point)
 #ifdef __BOTHWX__
   m_DoNotPaint = true;
 #endif
-  if(m_TextPopup) //return;
+  if(m_TextPopup) 
 	 DeletePopup();
 
 #ifdef __CR_WIN__
@@ -846,4 +869,223 @@ void CxPlot::CreatePopup(CcString text, CcPoint point)
 
 #endif
 
+}
+
+// create a popup window containing a key for this graph.
+// numser : number of series
+// names:	the series names (array of numser elements)
+// col:		the series colours...
+void CxPlot::CreateKey(int numser, CcString* names, int** col)
+{
+//	DeleteKey();
+	if(!m_Key)
+	{
+		m_Key = new CxPlotKey(this, numser, names, col);
+	}
+}
+
+void CxPlot::DeleteKey()
+{
+  if ( m_Key )
+  {
+#ifdef __CR_WIN__
+    m_Key->DestroyWindow();
+    delete m_Key;
+#endif
+    m_Key=nil;
+  }
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+//
+//	The CxPlotKey stuff
+//
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+#ifdef __CR_WIN__
+// Windows message map for the key
+BEGIN_MESSAGE_MAP(CxPlotKey, CWnd)
+	ON_WM_PAINT()
+	ON_WM_LBUTTONUP()
+	ON_WM_LBUTTONDOWN()
+	ON_WM_MOUSEMOVE()
+END_MESSAGE_MAP()
+#endif
+
+CxPlotKey::CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col)
+{
+#ifdef __CR_WIN__
+	m_Parent = parent;
+	mDragPos.x = 0;
+	mDragPos.y = 0;
+	mDragging = false;
+	m_memDC = new CDC();
+
+	m_NumberOfSeries = numser;
+	m_Names = new CcString[numser];
+
+	m_Colours = new int*[3];
+
+	m_Colours[0] = new int[m_NumberOfSeries];
+	m_Colours[1] = new int[m_NumberOfSeries];
+	m_Colours[2] = new int[m_NumberOfSeries];
+
+	for(int i=0; i<m_NumberOfSeries; i++)
+	{
+		m_Names[i] = names[i];
+		m_Colours[0][i] = col[0][i];
+		m_Colours[1][i] = col[1][i];
+		m_Colours[2][i] = col[2][i];
+	}
+
+	CcPoint point = mDragPos;
+
+  CWnd *parw = (CWnd*)m_Parent->ptr_to_crObject->GetRootWidget()->ptr_to_cxObject;
+
+  const char* wndClass = AfxRegisterWndClass(CS_HREDRAW|CS_VREDRAW,NULL,(HBRUSH)(COLOR_MENU+1),NULL);
+
+  Create(wndClass, "Key", SS_CENTER|WS_BORDER|WS_CAPTION|WS_OVERLAPPED, CRect(200,200,400,400), parw,1);
+  SetFont(CcController::mp_font);
+//  ModifyStyleEx(NULL,WS_EX_TOPMOST|WS_EX_CLIENTEDGE,0);
+  ShowWindow(SW_SHOW);
+  m_memDC = new CClientDC(this);
+//  InvalidateRect(NULL,false);
+#endif
+}
+
+CxPlotKey::~CxPlotKey()
+{
+	delete m_memDC;
+}
+
+void CxPlotKey::OnPaint()
+{
+#ifdef __CR_WIN__
+ // CClientDC dc(this);
+ // CFont* oldFont = dc.SelectObject(CcController::mp_font);
+
+  SIZE size;
+
+  CWnd::OnPaint();
+  
+//	for(int i=0; i<m_NumberOfSeries; i++)
+//	{
+//		SIZE ts = dc.GetOutputTextExtent(m_Names[i].ToCString());
+//		size.cx = max(ts.cx, size.cx);
+//		size.cy = max(ts.cy, size.cy);
+//		text += " ";
+//		text += m_Names[i];
+//	}
+
+	RECT windowsize;
+	GetClientRect(&windowsize);
+	size.cx = windowsize.right;
+	size.cy = windowsize.bottom;
+
+//	dc.SelectObject(oldFont);
+//	size.cy *= m_NumberOfSeries;
+//	size.cx *= 2;
+  
+  CClientDC newdc(this);
+
+  CFont* oldFont = newdc.SelectObject(CcController::mp_font);
+  CcPoint* temp = new CcPoint[5];
+
+ // m_Parent->OnPaint();
+
+  BringWindowToTop();
+//m_memDC->PatBlt(0,0, size.cx, size.cy, WHITENESS);
+
+  for(int i=0; i<m_NumberOfSeries; i++)
+  {
+	  temp[0].x = 4;				temp[0].y = i*size.cy/m_NumberOfSeries + 4;
+	  temp[1].x = 4;				temp[1].y = (i+1)*size.cy/m_NumberOfSeries - 4;
+	  temp[2].x = size.cx/2 - 4;	temp[2].y = (i+1)*size.cy/m_NumberOfSeries- 4;
+	  temp[3].x = size.cx/2 - 4;	temp[3].y = i*size.cy/m_NumberOfSeries + 4;
+	  temp[4].x = 4;				temp[4].y = i*size.cy/m_NumberOfSeries + 4;
+
+        CBrush      brush;
+        brush.CreateSolidBrush(PALETTERGB(m_Colours[0][i],m_Colours[1][i],m_Colours[2][i]));
+        CPen   pen(PS_SOLID,1,PALETTERGB(m_Colours[0][i],m_Colours[1][i],m_Colours[2][i]));
+
+        CBrush *oldBrush = m_memDC->SelectObject(&brush);
+        CPen   *oldpen = m_memDC->SelectObject(&pen);
+
+        m_memDC->Polygon( (LPPOINT) temp, 5);
+        m_memDC->SelectObject(oldBrush);
+		brush.DeleteObject();
+        m_memDC->SelectObject(oldpen);
+		pen.DeleteObject();
+
+	  newdc.TextOut(size.cx/2, i*size.cy/m_NumberOfSeries, m_Names[i].ToCString());
+  }
+
+  delete [] temp;
+  newdc.SelectObject(oldFont);
+ 
+//  InvalidateRect(NULL,false);
+#endif
+}
+
+void CxPlotKey::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// detect whether mouse was clicked on the m_key window
+	// if so, set the flag, and commence mouse tracking (in OnMouseMove())
+//	RECT wpos, pwpos;
+
+	//if(m_Key)
+//	{
+//		this->GetWindowRect(&wpos);
+//		m_Parent->GetWindowRect(&pwpos);
+///		
+//		if((point.x > wpos.left-pwpos.left) && (point.x < wpos.right-pwpos.left))
+//		{
+//			if((point.y > wpos.top-pwpos.top) && (point.y < wpos.bottom-pwpos.top))
+//			{
+				mDragging = true;
+//			}
+//		}
+//	}
+}
+
+void CxPlotKey::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	// remove flag, stop window dragging.
+	if(mDragging)
+		mDragging = false;
+}
+
+void CxPlotKey::OnMouseMove(UINT nFlags, CPoint point)
+{
+	// check button IS down - may have missed LbuttonUp message
+	if( (nFlags & MK_LBUTTON) != 0 )
+		mDragging = false;
+	
+	// if mouse was over key when clicked, move the key
+	if(mDragging)
+	{
+		// convert back to window coordinates
+
+		// point : current mouse pos
+		// mDragPos: last mouse pos
+		// dist : relative pos
+
+		CPoint dist;
+		dist.x = point.x - mDragPos.x;
+		dist.y = point.y - mDragPos.y;
+
+		RECT wpos,pwpos;
+
+		GetWindowRect(&wpos);
+//		m_Parent->GetWindowRect(&pwpos);
+//		MoveWindow(wpos.left - pwpos.left + dist.x,wpos.top - pwpos.top + dist.y, wpos.right-wpos.left,wpos.bottom-wpos.top,TRUE);
+		MoveWindow(point.x, point.y,  wpos.right-wpos.left, wpos.bottom-wpos.top, FALSE);
+//		m_Key->MoveWindow(drag.x, drag.y, wpos.right-wpos.left, wpos.bottom-wpos.top, TRUE);
+
+//		((CrPlot*)ptr_to_crObject)->RequestDrawKey();
+
+		mDragPos.x = point.x;
+		mDragPos.y = point.y;
+	}
 }

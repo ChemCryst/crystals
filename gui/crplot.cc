@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 23:20
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2001/11/26 18:38:49  ckp2
+//
+//   RIC: Ensure that GetDataFromPoint always returns a value, even if there is no attached plot.
+//
 //   Revision 1.3  2001/11/26 14:02:50  ckpgroup
 //   SH: Added mouse-over message support - display label and data value for the bar
 //   under the pointer.
@@ -234,10 +238,19 @@ int CrPlot::GetIdealHeight()
     return ((CxPlot*)ptr_to_cxObject)->GetIdealHeight();
 }
 
-CcString CrPlot::GetDataFromPoint(CcPoint point)
+CcString CrPlot::GetDataFromPoint(CcPoint* point)
 {
 	if(attachedPlotData) return attachedPlotData->GetDataFromPoint(point);
 
-        return "error";
+    return "error";
 }
 
+void CrPlot::CreateKey(int numser, CcString* names, int** col)
+{
+	((CxPlot*)ptr_to_cxObject)->CreateKey(numser, names, col);
+}
+
+void CrPlot::RequestDrawKey()
+{
+	if(attachedPlotData) attachedPlotData->DrawKey();
+}

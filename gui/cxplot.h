@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:09
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2001/12/03 14:25:50  ckp2
+//   RIC: Bug fixes. Release version no longer crashes on mouse leave.
+//
 //   Revision 1.4  2001/11/26 16:47:36  ckpgroup
 //   SH: More MouseOver changes. Scatterplots display the graph coordinates of the mouse pointer.
 //   Remove labels when mouse leaves window.
@@ -38,7 +41,6 @@
 #define BASEPlot wxControl
 #endif
 
-
 #ifdef __BOTHWX__
 class mywxStaticText : public wxStaticText
 {
@@ -55,6 +57,32 @@ class mywxStaticText : public wxStaticText
 #ifdef __CR_WIN__
 #include <afxwin.h>
 #define BASEPlot CWnd
+#endif
+
+class CxPlot;
+
+#ifdef __CR_WIN__
+class CxPlotKey : public BASEPlot
+{
+public:
+		CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col);
+		~CxPlotKey();
+
+		afx_msg void OnPaint();
+		afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+		afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+		afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+		DECLARE_MESSAGE_MAP()
+
+		CDC * m_memDC;
+
+		CxPlot* m_Parent;
+		bool mDragging;
+		CcPoint mDragPos;
+		int m_NumberOfSeries;
+		CcString* m_Names;
+		int** m_Colours;
+};
 #endif
 
 class CrPlot;
@@ -78,7 +106,7 @@ class CxPlot : public BASEPlot
         ~CxPlot();
         void CxDestroyWindow();
 
-        void    SetText( char * text );
+        void SetText( char * text );
         void SetIdealWidth(int nCharsWide);
         void SetIdealHeight(int nCharsHigh);
         CcPoint DeviceToLogical(int x, int y);
@@ -97,19 +125,30 @@ class CxPlot : public BASEPlot
 		
 		void DeletePopup();
 		void CreatePopup(CcString atomname, CcPoint point);
+		void DeleteKey();
+		void CreateKey(int numser, CcString* names, int** col);
+		void CreateKeyWindow(int x, int y);
 
         CrGUIElement *  ptr_to_crObject;
         int mIdealHeight;
         int mIdealWidth;
         static int mPlotCount;
         int mPolyMode;
-		CcPoint		moldMPos;
+		CcPoint		moldMPos;	// mouse pointer position in last frame
+		CcPoint		moldPPos;	// popup position in last frame
+		CcString	moldText;	// popup text in the last frame
 		bool		mMouseCaptured;
+
+//		CcPoint		mDragPos;	// mouse position when dragging
+//		bool		mDragging;	// true if lbutton down and dragging the key around...
 
 //Machine specific parts:
 #ifdef __CR_WIN__
       public:
 		CStatic* m_TextPopup;
+//		CStatic* m_Key;
+
+		CxPlotKey*	m_Key;
 
         COLORREF mfgcolour;
         CBitmap *m_oldMemDCBitmap, *m_newMemDCBitmap;
@@ -118,8 +157,7 @@ class CxPlot : public BASEPlot
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
         afx_msg void OnPaint();
 		afx_msg void OnMouseMove( UINT nFlags, CPoint point );
-//                afx_msg void OnMouseLeave();
-        afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);
+		afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);
         DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__

@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 23:28
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2001/11/26 14:02:50  ckpgroup
+//   SH: Added mouse-over message support - display label and data value for the bar
+//   under the pointer.
+//
 //   Revision 1.2  2001/11/12 16:24:31  ckpgroup
 //   SH: Graphical agreement analysis
 //
@@ -33,6 +37,7 @@ class CcPoint;
 #define TEXT_BOLD		32
 #define TEXT_ANGLE		64
 #define TEXT_BOTTOM		128
+#define TEXT_VERTICALDOWN 256
 
 class   CrPlot : public CrGUIElement
 {
@@ -47,7 +52,9 @@ class   CrPlot : public CrGUIElement
         void Clear();
 		int GetMaxFontSize(int width, int height, CcString text, int param);
 		CcPoint GetTextArea(int size, CcString text, int param);
-		CcString GetDataFromPoint(CcPoint point);					// get a description of the data under the mouse
+		CcString GetDataFromPoint(CcPoint *point);					// get a description of the data under the mouse
+		void CreateKey(int numser, CcString* names, int** col);
+		void RequestDrawKey();										// called by CxPlot::OnPaint to get the key sent again
 
 //Creation and adding data:
         void Attach(CcPlotData* doc);
