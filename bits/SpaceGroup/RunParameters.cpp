@@ -230,7 +230,7 @@ void RunParameters::readParamFile()
          //   char tUniqueRE[] = "^[[:space:]]*UNIQUE[[:space:]]+(A|B|C|(NONE/UNKNOWN))";
             char tChiralRE[] = "^[[:space:]]*CHIRAL[[:space:]]+((YES)|(UNKNOWN))[[:space:]]*(#.*)?$";
             char tOutputRE[] = "^[[:space:]]*OUTPUT[[:space:]]+\"([^\"]+)\"[[:space:]]*(#.*)?$";
-			char tMergeRE[] = "^[[:space:]]*MERGE[[:space:]]+((YES)|(NO))[[:space:]]*(#.*)?$";
+			char tMergeRE[] = "^[[:space:]]*USE_MERGED[[:space:]]+((YES)|(NO))[[:space:]]*(#.*)?$";
             char tHKLRE[] = "^[[:space:]]*HKL[[:space:]]+\"([^\"]+)\"[[:space:]]*(#.*)?$";
             char tCommentRE[] = "(#.+)$";
 			char tSymmetryRE[] = "^[[:space:]]*SYMMETRY[[:space:]]+(([12346/M-]|[[:space:]])+(RHOM)?)[[:space:]]*(#.*)?$";
