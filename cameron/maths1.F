@@ -271,98 +271,6 @@ C RECOMBINE THE NUMBER
       END
  
  
-CODE FOR ZCOLMV [ COLLECT MOVE ]
-      SUBROUTINE ZCOLMV(INCMV)
-C This routine takes the atoms stored after a COLLECT procedure and
-C moves them into the main store. Their atomic information is taken
-C from the initial atoms, they are sorted so that their order remains
-C the same as it was in the input data.
-C
-C Before this is done it is necessary to check that the centroid of
-C the newly collected molecule lies within the unit cell.
-      
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
-
-      INTEGER MCX(3)
-      REAL SYMM(4,4),C(3),D(3,3),D1(3,3)
-C UNFLAG THE ATOMS
-      DO 5 I = ISVIEW+IPACKT*8,IFVIEW-1,IPACKT
-	RSTORE(I) = ABS(RSTORE(I))
-5     CONTINUE
-C CALCULATE THE CENTROID
-      CALL ZZEROF (CENTR,3)
-      CALL ZZEROI (MCX,3)
-      DO 10 I = 0,INCMV-1
-	DO 20 J = 1,3
-	  CENTR(J) = CENTR(J) + RSTORE(IREND-I*5-J)
-20      CONTINUE
-10    CONTINUE
-C GET THE SYMMETRY OPERATOR.
-      DO 30 J = 1,3
-	CENTR(J) = CENTR(J)/INCMV
-C THE VALUE CONTAINED IN MCX REPRESENTS THE TRANSLATION REQUIRED TO
-C MOVE THE CENTROID INTO THE CELL.
-	IF (CENTR(J).LT.0.0) MCX(J) = 1.0
-	IF (CENTR(J).GT.1.0) MCX(J) = -1.0
-	CENTR(J) = CENTR(J) + MCX(J)
-30    CONTINUE
-C FIRST MOVE OVER THE CELL CORNERS
-      CALL ZMOVE (RSTORE(ISINIT),RSTORE(IFVIEW),IPACKT*8)
-C ALSO MOVE OVER THE CELL LABELS
-      ICCC = (IFVIEW-IRATOM)/IPACKT + ICATOM
-      DO 3000 ICL = 0 , 7
-	CSTORE (ICCC+ICL) = CSTORE (ICATOM+ICL)
-3000  CONTINUE
-C NOW MOVE THE ATOMS OVER, SORTING ON THE INITIAL ATOMIC POSITION.
-      IATMIN = IFVIEW + IPACKT*8
-      DO 40 J = 1,INCMV
-	DO 50 I = 0,INCMV-1
-	  N = RSTORE(IREND-I*5)
-	  IF (N.LT.IATMIN) THEN
-	    IATMIN = N
-	    K = I
-	  ENDIF
-50      CONTINUE
-	DO 70 L = 1,3
-	  C(L) = RSTORE(IREND-K*5-L) + MCX(L)
-70      CONTINUE
-C GET THE CORRECT SYMMETRY OPERATOR.
-	NS = NINT(RSTORE(IREND-K*5-4))
-	CALL ZMOVE (RSTORE(ITOT-(NS*16)),SYMM,16)
-	DO 71 L = 1,3
-	  DO 72 M = 1,3
-	    D1(L,M) = RSTORE(IATMIN+L*3+M)
-72        CONTINUE
-71      CONTINUE
-	DO 73 L = 1,3
-	  DO 74 M = 1,3
-	    D(L,M) = SYMM(M,1)*D1(L,1) + SYMM(M,2)*D1(L,2)
-     c      + SYMM(M,3)*D1(L,3)
-74        CONTINUE
-73      CONTINUE
-	CALL ZIMOVE (C,D,IATMIN,IFVIEW+(IATMIN-ISVIEW),0)
-C REMOVE THIS ATOM FROM THE MIN CALCULATION.
-	RSTORE (IREND-K*5) = IFVIEW
-	IATMIN = IFVIEW
-40    CONTINUE
-      RETURN
-      END
  
 CODE FOR ZDCALC
       SUBROUTINE ZDCALC
@@ -1273,6 +1181,7 @@ C Atoms are drawn between ISVIEW and IFVIEW.
 \XIOBUF
 
       INTEGER KK
+      CHARACTER*80 CHARTC
       IF (ISCRN.EQ.-1) THEN
 	CALL ZMORE('You have not specified an output device!',0)
 	RETURN
@@ -1282,13 +1191,15 @@ C Atoms are flagged once drawn.
       IF (ICURS.EQ.0.AND.ISTREO.EQ.0) THEN
 	  CALL ZCLEAR
 	  CALL ZCLARE(0,IDEVCL(IBACK+1))
-C          CALL ZCURSR (0,0)
       ENDIF
       IF (ICURS.NE.0) THEN
 C CURSOR CONTROL
 	DO 7 I = ISVIEW , IFVIEW-1,IPACKT
 	  CALL ZBONDS(I,0,0)
-7       CONTINUE
+7     CONTINUE
+      IF (IMENCN.EQ.2) CALL ZMENUS
+&GID      CALL ZMORE('^^CH SHOW',0)
+&GID      CALL ZMORE('^^CR',0)
 	RETURN
       ENDIF
 C WORK OUT THE NUMBER OF LINES PER BOND AND ANGULAR STEP.
@@ -1335,7 +1246,6 @@ C WE NEED TO RESCALE THE DEVICE SIZE FOR ISCRN = 5 ( POSTSCRIPT )
 	YCEN = YCEN / RES
       ENDIF
 C      WRITE (ISTOUT,*) 'FINISHED'
-      IF (IPCX.EQ.1) CALL ZPCX
       IF (IPHOTO.EQ.1) CALL ZGETKY(KK)
       CALL ZHOME
       IF (ISTREO.EQ.0.AND.(IPCX.EQ.0).AND.(IPHOTO.EQ.0)) THEN
@@ -1350,6 +1260,9 @@ C      WRITE (ISTOUT,*) 'FINISHED'
 11    FORMAT ('Current value of scale is ',F7.2, ' (',2F7.2,')')
 C ---- GET A TITLE
       IF (ITITLE.GT.0) CALL ZCAPT
+      IF (IMENCN.EQ.2) CALL ZMENUS
+&GID      CALL ZMORE('^^CH SHOW',0)
+&GID      CALL ZMORE('^^CR',0)
       RETURN
       END
  
@@ -2402,120 +2315,6 @@ C NOW LOOK AT THE NUMBER
       RETURN
       END
  
-CODE FOR ZSOUT [ SYMMETRY OPERATOR OUTPUT ]
-      SUBROUTINE xxSOUT (SYMM,SWORD,ISLEN)
-      
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
-
-      REAL SYMM(4,4),TRAN(8)
-      CHARACTER*3 CTRAN(8),SX(3)
-      CHARACTER*50 SWORD,STEMP
-      CHARACTER*10 CTEMP
-      DATA TRAN /0.0,0.5,0.3333,0.25,0.66667,0.75,0.166667,0.8333333/
-      DATA CTRAN /'0  ','1/2','1/3','1/4','2/3','3/4','1/6','5/6'/
-      DATA SX /'x','y','z'/
-C This routine takes in the symmetry operator and prints out its text
-C equivalent.
-      K = 0
-      DO 10 I = 1 , 3
-C GET THE PARTS ONE LINE AT A TIME
-C DO THE X Y Z BIT FIRST
-C FIRST CHECK FOR X-Y OR Y-X BITS
-	IF ((NINT(SYMM(I,1)).EQ.1).AND.(NINT(SYMM(I,2)).EQ.-1)) THEN
-	  IF (K.EQ.0) THEN
-	    SWORD = ' x-y'
-	    K = 4
-	  ELSE
-	    STEMP = SWORD(1:K)//' x-y'
-	    SWORD = STEMP
-	    K = K + 4
-	  ENDIF
-	ELSE IF ((NINT(SYMM(I,1)).EQ.-1).AND.(NINT(SYMM(I,2)).EQ.1))
-     c THEN
-	  IF (K.EQ.0) THEN
-	    SWORD = ' y-x'
-	    K = 4
-	  ELSE
-	    STEMP = SWORD(1:K)//' y-x'
-	    SWORD = STEMP
-	    K = K + 4
-	  ENDIF
-	ELSE
-C WHERE DOES THE 1 LIE?
-	  JJ = 0
-	  DO 30 J = 1 , 3
-	    IF (ABS(NINT(SYMM(I,J))).EQ.1) JJ = J
-30        CONTINUE
-	  IF (NINT(SYMM(I,JJ)).EQ.1) THEN
-	    IF (K.EQ.0) THEN
-	      SWORD = SX(JJ)
-	      K = 1
-	    ELSE
-	      STEMP = SWORD(1:K)//' '//SX(JJ)
-	      SWORD = STEMP
-	      K = K + 2
-	    ENDIF
-	  ELSE
-	    IF (K.EQ.0) THEN
-	      SWORD = ' -'//SX(JJ)
-	      K = 3
-	    ELSE
-	      STEMP = SWORD(1:K)//' -'//SX(JJ)
-	      SWORD = STEMP
-	      K = K + 3
-	    ENDIF
-	  ENDIF
-	ENDIF
-C NOW DO THE TRANSLATION IF IT OCCURS
-	IF ((ABS(SYMM(I,4)-0.000).GT.0.001).AND.
-     c  (ABS(SYMM(I,4)-1.000).GT.0.001)) THEN
-C NOT ZERO OR ONE - WHAT IS IT?
-	  L = 0
-	  DO 20 J = 2 , 8
-	    IF (ABS(ABS(SYMM(I,4))-TRAN(J)).LT.0.001) L = J
-20        CONTINUE
-C NOW ADD IN THE TEXT
-	  IF (L.EQ.0) THEN
-C THE NUMBER IS NOT A RECOGNISED ONE
-	    WRITE (CTEMP,'(SP,F10.4)') SYMM(I,4)
-	    STEMP = SWORD(1:K)//'-'//CTEMP
-	    INLEN = 11
-	  ELSE
-	    IF (SYMM(I,4).GT.0.0) THEN
-C POSITIVE
-	      STEMP = SWORD(1:K)//'+'//CTRAN(L)
-	    ELSE
-	      STEMP = SWORD(1:K)//'-'//CTRAN(L)
-	    ENDIF
-	    INLEN = 4
-	  ENDIF
-	  SWORD = STEMP
-	  K = K + INLEN
-	ENDIF
-C ADD IN THE SPACE
-	STEMP = SWORD(1:K)//' '
-	SWORD = STEMP
-	K = K + 1
-10    CONTINUE
-      ISLEN = K
-      RETURN
-      END
  
 CODE FOR LMOLAX
       FUNCTION LMOLAX(POINTS,NPOINT,ISTEP,CENT,ROOTS,VECTOR,COSINE,
@@ -3599,88 +3398,6 @@ C MULTIPLY BY THE ROTATION MATRIX
       RETURN
       END
  
-CODE FOR ZMAXIM [ MAXIMISE PICTURE SIZE ]
-      SUBROUTINE ZMAXIM (IDIR)
-C This routine will maximise the picture size in the plane perpendicular
-C to the direction defined by IDIR.
-C IDIR = 1 - x-direction (used for VERT)
-C IDIR = 2 - y-direction (used for HORZ)
-C IDIR = 3 - z-direction (used for ALONG,BISECT,PLANE).
-C This will only maximise included atoms.
-C N,M then define the two rotating coordintes.
-C This routine also flags atoms not to be drawn as they overlap, by
-C making IPCK = IPCK*100.
-      
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
-
-C      REAL XXC(3),WORK(3,3),VEC1(3),VEC2(3)
-      N = MOD(IDIR,3)
-      M = MOD(IDIR+1,3)
-      IF (M.LT.N) THEN
-	M = 2
-	N = 0
-      ENDIF
-C The picture is maximised by diagonalising the relevant 2x2 matrix eg
-C { sum (x**2) sum (xy)   }
-C { sum (xy)   sum (y**2) }
-C for the xy plane (IDIR=3)
-      XCOLD = XC
-      YCOLD = YC
-      ZCOLD = ZC
-      X2 = 0.0
-      Y2 = 0.0
-      XY = 0.0
-      D2 = 0.0
-      K = 0
-      L = 0
-      DO 10 I = ISVIEW,IFVIEW-1,IPACKT
-C CHECK IF ATOM IS INCLUDED
-	X = RSTORE (I+IXYZO+N)
-	Y = RSTORE (I+IXYZO+M)
-	IF (RSTORE(I+IPCK+1).LT.0.0) GOTO 10
-	DO 20 J = ISVIEW,IFVIEW-1,IPACKT
-	  X1 = RSTORE (J+IXYZO+N)
-	  Y1 = RSTORE (J+IXYZO+M)
-	  D = (X-X1)**2 + (Y-Y1)**2
-	  IF (D.GT.D2) THEN
-	    D2 = D
-	    K = I
-	    L = J
-	  ENDIF
-20      CONTINUE
-10    CONTINUE
-      X = RSTORE (K+IXYZO+N) - RSTORE(L+IXYZO+N)
-      Y = RSTORE (K+IXYZO+M) - RSTORE(L+IXYZO+M)
-      P = ATAN (Y/X)
-      IF (IDIR.NE.1) P = -P
-C SET THE CENTRE OF ROTATION TO ATOM 1
-      XC = RSTORE(K+IXYZO)
-      YC = RSTORE(K+IXYZO+1)
-      ZC = RSTORE(K+IXYZO+2)
-      CALL ZROT (P,IDIR)
-C RESET CENTRE
-      XC = XCOLD
-      YC = YCOLD
-      ZC = ZCOLD
-      CALL ZATMUL(0,0,0)
-      RETURN
-      END
  
 CODE FOR ZFRAG
       SUBROUTINE ZFRAG (I,IPOS,VAL,ITYPE)
@@ -3759,130 +3476,6 @@ C DON'T DUPLICATE GROUP NUMBERS
       RETURN
       END
  
-CODE FOR ZSPECL
-      SUBROUTINE ZSPECL (ITYPE)
-C THIS ROUTINE CHECKS THE MOLECULE FOR ATOMS ON SPECIAL POSITIONS.
-C THE SYMMETRY OPERATORS ARE APPLIED ONE BY ONE AND A LIST OF THOSE
-C OPERATORS THAT RESULT IN UNIQUE POSITIONS ARE STORED AT THE END OF THE
-C RSTORE ARRAY.
-C THE NUMBER AND POSITION OF THE SPACEGROUP INFO ARE HELD AT
-C I+ISYM AND I+ISYM+1
-C ITYPE = 1 all atoms are unique
-C       = 2 used after SETUNIT to look for symmetry equivalent atoms.
-      
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
-
-      REAL X(3),X1(3),SYMM(4,4)
-C DO NOT LOOP OVER CELL CORNERS FOR THIS
-      NSPOS = ISYMED
-      NAT = 0
-      DO 10 I = ISINIT + IPACKT*8 , IFINIT -1 , IPACKT
-	NAT = 0
-	NSSYM = 0
-	DO 20 J = 1 , 3
-	  X(J) = RSTORE (I+J)
-20      CONTINUE
-C LOOP OVER AND GET THE SYMMETRY OPERATORS
-	DO 30 II = 1 , NSYMM
-	  CALL ZMOVE (RSTORE(ITOT-II*16),SYMM,16)
-C APPLY THE OPERATOR
-	  CALL ZMATV4 (SYMM,X,X1)
-C CHECK ATOMS PREVIOUSLY FOUND
-	  ISAT = 0
-	  IF (NAT.GT.0) THEN
-	    DO 40 J = IRLAST , IRLAST + NAT*3 - 1 , 3
-	      IF (ABS(X1(1)-RSTORE(J)).LE.RSTOL) THEN
-		IF (ABS(X1(2)-RSTORE(J+1)).LE.RSTOL) THEN
-		  IF (ABS(X1(3)-RSTORE(J+2)).LE.RSTOL) THEN
-		    ISAT = 1
-		  ENDIF
-		ENDIF
-	      ENDIF
-40          CONTINUE
-	  ENDIF
-C ONLY STORE THE ATOMS COORDINATES AND THIS OPERATOR NUMBER IF
-C A PREVIOUS ATOM IS NOT FOUND.
-	  IF (ISAT.EQ.0) THEN
-	    RSTORE (NSPOS-NSSYM) = II
-	    NSSYM = NSSYM + 1
-	    RSTORE (IRLAST + NAT*3 )     = X1(1)
-	    RSTORE (IRLAST + NAT*3 + 1 ) = X1(2)
-	    RSTORE (IRLAST + NAT*3 + 2 ) = X1(3)
-	    NAT = NAT + 1
-	  ENDIF
-30      CONTINUE
-C STORE THE INFO
-	RSTORE ( I + ISYM ) = NSPOS
-	RSTORE ( I + ISYM + 1) = NSSYM
-	NSPOS = NSPOS - NSSYM
-10    CONTINUE
-      ISYMED = NSPOS
-C      IF (ITYPE.NE.2) RETURN
-C IF ITYPE = 2 THEN WE HAVE TO CHECK THE ASSYMETRIC UNIT AS WELL
-C TO ALLOW FOR ATOMS THAT ARE SYMMETRY EQUIVALENTS.
-C      IS = ( ISINIT - IRATOM ) / IPACKT + ICATOM + 8
-C      IF = ( IFINIT - IRATOM ) / IPACKT + ICATOM
-C LOOP OVER THE ATOM LABELS
-C      DO 50 I = IS , IF - 1
-C        DO 60 J = I+1 , IF - 1
-C          IF (CSTORE(I).EQ.CSTORE(J)) THEN
-C ATOMS ARE POSSIBLY SYMMETRY EQUIVALENT
-C GET THE COORDS OF BOTH THE ATOMS
-C            N = ( I - ICATOM ) *IPACKT + IRATOM
-C            M = ( J - ICATOM ) *IPACKT + IRATOM
-C            DO 70 II = 1 , 3
-C              X(II) = RSTORE (N + II)
-C              X1(II) = RSTORE (M +II)
-C70          CONTINUE
-C LOOP OVER THE SYMMETRY OPERATORS OF THE FIRST ATOM AND LOOK FOR
-C THE COORDS OF THE SECOND
-C            NSTART = NINT (RSTORE (N + ISYM ))
-C            NSSYM = NINT ( RSTORE (N+ ISYM + 1))
-C            DO 80 K = NSTART , NSTART - NSSYM + 1 , -1
-C              ISSYM = NINT (RSTORE (K))
-C GET THE OPERATOR
-C              CALL ZMOVE( RSTORE(ITOT-ISSYM*16), SYMM , 16)
-C APPLY IT TO ATOM 1
-C              CALL ZMATV4 (SYMM,X,X2)
-C COMPARE THE RESULT
-C              ISAME = 0
-C              DO 90 L = 1 , 3
-C                DVAL = ABS ( X2(L) - X1(L) )
-C100             CONTINUE
-C                IF (DVAL.GE.1.0) THEN
-C                  DVAL = DVAL - 1.0
-C                  GOTO 100
-C                ENDIF
-C                IF (ABS(DVAL).LT.0.0000001) THEN
-C                  ISAME = ISAME + 1
-C                ENDIF
-C90            CONTINUE
-C              IF (ISAME.EQ.3) THEN
-C WE HAVE A DUPLICATE ATOM - GET RID OF THIS OPERATOR!
-C                RSTORE(K) = 0.0
-C              ENDIF
-C80          CONTINUE
-C          ENDIF
-C60      CONTINUE
-C50    CONTINUE
-      RETURN
-      END
 CODE FOR ZBNDCK [ BOND CHECK AND UPDATE ]
       SUBROUTINE ZBNDCK (N,IMULTN,M,IMULTM,ISET,INUMB,IJN,ITYPE)
 C This routine is used to check and update the bond colour/style

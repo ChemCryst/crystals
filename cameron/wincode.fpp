@@ -14,17 +14,27 @@ C----------------------------------------------------------------------C
 C
       subroutine CreateGraphicsWindow(ix,iy)
 \CAMWIN
+      COMMON /CAMBFF/ BUFFER
+      CHARACTER*80 BUFFER(5)
       include <windows.ins>
-      external f_close
+      external f_close, mouseevent
       integer ix,iy,f_close
       GraphicsHandle=-1
+      do 4 i = 1,4
+        buffer(i) = ' '
+4     continue
+
       i=winio@('%ca[CAMERON Graphics Window]%ww[no_border]&')
       i=winio@('%sp&',0,0)
       i=winio@('%cc&',f_close)
       i=winio@('%bg[grey]&')
-      i=winio@('%pv%`3cu%gr[black]%lw&',
+      i=winio@('%pv%`3cu%^gr[black,full_mouse_input]%lw&',
      1 CURSOR_ARROW,CURSOR_CROSS,CURSOR_SIZE,Cursor$Number,ix,iy,
-     1 GraphicsHandle)
+     1 mouseevent,GraphicsHandle)
+      I=WINIO@('%ff%`80rs&',buffer(1))
+      I=WINIO@('%ff%`80rs&',buffer(2))
+      I=WINIO@('%ff%`80rs&',buffer(3))
+      I=WINIO@('%ff%`80rs&',buffer(4))
       i=winio@('%ff%tc[blue]%fn[Times New Roman]%ts%ob[status,scored]%`6
      10rs%cb',1.0d0,Status$Text)
       end
@@ -104,16 +114,6 @@ C     icursor = 3 -> size-cursor
 C
 C----------------------------------------------------------------------C
 C
-      subroutine zmore1(text,iarg)
-C ---- updates text message in status bar - iarg is not used but kept
-C      for compatibility with CAMERON function ZMORE
-\CAMWIN
-      character*(*) text
-      Status$Text=text
-      call window_update@(Status$Text)
-      end
-C
-C----------------------------------------------------------------------C
 C
       subroutine temp_yield
       include <windows.ins>
@@ -159,3 +159,50 @@ C
       include <windows.ins>
       call bold_font@(ifont)
       end
+
+
+      integer*4 function mouseevent()
+      include <windows.ins>
+\CAMWIN
+      LOGICAL BOUNCE
+      SAVE    BOUNCE
+
+      DATA    BOUNCE /.FALSE./
+
+      CALL GET_MOUSE_INFO@(IX,IY,IFLAG)
+
+      IX = NINT(FLOAT(IX)/SCALE_X)
+      IY = NINT(FLOAT(IY)/SCALE_Y)
+
+      IF((IFLAG.EQ.1).OR.(IFLAG.EQ.2)) THEN
+         IF ( BOUNCE ) THEN
+            BOUNCE = .FALSE.
+            CALL KMSADD(IX,IY,(IFLAG*(-2))+3) ! 2->-1, 1->+1
+         END IF
+      ELSE
+         BOUNCE = .TRUE.
+         CALL KMSADD(IX,IY,0)    
+      ENDIF
+      
+      end
+
+
+      subroutine winout(ctext)
+      character*(*) ctext
+      COMMON /CAMBFF/ BUFFER
+      CHARACTER*80 BUFFER(5)
+      include <windows.ins>
+
+C Add new text
+      NALEN = MIN(LEN(CTEXT),80)
+      write(BUFFER(5),'(A)') ctext(1:NALEN)
+
+C Shift buffer up.
+
+      DO 10 I = 1,4
+        BUFFER(I) = BUFFER(I+1)
+      call window_update@(BUFFER(I))
+10    CONTINUE
+
+      end      
+      

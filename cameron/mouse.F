@@ -1,4 +1,7 @@
-CRYSTALS CODE FOR MOUSE.FOR                                                     
+C $Log: not supported by cvs2svn $
+
+
+CRYSTALS CODE FOR MOUSE.FOR
 CODE FOR ZMLAB
       SUBROUTINE ZMLAB
 C This routine controls the MOUSE movement of atomic labelling. It
@@ -36,52 +39,44 @@ C labelling is then resumed.
       INTEGER IB,KK
 C THE CODE BELOW IS THE 'EVENT LOOP' WHICH ACTS ON BUTTON PRESSES AND
 C V KEY PRESSES.
+C Update status bar
       CALL ZMORE('Mouse label control activated.',0)
+      CALL ZMORE('Options: Click atom to label',0)
+      CALL ZMORE('         Click label to move, then new location',0)
+      CALL ZMORE('         V to update view, RETURN to end labelling',0)
       CALL ZMORE1('Mouse label control activated.',0)
-      IB = 1
-      CALL ZMDISP
+
+
 10    CONTINUE
-      CALL ZGTBUT(0,IB)
-      IF (IB.NE.0) THEN
-C LEFT MOUSE BUTTON HAS BEEN PRESSED.
-        CALL ZLBUT
-C PC CODE
-C ****
-C FLUSH RIGHT MOUSE BUTTON BUFFER
-        CALL ZGTBUT(1,IB)
+
+C Get the mouse information
+      IB = KMSGET(JX,JY,JF)
+
+      IF ((IB.EQ.0).AND.(JF.GT.0)) THEN
+C Left mouse button has been pressed.
+        CALL ZLBUT(JX,JY)
         GOTO 10
-      ENDIF
-      CALL ZGTBUT(1,IB)
-      IF (IB.NE.0) THEN
-C RIGHT MOUSE BUTTON HAS BEEN PRESSED
-        CALL ZMHIDE
+      ELSE IF ((IB.EQ.0).AND.(JF.LT.0)) THEN
+C Right mouse button has been pressed.
         RETURN
       ENDIF
-C ****
+
+C Check the keyboard
       CALL ZGTKY1(KK)
       IF ((KK.EQ.ICUV).OR.(KK.EQ.ICLV)) THEN
 C V KEY HAS BEEN PRESSED - WE NEED TO REDRAW THE PICTURE
-        CALL ZMHIDE
         CALL ZDOVI
-        CALL ZMDISP
         GOTO 10
       ENDIF
 C ALSO RETURN ON A RETURN KEY HIT
       IF (KK.EQ.ICRET) THEN
-        CALL ZMHIDE
         RETURN
       ENDIF
-C VAX CODE
-C ****
-C      IF (CHAR(KK).EQ.'#') THEN
-C        CALL ZLBUT
-C      ENDIF
-C ****
       GOTO 10
       END
  
 CODE FOR ZLBUT
-      SUBROUTINE ZLBUT
+      SUBROUTINE ZLBUT (IMX,IMY)
 C A LEFT MOUSE BUTTON PRESS HAS BEEN FOUND - LOOK TO SEE WHETHER THERE
 C IS A LABEL UNDER THE MOUSE CURSOR.
       
@@ -114,8 +109,6 @@ C      YMIN = (-0.9*YCEN)/SCALE + YCP
 C      YMAX = (0.9*YCEN)/SCALE + YCP
       TENPIX = REAL(ILSIZE)/SCALE
       RSMALL = ( 2.0 / SCALE ) **2
-C GET MOUSE POSITION
-      CALL ZGTMPS (IMX,IMY)
 C CONVERT TO ANGSTROM COORDINATES
       X = (IMX-XCEN-XOFF)/SCALE + XCP
       Y = (IMY-YCEN-YOFF)/SCALE + YCP
@@ -165,9 +158,7 @@ C CHECK FOR PACK LABELLING
               CLAB = CSTORE(ILL)
             ENDIF
 C DRAW THE LABEL
-            CALL ZMHIDE
             CALL ZDRTEX(IX,IY,CLAB(1:IL),IDEVCL(ILABCL+1))
-            CALL ZMDISP
 C SAVE THE LABEL COORDINATES
             RSTORE(I+ILAB) = RSTORE(I+IXYZO)
             RSTORE(I+ILAB+1) = RSTORE(I+IXYZO+1)
@@ -193,39 +184,35 @@ C CHECK FOR PACK LABELLING
 C FIND OUT THE LABEL LENGTH
       LABLN = TENPIX * REAL(IL) * 0.8
 C NEED TO HIDE THE MOUSE CURSOR DURING DRAWING
-      CALL ZMHIDE
 C NOW DRAW THE ATOM LABEL IN THE BACKGROUND COLOUR
       CALL ZDRTEX (IX,IY,CLAB(1:IL),IDEVCL(IBACK+1))
 C DRAW THE CROSS AND THE BOX
       ICOL = 4
       CALL ZMBXCR (ILNO,ICOL,ICOL)
-      CALL ZMDISP
 C NOW WAIT FOR THE NEXT LEFT BUTTON PRESS
 30    CONTINUE
 C PC CODE ONLY
 C ****
-      CALL ZGTBUT(0,IB)
+C      CALL ZGTBUT(0,IB)
+      IB = KMSGET(IMX,IMY,JF)
 C ****
 C VAX CODE
 C ****
 C      IB = 0
 C ****
-      IF (IB.EQ.0) THEN
-C CHECK FOR KEYPRESSES
+      IF ((IB.LT.0).AND.(JF.LE.0)) THEN
+C No mouse click, check for keypresses.
         CALL ZGTKY1 (KK)
         IF ((CHAR(KK).EQ.'N').OR.(CHAR(KK).EQ.'n')) THEN
 C THIS ATOM IS NOT TO BE LABELLED
-          CALL ZMHIDE
           CALL ZMBXCR(ILNO,IBACK,IBACK)
-          CALL ZMDISP
           RSTORE(ILNO+IATTYP+2) = 0.0
           RETURN
         ELSE IF (CHAR(KK).NE.'#') THEN
           GOTO 30
         ENDIF
       ENDIF
-C LEFT BUTTON HAS BEEN PRESSED - GET THE CURRENT POSITION
-      CALL ZGTMPS (IMX,IMY)
+C LEFT BUTTON HAS BEEN PRESSED 
 C CONVERT THE COORDS TO ORTHOGONAL ONES
       RSTORE(ILNO+ILAB) = (IMX-XCEN-XOFF)/SCALE + XCP
       RSTORE(ILNO+ILAB+1) = (IMY-YCEN-YOFF)/SCALE + YCP
@@ -238,14 +225,12 @@ C     + RSTORE(ILNO+ILAB+1)+TENPIX.GT.YMAX) THEN
 C        CALL ZBEEP
 C        GOTO 30
 C      ENDIF
-      CALL ZMHIDE
 C DRAW THE CROSS AND THE BOX
       CALL ZMBXCR (ILNO,IBACK,IBACK)
 C NOW DRAW THE NEW LABEL
       IX = IMX - XCEN - XOFF
       IY = IMY - YCEN - YOFF
       CALL ZDRTEX (IX,IY,CLAB(1:IL),IDEVCL(ILABCL+1))
-      CALL ZMDISP
       RETURN
       END
  

@@ -341,69 +341,7 @@ C OTHERWISE CALCULATE THE EIGENVALUES AND VECTORS AS NORMAL
       P = ATAN2 ( VEC2(2) , VEC2(1) )
       RETURN
       END
- 
- 
-CODE FOR OLDZDIAG2 (WORK,VEC2,VEC3,EIG1,EIG2,P)
-      SUBROUTINE OLDZDIAG2 (WORK,VEC2,VEC3,EIG1,EIG2,P)
-      REAL WORK(3,3),VEC2(3),VEC3(3),EIG1,EIG2,P
-C IS THE MATRIX SYMMETRIC AND REAL?
-C Diagonalise the xy components of the matrix to find out the principal
-C axes of this new ELLIPSE.
-C This is done by forming and solving a quadratic eqn in the eigenvalues
-C FIRST CHECK FOR ZERO OFF DIAGONAL TERMS
-      IF (ABS(WORK(1,2)).LT.0.0000001) THEN
-	EIG1 = WORK(1,1)
-	EIG2 = WORK(2,2)
-C NOW CHECK FOR ZERO EIGENVALUES
-	IF (ABS(EIG1).LT.0.0000001) THEN
-	  VEC2(1) = 0.0
-	  VEC2(2) = 0.0
-	  VEC3(1) = 0.0
-	  VEC3(2) = - 1.0 / SQRT ( EIG2 )
-	  P = 0.0
-	ELSE IF (ABS(EIG2).LT.0.000001) THEN
-	  VEC2(1) = -1.0 / SQRT ( EIG1 )
-	  VEC2(2) = 0.0
-	  VEC3(1) = 0.0
-	  VEC3(2) = 0.0
-	  P = 0.0
-	ELSE
-	  VEC2(1) = 1.0 / SQRT ( EIG1 )
-	  VEC2(2) = 0.0
-	  VEC3(1) = 0.0
-	  VEC3(2) = 1.0 / SQRT ( EIG2 )
-	  P = 0.0
-	ENDIF
-	VEC2(3) = 0.0
-	VEC3(3) = 0.0
-	RETURN
-      ENDIF
-C OTHERWISE CALCULATE THE EIGENVALUES AND VECTORS AS NORMAL
-      B = WORK(1,1) + WORK(2,2)
-      C = B*B - 4*(WORK(1,1)*WORK(2,2) - WORK(1,2)*WORK(2,1))
-      IF (C.LT.0.0) C = 0.0
-      C = SQRT (C)
-      EIG1 = ABS((B+C)/2)
-      EIG2 = ABS((B-C)/2)
-      V =  ( EIG1-WORK(1,1) ) / WORK(2,1)
-      V1 = 1.0/(EIG1*(V*V+1))
-      VEC2(1) = SQRT(V1)
-      VEC2(2) = V*VEC2(1)
-      VEC2(3) = 0.0
-      IF (ABS(EIG2).LT.0.0000001) THEN
-	VEC3(1) = 0.0
-	VEC3(2) = 0.0
-	VEC3(3) = 0.0
-      ELSE
-	V = ( EIG2 - WORK ( 1,1) ) / WORK ( 2,1 )
-	V1 = 1.0/(EIG2*(V*V+1))
-	VEC3(1) = SQRT(V1)
-	VEC3(2) = V*VEC3(1)
-	VEC3(3) = 0.0
-      ENDIF
-      P = ATAN2 ( VEC2(2) , VEC2(1) )
-      RETURN
-      END
+
  
 CODE FOR ZDTPRD
       SUBROUTINE ZDTPRD(VEC1,VEC2,PHI)
@@ -577,28 +515,6 @@ C MOVE ANSWER INTO B
       RETURN
       END
  
-CODE FOR ZSPSCH [CHARACTER STRING SEARCH]
-      SUBROUTINE ZSPSCH (STRING,ILN,ISTART,IFIN)
-      CHARACTER*(*) STRING
-      CHARACTER*1 SPACE
-C THIS ROUTINE FINDS THE FIRST AND LAST SPACES IN A STRING
-      SPACE = ' '
-      ISTART = 0
-      IFIN = 0
-      DO 10 I = 1 , ILN
-      IF (ISTART.EQ.0) THEN
-C SEARCH FOR FIRST SPACE
-	IF (STRING(I:I).EQ.SPACE) THEN
-	  ISTART = I
-	ENDIF
-      ELSE
-	IF ((STRING(I:I).NE.SPACE).AND.(IFIN.EQ.0)) THEN
-	  IFIN = I
-	 ENDIF
-      ENDIF
-10    CONTINUE
-      RETURN
-      END
  
 CODE FOR ZZEROF
       SUBROUTINE ZZEROF(A,N)
@@ -629,8 +545,8 @@ CODE FOR ZZEROI
       END
  
 CODE FOR LMOUSE
-      FUNCTION LMOUSE (CC)
-C This routine reads the mouse position and calculates which atom
+      FUNCTION LMOUSE (CC,IX,IY)
+C This routine calculates which atom
 C this position corresponds to. There is also an element key which can
 C be clicked on in order to specify an element.
 C IMOUSE = 1 means that the mouse is deactivated.
@@ -664,7 +580,9 @@ C NMOUSE is the current position on the input line.
       CLNUM = '                    '
       CC = CLNUM
       LMOUSE = -1
-      CALL ZGTMPS(IMX,IMY)
+C      CALL ZGTMPS(IMX,IMY)
+      IMX = IX
+      IMY = IY
 C FIRST CHECK THE MENUS
       IF (IMENCN.EQ.2) THEN
 	DO 1010 I = 1 , IBUTNO
@@ -706,10 +624,10 @@ C YES!! PUT ELEMENT INTO COMMAND LINE!
 	  ENDIF
 	ENDIF
       ENDIF
+
 C CONVERT THE COORDS TO ORTHOGONAL ONES WITHOUT SCALING ETC.
-C      X = (IMX-XCEN)/SCALE + XCP
-C      Y = (IMY-YCEN)/SCALE + YCP
-C      WRITE (6,*) 'IMX IMX X Y ',IMX,IMY,X,Y
+      X = (IMX-XCEN)/SCALE + XCP
+      Y = (IMY-YCEN)/SCALE + YCP
 C LOOP TO FIND THE COORDS - MUST LIE WITHIN A RADIUS DISTANCE OF THE
 C ATOM.
 C IF MORE THAN ONE ATOM IS POSSIBLE THEN CHOOSE THE CLOSEST ONE.
@@ -857,7 +775,7 @@ C THIS ROUTINE GETS THE EQUIVALENT COLOUR NUMBER FOR THE COLOUR TABLE
      +  'Need to check colour names in COLOUR.CMN and PROP.CMN.'
 C cljf
         call zmore1(
-     1'Need to check colour names in COLOUR.CMN and PROP.CMN.')
+     1'Need to check colour names in COLOUR.CMN and PROP.CMN.',0)
         STOP
       ENDIF
       RETURN
@@ -904,60 +822,15 @@ CODE FOR ZMORE
 C THIS ROUTINE HANDLES THE 'MORE' FACILITY FOR TEXT OUTPUT
       SUBROUTINE ZMORE (TEXT,IFLAG)
       
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
 \CAMBLK
 \XIOBUF
 
       CHARACTER*(*) TEXT
-      INTEGER K
-      INTEGER NLPAG
-      SAVE NLPAG
-C SETTING IFLAG TO 1 MEANS THAT WE ARE COUNTING FROM THE BEGINNING
-C AGAIN
-C IFLAG = 2 LINES TO BE INCLUDED IN THE MORE CALCULATION
-C IFLAG = 0 WRITE OUT AND UPDATE INLINE AS NORMAL
-C IFLAG = -1 ADD 1 TO THE LINE NO.
-C IDEALLY ALL OF THE WRITES SHOULD BE DIRECTED VIA THIS ROUTINE.
-      ILL = LEN(TEXT)
-      IF (ILL.GT.80) ILL=80
-      IF (IFLAG.EQ.0) NLPAG = 0
-      INLINE = INLINE + 1
-      IF (INLINE.GT.IPAGE) INLINE = IPAGE
-      IF (IFLAG.EQ.0 .OR. IFLAG .EQ. -1) THEN
-	IF (ISCRN.EQ.4 .AND. INLINE.EQ.IPAGE) THEN
-	  CALL ZCLEAR
-	  INLINE = 1
-	ENDIF
-	IF (IFLAG.EQ.0) WRITE (ISTOUT,'(A)') TEXT(1:ILL)
-	RETURN
-      ENDIF
-      IF (IFLAG.EQ.1) THEN
-	NLPAG=0
-	IF (ISCRN.EQ.4) THEN
-	  CALL ZCLEAR
-	ENDIF
-      ENDIF
-      WRITE (ISTOUT,'(A)') TEXT(1:ILL)
-      NLPAG = NLPAG + 1
-      IF (NLPAG.GE.IPAGE) THEN
-	WRITE (ISTOUT,*) '*****MORE*****'
-	CALL ZGTKEY(K)
-	NLPAG = 1
-      ENDIF
+
+      ILL = MIN (LEN(TEXT),80)
+
+      WRITE (CMON,'(A)') TEXT(1:ILL)
+      CALL XPRVDU (6,1,0)
       RETURN
       END
  

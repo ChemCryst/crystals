@@ -346,29 +346,30 @@ C Write out the choice message
       CALL ZBEEP
 10    CONTINUE
       IF (IFOBEY.EQ.-1) THEN
-        CALL ZMORE(
-     c 'An error has been found in the input line.',0)
-        CALL ZMORE(
-     c 'Do you want to Abandon the line altogether,',0)
-        CALL ZMORE('Edit the line to correct the error',0)
-        CALL ZMORE ('or obtain Help on the current command?',0)
+C        CALL ZMORE(
+C     c 'An error has been found in the input line.',0)
+C        CALL ZMORE(
+C     c 'Do you want to Abandon the line altogether,',0)
+C        CALL ZMORE('Edit the line to correct the error',0)
+C        CALL ZMORE ('or obtain Help on the current command?',0)
 11      CONTINUE
-       CALL ZMORE('A/E/H ?',0)
-        CALL ZGTANS (ANS,0)
-        IF ((ANS.EQ.'a').OR.(ANS.EQ.'A')) THEN
+C       CALL ZMORE('A/E/H ?',0)
+C        CALL ZGTANS (ANS,0)
+C        IF ((ANS.EQ.'a').OR.(ANS.EQ.'A')) THEN
+C Just abandon the line.
           ICHOIC = 2
           RETURN
 C        ELSE IF ((ANS.EQ.'P').OR.(ANS.EQ.'p')) THEN
 C          ICHOIC = 1
 C          RETURN
-        ELSE IF ((ANS.EQ.'e').OR.(ANS.EQ.'E')) THEN
-          ICHOIC = 3
-        ELSE IF ((ANS.EQ.'h').OR.(ANS.EQ.'H')) THEN
-          ICHOIC = 4
-        ELSE
-          CALL ZBEEP
-          GOTO 11
-        ENDIF
+C        ELSE IF ((ANS.EQ.'e').OR.(ANS.EQ.'E')) THEN
+C          ICHOIC = 3
+C        ELSE IF ((ANS.EQ.'h').OR.(ANS.EQ.'H')) THEN
+C          ICHOIC = 4
+C        ELSE
+C          CALL ZBEEP
+C          GOTO 11
+C        ENDIF
       ELSE
       CALL ZMORE(
      c'An error has occured while reading an OBEY file.',0)
@@ -1677,9 +1678,7 @@ C EDIT IS TURNED OFF
         IERRH = 1
         RETURN
       ENDIF
-      IF (IMENCN.NE.0) THEN
-        CALL ZVGA
-      ENDIF
+
 C PRINT OUT THE ERROR MESSAGE
       CALL ZMORE(' ',0)
       CALL ZMORE(ERRTXT,0)
@@ -1758,7 +1757,7 @@ C RE-PROCESS THE COMMAND LINE (THE EDITING WILL HAVE BEEN DONE IN
 C XERCHO )
         IERRH = 0
       ENDIF
-      IF (IMENCN.GT.0) CALL ZMNRED(1)
+C      IF (IMENCN.GT.0) CALL ZMNRED(1)
       RETURN
       END
  
@@ -3569,7 +3568,7 @@ CNOV98      IF (.NOT.LFILES (IFPATH,'CAMERON.OBY',IFOBEY)) THEN
         RETURN
       ENDIF
 10    CONTINUE
-      CALL ZOBEY
+      CALL ZCONTR
       IF (IFOBEY.GT.IFST) GOTO 10
       RETURN
       END

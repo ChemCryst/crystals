@@ -1,9 +1,7 @@
 CRYSTALS CODE FOR BUTTON.FOR                                                    
       SUBROUTINE ZMNINI
 C INITIALISE MENUS
-C THIS IS A TEST ROUTINE FOR THE BUTTON CODE
 C FIRST CALL THE BUTTON DRAWING ROUTINE
-c^^^      INCLUDE 'BUTTON.INC'
       
 \CAMPAR
 \CAMCOM
@@ -26,7 +24,7 @@ c^^^      INCLUDE 'BUTTON.INC'
       LOGICAL LFILES
 C READ IN THE FILE
       IF (.NOT.LFILES(-1,'BUTTON.CMN',IINPT)) THEN
-        WRITE (ISTOUT,*) 'ERROR BUTTON.CMN NOT FOUND'
+        CALL ZMORE('ERROR BUTTON.CMN NOT FOUND',0)
         IMENCN = 0
         RETURN
       ENDIF
@@ -38,14 +36,92 @@ C READ IN THE NAMES
         READ (IINPT,'(A80)') CBUTTX(I)
 10    CONTINUE
       IF (.NOT.LFILES(0,' ',IINPT)) THEN
-        WRITE (ISTOUT,*) 'ERROR CLOSING BUTTON.CMN'
+        CALL ZMORE('ERROR CLOSING BUTTON.CMN',0)
       ENDIF
       CALL ZSETUP ( IBBACK, IBTEXT, IBBORD, 1)
       IMENCN = 2
-      CALL ZDOBUT (CBUTTS,INTOT,500,0,139,460,IBNWID,IBNHEI)
+      CALL ZDOBUT (CBUTTS,INTOT,500,0,139,440,IBNWID,IBNHEI)
       RETURN
       END
- 
+
+
+C Load the menu info, one line at a time. This routine
+C is called repeatedly until it sets LINPMN to FALSE.
+      SUBROUTINE ZMNLOD
+
+\CAMPAR
+\CAMCOM
+\CAMANA
+\CAMDAT
+\CAMCAL
+\CAMMSE
+\CAMMEN
+\CAMCHR
+\CAMGRP
+\CAMCOL
+\CAMFLG
+\CAMSHR
+\CAMVER
+\CAMKEY
+\CAMBTN
+\CAMBLK
+\XIOBUF
+\CAMIMN
+
+      INTEGER KOUNT, INTOT, IODD
+      SAVE KOUNT, INTOT, IODD
+      DATA KOUNT /0/, INTOT /0/, IODD /0/
+
+
+      IF ( KOUNT .EQ. 0 ) THEN
+            READ (LLINE(ILINE),*,ERR=999) IBNWID,IBNHEI
+            INTOT = IBNWID*IBNHEI
+            KOUNT = 1
+            RETURN
+      ENDIF
+
+      
+      IF ( IODD .EQ. 0 ) THEN
+            READ(LLINE(ILINE),'(A20)',ERR=999) CBUTTS(KOUNT)
+            IODD = 1
+            RETURN
+      ENDIF
+
+      IF ( IODD .EQ. 1 ) THEN
+            READ(LLINE(ILINE),'(A80)',ERR=999) CBUTTX(KOUNT)
+            IODD = 0
+C Remove underscore prefix, which can be used to hide
+C for example #SCRIPT from KRDREC during processing.
+            IF(CBUTTX(KOUNT)(1:1).EQ.'_')THEN
+                  READ(CBUTTX(KOUNT)(2:),'(A)') CBUTTX(KOUNT)
+            ENDIF
+
+            KOUNT = KOUNT + 1
+
+            IF ( KOUNT .GT. INTOT ) THEN
+                  LINPMN = .FALSE.
+                  KOUNT = 0
+                  INTOT = 0
+                  IODD = 0
+                  CALL ZSETUP ( IBBACK, IBTEXT, IBBORD, 1)
+                  IMENCN = 2
+                  CALL ZDOBUT (CBUTTS,INTOT,500,0,139,440,IBNWID,IBNHEI)
+            ENDIF
+
+            RETURN
+      ENDIF
+
+999   CONTINUE
+      CALL ZMORE('Error inputting menu buttons',0)
+      CALL ZMORE1('Error inputting menu buttons',0)
+      LINPMN = .FALSE.
+      KOUNT = 0
+      INTOT = 0
+      IODD = 0
+      RETURN
+
+      END
+
 CODE FOR IBDRAW
       INTEGER FUNCTION IBDRAW (IX,IY,CTEXT)
       
@@ -253,83 +329,7 @@ C LOOP OVER THE BUTTONS
 10    CONTINUE
       RETURN
       END
- 
-CODE FOR ZMOUSE
-      SUBROUTINE ZMOUSE
-      INTEGER IBX,IBY,IBCHCK
-c^^^      INCLUDE 'BUTTON.INC'
-      
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
-
-      CALL ZMINIT
-      CALL ZMDISP
-      IB = 0
-10    CONTINUE
-      CALL ZGTBUT (1,IB)
-      IF (IB.GT.0) RETURN
-      CALL ZGTBUT (0,IB)
-      IF (IB.EQ.0) GOTO 10
-C GET THE MOUSE POSITION
-      CALL ZGTMPS (IBX,IBY)
-C CHECK THIS POSITION
-      INO = IBCHCK (IBX,IBY)
-      IF (INO.GT.0) THEN
-        WRITE (6,*) CBUTTX (INO)
-      ENDIF
-      GOTO 10
-      END
- 
- 
-CODE FOR IBCHCK
-      INTEGER FUNCTION IBCHCK (IMX,IMY)
-      
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
-
-C^^^      INCLUDE 'BUTTON.INC'
-      IBCHCK = -1
-C THIS CHECKS THE BUTTONS TO SEE WHETHER ONE HAS BEEN ACTIVATED
-      DO 10 I = 1 , IBUTNO
-        IF (IMX.LT.IBUTTS(1,I)) GOTO 10
-        IF (IMY.LT.IBUTTS(2,I)) GOTO 10
-        IF (IMX.GT.IBUTTS(3,I)) GOTO 10
-        IF (IMY.GT.IBUTTS(4,I)) GOTO 10
-        IBCHCK = I
-        RETURN
-10    CONTINUE
-      RETURN
-      END
+           
  
 CODE FOR ZMENUS
       SUBROUTINE ZMENUS
@@ -352,12 +352,10 @@ CODE FOR ZMENUS
 \CAMBLK
 \XIOBUF
 
-c^^^      INCLUDE 'BUTTON.INC'
       INTEGER IX(5),IY(5)
       CHARACTER*(ICLEN) CTEXT
       IFLAG = 0
 C DRAW THE MENU BUTTONS
-C      CALL ZVGA
 C      INTOT = IBNWID*IBNHEI
 C      CALL ZDOBUT (CBUTTS,INTOT,500,0,139,460,IBNWID,IBNHEI)
 C NOW NEED TO DRAW THE BUTTONS
@@ -402,85 +400,43 @@ C NOW DRAW IN THE TEXT
         ENDIF
 10    CONTINUE
 C DRAW THE INPUT REGION - USE THE SCREEN COORDINATES XCENS, YCENS
+      CALL ZMNINP
+      RETURN
+
+      END
+
+CODE FOR ZMNINP
+      SUBROUTINE ZMNINP
+C DRAW THE INPUT REGION - USE THE SCREEN COORDINATES XCENS, YCENS
+\CAMPAR
+\CAMCOM
+\CAMANA
+\CAMDAT
+\CAMCAL
+\CAMMSE
+\CAMMEN
+\CAMCHR
+\CAMGRP
+\CAMCOL
+\CAMFLG
+\CAMSHR
+\CAMVER
+\CAMKEY
+\CAMBTN
+\CAMBLK
+\XIOBUF
+      INTEGER IX(5),IY(5)
       IX(1) = 0
       IY(1) = YCENS*2.0
       IX(2) = XCENS*2.0+139
       IY(2) = IY(1)
       IX(3) = IX(2)
-      IY(3) = 2.0*YCENS+21
+      IY(3) = 2.0*YCENS+42
       IX(4) = IX(1)
       IY(4) = IY(3)
       IX(5) = IX(1)
       IY(5) = IY(1)
       CALL ZPOLGN (IX,IY,5,IBBACK)
       CALL ZPLINE (IX,IY,5,IBBORD)
-C NOW DO THE MAIN LOOP
-      IMESSG = -1
-C Use the screen co-ordinates, not the device co-ordinates!
-C99 NOTE RC USES YCEN
-c      IYPOS = 2.0*YCEN + 5
-      IYPOS = 2.0*YCENS + 5
-      CALL ZMDISP
-
-C Wait for input.
-      CALL ZTXT (10,IYPOS,CTEXT,IMESSG)
-
-      LLINE(ILINE) = CTEXT
-        CALL ZUPCAS (CTEXT)
-      LINE(ILINE) = CTEXT
-C      IF (IDEV.EQ.1) CALL ZMHIDE
-C NEED TO GET THE UPPERCASE VERSION FOR ANALYSIS
-13    CALL ZCANAL
-      IF (IPROC.EQ.1) THEN
-C SEND THE LINE TO THE LOG FILE
-         CALL ZLOGWT(1)
-         CALL ZCOMDO
-         CALL ZABAND(2)
-         IF (ICAMER.EQ.-1) RETURN
-      ENDIF
-      IF (IPROC.EQ.2) THEN
-C REMOVE THE LAST (INCOMPLETE) COMMAND.
-        IF (INCOM(1).NE.INCOM(2)) THEN
-          ICPOS = ICPOS - 1
-          ICCPOS = ICCPOS - IC
-          ICNPOS = ICNPOS - IN
-          ICRPOS = ICRPOS - IR
-        ENDIF
-        CALL ZABAND(1)
-        CALL ZCOMDO
-        CALL ZABAND(2)
-        IF (ICAMER.EQ.-1) RETURN
-        IBEG = -1
-      ENDIF
-      IF (IPROC.EQ.0) THEN
-C ABANDON
-        ILINE = 1
-        CALL ZLOGWT(0)
-        CALL ZABAND(2)
-        IBEG = -1
-        IHEAD = 1
-C RESET FLAGS FOR LOG FILE
-        ICLOG = 1
-        ICABAN = 1
-      ENDIF
-      IF ((ILINE.LT.10).AND.(IBEG.EQ.-1)) THEN
-        ILINE = ILINE + 1
-        IEND = 0
-      ELSE IF ((ILINE.EQ.10).AND.(IBEG.EQ.-1)) THEN
-        DO 30 I = 1 , 10
-          DO 40 J = 1 , ICLEN
-40        LINE(I)(J:J) = ' '
-30      CONTINUE
-        ILINE = 1
-        IEND = 0
-      ENDIF
-      IF (IBEG.NE.-1) GOTO 13
-C PROCESS THE BLANK LINE
-      IF (IFLAG.EQ.0) THEN
-        LINE(ILINE) = ' '
-        LLINE(ILINE) = ' '
-        IFLAG = 1
-        GOTO 13
-      ENDIF
       RETURN
       END

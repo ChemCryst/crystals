@@ -2351,7 +2351,6 @@ C A TITLE
       GOTO 9999
 716   CONTINUE
 C MOUSE RESET
-      CALL ZMREST
       GOTO 9999
 9999  CONTINUE
       RETURN
@@ -4561,7 +4560,7 @@ C CHECK DEVICE
       IF (IMENCN.EQ.0) THEN
         IMENCN = 1
         XCENS = XCENS - 70
-        YCENS = YCENS - 12
+        YCENS = YCENS - 24
         XCEN = XCENS
         YCEN = YCENS
       ENDIF
@@ -4571,7 +4570,7 @@ C CHECK DEVICE
 C MENUS OFF
       IF (IMENCN.NE.0) THEN
         XCENS = XCENS + 70
-        YCENS = YCENS + 12
+        YCENS = YCENS + 24
         XCEN = XCENS
         YCEN = YCENS
       ENDIF
@@ -5255,8 +5254,8 @@ C STORE THE NEW LABEL
  
 CODE FOR SUBROUTINE ZCMD24
       SUBROUTINE ZCMD24
-C This is the subroutine to get hold of the List12 interactive
-C definition stuff.
-C      CALL ZLST12
+C This initiates the input of a new set of menus.
+\CAMIMN
+      LINPMN = .TRUE.
       RETURN
       END

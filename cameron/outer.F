@@ -21,48 +21,45 @@ C      SUBROUTINE ZCAMER ( ITYPE , RCRYST, NSTORE , IDEVIC)
 \CAMBTN
 \CAMBLK
 \XIOBUF
+\CAMIMN
 
 C      REAL RCRYST(NSTORE)
 CDJW99 this upsets FTN95      EXTERNAL ZBLOCK
       LOGICAL LEXIST
-\CAMWIN
-      character*80 caption
+&DOS\CAMWIN
+&DOS      character*80 caption
+&DOSC ---- some initialisation
+&DOS      ikeym(1)=0
+&DOS      ikeym(2)=0
+&DOS      ikeym(3)=0
+&DOS      ikeym(4)=0
+&DOS      font=1
+&DOS      italic=0.
+&DOS      rotation=0.
+&DOS      Status$Text=' '
+&DOS      Cursor$Number=1
+&DOS      call GetWindowSize(xwin,ywin)
+&DOS      size=0.9*float(xwin)/640.
+&DOS      iy=ywin-65
+&DOSC ---- CAMERON still functions internally in the VGA graphics
+&DOSC      space of 640x480. scale_X/scale_Y are the scaling values
+&DOSC      corresponding to the current Windows resolution. The
+&DOSC      parameters for all graphics primitive are scaled up when
+&DOSC      drawing, conversely the reported coordinates from mouse
+&DOSC      clicks are scaled down when returned to program. This
+&DOSC      provides a simple but effective way of coping with
+&DOSC      different screen resolutions. The scaling is done in the
+&DOSC      routines in SPECIFIC.FOR
+&DOS      scale_X=float(iy)/480.
+&DOS      scale_Y=scale_X
+&DOS      ix=nint(640.0*scale_X)
+&DOSC ---- open I/O and graphics windows
+&DOS      caption='CAMERON Dialog Window'
+&DOSC      call CreateIOWindow(caption,DialogHandle)
+&DOS      call CreateGraphicsWindow(ix,iy)
 
-C ---- some initialisation
-      ikeym(1)=0
-      ikeym(2)=0
-      ikeym(3)=0
-      ikeym(4)=0
-      font=1
-      italic=0.
-      rotation=0.
-      Status$Text=' '
-      Cursor$Number=1
-      call GetWindowSize(xwin,ywin)
-      size=0.9*float(xwin)/640.
-      iy=ywin-65
-
-C ---- CAMERON still functions internally in the VGA graphics space of
-C      640x480. scale_X/scale_Y are the scaling values corresponding to
-C      the current Windows resolution. The parameters for all graphics
-C      primitive are scaled up when drawing, conversely the reported
-C      coordinates from mouse clicks are scaled down when returned to
-C      program. This provides a simple but effective way of coping with
-C      different screen resolutions. The scaling is done in the routines
-C      in SPECIFIC.FOR
-
-      scale_X=float(iy)/480.
-      scale_Y=scale_X
-      ix=nint(640.0*scale_X)
-
-C ---- open I/O and graphics windows
-      caption='CAMERON Dialog Window'
-C      call CreateIOWindow(caption,DialogHandle)
-      call CreateGraphicsWindow(ix,iy)
-
-
+      LINPMN = .FALSE.     
       ICAMER = ITYPE
-      CALL ZOINIT
       IF (ICAMER.LT.2) THEN
 C SET UP FLAG POSITIONS FOR LARGE VERSION OF CAMERON
         IXYZO = 16
@@ -82,7 +79,6 @@ C SET UP FLAG POSITIONS FOR SMALL VERSION OF CAMERON
         ISYM = 0
         IPACKT = 19
       ENDIF
-      CALL ZMINIT
       IRLAST = 1
       CALL ZINIT
       IF (ICAMER.LT.2) THEN
@@ -114,10 +110,7 @@ C CHECK IF THERE IS A CAMERON.INI
       ELSE
         CALL ZSMALL (RCRYST , NSTORE , IDEVIC)
       ENDIF
-      call zmore1('CAMERON finished !!',0)
-      GraphicsHandle = 0
-      call window_update@(GraphicsHandle)
-
+      RETURN
       END
 C
 CODE FOR ZCANAL
@@ -472,187 +465,6 @@ C       ICABAN = ICABAN - IEND + IBEG - 2
 C GO BACK AND PROCESS COMMAND
        END
  
-CODE FOR ZMNCOM [ COMMUNICATION ]
-C THIS ROUTINE CREATES THE STRING THAT WILL BE USED TO COMMUNICATE WITH
-C THE MAIN PROGRAM.
-      SUBROUTINE ZMNCOM(CTEXT,ITYPE)
-      
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
-
-      INTEGER IX1,IY1,IX2,IY2
-      INTEGER ERROR
-      CHARACTER*(ICLEN) CDUMP
-      CHARACTER*(ICLEN) CTEXT
-C ITYPE = 0 NO ARGUMENTS (PROCESS)
-C ITYPE = 1 ARGUMENTS (DON'T PROCESS)
-C ITYPE = -1 SECOND CLICK ON ARGUMENT COMMAND (PROCESS).
-C ITYPE = 3 VIEW
-       IF (ITYPE.EQ.3) THEN
-         CALL ZCOMDO
-         CALL ZABAND(2)
-         LINE(ILINE)(1:4) = 'VIEW'
-         IEND = 0
-         CALL ZCANAL
-         CALL ZCANAL
-         CALL ZCOMDO
-         CALL ZABAND(2)
-         CALL ZRETST(IBUFF)
-         IX1 = 0
-         IY1 = 0
-         IX2 = 2*XCEN - 1
-         IY2 = 2*YCEN - 1
-         CALL ZGTSCN(IX1,IY1,IX2,IY2,IBUFF)
-         CALL ZABAND(2)
-         CALL ZMNRED(1)
-         RETURN
-       ENDIF
-        IF (ITYPE.EQ.-1) THEN
-        IX1 = 0
-        IY1 = 0
-        CALL ZRTSBL(IX1,IY1,IBUFF,0,ERROR)
-        CALL ZCOMDO
-        CALL ZABAND(2)
-        IF (ICAMER.EQ.-1) RETURN
-C RESET FLAGS
-C ALSO LOOP ALONG IMOLD TO RESET FLAGS
-          DO 40 I = 1 , 10
-            IF (IMOLD(I).GT.1) THEN
-              RSTORE(IMOLD(I)+3) = ABS(RSTORE(IMOLD(I)+3))
-            ENDIF
-40        CONTINUE
-        RSTORE(IMENU(IMENVT,3)+3) = ABS(RSTORE(IMENU(IMENVT,3)+3))
-        CALL ZRETST(IBUFF)
-        IX1 = 0
-        IY1 = 0
-        IX2 = 2*XCEN - 1
-        IY2 = 2*YCEN - 1
-        CALL ZGTSCN(IX1,IY1,IX2,IY2,IBUFF)
-        CALL ZABAND(2)
-        RETURN
-      ENDIF
-C CHECK THAT THE OLD PATHS MEET PROPERLY
-      IX = 0
-      DO 5 I = 2 , IMENVT-1
-C JUMP OUT IF WE HAVE REACHED THE END OF THE OLD PATH
-C BRANCHING ONLY ALLOWED AT THE CURRENT MENU LEVEL.
-        IF (IMOLD(I).EQ.0) GOTO 7
-        IF (IMOLD(I).NE.IMENU(I,3)) IX = 1
-5     CONTINUE
-7     CONTINUE
-      IF ((IX.EQ.0).AND.(IMOLD(IMENVT).NE.IMENU(IMENVT,3)).AND.
-     c  (IMOLD(IMENVT).NE.0)) IX = 2
-C IF WE HAVE MOVED TO ANOTHER COMMAND - RESET FLAGS FOR THE LAST ONE.
-      IF (IX.EQ.2) THEN
-        RSTORE(IMOLD(IMENVT)+3) = ABS(RSTORE(IMOLD(IMENVT)+3))
-      ENDIF
-C WE NEED TO LOOP DOWN THE CURRENT MENU 'PATH'
-      IL = 1
-      DO 10 I = 2 , IMENVT-1
-        IF (NINT(RSTORE(IMENU(I,3)+3)).EQ.-3) IL = I
-10    CONTINUE
-C THE -3 WILL ONLY OCCUR IF A PREVIOUS MENU ITEM HAS HAD INFO ENTERED
-C FOR IT.
-C SEND THE INFO FROM IL DOWN TO THE CURRENT VALUE OF IMENVT-1.
-      IF (IX.EQ.1) IL = 1
-      IF (IX.EQ.2) IL = IMENVT-1
-      IIC = 1
-      ILINE = ILINE + 1
-      IF (ILINE.GE.8) ILINE=1
-      DO 20 I = IL+1 , IMENVT
-        N = NINT(RSTORE(IMENU(I,3)))
-C DO NOT OUTPUT A DUMMY NAME
-        IF (NINT(RSTORE(IMENU(I,3)+3)).EQ.-2) GOTO 20
-        IF (IIC.EQ.1) THEN
-          LINE(ILINE) = CSTORE(N)//CSTORE(N+1)
-        ELSE
-          CDUMP = LINE(ILINE)(1:IIC)//CSTORE(N)//CSTORE(N+1)
-          LINE(ILINE) = CDUMP
-        ENDIF
-        IIC = IIC + 2*ILEN
-20    CONTINUE
-C NOW WE NEED TO PASS THIS INFO TO CAMERON
-      IEND = 0
-      CALL ZCANAL
-C SEND DOWN THE ARGUMENTS IF THEY EXIST.
-      IF (ITYPE.EQ.1) THEN
-        LINE(ILINE+1) = CTEXT
-        ILINE = ILINE + 1
-        IEND = 0
-        CALL ZCANAL
-        IF (IPROC.EQ.3) THEN
-C FORCE STORAGE OF INFO
-          INFCMD(ICINPS) = IC*100 + IN*10 + IR
-          ICINPS = ICINPS + 1
-          ISTORE = 1
-        ENDIF
-      ENDIF
-      IF (ITYPE.EQ.0) THEN
-C NEED TO FORCE PROCESSING OF THE COMMAND
-        IF (IPROC.EQ.3) THEN
-          CALL ZCANAL
-        ENDIF
-        IF (IBEG.NE.-1) THEN
-          IEND = 0
-          CALL ZCANAL
-        ENDIF
-        IF (IPROC.EQ.3) THEN
-C FORCE STORAGE OF INFO
-          INFCMD(ICINPS) = IC*100 + IN*10 + IR
-          ICINPS = ICINPS + 1
-          ISTORE = 1
-        ENDIF
-        IX1 = 0
-        IY1 = 0
-        CALL ZRTSBL(IX1,IY1,IBUFF,0,ERROR)
-        CALL ZCOMDO
-        CALL ZABAND(2)
-        IF (ICAMER.EQ.-1) RETURN
-C RESET THE FLAGS
-        CALL ZABAND(2)
-C ALSO LOOP ALONG IMOLD TO RESET FLAGS
-          DO 50 I = 1 , 10
-            IF (IMOLD(I).GT.1) THEN
-              RSTORE(IMOLD(I)+3) = ABS(RSTORE(IMOLD(I)+3))
-            ENDIF
-50        CONTINUE
-        CALL ZRETST(IBUFF)
-        IX1 = 0
-        IY1 = 0
-        IX2 = 2*XCEN - 1
-        IY2 = 2*YCEN - 1
-        CALL ZGTSCN(IX1,IY1,IX2,IY2,IBUFF)
-        RETURN
-      ENDIF
-      IF ((IPROC.EQ.0).OR.(IPROC.EQ.2)) THEN
-C THERE IS AN ERROR - ABANDON
-C ALSO LOOP ALONG IMOLD TO RESET FLAGS
-          DO 30 I = 1 , 10
-            IF (IMOLD(I).GT.1) THEN
-              RSTORE(IMOLD(I)+3) = ABS(RSTORE(IMOLD(I)+3))
-            ENDIF
-30        CONTINUE
-          RSTORE(IMENU(IMENVT,3)+3) = ABS(RSTORE(IMENU(IMENVT,3)+3))
-          CALL ZABAND(2)
-        RETURN
-      ENDIF
-      RETURN
-      END
  
  
 CODE FOR ZCOMDO [ COMMAND DO ! ]
@@ -695,8 +507,7 @@ C     error.
 \CAMBLK
 \XIOBUF
 C
-\CAMWIN
-CDJW99      INCLUDE <WINDOWS.INS>
+&DOS\CAMWIN
       LOGICAL LFILES
       IF (ICNT.GE.ICPOS) RETURN
 10    ICC = INFCMD(ICNT)/100
@@ -799,6 +610,8 @@ C END WILL RETURN TO CRYSTALS
         ID = 920
         CALL ZCMD9(ID)
         ICAMER = -1
+&DOS      GraphicsHandle = 0
+&DOS      call window_update@(GraphicsHandle)
         RETURN
       ELSE
         IF (IDEV.NE.-1) THEN
@@ -861,289 +674,71 @@ CODE FOR ZCONTR
 \CAMBTN
 \CAMBLK
 \XIOBUF
+\CAMIMN
 
 CC THIS ACTS UPON THE VALUE OF IMENCN
 CC = 0 keyboard input
 CC = 1 first time menu input
 CC = 2 further menu input
+
+
 10    CONTINUE
 C CHECK FOR CRYSTALS ENTRY
       IF (ICAMER.EQ.-1) RETURN
-      IF (IFOBEY.NE.-1) THEN
-        CALL ZOBEY
-      ELSE IF (IMENCN.EQ.0) THEN
-        CALL ZINPUT
-      ELSE IF (IMENCN.EQ.1) THEN
-        CALL ZMNINI
-      ELSE IF (IMENCN.EQ.2) THEN
-        CALL ZMENUS
-      ENDIF
-      GOTO 10
-      END
- 
- 
-CODE FOR ZZMNINI [ DO MENU - NOW A DUMMY - SEE BUTTON 1996 ]
-      SUBROUTINE ZZMNINI
-C THIS ROUTINE SETS UP THE MENU CONTROL DATA AND ALSO THE NAMES OF
-C THE COMMANDS - SUB-COMMANDS IN THE RELEVANT MENUS.
-      
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
 
-C      INTEGER IMENU (10,3)
-C IMENU IS THE CONTROLLING ARRAY FOR GENERATING THE MENU LISTS.
-      ISMEN = IRLAST
-      CALL ZZEROI (IMENU,30)
-      IMST = ISMEN
-      IMFIN = ISMEN
-      ISTEP = 4
-      IMEN = 1
-C SET UP THE LIST FOR THE TOP MENU BAR.
-      DO 10 I = ISHEAD , ISHEAD + (IHNUM-1)*IHMAX , IHMAX
-        RSTORE(IMFIN) = NINT (RSTORE (I))
-        IMFIN = IMFIN + 4
-10    CONTINUE
-      IMENU ( IMEN , 1) = IMST
-      IMENU ( IMEN , 2 ) = IMFIN - 4
-      IMENU ( IMEN , 3) = IMST
-      IMST = IMFIN
-      IMEN = 2
-      IMENU (IMEN,1 ) = IMST
-      IMENU (IMEN,3 ) = IMST
-C SET UP THE DATA FOR THE TOP MENU BAR
-      DO 20 I = ISHEAD, ISHEAD + (IHNUM - 1)*IHMAX , IHMAX
-C GET THE NUMBER OF COMMANDS IN THIS GROUP
-      IS = IMENU (IMEN-1,1)
-C      IP = IMENU (IMEN-1,3)
-        RSTORE (IS + (I-ISHEAD)*ISTEP/IHMAX + 1 ) = IMST
-        IH = NINT ( RSTORE ( I + 1 ))
-        DO 30 L = 2 , IH + 1
-C GET THE NUMBER OF THE COMMAND GROUP
-          IGCOM = NINT (RSTORE (I+L) )
-C LOOK FOR THIS GROUP IN THE MAIN LIST
-          DO 40 J = ICOM , ISHEAD-1 , ISRCOM
-            IF (ABS(NINT(RSTORE(J))).EQ.IGCOM) GOTO 50
-40        CONTINUE
-50        CONTINUE
-C NOW SEARCH TO FIND ALL HEADER COMMANDS IN THIS LIST.
-          DO 60 K = J , J+30*ISRCOM , ISRCOM
-            IF (K.GE.ISHEAD) GOTO 61
-            ID = ABS(NINT ( RSTORE ( K ) ))
-            IF (ID/100.EQ.IGCOM/100) THEN
-C WE HAVE A COMMAND IN THE SAME GROUP - IS IT A HEADER COMMAND?
-              IF (NINT(RSTORE(K+1)).EQ.0) THEN
-C YES IT IS - STORE IT IN THE ARRAY
-                IMNPOS = ICOM + ( K - ICOM )*ISCOM/ISRCOM
-                RSTORE(IMFIN) = IMNPOS
-                IMFIN = IMFIN + ISTEP
-              ENDIF
+
+C Get a command from the right place (user or obey file)
+      IF(IFOBEY.EQ.-1) THEN
+            CALL ZINCH(LLINE(ILINE))
+      ELSE
+C   Read the line from the file
+            READ (IFOBEY,'(A)',END=9999) LLINE(ILINE)
+C            CALL ZMORE(LLINE(ILINE),0)
+      ENDIF
+
+C      CALL ZMORE(LLINE(ILINE),0)
+
+      IF (LINPMN) THEN
+C Initialising menus, pass line to ZMNINI
+            CALL ZMNLOD
+      ELSE
+
+C Normal use, interpret the line
+            CALL ZOBEY
+            IF(IFOBEY.EQ.-1) THEN
+C    Force execution of line
+                  LLINE(ILINE) = ' '
+                  CALL ZOBEY
+C   Clear the status line
+                  IF(.NOT.LCLOSE)CALL ZMORE1(' ',0)
+C    Clear buffer
+                  CHRBUF = ' '
+C    Clear the input box.
+                  IF(.NOT.LCLOSE)CALL ZMNINP
             ENDIF
-60        CONTINUE
-61        CONTINUE
-30      CONTINUE
-        RSTORE ( IS + (I-ISHEAD)*ISTEP/IHMAX + 2 ) = (IMFIN-IMST)/ISTEP
-        RSTORE ( IS + (I-ISHEAD)*ISTEP/IHMAX + 3 ) = 0
-        IMST = IMFIN
-20    CONTINUE
-C NOW WE HAVE SET UP THE LIST - WE NEED TO GENERATE THE REMAINING
-C MENUS
-      IMENU (IMEN , 2) = IMFIN - 4
-C      IMENU ( IMEN , 3) = IMST
-70    CONTINUE
-C LOOP OVER THE LEVEL OF MENU THAT WE ARE CURRENTLY ON.
-      IFIND = 0
-      IMENU (IMEN+1,1) = IMST
-      IMENU (IMEN+1, 3 ) = IMST
-      DO 80 I = IMENU (IMEN,1) , IMENU (IMEN,2) , ISTEP
-C CHECK THAT WE HAVE A 'REAL' COMMAND
-        IF (NINT(RSTORE(I+3)).EQ.2) GOTO 80
-C GET THE COMMAND NUMBER
-        ICP = ICOM + (NINT(RSTORE(I))-ICOM)*ISRCOM/ISCOM
-        ICNO = NINT (RSTORE (ICP))
-C GET THE SUB-COMMAND INFO
-        ICSUB = NINT (RSTORE (ICP + 5) )
-C WE CAN HAVE FOLLOWING INFO
-        ISS = RSTORE(ICP+2)+RSTORE(ICP+3)+RSTORE(ICP+4)
-        IF ((ABS(ICSUB).LT.10).AND.(ISS.GT.0)) RSTORE(I+3) = 1.0
-        IF ((MOD(ABS(ICSUB),10).EQ.4).OR.(ICNO.LT.0)) THEN
-C WE MAY HAVE TO ADD IN AN ADDITIONAL MENU ITEM FOR THE CHARACTER INPUT.
-          IF (ABS(ICSUB).GT.9) THEN
-C GET THE CHARACTER EQUIVALENT
-            IF (ABS(ICSUB).GT.9) N = ABS(ICSUB)/10
-C            IF (ICNO.LT.0) N = ICSUB
-            IMNPOS = IMCHAR + (N-1)*2
-            RSTORE(IMFIN) = IMNPOS
-C SET FLAG FOR INFO CREATED
-C            IF (ICNO.LT.0) THEN
-C              RSTORE(IMFIN+3) = 3.0
-C            ELSE
-              RSTORE(IMFIN+3) = 2.0
-C            ENDIF
-            IMFIN = IMFIN + ISTEP
-            IFIND = 1
-          ELSE
-            ISS = RSTORE(ICP+2)+RSTORE(ICP+3)+RSTORE(ICP+4)
-C SET THE COMMAND SO THAT WE HAVE INFO BEFORE THE SUB-COMMAND.
-            IF (ISS.GT.0.0) RSTORE(I+3)=3.0
-          ENDIF
-C WE HAVE A SUB-COMMAND POSSIBLE.
-C LOOP OVER THE SUB-COMMANDS
-          IST = ICP - 20*ISRCOM
-          IF (IST.LT.ICOM) IST=ICOM
-          IFN = ICP + 20*ISRCOM
-          DO 90 J = IST , IFN , ISRCOM
-C GET THE NUMBER OF THE COMMAND
-            ICSNO = ABS(NINT (RSTORE(J)))
-            IF (ICSNO/100.NE.ABS(ICNO/100)) GOTO 90
-C MUST BE OF THE SAME GROUP
-C GET THE PREVIOUS COMMAND NUMBER
-            ISPR = NINT (RSTORE (J+1))
-            IF (ICSUB.GT.0) THEN
-C 4 type sub-command n, -n and 1 valid.
-              IF (ISPR.EQ.1) THEN
-C THIS IS 'SPECIAL' - NEED TO GET PREVIOUS NUMBER FOR ABOVE COMMAND.
-                IF (IMEN.GT.3) GOTO 90
-                ICPR = NINT (RSTORE (ICP+1))
-                IF (ABS(ICPR).GT.1) THEN
-C WE HAVE A n or -n COMMAND AT LEVEL 2 PUT 1'S HERE
-                  IF (IMEN.EQ.3) THEN
-C SUB-COMMAND IS VALID
-                    IMNPOS = ICOM + (J-ICOM)*ISCOM/ISRCOM
-                    RSTORE(IMFIN) = IMNPOS
-                    IMFIN = IMFIN + ISTEP
-                    IFIND = 1
-                  ENDIF
-                ELSE
-                  IF (IMEN.EQ.2) THEN
-C SUB-COMMAND IS VALID
-                    IMNPOS = ICOM + (J-ICOM)*ISCOM/ISRCOM
-                    RSTORE(IMFIN) = IMNPOS
-                    IMFIN = IMFIN + ISTEP
-                    IFIND = 1
-                  ENDIF
-                ENDIF
-              ELSE IF (ABS(ISPR).EQ.ABS(ICNO)) THEN
-C SUB-COMMAND IS VALID
-                IMNPOS = ICOM + (J-ICOM)*ISCOM/ISRCOM
-                RSTORE(IMFIN) = IMNPOS
-                IMFIN = IMFIN + ISTEP
-                IFIND = 1
-              ENDIF
-            ELSE
-C -4 type sub-command n and -n are valid
-              IF (ABS(ISPR).EQ.ABS(ICNO)) THEN
-                IMNPOS = ICOM + (J-ICOM)*ISCOM/ISRCOM
-                RSTORE(IMFIN) = IMNPOS
-                IMFIN = IMFIN + ISTEP
-                IFIND = 1
-              ENDIF
-            ENDIF
-90        CONTINUE
-C IF ANY COMMANDS HAVE BEEN FOUND - STORE THE INFO
-          IF (IMFIN.NE.IMST) THEN
-            RSTORE(I+1) = IMST
-            RSTORE(I+2) = (IMFIN - IMST) / ISTEP
-            IMST = IMFIN
-          ENDIF
-        ENDIF
-80    CONTINUE
-C IFIND WILL HAVE BEEN SET IF WE HAVE FOUND A SUB-COMMAND MENU
-      IF (IFIND.EQ.1) THEN
-        IMEN = IMEN + 1
-        IMENU (IMEN , 2 ) = IMFIN - 4
-C        IMENU (IMEN , 3 ) = IMENU (IMEN,1)
-        GOTO 70
       ENDIF
-      IRLAST = IMFIN
-      CALL ZMENU
+
+
+
+C Initialise the menus (read in data)
+      IF (IMENCN.EQ.1) CALL ZMNINI
+
+      IF (IFOBEY.NE.-1) GOTO 10 !Reading from file. Don't return.
+
       RETURN
+9999  CONTINUE
+C END OF OBEY FILE
+      CLOSE(IFOBEY)
+      IF (IFOBEY.GT.IFSTAR) THEN
+        IFOBEY = IFOBEY - 1
+      ELSE
+        IFOBEY = -1
+      ENDIF
+      RETURN
+
       END
  
-CODE FOR ZDOWN
-      SUBROUTINE ZDOWN
-      
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
-
-C FIRST OF ALL - ARE WE WITHIN A VERTICAL MENU?
-      IF (IMENVT.EQ.1) THEN
-C NO WE AREN'T
-        IMENX(2) = IMPOS(IMNTOP)
-        IMENY(2) = 20
-        IMENVT = 2
-        CALL ZMNVET(1)
-        RETURN
-      ENDIF
-C OTHERWISE - WE MUST BE ALREADY IN A MENU - DO DOWN WITHIN THIS.
-      N = IMENU ( IMENVT,3 )
-      M = N + 4
-C      IVERT(IMENVT) = IVERT(IMENVT) + 1
-      IMENU (IMENVT,3) = IMENU (IMENVT,3) + 4
-      IF (M.GT.IMENU(IMENVT,2)) THEN
-        M = IMENU(IMENVT,2)
-C        IVERT(IMENVT) = IVITEM
-        IMENU(IMENVT,3) = IMENU(IMENVT,2)
-      ENDIF
-      CALL ZMNVHI (N , M)
-      RETURN
-      END
  
-CODE FOR ZESCP
-C ESCAPE KEY PRESSED
-      SUBROUTINE ZESCP
-      
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
-
-      IMENVT = 1
-      CALL ZMNRED(1)
-      RETURN
-      END
  
  
 CODE FOR ZINIT
@@ -1406,481 +1001,11 @@ C LEAVE SPACE TO STORE 20 PIECES OF TEXT.
       ITEXT = IRLAST
       IRLAST = IRLAST + 20 * 5
 C INITIALISE THE OUTPUT CHANNELS
-C      CALL ZOINIT
       RETURN
       END
  
-CODE FOR ZINPUT [COMMAND INPUT]
-      SUBROUTINE ZINPUT
-C This routine reads the input and sends it to the XCANAL routine
-      
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
 
-      CHARACTER*(ICLEN) CTEMP
-C TURN ON THE MOUSE
-      IF (IDEV.EQ.1) CALL ZMDISP
-      CALL ZINCH(LLINE(ILINE))
-C TURN IT OFF AGAIN
-      IF (IDEV.EQ.1) CALL ZMHIDE
-C NEED TO GET THE UPPERCASE VERSION FOR ANALYSIS
-      CTEMP = LLINE(ILINE)
-      CALL ZUPCAS (CTEMP)
-      LINE(ILINE) = CTEMP
-C      IL = 0
-C FIND THE LENGTH OF THE LINE
-C      DO 10 I = ICLEN , 1 , -1
-C        IF (LINE(ILINE)(I:I).NE.' ') GOTO 9
-C10    CONTINUE
-C      IL = -1
-C9     CONTINUE
-C AT THE LINE END THERE IS NO SPACE
-C      IF (IL.NE.-1) THEN
-C        IF (I.EQ.ICLEN) THEN
-C          CLOG(ICLOG:ICLOG+I) = LINE(ILINE)(1:I)//' '
-C        ELSE
-C          CLOG(ICLOG:ICLOG+I) = LINE(ILINE)(1:I+1)
-C        ENDIF
-C        ICLOG = ICLOG + I + 1
-C      ENDIF
-C ADD THIS LINE TO THE LOG FILE
-13    CALL ZCANAL
-      IF (IPROC.EQ.1) THEN
-C SEND THE LINE TO THE LOG FILE
-         CALL ZLOGWT(1)
-C        IF (ICABAN.GT.1) THEN
-C            IF (ILOG.EQ.1) THEN
-C              WRITE (IFLOG,'(A)') CLOG (1:ICABAN-1)
-C            ENDIF
-C RESET THE FLAGS AND MOVE OVER THE REST OF THE LINE
-C            IF (ICABAN.NE.ICLOG) THEN
-C              CTEMP = CLOG(ICABAN:ICLOG-1)
-C              CLOG (1:ICLOG-ICABAN) = CTEMP(1:ICLOG-ICABAN)
-C              ICLOG = ICLOG - ICABAN + 1
-C            ELSE
-C              ICLOG = 1
-C            ENDIF
-C            ICABAN = 1
-C        ENDIF
-C PROCESS THE COMMANDS SO FAR
-        CALL ZCOMDO
-        CALL ZABAND(2)
-        IF (ICAMER.EQ.-1) RETURN
-      ENDIF
-      IF (IPROC.EQ.2) THEN
-C REMOVE THE LAST (INCOMPLETE) COMMAND.
-        IF (INCOM(1).NE.INCOM(2)) THEN
-          ICPOS = ICPOS - 1
-          ICCPOS = ICCPOS - IC
-          ICNPOS = ICNPOS - IN
-          ICRPOS = ICRPOS - IR
-        ENDIF
-        CALL ZABAND(1)
-        CALL ZCOMDO
-        CALL ZABAND(2)
-        IF (ICAMER.EQ.-1) RETURN
-        IBEG = -1
-      ENDIF
-      IF (IPROC.EQ.0) THEN
-C ABANDON
-        ILINE = 1
-        CALL ZLOGWT(0)
-        CALL ZABAND(2)
-        IBEG = -1
-        IHEAD = 1
-C RESET FLAGS FOR LOG FILE
-        ICLOG = 1
-        ICABAN = 1
-      ENDIF
-      IF ((ILINE.LT.10).AND.(IBEG.EQ.-1)) THEN
-        ILINE = ILINE + 1
-        IEND = 0
-      ELSE IF ((ILINE.EQ.10).AND.(IBEG.EQ.-1)) THEN
-        DO 30 I = 1 , 10
-          DO 40 J = 1 , ICLEN
-40        LINE(I)(J:J) = ' '
-30      CONTINUE
-        ILINE = 1
-        IEND = 0
-      ENDIF
-      IF (IBEG.NE.-1) GOTO 13
-C      GOTO 10
-      RETURN
-      END
  
-CODE FOR ZMNKEY [ KEY CONTROL OF MENUS ]
-      SUBROUTINE ZMNKEY
-      
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
-
-      INTEGER KK
-C10    CONTINUE
-      CALL ZGETKY(KK)
-      IF (KK.EQ.ICRGHT) THEN
-        CALL ZRIGHT
-      ELSE IF (KK.EQ.ICLEFT) THEN
-        CALL ZLEFT
-      ELSE IF (KK.EQ.ICDOWN) THEN
-        CALL ZDOWN
-      ELSE IF (KK.EQ.ICUP) THEN
-        CALL ZUP
-      ELSE IF (KK.EQ.ICESP) THEN
-        CALL ZESCP
-      ELSE IF (KK.EQ.ICRET) THEN
-        CALL ZRET
-      ELSE IF ((KK.EQ.ICLV).OR.(KK.EQ.ICUV)) THEN
-        CALL ZV
-      ENDIF
-C CLEAR SCREEN WE HAVE LEFT MENUS
-      IF (IMENCN.EQ.0) CALL ZVGA
-      RETURN
-      END
- 
-CODE FOR ZLEFT
-      SUBROUTINE ZLEFT
-      
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
-
-C THIS ROUTINE ACTS UPON A LEFT CURSOR.
-      IF (IMENVT.GT.1) THEN
-C DO WE HAVE AN ARROW
-        IF (IMNTOP.GT.NITEM/2) THEN
-C YES THERE ARE RIGHT ARROWS POSSIBLE
-          ILAR = IMENU(IMENVT,3)
-          ILAR = NINT (RSTORE (ILAR+2) )
-          IF (ILAR.GT.0) THEN
-C YES THERE IS AN ARROW - GET THE NEXT ROUTINE
-C WHERE ARE WE IN THE CURRENT ROUTINE?
-            N = ( IMENU(IMENVT,3) - IMENU(IMENVT,1) ) /4
-            IMENVT = IMENVT + 1
-            IMENX(IMENVT) = IMENX(IMENVT-1) - IMENWD/2
-            IMENY(IMENVT) = IMENY(IMENVT-1) + 15*N
-            CALL ZMNVET(1)
-          ENDIF
-        ELSE
-C LEFT ARROW - GOES BACK UP A MENU
-          CALL ZMNVET(-1)
-          IMENVT = IMENVT - 1
-          CALL ZMNRED(2)
-        ENDIF
-        RETURN
-C NO ARROW - IGNORE THIS
-      ENDIF
-      N = IMENU(1,3)
-      M = N - 4
-      IMNTOP = IMNTOP - 1
-      IMENU(1,3) = IMENU(1,3) - 4
-      IF (M.LT.IMENU(1,1)) THEN
-C CAN'T GO LEFT
-        IMENU(1,3) = IMENU(1,1)
-        IMNTOP = 1
-        RETURN
-      ENDIF
-      IF (IMNTOP.EQ.0) THEN
-C        IF (M.GE.IMENU(1,1)) THEN
-C        IF (IMENU(IMENVT,3).GT.IMENU(IMENVT,1)) THEN
-C NEED TO MOVE OVER THE MENU BAR
-C          IMENU(IMENVT,3) = IMENU(IMENVT,3) - 4
-C          M = IMENU(1,3)
-C        ELSE
-C          M = IMENU(1,1)
-C        ENDIF
-        IMNTOP = 1
-        A = IMENU(1,3)
-        B = IMENU(1,3) + NITEM*4 - 4
-        CALL ZCHARW(A,B)
-        CALL ZMNTOP(A,B)
-      ENDIF
-      CALL ZMNHI (N,M)
-      RETURN
-      END
- 
-CODE FOR ZMENU
-      SUBROUTINE ZMENU
-      
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
-
-      INTEGER IX1,IY1,IX2,IY2
-      CALL ZVGA
-      IX1 = 0
-      IY1 = 0
-      IX2 = 639
-      IY2 = 479
-      CALL ZGTSCN(IX1,IY1,IX2,IY2,IBUFF)
-      IMNTOP = 1
-      IMENVT = 1
-      NITEM = 6
-      ICONTR = 2
-      A= IMENU(1,1)
-      B = IMENU(1,1)+NITEM*4 -4
-      CALL ZCHARW(A,B)
-      CALL ZMNTOP(A,B)
-C NOW DO THE HIGHLIGHT ROUTINE
-      CALL ZMNHI (IMENU(1,1),IMENU(1,1))
-      IMENCN = 2
-      RETURN
-      END
- 
-CODE FOR ZRET
-      SUBROUTINE ZRET
-      
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
-
-      CHARACTER*(ICLEN) CTEXT
-      CHARACTER*12 CNAME
-      INTEGER IPOS
-      INTEGER IX1,IY1,IX2,IY2
-      INTEGER IERROR,IMNOLD,ICLFLG
-C This routine acts upon the return keystroke.
-      ICLFLG = 0
-      IPOS = 1
-      IESCP = 0
-      IF (IMENVT.EQ.1) THEN
-C DO NOTHING IF WE IN THE TOP BAR.
-        RETURN
-      ENDIF
-C RETURN IS NOT ALLOWED FOR COMMANDS IN THE MIDDLE OF A SUB
-C MENU STACK.
-      ILINE = 0
-      IF (RSTORE(IMENU(IMENVT,3)+1).GT.0) RETURN
-C SET HEADER COMMAND FLAG
-      IHEAD = 1
-      IMNOLD = IMENVT
-C WE NEED TO LOOP OVER THE ITEMS ABOVE
-      DO 10 I = 2 , IMNOLD
-        II = IMENU(I,3)
-C GET THE COMMAND NAME
-        IF (NINT(RSTORE(II+3)).NE.2) THEN
-          CNAME = CSTORE(NINT(RSTORE(II)))
-     +    //CSTORE(NINT(RSTORE(II))+1)
-          ILINE = ILINE + 1
-          IF (ILINE.EQ.10) ILINE=1
-          IEND = 0
-          LINE(ILINE) = CNAME
-C PASS DOWN THE NAME
-          CALL ZCANAL
-          IF (IPROC.EQ.0) THEN
-            CALL ZABAND(2)
-            GOTO 11
-          ENDIF
-        ENDIF
-C ARE WE WAITING FOR INPUT?
-        IINP = NINT ( RSTORE ( IMENU ( I,3 ) + 3) )
-        IF (IINP.GT.0.AND.ICLFLG.EQ.0) THEN
-          IX1 = 0
-          IY1 = 0
-          IERROR = 0
-          IF (IBUFF.EQ.0) THEN
-            CALL ZCLEAR
-          ELSE
-            CALL ZRTSBL (IX1,IY1,IBUFF,0,IERROR)
-          ENDIF
-          IMENVT = 1
-          CALL ZMNRED(1)
-          IMENVT = IMNOLD
-          ICLFLG = 1
-        ENDIF
-        IF (IINP.GT.0) THEN
-          CALL ZMNINL(CTEXT,IESCP,I)
-          IF (IESCP.EQ.1) THEN
-            CALL ZABAND(2)
-            GOTO 11
-          ENDIF
-C ADD THE TEXT INTO THE LINE
-          ILINE = ILINE + 1
-          IF (ILINE.EQ.10) ILINE=1
-          LINE(ILINE) = CTEXT
-          IEND = 0
-          CALL ZCANAL
-          IF (IPROC.EQ.0) THEN
-            CALL ZABAND(2)
-            GOTO 11
-          ENDIF
-        ENDIF
-10    CONTINUE
-      IF (IPROC.EQ.3) THEN
-C FORCE STORAGE OF INFO
-        INFCMD(ICINPS) = IC*100 + IN*10 + IR
-        ICINPS = ICINPS + 1
-        ISTORE = 1
-      ENDIF
-11    CONTINUE
-      IX1 = 0
-      IY1 = 0
-      IERROR = 0
-      IF (IBUFF.EQ.0) THEN
-        CALL ZCLEAR
-      ELSE
-        CALL ZRTSBL (IX1,IY1,IBUFF,0,IERROR)
-      ENDIF
-      CALL ZCOMDO
-      CALL ZABAND(2)
-      IF (ICAMER.EQ.-1) RETURN
-      CALL ZRETST(IBUFF)
-      IX1 = 0
-      IY1 = 0
-      IX2 = 2*XCEN - 1
-      IY2 = 2*YCEN - 1
-      CALL ZGTSCN(IX1,IY1,IX2,IY2,IBUFF)
-      IMENVT = 1
-      CALL ZMNRED(1)
-      RETURN
-      END
- 
- 
-CODE FOR ZRIGHT
-      SUBROUTINE ZRIGHT
-      
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
-
-C THIS ROUTINE ACTS UPON A RIGHT CURSOR PRESS.
-      IF (IMENVT.GT.1) THEN
-C DO WE HAVE AN ARROW
-        IF (IMNTOP.LE.NITEM/2) THEN
-C YES THERE ARE RIGHT ARROWS POSSIBLE
-          ILAR = IMENU(IMENVT,3)
-          ILAR = NINT (RSTORE (ILAR+2) )
-          IF (ILAR.GT.0) THEN
-C YES THERE IS AN ARROW - GET THE NEXT ROUTINE
-C WHERE ARE WE IN THE PREVIOUS ROUTINE?
-            N = ( IMENU(IMENVT,3) - IMENU(IMENVT,1) ) / 4
-            IMENVT = IMENVT + 1
-            IMENX(IMENVT) = IMENX(IMENVT-1) + IMENWD/2
-            IMENY(IMENVT) = IMENY(IMENVT-1) + 15*N
-            CALL ZMNVET(1)
-          ENDIF
-        ELSE
-C GO BACK UP A MENU
-          CALL ZMNVET(-1)
-          IMENVT = IMENVT - 1
-          CALL ZMNRED(2)
-        ENDIF
-        RETURN
-C NO ARROW - IGNORE THIS
-      ENDIF
-      N = IMENU(1,3)
-      M = IMENU(1,3) + 4
-      IMENU(IMENVT,3) = IMENU (IMENVT,3) + 4
-      IMNTOP = IMNTOP + 1
-      IF (IMENU(IMENVT,3).GT.IMENU(IMENVT,2)) THEN
-C CAN'T GO RIGHT
-        IMENU(IMENVT,3) = IMENU(IMENVT,2)
-        M = M - 4
-        IMNTOP = IMNTOP - 1
-        RETURN
-      ENDIF
-      IF (IMNTOP.GT.NITEM) THEN
-C WE NEED TO MOVE OVER THE TOP MENU BAR
-C      IF (M.LE.IMENU(1,2)) THEN
-C        IF (IMENU(IMENVT,2)-IMENU(IMENVT,3).GT.NITEM*4) THEN
-C MOVE THE MENU BAR
-C        ELSE
-C          M = IMENU(1,2)
-C        ENDIF
-        A = IMENU(1,3) - NITEM*4 + 4
-        B = IMENU(1,3)
-        CALL ZCHARW(A,B)
-        CALL ZMNTOP(A,B)
-        IMNTOP = NITEM
-      ENDIF
-      CALL ZMNHI (N,M)
-      RETURN
-      END
  
 CODE FOR ZTITLE
       SUBROUTINE ZTITLE
@@ -1935,10 +1060,8 @@ C LOOK FOR THE CAMERON.LJP TITLE FILE
 C THIS IS DEVICE VGA
         IPCX = 1
         ID = 1
-        CALL ZVGA
         IF (IFIRST.EQ.1) RETURN
         IFIRST = 1
-        CALL ZPCXT ( IERR )
         IF (IERR.EQ.1) THEN
           LEXIST = .FALSE.
           GOTO 5
@@ -1947,84 +1070,6 @@ C THIS IS DEVICE VGA
       RETURN
       END
  
-CODE FOR ZUP
-      SUBROUTINE ZUP
-      
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
-
-C FIRST OF ALL - ARE WE WITHIN A VERTICAL MENU?
-      IF (IMENVT.EQ.1) THEN
-C NO WE AREN'T
-        RETURN
-      ENDIF
-C OTHERWISE - WE MUST BE ALREADY IN A MENU - DO UP WITHIN THIS.
-      N = IMENU(IMENVT,3)
-      M = N - 4
-C      IVERT(IMENVT) = IVERT(IMENVT) - 1
-      IMENU(IMENVT,3) = IMENU(IMENVT,3) - 4
-      IF (M.LT.IMENU(IMENVT,1)) THEN
-C        M = 1
-C        IVERT(IMENVT) = 1
-C GO UP A MENU
-      IMENVT = IMENVT - 1
-      M = IMENU(IMENVT,3)
-      N = IMENU(IMENVT,3)
-      CALL ZMNRED(1)
-C      M = IMENU(IMENVT,1)
-C      IMENU(IMENVT,3) = M
-      ENDIF
-      IF (IMENVT.EQ.1) THEN
-        CALL ZMNHI(N,M)
-      ELSE
-        CALL ZMNVHI (N , M)
-      ENDIF
-      RETURN
-      END
- 
-CODE FOR ZV
-      SUBROUTINE ZV
-      
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
-
-      CHARACTER*80 CTEXT
-C THIS CAUSES A VIEW TO BE EXECUTED.
-      IF (IMENVT.EQ.1) THEN
-        CALL ZMNCOM (CTEXT,3)
-      ENDIF
-      RETURN
-      END
  
  
 CODE FOR ZOBEY
@@ -2050,53 +1095,36 @@ C This routine reads the OBEYed file and sends it to the XCANAL routine
 \XIOBUF
 
       CHARACTER*(ICLEN) CTEMP
-C READ THE LINE FROM THE FILE
-      READ (IFOBEY,'(A)',END=9999) LLINE(ILINE)
-      CALL ZMORE(LLINE(ILINE),0)
+      CHARACTER*20 CC
+
+
 C CONVERT TO UPPERCASE FOR ANALYSIS
       CTEMP = LLINE(ILINE)
       CALL ZUPCAS (CTEMP)
       LINE(ILINE) = CTEMP
-C      IL = 0
-C FIND THE LENGTH OF THE LINE
-C      DO 10 I = ICLEN , 1 , -1
-C        IF (LINE(ILINE)(I:I).NE.' ') GOTO 9
-C10    CONTINUE
-C      IL = -1
-C9     CONTINUE
-C      IF (IL.NE.-1) THEN
-C        IF (I.EQ.ICLEN) THEN
-C          CLOG(ICLOG:ICLOG+I) = LINE(ILINE)(1:I)//' '
-C        ELSE
-C          CLOG(ICLOG:ICLOG+I) = LINE(ILINE)(1:I+1)
-C        ENDIF
-C        ICLOG = ICLOG + I + 1
-C      ENDIF
-C ADD THIS LINE TO THE LOG FILE
+      IF(CTEMP(1:6).EQ.'LCLICK')THEN
+            READ(CTEMP(7:),*) MXPOS, MYPOS
+            II=LMOUSE(CC,MXPOS,MYPOS)
+            CALL XCTRIM(CC,IIILEN)
+            IF(IIILEN.GT.1) THEN
+&GID              CALL ZMORE('^^CO SET _MAINTEXTINPUT APPEND='' '//
+&GID     1 CC(1:IIILEN) // '''',0)
+&DOS              CALL ZMORE('Append atom '//CC(1:IIILEN),0)
+            ENDIF
+            LLINE(ILINE)=' '
+            CTEMP=' '
+            RETURN
+      ENDIF      
+
 13    CALL ZCANAL
       IF (IPROC.EQ.1) THEN
-C PROCESS THE COMMANDS SO FAR
-C SEND THE LINE TO THE LOG FILE
-C        IF (ICABAN.GT.1) THEN
-C            IF (ILOG.EQ.1) THEN
-C              WRITE (IFLOG,'(A)') CLOG (1:ICABAN-1)
-C            ENDIF
-C RESET THE FLAGS AND MOVE OVER THE REST OF THE LINE
-C            IF (ICABAN.NE.ICLOG) THEN
-C              CTEMP = CLOG(ICABAN:ICLOG-1)
-C              CLOG (1:ICLOG-ICABAN) = CTEMP(1:ICLOG-ICABAN)
-C              ICLOG = ICLOG - ICABAN + 1
-C            ELSE
-C              ICLOG = 1
-C            ENDIF
-C            ICABAN = 1
-C        ENDIF
         CALL ZLOGWT(1)
         CALL ZCOMDO
         CALL ZABAND(2)
         IF (ICAMER.EQ.-1) RETURN
       ENDIF
       IF (IPROC.EQ.2) THEN
+
 C REMOVE THE LAST (INCOMPLETE) COMMAND.
         IF (INCOM(1).NE.INCOM(2)) THEN
           ICPOS = ICPOS - 1
@@ -2131,15 +1159,6 @@ C ABANDON
       ENDIF
       IF (IBEG.NE.-1) GOTO 13
 C      GOTO 10
-      RETURN
-9999  CONTINUE
-C END OF OBEY FILE
-      CLOSE(IFOBEY)
-      IF (IFOBEY.GT.IFSTAR) THEN
-        IFOBEY = IFOBEY - 1
-      ELSE
-        IFOBEY = -1
-      ENDIF
       RETURN
       END
 C
