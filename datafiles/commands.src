@@ -1353,8 +1353,8 @@ Data reduction details
     .ZZ4                0    0    1    0    0.0
     .ZZ5                0    0    1    0    0.0
     .ZZ6                0    0    1    0    0.0
-    .REDUCTION          0    0    1    4    0 UNKNOWN
-     UNKNOWN        RC93           DENZO          SHELX          
+    .REDUCTION          0    0    1    5    0 UNKNOWN
+     UNKNOWN        RC93           DENZO          SHELX          XRED
    2.CONDITIONS        13    1    0    0   13    1  102    5   30
          1    1    1    1    1    1    0    0    0    0
 Data collection details
@@ -1374,9 +1374,9 @@ Data collection details
      2THETA/OMEGA   OMEGA          UNKNOWN
     .INTERVAL           0    0    1    0    1 0.
     .COUNT              0    0    1    0    1 0.
-    .INSTRUMENT         0    0    1    6    0 UNKNOWN
+    .INSTRUMENT         0    0    1    7    0 UNKNOWN
      UNKNOWN        CAD4           MACH3          KAPPACCD       DIP
-     SMART
+     SMART          IPDS
    3.REFINEMENT        13    1    0    0   13    1  103    9   30
          1    1    1    1    1    1    0    0    0    0
 Refimenent details

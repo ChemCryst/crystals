@@ -621,6 +621,7 @@ C
 \XLST05
 \XLST11
 \XLST12
+\XLST23
 \XUNITS
 \XSSVAL
 \XAPK
@@ -638,6 +639,7 @@ C--INPUT WENT OKAY  -  CLEAR THE CORE AGAIN
 C--LOAD A FEW LISTS
       CALL XFAL01
       CALL XFAL05
+      CALL XFAL23
 C--FORM THE ABSOLUTE LIST 12
       JQ=0
       JS=1
@@ -866,6 +868,7 @@ C
 \XLST05
 \XLST11
 \XLST12
+\XLST23
 \XUNITS
 \XSSVAL
 \XAPK
@@ -884,6 +887,10 @@ CDJWMAY99 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
       CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
       CALL XRDOPN(8, KDEV , CSSCIF, LSSCIF)
 C -- SET INITIAL VALUES.
+cdjw feb2001
+        iupdat = istore(l23sp+1)
+        toler = store(l23sp+5)
+        call xprc17 (0, 0, TOLER, -1)
 C
       IDSPHD = 0
       M5=L5
@@ -991,12 +998,17 @@ cdjw99]
 C----- GET THE OCCUPANCY
         J = J + NUF
         CALL XMOVE (LINEA, LINEC, 118)
-        CALL SNUM ( STORE(M5+2), BPD(1), NUD, NOP, J, LINEC)
+          if (iupdat .ge.0) then
+            w = store(m5+2)*store(m5+13)
+          else
+            w = store(m5+2)
+          endif
+        CALL SNUM ( W, BPD(1), NUD, NOP, J, LINEC)
 C-C-C-SET OCC TO BE PRINTED ON SCREEN AFTER \PARAMETERS-COMMAND
 C-C-C-(NOT IN CONTEXT WITH SPECIAL ATOMS, NEXT LINE MAY BE DELETED)
-        BUFF(1)=STORE(M5+2)
-        IF ( ABS (1.0 - STORE(M5+2)) .GT. ZERO) THEN
-        CALL SNUM ( STORE(M5+2), BPD(1), NUD, NOP, J, LINEA)
+        BUFF(1)=W
+        IF ( ABS (1.0 - W) .GT. ZERO) THEN
+        CALL SNUM ( W, BPD(1), NUD, NOP, J, LINEA)
       ENDIF
 C-C-C-OUTPUT THE FLAG OF ATOM
 cdjwnov98      CALL SNUM(STORE(M5+3),0.0,1,0,(IFIR+9),LINEA)
@@ -2223,6 +2235,7 @@ C
 \XLST02
 \XLST03
 \XLST05
+\XLST23
 \XLST29
 \XUNITS
 \XSSVAL
@@ -2237,12 +2250,16 @@ C----- LOAD DATA IF NOT ALREADY IN CORE
       IF (KHUNTR (2,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL02
       IF (KHUNTR (3,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL03
       IF (KHUNTR (5,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL05
+      IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL23
       IF (KHUNTR (29,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL29
 C-----  SET UP OCCUPANCIES
         WRITE ( CMON, '(A)') ' Recomputing density and Mu'
         CALL XPRVDU(NCVDU, 1,0)
         WRITE(NCAWU,'(A)') CMON(1)(:)
-        CALL XPRC17 (0, 0, .6, -1)
+cdjw feb2001
+        iupdat = istore(l23sp+1)
+        toler = store(l23sp+5)
+        CALL XPRC17 (0, 0, toler, -1)
         IF (IERFLG .LE. 0) GOTO 1600
 C----- CLEAR THE CELL PROPERTY DETAILS
         WEIGHT =0.
@@ -2264,8 +2281,13 @@ C----- NO MATCH -
           GOTO 1522
 1520  CONTINUE
 C----- MATCH
-          WEIGHT = WEIGHT + STORE(M5+2) * STORE(M5+13) * STORE(M29+6)
-          ABSN = ABSN + STORE(M5+2) * STORE(M5+13) * STORE(M29+5)
+          if (iupdat .ge.0) then
+            w = store(m5+2)*store(m5+13)
+          else
+            w = store(m5+2)
+          endif
+          WEIGHT = WEIGHT + W * STORE(M29+6)
+          ABSN = ABSN + W * STORE(M29+5)
 1522    CONTINUE
 C
 C----- CHECK LIST 3
@@ -2731,29 +2753,37 @@ C
       CALL XRDOPN(7, KDEV , CSSCIF, LSSCIF)
       RETURN
       END
-CODE FOR XCIF
-      SUBROUTINE XCIF
-CDJWMAR99[      CIF OUTPUT DIRECTED TO NCFPU1, PERMITTING TEXT OUTPUT TO 
+CODE FOR XCIFX
+      SUBROUTINE XCIFX
+CDJWMAR99[      CIF OUTPUT DIRECTED TO NCFPU1, PERMITTING TEXT OUTPUT TO
 C               BE SENT TO THE PUNCH UNIT AS A TABLE
-C
-      PARAMETER(NCOL=2, NROW=49)
-      PARAMETER (IDATA=15, IREF=23)
-      CHARACTER *35 CPAGE(NROW,NCOL)
-C
+C 
+      PARAMETER (NCOL=2,NROW=49)
+      PARAMETER (IDATA=15,IREF=23)
+      CHARACTER*35 CPAGE(NROW,NCOL)
+      CHARACTER*76 CREFMK
+      PARAMETER (IDIFMX=7)
+      DIMENSION IREFCD(3,IDIFMX)
+      PARAMETER (ISOLMX=7)
+      DIMENSION ISOLCD(ISOLMX)
+      PARAMETER (IABSMX=7)
+      DIMENSION IABSCD(IABSMX)
+
+C 
 CDJWMAR99 MANY CHANGES TO BRING UP TO DATE WITH NEW CIFDIC
-      parameter (nterm = 4)
-      parameter (nnames = 30)
+      PARAMETER (NTERM=4)
+      PARAMETER (NNAMES=30)
       DIMENSION A(8), JDEV(4), KDEV(4)
-      PARAMETER (NLST = 12)
+      PARAMETER (NLST=12)
       DIMENSION LSTNUM(NLST), JLOAD(NLST)
       DIMENSION IVEC(16), ESD(6)
-      CHARACTER CCELL(3)*1, CANG(3)*5, CSIZE(3)*3, CINDEX(3)*2
-      CHARACTER CBUF*80, CTEMP*80, CLINE *80
-C
-      CHARACTER *4 CTYPE
-      CHARACTER *15 CINSTR, CDIR,  CPARAM, CVALUE, CDEF
-      character *26 upper, lower
-C
+      CHARACTER CCELL(3)*1,CANG(3)*5,CSIZE(3)*3,CINDEX(3)*2
+      CHARACTER CBUF*80,CTEMP*80,CLINE*80
+C 
+      CHARACTER*4 CTYPE
+      CHARACTER*15 CINSTR,CDIR,CPARAM,CVALUE,CDEF
+      CHARACTER*26 UPPER,LOWER
+C 
 \TSSCHR
 \ICOM30
 \ICOM31
@@ -2781,74 +2811,82 @@ C
 \XLST30
 \XLST31
 \XIOBUF
-C
-C
+C 
+C 
 \QLST30
 \QLST31
 \QSTORE
-C
-C
-      DATA UPPER /'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
-      DATA LOWER /'abcdefghijklmnopqrstuvwxyz'/
+C 
+C------ REFERENCE CODES FOR THE DIFFRACTOMETERS
+      DATA IREFCD /4,5,6, 13,24,13, 13,24,13, 25,17,17, 15,17,17,
+     1 26,27,27, 20,19,20 /
+C------ REFERENCE CODES FOR DIRECT METHODS
+      DATA ISOLCD /1,18,30,11,22,28,29/
+C------ REFERENCE CODES FOR ABSORPTION METHOD
+      DATA IABSCD /7,21,16,17,31,32,33/
+
+C 
+      DATA UPPER/'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
+      DATA LOWER/'abcdefghijklmnopqrstuvwxyz'/
 C                  1 2 3 4 5 6  7  8  9  10 11 12
-      DATA LSTNUM /1,2,3,4,5,13,23,29,30,31, 6,28 /
-      DATA CCELL /'a', 'b', 'c'/
-      DATA CANG /'alpha', 'beta', 'gamma' /
-      DATA CSIZE /'min', 'mid', 'max' /
-      DATA CINDEX / 'h_', 'k_', 'l_' /
-      DATA ICARB /'C   '/
-      DATA IHYD  /'H   '/
+      DATA LSTNUM/1,2,3,4,5,13,23,29,30,31,6,28/
+      DATA CCELL/'a','b','c'/
+      DATA CANG/'alpha','beta','gamma'/
+      DATA CSIZE/'min','mid','max'/
+      DATA CINDEX/'h_','k_','l_'/
+      DATA ICARB/'C   '/
+      DATA IHYD/'H   '/
 CDJWMAR99      DATA JDEV /'H','K','L','I'/
-C
+C 
 CDJWMAY99 - PREAPRE TO OPEN CIF OUTPUT ON FRN1
-      CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
-      CALL XRDOPN(6, KDEV , CSSCIF, LSSCIF)
+      CALL XMOVEI (KEYFIL(1,23),KDEV,4)
+      CALL XRDOPN (6,KDEV,CSSCIF,LSSCIF)
 C--READ THE REMAINING CONTROL CARDS
       I=KRDDPV(ISTORE(NFL),1)
-      IF ( I .LT. 0 ) GO TO 9910
+      IF (I.LT.0) GO TO 2550
       CALL XRSL
       CALL XCSAE
 C----- CLEAR OUT THE PAGE BUFFER
-      DO 10, I=1,NROW
-      CPAGE(I,1)= ' '
-      CPAGE(I,2)= ' '
-10    CONTINUE
-      WRITE(NCFPU1, '(''data_CRYSTALS_cif '')')
-      CALL XDATER ( CBUF(1:8))
-      WRITE(NCFPU1,'(''_audit_creation_date  '',6X, 3(A2,A))')
-     1 CBUF(7:8),'-',CBUF(4:5),'-',CBUF(1:2)
-      WRITE(NCFPU1, 
-     1 '(''_audit_creation_method CRYSTALS_ver_12-03-99'')')
+      DO 50 I=1,NROW
+         CPAGE(I,1)=' '
+         CPAGE(I,2)=' '
+50    CONTINUE
+      WRITE (NCFPU1,'(''data_CRYSTALS_cif '')')
+      CALL XDATER (CBUF(1:8))
+      WRITE (NCFPU1,'(''_audit_creation_date  '',6X, 3(A2,A))')
+     1CBUF(7:8),'-',CBUF(4:5),'-',CBUF(1:2)
+      WRITE (NCFPU1,'(''_audit_creation_method CRYSTALS_ver_12-03-99'')'
+     1)
 C----- OUTPUT A TITLE, FIRST 60 CHARACTERS ONLY
-      WRITE(NCFPU1,'(''#  '',15A4)') (KTITL(I),I=1,15)
-      WRITE(CLINE,'(15A4,3(A2,A))')
-     1 (KTITL(I),I=1,15), CBUF(7:8),'-',CBUF(4:5),'-',CBUF(1:2)
-C
-        K = KHKIBM(CLINE)
-        CALL XCREMS (CLINE, CLINE, NCHAR)
-        CALL XCTRIM (CLINE, NCHAR)
-        K = MIN (35, NCHAR)
-        WRITE(CPAGE(1,1)(:),'(A)') CLINE(1:K)
-        IF (NCHAR .GE. 36) THEN
-         K = MIN (70, NCHAR)
-         WRITE(CPAGE(1,2)(:),'(A)') CLINE(36:K)
-        ENDIF
+      WRITE (NCFPU1,'(''#  '',15A4)') (KTITL(I),I=1,15)
+      WRITE (CLINE,'(15A4,3(A2,A))') (KTITL(I),I=1,15),CBUF(7:8),'-',
+     1CBUF(4:5),'-',CBUF(1:2)
+C 
+      K=KHKIBM(CLINE)
+      CALL XCREMS (CLINE,CLINE,NCHAR)
+      CALL XCTRIM (CLINE,NCHAR)
+      K=MIN(35,NCHAR)
+      WRITE (CPAGE(1,1)(:),'(A)') CLINE(1:K)
+      IF (NCHAR.GE.36) THEN
+         K=MIN(70,NCHAR)
+         WRITE (CPAGE(1,2)(:),'(A)') CLINE(36:K)
+      END IF
 C----- COPY HEADER INFORMATION FROM .CIF FILE
-      CALL XMOVEI(KEYFIL(1,2), JDEV, 4)
-cdjw99      CALL XRDOPN(6, JDEV , 'CRYSDIR:REFCIF.SDA', 18)
+      CALL XMOVEI (KEYFIL(1,2),JDEV,4)
+Cdjw99      CALL XRDOPN(6, JDEV , 'CRYSDIR:REFCIF.SDA', 18)
 &DOS      CALL XRDOPN(6, JDEV , 'CRYSDIR:script\refcif.dat', 25)
 &DVF      CALL XRDOPN(6, JDEV , 'CRYSDIR:script\refcif.dat', 25)
 &GID      CALL XRDOPN(6, JDEV , 'CRYSDIR:script\refcif.dat', 25)
 &VAX      CALL XRDOPN(6, JDEV , 'CRYSDIR:script\refcif.dat', 25)
 &LIN      CALL XRDOPN(6, JDEV , 'CRYSDIR:script/refcif.dat', 25)
 &GIL      CALL XRDOPN(6, JDEV , 'CRYSDIR:script/refcif.dat', 25)
-      IF (IERFLG .GE. 0) THEN
-       CLINE=' '
-20     CONTINUE
-       READ(NCARU,'(A)',ERR=20,END=30) CLINE
-       WRITE(NCFPU1,'(A)') CLINE
-       GOTO 20
-30     CONTINUE
+      IF (IERFLG.GE.0) THEN
+         CLINE=' '
+100      CONTINUE
+         READ (NCARU,'(A)',ERR=100,END=150) CLINE
+         WRITE (NCFPU1,'(A)') CLINE
+         GO TO 100
+150      CONTINUE
 C      CLOSE THE FILE
 &DOS       CALL XRDOPN(7, JDEV , 'CRYSDIR:script\refcif.dat', 25)
 &DVF       CALL XRDOPN(7, JDEV , 'CRYSDIR:script\refcif.dat', 25)
@@ -2857,622 +2895,822 @@ C      CLOSE THE FILE
 &LIN       CALL XRDOPN(7, JDEV , 'CRYSDIR:script/refcif.dat', 25)
 &GIL       CALL XRDOPN(7, JDEV , 'CRYSDIR:script/refcif.dat', 25)
       ELSE
-       IERFLG = 0
-       WRITE(CMON,'('' cif header file not available'')')
-       CALL XPRVDU(NCVDU, 1,0)
-       WRITE(NCAWU,'(A)') CMON(1)(:)
-       IERFLG = 0
-      ENDIF
-C
+         WRITE (CMON,'('' cif header file not available'')')
+         CALL XPRVDU (NCVDU,1,0)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
+         IERFLG=0
+      END IF
+C################################################################
+C 
 C                  1 2 3 4 5 6  7  8  9  10 11 12
 C     DATA LSTNUM /1,2,3,4,5,13,23,29,30,31, 6,28 /
-      DO 1250 MLST= 1, NLST
+      DO 550 MLST=1,NLST
 C-----  INDICATE LIST NOT LOADED
-        JLOAD(MLST) = 0
-        LSTYPE = LSTNUM(MLST)
-        IF (  KEXIST ( LSTYPE )  ) 1210 , 1200 , 1220
-1200    CONTINUE
-          WRITE ( CMON , 1205 ) LSTYPE
-          CALL XPRVDU(NCVDU, 1,0)
-          WRITE(NCAWU,'(A)') CMON(1)(:)
-1205      FORMAT ( 1X , 'List ' , I2 , ' contains errors')
-          GOTO 1250
-1210    CONTINUE
-          WRITE ( CMON , 1215 ) LSTYPE
-1215      FORMAT ( 1X , 'List' , I2 , ' does not exist' )
-          CALL XPRVDU(NCVDU, 1,0)
-          WRITE(NCAWU,'(A)') CMON(1)(:)
-          GOTO 1250
-1220    CONTINUE
-C
-        IF ( LSTYPE .EQ. 1 ) THEN
-          CALL XFAL01
-        ELSE IF ( LSTYPE .EQ. 2 ) THEN
-          CALL XFAL02
-        ELSE IF ( LSTYPE .EQ. 3 ) THEN
-          CALL XFAL03
-        ELSE IF ( LSTYPE .EQ. 4 ) THEN
-          CALL XFAL04
-        ELSE IF ( LSTYPE .EQ. 5 ) THEN
-          CALL XLDR05 ( LSTYPE )
-        ELSE IF ( LSTYPE .EQ. 6 ) THEN
-          CALL XFAL06 ( 0 )
-        ELSE IF ( LSTYPE .EQ. 10 ) THEN
-          CALL XLDR05 ( LSTYPE )
-        ELSE IF ( LSTYPE .EQ. 13 ) THEN
-          CALL XFAL13
-        ELSE IF ( LSTYPE .EQ. 14 ) THEN
-          CALL XFAL14
-        ELSE IF ( LSTYPE .EQ. 23 ) THEN
-          CALL XFAL23
-        ELSE IF ( LSTYPE .EQ. 27 ) THEN
-          CALL XFAL27
-        ELSE IF ( LSTYPE .EQ. 28 ) THEN
+         JLOAD(MLST)=0
+         LSTYPE=LSTNUM(MLST)
+         IF (KEXIST(LSTYPE)) 400,300,500
+300      CONTINUE
+         WRITE (CMON,350) LSTYPE
+         CALL XPRVDU (NCVDU,1,0)
+         WRITE (NCAWU,'(A)') CMON(1)(:)
+350      FORMAT (1X,'List ',I2,' contains errors')
+         GO TO 550
+400      CONTINUE
+         WRITE (CMON,450) LSTYPE
+450      FORMAT (1X,'List',I2,' does not exist')
+         CALL XPRVDU (NCVDU,1,0)
+         WRITE (NCAWU,'(A)') CMON(1)(:)
+         GO TO 550
+500      CONTINUE
+C 
+         IF (LSTYPE.EQ.1) THEN
+            CALL XFAL01
+         ELSE IF (LSTYPE.EQ.2) THEN
+            CALL XFAL02
+         ELSE IF (LSTYPE.EQ.3) THEN
+            CALL XFAL03
+         ELSE IF (LSTYPE.EQ.4) THEN
+            CALL XFAL04
+         ELSE IF (LSTYPE.EQ.5) THEN
+            CALL XLDR05 (LSTYPE)
+         ELSE IF (LSTYPE.EQ.6) THEN
+            CALL XFAL06 (0)
+         ELSE IF (LSTYPE.EQ.10) THEN
+            CALL XLDR05 (LSTYPE)
+         ELSE IF (LSTYPE.EQ.13) THEN
+            CALL XFAL13
+         ELSE IF (LSTYPE.EQ.14) THEN
+            CALL XFAL14
+         ELSE IF (LSTYPE.EQ.23) THEN
+            CALL XFAL23
+         ELSE IF (LSTYPE.EQ.27) THEN
+            CALL XFAL27
+         ELSE IF (LSTYPE.EQ.28) THEN
 C--- LOADED BY XFAL06          CALL XFAL28
-          CONTINUE
-        ELSE IF ( LSTYPE .EQ. 29 ) THEN
-          CALL XFAL29
-        ELSE IF ( LSTYPE .EQ. 30 ) THEN
-          CALL XFAL30
-        ELSE IF ( LSTYPE .EQ. 31 ) THEN
-C--SET THE DIMENSION OF THE COMMON BLOCK FOR LIST 31
-C\IDIM31
-          IDIM31=12
-          CALL XLDLST(31,ICOM31,IDIM31,0)
-        ENDIF
+         ELSE IF (LSTYPE.EQ.29) THEN
+            CALL XFAL29
+         ELSE IF (LSTYPE.EQ.30) THEN
+            CALL XFAL30
+         ELSE IF (LSTYPE.EQ.31) THEN
+\IDIM31
+         CALL XLDLST (31,ICOM31,IDIM31,0)
+         END IF
+C 
+         IF (IERFLG.GE.0) JLOAD(MLST)=1
+550   CONTINUE
+C 
+C################################################################
+c----- LOAD THE AVAILABLE REFERENCE TABLE
+&DOS      CALL XRDOPN(6, JDEV , 'CRYSDIR:script\reftab.dat', 25)
+&DVF      CALL XRDOPN(6, JDEV , 'CRYSDIR:script\reftab.dat', 25)
+&GID      CALL XRDOPN(6, JDEV , 'CRYSDIR:script\reftab.dat', 25)
+&VAX      CALL XRDOPN(6, JDEV , 'CRYSDIR:script\reftab.dat', 25)
+&LIN      CALL XRDOPN(6, JDEV , 'CRYSDIR:script/reftab.dat', 25)
+&GIL      CALL XRDOPN(6, JDEV , 'CRYSDIR:script/reftab.dat', 25)
+      IF (IERFLG.GE.0) THEN
+         READ (NCARU,'(i4)') NREFS
+         REWIND (NCARU)
+         MDREFS=21
+         LREFS=NFL
+         I=KCHNFL(NREFS*MDREFS)
+         CALL XZEROF (ISTORE(LREFS),MDREFS*NREFS)
+C 
+         I=0
+         J=LREFS
+200      CONTINUE
+         READ (NCARU,'(a)',ERR=200,END=250) CTEMP
+         IF (CTEMP(1:1).EQ.'#') THEN
+            READ (CTEMP,'(1x,i3,19a4)') (ISTORE(K),K=J+1,J+MDREFS-1)
+            J=J+MDREFS
+            I=I+1
+         END IF
+         GO TO 200
+250      CONTINUE
+         REWIND (NCARU)
+         IF (I.NE.NREFS) THEN
+            WRITE (CMON,'(i6,a,i6,a)') I,'references found,',NREFS,' ref
+     1erences expected'
+            NREFS=I
+            CALL XPRVDU (NCVDU,1,0)
+            IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+         END IF
+      ELSE
+         NREFS = 0
+         IERFLG=0
+         WRITE (CMON,'('' Reference file not available'')')
+         CALL XPRVDU (NCVDU,1,0)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:)
+      END IF
+C-useage example
+c      ival =012
+c      ctemp = crefmk(istore(lrefs), nrefs, mdrefs, ival)
+c      call xrefpr (istore(lrefs),nrefs,mdrefs)
+
+      IF (I.LE.0) THEN
+         WRITE (CMON,'('' Reference '', i4, '' not available'')') IVAL
+         CALL XPRVDU (NCVDU,1,0)
+         WRITE (NCAWU,'(A)') CMON(1)(:)
+      END IF
+C################################################################
+      call xpcif(
+     1 '# General computing')
+      call xpcif(
+     1'#=============================================================')
+         ival=22
+         ctemp = crefmk(istore(lrefs), nrefs, mdrefs, ival)
+         WRITE (CLINE,'(''_computing_structure_refinement'' )') 
+         CALL XPCIF (CLINE)
+         CALL XPCIF (';')
+         WRITE (CLINE,'(A )') CTEMP(1:NCHAR)
+         CALL XPCIF (CLINE)
+         CALL XPCIF (';')
 C
-        IF ( IERFLG .GE. 0 ) JLOAD(MLST) = 1
-1250  CONTINUE
+         WRITE (CLINE,'(''_computing_publication_material'' )') 
+         CALL XPCIF (CLINE)
+         CALL XPCIF (';')
+         WRITE (CLINE,'(A )') CTEMP(1:NCHAR)
+         CALL XPCIF (CLINE)
+         CALL XPCIF (';')
 C
+         ival=23
+         ctemp = crefmk(istore(lrefs), nrefs, mdrefs, ival)
+         WRITE (CLINE,'(''_computing_molecular_graphics'' )') 
+         CALL XPCIF (CLINE)
+         CALL XPCIF (';')
+         WRITE (CLINE,'(A )') CTEMP(1:NCHAR)
+         CALL XPCIF (CLINE)
+         CALL XPCIF (';')
+      call xpcif(
+     1'#=============================================================')
 C----- GET LIST 30 READY FOR UPDATING
-      IF (  JLOAD ( 9 ) .LE. 0 ) THEN
-      WRITE(CMON,'(A)') 'List 30 not available - cif output abandoned'
-      CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU,'(A)') CMON(1)(:)
-      GOTO 9920
-      ENDIF
-C
+      IF (JLOAD(9).LE.0) THEN
+         WRITE (CMON,'(A)') 'List 30 not available - cif output abandone
+     1d'
+         CALL XPRVDU (NCVDU,1,0)
+         WRITE (NCAWU,'(A)') CMON(1)(:)
+         GO TO 2600
+      END IF
+C 
 C----- LIST 1 AND 31
-C
-      IF (  JLOAD ( 1 ) .GE. 1 ) THEN
+C 
+      IF (JLOAD(1).GE.1) THEN
 C --  CONVERT ANGLES TO DEGREES.
-        STORE(L1P1+3) = RTD * STORE(L1P1+3)
-        STORE(L1P1+4) = RTD * STORE(L1P1+4)
-        STORE(L1P1+5) = RTD * STORE(L1P1+5)
-        CALL XZEROF ( ESD, 6 )
-        IF (  JLOAD ( 10 ) .GE. 1 ) THEN
+         STORE(L1P1+3)=RTD*STORE(L1P1+3)
+         STORE(L1P1+4)=RTD*STORE(L1P1+4)
+         STORE(L1P1+5)=RTD*STORE(L1P1+5)
+         CALL XZEROF (ESD,6)
+         IF (JLOAD(10).GE.1) THEN
 C----- SCALE DOWN THE ELEMENTS OF THE V/CV MATRIX
-          SCALE = STORE(L31K)
-          M31 = L31
-          ESD(1) =  SQRT(STORE(M31) * SCALE)
-          ESD(2) =  SQRT(STORE(M31+6) * SCALE)
-          ESD(3) =  SQRT(STORE(M31+11) * SCALE)
-          ESD(4) =  SQRT(STORE(M31+15) * SCALE) * RTD
-          ESD(5) =  SQRT(STORE(M31+18) * SCALE) * RTD
-          ESD(6) =  SQRT(STORE(M31+20) * SCALE) * RTD
-        ENDIF
-1300    CONTINUE
-        M1P1 = L1P1
-        DO 1350 I = 1,3
+            SCALE=STORE(L31K)
+            M31=L31
+            ESD(1)=SQRT(STORE(M31)*SCALE)
+            ESD(2)=SQRT(STORE(M31+6)*SCALE)
+            ESD(3)=SQRT(STORE(M31+11)*SCALE)
+            ESD(4)=SQRT(STORE(M31+15)*SCALE)*RTD
+            ESD(5)=SQRT(STORE(M31+18)*SCALE)*RTD
+            ESD(6)=SQRT(STORE(M31+20)*SCALE)*RTD
+         END IF
+         M1P1=L1P1
+         DO 700 I=1,3
 C----- VALUE AND ESD
-          CALL XFILL (IB, IVEC, 16)
-          CALL SNUM ( STORE(M1P1), ESD(I), -3, 0, 7, IVEC )
-          WRITE( CBUF, '(16A1)') (IVEC(J), J=1, 16)
-          CALL XCRAS ( CBUF, N)
-          WRITE(NCFPU1,1310) CCELL(I)(1:1), CBUF(1:N)
-1310      FORMAT ('_cell_length_',A,1X, A)
-          WRITE(CPAGE(3+I,1)(:), '(A,17X,A)') CCELL(I)(1:1), CBUF(1:N)
-          CALL XFILL (IB, IVEC, 16)
-          CALL SNUM ( STORE(M1P1+3), ESD(I+3), -2, 0, 7, IVEC )
-          WRITE( CBUF, '(16A1)') (IVEC(J), J=1, 16)
-          CALL XCRAS ( CBUF, N)
-          J = INDEX(CBUF(1:N), '.')
-          IF (J .EQ. 0) J = MAX (1, N)
-          TEMP = STORE(M1P1+3)- INT(STORE(M1P1+3)) 
-          IF (TEMP .LE. ZERO) N = MAX(1,J-1)
-          WRITE(NCFPU1,1320) CANG(I)(1:5), CBUF(1:N)
-1320      FORMAT ('_cell_angle_',A,1X, A)
-          WRITE(CPAGE(3+I,2)(:), '(A,16X,A)') CANG(I)(1:5), CBUF(1:N)
-          M1P1 = M1P1 + 1
-1350    CONTINUE
-        WRITE(NCFPU1, 1340) STORE(L1P1+6)
-1340    FORMAT('_cell_volume ', F8.1)
-          WRITE(CPAGE(7,1)(:), '(A,10X,F8.1)') 'Volume', STORE(L1P1+6) 
-      ENDIF
-C
+            CALL XFILL (IB,IVEC,16)
+            CALL SNUM (STORE(M1P1),ESD(I),-3,0,7,IVEC)
+            WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
+            CALL XCRAS (CBUF,N)
+            WRITE (NCFPU1,600) CCELL(I)(1:1),CBUF(1:N)
+600         FORMAT ('_cell_length_',A,1X,A)
+            WRITE (CPAGE(3+I,1)(:),'(A,17X,A)') CCELL(I)(1:1),CBUF(1:N)
+            CALL XFILL (IB,IVEC,16)
+            CALL SNUM (STORE(M1P1+3),ESD(I+3),-2,0,7,IVEC)
+            WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
+            CALL XCRAS (CBUF,N)
+            J=INDEX(CBUF(1:N),'.')
+            IF (J.EQ.0) J=MAX(1,N)
+            TEMP=STORE(M1P1+3)-INT(STORE(M1P1+3))
+            IF (TEMP.LE.ZERO) N=MAX(1,J-1)
+            WRITE (NCFPU1,650) CANG(I)(1:5),CBUF(1:N)
+650         FORMAT ('_cell_angle_',A,1X,A)
+            WRITE (CPAGE(3+I,2)(:),'(A,16X,A)') CANG(I)(1:5),CBUF(1:N)
+            M1P1=M1P1+1
+700      CONTINUE
+         WRITE (NCFPU1,750) STORE(L1P1+6)
+750      FORMAT ('_cell_volume ',F8.1)
+         WRITE (CPAGE(7,1)(:),'(A,10X,F8.1)') 'Volume',STORE(L1P1+6)
+      END IF
+C 
 C----- LIST 2
-C
-      IF (  JLOAD ( 2 ) .GE. 1 ) THEN
-        ICENTR = NINT ( STORE(L2C) ) +1
+C 
+      IF (JLOAD(2).GE.1) THEN
+         ICENTR=NINT(STORE(L2C))+1
 C----- CRYSTAL CLASS - FROM LIST 2
-        J  = L2CC + MD2CC - 1
-        WRITE(CTEMP,1400) (ISTORE(I), I = L2CC, J)
-1400    FORMAT (4(A4))
-        CBUF = ' '
-        CALL XCCLWC (CTEMP(2:), CBUF(2:))
-        CBUF(1:1) = CTEMP(1:1)
-        CALL XCTRIM (CBUF, J)
-        WRITE(CLINE,1401) CBUF(1:J)
-1401    FORMAT('_symmetry_cell_setting   ''', A ,'''')
-        WRITE(CPAGE(3,1)(:), '(A,5X,A)') 'Crystal Class', CBUF(1:J)
-        CALL XPCIF(CLINE)
-C
+         J=L2CC+MD2CC-1
+         WRITE (CTEMP,800) (ISTORE(I),I=L2CC,J)
+800      FORMAT (4(A4))
+         CBUF=' '
+         CALL XCCLWC (CTEMP(2:),CBUF(2:))
+         CBUF(1:1)=CTEMP(1:1)
+         CALL XCTRIM (CBUF,J)
+         WRITE (CLINE,850) CBUF(1:J)
+850      FORMAT ('_symmetry_cell_setting   ''',A,'''')
+         WRITE (CPAGE(3,1)(:),'(A,5X,A)') 'Crystal Class',CBUF(1:J)
+         CALL XPCIF (CLINE)
+C 
 C ----- DISPLAY SPACE GROUP SYMBOL
-        J  = L2SG + MD2SG - 1
-        WRITE(CTEMP,1402) (ISTORE(I), I = L2SG, J)
-1402    FORMAT (4(A4,1X))
-        CBUF = ' '
-        CALL XCCLWC (CTEMP(2:), CBUF(2:))
-        CBUF(1:1) = CTEMP(1:1)
-        CALL XCTRIM (CBUF, J)
-        WRITE(CLINE,1403) CBUF(1:J)
-1403    FORMAT('_symmetry_space_group_name_H-M   ''', A ,'''')
+         J=L2SG+MD2SG-1
+         WRITE (CTEMP,900) (ISTORE(I),I=L2SG,J)
+900      FORMAT (4(A4,1X))
+         CBUF=' '
+         CALL XCCLWC (CTEMP(2:),CBUF(2:))
+         CBUF(1:1)=CTEMP(1:1)
+         CALL XCTRIM (CBUF,J)
+         WRITE (CLINE,950) CBUF(1:J)
+950      FORMAT ('_symmetry_space_group_name_H-M   ''',A,'''')
 CRicMay99 Changed 10X to 1X: CPAGE is only 35 chars wide so it is
 C         easy to overflow with eg. 17 character spacegroup symbols.
 C         This will spoil the formatting. Maybe it would be better
 C         to compress whitespace.
-        WRITE(CPAGE(3,2)(:), '(A,1X,A)') 'Space Group', CBUF(1:J)
-        CALL XPCIF(CLINE)
-C
+         WRITE (CPAGE(3,2)(:),'(A,1X,A)') 'Space Group',CBUF(1:J)
+         CALL XPCIF (CLINE)
+C 
 C --    DISPLAY EACH SYMMETRY OPERATOR
-        WRITE(NCFPU1, 1405)
-1405    FORMAT ('loop_',/, ' _symmetry_equiv_pos_as_xyz')
-        DO 1450 I = L2 , M2 , MD2
-          DO 1430 J = L2P, M2P, MD2P
-            CALL XMOVE (STORE(I), STORE(NFL), 12)
-            DO 1420 K = 1, ICENTR
+         WRITE (NCFPU1,1000)
+1000     FORMAT ('loop_',/,' _symmetry_equiv_pos_as_xyz')
+         DO 1200 I=L2,M2,MD2
+            DO 1150 J=L2P,M2P,MD2P
+               CALL XMOVE (STORE(I),STORE(NFL),12)
+               DO 1100 K=1,ICENTR
 C             NEGATE IF REQUIRED
-              IF (K .EQ. 2) CALL XNEGTR( STORE(I), STORE(NFL), 9)
-              CALL XSUMOP ( STORE(NFL) , STORE(J) , CTEMP , LENGTH )
-              CALL XCCLWC (CTEMP(1:LENGTH), CBUF(1:LENGTH))
-              WRITE ( NCFPU1 , 1410 ) CBUF(1:LENGTH)
-1410          FORMAT ( 1X, '''' , A, '''' )
-1420        CONTINUE
-1430      CONTINUE
-1450    CONTINUE
-C
-      ENDIF
-C
+                  IF (K.EQ.2) CALL XNEGTR (STORE(I),STORE(NFL),9)
+                  CALL XSUMOP (STORE(NFL),STORE(J),CTEMP,LENGTH)
+                  CALL XCCLWC (CTEMP(1:LENGTH),CBUF(1:LENGTH))
+                  WRITE (NCFPU1,1050) CBUF(1:LENGTH)
+1050              FORMAT (1X,'''',A,'''')
+1100           CONTINUE
+1150        CONTINUE
+1200     CONTINUE
+C 
+      END IF
+C 
 C----- LIST 3
-C
-      IF (JLOAD ( 3 ) .GE. 1) THEN
-        WRITE(NCFPU1,1455)
-1455    FORMAT('loop_'/
-     1'_atom_type_symbol'/ '_atom_type_scat_dispersion_real' /
-     2'_atom_type_scat_dispersion_imag'/
-     3'_atom_type_scat_Cromer_Mann_a1'/'_atom_type_scat_Cromer_Mann_b1'/
-     4'_atom_type_scat_Cromer_Mann_a2'/'_atom_type_scat_Cromer_Mann_b2'/
-     5'_atom_type_scat_Cromer_Mann_a3'/'_atom_type_scat_Cromer_Mann_b3'/
-     6'_atom_type_scat_Cromer_Mann_a4'/'_atom_type_scat_Cromer_Mann_b4'/
-     7'_atom_type_scat_Cromer_Mann_c'/'_atom_type_scat_source  ' )
-        DO 1500 M3 = L3, L3+(N3-1)*MD3, MD3
-        WRITE(CTEMP, '(A4)') ISTORE(M3)
-        CBUF = CTEMP(2:4)
-        CALL XCCLWC (CBUF(1:3), CTEMP(2:4))
-        WRITE(NCFPU1,1460) CTEMP(1:4), (STORE(M), M=M3+1, M3+11)
-1460    FORMAT(1X, '''',A4,'''', 4F10.4, /, 7F10.4)
-        WRITE(NCFPU1,1454)
-1454    FORMAT(
-     1       '''International_Tables','_Vol_IV_Table_2.2B''')
-1500    CONTINUE
-      ENDIF
-C
+C 
+      IF (JLOAD(3).GE.1) THEN
+         WRITE (NCFPU1,1250)
+1250     FORMAT ('loop_'/'_atom_type_symbol'/'_atom_type_scat_dispersion
+     1_real'/'_atom_type_scat_dispersion_imag'/'_atom_type_scat_Cromer_M
+     2ann_a1'/'_atom_type_scat_Cromer_Mann_b1'/'_atom_type_scat_Cromer_M
+     3ann_a2'/'_atom_type_scat_Cromer_Mann_b2'/'_atom_type_scat_Cromer_M
+     4ann_a3'/'_atom_type_scat_Cromer_Mann_b3'/'_atom_type_scat_Cromer_M
+     5ann_a4'/'_atom_type_scat_Cromer_Mann_b4'/'_atom_type_scat_Cromer_M
+     6ann_c'/'_atom_type_scat_source  ')
+         DO 1400 M3=L3,L3+(N3-1)*MD3,MD3
+            WRITE (CTEMP,'(A4)') ISTORE(M3)
+            CBUF=CTEMP(2:4)
+            CALL XCCLWC (CBUF(1:3),CTEMP(2:4))
+            WRITE (NCFPU1,1300) CTEMP(1:4),(STORE(M),M=M3+1,M3+11)
+1300        FORMAT (1X,'''',A4,'''',4F10.4,/,7F10.4)
+            WRITE (NCFPU1,1350)
+1350        FORMAT ('''International_Tables','_Vol_IV_Table_2.2B''')
+1400     CONTINUE
+      END IF
+C 
 C----- COMPUTE PROPERTIES OF CELL
-C
-      IF (JLOAD(1)*JLOAD(2)*JLOAD(3)*JLOAD(5)*JLOAD(8) .NE. 0) THEN
-C
-        IEPROP  = KCPROP(A)
+C 
+      IF (JLOAD(1)*JLOAD(2)*JLOAD(3)*JLOAD(5)*JLOAD(8).NE.0) THEN
+C 
+         IEPROP=KCPROP(A)
 C----- SAVE THE GOODIES IN LIST 30
-        IF (JLOAD(9) .GE. 1) THEN
-            STORE(L30GE+1) = A(1)
-            STORE(L30GE+2) = A(2)
-            STORE(L30GE+3) = A(3)
-            STORE(L30GE+4) = A(4)
-        ENDIF
-      ENDIF
-C
+         IF (JLOAD(9).GE.1) THEN
+            STORE(L30GE+1)=A(1)
+            STORE(L30GE+2)=A(2)
+            STORE(L30GE+3)=A(3)
+            STORE(L30GE+4)=A(4)
+         END IF
+      END IF
+C 
 C----- CHECK IF LIST 5 LOADED
-      IF (JLOAD(5) .NE. 1) GOTO 1700
-1600  CONTINUE
+      IF (JLOAD(5).NE.1) GO TO 1750
 C----- CHEMICAL FORMULA
 CDJWMAR99[
-      IBASE = KSTALL(NTERM * NNAMES)
-      CALL XZEROF (STORE(IBASE), NTERM * NNAMES)
-      ISTORE(IBASE) = ICARB
-      STORE(IBASE+1) = 0.0
-      ISTORE(IBASE+NTERM) = IHYD
-      STORE(IBASE+NTERM+1) = 0.0
-      NBASE = 2
-      DO 1640 M5 = L5, L5 + (N5-1)*MD5, MD5
+      IBASE=KSTALL(NTERM*NNAMES)
+      CALL XZEROF (STORE(IBASE),NTERM*NNAMES)
+      ISTORE(IBASE)=ICARB
+      STORE(IBASE+1)=0.0
+      ISTORE(IBASE+NTERM)=IHYD
+      STORE(IBASE+NTERM+1)=0.0
+      NBASE=2
+      DO 1500 M5=L5,L5+(N5-1)*MD5,MD5
 C-----  GET THE CHARACTER FORM OF THE NAME, AS A UNIQUE CODE
-        WRITE(CTYPE,'(A4)') ISTORE(M5)
-        CALL XCRAS (CTYPE, NCHAR)
-      ITEXT = 
-     1 100*INDEX(UPPER,CTYPE(1:1)) + INDEX(UPPER,CTYPE(2:2))
-c
-        DO 1630 J = IBASE , IBASE + (NBASE-1)*NTERM, NTERM
-          IF (ISTORE(J) .EQ. ISTORE(M5)) THEN
-            STORE(J+1) = STORE(J+1) + STORE(M5+2)*STORE(M5+13)
-            ISTORE(J+2) = J
-            ISTORE(J+3) = ITEXT
-            GOTO 1640
-          ENDIF
-1630    CONTINUE
-        J = IBASE + NBASE*NTERM
-        ISTORE(J) = ISTORE(M5)
-        STORE(J+1) = STORE(M5+2)*STORE(M5+13)
-        ISTORE(J+2) = J
-        ISTORE(J+3) = ITEXT
-        NBASE = NBASE + 1
-1640  CONTINUE
-C----- NOW SORT ON UNIQUE CODE, STARTTING AFTER (POSSIBLE) H 
-      I = IBASE+2*NTERM
-      J =  MAX (0,NBASE-2)
-      K =  NTERM
-      L = 4
-      CALL SSORTI (I, J, K, L)
-      J =  1
-      CLINE = ' '
-      DO 1650 I = IBASE, IBASE +(NBASE-1)*NTERM, NTERM
+         WRITE (CTYPE,'(A4)') ISTORE(M5)
+         CALL XCRAS (CTYPE,NCHAR)
+         ITEXT=100*INDEX(UPPER,CTYPE(1:1))+INDEX(UPPER,CTYPE(2:2))
+C 
+         DO 1450 J=IBASE,IBASE+(NBASE-1)*NTERM,NTERM
+            IF (ISTORE(J).EQ.ISTORE(M5)) THEN
+               STORE(J+1)=STORE(J+1)+STORE(M5+2)*STORE(M5+13)
+               ISTORE(J+2)=J
+               ISTORE(J+3)=ITEXT
+               GO TO 1500
+            END IF
+1450     CONTINUE
+         J=IBASE+NBASE*NTERM
+         ISTORE(J)=ISTORE(M5)
+         STORE(J+1)=STORE(M5+2)*STORE(M5+13)
+         ISTORE(J+2)=J
+         ISTORE(J+3)=ITEXT
+         NBASE=NBASE+1
+1500  CONTINUE
+C----- NOW SORT ON UNIQUE CODE, STARTTING AFTER (POSSIBLE) H
+      I=IBASE+2*NTERM
+      J=MAX(0,NBASE-2)
+      K=NTERM
+      L=4
+      CALL SSORTI (I,J,K,L)
+      J=1
+      CLINE=' '
+      DO 1700 I=IBASE,IBASE+(NBASE-1)*NTERM,NTERM
 CDJWMAR99]
-cdjw NOV97
-          IF (STORE(I+1) .LE. ZERO) GOTO 1650
-          ITYPE = ISTORE(I)
-          WRITE(CTYPE, 1609) ITYPE
-1609      FORMAT(A4)
-          CALL XCRAS(CTYPE, LENGTH)
-          IF (LENGTH .GE. 2) THEN
-            CBUF = CTYPE(2:LENGTH)
-            CALL XCCLWC (CBUF(1:LENGTH-1), CTYPE(2:LENGTH))
-          ENDIF
-          SUM = STORE(I+1)
-          NSUM = NINT(SUM)
-          IF ( AMOD (SUM, 1.0) .LE. ZERO) THEN
-            WRITE(CTEMP, 1610) NSUM
-1610        FORMAT(I8)
-          ELSE
-            WRITE(CTEMP, 1611) SUM
-1611        FORMAT(F8.2)
-          ENDIF
-          CALL XCRAS (CTYPE, NCHAR)
-          CALL XCRAS (CTEMP, LENGTH)
-          CLINE(J:) = ' '//CTYPE(1:NCHAR)//CTEMP(1:LENGTH)
-          CALL XCREMS (CLINE, CLINE, J)
-          CALL XCTRIM (CLINE, J)
-1650  CONTINUE
-c
-      WRITE(NCFPU1, '(A,/A,A,A)')
-     1 '_chemical_formula_sum', '''' , CLINE(1:J), ''''
-      WRITE(NCFPU1, '(A,/A,A,A)')
-     1 '_chemical_formula_moiety', '''' , CLINE(1:J), ''''
-      WRITE(NCFPU1,'(''_chemical_compound_source'',
-     1 /,'';''/''?''/'';'')')
-        K = MIN (27, J)
-        WRITE(CPAGE(2,1)(:),'(A,A)')'Formula ', CLINE(1:K)
-        IF (J .GE. 28) THEN
-         K = MIN (63, J)
-         WRITE(CPAGE(2,2)(:),'(A)') CLINE(28:K)
-        ENDIF
-C
+Cdjw NOV97
+         IF (STORE(I+1).LE.ZERO) GO TO 1700
+         ITYPE=ISTORE(I)
+         WRITE (CTYPE,1550) ITYPE
+1550     FORMAT (A4)
+         CALL XCRAS (CTYPE,LENGTH)
+         IF (LENGTH.GE.2) THEN
+            CBUF=CTYPE(2:LENGTH)
+            CALL XCCLWC (CBUF(1:LENGTH-1),CTYPE(2:LENGTH))
+         END IF
+         SUM=STORE(I+1)
+         NSUM=NINT(SUM)
+         IF (AMOD(SUM,1.0).LE.ZERO) THEN
+            WRITE (CTEMP,1600) NSUM
+1600        FORMAT (I8)
+         ELSE
+            WRITE (CTEMP,1650) SUM
+1650        FORMAT (F8.2)
+         END IF
+         CALL XCRAS (CTYPE,NCHAR)
+         CALL XCRAS (CTEMP,LENGTH)
+         CLINE(J:)=' '//CTYPE(1:NCHAR)//CTEMP(1:LENGTH)
+         CALL XCREMS (CLINE,CLINE,J)
+         CALL XCTRIM (CLINE,J)
 1700  CONTINUE
-C
-      IF( JLOAD(9) .GE. 1) THEN
-C
-      WRITE(NCFPU1,
-     1 '(''_chemical_formula_weight '',F8.2)') STORE(L30GE+4)
-      CLINE(1:18 ) = '_cell_measurement_'
-      WRITE(NCFPU1, '(A18, ''reflns_used '', I8)')
-     1  CLINE(1:18), NINT(STORE(L30CD+3))
-      WRITE(NCFPU1, '(A18, ''theta_min '', I8)')
-     1  CLINE(1:18), NINT(STORE(L30CD+4))
-      WRITE(NCFPU1, '(A18, ''theta_max '', I8)')
-     1  CLINE(1:18), NINT(STORE(L30CD+5))
-      WRITE(NCFPU1, '(A18, ''temperature '', I6)')
-     1  CLINE(1:18), NINT(STORE(L30CD+6))
-      WRITE(CPAGE(9,2)(:), '(A,17X,F8.2)') 'Mr ', STORE(L30GE+4)
-      WRITE(CPAGE(13,1)(:), '(A,5X,I6,A)') 'Cell from', 
-     1 NINT(STORE(L30CD+3)), ' Reflections'
-      WRITE(CPAGE(13,2)(:),'(A,9X,I3,'' to ''I3)')
-     1 'Theta Range',NINT(STORE(L30CD+4)),NINT(STORE(L30CD+5))
-      WRITE(CPAGE(10,2)(:),'(A,5X,I6)')
-     1 'Temperature (K)',NINT(STORE(L30CD+6))
-C
-          SUM = STORE(L30GE+5)
-          NSUM = NINT(SUM)
-          IF ( AMOD (SUM, 1.0) .LE. ZERO) THEN
-            WRITE(CTEMP, 1610) NSUM
-          ELSE
-            WRITE(CTEMP, 1611) SUM
-          ENDIF
-          CALL XCRAS (CTEMP, LENGTH)
-      WRITE(NCFPU1,'(''_cell_formula_units_Z '', A)') CTEMP(1:LENGTH)
-      WRITE(CPAGE(7,2)(:), '(A,19X,A)') 'Z ', CTEMP(1:LENGTH)
-C
-      CBUF(1:15) = '_exptl_crystal_'
-      WRITE(CLINE,'(3X,8A4)')
-     1 (ISTORE(K), K = L30SH, L30SH + MD30SH -1)
-      CALL XCCLWC ( CLINE(1:), CTEMP(1:))
-      CALL XCTRIM(CTEMP, J)
-      WRITE(CLINE, '(A,''description '',A,A,A)') CBUF(1:15),
-     1 '''', CTEMP(1:J), ''''
-      CALL XPCIF( CLINE)
-      WRITE(CPAGE(12,2)(:), '(A,2X,A)') 'Shape', CTEMP(1:J)
-C
-      WRITE(CLINE,'(3X,8A4)')
-     1 (ISTORE(K), K = L30CL, L30CL + MD30CL -1)
-      CALL XCCLWC ( CLINE(1:), CTEMP(1:))
-      CALL XCTRIM(CTEMP, J)
-      WRITE(CLINE, '(A,''colour '', A,A,A)') CBUF(1:15),
-     1 '''', CTEMP(1:J), ''''
-      CALL XPCIF( CLINE)
-      WRITE(CPAGE(12,1)(:), '(A,1X,A)') 'Colour', CTEMP(1:J)
-C
-      DO 1710 I = 1,3
-        WRITE(CLINE, '(A,''size_'', A, F5.2)')
-     1  CBUF(1:15), CSIZE(I), STORE(L30CD+I-1)
-        CALL XPCIF( CLINE)
-1710  CONTINUE
-      WRITE(CPAGE(11,1)(:), '(A,13X,F5.2,''x'',F5.2,''x'',F5.2)') 
-     1 'Size',STORE(L30CD),STORE(L30CD+1),STORE(L30CD+2)
-C
-        WRITE(CLINE, '(A,''density_diffrn'',  F5.2)')
-     1  CBUF(1:15),  STORE(L30GE+1)
-        CALL XPCIF( CLINE)
-        WRITE(CPAGE(9,1)(:), '(A,17X,F5.2)') 'Dx',STORE(L30GE+1)
-C
-        IF (STORE(L30GE) .GT. ZERO) THEN
-        WRITE(CLINE, '(A,''density_meas'', F5.2)')
-     1  CBUF(1:15), STORE(L30GE)
-        ELSE
-        WRITE(CLINE, 1701) CBUF(1:15), 'density_meas', '''',
-     1  'not measured', ''''
-1701    FORMAT (A,A,6X, A,A,A )
-        CALL XPCIF( CLINE)
-        ENDIF
-C
-        WRITE(CLINE, '(A,''F_000'', F12.2)')
-     1  CBUF(1:15), STORE(L30GE+2)
-        CALL XPCIF( CLINE)
-C
-        CBUF(1:15) = '_exptl_absorpt_'
-C
-        WRITE(CLINE, '(A,''coefficient_mu'',  F8.2)')
-     1  CBUF(1:15), 0.1*STORE(L30GE+3)
-        CALL XPCIF( CLINE)
-        WRITE(CPAGE(10,1)(:), '(A,13X,F9.3)') 'Mu',0.1*STORE(L30GE+3)
+C 
+      WRITE (NCFPU1,'(A,/A,A,A)') '_chemical_formula_sum','''',
+     1CLINE(1:J),''''
+      WRITE (NCFPU1,'(A,/A,A,A)') '_chemical_formula_moiety','''',
+     1CLINE(1:J),''''
+      WRITE (NCFPU1,'(''_chemical_compound_source'',                    
+     1  /,'';''/''?''/'';'')')
+      K=MIN(27,J)
+      WRITE (CPAGE(2,1)(:),'(A,A)') 'Formula ',CLINE(1:K)
+      IF (J.GE.28) THEN
+         K=MIN(63,J)
+         WRITE (CPAGE(2,2)(:),'(A)') CLINE(28:K)
+      END IF
+C 
+C----- LIST 30
+1750  CONTINUE
+C 
+      IF (JLOAD(9).GE.1) THEN
+C 
+         WRITE (NCFPU1,'(''_chemical_formula_weight '',F8.2)')
+     1    STORE(L30GE+4)
+         CLINE(1:18)='_cell_measurement_'
+         WRITE (NCFPU1,'(A18, ''reflns_used '', I8)') CLINE(1:18),
+     1    NINT(STORE(L30CD+3))
+         WRITE (NCFPU1,'(A18, ''theta_min '', I8)') CLINE(1:18),
+     1    NINT(STORE(L30CD+4))
+         WRITE (NCFPU1,'(A18, ''theta_max '', I8)') CLINE(1:18),
+     1    NINT(STORE(L30CD+5))
+         WRITE (NCFPU1,'(A18, ''temperature '', I6)') CLINE(1:18),
+     1    NINT(STORE(L30CD+6))
+         WRITE (CPAGE(9,2)(:),'(A,17X,F8.2)') 'Mr ',STORE(L30GE+4)
+         WRITE (CPAGE(13,1)(:),'(A,5X,I6,A)') 'Cell from',
+     1    NINT(STORE(L30CD+3)),' Reflections'
+         WRITE (CPAGE(13,2)(:),'(A,9X,I3,'' to ''I3)') 'Theta Range',
+     1    NINT(STORE(L30CD+4)),NINT(STORE(L30CD+5))
+         WRITE (CPAGE(10,2)(:),'(A,5X,I6)') 'Temperature (K)',
+     1    NINT(STORE(L30CD+6))
+C 
+         SUM=STORE(L30GE+5)
+         NSUM=NINT(SUM)
+         IF (AMOD(SUM,1.0).LE.ZERO) THEN
+            WRITE (CTEMP,1600) NSUM
+         ELSE
+            WRITE (CTEMP,1650) SUM
+         END IF
+         CALL XCRAS (CTEMP,LENGTH)
+         WRITE (NCFPU1,'(''_cell_formula_units_Z '', A)')
+     1    CTEMP(1:LENGTH)
+         WRITE (CPAGE(7,2)(:),'(A,19X,A)') 'Z ',CTEMP(1:LENGTH)
+C 
+         CBUF(1:15)='_exptl_crystal_'
+         WRITE (CLINE,'(3X,8A4)') (ISTORE(K),K=L30SH,L30SH+MD30SH-1)
+         CALL XCCLWC (CLINE(1:),CTEMP(1:))
+         CALL XCTRIM (CTEMP,J)
+         WRITE (CLINE,'(A,''description '',A,A,A)') CBUF(1:15),'''',
+     1    CTEMP(1:J),''''
+         CALL XPCIF (CLINE)
+         WRITE (CPAGE(12,2)(:),'(A,2X,A)') 'Shape',CTEMP(1:J)
+C 
+         WRITE (CLINE,'(3X,8A4)') (ISTORE(K),K=L30CL,L30CL+MD30CL-1)
+         CALL XCCLWC (CLINE(1:),CTEMP(1:))
+         CALL XCTRIM (CTEMP,J)
+         WRITE (CLINE,'(A,''colour '', A,A,A)') CBUF(1:15),'''',
+     1    CTEMP(1:J),''''
+         CALL XPCIF (CLINE)
+         WRITE (CPAGE(12,1)(:),'(A,1X,A)') 'Colour',CTEMP(1:J)
+C 
+         DO 1800 I=1,3
+            WRITE (CLINE,'(A,''size_'', A, F5.2)') CBUF(1:15),CSIZE(I),
+     1       STORE(L30CD+I-1)
+            CALL XPCIF (CLINE)
+1800     CONTINUE
+         WRITE (CPAGE(11,1)(:),'(A,13X,F5.2,''x'',F5.2,''x'',F5.2)') 'Si
+     1ze',STORE(L30CD),STORE(L30CD+1),STORE(L30CD+2)
+C 
+         WRITE (CLINE,'(A,''density_diffrn'',  F5.2)') CBUF(1:15),
+     1    STORE(L30GE+1)
+         CALL XPCIF (CLINE)
+         WRITE (CPAGE(9,1)(:),'(A,17X,F5.2)') 'Dx',STORE(L30GE+1)
+C 
+         IF (STORE(L30GE).GT.ZERO) THEN
+            WRITE (CLINE,'(A,''density_meas'', F5.2)') CBUF(1:15),
+     1       STORE(L30GE)
+         ELSE
+            WRITE (CLINE,1850) CBUF(1:15),'density_meas','''','not measu
+     1red',''''
+1850        FORMAT (A,A,6X,A,A,A)
+            CALL XPCIF (CLINE)
+         END IF
+C 
+         WRITE (CLINE,'(A,''F_000'', F12.2)') CBUF(1:15),STORE(L30GE+2)
+         CALL XPCIF (CLINE)
+C 
+         CBUF(1:15)='_exptl_absorpt_'
+C 
+         WRITE (CLINE,'(A,''coefficient_mu'',  F8.2)') CBUF(1:15),0.1*
+     1    STORE(L30GE+3)
+         CALL XPCIF (CLINE)
+         WRITE (CPAGE(10,1)(:),'(A,13X,F9.3)') 'Mu',0.1*STORE(L30GE+3)
 C      THE ABSORPTION DETAILS - ASSUME NO PATH ALONG AXIS!
-       TMAX = EXP(-0.1*STORE(L30GE+3)*STORE(L30CD))
-       TMIN = EXP(-0.1*STORE(L30GE+3)*STORE(L30CD+1))
-C----- PARAMETER 9 ON DIRECTIVE 5 IS A CHATACTER STRING
-        IPARAM  = 9
-        IDIR = 5
-        IVAL = ISTORE( L30AB +IPARAM -1)
-        IZZZ= KGVAL(CINSTR, CDIR, CPARAM, CVALUE, CDEF,
-     1                   30+3, IDIR, IPARAM, IVAL, JVAL, VAL, JTYPE)
+         TMAX=EXP(-0.1*STORE(L30GE+3)*STORE(L30CD))
+         TMIN=EXP(-0.1*STORE(L30GE+3)*STORE(L30CD+1))
+         WRITE (CLINE,'(''# Sheldrick geometric definitions '', 2F8.2)')
+     1     TMIN,TMAX
+         CALL XPCIF (CLINE)
+C----- PARAMETER 13 ON DIRECTIVE 2 IS A CHATACTER STRING
+C DIFFRACTOMETER MAKE
+         IPARAM=13
+         IDIR=2
+         IVAL=ISTORE(L30CD+IPARAM-1)
+         IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
+     1    IVAL,JVAL,VAL,JTYPE)
+C UNKNOWN CAD4 MACH3 KAPPACCD DIP SMART IPDS
+C    1     2       3     4    5     6    7
+         IDIFNO = IVAL+1
+         CALL XCREMS (CVALUE,CVALUE,NCHAR)
+         CALL XCTRIM (CVALUE,NCHAR)
+         WRITE (CPAGE(IDATA,1)(:),'(A,1X,A)') 'Diffractometer type',
+     1    CVALUE(1:NCHAR)
+      IF (IDIFNO .EQ. 1) THEN
+C- UNKNOWN
+        CTEMP='Unknown'
+      ELSE IF (IDIFNO .EQ. 2) THEN
+C- CAD4
+        CTEMP='Enraf-Nonius CAD4'
+      ELSE IF (IDIFNO .EQ. 3) THEN
+C- MACH3
+        CTEMP='Enraf-Nonius Mach3'
+      ELSE IF (IDIFNO .EQ. 4) THEN
+C- KAPPACCD
+        CTEMP='Enraf Nonius Kappa CCD'
+      ELSE IF (IDIFNO .EQ. 5) THEN
+C- DIP
+        CTEMP='Enraf-Nonius DIP2000'
+      ELSE IF (IDIFNO .EQ. 6) THEN
+C- SMART
+        CTEMP='Bruker SMART'
+      ELSE IF (IDIFNO .EQ. 7) THEN
+C- IPDS
+        CTEMP='Stoe IPDS'
+      ELSE IF (IDIFNO .GT. IDIFMX) THEN
+        WRITE(CMON,'(A)') 'Unknown Diffractometer type'
+        CALL XPRVDU(NCVDU,1,0)
+        CTEMP='Unknown'
+        IDIFNO = 1
+      ENDIF
+      CALL XCTRIM (CTEMP,NCHAR)
+C
+         WRITE (CLINE,'(''_diffrn_measurement_device_type'' )') 
+         CALL XPCIF (CLINE)
+         CALL XPCIF (';')
+         WRITE (CLINE,'(A )') CTEMP(1:NCHAR)
+         CALL XPCIF (CLINE)
+         CALL XPCIF (';')
+C
+         WRITE (CLINE,'(A)') 
+     1   '_diffrn_radiation_monochromator      graphite'
+         CALL XPCIF (CLINE)
+C
+         IVAL = IREFCD(1,IDIFNO)
+         CTEMP = CREFMK(ISTORE(LREFS), NREFS, MDREFS, IVAL)
+         CALL XCTRIM (CTEMP,NCHAR)
+         WRITE (CLINE,'(''_computing_data_collection'' )') 
+         CALL XPCIF (CLINE)
+         CALL XPCIF (';')
+         WRITE (CLINE,'(A )')CTEMP(1:NCHAR)
+         CALL XPCIF (CLINE)
+         CALL XPCIF (';')
+C
+         IVAL = IREFCD(2,IDIFNO)
+         CTEMP = CREFMK(ISTORE(LREFS), NREFS, MDREFS, IVAL)
+         CALL XCTRIM (CTEMP,NCHAR)
+         WRITE (CLINE,'(''_computing_data_reduction'' )') 
+         CALL XPCIF (CLINE)
+         CALL XPCIF (';')
+         WRITE (CLINE,'(A )')CTEMP(1:NCHAR)
+         CALL XPCIF (CLINE)
+         CALL XPCIF (';')
+C
+         IVAL = IREFCD(3,IDIFNO)
+         CTEMP = CREFMK(ISTORE(LREFS), NREFS, MDREFS, IVAL)
+         CALL XCTRIM (CTEMP,NCHAR)
+         WRITE (CLINE,'(''_computing_cell_refinement '' )') 
+         CALL XPCIF (CLINE)
+         CALL XPCIF (';')
+         WRITE (CLINE,'(A )') CTEMP(1:NCHAR)
+         CALL XPCIF (CLINE)
+         CALL XPCIF (';')
+C
+C----- DIRECT METHODS.
+C----- PARAMETER 13 ON DIRECTIVE 6 IS A CHARACTER STRING
+         IPARAM=13
+         IDIR=6
+         IVAL=ISTORE(L30GE+IPARAM-1)
+         IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
+     1    IVAL,JVAL,VAL,JTYPE)
+         IVAL = ISOLCD(IVAL+1)
+         CTEMP = CREFMK(ISTORE(LREFS), NREFS, MDREFS, IVAL)
+         CALL XCTRIM (CTEMP,NCHAR)
+         WRITE (CLINE,'(''_computing_structure_solution '' )') 
+         CALL XPCIF (CLINE)
+         CALL XPCIF (';')
+         WRITE (CLINE,'(A,A,A )') CTEMP(1:NCHAR)
+         CALL XPCIF (CLINE)
+         CALL XPCIF (';')
+C
+C----- PARAMETER 10 ON DIRECTIVE 2 IS A CHARACTER STRING
+C SCAN MODE DETAILS
+         IPARAM=10
+         IDIR=2
+         IVAL=ISTORE(L30CD+IPARAM-1)
+         IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
+     1    IVAL,JVAL,VAL,JTYPE)
+         CALL XCTRIM (CVALUE,NCHAR)
+         WRITE (CPAGE(IDATA,2)(:),'(A,4X,A)') 'Scan type ',
+     1    CVALUE(1:NCHAR)
+         J=INDEX(CVALUE,'THETA')
+         IF (J.NE.0) THEN
+&DOS            CVALUE = '\w/2\q'
+&DVF            CVALUE = '\w/2\q'
+&GID            CVALUE = '\w/2\q'
+&VAX            CVALUE = '\w/2\q'
+&LIN            CVALUE = '\\w/2\\q'
+&GIL            CVALUE = '\\w/2\\q'
+         END IF
+         J=INDEX(CVALUE,'OMEG')
+         IF (J.NE.0) THEN
+&DOS            CVALUE(J:J+4) = '\w'
+&DVF            CVALUE(J:J+4) = '\w'
+&GID            CVALUE(J:J+4) = '\w'
+&VAX            CVALUE(J:J+4) = '\w'
+&LIN            CVALUE(J:J+4) = '\\w'
+&GIL            CVALUE(J:J+4) = '\\w'
+         END IF
+         CALL XCRAS (CVALUE,J)
+         CLINE=' '
+         WRITE (CLINE,'( ''_diffrn_measurement_method '',A)') CVALUE
+         CALL XPCIF (CLINE)
+C----- PARAMETER 9 ON DIRECTIVE 5 IS A CHARACTER STRING
+C ABSORPTION TYPE
+         IPARAM=9
+         IDIR=5
+         IVAL=ISTORE(L30AB+IPARAM-1)
+         IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
+     1    IVAL,JVAL,VAL,JTYPE)
 C----- NOTE - WE CANNOT USE THE CRYSTALS CHARACTER STRING
-        IF (TMIN .GT. 3.0) THEN
-          WRITE(CMON,'(A)') 
-     1    'Analytical absorption correction mandatory for Acta C'
-          CALL XPRVDU(NCVDU, 1,0)
-          WRITE(NCAWU,'(A)') CMON(1)(:)
-        ELSE IF (TMIN .GT. 1.0) THEN
+         CMON(1) = ' '
+         IF (TMIN.GT.3.0) THEN
+            WRITE (CMON,'(A)') 'Analytical absorption correction mandato
+     1ry for Acta C'
+         ELSE IF (TMIN.GT.1.0) THEN
 C         IF (IVAL .LE. 1) THEN
-          WRITE(CMON,'(A,A)') 
-     1    'A psi, empirical, multi-scan or analytical absorption ',
-     2    'correction should be applied for Acta C'
-          CALL XPRVDU(NCVDU, 1,0)
-          WRITE(NCAWU,'(A)') CMON(1)(:)
-        ENDIF
-        IF (IVAL .EQ. 0) THEN
+            WRITE (CMON,'(A,A)') 'A psi, empirical, multi-scan or analyt
+     1ical absorption ','correction should be applied for Acta C'
+         END IF
+         IF (CMON(1)(1:1) .NE. ' ') THEN
+            CALL XPRVDU (NCVDU,1,0)
+            WRITE (NCAWU,'(A)') CMON(1)(:)
+            IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
+            CALL XPCIF('# '//CMON(1)(:))
+         ENDIF
+         IVAL = MAX (IABSMX, IVAL + 1)
+C NONE DIFABS EMPIRICAL MULTI-SCAN SADABS SORTAV SHELXA
+C   1    2         3        4      5      6        7
+         IF (IVAL.EQ.1) THEN
             CVALUE='none'
-            J = 0
-        ELSE IF (IVAL .EQ. 1) THEN
+            J=0
+         ELSE IF ((IVAL.EQ.2).OR.(IVAL.EQ.7)) THEN
             CVALUE='refdelf'
-            J = 6
-        ELSE IF (IVAL .EQ. 2) THEN
-          IF (L13DT .EQ. 9) THEN
+            J=6
+         ELSE IF (IVAL.EQ.3) THEN
+            IF (L13DT.EQ.9) THEN
+C           AREA DETECTOR
+               CVALUE='multi-scan'
+               J=2
+            ELSE
+               CVALUE='psi-scan'
+               J=4
+            END IF
+         ELSE IF ((IVAL.GE.4).OR.(IVAL.LE.6)) THEN
 C           AREA DETECTOR
             CVALUE='multi-scan'
-            J = 2
-          ELSE
-            CVALUE='psi-scan'
-            J = 4
-          ENDIF
-        ELSE IF (IVAL .EQ. 3) THEN
-C           AREA DETECTOR
-            CVALUE='multi-scan'
-            J = 2
-        ELSE
+            J=2
+         ELSE
             CVALUE='?'
-            J = 0
-        ENDIF
-        CLINE = ' '
-        WRITE(CLINE, '( A, ''correction_type '',A)')
-     1  CBUF(1:15), CVALUE
-        CALL XPCIF( CLINE)
-        WRITE(CPAGE(IDATA+1,1)(:), '(A,5X,A)') 
-     1 'Absorption type', CVALUE
-      IF (J .EQ. 6 ) THEN
-        CTEMP = '''refined from delta-F (Walker & Stuart , 1983)'''
-      ELSE IF (J .EQ. 4 ) THEN
-&DOS        CTEMP = '''\y scan,(North et al, 1968)'''
-&DVF        CTEMP = '''\y scan,(North et al, 1968)'''
-&GID        CTEMP = '''\y scan,(North et al, 1968)'''
-&VAX        CTEMP = '''\y scan,(North et al, 1968)'''
-&LIN        CTEMP = '''\\y scan,(North et al, 1968)'''
-&GIL        CTEMP = '''\\y scan,(North et al, 1968)'''
-      ELSE IF (J .EQ. 2 ) THEN
-        CTEMP = ''' (Otwinowski, Z. & Minor, W. 1996)'''
-      ELSE
-        J = 0
-      ENDIF
+            J=0
+         END IF
+         CLINE=' '
+         WRITE (CLINE,'( A, ''correction_type '',A)') CBUF(1:15),CVALUE
+         CALL XPCIF (CLINE)
+         WRITE (CPAGE(IDATA+1,1)(:),'(A,5X,A)') 'Absorption type',
+     1    CVALUE
+C 
+         IF ((J.GT.0).AND.(STORE(L30AB+1+J).GT.ZERO)) THEN
+            CLINE=' '
+            WRITE (CLINE,'( A, ''process_details '')') CBUF(1:15)
+            CALL XPCIF (CLINE)
+            IVAL = IABSCD(IVAL)
+            CTEMP = CREFMK(ISTORE(LREFS), NREFS, MDREFS, IVAL)
+            CALL XCTRIM (CTEMP,NCHAR)
+            CALL XPCIF (';')
+            WRITE (CLINE,'(A,A,A )') CTEMP(1:NCHAR)
+            CALL XPCIF (CLINE)
+            CALL XPCIF (';')
 C
-      CALL XCTRIM (CTEMP, JJ)
-      IF ((J .GT. 0) .AND. ( STORE(L30AB+1+J) .GT. ZERO)) THEN
-        CLINE = ' '
-        WRITE(CLINE, '( A, ''process_details '',A)')
-     1  CBUF(1:15), CTEMP(1:JJ)
-        CALL XPCIF( CLINE)
-        DO 1720 I = 1,3,2
-            WRITE(CLINE, '(A,''correction_T_'', A, F8.2)') 
-     1      CBUF(1:15), CSIZE(I),
-     2      STORE(L30AB-1 +J + (I+1)/2 )/ STORE(L30AB+1+J)*TMAX
-           CALL XPCIF( CLINE)
-           WRITE(CPAGE(IDATA+1,2)(:), '(A,2X,2F5.2)') 
-     1     'Transmission range',
-     2      STORE(L30AB-1 +J + (1+1)/2 )/ STORE(L30AB+1+J)*TMAX,
-     3      STORE(L30AB-1 +J + (3+1)/2 )/ STORE(L30AB+1+J)*TMAX
-1720      CONTINUE
-      ELSE
-            WRITE(CLINE, '(A,''correction_T_'', A, F8.2)') 
-     1      CBUF(1:15), CSIZE(1),TMIN
-           CALL XPCIF( CLINE)
-            WRITE(CLINE, '(A,''correction_T_'', A, F8.2)') 
-     1      CBUF(1:15), CSIZE(3),TMAX
-           CALL XPCIF( CLINE)
-           WRITE(CPAGE(IDATA+1,2)(:), '(A,2X,2F5.2)') 
-     1     'Transmission range', TMIN, TMAX
-      ENDIF
-      WRITE(CLINE,'(''# Sheldrick geometric definitions '', 2F8.2)')
-     1 TMIN, TMAX
-      CALL XPCIF( CLINE)
-C
-        CBUF(1:18) = '_diffrn_standards_'
-C
-        WRITE(CLINE, '(A, ''interval_time '',I8)') CBUF(1:18),
-     1  NINT(STORE(L30CD+10))
-        CALL XPCIF( CLINE)
-        WRITE(CLINE, '(A, ''interval_count '',I8)') CBUF(1:18),
-     1  NINT(STORE(L30CD+11))
-        CALL XPCIF( CLINE)
-        WRITE(CPAGE(14,1)(:),'(''Standard Interval '',I8)')
-     1  NINT(STORE(L30CD+11))
-C
-        WRITE(CLINE, '(A, ''number '', I8)') CBUF(1:18),
-     1  NINT(STORE(L30CD+7))
-        CALL XPCIF( CLINE)
-        WRITE(CPAGE(14,2)(:),'(''Standard Count '',3X, I8)')
-     1  NINT(STORE(L30CD+7))
-C
-        WRITE(CLINE, '(A, ''decay_% '', F6.2)') CBUF(1:18),
-     1  STORE(L30CD+8)
-        CALL XPCIF( CLINE)
-C
-        WRITE(NCFPU1,'(''_diffrn_ambient_temperature '',I10)')
-     1  NINT(STORE(L30CD+6))
-C
-        CBUF(1:15) = '_diffrn_reflns_'
-C
-        CLINE = ' '
-        WRITE(CLINE, '(A, ''number '', I10)') CBUF(1:15),
-     1  NINT(STORE(L30DR))
-        CALL XPCIF( CLINE)
-        WRITE(CPAGE(IDATA+2,1)(:), '(''Reflections measured '', I8)')
-     1  NINT(STORE(L30DR))
-C
-        IF (STORE(L30DR+4) .LE. ZERO) THEN
+            DO 1900 I=1,3,2
+               WRITE (CLINE,'(A,''correction_T_'', A, F8.2)') CBUF(1:15)
+     1          ,CSIZE(I),STORE(L30AB-1+J+(I+1)/2)/STORE(L30AB+1+J)*
+     2          TMAX
+               CALL XPCIF (CLINE)
+               WRITE (CPAGE(IDATA+1,2)(:),'(A,2X,2F5.2)') 'Transmission 
+     1range',STORE(L30AB-1+J+(1+1)/2)/STORE(L30AB+1+J)*TMAX,STORE(L30AB-
+     2          1+J+(3+1)/2)/STORE(L30AB+1+J)*TMAX
+1900        CONTINUE
+         ELSE
+            WRITE (CLINE,'(A,''correction_T_'', A, F8.2)') CBUF(1:15),
+     1       CSIZE(1),TMIN
+            CALL XPCIF (CLINE)
+            WRITE (CLINE,'(A,''correction_T_'', A, F8.2)') CBUF(1:15),
+     1       CSIZE(3),TMAX
+            CALL XPCIF (CLINE)
+            WRITE (CPAGE(IDATA+1,2)(:),'(A,2X,2F5.2)') 'Transmission ran
+     1ge',TMIN,TMAX
+         END IF
+C 
+         CBUF(1:18)='_diffrn_standards_'
+C 
+         WRITE (CLINE,'(A, ''interval_time '',I8)') CBUF(1:18),
+     1    NINT(STORE(L30CD+10))
+         CALL XPCIF (CLINE)
+         WRITE (CLINE,'(A, ''interval_count '',I8)') CBUF(1:18),
+     1    NINT(STORE(L30CD+11))
+         CALL XPCIF (CLINE)
+         WRITE (CPAGE(14,1)(:),'(''Standard Interval '',I8)')
+     1    NINT(STORE(L30CD+11))
+C 
+         WRITE (CLINE,'(A, ''number '', I8)') CBUF(1:18),
+     1    NINT(STORE(L30CD+7))
+         CALL XPCIF (CLINE)
+         WRITE (CPAGE(14,2)(:),'(''Standard Count '',3X, I8)')
+     1    NINT(STORE(L30CD+7))
+C 
+         WRITE (CLINE,'(A, ''decay_% '', F6.2)') CBUF(1:18),STORE(L30CD+
+     1    8)
+         CALL XPCIF (CLINE)
+C 
+         WRITE (NCFPU1,'(''_diffrn_ambient_temperature '',I10)')
+     1    NINT(STORE(L30CD+6))
+C 
+         CBUF(1:15)='_diffrn_reflns_'
+C 
+         CLINE=' '
+         WRITE (CLINE,'(A, ''number '', I10)') CBUF(1:15),
+     1    NINT(STORE(L30DR))
+         CALL XPCIF (CLINE)
+         WRITE (CPAGE(IDATA+2,1)(:),'(''Reflections measured '', I8)')
+     1    NINT(STORE(L30DR))
+C 
+         IF (STORE(L30DR+4).LE.ZERO) THEN
 C----- FRIEDELS LAW USED
-            I = 2
-        ELSE
-            I = 4
-        ENDIF
-        J = MIN (NINT(STORE(L30DR+I)), NINT(STORE(L30DR)))
-        WRITE(CPAGE(IDATA+2,2)(:), '(''Independent reflections'', 
-     1  I7)') J
-        WRITE(CPAGE(IDATA+3,1)(:), '(''Rint '', 14X,
-     1  F10.4)') STORE(L30DR+1+I)* .01
-        CLINE = ' '
-        WRITE(CLINE,'(''_reflns_number_total '')')
-        CTEMP(1:) = CLINE(1:15)
-        WRITE(CLINE(22:),'(I10)') J
-        CALL XPCIF( CLINE)
-        WRITE(CLINE, '(A, ''av_R_equivalents '', F10.2)')
-     1  CBUF(1:15),STORE(L30DR+1+I)
-        CALL XPCIF( CLINE)
-          WRITE(CLINE,'(A,I6)') 
-     1    '# Number of reflections with Friedels Law is ',
-     2    NINT(STORE(L30DR+2))
-          CALL XPCIF( CLINE)
-          WRITE(CLINE,'(A,I6)') 
-     1    '# Number of reflections without Friedels Law is ',
-     2    NINT(STORE(L30DR+4))
-          CALL XPCIF( CLINE)
+            I=2
+         ELSE
+            I=4
+         END IF
+         J=MIN(NINT(STORE(L30DR+I)),NINT(STORE(L30DR)))
+         WRITE (CPAGE(IDATA+2,2)(:),'(''Independent reflections'',      
+     1   I7)') J
+         WRITE (CPAGE(IDATA+3,1)(:),'(''Rint '', 14X,                   
+     1   F10.4)') STORE(L30DR+1+I)*.01
+         CLINE=' '
+         WRITE (CLINE,'(''_reflns_number_total '')')
+         CTEMP(1:)=CLINE(1:15)
+         WRITE (CLINE(22:),'(I10)') J
+         CALL XPCIF (CLINE)
+         WRITE (CLINE,'(A, ''av_R_equivalents '', F10.2)') CBUF(1:15),
+     1    STORE(L30DR+1+I)
+         CALL XPCIF (CLINE)
+         WRITE (CLINE,'(A,I6)') '# Number of reflections with Friedels L
+     1aw is ',NINT(STORE(L30DR+2))
+         CALL XPCIF (CLINE)
+         WRITE (CLINE,'(A,I6)') '# Number of reflections without Friedel
+     1s Law is ',NINT(STORE(L30DR+4))
+         CALL XPCIF (CLINE)
 C----- TRY FOR A FRIEDEL MERGE ESTIMATE
-        IF (STORE(L30DR+2) .GT. ZERO) I = 2
-        IF (JLOAD(2)*JLOAD(1) .GE. 1) THEN
-          TMP = 8.*((PI*STORE(L1P1+6))/(6. * (3-(I/2)) * N2P * N2) * 
-     2    ((2. * SIN(DTR*STORE(L30IX+7)))/STORE(L13DC))**3 )
-          IF (TMP .GT. ZERO) THEN
-           WRITE(CLINE,'(A,I6)') 
-     1    '# Theoretical number of reflections is about', NINT(TMP)
-           CALL XPCIF( CLINE)
-           TMP = MIN (1., STORE(L30DR+I)/TMP) 
-           WRITE(CLINE, '(''_diffrn_measured_fraction_theta_max ''
-     1    , F10.3)') TMP
-           CALL XPCIF( CLINE)
-          ENDIF
-        ENDIF
-C
-        CLINE = ' '
-        WRITE(CLINE, '(A, ''gt  '', I10)')
-     1  CTEMP(1:15), NINT(STORE(L30RF+8))
-        CALL XPCIF( CLINE)
-C
-        DO 1715 J = 1,3,2
-        WRITE(CLINE, '(A, ''theta_'',A, F10.2)')
-     1  CBUF(1:15), CSIZE(J),
-     2  STORE(L30IX + (J+1)/2 + 5)
-        CALL XPCIF( CLINE)
-1715    CONTINUE
-        WRITE(CPAGE(IDATA+3,2)(:), '(''Theta max '', 10X,
-     1  f10.2)') STORE(L30IX + 7)
-C
+         IF (STORE(L30DR+2).GT.ZERO) I=2
+         IF (JLOAD(2)*JLOAD(1).GE.1) THEN
+            TMP=8.*((PI*STORE(L1P1+6))/(6.*(3-(I/2))*N2P*N2)*((2.*
+     1       SIN(DTR*STORE(L30IX+7)))/STORE(L13DC))**3)
+            IF (TMP.GT.ZERO) THEN
+               WRITE (CLINE,'(A,I6)') '# Theoretical number of reflectio
+     1ns is about',NINT(TMP)
+               CALL XPCIF (CLINE)
+               TMP=MIN(1.,STORE(L30DR+I)/TMP)
+               WRITE (CLINE,'(''_diffrn_measured_fraction_theta_max ''  
+     1        , F10.3)') TMP
+               CALL XPCIF (CLINE)
+            END IF
+         END IF
+C 
+         CLINE=' '
+         WRITE (CLINE,'(A, ''gt  '', I10)') CTEMP(1:15),
+     1    NINT(STORE(L30RF+8))
+         CALL XPCIF (CLINE)
+C 
+         DO 1950 J=1,3,2
+            WRITE (CLINE,'(A, ''theta_'',A, F10.2)') CBUF(1:15),CSIZE(J)
+     1       ,STORE(L30IX+(J+1)/2+5)
+            CALL XPCIF (CLINE)
+1950     CONTINUE
+         WRITE (CPAGE(IDATA+3,2)(:),'(''Theta max '', 10X,              
+     1   f10.2)') STORE(L30IX+7)
+C 
 C----- RELECTION LIMITS IN DATA COLLECTION
-        K = 0
-        DO 1730 I = 1, 3
-          DO 1725 J = 1,3,2
-          WRITE(CLINE, '(A, ''limit_'',A,A, I10)')
-     1    CBUF(1:15), CINDEX(I), CSIZE(J),
-     2    NINT(STORE(L30IX + K))
-          K = K + 1
-          CALL XPCIF( CLINE)
-1725    CONTINUE
-          WRITE(CPAGE(IDATA+I+3,1)(22:), '(2I6)') 
-     1 NINT(STORE(L30IX+K-2)),NINT(STORE(L30IX+K-1))
-1730  CONTINUE
-C
-          WRITE(CPAGE(IDATA+4,1)(1:15), '(A)') 'Hmin, Hmax'
-          WRITE(CPAGE(IDATA+5,1)(1:15), '(A)') 'Kmin, Kmax'
-          WRITE(CPAGE(IDATA+6,1)(1:15), '(A)') 'Lmin, Lmax'
-C
+         K=0
+         DO 2050 I=1,3
+            DO 2000 J=1,3,2
+               WRITE (CLINE,'(A, ''limit_'',A,A, I10)') CBUF(1:15),
+     1          CINDEX(I),CSIZE(J),NINT(STORE(L30IX+K))
+               K=K+1
+               CALL XPCIF (CLINE)
+2000        CONTINUE
+            WRITE (CPAGE(IDATA+I+3,1)(22:),'(2I6)') NINT(STORE(L30IX+K-
+     1       2)),NINT(STORE(L30IX+K-1))
+2050     CONTINUE
+C 
+         WRITE (CPAGE(IDATA+4,1)(1:15),'(A)') 'Hmin, Hmax'
+         WRITE (CPAGE(IDATA+5,1)(1:15),'(A)') 'Kmin, Kmax'
+         WRITE (CPAGE(IDATA+6,1)(1:15),'(A)') 'Lmin, Lmax'
+C 
 C----- GET LIST 6 FOR REFLECTION LIMITS IN COMPUTATIONS
-      IF (  JLOAD ( 12 ) .GE. 1 ) THEN
-       JLOAD(11) = 1
+         IF (JLOAD(12).GE.1) THEN
+            JLOAD(11)=1
 C--    LOOP OVER EACH INDEX
-       M6DTL=L6DTL
-       IF (N6DTL .GE. 4) THEN
-         DO 1735 I=1,3
+            M6DTL=L6DTL
+            IF (N6DTL.GE.4) THEN
+               DO 2300 I=1,3
 C--       CHECK IF THIS DETAIL IS SET
-          IF(STORE(M6DTL+3)-ZERO)1731,1732,1732
-1731      CONTINUE
+                  IF (STORE(M6DTL+3)-ZERO) 2100,2150,2150
+2100              CONTINUE
 C--       NOT SET  -  IGNORE IT
-          GOTO 1734
+                  GO TO 2250
 C--       PRINT THE DETAILS
-1732      CONTINUE
-          K = 0
-          DO 1733 J = 1,3,2
-           WRITE(CLINE, '(''_reflns_limit_'',A,A, I10)')
-     1     CINDEX(I), CSIZE(J), NINT(STORE( K+M6DTL))
-           K = K + 1
-           CALL XPCIF( CLINE) 
-1733      CONTINUE
+2150              CONTINUE
+                  K=0
+                  DO 2200 J=1,3,2
+                     WRITE (CLINE,'(''_reflns_limit_'',A,A, I10)')
+     1                CINDEX(I),CSIZE(J),NINT(STORE(K+M6DTL))
+                     K=K+1
+                     CALL XPCIF (CLINE)
+2200              CONTINUE
 C--UPDATE FOR THE NEXT PARAMETER
-1734      CONTINUE
-          M6DTL=M6DTL+MD6DTL
-1735     CONTINUE
-        ENDIF
-      ENDIF
-C
+2250              CONTINUE
+                  M6DTL=M6DTL+MD6DTL
+2300           CONTINUE
+            END IF
+         END IF
+C 
 C----- GET THE REFLECTION RESTRICTIONS FROM LIST30
 CNOV98 LIST 28 NO LONGER USED
 C       IF (  JLOAD ( 12 ) .GE. 1 ) THEN
@@ -3491,282 +3729,254 @@ C            INDNAM = INDNAM + MD28CN
 C1702      CONTINUE
 C         ENDIF
 C       ENDIF
-C
-       CBUF(1:21) = '_refine_diff_density_'
-       J = 1
-       DO 1740 K = 1,2
-          WRITE(CLINE, '(A, A, F10.2)')
-     1    CBUF(1:21), CSIZE(J),(STORE(L30RF+ 4 + K))
-          CALL XPCIF( CLINE)
-          J = J + 2
-1740   CONTINUE
-c
+C 
+         CBUF(1:21)='_refine_diff_density_'
+         J=1
+         DO 2350 K=1,2
+            WRITE (CLINE,'(A, A, F10.2)') CBUF(1:21),CSIZE(J),
+     1       (STORE(L30RF+4+K))
+            CALL XPCIF (CLINE)
+            J=J+2
+2350     CONTINUE
+C 
 &DOS       WRITE(CBUF, '(''>'',F6.2,''\s(I)'')') STORE(L30RF+3)
 &DVF       WRITE(CBUF, '(''>'',F6.2,''\s(I)'')') STORE(L30RF+3)
 &GID       WRITE(CBUF, '(''>'',F6.2,''\s(I)'')') STORE(L30RF+3)
 &VAX       WRITE(CBUF, '(''>'',F6.2,''\s(I)'')') STORE(L30RF+3)
 &LIN       WRITE(CBUF, '(''>'',F6.2,''\\s(I)'')') STORE(L30RF+3)
 &GIL       WRITE(CBUF, '(''>'',F6.2,''\\s(I)'')') STORE(L30RF+3)
-       CALL XCRAS(CBUF,NCHAR)
-       WRITE(NCFPU1,'(''_reflns_threshold_expression  '',A)')
-     1 CBUF(1:NCHAR)
-       CBUF(1:11) = '_refine_ls_'
-C
-        WRITE(CLINE, '(A, ''number_reflns '', I10)')
-     1  CBUF(1:11), NINT(STORE(L30RF+8))
-        CALL XPCIF( CLINE)
-C
-        WRITE(CLINE, '(A, ''number_parameters '', I10)')
-     1  CBUF(1:11), NINT(STORE(L30RF+2))
-        CALL XPCIF( CLINE)
-C
-        WRITE(CLINE, '(A, ''R_factor_gt '', F10.4)')
-     1  CBUF(1:11), STORE(L30RF+0)*0.01
-        CALL XPCIF( CLINE)
-C
-        WRITE(CLINE, '(A, ''wR_factor_ref '', F10.4)')
-     1  CBUF(1:11), STORE(L30RF+1)*0.01
-        CALL XPCIF( CLINE)
-C
-        WRITE(CLINE, '(A, ''goodness_of_fit_ref '', F10.4)')
-     1  CBUF(1:11), STORE(L30RF+4)
-        CALL XPCIF( CLINE)
-c
-        WRITE(CLINE, '(A, ''shift/su_max '', F10.6)')
-     1  CBUF(1:11), STORE(L30RF+7)
-        CALL XPCIF( CLINE)
-C
-       WRITE(CPAGE(IREF+3,1 )(:),'(A,6X,F10.2)') 'Delta Rho min',
-     1 STORE(L30RF+5)
-       WRITE(CPAGE(IREF+3,2 )(:),'(A,7XF10.2)') 'Delta Rho max',
-     1 STORE(L30RF+6)
-       WRITE(CPAGE(IREF+4,1 )(:),'(A,3X,I10)') 'Reflections used',
-     1 NINT(STORE(L30RF+8))
-       WRITE(CPAGE(IREF+4,2 )(:),'(A,6X,F10.2)') 'sigma(I) limit',
-     1 STORE(L30RF+3)
-       WRITE(CPAGE(IREF+5,1 )(:),'(A,I9)') 'Number of parameters',
-     1 NINT(STORE(L30RF+2))
-       WRITE(CPAGE(IREF+5,2 )(:),'(A,5X,F10.3)') 'Goodness of fit',
-     1 STORE(L30RF+4)
-       WRITE(CPAGE(IREF+1,1 )(:),'(A,11X,F10.3)') 'R-factor',
-     1 STORE(L30RF)*0.01
-       WRITE(CPAGE(IREF+1,2 )(:),'(A,3X,F10.3)') 'Weighted R-factor',
-     1 STORE(L30RF+1)*0.01
-       WRITE(CPAGE(IREF+2,2 )(:),'(A,8X,F10.4)') 'Max shift/su',
-     1 STORE(L30RF+7)
-C
-       IF (STORE(L30GE+7) .GT. ZERO ) THEN
-         IF (STORE(L30GE+6) .GT. 0.5+ZERO) THEN
-         WRITE(CMON,1745)
-1745     FORMAT('The Flack parameter is greater than 0.5',
-     1   'The structure may need inverting')
-          CALL XPRVDU(NCVDU, 1,0)
-          WRITE(NCAWU,'(A)') CMON(1)(:)
-        ENDIF
+         CALL XCRAS (CBUF,NCHAR)
+         WRITE (NCFPU1,'(''_reflns_threshold_expression  '',A)')
+     1    CBUF(1:NCHAR)
+         CBUF(1:11)='_refine_ls_'
+C 
+         WRITE (CLINE,'(A, ''number_reflns '', I10)') CBUF(1:11),
+     1    NINT(STORE(L30RF+8))
+         CALL XPCIF (CLINE)
+C 
+         WRITE (CLINE,'(A, ''number_parameters '', I10)') CBUF(1:11),
+     1    NINT(STORE(L30RF+2))
+         CALL XPCIF (CLINE)
+C 
+         WRITE (CLINE,'(A, ''R_factor_gt '', F10.4)') CBUF(1:11),
+     1    STORE(L30RF+0)*0.01
+         CALL XPCIF (CLINE)
+C 
+         WRITE (CLINE,'(A, ''wR_factor_ref '', F10.4)') CBUF(1:11),
+     1    STORE(L30RF+1)*0.01
+         CALL XPCIF (CLINE)
+C 
+         WRITE (CLINE,'(A, ''goodness_of_fit_ref '', F10.4)') CBUF(1:11)
+     1    ,STORE(L30RF+4)
+         CALL XPCIF (CLINE)
+C 
+         WRITE (CLINE,'(A, ''shift/su_max '', F10.6)') CBUF(1:11),
+     1    STORE(L30RF+7)
+         CALL XPCIF (CLINE)
+C 
+         WRITE (CPAGE(IREF+3,1)(:),'(A,6X,F10.2)') 'Delta Rho min',
+     1    STORE(L30RF+5)
+         WRITE (CPAGE(IREF+3,2)(:),'(A,7XF10.2)') 'Delta Rho max',
+     1    STORE(L30RF+6)
+         WRITE (CPAGE(IREF+4,1)(:),'(A,3X,I10)') 'Reflections used',
+     1    NINT(STORE(L30RF+8))
+         WRITE (CPAGE(IREF+4,2)(:),'(A,6X,F10.2)') 'sigma(I) limit',
+     1    STORE(L30RF+3)
+         WRITE (CPAGE(IREF+5,1)(:),'(A,I9)') 'Number of parameters',
+     1    NINT(STORE(L30RF+2))
+         WRITE (CPAGE(IREF+5,2)(:),'(A,5X,F10.3)') 'Goodness of fit',
+     1    STORE(L30RF+4)
+         WRITE (CPAGE(IREF+1,1)(:),'(A,11X,F10.3)') 'R-factor',
+     1    STORE(L30RF)*0.01
+         WRITE (CPAGE(IREF+1,2)(:),'(A,3X,F10.3)') 'Weighted R-factor',
+     1    STORE(L30RF+1)*0.01
+         WRITE (CPAGE(IREF+2,2)(:),'(A,8X,F10.4)') 'Max shift/su',
+     1    STORE(L30RF+7)
+C 
+         IF (STORE(L30GE+7).GT.ZERO) THEN
+            IF (STORE(L30GE+6).GT.0.5+ZERO) THEN
+               WRITE (CMON,2400)
+2400           FORMAT ('The Flack parameter is greater than 0.5','The st
+     1ructure may need inverting')
+               CALL XPRVDU (NCVDU,1,0)
+               WRITE (NCAWU,'(A)') CMON(1)(:)
+            END IF
 C----- PACK UP THE FLACK PARAMETER AND ITS ESD
-          CALL XFILL (IB, IVEC, 16)
-          CALL SNUM ( STORE(L30GE+6), STORE(L30GE+7), -0, 0, 7, IVEC )
-          WRITE( CTEMP, '(16A1)') (IVEC(J), J=1, 16)
-          CALL XCRAS ( CTEMP, N)
-        WRITE(CLINE, '(A, ''abs_structure_Flack  '', 4X,
-     1  '''''''',
-     2  A, '''''''')')
-     3  CBUF(1:11), CTEMP(1:N)
-        CALL XPCIF( CLINE)
-       WRITE(CPAGE(IREF+7,1 )(:),'(A,A)') 'Flack parameter',
-     1 CTEMP(1:N)
-C
-          WRITE( CTEMP, '(I12)')  
-     1  MAX( 0, NINT(STORE(L30DR+4)-STORE(L30DR+2)))
-          CALL XCRAS ( CTEMP, N)
-        WRITE(CLINE, '(A, ''abs_structure_details  '', 4X,
-     1  ''''''Flack, '',
-     2  A, '' Friedel-pairs'''''')')
-     3  CBUF(1:11), CTEMP(1:N)
-        CALL XPCIF( CLINE)
-       ENDIF
-C
+            CALL XFILL (IB,IVEC,16)
+            CALL SNUM (STORE(L30GE+6),STORE(L30GE+7),-0,0,7,IVEC)
+            WRITE (CTEMP,'(16A1)') (IVEC(J),J=1,16)
+            CALL XCRAS (CTEMP,N)
+            WRITE (CLINE,'(A, ''abs_structure_Flack  '', 4X,            
+     1      '''''''',                                                   
+     2      A, '''''''')') CBUF(1:11),CTEMP(1:N)
+            CALL XPCIF (CLINE)
+            WRITE (CPAGE(IREF+7,1)(:),'(A,A)') 'Flack parameter',
+     1       CTEMP(1:N)
+C 
+            WRITE (CTEMP,'(I12)') MAX(0,NINT(STORE(L30DR+4)-STORE(L30DR+
+     1       2)))
+            CALL XCRAS (CTEMP,N)
+            WRITE (CLINE,'(A, ''abs_structure_details  '', 4X,          
+     1      ''''''Flack, '',                                            
+     2      A, '' Friedel-pairs'''''')') CBUF(1:11),CTEMP(1:N)
+            CALL XPCIF (CLINE)
+         END IF
+C 
 C      THE REFINEMENT DETAILS
-C----- PARAMETER 13 ON DIRECTIVE 3 IS A CHATACTER STRING
-        IPARAM  = 13
-        IDIR = 3
-        IVAL = ISTORE( L30RF +IPARAM -1)
-        IZZZ= KGVAL(CINSTR, CDIR, CPARAM, CVALUE, CDEF,
-     1                   30+3, IDIR, IPARAM, IVAL, JVAL, VAL, JTYPE)
-         IF (IVAL .EQ. 1) THEN
-           CTYPE = 'F'
+C----- PARAMETER 13 ON DIRECTIVE 3 IS A CHARACTER STRING
+         IPARAM=13
+         IDIR=3
+         IVAL=ISTORE(L30RF+IPARAM-1)
+         IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
+     1    IVAL,JVAL,VAL,JTYPE)
+         IF (IVAL.EQ.1) THEN
+            CTYPE='F'
          ELSE
-           CTYPE = 'Fsqd'
-         ENDIF
-        CLINE = ' '
-        WRITE(CLINE, '( A, ''structure_factor_coef '',A)')
-     1  CBUF(1:11), CTYPE
-        CALL XPCIF( CLINE)
-       WRITE(CPAGE(IREF,1 )(:),'(A,A)') 'Refinement on ',
-     1 CTYPE
-C
+            CTYPE='Fsqd'
+         END IF
+         CLINE=' '
+         WRITE (CLINE,'( A, ''structure_factor_coef '',A)') CBUF(1:11),
+     1    CTYPE
+         CALL XPCIF (CLINE)
+         WRITE (CPAGE(IREF,1)(:),'(A,A)') 'Refinement on ',CTYPE
+C 
 C----- WEIGHTING SCHEME - LIST 4
-C
-       IF (JLOAD(4) .GT. 0) THEN
-         ITYPE = ISTORE(L4C)
-         IF (ITYPE .EQ. 9) THEN
+C 
+         IF (JLOAD(4).GT.0) THEN
+            ITYPE=ISTORE(L4C)
+            IF (ITYPE.EQ.9) THEN
 C------ UNIT WEIGHTS
-           WRITE(CLINE,'(A)') 
-     1     '# WARNING. The IUCr will not accept Unit Weights'
-           CALL XPCIF( CLINE)
-         ELSE IF( (ITYPE .EQ. 5) .OR. (ITYPE .EQ. 6) .OR.
-     1   (ITYPE .EQ. 7) .OR. (ITYPE .EQ. 8)) THEN
+               WRITE (CLINE,'(A)') '# WARNING. The IUCr will not accept 
+     1Unit Weights'
+               CALL XPCIF (CLINE)
+            ELSE IF ((ITYPE.EQ.5).OR.(ITYPE.EQ.6).OR.(ITYPE.EQ.7).OR.
+     1       (ITYPE.EQ.8)) THEN
 C------ SIGMA WEIGHTS
-           CLINE = ' '
-           WRITE (CLINE,'(A, ''weighting_scheme sigma'')') CBUF(1:11)
-           CALL XPCIF( CLINE)
-         ELSE IF (ITYPE .EQ. 16) THEN
+               CLINE=' '
+               WRITE (CLINE,'(A, ''weighting_scheme sigma'')')
+     1          CBUF(1:11)
+               CALL XPCIF (CLINE)
+            ELSE IF (ITYPE.EQ.16) THEN
 C------ MODIFIED STASTISTICAL WEIGHTS
-           CLINE = ' '
-           WRITE (CLINE,'(A, ''weighting_scheme calc'')') CBUF(1:11)
-           CALL XPCIF( CLINE)
-           CLINE = ' '
-           WRITE (CLINE,'(A, ''weighting_details '')') CBUF(1:11)
-           CALL XPCIF( CLINE)
-           WRITE(NCFPU1,'('';'')')
-           IF (MD4 .GT. 0) THEN
-             WRITE ( CLINE , 1035 ) 
-     1       STORE(L4),CTYPE,STORE(L4+1),CTYPE,STORE(L4+2) 
-1035        FORMAT ('w = 1/(',G8.3,'*',A,' +',G8.3,
+               CLINE=' '
+               WRITE (CLINE,'(A, ''weighting_scheme calc'')') CBUF(1:11)
+               CALL XPCIF (CLINE)
+               CLINE=' '
+               WRITE (CLINE,'(A, ''weighting_details '')') CBUF(1:11)
+               CALL XPCIF (CLINE)
+               WRITE (NCFPU1,'('';'')')
+               IF (MD4.GT.0) THEN
+                  WRITE (CLINE,2450) STORE(L4),CTYPE,STORE(L4+1),CTYPE,
+     1             STORE(L4+2)
+2450              FORMAT ('w = 1/(',G8.3,'*',A,' +',G8.3,
 &DOS     1      '*\s^2^(',A,') + ', G8.3,')' )
 &DVF     1      '*\s^2^(',A,') + ', G8.3,')' )
 &GID     1      '*\s^2^(',A,') + ', G8.3,')' )
 &VAX     1      '*\s^2^(',A,') + ', G8.3,')' )
 &LIN     1      '*\\s^2^(',A,') + ', G8.3,')' )
 &GIL     1      '*\\s^2^(',A,') + ', G8.3,')' )
-           ENDIF
-           CALL XPCIF( CLINE)
-           WRITE(NCFPU1,'('';'')')
-         ELSE IF( (ITYPE .EQ. 10) .OR. (ITYPE .EQ.11) .OR.
-     1   (ITYPE .EQ. 14) .OR. (ITYPE .EQ. 15)) THEN
+               END IF
+               CALL XPCIF (CLINE)
+               WRITE (NCFPU1,'('';'')')
+            ELSE IF ((ITYPE.EQ.10).OR.(ITYPE.EQ.11).OR.(ITYPE.EQ.14).OR.
+     1       (ITYPE.EQ.15)) THEN
 C------ CHEBYCHEV WEIGHTS
-           CLINE = ' '
-           WRITE (CLINE,'(A, ''weighting_scheme calc'')') CBUF(1:11)
-           CALL XPCIF( CLINE)
-           CLINE = ' '
-           WRITE (CLINE,'(A, ''weighting_details '')') CBUF(1:11)
-           CALL XPCIF( CLINE)
-           WRITE(NCFPU1,'('';'')')
-           WRITE (CLINE,'(A,I3,A)') 
-     1     'Chebychev polynomial with ', MD4,
-     2     ' parameters,  Carruthers & Watkin , 1979,'
-           CALL XPCIF( CLINE)
-          IF (MD4 .GT. 0) THEN
-            M4 = L4 + MD4 -1
-            WRITE ( NCFPU1 , 1036 ) ( STORE(J) , J = L4 , M4 )
-1036        FORMAT ( 8G9.3 )
-           WRITE(NCFPU1,'('';'')')
-          ENDIF
-         ENDIF 
-        K = KHKIBM(CLINE)
-        CALL XCREMS (CLINE, CLINE, NCHAR)
-        CALL XCTRIM (CLINE, NCHAR)
-        K = MIN (26, NCHAR)
-        WRITE(CPAGE(IREF+6,1)(:),'(A,A)')'Weights: ', CLINE(1:K)
-        IF (NCHAR .GE. 27) THEN
-         K = MIN (61, NCHAR)
-         WRITE(CPAGE(IREF+6,2)(:),'(A)') CLINE(27:K)
-        ENDIF
-       ENDIF
-      ENDIF
-C
-1750  CONTINUE
-      IF (JLOAD(6) .GE. 1) THEN
-          CBUF (1:5) = ''' ? '''
-          IF (NINT(10.*STORE(L13DC)) .EQ. 7) THEN
+               CLINE=' '
+               WRITE (CLINE,'(A, ''weighting_scheme calc'')') CBUF(1:11)
+               CALL XPCIF (CLINE)
+               CLINE=' '
+               WRITE (CLINE,'(A, ''weighting_details '')') CBUF(1:11)
+               CALL XPCIF (CLINE)
+               WRITE (NCFPU1,'('';'')')
+               WRITE (CLINE,'(A,I3,A)') 'Chebychev polynomial with ',
+     1          MD4,' parameters,  Carruthers & Watkin , 1979,'
+               CALL XPCIF (CLINE)
+               IF (MD4.GT.0) THEN
+                  M4=L4+MD4-1
+                  WRITE (NCFPU1,2500) (STORE(J),J=L4,M4)
+2500              FORMAT (8G9.3)
+                  WRITE (NCFPU1,'('';'')')
+               END IF
+            END IF
+            K=KHKIBM(CLINE)
+            CALL XCREMS (CLINE,CLINE,NCHAR)
+            CALL XCTRIM (CLINE,NCHAR)
+            K=MIN(26,NCHAR)
+            WRITE (CPAGE(IREF+6,1)(:),'(A,A)') 'Weights: ',CLINE(1:K)
+            IF (NCHAR.GE.27) THEN
+               K=MIN(61,NCHAR)
+               WRITE (CPAGE(IREF+6,2)(:),'(A)') CLINE(27:K)
+            END IF
+         END IF
+      END IF
+C 
+      IF (JLOAD(6).GE.1) THEN
+         CBUF(1:5)=''' ? '''
+         IF (NINT(10.*STORE(L13DC)).EQ.7) THEN
 ##LINGIL            CBUF(1:8) = '''Mo K\a'''
 &&LINGIL            CBUF(1:8) = '''Mo K\\a'''
-          ELSE IF (NINT(10.*STORE(L13DC)) .EQ. 15) THEN
+         ELSE IF (NINT(10.*STORE(L13DC)).EQ.15) THEN
 ##LINGIL            CBUF(1:8) = '''Cu K\a'''
 &&LINGIL            CBUF(1:8) = '''Cu K\\a'''
-          ENDIF
-      WRITE(NCFPU1,'(''_diffrn_radiation_type       '', A)')CBUF(1:8)
-      WRITE(NCFPU1,'(''_diffrn_radiation_wavelength '', F12.5)')
-     1 STORE(L13DC)
-       WRITE(CPAGE(8,1 )(:),'(A,4X,A)') 'Radiation type',
-     1 CBUF(2:7)
-       WRITE(CPAGE(8,2 )(:),'(A,5X,F10.6)') 'Wavelength',
-     1 STORE(L13DC)
-C
-C----- PARAMETER 1 ON DIRECTIVE 2 IS A CHATACTER STRING
-        IPARAM  = 1
-        IDIR = 2
-        IVAL = ISTORE( L13DT +IPARAM -1)
-        IZZZ= KGVAL(CINSTR, CDIR, CPARAM, CVALUE, CDEF,
-     1                  13+3, IDIR, IPARAM, IVAL, JVAL, VAL, JTYPE)
-        CALL XCREMS (CVALUE, CVALUE, NCHAR)
-        CALL XCTRIM (CVALUE, NCHAR)
-        WRITE(CPAGE(IDATA,1)(:), '(A,1X,A)') 'Diffractometer type',
-     1  CVALUE(1:NCHAR)
-      ENDIF
-C
-C
-      IF (JLOAD(9) .GE. 1) THEN 
-C      THE SCAN MODE DETAILS
-C----- PARAMETER 10 ON DIRECTIVE 2 IS A CHATACTER STRING
-        IPARAM  = 10
-        IDIR = 2
-        IVAL = ISTORE( L30CD +IPARAM -1)
-        IZZZ= KGVAL(CINSTR, CDIR, CPARAM, CVALUE, CDEF,
-     1                  30+3, IDIR, IPARAM, IVAL, JVAL, VAL, JTYPE)
-        CALL XCTRIM (CVALUE, NCHAR)
-        WRITE(CPAGE(IDATA,2)(:),'(A,4X,A)') 
-     1  'Scan type ', CVALUE(1:NCHAR)
-        J = INDEX( CVALUE, 'THETA')
-        IF (J .NE. 0) THEN
-&DOS            CVALUE = '\w/2\q'
-&DVF            CVALUE = '\w/2\q'
-&GID            CVALUE = '\w/2\q'
-&VAX            CVALUE = '\w/2\q'
-&LIN            CVALUE = '\\w/2\\q'
-&GIL            CVALUE = '\\w/2\\q'
-        ENDIF
-        J = INDEX( CVALUE, 'OMEG')
-        IF (J .NE. 0) THEN
-&DOS            CVALUE(J:J+4) = '\w'
-&DVF            CVALUE(J:J+4) = '\w'
-&GID            CVALUE(J:J+4) = '\w'
-&VAX            CVALUE(J:J+4) = '\w'
-&LIN            CVALUE(J:J+4) = '\\w'
-&GIL            CVALUE(J:J+4) = '\\w'
-        ENDIF
-        CALL XCRAS(CVALUE, J)
-        CLINE = ' '
-        WRITE(CLINE, '( ''_diffrn_measurement_method '',A)') CVALUE
-        CALL XPCIF( CLINE)
-      ENDIF
-C
-C
-9910  CONTINUE
-      WRITE(NCPU,'(A)') CHAR(12)
-      WRITE(NCPU,'(5X,2A35)') ((CPAGE(I,J),J=1,NCOL),I=1,NROW)
+         END IF
+         WRITE (NCFPU1,'(''_diffrn_radiation_type       '', A)')
+     1    CBUF(1:8)
+         WRITE (NCFPU1,'(''_diffrn_radiation_wavelength '', F12.5)')
+     1    STORE(L13DC)
+         WRITE (CPAGE(8,1)(:),'(A,4X,A)') 'Radiation type',CBUF(2:7)
+         WRITE (CPAGE(8,2)(:),'(A,5X,F10.6)') 'Wavelength',STORE(L13DC)
+C 
+      END IF
+C - NOW LIST THE REFERENCES
+         WRITE (CLINE,'( A)') 
+     1 '## -------------------REFERENCES ----------------------##'
+         CALL XPCIF (CLINE)
+         WRITE (CLINE,'( A)') 
+     1 '## Insert your own references - in alphabetic order'
+         CALL XPCIF (CLINE)
+         WRITE (CLINE,'( A)') 
+     1 '_publ_section_references '
+         CALL XPCIF (CLINE)
+         CALL XPCIF (';')
+         CALL XREFPR (ISTORE(LREFS),NREFS,MDREFS)
+         CALL XPCIF (';')
+C 
+C 
+2550  CONTINUE
+      WRITE (NCPU,'(A)') CHAR(12)
+      WRITE (NCPU,'(5X,2A35)') ((CPAGE(I,J),J=1,NCOL),I=1,NROW)
 C----- ONLY 29 LINES USED IN PAGE  - CMON IS CURRENLTY 24
-      WRITE(CMON,'(X,2A35)')  ((CPAGE(I,J),J=1,NCOL),I=1,24)
-      CALL XPRVDU(NCVDU,24,1)
-      WRITE(CMON,'(X,2A35)')  ((CPAGE(I,J),J=1,NCOL),I=25,29)
-      CALL XPRVDU(NCVDU,5,1)
+      WRITE (CMON,'(X,2A35)') ((CPAGE(I,J),J=1,NCOL),I=1,24)
+      CALL XPRVDU (NCVDU,24,1)
+      WRITE (CMON,'(X,2A35)') ((CPAGE(I,J),J=1,NCOL),I=25,29)
+      CALL XPRVDU (NCVDU,5,1)
 C      WRITE LIST 30 BACK TO DISK
-      IF (JLOAD(9) .GE. 1)
-     1 CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
-      GOTO 9930
-C----- ERROR EXIT      
-9920  CONTINUE
-C
-9930  CONTINUE
-      CALL XRDOPN(7, KDEV , CSSCIF, LSSCIF)
-      IF (IEPROP .NE. 1) THEN
-            WRITE(CMON,9931)
-9931         FORMAT(' Error in computing molecular properties',/
-     1       ' Re-input expected composition - #SCRIPT INCOMP')
-            CALL XPRVDU(NCVDU,2,0)
-      ENDIF
+      IF (JLOAD(9).GE.1) CALL XWLSTD (30,ICOM30,IDIM30,-1,-1)
+      GO TO 2650
+C----- ERROR EXIT
+2600  CONTINUE
+C 
+2650  CONTINUE
+      IF (IEPROP.NE.1) THEN
+         WRITE (CMON,2700)
+2700     FORMAT (' Error in computing molecular properties',/' Re-input 
+     1expected composition - #SCRIPT INCOMP')
+         CALL XPRVDU (NCVDU,2,0)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,A)') CMON(1),CMON(2)
+         WRITE (NCAWU,'(A,A)') CMON(1),CMON(2)
+      END IF
+C----- CLOSE THE 'CIF' OUTPUT FILE
+      CALL XRDOPN (7,KDEV,CSSCIF,LSSCIF)
+C      CLOSE THE REFERENCES FILE
+&DOS       CALL XRDOPN(7, JDEV , 'CRYSDIR:script\reftab.dat', 25)
+&DVF       CALL XRDOPN(7, JDEV , 'CRYSDIR:script\reftab.dat', 25)
+&GID       CALL XRDOPN(7, JDEV , 'CRYSDIR:script\reftab.dat', 25)
+&VAX       CALL XRDOPN(7, JDEV , 'CRYSDIR:script\reftab.dat', 25)
+&LIN       CALL XRDOPN(7, JDEV , 'CRYSDIR:script/reftab.dat', 25)
+&GIL       CALL XRDOPN(7, JDEV , 'CRYSDIR:script/reftab.dat', 25)
       RETURN
       END
+C
 CODE FOR XPCIF
       SUBROUTINE XPCIF(CLINE)
 C----- COMPRESS AND PUNCH THE STRING CLINE
@@ -3776,5 +3986,81 @@ C----- COMPRESS AND PUNCH THE STRING CLINE
         CALL XCREMS (CLINE, CLINE, NCHAR)
         CALL XCTRIM (CLINE, NCHAR)
         WRITE(NCFPU1, '(A)') CLINE(1:NCHAR)
+      RETURN
+      END
+CODE FOR CREFMK
+      CHARACTER *(*) FUNCTION CREFMK(ITAB, NTAB, MDTAB, IVAL)
+C----- MARK A REFERENCE AS BEING USED
+C      RETURNS WITH BRIEF REFERENCE
+C      ITAB - TABLE IF IDENTIFIERS AND BRIEF NAMES
+C      NTAB AND MDTAB NUMBER OF IDENTIFIERS, LENGTH OF EACH
+C      IVAL IDENTIFIER TO BE MARKED AS USED
+      DIMENSION ITAB(MDTAB*NTAB)
+      CHARACTER *80 CTEMP
+\XUNITS
+\XSSVAL
+\XIOBUF
+      CREFMK = ' '      
+      IF (NTAB.LE. 0) GOTO 980
+      DO 100 I = 1, 1+(NTAB-1)*MDTAB,MDTAB
+       IF (ITAB(I+1) .EQ. IVAL) THEN
+            ITAB(I) = 1
+             WRITE(CTEMP,'(19A4)') (ITAB(J),J=I+2,I+MDTAB-1) 
+             CREFMK = CTEMP
+            GOTO 980
+       ENDIF
+100   CONTINUE
+      WRITE(CMON,'('' Reference '', i4, '' not found'')')IVAL
+      CALL XPRVDU(NCVDU, 1,0)
+      IF (ISSPRT .EQ.0) WRITE(NCWU,'(A)') CMON(1)(:)
+      WRITE(NCAWU,'(A)') CMON(1)(:)
+980   CONTINUE
+      RETURN
+      END
+C
+CODE FOR XREFPR
+      SUBROUTINE XREFPR(ITAB, NTAB, MDTAB)
+C----- PRINT OUT THE USED-REFERENCES
+      DIMENSION ITAB(MDTAB*NTAB)
+      CHARACTER *80 CBUF
+\XUNITS
+\XSSVAL
+\XIOBUF
+      REWIND (NCARU)
+      IF (NTAB.LE. 0) GOTO 900
+      DO 100 I = 1, 1+(NTAB-1)*MDTAB,MDTAB
+c      write(cbuf,'(2i4)') istore(i), istore(I+1)
+c      call zmore(cbuf,0)
+      IF (ITAB(I) .EQ. 1) THEN
+50     CONTINUE
+       READ(NCARU,'(A)',END=900,ERR=900) CBUF
+       IF (CBUF(1:1) .EQ. '#') THEN
+            READ (CBUF,'(1X,I3)') J
+            IF (J .EQ. ITAB(I+1)) THEN
+               CALL XPCIF(' ')
+C               WRITE(CMON,'(1X)') 
+C               CALL XPRVDU(NCVDU,1,0)
+               WRITE(CBUF,'(19A4)') (ITAB(K),K=I+2,I+MDTAB-1)
+C               CALL XPCIF(CBUF)
+C               WRITE(CMON,'(A)') CBUF
+C               CALL XPRVDU(NCVDU,1,0)
+               CALL XPCIF(' ')
+60             CONTINUE
+               READ(NCARU,'(A)',END=900,ERR=900) CBUF
+               IF ((CBUF(1:1) .EQ. ' ') .OR. (CBUF(1:1) .EQ. '#'))
+     1         GOTO 90
+               CALL XPCIF(CBUF)
+C                WRITE(CMON,'(A)') CBUF
+C                CALL XPRVDU(NCVDU,1,0)
+               GOTO 60 
+            ENDIF
+        ENDIF
+        GOTO 50
+      ENDIF
+90    CONTINUE
+100   CONTINUE
+      RETURN
+900   CONTINUE
+      CALL ZMORE ('Premature end',0)
       RETURN
       END
