@@ -193,7 +193,10 @@ class Matrix:public MyObject
             iMatrix[pXIndex*iYSize+pYIndex] = pValue;
         }
         
-        
+        inline void setValues(const type* pValues, size_t pLength)
+        {
+            memcpy(iMatrix, pValues, pLength*sizeof(type));
+        }
         
         std::ostream& output(std::ostream& pStream)
         {
@@ -303,27 +306,26 @@ class Matrix:public MyObject
         
         void transpose()
         {
-            int tXsize = iYSize, tYSize = iXSize;
-            int x = 0, y = 1, c =1;
+            size_t tXSize = iYSize, tYSize = iXSize;
              
-            for (int x = 0; x < iXSize; x++)
+            for (size_t x = 0; x < iXSize; x++)
             {
-                for (int y = 1; y < iYSize; y++)
+                for (size_t y = 0; y < iYSize; y++)
                 {
-                    type tTemp = iMatrix[pXIndex*tYSize+pYIndex];
-                    iMatrix[x*tYSize+y] = iMatrix[x*iYSize+y];
+                    type tTemp = iMatrix[y*tYSize+x];
+                    iMatrix[y*tYSize+x] = iMatrix[x*iYSize+y];
+                    iMatrix[x*iYSize+y] = tTemp;
                 }
             }
             iYSize = tXSize;
             iXSize = tYSize;
-
         }
         
         inline type sum()
         {
             type tSum = 0;
             
-            for (int i = 0;  i < iSize; i ++)
+            for (size_t i = 0;  i < iSize; i ++)
             {
                 tSum += iMatrix[i];
             }
@@ -561,6 +563,23 @@ class Matrix<float>:public MyObject
             return false;
         }
         
+        void transpose()
+        {
+            size_t tXSize = iYSize, tYSize = iXSize;
+             
+            for (size_t x = 0; x < iXSize; x++)
+            {
+                for (size_t y = 0; y < iYSize-(iXSize-x); y++)
+                {
+                    float tTemp = iMatrix[y*tYSize+x];
+                    iMatrix[y*tYSize+x] = iMatrix[x*iYSize+y];
+                    iMatrix[x*iYSize+y] = tTemp;
+                }
+            }
+            iYSize = tXSize;
+            iXSize = tYSize;
+        }
+        
         inline float sum()
         {
             float tSum = 0;
@@ -568,6 +587,17 @@ class Matrix<float>:public MyObject
             for (size_t i = 0;  i < iSize; i ++)
             {
                 tSum += iMatrix[i];
+            }
+            return tSum;
+        }
+        
+        inline float abssum()
+        {
+            float tSum = 0;
+            
+            for (size_t i = 0;  i < iSize; i ++)
+            {
+                tSum += fabs(iMatrix[i]);
             }
             return tSum;
         }
