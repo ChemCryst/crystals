@@ -2,15 +2,26 @@
 %% CRYSTALS reflection input script
 %  VARIABLE INTEGER INBASICS
 %  VARIABLE INTEGER SHELX FS NCOEF FMT
-%  VARIABLE CHARACTER SWITCH
+%  VARIABLE LOGICAL LCANCEL
+%  EVALUATE LCANCEL = FALSE
  Input reflection data from  file containing h,k,l Fo, sigma (HKLI file)
  ----- ---------- ---- ---------- ---------- ----- --- ----- -----------
 %%
 %% Initial checks. Is there any point proceeding.
-%  COPY '#SCRIPT INBASICS'
+%  COPY '#SCRIPT XINBASICS'
 %  IF INBASICS .NE. 1 THEN
+
   Basic Cell, Space Group or composition information is missing.
   This SCRIPT will be abandoned without reading the reflections.
+
+%    FINISH
+%  END IF
+%  IF LCANCEL .EQ. TRUE THEN
+
+  Basic Cell, Space Group or composition information is missing.
+  You must provide this information before data reduction can be
+  performed.
+
 %    FINISH
 %  END IF
 %%
@@ -197,7 +208,7 @@
 %       COPY 'END'
 %       CLEAR
 %       VERIFY YES NO
-%       GET SILENT NOSTORE FINAL ABBREVIATED  -
+%       GET  NOSTORE FINAL ABBREVIATED  -
   'Do you wish to merge reflections?'  'YES'
 %       IF VALUE .EQ. 1 THEN
             * Merging equivalent reflections
@@ -258,11 +269,3 @@ e.g. a file processed by RC93 will contain intensities.
 % END LOOP
 %END SCRIPT
 
-
-
-
-
-%%
-%%
-%%
-%END SCRIPT
