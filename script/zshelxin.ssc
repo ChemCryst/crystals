@@ -12,7 +12,7 @@
 %%
 % VARIABLE LOGICAL   SFILERR LFIRST LPEAK LNOTAT LCRY SXGETALL
 % VARIABLE CHARACTER CLINE
- 
+
 {I * Looking for atoms and peaks in SHELX file.
  
 %%
