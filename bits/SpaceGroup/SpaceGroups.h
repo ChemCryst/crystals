@@ -47,7 +47,7 @@ class SpaceGroups:public vector<SpaceGroup>
 std::ofstream& operator<<(std::ofstream& pStream, SpaceGroups& pSpaceGroups);
 std::ostream& operator<<(std::ostream& pStream, SpaceGroups& pSpaceGroups);
 
-class SGColumn:public ArrayList<SpaceGroups>
+class SGColumn:public vector<SpaceGroups*>
 {
     private:
         vector<CrystSymmetry> iPointGroup;
