@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.34  2001/06/08 15:02:51  richard
+C Get F/F2 state for status window from L23 rather than L30.
+C
 C Revision 1.33  2001/03/16 17:10:41  richard
 C Re-instate full search of atom list for bonds. Had changed it to pivot onwards,
 C but this meant that bonds across symm ops, only one was drawn. Unfortunately, it now
@@ -1125,9 +1128,9 @@ C If a symm related atom, colour bond grey.
                   IF ((ABS(STORE(IAT2P+4)-STACK(J*5-3)).GT.0.001).OR.
      1                (ABS(STORE(IAT2P+5)-STACK(J*5-2)).GT.0.001).OR.
      2                (ABS(STORE(IAT2P+6)-STACK(J*5-1)).GT.0.001))THEN
-                    KR = 192
-                    KG = 192
-                    KB = 192
+                    KR = 128
+                    KG = 128
+                    KB = 128
                   END IF
 
 C See if this bond is in LIST 18. If so, use it's deviation to colour it.
