@@ -15,7 +15,7 @@
 #include	"cxgrid.h"
 #include	"cxwindow.h"
 #include	"creditbox.h"
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 #include <ctype.h> //for proto of iscntrl()
 #include <wx/utils.h> //for wxBell!
 #endif
@@ -35,7 +35,7 @@ CxEditBox *	CxEditBox::CreateCxEditBox( CrEditBox * container, CxGrid * guiParen
 	theEditBox->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);  //Sink it into the window.
 	theEditBox->SetFont(CxGrid::mp_font);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       theEditBox->Create(guiParent, -1, "EditBox", wxPoint(0,0), wxSize(10,10));
 #endif
 	return theEditBox;
@@ -83,7 +83,7 @@ void  CxEditBox::SetText( CcString text )
 				i = 0;
 	}
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetValue( text.ToCString() );
 #endif
 #ifdef __WINDOWS__
@@ -99,7 +99,7 @@ void  CxEditBox::AddText( CcString text )
       SetWindowPos(&wndTop,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW); //Bring the focus to this window.
       SetSel(GetWindowTextLength(),GetWindowTextLength());  //Place caret at end of text.
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       AppendText(text.ToCString());
       SetFocus();
 #endif
@@ -110,10 +110,11 @@ void	CxEditBox::SetGeometry( int top, int left, int bottom, int right )
 #ifdef __WINDOWS__
 	MoveWindow(left,top,right-left,bottom-top,true); //Move the edit box
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetSize(left,top,right-left,bottom-top);
 #endif
-
+//      LOGSTAT ("I am the editbox " + CcString((int)this));
+//      LOGSTAT ("My top is set to " + CcString(top) );
 }
 
 int   CxEditBox::GetTop()
@@ -122,14 +123,14 @@ int   CxEditBox::GetTop()
       RECT windowRect, parentRect;
 	GetWindowRect(&windowRect);
 	CWnd* parent = GetParent();
-	if(parent != nil)
-	{
-		parent->GetWindowRect(&parentRect);
-		windowRect.top -= parentRect.top;
-	}
+      if(parent != nil)
+      {
+              parent->GetWindowRect(&parentRect);
+              windowRect.top -= parentRect.top;
+      }
 	return ( windowRect.top );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
@@ -138,6 +139,8 @@ int   CxEditBox::GetTop()
             parentRect = parent->GetRect();
             windowRect.y -= parentRect.y;
 	}
+      LOGSTAT ("I am the editbox " + CcString((int)this));
+      LOGSTAT ("My top is " + CcString(windowRect.y) );
       return ( windowRect.y );
 #endif
 }
@@ -154,7 +157,7 @@ int   CxEditBox::GetLeft()
 	}
 	return ( windowRect.left );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
@@ -174,7 +177,7 @@ int   CxEditBox::GetWidth()
 	GetWindowRect(&windowRect);
 	return ( windowRect.Width() );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetWidth() );
@@ -187,7 +190,7 @@ int   CxEditBox::GetHeight()
 	GetWindowRect(&windowRect);
       return ( windowRect.Height() );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetHeight() );
@@ -209,8 +212,10 @@ int	CxEditBox::GetIdealHeight()
 	cdc.SelectObject(oldFont);
 	return textMetric.tmHeight + 5;
 #endif
-#ifdef __LINUX__
-      return GetCharHeight() + 5;
+#ifdef __BOTHWX__
+      int cx, cy;
+      GetTextExtent( "Some text", &cx, &cy ) ;
+      return cy + 5;
 #endif
 }
 
@@ -219,7 +224,7 @@ int CxEditBox::GetText(char* theText, int maxlen)
 #ifdef __WINDOWS__
 	int textlen = GetWindowText(theText,maxlen);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxString wtext = GetValue();
       int textlen = wtext.Length();
       strcpy(theText, wtext.c_str());
@@ -248,7 +253,7 @@ CcString CxEditBox::GetText()
 #ifdef __WINDOWS__
       int textlen = GetWindowText((char*)&theText,maxlen);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxString wtext = GetValue();
       int textlen = wtext.Length();
       strcpy(theText, wtext.c_str());
@@ -280,7 +285,7 @@ void	CxEditBox::SetVisibleChars( int count )
 	cdc.SelectObject(oldFont);         //Select the old font back into the DC.
       mCharsWidth = count * textMetric.tmAveCharWidth;  //Work out the ideal width.
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       mCharsWidth = count * GetCharWidth();
 #endif
 }
@@ -296,7 +301,7 @@ BEGIN_MESSAGE_MAP(CxEditBox, CEdit)
         ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 //wx Message Table
 BEGIN_EVENT_TABLE(CxEditBox, BASEEDITBOX)
       EVT_CHAR( CxEditBox::OnChar )
@@ -311,7 +316,7 @@ void CxEditBox::Focus()
 #ifdef __WINDOWS__
       SetSel(GetWindowTextLength(),GetWindowTextLength());  //Place caret at end of text.
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetInsertionPoint( GetLineLength(0) );  //Place caret at end of text.
 #endif
 
@@ -350,7 +355,7 @@ void CxEditBox::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 #ifdef __WINDOWS__
 			if (((c < '0') || (c > '9')) && (c != '.')) {Beep(1000,50); return;} //If it is non numeric, and not '.', then ignore.
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
                   if (((c < '0') || (c > '9')) && (c != '.')) {wxBell(); return;} //If it is non numeric, and not '.', then ignore.
 #endif
             }
@@ -360,7 +365,7 @@ void CxEditBox::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 #ifdef __WINDOWS__
 			if ( c == '.' ) {Beep(1000,50); return;} //If it's a dot, ignore.
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
                   if ( c == '.' ) {wxBell(); return;} //If it's a dot, ignore.
 #endif
 		}
@@ -371,7 +376,7 @@ void CxEditBox::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 	}
 }
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void CxEditBox::OnChar( wxKeyEvent & event )
 {
       int nChar = event.KeyCode();
@@ -404,7 +409,7 @@ void CxEditBox::OnChar( wxKeyEvent & event )
 #ifdef __WINDOWS__
 			if (((c < '0') || (c > '9')) && (c != '.')) {Beep(1000,50); return;} //If it is non numeric, and not '.', then ignore.
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
                   if (((c < '0') || (c > '9')) && (c != '.')) {wxBell(); return;} //If it is non numeric, and not '.', then ignore.
 #endif
 		}
@@ -414,7 +419,7 @@ void CxEditBox::OnChar( wxKeyEvent & event )
 #ifdef __WINDOWS__
 			if ( c == '.' ) {Beep(1000,50); return;} //If it's a dot, ignore.
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
                   if ( c == '.' ) {wxBell(); return;} //If it's a dot, ignore.
 #endif
 		}
@@ -436,7 +441,7 @@ void CxEditBox::Disable(Boolean disable)
       else               
             EnableWindow(true);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       if(disable)
             Enable(false);
 	else
@@ -456,7 +461,7 @@ void CxEditBox::ClearBox()
 	SetSel(0,-1);       //Set the selection to the whole of the text buffer.
 	Clear();			//Clears the selection.
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       Clear();
 #endif
 }
@@ -478,7 +483,7 @@ void CxEditBox::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
             }
 }
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void CxEditBox::OnKeyDown ( wxKeyEvent & event )
 {
             switch (event.KeyCode())

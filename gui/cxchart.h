@@ -23,7 +23,7 @@ class LStdChart;
 #include	<LStdControl.h>
 #endif
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 #include <wx/control.h>
 #include <wx/colour.h>
 #include <wx/bitmap.h>
@@ -107,7 +107,7 @@ private:
             afx_msg void OnKeyDown( UINT nChar, UINT nRepCnt, UINT nFlags );
 		DECLARE_MESSAGE_MAP()
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       public:
 
             wxColour mfgcolour;

@@ -22,7 +22,7 @@ class LEditField;
 #include	<LEditField.h>;
 #endif
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 #include <wx/textctrl.h>
 #define BASEEDITBOX wxTextCtrl
 #endif
@@ -88,7 +88,7 @@ class CxEditBox : public BASEEDITBOX
             afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 		DECLARE_MESSAGE_MAP()
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
             void OnChar(wxKeyEvent & event);
             void OnKeyDown(wxKeyEvent & event);
             DECLARE_EVENT_TABLE()

@@ -22,7 +22,7 @@ class LStdCheckBox;
 #include	<LStdControl.h>;
 #endif
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 #include <wx/checkbox.h>
 #define BASECHECKBOX wxCheckBox
 #endif
@@ -69,7 +69,7 @@ class CxCheckBox : public BASECHECKBOX
 
 		DECLARE_MESSAGE_MAP()
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
             void BoxClicked();
             void OnChar(wxKeyEvent & event );
             DECLARE_EVENT_TABLE()

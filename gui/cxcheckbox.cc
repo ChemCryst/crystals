@@ -26,7 +26,7 @@ CxCheckBox *	CxCheckBox::CreateCxCheckBox( CrCheckBox * container, CxGrid * guiP
         theStdButton->Create("CheckBox",WS_CHILD| WS_VISIBLE| BS_AUTOCHECKBOX, CRect(0,0,10,10), guiParent, mCheckBoxCount++);
 	theStdButton->SetFont(CxGrid::mp_font);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       theStdButton->Create(guiParent,-1,"CheckBox",wxPoint(0,0),wxSize(0,0));
 #endif
 
@@ -49,7 +49,7 @@ void	CxCheckBox::BoxClicked()
 #ifdef __WINDOWS__
       Boolean state = GetBoxState() == 1 ? true : false;
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       Boolean state = GetValue();
 #endif
 
@@ -66,7 +66,7 @@ void	CxCheckBox::SetText( char * text )
 	c2pstr( reinterpret_cast<char *>(descriptor) );
 	SetDescriptor( descriptor );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetLabel(text);
 #endif
 #ifdef __WINDOWS__
@@ -80,7 +80,7 @@ void  CxCheckBox::SetGeometry( int top, int left, int bottom, int right )
 #ifdef __WINDOWS__
 	MoveWindow(left,top,right-left,bottom-top,true);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetSize(left,top,right-left,bottom-top);
 #endif
 
@@ -98,15 +98,15 @@ int   CxCheckBox::GetTop()
 	}
 	return ( windowRect.top );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
-	if(parent != nil)
-	{
-            parentRect = parent->GetRect();
-            windowRect.y -= parentRect.y;
-	}
+//	if(parent != nil)
+//	{
+//            parentRect = parent->GetRect();
+//            windowRect.y -= parentRect.y;
+//	}
       return ( windowRect.y );
 #endif
 }
@@ -123,7 +123,7 @@ int   CxCheckBox::GetLeft()
 	}
 	return ( windowRect.left );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
@@ -143,7 +143,7 @@ int   CxCheckBox::GetWidth()
 	GetWindowRect(&windowRect);
 	return ( windowRect.Width() );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetWidth() );
@@ -156,7 +156,7 @@ int   CxCheckBox::GetHeight()
 	GetWindowRect(&windowRect);
       return ( windowRect.Height() );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetHeight() );
@@ -173,7 +173,7 @@ int   CxCheckBox::GetIdealWidth()
 	GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
       return (size.cx+20); // optimum width for Windows buttons (only joking)
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       int cx,cy;
       GetTextExtent( GetLabel(), &cx, &cy );
       return (cx+20); // nice width for buttons
@@ -191,7 +191,7 @@ int   CxCheckBox::GetIdealHeight()
 	GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
 	return (size.cy+5); // *** optimum height for MacOS Buttons (depends on users font size?)
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       int cx,cy;
       GetTextExtent( GetLabel(), &cx, &cy );
       return (cy+5); // nice height for buttons
@@ -209,7 +209,7 @@ void	CxCheckBox::SetBoxState( Boolean inValue )
 		value = 0;
 	SetCheck( value );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetValue (inValue);
 #endif
 
@@ -224,7 +224,7 @@ Boolean	CxCheckBox::GetBoxState()
 	else
 		return (false);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       return GetValue();
 #endif
 }
@@ -237,7 +237,7 @@ BEGIN_MESSAGE_MAP(CxCheckBox, BASECHECKBOX)
 END_MESSAGE_MAP()
 #endif
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 //wxWindows Event Table
 BEGIN_EVENT_TABLE(CxCheckBox, BASECHECKBOX)
       EVT_CHECKBOX( -1, CxCheckBox::BoxClicked ) 
@@ -272,7 +272,7 @@ void CxCheckBox::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 	}
 }
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void CxCheckBox::OnChar( wxKeyEvent & event )
 {
       switch(event.KeyCode())
@@ -310,7 +310,7 @@ void CxCheckBox::Disable(Boolean disabled)
 	else
             EnableWindow(true);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 	if(disabled)
             Enable(false);
 	else
