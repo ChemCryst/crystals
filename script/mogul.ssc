@@ -5,10 +5,9 @@
 %  COPY '#spawn +copy \mogul\develop\mogul\bin\moguldatfil.txt .'
 %  COPY '#CLOSE SCPDATA'
 %  COPY '#RELEASE PUNCH crystals.qf'
-%  TRANSFER 'MOGUL OPEN_GUI 3D' TO PUNCH
-%  TRANSFER 'MOGUL MOLECULE crystals.mol2' TO PUNCH
-%  TRANSFER 'MOGUL OUTPUT_FILE mogul.stat' TO PUNCH
-%  TRANSFER 'MOGUL AUTO_CLOSE' TO PUNCH
+%  TRANSFER 'MOGUL GUI OPEN 3D' TO PUNCH
+%  TRANSFER 'MOGUL MOLECULE FILE crystals.mol2' TO PUNCH
+%  TRANSFER 'MOGUL OUTPUT FILE mogul.stat' TO PUNCH
 %%
 %% Do distances and angles in blocks - makes mogul go faster as data
 %% are in different libraries.

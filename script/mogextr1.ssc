@@ -8,179 +8,190 @@
 % EXTRACT REWIND
 % EVALUATE DPVCOUNT = 0
 % LOOP
-%      ON ERROR TERMINATE
-%      ON END TERMINATE
-%      ON EDITERROR REPEAT
-%      IF ( DPVCOUNT .GT. 5000 ) THEN
-%       COPY 'WRITE'
-%       COPY 'END'
-%       COPY '#GENERALEDIT 5'
-%       COPY 'LOCATE RECORDTYPE=101'
-%       COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'
-%       EVALUATE DPVCOUNT = 0
-%      END IF
+%  ON ERROR TERMINATE
+%  ON END TERMINATE
+%  ON EDITERROR REPEAT
+%  IF ( DPVCOUNT .GT. 5000 ) THEN
+%   COPY 'WRITE'
+%   COPY 'END'
+%   COPY '#GENERALEDIT 5'
+%   COPY 'LOCATE RECORDTYPE=101'
+%   COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'
+%   EVALUATE DPVCOUNT = 0
+%  END IF
 %%
-%      COPY 'TOP'
-%      EVALUATE DPVCOUNT = DPVCOUNT + 1
+%  COPY 'TOP'
+%  EVALUATE DPVCOUNT = DPVCOUNT + 1
 %%
 %% Extract the original query line:
 %%
-%      EXTRACT NEXT
-%      EXTRACT TRANSFER INPUT
-%      CLEAR
-%      VERIFY DIST ANGLE TORSION
-%      GET SILENT NOSTORE ABBREVIATED ' '
-%      EVALUATE NIN = VALUE
+%  EXTRACT NEXT
+%  EXTRACT TRANSFER INPUT
+%  CLEAR
+%  GET SILENT NOSTORE NOPROMPT KEYWORD ' ' 'BlankLine'
+%  IF ( CVALUE .EQ. 'BOND' ) THEN
+%    EVALUATE NIN = 1
+%  ELSE IF ( CVALUE .EQ. 'ANGLE' ) THEN
+%    EVALUATE NIN = 2
+%  ELSE IF ( CVALUE .EQ. 'TORSION' ) THEN
+%    EVALUATE NIN = 3
+%  ELSE
+%    GET SILENT NOPROMPT TEXT '[Some text]' '[Blank line]'
+%    OUTPUT
+%    EVALUATE NIN = 0
+%  END IF
+%  IF NIN .GT. 0 THEN
 %% Read the atom numbers:
+%    GET SILENT NOSTORE INTEGER ' '
+%    LOOP NIN TIMES
 %      GET SILENT NOSTORE INTEGER ' '
-%      LOOP NIN TIMES
-%       GET SILENT NOSTORE INTEGER ' '
-%      END LOOP
+%    END LOOP
 %% Read the #:
-%      GET SILENT NOSTORE KEYWORD ' '
+%    GET SILENT NOSTORE KEYWORD ' '
 %% Read the actual value:
-%      GET SILENT NOSTORE REAL ' '
-%      EVALUATE ACTUAL = VALUE
+%    GET SILENT NOSTORE REAL ' '
+%    EVALUATE ACTUAL = VALUE
 %% Read the atoms:
-%      INSERT !^^WI '!
-%      EVALUATE CAT1 = ' '
-%      EVALUATE CAT2 = ' '
-%      EVALUATE CAT3 = ' '
-%      EVALUATE CAT4 = ' '
-%      LOOP ( NIN + 1 ) TIMES
-%       EVALUATE CAT4 = CAT3
-%       EVALUATE CAT3 = CAT2
-%       EVALUATE CAT2 = CAT1
-%       GET SILENT KEYWORD ' '
-%       EVALUATE CAT1 = CVALUE
-%      END LOOP
-%      INSERT !' !
+%    INSERT !^^WI '!
+%    EVALUATE CAT1 = ' '
+%    EVALUATE CAT2 = ' '
+%    EVALUATE CAT3 = ' '
+%    EVALUATE CAT4 = ' '
+%    LOOP ( NIN + 1 ) TIMES
+%     EVALUATE CAT4 = CAT3
+%     EVALUATE CAT3 = CAT2
+%     EVALUATE CAT2 = CAT1
+%     GET SILENT KEYWORD ' '
+%     EVALUATE CAT1 = CVALUE
+%    END LOOP
+%    INSERT !' !
 %%
 %% Extract the results line:
 %%
-%      EXTRACT NEXT
-%      EXTRACT TRANSFER INPUT
-%      EVALUATE NUMOBS = 0
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER INPUT
+%    EVALUATE NUMOBS = 0
 %% See what it holds:
-%      VERIFY NOHITS ERROR STATS
-%      GET SILENT NOSTORE ABBREVIATED ' '
-%      CASE VALUE
-%       BLOCK    %NOHITS%
-%        EVALUATE NUMOBS = 0
-%        EVALUATE Z = 0.0
-%        INSERT "'No hits'  ''"
+%    VERIFY NOHITS ERROR STATS
+%    GET SILENT NOSTORE ABBREVIATED ' '
+%    CASE VALUE
+%     BLOCK    %NOHITS%
+%      EVALUATE NUMOBS = 0
+%      EVALUATE Z = 0.0
+%      INSERT "'No hits'  ''"
 %% Read the reason:
-%       END BLOCK
-%       BLOCK    %ERROR%
-%        EVALUATE NUMOBS = - 1
-%        EVALUATE Z = 0.0
-%        INSERT "'Error' ''"
+%     END BLOCK
+%     BLOCK    %ERROR%
+%      EVALUATE NUMOBS = - 1
+%      EVALUATE Z = 0.0
+%      INSERT "'Error' ''"
 %% Read the error code:
 %% Read the reason:
-%       END BLOCK
-%       BLOCK    %STATS%
+%     END BLOCK
+%     BLOCK    %STATS%
 %% Work out the Z-score:
-%        GET SILENT NOSTORE INTEGER ' '
-%        EVALUATE NUMOBS = VALUE
+%      GET SILENT NOSTORE INTEGER ' '
+%      EVALUATE NUMOBS = VALUE
 %% Ignore, for now, the mean, min and max:
-%        GET SILENT NOSTORE REAL ' '
-%        GET SILENT NOSTORE REAL ' '
-%        GET SILENT NOSTORE REAL ' '
+%      GET SILENT NOSTORE REAL ' '
+%      GET SILENT NOSTORE REAL ' '
+%      GET SILENT NOSTORE REAL ' '
 %% Read the median:
-%        GET SILENT NOSTORE REAL ' '
-%        EVALUATE IDEAL = VALUE
-%        GET SILENT NOSTORE REAL ' '
-%        EVALUATE DEV = VALUE
-%        IF ( DEV .LT. 0.000001 ) THEN
-%         EVALUATE DEV = 0.000001
-%        END IF
-%        EVALUATE Z = ( ACTUAL - IDEAL ) / DEV
-%        STORE FORMAT /(F8.3)/ REAL ( ACTUAL - IDEAL )
-%        IF Z .GT. 100.0 THEN
-%         INSERT '>100.0'
-%        ELSE IF Z .LT. - 100.0 THEN
-%         INSERT '>100.0'
-%        ELSE IF Z .GT. 0.0 THEN
-%         STORE FORMAT /(F8.3)/  LENGTH 8 REAL Z
-%        ELSE
-%         STORE FORMAT /(F8.3)/  LENGTH 8 REAL ( - Z )
-%        END IF
+%      GET SILENT NOSTORE REAL ' '
+%      EVALUATE IDEAL = VALUE
+%      GET SILENT NOSTORE REAL ' '
+%      EVALUATE DEV = VALUE
+%      IF ( DEV .LT. 0.000001 ) THEN
+%       EVALUATE DEV = 0.000001
+%      END IF
+%      EVALUATE Z = ( ACTUAL - IDEAL ) / DEV
+%      STORE FORMAT /(F8.3)/ REAL ( ACTUAL - IDEAL )
+%      IF Z .GT. 100.0 THEN
+%       INSERT '>100.0'
+%      ELSE IF Z .LT. - 100.0 THEN
+%       INSERT '>100.0'
+%      ELSE IF Z .GT. 0.0 THEN
+%       STORE FORMAT /(F8.3)/  LENGTH 8 REAL Z
+%      ELSE
+%       STORE FORMAT /(F8.3)/  LENGTH 8 REAL ( - Z )
+%      END IF
 %%
 %%
-%        EVALUATE ZTOT = ZTOT + 1.0
-%        IF NUMOBS .GE. 4 THEN
+%      EVALUATE ZTOT = ZTOT + 1.0
+%      IF NUMOBS .GE. 4 THEN
+%%      
+%       IF Z .GT. 0.0 THEN
+%        EVALUATE ZSUM = ZSUM + Z
+%       ELSE
+%        EVALUATE ZSUM = ZSUM - Z
+%       END IF
 %%
-%         IF Z .GT. 0.0 THEN
-%          EVALUATE ZSUM = ZSUM + Z
-%         ELSE
-%          EVALUATE ZSUM = ZSUM - Z
-%         END IF
+%       EVALUATE ZNUM = ZNUM + 1.0
 %%
-%         EVALUATE ZNUM = ZNUM + 1.0
-%%
-%         IF Z .GT. ZMAX THEN
-%          EVALUATE ZMAX = Z
-%         END IF
-%         IF ( - Z ) .GT. ZMAX THEN
-%          EVALUATE ZMAX = - Z
-%         END IF
-%        END IF
-%       END BLOCK
-%      END CASE
+%       IF Z .GT. ZMAX THEN
+%        EVALUATE ZMAX = Z
+%       END IF
+%       IF ( - Z ) .GT. ZMAX THEN
+%        EVALUATE ZMAX = - Z
+%       END IF
+%      END IF
+%     END BLOCK
+%    END CASE
 %%
 %% The atoms graph:
 %%
-%      IF NUMOBS .LT. 0 THEN
+%    IF NUMOBS .LT. 0 THEN
 %% No badness for errors (probably bonds to metals etc.):
-%        EVALUATE Z = 1.0
-%      ELSE IF NUMOBS .LE. 0 THEN
+%      EVALUATE Z = 1.0
+%    ELSE IF NUMOBS .LE. 0 THEN
 %% Arbitrary badness for missing results:
-%        EVALUATE Z = 4.0
-%      ELSE IF NUMOBS .LT. 4 THEN
+%      EVALUATE Z = 4.0
+%    ELSE IF NUMOBS .LT. 4 THEN
 %% Arbitrary badness for missing results:
-%        EVALUATE Z = 3.0
-%      ELSE IF Z .LT. 0.0 THEN
-%        EVALUATE Z = - Z
-%      END IF
-%      IF Z .GT. 10.0 THEN
-%        EVALUATE Z = 10.0
-%      ELSE IF Z .LT. 0.25 THEN
-%          EVALUATE Z = 0.25
-%      END IF
-%      LOOP ( NIN + 1 ) TIMES
-%          CASE LOOPCOUNTER
-%           EVALUATE CAT = CAT1
-%           EVALUATE CAT = CAT2
-%           EVALUATE CAT = CAT3
-%           EVALUATE CAT = CAT4
-%          END CASE
-%          EVALUATE ISER = FIRSTINT ( CAT ) 
-%          EVALUATE CELE = FIRSTSTR ( CAT )
-%          EVALUATE NINDEX = 0
-%          IF ( ISER .LE. SERMAX ) THEN
-%            ON EDITERROR TERMINATE
-%            COPY 'TOP'
-%            EVALUATE DPVCOUNT = DPVCOUNT + 1
-%            COPY '#SCRIPT MOGEXTR2'
-%            IF ( NINDEX .EQ. 0 ) THEN
-%              TRANSFER '{E Atom not found. ' // CAT TO DISPLAY
-%            END IF
-%          END IF
-%      END LOOP
-%%
-%      CASE NIN
-%          INSERT 'Dist'
-%          INSERT 'Angle'
-%          INSERT 'Torsion'
+%      EVALUATE Z = 3.0
+%    ELSE IF Z .LT. 0.0 THEN
+%      EVALUATE Z = - Z
+%    END IF
+%    IF Z .GT. 10.0 THEN
+%      EVALUATE Z = 10.0
+%    ELSE IF Z .LT. 0.25 THEN
+%      EVALUATE Z = 0.25
+%    END IF
+%    LOOP ( NIN + 1 ) TIMES
+%      CASE LOOPCOUNTER
+%        EVALUATE CAT = CAT1
+%        EVALUATE CAT = CAT2
+%        EVALUATE CAT = CAT3
+%        EVALUATE CAT = CAT4
 %      END CASE
-%      INSERT !'!
-%      OUTPUT
+%      EVALUATE ISER = FIRSTINT ( CAT ) 
+%      EVALUATE CELE = FIRSTSTR ( CAT )
+%      EVALUATE NINDEX = 0
+%      IF ( ISER .LE. SERMAX ) THEN
+%        ON EDITERROR TERMINATE
+%        COPY 'TOP'
+%        EVALUATE DPVCOUNT = DPVCOUNT + 1
+%        COPY '#SCRIPT MOGEXTR2'
+%        IF ( NINDEX .EQ. 0 ) THEN
+%          TRANSFER '{E Atom not found. ' // CAT TO DISPLAY
+%        END IF
+%      END IF
+%    END LOOP
+%%
+%    CASE NIN
+%      INSERT 'Dist'
+%      INSERT 'Angle'
+%      INSERT 'Torsion'
+%    END CASE
+%    INSERT !'!
+%    OUTPUT
+%  END IF
 % END LOOP
 %%
 %% Take geometric mean of EFOM values.
 %%
-% COPY 'TOP'
-% LOOP
+%  COPY 'TOP'
+%  LOOP
 %   ON ERROR TERMINATE
 %   ON EDITERROR TERMINATE
 %   COPY 'TRANSFER FROM OFFSET=13 TO EFOM'
@@ -194,7 +205,7 @@
 %   COPY 'TRANSFER TO OFFSET=13 FROM EFOM'
 %   COPY 'TRANSFER TO OFFSET=14 FROM ETOT'
 %   COPY 'NEXT'
-% END LOOP
-% COPY 'WRITE'
-% COPY 'END'
+%  END LOOP
+%  COPY 'WRITE'
+%  COPY 'END'
 %END SCRIPT

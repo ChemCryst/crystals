@@ -3,7 +3,7 @@
 %     VARIABLE REAL IDEAL ACTUAL DEV Z EFOM EMAX ESUM ENUM ETOT
 %     VARIABLE INTEGER ZB1 ZB2 ZB3 ZB4 ZB5 ZB6 ZB7 ZB8 ZB9 ZB10
 %     VARIABLE INTEGER NIN NFOM MAT1 MAT2 MAT3 MAT4 NUMOBS ZMISS
-%     VARIABLE INTEGER CURSEL N SERMAX OLDSER
+%     VARIABLE INTEGER CURSEL N SERMAX OLDSER NCOUNT
 %     VARIABLE CHARACTER CAT1 CAT2 CAT3 CAT4 RSVAL RSESD CLINE1
 %     VARIABLE CHARACTER CAT  
 %     EVALUATE ZMAX = 0.0
@@ -21,7 +21,7 @@
 %     COPY '#CLOSE SCPDATA'
 %     COPY '#OPEN SCPDATA mogul.stat'
 %%
-%% Wipe out spare and find max serial:
+%% Wipe out spare and also find max serial:
 %%
 %     COPY '#GENERALEDIT 5'
 %     COPY 'LOCATE RECORDTYPE=101'
@@ -248,18 +248,26 @@
 %    EVALUATE ZB9 = 0
 %    EVALUATE ZB10 = 0
 %    LOOP
-%       ON ERROR TERMINATE
-%       ON END TERMINATE
+%      ON ERROR TERMINATE
+%      ON END TERMINATE
 %%
 %% Extract the original query line:
 %%
-%       EXTRACT NEXT
-%       EXTRACT TRANSFER INPUT
+%      EXTRACT NEXT
+%      EXTRACT TRANSFER INPUT
 %%
-%       CLEAR
-%       VERIFY DIST ANGLE TORSION
-%       GET SILENT NOSTORE ABBREVIATED ' '
-%       EVALUATE NIN = VALUE
+%      CLEAR
+%      GET SILENT NOSTORE NOPROMPT KEYWORD ' ' 'BlankLine'
+%      IF ( CVALUE .EQ. 'BOND' ) THEN
+%        EVALUATE NIN = 1
+%      ELSE IF ( CVALUE .EQ. 'ANGLE' ) THEN
+%        EVALUATE NIN = 2
+%      ELSE IF ( CVALUE .EQ. 'TORSION' ) THEN
+%        EVALUATE NIN = 3
+%      ELSE
+%        EVALUATE NIN = 0
+%      END IF
+%      IF NIN .GT. 0 THEN
 %% Skip the atom numbers:
 %       GET SILENT NOSTORE INTEGER ' '
 %       LOOP NIN TIMES
@@ -323,6 +331,7 @@
 %         END IF
 %%
 %       END IF
+%      END IF
 %    END LOOP
 %%
 %% Do the graph
@@ -369,23 +378,50 @@
 %%%  EVALUATE NFOM = VALUE
 % IF ( NFOM .NE. CURSEL ) THEN
 %  EVALUATE CURSEL = NFOM
+%  EVALUATE NCOUNT = 1
 %% Rewind mogul.stat
 %  EXTRACT REWIND
-%% Skip (NFOM-1 * 2) lines
-%  LOOP ( ( NFOM - 1 ) * 2 ) TIMES
-%  ON ERROR TERMINATE
-%  ON END TERMINATE
-%  EXTRACT NEXT
+%% Skip (NFOM-1) results plus any unrecognised lines (e.g. INFO and WARN)
+%  LOOP 
+%   ON ERROR TERMINATE
+%   ON END TERMINATE
+%   IF ( NCOUNT .GE. NFOM ) THEN
+%    EVALUATE LOOPEND = LOOPCOUNTER
+%   ELSE
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER INPUT
+%    GET SILENT NOSTORE NOPROMPT KEYWORD ' ' 'BlankLine'
+%    IF ( CVALUE .EQ. 'BOND' ) .OR. ( CVALUE .EQ. 'ANGLE' ) .OR. -
+        ( CVALUE .EQ. 'TORSION' ) THEN
+%     EXTRACT NEXT
+%     EVALUATE NCOUNT = NCOUNT + 1
+%    END IF
+%   END IF
 %  END LOOP
+%%
+%% Bug here - the next line might possibly be INFO or WARN.
+%%
 %  BLOCK
 %  ON ERROR TERMINATE
 %  ON END TERMINATE
-%  EXTRACT NEXT
-%  EXTRACT TRANSFER INPUT
-%  CLEAR
-%  VERIFY DIST ANGLE TORSION
-%  GET SILENT NOSTORE ABBREVIATED ' '
-%  EVALUATE NIN = VALUE
+%  LOOP
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   CLEAR
+%   GET SILENT NOSTORE NOPROMPT KEYWORD ' ' 'BlankLine'
+%   IF ( CVALUE .EQ. 'BOND' ) THEN
+%    EVALUATE NIN = 1
+%   ELSE IF ( CVALUE .EQ. 'ANGLE' ) THEN
+%    EVALUATE NIN = 2
+%   ELSE IF ( CVALUE .EQ. 'TORSION' ) THEN
+%    EVALUATE NIN = 3
+%   ELSE
+%    EVALUATE NIN = 0
+%   END IF
+%   IF NIN .GT. 0 THEN
+%     EVALUATE LOOPEND = LOOPCOUNTER
+%   END IF
+%  END LOOP
 %  CASE NIN
 %   BLOCK
 %    GET SILENT NOSTORE INTEGER ' '
@@ -565,6 +601,7 @@
 %         END BLOCK
 %         BLOCK   %RT_BXX%
 ^^CO        DISPOSE MOGUL2
+%           COPY '#CLOSE SCPDATA'
 %           FINISH
 %         END BLOCK
 %         BLOCK
@@ -575,10 +612,10 @@
 {I * Writing instructions for Mogul...
 %           COPY '#CLOSE SCPDATA'
 %           COPY '#RELEASE PUNCH crystals.qf'
-%           TRANSFER 'MOGUL OPEN_GUI 3D' TO PUNCH
-%           TRANSFER 'MOGUL MOLECULE crystals.mol2' TO PUNCH
+%           TRANSFER 'MOGUL GUI OPEN 3D' TO PUNCH
+%           TRANSFER 'MOGUL MOLECULE FILE crystals.mol2' TO PUNCH
 %           CASE NIN
-%             TRANSFER 'DIST  ' // CHARACTER ( MAT1 ) // ' ' // -
+%             TRANSFER 'BOND  ' // CHARACTER ( MAT1 ) // ' ' // -
  CHARACTER ( MAT2 ) TO PUNCH
 %             TRANSFER 'ANGLE ' // CHARACTER ( MAT1 ) // ' ' // -
  CHARACTER ( MAT2 ) // ' ' // CHARACTER ( MAT3 ) TO PUNCH
@@ -605,7 +642,7 @@
 %         END BLOCK
 %         BLOCK        %%MR_BRR
 %           CASE NIN
-%             BLOCK %DIST%
+%             BLOCK %BOND%
 %% Get two values
 %               CLEAR
 ^^WI WINDOW XRESTRD 'Restrain Distance' MODAL
@@ -776,60 +813,70 @@
 %                    EXTRACT NEXT
 %                    EXTRACT TRANSFER INPUT
 %                    CLEAR
-%                    VERIFY DIST ANGLE TORSION
-%                    GET SILENT NOSTORE ABBREVIATED ' '
-%                    EVALUATE NIN = VALUE
+%                    VERIFY BOND ANGLE TORSION
+%                    GET SILENT NOSTORE NOPROMPT KEYWORD ' ' 'BlankLine'
+%                    IF ( CVALUE .EQ. 'BOND' ) THEN
+%                      EVALUATE NIN = 1
+%                    ELSE IF ( CVALUE .EQ. 'ANGLE' ) THEN
+%                      EVALUATE NIN = 2
+%                    ELSE IF ( CVALUE .EQ. 'TORSION' ) THEN
+%                      EVALUATE NIN = 3
+%                    ELSE
+%                      EVALUATE NIN = 0
+%                    END IF
+%                    IF NIN .GT. 0 THEN
 %% Read the atom numbers:
-%                    GET SILENT NOSTORE INTEGER ' '
-%                    LOOP NIN TIMES
 %                     GET SILENT NOSTORE INTEGER ' '
-%                    END LOOP
-%% Read the #:
-%                    GET SILENT NOSTORE KEYWORD ' '
-%% Read the actual value:
-%                    GET SILENT NOSTORE REAL ' '
-%                    EVALUATE ACTUAL = VALUE
-%% Read the atoms:
-%                    EVALUATE CAT1 = ' '
-%                    EVALUATE CAT2 = ' '
-%                    EVALUATE CAT3 = ' '
-%                    EVALUATE CAT4 = ' '
-%                    LOOP ( NIN + 1 ) TIMES
-%                     EVALUATE CAT4 = CAT3
-%                     EVALUATE CAT3 = CAT2
-%                     EVALUATE CAT2 = CAT1
-%                     GET NOSTORE SILENT KEYWORD ' '
-%                     EVALUATE CAT1 = CVALUE
-%                    END LOOP
-%% Extract the results line:
-%                    EXTRACT NEXT
-%                    EXTRACT TRANSFER INPUT
-%% See what it holds:
-%                    VERIFY NOHITS ERROR STATS
-%                    GET SILENT NOSTORE ABBREVIATED ' '
-%                    IF VALUE .EQ. 3 THEN
+%                     LOOP NIN TIMES
 %                      GET SILENT NOSTORE INTEGER ' '
-%                      EVALUATE NUMOBS = VALUE
+%                     END LOOP
+%% Read the #:
+%                     GET SILENT NOSTORE KEYWORD ' '
+%% Read the actual value:
+%                     GET SILENT NOSTORE REAL ' '
+%                     EVALUATE ACTUAL = VALUE
+%% Read the atoms:
+%                     EVALUATE CAT1 = ' '
+%                     EVALUATE CAT2 = ' '
+%                     EVALUATE CAT3 = ' '
+%                     EVALUATE CAT4 = ' '
+%                     LOOP ( NIN + 1 ) TIMES
+%                      EVALUATE CAT4 = CAT3
+%                      EVALUATE CAT3 = CAT2
+%                      EVALUATE CAT2 = CAT1
+%                      GET NOSTORE SILENT KEYWORD ' '
+%                      EVALUATE CAT1 = CVALUE
+%                     END LOOP
+%% Extract the results line:
+%                     EXTRACT NEXT
+%                     EXTRACT TRANSFER INPUT
+%% See what it holds:
+%                     VERIFY NOHITS ERROR STATS
+%                     GET SILENT NOSTORE ABBREVIATED ' '
+%                     IF VALUE .EQ. 3 THEN
+%                       GET SILENT NOSTORE INTEGER ' '
+%                       EVALUATE NUMOBS = VALUE
 %% Ignore, for now, the mean, min and max:
-%                      GET SILENT NOSTORE REAL ' '
-%                      GET SILENT NOSTORE REAL ' '
-%                      GET SILENT NOSTORE REAL ' '
+%                       GET SILENT NOSTORE REAL ' '
+%                       GET SILENT NOSTORE REAL ' '
+%                       GET SILENT NOSTORE REAL ' '
 %% Read the median:
-%                      GET SILENT NOSTORE REAL ' '
-%                      EVALUATE IDEAL = VALUE
-%                      GET SILENT NOSTORE REAL ' '
-%                      EVALUATE DEV = VALUE
-%                      IF ( DEV .LT. 0.000001 ) THEN
-%                       EVALUATE DEV = 0.000001
-%                      END IF
-%                      CASE NIN
+%                       GET SILENT NOSTORE REAL ' '
+%                       EVALUATE IDEAL = VALUE
+%                       GET SILENT NOSTORE REAL ' '
+%                       EVALUATE DEV = VALUE
+%                       IF ( DEV .LT. 0.000001 ) THEN
+%                        EVALUATE DEV = 0.000001
+%                       END IF
+%                       CASE NIN
 %                        EVALUATE CLINE1 = 'DIST ' // CHARACTER ( IDEAL ) -
   // ', ' //  CHARACTER ( DEV * EFOM ) // ' = ' // CAT2 // ' to ' // CAT1
 %                        EVALUATE CLINE1 = 'ANGL ' // CHARACTER ( IDEAL ) -
   // ', ' //  CHARACTER ( DEV * EFOM ) // ' = ' // CAT2 // ' to ' //  -
   CAT3 // ' to ' // CAT1
-%                      END CASE
-%                      TRANSFER '%QUEUE COPY ' // CLINE1 TO SCRIPT
+%                       END CASE
+%                       TRANSFER '%QUEUE COPY ' // CLINE1 TO SCRIPT
+%                     END IF
 %                    END IF
 %                   END LOOP
 %                   QUEUE COPY END
