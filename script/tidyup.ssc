@@ -1,120 +1,118 @@
-%SCRIPT TIDYUP
+%SCRIPT TIDYUP                                                                  
+%%                                                                              
+% VARIABLE LOGICAL TWINNED                                                      
+% EVALUATE TWINNED = FALSE                                                      
+%  BLOCK                                                                        
+%    VARIABLE INTEGER ITMP                                                      
+%    IF ( EXISTS 13 .GT. 0 ) THEN                                               
+%        COPY '#GENERALEDIT 13'                                                 
+%        COPY 'LOCATE RECORDTYPE=101'                                           
+%        COPY 'TRANSFER FROM OFFSET=1 TO ITMP'                                  
+%        IF ( ITMP .GE. 0 ) THEN                                                
+%         EVALUATE TWINNED = TRUE                                               
+%        ELSE                                                                   
+%         EVALUATE TWINNED = FALSE                                              
+%        END IF                                                                 
+%        COPY 'END'                                                             
+%    END IF                                                                     
+%  END BLOCK                                                                    
+%%                                                                              
+%% A penultimate difference map                                                 
+%  COPY '#SCRIPT VALID12'                                                       
+%  COPY '#SFLS'                                                                 
+%  IF TWINNED .EQ. TRUE THEN                                                    
+%     COPY 'CALC /FO/=SCALED-/FOT/'                                             
+%  ELSE                                                                         
+%     COPY 'CALC'                                                               
+%  END IF                                                                       
+%  COPY '#FOUR'                                                                 
+%  COPY 'MAP TYPE=DIFF'                                                         
+%  COPY 'PEAK HEIGHT=1 '                                                        
+%  COPY 'END'                                                                   
+%%                                                                              
+%  VARIABLE REAL NREF NPARAM RHOMAX                                             
+%% The variables needed by XQUESTIO                                             
+%  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                        
+%  VARIABLE LOGICAL   ANSWER                                                    
+%%                                                                              
+%  IF ( EXISTS 30 .NE. 1 ) THEN                                                 
+{E There in no LIST 30 with the general details available                       
+{I Type #SCRIPT ED30 to input general details.                                  
+%    COPY '#SCRIPT DIRECT'                                                      
+%  END IF                                                                       
+%  COPY '#GENERALEDIT 30'                                                       
+%  COPY 'LOCATE RECORDTYPE = 103'                                               
+%  COPY 'TRANSFER FROM OFFSET =  2 TO NPARAM'                                   
+%  COPY 'TRANSFER FROM OFFSET =  6 TO RHOMAX '                                  
+%  COPY 'TRANSFER FROM OFFSET =  8 TO NREF '                                    
+%  COPY 'END'                                                                   
+%%                                                                              
+%  IF ( NREF / NPARAM )  .LE. 5.0 THEN                                          
+{E You have {RFAR{E too few X-ray observations for the number of variables      
+{E you are trying to refine. Think again or seek help.                          
+%    COPY '#SCRIPT DIRECT'                                                      
+%  END IF                                                                       
+%%                                                                              
+%  IF RHOMAX .GE. 0.3 THEN                                                      
+{R The residual density is rather high. Could you have disorder,                
+{R missing solvent or an absorption problem?                                    
+%%                                                                              
+%    EVALUATE QTITLE = 'Tidy up'                                                
+%    EVALUATE QLINE1 = 'Do you want to view the residual peaks?'                
+%    EVALUATE QLINE2 = ' '                                                      
+%    EVALUATE BUTTOK = '&Yes'                                                   
+%    EVALUATE BUTTXX = '&No'                                                    
+%    COPY '#SCRIPT XQUESTIO'                                                    
+%    IF ANSWER .EQ. TRUE THEN                                                   
+%      COPY '#COLL 10 5'                                                        
+%      COPY 'SEL TYPE=PEAK'                                                     
+%      COPY 'END'                                                               
+%%     RUN CAMERON                                                                  
+%      COPY '#SCRIPT PLOT'                                                      
 %%
-% VARIABLE LOGICAL TWINNED
-% EVALUATE TWINNED = FALSE
-%  BLOCK
-%    VARIABLE INTEGER ITMP
-%    IF ( EXISTS 13 .GT. 0 ) THEN
-%        COPY '#GENERALEDIT 13'
-%        COPY 'LOCATE RECORDTYPE=101'
-%        COPY 'TRANSFER FROM OFFSET=1 TO ITMP'
-%        IF ( ITMP .GE. 0 ) THEN
-%         EVALUATE TWINNED = TRUE
-%        ELSE
-%         EVALUATE TWINNED = FALSE
-%        END IF
-%        COPY 'END'
-%    END IF
-%  END BLOCK
-%%
-%% A penultimate difference map
-%  COPY '#SCRIPT VALID12'
-%  COPY '#SFLS'
-%  IF TWINNED .EQ. TRUE THEN
-%     COPY 'CALC /FO/=SCALED-/FOT/'
-%  ELSE
-%     COPY 'CALC'
-%  END IF
-%  COPY '#FOUR'
-%  COPY 'MAP TYPE=DIFF'
-%  COPY 'PEAK HEIGHT=1 '
-%  COPY 'END'
-%%
-%  VARIABLE REAL NREF NPARAM RHOMAX
-%% The variables needed by XQUESTIO
-%  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
-%  VARIABLE LOGICAL   ANSWER
-%%
-%  IF ( EXISTS 30 .NE. 1 ) THEN
-{E There in no LIST 30 with the general details available
-{I Type #SCRIPT ED30 to input general details.
-%    COPY '#SCRIPT DIRECT'
-%  END IF
-%  COPY '#GENERALEDIT 30'
-%  COPY 'LOCATE RECORDTYPE = 103'
-%  COPY 'TRANSFER FROM OFFSET =  2 TO NPARAM'
-%  COPY 'TRANSFER FROM OFFSET =  6 TO RHOMAX '
-%  COPY 'TRANSFER FROM OFFSET =  8 TO NREF '
-%  COPY 'END'
-%%
-%  IF ( NREF / NPARAM )  .LE. 5.0 THEN
-{E You have {RFAR{E too few X-ray observations for the number of variables
-{E you are trying to refine. Think again or seek help.
-%    COPY '#SCRIPT DIRECT'
-%  END IF
-%%
-%  IF RHOMAX .GE. 0.3 THEN
-{R The residual density is rather high. Could you have disorder,
-{R missing solvent or an absorption problem?
-%%
-%    EVALUATE QTITLE = 'Tidy up'
-%    EVALUATE QLINE1 = 'Do you want to view the residual peaks?'
-%    EVALUATE QLINE2 = ' '
-%    EVALUATE BUTTOK = '&Yes'
-%    EVALUATE BUTTXX = '&No'
-%    COPY '#SCRIPT XQUESTIO'
-%    IF ANSWER .EQ. TRUE THEN
-%      COPY '#COLL 10 5'
-%      COPY 'SEL TYPE=PEAK'
-%      COPY 'END'
-%% RUN CAMERON
-%      COPY '#SCRIPT PLOT'
-%    END IF
-%    EVALUATE QTITLE = 'Tidy up'
-%    EVALUATE QLINE1 = 'Do you want to ignore these peaks? (you must'
-%    EVALUATE QLINE2 = 'be sure that they are not important)'
-%    EVALUATE BUTTOK = '&Ignore'
-%    EVALUATE BUTTXX = '&Back'
-%    COPY '#SCRIPT XQUESTIO'
-%    IF ANSWER .EQ. FALSE THEN
-{R The 'ROUTINE' script cannot handle this problem.
-{R Consult an experienced user or the User Guide.
-%      COPY '#SCRIPT DIRECT'
-%    ELSE 
-%      COPY '#DISK'
-%      COPY 'RESET 5 0 -1'
-%      COPY '#DISP'
-%      COPY 'END'
-%    END IF
-%  END IF
-%%
-%  EVALUATE QTITLE = 'Tidy up'
-%  EVALUATE QLINE1 = 'Do you want to carry out 6 final cycles of refinement?'
-%  EVALUATE QLINE2 = '(Grind the structure into a minimum!)'
-%  EVALUATE BUTTOK = '&Yes'
-%  EVALUATE BUTTXX = '&No'
-%  COPY '#SCRIPT XQUESTIO'
-%  IF ANSWER .EQ. TRUE THEN
-%    COPY '#SCRIPT SIXCYCLE'
-%  ELSE
-{S You have requested no final cycles of refinement.
-{I This is one cycle of least squares with NO SHIFTS. Your model won't
-{I be changed, it's just that the parameter su's need recalculating.
-%    COPY '#SFLS'
-%    COPY 'REFINE'
-%    COPY 'SHIFT GENERAL=0.0'
-%    COPY 'END'
-%  END IF
-%% A final difference map.
-%  COPY '#SFLS'
-%  IF TWINNED .EQ. TRUE THEN
-%     COPY 'CALC /FO/=SCALED-/FOT/'
-%  ELSE
-%     COPY 'CALC'
-%  END IF
-%  COPY '#FOUR'
-%  COPY 'MAP TYPE=DIFF'
-%  COPY 'PEAK HEIGHT=1 '
-%  COPY 'END'
-%%
-%END SCRIPT
+%      EVALUATE QTITLE = 'Tidy up'                                                
+%      EVALUATE QLINE1 = 'Do you want to ignore these peaks? (you must'           
+%      EVALUATE QLINE2 = 'be sure that they are not important)'                   
+%      EVALUATE BUTTOK = '&Ignore'                                                
+%      EVALUATE BUTTXX = '&Back'                                                  
+%      COPY '#SCRIPT XQUESTIO'                                                    
+%      IF ANSWER .EQ. FALSE THEN                                                  
+{R The 'ROUTINE' script cannot handle this problem.                             
+{R Consult an experienced user or the User Guide.                               
+%        COPY '#SCRIPT DIRECT'                                                    
+%      ELSE                                                                       
+%        COPY '#SCRIPT XDELQ'                                                             
+%      END IF                                                                     
+%    END IF                                                                     
+%  END IF                                                                       
+%%                                                                              
+%  EVALUATE QTITLE = 'Tidy up'                                                  
+%  EVALUATE QLINE1 = 'Do you want to carry out 6 final cycles of refinement?'   
+%  EVALUATE QLINE2 = '(Grind the structure into a minimum!)'                    
+%  EVALUATE BUTTOK = '&Yes'                                                     
+%  EVALUATE BUTTXX = '&No'                                                      
+%  COPY '#SCRIPT XQUESTIO'                                                      
+%  IF ANSWER .EQ. TRUE THEN                                                     
+%    COPY '#SCRIPT SIXCYCLE'                                                    
+%  ELSE                                                                         
+{S You have requested no final cycles of refinement.                            
+{I This is one cycle of least squares with NO SHIFTS. Your model won't          
+{I be changed, it's just that the parameter su's need recalculating.            
+%    COPY '#SFLS'                                                               
+%    COPY 'REFINE'                                                              
+%    COPY 'SHIFT GENERAL=0.0'                                                   
+%    COPY 'END'                                                                 
+%  END IF                                                                       
+%% A final difference map.                                                      
+%  COPY '#SFLS'                                                                 
+%  IF TWINNED .EQ. TRUE THEN                                                    
+%     COPY 'CALC /FO/=SCALED-/FOT/'                                             
+%  ELSE                                                                         
+%     COPY 'CALC'                                                               
+%  END IF                                                                       
+%  COPY '#FOUR'                                                                 
+%  COPY 'MAP TYPE=DIFF'                                                         
+%  COPY 'PEAK HEIGHT=1 '                                                        
+%  COPY 'END'                                                                   
+%%                                                                              
+%END SCRIPT                                                                     
