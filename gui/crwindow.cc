@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.27  2003/02/25 15:36:48  rich
+//   New WINDOW modifer "LARGE" makes the given window take up 64% of the area
+//   of the Main CRYSTALS window, provided the window doesn't already have a
+//   stored size from a previous "KEEP" modifier. This means that the first time
+//   windows appear (e.g. Cameron) they don't have to be ridiculously small.
+//
 //   Revision 1.26  2003/01/15 14:06:29  rich
 //   Some fail-safe code in the GUI. In the event of a creation of a window failing don't
 //   allow the rest of the windows to be corrupted.
@@ -484,33 +490,35 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
             if ( m_Large && keep_no_info ) 
             {
 // Make the size large - take up about 80% of the main CRYSTALS window.
+// (or 80% of screen if main window isn't found)
+
                CcRect mainSize(0,0,0,0);
+               mainSize = (CcController::theController)->GetScreenArea();
                CrGUIElement *main = (CcController::theController)->FindObject("_MAIN");
-               if ( main )
-               {
+
+               if ( main && ( main != this ))
                   mainSize = main->GetGeometry();
 
-                  if ( newPosn.Width() < (int)(0.8 * mainSize.Width()) )
-                  {
-                    mainSize.mLeft  += (int)(mainSize.Width() * 0.1);
-                    mainSize.mRight -= (int)(mainSize.Width() * 0.1);
-                  }
-                  if ( newPosn.Height() < (int)(0.8 * mainSize.Height()) )
-                  {
-                    mainSize.mTop    += (int)(mainSize.Height() * 0.1);
-                    mainSize.mBottom -= (int)(mainSize.Height() * 0.1);
-                  }
+               if ( newPosn.Width() < (int)(0.8 * mainSize.Width()) )
+               {
+                 mainSize.mLeft  += (int)(mainSize.Width() * 0.1);
+                 mainSize.mRight -= (int)(mainSize.Width() * 0.1);
+               }
+               if ( newPosn.Height() < (int)(0.8 * mainSize.Height()) )
+               {
+                 mainSize.mTop    += (int)(mainSize.Height() * 0.1);
+                 mainSize.mBottom -= (int)(mainSize.Height() * 0.1);
+               }
 
                   
-                  if (( mainSize.Height() > 10) && ( mainSize.Width() > 10 ))
-                   ((CxWindow*)ptr_to_cxObject)->SetGeometry(mainSize.mTop,
-                                                             mainSize.mLeft,
-                                                             mainSize.mBottom,
-                                                             mainSize.mRight );
+               if (( mainSize.Height() > 10) && ( mainSize.Width() > 10 ))
+                ((CxWindow*)ptr_to_cxObject)->SetGeometry(mainSize.mTop,
+                                                          mainSize.mLeft,
+                                                          mainSize.mBottom,
+                                                          mainSize.mRight );
 // NB Direct call to the CxWindow::SetGeometry, avoids the AdjustSize call
 // in CrWindow::SetGeometry which adds on height and width for borders and
 // menubars.
-               }
 
             }
 
