@@ -10,7 +10,7 @@
 %  VARIABLE INTEGER                         HRTYP  L12SER          HRESTF
 %%
 %  IF EXISTS 39 .LT. 1 THEN
-{S * Creating new L39.
+%%{S * Creating new L39.
 %      COPY '#LIST 39'
 %      COPY 'READ NINT=1'
 %      COPY 'INTEGER INFO 0'
@@ -93,5 +93,5 @@
 %%
 %  COPY 'WRITE OVERWRITE=OVERWRITE'
 %  COPY 'END'
-{R * Guide information stored (in list 39).
+%%{R * Guide information stored (in list 39).
 %END SCRIPT
