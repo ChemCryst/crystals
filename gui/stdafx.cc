@@ -2,5 +2,7 @@
 //	crystals.pch will be the pre-compiled header
 //	stdafx.obj will contain the pre-compiled type information
 
+#ifdef __WINDOWS__
 #include "stdafx.h"
 
+#endif

@@ -2,6 +2,7 @@
 //  or project specific include files that are used frequently, but
 //      are changed infrequently
 //
+#ifndef __SKIP_SYS_INCLUDES__
 
 #if !defined(AFX_STDAFX_H__DEE5F4C7_D4B0_11D1_B74B_0080C8372E35__INCLUDED_)
 #define AFX_STDAFX_H__DEE5F4C7_D4B0_11D1_B74B_0080C8372E35__INCLUDED_
@@ -23,3 +24,5 @@
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
 #endif // !defined(AFX_STDAFX_H__DEE5F4C7_D4B0_11D1_B74B_0080C8372E35__INCLUDED_)
+
+#endif // __SKIP_SYS_INCLUDES__
