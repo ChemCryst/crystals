@@ -177,34 +177,58 @@ char* getCrystalSystem()
     int iSelect = -1;
     do
     {
-        cout << "Select crystal system\n";
-        cout << "0: Triclinic\n1: Monoclinic\n2: Orthorhombic\n3: Tetragonal\n4: Trigonal\n5: Hexagonal\n6: Cubic\n";
-        cin >> iSelect;
-        switch (iSelect)
-        {
-            case 0:
-                return "Triclinic";
-            break;
-            case 1:
-                return "Monoclinic";
-            break;
-            case 2:
-                return "Orthorhombic";
-            break;
-            case 3:
-                return "Tetragonal";
-            break;
-            case 4:
-                return "Trigonal";
-            break;
-            case 5:
-                return "Hexagonal";
-            break;
-            case 6:
-                return "Cubic";
-            break;
-        }
+        std::cout << "0: Triclinic\n" <<
+            "1: MonoclinicA\n" <<
+            "2: MonoclinicB\n" <<
+            "3: MonoclinicC\n" <<
+            "4: Orthorhombic\n" <<
+            "5: Tetragonal\n" <<
+            "6: Trigonal\n" <<
+            "7: Hexagonal\n" <<
+            "8: Cubic\nSelect crystal system:";
+        std::cin >> iSelect;
+        return crystalSystemConst(iSelect);
     }
     while (iSelect < 0 && iSelect > 6);
     return 0;
+}
+
+char* crystalSystemConst(int pIndex)
+{
+    switch (pIndex)
+    {
+        case 0:
+            return "Triclinic";
+        break;
+        case 1:
+            return "MonoclinicA";
+        break;
+        case 2:
+            return "MonoclinicB";
+        break;
+        case 3:
+            return "MonoclinicC";
+        break;
+        case 4:
+            return "Orthorhombic";
+        break;
+        case 5:
+            return "Tetragonal";
+        break;
+        case 6:
+            return "Trigonal";
+        break;
+        case 7:
+            return "Hexagonal";
+        break;
+        case 8:
+            return "Cubic";
+        break;
+    }
+    return NULL;
+}
+
+void UnitCell::readInUnitCell(char* tPath)	//Reads in from the file provided
+{
+    
 }
