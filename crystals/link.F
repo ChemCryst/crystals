@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2001/06/18 08:27:55  richard
+C Comment out the sir input file comments (which are jumped around anyway), because
+C the linux compiler doesn't like the format statements (lots of missing commas, I think).
+C
 C Revision 1.27  2001/04/11 15:27:15  CKP2
 C Fix xsymop so that .CIF entries tally
 C
@@ -528,7 +532,9 @@ C----- UNIT CARDS
         WRITE (NCFPU1, ' (''UNIT '', 15F5.0)')
      1  (F*STORE(J+4), J = L29, M29, MD29)
       ENDIF
-
+C----- WRITE DUMMY FVAR CARD
+        WRITE (NCFPU1, ' (''FVAR 1. '')')
+C
 C----- WRITING ATOMS - SAVE AND RESTORE IO UNITS
         J = NCPU
         NCPU = NCFPU1
