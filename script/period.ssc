@@ -4,10 +4,11 @@
 %%
 ^^WI WINDOW PERIOD 'Periodic table' MODAL
 ^^WI CANCEL='XX' COMMIT='XX'
-^^WI GRID VLARGE NROWS=8 NCOLS=20
+^^WI GRID VLARGE NROWS=12 NCOLS=20
 ^^WI {
 ^^WI  @ 2,2 BUTTON H H
-^^WI  @ 2,19 BUTTON He He
+^^WI  @ 2,15 BUTTON Q Q
+^^WI  @ 2,19 STATIC He He
 ^^WI  @ 3,2 BUTTON Li Li
 ^^WI  @ 3,3 BUTTON Be Be
 ^^WI  @ 3,14 BUTTON B B
@@ -15,7 +16,7 @@
 ^^WI  @ 3,16 BUTTON N N
 ^^WI  @ 3,17 BUTTON O O
 ^^WI  @ 3,18 BUTTON F F
-^^WI  @ 3,19 BUTTON Ne Ne
+^^WI  @ 3,19 STATIC Ne Ne
 ^^WI  @ 4,2 BUTTON Na Na
 ^^WI  @ 4,3 BUTTON Mg Mg
 ^^WI  @ 4,14 BUTTON Al Al
@@ -23,7 +24,7 @@
 ^^WI  @ 4,16 BUTTON P P
 ^^WI  @ 4,17 BUTTON S S
 ^^WI  @ 4,18 BUTTON Cl Cl
-^^WI  @ 4,19 BUTTON Ar Ar
+^^WI  @ 4,19 STATIC Ar Ar
 ^^WI  @ 5,2 BUTTON K K 
 ^^WI  @ 5,3 BUTTON Ca Ca
 ^^WI  @ 5,4 BUTTON Sc Sc
@@ -41,7 +42,74 @@
 ^^WI  @ 5,16 BUTTON As As
 ^^WI  @ 5,17 BUTTON Se Se
 ^^WI  @ 5,18 BUTTON Br Br
-^^WI  @ 5,19 BUTTON Kr KR
+^^WI  @ 5,19 STATIC Kr Kr
+^^WI  @ 6,2 BUTTON Rb Rb
+^^WI  @ 6,3 BUTTON Sr Sr
+^^WI  @ 6,4 BUTTON Y Y
+^^WI  @ 6,5 BUTTON Zr Zr 
+^^WI  @ 6,6 BUTTON Nb Nb
+^^WI  @ 6,7 BUTTON Mo Mo
+^^WI  @ 6,8 BUTTON Tc Tc
+^^WI  @ 6,9 BUTTON Ru Ru
+^^WI  @ 6,10 BUTTON Rh Rh 
+^^WI  @ 6,11 BUTTON Pd Pd 
+^^WI  @ 6,12 BUTTON Ag Ag 
+^^WI  @ 6,13 BUTTON Cd Cd
+^^WI  @ 6,14 BUTTON In In
+^^WI  @ 6,15 BUTTON Sn Sn
+^^WI  @ 6,16 BUTTON Sb Sb
+^^WI  @ 6,17 BUTTON Te Te
+^^WI  @ 6,18 BUTTON I I
+^^WI  @ 6,19 STATIC Xe Xe
+^^WI  @ 7,2 BUTTON Cs Cs 
+^^WI  @ 7,3 BUTTON Ba Ba
+^^WI  @ 7,4 BUTTON La La
+^^WI  @ 7,5 BUTTON Hf Hf 
+^^WI  @ 7,6 BUTTON Ta Ta
+^^WI  @ 7,7 BUTTON W W
+^^WI  @ 7,8 BUTTON Re Re 
+^^WI  @ 7,9 BUTTON Os Os
+^^WI  @ 7,10 BUTTON Ir Ir 
+^^WI  @ 7,11 BUTTON Pt Pt 
+^^WI  @ 7,12 BUTTON Au Au 
+^^WI  @ 7,13 BUTTON Hg Hg
+^^WI  @ 7,14 BUTTON Tl Tl
+^^WI  @ 7,15 BUTTON Pb Pb
+^^WI  @ 7,16 BUTTON Bi Bi
+^^WI  @ 7,17 BUTTON Po Po
+^^WI  @ 7,18 STATIC At At
+^^WI  @ 7,19 STATIC Rn Rn
+^^WI  @ 8,2 STATIC Fr Fr
+^^WI  @ 8,3 BUTTON Ra Ra
+^^WI  @ 8,4 BUTTON Ac Ac
+^^WI  @ 10,5 BUTTON Ce Ce
+^^WI  @ 10,6 BUTTON Pr Pr
+^^WI  @ 10,7 BUTTON Nd Nd
+^^WI  @ 10,8 BUTTON Pm Pm
+^^WI  @ 10,9 BUTTON Sm Sm
+^^WI  @ 10,10 BUTTON Eu Eu  
+^^WI  @ 10,11 BUTTON Gd Gd
+^^WI  @ 10,12 BUTTON Tb Tb 
+^^WI  @ 10,13 BUTTON Dy Dy
+^^WI  @ 10,14 BUTTON Ho Ho
+^^WI  @ 10,15 BUTTON Er Er
+^^WI  @ 10,16 BUTTON Tm Tm
+^^WI  @ 10,17 BUTTON Yb Yb
+^^WI  @ 10,18 BUTTON Lu Lu
+^^WI  @ 11,5 BUTTON Th Th
+^^WI  @ 11,6 BUTTON Pa Pa
+^^WI  @ 11,7 BUTTON U U 
+^^WI  @ 11,8 BUTTON Np Np
+^^WI  @ 11,9 BUTTON Pu Pu
+^^WI  @ 11,10 BUTTON Am Am  
+^^WI  @ 11,11 STATIC Cm Cm
+^^WI  @ 11,12 STATIC Bk Bk 
+^^WI  @ 11,13 STATIC Cf Cf
+^^WI  @ 11,14 STATIC Es Es
+^^WI  @ 11,15 STATIC Fm Fm
+^^WI  @ 11,16 STATIC Md Md
+^^WI  @ 11,17 STATIC No No
+^^WI  @ 11,18 STATIC Lr Lr
 ^^WI }
 ^^WI SHOW
 ^^CR
