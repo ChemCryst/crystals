@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2001/04/11 15:27:15  CKP2
+C Fix xsymop so that .CIF entries tally
+C
 C Revision 1.26  2001/03/26 16:40:57  richard
 C Increased possible path length from 32 to 64 chars in KLNKIO.
 C
@@ -645,420 +648,420 @@ C----- OUTPUT A TITLE, FIRST 20 WORDS ONLY
      1 (KTITL(I),I=1,20)
 cdjw1999------ List the commands as comments
       GOTO 19400
-       write(ncfpu1,'('
-     1'>%JOB               a caption is printed in the output '
-     2')')
-       write(ncfpu1,'('
-     1'>%STRUCTURE string  this command is used to  specify the  name'
-     2')')
-       write(ncfpu1,'('
-     1'>                   of  the  structure  to  investigate.   The '
-     2')')
-       write(ncfpu1,'('
-     1'>                   program creates  the  name  of  the  files '
-     2')')
-       write(ncfpu1,'('
-     1'>                   needed by adding the appropriate extension '
-     2')')
-       write(ncfpu1,'('
-     1'>                   to the structure name. The file names are: '
-     2')')
-       write(ncfpu1,'('
-     1'>                      string.bin -> direct access file'
-     2')')
-       write(ncfpu1,'('
-     1'>                      string.ins -> final coordinates file'
-     2')')
-       write(ncfpu1,'('
-     1'>                      string.plt -> file for graphics'
-     2')')
-       write(ncfpu1,'('
-     1'>                   If this command  is  not  used the default '
-     2')')
-       write(ncfpu1,'('
-     1'>                   string "STRUCT" (instead of the name of the'
-     2')')
-       write(ncfpu1,'('
-     1'>                   structure) is used to create file names. '
-     2')')
-       write(ncfpu1,'('
-     1'>%WINDOW [ x y ]    graphic window is required.  Optionally '
-     2')')
-       write(ncfpu1,'('
-     1'>                   it is possible  to increase the dimensions '
-     2')')
-       write(ncfpu1,'('
-     1'>                   using x and y. Default values are 720,500.'
-     2')')
-       write(ncfpu1,'('
-     1'>%NOWINDOW          graphic window is suppressed'
-     2')')
-       write(ncfpu1,'('
-     1'>%INITIALIZE        initialize the direct access file '
-     2')')
-       write(ncfpu1,'('
-     1'>                   (to override previous results and data)'
-     2')')
-       write(ncfpu1,'('
-     1'>%END               end of the input file'
-     2')')
-       write(ncfpu1,'('
-     1'> '
-     2')')
-       write(ncfpu1,'('
-     1'>%CONTINUE          the  program  runs  in  default conditions'
-     2')')
-       write(ncfpu1,'('
-     1'>                   from the last given command up to the end '
-     2')')
-       write(ncfpu1,'('
-     1'> '
-     2')')
-       write(ncfpu1,'('
-     1'> '
-     2')')
-       write(ncfpu1,'('
-     1'>        Preparation  of  data  for  DATA   routine           '
-     2')')
-       write(ncfpu1,'('
-     1'> ----------------------------------------------------------- '
-     2')')
-       write(ncfpu1,'('
-     1'>%DATA              Data input routine'
-     2')')
-       write(ncfpu1,'('
-     1'>CELL  a  b  c  alpha  beta  gamma'
-     2')')
-       write(ncfpu1,'('
-     1'>SPACEGROUP string'
-     2')')
-       write(ncfpu1,'('
-     1'>SHIFT  sx sy sz  '
-     2')')
-       write(ncfpu1,'('
-     1'>CONTENTS  El1  n1  El2   n2   El3  n3   .........'
-     2')')
-       write(ncfpu1,'('
-     1'>RHOMAX x  '
-     2')')
-       write(ncfpu1,'('
-     1'>RECORD n'
-     2')')
-       write(ncfpu1,'('
-     1'>FORMAT string '
-     2')')
-       write(ncfpu1,'('
-     1'>GENER  '
-     2')')
-       write(ncfpu1,'('
-     1'>NOSIGMA'
-     2')')
-       write(ncfpu1,'('
-     1'>REFLECTIONS string '
-     2')')
-       write(ncfpu1,'('
-     1'>FOSQUARE'
-     2')')
-       write(ncfpu1,'('
-     1'> '
-     2')')
-       write(ncfpu1,'('
-     1'>        Preparation  of  data  for  NORMAL routine            '
-     2')')
-       write(ncfpu1,'('
-     1'> ------------------------------------------------------------ '
-     2')')
-       write(ncfpu1,'('
-     1'>%NORMAL            normalization routine'
-     2')')
-       write(ncfpu1,'('
-     1'>NREF n'
-     2')')
-       write(ncfpu1,'('
-     1'>NZRO n'
-     2')')
-       write(ncfpu1,'('
-     1'>BFAC x  '
-     2')')
-       write(ncfpu1,'('
-     1'>PSEUDO n(1,1) n(2,1) n(3,1) n(4,1) n(1,2)  . . .  n(4,3)'
-     2')')
-       write(ncfpu1,'('
-     1'>PARTIAL'
-     2')')
-       write(ncfpu1,'('
-     1'> '
-     2')')
-       write(ncfpu1,'('
-     1'>       Preparation  of  data  for  SEMINVARIANTS  routine     '
-     2')')
-       write(ncfpu1,'('
-     1'> ------------------------------------------------------------ '
-     2')')
-       write(ncfpu1,'('
-     1'>%SEMINV            seminvariants routine'
-     2')')
-       write(ncfpu1,'('
-     1'>FIRST '
-     2')')
-       write(ncfpu1,'('
-     1'>NRS1 n '
-     2')')
-       write(ncfpu1,'('
-     1'>LIST     '
-     2')')
-       write(ncfpu1,'('
-     1'>NUMK n  '
-     2')')
-       write(ncfpu1,'('
-     1'>NRS2 n  '
-     2')')
-       write(ncfpu1,'('
-     1'> '
-     2')')
-       write(ncfpu1,'('
-     1'>         Preparation  of  data  for  INVARIANTS  routine    '
-     2')')
-       write(ncfpu1,'('
-     1'> -----------------------------------------------------------'
-     2')')
-       write(ncfpu1,'('
-     1'>%INVARIANTS        invariants routine'
-     2')')
-       write(ncfpu1,'('
-     1'>NRTRIPLETS n   '
-     2')')
-       write(ncfpu1,'('
-     1'>GMIN  x    '
-     2')')
-       write(ncfpu1,'('
-     1'>EMIN x   '
-     2')')
-       write(ncfpu1,'('
-     1'>NRPSIZERO n '
-     2')')
-       write(ncfpu1,'('
-     1'>EMAX x    '
-     2')')
-       write(ncfpu1,'('
-     1'>COCHRAN '
-     2')')
-       write(ncfpu1,'('
-     1'>NUMK n  '
-     2')')
-       write(ncfpu1,'('
-     1'>CORRECTION x  '
-     2')')
-       write(ncfpu1,'('
-     1'>BIG n'
-     2')')
-       write(ncfpu1,'('
-     1'> '
-     2')')
-       write(ncfpu1,'('
-     1'>           Preparation  of  data  for  PHASE  routine       '
-     2')')
-       write(ncfpu1,'('
-     1'> -----------------------------------------------------------'
-     2')')
-       write(ncfpu1,'('
-     1'>%PHASE             converge-tangent routine'
-     2')')
-       write(ncfpu1,'('
-     1'>LIST n     '
-     2')')
-       write(ncfpu1,'('
-     1'>TWOPHASE x   '
-     2')')
-       write(ncfpu1,'('
-     1'>ONEPHASE n     '
-     2')')
-       write(ncfpu1,'('
-     1'>ORIGIN n(i) phi(i)'
-     2')')
-       write(ncfpu1,'('
-     1'>ENANTIOMORPH n '
-     2')')
-       write(ncfpu1,'('
-     1'>SYMBOLS n   '
-     2')')
-       write(ncfpu1,'('
-     1'>PERMUTE n(i)'
-     2')')
-       write(ncfpu1,'('
-     1'>SPECIALS n     '
-     2')')
-       write(ncfpu1,'('
-     1'>PHASE n(i) phi(i) wt(i)'
-     2')')
-       write(ncfpu1,'('
-     1'>TABLE'
-     2')')
-       write(ncfpu1,'('
-     1'>TRIALS n(i) '
-     2')')
-       write(ncfpu1,'('
-     1'>MINFOM  x n  '
-     2')')
-       write(ncfpu1,'('
-     1'>RANDOM n '
-     2')')
-       write(ncfpu1,'('
-     1'>SEED n'
-     2')')
-       write(ncfpu1,'('
-     1'>NOREJECT'
-     2')')
-       write(ncfpu1,'('
-     1'>TEST'
-     2')')
-       write(ncfpu1,'('
-     1'>MAXTRIALS'
-     2')')
-       write(ncfpu1,'('
-     1'> '
-     2')')
-       write(ncfpu1,'('
-     1'>   Preparation  of  data  for  FOURIER/LEAST-SQUARES  routine'
-     2')')
-       write(ncfpu1,'('
-     1'> ------------------------------------------------------------'
-     2')')
-       write(ncfpu1,'('
-     1'>%FOURIER           Fourier/Least-Squares routine'
-     2')')
-       write(ncfpu1,'('
-     1'>SET n      '
-     2')')
-       write(ncfpu1,'('
-     1'>MAP '
-     2')')
-       write(ncfpu1,'('
-     1'>LEVEL n   '
-     2')')
-       write(ncfpu1,'('
-     1'>GRID x       '
-     2')')
-      write(ncfpu1,'('
-     1'>LIMITS  l1  l2  l3  '
-     2')')
-      write(ncfpu1,'('
-     1'>PEAKS n   '
-     2')')
-       write(ncfpu1,'('
-     1'>LAYX'
-     2')')
-       write(ncfpu1,'('
-     1'>LAYY'
-     2')')
-       write(ncfpu1,'('
-     1'>LAYZ'
-     2')')
-       write(ncfpu1,'('
-     1'>RADIUS El x'
-     2')')
-       write(ncfpu1,'('
-     1'>COORDINATION El  dmin  dmax  [n]'
-     2')')
-       write(ncfpu1,'('
-     1'>FOMIN x'
-     2')')
-       write(ncfpu1,'('
-     1'>SIGMA x'
-     2')')
-       write(ncfpu1,'('
-     1'>DMAX x'
-     2')')
-       write(ncfpu1,'('
-     1'>RECYCLE n'
-     2')')
-       write(ncfpu1,'('
-     1'>FRAGMENT string'
-     2')')
-       write(ncfpu1,'('
-     1'>     '
-     2')')
-       write(ncfpu1,'('
-     1'>          Preparation  of  data  for  EXPORT   routine       '
-     2')')
-       write(ncfpu1,'('
-     1'> ------------------------------------------------------------'
-     2')')
-       write(ncfpu1,'('
-     1'>%EXPORT'
-     2')')
-       write(ncfpu1,'('
-     1'>CRYSTALS string'
-     2')')
-       write(ncfpu1,'('
-     1'>COMPLETE'
-     2')')
-       write(ncfpu1,'('
-     1'>SHELX string'
-     2')')
-       write(ncfpu1,'('
-     1'>MOLDRAW string'
-     2')')
-       write(ncfpu1,'('
-     1'>SCHAKAL string'
-     2')')
-       write(ncfpu1,'('
-     1'>MOLPLOT string'
-     2')')
-       write(ncfpu1,'('
-     1'>XYZ string'
-     2')')
-       write(ncfpu1,'('
-     1'>'
-     2')')
-       write(ncfpu1,'('
-     1'>          Preparation  of  data  for  RESTART  routine       '
-     2')')
-       write(ncfpu1,'('
-     1'> ------------------------------------------------------------'
-     2')')
-       write(ncfpu1,'('
-     1'>%RESTART           Fourier/Least-Squares restart routine'
-     2')')
-       write(ncfpu1,'('
-     1'>COMPLETE'
-     2')')
-       write(ncfpu1,'('
-     1'>RELABEL string species (or RENAME string species)'
-     2')')
-       write(ncfpu1,'('
-     1'>DELETE string'
-     2')')
-       write(ncfpu1,'('
-     1'> '
-     2')')
-       write(ncfpu1,'('
-     1'>          Preparation  of  data  for  PATTERSON routine      '
-     2')')
-       write(ncfpu1,'('
-     1'> ------------------------------------------------------------'
-     2')')
-       write(ncfpu1,'('
-     1'>%PATTERSON'
-     2')')
-       write(ncfpu1,'('
-     1'>LAYX, LAYY, LAYZ, MAP, PEAKS, LIMIT, GRID: See Fourier '
-     2')')
-      write(ncfpu1,'('
-     1'>E**2 (or E*E)'
-     2')')
-       write(ncfpu1,'('
-     1'>F**2 (or F*F)'
-     2')')
-       write(ncfpu1,'('
-     1'>E*F  (or F*E)'
-     2')')
-       write(ncfpu1,'('
-     1'>  '
-     2')')
-       write(ncfpu1,'('
-     1'> '
-     2')')
+c       write(ncfpu1,'('
+c     1'>%JOB               a caption is printed in the output '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>%STRUCTURE string  this command is used to  specify the  name'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>                   of  the  structure  to  investigate.   The '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>                   program creates  the  name  of  the  files '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>                   needed by adding the appropriate extension '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>                   to the structure name. The file names are: '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>                      string.bin -> direct access file'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>                      string.ins -> final coordinates file'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>                      string.plt -> file for graphics'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>                   If this command  is  not  used the default '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>                   string "STRUCT" (instead of the name of the'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>                   structure) is used to create file names. '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>%WINDOW [ x y ]    graphic window is required.  Optionally '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>                   it is possible  to increase the dimensions '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>                   using x and y. Default values are 720,500.'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>%NOWINDOW          graphic window is suppressed'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>%INITIALIZE        initialize the direct access file '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>                   (to override previous results and data)'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>%END               end of the input file'
+c     2')')
+c       write(ncfpu1,'('
+c     1'> '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>%CONTINUE          the  program  runs  in  default conditions'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>                   from the last given command up to the end '
+c     2')')
+c       write(ncfpu1,'('
+c     1'> '
+c     2')')
+c       write(ncfpu1,'('
+c     1'> '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>        Preparation  of  data  for  DATA   routine           '
+c     2')')
+c       write(ncfpu1,'('
+c     1'> ----------------------------------------------------------- '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>%DATA              Data input routine'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>CELL  a  b  c  alpha  beta  gamma'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>SPACEGROUP string'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>SHIFT  sx sy sz  '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>CONTENTS  El1  n1  El2   n2   El3  n3   .........'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>RHOMAX x  '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>RECORD n'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>FORMAT string '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>GENER  '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>NOSIGMA'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>REFLECTIONS string '
+c     2')')
+c       write(ncfpcu1,'('
+c     1'>FOSQUARE'
+c     2')')
+c       write(ncfpu1,'('
+c     1'> '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>        Preparation  of  data  for  NORMAL routine            '
+c     2')')
+c       write(ncfpu1,'('
+c     1'> ------------------------------------------------------------ '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>%NORMAL            normalization routine'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>NREF n'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>NZRO n'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>BFAC x  '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>PSEUDO n(1,1) n(2,1) n(3,1) n(4,1) n(1,2)  . . .  n(4,3)'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>PARTIAL'
+c     2')')
+c       write(ncfpu1,'('
+c     1'> '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>       Preparation  of  data  for  SEMINVARIANTS  routine     '
+c     2')')
+c       write(ncfpu1,'('
+c     1'> ------------------------------------------------------------ '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>%SEMINV            seminvariants routine'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>FIRST '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>NRS1 n '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>LIST     '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>NUMK n  '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>NRS2 n  '
+c     2')')
+c       write(ncfpu1,'('
+c     1'> '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>         Preparation  of  data  for  INVARIANTS  routine    '
+c     2')')
+c       write(ncfpu1,'('
+c     1'> -----------------------------------------------------------'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>%INVARIANTS        invariants routine'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>NRTRIPLETS n   '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>GMIN  x    '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>EMIN x   '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>NRPSIZERO n '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>EMAX x    '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>COCHRAN '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>NUMK n  '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>CORRECTION x  '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>BIG n'
+c     2')')
+c       write(ncfpu1,'('
+c     1'> '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>           Preparation  of  data  for  PHASE  routine       '
+c     2')')
+c       write(ncfpu1,'('
+c     1'> -----------------------------------------------------------'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>%PHASE             converge-tangent routine'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>LIST n     '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>TWOPHASE x   '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>ONEPHASE n     '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>ORIGIN n(i) phi(i)'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>ENANTIOMORPH n '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>SYMBOLS n   '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>PERMUTE n(i)'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>SPECIALS n     '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>PHASE n(i) phi(i) wt(i)'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>TABLE'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>TRIALS n(i) '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>MINFOM  x n  '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>RANDOM n '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>SEED n'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>NOREJECT'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>TEST'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>MAXTRIALS'
+c     2')')
+c       write(ncfpu1,'('
+c     1'> '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>   Preparation  of  data  for  FOURIER/LEAST-SQUARES  routine'
+c     2')')
+c       write(ncfpu1,'('
+c     1'> ------------------------------------------------------------'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>%FOURIER           Fourier/Least-Squares routine'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>SET n      '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>MAP '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>LEVEL n   '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>GRID x       '
+c     2')')
+c      write(ncfpu1,'('
+c     1'>LIMITS  l1  l2  l3  '
+c     2')')
+c      write(ncfpu1,'('
+c     1'>PEAKS n   '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>LAYX'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>LAYY'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>LAYZ'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>RADIUS El x'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>COORDINATION El  dmin  dmax  [n]'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>FOMIN x'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>SIGMA x'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>DMAX x'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>RECYCLE n'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>FRAGMENT string'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>     '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>          Preparation  of  data  for  EXPORT   routine       '
+c     2')')
+c       write(ncfpu1,'('
+c     1'> ------------------------------------------------------------'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>%EXPORT'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>CRYSTALS string'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>COMPLETE'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>SHELX string'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>MOLDRAW string'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>SCHAKAL string'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>MOLPLOT string'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>XYZ string'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>          Preparation  of  data  for  RESTART  routine       '
+c     2')')
+c       write(ncfpu1,'('
+c     1'> ------------------------------------------------------------'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>%RESTART           Fourier/Least-Squares restart routine'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>COMPLETE'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>RELABEL string species (or RENAME string species)'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>DELETE string'
+c     2')')
+c       write(ncfpu1,'('
+c     1'> '
+c     2')')
+c       write(ncfpu1,'('
+c     1'>          Preparation  of  data  for  PATTERSON routine      '
+c     2')')
+c       write(ncfpu1,'('
+c     1'> ------------------------------------------------------------'
+c     2')')
+c       write(ncfpu1,'('
+c      1'>%PATTERSON'
+c      2')')
+c       write(ncfpu1,'('
+c     1'>LAYX, LAYY, LAYZ, MAP, PEAKS, LIMIT, GRID: See Fourier '
+c     2')')
+c      write(ncfpu1,'('
+c     1'>E**2 (or E*E)'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>F**2 (or F*F)'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>E*F  (or F*E)'
+c     2')')
+c       write(ncfpu1,'('
+c     1'>  '
+c     2')')
+c       write(ncfpu1,'('
+c     1'> '
+c     2')')
 19400  CONTINUE
 cdjw1999
         WRITE(NCFPU1, '(''%data '',/,8X,''cell '', 3F7.3, 3F8.3)')
