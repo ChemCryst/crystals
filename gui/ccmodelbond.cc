@@ -15,6 +15,9 @@ CcModelBond::CcModelBond()
 	ox2 = oy2 = oz2 = x2 = y2 = z2 = 0;
 	r = g = b = 0;
 	rad = 0;
+	xrot = 0;
+	yrot = 0;
+	length = 1;
 }
 
 CcModelBond::~CcModelBond()
@@ -23,6 +26,7 @@ CcModelBond::~CcModelBond()
 
 void CcModelBond::ParseInput(CcTokenList* tokenList)
 {
+    float degToRad = (float) (3.1415926535 / 180.0);
 	CcString theString;
 //Just read four integers.
 	theString = tokenList->GetToken();
@@ -45,6 +49,19 @@ void CcModelBond::ParseInput(CcTokenList* tokenList)
 	b = atoi( theString.ToCString() );
 	theString = tokenList->GetToken();
 	rad = atoi( theString.ToCString() );
+
+// Do these calculations now. Uses 3 bytes more memory per bond, but saves a lot of time later,
+// as they were re-calculated every time the model is rotated.
+    float xlen = (float)(x2-x1);
+	float ylen = (float)(y2-y1);
+	float zlen = (float)(z2-z1);
+    float xzlen =  (float)sqrt ( xlen*xlen + zlen*zlen );
+	
+    xrot = -atan2( ylen, xzlen ) / (float) degToRad;
+    yrot =  atan2( xlen , zlen ) / (float) degToRad;
+    length = (float)sqrt ( xlen*xlen + ylen*ylen + zlen*zlen );
+
+
 }
 
 void CcModelBond::Render(CrModel * view, Boolean detailed)
@@ -52,23 +69,22 @@ void CcModelBond::Render(CrModel * view, Boolean detailed)
 
                                                    
 /*   float vecX = ((CxModel*)view->mWidgetPtr)->mat[6] * (z2 - z1)
-              - ((CxModel*)view->mWidgetPtr)->mat[10] * (y2 - y1);
-   float vecY = ((CxModel*)view->mWidgetPtr)->mat[10] * (x2 - x1)
-              - ((CxModel*)view->mWidgetPtr)->mat[2] * (z2 - z1);
-   float vecZ = ((CxModel*)view->mWidgetPtr)->mat[2] * (y2 - y1)
-              - ((CxModel*)view->mWidgetPtr)->mat[6] * (x2 - x1);
-
-
+//              - ((CxModel*)view->mWidgetPtr)->mat[10] * (y2 - y1);
+//   float vecY = ((CxModel*)view->mWidgetPtr)->mat[10] * (x2 - x1)
+//              - ((CxModel*)view->mWidgetPtr)->mat[2] * (z2 - z1);
+//  float vecZ = ((CxModel*)view->mWidgetPtr)->mat[2] * (y2 - y1)
+//              - ((CxModel*)view->mWidgetPtr)->mat[6] * (x2 - x1);
+//
+//
 //   TEXTOUT("VECX "+CcString(vecX)+" VECY "+CcString(vecY)+"VECZ "+CcString(vecZ));
-
-   float vecLeng = max ( 0.001, sqrt ( vecX*vecX + vecY*vecY + vecZ*vecZ ));
-   vecX = vecX / vecLeng;
-   vecY = vecY / vecLeng;
-   vecZ = vecZ / vecLeng;
-
+//
+//   float vecLeng = max ( 0.001, sqrt ( vecX*vecX + vecY*vecY + vecZ*vecZ ));
+//   vecX = vecX / vecLeng;
+//   vecY = vecY / vecLeng;
+//   vecZ = vecZ / vecLeng;
+//
 */
 
-   double degToRad = 3.1415926535 / 180.0;
    int detail = (detailed)? view->m_NormalRes : view->m_QuickRes ;
    glPushMatrix();
       GLUquadricObj* cylinder;
@@ -82,28 +98,28 @@ void CcModelBond::Render(CrModel * view, Boolean detailed)
       glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
 
       int bondrad = (int)((float)rad* view->RadiusScale());
-      float xlen = (float)(x2-x1), ylen = (float)(y2-y1), zlen = (float)(z2-z1);
-      float length = (float)sqrt ( xlen*xlen + ylen*ylen + zlen*zlen );
-      float centerX = (x1 + x2)/2.0f , centerY = (y1 + y2)/2.0f, centerZ = (z1 + z2)/2.0f;
-      float xrot = (float)asin (min(1.0f,max(-1.0f,(-ylen/length))));
-      float yrot = (float)acos (min(1.0f,max(-1.0f,(zlen/(length*cos(xrot)) ))));
-      if ( (length*cos(xrot)*sin(yrot))/xlen < 0 )
-			yrot = -yrot;
+//      float xlen = (float)(x2-x1), ylen = (float)(y2-y1), zlen = (float)(z2-z1);
+//      float length = (float)sqrt ( xlen*xlen + ylen*ylen + zlen*zlen );
+//      float xrot = (float)asin (min(1.0f,max(-1.0f,(-ylen/length))));
+//      float yrot = (float)acos (min(1.0f,max(-1.0f,(zlen/(length*cos(xrot)) ))));
+//      if ( (length*cos(xrot)*sin(yrot))/xlen < 0 )
+//			yrot = -yrot;
+// Changed to use atan2 instead of acos and asin and moved into ParseInput so only calced once.
 
-      xrot = xrot/(float)degToRad;
-      yrot = yrot/(float)degToRad;
 
-        glTranslated(centerX, centerY, centerZ);   //Translate view origin to the center of the bond
-        glRotatef(yrot,0,1,0);
-        glRotatef(xrot,1,0,0);
-        glTranslated(0, 0, -length / 2);           //shift the cylinder so it is centered at 0,0,0;
-        cylinder = gluNewQuadric();
-        gluQuadricDrawStyle(cylinder,GLU_FILL);
-        gluCylinder(cylinder,(float)bondrad,(float)bondrad,length, detail, detail);
-        gluDeleteQuadric(cylinder);
+	  glTranslated((x1+x2)/2.0f, (y1+y2)/2.0f, (z1+z2)/2.0f);   //Translate view origin to the center of the bond
+      glRotatef(yrot,0,1,0);
+      glRotatef(xrot,1,0,0);
+      glTranslated(0, 0, -length / 2);           //shift the cylinder so it is centered at 0,0,0;
+      cylinder = gluNewQuadric();
+      gluQuadricDrawStyle(cylinder,GLU_FILL);
+      gluCylinder(cylinder,(float)bondrad,(float)bondrad,length, detail, detail);
+      gluDeleteQuadric(cylinder);
+
+
 /*
       glPushMatrix();
-        glTranslated(100*vecX+centerX, 100*vecY+centerY, 100*vecZ+centerZ);   //Translate view origin to the center of the bond
+        glTranslated(100*vecX+(x1+x2)/2.0f, 100*vecY+(y1+y2)/2.0f, 100*vecZ+(z1+z2)/2.0f);   //Translate view origin to the center of the bond
         glRotatef(yrot,0,1,0);
         glRotatef(xrot,1,0,0);
         glTranslated(0, 0, -length / 2);           //shift the cylinder so it is centered at 0,0,0;
@@ -113,7 +129,7 @@ void CcModelBond::Render(CrModel * view, Boolean detailed)
         gluDeleteQuadric(cylinder);
       glPopMatrix();
       glPushMatrix();
-        glTranslated(-100*vecX+centerX, -100*vecY+centerY, -100*vecZ+centerZ);   //Translate view origin to the center of the bond
+        glTranslated(-100*vecX+((x1+x2)/2.0f), -100*vecY+((y1+y2)/2.0f), -100*vecZ+((z1+z2)/2.0f));   //Translate view origin to the center of the bond
         glRotatef(yrot,0,1,0);
         glRotatef(xrot,1,0,0);
         glTranslated(0, 0, -length / 2);           //shift the cylinder so it is centered at 0,0,0;

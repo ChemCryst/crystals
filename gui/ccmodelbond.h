@@ -23,6 +23,8 @@ class CcModelBond : public CcModelObject
 		int ox2,oy2,oz2;
 		int r,g,b;
 		int rad;
+		float length;
+		float xrot, yrot;
 };
 
 #endif
