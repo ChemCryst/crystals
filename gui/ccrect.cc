@@ -26,6 +26,42 @@ CcRect::CcRect( const CcRect &inRect )
       mRight      = inRect.mRight;
 }
 
+CcRect::CcRect( CcString geomString )
+{
+      int len = geomString.Len();
+      char str[] = "                                                                                ";
+      strcpy(&str[0], geomString.ToCString());
+      char delim[] = " ";
+      char * top = strtok( str , delim);
+      char * lef = strtok( NULL, delim);
+      char * bot = strtok( NULL, delim);
+      char * rig = strtok( NULL, delim);
+       
+      if ( top && lef && bot && rig )
+      {
+		mTop    = atoi ( top ) ;
+		mLeft   = atoi ( lef ) ;
+		mBottom = atoi ( bot ) ;
+		mRight  = atoi ( rig ) ;
+      }
+      else
+      {
+            mTop   = mLeft = 0;
+            mRight = mBottom = 6;
+      }
+}     
+
+CcString CcRect::AsString()
+{
+      CcString cgeom = CcString ( mTop )    + " "
+                     + CcString ( mLeft )   + " "
+                     + CcString ( mBottom ) + " "
+                     + CcString ( mRight );
+
+      return cgeom;
+}
+
+
 CcRect::CcRect( const int top, const int left, const int bottom, const int right )
 {
 	Set( top, left, bottom, right );

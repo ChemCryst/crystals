@@ -21,6 +21,7 @@ class	CcRect
 		// methods
 			CcRect();
                   CcRect( const CcRect & inRect );
+                  CcRect( CcString inGeom );
 			CcRect( const int top, const int left, const int bottom, const int right );
 			~CcRect();
 		void	Set( const int top, const int left, const int bottom, const int right );
@@ -31,7 +32,8 @@ class	CcRect
 		const int	Height();
 		const int	Width();
 		CcRect&	operator=( const CcRect &inRect );
-		
+            CcString AsString();
+
 		// attributes
 		int	mTop;
 		int	mLeft;
