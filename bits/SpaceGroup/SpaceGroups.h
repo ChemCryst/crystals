@@ -11,6 +11,8 @@
 #include "Collections.h"
 #include "BaseTypes.h"
 #include <iostream>
+#include <fstream>
+#include <vector>
 using namespace std;
 
 class SpaceGroup:public MyObject
@@ -19,6 +21,7 @@ class SpaceGroup:public MyObject
         char* iSymbols;
     public:
         SpaceGroup(char* pSymbols);
+        SpaceGroup(const SpaceGroup& pSpaceGroup);
         ~SpaceGroup();
         char* getSymbol();
         std::ostream& output(std::ostream& pStream);
@@ -26,16 +29,31 @@ class SpaceGroup:public MyObject
 
 std::ostream& operator<<(std::ostream& pStream, SpaceGroup& pSpaceGroup);
 
+class SpaceGroups:private vector<SpaceGroup>
+{	
+    private:
+        char* iBrackets;
+        void addSpaceGroups(char* pSpaceGroups);
+    public:
+        SpaceGroups(char* pSpaceGroups);
+        long count();
+        std::ostream& output(std::ostream& pStream);
+        std::ofstream& output(std::ofstream& pStream);
+};
+
+std::ofstream& operator<<(std::ofstream& pStream, SpaceGroups& pSpaceGroups);
+std::ostream& operator<<(std::ostream& pStream, SpaceGroups& pSpaceGroups);
+
 class SGColumn:virtual public Column
 {
     private:
         char* iPointGroup;
-        ArrayList<SpaceGroup>* iSpaceGroups;
+        ArrayList<SpaceGroups>* iSpaceGroups;
     public:
         SGColumn();
         ~SGColumn();
         void add(char* pSpaceGroup, int pRow);
-        SpaceGroup* get(int pIndex);
+        SpaceGroups* get(int pIndex);
         int length();
         void setHeading(char* pHeading);
         char* getPointGroup();
