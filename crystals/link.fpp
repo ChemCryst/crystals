@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2000/09/20 12:27:33  ckp2
+C FOREIGN New options for SIR92, and a PLATON directive.
+C
 C Revision 1.19  1999/10/07 14:34:53  ckp2
 C djw MORE sir97 bits!
 C
@@ -400,7 +403,7 @@ C
 C----- JUST WRITING ATOMS - SAVE AND RESTORE IO UNITS
         J = NCPU
         NCPU = NCFPU1
-        CALL XPCH5C(0)
+        CALL XPCH5C(1)
         NCPU = J
         GOTO 1850
       ENDIF
