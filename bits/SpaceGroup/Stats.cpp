@@ -63,7 +63,7 @@ void Stats::addReflectionRows(int pColumn, Reflection* pReflection, Matrix<float
             tStats->tNumNonM ++;	//Number non-matched
             if (pReflection->i/pReflection->iSE >= 3)
             {
-                tStats->tNumNonMLsInt ++;	//Number Int<3*sigma non-matched
+                tStats->tNumNonMLsInt ++;	//Number Int>=3*sigma non-matched
             }
             else
             {
@@ -116,7 +116,7 @@ void Stats::outputRow(int pRow, std::ostream& pStream)
     }
     for (int i = 0; i < tHCount; i++)
     {
-        pStream << "| NMAI: " << iStats[i*tCCount+pRow].tNonMTotInt/iStats[i*tCCount+pRow].tNumNonM << "\t";	//Total intensity non-matched.
+        pStream << "| NMAI: " << setprecision (4) << iStats[i*tCCount+pRow].tNonMTotInt/iStats[i*tCCount+pRow].tNumNonM << "\t";	//Total intensity non-matched.
     }
     pStream << "\n\t\t";
     for (int i = 0; i < tHCount; i++)
@@ -230,6 +230,6 @@ std::ostream& Stats::output(std::ostream& pStream)
 
 std::ostream& operator<<(std::ostream& pStream, Stats& pStats)
 {
-    return pStats.output(pStream);
+    return pStats.output(pStream);	// Change tabs to spaces when outputing to a file.
 }
 
