@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  1999/06/04 11:43:08  dosuser
+C RIC: Added support for linux graphical interface version (GIL)
+C
 C Revision 1.5  1999/05/11 11:56:38  dosuser
 C RIC: Calling ZMORE with wrong # of args. Fixed.
 C
@@ -3076,6 +3079,7 @@ CODE FOR ZCMD11 [ 1100 GROUP SCREEN/HARDCOPY ]
 \CAMBTN
 \CAMBLK
 \XIOBUF
+\CAMDEV
 
 C READ IN AND SET UP THE DEVICE SPECIFIERS - THIS ROUTINE IS
 C CALLED FROM THE SMALL VERSION TO SET UP THE DEVICE.
@@ -3113,23 +3117,43 @@ C FIRST WE NEED TO SHUT DOWN THE OLD DEVICE IF REQUIRED.
       ENDIF
 C LOAD IN THE DEVICE INFO
       ILSIZE = 10
-      IF (.NOT.LFILES (-1,'DEVICE.CMN',IINPT)) THEN
-        CALL ZTXTMD
-        CALL ZMORE('Error - file DEVICE.CMN cannot be found.',0)
-        CALL ZMORE('CAMERON cannot continue',0)
-C cljf
-        CALL ZMORE1('Error - file DEVICE.CMN cannot be found.',0)
-        STOP
-      ENDIF
-      DO 1110 I = 1,(ID-2)*2+12
-        READ (IINPT,'(80X)')
-1110  CONTINUE
+cric99: Device.cmn removed. Parameters stored in CAMPRE in CAMDEV
+c      IF (.NOT.LFILES (-1,'DEVICE.CMN',IINPT)) THEN
+c        CALL ZTXTMD
+c        CALL ZMORE('Error - file DEVICE.CMN cannot be found.',0)
+c        CALL ZMORE('CAMERON cannot continue',0)
+cC cljf
+c        CALL ZMORE1('Error - file DEVICE.CMN cannot be found.',0)
+c        STOP
+c      ENDIF
+
+c nb ID of 2 corresponds to the first item (VGA).
+ 
+C      DO 1110 I = 1,(ID-2)*2+12
+C        READ (IINPT,'(80X)')
+C1110  CONTINUE
 C LOAD IN THE SCREEN/HARDCOPY PARAMETERS
       IF ((ID.EQ.2).OR.(ID.EQ.3).OR.(ID.EQ.5).OR.(ID.EQ.8)
      c .OR. (ID.EQ.11) ) THEN
-        READ (IINPT,1111) XCENS,YCENS,SCLIMS,IBACKS,IFORES,ILABCS,
-     c IBNDCS,ICLDES
-        READ (IINPT,1112) IDEVCS
+
+C        READ (IINPT,1111) XCENS,YCENS,SCLIMS,IBACKS,IFORES,ILABCS,
+C     c IBNDCS,ICLDES
+
+        KID = ID - 2
+        XCENS = RCAMDV ( KID * 3 + 1 )
+        YCENS = RCAMDV ( KID * 3 + 2 ) 
+        SCLIMS= RCAMDV ( KID * 3 + 3 ) 
+        IBACKS= ICAMDV ( KID * 5 + 1 )
+        IFORES= ICAMDV ( KID * 5 + 2 )
+        ILABCS= ICAMDV ( KID * 5 + 3 )
+        IBNDCS= ICAMDV ( KID * 5 + 4 )
+        ICLDES= ICAMDV ( KID * 5 + 5 )
+
+        DO I = 1,16
+            IDEVCS(I) = JCAMDV ( KID * 16 + I )
+        END DO
+
+C        READ (IINPT,1112) IDEVCS
         ICELLC = IBNDCS
         IF (XCENS.LT.YCENS) THEN
           ISCALS = XCENS
@@ -3144,9 +3168,24 @@ C LOAD IN THE SCREEN/HARDCOPY PARAMETERS
 C COPY OVER THE DEFAULT BOND COLOUR
         IBNDCL = IBNDCS
       ELSE
-        READ (IINPT,1111) XCENH,YCENH,SCLIMH,IBACKH,IFOREH,ILABCH,
-     c IBNDCH,ICLDEH
-        READ (IINPT,1112) IDEVCH
+        KID = ID - 2
+        XCENH = RCAMDV ( KID * 3 + 1 )
+        YCENH = RCAMDV ( KID * 3 + 2 ) 
+        SCLIMH= RCAMDV ( KID * 3 + 3 ) 
+        IBACKH= ICAMDV ( KID * 5 + 1 )
+        IFOREH= ICAMDV ( KID * 5 + 2 )
+        ILABCH= ICAMDV ( KID * 5 + 3 )
+        IBNDCH= ICAMDV ( KID * 5 + 4 )
+        ICLDEH= ICAMDV ( KID * 5 + 5 )
+        DO I = 1,16
+            IDEVCH(I) = JCAMDV ( KID * 16 + I )
+        END DO
+
+C        READ (IINPT,1111) XCENH,YCENH,SCLIMH,IBACKH,IFOREH,ILABCH,
+C     c IBNDCH,ICLDEH
+C        READ (IINPT,1112) IDEVCH
+
+
         ICELLC = IBNDCH
         IF (XCENH.LT.YCENH) THEN
           ISCALH = XCENH
@@ -3167,11 +3206,11 @@ C CLEAR THE SCREEN
         YCEN = YCENS
         SCLLIM = SCLIMS
       ENDIF
-1111  FORMAT (5X,3F8.1,5I4)
-1112  FORMAT (16(I2,2X))
-      IF (.NOT.LFILES (0,' ',IINPT)) THEN
-        CALL ZMORE('Error on closing DEVICE.CMN file.',0)
-      ENDIF
+C1111  FORMAT (5X,3F8.1,5I4)
+C1112  FORMAT (16(I2,2X))
+C      IF (.NOT.LFILES (0,' ',IINPT)) THEN
+C        CALL ZMORE('Error on closing DEVICE.CMN file.',0)
+C      ENDIF
 9999  CONTINUE
       RETURN
       END
@@ -5296,3 +5335,50 @@ C This initiates the input of a new set of menus.
       LINPMN = .TRUE.
       RETURN
       END
+
+
+CODE FOR CAMPRESETS
+      BLOCK DATA CAMPRE
+\CAMDEV
+
+
+      DATA CCAMDV / 'VGA',       'SIGMA',        'HPGL',
+     1              'TEKT',      'POST',         'ENCAP',
+     1              'VGA',       'CPOST',        'CENCA' /
+
+#GID      DATA RCAMDV / 320.0, 240.0, 30.0,
+&GID      DATA RCAMDV /1200.0,1200.0, 30.0,
+     2                  480.0, 360.0, 50.0,
+     3                 5200.0,3700.0,300.0,
+     4                  550.0, 360.0, 40.0,
+     5                 4100.0,3000.0,300.0,
+     6                 3000.0,3000.0,300.0,
+     7                  320.0, 240.0, 30.0,
+     8                 4100.0,3000.0,300.0,
+     9                 3000.0,3000.0,300.0 /
+
+      DATA ICAMDV / 15, 0, 0, 0, 0,
+     2               0,15, 8, 0, 0,
+     3              15, 0, 8, 0, 0,
+     4               0, 0, 0, 1, 1,
+     5              15, 1, 0, 1, 1, 
+     6              15, 1, 0, 1, 1, 
+     7              15, 0, 0, 0, 0,
+     8              15, 0, 0, 0, 0,
+     9              15, 0, 0, 0, 0 /
+
+      DATA JCAMDV / 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,
+     2              0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,
+     3              0,1,1,1,1,1,1,1,1,1, 1, 1, 1, 1, 1, 1,
+     4              0,1,1,1,1,1,1,1,1,1, 1, 1, 1, 1, 1, 1,
+     5              0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,
+     6              0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,
+     7              0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,
+     8              0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,
+     9              0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15/
+
+      END
+
+
+
+
