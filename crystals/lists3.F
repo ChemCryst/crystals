@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2003/02/20 16:02:26  rich
+C When list4 is read from disc, fiddle around with the common block.
+C
 C Revision 1.12  2003/01/15 13:50:35  rich
 C Remove all output to NCAWU as part of an ongoing project.
 C
@@ -1290,21 +1293,23 @@ C -- 'EXTEND' DIRECTIVE
 C -- CHECK FOR INVALID VALUES SUPPLIED
       IF ( IRECS .LT. 0 ) GO TO 9900
       IF ( IFREE .LT. 0 ) GO TO 9900
+      IF ( IFREE + IRECS  .GT. 0 ) THEN
 C -- IF AN AMOUNT OF FREE SPACE HAS BEEN REQUESTED, FIND OUT HOW MUCH
 C    SPACE MUST BE ADDED.
-      CALL XDAEND ( NCDFU , IEND )
-      IDWZAP = 0
-      ILASTU = ( KNEXTF ( IDWZAP ) / NWDRCI ) + 1
-      IUNUSE = IEND - ILASTU - 1
-      IADD = MAX0 ( ( IFREE - IUNUSE ) , 0 ) + IRECS
+        CALL XDAEND ( NCDFU , IEND )
+        IDWZAP = 0
+        ILASTU = ( KNEXTF ( IDWZAP ) / NWDRCI ) + 1
+        IUNUSE = IEND - ILASTU - 1
+        IADD = MAX0 ( ( IFREE - IUNUSE ) , 0 ) + IRECS
 C -- ADD REQUIRED EXTRA RECORDS TO FILE
-      CALL XDAXTN ( NCDFU , IEND , IADD )
+        CALL XDAXTN ( NCDFU , IEND , IADD )
 C -- CALCULATE THE NUMBER OF WORDS THAT HAVE BEEN ADDED TO THE FILE
-      IWORDS = IADD * NWDRCI
+        IWORDS = IADD * NWDRCI
 C -- WRITE A MESSAGE TO INFORM THE USER
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1877 ) IADD , IWORDS
-1877  FORMAT ( 1X,'Disc file extended by ',I3, ' record(s)' ,
-     1 ' ( ' , I6 , ' integer words ) ' )
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1877 ) IADD , IWORDS
+1877    FORMAT ( 1X,'Disc file extended by ',I3, ' record(s)' ,
+     1  ' ( ' , I6 , ' integer words ) ' )
+      END IF
       GO TO 4000
 C
 1900  CONTINUE
