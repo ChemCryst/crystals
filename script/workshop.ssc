@@ -1,6 +1,6 @@
 %SCRIPT WORKSHOP
 % VARIABLE INTEGER CHOICE CLEAN
-% VARIABLE CHARACTER CDIR
+% VARIABLE CHARACTER CDIR CFDIR
 % VARIABLE LOGICAL T
 %%
 %% Closes current files and dir and restarts in appropriate location,
@@ -89,13 +89,14 @@
 %        END IF
 %       END IF
 ^^CO    DISPOSE WORKS
+%       EVALUATE CFDIR = GETENV ( 'CRYSDIR' ) 
 %       CASE CHOICE
-%          EVALUATE CDIR = 'CRYSDIR:cyclo\'
-%          EVALUATE CDIR = 'CRYSDIR:ylid\'
-%          EVALUATE CDIR = 'CRYSDIR:peach\'
-%          EVALUATE CDIR = 'CRYSDIR:keen\'
-%          EVALUATE CDIR = 'CRYSDIR:nket\'
-%          EVALUATE CDIR = 'CRYSDIR:example\'
+%          EVALUATE CDIR = CFDIR // 'cyclo\'
+%          EVALUATE CDIR = CFDIR // 'ylid\'
+%          EVALUATE CDIR = CFDIR // 'peach\'
+%          EVALUATE CDIR = CFDIR // 'keen\'
+%          EVALUATE CDIR = CFDIR // 'nket\'
+%          EVALUATE CDIR = CFDIR // 'example\'
 %       END CASE
 %       IF ( .NOT. ( FILEEXISTS CDIR ) ) THEN
 %         TRANSFER '{E Cannot find ' // CDIR TO DISPLAY
