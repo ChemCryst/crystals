@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////
+//////////////////////////////9//////////////////////////////////////////
 
 //   CRYSTALS Interface      Class CrMenu
 
@@ -244,9 +244,10 @@ void CrMenu::Popup(int x, int y, void * window)
       ((CxMenu*)ptr_to_cxObject)->PopupMenuHere(x,y,window);
 }
 
-void CrMenu::Substitute(CcString atomname, CcModelDoc* model)
+void CrMenu::Substitute(CcString atomname, CcModelDoc* model, CcString atom2)
 {
 //Replace all occurences of _A in the command and text fields with the atomname.
+//Replace all occurences of _S in the command and text fields with atom2.
 //Replace all occurences of _G in the command with a newline seperated list of atom names, followed by END.
     CcMenuItem* menuItem = nil;
     CcString acommand, atext;
@@ -255,7 +256,7 @@ void CrMenu::Substitute(CcString atomname, CcModelDoc* model)
     {
         if (menuItem->type == CR_SUBMENU)
         {
-            menuItem->ptr->Substitute(atomname, model);
+            menuItem->ptr->Substitute(atomname, model, atom2);
             atext    = menuItem->originaltext;
             int i;
             for (i = 0; i < atext.Len()-1; i++)
@@ -267,7 +268,16 @@ void CrMenu::Substitute(CcString atomname, CcModelDoc* model)
                     atext = firstPart + atomname + lastPart;
                 }
             }
-            menuItem->SetText(atext);
+            for (i = 0; i < atext.Len()-1; i++)
+            {
+                if(atext[i] == '_' && atext[i+1] == 'S')
+                {
+                    CcString firstPart = atext.Chop(i+1,atext.Len());
+                    CcString lastPart  = atext.Chop(1,i+2);
+                    atext = firstPart + atom2 + lastPart;
+                }
+            }
+            menuItem->SetTitle(atext);
         }
         else if (menuItem->type == CR_MENUITEM)
         {
@@ -285,6 +295,15 @@ void CrMenu::Substitute(CcString atomname, CcModelDoc* model)
             }
             for (i = 0; i < acommand.Len()-1; i++)
             {
+                if(acommand[i] == '_' && acommand[i+1] == 'S')
+                {
+                    CcString firstPart = acommand.Chop(i+1,acommand.Len());
+                    CcString lastPart  = acommand.Chop(1,i+2);
+                    acommand = firstPart + atom2 + lastPart;
+                }
+            }
+            for (i = 0; i < acommand.Len()-1; i++)
+            {
                 if(acommand[i] == '_' && acommand[i+1] == 'G')
                 {
                     CcString firstPart = acommand.Chop(i+1,acommand.Len());
@@ -294,8 +313,6 @@ void CrMenu::Substitute(CcString atomname, CcModelDoc* model)
                     acommand += lastPart;
                 }
             }
-
-
             for (i = 0; i < atext.Len()-1; i++)
             {
                 if(atext[i] == '_' && atext[i+1] == 'A')
@@ -305,16 +322,25 @@ void CrMenu::Substitute(CcString atomname, CcModelDoc* model)
                     atext = firstPart + atomname + lastPart;
                 }
             }
+            for (i = 0; i < atext.Len()-1; i++)
+            {
+                if(atext[i] == '_' && atext[i+1] == 'S')
+                {
+                    CcString firstPart = atext.Chop(i+1,atext.Len());
+                    CcString lastPart  = atext.Chop(1,i+2);
+                    atext = firstPart + atom2 + lastPart;
+                }
+            }
             menuItem->command = acommand;
             menuItem->SetText(atext);
             if ( (CcController::theController)->status.ShouldBeEnabled( menuItem->enable, menuItem->disable ) )
-                  {
-                              ((CxMenu*)ptr_to_cxObject)->EnableItem( menuItem->id, true);
-                  }
-                  else
-                  {
-                              ((CxMenu*)ptr_to_cxObject)->EnableItem( menuItem->id, false);
-                  }
+            {
+                 ((CxMenu*)ptr_to_cxObject)->EnableItem( menuItem->id, true);
+            }
+            else
+            {
+                 ((CxMenu*)ptr_to_cxObject)->EnableItem( menuItem->id, false);
+            }
         }
     }
 

@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2002/02/20 12:05:20  DJWgroup
+//   SH: Added class to allow easier passing of mouseover information from plot classes.
+//
 //   Revision 1.8  2002/02/19 16:34:52  ckp2
 //   Menus for plots.
 //
@@ -51,7 +54,8 @@ class   CrMenu : public CrGUIElement
 
           // methods
         CcParse ParseInput( CcTokenList * tokenList );
-        void Substitute(CcString atomname, CcModelDoc* model);
+
+        void Substitute(CcString atomname, CcModelDoc* model, CcString atom2);
         void Substitute(PlotDataPopup data);
         void Popup(int x, int y, void* window);
         int Condition(CcString conditions);
