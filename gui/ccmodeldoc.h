@@ -8,6 +8,15 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2001/06/17 15:24:20  richard
+//
+//
+//   Lot of functions which used to be called from CxModel and CrModel removed and
+//   now CcModelDoc does these for itself (lists of selected atoms etc.)
+//
+//   Render groups atoms by drawing style and sends GL attributes only once at beginning
+//   of each set (e.g. disabled atoms, selected atoms, normal atoms, excluded atoms.)
+//
 //   Revision 1.8  2001/03/08 15:12:17  richard
 //   Added functions for excluding atoms and bonds, and excluding fragments based on
 //   known bonding.
@@ -41,6 +50,7 @@ class CcList;
 class CcModelAtom;
 class CcModelObject;
 class CcModelStyle;
+class CcModelDoc;
 
 class CcModelDoc
 {
@@ -53,6 +63,17 @@ class CcModelDoc
         void SelectAtomByLabel(CcString atomname, Boolean select);
         void DisableAtomByLabel(CcString atomname, Boolean select);
         CcModelAtom* FindAtomByLabel(CcString atomname);
+        CcModelAtom* FindAtomByPosn(int posn);
+
+        void FastBond(int x1,int y1,int z1, int x2, int y2, int z2,
+                          int r, int g, int b,  int rad,int btype,
+                          int np, int * ptrs, CcString label, CcString cslabl);
+
+        void FastAtom(CcString label,int x1,int y1,int z1, 
+                          int r, int g, int b, int occ,int cov, int vdw,
+                          int spare, int flag,
+                          int u1,int u2,int u3,int u4,int u5,
+                          int u6,int u7,int u8,int u9);
 
         void ExcludeBonds();
 
@@ -67,7 +88,7 @@ class CcModelDoc
         void Select(Boolean selected);
         void HighlightView(CrModel* aView);
         void RemoveView(CrModel* aView);
-        void DrawViews();
+        void DrawViews(bool rescaled = false);
         void AddModelView(CrModel* aView);
         void Clear();
         CcModelDoc();
@@ -77,6 +98,11 @@ class CcModelDoc
 
         CcString mName;
         CcList attachedViews;
+
+        static CcList  sm_ModelDocList;
+        static CcModelDoc* sm_CurrentModelDoc;
+
+
     private:
         int nSelected;
         int m_nAtoms;

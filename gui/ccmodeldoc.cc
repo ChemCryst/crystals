@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.13  2002/01/31 15:03:13  ckp2
+// RIC: Fix Alexander's OpenGL bug (at last).
+//
 // Revision 1.12  2001/06/17 15:24:19  richard
 //
 //
@@ -80,6 +83,11 @@
 #include    "cccontroller.h"    // for sending commands
 #include    "cxmodel.h"
 
+
+CcList CcModelDoc::sm_ModelDocList;
+CcModelDoc* CcModelDoc::sm_CurrentModelDoc = nil;
+
+
 CcModelDoc::CcModelDoc( )
 {
     mAtomList = new CcList();
@@ -88,6 +96,8 @@ CcModelDoc::CcModelDoc( )
 //        mTriList = new CcList();
     m_nAtoms = 0;
     nSelected = 0;
+    sm_ModelDocList.AddItem(this);
+    sm_CurrentModelDoc = this;
 }
 
 CcModelDoc::~CcModelDoc()
@@ -129,6 +139,9 @@ CcModelDoc::~CcModelDoc()
     {
         aView->DocRemoved();
     }
+// Remove from list of plotdata objects:
+    sm_ModelDocList.FindItem(this);
+    sm_ModelDocList.RemoveItem();
 
 }
 
@@ -144,7 +157,7 @@ Boolean CcModelDoc::ParseInput( CcTokenList * tokenList )
             case kTModelShow:
             {
                 tokenList->GetToken(); // Remove that token!
-                DrawViews();
+                DrawViews(true);
                 break;
             }
             case kTModelAtom:
@@ -234,23 +247,23 @@ void CcModelDoc::Clear()
 
       (CcController::theController)->status.SetNumSelectedAtoms( 0 );
 
-      DrawViews();
+//      DrawViews();
 
 }
 
 void CcModelDoc::AddModelView(CrModel * aView)
 {
     attachedViews.AddItem(aView);
-      aView->Update();
+      aView->Update(true);
 }
 
-void CcModelDoc::DrawViews()
+void CcModelDoc::DrawViews(bool rescaled)
 {
     attachedViews.Reset();
     CrModel* aView;
     while( ( aView = (CrModel*)attachedViews.GetItemAndMove() ) != nil)
     {
-            aView->Update();
+            aView->Update(rescaled);
     }
 }
 
@@ -303,6 +316,18 @@ CcModelAtom* CcModelDoc::FindAtomByLabel(CcString atomname)
             return item;
     }
     return nil;
+}
+
+CcModelAtom* CcModelDoc::FindAtomByPosn(int posn)
+{
+    CcModelAtom* item = nil;
+    mAtomList->Reset();
+    item = (CcModelAtom*)mAtomList->GetItemAndMove();
+    for (int i = 0; i < posn; i++ )
+    {
+       item = (CcModelAtom*)mAtomList->GetItemAndMove();
+    }
+    return item;
 }
 
 
@@ -431,7 +456,7 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           {
             glLoadName ( ++ glIDCount );
             aitem->Render(style);
-            aitem->glID = glIDCount;
+            aitem->m_glID = glIDCount;
           }
         }
         mAtomList->Reset();
@@ -448,7 +473,7 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           {
             glLoadName ( ++ glIDCount );
             aitem->Render(style);
-            aitem->glID = glIDCount;
+            aitem->m_glID = glIDCount;
           }
         }
         mAtomList->Reset();
@@ -465,7 +490,7 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           {
             glLoadName ( ++ glIDCount );
             aitem->Render(style);
-            aitem->glID = glIDCount;
+            aitem->m_glID = glIDCount;
           }
         }
         glEndList();
@@ -487,7 +512,7 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           {
             glLoadName ( ++ glIDCount );
             bitem->Render(style);
-            bitem->glID = glIDCount;
+            bitem->m_glID = glIDCount;
           }
         }
         glEndList();
@@ -503,7 +528,7 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
             glPolygonMode(GL_FRONT, GL_POINT);
             glPolygonMode(GL_BACK, GL_POINT);
             aitem->Render(style);
-            aitem->glID = 0;
+            aitem->m_glID = 0;
           }
         }
         mBondList->Reset();
@@ -514,7 +539,7 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
             glPolygonMode(GL_FRONT, GL_POINT);
             glPolygonMode(GL_BACK, GL_POINT);
             bitem->Render(style);
-            bitem->glID = 0;
+            bitem->m_glID = 0;
           }
         }
         glEndList();
@@ -536,7 +561,7 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           {
             glLoadName ( ++ glIDCount );
             aitem->Render(style);
-            aitem->glID = glIDCount;
+            aitem->m_glID = glIDCount;
           }
         }
         mAtomList->Reset();
@@ -553,7 +578,7 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           {
             glLoadName ( ++ glIDCount );
             aitem->Render(style);
-            aitem->glID = glIDCount;
+            aitem->m_glID = glIDCount;
           }
         }
         mAtomList->Reset();
@@ -570,7 +595,7 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           {
             glLoadName ( ++ glIDCount );
             aitem->Render(style);
-            aitem->glID = glIDCount;
+            aitem->m_glID = glIDCount;
           }
         }
         glEndList();
@@ -593,7 +618,7 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           {
             glLoadName ( ++ glIDCount );
             bitem->Render(style);
-            bitem->glID = glIDCount;
+            bitem->m_glID = glIDCount;
           }
         }
         glEndList();
@@ -653,16 +678,16 @@ void CcModelDoc::SelectFrag(CcString atomname, bool select)
        mBondList->Reset();
        while ((bitem = (CcModelBond*)mBondList->GetItemAndMove()) )
        {
-         if (( bitem->atom1 ) && ( bitem->atom2 ))
+         if (( bitem->m_atom1 ) && ( bitem->m_atom2 ))
          {
-           if (( bitem->atom1->spare ) && ( ! bitem->atom2->spare ))
+           if (( bitem->m_atom1->spare ) && ( ! bitem->m_atom2->spare ))
            {
-              bitem->atom2->spare = true;
+              bitem->m_atom2->spare = true;
               nChanged++;
            }
-           else if (( bitem->atom2->spare ) && ( ! bitem->atom1->spare ))
+           else if (( bitem->m_atom2->spare ) && ( ! bitem->m_atom1->spare ))
            {
-              bitem->atom1->spare = true;
+              bitem->m_atom1->spare = true;
               nChanged++;
            }
          }
@@ -749,7 +774,7 @@ CcModelObject * CcModelDoc::FindObjectByGLName(GLuint name)
      mAtomList->Reset();
      while ( (aitem = (CcModelObject*)mAtomList->GetItemAndMove()) )
      {
-        if ( aitem->glID == name )  return aitem;
+        if ( aitem->m_glID == name )  return aitem;
      }
   }
   if ( mBondList->ListSize() )
@@ -757,10 +782,111 @@ CcModelObject * CcModelDoc::FindObjectByGLName(GLuint name)
      mBondList->Reset();
      while ( (aitem = (CcModelObject*)mBondList->GetItemAndMove()) )
      {
-        if ( aitem->glID == name )  return aitem;
+        if ( aitem->m_glID == name )  return aitem;
      }
   }
   return nil;
 }
+
+
+
+void CcModelDoc::FastBond(int x1,int y1,int z1, int x2, int y2, int z2,
+                          int r, int g, int b,  int rad,int btype,
+                          int np, int * ptrs, CcString label, CcString cslabl)
+{
+    CcModelBond* item = new CcModelBond(x1,y1,z1,x2,y2,z2,
+                          r, g, b,  rad, btype,
+                          np, ptrs, label, cslabl, this);
+    mBondList->AddItem(item);
+}
+
+void CcModelDoc::FastAtom(CcString label,int x1,int y1,int z1, 
+                          int r, int g, int b, int occ,int cov, int vdw,
+                          int spare, int flag,
+                          int u1,int u2,int u3,int u4,int u5,
+                          int u6,int u7,int u8,int u9)
+{
+    CcModelAtom* item = new CcModelAtom(label,x1,y1,z1, 
+                          r,g,b,occ,cov,vdw,spare,flag,
+                          u1,u2,u3,u4,u5,u6,u7,u8,u9,this);
+    mAtomList->AddItem(item);
+}
+
+
+
+extern "C" {
+
+//declarations:
+
+#ifdef __BOTHWIN__
+void fastbond  (int x1,int y1,int z1, int x2, int y2, int z2,
+                int r, int g, int b,  int rad,int btype,
+                int np, int * ptrs, char label[80], char slabel[80] );
+#endif
+#ifdef __LINUX__
+void fastbond_ (int x1,int y1,int z1, int x2, int y2, int z2,
+                int r, int g, int b,  int rad,int btype,
+                int np, int * ptrs, char label[80], char slabel[80] );
+#endif
+#ifdef __BOTHWIN__
+void fastatom  (char* label,int x1,int y1,int z1, 
+                int r, int g, int b, int occ,int cov, int vdw,
+                int spare, int flag, int u1,int u2,int u3,int u4,int u5,
+                int u6,int u7,int u8,int u9);
+#endif
+#ifdef __LINUX__
+void fastatom_  (char* label,int x1,int y1,int z1, 
+                int r, int g, int b, int occ,int cov, int vdw,
+                int spare, int flag, int u1,int u2,int u3,int u4,int u5,
+                int u6,int u7,int u8,int u9);
+#endif
+
+//implementations:
+
+#ifdef __BOTHWIN__
+void fastbond  (int x1,int y1,int z1, int x2, int y2, int z2,
+                int r, int g, int b,  int rad,int btype,
+                int np, int * ptrs,
+                char label[80], char slabel[80] )
+#endif
+#ifdef __LINUX__
+void fastbond_ (int x1,int y1,int z1, int x2, int y2, int z2,
+                int r, int g, int b,  int rad,int btype,
+                int np, int * ptrs,
+                char label[80], char slabel[80] )
+#endif
+{
+      CcString clabel = label;
+      LOGSTAT ( "-----------Fastbond added:" + clabel );
+      if ( CcModelDoc::sm_CurrentModelDoc )
+            CcModelDoc::sm_CurrentModelDoc->FastBond(x1,y1,z1,x2,y2,z2,r,g,b,rad,btype,
+                                         np,ptrs,clabel,slabel);
+}
+
+#ifdef __BOTHWIN__
+void fastatom  (char* label,int x1,int y1,int z1, 
+                int r, int g, int b, int occ,int cov, int vdw,
+                int spare, int flag, int u1,int u2,int u3,int u4,int u5,
+                int u6,int u7,int u8,int u9)
+#endif
+#ifdef __LINUX__
+void fastatom_  (char* label,int x1,int y1,int z1, 
+                int r, int g, int b, int occ,int cov, int vdw,
+                int spare, int flag, int u1,int u2,int u3,int u4,int u5,
+                int u6,int u7,int u8,int u9)
+#endif
+{
+      CcString clabel = label;
+      LOGSTAT ( "-----------Fastatom added:" + clabel );
+      if ( CcModelDoc::sm_CurrentModelDoc )
+            CcModelDoc::sm_CurrentModelDoc->FastAtom(clabel,x1,y1,z1, 
+                          r,g,b,occ,cov,vdw,spare,flag,
+                          u1,u2,u3,u4,u5,u6,u7,u8,u9) ;
+
+}
+
+
+}
+
 
 
