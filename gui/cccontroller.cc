@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.25  2001/03/08 16:44:02  richard
+// General changes - replaced common functions in all GUI classes by macros.
+// Generally tidied up, added logs to top of all source files.
+//
 // Revision 1.24  2001/03/08 14:57:19  richard
 // Moved all CXAPP and CRAPP functions into this class, to try to make the
 // whole thing more understandable. This one class has one instance, and it
@@ -2702,7 +2706,7 @@ extern "C" {
   {
     CcString line(theLine);
 // Trim any weird characters off the end of the line.
-	line = line.Sub(1,line.Length()-5);
+    line = line.Sub(1,line.Length()-5);
 
     bool bWait = false;
     bool bRest = false;
@@ -2793,22 +2797,76 @@ extern "C" {
         si.lpParameters = newparam.ToCString();
         si.fMask        = SEE_MASK_NOCLOSEPROCESS; //Don't mask errors for this call.
         ShellExecuteEx ( & si );
-//It is not possible to wait for rundll32's spawned process, so
-//we just pop up a message box, to hold this app here.
+// It is not possible to wait for rundll32's spawned process, so
+// we just pop up a message box, to hold this app here.
         AfxGetApp()->m_pMainWnd->MessageBox("CRYSTALS is waiting.\nClick OK when external application has exited.",
                                             "#SPAWN: Waiting",MB_OK);
 
+        CcController::theController->ProcessOutput( " ");
+        CcController::theController->ProcessOutput( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
+        CcController::theController->ProcessOutput( " ");
+        WaitForSingleObject( si.hProcess, INFINITE );
+
+      }
+      else if ( (int)si.hInstApp <= 32 )
+      {
+
+// Some other failure. Try another method of starting external programs.
+
+        CcController::theController->ProcessOutput( "{I Failed to start " + firstTok + ", (security or not found?) trying another method.");
+        extern int errno;
+        char * str = new char[81];
+        memcpy(str,line.Sub(sFirst+1,-1).ToCString(),80);
+        *(str+80) = '\0';
+
+        char* args[10];       // This allows a maximum of 9 command line arguments
+
+        char seps[] = " \t";
+        char *token = strtok( str, seps );
+        args[0] = token;
+        for (int i = 1; (( token != NULL ) && ( i < 10 )); i++ )
+        {
+          token = strtok( NULL, seps );
+          args[i] = token;
+        }
+
+        int result = _spawnvp(_P_WAIT, args[0], args);
+  
+        if ( result == -1 )  //Start failed
+        {
+          CcController::theController->ProcessOutput( "{I Failed again to start " + firstTok + ", errno is:" + CcString(errno)+" trying a command shell.");
+          for (i = 7; i>=0; i--)
+          {
+             args[i+2] = args[i];
+          }
+
+          OSVERSIONINFO o;
+          o.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+          GetVersionEx(&o);
+  
+          if (o.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) args[0] = "command.com";
+          else  args[0] = "cmd.exe";
+
+          args[1] = "/c";
+          result = _spawnvp(_P_WAIT, args[0], args);
+          if ( result != 0 ) TEXTOUT ( "{I Failed yet again. Errno is:" + CcString(errno) + ". Giving up.");
+        }
+        delete [] str;
+
+      }
+      else
+      {
+        CcController::theController->ProcessOutput( " ");
+        CcController::theController->ProcessOutput( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
+        CcController::theController->ProcessOutput( " ");
+        WaitForSingleObject( si.hProcess, INFINITE );
       }
 
-      CcController::theController->ProcessOutput( " ");
-      CcController::theController->ProcessOutput( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
-      CcController::theController->ProcessOutput( " ");
-      WaitForSingleObject( si.hProcess, INFINITE );
 
     }
     else
     {
-// Launch with ShellExecute function. There is no waiting for apps to finsh.
+// Launch with ShellExecute function. There is no waiting for apps to finish.
       HINSTANCE ex = ShellExecute( GetDesktopWindow(),
                                    "open",
                                    firstTok.ToCString(),
@@ -2824,6 +2882,51 @@ extern "C" {
                        NULL,
                        SW_SHOWNORMAL);
       }
+      else if ( (int)ex <= 32 )
+      {
+// Some other failure. Try another method of starting external programs.
+        CcController::theController->ProcessOutput( "{I Failed to start " + firstTok + ", (security or not found?) trying another method.");
+        extern int errno;
+        char * str = new char[81];
+        memcpy(str,line.Sub(sFirst+1,-1).ToCString(),80);
+        *(str+80) = '\0';
+
+        char* args[10];       // This allows a maximum of 9 command line arguments
+
+        char seps[] = " \t";
+        char *token = strtok( str, seps );
+        args[0] = token;
+        for ( int i = 1; (( token != NULL ) && ( i < 10 )); i++ )
+        {
+          token = strtok( NULL, seps );
+          args[i] = token;
+        }
+
+        int result = _spawnvp(_P_WAIT, args[0], args);
+  
+        if ( result == -1 )  //Start failed
+        {
+          CcController::theController->ProcessOutput( "{I Failed again to start " + firstTok + ", errno is:" + CcString(errno)+" trying a command shell.");
+          for (i = 7; i>=0; i--)
+          {
+             args[i+2] = args[i];
+          }
+
+          OSVERSIONINFO o;
+          o.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+          GetVersionEx(&o);
+  
+          if (o.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) args[0] = "command.com";
+          else  args[0] = "cmd.exe";
+
+          args[1] = "/c";
+          result = _spawnvp(_P_WAIT, args[0], args);
+          if ( result != 0 ) TEXTOUT ( "{I Failed yet again. Errno is:" + CcString(errno) + ". Giving up.");
+        }
+        delete [] str;
+
+      }
+
     }
   }
 
