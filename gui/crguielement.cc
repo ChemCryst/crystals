@@ -7,7 +7,7 @@
 //   Filename:  CrGUIElement.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:19 Uhr
-//   Modified:  30.3.1998 13:33 Uhr
+//   $Log: not supported by cvs2svn $
 
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
@@ -27,12 +27,12 @@ CrGUIElement::CrGUIElement( CrGUIElement * mParentPtr )
     mSelfInitialised = false;
     mCallbackState = false;
     mAlignment = kNoAlignment;
-    mWidthFactor = 1.0;
-    mHeightFactor = 1.0;
     mXCanResize = false;
     mYCanResize = false;
     mTabStop = true;
     mDisabled = true;
+    m_InitWidth = 0;
+    m_InitHeight = 0;
 }
 
 CrGUIElement::~CrGUIElement()
@@ -86,9 +86,9 @@ void    CrGUIElement::GetValue(CcTokenList * tokenList)
     (CcController::theController)->SendCommand("ERROR",true);
 }
 
-Boolean CrGUIElement::ParseInput( CcTokenList * tokenList )
+CcParse CrGUIElement::ParseInput( CcTokenList * tokenList )
 {
-    Boolean retVal = false;
+    CcParse retVal(false, mXCanResize, mYCanResize);
 
     mName = tokenList->GetToken();
     mText = tokenList->GetToken();
@@ -96,7 +96,7 @@ Boolean CrGUIElement::ParseInput( CcTokenList * tokenList )
     SetText(mText);
 
     if ( mText.Length() != 0 || mName.Length() != 0 )
-        retVal = true;
+        retVal = CcParse( true, mXCanResize, mYCanResize ) ;
 
     LOGSTAT( "Identifier = " + mName +
              ", text = "      + mText  );
@@ -104,14 +104,14 @@ Boolean CrGUIElement::ParseInput( CcTokenList * tokenList )
     return retVal;
 }
 
-Boolean CrGUIElement::ParseInputNoText( CcTokenList * tokenList )
+CcParse CrGUIElement::ParseInputNoText( CcTokenList * tokenList )
 {
-    Boolean retVal = false;
+    CcParse retVal (false, mXCanResize, mYCanResize);
 
     mName = tokenList->GetToken();
 
     if ( mName.Length() != 0 )
-        retVal = true;
+        retVal = CcParse(true, mXCanResize, mYCanResize);
 
     LOGSTAT( "Identifier = " + mName );
 
@@ -138,13 +138,6 @@ int CrGUIElement::GetIdealHeight()
 //This just returns zero. It is overridden for elements which can resize.
     return 0;
 }
-
-void CrGUIElement::Resize(int newColWidth, int newRowHeight, int origColWidth, int origRowHeight)
-{
-    mWidthFactor = (float)((float)newColWidth / (float)origColWidth);
-    mHeightFactor= (float)((float)newRowHeight/ (float)origRowHeight);
-}
-
 
 void CrGUIElement::NextFocus(Boolean bPrevious)
 {
@@ -202,11 +195,4 @@ void CrGUIElement::Rename( CcString newName )
 {
       LOGSTAT("Renameing object: " + mName + " to " + newName );
       mName = newName;
-}
-
-void CrGUIElement::SetOriginalSizes()
-{
-// Do nothing. This function is overridden by all
-// re-sizeable GUIElements. e.g. Model, Chart, MultiEdit, EditBox etc.
-      return;
 }
