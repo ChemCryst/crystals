@@ -3,7 +3,7 @@
 %% A Script to check some constants against some of the ACTA
 %% submission requirements.
 %%
-%  VARIABLE INTEGER ERRFLAG ALERTFLAG WARNFLAG
+%  VARIABLE INTEGER ERRFLAG ALERTFLAG WARNFLAG IANOMA
 %  VARIABLE CHARACTER CDLINE
 %  VARIABLE REAL WORK1 WORK2 WORK3 ZMAX CENTRO
 %  VARIABLE LOGICAL VALIDPASS VALIDFAIL
@@ -13,12 +13,10 @@
 %  EVALUATE WARNFLAG = 0
 %%
 %%   Re-calculate the electron density.
- 
 {S * Recalculating min and max electron density.
 %  COPY '#FOURIER'
 %  COPY 'MAP TYPE=DIFF'
 %  COPY 'END'
- 
 {S * Recalculating R.
 %  EVALUATE ERRFLAG = 1
 %  BLOCK
@@ -32,20 +30,17 @@
  
 {E **** Fatal: Error in calculating phases.
 {R Do you have Fourier peaks ('Q,L,R or M') in your model?
- 
+
 %     FINISH
 %  END IF
- 
+
 {S * Checking data against some IUCr validation criteria...
- 
-{I A quick guide to possible warnings:
-{I
-{I *    ALERT = Not too serious, may indicate problems
-{I **   WARN  = Problem - will need correcting or thorough investigation.
-{I ***  FAIL  = Serious problem or incomplete refinement.
-{I **** FATAL = Missing data prevents checking.
- 
- 
+          {I A quick guide to possible warnings:
+          {I *    ALERT = Not too serious, may indicate problems
+          {I **   WARN  = Problem - will need correcting or investigation.
+          {I ***  FAIL  = Serious problem or incomplete refinement.
+          {I **** FATAL = Missing data prevents checking.
+
 %%
 %% Check List 30 exists.
 %%
@@ -92,6 +87,23 @@
 %    IF WORK1 .LT. 25.0 THEN
 {I *   ALERT: Experiment Temperaure < 25K. Are you sure?
 %       EVALUATE ALERTFLAG = ALERTFLAG + 1
+%    END IF
+%  END BLOCK
+%%
+%%
+%% Anomalous scattering
+%%
+{I Checking anomalous scattering is used.
+%  BLOCK
+%    COPY '#GENERALEDIT 23'
+%    COPY 'LOCATE RECORDTYPE = 101'
+%    COPY 'TRANSFER FROM OFFSET = 0 TO IANOMA'
+%    COPY 'END'
+%    IF ( IANOMA .EQ. - 1 ) THEN
+{E *** FAIL:  You should include an anomalous dispersion correction
+{E            towards the end of the refinement.
+ Turn it on with: "Refinement" -> "F of Fsq and advanced options"
+%       EVALUATE ERRFLAG = ERRFLAG + 1
 %    END IF
 %  END BLOCK
 %%
