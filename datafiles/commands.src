@@ -1483,14 +1483,14 @@ New CIF extensions
 (8G15.3/8G15.3/2G15.3,11X,A4)
          2    2    2    2    2    2    2    2    2    2    2    2    2    2    2
          2    2    2    3
-    .ZZ1                0    0    1    0    1 0.
-    .ZZ2                0    0    1    0    1 0.
-    .ZZ3                0    0    1    0    1 0.
-    .ZZ4                0    0    1    0    1 0.
-    .ZZ5                0    0    1    0    1 0.
-    .ZZ6                0    0    1    0    1 0.
-    .ZZ7                0    0    1    0    1 0.
-    .ZZ8                0    0    1    0    1 0.
+    .CALC-SIGMA         0    0    1    0    1 0.
+    .CALC-NREF          0    0    1    0    1 0.
+    .CALC-R             0    0    1    0    1 0.
+    .CALC-RW            0    0    1    0    1 0.
+    .ALL-SIGMA          0    0    1    0    1 0.
+    .ALL-NREF           0    0    1    0    1 0.
+    .ALL-R              0    0    1    0    1 0.
+    .ALL-RW             0    0    1    0    1 0.
     .ZZ9                0    0    1    0    1 0.
     .ZZ10               0    0    1    0    1 0.
     .ZZ11               0    0    1    0    1 0.
@@ -1573,10 +1573,10 @@ INFORMATION THAT CONTROLS THE TYPE OF SFLS CALCULATION TO BE PERFORMED
     .AUGFACT            0    0    1    0    0 0.0
     .FILTER             0    0    1    0    0 .00005
     .DISCRIMINATOR      0    0    1    0    0 100.0
-   2.SCALE              5    0    3    0   16   10  101    1   33
+   2.SCALE              6    0    3    0   16   10  101    1   33
          0    0    0    0    0    0    0    0    0    0
          6    7    8
-         3    3    3    3    3
+         3    3    3    3    3    2
     .XXXXXXX            0    0    1   -1    1 NO
     .YYYYYY             0    0    1   -1    1 NO
     .LIST               0    0    1    4   -2 OFF
@@ -1585,7 +1585,8 @@ INFORMATION THAT CONTROLS THE TYPE OF SFLS CALCULATION TO BE PERFORMED
      PART           NONE           FULL
     ./FO/               0    0    1    2   -1 /FOT/
      /FOT/          SCALED-/FOT/
-  -2.CALCULATE          5    0    3    0   16   10  101    1   33
+    .THRESHOLD          0    0    1    0    0  4.0
+  -2.CALCULATE          6    0    3    0   16   10  101    1   33
   -1.SOLVE             12    0    0    0   16   10  101    1   33
   -1.VECTOR            12    0    0    0   16   10  101    1   33
    6.SHIFT             25    0    0    0   25   10  102    5   33

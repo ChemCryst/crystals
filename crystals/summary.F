@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  2002/01/16 10:37:32  ckp2
+C Remove all spaces in hkl label. Only pass Fo and Fc to 2 decimal places.
+C
 C Revision 1.13  2002/01/16 10:30:33  ckpgroup
 C SH: Added labels to scatter plot of Fo vs. Fc.
 C
@@ -1659,13 +1662,16 @@ C
      * /
       DATA (CKEY(I,6),I=1,MAXKEY)/
      1 'Dobs', 'Dcalc', 'Fooo', 'Mu', 'M', 'Z', 'Flack',
-     2 'Flack esd', 'Sigma cutoff',
+     2 'Flack esd', 'Sigma Analyse',
      3 'No. Analyse', 'R Analyse', 'Rw Analyse',
      4 7*'*'
      * /
       DATA (CKEY(I,7),I=1,MAXKEY)/ 19*'*' /
       DATA (CKEY(I,8),I=1,MAXKEY)/ 19*'*' /
-      DATA (CKEY(I,9),I=1,MAXKEY)/ 19*'*' /
+      DATA (CKEY(I,9),I=1,MAXKEY)/ 
+     1 'Sigma Calc', 'No. Calc', 'R Calc', 'Rw Calc',
+     2 'Sigma All', 'No. All', 'R All', 'Rw All',
+     * 11*'*' /
 C
 C
 C
@@ -1675,7 +1681,22 @@ C
 C
       DO 5000 J = 1, MAXBLK
 C----- THE ALL-TEXT ITEMS
-        IF (J .GE. 7)  GOTO 5000
+        IF ((J.EQ.7) .OR. (J.EQ.8))  THEN
+            I = 4 * (J-1) +1
+            L30 = IPOINT(I)
+            MD30 = IPOINT(I+2)
+            IF ( MD30 .GT. 0 ) THEN
+              CLINE(1:80) = ' '
+              WRITE(CLINE,'(A,3X,8A4)') CTYPE(J),
+     1        (ISTORE(K), K = L30, L30 + MD30 -1)
+              CALL XCCLWC ( CLINE(2:), CLOW(2:))
+              CLOW(1:1) = CLINE(1:1)
+              IF (ISSPRT .EQ. 0) WRITE(NCWU,1021) CLOW
+              WRITE(NCAWU, 1021) CLOW
+              WRITE ( CMON , 1021) CLOW
+              CALL XPRVDU(NCVDU, 1,0)
+            ENDIF
+        ELSE
       I = 4 * (J-1) +1
       L30 = IPOINT(I)
       MD30 = IPOINT(I+2)
@@ -1803,25 +1824,8 @@ C STRUCTURE SOLUTION
           WRITE ( CMON , 1000 ) CTYPE(J)
           CALL XPRVDU(NCVDU, 1,0)
       ENDIF
-5000  CONTINUE
-C
-C----- THERE REMAIN SOME PURE TEXT ITEMS
-      DO 6000 J = 7,8
-      I = 4 * (J-1) +1
-      L30 = IPOINT(I)
-      MD30 = IPOINT(I+2)
-      IF ( MD30 .GT. 0 ) THEN
-        CLINE(1:80) = ' '
-        WRITE(CLINE,'(A,3X,8A4)') CTYPE(J),
-     1 (ISTORE(K), K = L30, L30 + MD30 -1)
-        CALL XCCLWC ( CLINE(2:), CLOW(2:))
-        CLOW(1:1) = CLINE(1:1)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,1021) CLOW
-        WRITE(NCAWU, 1021) CLOW
-        WRITE ( CMON , 1021) CLOW
-        CALL XPRVDU(NCVDU, 1,0)
       ENDIF
-6000  CONTINUE
+5000  CONTINUE
       RETURN
       END
 C

@@ -1,4 +1,16 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2001/10/08 12:25:59  ckp2
+C
+C All program sub-units now RETURN to the main CRYSTL() function inbetween commands.
+C The changes made are: in every sub-program the GOTO's that used to loop back for
+C the next KNXTOP command have been changed to RETURN's. In the main program KNXTOP is now
+C called at the top of the loop, but first the current ProgramName (KPRGNM) array is cleared
+C to ensure the KNXTOP knows that it is not in the correct sub-program already. (This
+C is the way KNXTOP worked on the very first call within CRYSTALS).
+C
+C We now have one location (CRYSTL()) where the program flow returns between every command. I will
+C put this to good use soon.
+C
 C Revision 1.15  2001/08/14 10:47:06  ckp2
 C FLOAT(NINT()) all indices transformed by L25 twinning matrices just in case
 C the twin law doesn't quite bring them onto an integer. (The user had better
@@ -124,6 +136,8 @@ C--'#CALCULATE' HAS BEEN GIVEN
 1300  CONTINUE
       JB=-1
       JH=-1
+      CALL XZEROF(RALL(1),12)
+      RALL(1)=STORE(L33CD+5)
       GOTO 1400
 C
 C--'#CYCLENDS' INSTRUCTION
@@ -344,7 +358,7 @@ C -- INVALID TEMPERATURE FACTOR
      1 GOTO 3340
       WRITE ( CMON, 3320) STORE(L5O+4)
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0)  WRITE(NCAWU, '(A)') CMON(1)(:)
+      IF (ISSPRT .EQ. 0)  WRITE(NCWU, '(A)') CMON(1)(:)
       WRITE(NCAWU, '(A)') CMON(1)(:)
 3320  FORMAT(1X,'Enantiopole parameter out of range. (',F6.3,' ) ')
 C      STORE(L5O+4) = MAX (STORE(L5O+4), 0.0)
@@ -727,9 +741,10 @@ C--UPDATE THE DETAILS FOR LIST 33
 \IDIM33
 C--OUTPUT THE NEW LIST 33 TO DISC
       CALL XWLSTD(33,ICOM33,IDIM33,-1,-1)
-      IF (KHUNTR (11,0, IADDL,IADDR,IADDD, -1) .EQ. 0) THEN
-        IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30
-C----- UPDATE LIST 30
+      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30
+        IF (KHUNTR (11,0, IADDL,IADDR,IADDD, -1) .EQ. 0) THEN
+C-----'REFINE'
+C-----  UPDATE LIST 30
         STORE(L30RF +0 ) = R
         STORE(L30GE +10 ) = R
         STORE(L30RF +1 ) = RW
@@ -743,17 +758,57 @@ C----- NUMBER OF REFLECTIONS USED
         STORE(L30RF +8 ) = STORE(L11P+24)
         STORE(L30GE +9 ) = STORE(L11P+24)
 C----- SIGMA THRESHOLD FOR REFINEMENT
-      IF (JB .GE. 0)  THEN
+        IF (JB .GE. 0)  THEN
             STORE(L30RF+3) = S6SIG
             STORE(L30GE+8) = S6SIG
-      ENDIF
+        ENDIF
 C----- STORE THETA LIMITS
-      STORE(L30IX+6) = RTD*ASIN(WAVE*SMIN)
-      STORE(L30IX+7) = RTD*ASIN(WAVE*SMAX)
+        STORE(L30IX+6) = RTD*ASIN(WAVE*SMIN)
+        STORE(L30IX+7) = RTD*ASIN(WAVE*SMAX)
 C----- REFINEMENT TYPE
         ISTORE(L30RF +12 ) = NV + 2
-        CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
       ENDIF
+C----- 'CALC' ONLY
+      IF(JB+JH .EQ. -2) THEN
+            STORE(L30CF)=RALL(1)
+            STORE(L30CF+4)=-10.
+            STORE(L30CF+1)=RALL(2)
+            STORE(L30CF+5)=RALL(7)
+            IF (RALL(4) .GT. ZERO) THEN
+             STORE(L30CF+2) =100.* RALL(3)/RALL(4)
+            ENDIF
+            IF (RALL(9) .GT. ZERO) THEN
+             STORE(L30CF+6) =100.* RALL(8)/RALL(9)
+            ENDIF
+C
+            IF (RALL(6) .GT. ZERO) THEN
+             STORE(L30CF+3) = 100.*SQRT(RALL(5)/RALL(6))
+            ENDIF
+            IF (RALL(11) .GT. ZERO) THEN
+             STORE(L30CF+7) = 100.*SQRT(RALL(10)/RALL(11))
+            ENDIF
+6260        FORMAT (/
+     1       ' With Sigma(I) cutoff= ',F6.2, 
+     1       ', there are', I9, ' reflections',/
+     1       , ' R-value=',F7.3, 34X, ' Rw=', F7.3)
+C
+            WRITE ( CMON, 6260) -10., NINT(RALL(7)), 
+     1      STORE(L30CF+6),STORE(L30CF+7)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A/A/A/)') 
+     1      CMON(1)(:),CMON(2)(:),CMON(3)(:)
+            WRITE(NCAWU,'(A/A/A/)') CMON(1)(:),CMON(2)(:),CMON(3)(:)
+            CALL OUTCOL(6)
+            CALL XPRVDU(NCVDU, 3, 0)
+C
+            WRITE ( CMON, 6260) RALL(1), NINT(RALL(2)), 
+     1      STORE(L30CF+2),STORE(L30CF+3)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A/A/A/)') 
+     1      CMON(1)(:),CMON(2)(:),CMON(3)(:)
+            WRITE(NCAWU,'(A/A/A/)') CMON(1)(:),CMON(2)(:),CMON(3)(:)
+            CALL XPRVDU(NCVDU, 3, 0)
+            CALL OUTCOL(1)
+      ENDIF
+      CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
 C--CLEAR THE CORE
       CALL XRSL
       CALL XCSAE
@@ -1307,7 +1362,11 @@ C--CHECK IF A PRINT IS REQUIRED
 C
 C--START OF THE LOOP OVER REFLECTIONS
 1830  CONTINUE
-      IF(KFNR(1))5850,1850,1850
+      IF(JB+JH .EQ. -2) THEN
+            IF(KLDRNR(1)) 5850,1850,1850
+      ELSE
+            IF(KFNR(1))5850,1850,1850
+      ENDIF
 C
 C--UPDATE THE REFLECTION COUNTER FLAG
 1850  CONTINUE
@@ -1376,7 +1435,7 @@ C--CALCULATION WITHOUT TWINNING  -  BRANCH TO THE S.F. ROUTINES
       NL=0
       ASSIGN 2350 TO ICONT
       GOTO 6300
-C^
+C
 C--MAIN S.F.L.S. LOOP  -  CALCULATES A AND B AND THEIR DERIVATIVES
 C
 C  ICONT  SET TO THE RETURN ADDRESS
@@ -2476,7 +2535,7 @@ C--REFINEMENT AGAINST /FO/  -  CHECK IF WE ARE USING EXTINCTION CORRECTI
       IF(NA)5500,5350,5350
 C--REFINEMENT AGAINST /FO/ **2  -  COMPUTE THE CORRECTION TERM
 5300  CONTINUE
-C^^
+C
       A=2.0*FCEXS
 C--CHECK IF WE SHOULD APPLY THE EXTINCTION CORRECTION
       IF(NA)5400,5350,5350
@@ -2510,7 +2569,7 @@ C----- ORIGINALLY, CRYSTALS COMPUTED THE SCALE WITH RESPECT TO F, BUT
 C      THIS IS NONLINEAR, SO CONVERGENCE WAS POOR. NOW, THE SHIFTS ARE
 C      WRTO F**2. THIS IS TAKEN CARE OF WHEN THE SHIFT IS APPLIED.
 C      SEE NEAR LABEL 6100
-C^^^      A=A*2.0*FCEXS
+CCC      A=A*2.0*FCEXS
       A=A*SCALES*FCEXT
 C--ACCUMULATE THE TERMS FOR THE SCALE FACTOR
 5700  CONTINUE
@@ -2523,6 +2582,22 @@ C--ACCUMULATE TOTALS FOR /FC/ AND THE PHASE
       CALL XACRT(6)
       CALL XACRT(7)
       CALL XACRT(16)
+C----- ADD IN DETAILS FOR ALL DATA DURING 'CALC'
+      IF(JB+JH .EQ. -2) THEN
+       IF (STORE(M6+20) .GE. RALL(1)) THEN
+            RALL(2) = RALL(2) + 1.
+            RALL(3) = RALL(3) + ABS(ABS(FO)-FCEXS)
+            RALL(4) = RALL(4) + ABS(FO)
+            RALL(5) = RALL(5) + WDF*WDF
+            RALL(6) = RALL(6) + A*A
+       ENDIF
+            RALL(7) = RALL(7) + 1.
+            RALL(8) = RALL(8) + ABS(ABS(FO)-FCEXS)
+            RALL(9) = RALL(9) + ABS(FO)
+            RALL(10) = RALL(10) + WDF*WDF
+            RALL(11) = RALL(11) + A*A
+      ENDIF
+C
 C--PICK UP THE NEXT REFLECTION
 5800  CONTINUE
       GOTO 1830
@@ -2570,7 +2645,7 @@ C           REMEMBER THE SHIFT IS IN F**2
       ELSE
             STORE(L5O)=STORE(L5O)+BC
       ENDIF
-C^^^
+C
 6200  CONTINUE
       SCALE=STORE(L5O)
       JX=IABS(JB)+IABS(JH)*2+(NB+1)*4
@@ -2654,9 +2729,8 @@ C
       CALL OUTCOL(6)
       CALL XPRVDU(NCVDU, 3, 0)
       CALL OUTCOL(1)
-C
       RETURN
-C^
+C
 C
 C
 C

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2002/01/09 14:59:17  Administrator
+C bound shifts, abandon ill-conditioned problem
+C
 C Revision 1.11  2001/10/10 17:08:21  Administrator
 C Find best-match list 3 and 26 for weird wavelengths - warn user
 C
@@ -1832,7 +1835,10 @@ C      LIST 23 DOES NOT NEED IT
       GOTO 3250
 C--'#PUNCH' TO BE ISSUED  -  CHECK IF IT IS NECESSARY
 3150  CONTINUE
-      IF (ISTORE(M33CD+5)) 3300, 3250, 3250
+CDJW0102 - ONLY IF TYPE IS 'REFINE'. ITEM+5 USED AS 'FILTER'
+C          ON 'CALC'
+      IF ((J .EQ. 1) .AND. (ISTORE(M33CD+5) .EQ. 0)) GOTO 3300
+      GOTO 3250      
 C--'#INVERT' TO BE ISSUED  -  CHECK IF THIS IS A 'VECTOR' INSTRUCTION
 3200  CONTINUE
       IF(ISTORE(M-1)-5)3250,3300,3250
