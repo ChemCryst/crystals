@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  1999/05/25 16:03:31  dosuser
+C RIC: Changes for UNIX filenames for LIN and GIL targets.
+C
 C Revision 1.10  1999/05/21 11:18:59  dosuser
 C RIC: When drawing bonds colour them according to the deviation from
 C the CSD mean, if this info has already been computed.
@@ -986,12 +989,21 @@ C
      1                 + GUMTRX(8) * STACK((J*5)-2)
      2                 + GUMTRX(9) * STACK((J*5)-1)
 
+CCDEBUG{
+c                  WRITE ( 99, '(A,2F8.4,2(A4,I4,3F8.5))')
+c     1                  'BOND FOUND ',ACTDST, REQDST,
+c     1                  ISTORE(IAT1P),NINT(STORE(IAT1P+1)),
+c     1                  STORE(IAT1P+4),STORE(IAT1P+5),STORE(IAT1P+6),
+c     1                  ISTORE(IAT2P),NINT(STORE(IAT2P+1)),
+c     1                  STORE(IAT2P+4),STORE(IAT2P+5),STORE(IAT2P+6)
+cCDEBUG}      
+
 C See if this bond is in LIST 18. If so, use it's deviation to colour it.
 
-                  JELE1 = ISTORE(IAT1P)
-                  JSER1 = ISTORE(IAT1P+1)
-                  JELE2 = ISTORE(IAT1P)
-                  JSER2 = ISTORE(IAT1P)
+c                  JELE1 = ISTORE(IAT1P)
+c                  JSER1 = ISTORE(IAT1P+1)
+c                  JELE2 = ISTORE(IAT1P)
+c                  JSER2 = ISTORE(IAT1P)
                   KR = 0
                   KG = 0
                   KB = 0
