@@ -5,9 +5,9 @@
 +GIL    click here:          {&"crysdir:manual/primer-1.html"{&
     or here:      {&http://www.xtl.ox.ac.uk/primer-1.html{&
  Additional help may be available in the list of FAQs:
--GIL                            {&"crysdir:manual\faq-2.html"{&
-+GIL                            {&"crysdir:manual/faq-2.html"{&
-    or here:         {&http://www.xtl.ox.ac.uk/faq-2.html{&
+-GIL                            {&"crysdir:manual\faq-1.html"{&
++GIL                            {&"crysdir:manual/faq-1.html"{&
+    or here:         {&http://www.xtl.ox.ac.uk/faq-1.html{&
 
  Problems using or installing crystals? Click to email either:
 {&mailto:richard.cooper@chem.ox.ac.uk{& {&mailto:david.watkin@chem.ox.ac.uk{&
