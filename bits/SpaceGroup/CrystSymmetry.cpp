@@ -42,7 +42,6 @@ void CrystSymmetry::runCheck()
 	string sym = "^(" + SymOp + SymOp + "?" + SymOp + "?)([[:space:]]rhom)?$"; //Rhom is a special case. I don't like doing this but I cannot be bothered doing properly
 	
 	regex_t symFSO;
-
 	regcomp(&symFSO, sym.c_str(), REG_EXTENDED | REG_NOSUB | REG_ICASE);
 	if (0 != (tError = regexec(&symFSO, c_str(), 0, NULL, 0)))
 	{
