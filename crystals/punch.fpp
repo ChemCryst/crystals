@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.31  2003/01/13 17:30:15  rich
+C In FCF punch: Use M6+20 for ratio, rather than incorrectly calculating it.
+C
 C Revision 1.30  2002/06/28 16:13:08  Administrator
 C ensure that the field NEW can hold characters
 C
@@ -872,7 +875,9 @@ C -- ERRORS
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       END
 CODE FOR XPCH6C
-      SUBROUTINE XPCH6C
+      SUBROUTINE XPCH6C(KF)
+C KF  0 - F's
+C     1 - F^2's
 C----- CIF FORMAT PUNCH
 CDJWMAY99 - OUTPUT TO FOREIGN PUNCH UNIT
       CHARACTER*80 CBUF
@@ -977,10 +982,18 @@ C---- SCALE DOWN THE ELEMENTS OF THE V/CV MATRIX
       WRITE(NCFPU1,'(''#    < - excluded by I/sigmaI cutoff '')')
       WRITE(NCFPU1,'(''#    x - excluded for another reason  '')')
 
-      WRITE(NCFPU1,1000)
+      IF ( KF.EQ.1 )  THEN
+         WRITE(NCFPU1,1001)
+      ELSE
+         WRITE(NCFPU1,1000)
+      END IF
 1000  FORMAT ( /,'loop_',/,'_refln_index_h'/,'_refln_index_k'/,
      1 '_refln_index_l'/,'_refln_F_meas'/,'_refln_F_calc'/,
      2 '_refln_F_sigma'/,'_refln_observed_status')
+1001  FORMAT ( /,'loop_',/,'_refln_index_h'/,'_refln_index_k'/,
+     1 '_refln_index_l'/,'_refln_F_squared_meas'/,
+     2 '_refln_F_squared_calc'/,
+     3 '_refln_F_squared_sigma'/,'_refln_observed_status')
 
 
 
@@ -1009,8 +1022,10 @@ C---- GET SIGMA THRESHOLD FROM L28
       S =  MAX(0.0,STORE(M6+12))
 
 
-C      CALL XSQRF(FOS, FO, FABS, SIGMA, STORE(M6+12))
-C      SIGRAT = FOS / MAX(0.0001,SIGMA)
+      IF ( KF.EQ.1 ) THEN
+         CALL XSQRF(FOS, FO, FABS, SIGMA, STORE(M6+12))
+         FCS = FC*FC
+      END IF
 
       IF ( STORE(M6+20) .LT. S6SIG) THEN
         IALW = 2                    !Rejected by sigma cutoff.
@@ -1020,7 +1035,11 @@ C      SIGRAT = FOS / MAX(0.0001,SIGMA)
         IALW = 1                    !Used.
       END IF
 
-      WRITE(NCFPU1,'(3I4,3F12.2,1X,A1)') I, J, K, FO, FC, S, CALW(IALW)
+      IF ( KF.EQ.1 ) THEN
+        WRITE(NCFPU1,'(3I4,3F12.2,1X,A1)')I,J,K,FOS,FCS,SIGMA,CALW(IALW)
+      ELSE
+         WRITE(NCFPU1,'(3I4,3F12.2,1X,A1)')I, J, K, FO, FC, S,CALW(IALW)
+      END IF
       GOTO 1840
 1850  CONTINUE
       GOTO 9999

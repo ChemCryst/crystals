@@ -1,4 +1,16 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.5  2001/10/08 12:25:58  ckp2
+C
+C All program sub-units now RETURN to the main CRYSTL() function inbetween commands.
+C The changes made are: in every sub-program the GOTO's that used to loop back for
+C the next KNXTOP command have been changed to RETURN's. In the main program KNXTOP is now
+C called at the top of the loop, but first the current ProgramName (KPRGNM) array is cleared
+C to ensure the KNXTOP knows that it is not in the correct sub-program already. (This
+C is the way KNXTOP worked on the very first call within CRYSTALS).
+C
+C We now have one location (CRYSTL()) where the program flow returns between every command. I will
+C put this to good use soon.
+C
 C Revision 1.4  2001/02/26 10:26:48  richard
 C Added changelog to top of file
 
@@ -115,7 +127,7 @@ C--NOT LIST 6  -  AN ERROR
       RETURN
 C--CHECK THE TYPE OF PUNCH
 7300  CONTINUE
-      GOTO (7310, 7340, 7320, 7330 ) ICLASS+2
+      GOTO (7310, 7340, 7320, 7330, 7350 ) ICLASS+2
       RETURN
 C--NORMAL PUNCH FORMAT
 7310  CONTINUE
@@ -129,9 +141,13 @@ C--OBSERVED QUANTITIES ONLY
 7330  CONTINUE
       CALL XPCH6O
       RETURN
-C----- CIF OUTPUT
+C----- CIF OUTPUT F's
 7340  CONTINUE
-      CALL XPCH6C
+      CALL XPCH6C(0)
+      RETURN
+C----- CIF OUTPUT F^2's
+7350  CONTINUE
+      CALL XPCH6C(1)
       RETURN
       END
 
