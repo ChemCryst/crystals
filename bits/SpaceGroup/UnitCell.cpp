@@ -262,6 +262,56 @@ char* getCrystalSystem()
     return tString;
 }
 
+int indexOf(String& pClass, String& pUnique)
+{
+    pClass.upcase();
+    pUnique.upcase();
+    if ("Triclinic")
+    {
+        return 0;
+    }
+    else if ("Monoclinic")
+    {
+        if (pUnique.cmp("A") == 0)
+        {
+            return 1;
+        }
+        else if (pUnique.cmp("C"))
+        {
+            return 3;
+        }
+        else if (pUnique.cmp("B") || pUnique.cmp("UNKNOWN"))
+        {
+            return 2;
+        }
+    }
+    else if ("Orthorhombic")
+    {
+        return 4;
+    }
+    else if ("Tetragonal")
+    {
+        return 5;
+    }
+    else if("Trigonal")
+    {
+        return 6;
+    }
+    else if("Trigonal(Rhom)")
+    {
+        return 7;
+    }
+    else if("Hexagonal")
+    {
+        return 8;
+    }
+    else if("Cubic")
+    {
+        return 9;
+    }
+    return -1;
+}
+
 char* crystalSystemConst(int pIndex)
 {
     switch (pIndex)
@@ -316,7 +366,6 @@ void UnitCell::readInUnitCell(char* pPath)	//Reads in from the file provided
     char tLine[255];
     
     regex_t tAngles;
-    regex_t tLengths;
     
     /**************************************/
     /*** Open File ready to be read in	***/
@@ -331,29 +380,23 @@ void UnitCell::readInUnitCell(char* pPath)	//Reads in from the file provided
     /*** Set up the regular expressions ***/
     /**************************************/
      regcomp(&tAngles, 
-     "continue[[:space:]]+alpha[[:space:]]*=[[:space:]]*([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)[[:space:]]+beta[[:space:]]*=[[:space:]]*([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)[[:space:]]+gamma[[:space:]]*=[[:space:]]*([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)",
+     "CELL[[:space:]]+([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)[[:space:]]+([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)[[:space:]]+([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)[[:space:]]+([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)[[:space:]]+([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)[[:space:]]+([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)",
       REG_EXTENDED);
-    regcomp(&tLengths, 
-     "real[[:space:]]+a[[:space:]]*=[[:space:]]*([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)[[:space:]]+b[[:space:]]*=[[:space:]]*([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)[[:space:]]+c[[:space:]]*=[[:space:]]*([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)",
-      REG_EXTENDED);
-    regmatch_t tMatch[8];
+    regmatch_t tMatch[13];
     
     while (fgets(tLine, 255, tFile))
     {
-        if (!regexec(&tAngles, tLine, 8, tMatch, 0))
+        if (!regexec(&tAngles, tLine, 13, tMatch, 0))
         {
             String tAlpha(tLine, (int)tMatch[1].rm_so, (int)tMatch[1].rm_eo);
             String tBeta(tLine, (int)tMatch[3].rm_so, (int)tMatch[3].rm_eo);
             String tGamma(tLine, (int)tMatch[5].rm_so, (int)tMatch[5].rm_eo);
+            String tA(tLine, (int)tMatch[7].rm_so, (int)tMatch[7].rm_eo);
+            String tB(tLine, (int)tMatch[9].rm_so, (int)tMatch[9].rm_eo);
+            String tC(tLine, (int)tMatch[11].rm_so, (int)tMatch[11].rm_eo);
             iAlpha = tAlpha.toDouble();
             iBeta = tBeta.toDouble();
             iGamma = tGamma.toDouble();
-        }
-        else if (!regexec(&tLengths, tLine, 8, tMatch, 0))
-        {
-            String tA(tLine, (int)tMatch[1].rm_so, (int)tMatch[1].rm_eo);
-            String tB(tLine, (int)tMatch[3].rm_so, (int)tMatch[3].rm_eo);
-            String tC(tLine, (int)tMatch[5].rm_so, (int)tMatch[5].rm_eo);
             iA = tA.toDouble();
             iB = tB.toDouble();
             iC = tC.toDouble();
