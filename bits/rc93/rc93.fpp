@@ -2147,8 +2147,9 @@ C on all platforms.
         IF ( ISLP .GT. 0 ) THEN
 #if defined (_WXS_)
           NAME(LEVEL)(ISLP:ISLP) = '\\'
-#endif
+#else
           NAME(LEVEL)(ISLP:ISLP) = '\'
+#endif
         ELSE
           EXIT
         END IF
@@ -5284,3 +5285,27 @@ c
       return
       end
 C
+
+#if defined(_DVF_) || defined (_GID_) || defined (_DOS_) || defined (_WXS_)
+CODE FOR KCCEQL
+      FUNCTION KCCEQL ( CDATA , ISTART , CMATCH )
+C -- LOCATE SUBSTRING IN STRING
+C -- THIS FUNCTION IS SIMILAR TO FORTRAN 'INDEX'
+C      CDATA       STRING IN WHICH TO SEARCH
+C      ISTART      STARTING POSITION IN 'CDATA'
+C      CMATCH      STRING TO SEARCH FOR
+C      KCCEQL      -1      NO MATCH
+C                  +VE     POSITION IN 'CDATA' OF CMATCH
+      CHARACTER*(*) CDATA , CMATCH
+      KCCEQL = -1
+      LENMAT = LEN ( CMATCH )
+      LENDAT = LEN ( CDATA )
+      IFINSH = LENDAT - LENMAT + 1
+      IF ( ISTART .LE. 0 ) RETURN
+      IF ( ISTART .GT. IFINSH ) RETURN
+      IPOS = INDEX ( CDATA(ISTART:) , CMATCH )
+      IF ( IPOS .LE. 0 ) RETURN
+      KCCEQL = ISTART + IPOS - 1
+      RETURN
+      END
+#endif
