@@ -29,12 +29,15 @@ class LaueGroupGraph
 				Matrix<short>* iRotation; //If NULL then assumed to be identity
 				Matrix<short>* iTransformation; //If NULL assumed to be identity
 				MergedReflections* iMergedData;
+				bool iInvertTransformation; //Remove the transformation applied to the data already.
 			public:
 				Link(Node* pLinkingNode, const Matrix<short>* pRotation = NULL, const Matrix<short>* pTransformation = NULL);
+				Link(Node* pNode, const bool pInvertTransformation);
 				std::ostream& output(std::ostream& pStream) const;
 				Node *node();
 				~Link();
 				//Methods for the merging
+				float unitCellRating(HKLData& pReflections);
 				void dropReflections(); //Releases all the reflections which where generated when merged.
 				MergedReflections& merge(HKLData& tReflections);
 				MergedReflections& follow(const float pThreshold);
@@ -43,17 +46,19 @@ class LaueGroupGraph
 		class Node
 		{
 			protected:
-				JJLaueGroup* iLaueGroup; //A reference to the LaueGroup this node represents. Not to be released by this class
+				LaueGroup* iLaueGroup; //A reference to the LaueGroup this node represents. Not to be released by this class
 				list<Link*> iLinks; //A list of the links from this node to the others.
 			public:
-				Node(JJLaueGroup* pLaueGroup);
+				Node(LaueGroup* pLaueGroup);
 				~Node();
 				void addLink(Node* pNode, const Matrix<short>* pRotation = NULL, const Matrix<short>* pTransformation = NULL);
+				void addLink(Node* pNode, const bool pInvertTransformation); //remove any transformations applied to the data already.
 				size_t numberOfLinks();
-				JJLaueGroup* laueGroup();
+				LaueGroup* laueGroup();
 				std::ostream& output(std::ostream& pStream);
 				//Methods for the merging
 //				void dropReflections(); //Releases all the reflections which where generated when merged.
+				float unitCellRating(HKLData& pReflections);
 				MergedReflections& follow(MergedReflections& tReflections, const float pThreshold); //Make node merge the reflections for all of it's connection Nodes.
 				MergedReflections* merge(HKLData& tReflections, Matrix<short>* pTransformationMatrix = NULL);
 		};
