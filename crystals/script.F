@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  1999/03/24 17:51:54  dosuser
+C open/append changes
+C
 C Revision 1.7  1999/03/05 17:16:37  dosuser
 C *** empty log message ***
 C
@@ -2275,7 +2278,11 @@ C
       PARAMETER ( JPOSTK = 4 )
 CJAN99  2 NEW UNARY OPERATORS
 C       CHAR=FIRSTSTR(CHAR) AND INT=FIRSTINT(CHAR)
-      PARAMETER ( NOPER = 37 , NUBASE = 24 )
+C
+CAPR99  1 NEW UNARY OPERATOR:
+C       REAL=SQRT(REAL)
+C
+      PARAMETER ( NOPER = 38 , NUBASE = 24 )
       PARAMETER ( NARGMX = 3 , NOTYPE = 13 )
 C
       PARAMETER ( JNONE = 0 )
@@ -2317,7 +2324,7 @@ C
      3           6 , 7 , 11 , 11 ,
 CJAN99
      4           8 , 9 ,  9 , 10 ,  8 , 10 ,  4 , 12 , 13 , 10 , 12,
-     5          12 , 12 /
+     5          12 , 12,  4 /
 C
       DATA NARGS  / 0 , 2 , 2 , 1 , 2 , 2 , 3 , 1 , 1 , 1 , 2 , 1 , 1 /
       DATA NRESLT / 0 , 1 , 1 , 1 , 1 , 2 , 1 , 1 , 1 , 1 , 1 , 1 , 1 /
@@ -2604,7 +2611,7 @@ C
       GO TO ( 5010 , 8000 , 5020 , 5030 , 8000 ,
      2        5040 , 5050 , 5060 , 5070 , 5080 ,
 CJAN99
-     3        5090 , 5100,  5110 ,
+     3        5090 , 5100,  5110 , 5120 , 
      4        9940 ) , IUOPER
       GO TO 9940
 C
@@ -2781,6 +2788,17 @@ C Skip till we find not an integer
       GO TO 8000
 C
 C
+5120  CONTINUE
+C
+C -- 'SQRT'
+C
+C Return the square root of the argument. 
+C
+        XCODE(JVALUE,IARG(1)) = SQRT ( XCODE(JVALUE,IARG(1)) )
+        ICODE(JVTYPE,IARG(1)) = 2
+C
+C
+      GO TO 8000
 C
 C
 C
@@ -3033,7 +3051,7 @@ C
       PARAMETER ( IBASBR = 1               , NBROPR =  2 )
       PARAMETER ( IBASBI = IBASBR + NBROPR , NBOPER = 22 )
 CJAN99
-      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 13 )
+      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 14 )
       PARAMETER ( NOPER = IBASUN + NUOPER - 1 )
       PARAMETER ( LOPER = 10 )
 C
@@ -3073,7 +3091,7 @@ C
      9                '.IF.'  , 'REAL'  ,'INTEGER', '.VALUE.',
 CJAN99
      *                'CHARACTER','KEYWORD','UPPERCASE','FIRSTSTR',
-     1                'FIRSTINT'                                    /
+     1                'FIRSTINT','SQRT'                          /
 C
       DATA IPRECD /      0    ,   200   ,    0    ,
      2                  100   ,   100   ,   120   ,   120   ,
@@ -3086,7 +3104,7 @@ C
      9                   40   ,   180   ,   180   ,   180   ,
 CJAN99
      *                  180   ,   180   ,   180   ,   180   ,
-     1                  180                       /
+     1                  180   ,   180                    /
 C
       DATA CDATAT / '<invalid>', 'integer', 'real', 'logical',
      2             'character' /
