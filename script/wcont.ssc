@@ -79,7 +79,7 @@
 %          INSERT ') '
 %        END LOOP
 %        SEND
-Û%        CLEAR
+%        CLEAR
 %      END IF
 %  COPY 'PLANE'
 %  COPY 'SAVE'
