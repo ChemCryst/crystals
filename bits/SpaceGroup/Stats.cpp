@@ -10,6 +10,7 @@
 #include "Stats.h"
 #include "MathFunctions.h"
 #include "Collections.h"
+#include <iomanip>
 
 //Average Int
 static float AbsentAIM = 0.00834789f;
@@ -111,7 +112,7 @@ void Stats::outputRow(int pRow, std::ostream& pStream)
     pStream << tName << "\t";
     if (strlen(tName) <	8)
     {
-        std::cout << "\t";
+        pStream << "\t";
     }
     for (int i = 0; i < tHCount; i++)
     {
@@ -125,7 +126,7 @@ void Stats::outputRow(int pRow, std::ostream& pStream)
     pStream << "\n\t\t";
     for (int i = 0; i < tHCount; i++)
     {
-        printf("| Rat1: %0.4f\t", iStats[i*tCCount+pRow].tRating1);	
+        pStream << "| Rat1: " << setprecision (4) << (float)iStats[i*tCCount+pRow].tRating1 << "\t";
     }
     pStream << "\n\t\t";
     for (int i = 0; i < tHCount; i++)
@@ -150,7 +151,7 @@ void Stats::outputRow(int pRow, std::ostream& pStream)
     pStream << "\n\t\t";
     for (int i = 0; i < tHCount; i++)
     {
-        printf("| Rat2: %0.4f\t", (float)iStats[i*tCCount+pRow].tRating2);	
+         pStream << "| Rat2: " << setprecision (4) << (float)iStats[i*tCCount+pRow].tRating2 << "\t";	
     }
 }
 
@@ -213,8 +214,8 @@ void Stats::handleFilteredData(int pColumns[], int pNumColumns)	//pColumns an ar
 
 std::ostream& Stats::output(std::ostream& pStream)
 {
-    std::cout << "Total: " << iTotalNum <<"\n";
-    std::cout << "Average Int: " << iTotalIntensity/iTotalNum << "\n";
+    pStream << "Total: " << iTotalNum <<"\n";
+    pStream << "Average Int: " << iTotalIntensity/iTotalNum << "\n";
     //Print headings
     outputHeadings(pStream);
     //Print rows
