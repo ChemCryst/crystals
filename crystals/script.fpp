@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.32  2002/01/31 10:02:29  ckp2
+C RIC: New script function CHAR2=GETENV(CHAR1) set CHAR2 to the value
+C of the environment variable CHAR1.
+C
 C Revision 1.31  2002/01/30 15:24:48  ckp2
 C RIC: Calls to MTRNLG in FILEEXISTS and FILEDELETE.
 C
@@ -2051,9 +2055,9 @@ C -- DEFINE KEYWORDS FOR 'EXTRACT TRANSFER'
       CHARACTER*(LTRANS) CTRANS(NTRANS)
 C
 C -- SET UP INPUT BUFFER, AND AREA TO STORE SEARCH STRING
-      PARAMETER ( NINPBF = 120 )
+      PARAMETER ( NINPBF = 256 )
       CHARACTER*(NINPBF) CINPBF
-      PARAMETER ( NSERCH = 80 )
+      PARAMETER ( NSERCH = 256 )
       CHARACTER*(NSERCH) CSERCH
 C
 \PSCRPT
@@ -2416,7 +2420,7 @@ C
 C
       DIMENSION IARG(NARGMX) , ITYPE(NARGMX) , IPOSIT(NARGMX)
 C
-      PARAMETER ( LENWRK = 80 )
+      PARAMETER ( LENWRK = 256 )
       CHARACTER*(LENWRK) CWORK1 , CWORK2
 C
       CHARACTER*6 CLOGIC(0:1)
@@ -5855,7 +5859,7 @@ CJAN99
       PARAMETER ( LDEST = 12 , NDEST = 6 )
       CHARACTER*(LDEST) CDEST(NDEST)
 C
-      PARAMETER ( LENDSP = 80 )
+      PARAMETER ( LENDSP = 256 )
       CHARACTER*(LENDSP) CWORK
 C
 \PSCMSG
@@ -5935,12 +5939,12 @@ C and ! on the end, then set KSCTRA to 3 so that the command is copied b
 C to the script processor.
         ISTAT = KSCSDC ( IVALUE , CTEXT , IUSLEN )
           IF ( IUSLEN .GT. 0 ) THEN
-            IUSLEN = MIN(80,IUSLEN + 12)
+            IUSLEN = MIN(256,IUSLEN + 12)
             KSCTRA = 3
 C Shift the characters up by 10 places
-                DO 10 I = 80,11,-10
-                        CTEXT(I-9:I) = CTEXT(I-19:I-10)
-10        CONTINUE
+            DO I = 256,11,-1
+                CTEXT(I:I) = CTEXT(I-10:I-10)
+            END DO
 C Add the pretext
                 CTEXT(1:10) = '%INSERT ! '
 C Add the posttext
@@ -5954,7 +5958,7 @@ C Purpose: To transfer text strings to the user input buffer.
 C Remarks: Any existing unprocessed user input is overwritten.
         ISTAT = KSCSDC ( IVALUE , CTEXT , IUSLEN )
         IF ( IUSLEN .GT. 0 ) THEN
-            IUSLEN = MIN(80,IUSLEN)
+            IUSLEN = MIN(256,IUSLEN)
             CLINPB = CTEXT(1:IUSLEN)
             CUINPB = CTEXT(1:IUSLEN)
             IINPPS = 1
@@ -6251,7 +6255,7 @@ C
 C -- CHARACTER BUFFERS FOR GENERATING PROMPT STRINGS
 \XCLWIN
 C
-      CHARACTER *80 CBUFFR
+      CHARACTER *256 CBUFFR
 C----- TO HOLD REAL FORMAT EXPRESSION
       CHARACTER *8 CFMTXP
 C

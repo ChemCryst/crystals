@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2002/02/20 14:35:39  ckp2
+C Don't remove spaces from files names when generating names.
+C
 C Revision 1.27  2001/12/18 13:08:36  ckp2
 C Code for getting and setting errors from List 39.
 C
@@ -1118,7 +1121,7 @@ C
 C
       IEND = ISTART + LENGTH - 1
       WRITE ( RESULT(ISTART:IEND) , 1005 ) NAME
-1005  FORMAT ( 80A1 )
+1005  FORMAT ( 256A1 )
       ISTART = IEND + 1
 C
       IF ( SUFFIX .NE. ' ' ) THEN
@@ -1324,7 +1327,7 @@ C      +1      SUCCESS
 C
       CHARACTER*(*) FNAME
 C
-      CHARACTER*64 CNAME
+      CHARACTER*256 CNAME
       LOGICAL LNAMED, LOPEN
 C
       FNAME = ' '
@@ -1787,16 +1790,16 @@ C      2 = PRESERVE ORIGINAL CASE
 C      SET ICASE EQUAL TO ISSFLC 
 C      TO USE THE SYSTEM VARIABLE SET WITH #SET FILECASE
       CHARACTER *(*) FILNAM, CLCNAM
-      CHARACTER *64 CTEMP
+      CHARACTER *256 CTEMP
 \XSSVAL
 \XUNITS
 \XIOBUF
       NAMLEN = MIN (LEN(FILNAM), LEN(CLCNAM))
       IF (NAMLEN .GT. 0) THEN
-        IF (NAMLEN .GT. 64) THEN
-         NAMLEN = MIN (64, NAMLEN)
+        IF (NAMLEN .GT. 256) THEN
+         NAMLEN = MIN (256, NAMLEN)
          WRITE ( CMON,100)FILNAM(1:NAMLEN)
-100      FORMAT ( 'Filename truncated to 64 characters',A )
+100      FORMAT ( 'Filename truncated to 256 characters',A )
          CALL XPRVDU(NCEROR, 3,0)
          WRITE ( NCAWU , '(A)' ) CMON(1)
          IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)

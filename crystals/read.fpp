@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.30  2002/02/20 14:34:01  ckp2
+C Update KRDARG to respect double quotes when reading off arguments. Updated
+C KSYSIN not to use KRDARG, but to pass double quotes straight into KDETCH.
+C
 C Revision 1.29  2001/10/23 15:23:38  ckp2
 C Send filenames regardless of ISSUPD status (this should only affect the sending of the model).
 C
@@ -388,8 +392,8 @@ C
 C
 C -- CONVERT INPUT TO UPPERCASE FOR CORRECT COMMAND PROCESSING
       CALL XCCUPC ( CRDLWC , CRDUPC )
-      READ ( CRDLWC , '(80A1)' ) LCMAGE
-      READ ( CRDUPC , '(80A1)' ) IMAGE
+      READ ( CRDLWC , '(256A1)' ) LCMAGE
+      READ ( CRDUPC , '(256A1)' ) IMAGE
 C
       IF ( ISSSTA .LE. 0 ) NI = NI + IRDINC(IFLIND)
 C
@@ -713,8 +717,8 @@ C
       DIMENSION KEYUSE(8)
 C
       CHARACTER *1  CFILE
-      CHARACTER *80 CCMND
-      CHARACTER *63 CUFILE, CRFILE
+      CHARACTER *256 CCMND
+      CHARACTER *256 CUFILE, CRFILE
 C
 \XSTR11
 \TDVNAM
@@ -1090,9 +1094,9 @@ c      LENGTH = KRDARG ( IREQUI  , 2 )
       IF ( LENGTH .GT. 0 ) THEN
 C----- COPY AS MUCH OF LINE AS POSSIBLE
 c        LENGTH = 80 - NC
-        LENGTH = 80 - LSTART
+        LENGTH = 256 - LSTART
         LCMND = LENGTH + 1
-        CCMND(1:LCMND) = CRDLWC(LSTART:80)
+        CCMND(1:LCMND) = CRDLWC(LSTART:256)
       ENDIF
       CALL XDETCH ( CCMND(1:LCMND) )
       GOTO 9000
@@ -1225,6 +1229,10 @@ C
       DATA KQUOT /'"'/
 C
 C
+C
+      LLASTC=LASTCH
+      LASTCH=256
+
 C -- LOCATE NEXT CHARACTER FOLLOWING SPACE
       NC = KEQUAL ( NC , IB )
       NC = KNEQUL ( NC , IB )
@@ -1239,11 +1247,11 @@ C -- CHECK FOR PRESENCE OF ARGUMENT
 C -- Check if this argument starts with a quote
         IF (IMAGE(NC).EQ.KQUOT)THEN
 C -- Skip over the quote
-          NC = MIN(NC+1,LASTCH)
+          NC = MIN(NC+1,256)
 C -- FIND OTHER END OF ARGUMENT (next quote)
           ND = KEQUAL ( NC, KQUOT )
           IF ( ND .LE. 0 ) THEN
-            ND = LASTCH
+            ND = 256
           ELSE
 C -- Remove second quote completely.
             IMAGE(ND)=IB
@@ -1253,7 +1261,7 @@ C -- Remove second quote completely.
 
 C -- FIND OTHER END OF ARGUMENT (next space)
           ND = KEQUAL ( NC , IB )
-          IF ( ND .LE. 0 ) ND = LASTCH
+          IF ( ND .LE. 0 ) ND = 256
         END IF
 
         LENGTH = ND - NC
@@ -1265,6 +1273,9 @@ C -- SEARCH FOR ANOTHER ARGUMENT
 C
 C
       ENDIF
+
+      LASTCH=LLASTC
+
 C
       IF ( IEXACT .EQ. 1 ) THEN
         IF ( ( NFOUND .EQ. 0 ) .AND. ( ICOUNT .GT. 0 ) ) GO TO 9960
@@ -2027,7 +2038,7 @@ C
 C
       LOGICAL LEXIST, LOPEN, LNAMED
       CHARACTER *(*) CFILE
-      PARAMETER (LNMMAX = 63)
+      PARAMETER (LNMMAX = 256)
       CHARACTER *(LNMMAX)  OLDFIL, NEWFIL, INQFIL
 C
 CDJWMAR99

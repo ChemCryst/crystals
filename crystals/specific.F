@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.32  2002/02/20 14:37:56  ckp2
+C RIC: Changes to XDETCH to do with allowing quotes around filenames.
+C RIC: Do not remove spaces from filenames in MTRNLG.
+C
 C Revision 1.31  2001/09/07 14:21:36  ckp2
 C Fiddled around with #DISK to allow time and date to be stored for each entry.
 C There is a year 2038 problems with the date format, it'll seem like 1970 again.
@@ -120,7 +124,7 @@ C
 C
       CHARACTER *8 CCONT
       CHARACTER *(*) CFNAME
-      CHARACTER *80  CLCNAM, FILNAM
+      CHARACTER *256  CLCNAM, FILNAM
 C
       PARAMETER (NFLSTT=5)
       CHARACTER*7 FLSTAT(NFLSTT)
@@ -419,7 +423,7 @@ cdjwapr99
 C
       INTEGER IDUNIT , IFSTAT , IFMODE
       CHARACTER*(*) CFNAME
-      CHARACTER *80 CLCNAM, FILNAM
+      CHARACTER *256 CLCNAM, FILNAM
 C
 C
       CHARACTER*6 FLSTAT(3)
@@ -695,7 +699,7 @@ C
 C -- MESSAGE TYPE REQUESTED IS OVERRIDDEN BY VALUE OF IRDCMS STORED
 C    FOR THIS UNIT NUMBER
 C
-      CHARACTER*64 NAME
+      CHARACTER*256 NAME
       CHARACTER*10 ACTION(3)
 C
 \UFILE
@@ -996,7 +1000,7 @@ C      1      NULL STRING
 C      ELSE    LENGTH
 C
       CHARACTER*(*) CPATH
-      CHARACTER*64 CNAME
+      CHARACTER*256 CNAME
 C
 \XUNITS
 \XSSVAL
@@ -1005,11 +1009,11 @@ C
       KPATH = 1
       CPATH = ' '
       IF (KFLNAM( NCDFU, CNAME) .GT. 0) THEN
-&PPCC----- UNDER MAC OS, LOOK FOR THE ':'
+C----- UNDER MAC OS, LOOK FOR THE ':'
 &PPC            I = INDEX (CNAME, ':' )
-&H-PC----- UNDER UNIX, LOOK FOR THE '/'
+C----- UNDER UNIX, LOOK FOR THE '/'
 &H-P            I = INDEX (CNAME, '/' )
-&DOSC----- UNDER DOS, LOOK FOR THE LAST BACKSLASH - CHAR(92)
+C----- UNDER DOS, LOOK FOR THE LAST BACKSLASH - CHAR(92)
 &DOS            J = LEN (CNAME)
 &DOS            DO 10 K = J, 1, -1
 &DOS              IF (CNAME(K:K) .EQ. CHAR(92)) GOTO 20
@@ -1017,7 +1021,7 @@ C
 &DOS            K = 0
 &DOS20          CONTINUE
 &DOS            I = K
-&&GILLINC----- UNDER LINUX, LOOK FOR THE LAST FORWARDSLASH - CHAR(?)
+C----- UNDER LINUX, LOOK FOR THE LAST FORWARDSLASH - CHAR(?)
 &&GILLIN            J = LEN (CNAME)
 &&GILLIN            DO 10 K = J, 1, -1
 &&GILLIN              IF (CNAME(K:K) .EQ. '/') GOTO 20
@@ -1025,14 +1029,9 @@ C
 &&GILLIN            K = 0
 &&GILLIN20          CONTINUE
 &&GILLIN            I = K
-&&DVFGIDC----- UNDER WIN, LOOK FOR THE LAST BACKSLASH - CHAR(92)
+C----- UNDER WIN, LOOK FOR THE LAST BACKSLASH - CHAR(92)
 &&DVFGID            J = LEN (CNAME)
-&&DVFGID            DO 10 K = J, 1, -1
-&&DVFGID              IF (CNAME(K:K) .EQ. CHAR(92)) GOTO 20
-&&DVFGID10          CONTINUE
-&&DVFGID            K = 0
-&&DVFGID20          CONTINUE
-&&DVFGID            I = K
+&&DVFGID            I = KCLEQL ( CNAME, CHAR(92))
 &VAXC----- UNDER VMS, LOOK FOR THE ']'
 &VAX            I = INDEX (CNAME, ']' )
 &XXX            I = 0
@@ -1904,8 +1903,8 @@ C
       DIMENSION ILIMIT(2)
 C
       CHARACTER*(*) COMMND
-      CHARACTER*128 ACTUAL
-      CHARACTER*64  CTEMP
+      CHARACTER*256 ACTUAL
+      CHARACTER*256 CTEMP
 C
 \XUNITS
 \XIOBUF
@@ -1918,21 +1917,44 @@ C to check for environment labels.
 C Add the returned string onto ACTUAL.
 C ICS keeps track of position in COMMND, and ICA the position in ACTUAL
 
+C Find last non-space.
 #VAX      ICL = KCLNEQ ( COMMND, -1, ' ' )
 #VAX      ICS = 1
 #VAX      IAS = 1
-#VAX34    CONTINUE
-#VAX         ICE = KCCEQL ( COMMND, ICS, ' ' )
-#VAX         IF (ICE.LE.0) GOTO 35
-#VAX         CTEMP = COMMND(ICS:ICE-1)
-#VAX         ICS = ICE + 1
-#VAX         CALL MTRNLG(CTEMP,'UNKNOWN',ILENG)
-#VAX         ITM = INDEX ( CTEMP, ' ' )
-#VAX         IF (ITM.LE.0) GOTO 35
-#VAX         ACTUAL (IAS:) = CTEMP
-#VAX         IF ( ICS.GT.ICL ) GOTO 35
-#VAX         IAS = IAS + ITM
-#VAX      GOTO 34
+#VAX      DO WHILE ( .TRUE. )
+C Find next non-space.
+#VAX         ICS = KCCNEQ ( COMMND, ICS, ' ' )
+#VAX         IF ( ICS .LE. 0 ) GOTO 35
+#VAX         IF ( COMMND(ICS:ICS) .EQ. '"' ) THEN !Find end quote
+#VAX            ICE = KCCEQL ( COMMND, ICS+1, '"')
+#VAX            IF (ICE.LE.0) THEN     !Handle unpaired quote.
+#VAX              COMMND (ICS:ICS) = ' '
+#VAX              ICS = ICS + 1
+#VAX              ICE = KCCEQL ( COMMND, ICS, ' ' )
+#VAX            END IF
+#VAX            ICS = MAX(1,ICS)
+#VAX            ICE = MAX(ICE,ICS+2)
+#VAX            CTEMP = COMMND(ICS+1:ICE-1)
+#VAX            ICS = ICE + 1
+#VAX            CALL MTRNLG(CTEMP,'UNKNOWN',ILENG)
+#VAX            ITM = KCLNEQ( CTEMP, -1, ' ' )
+#VAX            IF (ITM.LE.0) GOTO 35
+#VAX            ACTUAL (IAS:) = '"' // CTEMP(1:ITM) // '"'
+#VAX            IF ( ICS.GT.ICL ) GOTO 35
+#VAX            IAS = IAS + ITM + 3
+#VAX         ELSE                         !Find end space
+#VAX            ICE = KCCEQL ( COMMND, ICS, ' ' )
+#VAX            IF (ICE.LE.0) GOTO 35
+#VAX            CTEMP = COMMND(ICS:ICE-1)
+#VAX            ICS = ICE + 1
+#VAX            CALL MTRNLG(CTEMP,'UNKNOWN',ILENG)
+#VAX            ITM = KCLNEQ( CTEMP, -1, ' ' )
+#VAX            IF (ITM.LE.0) GOTO 35
+#VAX            ACTUAL (IAS:) = CTEMP(1:ITM)
+#VAX            IF ( ICS.GT.ICL ) GOTO 35
+#VAX            IAS = IAS + ITM + 1
+#VAX         END IF
+#VAX      END DO
 #VAX35    CONTINUE
 #VAX      COMMND = ACTUAL
 
@@ -2542,192 +2564,202 @@ C
 \XERVAL
 \XIOBUF
 C
-#PPCC NOW WE SEARCH FOR THE LENGTH OF OUR FILE NAME AND REMOVE BLANKS.
-#PPCC
-#PPCC      WRITE(6,*) 'MTRNLG:  Input="',FILNAM(1:KSTRLN(FILNAM)),
-#PPCC     & '":',LEN(FILNAM),', Status="',STATUS(1:KSTRLN(STATUS)),'"'
-#PPC      LEVEL=1
-c#PPC      J=0
-c#PPC      DO 1 I=1,LEN(FILNAM)
-c#PPC        IF(FILNAM(I:I).NE.' ') THEN
-c#PPC          J=J+1
-c#PPC          IF(J.LE.LEN(NAME(1))) NAME(1)(J:J)=FILNAM(I:I)
-c#PPC        ENDIF
-c#PPC1     CONTINUE
+C NOW WE SEARCH FOR THE LENGTH OF OUR FILE NAME AND REMOVE BLANKS.
+C
+C      WRITE(6,*) 'MTRNLG:  Input="',FILNAM(1:KSTRLN(FILNAM)),
+C     & '":',LEN(FILNAM),', Status="',STATUS(1:KSTRLN(STATUS)),'"'
+      WRITE(CMON,*) 'MTRNLG:  Input="',FILNAM(1:KSTRLN(FILNAM)),
+     & '":',LEN(FILNAM),', Status="',STATUS(1:KSTRLN(STATUS)),'"'
+      CALL XPRVDU(NCVDU,1,0)
+      LEVEL=1
+c      J=0
+c      DO 1 I=1,LEN(FILNAM)
+c        IF(FILNAM(I:I).NE.' ') THEN
+c          J=J+1
+c          IF(J.LE.LEN(NAME(1))) NAME(1)(J:J)=FILNAM(I:I)
+c        ENDIF
+c1     CONTINUE
 
-          J = MIN(LEN(NAME(1)),MAX(1,KCLNEQ(FILNAM,-1,' ')))
-          NAME(1)(1:J)=FILNAM(1:J)
+      J = MIN(LEN(NAME(1)),MAX(1,KCLNEQ(FILNAM,-1,' ')))
+      NAME(1)(1:J)=FILNAM(1:J)
 
-#PPC      NAMLEN(1)=J
-#PPC      LSTPOS(1)=0
-#PPC      LSTLEN(1)=-1
+      NAMLEN(1)=J
+      LSTPOS(1)=0
+      LSTLEN(1)=-1
 C
-#PPCC CHECK ON FILE NAME NAMLEN OVERFLOW
+C CHECK ON FILE NAME NAMLEN OVERFLOW
 C
-#PPC      IF(J.GT.LEN(NAME(LEVEL))) THEN
-#PPC      WRITE ( cmon, '( '' MTRNLG: Filename too long '')')
-#PPC      CALL XPRVDU(NCEROR, 1, 0)
-#PPC      CALL XOPMSG (IOPCRY, IOPABN, 0 )
-#PPC      CALL XERHND (IERSEV)
-#PPC      ENDIF
+      IF(J.GT.LEN(NAME(LEVEL))) THEN
+        WRITE ( cmon, '( '' MTRNLG: Filename too long '')')
+        CALL XPRVDU(NCEROR, 1, 0)
+        CALL XOPMSG (IOPCRY, IOPABN, 0 )
+        CALL XERHND (IERSEV)
+      ENDIF
 C
-#PPC      IWHAT=0
-#PPC      IF(STATUS.EQ.'OLD') IWHAT=1
-#PPC      IF(STATUS.EQ.'NEW') IWHAT=2
-#PPC      IF(STATUS.EQ.'FRESH') IWHAT=2
-#PPC      IF(STATUS.EQ.'UNKNOWN') IWHAT=3
-#PPC      IF(IWHAT.EQ.0) THEN
-#PPC      WRITE ( CMON, '( '' MTRNLG: Unknown status '')')
-#PPC      CALL XPRVDU(NCEROR, 1, 0)
-#PPC      CALL XOPMSG (IOPCRY, IOPABN, 0 )
-#PPC      CALL XERHND (IERSEV)
-#PPC      END IF
+      IWHAT=0
+      IF(STATUS.EQ.'OLD') IWHAT=1
+      IF(STATUS.EQ.'NEW') IWHAT=2
+      IF(STATUS.EQ.'FRESH') IWHAT=2
+      IF(STATUS.EQ.'UNKNOWN') IWHAT=3
+      IF(IWHAT.EQ.0) THEN
+        WRITE ( CMON, '( '' MTRNLG: Unknown status '')')
+        CALL XPRVDU(NCEROR, 1, 0)
+        CALL XOPMSG (IOPCRY, IOPABN, 0 )
+        CALL XERHND (IERSEV)
+      END IF
 C
-#PPCC HERE COMES THE BIG SEARCH LOOP. IT IS GUIDED BY THE LEVEL AND THE
-#PPCC VARIABLE.
+C HERE COMES THE BIG SEARCH LOOP. IT IS GUIDED BY THE LEVEL AND THE
+C VARIABLE.
 C
-#PPCC SEARCH FOR THE FIRST ':' IF THERE IS ANY
+C SEARCH FOR THE FIRST ':' IF THERE IS ANY
 C
-#PPC2     COLPOS(LEVEL)=INDEX(NAME(LEVEL)(1:NAMLEN(LEVEL)),':')
-#PPCC      WRITE(6,*) 'Looking for :', NAME(LEVEL)(1:NAMLEN(LEVEL))
+
+2     COLPOS(LEVEL)=INDEX(NAME(LEVEL)(1:NAMLEN(LEVEL)),':')
+
+C      WRITE(6,*) 'Looking for :', NAME(LEVEL)(1:NAMLEN(LEVEL))
 C
-#PPCC TEST IF SOMETHING CAN BE DONE
+C TEST IF SOMETHING CAN BE DONE
 C
-#PPC      IF(COLPOS(LEVEL).LT.3) THEN
-#PPCC^^
-#PPCC        WRITE(6,*)'Inquiring: ',NAME(LEVEL)(1:NAMLEN(LEVEL))
-#PPC        IF(IWHAT.EQ.2) GOTO 9999
-#PPC        INQNAM=NAME(LEVEL)(1:NAMLEN(LEVEL))
-#PPC        DO 6666 I=NAMLEN(LEVEL)+1,LEN(INQNAM)
-#PPC          INQNAM(I:I)=' '
-#PPC6666    CONTINUE
-#PPCcnov98        INQUIRE(FILE=INQNAM,EXIST=LEXIST)
-#PPC        INQUIRE(FILE=INQNAM,EXIST=LEXIST, iostat=iotest)
-#PPC        if( (iotest .eq. 0) .and.
-#PPC     1  (LEXIST))  GOTO 9999
-#PPC        LEVEL=LEVEL-1
-#PPC        IF(LEVEL.GE.1) GOTO 3
-#PPC        LEVEL=1
-#PPC        GOTO 9999
-#PPC      ENDIF
+      IF(COLPOS(LEVEL).LT.3) THEN
+C^^
+C        WRITE(6,*)'Inquiring: ',NAME(LEVEL)(1:NAMLEN(LEVEL))
+        IF(IWHAT.EQ.2) GOTO 9999
+        INQNAM=NAME(LEVEL)(1:NAMLEN(LEVEL))
+        DO I=NAMLEN(LEVEL)+1,LEN(INQNAM)
+          INQNAM(I:I)=' '
+        END DO
+cnov98        INQUIRE(FILE=INQNAM,EXIST=LEXIST)
+        INQUIRE(FILE=INQNAM,EXIST=LEXIST, iostat=iotest)
+        if( (iotest .eq. 0) .and.
+     1  (LEXIST))  GOTO 9999
+        LEVEL=LEVEL-1
+        IF(LEVEL.GE.1) GOTO 3
+        LEVEL=1
+        GOTO 9999
+      ENDIF
 C
-#PPCC LOOK FOR AN ENVIRONMENT STRING IF NONE WAS ASSIGNED UP TO NOW
+C LOOK FOR AN ENVIRONMENT STRING IF NONE WAS ASSIGNED UP TO NOW
 C
-#PPC      IF(LSTLEN(LEVEL).LT.0) THEN
-#PPC        CALL XCCUPC(NAME(LEVEL)(1:COLPOS(LEVEL)-1),
-#PPC     &              NAME(LEVEL)(1:COLPOS(LEVEL)-1))
-#PPC        LIST(LEVEL) = ' '
-&DOSC----- DOSPARAM@ ( CPARAM, CVALUE) RETURNS THE CVALUE OF THE PARAMET
-&DOSC      CPARAM, INITIALISED WITH THE DOS COMMAND
-&DOSC      SET CPARAM=CVALUE
+      IF(LSTLEN(LEVEL).LT.0) THEN
+        CALL XCCUPC(NAME(LEVEL)(1:COLPOS(LEVEL)-1),
+     &              NAME(LEVEL)(1:COLPOS(LEVEL)-1))
+        LIST(LEVEL) = ' '
+C----- DOSPARAM@ ( CPARAM, CVALUE) RETURNS THE CVALUE OF THE PARAMET
+C      CPARAM, INITIALISED WITH THE DOS COMMAND:   SET CPARAM=CVALUE
 &DOS        CALL DOSPARAM@(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
-&&DVFGID        CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
+&&DVFGID      CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 &UNX        CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
-&&LINGIL        CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
+&&LINGIL      CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 
 CNOV98 IF THERE IS NO ENVIRONMENT VARIABLE, CHECK THE PRESETS
-      IF (LIST(LEVEL) .EQ. ' ') THEN
-       IF (NAME(LEVEL)(1:COLPOS(LEVEL)-1) .EQ. 'CRMAN') THEN
-         LIST(LEVEL) = CHLPDV(1:LHLPDV)
-       ELSE IF (NAME(LEVEL)(1:COLPOS(LEVEL)-1) .EQ. 'CRSCP') THEN
-         LIST(LEVEL) = CSCPDV(1:LSCPDV)
-       ELSE IF (NAME(LEVEL)(1:COLPOS(LEVEL)-1) .EQ. 'CRDIR') THEN
+        IF (LIST(LEVEL) .EQ. ' ') THEN
+          IF (NAME(LEVEL)(1:COLPOS(LEVEL)-1) .EQ. 'CRMAN') THEN
+            LIST(LEVEL) = CHLPDV(1:LHLPDV)
+          ELSE IF (NAME(LEVEL)(1:COLPOS(LEVEL)-1) .EQ. 'CRSCP') THEN
+            LIST(LEVEL) = CSCPDV(1:LSCPDV)
+          ELSE IF (NAME(LEVEL)(1:COLPOS(LEVEL)-1) .EQ. 'CRDIR') THEN
 &DOS         LIST(LEVEL) = '.\'
 &DVF         LIST(LEVEL) = '.\'
 &GID         LIST(LEVEL) = '.\'
 &VAX         LIST(LEVEL) = '.\'
 &LIN         LIST(LEVEL) = './'
 &GIL         LIST(LEVEL) = './'
-       ENDIF
+          ENDIF
+        ENDIF
+        LSTPOS(LEVEL)=0
+        LSTLEN(LEVEL)=KSTRLN(LIST(LEVEL))
+C^^
+C        WRITE(6,*) 'Environment ',LEVEL,'  "',
+C     &    NAME(LEVEL)(1:COLPOS(LEVEL)-1),'"  = "',
+C     &    LIST(LEVEL)(1:LSTLEN(LEVEL)),'"'
       ENDIF
-#PPC        LSTPOS(LEVEL)=0
-#PPC        LSTLEN(LEVEL)=KSTRLN(LIST(LEVEL))
-#PPCC^^
-#PPCC        WRITE(6,*) 'Environment ',LEVEL,'  "',
-#PPCC     &    NAME(LEVEL)(1:COLPOS(LEVEL)-1),'"  = "',
-#PPCC     &    LIST(LEVEL)(1:LSTLEN(LEVEL)),'"'
-#PPC      ENDIF
 C
-#PPCC TEST LIST FOR SOMETHING TO PROCESS
+C TEST LIST FOR SOMETHING TO PROCESS
 C
-#PPC3     CONTINUE
-#PPCC^^
-#PPCC      WRITE(6,*) 'Testing ',LEVEL,'  "',
-#PPCC     &  NAME(LEVEL)(1:NAMLEN(LEVEL)),'"'
-#PPC      IF((LSTPOS(LEVEL).GE.LSTLEN(LEVEL))
-#PPC     &  .OR.((LSTPOS(LEVEL).GT.0).AND.(IWHAT.EQ.2))) THEN
-#PPC        LEVEL=LEVEL-1
-#PPC        IF(LEVEL.GE.1) GOTO 3
-#PPC        LEVEL=1
-#PPC        IF(IWHAT.EQ.3) THEN
-#PPC          IWHAT=2
-#PPC          LEVEL=1
-#PPC          LSTPOS(1)=0
-#PPC          LSTLEN(1)=-1
-#PPC          GOTO 2
-#PPC        ENDIF
-#PPC        GOTO 9999
-#PPC      ELSE
-#PPC        IF(LEVEL.GE.MAXLVL) THEN
-#PPC          WRITE ( CMON, '( '' MTRNLG: Out of levels '')')
-#PPC          CALL XPRVDU(NCEROR, 1, 0)
-#PPC          CALL XOPMSG (IOPCRY, IOPABN, 0 )
-#PPC          CALL XERHND (IERSEV)
-#PPC        END IF
-#PPC        J=LSTPOS(LEVEL)+1
-#PPC        LSTPOS(LEVEL)=INDEX(LIST(LEVEL)(J:LSTLEN(LEVEL)),',')+J-1
-#PPC        IF(LSTPOS(LEVEL).EQ.(J-1)) LSTPOS(LEVEL)=LSTLEN(LEVEL)+1
-#PPCC^^
-#PPCC         WRITE(6,*)
-#PPCC     1 'Extracted     "',LIST(LEVEL)(J:LSTPOS(LEVEL)-1),'"'
-#PPC        K=LSTPOS(LEVEL)-J
-#PPC        NAME(LEVEL+1)(1:K)=LIST(LEVEL)(J:LSTPOS(LEVEL)-1)
-#PPCC^^
-#PPCC          WRITE(6,*)'Name="',NAME(LEVEL+1)(1:K),'"',J,K
-#PPC        J=COLPOS(LEVEL)
+3     CONTINUE
+C^^
+C      WRITE(6,*) 'Testing ',LEVEL,'  "',
+C     &  NAME(LEVEL)(1:NAMLEN(LEVEL)),'"'
+      IF((LSTPOS(LEVEL).GE.LSTLEN(LEVEL))
+     &  .OR.((LSTPOS(LEVEL).GT.0).AND.(IWHAT.EQ.2))) THEN
+        LEVEL=LEVEL-1
+        IF(LEVEL.GE.1) GOTO 3
+        LEVEL=1
+        IF(IWHAT.EQ.3) THEN
+          IWHAT=2
+          LEVEL=1
+          LSTPOS(1)=0
+          LSTLEN(1)=-1
+          GOTO 2
+        ENDIF
+        GOTO 9999
+      ELSE
+        IF(LEVEL.GE.MAXLVL) THEN
+          WRITE ( CMON, '( '' MTRNLG: Out of levels '')')
+          CALL XPRVDU(NCEROR, 1, 0)
+          CALL XOPMSG (IOPCRY, IOPABN, 0 )
+          CALL XERHND (IERSEV)
+        END IF
+        J=LSTPOS(LEVEL)+1
+        LSTPOS(LEVEL)=INDEX(LIST(LEVEL)(J:LSTLEN(LEVEL)),',')+J-1
+        IF(LSTPOS(LEVEL).EQ.(J-1)) LSTPOS(LEVEL)=LSTLEN(LEVEL)+1
+C^^
+C         WRITE(6,*)
+C     1 'Extracted     "',LIST(LEVEL)(J:LSTPOS(LEVEL)-1),'"'
+        K=LSTPOS(LEVEL)-J
+        NAME(LEVEL+1)(1:K)=LIST(LEVEL)(J:LSTPOS(LEVEL)-1)
+C^^
+C          WRITE(6,*)'Name="',NAME(LEVEL+1)(1:K),'"',J,K
+        J=COLPOS(LEVEL)
+
+C IF SOME 'REST' OF THE ORIGINAL FILE NAME REMAINDED
 C
-#PPCC IF SOME 'REST' OF THE ORIGINAL FILE NAME REMAINDED
+        IF(J.LT.NAMLEN(LEVEL)) THEN
 C
-#PPC        IF(J.LT.NAMLEN(LEVEL)) THEN
+C IF THE 'REST' CAN BE ADDED TO THE STRING WE GOT, DO SO
 C
-#PPCC IF THE 'REST' CAN BE ADDED TO THE STRING WE GOT, DO SO
-C
-#PPC          IF((K+(NAMLEN(LEVEL)-J)).LE.LEN(NAME(LEVEL+1))) THEN
-#PPC            NAME(LEVEL+1)(K+1:K+(NAMLEN(LEVEL)-J))
-#PPC     &        =NAME(LEVEL)(J+1:NAMLEN(LEVEL))
-#PPC            NAMLEN(LEVEL+1)=K+(NAMLEN(LEVEL)-J)
-#PPC            DO 4 I=NAMLEN(LEVEL+1)+1,LEN(NAME(LEVEL+1))
-#PPC              NAME(LEVEL+1)(I:I)=' '
-#PPC4           CONTINUE
-#PPC          ELSE
-#PPC            NAME(LEVEL+1)(K+1:LEN(NAME(LEVEL+1)))
-#PPC     &        =NAME(LEVEL)(J+1:J+(LEN(NAME(LEVEL+1))-K))
-#PPC            NAMLEN(LEVEL+1)=LEN(NAME(LEVEL+1))
+          IF((K+(NAMLEN(LEVEL)-J)).LE.LEN(NAME(LEVEL+1))) THEN
+            NAME(LEVEL+1)(K+1:K+(NAMLEN(LEVEL)-J))
+     &        =NAME(LEVEL)(J+1:NAMLEN(LEVEL))
+            NAMLEN(LEVEL+1)=K+(NAMLEN(LEVEL)-J)
+            DO 4 I=NAMLEN(LEVEL+1)+1,LEN(NAME(LEVEL+1))
+              NAME(LEVEL+1)(I:I)=' '
+4           CONTINUE
+          ELSE
+            NAME(LEVEL+1)(K+1:LEN(NAME(LEVEL+1)))
+     &        =NAME(LEVEL)(J+1:J+(LEN(NAME(LEVEL+1))-K))
+            NAMLEN(LEVEL+1)=LEN(NAME(LEVEL+1))
 C           ...
-#PPC          ENDIF
-#PPC        ELSE
-#PPC          NAMLEN(LEVEL+1)=K
-#PPC        ENDIF
-#PPC        LEVEL = LEVEL+1
-#PPC        LSTPOS(LEVEL) = 0
-#PPC        LSTLEN(LEVEL) = 0
-#PPCCNOV98        LSTLEN(LEVEL) = -1
-#PPC        GOTO 2
-#PPC      ENDIF
-#PPC9999  CONTINUE
-#PPC      IF(LEN(FILNAM).LT.NAMLEN(LEVEL)) THEN
-#PPC          WRITE ( CMON, '(// '' MTRNLG: Filename too small ''//)')
-#PPC          CALL XPRVDU(NCEROR, 1, 0)
-#PPC          CALL XOPMSG (IOPCRY, IOPABN, 0 )
-#PPC          CALL XERHND (IERSEV)
-#PPC       END IF
+          ENDIF
+        ELSE
+          NAMLEN(LEVEL+1)=K
+        ENDIF
+        LEVEL = LEVEL+1
+        LSTPOS(LEVEL) = 0
+        LSTLEN(LEVEL) = 0
+CNOV98        LSTLEN(LEVEL) = -1
+        GOTO 2
+      ENDIF
+9999  CONTINUE
+      IF(LEN(FILNAM).LT.NAMLEN(LEVEL)) THEN
+          WRITE ( CMON, '(// '' MTRNLG: Filename too small ''//)')
+          CALL XPRVDU(NCEROR, 1, 0)
+          CALL XOPMSG (IOPCRY, IOPABN, 0 )
+          CALL XERHND (IERSEV)
+       END IF
 C
-#PPC      FILNAM(1:NAMLEN(LEVEL))=NAME(LEVEL)(1:NAMLEN(LEVEL))
-#PPC      DO 8888 I=NAMLEN(LEVEL)+1,LEN(FILNAM)
-#PPC        FILNAM(I:I)=' '
-#PPC8888  CONTINUE
-#PPC      LENNAM = KSTRLN(FILNAM)
-#PPCC      WRITE(6,*) 'MTRNLG: Output="',FILNAM(1:LENNAM),'"'
+      FILNAM(1:NAMLEN(LEVEL))=NAME(LEVEL)(1:NAMLEN(LEVEL))
+      DO 8888 I=NAMLEN(LEVEL)+1,LEN(FILNAM)
+        FILNAM(I:I)=' '
+8888  CONTINUE
+      LENNAM = KSTRLN(FILNAM)
+C      WRITE(6,*) 'MTRNLG: Output="',FILNAM(1:LENNAM),'"'
+      WRITE(CMON,*) 'MTRNLG: Output="',FILNAM(1:LENNAM),'"'
+      CALL XPRVDU(NCVDU,1,0)
+
+
+C
+C This is the PPC version of MTRNLG, preserved for future use:
 &WINC----- I DONT KNOW WHERE THIS CAME FROM!
 &WIN       WIN_FILER (FILNAM, LENNAM)
 &PPC\CFLDAT
@@ -2973,12 +3005,12 @@ CODE FOR GETCOM
 &GID                    SUBROUTINE CINEXTCOMMAND (istat, caline)
 &GID                    !DEC$ ATTRIBUTES C :: cinextcommand
 &GID                    INTEGER ISTAT
-&GID                    CHARACTER*80 CALINE
+&GID                    CHARACTER*256 CALINE
 &GID                    !DEC$ ATTRIBUTES REFERENCE :: CALINE
 &GID                    END SUBROUTINE CINEXTCOMMAND
 &GID            END INTERFACE
 &GID      INTEGER ISTAT
-&&GIDGIL      CHARACTER*200 CALINE
+&&GIDGIL      CHARACTER*256 CALINE
 \XSSVAL
 \UFILE
 \CAMPAR
@@ -2991,17 +3023,15 @@ CODE FOR GETCOM
 &VAX      READ( NCUFU(1), 1) CLINE
 &LIN      READ( NCUFU(1), 1) CLINE
 &DVF      READ( NCUFU(1), 1) CLINE
-
 &GIL      CALINE = ' '
 &GIL      ISTAT = 0
 &GIL      CALL CINEXTCOMMAND(ISTAT,CALINE)
-&GIL      READ(CALINE,'(A80)') CLINE
-&GID      DATA CALINE(1:40) /'                                        '/
-&GID      DATA CALINE(41:80)/'                                        '/
+&GIL      READ(CALINE,'(A)') CLINE
+C&GID      DATA CALINE(1:40) /'                                        '/
+&GID      CALINE=' '
 &GID      ISTAT = 0
 &GID      CALL CINEXTCOMMAND(ISTAT,CALINE)
-&GID      READ(CALINE,'(A80)') CLINE
-
+&GID      READ(CALINE,'(A)') CLINE
 &&GILGID      IF ( LCLOSE ) THEN
 &&GILGID          WRITE(CMON,'(A)') '^^WI SET PROGOUTPUT TEXT = '
 &&GILGID          CALL XPRVDU (NCVDU,1,0)
@@ -3010,13 +3040,11 @@ CODE FOR GETCOM
 &&GILGID          WRITE(CMON,'(A)')  '^^CR '
 &&GILGID          CALL XPRVDU (NCVDU,1,0)
 &&GILGID      ENDIF
-
 &DOS      IF ( LCLOSE ) THEN
 &DOS         READ( NCUFU(1), 1) CLINE
 &DOS      ELSE
 &DOS         CALL ZTXT (CLINE)
 &DOS      ENDIF
-
 1     FORMAT ( A )
       RETURN
       END
@@ -3334,102 +3362,90 @@ C---- MACHINE SPECIFIC WRITE TO THE SCREEN
 &GID                    !DEC$ ATTRIBUTES C :: CALLCCODE
 &GID                    CHARACTER*(*) CALINE
 &GID                    !DEC$ ATTRIBUTES REFERENCE :: CALINE
-&GID                    END SUBROUTINE CALLCCODE
-&GID            END INTERFACE
+&GID                END SUBROUTINE CALLCCODE
+&GID      END INTERFACE
 &GIDC}
 \XDRIVE
 \XSSVAL
 \CAMBLK
 \OUTCOL
-&&GIDGIL      CHARACTER *80 CTEMP
       CHARACTER*(*) CBUF(LINBUF)
-      CHARACTER*86 CEXTRA
+      CHARACTER*262 CEXTRA
       CHARACTER*1 CFIRST, CLAST
       CHARACTER*10 CFRMAT
       DATA CFRMAT /'(1X,A)'/
+
+      CEXTRA = ' '
       LENBUF = LEN(CBUF(1))
-      IF ((ISSTML.NE.1) .AND. (ISSTML.NE.2)) THEN
-C      LINE LIMITED TO 79
-       LENBUF = MIN(LENBUF,79)
-      ENDIF
+##GILGID      IF ((ISSTML.NE.1) .AND. (ISSTML.NE.2)) THEN
+##GILGID         LENBUF = MIN(LENBUF,79)   !LINE LIMITED TO 79
+##GILGID      ENDIF
+
       IF (NLINES .GE. 1) THEN
             IF (NLINES .GT. LINBUF) THEN
 C- PRINT A WARNING SOMEWHERE
-            WRITE(*,*) 'vdu buffer overflow'
-            NLINES = LINBUF
+              WRITE(*,*) 'vdu buffer overflow'
+              NLINES = LINBUF
             ENDIF
+
             DO 100 J = 1, NLINES
-                  CALL XCTRIM(CBUF(J),N)
-C                 SET N TO LAST NON-BLANK
-                  N = MAX(1,N)
-                  CFIRST = CBUF(J)(1:1)
-                  CLAST = CBUF(J)(N:N)
-&&GIDGIL                  IF (CBUF(J)(2:2).NE.'^') THEN
-&&GIDGIL                    IF ((IOFORE.EQ.-1).OR.(IOBACK.EQ.-1)) THEN
-&&GIDGIL                      WRITE( CEXTRA,'(A80)') CBUF(J)
-&&GIDGIL                    ELSE 
-&&GIDGIL                      WRITE( CEXTRA,'(2(A,I2.2),A80)')
-&&GIDGIL     1                '{', IOFORE, ',', IOBACK, CBUF(J)
-&&GIDGIL                    ENDIF 
-&&GIDGIL                  ELSE 
-&&GIDGIL                    WRITE( CEXTRA,'(A80)') CBUF(J)
-&&GIDGIL                  END IF 
-                        IF (CLAST .EQ. CHAR(13)) THEN
-C-----------------NO CARRIAGE RETURN OR LINE FEED
-C                       PAD OUT WITH BLANK
-C                       CBUF(J)(N:LENBUF) = ' '
-C                       CBUF(J)(LENBUF:LENBUF) = CHAR(13)
-C                       N = LENBUF
-&DOSC------             SWITCH OFF LINE FEEDS
-&DOS                    JNL77 = 0
-##GIDGIL                    CFRMAT = '(1X,A)'
-&VAX                    N = N - 1
-&VAX                    CFRMAT = '(''+'',A)'
-&DOS                    IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
-##GIDGIL                        WRITE(NCDEV ,CFRMAT) CBUF(J)(1:N)
-&&GIDGIL                        CALL CALLCCODE ( CEXTRA(1:N+6))
-&DOSC------             SWITCH ON LINE FEEDS
-&DOS                    JNL77 = 1
-                  ELSEIF ( CFIRST .EQ. '+' ) THEN
-C-----------------FORTRAN CARRIAGE RETURN WITHOUT LINE FEED
-&DOSC------             SWITCH OFF LINE FEEDS
-&DOS                    JNL77 = 0
-                        CFRMAT = '(A)'
-&DOS                    IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
-Cdjw[      enable thermometer etc in non-vga mode
-##GIDGIL                WRITE(NCDEV ,'(A,$)') char(13)
-##GIDGIL                WRITE(NCDEV ,'(A,$)') CBUF(J)(2:LENBUF)
-Cdjw99]
-&DOSC------             SWITCH ON LINE FEEDS
-&DOS                    JNL77 = 1
-C&&GIDGIL                          CTEMP = '^^CO SET TEXTOUTPUT BACKLINE'
-C&&GIDGIL                          CALL CALLCCODE ( CTEMP )
-C&&GIDGIL                    CALL CALLCCODE ( CEXTRA(1:LENBUF+6) )
-                  ELSEIF (CLAST .EQ. '$') THEN
-C-----------------LEAVE CURSOR AT CURRENT POSITION
-&DOSC------             SWITCH OFF LINE FEEDS
-&DOS                    JNL77 = 0
+
+               CALL XCTRIM(CBUF(J),N)
+               N = MAX(1,N)         ! SET N TO LAST NON-BLANK
+               CFIRST = CBUF(J)(1:1)
+               CLAST = CBUF(J)(N:N)
+&&GIDGIL       IF (CBUF(J)(2:2).NE.'^') THEN
+C&&GILGID          LENBUF = MIN(LENBUF,79)   !LINE LIMITED TO 79 (for output)
+&&GIDGIL          IF ((IOFORE.EQ.-1).OR.(IOBACK.EQ.-1)) THEN
+&&GIDGIL             WRITE( CEXTRA,'(A)') CBUF(J)
+&&GIDGIL          ELSE 
+&&GIDGIL             WRITE( CEXTRA,'(2(A,I2.2),A)')
+&&GIDGIL     1       '{', IOFORE, ',', IOBACK, CBUF(J)
+&&GIDGIL          ENDIF 
+&&GIDGIL       ELSE 
+&&GIDGIL          WRITE( CEXTRA,'(A)') CBUF(J) !Line not limited (^^ command)
+&&GIDGIL       END IF
+
+               IF (CLAST .EQ. CHAR(13)) THEN !--- NO CR OR LF
+&DOS               JNL77 = 0                 !--- SWITCH OFF LINE FEEDS
+##GIDGIL            CFRMAT = '(1X,A)'
+&VAX                N = N - 1
+&VAX                CFRMAT = '(''+'',A)'
+&DOS                IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
+##GIDGIL            WRITE(NCDEV ,CFRMAT) CBUF(J)(1:N)
+&&GIDGIL            CALL CALLCCODE ( CEXTRA(1:N+6))
+&DOS                JNL77 = 1                   !--- SWITCH ON LINE FEEDS
+               ELSEIF ( CFIRST .EQ. '+' ) THEN !--FORTRAN CR WITHOUT LF
+&DOSC------             
+&DOS                JNL77 = 0               !--- SWITCH OFF LINE FEEDS
+                    CFRMAT = '(A)'
+&DOS                IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
+Cdjw:      enable thermometer etc in non-vga mode
+##GIDGIL            WRITE(NCDEV ,'(A,$)') char(13)
+##GIDGIL            WRITE(NCDEV ,'(A,$)') CBUF(J)(2:LENBUF)
+&DOS                JNL77 = 1               !--- SWITCH ON LINE FEEDS
+               ELSEIF (CLAST .EQ. '$') THEN !--- LEAVE CURSOR AT CURRENT POSITION
+&DOS                JNL77 = 0           !--- SWITCH OFF LINE FEEDS
                     CFRMAT = '(A,A1)'
-&DOS                    IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
-&DOS                    WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF),CHAR(13)
-&&GIDGIL                    CALL CALLCCODE ( CEXTRA(1:LENBUF+6))
-&VAX                    CFRMAT = '(A,$)'
-&VAX                    WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
-&DOSC------             SWITCH ON LINE FEEDS
-&DOS                    JNL77 = 1
-                  ELSEIF ( CFIRST .EQ. '0' ) THEN
-                        CFRMAT = '(/,A)'
-&DOS                    IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
-##GIDGIL                  WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
-&&GIDGIL                    CALL CALLCCODE ( CEXTRA(1:LENBUF+6))
-                  ELSE
-                        CFRMAT = '(A)'
-##GIDGIL                  WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
-&DOS                    IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
-&&GIDGIL                    CALL CALLCCODE ( CEXTRA(1:LENBUF+6))
-                  ENDIF
+&DOS                IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
+&DOS                WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF),CHAR(13)
+&&GIDGIL            CALL CALLCCODE ( CEXTRA(1:LENBUF))
+&VAX                CFRMAT = '(A,$)'
+&VAX                WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
+&DOS                JNL77 = 1           !--- SWITCH ON LINE FEEDS
+               ELSEIF ( CFIRST .EQ. '0' ) THEN
+                    CFRMAT = '(/,A)'
+&DOS                IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
+##GIDGIL            WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
+&&GIDGIL            CALL CALLCCODE ( CEXTRA(1:LENBUF))
+               ELSE
+                    CFRMAT = '(A)'
+##GIDGIL            WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
+&DOS                IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
+&&GIDGIL            CALL CALLCCODE ( CEXTRA(1:LENBUF))
+               ENDIF
 C
-            CBUF(J) = ' '
+               CBUF(J) = ' '
 100         CONTINUE
 400         FORMAT(A)
       ENDIF
@@ -3446,7 +3462,7 @@ C
 &GID                    !DEC$ ATTRIBUTES REFERENCE :: CALINE
 &GID                    END SUBROUTINE GUEXEC
 &GID      END INTERFACE
-&GID      CHARACTER*80 CLINE
+&GID      CHARACTER*(*) CLINE
 &GID      CALL GUEXEC ( CLINE )
 &GID
 &GID      RETURN
