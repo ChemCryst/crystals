@@ -22,10 +22,10 @@
 int	CxWindow::mWindowCount = kWindowBase;
 
 
-CxWindow *	CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, int attributes )
+CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, int attributes )
 {
 
-	CxWindow	*theWindow = new CxWindow( container, attributes & kSize );
+        CxWindow *theWindow = new CxWindow( container, attributes & kSize );
 
 #ifdef __WINDOWS__
 	const char* wndClass = AfxRegisterWndClass(
@@ -37,10 +37,9 @@ CxWindow *	CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
 
 	theWindow->mParentWnd = (CWnd*) parentWindow;
 
-	theWindow->Create(
-						wndClass,
+        theWindow->Create(                      wndClass,
 						"Window",
-        (attributes & kSize)? WS_CAPTION|WS_SYSMENU|WS_MAXIMIZEBOX|WS_MINIMIZEBOX : WS_CAPTION|WS_SYSMENU,
+        (attributes & kSize)? WS_POPUP|WS_CAPTION|WS_SYSMENU|WS_MAXIMIZEBOX|WS_MINIMIZEBOX : WS_POPUP|WS_CAPTION|WS_SYSMENU,
 						CRect(0,0,10,10),
 						theWindow->mParentWnd);
 #endif
@@ -52,24 +51,30 @@ CxWindow *	CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
 
 	//if the window is modal, disable the parent:
 	
-	if (theWindow->mParentWnd)
+        if ( attributes & kModal )
 	{
 #ifdef __WINDOWS__
-            theWindow->mParentWnd->EnableWindow(false);
-            theWindow->EnableWindow(true);  //All child windows have been disabled, so re-enable this one.
+            if ( theWindow->mParentWnd )
+            {
+                theWindow->mParentWnd->EnableWindow(false);
+                theWindow->EnableWindow(true);  //All child windows have been disabled, so re-enable this one.
+                theWindow->ModifyStyle(WS_MINIMIZEBOX,NULL,SWP_NOZORDER); //No Minimize box for modal windows with parents.
+            }
 #endif
 #ifdef __LINUX__
-            theWindow->mParentWnd->Enable(false);
-            theWindow->Enable(true);  //All child windows have been disabled, so re-enable this one.
+            if ( theWindow->mParentWnd )
+            {
+                theWindow->mParentWnd->Enable(false);
+                theWindow->Enable(true);  //All child windows have been disabled, so re-enable this one.
+            }
 #endif
 	}
 
 #ifdef __WINDOWS__
 	if ( attributes & kSize )
-		theWindow->ModifyStyle(NULL,WS_BORDER|WS_THICKFRAME,SWP_NOZORDER);
-//      theWindow->ShowWindow(SW_SHOW);
-//      theWindow->UpdateWindow();
+            theWindow->ModifyStyle(NULL,WS_BORDER|WS_THICKFRAME,SWP_NOZORDER);
 #endif
+
 #ifdef __LINUX__
       theWindow->Show(true);
 #endif
@@ -93,6 +98,7 @@ CxWindow::CxWindow( CrWindow * container, int sizeable )
 CxWindow::~CxWindow()
 {
 
+        ((CrWindow*)mWidget)->NotifyControl();
 	mWindowCount--;
 	if (mParentWnd)
 #ifdef __WINDOWS__
@@ -156,12 +162,12 @@ int   CxWindow::GetTop()
 #ifdef __WINDOWS__
       RECT windowRect, parentRect;
 	GetWindowRect(&windowRect);
-	CWnd* parent = GetParent();
-	if(parent != nil)
-	{
-		parent->GetWindowRect(&parentRect);
-		windowRect.top -= parentRect.top;
-	}
+//        CWnd* parent = GetParent();
+//        if(parent != nil)
+//        {
+//                parent->GetWindowRect(&parentRect);
+//                windowRect.top -= parentRect.top;
+//        }
 	return ( windowRect.top );
 #endif
 #ifdef __LINUX__
@@ -181,12 +187,12 @@ int   CxWindow::GetLeft()
 #ifdef __WINDOWS__
       RECT windowRect, parentRect;
 	GetWindowRect(&windowRect);
-	CWnd* parent = GetParent();
-	if(parent != nil)
-	{
-		parent->GetWindowRect(&parentRect);
-		windowRect.left -= parentRect.left;
-	}
+//        CWnd* parent = GetParent();
+//        if(parent != nil)
+//        {
+//                parent->GetWindowRect(&parentRect);
+//                windowRect.left -= parentRect.left;
+//        }
 	return ( windowRect.left );
 #endif
 #ifdef __LINUX__
