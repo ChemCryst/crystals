@@ -63,12 +63,15 @@ typedef void AppContext;
 #ifdef __LINUX__
 typedef bool Boolean;
 #define nil 0
-#define TRUE true
-#define FALSE false
+//#define TRUE true
+//#define FALSE false
 #define UINT uint
 #include <wx/file.h>
 #include <wx/memory.h>
-#define TRACE WXTRACE 
+#include <stdio.h>
+#include <iostream.h>
+#include <iomanip.h>
+#define TRACE WXTRACE
 #endif
 
 #ifdef __WINDOWS__
@@ -97,8 +100,10 @@ typedef bool Boolean;
 
 
 #ifdef _DEBUG
+#ifdef __WINDOWS__
 	#include <afxwin.h> //Needed for TRACE debugger macro.
 	#define new DEBUG_NEW //Needed for debugger to track heap allocations.
+#endif
 	#ifdef LOGERRORS
 		#define LOGERR(a) ( (CcController::theController)->LogError(a,0) )
 	#else
