@@ -12,13 +12,11 @@
 #include	"crystalsinterface.h"
 #include	"crconstants.h"
 #include	"crguielement.h"
-//insert your own code here.
 #include	"cclist.h"
 #include	"ccrect.h"
 #include	"cccontroller.h"
 #include	"cctokenlist.h"
 #include	"crwindow.h"
-//End of user code.          
 
 CcController *	CrGUIElement::mControllerPtr;
 
