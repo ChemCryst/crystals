@@ -408,10 +408,12 @@ C      NCHAR NUMBER OF CHARACTERS IN NUMBER
 C
       CHARACTER *(*) CTEXT
       CHARACTER *1 CTERM
-      CHARACTER *9 CNUM
+C      CHARACTER *9 CNUM
+      CHARACTER *10 CNUM
 \XUNITS
 C
-      DATA CNUM / '123456789' /
+C      DATA CNUM / '123456789' /
+      DATA CNUM / '0123456789' /
 C
       LENGTH = LEN (CTEXT)
       KGTNUM = 0
@@ -419,8 +421,10 @@ C
       CTERM = ' '
 C
       DO 1000 I = 1, LENGTH
-      IVAL = INDEX (CNUM, CTEXT(I:I))
-      IF (IVAL .GT. 0) THEN
+C      IVAL = INDEX (CNUM, CTEXT(I:I))
+      IVAL = INDEX (CNUM, CTEXT(I:I)) - 1
+C      IF (IVAL .GT. 0) THEN
+      IF (IVAL .GE. 0) THEN
             KGTNUM = 10 * KGTNUM + IVAL
             NCHAR = NCHAR + 1
       ELSE
