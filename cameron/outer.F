@@ -729,17 +729,28 @@ C Initialising menus, pass line to ZMNINI
       ELSE
 C
 C Normal use, interpret the line
+            IF (LLINE(ILINE)(LEN_TRIM(LLINE(ILINE)):) .EQ. '+') THEN
+              KMORE = 1
+              WRITE(LLINE(ILINE)(LEN_TRIM(LLINE(ILINE)):),'(A)')' '
+            ELSE
+              KMORE = 0
+            END IF
             CALL ZOBEY
             IF(IFOBEY.EQ.-1) THEN
-C    Force execution of line
+C    Force execution of line unless last char is '+'
+               IF (KMORE.EQ.0) THEN
                   LLINE(ILINE) = ' '
                   CALL ZOBEY
 C   Clear the status line
-                  IF(.NOT.LCLOSE)CALL ZMORE1('temp! ',0)
+                  IF(.NOT.LCLOSE)CALL ZMORE1('Cameron - ready',0)
+               ELSE
+C   Clear the status line
+                  IF(.NOT.LCLOSE)CALL ZMORE1('Cameron - continue',0)
+               END IF
 C    Clear buffer
-                  CHRBUF = ' '
+               CHRBUF = ' '
 C    Clear the input box.
-#GID                  IF(.NOT.LCLOSE)CALL ZMNINP
+#GID               IF(.NOT.LCLOSE)CALL ZMNINP
             ENDIF
       ENDIF
 C
