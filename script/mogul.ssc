@@ -3,6 +3,7 @@
 %  COPY '#FOREIGN CSD'
 %  COPY 'END'
 %  COPY '#spawn +copy \mogul\develop\mogul\bin\moguldatfil.txt .'
+%  COPY '#CLOSE SCPDATA'
 %  COPY '#RELEASE PUNCH crystals.qf'
 %  TRANSFER 'CALCULATE mogul.stat' TO PUNCH
 %%
