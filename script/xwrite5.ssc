@@ -1,24 +1,35 @@
 %SCRIPT XWRITE5
+%%
+%%
+%% SECTION 1
+%%
+%%  Setup variables, display window, wait for response,
+%%  read values, close window.
+%%
 %%   Sets the REF flag of every atom in list 5.
 %%   Global (already set) variables:
 %  VARIABLE INTEGER SETADP
 %%
 %%   Local variables:
-%  VARIABLE INTEGER REFLAG HMODE ISER CURMODE INBLOCK IEXTIN N5
-%  VARIABLE LOGICAL DOWRITE OVERRIDE STUCK TWINNED DOREFINE HRIDE DOFOUR
-%  VARIABLE CHARACTER CTYPE CTYPE2
+%  VARIABLE INTEGER REFLAG INBLOCK IEXTIN N5 ICHK I5
+%  VARIABLE INTEGER REFLAG HMODE ISER CURMODE 
+%  VARIABLE LOGICAL DOWRITE OVERRIDE STUCK TWINNED
+%  VARIABLE LOGICAL DOREFINE HRIDE HREST DOFOUR
+%  VARIABLE CHARACTER CTYPE CTYPE2 KEYBREAK
 %  VARIABLE REAL SERIAL HFIRST CENTRO WORK1 SERIAL2 RN5
 %  EVALUATE TWINNED = FALSE
 %  EVALUATE DOREFINE = TRUE
 %  EVALUATE DOFOUR = FALSE
+%  VARIABLE CHARACTER CCHK CELE
+%  VARIABLE REAL RCHK
 %%
 %%   Variables set by ASSESS 5
 %  VARIABLE LOGICAL DOEXTNC DOFLACK DOSORT DKEXT DOTWIN
 %  VARIABLE INTEGER ADP
 %%
 %%   Variables set by or needed for XGETINFO/XPUTINFO
-%  VARIABLE INTEGER HRTYP L12SER
-%  VARIABLE LOGICAL HRMASK L12SMASK
+%  VARIABLE INTEGER HRTYP L12SER HRESTF
+%  VARIABLE LOGICAL HRMASK L12SMASK HRESTM
 %%
 %% The variables needed by XQUESTIO
 %  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
@@ -112,21 +123,25 @@
 ^^WI   @ 5,1 CHECKBOX OVRD '&Override sticky settings for atoms' STATE=OFF
 ^^WI   }
 % IF ( HFIRST .GE. 0.0 ) THEN
-^^WI   @ 3,1 GRID HR NROWS=4 NCOLS=1 OUTLINE='Hydrogens'
+^^WI   @ 3,1 GRID HR NROWS=5 NCOLS=1 OUTLINE='Hydrogens'
 ^^WI   {
 ^^WI     @ 1,1 RADIOBUTTON HFIX  '&Fix H atoms'
 % IF HRTYP .LE. 0 THEN
 ^^WI           STATE=ON
 % END IF
 ^^WI     @ 2,1 RADIOBUTTON HRIDE 'Ride &H atoms'
-% IF HRTYP .GE. 3 THEN
+% IF HRTYP .EQ. 3 .OR. HRTYP .EQ. 10 THEN
+^^WI           STATE=ON
+% END IF
+^^WI     @ 5,1 CHECKBOX HREST '&Treat H as above, except restrain C-H bonds'
+% IF HRESTF .NE. 0 THEN
 ^^WI           STATE=ON
 % END IF
 ^^WI     @ 3,1 RADIOBUTTON HREFN '&Refine H atom positions'
 % IF HRTYP .EQ. 1 THEN
 ^^WI           STATE=ON
 % END IF
-^^WI     @ 4,1 RADIOBUTTON HREFUI '&Refine H atom posn and Uiso'
+^^WI     @ 4,1 RADIOBUTTON HREFUI 'Refine H atom posn and &Uiso'
 % IF HRTYP .EQ. 2 THEN
 ^^WI           STATE=ON
 % END IF
@@ -256,6 +271,14 @@
 %  IF ( VALUE .EQ. 1 ) THEN
 %    EVALUATE HMODE = 2
 %  END IF
+%  EVALUATE HREST = FALSE
+^^?? HREST STATE
+%  VERIFY ON OFF
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  IF ( VALUE .EQ. 1 ) THEN
+%    EVALUATE HREST = TRUE
+%    EVALUATE HRESTF = 1
+%  END IF
 %%
 % END IF
 %%
@@ -377,9 +400,11 @@
 %%
 ^^CO DISPOSE XRSETUP
 %%
+%% SECTION 2
+%%
+%% Set the refinement flags in L5 for all the non-sticky atoms.
 %%
 %%
-%% Set the refinement flags for all the non-sticky atoms.
 %%
 %  EVALUATE STUCK = FALSE
 %  EVALUATE HRIDE = FALSE
@@ -474,6 +499,7 @@
 %%
 %%
 %%
+%% SECTION 3
 %%
 %% Write a list 12 from the flags in list 5.
 %%
@@ -481,6 +507,104 @@
 %%
 %%
 %
+%%
+%  IF ( HREST ) THEN
+ Working out H restraints
+%     COPY '#RELEASE SCPQ someh.12'
+%     QUEUE REWIND
+%     COPY '#GENERALEDIT 5'
+%     COPY 'LOCATE RECORDTYPE=101'
+%     COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%     LOOP
+%       ON EDITERROR TERMINATE
+%       COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
+%       COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
+%       COPY 'TRANSFER FROM OFFSET=15 TO REFLAG'
+%       IF ( CTYPE .EQ. 'H' ) .AND. ( REFLAG .LT. 0 ) THEN
+%         CLEAR
+%         INSERT 'CONT H('
+%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
+%         INSERT ')'
+%%         OUTPUT
+%         QUEUE SEND
+%       END IF
+%       COPY 'NEXT'
+%     END LOOP
+%     COPY 'END'
+%     EVALUATE HREST = FALSE
+%     COPY '#RELEASE PUNCH new16bit.pch'
+%     COPY '#CLOSE SCPQ'
+%     COPY '#CLOSE SCPDATA'
+%     COPY '#OPEN SCPQ restdat.12'
+%     COPY '#DISTANCES'
+%     COPY 'OUTPUT MON=OFF PUNCH=H-REST'
+%     COPY 'SELECT SYMMETRY=NONE'
+%     COPY 'exclude'
+%     COPY '#use someh.12'
+%     COPY 'END'
+%     COPY '#RELEASE PUNCH BFILE.PCH'
+%     COPY '#RELEASE SCPQ BFILE.SPQ'
+%%
+%% Now take all the atoms in restdat.12 and set their refine flag to 1,
+%% (or 2 if HMODE=2). Set STUCK true so that a custom L12 is written.
+%%
+%     COPY '#CLOSE SCPDATA'
+%     COPY '#OPEN SCPDATA restdat.12'
+%     EXTRACT REWIND
+%     EVALUATE ICHK = 1
+%     IF ( HMODE .EQ. 2 ) THEN
+%       EVALUATE ICHK = 2
+%     END IF
+%     COPY '#GENERALEDIT 5'
+%     COPY 'TRANSHEAD FROM OFFSET=3 TO N5'
+%     EVALUATE I5 = 1
+%     COPY 'LOCATE RECORDTYPE=101'
+%     COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%     LOOP
+%       ON ERROR TERMINATE
+%       ON END TERMINATE
+%%
+%% Extract the atom line:
+%%
+%       EXTRACT NEXT
+%       EXTRACT TRANSFER INPUT
+%       CLEAR
+%% Read the atom
+%       GET NOSTORE SILENT KEYWORD ' '
+%       EVALUATE ISER = FIRSTINT ( CVALUE ) 
+%       EVALUATE CELE = FIRSTSTR ( CVALUE )
+% TRANSFER 'Looking for ' // CVALUE TO DISPLAY
+%       LOOP N5 TIMES
+%         ON EDITERROR TERMINATE
+%         COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
+%         COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+% TRANSFER ' Testing ' // CCHK // CHARACTER ( RCHK ) TO DISPLAY
+%         IF ( ( CELE .EQ. CCHK ) .AND. ( ISER .EQ. INTEGER ( RCHK ) ) ) THEN
+%           COPY 'TRANSFER TO OFFSET=15 FROM ICHK'
+%           EVALUATE STUCK = TRUE
+%           EVALUATE HREST = TRUE
+%           EVALUATE LOOPEND = LOOPCOUNTER
+%         END IF
+%         EVALUATE I5 = I5 + 1
+%         IF ( I5 .GT. N5 ) THEN
+%           COPY 'TOP'
+%           EVALUATE I5 = 1
+%         ELSE
+%           COPY 'NEXT'
+%         END IF
+%       END LOOP
+%     END LOOP
+%     COPY 'WRITE OVERWRITE=OVERWRITE'
+%     COPY 'END'
+%     COPY '#CLOSE SCPDATA'
+%  END IF
+%  IF ( .NOT. HREST ) THEN
+%    COPY '#RELEASE punch new16bit.pch'
+%    TRANSFER ' ' TO PUNCH
+%  END IF
+%  EVALUATE KEYBREAK = 'HREST'
+%  COPY '#SCRIPT ZADDLI16'
+%%
 %  IF ( HRIDE ) THEN
  Working out RIDES
 %     EVALUATE HRIDE = FALSE
@@ -502,18 +626,19 @@
 %         INSERT 'CONT H('
 %         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
 %         INSERT ')'
-%         OUTPUT
+%%         OUTPUT
 %         QUEUE SEND
 %       END IF
 %       COPY 'NEXT'
 %     END LOOP
+%     COPY 'END'
 %  END IF
-%  COPY 'END'
+%% If HRIDE is still set, we found some atoms to ride.
 %  IF ( HRIDE ) THEN
  Calculating RIDES.
 %     COPY '#RELEASE PUNCH RIDEDAT.12'
 %     COPY '#DISTANCES'
-%     COPY 'OUTPUT MON=DIST PUNCH=SCRIPT'
+%     COPY 'OUTPUT MON=OFF PUNCH=SCRIPT'
 %     COPY 'SELECT SYMMETRY=NONE'
 %     COPY 'BONDED'
 %     QUEUE PROCESS
@@ -521,8 +646,12 @@
 %     COPY '#RELEASE PUNCH BFILE.PCH'
 %  END IF
 %%
-%%
 %  IF ( STUCK ) THEN
+%%
+%% Write a custom L12, using each atoms REFINE flag to specify
+%% its treatment. Neighbouring atoms with same flags are grouped
+%% using UNTIL.
+%%
 %    CLEAR
 %    COPY '#RELEASE SCPQUEUE l12.spq'
 %    QUEUE REWIND
@@ -606,6 +735,9 @@
 %    QUEUE COPY END
 %    COPY '#RELEASE SCPQUEUE bfile.spq'
 %    COPY '#USE l12.spq'
+%%
+%% Very simple L12's:
+%%
 %  ELSE
 %    COPY '#LIST 12'
 %    CASE SETADP + 1
@@ -646,6 +778,7 @@
 %  EVALUATE L12SMASK = TRUE
 %  EVALUATE HRTYP    = HMODE
 %  EVALUATE HRMASK   = TRUE
+%  EVALUATE HRESTM   = TRUE
 %  COPY '#SCRIPT XPUTINFO'
 %%
 %  IF ( DOREFINE ) THEN
