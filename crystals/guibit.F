@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  1999/06/01 13:00:05  dosuser
+C RIC: Added commented out debugging code for checking which bonds
+C have been found.
+C RIC: Commented out some unused variables.
+C
 C Revision 1.11  1999/05/25 16:03:31  dosuser
 C RIC: Changes for UNIX filenames for LIN and GIL targets.
 C
@@ -737,22 +742,26 @@ C     1      TSTORE(IPLACE+1),TSTORE(IPLACE+2),'^^EN'
 30       CONTINUE
 C
 C Calculate the centre of the molecule
-         XCENT = XTOT / N5
-         YCENT = YTOT / N5
-         ZCENT = ZTOT / N5
+         GCENTX = XTOT / N5
+         GCENTY = YTOT / N5
+         GCENTZ = ZTOT / N5
 C
 C Find atom furthest from the center to set scaling.
 C NB, it is quicker to find the center and longest distance from it
 C (two loops through the list), than to find the longest distance
 C between all pairs of atoms (n squared / 2 loops through the list...)
 C
-C
+C Centre the molecule on 0,0,0 at the same time!
+
          IPLACE = 1
          RLENTH = 0
          DO 40 I = 1, N5
-             TMPLEN = SQRT ( ((TSTORE(IPLACE)  -XCENT)**2)
-     1                     + ((TSTORE(IPLACE+1)-YCENT)**2)
-     2                     + ((TSTORE(IPLACE+2)-ZCENT)**2) )
+             TSTORE(IPLACE)   = TSTORE(IPLACE)   - GCENTX
+             TSTORE(IPLACE+1) = TSTORE(IPLACE+1) - GCENTY
+             TSTORE(IPLACE+2) = TSTORE(IPLACE+2) - GCENTZ
+             TMPLEN = SQRT ( (TSTORE(IPLACE  )**2)
+     1                     + (TSTORE(IPLACE+1)**2)
+     2                     + (TSTORE(IPLACE+2)**2) )
              RLENTH = MAX (TMPLEN + 2,RLENTH)
              IPLACE = IPLACE + 3
 40       CONTINUE
@@ -928,11 +937,14 @@ C Filter out tiny axes
              TENSOR(3,3) = MAX ( TENSOR(3,3), TENSOR(1,1)/100 )
              TENSOR(3,3) = MAX ( TENSOR(3,3), TENSOR(2,2)/100 )
 
-             DO 93 KI=1,3
-              DO 94 KJ=1,3
-               AXES(KI,KJ) = ROTN(KJ,KI)*SQRT(ABS(TENSOR(KJ,KJ)))*GSCALE
-94            CONTINUE
-93           CONTINUE
+             DO KI=1,3
+              DO KJ=1,3
+               AXES(KI,KJ) =   ROTN(KJ,KI)
+     1                       * SQRT(ABS(TENSOR(KJ,KJ)))
+     2                       * GSCALE
+     3                       * 1.5
+              END DO
+             END DO
 
 C           WRITE(99,'(9(1X,F7.4))') ((AXES(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
 
@@ -982,12 +994,15 @@ C
                   XX   = GUMTRX(1) * STACK((J*5)-3)
      1                 + GUMTRX(2) * STACK((J*5)-2)
      2                 + GUMTRX(3) * STACK((J*5)-1)
+     3                 - GCENTX
                   XY   = GUMTRX(4) * STACK((J*5)-3)
      1                 + GUMTRX(5) * STACK((J*5)-2)
      2                 + GUMTRX(6) * STACK((J*5)-1)
+     3                 - GCENTY
                   XZ   = GUMTRX(7) * STACK((J*5)-3)
      1                 + GUMTRX(8) * STACK((J*5)-2)
      2                 + GUMTRX(9) * STACK((J*5)-1)
+     3                 - GCENTZ
 
 CCDEBUG{
 c                  WRITE ( 99, '(A,2F8.4,2(A4,I4,3F8.5))')
