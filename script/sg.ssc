@@ -138,7 +138,7 @@
 %%
 %% The HKL line
 %%
-% TRANSFER 'HKL sg.hkl' TO PUNCH
+% TRANSFER 'HKL "sg.hkl"' TO PUNCH
 %%
 %% The CLASS line
 %%
@@ -171,7 +171,7 @@
 %% 
 %% The OUTPUT file:
 %%
-% TRANSFER 'OUTPUT sg.dat' TO PUNCH
+% TRANSFER 'OUTPUT "sg.dat"' TO PUNCH
 %%
 %% Close file.
 %%
