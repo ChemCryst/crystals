@@ -1022,8 +1022,9 @@ c-c-c-move them to correct position (originally u[ij])
       L=KCOMP(NWKA,ISTORE(MF+2),ICOORD,NKA,LKA)
 c----- save the true parameter index from coord
       lorig = l
-       if (l .ge. 15) then
-       l=l-7
+CDJWJAN00
+       if (l .ge. NKAS) then
+       l=l-NKAO
        endif
 C--IS IT A PARAMETER
       N=1
@@ -1257,7 +1258,8 @@ C--CHECK IF THIS IS A NORMAL PARAMETER
 c----- save the true parameter index from coord
       lorig = i
 1430  continue
-      if (i .ge. 15) i = i - 7
+CDJW JAN00
+      if (i .ge. NKAS) i = i - NKAO
       IF(I)1000,1000,1450
 1450  CONTINUE
       KCHPRM = LORIG
@@ -1398,7 +1400,8 @@ C--CHECK IF THIS IS A NORMAL PARAMETER
 c----- save the true parameter index from coord
       lorig = i
 1430  continue
-      if (i .ge. 15) i = i - 7
+CDJW JAN00
+      if (i .ge. NKAS) i = i - NKAO
       IF(I)1000,1000,1450
 C--SET UP A DUMMY ATOM HEADER
 1450  CONTINUE

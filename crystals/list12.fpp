@@ -1558,6 +1558,7 @@ C
 \XLST12
 \XFRM22
 \XCONST
+\XAPK
 C
 \XIOBUF
 \QSTORE
@@ -1825,9 +1826,9 @@ c       if (istore(mq+6) .eq. nowt) goto 12
         lnew = istore(idjw1+1)
         lorig = istore(idjw1+2)
         idjw1 = istore(idjw1) + mq
-        if (lorig .eq. 15) then
+        if (lorig .eq. NKAS) then
             liso = 1
-        else if ((lorig .ge. 16) .and. (lorig .le. 18) ) then
+        else if ((lorig .ge. NKAS+1) .and. (lorig .le. NKAS+3) ) then
             lspec =1
         else if ((lorig .ge. 8) .and. (lorig .le. 13) ) then
             laniso = 1
