@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2004/07/02 13:26:01  rich
+C Remove dependency on HARWELL and NAG libraries. Replaced with LAPACK
+C and BLAS code (and a home-made bessel function approximation).
+C
 C Revision 1.20  2003/12/02 11:52:33  rich
 C Code for \MASK command.
 C
@@ -3548,6 +3552,7 @@ C--
       DIMENSION IDIVS(3)
       DIMENSION IIND3(3)
       DIMENSION STEPS(3)
+      DIMENSION XJ(3)
 
 \ICOM42
 
@@ -3591,11 +3596,13 @@ C -- Load existing list forty-two:
         WRITE(CMON,'(A)')'Loaded existing List 42'
         CALL XPRVDU(NCVDU,1,0)
         DO I = 0,2
-            WRITE(CMON,'(3(A,F8.3),A)')
+            WRITE(CMON,'(4(A,F8.3),A)')
      1      'Limits are', STORE(L42L+I*3),
      2      ' to ',STORE(L42L+I*3+2),
-     2      ' in ',STORE(L42L+I*3+1),' steps.'
-            CALL XPRVDU(NCVDU,1,0)
+     2      ' in ',STORE(L42L+I*3+1),' steps of ',
+     3      ((STORE(L42L+I*3+2)-STORE(L42L+I*3))/
+     3      STORE(L42L+I*3+1))*STORE(L1P1+I), ' Angstrom.'
+            CALL XPRVDU(NCVDU,1,0)                     
             IDIVS(I+1) = NINT(STORE(L42L+I*3+1))
           END DO
       ELSE
@@ -3795,16 +3802,17 @@ C----- LOOP OVER ALL SECTIONS
                STORE(IABAT+5) = STORE(L42L+3) + STEPS(2) * IYSECT
 C GET ADDRESS of THIS POINT in L42M array.
                M42M=L42M+IIND3(1)*IXSECT+IIND3(2)*IYSECT+IIND3(3)*IZSECT
-                M5=L5  ! RESET THE CONTACT ATOM
-                NFL=JE ! RESET BEGINNING OF DISTANCE STACK TO JE EVERY TIME
-                JFNVC = 0
-                ITRANS = 1
-                NDIST = KDIST1( N5, JL, JT, JFNVC, 0, ITRANS, 0, 4, 0)
+
+               M5=L5  ! RESET THE CONTACT ATOM
+               NFL=JE ! RESET BEGINNING OF DISTANCE STACK TO JE EVERY TIME
+               JFNVC = 0
+               ITRANS = 1
+               NDIST = KDIST1( N5, JL, JT, JFNVC, 0, ITRANS, 0, 4, 0)
 c                WRITE(CMON,'(A,3I4,A,I5)') 'Point ',
 c     1           IZSECT,IXSECT,IYSECT,' bonds: ',NDIST
 c                CALL XPRVDU(NCVDU,1,0)
-                NBONDS = NDIST
-                IF ( IMSKOP .NE. 0 ) THEN ! Simple inside/outside atom.
+               NBONDS = NDIST
+               IF ( IMSKOP .NE. 0 ) THEN ! Simple inside/outside atom.
                   DO K = JE, JE+(JT*(NBONDS-1)),JT
                     IAD5 = ISTORE(K)
                     IF ( ISTORE(IAD5) .NE. IPEAK ) THEN
@@ -3815,11 +3823,18 @@ c                CALL XPRVDU(NCVDU,1,0)
                       END IF
                     END IF
                   END DO
-                ELSE ! Solvent accessible region
+               ELSE ! Solvent accessible region
                   IACCES = 1
+
+c                  WRITE(99,'(3I4,3F9.3)')IXSECT,IYSECT,IZSECT,
+c     1            STORE(IABAT+4),STORE(IABAT+5),STORE(IABAT+6)
+
                   DO K = JE, JE+(JT*(NBONDS-1)),JT
                     IAD5 = ISTORE(K)
                     IF ( ISTORE(IAD5) .NE. IPEAK ) THEN
+c                    WRITE(CMON,'(A,F8.3)')'Inaccessible distance: ',
+c     1        STORE(ISTORE(K)+13) * ATMULT + ATCNST + ATVOID
+c                   CALL XPRVDU(NCVDU,1,0)
                       IF ( STORE(K+10) .LT.
      1    STORE(ISTORE(K)+13) * ATMULT + ATCNST + ATVOID ) THEN   ! Inaccessible
                         IACCES = 0
@@ -3829,24 +3844,54 @@ c                CALL XPRVDU(NCVDU,1,0)
                   END DO
                   IF ( IACCES .EQ. 1 ) THEN ! Set surrounding points to MASKIN.
 C If we are doing accessible volume and no contacts to this point,
-C then need to set MASKOU for this point, and all points within a
+C then need to set MASKIN for this point, and all points within a
 C radius of ATVOID
+                    ISTORE(M42M) = 2
 C Work out steps equivalent to ATVOID in each axial direction.
                     JXSTPS = NINT(.5+(ATVOID /(STORE(L1P1)*STEPS(1))))
                     JYSTPS = NINT(.5+(ATVOID /(STORE(L1P1+1)*STEPS(2))))
                     JZSTPS = NINT(.5+(ATVOID /(STORE(L1P1+2)*STEPS(3))))
-
-C                    JMIN = 
 C Truncate wrt edges of mask region.
+                    JXMIN = MAX(0,IXSECT-JXSTPS)
+                    JYMIN = MAX(0,IYSECT-JYSTPS)
+                    JZMIN = MAX(0,IZSECT-JZSTPS)
+                    JXMAX = MIN(IDIVS(1)-1,IXSECT+JXSTPS)
+                    JYMAX = MIN(IDIVS(2)-1,IYSECT+JYSTPS)
+                    JZMAX = MIN(IDIVS(3)-1,IZSECT+JZSTPS)
+
+                    NZERO=0
+                    NTOT=(JXMAX-JXMIN+1)*(JYMAX-JYMIN+1)*(JZMAX-JZMIN+1)
 
 C For each included point test distance to central point vs ATVOID.
-                  END IF
-                END IF
+                    DO JZSECT = JZMIN,JZMAX
+                      XJ(3) = STORE(L42L+6) + STEPS(3) * JZSECT
+                      DO JXSECT = JXMIN,JXMAX
+                        XJ(1) = STORE( L42L ) + STEPS(1) * JXSECT
+                        DO JYSECT = JYMIN,JYMAX
+                          J42M=L42M+IIND3(1)*JXSECT+IIND3(2)*JYSECT+
+     1                              IIND3(3)*JZSECT
+                          IF ( ISTORE(J42M) .EQ. 0 ) THEN
+                            XJ(2) = STORE(L42L+3) + STEPS(2) * JYSECT
+C Test distance.
+                            IF (XDSTN2(STORE(IABAT+4),XJ)
+     1                                           .LT.ATVOID**2) THEN
+                              ISTORE(J42M) = MASKIN
+                              NZERO = NZERO+1
+                            END IF
+                          END IF
+                        END DO
+                      END DO
+                    END DO
 
+                    WRITE(99,'(11I6)')JXMIN,JXMAX,JYMIN,JYMAX,
+     1               JZMIN,JZMAX,JXSTPS,JYSTPS,JZSTPS,NTOT,NZERO
+
+                  END IF
+               END IF
 
 C-------JK IS CURRENT NEXT FREE ADDRESS - SAVE AND SET LAST ENTRY
-                NFL = JL
-                JK = JL - JT
+               NFL = JL
+               JK = JL - JT
              END DO
            END DO
          END DO

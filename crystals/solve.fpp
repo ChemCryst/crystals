@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2004/07/02 13:26:01  rich
+C Remove dependency on HARWELL and NAG libraries. Replaced with LAPACK
+C and BLAS code (and a home-made bessel function approximation).
+C
 C Revision 1.20  2003/06/19 16:29:50  rich
 C
 C Store, in L30, the number of restraints that L16 is generating.
@@ -218,21 +222,21 @@ C--FIND THE POINTERS TO THE SHIFT INFORMATION
       JB=M33SV+1
 C--SET UP THE PARAMETER GROUP SHIFT LOCATIONS
       DO 1150 I=JC,JD,MW
-      STORE(I)=1.
-      STORE(I+1)=0.
-      STORE(I+2)=0.
-      STORE(I+3)=0.
-      STORE(I+4)=0.
-      STORE(I+5) = 0.
+         STORE(I)=1.
+         STORE(I+1)=0.
+         STORE(I+2)=0.
+         STORE(I+3)=0.
+         STORE(I+4)=0.
+         STORE(I+5) = 0.
 C--CHECK IF A SHIFT FACTOR HAS BEEN GIVEN IN LIST 33
-      IF(ISTORE(JA))1050,1100,1100
+         IF(ISTORE(JA))1050,1100,1100
 C--MOVE THE SHIFT FACTOR FROM LIST 33
-1050  CONTINUE
-      STORE(I)=STORE(JB)
+1050     CONTINUE
+         STORE(I)=STORE(JB)
 C--INCREMENT THE POINTERS
-1100  CONTINUE
-      JA=JA+1
-      JB=JB+1
+1100     CONTINUE
+         JA=JA+1
+         JB=JB+1
 1150  CONTINUE
 C
 C--LOAD A FEW MORE LISTS
@@ -240,7 +244,7 @@ C--LOAD A FEW MORE LISTS
       CALL XFAL05
       IF (METHOD .EQ. 1) THEN
         IF (ISSPRT .EQ. 0) WRITE(NCWU,1151)  AUGFAC, FILTER, DISCRM
-1151  FORMAT(1X, ' Eigen filters ', 3(G10.4,3X) )
+1151    FORMAT(1X, ' Eigen filters ', 3(G10.4,3X) )
       ENDIF
 C--FORM THE ABSOLUTE LIST 12
       JQ=2
@@ -356,18 +360,18 @@ C----- SET THE RUNNING ADDRESS FOR STEPPING THROUGH THE MATRIX
 C
       DO 3500 JZ=1,N12B
 C---- RESET MATRIX AREA
-      LFLD = LFLDS
-      NFLD = NFLDS
+         LFLD = LFLDS
+         NFLD = NFLDS
 C----- INDICATE WE MAY NEED A CAPTION LATER
-      ICAPT = 0
+         ICAPT = 0
 C--INVERT THE  MATRIX BLOCK IF IT IS NECESSARY
-      JY=ISTORE(M12B+1)
-      NELEM = (JY*(JY+1))/2
+         JY=ISTORE(M12B+1)
+         NELEM = (JY*(JY+1))/2
 C
-      IF ( (JP .LE. 0) .OR.(METHOD .EQ. 0) ) THEN
+         IF ( (JP .LE. 0) .OR.(METHOD .EQ. 0) ) THEN
 C-----  RE-USE OF MSTRIX OR CHOLESKI - GET SOME CORE FOR THE UPPER TRIAN
             L11C = KADD11(-101,MD11,NELEM)
-      ELSE
+         ELSE
 C-----  GET SOME CORE FOR THE FULL MATRIX
             L11C = KADD11( -101, MD11, JY*JY)
 C----- ALLOCATE SPACE FOR EIGEN VALUES
@@ -379,79 +383,79 @@ C----- ALLOCATE SPACE FOR EGENVECTORS
 C----- ALLOCATE WORK SPACE
             IWRK = KADD11( 1015, MD11, 5*JY)
             IF ( IERFLG .LT. 0 ) GO TO 9900
-      ENDIF
-      M11 = L11C
-      INM = L11C
+         ENDIF
+         M11 = L11C
+         INM = L11C
 C--BRING DOWN THE MATRIX - REMEMBER MD11 INDICATES SINGLE OR DOUBLE PREC
-      CALL XDOWNF (M11DB, XSTR11 (MD11*L11C-MD11+1), MD11*NELEM)
-      IF (JP .GT. 0 ) THEN
+         CALL XDOWNF (M11DB, XSTR11 (MD11*L11C-MD11+1), MD11*NELEM)
+         IF (JP .GT. 0 ) THEN
 C----- CHOOSE INVERTOR
-        IF (METHOD .LE. 0) THEN
-            CALL XCHOLS(JY, L11C, KO)
-        ELSE
+            IF (METHOD .LE. 0) THEN
+               CALL XCHOLS(JY, L11C, KO)
+            ELSE
 C----- EXPAND  LOWER TRIANGLE OF FULL SQUARE
-            CALL XMTCVT (INM, JY, 1, MD11)
-            CALL XFILTR
+               CALL XMTCVT (INM, JY, 1, MD11)
+               CALL XFILTR
      1      (STR11(INM), STR11(IVAL), STR11(IVEC), STR11(ISCL),
      2      STR11(IWRK), JY, AUGFAC, FILTER, DISCRM, ILEVEL  )
 C----- COMPRESS INVERTED MATRIX
-            CALL XMTCVT (INM, JY, 2, MD11)
-        ENDIF
-      ENDIF
-2050  CONTINUE
-      L11RC = KADD11(-102,MD11R, JY)
-      M11R=L11RC
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+               CALL XMTCVT (INM, JY, 2, MD11)
+            ENDIF
+         ENDIF
+2050     CONTINUE
+         L11RC = KADD11(-102,MD11R, JY)
+         M11R=L11RC
+         IF ( IERFLG .LT. 0 ) GO TO 9900
 C--BRING DOWN THE VECTOR
-      CALL XDOWNF (M11RDB, XSTR11 (MD11R*L11RC-MD11R+1), MD11R*JY)
-      CALL XSOLVE(JY, L11C, M11R, KO)
+         CALL XDOWNF (M11RDB, XSTR11 (MD11R*L11RC-MD11R+1), MD11R*JY)
+         CALL XSOLVE(JY, L11C, M11R, KO)
 C--SPREAD OUT THE NEW SHIFTS TO ALLOW THE STORAGE OF OTHER DATA
-      JV=JO+JY+JY-2
-      JW=KO+JY-1
-      DO 2100 JU=1,JY
-      STORE(JV)=STR11(JW)
-      ISTORE(JV+1)=NOWT
-      JV=JV-2
-      JW=JW-1
-2100  CONTINUE
-      JQ=M11
+         JV=JO+JY+JY-2
+         JW=KO+JY-1
+         DO 2100 JU=1,JY
+            STORE(JV)=STR11(JW)
+            ISTORE(JV+1)=NOWT
+            JV=JV-2
+            JW=JW-1
+2100     CONTINUE
+         JQ=M11
 C--SEARCH THROUGH THE ATOMIC PARAMETERS FOR EACH OF THE
 C  LEAST SQUARES PARAMETERS IN TURN
 C
 C----- SET UP THE START ADDRESSES
-      M5 = L5 - MD5
-      M12 = L12O
-      L12A = NOWT
-      JS = 0
+         M5 = L5 - MD5
+         M12 = L12O
+         L12A = NOWT
+         JS = 0
 C
 C
-      DO 3450 JX=1,JY
-      S=0.0
-      C=0.
+         DO 3450 JX=1,JY
+            S=0.0
+            C=0.
 C----- LOOK FOR PATAMETER 'JT'
-      IHIT = KFLSP (JT, JS, JR, JO, JX, JC, JQ, JZ, ICAPT,
-     1 E, C, A, S, RMAX, SOESD, ILEVEL, MW, CTEXT)
-      IF (IHIT .EQ. 0) GOTO  3450
+            IHIT = KFLSP (JT, JS, JR, JO, JX, JC, JQ, JZ, ICAPT,
+     1                   E, C, A, S, RMAX, SOESD, ILEVEL, MW, CTEXT)
+            IF (IHIT .EQ. 0) GOTO  3450
 C--PARAMETER HAS BEEN FOUND  -  CALCULATE THE RESULTS
 C----- SUM OF SQUARES SHIFT / ESD
-      F=F+S*S
+            F=F+S*S
 C ----- FIND THE MAXIMUM SHIFT /ESD
 C>DJWOCT96
-      IF (ABS(S) .GT. SMAX) THEN
-        SMAX = ABS(S)
-        JSAVE = JT
-        CSAVE = CTEXT
-      ENDIF
+            IF (ABS(S) .GT. SMAX) THEN
+               SMAX = ABS(S)
+               JSAVE = JT
+               CSAVE = CTEXT
+            ENDIF
 C<DJWOCT96
 C----- IF SINGULAR, INCREMENT COUNTER
-      IF (A .LT. ZEROSQ) JA = JA + 1
+            IF (A .LT. ZEROSQ) JA = JA + 1
 C
 C--STORE THE SHIFT INFORMATION FOR THIS COORDINATE
 C      JD=ISTORE(JO+1)
 C-C-C-CHECK SHIFT-TYPE
 C-C-C-SHIFT OF OV, OCC, X, Y, Z, U[13], U[12] (NOT AMBIGUOUS)
-      IF ((JS .LE. 7) .OR. (JS .GE. 12)) THEN
-       JD=ISTORE(JO+1)
+            IF ((JS .LE. 7) .OR. (JS .GE. 12)) THEN
+               JD=ISTORE(JO+1)
 C-C-C
 C-C-C-GENERAL REMARK CONCERNING THIS PART:
 C-C-C-NORMALLY JD IS OBTAINED FROM ISTORE(JO+1). THIS ISN'T POSSIBLE
@@ -467,90 +471,90 @@ C-C-C-HAVE TO FIND THE PLACE WHERE ISTORE(JO+1) IS SET AND MAKE SURE
 C-C-C-THAT IT IS ALSO DONE FOR THE SPECIAL PARAMETERS
 C-C-C
 C-C-C-SHIFT OF U[11]/U[ISO]/"U[ISO]" (AMBIGUOUS)
-      ELSE IF (JS .EQ. 8) THEN
+            ELSE IF (JS .EQ. 8) THEN
 C-C-C-ANISOTROPIC ATOM (---> SHIFT OF U[11])
-       IF (NINT(STORE(M5+3)) .EQ. 0) THEN
-        JD=ISTORE(JO+1)
+               IF (NINT(STORE(M5+3)) .EQ. 0) THEN
+                  JD=ISTORE(JO+1)
 C-C-C-ISOTROPIC ATOM (---> SHIFT OF U[ISO])
-       ELSE IF (NINT(STORE(M5+3)) .EQ. 1) THEN
-        JD=JC+4*MW
+               ELSE IF (NINT(STORE(M5+3)) .EQ. 1) THEN
+                  JD=JC+4*MW
 C-C-C-SURFACE OF SPHERE (---> SHIFT OF "U[ISO]", I.E. THICKN. OF SURF.)
-       ELSE IF (NINT(STORE(M5+3)) .EQ. 2) THEN
-        JD=JC+14*MW
+               ELSE IF (NINT(STORE(M5+3)) .EQ. 2) THEN
+                  JD=JC+14*MW
 C-C-C-LINE (---> SHIFT OF "U[ISO]", I.E. THICKNESS OF LINE)
-       ELSE IF (NINT(STORE(M5+3)) .EQ. 3) THEN
-        JD=JC+16*MW
+               ELSE IF (NINT(STORE(M5+3)) .EQ. 3) THEN
+                  JD=JC+16*MW
 C-C-C-RING (---> SHIFT OF "U[ISO]", I.E. THICKN. OF RING)
-       ELSE IF (NINT(STORE(M5+3)) .EQ. 4) THEN
-        JD=JC+20*MW
-       ENDIF
+               ELSE IF (NINT(STORE(M5+3)) .EQ. 4) THEN
+                  JD=JC+20*MW
+               ENDIF
 C-C-C-SHIFT OF U[22]/SIZE (AMBIGUOUS)
-      ELSE IF (JS .EQ. 9) THEN
+            ELSE IF (JS .EQ. 9) THEN
 C-C-C-ANISOTROPIC ATOM (---> SHIFT OF U[22])
-       IF (NINT(STORE(M5+3)) .EQ. 0) THEN
-        JD=ISTORE(JO+1)
+               IF (NINT(STORE(M5+3)) .EQ. 0) THEN
+                  JD=ISTORE(JO+1)
 C-C-C-SURFACE OF SPHERE (---> SHIFT OF SIZE, I.E. RADIUS OF SPHERE)
-       ELSE IF (NINT(STORE(M5+3)) .EQ. 2) THEN
-        JD=JC+15*MW
+               ELSE IF (NINT(STORE(M5+3)) .EQ. 2) THEN
+                  JD=JC+15*MW
 C-C-C-LINE (---> SHIFT OF SIZE, I.E. LENGTH OF LINE)
-       ELSE IF (NINT(STORE(M5+3)) .EQ. 3) THEN
-        JD=JC+17*MW
+               ELSE IF (NINT(STORE(M5+3)) .EQ. 3) THEN
+                  JD=JC+17*MW
 C-C-C-RING (---> SHIFT OF SIZE, I.E. RADIUS OF RING)
-       ELSE IF (NINT(STORE(M5+3)) .EQ. 4) THEN
-        JD=JC+21*MW
-       ENDIF
+               ELSE IF (NINT(STORE(M5+3)) .EQ. 4) THEN
+                  JD=JC+21*MW
+               ENDIF
 C-C-C-SHIFT OF U[33]/DECLINAT (AMBIGUOUS)
-      ELSE IF (JS .EQ. 10) THEN
+            ELSE IF (JS .EQ. 10) THEN
 C-C-C-ANISOTROPIC ATOM (---> SHIFT OF U[33])
-       IF (NINT(STORE(M5+3)) .EQ. 0) THEN
-        JD=ISTORE(JO+1)
+               IF (NINT(STORE(M5+3)) .EQ. 0) THEN
+                  JD=ISTORE(JO+1)
 C-C-C-LINE (---> SHIFT OF DECLINAT OF LINE)
-       ELSE IF (NINT(STORE(M5+3)) .EQ. 3) THEN
-        JD=JC+18*MW
+               ELSE IF (NINT(STORE(M5+3)) .EQ. 3) THEN
+                  JD=JC+18*MW
 C-C-C-RING (---> SHIFT OF DECLINAT OF RINGNORMAL)
-       ELSE IF (NINT(STORE(M5+3)) .EQ. 4) THEN
-        JD=JC+22*MW
-       ENDIF
+               ELSE IF (NINT(STORE(M5+3)) .EQ. 4) THEN
+                  JD=JC+22*MW
+               ENDIF
 C-C-C-SHIFT OF U[23]/AZIMUTH (AMBIGUOUS)
-      ELSE IF (JS .EQ. 11) THEN
+            ELSE IF (JS .EQ. 11) THEN
 C-C-C-ANISOTROPIC ATOM (---> SHIFT OF U[23])
-       IF (NINT(STORE(M5+3)) .EQ. 0) THEN
-        JD=ISTORE(JO+1)
+               IF (NINT(STORE(M5+3)) .EQ. 0) THEN
+                  JD=ISTORE(JO+1)
 C-C-C-LINE (---> SHIFT OF AZIMUTH OF LINE)
-       ELSE IF (NINT(STORE(M5+3)) .EQ. 3) THEN
-        JD=JC+19*MW
+               ELSE IF (NINT(STORE(M5+3)) .EQ. 3) THEN
+                  JD=JC+19*MW
 C-C-C-RING (---> SHIFT OF AZIMUTH OF RINGNORMAL)
-       ELSE IF (NINT(STORE(M5+3)) .EQ. 4) THEN
-        JD=JC+23*MW
-       ENDIF
-      ENDIF
-      STORE(JD+1)=STORE(JD+1)+1.
-      STORE(JD+2)=STORE(JD+2)+STORE(JO)
-      STORE(JD+3)=STORE(JD+3)+STORE(JO)*STORE(JO)
-      STORE(JD+5) = AMAX1(STORE(JD+5), ABS(STORE(JO)) )
+               ELSE IF (NINT(STORE(M5+3)) .EQ. 4) THEN
+                  JD=JC+23*MW
+               ENDIF
+            ENDIF
+            STORE(JD+1)=STORE(JD+1)+1.
+            STORE(JD+2)=STORE(JD+2)+STORE(JO)
+            STORE(JD+3)=STORE(JD+3)+STORE(JO)*STORE(JO)
+            STORE(JD+5) = AMAX1(STORE(JD+5), ABS(STORE(JO)) )
 C--CHECK IF THE SIGN HAS CHANGED COMPARED WITH THE LAST CYCLE
-      IF(C)3350,3400,3400
+            IF(C)3350,3400,3400
 C--THE SIGN HAS CHANGED
-3350  CONTINUE
-      STORE(JD+4)=STORE(JD+4)+1.
+3350        CONTINUE
+            STORE(JD+4)=STORE(JD+4)+1.
 C--UPDATE THE ADDRESS AND CONTROL FLAGS
-3400  CONTINUE
-      JO=JO+2
-      JQ=JQ+JY-JX+1
-      JT=JT+1
-      M24=M24+MD24
-3450  CONTINUE
+3400        CONTINUE
+            JO=JO+2
+            JQ=JQ+JY-JX+1
+            JT=JT+1
+            M24=M24+MD24
+3450     CONTINUE
 C----- PUT THE GOODIES BACK ON THE DISK
-      CALL XUPF (M11DB, XSTR11 (MD11*L11C-MD11+1), MD11*NELEM)
-      CALL XUPF (M11RDB, XSTR11 (MD11R*L11RC-MD11R+1), MD11R*JY)
+         CALL XUPF (M11DB, XSTR11 (MD11*L11C-MD11+1), MD11*NELEM)
+         CALL XUPF (M11RDB, XSTR11 (MD11R*L11RC-MD11R+1), MD11R*JY)
 C--CHANGE TO THE NEXT BLOCK - UPDATE DISK ADDRESSES
-      M11DB = M11DB +((ISTORE(M12B+1)+1)*ISTORE(M12B+1))/2
-      M11RDB = M11RDB+ISTORE(M12B+1)
-      M12B=M12B+MD12B
+         M11DB = M11DB +((ISTORE(M12B+1)+1)*ISTORE(M12B+1))/2
+         M11RDB = M11RDB+ISTORE(M12B+1)
+         M12B=M12B+MD12B
 3500  CONTINUE
-C
-C
-C
+
+
+
 C--PRINT THE OVERALL STATISTICS
       ICONVG = 0
       IF (ISSPRT .EQ. 0) WRITE(NCWU,3550) F
