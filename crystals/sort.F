@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2003/09/05 20:05:01  djw
+C suppress printing empty records is SRTDWN
+C
 C Revision 1.7  2003/08/05 11:11:12  rich
 C Commented out unused routines - saves 50Kb off the executable.
 C
@@ -1092,20 +1095,20 @@ C----- INSERTION
       IHIT = 0
       MSORT = LSORT
       DO 200 I = 1, NSORT
-      IF (ITYPE .LT. 0) THEN
-        IF (STORE(ITEM+IPOS) .LE. STORE(MSORT+IPOS)) IHIT = 1
-      ELSE IF (ITYPE .GT. 0) THEN
-        IF (STORE(ITEM+IPOS) .GE. STORE(MSORT+IPOS)) IHIT = 1
-      ELSE
-        IF (ABS(STORE(ITEM+IPOS)) .GE. ABS(STORE(MSORT+IPOS))) IHIT = 1
-      ENDIF
+        IF (ITYPE .LT. 0) THEN
+          IF (STORE(ITEM+IPOS) .LE. STORE(MSORT+IPOS)) IHIT = 1
+        ELSE IF (ITYPE .GT. 0) THEN
+          IF (STORE(ITEM+IPOS) .GE. STORE(MSORT+IPOS)) IHIT = 1
+        ELSE
+          IF (ABS(STORE(ITEM+IPOS)) .GE. ABS(STORE(MSORT+IPOS))) IHIT=1
+        ENDIF
         IF (IHIT .NE. 0) THEN
           IHIT = 0
 C-----    SHUFFLE REMAINDER DOWN
             ITEMP = LSORT + (NSORT-2) * MDSORT
             DO 300 J = NSORT, I+1, -1
                   CALL XMOVE (STORE(ITEMP), STORE(ITEMP+MDSORT), MDSORT)
-            ITEMP = ITEMP - MDSORT
+                  ITEMP = ITEMP - MDSORT
 300         CONTINUE
             CALL XMOVE (STORE(ITEM), STORE(MSORT), MDSORT)
             VALUE = STORE(LSORT + IPOS + (NSORT-1)*MDSORT)
