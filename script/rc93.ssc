@@ -1,0 +1,6 @@
+%SCRIPT RC93
+
+ * Running RC93.
+%      COPY '#SPAWN  COMMAND.COM /c CRYSDIR:RC93.BAT'
+ * Done.
+%END SCRIPT
