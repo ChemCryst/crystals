@@ -41,7 +41,7 @@
 %      END BLOCK
 %      BLOCK
 %        CLEAR
-%        INSERT '{I    The R-factor is '
+%        INSERT '{R    The R-factor is '
 %        STORE FORMAT '(F8.3)' LENGTH 8 REAL R
 %        INSERT ', the ratio Fo/Fc is '
 %        STORE FORMAT '(F8.4)' LENGTH 8 REAL RATIO
