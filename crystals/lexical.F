@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2001/06/19 08:19:19  richard
+C Increased store limits as two people have now hit the barrier for LIST 16
+C size. A complete recompilation of all fortran sources is required for consitency.
+C Do at least a "code fortran", or a "buildall" to be really sure.
+C
 C Revision 1.12  2001/02/26 10:26:49  richard
 C Added changelog to top of file
 C
@@ -2790,7 +2795,7 @@ C    DEFAULT. THE ONLY POSSIBLE RESULT NOT AVAILIBLE IS -98765.
 \XSSVAL
 \XIOBUF
 C --
-      DUMMY = DUMMY
+      RDUMMY = DUMMY
 C -- READ A VALUE
       VALUE=XLXRDV(-98765.)
       IF (ABS(VALUE+98765.) .LT. 0.0001) GO TO 9500
