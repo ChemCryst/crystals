@@ -91,7 +91,7 @@
 @if exist %1.obj del %1.obj
 @set COPTIONS=%CDEF% %COPTS%
 @if "%CRDEBUG%" == "TRUE" set COPTIONS=%CDEF% %CDEBUG%
-%CC% ..\gui\%1.cc %COUT%%1.obj %COPTIONS% 2> obj\output || perl ..\bin\errmail.pl CPP_RELEASE_COMPILE %1.cpp obj\output
+%CC% ..\gui\%1.cc %COUT%%1.obj %COPTIONS% 2> obj\output || ( make_err.bat CPP_RELEASE_COMPILE %1.cpp obj\output & exit /b 1 )
 @goto %JUMPBACK%
 
 :fcomp
@@ -99,8 +99,8 @@
 @if exist %1.obj del %1.obj
 @set FOPTIONS=%FDEF% %FWIN% %FOPTS%
 @if "%CRDEBUG%" == "TRUE" set FOPTIONS=%FDEF% %FWIN% %FDEBUG%
-@if not "%1" == "lapack" %F77% %SRCDIR%\%1.fpp %FOUT%%1.obj %FOPTIONS% 2> obj\output || perl ..\bin\errmail.pl FPP_RELEASE_COMPILE %1.fpp obj\output
-@if "%1" == "lapack" %F77% %SRCDIR%\%1.f %FOUT%%1.obj %FWIN% %FDEF% %FNOOPT% 2> obj\output || perl ..\bin\errmail.pl FPP_RELEASE_COMPILE %1.fpp obj\output
+@if not "%1" == "lapack" %F77% %SRCDIR%\%1.fpp %FOUT%%1.obj %FOPTIONS% 2> obj\output || ( make_err.bat FPP_RELEASE_COMPILE %1.fpp obj\output  & exit /b 1 )
+@if "%1" == "lapack" %F77% %SRCDIR%\%1.f %FOUT%%1.obj %FWIN% %FDEF% %FNOOPT% 2> obj\output || ( make_err.bat FPP_RELEASE_COMPILE %1.fpp obj\output  & exit /b 1 )
 @goto %JUMPBACK%
 
 :scomp
@@ -118,5 +118,4 @@
 :exit
 @time /t
 @
-
 
