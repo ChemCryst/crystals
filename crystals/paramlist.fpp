@@ -43,7 +43,7 @@ C
       integer loc                ! location to insert item
       integer item               ! Item to insert
 
-      call xmove(list(loc), list(loc+1), list_length-(loc))
+      call xmove(list(loc), list(loc+1), list_length-(loc-1))
       list(loc) = item
       list_insert_item = list_length+1
       end
