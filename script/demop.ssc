@@ -35,7 +35,8 @@
 {0,3 Input basic crystallographic information
 % EVALUATE QLINE = 'Input basic information'
 % COPY '#SCRIPT XPAUSE'
-% copy '#use crysdir:\script\demo1.dat'
+-GIL% copy '#use crysdir:\script\demo1.dat'
++GIL% copy '#use crysdir:/script/demo1.dat'
 
 {0,2 Note that the mean value for the systematic absences is +ve
 {0,2 This is was common knowledge in the days of Weissenberg 
@@ -47,7 +48,8 @@
 % EVALUATE QLINE = 'Input structure from Sir92'
 % COPY '#SCRIPT XPAUSE'
 
-% copy '#use crysdir:\script\demo2.dat'
+-GIL% copy '#use crysdir:\script\demo2.dat'
++GIL% copy '#use crysdir:/script/demo2.dat'
 
 
 {0,2 The SIR92 structure is almost completely correct 
@@ -64,8 +66,10 @@
 % EVALUATE QLINE = 'Perturb the structure'
 % COPY '#SCRIPT XPAUSE'
 
-% copy '#use crysdir:\script\demo3.dat'
-% copy '#use crysdir:\script\demo4.dat'
+-GIL% copy '#use crysdir:\script\demo3.dat'
+-GIL% copy '#use crysdir:\script\demo4.dat'
++GIL% copy '#use crysdir:/script/demo3.dat'
++GIL% copy '#use crysdir:/script/demo4.dat'
 
 {0,3 Now try refining just the positions. 
 {0,3 
@@ -111,21 +115,24 @@
 % EVALUATE QLINE = 'Sort out spurious atoms'
 % COPY '#SCRIPT XPAUSE'
 
-% copy '#use crysdir:\script\demo6.dat'
+-GIL% copy '#use crysdir:\script\demo6.dat'
++GIL% copy '#use crysdir:/script/demo6.dat'
 
 {0,3 Now some ADP refinement. First iso, then aniso.
 
 % EVALUATE QLINE = 'Refinement'
 % COPY '#SCRIPT XPAUSE'
 
-% copy '#use crysdir:\script\demo7.dat'
+-GIL% copy '#use crysdir:\script\demo7.dat'
++GIL% copy '#use crysdir:/script/demo7.dat'
 
 {0,2 The structure looks OK, but the numbering is
 {0,2 erratic. Let CRYSTALS sort it out
 
 % EVALUATE QLINE = 'Relabel'
 % COPY '#SCRIPT XPAUSE'
-%copy '#use crysdir:\script\demo8.dat'
+-GIL%copy '#use crysdir:\script\demo8.dat'
++GIL%copy '#use crysdir:/script/demo8.dat'
 
 {0,3 Compute Hydrogen atoms based on geometry (WHITE)
 {0,3 and compare them with the difference Fourier (PINK)
@@ -134,7 +141,8 @@
 % EVALUATE QLINE = 'Find H atoms'
 % COPY '#SCRIPT XPAUSE'
 
-% copy '#use crysdir:\script\demo9.dat'
+-GIL% copy '#use crysdir:\script\demo9.dat'
++GIL% copy '#use crysdir:/script/demo9.dat'
 % copy '#list 12'
 % copy "full first(x's, u's) until o(20)"
 % copy 'end'
@@ -208,7 +216,8 @@
 % COPY '#SCRIPT XPAUSE'
 
 
-% COPY '#use crysdir:\script\demo10.dat'
+-GIL% COPY '#use crysdir:\script\demo10.dat'
++GIL% COPY '#use crysdir:/script/demo10.dat'
 % copy '#finish'
 
 % END SCRIPT
