@@ -146,8 +146,8 @@
 %   VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
 %   VARIABLE LOGICAL ANSWER
 %   EVALUATE QTITLE = 'Return to Crystals'
-%   EVALUATE QLINE1 = 'Do you want to apply any'
-%   EVALUATE QLINE2 = 'changes made in CAMERON?'
+%   EVALUATE QLINE1 = 'Do you want to apply any changes'
+%   EVALUATE QLINE2 = 'made in CAMERON?'
 %   EVALUATE BUTTOK = '&Yes'
 %   EVALUATE BUTTXX = '&No'
 %   COPY '#SCRIPT XQUESTIO'
