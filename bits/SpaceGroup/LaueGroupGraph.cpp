@@ -88,8 +88,8 @@ float LaueGroupGraph::Link::unitCellRating(HKLData& pReflections)
 MergedReflections& LaueGroupGraph::Link::follow(const float pThreshold)
 {
 	MergedReflections& tResult = (iConnectingNode->follow(*iMergedData, pThreshold));
-	std::cout << "Followed " << (*iConnectingNode->laueGroup()) << " with rating " << iMergedData->rFactor() << "\n";
-	std::cout << "Data was transformed with: \n" << iMergedData->transformation() << "\n";
+	//	std::cout << "Followed " << (*iConnectingNode->laueGroup()) << " with rating " << iMergedData->rFactor() << "\n";
+	//	std::cout << "Data was transformed with: \n" << iMergedData->transformation() << "\n";
 	if (&tResult != iMergedData)
 	{
 		dropReflections();
@@ -166,7 +166,7 @@ MergedReflections& LaueGroupGraph::Node::follow(MergedReflections& pHKLs, const 
 	{
 		float tFinalRating;
 		MergedReflections& tLastMergedRef = (*tIterator)->merge(pHKLs);
-		if (maximum(tLastMergedRef.unitCellTensor(), -1000000.0f, tLastMergedRef.unitCellTensor().sizeX()*tLastMergedRef.unitCellTensor().sizeY()) > 0) //If the unit cell wasn't set.
+		if (smallValue(maximum(tLastMergedRef.unitCellTensor(), -1000000.0f, tLastMergedRef.unitCellTensor().sizeX()*tLastMergedRef.unitCellTensor().sizeY())) > 0) //If the unit cell wasn't set.
 		{
 			float tUnitCellRating = (*tIterator)->unitCellRating(tLastMergedRef);
 			tFinalRating = (tLastMergedRef.rFactor()+tUnitCellRating)/2;
@@ -217,7 +217,7 @@ MergedReflections* LaueGroupGraph::Node::merge(HKLData& pReflections, Matrix<sho
 	std::cout << (*iLaueGroup) << " being merged";
 	if (pTransformationMatrix)
 	{
-		std::cout <<  "with transformation";
+		std::cout <<  " with transformation";
 		tUnitCellTensor = transformMatrixTensorRecipricalSpaceTransfomation(tUnitCellTensor, *pTransformationMatrix);
 	}
 	std::cout <<  "\n";
