@@ -2,21 +2,24 @@
 //   CRYSTALS Interface      Class CrTab
 ////////////////////////////////////////////////////////////////////////
 //   Filename:  CrTab.cpp
-//   Authors:   Richard Cooper 
-//   Created:   23.1.2001 20:46 
+//   Authors:   Richard Cooper
+//   Created:   23.1.2001 20:46
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1  2001/01/25 17:17:05  richard
+//   A new control for tabbed property sheets.
+//
 
-#include	"crystalsinterface.h"
-#include	"crconstants.h"
+#include    "crystalsinterface.h"
+#include    "crconstants.h"
 #include        "ccstring.h"
 #include        "crtab.h"
 #include        "cxtab.h"
-#include	"crgrid.h"
+#include    "crgrid.h"
 #include        "cxgrid.h"
-#include	"cctokenlist.h"
-#include	"cccontroller.h"
-#include	"crwindow.h"
-#include	"ccrect.h"
+#include    "cctokenlist.h"
+#include    "cccontroller.h"
+#include    "crwindow.h"
+#include    "ccrect.h"
 
 
 
@@ -29,47 +32,72 @@ class CcTabData
 };
 
 CrTab::CrTab( CrGUIElement * mParentPtr )
-	:	CrGUIElement( mParentPtr )
+    :   CrGUIElement( mParentPtr )
 {
         ptr_to_cxObject = CxTab::CreateCxTab( this, (CxGrid *)(mParentPtr->GetWidget()) );
         mTabStop = true;
         m_nTabs = 0;
-        m_nRealParent = mParentPtr;
         m_currentTab = nil;
-        mXCanResize = true;
-        mYCanResize = true;
+        mXCanResize = false;
+        mYCanResize = false;
 }
 
 CrTab::~CrTab()
 {
-	CrGUIElement * theItem;
-	
-        mTabsList.Reset();
-        theItem = (CrGUIElement *)mTabsList.GetItem();
-	
-	while ( theItem != nil )
-	{
-		delete theItem;
-                mTabsList.RemoveItem();
-                theItem = (CrGUIElement *)mTabsList.GetItem();
-	}
-	
-        if ( ptr_to_cxObject != nil )
-	{
-                delete (CxTab*)ptr_to_cxObject;
-                ptr_to_cxObject = nil;
-	}
+    mTabsList.Reset();
+    CrGUIElement * theItem = (CrGUIElement *)mTabsList.GetItem();
+    while ( theItem != nil )
+    {
+      delete theItem;
+      mTabsList.RemoveItem();
+      theItem = (CrGUIElement *)mTabsList.GetItem();
+    }
+
+    if ( ptr_to_cxObject != nil )
+    {
+      ((CxTab*)ptr_to_cxObject)->DestroyWindow(); delete (CxTab*)ptr_to_cxObject;
+      ptr_to_cxObject = nil;
+    }
 }
 
-Boolean CrTab::ParseInput( CcTokenList * tokenList )
+void CrTab::SetGeometry( const CcRect * rect )
 {
-  Boolean retVal = false;
+  ((CxTab*)ptr_to_cxObject)->SetGeometry( rect->mTop,    rect->mLeft,
+                                           rect->mBottom, rect->mRight );
+
+  CcRect aRectangle;
+  int height = rect->mBottom-rect->mTop;
+  int width  = rect->mRight-rect->mLeft;
+  int offTop = ((CxTab*)ptr_to_cxObject)->GetTabsHeight();
+  int offBot = ((CxTab*)ptr_to_cxObject)->GetTabsExtraVSpace();
+
+  //Set height and width of all tabs - allowing for edges of tab control.
+
+  LOGSTAT("CrTab: " + mName + " SetGeometry: set height and width of all tabs.");
+  mTabsList.Reset();
+  CrGrid* theItem = (CrGrid *)mTabsList.GetItemAndMove();
+  while ( theItem != nil )
+  {
+    aRectangle.Set(offTop,EMPTY_CELL,height-offBot,width-EMPTY_CELL);
+    LOGSTAT ("TAB"); CcController::debugIndent++;
+    theItem->SetGeometry(&aRectangle);
+    CcController::debugIndent--;
+    theItem = (CrGrid*)mTabsList.GetItemAndMove();
+  }
+}
+
+CRGETGEOMETRY(CrTab,CxTab)
+
+
+CcParse CrTab::ParseInput( CcTokenList * tokenList )
+{
+  CcParse retVal(false, mXCanResize, mYCanResize);
   Boolean hasTokenForMe = true;
   CcString theString;
-	
+
 // Initialization for the first time
   if( ! mSelfInitialised )
-  { 
+  {
     LOGSTAT("Tabctrl Initing...");
     retVal = CrGUIElement::ParseInputNoText( tokenList );
     LOGSTAT( "Created TabControl  " + mName );
@@ -86,13 +114,15 @@ Boolean CrTab::ParseInput( CcTokenList * tokenList )
           mCallbackState = inform;
           break;
         }
+        case kTOpenGrid:
+          tokenList->GetToken();
         default:
         {
           hasTokenForMe = false;
           break; // We leave the token in the list and exit the loop
         }
       }
-    } 
+    }
 
     mSelfInitialised = true;
 
@@ -100,7 +130,7 @@ Boolean CrTab::ParseInput( CcTokenList * tokenList )
 
 
   if( tokenList->GetDescriptor( kInstructionClass ) == kTNoMoreToken )
-		return true;
+        return true;
 
   hasTokenForMe = true;
 
@@ -121,8 +151,10 @@ Boolean CrTab::ParseInput( CcTokenList * tokenList )
         {
           tokenList->GetToken();      // remove that token
           retVal = gridPtr->ParseInput( tokenList );
-   
-          if ( retVal )
+
+          mXCanResize = mXCanResize || retVal.CanXResize();
+          mYCanResize = mYCanResize || retVal.CanYResize();
+          if ( retVal.OK() )
           {
             tabData->tabGrid = gridPtr;
             mTabsList.AddItem( (void*) gridPtr );
@@ -147,10 +179,13 @@ Boolean CrTab::ParseInput( CcTokenList * tokenList )
             delete gridPtr;
             gridPtr = nil;
           }
-   
+
         }
+        delete tabData;  //Don't think tabdata is really needed.
         break;
       }
+      case kTEndGrid:
+        tokenList->GetToken();  //run on into default.
       default:
       {
         ((CxTab*)ptr_to_cxObject)->RedrawTabs();
@@ -158,42 +193,12 @@ Boolean CrTab::ParseInput( CcTokenList * tokenList )
       }
     }
   }
-  return (retVal);
+  return CcParse(true,mXCanResize,mYCanResize);
 }
 
-void    CrTab::SetGeometry( const CcRect * rect )
+CcRect CrTab::CalcLayout(bool recalc)
 {
-  ((CxGrid*)ptr_to_cxObject)->SetGeometry(rect->mTop,rect->mLeft,rect->mBottom,rect->mRight );
-  LOGSTAT ("CrTab SetGeom top = " + CcString(rect->mTop) +
-                       " left = " + CcString(rect->mLeft) +
-                       " bottom = " + CcString(rect->mBottom) +
-                       " right = " + CcString(rect->mRight)
-                       );
-}
-
-CcRect  CrTab::GetGeometry()
-{
-  int top    = ((CxGrid*)ptr_to_cxObject)->GetTop();
-  int left   = ((CxGrid*)ptr_to_cxObject)->GetLeft();
-  int bottom = ((CxGrid*)ptr_to_cxObject)->GetTop()+((CxGrid*)ptr_to_cxObject)->GetHeight();
-  int right  = ((CxGrid*)ptr_to_cxObject)->GetLeft()+((CxGrid*)ptr_to_cxObject)->GetWidth();
-
-  LOGSTAT ("CrTab GetGeom top = " + CcString(top) +
-                       " left = " + CcString(left) +
-                       " bottom = " + CcString(bottom) +
-                       " right = " + CcString(right)
-                       );
-
-  CcRect retVal( top, left, bottom, right );
-
-  return retVal;
-}
-
-void    CrTab::CalcLayout()
-{
-// Calclayout works out size of all children, adjusts the children
-// for neatness if necessary/possible, and then sets the Cxgeometry
-// of this tabctrl to fit around the children.
+// Calclayout works out size of all children.
 
   CcController::debugIndent++;
 
@@ -208,61 +213,22 @@ void    CrTab::CalcLayout()
   while ( theItem != nil )
   {
     LOGSTAT ("TAB"); CcController::debugIndent++;
-    theItem->CalcLayout();
+    aRectangle = theItem->CalcLayout(recalc);
+    maxH = max ( maxH, aRectangle.Height() );
+    maxW = max ( maxW, aRectangle.Width()  );
     CcController::debugIndent--;
     theItem = (CrGrid*)mTabsList.GetItemAndMove();
   }
 
-  LOGSTAT("CrTab: " + mName + " CalcLayout Step 2: find max height and width");
-  mTabsList.Reset();
-  theItem = (CrGrid *)mTabsList.GetItemAndMove();
-  while ( theItem != nil )
-  {
-    aRectangle = theItem->GetGeometry();
-    maxH =       max ( maxH, aRectangle.Height() );
-    maxW =       max ( maxW, aRectangle.Width()  );
-    theItem = (CrGrid*)mTabsList.GetItemAndMove();
-  }
-
-  int offy = ((CxTab*)ptr_to_cxObject)->GetTabsHeight();
-  int offh = ((CxTab*)ptr_to_cxObject)->GetTabsExtraVSpace();
-
-  LOGSTAT("CrTab: " + mName + " CalcLayout Step 3: set max height and width of all tabs.");
-  mTabsList.Reset();
-  theItem = (CrGrid *)mTabsList.GetItemAndMove();
-  while ( theItem != nil )
-  {
-    aRectangle.Set(offy,EMPTY_CELL,maxH+offy,maxW+EMPTY_CELL);
-    LOGSTAT ("TAB"); CcController::debugIndent++;
-    theItem->SetGeometry(&aRectangle);
-    CcController::debugIndent--;
-    theItem = (CrGrid*)mTabsList.GetItemAndMove();
-  }
-
-  m_GridH = maxH;
-  m_GridW = maxW;
- 
-  LOGSTAT("CrTab  " + mName + "CalcLayout, m_gridH and W = "+CcString(m_GridH)+" "+CcString(m_GridW));
-
-  ((CxTab*)ptr_to_cxObject)->SetGeometry(0,0,maxH+offy+offh,maxW+2*EMPTY_CELL);
-
-  LOGSTAT("CrTab  " + mName + "CalcLayout, Set CxGeom to 0,0,"+CcString(maxH+offy+offh)+","+CcString(maxW+2*EMPTY_CELL));
+  int offTop = ((CxTab*)ptr_to_cxObject)->GetTabsHeight();
+  int offBot = ((CxTab*)ptr_to_cxObject)->GetTabsExtraVSpace();
 
   CcController::debugIndent--;
 
+  return CcRect( 0, 0, maxH+offTop+offBot, maxW+(2*EMPTY_CELL));
+
 }
 
-void  CrTab::SetOriginalSizes()
-{
-  // Call SetOriginalSizes() for child elements.
-  mTabsList.Reset();
-  CrGrid* theItem = (CrGrid *)mTabsList.GetItemAndMove();
-  while ( theItem != nil )
-  {
-    theItem->SetOriginalSizes();
-    theItem = (CrGrid*)mTabsList.GetItemAndMove();
-  }
-}
 
 void    CrTab::SetText( CcString item )
 {
@@ -270,10 +236,10 @@ void    CrTab::SetText( CcString item )
 
 CrGUIElement *  CrTab::FindObject( CcString Name )
 {
-  CrGUIElement* theElement;
+  CrGUIElement* theElement = nil;
   mTabsList.Reset();
   CrGrid* theItem = (CrGrid *)mTabsList.GetItemAndMove();
-  while ( theItem != nil )
+  while ( theItem != nil && theElement == nil )
   {
     theElement = theItem->FindObject( Name );
     theItem = (CrGrid*)mTabsList.GetItemAndMove();
@@ -298,34 +264,6 @@ void CrTab::ChangeTab(int tab)
 
   ((CxTab*)ptr_to_cxObject)->RedrawTabs();
 }
-
-
-void CrTab::Resize(int newWidth, int newHeight, int origWidth, int origHeight)
-{
- // Need to subtract space for the tab control, then call resize on
- // all the child grids.
-
-  LOGSTAT("CrTab  " + mName + "Resize nW,nH,oW,oH: "+CcString(newWidth)+CcString(newHeight)+CcString(origWidth)+CcString(origHeight));
-
-  int offy = ((CxTab*)ptr_to_cxObject)->GetTabsHeight();
-  int offh = ((CxTab*)ptr_to_cxObject)->GetTabsExtraVSpace();
-
-  int nW = newWidth - 2*EMPTY_CELL;
-  int oW = origWidth - 2*EMPTY_CELL;
-  int nH = newHeight - EMPTY_CELL - offy - offh;
-  int oH = origHeight - EMPTY_CELL - offy - offh;
-
-  LOGSTAT("CrTab  " + mName + "Resize adjusted nW,nH,oW,oH: "+CcString(nW)+CcString(nH)+CcString(oW)+CcString(oH));
-
-  mTabsList.Reset();
-  CrGrid* theItem = (CrGrid *)mTabsList.GetItemAndMove();
-  while ( theItem != nil )
-  {
-    theItem->Resize(nW,nH,oW,oH);
-    theItem = (CrGrid*)mTabsList.GetItemAndMove();
-  }
-}
-
 
 int CrTab::GetIdealWidth()
 {
@@ -358,4 +296,3 @@ int CrTab::GetIdealHeight()
 
   return resizeableHeight;
 }
-
