@@ -10,6 +10,9 @@
 //   Modified:  30.3.1998 11:25 Uhr
 
 //  $Log: not supported by cvs2svn $
+//  Revision 1.5  1999/04/28 13:59:48  dosuser
+//  RIC: Fix: Added a break to a case statement.
+//
 //  Revision 1.4  1999/04/26 12:21:03  dosuser
 //  RIC: Added a kTSetSelection section in ParseInput to allow the current
 //       selection to be changed from SCRIPTS
@@ -197,10 +200,12 @@ void CrListBox::GetValue(CcTokenList * tokenList)
 	{
 		tokenList->GetToken();
             int index = atoi ((tokenList->GetToken()).ToCString());
-		char theText[256];
- //TODO. Wrap this call with a CxListBox function, rather that this base class.
-            int textLen = ((CxListBox*)mWidgetPtr)->GetText(index - 1,&theText[0]);
-		SendCommand( CcString( theText ), true );
+//            char theText[256];
+//TODO. Wrap this call with a CxListBox function, rather that this base class.
+//DONE.
+//            int textLen = ((CxListBox*)mWidgetPtr)->GetText(index - 1,&theText[0]);
+            CcString theText = ((CxListBox*)mWidgetPtr)->GetListBoxText(index);
+            SendCommand( theText, true );
 	}
 	else if (desc == kTQSelected )
 	{
