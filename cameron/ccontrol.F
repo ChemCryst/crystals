@@ -1,6 +1,9 @@
 CRYSTALS CODE FOR CCONTROL.FOR
 
 C $Log: not supported by cvs2svn $
+C Revision 1.4  1999/04/28 12:32:39  dosuser
+C RIC: Debugging statements for ellipses added as comments.
+C
 
 CAMERON CODE FOR CONTROL
 CODE FOR ZABAND [ ABANDON - RESET COMMAND FLAGS ]
@@ -2180,7 +2183,7 @@ C READ IN THE INFO
 C STORE THE INFO
       JELM = JELM + 1
       CSTORE (I) = LABEL
-      RSTORE (J) = COV
+      RSTORE (J) = ABS(COV)
       RSTORE (J+1) = ION
       RSTORE (J+2) = VAN
 C WORK OUT THE COLOUR NUMBER
