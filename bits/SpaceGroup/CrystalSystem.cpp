@@ -48,18 +48,70 @@
 
 using namespace std;
 
+static regex_t* iHeaderRE  =NULL;
+static regex_t* iCondRE  =NULL;
+static regex_t* iFirstNumRE  =NULL;
+static regex_t* iFirstNSpRE  =NULL;
+static regex_t* iTableRE  =NULL;
+static regex_t* iTableArgsRE =NULL;
+
+void initCrysRegEx()
+{
+    if (iHeaderRE == NULL)
+    {
+        char tHeaderRE[] = "^([[:digit:]]+)\t([hkl0-]{3}[hkl0-]?)\t(\\[[0123456789;. -]+\\])[[:space:]]*$";
+            //Checks the format of the header line.
+        char tCondRE[] = "^([[:digit:]]+)\t(([[:alnum:]]|[- =+])+)\t(\\[( *([-+]?[[:digit:]]+(\\.[[:digit:]]+)?) *(;)?)*( *([-+]?[[:digit:]]+(\\.[[:digit:]]+)?) *)\\])\t([[:digit:]]+)[[:space:]]*$";
+            //Checks the formoat of a line in the conditons list is the conrrect format.
+        char tFirstNumRE[] = "([[:digit:]]),?[[:space:]]?"; 
+            //Takes the first number of a , delimited list of numbers.
+        char tFirstNSpRE[] = "([^\t]+)\t?([^\t].+)?";	
+            //Takes the first non-space part of the heading line and returns the point of it in $1
+        char tTableRE[] = "([^\t]+\t?)([^\t].*)?";
+            //Gets the first non-tab part of the line and returns its placing in $1.
+        char tTableArgsRE[] = "([^\t]+)\t([[:digit:]]+), ([[:digit:]]+)";
+            //The header line of the table. This contains the name of the system and the number of condition columns and the number of point group columns.
+        iHeaderRE  = new regex_t;
+        iCondRE  = new regex_t;
+        iFirstNumRE  = new regex_t;
+        iFirstNSpRE  = new regex_t;
+        iTableRE  = new regex_t;
+        iTableArgsRE = new regex_t;
+        regcomp(iHeaderRE, tHeaderRE, REG_EXTENDED);
+        regcomp(iCondRE, tCondRE, REG_EXTENDED);
+        regcomp(iFirstNumRE, tFirstNumRE, REG_EXTENDED);
+        regcomp(iFirstNSpRE, tFirstNSpRE, REG_EXTENDED);
+        regcomp(iTableRE, tTableRE, REG_EXTENDED);
+        regcomp(iTableArgsRE, tTableArgsRE, REG_EXTENDED);
+    }
+}
+
+void deinitRE()
+{
+    if (iHeaderRE != NULL)
+    {
+        delete iHeaderRE;
+        delete iCondRE;
+        delete iFirstNumRE;
+        delete iFirstNSpRE;
+        delete iTableRE;
+        delete iTableArgsRE;
+        iHeaderRE = NULL;
+        iCondRE = NULL;
+        iFirstNumRE = NULL;
+        iFirstNSpRE = NULL;
+        iTableRE = NULL;
+        iTableArgsRE = NULL;
+    }
+}
+
 Heading::Heading(char* pLine)
 {
-    char tRegExp[] = "^([[:digit:]]+)\t([hkl0-]{3}[hkl0-]?)\t(\\[[0123456789;. -]+\\])[[:space:]]*$";//This is to check that the line is in the correct format excluding the format of the matrix i self.
-
-    regex_t tRegEx;
-    regcomp(&tRegEx, tRegExp, REG_EXTENDED);
-    
     size_t tMatches = 4;
-    regmatch_t tMatch[4];
+    regmatch_t tMatch[tMatches];
     
-    bzero(tMatch, sizeof(regmatch_t)*4);
-    if (regexec(&tRegEx, pLine, tMatches, tMatch, 0))
+    bzero(tMatch, sizeof(regmatch_t)*tMatches);
+    if (regexec(iHeaderRE, pLine, tMatches, tMatch, 0))
     {
         throw MyException(kUnknownException, "Heading had an invalid format!");
     }
@@ -113,9 +165,7 @@ std::ostream& operator<<(std::ostream& pStream, Heading& pHeader)
 
 Condition::Condition(char* pLine)
 {
-    char tRegExp[] = "^([[:digit:]]+)\t(([[:alnum:]]|[- =+])+)\t(\\[( *([-+]?[[:digit:]]+(\\.[[:digit:]]+)?) *(;)?)*( *([-+]?[[:digit:]]+(\\.[[:digit:]]+)?) *)\\])\t([[:digit:]]+)[[:space:]]*$";//This checks to see if the line is in the correct format and get the offsets for all the needed information.
-    
-    /* Match Index 	Description
+/* Match Index 	Description
      * 0 	 	Line
      * 1		Index of string
      * 2 		Name of condition
@@ -127,14 +177,11 @@ Condition::Condition(char* pLine)
      * 8		"
      * 9		Multiplier for condition
      */
-    regex_t tRegEx;
-    regcomp(&tRegEx, tRegExp, REG_EXTENDED);
-    
     size_t tMatches = 15;
-    regmatch_t tMatch[15];
+    regmatch_t tMatch[tMatches];
     
-    bzero(tMatch, sizeof(regmatch_t)*15);
-    if (regexec(&tRegEx, pLine, tMatches, tMatch, 0))
+    bzero(tMatch, sizeof(regmatch_t)*tMatches);
+    if (regexec(iCondRE, pLine, tMatches, tMatch, 0))
     {
         throw MyException(kUnknownException, "Condition had an invalid format!");
     }
@@ -190,16 +237,6 @@ std::ostream& operator<<(std::ostream& pStream, Condition& pCondition)
 Conditions::Conditions()
 {
     iConditions = new ArrayList<Condition>(1);
-
- /*   while ((tNext = strchr(tPrev, '\n'))!=NULL)
-    {
-        char tString[tNext-tPrev+1];
-        tString[tNext-tPrev] = 0;
-        strncpy(tString, tPrev, tNext-tPrev);
-        Condition* tCondition = new Condition(tString);
-        iConditions->setWithAdd(tCondition, tCondition->getID());
-        tPrev = tNext+1;
-    }*/
 }
 
 Conditions::~Conditions()
@@ -275,23 +312,30 @@ void Conditions::readFrom(filebuf& pFile)
     char tHeaderLine[] = "ID	Name	Vector	Multiplier";
 	std::istream tFile(&pFile);
     char tLine[255];
+    int tLineNum = 0;
     
     do
     {
         tFile.getline(tLine, 255);
+        trim(tLine);
     }while (strstr(tLine, tHeaderLine) == NULL && !tFile.eof());
     do
     {
         tFile.getline(tLine, 255);
+        trim(tLine);
         try
         {
-			if (tLine[0] != '\0')
-				addCondition(tLine);
+            if (tLine[0] != '\0')
+                    addCondition(tLine);
         }
-        catch (MyException& e)
+        catch (MyException& eE)
         {
-            std::cout << e.what() << "\n";;
+            char tText[255];
+            sprintf(tText, "On line %d", tLineNum);
+            eE.addError(tText);
+            throw eE;
         }
+        tLineNum++;
     }
     while (!tFile.eof() && strlen(tLine)>0);
 }
@@ -329,17 +373,6 @@ std::ostream& operator<<(std::ostream& pStream, Conditions& pConditions)
 Headings::Headings()
 {
     iHeadings = new ArrayList<Heading>(1);
-/*    char* tNext;
-    char* tPrev = pLines;
-    while ((tNext = strchr(tPrev, '\n'))!=NULL)
-    {
-        char tString[tNext-tPrev+1];
-        tString[tNext-tPrev] = 0;
-        strncpy(tString, tPrev, tNext-tPrev);
-        Heading* tHeading = new Heading(tString);
-        iHeadings->setWithAdd(tHeading, tHeading->getID());
-        tPrev = tNext+1;
-    }*/
 }
 
 Headings::~Headings()
@@ -431,25 +464,32 @@ char* Headings::addHeading(char* pLine)	//Returns the point which the line at th
 void Headings::readFrom(filebuf& pFile)
 {
     char tHeaderLine[] = "ID	Name	Matrix";
-	std::istream tFile(&pFile);
+    std::istream tFile(&pFile);
     char tLine[255];
+    int tLineNum = 0;
     
     do
     {
         tFile.getline(tLine, 255);
+        trim(tLine);
     }while (strstr(tLine, tHeaderLine) == NULL && !tFile.eof());
     do
     {
         tFile.getline(tLine, 255);
+        trim(tLine);
         try
         {
-			if (tLine[0] != '\0')
-				addHeading(tLine);
+            if (tLine[0] != '\0')
+                    addHeading(tLine);
         }
-        catch (MyException& e)
+        catch (MyException eE)
         {
-            std::cout << e.what() << "\n";;
+            char tError[255];
+            sprintf(tError, "On line %d", tLineNum);
+            eE.addError(tError);
+            throw eE;
         }
+        tLineNum ++;
     }
     while (!tFile.eof() && strlen(tLine)>0);
 }
@@ -626,17 +666,12 @@ void ConditionColumn::addEmptyCondition(int pRow)
 
 void ConditionColumn::setHeading(char* pHeading)
 {
-    char tRegExp[] = "([[:digit:]]),?[[:space:]]?";
     int tOffset = 0;
-    
-    regex_t tRegEx;
-    regcomp(&tRegEx, tRegExp, REG_EXTENDED);
-    
     size_t tMatches = 3;
-    regmatch_t tMatch[3];
+    regmatch_t tMatch[tMatches];
     
     bzero(tMatch, sizeof(regmatch_t)*3);
-    while (!regexec(&tRegEx, pHeading+tOffset, tMatches, tMatch, 0))
+    while (!regexec(iFirstNumRE, pHeading+tOffset, tMatches, tMatch, 0))
     {
         int pIndex = strtol(pHeading+tOffset, NULL, 10);
         addHeading((signed char)pIndex);
@@ -823,16 +858,11 @@ Table::~Table()
 
 void Table::columnHeadings(char* pHeadings, int pColumn)
 {
-    char tRegExp[] = "([^\t]+)\t?([^\t].+)?";
-    
-    regex_t tRegEx;
-    regcomp(&tRegEx, tRegExp, REG_EXTENDED);
-    
     size_t tMatches = 3;
-    regmatch_t tMatch[3];
+    regmatch_t tMatch[tMatches];
     
-    bzero(tMatch, sizeof(regmatch_t)*3);
-    if (regexec(&tRegEx, pHeadings, tMatches, tMatch, 0))
+    bzero(tMatch, sizeof(regmatch_t)*tMatches);
+    if (regexec(iFirstNSpRE, pHeadings, tMatches, tMatch, 0))
     {
         return;
     }
@@ -849,7 +879,7 @@ void Table::columnHeadings(char* pHeadings, int pColumn)
         
         if (iSpaceGroups->length()<=tSpaceGroupLen)
         {
-            throw MyException(kUnknownException, "Table has bad format!");
+            throw MyException(kUnknownException, "Table heading has bad format.");
         }
         iSpaceGroups->get(tSpaceGroupLen)->setHeading(tString);
     }
@@ -868,16 +898,11 @@ void Table::readColumnHeadings(char* pHeadings)
 
 void Table::addLine(char* pLine, int pColumn)
 {
-    char tRegExp[] = "([^\t]+\t?)([^\t].*)?";
-    
-    regex_t tRegEx;
-    regcomp(&tRegEx, tRegExp, REG_EXTENDED);
-    
     size_t tMatches = 3;
-    regmatch_t tMatch[3];
+    regmatch_t tMatch[tMatches];
     
-    bzero(tMatch, sizeof(regmatch_t)*3);
-    if (regexec(&tRegEx, pLine, tMatches, tMatch, 0))
+    bzero(tMatch, sizeof(regmatch_t)*tMatches);
+    if (regexec(iTableRE, pLine, tMatches, tMatch, 0))
     {
         return;
     }
@@ -960,24 +985,16 @@ void Table::readFrom(filebuf& pFile)
     do
     {
         tFile.getline(tLine, 255);
+        trim(tLine);
     }while (!tFile.eof() && emptyLine(tLine));
     while (!tFile.eof() && strlen(tLine)>0)
     {
         addLine(tLine);
         tFile.getline(tLine, 255);
+        trim(tLine);
     }
 }
 
-/*void Table::addReflection(Reflection* pReflection)
-{
-    int tCount = iColumns->length();
-    for (int i = 0; i < tCount; i++)
-    {
-        ConditionColumn* tColumn = iColumns->get(i);
-        tColumn->addReflection(pReflection, iHeadings, iConditions);
-    }
-}*/
-        
 std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream)
 {
     int tLengthConditions = iColumns->length();
@@ -1038,21 +1055,6 @@ std::ostream& Table::output(std::ostream& pStream)
     return pStream;
 }
 
-std::ostream& Table::outputColumn(std::ostream& pStream, int pColumn, Headings* pHeadings, Conditions* pConditions)
-{
-    if (pColumn < iColumns->length())
-    {
-        ConditionColumn* tColumn = iColumns->get(pColumn);
-        tColumn->output(pStream, pHeadings, pConditions);
-    }
-    else
-    {
-        //SpaceGroups* tSpaceGroups = iSpaceGroups->get(pColumn - iColumns->length());
-        //tSpaceGroups->output(pStream);
-    }
-    return pStream;
-}
-
 Indexs* Table::getConditions(int pRow, int pColumn)
 {
     ConditionColumn* tColumn = iColumns->get(pColumn);
@@ -1081,6 +1083,7 @@ std::ostream& operator<<(std::ostream& pStream, Table& pTable)
 Tables::Tables(char* pFileName)
 {
     filebuf tFile;
+    initCrysRegEx();
     if (tFile.open(pFileName, std::ios::in) == NULL)
     {
         throw FileException(errno);
@@ -1094,13 +1097,6 @@ Tables::Tables(char* pFileName)
     readFrom(tFile);
     tFile.close(); 
 }
-    
-//Tables::Tables(Headings* pHeadings, Conditions* pConditions)
-//{
-//    iHeadings = pHeadings;
-//    iConditions = pConditions;
-//    
-//}
         
 Tables::~Tables()
 {
@@ -1117,6 +1113,7 @@ Tables::~Tables()
     delete iHeadings;
     delete iConditions;
     delete iTables;
+    deinitRE();
 }
 
 Headings* Tables::getHeadings()
@@ -1136,16 +1133,11 @@ void Tables::addTable(Table* pTable)
 
 void tableAttributesLine(char* pLine, char* pSystemName, int *pNumOfCondCols, int *pNumOfSGCols)
 {
-    char tRegExp[] = "([^\t]+)\t([[:digit:]]+), ([[:digit:]]+)";
-    
-    regex_t tRegEx;
-    regcomp(&tRegEx, tRegExp, REG_EXTENDED);
-    
     size_t tMatches = 4;
-    regmatch_t tMatch[4];
+    regmatch_t tMatch[tMatches];
     
-    bzero(tMatch, sizeof(regmatch_t)*4);
-    if (regexec(&tRegEx, pLine, tMatches, tMatch, 0))
+    bzero(tMatch, sizeof(regmatch_t)*tMatches);
+    if (regexec(iTableArgsRE, pLine, tMatches, tMatch, 0))
     {
         throw MyException(kUnknownException, "Table has bad format!");
     }
@@ -1157,24 +1149,47 @@ void tableAttributesLine(char* pLine, char* pSystemName, int *pNumOfCondCols, in
 
 void Tables::readFrom(filebuf& pFile)
 {
-	std::istream tFile(&pFile);
+    std::istream tFile(&pFile);
     char tLine[255];
  
     while (!tFile.eof())
     {
         tFile.getline(tLine, 255);
+        trim(tLine);
         if (!emptyLine(tLine))
         {
             char tSystemName[255]; // This it either monoclinic orthorombic etc. 
             int tNumOfCondCols, tNumOfSGCols;
+            Table* tTable;
             
-            tableAttributesLine(tLine, tSystemName, &tNumOfCondCols, &tNumOfSGCols);
-            Table* tTable = new Table(tSystemName, iHeadings, iConditions, tNumOfCondCols, tNumOfSGCols); 
+            try
+            {
+                tableAttributesLine(tLine, tSystemName, &tNumOfCondCols, &tNumOfSGCols);
+                tTable = new Table(tSystemName, iHeadings, iConditions, tNumOfCondCols, tNumOfSGCols); 
+            }
+            catch (MyException eE)
+            {
+                char tError[255];
+                sprintf(tError, "In Table %s", tSystemName);
+                eE.addError(tError);
+                throw eE;
+            }
             tFile.getline(tLine, 255);
+            trim(tLine);
             if (!emptyLine(tLine))
             {
-                tTable->readColumnHeadings(tLine);
-                tTable->readFrom(pFile);
+                try
+                {
+                    tTable->readColumnHeadings(tLine);
+                    tTable->readFrom(pFile);
+                }
+                catch (MyException eE)
+                {
+                    char tError[255];
+                    sprintf(tError, "In Table %s", tSystemName);
+                    eE.addError(tError);
+                    throw eE;
+                }
             }
             addTable(tTable);
         }
