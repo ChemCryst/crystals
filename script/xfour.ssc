@@ -3,7 +3,8 @@
 % VARIABLE LOGICAL LCONTOUR LSECTION
 % VARIABLE LOGICAL PEAKCHANGE REDRAW
 % VARIABLE INTEGER DOSCALE DOCALC DOMAP NPEAKS IMAP
-% VARIABLE INTEGER PEAKS ATOMS DOPEAKS DOCOLLECT MTYPE LSECT
+% VARIABLE INTEGER PEAKS ATOMS DOPEAKS DOCOLLECT MTYPE
+%% LSECT
 % VARIABLE REAL PEAKHEIGHT REJLIMIT
 % VARIABLE CHARACTER CDLINE
 % IF SCRIPTEXT .EQ. TRUE THEN
@@ -55,11 +56,11 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^WI  }
 ^^WI  @ 1,1 GRID GRIDA NROWS=12 NCOLS=3
 ^^WI  {
-^^WI   @ 2,2 GRID GRIDAA NROWS=3 NCOLS=3 OUTLINE='Pre calc'
+^^WI   @ 2,2 GRID GRIDAA NROWS=2 NCOLS=3 OUTLINE='Pre calc'
 ^^WI   {
 ^^WI    @ 1,2 CHECKBOX XSCALE 'Recalculate scale factor' INFORM=NO
 ^^WI    @ 2,2 CHECKBOX XCALC 'Recalculate phases' INFORM=NO
-^^WI    @ 3,2 CHECKBOX XSECT 'Set map ranges' INFORM = NO
+%%%^^WI    @ 3,2 CHECKBOX XSECT 'Set map ranges' INFORM = NO
 %      IF LSECTION .EQ. TRUE THEN
 ^^WI      STATE = OFF
 %      ELSE
@@ -90,11 +91,11 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^WI   }
 ^^WI   @ 6,2 GRID GRIDAC NROWS=2 NCOLS=3 OUTLINE='Maximum peaks'
 ^^WI   {
-^^WI    @ 1,2 CHECKBOX XDPEAKS 'Calculate based on cell volume.'
+^^WI    @ 1,2 RADIOBUTTON XDPEAKS 'Calculate based on cell volume.'
 ^^WI          STATE=ON INFORM=YES
 ^^WI    @ 2,2 GRID GRIDACA NROWS=1 NCOLS=3
 ^^WI    {
-^^WI     @ 1,1 CHECKBOX XNPEAKS 'Number of peaks to keep:'
+^^WI     @ 1,1 RADIOBUTTON XNPEAKS 'Number of peaks to keep:'
 ^^WI           STATE=OFF INFORM=YES
 ^^WI     @ 1,3 EDITBOX ICPEAKS '0' CHARS=5 INTEGER DISABLED=YES
 ^^WI    }
@@ -104,7 +105,11 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^WI    @ 1,2 STATIC TEXT4 'Rejection limit for co-incident peaks'
 ^^WI    @ 1,4 EDITBOX FCREJECT '0.01' REAL CHARS=6
 ^^WI   }
-^^WI   @ 10,2 CHECKBOX XMAP 'Save a map plotting file' INFORM=NO
+^^WI   @ 10,2 GRID GMAPS NROWS=1 NCOLS=3 OUTLINE='Maps'
+^^WI   {
+^^WI     @ 1,1 CHECKBOX XMAP 'Save a map plotting file' INFORM=NO
+^^WI     @ 1,3 BUTTON BSETMAP '&Set Map Ranges...'
+^^WI   }
 ^^WI  }
 ^^WI }
 ^^WI SHOW
@@ -115,7 +120,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 % OUTPUT
 ^^CR
 % END IF
-% VERIFY XFLIST XDPEAKS XNPEAKS XFEDIT BUTTONOK BUTTONXX
+% VERIFY XFLIST XDPEAKS XNPEAKS XFEDIT BUTTONOK BUTTONXX BSETMAP
 % GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 % CASE VALUE
 %   BLOCK           %XFLIST Change default peak height?%
@@ -132,36 +137,14 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %       END IF
 %   END BLOCK
 %   BLOCK           %XDPEAKS%
-%       VERIFY ON OFF
-%       GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%       CASE VALUE
-%           BLOCK       %ON%
 ^^WI            SET XNPEAKS STATE=OFF
 ^^WI            SET ICPEAKS DISABLED=YES
 ^^CR
-%           END BLOCK
-%           BLOCK       %OFF%
-^^WI            SET XNPEAKS STATE=ON
-^^WI            SET ICPEAKS DISABLED=NO
-^^CR
-%           END BLOCK
-%       END CASE
 %   END BLOCK
 %   BLOCK           %XNPEAKS%
-%       VERIFY ON OFF
-%       GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%       CASE VALUE
-%           BLOCK       %ON%
 ^^WI            SET XDPEAKS STATE=OFF
 ^^WI            SET ICPEAKS DISABLED=NO
 ^^CR
-%           END BLOCK
-%           BLOCK       %OFF%
-^^WI            SET XDPEAKS STATE=ON
-^^WI            SET ICPEAKS DISABLED=YES
-^^CR
-%           END BLOCK
-%       END CASE
 %   END BLOCK
 %   BLOCK           %XFEDIT%
 %%If the user sets a value, turn off automatic value change.
@@ -211,17 +194,17 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %       VERIFY ON OFF
 %       GET SILENT NOSTORE FINAL ABBREVIATED ' '
 %       EVALUATE DOMAP = VALUE
-%% FIND OUT ABOUT LIST 14
-^^??    XSECT STATE
-%       VERIFY ON OFF
-%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%       EVALUATE LSECT = VALUE
+%%%% FIND OUT ABOUT LIST 14
+%%%^^??    XSECT STATE
+%%%       VERIFY ON OFF
+%%%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%%%       EVALUATE LSECT = VALUE
 ^^WI    DISPOSE FOURIER
 ^^CR
 %%
-%       IF LSECT .EQ. 1 THEN
-%        COPY '#SCRIPT XSECTION'
-%       END IF
+%%%       IF LSECT .EQ. 1 THEN
+%%%        COPY '#SCRIPT XSECTION'
+%%%       END IF
 %       IF DOSCALE .EQ. 1 THEN
 %           COPY '#EDIT'
 %           COPY 'SELECT TYPE NE Q'
@@ -307,18 +290,19 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %%      SHOW NPEAKS
 %       IF NPEAKS .LE. 0 THEN
 ^^WI    WINDOW NOPEAKS 'No peaks' MODAL
-^^WI    GRID MYMAIN NROWS=1 NCOLS=2
+^^WI    GRID MYMAIN NROWS=1 NCOLS=3
 ^^WI    {
-^^WI      @ 1,1 GRID GRIDL NROWS=8 NCOLS=3
+^^WI      @ 1,1 GRID GRIDL NROWS=3 NCOLS=2
 ^^WI      {
-^^WI        @ 2,2 STATIC TEXT1 'No peaks were found.'
-^^WI        @ 3,2 STATIC TEXT2 'Try increasing the'
-^^WI        @ 4,2 STATIC TEXT3 'number of peaks to'
-^^WI        @ 5,2 STATIC TEXT4 'keep or decreasing'
-^^WI        @ 6,2 STATIC TEXT5 'the minimum peak '
-^^WI        @ 7,2 STATIC TEXT6 'height.'
+^^WI        @ 2,2 ICON IM INFO
 ^^WI      }
-^^WI      @ 1,2 GRID GRIDR NROWS=5 NCOLS=3
+^^WI      @ 1,2 GRID GRIDM NROWS=5 NCOLS=3
+^^WI      {
+^^WI        @ 2,2 STATIC TEXT1 'No peaks were found. Try increasing'
+^^WI        @ 3,2 STATIC TEXT2 'the "number of peaks to keep" or'
+^^WI        @ 4,2 STATIC TEXT4 'decreasing the minimum peak height.'
+^^WI      }
+^^WI      @ 1,3 GRID GRIDR NROWS=5 NCOLS=3
 ^^WI      {
 ^^WI        @ 2,2 BUTTON BTNOK '&Try Again' DEFAULT
 ^^WI        @ 4,2 BUTTON BTNXX '&Abort'
@@ -337,9 +321,13 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %           FINISH
 %       END IF
 ^^WI WINDOW PEAKS 'Peaks found' MODAL
-^^WI GRID MYMAIN NROWS=1 NCOLS=2
+^^WI GRID MYMAIN NROWS=1 NCOLS=3
 ^^WI {
-^^WI   @ 1,1 GRID GRIDL NROWS=7 NCOLS=3
+^^WI  @ 1,1 GRID GRIDL NROWS=3 NCOLS=2
+^^WI   {
+^^WI     @ 2,2 ICON IM INFO
+^^WI   }
+^^WI   @ 1,2 GRID GRIDL NROWS=7 NCOLS=3
 ^^WI   {
 % CLEAR
 % INSERT !^^WI @ 2,2 STATIC TEXT1 'Found !
@@ -348,9 +336,9 @@ a SCRIPT to help with the computation and processing of Fourier maps
 % OUTPUT
 ^^WI   @ 3,2 STATIC XPEAKS 'Convert them into an atom list?'
 ^^WI   @ 5,2 CHECKBOX XCOLLECT 'Collect the peaks into fragments.'
-^^WI                                           STATE=ON INFORM=YES
+^^WI                                         STATE=ON 
 ^^WI   }
-^^WI   @ 1,2 GRID GRIDR NROWS=5 NCOLS=3
+^^WI   @ 1,3 GRID GRIDR NROWS=5 NCOLS=3
 ^^WI   {
 ^^WI     @ 2,2 BUTTON BTNOK '&Ok' DEFAULT
 ^^WI     @ 4,2 BUTTON BTNXX '&Cancel'
@@ -388,6 +376,9 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^WI    DISPOSE FOURIER
 ^^CR
 %       FINISH
+%   END BLOCK
+%   BLOCK                   %BSETMAP%
+%       COPY '#SCRIPT XSECTION'
 %   END BLOCK
 % END CASE
 % END LOOP
