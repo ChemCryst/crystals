@@ -7,6 +7,9 @@
  */
  
  // $Log: not supported by cvs2svn $
+ // Revision 1.1  2005/02/02 15:27:23  stefan
+ // 1. Initial addition to crystals. A group of classes for threading.
+ //
 #include "crystalsinterface.h"
 #include "ccsemaphore.h"
 
@@ -25,8 +28,7 @@ void CcSemaphore::wait(const unsigned int pTime) throw(semaphore_timeout, semaph
 {
 	error_type tResult;
 	#if defined(__CR_WIN__)
-	tResult = WaitForSingleObject( iSemaphore, pTime)
-	#warning This my not be correct for the windows version. Please check. Might need to check for other errors.
+	tResult = WaitForSingleObject( iSemaphore, pTime);
 	if (tResult == WAIT_TIMEOUT)
 	{
 		throw semaphore_timeout();
