@@ -33,6 +33,9 @@ C
 &&DVFGID      WRITE(REASON, '(A,I4)') 'File I/O Error: ', IOS
 &&DVFGID      CALL XCTRIM( REASON, MSGEND )
 &DVF      CALL PERROR (' perror message ')
+&LIN      WRITE(REASON, '(A,I4)') 'File I/O Error: ', IOS
+&LIN      CALL XCTRIM( REASON, MSGEND )
+&LIN      CALL PERROR (' perror message ')
 &VAXC -- DETERMINE REASON FOR ERROR, USING SYSTEM ROUTINE
 &VAX      CALL ERRSNS ( I1,RMSSTS,RMSSTV,I4,I5 )
 &VAX      CALL LIB$SYS_GETMSG ( RMSSTS , MSGEND , REASON )
@@ -759,7 +762,9 @@ C      J SOME MEASURE OF PROGRESS
 \XUNITS
 \XDRIVE
 \XIOBUF
-      DATA CLOCK / '|', '/', '-', '\' /
+&&DOSDVF      DATA CLOCK / '|', '/', '-', '\' /
+&&GIDVAX      DATA CLOCK / '|', '/', '-', '\' /
+&&LINGIL      DATA CLOCK / '|', '/', '-', '\\' /
 C
        ICLOCK = 1 + MOD (J,4)
 C
@@ -792,11 +797,9 @@ C
       IPERCN = MIN0 ( 100 , ( 100 * IVALUE ) / MAXVAL )
 CDJWJAN99<
       IF (ISSTML .EQ. 4) THEN
-&&DVFGIDCGUI{
        WRITE (CMON,1505) IPERCN
 1505   FORMAT ('^^CO SET PROGOUTPUT COMPLETE = ',I3)
        CALL XPRVDU (NCVDU,1,0)
-&&DVFGIDCGUI}
        RETURN
       ENDIF
       NSTAR = MIN0 ( NINTER, (NINTER * IVALUE ) / MAXVAL)
@@ -888,6 +891,8 @@ C
 &DGV      READ ( IUNIT , END = 3000 ) J
 &DOS      READ ( IUNIT , REC = I , ERR = 3000, IOSTAT=IOS) J
 &DOS      IF (IOS .EQ. -1) GOTO 3000
+&LIN      READ ( IUNIT , REC = I , ERR = 3000, IOSTAT=IOS) J
+&LIN      IF (IOS .EQ. -1) GOTO 3000
 &&DVFGID      READ ( IUNIT , REC = I , ERR = 3000, IOSTAT=IOS) J
 &&DVFGID      IF (IOS .EQ. -1) GOTO 3000
 &VAX      READ ( IUNIT , REC = I , ERR = 3000, IOSTAT=IOS) J
@@ -953,6 +958,14 @@ C
 &DOS            K = 0
 &DOS20          CONTINUE
 &DOS            I = K
+&LINC----- UNDER LINUX, LOOK FOR THE LAST FORWARDSLASH - CHAR(?)
+&LIN            J = LEN (CNAME)
+&LIN            DO 10 K = J, 1, -1
+&LIN              IF (CNAME(K:K) .EQ. '/') GOTO 20
+&LIN10          CONTINUE
+&LIN            K = 0
+&LIN20          CONTINUE
+&LIN            I = K
 &&DVFGIDC----- UNDER WIN, LOOK FOR THE LAST BACKSLASH - CHAR(92)
 &&DVFGID            J = LEN (CNAME)
 &&DVFGID            DO 10 K = J, 1, -1
@@ -1298,6 +1311,7 @@ C
 C
 C&&DVFGID      RTIME = RTC()
 &&DVFGID      CALL CPU_TIME(RTIME)
+&LIN      CALL CPU_TIME(RTIME)
 C
 &PPCC -- FOR MAC OS, WE WILL RETURN 0
 &PPC      RTIME = 0.0
@@ -1307,8 +1321,9 @@ C
       RETURN
       END
 C
-CODE FOR ITIME
-      SUBROUTINE ITIME ( I )
+CODE FOR JTIME
+C RICMAY99 ITIME is an intrinsic on some systems. Renamed JTIME.
+      SUBROUTINE JTIME ( I )
 C
 C -- RETURN , AS INTEGER VALUE , THE NUMBER OF SECONDS SINCE MIDNIGHT
 &&DVFGID      USE DFPORT
@@ -1337,6 +1352,8 @@ C
 C&&DVFGID      A = RTC()
 C&&DVFGID      I = NINT (A)
 &&DVFGID      I = TIME()
+&LIN      CALL CPU_TIME(A)
+&LIN      I = NINT ( A )
 &DOS      CALL CLOCK@ (A)
 &DOS      I = NINT (A)
 C
@@ -1349,7 +1366,8 @@ C
 C
 CODE FOR XTIMER
 &&DVFGID      SUBROUTINE XTIMER ( CTIME2 )
-##DVFGID      SUBROUTINE XTIMER ( CTIME )
+&&LINGIL      SUBROUTINE XTIMER ( CTIME2 )
+&&DOSVAX      SUBROUTINE XTIMER ( CTIME )
 C
 &&DVFGID      USE DFPORT
 C -- GET SYSTEM TIME IN CHARACTER FORM
@@ -1370,7 +1388,7 @@ C      TIME$A            HH-MM-SS
 C      TIME              INTEGER ARRAY :- HOURS, MINUTES, SECONDS
 C
 C
-##DVFGID      CHARACTER*8 CTIME
+&&DOSVAX      CHARACTER*8 CTIME
 C
 &ICL      CHARACTER*10 CTIME2
 &ICL      CALL ICL9LGGTIME ( CTIME2 )
@@ -1396,7 +1414,12 @@ C
 &DOS      CTIME = TIME@()
 C
 &&DVFGID      CHARACTER*8 CTIME2
+&&LINGIL      CHARACTER*8 CTIME2
 &&DVFGID      CTIME2 = CLOCK()
+
+&&LINGIL      DIMENSION ITIM(3)
+&&LINGIL      CALL ITIME(ITIM)
+&&LINGIL      WRITE ( CTIME2, '(I2,'':'',I2,'':'',I2)' ) ITIM
 C
 &XXX      CTIME = ' '
 C
@@ -1476,6 +1499,13 @@ C
 &DGV     2      IDATE(2) , MOD ( IDATE(1) , 100 )
 &DGV      IF ( CDATE(1:1) .EQ. ' ' ) CDATE(1:1) = '0'
 &DGV      IF ( CDATE(4:4) .EQ. ' ' ) CDATE(4:4) = '0'
+
+&LIN      DIMENSION IDAT(3)
+&LIN      CALL IDATE ( IDAT )
+&LIN      WRITE ( CDATE , '(I2,''/'',I2,''/'',I2)' ) IDAT(3) ,
+&LIN     2      IDAT(2) , MOD ( IDAT(1) , 100 )
+&LIN      IF ( CDATE(1:1) .EQ. ' ' ) CDATE(1:1) = '0'
+&LIN      IF ( CDATE(4:4) .EQ. ' ' ) CDATE(4:4) = '0'
 C
 &H-P      call get_time (tmbuf)
 &H-P      char_ptr=format_time(tmbuf)
@@ -1499,6 +1529,7 @@ C
 &DOS      KOR = IOR ( I , J )
 &PPC      KOR = JIOR ( I , J )
 &&DVFGID      KOR = IOR ( I , J )
+&&LINGIL      KOR = IOR ( I , J )
 &VAX      KOR = JIOR ( I , J )
 &PRI      KOR = OR ( I , J )
 &DGV      KOR = IOR ( I , J )
@@ -1517,6 +1548,7 @@ C
 &DOS      KAND = IAND ( I , J )
 &PPC      KAND = JIAND ( I , J )
 &&DVFGID      KAND = IAND ( I , J )
+&&LINGIL      KAND = IAND ( I , J )
 &VAX      KAND = JIAND ( I , J )
 &PRI      KAND = AND ( I , J )
 &DGV      KAND = IAND ( I , J )
@@ -1546,6 +1578,8 @@ C
 C
 &&DVFGID      I = LOC ( ISRCE(1))
 &&DVFGID      J = LOC ( IRESLT(1))
+&&LINGIL      I = LOC ( ISRCE(1))
+&&LINGIL      J = LOC ( IRESLT(1))
 C
 &VAXC -- USE VAX FORTRAN BUILT-IN FUNCTIONS TO FIND THE DIRECTION THE
 &VAXC    DATA WILL BE MOVED
@@ -1627,9 +1661,13 @@ C
 C
 &&DVFGID      I = LOC ( ISRCE(1))
 &&DVFGID      J = LOC ( IRESLT(1))
+&&LINGIL      I = LOC ( ISRCE(1))
+&&LINGIL      J = LOC ( IRESLT(1))
 C
 &&DVFGID      I = LOC ( ISRCE(1))
 &&DVFGID      J = LOC ( IRESLT(1))
+&&LINGIL      I = LOC ( ISRCE(1))
+&&LINGIL      J = LOC ( IRESLT(1))
 C
 &UNX      I = LOC ( ISRCE(1))
 &UNX      J = LOC ( IRESLT(1))
@@ -1802,7 +1840,7 @@ C
 C
 C
       IMPLICIT INTEGER ( S )
-      INTEGER SYSTEM
+&H-P      INTEGER SYSTEM
 C
       DIMENSION ILIMIT(2)
 C
@@ -1872,6 +1910,8 @@ C
 &DOS      IF (IFAIL .EQ. 0) RETURN
 &&DVFGID      IFAIL = SYSTEMQQ(COMMND)
 &&DVFGID      IF (IFAIL .EQ. 0 ) RETURN
+&&LINGIL      CALL SYSTEM(COMMND,IFAIL)
+&&LINGIL      IF (IFAIL .EQ. 0 ) RETURN
 C
 C
 &XXX      IF (ISSPRT .EQ. 0) THEN
@@ -2490,6 +2530,8 @@ C
 &DOS        CALL DOSPARAM@(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 &&DVFGID        CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 &UNX        CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
+&&LINGIL        CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
+
 CNOV98 IF THERE IS NO ENVIRONMENT VARIABLE, CHECK THE PRESETS
       IF (LIST(LEVEL) .EQ. ' ') THEN
        IF (NAME(LEVEL)(1:COLPOS(LEVEL)-1) .EQ. 'CRMAN') THEN
@@ -2497,7 +2539,12 @@ CNOV98 IF THERE IS NO ENVIRONMENT VARIABLE, CHECK THE PRESETS
        ELSE IF (NAME(LEVEL)(1:COLPOS(LEVEL)-1) .EQ. 'CRSCP') THEN
          LIST(LEVEL) = CSCPDV(1:LSCPDV)
        ELSE IF (NAME(LEVEL)(1:COLPOS(LEVEL)-1) .EQ. 'CRDIR') THEN
-         LIST(LEVEL) = '.\'
+&DOS         LIST(LEVEL) = '.\'
+&DVF         LIST(LEVEL) = '.\'
+&GID         LIST(LEVEL) = '.\'
+&VAX         LIST(LEVEL) = '.\'
+&LIN         LIST(LEVEL) = './'
+&GIL         LIST(LEVEL) = './'
        ENDIF
       ENDIF
 #PPC        LSTPOS(LEVEL)=0
@@ -2757,23 +2804,28 @@ C----- REPEAT RANDOM SEQUENCE
 &XXX          SEED = 0.0
 &VAX          SEED = 7654321
 &DOS          CALL SET_SEED@(SEED)
-&&DVFGID          CALL SRAND(SEED)
+&&DVFGID          CALL SRAND(0)
+&&LINGIL          CALL SRAND(0)
         ELSE
 C----- CREATE NEW SEQUENCE
 &XXX          SEED = 0
 &VAX          SEED = NINT(SECNDS(0.0))
 &DOS          CALL DATE_TIME_SEED@
 &&DVFGID          CALL SRAND(RND$TIMESEED )
+&&LINGIL          CALL SYSTEM_CLOCK(ISEED,IDV,IDV2)
+&&LINGIL          CALL SRAND(ISEED)
         ENDIF
       ENDIF
       IF (ISET .EQ. 0) THEN
 &XXX      STOP 'NO RANDOM No GENERATOR'
 &DOS      ZZZ = RANDOM()
 &&DVFGID      ZZZ = RAND()
+&&LINGIL      ZZZ = RAND()
 &VAX      ZZZ = RAN (SEED)
 1      V1 = 2. * SNGL(ZZZ) -1.
 &DOS      ZZZ = RANDOM()
 &&DVFGID      ZZZ = RAND()
+&&LINGIL      ZZZ = RAND()
 &VAX      ZZZ = RAN (SEED)
        V2 = 2. * SNGL(ZZZ) -1.
       R = V1**2 + V2**2
@@ -2902,9 +2954,12 @@ C----- CLOSE ALL THE FILES
             J = KFLCLS(IFLUNI(I))
 2001  CONTINUE
 &DVF      CALL EXIT(IVAR)
+&LIN      CALL EXIT(IVAR)
 ##GIDDVF      STOP
 &GID      CALL CIENDTHREAD(IVAR)
+&GIL      CALL CIENDTHREAD(IVAR)
 &GID      RETURN
+&GIL      RETURN
       END
 
 code for dumio (keep the program going while we test it)
