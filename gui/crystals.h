@@ -24,7 +24,7 @@
 #endif
 
 
-#define WM_STUFFTOPROCESS ( WM_USER + 100 )
+// #define WM_STUFFTOPROCESS ( WM_USER + 100 )
 
 /////////////////////////////////////////////////////////////////////////////
 // CCrystalsApp:
@@ -43,7 +43,6 @@ class CCrystalsApp : public wxApp
 
 public:
 	CCrystalsApp();
-
 #ifdef __WINDOWS__
 // Overrides
 	// ClassWizard generated virtual function overrides
