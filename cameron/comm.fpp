@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  1999/12/23 12:29:17  ckp2
+C djw  Close postscript file once figure is written
+C
 C Revision 1.9  1999/11/18 17:59:04  ckp2
 C djw  enable printing from within CAMERON
 C
@@ -4331,7 +4334,8 @@ C ALL
 C RANGE
       DISBEG = RCOMMD(IRCNT)
       DISEND = RCOMMD(IRCNT+1)
-      GOTO 9999
+cdjwfeb2000      GOTO 9999
+      goto 1501
 1503  CONTINUE
 C FROM
       IF (NDIST1.NE.0) RETURN
