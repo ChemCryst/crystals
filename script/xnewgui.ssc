@@ -1,0 +1,32 @@
+%SCRIPT NEWGUI
+%% SET VERIFY TRUE
+%% INITIALISE THE GUI BUFFERS
+% IF ( EXISTS  1 .EQ. 1 ) THEN
+%            COPY '#SUM L 1'
+%            COPY 'END'
+% ELSE
+
+
+WARNING: The cell parameters are not available for the Model window
+
+
+% END IF
+% IF ( EXISTS  2 .EQ. 1 ) THEN
+%            COPY '#SUM L 2'
+%            COPY 'END'
+% ELSE
+
+WARNING: The Space Group is not available for the Model window
+
+
+% END IF
+% IF ( EXISTS  5 .EQ. 1 ) THEN
+%            COPY '#SUM L 5 LOW'
+%            COPY 'END'
+% ELSE
+
+WARNING: There are no atoms available for the Model window
+
+
+% END IF
+%END SCRIPT
