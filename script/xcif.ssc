@@ -1,10 +1,137 @@
 %SCRIPT XCIF
 %% The variables needed by XQUESTIO
-% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
-% VARIABLE LOGICAL   ANSWER
+%    VARIABLE CHARACTER CFILE
+%    VARIABLE LOGICAL TWINNED
+%%
+%    EVALUATE TWINNED = FALSE
+%    BLOCK
+%      VARIABLE INTEGER ITMP
+%      IF ( EXISTS 13 .GT. 0 ) THEN
+%        COPY '#GENERALEDIT 13'
+%        COPY 'LOCATE RECORDTYPE=101'
+%        COPY 'TRANSFER FROM OFFSET=1 TO ITMP'
+%        IF ( ITMP .GE. 0 ) THEN
+%         EVALUATE TWINNED = TRUE
+%        ELSE
+%         EVALUATE TWINNED = FALSE
+%        END IF
+%        COPY 'END'
+%      END IF
+%    END BLOCK
+%%
+%%
+^^WI WINDOW XCIF 'Output CIF' MODAL COMMIT='CIFOK' CANCEL='CIFXX'
+^^WI GRID   GRIDM NROWS=9 NCOLS=3
+^^WI {
+^^WI  @ 2,2 BUTTON GOODY 'Edit CIF Goodies...'
+^^WI  @ 8,2 GRID GRIDB NROWS=1 NCOLS=5
+^^WI  {
+^^WI    @ 1,1 BUTTON CIFOK '&Ok' DEFAULT
+^^WI    @ 1,3 BUTTON CIFXX '&Cancel'
+^^WI    @ 1,5 BUTTON CIFHELP    '&Help'
+^^WI  }
+^^WI  @ 4,2 GRID GRIDA NROWS=1 NCOLS=3 OUTLINE='Recalculate'
+^^WI  {
+^^WI    @ 1,1 CHECKBOX XREF 'Six final cycles' STATE=ON
+^^WI    @ 1,3 CHECKBOX XFOU 'Difference Fourier map' STATE=ON
+^^WI  }
+^^WI  @ 6,2 GRID GRIDAC NROWS=3 NCOLS=1 OUTLINE='Additional FCF file'
+^^WI  {
+^^WI    @ 1,1 RADIOBUTTON FCFS 'Reflections with F-squared values' STATE=ON
+^^WI    @ 2,1 RADIOBUTTON FCFF 'Reflections with F values'
+^^WI    @ 3,1 RADIOBUTTON FCFN 'No output'
+^^WI  }
+^^WI  @ 5,2 GRID GRIDV NROWS=3 NCOLS=3 OUTLINE='Display'
+^^WI  {
+^^WI    @ 1,1 RADIOBUTTON CFNONE 'None' STATE=ON
+^^WI    @ 2,1 RADIOBUTTON CFNOTE 'Notepad' 
+^^WI    @ 3,1 RADIOBUTTON CFCCDC 'Encifer' 
+^^WI    @ 1,3 RADIOBUTTON CFPLAT 'Platon' 
+^^WI    @ 2,3 RADIOBUTTON CFCHKC 'Platon checkcif' 
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+%    LOOP
+%     VERIFY CIFOK CIFXX CIFHELP GOODY 
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%     CASE VALUE
+%      BLOCK   % CIFOK
+^^WI WINDOW XBLOCK 'CIF' MODAL GRID MAIN NROWS=3 NCOLS=3
+^^WI { @ 2,2 STATIC T1 'CIF generation in progress' } SHOW
+^^CR
+%       EVALUATE LOOPEND = LOOPCOUNTER
+%      END BLOCK
+%      BLOCK   % CIFXX
+^^CO    DISPOSE XCIF
+%       FINISH
+%      END BLOCK
+%      BLOCK   % CIFHELP
+%      COPY '#SCRIPT XHELP1'
+ CIF files
+ ---------
 
- * CIF listing of all data
+ CIF is an International Union of Crystallography standard
+ for archiving, exchanging and publishing crystallographic
+ data. For details see Hall, S. R., Allen, F. H., &
+ Brown, I. D. (1991). Acta Cryst A47, 655-685.
 
+ When you click OK, a CIF file named 'publish.cif' will be
+ created in the current folder.
+
+ Options
+ -------
+
+ Edit CIF Goodies - opens a dialog for editing some of the
+ stored experimental information before it is saved in
+ the CIF file.
+ 
+ Six final cycles - this confirms that the parameters are
+ in a stable minimum if the shifts in all refined parameters
+ are small.
+ 
+ Fourier difference map - this recomputes a Fourier difference
+ map so that the minimum and maximum electron density in
+ the CIF are accurate.
+ 
+ Display - includes options for opening the CIF in various
+ programs after it is produced.
+ 
+ Additional FCF file - Saves an additional file called publish.fcf
+ containing the hkl data in either F or F-squared format.
+
+%       COPY '#SCRIPT XHELP2'
+
+%      END BLOCK
+%      BLOCK   % GOODY
+%       COPY '#SCRIPT ED30'
+%      END BLOCK
+%     END CASE
+%    END LOOP
+%%
+ * Producing a CIF listing of all data
+%%
+^^?? XREF STATE
+%    VERIFY ON OFF
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%    IF ( VALUE .EQ. 1 ) THEN
+%      COPY '#SCRIPT SIXCYCLE'
+%    END IF
+%%
+%%
+^^?? XFOU STATE
+%    VERIFY ON OFF
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%    IF ( VALUE .EQ. 1 ) THEN
+%% A final difference map.
+%      COPY '#SCRIPT PREFOUR'
+%      COPY 'MAP TYPE=DIFF'
+%      COPY 'PEAK HEIGHT=1 '
+%      COPY 'END'
+%      COPY '#SCRIPT POSTFOUR'
+{I Difference Fourier complete.
+%    END IF
+%%
 %    COPY "#BONDCALC FORCE"
 %    COPY "END"
 %    COPY "#STORE CSYS CIF 'publish.cif'"
@@ -21,58 +148,54 @@
 %    COPY 'SELECT RANGE=L41'
 %    COPY 'OUTPUT MON=DIST PUNCH = CIF HESD=NONFIXED'
 %    COPY 'END'
-%%
-%%
-%    EVALUATE QTITLE = 'Parameter CIF'
-%    EVALUATE QLINE1 = 'CIF saved as publish.cif.'
-%    EVALUATE QLINE2 = 'Do you want to open it for editing?'
-%    EVALUATE BUTTOK = '&Yes'
-%    EVALUATE BUTTXX = '&No'
-%    COPY '#SCRIPT XQUESTIO'
-%    IF ANSWER .EQ. TRUE THEN
-%      COPY '#SPAWN +notepad publish.cif'
-%    END IF
   Parameters saved in {&publish.cif{&
 %%
-^^WI WINDOW CIFREF 'Reflection CIF?'
-^^WI   MODAL COMMIT='CIFBOK' CANCEL='CIFBXX'
-^^WI GRID GRIDLR NROWS=1 NCOLS=2
-^^WI {
-^^WI   @ 1,1 GRID GRIDL NROWS=7 NCOLS=3
-^^WI   {
-^^WI     @ 1,2 STATIC CF1 'Prepare a CIF reflection listing with:'
-^^WI     @ 3,2 RADIOBUTTON RF '&Fo, Fc and sigma(Fo)'
-^^WI           STATE=OFF
-^^WI     @ 4,2 RADIOBUTTON RS 'Fo^2, Fc^2, and sigma(Fo^2)'
-^^WI           STATE=ON
-^^WI     @ 6,2 STATIC CF2 'CIF will be saved as publish.fcf'
-^^WI   }
-^^WI   @ 1,2 GRID GRIDR NROWS=5 NCOLS=2
-^^WI   {
-^^WI     @ 2,1 BUTTON CIFBOK '&Yes' COMMIT DEFAULT
-^^WI     @ 4,1 BUTTON CIFBXX '&No' CANCEL
-^^WI   }
-^^WI }
-^^WI SHOW
-^^CR
-%    VERIFY CIFBOK CIFBXX
-%    GET SILENT NOSTORE ABBREVIATED 'CIFBOK=Process'
-%    IF VALUE .EQ. 2 THEN
-^^CO DISPOSE CIFREF
-%         FINISH
-%    END IF
-^^?? RF STATE
+%%
+^^?? FCFN STATE
 %    VERIFY ON OFF
-%    GET SILENT NOSTORE ABBREVIATED 'On=Fs'
-^^CO DISPOSE CIFREF
-%    COPY '#OPEN FRN1 publish.fcf'
-%    IF VALUE .EQ. 1 THEN
-%      COPY '#PUNCH 6 B'
-%    ELSE
-%      COPY '#PUNCH 6 E'
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%    IF ( VALUE .EQ. 2 ) THEN
+%      COPY '#OPEN FRN1 publish.fcf'
+^^??   FCFS STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%      IF ( VALUE .EQ. 1 ) THEN
+%        COPY '#PUNCH 6 E'
+%      ELSE
+%        COPY '#PUNCH 6 B'
+%      END IF
+%      COPY 'END'
+%      COPY '#RELEASE FRN1 BFILE.FRN'
+  Reflections saved in {&publish.fcf{&
 %    END IF
-%    COPY 'END'
-%    COPY '#RELEASE FRN1 BFILE.FRN'
- Reflections saved in {&publish.fcf{&
+%%
+^^?? CFNOTE STATE
+%    VERIFY ON OFF
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%    IF ( VALUE .EQ. 1 ) THEN
+%      COPY '#SPAWN notepad publish.cif'
+%    ELSE
+^^??   CFCCDC STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%      IF ( VALUE .EQ. 1 ) THEN
+%        COPY '#SPAWN encifer publish.cif'
+%      ELSE
+^^??     CFPLAT STATE
+%        VERIFY ON OFF
+%        GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%        IF ( VALUE .EQ. 1 ) THEN
+%          COPY '#SPAWN platon publish.cif'
+%        ELSE
+^^??       CFCHKC STATE
+%          VERIFY ON OFF
+%          GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%          IF ( VALUE .EQ. 1 ) THEN
+%            COPY '#SPAWN platon -u publish.cif'
+%          END IF
+%        END IF
+%      END IF
+%    END IF
+^^CO DISPOSE XBLOCK DISPOSE XCIF
 %%
 %END SCRIPT
