@@ -1483,6 +1483,13 @@ CODE FOR XPURGE
       SUBROUTINE XPURGE
 C--SUBROUTINE TO ELIMINATE UNWANTED LISTS FROM THE DISC
 C
+C      FILE=OLD/DATE/FILENAME
+C            OLD  PUGE EXISTING DSC
+C            DATE CREATE FILENAME FROM DATE
+C            OTHERWISE USE GIVEN NAME
+C      INITIALSIZE=
+C      LOG=ON/OFF
+C      LIST=N
 C
 C      NEWFIL      0      PURGE CURRENT FILE
 C                  1      CREATE NEW FILE FOR DATA ( 'PURGE NEW' )
@@ -1491,9 +1498,9 @@ C
 C
 C----- 8M - THE BIGGEST DISK ADDRESS WE CAN EXPECT (1995). WAS 1M
       PARAMETER (MADRES = 8 000 000)
-C
-cdjwapr99
-      character*4 cexten, cold
+c
+CDJWAPR99
+      CHARACTER *16 COLDD, CNEWD
 C--
 C
 \TSSCHR
@@ -1513,16 +1520,17 @@ C
 C
 \QSTORE
 C
-cdjwapr99
-      data cold /'OLD '/
-cdjwmay00
-      DATA ICOMSZ / 4 /
+CDJWMAY00
+      DATA ICOMSZ / 7 /
       DATA MINSIZ / 5 /
 C
 C
 C--SET THE TIMING AND READ THE CONSTANTS
       CALL XTIME1(2)
       IEXTND = 0
+C----- CLEAR THE FILENAMES
+      COLDD = ' '
+      CNEWD = ' '
 C
 C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
 CMAR98
@@ -1531,24 +1539,57 @@ CMAR98
       I = KRDDPV ( ISTORE(ICOMBF) , ICOMSZ )
       IF ( I .LT. 0 ) GO TO 9920
 C
-cdjwapr99
+CDJWAPR99
+      WRITE (CNEWD ,'(4A4)') (ISTORE(ICOMBF+I),I=0,3)
+      IF ((CNEWD(1:4) .EQ. 'old ') .OR. 
+     1   (CNEWD(1:4) .EQ. 'OLD ')) THEN
+C---- NO NEW FILE
+            NEWFIL = 0
+      ELSE IF ((CNEWD(1:4) .EQ. 'date') .OR.
+     1        (CNEWD(1:4) .EQ. 'DATE')) THEN
+            LNEWD = 8
+            I= IGDAT(CNEWD)
+            NEWFIL = 1
+      ELSE
+C -- SET NEW FILE FLAG 
+            NEWFIL = 1
+      ENDIF
 C
-      write (cexten,'(a4)') istore(icombf)
-C -- CREATE NEW FILE FLAG -- NEWFIL = 0  >>> NO NEW FILE
-      if (cexten .eq. cold) then
-            newfil = 0
-      else
-            newfil = 1
-      endif
+CDJWOCT20000 - THE 'NEW DSC' NAME SET IN CSSNDA IS NO LONGER USED
+CDJWAPR99{
+      IF (NEWFIL .EQ. 1) THEN
+       LNEWD = LEN(CNEWD)
+       CALL XCRAS(CNEWD(1:LNEWD), JLEN)
+       DO 1710 ISTAT = 1,JLEN
+C----- REMOVE ANY '.'
+       IF (CSSNDA(ISTAT:ISTAT) .EQ. '.') THEN
+         CSSNDA(ISTAT:) = ' '
+         JLEN = ISTAT - 1
+         GOTO 1715
+       ENDIF
+1710   CONTINUE
+1715   CONTINUE
+       CSSNDA=CNEWD(1:JLEN)//'.dsc'
+       LSSNDA = JLEN+4
+       CALL XCRAS(CSSNDA(1:LSSNDA), LSSNDA)
+       CALL FCASE(CSSNDA, CSSNDA, ISSFLC)
+       WRITE (CMON,'(A,A)') 'Opening new dsc file: ', CSSNDA(1:LSSNDA)
+       CALL XPRVDU(NCEROR, 1,0)
+       WRITE(NCAWU,'(A)') CMON(1)(:)
+       IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)(:)
+CDJWAPR99}
+      ENDIF
+C
+C
 C -- INITIAL SIZE REQUESTED
-      IRQSIZ = ISTORE(ICOMBF+1)
+      IRQSIZ = ISTORE(ICOMBF+4)
 C -- SET LOG FLAG
-      LOGREQ = ISTORE(ICOMBF+2)
+      LOGREQ = ISTORE(ICOMBF+5)
 C -- SET TOTAL LENGTH OF FILE REQUIRED FOR NEW LISTS
       LENTOT = 0
-cdjwmay99
-c----- set type of list to be purged
-      ipgtyp = istore(icombf+3)
+CDJWMAY99
+C----- SET TYPE OF LIST TO BE PURGED
+      IPGTYP = ISTORE(ICOMBF+6)
 C
 C -- OLD AND NEW FILE UNITS = 'NCDFU'
       NUOLD = NCDFU
@@ -1607,9 +1648,6 @@ C--CHECK IF THERE ARE ANY LISTS ON THIS DISC
 C--PRESERVE THE ADDRESS OF THE LAST LIST IN THE CURRENT LIST INDEX
 1250  CONTINUE
       KE=KC-KB-KB
-c
-c^
-c
 C--FIND ANY LISTS IN THE FILE INDEX WHICH CANNOT BE PURGED
       DO 1700 I=1,MLN
       ISRCH=0
@@ -1631,10 +1669,10 @@ C--CHECK THE SERIAL NUMBERS
 1450  CONTINUE
 C--CHECK IF THIS LIST SHOULD BE SAVED
 1500  CONTINUE
-cdjwmay99{
-c----- is this list type to be purged?
-      If ( (ipgtyp .ne. 0) .and. (ipgtyp .ne. istore(kd))) goto 1550
-cdjwmay99}
+CDJWMAY99{
+C----- IS THIS LIST TYPE TO BE PURGED?
+      IF ( (IPGTYP .NE. 0) .AND. (IPGTYP .NE. ISTORE(KD))) GOTO 1550
+CDJWMAY99}
       IF ( ISTORE(KD+1) .LT. 0 ) GO TO 1550
 C -- CHECK IF THIS SHOULD BE LOGGED
       IF ( LOGREQ .GT. 0 ) CALL XPUMSG ( 8 , KD )
@@ -1666,31 +1704,6 @@ C -- CREATE NEW FILE IF REQUIRED
 C
       IF ( NEWFIL .LE. 0 ) GO TO 1740
 C -- CREATE NEW FILE
-cdjwapr99{
-      istat = len(cssnda)
-      call xctrim(cssnda(1:lssnda), jlen)
-      if (istat .ge. jlen+1) cssnda(jlen+1:istat) = ' '
-      do 1710 istat = jlen,1,-1
-        if (cssnda(istat:istat) .eq. '.') goto 1715
-1710  continue
-c----- add a '.'
-      jlen =jlen+1
-      cssnda(jlen:jlen) = '.'
-      istat = jlen
-1715  continue
-      if (jlen - istat .gt. 4) then
-       write(cmon,'(a)') 'File extension limited to 4 characters'       
-       call xprvdu(nceror, 1,0)
-       write(ncawu,'(a)') cmon(1)(:)
-       if (issprt .eq. 0) write ( ncwu , '(a)' ) cmon(1)(:)
-      endif
-      cssnda(istat+1:) = cexten
-      call xctrim(cssnda,lssnda)
-      write (cmon,*) 'Opening new dsc file: ', cssnda(1:lssnda)
-      call xprvdu(nceror, 1,0)
-      write(ncawu,'(a)') cmon(1)(:)
-      if (issprt .eq. 0) write ( ncwu , '(a)' ) cmon(1)(:)
-cdjwapr99}
       ISTAT = KDAOPN ( NUNEW , CSSNDA(1:LSSNDA) , ISSNEW , ISSWRI )
 C -- CALCULATE THE SPACE REQUIRED FOR THE NEW FILE. THIS IS THE MAXIMUM
 C    OF 0 , ( 'IRQSIZ'- 'MINSIZ' ) , AND 'LSTLEN'
@@ -1849,10 +1862,10 @@ C--RELOAD ITS INDICES
 C--WRITE THE INDEX DATA FOR LIST 50 INTO THIS INDEX
       CALL XWCLI(LN50,LSN50,NFW50,NLW50,IOWF50,NOS50,ISTORE(NFL))
 C -- FINAL MESSAGE
-cdjwapr99 close a new DA file
-      if (newfil .ge. 1) then
+CDJWAPR99 CLOSE A NEW DA FILE
+      IF (NEWFIL .GE. 1) THEN
             ISTAT = KFLCLS(NUNEW)
-      endif
+      ENDIF
       CALL XOPMSG ( IOPPUR , IOPEND , 610 )
       CALL XTIME2(2)
       CALL XRSL
@@ -1869,10 +1882,10 @@ C -- NEGATIVE INITIAL SIZE
       GO TO 9900
 9920  CONTINUE
 C -- INPUT ERRORS
-cdjwapr99
-      write(cmon,'(a)') 'File extension limited to 4 characters'       
+CDJWAPR99
+      WRITE(CMON,'(A)') 'Filename limited to 16 characters'       
       CALL XPRVDU(NCEROR, 1,0)
-      write(ncawu,'(a)') cmon(1)(:)
+      WRITE(NCAWU,'(A)') CMON(1)(:)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) cmon(1)(:)
       CALL XOPMSG ( IOPPUR , IOPCMI , 0 )
       GO TO 9900
