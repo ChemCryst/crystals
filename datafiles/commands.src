@@ -3090,6 +3090,51 @@ GENERALEDIT       22    0
     .TYPE               1   -1    1    0
 CIFOUT             0    0    
    5    4096 CRYSTALSPUBLISH
+VSLANT             7    5
+   3    4096 CRYSTALSTRIAL
+    1    2    5    6   20
+   1.MAP                1    1    0    0
+         3
+    .FILE              28    0    1    2    0 NO
+     NO             YES
+   2.CENTROID           3    1    1    0
+         7
+         2    2    2
+    .XO                14    0    1    0    0 0.0
+    .YO                15    0    1    0    0 0.0
+    .ZO                16    0    1    0    0 0.0
+   3.MATRIX             9    1    1    0
+         7
+         2    2    2    2    2    2    2    2    2
+    .R(11)              1    0    1    0    0 
+    .R(12)              2    0    1    0    0
+    .R(13)              3    0    1    0    0
+    .R(21)              4    0    1    0    0
+    .R(22)              5    0    1    0    0
+    .R(23)              6    0    1    0    0
+    .R(31)              7    0    1    0    0
+    .R(32)              8    0    1    0    0
+    .R(33)              9    0    1    0    0
+   4.DOWN               3    1    0    0
+         2    1    2
+    .MINIMUM           17   -1    1    0    0
+    .NUMBER            18   -1    1    0    0
+    .STEP              19   -1    1    0    0
+   5.ACROSS             3    1    0    0
+         2    1    2
+    .MINIMUM           20   -1    1    0    0
+    .NUMBER            21   -1    1    0    0
+    .STEP              22   -1    1    0    0
+   6.SECTION            3    1    0    0
+         2    1    2
+    .MINIMUM           23    0    1    0    0 0.0
+    .NUMBER            24    0    1    0    0         1
+    .STEP              25    0    1    0    0 .25
+   7.SAVED              1    1    2    0
+         2    3
+         3
+    .MATRIX            27    0    1    4    0 NONE
+     NONE           MOLAX          TLS            AXES
 SLANT              7    5
    2    4096 CRYSTALSTRIAL
     1    2    5    6   20
