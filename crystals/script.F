@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.36  2002/03/11 14:45:54  ckp2
+C RIC: Provided more reliable way of deleting files for script (updated FILEDELETE function)
+C
 C Revision 1.35  2002/03/06 10:57:46  ckp2
 C USe CRYSTART.DAT if present. (Different from CRYSINIT, which gets used before
 C the GUI is initialised). Remove initial space that script puts in output in TRANSFER
@@ -6267,6 +6270,8 @@ C
       CHARACTER *256 CBUFFR
 C----- TO HOLD REAL FORMAT EXPRESSION
       CHARACTER *8 CFMTXP
+      CHARACTER*80 CSCPNM, CPRVNM, CLSTNM
+      SAVE CLSTNM
 C
 C
       PARAMETER (MLNLEN = 78, MLIN = 3)
@@ -6308,6 +6313,8 @@ C        CHARACTER*4 CCRICH
 C
 C
       EQUIVALENCE ( IVALUE , VALUE )
+      DATA CLSTNM / ' ' /
+      DATA CPRVNM / ' ' /
 C
       DATA CVALTP / 'INTEGER'      , 'REAL'         , 'TEXT'         ,
      2              'KEYWORD'      , 'VERIFIED'     , 'FILENAME'     ,
@@ -6576,6 +6583,7 @@ C----- NORMAL TEXT TERMINAL
             ENDIF
 C            CALL VGACOL ('BOL', 'WHI', 'BLU' )
              CALL OUTCOL(1)
+
           ELSE
 C---- VT52/100       MENU MODE
             CALL XMENUR (CPRMPT, MENPMT, CLINPB, LENLIN, CDEFLT,
@@ -6590,6 +6598,24 @@ C
         CALL XPRMPT ( NCVDU , CBUFFR(1:LENTOT) )
         CALL OUTCOL(1)
        ENDIF
+C----- RECOVER SCRIPT NAME
+&&GILGID      ISTAT= KSCIDN(2,3,'SCRIPTNAME',1,IS,IDSCP,ISCPNM,1)
+&&GILGID      ISTAT= KSCSDC( ISCPNM, CSCPNM, LENNM)
+&&GILGID      IF (CSCPNM .NE. CLSTNM) CPRVNM = CLSTNM
+&&GILGID      CLSTNM = CSCPNM(1:LENNM)
+&&GILGID      CALL XCTRIM (CLSTNM,LLSTNM)
+
+&&GILGID      WRITE(CMON(1),'(A)') '^^WI SET PROGOUTPUT TEXT = '
+&&GILGID      IF ( CPRVNM(1:3) .NE. '   ' ) THEN
+&&GILGID         WRITE(CMON(2),'(5A)')'^^WI ''Running script: ',
+&&GILGID     1   CSCPNM(1:LENNM),
+&&GILGID     1   ' called from: ', CPRVNM(1:LLSTNM), ''''
+&&GILGID      ELSE
+&&GILGID         WRITE(CMON(2),'(3A)')'^^WI ''Script: ',
+&&GILGID     1  CSCPNM(1:LENNM), ''''
+&&GILGID      ENDIF
+&&GILGID      WRITE(CMON(3),'(A)') '^^CR'
+&&GILGID      CALL XPRVDU(NCVDU,3,0)
 C
 C -- READ THE USER'S RESPONSE FROM THE TERMINAL
 C
