@@ -61,8 +61,7 @@ CxChart::CxChart(CrChart* container)
 	mPolyMode = 0;
 	m_IsoCoords = true;
 	m_inverted = false;
-//Insert your own code here.
-//End of user code.         
+        m_SendCursorKeys = false;
 
 }
 // OPSignature:  CxChart:~CxChart() 
@@ -192,6 +191,7 @@ BEGIN_MESSAGE_MAP(CxChart, CWnd)
 	ON_WM_LBUTTONUP()
 	ON_WM_RBUTTONUP()
 	ON_WM_MOUSEMOVE()
+      ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 
 void CxChart::Focus()
@@ -683,4 +683,27 @@ void CxChart::Invert(Boolean inverted)
 void CxChart::NoEdge()
 {
 	ModifyStyleEx(WS_EX_CLIENTEDGE,NULL,0);
+}
+
+void CxChart::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
+{
+            switch (nChar) {
+                  case VK_LEFT:
+                  case VK_RIGHT:
+                  case VK_UP:
+                  case VK_DOWN:
+                  case VK_INSERT:
+                  case VK_DELETE:
+                  case VK_END:
+                  case VK_ESCAPE:
+
+                        ((CrChart*)mWidget)->SysKey( nChar );
+
+                        break;
+                  default:
+                  //Do nothing
+                        break;
+            }
+
+      CWnd::OnKeyDown( nChar, nRepCnt, nFlags );
 }
