@@ -18,6 +18,7 @@
 
 #ifdef __BOTHWX__
 #include <wx/listctrl.h>
+#include <wx/event.h>
 #define BASELISTCTRL wxListCtrl
 #endif
 
@@ -31,15 +32,15 @@ class CxListCtrl : public BASELISTCTRL
     public:
         int GetNumberSelected();
         void GetSelectedIndices( int * values );
-        void InvertSelection();
         int m_ProgSelecting;
         CcString GetListItem(int item);
-        void SelectPattern(CcString* strings, bool select);
         CcString GetCell(int row, int col);
+        void InvertSelection();
         void SelectAll(bool select);
+        void SelectPattern(CcString* strings, bool select);
+        void SortCol(int col, bool sort);
         void AddRow ( CcString * rowOfStrings );
         void AddColumn( CcString colHeader);
-        void SortCol(int col, bool sort);
         void Focus();
         static CxListCtrl * CreateCxListCtrl( CrListCtrl * container, CxGrid * guiParent);
             CxListCtrl( CrListCtrl * container );
@@ -78,6 +79,11 @@ class CxListCtrl : public BASELISTCTRL
         DECLARE_MESSAGE_MAP()
 
 #endif
+#ifdef __BOTHWX__
+    void OnChar(wxKeyEvent & event );
+    DECLARE_EVENT_TABLE()
+#endif
+
 
         // attributes
         CrGUIElement *  ptr_to_crObject;

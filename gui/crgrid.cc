@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.24  2003/11/28 10:29:11  rich
+//   Replace min and max macros with CRMIN and CRMAX. These names are
+//   less likely to confuse gcc.
+//
 //   Revision 1.23  2003/05/07 12:18:57  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -344,9 +348,6 @@ CcParse CrGrid::ParseInput( CcTokenList * tokenList )
               retVal = InitElement( listPtr, tokenList, xpos, ypos );
             break;
           }
-#ifdef __CR_WIN__
-//The ListCtrl is not yet supported
-// under linux due to lack of demand.
           case kTCreateListCtrl:                    // Create a List Control
           {
             CrListCtrl * listPtr = new CrListCtrl( this );
@@ -354,7 +355,6 @@ CcParse CrGrid::ParseInput( CcTokenList * tokenList )
               retVal = InitElement( listPtr, tokenList, xpos, ypos );
             break;
           }
-#endif
           case kTCreateModList:                    // Create a List Control
           {
             CrModList * listPtr = new CrModList( this );

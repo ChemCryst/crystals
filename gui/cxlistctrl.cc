@@ -1,14 +1,10 @@
-// This class is being temporarily removed from the LINUX version,
-// as it is far too complicated and not even used in SCRIPTS yet.
-#ifdef __CR_WIN__
-
 ////////////////////////////////////////////////////////////////////////
 
 //   CRYSTALS Interface      Class CxListCtrl
 
 ////////////////////////////////////////////////////////////////////////
 
-//   Filename:  CxListCtrl.cc
+//   Filename:  CxListCtrl.cpp
 //   Authors:   Richard Cooper
 
 #include    "crystalsinterface.h"
@@ -30,7 +26,7 @@ CxListCtrl *    CxListCtrl::CreateCxListCtrl( CrListCtrl * container, CxGrid * g
     theListCtrl->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
     theListCtrl->SetFont(CcController::mp_font);
 #endif
-#ifdef nnLINUXnn
+#ifdef __BOTHWX__
       theListCtrl->Create(guiParent, -1, wxPoint(0,0), wxSize(10,10),
                           wxLC_REPORT);
 #endif
@@ -93,7 +89,7 @@ int CxListCtrl::GetIdealHeight()
     cdc.SelectObject(oldFont);
     return lines * ( textMetric.tmHeight + 2 );
 #endif
-#ifdef nnLINUXnn
+#ifdef __BOTHWX__
       return mVisibleLines * ( GetCharHeight() + 2 );
 #endif
 }
@@ -113,20 +109,13 @@ BEGIN_MESSAGE_MAP(CxListCtrl, CListCtrl)
     ON_WM_KILLFOCUS()
     ON_WM_SETFOCUS()
     ON_NOTIFY(HDN_ITEMCLICKA, 0, OnHeaderClicked)
-      ON_NOTIFY(HDN_ITEMCLICKW, 0, OnHeaderClicked)
+    ON_NOTIFY(HDN_ITEMCLICKW, 0, OnHeaderClicked)
     ON_NOTIFY_REFLECT( LVN_ITEMCHANGED, ItemChanged )
 END_MESSAGE_MAP()
 #endif
-#ifdef nnLINUXnn
-//wx Message Map
-BEGIN_EVENT_TABLE(CxButton, wxButton)
-      EVT_CHAR( CxButton::OnChar )
-      EVT...
-      EVT...
-      EVT...
-      ECT...
-      EVT...
-      EVT_LIST_COL_CLICK
+#ifdef __BOTHWX__
+BEGIN_EVENT_TABLE(CxListCtrl, wxListCtrl)
+     EVT_CHAR( CxListCtrl::OnChar )
 END_EVENT_TABLE()
 #endif
 
@@ -153,9 +142,18 @@ void CxListCtrl::AddColumn(CcString colHeader)
         newcolTypes[i]  = m_colTypes[i];
     }
     newcolTypes[m_numcols-1] = COL_INT; //Always start with INT. This will fail to REAL, and then to TEXT.
+
+#ifdef __CR_WIN__
     newcolWidths[m_numcols-1] = CRMAX(10,GetStringWidth(colHeader.ToCString())+15);
     InsertColumn( m_numcols, colHeader.ToCString(), LVCFMT_LEFT, 10, m_numcols );
-    SetColumnWidth(m_numcols,newcolWidths[m_numcols-1]);
+#endif
+#ifdef __BOTHWX__
+    int w,h;
+    GetTextExtent(colHeader.ToCString(),&w,&h);
+    newcolWidths[m_numcols-1] = CRMAX(10,w);
+    InsertColumn(m_numcols-1, colHeader.ToCString(),wxLIST_FORMAT_LEFT, 10 );
+#endif
+    SetColumnWidth(m_numcols-1,newcolWidths[m_numcols-1]);
 
     delete [] m_colWidths;      //delete the old list of widths.
     m_colWidths = newcolWidths; //re-assign pointer, to the new list.
@@ -166,7 +164,12 @@ void CxListCtrl::AddColumn(CcString colHeader)
 void CxListCtrl::AddRow(CcString * rowOfStrings)
 {
 
+#ifdef __CR_WIN__
     int nItem = InsertItem(mItems++, _T(""));
+#endif
+#ifdef __BOTHWX__
+    int nItem = InsertItem(mItems++, _T(""));
+#endif
 
     int *newIndex = new int[mItems+1];
     for ( int i=1; i < (mItems); i++ )
@@ -179,9 +182,16 @@ void CxListCtrl::AddRow(CcString * rowOfStrings)
 
     for (int j = 0; j < m_numcols; j++)
     {
-        SetItemText(nItem, j, rowOfStrings[j].ToCString());
+#ifdef __CR_WIN__
+	SetItemText(nItem, j, rowOfStrings[j].ToCString());
         int width = GetStringWidth(rowOfStrings[j].ToCString());
-        m_colWidths[j] = CRMAX(m_colWidths[j],width + 15);
+#endif
+#ifdef __BOTHWX__
+	SetItem(nItem, j, rowOfStrings[j].ToCString());
+        int width,h;
+	GetTextExtent(rowOfStrings[j].ToCString(),&width,&h);
+#endif
+	m_colWidths[j] = CRMAX(m_colWidths[j],width + 15);
         SetColumnWidth(j,m_colWidths[j]);
         int type = WhichType(rowOfStrings[j]);
         m_colTypes[j] = CRMAX(m_colTypes[j], type);
@@ -194,7 +204,7 @@ void CxListCtrl::AddRow(CcString * rowOfStrings)
 
 //// The following code fragment is from www.codeguru.com and implements full row highlighting:
 
-
+#ifdef __CR_WIN__
 void CxListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 {
         CDC* pDC = CDC::FromHandle(lpDrawItemStruct->hDC);
@@ -549,13 +559,6 @@ void CxListCtrl::OnHeaderClicked(NMHDR* pNMHDR, LRESULT* pResult)
         *pResult = 0;
 }
 
-void CxListCtrl::SortCol(int col, bool sort)
-{
-    int nColCount = ((CHeaderCtrl*)GetDlgItem(0))->GetItemCount();
-    if( col >= nColCount) return;
-    SortTextItems( m_colTypes[col], col, sort );
-}
-
 
 // SortTextItems        - Sort the list based on column text
 // Returns              - Returns true for success
@@ -776,10 +779,19 @@ bool CxListCtrl::SortTextItems( int colType, int nCol, bool bAscending)
 }
 
 
+#endif        //CR_WIN
 
 
 
 
+void CxListCtrl::SortCol(int col, bool sort)
+{
+#ifdef __CR_WIN__
+    int nColCount = ((CHeaderCtrl*)GetDlgItem(0))->GetItemCount();
+    if( col >= nColCount) return;
+    SortTextItems( m_colTypes[col], col, sort );
+#endif
+}
 
 
 
@@ -874,6 +886,7 @@ int CxListCtrl::WhichType(CcString text)
 
 void CxListCtrl::SelectAll(bool select)
 {
+#ifdef __CR_WIN__
 
     int size = GetItemCount();
     m_ProgSelecting = size;
@@ -895,18 +908,27 @@ void CxListCtrl::SelectAll(bool select)
         SetItem( &moveItem );
     }
 
+#endif
 }
 
-
+#ifdef __CR_WIN__
 CcString CxListCtrl::GetCell(int row, int col)
 {
     CString temp = GetItemText(row, col);
     CcString retVal = temp.GetBuffer(temp.GetLength());
     return retVal;
 }
+#endif
+#ifdef __BOTHWX__
+CcString CxListCtrl::GetCell(int row, int col)
+{
+ return CcString("Unimplemented");
+}
+#endif
 
 void CxListCtrl::SelectPattern(CcString * strings, bool select)
 {
+#ifdef __CR_WIN__
     int size = GetItemCount();
     bool match = true;
     for ( int i = 0; i < size; i++ )
@@ -976,10 +998,15 @@ void CxListCtrl::SelectPattern(CcString * strings, bool select)
             SetItem( &setItem );
         }
     }
+#endif
 }
 
 CcString CxListCtrl::GetListItem(int item)
 {
+#ifdef __BOTHWX__
+  return CcString("Unimplemented");
+#endif
+#ifdef __CR_WIN__
     int nColCount = ((CHeaderCtrl*)GetDlgItem(0))->GetItemCount();
     CString textresult = "";
 
@@ -988,10 +1015,12 @@ CcString CxListCtrl::GetListItem(int item)
 
     CcString result = textresult.GetBuffer(textresult.GetLength());
     return result;
+#endif
 }
 
 void    CxListCtrl::InvertSelection()
 {
+#ifdef __CR_WIN__
     int size = GetItemCount();
     m_ProgSelecting = size;
     LV_ITEM moveItem;
@@ -1014,13 +1043,16 @@ void    CxListCtrl::InvertSelection()
             moveItem.state |= LVIS_SELECTED;
         SetItem( &moveItem );
     }
-
+#endif
 }
-
 
 
 int CxListCtrl::GetNumberSelected()
 {
+#ifdef __BOTHWX__
+  return -1;
+#endif
+#ifdef __CR_WIN__
     int size = GetItemCount();
     LV_ITEM moveItem;
     int count = 0;
@@ -1038,10 +1070,15 @@ int CxListCtrl::GetNumberSelected()
 
     }
     return count;
+#endif
 }
 
 void CxListCtrl::GetSelectedIndices(  int * values )
 {
+#ifdef __BOTHWX__
+   return;
+#endif
+#ifdef __CR_WIN__
     int size = GetItemCount();
     int count = 0;
     LV_ITEM moveItem;
@@ -1062,6 +1099,7 @@ void CxListCtrl::GetSelectedIndices(  int * values )
         }
     }
     return;
+#endif
 }
 
 void CxListCtrl::CxSetSelection( int select )
@@ -1075,7 +1113,7 @@ void CxListCtrl::CxSetSelection( int select )
 #ifdef __CR_WIN__
     SetItemState(select - 1, 0xFFFF, LVIS_SELECTED);
 #endif
-}
-
-
+#ifdef __BOTHWX__
+    SetItemState(select - 1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
 #endif
+}

@@ -1,4 +1,3 @@
-#ifdef __CR_WIN__
 ////////////////////////////////////////////////////////////////////////
 
 //   CRYSTALS Interface      Class CrListCtrl
@@ -9,6 +8,9 @@
 //   Authors:   Richard Cooper
 //   Created:   10.11.1998 16:36
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2003/08/22 21:40:20  rich
+//   Change misleading error message.
+//
 //   Revision 1.10  2003/08/01 16:18:16  rich
 //   Add script access to a command to sort list controls by any
 //   column in ascending or descending order.
@@ -316,4 +318,3 @@ void CrListCtrl::SendValue(CcString message)
     }
 }
 
-#endif
