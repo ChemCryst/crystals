@@ -325,7 +325,7 @@ EXTINCTION  PARAMETERS
 (1X,9F12.5)
          2
     .PARAMETER          0    0    1    0    0 0.0
-LIST 6            16    2
+LIST 6            17    2
    1    4096 CRYSTALSINPUT6
    13   28
    1.READ               6    1    0    0
@@ -436,6 +436,23 @@ RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER
     .ELEMENTS           0    0    0    0    0        11
   16.XINPUT-BUFFER      0    0    0    0  -31    1 1004   41  106
          0    0    0    0    0    0    0    0    0    0
+  17.MATRIX            11    1    0    0   11    1 1009  108    6
+         1    1    1    1    1    1    0    0    0    0
+THE CONSTANTS THAT DEFINE A MATRIX FOR TRANSFORMING INDICES
+(10X,60A1)
+(1X,9F6.2)
+         2    2    2    2    2    2    2    2    2    2    2
+    .M11                0    0    1    0    0 1.0
+    .M21                0    0    1    0    0 0.0
+    .M31                0    0    1    0    0 0.0
+    .M12                0    0    1    0    0 0.0
+    .M22                0    0    1    0    0 1.0
+    .M32                0    0    1    0    0 0.0
+    .M13                0    0    1    0    0 0.0
+    .M23                0    0    1    0    0 0.0
+    .M33                0    0    1    0    0 1.0
+    .TOLERANCE          0    0    1    0    0 0.1
+    .TWINTOLER          0    0    1    0    0 0.001
 LIST 7            16    0
    1    4096 CRYSTALSINPUT6
    1.READ               6    1    0    0
