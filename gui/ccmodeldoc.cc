@@ -18,6 +18,11 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.3  1999/04/26 11:12:39  dosuser
+// RIC: Added a bit of code to call Reset() on all views attached to
+//      the modeldoc in order that they don't keep pointers to atoms
+//      in the modeldoc once it is updated by CRYSTALS.
+//
 
 
 
@@ -292,9 +297,10 @@ void CcModelDoc::HighlightView(CrModel * aView)
 {
 	mAtomList->Reset();
 	CcModelAtom* item;
-	aView->ClearHighlights();
+      aView->StartHighlights();
 	while ( (item = (CcModelAtom*)mAtomList->GetItemAndMove()) != nil )
 		item->Highlight(aView);
+      aView->FinishHighlights();
 }
 
 void CcModelDoc::Select(Boolean selected)
