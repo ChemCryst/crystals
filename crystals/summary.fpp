@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2002/03/21 17:51:18  richard
+C Extend I/sigma(I) frequency graph down to -5.
+C
 C Revision 1.26  2002/03/18 22:14:02  richard
 C Enhance #SIGMADIST so it will output I/sigma(I) vs. resolution.
 C
@@ -984,6 +987,7 @@ C
       BOTTOM = 0.0
       WTOP = 0.0
       WBOT = 0.0
+      SIGTOP = 0.0
       IFSQ = ISTORE(L23MN+1)
       N6ACC = 0
       FCMAX = 0
@@ -1010,6 +1014,7 @@ c        Y(N6ACC) = ABS(FO - FC) - STORE(M6+12)
         WT = STORE(M6+4)
         TOP = TOP + ABS (ABS(FO) - FC)
         BOTTOM = BOTTOM + ABS(FO)
+        SIGTOP = SIGTOP + STORE(M6+12)
         IF (IFSQ .GE. 0) THEN
 C - FSQ REFINENENT
             WDEL = WT* (FO * ABS(FO) - FC*FC)
@@ -1026,6 +1031,7 @@ C
 C -- BEGIN OUTPUT
 C
 1200  CONTINUE
+
 c -- ADD A SERIES FOR STRAIGHT LINE
       IF ( LEVEL .EQ. 4) THEN
         WRITE(CMON,'(A)')
@@ -1090,6 +1096,7 @@ c      CALL XPRVDU(NCVDU,1,0)
 
 C----- COMPUTE AND STORE R-VALUES
       RFACT = 100. * TOP / BOTTOM
+      RSIGM = 100. * SIGTOP / BOTTOM
       IF (WBOT .LE. 0.0) THEN
         WRFAC = 0.0
       ELSE
@@ -1109,20 +1116,22 @@ C -- PRINT THE R VALUE ETC.
       J = NINT(STORE(L6P))
       M6P = L6P+2
       IF (ISSPRT .EQ. 0)
-     1 WRITE ( NCWU , 1235 ) J , ( STORE(I+1) , I=L6P,M6P )
-      WRITE ( NCAWU , 1235 ) J , ( STORE(I+1) , I=L6P,M6P )
-      WRITE ( CMON , 1235 ) J , ( STORE(I+1) , I=L6P,M6P )
-      CALL XPRVDU(NCVDU, 2,0)
+     1 WRITE ( NCWU , 1235 ) J , ( STORE(I+1) , I=L6P,M6P ), RSIGM
+      WRITE ( NCAWU , 1235 ) J , ( STORE(I+1) , I=L6P,M6P ), RSIGM
+      WRITE ( CMON , 1235 ) J , ( STORE(I+1) , I=L6P,M6P ), RSIGM
+      CALL XPRVDU(NCVDU, 3,0)
+
+1235  FORMAT (1X , 'After ' , I5 ,
+     2 ' structure factor/refinement calculations ' , / ,
+     3 1X , ' R =  ' , F6.2 , 5X , 'Weighted R = ' , F6.2 ,
+     4 5X , 'Minimisation function = ' , E15.6, / ,
+     5     'Rsigma=', F6.2 )
+
 C -- FINISH THE GRAPH DEFINITION
       IF ( LEVEL .EQ. 4 ) THEN
         WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
         CALL XPRVDU(NCVDU, 2,0)
       ENDIF
-
-1235  FORMAT (1X , 'After ' , I5 ,
-     2 ' structure factor/refinement calculations ' , / ,
-     3 1X , 'R = ' , F6.2 , 5X , 'Weighted R = ' , F6.2 ,
-     4 5X , 'Minimisation function = ' , E15.6 )
 C
 C
 C----- UPDATE LIST 30
