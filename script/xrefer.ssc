@@ -1,0 +1,31 @@
+%SCRIPT XREFER
+%VARIABLE INTEGER HELPSIZE
+%EVALUATE HELPSIZE = 2
+%COPY '#SCRIPT XHELP1'
+
+These are the new references for CRYSTALS and CAMERON, please give them with
+each structure you publish. In the current difficult financial atmosphere in 
+the UK, employers have begun to count the numbers of citations for work, as 
+well as publications, so we will need clear support from the user community 
+if the work is to continue.
+
+CRYSTALS
+     Watkin, D.J. Prout, C.K., Carruthers, J.R.,
+     Betteridge, P.W., Cooper, R.I. CRYSTALS Issue 11.
+     Chemical Crystallography Laboratory, University
+     of Oxford, Oxford. 
+
+CAMERON
+     Watkin, D.J. Prout, C.K., Pearce, L.J. (1996).
+     CAMERON, Chemical Crystallography Laboratory,
+     University of Oxford, Oxford.
+
+RC93
+     Watkin, D.J., Prout, C.K., Lilley, P.M.deQ. (1994),
+     RC93, Chemical Crystallography Laboratory, University
+     of Oxford, Oxford.
+
+%COPY '#SCRIPT XHELP2'
+
+%END SCRIPT
+
