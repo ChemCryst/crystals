@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.29  2000/12/13 17:47:38  richard
+C Support for LINUX.
+C
 C Revision 1.28  2000/09/19 14:13:16  CKP2
 C find colour table in SCRIPT
 C
@@ -538,6 +541,12 @@ C----- SET THE FLAGS
 2550                  CONTINUE                  !
                       STACK(JS+4)=E             !4 = Dist
                       JS=JS+JT
+                      IF (JS.GT.500) THEN
+                          JS=JS-JT
+                          CALL ZMORE('Too many contacts in ICRDIST1',0)
+                          NJ=NJ-1
+                          J=JS-4
+                      END IF
                     END IF
                   END IF
                 END IF
