@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   5.3.1998 13:51 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.13  2001/03/08 16:44:10  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 
 #ifndef     __CxMultiEdit_H__
 #define     __CxMultiEdit_H__
@@ -50,6 +54,7 @@ class CxMultiEdit : public BASEMULTIEDIT
 //            void  SetHyperText( CcString cText, CcString cCommand  );
         void    SetIdealWidth(int nCharsWide);
         void    SetIdealHeight(int nCharsHigh);
+        void CxDestroyWindow();
         int GetIdealWidth();
         int GetIdealHeight();
         int GetTop();
