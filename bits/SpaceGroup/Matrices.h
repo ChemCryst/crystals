@@ -49,8 +49,8 @@
 #define kInnerDimensionErrorN -2
 
 //Error strings
-#define kDimensionError "Matrix dimesions must agree." 
-#define kInnerDimensionError "Inner matrix dimesions must agree."
+#define kDimensionError "Matrix dimensions must agree." 
+#define kInnerDimensionError "Inner matrix dimensions must agree."
 
 class MatrixException:public MyException
 {
@@ -155,12 +155,12 @@ class Matrix:public MyObject
                 throw MatrixException(kInnerDimensionErrorN,  kInnerDimensionError);
             }
             type* tNewMatrix = new type[iYSize*pMatrix.iXSize];
-            for (int i = 0; i < iYSize; i ++)
+            for (size_t i = 0; i < iYSize; i ++)
             {
-                for (int j = 0; j < pMatrix.iXSize; j ++)
+                for (size_t j = 0; j < pMatrix.iXSize; j ++)
                 {
                     tNewMatrix[j*iYSize+i] = getValue(0, i)*pMatrix.getValue(j, 0); 
-                    for (int k = 1; k < iXSize; k++)
+                    for (size_t k = 1; k < iXSize; k++)
                     {
                         tNewMatrix[j*iYSize+i] += getValue(k, i)*pMatrix.getValue(j, k);
                     }
@@ -317,19 +317,34 @@ class Matrix:public MyObject
         
         void transpose()
         {
-            size_t tXSize = iYSize, tYSize = iXSize;
-             
-            for (size_t x = 0; x < iXSize; x++)
-            {
-                for (size_t y = 0; y < iYSize-(iXSize-x); y++)
+            if (iXSize == iYSize)   
+            {//in situ transpose For square matrices
+                for (size_t x = 0; x < iXSize; x++)
                 {
-                    float tTemp = iMatrix[y*tYSize+x];
-                    iMatrix[y*tYSize+x] = iMatrix[x*iYSize+y];
-                    iMatrix[x*iYSize+y] = tTemp;
+                    for (size_t y = 0; y < iYSize-(iXSize-x); y++)
+                    {
+                        type tTemp = iMatrix[y*iYSize+x];
+                        iMatrix[y*iYSize+x] = iMatrix[x*iYSize+y];
+                        iMatrix[x*iYSize+y] = tTemp;
+                    }
                 }
             }
-            iYSize = tXSize;
-            iXSize = tYSize;
+            else
+            {
+                size_t tXSize = iYSize, tYSize = iXSize;
+                type* tMatrix = new type[iSize];
+                for (size_t x = 0; x < iXSize; x++)
+                {
+                    for (size_t y = 0; y < iYSize; y++)
+                    {
+                        tMatrix[y*tYSize+x] = iMatrix[x*iYSize+y];
+                    }
+                }
+                delete[] iMatrix;
+                iMatrix = tMatrix;
+                iYSize = tYSize;
+                iXSize = tXSize;
+            }
         }
         
         inline type sum()
@@ -574,7 +589,7 @@ class Matrix<float>:public MyObject
             return false;
         }
         
-        void transpose()
+      /*  void transpose()
         {
             size_t tXSize = iYSize, tYSize = iXSize;
              
@@ -589,6 +604,38 @@ class Matrix<float>:public MyObject
             }
             iYSize = tXSize;
             iXSize = tYSize;
+        }*/
+        
+        void transpose()
+        {
+            if (iXSize == iYSize)   
+            {//in situ transpose For square matrices
+                for (size_t x = 0; x < iXSize; x++)
+                {
+                    for (size_t y = 0; y < iYSize-(iXSize-x); y++)
+                    {
+                        float tTemp = iMatrix[y*iYSize+x];
+                        iMatrix[y*iYSize+x] = iMatrix[x*iYSize+y];
+                        iMatrix[x*iYSize+y] = tTemp;
+                    }
+                }
+            }
+            else
+            {
+                size_t tXSize = iYSize, tYSize = iXSize;
+                float* tMatrix = new float[iSize];
+                for (size_t x = 0; x < iXSize; x++)
+                {
+                    for (size_t y = 0; y < iYSize; y++)
+                    {
+                        tMatrix[y*tYSize+x] = iMatrix[x*iYSize+y];
+                    }
+                }
+                delete[] iMatrix;
+                iMatrix = tMatrix;
+                iYSize = tYSize;
+                iXSize = tXSize;
+            }
         }
         
         inline float sum()
