@@ -3,45 +3,413 @@
 %% A Script to check some constants against some of the ACTA
 %% submission requirements.
 %%
-%    VARIABLE INTEGER ERRFLAG
-%    VARIABLE CHARACTER CDLINE
-%    EVALUATE ERRFLAG = 0
- Checking data against some IUCr submission requirements...
-%    VARIABLE REAL MINSIZE MIDSIZE MAXSIZE
+%  VARIABLE INTEGER ERRFLAG ALERTFLAG WARNFLAG
+%  VARIABLE CHARACTER CDLINE
+%  VARIABLE REAL WORK1 WORK2 WORK3 ZMAX CENTRO
+%  EVALUATE ERRFLAG = 0
+%  EVALUATE ALERTFLAG = 0
+%  EVALUATE WARNFLAG = 0
+
+ * Checking data against some IUCr validation criteria...
+
+%%
+%% Check List 30 exists.
+%%
+%  BLOCK
+%    IF ( EXISTS 30 .NE. 1 ) THEN
+ **** FATAL: There in no LIST 30 with the general details available
+             Have you actually carried out an analysis?
+%      FINISH
+%    END IF
+%  END BLOCK
+%%
+%% Crystals Size
+%%
+%  BLOCK      
 %    COPY '#GENERALEDIT 30'
 %    COPY 'LOCATE RECORDTYPE = 102'
-%    COPY 'TRANSFER FROM OFFSET = 0 TO MINSIZE'
-%    COPY 'TRANSFER FROM OFFSET = 1 TO MIDSIZE'
-%    COPY 'TRANSFER FROM OFFSET = 2 TO MAXSIZE'
+%    COPY 'TRANSFER FROM OFFSET = 0 TO WORK1'
+%    COPY 'TRANSFER FROM OFFSET = 1 TO WORK2'
+%    COPY 'TRANSFER FROM OFFSET = 2 TO WORK3'
 %    COPY 'END'
-%    IF MINSIZE .GT. 0.6 THEN
- FAIL: Minimum crystal dimension greater then 0.6mm
-%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    IF WORK1 .GT. 0.6 THEN
+ **  WARN:  Minimum crystal dimension greater then 0.6mm
+%       EVALUATE WARNFLAG = WARNFLAG + 1
 %    END IF
-%    IF MIDSIZE .GT. 0.8 THEN
- FAIL: Medium crystal dimension greater then 0.8mm
-%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    IF WORK2 .GT. 0.8 THEN
+ **  WARN:  Medium crystal dimension greater then 0.8mm
+%       EVALUATE WARNFLAG = WARNFLAG + 1
 %    END IF
-%    IF MAXSIZE .GT. 1.0 THEN
- FAIL: Maximum crystal dimension greater then 1.0mm
-%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    IF WORK3 .GT. 1.0 THEN
+ **  WARN:  Maximum crystal dimension greater then 1.0mm
+%       EVALUATE WARNFLAG = WARNFLAG + 1
 %    END IF
-%    IF ERRFLAG .GT. 0 THEN
+%  END BLOCK
+%%
+%% Temperature
+%%
+%  BLOCK      
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 102'
+%    COPY 'TRANSFER FROM OFFSET = 6 TO WORK1'
+%    COPY 'END'
+%    IF WORK1 .LT. 25.0 THEN
+ *   ALERT: Experiment Temperaure < 25K. Are you sure?
+%       EVALUATE ALERTFLAG = ALERTFLAG + 1
+%    END IF
+%  END BLOCK
+%%
+%% Sigma cutoff
+%%
+%  BLOCK
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 103'
+%    COPY 'TRANSFER FROM OFFSET = 3 TO WORK1'
+%    COPY 'END'
+%    IF WORK1 .GE. 12.0 THEN
+ *** FAIL:  Sigma cutoff >= 12.0
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    ELSE
+%       IF WORK1 .GE. 10.0 THEN
+ **  WARN:  Sigma cutoff >= 10.0
+%          EVALUATE WARNFLAG = WARNFLAG + 1
+%       ELSE
+%          IF WORK1 .GE. 8.0 THEN
+ *   ALERT: Sigma cutoff >= 8.0
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%          END IF
+%       END IF
+%    END IF
+%  END BLOCK
+%%
+%% Rint
+%%
+%  BLOCK
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 101'
+%    COPY 'TRANSFER FROM OFFSET = 3 TO WORK1'
+%    COPY 'END'
+%    IF WORK1 .GT. 0.20 THEN
+ *** FAIL:  Merging R-Factor greater than 20%
+            Your data may be very poor quality.
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    ELSE
+%       IF WORK1 .GE. 0.15 THEN
+ **  WARN:  Merging R-Factor greater than 15%
+            Your data may be very poor quality.
+%          EVALUATE WARNFLAG = WARNFLAG + 1
+%       ELSE
+%          IF WORK1 .GE. 0.10 THEN
+ *   ALERT: Merging R-Factor greater than 10%
+            Your data may be of low quality.
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%          END IF
+%       END IF
+%    END IF
+%  END BLOCK
+%%
+%% Rfactor, weighted R-factor, GOF
+%%
+%  BLOCK
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 103'
+%    COPY 'TRANSFER FROM OFFSET = 0 TO WORK1'
+%    COPY 'TRANSFER FROM OFFSET = 1 TO WORK2'
+%    COPY 'TRANSFER FROM OFFSET = 4 TO WORK3'
+%    COPY 'END'
+%    IF WORK1 .GT. 20.0 THEN
+ *** FAIL:  R-Factor greater than 20%
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    ELSE
+%       IF WORK1 .GE. 15.0 THEN
+ **  WARN:  R-Factor greater than 15%
+%          EVALUATE WARNFLAG = WARNFLAG + 1
+%       ELSE
+%          IF WORK1 .GE. 10.0 THEN
+ *   ALERT: R-Factor greater than 10%
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%          END IF
+%       END IF
+%    END IF
+%    IF WORK2 .GT. 45.0 THEN
+ *** FAIL:  Weighted R-Factor greater than 45%
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    ELSE
+%       IF WORK2 .GE. 35.0 THEN
+ **  WARN:  Weighted R-Factor greater than 35%
+%          EVALUATE WARNFLAG = WARNFLAG + 1
+%       ELSE
+%          IF WORK2 .GE. 25.0 THEN
+ *   ALERT: Weighted R-Factor greater than 25%
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%          END IF
+%       END IF
+%    END IF
+%    IF WORK3 .GT. 6.0 THEN
+ *** FAIL:  Goodness of fit greater than 6.0
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    ELSE
+%       IF WORK3 .GT. 4.0 THEN
+ **  WARN:  Goodness of fit greater than 4.0
+%          EVALUATE WARNFLAG = WARNFLAG + 1
+%       ELSE
+%          IF WORK3 .GT. 2.0 THEN
+ *   ALERT: Goodness of fit greater than 2.0
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%          END IF
+%       END IF
+%    END IF
+%    IF WORK3 .LT. 0.4 THEN
+ *** FAIL:  Goodness of fit less than 0.4
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    ELSE
+%       IF WORK3 .LT. 0.6 THEN
+ **  WARN:  Goodness of fit less than 0.6
+%          EVALUATE WARNFLAG = WARNFLAG + 1
+%       ELSE
+%          IF WORK3 .LT. 0.8 THEN
+ *   ALERT: Goodness of fit less then 0.8
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%          END IF
+%       END IF
+%    END IF
+%  END BLOCK
+%%
+%% Shift / esd
+%%
+%  BLOCK
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 103'
+%    COPY 'TRANSFER FROM OFFSET = 7 TO WORK1'
+%    COPY 'END'
+%    IF WORK1 .GT. 0.20 THEN
+ *** FAIL:  Shift / esd > 0.20
+            Consider carrying out some unconditional cycles of refinement.
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    ELSE
+%       IF WORK1 .GE. 0.10 THEN
+ **  WARN:  Shift / esd > 0.10
+            Consider carrying out some unconditional cycles of refinement.
+%          EVALUATE WARNFLAG = WARNFLAG + 1
+%       ELSE
+%          IF WORK1 .GE. 0.05 THEN
+ *   ALERT: Shift / esd > 0.05
+            Consider carrying out some unconditional cycles of refinement.
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%          END IF
+%       END IF
+%    END IF
+%  END BLOCK
+%%
+%% Diff density:
+%%
+%% NB. We need ZMAX, but element number information isn't known
+%% to CRYSTALS. Instead (as this is a fairly arbitrary test anyway)
+%% we assume that Z is (Atomic weight / 2.484)
+%% NB. Store ZMAX/10.0 (ie. divide weight by 24.84)
+%%
+%   BLOCK
+%     IF ( EXISTS 29 .NE. 1 ) THEN
+ **** FATAL: No list 29 (atomic properties) present
+             Have you carried out an analysis?
+        FINISH
+%     END IF
+%     IF ( EXISTS 2 .NE. 1 ) THEN
+ **** FATAL: No list 2 (symmetry) present
+             Have you carried out an analysis?
+        FINISH
+%     END IF
+%%
+%     COPY '#GENERALEDIT 29'
+%     COPY 'LOCATE RECORDTYPE=101'
+%     COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%     LOOP
+%       ON EDITERROR TERMINATE
+%       COPY 'TRANSFER FROM OFFSET=6 TO WORK1'
+%       IF ( WORK1 .GT. ZMAX ) THEN
+%          EVALUATE ZMAX = WORK1
+%       END IF
+%       COPY 'NEXT'
+%     END LOOP
+%     COPY 'END'
+%     EVALUATE ZMAX = ZMAX / 24.84
+%%
+%     COPY '#GENERALEDIT 2'
+%     COPY 'LOCATE RECORDTYPE=101'
+%     COPY 'TRANSFER FROM OFFSET=0 TO CENTRO'
+%     COPY 'END'
+
+%%
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 103'
+%    COPY 'TRANSFER FROM OFFSET = 5 TO WORK1'
+%    COPY 'TRANSFER FROM OFFSET = 6 TO WORK2'
+%    COPY 'END'
+%%
+%%   DelRhoMin
+%%
+%    IF WORK1 .LT. ( - ZMAX * 2.0 ) THEN
+ *** FAIL:  Minimum electron density difference is too negative ( less than
+            twice ZMAX / - 10 )
+            There may be disorder, missing atoms or unlocated solvent.
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    ELSE
+%       IF WORK1 .LT. ( - ZMAX ) THEN
+ *** WARN:  Minimum electron density difference is too negative ( less than
+            ZMAX / - 10 )
+            There may be disorder, missing atoms or unlocated solvent.
+%          EVALUATE WARNFLAG = WARNFLAG + 1
+%       ELSE
+%          IF WORK1 .LT. ( - ZMAX * 0.75 ) THEN
+ *** ALERT: Minimum electron density difference is too negative ( less than
+            0.75 * ZMAX / - 10 )
+            There may be disorder, missing atoms or unlocated solvent.
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%          END IF
+%       END IF
+%    END IF
+%%
+%%   DelRhoMax
+%%
+%    IF WORK2 .GT. ( ZMAX * 2.0 ) THEN
+ *** FAIL:  Maximum electron density difference is too high ( more than
+            twice ZMAX / 10 )
+            There may be disorder, missing atoms or unlocated solvent.
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    ELSE
+%       IF WORK2 .LT. ( - ZMAX ) THEN
+ *** WARN:  Maximum electron density difference is too high ( more than
+            ZMAX / 10 )
+            There may be disorder, missing atoms or unlocated solvent.
+%          EVALUATE WARNFLAG = WARNFLAG + 1
+%       ELSE
+%          IF WORK2 .LT. ( - ZMAX * 0.75 ) THEN
+ *** ALERT: Maximum electron density difference is too high ( more than
+            0.75 * ZMAX / 10 )
+            There may be disorder, missing atoms or unlocated solvent.
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%          END IF
+%       END IF
+%    END IF
+%  END BLOCK
+%%
+%% Flack parameter.
+%%
+%  BLOCK
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 106'
+%    COPY 'TRANSFER FROM OFFSET = 6 TO WORK1'
+%    COPY 'TRANSFER FROM OFFSET = 7 TO WORK2'
+%    COPY 'END'
+%    IF WORK1 .GE. 0.7 THEN
+ *   ALERT: Does Flack parameter indicate that chirality should be inverted?
+%       EVALUATE ALERTFLAG = ALERTFLAG + 1
+%    ELSE
+%       IF WORK1 .GE. 0.3 THEN
+ **  WARN:  Flack parameter has failed to refine to an unambigous value.
+%          EVALUATE WARNFLAG = WARNFLAG + 1
+%       ELSE
+%          IF WORK1 .LT. - 0.1 THEN
+ *** FAIL: Flack parameter too small. ( < -0.1 ).
+%             EVALUATE ERRFLAG = ERRFLAG + 1
+%          END IF
+%       END IF
+%    END IF
+%    IF WORK2 .GE. 0.5 THEN
+ **  WARN:  Flack su indicates that result is meaningless. ( > 0.5 )
+%       EVALUATE WARNFLAG = WARNFLAG + 1
+%    END IF
+%  END BLOCK
+%%
+%% Ratio of NPARAM to NREF.
+%%
+%  BLOCK
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 103'
+%    COPY 'TRANSFER FROM OFFSET =  2 TO WORK1'
+%    COPY 'TRANSFER FROM OFFSET =  8 TO WORK2 '
+%    COPY 'END'
+%    EVALUATE WORK3 = WORK2 / WORK1
+%    IF ( CENTRO .GT. 0.99 ) .OR. ( ZMAX .GT. 1.65 ) THEN
+%      IF WORK3 .LE. 6.0 THEN
+ *** FAIL:  Ratio of reflections to parameters is unacceptable ( < 6.0 )
+            Reduce the number of parameters, or seek help.
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%      ELSE
+%         IF WORK3 .LE. 8.0 THEN
+ **  WARN:  Ratio of reflections to parameters is unacceptable ( < 8.0 )
+            Reduce the number of parameters, or seek help.
+%           EVALUATE WARNFLAG = WARNFLAG + 1
+%         ELSE
+%           IF WORK3 .LE. 10.0 THEN
+ *   ALERT: Ratio of reflections to parameters is quite low ( < 10.0 )
+            You should reduce the number of parameters in the refinement.
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%           END IF
+%         END IF
+%      END IF
+%    ELSE  
+%%%                                   (Non-centro and Z < 18).
+%      IF WORK3 .LE. 4.0 THEN
+ *** FAIL:  Ratio of reflections to parameters is unacceptable ( < 4.0 )
+            Reduce the number of parameters, or seek help.
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%      ELSE
+%         IF WORK3 .LE. 6.0 THEN
+ **  WARN:  Ratio of reflections to parameters is unacceptable ( < 6.0 )
+            Reduce the number of parameters, or seek help.
+%           EVALUATE WARNFLAG = WARNFLAG + 1
+%         ELSE
+%           IF WORK3 .LE. 8.0 THEN
+ *   ALERT: Ratio of reflections to parameters is quite low ( < 8.0 )
+            You should reduce the number of parameters in the refinement.
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%           END IF
+%         END IF
+%      END IF
+%    END IF
+%  END BLOCK
+%%
+%%
+%%
+%% Check results
+%%
+
+
+%  IF ERRFLAG .GT. 0 THEN
 %    CLEAR
-%    INSERT !%EVALUATE CDLINE = "Failed !
 %    STORE FORMAT /(I4)/ LENGTH 4 INTEGER ERRFLAG
 %    IF ERRFLAG .EQ. 1 THEN
-%       INSERT ! check. "!
+%      INSERT ! check failed. !
 %    ELSE
-%       INSERT ! checks. "!
+%      INSERT ! checks failed. !
 %    END IF
-%    EXECUTE
-
-%    TRANSFER CDLINE TO DISPLAY
+%    OUTPUT
+%  END IF
+%  IF WARNFLAG .GT. 0 THEN
+%    CLEAR
+%    STORE FORMAT /(I4)/ LENGTH 4 INTEGER WARNFLAG
+%    IF WARNFLAG .EQ. 1 THEN
+%      INSERT ! warning issued. !
 %    ELSE
-
+%      INSERT ! warnings issued. !
+%    END IF
+%    OUTPUT
+%  END IF
+%  IF ALERTFLAG .GT. 0 THEN
+%    CLEAR
+%    STORE FORMAT /(I4)/ LENGTH 4 INTEGER ALERTFLAG
+%    IF ALERTFLAG .EQ. 1 THEN
+%      INSERT ! alert issued. !
+%    ELSE
+%      INSERT ! alerts issued. !
+%    END IF
+%    OUTPUT
+%  END IF
+%%
+%  IF ( ALERTFLAG .EQ. 0 ) .AND. ( ERRFLAG .EQ. 0 ) .AND. -
+      (  WARNFLAG .EQ. 0 ) THEN
 All checks passed successfully. 
-Email a CIF to checkcif@iucr.ac.uk for more 
-detailed and up to date checks.
-%END IF
+Email a CIF to checkcif@iucr.ac.uk for more detailed and up to date checks.
+%  END IF
 %END SCRIPT
