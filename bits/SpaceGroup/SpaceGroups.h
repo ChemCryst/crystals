@@ -45,17 +45,15 @@ class SpaceGroups:private vector<SpaceGroup>
 std::ofstream& operator<<(std::ofstream& pStream, SpaceGroups& pSpaceGroups);
 std::ostream& operator<<(std::ostream& pStream, SpaceGroups& pSpaceGroups);
 
-class SGColumn:virtual public Column
+class SGColumn:public ArrayList<SpaceGroups>
 {
     private:
         char* iPointGroup;
-        ArrayList<SpaceGroups>* iSpaceGroups;
     public:
         SGColumn();
         ~SGColumn();
         void add(char* pSpaceGroup, int pRow);
         SpaceGroups* get(int pIndex);
-        int length();
         void setHeading(char* pHeading);
         char* getPointGroup();
 };
