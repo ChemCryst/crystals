@@ -111,12 +111,12 @@
 %     END LOOP
 %   END IF
 %%
-%% Check for the last 6 SHELX commands. Add more commands here
+%% Check for the last 7 SHELX commands. Add more commands here
 %% if you discover any that are missing.
 %%
 %   IF LNOTAT .EQ. FALSE THEN
-%     VERIFY SIMU DEFS SUMP CGLS SLIM WPDB
-%     LOOP 6 TIMES
+%     VERIFY SIMU DEFS SUMP CGLS SLIM WPDB HTAB
+%     LOOP 7 TIMES
 %       IF ( KEYWORD LOOPCOUNTER ) .EQ. CLINE THEN
 %          EVALUATE LNOTAT = TRUE
 %          EVALUATE LOOPEND = LOOPCOUNTER
