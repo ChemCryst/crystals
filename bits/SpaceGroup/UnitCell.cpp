@@ -215,12 +215,17 @@ char* getCrystalSystem(const UnitCell::systemID pDefault)
         std::cout << "\n" << printCrystConst << "Select crystal system[" << pDefault << "]:";
         std::cin.getline(iSelect, 255);
         if (iSelect[0] == '\0')
-        {
             tString = crystalSystemConst(pDefault);
+        else
+        { 
+            tString = crystalSystemConst((UnitCell::systemID)strtol(iSelect, &tEnd, 10));
+            if (tEnd[0] != '\0')
+            {
+                tString =NULL;
+            }
         }
-        tString = crystalSystemConst((UnitCell::systemID)strtol(iSelect, &tEnd, 10));
     }
-    while (tEnd[0] != '\0' || tString == NULL);
+    while (tString == NULL);
     delete[] iSelect;
     return tString;
 }
