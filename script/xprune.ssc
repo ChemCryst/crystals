@@ -86,8 +86,8 @@
 %                  LOOP
 %                    ON EDITERROR TERMINATE
 %                    COPY 'TRANSFER FROM OFFSET=0 TO CLTYPE'
-%                    TRANSFER '^^WI ITEM ' // CLTYPE // CLTYPE // -
-                     "'GCHT_N" // CLTYPE // "_N_GEND'" TO DISPLAY
+%                    TRANSFER "^^WI ITEM '" // CLTYPE // "' '" // CLTYPE // -
+                     "' 'GCHT_N" // CLTYPE // "_N_GEND'" TO DISPLAY
 %                    EVALUATE N29 = N29 + 1
 %                    COPY 'NEXT'
 %                  END LOOP
@@ -113,8 +113,8 @@
 %                  LOOP
 %                    ON EDITERROR TERMINATE
 %                    COPY 'TRANSFER FROM OFFSET=0 TO CLTYPE'
-%                    TRANSFER '^^WI ITEM ' // CLTYPE // CLTYPE // -
-                     "'CHT_N" // CLTYPE // "_N_A'" TO DISPLAY
+%                    TRANSFER "^^WI ITEM '" // CLTYPE // "' '" // CLTYPE // -
+                     "' 'CHT_N" // CLTYPE // "_N_A'" TO DISPLAY
 %                    EVALUATE N29 = N29 + 1
 %                    COPY 'NEXT'
 %                  END LOOP
