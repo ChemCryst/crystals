@@ -6,6 +6,9 @@
 //   Modified:  22.7.1998 10:41 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.11  2000/09/20 12:53:03  ckp2
+// Moved kS and kTEmpty defs into here, as they are also used by TEXTOUT
+//
 // Revision 1.10  1999/06/13 14:33:46  dosuser
 // RIC: All tokens which are specific to a single GUI object have been
 // moved into the header file for that object. All that is left are the
@@ -52,6 +55,7 @@
 #define kSSetCommitText	"COMMIT"
 #define kSSetCancelText	"CANCEL"
 #define kSSelectAtoms	"SELECT"
+#define kSDisableAtoms  "DISABLEATOM"
 #define kSInvert	"INVERT"
 #define kSInform	"INFORM"
 #define kSIgnore	"IGNORE"
@@ -94,6 +98,7 @@ enum
  kTSetCommitText,
  kTSetCancelText,
  kTSelectAtoms,	
+ kTDisableAtoms, 
  kTInvert,	
  kTInform,	
  kTIgnore,	
