@@ -64,7 +64,7 @@ using namespace std;
 #define PATH_MAX _MAX_PATH
 #endif
 
-#define kVersion "1§"
+#define kVersion "1.0.1(Beta)"
 
 void outputToFile(RunParameters& pRunData, Stats* pStats, RankedSpaceGroups* pRanking, Table& pTable)	//This outputs the ranked spacegroups and the stats table to the file at the path pRunData->iOutputFile
 {
