@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  1999/06/13 16:10:10  dosuser
+C RIC: Use common block to store device.cmn information.
+C Device.cmn no longer needed.
+C
 C Revision 1.6  1999/06/04 11:43:08  dosuser
 C RIC: Added support for linux graphical interface version (GIL)
 C
@@ -265,7 +269,8 @@ C SCALE DOWN FURTHER TO PRODUCE A BORDER
         ELSE
           IF (ISCRN.EQ.6 .OR. ISCRN.EQ.5
      +   .OR. ISCRN.EQ.8 ) THEN
-            SCALE = SCLFIX * 10.0
+##GIDGIL            SCALE = SCLFIX * 10.0
+&&GIDGIL            SCALE = SCLFIX * 2.0
           ELSE
             SCALE = SCLFIX
           ENDIF
