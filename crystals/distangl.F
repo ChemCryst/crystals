@@ -1,4 +1,19 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2001/03/08 14:24:13  richard
+C Revamped the way this works a bit. KDIST1 overhauled to get rid of unnecessary jumps
+C and deprecated fortran stuff - seems easier to understand now ;)
+C ONLY (dirctive on it's own) simply causes the function vector to be used for INCL/EXCL
+C only, it no longer takes arguments. (Used to work like INCLUDE).
+C INCLUDE - as before, but disables PIVOT and BONDED directives. Any set of directives
+C featuring an INCLUDE will result in all non-specified atom being EXCLUDED.
+C EXCLUDE - as before, on it's own all non-specified atoms are INCLUDED.
+C PIVOT - atom can be a pivot in the calculation. Disables the INCLUDE directive. All
+C non specified atoms will be type BONDED, unless there is a BONDED directive, in which case
+C non-specified atoms are excluded.
+C BONDED - atom can be bonded to in the calculation. Disables the INCLUDE directive. All
+C non-specified atoms will be type PIVOT, unless there is a PIVOT directive, in which case
+C non-specified atoms are excluded.
+C
 C Revision 1.7  2001/01/22 16:49:25  richard
 C Fix array overflow when using include in #dist after List12 has been previously loaded.
 C
@@ -4134,7 +4149,7 @@ C
 C
                   MBONDS = 0
 C-------COMPUTE DISTANCE STACK TO A TWO BOND MAXIMUM
-                  MDIST = KDIST1( N5, JL, JT, -1, TOLER, ITRANS)
+                  MDIST = KDIST1( N5, JL, JT, JFNVC, TOLER, ITRANS)
                   MBONDS = MDIST
 C-------JK IS CURRENT NEXT FREE ADDRESS - SAVE AND SET LAST ENTRY
                   NFL = JL
