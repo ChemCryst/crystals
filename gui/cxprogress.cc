@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper
 //   Created:   05.11.1998 14:24 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2001/07/16 07:30:02  ckp2
+//   Let the linux version resize.
+//
 //   Revision 1.9  2001/06/18 12:55:46  richard
 //   The wxGauge class can't have child windows inserted. For now removed text appearing
 //   on progress bar in wx versions. Long term will parent both controls in a standard
@@ -187,6 +190,7 @@ void CxProgress::SetProgress(int complete)
     if(m_TextOverlay != nil)
     {
 #ifdef __CR_WIN__
+        m_TextOverlay->DestroyWindow();
         delete m_TextOverlay;
 #endif
 #ifdef __WINMSW__
