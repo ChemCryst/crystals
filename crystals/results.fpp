@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2001/03/05 17:29:01  CKP2
+C Fix cif punching of character constants
+C
 C Revision 1.12  2001/03/02 17:04:34  CKP2
 C More cif patches
 C
@@ -3998,8 +4001,8 @@ C----- COMPRESS AND PUNCH THE STRING CLINE
       CHARACTER *(*) CLINE
       CHARACTER *80 CTEMP
 \XUNITS
-        K = KHKIBM(CLINE)
         CALL XCREMS (CLINE, CTEMP, NCHAR)
+        K = KHKIBM(CLINE)
         CALL XCTRIM (CTEMP, NCHAR)
         WRITE(NCFPU1, '(A)') CTEMP(1:NCHAR)
       RETURN
