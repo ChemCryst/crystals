@@ -190,26 +190,27 @@ std::ostream& operator<<(std::ostream& pStream, SpaceGroups& pSpaceGroups)
     return pSpaceGroups.output(pStream);
 }
 
-SGColumn::SGColumn():ArrayList<SpaceGroups>(1), iPointGroup(vector<CrystSymmetry>())
+SGColumn::SGColumn():vector<SpaceGroups*>(), iPointGroup(vector<CrystSymmetry>())
 {}
 
 SGColumn::~SGColumn()
 {
-    int tSize = length();
-    
-    for (int i = 0; i < tSize; i++)
-    {
-        SpaceGroups* tSpace = get(i);
-        if (tSpace)
-        {
-            delete tSpace;
-        }
-    }
+	vector<SpaceGroups*>::iterator tIter;
+	
+	for (tIter=begin(); tIter != end(); tIter ++)
+	{
+		if (*tIter)
+			delete (*tIter);
+	}
 }
 
 void SGColumn::add(char* pSpaceGroup,  int pRow)
 {
-    setWithAdd(new SpaceGroups(pSpaceGroup), pRow);
+	if (size() <= (unsigned int)pRow)
+	{
+		resize(pRow+1, NULL);
+	}
+    at(pRow) = new SpaceGroups(pSpaceGroup);
 }
 
 void SGColumn::setPointGroup(char* pHeading)
