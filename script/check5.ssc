@@ -1,7 +1,9 @@
 %SCRIPT CHECK5
 %% A SCRIPT TO CHECK THAT LIST 5 IS IN THE CORRECT ORDER
 %% AND FIND LAST NON-H ATOM
-%  VARIABLE LOGICAL EXTINCT 
+
+ * Checking the state of the atomic parameters list (5).
+%  VARIABLE LOGICAL EXTINCT
 %  VARIABLE INTEGER ADP
 %  EVALUATE EXTINCT = FALSE
 %  VARIABLE CHARACTER CLAST CPARAM CPARAM2
@@ -110,4 +112,5 @@ WARNING - You have no atoms to refine
 %%      no Hydrogen found
 %       EVALUATE CLAST = " LAST"
 %     END IF
+ * Done.
 %END SCRIPT

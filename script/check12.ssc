@@ -1,7 +1,9 @@
 %SCRIPT VALID12
 %% Ensures that we have at least a minimum valid LIST12 
 %% REMEMBER THAT A VALID LIST MAY NOT BE A SUITABLE LIST
-%  VARIABLE LOGICAL EXTINCT 
+
+ * Ensuring that refinement directives exist and are valid.
+%  VARIABLE LOGICAL EXTINCT
 %  VARIABLE INTEGER ADP
 %  EVALUATE EXTINCT = FALSE
 %  VARIABLE CHARACTER CLAST CPARAM CPARAM2
@@ -15,7 +17,7 @@
 %%END BLOCK
 %%
 % IF EXISTS 5 .GE. 1 THEN
-CRYSTALS is creating a minimum valid LIST 12
+ * CRYSTALS is creating a minimum valid LIST 12
 %   IF ADP .LE. 0 THEN
 %     EVALUATE CPARAM = " X'S "
 %   ELSE IF ADP .EQ. 1 THEN
@@ -41,5 +43,6 @@ CRYSTALS is creating a minimum valid LIST 12
 %   QUEUE COPY END
 %   QUEUE PROCESS
 %  END IF
+ * Done
 %END SCRIPT
 
