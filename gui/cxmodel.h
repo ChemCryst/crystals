@@ -46,6 +46,9 @@ class	CxModel : public CWnd
 {
 	public:
             void Reset();
+                float ScaleToWindow();
+                float m_projratio;
+            Boolean m_moved;
 		void UpdateHighlights();
 		HDC hDC;
 		GLuint mNormal;

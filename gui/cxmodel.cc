@@ -9,7 +9,6 @@
 #include	<gl\glu.h>
 #include	<math.h>
 #include	"cxmodel.h"
-
 #include	"cxgrid.h"
 #include	"cxwindow.h"
 #include	"crmodel.h"
@@ -20,28 +19,20 @@
 
 int CxModel::mModelCount = kModelBase;
 
-CxModel *	CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
+CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 {
-	const char* wndClass = AfxRegisterWndClass(
-									CS_HREDRAW|CS_VREDRAW,
-									NULL,
-									(HBRUSH)(COLOR_MENU+1),
-									NULL
-									);
+        const char* wndClass = AfxRegisterWndClass(   CS_HREDRAW|CS_VREDRAW,
+                                                      NULL,
+                                                      (HBRUSH)(COLOR_MENU+1),
+                                                      NULL
+                                                           );
 
 	CxModel	*theStdModel = new CxModel(container);
 	theStdModel->Create(wndClass,"Model",WS_CHILD|WS_VISIBLE,CRect(0,0,26,28),guiParent,mModelCount++);
 	theStdModel->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
 	theStdModel->SetFont(CxGrid::mp_font);
 
-//      CClientDC   dc(theStdModel);
-//      theStdModel->memDC.CreateCompatibleDC(&dc);
-//      theStdModel->newMemDCBitmap = new CBitmap;
 	CRect rect;
-//      theStdModel->GetClientRect (&rect);
-//      theStdModel->newMemDCBitmap->CreateCompatibleBitmap(&dc,rect.Width(),rect.Height());
-//      theStdModel->oldMemDCBitmap = theStdModel->memDC.SelectObject(theStdModel->newMemDCBitmap);
-//      theStdModel->memDC.PatBlt(0,0,rect.Width(),rect.Height(),WHITENESS);
 
 	theStdModel->hDC = ::GetDC(theStdModel->GetSafeHwnd());
 	theStdModel->SetWindowPixelFormat(theStdModel->hDC);
@@ -62,6 +53,7 @@ CxModel::CxModel(CrModel* container)
 	m_radius = COVALENT;
 	m_radscale = 1.0f;
 	m_fastrotate = FALSE;
+      m_moved = true;
 	matrix = new float[16];
 	m_hGLContext = NULL;
 	m_GLPixelIndex = 0;
@@ -71,6 +63,8 @@ CxModel::CxModel(CrModel* container)
 	matrix[12]=0.0f; matrix[13]=0.0f; matrix[14]=0.0f; matrix[15]=1.0f;
 	m_LitAtom = nil;
 	m_drawing = false;
+        m_projratio = 1.0;
+
 }
 
 CxModel::~CxModel()
@@ -78,14 +72,12 @@ CxModel::~CxModel()
 	mModelCount--;
 	delete [] matrix;
 
-      wglMakeCurrent(NULL,NULL);
-      wglDeleteContext(m_hGLContext);
+        wglMakeCurrent(NULL,NULL);
+        wglDeleteContext(m_hGLContext);
 
 	HWND hWnd = GetSafeHwnd();
 	::ReleaseDC(hWnd,hDC);
 
-//      delete newMemDCBitmap; 
-	
 }
 
 void	CxModel::SetText( char * text )
@@ -93,7 +85,7 @@ void	CxModel::SetText( char * text )
 	SetWindowText(text);
 }
 
-void	CxModel::SetGeometry( int top, int left, int bottom, int right )
+void    CxModel::SetGeometry( int top, int left, int bottom, int right )
 {
 	if((top<0) || (left<0))
 	{
@@ -112,23 +104,6 @@ void	CxModel::SetGeometry( int top, int left, int bottom, int right )
 	else
 	{
 		MoveWindow(left,top,right-left,bottom-top,true);
-//            if(memDC != NULL)
-//            {
-//                  memDC.SelectObject(oldMemDCBitmap);
-//                  delete newMemDCBitmap; 
-//
-//                  CClientDC   dc(this);
-//                  newMemDCBitmap = new CBitmap;
-//                  CRect rect;
-//                  newMemDCBitmap->CreateCompatibleBitmap(&dc, right-left, bottom-top);
-//                  oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
-//                  memDC.PatBlt(0, 0, right-left, bottom-top, WHITENESS);
-////                  mBackBufferReady = 0;
-//                  ((CrModel*)mWidget)->ReDrawHighlights();
-//            }
-
-//		Setup();
-//		PaintBuffer();
 	}
 }
 int	CxModel::GetTop()
@@ -289,17 +264,8 @@ void CxModel::OnPaint()
 
       CPaintDC dc(this); // device context for painting
 
-	Setup();
-	PaintBuffer();
-
-
-//	if(m_LitAtom != nil)
-//		HighlightAtom(m_LitAtom,FALSE);
-
-//      CRect rect;
-//      GetClientRect (&rect);
-//      dc.BitBlt(0,0,rect.Width(),rect.Height(),&memDC,0,0,SRCAND);
-
+      Setup();
+      PaintBuffer();
 
     wglMakeCurrent(NULL,NULL);
 
@@ -326,14 +292,6 @@ void CxModel::SetIdealWidth(int nCharsWide)
 }
 
 
-//void CxModel::Clear()
-//{
-//      CRect rect;
-//      GetClientRect (&rect);
-//      memDC.PatBlt(0, 0, rect.Width(), rect.Height(), WHITENESS);
-//}
-
-
 void CxModel::OnLButtonUp( UINT nFlags, CPoint point )
 {
 	NOTUSED(nFlags);
@@ -344,9 +302,6 @@ void CxModel::OnLButtonUp( UINT nFlags, CPoint point )
 		InvalidateRect(NULL,FALSE);
 	}
 
-//	CPoint devPoint = LogicalToDevice(point);
-//	((CrModel*)mWidget)->LMouseClick(devPoint.x, devPoint.y);
-	
 }
 
 void CxModel::OnLButtonDown( UINT nFlags, CPoint point )
@@ -358,9 +313,9 @@ void CxModel::OnLButtonDown( UINT nFlags, CPoint point )
 		((CrModel*)mWidget)->SendAtom(atom);
             m_LitAtom=nil; //Get it to rehighlight properly.
             wglMakeCurrent(hDC, m_hGLContext);
-            glNewList(mLitatom,GL_COMPILE);
-            DrawAtom(atom,1);
-            glEndList();
+              glNewList(mLitatom,GL_COMPILE);
+              DrawAtom(atom,1);
+              glEndList();
             wglMakeCurrent(NULL,NULL);
             InvalidateRect(NULL,FALSE);
 	}
@@ -391,7 +346,6 @@ void CxModel::OnMouseMove( UINT nFlags, CPoint point )
 	
 			if(rotate.cy != 0)
 			{
-//                        mBackBufferReady = 0;
 				for (int i = 0; i < 16; i++)
 					oldmatrix[i]=matrix[i];
 	
@@ -404,7 +358,6 @@ void CxModel::OnMouseMove( UINT nFlags, CPoint point )
 			}
 			if(rotate.cx != 0)
 			{
-//                        mBackBufferReady = 0;
 				for (int i = 0; i < 16; i++)
 					oldmatrix[i]=matrix[i];
 	
@@ -417,7 +370,8 @@ void CxModel::OnMouseMove( UINT nFlags, CPoint point )
 			}
 	
 			delete oldmatrix;
-			InvalidateRect(NULL,FALSE);
+                  m_moved = true;
+                  InvalidateRect(NULL,FALSE);
 		}
 		else   //LBUTTONDOWN, but not rotating yet.
 		{
@@ -435,7 +389,8 @@ void CxModel::OnMouseMove( UINT nFlags, CPoint point )
 		{
 			m_fastrotate = FALSE;
 			((CrModel*)mWidget)->ReDrawHighlights();
-			InvalidateRect(NULL,FALSE);
+                  m_moved = true;
+                  InvalidateRect(NULL,FALSE);
 		}
 
 		CcString atomname;
@@ -449,15 +404,15 @@ void CxModel::OnMouseMove( UINT nFlags, CPoint point )
 				if (!m_drawing) // handy though this feature is, we can't really draw two lists at once.
 				{       
 					wglMakeCurrent(hDC, m_hGLContext);
-					glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
-					glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-					glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
-					glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
-                              glNewList(mLitatom,GL_COMPILE);
-					DrawAtom(atom,1);
-                              glEndList();
-                              wglMakeCurrent(NULL,NULL);
-                              InvalidateRect(NULL,FALSE);
+                                         glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
+                                         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+                                         glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
+                                         glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
+                                         glNewList(mLitatom,GL_COMPILE);
+                                         DrawAtom(atom,1);
+                                         glEndList();
+                                        wglMakeCurrent(NULL,NULL);
+                                        InvalidateRect(NULL,FALSE);
 				}
 			}
 		}
@@ -513,7 +468,7 @@ void CxModel::OnRButtonUp( UINT nFlags, CPoint point )
 }
 
 
-
+///////////// Start the normal atom list
 
 void CxModel::Start()
 {
@@ -524,11 +479,74 @@ void CxModel::Start()
 	glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
 	glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
 
-	glNewList(mNormal,GL_COMPILE);
+// This is a new list. Remove the old lit atom.
+	m_LitAtom = nil;
+      glNewList(mLitatom,GL_COMPILE);
+      glEndList();
 
+// Start the normal atom list. It is closed in Display().
+	glNewList(mNormal,GL_COMPILE);
 	m_drawing = true;
-                             
 }
+
+// You can call DrawAtom, DrawBond or DrawTri in between
+// Start() and Display().
+
+///////////// End the normal atom list
+
+void CxModel::Display()
+{
+      glEndList();
+      wglMakeCurrent(NULL,NULL);
+      m_moved = true;
+      InvalidateRect(NULL,FALSE);
+      m_drawing = false;
+}
+
+///////////// Start the highlight atom list
+
+void CxModel::StartHighlights()
+{
+	if (!m_drawing) // handy though this feature is, we can't really draw two lists at once.
+	{       
+		m_drawing = true;
+		wglMakeCurrent(hDC, m_hGLContext);
+		glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
+		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+		glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
+		glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
+            glNewList(mHighlights,GL_COMPILE);
+	}
+}
+
+///////////// Add the highlit atoms to the list.
+// You can call HighlightAtom in between
+// StartHighlights() and FinishHighlights().
+
+void CxModel::HighlightAtom(CcModelAtom * theAtom, Boolean selected)
+{
+      DrawAtom(theAtom,2);
+      return;
+}
+
+
+///////////// End the highlight atom list
+
+void CxModel::FinishHighlights()
+{
+	glEndList();
+	wglMakeCurrent(NULL,NULL);
+
+	InvalidateRect(NULL,FALSE);
+	m_drawing = false;
+}
+
+
+
+
+
+
+
 
 void CxModel::DrawAtom(CcModelAtom* anAtom, int style)
 {
@@ -619,28 +637,30 @@ void CxModel::DrawAtom(CcModelAtom* anAtom, int style)
       glPopMatrix();
 }
 
-void CxModel::Display()
-{
-	glEndList();
-      wglMakeCurrent(NULL,NULL);
-
-      InvalidateRect(NULL,FALSE);
-	m_drawing = false;
-}
 
 void CxModel::Setup()
 {	
       CRect rect;
 	GetClientRect(&rect);
 
-	GLsizei width  = min (rect.Width(),rect.Height());
-	GLsizei	height = width;
+        GLsizei width  = min (rect.Width(),rect.Height());
+        GLsizei height = width;
+
 
 	glViewport(0,0,width,height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	glOrtho(0,10000,0,10000,-10000,0);
+      if (m_moved)
+      {
+        m_moved = false;
+        float ratio = ScaleToWindow();
+        m_projratio = ratio;
+      }
+
+      int diff = (int)( 10000 -  ( 10000 * m_projratio ) ) / 2.0;
+
+      glOrtho(diff,10000-diff,diff,10000-diff,-10000,0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glEnable(GL_LIGHTING);
@@ -652,22 +672,22 @@ void CxModel::Setup()
 void CxModel::PaintBuffer() 
 {
 
-		glLoadIdentity();
-		glClearColor( 1.0f,1.0f,1.0f,0.0f); 
+            glLoadIdentity();
+            glClearColor( 1.0f,1.0f,1.0f,0.0f); 
+ 
+            glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	
-		GLfloat LightAmbient[] = { 0.1f, 0.1f, 0.1f, 0.1f };
-		GLfloat LightDiffuse[] = { 0.7f, 0.7f, 0.7f, 0.7f };
-//		GLfloat LightSpecular[] ={ 0.0f, 0.0f, 0.0f, 0.1f };
-		GLfloat LightSpecular[] ={ 1.0f, 1.0f, 1.0f, 1.0f };
+            GLfloat LightAmbient[] = { 0.1f, 0.1f, 0.1f, 0.1f };
+            GLfloat LightDiffuse[] = { 0.7f, 0.7f, 0.7f, 0.7f };
+//           GLfloat LightSpecular[] ={ 0.0f, 0.0f, 0.0f, 0.1f };
+            GLfloat LightSpecular[] ={ 1.0f, 1.0f, 1.0f, 1.0f };
 
             GLfloat LightPosition[] = {10000.0f, 10000.0f, 10000.0f, 0.0f};
-		glLightfv(GL_LIGHT0, GL_AMBIENT, LightAmbient);	
-		glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse);	
-		glLightfv(GL_LIGHT0, GL_SPECULAR, LightSpecular);	
-		glLightfv(GL_LIGHT0, GL_POSITION, LightPosition);	
-		glEnable(GL_LIGHT0);
+            glLightfv(GL_LIGHT0, GL_AMBIENT, LightAmbient); 
+            glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse); 
+            glLightfv(GL_LIGHT0, GL_SPECULAR, LightSpecular); 
+            glLightfv(GL_LIGHT0, GL_POSITION, LightPosition); 
+            glEnable(GL_LIGHT0);
 
             GLfloat LightPosition1[] = {-10000.0f, -10000.0f, 10000.0f, 0.0f};
             glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient); 
@@ -682,7 +702,7 @@ void CxModel::PaintBuffer()
 		matrix[15] = 1.0;
 
 		glTranslated (5000, 5000,5000);     //The object coordinates are centered at 5000,5000,5000 by center model.
-		glMultMatrixf(matrix);				//However rotations are about (0,0,0)
+                glMultMatrixf(matrix);                          //However rotations are about (0,0,0)
 		glTranslated (-5000, -5000,-5000);  //And then translate them back
 	
 		if(!m_fastrotate)
@@ -880,13 +900,7 @@ Boolean CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelAt
 	GLdouble x,y,z,x1,y1,z1;	// Storage for object coordinates
 	GLint viewport[4];			// Storage for viewport coordinates
 
-	if(matrix[15] == 0) //Bad Matrix. Recalculate. (This rarely happens).
-	{
-		Setup();
-//            mBackBufferReady = 0; //Otherwise it won't recalculate
-		PaintBuffer();
-	}
-
+                  
 // Account for difference between Windows (GDI) coordinates
 // and OpenGL coordinates
 
@@ -894,6 +908,7 @@ Boolean CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelAt
 	GetClientRect(&rect);
 	yPos = rect.Height() - yPos;
 
+                          
 	for ( int i = 0; i<16; i++ )
 	{
 		modelMatrix[i] = matrix[i];
@@ -903,17 +918,30 @@ Boolean CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelAt
 	viewport[2] = min(rect.Width(), rect.Height());
 	viewport[3] = viewport[2];
 
-	projMatrix[0]  = 1.0 / 5000.0;
+
+// Account for m_projratio scaling of the model.
+// Need to scale about the centre point of the window.
+
+
+        int diff = (int)( viewport[2] - ( viewport[2] * m_projratio ) ) / 2.0;
+
+        xPos = ( xPos * m_projratio ) + diff;
+        yPos = ( yPos * m_projratio ) + diff;
+
+
+
+
+        projMatrix[0]  = 1.0 / ( 5000.0 );
 	projMatrix[1]  = 0.0;
-	projMatrix[2]  = 0.0;
+        projMatrix[2]  = 0.0;
 	projMatrix[3]  = 0.0;
 	projMatrix[4]  = 0.0;
-	projMatrix[5]  = 1.0 / 5000.0;
+        projMatrix[5]  = 1.0 / ( 5000.0 );
 	projMatrix[6]  = 0.0;
 	projMatrix[7]  = 0.0;
 	projMatrix[8]  = 0.0;
 	projMatrix[9]  = 0.0;
-	projMatrix[10] = 1.0 / 5000.0;
+        projMatrix[10] = 1.0 / ( 5000.0 );
 	projMatrix[11]  = 0.0;
 	projMatrix[12]  = -1.0;
 	projMatrix[13]  = -1.0;
@@ -924,7 +952,6 @@ Boolean CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelAt
 	gluUnProject(0, 0, 0, modelMatrix, projMatrix, viewport, &x1, &y1, &z1);
 	gluUnProject(1, 1, 0, modelMatrix, projMatrix, viewport, &x, &y, &z);
 	double scale = sqrt(2.0) / sqrt( (x1-x)*(x1-x) + (y1-y)*(y1-y) + (z1-z)*(z1-z) );
-
 //loop through the atoms.
 //find any that are within radius of (xPos,yPos)
 //store the one with the *lowest* z coord. 
@@ -935,19 +962,19 @@ Boolean CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelAt
 		double topAtomZ = 0;
 		double topAtomBZ = 0;
 
-
 		CcModelAtom* atomCoord;
 		CrModel* crModel = (CrModel*)mWidget;
 
 		crModel->PrepareToGetAtoms();
 		while ( (atomCoord = crModel->GetModelAtom()) != nil )
 		{
-			int radius = (int)(atomCoord->R() * max(m_radscale,0.5) * scale); //NB m_radscale doesn't go below 0.5 or it gets all fiddly trying to find atoms with the mouse.
-			int radsq = radius * radius;
-			gluProject((double)atomCoord->X(), (double)atomCoord->Y(), (double)atomCoord->Z(), 
-						modelMatrix, projMatrix, viewport, 
-						&x, &y, &z);
-//			double dist = sqrt ( (xPos - x)*(xPos - x) + (yPos - y)*(yPos - y) ); 
+			int radius = (int)(atomCoord->R() * max(m_radscale,0.25) * scale); //NB m_radscale doesn't go below 0.5 or it gets all fiddly trying to find atoms with the mouse.
+            int radsq = radius * radius / m_projratio;
+
+
+            gluProject((double)atomCoord->X(), (double)atomCoord->Y(), (double)atomCoord->Z(), 
+							   modelMatrix, projMatrix, viewport, 
+						       &x, &y, &z);
 			int distsq = (int) ((xPos-x)*(xPos-x) + (yPos - y)*(yPos - y));
 
 			if ( ( (topAtom == nil)||(topAtomZ < z) ) && ( distsq < radsq ) )
@@ -956,10 +983,13 @@ Boolean CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelAt
 				topAtomZ = z;
 			}
 
-// If the topAtom has not been found
-// AND the topAtomB has not been found OR the current atom is higher
-// AND the distance is in the B range.
-			if   ( (topAtom == nil) && ( (topAtomB == nil)||(topAtomBZ < z )) && (distsq < (radsq*3) ) )
+// If we haven't found an atom yet look for others in a wider radius. This
+// will be used if we don't find an atom within the radsq.
+
+// If  (1) the topAtom  has not been found
+// AND (2) the topAtomB has not been found OR the current atom is higher
+// AND (3) the distance is in the B range.
+                  if   ( (topAtom == nil) && ( (topAtomB == nil)||(topAtomBZ < z )) && (distsq < (radsq*6) ) )
 			{
 				topAtomB = atomCoord;
 				topAtomBZ = z;
@@ -983,35 +1013,102 @@ Boolean CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelAt
 }
 
 
-
-
-void CxModel::StartHighlights()
+float CxModel::ScaleToWindow()
 {
-	if (!m_drawing) // handy though this feature is, we can't really draw two lists at once.
-	{       
-		m_drawing = true;
-		wglMakeCurrent(hDC, m_hGLContext);
-		glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
-		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-		glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
-		glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
-                glNewList(mHighlights,GL_COMPILE);
+//This is called every time as the molecule rotates.
+//It is important that it is very fast, since
+//it loops through *all* the atoms!
+
+
+        GLdouble modelMatrix[16];       // Storage for modelview matrix
+	GLdouble projMatrix[16];	// Storage for projection matrix
+	GLdouble x,y,z,x1,y1,z1;	// Storage for object coordinates
+	GLint viewport[4];			// Storage for viewport coordinates
+
+
+// Store min and max x and y
+        int xMax = -10000;
+        int yMax = -10000;
+        int xMin =  10000;
+        int yMin =  10000;
+
+
+	CRect rect;
+	GetClientRect(&rect);
+
+	for ( int i = 0; i<16; i++ )
+	{
+		modelMatrix[i] = matrix[i];
 	}
+	viewport[0] = 0;
+	viewport[1] = 0;
+        viewport[2] = min ( rect.Width(), rect.Height() );
+        viewport[3] = viewport[2];
+
+	projMatrix[0]  = 1.0 / 5000.0;
+	projMatrix[1]  = 0.0;
+	projMatrix[2]  = 0.0;
+	projMatrix[3]  = 0.0;
+	projMatrix[4]  = 0.0;
+	projMatrix[5]  = 1.0 / 5000.0;
+	projMatrix[6]  = 0.0;
+	projMatrix[7]  = 0.0;
+	projMatrix[8]  = 0.0;
+	projMatrix[9]  = 0.0;
+	projMatrix[10] = 1.0 / 5000.0;
+	projMatrix[11]  = 0.0;
+	projMatrix[12]  = -1.0;
+	projMatrix[13]  = -1.0;
+	projMatrix[14]  = 1.0;
+	projMatrix[15]  = 1.0;
+
+//Need scale between model and window in order to do radius calculation
+       gluUnProject(0, 0, 0, modelMatrix, projMatrix, viewport, &x1, &y1, &z1);
+       gluUnProject(1, 1, 0, modelMatrix, projMatrix, viewport, &x, &y, &z);
+       double scale = sqrt(2.0) / sqrt( (x1-x)*(x1-x) + (y1-y)*(y1-y) + (z1-z)*(z1-z) );
+
+//loop through the atoms.
+
+       CcModelAtom* atomCoord;
+       CrModel* crModel = (CrModel*)mWidget;
+
+       crModel->PrepareToGetAtoms();
+       while ( (atomCoord = crModel->GetModelAtom()) != nil )
+       {
+             int radius = (int)(atomCoord->R() * m_radscale * scale); 
+             gluProject((double)atomCoord->X(), (double)atomCoord->Y(), (double)atomCoord->Z(),
+                        modelMatrix, projMatrix, viewport, 
+                        &x, &y, &z);
+
+             xMax = max ( xMax, x + 2 * radius + 20 );
+             xMin = min ( xMin, x - 2 * radius - 20);
+             yMax = max ( yMax, y + 2 * radius + 20);
+             yMin = min ( yMin, y - 2 * radius - 20);
+
+
+       } //end atom getting loop
+
+// Now, lets see. Do we want to scale against x or y?
+       float xratio = (float)(xMax-xMin) / (float)(viewport[2]);
+       float yratio = (float)(yMax-yMin) / (float)(viewport[2]);
+       float scaletowin;
+
+       if ( xratio > yratio )
+       {
+// We're scaling to x
+                scaletowin = xratio;
+       }
+       else
+       {
+                scaletowin = yratio;
+       }
+
+       return scaletowin;
+
+
 }
 
-void CxModel::FinishHighlights()
-{
-	glEndList();
-	wglMakeCurrent(NULL,NULL);
-	InvalidateRect(NULL,FALSE);
-	m_drawing = false;
-}
 
-void CxModel::HighlightAtom(CcModelAtom * theAtom, Boolean selected)
-{
-      DrawAtom(theAtom,2);
-	return;
-}
 
 
 void CxModel::OnMenuSelected(int nID)
