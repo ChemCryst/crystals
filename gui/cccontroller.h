@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 15:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.28  2003/01/16 11:44:14  rich
+//   New "SAFESET [ objectname instructions ]" syntax introduced. If objectname
+//   doesn't exist, it ignores all the tokens between the square brackets, without
+//   raising an error. Can be used for updating GUI objects that don't have to
+//   be there.
+//
 //   Revision 1.27  2003/01/14 10:27:18  rich
 //   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
 //
@@ -160,7 +166,7 @@ class   CcController
     void    SendCommand( CcString command , Boolean jumpQueue = false);
     void    Tokenize( CcString text );
     Boolean IsSpace( char c );
-    Boolean IsDelimiter( char c );
+    char IsDelimiter( char c, char delim = 0 );
     void  AppendToken( CcString text );
 
     void  AddCrystalsCommand( CcString line , Boolean jumpQueue = false);

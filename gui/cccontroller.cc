@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.54  2003/02/20 14:06:21  rich
+// Don't crash if initial window fails to open, just stop.
+//
 // Revision 1.53  2003/01/16 11:44:14  rich
 // New "SAFESET [ objectname instructions ]" syntax introduced. If objectname
 // doesn't exist, it ignores all the tokens between the square brackets, without
@@ -1181,9 +1184,10 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
 Boolean     CcController::ParseLine( CcString text )
 {
 
-      int start = 1, stop = 1, i;
+    int start = 1, stop = 1, i;
     Boolean inSpace = true;
     Boolean inDelimiter = false;
+    char closer = 0;
 
       int clen = text.Len();
 
@@ -1191,48 +1195,46 @@ Boolean     CcController::ParseLine( CcString text )
       {
         if ( inDelimiter )
         {
-            if ( IsDelimiter( text[i-1] ) )  // end of item
+            if ( IsDelimiter( text[i-1], closer ) )  // end of item
             {
-                        stop = i-1;
+                stop = i-1;
 // we could have an empty string ie. '' so check before crashing the program.
-                        if ( stop < start )
-                        {
-                            AppendToken("") ;// add item to token list
-                        }
-                        else
-                        {
-                            AppendToken(text.Sub(start,stop) ) ;// add item to token list
-                        }
+                if ( stop < start )
+                {
+                    AppendToken("") ;// add item to token list
+                }
+                else
+                {
+                    AppendToken(text.Sub(start,stop) ) ;// add item to token list
+                }
 // Reset values
                 start = stop = 0;
                 inDelimiter = false;
                 inSpace = true;
+                closer = 0;
             }
         }
         else
         {
             if ( IsSpace( text[i-1] ) )
             {
-                if ( ! inSpace )
-                // end of item
+                if ( ! inSpace )           // end of item
                 {
-                              stop = i-1;
-                    // add item to token list
-                              AppendToken(text.Sub(start,stop) );
+                    stop = i-1;
+                    AppendToken(text.Sub(start,stop) ); // add item to token list
 
                     // init values
                     start = stop = 0;
                     inSpace = true;
                 }
             }
-            else if ( IsDelimiter( text[i-1] ) )
+            else if ( closer = IsDelimiter( text[i-1] ) )
             {
                 start = i+1;
                 stop = 0;
                 inDelimiter = true;
             }
-            else if ( inSpace )
-            // start of item
+            else if ( inSpace )            // start of item
             {
                 start = i;
                 stop = 0;
@@ -1396,11 +1398,25 @@ Boolean CcController::IsSpace( char c )
             || c == ',' );
 }
 
-Boolean CcController::IsDelimiter( char c )
+char CcController::IsDelimiter( char c, char delim )
 {
-    //   ' is the delimiter.
+    //   ' or " or ! or < is the delimiter.
 #define kQuoteChar 39
-    return ( c == kQuoteChar ) ;
+#define kDoubleQuoteChar 34
+#define kShriekChar 33
+#define kLeftAngle 60
+#define kRightAngle 62
+
+// If delim is non-zero we are looking for a closing quote, so it
+// must match 'delim', otherwise it can be any of the 4 quoting chars.
+
+    if ( delim ) return ( c == delim ? c : 0 ) ;
+
+    if ( c == kQuoteChar ) return kQuoteChar;
+    if ( c == kDoubleQuoteChar ) return kDoubleQuoteChar;
+    if ( c == kShriekChar ) return kShriekChar;
+    if ( c == kLeftAngle ) return kRightAngle;
+    return ( 0 ) ;
 }
 
 void  CcController::AppendToken( CcString text  )
