@@ -3,6 +3,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.26  2003/08/13 16:02:05  rich
+// Add definition of min and max macros to header.
+//
 // Revision 1.25  2003/05/07 12:18:57  rich
 //
 // RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -207,10 +210,6 @@ typedef unsigned int UINT;
 #else
  #define LOGERRORS    //        Log errors         (LOGERR macro)
  #define LOGWARNINGS  //        Log warnings       (LOGWARN macro)
-#ifdef __BOTHWX__   //For the time being on Linux
- #define LOGSTATUS    //Log lots of things (LOGSTAT macro)
-#endif
-
 #endif
 
 
