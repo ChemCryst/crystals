@@ -6,6 +6,9 @@
 //   Filename:  CxBitmap.cpp
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2004/10/06 13:57:26  rich
+//   Fixes for WXS version.
+//
 //   Revision 1.8  2004/06/24 09:12:01  rich
 //   Replaced home-made strings and lists with Standard
 //   Template Library versions.
@@ -96,10 +99,10 @@ void    CxBitmap::LoadFile( string bitmap, bool transp )
     string dir = (CcController::theController)->EnvVarExtract( crysdir, i );
     i++;
 #ifdef __BOTHWIN__
-    string file = dir + "\\script\\" + bitmap;
+    string file = dir + "script\\" + bitmap;
 #endif
 #ifdef __WXGTK__
-    string file = dir + "/script/" + bitmap;
+    string file = dir + "script/" + bitmap;
 #endif
 
 #ifdef __CR_WIN__

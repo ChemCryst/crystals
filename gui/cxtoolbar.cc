@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.15  2004/10/06 13:57:26  rich
+//   Fixes for WXS version.
+//
 //   Revision 1.14  2004/06/24 09:12:02  rich
 //   Replaced home-made strings and lists with Standard
 //   Template Library versions.
@@ -242,10 +245,10 @@ bool    CxToolBar::AddTool( CcTool* newTool )
       string dir = (CcController::theController)->EnvVarExtract( crysdir, i );
       i++;
 #ifdef __WXGTK__
-      string file = dir + "/script/" + newTool->tImage;
+      string file = dir + "script/" + newTool->tImage;
 #endif
 #ifdef __BOTHWIN__
-      string file = dir + "\\script\\" + newTool->tImage;
+      string file = dir + "script\\" + newTool->tImage;
 #endif
 
 #ifdef __BOTHWX__
