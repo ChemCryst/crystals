@@ -8,6 +8,11 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.13  2001/07/16 07:29:29  ckp2
+//   Really messed around with the creation of the memory device context in the wx version.
+//   Now it is deleted and recreated (along with it's bitmap) every time the window is
+//   resized. This seems the best way to stop it randomly crashing with an invalid wxPen warning.
+//
 //   Revision 1.12  2001/06/18 12:46:05  richard
 //   Keep bitmap selected in the wxMemoryDC. (Except when deleting and recreating, e.g.
 //   when window resizes.) Use wxGuiMutex functions to ensure safe clearing of the
@@ -61,14 +66,14 @@ CxChart *   CxChart::CreateCxChart( CrChart * container, CxGrid * guiParent )
     theStdChart->SetFont(CcController::mp_font);
 
     CClientDC   dc(theStdChart);
-    theStdChart->memDC.CreateCompatibleDC(&dc);
+    theStdChart->memDC->CreateCompatibleDC(&dc);
     theStdChart->newMemDCBitmap = new CBitmap;
     CRect rect;
     theStdChart->GetClientRect (&rect);
     theStdChart->newMemDCBitmap->CreateCompatibleBitmap(&dc,rect.Width(),rect.Height());
-    theStdChart->oldMemDCBitmap = theStdChart->memDC.SelectObject(theStdChart->newMemDCBitmap);
-    theStdChart->memDC.PatBlt(0,0,rect.Width(),rect.Height(),WHITENESS);
-    theStdChart->memDC.SelectObject(theStdChart->oldMemDCBitmap);
+    theStdChart->oldMemDCBitmap = theStdChart->memDC->SelectObject(theStdChart->newMemDCBitmap);
+    theStdChart->memDC->PatBlt(0,0,rect.Width(),rect.Height(),WHITENESS);
+    theStdChart->memDC->SelectObject(theStdChart->oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
       CxChart  *theStdChart = new CxChart(container);
@@ -92,6 +97,7 @@ CxChart::CxChart(CrChart* container)
     ptr_to_crObject = container;
 #ifdef __CR_WIN__
     mfgcolour = PALETTERGB(0,0,0);
+    memDC = new CDC();
 #endif
 #ifdef __BOTHWX__
     mfgcolour = wxColour(0,0,0);
@@ -109,6 +115,9 @@ CxChart::~CxChart()
 {
     mChartCount--;
     delete newMemDCBitmap;
+#ifdef __CR_WIN__
+    delete memDC;
+#endif
 #ifdef __BOTHWX__
     delete memDC;
     delete m_pen;
@@ -149,15 +158,15 @@ void    CxChart::SetGeometry( int top, int left, int bottom, int right )
 {
 #ifdef __CR_WIN__
   MoveWindow(left,top,right-left,bottom-top,true);
-  if(memDC != NULL)
+  if(memDC)
   {
      delete newMemDCBitmap;
      CClientDC   dc(this);
      newMemDCBitmap = new CBitmap;
      newMemDCBitmap->CreateCompatibleBitmap(&dc, right-left, bottom-top);
-     oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
-     memDC.PatBlt(0, 0, right-left, bottom-top, WHITENESS);
-     memDC.SelectObject(oldMemDCBitmap);
+     oldMemDCBitmap = memDC->SelectObject(newMemDCBitmap);
+     memDC->PatBlt(0, 0, right-left, bottom-top, WHITENESS);
+     memDC->SelectObject(oldMemDCBitmap);
   }
   ((CrChart*)ptr_to_crObject)->ReDrawView();
 #endif
@@ -182,6 +191,12 @@ void    CxChart::SetGeometry( int top, int left, int bottom, int right )
 
       ((CrChart*)ptr_to_crObject)->ReDrawView();
 #endif
+
+}
+
+
+void CxChart::DrawMetafile ( )
+{
 
 }
 
@@ -237,13 +252,13 @@ void CxChart::DrawLine(int x1, int y1, int x2, int y2)
 
 #ifdef __CR_WIN__
     CPen pen(PS_SOLID,1,mfgcolour), *oldpen;
-    oldpen = memDC.SelectObject(&pen);
-    oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
+    oldpen = memDC->SelectObject(&pen);
+    oldMemDCBitmap = memDC->SelectObject(newMemDCBitmap);
 
-    memDC.MoveTo(CPoint(cpoint1.x,cpoint1.y));
-    memDC.LineTo(CPoint(cpoint2.x,cpoint2.y));
-    memDC.SelectObject(oldMemDCBitmap);
-    memDC.SelectObject(oldpen);
+    memDC->MoveTo(CPoint(cpoint1.x,cpoint1.y));
+    memDC->LineTo(CPoint(cpoint2.x,cpoint2.y));
+    memDC->SelectObject(oldMemDCBitmap);
+    memDC->SelectObject(oldpen);
 #endif
 
 #ifdef __BOTHWX__
@@ -361,11 +376,11 @@ void CxChart::OnPaint()
     CRect rect;
     GetClientRect (&rect);
 
-    oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
+    oldMemDCBitmap = memDC->SelectObject(newMemDCBitmap);
 
-    dc.BitBlt(0,0,rect.Width(),rect.Height(),&memDC,0,0,SRCCOPY);
+    dc.BitBlt(0,0,rect.Width(),rect.Height(),memDC,0,0,SRCCOPY);
 
-    memDC.SelectObject(oldMemDCBitmap);
+    memDC->SelectObject(oldMemDCBitmap);
 
     if(m_inverted)
     {
@@ -439,9 +454,9 @@ void CxChart::Clear()
 #ifdef __CR_WIN__
     CRect rect;
     GetClientRect (&rect);
-    oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
-    memDC.PatBlt(0, 0, rect.Width(), rect.Height(), WHITENESS);
-    memDC.SelectObject(oldMemDCBitmap);
+    oldMemDCBitmap = memDC->SelectObject(newMemDCBitmap);
+    memDC->PatBlt(0, 0, rect.Width(), rect.Height(), WHITENESS);
+    memDC->SelectObject(oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
 //      ::wxMutexGuiEnter();
@@ -470,14 +485,14 @@ void CxChart::DrawEllipse(int x, int y, int w, int h, Boolean fill)
 #ifdef __CR_WIN__
     CRgn        rgn;
     CBrush      brush;
-    oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
+    oldMemDCBitmap = memDC->SelectObject(newMemDCBitmap);
     rgn.CreateEllipticRgn(topleft.x,topleft.y,bottomright.x,bottomright.y);
     brush.CreateSolidBrush(mfgcolour);
     if(fill)
-        memDC.FillRgn(&rgn,&brush);
+        memDC->FillRgn(&rgn,&brush);
     else
-        memDC.FrameRgn(&rgn,&brush,1,1);
-    memDC.SelectObject(oldMemDCBitmap);
+        memDC->FrameRgn(&rgn,&brush,1,1);
+    memDC->SelectObject(oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
 
@@ -498,14 +513,14 @@ void CxChart::DrawText(int x, int y, CcString text)
       CcPoint      coord = DeviceToLogical(x,y);
 #ifdef __CR_WIN__
     CPen        pen(PS_SOLID,1,mfgcolour);
-    oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
-    CPen        *oldpen = memDC.SelectObject(&pen);
-    CFont       *oldFont = memDC.SelectObject(CcController::mp_font);
-    memDC.SetBkMode(TRANSPARENT);
-    memDC.TextOut(coord.x,coord.y,text.ToCString());
-    memDC.SelectObject(oldpen);
-    memDC.SelectObject(oldFont);
-    memDC.SelectObject(oldMemDCBitmap);
+    oldMemDCBitmap = memDC->SelectObject(newMemDCBitmap);
+    CPen        *oldpen = memDC->SelectObject(&pen);
+    CFont       *oldFont = memDC->SelectObject(CcController::mp_font);
+    memDC->SetBkMode(TRANSPARENT);
+    memDC->TextOut(coord.x,coord.y,text.ToCString());
+    memDC->SelectObject(oldpen);
+    memDC->SelectObject(oldFont);
+    memDC->SelectObject(oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
       wxString wtext = wxString(text.ToCString());
@@ -521,32 +536,32 @@ void CxChart::DrawText(int x, int y, CcString text)
 void CxChart::DrawPoly(int nVertices, int * vertices, Boolean fill)
 {
 #ifdef __CR_WIN__
-      oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
+      oldMemDCBitmap = memDC->SelectObject(newMemDCBitmap);
     if(fill)
     {
         CBrush      brush;
         brush.CreateSolidBrush(mfgcolour);
             CPen   pen(PS_SOLID,1,mfgcolour);
 
-            CBrush *oldBrush = memDC.SelectObject(&brush);
-            CPen   *oldpen = memDC.SelectObject(&pen);
+            CBrush *oldBrush = memDC->SelectObject(&brush);
+            CPen   *oldpen = memDC->SelectObject(&pen);
 
             CcPoint*           points = new CcPoint[nVertices];
         for ( int j = 0; j < nVertices*2 ; j+=2 )
         {
             points[j/2] = DeviceToLogical( *(vertices+j), *(vertices+j+1) );
         }
-            memDC.Polygon( (LPPOINT) points, nVertices );
-            memDC.SelectObject(oldBrush);
-            memDC.SelectObject(oldpen);
+            memDC->Polygon( (LPPOINT) points, nVertices );
+            memDC->SelectObject(oldBrush);
+            memDC->SelectObject(oldpen);
             delete [] points;
     }
       else
       {
 //NB: If the polygon isn't filled, then it shouldn't closed.
         CPen   pen(PS_SOLID,1,mfgcolour);
-        CPen   *oldpen = memDC.SelectObject(&pen);
-        CBrush *oldBrush = (CBrush*)memDC.SelectStockObject(NULL_BRUSH);
+        CPen   *oldpen = memDC->SelectObject(&pen);
+        CBrush *oldBrush = (CBrush*)memDC->SelectStockObject(NULL_BRUSH);
 
         CcPoint*           points = new CcPoint[nVertices];
         for ( int j = 0; j < nVertices*2 ; j+=2 )
@@ -554,14 +569,14 @@ void CxChart::DrawPoly(int nVertices, int * vertices, Boolean fill)
             points[j/2] = DeviceToLogical( *(vertices+j), *(vertices+j+1) );
         }
 
-        memDC.Polyline( (LPPOINT) points, nVertices );
+        memDC->Polyline( (LPPOINT) points, nVertices );
 
-        memDC.SelectObject(oldBrush);
-        memDC.SelectObject(oldpen);
+        memDC->SelectObject(oldBrush);
+        memDC->SelectObject(oldpen);
         delete [] points;
       }
 
-      memDC.SelectObject(oldMemDCBitmap);
+      memDC->SelectObject(oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
       memDC->SetPen( *m_pen );
@@ -595,7 +610,7 @@ void CGraphWnd::drawpolygon(int i)
             points[j/2] = deviceToLogical(wgraphcommands[i+j+2],wgraphcommands[i+j+3]);
     rgn.CreatePolygonRgn((LPPOINT) &points,(wgraphcommands[i+1]-2)/2,WINDING);
     brush.CreateSolidBrush(fgcolour);
-    memDC.FillRgn(&rgn,&brush);
+    memDC->FillRgn(&rgn,&brush);
 
     //or    graphDC.Polygon(points, wgrap....);
 }
@@ -606,13 +621,13 @@ void CGraphWnd::drawemptypolygon(int i) //NB Empty polygon is not closed (should
     CPen        pen(PS_SOLID,1,fgcolour);
     CPen        *oldpen;
 
-    oldpen = memDC.SelectObject(&pen);
-    memDC.MoveTo(deviceToLogical(wgraphcommands[i+2],wgraphcommands[i+3]));
+    oldpen = memDC->SelectObject(&pen);
+    memDC->MoveTo(deviceToLogical(wgraphcommands[i+2],wgraphcommands[i+3]));
 
     for (int j = 2; j < wgraphcommands[i+1] - 2 ; j=j+2)
-        memDC.LineTo(deviceToLogical(wgraphcommands[i+j+2],wgraphcommands[i+j+3]));
+        memDC->LineTo(deviceToLogical(wgraphcommands[i+j+2],wgraphcommands[i+j+3]));
 
-    memDC.SelectObject(oldpen);
+    memDC->SelectObject(oldpen);
 
 }
 
@@ -848,8 +863,8 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean 
 {
 #ifdef __CR_WIN__
     CPen        pen(PS_SOLID,1,mfgcolour);
-    CPen*       oldpen = memDC.SelectObject(&pen);
-    oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
+    CPen*       oldpen = memDC->SelectObject(&pen);
+    oldMemDCBitmap = memDC->SelectObject(newMemDCBitmap);
     LOGFONT     theLogfont;
     (CcController::mp_font)->GetLogFont(&theLogfont);
     theLogfont.lfHeight = 180;
@@ -868,10 +883,10 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean 
     while (fontIsTooBig)
     {
         CFont  theFont;
-        theFont.CreatePointFontIndirect(&theLogfont, &memDC);
-        CFont* oldFont = memDC.SelectObject(&theFont);
+        theFont.CreatePointFontIndirect(&theLogfont, memDC);
+        CFont* oldFont = memDC->SelectObject(&theFont);
 
-        size = memDC.GetOutputTextExtent(theText.ToCString(), theText.Len());
+        size = memDC->GetOutputTextExtent(theText.ToCString(), theText.Len());
 
                 if (((size.cx < coord2.x - coord.x)&&(size.cy < coord2.y - coord.y))||(theLogfont.lfHeight<=60))
         {
@@ -879,20 +894,20 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean 
             fontIsTooBig = false;
             int xcrd = ( coord2.x + coord.x - size.cx ) / 2;
             int ycrd = ( coord2.y + coord.y - size.cy ) / 2;
-            memDC.SetBkMode(TRANSPARENT);
-            memDC.TextOut(xcrd,ycrd,theText.ToCString(),theText.Len());
-            memDC.SelectObject(oldpen);
-            memDC.SelectObject(oldFont);
+            memDC->SetBkMode(TRANSPARENT);
+            memDC->TextOut(xcrd,ycrd,theText.ToCString(),theText.Len());
+            memDC->SelectObject(oldpen);
+            memDC->SelectObject(oldFont);
         }
         else
         {
             //Reduced the logfont height, put the oldfont back into the DC and repeat.
             theLogfont.lfHeight -= 10;
-            memDC.SelectObject(oldFont); //Our CFont goes out of scope, and is deleted automatically
+            memDC->SelectObject(oldFont); //Our CFont goes out of scope, and is deleted automatically
         }
                 theFont.DeleteObject(); //Free memory associated with font.
     }
-    memDC.SelectObject(oldMemDCBitmap);
+    memDC->SelectObject(oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
       memDC->SetPen( *m_pen );

@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 15:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.21  2001/07/16 07:21:42  ckp2
+//   New Completing() function to check if CRYSTALS has requested an immediate answer
+//   to a query (^^?? format).
+//
 //   Revision 1.20  2001/06/17 15:30:06  richard
 //   ScriptsExited function loops through window list and closes any MODAL windows
 //   without the STAYOPEN attribute. (Prevents that problem where scripts crash
@@ -59,6 +63,7 @@
 #endif
 
 
+class CcPlotData;
 class CcChartDoc;
 class CcModelDoc;
 class CrWindow;
@@ -207,6 +212,7 @@ class   CcController
   protected:
     CcTokenList *   mQuickTokenList;
     CcTokenList *   mWindowTokenList;
+    CcTokenList *   mPlotTokenList;
     CcTokenList *   mChartTokenList;
     CcTokenList *   mModelTokenList;
     CcTokenList *   mStatusTokenList;
@@ -280,6 +286,7 @@ extern "C" {
 
 #define kSWindowSelector    "WI"
 #define kSChartSelector     "CH"
+#define kSPlotSelector      "PL"
 #define kSOneCommand        "CO"
 #define kSControlSelector   "CR"
 #define kSModelSelector     "GR"
@@ -305,18 +312,10 @@ enum
  kTRenameObject,
  kTGetValue,
  kTTitleOnly,
- kTWindowSelector,
- kTChartSelector,
- kTOneCommand,
- kTControlSelector,
- kTModelSelector,
- kTStatusSelector,
- kTQuerySelector,
  kTGetKeyValue,
  kTSetKeyValue,
  kTFocus,
- kTFontSet
-
+ kTFontSet,
 };
 
 

@@ -5,6 +5,9 @@
 //   Created:   22.7.1998 10:41 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.13  2001/03/08 15:31:50  richard
+// Moved some token definitions here so that they can be shared between classes.
+//
 // Revision 1.12  2000/09/28 17:17:17  ckp2
 // New constant for DISABLING atoms
 //
@@ -164,7 +167,8 @@ enum {
     kStatusClass,
     kGraphClass,
     kPositionalClass,
-    kQueryClass
+    kQueryClass,
+    kPlotClass
 };
 
 

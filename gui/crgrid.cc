@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.16  2001/06/17 15:14:13  richard
+//   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
+//
 //   Revision 1.15  2001/03/23 11:35:53  richard
 //   Initialise some pointers to zero to avoid crash if grid fails
 //   to initialise and then gets deleted.
@@ -39,6 +42,7 @@
 #include        "crprogress.h"
 #include        "crcheckbox.h"
 #include        "crchart.h"
+#include        "crplot.h"
 #include        <GL/glu.h>
 #include        "crmodel.h"
 #include        "crradiobutton.h"
@@ -383,7 +387,14 @@ CcParse CrGrid::ParseInput( CcTokenList * tokenList )
               retVal = InitElement( chartPtr, tokenList, xpos, ypos );
             break;
           }
-          case kTCreateModel:                                 // Create a Chart
+          case kTCreatePlot:                                 // Create a Plot
+          {
+            CrPlot * plotPtr = new CrPlot( this );
+            if ( plotPtr != nil )
+              retVal = InitElement( plotPtr, tokenList, xpos, ypos );
+            break;
+          }
+          case kTCreateModel:                                 // Create a Model
           {
             CrModel * modelPtr = new CrModel( this );
             if ( modelPtr != nil )

@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.14  2001/06/17 14:51:29  richard
+//   New stayopen property for windows.
+//
 //   Revision 1.13  2001/03/27 15:15:00  richard
 //   Added a timer to the main window that is activated as the main window is
 //   created.
@@ -107,6 +110,7 @@ private:
 
 #define kSCreateModelDoc    "MODEL"
 #define kSCreateChartDoc    "CHART"
+#define kSCreatePlotData    "PLOTDATA"
 #define kSShowWindow        "SHOW"
 #define kSHideWindow        "HIDE"
 #define kSDefineMenu        "DEFINEMENU"
@@ -143,7 +147,8 @@ enum
  kTCascade,
  kTCentred,
  kTKeep,
- kTStayOpen
+ kTStayOpen,
+ kTCreatePlotData
 };
 
 

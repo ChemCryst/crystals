@@ -8,6 +8,11 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2001/07/16 07:29:29  ckp2
+//   Really messed around with the creation of the memory device context in the wx version.
+//   Now it is deleted and recreated (along with it's bitmap) every time the window is
+//   resized. This seems the best way to stop it randomly crashing with an invalid wxPen warning.
+//
 //   Revision 1.8  2001/06/17 14:46:04  richard
 //   CxDestroyWindow function.
 //   wx bug fixes.
@@ -52,6 +57,7 @@ class CxChart : public BASECHART
 {
 // Public interface exposed to the CrClass:
     public:
+        void DrawMetafile ( );
         void NoEdge();
         void Invert(Boolean inverted);
         void FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean rotated);
@@ -105,7 +111,7 @@ private:
 
         COLORREF mfgcolour;
         CBitmap *oldMemDCBitmap, *newMemDCBitmap;
-        CDC memDC;
+        CDC * memDC;
 
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
         afx_msg void OnPaint();

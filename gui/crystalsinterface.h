@@ -3,6 +3,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.18  2001/07/16 07:27:52  ckp2
+// Just fiddling.
+//
 // Revision 1.17  2001/06/18 12:42:55  richard
 // Remove definition of __WXGTK__ as it is defined on the compiler command line.
 //
@@ -85,10 +88,11 @@ enum {
     kBitmapBase         =   57000,
     kTabBase            =   58000,
     kToolBarBase        =   59000,
-    kToolButtonBase     =     60000,
-    kMenuBase           =     65000,
+    kToolButtonBase     =   60000,
+    kMenuBase           =   65000,
     kResizeBarBase      =   70000,
-    kStretchBase      =   71000
+    kStretchBase        =   71000,
+    kPlotBase           =   72000
 };
 #define kNoAlignment        0
 #define kExpand             1

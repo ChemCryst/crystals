@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:19 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2001/03/08 15:38:29  richard
+//   ParseInput now defined to return a CcParse object, which contains three boolean
+//   values , success, xCanResize and yCanResize. This means that resize info filters
+//   back down to each level as the objects are created.
+//   Removed SetOriginalSizes subroutine - no longer needed.
+//
 
 #ifndef     __CrGUIElement_H__
 #define     __CrGUIElement_H__
@@ -53,11 +59,11 @@ class   CrGUIElement
     virtual void Align();
     virtual void GetValue();
     virtual void GetValue(CcTokenList * tokenList);
-    virtual CcRect CalcLayout(bool recalc=false) = 0;
     virtual CcParse ParseInput( CcTokenList * tokenList );
     virtual CcParse ParseInputNoText( CcTokenList * tokenList );
 
 //Pure virtual functions, MUST be implemented in derived classes.
+    virtual CcRect CalcLayout(bool recalc=false) = 0;
     virtual void CrFocus()=0;
     virtual CcRect  GetGeometry() = 0;
     virtual void SetText( CcString text ) = 0;

@@ -8,6 +8,14 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2001/03/08 15:36:04  richard
+//   Completely re-written the window sizing and layout code. Now much simpler.
+//   Calclayout works out and returns the size of a GUI object, so that the
+//   calling window knows what size to make itself initially. The setgeom call then
+//   actaully sets the sizes. During resize the difference between
+//   the available size and the original size is used to calculate how much
+//   to expand or shrink each object.
+//
 
 #ifndef     __CrGrid_H__
 #define     __CrGrid_H__
@@ -86,6 +94,7 @@ class   CrGrid : public CrGUIElement
 #define kSCreateRadioButton "RADIOBUTTON"
 #define kSCreateCheckBox    "CHECKBOX"
 #define kSCreateChart       "CHARTWINDOW"
+#define kSCreatePlot       "PLOTWINDOW"
 #define kSCreateModel       "MODELWINDOW"
 #define kSOutline       "OUTLINE"
 #define kSAlignExpand       "EXPAND"
@@ -122,7 +131,8 @@ enum
  kTCreateTabCtrl,
  kTCreateToolBar,
  kTCreateResize,
- kTCreateStretch
+ kTCreateStretch,
+ kTCreatePlot
 };
 
 

@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.36  2001/09/19 09:02:46  ckp2
+// Fix problem retreiving keys from winsizes.ini when the key also happened to
+// be the start of another key, e.g. "_VIS" and "_VISRSZ". (i.e. look for the space).
+//
 // Revision 1.35  2001/09/11 09:31:27  ckp2
 // Improved locking of CRYSTALS queue when ^^?? querying GUI for info.
 //
@@ -211,6 +215,7 @@
 #include    "cxeditbox.h"
 #include    "crmultiedit.h"
 #include    "crtextout.h"
+#include    "ccplotdata.h"
 #include    "ccchartdoc.h"
 #include    "ccmodeldoc.h"
 #include    "ccquickdata.h"
@@ -314,6 +319,7 @@ CcController::CcController( CcString directory, CcString dscfile )
     mCrystalsThread = nil;
 
 //Docs. (A doc is attached to a window (or vice versa), and holds and manages all the data)
+//    CcPlotData::sm_CurrentPlotData = nil;
     mCurrentChartDoc = nil;
     mCurrentModelDoc = nil;
 
@@ -330,6 +336,7 @@ CcController::CcController( CcString directory, CcString dscfile )
 //Lists
     mModelTokenList = new CcTokenList(); //Tokens for a model window.
     mChartTokenList = new CcTokenList(); //Tokens for a chart (graphics) window.
+    mPlotTokenList = new CcTokenList(); //Tokens for a plot window.
     mStatusTokenList = new CcTokenList(); //Tokens for the status object.
     mQuickTokenList = new CcTokenList();  //Tokens for immediate processing.
     mWindowTokenList = new CcTokenList(); //Tokens for defining or changing windows.
@@ -543,6 +550,7 @@ CcController::~CcController()       //The destructor. Delete all the heap object
     }
 
     delete mWindowTokenList;
+    delete mPlotTokenList;
     delete mChartTokenList;
     delete mQuickTokenList;
     delete mModelTokenList;
@@ -725,38 +733,37 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
                     if(theElement)
                         theElement->ParseInput( tokenList );
                     else
-                                        {
-                                                CrGraph * theGraph = nil, * theItem;
-                                                mGraphList.Reset();
-                                                theItem = (CrGraph *)mGraphList.GetItemAndMove();
-                                                while ( theItem != nil && theGraph == nil )
-                                                {
-                                                           theGraph = theItem->FindObject( name );
-                                                           theItem = (CrGraph *)mGraphList.GetItemAndMove();
-                                                }
-                                                if ( theGraph )
-                                                           theGraph->ParseInput( tokenList );
-                                                else
-                                                {
-
-                                                   CcChartDoc * theChart = nil, * theCItem;
-                                                   mChartList.Reset();
-                                                   theCItem = (CcChartDoc *)mChartList.GetItemAndMove();
-                                                   while ( theCItem != nil && theChart == nil )
-                                                   {
-                                                           theChart = theCItem->FindObject( name );
-                                                           theCItem = (CcChartDoc *)mChartList.GetItemAndMove();
-                                                   }
-                                                   if ( theChart )
-                                                           theChart->ParseInput( tokenList );
-                                                   else
-                                                             LOGWARN( "CcController:ParseInput:Set couldn't find object with name '" + name + "'");
-                                                }
-                                        }
+                    {
+                        CrGraph * theGraph = nil, * theItem;
+                        mGraphList.Reset();
+                        theItem = (CrGraph *)mGraphList.GetItemAndMove();
+                        while ( theItem != nil && theGraph == nil )
+                        {
+                            theGraph = theItem->FindObject( name );
+                            theItem = (CrGraph *)mGraphList.GetItemAndMove();
+                        }
+                        if ( theGraph )
+                            theGraph->ParseInput( tokenList );
+                        else
+                        {
+                            CcChartDoc * theChart = nil, * theCItem;
+                            mChartList.Reset();
+                            theCItem = (CcChartDoc *)mChartList.GetItemAndMove();
+                            while ( theCItem != nil && theChart == nil )
+                            {
+                                theChart = theCItem->FindObject( name );
+                                theCItem = (CcChartDoc *)mChartList.GetItemAndMove();
+                            }
+                            if ( theChart )
+                                theChart->ParseInput( tokenList );
+                            else
+                                LOGWARN( "CcController:ParseInput:Set couldn't find object with name '" + name + "'");
+                        }
+                    }
                 }
                 break;
             }
-                  case kTFocus:
+            case kTFocus:
             {
                 // remove that token
                 tokenList->GetToken();
@@ -775,23 +782,23 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
                     theElement = GetProgressOutputPlace();
                               theElement->CrFocus();
                 }
-                        else if (name == "TEXTINPUT")
+                else if (name == "TEXTINPUT")
                 {
-                              theElement = GetInputPlace();
-                              theElement->CrFocus();
+                    theElement = GetInputPlace();
+                    theElement->CrFocus();
                 }
                 else
                 {
                     // Look for the item
                     theElement = FindObject( name );
                     if(theElement)
-                                    theElement->CrFocus();
+                        theElement->CrFocus();
                     else
-                                    LOGWARN( "CcController:ParseInput:Focus couldn't find object with name '" + name + "'");
+                        LOGWARN( "CcController:ParseInput:Focus couldn't find object with name '" + name + "'");
                 }
                 break;
             }
-                        case kTRenameObject:
+            case kTRenameObject:
             {
                 // remove that token
                 tokenList->GetToken();
@@ -840,6 +847,14 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
                 CcChartDoc* cPtr = new CcChartDoc();
                 cPtr->ParseInput( tokenList );
                 mCurrentChartDoc = cPtr;
+                break;
+            }
+            case kTCreatePlotData:
+            {
+                tokenList->GetToken(); //remove token
+                CcPlotData* pPtr = CcPlotData::CreatePlotData( tokenList );
+                pPtr->ParseInput( tokenList );
+                CcPlotData::sm_CurrentPlotData = pPtr;
                 break;
             }
             case kTCreateModelDoc:
@@ -999,6 +1014,14 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
                         retVal = mCurrentChartDoc->ParseInput( tokenList );
                     }
                 }
+                else if ( tokenList == mPlotTokenList )
+                {
+                    if ( CcPlotData::sm_CurrentPlotData != nil )
+                    {
+                        LOGSTAT("CcController:ParseInput:default Passing tokenlist to plot");
+                        retVal = CcPlotData::sm_CurrentPlotData->ParseInput( tokenList );
+                    }
+                }
                 else if ( tokenList == mModelTokenList )
                 {
                     if ( mCurrentModelDoc != nil )
@@ -1139,6 +1162,11 @@ void    CcController::Tokenize( CcString cText )
         else if      ( selector == kSChartSelector )
         {
             mCurTokenList = mChartTokenList;
+            ParseLine( cText.Chop(1,chop) );
+        }
+        else if      ( selector == kSPlotSelector )
+        {
+            mCurTokenList = mPlotTokenList;
             ParseLine( cText.Chop(1,chop) );
         }
         else if      ( selector == kSModelSelector )
