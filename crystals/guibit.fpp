@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.71  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.3  2005/01/07 11:56:53  rich
 C Add some blank lines between some #if and #endifs.
 C
@@ -857,7 +861,7 @@ C Look for properties in our cache: (things like Q, which are not in 29).
 C Atom info not found. Load it and cache it. The info is stored
 C in common, so only needs loading once.
 
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
              CFILEN = 'CRYSDIR:script\propwin.dat'
 #else
              CFILEN = 'CRYSDIR:script/propwin.dat'
@@ -923,7 +927,7 @@ C Get colour definition from our cache:
                IF ( KFNDPR .EQ. 0 ) THEN
 
 C Get the colour definition for this colour from colour.cmn and cache it.
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
                   CFILEN = 'CRYSDIR:SCRIPT\COLOUR.CMN'
 #else
                   CFILEN = 'CRYSDIR:script/colour.cmn'
@@ -2030,7 +2034,7 @@ c      END
 
 
 
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       SUBROUTINE FSTBND(IX1,IY1,IZ1,IX2,IY2,IZ2,IR,IG,IB,IRAD,
      1 IBT,INP,LPTS,ILLEN,CLABL,ISLEN,CSLABL)
 #endif
@@ -2066,7 +2070,7 @@ C
       END INTERFACE
 C
 #endif
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
 
       INTEGER IX1, IX2, IZ1, IY1, IY2, IZ2
       INTEGER IR,IG,IB,IRAD,IBT,INP,LPTS(*),ILLEN
@@ -2082,14 +2086,14 @@ C
 #if defined(_GID_) 
       CHARACTER*(ILLEN+1) BLABL
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       CHARACTER*80 BLABL
 #endif
 #if defined(_WXS_) 
       CHARACTER*80 BLABL
 #endif
 
-#if defined(_GID_) || defined(_GIL_)
+#if defined(_GID_) || defined(_GIL_) || defined(_MAC_)
 
       CHARACTER*(*) CSLABL
 
@@ -2101,7 +2105,7 @@ C
 #if defined(_GID_) 
       CHARACTER*(ISLEN+1) BSLABL
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       CHARACTER*80 BSLABL
 #endif
 #if defined(_WXS_) 
@@ -2109,7 +2113,7 @@ C
 C
 #endif
 
-#if defined(_GID_) || defined(_GIL_)
+#if defined(_GID_) || defined(_GIL_) || defined(_MAC_)
 
       BLABL = CLABL(1:ILLEN)  // CHAR(0)
       BSLABL= CSLABL(1:ISLEN) // CHAR(0)
@@ -2124,7 +2128,7 @@ C
       CALL FASTBOND(IX1,IY1,IZ1,IX2,IY2,IZ2,IR,IG,IB,IRAD,
      1 IBT,INP,LPTS,BLABL,BSLABL)
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       CALL FASTBOND(%VAL(IX1),%VAL(IY1),%VAL(IZ1),%VAL(IX2),
      1 %VAL(IY2),%VAL(IZ2),%VAL(IR),%VAL(IG),%VAL(IB),%VAL(IRAD),
      1 %VAL(IBT),%VAL(INP),LPTS,BLABL,BSLABL)
@@ -2135,7 +2139,7 @@ C
      1 %VAL(IBT),%VAL(INP),LPTS,BLABL,BSLABL)
 #endif
 
-#if defined(_GID_) || defined(_GIL_)
+#if defined(_GID_) || defined(_GIL_) || defined(_MAC_)
 
       RETURN
       END
@@ -2147,7 +2151,7 @@ C
 #endif
 
 
-#if defined(_GID_) || defined(_GIL_)
+#if defined(_GID_) || defined(_GIL_) || defined(_MAC_)
 
       SUBROUTINE FSTATM(CE,IS,LL,CL,IX,IY,IZ,IR,IG,IB,IOC,RCO,
      1 IVD,ISP,IFL,RU1,RU2,RU3,RU4,RU5,RU6,RU7,RU8,RU9,
@@ -2207,7 +2211,7 @@ C
 C
 #endif
 
-#if defined(_GID_) || defined(_GIL_)
+#if defined(_GID_) || defined(_GIL_) || defined(_MAC_)
 
       INTEGER LL,IX,IY,IZ,IR,IG,IB,IOC,IVD
       INTEGER ISP,IFL, IFF, IFA, IFG, IS
@@ -2229,7 +2233,7 @@ C
 #if defined(_GID_) 
       CHARACTER*(LL+1) BL
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       CHARACTER*80 BL
 #endif
 #if defined(_WXS_) 
@@ -2237,7 +2241,7 @@ C
 C
 #endif
 
-#if defined(_GID_) || defined(_GIL_)
+#if defined(_GID_) || defined(_GIL_) || defined(_MAC_)
 
       BL = CL(1:LL)  // CHAR(0)
       BE = CE(1:4)  // CHAR(0)
@@ -2253,7 +2257,7 @@ C
      1 ISP,IFL,RU1,RU2,RU3,RU4,RU5,RU6,RU7,RU8,RU9,RFX,RFY,RFZ,
      2 IFF, IFA, IFG, RUE, RUS)
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       CALL FASTATOM(BE,%VAL(IS),BL,%VAL(IX),%VAL(IY),%VAL(IZ),
      1 %VAL(IR),%VAL(IG),
      1 %VAL(IB),%VAL(IOC),%VAL(RCO),%VAL(IVD),%VAL(ISP),%VAL(IFL),
@@ -2262,7 +2266,7 @@ C
      1 %VAL(IFF),%VAL(IFA),%VAL(IFG),%VAL(RUE),%VAL(RUS))
 #endif
 
-#if defined(_GID_) || defined(_GIL_)
+#if defined(_GID_) || defined(_GIL_) || defined(_MAC_)
 
       RETURN
       END
@@ -2280,7 +2284,7 @@ C
       END
 
 #endif
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       SUBROUTINE FSTSPH(LL,CL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
      1 ISP,IFL,ISO,IRAD)
 #endif
@@ -2315,7 +2319,7 @@ C
       END INTERFACE
 C
 #endif
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       INTEGER LL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD
       INTEGER ISP,IFL,ISO,IRAD
       CHARACTER*(*) CL
@@ -2328,7 +2332,7 @@ C
 #if defined(_GID_) 
       CHARACTER*(LL+1) BL
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       CHARACTER*80 BL
 #endif
 #if defined(_WXS_) 
@@ -2336,7 +2340,7 @@ C
 C
 #endif
 
-#if defined(_GID_) || defined(_GIL_)
+#if defined(_GID_) || defined(_GIL_) || defined(_MAC_)
 
       BL = CL(1:LL)  // CHAR(0)
 
@@ -2349,12 +2353,12 @@ C
       CALL FASTSPHERE(BL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
      1 ISP,IFL,ISO,IRAD)
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       CALL FASTSPHERE(BL,%VAL(IX),%VAL(IY),%VAL(IZ),%VAL(IR),
      1 %VAL(IG),%VAL(IB),%VAL(IOC),%VAL(ICO),%VAL(IVD),%VAL(ISP),
      1 %VAL(IFL),%VAL(ISO),%VAL(IRAD))
 #endif
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       RETURN
       END
 #endif
@@ -2367,7 +2371,7 @@ C
 C
 C
 #endif
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       SUBROUTINE FSTRNG(LL,CL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
      1 ISP,IFL,ISO,IRAD, IDEC, IAZ)
 #endif
@@ -2404,7 +2408,7 @@ C
       END INTERFACE
 C
 #endif
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       INTEGER LL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD
       INTEGER ISP,IFL,ISO,IRAD,IDEC,IAZ
       CHARACTER*(*) CL
@@ -2417,7 +2421,7 @@ C
 #if defined(_GID_) 
       CHARACTER*(LL+1) BL
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       CHARACTER*80 BL
 #endif
 #if defined(_WXS_) 
@@ -2425,7 +2429,7 @@ C
 C
 #endif
 
-#if defined(_GID_) || defined(_GIL_)
+#if defined(_GID_) || defined(_GIL_) || defined(_MAC_)
       BL = CL(1:LL)  // CHAR(0)
 
 #endif
@@ -2438,13 +2442,13 @@ C
       CALL FASTDONUT(BL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
      1 ISP,IFL,ISO,IRAD, IDEC,IAZ)
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       CALL FASTDONUT(BL,%VAL(IX),%VAL(IY),%VAL(IZ),%VAL(IR),
      1 %VAL(IG),%VAL(IB),%VAL(IOC),%VAL(ICO),%VAL(IVD),%VAL(ISP),
      1 %VAL(IFL),%VAL(ISO),%VAL(IRAD),%VAL(IDEC),%VAL(IAZ))
 #endif
 
-#if defined(_GID_) || defined(_GIL_)
+#if defined(_GID_) || defined(_GIL_) || defined(_MAC_)
 
       RETURN
       END

@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.56  2005/01/23 08:29:12  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.4  2005/01/17 14:59:42  rich
 C Typo.
 C
@@ -3280,7 +3284,7 @@ C 'c:\structures\nket\'  e.g. everything up to the last slash.
 #if defined(_LIN_) 
       IECF = KCLEQL(CWORK1(1:LEN1),'/')
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       IECF = KCLEQL(CWORK1(1:LEN1),'/')
 #endif
 #if defined(_WXS_) 
@@ -3319,7 +3323,7 @@ C 'crfile.dsc'  e.g. everything after the last slash if there is one.
 #if defined(_LIN_) 
       IECF = KCLEQL(CWORK1(1:LEN1),'/')
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       IECF = KCLEQL(CWORK1(1:LEN1),'/')
 #endif
 #if defined(_WXS_) 
@@ -3359,7 +3363,7 @@ C up to the last dot.
 #if defined(_LIN_) 
       IECF = KCLEQL(CWORK1(1:LEN1),'/')
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       IECF = KCLEQL(CWORK1(1:LEN1),'/')
 #endif
 #if defined(_WXS_) 
@@ -7060,7 +7064,7 @@ C
         CALL OUTCOL(1)
        ENDIF
 C----- RECOVER SCRIPT NAME
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)
       ISTAT= KSCIDN(2,3,'SCRIPTNAME',1,IS,IDSCP,ISCPNM,1)
       ISTAT= KSCSDC( ISCPNM, CSCPNM, LENNM)
       IF (CSCPNM .NE. CLSTNM) CPRVNM = CLSTNM

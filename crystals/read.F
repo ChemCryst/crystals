@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.50  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.2  2004/12/13 16:16:08  rich
 C Changed GIL to _GIL_ etc.
 C
@@ -359,12 +363,12 @@ C
       IF ( LPRMPT ) THEN
         IRDLIN = 0
         IF (ITYPFL .EQ. 1 .AND. NCRU .EQ. 5)  THEN
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_) 
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
           CALL XPRMPT ( NCVDU , '!' )
 #else
           WRITE(CMON,'(A)')
 #endif
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)
      1     '^^CO SAFESET [ XPRMPT TEXT ''!'' ]'
           CALL XPRVDU(NCVDU,1,0)
           WRITE(CMON,'(A)')
@@ -375,12 +379,12 @@ C
           CALL XPRVDU (NCVDU,1,0)
 #endif
         ELSE
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_) 
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
           CALL XPRMPT ( NCVDU , '>' )
 #else
           WRITE(CMON,'(A)')
 #endif
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)
      1     '^^CO SAFESET [ XPRMPT TEXT ''>'' ]'
           CALL XPRVDU(NCVDU,1,0)
           WRITE(CMON,'(A)')
@@ -401,7 +405,7 @@ C If in script mode, set flag.
         END IF
 C Update status information for GUI.
 
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)
         IF (ISSTML .EQ. 4) CALL MENUUP
 #endif
       ENDIF
@@ -412,7 +416,7 @@ C Update status information for GUI.
 C
       ISTAT = KRDLIN ( NCRU , CRDLWC , IFIN )
 
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)
       IF ( NCRU .EQ. 5 ) THEN
       WRITE(CMON,'(A)') '^^CO SAFESET [ XPRMPT TEXT "" ]'
       CALL XPRVDU(NCVDU,1,0)
@@ -668,7 +672,7 @@ C&PPCCE***
 #endif
       IF (IUNIT .EQ. NCUFU(1)) THEN
 C If in script mode, set flag.
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
         INSTRC = .FALSE.
         IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
           INSTRC = .TRUE.
@@ -681,14 +685,14 @@ c&&GILGID          WRITE (CMON,1515) '''SCRIPTS - Awaiting User Action'''
 c&&GILGID          CALL XPRVDU (NCVDU,1,0)
 
 #endif
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
         END IF
 #endif
 #if defined(_WXS_) 
         END IF
 
 #endif
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
 C Update status information for UI.
             CALL MENUUP
 #endif
@@ -698,7 +702,7 @@ C Update status information for UI.
             CALL GETCOM(CLINE)
 
 C If in script mode, set progress text.
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
         IF ( INSTRC ) THEN
           WRITE (CMON,1515) '''Crystals Script Mode'''
           CALL XPRVDU (NCVDU,1,0)
@@ -1088,7 +1092,7 @@ C
         ELSE IF ( ISYSIN .EQ. ISCRIP ) THEN
           CALL XFLPCK ( LCMAGE(NC) , LENGTH ,
      2            CSCPDV(1:LSCPDV) , CSCPEX(1:LSCPEX) , CRFILE , N )
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
 C FORCE all #SCRIPT arguments to lowercase - all other files can
 C mixed case, but all script must be lower. This is for compatibility
 C with existing script calls in scripts which are usually uppercase.
@@ -2470,7 +2474,7 @@ C----- WRITE A SINGLE SPACE FOR NULL FILE NAMES
       ENDIF
 CRICFEB01[
 2346    FORMAT ( '^^CO SAFESET [ ', A , ' TEXT ''', A , ''' ]' )
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       IF ( IDEV .EQ. NCPU ) THEN
         WRITE ( CMON,2346) '_MT_PCH', NEWFIL(1:LENNAM)
         CALL XPRVDU ( NCVDU, 1, 0 )

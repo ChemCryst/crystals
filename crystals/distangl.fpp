@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.71  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.3  2005/01/17 14:11:07  rich
 C Bring new repository into line up-to-date with old. (Better error messages).
 C
@@ -6544,7 +6548,7 @@ C -- Add this extra element in L29 style at NEWL29.
             STORE(NEWM29+2) = STORE(L40T+2)
 
 C -- Have to get proper covalent radii from file if possible.
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) && !defined(_MAC_)
             CFILEN = 'CRYSDIR:\script\propwin.dat'
 #else
             CFILEN = 'CRYSDIR:/script/propwin.dat'

@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.2  2004/12/13 16:16:08  rich
 C Changed GIL to _GIL_ etc.
 C
@@ -1312,7 +1316,7 @@ C -- PRODUCE DISPLAY IF REQUIRED
 C
       IF ( DISPL6 ) THEN
         IF ( N6R .GE. (N6D-1) ) THEN
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_) 
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
           WRITE ( CMON,1505)
           CALL XPRVDU(NCVDU, 1, 0)
           WRITE(NCVDU,1505)
@@ -1320,7 +1324,7 @@ C
 1505      FORMAT ( 15X ,  12X, 'Processing reflections ')
 C          CALL VGACOL ( 'BOL', 'YEL', 'BLA' )
            CALL OUTCOL(6)
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_) 
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
           WRITE(NCVDU,'(15X,''^'',$)')
 #endif
           NSTAR = 1

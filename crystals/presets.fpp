@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.49  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.2  2004/12/13 16:16:08  rich
 C Changed GIL to _GIL_ etc.
 C
@@ -334,7 +338,7 @@ C      SET INTERACTIVE UNDER DOS
 C      SET INTERACTIVE UNDER WINDOWS
       DATA IQUN /2/, JQUN/2/
 #endif
-#if defined(_GIL_) || defined(_LIN_) 
+#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
 C      SET INTERACTIVE UNDER LINUX
       DATA IQUN /2/, JQUN/2/
 #endif
@@ -459,7 +463,7 @@ C      REASSIGN PRINTER IN STARTUP FILE
 #if defined(_DVF_) 
       DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
 #endif
 #if defined(_WXS_) 
@@ -478,7 +482,7 @@ C      PRINTER ASSIGNED IN JOB CONTROL LANGUAGE
 #if defined(_DVF_) || defined(_GID_) 
       DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
 #endif
-#if defined(_GIL_) || defined(_LIN_) 
+#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
 #endif
 #if defined(_WXS_) 
@@ -578,7 +582,7 @@ C
 #if defined(_LIN_) 
       DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
 #endif
 #if defined(_WXS_) 
@@ -1342,7 +1346,7 @@ C  THE CHARACTER DEFINITIONS 'CSS***)
       DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Dec' /
       DATA ISSDAT(3) / '  20' / , ISSDAT(4) / '00  ' /
 #endif
-#if defined(_GIL_) || defined(_LIN_) 
+#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       DATA ISSMAC(1) / 'Pent' / , ISSMAC(2) / 'ium ' /
       DATA ISSOPS(1) / 'Linu' / , ISSOPS(2) / 'x   ' /
       DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Jun' /
@@ -1387,7 +1391,7 @@ C
 #if defined(_VAX_) 
       DATA ISSFNF /  29 /
 #endif
-#if defined(_GIL_) || defined(_LIN_) 
+#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       DATA ISSFNF /  2 /
 #endif
 #if defined(_WXS_) 
@@ -1423,7 +1427,7 @@ C                  ISSDAR = 4 * ISSRLI
 #if defined(_DVF_) 
       DATA ISSDAR / 512 /
 #endif
-#if defined(_GIL_) || defined(_LIN_) 
+#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       DATA ISSDAR / 2048 /
 #endif
 #if defined(_WXS_) 
@@ -1505,7 +1509,7 @@ C
       DATA CSSDAT / 'December 1998' /
       DATA LSSDAT / 13 /
 #endif
-#if defined(_GIL_) || defined(_LIN_) 
+#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       DATA CSSMAC / 'Intel Pentium' /
       DATA LSSMAC / 13 /
       DATA CSSOPS / 'Linux' /
@@ -1542,7 +1546,7 @@ C
 #if defined(_GID_) || defined(_VAX_) 
       DATA CSSCST / 'CRYSDIR:crystals.srt' /
 #endif
-#if defined(_GIL_) || defined(_LIN_) 
+#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       DATA CSSCST / 'CRYSDIR:crystals.srt' /
 #endif
 #if defined(_WXS_) 
@@ -1556,7 +1560,7 @@ C
 #if defined(_GID_) || defined(_VAX_) 
       DATA CSSDST / 'CRYSDIR:crysdef.srt' /
 #endif
-#if defined(_GIL_) || defined(_LIN_) 
+#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       DATA CSSDST / 'CRYSDIR:crysdef.srt' /
 #endif
 #if defined(_WXS_) 
@@ -1580,7 +1584,7 @@ C
       DATA CSSSCT / ' ' /
       DATA LSSSCT / 1 /
 #endif
-#if defined(_GIL_) || defined(_LIN_) 
+#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       DATA CSSSCT / ' ' /
       DATA LSSSCT / 1 /
 #endif
@@ -1609,7 +1613,7 @@ C
       DATA CSSELE / ' ' /
       DATA LSSELE / 1 /
 #endif
-#if defined(_GIL_) || defined(_LIN_) 
+#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       DATA CSSELE / ' ' /
       DATA LSSELE / 1 /
 #endif
@@ -1638,7 +1642,7 @@ C
       DATA CSSVDU  / 'CON' /
       DATA LSSVDU / 3 /
 #endif
-#if defined(_GIL_) || defined(_LIN_) 
+#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       DATA CSSVDU  / 'CON' /
       DATA LSSVDU / 3 /
 #endif
@@ -1667,7 +1671,7 @@ C
       DATA CSSLPT  / 'PRN' /
       DATA LSSLPT / 3 /
 #endif
-#if defined(_GIL_) || defined(_LIN_) 
+#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       DATA CSSLPT  / 'PRN' /
       DATA LSSLPT / 3 /
 #endif
@@ -1697,7 +1701,7 @@ cdjwmay99
       DATA CSSCIF / 'publish.cif' /
       DATA LSSCIF / 11 /
 #endif
-#if defined(_GIL_) || defined(_LIN_) 
+#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       DATA CSSCIF / 'publish.cif' /
       DATA LSSCIF / 11 /
 #endif
@@ -1718,7 +1722,7 @@ cRICjul99
       DATA CSSMAP / 'fourier.map' /
       DATA LSSMAP / 11 /
 #endif
-#if defined(_GIL_) || defined(_LIN_) 
+#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       DATA CSSMAP / 'fourier.map' /
       DATA LSSMAP / 11 /
 #endif
@@ -2238,7 +2242,7 @@ C --- UFILE ---
 #if defined(_DOS_) || defined(_DVF_) || defined(_GID_) 
       IFLUNI(4)  =  6
 #endif
-#if defined(_GIL_) || defined(_LIN_) 
+#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       IFLUNI(4)  =  6
 #endif
 #if defined(_WXS_) 
@@ -2320,7 +2324,7 @@ C --- XUNITS ---
 #if defined(_DOS_) || defined(_DVF_) || defined(_GID_) 
       NCWU=6
 #endif
-#if defined(_GIL_) || defined(_LIN_) 
+#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       NCWU=6
 #endif
 #if defined(_WXS_) 
@@ -2341,7 +2345,7 @@ C --- XUNITS ---
       IQUN=2
       JQUN=2
 #endif
-#if defined(_GIL_) || defined(_LIN_) 
+#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       IQUN=2
       JQUN=2
 #endif
