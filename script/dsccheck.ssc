@@ -1,10 +1,12 @@
 %SCRIPT DSCCHECK
 %%
 %%
+%  VARIABLE INTEGER MD
 %  VARIABLE REAL UISOF
 %  VARIABLE LOGICAL OLDDSC
 %  EVALUATE OLDDSC = FALSE
 %%
+%% LOOK FOR OLD DEFINTION OF U[ISO]
 % IF ( EXISTS  5 .EQ. 1 ) THEN
 %  COPY '#GENERALEDIT 5'
 %  COPY 'LOCATE RECORDTYPE=101'
@@ -19,6 +21,15 @@
 %  END LOOP
 %  COPY 'END'
 %%
+%%  LOOK FOR SHORT ATOM RECORDS
+%  COPY '#GENERALEDIT 5'
+%  CLEAR
+%  COPY 'TRANSHEAD FROM OFFSET = 2 TO MD '
+%     IF ( MD .NE. 16 ) THEN
+%         EVALUATE OLDDSC = TRUE
+%     END IF
+%  COPY 'END'
+%%
 %  IF ( OLDDSC ) THEN
 
   +------------------------------------------------+
@@ -27,10 +38,6 @@
   |                                                |
   |  You are opening what appears to be an OLD     |
   |  format DSC file.                              |
-  |                                                |
-  |  ( Specifically, column 3 of LIST 5 (atoms)    |
-  |  has Uiso values in, which are now located     |
-  |  in column 7 )                                 |
   |                                                |
   |  It is possible to automatically reformat      |
   |  your current LIST 5 so that you can           |
@@ -64,6 +71,8 @@ automatically reformat LIST 5 for you?' 'YES'
  of CRYSTALS, then type '#USE OLDLIST5.DAT' when
  you start up CRYSTALS.
 
+%%  REINPUT OLD LIST 5 TO GET CORRECT NUMBER OF ATOM KEYS
+%    COPY '#USE OLDLIST5.DAT'
 %    COPY '#EDIT'
 %    COPY 'REFORMAT ALL'
 %    COPY 'END'
@@ -71,6 +80,42 @@ automatically reformat LIST 5 for you?' 'YES'
  Your present LIST 5 has been converted to the new
  format. You may now continue safely.
 
+%   END IF
+%  END IF
+% END IF
+%% NOW CHECK LIST 29!
+%%  LOOK FOR SHORT ATOM RECORDS
+% IF ( EXISTS  29 .EQ. 1 ) THEN
+%  EVALUATE OLDDSC = FALSE
+%  COPY '#GENERALEDIT 29'
+%  CLEAR
+%  COPY 'TRANSHEAD FROM OFFSET = 2 TO MD '
+%     IF ( MD .NE. 8 ) THEN
+%         EVALUATE OLDDSC = TRUE
+%     END IF
+%  COPY 'END'
+%  IF ( OLDDSC ) THEN
+  +----------------------------------------------------------------+
+  |                                                                |
+  | Your database knows nothing about colours schemes for elements.| 
+  |                                                                |
+  +----------------------------------------------------------------+
+
+% VERIFY NO YES
+  You have two options:
+
+  Ignore this warning - Carry on working with this
+                        DSC file. Colour schemes may
+                        be weird.
+                        
+  Update the element properties. This requires you to re-input
+                        the empirical formula for the contents
+                        of the asymmetric unit.
+
+%  GET NOSTORE FINAL ABBREVIATED 'Do you want to re-input the -
+ empirical formula?' 'YES'
+%   IF VALUE .EQ. 2 THEN
+%     COPY '#SCRIPT INLIST29'
 %   END IF
 %  END IF
 % END IF
