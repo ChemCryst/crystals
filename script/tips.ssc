@@ -110,10 +110,11 @@
  available in postscript and HTML.
 %   END BLOCK
 %   BLOCK     %TIP12%
-No reflections are found during QUICKSTART. Either the
-filename or the format statement is incorrect. Check
-the filename, and that the format statement is enclosed
-in brackets.
+Common probelms.
+If no reflections are found during QUICKSTART:
+The filename or the format statement may be incorrect.
+Check the filename, and that the format statement
+is enclosed in brackets.
 %   END BLOCK
 %   BLOCK     %TIP13%
 Structure factor calculations fail with error messages
