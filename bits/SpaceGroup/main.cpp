@@ -64,14 +64,14 @@ using namespace std;
 #define PATH_MAX _MAX_PATH
 #endif
 
-void outputToFile(RunParameters& pRunData, Stats* pStats, RankedSpaceGroups* pRanking)	//This outputs the ranked spacegroups and the stats table to the file at the path pRunData->iOutputFile
+void outputToFile(RunParameters& pRunData, Stats* pStats, RankedSpaceGroups* pRanking, Table& pTable)	//This outputs the ranked spacegroups and the stats table to the file at the path pRunData->iOutputFile
 {
     if (pRunData.iOutputFile.getCString()[0] != 0)
     {
         ofstream tOutputFile(pRunData.iOutputFile.getCString(), ofstream::out);
         if (!tOutputFile.fail())
         {
-            tOutputFile << *pStats << "\n";
+            pStats->output(tOutputFile, pTable) << "\n";
             tOutputFile << *pRanking << "\n";
             tOutputFile.close();
         }
@@ -140,7 +140,7 @@ void runTest(RunParameters& pRunData)
     gettimeofday(&time2, NULL);
     std::cout <<"\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
     std::cout << "\n" << *tRankings << "\n";
-    outputToFile(pRunData, tStats, tRankings);
+    outputToFile(pRunData, tStats, tRankings, *tTable);
     if (pRunData.iInteractiveMode)
     {
         InteractiveControl tInteractiveControl(tStats, tRankings, tTable);
