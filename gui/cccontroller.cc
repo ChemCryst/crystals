@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.76  2003/11/05 09:17:21  rich
+// Use 'cerr' function from the 'std' namespace.
+//
 // Revision 1.75  2003/10/29 12:29:33  rich
 // Add code to CcMenuItem to allow the menu name and command to
 // be redefined 'on the fly' by CRYSTALS.
@@ -492,6 +495,8 @@ static CcLock m_wait_for_thread_start(false);
 #include <wx/settings.h>
 wxFont* CcController::mp_inputfont = nil;
 #include <wx/msgdlg.h>
+#include <unistd.h>
+#include <sys/wait.h>
 #endif
 
 CcController* CcController::theController = nil;
@@ -3532,25 +3537,27 @@ extern "C" {
 
   void FORCALL(callccode) ( char* theLine)
   {
-      char * str = new char[263];
-      memcpy(str,theLine,262);
-      *(str+262) = '\0';
-      CcString temp = CcString(str);
+      char * tempstr = new char[263];
+      memcpy(tempstr,theLine,262);
+      *(tempstr+262) = '\0';
+      CcString temp = CcString(tempstr);
 //      LOGSTAT("Tempuntrimmed:\""+temp+"\"");
       temp.Trim();
 //      LOGSTAT("Temp, trimmed:\""+temp+"\"");
       (CcController::theController)->AddInterfaceCommand( temp );
-      delete [] str;
+      delete [] tempstr;
   }
 
   void FORCALL(guexec) ( char* theLine)
   {
-    CcString line(theLine);
-// Trim any weird characters off the end of the line. Where do
-// they come from?!
-    line = line.Sub(1,line.Length()-5);
-
-    TEXTOUT ( "Guexec: " + line );
+    char * tempstr = new char[263];
+    memcpy(tempstr,theLine,262);
+    *(tempstr+262) = '\0';
+    CcString line = CcString(tempstr);
+    line.Trim();
+    delete [] tempstr;
+    tempstr = NULL;
+//    (CcController::theController)->AddInterfaceCommand( "Guexec: " + line );
 
     bool bWait = false;
     bool bRest = false;
@@ -3621,13 +3628,18 @@ extern "C" {
       eRest = min ( eRest+1, line.Length()); // convert to valid 1-based index.
       restLine = line.Sub(sRest,eRest);
     }
+    else
+    {
+      eRest = max ( eRest, sRest );          // ensure positive length
+      sRest = min ( sRest+1, line.Length()); // convert to valid 1-based index.
+      eRest = min ( eRest+1, line.Length()); // convert to valid 1-based index.
+    }
 
 #ifdef __CR_WIN__
 
     if ( bWait )
     {
 // Launch with ShellExecute function. Then wait for app.
-
 //Special case html files with a # anchor reference after file name:
       int match = firstTok.Match('#');
       if ( match ) {
@@ -3811,71 +3823,51 @@ extern "C" {
 
 #ifdef __BOTHWX__
 
-// Attempt to launch as a command...
-
-    if ( bWait )
-    {
-        CcController::theController->ProcessOutput( " ");
-        CcController::theController->ProcessOutput( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
-        CcController::theController->ProcessOutput( " ");
-        wxEnableTopLevelWindows(FALSE);
-    }
-
-    long result = ::wxExecute(line.Sub(sFirst+1,eRest).ToCString(), bWait);
-
-    if ( bWait ) wxEnableTopLevelWindows(TRUE);
-
-    if ( bWait )
-    {
-      if ( result != -1 ) return;
-    }                                                              
-    else
-    {
-      if ( result != 0 ) return;
-    }
-
-    CcController::theController->ProcessOutput( "     {0,2 Failed. Retrying.              ");
-
-// FAILURE - maybe a filename, not a program
-// try getting the program associated with the filename.
+// Check if this might be a filename, and if so find application to
+// open it with.
 
     wxString fullname(firstTok.ToCString());
-    wxString path;
-    wxString name;
-    wxString extension;
-    wxString command;
+    wxString path, name, extension, command;
     ::wxSplitPath(firstTok.ToCString(),&path,&name,&extension);
-
     wxFileType * filetype = wxTheMimeTypesManager->GetFileTypeFromExtension(extension);
 
-    if ( filetype && filetype->GetOpenCommand(&command,
-                                  wxFileType::MessageParameters(fullname,_T("")) ) )
+    if ( filetype && filetype->GetOpenCommand(&command, wxFileType::MessageParameters(fullname,_T("")) ) )
     {
-        if ( bWait )
-        {
-            CcController::theController->ProcessOutput( " ");
-            CcController::theController->ProcessOutput( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
-            CcController::theController->ProcessOutput( " ");
-            wxEnableTopLevelWindows(FALSE);
-        }
-        long result = ::wxExecute(command, bWait);
-        if ( bWait )
-        {
-          wxEnableTopLevelWindows(TRUE);
-          if ( result != -1 ) return;
-        }                                                              
-        else
-        {
-          if ( result != 0 ) return;
-        }
-        CcController::theController->ProcessOutput( "     {0,2 Failed to execute associated command.      ");
-        return;
+        line = CcString(command.c_str()) + " " + line;
     }
 
-    CcController::theController->ProcessOutput( "     {0,2 Failed to find associated command. Trying shell" );
-    CcController::theController->ProcessOutput( "     {0,2 "+line.Sub(sFirst+1,eRest) );
+    if ( bWait )
+    {
+      (CcController::theController)->AddInterfaceCommand( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
+//      wxEnableTopLevelWindows(FALSE);
+    }
 
-    ::wxShell(line.Sub(sFirst+1,eRest).ToCString());
+    extern int errno;
+    char * str = new char[257];
+    memcpy(str,line.Sub(sFirst+1,-1).ToCString(),256);
+    *(str+256) = '\0';
+    char* args[10];       // This allows a maximum of 9 command line arguments
+    char seps[] = " \t";
+    char *token = strtok( str, seps );
+    args[0] = token;
+    for ( int i = 1; (( token != NULL ) && ( i < 10 )); i++ )
+    {
+      token = strtok( NULL, seps );
+      args[i] = token;
+    }
+    
+    pid_t pid = fork();
+    
+    if ( pid == 0 ) {          //We're in the child process.
+       execvp( args[0], args );
+       exit(-1);
+    }
+// We're in the parent process
+
+    if ( bWait )
+    {
+        waitpid(pid,NULL,0);	     
+    }
 
     return;
 
@@ -3955,3 +3947,4 @@ extern "C" {
   }
 
 } // end of C functions
+
