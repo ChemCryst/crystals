@@ -1364,19 +1364,19 @@ C             (EG EQUIVALENCED, IS MULTIPART OR WEIGHTED)
 C
               IF((KEQV .EQ. 1).OR.(IPA .GT. 0).OR.(WTK .GT. ZEROSQ))
      1          THEN
-      WRITE(NCAWU,527) STORE(M5S), NINT(STORE(M5S+1)), COORD(KS+1), CRST
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,527) STORE(M5S), NINT(STORE(M5S+1)), COORD(KS+1), CRST
-      ENDIF
+                WRITE(CMON,527)STORE(M5S), NINT(STORE(M5S+1)),
+     1          COORD(KS+1), CRST
+                WRITE(NCAWU,'(A)') CMON(1)(:)
+                IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
 527   FORMAT(' Parameter  ',A4, I4,4X,  A,6X,' to be fixed by ', A)
                 NRESTR = NRESTR + 1
-            CALL XRESTF (KS, XO(KS), M5S )
+                CALL XRESTF (KS, XO(KS), M5S )
               ELSE
 C
-      WRITE(NCAWU,527) STORE(M5S), NINT(STORE(M5S+1)), COORD(KS+1), CCST
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,527) STORE(M5S), NINT(STORE(M5S+1)), COORD(KS+1), CCST
-      ENDIF
+                WRITE(CMON,527)STORE(M5S), NINT(STORE(M5S+1)), 
+     1          COORD(KS+1), CCST
+                WRITE(NCAWU,'(A)') CMON(1)(:)
+                IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
 C               SET 'FIX' AND 'EXPLICIT'
                 ISTORE(KPA+2) = KOR(ISTORE(KPA+2),IO(2))
                 ISTORE(KPA+2) = KOR(ISTORE(KPA+2),IE(2))
@@ -1435,24 +1435,20 @@ C                         SET THE 'EQUIV' AND 'EXPLICIT'
                           KEY(JS) = NOWT
 C                         INCREMENT THE RELATED PARAMETER COUNT
                           NRELP = NRELP + 1
-      WRITE(NCAWU,528) STORE(M5S), NINT(STORE(M5S+1)), COORD(KS+1),
-     1                    COORD(JS+1), CCST
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,528) STORE(M5S), NINT(STORE(M5S+1)), COORD(KS+1),
-     1                    COORD(JS+1), CCST
-      ENDIF
-528   FORMAT(' Parameters ',A4, I4,4X, A, ' and ', A,
-     1 ' related by ', A)
+                          WRITE(CMON,528)STORE(M5S),NINT(STORE(M5S+1))
+     1                    ,COORD(KS+1), CCST
+                          WRITE(NCAWU,'(A)') CMON(1)(:)
+                        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
+528                     FORMAT(' Parameters ',A4, I4,4X, A, ' and ', A,
+     1                  ' related by ', A)
 C
                         ELSE
 C
 C                       RELATED COORDS, BUT WE CANNOT SET UP CONSTRAINTS
-      WRITE(NCAWU,528) STORE(M5S), NINT(STORE(M5S+1)), COORD(KS+1),
-     1                    COORD(JS+1), CRST
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,528) STORE(M5S), NINT(STORE(M5S+1)), COORD(KS+1),
-     1                    COORD(JS+1), CRST
-      ENDIF
+                          WRITE(CMON,528)STORE(M5S),NINT(STORE(M5S+1))
+     1                    ,COORD(KS+1), CRST
+                          WRITE(NCAWU,'(A)') CMON(1)(:)
+                        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
                         CALL XRESTL (KS, COEF(KS), XO(KS),
      1                   JS, COEF(JS), XO(JS), M5S)
                           NRESTR = NRESTR + 1
