@@ -8,6 +8,8 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  30.3.1998 11:25 Uhr
+// $Log: not supported by cvs2svn $
+
 
 #include	"crystalsinterface.h"
 #include    "crconstants.h"
@@ -94,7 +96,7 @@ Boolean	CrButton::ParseInput( CcTokenList * tokenList )
 			}
 			case kTDefault:
 			{
-				((CxButton*)mWidgetPtr)->SetDefault();
+				((CxButton*)mWidgetPtr)->SetDef();
 				tokenList->GetToken(); // Remove that token!
 				LOGSTAT( "CrButton:ParseInput Setting default button" );
 				break;
