@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2000/10/31 14:36:54  ckp2
+C Log changes
+C
 CODE FOR XERIOM
       SUBROUTINE XERIOM ( IUNIT , IOS )
 C -- THIS SUBROUTINE SHOULD OUTPUT A MESSAGE ABOUT THE I/O ERROR THAT JU
@@ -2849,6 +2852,19 @@ C----- SHOULD BE REPLACED BY A MACHINE SPECIFIC ROUTINE
 ##DVFGID      MMOUSE = 1
 ##DVFGID      RETURN
       END
+
+CODE FOR FRAND
+      FUNCTION FRAND()
+C------ RETURNS A VALUE BETWEEN 0 and 1 from the compiler library's
+C       random number generator.
+&&DVFGID      USE DFPORT
+&&DVFGID      FRAND = RAND()
+&DOS          FRAND = RANDOM()
+&&LINGIL      FRAND = RAND()
+&VAX          FRAND = RAN (NINT(SECNDS(0.0)))
+      RETURN
+      END
+
 CODE FOR XRAND
       FUNCTION XRAND(REQVAR, ISEED)
 C------ RETURNS A VALUE DISTRIBUTED ABOUT ZERO FROM A DISTRIBUTION
@@ -2881,16 +2897,9 @@ C----- CREATE NEW SEQUENCE
       ENDIF
       IF (ISET .EQ. 0) THEN
 &XXX      STOP 'NO RANDOM No GENERATOR'
-&DOS      ZZZ = RANDOM()
-&&DVFGID      ZZZ = RAND()
-&&LINGIL      ZZZ = RAND()
-&VAX      ZZZ = RAN (SEED)
-1      V1 = 2. * SNGL(ZZZ) -1.
-&DOS      ZZZ = RANDOM()
-&&DVFGID      ZZZ = RAND()
-&&LINGIL      ZZZ = RAND()
-&VAX      ZZZ = RAN (SEED)
-       V2 = 2. * SNGL(ZZZ) -1.
+
+1      V1 = 2. * SNGL(FRAND()) -1.
+       V2 = 2. * SNGL(FRAND()) -1.
       R = V1**2 + V2**2
       IF (R .GE. 1.  .OR. R .EQ. 0. ) GOTO 1
       FAC = SQRT(-2. * LOG(R)/R)
