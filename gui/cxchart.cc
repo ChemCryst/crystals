@@ -8,6 +8,13 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2001/06/18 12:46:05  richard
+//   Keep bitmap selected in the wxMemoryDC. (Except when deleting and recreating, e.g.
+//   when window resizes.) Use wxGuiMutex functions to ensure safe clearing of the
+//   screen by the FSTCLR routine from Fortran - that thread isn't supposed to directly
+//   access the DC. NB. All other FAST functions simply deposit the data in a queue
+//   to be drawn by the main thread, so there is no problem.
+//
 //   Revision 1.11  2001/06/17 14:46:03  richard
 //   CxDestroyWindow function.
 //   wx bug fixes.
@@ -67,9 +74,9 @@ CxChart *   CxChart::CreateCxChart( CrChart * container, CxGrid * guiParent )
       CxChart  *theStdChart = new CxChart(container);
       theStdChart->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10));
       theStdChart->newMemDCBitmap = new wxBitmap(10,10);
-      theStdChart->memDC.SelectObject(*(theStdChart->newMemDCBitmap));
-      theStdChart->memDC.SetBrush( *wxWHITE_BRUSH );
-      theStdChart->memDC.Clear();
+      theStdChart->memDC->SelectObject(*(theStdChart->newMemDCBitmap));
+      theStdChart->memDC->SetBrush( *wxWHITE_BRUSH );
+      theStdChart->memDC->Clear();
 #endif
     return theStdChart;
 }
@@ -90,6 +97,7 @@ CxChart::CxChart(CrChart* container)
     mfgcolour = wxColour(0,0,0);
     m_pen = new wxPen(mfgcolour,1,wxSOLID);
     m_brush = new wxBrush(mfgcolour,wxSOLID);
+    memDC = new wxMemoryDC();
 #endif
     mPolyMode = 0;
     m_IsoCoords = true;
@@ -102,6 +110,7 @@ CxChart::~CxChart()
     mChartCount--;
     delete newMemDCBitmap;
 #ifdef __BOTHWX__
+    delete memDC;
     delete m_pen;
     delete m_brush;
 #endif
@@ -153,14 +162,24 @@ void    CxChart::SetGeometry( int top, int left, int bottom, int right )
   ((CrChart*)ptr_to_crObject)->ReDrawView();
 #endif
 #ifdef __BOTHWX__
-      SetSize(left,top,right-left,bottom-top);
-      memDC.SelectObject(wxNullBitmap);
-      delete newMemDCBitmap;
+
       wxClientDC   dc(this);
+      
+      memDC->SelectObject(wxNullBitmap);
+
+      delete newMemDCBitmap;
+      delete memDC;
+
+      memDC = new wxMemoryDC();
       newMemDCBitmap = new wxBitmap(right-left, bottom-top);
-      memDC.SelectObject(*newMemDCBitmap);
-      memDC.SetBrush( *wxWHITE_BRUSH );
-      memDC.Clear();
+      memDC->SelectObject(*newMemDCBitmap);
+
+      memDC->SetBrush( *wxWHITE_BRUSH );
+      memDC->SetPen( *wxBLACK_PEN );
+      memDC->Clear();
+
+      SetSize(left,top,right-left,bottom-top);
+
       ((CrChart*)ptr_to_crObject)->ReDrawView();
 #endif
 
@@ -228,9 +247,9 @@ void CxChart::DrawLine(int x1, int y1, int x2, int y2)
 #endif
 
 #ifdef __BOTHWX__
-    memDC.SetPen( *m_pen );
-    memDC.DrawLine(cpoint1.x,cpoint1.y,cpoint2.x,cpoint2.y);
-    memDC.SetPen( wxNullPen );
+    memDC->SetPen( *m_pen );
+    memDC->DrawLine(cpoint1.x,cpoint1.y,cpoint2.x,cpoint2.y);
+//    memDC->SetPen( wxNullPen );
 #endif
 
 }
@@ -365,11 +384,11 @@ void CxChart::OnPaint(wxPaintEvent & event)
 
       wxRect rect = GetRect();
 
-//      memDC.SelectObject(*newMemDCBitmap);
+//      memDC->SelectObject(*newMemDCBitmap);
 
-      dc.Blit( 0,0,rect.GetWidth(),rect.GetHeight(),&memDC,0,0,wxCOPY,false);
+      dc.Blit( 0,0,rect.GetWidth(),rect.GetHeight(),memDC,0,0,wxCOPY,false);
 
-//      memDC.SelectObject(wxNullBitmap);
+//      memDC->SelectObject(wxNullBitmap);
 
     if(m_inverted)
     {
@@ -425,12 +444,12 @@ void CxChart::Clear()
     memDC.SelectObject(oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
-      ::wxMutexGuiEnter();
-//      memDC.SelectObject(*newMemDCBitmap);
-      memDC.SetBrush( *wxWHITE_BRUSH );
-      memDC.Clear();
-//      memDC.SelectObject(wxNullBitmap);
-      ::wxMutexGuiLeave();
+//      ::wxMutexGuiEnter();
+//      memDC->SelectObject(*newMemDCBitmap);
+      memDC->SetBrush( *wxWHITE_BRUSH );
+      memDC->Clear();
+//      memDC->SelectObject(wxNullBitmap);
+//      ::wxMutexGuiLeave();
 #endif
 }
 
@@ -462,16 +481,14 @@ void CxChart::DrawEllipse(int x, int y, int w, int h, Boolean fill)
 #endif
 #ifdef __BOTHWX__
 
-//      memDC.SelectObject(*newMemDCBitmap);
-      memDC.SetPen( *m_pen );
+      memDC->SetPen( *m_pen );
       if ( fill )
-            memDC.SetBrush( *m_brush );
+            memDC->SetBrush( *m_brush );
       else
-            memDC.SetBrush( *wxTRANSPARENT_BRUSH );
-      memDC.DrawEllipse(topleft.x,topleft.y,bottomright.x-topleft.x,bottomright.y-topleft.y);
-      memDC.SetPen( wxNullPen );
-      memDC.SetBrush( wxNullBrush );
-//      memDC.SelectObject(wxNullBitmap);
+            memDC->SetBrush( *wxTRANSPARENT_BRUSH );
+      memDC->DrawEllipse(topleft.x,topleft.y,bottomright.x-topleft.x,bottomright.y-topleft.y);
+//      memDC->SetPen( wxNullPen );
+      memDC->SetBrush( wxNullBrush );
 #endif
 }
 
@@ -492,14 +509,12 @@ void CxChart::DrawText(int x, int y, CcString text)
 #endif
 #ifdef __BOTHWX__
       wxString wtext = wxString(text.ToCString());
-//      memDC.SelectObject(*newMemDCBitmap);
-      memDC.SetBrush( *m_brush );
-      memDC.SetPen( *m_pen );
-      memDC.SetBackgroundMode( wxTRANSPARENT );
-      memDC.DrawText(wtext, coord.x, coord.y );
-      memDC.SetPen( wxNullPen );
-      memDC.SetBrush( wxNullBrush );
-//      memDC.SelectObject(wxNullBitmap);
+      memDC->SetBrush( *m_brush );
+      memDC->SetPen( *m_pen );
+      memDC->SetBackgroundMode( wxTRANSPARENT );
+      memDC->DrawText(wtext, coord.x, coord.y );
+//      memDC->SetPen( wxNullPen );
+      memDC->SetBrush( wxNullBrush );
 #endif
 }
 
@@ -549,22 +564,20 @@ void CxChart::DrawPoly(int nVertices, int * vertices, Boolean fill)
       memDC.SelectObject(oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
-//      memDC.SelectObject(*newMemDCBitmap);
-      memDC.SetPen( *m_pen );
+      memDC->SetPen( *m_pen );
       if ( fill )
-            memDC.SetBrush( *m_brush );
+            memDC->SetBrush( *m_brush );
       else
-            memDC.SetBrush( *wxTRANSPARENT_BRUSH );
+            memDC->SetBrush( *wxTRANSPARENT_BRUSH );
       CcPoint*           points = new CcPoint[nVertices];
       for ( int j = 0; j < nVertices*2 ; j+=2 )
       {
             points[j/2] = DeviceToLogical( *(vertices+j), *(vertices+j+1) );
       }
-      memDC.DrawPolygon(nVertices, (wxPoint*) points );
+      memDC->DrawPolygon(nVertices, (wxPoint*) points );
       delete [] points;
-      memDC.SetPen( wxNullPen );
-      memDC.SetBrush( wxNullBrush );
-//      memDC.SelectObject(wxNullBitmap);
+//      memDC->SetPen( wxNullPen );
+      memDC->SetBrush( wxNullBrush );
 #endif
 
 }
@@ -609,7 +622,6 @@ void CxChart::SetColour(int r, int g, int b)
 {
 #ifdef __CR_WIN__
     mfgcolour = PALETTERGB(r,g,b);
-//  TRACE("CxChart SetColour to: %d, %d, %d \n",r,g,b);
 #endif
 #ifdef __BOTHWX__
       mfgcolour = wxColour ( r,g,b );
@@ -883,9 +895,8 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean 
     memDC.SelectObject(oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
-      memDC.SetPen( *m_pen );
-//      memDC.SelectObject( *newMemDCBitmap );
-      wxFont theFont = memDC.GetFont();
+      memDC->SetPen( *m_pen );
+      wxFont theFont = memDC->GetFont();
 
       wxString wtext (theText.ToCString());
 
@@ -901,30 +912,29 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean 
 
     while (fontIsTooBig)
     {
-            memDC.SetFont(theFont);
+            memDC->SetFont(theFont);
             int cx,cy;
             GetTextExtent( wtext, &cx, &cy );
 
-            if ((( cx < cwide )&&( cy < chigh ))||(theFont.GetPointSize()<=8))
+        if ((( cx < cwide )&&( cy < chigh ))||(theFont.GetPointSize()<=8))
         {
             //Output the text, and exit.
             fontIsTooBig = false;
 //Centre the text.
                   int xcrd = ( coord2.x + coord.x - cx ) / 2;
                   int ycrd = ( coord2.y + coord.y - cy ) / 2;
-                  memDC.SetBackgroundMode( wxTRANSPARENT );
-                  memDC.DrawText(wtext, xcrd , ycrd );
+                  memDC->SetBackgroundMode( wxTRANSPARENT );
+                  memDC->DrawText(wtext, xcrd , ycrd );
         }
         else
         {
                   //Reduced the font height and repeat.
                   theFont.SetPointSize( theFont.GetPointSize()-1 );
-                  memDC.SetFont( wxNullFont );
+                  memDC->SetFont( wxNullFont );
         }
     }
-      memDC.SetFont( wxNullFont );
-      memDC.SetPen( wxNullPen );
-//      memDC.SelectObject( wxNullBitmap );
+      memDC->SetFont( wxNullFont );
+//      memDC->SetPen( wxNullPen );
 #endif
 }
 
