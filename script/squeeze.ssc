@@ -69,6 +69,9 @@ them being overwritten
 % COPY 'END'
 % COPY '#SCRIPT VALID12'
 % COPY '#SFLS'
+% COPY 'SCALE'
+% COPY 'END'
+% COPY '#SFLS'
 % COPY 'CALC'
 % COPY 'END'
 %%
