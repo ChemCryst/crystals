@@ -6219,7 +6219,7 @@ Translations from asymmetric unit co-ordinates.
 As for MAKE, but without the BONDTYPE keyword.
 #
 #X\BONDING#
-#YBonding information - \LIST 40#
+#YBonding information - \BONDING#
 #HSbonding#
 #N  10#
 #J
@@ -6231,9 +6231,15 @@ As for MAKE, but without the BONDTYPE keyword.
  BREAK atom-specification TO atom-specification
  END
 #
-#PA more user-friendly way of inputting a LIST 40.
+#PTHis is a more user-friendly alternative to inputting a LIST 40.
 Directive syntax is like \LIST 40 with the following exceptions:
-#P1) The MAKE and BREAK directives look like this:
+#P1) ACTION. This can take two values:
+#N   3#
+#J
+      REPLACE (Default, and replace previous LIST 40 with a new on)
+      EXTEND  (adds new commands to end of existing LIST 40)
+#
+#P2) The MAKE and BREAK directives look like this:
 #N   2#
 #J
  MAKE C(1) TO C(4) 8
@@ -6246,7 +6252,7 @@ truncated when the rest are default values: (serial,1,1,0,0,0):
 #J
  MAKE C(1,2,1,0,1,1) TO C(8) 4
 #
-#P2) The READ directive need not be given. This makes it easier to edit
+#P3) The READ directive need not be given. This makes it easier to edit
 text files containing the command as you don't have to remember to alter
 the values on the READ directive.
 #P3) The command may be given as \BONDING EXTEND, in which case it takes
