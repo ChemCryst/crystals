@@ -6,6 +6,10 @@ A SCRIPT to assist with the weighting of least squares refinement
 %    FINISH
 %  END IF
 %% FIND OUT IF F OR FSQ REFINEMENT
+%  VARIABLE LOGICAL WMASK WDONE
+%  EVALUATE WMASK = TRUE
+%  EVALUATE WDONE = TRUE
+%  COPY '#SCRIPT XPUTINFO'
 %  VARIABLE INTEGER FTYPE
 %  COPY '#GENERALEDIT 23'
 %  COPY 'LOCATE RECORDTYPE=103'
@@ -95,6 +99,9 @@ routine work.
 %                COPY '#ANALYSE'
 %                COPY 'END'
 %                COPY '#PAUSE 5'
+%                EVALUATE WMASK = TRUE
+%                EVALUATE WDONE = FALSE
+%                COPY '#SCRIPT XPUTINFO'
 %            END BLOCK
 %            BLOCK                                    %STATISTICAL%
 %                COPY '#SCRIPT STATWT'
