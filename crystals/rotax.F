@@ -450,7 +450,7 @@ c      mdisag=matmul(M,disag)
 1     FORMAT (/,f5.1,' degree ',A,' about ',3(F4.0),1X,A,
      1               ' lattice direction: ')
 2     FORMAT ( A, ' direction     ',3f4.0,' f.o.m. = ',f6.2)
-3     FORMAT (f6.4,1X,A,1X,3I4)
+3     FORMAT (f6.3,1X,A,1X,3I4)
 
       if (fom<tol) then
          if(dorr=="d") then
@@ -462,7 +462,8 @@ c      mdisag=matmul(M,disag)
             endif
 
             IF ( ipunch .ge. 1 ) then
-               write (NCPU,3) fom, 'direct',(nint(x(i)),i=1,3)
+               write (NCPU,3) min(99.999,fom), 'direct',
+     1                       (nint(x(i)),i=1,3)
             END IF
 
             call write_results(fom,disag,d,q,bc,M,ipunch)
@@ -480,7 +481,8 @@ c      mdisag=matmul(M,disag)
             endif
 
             IF ( ipunch .ge. 1 ) then
-               write (NCPU,3) fom, 'reciprocal',(nint(x(i)),i=1,3)
+               write (NCPU,3) min(99.999,fom), 'reciprocal',
+     1                        (nint(x(i)),i=1,3)
             END IF
 
             call write_results(fom,disag,d,q,bc,M,ipunch)
