@@ -46,7 +46,7 @@
 ^^WI     @ 1,1 BUTTON BOK 'Submit &Answer' DEFAULT
 ^^WI     @ 1,3 BUTTON BHH 'Help'
 ^^WI     @ 1,5 BUTTON BXX '&Cancel'
-^^WI     @ 1,7 BUTTON BIT 'Int Tab'
+^^WI     @ 1,7 BUTTON BIT 'Int Tables'
 ^^WI   }
 ^^WI }
 ^^WI SHOW
@@ -126,7 +126,7 @@ For the common space-groups, there are 5 steps to follow:
 NOTE. In tetragonal and trigonal and hexagonal crystals, reflections of
   type hhl and h-hl may also have systematic absences.
  
-
+ 
 {1,9   A condition such as l=4n in the column 00l indicates that      |
 {1,9   reflections only occur in the 00l row when l is a multiple     |
 {1,9   of 4.                                                          |
