@@ -1,0 +1,37 @@
+% SCRIPT XHELP12
+%      COPY '#SCRIPT XHELP1m'
+{2,0 View Structure
+      This activates the display module, CAMERON
+{2,0 Fourier Refinement
+      By the method of Lipson & Cochran
+{2,0 Refine Positions
+      Refine x,y,z of all non-H atoms
+{2,0 Refine posn and iso
+      Refine x,y,z,Uiso of all non-H atoms
+{2,0 Refine posn and aniso
+      Refine x,y,z,Uaniso of all non-H atoms
+{2,0 Add hydrogen
+      Produce an editable model containing observed (from
+      difference map) and computed H positions
+{2,0 Check Extinction
+      Produce an analysis of variance listing which may reveal
+      the necessity for an extinction correction
+{2,0 Optimise Weights
+      Towards the end of refinement, once all parameters have been
+      partially refined, optimise the LS weights
+{2,0 N-Cycles
+      Do up-to n cycles of refinement. CRYSTALS will stop refinement
+      once convergence slows down, or if divergence occurs.
+{2,0 6-cycles
+      Do six cycles, even if everything converges or blows up. Usually 
+      the last operation before 'validation'
+{2,0 Validate
+       Check that the structure meets the Acta Cryst requirements.
+{2,0 Publish
+      Produce cif and tabular listsings.
+
+{4,0 WARNING:
+{4,0   IF YOU HAVE CAREFULLY BUILT A REFINEMENT LIST,
+{4,0   LIST 12, THESE AUTOMATIC PROCEDURES WILL DESTROY IT!
+%       COPY '#SCRIPT XHELP2'
+% END SCRIPT
