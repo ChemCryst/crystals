@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.49  2003/11/06 15:48:37  rich
+C When using IDECMASK operator in scripts always return absolute values.
+C
 C Revision 1.48  2003/09/04 14:14:28  rich
 C Modify FIRSTINT function, so that it returns ZERO if no integer is
 C found in the current string. This make the SHELX input work if there
@@ -2036,9 +2039,10 @@ C    APPROPRIATE ) BE ZERO.
 C
 C
       CHARACTER*(*) CTEXT
+      CHARACTER*80  CTITLE
 C
 C
-      PARAMETER ( LSTAND = 12 , NSTAND = 6 )
+      PARAMETER ( LSTAND = 12 , NSTAND = 7 )
       PARAMETER ( JINTEG = 1 , JREAL = 2 , JLOGIC = 3 )
       PARAMETER ( JCHAR = 4 )
       PARAMETER ( JTRUE = 1  , JFALSE = 0 )
@@ -2051,16 +2055,17 @@ C
 C
 \XSCCHR
 \XSCGBL
+\XCOMPD
 C
 C
       DATA CSTAND / 'TRUE' , 'FALSE' , 'VALUE' , 'USERLENGTH' ,
-     2 'NULLSTRING' , 'CVALUE' /
+     2 'NULLSTRING' , 'CVALUE' , 'CTITLE' /
       DATA ISTYPE / JLOGIC , JLOGIC  , 0       , JINTEG       ,
-     2 JCHAR        , JCHAR    /
+     2 JCHAR        , JCHAR    , JCHAR    /
       DATA ISVALU / JTRUE  , JFALSE  , 0       , 0            ,
-     2 0            , 0        /
+     2 0            , 0    ,    0    /
       DATA LSCALC / .FALSE. , .FALSE. , .TRUE. , .TRUE.       ,
-     2 .FALSE.      , .TRUE.   /
+     2 .FALSE.      , .TRUE., .TRUE.   /
 C
 C
 C
@@ -2100,6 +2105,14 @@ C
           ITYPE = JCHAR
 C RIC 98 ISCVLN is the end position, not the length of the string.
           ISTAT = KSCSCD ( CLINPB(ISCVLS:ISCVLN) , IRESLT )
+C
+C
+C -- 'CTITLE'
+C
+        ELSE IF ( ISTAND .EQ. 7 ) THEN
+          ITYPE = JCHAR
+          WRITE( CTITLE, '(20A4)') KTITL
+          ISTAT = KSCSCD ( CTITLE , IRESLT )
 C
         ENDIF
 C
