@@ -1,0 +1,18 @@
+%SCRIPT XRIGHT
+^^WI WINDOW RIGHT 'Correct'
+^^WI GRID  GRIDM NROWS=3 NCOLS=5
+^^WI {
+^^WI  @ 2,4 BITMAP WATKIN FILE 'watkin.bmp'
+^^WI  @ 2,2 GRID L NROWS=4 NCOLS=1
+^^WI  {
+^^WI    @ 1,1 STATIC T1 'Just so. That is the'
+^^WI    @ 2,1 STATIC T2 'correct answer.'
+^^WI    @ 4,1 BUTTON BOK 'Continue' COMMIT CANCEL DEFAULT
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+% GET NOSTORE SILENT TEXT ' ' ' '
+^^CO DISPOSE RIGHT
+%END SCRIPT
+

@@ -1,0 +1,26 @@
+%SCRIPT XWRONG
+%  VARIABLE INTEGER NWRONG
+^^WI WINDOW WRONG 'Incorrect' CANCEL='XX'
+^^WI GRID GRIDM NROWS=3 NCOLS=5
+^^WI {
+^^WI     @ 2,2 BITMAP PROUT FILE 'prout.bmp'
+^^WI     @ 2,4 GRID   R     NROWS=4 NCOLS=1
+^^WI     {
+%  IF NWRONG .EQ. 1 THEN
+^^WI       @ 1,1 STATIC T1 '1 of your answers is'
+%  ELSE
+%    CLEAR
+%    INSERT !^^WI @ 1,1 STATIC T1 '!
+%    STORE FORMAT /(I1)/ LENGTH 1 INTEGER NWRONG
+%    INSERT ! of your answers are'!
+%    OUTPUT
+%  END IF
+^^WI       @ 2,1 STATIC T2 'wrong. Think carefully.'
+^^WI       @ 4,1 BUTTON BOK 'Try again' COMMIT DEFAULT
+^^WI     }
+^^WI }
+^^WI SHOW
+^^CR
+% GET NOSTORE SILENT TEXT ' ' ' '
+^^CO DISPOSE WRONG
+%END SCRIPT
