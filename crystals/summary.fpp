@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.57  2004/04/19 15:43:13  rich
+C Added normal probability plot to \SUM L 6 (if LEVEL=NORMPP is specified)
+C For each reflection the value of (w)^.5*DELTA is stored in memory along
+C with a packed version of the indices. These are sorted using XSHELQ and
+C the normal score is calculated.
+C
 C Revision 1.56  2004/03/10 13:11:35  rich
 C Avoid error in summary if too many weighting parameters are given.
 C
@@ -3050,6 +3056,7 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       IULN = KTYP06(ITYP06)
       CALL XFAL06 (IULN, 0)
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
+      IF (KHUNTR ( 2,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL02
 
       DO I = 1,110
         KSIGS(I) = 0
@@ -3075,8 +3082,10 @@ C -- SCAN LIST 6 FOR REFLECTIONS
 
         IF ( KALLOW(IN).EQ. 0 ) THEN
           NALLOW = NALLOW + 1
-          JSIGS = MIN( 120, MAX( 1, NINT(60 + RTDIV * STORE(M6+6)) ) )
-          MSIGS(JSIGS) = MSIGS(JSIGS) + 1
+          IF ( ISCNTRC ( STORE(M6) ) .EQ. 0 ) THEN
+           JSIGS = MIN( 120, MAX( 1, NINT(60 + RTDIV * STORE(M6+6)) ) )
+           MSIGS(JSIGS) = MSIGS(JSIGS) + 1
+          END IF
         END IF
 
         NTOT = NTOT + 1
@@ -3085,10 +3094,12 @@ C -- SCAN LIST 6 FOR REFLECTIONS
         JSIGS = MAX(JSIGS,1)
         IF ( JSIGS .LE. 110 ) KSIGS(JSIGS) = KSIGS(JSIGS) + 1
 
+
         SIGNOI = FOS/SIGMA
         JSIGS = 3
         IF ( SIGNOI .LT. 10 ) JSIGS = 2
         IF ( SIGNOI .LT. 3 ) JSIGS = 1
+
         MSIG = 1 + NINT( STORE(M6+16) * 25.0 / 0.5 )
         MSIG = MAX ( 1,MSIG )
         MSIG = MIN ( 25,MSIG )
@@ -3492,6 +3503,31 @@ C CDD For g77 changed       CMON = ' '   to:
        END DO
       END DO
 
+      RETURN
+      END
+
+
+CODE FOR ISCNTRC
+      FUNCTION ISCNTRC ( HKL )
+      DIMENSION HKL(3), SHKL(3)
+\XLST02
+\STORE
+\ISTORE
+\QSTORE
+      IF ( IC .EQ. 1 ) THEN ! Centre of symmetry, all reflections affected.
+        ISCNTRC = 1
+        RETURN
+      END IF
+C Loop over each symmetry operator (we can ignore lattice centerings).
+      ISCNTRC = 0
+      DO 100 I=0,N2-1
+          CALL XMLTTM(STORE(L2+I*MD2),HKL(1),SHKL(1),3,3,1)
+          DO J = 1,3
+              IF ( NINT(SHKL(J)) .NE. - NINT(HKL(J)) ) GOTO 100
+          END DO
+          ISCNTRC = 1
+          RETURN
+100   CONTINUE
       RETURN
       END
 

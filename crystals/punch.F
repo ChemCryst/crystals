@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.38  2004/03/01 11:39:41  rich
+C Put data_ block header on .fcf file.
+C
 C Revision 1.37  2003/12/01 09:31:36  rich
 C Use longer buffer for cell parameter output in FCF file.
 C
@@ -1082,8 +1085,10 @@ CDJW02      CALL XRDOPN(7, KDEV , CSSCIF, LSSCIF)
       RETURN
       END
 CODE FOR XPCH6X
-      SUBROUTINE XPCH6X(IULN)
+      SUBROUTINE XPCH6X(IULN,IFOFC)
 C----- SHELX FORMAT PUNCH
+C - List number (6 or 7) for loading the right reflection list.
+C - IFOFC: 0 - punch FOsq, 1 - punch FCsq with made up errors sigma.
 \STORE
 \XUNITS
 \XLST06
@@ -1098,7 +1103,20 @@ c      E=STORE(M6DTL+1)       ! FETCH THE MAXIMUM VALUE OF /FO/
 
 1840  CONTINUE
         IF ( KLDRNR (IN) .LT. 0 ) GOTO 9999
-        CALL XSQRF(FOS, STORE(M6+3), FABS, SIGMA, STORE(M6+12))
+        IF ( IFOFC .EQ. 0 ) THEN
+          CALL XSQRF(FOS, STORE(M6+3), FABS, SIGMA, STORE(M6+12))
+        ELSE
+C This is just a test, don't use these numbers for anything important.
+          FOS = STORE(M6+5) * STORE(M6+5)
+C Make up a sigma that is proportional to the sqrt of FOS, but
+C doesn't quite ever drop to zero.
+          SIGMA = 0.676 * STORE(M6+5) + 3.1
+C The errors in FOS/SIGMA should be normally distributed, assume
+C sigma's underestimated by a factor of 5.
+          X = XRAND ( 1.0, 1 )
+          FOS = FOS + 5 * SIGMA * X
+        END IF
+
         IF      (FOS.LT.100000.00) THEN
           WRITE(NCPU,'(3I4,2F8.2)')(NINT(STORE(M6+I)),I=0,2),FOS,SIGMA
         ELSE IF (FOS.LT.1000000.0) THEN

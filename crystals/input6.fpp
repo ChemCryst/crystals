@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2003/06/27 10:11:34  rich
+C Added "#PUNCH 6 F" - outputs a plain HKLF4 format listing to the
+C punch file with no headers or anything.
+C
 C Revision 1.7  2003/02/14 17:09:02  djw
 C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
 C recine have the parameter ityp06, which corresponds to the types
@@ -157,8 +161,8 @@ C--NOT LIST 6  -  AN ERROR
       RETURN
 C--CHECK THE TYPE OF PUNCH
 7300  CONTINUE
-C           A     B     C     D     E     F
-      GOTO (7310, 7340, 7320, 7330, 7350, 7360 ) ICLASS+2
+C           A     B     C     D     E     F     G
+      GOTO (7310, 7340, 7320, 7330, 7350, 7360, 7370 ) ICLASS+2
       RETURN
 C--NORMAL PUNCH FORMAT
 7310  CONTINUE
@@ -182,7 +186,11 @@ C----- CIF OUTPUT F^2's
       RETURN
 C----- PLAIN SHELX HKL OUTPUT
 7360  CONTINUE
-      CALL XPCH6X(LSTNO)
+      CALL XPCH6X(LSTNO,0)
+      RETURN
+C----- SHELX HKL OUTPUT of FC with made up sigmas.
+7370  CONTINUE
+      CALL XPCH6X(LSTNO,1)
       RETURN
       END
 

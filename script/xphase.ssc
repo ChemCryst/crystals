@@ -11,8 +11,10 @@
 ^^WI    {
 ^^WI     @ 1,1 STATIC XFW1
 ^^WI 'You are looking at the distribution of phase angles.'
-^^WI     @ 2,1 STATIC XFW2 ' '
-^^WI     @ 3,1 STATIC XFW3 ' '
+^^WI     @ 2,1 STATIC XFW2
+^^WI 'for all non-centrosymetric classes of reflections.'
+^^WI     @ 3,1 STATIC XFW3
+^^WI 'In centrosymmetric space groups, this graph will be empty.'
 ^^WI    }
 ^^WI    @ 1,1 ICON IM INFO
 ^^WI   }
