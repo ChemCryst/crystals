@@ -1,7 +1,8 @@
 %SCRIPT XFOUR
 % VARIABLE CHARACTER FNAME
-% VARIABLE LOGICAL TWINNED
+% VARIABLE LOGICAL TWINNED NOINI5
 % EVALUATE TWINNED = FALSE
+% EVALUATE NOINI5 = FALSE
 %  BLOCK
 %    VARIABLE INTEGER ITMP
 %    IF ( EXISTS 13 .NE. 0 ) THEN
@@ -86,8 +87,15 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^WI   @ 2,2 GRID GRIDAA NROWS=2 NCOLS=3 OUTLINE='Pre calc'
 ^^WI   {
 ^^WI    @ 1,2 CHECKBOX XSCALE 'Recalculate scale factor' INFORM=NO
+%    IF EXISTS 5 .NE. 1 THEN
+^^WI         DISABLED=YES
+%    END IF
 ^^WI    @ 2,2 CHECKBOX XCALC 'Recalculate phases' INFORM=NO
-^^WI                                              STATE = ON
+%    IF EXISTS 5 .NE. 1 THEN
+^^WI         DISABLED=YES
+%    ELSE
+^^WI         STATE = ON
+%    END IF
 ^^WI   }
 ^^WI   @ 4,2 GRID GRIDAB NROWS=3 NCOLS=3 OUTLINE='Fourier map'
 ^^WI   {
@@ -325,6 +333,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %        COPY 'END'
 %       ELSE
 %        EVALUATE N5O = 0
+%        EVALUATE NOINI5 = TRUE
 %       END IF
 %       EVALUATE NPEAKS = N10 - N5O
 %%      SHOW NPEAKS
