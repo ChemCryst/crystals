@@ -1,0 +1,26 @@
+%SCRIPT XQCAM
+%%
+%% Runs Cameron with no questions, no menus, no buttons, no text window.
+%%
+^^WI WINDOW _CAMWINDOW 'Cameron' KEEP SIZE MODAL CANCEL='END'
+%% The first grid splits the main area from the status bar.
+^^WI GRID SPLIT NROWS=6 NCOLS=3
+^^WI {
+^^WI   @ 2,2 CHARTWINDOW _CAMERONVIEW NROWS=30 NCOLS=90
+^^WI         INFORM=YES
+%% The inner grid splits the text output from the tools
+^^WI   @ 4,2 EDITBOX _CAMTEXTINPUT '' NCOLS=5
+^^WI          SENDONRETURN=YES INPUT
+^^WI   @ 6,2 PROGRESS  _CAMPROG 'Initialising'
+^^WI }
+^^WI SHOW
+^^CR
+^^WI SENDPROGRESSTO _CAMPROG
+^^CR
+% COPY '#CAM'
+% COPY 'END'
+% COPY ' '
+% COPY 'BALL ALL PLANE ALL VIEW'
+% COPY ' '
+%END SCRIPT
+

@@ -1,0 +1,9 @@
+%SCRIPT XQCAME
+%%
+%% Close the Cameron window opened by XQCAM.
+%%
+% COPY 'END'
+% COPY ' '
+^^WI DISPOSE _CAMWINDOW
+^^CR
+%END SCRIPT
