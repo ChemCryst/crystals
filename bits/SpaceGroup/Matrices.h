@@ -48,10 +48,12 @@
 //Error codes
 #define kDimensionErrorN -1
 #define kInnerDimensionErrorN -2
+#define kSquareMatrixN -3
 
 //Error strings
 #define kDimensionError "Matrix dimensions must agree." 
 #define kInnerDimensionError "Inner matrix dimensions must agree."
+#define kSquareMatrix "Matrix must be square."
 
 class MatrixException:public MyException
 {
@@ -101,7 +103,7 @@ class Matrix:public MyObject
             iMatrix = new type[pMatrix.iSize];
             memcpy(iMatrix, pMatrix.iMatrix, pMatrix.iSize*sizeof(type));
         }
-        
+		
 		Matrix(const type pMatrix[], const size_t pXSize, const size_t pYSize):iXSize(pXSize), iYSize(pYSize), iSize(pXSize*pYSize)
         {
             iMatrix = new type[iSize];
@@ -149,7 +151,7 @@ class Matrix:public MyObject
             return *this;
         }
         
-        Matrix<type>& operator*=(Matrix<type>& pMatrix)
+        Matrix<type>& operator*=(const Matrix<type>& pMatrix)
         {
             if (iXSize != pMatrix.iYSize)
             {
@@ -178,6 +180,11 @@ class Matrix:public MyObject
         {
             return iMatrix[pIndex];
         }
+		
+		inline type& operator[](const size_t pIndex) const
+		{
+			return iMatrix[pIndex];
+		}
         
         inline type getValue(const size_t pXIndex, const size_t pYIndex) const
         {
@@ -242,12 +249,13 @@ class Matrix:public MyObject
             return *this;
         }
         
-        inline void add(const Matrix<type>& pMatrix1, Matrix<type>& pResult)	//A faster subtraction this doesn't check to see if the result matrix is the correct size before inserting the results it is assumed to be the correct size already
+        inline Matrix<type>& add(const Matrix<type>& pMatrix1, Matrix<type>& pResult)	//A faster subtraction this doesn't check to see if the result matrix is the correct size before inserting the results it is assumed to be the correct size already
         {
             for (int i = 0; i < iSize; i++)
             {
                 pResult[i] = iMatrix[i] + pMatrix1.iMatrix[i];
             }
+			return pResult;
         }
 
         inline float abssum()
@@ -261,14 +269,34 @@ class Matrix:public MyObject
             return tSum;
         }
 
-        inline void sub(Matrix<type>& pMatrix1, Matrix<type>& pResult)	//A faster subtraction this doesn't check to see if the result matrix is the correct size before inserting the results it is assumed to be the correct size already
+        inline Matrix<type>& sub(Matrix<type>& pMatrix1, Matrix<type>& pResult)	//A faster subtraction this doesn't check to see if the result matrix is the correct size before inserting the results it is assumed to be the correct size already
         {
             for (size_t i = 0; i < iSize; i++)
             {
                 pResult.iMatrix[i] = iMatrix[i] - pMatrix1.iMatrix[i];
             }
+			return pResult;
         }
-          
+		
+		inline Matrix<type>& sub(type pValue, Matrix<float>& pResult)	
+        {
+			Matrix<float> tSub(iXSize, iYSize, pValue);
+            this->sub(tSub, pResult);
+			return pResult;
+        }
+		
+		inline Matrix<type>& mul(const type& pMult)	//A faster multiply this doesn't check to see if the result matrix is the correct size before inserting the results
+        {
+			for (size_t i = 0; i < iYSize; i ++)
+            {
+                for (size_t j = 0; j < iXSize; j ++)
+                {
+					iMatrix[i*iYSize+j] *= pMult;
+				}
+			}
+			return *this;
+		}
+		
         inline void mul(const Matrix<type>& pMatrix1, Matrix<type>& pResult)	//A faster multiply this doesn't check to see if the result matrix is the correct size before inserting the results
         {
             pResult.iXSize = pMatrix1.iXSize;
@@ -372,6 +400,66 @@ class Matrix:public MyObject
         {
             return memcmp(iMatrix, pValue2.iMatrix, sizeof(type)*iSize);
         }
+		
+		
+		type determinant()
+		{
+			if (iSize == 1)
+				return getValue(0, 0);
+			type tDet = 0;
+			if (iXSize != iYSize)
+				throw MatrixException(kSquareMatrixN, kSquareMatrix);
+			for (size_t i = 0; i < iXSize; ++i)
+			{
+				int tSign = ( i % 2) ? -1 : 1;
+				Matrix<type> tCofactor;
+				cofactor(i, 0, tCofactor);
+				tDet += tSign * getValue(i, 0) * tCofactor.determinant();
+			}
+			return tDet;
+		}
+		
+		Matrix<type>& cofactor(size_t x, size_t y, Matrix<type>& pResult)
+		{
+			pResult.resize(iXSize-1, iYSize-1);
+			for (size_t i = 0, k = 0; i < iXSize; ++i) 
+			{
+				if ( i != x) 
+				{
+					for (size_t j = 0, l = 0; j < iYSize; ++j) 
+					{
+						if ( j != y) 
+						{
+							pResult.setValue(getValue(i, j), k, l);
+							++l;
+						}
+					}
+					++k;
+				}
+			}
+			return pResult;
+		}
+		
+		Matrix<type>& inv()
+		{
+			if (iXSize != iYSize)
+				throw MatrixException(kSquareMatrixN, kSquareMatrix);
+				
+			Matrix<type> tResult(iXSize, iXSize); //Using xSize because then we don't need to put ySize in a register.
+												//Probably want help in the slightest but want do any harm.
+			Matrix<type> tCofactor(iXSize-1, iXSize-1);
+			for (size_t i = 0; i < iXSize; i++)
+			{
+				for (size_t j = 0; j < iXSize; j++)
+				{
+					int tSign = ((i+j)%2) ? -1 : 1;
+					type tTemp = tSign*cofactor(i, j, tCofactor).determinant();
+					tResult.setValue(tTemp, j, i);
+				}
+			}
+			(*this) = tResult.mul(1/determinant());
+			return *this;
+		}
 };
 
 #if defined (__APPLE__)
@@ -379,7 +467,7 @@ class Matrix:public MyObject
 template<>
 class Matrix<float>:public MyObject
 {
-    private:
+    protected:
         float* 	iMatrix;
         size_t 	iXSize, iYSize, iSize;
     public:
@@ -415,7 +503,7 @@ class Matrix<float>:public MyObject
         
         Matrix(const Matrix<float>& pMatrix):iXSize(pMatrix.iXSize), iYSize(pMatrix.iYSize), iSize(pMatrix.iSize)  //Copy constructor
         {
-            iMatrix = (float*)malloc(sizeof(float)*iSize);;
+            iMatrix = (float*)malloc(sizeof(float)*iSize);
             memcpy(iMatrix, pMatrix.iMatrix, pMatrix.iSize*sizeof(float));
         }
         
@@ -425,6 +513,19 @@ class Matrix<float>:public MyObject
             memcpy(iMatrix, pMatrix, iSize*sizeof(float));
         }
         
+		template <class otherType>
+        Matrix(const Matrix<otherType>& pMatrix)
+        {
+			iYSize = pMatrix.sizeY();
+			iXSize = pMatrix.sizeX();
+			iSize = iXSize * iYSize;
+			iMatrix = (float*)malloc(sizeof(float)*iSize);
+            for (size_t i = 0; i< iSize; i++)
+            {
+                iMatrix[i] = (float)pMatrix.getValue(i);
+            }
+        }
+		
         ~Matrix()
         {
             free(iMatrix);
@@ -475,6 +576,11 @@ class Matrix<float>:public MyObject
             return iMatrix[pIndex];
         }
         
+		inline float& operator[](const size_t pIndex) const
+		{
+			return iMatrix[pIndex];
+		}
+		
         inline float getValue(const short pXIndex, const short pYIndex) const
         {
             return iMatrix[pXIndex*iYSize+pYIndex];
@@ -537,16 +643,31 @@ class Matrix<float>:public MyObject
             return *this;
         }
         
-        inline void add(Matrix<float>& pMatrix1, Matrix<float>& pResult)	//A faster subtraction this doesn't check to see if the result matrix is the correct size before inserting the results it is assumed to be the correct size already
+        inline Matrix<float>& add(Matrix<float>& pMatrix1, Matrix<float>& pResult)	//A faster subtraction this doesn't check to see if the result matrix is the correct size before inserting the results it is assumed to be the correct size already
         {
             vadd(iMatrix, 1, pMatrix1.iMatrix, 1, pResult.iMatrix, 1, iSize);
+			return pResult;
         }
            
-        inline void sub(Matrix<float>& pMatrix1, Matrix<float>& pResult)	//A faster subtraction this doesn't check to see if the result matrix is the correct size before inserting the results it is assumed to be the correct size already
+        inline Matrix<float>& sub(Matrix<float>& pMatrix1, Matrix<float>& pResult)	//A faster subtraction this doesn't check to see if the result matrix is the correct size before inserting the results it is assumed to be the correct size already
         {
             vsub(pMatrix1.iMatrix, 1, iMatrix, 1, pResult.iMatrix, 1, iSize);
+			return pResult;
         }
-          
+		
+		inline Matrix<float>& sub(float pValue, Matrix<float>& pResult)	
+        {
+			Matrix<float> tSub(iXSize, iYSize, pValue);
+            this->sub(tSub, pResult);
+			return pResult;
+        }
+        
+		inline Matrix<float>& mul(const float pMultiplier, Matrix<float>& pResult)
+		{
+			vsmul(iMatrix, 1, &pMultiplier, pResult.iMatrix, 1, iSize);
+			return pResult;
+		}
+		   
         inline void mul(Matrix<float>& pMatrix1, Matrix<float>& pResult)	//A faster multiply this doesn't check to see if the result matrix is the correct size before inserting the results
         {
             pResult.iXSize = pMatrix1.iXSize;
@@ -674,23 +795,82 @@ class Matrix<float>:public MyObject
         {
             return memcmp(iMatrix, pValue2.iMatrix, sizeof(float)*iSize);
         }
+		
+		float determinant()
+		{
+			if (iSize == 1)
+				return getValue(0, 0);
+			float tDet = 0;
+			if (iXSize != iYSize)
+				throw MatrixException(kSquareMatrixN, kSquareMatrix);
+			for (size_t i = 0; i < iXSize; ++i)
+			{
+				int sgn = ( i % 2) ? -1 : 1;
+				Matrix<float> tCofactor;
+				cofactor(i, 0, tCofactor);
+				tDet += sgn * getValue(i, 0) * tCofactor.determinant();
+			}
+			return tDet;
+		}
+		
+		Matrix<float>& cofactor(size_t x, size_t y, Matrix<float>& pResult) const
+		{
+			pResult.resize(iXSize-1, iYSize-1);
+			for (size_t i = 0, k = 0; i < iXSize; ++i) 
+			{
+				if ( i != x) 
+				{
+					for (size_t j = 0, l = 0; j < iYSize; ++j) 
+					{
+						if ( j != y) 
+						{
+							pResult.setValue(getValue(i, j), k, l);
+							++l;
+						}
+					}
+					++k;
+				}
+			}
+			return pResult;
+		}
+		
+		Matrix<float>& inv()
+		{
+			if (iXSize != iYSize)
+				throw MatrixException(kSquareMatrixN, kSquareMatrix);
+				
+			Matrix<float> tResult(iXSize, iXSize); //Using xSize because then we don't need to put ySize in a register.
+												//Probably want help in the slightest but want do any harm.
+			Matrix<float> tCofactor(iXSize-1, iXSize-1);
+			for (size_t i = 0; i < iXSize; i++)
+			{
+				for (size_t j = 0; j < iXSize; j++)
+				{
+					int tSign = ((i+j)%2) ? -1 : 1;
+					float tTemp = tSign*cofactor(i, j, tCofactor).determinant();
+					tResult.setValue(tTemp, j, i);
+				}
+			}
+			(*this) = tResult.mul(1/determinant(), tResult);
+			return *this;
+		}
 };
 #endif
 
 template <class type>
-Matrix<type> operator+( Matrix<type>& pMatrix1,  Matrix<type>& pMatrix2)
+Matrix<type> operator+(const Matrix<type>& pMatrix1, const Matrix<type>& pMatrix2)
 {
     return Matrix<type>(pMatrix1) += pMatrix2;
 }
 
 template <class type>    
-Matrix<type> operator-( Matrix<type>& pMatrix1,  Matrix<type>& pMatrix2)
+Matrix<type> operator-(const Matrix<type>& pMatrix1, const Matrix<type>& pMatrix2)
 {
     return Matrix<type>(pMatrix1) -= pMatrix2;
 }
 
 template <class type>
-Matrix<type> operator*(Matrix<type>& pMatrix1, Matrix<type>& pMatrix2)
+Matrix<type> operator*(const Matrix<type>& pMatrix1, const Matrix<type>& pMatrix2)
 {
     return Matrix<type>(pMatrix1) *= pMatrix2;;
 }
