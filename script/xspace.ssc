@@ -13,7 +13,7 @@
 %   EVALUATE LCANCEL = FALSE
 %% A SCRIPT TO UPDTE LIST 2
 %  IF EXISTS 2 .LE. 0 THEN
-%    EVALUATE L2 = 'P'
+%    EVALUATE L2 = 'P   '
 %    EVALUATE A2 = '1'
 %    EVALUATE B2 = ' '
 %    EVALUATE C2 = ' '
