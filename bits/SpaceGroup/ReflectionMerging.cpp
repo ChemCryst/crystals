@@ -132,12 +132,12 @@ static LaueClassMatrices gLaueMatrices;
 class LaueGroups::LaueGroup:public MyObject
 {
 private:
-    LaueGroups::systemID iCrystalSystem;
+    SystemID iCrystalSystem;
     Array<unsigned short>* iMatIndices;
     MergedData* iMergedData;
     char* iLaueGroup;
 public:    
-    LaueGroup(const LaueGroups::systemID pSys, const char* pLaueGroup, const unsigned short pIndices[], const int pNumMat):iCrystalSystem(pSys), iMergedData(NULL)
+    LaueGroup(const LaueGroups:: pSys, const char* pLaueGroup, const unsigned short pIndices[], const int pNumMat):iCrystalSystem(pSys), iMergedData(NULL)
     {
         iMatIndices = new Array<unsigned short>(pIndices, pNumMat);
         iLaueGroup = new char[strlen(pLaueGroup)+1];
@@ -156,7 +156,7 @@ public:
         delete[] iLaueGroup;
     }
     
-    LaueGroups::systemID getCrystalSystem() const
+    SystemID getCrystalSystem() const
     {
         return iCrystalSystem;
     }
@@ -195,12 +195,11 @@ public:
     }
     
     void buildMergedData(const HKLData& pHKLs, const RunParameters& pRunPara)
-    {        
-       // const static short kMin[] = {SHRT_MIN, SHRT_MIN, SHRT_MIN}; 
-        size_t tReflNum = pHKLs.length();
-         Matrix<short> tCurHKL(1, 3);
-         Matrix<short> tTempHKL(1, 3);
-         Matrix<short> tZero(1, 3, 0);
+    {		
+        size_t tReflNum = pHKLs.size();
+		Matrix<short> tCurHKL(1, 3);
+		Matrix<short> tTempHKL(1, 3);
+		Matrix<short> tZero(1, 3, 0);
         short tHLimit = 0;
         short tKLimit;
         short tLLimit;
@@ -221,11 +220,11 @@ public:
         {
             if (tHLimit > 0)    //If it is filtering
             {
-                if (pHKLs.get(j)->tHKL->getValue(0) < tHLimit)
+                if (pHKLs[j]->tHKL->getValue(0) < tHLimit)
                 {
-                    if (pHKLs.get(j)->tHKL->getValue(1) < tKLimit)
+                    if (pHKLs[j]->tHKL->getValue(1) < tKLimit)
                     {
-                            if (pHKLs.get(j)->tHKL->getValue(2) > tKLimit)
+                            if (pHKLs[j]->tHKL->getValue(2) > tKLimit)
                                 continue;
                     }
                     else
@@ -238,21 +237,22 @@ public:
                     continue;
                 }
             }
-            tCurHKL = (*pHKLs.get(j)->tHKL);   //Set current max hkl value
+            tCurHKL = (*pHKLs[j]->tHKL);   //Set current max hkl value
             for (size_t i = 0; i < iMatIndices->size(); i++) //Run through all the matrices.
             {
-                (gLaueMatrices.getMatrix((*iMatIndices)[i]))->mul(*pHKLs.get(j)->tHKL, tTempHKL); //Multiply the hkl value with the current matrix
-                
-				for (int j = 0; j < 2; j++) //Do this twice
+                (gLaueMatrices.getMatrix((*iMatIndices)[i]))->mul(*pHKLs[j]->tHKL, tTempHKL); //Multiply the hkl value with the current matrix
+                for (int j = 0; j < 2; j++) //Do this twice
                 {
+
                     if (greaterHKL(tTempHKL, tCurHKL)) //see if this new HKL value is greater then the last. This is just for consistancy could just as well be least hkl value or something.
                     {
                         tCurHKL = tTempHKL;
                     }
+					
                     tZero.sub(tTempHKL, tTempHKL); //Invert the hkl value.
                 }
             }
-            iMergedData->add(tCurHKL, *pHKLs.get(j));
+            iMergedData->add(tCurHKL, *pHKLs[j]);
         }
     }
     
@@ -294,6 +294,7 @@ LaueGroups::LaueGroups()//:Array<LaueGroup*>(14)
 				       37, 10, 5, 28, 29, 0, //  -3 1 m
 				       37, 30, 10, 1, 6, 23, //6/m
 				       37, 30, 10, 1, 5, 23, 7, 28, 38, 29, 8, 0, //6/m m m
+					   
 				       37, 26, 20, 36, 25, 19, 24, 15, 14, 3, 9, 31,//m -3
 				       37, 26, 20, 36, 25, 19, 24, 15, 14, 3, 9, 31, 28, 18, 35, 27, 17, 34, 13, 2, 33, 21, 16, 11};//m -3 m
     /* The laue groups should always bin in order of symmetry as other methods rely this order on this*/
@@ -326,7 +327,7 @@ Array<unsigned short>& LaueGroups::getGroupIndice(const SystemRef pSystemRef, co
 }
 
 
-LaueGroups::systemID LaueGroups::unitCellID2LaueGroupID(const UnitCell::systemID pID)
+SystemID LaueGroups::unitCellID2LaueGroupID(const UnitCell::systemID pID)
 {
     switch (pID)
     {
@@ -364,7 +365,7 @@ LaueGroups::systemID LaueGroups::unitCellID2LaueGroupID(const UnitCell::systemID
     return LaueGroups::kTriclinicID;
 }
 
-UnitCell::systemID LaueGroups::laueGroupID2UnitCellID(LaueGroups::systemID pID)
+UnitCell:: LaueGroups::laueGroupID2UnitCellID(LaueGroups::systemID pID)
 {
     switch (pID)
     {
@@ -429,7 +430,7 @@ bool LaueGroups::mergeForAll(const HKLData& pHKLs, const bool pThrowRefl, const 
     return tMerged;
 }
 
-LaueGroups::systemID LaueGroups::guessSystem(const HKLData& pHKLs, const RunParameters& pRunParam)
+SystemID LaueGroups::guessSystem(const HKLData& pHKLs, const RunParameters& pRunParam)
 {
     size_t tBest = 0;
     float tLowestRF = FLT_MAX;
@@ -469,7 +470,7 @@ LaueGroups::systemID LaueGroups::guessSystem(const HKLData& pHKLs, const RunPara
     return (*iGroups)[tBest]->getCrystalSystem();
 }
 
-SystemRef LaueGroups::getSystemRef(unsigned short* pNumGroup, const LaueGroups::systemID pSystem) const
+SystemRef LaueGroups::getSystemRef(unsigned short* pNumGroup, const LaueGroups:: pSystem) const
 {
     unsigned short i = 0;
     unsigned short tResult;
@@ -487,7 +488,7 @@ SystemRef LaueGroups::getSystemRef(unsigned short* pNumGroup, const LaueGroups::
     return 0;
 }
 
-LaueGroups::systemID LaueGroups::getCrystalSystemFor(const SystemRef pSystemRef)
+SystemID LaueGroups::getCrystalSystemFor(const SystemRef pSystemRef)
 {
     return (*iGroups)[pSystemRef]->getCrystalSystem();
 }
@@ -525,7 +526,7 @@ float sumdiff(Array<float>& pValues, float pMean)
     return tTotal;
 }
 
-//static multiset<Reflection*, lsreflection>* gSortedReflections = NULL;
+static multiset<Reflection*, lsreflection>* gSortedReflections = NULL;
 static size_t gNumRefl = 0;
 static Reflection* gReflections = NULL;
 
@@ -544,11 +545,11 @@ MergedData::MergedData(const size_t pNumRefl):iUpto(0), iRFactor(-1)
     {
         gReflections = new Reflection[gNumRefl];
     }
-/*    if (gSortedReflections == NULL)
+    if (gSortedReflections == NULL)
     {
         gSortedReflections = new multiset<Reflection*, lsreflection>();
     }
-    gSortedReflections->clear();*/
+    gSortedReflections->clear();
 }
 
 MergedData::~MergedData()
@@ -561,8 +562,8 @@ void MergedData::add(const Matrix<short>& pHKL, const Reflection& pRefl)
     gReflections[iUpto].setHKL(pHKL);
     gReflections[iUpto].i = pRefl.i;
     gReflections[iUpto].iSE = pRefl.iSE;
-	iUpto ++;
-    //gSortedReflections->insert(&(gReflections[iUpto++]));
+	//iUpto ++;
+    gSortedReflections->insert(&(gReflections[iUpto++]));
 }
 
 void MergedData::releaseReflections()
@@ -571,9 +572,9 @@ void MergedData::releaseReflections()
     {
         delete[] gReflections; //Release all the global reflections used.
         gReflections = NULL;    //Make sure that we know that this is need.
-      //  gSortedReflections->clear(); //Clear all the reflections which where in the sorted list because they no longer exist
-        //delete gSortedReflections;  //Release the memory
-        //gSortedReflections = NULL; 
+        gSortedReflections->clear(); //Clear all the reflections which where in the sorted list because they no longer exist
+        delete gSortedReflections;  //Release the memory
+        gSortedReflections = NULL; 
     }
 }
 
@@ -582,27 +583,23 @@ float MergedData::calculateRFactor()
 	static Matrix<short>* tCurHKL;
         static Array<float> tValues(23);                //I don't think that this should need to be any greater then 23 elements long.
         tValues.clear();                                //Clear the values from the last time they were used.
-       // multiset<Reflection*, lsreflection>::iterator tIter = gSortedReflections->begin(); //Start at the first 
+        multiset<Reflection*, lsreflection>::iterator tIter = gSortedReflections->begin(); //Start at the first 
         register float tSumSum = 0;                              //Make sure that every thing is set to 0
         register float tMeanDiffSum = 0;
         register float tSum = 0;
         
-		unsigned int i = 0;
-		
         int tNumMerged = 0, tNumResRef=0;
         cout << gLaueGroup << "\n";
         tCurHKL = (*(gSortedReflections->begin()))->tHKL; //Save the pointer to the current hkl value
-        while (tIter != gSortedReflections->end()) //Run through all the reflections
+		do //Run through all the reflections
         {
             if (  !((*(*tIter)->tHKL) == (*tCurHKL))) //If the HKL value has changed then 
 			{
 				if (tValues.size()>1) //As long as there are more then one reflection
 				{
-							tNumMerged += tValues.size();
-							
+					tNumMerged += tValues.size();  
 					tSum = fabsf(sum(tValues.getPointer(), tValues.size()));
 					tSumSum += tSum;
-								
 					tMeanDiffSum += sumdiff(tValues, tSum/tValues.size());
 				}
 				tCurHKL = (*tIter)->tHKL; //Save the next hkl value
@@ -610,14 +607,13 @@ float MergedData::calculateRFactor()
 				tNumResRef  ++;
 			}
             tValues.add((*tIter)->i);  //Save the intensity
-            tIter++; //Move on to the next reflection in the list.
-        }
+        }	while (++tIter != gSortedReflections->end());//Move on to the next reflection in the list.
+
         if (tSumSum == 0)
             iRFactor = 0;
         else
             iRFactor = tMeanDiffSum/tSumSum; //In the desciption this is multiplied by
 	//But as these values are for comparison there isn't much point
-	cout << iRFactor << "\n";
         return iRFactor;
 }
 
