@@ -26,7 +26,7 @@
 ^^WI       {
 ^^WI         ITEM GRID _CAMDISP NROWS=1 NCOLS=1
 ^^WI         {
-^^WI            @ 1,1 CHARTWINDOW _CAMERONVIEW NROWS=25 NCOLS=45
+^^WI            @ 1,1 CHARTWINDOW _CAMERONVIEW NROWS=30 NCOLS=45
 ^^WI            INFORM=YES
 ^^WI         }
 ^^WI         ITEM GRID _CAMBTNS NROWS=9 NCOLS=1
@@ -80,7 +80,7 @@
 ^^WI     }
 ^^WI     ITEM GRID _CAMTXOUT NROWS=1 NCOLS=1
 ^^WI     {
-^^WI       @ 1,1 TEXTOUT _CAMTEXT '' NROWS=40 NCOLS=10
+^^WI       @ 1,1 TEXTOUT _CAMTEXT '' NROWS=5 NCOLS=10
 ^^WI     }
 ^^WI   }
 ^^WI }
