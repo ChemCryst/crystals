@@ -99,10 +99,11 @@ donated by Bill Clegg:
 The H atoms were all located in a difference map, but those 
 attached to carbon atoms were repositioned geometrically.  
 The H atoms were initially refined with soft restraints on the 
-bond lengths and angles to regularise their geometry (C---H = 0.97--1.01,
-O---H = 0.94 \%A), after which they were refined as riding, with U(H) =
-1.2U~eq~(C) for those bonded to carbon, and U(H) = 0.05 \%A^2^ for the 
-hydroxy group. 
+bond lengths and angles to regularise their geometry (C---H in the range 
+0.93-98, O---N in the range 0.86-0.89 and O---H = 0.82 \%A) and isotropic adps
+(U(H) in the range 1.2-1.5 times U~equiv~ of the adjacent atom), 
+after which they were refined with riding constraints.
+. 
 ;
 
 _publ_section_exptl_prep
