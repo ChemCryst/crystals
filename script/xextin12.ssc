@@ -2,6 +2,18 @@
 %  VARIABLE LOGICAL EDONE EMASK DOEXTNC REFREQD
 %  EVALUATE EDONE = TRUE
 %  EVALUATE EMASK = TRUE
+%%
+%% Without asking, sneakily turn on anomalous scattering correction:
+%% This script is only called by the guide. And the guide should always
+%% do the right thing.
+%  VARIABLE INTEGER IANOMA
+%  EVALUATE IANOMA = 0
+%  COPY '#GENERALEDIT 23'
+%  COPY 'LOCATE RECORDTYPE = 101'
+%  COPY 'TRANSFER TO OFFSET = 0 FROM IANOMA'
+%  COPY 'WRITE'
+%  COPY 'END'
+%%
 %  COPY '#SCRIPT XPUTINFO'
 ^^WI WINDOW XEXTINC 'Extinction check' KEEP SIZE LARGE MODAL
 ^^WI COMMIT='EXT_BOK' CANCEL='EXT_BXX'
