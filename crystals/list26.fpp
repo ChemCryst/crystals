@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2003/03/20 16:11:28  rich
+C Fix. I accidentally removed a GOTO when clearing out NCAWU writes the other
+C week... with disasterous consquences for anyone typing #CHECK.
+C
 C Revision 1.10  2003/02/26 12:13:27  rich
 C Removed some writes to the monitor file, as part of an
 C ongoing (quite boring) project.
@@ -883,13 +887,13 @@ C--THIS IS AN ELEMENT OR LAYER SCALE FACTOR
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,4850) KF,(KSCAL(M,JB),M=1,2), (A1(M),M=1,MM)
       ENDIF
-4850  FORMAT(2H  ,A1,38X,2A4,I4,3X,2F10.5)
+4850  FORMAT(2H  ,A1,38X,2A4,4X,3X,2F10.5)
       WRITE(NCAWU,4851) KF,(KSCAL(M,JB),M=1,2), (A1(M),M=1,MM)
       IF ((IMON .GE. 1) .AND. (ABS(A1(2)) .GE. C) ) THEN
        WRITE(CMON,4851) KF,(KSCAL(M,JB),M=1,2), (A1(M),M=1,MM)
        CALL XPRVDU(NCVDU, 1,0)
       ENDIF
-4851  FORMAT(1X,A1,7X,2A4,I4,1X,2F10.5)
+4851  FORMAT(1X,A1,7X,2A4,4X,1X,2F10.5)
       GOTO 4250
 C
 9900  CONTINUE
