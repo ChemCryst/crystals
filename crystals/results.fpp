@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2001/06/13 14:47:06  richard
+C Tweak order of calculation so that List 5 always returns exactly the same
+C molecular weight as List 29. (Number of multiplications reduced).
+C
 C Revision 1.18  2001/06/04 16:04:33  richard
 C Fix display of su's in overall parameters in #PARA/END
 C
@@ -3591,6 +3595,8 @@ C           AREA DETECTOR
          WRITE (CPAGE(IDATA+1,1)(:),'(A,5X,A)') 'Absorption type',
      1    CVALUE
 C 
+C
+         IF ((J.GT.0).AND.(STORE(L30AB+1+J).GT.ZERO)) THEN
             CLINE=' '
             WRITE (CLINE,'( A, ''process_details '')') CBUF(1:15)
             CALL XPCIF (CLINE)
@@ -3601,8 +3607,6 @@ C
             WRITE (CLINE,'(A,A,A )') CTEMP(1:NCHAR)
             CALL XPCIF (CLINE)
             CALL XPCIF (';')
-C
-         IF ((J.GT.0).AND.(STORE(L30AB+1+J).GT.ZERO)) THEN
             DO 1900 I=1,3,2
                WRITE (CLINE,'(A,''correction_T_'', A, F8.2)') CBUF(1:15)
      1          ,CSIZE(I),STORE(L30AB-1+J+(I+1)/2)/STORE(L30AB+1+J)*
