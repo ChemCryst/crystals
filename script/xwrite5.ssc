@@ -1,0 +1,341 @@
+%SCRIPT XWRITE5
+%%   Sets the REF flag of every atom in list 5.
+%%   Global (already set) variables:
+%  VARIABLE INTEGER SETADP
+%%
+%%   Local variables:
+%  VARIABLE INTEGER REFLAG HMODE ISER
+%  VARIABLE LOGICAL DOWRITE OVERRIDE STUCK
+%  VARIABLE CHARACTER CTYPE
+%  VARIABLE REAL SERIAL HFIRST CENTRO
+%%
+%%   Variables set by ASSESS 5
+%  VARIABLE LOGICAL DOEXTNC DOFLACK DOSORT DKEXT
+%  VARIABLE INTEGER ADP
+%%
+%%   Variables set by or needed for XGETINFO/XPUTINFO
+%  VARIABLE INTEGER HRTYP L12SER
+%  VARIABLE LOGICAL HRMASK L12SMASK
+%%
+%% The variables needed by XQUESTIO
+%  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
+%  VARIABLE LOGICAL   ANSWER
+%%
+%%
+%% XGuideR sets DOEXTNC to indicate that extinction should be refined.
+%% Assess5 resets DOEXTNC so that it indicates if ext is being refined.
+%% Therefore store it and if TRUE, restore it after the assess5 call.
+%  IF ( DOEXTNC ) THEN
+%    EVALUATE DKEXT = TRUE
+%  END IF
+%  COPY '#SCRIPT ASSESS5'
+%  IF ( DOSORT ) THEN
+{S * Re-ordering list 5, so that H atoms are at the end
+%    COPY '#SCRIPT HLAST'
+%    COPY '#SCRIPT ASSESS5'
+%  END IF
+%
+%  IF ( DKEXT ) THEN
+%    EVALUATE DOEXTNC = TRUE
+%  END IF
+%%
+%  COPY '#SCRIPT XGETINFO'
+%%
+%  COPY '#GENERALEDIT 2'
+%  COPY 'LOCATE RECORDTYPE=101'
+%  COPY 'TRANSFER FROM OFFSET=0 TO CENTRO'
+%  COPY 'END'
+%%
+%  COPY '#GENERALEDIT 12'
+%  COPY 'GETSERIAL ISER'
+%  COPY 'END'
+%%
+%  IF ( ISER .NE. L12SER ) THEN
+%    EVALUATE QTITLE = 'List 12 has changed'
+%    EVALUATE QLINE1 = 'This script will overwrite any refinement'
+%    EVALUATE QLINE2 = 'instructions that you may have written (List 12)'
+%    EVALUATE BUTTOK = '&Continue'
+%    EVALUATE BUTTXX = '&Cancel'
+%    COPY '#SCRIPT XQUESTIO'
+%    IF ANSWER .EQ. FALSE THEN
+ 
+{I You have chosen to keep your existing list 12,
+{I run '#SCRIPT XREFINE' to carry out the refinement.
+
+%      FINISH
+%  END IF
+%%
+^^WI WINDOW XRSETUP 'Least Squares Directives' MODAL
+^^WI COMMIT='W5_BOK' CANCEL='W5_BXX'
+^^WI GRID MAIN NROWS=3 NCOLS=5
+^^WI {
+^^WI  @ 2,2 GRID L NROWS=5 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 GRID OR NROWS=6 NCOLS=1 OUTLINE='General'
+^^WI   {
+^^WI     @ 1,1 RADIOBUTTON REFPXO 'Refine &positions only' STATE=OFF
+^^WI     @ 2,1 RADIOBUTTON REFPUI 'Refine positions and U&iso' STATE=OFF
+^^WI     @ 3,1 RADIOBUTTON REFPUA 'Refine positions and &Uijs' STATE=OFF
+%% ^^WI     @ 5,1 CHECKBOX OVRD
+%% ^^WI           '&Override sticky settings for atoms' STATE=OFF
+^^WI   }
+% IF ( HFIRST .GE. 0.0 ) THEN
+^^WI   @ 2,1 GRID HR NROWS=5 NCOLS=1 OUTLINE='Hydrogens'
+^^WI   {
+^^WI     @ 1,1 RADIOBUTTON HFIX  '&Fix H atoms'
+% IF HRTYP .LE. 0 THEN
+^^WI           STATE=ON
+% END IF
+^^WI     @ 2,1 RADIOBUTTON HRIDE 'Ride &H atoms'
+% IF HRTYP .EQ. 1 THEN
+^^WI           STATE=ON
+% END IF
+^^WI     @ 3,1 RADIOBUTTON HREFN '&Refine H atom positions'
+% IF HRTYP .EQ. 2 THEN
+^^WI           STATE=ON
+% END IF
+^^WI     @ 4,1 RADIOBUTTON HREFUI '&Refine H atom posn and Uiso'
+% IF HRTYP .GE. 3 THEN
+^^WI           STATE=ON
+% END IF
+^^WI   }
+% END IF
+^^WI   @ 3,1 GRID XP NROWS=4 NCOLS=1 OUTLINE='Other parameters'
+^^WI   {
+^^WI    @ 1,1 CHECKBOX FLACK 'Flack parameter' STATE=OFF
+% IF ( CENTRO .GT. 0.9 ) THEN
+^^WI           DISABLED=YES
+% END IF
+^^WI    @ 3,1 CHECKBOX EXTNC 'Extinction parameter' STATE=OFF
+^^WI   }
+^^WI  }
+^^WI  @ 2,4 GRID R NROWS=3 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 BUTTON W5_BOK '&OK' DEFAULT
+^^WI   @ 3,1 BUTTON W5_BXX '&Cancel'
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%  IF ( SETADP .EQ. 0 ) THEN
+{S * Direct call of XWRITE5 - setting default refinement
+{S   mode to current assessment by ASSESS5.
+%    EVALUATE SETADP = ADP
+%  END IF
+%  CASE ( SETADP + 1 )
+%    BLOCK   % Zero
+{E No atomic parameters to refine.
+%    END BLOCK
+%    BLOCK   % setadp is 1 - pos only
+^^CO SET REFPXO STATE=ON
+%    END BLOCK
+%    BLOCK   % setadp is 2 - pos and uiso
+^^CO SET REFPUI STATE=ON
+%    END BLOCK
+%    BLOCK   % setadp is 3 - pos and uij
+^^CO SET REFPUA STATE=ON
+%    END BLOCK
+%  END CASE
+%  IF ( DOFLACK .EQ. TRUE ) THEN
+^^CO SET FLACK STATE=ON
+%  END IF
+%  IF ( DOEXTNC .EQ. TRUE ) THEN
+^^CO SET EXTNC STATE=ON
+%  END IF
+%%
+%% Get OK and Cancel button press:
+%%
+%  VERIFY W5_BOK W5_BXX
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'W5_BOK'
+%  IF VALUE .EQ. 2 THEN
+^^CO DISPOSE XRSETUP
+%    FINISH
+%  END IF
+%%
+%% Retrieve info from the dialog:
+%%
+%  EVALUATE SETADP = 0
+^^?? REFPXO STATE
+%  VERIFY ON OFF
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  IF ( VALUE .EQ. 1 ) THEN
+%    EVALUATE SETADP = 1
+%  END IF
+^^?? REFPUI STATE
+%  VERIFY ON OFF
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  IF ( VALUE .EQ. 1 ) THEN
+%    EVALUATE SETADP = 2
+%  END IF
+^^?? REFPUA STATE
+%  VERIFY ON OFF
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  IF ( VALUE .EQ. 1 ) THEN
+%    EVALUATE SETADP = 3
+%  END IF
+%%
+%  EVALUATE HMODE = 0
+% IF ( HFIRST .GE. 0.0 ) THEN
+%%
+^^?? HFIX STATE
+%  VERIFY ON OFF
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  IF ( VALUE .EQ. 1 ) THEN
+%    EVALUATE HMODE = 0
+%  END IF
+^^??  HRIDE STATE
+%  VERIFY ON OFF
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  IF ( VALUE .EQ. 1 ) THEN
+%    EVALUATE HMODE = 1
+%  END IF
+^^?? HREFN STATE
+%  VERIFY ON OFF
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  IF ( VALUE .EQ. 1 ) THEN
+%    EVALUATE HMODE = 2
+%  END IF
+^^?? HREFUI STATE
+%  VERIFY ON OFF
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  IF ( VALUE .EQ. 1 ) THEN
+%    EVALUATE HMODE = 3
+%  END IF
+%%
+% END IF
+%%
+%  EVALUATE OVERRIDE = FALSE
+%%^^?? OVRD STATE
+%%%  VERIFY ON OFF
+%%%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%%%  IF ( VALUE .EQ. 1 ) THEN
+%    EVALUATE OVERRIDE = TRUE
+%%%  END IF
+%%
+^^?? FLACK STATE
+%  VERIFY ON OFF
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  IF ( VALUE .EQ. 1 ) THEN
+%    EVALUATE DOFLACK = TRUE
+%  END IF
+^^?? EXTNC STATE
+%  VERIFY ON OFF
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  IF ( VALUE .EQ. 1 ) THEN
+%    EVALUATE DOEXTNC = TRUE
+%  END IF
+%%
+%%
+^^CO DISPOSE XRSETUP
+%%
+%%
+%  EVALUATE HRTYP = HMODE
+%  EVALUATE HRMASK = TRUE
+%  COPY '#SCRIPT XPUTINFO'
+%%
+%% Set the refinement flags for all the non-sticky atoms.
+%%
+%  EVALUATE STUCK = FALSE
+%  IF EXISTS 5 .GE. 1 THEN
+%   IF OVERRIDE .EQ. TRUE THEN
+{S * CRYSTALS is setting refinement modes for all atoms.
+%   ELSE
+{S * CRYSTALS is setting refinement modes for non-sticky atoms.
+%   END IF
+%    IF SETADP .LE. 1 THEN
+{R   Atomic positions will be refined
+%    ELSE IF SETADP .EQ. 2 THEN
+{R   Positions and isotropic temperature factors will be refined
+%    ELSE IF SETADP .EQ. 3 THEN
+{R   Positions and anisotropic temperature factors will be refined
+%    END IF
+%    EVALUATE DOWRITE = FALSE
+%    COPY '#GENERALEDIT 5'
+%    COPY 'LOCATE RECORDTYPE=101'
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%    LOOP
+%      ON EDITERROR TERMINATE
+%      COPY 'TRANSFER FROM OFFSET=14 TO REFLAG'
+%      IF ( REFLAG .NE. SETADP ) THEN
+%        IF ( REFLAG .GE.  0     )  THEN
+%% Non-sticky atom, just change the value.
+%          EVALUATE DOWRITE = TRUE
+%          COPY 'TRANSFER TO OFFSET=14 FROM SETADP'
+%        ELSE IF ( OVERRIDE .EQ. TRUE ) THEN
+%% Sticky atom, but override allowed, just change the value.
+%          EVALUATE DOWRITE = TRUE
+%          COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
+%          COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
+%          COPY 'TRANSFER TO OFFSET=14 FROM SETADP'
+%          CLEAR
+%          INSERT '{R   Overriding sticky settings for atom: '
+%          STORE FORMAT /(A4)/ LENGTH 4 CHARACTER CTYPE
+%          INSERT '('
+%          STORE FORMAT /(F5.0)/ LENGTH 5 REAL SERIAL
+%          INSERT ')'
+%          OUTPUT
+%        ELSE IF ( REFLAG .NE. - REFLAG ) THEN
+%% Remember that there are some sticky atoms of different
+%% refinement mode to the default.
+%          EVALUATE STUCK = TRUE
+%        END IF
+%      END IF
+%      COPY 'NEXT'
+%    END LOOP
+%    IF ( DOWRITE .EQ. TRUE ) THEN
+%      COPY 'WRITE'
+%    END IF
+%    COPY 'END'
+%  END IF
+%%
+%% Write a list 12 from the flags in list 5.
+%%
+%
+%  COPY '#RELEASE PUNCH RIDEDAT.12'
+%  COPY '#DISTANCES'
+%  COPY 'OUTPUT MON=DIST PUNCH=SCRIPT'
+%  COPY 'BONDED H'
+%  COPY 'END'
+%  COPY '#RELEASE PUNCH BFILE.PCH'
+%%
+%%
+%  IF ( STUCK ) THEN
+
+{E
+{E Sticky atoms are not implemented yet....
+{E
+
+%  ELSE
+%    COPY '#LIST 12'
+%    CASE SETADP
+%      COPY "FULL X'S"
+%      COPY "FULL X'S, U[ISO]"
+%      COPY "FULL X'S, U'S"
+%    END CASE
+%    IF ( DOEXTNC ) THEN
+%      COPY 'CONT EXTPARAM'
+%    END IF
+%    IF ( DOFLACK ) THEN
+%      COPY 'CONT ENANTIO'
+%    END IF
+%    IF ( HMODE .EQ. 1 ) THEN
+%      COPY '#USE RIDEDAT.12'
+%    ELSE IF ( HMODE .GE. 2 ) THEN
+%      CLEAR
+%      INSERT "CONT H("
+%      STORE FORMAT /(F5.0)/ LENGTH 5 REAL HFIRST
+%      IF ( HMODE .EQ. 2 ) THEN
+%        INSERT ",X'S) UNTIL LAST"
+%      ELSE
+%        INSERT ",X'S,U[ISO]) UNTIL LAST"
+%      END IF
+%      SEND
+%    END IF
+%    COPY 'END'
+%  END IF
+%  COPY '#SCRIPT VALID12'
+%  COPY '#SCRIPT XREFINE'
+%END SCRIPT
+
+ 
