@@ -68,8 +68,8 @@ using namespace std;
 
 typedef struct RunStruct
 {
-    char* iFileName;		//File name for the hkl data.
-    char* iTablesFile;		//The file name of the tables file.
+    Path iFileName;		//File name for the hkl data.
+    Path iTablesFile;		//The file name of the tables file.
     char* iOtherInfoFile;	//The name of a file for more informtion.
     bool  iChiral;			//false is not nessaseraly chiral. false chiral
     char* iCrystalSys;		//Crystal System
@@ -81,7 +81,7 @@ void runTest(RunStruct *pRunData)
     struct timeval time1;
     struct timeval time2;
     gettimeofday(&time1, NULL);
-    Tables* tTables = new Tables(pRunData->iTablesFile);
+    Tables* tTables = new Tables(pRunData->iTablesFile.getCString());
     gettimeofday(&time2, NULL);
     std::cout << "\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
     if (pRunData->iCrystalSys[0] == 0)
@@ -90,7 +90,7 @@ void runTest(RunStruct *pRunData)
     }
     std::cout << "\nReading in hkl data...";
     gettimeofday(&time1, NULL);
-    HKLData* tHKL = new HKLData(pRunData->iFileName);
+    HKLData* tHKL = new HKLData(pRunData->iFileName.getCString());
     gettimeofday(&time2, NULL);
     std::cout << "\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
     std::cout << "\nCalculating probabilities...";
@@ -131,11 +131,12 @@ void initRunStruct(RunStruct *pRunStruct)
 	char * tWorkingPath = NULL;
 	tWorkingPath = getcwd(NULL, PATH_MAX);
 #endif
-    pRunStruct->iTablesFile = new char[strlen(tWorkingPath)+strlen(kDefaultTables)+1];
-    sprintf(pRunStruct->iTablesFile, "%s%s", tWorkingPath, kDefaultTables);
-	free(tWorkingPath);
-    pRunStruct->iFileName = new char[PATH_MAX];
-    pRunStruct->iFileName[0] = 0;
+    //pRunStruct->iTablesFile = new char[strlen(tWorkingPath)+strlen(kDefaultTables)+1];
+    pRunStruct->iTablesFile.initFormated("%s%s", tWorkingPath, kDefaultTables);
+    //sprintf(pRunStruct->iTablesFile, "%s%s", tWorkingPath, kDefaultTables);
+    free(tWorkingPath);
+//    pRunStruct->iFileName = new char[PATH_MAX];
+//    pRunStruct->iFileName[0] = 0;
     pRunStruct->iCrystalSys = new char[20];
     pRunStruct->iCrystalSys[0] = 0;
     pRunStruct->iChiral = false;
@@ -154,7 +155,7 @@ bool handleArg(int *pPos, int pMax, _TCHAR * argv[], RunStruct *pRunData)
         (*pPos)++;
         if (*pPos < pMax && argv[*pPos][0] != '-')
         {
-            strcpy(pRunData->iFileName, argv[*pPos]);
+            pRunData->iFileName.init(argv[*pPos]);
             (*pPos)++;
             return true;
         }
@@ -164,9 +165,10 @@ bool handleArg(int *pPos, int pMax, _TCHAR * argv[], RunStruct *pRunData)
         (*pPos)++;
         if (*pPos < pMax && argv[*pPos][0] != '-')
         {
-            delete pRunData->iTablesFile;
-            pRunData->iTablesFile = new char[strlen(argv[*pPos])+1];
-            strcpy(pRunData->iTablesFile, argv[*pPos]);
+//            delete pRunData->iTablesFile;
+//            pRunData->iTablesFile = new char[strlen(argv[*pPos])+1];
+//            strcpy(pRunData->iTablesFile, argv[*pPos]);
+            pRunData->iTablesFile.init(argv[*pPos]);
             (*pPos)++;
             return true;
         }
@@ -233,11 +235,11 @@ int _tmain(int argc, _TCHAR* argv[])
     {
         return 0;
     }
-    if (tRunStruct.iFileName[0] == 0)
+    if (tRunStruct.iFileName.getCString()[0] == 0)
     {
         std::cout << "Enter hkl file path: ";
         std::cin >> tRunStruct.iFileName;
-        removeOutterQuotes(tRunStruct.iFileName);
+        tRunStruct.iFileName.removeOutterQuotes();
     }
     try
     {
@@ -247,8 +249,8 @@ int _tmain(int argc, _TCHAR* argv[])
     {
         std::cout << "\n" << eE.what() << "\n";
     }   
-    delete tRunStruct.iFileName;
-    delete tRunStruct.iTablesFile;
+   // delete tRunStruct.iFileName;
+    //delete tRunStruct.iTablesFile;
     delete tRunStruct.iCrystalSys;
 	return 0;
 }
