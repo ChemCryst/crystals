@@ -42,6 +42,9 @@
 #include "MathFunctions.h"
 #include "StringClasses.h"
 #include "Wrappers.h"
+
+#include <map>
+
 #if defined(_WIN32)
 #include <Boost/regex.h>
 #else
@@ -169,19 +172,25 @@ float UnitCell::getSEGamma()
     return iSEGamma;
 }
 
+/*char UnitCell::getUnqueSide()
+{
+
+}*/
+
 char* UnitCell::guessCrystalSystem()
 {
     float tAs[7];
     float tGs[6];
-    TreeMap<Float, Integer> tResults;
+    multimap<float, int, less<float> > tResults;
     
-    float temp = iAlpha - 90;
+    float  temp;
+    temp = iAlpha - 90.0f;
     tAs[0] = sqr(temp); 
-    temp = iGamma - 90;
+    temp = iGamma - 90.0f;
     tAs[1] = sqr(temp);  
-    temp = iBeta - 90;
+    temp = iBeta - 90.0f;
     tAs[2] = sqr(temp);  
-    temp = iGamma - 120;
+    temp = iGamma - 120.0f;
     tAs[3] = sqr(temp);  
     temp = iAlpha - iBeta;
     tAs[4] = sqr(temp);  
@@ -203,44 +212,25 @@ char* UnitCell::guessCrystalSystem()
     temp = iB - iC;
     tGs[5] = sqr(temp); 
 
-    int tBestGuess = 1;
-
     float tCurrentGuess;
-    if ((tCurrentGuess = (tAs[1] + tAs[2] + tGs[0] + tGs[2])/4) > tCurrentGuess)	//Monoclinic A
-    {
-        tBestGuess = 1;
-    }
-    else if ((tCurrentGuess = (tAs[0] + tAs[1] + tGs[0] + tGs[1])/4) > tCurrentGuess)	//Monoclinic B
-    {
-        tBestGuess = 1;
-    }
-    else if ((tCurrentGuess = (tAs[0] + tAs[2] + tGs[2] + tGs[1])/4) > tCurrentGuess)	//Monoclinic C
-    {
-        tBestGuess = 1;
-    }
-    else if ((tCurrentGuess = (tAs[0] +  tAs[1] +  tAs[2])/3) > tCurrentGuess)	//Orthorhombic
-    {
-        tBestGuess = 1;
-    }
-    else if ((tCurrentGuess = (tAs[0] + tAs[1] + tAs[2] + tGs[3])/4) > tCurrentGuess)	//Tetragonal
-    {
-        tBestGuess = 1;
-    }
-    else if ((tCurrentGuess = (tAs[0] + tAs[2] + tAs[3] + tGs[3])/4) > tCurrentGuess)	//Triconal or hex
-    {
-        tBestGuess = 1;
-    }
-    else if ((tCurrentGuess = (tAs[4] + tAs[5] + tAs[6] + tGs[3] + tGs[4] + tGs[5])/6) > tCurrentGuess)	//Trigonal rhom
-    {
-        tBestGuess = 1;
-    }
-    else if ((tCurrentGuess = (tAs[0] + tAs[1] + tAs[2] + tGs[3] + tGs[4] + tGs[5])/6) > tCurrentGuess)	//Cubic
-    {
-        tBestGuess = 9;
-    }
+    tCurrentGuess = (tAs[1] + tAs[2] + tGs[0] + tGs[2])/4; 
+    tResults.insert(pair<float, int>(tCurrentGuess, 1));
+    tCurrentGuess = (tAs[0] + tAs[1] + tGs[0] + tGs[1])/4; 
+    tResults.insert(pair<float, int>(tCurrentGuess, 2));
+    tCurrentGuess = (tAs[0] + tAs[2] + tGs[2] + tGs[1])/4; 
+    tResults.insert(pair<float, int>(tCurrentGuess, 3));
+    tCurrentGuess = (tAs[0] +  tAs[1] +  tAs[2])/3;
+    tResults.insert(pair<float, int>(tCurrentGuess, 4));
+    tCurrentGuess = (tAs[0] + tAs[1] + tAs[2] + tGs[3])/4;
+    tResults.insert(pair<float, int>(tCurrentGuess, 5));
+    tCurrentGuess = (tAs[0] + tAs[2] + tAs[3] + tGs[3])/4;
+    tResults.insert(pair<float, int>(tCurrentGuess, 6));
+    tCurrentGuess = (tAs[4] + tAs[5] + tAs[6] + tGs[3] + tGs[4] + tGs[5])/6;
+    tResults.insert(pair<float, int>(tCurrentGuess, 7));
+    tCurrentGuess = (tAs[0] + tAs[1] + tAs[2] + tGs[3] + tGs[4] + tGs[5])/6;
+    tResults.insert(pair<float, int>(tCurrentGuess, 8));
     
-    
-    float tMonoA = (tAs[1] + tAs[2] + tGs[0] + tGs[2])/4;
+   /* float tMonoA = (tAs[1] + tAs[2] + tGs[0] + tGs[2])/4;
     float tMonoB = (tAs[0] + tAs[1] + tGs[0] + tGs[1])/4;
     float tMonoC = (tAs[0] + tAs[2] + tGs[2] + tGs[1])/4;
     float tOrth = (tAs[0] +  tAs[1] +  tAs[2])/3;
@@ -257,7 +247,7 @@ char* UnitCell::guessCrystalSystem()
     "tTetr: " << tTetr << "\n" <<
     "tTriHexHex: " << tTriHexHex << "\n" <<
     "tTriRho: " << tTriRho <<  "\n" <<
-    "tCubic: " << tCubic << "\n";
+    "tCubic: " << tCubic << "\n";*/
 /*    
 "Triclinic"
 "MonoclinicB"
@@ -413,12 +403,12 @@ bool UnitCell::init(char* pLine)	//Reads in from the file provided
     //Run line through regular expression
     if (!regexec(&tAngles, pLine, 13, tMatch, 0))
     {
-        String tAlpha(pLine, (int)tMatch[1].rm_so, (int)tMatch[1].rm_eo);
-        String tBeta(pLine, (int)tMatch[3].rm_so, (int)tMatch[3].rm_eo);
-        String tGamma(pLine, (int)tMatch[5].rm_so, (int)tMatch[5].rm_eo);
-        String tA(pLine, (int)tMatch[7].rm_so, (int)tMatch[7].rm_eo);
-        String tB(pLine, (int)tMatch[9].rm_so, (int)tMatch[9].rm_eo);
-        String tC(pLine, (int)tMatch[11].rm_so, (int)tMatch[11].rm_eo);
+        String tAlpha(pLine, (int)tMatch[7].rm_so, (int)tMatch[7].rm_eo);
+        String tBeta(pLine, (int)tMatch[9].rm_so, (int)tMatch[9].rm_eo);
+        String tGamma(pLine, (int)tMatch[11].rm_so, (int)tMatch[11].rm_eo);
+        String tA(pLine, (int)tMatch[1].rm_so, (int)tMatch[1].rm_eo);
+        String tB(pLine, (int)tMatch[3].rm_so, (int)tMatch[3].rm_eo);
+        String tC(pLine, (int)tMatch[5].rm_so, (int)tMatch[5].rm_eo);
         iAlpha = (float)tAlpha.toDouble();
         iBeta = (float)tBeta.toDouble();
         iGamma = (float)tGamma.toDouble();
