@@ -267,7 +267,7 @@
 %         END IF
 %% TRANSFER 'Space group read from TITL card: ' // SPACEREAD TO DISPLAY
 %%
-%{I Now check the spacegroup...
+%%{I Now check the spacegroup...
 %%
 %          EVALUATE SPACEHOOK = 'Space group needed for SHELX file input'
 %          COPY '#SCRIPT XSPACE'
