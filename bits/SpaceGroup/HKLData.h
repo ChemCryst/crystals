@@ -79,8 +79,8 @@ class HKLData:public MyObject
         bool find(const Reflection* pReflection);
 };
 
-static const float kMoWL = 1.5418; //Angstroms
-static const float kCuWL = 1.5418; //Angstroms
+static const float kMoWL = 1.5418f; //Angstroms
+static const float kCuWL = 1.5418f; //Angstroms
 
 float resipSphVol(float pAngRad, float pWaveLength);
 #endif
