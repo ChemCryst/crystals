@@ -9,6 +9,11 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.105  2004/11/19 10:56:03  rich
+// Remove classes from extern C section - turned back into C. Fixed C.
+// May still be problems spawning redirected processes in GUI, but
+// other features work as before.
+//
 // Revision 1.104  2004/11/15 13:27:10  rich
 // Allow for possibility of running spawned processes in the CRYSTALS window.
 // For example, type: #spawn % crysdir:kccdin.exe to run within the GUI.
@@ -573,6 +578,7 @@ using namespace std;
   #include <wx/mimetype.h>
   #include <wx/utils.h>
   #include <sys/wait.h>
+  #include <fcntl.h>
   CcThread * CcController::mCrystalsThread = nil;
 #endif
 
@@ -3420,7 +3426,6 @@ extern "C" {
       for(;;)      //main program loop
       {
         PeekNamedPipe(outPipe.output,buf,1023,&bread,&avail,NULL);
-
         while ( bread != 0 )
         {
           BZERO(buf);
@@ -3467,6 +3472,7 @@ extern "C" {
            WriteFile(inPipe.input,s.c_str(),s.length(),&bread,NULL); //send it to stdin
            WriteFile(inPipe.input,"\n",1,&bread,NULL); //send an extra newline char
         }
+
       }
 // Reenable all menus
       CcController::theController->AddInterfaceCommand( "^^ST STATUNSET IN");
@@ -3569,6 +3575,10 @@ extern "C" {
     {
       (CcController::theController)->AddInterfaceCommand( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
     }
+    else if ( bRedir )
+    {
+      (CcController::theController)->AddInterfaceCommand( "     {0,2 Starting {2,0 " + firstTok + " {0,2 interactively. ");
+    }
     else
     {
       (CcController::theController)->AddInterfaceCommand( "     {0,2 Starting {2,0 " + firstTok + " {0,2 ");
@@ -3612,15 +3622,35 @@ extern "C" {
         delete [] cmd;
         return;
       }
-
-
+      if ( fcntl(ftoParent[0],F_SETFL,O_NONBLOCK) == -1 ) {
+        std::cerr << "GUEXEC: Pipe 2 switch to Non-blocking failed: " << "\n";
+        close(ftoParent[0]);
+        close(ftoParent[1]);
+        close(ftoChild[0]);
+        close(ftoChild[1]);
+        delete [] str;
+        delete [] cmd;
+        return;
+      }
+     
+      int fd;
       pid_t pid = fork();
 
       if ( pid == 0 ) {          //We're in the child process.
+       close(ftoChild[1]);
+       close(ftoParent[0]);
+       if ( dup2(ftoChild[0],  0) < 0 ) {
+         std::cerr << "\nGUEXEC: Child. Failed to dup2 to stdin...\n";
+       }
        close(ftoChild[0]);
+       if ( dup2(ftoParent[1], 1) < 0 ) {
+         std::cerr << "\nGUEXEC: Child. Failed to dup2 to stdout...\n";
+       }
+       if ( dup2(ftoParent[1], 2) < 0 ) {
+         std::cerr << "\nGUEXEC: Child. Failed to dup2 to stderr...\n";
+       }
        close(ftoParent[1]);
-       dup2(ftoParent[0],fileno(stdout));
-       dup2(ftoChild[1],fileno(stdin));
+
        std::cerr << "\nGUEXEC: Child. Execing...\n";
        int err = execvp( args[0], args );
        std::cerr << "GUEXEC: Something went wrong: " << err <<"\n";
@@ -3629,8 +3659,8 @@ extern "C" {
       }
 
 // We're in the parent process
-      close(ftoChild[1]);
-      close(ftoParent[0]);
+      close(ftoChild[0]);
+      close(ftoParent[1]);
       std::cerr << "GUEXEC: Parent.\n";
 
       unsigned long exit=0;  //process exit code
@@ -3646,11 +3676,12 @@ extern "C" {
       BZERO(buf);
       for(;;)      //main program loop
       {
-        int bread = 0;
-        while ( bread != 0 )
+        int bread = -1;
+        while ( 1 )
         {
           BZERO(buf);
-          bread = read(ftoParent[1],buf,1023);  //read the stdout pipe
+          bread = read(ftoParent[0],buf,1023);  //read the stdout pipe
+          if ( bread <= 0 ) break;
           string s(buf);
           string::size_type i;
           while ( ( i = s.find_first_of("\r") ) != string::npos ) {
@@ -3670,8 +3701,14 @@ extern "C" {
           BZERO(buf);
         }
 
+
         int status;
-        if ( waitpid(pid, &status, WNOHANG) != 0 ) break;
+        if ( waitpid(pid, &status, WNOHANG) != 0 ) {
+          std::cerr << "GUEXEC: Detected child process exited\n" ;
+          (CcController::theController)->AddInterfaceCommand( "     {0,2 Process has exited. ");
+          break;
+        }
+
 
         bool wait = false;
  
@@ -3687,10 +3724,12 @@ extern "C" {
              break;
            }
            CcController::theController->AddInterfaceCommand("{0,1 " + s);
-           write(ftoChild[0],s.c_str(),s.length()); //send it to stdin
-           write(ftoChild[0],"\n",1); //send an extra newline char
+           write(ftoChild[1],s.c_str(),s.length()); //send it to stdin
+           write(ftoChild[1],"\n",1); //send an extra newline char
         }
+
       }
+
 // Reenable all menus
       CcController::theController->AddInterfaceCommand( "^^ST STATUNSET IN");
       CcController::theController->AddInterfaceCommand( "^^CR");
@@ -3701,8 +3740,6 @@ extern "C" {
 
       pid_t pid = fork();
 
-
-    
       if ( pid == 0 ) {          //We're in the child process.
        std::cerr << "\nGUEXEC: Child. Execing...\n";
        int err = execvp( args[0], args );
@@ -3804,7 +3841,7 @@ bool CcController::GetCrystalsCommand( char * line, bool & bGuexec )
   if ( bGuexec ) 
      m_Crystals_Command_Added.Wait(); // Wait until queue is not empty
   else {
-     if ( !m_Crystals_Command_Added.Wait(10) ) {  // Poll
+     if ( !m_Crystals_Command_Added.Wait(200) ) {  // Poll
        bGuexec = false;
        return true;
      }
@@ -3815,8 +3852,16 @@ bool CcController::GetCrystalsCommand( char * line, bool & bGuexec )
 
   m_Crystals_Commands_CS.Enter();  // Enter queue CS.
 
-     strcpy( line, mCrystalsCommandDeq.front().c_str() );
-     mCrystalsCommandDeq.pop_front();
+     if ( mCrystalsCommandDeq.empty() ) {
+       LOGERR("-----------Crystals thread: Empty command buffer.");
+       strcpy( line, "" );
+       bGuexec = false;
+     }
+     else
+     {
+       strcpy( line, mCrystalsCommandDeq.front().c_str() );
+       mCrystalsCommandDeq.pop_front();
+     }
 
      LOGSTAT("-----------Crystals thread: Got command: "+ string(line));
 
