@@ -772,10 +772,10 @@ C Transpose the matrix...
         DO 1348 IINX = 1,3
                 TRANS(IINX+9) = PROCS(IINX+13)
 1348    CONTINUE
-&GID      if (isstml .eq.4) then
-&GID      CALL FOUR3DI(TRANS,STORE(L1P1),NUM(1),START(1),
-&GID     1 STEPS(1),.TRUE.)
-&GID      endif
+C&GID      if (isstml .eq.4) then
+C&GID      CALL FOUR3DI(TRANS,STORE(L1P1),NUM(1),START(1),
+C&GID     1 STEPS(1),.TRUE.)
+C&GID      endif
 cjan99
       ENDIF
 C
