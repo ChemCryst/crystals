@@ -1,6 +1,6 @@
 %SCRIPT XCHECK6
 % VARIABLE LOGICAL MERGER ABSENT LNEWRAT LNEWRHO I6DONE I6MASK LMAONCE
-% VARIABLE REAL NEWRHO NEWRAT
+% VARIABLE REAL NEWRHO NEWRAT THFULL
 % VARIABLE REAL VOLPRATM NNONHATM CELLVOL SGMULT NALLOWREF ESTNPARA ESTOTP
 % VARIABLE INTEGER ABSPRINT ABSTOTAL
 % EVALUATE MERGER = FILEEXISTS 'mergingr.dat'
@@ -27,6 +27,24 @@
 ^^WI  {
 ^^WI   @ 2,2 TABCTRL _MAINTABS
 ^^WI   {
+^^WI    TAB _MAINTAB2a 'Completeness' GRID _MAINTG2 NROWS=5 NCOLS=3
+^^WI    { 
+^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
+^^WI     {
+^^WI      @ 1,3 GRID EXP2 NROWS=2 NCOLS=1
+^^WI      {
+^^WI       @ 1,1 STATIC XFW1
+^^WI 'You are looking at the completeness of the data set'
+^^WI       @ 2,1 STATIC XFW2
+^^WI 'across the range ( 0.75 - 1.0 ) * theta max.'
+^^WI      }
+^^WI      @ 1,1 ICON IM INFO
+^^WI     }
+^^WI     @ 4,2 PLOTWINDOW _VCOMPL NROWS=20 NCOLS=64
+^^WI      DEFINEPOPUPMENU POPUP 'Selection'
+^^WI        ITEM _SDELA '&Manually set theta full = _L' 'SIGFULL_N_L'
+^^WI      ENDDEFINEMENU
+^^WI    }
 ^^WI    TAB _MAINTAB2 'Sigma freq' GRID _MAINTG2 NROWS=5 NCOLS=3
 ^^WI    { 
 ^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
@@ -239,9 +257,17 @@
 ^^CO SENDPROGRESSTO _CHECKPR
 %%
 % LOOP
+{I Computing completeness.
+%  COPY '#THLIM'
+%  COPY 'OUTPUT PLOT=YES'
+%  COPY 'END'
+{I Done.
+%%
+{I Computing Wilson statistics.
 %  COPY '#WILSON'
 %  COPY 'OUTPUT PLOT=YES NZ=YES STATS=YES'
 %  COPY 'END'
+{I Done.
 %%
 %  IF ( ABSENT .AND. LMAONCE ) THEN
 %    COPY '#OPEN SCPDATA absences.dat'
@@ -285,15 +311,18 @@
 %    COPY '#CLOSE SCPDATA'
 ^^PL SHOW
 ^^CR
+{I Done.
 %  END IF
 %%
+{I Calculating I/u(I) distribution.
 %  COPY '#SIGMADIST'
 %  COPY 'OUTPUT PLOT=YES RES=YES'
 %  COPY 'END'
+{I Done.
 %%
 %  IF ( MERGER .AND. LMAONCE ) THEN
 %    COPY '#OPEN SCPDATA mergingr.dat'
-{I About to get merging R data.
+{I Fetching merging R data.
 %    EXTRACT REWIND
 %% Skip first three lines:
 %    EXTRACT NEXT
@@ -330,6 +359,7 @@
 ^^PL SHOW
 ^^CR
 %    COPY '#CLOSE SCPDATA'
+{I Done.
 %  END IF
 %  EVALUATE LMAONCE = FALSE
 %%
@@ -384,7 +414,7 @@
 %  OUTPUT
 %%
 %  LOOP
-%    VERIFY XC_BOK XC_REF RHOMIT SIGCUT ED28 ED02 ED29
+%    VERIFY XC_BOK XC_REF RHOMIT SIGCUT ED28 ED02 ED29 SIGFULL
 %    GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
 %    CASE VALUE
 %      BLOCK    %XC_BOK
@@ -423,6 +453,21 @@
 %      BLOCK    %ED29
 %        COPY '#SCRIPT XINLIST3'
 %        EVALUATE LOOPCOUNTER = LOOPEND
+%      END BLOCK
+%      BLOCK    %SIGFULL
+%        IF EXISTS ( 30 ) .EQ. 0 THEN
+%          COPY '#LIST 30'
+%          COPY 'END'
+%        END IF
+%        COPY '#GENERALEDIT 30'
+%        COPY 'LOCATE RECORDTYPE = 109'
+%        GET NOSTORE SILENT FINAL REAL ' ' ' '
+%        EVALUATE THFULL = - VALUE
+%        COPY 'TRANSFER TO OFFSET = 10 FROM THFULL'
+%        COPY 'WRITE'
+%        COPY 'END'
+%        TRANSFER '{I Theta full manually set to ' // -
+            CHARACTER ( - THFULL ) TO DISPLAY
 %      END BLOCK
 %    END CASE
 %  END LOOP
