@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2001/05/31 16:39:48  richard
+C RIC: New processing of SLICES and CONDITIONS in KALLOW.
+C
 C Revision 1.5  2001/02/26 10:28:02  richard
 C RIC: Added changelog to top of file
 C
@@ -1199,7 +1202,7 @@ C                    -1      NO DISPLAY
 C                    +1      DISPLAY
 C
       LOGICAL DISPL6
-      PARAMETER (NINTER = 50)
+      PARAMETER (NINTER = 20)
 C--
 \ISTORE
 C
