@@ -1,10 +1,16 @@
 %SCRIPT GFINDH
-% VARIABLE LOGICAL XGRETURN
+% VARIABLE CHARACTER CATOM CEL
+% VARIABLE LOGICAL HQEXEC
 %% The variables needed by XQUESTIO
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
 % VARIABLE LOGICAL   ANSWER
 %% Variable returned by assess5
 % VARIABLE REAL HFIRST
+%%
+% VARIABLE INTEGER OLDSER
+% COPY '#GENERALEDIT 5'
+% COPY 'GETSERIAL OLDSER'
+% COPY 'END'
 %%
 % VARIABLE LOGICAL TWINNED
 % EVALUATE TWINNED = FALSE
@@ -23,100 +29,61 @@
 %    END IF
 %  END BLOCK
 %%
- 
- * This SCRIPT permits you to remove all existing hydrogen atoms before
-   starting the placement.
- * It computes the positions of hydrogen atoms on carbon atoms but does
-   not include them in the structure factor calculation.
- * It then searches to confirm them in a difference map. Calculated (H)
-   and found (QH) atoms are displayed, and the model may be edited.
- * Finally, any peaks close to a calculated H atom are eliminated, and
-   any remaining peaks deleted.
-
-% COPY '#SCRIPT ASSESS5'
-% IF ( HFIRST .GT. 0.0 ) THEN
-%   EVALUATE QTITLE = 'Delete Hydrogen'
-%   EVALUATE QLINE1 = 'Do you want to delete'
-%   EVALUATE QLINE2 = 'existing hydrogen atoms?'
-%   EVALUATE BUTTOK = '&No'
-%   EVALUATE BUTTXX = '&Yes'
-%   COPY '#SCRIPT XQUESTIO'
-%   IF ANSWER .EQ. FALSE THEN
-%      COPY '#EDIT'
-%      COPY 'SELECT TYPE NE H'
-%      COPY 'END'
-%   END IF
-% END IF
-%%
-% COPY '#SCRIPT XDELQ'
-% COPY '#SCRIPT VALID12'
-% COPY '#SFLS'
-% IF TWINNED .EQ. TRUE THEN
-%    COPY 'CALC /FO/=SCALED-/FOT/'
-% ELSE
-%    COPY 'CALC'
-% END IF
-% COPY 'END'
-% COPY '#PERHYDRO'
-% COPY 'ACTION BOTH'
-% COPY 'END'
-%%
-% COPY '#FOUR'
-% COPY 'MAP TYPE=DIFF'
-% COPY 'PEAK HEIGHT=1'
-% COPY 'END'
-% COPY '#COLL 10 5'
-% COPY 'SEL TYPE=PEAK'
-% COPY 'END'
-%%
-% COPY '#EDIT'
-% COPY 'TYPECHANGE TYPE EQ Q QH'
-% COPY 'END'
-^^CO SET _MODBAR ITEM _MBALL STATE ON ITEM _MADP STATE OFF
-^^CO SET MODEL01 RADTYPE=COV RADSCALE=250
-%%
-% IF ( XGRETURN ) THEN
-^^WI  WINDOW CONTINUE 'Continue' POSITION BELOW XGUIDER
-% ELSE
-^^WI  WINDOW CONTINUE 'Continue' POSITION CASCADE '_MAINTEXTOUTPUT'
-% END IF
-^^WI COMMIT='BOK' CANCEL='BXX' DISABLEIF='IN'
-^^WI GRID MAIN NROWS=3 NCOLS=5
+^^WI WINDOW FINDH 'Add Hydrogen' MODAL KEEP SIZE LARGE COMMIT='FHBOK'
+^^WI CANCEL='FHBXX'
+^^WI GRID MAIN NROWS=9 NCOLS=3
 ^^WI {
-^^WI   @ 2,2 GRID L NROWS=5 NCOLS=1
+^^WI   @ 2,2 GRID GRIDQ NROWS=1 NCOLS=3 OUTLINE=''
 ^^WI   {
-^^WI     @ 1,1 STATIC T0 'Rename QH peaks in good positions as'
-^^WI     @ 2,1 STATIC T1 'H atoms. You may use CAMERON to do this'
-^^WI     @ 3,1 STATIC T2 'if you prefer. Then click "Continue".'
-^^WI     @ 4,1 CHECKBOX FOUREF
-^^WI       'Advanced: Fourier refinement using peaks' STATE=OFF
-^^WI     @ 5,1 CHECKBOX AHFOUND
-^^WI       'All H atoms have been found' STATE=OFF
+^^WI     @ 1,1 ICON IM INFO
+^^WI     @ 1,3 GRID EXP2 NROWS=4 NCOLS=1
+^^WI     {
+^^WI       @ 1,1 STATIC T1
+^^WI 'Key: H (white) - Geometric H positions, QH (pink) - Diff Fourier peaks.'
+^^WI       @ 2,1 STATIC T2
+^^WI 'Complete the structure by changing QH peaks to H by clicking them.'
+^^WI       @ 3,1 STATIC T3
+^^WI 'Remaining QH peaks will be deleted on exit. If the structure is'
+^^WI       @ 4,1 STATIC T4
+^^WI 'complete, check the "All H atoms have been found" checkbox below.'
+^^WI     }
 ^^WI   }
-^^WI   @ 2,4 GRID R NROWS=3 NCOLS=1
+^^WI   @ 4,2 GRID TEXT NROWS=1 NCOLS=3
 ^^WI   {
-% IF ( XGRETURN ) THEN
-^^WI     @ 1,1 GRID R NROWS=3 NCOLS=1 COMMAND='#SCRIPT GFINH_NAUTO'
-% ELSE
-^^WI     @ 1,1 GRID RT NROWS=3 NCOLS=1 COMMAND='#SCRIPT GFINH_NFIND'
-% END IF
-^^WI     {
-^^WI       @ 1,1 BUTTON BOK '&Continue'
-^^WI       @ 3,1 BUTTON BXX '&Cancel'
-^^WI     }
-^^WI     @ 3,1 GRID RB NROWS=1 NCOLS=1 COMMAND='#SCRIPT XRETYPE'
-^^WI     {
-^^WI       @ 1,1 BUTTON NULL '&Rename'
-^^WI     }
+^^WI      @ 1,1 GRID OPTIONS NROWS=3 NCOLS=1
+^^WI      {
+^^WI        @ 1,1 GRID CLICK NROWS=2 NCOLS=3 OUTLINE='Click action'
+^^WI        {
+^^WI           @ 1,1 STATIC _ELT 'change to:'
+^^WI           @ 2,1 LISTBOX _ELS VISLINES=6 ADDTOLIST
+^^WI             'H' 'QH' 'Delete' 'NULL'
+^^WI        }
+^^WI      }
+^^WI      @ 1,3 MODELWINDOW MODELRE 'N' NROWS=5 NCOLS=65
+^^WI            ATTACH L5 RADSCALE=250 RADTYPE=COV
+^^WI            MOUSEACTION=HEADERATOM
+^^WI   }
+^^WI   @ 6,2 GRID CHECKB NROWS=1 NCOLS=3
+^^WI     @ 1,1 CHECKBOX AHFOUND
+^^WI       'All H atoms have been found' STATE=OFF
+^^WI     @ 1,3 CHECKBOX FOUREF
+^^WI       'Advanced: Fourier refinement using QH peaks' STATE=OFF
+^^WI   }
+^^WI   @ 8,2 GRID BTNS NROWS=1 NCOLS=7
+^^WI   {
+^^WI     @ 1,1 BUTTON FHBOK 'D&one' DEFAULT COMMIT
+^^WI     @ 1,3 BUTTON FHBXX '&Cancel' CANCEL
+^^WI     @ 1,5 BUTTON FHBHELP '&Help' 
 ^^WI   }
 ^^WI }
 ^^WI SHOW
 ^^CR
+^^WI WINDOW XABORT 'Calculating:' MODAL GRID MAIN NROWS=3 NCOLS=3
+^^WI { @ 2,2 STATIC GFT1 'Please wait. Checking current model.' } SHOW
+^^CR
  
  * Rename any QH peaks that you wish to keep to 'H'.
 
- {2,15 Move the floating window out of the way of the model.
- 
  {2,15 The WHITE atoms are geometrically placed on the carbon and nitrogen
  {2,15 skeleton, and the PINK atoms have been found in a Fourier map.
 
@@ -128,7 +95,136 @@
  {2,15 with the RIGHT mouse button and choosing "Change Type" from
  {2,15 the menu.
 
- {2,15 When you are finished, click "Continue" in the floating window.
+% COPY '#SCRIPT ASSESS5'
+% IF ( HFIRST .GT. 0.0 ) THEN
+%   EVALUATE QTITLE = 'Delete Hydrogen'
+%   EVALUATE QLINE1 = 'Do you want to delete'
+%   EVALUATE QLINE2 = 'existing Hydrogen atoms?'
+%   EVALUATE BUTTOK = '&No'
+%   EVALUATE BUTTXX = '&Yes'
+%   COPY '#SCRIPT XQUESTIO'
+%   IF ANSWER .EQ. FALSE THEN
+%      COPY '#EDIT'
+%      COPY 'SELECT TYPE NE H'
+%      COPY 'END'
+%   END IF
+% END IF
+%%
+^^CO SET GFT1 TEXT 'Calculating phases from model.'
+% COPY '#SCRIPT XDELQ'
+% COPY '#SCRIPT VALID12'
+% COPY '#SFLS'
+% IF TWINNED .EQ. TRUE THEN
+%    COPY 'CALC /FO/=SCALED-/FOT/'
+% ELSE
+%    COPY 'CALC'
+% END IF
+^^CO SET GFT1 TEXT 'Adding geometric H (white).'
+% COPY '#PERHYDRO'
+% COPY 'ACTION BOTH'
+% COPY 'END'
+%%
+^^CO SET GFT1 TEXT 'Difference Fourier map.'
+% COPY '#FOUR'
+% COPY 'MAP TYPE=DIFF'
+% COPY 'PEAK HEIGHT=1'
+^^CO SET GFT1 TEXT 'Collecting peaks.'
+% COPY '#COLL 10 5'
+% COPY 'SEL TYPE=PEAK'
+%%
+^^CO SET GFT1 TEXT 'Changing Q to QH.'
+% COPY '#EDIT'
+% COPY 'TYPECHANGE TYPE EQ Q QH'
+% COPY 'CLASH FIXLATTER'
+% COPY 'GUI HIGH'
+% COPY 'EXEC'
+^^CO DISPOSE XABORT
+% LOOP
+%   VERIFY FHBOK FHBXX ATOM FHBHELP
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%   CASE VALUE
+%    BLOCK      %FHBOK
+ * Deleting remaining QH atoms.
+%      COPY 'END'
+%      COPY '#SCRIPT XDELQ'
+%      
+^^CO   DISPOSE FINDH
+%      FINISH
+%    END BLOCK
+%    BLOCK      %BXX
+ * Dialog cancelled. No hydrogen added.
+%      COPY 'QUIT'
+%      COPY 'END'
+%      COPY '#DISK'
+%      CLEAR
+%      INSERT 'RESET 5 '
+%      STORE INTEGER OLDSER
+%      SEND
+%      COPY '#SUM L 5'
+%      COPY 'END'
+^^CO   DISPOSE FINDH
+%      FINISH
+%    END BLOCK
+%    BLOCK      %ATOM
+%     GET SILENT NOSTORE TEXT ' ' ' '
+^^CW
+%     EVALUATE CATOM = CVALUE
+%     EVALUATE HQEXEC = TRUE
+%
+%     CLEAR
+%     INSERT '^^?? _ELS LISTTEXT '
+^^??     _ELS SELECTED
+%     GET SILENT INTEGER ' '
+%     OUTPUT
+%     GET SILENT NOSTORE KEYWORD ' ' 'ERROR'
+%     EVALUATE CEL = CVALUE
+%%
+%     IF .NOT. ( CATOM STARTSWITH 'H' .OR. CATOM STARTSWITH 'QH' ) THEN
+%      EVALUATE QTITLE = 'Careful!'
+%      EVALUATE QLINE1 = 'Are you sure you want to change ' // CATOM // ' to'
+%      EVALUATE QLINE2 = CEL // '. You should be changing QH peaks to H.'
+%      EVALUATE BUTTOK = '&Sure'
+%      EVALUATE BUTTXX = '&Cancel'
+%      COPY '#SCRIPT XQUESTIO'
+%      IF ANSWER .EQ. FALSE THEN
+%        EVALUATE HQEXEC = FALSE
+%      END IF
+%     END IF
+%%
+%     IF ( HQEXEC ) THEN
+%      IF ( ( UPPERCASE CEL ) .EQ. 'DELETE' ) THEN
+%        TRANSFER 'DELETE ' // CATOM TO CRYSTALS
+%        COPY 'EXEC'
+%      ELSE
+%        TRANSFER 'DRENAME ' // CATOM // ' ' // CEL // '(' // -
+         CHARACTER ( FIRSTINT ( CATOM ) ) // ')' TO CRYSTALS
+%        COPY 'EXEC'
+%      END IF
+%     END IF
+%    END BLOCK
+%    BLOCK      %HELP
+%      COPY '#SCRIPT XHELP1'
 
-% COPY '#SCRIPT DIRECT'
+ * Rename any QH peaks that you wish to keep to 'H'.
+
+ {2,15 The WHITE atoms are geometrically placed on the carbon and nitrogen
+ {2,15 skeleton, and the PINK atoms have been found in a Fourier map.
+
+ {2,15 Where the atoms almost co-incide, you can get a qualitative idea
+ {2,15 of the quality of your data.
+
+ {2,15 Where hydrogens have not been geometrically placed, you can
+ {2,15 change the PINK atom to a WHITE hydrogen, by clicking on it
+ {2,15 with the RIGHT mouse button and choosing "Change Type" from
+ {2,15 the menu.
+
+ Click on the atoms in the molecule to either change their
+ type to the current selection (e.g. H), or delete them.
+
+ Click Done when complete.
+
+%      COPY '#SCRIPT XHELP2'
+%    END BLOCK
+%   END CASE
+% END LOOP
 %END SCRIPT
