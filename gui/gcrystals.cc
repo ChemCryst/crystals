@@ -142,7 +142,7 @@ BOOL CCrystalsApp::OnIdle(LONG lCount)
 {
     // TODO: Add your specialized code here and/or call the base class
     BOOL sysret = CWinApp::OnIdle(lCount);
-    BOOL appret = false;
+    bool appret = false;
 
     if (lCount > 10)
     {
@@ -224,13 +224,18 @@ void CCrystalsApp::OnIdle(wxIdleEvent & event)
     bool sysret = event.MoreRequested();
 
     
-    int appret = DoCommandTransferStuff();
+//    bool appret = DoCommandTransferStuff();
+
+    for ( int i=0; i<25; i++ )
+    {  
+       if ( ! appret = DoCommandTransferStuff() ) break;
+    }
 
 
     //Only stop idle processing if:
     // 1. appret is false (no more interface commands)
     // 2. sysret is false (no more idle processing needed by framework).
-    if((appret==0) && (!sysret))
+    if((!appret) && (!sysret))
     {
         return;
     }
@@ -251,7 +256,7 @@ int CCrystalsApp::OnExit()
 
 void CCrystalsApp::OnKickTimer(wxTimerEvent& event)
 {
-        for ( int i=0; i<50; i++ )
+        for ( int i=0; i<25; i++ )
         {  
            if ( ! DoCommandTransferStuff() ) break;
         }
@@ -260,7 +265,7 @@ void CCrystalsApp::OnKickTimer(wxTimerEvent& event)
 #endif
 
 
-BOOL CCrystalsApp::DoCommandTransferStuff()
+bool CCrystalsApp::DoCommandTransferStuff()
 {
     char theLine[255];
     bool appret = false;
@@ -277,7 +282,6 @@ BOOL CCrystalsApp::DoCommandTransferStuff()
             theCrApp->mController->Tokenize(theLine);
         }
     }
-
 
     return appret;
 }
