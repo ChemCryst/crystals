@@ -40,9 +40,8 @@ C
 C
       WRITE ( CMON,1005) REASON(MSGST:MSGEND)
       CALL XPRVDU(NCEROR, 1, 0)
-C
-      IF (ISSPRT .EQ. 0) WRITE (NCWU, 1005 ) REASON(MSGST:MSGEND)
-      WRITE ( NCAWU , 1005 ) REASON(MSGST:MSGEND)
+      IF (ISSPRT .EQ. 0) WRITE (NCWU, '(a)' ) cmon(1)
+      WRITE ( NCAWU , '(a)' ) cmon(1)
 C
       RETURN
       END
@@ -361,6 +360,8 @@ C
 C            -VE         FAILURE ( RETURNS IOSTAT VALUE )
 C            +VE         SUCCESS
 C
+cdjwapr99
+      logical lexist
 C
       INTEGER IDUNIT , IFSTAT , IFMODE
       CHARACTER*(*) CFNAME
@@ -372,6 +373,8 @@ C
 C
 \XOPVAL
 \XSSVAL
+\XUNITS
+\XIOBUF
 C
 C
       DATA FLSTAT / 'OLD   ' , 'NEW   ' , 'CIF   ' /
@@ -410,9 +413,16 @@ C -- IF REQUEST IS 'CIF' SET STATUS TO 'OLD'
 C
       IF ( ACSTAT .EQ. 'CIF' ) ACSTAT = 'OLD'
 C
-CS***
-&PPC      CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN,IDUNIT)
-CE***
+cdjwapr99 move to here  - done for PPC anyway
+      CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
+cdjwapr99{
+c      if a 'new' file already exists, return a proper message
+      IF ((FLSTAT(IFSTAT) .EQ. 'NEW' ) .AND. (FILNAM .NE. ' '))THEN
+       lexist = .false.
+       inquire(file=clcnam(1:namlen), exist=lexist)
+       if (lexist ) goto 9920
+      endif
+cdjwapr99}
 C
 2000  CONTINUE
 C
@@ -441,7 +451,7 @@ C
 &PPC           TESTAT = ACSTAT
 &PPC        ENDIF
 &PPCCE***
-#PPC        CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
+cdjwapr99 moved higher up        CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
         OPEN ( UNIT   = IDUNIT ,
      1         FILE   = CLCNAM ,
 &PPC     1         STATUS = TESTAT ,
@@ -567,6 +577,16 @@ C****
       CALL XOPMSG ( IOPCRY , IOPINT , 0 )
 CE*** instead of CALL XOPMSG ( IOPCRY , IOPINT )
       GO TO 9900
+cdjwapr99
+9920  continue
+      CALL XCTRIM(CLCNAM, ILEN)
+      write(cmon,'(a,a,a)')
+     1 'The D/A file ( ', clcnam(1:ILEN) ,
+     2 ' )already exists and cannot be overwritten'
+      CALL XPRVDU(NCEROR, 1, 0)
+      IF (ISSPRT .EQ. 0) WRITE (NCWU, '(a)' ) cmon(1)
+      WRITE ( NCAWU , '(a)' ) cmon(1)
+      goto 9910
       END
 C
 CODE FOR KFLCLS
@@ -2836,6 +2856,7 @@ CODE FOR GUEXIT
 &GID      END INTERFACE
 C
       INTEGER IVAR
+\UFILE
 C Meanings of IVAR.
 C 0    Ok
 C 1    Error
@@ -2868,7 +2889,12 @@ c 2024 KFUNCT
 c 2025 XABS
 c 2026 XCONOP ERROR
 c 2027 ROUTINE NOT IMPLEMENTED
-
+cdjwapr99 moved from out of XFINAL to prevent error messages in FTN77 
+c version
+C----- CLOSE ALL THE FILES
+      DO 2001 I = 1,NFLUSD
+            J = KFLCLS(IFLUNI(I))
+2001  CONTINUE
 &DVF      CALL EXIT(IVAR)
 ##GIDDVF      STOP
 &GID      CALL CIENDTHREAD(IVAR)
