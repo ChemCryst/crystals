@@ -1,138 +1,147 @@
 %SCRIPT XCHECK6
-% VARIABLE LOGICAL MERGER ABSENT
+% VARIABLE LOGICAL MERGER ABSENT LNEWRAT LNEWRHO
+% VARIABLE REAL NEWRHO NEWRAT
 % EVALUATE MERGER = FILEEXISTS 'mergingr.dat'
 % EVALUATE ABSENT = FILEEXISTS 'absences.dat'
 ^^WI WINDOW XCHECK6 'Initial Analyses' MODAL KEEP SIZE
-^^WI COMMIT='WIL_BOK' CANCEL='^^CO DISPOSE XCHECK6'
-^^WI GRID MAIN NROWS=2 NCOLS=1
+^^WI COMMIT='XC_BOK' CANCEL='XC_BOK'
+^^WI GRID MAIN NROWS=3 NCOLS=1
 ^^WI {
 ^^WI  @ 1,1 GRID TOP NROWS=3 NCOLS=3
 ^^WI  {
-^^WI  @ 2,2 TABCTRL _MAINTABS
-^^WI  {
-^^WI   TAB _MAINTAB2 'Sigmas' GRID _MAINTG2 NROWS=5 NCOLS=3
+^^WI   @ 2,2 TABCTRL _MAINTABS
 ^^WI   {
-^^WI    @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
-^^WI    {
-^^WI     @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
+^^WI    TAB _MAINTAB2 'Sigmas' GRID _MAINTG2 NROWS=5 NCOLS=3
+^^WI    { 
+^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
 ^^WI     {
-^^WI      @ 1,1 STATIC XFW1
-^^WI  'You are looking at the frequency of F^2/sigma(F^2).'
-^^WI      @ 2,1 STATIC XFW2 ' '
-^^WI      @ 3,1 STATIC XFW3 'Right-click on a bar for data cut-off options.'
+^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
+^^WI      {
+^^WI       @ 1,1 STATIC XFW1
+^^WI 'You are looking at the frequency of I/sigma(I). The green line shows'
+^^WI       @ 2,1 STATIC XFW2
+^^WI 'number of reflections above a given I/sigma(I) ratio.'
+^^WI       @ 3,1 STATIC XFW3 'Right-click on a bar for data cut-off options.'
+^^WI      }
+^^WI      @ 1,1 ICON IM INFO
 ^^WI     }
-^^WI     @ 1,1 ICON IM INFO
+^^WI     @ 4,2 PLOTWINDOW _VSIGLEVL NROWS=20 NCOLS=64
+^^WI      DEFINEPOPUPMENU POPUP 'Selection'
+^^WI        ITEM _SDELA '&Reject data: I/sigma(I) < _X' 'SIGCUT_N_X'
+^^WI      ENDDEFINEMENU
 ^^WI    }
-^^WI    @ 4,2 PLOTWINDOW _VSIGLEVL NROWS=20 NCOLS=64
-^^WI     DEFINEPOPUPMENU POPUP 'Selection'
-^^WI       ITEM _SDELA '&Reject data: I/sigma(I) < _X' 'SIGCUT_N_X'
-^^WI     ENDDEFINEMENU
-^^WI   }
-^^WI   TAB _MAINTAB3 'Merging R' GRID _MAINTG3 NROWS=5 NCOLS=3
-^^WI   {
+^^WI    TAB _MAINTAB3 'Merging R' GRID _MAINTG3 NROWS=5 NCOLS=3
+^^WI    {
 % IF ( MERGER ) THEN
-^^WI    @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
-^^WI    {
-^^WI     @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
+^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
 ^^WI     {
-^^WI      @ 1,1 STATIC XFW1
+^^WI       @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
+^^WI      {
+^^WI       @ 1,1 STATIC XFW1
 ^^WI  'You are looking at merging R statistics.'
-^^WI      @ 2,1 STATIC XFW2 ' '
-^^WI      @ 3,1 STATIC XFW3 'Right-click on a bar for data cut-off options.'
+^^WI       @ 2,1 STATIC XFW2 ' '
+^^WI       @ 3,1 STATIC XFW3 'Right-click on a bar for data cut-off options.'
+^^WI      }
+^^WI      @ 1,1 ICON IM INFO
 ^^WI     }
-^^WI     @ 1,1 ICON IM INFO
-^^WI    }
-^^WI    @ 4,2 PLOTWINDOW _VRMERGE NROWS=20 NCOLS=64
-^^WI     DEFINEPOPUPMENU POPUP 'Selection'
-^^WI       ITEM _SDELA '&Reject data: I/sigma(I) < _X' 'SIGCUT_N_X'
-^^WI     ENDDEFINEMENU
+^^WI     @ 4,2 PLOTWINDOW _VRMERGE NROWS=20 NCOLS=64
+^^WI      DEFINEPOPUPMENU POPUP 'Selection'
+^^WI        ITEM _SDELA '&Reject data: I/sigma(I) < _X' 'SIGCUT_N_X'
+^^WI      ENDDEFINEMENU
 % ELSE
-^^WI    @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
-^^WI    {
-^^WI     @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
+^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
 ^^WI     {
-^^WI      @ 1,1 STATIC XFW1 'No merging-R file found. Perhaps data have'
-^^WI      @ 2,1 STATIC XFW2 'not been merged (#SORT,#MERGE), or perhaps'
-^^WI      @ 3,1 STATIC XFW3 'they were merged by other software.'
+^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
+^^WI      {
+^^WI       @ 1,1 STATIC XFW1 'No merging-R file found. Perhaps data have'
+^^WI       @ 2,1 STATIC XFW2 'not been merged (#SORT,#MERGE), or perhaps'
+^^WI       @ 3,1 STATIC XFW3 'they were merged by other software.'
+^^WI      }
+^^WI      @ 1,1 ICON IM ERROR
 ^^WI     }
-^^WI     @ 1,1 ICON IM ERROR
-^^WI    }
 % END IF
-^^WI   }
-^^WI   TAB _MAINTAB1 'Absences' GRID _MAINTG1 NROWS=5 NCOLS=3
-^^WI   {
+^^WI    }
+^^WI    TAB _MAINTAB1 'Absences' GRID _MAINTG1 NROWS=5 NCOLS=3
+^^WI    {
 % IF ( ABSENT ) THEN
-^^WI    @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
-^^WI    {
-^^WI     @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
+^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
 ^^WI     {
-^^WI      @ 1,1 STATIC XFW1
+^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
+^^WI      {
+^^WI       @ 1,1 STATIC XFW1
 ^^WI  'You are looking at a systematic absence analysis.'
-^^WI      @ 2,1 STATIC XFW2 ' '
-^^WI      @ 3,1 STATIC XFW3 ' '
+^^WI       @ 2,1 STATIC XFW2 ' '
+^^WI       @ 3,1 STATIC XFW3 ' '
+^^WI      }
+^^WI      @ 1,1 ICON IM INFO
 ^^WI     }
-^^WI     @ 1,1 ICON IM INFO
-^^WI    }
-^^WI    @ 4,2 PLOTWINDOW _VABSENT NROWS=20 NCOLS=64
+^^WI     @ 4,2 PLOTWINDOW _VABSENT NROWS=20 NCOLS=64
 % ELSE
-^^WI    @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
-^^WI    {
-^^WI     @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
+^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
 ^^WI     {
-^^WI      @ 1,1 STATIC XFW1 'No absences file found. Perhaps absences have'
-^^WI      @ 2,1 STATIC XFW2 'not been removed (#SYST), or perhaps they were'
-^^WI      @ 3,1 STATIC XFW3 'removed by other software.'
+^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
+^^WI      {
+^^WI       @ 1,1 STATIC XFW1 'No absences file found. Perhaps absences have'
+^^WI       @ 2,1 STATIC XFW2 'not been removed (#SYST), or perhaps they were'
+^^WI       @ 3,1 STATIC XFW3 'removed by other software.'
+^^WI      }
+^^WI      @ 1,1 ICON IM ERROR
 ^^WI     }
-^^WI     @ 1,1 ICON IM ERROR
-^^WI    }
 % END IF
-^^WI   }
-^^WI   TAB _MAINTAB0 'Wilson' GRID _MAINTG0 NROWS=5 NCOLS=3
-^^WI   {
-^^WI    @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
-^^WI    {
-^^WI     @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
-^^WI     {
-^^WI      @ 1,1 STATIC XFW1
-^^WI 'You are looking at a Wilson Plot.'
-^^WI      @ 2,1 STATIC XFW2 ' '
-^^WI      @ 3,1 STATIC XFW3 'Right-click a point for data cut-off options.'
-^^WI     }
-^^WI     @ 1,1 ICON IM INFO
 ^^WI    }
-^^WI    @ 4,2 PLOTWINDOW _VWILSON NROWS=20 NCOLS=64
-^^WI     DEFINEPOPUPMENU POPUP 'Selection'
-^^WI       ITEM _SDELA '&Reject data: rho > _Y ' 'RHOMIT_N_Y'
-^^WI     ENDDEFINEMENU
-^^WI   }
-^^WI   TAB _MAINTAB4 'N(Z) distribution' GRID _MAINTG0 NROWS=5 NCOLS=3
-^^WI   {
-^^WI    @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
+^^WI     TAB _MAINTAB0 'Wilson' GRID _MAINTG0 NROWS=5 NCOLS=3
 ^^WI    {
-^^WI     @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
+^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
 ^^WI     {
-^^WI      @ 1,1 STATIC XFW1
+^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
+^^WI      {
+^^WI       @ 1,1 STATIC XFW1
+^^WI  'You are looking at a Wilson Plot.'
+^^WI       @ 2,1 STATIC XFW2 ' '
+^^WI       @ 3,1 STATIC XFW3 'Right-click a point for data cut-off options.'
+^^WI      }
+^^WI      @ 1,1 ICON IM INFO
+^^WI     }
+^^WI     @ 4,2 PLOTWINDOW _VWILSON NROWS=20 NCOLS=64
+^^WI      DEFINEPOPUPMENU POPUP 'Selection'
+^^WI        ITEM _SDELA '&Reject data: rho > _Y ' 'RHOMIT_N_Y'
+^^WI      ENDDEFINEMENU
+^^WI    }
+^^WI    TAB _MAINTAB4 'N(Z) distribution' GRID _MAINTG0 NROWS=5 NCOLS=3
+^^WI    {
+^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
+^^WI     {
+^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
+^^WI      {
+^^WI       @ 1,1 STATIC XFW1
 ^^WI 'You are looking at N(Z) cumulative probability distribution functions'
-^^WI      @ 2,1 STATIC XFW2 ' '
-^^WI      @ 3,1 STATIC XFW3 ' '
+^^WI       @ 2,1 STATIC XFW2 ' '
+^^WI       @ 3,1 STATIC XFW3 ' '
+^^WI      }
+^^WI      @ 1,1 ICON IM INFO
 ^^WI     }
-^^WI     @ 1,1 ICON IM INFO
+^^WI     @ 4,2 PLOTWINDOW _VNZDIST NROWS=20 NCOLS=64
 ^^WI    }
-^^WI    @ 4,2 PLOTWINDOW _VNZDIST NROWS=20 NCOLS=64
 ^^WI   }
 ^^WI  }
+^^WI  @ 2,1 GRID BUTT NROWS=2 NCOLS=5
+^^WI  {
+^^WI   @ 1,1 STRETCH RS HORIZONTAL
+^^WI   @ 1,2 BUTTON XC_REF 'Refresh' 
+^^WI   @ 1,4 BUTTON XC_BOK 'Close' COMMIT DEFAULT CANCEL
 ^^WI  }
-^^WI  @ 2,1 PROGRESS _CHECKPR 'Please wait'
+^^WI  @ 3,1 PROGRESS _CHECKPR 'Please wait'
 ^^WI }
 ^^WI SHOW
 ^^CR
 ^^CO SENDPROGRESSTO _CHECKPR
 %%
-% COPY '#WILSON'
-% COPY 'OUTPUT PLOT=YES NZ=YES'
-% COPY 'END'
+% LOOP
+%  COPY '#WILSON'
+%  COPY 'OUTPUT PLOT=YES NZ=YES'
+%  COPY 'END'
 %%
-% IF ( ABSENT ) THEN
+%  IF ( ABSENT ) THEN
 %    COPY '#OPEN SCPDATA absences.dat'
 {I About to get absence data.
 %    EXTRACT REWIND
@@ -165,13 +174,13 @@
 %    COPY '#CLOSE SCPDATA'
 ^^PL SHOW
 ^^CR
-% END IF
+%  END IF
 %%
-% COPY '#SIGMADIST'
-% COPY 'OUTPUT PLOT=YES'
-% COPY 'END'
+%  COPY '#SIGMADIST'
+%  COPY 'OUTPUT PLOT=YES'
+%  COPY 'END'
 %%
-% IF ( MERGER ) THEN
+%  IF ( MERGER ) THEN
 %    COPY '#OPEN SCPDATA mergingr.dat'
 {I About to get merging R data.
 %    EXTRACT REWIND
@@ -188,7 +197,6 @@
 ^^PL SERIES 1 SERIESNAME 'Merging R factor'
 ^^PL SERIES 2 SERIESNAME 'Number contributors' TYPE LINE 
 ^^PL SERIES 3 SERIESNAME 'Number > given I/sigma(I)' TYPE LINE USERIGHTAXIS
-^^PL 
 %%
 %    LOOP
 %      ON ERROR TERMINATE
@@ -211,7 +219,35 @@
 ^^PL SHOW
 ^^CR
 %    COPY '#CLOSE SCPDATA'
-% END IF
+%  END IF
+%  LOOP
+%    VERIFY XC_BOK XC_REF RHOMIT SIGCUT
+%    GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%    CASE VALUE
+%     BLOCK    %XC_BOK
+^^CO   DISPOSE XCHECK6
+%      FINISH
+%     END BLOCK
+%     BLOCK    %XC_REF
+%      EVALUATE LOOPCOUNTER = LOOPEND
+%     END BLOCK
+%     BLOCK    %RHOMIT
+%%        GET SILENT NOSTORE REAL ' ' ' '
+%%        EVALUATE NEWRHO = VALUE
+%%        EVALUATE LNEWRAT = FALSE
+%        EVALUATE LNEWRHO = TRUE
+%%        COPY '#SCRIPT XLIST28'
+%     END BLOCK
+%     BLOCK    %SIGCUT
+%        GET NOSTORE SILENT REAL ' ' ' '
+%        EVALUATE NEWRAT = VALUE
+%        EVALUATE LNEWRAT = TRUE
+%        EVALUATE LNEWRHO = FALSE
+%        COPY '#SCRIPT XLIST28'
+%     END BLOCK
+%    END CASE
+%  END LOOP
+% END LOOP
 %END SCRIPT
 
 
