@@ -19,32 +19,24 @@
 #include	"cccontroller.h"	// for sending commands
 
 
-// OPSignature:  CrRadioButton:CrRadioButton( CrGUIElement *:mParentPtr ) 
-	CrRadioButton::CrRadioButton( CrGUIElement * mParentPtr )
-//Insert your own initialization here.
+CrRadioButton::CrRadioButton( CrGUIElement * mParentPtr )
 	:	CrGUIElement( mParentPtr )
-//End of user initialization.         
 {
-//Insert your own code here.
 	mWidgetPtr = CxRadioButton::CreateCxRadioButton( this, (CxGrid *)(mParentPtr->GetWidget()) );
 	mTabStop = true;
-//End of user code.         
 }
-// OPSignature:  CrRadioButton:~CrRadioButton() 
-	CrRadioButton::~CrRadioButton()
+
+CrRadioButton::~CrRadioButton()
 {
-//Insert your own code here.
 	if ( mWidgetPtr != nil )
 	{
 		delete (CxRadioButton*)mWidgetPtr;
 		mWidgetPtr = nil;
 	}
-//End of user code.         
 }
-// OPSignature: Boolean CrRadioButton:ParseInput( CcTokenList *:tokenList ) 
+
 Boolean	CrRadioButton::ParseInput( CcTokenList * tokenList )
 {
-//Insert your own code here.
 	Boolean retVal = true;
 	Boolean hasTokenForMe = true;
 	
@@ -118,77 +110,87 @@ Boolean	CrRadioButton::ParseInput( CcTokenList * tokenList )
 	}	
 	
 	return retVal;
-//End of user code.         
 }
-// OPSignature: void CrRadioButton:SetText( CcString:text ) 
+
 void	CrRadioButton::SetText( CcString text )
 {
-//Insert your own code here.
 	char theText[256];
 	strcpy( theText, text.ToCString() );
 
 	( (CxRadioButton *)mWidgetPtr)->SetText( theText );
-//End of user code.         
 }
-// OPSignature: void CrRadioButton:SetGeometry( const CcRect *:rect ) 
+
 void	CrRadioButton::SetGeometry( const CcRect * rect )
 {
-//Insert your own code here.
 	((CxRadioButton*)mWidgetPtr)->SetGeometry(	rect->mTop,
 												rect->mLeft,
 												rect->mBottom,
 												rect->mRight );
-//End of user code.         
 }
-// OPSignature: CcRect CrRadioButton:GetGeometry() 
+
 CcRect	CrRadioButton::GetGeometry()
 {
-//Insert your own code here.
 	 CcRect retVal(
 			((CxRadioButton*)mWidgetPtr)->GetTop(), 
 			((CxRadioButton*)mWidgetPtr)->GetLeft(),
 			((CxRadioButton*)mWidgetPtr)->GetTop()+((CxRadioButton*)mWidgetPtr)->GetHeight(),
 			((CxRadioButton*)mWidgetPtr)->GetLeft()+((CxRadioButton*)mWidgetPtr)->GetWidth()   );
 	return retVal;
-//End of user code.         
 }
-// OPSignature: void CrRadioButton:CalcLayout() 
+
 void	CrRadioButton::CalcLayout()
 {
-//Insert your own code here.
 	int w =  ((CxRadioButton*)mWidgetPtr)->GetIdealWidth();
 	int h =  ((CxRadioButton*)mWidgetPtr)->GetIdealHeight();
 	((CxRadioButton*)mWidgetPtr)->SetGeometry(0,0,h,w);	
-//End of user code.         
 }
-// OPSignature: void CrRadioButton:GetValue() 
+
 void	CrRadioButton::GetValue()
 {
-//Insert your own code here.
 	CcString stateString;
 	if ( ((CxRadioButton*)mWidgetPtr)->GetRadioState() )
 		stateString = kSOn;
 	else
 		stateString = kSOff;
 	SendCommand( stateString );
-//End of user code.         
 }
-// OPSignature: void CrRadioButton:ButtonChanged( Boolean:state ) 
+
+void  CrRadioButton::GetValue( CcTokenList * tokenList )
+{
+	CcString stateString;
+
+      if( tokenList->GetDescriptor(kQueryClass) == kTQState )
+      {
+            tokenList->GetToken();
+            if ( ((CxRadioButton*)mWidgetPtr)->GetRadioState() )
+                  stateString = kSOn;
+            else
+                  stateString = kSOff;
+            SendCommand( stateString,true);
+      }
+      else
+      {
+            SendCommand( "ERROR",true );
+            stateString = tokenList->GetToken();
+            LOGWARN( "CrCheckBox:GetValue Error unrecognised token." + stateString );
+      }
+}
+
+
+
+
 void	CrRadioButton::ButtonOn()
 {
-//Insert your own code here.
 	if ( mCallbackState )
 	{
 		SendCommand(mName);
 	}
-//End of user code.         
 }
-// OPSignature: void CrRadioButton:SetState( Boolean:state ) 
+
 void	CrRadioButton::SetState( Boolean state )
 {
-//Insert your own code here.
-	((CxRadioButton*)mWidgetPtr)->SetRadioState(state);	
-//End of user code.         
+
+	((CxRadioButton*)mWidgetPtr)->SetRadioState(state);
 }
 
 void CrRadioButton::CrFocus()

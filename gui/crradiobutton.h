@@ -30,6 +30,7 @@ class	CrRadioButton : public CrGUIElement
 		CcRect	GetGeometry();
 		void	CalcLayout();
 		void	GetValue();
+            void  GetValue(CcTokenList * tokenList);
 		void	ButtonOn();
 		void	SetState( Boolean state );
 		
