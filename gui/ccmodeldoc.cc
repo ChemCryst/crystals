@@ -18,6 +18,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.7  1999/08/03 09:19:18  richard
+// RIC: Keep track of number of selected atoms more carefully.
+//
 // Revision 1.6  1999/06/22 12:57:18  dosuser
 // RIC: RenderModel returns a boolean indicating whether anything was drawn.
 //
@@ -206,6 +209,8 @@ void CcModelDoc::Clear()
 
 	m_nAtoms = 0;
 
+      nSelected = 0;
+
       (CcController::theController)->status.SetNumSelectedAtoms( 0 );
 
       DrawViews();
@@ -295,9 +300,15 @@ void CcModelDoc::SelectAllAtoms(Boolean select)
 	}
       DrawViews();
       if ( select )
-            (CcController::theController)->status.SetNumSelectedAtoms( i );
+      {
+            nSelected = i;
+      }
       else
-            (CcController::theController)->status.SetNumSelectedAtoms( 0 );
+      {
+            nSelected = 0;
+      }
+      (CcController::theController)->status.SetNumSelectedAtoms( nSelected );
+
 }
 
 CcString CcModelDoc::Compress(CcString atomname)

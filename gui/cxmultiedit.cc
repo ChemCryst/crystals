@@ -502,7 +502,7 @@ void CxMultiEdit::SetFontHeight( int height )
 #ifdef __WINDOWS__
       CHARFORMAT cf;
       cf.dwMask = ( CFM_SIZE ) ; //Use the CFM_SIZE attribute
-        mHeight = (int)((height + 10) / 10.0);
+        mHeight = (int)((height + 20) / 10.0);
       cf.yHeight = height; 
 
       SetSel(0, -1);
