@@ -3,6 +3,91 @@
 % VARIABLE CHARACTER CTYPE
 % VARIABLE INTEGER IDIST IANG IGUI
 % VARIABLE INTEGER EXPECTED EXPECTALL NH29 NH5 
+% VARIABLE CHARACTER MOGULLOC
+%%
+^^CO GETREG "Software\CCDC\" "MogulLatestVersion"
+%GET SILENT NOSTORE TEXT 'Latest mogul?' ' '
+%TRANSFER '^^CO GETREG "Software\CCDC\Mogul\' // CVALUE // -
+ '\" Executable' TO DISPLAY
+% GET SILENT NOSTORE TEXT 'Exec?' 'BLANK'
+% EVALUATE MOGULLOC = CVALUE
+%%
+%%
+% IF ( CVALUE .EQ. 'BLANK' ) THEN
+^^WI WINDOW MOGULMISS 'Mogul missing' MODAL KEEP SIZE LARGE
+^^WI COMMIT='MM_OK' CANCEL='MM_OK' POSITION=CENTRED '_MAINTEXTOUTPUT'
+^^WI GRID MMM NROWS=5 NCOLS=3
+^^WI {
+^^WI   @ 2,2 GRID TOP NROWS=1 NCOLS=3
+^^WI   {
+^^WI     @ 1,1 GRID LOG NROWS=1 NCOLS=1
+^^WI     {
+^^WI       @ 1,1 BITMAP LOGO TRANS FILE 'ccdclogo.bmp'
+^^WI     }
+^^WI     @ 1,3 GRID HOLD NROWS=1 NCOLS=1
+^^WI     {
+^^WI       @ 1,1 TEXTOUT MMEXPLAIN 'Could not find the Mogul executable.'
+^^WI NROWS=10 NCOLS=40 TRANSPARENT
+^^WI TEXT ' '
+^^WI TEXT ' Is it installed? If so, click Browse and locate mogul.exe.'
+^^WI TEXT ' '
+^^WI TEXT ' Mogul should be distributed with each main CSD release.'
+^^WI TEXT ' See {&http://www.ccdc.cam.ac.uk/{&'
+^^WI TEXT ' '
+^^WI TEXT ' Close this dialog, install Mogul then try again.'
+^^WI TEXT ' '
+^^WI VIEWTOP
+^^WI     }
+^^WI   }
+^^WI   @ 4,2 GRID BOTTOM NROWS=1 NCOLS=5
+^^WI   {
+^^WI     @ 1,1 STRETCH S1 HORIZONTAL
+^^WI     @ 1,2 BUTTON MM_OK 'Close' COMMIT CANCEL DEFAULT
+^^WI     @ 1,4 BUTTON MM_BRWS 'Browse for mogul.exe...'
+^^WI     @ 1,5 STRETCH S2 HORIZONTAL
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+^^CO  SET MMEXPLAIN VIEWTOP
+%     LOOP
+%       VERIFY #$ MM_OK MM_BRWS
+%       GET SILENT NOSTORE ABBREVIATED ' ' ' '
+%       CASE VALUE
+%         BLOCK  %#$command%
+%           CLEAR
+%           INSERT '#SPAWN '
+%           GET SILENT FINAL TEXT ' ' ' '
+%           OUTPUT
+%           SEND
+%         END BLOCK
+%         BLOCK                                %XX
+^^CO        DISPOSE MOGULMISS
+%           FINISH
+%         END BLOCK
+%         BLOCK                                %MM_BRWS
+
+  Where is the mogul executable (mogul.exe)?
+  Hint: Try looking in c:\program files\ccdc\
+
+^^CO SYSOPENFILE 'mogul*.exe' 'Mogul executable'
+
+%           GET SILENT NOSTORE TEXT 'Mogul location:'
+%           IF CVALUE .NE. 'CANCEL' THEN
+%             EVALUATE MOGULLOC = CVALUE
+%             EVALUATE LOOPEND = LOOPCOUNTER
+^^CO          DISPOSE MOGULMISS
+%           ELSE
+^^CO          DISPOSE MOGULMISS
+%             FINISH
+%           END IF
+%         END BLOCK
+%       END CASE
+%     END LOOP
+%   END IF
+%  END IF
+% END IF
+%%
 %%
 ^^WI WINDOW XMOGULGO 'Mogul Search' MODAL KEEP SIZE LARGE
 ^^WI               COMMIT='MG_OK' CANCEL='MG_XX'
@@ -142,12 +227,7 @@
 %  TRANSFER 'MOGUL MOLECULE FILE crystals.mol2' TO PUNCH
 %  COPY '#RELEASE PUNCH bfile.pch'
 {I * Running Mogul.
-^^CO GETREG "Software\CCDC\" "MogulLatestVersion"
-%GET SILENT NOSTORE TEXT 'Latest mogul?' ' '
-%TRANSFER '^^CO GETREG "Software\CCDC\Mogul\' // CVALUE // -
- '\" Executable' TO DISPLAY
-% GET SILENT NOSTORE TEXT 'Exec?' ' '
-% TRANSFER '#SPAWN "' // CVALUE // '" -ins crystals.qf' TO CRYSTALS
+% TRANSFER '#SPAWN "' // MOGULLOC // '" -ins crystals.qf' TO CRYSTALS
 {R * Done.
 ^^CO DISPOSE XMOGULGO
 %  FINISH
@@ -207,12 +287,7 @@
 %  COPY '#RELEASE PUNCH bfile.pch'
 {R * Done.
 {I * Running Mogul.
-^^CO GETREG "Software\CCDC\" "MogulLatestVersion"
-%GET SILENT NOSTORE TEXT 'Latest mogul?' ' '
-%TRANSFER '^^CO GETREG "Software\CCDC\Mogul\' // CVALUE // -
- '\" Executable' TO DISPLAY
-% GET SILENT NOSTORE TEXT 'Exec?' ' '
-% TRANSFER '#SPAWN + "' // CVALUE // '" -ins crystals.qf' TO CRYSTALS
+% TRANSFER '#SPAWN + "' // MOGULLOC // '" -ins crystals.qf' TO CRYSTALS
 {R * Done.
 ^^CO DISPOSE XMOGULGO
 %  COPY '#SCRIPT MOGULRES'
