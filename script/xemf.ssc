@@ -1,0 +1,74 @@
+%SCRIPT XWMF  %Script for outputting a windows metafile from chart%
+%    CLEAR
+%    INSERT '^^CO SET '
+%    GET SILENT TEXT ' ' ' '
+^^WI WINDOW XWMF 'Save Image' MODAL
+^^WI GRID G1 NROWS=3 NCOLS=5
+^^WI {
+^^WI  @ 2,2 GRID GL NROWS=9 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 RADIOBUTTON RLOW 'Low quality (640x480)' STATE=OFF IGNORE
+^^WI   @ 2,1 RADIOBUTTON RMED 'Medium quality (800x600)' STATE=OFF IGNORE
+^^WI   @ 3,1 RADIOBUTTON RHIG 'High quality (1024x768)' STATE=ON IGNORE
+^^WI   @ 4,1 RADIOBUTTON RSUP 'Spiffing quality (1280x1024)' STATE=OFF IGNORE
+^^WI   @ 5,1 RADIOBUTTON ROTH 'Other:' STATE=OFF IGNORE
+^^WI   @ 6,1 GRID LL NROWS=1 NCOLS=7
+^^WI   {
+^^WI    @ 1,5 EDITBOX ROW '2560' INTEGER
+^^WI    @ 1,7 EDITBOX ROH '2048' INTEGER
+^^WI   }
+^^WI  }
+^^WI  @ 2,4 GRID   GR NROWS=3 NCOLS=3
+^^WI  {
+^^WI   @ 1,2 BUTTON      BTOK 'Ok' DEFAULT
+^^WI   @ 3,2 BUTTON      BTXX 'Cancel'
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+%    INSERT ' SAVEEMF '
+%    VERIFY BTOK BTXX
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%    IF ( VALUE .EQ. 2 ) THEN
+^^CO     DISPOSE XWMF
+%        CLEAR
+%        FINISH
+%    END IF
+^^?? RLOW STATE
+%    VERIFY ON OFF
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%    IF ( VALUE .EQ. 1 ) THEN
+%     INSERT '640 480'
+%    ELSE
+^^??  RMED STATE
+%     VERIFY ON OFF
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%     IF ( VALUE .EQ. 1 ) THEN
+%      INSERT '800 600'
+%     ELSE
+^^??   RMED STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      IF ( VALUE .EQ. 1 ) THEN
+%       INSERT '1024 768'
+%      ELSE
+^^??    RSUP STATE
+%       VERIFY ON OFF
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%       IF ( VALUE .EQ. 1 ) THEN
+%        INSERT '1280 1024'
+%       ELSE
+^^??     ROW TEXT
+%        GET SILENT INTEGER ' '
+^^??     ROH TEXT
+%        GET SILENT INTEGER ' '
+%       END IF
+%      END IF
+%     END IF
+%    END IF
+^^CO DISPOSE XWMF
+%    OUTPUT
+
+{I A free wmf viewer is available from {&http://www.irfanview.com/{&.
+
+%END SCRIPT
