@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.38  2003/02/14 17:09:02  djw
+C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
+C recine have the parameter ityp06, which corresponds to the types
+C pickedip for lists 6 and 7  from the command file
+C
 C Revision 1.37  2003/01/14 10:23:57  rich
 C Replace tabs with spaces.
 C
@@ -2360,7 +2365,7 @@ C
      * /
       DATA (CKEY(I,3),I=1,MAXKEY)/
      1 'R', 'Rw', 'No. param last cycle', 'Sigma Cutoff', 'S',
-     2 'Del rho min','Del rho max','max RMS shift','Reflections used',
+     2 '*','*','max RMS shift','Reflections used',
      3 'Fo min function', 'Restraint min func', 'Total min func',
      4  7*'*'
      * /
@@ -2384,7 +2389,7 @@ C
      1 'Sigma Calc', 'No. Calc', 'R Calc', 'Rw Calc',
      2 'Sigma All', 'No. All', 'R All', 'Rw All', 'Extn-su',
      4 'Completeness' , 'Theta-full', 'Cmpltnss-full', 'Pressure kPa',
-     5 6*'*' /
+     5 'Del rho min','Del rho max','x','y','z','*' /
 C
 C
 C

@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.48  2003/02/14 17:09:02  djw
+C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
+C recine have the parameter ityp06, which corresponds to the types
+C pickedip for lists 6 and 7  from the command file
+C
 C Revision 1.47  2003/01/15 13:52:49  rich
 C Remove all output to NCAWU.
 C
@@ -4107,8 +4112,8 @@ C
 
          CBUF(1:21)='_refine_diff_density_'
          J=1
-         IF( ( ABS(STORE(L30RF+5)) .LT. 0.000001 ) .AND.
-     1       ( ABS(STORE(L30RF+6)) .LT. 0.000001 ) ) THEN
+         IF( ( ABS(STORE(L30CF+13)) .LT. 0.000001 ) .AND.
+     1       ( ABS(STORE(L30CF+14)) .LT. 0.000001 ) ) THEN
            DO K=1,2
              WRITE (CLINE,'(A, A,1X,A)') CBUF(1:21),CSIZE(J), '?'
              CALL XPCIF (CLINE)
@@ -4117,7 +4122,7 @@ C
          ELSE
            DO K=1,2
              WRITE (CLINE,'(A, A, F10.2)') CBUF(1:21),CSIZE(J),
-     1       (STORE(L30RF+4+K))
+     1       (STORE(L30CF+12+K))
              CALL XPCIF (CLINE)
              J=J+2
            END DO

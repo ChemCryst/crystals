@@ -1410,8 +1410,8 @@ Refimenent details
     .NPARAM             0    0    1    0    1 0.
     .SIGMACUT           0    0    1    0    1 0.
     .GOF                0    0    1    0    1 0.
-    .DELRHOMIN          0    0    1    0    1 0.
-    .DELRHOMAX          0    0    1    0    1 0.
+    .Z6                 0    0    1    0    1 0.
+    .Z7                 0    0    1    0    1 0.
     .RMSSHIFT           0    0    1    0    1 0.
     .NREFUSED           0    0    1    0    1 0.
     .FMINFUNC           0    0    1    0    1 0.
@@ -1518,11 +1518,11 @@ New CIF extensions
     .THETA-FULL         0    0    1    0    1 0.
     .COMPL-FULL         0    0    1    0    1 0.
     .PRESSURE           0    0    1    0    1 0.
-    .ZZ14               0    0    1    0    1 0.
-    .ZZ15               0    0    1    0    1 0.
-    .ZZ16               0    0    1    0    1 0.
-    .ZZ17               0    0    1    0    1 0.
-    .ZZ18               0    0    1    0    1 0.
+    .DELRHOMIN          0    0    1    0    1 0.
+    .DELRHOMAX          0    0    1    0    1 0.
+    .XMIN               0    0    1    0    1 0.
+    .YMIN               0    0    1    0    1 0.
+    .ZMIN               0    0    1    0    1 0.
     .SPARE              0    0    1    2    0 UNKNOWN
      UNKNOWN        KNOWN
 LIST 31            3    0
