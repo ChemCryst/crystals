@@ -39,27 +39,14 @@
 #include "ComClasses.h"
 #include "StringClasses.h"
 #include "Matrices.h"
-      
+#include "LaueClasses.h"
+
 class UnitCell:public MyObject
 {
 private:
     float iA, iB, iC, iAlpha, iBeta, iGamma;
     float iSEA, iSEB, iSEC, iSEAlpha, iSEBeta, iSEGamma;    
 public:
-    enum systemID
-    {
-      kTriclinic = 0,
-      kMonoclinicA,
-      kMonoclinicB,
-      kMonoclinicC,
-      kOrtharombic,
-      kTetragonal,
-      kTrigonal,
-      kTrigonalRhom,
-      kHexagonal,
-      kCubic,
-      };
-      
     UnitCell();
     bool init(char* pLine);
     void setA(float pA);
@@ -92,9 +79,8 @@ public:
     std::ostream& output(std::ostream& pStream)const;
 };
 
-char* getCrystalSystem();
-char* getCrystalSystem(const UnitCell::systemID pDefault);
-char* crystalSystemConst(UnitCell::systemID pIndex);
-UnitCell::systemID indexOfSystem(String& pSystem, String& pUnique);
+SystemID getCrystalSystem(SystemID pDefault);
+char* crystalSystemConst(SystemID pIndex);
+SystemID indexOfSystem(String& pSystem, String& pUnique);
 std::ostream& operator<<(std::ostream& pStream, const UnitCell& pUnitCell);
 #endif
