@@ -18,6 +18,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.8  1999/08/25 17:57:41  ckp2
+// RIC: Updates from before Glasgow
+//
 // Revision 1.7  1999/08/03 09:19:18  richard
 // RIC: Keep track of number of selected atoms more carefully.
 //
@@ -269,6 +272,15 @@ void CcModelDoc::SelectAtomByLabel(CcString atomname, Boolean select)
 	if(item)
 		item->Select(select);
 //      ReDrawHighlights(true);
+      DrawViews();
+
+}
+
+void CcModelDoc::DisableAtomByLabel(CcString atomname, Boolean select)
+{
+	CcModelAtom* item = FindAtomByLabel(atomname);
+	if(item)
+                item->Disable(select);
       DrawViews();
 
 }

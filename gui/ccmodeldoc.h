@@ -37,6 +37,7 @@ class CcModelDoc
 		CcString Compress(CcString atomname);
 		void SelectAllAtoms(Boolean select);
 		void SelectAtomByLabel(CcString atomname, Boolean select);
+                void DisableAtomByLabel(CcString atomname, Boolean select);
 		CcModelAtom* FindAtomByLabel(CcString atomname);
 		void PrepareToGetAtoms();
 		void Select(Boolean selected);
