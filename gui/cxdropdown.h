@@ -39,12 +39,13 @@ class	CxDropDown : public CComboBox
 		CcString GetDropDownText(int index);
 		int mItems;
 		void Focus();
-		// methods
+            // methods
 		static CxDropDown *	CreateCxDropDown( CrDropDown * container, CxGrid * guiParent );
 			CxDropDown( CrDropDown * container );
 			~CxDropDown();
 		void	Selected();
 		void	AddItem( char * text );
+            void  SetSelection ( int select );
 		void	SetGeometry( const int top, const int left, const int bottom, const int right );
 		int	GetTop();
 		int	GetLeft();

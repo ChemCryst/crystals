@@ -9,6 +9,8 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  6.3.1998 10:10 Uhr
 
+// $Log: not supported by cvs2svn $
+
 #include	"crystalsinterface.h"
 #include	"cxdropdown.h"
 //insert your own code here.
@@ -19,10 +21,8 @@
 //End of user code.          
 
 int	CxDropDown::mDropDownCount = kDropDownBase;
-// OPSignature: CxDropDown * CxDropDown:CreateCxDropDown( CrDropDown *:container  CxGrid *:guiParent  int:boxType ) 
 CxDropDown *	CxDropDown::CreateCxDropDown( CrDropDown * container, CxGrid * guiParent )
 {
-//Insert your own code here.
 /*	SPaneInfo	thePaneInfo;	// Info for Pane
 	
 	thePaneInfo.visible = true;
@@ -49,30 +49,26 @@ CxDropDown *	CxDropDown::CreateCxDropDown( CrDropDown * container, CxGrid * guiP
 	theDropDown->SetFont(CxGrid::mp_font);
 
 	return theDropDown;
-//End of user code.         
 }
-// OPSignature:  CxDropDown:CxDropDown( CrDropDown *:container  SPaneInfo:&inPaneInfo char *:defaultTitle ) 
-	CxDropDown::CxDropDown( CrDropDown * container)
-		:CComboBox()
-//Insert your own initialization here.
 
-//End of user initialization.         
+CxDropDown::CxDropDown( CrDropDown * container)
+		:CComboBox()
 {
-//Insert your own code here.
 	mWidget = container;
 	mItems = 0;
 
-//End of user code.         
 }
-// OPSignature:  CxDropDown:~CxDropDown() 
 	CxDropDown::~CxDropDown()
 {
-//Insert your own code here.
-//	RemoveDropDown();
 	mDropDownCount--;
-//End of user code.         
 }
-// OPSignature: void CxDropDown:Selected( int:itemIndex ) 
+
+void CxDropDown::SetSelection(int select)
+{
+      SetCurSel ( select - 1 );
+
+}
+
 void	CxDropDown::Selected()
 {
 //Insert your own code here.
