@@ -9,10 +9,8 @@
 %  VARIABLE LOGICAL HDONE EDONE WDONE PDONE                 I6DONE
 %  VARIABLE INTEGER                         HRTYP  L12SER
 %%
-
- * Storing info in L39.
 %  IF EXISTS 39 .LT. 1 THEN
- * Creating new L39.
+{S * Creating new L39.
 %      COPY '#LIST 39'
 %      COPY 'READ NINT=1'
 %      COPY 'INTEGER INFO 0'
@@ -35,7 +33,6 @@
 %    EVALUATE DOINSERT = FALSE
 %  END BLOCK
 %  IF DOINSERT THEN
- * Inserting new key "INFO 0"
 %     COPY 'INSERT'
 %  END IF
 %  COPY 'CHANGE 0 CHAR CHAR = INFO'
@@ -43,37 +40,29 @@
 %  IF ( HMASK .EQ. TRUE ) THEN
 %    IF ( HDONE .EQ. TRUE ) THEN
 %      COPY 'CHANGE 2 INTEGER INTEGER = 1'
-  Storing: All H placed.
 %    ELSE
 %      COPY 'CHANGE 2 INTEGER INTEGER = 0'
-  Storing: All H not placed.
 %    END IF
 %  END IF
 %  IF ( EMASK .EQ. TRUE ) THEN
 %    IF ( EDONE .EQ. TRUE ) THEN
 %      COPY 'CHANGE 3 INTEGER INTEGER = 1'
-  Storing: Extinction checked.
 %    ELSE
 %      COPY 'CHANGE 3 INTEGER INTEGER = 0'
-  Storing: Extinction not checked.
 %    END IF
 %  END IF
 %  IF ( WMASK .EQ. TRUE ) THEN
 %    IF ( WDONE .EQ. TRUE ) THEN
 %      COPY 'CHANGE 4 INTEGER INTEGER = 1'
-  Storing: Weights applied.
 %    ELSE
 %      COPY 'CHANGE 4 INTEGER INTEGER = 0'
-  Storing: Weights not applied.
 %    END IF
 %  END IF
 %  IF ( PMASK .EQ. TRUE ) THEN
 %    IF ( PDONE .EQ. TRUE ) THEN
 %      COPY 'CHANGE 5 INTEGER INTEGER = 1'
-  Storing: Purged list 11.
 %    ELSE
 %      COPY 'CHANGE 5 INTEGER INTEGER = 0'
-  Storing: 11 not purged.
 %    END IF
 %  END IF
 %  IF ( HRMASK ) THEN
@@ -81,26 +70,22 @@
 %    INSERT 'CHANGE 6 INTEGER INTEGER = '
 %    STORE FORMAT /(I4)/ LENGTH 4 INTEGER HRTYP
 %    SEND
-  Storing: LS Hydrogen treatment preference.
 %  END IF
 %  IF ( L12SMASK ) THEN
 %    CLEAR
 %    INSERT 'CHANGE 7 INTEGER INTEGER = '
 %    STORE FORMAT /(I6)/ LENGTH 6 INTEGER L12SER
 %    SEND
-  Storing: Refinement directive list serial number.
 %  END IF
 %  IF ( I6MASK .EQ. TRUE ) THEN
 %    IF ( I6DONE .EQ. TRUE ) THEN
 %      COPY 'CHANGE 8 INTEGER INTEGER = 1'
-  Storing: Done initial data inspection.
 %    ELSE
 %      COPY 'CHANGE 8 INTEGER INTEGER = 0'
-  Storing: Have not done initial data inspection.
 %    END IF
 %  END IF
 %%
 %  COPY 'WRITE OVERWRITE=OVERWRITE'
 %  COPY 'END'
- * Done.
+{R * Guide information stored (in list 39).
 %END SCRIPT

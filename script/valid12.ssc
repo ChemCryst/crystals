@@ -1,7 +1,5 @@
 %SCRIPT VALID12
 %% Ensures that we have at least a minimum valid LIST12
- 
-{S * Ensuring that refinement directives exist and are valid.
 %%
 %  VARIABLE LOGICAL L12SMASK
 %  VARIABLE INTEGER L12SER
@@ -11,16 +9,13 @@
 %    COPY '#LIST 22'
 %    COPY 'END'
 %% 
-
 {R  CRYSTALS has valid refinement directives  (LIST 12)
 %% 
 %    COPY '#PRINT 12'
 %    COPY 'END'
 {R  Remember that 'valid' does not necessarily mean 'suitable'!
-
 %    FINISH
 %  END BLOCK
-
 {E  CRYSTALS DOES NOT have valid refinement directives (LIST 12)
 {S  * Backing up existing refinement directives. (LIST 12)
 %  COPY '#RELEASE PUNCH bad12.pch'
@@ -28,7 +23,6 @@
 %  COPY 'END'
 %  COPY '#RELEASE PUNCH bfile.pch'
 {I  Bad refinement directives saved to: {&bad12.pch{&
-
 {S  * Creating a minimum valid refinement list.
 %  COPY '#LIST 12'
 %  COPY 'FULL'

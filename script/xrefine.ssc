@@ -104,8 +104,8 @@
 ^^CO DISPOSE XREFINE
 %%
 %  END IF
-%  COPY '#SUM LIST 12'
-%  COPY 'END'
+%%  COPY '#SUM LIST 12'
+%%  COPY 'END'
 %%
 %  COPY '#SCRIPT RFACTOR'
 %  EVALUATE RMIN = R
@@ -126,11 +126,10 @@
 %    COPY 'END'
 %  END IF
 %%
-%  COPY '#LIST 22'
-%  COPY 'END'
-%%
 %  COPY '#SCRIPT XDELQ'
 %%
+%  COPY '#LIST 22'
+%  COPY 'END'
 %%
 %  IF NCYCLE .GT. 0 THEN
 %    CASE NFORCE
@@ -205,27 +204,25 @@
 %      END BLOCK
 %    END CASE
 %  END IF
-
 ^^CO DISPOSE XABORT
-
 %%
 %  COPY '#SCRIPT RFACTOR'
-{S * Test for near convergence of the R factor...
 %  CLEAR
-%  INSERT ' {R   Old R factor = '
-%  STORE FORMAT /(F7.2)/ LENGTH 7 REAL RMIN
-%  INSERT '%. New R factor = '
-%  STORE FORMAT /(F7.2)/ LENGTH 7 REAL R
-%  OUTPUT
-%  CLEAR
+%  INSERT '{RThe old R-factor was'
+%  STORE FORMAT /(F8.3)/ LENGTH 8 REAL RMIN
+%  INSERT '%'
 %%
-%  IF R .GT. RMIN * 1.1 THEN
-{S * The R-factor is worse.
-%  ELSE IF R .GE. RMIN * 0.99 THEN
-{S * The refinement has probably converged.
+%  IF ( RMIN .GT. 0.0 ) THEN
+%   IF R .GT. RMIN * 1.1 THEN
+%    INSERT ', the R-factor is worse.'
+%   ELSE IF R .GE. RMIN * 0.99 THEN
+%    INSERT ', the refinement has probably converged.'
+%   END IF
 %  END IF
+%  OUTPUT
+
 %%
 %  EVALUATE RMIN = R
 %%
 %END SCRIPT
-
+ 

@@ -12,7 +12,6 @@
 %%    Preferred H treatment       (HRTYP)
 %%    Last list 12 written        (L12SER)
 %%
-{S * Checking info stored in L39.
 %  IF EXISTS 39 .GE. 1 THEN
 %   COPY '#GENERALEDIT 39'
 %   COPY 'LOCATE RECORDTYPE = 101'
