@@ -1,0 +1,94 @@
+%SCRIPT XW
+% IF EXISTS 6 .NE. 1 THEN
+  No reflections have been stored.
+  Agreement analysis is not possible.
+% ELSE
+^^WI WINDOW A1 'Agreement analysis' SIZE KEEP MODAL
+^^WI GRID BOSS NROWS=6 NCOLS=3
+^^WI {
+^^WI   @ 2,2 GRID GRAPHS NROWS=3 NCOLS=5
+^^WI   {
+^^WI      @ 1,1 PLOTWINDOW _RWGHT NROWS=20 NCOLS=48
+^^WI      @ 1,3 PLOTWINDOW _RWGH2 NROWS=20 NCOLS=48
+^^WI      @ 1,5 PLOTWINDOW _RWGH3 NROWS=20 NCOLS=48
+^^WI      @ 3,1 PLOTWINDOW _VFO NROWS=20 NCOLS=48
+^^WI      @ 3,3 PLOTWINDOW _VF2 NROWS=20 NCOLS=48
+^^WI      @ 3,5 PLOTWINDOW _VF3 NROWS=20 NCOLS=48
+^^WI   }
+^^WI   @ 4,2 GRID STUFF NROWS=1 NCOLS=3
+^^WI   {
+^^WI    @ 1,1 TEXTOUT atext ' ' NROWS=5 NCOLS=78
+^^WI    @ 1,3 GRID BTNS NROWS=1 NCOLS=3
+^^WI    {
+^^WI      @ 1,1 BUTTON CLOSE '&Close' COMMIT CANCEL DEFAULT
+^^WI      @ 1,3 BUTTON HELP '&Help'
+^^WI    }
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+^^WI SENDTEXTTO atext
+^^CR
+{S * Chebychev weighting with 5 parameters
+{I   Estimated delta(F)**2 as a function of F:
+%          COPY '#LIST 4'
+%          COPY 'SCHEME NUMBER=14, NPARAM=5'
+%          COPY 'END'
+%          COPY '#ANALYSE'
+{I   Agreement analysis:
+%          COPY 'END'
+^^CO RENAME _VFO _VF1
+^^CO RENAME _VF2 _VFO
+^^CO RENAME _RWGHT _RWGH1
+^^CO RENAME _RWGH2 _RWGHT
+{S * Chebychev weighting with 4 parameters
+{I   Estimated delta(F)**2 as a function of F:
+%          COPY '#LIST 4'
+%          COPY 'SCHEME NUMBER=14, NPARAM=4'
+%          COPY 'END'
+%          COPY '#ANALYSE'
+{I   Agreement analysis:
+%          COPY 'END'
+^^CO RENAME _VFO _VF2
+^^CO RENAME _VF3 _VFO
+^^CO RENAME _RWGHT _RWGH2
+^^CO RENAME _RWGH3 _RWGHT
+{S * Chebychev weighting with 3 parameters
+{I   Estimated delta(F)**2 as a function of F:
+%          COPY '#LIST 4'
+%          COPY 'SCHEME NUMBER=14, NPARAM=3'
+%          COPY 'END'
+%          COPY '#ANALYSE'
+{I   Agreement analysis:
+%          COPY 'END'
+^^WI SENDTEXTTO _MAINTEXTOUTPUT
+^^CR
+% LOOP
+%   VERIFY CLOSE HELP
+%   GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%   CASE VALUE
+%     BLOCK  %CLOSE%
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%     END BLOCK
+%     BLOCK  %HELP%
+%        COPY '#SCRIPT XHELP1'
+
+The residual, Fo-Fc, is analysed for systematic trends, which 
+might indicate an incomplete model, or an unsatisfactory 
+weighting scheme. There are more details in the chapter "Structure 
+Factors and Least Squares" in the CRYSTALS manual.
+
+The two graphs provide a comparison between Fo and Fc as a function of 
+the ranges of Fo, and the ranges of sin(theta)/lambda. For a well 
+refined structure with suitable weights, Fo/Fc should be about unity 
+for all Fo ranges and also for all sin(theta)/lambda ranges. A serious 
+imbalance in Fo/Fc may mean the structure is incomplete, or unsuitable 
+data reduction. A systemstic trend in Fo/Fc may mean unsuitable weights 
+are being used. 
+%        COPY '#SCRIPT XHELP2'
+%     END BLOCK
+%   END CASE
+% END LOOP
+^^CO DISPOSE A1
+% END IF
+%END SCRIPT
