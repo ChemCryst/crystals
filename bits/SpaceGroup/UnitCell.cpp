@@ -172,25 +172,34 @@ char* UnitCell::guessCrystalSystem()
     return NULL;
 }
 
+std::ostream& printCrystConst(std::ostream& pStream)
+{
+    int i = 0;
+    char* tText = crystalSystemConst(i);
+    while (tText != NULL)
+    {
+        pStream << i << ": " << tText << "\n";
+        i ++;
+        tText = crystalSystemConst(i);
+    }
+    return pStream;
+}
+
 char* getCrystalSystem()
 {
-    int iSelect = -1;
+    char* iSelect = new char[255];
+    char* tString = NULL;
+    char* tEnd = NULL;
+    
     do
     {
-        std::cout << "0: Triclinic\n" <<
-            "1: MonoclinicA\n" <<
-            "2: MonoclinicB\n" <<
-            "3: MonoclinicC\n" <<
-            "4: Orthorhombic\n" <<
-            "5: Tetragonal\n" <<
-            "6: Trigonal\n" <<
-            "7: Hexagonal\n" <<
-            "8: Cubic\nSelect crystal system:";
+        std::cout << "\n" << printCrystConst << "Select crystal system:";
         std::cin >> iSelect;
-        return crystalSystemConst(iSelect);
+        tString = crystalSystemConst(strtol(iSelect, &tEnd, 10));
     }
-    while (iSelect < 0 && iSelect > 6);
-    return 0;
+    while (iSelect[0] == '\0' || tEnd[0] != '\0' || tString == NULL);
+    delete[] iSelect;
+    return tString;
 }
 
 char* crystalSystemConst(int pIndex)
@@ -219,9 +228,12 @@ char* crystalSystemConst(int pIndex)
             return "Trigonal";
         break;
         case 7:
-            return "Hexagonal";
+            return "Trigonal(Rhom)";
         break;
         case 8:
+            return "Hexagonal";
+        break;
+        case 9:
             return "Cubic";
         break;
     }
