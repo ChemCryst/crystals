@@ -2883,19 +2883,19 @@ C
       GOTO 9900
 9710  CONTINUE
       CALL XERIOM (NCEXTR, IABS(I))
-      WRITE(NCAWU,9711) CLINE(1:ISIZE)
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU, 9711) CLINE(1:ISIZE)
-      WRITE ( CMON, 9711) CLINE(1:ISIZE)
+      WRITE ( CMON, 9711) CLINE(1:ISIZE), CARG
+      WRITE(NCAWU,'(A)') CMON(1)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A)') CMON(1)
       CALL XPRVDU(NCVDU, 1,0)
-9711  FORMAT (' End of file ', A, ' - item not found')
+9711  FORMAT (' End of file ', A, ' - item  "',A,'"  not found')
       GOTO 9900
 9720  CONTINUE
       CALL XERIOM (NCEXTR, IABS(I))
-      WRITE(NCAWU,9721) CLINE(1:ISIZE)
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU, 9721) CLINE(1:ISIZE)
-      WRITE ( CMON, 9721) CLINE(1:ISIZE)
+      WRITE ( CMON, 9721) CLINE(1:ISIZE), CARG
+      WRITE(NCAWU,'(A)') CMON(1)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A)') CMON(1)
       CALL XPRVDU(NCVDU, 1,0)
-9721  FORMAT (' Error in file ', A, ' - item not found')
+9721  FORMAT (' Error in file ', A, ' - item  "',A,'"  not found')
       GOTO 9900
 9730  CONTINUE
       WRITE(NCAWU,9731)
