@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  1999/03/24 17:51:33  dosuser
+C open/append changes
+C
 C Revision 1.7  1999/02/23 19:51:09  dosuser
 C RIC: Changed the Cameron linkage. Allow scripts to be used in Cameron.
 C      Simply: Cameron gets input from KRDREC, which allows SCRIPTS
@@ -372,7 +375,9 @@ C----- FIND SCALE FROM MAXIMUM FO (ITEM 3)
       IF (STORE(IN+3) .LE. ZERO) THEN
       SCALE = 1.0
       ELSE
-      SCALE = 99999.0 / STORE(IN+1)**2
+Cdjw99 Can this be true?
+C      SCALE = 99999.0 / STORE(IN+1)**2
+      SCALE = 99999.0 / STORE(IN+3)**2
       ENDIF
 C
       WRITE(NCFPU1, '(''HKLF  -4'' )')
@@ -384,16 +389,13 @@ C----- LOOP OVER DATA
       I = NINT(STORE(M6))
       J = NINT(STORE(M6+1))
       K = NINT(STORE(M6+2))
-      FS = (STORE(M6+3) * ABS(STORE(M6+3)) ) * SCALE
-      IF (STORE(M6+12) .GT. ZERO) THEN
-            S = 2. * ABS(STORE(M6+3)) * STORE(M6+12) * SCALE
-      ELSE
-            IF (STORE(M6+20) .LE. ZERO) THEN
-                  S = 0.0
-            ELSE
-                  S = ABS(FS) / STORE(M6+20)
-            ENDIF
-      ENDIF
+CDJWMAR99[
+      CALL XSQRF(FS, STORE(M6+3), FABS, S, STORE(M6+12))
+      FS = FS * SCALE
+      S = S * SCALE
+      IF ((S .LE. ZERO) .AND. (STORE(M6+20) .GT. ZERO))
+     1 S = ABS(FS) / STORE(M6+20)
+CDJWMAR99]
       WRITE(NCFPU1, '(3I4, 2F8.1)') I, J, K, FS, S
       GOTO 1840
 1850  CONTINUE
@@ -495,16 +497,13 @@ C----- LOOP OVER DATA
       I = NINT(STORE(M6))
       J = NINT(STORE(M6+1))
       K = NINT(STORE(M6+2))
-      FS =  STORE(M6+3) * SCALE
-      IF (STORE(M6+12) .GT. ZERO) THEN
-            S = STORE(M6+12) * SCALE
-      ELSE
-            IF (STORE(M6+20) .LE. ZERO) THEN
-                  S = 0.0
-            ELSE
-                  S = ABS(FS) / 2. * STORE(M6+20)
-            ENDIF
-      ENDIF
+CDJWMAR99[
+      CALL XSQRF(FS, STORE(M6+3), FABS, S, STORE(M6+12))
+      FS = FS * SCALE
+      S = S * SCALE
+      IF ((S .LE. ZERO) .AND. (STORE(M6+20) .GT. ZERO))
+     1 S = ABS(FS) / STORE(M6+20)
+CDJWMAR99]
       IF (ILINK .EQ. 5) THEN
        IF (KALLOW(IN) .LT. 0) THEN
             JCODE = 1
