@@ -1,4 +1,4 @@
-%SCRIPT SLANT 
+%SCRIPT SLANT
 %%
 % VARIABLE REAL XMIN XMAX YMIN YMAX STEPX STEPY MINX MINY
 % VARIABLE REAL ZSECT MINZ STEPZ RESOL BORDER
@@ -8,15 +8,15 @@
 % VARIABLE LOGICAL SCRIPTEXT
 %%&VAX% EVALUATE VAX = TRUE
 % EVALUATE VAX = FALSE
- This SCRIPT helps with the computation of arbitarily orientated Fourier    
- sections.                                                                  
- The orientation of the section is defined by a 3x3 matrix. The extent      
- of the section is defined in terms of an origin and minimum and maximum    
- limits in the x' and y' directions.                                        
-   If the section lies parallel to a molecular plane, a best plane          
- calculation can be performed to get the necessary matrix and centroid.     
-   If the section lies perpendicular to a principal axis of libration, a    
- TLS calculation can be performed to get the necessary matrix and centroid. 
+ This SCRIPT helps with the computation of arbitarily orientated Fourier
+ sections.
+ The orientation of the section is defined by a 3x3 matrix. The extent
+ of the section is defined in terms of an origin and minimum and maximum
+ limits in the x' and y' directions.
+   If the section lies parallel to a molecular plane, a best plane
+ calculation can be performed to get the necessary matrix and centroid.
+   If the section lies perpendicular to a principal axis of libration, a
+ TLS calculation can be performed to get the necessary matrix and centroid.
 % BLOCK
 %   ON ERROR REPEAT
 %   VERIFY YES NO
@@ -154,13 +154,13 @@
 %    INSERT 'DOWN '
 %    STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINX
 %    STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPX
-%    INSERT ' 0.25'
+%    STORE FORMAT /(F7.2)/ LENGTH 7 REAL resol
 %    QUEUE SEND
 %    CLEAR
 %    INSERT 'ACROSS '
 %    STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINY
 %    STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPY
-%    INSERT ' 0.25'
+%    STORE FORMAT /(F7.2)/ LENGTH 7 REAL resol
 %    QUEUE SEND
 %    CLEAR
 %    INSERT 'SECTION '
