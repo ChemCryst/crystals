@@ -1,3 +1,4 @@
+#if !defined (__CR_WIN__)
 
 #include "crystalsinterface.h"
 #include "crystals.h"
@@ -12,3 +13,5 @@ void * CcThread::Entry()
       CrystalsThreadProc( nil );
       return nil;
 }
+
+#endif

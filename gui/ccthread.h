@@ -1,3 +1,5 @@
+#if !defined(__CR_WIN__)
+
 #ifndef __CcThread_h_
 #define __CcThread_h_
 
@@ -8,4 +10,6 @@ class CcThread : public wxThread
       public:
          virtual void * Entry();
 };
+#endif
+
 #endif
