@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   26.1.2001 17:10 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2003/09/11 13:18:17  rich
+//   If toolbar buttons fail to initialise delete containers.
+//
 //   Revision 1.4  2003/05/07 12:18:57  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -146,6 +149,7 @@ CcParse CrToolBar::ParseInput( CcTokenList * tokenList )
         if ( !((CxToolBar*)ptr_to_cxObject)->AddTool( newTool ) )
         {
            //Remove tool
+           LOGSTAT("Failed to create toolbar item: " + newTool->tName);
            (CcController::theController)->RemoveTool(newTool);
            if ( m_ToolList.FindItem( (void*) newTool ) ) m_ToolList.RemoveItem();
            delete newTool;
@@ -174,7 +178,6 @@ CcParse CrToolBar::ParseInput( CcTokenList * tokenList )
         tokenList->GetToken();                 // Remove that token!
         CcString item = tokenList->GetToken(); // Get Item Name.
         CcTool* nt = (CcController::theController)->FindTool(item);
-        if ( !nt ) break;
 
         bool moreTokens = true;
         while ( moreTokens )
@@ -186,7 +189,7 @@ CcParse CrToolBar::ParseInput( CcTokenList * tokenList )
                 tokenList->GetToken(); // Remove that token!
                 bool on = (tokenList->GetDescriptor(kLogicalClass) == kTOn) ? true : false;
                 tokenList->GetToken(); // Remove that token!
-                ((CxToolBar*)ptr_to_cxObject)->CheckTool(on,nt->CxID);
+                if ( nt ) ((CxToolBar*)ptr_to_cxObject)->CheckTool(on,nt->CxID);
                 break;
             }
             default:
