@@ -1,0 +1,51 @@
+%SCRIPT XUSE
+%  VARIABLE CHARACTER CNULL FILENAME
+^^WI WINDOW XUSE 'Use a CRYSTALS command file' MODAL
+^^WI COMMIT='XU_BOK' CANCEL='XU_BXX'
+^^WI GRID MAIN NROWS=3 NCOLS=5
+^^WI {
+^^WI   @ 2,2 GRID LEFT NROWS=3 NCOLS=1
+^^WI   {
+^^WI    @ 1,1 STATIC T1 'Please enter the name of the file to use.'
+^^WI    @ 3,1 EDITBOX XU_E1 '' CHARS=50
+^^WI   }
+^^WI   @ 2,4 GRID RIGHT NROWS=5 NCOLS=1
+^^WI   {
+^^WI    @ 1,1 BUTTON XU_BOK '&Ok' DEFAULT COMMIT
+^^WI    @ 3,1 BUTTON XU_BXX '&Cancel'
+^^WI    @ 5,1 BUTTON XU_BRW '&Browse'
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+^^CO FOCUS XU_E1
+%%%% Processing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LOOP
+%  VERIFY XU_BOK XU_BXX XU_BRW 
+%  GET SILENT NOSTORE FINAL ABBREVIATED 'Option:' 'XU_BXX'
+%  CASE VALUE
+%    BLOCK              %OK%
+^^??    XU_E1 TEXT
+%       GET SILENT NOSTORE KEYWORD 'Get E1 filename:'
+%       IF CVALUE .NE. CNULL THEN
+%         EVALUATE LOOPEND = LOOPCOUNTER
+%         EVALUATE FILENAME = CVALUE
+%       END IF
+%    END BLOCK
+%    BLOCK             %CANCEL%
+^^CO      DISPOSE XUSE
+%         FINISH
+%    END BLOCK
+%    BLOCK             %BROWSE%
+^^CO SYSOPENFILE '*.*' 'File of crystals commands'
+%      GET SILENT KEYWORD 'New filename:'
+%      IF CVALUE .NE. 'CANCEL' THEN
+%         EVALUATE LOOPEND = LOOPCOUNTER
+%         EVALUATE FILENAME = CVALUE
+%      END IF
+%    END BLOCK
+%  END CASE
+% END LOOP
+^^CO DISPOSE XUSE
+% TRANSFER '#USE ' // FILENAME TO CRYSTALS
+%END SCRIPT
