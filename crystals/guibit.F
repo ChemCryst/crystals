@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.45  2002/06/28 10:10:22  richard
+C Minor gui update enabling display of special shapes: ring and sphere.
+C
 C Revision 1.44  2002/06/07 15:20:55  richard
 C If sigma cutoff is <= -10, display 'none' in refinement tab.
 C
@@ -497,15 +500,14 @@ C Wait for disk buffers to be allocated, before loading lists.
       IF ( IULN .GE. 0 ) THEN
         CALL XRSL
         CALL XCSAE
+C -- CLEAR ERROR FLAG
+        IERFLG = 1
       END IF
 
 c      WRITE(CMON,'(a)')' XGUIUP: ENTRY.'
 c      CALL XPRVDU (NCVDU,1,0)
 
 C
-C -- CLEAR ERROR FLAG
-C
-      IERFLG = 1
 
 
 
@@ -588,6 +590,14 @@ C Ensure list 41 dependencies are up to date:
 
             CALL XRLIND(5, L05SR, NFW, LL, IOW, NOS, ID)
             CALL XRLIND(41,L41SR, NFW, LL, IOW, NOS, ID)
+
+            IF ( IULN .LT. 0 ) THEN
+              IF ( ISERnn(5) .EQ. -1) THEN
+                L05SR = -2
+              ELSE
+                L05SR = -1
+              END IF
+            END IF
 
 C If the current list is is the same as one sent before then
 C don't update the GUI.
