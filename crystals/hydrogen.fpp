@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2003/08/18 12:26:00  rich
+C Filter list of distances returned by KDIST1 to prevent 2nd and 3rd atom
+C being on the same site when it is a special position. Still to be done:
+C set occupancies of H's when this occurs.
+C
 C Revision 1.20  2003/08/05 11:11:11  rich
 C Commented out unused routines - saves 50Kb off the executable.
 C
@@ -778,7 +783,8 @@ C----- OPEN A FILE FOR THE RIDING RESTRAINTS
       CALL XRDOPN (6,JFRN(1),CPATH(1:LPATH)//'RIDEH.DAT',LPATH+9)
       IF (JACT.LE.2) THEN
          CSRQ=' '
-         WRITE (CSRQ,'(A10)') '#HYDROGENS'
+         WRITE (CSRQ,'(A10,1X,I2,1X,I2)') '#HYDROGENS',
+     1    KTYP05(MX),KTYP05(MY)
          CALL XISRC (CSRQ)
          CSRQ=' '
          WRITE (CSRQ,'(A5,F6.3)') 'DIST ',SX
@@ -788,7 +794,8 @@ C----- OPEN A FILE FOR THE RIDING RESTRAINTS
          CALL XISRC (CSRQ)
       END IF
       IF (JACT.GE.2) THEN
-         WRITE (NCFPU2,'(A10)') '#HYDROGENS'
+         WRITE (NCFPU2,'(A10,1X,I2,1X,I2)') '#HYDROGENS',
+     1    KTYP05(MX),KTYP05(MY)
          WRITE (NCFPU2,'(A5,F6.3)') 'DIST ',SX
          WRITE (NCFPU2,'(A7, A4, F6.3)') 'U[ISO] ',JNEXT,UFACT
       END IF
@@ -847,13 +854,13 @@ C-------- CHECK FOR ERRORS AND ISOLATED ATOMS
 C TODO: Check for bonding to more than one non-zero part. If this happens,
 C each part should be treated independently.
 
-      WRITE(CMON,'(A,I4,1X,A4,I4)')'Bonds found: ',NDIST,
-     1   ISTORE(M5A),NINT(STORE(M5A+1))
-      DO MMMI=JE,JE+JT*(NDIST-1),JT
-         WRITE(CMON,'(A,A4,I4)')'Found bond to:',
-     1   ISTORE(ISTORE(MMMI)),NINT(STORE(ISTORE(MMMI)+1))
-         CALL XPRVDU(NCVDU,1,0)
-      END DO
+c      WRITE(CMON,'(A,I4,1X,A4,I4)')'Bonds found: ',NDIST,
+c     1   ISTORE(M5A),NINT(STORE(M5A+1))
+c      DO MMMI=JE,JE+JT*(NDIST-1),JT
+c         WRITE(CMON,'(A,A4,I4)')'Found bond to:',
+c     1   ISTORE(ISTORE(MMMI)),NINT(STORE(ISTORE(MMMI)+1))
+c         CALL XPRVDU(NCVDU,1,0)
+c      END DO
 
 
       IF (NDIST .GE. 2) THEN   !If there are more than two atoms found:
@@ -888,14 +895,14 @@ C SHUFFLE ITEMS UP IF ADDRESSES DIFFERENT
 
       ENDIF
 
-      WRITE(CMON,'(A,I4,1X,A4,I4)')'Filtered bonds found: ',NDIST,
-     1   ISTORE(M5A),NINT(STORE(M5A+1))
-      CALL XPRVDU(NCVDU,1,0)
-      DO MMMI=JE,JE+JT*(NDIST-1),JT
-         WRITE(CMON,'(A,A4,I4)')'Found bond to:',
-     1   ISTORE(ISTORE(MMMI)),NINT(STORE(ISTORE(MMMI)+1))
-         CALL XPRVDU(NCVDU,1,0)
-      END DO
+c      WRITE(CMON,'(A,I4,1X,A4,I4)')'Filtered bonds found: ',NDIST,
+c     1   ISTORE(M5A),NINT(STORE(M5A+1))
+c      CALL XPRVDU(NCVDU,1,0)
+c      DO MMMI=JE,JE+JT*(NDIST-1),JT
+c         WRITE(CMON,'(A,A4,I4)')'Found bond to:',
+c     1   ISTORE(ISTORE(MMMI)),NINT(STORE(ISTORE(MMMI)+1))
+c         CALL XPRVDU(NCVDU,1,0)
+c      END DO
 
 
 C
