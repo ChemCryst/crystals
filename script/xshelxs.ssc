@@ -75,7 +75,7 @@
 %      IF ( IRUN .EQ. 2 ) THEN
 %           FINISH
 %      END IF
-%      COPY '#SPAWN  COMMAND.COM /c CRYSDIR:SHELXS.EXE >shelxs.lis'
+%      COPY '#SPAWN + COMMAND.COM /c CRYSDIR:SHELXS.EXE >shelxs.lis'
 %      COPY '#TYPE SHELXS.LIS'
 %   END BLOCK
 %   BLOCK
