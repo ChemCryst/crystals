@@ -370,6 +370,16 @@ Boolean	CrWindow::ParseInput( CcTokenList * tokenList )
 			break;
 		}
 
+            case kTTextSelector:
+            {
+			tokenList->GetToken();
+                  LOGSTAT("Changing title of window.");
+			retVal = true;
+                  mText = tokenList->GetToken();
+                  SetText( mText );
+                  break;
+            }
+
 		
 		default:
 		{
