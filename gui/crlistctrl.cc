@@ -9,6 +9,10 @@
 //   Authors:   Richard Cooper
 //   Created:   10.11.1998 16:36
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2003/08/01 16:18:16  rich
+//   Add script access to a command to sort list controls by any
+//   column in ascending or descending order.
+//
 //   Revision 1.9  2003/05/07 12:18:57  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -280,7 +284,7 @@ void CrListCtrl::GetValue(CcTokenList * tokenList)
         {
             SendCommand( "ERROR",true );
             CcString error = tokenList->GetToken();
-            LOGWARN( "CrEditCtrl:GetValue Error unrecognised token." + error);
+            LOGWARN( "CrListCtrl:GetValue Error unrecognised token." + error);
             break;
         }
     }
