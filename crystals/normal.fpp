@@ -639,7 +639,7 @@ C TOP FRAME
       IF ( IPLOTW .EQ. 1 ) THEN
         WRITE(CMON,'(A,5(/A))')
      1  '^^PL PLOTDATA _WILSON SCATTER ATTACH _VWILSON KEY',
-     1  '^^PL XAXIS TITLE LN(F(OBS)**2/SUM(FSQ))',
+     1  '^^PL XAXIS TITLE "ln(<F(obs)**2>rho/<SUM(f**2)>rho)"',
      1  '^^PL NSERIES=3 LENGTH=50 YAXIS TITLE Rho',
      1  '^^PL SERIES 1 SERIESNAME ''Straight Line'' TYPE LINE',
      1  '^^PL SERIES 2 SERIESNAME ''Wilson''',
