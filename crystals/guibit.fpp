@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.57  2003/03/10 13:35:28  rich
+C Output wavelength and radiation type.
+C
 C Revision 1.56  2003/03/06 15:13:28  rich
 C Output twin laws to the information tab. It would be nice to get the twin
 C scales in here too.
@@ -523,6 +526,7 @@ c         loaded by the calling routine.
       CHARACTER*8 CINST(6)
       INTEGER IUNKN
       CHARACTER*8 CRADTN(2)
+      CHARACTER*11 CBONDS(9)
 
 
       DIMENSION LST(15)
@@ -538,8 +542,10 @@ c         loaded by the calling routine.
       DATA    CINST /'Unknown','CAD4','Mach3','KappaCCD','Dip','Smart'/
       DATA    IUNKN /'UNKN'/
       DATA CRADTN / 'X-rays' , 'neutrons' /
+      DATA CBONDS / 'single',    'double',      'triple',  'quadruple',
+     1  'aromatic', 'polymeric', 'delocalised', 'strange', 'pi-bond'/
 
-C
+
 C The QSINl5 flag is set here, if there are Q atoms in list 5.
 C It is used by the menu update routine.
 C
@@ -1139,8 +1145,8 @@ c               CALL XPRVDU(NCVDU, 2,0)
                ISTR11(KNF11) = IA1
                ISTR11(KNF11+1) = IA2
 
-               WRITE(CMON(1),'(3A,F6.3)')CLAB(1:LLAB),'-',
-     1                                  CLAB2(1:LLAB2), STORE(M41B+13)
+               WRITE(CMON(1),'(3A,F6.3,1X,A)')CLAB(1:LLAB),'-',
+     1         CLAB2(1:LLAB2), STORE(M41B+13), CBONDS(ISTORE(M41B+12))
                CALL XCTRIM( CMON(1), LTMN )
 
                IF ( ISSYM .EQ. 0 ) THEN   !Normal bond
