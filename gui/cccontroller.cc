@@ -10,6 +10,11 @@
 //   Modified:  30.3.1998 12:23 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.22  2001/01/18 12:15:56  richard
+// Fix command history. Caret only goes to end for AddText calls to
+// EDITBOX, stays at begining for SetText calls.
+// Command history no longer records empty lines (hooray).
+//
 // Revision 1.21  2001/01/16 15:34:54  richard
 // wxWindows support.
 // Revamped some of CxTextout, Cr/Cx Menu and MenuBar. These changes must be
@@ -179,6 +184,7 @@ static wxMutex mCrystalsThreadIsLocked;
 
 
 CcController* CcController::theController = nil;
+int CcController::debugIndent = 0;
 //DWORD CcController::threadID = 0L;
 
 extern "C" {
@@ -224,12 +230,10 @@ CcController::CcController( CxApp * appContext )
     mWindowTokenList = new CcTokenList(); //Tokens for defining or changing windows.
 
 
-    mQuickData = new CcQuickData();  //An object to hold large blocks of information that is quicker to pass directly from the FORTRAN rather than through the TokenList processing channels.
-
 // Initialize the static pointers in classes for accessing this controller object.
     CrGUIElement::mControllerPtr = this;
     CcController::theController = this;
-
+    CcController::debugIndent = 0;
 
 // Win32 specific: Set up MUTEXES for synchronising threads.
 // ie. Only one thread at a time can access the command and interface queues to prevent corruption.
@@ -267,7 +271,6 @@ CcController::~CcController()       //The destructor. Delete all the heap object
     delete mQuickTokenList;
     delete mModelTokenList;
     delete mStatusTokenList;
-    delete mQuickData;
 
     mModelDocList.Reset();
     CcModelDoc* theItem ;
@@ -610,7 +613,7 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
                 SendCommand(result);
                 break;
             }
-                  case kTSysRestart: //Crystals has closed down, restart in specified directory.
+            case kTSysRestart: //Crystals has closed down, restart in specified directory.
             {
                 tokenList->GetToken();    // remove that token
                         m_newdir = tokenList->GetToken();
@@ -1094,8 +1097,7 @@ void  CcController::AddInterfaceCommand( CcString line )
 #ifdef __CR_WIN__
     ReleaseMutex( mInterfaceCommandQueueMutex );
 #endif
-      LOGSTAT("!!!Crystals thread: CcController:AddInterfaceCommand: Adding: " + line );
-
+      LOGSTAT("CRYSTALS puts: " + line );
 
       for ( int j = 1; j < min ( line.Length()-3, 6 ); j++ )
       {
@@ -1223,7 +1225,7 @@ Boolean CcController::GetInterfaceCommand( char * line )
         else
         {
                 CcString temp = CcString(line);
-                LOGSTAT("CcController:GetInterfaceCommand Getting this command: "+temp);
+                LOGSTAT("GUI gets: "+temp);
 #ifdef __CR_WIN__
                 ReleaseMutex( mInterfaceCommandQueueMutex );
 #endif
@@ -1307,6 +1309,11 @@ void    CcController::LogError( CcString errString , int level )
     {
         errString = "XXXX Error: " + errString;
     }
+    for ( int i = 0; i < CcController::debugIndent; i++)
+    {
+      fprintf( mErrorLog, "  ");
+    }
+
     fprintf( mErrorLog, "%s\n", errString.ToCString() );
     fflush( mErrorLog );
 

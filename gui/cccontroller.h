@@ -55,13 +55,13 @@ class	CcController
 
 		CcChartDoc* mCurrentChartDoc;
 		CcModelDoc* mCurrentModelDoc;
-		CcQuickData* mQuickData;
 		Boolean mThisThreadisDead;
             Boolean m_Completing;
 
 		CcStatus status;
 
 		static CcController* theController;
+                static int debugIndent;
 //            static DWORD threadID;
 		void FocusToInput(char theChar);
 		CrGUIElement* FindObject( CcString Name );
@@ -146,7 +146,7 @@ class	CcController
 #define kSSysSaveFile	   "SYSSAVEFILE"
 #define kSSysGetDir        "SYSGETDIR"
 #define kSSysRestart       "RESTART"
-#define kSRestartFile      "FILE"
+#define kSRestartFile      "NEWFILE"
 #define	kSRedirectText	   "SENDTEXTTO"
 #define	kSRedirectProgress "SENDPROGRESSTO"
 #define kSRedirectInput    "GETINPUTFROM"
