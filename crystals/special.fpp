@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.5  2002/02/13 15:32:20  Administrator
+C Reduce calls to SPECIAL in multicycle SFLS, enable shift reversal monitoring, and fix Lachlans shift bounding
+C
 C Revision 1.4  2001/02/26 10:36:09  richard
 C Added changelog to top of file
 C
@@ -757,35 +760,40 @@ C
 \QSTORE
 C
       NUPDAT = 0
-       KSPGET = 1
+      KSPGET = 1
 C------ GOMMS METHOD
       CALL XMOVE (STORE(M5+4), X(1), 9)
+
+CRIC02: Protect the Uiso value. KSPECA thinks it's an odd Uij.
+      IF (STORE(M5+3) .EQ. 1.0) UISTMP = STORE(M5+7)
+
       IGSTAT = KSPECA (X, XO, KEY, COEF, MGM)
-C
-210     CONTINUE
-C
+
+CRIC02: Protect the Uiso value. KSPECA thinks it's an odd Uij.
+      IF (STORE(M5+3) .EQ. 1.0) XO(4) = UISTMP
+
 C----- INSERT OCCUPATION NUMBER, AND SET UPDATED COUNTER
 c      IF (IGSTAT .LE. 0 ) THEN
-        MUPDAT = 0
-        A  = 1./ FLOAT(MGM)
-        IF (ABS( A - STORE(M5+13)) .GE. ZERO ) THEN
-          MUPDAT = 1
+      MUPDAT = 0
+      A  = 1./ FLOAT(MGM)
+      IF (ABS( A - STORE(M5+13)) .GE. ZERO ) THEN
+         MUPDAT = 1
           STORE(M5+13) = A
-        ENDIF
+      ENDIF
 C-C-C-JUMP OVER SPECIAL-CHECK FOR NON-ANISOTROPIC ATOMS
 C-C-C-SHOULD WE LEAVE THE CHECK FOR ISOTROPICS ???
 C-C-C-DISTINCTION BETWEEN ANISOTROPIC ATOMS AND OTHERS
-        IF (STORE(M5+3) .EQ. 0.0) THEN
+      IF (STORE(M5+3) .EQ. 0.0) THEN
          KK=9
-        ELSE
+      ELSE
          KK=3
          DO 220, K=4,9
-         KEY(K)=K
+           KEY(K)=K
 220      CONTINUE
-        ENDIF
+      ENDIF
 C------ RESET COUNTER IF UPDATING OF LIST 5 NOT REQUIRED
-        IF (IUPDAT .LT. 0) MUPDAT = 0
-        IF (IUPDAT .GE. 1) THEN
+      IF (IUPDAT .LT. 0) MUPDAT = 0
+      IF (IUPDAT .GE. 1) THEN
 C          DO 545, K =1,9
 C-C-C-FLEXIBILISATION OF SPECIAL-CHECK CORRESPONDING TO ATOM-TYPE
           DO 545, K =1,KK
@@ -796,11 +804,12 @@ C-C-C-FLEXIBILISATION OF SPECIAL-CHECK CORRESPONDING TO ATOM-TYPE
             ENDIF
 545       CONTINUE
 546       CONTINUE
-        ENDIF
+      ENDIF
       IF (MUPDAT .GT. 0 ) NUPDAT =NUPDAT + 1
       KSPGET = IGSTAT
       RETURN
       END
+
 CODE FOR XL17H
       SUBROUTINE XL17H (IADSRQ, NSRQ)
 C---- WRITE A LIST 17 HEADER
