@@ -1,125 +1,227 @@
 %SCRIPT MOGULRES
 %     VARIABLE REAL ZMAX ZSUM ZNUM ZTOT ZAVE
 %     VARIABLE REAL IDEAL ACTUAL DEV Z
+%     VARIABLE INTEGER ZB1 ZB2 ZB3 ZB4 ZB5 ZB6 ZB7 ZB8 ZB9 ZB10
 %     VARIABLE INTEGER NIN NFOM MAT1 MAT2 MAT3 MAT4 NUMOBS ZMISS
+%     VARIABLE INTEGER NOHIT NERROR
 %     VARIABLE CHARACTER CAT1 CAT2 CAT3 CAT4 RSVAL RSESD CLINE1
 %     EVALUATE ZMAX = 0.0
 %     EVALUATE ZSUM = 0.0
 %     EVALUATE ZTOT = 0.0
 %     EVALUATE ZNUM = 0.0
+%     EVALUATE NOHIT = 0
+%     EVALUATE NERROR = 0
 %     COPY '#RELEASE PUNCH bfile.pch'
 %     COPY '#CLOSE SCPDATA'
 %     COPY '#OPEN SCPDATA mogul.stat'
-^^WI WINDOW MOGUL2 'Mogul Results' MODAL
+^^WI WINDOW MOGUL2 'Mogul Results' MODAL COMMIT='MR_BXX' CANCEL='MR_BXX'
 ^^WI POSITION=CENTRED '_MAINTEXTOUTPUT'
-^^WI GRID M NROWS=6 NCOLS=3 {
-^^WI  @ 4,2 GRID G NROWS=3 NCOLS=3 {
-^^WI     @ 2,1 GRID GA NROWS=3 NCOLS=1 {
-^^WI        @ 1,1 STATIC RT_T4 'Figures of merit (zero is best)'
-^^WI        @ 3,1 LISTBOX RT_RES VISLINES=9 INFORM=YES
+^^WI GRID MGM NROWS=5 NCOLS=5
+^^WI {
+^^WI   @ 4,4 GRID MGC NROWS=1 NCOLS=2
+^^WI   {
+^^WI     @ 1,1 STRETCH B HORIZONTAL
+^^WI     @ 1,2 BUTTON MR_BXX 'Cancel' CANCEL COMMIT DEFAULT
+^^WI   }
+^^WI   @ 2,2 GRID LOG NROWS=1 NCOLS=1
+^^WI   {
+^^WI      @ 1,1 BITMAP LOGO TRANS FILE 'ccdclogo.bmp'
+^^WI   }
+^^WI   @ 2,4 TABCTRL MOGULTABS
+^^WI   {
+^^WI     TAB MGTAB1 'Results' GRID MGG1 NROWS=3 NCOLS=3
+^^WI     {
+^^WI       @ 2,2 GRID M NROWS=9 NCOLS=3
+^^WI       {
+^^WI         @ 2,2 GRID G NROWS=2 NCOLS=1
+^^WI         {
+^^WI           @ 1,1 STATIC RT_T4 'Figures of merit: zero is best agreement.'
+^^WI           @ 2,1 STATIC RT_T5 
+^^WI 'If +ve structure > Mogul median, if -ve structure < Mogul median'
+^^WI         }
+^^WI         @ 4,2 GRID L NROWS=1 NCOLS=3
+^^WI         {
+^^WI           @ 1,1 LISTBOX MR_RES VISLINES=9 INFORM=YES
 ^^WI              ADDTOLIST
 {I About to get all the FOM's
-%     EXTRACT REWIND
-%     LOOP
-%       ON ERROR TERMINATE
-%       ON END TERMINATE
-%%  Get the atom names
-%       EXTRACT NEXT
-%       EXTRACT TRANSFER INPUT
-%       CLEAR
-%       VERIFY DIST ANGLE TORSION
-%       GET SILENT NOSTORE ABBREVIATED ' '
-%       EVALUATE NIN = VALUE
-%       GET SILENT NOSTORE INTEGER ' '
-%       LOOP NIN TIMES
-%         GET SILENT NOSTORE INTEGER ' '
-%       END LOOP
-%       GET SILENT NOSTORE REAL ' '
-%       EVALUATE ACTUAL = VALUE
-%       INSERT !^^WI '!
-%       GET SILENT TEXT ' ' ' '
-%%  Work out the Z-score
-%       EXTRACT NEXT
-%       EXTRACT TRANSFER INPUT
-%       GET SILENT NOSTORE INTEGER ' '
-%       EVALUATE NUMOBS = VALUE
-%       GET SILENT NOSTORE REAL ' '
-%       EVALUATE IDEAL = VALUE
-%       GET SILENT NOSTORE REAL ' '
-%       EVALUATE DEV = VALUE
-%       IF ( DEV .LT. 0.000001 ) THEN
-%         EVALUATE DEV = 0.000001
-%       END IF
-%       EVALUATE Z = ( IDEAL - ACTUAL ) / DEV
-%       IF Z .GT. 100.0 THEN
-%         INSERT '>100.0'
-%       ELSE IF Z .LT. - 100.0 THEN
-%         INSERT '>-100.0'
-%       ELSE
-%         TRANSFER CHARACTER ( Z ) TO BUFFER
-%       END IF
-%       INSERT !'!
-%       OUTPUT
-%       EVALUATE ZTOT = ZTOT + 1.0
-%       IF NUMOBS .GE. 4 THEN
+%                 EXTRACT REWIND
+%                 LOOP
+%                   ON ERROR TERMINATE
+%                   ON END TERMINATE
 %%
-%          IF Z .GT. 0.0 THEN
-%            EVALUATE ZSUM = ZSUM + Z
-%          ELSE
-%            EVALUATE ZSUM = ZSUM - Z
-%          END IF
+%% Extract the original query line:
 %%
-%          EVALUATE ZNUM = ZNUM + 1.0
+%                   EXTRACT NEXT
+%                   EXTRACT TRANSFER INPUT
+%                   CLEAR
+%                   VERIFY DIST ANGLE TORSION
+%                   GET SILENT NOSTORE ABBREVIATED ' '
+%                   EVALUATE NIN = VALUE
+%% Read the atom numbers:
+%                   GET SILENT NOSTORE INTEGER ' '
+%                   LOOP NIN TIMES
+%                     GET SILENT NOSTORE INTEGER ' '
+%                   END LOOP
+%% Read the #:
+%                   GET SILENT NOSTORE KEYWORD ' '
+%% Read the actual value:
+%                   GET SILENT NOSTORE REAL ' '
+%                   EVALUATE ACTUAL = VALUE
+%% Read the atoms:
+%                   INSERT !^^WI '!
+%                   GET SILENT TEXT ' ' ' '
 %%
-%          IF Z .GT. ZMAX THEN
-%             EVALUATE ZMAX = Z
-%          END IF
-%          IF ( - Z ) .GT. ZMAX THEN
-%             EVALUATE ZMAX = - Z
-%          END IF
+%% Extract the results line:
 %%
-%       END IF
-%     END LOOP
+%                   EXTRACT NEXT
+%                   EXTRACT TRANSFER INPUT
+%% See what it holds:
+%                   VERIFY NOHITS ERROR STATS
+%                   GET SILENT NOSTORE ABBREVIATED ' '
+%                   CASE VALUE
+%                    BLOCK    %NOHITS%
+%                      EVALUATE NOHIT = NOHIT + 1
+%                      INSERT 'No hits'
+%% Read the reason:
+%                    END BLOCK
+%                    BLOCK    %ERROR%
+%                      EVALUATE NERROR = NERROR + 1
+%                      INSERT 'Error'
+%% Read the error code:
+%% Read the reason:
+%                    END BLOCK
+%                    BLOCK    %STATS%
+%% Work out the Z-score:
+%                     GET SILENT NOSTORE INTEGER ' '
+%                     EVALUATE NUMOBS = VALUE
+%% Ignore, for now, the mean, min and max:
+%                     GET SILENT NOSTORE REAL ' '
+%                     GET SILENT NOSTORE REAL ' '
+%                     GET SILENT NOSTORE REAL ' '
+%% Read the median:
+%                     GET SILENT NOSTORE REAL ' '
+%                     EVALUATE IDEAL = VALUE
+%                     GET SILENT NOSTORE REAL ' '
+%                     EVALUATE DEV = VALUE
+%                     IF ( DEV .LT. 0.000001 ) THEN
+%                       EVALUATE DEV = 0.000001
+%                     END IF
+%                     EVALUATE Z = ( ACTUAL - IDEAL ) / DEV
+%                     IF Z .GT. 100.0 THEN
+%                       INSERT '>100.0'
+%                     ELSE IF Z .LT. - 100.0 THEN
+%                       INSERT '>-100.0'
+%                     ELSE
+%                       TRANSFER CHARACTER ( Z ) TO BUFFER
+%                     END IF
+%                     EVALUATE ZTOT = ZTOT + 1.0
+%                     IF NUMOBS .GE. 4 THEN
+%%
+%                       IF Z .GT. 0.0 THEN
+%                        EVALUATE ZSUM = ZSUM + Z
+%                       ELSE
+%                        EVALUATE ZSUM = ZSUM - Z
+%                       END IF
+%%
+%                       EVALUATE ZNUM = ZNUM + 1.0
+%%
+%                       IF Z .GT. ZMAX THEN
+%                         EVALUATE ZMAX = Z
+%                       END IF
+%                       IF ( - Z ) .GT. ZMAX THEN
+%                          EVALUATE ZMAX = - Z
+%                       END IF
+%%
+%                      END IF
+%                    END BLOCK
+%                   END CASE
+%                   INSERT !'!
+%                   OUTPUT
+%                 END LOOP
 ^^WI              'NULL'
+^^WI           @ 1,3 GRID GB NROWS=2 NCOLS=1
+^^WI           {
+^^WI             @ 1,1 STATIC MR_TYPE 'Angle X(000) X(000) X(000)'
+^^WI             @ 2,1 GRID GBB NROWS=12 NCOLS=3
+^^WI             {
+^^WI               @ 1,1 STATIC RT_T3 'Actual:'
+^^WI               @ 1,3 STATIC MR_ACTU '0000.0000'
+^^WI               @ 3,1 STATIC RT_T3 'Num. hits:'
+^^WI               @ 3,3 STATIC MR_NUMO '000000'
+^^WI               @ 4,1 STATIC RT_T3 'Median:'
+^^WI               @ 4,3 STATIC MR_MEDIAN '0000.0000'
+^^WI               @ 5,1 STATIC RT_T3 'Mean:'
+^^WI               @ 5,3 STATIC MR_MEAN '0000.0000'
+^^WI               @ 6,1 STATIC RT_T3 'Std deviation:'
+^^WI               @ 6,3 STATIC MR_SIGM '0000.0000'
+^^WI               @ 8,1 STATIC RT_T3 'Min:'
+^^WI               @ 8,3 STATIC MR_MINO '0000.0000'
+^^WI               @ 9,1 STATIC RT_T3 'Max:'
+^^WI               @ 9,3 STATIC MR_MAXO '0000.0000'
+^^WI               @ 10,1 STATIC RT_T3 'Upper quartile:'
+^^WI               @ 10,3 STATIC MR_UPPERQ '0000.0000'
+^^WI               @ 11,1 STATIC RT_T3 'Lower quartile:'
+^^WI               @ 11,3 STATIC MR_LOWERQ '0000.0000'
+^^WI               @ 12,1 STATIC RT_T3 'Z-score:'
+^^WI               @ 12,3 STATIC MR_ZSCO '0000.0000'
+^^WI             }
+^^WI           }
+^^WI         }
+^^WI         @ 6,2 GRID B NROWS=1 NCOLS=6
+^^WI         {
+^^WI           @ 1,1 STRETCH RT_STR2 HORIZONTAL
+^^WI           @ 1,2 BUTTON MR_BOK '&Examine in Mogul'
+^^WI           @ 1,4 BUTTON MR_BRR '&Restrain'
+^^WI         }
+^^WI         @ 8,2 GRID C NROWS=1 NCOLS=1
+^^WI         {
+^^WI           @ 1,1 BUTTON MR_BOK '&Restrain Everything'
+^^WI         }
+^^WI       }
 ^^WI     }
-^^WI     @ 2,3 GRID GB NROWS=5 NCOLS=1 {
-^^WI        @ 1,1 GRID GBA NROWS=14 NCOLS=3 {
-^^WI           @ 1,1 STATIC RT_T3 'Fragment:'
-^^WI           @ 1,3 STATIC MR_TYPE 'none yet'
-^^WI           @ 2,1 STATIC RT_T3 'Actual:'
-^^WI           @ 2,3 STATIC MR_ACTU '0000.0000'
-^^WI           @ 4,1 STATIC RT_T3 'Num obs:'
-^^WI           @ 4,3 STATIC MR_NUMO '000000'
-^^WI           @ 5,1 STATIC RT_T3 'Median:'
-^^WI           @ 5,3 STATIC MR_IDEA '0000.0000'
-^^WI           @ 6,1 STATIC RT_T3 'Min:'
-^^WI           @ 6,3 STATIC MR_MINO '0000.0000'
-^^WI           @ 7,1 STATIC RT_T3 'Max:'
-^^WI           @ 7,3 STATIC MR_MAXO '0000.0000'
-^^WI           @ 8,1 STATIC RT_T3 'Deviation:'
-^^WI           @ 8,3 STATIC MR_SIGM '0000.0000'
-^^WI           @ 9,1 STATIC RT_T3 'Z-score:'
-^^WI           @ 9,3 STATIC MR_ZSCO '0000.0000'
-^^WI           @ 11,1 STATIC RT_T3 'Mean Z:'
-^^WI           @ 11,3 STATIC MR_ZAVE '0000.0000'
-^^WI           @ 12,1 STATIC RT_T3 'Max Z:'
-^^WI           @ 12,3 STATIC MR_ZMAX '0000.0000'
-^^WI           @ 13,1 STATIC RT_T3 '< 4 obs:'
-^^WI           @ 13,3 STATIC MR_ZMIS '0000.0000'
-^^WI           @ 14,1 STATIC RT_T3 'N res:'
-^^WI           @ 14,3 STATIC MR_ZTOT '0000.0000'
-^^WI        }
+^^WI     TAB MGTAB2 'Z Distribution' GRID ZDG NROWS=5 NCOLS=3
+^^WI     {
+^^WI         @ 2,2 GRID ST NROWS=2 NCOLS=7 {
+^^WI           @ 1,1 STATIC RT_T3 'Mean Z:'
+^^WI           @ 1,3 STATIC MR_ZAVE '0000.0000'
+^^WI           @ 1,5 STATIC RT_T3 'Max Z:'
+^^WI           @ 1,7 STATIC MR_ZMAX '0000.0000'
+^^WI           @ 2,1 STATIC RT_T3 'Num. results:'
+^^WI           @ 2,3 STATIC MR_ZTOT '0000.0000'
+^^WI           @ 2,5 STATIC RT_T3 'Num. results with <4 hits:'
+^^WI           @ 2,7 STATIC MR_ZMIS '0000.0000'
+^^WI         }
+^^WI         @ 4,2 PLOTWINDOW VMOGUL NROWS=20 NCOLS=64 
 ^^WI     }
-^^WI  }
-^^WI  @ 5,2 GRID B NROWS=2 NCOLS=7 {
-^^WI     @ 1,1 STRETCH RT_STR2 HORIZONTAL
-^^WI     @ 1,2 BUTTON RT_BOK '&Examine in Mogul'
-^^WI     @ 1,4 BUTTON RT_BRR '&Restrain'
-^^WI     @ 1,6 BUTTON RT_BXX '&Close' DEFAULT COMMIT CANCEL
+^^WI     TAB MGTAB0 'Information' GRID MGG0 NROWS=1 NCOLS=1
+^^WI     {
+^^WI       @ 1,1 TEXTOUT MGEXPLAIN 
+^^WI ' Mogul has collected statistics for each of the fragments listed'
+^^WI NROWS=10 NCOLS=40 TRANSPARENT
+^^WI TEXT ' in the results tab.'
+^^WI TEXT ' Click on a particular hit to view the stats.'
+^^WI TEXT ' '
+^^WI TEXT ' The most useful statistic for each fragment is the Z-score.'
+^^WI TEXT ' This indicates how far the observed value in your structure'
+^^WI TEXT ' deviates from the CSD median, in units of standard deviations'
+^^WI TEXT ' of the CSD sample   i.e.  Z = ( OBS - MEDIAN ) / sigma (OBS)'
+^^WI TEXT ' '
+^^WI TEXT ' The median is used here for robustness.'
+^^WI TEXT ' '
+^^WI TEXT ' The Z-distribution graph shows the frequency of Z-values for'
+^^WI TEXT ' your structure. You may spot outliers here.'
+^^WI TEXT ' '
+^^WI TEXT ' For further information see:'
+^^WI TEXT '      {&http://www.xtl.ox.ac.uk/mogul.html{&'
+^^WI TEXT ' '
+^^WI TEXT ' '
+^^WI VIEWTOP
+^^WI     }
 ^^WI   }
 ^^WI }
 ^^WI SHOW
 ^^CR
+^^CO SET MGEXPLAIN VIEWTOP
 %     EVALUATE ZMISS = INTEGER ( ZTOT - ZNUM )
 %     IF ZNUM .LE. 0.1 THEN
 %      EVALUATE ZNUM = 1.0
@@ -131,6 +233,126 @@
 %     TRANSFER '^^CO SET MR_ZMAX TEXT ' // CHARACTER ( ZMAX ) TO DISPLAY
 %     TRANSFER '^^CO SET MR_ZAVE TEXT ' // CHARACTER ( ZAVE ) TO DISPLAY
 %%
+%%  Loop again to get Z-graph.
+%%
+{I About to get all the FOMs again.
+%     EXTRACT REWIND
+%     EVALUATE ZB1 = 0
+%     EVALUATE ZB2 = 0
+%     EVALUATE ZB3 = 0
+%     EVALUATE ZB4 = 0
+%     EVALUATE ZB5 = 0
+%     EVALUATE ZB6 = 0
+%     EVALUATE ZB7 = 0
+%     EVALUATE ZB8 = 0
+%     EVALUATE ZB9 = 0
+%     EVALUATE ZB10 = 0
+%     LOOP
+%       ON ERROR TERMINATE
+%       ON END TERMINATE
+%%
+%% Extract the original query line:
+%%
+%       EXTRACT NEXT
+%       EXTRACT TRANSFER INPUT
+%%
+%       CLEAR
+%       VERIFY DIST ANGLE TORSION
+%       GET SILENT NOSTORE ABBREVIATED ' '
+%       EVALUATE NIN = VALUE
+%% Skip the atom numbers:
+%       GET SILENT NOSTORE INTEGER ' '
+%       LOOP NIN TIMES
+%         GET SILENT NOSTORE INTEGER ' '
+%       END LOOP
+%% Skip the #:
+%       GET SILENT NOSTORE KEYWORD ' '
+%% Read the actual value:
+%       GET SILENT NOSTORE REAL ' '
+%       EVALUATE ACTUAL = VALUE
+%% Skip the atoms:
+%       INSERT !^^WI '!
+%       GET SILENT TEXT ' ' ' '
+%%
+%% Extract the results line:
+%%
+%       EXTRACT NEXT
+%       EXTRACT TRANSFER INPUT
+%% See what it holds:
+%       VERIFY NOHITS ERROR STATS
+%       GET SILENT NOSTORE ABBREVIATED ' '
+%       IF ( VALUE .EQ. 3 ) THEN
+%         GET SILENT NOSTORE INTEGER ' '
+%         EVALUATE NUMOBS = VALUE
+%% Ignore, the mean, min and max:
+%         GET SILENT NOSTORE REAL ' '
+%         GET SILENT NOSTORE REAL ' '
+%         GET SILENT NOSTORE REAL ' '
+%% Get the median:
+%         GET SILENT NOSTORE REAL ' '
+%         EVALUATE IDEAL = VALUE
+%         GET SILENT NOSTORE REAL ' '
+%         EVALUATE DEV = VALUE
+%         IF ( DEV .LT. 0.000001 ) THEN
+%           EVALUATE DEV = 0.000001
+%         END IF
+%         EVALUATE Z = ( ACTUAL - IDEAL ) / DEV
+%         IF ( Z .LT. 0.0 ) THEN
+%            EVALUATE Z = - Z
+%         END IF
+%         IF ( Z .GT. ( ZMAX * 0.9 ) ) THEN
+%            EVALUATE ZB10 = ZB10 + 1
+%         ELSE IF ( Z .GT. ( ZMAX * 0.8 ) ) THEN
+%            EVALUATE ZB9 = ZB9 + 1
+%         ELSE IF ( Z .GT. ( ZMAX * 0.7 ) ) THEN
+%            EVALUATE ZB8 = ZB8 + 1
+%         ELSE IF ( Z .GT. ( ZMAX * 0.6 ) ) THEN
+%            EVALUATE ZB7 = ZB7 + 1
+%         ELSE IF ( Z .GT. ( ZMAX * 0.5 ) ) THEN
+%            EVALUATE ZB6 = ZB6 + 1
+%         ELSE IF ( Z .GT. ( ZMAX * 0.4 ) ) THEN
+%            EVALUATE ZB5 = ZB5 + 1
+%         ELSE IF ( Z .GT. ( ZMAX * 0.3 ) ) THEN
+%            EVALUATE ZB4 = ZB4 + 1
+%         ELSE IF ( Z .GT. ( ZMAX * 0.2 ) ) THEN
+%            EVALUATE ZB3 = ZB3 + 1
+%         ELSE IF ( Z .GT. ( ZMAX * 0.1 ) ) THEN
+%            EVALUATE ZB2 = ZB2 + 1
+%         ELSE
+%            EVALUATE ZB1 = ZB1 + 1
+%         END IF
+%%
+%       END IF
+%     END LOOP
+%%
+%% Do the graph
+%%
+^^PL PLOTDATA _CLASS BARGRAPH ATTACH VMOGUL
+^^PL XAXIS TITLE 'Z values'
+^^PL YAXIS TITLE 'Frequency'
+^^PL NSERIES=1 LENGTH=10
+% TRANSFER '^^PL LABEL ' // CHARACTER ( 0.0 ) // -
+           ' DATA '      // CHARACTER ( ZB1 ) TO DISPLAY
+% TRANSFER '^^PL LABEL ' // CHARACTER ( ZMAX * 0.1 ) // -
+           ' DATA '      // CHARACTER ( ZB2 ) TO DISPLAY
+% TRANSFER '^^PL LABEL ' // CHARACTER ( ZMAX * 0.2 ) // -
+           ' DATA '      // CHARACTER ( ZB3 ) TO DISPLAY
+% TRANSFER '^^PL LABEL ' // CHARACTER ( ZMAX * 0.3 ) // -
+           ' DATA '      // CHARACTER ( ZB4 ) TO DISPLAY
+% TRANSFER '^^PL LABEL ' // CHARACTER ( ZMAX * 0.4 ) // -
+           ' DATA '      // CHARACTER ( ZB5 ) TO DISPLAY
+% TRANSFER '^^PL LABEL ' // CHARACTER ( ZMAX * 0.5 ) // -
+           ' DATA '      // CHARACTER ( ZB6 ) TO DISPLAY
+% TRANSFER '^^PL LABEL ' // CHARACTER ( ZMAX * 0.6 ) // -
+           ' DATA '      // CHARACTER ( ZB7 ) TO DISPLAY
+% TRANSFER '^^PL LABEL ' // CHARACTER ( ZMAX * 0.7 ) // -
+           ' DATA '      // CHARACTER ( ZB8 ) TO DISPLAY
+% TRANSFER '^^PL LABEL ' // CHARACTER ( ZMAX * 0.8 ) // -
+           ' DATA '      // CHARACTER ( ZB9 ) TO DISPLAY
+% TRANSFER '^^PL LABEL ' // CHARACTER ( ZMAX * 0.9 ) // -
+           ' DATA '      // CHARACTER ( ZB10 ) TO DISPLAY
+^^PL SHOW
+^^CR
 %     LOOP
 %%
 %% Flush input buffer:
@@ -139,10 +361,9 @@
 %% Loop back here every time. First, fill in the details for the
 %% currently selected FOM.
 %%
-^^??    RT_RES SELECTED
+^^??    MR_RES SELECTED
 %       GET NOSTORE SILENT INTEGER ' ' ' '
 %       EVALUATE NFOM = VALUE
-%%
 %%
 %%
 %% Rewind mogul.stat
@@ -204,6 +425,10 @@
 %           END BLOCK
 %         END CASE
 %%
+%% Skip the '#'
+%%
+%         GET NOSTORE SILENT KEYWORD ' ' 
+%%
 %% Get the actual value
 %%
 %         CLEAR
@@ -232,68 +457,135 @@
 %           OUTPUT
 %         END LOOP
 %%
-%%  Work out the Z-score
+%% Extract the next line
+%%
 %         EXTRACT NEXT
 %         EXTRACT TRANSFER INPUT
 %%
-%         CLEAR
-%         INSERT !^^CO SET MR_NUMO TEXT '!
-%         GET SILENT INTEGER ' '
-%         INSERT !'!
-%         OUTPUT
+%% See what it holds:
 %%
-%         CLEAR
-%         INSERT !^^CO SET MR_IDEA TEXT '!
-%         GET SILENT REAL ' '
-%         EVALUATE IDEAL = VALUE
-%         INSERT !'!
-%         OUTPUT
+%         VERIFY NOHITS ERROR STATS
+%         GET SILENT NOSTORE ABBREVIATED ' '
+%         CASE VALUE
+%          BLOCK    %NOHITS%
+Nohits - setting dialog values to zero.
+^^CO SET MR_NUMO TEXT '0' SET MR_MEDIAN TEXT ' '
+^^CO SET MR_MEAN TEXT ' ' SET MR_MINO   TEXT ' '
+^^CO SET MR_MAXO TEXT ' ' SET MR_UPPERQ TEXT ' '
+^^CO SET MR_LOWERQ TEXT ' ' SET MR_SIGM TEXT ' '
+^^CO SET MR_ZSCO TEXT ' ' 
+
+%% Flush input buffer:
+%       GET NOPROMPT NOSTORE TEXT ' ' ' '
+%          END BLOCK
+%          BLOCK    %ERROR%
+Mogul reports error - setting dialog values to zero.
+^^CO SET MR_NUMO TEXT '0' SET MR_MEDIAN TEXT ' '
+^^CO SET MR_MEAN TEXT ' ' SET MR_MINO   TEXT ' '
+^^CO SET MR_MAXO TEXT ' ' SET MR_UPPERQ TEXT ' '
+^^CO SET MR_LOWERQ TEXT ' ' SET MR_SIGM TEXT ' '
+^^CO SET MR_ZSCO TEXT ' ' 
+%% Flush input buffer:
+%       GET NOPROMPT NOSTORE TEXT ' ' ' '
+%          END BLOCK
+%          BLOCK    %STATS%
+%           CLEAR
+%           INSERT !^^CO SET MR_NUMO TEXT '!
+%           GET SILENT INTEGER ' '
+%           INSERT !'!
+%           OUTPUT
 %%
-%         CLEAR
-%         INSERT !^^CO SET MR_SIGM TEXT '!
-%         GET SILENT REAL ' '
-%         EVALUATE DEV = VALUE
-%         INSERT !'!
-%         OUTPUT
+%           CLEAR
+%           INSERT !^^CO SET MR_MEAN TEXT '!
+%           GET SILENT REAL ' '
+%           INSERT !'!
+%           OUTPUT
 %%
-%         CLEAR
-%         INSERT !^^CO SET MR_MINO TEXT '!
-%         GET SILENT REAL ' '
-%         INSERT !'!
-%         OUTPUT
+%           CLEAR
+%           INSERT !^^CO SET MR_MINO TEXT '!
+%           GET SILENT REAL ' '
+%           INSERT !'!
+%           OUTPUT
 %%
-%         CLEAR
-%         INSERT !^^CO SET MR_MAXO TEXT '!
-%         GET SILENT REAL ' '
-%         INSERT !'!
-%         OUTPUT
+%           CLEAR
+%           INSERT !^^CO SET MR_MAXO TEXT '!
+%           GET SILENT REAL ' '
+%           INSERT !'!
+%           OUTPUT
 %%
-%         IF ( DEV .LT. 0.000001 ) THEN
-%           EVALUATE DEV = 0.000001
-%         END IF
-%         EVALUATE Z = ( IDEAL - ACTUAL ) / DEV
+%           CLEAR
+%           INSERT !^^CO SET MR_MEDIAN TEXT '!
+%           GET NOSTORE SILENT REAL ' '
+%           EVALUATE IDEAL = VALUE
+%           STORE FORMAT /(F8.3)/ LENGTH 6 REAL IDEAL
+%           INSERT !'!
+%           OUTPUT          
 %%
-%         CLEAR
-%         INSERT !^^CO SET MR_ZSCO TEXT '!
-%         IF Z .GT. 100.0 THEN
-%           INSERT '>100.0'
-%         ELSE
-%           TRANSFER CHARACTER ( Z ) TO BUFFER
-%         END IF
-%         INSERT !'!
-%         OUTPUT
+%           CLEAR
+%           INSERT !^^CO SET MR_SIGM TEXT '!
+%           GET NOSTORE SILENT REAL ' '
+%           EVALUATE DEV = VALUE
+%           STORE FORMAT /(F8.3)/ LENGTH 6 REAL DEV
+%           INSERT !'!
+%           OUTPUT
+%%
+%           CLEAR
+%           INSERT !^^CO SET MR_UPPERQ TEXT '!
+%           GET SILENT REAL ' '
+%           INSERT !'!
+%           OUTPUT
+%%
+%           CLEAR
+%           INSERT !^^CO SET MR_LOWERQ TEXT '!
+%           GET SILENT REAL ' '
+%           INSERT !'!
+%           OUTPUT
+%%
+%%  Work out the Z-score
+%           IF ( DEV .LT. 0.000001 ) THEN
+%             EVALUATE DEV = 0.000001
+%           END IF
+%           EVALUATE Z = ( ACTUAL - IDEAL ) / DEV
+%%
+%           CLEAR
+%           INSERT !^^CO SET MR_ZSCO TEXT '!
+%           IF Z .GT. 100.0 THEN
+%             INSERT '>100.0'
+%           ELSE
+%             STORE FORMAT /(F8.3)/ LENGTH 6 REAL Z
+%           END IF
+%           INSERT !'!
+%           OUTPUT
+%          END BLOCK
+%         END CASE
 %       END BLOCK
-%       VERIFY RT_BXX RT_BOK RT_BRR RT_RES 
-%       GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%       VERIFY #$ MR_BXX MR_BOK MR_BRR MR_RES 
+%       GET NOSTORE SILENT ABBREVIATED ' ' ' '
 %       CASE VALUE
+%         BLOCK  %#$command%
+%           CLEAR
+%           INSERT '#SPAWN '
+%           GET SILENT FINAL TEXT ' ' ' '
+%           OUTPUT
+%           SEND
+%         END BLOCK
 %         BLOCK   %RT_BXX%
 ^^CO        DISPOSE MOGUL2
 %           FINISH
 %         END BLOCK
 %         BLOCK
-^^CO        DISPOSE MOGUL2
-%           COPY     '#RELEASE PUNCH crystals.qf'
-%           TRANSFER 'DISPLAY' TO PUNCH
+{I * Generating mol2 structure file for MoGuL...
+%           COPY '#FOREIGN MOL2'
+%           COPY 'END'
+{R * Done.
+{I * Copying mogul library info file...
+%  COPY '#spawn +copy \mogul\develop\mogul\bin\moguldatfil.txt .'
+{R * Done.
+{I * Writing instructions for MoGuL...
+%           COPY '#CLOSE SCPDATA'
+%           COPY '#RELEASE PUNCH crystals.qf'
+%           TRANSFER 'MOGUL OPEN_GUI 3D' TO PUNCH
+%           TRANSFER 'MOGUL MOLECULE crystals.mol2' TO PUNCH
 %           CASE NIN
 %             TRANSFER 'DIST  ' // CHARACTER ( MAT1 ) // ' ' // -
  CHARACTER ( MAT2 ) TO PUNCH
@@ -304,13 +596,14 @@
  CHARACTER ( MAT4 ) TO PUNCH
 %           END CASE
 %           COPY '#RELEASE PUNCH bfile.pch'
-%           COPY '#FOREIGN CSD'
-%           COPY 'END'
-% COPY '#spawn +copy \mogul\develop\mogul\bin\moguldatfil.txt .'
-% COPY '#SPAWN "CRYSDIR:mogul.bat" qf crystals.qf'
+{R * Done.
+{I * Running Mogul.
+%           COPY '#SPAWN + "CRYSDIR:mogul.bat" -ins crystals.qf'
+{R * Done.
+^^CO        DISPOSE MOGUL2
 %           FINISH
 %         END BLOCK
-%         BLOCK        %%RT_BRR
+%         BLOCK        %%MR_BRR
 %           CASE NIN
 %             BLOCK %DIST%
 %% Get two values
@@ -365,7 +658,7 @@
 %             END BLOCK
 %           END CASE
 %         END BLOCK
-%         BLOCK        %%RT_RES
+%         BLOCK        %%MR_RES
 %           GET NOSTORE SILENT INTEGER ' ' ' '
 %         END BLOCK
 %       END CASE
