@@ -35,6 +35,9 @@
 %       COPY 'SORT'
 %       COPY 'INSERT RELAX'
 %       COPY 'DSORT SPARE'
+%% Relax leaves stupidly hugely numbers in SPARE, which will
+%% break punching of L5 sometimes - (e.g. Cameron link) - so:
+%       COPY 'INSERT ELECTRON'
 %       COPY 'END'
 %       COPY '#REGROUP'
 %       COPY 'SELECT TYPE=ALL SEQUENCE=YES'
