@@ -5,8 +5,9 @@
 %%
 % VARIABLE CHARACTER CATOM CEL CTYPE                                            
 % VARIABLE REAL SX SY SZ SS SERI                                                
-% VARIABLE LOGICAL HQEXEC                                                       
+% VARIABLE LOGICAL HQEXEC L12SMASK T
 % VARIABLE LOGICAL HDONE HMASK FOUREF AHFOUND REGUL
+% VARIABLE INTEGER L12SER
 %% The variables needed by XQUESTIO                                             
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
 % VARIABLE LOGICAL   ANSWER                                                     
@@ -251,10 +252,14 @@
 %%                                                                              
 %        COPY '#SCRIPT XREGULH'     
 %%                                                                              
-%%      COPY '#CLEAR 12'
-%%      COPY '#CLEAR 16'
-%%      COPY '#USE SAV1216.DAT'
-
+%        COPY '#USE SAV1216.DAT'
+%        EVALUATE T = FILEDELETE ( 'SAV1216.DAT' )
+%% Store the current L12 serial, so other scripts know.
+%        COPY '#GENERALEDIT 12'
+%        COPY 'GETSERIAL L12SER'
+%        COPY 'END'
+%        EVALUATE L12SMASK = TRUE
+%        COPY '#SCRIPT XPUTINFO'
 %      END IF
  * Remember - the data may not be good enough to reveal all H atoms.            
 %      IF AHFOUND .EQ. TRUE THEN                                                
