@@ -1,0 +1,169 @@
+%SCRIPT MOGULRES
+%     VARIABLE REAL IDEAL ACTUAL DEV Z MINSAM MAXSAM RCHK EFOM
+%     VARIABLE INTEGER NIN NFOM MAT1 MAT2 MAT3 MAT4 NUMOBS ISER NINDEX
+%     VARIABLE CHARACTER CAT1 CAT2 CAT3 CAT4 RSVAL RSESD CLINE1
+%     VARIABLE CHARACTER CELE CCHK CAT
+%     COPY '#RELEASE PUNCH bfile.pch'
+%     COPY '#CLOSE SCPDATA'
+%     COPY '#OPEN SCPDATA mogul.stat'
+%%
+%     COPY '#GENERALEDIT 5'
+%     COPY 'LOCATE RECORDTYPE=101'
+%     COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'
+%     COPY 'TOP'
+%     EVALUATE EFOM = 1.0
+%     LOOP
+%       ON EDITERROR TERMINATE
+%       COPY 'TRANSFER TO OFFSET=13 FROM EFOM'
+%       COPY 'NEXT'
+%     END LOOP
+%     COPY 'WRITE'
+%     COPY 'END'
+%%
+{I About to get all the FOM's
+%     EXTRACT REWIND
+%     COPY '#GENERALEDIT 5'
+%     COPY 'LOCATE RECORDTYPE=101'
+%     COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'
+%     LOOP
+Top of outer loop. Getting a result.
+%       ON EDITERROR REPEAT
+%       ON ERROR TERMINATE
+%       ON END TERMINATE
+%%
+%       COPY 'TOP'
+%%
+%%  Get the atom names
+%%
+%       EXTRACT NEXT
+%       EXTRACT TRANSFER INPUT
+%%
+%% Get the type
+%%
+%       VERIFY DIST ANGLE TORSION
+%       GET SILENT NOSTORE ABBREVIATED ' '
+%       EVALUATE NIN = VALUE
+%%
+%% Get the atom indexes
+%%
+%       CASE NIN
+%         BLOCK
+%           GET SILENT NOSTORE INTEGER ' '
+%           EVALUATE MAT1 = VALUE
+%           GET SILENT NOSTORE INTEGER ' '
+%           EVALUATE MAT2 = VALUE
+%         END BLOCK
+%         BLOCK
+%           GET SILENT NOSTORE INTEGER ' '
+%           EVALUATE MAT1 = VALUE
+%           GET SILENT NOSTORE INTEGER ' '
+%           EVALUATE MAT2 = VALUE
+%           GET SILENT NOSTORE INTEGER ' '
+%           EVALUATE MAT3 = VALUE
+%         END BLOCK
+%         BLOCK
+%           GET SILENT NOSTORE INTEGER ' '
+%           EVALUATE MAT1 = VALUE
+%           GET SILENT NOSTORE INTEGER ' '
+%           EVALUATE MAT2 = VALUE
+%           GET SILENT NOSTORE INTEGER ' '
+%           EVALUATE MAT3 = VALUE
+%           GET SILENT NOSTORE INTEGER ' '
+%           EVALUATE MAT4 = VALUE
+%         END BLOCK
+%       END CASE
+%%
+%% Get the actual value
+%%
+%       GET NOSTORE SILENT REAL ' '
+%       EVALUATE ACTUAL = VALUE
+%%
+%% Get the crystals atom names
+%%
+%       EVALUATE CAT1 = ' '
+%       EVALUATE CAT2 = ' '
+%       EVALUATE CAT3 = ' '
+%       EVALUATE CAT4 = ' '
+%       LOOP ( NIN + 1 ) TIMES
+%         EVALUATE CAT4 = CAT3
+%         EVALUATE CAT3 = CAT2
+%         EVALUATE CAT2 = CAT1
+%         GET NOSTORE SILENT KEYWORD ' '
+%         EVALUATE CAT1 = CVALUE
+%       END LOOP
+%%
+%%  Work out the Z-score
+%       EXTRACT NEXT
+%       EXTRACT TRANSFER INPUT
+%%
+%       GET NOSTORE SILENT INTEGER ' '
+%       EVALUATE NUMOBS = VALUE
+%%
+%       GET NOSTORE SILENT REAL ' '
+%       EVALUATE IDEAL = VALUE
+%%
+%       GET NOSTORE SILENT REAL ' '
+%       EVALUATE DEV = VALUE
+%%
+%       GET NOSTORE SILENT REAL ' '
+%       EVALUATE MINSAM = VALUE
+%%
+%       GET NOSTORE SILENT REAL ' '
+%       EVALUATE MAXSAM = VALUE
+%%
+%       IF ( DEV .LT. 0.000001 ) THEN
+%         EVALUATE DEV = 0.000001
+%       END IF
+%       EVALUATE Z = ( IDEAL - ACTUAL ) / DEV
+%%
+%       IF Z .LT. 0.0 THEN
+%         EVALUATE Z = - Z
+%       END IF
+%       IF Z .GT. 10.0 THEN
+%         EVALUATE Z = 10.0
+%       END IF
+%       IF Z .LT. 1.0 THEN
+%         EVALUATE Z = 1.0
+%       END IF
+%%
+%% Find the atoms in L5, and form FOM.
+%%
+About to find involved atoms
+%  TRANSFER CAT1 // ' ' // CAT2 // ' ' // CAT3 // ' ' // CAT4 TO DISPLAY
+%       LOOP ( NIN + 1 ) TIMES
+%         CASE LOOPCOUNTER
+%           EVALUATE CAT = CAT1
+%           EVALUATE CAT = CAT2
+%           EVALUATE CAT = CAT3
+%           EVALUATE CAT = CAT4
+%         END CASE
+%         EVALUATE ISER = FIRSTINT ( CAT ) 
+%         EVALUATE CELE = FIRSTSTR ( CAT )
+%         EVALUATE NINDEX = 0
+%         ON EDITERROR TERMINATE
+%         COPY 'TOP'
+%         LOOP 
+%           ON EDITERROR TERMINATE
+%           COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
+%           COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+%           IF ( ( CELE .EQ. CCHK ) .AND. -
+                 ( ISER .EQ. INTEGER ( RCHK ) ) ) THEN
+%             COPY 'TRANSFER FROM OFFSET=13 TO EFOM'
+%             EVALUATE EFOM = EFOM * Z
+%             COPY 'TRANSFER TO OFFSET=13 FROM EFOM'
+%             EVALUATE LOOPEND = LOOPCOUNTER
+%             EVALUATE NINDEX = LOOPCOUNTER
+%  TRANSFER CAT // CHARACTER ( EFOM ) TO DISPLAY
+%           END IF
+%           COPY 'NEXT'
+%         END LOOP
+%         IF ( NINDEX .EQ. 0 ) THEN
+%           TRANSFER '{E Atom not found. ' // CAT TO DISPLAY
+%         END IF
+%       END LOOP
+%     END LOOP
+%     COPY 'WRITE'
+%     COPY 'END'
+End of script.
+%END SCRIPT
+                                  
