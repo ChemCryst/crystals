@@ -48,7 +48,6 @@
 #include <sys/time.h>
 #endif
 #include <errno.h>
-#include "PCPort.h"
 #include "HKLData.h"
 #include "Exceptions.h"
 #include "CrystalSystem.h"
@@ -61,7 +60,8 @@
 
 using namespace std;
 
-#if !defined(_WIN32)
+#if defined(_WIN32)
+#include "PCPort.h"
 #define PATH_MAX _MAX_PATH
 #endif
 
@@ -182,11 +182,11 @@ void runTest(RunParameters& pRunData)
     std::cout <<"\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
     std::cout << "\n" << *tRankings << "\n";
     outputToFile(pRunData, tStats, tRankings, *tTable);
-    if (pRunData.iInteractiveMode)
+ /*   if (pRunData.iInteractiveMode)
     {
         InteractiveControl tInteractiveControl(tStats, tRankings, tTable);
         tInteractiveControl.goInteractive();
-    }
+    }*/
     delete tRankings;
     delete tStats;
     delete tHKL;
