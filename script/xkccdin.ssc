@@ -56,7 +56,7 @@
 %    BLOCK             %RUN KCCDIN%
 
 {S * Running KCCDIN.
-%      COPY '#SPAWN CRYSDIR:KCCDIN.BAT'
+%      COPY '#SPAWN "CRYSDIR:KCCDIN.BAT"'
 {R   Done.
 %    END BLOCK
 %    BLOCK      %BROWSE%

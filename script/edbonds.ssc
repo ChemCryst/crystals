@@ -19,8 +19,8 @@
 %  ON ERROR TERMINATE USER1
 %  BLOCK
 %    CLEAR
--GIL%    INSERT '#use crysdir:\script\edlist40.dat'
-+GIL%    INSERT '#use crysdir:/script/edlist40.dat'
+-GIL%    INSERT '#use crysdir:script\edlist40.dat'
++GIL%    INSERT '#use crysdir:script/edlist40.dat'
 %    SEND
 %    COPY '#USE SCPLST40.DAT'
 %    COPY '#SUMMARY LIST 40'

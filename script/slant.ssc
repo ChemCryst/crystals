@@ -195,11 +195,11 @@
   'Contour or Husak ?' 'CONTOUR'
 %     CASE VALUE
 %      BLOCK    %Run contour
-%        TRANSFER '#SPAWN CRYSDIR:contour ' // CFILE // '.FOU'  TO CRYSTALS
+%        TRANSFER '#SPAWN "CRYSDIR:contour.exe" ' // CFILE // '.FOU'  TO CRYSTALS
 %      END BLOCK
 %      BLOCK    %Run marchingcubesELD viewer
  * Starting Michal Husak's 3D ELD viewer. Wait while it loads up.
-%        TRANSFER '#SPAWN C:\PROGRA~1\MARCHI~1\MARCHI~1 ' -
+%        TRANSFER '#SPAWN "C:\PROGRA~1\MARCHI~1\MARCHI~1" ' -
     // CFILE // '.fou ' TO CRYSTALS
 %      END BLOCK
 %     END CASE

@@ -106,11 +106,11 @@
 %       CLEAR
 %       INSERT '#OPEN HKLI'
 ^^??    L6FILE TEXT
-%       GET SILENT FINAL FILENAME -
-        'Reflection File (HKLI file) '
+%       GET NOSTORE SILENT TEXT 'Reflection File (HKLI file) '
 %       IF ( .NOT. ( FILEEXISTS CVALUE ) ) THEN
  Error: Filename given does not exist.
 %       ELSE
+%         TRANSFER '"' // CVALUE // '"' TO BUFFER
 %         QUEUE SEND
 %         QUEUE PROCESS
 %         BLOCK   %REFLECTION TYPE%
@@ -265,10 +265,11 @@
 %     BLOCK                         %BROWSE%
 ^^WI    SYSOPENFILE '*.hkl;*.hkp' 'HKL file (*.hkl,*.hkp)'
 ^^CR
-%       GET SILENT KEYWORD 'New filename:'
+%       GET SILENT TEXT 'New filename:'
 %       IF CVALUE .NE. 'CANCEL' THEN
 %        CLEAR
-%        TRANSFER "^^WI SET L6FILE TEXT " // CVALUE TO DISPLAY
+^^WI SET L6FILE TEXT 
+%        TRANSFER "^^WI '" // CVALUE // "'" TO DISPLAY
 ^^CR
 %       END IF
 %     END BLOCK
@@ -302,6 +303,9 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT
 %%
 %% $Log: not supported by cvs2svn $
+%% Revision 1.18  2001/11/23 09:15:01  ckp2
+%% Call the xlist28 script for setting up a list 28 when importing hkl file.
+%%
 %% Revision 1.17  2001/11/13 09:51:29  ckp2
 %% Fix free format reads of reflections.
 %% Fix bug when no file name given.

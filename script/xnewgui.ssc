@@ -3,16 +3,16 @@
 
  For help getting started with CRYSTALS see the primer:
 
--GIL                {&crysdir:\manual\primer-1.html{&
+-GIL                {&crysdir:manual\primer-1.html{&
 -GILor         {&http://www.xtl.ox.ac.uk/primer-1.html{&
-+GIL                {&crysdir:/manual/primer-1.html{&
++GIL                {&crysdir:manual/primer-1.html{&
 +GILor         {&http://www.xtl.ox.ac.uk/primer-1.html{&
 
  Additional help may be available in the list of FAQs:
 
--GIL                 {&crysdir:\manual\faq-2.html{&
+-GIL                 {&crysdir:manual\faq-2.html{&
 -GILor           {&http://www.xtl.ox.ac.uk/faq-2.html{&
-+GIL                 {&crysdir:/manual/faq-2.html{&
++GIL                 {&crysdir:manual/faq-2.html{&
 +GILor           {&http://www.xtl.ox.ac.uk/faq-2.html{&
 
  If you are encountering problems using or installing crystals please

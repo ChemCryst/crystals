@@ -26,7 +26,7 @@
 %  CASE VALUE
 %    BLOCK              %OK%
 ^^??    XU_E1 TEXT
-%       GET SILENT NOSTORE KEYWORD 'Get E1 filename:'
+%       GET SILENT NOSTORE TEXT 'Get E1 filename:'
 %       IF CVALUE .NE. CNULL THEN
 %         EVALUATE LOOPEND = LOOPCOUNTER
 %         EVALUATE FILENAME = CVALUE
@@ -38,7 +38,7 @@
 %    END BLOCK
 %    BLOCK             %BROWSE%
 ^^CO SYSOPENFILE '*.*' 'File of crystals commands'
-%      GET SILENT KEYWORD 'New filename:'
+%      GET NOSTORE SILENT TEXT 'New filename:'
 %      IF CVALUE .NE. 'CANCEL' THEN
 %         EVALUATE LOOPEND = LOOPCOUNTER
 %         EVALUATE FILENAME = CVALUE
@@ -47,5 +47,6 @@
 %  END CASE
 % END LOOP
 ^^CO DISPOSE XUSE
-% TRANSFER '#USE ' // FILENAME TO CRYSTALS
+% TRANSFER '#USE "' // FILENAME // '"' TO DISPLAY
+% TRANSFER '#USE "' // FILENAME // '"' TO CRYSTALS
 %END SCRIPT

@@ -31,7 +31,7 @@
 %  END IF
 %%
 %%
-%  TRANSFER '#SPAWN ' // CFILE // ' -q  platon.res' TO CRYSTALS
+%  TRANSFER '#SPAWN "' // CFILE // '" -q  platon.res' TO CRYSTALS
 %%
 %   VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
 %   VARIABLE LOGICAL ANSWER
@@ -52,7 +52,7 @@ Trying to delete old Squeeze files
 %     COPY '#SPAWN +DEL LIST6.ABC'
 Deleted old Squeeze files
 %  END IF
-%  COPY '#SPAWN +COMMAND.COM /C CRYSDIR:CONVPLAT'
+%  COPY '#SPAWN "CRYSDIR:oshell.bat" "CRYSDIR:CONVPLAT"'
 %  COPY '#USE LIST6.ABC'
 %%
 Update LIST 23 to show the A & B parts are stored, and inhibit

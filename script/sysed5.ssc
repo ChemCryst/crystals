@@ -8,8 +8,8 @@
 %    COPY '#RELEASE PUNCH crfile.pch'
 %%
 %    CLEAR
--GIL%    INSERT '#use crysdir:\script\edlist5.dat'
-+GIL%    INSERT '#use crysdir:/script/edlist5.dat'
+-GIL%    INSERT '#use crysdir:script\edlist5.dat'
++GIL%    INSERT '#use crysdir:script/edlist5.dat'
 %    SEND
 %    COPY '# Inputting new list5'
 %    COPY '#USE SCPLST5.DAT'

@@ -71,7 +71,7 @@
 {R two element twin scales.
 % copy '#list 12'
 % copy 'block scale'
--GIL% copy '#use crysdir:\script\2twin12.dat'
-+GIL% copy '#use crysdir:/script/2twin12.dat'
+-GIL% copy '#use crysdir:script\2twin12.dat'
++GIL% copy '#use crysdir:script/2twin12.dat'
 % copy 'end'
 % end script

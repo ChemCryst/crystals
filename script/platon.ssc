@@ -17,7 +17,7 @@
 
 %    CLEAR
 %    INSERT '^^CO SETKEY PLATONDIR '
-%    GET SILENT TEXT 'Platon location:'
+%    GET NOSTORE SILENT TEXT 'Platon location:'
 %    IF CVALUE .NE. 'CANCEL' THEN
 %      EVALUATE CFILE = CVALUE
 %      OUTPUT
@@ -27,7 +27,8 @@
 %  END IF
 %%
 %%
-%  TRANSFER '#SPAWN ' // CFILE // ' platon.res' TO CRYSTALS
+%  TRANSFER '#SPAWN "' // CFILE // '" platon.res' TO DISPLAY
+%  TRANSFER '#SPAWN "' // CFILE // '" platon.res' TO CRYSTALS
 %%
 %%
 %END SCRIPT

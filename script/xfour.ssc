@@ -310,7 +310,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %         COPY '#SCRIPT XQUESTIO'
 %         IF ANSWER .EQ. TRUE THEN
  * Starting Fourier map viewer.
-%               TRANSFER '#SPAWN START CRYSDIR:CONTOUR ' // -
+%               TRANSFER '#SPAWN START "CRYSDIR:CONTOUR.EXE" ' // -
  FNAME TO CRYSTALS
 %         END IF
 %       END IF

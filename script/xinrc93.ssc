@@ -42,7 +42,7 @@
 %  CASE VALUE
 %    BLOCK              %OK%
 ^^??    E1 TEXT
-%       GET SILENT NOSTORE KEYWORD 'Get E1 filename:'
+%       GET SILENT NOSTORE TEXT 'Get E1 filename:'
 %       IF CVALUE .NE. CNULL THEN
 %         EVALUATE LOOPEND = LOOPCOUNTER
 %         EVALUATE FILENAME = CVALUE
@@ -57,22 +57,22 @@
 %    END BLOCK
 %    BLOCK             %RUN RC93%
 {S * Running RC93.
-%      COPY '#SPAWN  +COMMAND.COM /e:2048 /c CRYSDIR:RC93.BAT'
+%      COPY '#SPAWN + "CRYSDIR:oshell.bat" "CRYSDIR:RC93.BAT"'
 {R   Done.
 % copy '#type rc93.err'
 %    END BLOCK
 %    BLOCK      %BROWSE%
 ^^WI SYSOPENFILE '*.hkl' 'RC93 generated file (*.hkl)' TITLEONLY
 ^^CR
-%      GET SILENT KEYWORD 'New filename:'
+%      GET SILENT TEXT 'New filename:'
 %      IF CVALUE .NE. 'CANCEL' THEN
-%        TRANSFER "^^WI SET E1 TEXT " // CVALUE TO DISPLAY
+%        TRANSFER "^^WI SET E1 TEXT '" // CVALUE // "'" TO DISPLAY
 ^^WI       SET BTNOK DISABLED=NO
 ^^CR
 %      END IF
 %    END BLOCK
 %    BLOCK      %E1%
-%       GET SILENT NOSTORE KEYWORD 'Changed text' '_NOTHING'
+%       GET SILENT NOSTORE TEXT 'Changed text' '_NOTHING'
 %       IF CVALUE .NE. '_NOTHING' THEN
 ^^WI       SET BTNOK DISABLED=NO
 ^^CR
@@ -103,9 +103,9 @@ Files INITIAL.* will be created in your directory. They may be important.
 %    EVALUATE SCFNAME = FILENAME // '.SCF'
 %    EVALUATE HKLNAME = FILENAME // '.HKL'
 %    EVALUATE ABSNAME = FILENAME // '.ABS'
-%    TRANSFER '#USE ' //  SCFNAME // ' ' TO CRYSTALS
-%    TRANSFER '#OPEN HKLI ' //  HKLNAME // ' ' TO CRYSTALS
-%    TRANSFER '#USE ' //  ABSNAME // ' ' TO CRYSTALS
+%    TRANSFER '#USE "' //  SCFNAME // '" ' TO CRYSTALS
+%    TRANSFER '#OPEN HKLI "' //  HKLNAME // '" ' TO CRYSTALS
+%    TRANSFER '#USE "' //  ABSNAME // '" ' TO CRYSTALS
 %    BLOCK
 %      ON ERROR REPEAT
 %%     CHECK THAT THE BASIC DATA IS READ IN OK

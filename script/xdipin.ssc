@@ -42,24 +42,21 @@
 %       IF CVALUE .NE. CNULL THEN
 %         EVALUATE LOOPEND = LOOPCOUNTER
 %         EVALUATE FILENAME = CVALUE
-^^WI      DISPOSE XDIPIN
-^^CR
+^^CO      DISPOSE XDIPIN
 %       END IF
 %    END BLOCK
 %    BLOCK             %CANCEL%
-^^WI      DISPOSE XDIPIN
-^^CR
+^^CO      DISPOSE XDIPIN
 %         FINISH
 %    END BLOCK
 %    BLOCK             %RUN DIPIN%
 
 {S * Running DIPIN.
-%      COPY '#SPAWN  COMMAND.COM /c CRYSDIR:DIPIN.EXE'
+%      COPY '#SPAWN "CRYSDIR:oshell.bat" "CRYSDIR:DIPIN.EXE"'
 {R   Done.
 %    END BLOCK
 %    BLOCK      %BROWSE%
-^^WI SYSOPENFILE '*.dip' 'Dipin generated file (*.dip)' TITLEONLY
-^^CR
+^^CO SYSOPENFILE '*.dip' 'Dipin generated file (*.dip)' TITLEONLY
 %      GET SILENT KEYWORD 'New filename:'
 %      IF CVALUE .NE. 'CANCEL' THEN
 %        TRANSFER "^^WI SET E1 TEXT " // CVALUE TO DISPLAY
@@ -98,7 +95,7 @@ Files INITIAL.* will be created in your directory. They may be important.
 %      EVALUATE FILENAME = CVALUE
 %      EVALUATE SCFNAME = FILENAME // '.SCF'
 %      EVALUATE HKLNAME = FILENAME // '.DIP'
-%      TRANSFER '#USE ' //  SCFNAME // ' ' TO CRYSTALS
+%      TRANSFER '#USE "' //  SCFNAME // '" ' TO CRYSTALS
 %      BLOCK
 %            ON ERROR REPEAT
 %%           WE NEED BASIC LISTS FOR DATA REDUCTION
@@ -133,7 +130,7 @@ Files INITIAL.* will be created in your directory. They may be important.
 %          COPY '#LIST 4'
 %          COPY 'END'
 %%
-%          TRANSFER '#OPEN HKLI ' //  HKLNAME // ' ' TO CRYSTALS
+%          TRANSFER '#OPEN HKLI "' //  HKLNAME // '" ' TO CRYSTALS
 %      END BLOCK
 %  END BLOCK
 %%

@@ -94,7 +94,7 @@
 ^^WI  {
 -GIL% IF FILEEXISTS 'c:\progra~1\marchi~1\MarchingCubeELD.exe' -
 -GIL .EQ. TRUE THEN
-+GIL% IF FILEEXISTS 'crysdir:/MarchingCubeELD.exe' -
++GIL% IF FILEEXISTS 'crysdir:MarchingCubeELD.exe' -
 +GIL .EQ. TRUE THEN
 ^^WI   @ 1,2 RADIOBUTTON XC 'Run CONTOUR'
 ^^WI   @ 1,4 RADIOBUTTON XM 'Run 3D ELD Viewer' STATE=ON
@@ -314,13 +314,13 @@ view the generated sections.
 %             TRANSFER 'Map file saved as: ' // CFILE TO DISPLAY
 %           END BLOCK
 %           BLOCK    %Run contour
-%             TRANSFER '#SPAWN CRYSDIR:contour ' // CFILE TO CRYSTALS
+%             TRANSFER '#SPAWN "CRYSDIR:contour.exe" ' // CFILE TO CRYSTALS
 %           END BLOCK
 %           BLOCK    %Run marchingcubesELD viewer
  * Starting Michal Husak's 3D ELD viewer. Wait while it loads ....
--GIL% TRANSFER '#SPAWN C:\PROGRA~1\MARCHI~1\MarchingCubeELD.exe ' -
+-GIL% TRANSFER '#SPAWN "C:\PROGRA~1\MARCHI~1\MarchingCubeELD.exe" ' -
 -GIL    // CFILE TO CRYSTALS
-+GIL% TRANSFER '#SPAWN CRYSDIR:/MarchingCubeELD.exe ' -
++GIL% TRANSFER '#SPAWN "CRYSDIR:MarchingCubeELD.exe" ' -
 +GIL    // CFILE TO CRYSTALS
 %           END BLOCK
 %         END CASE

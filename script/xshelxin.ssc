@@ -67,10 +67,11 @@
 %     BLOCK                         %BROWSE%
 ^^WI    SYSOPENFILE '*.ins;*.res' 'Shelx file (*.res,*.ins)'
 ^^CR
-%       GET SILENT KEYWORD 'New filename:'
+%       GET SILENT TEXT 'New filename:'
 %       IF CVALUE .NE. 'CANCEL' THEN
 %        CLEAR
-%        TRANSFER "^^WI SET L6FILE TEXT " // CVALUE TO DISPLAY
+^^WI SET L6FILE TEXT
+%        TRANSFER "^^WI '" // CVALUE // "'" TO DISPLAY
 ^^CR
 %       END IF
 %     END BLOCK
@@ -81,8 +82,7 @@
 %     END BLOCK
 %     BLOCK                         %BOK%
 ^^??      L6FILE TEXT
-%         GET SILENT FINAL FILENAME -
-          'Shelx File (RES or INS file) '
+%         GET SILENT TEXT 'Shelx File (RES or INS file) '
 %         EVALUATE CFILE = CVALUE
 %         IF ( .NOT. ( FILEEXISTS CFILE ) ) THEN
  Error: Filename given does not exist.
@@ -92,7 +92,7 @@
 %         END IF
 ^^WI      DISPOSE XINSHELX
 ^^CR
-%         TRANSFER '#OPEN SCPDATA ' // CFILE TO CRYSTALS
+%         TRANSFER '#OPEN SCPD "' // CFILE // '"' TO CRYSTALS
 %%
 %%
 %% Cell card is the first thing to look for.
@@ -380,22 +380,22 @@
 %   END LOOP
 %   SEND
 %   OUTPUT
--GILSCATT CRYSDIR:\SCRIPT\SCATT.DAT
--GILPROPERTIES CRYSDIR:\SCRIPT\PROPWIN.DAT
+-GILSCATT CRYSDIR:SCRIPT\SCATT.DAT
+-GILPROPERTIES CRYSDIR:SCRIPT\PROPWIN.DAT
 +GILSCATT CRYSDIR:script/scatt.dat
-+GILPROPERTIES CRYSDIR:/script/propwin.dat
++GILPROPERTIES CRYSDIR:script/propwin.dat
 {R END
--GIL%   COPY 'SCATT CRYSDIR:\SCRIPT\SCATT.DAT'
--GIL%   COPY 'PROPERTIES CRYSDIR:\SCRIPT\PROPWIN.DAT'
-+GIL%   COPY 'SCATT CRYSDIR:/script/scatt.dat'
-+GIL%   COPY 'PROPERTIES CRYSDIR:/script/propwin.dat'
+-GIL%   COPY 'SCATT CRYSDIR:SCRIPT\SCATT.DAT'
+-GIL%   COPY 'PROPERTIES CRYSDIR:SCRIPT\PROPWIN.DAT'
++GIL%   COPY 'SCATT CRYSDIR:script/scatt.dat'
++GIL%   COPY 'PROPERTIES CRYSDIR:script/propwin.dat'
 %   COPY 'END'
 %%
 %% Now, experience shows that the SCPDATA file is closed and
 %% used for something else during the #COMPOSITION command.
 %% We must reopen it before continuing.
 %%
-%   TRANSFER '#OPEN SCPDATA ' // CFILE TO CRYSTALS
+%   TRANSFER '#OPEN SCPDATA "' // CFILE // '"' TO CRYSTALS
 % END IF
  
 {I * Rewinding SHELX file.

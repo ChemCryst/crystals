@@ -58,7 +58,7 @@
 ^^WI  {
 -GIL% IF FILEEXISTS 'c:\progra~1\marchi~1\MarchingCubeELD.exe' -
 -GIL  .EQ. TRUE THEN
-+GIL% IF FILEEXISTS 'CRYSDIR:/MarchingCubeELD.exe' -
++GIL% IF FILEEXISTS 'CRYSDIR:MarchingCubeELD.exe' -
 +GIL  .EQ. TRUE THEN
 ^^WI   @ 1,2 RADIOBUTTON XC 'Run CONTOUR'
 ^^WI   @ 1,4 RADIOBUTTON XM 'Run 3D ELD Viewer' STATE=ON
@@ -192,16 +192,16 @@ of any voids in your structure.
 %             TRANSFER 'Map file saved as: ' // CFILE TO DISPLAY
 %           END BLOCK
 %           BLOCK    %Run contour
-%             TRANSFER '#SPAWN CRYSDIR:contour ' // CFILE TO CRYSTALS
+%             TRANSFER '#SPAWN "CRYSDIR:contour.exe" ' // CFILE TO CRYSTALS
 %           END BLOCK
 %           BLOCK    %Run marchingcubesELD viewer
 
  * Starting Michal Husak's 3D ELD viewer. Wait while it loads ....
 
 {0,3 * MarchingCube program must be closed before continuing ....
--GIL%  TRANSFER '#SPAWN C:\PROGRA~1\MARCHI~1\MarchingCubeELD.exe ' -
+-GIL%  TRANSFER '#SPAWN "C:\PROGRA~1\MARCHI~1\MarchingCubeELD.exe" ' -
 -GIL    // CFILE TO CRYSTALS
-+GIL%  TRANSFER '#SPAWN CRYSDIR:/MarchingCubeELD.exe ' -
++GIL%  TRANSFER '#SPAWN "CRYSDIR:MarchingCubeELD.exe" ' -
 +GIL    // CFILE TO CRYSTALS
 
  * MCE is now closed.
