@@ -750,7 +750,7 @@ Table::Table(char* pName, Headings* pHeadings, Conditions* pConditions, int pNum
 {
     iName = new char[strlen(pName)+1];	//Allocate enought space for the name
     strcpy(iName, pName);	//Copy the name into the classes storage
-    String::upcase(iName);		//Make sure that the name is in upper case
+    String::upcase(iName);	//Make sure that the name is in upper case
     iHeadings = pHeadings;	//Keep a reference to the headers
     iConditions = pConditions;	//Keep a reference to the conditions
     iColumns = new ArrayList<ConditionColumn>(pNumColumns);	//Allocate the space for the condition columns of the table
@@ -935,18 +935,31 @@ ArrayList<Index>* Table::getHeadings(int pI)
         
 void Table::readFrom(filebuf& pFile)
 {
-	std::istream tFile(&pFile);
+    int tLineNum = 1;
+    std::istream tFile(&pFile);
     char tLine[255];
     do
     {
         tFile.getline(tLine, 255);
         String::trim(tLine);
+        tLineNum++;
     }while (!tFile.eof() && emptyLine(tLine));
     while (!tFile.eof() && strlen(tLine)>0)
     {
-        addLine(tLine);
-        tFile.getline(tLine, 255);
-        String::trim(tLine);
+        try
+        {
+            addLine(tLine);
+            tFile.getline(tLine, 255);
+            String::trim(tLine);
+            tLineNum++;
+        }
+        catch (MyException eE)
+        {
+            char tError[255];
+            sprintf(tError, "On line %d", tLineNum);
+            eE.addError(tError);
+            throw eE;
+        }
     }
 }
 
