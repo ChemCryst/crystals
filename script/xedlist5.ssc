@@ -73,8 +73,8 @@
 %    COPY '#PUNCH 5'
 %    COPY 'END'
 Current atom list backed up as EDATOMS.BAK
-%    COPY '#EDIT'
-%    COPY 'DELETE ALL'
+%    COPY '#LIST 5'
+%    COPY 'READ NATOM=0'
 %    COPY 'END'
 Atoms deleted.
 %  END IF
