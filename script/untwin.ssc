@@ -1,9 +1,10 @@
 %SCRIPT UNTWIN
-
+% VARIABLE LOGICAL JUSTINCASE
+%% JustInCase is TRUE if called from XROTAX. Don't print error message
+%% if no pretwin 6 is found.
 {I This script removes any twin laws that you may have previously entered.
 {I (Apart from the refinement directives and any restraints) - refinement
 {I directives will be handled automatically if you are using the GUIDE.
-
 %%
 %% Remove LIST 25
 %%
@@ -13,15 +14,14 @@
 % COPY 'DELETE 25'
 % COPY 'END'
 % END IF
-{R Done.
-
-{S * Recovering backed up reflection list from 'pretwin6.dat'.
+{R Done. Recovering backed up reflection list from 'pretwin6.dat'.
 % IF FILEEXISTS 'pretwin6.dat' .EQ. TRUE THEN
 %    COPY '#USE pretwin6.dat'
 {R Done.
+% ELSE IF JUSTINCASE THEN
+{I No pretwin6.dat exists: We will assume that this is the first
+{I time a twin law has been applied to this data set.
 % ELSE
-
-
 {E
 {E Error. Pretwin6.dat not found.
 {E
@@ -39,7 +39,6 @@
 
 
 % END IF
-
 {S * Removing element scales from list 5.
 %  VARIABLE INTEGER MD5ES
 %  EVALUATE MD5ES = 0
@@ -51,8 +50,7 @@
 %   COPY 'WRITE'
 %   COPY 'END'
 %  END BLOCK
-{R Updated number of elements in L5.
-{S Now punching and altering element values...
+{R Done. Now punching and altering element values...
 %  BLOCK
 %   VARIABLE CHARACTER CLINE1
 %   EXTRACT CLOSE
@@ -61,12 +59,10 @@
 %   COPY 'END'
 %   COPY '#RELEASE PUNCH bfile.pch'
 %   COPY '#USE untwin5.dat'
-%   COPY '#SUM L 5'
-%   COPY 'END'
+%%   COPY '#SUM L 5'
+%%   COPY 'END'
 %  END BLOCK
-{R Done.
-
-{S * Removing twin flag from list 13.
+{R Done. Now Removing twin flag from list 13.
 %  VARIABLE INTEGER TWIN
 %  EVALUATE TWIN = - 1
 %  BLOCK
@@ -79,6 +75,5 @@
 %   COPY 'END'
 %  END BLOCK
 {R Done.
-
 %END SCRIPT
 

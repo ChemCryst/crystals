@@ -124,7 +124,7 @@
 ^^WI        @ 2,1 STATIC RT_T4 'figure of merit (f.o.m):'
 ^^WI        @ 4,1 LISTBOX RT_RES VISLINES=9 INFORM=YES
 ^^WI              ADDTOLIST
-{I About to get all the FOM's
+{I Extracting FOM's from ROTAX output.
 %     EXTRACT REWIND
 %     EXTRACT NEXT
 %     LOOP
@@ -134,8 +134,8 @@
 %% Get the fom for each result
 %       EXTRACT NEXT
 %       CLEAR
-%       EXTRACT TRANSFER COMMAND
-%       EXECUTE SEND
+%%       EXTRACT TRANSFER COMMAND
+%%       EXECUTE SEND
 %       EXTRACT TRANSFER INPUT
 %       CLEAR
 %       INSERT !^^WI '!
@@ -405,6 +405,8 @@
 %         END BLOCK
 %         BLOCK
 {S * Removing any existing twin laws...
+%           VARIABLE LOGICAL JUSTINCASE
+%           EVALUATE JUSTINCASE = TRUE
 %           COPY '#SCRIPT UNTWIN'
 {S * Storing the twin law in LIST 25.
 %           COPY '#LIST 25'
