@@ -7,7 +7,7 @@
 //   Filename:  CxRadioButton.h
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  12.3.1998 10:38 Uhr
+//   $Log: not supported by cvs2svn $
 
 #ifndef     __CxRadioButton_H__
 #define     __CxRadioButton_H__
@@ -51,6 +51,7 @@ class CxRadioButton : public BASERADIOBUTTON
         void    BroadcastValueMessage();
         void    SetRadioState( Boolean inValue );
         Boolean GetRadioState();
+        void Disable(Boolean disabled);
 
 // The private parts.
         CrGUIElement *  ptr_to_crObject;

@@ -7,12 +7,13 @@
 //   Filename:  CxRadioButton.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  12.3.1998 10:38 Uhr
+//   $Log: not supported by cvs2svn $
 
 
 #include    "crystalsinterface.h"
 #include    "cxradiobutton.h"
 #include    "cxgrid.h"
+#include    "cccontroller.h"
 #include    "crradiobutton.h"
 
 int CxRadioButton::mRadioButtonCount = kRadioButtonBase;
@@ -22,7 +23,7 @@ CxRadioButton * CxRadioButton::CreateCxRadioButton( CrRadioButton * container, C
     CxRadioButton   *theStdButton = new CxRadioButton( container );
 #ifdef __CR_WIN__
         theStdButton->Create("RadioButton", WS_CHILD| WS_VISIBLE| BS_AUTORADIOBUTTON, CRect(0,0,10,10), guiParent, mRadioButtonCount++);
-    theStdButton->SetFont(CxGrid::mp_font);
+    theStdButton->SetFont(CcController::mp_font);
 #endif
 #ifdef __BOTHWX__
       theStdButton->Create(guiParent,-1,"Radiobutton");
@@ -65,111 +66,9 @@ void    CxRadioButton::SetText( char * text )
 
 }
 
-void  CxRadioButton::SetGeometry( int top, int left, int bottom, int right )
-{
-#ifdef __CR_WIN__
-    if((top<0) || (left<0))
-    {
-        RECT windowRect;
-        RECT parentRect;
-        GetWindowRect(&windowRect);
-        CWnd* parent = GetParent();
-        if(parent != nil)
-        {
-            parent->GetWindowRect(&parentRect);
-            windowRect.top -= parentRect.top;
-            windowRect.left -= parentRect.left;
-        }
-        MoveWindow(windowRect.left,windowRect.top,right-left,bottom-top,false);
-    }
-    else
-    {
-        MoveWindow(left,top,right-left,bottom-top,true);
-    }
-#endif
-#ifdef __BOTHWX__
-      SetSize(left,top,right-left,bottom-top);
-#endif
+CXSETGEOMETRY(CxRadioButton)
 
-}
-
-int   CxRadioButton::GetTop()
-{
-#ifdef __CR_WIN__
-      RECT windowRect, parentRect;
-    GetWindowRect(&windowRect);
-    CWnd* parent = GetParent();
-    if(parent != nil)
-    {
-        parent->GetWindowRect(&parentRect);
-        windowRect.top -= parentRect.top;
-    }
-    return ( windowRect.top );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;//, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-//  if(parent != nil)
-//  {
-//            parentRect = parent->GetRect();
-//            windowRect.y -= parentRect.y;
-//  }
-      return ( windowRect.y );
-#endif
-}
-int   CxRadioButton::GetLeft()
-{
-#ifdef __CR_WIN__
-      RECT windowRect;//, parentRect;
-    GetWindowRect(&windowRect);
-    CWnd* parent = GetParent();
-//  if(parent != nil)
-//  {
-//      parent->GetWindowRect(&parentRect);
-//      windowRect.left -= parentRect.left;
-//  }
-    return ( windowRect.left );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-    if(parent != nil)
-    {
-            parentRect = parent->GetRect();
-            windowRect.x -= parentRect.x;
-    }
-      return ( windowRect.x );
-#endif
-
-}
-int   CxRadioButton::GetWidth()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-    return ( windowRect.Width() );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetWidth() );
-#endif
-}
-int   CxRadioButton::GetHeight()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-      return ( windowRect.Height() );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetHeight() );
-#endif
-}
+CXGETGEOMETRIES(CxRadioButton)
 
 
 int   CxRadioButton::GetIdealWidth()
@@ -316,3 +215,21 @@ void CxRadioButton::OnChar( wxKeyEvent & event )
     }
 }
 #endif
+
+
+void CxRadioButton::Disable(Boolean disabled)
+{
+#ifdef __CR_WIN__
+    if(disabled)
+            EnableWindow(false);
+    else
+            EnableWindow(true);
+#endif
+#ifdef __BOTHWX__
+    if(disabled)
+            Enable(false);
+    else
+            Enable(true);
+#endif
+}
+
