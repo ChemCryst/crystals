@@ -176,7 +176,7 @@ BOOL CCrystalsApp::OnIdle(LONG lCount)
 LRESULT CCrystalsApp::OnStuffToProcess(WPARAM wp, LPARAM lp)
 {
   theControl->DoCommandTransferStuff();
-  LOGSTAT ( "Stuff To Process" );
+//  LOGSTAT ( "Stuff To Process" );
   return 0;
 }
 
