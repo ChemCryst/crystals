@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.46  2003/09/29 15:38:34  rich
+C Added \DEFINE system instruction for building the command file. No
+C need for separate executable anymore. This command is \REMOVEd in
+C the normal startup file to prevent accidents.
+C
 C Revision 1.45  2003/08/05 11:11:12  rich
 C Commented out unused routines - saves 50Kb off the executable.
 C
@@ -2679,7 +2684,7 @@ C----- ICDDIM = 2 * NWK, IN COMMON BLOCK XLEXCH
 C----- NUMBER OF VARIABLES AND CHARACTERS IN COMMON /XSSCHR/
 cdjwmay99one more parameter length 64
 cRICjul99and another length 64
-      PARAMETER (NSSLEN = 14, NSSCHR = 704 )
+      PARAMETER (NSSLEN = 14, NSSCHR = 2624 )
 C
 C
       DIMENSION ISSBLK(ISSDIM)
@@ -2791,8 +2796,8 @@ C----- DEVI   50 - 55
 C----- CSYS   56 - 67
 cdjwmay99 change 448 to 449, add 577
 cRICjul99 add 641.
-     * 1,   17,  33,  49,  65,  129, 193, 257, 321, 385, 449, 513,
-     * 577, 641 /
+     * 1,   17,  33,  49,  65,  321, 577, 833,1089,1345,1601,1857,
+     * 2113, 2369 /
 C
 C
       DATA ITRAD2 /
@@ -2830,7 +2835,7 @@ C----- DEVI   50 - 55
 cdjwmay99
 cRICjul99
 C----- CSYS   56 - 69
-     * 16, 16, 16, 16, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64 /
+     * 16, 16, 16, 16,256,256,256,256,256,256,256,256,256,256 /
 C
 C
 C -- IDENTIFY BLOCK NAME
