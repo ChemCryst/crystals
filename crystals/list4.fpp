@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2001/11/13 13:22:16  ckp2
+C New titles for graphs.
+C
 C Revision 1.20  2001/11/13 12:16:13  ckp2
 C RC: Fix graphical output when there is no data for a given bin.
 C
@@ -2805,8 +2808,8 @@ C--- OUTPUT TO SCREEN
 
       WRITE(CMON,'(A,/,A,/,A,/,A)') 
      1 '^^PL PLOTDATA _FO BARGRAPH ATTACH _VFO',
-     1 '^^PL NSERIES=2 LENGTH=16 LOG ',
-     1 '^^PL XTITLE ''<-Strong            Fo Range            Weak->''',
+     1 '^^PL NSERIES=2 LENGTH=20 LOG ',
+     1'^^PL XTITLE ''<- Weak           Fo Range            Strong ->''',
      1 '^^PL YTITLE <Fo-Fc>**2 ZOOM 0 0 0.01 100'
       CALL XPRVDU(NCVDU, 4,0)
 
@@ -2915,7 +2918,7 @@ C--AGREEMENT ANALYSIS ON SIN(THETA)/LAMBDA RANGES
 
       WRITE(CMON,'(A,/,A,/,A,/,A)')
      1 '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VSINT YTITLE <Fo-Fc>**2',
-     1 '^^PL LOG NSERIES=2 LENGTH=8',
+     1 '^^PL LOG NSERIES=2 LENGTH=10',
      1'^^PL XTITLE ''<-Low angle    Sin(theta)/lambda   High angle->''',
      1 '^^PL ZOOM 0 0 0.01 100'
       CALL XPRVDU(NCVDU, 4,0)
