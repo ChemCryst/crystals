@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.43  2003/09/16 13:30:08  rich
+C Oops. Don't assume that real cell parameters are inverse of reciprocal. Fixed.
+C
 C Revision 1.42  2003/09/15 15:27:06  rich
 C Upgraded TRANSFORM directive to handle transformations of ADPs better.
 C Rotation matrix, R, was applied: Unew = RUR', which only works properly
@@ -1929,11 +1932,21 @@ C -- APPLY SYMMETRY TO ATOMIC COORDINATES
          GO TO 8250
 C--'ADD' OR 'SUBTRACT'
 6000     CONTINUE
-         STORE(JU)=STORE(JU)+Z
+cdjwfeb04 to enable maths on the integer fields
+         IF (((JV .EQ. 14) .OR. (JV .EQ. 15)) .OR. (JV .EQ. 16)) THEN
+           ISTORE(JU)=ISTORE(JU)+NINT(Z)
+         ELSE
+           STORE(JU)=STORE(JU)+Z
+         ENDIF
          GO TO 6150
 C--'MULTIPLY' OR 'DIVIDE'
 6050     CONTINUE
-         STORE(JU)=STORE(JU)*Z
+cdjwfeb04 to enable maths on the integer fields
+         IF (((JV .EQ. 14) .OR. (JV .EQ. 15)) .OR. (JV .EQ. 16)) THEN
+           ISTORE(JU)=ISTORE(JU)*NINT(Z)
+         ELSE
+           STORE(JU)=STORE(JU)*Z
+         ENDIF
          GO TO 6150
 6100     CONTINUE
 C----- PERTURB
