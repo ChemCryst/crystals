@@ -54,14 +54,16 @@
 %    GET NOSTORE REAL 'Tolerance for coincidence? ' '.6'
 %    INSERT ' TOLER ='
 %    STORE REAL VALUE
-%    INSERT 'ALLCYCLES U[MIN]='
+%    QUEUE SEND
+%    CLEAR
 %    GET NOSTORE REAL 'Minimum acceptable Ui? ' '.01'
+%    INSERT 'ALLCYCLES U[MIN]='
 %    STORE REAL VALUE
 %    QUEUE SEND
 %%
 %    BLOCK
 %    VARIABLE INTEGER FOLD
-%    EVALUATE FOLD = 10
+%    EVALUATE FOLD = 1
 %      IF EXISTS 23 .GE. 1 THEN
 %       COPY '#GENERALEDIT 23'
 %       COPY 'LOCATE RECORDTYPE = 103'
