@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.48  2003/10/31 17:25:31  rich
+C Don't output reflections to SHELXS.INS when using
+C #FOREIGN SHELX SPECIAL
+C
 C Revision 1.47  2003/08/13 12:30:12  rich
 C Avoid calling XMOVE with zero length arrays to move, it fails.
 C
@@ -1704,8 +1708,8 @@ C
 C
 1000  CONTINUE
       CALL XRDOPN ( 5 , JFRN(1,JFILE) ,
-#GIL     1 CPATH(1:LPATH)// CFILE(IFILE)(1:LFILE(IFILE)),
-&GIL     1 CFILE(IFILE)(1:LFILE(IFILE)),
+##WXSGIL     1 CPATH(1:LPATH)// CFILE(IFILE)(1:LFILE(IFILE)),
+&&WXSGIL     1 CFILE(IFILE)(1:LFILE(IFILE)),
      2 LPATH+LFILE(IFILE))
 C------ EXIT ON ERROR
       IF (IERFLG .LE. 0) GOTO 9900
