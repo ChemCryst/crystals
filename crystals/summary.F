@@ -1529,8 +1529,8 @@ C
      2 'Theta max', 11*'*'
      * /
       DATA (CKEY(I,5),I=1,MAXKEY)/
-     1 4*'*', 'empirical min', 'Empirical max', 'DIFABS min',
-     2 'DIFABS max', 11*'*'
+     1 4*'*', 'empirical min', 'Empirical max', 'refdelf min',
+     2 'refdelf max', 11*'*'
      * /
       DATA (CKEY(I,6),I=1,MAXKEY)/
      1 'Dobs', 'Dcalc', 'Fooo', 'Mu', 'M', 'Z', 'Flack',
@@ -1550,7 +1550,7 @@ C
 C
       DO 5000 J = 1, MAXBLK
 C----- THE ALL-TEXT ITEMS
-        IF ((J .EQ. 7) .OR. (J .EQ. 8)) GOTO 5000
+        IF (J .GE. 7)  GOTO 5000
       I = 4 * (J-1) +1
       L30 = IPOINT(I)
       MD30 = IPOINT(I+2)
@@ -1606,32 +1606,54 @@ C----- FINISHED ON AN ODD ITEM, SO MUST PRINT
 C
         IF ( J .EQ. 1 ) THEN
 C----- PARAMETER 13 ON DIRECTIVE 1 IS A CHARACTER STRING
+C DATA REDUCTION
           IPARAM  = 13
           IDIR = 1
           IVAL = ISTORE( L30 +IPARAM -1)
           GOTO 3020
         ELSE IF ( J .EQ. 2 ) THEN
 C----- PARAMETER 10 ON DIRECTIVE 2 IS A CHARACTER STRING
+C SCAN MODE
           IPARAM  = 10
           IDIR = 2
-          IVAL = ISTORE( L30 +10 -1)
+          IVAL = ISTORE( L30 +IPARAM -1)
+C----- WE HAVE TO COPY IN THE CODE HERE BECUSE THERE ARE 2
+C      TEXT ITEMS
+        IZZZ= KGVAL(CINSTR, CDIR, CPARAM, CVALUE, CDEF,
+     1                    33, IDIR, IPARAM, IVAL, JVAL, VAL, JTYPE)
+        CLINE(1:80) = ' '
+        WRITE(CLINE,1020) CPARAM, CVALUE
+        CALL XCCLWC ( CLINE(2:), CLOW(2:))
+        CLOW(1:1) = CLINE(1:1)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,1021) CLOW
+        WRITE(NCAWU, 1021) CLOW
+        WRITE(CMON, 1021) CLOW
+        CALL XPRVDU(NCVDU, 1,0)
+C----- PARAMETER 13 ON DIRECTIVE 2 IS A CHARACTER STRING
+C SCAN MODE
+          IPARAM  = 13
+          IDIR = 2
+          IVAL = ISTORE( L30 +IPARAM -1)
           GOTO 3020
         ELSE IF ( J .EQ. 3 ) THEN
 C----- PARAMETER 13 ON DIRECTIVE 3 IS A CHARACTER STRING
+C F COEFFICIENT
           IPARAM  = 13
           IDIR = 3
           IVAL = ISTORE( L30 +IPARAM -1)
           GOTO 3020
         ELSE IF ( J .EQ. 5 ) THEN
 C----- PARAMETER 9 ON DIRECTIVE 5 IS A CHARACTER STRING
+C ABSORPTION TYPE
           IPARAM  = 9
           IDIR = 5
-          IVAL = ISTORE( L30 +9 -1)
+          IVAL = ISTORE( L30 +IPARAM -1)
           GOTO 3020
         ELSE IF ( J .EQ. 6 ) THEN
 C----- PARAMETER 13 ON DIRECTIVE 6 IS A CHARACTER STRING
-          IPARAM  = 9
-          IDIR = 13
+C STRUCTURE SOLUTION
+          IPARAM  = 13
+          IDIR = 6
           IVAL = ISTORE( L30 +IPARAM -1)
           GOTO 3020
         ENDIF
