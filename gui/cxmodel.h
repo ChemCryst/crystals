@@ -19,6 +19,7 @@
 #include  <wx/dcclient.h>
 #include  <wx/glcanvas.h>
 #include  <wx/event.h>
+#include <wx/stattext.h>
 #define BASEMODEL wxGLCanvas
 #endif
 
@@ -121,6 +122,8 @@ class CxModel : public BASEMODEL
             Boolean m_Shading;       // Use fancy shading?
 
 #ifdef __CR_WIN__
+        CStatic* m_TextPopup;
+
         int m_GLPixelIndex;                                  //The pixel index member?
         HGLRC m_hGLContext;                                  //The rendering context handle.
         HDC hDC;
@@ -146,6 +149,7 @@ class CxModel : public BASEMODEL
         DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
+            wxStaticText m_TextPopup;
             void OnEraseBackground(wxEraseEvent & evt);
             void OnLButtonUp(wxMouseEvent & event);
             void OnLButtonDown(wxMouseEvent & event);
