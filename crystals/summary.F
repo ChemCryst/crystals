@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  2002/02/01 14:41:31  Administrator
+C Enable CALC to get additional R factors and display them in SUMMARY
+C
 C Revision 1.14  2002/01/16 10:37:32  ckp2
 C Remove all spaces in hkl label. Only pass Fo and Fc to 2 decimal places.
 C
@@ -1864,16 +1867,11 @@ C
 C
       DATA AXIS / 'X' , 'Y' , 'Z' /
 C
-C
-C
-C
 C -- CLEAR TEXT BUFFER
-C
       TEXT = ' '
       LENGTH = 0
 C
 C -- SCAN EACH COMPONENT
-C
       DO 2000 I = 1 , 3
         IF ( I .NE. 1 ) THEN
           LENGTH = LENGTH + 1
@@ -1881,9 +1879,7 @@ C
         ENDIF
 C
 C -- DETERMINE 'X' , 'Y' , 'Z' PART
-C
       IFIRST = 1
-C
         DO 1900 J = 1 , 3
           IOPER = NINT ( OPER(J,I) )
           IF ( IOPER .EQ. 0 ) GO TO 1900
@@ -1901,7 +1897,6 @@ C
 C
 C -- DETERMINE TRANSLATIONAL PART, BUT ONLY FOR NON-INTEGRAL
 C    TRANSLATIONS
-C
         TRANS = OPER(I,4) + XLATT(I)
 cdjwapr2001
         jtrans = int(abs(trans)) * nint(sign(1., trans))
@@ -1912,8 +1907,7 @@ cdjwapr2001
         endif
 C
 C -- CONVERT TRANSLATION TO RATIO OF TWO WHOLE NUMBERS
-C
-C----- NOTE TOLERANCE IS QUITE CRUDE INCASE VALUES LIKE 0.33 ARE USED
+C -- NOTE TOLERANCE IS QUITE CRUDE INCASE VALUES LIKE 0.33 ARE USED
         FAC = 1.
         XTRANS = TRANS
 1950    CONTINUE
@@ -1955,7 +1949,7 @@ c
 1980    CONTINUE
       endif
 C
-      if (imult .ne. 0) then
+      if (imult .gt. 1) then
         LENGTH = LENGTH + 1
         TEXT(LENGTH:LENGTH) = '/'
 C
