@@ -2365,7 +2365,7 @@ ANISO             14    4
          1
     .INPUTLIST         36    0    1    2    1         5
               5        10
-EDIT              38    5
+EDIT              39    5
    1    4096 CRYSTALSALTER5
     1    2    5   10   20
    1.DELETE             0 9999    0    0    0    0  101    5  145
@@ -2469,7 +2469,11 @@ EDIT              38    5
      OFF            LOW            MEDIUM         HIGH
   37.RESET              0 9999    0    0    0    0  134    5  145
          0    0    0    0    0    0    0    0    0    0
-  38.EDIT               2    1    0    0
+  38.GRAPH              1 9999    0    0
+         3
+    .OF                39    0    1    1    0 SPARE
+     SPARE
+  39.EDIT               2    1    0    0
          1    1
     .INPUTLIST         37    0    1    2    1         5
               5        10
