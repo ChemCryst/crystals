@@ -1,0 +1,222 @@
+\subsection{CrystalSystem}
+{\footnotesize CrystalSystem.h modified  30/04/2003 \\ CrystalSystem.cpp modified 30/04/2003}
+
+\subsubsection{Heading}
+\emph{Publicly extends MyObject}\\
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{Heading}\\ \hline
+-iMatrix:Matrix$<$float$>$\\
+-iName:char*\\
+-iID:int\\
+\hline
++Heading(char* pLines):\\
++\til Heading():\\
++getName():char*\\
++getMatrix():Matrix$<$float$>$*\\
++getID():int\\
++output(std::ostream\ands\xspace pStream):std::ostream\ands\\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Headings}
+\emph{Publicly extends MyObject}\\
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{Headings}\\ \hline
+-iHeadings:ArrayList$<$Heading$>$*\\
+\hline
++Headings():\\
++\til Headings():\\
++getMatrix(int pIndex):Matrix$<$float$>$*\\
++getName(int pIndex):char*\\
++getID(int pIndex):int\\
++output(std::ostream\ands\xspace pStream):std::ostream\ands\\
++addHeading(char* pLine):char*\\
++readFrom(filebuf\ands\xspace pFile):void\\
++length():int\\
+\hline
+\end{tabular}
+\end{table}
+
+This class should just extends the arraylist$<$Heading$>$ class and not have it as one of it's member variables. This is to be done.
+
+\subsubsection{Condition}
+\emph{Publicly extends MyObject}\\
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{Condition}\\ \hline
+-iMatrix:Matrix$<$float$>$\\
+-iName:char*\\
+-iID:int\\
+-iMult:float\\
+\hline
++ Condition(char* pLines):\\
++\til Condition():\\
++getName():char*\\
++getMatrix():Matrix$<$float$>$*\\
++getMult():float\\
++getID():int\\
++output(std::ostream\ands\xspace pStream):std::ostream\ands\\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Conditions}
+\emph{Publicly extends MyObject}\\
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{Conditions}\\ \hline
+-Conditions:ArrayList$<$Condition$>$*\\
+\hline
++ Conditions():\\
++\til Conditions():\\
++getName(int pIndex):char*\\
++getMult(int pIndex):float\\
++getMatrix(int pIndex):Matrix$<$float$>$*\\
++output(std::ostream\ands\xspace pStream):std::ostream\ands\\
++addCondition(char* pLine):char*\\
++readFrom(filebuf\ands\xspace pFile):void
++length():int\\
+\hline
+\end{tabular}
+\end{table}
+
+This class should just extends the arraylist$<$Condition$>$ class and not have it as one of it's member variables. This is to be done.
+
+\subsubsection{Index}
+\emph{Publicly extends MyObject}\\
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{Index}\\ \hline
+-iValue:int\\
+\hline
++Index(signed char pValue):\\
++Index(Index\ands pObject):\\
++get():signed char\\
++set(signed int pValue):void\\
++operator$=$(Index\ands\xspace pObject):Index\ands\\
++operator$<$(Index\ands\xspace pObject):bool\\
++operator$>$(Index\ands\xspace pObject):bool\\
++operator$==$(Index\ands\xspace pObject):bool\\
+output(std::ostream\ands\xspace pStream):std::ostream\ands\\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Indexs}
+\emph{Publicly extends MyObject}\\
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{Indexs}\\ \hline
+-iIndexs:ArrayList$<$Index$>$\\
+\hline
++Indexs(signed char pIndex):\\
++\til Index():\\
++addIndex(singed char pIndex):void\\
++number():int\\
++getIndex(int pIndex):Index*\\
++getValue(int pIndex):int\\
++output(std::ostream\ands\xspace pStream):std::ostream\ands\\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Column}
+\emph{Publicly extends MyObject}\\
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{Column}\\ \hline
+\\
+\hline
++setHeading(char* pHeading):void\\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{ConditionColumn}
+\emph{Virtually publicly extends Column}\\
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{ConditionColumn}\\ \hline
+-iHeadingConditions:ArrayList$<$Index$>$*\\
+-iConditions:ArrayList$<$Indexs$>$*\\
+\hline
++ConditionColumn():\\
++\til ConditionColumn():\\
++addHeading(signed char pIndex):void\\
++setHeading(char* pHeading):void\\
++getHeading(const int pIndex):int\\
++getHeadings():ArrayList$<$Index$>$*\\
++addCondition(signed char pIndex, int pRow):void\\
++addEmptyCondition(int pRow):void\\
++getConditions():Indexs*\\
++countCondition():int\\
++countHeadings():int\\
++output(std::ostream\ands\xspace pStream, Headings* pHeadings, Conditions* pConditions):std::ostream\ands\\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{SpaceGroup}
+\emph{Publicly extends MyObject}\\
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{SpaceGroup}\\ \hline
+-iSymbol:char*\\
+\hline
++SpaceGroup():\\
++\til SpaceGroup():\\
++getSymbol():char*\\
++output(stD::ostream\ands\xspace pStream):std::ostream\ands\\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{SpaceGroups}
+\emph{Virtually publicly extends Column}\\
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{SpaceGroups}\\ \hline
+-iPointGroup:char*\\
+-iSpaceGroups:ArrayList$<$SpaceGroup$>$*\\
+\hline
++SpaceGroups():\\
++\til SpaceGroups():\\
++add(char* pSpaceGroup, int pRow):void\\
++get(int pIndex):SpaceGroup*\\
++length():int\\
++setHeading(char* pHeading):void\\
++getPointGroup():char*\\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Table}
+\emph{Publicly extends MyObject}\\
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{Table}\\ \hline
+-iName:char*\\
+-iColumns:ArrayList$<$ConditionColumn$>$*\\
+-iSpaceGroups:ArrayList$<$SpaceGroups$>$*\\
+-iHeadings:Headings*\\
+-iConditions:Conditions*\\
+\hline
+-columnHeadings(char* pHeadings, int pColumn):void\\
+-addLine(char* pLine, int pColumn):void\\
+-addCondition(char* pCondition, CondtionColumn* pColumn, int pRow):void\\
+-addSpaceGroup(char* pSpaceGroup, SpaceGroups* pSpaceGroups, int pRow):void\\
++Table(char* pName, Headings* pHeadings, Conditions* pConditions, int pNumColumns, int pNumPointGroups):\\
++\til Table():\\
++addLine(char* pLine):void\\
++readColumnHeadings(char* pHeadings):void\\
++readFrom(filebuf\ands\xspace pFile):void\\
++getName():char*\\
++getHeadings(int pI):ArrayList$<$Index$>$\\
++output(std::ostream\ands\xspace pStream):std::ostream\ands\\
++output(int pLineNumstd::ostream\ands\xspace pStream):std::ostream\ands\\
+\hline
+\end{tabular}
+\end{table}
