@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.4  2001/02/26 10:25:31  richard
+C Added changelog to top of file
+C
 C
 CODE FOR XDFABS
       SUBROUTINE XDFABS
@@ -156,7 +159,13 @@ C      THE CORRECTION IS NOT RECOMPUTED
       ENDIF
 C
 C
-      IF (ABS(XDETR3(STORE(L13OM))) .GE. ZERO) THEN
+CDJWMAR2001
+      IF (L13OM.GT.0) THEN
+            A=ABS(XDETR3(STORE(L13OM)))
+      ELSE
+            A=0.
+      ENDIF
+      IF (A .GT. ZERO) THEN
 C----- COPY OVER THE ORIENTATION MATRIX
         CALL XMOVE (STORE(L13OM),ORIENT(1,1),9)
       ELSE
