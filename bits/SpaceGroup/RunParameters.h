@@ -111,7 +111,7 @@ class RunParameters
 		template<typename _CharT, typename _Traits>
 		basic_ostream<_CharT, _Traits>& usage(basic_ostream<_CharT, _Traits>& pStream)
 		{
-			pStream << "Usage: " << iProgramName << "[-f hklfile] [-t tablefile] [-b batchfile] [-c|-nc] [-s symetry#]\n";
+			pStream << "Usage: " << iProgramName << " [-f hklfile] [-t tablefile] [-b batchfile] [-c|-nc] [-s symetry#]\n";
 			pStream << "-f hklfile: The path of the hkl file to read in.\n";
 			pStream << "-t tablefile: The path of the table file.\n";
 			pStream << "-o outputfile: The path to a file to output the stats table and the raking table.\n";
