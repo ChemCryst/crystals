@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   23.1.2001 20:46
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2001/06/17 15:14:12  richard
+//   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
+//
 //   Revision 1.2  2001/03/08 15:43:42  richard
 //   Minor bug fixes.
 //
@@ -25,14 +28,6 @@
 #include    "ccrect.h"
 
 
-
-class CcTabData
-{
-  public:
-    CcString tabName;
-    CcString tabText;
-    CrGrid*  tabGrid;
-};
 
 CrTab::CrTab( CrGUIElement * mParentPtr )
     :   CrGUIElement( mParentPtr )
@@ -164,7 +159,7 @@ CcParse CrTab::ParseInput( CcTokenList * tokenList )
           {
             tabData->tabGrid = gridPtr;
             mTabsList.AddItem( (void*) gridPtr );
-            ((CxTab*)ptr_to_cxObject)->AddTab(tabData->tabText) ;
+            ((CxTab*)ptr_to_cxObject)->AddTab(tabData) ;
             if ( m_nTabs )
             {
               gridPtr->CrShowGrid(false);

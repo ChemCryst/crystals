@@ -16,6 +16,15 @@
 class CcTokenList;
 class CrGrid;
 
+class CcTabData
+{
+  public:
+    CcString tabName;
+    CcString tabText;
+    CrGrid*  tabGrid;
+};
+
+
 class   CrTab : public CrGUIElement
 {
   public:
