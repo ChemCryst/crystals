@@ -574,14 +574,15 @@ CS*** The following line has been changed out causing compiling error
 C**** A third parameter has been added (0)
 C**** Ludwig Macko, 23.11.1994
 C****
-      CALL XOPMSG ( IOPCRY , IOPINT , 0 )
+cdjw      CALL XOPMSG ( IOPCRY , IOPINT , 0 )
+      CALL XOPMSG ( IOPCRY , IOPcmi , 0 )
 CE*** instead of CALL XOPMSG ( IOPCRY , IOPINT )
       GO TO 9900
 cdjwapr99
 9920  continue
       CALL XCTRIM(CLCNAM, ILEN)
       write(cmon,'(a,a,a)')
-     1 'The D/A file ( ', clcnam(1:ILEN) ,
+     1 ' The D/A file ( ', clcnam(1:ILEN) ,
      2 ' )already exists and cannot be overwritten'
       CALL XPRVDU(NCEROR, 1, 0)
       IF (ISSPRT .EQ. 0) WRITE (NCWU, '(a)' ) cmon(1)
