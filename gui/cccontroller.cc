@@ -9,6 +9,11 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.26  2001/03/21 16:58:43  richard
+// If ShellExectue fails to launch a program of file, then have a go with the
+// old spawnvp method instead. As a knock on effect this fixes the Cameron PRINT command
+// and the scripts FILEDELETE operator.
+//
 // Revision 1.25  2001/03/08 16:44:02  richard
 // General changes - replaced common functions in all GUI classes by macros.
 // Generally tidied up, added logs to top of all source files.
@@ -542,13 +547,15 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
             {
                 LOGSTAT("CcController: Creating window");
                 CrWindow * wPtr = new CrWindow();
-                mCurrentWindow = wPtr;
                 if ( wPtr != nil )
                 {
                     tokenList->GetToken(); //remove token.
                     retVal = wPtr->ParseInput( tokenList );
                     if ( retVal.OK() )
+					{
                         mWindowList.AddItem( wPtr );
+		                mCurrentWindow = wPtr;
+					}
                     else
                         delete wPtr;
                 }
