@@ -8,6 +8,11 @@
 //   Authors:   Richard Cooper
 //   Created:   23.2.2001 11:35
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1  2001/02/26 12:07:05  richard
+//   New stretch class. Probably the simplest class ever written, it has no functionality
+//   except that it can be put in a grid of non-resizing items, and it will make that
+//   row, column or both appear to be able to resize, thus spreading out fixed size items.
+//
 
 #ifndef     __CxStretch_H__
 #define     __CxStretch_H__
@@ -34,6 +39,7 @@ class CxStretch : public BASESTRETCH
         static CxStretch * CreateCxStretch( CrStretch * container, CxGrid * guiParent );
         CxStretch( CrStretch * container );
         ~CxStretch();
+        void CxDestroyWindow();
         void    SetGeometry( const int top, const int left, const int bottom, const int right );
         int GetTop();
         int GetLeft();

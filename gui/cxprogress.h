@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2001/03/08 16:44:10  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 
 #ifndef     __CxProgress_H__
 #define     __CxProgress_H__
@@ -50,6 +54,7 @@ class CxProgress : public BASEPROGRESS
         static void RemoveProgress();
         void    SetVisibleChars( int count );
             void  SwitchText ( CcString * text );
+        void CxDestroyWindow();
 
 
         // attributes

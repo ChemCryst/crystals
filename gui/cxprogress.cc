@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper
 //   Created:   05.11.1998 14:24 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2001/03/08 16:44:10  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 
 
 #include    "crystalsinterface.h"
@@ -45,13 +49,29 @@ CxProgress::~CxProgress()
     RemoveProgress();
     if(m_TextOverlay != nil)
     {
-        m_TextOverlay->DestroyWindow(); delete m_TextOverlay;
+#ifdef __CR_WIN__
+        m_TextOverlay->DestroyWindow();
+        delete m_TextOverlay;
+#endif
+#ifdef __BOTHWX__
+        m_TextOverlay->Destroy();
+#endif
     }
 }
 
+void CxProgress::CxDestroyWindow()
+{
+  #ifdef __CR_WIN__
+DestroyWindow();
+#endif
+#ifdef __BOTHWX__
+Destroy();
+#endif
+}
+
+
 void    CxProgress::SetText( char * text )
 {
-// We have to be a bit clever here:
 // Every time we're told to set the text we check if m_textoverlay is present
 // If not: create one and set its text; if so: set its text.
 // Every time we're told to set the progress, we destroy to textoverlay. Simple.
@@ -65,10 +85,9 @@ void    CxProgress::SetText( char * text )
         m_TextOverlay->SetFont(CcController::mp_font);
 #endif
 #ifdef __BOTHWX__
-            LOGERR("NOT Making new static text overlay for the Progress Bar.\n");
-//            m_TextOverlay = new wxStaticText();
-//            cerr << "Creating new static text overlay for the Progress Bar.\n";
-//            m_TextOverlay->Create( (wxWindow*)this, -1, text, wxPoint(0,0), GetSize() );
+        m_TextOverlay = new wxStaticText();
+        cerr << "Creating new static text overlay for the Progress Bar.\n";
+        m_TextOverlay->Create( (wxWindow*)this, -1, text, wxPoint(0,0), GetSize(), wxST_NO_AUTORESIZE );
 #endif
     }
     else
@@ -76,7 +95,7 @@ void    CxProgress::SetText( char * text )
         m_TextOverlay->SetWindowText(text);
 #endif
 #ifdef __BOTHWX__
-            m_TextOverlay->SetLabel(text);
+        m_TextOverlay->SetLabel(text);
 #endif
 }
 
@@ -96,7 +115,7 @@ void    CxProgress::SetGeometry( int top, int left, int bottom, int right )
     SetSize(left,top,right-left,bottom-top);
     if(m_TextOverlay != nil)
     {
-            m_TextOverlay->SetSize( GetRect() ) ;
+        m_TextOverlay->SetSize( GetRect() ) ;
     }
 #endif
 }
@@ -155,7 +174,12 @@ void CxProgress::SetProgress(int complete)
 {
     if(m_TextOverlay != nil)
     {
+#ifdef __CR_WIN__
         delete m_TextOverlay;
+#endif
+#ifdef __BOTHWX__
+        m_TextOverlay->Destroy();
+#endif
         m_TextOverlay = nil;
     }
 
@@ -180,6 +204,10 @@ void CxProgress::SwitchText ( CcString * text )
                         m_TextOverlay->GetWindowText(temp);
                         m_oldText = (LPCTSTR) temp;
 #endif
+#ifdef __BOTHWX__
+                        m_oldText = CcString( m_TextOverlay->GetLabel() );
+#endif
+
                   }
                   else
                   {
