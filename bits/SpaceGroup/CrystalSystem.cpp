@@ -143,7 +143,7 @@ char* Heading::getName()
     return iName;
 }
 
-Matrix<float>* Heading::getMatrix()
+Matrix<short>* Heading::getMatrix()
 {
     return iMatrix;
 }
@@ -209,7 +209,7 @@ char* Condition::getName()
     return iName;
 }
 
-Matrix<float>* Condition::getMatrix()
+Matrix<short>* Condition::getMatrix()
 {
     return iMatrix;
 }
@@ -265,7 +265,7 @@ char* Conditions::getName(int pIndex)
     return tCondition->getName();
 }
 
-Matrix<float>* Conditions::getMatrix(int pIndex)
+Matrix<short>* Conditions::getMatrix(int pIndex)
 {
     Condition* tCondition = iConditions->get(pIndex);
     
@@ -302,7 +302,7 @@ char* Conditions::addCondition(char* pLine)	//Returns the point which the line a
         strncpy(tString, pLine, (int)(tNext-pLine));
         tCondition = new Condition(tString);
         tNext++;
-		delete[] tString;
+        delete[] tString;
     }
     iConditions->setWithAdd(tCondition, tCondition->getID());
     return tNext;
@@ -392,7 +392,7 @@ int Headings::length()
     return iHeadings->length();
 }
 
-Matrix<float>* Headings::getMatrix(int pIndex)
+Matrix<short>* Headings::getMatrix(int pIndex)
 {
     Heading* tHeading = iHeadings->get(pIndex);
     
@@ -858,6 +858,7 @@ void Table::addLine(char* pLine, int pColumn)
         addSpaceGroup(tString, iSGColumn->get(pColumn-iColumns->length()), pRow);
     }
     addLine(pLine+(int)tMatch[1].rm_eo , pColumn+1);
+    delete tString;
 }
 
 
@@ -1357,50 +1358,6 @@ std::ostream& operator <<(std::ostream& pStream, Tables& pTables)
     return pTables.output(pStream);
 };
 
-void RankedSpaceGroups::calcRowRating(RowRating* pRatings, int pRow, Table& pTable, Stats& pStats)
-{
-    int tCount = pTable.numberOfColumns(); 
-    
-    for (int i = 0; i < tCount; i++)
-    {
-        ArrayList<Index>* tHeadings = pTable.getHeadings(i);
-        int tHCount = tHeadings->length();
-        for (int j =0; j < tHCount; j++)
-        {
-            Indexs* tIndexs = pTable.getConditions(pRow, i);
-            addConditionRatings(pRatings, pStats, tIndexs, tHeadings->get(j));
-        }
-    }
-}
-
-void RankedSpaceGroups::addConditionRatings(RowRating* pRating, Stats& pStats, Indexs* tIndexs, Index* pHeadingIndex)
-{
-    if (tIndexs)
-    {
-        int tCount = tIndexs->number();
-        for (int i = 0; i < tCount; i++)
-        {
-            int tRow = tIndexs->getValue(i);
-            const ElemStats* tElement = pStats.getElem(pHeadingIndex->get(), tRow);
-            addRating(pRating, tElement);
-        }
-    }
-    else
-    {
-        pRating->iTotNumVal++;
-    }
-}
-
-void RankedSpaceGroups::addRating(RowRating* pRating, const ElemStats* pStats)
-{
-    pRating->iTotNumVal++;
-    pRating->iSumRat1 += pStats->tRating1;
-    pRating->iSumRat2 += pStats->tRating2;
-    pRating->iSumSqrRat1 += sqr(pStats->tRating1);
-    pRating->iSumSqrRat2 += sqr(pStats->tRating2);
-    pRating->iFiltered |= pStats->iFiltered ;
-}
-
 bool hasChiralSpaceGroup(int pPGroupNumbers[], Table& pTable, int pRow)
 {
     int i = 0;
@@ -1418,64 +1375,107 @@ bool hasChiralSpaceGroup(int pPGroupNumbers[], Table& pTable, int pRow)
     return false;
 }
 
-RankedSpaceGroups::RankedSpaceGroups(Table& pTable, Stats& pStats, bool pChiral)	//Chiral still needs handling. Needs doing
-{
-    iRatings = new RowRating[pTable.numberOfRows()];		//Allocate space for all the ratings.s
-    const int tPGroupNumber = pTable.getNumPointGroups();
-    int* tPGroupNumbers = new int[tPGroupNumber+1];	//The end of this list is identifed by an index of -1
+RankedSpaceGroups::RankedSpaceGroups(Table& pTable, Stats& pStats, bool pChiral)
+{	
+    int* tPGroupNumbers =  NULL;
     iChiral = pChiral;
-    
-    pTable.chiralPointGroups(tPGroupNumbers);
+    if (iChiral)  	//If this is a chiral structure then get the information for filtering the list.
+    {
+        const int tPGroupNumber = pTable.getNumPointGroups();
+        tPGroupNumbers = new int[tPGroupNumber+1];	//The end of this list is identifed by an index of -1
+        pTable.chiralPointGroups(tPGroupNumbers);
+    }
     int tCount = pTable.numberOfRows();
     for (int i = 0; i < tCount; i++)
     {
-        if (!iChiral || (pChiral && hasChiralSpaceGroup(tPGroupNumbers, pTable, i)))
+        if (!iChiral || (iChiral && hasChiralSpaceGroup(tPGroupNumbers, pTable, i)))
         {
-		iRatings[i].iRowNum = i;
-		iRatings[i].iTotNumVal = 0;
-		iRatings[i].iSumRat1 = 0;
-		iRatings[i].iSumRat2 = 0;
-		iRatings[i].iSumSqrRat1 = 0;
-		iRatings[i].iSumSqrRat2 = 0;
-		iRatings[i].iMean= 0;
-                iRatings[i].iFiltered = false;
-		calcRowRating(&(iRatings[i]), i, pTable, pStats);
-                addToList(&(iRatings[i]));	//Add the rating for the current row into the order list of rows.
+            RowRating iRating(i, pTable, pStats);
+            addToList(iRating);	//Add the rating for the current row into the order list of rows.
         }
     }
     iTable = &pTable;
-	delete tPGroupNumbers;
+    delete tPGroupNumbers;
 }
 
-void RankedSpaceGroups::addToList(RowRating* pRating)
+RankedSpaceGroups::RowRating::RowRating(int pRow, Table& pTable, Stats& pStats):Float(0)
 {
-    RowRating* tCurrentRat;
-    int tCounter = 0;
-        
-    iRatingList.reset();
-    pRating->iMean = (pRating->iSumRat1+pRating->iSumRat2)/(2*pRating->iTotNumVal);
-    if (pRating->iFiltered)
+    int tCount = pTable.numberOfColumns(); 
+    
+    iRowNum = pRow;
+    iTotNumVal = 0;
+    iSumRat1 = 0;
+    iSumRat2 = 0;
+    iSumSqrRat1 = 0;
+    iSumSqrRat2 = 0;
+    iFiltered = false;
+    
+    for (int i = 0; i < tCount; i++)
     {
-        pRating->iMean += 1;	//If we think that this has been filtered then we try and move it to the top
+        ArrayList<Index>* tHeadings = pTable.getHeadings(i);
+        int tHCount = tHeadings->length();
+        for (int j =0; j < tHCount; j++)
+        {
+            Indexs* tIndexs = pTable.getConditions(pRow, i);
+            addConditionRatings(pStats, tIndexs, tHeadings->get(j));
+        }
     }
-    tCurrentRat = iRatingList.next();
-    while (tCurrentRat != NULL && tCurrentRat->iMean > pRating->iMean)
-    {
-        tCurrentRat = iRatingList.next();
-        tCounter++;
-    }
-    iRatingList.insert(pRating, tCounter);
+    iValue = (iSumRat1+iSumRat2)/(2*iTotNumVal);
+    iValue += iFiltered?1:0;
 }
 
-RankedSpaceGroups::~RankedSpaceGroups()
+void RankedSpaceGroups::RowRating::addConditionRatings(Stats& pStats, Indexs* tIndexs, Index* pHeadingIndex)
 {
-    delete[] iRatings;
+    if (tIndexs)
+    {
+        int tCount = tIndexs->number();
+        for (int i = 0; i < tCount; i++)
+        {
+            int tRow = tIndexs->getValue(i);
+            const ElemStats* tElement = pStats.getElem(pHeadingIndex->get(), tRow);
+            addRating(tElement);
+        }
+    }
+    else
+    {
+        iTotNumVal++;
+    }
+}
+
+void RankedSpaceGroups::RowRating::addRating(const ElemStats* pStats)
+{
+    iTotNumVal++;
+    iSumRat1 += pStats->tRating1;
+    iSumRat2 += pStats->tRating2;
+    iSumSqrRat1 += sqr(pStats->tRating1);
+    iSumSqrRat2 += sqr(pStats->tRating2);
+    iFiltered |= pStats->iFiltered ;
+}
+
+RankedSpaceGroups::RowRating& RankedSpaceGroups::RowRating::operator=(RowRating& pRowRating)
+{
+    (Float)(*this) = (Float)pRowRating;
+    iRowNum = pRowRating.iRowNum;
+    iTotNumVal = pRowRating.iTotNumVal;
+    iSumRat1 = pRowRating.iSumRat1;
+    iSumRat2 = pRowRating.iSumRat2;
+    iSumSqrRat1 = pRowRating.iSumSqrRat1;
+    iSumSqrRat2 = pRowRating.iSumSqrRat2;
+    iFiltered = pRowRating.iFiltered;
+    return *this;
+}
+
+void RankedSpaceGroups::addToList(RowRating& pRating)
+{
+    iSortedRatings.add(pRating);
 }
 
 std::ofstream& RankedSpaceGroups::output(std::ofstream& pStream)	//Used when outputing the ranked space groups to a file.
 {
-    pStream << "RESULTS " << iRatingList.count() << "\n";
+    Iterator<RowRating>* tRatingIter = iSortedRatings.createIterator();
     RowRating* tCurrentRating;
+        
+    pStream << "RESULTS " << iSortedRatings.count() << "\n";
     const int tPNum = iTable->getNumPointGroups();
     int* tPointGroups = new int[tPNum];
     
@@ -1483,10 +1483,10 @@ std::ofstream& RankedSpaceGroups::output(std::ofstream& pStream)	//Used when out
     {
         iTable->chiralPointGroups(tPointGroups);
     }
-    iRatingList.reset();
-    while ((tCurrentRating = iRatingList.next()) != NULL)
+    tRatingIter->reset();
+    while ((tCurrentRating = tRatingIter->next()) != NULL)
     {
-        pStream << tCurrentRating->iMean << "\n";
+        pStream << tCurrentRating->value() << "\n";
         pStream << "PROMOTED ";
         if (tCurrentRating->iFiltered)
             pStream << "YES\n";
@@ -1497,12 +1497,14 @@ std::ofstream& RankedSpaceGroups::output(std::ofstream& pStream)	//Used when out
         else
             iTable->outputLine(tCurrentRating->iRowNum, pStream);
     }
+    delete tRatingIter;
     delete tPointGroups;
     return pStream;
 }
 
 std::ostream& RankedSpaceGroups::output(std::ostream& pStream)
 {
+    Iterator<RowRating>* tRatingIter = iSortedRatings.createIterator();
     RowRating* tCurrentRating;
     const int tPNum = iTable->getNumPointGroups();
     int* tPointGroups = new int[tPNum];
@@ -1513,10 +1515,10 @@ std::ostream& RankedSpaceGroups::output(std::ostream& pStream)
     }
     pStream << "A '*' indicates that the row has been promoted because it seems that the data has been previously filtered for the centering.\n\n";
      
-    iRatingList.reset();
-    while ((tCurrentRating = iRatingList.next()) != NULL)
+    tRatingIter->reset();
+    while ((tCurrentRating = tRatingIter->next()) != NULL)
     {
-        pStream << setw(3) << tCurrentRating->iRowNum << " " << setprecision(4) << setw(9) << tCurrentRating->iMean << " ";
+        pStream << setw(3) << tCurrentRating->iRowNum << " " << setprecision(4) << setw(9) << tCurrentRating->value() << " ";
         if (tCurrentRating->iFiltered)
             pStream << " * ";
         else
@@ -1526,6 +1528,7 @@ std::ostream& RankedSpaceGroups::output(std::ostream& pStream)
         else
             iTable->outputLine(tCurrentRating->iRowNum, pStream);
     }
+    delete tRatingIter;
     delete tPointGroups;
     return pStream;
 }
