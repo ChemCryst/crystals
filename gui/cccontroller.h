@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 15:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.37  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.36  2004/05/18 13:51:33  rich
 //   Fixed shut down of Fortran thread in Linux - but requires the use
 //   of exceptions. To exit properly the thread must return from the
@@ -212,10 +216,6 @@ class   CcController
 
     static int CcController::GetDescriptor( string &token, int descriptorClass );
 
-    bool Completing();
-    void CompleteProcessing();
-    void ProcessingComplete();
-
     void UpdateToolBars();
     void ScriptsExited();
 
@@ -281,7 +281,6 @@ class   CcController
     deque<string> *  mCurTokenList;
 
     bool mThisThreadisDead;
-    bool m_Completing;
     bool m_restart;
     string m_newdir;
     bool m_Wait;

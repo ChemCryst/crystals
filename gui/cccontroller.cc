@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.91  2004/06/24 11:39:46  rich
+// Removed unused variable.
+//
 // Revision 1.90  2004/06/24 09:12:00  rich
 // Replaced home-made strings and lists with Standard
 // Template Library versions.
@@ -549,8 +552,6 @@ using namespace std;
 #include "fortran.h"
 
 
-
-
 #ifdef __CR_WIN__
 CFont* CcController::mp_font = nil;
 CFont* CcController::mp_inputfont = nil;
@@ -560,8 +561,6 @@ CFont* CcController::mp_inputfont = nil;
 static CcLock m_Crystals_Commands_CS(true);
 static CcLock m_Interface_Commands_CS(true);
 static CcLock m_Crystals_Thread_Alive(true);
-static CcLock m_Protect_Completing_CS(true);
-
 
 static CcLock m_Crystals_Command_Added(false);
 static CcLock m_Complete_Signal(false);
@@ -596,7 +595,6 @@ CcController::CcController( const string & directory, const string & dscfile )
 //Things
     mErrorLog = nil;
     mThisThreadisDead = false;
-    m_Completing = false;
 
     m_restart = false;
     mCrystalsThread = nil;
@@ -1466,7 +1464,7 @@ void    CcController::Tokenize( const string & cText )
             while ( ParseInput( *mCurTokenList ) );
 //We must now signal the waiting Crystals thread that we're complete.
             LOGSTAT ( "CW complete, unlocking output queue.");
-            ProcessingComplete();
+            m_Complete_Signal.Signal();
         }
         else if ( selector.compare(kSOneCommand) == 0 )
         {                                                                                                                                //Avoids breaking up (and corrupting) the incoming streams from scripts.
@@ -1485,7 +1483,7 @@ void    CcController::Tokenize( const string & cText )
             mCurTokenList  = mTempTokenList;
 //We must now signal the waiting Crystals thread that it's input is ready.
             LOGSTAT ( "?? complete, unlocking output queue.");
-            ProcessingComplete();
+            m_Complete_Signal.Signal();
         }
         else                                             // Simple output text or comment
         {
@@ -1498,41 +1496,6 @@ void    CcController::Tokenize( const string & cText )
     }
 }
 
-void CcController::CompleteProcessing()
-{
-
-// This function is called by the CRYSTALS thread and
-// will not return until the interface has processed all
-// pending commands in the command queue.
-
-   m_Protect_Completing_CS.Enter();
-          LOGSTAT("-----------Output queue locked." );
-          m_Completing = true;
-   m_Protect_Completing_CS.Leave();
-}
-
-
-
-void CcController::ProcessingComplete()
-{
-// This is called by the interface to signal that it has finished
-// processing all pending commands in the command queue.
-
-   m_Protect_Completing_CS.Enter();
-         LOGSTAT("Output queue released." );
-         m_Completing=false;
-   m_Protect_Completing_CS.Leave();
-   m_Complete_Signal.Signal();
-
-}
-
-bool CcController::Completing()
-{
-   m_Protect_Completing_CS.Enter();
-         bool temp = m_Completing;
-   m_Protect_Completing_CS.Leave();
-   return temp;
-}    
 
 void  CcController::AddCrystalsCommand(const string &line, bool jumpQueue)
 {
@@ -1577,10 +1540,12 @@ void  CcController::AddCrystalsCommand(const string &line, bool jumpQueue)
          while ( stp != string::npos )
          {
             mCrystalsCommandDeq.push_front ( temp.substr(stp+2,temp.length()-stp-2) );
+            m_Crystals_Command_Added.Signal();
             temp = temp.substr(0,stp);
             stp = temp.rfind("_N");
          }
          mCrystalsCommandDeq.push_front ( temp );
+         m_Crystals_Command_Added.Signal();
       }
       else
       {
@@ -1588,20 +1553,16 @@ void  CcController::AddCrystalsCommand(const string &line, bool jumpQueue)
          while ( stp != string::npos )
          {
             mCrystalsCommandDeq.push_back ( temp.substr(0,stp) );
+            m_Crystals_Command_Added.Signal();
             temp.erase(0,stp+2);
             stp = temp.find("_N");
          }
          mCrystalsCommandDeq.push_back ( temp );
+         m_Crystals_Command_Added.Signal();
       }
-
-//    if (jumpQueue) {
-//        LOGSTAT ( "Jumpqueue occured, unlocking output queue.");
-//        ProcessingComplete();
-//    }
 
     m_Crystals_Commands_CS.Leave();
 
-    m_Crystals_Command_Added.Signal();
 
 
 }
@@ -1641,10 +1602,9 @@ void  CcController::AddInterfaceCommand( const string &line, bool internal )
         string selector = line.substr(chop-2,2);
         if ( !internal && ((selector == kSQuerySelector) || (selector == kSWaitControlSelector)))
         {
-          lock = true;
-          CompleteProcessing();
-// Nothing can be read back from queue until this query is answered.
-          LOGSTAT ("-----------Queue will be locked before returning: "+selector);
+          lock = true; // Don't return from here until 
+                       // this query is answered.
+          LOGSTAT ("-----------Thread will be locked before returning: "+selector);
         }
       }
     }
@@ -1653,8 +1613,7 @@ void  CcController::AddInterfaceCommand( const string &line, bool internal )
   m_Interface_Commands_CS.Enter();
 
        if(mThisThreadisDead) endthread(0);
-//       mInterfaceCommandQueue.SetCommand( line );
-         mInterfaceCommandDeq.push_back(line);
+       mInterfaceCommandDeq.push_back(line);
        LOGSTAT("-----------CRYSTALS has put: " + line );
 
   m_Interface_Commands_CS.Leave();
@@ -1665,24 +1624,11 @@ void  CcController::AddInterfaceCommand( const string &line, bool internal )
 
   bool comp = false;
 
-  while ( Completing() )
+  if ( lock ) 
   {
-       comp = true;
-// If ?? or CW, trap CRYSTALS here, while the GUI carries out requested action.
-       LOGSTAT ("-----------Queue locked");
-       m_Complete_Signal.Wait(); // max of 0.4 secs between retries.
-  }
-
-  if (comp)
-  {
+       m_Complete_Signal.Wait();
        LOGSTAT ("-----------Queue released");
   }
-  else if ( lock )
-  {
-       LOGSTAT ("-----------Queue was released very quickly.");
-  }
-
-
 }
 
 
@@ -1740,12 +1686,6 @@ bool CcController::GetInterfaceCommand( string &line )
   if ( mInterfaceCommandDeq.empty() )
   {
     line = "" ;
-// If CRYSTALS has nothing more to say, the we'd better make sure that the
-// queue of commands for CRYSTALS isn't locked:
-    if ( Completing() ) {
-       LOGSTAT ( "Unlocking the output queue for safety reasons");
-       ProcessingComplete();
-    }
     m_Interface_Commands_CS.Leave();
     return (false);
   }
@@ -3579,36 +3519,20 @@ bool CcController::GetCrystalsCommand( char * line )
 
 //Wait until the list is free for reading.
 
-    m_Crystals_Commands_CS.Enter();
+  if (mThisThreadisDead) return false;
 
-       if (mThisThreadisDead) return false;
+  m_Crystals_Command_Added.Wait(); // Wait until queue 
+                                   // is not empty
 
-//       while ( Completing() || !mCrystalsCommandQueue.GetCommand( line ) )
-       while ( Completing() || mCrystalsCommandDeq.empty() )
-       {
-// The queue is empty or locked so wait efficiently. 
-// Release the mutex for a while, so that someone else can write to the queue!
-//           LOGSTAT ("-----------Queue locked or empty..");
-         m_Crystals_Commands_CS.Leave();
-         if (mThisThreadisDead) return false;
+  m_Crystals_Commands_CS.Enter();  // Enter queue CS.
 
-         m_Crystals_Command_Added.Wait(1000);
+     strcpy( line, mCrystalsCommandDeq.front().c_str() );
+     mCrystalsCommandDeq.pop_front();
 
-//The writer has signalled us (or we got bored of waiting) now get the mutex and read the queue.
-         m_Crystals_Commands_CS.Enter();
-       }
+     LOGSTAT("-----------Crystals thread: Got command: "+ string(line));
 
-       string temp = mCrystalsCommandDeq.front();
-       strcpy( line, temp.c_str() );
-       mCrystalsCommandDeq.pop_front();
+  m_Crystals_Commands_CS.Leave();
 
-       LOGSTAT("-----------Crystals thread: Got command: "+ string(line));
-
-    m_Crystals_Commands_CS.Leave();
-
-    if (mThisThreadisDead) return false;
-
-    if (string(line) == "#DIENOW") endthread(0);
-
-    return (true);
+  if (mThisThreadisDead) return false;
+  return (true);
 }
