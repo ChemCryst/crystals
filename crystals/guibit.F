@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.17  1999/07/20 17:58:44  richard
+C RIC: There was a problem where any element without a colour assigned
+C in propwin.dat, was getting assigned a default radius aswell as a
+C default colour. Fixed.
+C
 C Revision 1.16  1999/07/02 17:53:36  richard
 C RIC: Changed bond determining routine to ignore bonds shorter than
 C      0.7 * (sum of covalent radii). This makes things a little clearer
@@ -287,121 +292,60 @@ C     1           YFOFC(NSOFAR,1),YFOFC(NSOFAR,2),'^^EN'
       ENDIF
       RETURN
       END
-C
-
-cCODE FOR GUI
-c      SUBROUTINE GUI(CLINE)
-cC Handle the commands from the GUI, and from the SCRIPTS.
-c\STORE
-c\ISTORE
-c\XUNITS
-c\XIOBUF
-c\XLST01
-c\XLST05
-c\XCONST
-cC
-c      CHARACTER*512 CUSTOR
-c      CHARACTER*80 CLINE
-c\GUISAV
-c\XGUIOV
-c\QSTORE
-cC
-c      CALL XCTRIM (CLINE,ILEN)
-cC
-cC If this line is continued store it and process later.
-c      IF(CLINE(ILEN-2:ILEN-1).EQ.'++') THEN
-c            CSTORE(PSTORE:PSTORE+ILEN-3) = CLINE(1:ILEN-3)
-c            PSTORE = PSTORE + ILEN - 3
-c            WRITE ( CMON, '(A)')'Storing data'
-c            CALL XPRVDU(NCVDU, 1,0)
-c            RETURN
-c      ELSE
-c            CSTORE(PSTORE:PSTORE+ILEN) = CLINE(1:ILEN)
-c            PSTORE = PSTORE + ILEN
-c            WRITE ( CMON, '(A)') CLINE(ILEN-2:ILEN-1)
-c            CALL XPRVDU(NCVDU, 1,0)
-c            WRITE ( CMON, '(A)')'Processing data'
-c            CALL XPRVDU(NCVDU, 1,0)
-c            CALL XCCUPC ( CSTORE, CUSTOR )
-c      ENDIF
-cC
-cC Branch on the type of operation
-cC
-c      IF(CUSTOR(1:5).EQ.'LOAD1') THEN
-c            WRITE ( CMON, '(A)')'^^TX Calling XFAL01^^EN'
-c            CALL XPRVDU(NCVDU, 1,0)
-c            CALL XFAL01
-c      ELSE IF (CUSTOR(1:5).EQ.'LOAD5') THEN
-c            WRITE ( CMON, '(A)')'^^TX Calling XFAL05^^EN'
-c            CALL XPRVDU(NCVDU, 1,0)
-c            LUPDAT = .TRUE.
-c            CALL XFAL05
-c      ELSE IF (CUSTOR(1:4).EQ.'MENU') THEN
-cC For now just copy the rest of the line to the menu channel.
-cC It would be nice to integrate the commands with script commands.
-c            WRITE ( CMON, '(3A)')'^^MN',CSTORE(6:PSTORE),'^^EN'
-c            CALL XPRVDU(NCVDU, 1,0)
-c      ELSE IF (CUSTOR(1:10).EQ.'NOGRUPDATE') THEN
-c            LUPDAT = .FALSE.
-c      ENDIF
-cC
-c      PSTORE = 1
-c      CSTORE = ' '
-c      CLINE = ' '
-c      RETURN
-c      END
-C
 
 CODE FOR GUIBLK
       BLOCK DATA GUIBLK
-\GUISAV
 \XGUIOV
-      DATA PSTORE /1/
       DATA ISERIA/0/, NATINF/0/
       DATA LGUIL1/.FALSE./
       DATA LGUIL2/.FALSE./
      1 LUPDAT/.FALSE./, QSINL5/.FALSE./
       END
-C
-C
+
+
 CODE FOR MENUUP (Updates the flags for the menus)
       SUBROUTINE MENUUP
 \XUNITS
 \XIOBUF
-C
       INTEGER FLAG
 \XGUIOV
-C
+
       IF(KEXIST(1).EQ.1) THEN
           WRITE(CMON(1),'(A)')'^^ST STATSET   L1'
       ELSE
           WRITE(CMON(1),'(A)')'^^ST STATUNSET L1'
       ENDIF
+
       IF(KEXIST(2).EQ.1) THEN
           WRITE(CMON(2),'(A)')'^^ST STATSET   L2'
       ELSE
           WRITE(CMON(2),'(A)')'^^ST STATUNSET L2'
       ENDIF
+
       IF(KEXIST(3).EQ.1) THEN
           WRITE(CMON(3),'(A)')'^^ST STATSET   L3'
       ELSE
           WRITE(CMON(3),'(A)')'^^ST STATUNSET L3'
       ENDIF
+
       IF(KEXIST(5).EQ.1) THEN
           WRITE(CMON(4),'(A)')'^^ST STATSET   L5'
       ELSE
           WRITE(CMON(4),'(A)')'^^ST STATUNSET L5'
       ENDIF
+
       IF(KEXIST(6).EQ.1) THEN
           WRITE(CMON(5),'(A)')'^^ST STATSET   L6'
       ELSE
           WRITE(CMON(5),'(A)')'^^ST STATUNSET L6'
       ENDIF
+
       IF(QSINL5) THEN
           WRITE(CMON(6),'(A)')'^^ST STATSET   QS'
       ELSE
           WRITE(CMON(6),'(A)')'^^ST STATUNSET QS'
       ENDIF
+
       IF (INSTRC) THEN
           WRITE(CMON(7),'(A)')'^^ST STATSET   IN'
       ELSE
@@ -711,7 +655,6 @@ C
 C
         IF(LDOFOU) LNOUPD = .TRUE.
  
-      QSINL5 = .FALSE.
 C
 C<DEBUG>
 C      WRITE(NCAWU,'(A,3I8,1X,2A)')'^^TX# L5,N5,MD5 ',
@@ -730,6 +673,7 @@ C Check for valid pointers to lists.
       IF ((.NOT.LGUIL1).OR.(.NOT.LGUIL2)) RETURN
 C Set old list number to current list number.
       ISERIA = ISERI
+      QSINL5 = .FALSE.
 C
 C Calculate and store orthogonal coords....
 C Calculate sum of x, y and z as we go.
@@ -805,8 +749,9 @@ C         WRITE(NCAWU,'(A)')'^^TXMain loop^^EN'
 C Get atom type.
              IATTYP = ISTORE(J)
              WRITE(CATTYP,'(A4)')IATTYP
-             IF((.NOT.QSINL5).AND.(CATTYP(1:1).EQ.'Q'))
-     1                  QSINL5 = .TRUE.
+             IF((.NOT.QSINL5).AND.(CATTYP(1:1).EQ.'Q')) THEN
+                       QSINL5 = .TRUE.
+             END IF
              DO 80 K = 1, NATINF * 6, 6
                    IF(IATINF(K).EQ.IATTYP) THEN
                         VDW  = ATINF(K+1)
@@ -889,7 +834,7 @@ C
                          GOTO 90
 89           CONTINUE !Reached end of properties file with no success
 C Add a black atom...
-                  WRITE(99,'(2A)') 'Not Found ', CATTYP
+C                  WRITE(99,'(2A)') 'Not Found ', CATTYP
                          IRED = 0
                          IGRE = 0
                          IBLU = 0
