@@ -56,7 +56,7 @@
 ^^WI             @ 1,2 DROPDOWN LSTYLE INFORM=YES ADDTOLIST
 ^^WI             'Spheres' 'Lines' 'Ellipses' 'NULL'
 ^^WI             @ 1,4 DROPDOWN LCOLOR INFORM=YES ADDTOLIST
-^^WI              'Default' 'B&W' 'NULL'
+^^WI              'Default' 'B&W' 'B&W-2' 'NULL'
 ^^WI             @ 3,2 DROPDOWN LPACK INFORM=YES ADDTOLIST
 ^^WI             'Unpack' 'Complete' 'Centroid' 'Cut' 'NULL'
 ^^WI             @ 3,4 BUTTON COLBUT 'Colours'
