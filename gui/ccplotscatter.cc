@@ -11,6 +11,16 @@
 //BIG NOTICE: PlotScatter is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.2  2005/01/14 12:10:58  rich
+// Fixed reflection indices for omitted reflections in Fo vs Fc graph.
+//
+// Revision 1.1.1.1  2004/12/13 11:16:17  rich
+// New CRYSTALS repository
+//
+// Revision 1.24  2004/06/24 09:12:01  rich
+// Replaced home-made strings and lists with Standard
+// Template Library versions.
+//
 // Revision 1.23  2003/12/09 09:51:54  rich
 // Fix colours of data series in plots if > 6 series.
 //
@@ -123,6 +133,7 @@
 CcPlotScatter::CcPlotScatter( )
 {
     m_Axes.m_GraphType = Plot_GraphScatter;
+    series_has_independent_labels = false;
 }
 
 CcPlotScatter::~CcPlotScatter()
@@ -168,6 +179,7 @@ bool CcPlotScatter::ParseInput( deque<string> &  tokenList )
                                 int sernum = 0;
                 if ( m_CompleteSeries > 0 ) {
                     sernum = m_CompleteSeries;
+                    series_has_independent_labels = true;
                 }
 
 
@@ -407,7 +419,8 @@ PlotDataPopup CcPlotScatter::GetDataFromPoint(CcPoint *point)
 
             vector<float>::iterator itx = m_Series[i].m_DataXY[0].begin();
             vector<float>::iterator ity = m_Series[i].m_DataXY[1].begin();
-            vector<string>::iterator its = m_Series[0].m_Label.begin();
+            int ind = series_has_independent_labels ? i : 0;
+            vector<string>::iterator its = m_Series[ind].m_Label.begin();
             for( ; itx != m_Series[i].m_DataXY[0].end(); itx++ )
             {
                 // need to : interpolate between xmin,xmax to get the label at that point,

@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper
 //   Created:   22.2.1998 14:43 Hours
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1.1.1  2004/12/13 11:16:18  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.12  2004/06/28 13:26:57  rich
+//   More Linux fixes, stl updates.
+//
 //   Revision 1.11  2004/06/24 09:12:01  rich
 //   Replaced home-made strings and lists with Standard
 //   Template Library versions.

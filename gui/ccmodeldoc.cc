@@ -17,6 +17,12 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.1.1.1  2004/12/13 11:16:17  rich
+// New CRYSTALS repository
+//
+// Revision 1.39  2004/11/12 09:11:15  rich
+// Finish removing displaylists from the MAC version.
+//
 // Revision 1.38  2004/11/12 09:09:40  rich
 // Fix newly introduced bond label bug.
 //

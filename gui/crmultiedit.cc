@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   06.3.1998 00:04 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1.1.1  2004/12/13 11:16:18  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.16  2004/09/17 14:03:54  rich
+//   Better support for accessing text in Multiline edit control from scripts.
+//
 //   Revision 1.15  2004/06/24 09:12:01  rich
 //   Replaced home-made strings and lists with Standard
 //   Template Library versions.

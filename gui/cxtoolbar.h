@@ -5,6 +5,13 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:50
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1.1.1  2004/12/13 11:16:18  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.7  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.6  2003/09/11 17:50:50  rich
 //   AddTool now returns a value so we can tell if it fails.
 //

@@ -1,6 +1,12 @@
 // crystals.h : main header file for the CRYSTALS application
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.1.1.1  2004/12/13 11:16:18  rich
+// New CRYSTALS repository
+//
+// Revision 1.12  2003/01/14 10:27:18  rich
+// Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
+//
 // Revision 1.11  2002/07/29 13:03:47  richard
 // Proxy routines avoid loading the real OLEACC.DLL - this file isn't present
 // on some older platforms (95/98/NT) unless Active Accessibility is installed.

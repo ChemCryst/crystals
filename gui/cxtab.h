@@ -5,6 +5,13 @@
 //   Authors:   Richard Cooper
 //   Created:   23.1.2001 23:30
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1.1.1  2004/12/13 11:16:18  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.5  2004/10/08 10:03:24  rich
+//   Tab change notification not required under wxWin. Fix tab sizing by including
+//   some space at the bottom.
+//
 //   Revision 1.4  2001/07/16 07:25:31  ckp2
 //   Make sure (in the wx version) that all the grids in the tab control are removed
 //   from the tab control before it is destroyed.

@@ -8,6 +8,16 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2005/01/12 13:15:56  rich
+//   Fix storage and retrieval of font name and size on WXS platform.
+//   Get rid of warning messages about missing bitmaps and toolbar buttons on WXS version.
+//
+//   Revision 1.1.1.1  2004/12/13 11:16:18  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.23  2004/10/06 13:57:26  rich
+//   Fixes for WXS version.
+//
 //   Revision 1.22  2004/06/28 13:26:57  rich
 //   More Linux fixes, stl updates.
 //
@@ -478,10 +488,10 @@ void CxEditBox::IsInputPlace()
 #endif  // !_WINNT
     string temp;
     temp = (CcController::theController)->GetKey( "MainFontHeight" );
-    if ( temp.length() )
-          pFont->SetPointSize( CRMAX( 2, atoi( temp.c_str() ) ) );
+    if ( temp.length() )  pFont->SetPointSize( CRMAX( 2, atoi( temp.c_str() ) ) );
+
     temp = (CcController::theController)->GetKey( "MainFontFace" );
-          pFont->SetFaceName( temp.c_str() );
+    if ( temp.length() )  pFont->SetFaceName( temp.c_str() );
 
     CcController::mp_inputfont = pFont;
 #endif

@@ -30,6 +30,10 @@
 #include <deque>
 #include <list>
 
+#ifdef __BOTHWIN__
+#include <windows.h>
+#endif
+
 class CcModelDoc;
 class CrWindow;
 class CrGUIElement;
@@ -190,7 +194,7 @@ extern "C" {
   void  FORCALL(datain)         ( int id, int *data, int offset, int nwords );
   void  FORCALL(callccode)      (  char *theLine                     );
   void  FORCALL(guexec)         (  char *theLine                     );
-#ifdef __CR_WIN__
+#ifdef __BOTHWIN__
   bool  IsWinNT();
 #endif
 
@@ -199,7 +203,7 @@ extern "C" {
 }
 
 
-#ifdef __CR_WIN__
+#ifdef __BOTHWIN__
 class CcProcessInfo
 {
    public:
@@ -301,6 +305,17 @@ enum
 
 
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2004/12/20 11:41:31  rich
+//   Added support for non-MFC windows version. (WXS)
+//
+//   Revision 1.1.1.1  2004/12/13 11:16:17  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.45  2004/11/19 10:56:03  rich
+//   Remove classes from extern C section - turned back into C. Fixed C.
+//   May still be problems spawning redirected processes in GUI, but
+//   other features work as before.
+//
 //   Revision 1.44  2004/11/15 13:27:10  rich
 //   Allow for possibility of running spawned processes in the CRYSTALS window.
 //   For example, type: #spawn % crysdir:kccdin.exe to run within the GUI.

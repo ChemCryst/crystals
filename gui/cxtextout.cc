@@ -184,10 +184,9 @@ void CxTextOut::Init()
 
     string temp;
     temp = (CcController::theController)->GetKey( "FontHeight" );
-    if ( temp.length() )
-          pFont->SetPointSize( CRMAX( 2, atoi( temp.c_str() ) ) );
+    if ( temp.length() ) pFont->SetPointSize( CRMAX( 2, atoi( temp.c_str() ) ) );
     temp = (CcController::theController)->GetKey( "FontFace" );
-          pFont->SetFaceName( temp.c_str() );
+    if ( temp.length() ) pFont->SetFaceName( temp.c_str() );
     CxSetFont( pFont );
 #endif
 
@@ -1004,11 +1003,13 @@ bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
   bool needMod = false;
   bool cbFound = false;
   unsigned int nWidth = 0;
+
 #ifdef __CR_WIN__
   CRect clientRc; GetClientRect( &clientRc );
   SIZE sz;
   unsigned int cx,cy;
 #endif
+
 #ifdef __BOTHWX__
   wxSize clientRc = GetClientSize( );
   m_nAvgCharWidth = pDC->GetCharWidth();
@@ -1043,16 +1044,10 @@ bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
                 }
                 else
                     cx = strToRender.length() * m_nAvgCharWidth;
-#endif
-#ifdef __BOTHWX__
-                GetTextExtent( strToRender.c_str(), &cx, &cy );
-#endif
-
-
-#ifdef __CR_WIN__
                 pDC->TextOut( nX, nY, strToRender.c_str() );
 #endif
 #ifdef __BOTHWX__
+                GetTextExtent( strToRender.c_str(), &cx, &cy );
                 pDC->DrawText( strToRender.c_str(), nX, nY );
 #endif
 
@@ -1106,22 +1101,19 @@ bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
 #ifdef __CR_WIN__
             if( !FLAG( m_lfFont.lfPitchAndFamily, FIXED_PITCH ) )
             {
-                                ::GetTextExtentPoint32( pDC->GetSafeHdc(), strTemp.c_str(), strTemp.length(), &sz );
-                cx = sz.cx;
+               ::GetTextExtentPoint32( pDC->GetSafeHdc(), strTemp.c_str(), strTemp.length(), &sz );
+               cx = sz.cx;
             }
             else
                 cx = strTemp.length() * m_nAvgCharWidth;
-#endif
-#ifdef __BOTHWX__
-            GetTextExtent( strTemp.c_str(), &cx, &cy );
-#endif
-            nWidth += cx;
-#ifdef __CR_WIN__
             pDC->TextOut( nX, nY, strTemp.c_str() );
 #endif
 #ifdef __BOTHWX__
+            GetTextExtent( strTemp.c_str(), &cx, &cy );
             pDC->DrawText( strTemp.c_str(), nX, nY );
 #endif
+
+            nWidth += cx;
             nX += cx;
             break;
         }
@@ -1133,11 +1125,6 @@ bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
             cbFound = true;  // No need to mod more than once.
 #ifdef __CR_WIN__
             pDC->TextOut( nX, nY, strTemp.c_str() );
-#endif
-#ifdef __BOTHWX__
-            pDC->DrawText( strTemp.c_str(), nX, nY );
-#endif
-#ifdef __CR_WIN__
             if( !FLAG( m_lfFont.lfPitchAndFamily, FIXED_PITCH ) )
             {
                                 ::GetTextExtentPoint32( pDC->GetSafeHdc(), strTemp.c_str(), strTemp.length(), &sz );
@@ -1147,12 +1134,13 @@ bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
                 cx = strTemp.length() * m_nAvgCharWidth;
 #endif
 #ifdef __BOTHWX__
+            pDC->DrawText( strTemp.c_str(), nX, nY );
             GetTextExtent( strTemp.c_str(), &cx, &cy );
 #endif
             nX += nWidth = cx;
     }
 
-	if ( ! cbFound )
+    if ( ! cbFound )
     {
        needMod = true;
        strLine[0] = 'x';
@@ -1172,9 +1160,8 @@ bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
   pDC->SetTextBackground( lastcol  ) ;
   pDC->SetPen( *m_pen );
   pDC->SetBrush( *m_brush );
-  pDC->DrawRectangle( nX,nY, clientRc.GetWidth(), m_nFontHeight );
+  pDC->DrawRectangle( nX,nY, clientRc.GetWidth()-nX, m_nFontHeight );
 #endif
-
 
   nY += m_nFontHeight;
 
@@ -1415,17 +1402,15 @@ void CxTextOut::ChooseFont()
 
      if ( fd.ShowModal() == wxID_OK )
      {
-            wxFontData newdata = fd.GetFontData();
-
-            *pFont = newdata.GetChosenFont();
-            CxSetFont( pFont );
-         ostringstream strstrm;
-         strstrm << m_pFont->GetPointSize();
-          (CcController::theController)->StoreKey( "FontHeight", strstrm.str() );
-         strstrm.str("");
-          strstrm << m_pFont->GetFaceName();
-         (CcController::theController)->StoreKey( "FontFace", strstrm.str() );
-
+        wxFontData newdata = fd.GetFontData();
+        *pFont = newdata.GetChosenFont();
+        CxSetFont( pFont );
+        ostringstream strstrm;
+        strstrm << m_pFont->GetPointSize();
+        (CcController::theController)->StoreKey( "FontHeight", strstrm.str() );
+        strstrm.str("");
+        strstrm << m_pFont->GetFaceName();
+        (CcController::theController)->StoreKey( "FontFace", strstrm.str() );
      }
 
 #endif

@@ -17,6 +17,12 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.2  2005/01/17 14:19:37  rich
+// Bring new repository into line up-to-date with old. (Fix Cameron font face and size.)
+//
+// Revision 1.1.1.1  2004/12/13 11:16:17  rich
+// New CRYSTALS repository
+//
 // Revision 1.19  2004/09/27 13:38:28  rich
 // Protect mCommandList (Cameron drawing commands) with a critical
 // section lock, since this list is added to from either thread.

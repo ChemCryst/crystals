@@ -80,6 +80,9 @@ class CxModList : public BASEMODLIST
         CxGrid* m_listboxparent;
 #endif
 #ifdef __BOTHWX__
+    void ItemSelected ( wxListEvent & event );
+    void ItemDeselected ( wxListEvent & event );
+    void RightClick ( wxListEvent & event );
     void OnChar(wxKeyEvent & event );
     DECLARE_EVENT_TABLE()
 #endif

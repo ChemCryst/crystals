@@ -8,6 +8,16 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2005/01/17 09:41:34  rich
+//   Fixed printing in WX version of Cameron.
+//
+//   Revision 1.1.1.1  2004/12/13 11:16:18  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.15  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.14  2003/05/07 12:18:58  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -103,8 +113,8 @@ class CxChart : public BASECHART
         void SetIdealWidth(int nCharsWide);
         void SetIdealHeight(int nCharsHigh);
         void Display();
-            CcPoint DeviceToLogical(int x, int y);
-            CcPoint LogicalToDevice(CcPoint point);
+        CcPoint DeviceToLogical(int x, int y);
+        CcPoint LogicalToDevice(CcPoint point);
         void DrawLine (int x1, int y1, int x2, int y2);
         void Focus();
         static CxChart *    CreateCxChart( CrChart * container, CxGrid * guiParent );
@@ -121,30 +131,28 @@ class CxChart : public BASECHART
         static int AddChart( void ) { mChartCount++; return mChartCount; };
         static void RemoveChart( void ) { mChartCount--; };
         void    BroadcastValueMessage( void );
+        void MakeMetaFile(int w, int h, bool enhanced);
+        void PrintPicture();
 
         CrGUIElement *  ptr_to_crObject;
         static int mChartCount;
         int mPolyMode;
 
 private:
-            bool m_inverted;
-            bool m_IsoCoords;
-            bool m_SendCursorKeys;
-            CcPoint mLastPolyModePoint;
-            CcPoint mStartPolyModePoint;
-            CcPoint mCurrentPolyModeLineEndPoint;
+        bool m_inverted;
+        bool m_IsoCoords;
+        bool m_SendCursorKeys;
+        CcPoint mLastPolyModePoint;
+        CcPoint mStartPolyModePoint;
+        CcPoint mCurrentPolyModeLineEndPoint;
+        CcRect m_client;
 
 // Private machine specific parts:
 #ifdef __CR_WIN__
       public:
-
         COLORREF mfgcolour;
         CBitmap *oldMemDCBitmap, *newMemDCBitmap;
         CDC * memDC;
-        CcRect m_client;
-
-        void MakeMetaFile(int w, int h, bool enhanced);
-        void PrintPicture();
 
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
         afx_msg void OnPaint();
@@ -156,15 +164,14 @@ private:
 #endif
 #ifdef __BOTHWX__
       public:
-
             wxColour mfgcolour;
             wxBitmap *oldMemDCBitmap, *newMemDCBitmap;
-            wxMemoryDC *memDC;
+//            wxMemoryDC *memDC;
+            wxDC *memDC;
             wxPen      * m_pen;
             wxBrush    * m_brush;
+            void PrintPic(wxDC * dc); // Call back from wxPrintout derived class
 
-        void MakeMetaFile(int w, int h, bool enhanced);
-        void PrintPicture();
 
             void OnLButtonUp(wxMouseEvent & event);
             void OnRButtonUp(wxMouseEvent & event);

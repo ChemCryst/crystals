@@ -8,6 +8,13 @@
 //   Authors:   Richard Cooper
 //   Created:   05.11.1998 14:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1.1.1  2004/12/13 11:16:18  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.6  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.5  2001/03/08 16:44:07  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.

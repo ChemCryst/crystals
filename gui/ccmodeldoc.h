@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1.1.1  2004/12/13 11:16:17  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.23  2004/11/09 09:45:02  rich
+//   Removed some old stuff. Don't use displaylists on the Mac version.
+//
 //   Revision 1.22  2004/06/25 09:29:18  rich
 //   Pass strings more efficiently. Fix bug in FlagFrag.
 //

@@ -125,6 +125,7 @@ bool CcLock::Wait(int timeout_ms)
 #ifdef __BOTHWX__
     if ( timeout_ms ) {
       wxSemaError result =  m_EvMutex -> WaitTimeout( timeout_ms );
+
       if ( result == wxSEMA_TIMEOUT ) {
 //        LOGSTAT ("++++WaitTimeout timed out, no signal.\n");
         return false;
@@ -133,8 +134,7 @@ bool CcLock::Wait(int timeout_ms)
 //        LOGSTAT ("++++WaitTimeout no error, object was signalled.\n");
         return true;
       }
-     
-      if ( result == wxSEMA_INVALID ) {
+      else if ( result == wxSEMA_INVALID ) {
 //        LOGSTAT ("++++WaitTimeout error: Invalid semaphore\n");
         return false;
       }
@@ -142,7 +142,13 @@ bool CcLock::Wait(int timeout_ms)
 //        LOGSTAT ("++++WaitTimeout error. Miscellaneous error\n");
         return false;
       }
+      else
+      {
+//        LOGSTAT ("++++WaitTimeout error. Unknown error\n");
+        return false; // But imagine that the object timed out.
+      }
     }
+
     m_EvMutex -> Wait();
 //    LOGSTAT ("++++Object was signalled.\n");
     return true;

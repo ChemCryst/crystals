@@ -7,6 +7,13 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.1.1.1  2004/12/13 11:16:17  rich
+// New CRYSTALS repository
+//
+// Revision 1.29  2004/06/24 09:12:01  rich
+// Replaced home-made strings and lists with Standard
+// Template Library versions.
+//
 // Revision 1.28  2003/12/09 09:51:54  rich
 // Fix colours of data series in plots if > 6 series.
 //

@@ -11,6 +11,12 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.1.1.1  2004/12/13 11:16:17  rich
+// New CRYSTALS repository
+//
+// Revision 1.29  2004/11/12 11:22:18  rich
+// Fix unreadable x-axis values.
+//
 // Revision 1.28  2004/06/24 09:12:01  rich
 // Replaced home-made strings and lists with Standard
 // Template Library versions.

@@ -7,6 +7,13 @@
 //   Filename:  CxResizeBar.cc
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1.1.1  2004/12/13 11:16:18  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.11  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.10  2003/11/28 10:29:11  rich
 //   Replace min and max macros with CRMIN and CRMAX. These names are
 //   less likely to confuse gcc.

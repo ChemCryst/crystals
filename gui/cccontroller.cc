@@ -9,6 +9,29 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.5  2005/01/13 17:56:20  rich
+// Fix spawning of shell commands (copying data to an pointer into exisiting string was bad).
+//
+// Revision 1.4  2005/01/12 13:15:56  rich
+// Fix storage and retrieval of font name and size on WXS platform.
+// Get rid of warning messages about missing bitmaps and toolbar buttons on WXS version.
+//
+// Revision 1.3  2004/12/20 11:41:31  rich
+// Added support for non-MFC windows version. (WXS)
+//
+// Revision 1.2  2004/12/17 10:28:06  rich
+// Error message if CRYSDIR is not set, or is set to blanks.
+//
+// Revision 1.1.1.1  2004/12/13 11:16:17  rich
+// New CRYSTALS repository
+//
+// Revision 1.106  2004/11/30 11:48:53  rich
+// Fix in-place running of shell programs on Linux and Mac versions.
+// Due to low-level IO library stuff, you should only run programs which
+// either don't require terminal input (e.g. ls, convplat, shelxs) or
+// programs that have been specially compiled so as not to buffer output to
+// STDOUT. This will happen shortly for kccdin, rc93 etc...
+//
 // Revision 1.105  2004/11/19 10:56:03  rich
 // Remove classes from extern C section - turned back into C. Fixed C.
 // May still be problems spawning redirected processes in GUI, but
@@ -690,10 +713,17 @@ CcController::CcController( const string & directory, const string & dscfile )
 
     FILE * file;
 //    char charline[256];
-    string crysdir ( getenv("CRYSDIR") );
-    if ( crysdir.length() == 0 )
+    char * ecrys = getenv("CRYSDIR");
+    if ( ecrys == 0 )
     {
       std::cerr << "You must set CRYSDIR before running crystals.\n";
+      return;
+    }
+ 
+    string crysdir ( ecrys );
+    if ( crysdir.length() == 0 )
+    {
+      std::cerr << "Set CRYSDIR to the location of crystals before running crystals.\n";
       return;
     }
 
@@ -2690,12 +2720,15 @@ void CcController::CcChooseFont()
    {
      wxFontData newdata = fd.GetFontData();
      *pFont = newdata.GetChosenFont();
+     if( mp_inputfont ) delete( mp_inputfont );
+     mp_inputfont = pFont;
      ostringstream strstrm;
      strstrm << mp_inputfont->GetPointSize();
-     StoreKey( "InputFontHeight", strstrm.str() );
+     StoreKey( "MainFontHeight", strstrm.str() );
      strstrm.str("");
      strstrm << mp_inputfont->GetFaceName();
-     StoreKey( "InputFontFace", strstrm.str() );
+     StoreKey( "MainFontFace", strstrm.str() );
+     ReLayout();
    }
 #endif
 
@@ -3319,14 +3352,21 @@ extern "C" {
 
         char* args[10];       // This allows a maximum of 9 command line arguments
 
+        for (int i=0;i<10;i++) args[i]=NULL;
+
+
         char seps[] = " \t";
         char *token = strtok( str, seps );
         args[0] = token;
         for (int i = 1; (( token != NULL ) && ( i < 10 )); i++ )
-        {
+        {                                                                     
           token = strtok( NULL, seps );
           args[i] = token;
         }
+
+        TEXTOUT(string(args[0]?args[0]:"")+" "+
+                  string(args[1]?args[1]:"") + " " +  string(args[2]?args[2]:"")+" "+
+                  string(args[3]?args[3]:"") + " " +  string(args[4]?args[4]:"")+" ...etc...");
 
         int result = _spawnvp(_P_WAIT, args[0], args);
   
@@ -3340,15 +3380,17 @@ extern "C" {
              args[ij+2] = args[ij];
           }
 
-          args[0] = IsWinNT() ? "cmd.exe" : "command.com" ;
+          if ( IsWinNT() )
+            args[0] = "cmd.exe";
+          else
+            args[0] = "command.com" ;
 
           args[1] = "/c";
+
           result = _spawnvp(_P_WAIT, args[0], args);
-          TEXTOUT(string(args[0])+" "+
-                  string(args[1])+" "+
-                  string(args[2])+" "+
-                  string(args[3])+" "+
-                  string(args[4])+" ...etc...");
+          TEXTOUT("Args: "+string(args[0])+" "+
+                  string(args[1]?args[1]:"") + " " +  string(args[2]?args[2]:"")+" "+
+                  string(args[3]?args[3]:"") + " " +  string(args[4]?args[4]:"")+" ...etc...");
 
           strstrm.str("");
           strstrm << "{I Failed yet again. Errno is:" << errno << ". Giving up.";
@@ -3356,6 +3398,7 @@ extern "C" {
           if ( result != 0 ) TEXTOUT ( strstrm.str() );
           else TEXTOUT("Might have worked.");
         }
+
         delete [] str;
 
       }
@@ -3538,8 +3581,10 @@ extern "C" {
              args[ij+2] = args[ij];
           }
 
-          args[0] = IsWinNT() ? "cmd.exe" : "command.com" ;
-
+          if ( IsWinNT() )
+            args[0] = "cmd.exe";
+          else
+            args[0] = "command.com" ;
 
           args[1] = "/c";
           result = _spawnvp(_P_WAIT, args[0], args);
@@ -3808,7 +3853,7 @@ extern "C" {
   }
 
 
-#ifdef __CR_WIN__
+#ifdef __BOTHWIN__
   bool IsWinNT()
   {
     OSVERSIONINFO o;

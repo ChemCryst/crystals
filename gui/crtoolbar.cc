@@ -5,6 +5,13 @@
 //   Authors:   Richard Cooper
 //   Created:   26.1.2001 17:10 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1.1.1  2004/12/13 11:16:18  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.7  2004/06/24 09:12:01  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.6  2003/09/16 14:47:47  rich
 //   If toolbar item fails to create, finish parsing any remaining options anyway.
 //

@@ -3,6 +3,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.1.1.1  2004/12/13 11:16:18  rich
+// New CRYSTALS repository
+//
+// Revision 1.34  2004/11/08 16:48:36  stefan
+// 1. Replaces some #ifdef (__WXGTK__) with #if defined(__WXGTK__) || defined(__WXMAC) to make the code compile correctly on the mac version.
+//
 // Revision 1.33  2004/10/07 11:16:05  rich
 // Change _DEBUG to __CRDEBUG__.
 //

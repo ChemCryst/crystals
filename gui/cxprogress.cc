@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper
 //   Created:   05.11.1998 14:24 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1.1.1  2004/12/13 11:16:18  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.15  2004/11/08 16:48:36  stefan
+//   1. Replaces some #ifdef (__WXGTK__) with #if defined(__WXGTK__) || defined(__WXMAC) to make the code compile correctly on the mac version.
+//
 //   Revision 1.14  2004/10/06 13:57:26  rich
 //   Fixes for WXS version.
 //

@@ -5,6 +5,16 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2005/01/12 13:15:56  rich
+//   Fix storage and retrieval of font name and size on WXS platform.
+//   Get rid of warning messages about missing bitmaps and toolbar buttons on WXS version.
+//
+//   Revision 1.1.1.1  2004/12/13 11:16:18  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.24  2004/09/17 14:03:54  rich
+//   Better support for accessing text in Multiline edit control from scripts.
+//
 //   Revision 1.23  2004/06/24 09:12:02  rich
 //   Replaced home-made strings and lists with Standard
 //   Template Library versions.
@@ -343,10 +353,9 @@ void CxMultiEdit::Init()
 
     string temp;
     temp = (CcController::theController)->GetKey( "FontHeight" );
-    if ( temp.length() )
-          pFont->SetPointSize( CRMAX( 2, atoi( temp.c_str() ) ) );
+    if ( temp.length() )  pFont->SetPointSize( CRMAX( 2, atoi( temp.c_str() ) ) );
     temp = (CcController::theController)->GetKey( "FontFace" );
-          pFont->SetFaceName( temp.c_str() );
+    if ( temp.length() )  pFont->SetFaceName( temp.c_str() );
     SetFont ( *pFont );
 #endif
 

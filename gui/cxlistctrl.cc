@@ -499,12 +499,12 @@ void CxListCtrl::ItemChanged( NMHDR * pNMHDR, LRESULT* pResult )
 
         if (pnmv->uNewState <= 1 && pnmv->uOldState >= 2) //Unselect Item.
         {
-          strm << "UNSELECTED_N" << m_originalIndex[(int)pnmv->iItem+1];
+          strm << "UNSELECTED_N" << m_originalIndex[(int)pnmv->iItem] +1;
           ((CrListCtrl*)ptr_to_crObject)->SendValue(strm.str() ); //Send the index
         }
         else if (pnmv->uNewState >= 2 && pnmv->uOldState <= 1) //Select Item
         {
-           strm << "SELECTED_N" << m_originalIndex[(int)pnmv->iItem+1];
+           strm << "SELECTED_N" << m_originalIndex[(int)pnmv->iItem] +1;
            ((CrListCtrl*)ptr_to_crObject)->SendValue( strm.str() ); //Send the index only.
         }
 
@@ -613,7 +613,7 @@ bool CxListCtrl::SortTextItems( int colType, int nCol, bool bAscending)
             break;
         }
         int hold = index[element];
-        int hold2 = m_originalIndex[element];
+        int hold2 = m_originalIndex[element-1];
         bool repeat = true;
         int place;
         for ( place = element - 1; repeat; place-- )
@@ -628,13 +628,13 @@ bool CxListCtrl::SortTextItems( int colType, int nCol, bool bAscending)
                     {
                         repeat              = false;
                         index[place+1]      = hold;
-                        m_originalIndex[place+1] = hold2;
+                        m_originalIndex[place] = hold2;
                         intsToSort[place+1] = intsToSort[0];
                     }
                     else
                     {
                         index[place+1]      = index[place];
-                        m_originalIndex[place+1] = m_originalIndex[place];
+                        m_originalIndex[place] = m_originalIndex[place-1];
                         intsToSort[place+1] = intsToSort[place];
                     }
                     break;
@@ -644,13 +644,13 @@ bool CxListCtrl::SortTextItems( int colType, int nCol, bool bAscending)
                     {
                         repeat                = false;
                         index[place+1]        = hold;
-                        m_originalIndex[place+1]  = hold2;
+                        m_originalIndex[place]  = hold2;
                         floatsToSort[place+1] = floatsToSort[0];
                     }
                     else
                     {
                         index[place+1]        = index[place];
-                        m_originalIndex[place+1] = m_originalIndex[place];
+                        m_originalIndex[place] = m_originalIndex[place-1];
                         floatsToSort[place+1] = floatsToSort[place];
                     }
                     break;
@@ -660,13 +660,13 @@ bool CxListCtrl::SortTextItems( int colType, int nCol, bool bAscending)
                     {
                         repeat                 = false;
                         index[place+1]         = hold;
-                        m_originalIndex[place+1]         = hold2;
+                        m_originalIndex[place]         = hold2;
                         stringsToSort[place+1] = stringsToSort[0];
                     }
                     else
                     {
                         index[place+1]         = index[place];
-                        m_originalIndex[place+1]         = m_originalIndex[place];
+                        m_originalIndex[place]         = m_originalIndex[place-1];
                         stringsToSort[place+1] = stringsToSort[place];
                     }
                     break;
@@ -687,7 +687,7 @@ bool CxListCtrl::SortTextItems( int colType, int nCol, bool bAscending)
                     break;
                 }
                 index[1] = hold;
-                m_originalIndex[1] = hold2;
+                m_originalIndex[0] = hold2;
                 repeat = false;
             }
         }

@@ -7,6 +7,13 @@
 //   Filename:  CrResizeBar.cc
 //   Author:    Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1.1.1  2004/12/13 11:16:18  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.11  2004/06/29 15:15:30  rich
+//   Remove references to unused kTNoMoreToken. Protect against reading
+//   an empty list of tokens.
+//
 //   Revision 1.10  2004/06/24 09:12:01  rich
 //   Replaced home-made strings and lists with Standard
 //   Template Library versions.

@@ -10,7 +10,7 @@ class CcChartEllipse : public CcChartObject
 {
     public:
         bool fill;
-        CcChartEllipse(bool filled = TRUE);
+        CcChartEllipse(bool filled = true);
             CcChartEllipse(bool filled, int ix, int iy, int iw, int ih );
         ~CcChartEllipse();
         void Draw(CrChart* chartToDrawOn);

@@ -6,6 +6,16 @@
 //   Filename:  CxBitmap.cpp
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2005/01/12 13:15:56  rich
+//   Fix storage and retrieval of font name and size on WXS platform.
+//   Get rid of warning messages about missing bitmaps and toolbar buttons on WXS version.
+//
+//   Revision 1.1.1.1  2004/12/13 11:16:18  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.11  2004/11/08 16:48:36  stefan
+//   1. Replaces some #ifdef (__WXGTK__) with #if defined(__WXGTK__) || defined(__WXMAC) to make the code compile correctly on the mac version.
+//
 //   Revision 1.10  2004/10/12 12:11:45  rich
 //   Remove extra slashes from paths.
 //
@@ -39,6 +49,9 @@
 #include    "cccontroller.h"
 #include    "crbitmap.h"
 #include    <iostream>
+#ifdef __BOTHWX__
+#include <sys/stat.h>
+#endif
 
 int     CxBitmap::mBitmapCount = kBitmapBase;
 CxBitmap *        CxBitmap::CreateCxBitmap( CrBitmap * container, CxGrid * guiParent )
@@ -121,7 +134,9 @@ void    CxBitmap::LoadFile( string bitmap, bool transp )
     }
 #endif
 #ifdef __BOTHWX__
-    if ( mbitmap.LoadFile(file.c_str(), wxBITMAP_TYPE_BMP))
+    struct stat buf;
+    if (   ( stat(file.c_str(),&buf)==0 )
+        && ( mbitmap.LoadFile(file.c_str(), wxBITMAP_TYPE_BMP)) )
     {
       noLuck = false;
     }

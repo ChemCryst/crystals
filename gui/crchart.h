@@ -8,6 +8,13 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   10.6.1998 13:06 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1.1.1  2004/12/13 11:16:17  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.10  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.9  2003/05/07 12:18:57  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows

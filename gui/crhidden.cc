@@ -11,6 +11,13 @@
 //   Cx equivalent class.
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1.1.1  2004/12/13 11:16:17  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.3  2004/06/24 09:12:01  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.2  2003/05/07 12:18:57  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows

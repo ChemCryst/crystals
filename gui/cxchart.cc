@@ -8,6 +8,15 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2005/01/17 14:19:37  rich
+//   Bring new repository into line up-to-date with old. (Fix Cameron font face and size.)
+//
+//   Revision 1.2  2005/01/17 09:41:34  rich
+//   Fixed printing in WX version of Cameron.
+//
+//   Revision 1.1.1.1  2004/12/13 11:16:18  rich
+//   New CRYSTALS repository
+//
 //   Revision 1.28  2004/06/28 13:26:57  rich
 //   More Linux fixes, stl updates.
 //
@@ -101,6 +110,7 @@ using namespace std;
 
 #include <cstdlib>
 #include <cstdio>
+#include    <iostream>
 
 
 #ifdef __CR_WIN__
@@ -108,8 +118,10 @@ using namespace std;
 #include <direct.h>
 #endif
 #ifdef __BOTHWX__
+#include <wx/dc.h>
 #include <wx/font.h>
 #include <wx/thread.h>
+#include <wx/printdlg.h>
 // These macros are being defined somewhere. They shouldn't be.
 
 #ifdef GetCharWidth
@@ -152,7 +164,7 @@ CxChart *   CxChart::CreateCxChart( CrChart * container, CxGrid * guiParent )
       CxChart  *theStdChart = new CxChart(container);
       theStdChart->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10));
       theStdChart->newMemDCBitmap = new wxBitmap(10,10);
-      theStdChart->memDC->SelectObject(*(theStdChart->newMemDCBitmap));
+      ((wxMemoryDC*)theStdChart->memDC)->SelectObject(*(theStdChart->newMemDCBitmap));
       theStdChart->memDC->SetBrush( *wxWHITE_BRUSH );
       theStdChart->memDC->Clear();
 #endif
@@ -240,20 +252,21 @@ void    CxChart::SetGeometry( int top, int left, int bottom, int right )
 
       wxClientDC   dc(this);
       
-      memDC->SelectObject(wxNullBitmap);
+      ((wxMemoryDC*)memDC)->SelectObject(wxNullBitmap);
 
       delete newMemDCBitmap;
       delete memDC;
 
       memDC = new wxMemoryDC();
       newMemDCBitmap = new wxBitmap(right-left, bottom-top);
-      memDC->SelectObject(*newMemDCBitmap);
+      ((wxMemoryDC*)memDC)->SelectObject(*newMemDCBitmap);
 
       memDC->SetBrush( *wxWHITE_BRUSH );
       memDC->SetPen( *wxBLACK_PEN );
       memDC->Clear();
 
       SetSize(left,top,right-left,bottom-top);
+      m_client.Set(top,left,bottom,right);
       ((CrChart*)ptr_to_crObject)->ReDrawView();
 #endif
 
@@ -332,22 +345,14 @@ void CxChart::DrawLine(int x1, int y1, int x2, int y2)
 
 CcPoint CxChart::DeviceToLogical(int x, int y)
 {
-      CcPoint      newpoint;
-      float        aspectratio, windowratio;
-
-#ifdef __CR_WIN__
-//      CRect       wwindowext;
-//      GetClientRect(&wwindowext);
-      CcRect       windowext( m_client.mTop, m_client.mLeft, m_client.mBottom, m_client.mRight);
-#endif
-#ifdef __BOTHWX__
-      wxRect wwindowext = GetRect();
-      CcRect windowext( wwindowext.y, wwindowext.x, wwindowext.GetBottom(), wwindowext.GetRight());
-#endif
+    CcPoint newpoint;
+    float   aspectratio, windowratio;
+    CcRect  windowext( m_client.mTop,    m_client.mLeft,
+                       m_client.mBottom, m_client.mRight);
 
     aspectratio = 1;
 
-      windowratio = (float)windowext.mRight / (float)windowext.mBottom;
+    windowratio = (float)windowext.mRight / (float)windowext.mBottom;
 
     if(m_IsoCoords)
     {
@@ -380,8 +385,8 @@ CcPoint CxChart::DeviceToLogical(int x, int y)
 
 CcPoint CxChart::LogicalToDevice(CcPoint point)
 {
-      CcPoint     newpoint;
-    float       aspectratio, windowratio;
+    CcPoint newpoint;
+    float   aspectratio, windowratio;
 
 #ifdef __CR_WIN__
       CRect       wwindowext;
@@ -395,7 +400,7 @@ CcPoint CxChart::LogicalToDevice(CcPoint point)
 
     aspectratio = 1;
 
-      windowratio = (float)windowext.mRight / (float)windowext.mBottom;
+    windowratio = (float)windowext.mRight / (float)windowext.mBottom;
 
     if (aspectratio > windowratio)    //The x coords are okay, ycoords must be
     {                                 //centered and scaled.
@@ -455,25 +460,12 @@ void CxChart::OnPaint()
 #ifdef __BOTHWX__
 void CxChart::OnPaint(wxPaintEvent & event)
 {
-      wxPaintDC dc(this); // device context for painting
-
-      wxRect rect = GetRect();
-
-//      memDC->SelectObject(*newMemDCBitmap);
-
-      dc.Blit( 0,0,rect.GetWidth(),rect.GetHeight(),memDC,0,0,wxCOPY,false);
-
-//      memDC->SelectObject(wxNullBitmap);
-
+    wxPaintDC dc(this); // device context for painting
+    dc.Blit( 0,0,m_client.Width(),m_client.Height(),memDC,0,0,wxCOPY,false);
     if(m_inverted)
-    {
-            wxRect rect = GetRect();
-            dc.Blit( 0,0,rect.GetWidth(),rect.GetHeight(),NULL,0,0,wxINVERT,false);
-    }
+      dc.Blit( 0,0,m_client.Width(),m_client.Height(),NULL,0,0,wxINVERT,false);
 }
 #endif
-
-
 
 void CxChart::SetIdealHeight(int nCharsHigh)
 {
@@ -512,19 +504,13 @@ void CxChart::SetIdealWidth(int nCharsWide)
 void CxChart::Clear()
 {
 #ifdef __CR_WIN__
-//    CRect rect;
-//    GetClientRect (&rect);
     oldMemDCBitmap = memDC->SelectObject(newMemDCBitmap);
     memDC->PatBlt(0, 0, m_client.Width(), m_client.Height(), WHITENESS);
     memDC->SelectObject(oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
-//      ::wxMutexGuiEnter();
-//      memDC->SelectObject(*newMemDCBitmap);
       memDC->SetBrush( *wxWHITE_BRUSH );
       memDC->Clear();
-//      memDC->SelectObject(wxNullBitmap);
-//      ::wxMutexGuiLeave();
 #endif
 }
 
@@ -576,7 +562,7 @@ void CxChart::DrawText(int x, int y, string text)
     oldMemDCBitmap = memDC->SelectObject(newMemDCBitmap);
     CPen        *oldpen = memDC->SelectObject(&pen);
     CFont theFont;
-        theFont.CreatePointFont(110, "Arial" , memDC);
+    theFont.CreatePointFont(110, "Arial Bold" , memDC);
 
     CFont* oldFont = memDC->SelectObject(&theFont);
     memDC->SetBkMode(TRANSPARENT);
@@ -1147,10 +1133,63 @@ void CxChart::OnKeyDown( wxKeyEvent & event )
 void CxChart::MakeMetaFile(int w, int h, bool enhanced)
 {
 }
-void CxChart::PrintPicture() 
+
+#include <wx/dcprint.h>
+#include <wx/print.h>
+
+class MyPrintOut : public wxPrintout {
+  public: 
+   MyPrintOut( CxChart* ptr, wxString & message )
+              :wxPrintout(message) { mp_chart = ptr; }
+   bool OnPrintPage(int pn) { mp_chart->PrintPic(GetDC()); return true;}
+   bool OnBeginDocument(int sPg, int ePg)
+         { if (!wxPrintout::OnBeginDocument(sPg, ePg)) return FALSE; return TRUE; }
+   bool HasPage (int pn ) {return ( pn == 1 );}
+
+   CxChart * mp_chart;
+};
+
+
+void CxChart::PrintPicture()
 {
+    wxString cwd = wxGetCwd();
+    wxString cam = "Cameron";
+
+    MyPrintOut printout ( this, cam);
+    MyPrintOut printout2 ( this, cam);
+
+    wxPrinter p;
+    p.Print(this, &printout);
+
+    CcController::theController->ProcessOutput( "Image sent to printer.");
+
+//If the users saves to a file, it is possible for them to change
+//the Windows working directory. This will confuse CRYSTALS badly.
+//Therefore:
+    wxSetWorkingDirectory(cwd);
+    return;
 }
+
+void CxChart::PrintPic(wxDC* dc)
+{
+      int wx,wy;
+      dc->GetSize(&wx,&wy);
+
+      CcRect backup_m_client = m_client;
+      m_client.Set(0, 0, wy, wx);
+
+      wxDC* temp = memDC;
+      memDC = dc;
+
+      ((CrChart*)ptr_to_crObject)->ReDrawView();
+
+      memDC = temp;
+      m_client = backup_m_client;
+}
+
+
 #endif
+
 #ifdef __CR_WIN__
 void CxChart::MakeMetaFile(int w, int h, bool enhanced)
 {
@@ -1259,6 +1298,8 @@ void CxChart::PrintPicture()
 
       memDC = &printDC;
       ((CrChart*)ptr_to_crObject)->ReDrawView();
+
+
       memDC = backup_memDC;
       m_client = backup_m_client;
 

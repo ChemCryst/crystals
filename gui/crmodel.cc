@@ -6,6 +6,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1.1.1  2004/12/13 11:16:18  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.34  2004/11/09 09:45:03  rich
+//   Removed some old stuff. Don't use displaylists on the Mac version.
+//
 //   Revision 1.33  2004/06/29 15:15:30  rich
 //   Remove references to unused kTNoMoreToken. Protect against reading
 //   an empty list of tokens.

@@ -38,6 +38,8 @@ CxModList *    CxModList::CreateCxModList( CrModList * container, CxGrid * guiPa
     return theModList;
 }
 
+
+
 CxModList::CxModList( CrModList * container )
       : BASEMODLIST()
 {
@@ -49,6 +51,8 @@ CxModList::CxModList( CrModList * container )
     bSortAscending = true;
     m_ProgSelecting = 0;
 }
+
+
 
 void CxModList::AddCols()
 {
@@ -86,10 +90,14 @@ void CxModList::AddCols()
 }
 
 
+
+
 CxModList::~CxModList()
 {
     RemoveModList();
 }
+
+
 
 
 void    CxModList::SetVisibleLines( int lines )
@@ -153,6 +161,9 @@ END_MESSAGE_MAP()
 #ifdef __BOTHWX__
 BEGIN_EVENT_TABLE(CxModList, wxListCtrl)
      EVT_CHAR( CxModList::OnChar )
+     EVT_LIST_ITEM_SELECTED(-1, CxModList::ItemSelected )
+     EVT_LIST_ITEM_DESELECTED(-1, CxModList::ItemDeselected )
+     EVT_LIST_ITEM_RIGHT_CLICK(-1, CxModList::RightClick )
 END_EVENT_TABLE()
 #endif
 
@@ -166,6 +177,8 @@ CXONCHAR(CxModList)
 
 
 
+
+
 void CxModList::AddRow(int id, vector<string> & rowOfStrings, bool selected,
                                bool disabled)
 {
@@ -176,28 +189,33 @@ void CxModList::AddRow(int id, vector<string> & rowOfStrings, bool selected,
       {
         if ( IDlist[i] == id )
         {
-            for( int j=0; j<m_numcols; j++)
 #ifdef __CR_WIN__
+            for( int j=0; j<m_numcols; j++) {
                 SetItemText( i, j, rowOfStrings[j].c_str());
-#endif
-#ifdef __BOTHWX__
-                SetItem( i, j, rowOfStrings[j].c_str());
-#endif
-
+            }
             if ( selected )
-#ifdef __CR_WIN__
                SetItemState(i, LVIS_SELECTED, LVIS_SELECTED);
-#endif
-#ifdef __BOTHWX__
-               SetItemState(i, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
-#endif
             else
-#ifdef __CR_WIN__
                SetItemState(i, 0, LVIS_SELECTED);
 #endif
+
+
 #ifdef __BOTHWX__
-               SetItemState(i, 0, wxLIST_STATE_SELECTED);
+            wxListItem info;
+            info.m_mask = wxLIST_MASK_STATE || wxLIST_MASK_TEXT;
+            info.m_itemId = i;
+            if ( selected )
+               info.m_state = wxLIST_STATE_SELECTED;
+            else
+               info.m_state = 0;
+
+            for( int j=0; j<m_numcols; j++) {
+              info.m_text = rowOfStrings[j].c_str();
+              info.m_col = j;
+              SetItem( info );
+            }
 #endif
+
             return;
         }
       }
@@ -251,6 +269,9 @@ void CxModList::AddRow(int id, vector<string> & rowOfStrings, bool selected,
 
     return;
 }
+
+
+
 
 
 #ifdef __CR_WIN__
@@ -529,6 +550,33 @@ void CxModList::ItemChanged( NMHDR * pNMHDR, LRESULT* pResult )
 
 
     }
+}
+#endif
+
+#ifdef __BOTHWX__
+
+void CxModList::ItemSelected ( wxListEvent& event )
+{
+  int item = event.m_itemIndex;
+  ostringstream strm;
+  strm << "SELECTED_N" << item + 1;
+  ((CrModList*)ptr_to_crObject)->SendValue( strm.str() ); //Send the index only.
+
+  int id = IDlist[item]-1;
+//  TEXTOUT ( "Select. item=" + string(item) + ", id=" + string(id) );
+  ((CrModList*)ptr_to_crObject)->SelectAtomByPosn(id,true);
+}
+
+void CxModList::ItemDeselected ( wxListEvent& event )
+{
+  int item = event.m_itemIndex;
+  ostringstream strm;
+  strm << "UNSELECTED_N" << item + 1;
+  ((CrModList*)ptr_to_crObject)->SendValue( strm.str() ); //Send the index
+
+  int id = IDlist[item]-1;
+//  TEXTOUT ( "Unselect. item=" + string(item) + ", id=" + string(id) );
+  ((CrModList*)ptr_to_crObject)->SelectAtomByPosn(id,false);
 }
 #endif
 
@@ -1013,7 +1061,7 @@ void CxModList::Update(int newsize)
 //       SendMessage((HWND)GetHWND(),WM_SETREDRAW,FALSE,0);
        ((CrModList*)ptr_to_crObject)->DocToList();
 //       SendMessage((HWND)GetHWND(),WM_SETREDRAW,TRUE,0);
-       Refresh();
+//       Refresh();
 #endif
 
 }
@@ -1070,6 +1118,43 @@ void CxModList::RightClick( NMHDR * pNMHDR, LRESULT* pResult )
 }
 #endif
 
+#ifdef __BOTHWX__
+void CxModList::RightClick( wxListEvent& event )
+{
+ int item = event.m_itemIndex;
+
+ wxPoint p = event.GetPoint();
+
+ int px = p.x;
+ int py = p.y;
+
+ if ( item >= 0 )
+ {
+   wxListItem li = event.GetItem();
+
+   bool bHighlight = (li.GetState() & wxLIST_STATE_SELECTED) != 0;
+
+   int id = IDlist[item]-1;
+
+   if ( bHighlight )
+   {
+//item is selected, but only one: show SINGLE menu.
+//item is selected, more than one: show GROUP menu. Let Cr decide.
+    ((CrModList*)ptr_to_crObject)->ContextMenu(px, py, id, 2);
+   }
+   else
+   {
+//item is not selected: show SINGLE menu.
+    ((CrModList*)ptr_to_crObject)->ContextMenu(px, py, id, 3);
+   }
+  }
+  else
+  {
+//Click missed all items: show NONE menu.
+    ((CrModList*)ptr_to_crObject)->ContextMenu(px, py, -1, 1);
+  }
+}
+#endif
 
 #ifdef __CR_WIN__
 void CxModList::OnMenuSelected(UINT nID)

@@ -1,20 +1,28 @@
 // crystals.cpp : Defines the class behaviors for the application.
 //
 
-#ifdef __CR_WIN__
-#include "stdafx.h"
-#include <cstdlib>
-#endif
-#ifdef __BOTHWX__
-#include <wx/event.h>
-#include <wx/app.h>
-#endif
-
 #include "crystalsinterface.h"
 #include "crystals.h"
 #include <string>
 #include <iostream>
 using namespace std;
+
+
+#ifdef __CR_WIN__
+  #include "stdafx.h"
+  #include <cstdlib>
+#endif
+
+#ifdef __BOTHWX__
+  #include <wx/event.h>
+  #include <wx/app.h>
+  #include <wx/config.h>
+#endif
+
+#ifdef __WXMSW__
+  #include <wx/msw/regconf.h>
+#endif
+
 
 #include "ccrect.h"
 #include "cccontroller.h"
@@ -71,9 +79,9 @@ using namespace std;
     CWinApp::InitInstance();
 
   // The user can override the ini file settings by setting
-  // CRYSDIR to the crystals directory, and USECRYSDIR to anything.
+  // CRYSDIR to the crystals directory.
 
-    if ( getenv("USECRYSDIR") == nil )
+    if ( getenv("CRYSDIR") == nil )
     {
 
  // Use the registry to fetch keys.
@@ -203,17 +211,17 @@ using namespace std;
   #endif
 
 #if defined(__WXMAC__)
-#include <Carbon/Carbon.h>
-#include <stdlib.h>
-#include <iostream>
+  #include <Carbon/Carbon.h>
+  #include <stdlib.h>
+  #include <iostream>
 
-const string macWorkingDir()
-{
-  NavDialogCreationOptions tDialogOptions;
-  NavDialogRef tDialog; 
-  NavReplyRecord tReply;
+  const string macWorkingDir()
+  {
+   NavDialogCreationOptions tDialogOptions;
+   NavDialogRef tDialog; 
+   NavReplyRecord tReply;
 
-  if (NavGetDefaultDialogCreationOptions(&tDialogOptions) == noErr)
+   if (NavGetDefaultDialogCreationOptions(&tDialogOptions) == noErr)
     {
       tDialogOptions.windowTitle = CFSTR("Select Working Directory");
       tDialogOptions.actionButtonLabel = CFSTR("Choose");
@@ -248,18 +256,17 @@ const string macWorkingDir()
 	  exit(0);
 	}
     }
-  std::cerr << "There was an error when setting up the working directly dialog.\n";
-  exit(0);
-  return string();
-}
+   std::cerr << "There was an error when setting up the working directly dialog.\n";
+   exit(0);
+   return string();
+  }
 
-void macSetCRYSDIR(const char* pPath)
-{
-  string tResources = pPath;
-  tResources = "CRYSDIR=" + tResources + "/Crystals_Resources/";
-  putenv(tResources.c_str()); 
-}
-
+  void macSetCRYSDIR(const char* pPath)
+  {
+    string tResources = pPath;
+    tResources = "CRYSDIR=" + tResources + "/Crystals_Resources/";
+    putenv(tResources.c_str()); 
+  }
 #endif    
 
   bool CCrystalsApp::OnInit()
@@ -267,7 +274,8 @@ void macSetCRYSDIR(const char* pPath)
     string directory;
     string dscfile;
 
-#if defined(__WXMAC__)    
+
+#if defined(__WXMAC__)
     UInt8 tPath[PATH_MAX];
     if (getenv("FINDER") != NULL)
       {
@@ -275,18 +283,32 @@ void macSetCRYSDIR(const char* pPath)
 	directory += "/";
       }
     CFURLGetFileSystemRepresentation(CFBundleCopyResourcesDirectoryURL(CFBundleGetMainBundle()), true, tPath, PATH_MAX); 
-    if (getenv("USECRYSDIR") == NULL)
+    if (getenv("CRYSDIR") == NULL)
     {
       macSetCRYSDIR((char*)tPath);
     }
-    else
-      {
-	if (strcmp(getenv("USECRYSDIR"), "TRUE") != 0)
-	  {
-	    macSetCRYSDIR((char*)tPath);
-	  }
-      }
 #endif
+
+
+    if ( getenv("CRYSDIR") == nil )
+    {
+
+ // Use the registry to fetch keys.
+      string location;
+      wxString str;
+      wxConfig * config = new wxConfig("Chem Cryst");
+      if ( config->Read("Crystals/Crysdir", &str ) ) {
+        location = str.c_str();
+      }
+      delete config;
+      location = location.insert( 0, "CRYSDIR=" );
+      char * env = new char[location.size()+1];
+      std::strcpy(env, location.c_str());
+      stringlist.push_back(env);
+      putenv( env );
+    }
+
+
     for ( int i = 1; i < argc; i++ )
     {
       string command = argv[i];
@@ -370,6 +392,19 @@ void macSetCRYSDIR(const char* pPath)
   }
 
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -5,6 +5,12 @@
 ////////////////////////////////////////////////////////////////////////
 
 // $Log: not supported by cvs2svn $
+// Revision 1.1.1.1  2004/12/13 11:16:17  rich
+// New CRYSTALS repository
+//
+// Revision 1.16  2004/07/02 11:56:01  rich
+// remove unused variables
+//
 // Revision 1.15  2004/06/28 13:26:57  rich
 // More Linux fixes, stl updates.
 //

@@ -9,6 +9,15 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2005/01/12 16:11:31  rich
+//   Use system metrics if available under WX. (Probably still not on MAC).
+//
+//   Revision 1.1.1.1  2004/12/13 11:16:18  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.38  2004/11/11 14:39:18  stefan
+//   1. Mac application files
+//
 //   Revision 1.37  2004/11/08 16:48:36  stefan
 //   1. Replaces some #ifdef (__WXGTK__) with #if defined(__WXGTK__) || defined(__WXMAC) to make the code compile correctly on the mac version.
 //
@@ -637,9 +646,15 @@ void CxWindow::AdjustSize(CcRect * size)
 //       int cH = 15;
 //       int bT = 4;
 // They are now:
-      int mN = ( GetMenuBar() != NULL ) ? wxSystemSettings::GetMetric(wxSYS_MENU_Y) : 0;
+      int mN = wxSystemSettings::GetMetric(wxSYS_MENU_Y);
       int cH = wxSystemSettings::GetMetric(wxSYS_CAPTION_Y);
       int bT = wxSystemSettings::GetMetric(wxSYS_FRAMESIZE_X);
+
+      cH = cH ? cH : 15;  // If cH not found, use 15 instead.
+      bT = bT ? bT : 4;   // If bT not found, use 4.
+      mN = mN ? mN : 20;  // If mN not foumd, use 20.
+
+      mN = GetMenuBar() ? mN : 0; // If no menubar, set to zero.
 #endif
  
     size->mRight  = size->Right()  + (2*bT);

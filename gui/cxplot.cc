@@ -9,6 +9,12 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1.1.1  2004/12/13 11:16:18  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.31  2004/06/28 13:26:57  rich
+//   More Linux fixes, stl updates.
+//
 //   Revision 1.30  2004/06/25 12:49:11  rich
 //   Make popup menus appear in the right place on plots under
 //   wxWindows
@@ -691,8 +697,8 @@ CcPoint CxPlot::GetTextArea(int fontsize, string text, int param)
     
     if(param & TEXT_ANGLE)
     {
-        cx = (int)(cx/sqrt(2));
-        cx = (int)(cx/sqrt(2));
+        cx = (int)(cx/1.41421);
+        cy = (int)(cx/1.41421);
     }
     else if(param & TEXT_VERTICAL)
     {

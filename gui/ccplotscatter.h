@@ -8,6 +8,16 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   10.11.2001 10:15
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2005/01/14 12:10:58  rich
+//   Fixed reflection indices for omitted reflections in Fo vs Fc graph.
+//
+//   Revision 1.1.1.1  2004/12/13 11:16:17  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.14  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.13  2003/05/07 12:18:56  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -76,6 +86,8 @@ class CcPlotScatter : public CcPlotData
         void CreateSeries(int numser, vector<int> & type);
         void AddSeries(int type, int length);
         void ExtendSeriesLength(int ser);
+
+        bool series_has_independent_labels;
 };
 
 

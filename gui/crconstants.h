@@ -5,6 +5,12 @@
 //   Created:   22.7.1998 10:41 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.1.1.1  2004/12/13 11:16:17  rich
+// New CRYSTALS repository
+//
+// Revision 1.21  2004/09/17 14:03:54  rich
+// Better support for accessing text in Multiline edit control from scripts.
+//
 // Revision 1.20  2004/06/29 15:15:30  rich
 // Remove references to unused kTNoMoreToken. Protect against reading
 // an empty list of tokens.

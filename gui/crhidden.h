@@ -8,6 +8,13 @@
 //   Authors:   Richard Cooper
 //   Created:   23.2.2001 11:35
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1.1.1  2004/12/13 11:16:17  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.2  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.1  2002/05/14 17:07:10  richard
 //   New GUI control CrHidden (HIDDENSTRING) is completely transparent and small, but
 //   will store a text string, so that, for example you can pass data from one script

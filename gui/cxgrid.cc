@@ -8,6 +8,17 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2005/01/12 13:15:56  rich
+//   Fix storage and retrieval of font name and size on WXS platform.
+//   Get rid of warning messages about missing bitmaps and toolbar buttons on WXS version.
+//
+//   Revision 1.1.1.1  2004/12/13 11:16:18  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.17  2004/06/24 09:12:01  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.16  2004/05/13 14:51:47  rich
 //   Removed debug print.
 //
@@ -88,29 +99,11 @@ CxGrid *    CxGrid::CreateCxGrid( CrGrid * container, CxGrid * guiParent )
         theGrid->SetFont(CcController::mp_font);
   }
 #endif
+
 #ifdef __BOTHWX__
   theGrid->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10));
   theGrid->Show(true);
   mGridCount++;
-
-
-    wxFont* pFont = new wxFont(12,wxMODERN,wxNORMAL,wxNORMAL);
-
-#ifndef _WINNT
-    *pFont = wxSystemSettings::GetSystemFont( wxSYS_ANSI_FIXED_FONT );
-#else
-    *pFont = wxSystemSettings::GetSystemFont( wxDEVICE_DEFAULT_FONT );
-#endif  // !_WINNT
-
-    string temp;
-    temp = (CcController::theController)->GetKey( "FontHeight" );
-    if ( temp.length() )
-          pFont->SetPointSize( CRMAX( 2, atoi( temp.c_str() ) ) );
-    temp = (CcController::theController)->GetKey( "FontFace" );
-          pFont->SetFaceName( temp.c_str() );
-
-
-
 #endif
   return theGrid;
 }

@@ -7,6 +7,13 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:44
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1.1.1  2004/12/13 11:16:18  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.2  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.1  2001/02/26 12:02:14  richard
 //   New toolbar classes.
 //

@@ -7,6 +7,12 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.1.1.1  2004/12/13 11:16:18  rich
+//  New CRYSTALS repository
+//
+//  Revision 1.36  2004/11/09 09:45:03  rich
+//  Removed some old stuff. Don't use displaylists on the Mac version.
+//
 //  Revision 1.35  2004/06/24 09:12:02  rich
 //  Replaced home-made strings and lists with Standard
 //  Template Library versions.

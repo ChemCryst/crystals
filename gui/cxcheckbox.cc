@@ -5,6 +5,13 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1.1.1  2004/12/13 11:16:19  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.13  2004/06/24 09:12:01  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.12  2004/05/13 09:16:12  rich
 //   I must release the device context after 'get'ting it during GetIdealHeight
 //   and width calls.

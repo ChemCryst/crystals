@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1.1.1  2004/12/13 11:16:18  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.37  2004/10/08 09:01:16  rich
+//   Fix window being deleted from list bug.
+//
 //   Revision 1.36  2004/06/29 15:15:30  rich
 //   Remove references to unused kTNoMoreToken. Protect against reading
 //   an empty list of tokens.

@@ -5,6 +5,16 @@
 //   Authors:   Richard Cooper
 //   Created:   23.1.2001 23:38
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2005/01/13 10:43:49  rich
+//   Fix tab layout on WXS version - I think this was changed previously to fix
+//   the MAC version, so some machine specific code will be required.
+//
+//   Revision 1.1.1.1  2004/12/13 11:16:18  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.10  2004/11/11 14:39:18  stefan
+//   1. Mac application files
+//
 //   Revision 1.9  2004/10/08 10:03:24  rich
 //   Tab change notification not required under wxWin. Fix tab sizing by including
 //   some space at the bottom.
@@ -152,7 +162,9 @@ int CxTab::GetTabsHeight()
 #ifdef __BOTHWX__
    wxSize mySize;
    mySize = CalcSizeFromPage(wxSize(0,0));
+   // std::cout << "mySize.y " << mySize.y;
    return mySize.y;
+   //return 0;
 #endif
 }
 
@@ -170,7 +182,7 @@ int CxTab::GetTabsExtraVSpace()
   return work.bottom + 10; //Good space at bottom.
 #endif
 #ifdef __BOTHWX__
-  return 10;
+  return 30;
 #endif
 }
 

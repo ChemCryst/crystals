@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1.1.1  2004/12/13 11:16:17  rich
+//   New CRYSTALS repository
+//
+//   Revision 1.8  2004/07/02 15:10:13  rich
+//   Fixed conditional enabling and disabling of menu and toolbar items.
+//
 //   Revision 1.7  2004/06/28 13:26:57  rich
 //   More Linux fixes, stl updates.
 //
