@@ -334,211 +334,263 @@ C IDOUT WILL BE SET ONCE A DISTANCE HAS BEEN OUTPUTTED
       IDOUT = 0
       INPOS = IRLAST + NDIST2*4
       DO 30 I = 1,NDIST1
-      II = IRLAST + (I-1)*4
-      DO 40 J = NDIST1+1,NDIST2
-        JJ =  IRLAST + (J-1)*4
-        NAT = 0
+        II = IRLAST + (I-1)*4
+        DO 40 J = NDIST1+1,NDIST2
+          JJ =  IRLAST + (J-1)*4
+          NAT = 0
 C DONT CALCULATE DISTANCES BETWEEN THE SAME ATOMS.
 C        IF (NINT(RSTORE(II)).EQ.NINT(RSTORE(JJ))) GOTO 40
 C GET COORDINATES
-        DO 50 K = 1,3
-          X1(K) = RSTORE (II + K)
-          X2(K) = RSTORE (JJ + K)
+          DO 50 K = 1,3
+            X1(K) = RSTORE (II + K)
+            X2(K) = RSTORE (JJ + K)
 50        CONTINUE
-        CALL ZMATV (ORTH,X1,X1)
-        DO 60 ISYMM = 1 , NSYMM
-          IF (IPACK.EQ.0) THEN
-            CALL ZMOVE (RSTORE(ITOT-(ISYMM*16)),SYMM,16)
-            DO 70 L = 1 , 3
-            X3(L) = SYMM(L,1) * X2(1) + SYMM(L,2)*X2(2) +
+
+c          WRITE(CLINE,'(A,6F8.3)')'CRDs: ',(X1(K),K=1,3),(X2(K),K=1,3)
+c          CALL ZMORE(CLINE,1)
+
+          CALL ZMATV (ORTH,X1,X1)
+          DO 60 ISYMM = 1 , NSYMM
+            IF (IPACK.EQ.0) THEN
+              CALL ZMOVE (RSTORE(ITOT-(ISYMM*16)),SYMM,16)
+              DO 70 L = 1 , 3
+                X3(L) = SYMM(L,1) * X2(1) + SYMM(L,2)*X2(2) +
      c                  SYMM(L,3) * X2(3) + SYMM(L,4)
 70            CONTINUE
+
+c              WRITE(CLINE,'(A,3F8.3,I4)')'Trn2: ',(X3(K),K=1,3),ISYMM
+c              CALL ZMORE(CLINE,1)
+
 C WE ALSO NEED TO TRANSLATE THE ATOM.
 C FIND THE START POINT
-          ELSE
-            CALL ZMOVE (X2,X3,3)
-          ENDIF
-          CALL ZZEROI (IMX,3)
-          CALL ZZEROI (IMX1,3)
-          K = 1
-80          CONTINUE
-          X4(1) = X3(1) + IMX(1)
-          X4(2) = X3(2) + IMX(2)
-          X4(3) = X3(3) + IMX(3)
-C CALCULATE THE ORTHOGONAL COORDINATES
-          CALL ZMATV (ORTH,X4,X5)
-          IF (X1(K)-X5(K).LT.DISEND) THEN
-            IMX(K) = IMX(K) - 1
-            GOTO 80
-          ENDIF
-C LOOK AT NEXT AXIS
-          K = K + 1
-          IF (K.LT.4) GOTO 80
-          IMX(1) = IMX(1) + 1
-          IMX(2) = IMX(2) + 1
-          IMX(3) = IMX(3) + 1
-C CALCULATE THE DISTANCE AT THE START POINT
-          X4(1) = X3(1) + IMX(1)
-          X4(2) = X3(2) + IMX(2)
-          X4(3) = X3(3) + IMX(3)
-          CALL ZMATV (ORTH,X4,X5)
-          D = (X1(1)-X5(1))**2 + (X1(2)-X5(2))**2 + (X1(3)-X5(3))**2
-          IF ((D.LE.DMAX).AND.(D.GE.DMIN)) THEN
-C GET THE LABELS
-            ILAB1 = (NINT(RSTORE(II))-ISINIT)/IPACKT + ICATOM
-            IL = INDEX ( CSTORE(ILAB1) , ' ') - 1
-            CALL ZPLABL (NINT(RSTORE(II)),CLAB,IL)
-            ILAB2 = (NINT(RSTORE(JJ))-ISINIT)/IPACKT + ICATOM
-C IS THIS A ZERO DISTANCE?
-            IF (ABS(D).LT.0.00001) THEN
-            IF (CSTORE(ILAB1).EQ.CSTORE(ILAB2)) GOTO 140
+            ELSE
+              CALL ZMOVE (X2,X3,3)
             ENDIF
+            CALL ZZEROI (IMX,3)
+            CALL ZZEROI (IMX1,3)
+            K = 1
+80          CONTINUE
+            X4(1) = X3(1) + IMX(1)
+            X4(2) = X3(2) + IMX(2)
+            X4(3) = X3(3) + IMX(3)
+C CALCULATE THE ORTHOGONAL COORDINATES
+            CALL ZMATV (ORTH,X4,X5)
+
+c            WRITE(CLINE,'(A,6F8.3,1x,I4)')'ORTs: ',(X1(KRC),KRC=1,3),
+c     1       (X5(KRC),KRC=1,3),K
+c            CALL ZMORE(CLINE,1)
+
+C Work out distance between atoms in direction of current axis, k,
+C in fractional coords.
+            FRCDIF = RSTORE (II+K) - X4(K)
+C Work out what this fractional distance is in Angstroms (keeping sign)
+            ANGDIF = FRCDIF * RSTORE(ICRYST+K-1)
+
+c            WRITE(CLINE,'(A,I4,3F9.4)')'K, FRC, ANGs, CELL: ',
+c     1       K, FRCDIF, ANGDIF, RSTORE(ICRYST+K-1)
+c            CALL ZMORE(CLINE,1)
+
+
+C            IF (X1(K)-X5(K).LT.DISEND) THEN !If X5 too large, move back one cell
+            IF ( ANGDIF .LT. DISEND ) THEN
+              IMX(K) = IMX(K) - 1
+              GOTO 80
+            ENDIF
+C LOOK AT NEXT AXIS
+            K = K + 1
+            IF (K.LT.4) GOTO 80
+            IMX(1) = IMX(1) + 1
+            IMX(2) = IMX(2) + 1
+            IMX(3) = IMX(3) + 1
+C CALCULATE THE DISTANCE AT THE START POINT
+            X4(1) = X3(1) + IMX(1)
+            X4(2) = X3(2) + IMX(2)
+            X4(3) = X3(3) + IMX(3)
+
+c            WRITE(CLINE,'(A,3F8.3,1x,3I4)')'FCRD: ',(X4(KRC),KRC=1,3),
+c     1      (IMX(KRC),KRC=1,3)
+c            CALL ZMORE(CLINE,1)
+
+            CALL ZMATV (ORTH,X4,X5)
+
+c            WRITE(CLINE,'(A,3F8.3)')'FORT: ',(X5(KRC),KRC=1,3)
+c            CALL ZMORE(CLINE,1)
+
+            D = (X1(1)-X5(1))**2 + (X1(2)-X5(2))**2 + (X1(3)-X5(3))**2
+
+c            WRITE(CLINE,'(A,3F9.3)')'D,DMIN,DMAX: ',D,DMIN,DMAX
+c            CALL ZMORE(CLINE,1)
+
+            IF ((D.LE.DMAX).AND.(D.GE.DMIN)) THEN
+C GET THE LABELS
+              ILAB1 = (NINT(RSTORE(II))-ISINIT)/IPACKT + ICATOM
+              IL = INDEX ( CSTORE(ILAB1) , ' ') - 1
+              CALL ZPLABL (NINT(RSTORE(II)),CLAB,IL)
+              ILAB2 = (NINT(RSTORE(JJ))-ISINIT)/IPACKT + ICATOM
+C IS THIS A ZERO DISTANCE?
+              IF (ABS(D).LT.0.00001) THEN
+                IF (CSTORE(ILAB1).EQ.CSTORE(ILAB2)) GOTO 140
+              ENDIF
 C HAVE WE USED THIS ATOM IN THIS POSITION BEFORE -
 C CHECK SPECIAL POSITIONS
-            IF (IPACK.EQ.0) THEN
-            IF (NINT(RSTORE(NINT(RSTORE(JJ))+ISYM)).EQ.1) THEN
-              DO 120 JJJ = 0 , NAT-1
-                NN = 0
-                DO 130 JJJJ = 0,2
-                  IF (ABS(RSTORE(INPOS+JJJ*3+JJJJ)-X4(JJJJ+1))
-     c                .LT.0.00001) NN = NN + 1
-130                 CONTINUE
+              IF (IPACK.EQ.0) THEN
+                IF (NINT(RSTORE(NINT(RSTORE(JJ))+ISYM)).EQ.1) THEN
+                  DO 120 JJJ = 0 , NAT-1
+                      NN = 0
+                      DO 130 JJJJ = 0,2
+                        IF (ABS(RSTORE(INPOS+JJJ*3+JJJJ)-X4(JJJJ+1))
+     c                    .LT.0.00001) NN = NN + 1
+130                   CONTINUE
 C THIS ATOM HAS ALREADY BEEN USED
-                IF (NN.EQ.3) GOTO 140
+                      IF (NN.EQ.3) GOTO 140
 120               CONTINUE
 C OTHERWISE STORE THE INFO
-              DO 150 JJJJ = 0 , 2
-                RSTORE(INPOS+NAT*3+JJJJ) = X4(JJJJ+1)
+                  DO 150 JJJJ = 0 , 2
+                      RSTORE(INPOS+NAT*3+JJJJ) = X4(JJJJ+1)
 150               CONTINUE
-              NAT = NAT + 1
-            ENDIF
-C NOW SEE IF THE ATOM EXISTS ALREADY
-            DO 90 LL = ISVIEW+IPACKT*8, IFVIEW-1, IPACKT
-              IF (ABS(RSTORE(LL+IXYZO)-X5(1)).LT.0.0001) THEN
-                IF (((IHAND.EQ.0)
-     c   .AND.(ABS(RSTORE(LL+IXYZO+1)-X5(2)).LT.0.0001)).OR.
-     c ((IHAND.EQ.1).AND.(ABS(-RSTORE(LL+IXYZO+1)-X5(2)).LT.0.0001)))
-     c    THEN
-                   IF (ABS(RSTORE(LL+IXYZO+2)-X5(3)).LT.0.0001) THEN
-C CHECK THE ATOM NAME IS THE SAME
-                  LLL = (LL-ISINIT)/IPACKT + ICATOM
-                  IF (CSTORE(LLL).EQ.CSTORE(ILAB2)) THEN
-C WE HAVE FOUND THE ATOM!
-                    IL = INDEX ( CSTORE(LLL),' ') - 1
-                    CALL ZPLABL (LL,CLAB1,IL)
-                    GOTO 91
-                  ENDIF
-                  ENDIF
+                  NAT = NAT + 1
                 ENDIF
-              ENDIF
+C NOW SEE IF THE ATOM EXISTS ALREADY
+                DO 90 LL = ISVIEW+IPACKT*8, IFVIEW-1, IPACKT
+                    IF (ABS(RSTORE(LL+IXYZO)-X5(1)).LT.0.0001) THEN
+                      IF (((IHAND.EQ.0)
+     c       .AND.(ABS(RSTORE(LL+IXYZO+1)-X5(2)).LT.0.0001)).OR.
+     c   ((IHAND.EQ.1).AND.(ABS(-RSTORE(LL+IXYZO+1)-X5(2)).LT.0.0001)))
+     c              THEN
+                        IF(ABS(RSTORE(LL+IXYZO+2)-X5(3)).LT.0.0001)THEN
+C CHECK THE ATOM NAME IS THE SAME
+                          LLL = (LL-ISINIT)/IPACKT + ICATOM
+                          IF (CSTORE(LLL).EQ.CSTORE(ILAB2)) THEN
+C WE HAVE FOUND THE ATOM!
+                            IL = INDEX ( CSTORE(LLL),' ') - 1
+                            CALL ZPLABL (LL,CLAB1,IL)
+                            GOTO 91
+                          ENDIF
+                        ENDIF
+                      ENDIF
+                    ENDIF
 90              CONTINUE
-            CLAB1 = CSTORE(ILAB2)
+                CLAB1 = CSTORE(ILAB2)
 91              CONTINUE
-            ELSE
+              ELSE
 C WORK OUT THE PACK LABEL FROM THE ATOM POSITION
-            LLL = (RSTORE(JJ)-IRATOM)/IPACKT + ICATOM
-            IL = INDEX(CSTORE(LLL),' ')-1
-            CALL ZPLABL (NINT(RSTORE(JJ)),CLAB1,IL)
-            ENDIF
-            D = SQRT (D)
-            IF (IPACK.EQ.0) THEN
-            CALL ZSOUT (SYMM,SWORD,ISLEN)
+                LLL = (RSTORE(JJ)-IRATOM)/IPACKT + ICATOM
+                IL = INDEX(CSTORE(LLL),' ')-1
+                CALL ZPLABL (NINT(RSTORE(JJ)),CLAB1,IL)
+              ENDIF
+              D = SQRT (D)
+              IF (IPACK.EQ.0) THEN
+                CALL ZSOUT (SYMM,SWORD,ISLEN)
 CRIC99 ISLEN is one char too long.
-            ISLEN=ISLEN-1
-            ENDIF
+                  ISLEN=ISLEN-1
+              ENDIF
 cdjwfeb2000 ------------------------------------------------------
-            IF (IPACK.EQ.0) THEN
-             WRITE (CLINE,12) CLAB,CLAB1,D,' ',SWORD(1:ISLEN),IMX
-            else
-             WRITE (CLINE,12) CLAB,CLAB1,D
-            ENDIF
-            CALL ZMORE(CLINE,2)
-            CALL ZMORE1(CLINE,2)
-12          FORMAT(A12,1X,A12,1X,F7.4,a,'Operator ',A,' trans',3I3)
+              IF (IPACK.EQ.0) THEN
+                  WRITE (CLINE,12) CLAB,CLAB1,D,' ',SWORD(1:ISLEN),IMX
+              else
+                  WRITE (CLINE,12) CLAB,CLAB1,D
+              ENDIF
+              CALL ZMORE(CLINE,2)
+              CALL ZMORE1(CLINE,2)
+12            FORMAT(A12,1X,A12,1X,F7.4,a,'Operator ',A,' trans',3I3)
 cdjwfeb2000 -------------------------------------------------------
-            IDOUT = 1
-          ENDIF
+              IDOUT = 1
+            ENDIF
 140         CONTINUE
 C NOW WE HAVE TO MOVE AROUND RELATIVE TO THE START POINT
-          K = 3
+            K = 3
 100         CONTINUE
-          IMX1(K) = IMX1(K) + 1
-          X4(1) = X3(1) + IMX(1) + IMX1(1)
-          X4(2) = X3(2) + IMX(2) + IMX1(2)
-          X4(3) = X3(3) + IMX(3) + IMX1(3)
-          CALL ZMATV (ORTH,X4,X5)
-          D = (X1(1)-X5(1))**2 + (X1(2)-X5(2))**2 + (X1(3)-X5(3))**2
-          IF ((D.LE.DMAX).AND.(D.GE.DMIN)) THEN
+            IMX1(K) = IMX1(K) + 1
+            X4(1) = X3(1) + IMX(1) + IMX1(1)
+            X4(2) = X3(2) + IMX(2) + IMX1(2)
+            X4(3) = X3(3) + IMX(3) + IMX1(3)
+
+c            WRITE(CLINE,'(A,3F8.3,1x,6I4)')'MOVF: ',(X4(KRC),KRC=1,3),
+c     1      (IMX(KRC),KRC=1,3),(IMX1(KRC),KRC=1,3)
+c            CALL ZMORE(CLINE,1)
+
+            CALL ZMATV (ORTH,X4,X5)
+
+c            WRITE(CLINE,'(A,3F8.3)')'MOVO: ',(X5(KRC),KRC=1,3)
+c            CALL ZMORE(CLINE,1)
+
+            D = (X1(1)-X5(1))**2 + (X1(2)-X5(2))**2 + (X1(3)-X5(3))**2
+
+
+c            WRITE(CLINE,'(A,3F9.3)')'D2,DMIN,DMAX:',D,DMIN,DMAX
+c            CALL ZMORE(CLINE,1)
+
+            IF ((D.LE.DMAX).AND.(D.GE.DMIN)) THEN
 C GET THE LABELS
-            ILAB1 = (NINT(RSTORE(II))-ISINIT)/IPACKT + ICATOM
-            IL = INDEX ( CSTORE(ILAB1),' ') - 1
-            CALL ZPLABL (NINT(RSTORE(II)),CLAB,IL)
-            ILAB2 = (NINT(RSTORE(JJ))-ISINIT)/IPACKT + ICATOM
+              ILAB1 = (NINT(RSTORE(II))-ISINIT)/IPACKT + ICATOM
+              IL = INDEX ( CSTORE(ILAB1),' ') - 1
+              CALL ZPLABL (NINT(RSTORE(II)),CLAB,IL)
+              ILAB2 = (NINT(RSTORE(JJ))-ISINIT)/IPACKT + ICATOM
 C CHECK FOR ZERO DISTANCES
-            IF (ABS(D).LT.0.00001) THEN
-            IF (CSTORE(ILAB1).EQ.CSTORE(ILAB2)) GOTO 100
-            ENDIF
+              IF (ABS(D).LT.0.00001) THEN
+                IF (CSTORE(ILAB1).EQ.CSTORE(ILAB2)) GOTO 100
+              ENDIF
 C HAVE WE USED THIS ATOM IN THIS POSITION BEFORE -
 C CHECK SPECIAL POSITIONS
-            IF (IPACK.EQ.0) THEN
-            IF (NINT(RSTORE(NINT(RSTORE(JJ))+ISYM)).EQ.1) THEN
-              DO 160 JJJ = 0 , NAT-1
-                NN = 0
-                DO 170 JJJJ = 0,2
-                  IF (ABS(RSTORE(INPOS+JJJ*3+JJJJ)-X4(JJJJ+1))
+              IF (IPACK.EQ.0) THEN
+                IF (NINT(RSTORE(NINT(RSTORE(JJ))+ISYM)).EQ.1) THEN
+                  DO 160 JJJ = 0 , NAT-1
+                    NN = 0
+                    DO 170 JJJJ = 0,2
+                      IF (ABS(RSTORE(INPOS+JJJ*3+JJJJ)-X4(JJJJ+1))
      c                .LT.0.00001) NN = NN + 1
 170                 CONTINUE
 C THIS ATOM HAS ALREADY BEEN USED
-                IF (NN.EQ.3) GOTO 100
+                    IF (NN.EQ.3) GOTO 100
 160               CONTINUE
 C OTHERWISE STORE THE INFO
-              DO 180 JJJJ = 0 , 2
-                RSTORE(INPOS+NAT*3+JJJJ) = X4(JJJJ+1)
+                  DO 180 JJJJ = 0 , 2
+                    RSTORE(INPOS+NAT*3+JJJJ) = X4(JJJJ+1)
 180               CONTINUE
-              NAT = NAT + 1
-            ENDIF
+                  NAT = NAT + 1
+                ENDIF
 C NOW SEE IF THE ATOM EXISTS ALREADY
-            DO 92 LL = ISVIEW+IPACKT*8, IFVIEW-1, IPACKT
-              IF (ABS(RSTORE(LL+IXYZO)-X5(1)).LT.0.0001) THEN
-                IF (((IHAND.EQ.0)
+                DO 92 LL = ISVIEW+IPACKT*8, IFVIEW-1, IPACKT
+                  IF (ABS(RSTORE(LL+IXYZO)-X5(1)).LT.0.0001) THEN
+                    IF (((IHAND.EQ.0)
      c .AND.(ABS(RSTORE(LL+IXYZO+1)-X5(2)).LT.0.0001)).OR.
      c ((IHAND.EQ.1).AND.(ABS(-RSTORE(LL+IXYZO+1)-X5(2)).LT.0.0001)))
      c  THEN
-                  IF (ABS(RSTORE(LL+IXYZO+2)-X5(3)).LT.0.0001) THEN
+                      IF (ABS(RSTORE(LL+IXYZO+2)-X5(3)).LT.0.0001) THEN
 C CHECK THE ATOM NAME IS THE SAME
-                  LLL = (LL-ISINIT)/IPACKT + ICATOM
-                  IF (CSTORE(LLL).EQ.CSTORE(ILAB2)) THEN
+                        LLL = (LL-ISINIT)/IPACKT + ICATOM
+                        IF (CSTORE(LLL).EQ.CSTORE(ILAB2)) THEN
 C WE HAVE FOUND THE ATOM!
-                    IL = INDEX ( CSTORE(LLL),' ') -1
-                    CALL ZPLABL (LL,CLAB1,IL)
-                    GOTO 93
+                          IL = INDEX ( CSTORE(LLL),' ') -1
+                          CALL ZPLABL (LL,CLAB1,IL)
+                          GOTO 93
+                        ENDIF
+                      ENDIF
+                    ENDIF
                   ENDIF
-                  ENDIF
-                ENDIF
-              ENDIF
 92              CONTINUE
-            CLAB1 = CSTORE(ILAB2)
+                CLAB1 = CSTORE(ILAB2)
 93              CONTINUE
-            ELSE
-            LLL = (RSTORE(JJ)-IRATOM)/IPACKT+ICATOM
-            IL = INDEX(CSTORE(LLL),' ') - 1
-            CALL ZPLABL (NINT(RSTORE(JJ)),CLAB1,IL)
-            ENDIF
-            D = SQRT (D)
-            IF (IPACK.EQ.0) THEN
-            CALL ZSOUT (SYMM,SWORD,ISLEN)
+              ELSE
+                LLL = (RSTORE(JJ)-IRATOM)/IPACKT+ICATOM
+                IL = INDEX(CSTORE(LLL),' ') - 1
+                CALL ZPLABL (NINT(RSTORE(JJ)),CLAB1,IL)
+              ENDIF
+              D = SQRT (D)
+              IF (IPACK.EQ.0) THEN
+                CALL ZSOUT (SYMM,SWORD,ISLEN)
 CRIC99 ISLEN is one char too long.
-            ISLEN=ISLEN-1
-            ENDIF
+                ISLEN=ISLEN-1
+              ENDIF
 cdjwfeb2000 ------------------------------------------------------
-            IF (IPACK.EQ.0) THEN
-             WRITE (CLINE,12) CLAB,CLAB1,D,':',SWORD(1:ISLEN),
-     1       IMX(1)+IMX1(1),IMX(2)+IMX1(2),IMX(3)+IMX1(3)
-            else
-             WRITE (CLINE,12) CLAB,CLAB1,D
-            ENDIF
-            CALL ZMORE(CLINE,2)
-            CALL ZMORE1(CLINE,2)
+              IF (IPACK.EQ.0) THEN
+                WRITE (CLINE,12) CLAB,CLAB1,D,':',SWORD(1:ISLEN),
+     1          IMX(1)+IMX1(1),IMX(2)+IMX1(2),IMX(3)+IMX1(3)
+              else
+                WRITE (CLINE,12) CLAB,CLAB1,D
+              ENDIF
+              CALL ZMORE(CLINE,2)
+              CALL ZMORE1(CLINE,2)
 cdjwfeb2000 -------------------------------------------------------
 c            WRITE (CLINE,11) CLAB,CLAB1,D
 c            CALL ZMORE(CLINE,2)
@@ -550,25 +602,34 @@ c            CALL ZMORE(CLINE,2)
 c            ENDIF
 cdjwfeb2000 -------------------------------------------------------
 c
-            IDOUT = 1
-            K = 3
-            GOTO 100
-          ELSE IF (X5(K)-X1(K).LT.DISEND) THEN
+              IDOUT = 1
+              K = 3
+              GOTO 100
+            ELSE
+C Work out distance between atoms in direction of current axis, k,
+C in fractional coords.
+              FRCDIF = X4(K) - RSTORE (II+K)
+C Work out what this fractional distance is in Angstroms (keeping sign)
+              ANGDIF = FRCDIF * RSTORE(ICRYST+K-1)
+C              IF (X5(K)-X1(K).LT.DISEND) THEN
+              IF (ANGDIF.LT.DISEND) THEN
 C POSSIBLE VALUES FURTHER ON
-            K = 3
-            GOTO 100
-          ELSE
+                K = 3
+                GOTO 100
+              ELSE
 C NOT IN RANGE LOOK AT THE AXIS BELOW
-            IMX1(K) = 0
-            K = K - 1
-            IF (K.NE.0) GOTO 100
-          ENDIF
-          IF (IPACK.GT.0) GOTO 62
+                IMX1(K) = 0
+                K = K - 1
+                IF (K.NE.0) GOTO 100
+              ENDIF
+            ENDIF
+            IF (IPACK.GT.0) GOTO 62
 60        CONTINUE
 C JUMP OUT TO HERE IF DOING DISTANCES ON A PACKED STRUCTURE
 62        CONTINUE
-40        CONTINUE
-30      CONTINUE
+40      CONTINUE
+30    CONTINUE
+
       IF (IDOUT.EQ.0) THEN
 C CHECK TO SEE IF WE HAVE ONLY TWO ATOMS
       IF ( (NDIST2.EQ.2).OR.
