@@ -221,6 +221,9 @@ CXONCHAR(CxModel)
 void CxModel::OnPaint()
 {
     CPaintDC dc(this); // device context for painting
+
+	HDC hOldDC = wglGetCurrentDC();
+	HGLRC hOldRC = wglGetCurrentContext();
     HDC hdc = ::GetDC ( GetSafeHwnd() );
     wglMakeCurrent(hdc, m_hGLContext);
 #endif
@@ -342,6 +345,9 @@ void CxModel::OnPaint(wxPaintEvent &event)
 //      TEXTOUT ( "No model. Displaying banner instead" );
       PaintBannerInstead ( &dc );
     }
+
+	wglMakeCurrent( hOldDC, hOldRC );
+
 }
 
 
@@ -1103,6 +1109,8 @@ void CxModel::Setup()
 void CxModel::NewSize(int cx, int cy)
 {
 #ifdef __CR_WIN__
+	HDC hOldDC = wglGetCurrentDC();
+	HGLRC hOldRC = wglGetCurrentContext();
     HDC hdc = ::GetDC ( GetSafeHwnd() );
     wglMakeCurrent(hdc, m_hGLContext);
 #endif
@@ -1117,6 +1125,7 @@ void CxModel::NewSize(int cx, int cy)
     if ( cy > cx ) m_stretchY = (float)cy / (float)cx;
     else           m_stretchX = (float)cx / (float)cy;
 
+	wglMakeCurrent( hOldDC, hOldRC );
 
 }
 
@@ -1273,6 +1282,8 @@ BOOL CxModel::CreateViewGLContext(HDC hDC)
 
 int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject **outObject, Boolean atomsOnly)
 {
+   HDC hOldDC = wglGetCurrentDC();
+   HGLRC hOldRC = wglGetCurrentContext();
    HDC hdc = ::GetDC ( GetSafeHwnd() );
    wglMakeCurrent(hdc, m_hGLContext);
 
@@ -1356,6 +1367,7 @@ int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject
 
      *outObject = ((CrModel*)ptr_to_crObject)->FindObjectByGLName ( highest_name );
 
+     wglMakeCurrent( hOldDC, hOldRC );
 
 
      if ( *outObject )
@@ -1371,6 +1383,8 @@ int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject
 
 void CxModel::SelectBoxedAtoms(CcRect rectangle, bool select)
 {
+   HDC hOldDC = wglGetCurrentDC();
+   HGLRC hOldRC = wglGetCurrentContext();
    HDC hdc = ::GetDC ( GetSafeHwnd() );
    wglMakeCurrent(hdc, m_hGLContext);
 
@@ -1431,12 +1445,17 @@ void CxModel::SelectBoxedAtoms(CcRect rectangle, bool select)
      if ( atom ) atom->Select();
    }
    delete [] selectbuf;
+
+   wglMakeCurrent( hOldDC, hOldRC );
+
 }
 
 void CxModel::PolyCheck()
 {
    if ( m_selectionPoints.ListSize() < 3 ) return;
 
+   HDC hOldDC = wglGetCurrentDC();
+   HGLRC hOldRC = wglGetCurrentContext();
    HDC hdc = ::GetDC ( GetSafeHwnd() );
    wglMakeCurrent(hdc, m_hGLContext);
 
@@ -1600,6 +1619,7 @@ void CxModel::PolyCheck()
 
    delete [] feedbuf;
 
+   wglMakeCurrent( hOldDC, hOldRC );
 
 }
 
