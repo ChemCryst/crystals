@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.37  2002/05/09 13:12:29  richard
+C RIC: Swap red/blue bars for the class, parity and layer agreement
+C analyses, to match the Fc/rho plots, which in turn match the
+C calculated weighting scheme.
+C
 C Revision 1.36  2002/04/30 20:24:07  richard
 C RIC: Reverse colours of weighted and unweighted agreement plots. (Only
 C done for Fc and rho plots so far - the others should be changed for consistency.)
@@ -430,6 +435,7 @@ C----- CHECK SECOND IS NON ZERO
       GO TO 1650
 C
 C--PROCESS THE NEXT REFLECTION  -  CHECK THAT THE CURRENT /FO/ IS NOT ZE
+
 2450  CONTINUE
 CDJW      FO= ABS(STORE(M6+3))
       FO= ABS(STORE(M6+ITWIN))
@@ -532,7 +538,19 @@ C--WEIGHTING SCHEME TYPE 7  -  1/SIGMA(/FO/)
       GOTO 4600
 3452  CONTINUE
 C----- SHELXTL WEIGHTS
-      sigma = aw
+C
+C -- Convert everything to scale of FC:
+C
+      IF ( JTYPE .EQ. 2 ) THEN   ! Fo**2 refinement
+        SFCSIG = AW / A**2
+        SFCFO  = FO / A**2
+        SFCFC  = FC / A**2
+      ELSE                       ! Fo refinement
+        SFCSIG = AW / A
+        SFCFO  = FO / A
+        SFCFC  = FC / A
+      END IF
+
       STHOLS = SNTHL2(L)
       STH = SQRT(STHOLS)*STORE(L13DC)
       Q = EXP (STORE(L4+2) * STHOLS)
@@ -541,10 +559,19 @@ C----- SHELXTL WEIGHTS
       ELSE IF (STORE(L4+2) .LT. ZERO ) THEN
             Q =  1. - Q
       ENDIF
-      P = STORE(L4+5) * MAX(0., FO) + (1-STORE(L4+5))*FC
-      AW = Q /
-     1 (SIGMA*SIGMA + (P*STORE(L4))*(P*STORE(L4)) +
-     2  STORE(L4+1)*P + STORE(L4+3) + STORE(L4+4)*STH)
+      P = STORE(L4+5) * MAX(0., SFCFO) + (1-STORE(L4+5))*SFCFC
+      AW = Q / 
+     1 (SFCSIG*SFCSIG + (P*STORE(L4))*(P*STORE(L4)) +
+     2  STORE(L4+1)*P + STORE(L4+3) + STORE(L4+4)*STH) 
+C
+C -- Convert weight back onto scale of FO:
+C
+      IF ( JTYPE .EQ. 2 ) THEN
+        AW = AW / A**4
+      ELSE
+        AW = AW / A**2
+      END IF
+C
       GOTO 4600
 C--WEIGHTING SCHEME TYPE 8  -  1/SIGMA(/FO/)**2
 3500  CONTINUE
@@ -2991,7 +3018,7 @@ C--AGREEMENT ANALYSIS ON /FO/
       WRITE(NCWU,1000)(NOPE(J,1),J=1,4),KM
       ENDIF
       WRITE ( NCAWU , 4900 )
-4900  FORMAT(' Agreement analysis on /FO/')
+4900  FORMAT(' Agreement analysis on /FC/')
       WRITE(NCAWU,4910)
 C--- OUTPUT TO SCREEN
       IF (MONIT .NE. 2) THEN
@@ -3003,7 +3030,7 @@ C--- OUTPUT TO SCREEN
         WRITE(CMON,'(A,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A)') 
      1 '^^PL PLOTDATA _FO BARGRAPH ATTACH _VFO', CSHK(PKFOR),
      1 '^^PL NSERIES=3 LENGTH=20 XAXIS TITLE',
-     1 '^^PL  ''<- Weak           Fo Range            Strong ->''',
+     1 '^^PL  ''<- Weak           Fc Range            Strong ->''',
      1 '^^PL YAXIS LOG TITLE <Fo-Fc>**2 ZOOM 0.01 100',
      1 '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
      1 '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
