@@ -34,6 +34,7 @@ C
 \XPCK06
 \XLST6A
 \XLST13
+\XLST25
 \XLST50
 \XLST30
 \XTAPES
@@ -133,9 +134,10 @@ C--FORMAT STATEMNT IS TOO LONG
 1300  CONTINUE
       CALL XMONTR(0)
       CALL XERHDR(0)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1350)
-      ENDIF
+        write(cmon,1350)
+        call xprvdu (ncvdu,1,0) 
+        write(ncawu,'(a)') cmon(1)
+        if (issprt.eq.0)write(ncawu,'(a)') cmon(1)
 1350  FORMAT(' Format statement is too large')
       GOTO 7450
 C--STORE THE NEW FORMAT OR PART OF FORMAT
@@ -170,7 +172,10 @@ CDJW DEC97
 C ITYPE COPY FIXED FREE COMPRESSED TWIN (HKLI) FIXED FREE COMP
 C        1     2    3       4        5           6    7    8
       IF (ITYPE6 .GT. 8) THEN
-        WRITE(NCAWU,'('' Invalid READ type'')')
+        write(cmon,'(a)') 'Invalid READ type'
+        call xprvdu (ncvdu,1,0) 
+        write(ncawu,'(a)') cmon(1)
+        if (issprt.eq.0)write(ncawu,'(a)') cmon(1)
         GOTO 7450
       ENDIF
       IF (ITYPE6 .EQ. 5) THEN
@@ -182,8 +187,31 @@ CDJW DEC97
 C--SET THE NUMBER OF REJECTED REFLECTIONS TO ZERO
       N6DEAD=0
       N6NEG=0
+c----- load list 25 to find number of twin elements
+      elem = 1.
+      IF (KEXIST(25) .EQ. 1) THEN
+       CALL XFAL25
+       IF ( IERFLG .LT. 0 ) GOTO 9900
+       do 3495 i = 2, n25
+       elem = 10.*elem + float(i)
+3495   continue
+      endif
+cdjwoct2000 > moved from lower down
+C--LOAD LIST 13 FOR THE TWIN DATA
+      CALL XFAL13
+      IF ( IERFLG .LT. 0 ) GO TO 9900
+      WAVE = STORE(L13DC)
+cdjwnov2000 > nolonger used at all. Type 
+c      determind from input keys
 C--POINT INITIALLY TO '/FO/'
-      IFO=3
+c      IFO=3
+C--CHECK IF THIS CRYSTAL IS TWINNED
+c      IF(ISTORE(L13CD+1))3550,3500,3500
+C--DATA IS FROM A TWINNED CRYSTAL  -  ALTER THE POINTER TO /FOT/
+3500  CONTINUE
+c      IFO=10
+3550  CONTINUE
+cdjwoct2000 < moved from lower down
 C--ZERO THE CORE BUFFER
       M6=L6
       CALL XZEROF(STORE(M6),MD6)
@@ -214,6 +242,16 @@ C -- CHECK IF 'RATIO' ( OF FO AND SIGMA ) HAS BEEN INPUT
 C -- CHECK IF 'FO ' OR 'FOT' HAS BEEN INPUT
       INFO = KCOMP ( 1 , JFOO , ISTORE(L6IMP) , MD6IMP , 1 )
       INFT = KCOMP ( 1 , JFOT , ISTORE(L6IMP) , MD6IMP , 1 )
+c----- determine input type from keys
+c----- set default to untwinned
+      ifo = 3
+      if (inft .ge. 0) then
+        ifo = 10
+        write(cmon,'(a)') 'Warning - You have no twin law'
+        call xprvdu (ncvdu,1,0) 
+        write(ncawu,'(a)') cmon(1)
+        if (issprt.eq.0)write(ncawu,'(a)') cmon(1)
+      endif
       IF(ISTORE(KZ+3))1850,1850,2050
 C--NO STORAGE KEYS HAVE BEEN INPUT  -  SET THE DEFAULTS
 1850  CONTINUE
@@ -223,9 +261,10 @@ C--CHECK IF ANY OUTPUT KEYS ARE INDICATED
 C--NO OUTPUT DATA
 1900  CONTINUE
       CALL XERHDR(0)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1950)
-      ENDIF
+        write(cmon,1950) 
+        call xprvdu (ncvdu,1,0) 
+        write(ncawu,'(a)') cmon(1)
+        if (issprt.eq.0)write(ncawu,'(a)') cmon(1)
 1950  FORMAT(' Insufficient output coefficients per reflection',
      2 ' have been indicated')
       GOTO 7400
@@ -242,6 +281,19 @@ C--CHECK IF THE INDICES SHOULD BE PACKED ON OUTPUT TO THE DISC
 C -- CHECK IF 'FO ' OR 'FOT' HAS BEEN SAVED
       JNFO = KCOMP ( 1 , JFOO , ISTORE(L6DMP) , MD6DMP , 1 )
       JNFT = KCOMP ( 1 , JFOT , ISTORE(L6DMP) , MD6DMP , 1 )
+cdjwoct200
+      if ((inft .ge. 0) .and. (jnft .lt.0)) then
+        write(cmon,'(a/a)') 'Twinned data input but not stored - ',
+     1  'Check the List 6 keys'
+        call xprvdu (ncvdu,2,0) 
+        write(ncawu,'(a)') cmon(1),cmon(2)
+        if (issprt.eq.0)write(ncawu,'(a)') cmon(1),cmon(2)
+        goto 9900
+      endif
+      write(ncawu,2101) info, inft, jnfo, jnft, ifo
+      if (issprt.eq.0)write(ncawu,2101) info, inft, jnfo, jnft, ifo
+2101  format('input, output and l13 flags', 5i5)
+cdjwoct2000
 C--CHECK IF THE PHASE AND THE BATCH NUMBER SHOULD BE PACKED
       IPHSEW=KCOMP(1,I15,ISTORE(L6DMP),MD6DMP,1)
 C -- CHECK IF THE JCODE AND RATIO SHOULD BE PACKED TOGETHER
@@ -383,7 +435,7 @@ C---- PUT SOMETING INTO FOT
      1 STORE(L6+JFOT(1)) = STORE(L6+JFOO(1))
 C----- PUT SOMETHING INTO ELEMENTS
       IF ((JNFT .GT. 0) .AND. (STORE(L6+11)  .LE. ZERO))
-     1 STORE(L6+11) = 12.0
+     1 STORE(L6+11) = elem
 C--RESET THE MOVE POINTERS
       L6DMP=ISTORE(KX+16)
       M6DMP=ISTORE(KX+17)
@@ -409,21 +461,11 @@ C--RESET THE CURRENT LIST TYPE
 3400  CONTINUE
       LN=IULN
       IREC=0
-C--LOAD LIST 13 FOR THE TWIN DATA
-      CALL XFAL13
-      IF ( IERFLG .LT. 0 ) GO TO 9900
-      WAVE = STORE(L13DC)
-C--CHECK IF THIS CRYSTAL IS TWINNED
-      IF(ISTORE(L13CD+1))3550,3500,3500
-C--DATA IS FROM A TWINNED CRYSTAL  -  ALTER THE POINTER TO /FO/
-3500  CONTINUE
-      IFO=10
-C--BRANCH ON THE TYPE OF OUTPUT
-3550  CONTINUE
 C----- INITIALISE THE ABSORPTION CORRECTION
       I=MABS(-1)
       IF ( IERFLG .LT. 0 ) GO TO 9900
       LN=IULN
+C--BRANCH ON THE TYPE OF OUTPUT
       GOTO(7150,3650,4300,4500,7150,6050,6050,6050,3600),ITYPE6
 C3600  STOP 'LIST 6 ERROR'
 3600  CALL GUEXIT(2019)
@@ -485,6 +527,7 @@ C----- ERROR DURING READ -
       IF (NCARDS .LE. 0) THEN
        WRITE(CMON,'(A)') ' Check the reflection filename, and format'
        CALL XPRVDU(NCVDU, 1,0)
+       WRITE(NCAWU,'(A)') CMON(1)
        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
        LEF = -1
       ELSE
@@ -718,8 +761,11 @@ C        STORE(L30IX+7) = ASIN(SQRT(STORE(LIX+1))*WAVE)*RTD
         CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
       ENDIF
 C----- WRITE LIST 13 TO DISK IF TYPE IS TWIN
-      IF(ITYPE6 .EQ. 5) THEN
-          WRITE(NCAWU,*) 'Upating List 13 for twinned data'
+      IF ((ITYPE6 .EQ. 5).or. (ifo .eq. jfot(1))) THEN
+          WRITE(cmon,'(a)') 'Upating List 13 for twinned data'
+          call xprvdu(ncvdu,1,0)
+          write(ncawu,'(a)') cmon(1)
+          if (issprt .eq. 0) write(ncwu,'(a)') cmon(1)
           ISTORE(L13CD+1) = 0
           CALL XWLSTD ( 13, ICOM13, IDIM13, -1, -1)
       ENDIF
