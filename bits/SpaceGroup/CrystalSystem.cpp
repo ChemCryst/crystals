@@ -317,12 +317,12 @@ void Conditions::readFrom(filebuf& pFile)
     do
     {
         tFile.getline(tLine, 255);
-        trim(tLine);
+        String::trim(tLine);
     }while (strstr(tLine, tHeaderLine) == NULL && !tFile.eof());
     do
     {
         tFile.getline(tLine, 255);
-        trim(tLine);
+        String::trim(tLine);
         try
         {
             if (tLine[0] != '\0')
@@ -473,12 +473,12 @@ void Headings::readFrom(filebuf& pFile)
     do
     {
         tFile.getline(tLine, 255);
-        trim(tLine);
+        String::trim(tLine);
     }while (strstr(tLine, tHeaderLine) == NULL && !tFile.eof());
     do
     {
         tFile.getline(tLine, 255);
-        trim(tLine);
+        String::trim(tLine);
         try
         {
             if (tLine[0] != '\0')
@@ -819,7 +819,7 @@ Table::Table(char* pName, Headings* pHeadings, Conditions* pConditions, int pNum
 {
     iName = new char[strlen(pName)+1];	//Allocate enought space for the name
     strcpy(iName, pName);	//Copy the name into the classes storage
-    upcase(iName);		//Make sure that the name is in upper case
+    String::upcase(iName);		//Make sure that the name is in upper case
     iHeadings = pHeadings;	//Keep a reference to the headers
     iConditions = pConditions;	//Keep a reference to the conditions
     iColumns = new ArrayList<ConditionColumn>(pNumColumns);	//Allocate the space for the condition columns of the table
@@ -989,13 +989,13 @@ void Table::readFrom(filebuf& pFile)
     do
     {
         tFile.getline(tLine, 255);
-        trim(tLine);
+        String::trim(tLine);
     }while (!tFile.eof() && emptyLine(tLine));
     while (!tFile.eof() && strlen(tLine)>0)
     {
         addLine(tLine);
         tFile.getline(tLine, 255);
-        trim(tLine);
+        String::trim(tLine);
     }
 }
 
@@ -1160,7 +1160,7 @@ void Tables::readFrom(filebuf& pFile)
     while (!tFile.eof())
     {
         tFile.getline(tLine, 255);
-        trim(tLine);
+        String::trim(tLine);
         if (!emptyLine(tLine))
         {
             char tSystemName[255]; // This it either monoclinic orthorombic etc. 
@@ -1180,7 +1180,7 @@ void Tables::readFrom(filebuf& pFile)
                 throw eE;
             }
             tFile.getline(tLine, 255);
-            trim(tLine);
+            String::trim(tLine);
             if (!emptyLine(tLine))
             {
                 try
@@ -1214,7 +1214,7 @@ Table* Tables::findTable(char* pName)
         if (tTable)
         {
             char* tName = tTable->getName();
-            upcase(pName);
+            String::upcase(pName);
             if (strcmp(pName, tName) == 0)
             {
                 tFound = true;
