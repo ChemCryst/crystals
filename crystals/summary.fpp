@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2002/03/01 11:33:41  Administrator
+C Correct and improve presntation of weighting scheme in .cif file
+C
 C Revision 1.20  2002/02/28 18:04:20  ckp2
 C New command #SIGMADIST for producing sigma distribution graph. It doesn't
 C do anything else.
@@ -2323,19 +2326,25 @@ C -- SCAN LIST 6 FOR ACCEPTED REFLECTIONS
         ISTAT = KLDRNR(0)
       END DO
 
+      NTOT = N6ACC
 
       IF (IPLOT .EQ. 1) THEN
-        WRITE(CMON,'(A/A/A/A)')
+        WRITE(CMON,'(A,6(/A))')
      1  '^^PL PLOTDATA _SIGLEVL BARGRAPH ATTACH _VSIGLEVL KEY',
-     1  '^^PL XAXIS TITLE ''I/sigma(I)'' NSERIES=1 LENGTH=2000',
+     1  '^^PL XAXIS TITLE ''I/sigma(I)'' NSERIES=2 LENGTH=100',
      1  '^^PL YAXIS TITLE ''Number of observations''',
-     1  '^^PL SERIES 1 SERIESNAME ''I/sigma(I) frequency'''
-        CALL XPRVDU(NCVDU, 4,0)
+     1  '^^PL YAXISRIGHT TITLE ''Number > given I/s(I)''',
+     1  '^^PL SERIES 1 SERIESNAME ''I/sigma(I) frequency''',
+     1  '^^PL SERIES 2 SERIESNAME ''Observations > I/sigma(I)''',
+     1  '^^PL TYPE LINE USERIGHTAXIS'
+        CALL XPRVDU(NCVDU, 7,0)
+
 
         DO I = 1, 100
-          WRITE(CMON,'(A,1X,F4.1,1X,A,1X,I6)')
-     1    '^^PL LABEL',(I-1)*.5,'DATA',KSIGS(I)
+          WRITE(CMON,'(A,1X,F4.1,1X,A,1X,I6,1X,I8)')
+     1    '^^PL LABEL',(I-1)*.5,'DATA',KSIGS(I),NTOT
           CALL XPRVDU(NCVDU,1,0)
+          NTOT = NTOT - KSIGS(I)
         END DO
 
         WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'

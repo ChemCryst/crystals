@@ -681,7 +681,7 @@ C TOP FRAME
      1  '^^PL XAXIS TITLE LN(F(OBS)**2/SIGFSQ)',
      1  '^^PL NSERIES=3 LENGTH=50 YAXIS TITLE Rho',
      1  '^^PL SERIES 1 SERIESNAME ''Straight Line'' TYPE LINE',
-     1  '^^PL SERIES 2 SERIESNAME ''Wilson'' TYPE LINE',
+     1  '^^PL SERIES 2 SERIESNAME ''Wilson''',
      1  '^^PL SERIES 3 SERIESNAME ''Wilson (Fcalc)'' TYPE LINE'
         CALL XPRVDU(NCVDU, 6,0)
       END IF
