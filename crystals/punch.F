@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2001/10/16 11:49:01  ckp2
+C Forgot L5 offset in PUnCH41
+C
 C Revision 1.22  2001/10/16 11:23:32  Administrator
 C Add missing common block to punch 41
 C
@@ -82,8 +85,9 @@ C----- DONT PUNCH 'SPARE' FOR THE MOMENT - IT CAUSES PROBLEMS
 C      WITH ALIEN PROGRAMS
 CDJWNOV2000 REINTRODUCE PUNCHING OF ALL DATA
 C      MD5TMP = MIN (13, MD5)
-      MD5TMP = MIN(18, MD5)
-      J = M5 + MD5TMP - 5
+      MD5TMP = MIN(18, MD5) 
+      J = M5 + 13
+C ISTORE bits will only print if J=18, not if J=14.
       WRITE(NCPU,1150) (STORE(I), I = M5, J),
      1                (ISTORE(I), I= J+1, M5+MD5TMP -1 )
 1150  FORMAT
