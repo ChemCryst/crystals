@@ -1,5 +1,5 @@
       PROGRAM NEWK
-      INCLUDE 'ciftbx.cmn'
+#include "ciftbx.cmn"
       LOGICAL F1,F2,F3,F4,F5
       LOGICAL FC,FV,FN,FF,FT,FW,FSG,FL6
       logical lnum
@@ -536,8 +536,8 @@ C      GET AN 8 BYTE CHARACTER REPRESENTATION OF DATE/TIME
       RETURN
       END
 C=======================================================================
-      INCLUDE 'xgroup.for'
-      INCLUDE 'charact.for'
-      INCLUDE 'ciftbx.for'
+#include "xgroup.for"
+#include "charact.for"
+#include "ciftbx.for"
 C=======================================================================
 

@@ -9,7 +9,7 @@ C*********************************************************************
 C OCT99 - ierfil UNIT to handle catastrophic errors
 C     This is the main controlling program section.
 C
-      include "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER NADD, J
 #if defined(_DOS_)
       CHARACTER *8 TIME@, DATE@, CTIME, CDATGB, CDATUS
@@ -172,7 +172,7 @@ C
       BLOCK DATA BLKDAT
 C     This file contains the initialisation data for the COMMON blocked
 C     variables.
-      include "RC93CM.INC"
+#include "RC93CM.INC"
 *      DATA STORE,ISTORE/65536*0/
       DATA ISCRN, IKEYBD/ 6, 5/
       DATA INIFIL, LISFIL, INPFIL, ISCFFL, IHKLFL, IABSFL/ 10, 11, 12,
@@ -225,7 +225,7 @@ C     kept of the number of automatic reorientations.
 C     The structure of the chained list is described at the end.
 C     The format for both Þrecords is:-
 C     1X, I2, 2X, F9.6, F9.6, F9.6, 2X, F9.6, F9.6, F9.6, 1X
-      include "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER J, LAM1, LAM2, LAM1F, LAM2F, MARKF, IRADF
       REAL RLAM1F, RLAM2F, ATTFAC
       INTEGER NADD
@@ -374,7 +374,7 @@ C     It should determine
 C                 the diffractometer type
 C                 whether filenames need to be capitalised.
 C                 whether to prompt before overwriting existing files
-      include "RC93CM.INC"
+#include "RC93CM.INC"
       CHARACTER*80 CAPION
 C     Variable NLINE has been made COMMON.
 C***      This will need to be altered for nonDOS systems  *********
@@ -519,7 +519,7 @@ C**********************************************************************
 C     This subroutine reads in the diffractometer type, or prompts for
 C     it if it is not there or is unrecognised.
       SUBROUTINE WOTDIF
-      include "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER J
 C  If this has been called because it was not called automatically by
 C     the .INI file, then CLINE will be blank and we need to prompt.
@@ -587,7 +587,7 @@ C     Now we have the diffractometer type.
 C**********************************************************************
 C     Read in whether to capitalize all filenames, user input, etc.
       SUBROUTINE CAPIT
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
 C     If this has not been called automatically, CLINE will be blank so
 C     need to prompt.
       IF (CLINE(4:) .EQ. ' ') GO TO 220
@@ -618,7 +618,7 @@ C*********************************************************************
 C     This subroutine reads in whether to prompt before 'overwriting'
 C     files
       SUBROUTINE OVPRMP
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       IF (CLINE(4:) .EQ. ' ') GO TO 310
       READ (CLINE,  '(5X,I2)', ERR=310) LOVRWR
       IF ((LOVRWR .LT. 0) .OR. (LOVRWR .GT. 1)) THEN
@@ -650,7 +650,7 @@ C     files
 C**********************************************************************
       SUBROUTINE SETHLP
 C     This subroutine sets the path and filename of the HELP file.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       CHARACTER*80 CAPION
       CAPION = 'HELP file'
       CALL GETPTH (CAPION,
@@ -662,7 +662,7 @@ C***********************************************************************
       SUBROUTINE ATTEN
 C     This subroutine reads in the path and filename for the attenuator
 C     coefficient data file.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       CHARACTER*80 CAPION
       CAPION = 'Attenuator Coefficient Data'
 30    CONTINUE
@@ -688,7 +688,7 @@ C***********************************************************************
       SUBROUTINE SPHABS
 C     This subroutine reads in the path and filename for the Spherical
 C     Absorption Correction Factors.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       CHARACTER*80 CAPION
       CAPION = 'Spherical Absorption Correction Factors'
 30    CONTINUE
@@ -714,7 +714,7 @@ C***********************************************************************
       SUBROUTINE ATSCAT (CAPION, CTYPE)
 C     This subroutine reads in the path and filename for the Atomic
 C     Scattering Factors, for both Cu and Mo radiation.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       CHARACTER*80 CAPION, CTYPE
       LOGICAL LOGEX
 30    CONTINUE
@@ -739,7 +739,7 @@ C***********************************************************************
       SUBROUTINE ATPROP
 C     This subroutine reads in the path and filename for the Atomic
 C     Properties.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       CHARACTER*80 CAPION
       LOGICAL LOGEX
       CAPION = 'Atomic Properties'
@@ -770,7 +770,7 @@ C     CHARACTER*80 input CULINE, it then capitalises this to give CLINE.
 C     If the input is 'help' then the help function is called from this
 C     routine.
 C     If an error occurs then KERR.ne.0.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER IUNIT
 C     CHARACTER*80 CLINE, CULINE         ***COMMON BLOCKED ARGUMENTS***
 C     INTEGER KERR, iskip
@@ -817,7 +817,7 @@ C     The format of record 2 is
 C   FORMAT  I2,    I6,  F8.3, F9.3, F9.3,  F9.3,  F7.3,    I7,   I3,  1X
 C           2 , NREFL, THETA, PHIK,  OMK, RKAPPA, WIDTH, IXRAYT, FRIDL
 C
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER IXRAYT, FRIDL
       INTEGER JCODE, IBIN
       REAL RINDS(3)
@@ -1050,7 +1050,7 @@ C     The whole card is also stored in a character array of data
 C     collection parameters, which will be written out neatly to the
 C     .LIS file in the TIDYUP section. Records 21, 22, 26 will all be
 C     in this array.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       IF (CDTCOL(1) .EQ .CNULL) THEN
             READ (CARD1, '(A)') CDTCOL(1)
             CALL CENTRE (LISFIL, CARD1(10:46))
@@ -1074,7 +1074,7 @@ C     and NFRIDL will be picked out as a text string for
 C     output to the .LIS and screen as a permanent record of the data
 C     collection parameters ( temporarily held in a char array 62*3
 C     [records 21, 22 and 26]).
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER NPIPRE, NADD
       REAL THEMAX, THEMIN
       READ (CARD1, 1001) THEMIN, THEMAX, NPIPRE
@@ -1109,7 +1109,7 @@ C     encountered in the middle of a .DAT file (eg if a .DAT and .PSI
 C     have been appended.)
 C     MN2ABS indicates if a change has really occured, =0 no change,
 C     =1 main 2 abs , =-1 abs 2 main.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       IF ((LABPRO .EQ. 0) .AND. (CARD1(7:12) .EQ. 'AZIMUT')) THEN
 C     There has been a change from main data to abs.profile, or this is
 C     a junk record23 created during datcin.
@@ -1179,7 +1179,7 @@ C     the min and max of H, K and L according to the CAD4 output (NB if
 C     the data file has been altered these may be incorrect but CRYSTALS
 C     works out its own HKL min and max).
 C     The pointer to the start of info from rec 24 is IR24P.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER NADD, MINMAX(6), J
 C     MINMAX = (MINH, MAXH, MINK, MAXK, MINL, MAXL)
       READ (CARD1, '(16X,3(5X, I5,I5))', ERR=10) MINMAX
@@ -1228,7 +1228,7 @@ C
 C     This subroutine copies each record 26 into the character array
 C     CDTCOL which will be output neatly by the TIDYUP section.
 C     It also sets RCON2 for absorption profile processing.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       READ (CARD1(45:54), '(F10.7)') RCON2
       CDTCOL (3) = CARD1(:62)
       RETURN
@@ -1238,7 +1238,7 @@ C***********************************************************************
 c^
 C
       SUBROUTINE RECORD
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       CHARACTER *64 CTEMP
 C----- RECORD NOT YET IDENTIFIED
       IREC = 0
@@ -1278,7 +1278,7 @@ C**********************************************************************
       INTEGER FUNCTION KINLIN(CARD)
 C----- READ A LINE, STRIP OUT SPURIOUS CHARACTERS, AND REJECT EMPTY
 C      LINES
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       CHARACTER *(*) CARD
       nchar = len(card)
       KINLIN = -1
@@ -1340,7 +1340,7 @@ C
 C     This subroutine deals with the processing of the refdump.
 C     NREFDP is the number of refdumps encountered, only want to output
 C     the first to the .LIS file.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER NADD
       REAL THETA
       IF (NREFDP .GT. 0) THEN
@@ -1394,7 +1394,7 @@ C     If the psiword is AZIMUT then the following data is for an
 C     absorption profile, otherwise it is the main reflection data.
 C     The flag for abs profile or not is the variable LABPRO (=0 main
 C     data, =1 abs profile data).
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       CHARACTER*6 CPSIWD
       CFORMT = '(A64)'
       REWIND (INPFIL)
@@ -1506,7 +1506,7 @@ C***********************************************************************
 C
       SUBROUTINE SGROUP
 C     This subroutine writes out a #SPACEGROUP instruction to the .SCF.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
 10    CONTINUE
       WRITE (ISCRN, '(/1X,A,A)') 'Please give the spacegroup',
      +'(eg. P 21 21 21):-'
@@ -1533,7 +1533,7 @@ C
       SUBROUTINE TIDYUP
 C     This routine does all of the sorting out when no more files are to
 C     be processed.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER NOPR, MAXIN(10), ITHETA
       CHARACTER*15 CINDEX(10)
       IF (CDTCOL(1)(10:46) .EQ. ' ') THEN
@@ -1632,7 +1632,7 @@ C***********************************************************************
 C
       SUBROUTINE WRL30
 C     This writes out the #LIST 30 instruction to the .SCF file.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER ITEMP, IPNTP
       REAL TEMP
       WRITE (ISCFFL, '(''#LIST 30'')' )
@@ -1723,7 +1723,7 @@ C
 C     This routine writes out some statistics and other information
 C     about the data to the .LIS file, and writes the more important
 C     to the screen.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER J, I, NSTARS, MAXBIN, ICOUNT
       INTEGER JGSCFP, LT3SIG
       INTEGER IREFP, IMEASP
@@ -1919,7 +1919,7 @@ C     whether or not to prompt before opening a version of a file which
 C     already exists.  This will allow VMS users to avoid the prompt
 C     which is unnecessary because VMS will not overwrite the existing
 C     file but will simply make a higher version of it.]
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER IUNIT, NUNIT, LEN
       CHARACTER*80 CFILNM
       LOGICAL LOGEX, LOGOPN
@@ -2048,7 +2048,7 @@ C     This function returns NADD with the starting pointer for the set
 C     of items ITEMS and reserves space in the chained list for the
 C     items.  ITEMS must be large enough to account for things which
 C     need eg,3 spaces for each 'item'.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER ITEMS
       IF (NMAXP .LE. (NFREEP+ITEMS)) THEN
             WRITE (ISCRN, '(''ERROR - Chained list too short.'')')
@@ -2327,7 +2327,7 @@ C     The attenuator factor written out by CAD4 may differ from that
 C     in the file ATT.DAT, but the ATT.DAT value is used.
 C     The format for both records is:-
 C     1X, I2, 2X, F9.6, F9.6, F9.6, 2X, F9.6, F9.6, F9.6, 1X
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER J, LAM1, LAM2, LAM1F, LAM2F, MARKF, IRADF
       REAL RLAM1F, RLAM2F, ATTFAC
       INTEGER NADD
@@ -2416,7 +2416,7 @@ C
 C     The format of record 2 is
 C   FORMAT  I2,    I6,  F8.3, F9.3, F9.3,  F9.3,  F7.3,    I7,   I3,  1X
 C           2 , NREFL, THETA, PHIK,  OMK, RKAPPA, WIDTH, IXRAYT, FRIDL
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       REAL FACT
       PARAMETER (FACT = 0.0174532925)
 C     FACT = pi / 180
@@ -2571,7 +2571,7 @@ C     LIBUI
 C     INTERA
 C     NOPR
 CPML INC
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
        INTEGER NOPR, ITHETA
        INTEGER I, MI, MINN, MAXIN (10)
        INTEGER N, N1, NN, NO2, ICORR
@@ -3004,9 +3004,9 @@ C  APHI     As ATHETA but for phi
 C
 C  LINE     Holds a line from the spherical absorption correction table
 C
-Cpml        INCLUDE 'ALL.CMN'
+Cpml  #include 'ALL.CMN'
 CPML INC
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
        CHARACTER*15 CINDEX(10)
        INTEGER MAXIN(10)
        INTEGER ILINE, LL15, I1, I2, LSPHAB, N, NN
@@ -3110,7 +3110,7 @@ C
 C
 C     This subroutine does the processing of each card if the file
 C     contains the absorption profile.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       CALL CENTRE (ISCRN, '-- PROCESSING ABSORPTION DATA -- ')
       OPEN (ITMPFL, STATUS='SCRATCH')
 20    CONTINUE
@@ -3189,7 +3189,7 @@ C     in a string up to 80 characters in length.  Non alphabetic
 C     characters are left unchanged.
 C     This may turn out to be a function not a subroutine.
 C     CIN is the input buffer*80, COUT is the output buffer*80.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       CHARACTER*26 CUPPER, CLOWER
       INTEGER J, IPLACE
       CHARACTER*(*) CIN, COUT
@@ -3213,7 +3213,7 @@ C     returns a pointer ICELLP to the position of the cell parameters in
 C     the list.
 C     It is based directly on the code in RC85 which originates from
 C     Enraf-Nonius.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       DOUBLE PRECISION RADIAN
       PARAMETER (RADIAN = 57.2957795131)
       REAL UMB(3,3), UTRA(3,3), UTRAU(3,3), UTUINV(3,3)
@@ -3308,7 +3308,7 @@ C
 C     This subroutine gives the inverse and determinant of a 3x3 matrix
 C                 B    = inv (A)
 C                 DETA = det (A)
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       REAL A(3,3), B(3,3), DETA
       INTEGER I,J
       B(1,1) = A(2,2)*A(3,3) - A(3,2)*A(2,3)
@@ -3345,7 +3345,7 @@ C
 C
 C     This subroutine takes an input string, centres it within an output
 C     buffer *80 and writes it out to the specified channel.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       CHARACTER*(*) CINBUF
       CHARACTER *80 COUTBF
       INTEGER IOFSET, LENGTH, IUNIT
@@ -3370,7 +3370,7 @@ C     those elements in the molecular formula. This is equivalent to the
 C     old #LIST 3 and #LIST 29.
 C     The path and file name for the scattering factors and atomic
 C     properties are held in CSCATT and CATPRO
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER I, ICOUNT, NONH, NADD
       REAL VOLMOL, Z, ZEST
 30    CONTINUE
@@ -3486,7 +3486,7 @@ C     necessary capitalise it.  It will offer output filenames of the
 C     same type as the input and check this with the user.  It will
 C     prompt before overwriting any old output files of the same name.
 C     It also opens the input and output channels.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER LFILNM, ISTART, IEND
       INTEGER ICHKFL, LSTCHR
       LFILNM = 0
@@ -3639,7 +3639,7 @@ C
 C
 C     This subroutine reads in the path and filename for the calling
 C     routine and returns as CFILNM.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       CHARACTER*80 CAPION, CFILNM
       IF (CLINE .EQ. CNULL) THEN
             GO TO 30
@@ -3672,7 +3672,7 @@ C
 C
 C     This routine provides a basic help function in the form of a text
 C     file help.hlp.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER J
       CLGFL = CHLPFL
       CALL MTRNLG(CLGFL, 'OLD', LENFIL)
@@ -3777,7 +3777,7 @@ C     NITNS is the no of items stored for a new standard, NITES is the
 C     no of items for a new measurement of an existing standard.
 C     Each standard has its HKL and Psi values stored, the approximated
 C     weight (= I(1) / sigma**2(I(1))) and a space left for the I(0).
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER NADD, NITNS, NITES, J, IND(3), NPI, INTBGL, IPEAK, INTBGR
       INTEGER IXRAYT, I, ICURRP, IMESDP, INEWP
       INTEGER IGPREP
@@ -3922,7 +3922,7 @@ C
 C     This subroutine offers the user the choice of first or most
 C     recent orientation matrix for List13, and also the chance to
 C     alter the unit cell which is input to crystals via List1.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER I, J, K, IUMBP, NADD
       REAL UMBNEW (9), ALTCEL(7), V, FACT, ALPCOS, BETCOS, GAMCOS
       PARAMETER (FACT=0.0174532925)
@@ -4086,7 +4086,7 @@ C
       SUBROUTINE ALTER (CMESS, IOFSET, ALTCEL)
 C     This subroutine offers the current value of the cell parameter
 C     as a default, and allows the user to input a new value.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER IOFSET
       REAL ALTCEL (7)
       CHARACTER*(*) CMESS
@@ -4110,7 +4110,7 @@ C
 C     This deals with the smoothing and output of the intensity
 C     standards into a Crystals List 27.
 C     The structure of the chained list is described at the end.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
 C     Check if have any standards stored.
       IF (ISTDSP .EQ. 1) THEN
             WRITE (ISCRN, '(/1X,A)') 'NO INTENSITY STANDARDS STORED'
@@ -4163,7 +4163,7 @@ C*********************************************************************
       SUBROUTINE SMTH5
 C     This subroutine uses 5 point smoothing to estimate the intensity
 C     of each standard reflection at x-raytime=0.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER J,K, IPNTP, IDATP, IOLDP, ITEMP
       INTEGER RINTEN(3), ZERINT
 C     Get the first three recorded intensities for each standard and use
@@ -4236,7 +4236,7 @@ C     each standard into a weighted scale factor.
 C     The scale factor for the jth measurement of the ith standard is
 C                  SCALE(i,j) = X(i,0) / X(i,j)
 C     These are then weighted with the stored weight.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER IPNTP, IDATP
       REAL ZERINT, WEIGHT
       IPNTP = ISTDSP
@@ -4267,7 +4267,7 @@ C     group of standards, along with the averaged time for the group
 C     scale factor.
 C     The group scale factors and xraytime are stored in the chained
 C     list. IGSCFP points to the first of them.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER LGSCFP, ITGSCF
       INTEGER NADD
       INTEGER IPNTP, IDATP, IGRPNO, ISUMXT, NOING, MEANXT
@@ -4347,7 +4347,7 @@ C     values and outputs them with the same xraytime.
 C            smoothed sf(i) = (sf(i-1)+ 2*sf(i) +sf(i+1)) / 4
 C     The value at xrayt=0 is estimated using the gradient of the first
 C     2 points.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER ITGSF, IRAWXT (3), IPNTSP(3), LEND, NADD
       REAL RAWSCF (3), GRAD, RAWNEW
       PARAMETER (ITGSF = 4)
@@ -4450,7 +4450,7 @@ C
      +                         IPNTSP, RAWSCF, IRAWXT, LEND)
 C     This subroutine loads three consecutive raw int stds starting from
 C     IPNTP, their pointers and xraytimes into the appropriate arrays.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER IPNTP, IPNTSP(3), IRAWXT(3), LEND
       REAL RAWSCF(3)
       IF (IPNTP .EQ. 0 ) THEN
@@ -4527,7 +4527,7 @@ C     after the value pointed to by ICURRP.
       INTEGER IFRNTP, IRAYT, NITGSF, ITEMPP, NADD
       PARAMETER (NITGSF = 5)
       REAL SCFACT
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       ITEMPP = ISTORE(IFRNTP)
       ISTORE(IFRNTP) = NADD (NITGSF)
       ISTORE(ISTORE(IFRNTP)) = ITEMPP
@@ -4541,7 +4541,7 @@ C     after the value pointed to by ICURRP.
 C
       SUBROUTINE WRL27
 C     This subroutine writes out the #LIST 27 to the .SCF file
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER JGSCFP, J
       JGSCFP = IGSCFP
       WRITE (ISCFFL, '(''#LIST 27'')')
@@ -4581,7 +4581,7 @@ C     This subroutine prompts the user for information to go into List30
 C     and stores this in the chained list. Other routines also store
 C     list 30 info which can be worked out automatically.  The actual
 C     output of the #LIST 30 instruction is done by subroutine WRL30.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       REAL DIMEN(3), TEMP, ATEMP(2), SPHMIN, TOTX, ABS, DEN, AMOLWT
       REAL SPHMAX
       INTEGER I, J, NADD
@@ -4804,7 +4804,7 @@ C
 C     This subroutine prompts the user for the information required
 C     for List31, the unit cell esd's and writes them out to the
 C     .SCF file.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       REAL ESDS(6), FACT
       PARAMETER (FACT = 0.01745329252)
 C     FACT = pi/180
@@ -4884,7 +4884,7 @@ C
       SUBROUTINE MAINDA
 C     This subroutine does the processing of each card if the file
 C     contains the main reflection data.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER I, NADD
       CALL CENTRE (ISCRN, '-- PROCESSING INTENSITY DATA -- ')
       IF (ISTATP .EQ. 1) THEN
@@ -4967,7 +4967,7 @@ C
 C     This will take the input in CLINE and convert it to two arrays,
 C     CATOMS(char*2 holding the elements) and NATOMS (int holding the
 C     no of each type of atom).
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER I, J, K, LINE
       CHARACTER*26 CUPPER
       DATA CUPPER/ 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
@@ -5133,7 +5133,7 @@ C
 C           sigma(I)  = SQRT( PEAK+ 4(BGL+BGR))
 C           sigma'(I) = sigma(I) * BASE SPEED * ATTENUATOR / SPEED
 C
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
 
       REAL FOBS, SIGMA, TEMP, RTEMP
       INTEGER NPI, IBGL, IPEAK, IBGR
@@ -5191,7 +5191,7 @@ C     values and outputs them with the same xraytime.
 C            smoothed sf(i) = (sf(i-1)+ 2*sf(i) +sf(i+1)) / 4
 C     The value at xrayt=0 is estimated using the gradient of the first
 C     2 points.
-      INCLUDE "RC93CM.INC"
+#include "RC93CM.INC"
       INTEGER ITGSF, IRAWXT (3), IPNTSP(3), LEND
       REAL RAWSCF (3), GRAD, RAWNEW
       PARAMETER (ITGSF = 4)

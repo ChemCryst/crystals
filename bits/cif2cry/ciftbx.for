@@ -242,7 +242,7 @@ C >>>>>> Set the device numbers.
 C
          function init_(devcif,devout,devdir,deverr)
 C
-         include   'ciftbx.sys'
+#include   "ciftbx.sys"
          logical   init_
          integer   devcif,devout,devdir,deverr
 C
@@ -262,7 +262,7 @@ C >>>>>> Read a CIF dictionary and prepare for checks
 C
          function dict_(fname,checks)
 C
-         include   'ciftbx.sys'
+#include   "ciftbx.sys"
          logical   dict_,data_,open_,char_
          character locase*80
          character fname*(*),checks*(*)
@@ -327,7 +327,7 @@ C >>>>>> Open a CIF and copy its contents into a direct access file.
 C
          function open_(fname)
 C
-         include   'ciftbx.sys'
+#include   "ciftbx.sys"
          logical   open_,test
          character fname*(*)
          integer   case,i
@@ -380,7 +380,7 @@ C >>>>>> Store the data names and pointers for the requested data block
 C
          function data_(name) 
 C
-         include   'ciftbx.sys'
+#include   "ciftbx.sys"
          logical   data_
          character name*(*),flag*4,temp*32,ltype*4
          character locase*80
@@ -554,7 +554,7 @@ C >>>>>> Get the attributes of data item associated with data name
 C
          function test_(temp)
 C
-         include   'ciftbx.sys'
+#include   "ciftbx.sys"
          logical    test_
          character  temp*(*),name*32
          character  locase*80
@@ -579,7 +579,7 @@ C >>>>>> Get the next data name in the data block
 C
          function name_(temp)              
 C
-         include   'ciftbx.sys'
+#include   "ciftbx.sys"
          logical    name_
          character  temp*(*)
 C
@@ -601,7 +601,7 @@ C >>>>>> Extract a number data item and its standard deviation
 C
          function numb_(temp,numb,sdev)
 C
-         include   'ciftbx.sys'
+#include   "ciftbx.sys"
          logical    numb_
          character  temp*(*),name*32
          character  locase*80
@@ -632,7 +632,7 @@ C >>>>>> Extract a character data item.
 C
          function char_(temp,strg)          
 C
-         include   'ciftbx.sys'
+#include   "ciftbx.sys"
          logical    char_
          character  temp*(*),name*32
          character  strg*(*),flag*4
@@ -669,7 +669,7 @@ C >>>>> Convert name string to lower case
 C        
          function locase(name)
 C
-         include     'ciftbx.sys'
+#include   "ciftbx.sys"
          character    locase*80
          character    temp*80,name*(*)
          character    low*26,cap*26,c*1
@@ -695,7 +695,7 @@ C >>>>>> Get the data item associated with the tag.
 C
          subroutine getitm(name)
 C
-         include   'ciftbx.sys'
+#include   "ciftbx.sys"
          SAVE
          character name*(*),lname(20)*32
          character fhash*3,flag*4
@@ -824,7 +824,7 @@ C >>>>>> Read the next string from the file
 C
          subroutine getstr
 C
-         include   'ciftbx.sys'
+#include   "ciftbx.sys"
          integer   i
          character c*1,num*13,flag*4
          data num/'0123456789+-.'/
@@ -904,7 +904,7 @@ C           component count CCNT 11111222223333444
 C
          Function ctonum1(name)
 C
-         include   'ciftbx.sys'
+#include   "ciftbx.sys"
          character test*15,c*1,name*15
          integer*4 m,nchar
          integer*4 ccnt,mant,expn,msin,esin,ndec
@@ -996,7 +996,7 @@ C           component count CCNT 11111222223333444
 C
          subroutine ctonum
 C
-         include   'ciftbx.sys'
+#include "ciftbx.sys"
          character test*15,c*1
          integer*4 m,nchar
          integer*4 ccnt,mant,expn,msin,esin,ndec
@@ -1082,7 +1082,7 @@ C >>>>>> Read a new line from the direct access file
 C
          subroutine getlin(flag)
 C
-         include   'ciftbx.sys'
+#include "ciftbx.sys"
          character flag*4
 C
          irecd=irecd+1
@@ -1106,7 +1106,7 @@ C >>>>>> Write error message and exit.
 C
          subroutine err(mess)
 C
-         include   'ciftbx.sys'
+#include "ciftbx.sys"
          character mess*(*)
 C
          write(errdev,'(/5a,i5)') ' ciftbx error in  ',
@@ -1122,7 +1122,7 @@ C >>>>>> Create a named file.
 C
          function pfile_(fname)
 C
-         include   'ciftbx.sys'
+#include "ciftbx.sys"
          logical   pfile_,test
          integer   i
          character fname*(*)
@@ -1157,7 +1157,7 @@ C >>>>>> Store a data block command in the CIF
 C
          function pdata_(name) 
 C
-         include   'ciftbx.sys'
+#include "ciftbx.sys"
          logical   pdata_
          character name*(*),temp*32
          character dbloc(100)*32
@@ -1197,7 +1197,7 @@ C >>>>>> Put a number into the CIF, perhaps with an esd appended
 C
          function pnumb_(name,numb,sdev)
 C
-         include   'ciftbx.sys'
+#include "ciftbx.sys"
          logical    pnumb_,flag
          character  name*(*),temp*32
          real       numb,sdev
@@ -1234,7 +1234,7 @@ C >>>>>> Put a character string into the CIF.
 C
          function pchar_(name,string)      
 C
-         include   'ciftbx.sys'
+#include "ciftbx.sys"
          logical    pchar_,flag
          character  name*(*),temp*32,string*(*)
          character  line*80,strg*80
@@ -1287,7 +1287,7 @@ C >>>>>> Put a text sequence into the CIF.
 C
          function ptext_(name,string)      
 C
-         include   'ciftbx.sys'
+#include "ciftbx.sys"
          logical    ptext_,flag
          character  name*(*),temp*32,string*(*),store*32
          data store/'                                '/
@@ -1331,7 +1331,7 @@ C >>>>>> Put a loop_ data name into the CIF.
 C
          function ploop_(name)      
 C
-         include   'ciftbx.sys'
+#include "ciftbx.sys"
          logical    ploop_,flag
          character  name*(*),temp*32
 C
@@ -1371,7 +1371,7 @@ C >>>>>> Close the CIF
 C
          subroutine close_
 C
-         include   'ciftbx.sys'
+#include "ciftbx.sys"
 C
          if(ptextf.eq.'yes') call eotext
          if(ploopn.gt.0)     call eoloop
@@ -1389,7 +1389,7 @@ C >>>>>> Put the string into the output CIF buffer
 C
          subroutine putstr(string)     
 C
-         include   'ciftbx.sys'
+#include "ciftbx.sys"
          SAVE
          character  string*(*),temp*80,obuf*80
          integer    ichar,i
@@ -1437,7 +1437,7 @@ C >>>>>> Convert the number and esd to string nnnn(m)
 C
          subroutine putnum(numb,sdev)  
 C
-         include   'ciftbx.sys'
+#include "ciftbx.sys"
          character  string*60,digit*9,temp*20
          real       numb,sdev
          integer    i,j
@@ -1482,7 +1482,7 @@ C >>>>>> Check dictionary for data name validation
 C
          subroutine dcheck(name,type,flag)
 C
-         include   'ciftbx.sys'
+#include "ciftbx.sys"
          logical    flag
          character  name*(*),temp*32,type*4
          integer    i
@@ -1508,7 +1508,7 @@ C >>>>>> End of text string
 C
          subroutine eotext
 C
-         include   'ciftbx.sys'
+#include "ciftbx.sys"
 C
          ptextf='no '
          call putstr(';')
@@ -1524,7 +1524,7 @@ C >>>>>> End of loop detected; check integrity and tidy up pointers
 C
          subroutine eoloop
 C
-         include   'ciftbx.sys'
+#include "ciftbx.sys"
          integer   i
 C
          if(ploopn.eq.0)          goto 200
@@ -1548,7 +1548,7 @@ C >>>>>> Set common default values
 C
          block data
 C
-         include   'ciftbx.sys'
+#include "ciftbx.sys"
          data cifdev /1/
          data outdev /2/
          data dirdev /3/

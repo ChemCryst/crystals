@@ -1,4 +1,4 @@
-      include       'ciftbx.for'
+#include       "ciftbx.for"
 
 C<ric02>
 #if defined(_DVF_) || defined(_GID_)
@@ -10,7 +10,7 @@ C<ric02>
       logical lfirst,namebl,allbl,linfl,loutfl
       integer optlen
 C<ric02/>
-      include       'ciftbx.cmn'
+#include       "ciftbx.cmn"
       logical       f1,f2,f3,f4,f5,f6
       character*32  name, response,buffer
       character*24  cspace, output_name
