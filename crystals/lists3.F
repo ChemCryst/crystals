@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2004/05/13 11:52:50  rich
+C Increase maximum disk address for purge from 8M to 2G. NB. There is no
+C check on the disk size growth, this just allows huge .dsc's to be
+C purged without introducing errors.
+C
 C Revision 1.18  2004/05/11 10:19:42  rich
 C Add #PURGE MON=LOW option to prevent printing of entire disk
 C index.
@@ -843,8 +848,11 @@ C--CHECK THE TYPE OF RECORD WE HAVE FOUND
 C--CARD IMAGE  -  PRINT IT
 1200  CONTINUE
       N=N+1
-      IF ( ITYPE .EQ. 1) CALL XPCHLX (N,IBUFF(4),IBUFF(5),IBUFF(6))
-      CALL XPRTLC(N,IBUFF(4),IBUFF(5),IBUFF(6))
+      IF ( ITYPE .EQ. 1) THEN
+         CALL XPCHLX (N,IBUFF(4),IBUFF(5),IBUFF(6))
+      ELSE
+         CALL XPRTLC(N,IBUFF(4),IBUFF(5),IBUFF(6))
+      END IF
       GOTO 1100
 C--CRACKED CODE  -  CHECK IF WE SHOULD PRINT IT
 1250  CONTINUE
