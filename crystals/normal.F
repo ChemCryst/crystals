@@ -684,8 +684,8 @@ C TOP FRAME
 
       CALL XPRVDU(NCVDU, 6,0)
 
-      XMIN = +1000
-      XMAX = -1000
+      XMIN = +1000.
+      XMAX = -1000.
 
       DO I=1,50                                                     
         DCV(I)=-1000000.0                                                 
@@ -732,12 +732,12 @@ C STORE K-CURVE
           END IF
 
           WRITE(CMON,'(A,6F10.5)')
-     1    '^^PL DATA ', SVAL , 0.2*FLOAT(I-1)*RX, WVAL,
-     2    0.2*FLOAT(I-1)*RX, WCVAL , 0.2*FLOAT(I-1)*RX
+     1    '^^PL DATA ', SVAL , 0.02*FLOAT(I-1)*RX, WVAL,
+     2    0.02*FLOAT(I-1)*RX, WCVAL , 0.02*FLOAT(I-1)*RX
           CALL XPRVDU(NCVDU, 1,0)
 
-          XMIN = MIN(XMIN, SVAL,WVAL,WCVAL)
-          XMAX = MAX(XMAX, SVAL,WVAL,WCVAL)
+          XMIN = MIN(XMIN, SVAL,WVAL)
+          XMAX = MAX(XMAX, SVAL,WVAL)
 
         END IF
 
@@ -764,8 +764,15 @@ C STORE K-CURVE
         END DO
       END DO
 
-      WRITE(CMON,'(A,2(F5.0,1X),A,F4.0,A/A/A)')
-     1 '^^PL XAXIS ZOOM ',XMIN,XMAX+1.,'YAXIS ZOOM ',(10.*RX)+1.,' 0',
+C Round down XMIN to nearest .1:
+      XMIN = FLOOR ( XMIN * 10. ) / 10.
+C Round XMAX up:
+      XMAX = CEILING ( XMAX * 10. ) / 10.
+C Round RX up:
+      XRX = CEILING ( RX * 10. ) / 10.
+
+      WRITE(CMON,'(A,2(F5.1,1X),A,F4.1,A/A/A)')
+     1 '^^PL XAXIS ZOOM ',XMIN,XMAX+.1,'YAXIS ZOOM ',XRX,' 0.0',
      2 '^^PL SHOW','^^CR'
      
       CALL XPRVDU(NCVDU, 3,0)
