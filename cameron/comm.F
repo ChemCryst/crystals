@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2001/06/18 08:17:24  richard
+C Set proper resolution for screen device in GIL version.
+C
 C Revision 1.15  2000/12/22 12:15:05  CKP2
 C Add common block XUNITS, change ipage to jpage
 C
@@ -237,7 +240,14 @@ C CHECK THE FILENAME
         CALL ZMORE1 ('File created as :'//cfort ,0)
         IPOST = 0
 C OPEN THE FILE
-        IF (.NOT.LFILES ( 5 , CFORT , IFOUT )) THEN
+C^DJWNOV2001 HOOK IN SCRATCH FILE FOR EPS WORKFILE
+        if (iencap .ne. 0) then
+c        open IFOUT as scratchfile (not normal see below)
+         idjw = LFILES ( 9 , CFORT , IFOUT )
+        else
+         idjw = LFILES ( 5 , CFORT , IFOUT )
+        endif
+        IF (.NOT. idjw) THEN
           IPROC = 0
           CALL ZMORE ('Error on file open:',0)
           CALL ZMORE (CFORT,0)
@@ -271,7 +281,6 @@ C LOOK FOR HAND CHANGES - THIS ALTERS THE VALUE OF LABEL Y COORDINATES
       ENDIF
       IHAND = 0
 C
-
       RES = 1.
       XOFF = 0.
       YOFF = 0.0
@@ -360,9 +369,23 @@ C      RESET THE SCALE
       SCALE  = OLDSCL 
       res = 1.
       CALL ZCLEAR
+cdjwnov2001 - post-process encapsulated postscript
+      if (iencap .gt. 0) then
+c        open real file on scratchfile unit not normal!
+         idjw = LFILES ( 5 , CFORT , ISCRAT )
+        IF (.NOT. idjw) THEN
+          IPROC = 0
+          CALL ZMORE ('Error on file open:',0)
+          CALL ZMORE (CFORT,0)
+          CALL ZMORE1 ('Error on file open:'// cfort ,0)
+          RETURN
+        ENDIF
+       call xpostp (IFOUT, ISCRAT, IFONT)
+      endif
 cdjwdec99
-c 'copy' finished - close the file
+c 'copy' finished - close the files
       LITEMP = LFILES ( 0 , CFORT , IFOUT )
+      LITEMP = LFILES ( 0 , CFORT , ISCRAT )
       GOTO 9999
 103   CONTINUE
 C XROT
@@ -5438,7 +5461,90 @@ CODE FOR CAMPRESETS
      9              0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15/
 
       END
+C
+CODE FOR XPOSTP
+      SUBROUTINE XPOSTP(IIN, IOUT, IFONT)
+C POST PROCESS A .PS FILE TO SET .EPS BOUNDING BOX
+C IFONT  NEW FONT SIZE
+      CHARACTER *132 CLINE
+      ALlx=100000
+      ALly=100000
+      Urx =-100000
+      Ury =-100000
+      REWIND (IIN)
+      REWIND (IOUT)
+C
+      NLIN=0
+100   CONTINUE
+      READ(IIN,'(A)', END=200) CLINE
+      CONTINUE
+      IF (CLINE(7:15) .EQ. 'scalefont') THEN
+            READ(CLINE,'(I5)', ERR=100)  JFONT
+      ENDIF
+      READ(CLINE, '(F7.0,F9.0)', ERR=100) A,B
+      IF (A .LT. ALlx) ALlx = A
+      IF (A .GT. Urx) Urx = A
 
+      IF (B .LT. ALly) ALly = B
+      IF (B .GT. Ury) Ury = B
+      NLIN=NLIN+1
 
+      GOTO 100
+200   CONTINUE
+      WRITE(CLINE,*) 'Figure limits ' , ALlx,ALly,Urx,Ury,NLIN
+      CALL ZMORE(CLINE,0)
+      DELTAX = (Urx-ALlx) * .05
+      DELTAY = (Ury-ALly) * .05
+      ALlx = MAX (0., ALlx - DELTAX)
+      Urx = Urx + 2.* DELTAX
+      ALly = MAX (0., ALly - 2.* DELTAY)
+      Ury = Ury + DELTAY
+      WRITE(CLINE,*) 'Bounding Box ', ALlx,ALly,Urx,Ury
+      CALL ZMORE(CLINE,0)
+      WRITE(CLINE,*) 'Old font was ',JFONT
+      CALL ZMORE(CLINE,0)
+      WRITE(CLINE,*) 'New font is ',IFONT
+      CALL ZMORE(CLINE,0)
+C
+      REWIND (IIN)
+      NLIN = 0
+      READ(IIN, '(A)') CLINE
+      IF (CLINE(1:10) .EQ. '%!PS-Adobe') THEN
+            READ(IIN,'(15X,4F8.0)') OALlx,OALly,OUrx,OUry
+            WRITE(CLINE,*) 'Original Bounding Box ',
+     1                   OALlx,OALly,OUrx,OUry
 
-
+            CALL ZMORE(CLINE,0)
+            READ(IIN, '(A)') CLINE
+            READ(IIN, '(A)') CLINE
+      ENDIF
+      WRITE(IOUT,'(A)') '%!PS-Adobe-2.0 EPSF-1.2'
+      WRITE(IOUT,'(A,4I8)') '%%BoundingBox: ',
+     1 nint(ALlx),nint(ALly),nint(Urx),nint(Ury)
+      WRITE(IOUT,'(A)') '%%EndComments'
+      WRITE(IOUT,'(A)') CLINE
+300   CONTINUE
+      NLIN = NLIN + 1
+      READ(IIN, '(A)', ERR= 350, END=400) CLINE
+      IF (CLINE(7:15) .EQ. 'scalefont') THEN
+            WRITE(IOUT,'(I5,1X,A)') IFONT, 'scalefont'
+      ELSE IF ( CLINE(1:5) .EQ. '/ywid') THEN
+            WRITE(IOUT,'(A,I5,1X,A)')
+     1 '/ywid  ', IFONT, 'def'
+      ELSE
+            IF (NLIN .LE. 12) THEN
+C                  SCRAP TRANSLATE AND SCALE LINES
+                  IF(CLINE(9:17) .EQ. 'translate') THEN
+                        READ(IIN,'(A)') CLINE
+                        GOTO 300
+                  ENDIF
+            ENDIF
+            WRITE(IOUT,'(A)') CLINE
+      ENDIF
+      GOTO 300
+350   CONTINUE
+      WRITE(CLINE,*) 'Error while processing file at line', NLIN
+      CALL ZMORE(CLINE,0)
+400   CONTINUE
+      RETURN
+      END
