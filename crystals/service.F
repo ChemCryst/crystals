@@ -917,16 +917,16 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 2005 ) CSSPRG(1:LSSPRG) , CTIME , CDATE
 2005  FORMAT ( // , 1X , A , ' initialised at ' , A , ' on ' , A )
-      WRITE ( NCWU , 2015 ) 0.1*FLOAT(ISSVER), CSSMAC(1:LSSMAC),
+      WRITE ( NCWU , 2015 ) 0.01*FLOAT(ISSVER), CSSMAC(1:LSSMAC),
      2 CSSOPS(1:LSSOPS), CSSDAT(1:LSSDAT)
       ENDIF
-      WRITE ( NCAWU, 2015 ) 0.1*FLOAT(ISSVER), CSSMAC(1:LSSMAC),
+      WRITE ( NCAWU, 2015 ) 0.01*FLOAT(ISSVER), CSSMAC(1:LSSMAC),
      2 CSSOPS(1:LSSOPS), CSSDAT(1:LSSDAT)
 C
-      WRITE ( CMON,2015)  0.1*FLOAT(ISSVER), CSSMAC(1:LSSMAC),
+      WRITE ( CMON,2015)  0.01*FLOAT(ISSVER), CSSMAC(1:LSSMAC),
      2 CSSOPS(1:LSSOPS), CSSDAT(1:LSSDAT)
       CALL XPRVDU(NCVDU, 6,0)
-2015  FORMAT ( /, 10X , 'Version ' , F5.2 , ' for ' , A , ' under '
+2015  FORMAT ( /, 9X , 'Version' , F7.2 , ' for ' , A , ' under '
      2 , A, 3X , A , / , 10X ,
      3 'Copyright Chemical Crystallogaphy Laboratory, Oxford' , / )
 C

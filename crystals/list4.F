@@ -91,7 +91,7 @@ C
 C
 C----- NO OF PARAMETERS EXPECTED FOR EACH SCHEME. 0 = UNDEFINED
       DATA NPARAM / 1, 1, 2, 1, 0, 0, 0, 0, 0, 0,
-     1              0, 1, 3, 0, 0, 3, 0, 0 /
+     1              0, 1, 3, 0, 0, 6, 0, 0 /
 C
       DATA IFMT1 / '(I6,2X,20F7.3)  '/
       DATA IFMT2 / '(/7X,20I7)  '/
@@ -143,7 +143,8 @@ C-----      FSQ REFINEMENT CHECK IF WE MUST USE 1/2FO, OR /FO/SQ
             IF (  (ITYPE4 .EQ. 10) .OR.
      1            (ITYPE4 .EQ. 11) .OR.
      1            (ITYPE4 .EQ. 14) .OR.
-     1            (ITYPE4 .EQ. 15) )    THEN
+     1            (ITYPE4 .EQ. 15) .or.
+     1            (ITYPE4 .EQ. 16) )    THEN
                JTYPE = 2
                IF (ISSPRT .EQ. 0) WRITE(NCWU,100) '/FO/ **2'
 100    FORMAT( 20X, ' LIST 4 weighting type is ', A)
@@ -346,7 +347,7 @@ C----- CHECK SECOND IS NON ZERO
 C
 C--PROCESS THE NEXT REFLECTION  -  CHECK THAT THE CURRENT /FO/ IS NOT ZE
 2450  CONTINUE
-      FO= ABS(STORE(M6+3))
+CDJW      FO= ABS(STORE(M6+3))
       FO= ABS(STORE(M6+ITWIN))
 C--SET THE WEIGHT TO THE SIGMA VALUED STORED IN LIST 6
       AW=STORE(M6+12)
@@ -447,7 +448,28 @@ C--WEIGHTING SCHEME TYPE 7  -  1/SIGMA(/FO/)
       GOTO 4600
 3452  CONTINUE
 C----- SHELXTL WEIGHTS, W = 1/(SIGSQ+G*FSQ)
-      AW = 1 / ( FO*FO*STORE(L4) + AW*AW*STORE(L4+1) + STORE(L4+2)  )
+      CALL XSQRF(FSQ, STORE(L6+ITWIN), FABS, SIGSQ, STORE(L6+12) )
+      FC = A * STORE(M6+5)
+      IF (JTYPE .EQ.2) THEN
+            FO = FSQ
+            SIGMA = SIGSQ
+            FC = FC * FC
+      ELSE
+            FO = FABS
+            SIGMA = STORE(L6+12)
+      ENDIF
+      STHOLS = SNTHL2(L)
+      STH = SQRT(STHOLS/STORE(L13DC))
+      Q = EXP (STORE(L4+2) * STHOLS)
+      IF ( ABS(STORE(L4+2)) .LE. ZERO) THEN
+            Q = 1.
+      ELSE IF (STORE(L4+2) .LT. ZERO ) THEN
+            Q =  1. - Q
+      ENDIF
+      P = STORE(L4+5) * MAX(0., FO) + (1-STORE(L4+5))*FC
+      AW = Q / 
+     1 (SIGMA*SIGMA + (P*STORE(L4))*(P*STORE(L4)) +
+     2  STORE(L4+1)*P + STORE(L4+3) + STORE(L4+4)*STH)
       GOTO 4600
 C--WEIGHTING SCHEME TYPE 8  -  1/SIGMA(/FO/)**2
 3500  CONTINUE

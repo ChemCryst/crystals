@@ -1,4 +1,4 @@
-CODE FOR XSMMRY
+CODE FOR XSMMRY 
       SUBROUTINE XSMMRY
 C
 C -- SUBROUTINE TO SUMMARISE DATA
@@ -574,10 +574,10 @@ C
      8 '1/(Data with the key SIGMA(/FO/) in list 6)' ,
      9 '1.0' ,
      + '1.0/[A[0]*T[0]''(X)+A[1]*T[1]''(X) ... +A[NP-1]*T[NP-1]''(X)]',
-     1 '[SIN(theta)/lambda]**P(1)' ,
-     2 '[weight] * exp[8*(p(1)/p(2))*(pi*s)**2]' ,
-     3 '[weight] * [1-(deltaF/6*sigmaF)**2]**2 ' ,
-     4 '1.0 / [P(1)*FO**2 + P(2)*SIGMA(/FO/)**2 + P(3)]' /
+     1 '[SIN(theta)/lambda]^P(1)' ,
+     2 '[weight] * exp[8*(p(1)/p(2))*(pi*s)^2]' ,
+     3 '[weight] * [1-(deltaF/6*sigmaF)^2]^2 ' ,
+     4 'q / [Sigma^2(F*)+(P(1)p)^2+P(2)p+P(4)+P(5)Sin(theta) ]' /
 C
       DATA IEXPRS / 1 , 2 , 3 , 4 , 5 , 0 , 6 , 0 , 7 , 0 ,
      2 7 , 0 , 8 , 0 , 8 , 0 , 9 , 0 , 10 , 0 , 10 , 0 , 11 , 0 ,
@@ -593,7 +593,7 @@ C
      3 ' ' , ' ' , ' ' , '( Unit weights )' ,
      4 '( Chebychev polynomial )' , '( Chebychev polynomial )' ,
      5 ' ' , '( Dunitz and Seiler )', '( Tukey and Prince )',
-     6 '( Tukey and Prince )', '( Sheldrick )' /
+     6 '( Tukey and Prince )', '( Modified Sheldrick )' /
       DATA LNNAME / 19 , 10 , 1 ,
      2 15 , 1 ,
      3 1 , 1 , 1 , 16 ,
@@ -1153,7 +1153,7 @@ C
       ENDIF
 C
       LHEADR = .FALSE.
- 
+
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2000) ISTORE(L23MN)
       WRITE(NCAWU,2000) ISTORE(L23MN)
       WRITE ( CMON ,2000) ISTORE(L23MN)
