@@ -33,7 +33,7 @@
 ^^WI           'Click the atom required, or &All for a full listing'
 ^^WI     @ 3,2 MODELWINDOW MODELAA 'N' NROWS=20 NCOLS=50
 ^^WI           INFORM=NO ATTACH=L5
-^^WI           RADSCALE=500 RADTYPE=COV MOUSEACTION=HEADERATOM
+^^WI           RADSCALE=250 RADTYPE=COV MOUSEACTION=HEADERATOM
 ^^WI    }
 ^^WI   }
 ^^WI   @ 1,2 GRID RGHT NROWS=5 NCOLS=3
@@ -59,8 +59,7 @@
 ^^WI         DISPOSE ANGLES
 ^^CR
 %            COPY '#DISTANCE'
-Warning, angles calculation does not yet output to VDU routine.
-%%            COPY 'OUTPUT MONITOR = ANGLES'
+%            COPY 'OUTPUT MONITOR = ANGLES'
 %            COPY 'SELECT ALL=YES, COORD=YES, SORT=YES, RANGE=LIMITS'
 %            COPY 'LIMITS DMAX=2.5, AMAX=2.0'
 %            COPY 'END'
@@ -98,10 +97,7 @@ Warning, angles calculation does not yet output to VDU routine.
 %               TRANSFER 'Angle calculation for ' // AT1 // ' - ' -
                                  // AT2 // ' - '  // AT3 TO DISPLAY
 %               COPY '#DISTANCES'
-
-Warning, angles calculation does not yet output to VDU routine.
-
-%%               COPY 'OUTPUT MONITOR=ANGLES'
+%               COPY 'OUTPUT MONITOR=ANGLES'
 %               COPY 'EXCLUDE ALL'
 %               TRANSFER 'INCLUDE ' // AT1 // ' ' -
                                  // AT2 // ' '  // AT3 TO CRYSTALS

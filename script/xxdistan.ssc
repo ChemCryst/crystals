@@ -23,7 +23,7 @@
 ^^WI           'Click the atoms required, or &All for a full listing'
 ^^WI    @ 6,2 MODELWINDOW MODELDD 'N' NROWS=20 NCOLS=50
 ^^WI           INFORM=NO ATTACH=L5
-^^WI           RADSCALE=500 RADTYPE=COV MOUSEACTION=HEADERATOM
+^^WI           RADSCALE=250 RADTYPE=COV MOUSEACTION=HEADERATOM
 ^^WI    @ 6,4 GRID RGHT NROWS=5 NCOLS=3
 ^^WI    {
 ^^WI      @ 2,2 BUTTON  AL '&All'
