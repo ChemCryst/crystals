@@ -6,12 +6,18 @@
  *  Copyright (c) 2003 __MyCompanyName__. All rights reserved.
  *
  */
-
+#ifndef __REFLECTION_MERGING_H__
+#define __REFLECTION_MERGING_H__
 #include "HKLData.h"
+#include "RunParameters.h"
+#include "UnitCell.h"
+
 #include <set>
 #include <vector>
 
 using namespace std;
+
+typedef unsigned int SystemRef;
 
 struct lsreflection
 {
@@ -31,17 +37,31 @@ struct lsreflection
 class MergedData
 {
  private:
-    void equivalentise(const Reflection& pReflection, Array<unsigned short>& pMatIndices, Reflection* pResult)const; 
+    multiset<Reflection*, lsreflection>* iSortedReflections;
+    size_t iNumRefl;
+    size_t iUpto;
+    Reflection** iReflections;
     float iRFactor;
+   //void equivalentise(const Reflection& pReflection, Array<unsigned short>& pMatIndices, Reflection* pResult)const; 
+         
+    float calculateRFactor();
  public:
-    MergedData(const HKLData& pData, Array<unsigned short>& pMatIndices);
-    MergedData(const MergedData& pMergedData);//Copy constructure;
+    MergedData(const size_t pNumRefl);
+    ~MergedData();
+    void releaseReflections();
+//    MergedData(const MergedData& pMergedData);//Copy constructure
+    void add(const Matrix<short>& pHKL, const Reflection& pRefl);
+    //static char* getCrystalSystem(RunParameters& pRunParams, HKLData& pHKL);
+    inline float getRFactor()
+        {
+            if (iRFactor == -1)
+                return calculateRFactor();
+            return iRFactor;
+        }
     std::ostream& output(std::ostream& pStream);
 };
 
 std::ostream& operator<<(std::ostream& pStream, MergedData& tData);
-
-#define SystemRef unsigned int
 
 class LaueGroups
 {
@@ -54,7 +74,9 @@ private:
     enum systemID
     {
       kTriclinicID = 0,
+      kMonoclinicAID,
       kMonoclinicBID,
+      kMonoclinicCID,
       kOrtharombicID,
       kTetragonalID,
       kTrigonalID,
@@ -62,9 +84,18 @@ private:
       kCubicID,
       };
     LaueGroups();
-    unsigned int getSystemRef(unsigned short* pNumGroup, const unsigned short pSystemID) const; //Returns a reference to the first system LaueGroup and the number of groups for that system in pNumGroups
-    MergedData mergeSystemGroup(const HKLData& pHKLData, const unsigned short pSystem, const unsigned short pGroup) const;
-    
+    SystemRef getSystemRef(unsigned short* pNumGroup, const LaueGroups::systemID pSystemID) const; //Returns a reference to the first system LaueGroup and the number of groups for that system in pNumGroups
+    void mergeSystemGroup(const HKLData& pHKLData, const SystemRef pSystemRef, const unsigned short pGroupID, const RunParameters& pRunPara);
+    void releaseMemoryFor(const SystemRef pSystemRef, const unsigned short pGroupID);
+    static LaueGroups::systemID unitCellID2LaueGroupID(const UnitCell::systemID pID);
+    static UnitCell::systemID laueGroupID2UnitCellID(LaueGroups::systemID pID);
+    LaueGroups::systemID getCrystalSystemFor(const SystemRef pSystemRef);
+    void mergeForAll(const HKLData& pHKLs, const bool pThrowRefl, const RunParameters& pRunParam)const;
+    LaueGroups::systemID guessSystem(const HKLData& pHKLs, const RunParameters& pRunParam);
+    size_t count();
     ~LaueGroups();
+    std::ostream& output(std::ostream& pStream);
 };
 
+std::ostream& operator<<(std::ostream& pStream, LaueGroups& tData);
+#endif
