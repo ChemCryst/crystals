@@ -739,7 +739,7 @@ C   Clear the status line
 C    Clear buffer
                   CHRBUF = ' '
 C    Clear the input box.
-                  IF(.NOT.LCLOSE)CALL ZMNINP
+#GID                  IF(.NOT.LCLOSE)CALL ZMNINP
             ENDIF
       ENDIF
 C
