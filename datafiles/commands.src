@@ -2254,8 +2254,8 @@ DISK               8    0
      LOW            MEDIUM         HIGH
 PURGE              1    0
    4    4096 CRYSTALSFIDDLE
-   1.PURGE              7    1    0    0
-         5    5    5    5    1    3    1
+   1.PURGE              8    1    0    0
+         5    5    5    5    1    3    1    3
     .FILE1              1    0    1    0    1 OLD
     .FILE2              2    0    1    0    1 
     .FILE3              3    0    1    0    1 
@@ -2264,6 +2264,8 @@ PURGE              1    0
     .LOG                6    0    1    2    0 OFF
      OFF            ON
     .LIST               7    0    1    0    0         0
+    .MONITOR            8    0    1    2    0 HIGH
+     HIGH           LOW
 SIMULATE          12    0
    6    4096 CRYSTALSFIDDLE
    1.ENVIRONMENT        1 9999    0    0

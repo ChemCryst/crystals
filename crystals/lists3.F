@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.17  2003/09/24 14:07:39  rich
+C Fix glaring bug in new .dsc purging code. Only showed
+C up under linux.
+C
 C Revision 1.16  2003/09/24 08:40:02  rich
 C Modified XPURGE so that if a list-specific purge is being done in-situ (ie.
 C not a 'PURGE NEW'), the new .dsc is initially built in a direct access
@@ -1514,6 +1518,7 @@ C            OTHERWISE USE GIVEN NAME
 C      INITIALSIZE=
 C      LOG=ON/OFF
 C      LIST=N
+C      MONITOR=HIGH/LOW
 C
 C      NEWFIL      0      PURGE CURRENT FILE
 C                  1      CREATE NEW FILE FOR DATA ( 'PURGE NEW' )
@@ -1546,7 +1551,7 @@ C
 \QSTORE
 C
 CDJWMAY00
-      DATA ICOMSZ / 7 /
+      DATA ICOMSZ / 8 /
       DATA MINSIZ / 5 /
 C
 C
@@ -1622,6 +1627,8 @@ C -- INITIAL SIZE REQUESTED
       IRQSIZ = ISTORE(ICOMBF+4)
 C -- SET LOG FLAG
       LOGREQ = ISTORE(ICOMBF+5)
+C -- SET THE MONITOR FLAG
+      MONREQ = ISTORE(ICOMBF+7)
 C -- SET TOTAL LENGTH OF FILE REQUIRED FOR NEW LISTS
       LENTOT = 0
 CDJWMAY99
@@ -1878,7 +1885,7 @@ C--END OF THE PROCESS  -  TERMINATION MESSAGES
 C
 C
       CALL XPUMSG ( 11 , NUNEW )
-      CALL XPRTFI ( 0, 0 )
+      IF ( MONREQ .EQ. 0 ) CALL XPRTFI ( 0, 0 )
 C
 2720  CONTINUE
 C Close new DA file / copy back from scratch.
