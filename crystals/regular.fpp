@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.10  2001/06/18 12:24:03  richard
+c Missing comma.
+c
 c Revision 1.9  2001/06/08 15:08:21  ckpgroup
 c reinstate updated re-naming code
 c
@@ -659,8 +662,6 @@ C
 CDJWAPR2001
 C----- CHECK THE NUMBER OF NEW AND OLD ATOMS
       IF (IMATRIX.EQ.1) THEN
-        WRITE(CMON,'(A,3I6)') 'Expected ', NATMD 
-        CALL XPRVDU(NCVDU,1,0)
         WRITE(CMON,'(A,I4,A,I4)') 'Input: mapping ', NNEW ,
      1 ' atoms onto ', nold 
         CALL XPRVDU(NCVDU,1,0)
