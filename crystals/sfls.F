@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2001/03/16 16:54:55  CKP2
+C Update list 30
+C
 C Revision 1.10  2001/03/02 17:03:46  CKP2
 C djw put common block \xsfwk inti macrifile, and extend for (more!) cif
 C items
@@ -723,7 +726,7 @@ C----- UPDATE LIST 30
         STORE(L30RF +0 ) = R
         STORE(L30GE +10 ) = R
         STORE(L30RF +1 ) = RW
-        STORE(L30GE +12 ) = RW
+        STORE(L30GE +11 ) = RW
 CNOV98        STORE(L30RF +3 ) = MAX (STORE(L30RF +3 ), STORE(L11P+23))
         IF(STORE(L11P+23) .GT.ZERO) STORE(L30RF +2 ) = STORE(L11P+23)
         IF (STORE(L11P+16) .GT. ZERO) THEN
