@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.60  2003/07/01 16:44:24  rich
+C Store the fact that a list does not exist, so to only output this data once.
+C
 C Revision 1.59  2003/05/07 12:18:54  rich
 C
 C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -1178,7 +1181,7 @@ c               CALL XPRVDU(NCVDU, 2,0)
              DO M41S = L41S, L41S+(N41S-1)*MD41S, MD41S
 
                KNF11 = 1
-               DO I = 1,ISTORE(M41S)
+               DO I = 1,MAX(6,ISTORE(M41S))
                  IA  = ISTORE(M41S+I)
                  IAP = L5 + IA * MD5
 c                 WRITE(CMON,'(A4,I4)')ISTORE(IAP),NINT(STORE(IAP+1))
@@ -1203,7 +1206,7 @@ c                 CALL XPRVDU(NCVDU,1,0)
                IWORK = KNF11 + 24
                KNF11 = KNF11 + 28
 
-               I = KMOLAX(STR11(1),ISTORE(M41S),4,STR11(ICENT),
+               I = KMOLAX(STR11(1),MAX(6,ISTORE(M41S)),4,STR11(ICENT),
      1             STR11(IROOT),STR11(IVECT),STR11(ICSNE),STR11(IWORK))
 
 C Transform centroid into orthogonal (gui) coords.
