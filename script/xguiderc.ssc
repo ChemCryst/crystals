@@ -52,8 +52,10 @@
 %%
 %        BLOCK % KSEXTN 7
 %          COPY '#SCRIPT XEXTIN12'
-%          EVALUATE SETADP = 3
-%          COPY '#SCRIPT XWRITE5'
+%          IF ( DOEXTNC ) THEN
+%            EVALUATE SETADP = 3
+%            COPY '#SCRIPT XWRITE5'
+%          END IF
 %        END BLOCK
 %%
 %        BLOCK % KSWEIG 8
