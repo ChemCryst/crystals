@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.90  2004/06/24 09:12:00  rich
+// Replaced home-made strings and lists with Standard
+// Template Library versions.
+//
 // Revision 1.89  2004/05/19 15:37:55  rich
 // Remove debugging output.
 //
@@ -555,13 +559,12 @@ CFont* CcController::mp_inputfont = nil;
 
 static CcLock m_Crystals_Commands_CS(true);
 static CcLock m_Interface_Commands_CS(true);
-
 static CcLock m_Crystals_Thread_Alive(true);
 static CcLock m_Protect_Completing_CS(true);
 
+
 static CcLock m_Crystals_Command_Added(false);
 static CcLock m_Complete_Signal(false);
-
 static CcLock m_wait_for_thread_start(false);
 
 
@@ -596,10 +599,6 @@ CcController::CcController( const string & directory, const string & dscfile )
     m_Completing = false;
 
     m_restart = false;
-
-    m_Wait = false;
-
-
     mCrystalsThread = nil;
 
     m_BatchMode = false;
@@ -2228,9 +2227,8 @@ void CcController::ReLayout()
 {
     LOGSTAT("FORTRAN: Grabbing Crystals_Thread_Alive mutex");
     m_Crystals_Thread_Alive.Enter(); //Will be owned whole time crystals thread is running.
-    LOGSTAT("FORTRAN: Grabbing wait_for_thread_start mutex");
-	LOGSTAT("FORTRAN: Signalling wait_for_thread_start condition");
-    m_wait_for_thread_start.Signal(true);  //Does nothing on Win32
+    LOGSTAT("FORTRAN: Posting wait_for_thread_start semaphore");
+    m_wait_for_thread_start.Signal(true);
 
     LOGSTAT("FORTRAN: Running CRYSTALS");
     try
@@ -2285,7 +2283,7 @@ void CcController::StartCrystalsThread()
    else
      LOGSTAT("Thread run error");
 #endif
-   LOGSTAT("GUI: Releasing and waiting for wait_for_thread_start signal");
+   LOGSTAT("GUI: Waiting for wait_for_thread_start semaphore.");
    m_wait_for_thread_start.Wait(0);
    LOGSTAT("GUI: Continuing.");
 
@@ -3590,7 +3588,6 @@ bool CcController::GetCrystalsCommand( char * line )
        {
 // The queue is empty or locked so wait efficiently. 
 // Release the mutex for a while, so that someone else can write to the queue!
-           m_Wait = false;
 //           LOGSTAT ("-----------Queue locked or empty..");
          m_Crystals_Commands_CS.Leave();
          if (mThisThreadisDead) return false;
@@ -3612,8 +3609,6 @@ bool CcController::GetCrystalsCommand( char * line )
     if (mThisThreadisDead) return false;
 
     if (string(line) == "#DIENOW") endthread(0);
-
-    m_Wait = true;
 
     return (true);
 }
