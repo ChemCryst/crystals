@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2004/10/06 09:23:07  rich
+C Fix non-g77 friendly FORMAT statements (Allen Oliver).
+C
 C Revision 1.23  2004/09/29 11:57:18  rich
 C Compress the output the happens during each cycle of SFLS.
 C
@@ -107,7 +110,12 @@ C
 C--
       CHARACTER *21 CTEXT, CSAVE
       CHARACTER *14 CLST23(4)
-
+C-------STEFANS VARIABLES
+      INTEGER ZEROED_COUNT
+      INTEGER XCOUNT, YCOUNT
+      REAL  THRESH_HOLD, RHS
+      REAL  SQRT_Mii, SQRT_Mjj, Mij
+C----------------------------
 \TYPE11
 C
 C
@@ -164,6 +172,7 @@ C----- SET THE PRINT THRESHOLDS
       DATA RMAX/3./, SOESD/1./, CCOEF/.8/
 C      DATA RMSSM/ 0.3/
       DATA RMSSM/ 0.0/
+      
       DATA CLST23 /'R-factor', 'Rw', 'shift/esd', 
      1 'Min function'/
 
@@ -394,8 +403,74 @@ C----- ALLOCATE WORK SPACE
          M11 = L11C
          INM = L11C
 C--BRING DOWN THE MATRIX - REMEMBER MD11 INDICATES SINGLE OR DOUBLE PREC
-         CALL XDOWNF (M11DB, XSTR11 (MD11*L11C-MD11+1), MD11*NELEM)
-         IF (JP .GT. 0 ) THEN
+
+      CALL XDOWNF (M11DB, XSTR11 (MD11*L11C-MD11+1), MD11*NELEM)
+C---------------STEFAN PANTOS INSERTING ZERO VALUES INTO THE NORMAL MATRIX FOR SMALL VALU
+      IF (STORE(L33CD+13) .EQ. 1.0) THEN
+         ZEROED_COUNT = 0
+         DO YCOUNT= 0,(JY-1)-1
+C     L11C,LAST_ELEMENT
+            DO XCOUNT = ycount+1, (JY-1)
+                  STR11(L11C+JY*YCOUNT-(YCOUNT+(YCOUNT*(YCOUNT-1))/2)
+     1              +xCOUNT) = 0
+                  ZEROED_COUNT = ZEROED_COUNT + 1
+            ENDDO
+         ENDDO
+             PRINT *, ZEROED_COUNT, ' elements zeroed with', 
+     1 ' to make it diagonal'
+      ELSEIF (STORE(L33CD+13) .GT. 0) THEN
+C----------CALCULATE THE THREASHOLD FROM THE RANGE OF VALUES
+
+         THRESH_HOLD = STORE(L33CD+13)
+         ZEROED_COUNT = 0
+         DO YCOUNT= 0,(JY-1)
+C     L11C,LAST_ELEMENT
+            DO XCOUNT = ycount, (JY-1)
+               SQRT_Mii = SQRT(STR11(L11C+JY*xCOUNT-(xCOUNT+(xCOUNT*
+     1          (xCOUNT-1))/2)+xCOUNT))
+               SQRT_Mjj = SQRT(STR11(L11C+JY*YCOUNT-(YCOUNT+(YCOUNT*
+     1          (YCOUNT-1))/2)+yCOUNT))
+               Mij = STR11(L11C+JY*YCOUNT-(YCOUNT+(YCOUNT*
+     1          (YCOUNT-1))/2)+xCOUNT)
+               RHS = THRESH_HOLD*SQRT_Mjj*SQRT_Mii
+C               if (xcount .lt. 10 .and. ycount .lt. 10) print *, Mij, 
+C     1          ' ', SQRT_Mii, ' ', SQRT_Mjj, ' = ', THRESHHOLD, ' LT', 
+C     2          (ABS(Mjj) .LT. RHS), ' ', (SQRT_Mjj*SQRT_Mii)
+               IF (ABS(Mij) .LT. RHS)THEN
+                  STR11(L11C+JY*YCOUNT-(YCOUNT+(YCOUNT*(YCOUNT-1))/2)
+     1              +xCOUNT) = 0
+                  ZEROED_COUNT = ZEROED_COUNT + 1
+               ENDIF
+c               ZEROED_COUNT = ZEROED_COUNT + 1
+            ENDDO
+c            ZEROED_COUNT = ZEROED_COUNT + 1
+         ENDDO
+         PRINT *, ZEROED_COUNT, ' elements zeroed with', 
+     1 ' thresh hold at ', THRESH_HOLD
+      i = KSCTRN(1, 'SFLS:ZEROED', ZEROED_COUNT, 1)
+      ENDIF
+c--------------OUTPUT THE NORMAL MATRIX HERE
+      IF ( ISTORE(L33CD+5) .Eq. 1 ) THEN
+         call open_normalfile(73)
+C         open(73, FILE='normal.m')
+         write (73, '(''N=['')')
+         DO YCOUNT=0, JY-1
+            DO XCOUNT = 0, YCOUNT-1
+               WRITE(73, '(G16.8,'' ...'')')0
+            ENDDO
+            DO XCOUNT=YCOUNT, JY-1
+               WRITE(73, '(G16.8,'' ...'')')STR11(L11C+
+     1              JY*YCOUNT-(YCOUNT+(YCOUNT*(YCOUNT-1))/2)+xCOUNT);
+            ENDDO
+            if (YCOUNT .ne. JY-1) WRITE(73, '('';'')')
+         ENDDO
+         write (73, '('']; NS = [''I4'', ''I4''];'')')JY, JY
+         write (73, '(A)')  'N = N + triu(N, 1)'';'
+         CLOSE(73)
+      END IF
+
+C----------OUTPUT THE NORMAL MATRIX 
+      IF (JP .GT. 0 ) THEN
 C----- CHOOSE INVERTOR
             IF (METHOD .LE. 0) THEN
                CALL XCHOLS(JY, L11C, KO)
@@ -19385,3 +19460,23 @@ c
 *
       END
 
+Code for open_normalfile
+C --- Subroutine for opening a new file for outputing the normal matrix into.
+C fileid - The file id to open the file under.
+      Subroutine open_normalfile(fileid)
+      implicit none
+
+      integer fileid, filecount, i
+      logical file_exists
+      character*255 file_name
+
+      filecount = 0
+      file_exists = .true.
+      do while (file_exists)
+         write(file_name, '(a i4 a)'), 'normal', filecount, '.m'
+         call xcras(file_name, i) 
+         inquire(FILE=FILE_NAME(1:i), EXIST=file_exists)
+         filecount = filecount + 1
+      end do
+      OPEN(fileid, FILE=file_name, STATUS='UNKNOWN')
+      end subroutine open_normalfile
