@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  1999/07/15 10:54:34  richard
+C RIC: Changed "Script waiting for input" message to "Script running", which
+C is more true, especially when the script isn't waiting for input.
+C
 C Revision 1.12  1999/07/02 17:54:50  richard
 C RIC: Moved the "Script awaiting input" message so that it prints
 C every time, not just on first entry to KRDREC.
@@ -205,7 +209,7 @@ C
 &&GILGID1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
 &&GILGID          WRITE (CMON,1515) '''Enter Commands'''
 &&GILGID          CALL XPRVDU (NCVDU,1,0)
-          ELSE
+        ELSE
           CALL XPRMPT ( NCVDU , '>' )
 &GID          WRITE(CMON,'(A)')'^^CO SET MODEL01 MOUSEACTION=APPENDATOM'
 &GID          CALL XPRVDU(NCVDU,1,0)
@@ -223,12 +227,6 @@ C Update status information for GUI.
         IF (ISSTML .EQ. 4) CALL MENUUP
       ENDIF
 
-&&GILGID      IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
-&&GILGID          WRITE (CMON,1515) '''Script running...'''
-&&GILGID          CALL XPRVDU (NCVDU,1,0)
-&&GILGID      END IF
-
-C
       IF ( IRDFND(IFLIND) .GT. 0 ) THEN
         CALL XRDPOS ( NCRU , IRDREC(IFLIND) , IRDFND(IFLIND) )
       ENDIF
@@ -480,11 +478,22 @@ C&PPCCE***
 
       IF (IUNIT .EQ. NCUFU(1)) THEN
 C If in script mode, set flag.
-&&GILGID            INSTRC = .FALSE.
-&&GILGID            IF ( IRDSCR(IFLIND) .GT. 0 ) INSTRC = .TRUE.
+&&GILGID        INSTRC = .FALSE.
+&&GILGID        IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
+&&GILGID          INSTRC = .TRUE.
+&&GILGID        END IF
+
 &&GILGIDC Update status information for UI.
 &&GILGID            CALL MENUUP
             CALL GETCOM(CLINE)
+
+C If in script mode, set progress text.
+&&GILGID        IF ( INSTRC ) THEN
+&&GILGID          WRITE (CMON,1515) '''Crystals Script Mode'''
+&&GILGID          CALL XPRVDU (NCVDU,1,0)
+&&GILGID1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
+&&GILGID        END IF
+
       ELSE
       READ ( IUNIT, 1015, ERR = 9910, END = 9920 , IOSTAT = IOS ) CLINE
       ENDIF
