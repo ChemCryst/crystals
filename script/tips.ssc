@@ -110,57 +110,64 @@
  available in postscript and HTML.
 %   END BLOCK
 %   BLOCK     %TIP12%
-Common probelms.
-If no reflections are found during QUICKSTART:
-The filename or the format statement may be incorrect.
+Common probelms:
+If no reflections are found during QUICKSTART, then the
+filename or the format statement may be incorrect.
 Check the filename, and that the format statement
 is enclosed in brackets.
 %   END BLOCK
 %   BLOCK     %TIP13%
-Structure factor calculations fail with error messages
-about atoms of type Q. There are peaks remaining from
-a Fourier search left in the atom list. Edit the atom
-list, either with a script, or directly e.g.
+Common probelms:
+If structure factor calculations fail with error messages
+about atoms of type Q, then there are peaks remaining from
+a Fourier search in the atom list. Edit the atom list,
+either with a script, or directly e.g.
      #EDIT
      SELECT TYPE NE Q
      END
 %   END BLOCK
 %   BLOCK     %TIP14%
-DIFABS fails. Either there are no values for Fc, or
+Common probelms:
+If DIFABS fails, either there are no values for Fc, or
 no orientation matrix. Compute structure factors (#SFLS
 enter, CALC enter, END) or input a matrix (LIST 13,
 there is a script INLIST13).
 %   END BLOCK
 %   BLOCK     %TIP15%
-Partially occupied special positions. The occupation factor
-given in the atom parameter list, LIST 5, is the 'chemical'
-occupancy, and so is always unity for a non-disordered site.
+Did you know? 
+Regarding partially occupied special positions: The
+occupation factor given in the atom parameter list,
+LIST 5, is the 'chemical' occupancy, and so is always unity
+for a non-disordered site.
 If the atom is on a special position, the 'crystallographic'
 occupancy (multiplicity) is computed automatically, and
-multiplied onto the 'chemical' occupancy. To force CRYSTALS
-to use unit crystallographic occupancy (and thus only use the
-term stored as occupancy in LIST 5), set the UPDATE parameter
-in LIST 23 to NO. There is a script, INLIST23 to help you).
-You will then need to take care of all occupation factors manually.
+multiplied onto the 'chemical' occupancy.
+To force CRYSTALS to use unit crystallographic occupancy
+(and thus only use the term stored as occupancy in LIST 5),
+set the UPDATE parameter in LIST 23 to NO. There is a script,
+INLIST23 to help you). You will then need to take care of all
+occupation factors manually.
 %   END BLOCK
 %   BLOCK     %TIP16%
-If you can only vaguely remember the syntax of a command:
-Look in the PRIMER (chapter 16 & 17), or if you have
-already started the command type a '?' on the next line,
-or issue #COMMANDS command_name.
+If you can only vaguely remember the syntax of a command,
+a) look in the PRIMER (chapter 16 & 17),
+b) if you have already started the command type a '?'
+   on the next line,
+c) issue #COMMANDS command
 %   END BLOCK
 %   BLOCK     %TIP17%
-If you see Read/Write error on unit 1:
-Unit 1 is the data base, and you have probably either filled
-you hard disk, or not enabled automatic disk file extension.
-Type
+Common problems:
+If you see Read/Write error on unit 1, (the data base),
+you may have filled you hard disk, or not enabled automatic
+disk file extension. Type:
 #DISK
 EXTEND SIZE=100 TRIES=100
 END
 %   END BLOCK
 %   BLOCK     %TIP18%
+Did you know?
 To automatically renumber atoms so that adjacent atoms
-have adjacent serial numbers:
+have adjacent serial numbers, type:
 #REGROUP
 SELECT SEQUENCE=YES
 END
@@ -188,37 +195,42 @@ c(101) until c(106), c(111) until c(116)
 If you have lots of phenyl groups, and not much data.
 Use restraints to permit a valid anisotropic refinement.
 E.g. for the group P(1)-C(1).....C(6)
+
 #LIST 16
+
 # first the geometry - this will enforce pseudo 6 fold symmetry, but you
 could make it 2 fold.
-PLANAR P(1) C(1) UNTIL C(6)
-ANGLE 180,.1 = P(1) to C(1) to C(4)
-DIST 0,.01 =MEAN C(1) TO C(2) C(2) TO C(3) C(3) TO C(4) C(4) TO
-CONT C(5) C(5) TO C(6) C(6) TO C(1)
-DIST 0,.01 =MEAN C(1) TO C(3) C(2) TO C(4) C(3) TO C(5) C(4) TO
-CONT C(6) C(5) TO C(1) C(6) TO C(2)
-DIST 0,.01 =MEAN C(1) TO C(4) C(2) TO C(5) C(3) TO C(6)
+PLANAR              P(1) C(1) UNTIL C(6)
+ANGLE 180, .1 =     P(1) to C(1) to C(4)
+DIST  0,  .01 =MEAN C(1) TO C(2) C(2) TO C(3) C(3) TO C(4)
+CONT                C(4) TO C(5) C(5) TO C(6) C(6) TO C(1)
+DIST  0,  .01 =MEAN C(1) TO C(3) C(2) TO C(4) C(3) TO C(5)
+CONT                C(4) TO C(6) C(5) TO C(1) C(6) TO C(2)
+DIST  0,  .01 =MEAN C(1) TO C(4) C(2) TO C(5) C(3) TO C(6)
+
 # now bond stretching restraints
-VIB 0,.01 = C(1) TO C(2) C(2) TO C(3) C(3) TO C(4) C(4) TO C(5) C(5)
-CONT TO C(6) C(6) TO C(1)
+VIB   0,  .01 =     C(1) TO C(2) C(2) TO C(3) C(3) TO C(4)
+CONT                C(4) TO C(5) C(5) TO C(6) C(6) TO C(1)
+
 # now angle flexing restraints
-VIB 0,.01 = C(1) TO C(3) C(2) TO C(4) C(3) TO C(5) C(4) TO C(6) C(5)
-CONT TO C(1) C(6) TO C(2)
-VIB 0,.01 = C(1) TO C(4) C(2) TO C(5) C(3) TO C(6)
+VIB   0,  .01 =     C(1) TO C(3) C(2) TO C(4) C(3) TO C(5)
+CONT                C(4) TO C(6) C(5) TO C(1) C(6) TO C(2)
+VIB   0,  .01 =     C(1) TO C(4) C(2) TO C(5) C(3) TO C(6)
+
 # so far, we have no restraints on the out-of-plane components of Uij
 # set up similarity restraints.
-U(ij) 0,.02 = C(1) TO C(2) C(2) TO C(3) C(3) TO C(4) C(4) TO C(5) C(5)
-CONT TO C(6) C(6) TO C(1)
-U(ij) 0,.03 = C(1) TO C(3) C(2) TO C(4) C(3) TO C(5) C(4) TO C(6) C(5)
-CONT TO C(1) C(6) TO C(2)
-VIB 0,.03 = C(1) TO C(4) C(2) TO C(5) C(3) TO C(6)
+U(ij)  0, .02 =     C(1) TO C(2) C(2) TO C(3) C(3) TO C(4)
+CONT                C(4) TO C(5) C(5) TO C(6) C(6) TO C(1)
+U(ij)  0, .03 =     C(1) TO C(3) C(2) TO C(4) C(3) TO C(5)
+CONT                C(4) TO C(6) C(5) TO C(1) C(6) TO C(2)
+VIB    0, .03 =     C(1) TO C(4) C(2) TO C(5) C(3) TO C(6)
 
 Note that the atom list on each bond restraint also occurs in
 a vibration restraint and a similarity restraint.
-There is a script (on the menu for RESTRAINTS) which will set
-these up for you. The geometrical rigidity can also be imposed
-as a constraint (with GROUP in LIST 12), though in this case
-the group must be idealised before refinement begins (#REGULARISE).
+There is a script which will set these up for you. The
+geometrical rigidity can also be imposed as a constraint
+(with GROUP in LIST 12), though in this case the group must
+be idealised before refinement begins (#REGULARISE).
 %   END BLOCK
 %   BLOCK     %TIP23%
 Hydrogen atoms can be found or placed geometrically
