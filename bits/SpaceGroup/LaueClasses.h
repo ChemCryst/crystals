@@ -10,7 +10,6 @@
 #define __LAUE_CLASSES_H__
 #include <iostream>
 #include <vector>
-#include "Collections.h"
 #include "Matrices.h"
 #include "BaseTypes.h"
 #include "Symmetry.h"

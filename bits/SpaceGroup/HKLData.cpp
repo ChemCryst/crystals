@@ -34,9 +34,7 @@
  * 	function name	
  * };
  */
-//#include "stdafx.h"
 #include "HKLData.h"
-#include "Collections.h"
 #include <iostream>
 #include <math.h>
 #include <stdio.h>

@@ -8,7 +8,6 @@
  */
 #ifndef __SPACE_GROUPS_H__
 #define __SPACE_GROUPS_H__
-#include "Collections.h"
 #include "BaseTypes.h"
 #include "Symmetry.h"
 #include <iostream>

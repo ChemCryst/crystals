@@ -40,11 +40,9 @@
  *
  */
 
-//#include "stdafx.h"    //This is need for compiling on windowz. Cannot put precomp if round it because M$ are a pain.
 #define _USE_MATH_DEFINES
 #include "UnitCell.h"
 #include "Exceptions.h"
-#include "Collections.h"
 #include "MathFunctions.h"
 #include "StringClasses.h"
 #include "Wrappers.h"

@@ -9,7 +9,6 @@
 
 #if !defined(__CONDITIONS_H__)
 #define __CONDITIONS_H__
-#include "Collections.h"
 #include "Matrices.h"
 #include <vector>
 

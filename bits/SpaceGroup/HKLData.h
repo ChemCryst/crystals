@@ -37,7 +37,6 @@
 
 #ifndef __HKL_DATA_H__
 #define __HKL_DATA_H__
-#include "Collections.h"
 #include <stdio.h>
 #include "vector"
 #include "Matrices.h"
