@@ -14,12 +14,12 @@
 %%
 %% Do some initial checks that all data is present
 %%
-% IF ( EXISTS 1 .EQ. 0 ) THEN
+% IF ( EXISTS 1 .LE. 0 ) THEN
 {E Missing unit cell
 {I The unit cell is required to determine the space group.
 %   FINISH
 % END IF
-% IF ( EXISTS 6 .EQ. 0 ) THEN
+% IF ( EXISTS 6 .LE. 0 ) THEN
 {E Missing observations
 {I Reflections (hkl data) are required to determine the space group.
 %   FINISH
@@ -53,7 +53,7 @@
 ^^CR
 %% Step 1a - if SG already entered, get class
 %%
-% IF ( EXISTS 2 .NE. 0 ) THEN
+% IF ( EXISTS 2 .GT. 0 ) THEN
 %   COPY '#GENERALEDIT 2'
 %   COPY 'LOCATE RECORDTYPE = 107'
 %   COPY 'TRANSFER FROM OFFSET = 0 TO CLASS1'

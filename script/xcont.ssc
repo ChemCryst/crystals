@@ -139,7 +139,7 @@
 %       CLEAR
 ^^WI    SYSSAVEFILE 'Slant.fou' '*.fou' 'Fourier map ascii file (*.fou)'
 ^^CR
-%       GET SILENT FINAL FILENAME 'Filename for map' 'Slant.fou'
+%       GET SILENT FINAL TEXT 'Filename for map' 'Slant.fou'
 %       IF CVALUE .NE. 'CANCEL' THEN
 %         TRANSFER "^^CO SET E1 TEXT " // CVALUE TO DISPLAY
 %       END IF

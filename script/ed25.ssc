@@ -30,7 +30,7 @@
 % EVALUATE CURMAT = 1
 % EVALUATE MATCHG = TRUE
 % EVALUATE CANCEL25 = FALSE
-% EVALUATE IS25 =  ( ( EXISTS 25 ) .NE. 0 )
+% EVALUATE IS25 =  ( ( EXISTS 25 ) .GE. 1 )
 % IF ( IS25 ) THEN
 %   COPY '#GENERALEDIT 25'
 %   COPY 'TRANSHEAD FROM OFFSET=3 TO N25'
@@ -56,7 +56,7 @@
 %   COPY 'END'
 % END IF
 %%
-% IF ( ( EXISTS 5 ) .NE. 0 ) THEN
+% IF ( ( EXISTS 5 ) .EQ. 1 ) THEN
 %   COPY '#GENERALEDIT 5'
 %   COPY 'TRANSHEAD FROM OFFSET=22 TO NEL'
 %   COPY 'LOCATE RECORDTYPE=105'
@@ -413,7 +413,7 @@
 %%
 %% Update L5 ELEMENT card.
 %%
-%       IF ( ( EXISTS 5 ) .NE. 0 ) THEN
+%       IF ( ( EXISTS 5 ) .NE. 1 ) THEN
 %% Calculate total of vol fractions.
 %         EVALUATE VOLF = 0.0
 %         LOOP N25 TIMES

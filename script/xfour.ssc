@@ -302,7 +302,7 @@
 %           BLOCK
 %              ON ERROR REPEAT
 ^^CO SYSSAVEFILE 'Mapfile' 'Mapfile' 'Binary MapView format (Mapfile)'
-%              GET SILENT NOSTORE FILENAME 'Save as' 'MAPVIEW'
+%              GET SILENT NOSTORE TEXT 'Save as' 'MAPVIEW'
 %              EVALUATE FNAME = CVALUE
 %              IF ( FNAME .EQ. 'CANCEL' ) THEN
 %                EVALUATE DOMAP = 0
@@ -317,7 +317,7 @@
 %           BLOCK
 %              ON ERROR REPEAT
 ^^CO SYSSAVEFILE 'Map.fou' '*.fou' 'Fourier map ASCII file (*.fou)'
-%              GET SILENT NOSTORE FILENAME 'Save as' 'MAP.FOU'
+%              GET SILENT NOSTORE TEXT 'Save as' 'MAP.FOU'
 %              EVALUATE FNAME = CVALUE
 %              IF ( FNAME .EQ. 'CANCEL' ) THEN
 %                EVALUATE DOMAP = 0
@@ -373,17 +373,17 @@
 %           GET SILENT NOSTORE FINAL TEXT '1' '1'
 %           EVALUATE CFILE = CVALUE
 %           IF CFILE .EQ. '1' .OR. FILEEXISTS ( CFILE ) .EQ. FALSE THEN
-%             IF FILEEXISTS 'c:\progra~1\marchi~1\MarchingCubeELD.exe' THEN
+%             IF FILEEXISTS 'crysdir:mce\mce.exe' THEN
+^^CO            SETKEY MCEDIR crysdir:mce\mce.exe
+%               EVALUATE CFILE = "crysdir:mce\mce.exe"
+%          ELSE IF FILEEXISTS 'c:\progra~1\marchi~1\MarchingCubeELD.exe' THEN
 ^^CO            SETKEY MCEDIR c:\progra~1\marchi~1\MarchingCubeELD.exe
 %               EVALUATE CFILE = "c:\progra~1\marchi~1\MarchingCubeELD.exe"
-%             ELSE IF FILEEXISTS 'crysdir:MarchingCubeELD.exe' THEN
-^^CO            SETKEY MCEDIR crysdir:MarchingCubeELD.exe
-%               EVALUATE CFILE = "crysdir:MarchingCubeELD.exe"
 %             ELSE
 
   Where is the MCE executable?
 
-^^CO SYSOPENFILE 'MarchingCubesELD.exe' 'MCE executable'
+^^CO SYSOPENFILE 'm*.exe' 'MCE executable'
 
 %               CLEAR
 %               INSERT '^^CO SETKEY MCEDIR '
@@ -398,7 +398,8 @@
 %               END IF
 %             END IF
 %           END IF
-%           TRANSFER '#SPAWN "' // CFILE // '" ' // FNAME TO CRYSTALS
+%           TRANSFER '#SPAWN "' // CFILE // '" "' // FNAME // '"' TO CRYSTALS
+%           TRANSFER '#SPAWN "' // CFILE // '" "' // FNAME // '"' TO DISPLAY
 %         END IF
 %       END IF
 %       IF ( DOMAP .EQ. 3 ) THEN
@@ -423,7 +424,7 @@
 
   Where is the Mapview executable?
 
-^^CO SYSOPENFILE 'Mapview.exe' 'Mapview executable'
+^^CO SYSOPENFILE 'Mapview*.exe' 'Mapview executable'
 
 %               CLEAR
 %               INSERT '^^CO SETKEY MAPVIEWDIR '

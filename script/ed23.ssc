@@ -17,7 +17,7 @@
 %%
 %%
 %%
-% IF  EXISTS ( 23 ) .EQ. 0 THEN
+% IF  EXISTS ( 23 ) .LE. 0 THEN
 %   COPY '#LIST 23'
 %   COPY 'END'
 % END IF
