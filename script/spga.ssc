@@ -29,8 +29,8 @@
 ^^CO SENDPROGRESSTO _SPGPR
 %        COPY '#SGPLOT'
 %        COPY 'OUTPUT PLOT=YES'
-%        COPY 'CLASS 1 0 0 0 0 0 0 0 1'
-%        COPY 'CONDITION 1 0 1 2'
+%        COPY 'CLASS 1 0 0 1 0 0 0 0 0'
+%        COPY 'CONDITION 1 0 0 2'
 %        COPY 'END'
 %        GET NOSTORE SILENT TEXT ' ' ' '
 ^^CO DISPOSE xspga

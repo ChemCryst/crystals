@@ -1,5 +1,4 @@
 %SCRIPT SGIN3  
-SGIN3
 %%
 %% SG changed. Populate list of classes, setup details.
 %%
@@ -69,5 +68,4 @@ SGIN3
 % END LOOP
 % EVALUATE CURCLA = 1
 % COPY '#SCRIPT SGIN4'
-END SGIN3
 %END SCRIPT

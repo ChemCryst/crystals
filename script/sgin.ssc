@@ -60,30 +60,26 @@
 ^^WI           @ 1,1 STATIC SG4 'Reflection Conditions'
 ^^WI           @ 2,1 LISTBOX SGCOND VISLINES=7 INFORM=YES
 ^^WI         }
-^^WI         @ 1,5 GRID SG10 NROWS=1 NCOLS=3
+^^WI         @ 1,5 GRID SG10 NROWS=8 NCOLS=5
 ^^WI         {
-^^WI           @ 1,1 GRID SG9A NROWS=7 NCOLS=1
-^^WI           {
 ^^WI             @ 1,1 STATIC SG43 'Condition'
-^^WI             @ 2,1 STATIC SG43 'Number'
-^^WI             @ 3,1 STATIC SG44 '<I>'
-^^WI             @ 5,1 STATIC SG45 'I>3u(I)'
-^^WI             @ 6,1 STATIC SG47 'Score 1:'
-^^WI             @ 7,1 STATIC SG48 'Score 2:'
-^^WI           }
-^^WI           @ 1,3 GRID SG9B NROWS=7 NCOLS=3
-^^WI           {
-^^WI             @ 1,1 STATIC SG6 'TRUE'
-^^WI             @ 1,3 STATIC SG6 'FALSE'
-^^WI             @ 2,1 STATIC SGNT ''
-^^WI             @ 2,3 STATIC SGNF ''
-^^WI             @ 3,1 STATIC SGAT ''
-^^WI             @ 3,3 STATIC SGAF ''
-^^WI             @ 5,1 STATIC SGGT ''
-^^WI             @ 5,3 STATIC SG46 '%'
-^^WI             @ 6,1 STATIC SGS1 ''
-^^WI             @ 7,1 STATIC SGS2 ''
-^^WI           }
+^^WI             @ 3,1 STATIC SG43 'Number'
+^^WI             @ 4,1 STATIC SG44 '<I>'
+^^WI             @ 6,1 STATIC SG45 'I>3u(I)'
+^^WI             @ 7,1 STATIC SG47 'Score 1:'
+^^WI             @ 8,1 STATIC SG48 'Score 2:'
+^^WI             @ 1,3 STATIC SG6 'TRUE'
+^^WI             @ 1,5 STATIC SG6 'FALSE'
+^^WI             @ 2,3 STATIC SG6 '-----'
+^^WI             @ 2,5 STATIC SG6 '-----'
+^^WI             @ 3,3 STATIC SGNT '0'
+^^WI             @ 3,5 STATIC SGNF '0'
+^^WI             @ 4,3 STATIC SGAT '0.00000'
+^^WI             @ 4,5 STATIC SGAF '0.00000'
+^^WI             @ 6,3 STATIC SGGT '0'
+^^WI             @ 6,5 STATIC SG46 '%'
+^^WI             @ 7,3 STATIC SGS1 '0'
+^^WI             @ 8,3 STATIC SGS2 '0'
 ^^WI         }
 ^^WI       }
 ^^WI     }
