@@ -37,6 +37,7 @@ class CrGUIElement;
 #define         INFO_BYTE             'I'                      // Control Character
 #define         STATUS_BYTE           'S'                      // Control Character
 #define         RESULT_BYTE           'R'                      // Control Character
+#define         NORMAL_BYTE           'N'                      // Control Character
 
 typedef struct _tagCOLOURCODE
 {

@@ -1201,6 +1201,14 @@ int CxTextOut::GetColourCodes( CcString& strData, COLOURCODE* pColourCode )
         nBytesToSkip = 2;                       // Skip the R
         strData = strData.Sub( 2,-1 ) + " ";    // Remove the R
     }
+    else if ( strData.Match( NORMAL_BYTE ) == 1 )
+    {
+        m_bInLink = false;
+        pColourCode->nFore = 1;                 // black on
+        pColourCode->nBack = 0;                 // white
+        nBytesToSkip = 2;                       // Skip the N
+        strData = strData.Sub( 2,-1 ) + " ";    // Remove the N
+    }
     else
     {
 
