@@ -46,4 +46,4 @@ dist : ../installer crysexe data scripts bits documentation
 	
 
 ../installer :
-	mkdir installer
+	mkdir ../installer
