@@ -1,4 +1,12 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  1999/05/10 17:09:10  dosuser
+C RIC: Fixed so that atomic co-ordinates will be displayed as soon
+C     as they become available. Previously you would have to either close
+C     the program or re-call #SET TERM WIN. After the call to XWININ(IN)
+C     LUPDAT was set to FALSE if no model was available. Now it isn't since
+C     if there is no model, XGDBUP will simply return without doing anything
+C     anyway.
+C
 CODE FOR KRDREC
       FUNCTION KRDREC(IN)
 C--READ THE NEXT RECORD, EITHER FROM THE INPUT STREAM OR FROM THE
@@ -459,7 +467,47 @@ C----- SPOT LINES BEGINNING WITH $, AND CONVERT TO # FUNCTIONS
         CLINE(J:J) = CLINE(I:I)
 1200    CONTINUE
         CLINE(1:5) = CTRAN1(1:1)//CDOLAR//'   '
-      ENDIF
+      END IF
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+C This section is used to test the CSDCODE.
+C Typing '#BONDTY' generates a list of bonds and automatically assigns
+C their bond types.
+cC----- SPOT LINES BEGINNING WITH #BONDTY, AND CALL BONDTY
+c      IF (CLINE(1:7) .EQ. '#BONDTY') THEN                               
+c          LENUSE = 1
+c          CLINE = ' '
+c          CALL BONDTY
+C Typing '#BONDCK' compares bond lengths and angles to the CSD data.
+C It writes quest files if the data is not available..
+cC----- SPOT LINES BEGINNING WITH #BONDCK, AND CALL KBNDCH               
+c      ELSE IF (CLINE(1:7) .EQ. '#BONDCK') THEN                               
+c          LENUSE = 1
+c          CLINE = ' '
+c        IDV4 = KBNDCH ( RDV,  IDV, RDV2,
+c     1                  RDV3, IDV2, IDV3, RDV4,
+c     1                  1,    RDV5 )
+c
+c
+C '#EMAP2' is put in the SRQ by '#EMAP' so that we can come back
+C and analyse the results of a #FIND.
+cC----- SPOT LINES BEGINNING WITH #EMAP2, AND CALL EMAP2D               
+c      ELSE IF (CLINE(1:6) .EQ. '#EMAP2') THEN                               
+c          LENUSE = 1
+c          CLINE = ' '
+c        ICODE = 2
+c        CALL EMAP2D(ICODE)
+C '#EMAP2D' reads in a 'GUESS.DAT' file which describes the
+C bonding of a molecule (CSD quest format). It gets the relevant
+C bond length and angle data from the local database and then
+C checks the results of #FIND with this.
+cC----- SPOT LINES BEGINNING WITH #EMAP, AND CALL EMAP2D               
+c      ELSE IF (CLINE(1:5) .EQ. '#EMAP') THEN                               
+c          LENUSE = 1
+c          CLINE = ' '
+c        ICODE = 0
+c        CALL EMAP2D(ICODE)
+c      ENDIF
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 C -- CONVERT FIRST CHARACTER IF NECESSARY
       IPOS = INDEX ( CTRAN1 , CLINE(1:1) )
       IF ( IPOS .GT. 0 ) CLINE(1:1) = CTRAN2(IPOS:IPOS)
