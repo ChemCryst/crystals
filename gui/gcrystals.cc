@@ -27,8 +27,6 @@ static char THIS_FILE[] = __FILE__;
 // CCrystalsApp
 #ifdef __CR_WIN__
 BEGIN_MESSAGE_MAP(CCrystalsApp, CWinApp)
-    //{{AFX_MSG_MAP(CCrystalsApp)
-    //}}AFX_MSG_MAP
     // Standard file based document commands
 //      ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
 //      ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
@@ -60,12 +58,9 @@ BOOL CCrystalsApp::InitInstance()
     //  of your final executable, you should remove from the following
     //  the specific initialization routines you do not need.
 
-#ifdef _AFXDLL
-    Enable3dControls();         // Call this when using MFC in a shared DLL
-#else
-    Enable3dControlsStatic();   // Call this when linking to MFC statically
-#endif
+    InitCommonControls();
 
+    CWinApp::InitInstance();
 
 // The user can override the ini file settings by setting
 // CRYSDIR to the crystals directory, and USECRYSDIR to anything.

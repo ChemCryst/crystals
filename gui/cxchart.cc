@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.19  2002/06/26 11:57:48  richard
+//   Label mouse fixes.
+//
 //   Revision 1.18  2002/05/08 08:56:13  richard
 //   Added support for wmf AND emf file output to Chart objects (Cameron). Reason:
 //   emf doesn't work on Windows 95. Bah.
@@ -536,7 +539,7 @@ void CxChart::DrawText(int x, int y, CcString text)
     CPen        *oldpen = memDC->SelectObject(&pen);
 	LOGFONT     theLogfont;
     (CcController::mp_font)->GetLogFont(&theLogfont);
-    CString face = *(theLogfont.lfFaceName);
+    CString face = CString(*(theLogfont.lfFaceName));
     CFont theFont;
         theFont.CreatePointFont(110, face , memDC);
 

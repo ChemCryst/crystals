@@ -1,6 +1,16 @@
 // crystals.h : main header file for the CRYSTALS application
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.9  2001/03/27 15:15:00  richard
+// Added a timer to the main window that is activated as the main window is
+// created.
+// The timer fires every half a second and causes any messages in the
+// CRYSTALS message queue to be processed. This is not the main way that messages
+// are found and processed, but sometimes the program just seemed to freeze and
+// would stay that way until you moved the mouse. This should (and in fact, does
+// seem to) remedy that problem.
+// Good good good.
+//
 // Revision 1.8  2001/03/08 16:44:07  richard
 // General changes - replaced common functions in all GUI classes by macros.
 // Generally tidied up, added logs to top of all source files.
@@ -90,10 +100,7 @@ public:
     CcController* theControl;
 };
 
+extern CCrystalsApp theApplication;
 
-/////////////////////////////////////////////////////////////////////////////
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
 #endif // !defined(AFX_CRYSTALS_H__DEE5F4C5_D4B0_11D1_B74B_0080C8372E35__INCLUDED_)

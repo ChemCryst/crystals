@@ -6,6 +6,10 @@
 //   Filename:  CxBitmap.cpp
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2001/06/17 14:47:36  richard
+//   CxDestroyWindow function.
+//   wx support.
+//
 //   Revision 1.5  2001/03/21 17:00:46  richard
 //   Fixed problem with transparent bitmaps.
 //
@@ -65,7 +69,7 @@ void    CxBitmap::LoadFile( CcString bitmap, bool transp )
   CcString crysdir ( getenv("CRYSDIR") );
   if ( crysdir.Length() == 0 )
   {
-    cerr << "You must set CRYSDIR before running crystals.\n";
+    std::cerr << "You must set CRYSDIR before running crystals.\n";
     return;
   }
 #ifdef __BOTHWX__

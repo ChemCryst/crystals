@@ -11,6 +11,16 @@
 //BIG NOTICE: PlotScatter is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.16  2002/07/03 14:23:21  richard
+// Replace as many old-style stream class header references with new style
+// e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
+//
+// Removed OnStuffToProcess message from WinApp, it doesn't compile under the new
+// stricter C++7.0 compiler. (CWinApp isn't a CWnd, so can't recieve messages?)
+//
+// Removed some bits from Steve's Plot classes that were generating (harmless) compiler
+// warning messages.
+//
 // Revision 1.15  2002/02/21 15:23:12  DJWgroup
 // SH: 1) Allocate memory for series individually (saves wasted memory if eg. straight line on Fo/Fc plot has only 2 points). 2) Fiddled with axis labels. Hopefully neater now.
 //
@@ -63,8 +73,8 @@
 //
 //
 
-#include	<math.h>
 #include    "crystalsinterface.h"
+#include	<math.h>
 #include    "crconstants.h"
 #include    "ccplotdata.h"
 #include    "ccplotscatter.h"
