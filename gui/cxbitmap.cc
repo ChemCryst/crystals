@@ -6,6 +6,9 @@
 //   Filename:  CxBitmap.cpp
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2004/10/12 12:11:45  rich
+//   Remove extra slashes from paths.
+//
 //   Revision 1.9  2004/10/06 13:57:26  rich
 //   Fixes for WXS version.
 //
@@ -101,7 +104,7 @@ void    CxBitmap::LoadFile( string bitmap, bool transp )
 #ifdef __BOTHWIN__
     string file = dir + "script\\" + bitmap;
 #endif
-#ifdef __WXGTK__
+#if defined(__WXGTK__) || defined(__WXMAC__)
     string file = dir + "script/" + bitmap;
 #endif
 

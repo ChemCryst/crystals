@@ -3,6 +3,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.33  2004/10/07 11:16:05  rich
+// Change _DEBUG to __CRDEBUG__.
+//
 // Revision 1.32  2004/10/06 13:57:26  rich
 // Fixes for WXS version.
 //
@@ -103,7 +106,7 @@
 #ifndef     __CrystalsInterface_H__
 #define     __CrystalsInterface_H__
 
-#ifdef __WXGTK__
+#if defined(__WXGTK__) || defined(__WXMAC__)
 #define __BOTHWX__ 1
 #endif
 

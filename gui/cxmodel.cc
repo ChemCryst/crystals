@@ -16,7 +16,7 @@
 #include    "cccontroller.h"
 #include    "resource.h"
 #include    <GL/glu.h>
-#ifdef __WXGTK__
+#if defined(__WXGTK__) || defined(__WXMAC__)
 #include "idb_splash.xpm"
 #endif
 
@@ -459,7 +459,7 @@ void CxModel::OnLButtonDown( UINT nFlags, CPoint wpoint )
 
 #endif
 
-#ifdef __WXGTK__
+#if defined(__WXGTK__) || defined(__WXMAC__)
 
 #define MK_CONTROL 1
 #define MK_SHIFT 2

@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper
 //   Created:   05.11.1998 14:24 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.14  2004/10/06 13:57:26  rich
+//   Fixes for WXS version.
+//
 //   Revision 1.13  2004/06/24 09:12:02  rich
 //   Replaced home-made strings and lists with Standard
 //   Template Library versions.
@@ -155,7 +158,7 @@ void    CxProgress::SetGeometry( int top, int left, int bottom, int right )
         m_TextOverlay->SetSize( GetRect() ) ;
     }
 #endif
-#ifdef __WXGTK__
+#if defined(__WXGTK__) || defined(__WXMAC__)
     SetSize(left,top,right-left,bottom-top);
 #endif
 }

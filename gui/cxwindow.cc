@@ -1,3 +1,4 @@
+
 ////////////////////////////////////////////////////////////////////////
 
 //   CRYSTALS Interface      Class CxWindow
@@ -8,6 +9,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.36  2004/10/08 09:02:22  rich
+//   Fix window sizing bug. Now uses system metrics.
+//
 //   Revision 1.35  2004/10/06 13:57:26  rich
 //   Fixes for WXS version.
 //
@@ -97,7 +101,7 @@
 #include    <string>
 #include    <sstream>
 
-#ifdef __WXGTK__
+#if defined(__WXGTK__) || defined(__WXMAC__)
 #include "wincrys.xpm"
 #endif
 

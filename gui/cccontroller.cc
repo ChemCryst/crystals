@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.100  2004/10/08 09:01:16  rich
+// Fix window being deleted from list bug.
+//
 // Revision 1.99  2004/10/06 13:57:26  rich
 // Fixes for WXS version.
 //
@@ -541,7 +544,7 @@ using namespace std;
   CWinThread * CcController::mGUIThread = nil;
 #endif
 
-#ifdef __WXGTK__
+#if defined(__WXGTK__) || defined(__WXMAC__)
   #include <errno.h>
   #include <sys/time.h>
   #define F77_STUB_REQUIRED
@@ -612,7 +615,7 @@ CcController::CcController( const string & directory, const string & dscfile )
 #ifdef __WXMSW__
     m_start_ticks = GetTickCount();
 #endif
-#ifdef __WXGTK__
+#if defined(__WXGTK__) || defined(__WXMAC__)
     struct timeval time;
     struct timezone tz;
     gettimeofday(&time,&tz);
@@ -1770,7 +1773,7 @@ void    CcController::LogError( string errString , int level )
 #ifdef __WXMSW__
     int now_ticks = GetTickCount();
 #endif
-#ifdef __WXGTK__
+#if defined(__WXGTK__) || defined(__WXMAC__)
     struct timeval time;
     struct timezone tz;
     gettimeofday(&time,&tz);
@@ -1783,7 +1786,7 @@ void    CcController::LogError( string errString , int level )
     fprintf( mErrorLog, "%d.%03d %s\n", elapse/1000,elapse%1000,errString.c_str() );
     fflush( mErrorLog );
 
-    #ifdef __WXGTK__
+    #if defined(__WXGTK__) || defined(__WXMAC__)
           std::cerr << elapse << " " << errString.c_str() << "\n";
     #endif
 }
@@ -3447,7 +3450,7 @@ extern "C" {
     }
 #endif
 
-#ifdef __WXGTK__
+#if defined(__WXGTK__) || defined(__WXMAC__)
 
 // Check if this might be a filename, and if so find application to
 // open it with.

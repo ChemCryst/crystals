@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.16  2004/10/12 12:11:45  rich
+//   Remove extra slashes from paths.
+//
 //   Revision 1.15  2004/10/06 13:57:26  rich
 //   Fixes for WXS version.
 //
@@ -232,7 +235,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
     string crysdir ( getenv("CRYSDIR") );
     if ( crysdir.length() == 0 )
     {
-#ifdef __WXGTK__
+#if defined(__WXGTK__) || defined(__WXMAC__)
 	std::cerr << "You must set CRYSDIR before running crystals.\n";
 #endif
       return false;
@@ -244,7 +247,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
     {
       string dir = (CcController::theController)->EnvVarExtract( crysdir, i );
       i++;
-#ifdef __WXGTK__
+#if defined(__WXGTK__) || defined(__WXMAC__)
       string file = dir + "script/" + newTool->tImage;
 #endif
 #ifdef __BOTHWIN__
