@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.41  2002/10/07 11:03:06  rich
+C EnCIFer compatibility.
+C
 C Revision 1.40  2002/08/30 14:36:15  richard
 C Added pressure to L30. Only appears in CIF if non-zero.
 C
@@ -831,7 +834,8 @@ C
 C
 2300  CONTINUE
 C----- OUTPUT THE OVERALL PARAMETERS
-      CALL XPP5OV(1)
+      MCFUNC = 1
+      CALL XPP5OV(MCFUNC)
       CALL XOPMSG ( IOPPPR , IOPLSE , 5 )
       CALL XTIME2 ( 2 )
       RETURN
@@ -2057,9 +2061,11 @@ C--CLEAR THE TEMPORARY STORAGE
 1000  CONTINUE
 C--CHECK IF ANY COORDINATES HAVE BEEN REFINED
       IF(ISTORE(M12+1))1100,1100,1050
+
 1050  CONTINUE
       L12A=ISTORE(M12+1)
       IF(ISTORE(L12A+3))1100,1150,1150
+
 1100  CONTINUE
       RETURN
 
@@ -2070,6 +2076,7 @@ C--CHECK IF ANY COORDINATES HAVE BEEN REFINED
       JV=ISTORE(L12A+3)
       JT=ISTORE(L12A+4)
       JP=JT-1
+
 C--SEARCH FOR THE CONTRIBUTIONS TO EACH PARAMETER IN TURN
       DO JW=JU,JV,MD12A
         IF(ISTORE(JW).GT.0)THEN
@@ -2080,9 +2087,10 @@ C--SEARCH FOR THE CONTRIBUTIONS TO EACH PARAMETER IN TURN
 C--CHECK IF THIS PART FOR THIS PARAMETER HAS BEEN REFINED
 1250      CONTINUE
           IF(ISTORE(JX))1550,1550,1300
-C--ADD THE CONTRIBUTIONS INTO THE STACK
+
 1300      CONTINUE
-          IF ( ( JR+4 )  .GE.   LFL ) GO TO 9910
+C--ADD THE CONTRIBUTIONS INTO THE STACK
+            IF ( ( JR+4 )  .GE.   LFL ) GO TO 9910
             ISTORE(JR)=ISTORE(JX)
             ISTORE(JR+2)=KBLCK(ISTORE(JR))
             ISTORE(JR+1)=M12B
@@ -2093,16 +2101,19 @@ C--ADD THE CONTRIBUTIONS INTO THE STACK
 1500        CONTINUE
             JR=JR+4
             JZ=JZ+1
-C--CARRY ONTO THE NEXT PART
+
 1550      CONTINUE
+C--CARRY ONTO THE NEXT PART
           JY=ISTORE(JY)
           IF(JY)1700,1700,1600
-C--MOVE ONTO THE NEXT PART
+
 1600      CONTINUE
+C--MOVE ONTO THE NEXT PART
             JX=ISTORE(JY+2)+ISTORE(JY+1)*(JT-ISTORE(JY+4))
-          IF(JX-ISTORE(JY+2))1550,1250,1650
-1650      CONTINUE
-          IF(ISTORE(JY+3)-JX)1550,1250,1250
+            IF(JX-ISTORE(JY+2))1550,1250,1650
+1650        CONTINUE
+              IF(ISTORE(JY+3)-JX)1550,1250,1250
+
 1700      CONTINUE
           IF(JZ.GT.0)THEN
 C--CALCULATE THE E.S.D.
@@ -3044,7 +3055,7 @@ CRICJUN02 - Last minute SFLS calc to get threshold cutoffs into 30.
          WRITE(NCWU, 1151)
          WRITE ( CMON ,1151)
          CALL XPRVDU(NCVDU, 1,0)
-1151     FORMAT(' Calculation of R values cannot procede ',
+1151     FORMAT(' Calculation of R values cannot proceed ',
      2          'as no refinement has been carried out yet.')
       ELSE
          CALL XSFLSB(-1)
@@ -4479,6 +4490,6 @@ C                CALL XPRVDU(NCVDU,1,0)
 100   CONTINUE
       RETURN
 900   CONTINUE
-      CALL ZMORE ('Premature end',0)
+&&GIDGIL      CALL ZMORE ('Premature end',0)
       RETURN
       END
