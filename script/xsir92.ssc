@@ -1,0 +1,116 @@
+%SCRIPT SIR92
+%   VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
+%   VARIABLE LOGICAL ANSWER
+%   IF EXISTS 6 .LT. 1 THEN
+            You do not have any reflections stored.
+            It is impossible to proceed without data.
+%       FINISH
+%   END IF
+%%
+%% write a SIR92 data file
+%%
+%   BLOCK
+^^WI WINDOW SIR92 'Sir92 Preparation'
+^^WI   MODAL COMMIT='BOK' CANCEL='BXX'
+^^WI GRID GRIDLR NROWS=1 NCOLS=2
+^^WI {
+^^WI   @ 1,1 GRID GRIDL NROWS=3 NCOLS=3
+^^WI   {
+^^WI     @ 1,2 RADIOBUTTON RS '&Default Sir92 parameters'
+^^WI           STATE=ON
+^^WI     @ 2,2 RADIOBUTTON RD '&Alternative Sir92 parameters'
+^^WI           STATE=OFF
+^^WI     @ 3,2 CHECKBOX CED '&Edit Sir92 file before processing'
+^^WI           STATE=OFF
+^^WI   }
+^^WI   @ 1,2 GRID GRIDR NROWS=5 NCOLS=2
+^^WI   {
+^^WI     @ 2,1 BUTTON BOK '&Ok'
+^^WI     @ 4,1 BUTTON BXX '&Cancel'
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%      VERIFY BOK BXX
+%      GET NOSTORE ABBREVIATED 'BOK=Process'
+%      IF VALUE .EQ. 2 THEN
+^^WI      DISPOSE SIR92
+^^CR
+%         FINISH
+%      END IF
+^^??   RS STATE
+%      VERIFY ON OFF
+%      GET NOSTORE ABBREVIATED 'On=Simple job'
+%      IF ( VALUE .EQ. 1 ) THEN
+%          COPY '#FOREIGN SIR92 '
+%          COPY 'END'
+%      ELSE
+%          COPY '#FOREIGN SIR92 DIFFICULT'
+%          COPY 'END'
+%      END IF
+^^??   CED STATE
+%      VERIFY ON OFF
+%      GET NOSTORE ABBREVIATED 'On=Edit first'
+^^WI   DISPOSE SIR92
+^^CR
+%      IF ( VALUE .EQ. 1 ) THEN
+%           COPY '#SPAWN start /w notepad.exe sir92.ini'
+%           EVALUATE QTITLE = 'Sir92 Preparation'
+%           EVALUATE QLINE1 = 'Do you still want to'
+%           EVALUATE QLINE2 = 'run the Sir92 job?'
+%           EVALUATE BUTTOK = '&Yes'
+%           EVALUATE BUTTXX = '&No'
+%           COPY '#SCRIPT XQUESTIO'
+%           IF ANSWER .EQ. FALSE THEN
+%               FINISH
+%           END IF
+%      END IF
+%      COPY '#SPAWN  SIR92'
+%   END BLOCK
+%   BLOCK
+%      EVALUATE QTITLE = 'Sir92 Results'
+%      EVALUATE QLINE1 = 'Do you want to use the structure'
+%      EVALUATE QLINE2 = 'from Sir92 ?'
+%      EVALUATE BUTTOK = '&Yes'
+%      EVALUATE BUTTXX = '&No'
+%      COPY '#SCRIPT XQUESTIO'
+%      IF ANSWER .EQ. FALSE THEN
+%          COPY '#SCRIPT XHELP1'
+   If the structure will not solve:
+   1) Try the "Alternative Sir92 parameters" option.
+   2) Try SHELXS.
+   3) Read the Sir92 guide in SIR92/GUIDE92.TXT for help.
+   4) Be sure that the space group is correct.
+%          COPY '#SCRIPT XHELP2'
+%          FINISH
+%      END IF
+%%
+%% Get the results back...
+%%
+%      COPY '#USE SIR92.INS'
+%      COPY '#EDIT'
+%      COPY 'MON OFF'
+%      COPY 'REFORMAT ALL'
+%      COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0'
+%      COPY 'MON MEDIUM'
+%      COPY 'END'
+%      IF ( EXISTS ( 5 ) .NE. 1 ) THEN
+%        FINISH
+%      END IF
+%      BLOCK
+%        COPY '#DISTANCES'
+%        COPY 'END'
+%      END BLOCK
+%%
+%% SET Solution type
+%%
+%      COPY '#GENERALEDIT 30'
+%      COPY 'LOCATE RECORDTYPE=106'
+%      COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=3'
+%      COPY 'WRITE'
+%      COPY 'END'
+%   END BLOCK
+%END SCRIPT
+
+
+
