@@ -149,6 +149,9 @@ CxModel::CxModel(CrModel* container)
   m_nSelectionPoints = 0;
   m_selectRect.Set(0,0,0,0);
   m_mouseMode = CXROTATE;
+
+  m_bitmapbits = NULL;
+  m_bitmapinfo = NULL;
 }
 
 
@@ -267,6 +270,7 @@ void CxModel::OnPaint(wxPaintEvent &event)
       glLoadIdentity();
       CameraSetup();
       ModelSetup();
+
       if ( m_fastrotate && !m_bModelChanged ) //If the model has changed, the QLISTS aren't ready yet.
       {
         glCallList( STYLIST );
@@ -867,6 +871,11 @@ void CxModel::Setup()
         }
 
 #endif
+
+//        m_bitmapinfo = NULL;
+//        LoadDIBitmap("test.bmp");
+
+
 }
 
 
@@ -886,6 +895,8 @@ void CxModel::NewSize(int cx, int cy)
 
     if ( cy > cx ) m_stretchY = (float)cy / (float)cx;
     else           m_stretchX = (float)cx / (float)cy;
+
+
 }
 
 void CxModel::CameraSetup()
@@ -901,6 +912,24 @@ void CxModel::ModelSetup()
 {
    glMatrixMode ( GL_MODELVIEW );
    glLoadIdentity();
+
+   int ic = 5000;
+
+   if (m_bitmapinfo)
+   {
+
+     float xscale  = (float)GetWidth() / m_bitmapinfo->bmiHeader.biWidth;
+     float yscale  = (float)GetHeight() / m_bitmapinfo->bmiHeader.biHeight;
+
+     glRasterPos3f(-ic * m_stretchX, -ic*m_stretchY, ( -ic + 10 ) * m_xScale);
+     glPixelZoom(xscale, yscale);
+
+     glDrawPixels(m_bitmapinfo->bmiHeader.biWidth,
+                  m_bitmapinfo->bmiHeader.biHeight,
+                  GL_BGR_EXT, GL_UNSIGNED_BYTE, m_bitmapbits);
+
+   }
+
    glTranslated ( m_xTrans, m_yTrans, m_zTrans );
    glMultMatrixf ( mat );
    glScalef     ( m_xScale, m_xScale, m_xScale );
@@ -1236,6 +1265,8 @@ void CxModel::AutoScale()
    m_yTrans = ymoffset * m_xScale;
 
    delete [] feedbuf;
+
+
 }
 
 
@@ -1527,3 +1558,106 @@ void CxModel::CreatePopup(CcString atomname, CcPoint point)
 
 #endif
 }
+
+
+
+void CxModel::LoadDIBitmap(CcString filename)
+{
+
+    if ( m_bitmapbits ) delete [] m_bitmapbits;
+    if ( m_bitmapinfo ) delete [] m_bitmapinfo;
+    m_bitmapbits = NULL;
+    m_bitmapinfo = NULL;
+
+    NeedRedraw(false);
+
+    HANDLE hFileHandle;
+    unsigned long lInfoSize = 0;
+    unsigned long lBitSize = 0;
+    int nTextureWidth;
+    int nTextureHeight;
+
+// Open the Bitmap file
+    hFileHandle = CreateFile(filename.ToCString(),GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_FLAG_SEQUENTIAL_SCAN,NULL);
+
+// Check for open failure (most likely file does not exist).
+    if(hFileHandle == INVALID_HANDLE_VALUE) return;
+
+// File is Open. Read in bitmap header information
+    BITMAPFILEHEADER        bitmapHeader;
+    DWORD dwBytes;
+    ReadFile(hFileHandle,&bitmapHeader,sizeof(BITMAPFILEHEADER), &dwBytes,NULL);
+
+    if(dwBytes != sizeof(BITMAPFILEHEADER)) 
+    {
+        CloseHandle(hFileHandle);
+        MessageBox ( "File is corrupt or not a device-independent bitmap", "ERROR", MB_OK);
+        return;
+    }
+
+// Check format of bitmap file
+    if(bitmapHeader.bfType != 'MB') 
+    {
+        CloseHandle(hFileHandle);
+        MessageBox ( "File is not a 24-bit device-independent bitmap", "ERROR", MB_OK);
+        return;
+    }
+
+// Read in bitmap information structure
+    lInfoSize = bitmapHeader.bfOffBits - sizeof(BITMAPFILEHEADER);
+    m_bitmapinfo = (BITMAPINFO *) new BYTE[lInfoSize];
+    ReadFile(hFileHandle,m_bitmapinfo,lInfoSize,&dwBytes,NULL);
+
+    if(dwBytes != lInfoSize) 
+    {
+        if(m_bitmapinfo) delete [] m_bitmapinfo;
+        m_bitmapinfo = NULL;
+        CloseHandle(hFileHandle);
+        MessageBox ( "While reading bitmap header - file is corrupt", "ERROR", MB_OK);
+        return;
+    }
+
+    if ( m_bitmapinfo->bmiHeader.biBitCount != 24 )
+    {
+        if(m_bitmapinfo) delete [] m_bitmapinfo;
+        m_bitmapinfo = NULL;
+        CloseHandle(hFileHandle);
+        MessageBox ( "Bitmap is not 24-bit DIB.", "ERROR", MB_OK);
+        return;
+    }
+
+
+
+    nTextureWidth = m_bitmapinfo->bmiHeader.biWidth;
+    nTextureHeight = m_bitmapinfo->bmiHeader.biHeight;
+    lBitSize = m_bitmapinfo->bmiHeader.biSizeImage;
+    if(lBitSize == 0) lBitSize = (nTextureWidth * m_bitmapinfo->bmiHeader.biBitCount + 7) / 8 * abs(nTextureHeight);
+	
+// Allocate space for the actual bitmap
+    m_bitmapbits = new BYTE[lBitSize];
+
+// Read in the bitmap bits
+    ReadFile(hFileHandle,m_bitmapbits,lBitSize,&dwBytes,NULL);
+
+    if(lBitSize != dwBytes)
+    {
+        if(m_bitmapbits) delete [] (BYTE *) m_bitmapbits;
+        m_bitmapbits = NULL;
+        if(m_bitmapinfo) delete [] m_bitmapinfo;
+        m_bitmapinfo = NULL;
+        CloseHandle(hFileHandle);
+        MessageBox ( "While reading bitmap data - file is corrupt", "ERROR", MB_OK);
+        return;
+    }
+
+    CloseHandle(hFileHandle);
+
+// This is specific to the binary format of the data read in.
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1); 
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+    glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
+    glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+
+    return;
+}
+

@@ -6,6 +6,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.20  2001/06/18 12:32:19  richard
+//   FindObjectByGLName had wrong return type for failure (bool rather than null).
+//
 //   Revision 1.19  2001/06/17 15:06:48  richard
 //   Rename member variables so that they are prefixed "m_".
 //   Moved a lot of code over into CcModelDoc - such as sending lists of atoms
@@ -124,6 +127,10 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
         default:
         {
           hasTokenForMe = false;
+
+          CcString bitmap = (CcController::theController)->GetKey( mName );
+          ((CxModel*)ptr_to_cxObject)->LoadDIBitmap(bitmap);
+
           break;
         }
       }
@@ -455,6 +462,14 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
         {
           SelectFrag(atomname,true);
         }
+        break;
+      }
+      case kTLoadBitmap:
+      {
+        tokenList->GetToken();
+        CcString filename = tokenList->GetToken();
+        if ( ptr_to_cxObject) ((CxModel*)ptr_to_cxObject)->LoadDIBitmap(filename);
+        (CcController::theController)->StoreKey( mName, filename );
         break;
       }
       default:

@@ -7,6 +7,11 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.21  2001/07/16 07:33:57  ckp2
+//  wx version: Subclassed the little text windows that popup and tell you the atom names,
+//  in order that they pass any mouse events to the model window. Otherwise they just get
+//  in the way of the user trying to click on the atoms.
+//
 //  Revision 1.20  2001/06/18 12:51:40  richard
 //  New variables to track whether the mouse has been captured, and if the
 //  OpenGL context has been initialised (wx only).
@@ -84,7 +89,7 @@ class CcModelObject;
 #define STYLIST       3
 #define QATOMLIST     4
 #define QBONDLIST     5
-#define XOBJECTLIST     6
+#define XOBJECTLIST   6
 
 #ifdef __BOTHWX__
 class mywxStaticText : public wxStaticText
@@ -184,6 +189,11 @@ class CxModel : public BASEMODEL
 
     void DeletePopup();
     void CreatePopup(CcString atomname, CcPoint point);
+
+    void LoadDIBitmap(CcString filename);
+    BYTE * m_bitmapbits;
+    BITMAPINFO * m_bitmapinfo;
+
 
     int m_DrawStyle;         // Rendering style
     bool m_Autosize;      // Resize when rotating?

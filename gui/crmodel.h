@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   10.6.1998 13:06 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2001/06/17 15:06:48  richard
+//   Rename member variables so that they are prefixed "m_".
+//   Moved a lot of code over into CcModelDoc - such as sending lists of atoms
+//   to the scripts. The ModelDoc holds the lists so is a simpler place to do this.
+//   This removed a lot of pointless "call throughs" from CxModel to CcModelDoc.
+//
 //   Revision 1.10  2001/03/08 15:41:48  richard
 //   Can switch between rotate mode, selection (box) mode. Can also select a fragment
 //   based on a single atom name, and you can zoom in on selected atoms (exclude unselected).
@@ -128,6 +134,7 @@ class   CrModel : public CrGUIElement
 #define kSSelectPoly        "POLY"
 #define kSZoomSelected      "ZOOMATOMS"
 #define kSSelectFrag        "SELFRAG"
+#define kSLoadBitmap        "LOADBITMAP"
 
 enum
 {
@@ -168,7 +175,8 @@ enum
  kTSelectPoly,
  kTRotateTool,
  kTZoomSelected,
- kTSelectFrag
+ kTSelectFrag,
+ kTLoadBitmap
 };
 
 
