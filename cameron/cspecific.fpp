@@ -924,13 +924,15 @@ C ---- updates text message in status bar - iarg is not used but kept
 C      for compatibility with CAMERON function ZMORE
 &DOS\CAMWIN
       character*(*) text
-      CHARACTER*100 ntext
+      CHARACTER*80 ntext
 C DOS VERSION NO LONGER HAS STATUS LINE. (SPACE SAVER)
 C&DOS      Status$Text=text
 C&DOS      call window_update@(Status$Text)
 &&GILGID      CALL XCTRIM(TEXT,ITL)
-&&GILGID      WRITE(NTEXT,'(4A)') '^^CO SET PROGOUTPUT TEXT=',
-&&GILGID     1                    '''',TEXT(1:ITL),''''
-&&GILGID      CALL ZMORE(NTEXT,0)
+&&GILGID      IF ( ITL .LE. 2 ) RETURN
+&&GILGID      ITL = MIN ( ITL, 70 )
+&&GILGID      CALL ZMORE('^^WI SET PROGOUTPUT TEXT=',0)
+&&GILGID      CALL ZMORE('^^WI '''//TEXT(1:ITL)//'''',0)
+&&GILGID      CALL ZMORE('^^CR',0)
       end
 
