@@ -1,4 +1,16 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  1999/05/13 18:03:13  dosuser
+C RIC: Seven new unary operators:
+C      CHAR = GETFILE (CHAR) Extracts the filename from a full path.
+C      CHAR = GETPATH (CHAR) Extracts the directory from a full path.
+C      CHAR = GETTITLE (CHAR) Extracts the stem of the filename
+C                             from a full path e.g. CRFILE
+C      CHAR = GETEXTN (CHAR) Extracts the extenstion of a filename
+C                             from a full path e.g. DSC
+C      LOGICAL = FILEEXISTS (CHAR) Tests whether a file exists.
+C      LOGICAL = FILEISOPEN (CHAR) Tests whether a file is open already.
+C      LOGICAL = FILEDELETE (CHAR) Deletes a file and tests success.
+C
 C Revision 1.10  1999/04/26 11:09:43  dosuser
 C RIC: Added an ABS() funtion in the SQRT to prevent crashes.
 C
@@ -2828,7 +2840,7 @@ C Extract the directory from a full pathname.
 C e.g. GETPATH 'c:\structures\nket\crfile.dsc' will return
 C 'c:\structures\nket\'  e.g. everything up to the last slash.
       IECF = KCLEQL(CWORK1(1:LEN1),'\')
-      WRITE (99,*) 'GETPATH:',IECF,CWORK1(1:LEN1)
+C      WRITE (99,*) 'GETPATH:',IECF,CWORK1(1:LEN1)
       IF ( IECF .LE. 0 ) THEN
             CWORK1 = ' '
             IECF = 1
@@ -2847,7 +2859,7 @@ C Extract the filename from a full pathname.
 C e.g. GETFILE 'c:\structures\nket\crfile.dsc' will return
 C 'crfile.dsc'  e.g. everything after the last slash if there is one.
       IECF = KCLEQL(CWORK1(1:LEN1),'\')
-      WRITE (99,*) 'GETFILE:',IECF,CWORK1(1:LEN1)
+C      WRITE (99,*) 'GETFILE:',IECF,CWORK1(1:LEN1)
       IF ( IECF .LE. 0 ) THEN
             IECF = 0
       END IF
