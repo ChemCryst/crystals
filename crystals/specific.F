@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.44  2003/11/19 15:17:21  rich
+C Linux ver: call C++ routine to spawn other programs.
+C
 C Revision 1.43  2003/09/24 08:35:23  rich
 C Modified KDAOPN so that it will open direct-access scratch files.
 C
@@ -1455,10 +1458,25 @@ C      TIME              HH-MM-SS
 C      TIME$A            HH-MM-SS
 C      TIME              INTEGER ARRAY :- HOURS, MINUTES, SECONDS
 C
+\XSSVAL
 C
 &&DOSVAX      CHARACTER*8 CTIME
 C
 &ICL      CHARACTER*10 CTIME2
+&DOS      CHARACTER*8 TIME@
+&&DVFGID      CHARACTER*8 CTIME2
+&&LINGIL      CHARACTER*8 CTIME2
+&WXS      CHARACTER*8 CTIME2
+&&LINGIL      DIMENSION ITIM(3)
+&WXS      DIMENSION ITIM(3)
+
+      IF ( ISSTIM .LE. 0 ) THEN
+&&DOSVAX        CTIME=' '
+##DOSVAX        CTIME2=' '
+        RETURN
+      END IF
+
+
 &ICL      CALL ICL9LGGTIME ( CTIME2 )
 &ICL      CTIME = CTIME2(1:2)//'.'//CTIME2(3:4)//'.'//CTIME2(5:6)
 C
@@ -1478,18 +1496,12 @@ C
 &DGV      IF ( CTIME(4:4) .EQ. ' ' ) CTIME(4:4) = '0'
 &DGV      IF ( CTIME(7:7) .EQ. ' ' ) CTIME(7:7) = '0'
 C
-&DOS      CHARACTER*8 TIME@
 &DOS      CTIME = TIME@()
 C
-&&DVFGID      CHARACTER*8 CTIME2
-&&LINGIL      CHARACTER*8 CTIME2
-&WXS      CHARACTER*8 CTIME2
 &&DVFGID      CTIME2 = CLOCK()
 
-&&LINGIL      DIMENSION ITIM(3)
 &&LINGIL      CALL ITIME(ITIM)
 &&LINGIL      WRITE ( CTIME2, '(I2,'':'',I2,'':'',I2)' ) ITIM
-&WXS      DIMENSION ITIM(3)
 &WXS      CALL ITIME(ITIM)
 &WXS      WRITE ( CTIME2, '(I2,'':'',I2,'':'',I2)' ) ITIM
 C
@@ -1522,6 +1534,7 @@ C      DATE$A            DAY, MMM DD YYYY ( MMM = 'JAN' ETC. ,
 C                                           DAY = 'MON', 'TUE', ETC. )
 C      DATE              INTEGER ARRAY :- YEAR, MONTH, DAY
 C
+\XSSVAL
 C
 &H-P$alias get_time = 'time' (%ref)
 &H-P$alias format_time = 'ctime' (%ref)
@@ -1536,6 +1549,19 @@ C
       CHARACTER*8 CDATE
 C
 &ICL      CHARACTER*8 CDATE2
+&VAX      CHARACTER*9 CDATE2
+&VAX      CHARACTER*36 CMONTH
+&VAX      DATA CMONTH /'JANFEBMARAPRMAYJUNJULAUGSEPOCTNOVDEC'/
+&PRI      CHARACTER*16 CDATE2
+&DGV      DIMENSION IDATE(3)
+&DOS      CHARACTER*8 EDATE@
+
+
+      IF ( ISSTIM .EQ. 0 ) THEN
+         CDATE = ' '
+         RETURN
+      END IF
+
 &ICL      CALL ICL9LGGDATE ( CDATE2 )
 &ICL      CDATE = CDATE2(7:8)//'.'//CDATE2(5:6)//'.'//CDATE2(3:4)
 &PPC      CHARACTER*9 CDATE2
@@ -1550,9 +1576,6 @@ C
 &PPC      IF (I .NE. 0) CDATE(I:I) = '0'
 C
 C
-&VAX      CHARACTER*9 CDATE2
-&VAX      CHARACTER*36 CMONTH
-&VAX      DATA CMONTH /'JANFEBMARAPRMAYJUNJULAUGSEPOCTNOVDEC'/
 &VAX      CALL DATE ( CDATE2 )
 &VAX      CDATE = CDATE2(1:6)//CDATE2(8:9)
 &VAX      I = INDEX (CMONTH, CDATE(4:6))
@@ -1561,11 +1584,9 @@ C
 &VAX      I = INDEX(CDATE(1:8), ' ')
 &VAX      IF (I .NE. 0) CDATE(I:I) = '0'
 C
-&PRI      CHARACTER*16 CDATE2
 &PRI      CALL DATE$A ( CDATE2 )
 &PRI      CDATE = CDATE2(10:11)//'-'//CDATE2(6:8)//CDATE2(15:16)
 C
-&DGV      DIMENSION IDATE(3)
 &DGV      CALL DATE ( IDATE )
 &DGV      WRITE ( CDATE , '(I2,''/'',I2,''/'',I2)' ) IDATE(3) ,
 &DGV     2      IDATE(2) , MOD ( IDATE(1) , 100 )
@@ -1590,7 +1611,6 @@ C
 &H-P      call copy_time(buf,'%s'//char(0),char_ptr)
 &H-P      CDATE=buf(9:10)//'-'//buf(5:7)//buf(23:24)
 C
-&DOS      CHARACTER*8 EDATE@
 &DOS      CDATE = EDATE@()
 &&DVFGID      CDATE = DATE()
 C
