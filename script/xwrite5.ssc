@@ -137,7 +137,7 @@
 % IF HRTYP .EQ. 3 .OR. HRTYP .EQ. 10 THEN
 ^^WI           STATE=ON
 % END IF
-^^WI     @ 5,1 CHECKBOX HREST '&Treat H as above, except restrain C-H bonds'
+^^WI    @ 5,1 CHECKBOX HREST '&Treat H as above, except restrain H-C,N,O bonds'
 % IF HRESTF .NE. 0 THEN
 ^^WI           STATE=ON
 % END IF
