@@ -275,8 +275,7 @@
 %     TRANSFER 'Found ' // CLINE TO DISPLAY
 %     IF LFIRST .EQ. TRUE THEN
 %       EVALUATE LFIRST = FALSE
-%       COPY '#EDIT'
-%       COPY 'DELETE FIRST UNTIL LAST'
+%       COPY '#LIST 5'
 %       COPY 'END'
 %       COPY '#EDIT'
 %     END IF
