@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.33  2001/07/16 07:20:41  ckp2
+// Much cleaner thread sync.
+//
 // Revision 1.31  2001/07/03 13:24:27  ckp2
 // Fixed race condition in queue critical sections. CRYSTALS now waits (up to 1 second)
 // to be signalled that something has been added to the queue instead of looping frantically.
@@ -2256,6 +2259,7 @@ void CcController::ScriptsExited()
   {
       if ( theWindow->mIsModal && !theWindow->mStayOpen )
       {
+         if ( theWindow == mCurrentWindow ) mCurrentWindow=nil;
          delete theWindow;
          mWindowList.RemoveItem();
       }
