@@ -114,8 +114,8 @@
 %%
 %% Launch CIF2CRY
 %%
-% TRANSFER '#SPAWN + "CRYSDIR:cif2cry.exe" ' // CARG // COUT // ' ' // CIF -
-  TO CRYSTALS
+% TRANSFER '#SPAWN + "CRYSDIR:cif2cry.exe" ' // CARG // '"' // COUT -
+  // '" "' // CIF // '"' TO CRYSTALS
 %%
 % IF RUNNOW THEN
 %   TRANSFER '#USE ' // COUT TO CRYSTALS
