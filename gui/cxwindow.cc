@@ -7,15 +7,14 @@
 //   Filename:  CxWindow.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  5.3.1998 16:45 Uhr
-
+//   $Log: not supported by cvs2svn $
 
 #include    "crystalsinterface.h"
 #include    "cxwindow.h"
-#include    "cxapp.h"
 #include    "cxmenubar.h"
 #include    "crmenu.h"
 #include    "ccmenuitem.h"
+#include    "crtoolbar.h"
 #include    "cccontroller.h"
 
 
@@ -25,62 +24,57 @@ int CxWindow::mWindowCount = kWindowBase;
 CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, int attributes )
 {
 
-        CxWindow *theWindow = new CxWindow( container, attributes & kSize );
+  CxWindow *theWindow = new CxWindow( container, attributes & kSize );
 
-#ifdef __CR_WIN__
-    const char* wndClass = AfxRegisterWndClass(
-                                            CS_HREDRAW|CS_VREDRAW,
-                                            NULL,
-                                            (HBRUSH)(COLOR_MENU+1),
-                                            AfxGetApp()->LoadIcon(IDI_ICON1)
-                                        );
+  #ifdef __CR_WIN__
+    const char* wndClass = AfxRegisterWndClass( CS_HREDRAW|CS_VREDRAW,
+                                       NULL, (HBRUSH)(COLOR_MENU+1),
+                                      AfxGetApp()->LoadIcon(IDI_ICON1));
 
     theWindow->mParentWnd = (CWnd*) parentWindow;
 
-        theWindow->Create(                      wndClass,
-                        "Window",
+    theWindow->Create(wndClass, "Window",
         (attributes & kSize)? WS_POPUP|WS_CAPTION|WS_SYSMENU|WS_MAXIMIZEBOX|WS_MINIMIZEBOX : WS_POPUP|WS_CAPTION|WS_SYSMENU,
-                        CRect(0,0,10,10),
-                        theWindow->mParentWnd);
-#endif
-#ifdef __BOTHWX__
+        CRect(0,0,1000,1000), theWindow->mParentWnd);
+  #endif
+  #ifdef __BOTHWX__
       theWindow->mParentWnd = (wxWindow*) parentWindow;
       theWindow->Create( NULL, -1, "Window", wxPoint(0, 0), wxSize(-1,-1), wxDEFAULT_FRAME_STYLE );
-#endif
+  #endif
 
-    //if the window is modal, disable the parent:
+  //if the window is modal, disable the parent:
 
-        if ( attributes & kModal )
+  if ( attributes & kModal )
+  {
+    if ( theWindow->mParentWnd )
     {
-#ifdef __CR_WIN__
-            if ( theWindow->mParentWnd )
-            {
-                theWindow->mParentWnd->EnableWindow(false);
-                theWindow->EnableWindow(true);  //All child windows have been disabled, so re-enable this one.
-                theWindow->ModifyStyle(WS_MINIMIZEBOX,NULL,SWP_NOZORDER); //No Minimize box for modal windows with parents.
-            }
-#endif
-#ifdef __BOTHWX__
-            if ( theWindow->mParentWnd )
-            {
-                theWindow->mParentWnd->Enable(false);
-                theWindow->Enable(true);  //All child windows have been disabled, so re-enable this one.
-            }
-#endif
+      #ifdef __CR_WIN__
+        theWindow->mParentWnd->EnableWindow(false);
+        theWindow->EnableWindow(true);  //All child windows have been disabled by the last call, so re-enable this one.
+        theWindow->ModifyStyle(WS_MINIMIZEBOX,NULL,SWP_NOZORDER); //No Minimize box for modal windows with parents.
+      #endif
+      #ifdef __BOTHWX__
+        theWindow->mParentWnd->Enable(false);
+        theWindow->Enable(true);  //All child windows have been disabled, so re-enable this one.
+      #endif
     }
+  }
+  else
+  {
+    #ifdef __CR_WIN__
+      theWindow->ModifyStyleEx(NULL,WS_EX_TOOLWINDOW,NULL); //Small title bar effect.
+    #endif
+  }
 
-#ifdef __CR_WIN__
-    if ( attributes & kSize )
-            theWindow->ModifyStyle(NULL,WS_BORDER|WS_THICKFRAME,SWP_NOZORDER);
-#endif
+  #ifdef __CR_WIN__
+    if ( attributes & kSize ) theWindow->ModifyStyle(NULL,WS_BORDER|WS_THICKFRAME,SWP_NOZORDER);
+  #endif
 
-#ifdef __BOTHWX__
-      theWindow->Show(true);
-#endif
+  #ifdef __BOTHWX__
+    theWindow->Show(true);
+  #endif
 
-
-    return (theWindow);
-
+  return (theWindow);
 }
 
 
@@ -91,15 +85,12 @@ CxWindow::CxWindow( CrWindow * container, int sizeable )
     mProgramResizing = true;
     mDefaultButton = nil;
     mSizeable = (sizeable==0) ? false : true;
-      mWindowWantsKeys = false;
-
+    mWindowWantsKeys = false;
+    m_PreDestroyed = false;
 }
 
-CxWindow::~CxWindow()
+void CxWindow::CxPreDestroy()
 {
-
-        ((CrWindow*)ptr_to_crObject)->NotifyControl();
-    mWindowCount--;
     if (mParentWnd)
 #ifdef __CR_WIN__
     {
@@ -110,6 +101,14 @@ CxWindow::~CxWindow()
 #ifdef __BOTHWX__
             mParentWnd->Enable(true); //Re-enable the parent.
 #endif
+    m_PreDestroyed = true;
+}
+
+CxWindow::~CxWindow()
+{
+    ((CrWindow*)ptr_to_crObject)->NotifyControl();
+    mWindowCount--;
+    if ( !m_PreDestroyed ) CxPreDestroy(); // Should really be called earlier.
 }
 
 void    CxWindow::SetText( char * text )
@@ -136,76 +135,27 @@ void    CxWindow::CxShowWindow()
 
 void    CxWindow::SetGeometry( int top, int left, int bottom, int right )
 {
-      LOGSTAT( "CxWindow::SetGeom called " + CcString(top) + " " + CcString(left)+ " " + CcString(bottom) + " " + CcString(right) );
+  LOGSTAT( "CxWindow::SetGeom called " + CcString(top) + " " + CcString(left)+ " " + CcString(bottom) + " " + CcString(right) );
 
-    if(mProgramResizing)  //Only move the window, if the program is resizing it.
-    {
-      LOGSTAT(" Progresizing is TRUE ");
+  if(mProgramResizing)  //Only move the window, if the program is resizing it.
+  {
+    LOGSTAT(" Progresizing is TRUE ");
 #ifdef __CR_WIN__
-        MoveWindow(left, top, (right-left), (bottom-top),true);
+    MoveWindow(left, top, (right-left), (bottom-top),true);
 #endif
 #ifdef __BOTHWX__
-        SetSize(left,top,right-left,bottom-top);
-        Refresh();
+    SetSize(left,top,right-left,bottom-top);
+    Refresh();
 #endif
-    }
-    else // if the user is resizing, then the window is already the right size.
-    {
-      LOGSTAT(" Progresizing is FALSE ");
-    }
+  }
+  else // if the user is resizing, then the window is already the right size.
+  {
+    LOGSTAT(" Progresizing is FALSE ");
+  }
 }
 
-int   CxWindow::GetTop()
-{
-#ifdef __CR_WIN__
-      RECT windowRect;//, parentRect;
-    GetWindowRect(&windowRect);
-//        CWnd* parent = GetParent();
-//        if(parent != nil)
-//        {
-//                parent->GetWindowRect(&parentRect);
-//                windowRect.top -= parentRect.top;
-//        }
-    return ( windowRect.top );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-//  if(parent != nil)
-//  {
-//            parentRect = parent->GetRect();
-//            windowRect.y -= parentRect.y;
-//  }
-      return ( windowRect.y );
-#endif
-}
-int   CxWindow::GetLeft()
-{
-#ifdef __CR_WIN__
-      RECT windowRect;//, parentRect;
-    GetWindowRect(&windowRect);
-//        CWnd* parent = GetParent();
-//        if(parent != nil)
-//        {
-//                parent->GetWindowRect(&parentRect);
-//                windowRect.left -= parentRect.left;
-//        }
-    return ( windowRect.left );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-    if(parent != nil)
-    {
-            parentRect = parent->GetRect();
-            windowRect.x -= parentRect.x;
-    }
-      return ( windowRect.x );
-#endif
+CXGETGEOMETRIES(CxWindow)
 
-}
 int   CxWindow::GetScreenTop()
 {
 #ifdef __CR_WIN__
@@ -245,32 +195,6 @@ int   CxWindow::GetScreenLeft()
 #endif
 
 }
-int   CxWindow::GetWidth()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-    return ( windowRect.Width() );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetWidth() );
-#endif
-}
-int   CxWindow::GetHeight()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-      return ( windowRect.Height() );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetHeight() );
-#endif
-}
 
 
 void    CxWindow::SetDefaultButton( CxButton * inButton )
@@ -308,10 +232,12 @@ BEGIN_MESSAGE_MAP(CxWindow, CFrameWnd)
     ON_WM_GETMINMAXINFO()
     ON_MESSAGE(WM_NCPAINT, OnMyNcPaint)
     ON_WM_CHAR()
-    ON_COMMAND_RANGE(kMenuBase, kMenuBase+1000, OnMenuSelected)
-    ON_UPDATE_COMMAND_UI_RANGE(kMenuBase,kMenuBase+1000,OnUpdateMenuItem)
-      ON_WM_KEYDOWN()
-      ON_WM_KEYUP()
+    ON_COMMAND_RANGE(kToolButtonBase, kToolButtonBase+5000, OnToolSelected)
+    ON_COMMAND_RANGE(kMenuBase, kMenuBase+5000, OnMenuSelected)
+    ON_UPDATE_COMMAND_UI_RANGE(kToolButtonBase,kToolButtonBase+5000,OnUpdateTools)
+    ON_UPDATE_COMMAND_UI_RANGE(kMenuBase,kMenuBase+5000,OnUpdateMenuItem)
+    ON_WM_KEYDOWN()
+    ON_WM_KEYUP()
 END_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
@@ -342,6 +268,16 @@ void CxWindow::OnUpdateMenuItem(CCmdUI* pCmdUI)
     else
             pCmdUI->Enable(false);
 }
+void CxWindow::OnUpdateTools(CCmdUI* pCmdUI)
+{
+    CcTool* theItem = (CcController::theController)->FindTool(pCmdUI->m_nID);
+    if(theItem == nil) return;
+
+    if ( (CcController::theController)->status.ShouldBeEnabled( theItem->tEnableFlags, theItem->tDisableFlags ) )
+            pCmdUI->Enable(true);
+    else
+            pCmdUI->Enable(false);
+}
 #endif
 #ifdef __BOTHWX__
 void CxWindow::OnUpdateMenuItem(wxUpdateUIEvent & pCmdUI)
@@ -355,6 +291,7 @@ void CxWindow::OnUpdateMenuItem(wxUpdateUIEvent & pCmdUI)
             pCmdUI.Enable(false);
 }
 #endif
+
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -426,48 +363,7 @@ void CxWindow::OnGetMinMaxInfo(MINMAXINFO FAR* lpMMI)
 }
 #endif
 
-#ifdef __CR_WIN__
-void CxWindow::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
-{
-    NOTUSED(nRepCnt);
-    NOTUSED(nFlags);
-    switch(nChar)
-    {
-        case 9:     //TAB. Shift focus back or forwards.
-        {
-            Boolean shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
-            ptr_to_crObject->NextFocus(shifted);
-            break;
-        }
-        default:
-        {
-            ptr_to_crObject->FocusToInput((char)nChar);
-            break;
-        }
-    }
-}
-#endif
-#ifdef __BOTHWX__
-void CxWindow::OnChar( wxKeyEvent & event )
-{
-      switch(event.KeyCode())
-    {
-        case 9:     //TAB. Shift focus back or forwards.
-        {
-                  Boolean shifted = event.m_shiftDown;
-            ptr_to_crObject->NextFocus(shifted);
-            break;
-        }
-        default:
-        {
-                  ptr_to_crObject->FocusToInput((char)event.KeyCode());
-            break;
-        }
-    }
-}
-#endif
-
-
+CXONCHAR(CxWindow)
 
 
 void CxWindow::Focus()
@@ -499,6 +395,23 @@ void CxWindow::OnMenuSelected(wxCommandEvent & event)
     ((CrWindow*)ptr_to_crObject)->MenuSelected( nID );
 
 }
+
+
+#ifdef __CR_WIN__
+void CxWindow::OnToolSelected(int nID)
+{
+    TRACE("Tool ID %d\n", nID);
+#endif
+#ifdef __BOTHWX__
+void CxWindow::OnMenuSelected(wxCommandEvent & event)
+{
+      int nID = event.m_id;
+#endif
+    ((CrWindow*)ptr_to_crObject)->ToolSelected( nID );
+}
+
+
+
 
 #ifdef __CR_WIN__
 BOOL CxWindow::PreCreateWindow(CREATESTRUCT& cs)
@@ -743,3 +656,20 @@ void CxWindow::OnKeyDown( wxKeyEvent & event )
 
 }
 #endif
+
+
+void CxWindow::Redraw()
+{
+  Invalidate();
+}
+
+void CxWindow::CxEnable(bool enable)
+{
+#ifdef __CR_WIN__
+  EnableWindow(enable);
+#endif
+#ifdef __BOTHWX__
+  Enable(enable);
+#endif
+}
+
