@@ -147,7 +147,7 @@
 %TRANSFER '^^CO GETREG "Software\CCDC\Mogul\' // CVALUE // -
  '\" Executable' TO DISPLAY
 % GET SILENT NOSTORE TEXT 'Exec?' ' '
-% TRANSFER '#SPAWN + "' // CVALUE // '" -ins crystals.qf' TO CRYSTALS
+% TRANSFER '#SPAWN "' // CVALUE // '" -ins crystals.qf' TO CRYSTALS
 {R * Done.
 ^^CO DISPOSE XMOGULGO
 %  FINISH
