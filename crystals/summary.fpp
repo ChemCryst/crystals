@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.43  2003/06/19 16:29:50  rich
+C
+C Store, in L30, the number of restraints that L16 is generating.
+C
+C Output, to the CIF, the _refine_ls_number_restraints for info.
+C
 C Revision 1.42  2003/04/01 13:48:51  rich
 C XTHLIM could go into an infinite loop in certain cases (certain cells?). Limit
 C loops for optimising MAXH,K,L to 400 iterations.
@@ -745,7 +751,7 @@ C
      1 '[SIN(theta)/lambda]^P(1)' ,
      2 '[weight] * exp[8*(p(1)/p(2))*(pi*s)^2]' ,
      3 '[weight] * [1-(deltaF/6*sigmaF)^2]^2 ' ,
-     4 'q / [Sigma^2(F*)+(P(1)p)^2+P(2)p+P(4)+P(5)Sin(theta) ]' /
+     4 '1. / [Sigma^2(F*)+(P(1)p)^2+P(2)p+P(4)+P(5)Sin(theta) ]' /
 C
       DATA IEXPRS / 1 , 2 , 3 , 4 , 5 , 0 , 6 , 0 , 7 , 0 ,
      2 7 , 0 , 8 , 0 , 8 , 0 , 9 , 0 , 10 , 0 , 10 , 0 , 11 , 0 ,

@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.57  2003/06/19 16:29:50  rich
+C
+C Store, in L30, the number of restraints that L16 is generating.
+C
+C Output, to the CIF, the _refine_ls_number_restraints for info.
+C
 C Revision 1.56  2003/05/27 10:24:04  djw
 C Line over-run fixed.
 C
@@ -3410,7 +3416,7 @@ C----- COPY HEADER INFORMATION FROM .CIF FILE
           CLINE=' '
 100       CONTINUE
           READ (NCARU,'(A)',ERR=100,END=150) CLINE
-          WRITE (NCFPU1,'(A)') CLINE
+          call xpcif (CLINE)
           GO TO 100
 150       CONTINUE
 C----- CLOSE THE FILE
@@ -5024,25 +5030,31 @@ C------ SIGMA WEIGHTS
                 ival = 35
                 ctemp = crefmk(istore(lrefs), nrefs, mdrefs, ival)
                 call xctrim (ctemp,nchar)
-                write (cline,'(a,a )') 'Method, part 1, ', 
+                write (cline,'(a,a )') ' Method, part 1, ', 
      1          ctemp(1:nchar)
                 call xpcif (cline)
                 write(cline,'(a,a)')  
-     1 '[weight] = 1.0/[A~0~*T~0~(x)+A~1~*T~1~(x)',
+     1 ' [weight] = 1.0/[A~0~*T~0~(x)+A~1~*T~1~(x)',
      2 ' ... +A~n-1~]*T~n-1~(x)]'
                 call xpcif (cline)
                 write (cline,'(a,a)') 
-     1 'where A~i~ are the Chebychev coefficients listed below',
-     2 ' and x = Fcalc/Fmax'
+     1 ' where A~i~ are the Chebychev coefficients listed below',
+     2 ' and x= Fcalc/Fmax'
                 call xpcif (cline)
+               write(ctext(3),'(a)') ' A~i~ are:'
                ival = 38
              else if ((itype .eq. 16) .or.  (itype .eq. 17)) then
                 ival = 34
+                write(cline,'(a)') 
+     1          ' p=P(3)*max(Fo^2,0) + (1-P(3))Fc^2'
+                call xpcif (cline)
+                write(ctext(3),'(a)') 
+     1          ' P(i) are:'
               endif
               if (ival .ne. 0 ) then     
                 ctemp = crefmk(istore(lrefs), nrefs, mdrefs, ival)
                 call xctrim (ctemp,nchar)
-                write (cline,'(a,a )') 'Method = ', ctemp(1:nchar)
+                write (cline,'(a,a )') ' Method = ', ctemp(1:nchar)
                 call xpcif (cline)
               else
                 call xpcif(ctext(1))
