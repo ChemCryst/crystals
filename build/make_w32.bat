@@ -1,3 +1,4 @@
+@if not exist .\make_w32.bat echo Only build in the build directory!&&goto exit
 @echo This script builds crystals using the Digital Fortran and Microsoft
 @echo Visual C++ compilers. All other compilers and environments use make
 @echo instead.
