@@ -3308,13 +3308,12 @@ C           AREA DETECTOR
       ENDIF
 C
       CALL XCTRIM (CTEMP, JJ)
-      IF (J .GT. 0) THEN
+      IF ((J .GT. 0) .AND. ( STORE(L30AB+1+J) .GT. ZERO)) THEN
         CLINE = ' '
         WRITE(CLINE, '( A, ''process_details '',A)')
      1  CBUF(1:15), CTEMP(1:JJ)
         CALL XPCIF( CLINE)
         DO 1720 I = 1,3,2
-          IF ( STORE(L30AB+1+J) .GT. ZERO) THEN
             WRITE(CLINE, '(A,''correction_T_'', A, F8.2)') 
      1      CBUF(1:15), CSIZE(I),
      2      STORE(L30AB-1 +J + (I+1)/2 )/ STORE(L30AB+1+J)*TMAX
@@ -3323,8 +3322,7 @@ C
      1     'Transmission range',
      2      STORE(L30AB-1 +J + (1+1)/2 )/ STORE(L30AB+1+J)*TMAX,
      3      STORE(L30AB-1 +J + (3+1)/2 )/ STORE(L30AB+1+J)*TMAX
-          ENDIF
-1720    CONTINUE
+1720      CONTINUE
       ELSE
             WRITE(CLINE, '(A,''correction_T_'', A, F8.2)') 
      1      CBUF(1:15), CSIZE(1),TMIN
