@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.59  2003/06/26 09:09:05  djw
+C Change P3 to P6 while thinking about other changes
+C
 C Revision 1.58  2003/06/24 13:01:04  djw
 C Change SHELX weighting text to keep Acta happy
 C
@@ -1078,7 +1081,7 @@ C
 C      NL                 NUMBER OF LINES PRINTED. INITIALLY SET AT
 C                         END OF PAGE.
 C
-      CHARACTER CLINE *160, CTEM *4, CHTML*20
+      CHARACTER CLINE *160, CTEM *4, CHTML*20, CASRF*7
 \TSSCHR
 \ISTORE
 C
@@ -1100,6 +1103,7 @@ C
 \XIOBUF
 \UFILE
 \XSSCHR
+\XFLAGS
 C
 \QSTORE
 C
@@ -1151,6 +1155,7 @@ C----- CAPTIONS FOR CIF FILE
         WRITE( NCFPU1, 902)
 902     FORMAT ('_atom_site_occupancy'/
      1 '_atom_site_adp_type'  /
+     1 '_atom_site_refinement_flags'  /
      2 '_atom_site_attached_hydrogens' )
 
       ELSE IF (IPCHCO .EQ. 3) THEN    !HEADERS FOR HTML TABLE
@@ -1348,6 +1353,17 @@ C----- ORDINARY PUNCH LISTING
             WRITE(NCPU,'(A)') CLINE(1:NCHAR)
         ELSE IF (IPCHCO .EQ. 2) THEN
 C----- CIF PUNCH LISTING
+
+C Work out the _atom_site_refinement_flags for this atom.
+            NASRF = 0
+            WRITE(CASRF(1:1),'(A)') '.'  ! Default is '.'
+            DO MASRF = 1,7
+              IF ( IAND (KBREFB(MASRF),ISTORE(M5+15)) .GT. 0 ) THEN
+                NASRF=NASRF+1
+                WRITE(CASRF(NASRF:NASRF),'(A1)')KBCIFF(MASRF:MASRF)
+              END IF
+            END DO
+            NASRF = MAX(NASRF,1)  ! Ensure at least one char is printed
             WRITE(CLINE,'(160A1)') LINEC
 C RIC01 Find second space in string:
             ISTRIC = MAX(1,KCCEQL(CLINE,1,' '))+1
@@ -1358,7 +1374,7 @@ C            IST = KCCNEQ (CLINE, 1, ' ')+1
             CALL XCTRIM (CLINE,NCHAR)
             CLINE(NCHAR+1:NCHAR+4) = CTEM
             CALL XCREMS( CLINE, CLINE, NCHAR)
-            WRITE(NCFPU1,'(A,A)') CLINE(1:NCHAR), ' .'
+            WRITE(NCFPU1,'(A,1X,2A)') CLINE(1:NCHAR),CASRF(1:NASRF),' .'
         ENDIF
 1550    FORMAT(2X,118A1)
         NL=NL+1
