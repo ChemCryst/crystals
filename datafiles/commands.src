@@ -1,0 +1,3299 @@
+ This is the main command definition file
+ 15
+  4 \LIST 4
+ 12 \CLEAR 12
+ 13 \LIST 13
+ 14 \LIST 14
+ 16 \CLEAR 16
+ 17 \CLEAR 17
+ 20 \LIST 20
+ 22 \LIST 22
+ 23 \LIST 23
+ 24 \NEWSHIFTS
+ 26 \LIST 26
+ 28 \LIST 28
+ 29 \LIST 29
+ 30 \LIST 30
+ 36 \WEIGHT
+LIST               1    2
+   1   40960
+    20   30
+   1.LIST               1    1    0    0
+         1
+     TYPE               1   -1    1    0    0
+PRINT              1    0
+   1   40960
+   1.PRINT              2    1    0    0
+         1    3
+     LIST               1   -1    1    0    0
+     CLASS              2    0    1    3   -1 A
+     A              B              C
+PUNCH              1    0
+   1   40960
+   1.PUNCH              2    1    0    0
+         1    3
+     LIST               1   -1    1    0    0
+     CLASS              2    0    1    4   -1 A
+     A              B              C              D
+LIST 1             9    2
+   1   40960 CRYSTALSINPUT
+   20   30
+   1.REAL               7    1    1    0    7    1  101    1    1
+         1    1    1    1    1    1    0    0    0    0
+REAL UNIT CELL PARAMETERS
+(10X,6(3X,12A1),2X,12A1)
+(1X,3F15.3,2X,3F15.3,F15.2)
+         2
+         2    2    2    2    2    2    2
+     A                  0   -1    1    0    0
+     B                  0   -1    1    0    0
+     C                  0   -1    1    0    0
+     ALPHA              0    0    1    0    0 90.
+     BETA               0    0    1    0    0 90.
+     GAMMA              0    0    1    0    0 90.
+     VOLUME             0    0    0    0    0
+   2.RECIPROCAL         7    1    1    0    7    1  102    5    1
+         1    1    1    1    1    1    0    0    0    0
+RECIPROCAL UNIT CELL PARAMETERS
+(7X,6(3X,12A1),12A1)
+(1X,3F15.6,2X,F12.3,2F15.3,3X,F15.6)
+         1
+         2    2    2    2    2    2    2
+     A*                 0   -1    1    0    0
+     B*                 0   -1    1    0    0
+     C*                 0   -1    1    0    0
+     ALPHA*             0    0    1    0    0 90.
+     BETA*              0    0    1    0    0 90.
+     GAMMA*             0    0    1    0    0 90.
+     RECIP VOLUME       0    0    0    0    0
+   3.DIR. TENSOR        0    0    0    0    9    2  103    9    1
+         1    1    0    0    1    1
+REAL METRIC TENSOR, INCLUDING AND EXCLUDING THE CELL PARAMETERS
+(3(6X,3F11.4/)/(6X,3F11.4))
+   4.INV. TENSOR        0    0    0    0    9    2  104   13    1
+         1    1    0    0    1    1
+RECIPROCAL METRIC TENSOR, INCLUDING AND EXCLUDING THE CELL PARAMETERS
+(3(6X,3F12.6/)/(6X,3F12.6))
+   5.DIR. ORTHOG.       0    0    0    0    9    2  105   17    1
+         1    1    0    0    1    1
+REAL OTHOGONALISATION MATRIX, INCLUDING AND EXCLUDING THE CELL PARAMETERS
+(3(6X,3F11.4/)/(6X,3F11.4))
+   6.INV. ORTHOG.       0    0    0    0    9    2  106   21    1
+         1    1    0    0    1    1
+RECIPROCAL ORTHOGONALISATION MATRIX, INCLUDING AND EXCLUDING THE CELL PARAMETERS
+(3(6X,3F12.6/)/(6X,3F12.6))
+   7.R[IJ]'S            6    0    0    0    6    1  107   25    1
+         1    1    1    1    1    1
+THE R(II)'S AND R(IJ)'S USED TO CALCULATE SIN(THETA)/LAMBDA
+(7X,6(3X,12A1))
+(1X,6F15.6)
+         2    2    2    2    2    2
+     R[11]              0   -1    0    0    0
+     R[22]              0   -1    0    0    0
+     R[33]              0   -1    0    0    0
+     R[23]              0   -1    0    0    0
+     R[13]              0   -1    0    0    0
+     R[12]              0   -1    0    0    0
+   8.ANISO-PARAMS       0    0    0    0    6    1  108   29    1
+         1    1    0    0    1    1
+ANISOTROPIC TEMPERATURE FACTOR COEFFICIENTS
+(6X,6F15.6)
+   9.ANISO-CONV.        0    0    0    0    3    1  109   33    1
+         1    1    0    0    1    1
+CONSTANTS TO CONVERT AN ATOM FROM ISO TO ANISO
+(6X,3F15.6)
+LIST 2             8    0
+   2   40960 CRYSTALSINPUT
+   1.CELL               3    1    0    0
+         1    3    3
+    .NSYMMETRIES       12   -1    1    0    0
+    .LATTICE            2    0    1    7    1 P
+     P              I              R              F              A
+     B              C
+    .CENTRIC            1    0    1    2    0 YES
+     NO             YES
+   2.SYMMETRY           3  -12    0    0   12  -12  102    9    2
+         1    1    0    0    1    1    0    0    0    0
+SYMMETRY OPERATORS
+((3(6X,3F10.0/),11X,3F10.5/))
+         4    4    4
+     X                  0   -1    1    0    0
+     Y                  0   -1    1    0    0
+     Z                  0   -1    1    0    0
+   3.IN. SYMMETRY       0    0    0    0   12  -12  103   13    2
+         1    1    0    0    1    1    0    0    0    0
+RECIPROCAL SYMMETRY OPERATORS
+((3(6X,3F10.0/),11X,3F10.5/))
+   4.TEMPORARY          0    0    0    0   10  -12  104   17    2
+         0    0    0    0    0    0    0    0    0    0
+   5.LATTICE OPS.       3    0    0    0    3    4  105   21    2
+         1    1    1    1    1    1    0    0    0    0
+NON-PRIMITIVE LATTICE TRANSLATIONS
+(10X,36A1)
+(3X,3F12.5)
+         2    2    2
+    .T(X)               0    0    0    0    0 0.0
+    .T(Y)               0    0    0    0    0 0.0
+    .T(Z)               0    0    0    0    0 0.0
+   6.CONSTANTS          4    0    0    0    4    1  101    5    2
+         1    1    1    1    1    1    0    0    0    0
+VARIOUS CONSTANTS REQUIRED WHEN USING LIST 2
+(4X,4(3X,12A1))
+(1X,4F15.1)
+         2    2    2    2
+    .CENTRO-FLAG        0    0    0    0    0 0.0
+    .LATTICE-FLAG       0    0    0    0    0 0.0
+    .MULTIPLIER 1       0    0    0    0    0 0.0
+    .MULTIPLIER 2       0    0    0    0    0 0.0
+   7.SPACEGROUP         4    1    0    0    4    1  106   25    2
+         1    1    0    0    1    1    0    0    0    0
+SPACE GROUP SYMBOL
+(6X,A4,2X,3(1X,A4))
+         3    3    3    3
+     LATTICE            0    0    1    0    0 NONE
+     A-AXIS             0    0    1    0    0
+     B-AXIS             0    0    1    0    0
+     C-AXIS             0    0    1    0    0
+   8.CLASS              4    1    0    0    4    1  107   29    2
+         1    1    0    0    1    1    0    0    0    0
+CRYSTAL CLASS
+(6X,4A4)
+         5    5    5    5
+     NAME(1)            0    0    1    0    0 NONE    
+     NAME(2)            0    0    1    0    0     
+     NAME(3)            0    0    1    0    0     
+     NAME(4)            0    0    1    0    0      
+LIST 3             4    0
+   3   40960 CRYSTALSINPUT
+   1.READ               1    1    0    0
+         1
+    .NSCATTERERS        4   -1    1    0    0
+   2.SCATTERING        12   -4    0    0   12   -4  101    1    3
+         1    1    1    1    1    1    0    0    0    0
+THE ATOMIC SCATTERING FACTORS IN EXPONENTIAL FORMAT
+(1X,120A1/37X,24A1)
+(1X,A4,2F12.3,2X,7F12.5/31X,2F12.5)
+         3    2    2    2    2    2    2    2    2    2    2    2
+    .TYPE               0   -1    1    0    0
+    .F'                 0    0    1    0    0 0.0
+    .F''                0    0    1    0    0 0.0
+    .A(1)               0   -1    1    0    0
+    .B(1)               0   -1    1    0    0
+    .A(2)               0   -1    1    0    0
+    .B(2)               0   -1    1    0    0
+    .A(3)               0   -1    1    0    0
+    .B(3)               0   -1    1    0    0
+    .A(4)               0   -1    1    0    0
+    .B(4)               0   -1    1    0    0
+    .C                  0   -1    1    0    0
+   3.REAL FORM          0    0    0    0    1   -4  102    5    3
+         0    0    0    0    0    0    0    0    0    0
+   4.IMAG. FORM         0    0    0    0    1   -4  103    9    3
+         0    0    0    0    0    0    0    0    0    0
+LIST 4             4    0
+   4   40960 CRYSTALSINPUT
+   1.SCHEME             5    1    0    0
+         1    1    3    1    1
+    .NUMBER             1    0    1    0    0         9
+    .NPARAMETERS        8    0    1    0    0         0
+    .TYPE               2    0    1    4    0 CHOOSE
+     NORMAL         1/2FO          /FO/**2        CHOOSE
+    .WEIGHT             3    0    1    0    0         2
+    .MAXIMUM            4    0    1    0    0     10000
+   2.PARAMETERS         1    1    0    0   -8    1  101    5    4
+         1    1    1    1    1    1    0    0    0    0
+PARAMETERS THAT ARE USED TO COMPUTE THE WEIGHT FOR A GIVEN REFLECTION
+(7X,12A1)
+(1X,8E15.6)
+         2
+    .P                  0    0    1    0    0 0.0
+   3.INTEGERS           2    0    0    0    2    1  102    9    4
+         1    1    1    1    1    1    0    0    0    0
+THE PARAMETERS REQUIRED TO DEFINE THE WEIGHTING SCHEME TO BE USED
+(1H ,8(3X,12A1))
+(1H ,I8,7I15)
+         1    1
+    .SCHEME             0    0    0    0    0         9
+    ./FO/-TYPE          0    0    0    0    0         0
+   4.REALS              2    0    0    0    2    1  103   13    4
+         1    1    1    1    1    1    0    0    0    0
+REAL PARAMETERS REQUIRED TO DEFINE THE WEIGHTING SCHEME TO BE USED
+(1H ,8(3X,12A1))
+(1H ,F8.4,7F15.4)
+         2    2
+    .WEIGHT             0    0    0    0    0        2.
+    .MAXIMUM            0    0    0    0    0    10000.
+LIST 5            10    0
+   5   40960 CRYSTALSINPUT
+   1.OVERALL            6    1    0    0    6    1  102   13    5
+         1    1    1    1    1    1    0    0    0    0
+OVERALL PARAMETERS
+(6X,108A1)
+(1X,9F12.5)
+         2    2    2    2    2    2
+    .SCALE              0    0    1    0    0 1.0
+    .DU[ISO]            0    0    1    0    0 0.05
+    .OU[ISO]            0    0    1    0    0 0.05
+    .POLARITY           0    0    1    0    0 1.0
+    .ENANTIO            0    0    1    0    0 0.0
+    .EXTPARAM           0    0    1    0    0 0.0
+   2.READ               7    1    0    0
+         1    1    1    1    1    1    1
+    .NATOM              4    0    1    0    0         0
+    .NLAYER            19    0    1    0    0         0
+    .NELEMENT          23    0    1    0    0         0
+    .NBATCH            27    0    1    0    0         0
+    .NCELL             31    0    1    0    0         0
+    .NPROFILE          35    0    1    0    0         0
+    .NEXTINCT          39    0    1    0    0         0
+   3.ATOM              14   -4    0    0   14   -4  101    1    5
+         1    1    1    1    1    1    0    0    0    0
+ATOMIC PARAMETERS
+(1X,120A1/85X,36A1,12A1)
+(1X,A4,F13.0,1X,8F12.5/79X,3F12.5,F8.1)
+         3    2    2    2    2    2    2    2    2    2    2    2    2    2
+    .TYPE               0   -1    1    0    0
+    .SERIAL             0   -1    1    0    0
+    .OCC                0    0    1    0    0 1.0
+    .FLAG               0    0    1    0    0 1.0
+    .X                  0   -1    1    0    0
+    .Y                  0   -1    1    0    0
+    .Z                  0   -1    1    0    0
+    .U[11]              0    0    1    0    0 0.05
+    .U[22]              0    0    1    0    0 0.0
+    .U[33]              0    0    1    0    0 0.0
+    .U[23]              0    0    1    0    0 0.0
+    .U[13]              0    0    1    0    0 0.0
+    .U[12]              0    0    1    0    0 0.0
+    .SPARE              0    0    1    0    0 0.0
+   4.INDEX              5    1    0    0    5    1  103    9    5
+         1    1    1    1    1    1    0    0    0    0
+THE CONSTANTS THAT DEFINE AN INDEX FOR LAYER SCALING
+(10X,60A1)
+(1X,4F12.2,F14.0)
+         2    2    2    2    3
+    .P                  0    0    1    0    0 0.0
+    .Q                  0    0    1    0    0 0.0
+    .R                  0    0    1    0    0 0.0
+    .S                  0    0    1    0    0 1.0
+    .ABSOLUTE           0    0    1    2   -1 YES
+     NO             YES
+   5.LAYERS             1    1    0    0  -19    1  104   17    5
+         1    1    1    1    1    1    0    0    0    0
+THE LAYER SCALE FACTORS, STARTING WITH THE SCALE FOR AN INDEX OF 1
+(7X,12A1)
+(1X,10F12.5)
+         2
+    .SCALE              0    0    1    0    0 1.0
+   6.ELEMENTS           1    1    0    0  -23    1  105   21    5
+         1    1    1    1    1    1    0    0    0    0
+THE ELEMENT SCALE FACTORS, STARTING WITH THE SCALE FOR THE FIRST ELEMENT
+(7X,12A1)
+(1X,10F12.5)
+         2
+    .SCALE              0    0    1    0    0 1.0
+   7.BATCH              1    1    0    0  -27    1  106   25    5
+         1    1    1    1    1    1    0    0    0    0
+THE BATCH SCALE FACTORS, STARTING WITH THE SCALE FOR THE FIRST BATCH
+(7X,12A1)
+(1X,10F12.5)
+         2
+    .SCALE              0    0    1    0    0 1.0
+   8.CELL               1    1    0    0  -31    1  108   29    5
+         1    1    1    1    1    1    0    0    0    0
+REAL CELL  PARAMETERS
+(6X,108A1)
+(1X,9F12.5)
+         2
+    .PARAMETER          0    0    1    0    0 0.0
+   9.PROFILE            1    1    0    0  -35    1  109   33    5
+         1    1    1    1    1    1    0    0    0    0
+PROFILE PARAMETERS
+(6X,108A1)
+(1X,9F12.5)
+         2
+    .PARAMETER          0    0    1    0    0 0.0
+  10.EXTINCTION         1    1    0    0  -39    1  110   37    5
+         1    1    1    1    1    1    0    0    0    0
+EXTINCTION  PARAMETERS
+(6X,108A1)
+(1X,9F12.5)
+         2
+    .PARAMETER          0    0    1    0    0 0.0
+LIST 6            16    2
+   1    4096 CRYSTALSINPUT6
+   13   28
+   1.READ               6    1    0    0
+         1    3    3    2    3    3
+    .NCOEFFICIENT      31    0    1    0    0         5
+    .TYPE              45    0    1    5    1 FREE
+     COPY           FIXED          FREE           COMPRESSED     TWIN
+    .F'S               70    0    1    2   -1 FO
+     FSQ            FO
+    .NGROUP            47    0    1    0    0 1.
+    .UNIT              48    0    1    2   -1 HKLI
+     HKLI           DATAFILE
+    .CHECK            107    0    1    2   -1 NO
+     NO             YES
+   2.STORE              3    1    0    0
+         1    3    3
+    .NCOEFFICIENT      19    0    1    0    0        33
+    .MEDIUM            49    0    1    3   -1 DISK
+     FILE           INPUT          DISK
+    .APPEND            46    0    1    2   -1 NO
+     NO             YES
+   3.INPUT              1    1    0    0  -31    1 1001   29  106
+         0    0    0    0    0    0    0    0    0    0
+         3
+    .COEFFICIENT        0    0    1   33    0 NOTHING
+     H              K              L              /FO/           SQRTW
+     /FC/           PHASE          A-PART         B-PART         TBAR
+     /FOT/          ELEMENTS       SIGMA(/FO/)    BATCH          INDICES
+     BATCH/PHASE    SINTH/L**2     FO/FC          JCODE          SERIAL
+     RATIO          THETA          OMEGA          CHI            PHI
+     KAPPA          PSI            CORRECTIONS    FACTOR1        FACTOR2
+     FACTOR3        RATIO/JCODE    NOTHING
+   4.OUTPUT            -3    1    0    0  -19    1  105   17    6
+         1    1    0    0    1    1    0    0    0    0
+POINTERS RELATING DATA IN THE DISK BUFFER TO THAT IN THE CORE BUFFER
+(1H ,24I5)
+   5.FORMAT             1    1    2    1    1    1 1008   33  106
+         0    0    0    0    0    0    0    0    0    0
+         6    7
+         1    2    2
+         4
+    .EXPRESSION         1    0    1    0    0 NONE
+   6.MULTIPLIERS        1    1    2    1  -31    1 1002   33  106
+         0    0    0    0    0    0    0    0    0    0
+         5    7
+         1    2    4
+         2
+    .VALUE              0    0    1    0    0 1.0
+   7.XOUT-TWINDEF      10    0    0    0   10    1 1003   37  106
+         0    0    0    0    0    0    0    0    0    0
+         1    1    1    1    1    1    1    1    1    1
+    .INDICES            0    0    0    0    0        14
+    ./FO/               0    0    0    0    0         3
+    .SQRTW              0    0    0    0    0         4
+    ./FC/               0    0    0    0    0         5
+    .BATCH/PHASE        0    0    0    0    0        15
+    .RATIO/JCODE        0    0    0    0    0        31
+    .SIGMA(/FO/)        0    0    0    0    0        12
+    .CORRECTIONS        0    0    0    0    0        27
+    .ELEMENTS           0    0    0    0    0        11
+    ./FOT/              0    0    0    0    0        10
+   8.XCORE-BUFFER       0    0    0    0   33    1  101    1    6
+         1    1    0    0    0    0    0    0    0    0
+THE CORE BUFFER
+   9.XREAD-FLAGS        0    0    0    0  -19    1  102    5    6
+         1    1    0    0    0    0    0    0    0    0
+INPUT DISK BUFFER, AND POINTERS TO CONTROL READING FROM THE DISK
+  10.XWRITE-FLAGS       0    0    0    0  -19    1  103    9    6
+         1    1    0    0    0    0    0    0    0    0
+OUTPUT DISK BUFFER, AND POINTERS TO CONTROL WRITING TO THE DISK
+  11.XREFLECTIONS       0    0    0    0  -19    0 -104   13    6
+         1    1    0    0    1    1    0    0    0    0
+DATA RECORD THAT CONTAINS THE REFLECTION DATA ON THE DISK
+(1H ,8E15.6/(1H ,15X,7E15.6))
+  12.XDATA-BLOCK        4    0    0    0    4    1  106   21    6
+         1    1    1    1    1    1    0    0    0    0
+DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS
+(1H ,8(3X,12A1))
+(1H ,8E15.6)
+         3    3    3    3
+    .CYCLE NUMBER       0    0    0    0    0 0.0
+    .R                  0    0    0    0    0 0.0
+    .WR                 0    0    0    0    0 0.0
+    .MINFUNC            0    0    0    0    0 0.0
+  13.XDETAILS           0    0    0    0    4   -3  107   25    6
+         1    1    0    0    1    1    0    0    0    0
+RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER
+(1H ,4E15.5)
+  14.XIN-DEFAULTS       5    0    0    0    5    1 1006   53  106
+         0    0    0    0    0    0    0    0    0    0
+         1    1    1    1    1
+    .H                  0    0    0    0    0         0
+    .K                  0    0    0    0    0         1
+    .L                  0    0    0    0    0         2
+    ./FO/               0    0    0    0    0         3
+    .SIGMA(/FO/)        0    0    0    0    0        12
+  15.XOUT-DEFAULTS      9    0    0    0    9    1 1007   57  106
+         0    0    0    0    0    0    0    0    0    0
+         1    1    1    1    1    1    1    1    1
+    .INDICES            0    0    0    0    0        14
+    ./FO/               0    0    0    0    0         3
+    .SQRTW              0    0    0    0    0         4
+    ./FC/               0    0    0    0    0         5
+    .BATCH/PHASE        0    0    0    0    0        15
+    .RATIO/JCODE        0    0    0    0    0        31
+    .SIGMA(/FO/)        0    0    0    0    0        12
+    .CORRECTIONS        0    0    0    0    0        27
+    .ELEMENTS           0    0    0    0    0        11
+  16.XINPUT-BUFFER      0    0    0    0  -31    1 1004   41  106
+         0    0    0    0    0    0    0    0    0    0
+LIST 7            16    0
+   1    4096 CRYSTALSINPUT6
+   1.READ               6    1    0    0
+         1    3    3    2    3    3
+    .NCOEFFICIENT      31    0    1    0    0        12
+    .TYPE              45    0    1    5    1 FIXED
+     COPY           FIXED          FREE           COMPRESSED     SPARE
+    .F'S               70    0    1    2   -1 FO
+     FSQ            FO
+    .NGROUP            47    0    1    0    0 1.
+    .UNIT              48    0    1    2   -1 DATAFILE
+     HKLI           DATAFILE
+    .CHECK            107    0    1    2   -1 NO
+     NO             YES
+   2.STORE              3    1    0    0
+         1    3    3
+    .NCOEFFICIENT      19    0    1    0    0         7
+    .MEDIUM            49    0    1    3   -1 DISK
+     FILE           INPUT          DISK
+    .APPEND            46    0    1    2   -1 NO
+     NO             YES
+   3.INPUT              1    1    0    0  -31    1 1001   29  107
+         0    0    0    0    0    0    0    0    0    0
+         3
+    .COEFFICIENT        0    0    1   33    0 NOTHING
+     H              K              L              /FO/           SQRTW
+     /FC/           PHASE          A-PART         B-PART         TBAR
+     /FOT/          ELEMENTS       SIGMA(/FO/)    BATCH          INDICES
+     BATCH/PHASE    SINTH/L**2     FO/FC          JCODE          SERIAL
+     RATIO          THETA          OMEGA          CHI            PHI
+     KAPPA          PSI            CORRECTIONS    FACTOR1        FACTOR2
+     FACTOR3        RATIO/JCODE    NOTHING
+   4.OUTPUT            -3    1    0    0  -19    1  105   17    7
+         1    1    0    0    1    1    0    0    0    0
+POINTERS RELATING DATA IN THE DISK BUFFER TO THAT IN THE CORE BUFFER
+(1H ,24I5)
+   5.FORMAT             1    1    2    1    1    1 1008   33  107
+         0    0    0    0    0    0    0    0    0    0
+         6    7
+         1    2    2
+         4
+    .EXPRESSION         1    0    1    0    0 NONE
+   6.MULTIPLIERS        1    1    2    1  -31    1 1002   33  107
+         0    0    0    0    0    0    0    0    0    0
+         5    7
+         1    2    4
+         2
+    .VALUE              0    0    1    0    0 1.0
+   7.BOSSDATA           1    1    2    1  -31    1 1003   37  107
+         0    0    0    0    0    0    0    0    0    0
+         5    6
+         1    2    5
+         1
+    .ITEM               0    0    1    0    0        -1
+   8.XCORE-BUFFER       0    0    0    0   33    1  101    1    7
+         1    1    0    0    0    0    0    0    0    0
+THE CORE BUFFER
+   9.XREAD-FLAGS        0    0    0    0  -19    1  102    5    7
+         1    1    0    0    0    0    0    0    0    0
+INPUT DISK BUFFER, AND POINTERS TO CONTROL READING FROM THE DISK
+  10.XWRITE-FLAGS       0    0    0    0  -19    1  103    9    7
+         1    1    0    0    0    0    0    0    0    0
+OUTPUT DISK BUFFER, AND POINTERS TO CONTROL WRITING TO THE DISK
+  11.XREFLECTIONS       0    0    0    0  -19    0 -104   13    7
+         1    1    0    0    1    1    0    0    0    0
+DATA RECORD THAT CONTAINS THE REFLECTION DATA ON THE DISK
+(1H ,8E15.6/(1H ,15X,7E15.6))
+  12.XDATA-BLOCK        4    0    0    0    4    1  106   21    7
+         1    1    1    1    1    1    0    0    0    0
+DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS
+(1H ,8(3X,12A1))
+(1H ,8E15.6)
+         3    3    3    3
+    .CYCLE NUMBER       0    0    0    0    0 0.0
+    .R                  0    0    0    0    0 0.0
+    .WR                 0    0    0    0    0 0.0
+    .MINFUNC            0    0    0    0    0 0.0
+  13.XDETAILS           0    0    0    0    4   -3  107   25    7
+         1    1    0    0    1    1    0    0    0    0
+RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER
+(1H ,4E15.5)
+  14.XIN-DEFAULTS      12    0    0    0   12    1 1006   53  107
+         0    0    0    0    0    0    0    0    0    0
+         1    1    1    1    1    1    1    1    1    1    1    1
+    .H                  0    0    0    0    0         0
+    .K                  0    0    0    0    0         1
+    .L                  0    0    0    0    0         2
+    ./FO/               0    0    0    0    0         3
+    .SIGMA(/FO/)        0    0    0    0    0        12
+    .JCODE              0    0    0    0    0        18
+    .SERIAL             0    0    0    0    0        19
+    .BATCH              0    0    0    0    0        13
+    .THETA              0    0    0    0    0        21
+    .PHI                0    0    0    0    0        24
+    .OMEGA              0    0    0    0    0        22
+    .KAPPA              0    0    0    0    0        25
+  15.XOUT-DEFAULTS      7    0    0    0    7    1 1007   57  107
+         0    0    0    0    0    0    0    0    0    0
+         1    1    1    1    1    1    1
+    .INDICES            0    0    0    0    0        14
+    ./FO/               0    0    0    0    0         3
+    .SIGMA(/FO/)        0    0    0    0    0        12
+    .THETA              0    0    0    0    0        21
+    .PHI                0    0    0    0    0        24
+    .OMEGA              0    0    0    0    0        22
+    .KAPPA              0    0    0    0    0        25
+  16.XINPUT-BUFFER      0    0    0    0  -31    1 1004   41  107
+         0    0    0    0    0    0    0    0    0    0
+LIST 8             0    0
+   8   40960 CRYSTALSINPUT
+LIST 9             0    0
+   9   40960 CRYSTALSINPUT
+LIST 10           10    0
+   5   40960 CRYSTALSINPUT
+   1.OVERALL            6    1    0    0    6    1  102   13   10
+         1    1    1    1    1    1    0    0    0    0
+OVERALL PARAMETERS
+(6X,108A1)
+(1X,9F12.5)
+         2    2    2    2    2    2
+    .SCALE              0    0    1    0    0 1.0
+    .DU[ISO]            0    0    1    0    0 0.05
+    .OU[ISO]            0    0    1    0    0 0.05
+    .POLARITY           0    0    1    0    0 1.0
+    .ENANTIO            0    0    1    0    0 0.0
+    .EXTPARAM           0    0    1    0    0 0.0
+   2.READ               7    1    0    0
+         1    1    1    1    1    1    1
+    .NATOM              4    0    1    0    0         0
+    .NLAYER            19    0    1    0    0         0
+    .NELEMENT          23    0    1    0    0         0
+    .NBATCH            27    0    1    0    0         0
+    .NCELL             31    0    1    0    0         0
+    .NPROFILE          35    0    1    0    0         0
+    .NEXTINCT          39    0    1    0    0         0
+   3.PEAK              14   -4    0    0   14   -4  101    1   10
+         1    1    1    1    1    1    0    0    0    0
+THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP
+(1X,120A1/85X,36A1,12A1)
+(1X,A4,F13.0,1X,8F12.5/79X,3F12.5,F8.4)
+         3    2    2    2    2    2    2    2    2    2    2    2    2    2
+    .TYPE               0    0    1    0    0 Q
+    .SERIAL             0   -1    1    0    0
+    .OCC                0    0    1    0    0 1.0
+    .U[ISO]             0    0    1    0    0 0.05
+    .X                  0   -1    1    0    0
+    .Y                  0   -1    1    0    0
+    .Z                  0   -1    1    0    0
+    .U[11]              0    0    1    0    0 0.0
+    .U[22]              0    0    1    0    0 0.0
+    .U[33]              0    0    1    0    0 0.0
+    .U[23]              0    0    1    0    0 0.0
+    .U[13]              0    0    1    0    0 0.0
+    .U[12]              0    0    1    0    0 0.0
+    .HEIGHT             0    0    1    0    0 0.0
+   4.INDEX              5    1    0    0    5    1  103    9   10
+         1    1    1    1    1    1    0    0    0    0
+THE CONSTANTS THAT DEFINE AN INDEX FOR LAYER SCALING
+(10X,60A1)
+(1X,4F12.2,F14.0)
+         2    2    2    2    3
+    .P                  0    0    1    0    0 0.0
+    .Q                  0    0    1    0    0 0.0
+    .R                  0    0    1    0    0 0.0
+    .S                  0    0    1    0    0 1.0
+    .ABSOLUTE           0    0    1    2   -1 YES
+     NO             YES
+   5.LAYERS             1    1    0    0  -19    1  104   17   10
+         1    1    1    1    1    1    0    0    0    0
+THE LAYER SCALE FACTORS, STARTING WITH THE SCALE FOR AN INDEX OF 1
+(7X,12A1)
+(1X,10F12.5)
+         2
+    .SCALE              0    0    1    0    0 1.0
+   6.ELEMENTS           1    1    0    0  -23    1  105   21   10
+         1    1    1    1    1    1    0    0    0    0
+THE ELEMENT SCALE FACTORS, STARTING WITH THE SCALE FOR THE FIRST ELEMENT
+(7X,12A1)
+(1X,10F12.5)
+         2
+    .SCALE              0    0    1    0    0 1.0
+   7.BATCH              1    1    0    0  -27    1  106   25   10
+         1    1    1    1    1    1    0    0    0    0
+THE BATCH SCALE FACTORS, STARTING WITH THE SCALE FOR THE FIRST BATCH
+(7X,12A1)
+(1X,10F12.5)
+         2
+    .SCALE              0    0    1    0    0 1.0
+   8.CELL               1    1    0    0  -31    1  108   29   10
+         1    1    1    1    1    1    0    0    0    0
+REAL CELL  PARAMETERS
+(6X,108A1)
+(1X,9F12.5)
+         2
+    .PARAMETER          0    0    1    0    0 0.0
+   9.PROFILE            1    1    0    0  -35    1  109   33   10
+         1    1    1    1    1    1    0    0    0    0
+PROFILE PARAMETERS
+(6X,108A1)
+(1X,9F12.5)
+         2
+    .PARAMETER          0    0    1    0    0 0.0
+  10.EXTINCTION         1    1    0    0  -39    1  110   37   10
+         1    1    1    1    1    1    0    0    0    0
+EXTINCTION  PARAMETERS
+(6X,108A1)
+(1X,9F12.5)
+         2
+    .PARAMETER          0    0    1    0    0 0.0
+LIST 11            4    0
+  11   40960 CRYSTALSINPUT
+   1.L.H.S.             0    0    0    0    1   -4 -101    1   11
+         0    0    0    0    0    0    0    0    0    0
+   2.R.H.S.             0    0    0    0    1   -8 -102    5   11
+         0    0    0    0    0    0    0    0    0    0
+   3.PREAMBLE           0    0    0    0   30    1  103    9   11
+         0    0    0    0    0    0    0    0    0    0
+   4.DEPENDENCIES       2    0    0    0    2    2    1   13   11
+         0    0    0    0    0    0    0    0    0    0
+         1    1
+    .LIST 5             0    0    0    0    0         5
+    .LIST 12            0    0    0    0    0        12
+LIST 12           11    0
+  12   40960 CRYSTALSINPUT
+   1.EQUIVALENCE        0 9999    0    3    0    0  101    5   12
+         0    0    0    0    0    0    0    0    0    0
+         5    0    0    6    0    0    7    0    0
+   2.FIX                0 9999    0    3    0    0  102    5   12
+         0    0    0    0    0    0    0    0    0    0
+         5    0    0    6    0    0    7    0    0
+   3.PLUS               0 9999    0    3    0    0  103    5   12
+         0    0    0    0    0    0    0    0    0    0
+         5    0    0    6    0    0    7    0    0
+   4.WEIGHT             0 9999    0    3    0    0  104    5   12
+         0    0    0    0    0    0    0    0    0    0
+         5    0    0    6    0    0    7    0    0
+   5.BLOCK              0 9999    2    0    0    0  105    5   12
+         0    0    0    0    0    0    0    0    0    0
+         6    7
+   6.FULL               0    2    2    0    0    0  106    5   12
+         0    0    0    0    0    0    0    0    0    0
+         5    7
+   7.DIAGONAL           0    2    2    0    0    0  107    5   12
+         0    0    0    0    0    0    0    0    0    0
+         5    6
+   8.RIDE               0 9999    0    3    0    0  108    5   12
+         0    0    0    0    0    0    0    0    0    0
+         5    0    0    6    0    0    7    0    0
+   9.LINK               0 9999    0    3    0    0  109    5   12
+         0    0    0    0    0    0    0    0    0    0
+         5    0    0    6    0    0    7    0    0
+  10.COMBINE            0 9999    0    3    0    0  110    5   12
+         0    0    0    0    0    0    0    0    0    0
+         5    0    0    6    0    0    7    0    0
+  11.GROUP              0 9999    0    3    0    0  111    5   12
+         0    0    0    0    0    0    0    0    0    0
+         5    0    0    6    0    0    7    0    0
+LIST 13            9    0
+  13   40960 CRYSTALSINPUT
+   1.CRYSTAL            3    0    0    0    3    1  101    1   13
+         1    1    1    1    1    1    0    0    0    0
+DATA PERTAINING TO THE CRYSTALS ITSELF (-1 FOR NO, 0 FOR YES)
+(1H ,8(3X,12A1))
+(1H ,I10,I13,6I15)
+         3    3    3
+    .FRIEDELPAIRS       0    0    1    2   -1 YES
+     NO             YES
+    .TWINNED            0    0    1    2   -1 NO
+     NO             YES
+    .SPREAD             0    0    1    2    1 GAUSSIAN
+     GAUSSIAN       LORENTZIAN
+   2.DIFFRACTION        3    0    0    0    3    1  102    5   13
+         1    1    1    1    1    1    0    0    0    0
+DATA PERTAINING TO THE METHOD OF DATA COLLECTION FOR THE PRESENT LIST 6
+(1H ,8(3X,12A1))
+(1H ,I10,7I15)
+         3    3    1
+    .GEOMETRY           0    0    1   10    1 UNKNOWN
+     NORMAL         EQUI           ANTI           PRECESSION     UNKNOWN
+     CAD4           ROLLETT        Y290           KAPPA          AREA
+    .RADIATION          0    0    1    2   -1 XRAYS
+     XRAYS          NEUTRONS
+    .INPUT-TYPE         0    0    0    0    0         0
+   3.CONDITIONS         7    0    0    0    7    1  103    9   13
+         1    1    1    1    1    1    0    0    0    0
+EXPERIMENTAL CONSTANTS THAT DEFINE THE DATA COLLECTION PROCESS
+(1H ,8(3X,12A1))
+(1H ,F12.5,F14.5,F15.5,F16.5,4F15.5)
+         2    2    2    2    2    2    2
+    .WAVELENGTH         0    0    1    0    0 .71073
+    .THETA(1)           0    0    1    0    0 6.05
+    .THETA(2)           0    0    1    0    0 90.0
+    .CONSTANT(1)        0    0    1    0    0 0.5869359
+    .CONSTANT(2)        0    0    1    0    0 0.6427007
+    .CONSTANT(3)        0    0    1    0    0 0.0001788
+    .CONSTANT(4)        0    0    1    0    0 90.0
+   4.TWO                9    0    4    4    9    2  104   13   13
+         1    1    1    1    1    1    0    0    0    0
+DEFINITION OF THE ORIENTATION MATRIX FROM TWO REFLECTIONS
+(1H ,8(3X,12A1)/1H ,15X,7(3X,12A1))
+(1H ,F7.3,2F15.3,F16.3,3F15.3,F16.3/1H ,7X,2F15.3)
+         5    6    7    8
+         2    1    6    2    1    7    2    1    8    2    1    9
+         2    2    2    2    2    2    2    2    2
+    .H                  0   -1    1    0    0 0.0
+    .K                  0   -1    1    0    0 0.0
+    .L                  0   -1    1    0    0 0.0
+    .THETA              0   -1    1    0    0 0.0
+    .OMEGA              0   -1    1    0    0 0.0
+    .CHI                0    0    1    0    0 0.0
+    .PHI                0   -1    1    0    0 0.0
+    .KAPPA              0    0    1    0    0 0.0
+    .PSI                0    0    1    0    0 0.0
+   5.THREE              9    0    4    2    9    3  105   17   13
+         1    1    1    1    1    1    0    0    0    0
+DEFINITION OF THE ORIENTATION MATRIX FROM THREE REFLECTIONS
+(1H ,8(3X,12A1)/1H ,15X,7(3X,12A1))
+(1H ,F7.3,2F15.3,F16.3,3F15.3,F16.3/1H ,7X,2F15.3)
+         4    6    7    8
+         2    1    6    2    1    9
+         2    2    2    2    2    2    2    2    2
+    .H                  0   -1    1    0    0 0.0
+    .K                  0   -1    1    0    0 0.0
+    .L                  0   -1    1    0    0 0.0
+    .THETA              0   -1    1    0    0 0.0
+    .OMEGA              0   -1    1    0    0 0.0
+    .CHI                0    0    1    0    0 0.0
+    .PHI                0   -1    1    0    0 0.0
+    .KAPPA              0    0    1    0    0 0.0
+    .PSI                0    0    1    0    0 0.0
+   6.REAL              12    0    4    2   12    1  106   21   13
+         1    1    1    1    1    1    0    0    0    0
+DEFINITION OF THE ORIENTATION MATRIX FROM THE PHI AXIS AND A GENERAL REFLECTION
+(1H ,8(3X,12A1)/1H ,15X,7(3X,12A1))
+(1H ,F10.3,2F15.3,F13.3,4F15.3/1H ,10X,2F15.3,F13.3,4F15.3)
+         4    5    7    8
+         2    1    6    2    1    9
+         2    2    2    2    2    2    2    2    2    2    2    2
+    .COMPONENT(1)       0   -1    1    0    0 0.0
+    .COMPONENT(2)       0   -1    1    0    0 0.0
+    .COMPONENT(3)       0   -1    1    0    0 0.0
+    .H                  0   -1    1    0    0 0.0
+    .K                  0   -1    1    0    0 0.0
+    .L                  0   -1    1    0    0 0.0
+    .THETA              0   -1    1    0    0 0.0
+    .OMEGA              0   -1    1    0    0 0.0
+    .CHI                0    0    1    0    0 0.0
+    .PHI                0   -1    1    0    0 0.0
+    .KAPPA              0    0    1    0    0 0.0
+    .PSI                0    0    1    0    0 0.0
+   7.RECIPROCAL        12    0    4    2   12    1  107   25   13
+         1    1    1    1    1    1    0    0    0    0
+DEFINITION OF THE ORIENTATION MATRIX FROM THE EQUATORIAL PLANE AND A REFLECTION
+(1H ,8(3X,12A1)/1H ,15X,7(3X,12A1))
+(1H ,F10.3,2F15.3,F13.3,4F15.3/1H ,10X,2F15.3,F13.3,4F15.3)
+         4    5    6    8
+         2    1    6    2    1    9
+         2    2    2    2    2    2    2    2    2    2    2    2
+    .COMPONENT(1)       0   -1    1    0    0 0.0
+    .COMPONENT(2)       0   -1    1    0    0 0.0
+    .COMPONENT(3)       0   -1    1    0    0 0.0
+    .H                  0   -1    1    0    0 0.0
+    .K                  0   -1    1    0    0 0.0
+    .L                  0   -1    1    0    0 0.0
+    .THETA              0   -1    1    0    0 0.0
+    .OMEGA              0   -1    1    0    0 0.0
+    .CHI                0    0    1    0    0 0.0
+    .PHI                0   -1    1    0    0 0.0
+    .KAPPA              0    0    1    0    0 0.0
+    .PSI                0    0    1    0    0 0.0
+   8.MATRIX             1    1    4    6    9    1  108   29   13
+         1    1    0    0    1    1    0    0    0    0
+THE ORIENTATION MATRIX
+(3(1H ,10X,3F10.5/))
+         4    5    6    7
+         2    1    5    2    1    6    2    1    7    2    1    8    2    1    9
+         2    1   10
+         2
+    .R                  0    0    1    0    0 0.0
+   9.AXIS               3    1    0    3    3    1  109   33   13
+         1    1    1    1    1    1    0    0    0    0
+THE AXIS USED FOR WEISSENBERG DATA COLLECTION
+(1H ,3(3X,12A1))
+(1H ,F6.2,2F15.2)
+         2    1    1    2    1    2    2    1    3
+         2    2    2
+    .H                  0    0    1    0    0 0.0
+    .K                  0    0    1    0    0 0.0
+    .L                  0    0    1    0    0 0.0
+LIST 14           10    0
+  14   40960 CRYSTALSINPUT
+   1.X-AXIS             6    1    0    0    6    1 1001   17  114
+         0    0    0    0    0    0    0    0    0    0
+         2    2    2    2    2    2
+    .MINIMUM            0    0    1    0    0 0.0
+    .STEP               0    0    1    0    0 0.3
+    .MAXIMUM            0    0    1    0    0 1.0
+    .DIVISION           0    0    1    0    0 0.0
+    .NOTHING            0    0    0    0    0 0.0
+    .NOTHING            0    0    0    0    0 0.0
+   2.Y-AXIS            -1    1    0    0    6    1 1002   21  114
+         0    0    0    0    0    0    0    0    0    0
+   3.Z-AXIS            -1    1    0    0    6    1 1003   25  114
+         0    0    0    0    0    0    0    0    0    0
+   4.ORIENTATION        3    1    0    0    3    1  102    5   14
+         1    1    1    1    1    1    0    0    0    0
+ORIENTATION PARAMETERS FOR THE MAP CALCULATION AND PRINTING
+(1H ,8(3X,12A1))
+(1H ,I7,7I15)
+         3    3    3
+    .DOWN               0    0    1    3    1 X
+     X              Y              Z
+    .ACROSS             0    0    1    3    1 Y
+     X              Y              Z
+    .THROUGH            0    0    1    3    1 Z
+     X              Y              Z
+   5.SCALEFACTOR        1    1    0    0    1    1  103    9   14
+         1    1    1    1    1    1    0    0    0    0
+THE MAP SCALE FACTOR
+(1H ,8(3X,12A1))
+(1H ,F10.5,7F15.5)
+         2
+    .VALUE              0    0    1    0    0 10.0
+   6.DIVISIONS          0    0    0    0    6    3  101    1   14
+         1    1    0    0    1    1    0    0    0    0
+DIVISIONS INFORMATION FOR EACH OF THE AXES
+(1H ,6F10.2)
+   7.X-PATT            -1    1    0    0    6    1 1004   29  114
+         0    0    0    0    0    0    0    0    0    0
+   8.Y-PATT            -1    1    0    0    6    1 1005   33  114
+         0    0    0    0    0    0    0    0    0    0
+   9.Z-PATT            -1    1    0    0    6    1 1006   37  114
+         0    0    0    0    0    0    0    0    0    0
+  10.PATDIV             0    0    0    0    6    3  104   13   14
+         1    1    0    0    1    1    0    0    0    0
+PATTERSON DIVISIONS FOR EACH OF THE AXES
+(1H ,6F10.2)
+LIST 15            0    0
+  15   40960 CRYSTALSINPUT
+LIST 16           19    0
+  16   40960 CRYSTALSINPUT
+   1.DEFINE             0 9999    0    0    0    0  101    5   16
+         0    0    0    0    0    0    0    0    0    0
+   2.RESTRAIN           0 9999    0    0    0    0  102    5   16
+         0    0    0    0    0    0    0    0    0    0
+   3.DISTANCES          0 9999    0    0    0    0  103    5   16
+         0    0    0    0    0    0    0    0    0    0
+   4.ANGLES             0 9999    0    0    0    0  104    5   16
+         0    0    0    0    0    0    0    0    0    0
+   5.VIBRATIONS         0 9999    0    0    0    0  105    5   16
+         0    0    0    0    0    0    0    0    0    0
+   6.COMPILER           0 9999    0    0    0    0  106    5   16
+         0    0    0    0    0    0    0    0    0    0
+   7.EXECUTION          0 9999    0    0    0    0  107    5   16
+         0    0    0    0    0    0    0    0    0    0
+   8.NO                 0 9999    0    0    0    0  108    5   16
+         0    0    0    0    0    0    0    0    0    0
+   9.FUNCTION           0 9999    0    0    0    0  109    5   16
+         0    0    0    0    0    0    0    0    0    0
+  10.U(IJ)'S            0 9999    0    0    0    0  110    5   16
+         0    0    0    0    0    0    0    0    0    0
+  11.TERM               0 9999    0    0    0    0  111    5   16
+         0    0    0    0    0    0    0    0    0    0
+  12.EQUATE             0 9999    0    0    0    0  112    5   16
+         0    0    0    0    0    0    0    0    0    0
+  13.PLANAR             0 9999    0    0    0    0  113    5   16
+         0    0    0    0    0    0    0    0    0    0
+  14.SUM                0 9999    0    0    0    0  114    5   16
+         0    0    0    0    0    0    0    0    0    0
+  15.FORM               0 9999    0    0    0    0  115    5   16
+         0    0    0    0    0    0    0    0    0    0
+  16.AVERAGE            0 9999    0    0    0    0  116    5   16
+         0    0    0    0    0    0    0    0    0    0
+  17.LIMIT              0 9999    0    0    0    0  117    5   16
+         0    0    0    0    0    0    0    0    0    0
+  18.NONBONDED          0 9999    0    0    0    0  118    5   16
+         0    0    0    0    0    0    0    0    0    0
+  19.ORIGIN             0 9999    0    0    0    0  119    5   16
+         0    0    0    0    0    0    0    0    0    0
+LIST 17           19    0
+  17   40960 CRYSTALSINPUT
+   1.DEFINE             0 9999    0    0    0    0  101    5   17
+         0    0    0    0    0    0    0    0    0    0
+   2.RESTRAIN           0 9999    0    0    0    0  102    5   17
+         0    0    0    0    0    0    0    0    0    0
+   3.DISTANCES          0 9999    0    0    0    0  103    5   17
+         0    0    0    0    0    0    0    0    0    0
+   4.ANGLES             0 9999    0    0    0    0  104    5   17
+         0    0    0    0    0    0    0    0    0    0
+   5.VIBRATIONS         0 9999    0    0    0    0  105    5   17
+         0    0    0    0    0    0    0    0    0    0
+   6.COMPILER           0 9999    0    0    0    0  106    5   17
+         0    0    0    0    0    0    0    0    0    0
+   7.EXECUTION          0 9999    0    0    0    0  107    5   17
+         0    0    0    0    0    0    0    0    0    0
+   8.NO                 0 9999    0    0    0    0  108    5   17
+         0    0    0    0    0    0    0    0    0    0
+   9.FUNCTION           0 9999    0    0    0    0  109    5   17
+         0    0    0    0    0    0    0    0    0    0
+  10.U(IJ)'S            0 9999    0    0    0    0  110    5   17
+         0    0    0    0    0    0    0    0    0    0
+  11.TERM               0 9999    0    0    0    0  111    5   17
+         0    0    0    0    0    0    0    0    0    0
+  12.EQUATE             0 9999    0    0    0    0  112    5   17
+         0    0    0    0    0    0    0    0    0    0
+  13.PLANAR             0 9999    0    0    0    0  113    5   17
+         0    0    0    0    0    0    0    0    0    0
+  14.SUM                0 9999    0    0    0    0  114    5   17
+         0    0    0    0    0    0    0    0    0    0
+  15.FORM               0 9999    0    0    0    0  115    5   17
+         0    0    0    0    0    0    0    0    0    0
+  16.AVERAGE            0 9999    0    0    0    0  116    5   17
+         0    0    0    0    0    0    0    0    0    0
+  17.LIMIT              0 9999    0    0    0    0  117    5   17
+         0    0    0    0    0    0    0    0    0    0
+  18.ENERGY             0 9999    0    0    0    0  118    5   17
+         0    0    0    0    0    0    0    0    0    0
+  19.ORIGIN             0 9999    0    0    0    0  119    5   16
+         0    0    0    0    0    0    0    0    0    0
+LIST 18            0    0
+  18   40960 CRYSTALSINPUT
+LIST 19            0    0
+  19   40960 CRYSTALSINPUT
+LIST 20            3    1
+  20   40960 CRYSTALSINPUT
+    30
+   1.MATRIX             9   10    0    0    9   10  101    1   20
+         1    1    0    0    1    1    0    0    0    0
+MATRICES FOR FOREWARD TRANSFORMATION
+(3(1H ,10X,3F10.3/))
+         2    2    2    2    2    2    2    2    2
+    .R(11)              0    0    1    0    0 1.0
+    .R(12)              0    0    1    0    0 0.0
+    .R(13)              0    0    1    0    0 0.0
+    .R(21)              0    0    1    0    0 0.0
+    .R(22)              0    0    1    0    0 1.0
+    .R(23)              0    0    1    0    0 0.0
+    .R(31)              0    0    1    0    0 0.0
+    .R(32)              0    0    1    0    0 0.0
+    .R(33)              0    0    1    0    0 1.0
+   2.INVERSE            0    0    0    0    9   10  102    5   20
+         1    1    0    0    1    1    0    0    0    0
+MATRICES FOR THE INVERSE TRANSFORMATIONS
+(3(1H ,10X,3F10.3/))
+   3.VECTOR             3   10    0    0    3   10  103    9   20
+         1    1    0    0    1    1    0    0    0    0
+VECTORS FOR FOREWARD TRANSFORMATION
+(1H ,10X,3F10.3/)
+         2    2    2
+    .V(1)               0    0    1    0    0 0.0
+    .V(2)               0    0    1    0    0 0.0
+    .V(3)               0    0    1    0    0 0.0
+LIST 21            0    0
+  21   40960 CRYSTALSINPUT
+ZAPZAP    22       4    3
+   1    4096 CRYSTALSPROCESS
+    5   12   23
+   1.DATA AREA          0    0    0    0    1    0  101    1   22
+         0    0    0    0    0    0    0    0    0    0
+   2.BLOCKING           0    0    0    0    216384  102    5   22
+         0    0    0    0    0    0    0    0    0    0
+   3.POINTERS           0    0    0    0    4   10 -103    9   22
+         0    0    0    0    0    0    0    0    0    0
+   4.DEPENDENCIES       2    0    0    0    2    2    1   13   22
+         0    0    0    0    0    0    0    0    0    0
+         1    1
+    .LIST 5             0    0    0    0    0         5
+    .LIST 12            0    0    0    0    0        12
+LIST 23            5    0
+  23   40960 CRYSTALSINPUT
+   1.MODIFY             7    1    0    0    7    1  101    1   23
+         1    1    1    1    1    1    0    0    0    0
+MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)
+(1H ,8(3X,12A1))
+(1H ,I10,7I15)
+         3    3    3    3    3    3    3
+    .ANOMALOUS          0    0    1    2   -1 NO
+     NO             YES
+    .EXTINCTION         0    0    1    2   -1 NO
+     NO             YES
+    .LAYERSCALES        0    0    1    2   -1 NO
+     NO             YES
+    .BATCHSCALES        0    0    1    2   -1 NO
+     NO             YES
+    .PARTIAL            0    0    1    2   -1 NO
+     NO             YES
+    .UPDATE             0    0    1    2   -1 NO
+     NO             YES
+    .ENANTIOPOLE        0    0    1    2   -1 NO
+     NO             YES
+   2.MINIMISE           6    1    0    0    6    1  103    9   23
+         1    1    1    1    1    1    0    0    0    0
+MODIFICATIONS TO THE MINIMISATION FUNCTION DURING SFLS (-1 FOR NO, 0 FOR YES)
+(1H ,8(3X,12A1))
+(1H ,I10,7I15)
+         1    3    3    3    3    3
+    .NSINGULARITY       0    0    1    0    0         0
+    .F-SQUARED          0    0    1    2   -1 NO
+     NO             YES
+    .RESTRAIN           0    0    1    2   -1 YES
+     NO             YES
+    .REFLECTIONS        0    0    1    2   -1 YES
+     NO             YES
+    .SPARE              0    0    1    2   -1 NO
+     NO             YES
+    .SPARE              0    0    1    2   -1 NO
+     NO             YES
+   3.ALLCYCLES          9    1    0    0    9    1  104   13   23
+         1    1    1    1    1    1    0    0    0    0
+CONDITIONS THAT MUST BE MET AFTER EACH CYCLE IF REFINEMENT IS TO CONTINUE
+(1H ,8(3X,12A1)/(1H ,15X,7(3X,12A1)))
+(1H ,E14.6,7E15.6/(1H ,14X,7E15.6))
+         2    2    2    2    2    2    2    2    2
+    .MIN-R              0    0    1    0    0 0.0
+    .MAX-R              0    0    1    0    0 100.
+    .MIN-WR             0    0    1    0    0 0.0
+    .MAX-WR             0    0    1    0    0 100.
+    .MIN-SUMSQ          0    0    1    0    0 0.0
+    .MAX-SUMSQ          0    0    1    0    0 10000.
+    .MIN-MINFUNC        0    0    1    0    0 0.0
+    .MAX-MINFUNC        0    0    1    0    0              1.0E15
+    .U[MIN]             0    0    1    0    0              0.0
+   4.INTERCYCLE         8    1    0    0    8    1  105   17   23
+         1    1    1    1    1    1    0    0    0    0
+CONDITIONS THAT MUST BE MET BETWEEN EACH CYCLE IF REFINEMENT IS TO CONTINUE
+(1H ,8(3X,12A1))
+(1H ,E14.6,7E15.6)
+         2    2    2    2    2    2    2    2
+    .MIN-DR             0    0    1    0    0 0.0
+    .MAX-DR             0    0    1    0    0 100.
+    .MIN-DWR            0    0    1    0    0 0.0
+    .MAX-DWR            0    0    1    0    0 100.
+    .MIN-DSUMSQ         0    0    1    0    0 0.0
+    .MAX-DSUMSQ         0    0    1    0    0 10000.
+    .MIN-DMINFUNC       0    0    1    0    0 0.0
+    .MAX-DMINFUNC       0    0    1    0    0              1.0E15
+   5.REFINE             6    1    0    0    6    1  106   21   23
+         1    1    1    1    0    0    0    0    0    0
+SPECIAL REFINEMENT CONDITIONS
+(1H ,8(3X,12A1))
+         3    3    3    3    3    2
+    .SPECIAL            0    0    1    5   -1 CONSTRAIN
+     NO             TEST           ORIGIN         RESTRAIN       CONSTRAIN
+    .UPDATE             0    0    1    3   -1 PARAMETERS
+     NO             OCCUPATION     PARAMETERS
+    .REWEIGHT           0    0    1    2   -1 NO
+     NO             YES
+    .GROUPS             0    0    1    2   -1 NO
+     NO             YES
+    .COMPOSITE          0    0    1    2   -1 NO
+     NO             YES
+    .TOLERANCE          0    0    1    0    0 0.6
+LIST 24            2    0
+  24   40960 CRYSTALSINPUT
+   1.SHIFTS             2    0    0    0    2   -4  101    1   24
+         1    1    1    1    1    1    0    0    0    0
+THE CALCULATED AND APPLIED SHIFT FACTORS
+(1H ,8(3X,12A1))
+(1H ,F10.5,7F15.5)
+         2    2
+    .CALCULATED         0    0    1    0    0 0.0
+    .APPLIED            0    0    1    0    0 0.0
+   2.DEPENDENCIES       2    0    0    0    2    2    1    5   24
+         0    0    0    0    0    0    0    0    0    0
+         1    1    
+    .LIST 5             0    0    0    0    0         5
+    .LIST 22            0    0    0    0    0        22
+LIST 25            3    0
+  25   40960 CRYSTALSINPUT
+   1.READ               1    1    0    0
+         1
+    .NELEMENT           4   -1    1    0    0
+   2.MATRIX             9   -4    0    0    9   -4  101    1   25
+         1    1    0    0    1    1    0    0    0    0
+THE MATRICES THAT TRANSFORM THE STANDARD INDICES INTO EACH ELEMENT
+(3(1H ,10X,3F10.3/))
+         2    2    2    2    2    2    2    2    2
+    .R(11)              0    0    1    0    0 1.0
+    .R(12)              0    0    1    0    0 0.0
+    .R(13)              0    0    1    0    0 0.0
+    .R(21)              0    0    1    0    0 0.0
+    .R(22)              0    0    1    0    0 1.0
+    .R(23)              0    0    1    0    0 0.0
+    .R(31)              0    0    1    0    0 0.0
+    .R(32)              0    0    1    0    0 0.0
+    .R(33)              0    0    1    0    0 1.0
+   3.INVERSE            0    0    0    0    9   -4  102    5   25
+         1    1    0    0    1    1    0    0    0    0
+THE INVERSE MATRICES FOR THE TWIN TRANSFORMATIONS
+(3(1H ,10X,3F10.3/))
+LIST 26            3    4
+   2    4096 CRYSTALSPROCESS
+    1    2   16   17
+   1.DEPENDENCIES       4    0    0    0    4    2    1    5   26
+         0    0    0    0    0    0    0    0    0    0
+         1    1    1    1
+    .LIST 1             0    0    0    0    0         1
+    .LIST 2             0    0    0    0    0         2
+    .LIST 16            0    0    0    0    0        16
+    .LIST 17            0    0    0    0    0        17
+   2.COMMON AREA        0    0    0    0    4    3 -101    9   26
+         0    0    0    0    0    0    0    0    0    0
+   3.CODE AREA          0    0    0    0    1    0 -102   13   26
+         0    0    0    0    0    0    0    0    0    0
+LIST 27            2    0
+  27   40960 CRYSTALSINPUT
+   1.READ               1    1    0    0
+         1
+    .NSCALE             4   -1    1    0    0
+   2.SCALE              4    0    0    0    4   -4  101    1   27
+         1    1    1    1    1    1    0    0    0    0
+THE SCALE FACTORS DEDUCED FROM THE HILGER WATTS 4-CIRCLE PROGRAM
+(1H ,4(3X,12A1))
+(1H ,F9.0,3X,F13.3,F17.3,F15.0)
+         2    2    2    2
+    .SCALENUMBER        0   -1    1    0    0
+    .RAWSCALE           0   -1    1    0    0
+    .SMOOTHSCALE        0   -1    1    0    0
+    .SERIALNUMBER       0   -1    1    0    0
+LIST 28           11    1
+  28   40960 CRYSTALSINPUT
+    1
+   1.READ               3    1    0    0
+         1    1    1
+    .NSLICES           20    0    1    0    0         0
+    .NOMISSIONS        32    0    1    0    0         0
+    .NCONDITION        36    0    1    0    0         0
+   2.MINIMA            33    1    0    0   33    1 1001   21  128
+         0    0    0    0    0    0    0    0    0    0
+         2    2    2    2    2    2    2    2    2    2    2    2    2    2    2
+         2    2    2    2    2    2    2    2    2    2    2    2    2    2    2
+         2    2    2
+    .H                  0    0    1    0    0 0.0
+    .K                  0    0    1    0    0 0.0
+    .L                  0    0    1    0    0 0.0
+    ./FO/               0    0    1    0    0 0.0
+    .SQRTW              0    0    1    0    0 0.0
+    ./FC/               0    0    1    0    0 0.0
+    .PHASE              0    0    1    0    0 0.0
+    .A-PART             0    0    1    0    0 0.0
+    .B-PART             0    0    1    0    0 0.0
+    .TBAR               0    0    1    0    0 0.0
+    ./FOT/              0    0    1    0    0 0.0
+    .ELEMENTS           0    0    1    0    0 0.0
+    .SIGMA(/FO/)        0    0    1    0    0 0.0
+    .BATCH              0    0    1    0    0 0.0
+    .INDICES            0    0    1    0    0 0.0
+    .BATCH/PHASE        0    0    1    0    0 0.0
+    .SINTH/L**2         0    0    1    0    0 0.0
+    .FO/FC              0    0    1    0    0 0.0
+    .JCODE              0    0    1    0    0 0.0
+    .SERIAL             0    0    1    0    0 0.0
+    .RATIO              0    0    1    0    0 0.0
+    .THETA              0    0    1    0    0 0.0
+    .OMEGA              0    0    1    0    0 0.0
+    .CHI                0    0    1    0    0 0.0
+    .PHI                0    0    1    0    0 0.0
+    .KAPPA              0    0    1    0    0 0.0
+    .PSI                0    0    1    0    0 0.0
+    .CORRECTIONS        0    0    1    0    0 0.0
+    .FACTOR1            0    0    1    0    0 0.0
+    .FACTOR2            0    0    1    0    0 0.0
+    .FACTOR3            0    0    1    0    0 0.0
+    .RATIO/JCODE        0    0    1    0    0 0.0
+    .NOTHING            0    0    1    0    0 0.0
+   3.MAXIMA            33    1    0    0   33    1 1002   25  128
+         0    0    0    0    0    0    0    0    0    0
+         2    2    2    2    2    2    2    2    2    2    2    2    2    2    2
+         2    2    2    2    2    2    2    2    2    2    2    2    2    2    2
+         2    2    2
+    .H                  0    0    1    0    0 0.0
+    .K                  0    0    1    0    0 0.0
+    .L                  0    0    1    0    0 0.0
+    ./FO/               0    0    1    0    0 0.0
+    .SQRTW              0    0    1    0    0 0.0
+    ./FC/               0    0    1    0    0 0.0
+    .PHASE              0    0    1    0    0 0.0
+    .A-PART             0    0    1    0    0 0.0
+    .B-PART             0    0    1    0    0 0.0
+    .TBAR               0    0    1    0    0 0.0
+    ./FOT/              0    0    1    0    0 0.0
+    .ELEMENTS           0    0    1    0    0 0.0
+    .SIGMA(/FO/)        0    0    1    0    0 0.0
+    .BATCH              0    0    1    0    0 0.0
+    .INDICES            0    0    1    0    0 0.0
+    .BATCH/PHASE        0    0    1    0    0 0.0
+    .SINTH/L**2         0    0    1    0    0 0.0
+    .FO/FC              0    0    1    0    0 0.0
+    .JCODE              0    0    1    0    0 0.0
+    .SERIAL             0    0    1    0    0 0.0
+    .RATIO              0    0    1    0    0 0.0
+    .THETA              0    0    1    0    0 0.0
+    .OMEGA              0    0    1    0    0 0.0
+    .CHI                0    0    1    0    0 0.0
+    .PHI                0    0    1    0    0 0.0
+    .KAPPA              0    0    1    0    0 0.0
+    .PSI                0    0    1    0    0 0.0
+    .CORRECTIONS        0    0    1    0    0 0.0
+    .FACTOR1            0    0    1    0    0 0.0
+    .FACTOR2            0    0    1    0    0 0.0
+    .FACTOR3            0    0    1    0    0 0.0
+    .RATIO/JCODE        0    0    1    0    0 0.0
+    .NOTHING            0    0    1    0    0 0.0
+   4.USE-MINIMA         0    0    0    0    2  -23  101    1   28
+         0    0    0    0    0    0    0    0    0    0
+   5.MINIMA-NAMES       0    0    0    0    4  -23 1101    5   28
+         1    1    0    0    1    1    0    0    0    0
+THE NAMES AND MINIMUM VALUES TO BE CHECKED FOR IN LIST 6
+(1H ,2X,3A4,3X,E15.5)
+   6.USE-MAXIMA         0    0    0    0    2  -27  102    9   28
+         0    0    0    0    0    0    0    0    0    0
+   7.MAXIMA-NAMES       0    0    0    0    4  -27 1102   13   28
+         1    1    0    0    1    1    0    0    0    0
+THE NAMES AND MAXIMUM VALUES TO BE CHECKED FOR IN LIST 6
+(1H ,2X,3A4,3X,E15.5)
+   8.SLICE              6    0    0    0    6  -20  103   17   28
+         1    1    1    1    1    1    0    0    0    0
+THE PARAMETERS DEFINING ACCEPTABLE SLICES OF RECIPROCAL SPACE
+(1H ,8(3X,12A1))
+(1H ,F6.2,6F15.2)
+         2    2    2    2    2    3
+    .P                  0    0    1    0    0 0.0
+    .Q                  0    0    1    0    0 0.0
+    .R                  0    0    1    0    0 0.0
+    .S                  0    0    1    0    0 0.0
+    .T                  0    0    1    0    0 0.0
+    .TYPE               0    0    1    2    0 REJECT
+     REJECT         ACCEPT
+   9.OMIT               3    0    0    0    3  -32  104   29   28
+         1    1    1    1    1    1    0    0    0    0
+THE REFLECTION INDICES TO BE OMITTED
+( 1H  , 9X , 3 ( 3X , 12A1 ) )
+( 1H  , 3 ( F15.2 ) )
+         2    2    2
+    .H                  0    0    1    0    0 0.0
+    .K                  0    0    1    0    0 0.0
+    .L                  0    0    1    0    0 0.0
+  10.CONDITION          6    0    0    0    6  -36  105   33   28
+         1    1    1    1    1    1    0    0    0    0
+THE PARAMETERS DEFINING ACCEPTABLE INDEX CONDITIONS
+(1H ,8(3X,12A1))
+(1H ,F6.2,6F15.2)
+         2    2    2    2    2    3
+    .P                  0    0    1    0    0 0.0
+    .Q                  0    0    1    0    0 0.0
+    .R                  0    0    1    0    0 0.0
+    .S                  0    0    1    0    0 1.0
+    .T                  0    0    1    0    0 2.0
+    .TYPE               0    0    1    2    0 REJECT
+     REJECT         ACCEPT
+  11.SKIP               1    1    0    0    1    1  106   37   28
+         1    1    1    1    1    1    0    0    0    0
+THE PARAMETER DEFINING SKIP STEP LENGTH
+(1H ,8(3X,12A1))
+(1H ,F6.2,6F15.2)
+         2
+    .STEP               0    0    1    0    0 1.0
+LIST 29            2    0
+  29   40960 CRYSTALSINPUT
+   1.READ               1    1    0    0
+         1
+    .NELEMENT           4    0    1    0    0         1
+   2.ELEMENT            7    0    0    0    7   -4  101    1   29
+         1    1    1    1    1    1    0    0    0    0
+The elements in the asymmetric unit
+(1H ,8(3X,12A1))
+(1H ,3X,A4,7F15.2)
+         3    2    2    2    2    2    2
+    .TYPE               0    0    1    0    0 NULL
+    .COVALENT           0    0    1    0    0 0.8
+    .VANDERWAALS        0    0    1    0    0 1.5
+    .IONIC              0    0    1    0    0 0.6
+    .NUMBER             0    0    1    0    0 0
+    .MUA                0    0    1    0    0 0
+    .WEIGHT             0    0    1    0    0 0
+GOODIES   30       9    0
+   8   40960 CRYSTALSINPUT
+   1.DATRED            13    1    0    0   13    1  101    1   30
+         1    1    1    1    1    1    0    0    0    0
+Data reduction details
+(8(3X,12A1))
+(8G15.3/4G15.3,11X,A4)
+         2    2    2    2    2    2    2    2    2    2    2    2    3
+    .NREFMES            0    0    1    0    0 0.
+    .ZZZ                0    0    1    0    0 0.
+    .NREFMERG           0    0    1    0    0 0.
+    .RMERGE             0    0    1    0    0 0.
+    .NREFFRIED          0    0    1    0    0 0.
+    .RMERGFRIED         0    0    1    0    0 0.
+    .ZZ1                0    0    1    0    0.0 
+    .ZZ2                0    0    1    0    0.0
+    .ZZ3                0    0    1    0    0.0
+    .ZZ4                0    0    1    0    0.0
+    .ZZ5                0    0    1    0    0.0
+    .ZZ6                0    0    1    0    0.0
+    .REDUCTION          0    0    1    4    0 UNKNOWN
+     UNKNOWN        RC93           DENZO          SHELX          
+   2.CONDITIONS        13    1    0    0   13    1  102    5   30
+         1    1    1    1    1    1    0    0    0    0
+Data collection details
+(8(3X,12A1))
+(8G15.3/G15.3,11X,A4,3G15.3)
+         2    2    2    2    2    2    2    2    2    3    2    2    2    
+    .MINSIZE            0    0    1    0    0 0.
+    .MEDSIZE            0    0    1    0    0 0.
+    .MAXSIZE            0    0    1    0    0 0.
+    .NORIENT            0    0    1    0    0 0.
+    .THORIENTMIN        0    0    1    0    0 0.
+    .THORIENTMAX        0    0    1    0    0 0.
+    .TEMPERATURE        0    0    1    0    1 293.
+    .STANDARDS          0    0    1    0    1 0.
+    .DECAY              0    0    1    0    1 0.
+    .SCANMODE           0    0    1    3    1 2THETA/OMEGA
+     2THETA/OMEGA   OMEGA          UNKNOWN
+    .INTERVAL           0    0    1    0    1 0.
+    .COUNT              0    0    1    0    1 0.
+    .ZZ1                0    0    1    0    1 0.
+   3.REFINEMENT        13    1    0    0   13    1  103    9   30
+         1    1    1    1    1    1    0    0    0    0
+Refimenent details
+(8(3X,12A1))
+(8G15.3/4G15.3,11X,A4)
+         2    2    2    2    2    2    2    2    2    2    2    2    3
+    .R                  0    0    1    0    1 0.
+    .RW                 0    0    1    0    1 0.
+    .NPARAM             0    0    1    0    1 0.
+    .SIGMACUT           0    0    1    0    1 0.
+    .GOF                0    0    1    0    1 0.
+    .DELRHOMIN          0    0    1    0    1 0.
+    .DELRHOMAX          0    0    1    0    1 0.
+    .RMSSHIFT           0    0    1    0    1 0.
+    .NREFUSED           0    0    1    0    1 0.
+    .FMINFUNC           0    0    1    0    1 0.
+    .RESTMINFUNC        0    0    1    0    1 0.
+    .TOTALMINFUNC       0    0    1    0    1 0.
+    .COEFFICIENT        0    0    1    3    1 F
+     F              F**2           UNKNOWN
+   4.INDEXRANGE         8    1    0    0    8    1  104   13   30
+         1    1    1    1    1    1    0    0    0    0
+Indices and theta for data collection
+(8(3X,12A1))
+(8G15.3)
+         2    2    2    2    2    2    2    2
+    .HMIN               0    0    1    0    1 0.
+    .HMAX               0    0    1    0    1 0.
+    .KMIN               0    0    1    0    1 0.
+    .KMAX               0    0    1    0    1 0.
+    .LMIN               0    0    1    0    1 0.
+    .LMAX               0    0    1    0    1 0.
+    .THETAMIN           0    0    1    0    1 0.
+    .THETAMAX           0    0    1    0    1 0.
+   5.ABSORPTION         9    1    0    0    9    1  105   17   30
+         1    1    1    1    1    1    0    0    0    0
+Min and max absorption
+(8(3X,12A1))
+(8G15.3/11X,A4)
+         2    2    2    2    2    2    2    2    3
+    .PSIMIN             0    0    1    0    1 0.
+    .PSIMAX             0    0    1    0    1 0.
+    .THETAMIN           0    0    1    0    1 0.
+    .THETAMAX           0    0    1    0    1 0.
+    .EMPMIN             0    0    1    0    1 0.
+    .EMPMAX             0    0    1    0    1 0.
+    .DIFABSMIN          0    0    1    0    1 0.
+    .DIFABSMAX          0    0    1    0    1 0.
+    .ABSTYPE            0    0    1    4    0 NONE
+     NONE           DIFABS         EMPIRICAL      MULTI-SCAN
+   6.GENERAL           13    1    0    0   13    1  106   21   30
+         1    1    1    1    1    1    0    0    0    0
+Various bits and pieces
+(8(3X,12A1))
+(8G15.3/4G15.3,11X,A4)
+         2    2    2    2    2    2    2    2    2    2    2    2    3
+    .DOBS               0    0    1    0    1 0.
+    .DCALC              0    0    1    0    1 0.
+    .F000               0    0    1    0    1 0.
+    .MU                 0    0    1    0    1 0.
+    .MOLWT              0    0    1    0    1 0.
+    .Z                  0    0    1    0    1 0.
+    .FLACK              0    0    1    0    1 0.
+    .ESD                0    0    1    0    1 0.
+    .SIGMACUT           0    0    1    0    1 0.
+    .CALC-NREF          0    0    1    0    1 0.
+    .CALC-R             0    0    1    0    1 0.
+    .CALC-RW            0    0    1    0    1 0.
+    .SOLUTION           0    0    1    5    0 UNKNOWN
+     UNKNOWN        SHELXS         SIR88          SIR92          PATTERSON
+   7.COLOUR             8    1    0    0    8    1  107   25   30
+         1    1    0    0    1    1    0    0    0    0
+Crystal colour
+(6X,8A4)
+         5    5    5    5    5    5    5    5
+     COL(1)             0    0    1    0    1 WHIT
+     COL(2)             0    0    1    0    1 E
+     COL(3)             0    0    1    0    1 
+     COL(4)             0    0    1    0    0
+     COL(5)             0    0    1    0    0
+     COL(6)             0    0    1    0    0
+     COL(7)             0    0    1    0    0
+     COL(8)             0    0    1    0    0
+   8.SHAPE              8    1    0    0    8    1  108   29   30
+         1    1    0    0    1    1    0    0    0    0
+Crystal shape
+(6X,8A4)
+         5    5    5    5    5    5    5    5
+     SHAPE(1)           0    0    1    0    1 PRIS
+     SHAPE(2)           0    0    1    0    0 M
+     SHAPE(3)           0    0    1    0    0
+     SHAPE(4)           0    0    1    0    0
+     SHAPE(5)           0    0    1    0    0
+     SHAPE(6)           0    0    1    0    0
+     SHAPE(7)           0    0    1    0    0
+     SHAPE(8)           0    0    1    0    0
+   9.CIFEXTRA          19    1    0    0   19    1  109   33   30
+         1    1    1    1    1    1    0    0    0    0
+New CIF extensions
+(8(3X,12A1))
+(8G15.3/8G15.3/2G15.3,11X,A4)
+         2    2    2    2    2    2    2    2    2    2    2    2    2    2    2
+         2    2    2    3
+    .ZZ1                0    0    1    0    1 0.
+    .ZZ2                0    0    1    0    1 0.
+    .ZZ3                0    0    1    0    1 0.
+    .ZZ4                0    0    1    0    1 0.
+    .ZZ5                0    0    1    0    1 0.
+    .ZZ6                0    0    1    0    1 0.
+    .ZZ7                0    0    1    0    1 0.
+    .ZZ8                0    0    1    0    1 0.
+    .ZZ9                0    0    1    0    1 0.
+    .ZZ10               0    0    1    0    1 0.
+    .ZZ11               0    0    1    0    1 0.
+    .ZZ12               0    0    1    0    1 0.
+    .ZZ13               0    0    1    0    1 0.
+    .ZZ14               0    0    1    0    1 0.
+    .ZZ15               0    0    1    0    1 0.
+    .ZZ16               0    0    1    0    1 0.
+    .ZZ17               0    0    1    0    1 0.
+    .ZZ18               0    0    1    0    1 0.
+    .SPARE              0    0    1    2    0 UNKNOWN
+     UNKNOWN        KNOWN
+LIST 31            3    0
+  31   40960 CRYSTALSINPUT
+   1.AMULT              1    1    0    0    1    1  101    1   31
+         1    1    0    0    1    1    0    0    0    0
+MULTIPLIER FOR COEFFICIENTS
+(2F10.8)
+         2
+    .VALUE              0    0    1    0    0 0.000001
+   2.MATRIX            21    1    0    0   21    1  102    5   31
+         1    1    0    0    1    1    0    0    0    0
+CELL PARAMETER CORRELATION MATRIX
+(1X,6F9.5/9X,5F9.5/18X,4F9.5/27X,3F9.5/36X,2F9.5/45X,F9.5/)
+         2    2    2    2    2    2    2    2    2    2    2    2    2    2    2
+         2    2    2    2    2    2
+    .V(11)              0    0    1    0    0 1.0
+    .V(12)              0    0    1    0    0 0.0
+    .V(13)              0    0    1    0    0 0.0
+    .V(14)              0    0    1    0    0 0.0
+    .V(15)              0    0    1    0    0 0.0
+    .V(16)              0    0    1    0    0 0.0
+    .V(22)              0    0    1    0    0 1.0
+    .V(23)              0    0    1    0    0 0.0
+    .V(24)              0    0    1    0    0 0.0
+    .V(25)              0    0    1    0    0 0.0
+    .V(26)              0    0    1    0    0 0.0
+    .V(33)              0    0    1    0    0 1.0
+    .V(34)              0    0    1    0    0 0.0
+    .V(35)              0    0    1    0    0 0.0
+    .V(36)              0    0    1    0    0 0.0
+    .V(44)              0    0    1    0    0 0.03
+    .V(45)              0    0    1    0    0 0.0
+    .V(46)              0    0    1    0    0 0.0
+    .V(55)              0    0    1    0    0 0.03
+    .V(56)              0    0    1    0    0 0.0
+    .V(66)              0    0    1    0    0 0.03
+   3.TERMS              0    0    0    0   12    1  103    9   31
+         1    1    0    0    1    1
+TERMS FOR DISTANCE/ANGLE CALCULATION
+(4(1H ,6F10.3/))
+LIST 32            0    0
+  32   40960 CRYSTALSINPUT
+SFLS              12   16
+   1   40960 CRYSTALSINPUT
+    1    2    3    4    5    6   13   11   16   17   22   23   25   26   33   36
+   1.REFINE            12    0    0    0   16   10  101    1   33
+         1    1    1    1    1    1    0    0    0    0
+INFORMATION THAT CONTROLS THE TYPE OF SFLS CALCULATION TO BE PERFORMED
+(1H ,8(3X,12A1))
+(1H ,I7,7I15/(1H ,7X,7I15))
+         3    3    3    3    3    3    3    3    3    2    2    2
+    .XXXXXXX            0    0    1    2   -1 NO
+     NO             YES
+    .YYYYYY             0    0    1   -1    1 NO
+    .LIST               0    0    1    4   -2 OFF
+     OFF            LOW            MEDIUM         HIGH
+    .MAP                0    0    1    3   -1 NONE
+     PART           NONE           FULL
+    ./FO/               0    0    1    2   -1 /FOT/
+     /FOT/          SCALED-/FOT/
+    .PUNCH              0    0    1    2   -1 NO
+     NO             YES
+    .MATRIX             0    0    1    2   -1 NEW
+     NEW            OLD
+    .MONITOR            0    0    1    4   -1 LOW
+     OFF            LOW            MEDIUM         HIGH
+    .INVERTOR           0    0    1    2   -1 CHOLESKI
+     CHOLESKI       EIGENVALUE
+    .AUGFACT            0    0    1    0    0 0.0
+    .FILTER             0    0    1    0    0 .00005
+    .DISCRIMINATOR      0    0    1    0    0 100.0
+   2.SCALE              5    0    3    0   16   10  101    1   33
+         0    0    0    0    0    0    0    0    0    0
+         6    7    8
+         3    3    3    3    3
+    .XXXXXXX            0    0    1   -1    1 NO
+    .YYYYYY             0    0    1   -1    1 NO
+    .LIST               0    0    1    4   -2 OFF
+     OFF            LOW            MEDIUM         HIGH
+    .MAP                0    0    1    3   -1 NONE
+     PART           NONE           FULL
+    ./FO/               0    0    1    2   -1 /FOT/
+     /FOT/          SCALED-/FOT/
+  -2.CALCULATE          5    0    3    0   16   10  101    1   33
+  -1.SOLVE             12    0    0    0   16   10  101    1   33
+  -1.VECTOR            12    0    0    0   16   10  101    1   33
+   6.SHIFT             25    0    0    0   25   10  102    5   33
+         1    1    1    1    1    1    0    0    0    0
+INFORMATION ABOUT THE SHIFT FACTORS TO BE USED DURING SFLS
+(1H ,8(3X,12A1)/(1H ,15X,7(3X,12A1)))
+(1H ,F10.6,7F15.6/(1H ,10X,7F15.6))
+         2    2    2    2    2    2    2    2    2    2    2    2    2    2    2
+         2    2    2    2    2    2    2    2    2    2
+    .GENERAL            0    0    1    0    0 1.0
+    .OVERALL            0    0    1    0    0 1.0
+    .TYPE               0    0    0    0    0 1.0
+    .SERIAL             0    0    0    0    0 1.0
+    .OCC                0    0    1    0    0 1.0
+    .U[ISO]             0    0    1    0    0 1.0
+    .X                  0    0    1    0    0 1.0
+    .Y                  0    0    1    0    0 1.0
+    .Z                  0    0    1    0    0 1.0
+    .U[11]              0    0    1    0    0 1.0
+    .U[22]              0    0    1    0    0 1.0
+    .U[33]              0    0    1    0    0 1.0
+    .U[23]              0    0    1    0    0 1.0
+    .U[13]              0    0    1    0    0 1.0
+    .U[12]              0    0    1    0    0 1.0
+    .SPISO              0    0    1    0    0 1.0
+    .SPSIZE             0    0    1    0    0 1.0
+    .LINISO             0    0    1    0    0 1.0
+    .LINSIZE            0    0    1    0    0 1.0
+    .LINDEC             0    0    1    0    0 1.0
+    .LINAZI             0    0    1    0    0 1.0
+    .RINGISO            0    0    1    0    0 1.0
+    .RINGSIZ            0    0    1    0    0 1.0
+    .RINGDEC            0    0    1    0    0 1.0
+    .RINGAZI            0    0    1    0    0 1.0
+  -6.MAXIMUM           13    0    0    0   13   10  102    5   33
+  -6.FORCE             13    0    0    0   13   10  102    5   33
+   9.TYPEOFSHIFT       25    0    0    0   25   10  103    9   33
+         1    1    1    1    1    1    0    0    0    0
+INFORMATION ABOUT THE TYPE OF SHIFT FACTOR TO COMPUTE AND USE DURING SFLS
+(1H ,8(3X,12A1)/(1H ,15X,7(3X,12A1)))
+(1H ,I5,7I15/(1H ,5X,7I15))
+         1    1    1    1    1    1    1    1    1    1    1    1    1    1    1
+         1    1    1    1    1    1    1    1    1    1
+    .GENERAL            0    0    1    0    0        -1
+    .OVERALL            0    0    1    0    0        -1
+    .TYPE               0    0    0    0    0        -1
+    .SERIAL             0    0    0    0    0        -1
+    .OCC                0    0    1    0    0        -1
+    .U[ISO]             0    0    1    0    0        -1
+    .X                  0    0    1    0    0        -1
+    .Y                  0    0    1    0    0        -1
+    .Z                  0    0    1    0    0        -1
+    .U[11]              0    0    1    0    0        -1
+    .U[22]              0    0    1    0    0        -1
+    .U[33]              0    0    1    0    0        -1
+    .U[23]              0    0    1    0    0        -1
+    .U[13]              0    0    1    0    0        -1
+    .U[12]              0    0    1    0    0        -1
+    .SPISO              0    0    1    0    0        -1
+    .SPSIZE             0    0    1    0    0        -1
+    .LINISO             0    0    1    0    0        -1
+    .LINSIZE            0    0    1    0    0        -1
+    .LINDEC             0    0    1    0    0        -1
+    .LINAZI             0    0    1    0    0        -1
+    .RINGISO            0    0    1    0    0        -1
+    .RINGSIZ            0    0    1    0    0        -1
+    .RINGDEC            0    0    1    0    0        -1
+    .RINGAZI            0    0    1    0    0        -1
+  10.INSTR-BLOCK        2    0    0    0    5   60  104   13   33
+         1    1    1    1    1    1    0    0    0    0
+INSTRUCTION TO BE ISSUED TO ENABLE EACH CYCLE OF S.F.L.S TO BE COMPUTED
+(1H ,8(3X,12A1))
+(1H ,I6,12X,A1,20A4)
+         1    3
+    .LENGTH             0    0    0    0    0         0
+    .COMMAND            0    0    0    0    0
+  11.CONTROL            2    0    0    0    2    1  105   21   33
+         1    1    1    1    1    1    0    0    0    0
+DATA RECORD THAT CONTAINS POINTERS USED TO CONTROL COMMAND ISSUING
+(1H ,8(3X,12A1)/(1H ,15X,7(3X,12A1)))
+(1H ,I7,7I15/(1H ,5X,7I15))
+         1    1
+    .OFFSET             0    0    0    0    0         0
+    .CYCLE NUMBER       0    0    0    0    0        -1
+  12.DATA-VALUES        5    0    0    0    5   10  106   17   33
+         1    1    1    1    1    1    0    0    0    0
+THE DETAILS DETERMINED BY THE CORRESPONDING CYCLE OF S.F.L.S
+(1H ,8(3X,12A1))
+(1H ,8E15.6)
+         2    2    2    2    2
+    .CYCLE NUMBER       0    0    0    0    0 0.0
+    .R                  0    0    0    0    0 0.0
+    .WR                 0    0    0    0    0 0.0
+    .SUMSQ              0    0    0    0    0 0.0
+    .MINFUNC            0    0    0    0    0 0.0
+LIST 34            0    0
+  34   40960 CRYSTALSINPUT
+LIST 35            0    0
+  35   40960 CRYSTALSINPUT
+LIST 36            1    4
+  36   40960 CRYSTALSINPUT
+    1    4    6   23
+   1.DEPENDENCIES       4    0    0    0    4    2    1    1   36
+         0    0    0    0    0    0    0    0    0    0
+         1    1    1    1
+    .LIST 1             0    0    0    0    0         1
+    .LIST 4             0    0    0    0    0         4
+    .LIST 6             0    0    0    0    0         6
+    .LIST 23            0    0    0    0    0        23
+LIST 37            0    0
+  37   40960 CRYSTALSINPUT
+LIST 38            6    0
+  38   40960 CRYSTALSINPUT
+   1.READ               5    1    0    0
+         1    1    1    1    1
+    .NGROUP             8    0    1    0    0         0
+    .NATOM             12    0    1    0    0         0
+    .NLINK             16    0    1    0    0         0
+    .NORIGIN           20    0    1    0    0         0
+    .NVECTOR           24    0    1    0    0         0
+   2.GROUP             40   -8    0    0   40   -8  101    5   38
+         1    1    1    1    1    1    0    0    0    0
+GROUP DEFINITIONS
+(1X,120A1,(/49X,72A1))
+(/1X,A4,F13.0,1X,8F12.5,/(43X,6F12.5))
+         3    2    2    2    2    2    2    2    2    2    2    2    2    2    2
+         2    2    2    2    2    2    2    2    2    2    2    2    2    2    2
+         2    2    2    2    2    2    2    2    2    2
+    .NAME               0   -1    1    0    0
+    .SERIAL             0   -1    1    0    0
+    .GOCC               0    0    1    0    0 1.0
+    .GU[ISO]            0    0    1    0    0 0.05
+    .GX                 0    0    1    0    0 0.0
+    .GY                 0    0    1    0    0 0.0
+    .GZ                 0    0    1    0    0 0.0
+    .GU[11]             0    0    1    0    0 0.0
+    .GU[22]             0    0    1    0    0 0.0
+    .GU[33]             0    0    1    0    0 0.0
+    .GU[23]             0    0    1    0    0 0.0
+    .GU[13]             0    0    1    0    0 0.0
+    .GU[12]             0    0    1    0    0 0.0
+    .T[11]              0    0    1    0    0 0.0
+    .T[22]              0    0    1    0    0 0.0
+    .T[33]              0    0    1    0    0 0.0
+    .T[23]              0    0    1    0    0 0.0
+    .T[13]              0    0    1    0    0 0.0
+    .T[12]              0    0    1    0    0 0.0
+    .L[11]              0    0    1    0    0 0.0
+    .L[22]              0    0    1    0    0 0.0
+    .L[33]              0    0    1    0    0 0.0
+    .L[23]              0    0    1    0    0 0.0
+    .L[13]              0    0    1    0    0 0.0
+    .L[12]              0    0    1    0    0 0.0
+    .S[11]              0    0    1    0    0 0.0
+    .S[12]              0    0    1    0    0 0.0
+    .S[13]              0    0    1    0    0 0.0
+    .S[21]              0    0    1    0    0 0.0
+    .S[22]              0    0    1    0    0 0.0
+    .S[23]              0    0    1    0    0 0.0
+    .S[31]              0    0    1    0    0 0.0
+    .S[32]              0    0    1    0    0 0.0
+    .S[32]              0    0    1    0    0 0.0
+    .ANGLE[1]           0    0    1    0    0 0.0
+    .ANGLE[2]           0    0    1    0    0 0.0
+    .ANGLE[3]           0    0    1    0    0 0.0
+    .COSINE[1]          0    0    1    0    0 0.0
+    .COSINE[2]          0    0    1    0    0 0.0
+    .COSINE[3]          0    0    1    0    0 1.0
+   3.LINK               8   -8    0    0    8   -8  102   13   38
+         1    1    1    1    1    1    0    0    0    0
+LINKS BETWEEN GROUP NAMES AND DATA
+(1X,96A1 )
+(1X ,8I12)
+         1    1    1    1    1    1    1    1
+    .ATOM               0   -1    1    0    0
+    .NATOM              0   -1    1    0    0
+    .ORIGIN             0    0    1    0    0         0
+    .NORIGIN            0    0    1    0    0         0
+    .VECTOR             0    0    1    0    0         0
+    .NVECTOR            0    0    1    0    0         0
+    .USE                0    0    1    0    0         0
+    .FLAG               0    0    1    0    0         0
+   4.ORIGIN             7  -20    0    0    7  -20  103   17   38
+         1    1    1    1    1    1    0    0    0    0
+Information defining the origin(s) of the group
+( 1X,84A1 )
+( 1X , A4,4X, 6F12.0 )
+         3    2    2    2    2    2    2
+    .TYPE               0   -1    1    0    0
+    .SERIAL             0   -1    1    0    0
+    .S                  0    0    1    0    0 1.0
+    .L                  0    0    1    0    0 1.0
+    .TX                 0    0    1    0    0 0.0
+    .TY                 0    0    1    0    0 0.0
+    .TZ                 0    0    1    0    0 0.0
+   5.VECTOR             7  -24    0    0    7  -24  104   21   38
+         1    1    1    1    1    1    0    0    0    0
+Information defining the orientation of the group
+( 1X,84A1 )
+( 1X , A4,4X, 6F12.0 )
+         3    2    2    2    2    2    2
+    .TYPE               0   -1    1    0    0
+    .SERIAL             0   -1    1    0    0
+    .S                  0    0    1    0    0 1.0
+    .L                  0    0    1    0    0 1.0
+    .TX                 0    0    1    0    0 0.0
+    .TY                 0    0    1    0    0 0.0
+    .TZ                 0    0    1    0    0 0.0
+   6.ATOM               2  -12    0    0    2  -12  105    9   38
+         1    1    1    1    1    1    0    0    0    0
+Atom specifications
+( 1X,24A1 )
+( 1X, A4, F12.0)
+         3    2
+    .TYPE               0   -1    1    0    0
+    .SERIAL             0   -1    1    0    0
+LIST 39            4    0
+  39   40960 CRYSTALSINPUT
+   1.OVERALL           12    1    0    0   12    1  103    9   39
+         1    1    1    1    1    1    0    0    0    0
+OVERALL PARAMETERS
+(6X,108A1)
+(1X,9F12.5)
+         2    2    2    2    2    2    2    2    2    2    2    2    
+    .OV1                0    0    1    0    0 0.0
+    .OV2                0    0    1    0    0 0.0
+    .OV3                0    0    1    0    0 0.0
+    .OV4                0    0    1    0    0 0.0
+    .OV5                0    0    1    0    0 0.0
+    .OV6                0    0    1    0    0 0.0
+    .OV7                0    0    1    0    0 0.0
+    .OV8                0    0    1    0    0 0.0
+    .OV9                0    0    1    0    0 0.0
+    .OV10               0    0    1    0    0 0.0
+    .OV11               0    0    1    0    0 0.0
+    .OV12               0    0    1    0    0 0.0
+   2.READ               2    1    0    0
+         1    1    
+    .NINTEGER           4    0    1    0    0         0
+    .NREAL              8    0    1    0    0         0
+   3.INTEGER           12   -4    0    0   12   -4  101    1   39
+         1    1    1    1    1    1    0    0    0    0
+INTEGER PARAMETERS
+(1X,108A1)
+(1X,A4,I13,1X,8I12/19X,8I12)
+         3    1    1    1    1    1    1    1    1    1    1    1
+    .TYPE               0   -1    1    0    0
+    .SERIAL             0   -1    1    0    0
+    .I1                 0    0    1    0    0 0
+    .I2                 0    0    1    0    0 0
+    .I3                 0    0    1    0    0 0
+    .I4                 0    0    1    0    0 0
+    .I5                 0    0    1    0    0 0
+    .I6                 0    0    1    0    0 0
+    .I7                 0    0    1    0    0 0
+    .I8                 0    0    1    0    0 0
+    .I9                 0    0    1    0    0 0
+    .I10                0    0    1    0    0 0
+   4.REAL              12   -8    0    0   12   -8  102    5   39
+         1    1    1    1    1    1    0    0    0    0
+REAL PARAMETERS
+(1X,108A1)
+(1X,A4,F13.0,1X,8F12.5/19X,8F12.5)
+         3    2    2    2    2    2    2    2    2    2    2    2
+    .TYPE               0   -1    1    0    0
+    .SERIAL             0   -1    1    0    0
+    .F1                 0    0    1    0    0 0.0
+    .F2                 0    0    1    0    0 0.0
+    .F3                 0    0    1    0    0 0.0
+    .F4                 0    0    1    0    0 0.0
+    .F5                 0    0    1    0    0 0.0
+    .F6                 0    0    1    0    0 0.0
+    .F7                 0    0    1    0    0 0.0
+    .F8                 0    0    1    0    0 0.0
+    .F9                 0    0    1    0    0 0.0
+    .F10                0    0    1    0    0 0.0
+LIST 40            0    0
+  40   40960 CRYSTALSINPUT
+LIST 41            0    0
+  41   40960 CRYSTALSINPUT
+LIST 42            0    0
+  42   40960 CRYSTALSINPUT
+LIST 43            0    0
+  43   40960 CRYSTALSINPUT
+LIST 44            0    0
+  44   40960 CRYSTALSINPUT
+LIST 45            0    0
+  45   40960 CRYSTALSINPUT
+LIST 46            0    0
+  46   40960 CRYSTALSINPUT
+LIST 47            0    0
+  47   40960 CRYSTALSINPUT
+LIST 48            0    0
+  48   40960 CRYSTALSINPUT
+LIST 49            0    0
+  49   40960 CRYSTALSINPUT
+LIST 50            0    0
+  50   40960 CRYSTALSINPUT
+REFINE             0   13
+   1    4096 CRYSTALSCALCULATE
+    1    2    3    4    5    6   13   11   22   23   25   33   36
+SCALE              0   11
+   2    4096 CRYSTALSCALCULATE
+    1    2    3    4    5    6   13   23   25   33   36
+CALCULATE          0   11
+   3    4096 CRYSTALSCALCULATE
+    1    2    3    4    5    6   13   23   25   33   36
+RESTRAIN           0    6
+   1    4096 CRYSTALSRESTRAIN
+    1    2    5   11   22   26
+CHECK              1    8
+   2    4096 CRYSTALSRESTRAIN
+    1    2    5   12   16   17   22   26
+   1.CHECK              1    1    0    0
+         3
+    .LEVEL              1    0    1    4   -1 LOW
+     OFF            LOW            MEDIUM         HIGH
+SPECIAL            1    4
+   3    4096 CRYSTALSPROCESS
+    1    2    5   23
+   1.SPECIAL            3    1    0    0
+         3    3    2
+    .ACTION             1    0    1    6   -1 LIST23
+     NONE           TEST           ORIGIN         RESTRAIN       CONSTRAIN
+     LIST23
+    .UPDATE             2    0    1    4   -1 LIST23
+     NONE           OCCUPATION     PARAMETERS     LIST23
+    .TOLERANCE          3    0    1    0    0 0.6
+INVERT             1    8
+   1    4096 CRYSTALSINVERT
+    1    2    5   11   22   23   24   33
+   1.INVERT             1    1    0    0
+         3
+    .METHOD             1    0    1    2    0 CHOLESKI
+     CHOLESKI       EIGENVALUE
+SOLVE              1    5
+   2    4096 CRYSTALSINVERT
+    1    5   22   23   24
+   1.SOLVE              1    1    0    0
+         3
+    .PRINT              1    0    1    2    0 YES
+     YES            NO
+NEWSHIFTS          0    0
+   3    4096 CRYSTALSINVERT
+CYCLENDS           0    1    3
+   2   40960 CRYSTALSINPUT
+   4    4096 CRYSTALSCALCULATE
+   4    4096 CRYSTALSINVERT
+   33
+CLEAR              1    0
+   5   40960 CRYSTALSINPUT
+   1.CLEAR              1    1    0    0
+         1
+    .INPUTLIST          1   -1    1    0    0
+FINISH             0    0   12
+   3   40960 CRYSTALSINPUT
+   1    4096 CRYSTALSFIDDLE
+   5    4096 CRYSTALSINVERT
+   3    4096 CRYSTALSRESTRAIN
+   3    4096 CRYSTALSGEOMETRY
+   3    4096 CRYSTALSANISO
+   4    4096 CRYSTALSALTER5
+   3    4096 CRYSTALSWEIGHT
+   4    4096 CRYSTALSDISTANCES
+   2    4096 CRYSTALSFOURIER
+   4    4096 CRYSTALSINPUT6
+   8    4096 CRYSTALSPROCESS6
+END                0    0   12
+   3   40960 CRYSTALSINPUT
+   1    4096 CRYSTALSFIDDLE
+   5    4096 CRYSTALSINVERT
+   3    4096 CRYSTALSRESTRAIN
+   3    4096 CRYSTALSGEOMETRY
+   3    4096 CRYSTALSANISO
+   4    4096 CRYSTALSALTER5
+   3    4096 CRYSTALSWEIGHT
+   4    4096 CRYSTALSDISTANCES
+   2    4096 CRYSTALSFOURIER
+   4    4096 CRYSTALSINPUT6
+   8    4096 CRYSTALSPROCESS6
+TITLE              1    0   12
+   4   40960 CRYSTALSINPUT
+   2    4096 CRYSTALSFIDDLE
+   6    4096 CRYSTALSINVERT
+   4    4096 CRYSTALSRESTRAIN
+   4    4096 CRYSTALSGEOMETRY
+   4    4096 CRYSTALSANISO
+   5    4096 CRYSTALSALTER5
+   4    4096 CRYSTALSWEIGHT
+   3    4096 CRYSTALSDISTANCES
+   3    4096 CRYSTALSFOURIER
+   3    4096 CRYSTALSINPUT6
+   7    4096 CRYSTALSPROCESS6
+   1.TITLE              1    1    0    0
+         4
+    .EXPRESSION         1   -1    1    0    0 NONE
+DISK               8    0
+   3    4096 CRYSTALSFIDDLE
+   1.PRINT              1 9999    0    0
+         3
+    .INDEX              1    0    1    3   -1 CURRENT
+     CURRENT        DISK           SUMMARY
+   2.MARKERROR          4 9999    0    0
+         1    1    1    3
+    .LIST               1   -1    1    0    0
+    .SERIAL             2    0    1    0    0         0
+    .RELATIVE           3    0    1    0    0         0
+    .ACTION             4    0    1    2   -1 YES
+     NO             YES
+  -2.RETAIN
+  -2.DELETE
+   5.RESET              3 9999    0    0
+         1    1    1
+    .LIST               1   -1    1    0    0
+    .SERIAL             2    0    1    0    0         0
+    .RELATIVE           3    0    1    0    0         0
+   6.USAGE              4 9999    0    0
+         1    1    1    3
+    .LIST               1   -1    1    0    0
+    .SERIAL             2    0    1    0    0         0
+    .RELATIVE           3    0    1    0    0         0
+    .FLAG               4    0    1    3   -1 UPDATE
+     OVERWRITE      READY          UPDATE
+   7.EXTEND             4 9999    0    0
+         1    1    1    1
+    .RECORDS            1    0    1    0    0         0
+    .FREE               2    0    1    0    0         0
+    .TRIES              3    0    1    0    0         1
+    .SIZE               4    0    1    0    0         5
+   8.CHECK              1 9999    0    0
+         3
+    .LEVEL              1    0    1    3    0 LOW
+     LOW            MEDIUM         HIGH
+PURGE              1    0
+   4    4096 CRYSTALSFIDDLE
+   1.PURGE              4    1    0    0
+         5    1    3    1
+    .FILE               1    0    1    0    1 OLD
+    .INITIALSIZE        2    0    1    0    0         0
+    .LOG                3    0    1    2    0 OFF
+     OFF            ON
+    .LIST               4    0    1    0    0         0
+SIMULATE          12    0
+   6    4096 CRYSTALSFIDDLE
+   1.ENVIRONMENT        1 9999    0    0
+         3
+    .MODE               1    0    1    4    0 SAME
+     SAME           INTERACTIVE    ONLINE         BATCH
+   2.LIMIT              2 9999    0    0
+         3    1
+    .TYPE               1   -1    1    9    1
+     NOP            SETFLAG        WARNING        ERROR          SEVERE
+     CATASTROPHE    PROGRAMMING    ABORT          UNWIND
+    .NUMBER             2    0    1    0    0        -1
+   3.ACTION             2 9999    0    0
+         3    3
+    .TYPE               1   -1    1    9    1
+     NOP            SETFLAG        WARNING        ERROR          SEVERE
+     CATASTROPHE    PROGRAMMING    ABORT          UNWIND
+    .ACTION             2   -1    1    4    1
+     RETURN         CONTINUE       REPORT         ABORT
+   4.RESET              1 9999    0    0
+         3
+    .TYPE               1   -1    1    9    1
+     NOP            SETFLAG        WARNING        ERROR          SEVERE
+     CATASTROPHE    PROGRAMMING    ABORT          UNWIND
+  -4.CAUSE              1 9999    0    0
+   6.INITIALISE         2 9999    0    0
+         3    3
+    .ENVIRONMENT        1    0    1    2    0 NO
+     NO             YES
+    .ERROR              2    0    1    2    0 NO
+     NO             YES
+   7.MESSAGE            3 9999    0    0
+         1    1    1
+    .FACILITY           1   -1    1    0
+    .NUMBER             2   -1    1    0
+    .PARAMETER          3    0    1    0    0         0
+   8.CHECKDISK          1 9999    0    0
+         3
+    .DISPLAY            1    0    1    2    1 FULL
+     FULL           SUMMARY
+   9.IDENTIFY           0 9999    0    0
+  10.EXAMINE            3 9999    0    0
+         1    1    3
+    .START              1    0    1    0    0         0
+    .LENGTH             2    0    1    0    0         1
+    .MODE               3    0    1    5    1 INTEGER
+     INTEGER        REAL           CHARACTER      DOUBLE         EXPONENTIAL
+  11.DEPOSIT            5 9999    0    0
+         1    3    1    2    3
+    .ADDRESS            1   -1    1    0
+    .MODE               2    0    1    3    2 INTEGER
+     INTEGER        REAL           CHARACTER
+    .INTEGER            3    0    1    0    0         1
+    .REAL               4    0    1    0    0 1.0000
+    .CHARACTER          5    0    1    0    0 AAAA
+  12.ENTER              6 9999    0    0
+         1    1    1    1    1    1    1
+    .TYPE               1   -1    1    0
+    .SERIAL             2   -1    1    0
+    .START              3   -1    1    0
+    .END                4   -1    1    0
+    .OVERWRITE          5   -1    1    0
+    .ORIGINAL           6   -1    1    0
+MOLAX             12    4
+   1    4096 CRYSTALSGEOMETRY
+    1    2    5   20
+   1.ATOMS              0 9999    0    0    0    0  101    5  115
+         0    0    0    0    0    0    0    0    0    0
+   2.PLANE              0 9999    0    0    0    0  102    5  115
+         0    0    0    0    0    0    0    0    0    0
+   3.EVALUATE           0 9999    0    0    0    0  103    5  115
+         0    0    0    0    0    0    0    0    0    0
+   4.ANGLE              0 9999    0    0    0    0  104    5  115
+         0    0    0    0    0    0    0    0    0    0
+   5.PLOT               0 9999    0    0    0    0  105    5  115
+         0    0    0    0    0    0    0    0    0    0
+   6.REPLACE            0 9999    0    0    0    0  106    5  115
+         0    0    0    0    0    0    0    0    0    0
+   7.SAVE               0 9999    0    0    0    0  107    5  115
+         0    0    0    0    0    0    0    0    0    0
+   8.EXECUTE            0 9999    0    0    0    0  108    5  115
+         0    0    0    0    0    0    0    0    0    0
+   9.QUIT               0 9999    0    0    0    0  109    5  115
+         0    0    0    0    0    0    0    0    0    0
+  10.LINE               0 9999    0    0    0    0  110    5  115
+         0    0    0    0    0    0    0    0    0    0
+  11.PUNCH              0 9999    0    0    0    0  111    5  115
+         0    0    0    0    0    0    0    0    0    0
+  12.MOLAX              1    1    0    0
+         1
+    .INPUTLIST         36    0    1    2    1         5
+              5        10
+TORSION            3    3
+   2    4096 CRYSTALSGEOMETRY
+    1    2    5
+   1.ATOMS              0 9999    0    0    0    0  101    5  125
+         0    0    0    0    0    0    0    0    0    0
+   2.PUBLICATION        1    2    0    0
+         3
+    .PRINT             37    0    1    3    0 NO
+     NO             YES            CIF
+   3.TORSION            1    1    0    0
+         1
+    .INPUTLIST         36    0    1    2    1         5
+              5        10
+AXES               1    2
+   1    4096 CRYSTALSANISO
+    1    5
+   1.AXES               1    1    0    0
+         1
+    .INPUTLIST          1    0    1    2    1         5
+              5        10
+ANISO             14    4
+   2    4096 CRYSTALSANISO
+    1    2    5   20
+   1.ATOMS              0 9999    0    0    0    0  101    5  135
+         0    0    0    0    0    0    0    0    0    0
+   2.CENTRE             0 9999    0    0    0    0  102    5  135
+         0    0    0    0    0    0    0    0    0    0
+   3.DISTANCES          0 9999    0    0    0    0  103    5  135
+         0    0    0    0    0    0    0    0    0    0
+   4.ANGLES             0 9999    0    0    0    0  104    5  135
+         0    0    0    0    0    0    0    0    0    0
+   5.EVALUATE           0 9999    0    0    0    0  105    5  135
+         0    0    0    0    0    0    0    0    0    0
+   6.REJECT             0 9999    0    0    0    0  106    5  135
+         0    0    0    0    0    0    0    0    0    0
+   7.LIMITS             0 9999    0    0    0    0  107    5  135
+         0    0    0    0    0    0    0    0    0    0
+   8.EXECUTE            0 9999    0    0    0    0  107    5  135
+         0    0    0    0    0    0    0    0    0    0
+   9.QUIT               0 9999    0    0    0    0  107    5  135
+         0    0    0    0    0    0    0    0    0    0
+  10.TLS                0 9999    0    0    0    0  107    5  135
+         0    0    0    0    0    0    0    0    0    0
+  11.AXES               0 9999    0    0    0    0  107    5  135
+         0    0    0    0    0    0    0    0    0    0
+  12.REPLACE            0 9999    0    0    0    0  107    5  135
+         0    0    0    0    0    0    0    0    0    0
+  13.SAVE               0 9999    0    0    0    0  107    5  135
+         0    0    0    0    0    0    0    0    0    0
+  14.ANISO              1    1    0    0
+         1
+    .INPUTLIST         36    0    1    2    1         5
+              5        10
+EDIT              38    5
+   1    4096 CRYSTALSALTER5
+    1    2    5   10   20
+   1.DELETE             0 9999    0    0    0    0  101    5  145
+         0    0    0    0    0    0    0    0    0    0
+   2.ANISO              0 9999    0    0    0    0  102    5  145
+         0    0    0    0    0    0    0    0    0    0
+   3.READ               0 9999    0    0    0    0  103    5  145
+         0    0    0    0    0    0    0    0    0    0
+   4.CHANGE             0 9999    0    0    0    0  104    5  145
+         0    0    0    0    0    0    0    0    0    0
+   5.ADD                0 9999    0    0    0    0  105    5  145
+         0    0    0    0    0    0    0    0    0    0
+   6.SUBTRACT           0 9999    0    0    0    0  106    5  145
+         0    0    0    0    0    0    0    0    0    0
+   7.MULTIPLY           0 9999    0    0    0    0  107    5  145
+         0    0    0    0    0    0    0    0    0    0
+   8.DIVIDE             0 9999    0    0    0    0  108    5  145
+         0    0    0    0    0    0    0    0    0    0
+   9.TRANSFORM          0 9999    0    0    0    0  109    5  145
+         0    0    0    0    0    0    0    0    0    0
+  10.CREATE             0 9999    0    0    0    0  110    5  145
+         0    0    0    0    0    0    0    0    0    0
+  11.SPLIT              0 9999    0    0    0    0  110    5  145
+         0    0    0    0    0    0    0    0    0    0
+  12.KEEP               0 9999    0    0    0    0  111    5  145
+         0    0    0    0    0    0    0    0    0    0
+  13.MOVE               0 9999    0    0    0    0  112    5  145
+         0    0    0    0    0    0    0    0    0    0
+  14.AFTER              0 9999    0    0    0    0  113    5  145
+         0    0    0    0    0    0    0    0    0    0
+  15.SELECT             0 9999    0    0    0    0  114    5  145
+         0    0    0    0    0    0    0    0    0    0
+  16.LIST               1 9999    0    0
+         3
+    .LEVEL             10    0    1    4    0 OFF
+     OFF            LOW            MEDIUM         HIGH
+  17.UEQUIV             0 9999    0    0    0    0  116    5  145
+         0    0    0    0    0    0    0    0    0    0
+  18.EXECUTE            0 9999    0    0    0    0  117    5  145
+         0    0    0    0    0    0    0    0    0    0
+  19.SAVE               0 9999    0    0    0    0  118    5  145
+         0    0    0    0    0    0    0    0    0    0
+  20.MONITOR            1 9999    0    0
+         3
+    .LEVEL             11    0    1    4    0 MEDIUM
+     OFF            LOW            MEDIUM         HIGH
+  21.QUIT               0 9999    0    0    0    0  120    5  145
+         0    0    0    0    0    0    0    0    0    0
+  22.ATOM              14 9999    0    0
+         3    2    2    2    2    2    2    2    2    2    2    2    2    2
+    .TYPE              12   -1    1    0    0
+    .SERIAL            13   -1    1    0    0
+    .OCC               14    0    1    0    0 1.0
+    .U[ISO]            15    0    1    0    0 0.05
+    .X                 16   -1    1    0    0
+    .Y                 17   -1    1    0    0
+    .Z                 18   -1    1    0    0
+    .U[11]             19    0    1    0    0 0.0
+    .U[22]             20    0    1    0    0 0.0
+    .U[33]             21    0    1    0    0 0.0
+    .U[23]             22    0    1    0    0 0.0
+    .U[13]             23    0    1    0    0 0.0
+    .U[12]             24    0    1    0    0 0.0
+    .SPARE             25    0    1    0    0 0.0
+  23.SORT               0 9999    0    0    0    0  122    5  145
+         0    0    0    0    0    0    0    0    0    0
+  24.DSORT              0 9999    0    0    0    0  123    5  145
+         0    0    0    0    0    0    0    0    0    0
+  25.RENAME             0 9999    0    0    0    0  124    5  145
+         0    0    0    0    0    0    0    0    0    0
+  26.TYPECHANGE         0 9999    0    0    0    0  125    5  145
+         0    0    0    0    0    0    0    0    0    0
+  27.INSERT             1 9999    0    0
+         3
+    .IDENTIFIER        10    0    1    2    1 ELECTRONS
+     ELECTRONS      WEIGHT
+  28.SHIFT              0 9999    0    0    0    0  126    5  145
+         0    0    0    0    0    0    0    0    0    0
+  29.DEORTHOGONAL       0 9999    0    0    0    0  127    5  145
+         0    0    0    0    0    0    0    0    0    0
+  30.CENTROID           0 9999    0    0    0    0  128    5  145
+         0    0    0    0    0    0    0    0    0    0
+  31.PERTURB            0 9999    0    0    0    0  129    5  145
+         0    0    0    0    0    0    0    0    0    0
+  32.SPHERE             0 9999    0    0    0    0  130    5  145
+         0    0    0    0    0    0    0    0    0    0
+  33.LINE               0 9999    0    0    0    0  131    5  145
+         0    0    0    0    0    0    0    0    0    0
+  34.RING               0 9999    0    0    0    0  132    5  145
+         0    0    0    0    0    0    0    0    0    0
+  35.REFORMAT           0 9999    0    0    0    0  133    5  145
+         0    0    0    0    0    0    0    0    0    0
+  36.GUI                1 9999    0    0
+         3
+    .LEVEL             36    0    1    4    0 MEDIUM
+     OFF            LOW            MEDIUM         HIGH
+  37.RESET              0 9999    0    0    0    0  134    5  145
+         0    0    0    0    0    0    0    0    0    0
+  38.EDIT               2    1    0    0
+         1    1
+    .INPUTLIST         37    0    1    2    1         5
+              5        10
+    .OUTPUTLIST        38    0    1    2    1         5
+              5        10
+CONVERT            1    2
+   2    4096 CRYSTALSALTER5
+    1    5
+   1.CONVERT            3    1    0    0    0    0    0    0    0
+         1    1    3
+    .INPUTLIST          2    0    1    2    1         5
+              5        10
+    .OUTPUTLIST         3    0    1    2    1         5
+              5        10
+    .CROSSTERMS         1    0    1    2    0 B[IJ]
+     B[IJ]          2B[IJ]
+HYDROGENS         12    3
+   3    4096 CRYSTALSALTER5
+    1    2    5
+   1.DISTANCE           0 9999    0    0    0    0  101    5  155
+         0    0    0    0    0    0    0    0    0    0
+   2.SERIAL             0 9999    0    0    0    0  102    5  155
+         0    0    0    0    0    0    0    0    0    0
+   3.U[ISO]             0 9999    0    0    0    0  103    5  155
+         0    0    0    0    0    0    0    0    0    0
+   4.PHENYL             0 9999    0    0    0    0  104    5  155
+         0    0    0    0    0    0    0    0    0    0
+   5.H13                0 9999    0    0    0    0  105    5  155
+         0    0    0    0    0    0    0    0    0    0
+   6.H33                0 9999    0    0    0    0  106    5  155
+         0    0    0    0    0    0    0    0    0    0
+   7.H23                0 9999    0    0    0    0  107    5  155
+         0    0    0    0    0    0    0    0    0    0
+   8.H22                0 9999    0    0    0    0  108    5  155
+         0    0    0    0    0    0    0    0    0    0
+   9.H12                0 9999    0    0    0    0  109    5  155
+         0    0    0    0    0    0    0    0    0    0
+  10.H11                0 9999    0    0    0    0  110    5  155
+         0    0    0    0    0    0    0    0    0    0
+  11.AFTER              0 9999    0    0    0    0  111    5  155
+         0    0    0    0    0    0    0    0    0    0
+  12.HYDROGENS          2    1    0    0
+         1    1
+    .INPUTLIST         36    0    1    2    1         5
+              5        10
+    .OUTPUTLIST        37    0    1    2    1         5
+              5        10
+REGULARISE        23    3
+   6    4096 CRYSTALSALTER5
+    1    2    5
+   1.GROUP              0 9999    0    0    4   -1  101    5  165
+         0    0    0    0    0    0    0    0    0    0
+   2.TARGET             0 9999    0    0    4   -1  102    5  165
+         0    0    0    0    0    0    0    0    0    0
+   3.IDEAL              0 9999    0    0    4   -1  103    5  165
+         0    0    0    0    0    0    0    0    0    0
+   4.SYSTEM             0 9999    0    0    4   -1  104    5  165
+         0    0    0    0    0    0    0    0    0    0
+   5.ATOM               0 9999    0    0    4   -1  105    5  165
+         0    0    0    0    0    0    0    0    0    0
+   6.ORIGIN             0 9999    0    0    4   -1  106    5  165
+         0    0    0    0    0    0    0    0    0    0
+   7.PHENYL             0 9999    0    0    4   -1  107    5  165
+         0    0    0    0    0    0    0    0    0    0
+   8.HEXAGON            0 9999    0    0    4   -1  108    5  165
+         0    0    0    0    0    0    0    0    0    0
+   9.METHOD             0 9999    0    0    4   -1  109    5  165
+         0    0    0    0    0    0    0    0    0    0
+  10.SQUARE             0 9999    0    0    4   -1  110    5  165
+         0    0    0    0    0    0    0    0    0    0
+  11.OCTAHEDRON         0 9999    0    0    4   -1  111    5  165
+         0    0    0    0    0    0    0    0    0    0
+  12.SQP                0 9999    0    0    4   -1  112    5  165
+         0    0    0    0    0    0    0    0    0    0
+  13.TBP                0 9999    0    0    4   -1  113    5  165
+         0    0    0    0    0    0    0    0    0    0
+  14.COMPARE            0 9999    0    0    4   -1  114    5  165
+         0    0    0    0    0    0    0    0    0    0
+  15.REPLACE            0 9999    0    0    4   -1  115    5  165
+         0    0    0    0    0    0    0    0    0    0
+  16.KEEP               0 9999    0    0    4   -1  116    5  165
+         0    0    0    0    0    0    0    0    0    0
+  17.AUGMENT            0 9999    0    0    4   -1  117    5  165
+         0    0    0    0    0    0    0    0    0    0
+  18.TETRAHEDRON        0 9999    0    0    4   -1  118    5  165
+         0    0    0    0    0    0    0    0    0    0
+  19.CP-RING            0 9999    0    0    4   -1  119    5  165
+         0    0    0    0    0    0    0    0    0    0
+  20.OLD                0 9999    0    0    4   -1  120    5  165
+         0    0    0    0    0    0    0    0    0    0
+  21.NEW                0 9999    0    0    4   -1  121    5  165
+         0    0    0    0    0    0    0    0    0    0
+  22.DUMMY22            0 9999    0    0    4   -1  122    5  165
+         0    0    0    0    0    0    0    0    0    0
+  23.REGULARISE         1    1    0    0    0    0    0    0    0
+         3
+    .MODE              35    0    1    4    1 COMPARE
+     REPLACE        COMPARE        KEEP           AUGMENT
+PERHYDRO           4    3
+   7    4096 CRYSTALSALTER5
+    1    2    5
+   1.DISTANCE           0 9999    0    0    0    0  101    5  155
+         0    0    0    0    0    0    0    0    0    0
+   2.ACTION             0 9999    0    0    0    0  102    5  155
+         0    0    0    0    0    0    0    0    0    0
+   3.U[ISO]             0 9999    0    0    0    0  103    5  155
+         0    0    0    0    0    0    0    0    0    0
+   4.PERHYDRO           2    1    0    0
+         1    1
+    .INPUTLIST         36    0    1    2    1         5
+              5        10
+    .OUTPUTLIST        37    0    1    2    1         5
+              5        10
+VOIDS              4    3
+   8    4096 CRYSTALSALTER5
+    1    2    5
+   1.DISTANCE           0 9999    0    0    0    0  101    5  155
+         0    0    0    0    0    0    0    0    0    0
+   2.RESOLUTION         0 9999    0    0    0    0  102    5  155
+         0    0    0    0    0    0    0    0    0    0
+   3.CONTACTS           0 9999    0    0    0    0  103    5  155
+         0    0    0    0    0    0    0    0    0    0
+   4.VOIDS              2    1    0    0
+         1    1
+    .INPUTLIST         36    0    1    2    1         5
+              5        10
+    .OUTPUTLIST        37    0    1    2    1         5
+              5        10
+WEIGHT             0    6
+   1    4096 CRYSTALSWEIGHT
+    1    4    5    6   13   23
+ANALYSE            4    5
+   2    4096 CRYSTALSWEIGHT
+    1    4    5    6   36
+   1.FO                 3    1    0    0
+         2    3    3
+    .INTERVAL           1    0    1    0    0 0.0
+    .TYPE               2    0    1    2    0 SQRT(/FO/)
+     SQRT(/FO/)     /FO/
+    .SCALE              3    0    1    2    0 /FO/
+     /FO/           /FC/
+   2.THETA              1    1    0    0
+         2
+    .INTERVAL           4    0    1    0    0 0.04
+   3.LAYERSCALE         3    1    0    0
+         3    3    3
+    .AXIS               5    0    1    4    0 NONE
+     NONE           H              K              L
+    .APPLY              6    0    1    2    0 NO
+     NO             YES
+    .ANALYSE            7    0    1    2    0 YES
+     NO             YES
+   4.LIST               1    1    0    0
+         3
+    .LEVEL              8    0    1    4    0 LOW
+     HIGH           LOW            MEDIUM         OFF
+DISTANCES          8    7
+   1    4096 CRYSTALSDISTANCES
+    1    2    5   11   12   29   31
+   1.LIMITS             4    1    0    0
+         2    2    2    2
+    .DMINIMUM           9    0    1    0    0 0.0
+    .DMAXIMUM          10    0    1    0    0 1.7
+    .AMINIMUM          11    0    1    0    0 0.0
+    .AMAXIMUM          12    0    1    0    0 1.7
+   2.E.S.D.S            2    1   0    0
+         3    3
+    .COMPUTE           15    0    1    2   -1 NO
+     NO             YES
+    .CELL              16    0    1   -2    1 NO
+   3.SELECT             7    1    0    0
+         3    3    3    3    3    3    3
+    .ALLDISTANCES      13    0    1    3   -1 NO
+     NO             ALMOST         YES
+    .COORDINATES       14    0    1   -2    1 NO
+    .SORTED            17    0    1   -2    1 NO
+    .TYPE              18    0    1    3   -1 ALL
+     ALL            INTRA          INTER
+    .RANGE             21    0    1    4    0 COVALENT
+     LIMITS         COVALENT       VANDERWAALS    IONIC
+    .SYMMETRY          24    0    1    3   -1 SPACEGROUP
+     PATTERSON      SPACEGROUP     NONE
+    .TRANSLATION       25    0    1    2   -1 YES
+     NO             YES
+   4.OUTPUT             3    1    0    0
+         3    3    3
+    .MONITOR           22    0    1    4    0 DISTANCES
+     OFF            DISTANCES      ANGLES         ALL
+    .LIST              19    0    1    4   -1 HIGH
+     OFF            LOW            MEDIUM         HIGH
+    .PUNCH             23    0    1    4   -1 NOTHING
+     NOTHING        RESTRAIN       PUBLISH        CIF
+   5.INCLUDE            0 9999    0    0    0    0  104    5  175
+         0    0    0    0    0    0    0    0    0    0
+   6.EXCLUDE            0 9999    0    0    0    0  105    5  175
+         0    0    0    0    0    0    0    0    0    0
+   7.ONLY               0 9999    0    0    0    0  106    5  175
+         0    0    0    0    0    0    0    0    0    0
+   8.DISTANCES          1    1    0    0
+         1
+    .INPUTLIST         20    0    1    2    1         5
+              5        10
+PEAKS              4    4
+   2    4096 CRYSTALSDISTANCES
+    1    2    5   10
+   1.SELECT             9    1    0    0
+         2    1    3    3    3    3    2    3    3
+    .REJECT             2    0    1    0    0 0.5
+    .KEEP               8    0    1    0    0   1000000
+    .MONITOR            9    0    1    4   -2 MEDIUM
+     OFF            LOW            MEDIUM         HIGH
+    .SEQUENCE          10    0    1    2   -1 NO
+     NO             YES
+    .TYPE               7    0    1    3   -1 PEAKS
+     ALL            PEAKS          AVERAGE
+    .REGROUP           13    0    1    2   -1 NO
+     NO             YES
+    .MOVE               4    0    1    0    0 2.0
+    .SYMMETRY          14    0    1    3   -1 SPACEGROUP
+     PATTERSON      SPACEGROUP     NONE
+    .TRANSLATION       15    0    1    2   -1 YES
+     NO             YES
+   2.REFINE             2    1    0    0
+         2    2
+    .DISTANCE          11    0    1    0    0 0.0
+    .MULTIPLIER        12    0    1    0    0 -100.0
+   3.INITIALISE         2    0    0    0
+         2    2
+    .DMIN               1    0    0    0    0 0.0
+    .AMIN               3    0    0    0    0 0.0
+   4.PEAKS              2    1    0    0
+         1    1
+    .INPUTLIST          5    0    1    2    1        10
+              5        10
+    .OUTPUTLIST         6    0    1    2    1         5
+              5        10
+REGROUP            3    3
+   5    4096 CRYSTALSDISTANCES
+    1    2    5
+   1.SELECT             7    1    0    0
+         2    1    3    3    3    3    3
+    .MOVE               4    0    1    0    0 2.0
+    .KEEP               8    0    1    0    0   1000000
+    .MONITOR            9    0    1    4   -2 LOW
+     OFF            LOW            MEDIUM         HIGH
+    .SEQUENCE          10    0    1    2   -1 NO
+     NO             YES
+    .TYPE               7    0    1    2   -1 ALL
+     ALL            PEAKS
+    .SYMMETRY          14    0    1    3   -1 SPACEGROUP
+     PATTERSON      SPACEGROUP     NONE
+    .TRANSLATION       15    0    1    2   -1 YES
+     NO             YES
+   2.INITIALISE         6    0    0    0
+         2    2    2    1    2    2    1
+    .DMIN               1    0    0    0    0 0.0
+    .DMAX               2    0    0    0    0 0.0
+    .AMIN               3    0    0    0    0 0.0
+    .IACTION           13    0    0    0    0         1
+    .DISTANCE          11    0    0    0    0 0.0
+    .MULTIPLIER        12    0    0    0    0 0.0
+   3.REGROUP            2    1    0    0
+         1    1
+    .INPUTLIST          5    0    1    2    1         5
+              5        10
+    .OUTPUTLIST         6    0    1    2    1         5
+              5        10
+COLLECT            3    4
+   6    4096 CRYSTALSDISTANCES
+    1    2    5   29
+   1.SELECT             5    1    0    0
+         3    2    3    3    3
+    .MONITOR            9    0    1    4   -2 LOW
+     OFF            LOW            MEDIUM         HIGH
+    .TOLERANCE          4    0    1    0    0 0.2
+    .TYPE               7    0    1    2   -1 ALL
+     ALL            PEAKS
+    .SYMMETRY          14    0    1    3   -1 SPACEGROUP
+     PATTERSON      SPACEGROUP     NONE
+    .TRANSLATION       15    0    1    2   -1 YES
+     NO             YES
+   2.INITIALISE         8    0    0    0
+         2    2    2    1    3    2    2    1
+    .DMIN               1    0    0    0    0 0.0
+    .DMAX               2    0    0    0    0 0.0
+    .AMIN               3    0    0    0    0 0.0
+    .KEEP               8    0    1    0    0   1000000
+    .SEQUENCE          10    0    1    2   -1 NO
+     NO             YES
+    .DISTANCE          11    0    0    0    0 0.0
+    .MULTIPLIER        12    0    0    0    0 0.0
+    .POINTER           13    0    0    0    0        -1
+   3.COLLECT            2    1    0    0
+         1    1
+    .INPUTLIST          5    0    1    2    1         5
+              5        10
+    .OUTPUTLIST         6    0    1    2    1         5
+              5        10
+LABEL              2    5
+   7    4096 CRYSTALSDISTANCES
+    1    2    3    5   29
+   1.SELECT             4    1    0    0
+         3    3    2    1
+    .MONITOR            1    0    1    4   -1 OFF
+     OFF            LOW            MEDIUM         HIGH
+    .MODE               2    0    1    2   -1 INITIAL
+     INITIAL        FINAL
+    .VALUE              3    0    1    0    0 0.0
+    .INTEGER            4    0    1    0    0         0
+   2.LABEL              2    1    0    0
+         1    1
+    .INPUTLIST          5    0    1    2    1        10
+              5        10
+    .OUTPUTLIST         6    0    1    2    1         5
+              5        10
+OCCMOD             2    5
+   8    4096 CRYSTALSDISTANCES
+    1    2    3    5   29
+   1.SELECT             4    1    0    0
+         3    3    2    1
+    .MONITOR            1    0    1    4   -1 OFF
+     OFF            LOW            MEDIUM         HIGH
+    .MODE               2    0    1    2   -1 INITIAL
+     INITIAL        FINAL
+    .VALUE              3    0    1    0    0 0.0
+    .INTEGER            4    0    1    0    0         0
+   2.OCCMOD             2    1    0    0
+         1    1
+    .INPUTLIST          5    0    1    2    1         5
+              5        10
+    .OUTPUTLIST         6    0    1    2    1         5
+              5        10
+AUTOMATIC          1    5
+   9    4096 CRYSTALSDISTANCES
+    1    2    3    5   29
+   1.SELECT             4    1    0    0
+         3    3    2    1
+    .MONITOR            1    0    1    4   -1 OFF
+     OFF            LOW            MEDIUM         HIGH
+    .MODE               2    0    1    4   -1 INITIAL
+     INITIAL        REFINE         FOURIER        FINAL
+    .VALUE              3    0    1    0    0 0.0
+    .INTEGER            4    0    1    0    0         0
+FOURIER            5    6
+   1    4096 CRYSTALSFOURIER
+    1    2    3    5    6   14
+   1.MAP                9    1    0    0
+         3    1    3    3    3    2    3    3    3
+    .TYPE               1    0    1   10    1 F-OBS
+     F-OBS          F-CALC         DIFFERENCE     2FO-FC         OPTIMAL
+     FO-PATTERSON   FC-PATTERSON   FO-FC-SQP      FOSQ-FCSQ-P    EXTERNAL
+    .NE                 2    0    1    0    0         1
+    .PRINT              4    0    1    2   -1 NO
+     NO             YES
+    .SCAN              12    0    1    2   -1 YES
+     NO             YES
+    .SCALE             18    0    1    3   -1 AUTOMATIC
+     NO             AUTOMATIC      YES
+    .ORIGIN            19    0    1    0    0 999.
+    .NMAP              22    0    1    2   -1 NO
+     YES            NO
+    .MONITOR           24    0    1    3   -1 MEDIUM
+     LOW            MEDIUM         HIGH
+    .FILE              25    0    1    2    0 NO
+     NO             YES
+   2.REFLECTIONS        4    1    0    0
+         3    3    2    3
+    .WEIGHT             3    0    1    3   -1 NO
+     SIM            NO             LIST-6
+    .REJECT             7    0    1    4    0 SMALL
+     NONE           SMALL          QUARTER        HALF
+    .F000              17    0    1    0    0 0.0
+    .CALC              23    0    1   -1    3
+   3.LAYOUT             6    1    0    0
+         1    1    1    1    2    2
+    .NLINE              8    0    1    0    0         2
+    .NCHARACTER         9    0    1    0    0         4
+    .MARGIN            10    0    1    0    0         4
+    .NSPACE            11    0    1    0    0         2
+    .MIN-RHO            5    0    1    0    0 -1000000.
+    .MAX-RHO            6    0    1    0    0  1000000.
+   4.PEAKS              3    1    0    0
+         2    1    2
+    .HEIGHT            13    0    1    0    0 0.0
+    .NPEAK             14    0    1    0    0         0
+    .REJECT            20    0    1    0    0 .01
+   5.TAPES              2    1    0    0
+         3    3
+    .INPUT             15    0    1    2    0 NO
+     NO             YES
+    .OUTPUT            16    0    1   -5    1
+HKLI              27    5
+   1    4096 CRYSTALSINPUT6
+    1    2    7   13   27
+   1.READ               6    1    0    0
+         1    3    3    2    3    3
+    .NCOEFFICIENT      31    0    1    0    0        12
+    .TYPE              45    0    1    3    6 FIXED
+     FIXED          FREE           COMPRESSED
+    .F'S               70    0    1    2   -1 FSQ
+     FSQ            FO
+    .NGROUP            47    0    1    0    0 1.
+    .UNIT              48    0    1    2   -1 HKLI
+     HKLI           DATAFILE
+    .CHECK            107    0    1    2   -1 NO
+     NO             YES
+   2.STORE              3    1    0    0
+         1    3    3
+    .NCOEFFICIENT      19    0    1    0    0         9
+    .MEDIUM            49    0    1    3   -1 FILE
+     FILE           INPUT          DISK
+    .APPEND            46    0    1    2   -1 NO
+     NO             YES
+   3.INPUT              1    1    0    0  -31    1 1001   29  106
+         0    0    0    0    0    0    0    0    0    0
+         3
+    .COEFFICIENT        0    0    1   33    0 NOTHING
+     H              K              L              /FO/           SQRTW
+     /FC/           PHASE          A-PART         B-PART         TBAR
+     /FOT/          ELEMENTS       SIGMA(/FO/)    BATCH          INDICES
+     BATCH/PHASE    SINTH/L**2     FO/FC          JCODE          SERIAL
+     RATIO          THETA          OMEGA          CHI            PHI
+     KAPPA          PSI            CORRECTIONS    FACTOR1        FACTOR2
+     FACTOR3        RATIO/JCODE    NOTHING
+   4.OUTPUT            -3    1    0    0  -19    1  105   17    6
+         1    1    0    0    1    1    0    0    0    0
+POINTERS RELATING DATA IN THE DISK BUFFER TO THAT IN THE CORE BUFFER
+(1H ,24I5)
+   5.FORMAT             1    0    0    1    1    1 1008   33  106
+         0    0    0    0    0    0    0    0    0    0
+         1    2    6
+         4
+    .EXPRESSION         1    0    1    0    0 NONE
+   6.FACTORS            1    1    0    0  -63    1 2002   61  106
+         0    0    0    0    0    0    0    0    0    0
+         3
+    .COEFFICIENT        0    0    1    3   28 FACTOR1
+     FACTOR1        FACTOR2        FACTOR3
+   7.XCORE-BUFFER       0    0    0    0   33    1  101    1    6
+         1    1    0    0    0    0    0    0    0    0
+THE CORE BUFFER
+   8.XREAD-FLAGS        0    0    0    0  -19    1  102    5    6
+         1    1    0    0    0    0    0    0    0    0
+INPUT DISK BUFFER, AND POINTERS TO CONTROL READING FROM THE DISK
+   9.XWRITE-FLAGS       0    0    0    0  -19    1  103    9    6
+         1    1    0    0    0    0    0    0    0    0
+OUTPUT DISK BUFFER, AND POINTERS TO CONTROL WRITING TO THE DISK
+  10.XREFLECTIONS       0    0    0    0  -19    0 -104   13    6
+         1    1    0    0    1    1    0    0    0    0
+DATA RECORD THAT CONTAINS THE REFLECTION DATA ON THE DISK
+(1H ,8E15.6/(1H ,15X,7E15.6))
+  11.XDATA-BLOCK        4    0    0    0    4    1  106   21    6
+         1    1    1    1    1    1    0    0    0    0
+DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS
+(1H ,8(3X,12A1))
+(1H ,8E15.6)
+         3    3    3    3
+    .CYCLE NUMBER       0    0    0    0    0 0.0
+    .R                  0    0    0    0    0 0.0
+    .WR                 0    0    0    0    0 0.0
+    .MINFUNC            0    0    0    0    0 0.0
+  12.XDETAILS           0    0    0    0    4   -3  107   25    6
+         1    1    0    0    1    1    0    0    0    0
+RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER
+(1H ,4E15.5)
+  13.XIN-DEFAULTS      12    0    0    0   12    1 1006   53  106
+         0    0    0    0    0    0    0    0    0    0
+         1    1    1    1    1    1    1    1    1    1    1    1
+    .H                  0    0    0    0    0         0
+    .K                  0    0    0    0    0         1
+    .L                  0    0    0    0    0         2
+    ./FO/               0    0    0    0    0         3
+    .SIGMA(/FO/)        0    0    0    0    0        12
+    .JCODE              0    0    0    0    0        18
+    .SERIAL             0    0    0    0    0        19
+    .BATCH              0    0    0    0    0        13
+    .THETA              0    0    0    0    0        21
+    .PHI                0    0    0    0    0        24
+    .OMEGA              0    0    0    0    0        22
+    .KAPPA              0    0    0    0    0        25
+  14.XOUT-DEFAULTS      9    0    0    0    9    1 1007   57  106
+         0    0    0    0    0    0    0    0    0    0
+         1    1    1    1    1    1    1    1    1
+    .INDICES            0    0    0    0    0        14
+    ./FO/               0    0    0    0    0         3
+    .SIGMA(/FO/)        0    0    0    0    0        12
+    .JCODE              0    0    0    0    0        18
+    .CORRECTIONS        0    0    0    0    0        27
+    .SERIAL             0    0    0    0    0        19
+    .RATIO              0    0    0    0    0        20
+    .BATCH/PHASE        0    0    0    0    0        15
+    .ELEMENTS           0    0    0    0    0        11
+  15.XINPUT-BUFFER      0    0    0    0  -31    1 1004   41  106
+         0    0    0    0    0    0    0    0    0    0
+  16.CORRECTIONS        2    1    0    0
+         1    1
+    .NSCALE            65    0    1    0    0         2
+    .NFACTOR           63    0    1    0    0         0
+  17.ABSORPTION         7    1    0    0
+         3    3    3    3    3    3    3
+    .PRINT             69    0    1    3   -1 PARTIAL
+     FULL           NONE           PARTIAL
+    .PHI               71    0    1    2    0 NO
+     NO             YES
+    .THETA             72    0    1  -17    2 NO
+    .TUBE              73    0    1  -17    2 NO
+    .PLATE             74    0    1  -17    2 NO
+    .GAUSSIAN          75    0    1  -17    2 NO
+    .HUBER             76    0    1  -17    2 NO
+  18.PHI                2    1    0    0
+         1    1
+    .NPHIVALUES        79    0    1    0    0         0
+    .NPHICURVES        84    0    1    0    0         0
+  19.PHIVALUES          1    1    0    1  -79    1 4001   77  106
+         0    0    0    0    0    0    0    0    0    0
+        17    2    1
+         2
+    .PHI                0   -1    1    0    0
+  20.PHIHKLI            4    0    0    1    4  -84 4002   81  106
+         0    0    0    0    0    0    0    0    0    0
+        17    2    1
+         2    2    2    2
+    .H                  0   -1    1    0    0
+    .K                  0   -1    1    0    0
+    .L                  0   -1    1    0    0
+    .I[MAX]             0   -1    1    0    0
+  21.PHICURVE           1    0    0    1  -79  -84 4003   85  106
+         0    0    0    0    0    0    0    0    0    0
+        17    2    1
+         2
+    .INTENSITIES        0   -1    1    0    0
+  22.THETA              1    1    0    0
+         1
+    .NTHETAVALUES      91    0    1    0    0         0
+  23.THETAVALUES        1    0    0    1  -91    1 4004   89  106
+         0    0    0    0    0    0    0    0    0    0
+        17    3    1
+         2
+    .THETA              0   -1    1    0    0
+  24.THETACURVE         1    0    0    1  -91    1 4005   93  106
+         0    0    0    0    0    0    0    0    0    0
+        17    3    1
+         2
+    .CORRECTION         0   -1    1    0    0
+  25.TUBE               7    1    0    1    7    1 4006   97  106
+         0    0    0    0    0    0    0    0    0    0
+        17    4    1
+         2    2    2    2    2    2    2
+    .NOTHING            0    0    0    0    0 0.0
+    .OMEGA              0   -1    1    0    0
+    .CHI                0   -1    1    0    0
+    .PHI                0   -1    1    0    0
+    .KAPPA              0   -1    1    0    0
+    .MU                 0   -1    1    0    0
+    .A[MAX]             0   -1    1    0    0
+  26.PLATE              7    1    0    1    7    1 4007  101  106
+         0    0    0    0    0    0    0    0    0    0
+        17    5    1
+         2    2    2    2    2    2    2
+    .NOTHING            0    0    0    0    0 0.0
+    .OMEGA              0   -1    1    0    1
+    .CHI                0   -1    1    0    0
+    .PHI                0   -1    1    0    0
+    .KAPPA              0   -1    1    0    0
+    .MU                 0   -1    1    0    0
+    .A[MAX]             0   -1    1    0    0
+  27.HUBER              2    1    0    1
+        17    6    1
+         2    2
+    .INTERVAL         105    0    1    0    0 12.0
+    .INTERPOLATE      106    0    1    0    0 0.7
+LP                 2    3
+   9    4096 CRYSTALSPROCESS6
+    1    6   13
+   1.STORE              2    1    0    0
+         3    3
+    .MEDIUM             2    0    1    3   -1 INPUT
+     FILE           INPUT          DISK
+    .F'S                3    0    1    2   -1 FO
+     FSQ            FO
+   2.LP                 1    1    0    0
+         1
+    .LISTTYPE           1    0    1    1    1         6
+              6
+SYSTEMATIC         2    3
+   2    4096 CRYSTALSPROCESS6
+    2    6   13
+   1.STORE              2    1    0    0
+         3    3
+    .MEDIUM             2    0    1    3   -1 INPUT
+     FILE           INPUT          DISK
+    .NEWINDICES         3    0    1    2   -1 YES
+     NO             YES
+   2.SYSTEMATIC         1    1    0    0
+         1
+    .LISTTYPE           1    0    1    1    1         6
+              6
+SORT               2    1
+   3    4096 CRYSTALSPROCESS6
+    6
+   1.STORE              1    1    0    0
+         3
+    .MEDIUM             2    0    1    3   -1 INPUT
+     FILE           INPUT          DISK
+   2.SORT               1    1    0    0
+         1
+    .LISTTYPE           1    0    1    1    1         6
+              6
+REORDER            2    3
+  10    4096 CRYSTALSPROCESS6
+    2    6   13
+   1.STORE              1    1    0    0
+         3
+    .MEDIUM             2    0    1    3   -1 INPUT
+     FILE           INPUT          DISK
+   2.REORDER            1    1    0    0
+         1
+    .LISTTYPE           1    0    1    1    1         6
+              6
+MERGE              7    2
+   4    4096 CRYSTALSPROCESS6
+    6   13
+   1.STORE              1    1    0    0
+         3
+    .MEDIUM             2    0    1    3   -1 DISK
+     FILE           INPUT          DISK
+   2.REFLECTIONS        4    1    0    0
+         1    3    2    3
+    .NJCODE            12    0    1    0    0         0
+    .LIST              15    0    1    4   -1 LOW
+     OFF            LOW            MEDIUM         HIGH
+    .LEVEL             16    0    1    0    0 3.0
+    .F'S               17    0    1    2   -1 YES
+     NO             YES
+   3.REJECT             2    1    0    0
+         2    1
+    .RATIO             13    0    1    0    0 -10.0
+    .SIGMA             14    0    1    2    1         2
+              1         2
+   4.JCODE              2    0    0    0    2  -12 3001    9  206
+         0    0    0    0    0    0    0    0    0    0
+         1    2
+    .NUMBER             0   -1    1    0    0
+    .VALUE              0    0    1    0    0 0.0
+   5.WEIGHT             3    1    0    0
+         1    1    1
+    .SCHEME             3    0    1    3    1         1
+              1         2         3
+    .NPARAMETERS        7    0    1    0    0         0
+    .NCYCLE             4    0    1    0    0         5
+   6.PARAMETERS         1    1    0    1   -7    1 3002    5  206
+         0    0    0    0    0    0    0    0    0    0
+         5    1    2
+         2
+    .P                  0    0    1    0    0 0.0
+   7.MERGE              1    1    0    0
+         1
+    .LISTTYPE           1    0    1    1    1         6
+              6
+REFLECTIONS        2    1
+   1    4096 CRYSTALSPUBLISH
+    6
+   1.LAYOUT             6    1    0    0
+         1    1    1    1    2    1
+    .NCOLUMNS           1    0    1    0    0         3
+    .NLINES             2    0    1    0    0        52
+    .INSET              4    0    1    0    0         4
+    .NSPACE             3    0    1    0    0         3
+    .SCALE              5    0    1    0    0 10.0
+    .NCHARACTER         6    0    1    0    0       120
+   2.OUTPUT             3    1    0    0
+         3    3    3
+    .PRINT              7    0    1    2    0 YES
+     NO             YES
+    .PUNCH              8    0    1    2    0 YES
+     NO             YES
+    .LIST28             9    0    1    2   -1 YES
+     NO             YES
+PARAMETERS         3    4
+   2    4096 CRYSTALSPUBLISH
+    1    5   11   12
+   1.LAYOUT             8    1    0    0
+         1    1    3    3    3    1    1    3
+    .INSET              1    0    1    0    0         1
+    .ATOM-NAME          6    0    1    0    0         6
+    .DOUBLE            12    0    1    2   -1 NO
+     NO             YES
+    .CHOOSE            13    0    1    3   -1 YES
+     YES            XXX            NO
+    .FLOATING          11    0    1    2    0 YES
+     YES            NO
+    .NCHARACTER        14    0    1    0    0       118
+    .NLINES            26    0    1    0    0        64
+    .LISTAXES          21    0    1    2    0 NO
+     NO             YES
+   2.COORDINATES        7    1    0    0
+         1    1    3    3    3    3    3
+    .NCHARACTER         7    0    1    0    0        14
+    .NDECIMAL           8    0    1    0    0         4
+    .SELECT            15    0    1    5    1 ALL
+     ALL            NONE           ONLY           EXCLUDE        SEPARATE
+    .TYPE              16    0    1    0    0 H
+    .MONITOR           19    0    1    4    0 LOW
+     OFF            LOW            MEDIUM         HIGH
+    .PRINT             22    0    1    2    0 YES
+     NO             YES
+    .PUNCH             23    0    1    3    0 YES
+     NO             YES            CIF
+   3.U'S                7    1    0    0
+         1    1    3    3    3    3    3
+    .NCHARACTER         9    0    1    0    0        11
+    .NDECIMAL          10    0    1    0    0         4
+    .SELECT            17    0    1    5    1 ALL
+     ALL            NONE           ONLY           EXCLUDE        SEPARATE
+    .TYPE              18    0    1    0    0 H
+    .MONITOR           20    0    1    4    0 OFF
+     OFF            LOW            MEDIUM         HIGH
+    .PRINT             24    0    1    2    0 YES
+     NO             YES
+    .PUNCH             25    0    1    3    0 YES
+     NO             YES            CIF
+SUMMARY            1    0
+   3    4096 CRYSTALSPUBLISH
+   1.SUMMARY            3    1    0    0
+         3    1    3
+    .OF                 3    0    1    2    0 LIST
+     LIST           EVERYTHING
+    .TYPE               1    0    1    0    0         6
+    .LEVEL              2    0    1    4    0 MEDIUM
+     OFF            LOW            MEDIUM         HIGH
+DISPLAY            1    1
+   3    4096 CRYSTALSPUBLISH
+    5
+   1.DISPLAY            3    1    0    0
+         3    1    1
+    .LEVEL              2    0    1    4    0 MEDIUM
+     OFF            LOW            MEDIUM         HIGH
+    .TYPE               1    0    0    0    0         5
+    .OF                 3    0    0    0    0         0
+GENERALEDIT       20    0
+   4    4096 CRYSTALSPUBLISH
+   1.LOCATE             1 9999    0    0
+         1
+    .RECORDTYPE         1    0    1    0    0       101
+   2.KEY                3 9999    0    0
+         1    1    3
+    .OFFSET             1    0    1    0    0         0
+    .LENGTH             2    0    1    0    0         1
+    .MODE               3    0    1    3    1 INTEGER
+     INTEGER        REAL           CHARACTER
+   3.DISPLAY            1 9999    0    0
+         3
+    .TYPE               1   -1    1    3    1
+     KEYS           GROUP          RECORD
+   4.FORMAT             2 9999    0    0
+         3    4
+    .TYPE               1   -1    1    3    1
+     KEYS           GROUP          RECORD
+    .EXPRESSION         2   -1    1    0
+   5.SEARCH             3 9999    0    0
+         1    2    3
+    .INTEGER            1    0    1    0    0         1
+    .REAL               2    0    1    0    0 1.0000
+    .CHARACTER          3    0    1    0    0 AAAA
+   6.GROUP              3 9999    0    0
+         1    1    3
+    .OFFSET             1    0    1    0    0         0
+    .LENGTH             2    0    1    0    0         1
+    .MODE               3    0    1    3    1 INTEGER
+     INTEGER        REAL           CHARACTER
+   7.ERROR              4 9999    0    0
+         3    3    3    4
+    .MESSAGE            1    0    1    2    0 YES
+     NO             YES
+    .SIGNAL             2    0    1    3    1 WARNING
+     NONE           WARNING        ERROR
+    .ACTION             3    0    1    3    0 NONE
+     NONE           VARIABLE       CONTINGENCY
+    .NAME               4    0    1    0    0 NONE
+   8.INSERT             0 9999    0    0
+   9.DELETE             0 9999    0    0
+  10.WRITE              0 9999    0    0
+  11.TRANSFER           4 9999    0    0
+         3    1    3    4
+    .DIRECTION          1   -1    1    2    1
+     FROM           TO
+    .OFFSET             2   -1    1    0
+    .XXXXXX             3   -1    1    2    1
+     FROM           TO
+    .VARIABLE           4   -1    1    0
+  12.CHANGE             5 9999    0    0
+         1    3    1    2    3
+    .OFFSET             1   -1    1    0
+    .MODE               2    0    1    3    2 INTEGER
+     INTEGER        REAL           CHARACTER
+    .INTEGER            3    0    1    0    0         1
+    .REAL               4    0    1    0    0 1.0000
+    .CHARACTER          5    0    1    0    0 AAAA
+  13.RECORD             3 9999    0    0
+         1    1    3
+    .OFFSET             1    0    1    0    0         0
+    .LENGTH             2    0    1    0    0         1
+    .MODE               3    0    1    3    1 INTEGER
+     INTEGER        REAL           CHARACTER
+  14.CHECK              0 9999    0    0
+  15.OPERATE            5 9999    0    0
+         3    1    3    1    2
+    .OPERATION          1   -1    1    4    1
+     ADD            SUBTRACT       MULTIPLY       DIVIDE
+    .OFFSET             2    0    1    0    0         0
+    .MODE               3    0    1    2    3 INTEGER
+     INTEGER        REAL
+    .INTEGER            4    0    1    0    0         0
+    .REAL               5    0    1    0    0 1.0000
+  16.TOP                0 9999    0    0
+  17.NEXT               0 9999    0    0
+  18.PREVIOUS           0 9999    0    0
+  19.BOTTOM             0 9999    0    0
+  20.GENERALEDIT        1    2    0    0
+         1
+    .TYPE               1   -1    1    0
+CIFOUT             0    0    
+   5    4096 CRYSTALSPUBLISH
+SLANT              7    5
+   2    4096 CRYSTALSTRIAL
+    1    2    5    6   20
+   1.MAP                6    1    0    0
+         3    1    2    3    3    3
+    .TYPE              10    0    1    5    1 /FO/
+     F-OBS          F-CALC         DIFFERENCE     FO-PATTERSON   FC-PATTERSON
+    .MIN-RHO           11    0    1    0    0         0
+    .SCALE             12    0    1    0    0 10.0
+    .WEIGHT            13    0    1    2    0 NO
+     NO             YES
+    .TAPE              26    0    1    2    0 NO
+     NO             YES
+    .FILE              28    0    1    2    0 NO
+     NO             YES
+   2.CENTROID           3    1    1    0
+         7
+         2    2    2
+    .XO                14    0    1    0    0 0.0
+    .YO                15    0    1    0    0 0.0
+    .ZO                16    0    1    0    0 0.0
+   3.MATRIX             9    1    1    0
+         7
+         2    2    2    2    2    2    2    2    2
+    .R(11)              1    0    1    0    0 
+    .R(12)              2    0    1    0    0
+    .R(13)              3    0    1    0    0
+    .R(21)              4    0    1    0    0
+    .R(22)              5    0    1    0    0
+    .R(23)              6    0    1    0    0
+    .R(31)              7    0    1    0    0
+    .R(32)              8    0    1    0    0
+    .R(33)              9    0    1    0    0
+   4.DOWN               3    1    0    0
+         2    1    2
+    .MINIMUM           17   -1    1    0    0
+    .NUMBER            18   -1    1    0    0
+    .STEP              19   -1    1    0    0
+   5.ACROSS             3    1    0    0
+         2    1    2
+    .MINIMUM           20   -1    1    0    0
+    .NUMBER            21   -1    1    0    0
+    .STEP              22   -1    1    0    0
+   6.SECTION            3    1    0    0
+         2    1    2
+    .MINIMUM           23    0    1    0    0 0.0
+    .NUMBER            24    0    1    0    0         1
+    .STEP              25    0    1    0    0 .25
+   7.SAVED              1    1    2    0
+         2    3
+         3
+    .MATRIX            27    0    1    4    0 NONE
+     NONE           MOLAX          TLS            AXES
+TRIAL              5    5
+   1    4096 CRYSTALSTRIAL
+    1    2    3    5    6
+   1.MAP                3    1    0    0
+         2    2    1
+    ./FO/-MIN          14    0    1    0    0 0.0
+    .SCALE             15    0    1    0    0 0.0
+    .MIN-RHO           16    0    1    0    0         0
+   2.DISPLACEMENT       3    1    0    0
+         2    2    2
+    .DELTA-X           20    0    1    0    0 0.0
+    .DELTA-Y           21    0    1    0    0 0.0
+    .DELTA-Z           22    0    1    0    0 0.0
+   3.DOWN               4    1    0    0
+         1    2    2    2
+    .NUMBER            17   -1    1    0    0
+    .X-COMPONENT        1   -1    1    0    0
+    .Y-COMPONENT        2   -1    1    0    0
+    .Z-COMPONENT        3   -1    1    0    0
+   4.ACROSS             4    1    0    0
+         1    2    2    2
+    .NUMBER            18   -1    1    0    0
+    .X-COMPONENT        4   -1    1    0    0
+    .Y-COMPONENT        5   -1    1    0    0
+    .Z-COMPONENT        6   -1    1    0    0
+   5.THROUGH            4    1    0    0
+         1    2    2    2
+    .NUMBER            19   -1    1    0    0
+    .X-COMPONENT        7   -1    1    0    0
+    .Y-COMPONENT        8   -1    1    0    0
+    .Z-COMPONENT        9   -1    1    0    0
+FOREIGN            1    0
+   1    4096 CRYSTALSFOREIGN
+   1.FOREIGN            2    1    0    0
+         3    3
+    .PROGRAM            1   -1    1    7    1
+     SNOOPI         CAMERON        SHELXS         MULTAN         SIR88
+     SIR92          SIR97           
+    .MODE               2    0    1    4    1 NORMAL
+     NORMAL         DIFFICULT      SPECIAL        PATTERSON
+-GIDCAMERON            1    0
++GIDXCAMERON           1    0
+   1    4096 CRYSTALSFOREIGN
+   1.CAMERON            2    1    0    0
+         3    3
+    .RUN                1    0    1    2    1 YES
+     NO             YES
+    .MODE               2    0    1    1    1 NORMAL
+     NORMAL         
+SPACEGROUP         2    1
+   2    4096 CRYSTALSFOREIGN
+   14
+   1.SYMBOL             1    1    0    0
+         4
+    .EXPRESSION         1   -1    1    0    0 NONE
+   2.AXIS               1    1    0    0
+         3
+    .UNIQUE             2    0    1    4    0 GENERATE
+     GENERATE       A-AXIS         B-AXIS         C-AXIS
+DIFABS             3    3
+   1    4096 CRYSTALSDIFABS
+    1    6   13
+   1.CORRECTION         1    1    0    0
+         3
+    .THETA              1    0    1    2    0 NO
+     NO             YES
+   2.DIFFRACTION        2    1    0    0
+         3    3
+    .GEOMETRY           2    0    1    5    0 CAD4
+     CAD4           SYNTEX-P1      SYNTEX-P21     PICKER         PW1100
+    .MODE               3    0    1    3    0 BISECTING
+     BISECTING      PARALLEL       GENERAL
+   3.DIFABS             3    1    0    0
+         3    3    3
+    .ACTION             4    0    1    3   -1 NEW
+     TEST           UPDATE         NEW
+    .MODE               5    0    1    3    0 FO
+     FO             FC             TRANSFER
+    .MAP                6    0    1    2    0 NO
+     NO             YES
+QUICKSTART         6    0
+   6   40960 CRYSTALSINPUT
+   1.SPACEGROUP         1    1    0    0
+         4
+    .SYMBOL             1   -1    1    0    0 NONE
+   2.FORMAT             1    1    0    0
+         4
+    .EXPRESSION         2   -1    1    0    0 NONE
+   3.CONTENTS           1    1    0    0
+         4
+    .FORMULA            3   -1    1    0    0 NONE
+   4.FILE               1    1    0    0
+         4
+    .NAME               4   -1    1    0    0 NONE
+   5.DATA               3    1    0    0
+         2    3    2
+    .WAVELENGTH         5    0    1    0    0 0.7107
+    .REFLECTIONS        6    0    1    3    1 FOBS
+     FOBS           FSQUARED       I
+    .RATIO             13    0    1    0    0 3.0
+   6.CELL               6    1    0    0
+         2    2    2    2    2    2
+     A                  7   -1    1    0    0
+     B                  8   -1    1    0    0
+     C                  9   -1    1    0    0
+     ALPHA             10    0    1    0    0 90.
+     BETA              11    0    1    0    0 90.
+     GAMMA             12    0    1    0    0 90.
+COMPOSITION        3    2
+   7   40960 CRYSTALSINPUT
+    2   13
+   1.CONTENTS           1    1    0    0
+         4
+    .FORMULA            1   -1    1    0    0 NONE
+   2.SCATTERING         1    1    0    0
+         4
+    .FILE               2   -1    1    0    0 NONE
+   3.PROPERTIES         1    1    0    0
+         4
+    .FILE               3   -1    1    0    0 NONE
+FIND               7    3
+   8   40960 CRYSTALSINPUT
+    1    2    5
+   1.CTRL               6    1    0    0
+         3    3    3    3    3    3
+    .OVERLAP            1    0    1    2    1 NO
+     YES            NO
+    .SORT               2    0    1    2    1 YES
+     YES            NO
+    .MCS                3    0    1    2    1 NO
+     YES            NO
+    .GRAPH              4    0    1    2    1 ATOM
+     ATOM           BOND
+    .EXTEND             5    0    1    2    1 YES
+     YES            NO
+    .SOURCE            22    0    1    3    1 L5
+     L5             L10            FILE
+   2.QUERY              6 9999    0    0
+         3    3    3    3    3    4
+    .MULTIPLE           6    0    1    2    1 YES
+     YES            NO
+    .OVERLAP            7    0    1    2    1 YES
+     YES            NO
+    .OUTPUT             8    0    1    3    1 FILE
+     FILE           PUNCH          SCREEN
+    .ACTION             9    0    1    2    1 APPEND
+     OVERWRITE      APPEND
+    .TYPE              10    0    1    3    1 FILE
+     L5             L10            FILE 
+    .FILENAME          11   -1    1    0    0 NONE
+   3.KNOWN              3 9999    0    0
+         1    1    4
+    .QUERY             12    0    1    0    0 0
+    .QATOM             13    0    1    0    0 0
+    .SATOM             14    0    1    0    0 NONE
+   4.APPLY              3 9999    0    0
+         1    1    1
+    .QUERY             15    0    1    0    0 0
+    .OPTION            16    0    1    0    0 0
+    .NOT               17    0    1    0    0 0
+   5.OUTFILE            5 9999    0    0
+         1    1    1    3    4
+    .QUERY             18    0    1    0    0 0
+    .OCCURRENCE        19    0    1    0    0 0
+    .OPTION            20    0    1    0    0 0
+    .ACTION            21    0    1    2    1 APPEND
+     OVERWRITE      APPEND
+    .FILENAME          22    0    1    0    0 NONE
+   6.SFILE              2    1    0    0
+         3    4
+    .TYPE              23    0    1    3    1 L5  
+     L5             L10            FILE
+    .NAME              24    0    1    0    0 NONE
+   7.PARAMETER          5    1    0    0
+         2    1    2    2    1
+    .PTHRESHOLD        25    0    1    0    0 0.135335
+    .MAXISO            26    0    1    0    0 0
+    .RMIN              27    0    1    0    0 0.50
+    .RMAX              28    0    1    0    0 2.00
+    .MAXEXT            29    0    1    0    0 0
