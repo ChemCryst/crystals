@@ -36,7 +36,7 @@
  */
 
 #include "Matrices.h"
-#include "regex.h"
+#include <regex.h>
 #include "MathFunctions.h"
 
 MatrixException::MatrixException(int pErrNum, char* pErrType):MyException(pErrNum, pErrType)
