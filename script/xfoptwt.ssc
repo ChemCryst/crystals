@@ -26,7 +26,7 @@
 ^^WI  @ 6,2 GRID XFBT NROWS=1 NCOLS=3
 ^^WI  {
 ^^WI   @ 1,1 BUTTON XFW_BOK 'Keep last scheme' DEFAULT
-^^WI   @ 1,3 BUTTON XFW_BXX 'Change'
+^^WI   @ 1,3 BUTTON XFW_BXX 'Change' LENGTH='Keep last scheme'
 ^^WI  }
 ^^WI }
 ^^WI SHOW
