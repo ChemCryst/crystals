@@ -1341,8 +1341,8 @@ ostream& RankedSpaceGroups::output(ostream& pStream)
     iRatingList.reset();
     while ((tCurrentRating = iRatingList.next()) != NULL)
     {
-        pStream << tCurrentRating->iRowNum << ": " << tCurrentRating->iSumRat1 << ", " << tCurrentRating->iSumRat2 << ", " << tCurrentRating->iMean << "\n";
-        iTable->outputLine(tCurrentRating->iRowNum, pStream);
+        pStream << tCurrentRating->iRowNum << ": " << tCurrentRating->iMean << " ";
+        iTable->outputLine(tCurrentRating->iRowNum, pStream);	//Make output space group only.
     }
     return pStream;
 }
