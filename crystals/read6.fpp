@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2001/02/26 10:28:04  richard
+C RIC: Added changelog to top of file
+C
 C
 CODE FOR XRD06
       SUBROUTINE XRD06 (IULN)
@@ -452,11 +455,8 @@ Cdjwnov2000  apply the matrix  note l6=m6
          IF (ABS(TRANSH(I)-FLOAT(NINT(TRANSH(I)))).GT.TOLER) THEN
 C--CHECK IF THIS IS THE FIRST REJECTED REFLECTION
             CALL XL6RRP (N6NEG,1000,IFO,CCAPT2)
-C--SEE IF WE SOULD REJECT THIS REFLECTION
-            IF (ICHECK.GE.0) THEN
-               N6DEAD=N6DEAD+1
-               GO TO 2100
-            END IF
+            N6DEAD=N6DEAD+1
+            GO TO 2100
          END IF
 2250  CONTINUE
       CALL XMOVE (TRANSH(10),STORE(M6),3)
@@ -717,11 +717,8 @@ Cnov2000 now apply a matrix
      1       THEN
 C--CHECK IF THIS IS THE FIRST REJECTED REFLECTION
                CALL XL6RRP (N6NEG,1000,IFO,CCAPT2)
-C--SEE IF WE SOULD REJECT THIS REFLECTION
-               IF (ICHECK.GE.0) THEN
-                  N6DEAD=N6DEAD+1
-                  GO TO 4850
-               END IF
+               N6DEAD=N6DEAD+1
+               GO TO 4850
             END IF
 4250     CONTINUE
          CALL XMOVE (TRANSH(10),STORE(M6),3)
