@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.46  2003/08/05 11:11:11  rich
+C Commented out unused routines - saves 50Kb off the executable.
+C
 C Revision 1.45  2003/07/16 21:59:39  rich
 C Zero L12 prior to KDIST4 call. (It may remain set from a previous
 C instruction, causing crashes).
@@ -2388,7 +2391,8 @@ c         WRITE ( CMON,'(A)') 'Seeking 2nd level bonds across sym ops.'
 c         CALL XPRVDU(NCVDU, 1,0)  
 
 C Move new atoms up and insert existing L5 block.
-         CALL XMOVE (STORE(JBASAT),STORE(JBASAT+MD5*N5),JNEWAT*MD5)
+         IF ( JNEWAT .GT. 0 ) 
+     1    CALL XMOVE (STORE(JBASAT),STORE(JBASAT+MD5*N5),JNEWAT*MD5)
          CALL XMOVE (STORE(L5),STORE(JBASAT),N5*MD5)
          L5 = JBASAT
          LASTN5 = N5
@@ -2602,7 +2606,8 @@ c                     write (99,'(A)') '3:Made it'
          END DO
 
 C Move new atoms and insert existing L5 block.
-         CALL XMOVE (STORE(JBASAT),STORE(JBASAT+MD5*N5),JNEWAT*MD5)
+         IF ( JNEWAT .GT. 0 ) 
+     1    CALL XMOVE (STORE(JBASAT),STORE(JBASAT+MD5*N5),JNEWAT*MD5)
          CALL XMOVE (STORE(L5),STORE(JBASAT),N5*MD5)
          L5 = JBASAT
          LASTN5 = N5
