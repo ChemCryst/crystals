@@ -93,20 +93,25 @@ bool CcLock::Wait(int timeout_ms)
     return ( WaitForSingleObject( m_Mutex, INFINITE ) == WAIT_OBJECT_0 );
 #endif
 #ifdef __BOTHWX__
-    if ( timeout_ms ) return m_EvMutex -> Wait( 0, timeout_ms * 1000 ); //wx version is in nanoseconds.
+    int secs = timeout_ms / 1000;
+    int nano = (timeout_ms - ( secs * 1000 )) * 1000000;
+    if ( timeout_ms ) return m_EvMutex -> Wait( secs, nano ); //wx version is in nanoseconds.
     m_EvMutex -> Wait();
     return true;
 #endif
 
 }
 
-void CcLock::Signal()
+void CcLock::Signal(bool all)
 {
 #ifdef __CR_WIN__
     PulseEvent(m_Mutex);
 #endif
 #ifdef __BOTHWX__
-    m_EvMutex -> Signal();
+    if ( all )
+        m_EvMutex -> Broadcast();
+    else
+        m_EvMutex -> Signal();
 #endif
 
 }

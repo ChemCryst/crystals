@@ -26,7 +26,7 @@ class CcLock
     bool IsLocked();
 
     bool Wait(int timeout_ms = 0);
-    void Signal();
+    void Signal(bool all = false);
 
   private:
     int m_Locked;
