@@ -31,12 +31,14 @@
 ^^WI    { 
 ^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
 ^^WI     {
-^^WI      @ 1,3 GRID EXP2 NROWS=2 NCOLS=1
+^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
 ^^WI      {
 ^^WI       @ 1,1 STATIC XFW1
-^^WI 'You are looking at the completeness of the data set'
+^^WI 'Completeness of the data set from 75% to 100% of theta max.'
 ^^WI       @ 2,1 STATIC XFW2
-^^WI 'across the range ( 0.75 - 1.0 ) * theta max.'
+^^WI 'You may manually select "theta full" (the value at which you consider'
+^^WI       @ 3,1 STATIC XFW3
+^^WI 'the data complete) by right-clicking the graph.'
 ^^WI      }
 ^^WI      @ 1,1 ICON IM INFO
 ^^WI     }
@@ -92,8 +94,9 @@
 ^^WI       @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
 ^^WI      {
 ^^WI       @ 1,1 STATIC XFW1
-^^WI  'You are looking at merging R statistics.'
-^^WI       @ 2,1 STATIC XFW2 ' '
+^^WI  'You are looking at merging R versus signal to noise. Merging R is'
+^^WI       @ 2,1 STATIC XFW2
+^^WI 'expected to be worse for low signal to noise data.'
 ^^WI       @ 3,1 STATIC XFW3 'Right-click on a bar for data cut-off options.'
 ^^WI      }
 ^^WI      @ 1,1 ICON IM INFO
@@ -123,9 +126,11 @@
 ^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
 ^^WI      {
 ^^WI       @ 1,1 STATIC XFW1
-^^WI  'You are looking at a systematic absence analysis.'
-^^WI       @ 2,1 STATIC XFW2 ' '
-^^WI       @ 3,1 STATIC XFW3 ' '
+^^WI 'Systematic absences: These data points were measured, but should be'
+^^WI       @ 2,1 STATIC XFW2
+^^WI 'absent due to space group. Allowing random noise, they should be'
+^^WI       @ 3,1 STATIC XFW3
+^^WI 'evenly distributed about zero. Absences are not used in refinement.'
 ^^WI      }
 ^^WI      @ 1,1 ICON IM INFO
 ^^WI     }
@@ -147,12 +152,17 @@
 ^^WI    {
 ^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
 ^^WI     {
-^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
+^^WI      @ 1,3 GRID EXP2 NROWS=5 NCOLS=1
 ^^WI      {
 ^^WI       @ 1,1 STATIC XFW1
-^^WI  'You are looking at a Wilson Plot.'
-^^WI       @ 2,1 STATIC XFW2 ' '
-^^WI       @ 3,1 STATIC XFW3 'Right-click a point for data cut-off options.'
+^^WI 'You are looking at a Wilson Plot; Diffraction angle (or rho) runs down'
+^^WI       @ 2,1 STATIC XFW2
+^^WI 'the vertical axis. Log of actual scattering over expected scattering'
+^^WI       @ 3,1 STATIC XFW2
+^^WI 'is plotted at each angle. Slope is due to fall off of actual scattering'
+^^WI       @ 4,1 STATIC XFW2
+^^WI 'with angle, intercept is due to arbitrary scaling of intensity data.'
+^^WI       @ 5,1 STATIC XFW3 'Right-click a point for data cut-off options.'
 ^^WI      }
 ^^WI      @ 1,1 ICON IM INFO
 ^^WI     }
@@ -175,9 +185,11 @@
 ^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
 ^^WI      {
 ^^WI       @ 1,1 STATIC XFW1
-^^WI 'You are looking at N(Z) cumulative probability distribution functions'
-^^WI       @ 2,1 STATIC XFW2 ' '
-^^WI       @ 3,1 STATIC XFW3 ' '
+^^WI 'You are looking at N(Z) cumulative probability distribution functions.'
+^^WI       @ 2,1 STATIC XFW2
+^^WI 'These show actual and expected distribution of E values. The "All Data"'
+^^WI       @ 3,1 STATIC XFW3
+^^WI 'points should follow one of the theoretical lines.'
 ^^WI      }
 ^^WI      @ 1,1 ICON IM INFO
 ^^WI     }
