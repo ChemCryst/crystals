@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.39  2002/10/31 13:25:26  rich
+C New script binary operator - IDECMASK. Uses one decimal number to
+C mask another: A IDECMASK B
+C Any 0 digits in B will cause the corresponding digit in A to be set
+C to zero, e.g. 987654 IDECMASK 101010 = 907050. Used for now to split
+C up the GROUP and PART numbers from offset 14 of L5 records.
+C
 C Revision 1.38  2002/08/28 14:38:03  richard
 C Added two new binary operators: IAND and IOR to do bitwise logical operations
 C on integers. (Reals are just NINT'd first). E.g. 6 IAND 2 = 2, 4 IOR 2 = 6.
@@ -2985,18 +2992,67 @@ C Extract the element from a concatenated element serial combo.
 C Returns a string up to the first number bracket or space.
 C For example 'C1', 'C(1)', 'C 1', or ' C(1)' will return 'C'
  
-        IECF = KCCNEQ(CWORK1(1:LEN1),1,' ') !Skip initial spaces
+      IECF = KCCNEQ(CWORK1(1:LEN1),1,' ') !Skip initial spaces
+      IEC = 1
+      IF ( IECF .EQ. -1 ) GOTO 8000 !No chars found at all
+
+C Do an initial sweep for brackets
+      IECOB = KCCEQL(CWORK1(1:LEN1),IECF+1,'(')
+      IECCB = -1
+
+      IF ( IECOB .NE. -1 ) THEN
+        IECCB = KCCEQL(CWORK1(1:LEN1),IECOB,')')
+      END IF
+
+
+      IF ( IECCB .EQ. -1 ) THEN
+        IECOB = 1
+      END IF
+
+
+      IF ( IECOB .NE. 1 ) THEN
+C Sanity check: between first nonspace and (, there can be no
+C more than 4 non spaces - these nonspaces must be consecutive.
+        IECTOT = 0
+        IECCHN = 0
+        IECCON = 0
+        IESTOP = 0
+        DO IEC = IECF,IECOB-1
+          IF ( CWORK1(IEC:IEC) .NE. ' ' ) THEN
+            IECTOT = IECTOT + 1
+            IECCHN = 0
+          ELSE
+            IF ( IECCHN .EQ. 0 ) THEN
+              IECCON = IECCON + 1
+              IESTOP = IEC
+            END IF
+            IECCHN = 1
+          END IF
+        END DO
+        IF ( IECCON .EQ. 0 ) IESTOP = IECOB-1
+        IF (( IECTOT .GT. 5 ) .OR. ( IECCON .GT. 1 )) THEN
+          IECOB = 1
+        END IF
+        IF (( IECTOT .EQ. 0 ) .OR. ( IESTOP .EQ. IECF )) THEN
+          IECOB = 1
+        END IF
+
+      END IF
+
+      IF ( IECOB .EQ. 1 ) THEN
         IEC = 1
-        IF ( IECF .EQ. -1 ) GOTO 5103 !No chars found
-        DO 5102 IEC = IECF, LEN1
-                READ(CWORK1(IEC:IEC),'(A1)') CECT
-                IF((CECT .EQ. '(') .OR. (CECT .EQ. ' ')) GOTO 5103
-                READ(CECT,'(I1)',ERR=5101) IECT
-                GOTO 5103
-5101        CONTINUE
-5102  CONTINUE
-5103  CONTINUE
-      ISTAT = KSCSCD ( CWORK1(1:IEC-1) , ICODE(JVALUE,IARG(1)) )
+        DO IEC = IECF, LEN1
+          READ(CWORK1(IEC:IEC),'(A1)') CECT
+          IF((CECT .EQ. '(') .OR. (CECT .EQ. ' ')) EXIT
+          READ(CECT,'(I1)',ERR=5101) IECT
+          EXIT
+5101      CONTINUE
+        END DO
+        ISTAT = KSCSCD ( CWORK1(1:IEC-1) , ICODE(JVALUE,IARG(1)) )
+      ELSE
+        ISTAT = KSCSCD ( CWORK1(1:IESTOP) , ICODE(JVALUE,IARG(1)) )
+      END IF
+
       ICODE(JVTYPE,IARG(1)) = 4
       GO TO 8000
  
@@ -3008,23 +3064,64 @@ C
 C Extract the serial from a concatenated element serial combo.
 C Returns an integer from the first number found in the string.
 C For example 'C1', 'C(1)', 'C 1.0', or ' C(1)' will return '1'
- 
+
+      ICODE(JVTYPE,IARG(1)) = 1
+      ICODE(JVALUE,IARG(1)) = -9999
+
+      IECF = KCCNEQ(CWORK1(1:LEN1),1,' ') !Skip initial spaces
+      IEC = 1
+      IF ( IECF .EQ. -1 ) GOTO 8000 !No chars found at all
+
+C Do an initial sweep for brackets
+      IECOB = KCCEQL(CWORK1(1:LEN1),IECF+1,'(')
+      IECCB = -1
+
+      IF ( IECOB .NE. -1 ) THEN
+        IECCB = KCCEQL(CWORK1(1:LEN1),IECOB,')')
+      END IF
+
+
+      IF ( IECCB .EQ. -1 ) THEN
+        IECOB = 1
+      ELSE
+C Sanity check: between first nonspace and (, there can be no
+C more than 4 non spaces - these nonspaces must be consecutive.
+        IECTOT = 0
+        IECCHN = 0
+        IECCON = 0
+        DO IEC = IECF,IECOB
+          IF ( CWORK1(IEC:IEC) .NE. ' ' ) THEN
+            IECTOT = IECTOT + 1
+            IECCHN = 0
+          ELSE
+            IF ( IECCHN .EQ. 0 ) IECCON = IECCON + 1
+            IECCHN = 1
+          END IF
+        END DO
+        IF (( IECTOT .GT. 5 ) .OR. ( IECCON .GT. 1 )) THEN
+          IECOB = 1
+        END IF
+
+      END IF
+
 C Skip till we find an integer
-        DO 5112 IEC = 1, LEN1
-                READ(CWORK1(IEC:IEC),'(I1)',ERR=5111) IECT
-                GOTO 5113
-5111            CONTINUE
-5112    CONTINUE
-5113    CONTINUE
-C Skip till we find not an integer
-        DO 5114 IEC2 = IEC, LEN1
-                READ(CWORK1(IEC2:IEC2),'(I1)',ERR=5115) IECT
-5114    CONTINUE
-5115    CONTINUE
-        ICODE(JVTYPE,IARG(1)) = 1
-        ICODE(JVALUE,IARG(1)) = -9999
-        IF ( IEC2-1 .LT. IEC ) GOTO 8000
-        READ(CWORK1(IEC:IEC2-1),'(I4)')ICODE(JVALUE,IARG(1))
+      DO IEC = IECOB, LEN1
+          READ(CWORK1(IEC:IEC),'(I1)',ERR=5111) IECT
+          IF(CWORK1(IEC:IEC).EQ.'-') GOTO 5111
+          EXIT
+5111      CONTINUE
+      END DO
+
+C Skip till we find not an integer, check explictly for space and -ve.
+      DO IEC2 = IEC, LEN1
+          IF ( CWORK1(IEC2:IEC2) .EQ. ' ' ) GOTO 5115
+          IF ( CWORK1(IEC2:IEC2) .EQ. '-' ) GOTO 5115
+          READ(CWORK1(IEC2:IEC2),'(I1)',ERR=5115) IECT
+      END DO
+5115  CONTINUE
+
+      IF ( IEC2-1 .LT. IEC ) GOTO 8000
+      READ(CWORK1(IEC:IEC2-1),'(I4)')ICODE(JVALUE,IARG(1))
       GO TO 8000
 C
 C
