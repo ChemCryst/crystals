@@ -1,3 +1,0 @@
-touch empty
-crysedit csd2cry.src csd2cry.for code=GIL macro=empty
-g77 csd2cry.for  -O3 -o csd2cry
