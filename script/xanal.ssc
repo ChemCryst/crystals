@@ -6,51 +6,35 @@
 ^^WI WINDOW A1 'Agreement analysis' SIZE KEEP MODAL
 ^^WI GRID BOSS NROWS=6 NCOLS=3
 ^^WI {
-^^WI   @ 2,2 GRID GRAPHS NROWS=3 NCOLS=3
+^^WI   @ 2,2 RESIZE _XARSZ1 VERTICAL
 ^^WI   {
-^^WI     @ 1,1 GRID GRAPH NROWS=1 NCOLS=1 OUTLINE=''
-^^WI     {  
-%%^^WI      @ 1,1 STATIC YAX1 '<Fo-Fc>**2' 
-^^WI      @ 1,1 PLOTWINDOW _VFO NROWS=20 NCOLS=48
-%%^^WI      @ 3,1 GRID WORDS NROWS=1 NCOLS=3
-%%^^WI      {
-%%^^WI       @ 1,1 STRETCH SL HORIZONTAL
-%%^^WI       @ 1,3 STRETCH SL HORIZONTAL
-%%^^WI       @ 1,2 STATIC T1 'Fo Range' 
-%%^^WI      }
+^^WI     ITEM GRID GRAPH NROWS=1 NCOLS=1
+^^WI     {
+^^WI       @ 1,1 RESIZE _XARSZ2 HORIZONTAL
+^^WI       {
+^^WI         ITEM GRID GRAPH NROWS=1 NCOLS=1
+^^WI         {  
+^^WI          @ 1,1 PLOTWINDOW _VFO NROWS=20 NCOLS=48
+^^WI         }
+^^WI         ITEM GRID GRAPH NROWS=1 NCOLS=1
+^^WI         {  
+^^WI          @ 1,1 PLOTWINDOW _VSINT NROWS=20 NCOLS=64
+^^WI         }
+^^WI       }
 ^^WI     }
-^^WI     @ 1,3 GRID GRAPH NROWS=1 NCOLS=1 OUTLINE=''
-^^WI     {  
-%%^^WI      @ 1,1 STATIC YAX1 '<Fo-Fc>**2' 
-^^WI      @ 1,1 PLOTWINDOW _VCLASS NROWS=20 NCOLS=64
-%%^^WI      @ 3,1 GRID WORDS NROWS=1 NCOLS=3
-%%^^WI      {
-%%^^WI       @ 1,1 STRETCH SL HORIZONTAL
-%%^^WI       @ 1,3 STRETCH SL HORIZONTAL
-%%^^WI       @ 1,2 STATIC T1 'HKL class' 
-%%^^WI      }
-^^WI     }
-^^WI     @ 3,1 GRID GRAPH NROWS=1 NCOLS=1 OUTLINE=''
-^^WI     {  
-%%^^WI      @ 1,1 STATIC YAX1 '<Fo-Fc>**2' 
-^^WI      @ 1,1 PLOTWINDOW _VSINT NROWS=20 NCOLS=64
-%%^^WI      @ 3,1 GRID WORDS NROWS=1 NCOLS=3
-%%^^WI      {
-%%^^WI       @ 1,1 STRETCH SL HORIZONTAL
-%%^^WI       @ 1,3 STRETCH SL HORIZONTAL
-%%^^WI       @ 1,2 STATIC T1 'Sin theta/lambda' 
-%%^^WI      }
-^^WI     }
-^^WI     @ 3,3 GRID GRAPH NROWS=1 NCOLS=1 OUTLINE=''
-^^WI     {  
-%%^^WI      @ 1,1 STATIC YAX1 '<Fo-Fc>**2' 
-^^WI      @ 1,1 PLOTWINDOW _VPAR NROWS=20 NCOLS=64
-%%^^WI      @ 3,1 GRID WORDS NROWS=1 NCOLS=3
-%%^^WI      {
-%%^^WI       @ 1,1 STRETCH SL HORIZONTAL
-%%^^WI       @ 1,3 STRETCH SL HORIZONTAL
-%%^^WI       @ 1,2 STATIC T1 'Parity group' 
-%%^^WI      }
+^^WI     ITEM GRID GRAPH NROWS=1 NCOLS=1
+^^WI     {
+^^WI       @ 1,1 RESIZE _XARSZ3 HORIZONTAL
+^^WI       {
+^^WI         ITEM GRID GRAPH NROWS=1 NCOLS=1
+^^WI         {  
+^^WI          @ 1,1 PLOTWINDOW _VCLASS NROWS=20 NCOLS=64
+^^WI         }
+^^WI         ITEM GRID GRAPH NROWS=1 NCOLS=1
+^^WI         {  
+^^WI          @ 1,1 PLOTWINDOW _VPAR NROWS=20 NCOLS=64
+^^WI         }
+^^WI       }
 ^^WI     }
 ^^WI   }
 ^^WI   @ 4,2 GRID STUFF NROWS=1 NCOLS=3
