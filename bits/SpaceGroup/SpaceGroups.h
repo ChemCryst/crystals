@@ -53,7 +53,7 @@ class SGColumn:public ArrayList<SpaceGroups>
         SGColumn();
         ~SGColumn();
         void add(char* pSpaceGroup, int pRow);
-        void setHeading(char* pHeading);
+        void setPointGroup(char* pHeading);
         char* getPointGroup();
 };
 #endif

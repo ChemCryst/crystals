@@ -219,7 +219,7 @@ void SGColumn::add(char* pSpaceGroup,  int pRow)
     setWithAdd(new SpaceGroups(pSpaceGroup), pRow);
 }
 
-void SGColumn::setHeading(char* pHeading)
+void SGColumn::setPointGroup(char* pHeading)
 {
     if (iPointGroup)
     {
