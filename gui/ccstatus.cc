@@ -8,6 +8,11 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2001/06/17 15:18:26  richard
+//   Notice when scripts exit (status bit 5 changes) and call ScriptsExited to
+//   close any modal windows that have been accidentally left open. Windows with
+//   the STAYOPEN property (notably the MAIN window) are exempt.
+//
 //   Revision 1.5  2001/03/08 15:22:11  richard
 //   New flag signalling that the model window is in a ZOOMED in state.
 //   Call to UpdateToolbars, when status changes, updates toolbar buttons, normal
@@ -191,7 +196,7 @@ void CcStatus::ParseInput(CcTokenList * tokenList)
             {
                 tokenList->GetToken();
                 int unSetFlags = CreateFlag(tokenList->GetToken());
-                if (( unSetFlags & 32 ) && ( ~statusFlags & 32 )) ScriptsExited();
+                if (( unSetFlags & 32 ) && ( statusFlags & 32 )) ScriptsExited();
                 statusFlags &= (~unSetFlags);
                 break;
             }
