@@ -18,8 +18,12 @@
 class CxMenu;
 class CcMenuItem;
 class CxWindow;
-//End of user code.         
- 
+
+#define NORMAL_MENU 0
+#define POPUP_MENU  1
+#define MENU_BAR    2
+
+
 class	CrMenu : public CrGUIElement
 {
 	public:
@@ -30,9 +34,9 @@ class	CrMenu : public CrGUIElement
 		CcList mMenuList;
 		void CrFocus();
 		// methods
-			CrMenu( CrGUIElement * mParentPtr );
-			CrMenu( CrGUIElement * mParentPtr , Boolean IsAPopupMenu );
-			~CrMenu();
+//            CrMenu( CrGUIElement * mParentPtr );
+            CrMenu( CrGUIElement * mParentPtr , int menuType = NORMAL_MENU );
+            ~CrMenu();
 		Boolean	ParseInput( CcTokenList * tokenList );
 		void	SetText( CcString text );
 		void	SetGeometry( const CcRect * rect );
@@ -40,6 +44,7 @@ class	CrMenu : public CrGUIElement
 		void	CalcLayout();
 		
 		// attributes
-		
+            int mMenuType;
+
 };
 #endif
