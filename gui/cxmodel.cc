@@ -965,7 +965,7 @@ void CxModel::OnRButtonUp( wxMouseEvent & event )
   }
   else
   {
-    ((CrModel*)ptr_to_crObject)->ContextMenu(point.x,point.y,nil,1);
+    ((CrModel*)ptr_to_crObject)->ContextMenu(point.x,point.y,"",1);
   }
 }
 
