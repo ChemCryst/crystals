@@ -139,7 +139,7 @@ NOTE. In tetragonal and trigonal and hexagonal crystals, reflections of
 
 {0,4 Space-group determination and diffraction symbols are explained
 {0,4 fully in International Tables, Vol A, pp 40-47.
-%       COPY '#SCRIPT XPICCY'
+%%       COPY '#SCRIPT XPICCY'
 %       COPY '#SCRIPT XHELP2'
 %     END BLOCK
 %     BLOCK         %BXX
