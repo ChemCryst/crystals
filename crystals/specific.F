@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.34  2002/02/27 19:53:45  ckp2
+C Comment out debugging output.
+C
 C Revision 1.33  2002/02/27 19:40:10  ckp2
 C RIC: Increased input line length to 256 chars. HOWEVER - only a few modules know about
 C this extra length. In general the program continues to ignore everything beyond
@@ -746,10 +749,10 @@ C
       CALL XCTRIM( NAME, NCHARS )
       IF ( ( IMSG .GT. 1 ) .AND. ( IRDCMS(IFLIND) .GT. 0 ) ) THEN
         IF ( I .GT. 0 ) THEN
-          WRITE ( CMON,1005) ACTION(IMSG) , NAME
+          WRITE ( CMON,1005) ACTION(IMSG) , NAME(1:NCHARS)
           CALL XPRVDU(NCEROR, 2, 0)
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1005 ) ACTION(IMSG) , NAME
-          WRITE ( NCAWU , 1005 ) ACTION(IMSG) , NAME
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU, 1005 )ACTION(IMSG),NAME(1:NCHARS)
+          WRITE ( NCAWU , 1005 ) ACTION(IMSG) , NAME(1:NCHARS)
 1005      FORMAT ( 1X, 'The following file has been ' , A, ' :- ' , / ,
      2 11X , A )
         ENDIF
@@ -757,7 +760,7 @@ C
 C
       ISTAT = KFLCLS ( IUNIT )
       IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
-       WRITE(NCWU,1006) IFLIND, IUNIT, NAME
+       WRITE(NCWU,1006) IFLIND, IUNIT, NAME(1:NCHARS)
 1006   FORMAT(' Closing File index=',I3, ' Unit =',I4,A)
       ENDIF
       IFLIND = IFLIND - 1
