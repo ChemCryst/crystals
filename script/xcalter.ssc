@@ -6,50 +6,38 @@
 %     BLOCK               %SHYDRO%
 %       COPY 'INCL H VIEW'
 %       COPY ' '
-^^WI    RENAME SHYDRO HHYDRO
-^^CR
-^^WI    SET HHYDRO TEXT 'Hide H'
-^^CR
+^^CO    RENAME SHYDRO HHYDRO SET HHYDRO TEXT 'Hide H'
+^^CO    SET _INCH TEXT 'Hide hydrogen' COMMAND '#SCRIPT XCALTER_NHHYDRO'
 %     END BLOCK
 %     BLOCK               %SLABEL%
 %       COPY 'LABEL ALL VIEW'
 %       COPY ' '
-^^WI    RENAME SLABEL HLABEL
-^^CR
-^^WI    SET HLABEL TEXT 'Labels off'
-^^CR
+^^CO    RENAME SLABEL HLABEL SET HLABEL TEXT 'Labels off'
+^^CO    SET _INCL TEXT 'Hide labels' COMMAND '#SCRIPT XCALTER_NHLABEL'
 %     END BLOCK
 %     BLOCK               %HHYDRO%
 %       COPY 'EXCL H VIEW'
 %       COPY ' '
-^^WI    RENAME HHYDRO SHYDRO
-^^CR
-^^WI    SET SHYDRO TEXT 'Show H'
-^^CR
+^^CO    RENAME HHYDRO SHYDRO SET SHYDRO TEXT 'Show H'
+^^CO    SET _INCH TEXT 'Show hydrogen' COMMAND '#SCRIPT XCALTER_NSHYDRO'
 %     END BLOCK
 %     BLOCK               %HLABEL%
 %       COPY 'NOLABEL ALL VIEW'
 %       COPY ' '
-^^WI    RENAME HLABEL SLABEL
-^^CR
-^^WI    SET SLABEL TEXT 'Labels on'
-^^CR
+^^CO    RENAME HLABEL SLABEL SET SLABEL TEXT 'Labels on'
+^^CO    SET _INCL TEXT 'Show labels' COMMAND '#SCRIPT XCALTER_NSLABEL'
 %     END BLOCK
 %     BLOCK               %SCELL%
 %       COPY 'INCLUDE CELL VIEW'
 %       COPY ' '
-^^WI    RENAME SCELL HCELL
-^^CR
-^^WI    SET HCELL TEXT 'Hide Cell'
-^^CR
+^^CO    RENAME SCELL HCELL SET HCELL TEXT 'Hide Cell'
+^^CO    SET _SCELL TEXT 'Hide cell' COMMAND '#SCRIPT XCALTER_NHCELL'
 %     END BLOCK
 %     BLOCK               %HCELL%
 %       COPY 'EXCL CELL VIEW'
 %       COPY ' '
-^^WI    RENAME HCELL SCELL
-^^CR
-^^WI    SET SCELL TEXT 'Show Cell'
-^^CR
+^^CO    RENAME HCELL SCELL SET SCELL TEXT 'Show Cell'
+^^CO    SET _SCELL TEXT 'Show cell' COMMAND '#SCRIPT XCALTER_NSCELL'
 %     END BLOCK
 %     BLOCK                %MLABEL%
 %       COPY 'LABEL MOUSE VIEW'
@@ -72,20 +60,14 @@
 %       COPY 'EXCL QH VIEW'
 %       COPY 'VIEW'
 %       COPY ' '
-^^WI    RENAME HPEAK SPEAK
-^^CR
-^^WI    SET SPEAK TEXT 'Show Q'
-^^CR
+^^CO    RENAME HPEAK SPEAK SET SPEAK TEXT 'Show Q'
 %     END BLOCK
 %     BLOCK               %SPEAK%
 %       COPY 'INCL Q VIEW'
 %       COPY 'INCL QH VIEW'
 %       COPY 'VIEW'
 %       COPY ' '
-^^WI    RENAME SPEAK HPEAK
-^^CR
-^^WI    SET HPEAK TEXT 'Hide Q'
-^^CR
+^^CO    RENAME SPEAK HPEAK SET HPEAK TEXT 'Hide Q'
 %     END BLOCK
 %     BLOCK               %VIEW%
 %       COPY 'VIEW'

@@ -112,13 +112,11 @@
 ^^WI   ITEM _FILL '&Empty' 'UNFILL VIEW _N'
 ^^WI  ENDMENU
 ^^WI  MENU VISI '&Visible'
-^^WI   ITEM _EXCH '&Hide hydrogen' '#SCRIPT XCALTER_NHHYDRO'
-^^WI   ITEM _INCH '&Show hydrogen' '#SCRIPT XCALTER_NSHYDRO'
+^^WI   ITEM _INCH '&Hide hydrogen' '#SCRIPT XCALTER_NHHYDRO'
 ^^WI   ITEM _EXCQ '&Hide peaks'    '#SCRIPT XCALTER_NHPEAK'
 ^^WI   ITEM _INCQ '&Show peaks'    '#SCRIPT XCALTER_NSPEAK'
 ^^WI   SPLIT
-^^WI   ITEM _EXCL '&Show labels'    '#SCRIPT XCALTER_NSLABEL'
-^^WI   ITEM _INCL '&Hide labels'    '#SCRIPT XCALTER_NHLABEL'
+^^WI   ITEM _INCL '&Show labels'    '#SCRIPT XCALTER_NSLABEL'
 ^^WI  ENDMENU
 ^^WI  MENU _ORIE '&Orientation'
 ^^WI   ITEM _ORIENT '&Orientation...' '#SCRIPT XORIENT'
@@ -131,8 +129,7 @@
 ^^WI   SPLIT
 ^^WI   ITEM _UNPK '&Unpack'   'UNPACK VIEW _N'
 ^^WI   SPLIT
-^^WI   ITEM _SCELL '&Show cell' 'INCLUDE CELL VIEW _N'
-^^WI   ITEM _HCELL '&Hide cell' 'EXCLUDE CELL VIEW _N'
+^^WI   ITEM _SCELL '&Show cell' '#SCRIPT XCALTER_NSCELL'
 ^^WI  ENDMENU
 ^^WI  MENU HELP '&Help'
 ^^WI   ITEM HTIPS '&Tip of the day'
