@@ -1,25 +1,40 @@
 %SCRIPT XRENUM
-
  * Manual renumbering of structure using mouse.
-
-^^WI WINDOW XRENUM 'Renumber' COMMIT='BOK' CANCEL='BXX'
-^^WI POSITION=CENTRED '_MAINTEXTOUTPUT'
-^^WI GRID MAIN NROWS=3 NCOLS=5
+^^WI WINDOW XRENUM 'Renumber' MODAL KEEP SIZE COMMIT='BOK' CANCEL='BXX'
+^^WI POSITION=CENTRED 'MODEL01'
+^^WI GRID MAIN NROWS=7 NCOLS=3
 ^^WI {
-^^WI   @ 2,2 GRID TEXT NROWS=6 NCOLS=1
+^^WI   @ 2,2 GRID TEXT NROWS=3 NCOLS=1
 ^^WI   {
-^^WI     @ 1,1 STATIC T1 'Atoms will be renmbered from' 
-^^WI     @ 2,1 STATIC T2 '1, in the order that you click'
-^^WI     @ 3,1 STATIC T3 'on them.' 
-^^WI     @ 4,1 STATIC T4 'Click "Done" to apply the new' 
-^^WI     @ 5,1 STATIC T5 'numbering or "Cancel" to ' 
-^^WI     @ 6,1 STATIC T6 'quit without changes.' 
+^^WI     @ 1,1 STATIC T1
+^^WI 'Atoms are numbered sequentially in the order that you click on them.'
 ^^WI   }
-^^WI   @ 2,4 GRID BTNS NROWS=5 NCOLS=1
+^^WI   @ 4,2 GRID TEXT NROWS=1 NCOLS=3
+^^WI   {
+^^WI      @ 1,1 GRID OPTIONS NROWS=4 NCOLS=1
+^^WI      {
+^^WI         @ 1,1 STATIC _TFS 'Next serial'
+^^WI         @ 2,1 EDITBOX NFS '1' CHARS=9 INTEGER
+^^WI         @ 3,1 STRETCH _V VERTICAL
+^^WI         @ 4,1 GRID OPTNS NROWS=3 NCOLS=1 OUTLINE='Remaining atoms'
+^^WI         {
+^^WI           @ 1,1 RADIOBUTTON RMND 'Delete' STATE=OFF
+^^WI           @ 2,1 RADIOBUTTON RMNN 'Number sequentially' STATE=ON
+^^WI           @ 3,1 RADIOBUTTON RMNS 'Leave alone (except clashes)'
+^^WI                                 STATE=OFF
+^^WI         }
+^^WI      }
+^^WI      @ 1,3 MODELWINDOW MODELRE 'N' NROWS=5 NCOLS=65
+^^WI            ATTACH L5 RADSCALE=250 RADTYPE=COV
+^^WI            MOUSEACTION=HEADERATOM
+^^WI   }
+^^WI   @ 6,2 GRID BTNS NROWS=1 NCOLS=7
 ^^WI   {
 ^^WI     @ 1,1 BUTTON BOK 'D&one' DEFAULT COMMIT
-^^WI     @ 3,1 BUTTON BXX '&Cancel' CANCEL
-^^WI     @ 5,1 BUTTON BHELP '&Help' 
+^^WI     @ 1,3 BUTTON BXX '&Cancel' CANCEL
+^^WI     @ 1,5 BUTTON BHELP '&Help' 
+^^WI     @ 1,7 STATIC T2
+^^WI '"Done" to apply the new numbering or "Cancel" to quit without changes.' 
 ^^WI   }
 ^^WI }
 ^^WI SHOW
@@ -33,79 +48,147 @@
 %  COPY 'TRANSHEAD FROM OFFSET=3 TO N5'
 %  COPY 'END'
 %%
-%% Renumber from - 10 * N5. ( Avoids clashes )
 %%
-%  COPY '#EDIT'
-%  CLEAR
-%  INSERT 'KEEP '
-%  STORE FORMAT /(I6)/ LENGTH 6 INTEGER ( - 10 * N5 )
-%  INSERT 'FIRST UNTIL LAST'
-%  SEND
-%  COPY 'EX'
-%%
-%% Make numbers positive. (For the GUI)
-%%
-%  COPY 'MULTIPLY -1 FIRST(SERIAL) UNTIL LAST'
-%  COPY 'END'
-%%
-^^CO SET MODEL01 MOUSEACTION=HEADERATOM
-%%
-%%
-%  VARIABLE INTEGER ICOUNTER
+%  VARIABLE INTEGER ICOUNTER INEXTS ISER
+%  VARIABLE REAL RLAST RFIRST
+%  VARIABLE CHARACTER CATOM CLAST CFIRST
 %  EVALUATE ICOUNTER = 0
+%  EVALUATE INEXTS   = - 1
 %  COPY '#EDIT'
 %  CLEAR
-%  INSERT 'KEEP 1'
+%  INSERT 'MOVE '
 %  LOOP
-%    ON ERROR TERMINATE
-%    VERIFY BOK BXX ATOM BHELP
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%    CASE VALUE
-%      BLOCK      %BOK
-^^CO DISPOSE XRENUM
+%   ON ERROR TERMINATE
+%   VERIFY BOK BXX ATOM BHELP
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%   CASE VALUE
+%    BLOCK      %BOK
  * Applying new numbering order
+%%
+%%     Add 10N5 to all the moved atoms. Need to find the last moved atom.
+%%     Possibly do a keep on the rest. Need first non-moved atom.
+%%
+%      IF ( ICOUNTER .LT. N5 ) THEN
 %        COPY 'END'
-%        FINISH
-%      END BLOCK
-%      BLOCK      %BXX
+%%       Need to do something with remaining atoms.
+         Need to do something with remaining atoms.
+^^??     RMNS STATE
+%        VERIFY OFF ON
+%        GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%        IF ( VALUE .EQ. 1 ) THEN
+^^??       RMND STATE
+%          VERIFY ON OFF
+%          GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%          COPY '#EDIT'
+%          TRANSFER 'ADD ' // CHARACTER ( 10 * N5 ) // -
+                    ' ALL(SERIAL)' TO CRYSTALS
+%          COPY 'END'
+%%
+%%         Need to find first non-mover
+%          COPY '#GENERALEDIT 5'
+%          COPY 'LOCATE RECORDTYPE=101'
+%          COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%          LOOP ICOUNTER TIMES
+%            ON EDITERROR TERMINATE
+%            COPY 'NEXT'
+%          END LOOP
+%          COPY 'TRANSFER FROM OFFSET=0 TO CFIRST'
+%          COPY 'TRANSFER FROM OFFSET=1 TO RFIRST'
+%          COPY 'END'
+%%
+%          IF ( VALUE .EQ. 1 ) THEN
+%            COPY '#EDIT'
+%            TRANSFER 'DELETE ' // CFIRST // '(' // -
+                      CHARACTER INTEGER RFIRST // ') UNTIL LAST' TO CRYSTALS
+%            COPY 'END'
+%          ELSE
+%            COPY '#EDIT'
+%            TRANSFER 'AFTER ' // CFIRST // '(' // -
+                      CHARACTER INTEGER RFIRST // ')' TO CRYSTALS
+%            TRANSFER 'MOVE ' // CHARACTER INEXTS // ' ' // CFIRST // '(' // -
+                      CHARACTER INTEGER RFIRST // ') UNTIL LAST' TO CRYSTALS
+%            COPY 'END'
+%          END IF
+%        ELSE
+%%
+%%         Need to find last mover
+%          COPY '#GENERALEDIT 5'
+%          COPY 'LOCATE RECORDTYPE=101'
+%          COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%          LOOP ( ICOUNTER - 1 ) TIMES
+%            ON EDITERROR TERMINATE
+%            COPY 'NEXT'
+%          END LOOP
+%          COPY 'TRANSFER FROM OFFSET=0 TO CLAST'
+%          COPY 'TRANSFER FROM OFFSET=1 TO RLAST'
+%          COPY 'END'
+%%
+%          COPY '#EDIT'
+%          TRANSFER 'ADD ' // CHARACTER ( 10 * N5 ) // -
+                    ' FIRST(SERIAL) UNTIL ' // CLAST // -
+                    '(' // CHARACTER INTEGER RLAST // ')' TO CRYSTALS
+%          COPY 'END'
+%        END IF
+%        COPY '#EDIT'
+%        COPY 'MONITOR OFF'
+%        COPY 'CLASH FIXLATTER'
+%        COPY 'END'
+%      ELSE
+%%       All atoms clicked. Just add 10*N5.
+%        CLEAR
+%        INSERT 'ADD '
+%        STORE INTEGER ( 10 * N5 )
+%        INSERT ' ALL(SERIAL)'
+%        SEND
+%        COPY 'END'
+%      END IF
+^^CO   DISPOSE XRENUM
+%      FINISH
+%    END BLOCK
+%    BLOCK      %BXX
 ^^CO DISPOSE XRENUM
  * Keeping old atom numbering scheme.
-%        COPY 'QUIT'
-%        COPY 'END'
-%        COPY '#DISK'
-%        CLEAR
-%        INSERT 'RESET 5 '
-%        STORE FORMAT /(I6)/ LENGTH 6 INTEGER OLDSER
-%        SEND
-%        COPY 'END'
-%        COPY '#DISP'
-%        COPY 'END'
-%        FINISH
-%      END BLOCK
-%      BLOCK      %ATOM
-%        GET SILENT TEXT ' ' ' '
-%        SEND
-%TRANSFER '^^CO SET MODEL01 DISABLEATOM ' // CVALUE // ' YES' TO DISPLAY
-%        CLEAR
-%        INSERT 'CONTINUE '
-%        EVALUATE ICOUNTER = ICOUNTER + 1
-%      END BLOCK
-%      BLOCK      %HELP
-%        COPY '#SCRIPT XHELP1'
+%      COPY 'QUIT'
+%      COPY 'END'
+%      FINISH
+%    END BLOCK
+%    BLOCK      %ATOM
+%      GET SILENT NOSTORE TEXT ' ' ' '
+^^CW
+%      EVALUATE CATOM = CVALUE
+^^??   NFS TEXT
+%      GET SILENT NOSTORE INTEGER ' ' ' '
+%      IF INEXTS .LT. VALUE THEN
+%       EVALUATE INEXTS = VALUE
+%       TRANSFER 'Skipping to serial ' // CHARACTER ( INEXTS ) TO DISPLAY
+%       STORE INTEGER ( INEXTS - 10 * N5 )
+%       INSERT ' '
+%      END IF
+%      STORE CHARACTER CATOM
+%      SEND
+%      TRANSFER '^^CO SET MODEL01 DISABLEATOM ' // CATOM // ' YES' TO DISPLAY
+%      EVALUATE ICOUNTER = ICOUNTER + 1
+%      EVALUATE INEXTS = INEXTS + 1
+%      TRANSFER '^^CO SET NFS TEXT ' // CHARACTER ( INEXTS ) TO DISPLAY
+%      CLEAR
+%      INSERT 'CONTINUE '
+%    END BLOCK
+%    BLOCK      %HELP
+%      COPY '#SCRIPT XHELP1'
   Click on the atoms in the molecule in the order
   you want them to be numbered. When you are finished
   click DONE to apply the new numbering scheme, or
   CANCEL to keep the old numbering scheme.
-%        COPY '#SCRIPT XHELP2'
-%      END BLOCK
-%    END CASE
-%    IF ICOUNTER .EQ. N5 THEN
-%       EVALUATE LOOPEND = LOOPCOUNTER
-^^CO DISPOSE XRENUM
- * Applying new numbering order
-%        COPY 'END'
-%        FINISH
-%    END IF
+%      COPY '#SCRIPT XHELP2'
+%    END BLOCK
+%   END CASE
+%%   IF ICOUNTER .EQ. N5 THEN
+%%     EVALUATE LOOPEND = LOOPCOUNTER
+%%^^CO DISPOSE XRENUM
+%% * Applying new numbering order
+%%%     COPY 'END'
+%%%     FINISH
+%%%   END IF
 %  END LOOP
 %END SCRIPT
 
