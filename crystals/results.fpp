@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2001/03/02 17:04:34  CKP2
+C More cif patches
+C
 C Revision 1.11  2001/02/27 18:15:52  CKP2
 C DJW move call to PRC17 from PP5CO to calling routine because of clash
 C with SELECT - probably due to incorrect use of STORE by something. List
@@ -3342,13 +3345,13 @@ C
          WRITE (CPAGE(11,1)(:),'(A,13X,F5.2,''x'',F5.2,''x'',F5.2)') 'Si
      1ze',STORE(L30CD),STORE(L30CD+1),STORE(L30CD+2)
 C 
-         WRITE (CLINE,'(A,''density_diffrn'',  F5.2)') CBUF(1:15),
+         WRITE (CLINE,'(A,''density_diffrn'',  F6.3)') CBUF(1:15),
      1    STORE(L30GE+1)
          CALL XPCIF (CLINE)
          WRITE (CPAGE(9,1)(:),'(A,17X,F5.2)') 'Dx',STORE(L30GE+1)
 C 
          IF (STORE(L30GE).GT.ZERO) THEN
-            WRITE (CLINE,'(A,''density_meas'', F5.2)') CBUF(1:15),
+            WRITE (CLINE,'(A,''density_meas'', F6.3)') CBUF(1:15),
      1       STORE(L30GE)
          ELSE
             WRITE (CLINE,1850) CBUF(1:15),'density_meas','''','not measu
@@ -3357,12 +3360,12 @@ C
             CALL XPCIF (CLINE)
          END IF
 C 
-         WRITE (CLINE,'(A,''F_000'', F12.2)') CBUF(1:15),STORE(L30GE+2)
+         WRITE (CLINE,'(A,''F_000'', F13.3)') CBUF(1:15),STORE(L30GE+2)
          CALL XPCIF (CLINE)
 C 
          CBUF(1:15)='_exptl_absorpt_'
 C 
-         WRITE (CLINE,'(A,''coefficient_mu'',  F8.2)') CBUF(1:15),0.1*
+         WRITE (CLINE,'(A,''coefficient_mu'',  F10.3)') CBUF(1:15),0.1*
      1    STORE(L30GE+3)
          CALL XPCIF (CLINE)
          WRITE (CPAGE(10,1)(:),'(A,13X,F9.3)') 'Mu',0.1*STORE(L30GE+3)
@@ -3993,11 +3996,12 @@ CODE FOR XPCIF
       SUBROUTINE XPCIF(CLINE)
 C----- COMPRESS AND PUNCH THE STRING CLINE
       CHARACTER *(*) CLINE
+      CHARACTER *80 CTEMP
 \XUNITS
         K = KHKIBM(CLINE)
-        CALL XCREMS (CLINE, CLINE, NCHAR)
-        CALL XCTRIM (CLINE, NCHAR)
-        WRITE(NCFPU1, '(A)') CLINE(1:NCHAR)
+        CALL XCREMS (CLINE, CTEMP, NCHAR)
+        CALL XCTRIM (CTEMP, NCHAR)
+        WRITE(NCFPU1, '(A)') CTEMP(1:NCHAR)
       RETURN
       END
 CODE FOR CREFMK
