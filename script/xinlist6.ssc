@@ -10,18 +10,34 @@
 %% Initial checks. Is there any point proceeding.
 %  COPY '#SCRIPT XINBASIC'
 %  IF INBASICS .NE. 1 THEN
-
+ 
   Basic Cell, Space Group or composition information is missing.
   This SCRIPT will be abandoned without reading the reflections.
-
+% copy '#script btext'
+  EITHER:
+         a - choose CELL, SPACE GROUP & ATOMIC PROPERTIES off
+             the X-ray data menu,
+  OR:
+         b - choose the Shelx (INS of RES) option off 
+             the X-ray data menu,
+% copy '#script ntext'
+ 
 %    FINISH
 %  END IF
 %  IF LCANCEL .EQ. TRUE THEN
-
+ 
   Basic Cell, Space Group or composition information is missing.
   You must provide this information before data reduction can be
   performed.
-
+% copy '#script btext'
+  EITHER:
+         a - choose CELL, SPACE GROUP & ATOMIC PROPERTIES off
+             the X-ray data menu,
+  OR:
+         b - choose the Shelx (INS of RES) option off 
+             the X-ray data menu,
+% copy '#script ntext'
+ 
 %    FINISH
 %  END IF
 %%
@@ -51,18 +67,18 @@
 ^^WI   @ 1,1 GRID GD NROWS=3 NCOLS=2 OUTLINE='Format'
 ^^WI   {
 ^^WI    @ 1,1 RADIOBUTTON RDF1 'Free format' INFORM
-^^WI    @ 2,1 RADIOBUTTON RDF2 'Shelx (fixed format)' 
+^^WI    @ 2,1 RADIOBUTTON RDF2 'Shelx (fixed format)'
 ^^WI                               INFORM STATE=ON
 ^^WI    @ 3,1 RADIOBUTTON RDF3 'Other (fixed format):'
-^^WI                               INFORM 
+^^WI                               INFORM
 ^^WI    @ 3,2 EDITBOX L6FORM ' (3F4.0, 2F8.0) ' CHARS=24
 ^^WI                                         DISABLED=YES
-^^WI   }                                  
+^^WI   }
 ^^WI   @ 1,2 GRID GB NROWS=6 NCOLS=2
 ^^WI   {
 ^^WI    @ 2,2 BUTTON BOK '&Ok' DEFAULT
 ^^WI    @ 4,2 BUTTON BXX '&Cancel'
-^^WI    @ 6,2 BUTTON HELP1 'Help...' 
+^^WI    @ 6,2 BUTTON HELP1 'Help...'
 ^^WI   }
 ^^WI  }
 ^^WI }
@@ -72,7 +88,7 @@
 %% Now the window is displayed, we wait for any of the following
 %% things to happen:
 %% "BOK" - the OK button is pressed.
-%% "BXX" - the Cancel button is pressed.    
+%% "BXX" - the Cancel button is pressed.
 %% "BROWSE" - the browse button is pressed.
 %% "HELP1" - the help button is pressed.
 %% "RDF1" - free format is selected. (DISable L6FORM)
@@ -243,7 +259,7 @@
 %     BLOCK                         %HELP1%
 %       COPY '#SCRIPT XHELP1'
 X-ray observation data can be stored in several different formats:
-
+ 
 I's --               Intensities. The "raw" reflection data as
                      recorded by the diffractometer.
 F's and F-squared -- Structure factor amplitudes (or their square).
@@ -268,4 +284,4 @@ e.g. a file processed by RC93 will contain intensities.
 %   END CASE
 % END LOOP
 %END SCRIPT
-
+ 
