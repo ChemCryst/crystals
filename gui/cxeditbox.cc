@@ -8,6 +8,13 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.17  2001/12/12 14:18:40  ckp2
+//   RIC: Mousewheel support! (Guess who's just got a new mouse.)
+//   RIC: Also PGUP and PGDOWN and Mousewheel allow the textoutput to be
+//   scrolled *even* *if* there is a dialog blocking other input. V. useful
+//   as some dialog questions can be better answered after reviewing what
+//   has happened in the text output.
+//
 //   Revision 1.16  2001/07/14 18:43:53  ckp2
 //   Bugfix: User could not enter - symbol into numerical input edit boxes. Oops.
 //
@@ -92,7 +99,7 @@ void  CxEditBox::SetText( CcString text )
     else if( allowedInput == CXE_REAL_NUMBER) //If we have an real, read it in then write it out again to check.
     {
             double number = atof(text.ToCString());
-            text = CcString ( number );
+            text = CcString ( number, 8 );
     }
 
     int j=0;
