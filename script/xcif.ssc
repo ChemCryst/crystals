@@ -31,8 +31,8 @@
 %    END IF
 %%
 %    EVALUATE QTITLE = 'CIF routine'
-%    EVALUATE QLINE1 = 'Do you want to produce'
-%    EVALUATE QLINE2 = 'a reflection listing?'
+%    EVALUATE QLINE1 = 'Do you want to produce a reflection listing?'
+%    EVALUATE QLINE2 = '(output now goes to publish.fcf)'
 %    EVALUATE BUTTOK = '&Yes'
 %    EVALUATE BUTTXX = '&No'
 %    COPY '#SCRIPT XQUESTIO'
