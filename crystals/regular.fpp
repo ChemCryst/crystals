@@ -1,5 +1,9 @@
 
 c $Log: not supported by cvs2svn $
+c Revision 1.40  2005/01/23 08:29:11  rich
+c Reinstated CVS change history for all FPP files.
+c History for very recent (January) changes may be lost.
+c
 c Revision 1.2  2005/01/17 13:21:08  rich
 c Bring new cvs repository into line with old.
 c
@@ -1583,7 +1587,7 @@ c         WRITE(CMON,'(A,2I5,A,I5,A,I5)') 'Changing: ',I,J,
 c     1    KTYPE,KSERIL,
 c     2    STORE(LRENM+(J-1)*MDRENM+4),NINT(STORE(LRENM+(J-1)*MDRENM+5))
 c          CALL XPRVDU(NCVDU,1,0)
-c         CALL XMOVE (STORE(LRENM+(J-1)*MDRENM+4), STORE(L5+(I-1)*MD5),2)
+         CALL XMOVE (STORE(LRENM+(J-1)*MDRENM+4), STORE(L5+(I-1)*MD5),2)
          ISTORE(LRENM+(J-1)*MDRENM) = 0
          ISTORE(LRENM+(J-1)*MDRENM+1) = 0 
          GOTO 1748                         !Only match once.
