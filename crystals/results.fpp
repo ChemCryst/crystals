@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.75  2004/02/16 14:17:04  rich
+C Output list of missing reflections to GUI during #THLIM calculation, if
+C requested.
+C
 C Revision 1.74  2004/02/13 14:51:12  rich
 C Move TMIN calculation to before the place where it is used. Doh.
 C
@@ -1467,13 +1471,15 @@ C Work out the _atom_site_refinement_flags_occupancy for this atom.
             CALL PRTGRP(ISTORE(M5+14),IPRT,IGRP)
             WRITE(CASDA(1:1),'(A)') '.' !Atom site disorder assembly
             NASDA = 1
-            IF ( IGRP .NE. 0 ) THEN
+            IF ( IGRP .NE. 0 .AND. ABS (IGRP) .LE. 999
+     1                       .AND. ABS (IPRT) .LE. 999) THEN
                WRITE(CASDA,'(I4)') IGRP
                NASDA = 4
             END IF
             WRITE(CASDG(1:1),'(A)') '.' !Atom site disorder group
             NASDG = 1
-            IF ( IPRT .NE. 0 ) THEN
+            IF ( IPRT .NE. 0 .AND. ABS(IGRP) .LE. 999
+     1                       .AND. ABS(IPRT) .LE. 999 ) THEN
                WRITE(CASDG,'(I4)') IPRT
                NASDG = 4
             END IF
