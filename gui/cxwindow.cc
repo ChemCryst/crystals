@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.23  2001/06/18 12:57:39  richard
+//   ? operator was returning a NULL for non-modal window styles, should be a 0 as it is
+//   part of a bitwise OR operation.
+//
 //   Revision 1.22  2001/06/17 14:26:37  richard
 //   Re-jig window creation.
 //   New CxDestroyWindow function to ensure correct destruction sequence.
@@ -112,6 +116,7 @@ CxWindow::CxWindow( CrWindow * container, int sizeable )
     mWindowWantsKeys = false;
     m_PreDestroyed = false;
     m_TimerActive = 0;
+
 }
 
 void CxWindow::CxPreDestroy()
@@ -365,27 +370,19 @@ void CxWindow::OnClose(wxCloseEvent & event)
 #ifdef __CR_WIN__
 void CxWindow::OnSize(UINT nType, int cx, int cy)
 {
-
     LOGSTAT( "OnSize called " + CcString(cx) + " " + CcString(cy) );
     CFrameWnd::OnSize(nType, cx, cy);
     mProgramResizing = false;
     if ( nType == SIZE_MINIMIZED ) return;
-    int mN = ( GetMenu() != NULL ) ? GetSystemMetrics(SM_CYMENU) : 0; //Height of the menu, if there is one. Otherwise zero.
-    int cH = GetSystemMetrics(SM_CYCAPTION);
-    int bT = GetSystemMetrics(SM_CXSIZEFRAME); //I think this is the maximum from SM_CXBORDER, SM_CXEDGE, SM_CXDLGFRAME...
 #endif
 
 #ifdef __BOTHWX__
 void CxWindow::OnSize(wxSizeEvent & event)
 {
       LOGSTAT( "OnSize called " + CcString(event.GetSize().x) + " " + CcString(event.GetSize().y) );
+      int cx,cy;
       mProgramResizing = false;
-      int cx = event.GetSize().x;
-      int cy = event.GetSize().y;
-      wxSystemSettings ss;
-      int mN = ( GetMenuBar() != NULL ) ? ss.GetSystemMetric(wxSYS_MENU_Y) : 0;
-      int cH = ss.GetSystemMetric(wxSYS_CAPTION_Y);
-      int bT = ss.GetSystemMetric(wxSYS_FRAMESIZE_X);
+      GetClientSize(&cx,&cy); //Onsize is whole window - we only want this bit.
 #endif
 
     ((CrWindow*)ptr_to_crObject)->ResizeWindow( cx ,cy );
@@ -553,11 +550,15 @@ void CxWindow::AdjustSize(CcRect * size)
 //              This the test      ?       value if test is true : value if false
 #endif
 #ifdef __BOTHWX__
-      wxSystemSettings ss;
-      int mN = ( GetMenuBar() != NULL ) ? ss.GetSystemMetric(wxSYS_MENU_Y) : 0;
-      int cH = ss.GetSystemMetric(wxSYS_CAPTION_Y);
-      int bT = ss.GetSystemMetric(wxSYS_FRAMESIZE_X);
+// The system metrics aren't implemented yet!
+       int mN = ( GetMenuBar() ) ? 20 : 0;
+       int cH = 15;
+       int bT = 4;
+//      int mN = ( GetMenuBar() != NULL ) ? wxSystemSettings::GetSystemMetric(wxSYS_MENU_Y) : 0;
+//      int cH = wxSystemSettings::GetSystemMetric(wxSYS_CAPTION_Y);
+//      int bT = wxSystemSettings::GetSystemMetric(wxSYS_FRAMESIZE_X);
 #endif
+ 
     size->mRight  = size->Right()  + (2*bT);
     size->mBottom = size->Bottom() + ((2*bT)+cH+mN);
 
