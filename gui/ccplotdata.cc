@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.26  2003/12/09 09:51:54  rich
+// Fix colours of data series in plots if > 6 series.
+//
 // Revision 1.25  2003/09/16 19:15:36  rich
 // Code to thin out labels on the x-axis of graphs to prevent overcrowding.
 // Seems to slow down the linux version - will investigate on Windows.
@@ -1019,7 +1022,7 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 
         int yroffset   = 0;
         
-        if(m_NumberOfYAxes == 2) yroffset = (2400 - ygaptop - ygapbottom)/(m_AxisData[Axis_YR].m_NumDiv);
+        if(m_NumberOfYAxes == 2) yroffset = (2400 - ygaptop - ygapbottom)/(CRMAX(1,m_AxisData[Axis_YR].m_NumDiv));
 
         // axis dimensions after rounding
         int axisheight = ydivoffset * (m_AxisData[Axis_YL].m_NumDiv);               
