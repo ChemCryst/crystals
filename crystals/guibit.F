@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.21  1999/09/22 16:11:37  ckp2
+C RIC: Modified bond length tolerances to match Cameron, except that
+C bonds shorter than 0.5*(sum of cov radii) will not be drawn.
+C
 C Revision 1.20  1999/08/03 09:17:18  richard
 C RIC: Pass the SPARE value to the GUI (if available), otherwise pass the
 C covalent radii. Spare is scaled by 0.01 to display on an angstrom scale.
@@ -679,8 +683,10 @@ C      1 WHEN LIST 1 IS FORMED
 C      2 WHEN THE GUI IS INITIALISED
 C (For example, the graphics window may be closed or even unimplemented)
 C
+CDJWDEC99 'ISSUPD' CAN  BE RESET BY '#SET AUTO = OFF/ON (VALUE 0/1)
 C
 C
+      IF (ISSUPD .EQ. 0 ) RETURN
       IF (.NOT.LUPDAT) RETURN
         IF (LNOUPD) THEN
                 LNOUPD = .FALSE.

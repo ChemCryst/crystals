@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  1999/10/22 11:47:26  ckp2
+C RIC: Uncommented the secret CSD stuff.
+C
 C Revision 1.14  1999/07/22 11:31:55  richard
 C RIC: Made sure that the 'Script running' message, (now 'Script Mode'), appears
 C after a read so that it doesn't replace useful Cameron status messages
@@ -1219,6 +1222,7 @@ C     15           OPENMESSAGE       'ISSFLM'
 C     16           PAUSE             'ISSPAS'
 C     17           EXPO(RT)          'ISSEXP'
 C     18           UEQU(IV)          'ISSUEQ'
+C     19           AUTO(UPDATE)      'ISSUPD'
 C
 C    THE NAMES OF THE ALLOWED FUNCTIONS ARE STORED IN THE ARRAY
 C    'KEYFNC'. EACH STORED NAME IS 8 'A1' WORDS LONG. ONLY THE FIRST 4
@@ -1240,13 +1244,13 @@ C      IFIRVL      NUMERIC VALUE ASSOCIATED WITH FIRST ALLOWED STRING
 C                  VALUE. SUBSEQUENT STRING VALUES ARE GIVEN INCREASING
 C                  NUMERIC VALUES
 C
-      DIMENSION KEYFNC(8,18)
+      DIMENSION KEYFNC(8,19)
       DIMENSION KEYVAL(4,21)
 C
-      DIMENSION ITPVAL(18)
-      DIMENSION ISTVAL(18)
-      DIMENSION NUMVAL(18)
-      DIMENSION IFIRVL(18)
+      DIMENSION ITPVAL(19)
+      DIMENSION ISTVAL(19)
+      DIMENSION NUMVAL(19)
+      DIMENSION IFIRVL(19)
 C
       DIMENSION VALUE(1)
 C
@@ -1262,12 +1266,12 @@ C
 \XIOBUF
 \XGUIOV
 C
-      DATA LFNC /8/, NFNC /18/, LUFNC /4/
+      DATA LFNC /8/, NFNC /19/, LUFNC /4/
 C
 C      MAPS        MONI(TOR)   LOG         PAGE        LIST(S)
 C      SPEE(D)     TIME        SRQ         TERM(INAL)   FILE(CASE)
 C      MESS(AGE)   PRIN(TER)   GENE(RATE)  OPEN(MESSAGE)
-C      PAUS(E)     EXPO(RT)      UEQU(IV)
+C      PAUS(E)     EXPO(RT)      UEQU(IV)  AUTO(UPDATE)
 C
       DATA KEYFNC(1,1) / 'M' / , KEYFNC(2,1) / 'A' /
       DATA KEYFNC(3,1) / 'P' / , KEYFNC(4,1) / 'S' /
@@ -1350,6 +1354,11 @@ C
       DATA KEYFNC(5,18) / 'I' / , KEYFNC(6,18) / 'V' /
       DATA KEYFNC(7,18) / ' ' / , KEYFNC(8,18) / ' ' /
 C
+      DATA KEYFNC(1,19) / 'A' / , KEYFNC(2,19) / 'U' /
+      DATA KEYFNC(3,19) / 'T' / , KEYFNC(4,19) / 'O' /
+      DATA KEYFNC(5,19) / 'U' / , KEYFNC(6,19) / 'P' /
+      DATA KEYFNC(7,19) / 'D' / , KEYFNC(8,19) / 'T' /
+C
       DATA LVAL / 4 / , NVAL / 21 /
 C
 C      LIST        NONE        CORE        OFF         ON
@@ -1409,9 +1418,9 @@ C
       DATA ITPVAL(10) / 1 / , ITPVAL(11) / 1 /
       DATA ITPVAL(12) / 1 / , ITPVAL(13) / 1 / , ITPVAL(14) / 1 /
       DATA ITPVAL(15) / 1 / , ITPVAL(16) / 2 / , ITPVAL(17) / 1 /
-      DATA ITPVAL(18) / 1 /
+      DATA ITPVAL(18) / 1 / , ITPVAL(19) / 1 /
 C
-C----- STARTING POSITIOON IN LIST OF KEYWORDS
+C----- STARTING POSITION IN LIST OF KEYWORDS
 C
       DATA ISTVAL(1)  /  1 / , ISTVAL(2)  /  4 / , ISTVAL(3)  /  4 /
       DATA ISTVAL(4)  /  0 / , ISTVAL(5)  /  8 / , ISTVAL(6)  /  6 /
@@ -1419,7 +1428,7 @@ C
       DATA ISTVAL(10) /  12 /, ISTVAL(11) / 17 /
       DATA ISTVAL(12) /   4 /, ISTVAL(13) /  4 / , ISTVAL(14) /  4 /
       DATA ISTVAL(15) /   4 /, ISTVAL(16) /  0 / , ISTVAL(17) / 4 /
-      DATA ISTVAL(18) /  20 /
+      DATA ISTVAL(18) /  20 /, ISTVAL(19) /  4 /
 C
 C----- NUMBER OF KEYWORDS PERMITTED
 C
@@ -1429,7 +1438,7 @@ C
       DATA NUMVAL(10) /  5/, NUMVAL(11) / 3/
       DATA NUMVAL(12) /  2/, NUMVAL(13) / 2/ , NUMVAL(14)  /  2 /
       DATA NUMVAL(15) /  2/, NUMVAL(16) / 0/ , NUMVAL(17)  /  2 /
-      DATA NUMVAL(18) /  2/
+      DATA NUMVAL(18) /  2/, NUMVAL(19) /  2/
 C
 C----- NUMERIC VALUE CORRESPONDING TO FIRST KEYWORD
 C
@@ -1439,7 +1448,7 @@ C
       DATA IFIRVL(10)  /  0 /, IFIRVL(11) / 0 /
       DATA IFIRVL(12)  /  0 /, IFIRVL(13) / -1 / , IFIRVL(14)  /  0 /
       DATA IFIRVL(15)  /  0 /, IFIRVL(16) /0/ , IFIRVL(17) / 0 /
-      DATA IFIRVL(18)  /  1 /
+      DATA IFIRVL(18)  /  1 /, IFIRVL(19)  /  0 /
 C
 C
 C
@@ -1557,6 +1566,8 @@ c              ENDIF
         ISSEXP = IRQVAL
       ELSE IF ( IRQFNC .EQ. 18 ) THEN
         ISSUEQ = IRQVAL
+      ELSE IF ( IRQFNC .EQ. 19 ) THEN
+        ISSUPD = IRQVAL
       ELSE
         GO TO 9920
       ENDIF
