@@ -83,44 +83,27 @@ CxModel::CxModel(CrModel* container)
 	m_drawing = false;
 	mBackBufferReady = 0;
 }
-// OPSignature:  CxModel:~CxModel() 
-	CxModel::~CxModel()
+
+CxModel::~CxModel()
 {
-//Insert your own code here.
 	mModelCount--;
 	delete [] matrix;
 
+      wglMakeCurrent(NULL,NULL);
+      wglDeleteContext(m_hGLContext);
+
 	HWND hWnd = GetSafeHwnd();
-//	HDC hDC = ::GetDC(hWnd);
 	::ReleaseDC(hWnd,hDC);
 
 	delete newMemDCBitmap;	
 	
-/*	if ( mOutlineWidget != nil )
-	{
-		delete mOutlineWidget;
-	}		*/
-//End of user code.         
 }
-// OPSignature: void CxModel:SetText( char *:text ) 
+
 void	CxModel::SetText( char * text )
 {
-//Insert your own code here.
-#ifdef __POWERPC__
-	Str255 descriptor;
-	
-	strcpy( reinterpret_cast<char *>(descriptor), text );
-	c2pstr( reinterpret_cast<char *>(descriptor) );
-	SetDescriptor( descriptor );
-#endif
-#ifdef __LINUX__
-	setText(text);
-#endif
-#ifdef __WINDOWS__
 	SetWindowText(text);
-#endif
-//End of user code.         
 }
+
 void	CxModel::SetGeometry( int top, int left, int bottom, int right )
 {
 	if((top<0) || (left<0))
@@ -791,10 +774,10 @@ BOOL CxModel::SetWindowPixelFormat(HDC hDC)
 	pixelDesc.nVersion = 1;
 
 	pixelDesc.dwFlags = PFD_DRAW_TO_WINDOW |
-//						PFD_DRAW_TO_BITMAP |
-						PFD_SUPPORT_OPENGL |
-						PFD_DOUBLEBUFFER |
-						PFD_STEREO_DONTCARE;
+//                        PFD_DRAW_TO_BITMAP |
+                          PFD_SUPPORT_OPENGL |
+                            PFD_DOUBLEBUFFER |
+                          PFD_STEREO_DONTCARE;
 
 	pixelDesc.iPixelType = PFD_TYPE_RGBA;
 	pixelDesc.cColorBits = 32;
