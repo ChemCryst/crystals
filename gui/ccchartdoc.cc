@@ -17,6 +17,10 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.8  2001/03/08 16:44:01  richard
+// General changes - replaced common functions in all GUI classes by macros.
+// Generally tidied up, added logs to top of all source files.
+//
 // Revision 1.7  2001/01/25 16:44:21  richard
 // Removed FASTPOLYF and E subroutines, which aren't used.
 //
@@ -32,6 +36,10 @@
 #include    "crgraph.h"
 #include    "ccchartobject.h"
 #include    "cccontroller.h"
+
+#ifdef __BOTHWX__
+#include <wx/thread.h>
+#endif
 
 CcChartDoc::CcChartDoc( )
 {
@@ -448,8 +456,10 @@ void CcChartDoc::Clear()
             delete theItem;
             theItem = (CcChartObject *)mCommandList->GetItem();
       }
-      if(attachedChart)
-            attachedChart->Clear();
+//Don't actually clear yet -- reduce flickering + not supposed to call GUI functions
+//from the crystals thread. (which we may be in right now...)
+//      if(attachedChart)
+//            attachedChart->Clear();
 }
 
 
@@ -594,9 +604,15 @@ void fastshow ( )
 void fastshow_ ( )
 #endif
 {
+#ifdef __BOTHWX__
+      ::wxMutexGuiEnter();
+#endif
       CcChartDoc * doc = (CcController::theController)->mCurrentChartDoc;
       if ( doc )
             doc->DrawView( );
+#ifdef __BOTHWX__
+      ::wxMutexGuiLeave();
+#endif
 }
 
 #ifdef __BOTHWIN__
