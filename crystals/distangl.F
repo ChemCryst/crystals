@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.64  2004/06/01 08:01:57  rich
+C Remove all writes to NCAWU
+C
 C Revision 1.63  2004/02/02 14:41:00  rich
 C Change Mogul syntax slightly.
 C Fix bug in L41 which missed symmetry related bonds in one
@@ -6934,6 +6937,8 @@ C--
 C--SET UP A FEW INITIAL POINTERS
       MAKE41=0         !Return value. Number of atoms found
       I5A=MPIV
+
+
 C--SET UP THE MAXIMUM AND MINIMUM VALUES FOR EACH DIRECTION FOR A DISTAN
       DO J=1,3
         BPD(J+3)=STORE(I5A+4)-AO/BPD(J)
@@ -6948,6 +6953,11 @@ C--SET UP THE MAXIMUM AND MINIMUM VALUES FOR EACH DIRECTION FOR A DISTAN
           EXIT
         END IF
       END DO
+
+
+C Check radii.
+      IF ( DAT1 .LT. 0.0 ) RETURN   ! R,L and M atoms for voids.
+      
 
       CALL PRTGRP(ISTORE(MPIV+14), MPIVPR, MPIVGR)
 
