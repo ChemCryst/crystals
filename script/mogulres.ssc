@@ -425,7 +425,7 @@
 %  CLEAR
 %  CASE NIN
 %   TRANSFER '^^WI SET MR_TYPE TEXT "Distance' // CAT // '"' TO DISPLAY
-%   TRANSFER '^^WI SET MR_TYPE TEXT "Angle' // CAT // '"' TO DISPLAY
+%   TRANSFER '^^WI SET MR_TYPE TEXT "Angle at' // CAT // '"' TO DISPLAY
 %   TRANSFER '^^WI SET MR_TYPE TEXT "Torsion' // CAT // '"' TO DISPLAY
 %  END CASE
 %  OUTPUT
