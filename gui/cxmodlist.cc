@@ -66,7 +66,7 @@ void CxModList::AddCols()
     colHeader[6] = "occ";
     colHeader[7] = "Type";
     colHeader[8] = "Ueq";
-    colHeader[9] = "Refine";
+    colHeader[9] = "Residue";
     colHeader[10] = "Part";
     colHeader[11] = "Spare";
 

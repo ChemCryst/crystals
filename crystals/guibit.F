@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.64  2003/10/31 12:42:18  rich
+C If BONDTYPE is set to OFF, remove list of special bonds from list 41
+C (L41S), since this bit is only ever changed by the BONDTY routine.
+C If bond type in L41 is zero, display 'unassigned' on model, rather
+C than memory access violation.
+C
 C Revision 1.63  2003/10/30 11:28:37  rich
 C Dynamically update Input/Edit menu items in the X-ray data
 C menu, to reflect whether they can be input or edited.
@@ -1016,7 +1022,7 @@ C                  STORE(I5+3) = 0.0
 #DVF     3           AXES(1,2),AXES(2,2),AXES(3,2),
 #DVF     3           AXES(1,3),AXES(2,3),AXES(3,3),
 #DVF     4           STORE(I5+4),STORE(I5+5),STORE(I5+6),
-#DVF     5           ISTORE(I5+15),ISTORE(I5+14), UEQUIV, STORE(I5+13) )
+#DVF     5           ISTORE(I5+16),ISTORE(I5+14), UEQUIV, STORE(I5+13) )
 
                ELSE IF ( NINT(STORE(I5+3)) .EQ. 2 ) THEN
 
