@@ -1,3 +1,4 @@
+C $Log: not supported by cvs2svn $
 CODE FOR CHINIT
       SUBROUTINE CHINIT(N,M,IR,IG,IB)
 \XCHTAP
@@ -243,68 +244,70 @@ C     1           YFOFC(NSOFAR,1),YFOFC(NSOFAR,2),'^^EN'
       RETURN
       END
 C
-CODE FOR GUI
-      SUBROUTINE GUI(CLINE)
-C Handle the commands from the GUI, and from the SCRIPTS.
-\STORE
-\ISTORE
-\XUNITS
-\XIOBUF
-\XLST01
-\XLST05
-\XCONST
+
+cCODE FOR GUI
+c      SUBROUTINE GUI(CLINE)
+cC Handle the commands from the GUI, and from the SCRIPTS.
+c\STORE
+c\ISTORE
+c\XUNITS
+c\XIOBUF
+c\XLST01
+c\XLST05
+c\XCONST
+cC
+c      CHARACTER*512 CUSTOR
+c      CHARACTER*80 CLINE
+c\GUISAV
+c\XGUIOV
+c\QSTORE
+cC
+c      CALL XCTRIM (CLINE,ILEN)
+cC
+cC If this line is continued store it and process later.
+c      IF(CLINE(ILEN-2:ILEN-1).EQ.'++') THEN
+c            CSTORE(PSTORE:PSTORE+ILEN-3) = CLINE(1:ILEN-3)
+c            PSTORE = PSTORE + ILEN - 3
+c            WRITE ( CMON, '(A)')'Storing data'
+c            CALL XPRVDU(NCVDU, 1,0)
+c            RETURN
+c      ELSE
+c            CSTORE(PSTORE:PSTORE+ILEN) = CLINE(1:ILEN)
+c            PSTORE = PSTORE + ILEN
+c            WRITE ( CMON, '(A)') CLINE(ILEN-2:ILEN-1)
+c            CALL XPRVDU(NCVDU, 1,0)
+c            WRITE ( CMON, '(A)')'Processing data'
+c            CALL XPRVDU(NCVDU, 1,0)
+c            CALL XCCUPC ( CSTORE, CUSTOR )
+c      ENDIF
+cC
+cC Branch on the type of operation
+cC
+c      IF(CUSTOR(1:5).EQ.'LOAD1') THEN
+c            WRITE ( CMON, '(A)')'^^TX Calling XFAL01^^EN'
+c            CALL XPRVDU(NCVDU, 1,0)
+c            CALL XFAL01
+c      ELSE IF (CUSTOR(1:5).EQ.'LOAD5') THEN
+c            WRITE ( CMON, '(A)')'^^TX Calling XFAL05^^EN'
+c            CALL XPRVDU(NCVDU, 1,0)
+c            LUPDAT = .TRUE.
+c            CALL XFAL05
+c      ELSE IF (CUSTOR(1:4).EQ.'MENU') THEN
+cC For now just copy the rest of the line to the menu channel.
+cC It would be nice to integrate the commands with script commands.
+c            WRITE ( CMON, '(3A)')'^^MN',CSTORE(6:PSTORE),'^^EN'
+c            CALL XPRVDU(NCVDU, 1,0)
+c      ELSE IF (CUSTOR(1:10).EQ.'NOGRUPDATE') THEN
+c            LUPDAT = .FALSE.
+c      ENDIF
+cC
+c      PSTORE = 1
+c      CSTORE = ' '
+c      CLINE = ' '
+c      RETURN
+c      END
 C
-      CHARACTER*512 CUSTOR
-      CHARACTER*80 CLINE
-\GUISAV
-\XGUIOV
-\QSTORE
-C
-      CALL XCTRIM (CLINE,ILEN)
-C
-C If this line is continued store it and process later.
-      IF(CLINE(ILEN-2:ILEN-1).EQ.'++') THEN
-            CSTORE(PSTORE:PSTORE+ILEN-3) = CLINE(1:ILEN-3)
-            PSTORE = PSTORE + ILEN - 3
-            WRITE ( CMON, '(A)')'Storing data'
-            CALL XPRVDU(NCVDU, 1,0)
-            RETURN
-      ELSE
-            CSTORE(PSTORE:PSTORE+ILEN) = CLINE(1:ILEN)
-            PSTORE = PSTORE + ILEN
-            WRITE ( CMON, '(A)') CLINE(ILEN-2:ILEN-1)
-            CALL XPRVDU(NCVDU, 1,0)
-            WRITE ( CMON, '(A)')'Processing data'
-            CALL XPRVDU(NCVDU, 1,0)
-            CALL XCCUPC ( CSTORE, CUSTOR )
-      ENDIF
-C
-C Branch on the type of operation
-C
-      IF(CUSTOR(1:5).EQ.'LOAD1') THEN
-            WRITE ( CMON, '(A)')'^^TX Calling XFAL01^^EN'
-            CALL XPRVDU(NCVDU, 1,0)
-            CALL XFAL01
-      ELSE IF (CUSTOR(1:5).EQ.'LOAD5') THEN
-            WRITE ( CMON, '(A)')'^^TX Calling XFAL05^^EN'
-            CALL XPRVDU(NCVDU, 1,0)
-            LUPDAT = .TRUE.
-            CALL XFAL05
-      ELSE IF (CUSTOR(1:4).EQ.'MENU') THEN
-C For now just copy the rest of the line to the menu channel.
-C It would be nice to integrate the commands with script commands.
-            WRITE ( CMON, '(3A)')'^^MN',CSTORE(6:PSTORE),'^^EN'
-            CALL XPRVDU(NCVDU, 1,0)
-      ELSE IF (CUSTOR(1:10).EQ.'NOGRUPDATE') THEN
-            LUPDAT = .FALSE.
-      ENDIF
-C
-      PSTORE = 1
-      CSTORE = ' '
-      CLINE = ' '
-      RETURN
-      END
-C
+
 CODE FOR GUIBLK
       BLOCK DATA GUIBLK
 \GUISAV
