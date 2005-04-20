@@ -7,6 +7,10 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.30  2005/01/23 10:20:24  rich
+// Reinstate CVS log history for C++ files and header files. Recent changes
+// are lost from the log, but not from the files!
+//
 // Revision 1.1.1.1  2004/12/13 11:16:17  rich
 // New CRYSTALS repository
 //
@@ -323,6 +327,9 @@ void CcPlotBar::DrawView(bool print)
         int ysorig = 0;
         float ysorigval = 0;
 
+        // call the axis drawing code (draw on top of data bars)
+        m_Axes.DrawAxes(attachedPlot);      
+
         // loop first through the series
         for(j=0; j<m_NumberOfSeries; j++)
         {
@@ -380,8 +387,6 @@ void CcPlotBar::DrawView(bool print)
             }
         }
 
-        // call the axis drawing code (draw on top of data bars)
-        m_Axes.DrawAxes(attachedPlot);      
 
         // display all the above
         attachedPlot->Display();
