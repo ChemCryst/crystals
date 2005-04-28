@@ -211,7 +211,7 @@ LIST 4             4    0
     .TOLER             19    0    1    0    0  6.0
     .DS1               20    0    1    0    0  1.0
     .DS2               21    0    1    0    0  1.0
-    .QUASI             22    0    1    0    0  1.0
+    .QUASI             22    0    1    0    0  0.1
    2.PARAMETERS         1    1    0    0   -8    1  101    5    4
          1    1    1    1    1    1    0    0    0    0
 PARAMETERS THAT ARE USED TO COMPUTE THE WEIGHT FOR A GIVEN REFLECTION
@@ -2638,9 +2638,9 @@ HYDROGENS         13    3
               5        10
     .OUTPUTLIST        37    0    1    2    1         5
               5        10
-REGULARISE        27    3
+REGULARISE        27    4
    6    4096 CRYSTALSALTER5
-    1    2    5
+    1    2    5   41
    1.GROUP              0 9999    0    0    4   -1  101    5  165
          0    0    0    0    0    0    0    0    0    0
    2.TARGET             0 9999    0    0    4   -1  102    5  165
