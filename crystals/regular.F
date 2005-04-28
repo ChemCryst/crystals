@@ -1,5 +1,11 @@
 
 c $Log: not supported by cvs2svn $
+c Revision 1.42  2005/03/15 09:51:24  rich
+c Fix bug in regular's #MATCH when: (a) more than two molecules in asym unit
+c and (b) each molecule contains additional symmetry and (c) the molecules being
+c matched are not at the top of list 5. Use proper LATVC pointers to address list
+c 5.
+c
 c Revision 1.41  2005/03/01 21:45:20  rich
 c Fix renumbering of alike molecules. I'd commented out one line too many
 c at some recent point. R.
@@ -378,6 +384,7 @@ C -- LOAD LIST 50
 C -- LOAD LIST 5
       CALL XLDRO5(LA)
       IF ( IERFLG .LT. 0 ) GO TO 9250
+      IF (KHUNTR (41,0,IADDL,IADDR,IADDD,-1).LT. 0) CALL XFAL41
 C -- INITIALISE VALUES FOR REGULARISE
 C -- INDICATE THAT LIST 12 IS NOT TO BE USED
       INCLUDE 'IDIM12.INC'
