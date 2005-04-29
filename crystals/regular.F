@@ -1,5 +1,8 @@
 
 c $Log: not supported by cvs2svn $
+c Revision 1.43  2005/04/28 17:14:16  djw
+c Ensure that LIST 41 loads
+c
 c Revision 1.42  2005/03/15 09:51:24  rich
 c Fix bug in regular's #MATCH when: (a) more than two molecules in asym unit
 c and (b) each molecule contains additional symmetry and (c) the molecules being
@@ -2455,8 +2458,10 @@ C RMS deviation of bonds
       BNDMAX = 0.0
       BNDMIN = 1000.0
 
-      WRITE(CMON,'(/,A)')'Bond length deviations'
-      CALL XPRVDU(NCVDU,2,0)
+      IF (NOLD .GE. 1) THEN
+        IF (ISSPRT .EQ. 0) 
+     C  WRITE(NCWU,'(/,A)')'Bond length deviations'
+      ENDIF
 
       DO I=1,NOLD
         INDOLD=LOLD+MDOLD*(I-1)
@@ -2507,13 +2512,15 @@ C Find the pivot atom (M5A) in the first group.
           BNDMAX = MAX(BNDMAX, DEV)
           NUMB = NUMB + 1
 
-          WRITE(CMON,'(4(1X,A,I4),F8.3)')
+      IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(4(1X,A,I4),F8.3)')
      4                            ISTORE(MOPIV),NINT(STORE(MOPIV+1)),
      2                            ISTORE(MOBNd),NINT(STORE(MOBND+1)),
      1                            ISTORE(MNPIV),NINT(STORE(MNPIV+1)),
      3                            ISTORE(MNBND),NINT(STORE(MNBND+1)),
      1     DEV
-          CALL XPRVDU(NCVDU,1,0)
+C          CALL XPRVDU(NCVDU,1,0)
+      ENDIF
 C Really check if the bond MNBND - MNPIV is in the bond list.
           
           IFBND = 0
@@ -2547,9 +2554,10 @@ C Really check if the bond MNBND - MNPIV is in the bond list.
         END DO    DISTLOOP
       END DO
 
-
-      WRITE(CMON,'(/,A)')'Torsion angle deviations'
-      CALL XPRVDU(NCVDU,2,0)
+      IF (NOLD .GE. 1) THEN
+        IF (ISSPRT .EQ. 0) 
+     1  WRITE(NCWU,'(/,A)')'Torsion angle deviations'
+      ENDIF
 
 C RMS deviation of torsions.
 C 1. Find next bond (a1-a2) in LOLD.
@@ -2745,7 +2753,8 @@ C If angles differ by more than 180, take 360 - diff.
 
               NUMT = NUMT + 1
 
-              WRITE(CMON,'(8(1X,A,I4),F8.3)')
+              IF (ISSPRT .EQ. 0) THEN
+              WRITE(NCWU,'(8(1X,A,I4),F8.3)')
      4                            ISTORE(MOC),NINT(STORE(MOC+1)),
      2                            ISTORE(MOA),NINT(STORE(MOA+1)),
      4                            ISTORE(MOB),NINT(STORE(MOB+1)),
@@ -2754,16 +2763,23 @@ C If angles differ by more than 180, take 360 - diff.
      3                            ISTORE(MNA),NINT(STORE(MNA+1)),
      1                            ISTORE(MNB),NINT(STORE(MNB+1)),
      3                            ISTORE(MND),NINT(STORE(MND+1)),TN
-              CALL XPRVDU(NCVDU,1,0)
+              ENDIF
             END DO ATOMBLOOP
           END DO ATOMALOOP
         END DO DLOOP
       END DO
 
 
-
-      SBDEV = SQRT(BDEV / NUMB)
-      STDEV = SQRT(MIN(TDEVP,TDEVN) / NUMT)
+      IF (NUMB .GT. 0) THEN
+       SBDEV = SQRT(BDEV / NUMB)
+      ELSE
+       SBDEV = 0.
+      ENDIF
+      IF (NUMT .GT.0) THEN
+       STDEV = SQRT(MIN(TDEVP,TDEVN) / NUMT)
+      ELSE
+       STDEV = 0.
+      ENDIF
 
       IF ( TDEVP .GT. TDEVN ) THEN
         TORMAX = TOR2MAX
@@ -2776,6 +2792,9 @@ C If angles differ by more than 180, take 360 - diff.
       WRITE(CMON,'(17X,A/A,3F12.4)')'rms pos    rms bond     rms tors',
      1 ' Deviations  ',RMSDEV(4), SBDEV, STDEV
       CALL XPRVDU(NCVDU,2,0)
+      IF (ISSPRT .EQ. 0) 
+     1 WRITE(NCWU,'(17X,A/A,3F12.4)')'rms pos    rms bond     rms tors',
+     2 ' Deviations  ',RMSDEV(4), SBDEV, STDEV
 
 
       IF (IPCHRE.GE.0)THEN
@@ -3061,14 +3080,12 @@ C
 C
       INCLUDE 'QSTORE.INC'
       
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
       IF(SUMDEV .GE. 0.1)THEN
        NUMDEV =NUMDEV +1
        WRITE(CMON,'(A)') 'WARNING - poor initial fit' 
        CALL OUTCOL(9)
        CALL XPRVDU(NCVDU,1,0)
        CALL OUTCOL(1)
-
        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
       ENDIF
 
@@ -3076,9 +3093,10 @@ C
       LNBUF = KSTALL ( MDNEW )
       NMATCHED = 0
 
-      WRITE(CMON,'(1X,A,7X,A,8X,A,6X,A)')
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE(NCWU,'(1X,A,7X,A,8X,A,6X,A)')
      1 'Improving','onto','giving', 'distance'
-      CALL XPRVDU(NCVDU,1,0)
+      ENDIF
  
       IF (NOLD.LE.0) GO TO 200
 
@@ -3096,12 +3114,12 @@ C   I think this info is lost by now.)
      1        ( ISTORE(IONTO+4) .EQ. 1 ) .OR.
      2        ( I .EQ. 0 ) ) THEN              !Just match it.
 
-           WRITE(CMON,'(A,A4,7I9)')'Old atom: ',ISTORE(IOLD5),
+           IF (ISSPRT .EQ. 0) THEN
+           WRITE(NCWU,'(A,A4,7I9)')'Old atom: ',ISTORE(IOLD5),
      1     NINT(STORE(IOLD5+1)),NINT(STORE(IOLD5+13)), LSPARE,
      2     ISTORE(IONTO+1),ISTORE(IONTO+2),
      3     ISTORE(IONTO+3),ISTORE(IONTO+4)
-
-           CALL XPRVDU(NCVDU,1,0)
+           ENDIF
 
            DO J=I,NNEW-1           !Loop over unmatched new atoms.
              INDNEW=LNEW+MDNEW*J         !Address of XYZnew
@@ -3121,9 +3139,10 @@ C Only consider atom if spare matches when LSPARE is one.
                  DISTSQ=DISTSQ+DELTSQ
                END DO
 
-               WRITE(CMON,'(A,A4,2I9,F15.8)')'Match: ',ISTORE(INEW5),
+               IF (ISSPRT .EQ. 0) THEN
+               WRITE(NCWU,'(A,A4,2I9,F15.8)')'Match: ',ISTORE(INEW5),
      1         NINT(STORE(INEW5+1)), J, DISTSQ
-               CALL XPRVDU(NCVDU,1,0)
+               ENDIF
              
                IF (DISTSQ.LT.DISMIN) THEN
                  DISMIN=DISTSQ
@@ -3163,11 +3182,12 @@ C Swap atoms at LMAP(I) and LMAP(J)
 
           NMATCHED = NMATCHED + 1
 
-          WRITE(CMON,
+          IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,
      1    '( A4,I4,I10,3X,A4,I4,I10,3X,F7.4)')
      1    STORE(IOLD5),NINT(STORE(IOLD5+1)),NINT(STORE(IOLD5+13)),
      2    STORE(INEW5),NINT(STORE(INEW5+1)),NINT(STORE(INEW5+13)),DISMIN
-          CALL XPRVDU(NCVDU,1,0)
+          ENDIF
 
          ELSE
 
@@ -3272,11 +3292,12 @@ c                       CALL XPRVDU(NCVDU,1,0)
                           DISTSQ=DISTSQ+DELTSQ
                          END DO
 
-                         WRITE(CMON,'(A,2(A4,I6,1x),F8.3)')
+                         IF (ISSPRT .EQ. 0) THEN
+                         WRITE(NCWU,'(A,2(A4,I6,1x),F8.3)')
      1                    'Possible match: ',
      1                   ISTORE(INEWB), NINT(STORE(INEWB+1)),
      1                   ISTORE(IOLDB), NINT(STORE(IOLDB+1)), DISTSQ
-                         CALL XPRVDU(NCVDU,1,0)
+                         ENDIF
              
                          IF (DISTSQ.LT.DISMIN) THEN
                            DISMIN=DISTSQ
@@ -3333,13 +3354,13 @@ C Rearrange the 'old' vectors:
                     STORE(LRENM+NMATCHED*MDRENM+4)=STORE(INEW5)
                     STORE(LRENM+NMATCHED*MDRENM+5)=STORE(INEW5+1)+ZORIG
 
-
-                    WRITE(CMON,
+                    IF (ISSPRT .EQ. 0) THEN
+                    WRITE(NCWU,
      1              '(A,2(A4,I4,I10,3X),F7.4)'), 'Matched: ',
      1              STORE(IOLD5),NINT(STORE(IOLD5+1)),
      1              NINT(STORE(IOLD5+13)), STORE(INEW5),
      1              NINT(STORE(INEW5+1)),NINT(STORE(INEW5+13)),DISMIN
-                    CALL XPRVDU(NCVDU,1,0)
+                    ENDIF
 
 
 c                    WRITE(CMON, '(2(A,A4,I4,3X))'),
@@ -4480,13 +4501,15 @@ c        END DO
           END IF
         END DO
 
+        IF (ISSPRT .EQ. 0) THEN
         WRITE(CMON,'(3(A,I6),A)')'ID Cycle ',NCYCLE,' has ',
      1  IDCOUN,' unique IDs and ',IDUNIQ,' unique pairs of atoms.'
-        CALL XPRVDU(NCVDU,1,0)
+        ENDIF
 
         IF ( IDCOUN*2 .EQ. NATMS ) THEN
           WRITE(CMON,'(A)') 'All pairs unique. Stopping.'
           CALL XPRVDU(NCVDU,1,0)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
           DO I = 0, N5-1       ! Copy SPARE into BEST
             ISTORE(LBEST+I) = NINT( STORE(L5+13+I*MD5) )
           END DO
