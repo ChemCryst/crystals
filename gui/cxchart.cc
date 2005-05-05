@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.30  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.3  2005/01/17 14:19:37  rich
 //   Bring new repository into line up-to-date with old. (Fix Cameron font face and size.)
 //
@@ -828,10 +832,10 @@ void CxChart::OnMouseMove( wxMouseEvent & event )
         CRgn oldrgn, newrgn;
 #endif
 #ifdef __BOTHWX__
-            wxClientDC dc(this); // device context for painting
+        wxClientDC dc(this); // device context for painting
 #endif
 
-            CcPoint points[4];
+        CcPoint points[4];
         points[0] = mLastPolyModePoint;
         points[1] = mCurrentPolyModeLineEndPoint;
         points[2].x = mCurrentPolyModeLineEndPoint.x + 2;
@@ -840,14 +844,15 @@ void CxChart::OnMouseMove( wxMouseEvent & event )
         points[3].y = mLastPolyModePoint.y + 2;
 
 #ifdef __CR_WIN__
-            oldrgn.CreatePolygonRgn((LPPOINT) points, 4, ALTERNATE);
+        oldrgn.CreatePolygonRgn((LPPOINT) points, 4, ALTERNATE);
         dc.InvertRgn(&oldrgn);
 #endif
 #ifdef __BOTHWX__
-
+        dc.SetLogicalFunction(wxINVERT);
+        dc.DrawLines(4, (wxPoint*) points);
 #endif
 
-            mCurrentPolyModeLineEndPoint = CcPoint(point.x,point.y);
+        mCurrentPolyModeLineEndPoint = CcPoint(point.x,point.y);
         points[0] = mLastPolyModePoint;
         points[1] = mCurrentPolyModeLineEndPoint;
         points[2].x = mCurrentPolyModeLineEndPoint.x + 2;
@@ -856,8 +861,12 @@ void CxChart::OnMouseMove( wxMouseEvent & event )
         points[3].y = mLastPolyModePoint.y + 2;
 
 #ifdef __CR_WIN__
-            newrgn.CreatePolygonRgn((LPPOINT) points, 4, ALTERNATE);
+        newrgn.CreatePolygonRgn((LPPOINT) points, 4, ALTERNATE);
         dc.InvertRgn(&newrgn);
+#endif
+#ifdef __BOTHWX__
+        dc.DrawLines(4, (wxPoint*) points);
+        dc.SetLogicalFunction(wxCOPY);
 #endif
     }
     else if(mPolyMode == 1)
