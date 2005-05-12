@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2005/03/08 12:50:48  stefan
+C 1. Rewrote the accumalation routine for the LHS but also rewrote it for the param_list method so that it now handles a blocked normal matrix.
+C Needs more testing but to the best of my knowledge works perfectly.
+C
 C Revision 1.6  2005/02/09 15:59:36  stefan
 C 1. Mistakenly I have been adding the diagonal elements in twice when doing the paramlist refinment. Fixed now.
 C
@@ -133,25 +137,16 @@ C============ Called Functions ===========
              const = derv(row)    ! Get the constant term for this row.
              if (PARAM_LIST(param_l_pos) .lt. 0) then !if the size of the param list element is < 0 
 C  Add in the whole row.
-                   do column = row, mat_block_dim     ! Run through all the columns of this block
-                      mat_block(mat_pos) = mat_block(mat_pos)+ derv(
-     1                  column)*const                 ! Sum next term on to mat element
-                      mat_pos = mat_pos + 1           ! Move on to next mat_pos
-                   end do
-                   param_l_pos = param_l_pos + 1      ! Move on to next list of parameters in param_list
+                  call add_in_row(const, derv(row), mat_block(mat_pos),
+     1              mat_block_dim-(row-1))
+                  mat_pos = mat_pos +  mat_block_dim-(row-1)    ! Move on to next row
+                  param_l_pos = param_l_pos + 1                 ! Move on to next list of parameters in param_list
              else
 C Add in some of the row
-                   mat_block(mat_pos) = mat_block(mat_pos) + derv(row)*
-     1             const                              ! Add in diagonal element as we know it will need to be
-                   do param_l_elem = 1, PARAM_LIST(param_l_pos) ! Run through all the parameters in this list.
-                        column = param_list(param_l_pos+param_l_elem) -
-     1                   (first_row_pos-1)                      ! calculate the the correct column for this block from the current parameter in the list
-                        if (column .gt. mat_block_dim)          !if we are over the edge of the block then no need to go further
-     1                        exit
-                        mat_elem = (column - (row)) + mat_pos   ! Calculate the position in the matrix block
-                        mat_block(mat_elem) = mat_block(mat_elem) + 
-     1                  const * derv(column)                    ! Sum the next term into the normal matrix.
-                   end do
+                   call param_list_add_in_row(const, derv(row), 
+     1              mat_block(mat_pos), mat_block_dim-(row-1), 
+     2              PARAM_LIST(param_l_pos+1), PARAM_LIST(param_l_pos),
+     3              row + (first_row_pos-1))
                    mat_pos = mat_pos + (mat_block_dim -(row-1)) ! Move tht he next row in this block of the normal matrix
                    param_l_pos = param_l_pos + PARAM_LIST(param_l_pos)+1 ! Move to the next row of param lists
              end if
@@ -160,6 +155,49 @@ C Add in some of the row
        return
        end
        
+CODE FOR ADD_IN_ROW
+      subroutine add_in_row(const, deriv, nmrow, row_size)
+      implicit none
+      
+      integer row_size           ! The size of the row which should be the same for both the nm and the derivatives
+      
+      real const             ! The constant term for this row
+      real deriv(row_size) ! The array of derivatives for this row.
+      real nmrow(row_size) ! The array containing the normal matrix row.
+      
+      integer element        ! The element we are upto in this row.
+      
+      do element = 1, row_size
+            nmrow(element) = nmrow(element) + const*deriv(element)
+      end do
+      end
+      
+CODE FOR PARAM_LIST_ADD_IN_ROW
+      subroutine param_list_add_in_row(const, deriv, nmrow, row_size,
+     1  params, params_size, row_index)
+      implicit none
+      
+      integer row_size            ! The size of the normal matrix row passed
+      integer params_size         ! The number of parameters passed.
+      
+      real const                  ! The constant term for this row
+      real deriv(row_size)        ! The array of derivatives for this row.
+      real nmrow(row_size)        ! The array containing the normal matrix row.
+      integer params(params_size) ! The parameter links for this row.
+      integer row_index           ! Which row in the whole normal matrix we are at. Index from 1
+      integer element             ! The element in the paramlist which we are up to.
+      
+      integer row_element         ! Current element in the row
+      
+      nmrow(1) = nmrow(1) + const*deriv(1)      ! Add in the diagonal element
+      do element = 1, params_size
+            row_element = params(element)-(row_index-1)
+            if (row_element .gt. row_size) exit ! If the row element is greater then this row's length then stop.
+            nmrow(row_element) = nmrow(row_element) + 
+     1       const*deriv(row_element)
+      end do
+      end
+      
 CODE FOR XADRHS
        subroutine XADRHS(WDF, DERIVS, RMAT11, NDERIV)
 C--   ADD INTO THE R.H.S. OF THE NORMAL EQUATIONS
