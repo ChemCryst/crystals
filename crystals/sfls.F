@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.43  2005/03/08 13:03:45  stefan
+C 1. Replaced code for param-list accumalation with new call which can handle a blocked normal matrix.
+C
 C Revision 1.42  2005/02/10 15:07:04  djw
 C Warn user if scalefactor goes out of range
 C
@@ -685,10 +688,12 @@ cdjw0302 - allow twin with extparam:  NA=-1
             CALL XSET11(-1,1,1)
             IF ( IERFLG .LT. 0 ) GO TO 9900
             if (ISTORE(L33CD+13) .EQ. 0) then ! See if sparse is set to bond
-               iresults = nfl
-               i = KCHNFL(N11)
+               iresults = KSTALL(N11)
                NRESULTS = param_list_make(istore(IRESULTS), n11, JR, 
      1              JQ)
+C Allocate the rest of the memory we have already used. this is horrible but there
+C isn't any other way to do it unless I create a chain(linked list)
+               inewresult = KSTALL(NRESULT) 
             END IF
           ELSE                       ! WE ONLY NEED THE R.H.S. MATRIX=OLD (Old LHS will be loaded later)
             CALL XSET11(0,0,1)
