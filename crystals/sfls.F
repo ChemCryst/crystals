@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.44  2005/05/12 13:35:35  stefan
+C 1. The memory allocation for the parameter list is done a little better but still isn't perfect.
+C
 C Revision 1.43  2005/03/08 13:03:45  stefan
 C 1. Replaced code for param-list accumalation with new call which can handle a blocked normal matrix.
 C
@@ -688,12 +691,16 @@ cdjw0302 - allow twin with extparam:  NA=-1
             CALL XSET11(-1,1,1)
             IF ( IERFLG .LT. 0 ) GO TO 9900
             if (ISTORE(L33CD+13) .EQ. 0) then ! See if sparse is set to bond
-               iresults = KSTALL(N11)
-               NRESULTS = param_list_make(istore(IRESULTS), n11, JR, 
+C               iresults = KSTALL(N11)
+C               print *, N11, NRESULTS
+C              NRESULTS = param_list_make(istore(IRESULTS), N11, JR,
+C     1              JQ)
+               NRESULTS = param_list_make(IRESULTS, JR, 
      1              JQ)
+            print *, N11, NRESULTS
 C Allocate the rest of the memory we have already used. this is horrible but there
 C isn't any other way to do it unless I create a chain(linked list)
-               inewresult = KSTALL(NRESULT) 
+C               inewresult = KSTALL(NRESULT) 
             END IF
           ELSE                       ! WE ONLY NEED THE R.H.S. MATRIX=OLD (Old LHS will be loaded later)
             CALL XSET11(0,0,1)
