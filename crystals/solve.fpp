@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.29  2005/03/07 09:04:50  djw
+C Add (commented) code for outputting shift info to PCH file for potential future use in pre-conditioning
+C
 C Revision 1.28  2005/03/03 18:10:09  stefan
 C 1. Made the punching of the normal matrix a little more advanced so that it now outputs all the different blocks of the matrix
 C
@@ -392,7 +395,14 @@ C----- SET THE RUNNING ADDRESS FOR STEPPING THROUGH THE MATRIX
 C
       if (ISTORE(L33CD+5) .eq. 1) then
             call open_normalfile(73)
-            write(73, '(''N={}'')')
+            write(73, '(''N={};'')')
+            if (ISTORE(L33CD+15) .eq. 1 ) then
+                  write(73, '(''NNorm={};'')')
+                  write(73, '(''VCNorm={};'')')
+            end if
+            write(73, '(''VC={};'')')
+            write(73, '(''NormVect={};'')')
+            write(73, '(''NBackNorm={};'')')
       end if
       DO 3500 JZ=1,N12B
 C---- RESET MATRIX AREA
@@ -425,70 +435,41 @@ C----- ALLOCATE WORK SPACE
 C--BRING DOWN THE MATRIX - REMEMBER MD11 INDICATES SINGLE OR DOUBLE PREC
 
       CALL XDOWNF (M11DB, XSTR11 (MD11*L11C-MD11+1), MD11*NELEM)
-C---------------STEFAN PANTOS INSERTING ZERO VALUES INTO THE NORMAL MATRIX FOR SMALL VALU
-      IF (STORE(L33CD+13) .EQ. 1.0) THEN
-         ZEROED_COUNT = 0
-         DO YCOUNT= 0,(JY-1)-1
-C     L11C,LAST_ELEMENT
-            DO XCOUNT = ycount+1, (JY-1)
-                  STR11(L11C+JY*YCOUNT-(YCOUNT+(YCOUNT*(YCOUNT-1))/2)
-     1              +xCOUNT) = 0
-                  ZEROED_COUNT = ZEROED_COUNT + 1
-            ENDDO
-         ENDDO
-             PRINT *, ZEROED_COUNT, ' elements zeroed with', 
-     1 ' to make it diagonal'
-      ELSEIF (STORE(L33CD+13) .GT. 0) THEN
-C----------CALCULATE THE THREASHOLD FROM THE RANGE OF VALUES
-
-         THRESH_HOLD = STORE(L33CD+13)
-         ZEROED_COUNT = 0
-         DO YCOUNT= 0,(JY-1)
-C     L11C,LAST_ELEMENT
-            DO XCOUNT = ycount, (JY-1)
-               SQRT_Mii = SQRT(STR11(L11C+JY*xCOUNT-(xCOUNT+(xCOUNT*
-     1          (xCOUNT-1))/2)+xCOUNT))
-               SQRT_Mjj = SQRT(STR11(L11C+JY*YCOUNT-(YCOUNT+(YCOUNT*
-     1          (YCOUNT-1))/2)+yCOUNT))
-               Mij = STR11(L11C+JY*YCOUNT-(YCOUNT+(YCOUNT*
-     1          (YCOUNT-1))/2)+xCOUNT)
-               RHS = THRESH_HOLD*SQRT_Mjj*SQRT_Mii
-C               if (xcount .lt. 10 .and. ycount .lt. 10) print *, Mij, 
-C     1          ' ', SQRT_Mii, ' ', SQRT_Mjj, ' = ', THRESHHOLD, ' LT', 
-C     2          (ABS(Mjj) .LT. RHS), ' ', (SQRT_Mjj*SQRT_Mii)
-               IF (ABS(Mij) .LT. RHS)THEN
-                  STR11(L11C+JY*YCOUNT-(YCOUNT+(YCOUNT*(YCOUNT-1))/2)
-     1              +xCOUNT) = 0
-                  ZEROED_COUNT = ZEROED_COUNT + 1
-               ENDIF
-c               ZEROED_COUNT = ZEROED_COUNT + 1
-            ENDDO
-c            ZEROED_COUNT = ZEROED_COUNT + 1
-         ENDDO
-         PRINT *, ZEROED_COUNT, ' elements zeroed with', 
-     1 ' thresh hold at ', THRESH_HOLD
-      i = KSCTRN(1, 'SFLS:ZEROED', ZEROED_COUNT, 1)
-      ENDIF
-c--------------OUTPUT THE NORMAL MATRIX HERE
+C     If we are going to threshhold the normal matrix then we do it here
+      if ( store(L33CD+16) .gt. 0 ) then
+            ZEROED_COUNT =  tri_matrix_apply_threshhold(STR11(L11C),
+     1       JY*(JY+1)/2, JY, store(L33CD+16))
+      end if
+C --- If we are doing matlab punching then do it here.      
       IF ( ISTORE(L33CD+5) .Eq. 1 ) THEN
-         write (73, '(''N{length(N)+1}=['')')
-         DO YCOUNT=0, JY-1
-            DO XCOUNT = 0, YCOUNT-1
-               WRITE(73, '(G16.8,'' ...'')')0
-            ENDDO
-            DO XCOUNT=YCOUNT, JY-1
-               WRITE(73, '(G16.8,'' ...'')')STR11(L11C+
-     1              JY*YCOUNT-(YCOUNT+(YCOUNT*(YCOUNT-1))/2)+xCOUNT)
-            ENDDO
-            if (YCOUNT .ne. JY-1) WRITE(73, '('';'')')
-         ENDDO
-         write (73, '('']'')')
-         write (73, '(A)')  'N{length(N)} = N{length(N)} +
-     1     triu(N{length(N)}, 1)'';'
+          call matlab_add_matrix_to_cell(73, STR11(L11C), JY*(JY+1)/2, 
+     1      JY, 'N')
       END IF
-
-C----------OUTPUT THE NORMAL MATRIX 
-
+Cc ---If we want to normalise the normal matrix do so...      
+C      if (ISTORE(L33CD+15) .eq. 1) then
+CC --- Allocate space for the normalisation vector
+C            ivector = KADD11( 1016, MD11, JY*2)   
+C            IF ( IERFLG .LT. 0 ) GO TO 9900 ! If there is an error do what david seems to do.
+C            call tri_matrix_normalise(str11(L11C), 
+C     1        JY*(JY+1)/2, JY, STR11(ivector))
+C            call matlab_add_vector_to_cell(73, STR11(ivector), JY,
+C     1            'NormVect')  
+CC-- If we are doing matlab punching then do it here.      
+C            if ( ISTORE(L33CD+5) .Eq. 1 ) then
+C                call matlab_add_matrix_to_cell(73, STR11(L11C), 
+C     1           JY*(JY+1)/2, JY, 'NNorm')
+C            end if
+C            call create_param_list_from_mat(str11(L11C), JY*(JY+1)/2,
+C     1       JY, 1, 0.0026D0)     ! The last but one parameter needs to be corrected as currently this will not handle multiple blocks
+C            call tri_matrix_normalise_with(str11(L11C), 
+C     1           JY*(JY+1)/2, JY, STR11(ivector))
+C            if ( ISTORE(L33CD+5) .Eq. 1 ) then
+C                call matlab_add_matrix_to_cell(73, STR11(L11C), 
+C     1           JY*(JY+1)/2, JY, 'NBackNorm')
+C            end if
+C      end if
+      
+      
       IF (JP .GT. 0 ) THEN
 C----- CHOOSE INVERTOR
             IF (METHOD .LE. 0) THEN
@@ -503,6 +484,28 @@ C----- COMPRESS INVERTED MATRIX
                CALL XMTCVT (INM, JY, 2, MD11)
             ENDIF
          ENDIF
+         
+c --- If we normalised the matrix then denormalise it      
+C         if (ISTORE(L33CD+15) .eq. 1 ) then
+CC               if ( ISTORE(L33CD+5) .Eq. 1 ) then
+C                   call matlab_add_matrix_to_cell(73, STR11(L11C), 
+C     1               JY*(JY+1)/2, JY, 'VCNorm')
+C               end if
+C               call matlab_add_vector_to_cell(73, STR11(ivector), JY,
+C     1            'NormVect')
+CC               call inv_diag(STR11(ivector), JY)
+C               call matlab_add_vector_to_cell(73, STR11(ivector), JY,
+C     1            'NormVect')
+C               call tri_matrix_normalise_with(str11(L11C), 
+C     1           JY*(JY+1)/2, JY, STR11(ivector))
+C         end if 
+         
+C-- If we are doing matlab punching then do it here.      
+         if ( ISTORE(L33CD+5) .Eq. 1 ) then
+            call matlab_add_matrix_to_cell(73, STR11(L11C), 
+     1            JY*(JY+1)/2, JY, 'VC')
+         end if
+                 
 2050     CONTINUE
          L11RC = KADD11(-102,MD11R, JY)
          M11R=L11RC
@@ -654,6 +657,12 @@ C--CHANGE TO THE NEXT BLOCK - UPDATE DISK ADDRESSES
          M12B=M12B+MD12B
 3500  CONTINUE
       if (ISTORE(L33CD+5) .eq. 1) then
+            write(73, '(''N=collectBlocks(N)'')')
+            if (ISTORE(L33CD+15) .eq. 1 ) then
+                  write(73, '(''NNorm=collectBlocks(NNorm);'')')
+                  write(73, '(''VCNorm=collectBlocks(VCNorm);'')')
+            end if
+            write(73, '(''VC=collectBlocks(VC);'')')
             CLOSE(73)
       end if
 C--PRINT THE OVERALL STATISTICS
