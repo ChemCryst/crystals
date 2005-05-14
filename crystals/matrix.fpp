@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.17  2005/05/13 12:03:23  stefan
+C 1. Added some of my own routines for accessing the triangular normal matrix or any other trianglare matrix.
+C
 C Revision 1.16  2005/02/27 21:28:10  rich
 C RIC: the WXS version would not refine at all. Fixed problem
 C in XCHOLS - compiler didn't recognise /0.1D1/ in a data statement. Changed
@@ -2205,7 +2208,7 @@ CODE FOR matlab_tri_mat
       
       integer xpos, ypos, maxpos, minpos, mat_elem
       
-      write (unit, '(A A)'), var_name, ' = ['
+      write (unit, '(A, '' = ['')'), var_name
       do xpos = 1, mat_dim
             do ypos = 1, mat_dim
                   if (mod(ypos, 6) .eq. 0) write (unit, '(A)'), '...'
@@ -2231,7 +2234,7 @@ CODE FOR matlab_vector
       real vector(vec_dim)
       integer pos
       
-      write (unit, '(A A)'), var_name, ' = ['
+      write (unit, '(A, '' = ['')'), var_name
       do pos = 1, vec_dim
             if (mod(pos, 6) .eq. 0) write (unit, '(A)'), '...'
             write (unit, '(G16.8$)'), vector(pos)
