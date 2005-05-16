@@ -5749,6 +5749,7 @@ hybridisation states of C are more clearly defined.
  TARGET Atom Specifications
  IDEAL  Atom Specifications
  RENAME offset number
+ CAMERON
  MAP Atom Specifications
  ONTO Atom Specifications
  SYSTEM a b c alpha beta gamma
@@ -5951,6 +5952,9 @@ hybridisation states of C are more clearly defined.
 #KNUMBER#
  If the number of atoms supplied on the following MAP and ONTO 
  directives does not match NUMBER, a warning is printed.
+#DCAMERON#
+ This matches atoms as in RENUMBER, but only creates CAMERON files
+ with atoms transformed into the common coordinate system.
 #DMAP  Atom Specifications#
  This specifies the atoms whose TYPE and SERIAL are to be propogated 
  into the ONTO atoms. The atoms can be in any order.
@@ -6050,7 +6054,8 @@ hybridisation states of C are more clearly defined.
 #D4 - Renaming a group of atoms#
  A second group of atoms is given new TYPES and SERIAL numbers 
  so that the atom names are related to  a previously named group.
-#In the example, the user has identified two sets of four non-coplanar 
+#P
+ In the example, the user has identified two sets of four non-coplanar 
  atoms in each 
  group e.g. C(1) with Q(103), C(3) with  Q(99) etc. The transformation 
  is then used to map the whole of the first group (C(1) until O(25)) onto 
@@ -6071,6 +6076,27 @@ hybridisation states of C are more clearly defined.
       \EDIT
       SORT SERIAL
       END
+#
+#D5 - Viewing matched molecules in CAMERON#
+ This does the mapping as RENAME, but doesn't
+ rename the atoms, just outputs CAMERON input files showing the two molecules
+ superimposed. Use as follows:
+#N   7#
+#J
+   \REGULARISE
+   target C(10) until C(16)
+   ideal  C(60) until C(76)
+   cameron
+   map    C(51) until C(99)
+   onto   C(1) until C(49)
+   end
+# This produces a cameron.ini, regular.l5i and regular.oby which may be viewed
+ by choosing Graphics->Special->Cameron (use existing...) from the menu.
+ Then type "obey regular.oby" in Cameron to colour the molecules nicely.
+ The TARGET and IDEAL are used to obtain the mapping. The atoms in MAP and ONTO
+ are just the ones you want to be included.
+ Don't read the atoms back into CRYSTALS when closing CAMERON - they're in
+ orthogonal coordinates.
 #
 #Q
 #XBONDCALC#
