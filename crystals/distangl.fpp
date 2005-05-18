@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.72  2005/02/25 17:25:20  stefan
+C 1. Added some preprocessor if defined lines for the mac version.
+C
 C Revision 1.71  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -6782,7 +6785,8 @@ c           CALL XPRVDU(NCVDU, 1,0)
           WRITE(CMON,'(2(A,A4,I4))')
      1    'Making bond from   ',ISTORE(M40M  ),ISTORE(M40M+1),
      1                   ' to ',ISTORE(M40M+7),ISTORE(M40M+8)
-            CALL XPRVDU(NCVDU, 1,0)
+C            CALL XPRVDU(NCVDU, 1,0)
+             IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON( 1)(:)
 
 C -- Add this bond into the L41. Still descending from the top of store.
           NWL41B = KCHLFL(MD41B) !Increase storage for L41B records
@@ -6895,8 +6899,8 @@ C -- Copy data down.
             WRITE(CMON,'(2(A,A4,I4))')
      1    'Breaking bond from ',ISTORE(INFO51),NINT(STORE(INFO51+1)),
      1               ' to ',ISTORE(INFO52),NINT(STORE(INFO52+1))
-            CALL XPRVDU(NCVDU, 1,0)
-
+C            CALL XPRVDU(NCVDU, 1,0)
+             IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON( 1)(:)
             IF ( KM41B .NE. M41B ) THEN
                CALL XMOVE(STORE(M41B),STORE(KM41B),MD41B)
             END IF
