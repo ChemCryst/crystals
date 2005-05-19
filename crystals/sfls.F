@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.45  2005/05/13 12:06:32  stefan
+C 1. The memory allocation for param list is now done in the param_list_make routine and so has been removed from here.
+C
 C Revision 1.44  2005/05/12 13:35:35  stefan
 C 1. The memory allocation for the parameter list is done a little better but still isn't perfect.
 C
@@ -398,7 +401,9 @@ C--THIS ANISOTROPIC TEMPERATURE FACTOR IS NOT ALLOWED
      1 WRITE(NCWU, 3110) STORE(M5),NINT(STORE(M5+1)),STORE(IADDU+1)
 3110  FORMAT(' Atom ', A4, I5, ' has U-min too small, ', F8.4)
       WRITE ( CMON, 3110) STORE(M5),NINT(STORE(M5+1)),STORE(IADDU+1)
+            CALL OUTCOL(9)
             CALL XPRVDU(NCVDU, 1,0)
+            CALL OUTCOL(1)
             A=AMIN1(A,STORE(IADDU+1))
             N=N+1
             U = UMIN+ZERO
@@ -523,7 +528,9 @@ C -- INVALID TEMPERATURE FACTOR
       END IF
 
       IF (STORE(L5O+5) .LT. -ZERO) THEN
+        CALL OUTCOL(9)
         WRITE ( CMON, 3345) STORE(L5O+5)
+        CALL OUTCOL(1)
         CALL XPRVDU(NCVDU, 1,0)
         WRITE(NCWU, '(A)') CMON(1)(:)
 3345    FORMAT(1X,'Extinction parameter out of range. (',F6.3,' ) ')
@@ -611,9 +618,9 @@ C -- INVALID TEMPERATURE FACTOR
          ELSE                         ! THIS IS A TWINNED REFINEMENT
 
            IF ( EXTINCT ) THEN
-             CALL OUTCOL(9)
              WRITE(CMON,'(6X,A)') 
      1       'It is unwise to refine extinction for twinned data'
+             CALL OUTCOL(9)
              CALL XPRVDU(NCVDU, 1,0)
              IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
              CALL OUTCOL(1)
