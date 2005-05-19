@@ -615,12 +615,12 @@ C     LEAST SQUARES
       BT=-0.5*SLOPE                                                     
       WRITE(NCWU,340) SLOPE,FLGK,BT,SC                                    
   340 FORMAT(1H ,7HSLOPE =,F8.4,4X,11HINTERCEPT =,F8.4,4X,              
-     1/25H TEMPERATURE FACTOR (B) =,F8.4,4X,7HSCALE =,F8.4,             
+     1/25H TEMPERATURE FACTOR (B) =,F8.4,4X,7HSCALE =,F12.4,             
      2 4X,37HF(ABSOLUTE)**2 = SCALE*F(OBSERVED)**2)
 
       IF (ISTATP .EQ. 1) THEN
 
-        WRITE(CMON,'(A,F8.4,A,F8.4)')
+        WRITE(CMON,'(A,F8.4,A,F12.4)')
      1  '^^CO SET _MW_BFACTR TEXT ',BT,
      1  ' SET _MW_BSCALE TEXT ',SC
         CALL XPRVDU(NCVDU, 1,0)
