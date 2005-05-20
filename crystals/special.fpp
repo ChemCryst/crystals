@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2005/01/23 08:29:12  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:06  rich
 C New CRYSTALS repository
 C
@@ -264,6 +268,7 @@ C
      2    ',  Number of positions =', I3, ' Occ = ', F6.4)
           WRITE ( CMON,523) ( PLM(K1(IK)+2), PRE(K2(IK)+1),
      2                          COORD(KEY(IK)+1) ,IK =1,9    )
+          CALL XPRVDU(NCVDU, 1,0)
           IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
 523       FORMAT (1X, 3(A1,A3,A2,1X), 6(A1,A3,A5,1X) )
       ENDIF
