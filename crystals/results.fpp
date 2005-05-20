@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.102  2005/03/07 09:07:40  djw
+C Correct Error in short SHELDRICK weight formula
+C
 C Revision 1.101  2005/02/25 17:25:20  stefan
 C 1. Added some preprocessor if defined lines for the mac version.
 C
@@ -3636,7 +3639,6 @@ C
 CDJWMAY99 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
       CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
       CALL XRDOPN(8, KDEV , CSSCIF, LSSCIF)
-c
       IESD = IESD
       NODEV = NODEV
       if (key .eq. 15) then
@@ -3654,6 +3656,21 @@ C      CLEAR THE STORE
             JA = 2
       ENDIF
       IPUB = KSTALL (28)
+cdjwmay05
+c----- check if there is any H-Bond data in MTE
+c      looping over file is a terrible wast of resources
+      if (key .eq. 15) then
+        rewind (mte)
+1       continue
+        READ (MTE, END=9000, ERR = 9000) CODE, TERM, ESD,
+     1 (STORE(JPUB),STORE(JPUB+1), (ISTORE(KPUB),KPUB=JPUB+2,JPUB+6),
+     2  JPUB=IPUB, IPUB+14, 7), (store(kpub),kpub=ipub+21,ipub+27)
+c----- no error - probably some data
+       if (code .eq. 'H') goto 2
+       goto 1
+      endif
+2     continue
+c
 C----- WE NEED JKEY ETC BECAUSE MTE MAY CONTAIN BOTH DISTANCES AND ANGLE
 cdjw160804 - jkey & ncyc were not initialised
       jkey = 0
