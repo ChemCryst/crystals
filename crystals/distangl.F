@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.73  2005/05/18 14:53:33  djw
+C Move a few writes to CMON to the printer during the formation of L41
+C
 C Revision 1.72  2005/02/25 17:25:20  stefan
 C 1. Added some preprocessor if defined lines for the mac version.
 C
@@ -7366,11 +7369,13 @@ C -- to look for a 'significant' change in co-ordinates.
 
 C Significant Shift ( F is dist squared ):
          IF ( F .GT. STORE(L40T+4)**2 ) THEN
-           WRITE(NCWU,'(a/a,I4,2F15.8)')
+           IF (ISSPRT .EQ. 0) THEN
+             WRITE(NCWU,'(a/a,I4,2F15.8)')
      + 'Bonds: Update required - Significant change in L5',
      + 'Atom#, tol^2, F^2 = ',I+1,STORE(L40T+4)**2,F
-         RETURN
-      ENDIF
+           endif
+           RETURN
+         ENDIF
          
       END DO
 
