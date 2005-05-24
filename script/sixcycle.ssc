@@ -1,5 +1,6 @@
 %SCRIPT SIXCYCLE
  DO 6 unconditional cycles of refinement
+%        COPY '#SCRIPT XCHKSCL'
 %        COPY '#SCRIPT XDELQ'
 %        COPY '#SFLS'
 %        COPY 'REFINE'
