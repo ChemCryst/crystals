@@ -8358,7 +8358,7 @@ including negative ones.
 #N  10#
 #J
  \SFLS  INPUT=
- CALCULATE LIST= MAP= /Fo/=
+ CALCULATE LIST= MAP= /Fo/= THRESHHOLD=
  SCALE LIST= MAP= /Fo/=
  REFINE LIST= MAP= /Fo/= PUNCH= MATRIX= MONITOR= INVERTOR=
  SHIFT  KEY= KEY=
@@ -8489,11 +8489,13 @@ Indicates which reflection list to use.
 #
 #P
 #DCALCULATE LIST= MAP= /Fo/= THRESHOLD=#
+#PIf CALCULATE is included with other commands within a single \SFLS 
+block, it _B{MUST _B{BE the last command.
 #PThis directive indicates that structure factors should be
  calculated, but that no refinement of any type should be done. 
 Structure factors are computed for every reflection and used to compute 
 R and Rw for all data. R and Rw are also computed for reflections with 
-I>t. Sigma(I).  The default value for the threshold is 4.
+I>threshold Sigma(I).  The default value for the threshold is 4.
 #P
  The directives
   SHIFT ,  MAXIMUM  and  FORCE  may not be given before the next
