@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.46  2005/05/19 15:30:21  djw
+C Highlight NPD atoms in CMON output
+C
 C Revision 1.45  2005/05/13 12:06:32  stefan
 C 1. The memory allocation for param list is now done in the param_list_make routine and so has been removed from here.
 C
@@ -262,6 +265,8 @@ C--SAVE THE LIST TYPE INDICATOR
 
 1105  CONTINUE
       CALL XZEROF(IWORKA(1),17)
+      write(cmon,'(4i10)') l33cd,m33cd,n33cd,md33cd
+      call xprvdu(ncvdu, 1,0)
       GOTO(1200,1250,1300,1350,4550,4600,1150),NUM
 1150  CALL GUEXIT(54)
 
@@ -281,7 +286,8 @@ C--'#CALCULATE' HAS BEEN GIVEN
 
       SFLS_TYPE = SFLS_CALC
       CALL XZEROF(RALL(1),12)
-      RALL(1)=STORE(L33CD+5)
+c----- assume CALC is last instruction
+      RALL(1)=STORE(L33CD+5 +(n33cd-1)*md33cd)
       GOTO 1400
 C
 C--'#CYCLENDS' INSTRUCTION
@@ -354,7 +360,9 @@ C--LOAD LIST 33  -  THE CONDITIONS FOR THIS S.F.L.S. CALCULATION
       CALL XFAL33
       IF ( IERFLG .LT. 0 ) GO TO 9900
       IF ( SFLS_TYPE .EQ. SFLS_CALC ) THEN
-         RALL(1)=STORE(L33CD+5)
+c----- assume CALC is last instruction
+      RALL(1)=STORE(L33CD+5 +(n33cd-1)*md33cd)
+c         RALL(1)=STORE(L33CD+16)
       END IF
 
 C If outputting design matrix and deltaF's then open files now.
