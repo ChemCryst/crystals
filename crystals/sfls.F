@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.47  2005/05/26 10:10:47  djw
+C Enable REF and CALC to be given in the same SFLS instruction.  CALC must be last command
+C
 C Revision 1.46  2005/05/19 15:30:21  djw
 C Highlight NPD atoms in CMON output
 C
@@ -265,8 +268,6 @@ C--SAVE THE LIST TYPE INDICATOR
 
 1105  CONTINUE
       CALL XZEROF(IWORKA(1),17)
-      write(cmon,'(4i10)') l33cd,m33cd,n33cd,md33cd
-      call xprvdu(ncvdu, 1,0)
       GOTO(1200,1250,1300,1350,4550,4600,1150),NUM
 1150  CALL GUEXIT(54)
 
@@ -286,8 +287,6 @@ C--'#CALCULATE' HAS BEEN GIVEN
 
       SFLS_TYPE = SFLS_CALC
       CALL XZEROF(RALL(1),12)
-c----- assume CALC is last instruction
-      RALL(1)=STORE(L33CD+5 +(n33cd-1)*md33cd)
       GOTO 1400
 C
 C--'#CYCLENDS' INSTRUCTION
@@ -360,15 +359,13 @@ C--LOAD LIST 33  -  THE CONDITIONS FOR THIS S.F.L.S. CALCULATION
       CALL XFAL33
       IF ( IERFLG .LT. 0 ) GO TO 9900
       IF ( SFLS_TYPE .EQ. SFLS_CALC ) THEN
-c----- assume CALC is last instruction
-      RALL(1)=STORE(L33CD+5 +(n33cd-1)*md33cd)
-c         RALL(1)=STORE(L33CD+16)
+      RALL(1)=STORE(M33CD+5)
       END IF
-
+c
 C If outputting design matrix and deltaF's then open files now.
        IF ( SFLS_TYPE .eq. SFLS_REFINE ) THEN     
        MATLAB = 0
-       IF (ISTORE(L33CD+5).EQ.1) THEN
+       IF (ISTORE(M33CD+5).EQ.1) THEN
         MATLAB = 1
         CALL XRDOPN (5,JFRN(1,1),'design.m',8)
         WRITE (NCFPU1, '(''A=['')')
@@ -376,7 +373,7 @@ C If outputting design matrix and deltaF's then open files now.
         WRITE (NCFPU2, '(''DF=['')')
        END IF
 
-       ILEV = ISTORE(L33CD+12)
+       ILEV = ISTORE(M33CD+12)
       END IF
 
       NF=-1
@@ -705,7 +702,7 @@ cdjw0302 - allow twin with extparam:  NA=-1
           IF(NEWLHS) THEN           ! SET UP A NEW MATRIX   MATRIX=NEW (default)
             CALL XSET11(-1,1,1)
             IF ( IERFLG .LT. 0 ) GO TO 9900
-            if (ISTORE(L33CD+13) .EQ. 0) then ! See if sparse is set to bond
+            if (ISTORE(M33CD+13) .EQ. 0) then ! See if sparse is set to bond
 C               iresults = KSTALL(N11)
 C               print *, N11, NRESULTS
 C              NRESULTS = param_list_make(istore(IRESULTS), N11, JR,
@@ -1399,7 +1396,7 @@ C----- INITIALISE THE ENANTIOMER BUFFER
       JENAN = 6
 
 
-      IF (ISTORE(L33CD+12).NE.0) THEN    ! Leverage calc.
+      IF (ISTORE(M33CD+12).NE.0) THEN    ! Leverage calc.
 C----- A BUFFER FOR ONE REFELCTION AND ITS LEVERAGE
         LTEMPL = NFL
         NTEMPL = 7              ! Seven items to be stored: H,K,L,STL2,LEV,FO,FC
@@ -1889,7 +1886,7 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
 
           END IF
 
-          IF (ISTORE(L33CD+5).EQ.1) THEN   ! Check if we should output matrix in MATLAB format.
+          IF (ISTORE(M33CD+5).EQ.1) THEN   ! Check if we should output matrix in MATLAB format.
             DO I = JO,JP-MOD(JP-JO,5)-1,5
               WRITE(NCFPU1,'(5G16.8,'' ...'')') (STORE(I+J),J=0,4)
             END DO
@@ -1901,8 +1898,8 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
 
           IF(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
  
-            IF (ISTORE(L33CD+12).EQ.0) THEN    ! Just a normal accumulation.
-               if (ISTORE(L33CD+13).EQ.0) THEN
+            IF (ISTORE(M33CD+12).EQ.0) THEN    ! Just a normal accumulation.
+               if (ISTORE(M33CD+13).EQ.0) THEN
                   CALL PARM_PAIRS_XLHS(STORE(JO), JP-JO+1, STR11(L11), 
      1             N11, iresults, nresults, 
      2             STORE(L12B), N12B*MD12B, MD12B)
@@ -1911,14 +1908,14 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
      1                 STORE(L12B), N12B*MD12B, MD12B )
                end if
             ELSE                    ! No accumulation, compute leverages, Pii.
-               if (ISTORE(L33CD+13).EQ.0) THEN
+               if (ISTORE(M33CD+13).EQ.0) THEN
                   write(CMON,
      1                 '(''SPARSE IS NOT USED FOR LEVERAGE'')')
                   call xprvdu(ncvdu,1,0)
                end if
                Pii = PDOLEV( ISTORE(L12B),MD12B*N12B,MD12B,
      1                    STR11(L11),N11,  STORE(JO),JP-JO+1,
-     2                    ISTORE(L33CD+12), TIX, RED)
+     2                    ISTORE(M33CD+12), TIX, RED)
               REDMAX = MAX ( REDMAX, RED )
 
               WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)), ',',
@@ -1972,7 +1969,7 @@ C----    H,K,L,SNTHL,LEV,
 
 C--END OF THE REFLECTIONS  -  PRINT THE R-VALUES ETC.
 
-      IF (ISTORE(L33CD+12).NE.0) THEN    ! Leverage plot
+      IF (ISTORE(M33CD+12).NE.0) THEN    ! Leverage plot
         WRITE(CMON,'(A,F18.14,A/A)')'^^PL YAXISRIGHT ZOOM 0.0 ',
      1   REDMAX,' SHOW',
      1   '^^CR'
