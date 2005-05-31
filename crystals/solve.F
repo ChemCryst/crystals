@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.30  2005/05/13 12:08:52  stefan
+C 1. Changed the call to the paramlist accumalation to work with the new version. Also made the matlab output output multi block normal matrices and sets it up to use the script collectBlocks to put it together in one matrix.
+C
 C Revision 1.29  2005/03/07 09:04:50  djw
 C Add (commented) code for outputting shift info to PCH file for potential future use in pre-conditioning
 C
@@ -393,10 +396,10 @@ C----- SET THE RUNNING ADDRESS FOR STEPPING THROUGH THE MATRIX
       M11DB = M11S
       M11RDB = M11RS
 C
-      if (ISTORE(L33CD+5) .eq. 1) then
+      if (ISTORE(M33CD+5) .eq. 1) then
             call open_normalfile(73)
             write(73, '(''N={};'')')
-            if (ISTORE(L33CD+15) .eq. 1 ) then
+            if (ISTORE(M33CD+15) .eq. 1 ) then
                   write(73, '(''NNorm={};'')')
                   write(73, '(''VCNorm={};'')')
             end if
@@ -436,17 +439,17 @@ C--BRING DOWN THE MATRIX - REMEMBER MD11 INDICATES SINGLE OR DOUBLE PREC
 
       CALL XDOWNF (M11DB, XSTR11 (MD11*L11C-MD11+1), MD11*NELEM)
 C     If we are going to threshhold the normal matrix then we do it here
-      if ( store(L33CD+16) .gt. 0 ) then
+      if ( store(M33CD+16) .gt. 0 ) then
             ZEROED_COUNT =  tri_matrix_apply_threshhold(STR11(L11C),
-     1       JY*(JY+1)/2, JY, store(L33CD+16))
+     1       JY*(JY+1)/2, JY, store(M33CD+16))
       end if
 C --- If we are doing matlab punching then do it here.      
-      IF ( ISTORE(L33CD+5) .Eq. 1 ) THEN
+      IF ( ISTORE(M33CD+5) .Eq. 1 ) THEN
           call matlab_add_matrix_to_cell(73, STR11(L11C), JY*(JY+1)/2, 
      1      JY, 'N')
       END IF
 Cc ---If we want to normalise the normal matrix do so...      
-C      if (ISTORE(L33CD+15) .eq. 1) then
+C      if (ISTORE(M33CD+15) .eq. 1) then
 CC --- Allocate space for the normalisation vector
 C            ivector = KADD11( 1016, MD11, JY*2)   
 C            IF ( IERFLG .LT. 0 ) GO TO 9900 ! If there is an error do what david seems to do.
@@ -455,7 +458,7 @@ C     1        JY*(JY+1)/2, JY, STR11(ivector))
 C            call matlab_add_vector_to_cell(73, STR11(ivector), JY,
 C     1            'NormVect')  
 CC-- If we are doing matlab punching then do it here.      
-C            if ( ISTORE(L33CD+5) .Eq. 1 ) then
+C            if ( ISTORE(M33CD+5) .Eq. 1 ) then
 C                call matlab_add_matrix_to_cell(73, STR11(L11C), 
 C     1           JY*(JY+1)/2, JY, 'NNorm')
 C            end if
@@ -463,7 +466,7 @@ C            call create_param_list_from_mat(str11(L11C), JY*(JY+1)/2,
 C     1       JY, 1, 0.0026D0)     ! The last but one parameter needs to be corrected as currently this will not handle multiple blocks
 C            call tri_matrix_normalise_with(str11(L11C), 
 C     1           JY*(JY+1)/2, JY, STR11(ivector))
-C            if ( ISTORE(L33CD+5) .Eq. 1 ) then
+C            if ( ISTORE(M33CD+5) .Eq. 1 ) then
 C                call matlab_add_matrix_to_cell(73, STR11(L11C), 
 C     1           JY*(JY+1)/2, JY, 'NBackNorm')
 C            end if
@@ -486,8 +489,8 @@ C----- COMPRESS INVERTED MATRIX
          ENDIF
          
 c --- If we normalised the matrix then denormalise it      
-C         if (ISTORE(L33CD+15) .eq. 1 ) then
-CC               if ( ISTORE(L33CD+5) .Eq. 1 ) then
+C         if (ISTORE(M33CD+15) .eq. 1 ) then
+CC               if ( ISTORE(M33CD+5) .Eq. 1 ) then
 C                   call matlab_add_matrix_to_cell(73, STR11(L11C), 
 C     1               JY*(JY+1)/2, JY, 'VCNorm')
 C               end if
@@ -501,7 +504,7 @@ C     1           JY*(JY+1)/2, JY, STR11(ivector))
 C         end if 
          
 C-- If we are doing matlab punching then do it here.      
-         if ( ISTORE(L33CD+5) .Eq. 1 ) then
+         if ( ISTORE(M33CD+5) .Eq. 1 ) then
             call matlab_add_matrix_to_cell(73, STR11(L11C), 
      1            JY*(JY+1)/2, JY, 'VC')
          end if
@@ -656,9 +659,9 @@ C--CHANGE TO THE NEXT BLOCK - UPDATE DISK ADDRESSES
          M11RDB = M11RDB+ISTORE(M12B+1)
          M12B=M12B+MD12B
 3500  CONTINUE
-      if (ISTORE(L33CD+5) .eq. 1) then
+      if (ISTORE(M33CD+5) .eq. 1) then
             write(73, '(''N=collectBlocks(N)'')')
-            if (ISTORE(L33CD+15) .eq. 1 ) then
+            if (ISTORE(M33CD+15) .eq. 1 ) then
                   write(73, '(''NNorm=collectBlocks(NNorm);'')')
                   write(73, '(''VCNorm=collectBlocks(VCNorm);'')')
             end if
