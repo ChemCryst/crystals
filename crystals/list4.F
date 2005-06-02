@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.52  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.4  2005/01/21 15:18:11  djw
 C Insert missing line to Chris's code
 C
@@ -670,6 +674,10 @@ C--ASSIGN A FEW POINTERS
         CALL XFAL06(IULN06,1)
         IF ( IERFLG .LT. 0 ) GO TO 9900
         FOAV = STORE(L6DTL+3*MD6DTL + 2)
+cdjwjun05
+        write(cmon,'(a,f12.3,a,f12.3)') 'Foav=',foav
+        call xprvdu (NCVDU, 1,0)
+
         FCAV = STORE(L6DTL+5*MD6DTL + 2)
         CALL XIRTAC(5)       ! CLEAR THE ACCUMULATION AREA FOR THE WEIGHT
         GOTO 5100            ! START APPLYING WEIGHTS
@@ -714,10 +722,10 @@ cdjw aug99 - try to controll weighting of Fsq refinenent for small Fs
 C--CHECK IF WE ARE REFINING AGAINST /FO/ **2
 
         IF(JTYPE.EQ.1) THEN      ! WGHTS FRM /FO/, MODIFD TO BE AGAINST FO**2
-          am = 0.5 / max(fo, quasi*foav)
+          am = 0.5 / max(fo, quasi*foav, aw)
         ELSE IF ( JTYPE .GE. 2 ) THEN    ! WEIGHTS COMPUTED FROM /FO/ **2,
           if (fo .le. aw) then           ! SO COMPUTE SIGMA**2
-            AW=2.0*AW*max(FO, quasi*foav)   
+            AW=2.0*AW*max(FO, quasi*foav, aw)   
           else
             AW=2.0*AW*FO
           endif
