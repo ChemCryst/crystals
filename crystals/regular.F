@@ -1,5 +1,8 @@
 
 c $Log: not supported by cvs2svn $
+c Revision 1.44  2005/04/29 09:04:47  djw
+c Move some CMON output to NCWU
+c
 c Revision 1.43  2005/04/28 17:14:16  djw
 c Ensure that LIST 41 loads
 c
@@ -1183,10 +1186,14 @@ C Use OPM for building existing ops
           OPM(4,4) = 1.0
 
           DO M2 = L2,L2+MD2*(N2-1),MD2 ! Loop over each symmetry matrix
-C Get the matrix.
-            DO K4=0,3
-              CALL XMOVE(STORE(M2+3*K4),OPM(1,1+K4),3)
+C Get the matrix, the rotation is stored transposed!
+            DO K4=0,2
+              DO K5 = 0,2
+                OPM(K5+1,K4+1) = STORE(M2+3*K5+K4)
+              END DO
             END DO
+C Copy the translation part into row 1 col 4
+            CALL XMOVE(STORE(M2+9),OPM(1,4),3)
 
             DO M2C = 0, IC                   ! IC is 1 for inversion centre.
               IF ( M2C .EQ. 1 ) THEN         ! Apply inversion on second loop.
