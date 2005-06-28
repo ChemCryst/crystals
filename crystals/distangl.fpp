@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.74  2005/05/24 16:41:17  djw
+C Move info text from CMON to NCWU
+C
 C Revision 1.73  2005/05/18 14:53:33  djw
 C Move a few writes to CMON to the printer during the formation of L41
 C
@@ -7430,7 +7433,7 @@ c
       do j=1,khy
        if (ihy(j) .eq. 1) then        
         write(cline,'(a,f6.3,a, a )')
-     1 'REST ', 1.2*UEQUIV, ', 0.002 = ', cbonda(j)
+     1 'REST ', UEQUIV, ', 0.002 = ', cbonda(j)
         call xcrems( cline, cline, nch)
         cline(nch-1:) = ',u[iso])'
         nch = nch + 7
