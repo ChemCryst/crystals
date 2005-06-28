@@ -1,706 +1,741 @@
-%SCRIPT XFOUR
-% VARIABLE CHARACTER FNAME CFILE
-% VARIABLE LOGICAL TWINNED NOINI5 MERGED
-% EVALUATE MERGED = FALSE
-% EVALUATE TWINNED = FALSE
-% EVALUATE NOINI5 = FALSE
-%  BLOCK
-%    VARIABLE INTEGER ITMP
-%    IF ( ( EXISTS 13 ) .EQ. 1 ) THEN
-%        COPY '#GENERALEDIT 13'
-%        COPY 'LOCATE RECORDTYPE=101'
-%        COPY 'TRANSFER FROM OFFSET=1 TO ITMP'
-%        IF ( ITMP .GE. 0 ) THEN
-%         EVALUATE TWINNED = TRUE
-%        ELSE
-%         EVALUATE TWINNED = FALSE
-%        END IF
-%        COPY 'TRANSFER FROM OFFSET=0 TO ITMP'
-%        IF ( ITMP .GE. 0 ) THEN
-%         EVALUATE MERGED = TRUE
-%        ELSE
-%         EVALUATE MERGED = FALSE
-%        END IF
-%        COPY 'END'
-%    END IF
-%  END BLOCK
-% VARIABLE LOGICAL SCRIPTEXT
-% VARIABLE LOGICAL LCONTOUR LSECTION COLLECTNEW
-% VARIABLE LOGICAL PEAKCHANGE REDRAW XFCALLED 
-% VARIABLE INTEGER DOSCALE DOCALC DOMAP NPEAKS IMAP IWEI N5O N10 N5N
-% VARIABLE INTEGER DOPEAKS DOCOLLECT MTYPE DOALL DOXPR
+%SCRIPT XFOUR                                                                   
+% VARIABLE CHARACTER FNAME CFILE                                                
+% VARIABLE LOGICAL TWINNED NOINI5 MERGED                                        
+% EVALUATE MERGED = FALSE                                                       
+% EVALUATE TWINNED = FALSE                                                      
+% EVALUATE NOINI5 = FALSE                                                       
+%  BLOCK                                                                        
+%    VARIABLE INTEGER ITMP                                                      
+%    IF ( ( EXISTS 13 ) .EQ. 1 ) THEN                                           
+%        COPY '#GENERALEDIT 13'                                                 
+%        COPY 'LOCATE RECORDTYPE=101'                                           
+%        COPY 'TRANSFER FROM OFFSET=1 TO ITMP'                                  
+%        IF ( ITMP .GE. 0 ) THEN                                                
+%         EVALUATE TWINNED = TRUE                                               
+%        ELSE                                                                   
+%         EVALUATE TWINNED = FALSE                                              
+%        END IF                                                                 
+%        COPY 'TRANSFER FROM OFFSET=0 TO ITMP'                                  
+%        IF ( ITMP .GE. 0 ) THEN                                                
+%         EVALUATE MERGED = TRUE                                                
+%        ELSE                                                                   
+%         EVALUATE MERGED = FALSE                                               
+%        END IF                                                                 
+%        COPY 'END'                                                             
+%    END IF                                                                     
+%  END BLOCK                                                                    
+% VARIABLE LOGICAL SCRIPTEXT                                                    
+% VARIABLE LOGICAL LCONTOUR LSECTION COLLECTNEW                                 
+% VARIABLE LOGICAL PEAKCHANGE REDRAW XFCALLED                                   
+% VARIABLE INTEGER DOSCALE DOCALC DOMAP NPEAKS IMAP IWEI N5O N10 N5N            
+% VARIABLE INTEGER DOPEAKS DOCOLLECT MTYPE DOALL DOXPR                          
+% VARIABLE INTEGER F67
+%%                                                                              
+%% The variables needed by XQUESTIO                                             
+% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
+% VARIABLE LOGICAL   ANSWER                                                     
+%%                                                                              
+%% LSECT                                                                        
+% VARIABLE REAL PEAKHEIGHT REJLIMIT                                             
+% VARIABLE CHARACTER CDLINE                                                     
+% IF SCRIPTEXT .EQ. TRUE THEN                                                   
+ This script implements the CRYSTALS command FOURIER, and may be used to        
+ compute a variety of real and vector space Fourier syntheses.                  
+ In this script you are only offered a limited selection of syntheses           
+ together with a peak search. The underlying COMMAND includes options           
+ for formatting and printing the map, various weighting schemes, and            
+ special treatment of reflections.                                              
+ After computing the map, this script enables you to process the peak           
+ search into an atoms list.                                                     
+% END IF                                                                        
+%%                                                                              
+%% This gets a passed in argument so that the menus                             
+%% can call the same script to do four different map types.                     
+%% Calling script can set XFCALLED to TRUE and recommend their                  
+%% own map type. (logicals are false if uninitialised)                          
+%%                                                                              
+%  IF ( XFCALLED .EQ. FALSE ) THEN                                              
+%   VERIFY FOBS DIFF 2FO-FC FCALC OPT FO-PAT FC-PAT                             
+%   GET SILENT NOSTORE FINAL ABBREVIATED 'Map type?' ' '                        
+%   EVALUATE MTYPE = VALUE                                                      
+%  END IF                                                                       
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%  VARIABLE REAL HEIGHT                                                         
+%  VARIABLE CHARACTER MAPTYPE                                                   
+%  EVALUATE MAPTYPE = 'UNKNOWN'                                                 
+%% CHECK IF LIST 14 EXISTS                                                      
+%  IF ( EXISTS 14 .NE. 1 ) THEN                                                 
+%      EVALUATE LSECTION = FALSE                                                
+%  ELSE                                                                         
+%      EVALUATE LSECTION = TRUE                                                 
+%  END IF                                                                       
+%%Set up dialog                                                                 
+% EVALUATE PEAKCHANGE = FALSE                                                   
+% EVALUATE REDRAW = TRUE                                                        
+% LOOP                                                                          
+% IF REDRAW .EQ. TRUE THEN                                                      
+%    EVALUATE REDRAW = FALSE                                                    
+%%                                                                              
+^^WI WINDOW FOURIER 'Fourier' MODAL COMMIT='BUTTONOK' CANCEL='BUTTONXX'         
+%%                                                                              
+^^WI GRID     GRIDM NROWS=1 NCOLS=2                                             
+^^WI {                                                                          
+^^WI  @ 1,2 GRID GRIDB NROWS=7 NCOLS=3                                          
+^^WI  {                                                                         
+^^WI    @ 2,2 BUTTON BUTTONOK '&Ok' DEFAULT                                     
+^^WI    @ 4,2 BUTTON BUTTONXX '&Cancel'                                         
+^^WI    @ 6,2 BUTTON BHELP    '&Help'                                           
+^^WI  }                                                                         
+^^WI  @ 1,1 GRID GRIDA NROWS=12 NCOLS=3                                         
+^^WI  {                                                                         
+^^WI   @ 2,2 GRID GRIDAA NROWS=2 NCOLS=3 OUTLINE='Pre calc'                     
+^^WI   {                                                                        
+^^WI    @ 1,2 CHECKBOX XSCALE 'Recalculate scale factor' INFORM=NO              
+%    IF EXISTS 5 .NE. 1 THEN                                                    
+^^WI         DISABLED=YES                                                       
+%    END IF                                                                     
+^^WI    @ 2,2 CHECKBOX XCALC 'Recalculate phases' INFORM=NO                     
+%    IF EXISTS 5 .NE. 1 THEN                                                    
+^^WI         DISABLED=YES                                                       
+%    ELSE                                                                       
+^^WI         STATE = ON                                                         
+%    END IF                                                                     
+^^WI   }                                                                        
+^^WI   @ 4,2 GRID GRIDAB NROWS=3 NCOLS=3 OUTLINE='Fourier map'                  
+^^WI   {                                                                        
+^^WI    @ 1,2 GRID GRIDABA NROWS=2 NCOLS=7                                      
+^^WI    {                                                                       
+^^WI     @ 1,1 STATIC TEXT1 'Map type:'                                         
+^^WI     @ 1,3 DROPDOWN XFLIST INFORM=YES                                       
+^^WI           ADDTOLIST 'F-Obs' 'Difference' '2Fo-Fc'                          
+^^WI                     'F-Calc' 'Optimal' 'Fo-Patterson'                      
+^^WI                     'Fc-Patterson' 'NULL'                                  
+^^WI     @ 1,5 STATIC TEXT1 'weights:'                                          
+^^WI     @ 1,7 DROPDOWN XWLIST                                                  
+^^WI           ADDTOLIST 'None' 'Sim' 'List-6' 'NULL'                           
+^^WI    }                                                                       
+^^WI    @ 3,2 GRID GRIDABB NROWS=1 NCOLS=5                                      
+^^WI    {                                                                       
+^^WI     @ 1,1 STATIC TEXT2 'Min. peak height:'                                 
+^^WI     @ 1,3 EDITBOX XFEDIT                                                   
+%    IF MTYPE .EQ. 2 THEN                                                       
+^^WI           '0.3'                                                            
+%    ELSE                                                                       
+^^WI           '1.5'                                                            
+%    END IF                                                                     
+^^WI           CHARS=9 REAL INFORM=YES                                          
+^^WI     @ 1,5 STATIC TEXT3 'electrons per cubic angstrom'                      
+^^WI    }                                                                       
+^^WI   }                                                                        
+^^WI   @ 6,2 GRID GRIDAC NROWS=2 NCOLS=3 OUTLINE='Maximum peaks'                
+^^WI   {                                                                        
+^^WI    @ 1,2 RADIOBUTTON XDPEAKS 'Calculate based on cell volume.'             
+^^WI          STATE=ON INFORM                                                   
+^^WI    @ 2,2 GRID GRIDACA NROWS=1 NCOLS=3                                      
+^^WI    {                                                                       
+^^WI     @ 1,1 RADIOBUTTON XNPEAKS 'Number of peaks to keep:'                   
+^^WI           STATE=OFF INFORM                                                 
+^^WI     @ 1,3 EDITBOX ICPEAKS '0' CHARS=5 INTEGER DISABLED=YES                 
+^^WI    }                                                                       
+^^WI   }                                                                        
+^^WI   @ 8,2 GRID GRIDAD NROWS=1 NCOLS=7 OUTLINE='Filter'                       
+^^WI   {                                                                        
+^^WI    @ 1,2 STATIC TEXT4 'Rejection limit for co-incident peaks'              
+^^WI    @ 1,4 EDITBOX FCREJECT '0.01' REAL CHARS=6                              
+^^WI   }                                                                        
+^^WI   @ 10,2 GRID GMAPS NROWS=3 NCOLS=1 OUTLINE='Maps'                         
+^^WI   {                                                                        
+^^WI     @ 1,1 GRID VBOTTOM NROWS=2 NCOLS=3                                     
+^^WI     {                                                                      
+^^WI      @ 1,1 RADIOBUTTON XMCON 'Save CONTOUR file'                           
+^^WI      @ 2,1 RADIOBUTTON XMMCE 'Save MCE file'                               
+^^WI      @ 1,3 RADIOBUTTON XMLOU 'Save Mapview file'                           
+^^WI      @ 2,3 RADIOBUTTON XMNON 'No map output' STATE=ON                      
+^^WI     }                                                                      
+^^WI     @ 3,1 BUTTON BSETMAP '&Set Map Ranges...'                              
+^^WI   }                                                                        
+^^WI  }                                                                         
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+% CLEAR                                                                         
+% INSERT '^^WI SET XFLIST SELECTION='                                           
+% STORE FORMAT /(I2)/ LENGTH 2 INTEGER MTYPE                                    
+% OUTPUT                                                                        
+^^CR                                                                            
+% END IF                                                                        
+% VERIFY XFLIST XDPEAKS XNPEAKS XFEDIT -                                        
+  BUTTONOK BUTTONXX BHELP BSETMAP                                               
+% GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                  
+% CASE VALUE                                                                    
+%   BLOCK           %XFLIST Change default peak height?%                        
+%       VERIFY 1 2 3 4 5 6 7                                                    
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                            
+%       IF PEAKCHANGE .EQ. FALSE THEN                                           
+%           IF VALUE .EQ. 2 THEN                                                
+^^WI            SET XFEDIT TEXT '0.3'                                           
+^^CR                                                                            
+%           ELSE                                                                
+^^WI            SET XFEDIT TEXT '1.5'                                           
+^^CR                                                                            
+%           END IF                                                              
+%       END IF                                                                  
+%   END BLOCK                                                                   
+%   BLOCK           %XDPEAKS%                                                   
+^^WI            SET XNPEAKS STATE=OFF                                           
+^^WI            SET ICPEAKS DISABLED=YES                                        
+^^CR                                                                            
+%   END BLOCK                                                                   
+%   BLOCK           %XNPEAKS%                                                   
+^^WI            SET XDPEAKS STATE=OFF                                           
+^^WI            SET ICPEAKS DISABLED=NO                                         
+^^CR                                                                            
+%   END BLOCK                                                                   
+%   BLOCK           %XFEDIT%                                                    
+%%If the user sets a value, turn off automatic value change.                    
+%       GET SILENT NOSTORE KEYWORD ' ' ' '                                      
+%       EVALUATE PEAKCHANGE = TRUE                                              
+%   END BLOCK                                                                   
+%   BLOCK           %BUTTONOK%                                                  
+%% recalc scale factor                                                          
+^^??    XSCALE STATE                                                            
+%       VERIFY ON OFF                                                           
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '                                
+%       EVALUATE DOSCALE = VALUE                                                
+%% recalc phases                                                                
+^^??    XCALC STATE                                                             
+%       VERIFY ON OFF                                                           
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '                                
+%       EVALUATE DOCALC = VALUE                                                 
+%% map type                                                                     
+^^??    XFLIST SELECTED                                                         
+%       VERIFY 1 2 3 4 5 6 7                                                    
+%       GET SILENT FINAL NOSTORE ABBREVIATED ' '                                
+%       EVALUATE IMAP = VALUE                                                   
+%% map weight                                                                   
+^^??    XWLIST SELECTED                                                         
+%       VERIFY 1 2 3                                                            
+%       GET SILENT FINAL NOSTORE ABBREVIATED ' '                                
+%       EVALUATE IWEI = VALUE                                                   
+%% min peak height                                                              
+^^??    XFEDIT TEXT                                                             
+%       GET SILENT NOSTORE REAL ' '                                             
+%       EVALUATE PEAKHEIGHT = 10.0 * VALUE                                      
+%% default or specified npeaks to keep                                          
+^^??    XDPEAKS STATE                                                           
+%       VERIFY ON OFF                                                           
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '                                
+%       CASE VALUE                                                              
+%           BLOCK %ON%                                                          
+%               EVALUATE NPEAKS = 0                                             
+%           END BLOCK                                                           
+%           BLOCK %OFF%                                                         
+^^??            ICPEAKS TEXT                                                    
+%               GET SILENT NOSTORE INTEGER ' '                                  
+%               EVALUATE NPEAKS = VALUE                                         
+%           END BLOCK                                                           
+%       END CASE                                                                
+%% rejection limit                                                              
+^^??    FCREJECT TEXT                                                           
+%       GET SILENT NOSTORE REAL ' '                                             
+%       EVALUATE REJLIMIT = VALUE                                               
+%% map file                                                                     
+^^??    XMCON STATE                                                             
+%       VERIFY ON OFF                                                           
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '                                
+%       IF VALUE .EQ. 1 THEN                                                    
+%        EVALUATE DOMAP = 1                                                     
+%       ELSE                                                                    
+^^??     XMMCE STATE                                                            
+%        VERIFY ON OFF                                                          
+%        GET SILENT NOSTORE FINAL ABBREVIATED ' '                               
+%        IF VALUE .EQ. 1 THEN                                                   
+%         EVALUATE DOMAP = 2                                                    
+%        ELSE                                                                   
+^^??      XMLOU STATE                                                           
+%         VERIFY ON OFF                                                         
+%         GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
+%         IF VALUE .EQ. 1 THEN                                                  
+%          EVALUATE DOMAP = 3                                                   
+%         ELSE                                                                  
+%          EVALUATE DOMAP = 0                                                   
+%         END IF                                                                
+%        END IF                                                                 
+%       END IF                                                                  
+^^WI    DISPOSE FOURIER                                                         
+^^CR                                                                            
+%%                                                                              
+%%djw - check that map is not a Patterson
+%       IF ( IMAP .LE. 5 ) THEN
+%        EVALUATE F67 = 6
+%        IF ( TWINNED .EQ. TRUE ) THEN 
+{I Computing de-twinned Fo values. 
+{I This may change the R-value temporarily
+%         COPY '#SFLS '
+%         COPY 'CALC  /FO/=SCALED-/FOT/'                                    
+%         COPY 'END'
+{I Copying reflection list to temporary storage.                                
+%         COPY '#COPY 6 7'                                                      
+%         COPY 'END'                                                            
+{I Calculating unique reflections using Friedel's law.                          
+%         COPY '#SYST 7 FRIEDEL=YES '                                 
+%         COPY 'END'                                                            
+{I Sorting temporary reflection list.                                           
+%         COPY '#SORT 7'                                                        
+%         COPY 'END'                                                            
+{I Merging temporary reflection list.                                           
+%         COPY '#MERGE 7 NO'                                                       
+%         COPY 'END'                                                            
+%         EVALUATE F67 = 7
 %%
-%% The variables needed by XQUESTIO
-% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
-% VARIABLE LOGICAL   ANSWER
+%        ELSE IF ( MERGED .EQ. FALSE ) THEN
+{I Copying reflection list to temporary storage.                                
+%         COPY '#COPY 6 7'                                                      
+%         COPY 'END'                                                            
+{I Calculating unique reflections using Friedel's law.                          
+%         COPY '#SYST 7 FRIEDEL=YES '                                 
+%         COPY 'END'                                                            
+{I Sorting temporary reflection list.                                           
+%         COPY '#SORT 7'                                                        
+%         COPY 'END'                                                            
+{I Merging temporary reflection list.                                           
+%         COPY '#MERGE 7 NO'                                                       
+%         COPY 'END'                                                            
+{I Computing Merged Fo.
+%         COPY '#SFLS 7'
+%         COPY 'CALC'                                    
+%         COPY 'END'
+%         EVALUATE F67 = 7
 %%
-%% LSECT
-% VARIABLE REAL PEAKHEIGHT REJLIMIT
-% VARIABLE CHARACTER CDLINE
-% IF SCRIPTEXT .EQ. TRUE THEN
- This script implements the CRYSTALS command FOURIER, and may be used to
- compute a variety of real and vector space Fourier syntheses.
- In this script you are only offered a limited selection of syntheses
- together with a peak search. The underlying COMMAND includes options
- for formatting and printing the map, various weighting schemes, and
- special treatment of reflections.
- After computing the map, this script enables you to process the peak
- search into an atoms list.
-% END IF
-%%
-%% This gets a passed in argument so that the menus
-%% can call the same script to do four different map types.
-%% Calling script can set XFCALLED to TRUE and recommend their
-%% own map type. (logicals are false if uninitialised)
-%%
-%  IF ( XFCALLED .EQ. FALSE ) THEN
-%   VERIFY FOBS DIFF 2FO-FC FCALC OPT FO-PAT FC-PAT
-%   GET SILENT NOSTORE FINAL ABBREVIATED 'Map type?' ' '
-%   EVALUATE MTYPE = VALUE
-%  END IF
-%%
-%%
-%%
-%  VARIABLE REAL HEIGHT
-%  VARIABLE CHARACTER MAPTYPE
-%  EVALUATE MAPTYPE = 'UNKNOWN'
-%% CHECK IF LIST 14 EXISTS
-%  IF ( EXISTS 14 .NE. 1 ) THEN
-%      EVALUATE LSECTION = FALSE
-%  ELSE
-%      EVALUATE LSECTION = TRUE
-%  END IF
-%%Set up dialog
-% EVALUATE PEAKCHANGE = FALSE
-% EVALUATE REDRAW = TRUE
-% LOOP
-% IF REDRAW .EQ. TRUE THEN
-%    EVALUATE REDRAW = FALSE
-%%
-^^WI WINDOW FOURIER 'Fourier' MODAL COMMIT='BUTTONOK' CANCEL='BUTTONXX'
-%%
-^^WI GRID     GRIDM NROWS=1 NCOLS=2
-^^WI {
-^^WI  @ 1,2 GRID GRIDB NROWS=7 NCOLS=3
-^^WI  {
-^^WI    @ 2,2 BUTTON BUTTONOK '&Ok' DEFAULT
-^^WI    @ 4,2 BUTTON BUTTONXX '&Cancel'
-^^WI    @ 6,2 BUTTON BHELP    '&Help'
-^^WI  }
-^^WI  @ 1,1 GRID GRIDA NROWS=12 NCOLS=3
-^^WI  {
-^^WI   @ 2,2 GRID GRIDAA NROWS=2 NCOLS=3 OUTLINE='Pre calc'
-^^WI   {
-^^WI    @ 1,2 CHECKBOX XSCALE 'Recalculate scale factor' INFORM=NO
-%    IF EXISTS 5 .NE. 1 THEN
-^^WI         DISABLED=YES
-%    END IF
-^^WI    @ 2,2 CHECKBOX XCALC 'Recalculate phases' INFORM=NO
-%    IF EXISTS 5 .NE. 1 THEN
-^^WI         DISABLED=YES
-%    ELSE
-^^WI         STATE = ON
-%    END IF
-^^WI   }
-^^WI   @ 4,2 GRID GRIDAB NROWS=3 NCOLS=3 OUTLINE='Fourier map'
-^^WI   {
-^^WI    @ 1,2 GRID GRIDABA NROWS=2 NCOLS=7
-^^WI    {
-^^WI     @ 1,1 STATIC TEXT1 'Map type:'
-^^WI     @ 1,3 DROPDOWN XFLIST INFORM=YES
-^^WI           ADDTOLIST 'F-Obs' 'Difference' '2Fo-Fc'
-^^WI                     'F-Calc' 'Optimal' 'Fo-Patterson'
-^^WI                     'Fc-Patterson' 'NULL'
-^^WI     @ 1,5 STATIC TEXT1 'weights:'
-^^WI     @ 1,7 DROPDOWN XWLIST 
-^^WI           ADDTOLIST 'None' 'Sim' 'List-6' 'NULL'
-^^WI    }
-^^WI    @ 3,2 GRID GRIDABB NROWS=1 NCOLS=5
-^^WI    {
-^^WI     @ 1,1 STATIC TEXT2 'Min. peak height:'
-^^WI     @ 1,3 EDITBOX XFEDIT
-%    IF MTYPE .EQ. 2 THEN
-^^WI           '0.3'
-%    ELSE
-^^WI           '1.5'
-%    END IF
-^^WI           CHARS=9 REAL INFORM=YES
-^^WI     @ 1,5 STATIC TEXT3 'electrons per cubic angstrom'
-^^WI    }
-^^WI   }
-^^WI   @ 6,2 GRID GRIDAC NROWS=2 NCOLS=3 OUTLINE='Maximum peaks'
-^^WI   {
-^^WI    @ 1,2 RADIOBUTTON XDPEAKS 'Calculate based on cell volume.'
-^^WI          STATE=ON INFORM
-^^WI    @ 2,2 GRID GRIDACA NROWS=1 NCOLS=3
-^^WI    {
-^^WI     @ 1,1 RADIOBUTTON XNPEAKS 'Number of peaks to keep:'
-^^WI           STATE=OFF INFORM
-^^WI     @ 1,3 EDITBOX ICPEAKS '0' CHARS=5 INTEGER DISABLED=YES
-^^WI    }
-^^WI   }
-^^WI   @ 8,2 GRID GRIDAD NROWS=1 NCOLS=7 OUTLINE='Filter'
-^^WI   {
-^^WI    @ 1,2 STATIC TEXT4 'Rejection limit for co-incident peaks'
-^^WI    @ 1,4 EDITBOX FCREJECT '0.01' REAL CHARS=6
-^^WI   }
-^^WI   @ 10,2 GRID GMAPS NROWS=3 NCOLS=1 OUTLINE='Maps'
-^^WI   {
-^^WI     @ 1,1 GRID VBOTTOM NROWS=2 NCOLS=3
-^^WI     {
-^^WI      @ 1,1 RADIOBUTTON XMCON 'Save CONTOUR file'
-^^WI      @ 2,1 RADIOBUTTON XMMCE 'Save MCE file' 
-^^WI      @ 1,3 RADIOBUTTON XMLOU 'Save Mapview file' 
-^^WI      @ 2,3 RADIOBUTTON XMNON 'No map output' STATE=ON
-^^WI     }
-^^WI     @ 3,1 BUTTON BSETMAP '&Set Map Ranges...'
-^^WI   }
-^^WI  }
-^^WI }
-^^WI SHOW
-^^CR
-% CLEAR
-% INSERT '^^WI SET XFLIST SELECTION='
-% STORE FORMAT /(I2)/ LENGTH 2 INTEGER MTYPE
-% OUTPUT
-^^CR
-% END IF
-% VERIFY XFLIST XDPEAKS XNPEAKS XFEDIT -
-  BUTTONOK BUTTONXX BHELP BSETMAP
-% GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-% CASE VALUE
-%   BLOCK           %XFLIST Change default peak height?%
-%       VERIFY 1 2 3 4 5 6 7
-%       GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%       IF PEAKCHANGE .EQ. FALSE THEN
-%           IF VALUE .EQ. 2 THEN
-^^WI            SET XFEDIT TEXT '0.3'
-^^CR
-%           ELSE
-^^WI            SET XFEDIT TEXT '1.5'
-^^CR
-%           END IF
-%       END IF
-%   END BLOCK
-%   BLOCK           %XDPEAKS%
-^^WI            SET XNPEAKS STATE=OFF
-^^WI            SET ICPEAKS DISABLED=YES
-^^CR
-%   END BLOCK
-%   BLOCK           %XNPEAKS%
-^^WI            SET XDPEAKS STATE=OFF
-^^WI            SET ICPEAKS DISABLED=NO
-^^CR
-%   END BLOCK
-%   BLOCK           %XFEDIT%
-%%If the user sets a value, turn off automatic value change.
-%       GET SILENT NOSTORE KEYWORD ' ' ' '
-%       EVALUATE PEAKCHANGE = TRUE
-%   END BLOCK
-%   BLOCK           %BUTTONOK%
-%% recalc scale factor
-^^??    XSCALE STATE
-%       VERIFY ON OFF
-%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%       EVALUATE DOSCALE = VALUE
-%% recalc phases
-^^??    XCALC STATE
-%       VERIFY ON OFF
-%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%       EVALUATE DOCALC = VALUE
-%% map type
-^^??    XFLIST SELECTED
-%       VERIFY 1 2 3 4 5 6 7
-%       GET SILENT FINAL NOSTORE ABBREVIATED ' '
-%       EVALUATE IMAP = VALUE
-%% map weight
-^^??    XWLIST SELECTED
-%       VERIFY 1 2 3
-%       GET SILENT FINAL NOSTORE ABBREVIATED ' '
-%       EVALUATE IWEI = VALUE
-%% min peak height
-^^??    XFEDIT TEXT
-%       GET SILENT NOSTORE REAL ' '
-%       EVALUATE PEAKHEIGHT = 10.0 * VALUE
-%% default or specified npeaks to keep
-^^??    XDPEAKS STATE
-%       VERIFY ON OFF
-%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%       CASE VALUE
-%           BLOCK %ON%
-%               EVALUATE NPEAKS = 0
-%           END BLOCK
-%           BLOCK %OFF%
-^^??            ICPEAKS TEXT
-%               GET SILENT NOSTORE INTEGER ' '
-%               EVALUATE NPEAKS = VALUE
-%           END BLOCK
-%       END CASE
-%% rejection limit
-^^??    FCREJECT TEXT
-%       GET SILENT NOSTORE REAL ' '
-%       EVALUATE REJLIMIT = VALUE
-%% map file
-^^??    XMCON STATE
-%       VERIFY ON OFF
-%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%       IF VALUE .EQ. 1 THEN
-%        EVALUATE DOMAP = 1
+%        ELSE 
+%         IF ( DOCALC .EQ. 1 ) THEN
+%            COPY '#SFLS'
+%            COPY 'CALC'
+%            COPY 'END'
+%         ELSE IF ( DOSCALE .EQ. 1 ) THEN
+%            COPY '#SFLS'
+%            COPY 'SCALE'
+%            COPY 'END'
+%         END IF
+%         EVALUATE F67 = 6
+%        END IF                                                                  
 %       ELSE
-^^??     XMMCE STATE
-%        VERIFY ON OFF
-%        GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%        IF VALUE .EQ. 1 THEN
-%         EVALUATE DOMAP = 2
-%        ELSE
-^^??      XMLOU STATE
-%         VERIFY ON OFF
-%         GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%         IF VALUE .EQ. 1 THEN
-%          EVALUATE DOMAP = 3
-%         ELSE
-%          EVALUATE DOMAP = 0
-%         END IF
-%        END IF
-%       END IF
-^^WI    DISPOSE FOURIER
-^^CR
-%%
-%       IF ( .NOT. MERGED ) THEN
-{I Copying reflection list to temporary storage.
-%         COPY '#COPY 6 7'
-%         COPY 'END'
-{I Calculating unique reflections using Friedel's law.
-%         COPY '#SYST 7 FRIEDEL=YES FILTER=YES'
-%         COPY 'END'
-{I Sorting temporary reflection list.
-%         COPY '#SORT 7'
-%         COPY 'END'
-{I Merging temporary reflection list.
-%         COPY '#MERGE 7'
-%         COPY 'END'
-%       END IF
-%       IF ( TWINNED ) THEN
-%         EVALUATE DOCALC = 1
-%       END IF
-%       IF ( DOSCALE .EQ. 1 .OR. DOCALC .EQ. 1 ) THEN
-%         COPY '#SCRIPT XDELQ'
-%         IF ( MERGED ) THEN
-%           COPY '#SFLS'
-%         ELSE
-%           COPY '#SFLS 7'
-%         END IF
-%         IF DOSCALE .EQ. 1 THEN
-%           IF TWINNED .EQ. TRUE THEN                                                     
-%             COPY 'SCALE /FO/=SCALED-/FOT/'                                              
-%           ELSE                                                                          
-%             COPY 'SCALE'
-%           END IF
+{Patterson map - remove all knowlwdge about twinning.
+%         IF ( ( EXISTS 25 ) .EQ. 1 ) THEN                                           
+%           COPY '#LIST 25'
 %           COPY 'END'
 %         END IF
-%         IF DOCALC .EQ. 1 THEN
-%           IF TWINNED .EQ. TRUE THEN                                                     
-%             COPY 'CALC /FO/=SCALED-/FOT/'                                              
-%           ELSE                                                                          
-%             COPY 'CALC'
-%           END IF
-%           COPY 'END'
-%         END IF
-%       END IF
-%       QUEUE REWIND
-%       CLEAR
-%       INSERT 'MAP TYPE = '
-%       IF IMAP .EQ. 1 THEN
-%           EVALUATE MAPTYPE = 'FO'
-%           INSERT 'F-O'
-%       ELSE IF IMAP .EQ. 2 THEN
-%           EVALUATE MAPTYPE = 'DIF'
-%           INSERT 'DIF'
-%       ELSE IF IMAP .EQ. 3 THEN
-%           EVALUATE MAPTYPE = '2FO'
-%           INSERT '2FO'
-%       ELSE IF IMAP .EQ. 4 THEN
-%           EVALUATE MAPTYPE = 'FC'
-%           INSERT 'F-C'
-%       ELSE IF IMAP .EQ. 5 THEN
-%           EVALUATE MAPTYPE = 'OPT'
-%           INSERT 'OPT'
-%       ELSE IF IMAP .EQ. 6 THEN
-%           EVALUATE MAPTYPE = 'FO-PAT'
-%           INSERT 'FO-PAT'
-%       ELSE
-%           EVALUATE MAPTYPE = 'FC-PAT'
-%           INSERT 'FC-PAT'
-%       END IF
-%       IF DOMAP .EQ. 3 THEN
-%           BLOCK
-%              ON ERROR REPEAT
-^^CO SYSSAVEFILE 'Mapfile' 'Mapfile' 'Binary MapView format (Mapfile)'
-%              GET SILENT NOSTORE TEXT 'Save as' 'MAPVIEW'
-%              EVALUATE FNAME = CVALUE
-%              IF ( FNAME .EQ. 'CANCEL' ) THEN
-%                EVALUATE DOMAP = 0
-%              ELSE
-%                INSERT ' FILE=MAPVIEW'
-%                EVALUATE LCONTOUR = TRUE
-%                TRANSFER "#STORE CSYS MAP '" //  FNAME  // -
-                 "'" TO CRYSTALS
-%              END IF
-%           END BLOCK
-%       ELSE IF DOMAP .GE. 1 THEN
-%           BLOCK
-%              ON ERROR REPEAT
-^^CO SYSSAVEFILE 'Map.fou' '*.fou' 'Fourier map ASCII file (*.fou)'
-%              GET SILENT NOSTORE TEXT 'Save as' 'MAP.FOU'
-%              EVALUATE FNAME = CVALUE
-%              IF ( FNAME .EQ. 'CANCEL' ) THEN
-%                EVALUATE DOMAP = 0
-%              ELSE
-%                INSERT ' FILE=YES'
-%                EVALUATE LCONTOUR = TRUE
-%                TRANSFER "#STORE CSYS MAP '" //  FNAME  // -
-                 "'" TO CRYSTALS
-%              END IF
-%           END BLOCK
-%       END IF
-%       QUEUE SEND
-%       CLEAR
-%       INSERT 'REFL WEIGHT = '
-%       IF IWEI .EQ. 1 THEN
-%           INSERT 'NO'
-%       ELSE IF IWEI .EQ. 2 THEN
-%           INSERT 'SIM'
-%       ELSE IF IWEI .EQ. 3 THEN
-%           INSERT 'LIST-6'
-%       END IF
-%       QUEUE SEND
-%       CLEAR
-%       INSERT 'PEAKS HEIGHT  = '
-%       STORE FORMAT /(F7.2)/ LENGTH 7 REAL PEAKHEIGHT
-%       INSERT ' NPEAK = '
-%       STORE FORMAT /(I6)/ LENGTH 6 INTEGER NPEAKS
-%       INSERT ' REJECT = '
-%       STORE FORMAT /(F7.2)/ LENGTH 7 REAL REJLIMIT
-%       QUEUE SEND
-%       CLEAR
-%       IF ( MERGED ) THEN
-%         COPY '#FOURIER'
-%         QUEUE PROCESS
+%         COPY '#LIST 5'
+%         COPY 'READ NATOM = 0'
 %         COPY 'END'
-%       ELSE
-%         COPY '#FOURIER 7'
-%         QUEUE PROCESS
-%         COPY 'END'
-%         COPY '#SCRIPT POSTFOUR'
-%       END IF
-{I Fourier calculation complete.
-%%
-%%
-%%
-%       IF ( DOMAP .EQ. 1 ) THEN
-%         EVALUATE QTITLE = 'Run CONTOUR'
-%         EVALUATE QLINE1 = 'Do you want to view the new map file'
-%         EVALUATE QLINE2 = 'in the CONTOUR program?'
-%         EVALUATE BUTTOK = '&Yes'
-%         EVALUATE BUTTXX = '&No'
-%         COPY '#SCRIPT XQUESTIO'
-%         IF ANSWER .EQ. TRUE THEN
- * Starting Fourier map viewer.
-%               TRANSFER '#SPAWN "CRYSDIR:CONTOUR.EXE" ' // -
- FNAME TO CRYSTALS
-%         END IF
-%       END IF
-%       IF ( DOMAP .EQ. 2 ) THEN
-%         EVALUATE QTITLE = 'Run MCE'
-%         EVALUATE QLINE1 = 'Do you want to view the new map file'
-%         EVALUATE QLINE2 = 'in the MCE program?'
-%         EVALUATE BUTTOK = '&Yes'
-%         EVALUATE BUTTXX = '&No'
-%         COPY '#SCRIPT XQUESTIO'
-%         IF ANSWER .EQ. TRUE THEN
- * Starting MCE map viewer.
-%%
-^^CO        GETKEY MCEDIR
-%%
-%           GET SILENT NOSTORE FINAL TEXT '1' '1'
-%           EVALUATE CFILE = CVALUE
-%           IF CFILE .EQ. '1' .OR. FILEEXISTS ( CFILE ) .EQ. FALSE THEN
-%             IF FILEEXISTS 'crysdir:mce/mce.exe' THEN
-^^CO            SETKEY MCEDIR crysdir:mce/mce.exe
-%               EVALUATE CFILE = "crysdir:mce/mce.exe"
-%          ELSE IF FILEEXISTS 'c:/progra~1/marchi~1/MarchingCubeELD.exe' THEN
-^^CO            SETKEY MCEDIR c:/progra~1/marchi~1/MarchingCubeELD.exe
-%               EVALUATE CFILE = "c:/progra~1/marchi~1/MarchingCubeELD.exe"
-%             ELSE
-
-  Where is the MCE executable?
-
-^^CO SYSOPENFILE 'm*.exe' 'MCE executable'
-
-%               CLEAR
-%               INSERT '^^CO SETKEY MCEDIR '
-%               GET SILENT TEXT 'MCE location:'
-%               IF CVALUE .NE. 'CANCEL' THEN
-%                 EVALUATE CFILE = CVALUE
-%                 OUTPUT
-%               ELSE
-
-{E MCE not found. Map is saved, but can't find viewer.
-
-%               END IF
-%             END IF
-%           END IF
-%           TRANSFER '#SPAWN "' // CFILE // '" "' // FNAME // '"' TO CRYSTALS
-%           TRANSFER '#SPAWN "' // CFILE // '" "' // FNAME // '"' TO DISPLAY
-%         END IF
-%       END IF
-%       IF ( DOMAP .EQ. 3 ) THEN
-%         EVALUATE QTITLE = 'Run Mapview'
-%         EVALUATE QLINE1 = 'Do you want to view the new map file'
-%         EVALUATE QLINE2 = 'in the Mapview program?'
-%         EVALUATE BUTTOK = '&Yes'
-%         EVALUATE BUTTXX = '&No'
-%         COPY '#SCRIPT XQUESTIO'
-%         IF ANSWER .EQ. TRUE THEN
- * Starting Mapview map viewer.
-%%
-^^CO        GETKEY MAPVIEWDIR
-%%
-%           GET SILENT NOSTORE FINAL TEXT '1' '1'
-%           EVALUATE CFILE = CVALUE
-%           IF CFILE .EQ. '1' .OR. FILEEXISTS ( CFILE ) .EQ. FALSE THEN
-%             IF FILEEXISTS 'WINGXDIR:/for_prog/mapview.exe' THEN
-^^CO            SETKEY MAPVIEWDIR WINGXDIR:/for_prog/mapview.exe
-%               EVALUATE CFILE = "WINGXDIR:/for_prog/mapview.exe"
-%             ELSE
-
-  Where is the Mapview executable?
-
-^^CO SYSOPENFILE 'Mapview*.exe' 'Mapview executable'
-
-%               CLEAR
-%               INSERT '^^CO SETKEY MAPVIEWDIR '
-%               GET SILENT TEXT 'MAPVIEW location:'
-%               IF CVALUE .NE. 'CANCEL' THEN
-%                 EVALUATE CFILE = CVALUE
-%                 OUTPUT
-%               ELSE
-
-{E Mapview.exe not found. Map is saved, but can't find viewer.
-
-%               END IF
-%             END IF
-%           END IF
-%           TRANSFER '#SPAWN "' // CFILE // '" ' // FNAME TO CRYSTALS
-%         END IF
-%       END IF
-%% See if any atoms were found
-%       copy '#set moni off'
-%       COPY '#GENERALEDIT 10'
-%       COPY 'TRANSHEAD FROM OFFSET=3 TO N10'
-%       COPY 'END'
-%       IF ( EXISTS 5 .EQ. 1 ) THEN
-%        COPY '#GENERALEDIT 5'
-%        COPY 'TRANSHEAD FROM OFFSET=3 TO N5O'
-%        COPY 'END'
-%       ELSE
-%        EVALUATE N5O = 0
-%        EVALUATE NOINI5 = TRUE
-%       END IF
-%       EVALUATE NPEAKS = N10 - N5O
-%%      SHOW NPEAKS
-%       IF NPEAKS .LE. 0 THEN
-^^WI    WINDOW NOPEAKS 'No peaks' MODAL
-^^WI    COMMIT='BTNXX' CANCEL='BTNXX'
-^^WI    GRID MYMAIN NROWS=1 NCOLS=3
-^^WI    {
-^^WI      @ 1,1 GRID GRIDL NROWS=3 NCOLS=2
-^^WI      {
-^^WI        @ 2,2 ICON IM INFO
-^^WI      }
-^^WI      @ 1,2 GRID GRIDM NROWS=5 NCOLS=3
-^^WI      {
-^^WI        @ 2,2 STATIC TEXT1 'No peaks were found. Try increasing'
-^^WI        @ 3,2 STATIC TEXT2 'the "number of peaks to keep" or'
-^^WI        @ 4,2 STATIC TEXT4 'decreasing the minimum peak height.'
-^^WI      }
-^^WI      @ 1,3 GRID GRIDR NROWS=5 NCOLS=3
-^^WI      {
-^^WI        @ 4,2 BUTTON BTNOK '&Try Again'
-^^WI        @ 2,2 BUTTON BTNXX '&Cancel'  DEFAULT
-^^WI      }
-^^WI    }
-^^WI    SHOW
-^^CR
-%           VERIFY BTNOK BTNXX
-%           GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-^^CO        DISPOSE NOPEAKS
-%           IF VALUE .EQ. 1 THEN
-%% Don't know how wise this is, the stack will run out eventually
-%               EVALUATE XFCALLED = TRUE
-%               COPY '#SCRIPT XFOUR'
-%               FINISH
-%           END IF
-%           FINISH
-%       END IF
-^^WI WINDOW PEAKS 'Peaks found' MODAL
-^^WI COMMIT='BTNOK' CANCEL='BTNXX'
-^^WI GRID MYMAIN NROWS=7 NCOLS=3
-^^WI {
-^^WI   @ 2,2 GRID GRIDT NROWS=1 NCOLS=5
-^^WI   {
-^^WI     @ 1,1 ICON IM INFO
-^^WI     @ 1,3 GRID GRIDI NROWS=3 NCOLS=1
-^^WI     {
-% CLEAR
-% INSERT   !^^WI @ 1,1 STATIC TEXT1 'Found !
-% STORE   FORMAT /(I4)/ LENGTH 4 INTEGER NPEAKS
-% INSERT   ! peaks. Some may be' !
-% OUTPUT
-^^WI       @ 2,1 STATIC XPEAKS 'coincident with existing atoms.'
-^^WI       @ 3,1 STATIC XPEAK2 'Transfer peaks to model?'
-^^WI     }
-^^WI     @ 1,4 STRETCH _H HORIZONTAL
-^^WI     @ 1,5 GRID GRIDR NROWS=1 NCOLS=3
-^^WI     {
-^^WI       @ 1,1 BUTTON BTNOK '&Transfer' DEFAULT
-^^WI       @ 1,3 BUTTON BTNXX '&Discard'
-^^WI     }
-^^WI   }
-^^WI   @ 4,2 GRID COLL NROWS=3 NCOLS=1 OUTLINE='During transfer:'
-^^WI   {
-^^WI      @ 1,1 RADIOBUTTON XNEW
-^^WI         'use symmetry to put peaks near existing fragments.'
-^^WI                                           STATE=ON IGNORE
-^^WI      @ 2,1 RADIOBUTTON XNON 'leave peaks where they are.'
-^^WI                                           STATE=OFF IGNORE
-^^WI      @ 3,1 RADIOBUTTON XALL
-^^WI         'use symmetry to build all atoms into fragments.'
-^^WI                                           STATE=OFF IGNORE
-^^WI   }
-^^WI   @ 6,2 GRID PRUNE NROWS=1 NCOLS=1 OUTLINE='After transfer:'
-^^WI   {
-^^WI     @ 1,1 CHECKBOX XPR 'Show peak results dialog' STATE=ON
-^^WI   }
-^^WI }
-^^WI SHOW
-^^CR
-%    VERIFY BTNOK BTNXX
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%        CASE VALUE
-%             BLOCK                %BUTTONOK%
-%                 QUEUE REWIND
-%                 CLEAR
-^^??              XPR STATE
-%                 VERIFY ON OFF
-%                 GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%                 EVALUATE DOXPR = VALUE
-^^??              XNON STATE
-%                 VERIFY OFF ON 
-%                 GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%                 EVALUATE DOCOLLECT = VALUE
-%                 IF DOCOLLECT .EQ. 1 THEN
-^^??                XNEW STATE
-%                   VERIFY OFF ON
-%                   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%                   EVALUATE DOALL = VALUE
-%                 END IF
-^^CO              DISPOSE PEAKS
-%                 COPY '#SCRIPT XPEAKS'
-%                 IF DOCOLLECT .EQ. 1 THEN
-%                   COPY '#COLLECT'
-%                   IF DOALL .EQ. 1 THEN
-%                     COPY 'SELECT TYPE=ALL'
-%                   ELSE
-%                     COPY 'SELECT TYPE=PEAKS'
-%                   END IF 
-%                   COPY 'END'
-%                 END IF
-%                 COPY '#GENERALEDIT 5'
-%                 COPY 'TRANSHEAD FROM OFFSET=3 TO N5N'
-%                 COPY 'END'
-%                 IF ( N5N .LE. N5O ) THEN
-%                    EVALUATE DOXPR = 2
-
-
-{I
-{I   All peaks have been rejected as they were coincident with
-{I                 existing atoms in the model.
-{I
-
-
-%                 END IF
-%                 IF DOXPR .EQ. 1 THEN
-%                   COPY '#SCRIPT XPRUNE'
-%                 END IF
-%                 FINISH
-%             END BLOCK
-%             BLOCK                %BUTTONXX%
-^^WI              DISPOSE PEAKS
-^^CR
-%                 FINISH
-%             END BLOCK
-%        END CASE
-%   END BLOCK
-%%
-%   BLOCK                   %BUTTONXX%
-^^WI    DISPOSE FOURIER
-^^CR
-%       FINISH
-%   END BLOCK
-%   BLOCK                   %BHELP%
-%       COPY '#SCRIPT XHELP1'
-Fourier maps.
- 
-The data required to control the calculation and printing
-of a Fourier map are split into two parts.
- 
-The first part, which should remain essentially unchanged
-from job to job, is stored in LIST 14, and describes the
-limits of the Fourier along each of the axes and the
-orientation of the map on the paper.
-To change this click on the 'Set Map Ranges' button.
- 
-The second part of the information, such as the type of map,
-is provided by this dialog.
- 
-In the ouput listing, new peaks are labelled, with the
-following meanings
- 
-GOOD PEAK - The peak centre was determined by Least-Squares.
-POOR PEAK - The peak centre was determined by interpolation.
-DUBIUOS PEAK - The peak centre is only a local maximum.
- 
-Options
-==========
- 
-Recompute scale factor:
-If there is a check mark next to this item, the overall scale
-factor will be re-calculated before the Fourier is calculated.
-This is necessary if you have input a new model.
- 
-Recompute phases:
-If there is a check mark next to this item, structure factors
-will be re-calculated for all reflections before the Fourier
-is calculated.
-This is advisable if you have made any changes to the
-model (e.g. deleting atoms) since the last least squares
-refinement.
- 
-Map Type:
-F-Obs -  Compute the map using observed structure factors.
-Diff  -  Subtract model structure factors from the observed
-         structure factors. This will show up differences
-         between  the model and the 'observed' structure -
-         such as missing atoms.
-2Fo-Fc -
- 
-%       COPY '#SCRIPT XHELP2'
-%   END BLOCK
-%   BLOCK                   %BSETMAP%
-%       COPY '#SCRIPT XSECTION'
-%   END BLOCK
-% END CASE
-% END LOOP
-% copy '#set moni off'
-%END SCRIPT
+%         IF ( ( EXISTS 13 ) .EQ. 1 ) THEN                                           
+%          COPY '#GENERALEDIT 13'                                                 
+%          COPY 'LOCATE RECORDTYPE=101'                                           
+%          IF ( TWINNED .EQ. TRUE ) THEN                                                
+%            EVALUATE ITEMP = 0
+%            COPY 'TRANSFER TO OFFSET=1 FROM ITMP'                                  
+%          END IF                                                                 
+%          COPY 'END'                                                             
+%         END IF                                                                     
+%         EVALUATE F67 = 6
+%       END IF                                                                  
+%%djw
+%       QUEUE REWIND                                                            
+%       CLEAR                                                                   
+%       INSERT 'MAP TYPE = '                                                    
+%       IF IMAP .EQ. 1 THEN                                                     
+%           EVALUATE MAPTYPE = 'FO'                                             
+%           INSERT 'F-O'                                                        
+%       ELSE IF IMAP .EQ. 2 THEN                                                
+%           EVALUATE MAPTYPE = 'DIF'                                            
+%           INSERT 'DIF'                                                        
+%       ELSE IF IMAP .EQ. 3 THEN                                                
+%           EVALUATE MAPTYPE = '2FO'                                            
+%           INSERT '2FO'                                                        
+%       ELSE IF IMAP .EQ. 4 THEN                                                
+%           EVALUATE MAPTYPE = 'FC'                                             
+%           INSERT 'F-C'                                                        
+%       ELSE IF IMAP .EQ. 5 THEN                                                
+%           EVALUATE MAPTYPE = 'OPT'                                            
+%           INSERT 'OPT'                                                        
+%       ELSE IF IMAP .EQ. 6 THEN                                                
+%           EVALUATE MAPTYPE = 'FO-PAT'                                         
+%           INSERT 'FO-PAT'                                                     
+%       ELSE                                                                    
+%           EVALUATE MAPTYPE = 'FC-PAT'                                         
+%           INSERT 'FC-PAT'                                                     
+%       END IF                                                                  
+%       IF DOMAP .EQ. 3 THEN                                                    
+%           BLOCK                                                               
+%              ON ERROR REPEAT                                                  
+^^CO SYSSAVEFILE 'Mapfile' 'Mapfile' 'Binary MapView format (Mapfile)'          
+%              GET SILENT NOSTORE TEXT 'Save as' 'MAPVIEW'                      
+%              EVALUATE FNAME = CVALUE                                          
+%              IF ( FNAME .EQ. 'CANCEL' ) THEN                                  
+%                EVALUATE DOMAP = 0                                             
+%              ELSE                                                             
+%                INSERT ' FILE=MAPVIEW'                                         
+%                EVALUATE LCONTOUR = TRUE                                       
+%                TRANSFER "#STORE CSYS MAP '" //  FNAME  // -                   
+                 "'" TO CRYSTALS                                                
+%              END IF                                                           
+%           END BLOCK                                                           
+%       ELSE IF DOMAP .GE. 1 THEN                                               
+%           BLOCK                                                               
+%              ON ERROR REPEAT                                                  
+^^CO SYSSAVEFILE 'Map.fou' '*.fou' 'Fourier map ASCII file (*.fou)'             
+%              GET SILENT NOSTORE TEXT 'Save as' 'MAP.FOU'                      
+%              EVALUATE FNAME = CVALUE                                          
+%              IF ( FNAME .EQ. 'CANCEL' ) THEN                                  
+%                EVALUATE DOMAP = 0                                             
+%              ELSE                                                             
+%                INSERT ' FILE=YES'                                             
+%                EVALUATE LCONTOUR = TRUE                                       
+%                TRANSFER "#STORE CSYS MAP '" //  FNAME  // -                   
+                 "'" TO CRYSTALS                                                
+%              END IF                                                           
+%           END BLOCK                                                           
+%       END IF                                                                  
+%       QUEUE SEND                                                              
+%       CLEAR                                                                   
+%       INSERT 'REFL WEIGHT = '                                                 
+%       IF IWEI .EQ. 1 THEN                                                     
+%           INSERT 'NO'                                                         
+%       ELSE IF IWEI .EQ. 2 THEN                                                
+%           INSERT 'SIM'                                                        
+%       ELSE IF IWEI .EQ. 3 THEN                                                
+%           INSERT 'LIST-6'                                                     
+%       END IF                                                                  
+%       QUEUE SEND                                                              
+%       CLEAR                                                                   
+%       INSERT 'PEAKS HEIGHT  = '                                               
+%       STORE FORMAT /(F7.2)/ LENGTH 7 REAL PEAKHEIGHT                          
+%       INSERT ' NPEAK = '                                                      
+%       STORE FORMAT /(I6)/ LENGTH 6 INTEGER NPEAKS                             
+%       INSERT ' REJECT = '                                                     
+%       STORE FORMAT /(F7.2)/ LENGTH 7 REAL REJLIMIT                            
+%       QUEUE SEND                                                              
+%       CLEAR                                                                   
+%       IF ( F67 .EQ. 6 ) THEN                                                      
+%         COPY '#FOURIER'                                                       
+%         QUEUE PROCESS                                                         
+%         COPY 'END'                                                            
+%       ELSE                                                                    
+%         COPY '#FOURIER 7'                                                     
+%         QUEUE PROCESS                                                         
+%         COPY 'END'                                                            
+%         COPY '#SCRIPT POSTFOUR'                                               
+%       END IF                                                                  
+{I Fourier calculation complete.                                                
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%       IF ( DOMAP .EQ. 1 ) THEN                                                
+%         EVALUATE QTITLE = 'Run CONTOUR'                                       
+%         EVALUATE QLINE1 = 'Do you want to view the new map file'              
+%         EVALUATE QLINE2 = 'in the CONTOUR program?'                           
+%         EVALUATE BUTTOK = '&Yes'                                              
+%         EVALUATE BUTTXX = '&No'                                               
+%         COPY '#SCRIPT XQUESTIO'                                               
+%         IF ANSWER .EQ. TRUE THEN                                              
+ * Starting Fourier map viewer.                                                 
+%               TRANSFER '#SPAWN "CRYSDIR:CONTOUR.EXE" ' // -                   
+ FNAME TO CRYSTALS                                                              
+%         END IF                                                                
+%       END IF                                                                  
+%       IF ( DOMAP .EQ. 2 ) THEN                                                
+%         EVALUATE QTITLE = 'Run MCE'                                           
+%         EVALUATE QLINE1 = 'Do you want to view the new map file'              
+%         EVALUATE QLINE2 = 'in the MCE program?'                               
+%         EVALUATE BUTTOK = '&Yes'                                              
+%         EVALUATE BUTTXX = '&No'                                               
+%         COPY '#SCRIPT XQUESTIO'                                               
+%         IF ANSWER .EQ. TRUE THEN                                              
+ * Starting MCE map viewer.                                                     
+%%                                                                              
+^^CO        GETKEY MCEDIR                                                       
+%%                                                                              
+%           GET SILENT NOSTORE FINAL TEXT '1' '1'                               
+%           EVALUATE CFILE = CVALUE                                             
+%           IF CFILE .EQ. '1' .OR. FILEEXISTS ( CFILE ) .EQ. FALSE THEN         
+%             IF FILEEXISTS 'crysdir:mce/mce.exe' THEN                          
+^^CO            SETKEY MCEDIR crysdir:mce/mce.exe                               
+%               EVALUATE CFILE = "crysdir:mce/mce.exe"                          
+%          ELSE IF FILEEXISTS 'c:/progra~1/marchi~1/MarchingCubeELD.exe' THEN   
+^^CO            SETKEY MCEDIR c:/progra~1/marchi~1/MarchingCubeELD.exe          
+%               EVALUATE CFILE = "c:/progra~1/marchi~1/MarchingCubeELD.exe"     
+%             ELSE                                                              
+                                                                                
+  Where is the MCE executable?                                                  
+                                                                                
+^^CO SYSOPENFILE 'm*.exe' 'MCE executable'                                      
+                                                                                
+%               CLEAR                                                           
+%               INSERT '^^CO SETKEY MCEDIR '                                    
+%               GET SILENT TEXT 'MCE location:'                                 
+%               IF CVALUE .NE. 'CANCEL' THEN                                    
+%                 EVALUATE CFILE = CVALUE                                       
+%                 OUTPUT                                                        
+%               ELSE                                                            
+                                                                                
+{E MCE not found. Map is saved, but can't find viewer.                          
+                                                                                
+%               END IF                                                          
+%             END IF                                                            
+%           END IF                                                              
+%           TRANSFER '#SPAWN "' // CFILE // '" "' // FNAME // '"' TO CRYSTALS   
+%           TRANSFER '#SPAWN "' // CFILE // '" "' // FNAME // '"' TO DISPLAY    
+%         END IF                                                                
+%       END IF                                                                  
+%       IF ( DOMAP .EQ. 3 ) THEN                                                
+%         EVALUATE QTITLE = 'Run Mapview'                                       
+%         EVALUATE QLINE1 = 'Do you want to view the new map file'              
+%         EVALUATE QLINE2 = 'in the Mapview program?'                           
+%         EVALUATE BUTTOK = '&Yes'                                              
+%         EVALUATE BUTTXX = '&No'                                               
+%         COPY '#SCRIPT XQUESTIO'                                               
+%         IF ANSWER .EQ. TRUE THEN                                              
+ * Starting Mapview map viewer.                                                 
+%%                                                                              
+^^CO        GETKEY MAPVIEWDIR                                                   
+%%                                                                              
+%           GET SILENT NOSTORE FINAL TEXT '1' '1'                               
+%           EVALUATE CFILE = CVALUE                                             
+%           IF CFILE .EQ. '1' .OR. FILEEXISTS ( CFILE ) .EQ. FALSE THEN         
+%             IF FILEEXISTS 'WINGXDIR:/for_prog/mapview.exe' THEN               
+^^CO            SETKEY MAPVIEWDIR WINGXDIR:/for_prog/mapview.exe                
+%               EVALUATE CFILE = "WINGXDIR:/for_prog/mapview.exe"               
+%             ELSE                                                              
+                                                                                
+  Where is the Mapview executable?                                              
+                                                                                
+^^CO SYSOPENFILE 'Mapview*.exe' 'Mapview executable'                            
+                                                                                
+%               CLEAR                                                           
+%               INSERT '^^CO SETKEY MAPVIEWDIR '                                
+%               GET SILENT TEXT 'MAPVIEW location:'                             
+%               IF CVALUE .NE. 'CANCEL' THEN                                    
+%                 EVALUATE CFILE = CVALUE                                       
+%                 OUTPUT                                                        
+%               ELSE                                                            
+                                                                                
+{E Mapview.exe not found. Map is saved, but can't find viewer.                  
+                                                                                
+%               END IF                                                          
+%             END IF                                                            
+%           END IF                                                              
+%           TRANSFER '#SPAWN "' // CFILE // '" ' // FNAME TO CRYSTALS           
+%         END IF                                                                
+%       END IF                                                                  
+%% See if any atoms were found                                                  
+%       copy '#set moni off'                                                    
+%       COPY '#GENERALEDIT 10'                                                  
+%       COPY 'TRANSHEAD FROM OFFSET=3 TO N10'                                   
+%       COPY 'END'                                                              
+%       IF ( EXISTS 5 .EQ. 1 ) THEN                                             
+%        COPY '#GENERALEDIT 5'                                                  
+%        COPY 'TRANSHEAD FROM OFFSET=3 TO N5O'                                  
+%        COPY 'END'                                                             
+%       ELSE                                                                    
+%        EVALUATE N5O = 0                                                       
+%        EVALUATE NOINI5 = TRUE                                                 
+%       END IF                                                                  
+%       EVALUATE NPEAKS = N10 - N5O                                             
+%%      SHOW NPEAKS                                                             
+%       IF NPEAKS .LE. 0 THEN                                                   
+^^WI    WINDOW NOPEAKS 'No peaks' MODAL                                         
+^^WI    COMMIT='BTNXX' CANCEL='BTNXX'                                           
+^^WI    GRID MYMAIN NROWS=1 NCOLS=3                                             
+^^WI    {                                                                       
+^^WI      @ 1,1 GRID GRIDL NROWS=3 NCOLS=2                                      
+^^WI      {                                                                     
+^^WI        @ 2,2 ICON IM INFO                                                  
+^^WI      }                                                                     
+^^WI      @ 1,2 GRID GRIDM NROWS=5 NCOLS=3                                      
+^^WI      {                                                                     
+^^WI        @ 2,2 STATIC TEXT1 'No peaks were found. Try increasing'            
+^^WI        @ 3,2 STATIC TEXT2 'the "number of peaks to keep" or'               
+^^WI        @ 4,2 STATIC TEXT4 'decreasing the minimum peak height.'            
+^^WI      }                                                                     
+^^WI      @ 1,3 GRID GRIDR NROWS=5 NCOLS=3                                      
+^^WI      {                                                                     
+^^WI        @ 4,2 BUTTON BTNOK '&Try Again'                                     
+^^WI        @ 2,2 BUTTON BTNXX '&Cancel'  DEFAULT                               
+^^WI      }                                                                     
+^^WI    }                                                                       
+^^WI    SHOW                                                                    
+^^CR                                                                            
+%           VERIFY BTNOK BTNXX                                                  
+%           GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                        
+^^CO        DISPOSE NOPEAKS                                                     
+%           IF VALUE .EQ. 1 THEN                                                
+%% Don't know how wise this is, the stack will run out eventually               
+%               EVALUATE XFCALLED = TRUE                                        
+%               COPY '#SCRIPT XFOUR'                                            
+%               FINISH                                                          
+%           END IF                                                              
+%           FINISH                                                              
+%       END IF                                                                  
+^^WI WINDOW PEAKS 'Peaks found' MODAL                                           
+^^WI COMMIT='BTNOK' CANCEL='BTNXX'                                              
+^^WI GRID MYMAIN NROWS=7 NCOLS=3                                                
+^^WI {                                                                          
+^^WI   @ 2,2 GRID GRIDT NROWS=1 NCOLS=5                                         
+^^WI   {                                                                        
+^^WI     @ 1,1 ICON IM INFO                                                     
+^^WI     @ 1,3 GRID GRIDI NROWS=3 NCOLS=1                                       
+^^WI     {                                                                      
+% CLEAR                                                                         
+% INSERT   !^^WI @ 1,1 STATIC TEXT1 'Found !                                    
+% STORE   FORMAT /(I4)/ LENGTH 4 INTEGER NPEAKS                                 
+% INSERT   ! peaks. Some may be' !                                              
+% OUTPUT                                                                        
+^^WI       @ 2,1 STATIC XPEAKS 'coincident with existing atoms.'                
+^^WI       @ 3,1 STATIC XPEAK2 'Transfer peaks to model?'                       
+^^WI     }                                                                      
+^^WI     @ 1,4 STRETCH _H HORIZONTAL                                            
+^^WI     @ 1,5 GRID GRIDR NROWS=1 NCOLS=3                                       
+^^WI     {                                                                      
+^^WI       @ 1,1 BUTTON BTNOK '&Transfer' DEFAULT                               
+^^WI       @ 1,3 BUTTON BTNXX '&Discard'                                        
+^^WI     }                                                                      
+^^WI   }                                                                        
+^^WI   @ 4,2 GRID COLL NROWS=3 NCOLS=1 OUTLINE='During transfer:'               
+^^WI   {                                                                        
+^^WI      @ 1,1 RADIOBUTTON XNEW                                                
+^^WI         'use symmetry to put peaks near existing fragments.'               
+^^WI                                           STATE=ON IGNORE                  
+^^WI      @ 2,1 RADIOBUTTON XNON 'leave peaks where they are.'                  
+^^WI                                           STATE=OFF IGNORE                 
+^^WI      @ 3,1 RADIOBUTTON XALL                                                
+^^WI         'use symmetry to build all atoms into fragments.'                  
+^^WI                                           STATE=OFF IGNORE                 
+^^WI   }                                                                        
+^^WI   @ 6,2 GRID PRUNE NROWS=1 NCOLS=1 OUTLINE='After transfer:'               
+^^WI   {                                                                        
+^^WI     @ 1,1 CHECKBOX XPR 'Show peak results dialog' STATE=ON                 
+^^WI   }                                                                        
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+%    VERIFY BTNOK BTNXX                                                         
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                               
+%        CASE VALUE                                                             
+%             BLOCK                %BUTTONOK%                                   
+%                 QUEUE REWIND                                                  
+%                 CLEAR                                                         
+^^??              XPR STATE                                                     
+%                 VERIFY ON OFF                                                 
+%                 GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                  
+%                 EVALUATE DOXPR = VALUE                                        
+^^??              XNON STATE                                                    
+%                 VERIFY OFF ON                                                 
+%                 GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                  
+%                 EVALUATE DOCOLLECT = VALUE                                    
+%                 IF DOCOLLECT .EQ. 1 THEN                                      
+^^??                XNEW STATE                                                  
+%                   VERIFY OFF ON                                               
+%                   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                
+%                   EVALUATE DOALL = VALUE                                      
+%                 END IF                                                        
+^^CO              DISPOSE PEAKS                                                 
+%                 COPY '#SCRIPT XPEAKS'                                         
+%                 IF DOCOLLECT .EQ. 1 THEN                                      
+%                   COPY '#COLLECT'                                             
+%                   IF DOALL .EQ. 1 THEN                                        
+%                     COPY 'SELECT TYPE=ALL'                                    
+%                   ELSE                                                        
+%                     COPY 'SELECT TYPE=PEAKS'                                  
+%                   END IF                                                      
+%                   COPY 'END'                                                  
+%                 END IF                                                        
+%                 COPY '#GENERALEDIT 5'                                         
+%                 COPY 'TRANSHEAD FROM OFFSET=3 TO N5N'                         
+%                 COPY 'END'                                                    
+%                 IF ( N5N .LE. N5O ) THEN                                      
+%                    EVALUATE DOXPR = 2                                         
+                                                                                
+                                                                                
+{I                                                                              
+{I   All peaks have been rejected as they were coincident with                  
+{I                 existing atoms in the model.                                 
+{I                                                                              
+                                                                                
+                                                                                
+%                 END IF                                                        
+%                 IF DOXPR .EQ. 1 THEN                                          
+%                   COPY '#SCRIPT XPRUNE'                                       
+%                 END IF                                                        
+%                 FINISH                                                        
+%             END BLOCK                                                         
+%             BLOCK                %BUTTONXX%                                   
+^^WI              DISPOSE PEAKS                                                 
+^^CR                                                                            
+%                 FINISH                                                        
+%             END BLOCK                                                         
+%        END CASE                                                               
+%   END BLOCK                                                                   
+%%                                                                              
+%   BLOCK                   %BUTTONXX%                                          
+^^WI    DISPOSE FOURIER                                                         
+^^CR                                                                            
+%       FINISH                                                                  
+%   END BLOCK                                                                   
+%   BLOCK                   %BHELP%                                             
+%       COPY '#SCRIPT XHELP1'                                                   
+Fourier maps.                                                                   
+                                                                                
+The data required to control the calculation and printing                       
+of a Fourier map are split into two parts.                                      
+                                                                                
+The first part, which should remain essentially unchanged                       
+from job to job, is stored in LIST 14, and describes the                        
+limits of the Fourier along each of the axes and the                            
+orientation of the map on the paper.                                            
+To change this click on the 'Set Map Ranges' button.                            
+                                                                                
+The second part of the information, such as the type of map,                    
+is provided by this dialog.                                                     
+                                                                                
+In the ouput listing, new peaks are labelled, with the                          
+following meanings                                                              
+                                                                                
+GOOD PEAK - The peak centre was determined by Least-Squares.                    
+POOR PEAK - The peak centre was determined by interpolation.                    
+DUBIUOS PEAK - The peak centre is only a local maximum.                         
+                                                                                
+Options                                                                         
+==========                                                                      
+                                                                                
+Recompute scale factor:                                                         
+If there is a check mark next to this item, the overall scale                   
+factor will be re-calculated before the Fourier is calculated.                  
+This is necessary if you have input a new model.                                
+                                                                                
+Recompute phases:                                                               
+If there is a check mark next to this item, structure factors                   
+will be re-calculated for all reflections before the Fourier                    
+is calculated.                                                                  
+This is advisable if you have made any changes to the                           
+model (e.g. deleting atoms) since the last least squares                        
+refinement.                                                                     
+                                                                                
+Map Type:                                                                       
+F-Obs -  Compute the map using observed structure factors.                      
+Diff  -  Subtract model structure factors from the observed                     
+         structure factors. This will show up differences                       
+         between  the model and the 'observed' structure -                      
+         such as missing atoms.                                                 
+2Fo-Fc -                                                                        
+                                                                                
+%       COPY '#SCRIPT XHELP2'                                                   
+%   END BLOCK                                                                   
+%   BLOCK                   %BSETMAP%                                           
+%       COPY '#SCRIPT XSECTION'                                                 
+%   END BLOCK                                                                   
+% END CASE                                                                      
+% END LOOP                                                                      
+% copy '#set moni off'                                                          
+%END SCRIPT                                                                     
