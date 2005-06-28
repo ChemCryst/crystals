@@ -3598,7 +3598,7 @@ For example
 #HSsyst#
 #N   8#
 #J
- \SYSTEMATIC
+ \SYSTEMATIC INPUTLIST=
  STORE MEDIUM= F'S= NEWINDICES=
  END
 #
@@ -3633,6 +3633,11 @@ For example:
 #Q
 #I\SYSTEMATIC#
 #Q
+#DSYSTEMATIC INPUTLIST=#
+#Q
+#KINPUTLIST=#
+     6 OR 7
+#Q
 #DSTORE MEDIUM= F'S= NEWINDICES=#
 #KMEDIUM=#
       Determines the output medium.
@@ -3666,7 +3671,7 @@ For example:
 #HSsort#
 #N   7#
 #J
- \SORT
+ \SORT INPUTLIST=
  STORE MEDIUM=
  END
 #
@@ -3712,7 +3717,7 @@ For example:
 #HSmerge#
 #N   9#
 #J
- \MERGE
+ \MERGE INPUT= TWINNED=
  STORE MEDIUM=
  REFLECTIONS NJCODE= LIST= LEVEL= F'S=
  JCODE NUMBER= VALUE=
@@ -3868,6 +3873,17 @@ For example:
  SIGMA2. It is almost always much greater.
 #Q
 #I\MERGE#
+#Q
+#DMERGE=#
+#KINPUT=#
+  Either 6 or 7.  Default is 6.
+#Q
+#KTWINNED=#
+#J
+  NO      Treat data as un-twinned
+  LIST13  Treat data according to list 13 
+  YES     Treat data as twinned
+#
 #Q
 #DSTORE MEDIUM=#
 #KMEDIUM=#
