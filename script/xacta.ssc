@@ -1,4 +1,4 @@
-%SCRIPT ACTA
+%SCRIPT XACTA
 %%
 %% A Script to check some constants against some of the ACTA
 %% submission requirements.
@@ -533,6 +533,6 @@
 {R All checks passed successfully.
  
 {I Select "Checkcif on the web" from the Analyse menu, to access
-{I {&http://checkcif.iucr.org/{&
+{I {&http://journals.iucr.org/services/cif/checking/checkform.html {&
 %  END IF
 %END SCRIPT

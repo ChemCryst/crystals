@@ -33,7 +33,7 @@
 ^^WI     ITEM ACTA  '&Acta checks' '#SCRIPT ACTA'
 ^^WI                     ENABLEIF='L1 L2 L5' DISABLEIF='IN'
 ^^WI     ITEM CWEB '&Checkcif on the web'
-^^WI '$http://checkcif.iucr.org/'
+^^WI '$http://journals.iucr.org/services/cif/checking/checkform.html'
 ^^WI     ITEM P '&Checkcif in platon' '#SCRIPT PLATONC' DISABLEIF='IN'
 ^^WI   ENDMENU
 ^^WI   ITEM CSDV '&Mogul Geometry Check'
