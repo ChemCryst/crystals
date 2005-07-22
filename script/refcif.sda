@@ -30,7 +30,8 @@ _publ_requested_journal          'Section C'
 _publ_requested_category         CO # choose from: FI FM FO CI CM CO AD
 _publ_requested_coeditor_name    'Prof William Clegg'
 
-_publ_section_title              # Title of paper
+_publ_section_title              
+# Title of paper - generally just the systematic or trivial name
 ; ?
 ;
 
@@ -56,17 +57,36 @@ loop_
 ;
 
 
-_publ_section_abstract                                # Text of the abstract
-;                                ?
+_publ_section_abstract                                
+# Text of the abstract 
+# (a) The Abstract must be self-contained and comprehensible
+# without the rest of the paper.  This means no references
+# to atom names or to compound numbers; compounds must be
+# identified as the title compound, or by name or by some other
+# means such as derivatives of each other (e.g. "the
+# corresponding ketone").
+# (b) The chemical formula of "the title compound" must be given.
+# (c) Any crystallographic molecular symmetry should be
+# mentioned, and also the presence of more than one molecule
+# in the asymmetric unit (i.e. anything other than Z'=1).
 ;
-_publ_section_comment                                 # Text of the paper
-;                                ?
+?
+;
+_publ_section_comment                                 
+# Text of the paper
+# Note that atoms are referenced as N2, not N(2) or N~2~
+;
+?
 ;
 _publ_section_acknowledgements                        # Acknowledgments
-;                                ?
 ;
-_publ_section_figure_captions                         # Captions to figures
-;                                ?
+?
+;
+_publ_section_figure_captions
+# Captions to figures 
+# Start each caption on a new line after a blank line
+;
+?
 ;
 
 _publ_section_exptl_refinement   # Some potentially useful phrases are:
@@ -75,39 +95,22 @@ Because the data were collected with molybdenum radiation, there were no
 measurable anomalous differences, as a consequence of which it was
 admissible to merge Friedel pairs of reflections.
 
-All hydrogen atoms were found in difference density syntheses.
-
-Hydrogen atoms were placed geometrically after each cycle.
-
-Hydrogen atoms were placed geometrically after each cycle, the preferred
-orientations of those groups whose conformations could not be assigned
-unambiguously having been previously identified by examination of a 
-difference Fourier map.  
-
-Hydrogen atoms were seen in a difference density synthesis. Those
-attached to carbon atoms were repositioned geometrically.
-
-Hydrogen were initially refined with soft restraints on the 
-bonds to regularise their geometry (bond lengths to accepted values, 
-angles either set by symmetry or to accepted values, and 
-U[iso] dependent upon the adjacent bonded atom),
-after which they were refined with riding constraints only.
-
-
-donated by Bill Clegg:
+# donated by Bill Clegg:
 
 The H atoms were all located in a difference map, but those 
 attached to carbon atoms were repositioned geometrically.  
 The H atoms were initially refined with soft restraints on the 
 bond lengths and angles to regularise their geometry (C---H in the range 
-0.93-98, O---N in the range 0.86-0.89 and O---H = 0.82 \%A) and isotropic adps
+0.93-98, N---H in the range 0.86-0.89 and O---H = 0.82 \%A) and isotropic adps
 (U(H) in the range 1.2-1.5 times U~equiv~ of the adjacent atom), 
 after which they were refined with riding constraints.
 . 
 ;
 
 _publ_section_exptl_prep
-;                                ?
+# Brief details or a reference.  Include solvent if known
+;
+?
 ;
 
 
