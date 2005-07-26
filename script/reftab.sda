@@ -1,4 +1,4 @@
-  40 items  - See the CRYSTALS manual for a description of the format.
+  41 items  - See the CRYSTALS manual for a description of the format.
 #001 USER DEFINED STRUCTURE SOLUTION
 User-defined structure solution reference
 
@@ -70,8 +70,10 @@ Acta Cryst, A35, 698-699.
 #040 Analytical Absorption (De Meulenaer & Tompa, 1965)
 De Meulenaer, J. & Tompa, H. (1965). Acta Cryst. 19, 1014.
 
-#013 CAD4 Express, (Straver, 1992)
-Straver, L. H. CAD4-EXPRESS, Nonius, Delft, The Netherlands (1992).
+
+#041 Flack Parameter (Flack, 1983)
+Flack, H. D. (1983). Acta Cryst. A39, 876-881.
+
 
 #014 Extinction correction (Larson, 1970)
 Larson, A.C. (1970). Crystallographic Computing, Ed  Ahmed, F.R.,
@@ -80,7 +82,7 @@ Munksgaard, Copenhagen, 291-294.
 #015 Xpress Data collection (MAC Science, 1989)
 MAC Science, (1989). Xpress.
 
-#025 COLLECT. Nonius (1997-2001).
+#025 COLLECT (Nonius, 1997-2001).
 Nonius (1997-2001). COLLECT. Nonius BV, Delft, The Netherlands.
 
 #016 Azimutal absorption correction (North et al., 1968)
@@ -129,6 +131,9 @@ Stoe & Cie (1996). IPDS Software.
 
 #020 IPDS (Stoe & Cie, 1996)
 Stoe & Cie (1996). XRED V1.08.
+
+#013 CAD4 Express, (Straver, 1992)
+Straver, L. H. CAD4-EXPRESS, Nonius, Delft, The Netherlands (1992).
 
 #021 DIFABS (Walker & Stuart, 1983)
 Walker, N., & Stuart, (1983). D. Acta Cryst, A39, 158-166.

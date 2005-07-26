@@ -83,28 +83,37 @@ _publ_section_acknowledgements                        # Acknowledgments
 ?
 ;
 _publ_section_figure_captions
-# Captions to figures 
-# Start each caption on a new line after a blank line
+# Captions to figures - Start each caption on a new line after a blank line
 ;
-?
+Fig. 1.
+The title compound with displacement ellipsoids drawn at the 50% 
+probability level.  The hydrogen atoms are shown as spheres of 
+arbitary radius.
+
 ;
 
 _publ_section_exptl_refinement   # Some potentially useful phrases are:
 ;
-Because the data were collected with molybdenum radiation, there were no 
-measurable anomalous differences, as a consequence of which it was
-admissible to merge Friedel pairs of reflections.
-
 # donated by Bill Clegg:
+
+In the absence of significant anomalous scattering, Friedel pairs were
+merged, and the absolute configuration is arbitrarily assigned. 
+
+The relatively large ratio of minimum to maximum corrections applied 
+in the multiscan process (1:nnn) reflect changes in the illuminated 
+volume of the crystal.   
+
+
 
 The H atoms were all located in a difference map, but those 
 attached to carbon atoms were repositioned geometrically.  
 The H atoms were initially refined with soft restraints on the 
 bond lengths and angles to regularise their geometry (C---H in the range 
-0.93-98, N---H in the range 0.86-0.89 and O---H = 0.82 \%A) and isotropic adps
-(U(H) in the range 1.2-1.5 times U~equiv~ of the adjacent atom), 
-after which they were refined with riding constraints.
-. 
+0.93--0.98, N---H in the range 0.86-0.89 and O---H = 0.82  \%A) 
+and displacement parameters 
+[U~iso~(H) in the range 1.2-1.5 times U~eq~ of the parent atom], 
+after which they were refined with riding constraints. 
+
 ;
 
 _publ_section_exptl_prep
