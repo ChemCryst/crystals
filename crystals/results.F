@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.103  2005/05/20 08:49:44  djw
+C Inhibit h-bond header if there are no H bonds
+C
 C Revision 1.102  2005/03/07 09:07:40  djw
 C Correct Error in short SHELDRICK weight formula
 C
@@ -4271,7 +4274,7 @@ C----- SCALE DOWN THE ELEMENTS OF THE V/CV MATRIX
           DO I=0,2
 C----- VALUE AND ESD
             CALL XFILL (IB,IVEC,16)
-            CALL SNUM (STORE(L1P1+I),ESD(I+1),-3,0,10,IVEC)
+            CALL SNUM (STORE(L1P1+I),ESD(I+1),-2,0,10,IVEC)
             WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
             CALL XCRAS (CBUF,N)
             WRITE (NCFPU1,600) CCELL(I+1)(1:1),CBUF(1:N)
@@ -4279,6 +4282,7 @@ C----- VALUE AND ESD
           END DO
           DO I=0,2
             CALL XFILL (IB,IVEC,16)
+cdjwjul05
             CALL SNUM (STORE(L1P1+3+I),ESD(I+4),-2,0,10,IVEC)
             WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
             CALL XCRAS (CBUF,N)
@@ -5024,6 +5028,16 @@ C----- PARAMETER 13 ON DIRECTIVE 2 IS A CHATACTER STRING: DIFFRACTOMETER MAKE
         IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
      1    IVAL,JVAL,VAL,JTYPE)
 
+cdjw0705
+        IF ((IVAL.EQ. 3) .AND. (IPUNCH .EQ. 0)) THEN
+            WRITE(Cline,'(A)')
+     1 '# For a Kappa CCD, set Tmin to 1.0 and'
+             CALL XPCIF (CLINE)
+            WRITE(Cline,'(A)')
+     1 '# Tmax to the ratio of max:min frame scales in scale_all.log'
+             CALL XPCIF (CLINE)
+        ENDIF
+
 C UNKNOWN CAD4 MACH3 KAPPACCD DIP SMART IPDS XCALIBUR
 C    1     2       3     4    5     6    7   8
         IDIFNO = IVAL+1
@@ -5047,7 +5061,7 @@ C- MACH3
              CTEMP='Enraf-Nonius Mach3'
            ELSE IF (IDIFNO .EQ. 4) THEN
 C- KAPPACCD
-             CTEMP='Nonius Kappa CCD'
+             CTEMP='Nonius KappaCCD'
            ELSE IF (IDIFNO .EQ. 5) THEN
 C- DIP
              CTEMP='Nonius DIP2000'
@@ -5185,6 +5199,14 @@ C RIC2001 New scan types. Use IVAL, not char string.
 
 C
         IF ( IPUNCH .EQ. 0 ) THEN
+cdjw0705
+          WRITE(Cline,'(A)')
+     1 '# If a reference occurs more than once, delete the author'
+          CALL XPCIF (CLINE)
+          WRITE(Cline,'(A)')
+     1 '# and date from subsequent references.'
+          CALL XPCIF (CLINE)
+c
            IVAL = IREFCD(1,IDIFNO)
            CTEMP = CREFMK(ISTORE(LREFS), NREFS, MDREFS, IVAL)
            CALL XCTRIM (CTEMP,NCHAR)
@@ -5603,7 +5625,7 @@ C
      1      '(''# well as the _gt R-factors:'')')
            END IF
 C
-           WRITE(CBUF, '(''I>'',F6.2,''u(I)'')') STORE(L30CF+0)
+           WRITE(CBUF, '(''I>'',F6.1,''\s(I)'')') STORE(L30CF+0)
            CALL XCRAS (CBUF,NCHAR)
            WRITE (NCFPU1,'(''_reflns_threshold_expression '',T35,A)')
      1     CBUF(1:NCHAR)
@@ -5694,9 +5716,11 @@ C----- PACK UP THE FLACK PARAMETER AND ITS ESD
             CALL XCRAS (CTEMP,N)
             IF ( IPUNCH .EQ. 0 ) THEN
               WRITE (CLINE,'(A, ''abs_structure_details  '', 4X,          
-     1        ''''''Flack, '',                                            
+     1        ''''''Flack (1983), '',                                            
      2        A, '' Friedel-pairs'''''')') CBUF(1:11),CTEMP(1:N)
               CALL XPCIF (CLINE)
+              ival =041
+              ctemp = crefmk(istore(lrefs), nrefs, mdrefs, ival)
             END IF
         END IF
 
@@ -6044,7 +6068,7 @@ C------ SIGMA WEIGHTS
                ival = 38
              else if ((itype .eq. 16) .or.  (itype .eq. 17)) then
 c               SHELX type
-                ival = 34
+                ival = 0
 cdjw090804^
                 if (nint(1000. * store(l4+5)) .ne. 333) then
                  write(cline,'(a)') 
