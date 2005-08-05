@@ -1,35 +1,41 @@
 ^^WI  MENU _VIEW    'A&ppearance'
-^^WI    MENU SCALE '&Atoms'
-^^WI     ITEM SCCOV '&Covalent'
-^^WI     '^^CO SET MODEL01 RADTYPE=COV RADSCALE=250'
-^^WI     ITEM SCVDW 'Van der &Waals'
-^^WI     '^^CO SET MODEL01 RADTYPE=VDW RADSCALE=1000'
-^^WI     ITEM SCVDW '&ADP'
-^^WI     '^^CO SET MODEL01 RADTYPE=THERMAL RADSCALE=250'
-^^WI     SPLIT
-^^WI     ITEM SCNORM '&Quarter size' '^^CO SET MODEL01 RADSCALE=250'
-^^WI     ITEM SCDOUB '&Half size' '^^CO SET MODEL01 RADSCALE=500'
-^^WI     ITEM SCQUAD '&Full size' '^^CO SET MODEL01 RADSCALE=1000'
-^^WI    ENDMENU
-^^WI    MENU MOD '&Model'
-^^WI     ITEM _REFR '&Update model' '#BONDC FORCE_N#SUM L 2_N#SUM L 5_NEND'
-^^WI                 DISABLEIF='IN' ENABLEIF='L1 L2 L5'
-^^WI     SPLIT
-^^WI     ITEM _REFO 'Auto update OFF' '#SCRIPT updtoff'
-^^WI                 DISABLEIF='IN'
-^^WI     ITEM _REFF 'Auto update ON'  '#SCRIPT updton'
-^^WI                 DISABLEIF='IN'
-^^WI     SPLIT
-^^WI     ITEM _MODW '&Set Wallpaper' '#SCRIPT XMODELBACK'
-^^WI                 DISABLEIF='IN' ENABLEIF='L5 L1 L2'
-^^WI     ITEM _MODW '&No Wallpaper' '^^CO SET MODEL01 LOADBITMAP='
-^^WI     ENDMENU
-^^WI    ITEM SIZEAUT '&Auto scale (zoom off)'
-^^WI       '^^CO SET MODEL01 AUTOSIZE=YES'
-^^WI    SPLIT
-^^WI    ITEM SETF 'Set &Text Font' '^^CO SET _MAINTEXTOUTPUT FONT'
-^^WI    ITEM SETF 'Set &Input Font' '^^CO FONT'
-^^WI    SPLIT
-^^WI    ITEM XH      'Appearance menu &help'
-^^WI        '$ "crysdir:manual/tools-menus.html#menus.appearance"'
-^^WI  ENDMENU
+^^WI    MENU SL '&Screen Layout'                                                       
+^^WI     ITEM P1 '&HTML'                                             
+^^WI     '#SPAWN CRYSDIR:script/layout.html' DISABLEIF='IN'                   
+^^WI     ITEM P1 '&PDF'                                              
+^^WI     '#SPAWN CRYSDIR:script/pale-layout.pdf' DISABLEIF='IN'                   
+^^WI    ENDMENU                                                                 
+^^WI    MENU SCALE '&Atoms'                                                     
+^^WI     ITEM SCCOV '&Covalent'                                                 
+^^WI     '^^CO SET MODEL01 RADTYPE=COV RADSCALE=250'                            
+^^WI     ITEM SCVDW 'Van der &Waals'                                            
+^^WI     '^^CO SET MODEL01 RADTYPE=VDW RADSCALE=1000'                           
+^^WI     ITEM SCVDW '&ADP'                                                      
+^^WI     '^^CO SET MODEL01 RADTYPE=THERMAL RADSCALE=250'                        
+^^WI     SPLIT                                                                  
+^^WI     ITEM SCNORM '&Quarter size' '^^CO SET MODEL01 RADSCALE=250'            
+^^WI     ITEM SCDOUB '&Half size' '^^CO SET MODEL01 RADSCALE=500'               
+^^WI     ITEM SCQUAD '&Full size' '^^CO SET MODEL01 RADSCALE=1000'              
+^^WI    ENDMENU                                                                 
+^^WI    MENU MOD '&Model'                                                       
+^^WI     ITEM _REFR '&Update model' '#BONDC FORCE_N#SUM L 2_N#SUM L 5_NEND'     
+^^WI                 DISABLEIF='IN' ENABLEIF='L1 L2 L5'                         
+^^WI     SPLIT                                                                  
+^^WI     ITEM _REFO 'Auto update OFF' '#SCRIPT updtoff'                         
+^^WI                 DISABLEIF='IN'                                             
+^^WI     ITEM _REFF 'Auto update ON'  '#SCRIPT updton'                          
+^^WI                 DISABLEIF='IN'                                             
+^^WI     SPLIT                                                                  
+^^WI     ITEM _MODW '&Set Wallpaper' '#SCRIPT XMODELBACK'                       
+^^WI                 DISABLEIF='IN' ENABLEIF='L5 L1 L2'                         
+^^WI     ITEM _MODW '&No Wallpaper' '^^CO SET MODEL01 LOADBITMAP='              
+^^WI     ENDMENU                                                                
+^^WI    ITEM SIZEAUT '&Auto scale (zoom off)'                                   
+^^WI       '^^CO SET MODEL01 AUTOSIZE=YES'                                      
+^^WI    SPLIT                                                                   
+^^WI    ITEM SETF 'Set &Text Font' '^^CO SET _MAINTEXTOUTPUT FONT'              
+^^WI    ITEM SETF 'Set &Input Font' '^^CO FONT'                                 
+^^WI    SPLIT                                                                   
+^^WI    ITEM XH      'Appearance menu &help'                                    
+^^WI        '$ "crysdir:manual/tools-menus.html#menus.appearance"'              
+^^WI  ENDMENU                                                                   
