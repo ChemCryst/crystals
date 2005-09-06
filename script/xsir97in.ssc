@@ -1,28 +1,56 @@
-%SCRIPT XSIR97IN
+%SCRIPT XSIR97IN                                                                
+% VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                         
+% VARIABLE LOGICAL ANSWER                                                       
+%%                                                                              
+%% Get the results back...                                                      
+%%                                                                              
+%      COPY '#SCRIPT FRESH'                                                     
+%%                                                                              
+%      COPY '#USE SIR97.cry'                                                    
+%      COPY '#EDIT'                                                             
+%      COPY 'MON OFF'                                                           
+%      COPY 'REFORMAT ALL'                                                      
+%      COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0' 
+%      COPY 'INSERT RESIDUE'                                 
+%      COPY 'END'                                                               
+%      IF ( EXISTS ( 5 ) .NE. 1 ) THEN                                          
+%        FINISH                                                                 
+%      END IF               
 %%
-%% Get the results back...
-%%
-%      COPY '#USE SIR97.CRY'
+%%  CENTRE STRUCTURE IN CELL
 %      COPY '#EDIT'
-%      COPY 'MON OFF'
-%      COPY 'REFORMAT ALL'
-%      COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0'
-%      COPY 'MON MEDIUM'
+
+%      COPY 'MOVE Q(1)'
 %      COPY 'END'
-%      IF ( EXISTS ( 5 ) .NE. 1 ) THEN
-%        FINISH
-%      END IF
-%      COPY '#SCRIPT XRENUMB'
-%      BLOCK
-%        COPY '#DISTANCES'
-%        COPY 'END'
-%      END BLOCK
-%%
-%% SET Solution type
-%%
-%      COPY '#GENERALEDIT 30'
-%      COPY 'LOCATE RECORDTYPE=106'
-%      COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=5'
-%      COPY 'WRITE OVERWRITE=OVERWRITE'
+%      COPY '#COLL'
+%      COPY 'SEL TYP=ALL TOL=4'
 %      COPY 'END'
-%END SCRIPT
+%      COPY '#COLL'
+%      COPY 'SEL TYP=ALL TOL=2'
+%      COPY 'END'
+%      COPY '#COLL'
+%      COPY 'SEL TYPE=ALL '
+%      COPY 'END'
+%      COPY '#EDIT'
+%      COPY 'SEL TYPE NE Q'
+%      COPY 'END'
+%%                                                    
+%%                                                                              
+%%                                                                              
+%      BLOCK                                                                    
+%       COPY '#SCRIPT XRENUMB'                                                  
+%      END BLOCK                                                                
+%%                                                                              
+%      BLOCK                                                                    
+%        COPY '#DISTANCES'                                                      
+%        COPY 'END'                                                             
+%      END BLOCK                                                                
+%%                                                                              
+%% SET Solution type                                                            
+%%                                                                              
+%      COPY '#GENERALEDIT 30'                                                   
+%      COPY 'LOCATE RECORDTYPE=106'                                             
+%      COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=5'                           
+%      COPY 'WRITE OVERWRITE=OVERWRITE'                                         
+%      COPY 'END'                                                               
+%END SCRIPT                                                                     
