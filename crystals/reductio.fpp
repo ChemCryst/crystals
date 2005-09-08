@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2005/09/08 13:08:37  djw
+C Store Rmerge as cif item Rint - spotted by Andrew)
+C
 C Revision 1.24  2005/06/28 12:59:03  djw
 C Enable MERGE to handle twins withiut changing LIST 13
 C
@@ -1175,9 +1178,9 @@ C
       CALL XPRVDU(NCVDU, 2,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') (CMON(I)(:),I=1,2)
 4049  FORMAT(
-     1 ' Rmerge = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  = '
+     1 ' Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  = '
      1  ,F6.3/
-     1 ' Rint   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] = '
+     1 ' Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] = '
      1  ,F6.3)
 C
       DO 4100 I = 1,3
@@ -1187,7 +1190,7 @@ C
       CALL XPRVDU(NCVDU, 2,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') (CMON(I)(:),I=1,2)
 4104  FORMAT(
-     1 ' Rmerge for I>10sigma,  10sigma>I>2sigma,    I<2sigma'/
+     1 ' Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma'/
      2 2X,F18.3, F16.3, F15.3)
 
       IF ( IULN .EQ. 6 ) THEN
