@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2005/06/28 12:59:03  djw
+C Enable MERGE to handle twins withiut changing LIST 13
+C
 C Revision 1.23  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -1227,14 +1230,15 @@ C        STORE(L30IX+4) = STORE(LIX)
 C        STORE(L30IX+5) = STORE(LIX+1)
 C      ENDIF
 CDJW FEB03  ONLY UPDTE FOR LIST 6
+c----Sep05  Store Rmerge (25) as Rint for cif compatibility
       IF (IULN .EQ. 6) THEN
        IF (ISTORE(L13CD) .EQ. -1) THEN
 C------- FRIEDEL USED
             STORE(L30DR+4) = FLOAT(N6W)
-            STORE(L30DR+5) = WORK(28)
+            STORE(L30DR+5) = WORK(25)
        ELSE
             STORE(L30DR+2) = min(FLOAT(N6W),STORE(L30DR+2))
-            STORE(L30DR+3) = WORK(28)
+            STORE(L30DR+3) = WORK(25)
        ENDIF
       ENDIF
       CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
