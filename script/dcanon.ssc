@@ -9,6 +9,13 @@
 {1,11
 {1,11  This SCRIPT enable you to apply atomic typing and related
 {1,11  numbering to multiple occurances of a motif in a structure.
+{1,11  
+{1,11  It is most useful if the automatic renumbering available from
+{1,11  the model window fails because of internal molecular symmetry
+{1,11  
+{1,11  This script allows the user to define the initial mapping of
+{1,11  the fragments
+{1,11  
 {1,11  Since CRYSTALS becomes confused if there are two or more atoms
 {1,11  of the same type with the same serial number, the best strategy
 {1,11  is as follows:

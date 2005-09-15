@@ -77,6 +77,9 @@
 {E An error occured when attempting the match the two fragments, the
 {E most common reasons are:
 {I   1.  The fragments have two- or more-fold symmetry.
+{I       Try TOOLs/SYSTEMATIC NAMING from the tool bar. This enables
+{I       you to manually provide an initial match.
+{I
 {I   2.  The fragments are different.
 %         END IF
 %       END IF
