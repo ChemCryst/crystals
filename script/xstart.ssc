@@ -16,12 +16,8 @@ Highlight the folder \EXAMPLE and click OK. On the command line, type:
 
  If this  is successful, change to the directory NKET and issue:
 
-          CRYSTALS
 
- You will be asked if you want to use SCRIPTS, answer YES. You will
- then be shown a menu. Type HELP if you are curious, then choose
-
- NEWSTART, 
+ #SCRIPT NEWSTART 
 
  then (after giving a title), 
 
