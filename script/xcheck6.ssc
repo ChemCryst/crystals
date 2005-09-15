@@ -1,638 +1,640 @@
-%SCRIPT XCHECK6
-% VARIABLE REAL WORK1 WORK2 WORK3 
-% VARIABLE LOGICAL MERGER ABSENT LNEWRAT LNEWRHO I6DONE I6MASK LMAONCE
-% VARIABLE LOGICAL WILFIL
-% VARIABLE REAL NEWRHO NEWRAT THFULL MRGR
-% VARIABLE REAL VOLPRATM NNONHATM CELLVOL SGMULT NALLOWREF ESTNPARA ESTOTP
-% VARIABLE INTEGER ABSPRINT ABSTOTAL
-% EVALUATE MERGER = FILEEXISTS 'mergingr.dat'
-% EVALUATE ABSENT = FILEEXISTS 'absences.dat'
-% EVALUATE LMAONCE = TRUE
-% EVALUATE WILFIL = FALSE
-%%
-% IF ( EXISTS 6 .NE. 1 ) THEN
-
-{E No reflections stored. Use "X-ray data->Input reflections".
-
-%   FINISH
-% END IF
-%%
-% EVALUATE I6DONE = TRUE
-% EVALUATE I6MASK = TRUE
-% COPY '#SCRIPT XPUTINFO'
-%%
-%%
-^^WI WINDOW XCHECK6 'Initial Analyses' LARGE MODAL KEEP SIZE
-^^WI COMMIT='XC_BOK' CANCEL='XC_BOK'
-^^WI GRID MAIN NROWS=3 NCOLS=1
-^^WI {
-^^WI  @ 1,1 GRID TOP NROWS=3 NCOLS=3
-^^WI  {
-^^WI   @ 2,2 TABCTRL _MAINTABS
-^^WI   {
-^^WI    TAB _MAINTAB2a 'Completeness' GRID _MAINTG2 NROWS=5 NCOLS=3
-^^WI    { 
-^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
-^^WI     {
-^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
-^^WI      {
-^^WI       @ 1,1 STATIC XFW1
-^^WI 'Completeness of the data set out to theta max.'
-^^WI       @ 2,1 STATIC XFW2
-^^WI 'You may manually select "theta full" (the value at which you consider'
-^^WI       @ 3,1 STATIC XFW3
-^^WI 'the data complete) by right-clicking the graph.'
-^^WI      }
-^^WI      @ 1,1 ICON IM INFO
-^^WI     }
-^^WI     @ 4,2 RESIZE _COMPRSZ VERTICAL {
-^^WI      ITEM GRID CR1 NROWS=1 NCOLS=1
-^^WI      {
-^^WI       @ 1,1 PLOTWINDOW _VCOMPL NROWS=20 NCOLS=64
-^^WI        DEFINEPOPUPMENU POPUP 'Selection'
-^^WI        ITEM _SDELA '&Manually set theta full = _X' 'SIGFULL_N_X'
-^^WI        ENDDEFINEMENU
-^^WI      }
-^^WI      ITEM GRID CR2 NROWS=3 NCOLS=1
-^^WI      {
-^^WI        @ 1,1 STATIC M1 'Missing data'
-^^WI        @ 3,1 LISTCTRL LMISSING VISLINES=9 NCOLS=4
-^^WI           'h' 'k' 'l' 'theta' ADDTOLIST 'NULL'
-^^WI      }
-^^WI     }
-^^WI    }
-^^WI    TAB _MAINTAB2 'Sigma freq' GRID _MAINTG2 NROWS=5 NCOLS=3
-^^WI    { 
-^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
-^^WI     {
-^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
-^^WI      {
-^^WI       @ 1,1 STATIC XFW1
-^^WI 'You are looking at the frequency of I/sigma(I). The blue line shows'
-^^WI       @ 2,1 STATIC XFW2
-^^WI 'number of reflections above a given I/sigma(I) ratio.'
-^^WI       @ 3,1 STATIC XFW3 'Right-click on a bar for data cut-off options.'
-^^WI      }
-^^WI      @ 1,1 ICON IM INFO
-^^WI     }
-^^WI     @ 4,2 PLOTWINDOW _VSIGLEVL NROWS=20 NCOLS=64
-^^WI      DEFINEPOPUPMENU POPUP 'Selection'
-^^WI        ITEM _SDELA '&Reject data: I/sigma(I) < _X' 'SIGCUT_N_X'
-^^WI      ENDDEFINEMENU
-^^WI    }
-^^WI    TAB _MAINTAB2 'Sigma vs Res' GRID _MAINTG2 NROWS=5 NCOLS=3
-^^WI    { 
-^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
-^^WI     {
-^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
-^^WI      {
-^^WI       @ 1,1 STATIC XFW1
-^^WI 'You are looking at the distribution of I/sigma(I) against '
-^^WI       @ 2,1 STATIC XFW2
-^^WI '(sin(theta)/lambda)**2'
-^^WI       @ 3,1 STATIC XFW3 'Right-click a point for data cut-off options.'
-^^WI      }
-^^WI      @ 1,1 ICON IM INFO
-^^WI     }
-^^WI     @ 4,2 PLOTWINDOW _VSIGRES NROWS=20 NCOLS=64
-^^WI      DEFINEPOPUPMENU POPUP 'Selection'
-^^WI        ITEM _SDELA '&Reject data: rho > _X' 'RHOMIT_N_X'
-^^WI      ENDDEFINEMENU
-^^WI    }
-^^WI    TAB _MAINTAB3 'Merging R' GRID _MAINTG3 NROWS=5 NCOLS=3
-^^WI    {
-% IF ( MERGER ) THEN
-^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
-^^WI     {
-^^WI       @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
-^^WI      {
-^^WI       @ 1,1 STATIC XFW1
-^^WI  'You are looking at merging R versus signal to noise. Merging R is'
-^^WI       @ 2,1 STATIC XFW2
-^^WI 'expected to be worse for low signal to noise data.'
-^^WI       @ 3,1 STATIC XFW3 'Right-click on a bar for data cut-off options.'
-^^WI      }
-^^WI      @ 1,1 ICON IM INFO
-^^WI     }
-^^WI     @ 4,2 PLOTWINDOW _VRMERGE NROWS=20 NCOLS=64
-^^WI      DEFINEPOPUPMENU POPUP 'Selection'
-^^WI        ITEM _SDELA '&Reject data: I/sigma(I) < _X' 'SIGCUT_N_X'
-^^WI      ENDDEFINEMENU
-% ELSE
-^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
-^^WI     {
-^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
-^^WI      {
-^^WI       @ 1,1 STATIC XFW1 'No merging-R file found. Perhaps data have'
-^^WI       @ 2,1 STATIC XFW2 'not been merged (#SORT,#MERGE), or perhaps'
-^^WI       @ 3,1 STATIC XFW3 'they were merged by other software.'
-^^WI      }
-^^WI      @ 1,1 ICON IM ERROR
-^^WI     }
-% END IF
-^^WI    }
-^^WI    TAB _MAINTAB1 'Absences' GRID _MAINTG1 NROWS=5 NCOLS=3
-^^WI    {
-% IF ( ABSENT ) THEN
-^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
-^^WI     {
-^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
-^^WI      {
-^^WI       @ 1,1 STATIC XFW1
-^^WI 'Systematic absences: These data points were measured, but should be'
-^^WI       @ 2,1 STATIC XFW2
-^^WI 'absent due to space group. Allowing random noise, they should be'
-^^WI       @ 3,1 STATIC XFW3
-^^WI 'evenly distributed about zero. Absences are not used in refinement.'
-^^WI      }
-^^WI      @ 1,1 ICON IM INFO
-^^WI     }
-^^WI     @ 4,2 PLOTWINDOW _VABSENT NROWS=20 NCOLS=64
-% ELSE
-^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
-^^WI     {
-^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
-^^WI      {
-^^WI       @ 1,1 STATIC XFW1 'No absences file found. Perhaps absences have'
-^^WI       @ 2,1 STATIC XFW2 'not been removed (#SYST), or perhaps they were'
-^^WI       @ 3,1 STATIC XFW3 'removed by other software.'
-^^WI      }
-^^WI      @ 1,1 ICON IM ERROR
-^^WI     }
-% END IF
-^^WI    }
-^^WI     TAB _MAINTAB0 'Wilson' GRID _MAINTG0 NROWS=9 NCOLS=3
-^^WI    {
-^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
-^^WI     {
-^^WI      @ 1,3 GRID EXP2 NROWS=5 NCOLS=1
-^^WI      {
-^^WI       @ 1,1 STATIC XFW1
-^^WI 'You are looking at a Wilson Plot; Diffraction angle (or rho) runs down'
-^^WI       @ 2,1 STATIC XFW2
-^^WI 'the vertical axis. Log of actual scattering over expected scattering'
-^^WI       @ 3,1 STATIC XFW2
-^^WI 'is plotted at each angle. Slope is due to fall off of actual scattering'
-^^WI       @ 4,1 STATIC XFW2
-^^WI 'with angle, intercept is due to arbitrary scaling of intensity data.'
-^^WI       @ 5,1 STATIC XFW3 'Right-click a point for data cut-off options.'
-^^WI      }
-^^WI      @ 1,1 ICON IM INFO
-^^WI     }
-^^WI     @ 4,2 PLOTWINDOW _VWILSON NROWS=20 NCOLS=64
-^^WI      DEFINEPOPUPMENU POPUP 'Selection'
-^^WI        ITEM _SDELA '&Reject data: rho > _Y ' 'RHOMIT2_N_Y'
-^^WI      ENDDEFINEMENU
-^^WI     @ 6,2 CHECKBOX WILFILT1
-^^WI           'Show plot using only reflections allowed by List 28'
-^^WI           STATE=OFF INFORM=YES
-^^WI     @ 8,2 GRID GSTAT NROWS=1 NCOLS=7
-^^WI     {
-^^WI       @ 1,1 STATIC WBFS 'B factor:'
-^^WI       @ 1,3 STATIC _MW_BFACTR '0000.0000'
-^^WI       @ 1,5 STATIC WBFS 'Scale:'
-^^WI       @ 1,7 STATIC _MW_BSCALE '0000.0000'
-^^WI     }
-^^WI    }
-^^WI    TAB _MAINTAB4 'N(Z) distribution' GRID _MAINTG0 NROWS=8 NCOLS=3
-^^WI    {
-^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
-^^WI     {
-^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
-^^WI      {
-^^WI       @ 1,1 STATIC XFW1
-^^WI 'You are looking at N(Z) cumulative probability distribution functions.'
-^^WI       @ 2,1 STATIC XFW2
-^^WI 'These show actual and expected distribution of E values. The "All Data"'
-^^WI       @ 3,1 STATIC XFW3
-^^WI 'points should follow one of the theoretical lines.'
-^^WI      }
-^^WI      @ 1,1 ICON IM INFO
-^^WI     }
-^^WI     @ 4,2 PLOTWINDOW _VNZDIST NROWS=20 NCOLS=64
-^^WI     @ 5,2 CHECKBOX WILFILT2
-^^WI           'Show plot using only reflections allowed by List 28'
-^^WI           STATE=OFF INFORM=YES
-^^WI     @ 7,2 GRID GSTAT2 NROWS=1 NCOLS=3
-^^WI     {
-^^WI       @ 1,1 STATIC WBFS 'MOD(E**2-1)'
-^^WI       @ 1,3 STATIC _MW_E2MIN1 '000000.000'
-^^WI     }
-^^WI    }
-^^WI    TAB _MAINTAB5 'Cell content' GRID _MAINTG0 NROWS=7 NCOLS=3
-^^WI    {
-^^WI     @ 2,2 GRID CGRID NROWS=3 NCOLS=1 OUTLINE='Cell contents'
-^^WI     {
-^^WI      @ 1,1 GRID CGRID1 NROWS=5 NCOLS=5
-^^WI      {
-^^WI       @ 1,1 STATIC C11 'Cell contents (List 29), indicate'
-^^WI       @ 1,3 STATIC C12 '00000000'
-^^WI       @ 1,5 STATIC C13 'non-H atoms in the asymmetric unit.'
-^^WI       @ 2,1 STATIC C21 'Cell volume (List 1) is'
-^^WI       @ 2,3 STATIC C22 '00000000'
-^^WI       @ 2,5 STATIC C23 'cubic Angstroms.'
-^^WI       @ 3,1 STATIC C31 'Space group multiplicity (List 2) is'
-^^WI       @ 3,3 STATIC C32 '00000000'
-^^WI       @ 5,1 STATIC C41 'Therefore, volume per non-H atom is'
-^^WI       @ 5,3 STATIC C42 '00000000'
-^^WI       @ 5,5 STATIC C43 'cubic Angstroms. (18.0 would be typical)'
-^^WI      }
-^^WI      @ 3,1 GRID CGRID2 NROWS=1 NCOLS=4
-^^WI      {
-^^WI       @ 1,1 STRETCH CS2 HORIZONTAL
-^^WI       @ 1,2 BUTTON ED29 'Change cell contents'
-^^WI       @ 1,4 BUTTON ED02 'Change space group'
-^^WI      }
-^^WI     }
-^^WI     @ 4,2 GRID PGRID NROWS=6 NCOLS=1 OUTLINE='Obs/param ratio'
-^^WI     {
-^^WI      @ 1,1 GRID PGRID1 NROWS=1 NCOLS=7
-^^WI      {
-^^WI       @ 1,1 STATIC P11 'Based on'
-^^WI       @ 1,3 STATIC P12 '000000'
-^^WI       @ 1,5 STATIC P13
-^^WI       'non-h atoms, estimated final number of lsq parameters is'
-^^WI       @ 1,7 STATIC P14 '000000'
-^^WI      }
-^^WI      @ 2,1 GRID PGRID2 NROWS=1 NCOLS=5
-^^WI      {
-^^WI       @ 1,1 STATIC P21 'List 28 currently allows'
-^^WI       @ 1,3 STATIC P22 '00000000'
-^^WI       @ 1,5 STATIC P23 'reflections to be used for refinement.'
-^^WI      }
-^^WI      @ 4,1 GRID PGRID3 NROWS=1 NCOLS=4
-^^WI      {
-^^WI       @ 1,1 STATIC P31 'Estimated final obs:parameter ratio is'
-^^WI       @ 1,3 STATIC P32 '000000'
-^^WI       @ 1,4 STATIC P33 ':  1.        (Ideal for publication is > 8.0)'
-^^WI      }
-^^WI      @ 6,1 GRID PGRID3 NROWS=1 NCOLS=2
-^^WI      {
-^^WI       @ 1,1 STRETCH CS2 HORIZONTAL
-^^WI       @ 1,2 BUTTON ED28 'Change reflection filters'
-^^WI      }
-^^WI     }
-^^WI     @ 6,2 GRID AGRID NROWS=6 NCOLS=5 OUTLINE='Acta recommendations'
-^^WI     {
-^^WI      @ 1,1 STATIC C1 'Crystal size'
-^^WI      @ 1,3 STATIC C2 'Computing'
-^^WI      @ 1,5 STATIC C3 'crystal size check results will appear here'
-^^WI      @ 2,1 STATIC T1 'Temperature'
-^^WI      @ 2,3 STATIC T2 'Computing'
-^^WI      @ 2,5 STATIC T3 'temperature check results will appear here'
-^^WI      @ 3,1 STATIC A1 'I/u(I) cutoff'
-^^WI      @ 3,3 STATIC A2 'Computing'
-^^WI      @ 3,5 STATIC A3 'I/u(I) check results will appear here'
-^^WI      @ 4,1 STATIC R1 'Merging R'
-^^WI      @ 4,3 STATIC R2 'Computing'
-^^WI      @ 4,5 STATIC R3 'Merging R check results will appear here'
-^^WI      @ 5,1 STATIC H1 'Theta full'
-^^WI      @ 5,3 STATIC H2 'Computing'
-^^WI      @ 5,5 STATIC H3 'Theta full check results will appear here'
-^^WI      @ 6,1 STATIC P1 'Completeness'
-^^WI      @ 6,3 STATIC P2 'Computing'
-^^WI      @ 6,5 STATIC P3 'Completeness check results will appear here'
-^^WI     }
-^^WI    }
-^^WI   }
-^^WI  }
-^^WI  @ 2,1 GRID BUTT NROWS=2 NCOLS=5
-^^WI  {
-^^WI   @ 1,1 STRETCH RS HORIZONTAL
-^^WI   @ 1,2 BUTTON XC_REF 'Refresh' 
-^^WI   @ 1,4 BUTTON XC_BOK 'Close' COMMIT DEFAULT CANCEL
-^^WI  }
-^^WI  @ 3,1 PROGRESS _CHECKPR 'Please wait'
-^^WI }
-^^WI SHOW
-^^CR
-^^CO SENDPROGRESSTO _CHECKPR
-%%
-% LOOP
-^^CO SET PROGOUTPUT TEXT 'Computing completeness'
-%  COPY '#THLIM'
-%  COPY 'OUTPUT PLOT=YES GLIST=YES'
-%  COPY 'END'
-%%
-^^CO SET PROGOUTPUT TEXT 'Computing Wilson statistics'
-%  COPY '#WILSON'
-%  COPY 'OUTPUT PLOT=YES NZ=YES STATS=YES'
-%  IF ( WILFIL ) THEN
-%    COPY 'FILTER LIST28 = YES'
-%  ELSE
-%    COPY 'FILTER LIST28 = NO'
-%  END IF
-%  COPY 'END'
-%%
-%  IF ( ABSENT .AND. LMAONCE ) THEN
-%    COPY '#OPEN SCPDATA absences.dat'
-^^CO SET PROGOUTPUT TEXT 'Reading systematic absences from absences.dat'
-^^WI WINDOW XABORT 'Absences' MODAL GRID MAIN NROWS=5 NCOLS=5
-^^WI { @ 2,2 STATIC T1 'Reading absence data.'
-^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT DISABLED=NO
-^^WI   @ 4,2 STATIC RABPR 'Reading absences         '} SHOW
-^^CR
-%    EVALUATE ABSPRINT = 0
-%    EVALUATE ABSTOTAL = 0
-%    EXTRACT REWIND
-%% Skip first line:
-%    EXTRACT NEXT
-%%
-^^PL PLOTDATA _CLASS SCATTER ATTACH _VABSENT
-^^PL XAXIS TITLE 'Fo**2/sigma(Fo**2)'
-^^PL NSERIES=1 LENGTH=40 YAXIS TITLE 'Fo**2'
-%%
-%    COPY '#SCRIPT YGETABS'
-%    COPY '#CLOSE SCPDATA'
-^^PL SHOW
-^^CR
-^^CO DISPOSE XABORT
-%  END IF
-%%
-^^CO SET PROGOUTPUT TEXT 'Calculating I/u(I) and I/u(I) vs rho distribution'
-%  COPY '#SIGMADIST'
-%  COPY 'OUTPUT PLOT=YES RES=YES'
-%  COPY 'END'
-%%
-%  IF ( LMAONCE ) THEN
-%    COPY '#GENERALEDIT 30'
-%    COPY 'LOCATE RECORDTYPE = 102'
-%    COPY 'TRANSFER FROM OFFSET = 0 TO WORK1'
-%    COPY 'TRANSFER FROM OFFSET = 1 TO WORK2'
-%    COPY 'TRANSFER FROM OFFSET = 2 TO WORK3'
-%    CLEAR
-%    INSERT "^^CO SET C3 TEXT '"
-^^CO SET C2 TEXT 'OK'
-%    IF WORK1 .GT. 0.6 THEN
-%       INSERT 'Min > 0.6mm '
-^^CO    SET C2 TEXT 'Warning'
-%    END IF
-%    IF WORK2 .GT. 0.8 THEN
-%       INSERT 'Med > 0.8mm '
-^^CO    SET C2 TEXT 'Warning'
-%    END IF
-%    IF WORK3 .GT. 1.0 THEN
-%       INSERT 'Max > 1.0mm'
-^^CO    SET C2 TEXT 'Warning'
-%    END IF
-%    INSERT "'"
-%    OUTPUT
-%    COPY 'LOCATE RECORDTYPE = 102'
-%    COPY 'TRANSFER FROM OFFSET = 6 TO WORK1'
-%    IF WORK1 .LT. 25.0 THEN
-^^CO    SET T2 TEXT 'Alert' SET T3 TEXT 'Temperaure < 25K. Please check.'
-%    ELSE
-^^CO    SET T2 TEXT 'OK' SET T3 TEXT ' '
-%    END IF
-%    COPY 'LOCATE RECORDTYPE = 103'
-%    COPY 'TRANSFER FROM OFFSET = 3 TO WORK1'
-%    IF WORK1 .GE. 12.0 THEN
-^^CO   SET A2 TEXT 'Fail' SET A3 TEXT 'I/u(I) >= 12'
-%    ELSE
-%      IF WORK1 .GE. 10.0 THEN
-^^CO     SET A2 TEXT 'Warn' SET A3 TEXT 'I/u(I) >= 10'
-%      ELSE
-%        IF WORK1 .GE. 8.0 THEN
-^^CO   SET A2 TEXT 'Alert' SET A3 TEXT 'I/u(I) >= 8'
-%        ELSE
-^^CO   SET A2 TEXT 'OK' SET A3 TEXT ' '
-%        END IF
-%      END IF
-%    END IF
-%    COPY 'LOCATE RECORDTYPE = 101'
-%    COPY 'TRANSFER FROM OFFSET = 3 TO WORK1'
-%    IF WORK1 .GT. 0.20 THEN
-^^CO   SET R2 TEXT 'Fail' SET R3 TEXT 'Rmerge > 20%. Poor data.'
-%    ELSE
-%      IF WORK1 .GE. 0.15 THEN
-^^CO     SET R2 TEXT 'Warn' SET R3 TEXT 'Rmerge > 15%. Poor data.'
-%      ELSE
-%        IF WORK1 .GE. 0.10 THEN
-^^CO       SET R2 TEXT 'Alert' SET R3 TEXT 'Rmerge > 10%. Not brilliant.'
-%        ELSE
-^^CO       SET R2 TEXT 'OK' SET R3 TEXT ' '
-%        END IF
-%      END IF
-%    END IF
-%    COPY 'LOCATE RECORDTYPE = 109'
-%    COPY 'TRANSFER FROM OFFSET = 10 TO WORK1'
-%    COPY 'TRANSFER FROM OFFSET = 11 TO WORK2'
-%    IF WORK1 .LT. 25.0 THEN
-^^CO   SET H2 TEXT 'Fail' SET H3 TEXT 'Theta full < 25 degrees'
-%    ELSE
-^^CO   SET H2 TEXT 'OK' SET H3 TEXT ' '
-%    END IF
-%    IF WORK2 .LT. 0.995 THEN
-^^CO   SET P2 TEXT 'Fail' SET P3 TEXT 'Completeness at theta full < 99.5%'
-%    ELSE
-^^CO   SET P2 TEXT 'OK' SET P3 TEXT ' '
-%    END IF
-%    COPY 'END'
-%  END IF
-^^CO SET PROGOUTPUT TEXT 'Reading merging-R data from mergingr.dat'
-%  IF ( MERGER .AND. LMAONCE ) THEN
-%    COPY '#OPEN SCPDATA mergingr.dat'
-%    EXTRACT REWIND
-%% Skip first three lines:
-%    EXTRACT NEXT
-%    EXTRACT NEXT
-%    EXTRACT NEXT
-%%
-^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VRMERGE KEY
-^^PL XAXIS TITLE 'I/sigma(I)'
-^^PL YAXIS ZOOM 0 50 TITLE 'Merging R factor(%)'
-^^PL YAXISRIGHT TITLE 'Number Of Reflections'
-^^PL NSERIES=2 LENGTH=100
-^^PL SERIES 1 SERIESNAME 'Merging R factor'
-^^PL SERIES 2 SERIESNAME 'Number > given I/sigma(I)' TYPE LINE USERIGHTAXIS
-%%
-% LOOP
-%  ON ERROR TERMINATE
-%  ON END TERMINATE
-%%
-%% Get the data for each result
-%%
-%  EXTRACT NEXT
-%  CLEAR
-%  EXTRACT TRANSFER INPUT
-%  CLEAR
-%  INSERT !^^PL LABEL !
-%  GET NOPROMPT REAL ' ' '-1.0'
-%  INSERT ! DATA !
-%  GET NOSTORE NOPROMPT REAL ' ' '-1.0'
-%  EVALUATE MRGR = VALUE
-%  IF MRGR .LT. 0.0 THEN
-%   EVALUATE MRGR = - MRGR
-%  END IF
-%  STORE REAL MRGR
-%  GET NOSTORE NOPROMPT INTEGER ' ' '-1'
-%  GET NOPROMPT INTEGER ' ' '-1'
-%  OUTPUT
-% END LOOP
-^^PL SHOW
-^^CR
-%    COPY '#CLOSE SCPDATA'
-%  END IF
-%  EVALUATE LMAONCE = FALSE
-%%
-^^CO SET PROGOUTPUT TEXT 'Calculating data:param ratio. Density etc.'
-%  COPY '#SCRIPT CHECKDENS'
-%%
-%  CLEAR
-%  INSERT "^^CO SET C12 TEXT '"
-%  STORE FORMAT /(F7.2)/ LENGTH 7 REAL NNONHATM
-%  INSERT "'"
-%  OUTPUT
-%%
-%  CLEAR
-%  INSERT "^^CO SET P12 TEXT '"
-%  STORE FORMAT /(F7.2)/ LENGTH 7 REAL NNONHATM
-%  INSERT "'"
-%  OUTPUT
-%%
-%  CLEAR
-%  INSERT "^^CO SET C22 TEXT '"
-%  STORE FORMAT /(F9.3)/ LENGTH 9 REAL CELLVOL
-%  INSERT "'"
-%  OUTPUT
-%%
-%  CLEAR
-%  INSERT "^^CO SET C32 TEXT '"
-%  STORE FORMAT /(I4)/ LENGTH 4 INTEGER INTEGER SGMULT
-%  INSERT "'"
-%  OUTPUT
-%%
-%  CLEAR
-%  INSERT "^^CO SET C42 TEXT '"
-%  STORE FORMAT /(F6.2)/ LENGTH 6 REAL VOLPRATM
-%  INSERT "'"
-%  OUTPUT
-%%
-%  CLEAR
-%  INSERT "^^CO SET P14 TEXT '"
-%  STORE FORMAT /(I6)/ LENGTH 6 INTEGER INTEGER ESTNPARA
-%  INSERT "'"
-%  OUTPUT
-%%
-%  CLEAR
-%  INSERT "^^CO SET P22 TEXT '"
-%  STORE FORMAT /(I7)/ LENGTH 7 INTEGER INTEGER NALLOWREF
-%  INSERT "'"
-%  OUTPUT
-%%
-%  CLEAR
-%  INSERT "^^CO SET P32 TEXT '"
-%  STORE FORMAT /(F6.2)/ LENGTH 6 REAL ESTOTP
-%  INSERT "'"
-%  OUTPUT
-^^CO SET PROGOUTPUT TEXT 'Ready'
-%%
-%  LOOP
-%    VERIFY XC_BOK XC_REF RHOMIT RHOMIT2 SIGCUT ED28 ED02 ED29 SIGFULL -
- WILFILT1 WILFILT2
-%    GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
-%    CASE VALUE
-%      BLOCK    %XC_BOK
-^^CO     DISPOSE XCHECK6
-%        FINISH
-%      END BLOCK
-%      BLOCK    %XC_REF
-%        EVALUATE LOOPCOUNTER = LOOPEND
-%      END BLOCK
-%      BLOCK    %RHOMIT
-%        GET SILENT NOSTORE REAL ' ' ' '
-%        EVALUATE NEWRHO = VALUE
-%        EVALUATE LNEWRAT = FALSE
-%        EVALUATE LNEWRHO = TRUE
-%        COPY '#SCRIPT XLIST28'
-%        EVALUATE LOOPCOUNTER = LOOPEND
-%      END BLOCK
-%      BLOCK    %RHOMIT2
-%        GET SILENT NOSTORE REAL ' ' ' '
-%        EVALUATE NEWRHO = VALUE
-%        EVALUATE LNEWRAT = FALSE
-%        EVALUATE LNEWRHO = TRUE
-%        COPY '#SCRIPT XLIST28'
-%        EVALUATE WILFIL = TRUE
-^^CO     SET WILFILT1 STATE=ON SET WILFILT2 STATE=ON
-%        EVALUATE LOOPCOUNTER = LOOPEND
-%      END BLOCK
-%      BLOCK    %SIGCUT
-%        GET NOSTORE SILENT REAL ' ' ' '
-%        EVALUATE NEWRAT = VALUE
-%        EVALUATE LNEWRAT = TRUE
-%        EVALUATE LNEWRHO = FALSE
-%        COPY '#SCRIPT XLIST28'
-%        EVALUATE LOOPCOUNTER = LOOPEND
-%      END BLOCK
-%      BLOCK    %ED28
-%        EVALUATE LNEWRAT = FALSE
-%        EVALUATE LNEWRHO = FALSE
-%        COPY '#SCRIPT XLIST28'
-%        EVALUATE LOOPCOUNTER = LOOPEND
-%      END BLOCK
-%      BLOCK    %ED02
-%        COPY '#SCRIPT XSPACE'
-%        EVALUATE LOOPCOUNTER = LOOPEND
-%      END BLOCK
-%      BLOCK    %ED29
-%        COPY '#SCRIPT XINLIST3'
-%        EVALUATE LOOPCOUNTER = LOOPEND
-%      END BLOCK
-%      BLOCK    %SIGFULL
-%        IF EXISTS ( 30 ) .EQ. 0 THEN
-%          COPY '#LIST 30'
-%          COPY 'END'
-%        END IF
-%        COPY '#GENERALEDIT 30'
-%        COPY 'LOCATE RECORDTYPE = 109'
-%        GET NOSTORE SILENT FINAL REAL ' ' ' '
-%        EVALUATE THFULL = - VALUE
-%        COPY 'TRANSFER TO OFFSET = 10 FROM THFULL'
-%        COPY 'WRITE'
-%        COPY 'END'
-%        TRANSFER '{I Theta full manually set to ' // -
-            CHARACTER ( - THFULL ) TO DISPLAY
-%      END BLOCK
-%      BLOCK    %WILFILT1
-%        VERIFY ON OFF
-%        GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%        COPY '#WILSON'
-%        COPY 'OUTPUT PLOT=YES NZ=YES STATS=YES'
-%        CASE VALUE
-%          BLOCK
-%            EVALUATE WILFIL = TRUE
-%            COPY 'FILTER LIST28 = YES'
-^^CO         SET WILFILT2 STATE=ON
-%          END BLOCK
-%          BLOCK
-%            EVALUATE WILFIL = FALSE
-%            COPY 'FILTER LIST28 = NO'
-^^CO         SET WILFILT2 STATE=OFF
-%          END BLOCK
-%        END CASE
-%        COPY 'END'
-%      END BLOCK
-%      BLOCK    %WILFILT2
-%        VERIFY ON OFF
-%        GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%        COPY '#WILSON'
-%        COPY 'OUTPUT PLOT=YES NZ=YES STATS=YES'
-%        CASE VALUE
-%          BLOCK
-%            EVALUATE WILFIL = TRUE
-%            COPY 'FILTER LIST28 = YES'
-^^CO         SET WILFILT1 STATE=ON
-%          END BLOCK
-%          BLOCK
-%            EVALUATE WILFIL = FALSE
-%            COPY 'FILTER LIST28 = NO'
-^^CO         SET WILFILT1 STATE=OFF
-%          END BLOCK
-%        END CASE
-%        COPY 'END'
-%      END BLOCK
-%    END CASE
-%  END LOOP
-% END LOOP
-%END SCRIPT
+%SCRIPT XCHECK6                                                                 
+% VARIABLE REAL WORK1 WORK2 WORK3                                               
+% VARIABLE LOGICAL MERGER ABSENT LNEWRAT LNEWRHO I6DONE I6MASK LMAONCE          
+% VARIABLE LOGICAL WILFIL                                                       
+% VARIABLE REAL NEWRHO NEWRAT THFULL MRGR                                       
+% VARIABLE REAL VOLPRATM NNONHATM CELLVOL SGMULT NALLOWREF ESTNPARA ESTOTP      
+% VARIABLE INTEGER ABSPRINT ABSTOTAL                                            
+% EVALUATE MERGER = FILEEXISTS 'mergingr.dat'                                   
+% EVALUATE ABSENT = FILEEXISTS 'absences.dat'                                   
+% EVALUATE LMAONCE = TRUE                                                       
+% EVALUATE WILFIL = FALSE                                                       
+%%                                                                              
+% IF ( EXISTS 6 .NE. 1 ) THEN                                                   
+                                                                                
+{E No reflections stored. Use "X-ray data->Input reflections".                  
+                                                                                
+%   FINISH                                                                      
+% END IF                                                                        
+%%                                                                              
+% EVALUATE I6DONE = TRUE                                                        
+% EVALUATE I6MASK = TRUE                                                        
+% COPY '#SCRIPT XPUTINFO'                                                       
+%%                                                                              
+%%                                                                              
+^^WI WINDOW XCHECK6 'Initial Analyses' LARGE MODAL KEEP SIZE                    
+^^WI COMMIT='XC_BOK' CANCEL='XC_BOK'                                            
+^^WI GRID MAIN NROWS=3 NCOLS=1                                                  
+^^WI {                                                                          
+^^WI  @ 1,1 GRID TOP NROWS=3 NCOLS=3                                            
+^^WI  {                                                                         
+^^WI   @ 2,2 TABCTRL _MAINTABS                                                  
+^^WI   {                                                                        
+^^WI    TAB _MAINTAB2a 'Completeness' GRID _MAINTG2 NROWS=5 NCOLS=3             
+^^WI    {                                                                       
+^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
+^^WI     {                                                                      
+^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                       
+^^WI      {                                                                     
+^^WI       @ 1,1 STATIC XFW1                                                    
+^^WI 'Completeness of the data set out to theta max.'                           
+^^WI       @ 2,1 STATIC XFW2                                                    
+^^WI 'You may manually select "theta full" (the value at which you consider'    
+^^WI       @ 3,1 STATIC XFW3                                                    
+^^WI 'the data complete) by right-clicking the graph.'                          
+^^WI      }                                                                     
+^^WI      @ 1,1 ICON IM INFO                                                    
+^^WI     }                                                                      
+^^WI     @ 4,2 RESIZE _COMPRSZ VERTICAL {                                       
+^^WI      ITEM GRID CR1 NROWS=1 NCOLS=1                                         
+^^WI      {                                                                     
+^^WI       @ 1,1 PLOTWINDOW _VCOMPL NROWS=20 NCOLS=64                           
+^^WI        DEFINEPOPUPMENU POPUP 'Selection'                                   
+^^WI        ITEM _SDELA '&Manually set theta full = _X' 'SIGFULL_N_X'           
+^^WI        ENDDEFINEMENU                                                       
+^^WI      }                                                                     
+^^WI      ITEM GRID CR2 NROWS=3 NCOLS=1                                         
+^^WI      {                                                                     
+^^WI        @ 1,1 STATIC M1 'Missing data'                                      
+^^WI        @ 3,1 LISTCTRL LMISSING VISLINES=9 NCOLS=4                          
+^^WI           'h' 'k' 'l' 'theta' ADDTOLIST 'NULL'                             
+^^WI      }                                                                     
+^^WI     }                                                                      
+^^WI    }                                                                       
+^^WI    TAB _MAINTAB2 'Sigma freq' GRID _MAINTG2 NROWS=5 NCOLS=3                
+^^WI    {                                                                       
+^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
+^^WI     {                                                                      
+^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                       
+^^WI      {                                                                     
+^^WI       @ 1,1 STATIC XFW1                                                    
+^^WI 'You are looking at the frequency of I/sigma(I). The blue line shows'      
+^^WI       @ 2,1 STATIC XFW2                                                    
+^^WI 'number of reflections above a given I/sigma(I) ratio.'                    
+^^WI       @ 3,1 STATIC XFW3 'Right-click on a bar for data cut-off options.'   
+^^WI      }                                                                     
+^^WI      @ 1,1 ICON IM INFO                                                    
+^^WI     }                                                                      
+^^WI     @ 4,2 PLOTWINDOW _VSIGLEVL NROWS=20 NCOLS=64                           
+^^WI      DEFINEPOPUPMENU POPUP 'Selection'                                     
+^^WI        ITEM _SDELA '&Reject data: I/sigma(I) < _X' 'SIGCUT_N_X'            
+^^WI      ENDDEFINEMENU                                                         
+^^WI    }                                                                       
+^^WI    TAB _MAINTAB2 'Sigma vs Res' GRID _MAINTG2 NROWS=5 NCOLS=3              
+^^WI    {                                                                       
+^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
+^^WI     {                                                                      
+^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                       
+^^WI      {                                                                     
+^^WI       @ 1,1 STATIC XFW1                                                    
+^^WI 'You are looking at the distribution of I/sigma(I) against '               
+^^WI       @ 2,1 STATIC XFW2                                                    
+^^WI '(sin(theta)/lambda)**2'                                                   
+^^WI       @ 3,1 STATIC XFW3 'Right-click a point for data cut-off options.'    
+^^WI      }                                                                     
+^^WI      @ 1,1 ICON IM INFO                                                    
+^^WI     }                                                                      
+^^WI     @ 4,2 PLOTWINDOW _VSIGRES NROWS=20 NCOLS=64                            
+^^WI      DEFINEPOPUPMENU POPUP 'Selection'                                     
+^^WI        ITEM _SDELA '&Reject data: rho > _X' 'RHOMIT_N_X'                   
+^^WI      ENDDEFINEMENU                                                         
+^^WI    }                                                                       
+^^WI    TAB _MAINTAB3 'Merging R' GRID _MAINTG3 NROWS=5 NCOLS=3                 
+^^WI    {                                                                       
+% IF ( MERGER ) THEN                                                            
+^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
+^^WI     {                                                                      
+^^WI       @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                      
+^^WI      {                                                                     
+^^WI       @ 1,1 STATIC XFW1                                                    
+^^WI  'You are looking at merging R versus signal to noise. Merging R is'       
+^^WI       @ 2,1 STATIC XFW2                                                    
+^^WI 'expected to be worse for low signal to noise data.'                       
+^^WI       @ 3,1 STATIC XFW3 'Right-click on a bar for data cut-off options.'   
+^^WI      }                                                                     
+^^WI      @ 1,1 ICON IM INFO                                                    
+^^WI     }                                                                      
+^^WI     @ 4,2 PLOTWINDOW _VRMERGE NROWS=20 NCOLS=64                            
+^^WI      DEFINEPOPUPMENU POPUP 'Selection'                                     
+^^WI        ITEM _SDELA '&Reject data: I/sigma(I) < _X' 'SIGCUT_N_X'            
+^^WI      ENDDEFINEMENU                                                         
+% ELSE                                                                          
+^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
+^^WI     {                                                                      
+^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                       
+^^WI      {                                                                     
+^^WI       @ 1,1 STATIC XFW1 'No merging-R file found. Perhaps data have'       
+^^WI       @ 2,1 STATIC XFW2 'not been merged (#SORT,#MERGE), or perhaps'       
+^^WI       @ 3,1 STATIC XFW3 'they were merged by other software.'              
+^^WI      }                                                                     
+^^WI      @ 1,1 ICON IM ERROR                                                   
+^^WI     }                                                                      
+% END IF                                                                        
+^^WI    }                                                                       
+^^WI    TAB _MAINTAB1 'Absences' GRID _MAINTG1 NROWS=5 NCOLS=3                  
+^^WI    {                                                                       
+% IF ( ABSENT ) THEN                                                            
+^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
+^^WI     {                                                                      
+^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                       
+^^WI      {                                                                     
+^^WI       @ 1,1 STATIC XFW1                                                    
+^^WI 'Systematic absences: These data points were measured, but should be'      
+^^WI       @ 2,1 STATIC XFW2                                                    
+^^WI 'absent due to space group. Allowing random noise, they should be'         
+^^WI       @ 3,1 STATIC XFW3                                                    
+^^WI 'evenly distributed about zero. Absences are not used in refinement.'      
+^^WI      }                                                                     
+^^WI      @ 1,1 ICON IM INFO                                                    
+^^WI     }                                                                      
+^^WI     @ 4,2 PLOTWINDOW _VABSENT NROWS=20 NCOLS=64                            
+% ELSE                                                                          
+^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
+^^WI     {                                                                      
+^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                       
+^^WI      {                                                                     
+^^WI       @ 1,1 STATIC XFW1 'No absences file found. Perhaps absences have'    
+^^WI       @ 2,1 STATIC XFW2 'not been removed (#SYST), or perhaps they were'   
+^^WI       @ 3,1 STATIC XFW3 'removed by other software.'                       
+^^WI      }                                                                     
+^^WI      @ 1,1 ICON IM ERROR                                                   
+^^WI     }                                                                      
+% END IF                                                                        
+^^WI    }                                                                       
+^^WI     TAB _MAINTAB0 'Wilson' GRID _MAINTG0 NROWS=9 NCOLS=3                   
+^^WI    {                                                                       
+^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
+^^WI     {                                                                      
+^^WI      @ 1,3 GRID EXP2 NROWS=5 NCOLS=1                                       
+^^WI      {                                                                     
+^^WI       @ 1,1 STATIC XFW1                                                    
+^^WI 'You are looking at a Wilson Plot; Diffraction angle (or rho) runs down'   
+^^WI       @ 2,1 STATIC XFW2                                                    
+^^WI 'the vertical axis. Log of actual scattering over expected scattering'     
+^^WI       @ 3,1 STATIC XFW2                                                    
+^^WI 'is plotted at each angle. Slope is due to fall off of actual scattering'  
+^^WI       @ 4,1 STATIC XFW2                                                    
+^^WI 'with angle, intercept is due to arbitrary scaling of intensity data.'     
+^^WI       @ 5,1 STATIC XFW3 'Right-click a point for data cut-off options.'    
+^^WI      }                                                                     
+^^WI      @ 1,1 ICON IM INFO                                                    
+^^WI     }                                                                      
+^^WI     @ 4,2 PLOTWINDOW _VWILSON NROWS=20 NCOLS=64                            
+^^WI      DEFINEPOPUPMENU POPUP 'Selection'                                     
+^^WI        ITEM _SDELA '&Reject data: rho > _Y ' 'RHOMIT2_N_Y'                 
+^^WI      ENDDEFINEMENU                                                         
+^^WI     @ 6,2 CHECKBOX WILFILT1                                                
+^^WI           'Show plot using only reflections allowed by List 28'            
+^^WI           STATE=OFF INFORM=YES                                             
+^^WI     @ 8,2 GRID GSTAT NROWS=1 NCOLS=11                                 
+^^WI     {                                                                      
+^^WI       @ 1,1 STATIC WBFS 'B factor:'                                        
+^^WI       @ 1,3 STATIC _MW_BFACTR '0000.0000'                                  
+^^WI       @ 1,5 STATIC WBFS 'Scale:'                                           
+^^WI       @ 1,7 STATIC _MW_BSCALE '0000.0000'  
+^^WI     @ 1,9 STATIC WBFS 'MOD(E**2-1)'                                        
+^^WI     @ 1,11 STATIC _MW_E2MIN1 '000000.000'                                  
+^^WI     }                                                                      
+^^WI    }                                                                       
+^^WI    TAB _MAINTAB4 'N(Z) distribution' GRID _MAINTG0 NROWS=8 NCOLS=3         
+^^WI    {                                                                       
+^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
+^^WI     {                                                                      
+^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                       
+^^WI      {                                                                     
+^^WI       @ 1,1 STATIC XFW1                                                    
+^^WI 'You are looking at N(Z) cumulative probability distribution functions.'   
+^^WI       @ 2,1 STATIC XFW2                                                    
+^^WI 'These show actual and expected distribution of E values. The "All Data"'  
+^^WI       @ 3,1 STATIC XFW3                                                    
+^^WI 'points should follow one of the theoretical lines.'                       
+^^WI      }                                                                     
+^^WI      @ 1,1 ICON IM INFO                                                    
+^^WI     }                                                                      
+^^WI     @ 4,2 PLOTWINDOW _VNZDIST NROWS=20 NCOLS=64                            
+^^WI     @ 5,2 CHECKBOX WILFILT2                                                
+^^WI           'Show plot using only reflections allowed by List 28'            
+^^WI           STATE=OFF INFORM=YES                                             
+^^WI     @ 7,2 GRID GSTAT2 NROWS=1 NCOLS=3                                      
+^^WI     {                                                                      
+^^WI       @ 1,1 STATIC WBFS 'MOD(E**2-1)'                                      
+^^WI       @ 1,3 STATIC _MW_E2MIN1 '000000.000'                                 
+^^WI     }                                                                      
+^^WI    }                                                                       
+^^WI    TAB _MAINTAB5 'Cell content' GRID _MAINTG0 NROWS=7 NCOLS=3              
+^^WI    {                                                                       
+^^WI     @ 2,2 GRID CGRID NROWS=3 NCOLS=1 OUTLINE='Cell contents'               
+^^WI     {                                                                      
+^^WI      @ 1,1 GRID CGRID1 NROWS=5 NCOLS=5                                     
+^^WI      {                                                                     
+^^WI       @ 1,1 STATIC C11 'Cell contents (List 29), indicate'                 
+^^WI       @ 1,3 STATIC C12 '00000000'                                          
+^^WI       @ 1,5 STATIC C13 'non-H atoms in the asymmetric unit.'               
+^^WI       @ 2,1 STATIC C21 'Cell volume (List 1) is'                           
+^^WI       @ 2,3 STATIC C22 '00000000'                                          
+^^WI       @ 2,5 STATIC C23 'cubic Angstroms.'                                  
+^^WI       @ 3,1 STATIC C31 'Space group multiplicity (List 2) is'              
+^^WI       @ 3,3 STATIC C32 '00000000'                                          
+^^WI       @ 5,1 STATIC C41 'Therefore, volume per non-H atom is'               
+^^WI       @ 5,3 STATIC C42 '00000000'                                          
+^^WI       @ 5,5 STATIC C43 'cubic Angstroms. (18.0 would be typical)'          
+^^WI      }                                                                     
+^^WI      @ 3,1 GRID CGRID2 NROWS=1 NCOLS=4                                     
+^^WI      {                                                                     
+^^WI       @ 1,1 STRETCH CS2 HORIZONTAL                                         
+^^WI       @ 1,2 BUTTON ED29 'Change cell contents'                             
+^^WI       @ 1,4 BUTTON ED02 'Change space group'                               
+^^WI      }                                                                     
+^^WI     }                                                                      
+^^WI     @ 4,2 GRID PGRID NROWS=6 NCOLS=1 OUTLINE='Obs/param ratio'             
+^^WI     {                                                                      
+^^WI      @ 1,1 GRID PGRID1 NROWS=1 NCOLS=7                                     
+^^WI      {                                                                     
+^^WI       @ 1,1 STATIC P11 'Based on'                                          
+^^WI       @ 1,3 STATIC P12 '000000'                                            
+^^WI       @ 1,5 STATIC P13                                                     
+^^WI       'non-h atoms, estimated final number of lsq parameters is'           
+^^WI       @ 1,7 STATIC P14 '000000'                                            
+^^WI      }                                                                     
+^^WI      @ 2,1 GRID PGRID2 NROWS=1 NCOLS=5                                     
+^^WI      {                                                                     
+^^WI       @ 1,1 STATIC P21 'List 28 currently allows'                          
+^^WI       @ 1,3 STATIC P22 '00000000'                                          
+^^WI       @ 1,5 STATIC P23 'reflections to be used for refinement.'            
+^^WI      }                                                                     
+^^WI      @ 4,1 GRID PGRID3 NROWS=1 NCOLS=4                                     
+^^WI      {                                                                     
+^^WI       @ 1,1 STATIC P31 'Estimated final obs:parameter ratio is'            
+^^WI       @ 1,3 STATIC P32 '000000'                                            
+^^WI       @ 1,4 STATIC P33 ':  1.        (Ideal for publication is > 8.0)'     
+^^WI      }                                                                     
+^^WI      @ 6,1 GRID PGRID3 NROWS=1 NCOLS=2                                     
+^^WI      {                                                                     
+^^WI       @ 1,1 STRETCH CS2 HORIZONTAL                                         
+^^WI       @ 1,2 BUTTON ED28 'Change reflection filters'                        
+^^WI      }                                                                     
+^^WI     }                                                                      
+^^WI     @ 6,2 GRID AGRID NROWS=6 NCOLS=5 OUTLINE='Acta recommendations'        
+^^WI     {                                                                      
+^^WI      @ 1,1 STATIC C1 'Crystal size'                                        
+^^WI      @ 1,3 STATIC C2 'Computing'                                           
+^^WI      @ 1,5 STATIC C3 'crystal size check results will appear here'         
+^^WI      @ 2,1 STATIC T1 'Temperature'                                         
+^^WI      @ 2,3 STATIC T2 'Computing'                                           
+^^WI      @ 2,5 STATIC T3 'temperature check results will appear here'          
+^^WI      @ 3,1 STATIC A1 'I/u(I) cutoff'                                       
+^^WI      @ 3,3 STATIC A2 'Computing'                                           
+^^WI      @ 3,5 STATIC A3 'I/u(I) check results will appear here'               
+^^WI      @ 4,1 STATIC R1 'Merging R'                                           
+^^WI      @ 4,3 STATIC R2 'Computing'                                           
+^^WI      @ 4,5 STATIC R3 'Merging R check results will appear here'            
+^^WI      @ 5,1 STATIC H1 'Theta full'                                          
+^^WI      @ 5,3 STATIC H2 'Computing'                                           
+^^WI      @ 5,5 STATIC H3 'Theta full check results will appear here'           
+^^WI      @ 6,1 STATIC P1 'Completeness'                                        
+^^WI      @ 6,3 STATIC P2 'Computing'                                           
+^^WI      @ 6,5 STATIC P3 'Completeness check results will appear here'         
+^^WI     }                                                                      
+^^WI    }                                                                       
+^^WI   }                                                                        
+^^WI  }                                                                         
+^^WI  @ 2,1 GRID BUTT NROWS=2 NCOLS=5                                           
+^^WI  {                                                                         
+^^WI   @ 1,1 STRETCH RS HORIZONTAL                                              
+^^WI   @ 1,2 BUTTON XC_REF 'Refresh'                                            
+^^WI   @ 1,4 BUTTON XC_BOK 'Close' COMMIT DEFAULT CANCEL                        
+^^WI  }                                                                         
+^^WI  @ 3,1 PROGRESS _CHECKPR 'Please wait'                                     
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+^^CO SENDPROGRESSTO _CHECKPR                                                    
+%%                                                                              
+% LOOP                                                                          
+^^CO SET PROGOUTPUT TEXT 'Computing completeness'                               
+%  COPY '#THLIM'                                                                
+%  COPY 'OUTPUT PLOT=YES GLIST=YES'                                             
+%  COPY 'END'                                                                   
+%%                                                                              
+^^CO SET PROGOUTPUT TEXT 'Computing Wilson statistics'                          
+%  COPY '#WILSON'                                                               
+%  COPY 'OUTPUT PLOT=YES NZ=YES STATS=YES'                                      
+%  IF ( WILFIL ) THEN                                                           
+%    COPY 'FILTER LIST28 = YES'                                                 
+%  ELSE                                                                         
+%    COPY 'FILTER LIST28 = NO'                                                  
+%  END IF                                                                       
+%  COPY 'END'                                                                   
+%%                                                                              
+%  IF ( ABSENT .AND. LMAONCE ) THEN                                             
+%    COPY '#OPEN SCPDATA absences.dat'                                          
+^^CO SET PROGOUTPUT TEXT 'Reading systematic absences from absences.dat'        
+^^WI WINDOW XABORT 'Absences' MODAL GRID MAIN NROWS=5 NCOLS=5                   
+^^WI { @ 2,2 STATIC T1 'Reading absence data.'                                  
+^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT DISABLED=NO               
+^^WI   @ 4,2 STATIC RABPR 'Reading absences         '} SHOW                     
+^^CR                                                                            
+%    EVALUATE ABSPRINT = 0                                                      
+%    EVALUATE ABSTOTAL = 0                                                      
+%    EXTRACT REWIND                                                             
+%% Skip first line:                                                             
+%    EXTRACT NEXT                                                               
+%%                                                                              
+^^PL PLOTDATA _CLASS SCATTER ATTACH _VABSENT                                    
+^^PL XAXIS TITLE 'Fo**2/sigma(Fo**2)'                                           
+^^PL NSERIES=1 LENGTH=40 YAXIS TITLE 'Fo**2'                                    
+%%                                                                              
+%    COPY '#SCRIPT YGETABS'                                                     
+%    COPY '#CLOSE SCPDATA'                                                      
+^^PL SHOW                                                                       
+^^CR                                                                            
+^^CO DISPOSE XABORT                                                             
+%  END IF                                                                       
+%%                                                                              
+^^CO SET PROGOUTPUT TEXT 'Calculating I/u(I) and I/u(I) vs rho distribution'    
+%  COPY '#SIGMADIST'                                                            
+%  COPY 'OUTPUT PLOT=YES RES=YES'                                               
+%  COPY 'END'                                                                   
+%%                                                                              
+%  IF ( LMAONCE ) THEN                                                          
+%    COPY '#GENERALEDIT 30'                                                     
+%    COPY 'LOCATE RECORDTYPE = 102'                                             
+%    COPY 'TRANSFER FROM OFFSET = 0 TO WORK1'                                   
+%    COPY 'TRANSFER FROM OFFSET = 1 TO WORK2'                                   
+%    COPY 'TRANSFER FROM OFFSET = 2 TO WORK3'                                   
+%    CLEAR                                                                      
+%    INSERT "^^CO SET C3 TEXT '"                                                
+^^CO SET C2 TEXT 'OK'                                                           
+%    IF WORK1 .GT. 0.6 THEN                                                     
+%       INSERT 'Min > 0.6mm '                                                   
+^^CO    SET C2 TEXT 'Warning'                                                   
+%    END IF                                                                     
+%    IF WORK2 .GT. 0.8 THEN                                                     
+%       INSERT 'Med > 0.8mm '                                                   
+^^CO    SET C2 TEXT 'Warning'                                                   
+%    END IF                                                                     
+%    IF WORK3 .GT. 1.0 THEN                                                     
+%       INSERT 'Max > 1.0mm'                                                    
+^^CO    SET C2 TEXT 'Warning'                                                   
+%    END IF                                                                     
+%    INSERT "'"                                                                 
+%    OUTPUT                                                                     
+%    COPY 'LOCATE RECORDTYPE = 102'                                             
+%    COPY 'TRANSFER FROM OFFSET = 6 TO WORK1'                                   
+%    IF WORK1 .LT. 25.0 THEN                                                    
+^^CO    SET T2 TEXT 'Alert' SET T3 TEXT 'Temperaure < 25K. Please check.'       
+%    ELSE                                                                       
+^^CO    SET T2 TEXT 'OK' SET T3 TEXT ' '                                        
+%    END IF                                                                     
+%    COPY 'LOCATE RECORDTYPE = 103'                                             
+%    COPY 'TRANSFER FROM OFFSET = 3 TO WORK1'                                   
+%    IF WORK1 .GE. 12.0 THEN                                                    
+^^CO   SET A2 TEXT 'Fail' SET A3 TEXT 'I/u(I) >= 12'                            
+%    ELSE                                                                       
+%      IF WORK1 .GE. 10.0 THEN                                                  
+^^CO     SET A2 TEXT 'Warn' SET A3 TEXT 'I/u(I) >= 10'                          
+%      ELSE                                                                     
+%        IF WORK1 .GE. 8.0 THEN                                                 
+^^CO   SET A2 TEXT 'Alert' SET A3 TEXT 'I/u(I) >= 8'                            
+%        ELSE                                                                   
+^^CO   SET A2 TEXT 'OK' SET A3 TEXT ' '                                         
+%        END IF                                                                 
+%      END IF                                                                   
+%    END IF                                                                     
+%    COPY 'LOCATE RECORDTYPE = 101'                                             
+%    COPY 'TRANSFER FROM OFFSET = 3 TO WORK1'                                   
+%    IF WORK1 .GT. 0.20 THEN                                                    
+^^CO   SET R2 TEXT 'Fail' SET R3 TEXT 'Rmerge > 20%. Poor data.'                
+%    ELSE                                                                       
+%      IF WORK1 .GE. 0.15 THEN                                                  
+^^CO     SET R2 TEXT 'Warn' SET R3 TEXT 'Rmerge > 15%. Poor data.'              
+%      ELSE                                                                     
+%        IF WORK1 .GE. 0.10 THEN                                                
+^^CO       SET R2 TEXT 'Alert' SET R3 TEXT 'Rmerge > 10%. Not brilliant.'       
+%        ELSE                                                                   
+^^CO       SET R2 TEXT 'OK' SET R3 TEXT ' '                                     
+%        END IF                                                                 
+%      END IF                                                                   
+%    END IF                                                                     
+%    COPY 'LOCATE RECORDTYPE = 109'                                             
+%    COPY 'TRANSFER FROM OFFSET = 10 TO WORK1'                                  
+%    COPY 'TRANSFER FROM OFFSET = 11 TO WORK2'                                  
+%    IF WORK1 .LT. 25.0 THEN                                                    
+^^CO   SET H2 TEXT 'Fail' SET H3 TEXT 'Theta full < 25 degrees'                 
+%    ELSE                                                                       
+^^CO   SET H2 TEXT 'OK' SET H3 TEXT ' '                                         
+%    END IF                                                                     
+%    IF WORK2 .LT. 0.995 THEN                                                   
+^^CO   SET P2 TEXT 'Fail' SET P3 TEXT 'Completeness at theta full < 99.5%'      
+%    ELSE                                                                       
+^^CO   SET P2 TEXT 'OK' SET P3 TEXT ' '                                         
+%    END IF                                                                     
+%    COPY 'END'                                                                 
+%  END IF                                                                       
+^^CO SET PROGOUTPUT TEXT 'Reading merging-R data from mergingr.dat'             
+%  IF ( MERGER .AND. LMAONCE ) THEN                                             
+%    COPY '#OPEN SCPDATA mergingr.dat'                                          
+%    EXTRACT REWIND                                                             
+%% Skip first three lines:                                                      
+%    EXTRACT NEXT                                                               
+%    EXTRACT NEXT                                                               
+%    EXTRACT NEXT                                                               
+%%                                                                              
+^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VRMERGE KEY                               
+^^PL XAXIS TITLE 'I/sigma(I)'                                                   
+^^PL YAXIS ZOOM 0 50 TITLE 'Merging R factor(%)'                                
+^^PL YAXISRIGHT TITLE 'Number Of Reflections'                                   
+^^PL NSERIES=2 LENGTH=100                                                       
+^^PL SERIES 1 SERIESNAME 'Merging R factor'                                     
+^^PL SERIES 2 SERIESNAME 'Number > given I/sigma(I)' TYPE LINE USERIGHTAXIS     
+%%                                                                              
+% LOOP                                                                          
+%  ON ERROR TERMINATE                                                           
+%  ON END TERMINATE                                                             
+%%                                                                              
+%% Get the data for each result                                                 
+%%                                                                              
+%  EXTRACT NEXT                                                                 
+%  CLEAR                                                                        
+%  EXTRACT TRANSFER INPUT                                                       
+%  CLEAR                                                                        
+%  INSERT !^^PL LABEL !                                                         
+%  GET NOPROMPT REAL ' ' '-1.0'                                                 
+%  INSERT ! DATA !                                                              
+%  GET NOSTORE NOPROMPT REAL ' ' '-1.0'                                         
+%  EVALUATE MRGR = VALUE                                                        
+%  IF MRGR .LT. 0.0 THEN                                                        
+%   EVALUATE MRGR = - MRGR                                                      
+%  END IF                                                                       
+%  STORE REAL MRGR                                                              
+%  GET NOSTORE NOPROMPT INTEGER ' ' '-1'                                        
+%  GET NOPROMPT INTEGER ' ' '-1'                                                
+%  OUTPUT                                                                       
+% END LOOP                                                                      
+^^PL SHOW                                                                       
+^^CR                                                                            
+%    COPY '#CLOSE SCPDATA'                                                      
+%  END IF                                                                       
+%  EVALUATE LMAONCE = FALSE                                                     
+%%                                                                              
+^^CO SET PROGOUTPUT TEXT 'Calculating data:param ratio. Density etc.'           
+%  COPY '#SCRIPT CHECKDENS'                                                     
+%%                                                                              
+%  CLEAR                                                                        
+%  INSERT "^^CO SET C12 TEXT '"                                                 
+%  STORE FORMAT /(F7.2)/ LENGTH 7 REAL NNONHATM                                 
+%  INSERT "'"                                                                   
+%  OUTPUT                                                                       
+%%                                                                              
+%  CLEAR                                                                        
+%  INSERT "^^CO SET P12 TEXT '"                                                 
+%  STORE FORMAT /(F7.2)/ LENGTH 7 REAL NNONHATM                                 
+%  INSERT "'"                                                                   
+%  OUTPUT                                                                       
+%%                                                                              
+%  CLEAR                                                                        
+%  INSERT "^^CO SET C22 TEXT '"                                                 
+%  STORE FORMAT /(F9.3)/ LENGTH 9 REAL CELLVOL                                  
+%  INSERT "'"                                                                   
+%  OUTPUT                                                                       
+%%                                                                              
+%  CLEAR                                                                        
+%  INSERT "^^CO SET C32 TEXT '"                                                 
+%  STORE FORMAT /(I4)/ LENGTH 4 INTEGER INTEGER SGMULT                          
+%  INSERT "'"                                                                   
+%  OUTPUT                                                                       
+%%                                                                              
+%  CLEAR                                                                        
+%  INSERT "^^CO SET C42 TEXT '"                                                 
+%  STORE FORMAT /(F6.2)/ LENGTH 6 REAL VOLPRATM                                 
+%  INSERT "'"                                                                   
+%  OUTPUT                                                                       
+%%                                                                              
+%  CLEAR                                                                        
+%  INSERT "^^CO SET P14 TEXT '"                                                 
+%  STORE FORMAT /(I6)/ LENGTH 6 INTEGER INTEGER ESTNPARA                        
+%  INSERT "'"                                                                   
+%  OUTPUT                                                                       
+%%                                                                              
+%  CLEAR                                                                        
+%  INSERT "^^CO SET P22 TEXT '"                                                 
+%  STORE FORMAT /(I7)/ LENGTH 7 INTEGER INTEGER NALLOWREF                       
+%  INSERT "'"                                                                   
+%  OUTPUT                                                                       
+%%                                                                              
+%  CLEAR                                                                        
+%  INSERT "^^CO SET P32 TEXT '"                                                 
+%  STORE FORMAT /(F6.2)/ LENGTH 6 REAL ESTOTP                                   
+%  INSERT "'"                                                                   
+%  OUTPUT                                                                       
+^^CO SET PROGOUTPUT TEXT 'Ready'                                                
+%%                                                                              
+%  LOOP                                                                         
+%    VERIFY XC_BOK XC_REF RHOMIT RHOMIT2 SIGCUT ED28 ED02 ED29 SIGFULL -        
+ WILFILT1 WILFILT2                                                              
+%    GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '                               
+%    CASE VALUE                                                                 
+%      BLOCK    %XC_BOK                                                         
+^^CO     DISPOSE XCHECK6                                                        
+%        FINISH                                                                 
+%      END BLOCK                                                                
+%      BLOCK    %XC_REF                                                         
+%        EVALUATE LOOPCOUNTER = LOOPEND                                         
+%      END BLOCK                                                                
+%      BLOCK    %RHOMIT                                                         
+%        GET SILENT NOSTORE REAL ' ' ' '                                        
+%        EVALUATE NEWRHO = VALUE                                                
+%        EVALUATE LNEWRAT = FALSE                                               
+%        EVALUATE LNEWRHO = TRUE                                                
+%        COPY '#SCRIPT XLIST28'                                                 
+%        EVALUATE LOOPCOUNTER = LOOPEND                                         
+%      END BLOCK                                                                
+%      BLOCK    %RHOMIT2                                                        
+%        GET SILENT NOSTORE REAL ' ' ' '                                        
+%        EVALUATE NEWRHO = VALUE                                                
+%        EVALUATE LNEWRAT = FALSE                                               
+%        EVALUATE LNEWRHO = TRUE                                                
+%        COPY '#SCRIPT XLIST28'                                                 
+%        EVALUATE WILFIL = TRUE                                                 
+^^CO     SET WILFILT1 STATE=ON SET WILFILT2 STATE=ON                            
+%        EVALUATE LOOPCOUNTER = LOOPEND                                         
+%      END BLOCK                                                                
+%      BLOCK    %SIGCUT                                                         
+%        GET NOSTORE SILENT REAL ' ' ' '                                        
+%        EVALUATE NEWRAT = VALUE                                                
+%        EVALUATE LNEWRAT = TRUE                                                
+%        EVALUATE LNEWRHO = FALSE                                               
+%        COPY '#SCRIPT XLIST28'                                                 
+%        EVALUATE LOOPCOUNTER = LOOPEND                                         
+%      END BLOCK                                                                
+%      BLOCK    %ED28                                                           
+%        EVALUATE LNEWRAT = FALSE                                               
+%        EVALUATE LNEWRHO = FALSE                                               
+%        COPY '#SCRIPT XLIST28'                                                 
+%        EVALUATE LOOPCOUNTER = LOOPEND                                         
+%      END BLOCK                                                                
+%      BLOCK    %ED02                                                           
+%        COPY '#SCRIPT XSPACE'                                                  
+%        EVALUATE LOOPCOUNTER = LOOPEND                                         
+%      END BLOCK                                                                
+%      BLOCK    %ED29                                                           
+%        COPY '#SCRIPT XINLIST3'                                                
+%        EVALUATE LOOPCOUNTER = LOOPEND                                         
+%      END BLOCK                                                                
+%      BLOCK    %SIGFULL                                                        
+%        IF EXISTS ( 30 ) .EQ. 0 THEN                                           
+%          COPY '#LIST 30'                                                      
+%          COPY 'END'                                                           
+%        END IF                                                                 
+%        COPY '#GENERALEDIT 30'                                                 
+%        COPY 'LOCATE RECORDTYPE = 109'                                         
+%        GET NOSTORE SILENT FINAL REAL ' ' ' '                                  
+%        EVALUATE THFULL = - VALUE                                              
+%        COPY 'TRANSFER TO OFFSET = 10 FROM THFULL'                             
+%        COPY 'WRITE'                                                           
+%        COPY 'END'                                                             
+%        TRANSFER '{I Theta full manually set to ' // -                         
+            CHARACTER ( - THFULL ) TO DISPLAY                                   
+%      END BLOCK                                                                
+%      BLOCK    %WILFILT1                                                       
+%        VERIFY ON OFF                                                          
+%        GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                           
+%        COPY '#WILSON'                                                         
+%        COPY 'OUTPUT PLOT=YES NZ=YES STATS=YES'                                
+%        CASE VALUE                                                             
+%          BLOCK                                                                
+%            EVALUATE WILFIL = TRUE                                             
+%            COPY 'FILTER LIST28 = YES'                                         
+^^CO         SET WILFILT2 STATE=ON                                              
+%          END BLOCK                                                            
+%          BLOCK                                                                
+%            EVALUATE WILFIL = FALSE                                            
+%            COPY 'FILTER LIST28 = NO'                                          
+^^CO         SET WILFILT2 STATE=OFF                                             
+%          END BLOCK                                                            
+%        END CASE                                                               
+%        COPY 'END'                                                             
+%      END BLOCK                                                                
+%      BLOCK    %WILFILT2                                                       
+%        VERIFY ON OFF                                                          
+%        GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                           
+%        COPY '#WILSON'                                                         
+%        COPY 'OUTPUT PLOT=YES NZ=YES STATS=YES'                                
+%        CASE VALUE                                                             
+%          BLOCK                                                                
+%            EVALUATE WILFIL = TRUE                                             
+%            COPY 'FILTER LIST28 = YES'                                         
+^^CO         SET WILFILT1 STATE=ON                                              
+%          END BLOCK                                                            
+%          BLOCK                                                                
+%            EVALUATE WILFIL = FALSE                                            
+%            COPY 'FILTER LIST28 = NO'                                          
+^^CO         SET WILFILT1 STATE=OFF                                             
+%          END BLOCK                                                            
+%        END CASE                                                               
+%        COPY 'END'                                                             
+%      END BLOCK                                                                
+%    END CASE                                                                   
+%  END LOOP                                                                     
+% END LOOP                                                                      
+%END SCRIPT                                                                     
