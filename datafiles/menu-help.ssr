@@ -5,6 +5,25 @@
 ^^WI   ITEM HSTAR '&Getting started'             
 ^^WI     '#SPAWN CRYSDIR:manual/readme.html' DISABLEIF='IN'                   
 ^^WI   ITEM HSTAR '&COMMAND line' '#SCRIPT XSTART' DISABLEIF='IN'            
+^^WI   MENU HDEMO '&Worked Examples' 
+
+^^WI     ITEM DEMO '&Basic' 
+^^WI     '#SPAWN CRYSDIR:DEMO/CYCLO/CYCLO-ROUTINE.PDF' DISABLEIF='IN'
+
+^^WI     ITEM DEMO '&Editing' 
+^^WI     '#SPAWN CRYSDIR:DEMO/EDITOR/EDITORS.PDF' DISABLEIF='IN'
+
+^^WI     ITEM DEMO '&Twin-KEEN' 
+^^WI     '#SPAWN CRYSDIR:DEMO/KEEN/KEEN-TWIN.PDF' DISABLEIF='IN'
+
+^^WI     ITEM DEMO '&Twin' 
+^^WI     '#SPAWN CRYSDIR:DEMO/TWIN/TIN-TWIN.PDF' DISABLEIF='IN'
+
+^^WI     ITEM DEMO '&Twin-2' 
+^^WI     '#SPAWN CRYSDIR:DEMO/TWIN2/TWIN-2.PDF' DISABLEIF='IN'
+
+
+^^WI   ENDMENU
 ^^WI   MENU HELP '&Help topics'                                                 
 ^^WI     ITEM TOPIC '&Strategy' '#SCRIPT HSTRAT' DISABLEIF='IN'                 
 ^^WI     ITEM TOPIC '&Crystals Lists' '#SCRIPT HLISTS' DISABLEIF='IN'           
