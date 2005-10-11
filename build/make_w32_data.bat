@@ -11,8 +11,8 @@
 
 @echo Copying precompiled stuff
 echo CVS > cvs.txt
-xcopy ..\precomp\all . /S /D /F /EXCLUDE:cvs.txt
-xcopy ..\precomp\%COMPCODE% . /S /D /F /EXCLUDE:cvs.txt
+xcopy ..\precomp\all . /S /D /F /Y /EXCLUDE:cvs.txt
+xcopy ..\precomp\%COMPCODE% . /S /D /F /Y /EXCLUDE:cvs.txt
 del cvs.txt
 
 @echo Creating COMMANDS.DSC file.
