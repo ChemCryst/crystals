@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:05  rich
 C New CRYSTALS repository
 C
@@ -796,8 +800,8 @@ C--SET THE POINTERS READY FOR INPUT
       NC=LASTCH
       CALL XMOVEI (ISTORE(KX), IPROCS(1), IDIMTH)
 
-      WRITE(CMON,'(4I10)') IPROCS
-      CALL XPRVDU(NCVDU, 3,0)
+c      WRITE(CMON,'(4I10)') IPROCS
+c      CALL XPRVDU(NCVDU, 3,0)
 C
 C----- SET THE REFLECTION LISTING TYPE ETC.
       ITYP06=IPROCS(1)
@@ -869,6 +873,16 @@ C--     COMPUTE SIN(THETA)**2
      3 *STORE(M6+1)*STORE(M6+2)+STORE(L1S+4)*STORE(M6)*STORE(M6+2)
      4 +STORE(L1S+5)*STORE(M6)*STORE(M6+1)
         L=0
+
+      STH = SQRT(MAX(0.0,T))
+      CTH = SQRT(1.-T)
+      TH = ATAN2(STH,CTH)
+
+
+C      WRITE(CMON,'(5f10.3)') store(m6),store(m6+1),store(m6+2),th*RTD
+C      CALL XPRVDU(NCVDU, 3,0)
+
+
         IF(T .LE. 0) L = 2
         IF(T .GT. 1) L = 1
         IF (L .NE. 0) THEN
