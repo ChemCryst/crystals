@@ -1,5 +1,5 @@
 %SCRIPT DIFABS
-%  VARIABLE INTEGER ABSORPTION MODE
+%  VARIABLE INTEGER ABSORPTION MODE OLDSER
 %  VARIABLE LOGICAL RECOMPUTE
 %  EVALUATE RECOMPUTE = FALSE
 %  VARIABLE LOGICAL SCRIPTEXT
@@ -12,7 +12,7 @@
       The refinement should have been completed with as many atoms as can
   be located or geometrically placed, with ISOTROPIC temperature factors.
   HOWEVER _
-      If the original data were bye and large from one asymmetric part of
+      If the original data were by and large from one asymmetric part of
   the lattice only, i.e. only a small percentage equivalent reflections
   (perhaps the -1 zones in Oxford), then DIFABS may give an acceptable
   result on merged data. If anisotropic refinement has been performed,
@@ -49,8 +49,8 @@
 %    IF ( VALUE .EQ. 1 ) THEN
 %      EVALUATE RECOMPUTE = TRUE
       We will save your original LIST 5, (atoms) in case you need it later
-%      COPY '#DISK'
-%      COPY 'RETAIN 5'
+%      COPY '#GENERALEDIT 5'
+%      COPY 'GETSERIAL OLDSER'
 %      COPY 'END'
 %      COPY '#EDIT'
 %      COPY 'UEQUIV FIRST UNTIL LAST'
@@ -200,8 +200,11 @@
 %        END IF
 %      END IF
 %        IF RECOMPUTE .EQ. TRUE THEN
+%          IF OLDSER .LT. 0 THEN
+%            EVALUATE OLDSER = - OLDSER
+%          END IF
 %          COPY '#DISK'
-%          COPY 'RESET 5 0 -1'
+%          TRANSFER 'RESET 5 ' // CHARACTER OLDSER TO CRYSTALS
 %          COPY 'END'
 %          COPY '#SFLS'
 %          COPY 'SCALE'
