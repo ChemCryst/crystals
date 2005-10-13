@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.75  2005/06/28 13:00:22  djw
+C Correct multiplier for Uequiv in H restraints
+C
 C Revision 1.74  2005/05/24 16:41:17  djw
 C Move info text from CMON to NCWU
 C
@@ -6347,7 +6350,7 @@ C--
       DIMENSION TXYZ(6)
       DIMENSION ID(2), JDEV(4)
       LOGICAL WEXIST, MATC11, MATC22, MATC12, MATC21
-      CHARACTER WCLINE*80, CFILEN*80, CATTYP*4
+      CHARACTER WCLINE*80, CFILEN*255, CATTYP*4
 
 
       INCLUDE 'STORE.INC'
