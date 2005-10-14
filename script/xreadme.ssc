@@ -2,63 +2,57 @@
 % VARIABLE INTEGER HELPSIZE
 % EVALUATE HELPSIZE = 2
 % COPY '#SCRIPT XHELP1'
-
 Getting Started
-
-
-If you have got here, you will probably have clicked the crystals icon. 
+===============-
+If you have got here, you will probably have clicked the CRYSTALS icon.
 You should have selected a drive letter, and a folder containing your 
 basic X-ray data. 
 
 PROBLEMS:
- 1 You didnt prepare a folder with the basic data. 
+ 1 You didn't prepare a folder with the basic data. 
 
-      Either 
-             open a DOS box and create a folder and load (from floppy, 
-             ftp etc) the basic data.
-      or     
-             Click My Computer
-               Select drive letter ( eg C:)
-                 Click File -> New folder. While the text New Folder 
-                 is still highlighted in blue, change the name to 
-                 something useful.
-                   Click on folder, and copy X-ray data files into 
-                   folder from some where else (ftp, floppy, 
-                   Neighbourhood etc)
-             Close My Computer
+     Either:
+       open a DOS box and create a folder and load (from floppy, 
+       ftp etc) the basic data.
+     or:     
+       a) Click My Computer
+       b) Select drive letter ( eg C:)
+       c) Click File -> New folder. While the text New Folder 
+          is still highlighted in blue, change the name to 
+          something useful.
+       d) Click on folder, and copy X-ray data files into 
+          folder from some where else (ftp, floppy, Neighbourhood etc.)
+       e) Close My Computer
 
-      On the CRYSTALS toolbar, choose File, New Working directory, and find 
-      the drive with your folder on it. Highlight the folder and click OK. 
+     On the CRYSTALS menu, choose File, New Working directory, and find 
+     the drive with your folder on it. Highlight the folder and click OK. 
 
  2 The wrong molecule appears in the window, or no molecule appears when 
    you expected one.
 
-      You are in the wrong folder. 
+     You are in the wrong folder. 
 
-      On the CRYSTALS toolbar, choose File, New Working DIrectory, and find 
-      the drive with the correct folder on it. Highlight the folder and click OK. 
+     On the CRYSTALS menu, choose File, New Working DIrectory, and find 
+     the drive with the correct folder on it. Highlight the folder and click
+     OK.
 
-  3 You need to get the data into CRYSTALS
+ 3 You need to get the data into CRYSTALS
 
-      On the toolbar, Select X-ray data
+     On the menu, Select X-ray data
+     Either:
+       select Preprocess/CAD4/DIP2000
+     or:
+       select Shelx (INS or RES) file
 
-      Either 
-            select Preprocess/CAD4/DIP2000
-      or
-            select Shelx (INS or REF) file
+     Select reflection data.
 
-      select reflection data.
+     Select SOLVE 
 
-      Select SOLVE 
+     Etc,etc
 
-      Etc,etc
-
-
-Note: You can add   driveletter:\wincrys; to your path. This will permit you to run 
-CRYSTALS from the prompt in a dosbox in the correct data directory, by just typing 
-CRYSTALS
-
-
+Note: You can add c:\wincrys; to your path. This will permit you to run 
+CRYSTALS from the prompt in a dosbox in the correct data directory, by
+just typing CRYSTALS.
 % COPY '#SCRIPT XHELP2'
 %END SCRIPT
 
