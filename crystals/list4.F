@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.53  2005/06/02 14:52:07  djw
+C Include observed sigma to protect against zero division if the users sets QUASI to 0.0
+C
 C Revision 1.52  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -413,7 +416,7 @@ c              SIG(N6ACC) =SIGMAS / MAX(.0001,A**2)
 c              SHFO(N6ACC) = STORE(M6+3) / MAX(.0001,A)
               SHFC = STORE(M6+5)
 c              SIG(N6ACC) = STORE(M6+12) / MAX(.0001,A)
-            END IF
+            ENDIF
             FCMAX = MAX ( FCMAX, SHFC )
           END DO
 C Make up some starting values of A and B:
@@ -524,6 +527,7 @@ C For each grid point (9x9) calculate 10 wD^2 values corresponding to Fc range.
      4                                        SXA,
      5                                        SXB ) )
              END DO
+
              SGOF = SQRT(MAX(.001,WDTO / (REAL (N6ACC) - RPARS )))
              WDTO = WDTO / REAL ( N6ACC )
              WRITE ( CMON, '(2(A,F10.4),/)')
@@ -545,7 +549,13 @@ C Converged!
                 SXA = 0.2
                 SXB = 0.0
              END IF
+             if (sxa .le. 0.) then
+               sxa = 0.1
+               write(cmon,'(A, 2f10.4)') 'Forced reset of P1', sxa, sxb
+               call xprvdu(ncvdu,1,0)
+             endif
              EXIT
+
           END DO
           WRITE ( CMON,'(A,2F10.4,A)') '     Weights applied: ',SXA,SXB,
      1                             ' .0 .0 .0 .333'
