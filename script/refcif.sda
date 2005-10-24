@@ -26,8 +26,8 @@ _publ_contact_author_address
 _publ_contact_author_phone       '+44 1865 000000'
 _publ_contact_author_fax         '+44 1865 000000'
 _publ_contact_author_email       'a.n.other@chem.no.ac.uk'
-_publ_requested_journal          'Section C'
-_publ_requested_category         CO # choose from: FI FM FO CI CM CO AD
+_publ_requested_journal          'Section E'
+_publ_requested_category         EO # choose from: FI FM FO CI CM CO AD
 _publ_requested_coeditor_name    'Prof William Clegg'
 
 _publ_section_title              
@@ -75,6 +75,7 @@ _publ_section_abstract
 _publ_section_comment                                 
 # Text of the paper
 # Note that atoms are referenced as N2, not N(2) or N~2~
+# If text containing () occur within (), the outer ones should be []
 ;
 ?
 ;
@@ -92,25 +93,38 @@ arbitary radius.
 
 ;
 
-_publ_section_exptl_refinement   # Some potentially useful phrases are:
-;
-# donated by Bill Clegg:
+_publ_section_exptl_refinement   # Some potentially useful phrases are
+;                                # donated by Bill Clegg:
 
 In the absence of significant anomalous scattering, Friedel pairs were
-merged, and the absolute configuration is arbitrarily assigned. 
+merged. 
+
+The absolute configuration was arbitrarily assigned. 
 
 The relatively large ratio of minimum to maximum corrections applied 
 in the multiscan process (1:nnn) reflect changes in the illuminated 
 volume of the crystal.   
+
+Changes in illuminated volume were kept to a minimum, and were 
+taken into account (G\"orbitz, 1999) by the multi-scan inter-frame 
+scaling (DENZO/SCALEPACK, Otwinowski & Minor, 1997).
+  
+
+G\"orbitz, C. H. (1999). Acta Cryst. B55, 1090-1098.
+
 
 
 
 The H atoms were all located in a difference map, but those 
 attached to carbon atoms were repositioned geometrically.  
 The H atoms were initially refined with soft restraints on the 
-bond lengths and angles to regularise their geometry (C---H in the range 
-0.93--0.98, N---H in the range 0.86-0.89 and O---H = 0.82  \%A) 
-and displacement parameters 
+bond lengths and angles to regularise their geometry 
+(C---H in the target range 0.93--0.98, 
+N---H in the range 0.86--0.89 
+N---H to 0.86 
+O---H = 0.82 
+\%A) 
+and isotropic adps 
 [U~iso~(H) in the range 1.2-1.5 times U~eq~ of the parent atom], 
 after which they were refined with riding constraints. 
 
