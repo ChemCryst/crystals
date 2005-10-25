@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.104  2005/07/26 09:25:42  djw
+C More Cleggy cif goodies
+C
 C Revision 1.103  2005/05/20 08:49:44  djw
 C Inhibit h-bond header if there are no H bonds
 C
@@ -3842,7 +3845,12 @@ C----- VALUE AND ESD
 cdjw021204
       if (key .eq. 15) esd = 0.
       if ((noh .gt. 0 ).and.( esd .le. 0.).AND.(NATOUT .GE. 3)) then
-        CALL SNUM ( TERM, 0., -1, 0, 10, IVEC )
+cdjwoct05. More fiddles to keep Bill happy
+        if (key .eq. 15) then
+          CALL SNUM ( TERM, 0., -0, 1, 10, IVEC )
+        else
+          CALL SNUM ( TERM, 0., -1, 0, 10, IVEC )
+        endif
       else
         CALL SNUM ( TERM, ESD, -3, 0, 10, IVEC )
       endif
@@ -3855,7 +3863,7 @@ C----- H-bonds AND ESDs
       do itmp =ipub+21, ipub+23, 2
         CALL XFILL (IB, IVEC, 20)
 c        CALL SNUM ( store(itmp),store(itmp+1),  -3, 0, 10, IVEC )
-        CALL SNUM ( store(itmp), 0.0,  -3, 0, 10, IVEC )
+        CALL SNUM ( store(itmp), 0.0,  -2, 0, 10, IVEC )
         WRITE( CBUF, '(20A1)') (IVEC(I), I=1, 20)
         CALL XCRAS ( CBUF, N)
         CLINE(J:J+N-1) = CBUF(1:N)
@@ -3865,7 +3873,8 @@ c        CALL SNUM ( store(itmp),store(itmp+1),  -3, 0, 10, IVEC )
      1  store(ipub+21)*store(Ipub+21) + store(ipub+23)*store(Ipub+23)
      2  -2.*store(ipub+21)*store(Ipub+23)*cos(term*dtr))
       call xfill (ib, ivec, 20)
-      call snum ( dadist, 0.,  -3, 0, 10, ivec )
+cdjwoct05. More fiddles to keep Bill happy
+      call snum ( dadist, 0.002,  -3, 0, 10, ivec )
       write( cbuf, '(20a1)') (ivec(i), i=1, 20)
       call xcras ( cbuf, n)
       cline(j:j+n-1) = cbuf(1:n)
