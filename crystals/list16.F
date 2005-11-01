@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.2  2005/01/17 14:05:28  rich
 C Bring new repository into line up-to-date with old. (Highlight SAME
 C restraint error message).
@@ -1197,11 +1201,13 @@ C--'SUM' DIRECTIVE FOR FLOATING ORIGINS
       ISTORE(LCG+1)=15
 C--SET UP THE DEFAULT VALUES FOR THIS RESTRAINT
 4600  CONTINUE
-      STORE(LCG+3)=100000000.
+c      STORE(LCG+3)=1 00 00 00 00.
+      STORE(LCG+3)=1 00 00.
 4610  CONTINUE
       STORE(LCG+4) = 0.
       J=LCG+3
-      ESD=0.000001
+c      ESD=0.00 00 01
+      ESD=0.00 01
 C--CHECK FOR SOME ARGUMENTS
       IF(ME)2550,2550,4650
 C--CHECK THE TYPE OF THE FIRST ARGUMENT  -  IT MAY NOT BE AN OPERATOR
