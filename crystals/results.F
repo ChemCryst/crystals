@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.105  2005/10/25 16:32:06  djw
+C Fix the number of decimal places in H-bond info to keep Bill happy
+C
 C Revision 1.104  2005/07/26 09:25:42  djw
 C More Cleggy cif goodies
 C
@@ -5446,9 +5449,12 @@ C----- TRY FOR A FRIEDEL MERGE ESTIMATE
         INRIC = 0
         IGLS  = 0
 
-        CALL XTHLIM (THMIN, THMAX,THMCMP, THBEST,THBCMP,INRIC,IULN,IGLS)
-
-        IF ( IPUNCH .EQ. 0 ) THEN
+cdjwnov05-check list 6
+        if (kexist(6) .gt. 0) then
+         CALL XTHLIM (THMIN, THMAX,THMCMP, THBEST,THBCMP,
+     1   INRIC,IULN,IGLS)
+ 
+         IF ( IPUNCH .EQ. 0 ) THEN
            CBUF(1:21)='_diffrn_reflns_theta_'
            WRITE (CLINE,'(A,''min '', F10.3)') CBUF(1:21), THMIN
            CALL XPCIF (CLINE)
@@ -5470,16 +5476,16 @@ C----- TRY FOR A FRIEDEL MERGE ESTIMATE
            CALL XPCIF (' ')
            CALL XPCIF (' ')
            CBUF(1:15)='_diffrn_reflns_'
-        ELSE IF ( IPUNCH .EQ. 1 ) THEN
+         ELSE IF ( IPUNCH .EQ. 1 ) THEN
            WRITE (CPAGE(IDATA+3,2)(:),'(''Theta max '', 10X,              
      1     f10.2)') STORE(L30IX+7)
-        ELSE IF ( IPUNCH .EQ. 2 ) THEN
+         ELSE IF ( IPUNCH .EQ. 2 ) THEN
            WRITE (NCPU,5) '&theta;<sub>max</sub>', STORE(L30IX+7)
-        END IF
+         END IF
  
 C----- RELECTION LIMITS IN DATA COLLECTION
-        K=0
-        DO I=1,3
+         K=0
+         DO I=1,3
            DO J=1,3,2
              IF ( IPUNCH .EQ. 0 ) THEN
                WRITE (CLINE,'(A, ''limit_'',A,A, I10)') CBUF(1:15),
@@ -5492,27 +5498,27 @@ C----- RELECTION LIMITS IN DATA COLLECTION
              WRITE (CPAGE(IDATA+I+3,1)(22:),'(2I6)')
      1        NINT(STORE(L30IX+K-2)),NINT(STORE(L30IX+K-1))
            ELSE IF ( IPUNCH .EQ. 2 ) THEN
-610      FORMAT ('<TR><TD>',A,'</TD><TD>',I4,' &rarr; ',I4,'</TD></TR>')
+610      FORMAT('<TR><TD>',A,'</TD><TD>',I4,' &rarr; ',I4,'</TD></TR>')
              WRITE (NCPU,610) CINDEX(I)(1:1)//' = ',
      1       NINT(STORE(L30IX+K-2)),NINT(STORE(L30IX+K-1))
            END IF
-        END DO
+         END DO
 
  
-        IF ( IPUNCH .EQ. 1 ) THEN
+         IF ( IPUNCH .EQ. 1 ) THEN
            WRITE (CPAGE(IDATA+4,1)(1:15),'(A)') 'Hmin, Hmax'
            WRITE (CPAGE(IDATA+5,1)(1:15),'(A)') 'Kmin, Kmax'
            WRITE (CPAGE(IDATA+6,1)(1:15),'(A)') 'Lmin, Lmax'
-        END IF
+         END IF
 
 
-        IF ( IPUNCH .EQ. 2 ) THEN
+         IF ( IPUNCH .EQ. 2 ) THEN
            WRITE (NCPU,'(''</TABLE>'')')
            WRITE (NCPU,'(''<H2>Refinement</H2>'')')
            WRITE (NCPU,'(''<TABLE>'')')
-        END IF
+         END IF
 
-        IF ( IPUNCH .EQ. 0 ) THEN
+         IF ( IPUNCH .EQ. 0 ) THEN
            IF (JLOAD(12).GE.1) THEN  !REFLECTION LIMITS IN COMPUTATIONS
              JLOAD(11)=1
              M6DTL=L6DTL
@@ -5532,9 +5538,9 @@ C----- RELECTION LIMITS IN DATA COLLECTION
                END DO
              END IF
            END IF
-        END IF
+         END IF
 
-        IF ( IPUNCH .EQ. 0 ) THEN
+         IF ( IPUNCH .EQ. 0 ) THEN
            CBUF(1:22)='_oxford_diffrn_Wilson_'
            CALL XPCIF (' ')
            WRITE (CLINE,'(A, ''B_factor '', F8.2)') CBUF(1:22),
@@ -5543,7 +5549,9 @@ C----- RELECTION LIMITS IN DATA COLLECTION
            WRITE (CLINE,'(A, ''scale '', F8.2)') CBUF(1:22),
      1     STORE(L30DR+7)
            CALL XPCIF (CLINE)
-        END IF
+         END IF
+        endif
+cdjwnov05-end of list 6 goodies
 
         IF ( IPUNCH .EQ. 0 ) THEN
            CALL XPCIF (' ')
