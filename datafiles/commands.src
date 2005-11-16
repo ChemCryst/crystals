@@ -3471,9 +3471,9 @@ REFLECTIONS        3    1
          1    
     .INPUTLIST         10    0    1    2    1         6
               6         7
-PARAMETERS         3    4
+PARAMETERS         3    2
    2    4096 CRYSTALSPUBLISH
-    1    5   11   12
+    1    5   
    1.LAYOUT             9    1    0    0
          1    1    3    3    3    1    1    3    3
     .INSET              1    0    1    0    0         1
