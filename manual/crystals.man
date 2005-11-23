@@ -6916,7 +6916,7 @@ are only going to be calculated.
 #KSPECIAL=#
 #N   9#
 #JX
-     SPECIAL = NONE                No action
+     SPECIAL = NO                  No action
              = TEST                Displays but does not store any restrictions
              = ORIGIN              Tests for and restrains floating origins
              = RESTRAIN            Creates and stores restraints
@@ -6925,7 +6925,7 @@ are only going to be calculated.
 #KUPDATE=#
 #N   6#
 #J
-      UPDATE = NONE                  Nothing updated
+      UPDATE = NO                    Nothing updated
              = OCCUPATION            Site occupancies modified
              = PARAMETERS  (Default) All adjustable parameters modified
 #
@@ -10113,8 +10113,8 @@ section #RLIST20#).
 #N  13#
 #J
  \DISTANCES INPUTLIST=
- OUTPUT MONITOR=  LIST= PUNCH=
- SELECT ALLDISTANCES= COORDINATES= SORTED= TYPE= RANGE=
+ OUTPUT MONITOR=  LIST= PUNCH= HESD=
+ SELECT ALLDIST= COORD= SORTED= TYPE= RANGE= SYMM= TRANS=
  LIMITS DMINIMUM= DMAXIMUM= AMINIMUM= AMAXIMUM=
  E.S.D.S COMPUTE= CELL=
  INCLUDE atoms
@@ -10314,7 +10314,7 @@ Angle     esd = 2.0
       VANDERWAALS.  Use 'VanderWaals' radii from LIST 29, but angles are
                     suppressed.
       IONIC.        Use 'ionic' radii from LIST 29.
-      LIMITS.       Use the specified or default ranges set by the LIMIT directive.
+      LIMITS.       Use specified or default ranges set by the LIMIT directive.
 #
 #KSYMMETRY=#
  This parameter controls the use of symmetry information in the calculation of
