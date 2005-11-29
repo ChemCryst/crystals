@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.26  2005/09/08 13:10:56  djw
+C Store Rmerge as cif item Rint  (spotted by Andrew)
+C
 C Revision 1.25  2005/09/08 13:08:37  djw
 C Store Rmerge as cif item Rint - spotted by Andrew)
 C
@@ -841,7 +844,7 @@ C--LOAD LIST 13
 
 
 cdjwjun05
-C IMTWIN INDICATED IF THE DATA ARE TO BE REGARDED AS TWINNED DURING
+C IMTWIN INDICATES IF THE DATA ARE TO BE REGARDED AS TWINNED DURING
 C THE MERGE
 C -1 = NOT TWINNED, 0 USE LIST 13 VALUE, +1 = TWINNED
       if (imtwin .eq. 0) then 
@@ -852,7 +855,23 @@ C -1 = NOT TWINNED, 0 USE LIST 13 VALUE, +1 = TWINNED
 C--SET THE /FO/ SLOT
       IFO=3
       ITWIN=-1
-      IF(imtwin)1300,1250,1250
+cdjwnov05
+c----- try to sort out batch scales
+c
+c----- CHECK IF BATCH KEYS ARE SET
+      IBCH=KCOMP(1,M6+13,ISTORE(L6DMP),MD6DMP,1)
+      IF ((IMTWIN .EQ. 0) .AND. (IBCH .NE. 0))THEN
+        WRITE(CMON,'(A)') 'Multi-batch twinned data cannot be handled'
+        CALL XPRVDU(NCVDU, 1,0)
+        GOTO 9900
+      ENDIF
+      IF(IBCH .NE. 0) THEN
+C----- SET UP BATCH SCALES TO LOOK LIKE ELEMENT SCALES
+        ITWIN = IBCH
+        IREC=4002
+        ITWINL=KCHLFL(NTERM)
+      ENDIF
+      IF(IMTWIN)1300,1250,1250
 C--THIS STRUCTURE IS TWINNED
 1250  CONTINUE
       IFO=10
@@ -860,13 +879,6 @@ C--THIS STRUCTURE IS TWINNED
       IREC=4002
       ITWINL=KCHLFL(NTERM)
 1300  CONTINUE
-
-cdjwjun05
-      write ( cmon ,'(a,5i6)') 'ifo, itwin, imtwin',ifo, itwin, imtwin
-      call xprvdu(ncvdu, 1,0)
-
-
-
 
 C--CLEAR THE INTENSITY STATISTICS AREA
       CALL XZEROF(RINT,6)
@@ -1088,7 +1100,7 @@ C--CHECK IF THIS IS ONLY ONE CONTRIBUTOR
 C--MORE THAN ONE CONTRIBUTOR  -  ZERO THE WEIGHT AND BATCH
 3450  CONTINUE
       STORE(M6+4)=0.
-      STORE(M6+13)=0.
+      IF (IBCH .EQ. 0) STORE(M6+13)=0.
 C----- STORE THE MINIMUM JCODE
       STORE(M6+18) = WORK(29)
 C--ZERO THE REMAINING CONSTANTS
@@ -1105,7 +1117,7 @@ CDJWMAP99[
       STORE(JFO) = FSIGN
       STORE(M6+12) = SIG
 cdjwmay99 - store the goodie in /FO/ as well for twinned
-      if (itwin .gt. 0) store(m6+3) = store(jfo)
+      if (itwin .EQ. 11) store(m6+3) = store(jfo)
 CDJWMAP99]
 C--STORE THE REFLECTION
 3600  CONTINUE
