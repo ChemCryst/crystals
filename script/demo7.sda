@@ -1,48 +1,48 @@
-#edit
-sel type ne q
-end
-#list 12
-full x's u[iso]
-end
-#sfls
-ref
-ref
-ref
-end
-#list 12
-full x's u's
-end
-#sfls
-ref
-ref
-ref
-end
-#script xqcam
-label all view
-text "We still have the methoxy group wrong" posi 10 10
-ellip all view
-#pause 10
-rena o13 c13 c8 o8 
-text number 1 posi 100 100
-text "relabel methoxy atoms" posi 10 10
-view
-#pause 5
-view
-#script xqcame
-#script xqcame
-#use cameron.l5
-#sfls
-ref
-ref
-end
-#script xqcam
-label all view
-text "This is better" posi 10 10
-ellip all view
-view
-#pause 5
-#script xqcame
-#script xqcame
-
-#use last
-
+#edit                                                                           
+sel type ne q                                                                   
+end                                                                             
+#list 12                                                                        
+full x's u[iso]                                                                 
+end                                                                             
+#sfls                                                                           
+ref                                                                             
+ref                                                                             
+ref                                                                             
+end                                                                             
+#list 12                                                                        
+full x's u's                                                                    
+end                                                                             
+#sfls                                                                           
+ref                                                                             
+ref                                                                             
+ref                                                                             
+end                                                                             
+#script xqcam                                                                   
+label all view                                                                  
+text "We still have the methoxy group wrong" posi 10 10                         
+ellip all view                                                                  
+#pause 5                                                                       
+rena o13 c13 c8 o8                                                              
+text number 1 posi 100 100                                                      
+text "relabel methoxy atoms" posi 10 10                                         
+view                                                                            
+#pause 5                                                                        
+view                                                                            
+#script xqcame                                                                  
+#script xqcame                                                                  
+#use cameron.l5                                                                 
+#sfls                                                                           
+ref                                                                             
+ref                                                                             
+end                                                                             
+#script xqcam                                                                   
+label all view                                                                  
+text "This is better" posi 10 10                                                
+ellip all view                                                                  
+view                                                                            
+#pause 5                                                                        
+#script xqcame                                                                  
+#script xqcame                                                                  
+                                                                                
+#use last                                                                       
+                                                                                

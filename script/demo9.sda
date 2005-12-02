@@ -1,35 +1,35 @@
-#edit
-sel type ne q
-sel type ne h
-end
+#edit                                                                           
+sel type ne q                                                                   
+sel type ne h                                                                   
+end                                                                             
 #perhydro                                                                       
-end
+end                                                                             
 #four                                                                           
-map type=diff
-peak height=3
-end
+map type=diff                                                                   
+peak height=3                                                                   
+end                                                                             
 #peak                                                                           
-sel rej=0.00001
-end
+sel rej=0.00001                                                                 
+end                                                                             
 #coll                                                                           
-sel type=peak
-end
-#script xqcam
-conn radi q .2
-text "The 'Q' peaks are from the Difference map" posi 10 10
-view
-#pause 2
-text "and computed H positions" posi 10 12
-view
-#pause 4
-label h n14 q20
-text "Change Q20 into H and get rid of the Q atoms" posi 10 14
-view
-rena q20 h14
-excl q qn
-view
-#pause 5
-#script xqcame
-#use cameron.l5
-#use last
-
+sel type=peak                                                                   
+end                                                                             
+#script xqcam                                                                   
+conn radi q .2                                                                  
+text "The 'Q' peaks are from the Difference map" posi 10 10                     
+view                                                                            
+#pause 2                                                                        
+text "and computed H positions" posi 10 12                                      
+label h n q  
+view                                                                            
+#pause 4                                                                        
+text "Change Q17 into H and get rid of the Q atoms" posi 10 14                  
+view                                                                            
+rena q20 h13                                                                    
+excl q                                                                       
+view                                                                            
+#pause 5                                                                        
+#script xqcame                                                                  
+#use cameron.l5                                                                 
+#use last                                                                       
+                                                                                

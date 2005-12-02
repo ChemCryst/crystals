@@ -1,29 +1,29 @@
 #edit                                                                           
-cent 100 c(1) until c(9)
-cent 200 c(9) until o(16) o(20)
-cent 300 c(14) c(17) c(18) c(19)
-end
-#script xqcam
-plane all view
-#pause 5
-text "Enclose main lobes in ellipsoids" posi 10 10 
-ellip q view
-#pause 5
-pack cell comp 
-incl cell 
-text numb 1 posi 100 100
-along axis a 
-text " Pack cell, look along 'a'" posi 1 30
-view
-#pause 5
-
-text numb 2 posi 100 100
-along axis b
-text "look along 'b'" posi 1 30
-view
-#pause 5
-#script xqcame
-#edit
-sel type ne qc
-end
-#use last
+cent 100 c(1) until c(9)                                                        
+cent 200 c(9) until o(16) o(20)                                                 
+cent 300 c(14) c(17) c(18) c(19)                                                
+end                                                                             
+#script xqcam                                                                   
+plane all view                                                                  
+#pause 5                                                                        
+text "Enclose main lobes in ellipsoids" posi 10 10                              
+ellip qc view                                                                    
+#pause 5                                                                        
+pack cell comp                                                                  
+incl cell                                                                       
+text numb 1 posi 100 100                                                        
+along axis a                                                                    
+text " Pack cell, look along 'a'" posi 1 30                                     
+view                                                                            
+#pause 5                                                                        
+                                                                                
+text numb 2 posi 100 100                                                        
+along axis b                                                                    
+text "look along 'b'" posi 1 30                                                 
+view                                                                            
+#pause 5                                                                        
+#script xqcame                                                                  
+#edit                                                                           
+sel type ne qc                                                                  
+end                                                                             
+#use last                                                                       
