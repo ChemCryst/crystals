@@ -16,8 +16,16 @@
 ^^WI   SPLIT
 ^^WI   ITEM ACTA  '&Acta checks' '#SCRIPT ACTA'
 ^^WI               ENABLEIF='L1 L2 L5' DISABLEIF='IN'
+
 ^^WI   ITEM CWEB 'Checkcif on the &web'
 ^^WI '$http://journals.iucr.org/services/cif/checking/checkform.html'
+
+^^WI   ITEM AWEB 'Alternative &Checkcif'
+^^WI '$http://checkcif.iucr.org'
+
+^^WI   ITEM PWEB 'Printcif on the &web'
+^^WI '$http://journals.iucr.org/services/cif/printcif.html'
+
 ^^WI   ITEM P 'Checkcif in &platon'
 ^^WI    '#SCRIPT PLATONC' DISABLEIF='IN'
 ^^WI   SPLIT
