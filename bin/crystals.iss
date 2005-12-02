@@ -3,9 +3,9 @@
 ;
 ;Adjust the program names and version here as appropriate:
 ;
-AppVerName=CRYSTALS 12.82-b (Jun 2005)
-AppVersion=12.82-b
-OutputBaseFilename=crystals-b1282-b-jun05-setup
+AppVerName=CRYSTALS 12.83 (Dec 2005)
+AppVersion=12.83
+OutputBaseFilename=crystals-b1283-Dec05-setup
 
 AppName=CRYSTALS
 OutputDir=..\installer
@@ -44,7 +44,7 @@ Source: ..\build\*.*; DestDir: {app}\; Excludes: "make*,buildfile.bat,code.bat";
 Source: ..\build\script\*.*; DestDir: {app}\script\;
 Source: ..\build\mce\*.*; DestDir: {app}\mce\;              
 Source: ..\build\manual\*.*; DestDir: {app}\manual\;
-Source: ..\build\demo\*; DestDir: {app}\demo\; Flags: recursesubdirs;
+Source: ..\build\demo\*; DestDir: {app}\demo\; Flags: recursesubdirs; Excludes: "*.doc";
 
 [Icons]
 Name: "{userdesktop}\Crystals";                 Filename: "{app}\crysload.exe";        WorkingDir: "{app}"; IconFilename: "{app}\crystals.exe"; IconIndex: 0
