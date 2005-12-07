@@ -1,5 +1,7 @@
-
 c $Log: not supported by cvs2svn $
+c Revision 1.45  2005/06/22 12:48:29  rich
+c Oops. SG op used in #MATCH pseudo-sg measure had rotational part transposed.
+c
 c Revision 1.44  2005/04/29 09:04:47  djw
 c Move some CMON output to NCWU
 c
@@ -1698,6 +1700,7 @@ C --
       DIMENSION ROTDIL(3,3),DILATN(3,3),ROTATN(3,3)
       DIMENSION VMAT(3,3),UMAT(3,3),UVEC(3)
       DIMENSION DILNEV(3), DETERM(3)
+      dimension djwa(3),djwb(3),djwc(3)
 C --
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
@@ -1706,6 +1709,7 @@ C --
       INCLUDE 'XRGLST.INC'
       INCLUDE 'QSTORE.INC'
       INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XCONST.INC'
 C --
 C --
       IF (ISSPRT .EQ. 0) WRITE (NCWU,1100)
@@ -1733,6 +1737,41 @@ C------ ROTATION-DILATION MATRIX D = (W3) * (W2)
 C----- CHECK THAT THIS MATRIX IS PROPERLY DEFINED
 C
       DET3 = XDETR3(ROTDIL)
+c
+cdjw-nov05
+      toler=0.1
+      if (abs(det3) .le. toler) then
+        write(cmon,'(a,f12.6)') 
+     1  ' Excessive contraction. Determinant =', det3
+        call xprvdu(ncvdu,1,0)
+        if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
+            djwa(1)=rotdil(1,1)
+            djwa(2)=rotdil(1,2)
+            djwa(3)=rotdil(1,3)
+c
+            djwb(1)=rotdil(2,1)
+            djwb(2)=rotdil(2,2)
+            djwb(3)=rotdil(2,3)
+c
+            if (ncrop3(djwa, djwb, djwc) .lt. 0) then
+             djwc(1)=0.
+             djwc(2)=0.
+             djwc(3)=1.
+            endif
+        write(cmon,'(a,3(/12x,3f12.6))')' Original matrix',rotdil
+        call xprvdu(ncvdu,4,0)
+        if (issprt .eq. 0) write (ncwu,'(a)') (cmon(i)(:),i=1,4)
+            rotdil(3,1)=djwc(1)
+            rotdil(3,2)=djwc(2)
+            rotdil(3,3)=djwc(3)
+        write(cmon,'(a,3(/12x,3f12.6))')' Modified matrix',rotdil
+        call xprvdu(ncvdu,4,0)
+        if (issprt .eq. 0) write (ncwu,'(a)') (cmon(i)(:),i=1,4)
+      endif
+      det3 = xdetr3(rotdil)
+
+c djwdec05 These are not always fixing the problem. Skip round them
+      goto 12345
       IF (ABS(ROTDIL(1,1)) .LE. 0.0001*NNEW) ROTDIL(1,1)=
      1 SQRT(1.-ROTDIL(1,2)*ROTDIL(1,2)-ROTDIL(1,3)*ROTDIL(1,3))
 C
@@ -1764,6 +1803,7 @@ c Sqrt may be negative, try this:
         DETR = XDETR3(ROTDIL)
         IF ( SIGN(1., DET3*DETR) .LT. 0.) ROTDIL(3,3) = -ROTDIL(3,3)
       END IF
+12345  continue
 C
 C -- DECOMPOSE ROTATION-DILATION MATRIX INTO DILATION AND ROTATION
 C    COMPONENTS
@@ -1780,10 +1820,17 @@ C    ARE IN DESCENDING ORDER
 C -- CALCULATE SQUARE ROOTS OF EIGENVALUES
       DO 7100 I=1,3
 C -- IF UVEC(I) IS CLOSE TO ZERO THEN DO NOT ATTEMPT SQUARE ROOT
-      IF (UVEC(I)) 7100,7100,7050
-7050  CONTINUE
-      UVEC(I)=SQRT(UVEC(I))
+      IF (UVEC(I) .gt. zero)  UVEC(I)=SQRT(UVEC(I))
+cdjwdec05. Try to fix the problem via the eigenvalues
+      if((uvec(i) .gt. 1.2) .or. (uvec(i) .lt. 0.8)) then
+         write(cmon,'(a,i2,f12.6,a )') 
+     1   ' Excessive dilation. Eigenvalue',i,uvec(i),' reset to unity'
+          call xprvdu(ncvdu,1,0)
+          if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
+         uvec(i)=1.0
+      endif
 7100  CONTINUE
+c
       CALL XMXMFV (UVEC(1),UMAT(1,1),3)
 C----- CALCULATE DILATION MATRIX (T)
 C    DILATION MATRIX = V*U*TRANSPOSE(V)
