@@ -11,8 +11,8 @@ _publ_contact_letter
 ;
                                  Please consider this CIF submission for
                                  publication as a Short Format Paper in Acta
-                                 Crystallographica E.  The figures have been
-                                 sent by mail.
+                                 Crystallographica E.  The figures will be
+                                 sent by e-mail.
 ;
 _publ_contact_author_name        'Anthony Other'
 _publ_contact_author_address
@@ -76,6 +76,7 @@ _publ_section_comment
 # Text of the paper
 # Note that atoms are referenced as N2, not N(2) or N~2~
 # If text containing () occur within (), the outer ones should be []
+# Figures should be referenced as Fih.
 ;
 ?
 ;
@@ -88,14 +89,14 @@ _publ_section_figure_captions
 ;
 Fig. 1.
 The title compound with displacement ellipsoids drawn at the 50% 
-probability level.  The hydrogen atoms are shown as spheres of 
+probability level.  H atoms are shown as spheres of 
 arbitary radius.
 
 ;
 
-_publ_section_exptl_refinement   # Some potentially useful phrases are
-;                                # donated by Bill Clegg:
-
+_publ_section_exptl_refinement
+# Some potentially useful phrases are donated by Bill Clegg:
+;
 In the absence of significant anomalous scattering, Friedel pairs were
 merged. 
 
@@ -119,14 +120,14 @@ The H atoms were all located in a difference map, but those
 attached to carbon atoms were repositioned geometrically.  
 The H atoms were initially refined with soft restraints on the 
 bond lengths and angles to regularise their geometry 
-(C---H in the target range 0.93--0.98, 
+(C---H in the range 0.93--0.98, 
 N---H in the range 0.86--0.89 
 N---H to 0.86 
 O---H = 0.82 
 \%A) 
-and isotropic adps 
-[U~iso~(H) in the range 1.2-1.5 times U~eq~ of the parent atom], 
-after which they were refined with riding constraints. 
+and  
+U~iso~(H) (in the range 1.2-1.5 times U~eq~ of the parent atom), 
+after which the positions were refined with riding constraints. 
 
 ;
 
