@@ -36,7 +36,7 @@
 %      COPY '#SUM L 12'
 %      COPY 'END'
 %%
-%      COPY '#RELEASE PUNCH new16bit.pch'                                        
+%      COPY '#RELEASE PUNCH H-restraints.pch'                                        
 %      COPY '#CLOSE SCPQ'                                                        
 %      COPY '#CLOSE SCPDATA'                                                     
 %      COPY '#OPEN SCPQ restdat.12'                                              
@@ -47,7 +47,7 @@
 %      COPY 'END'                                                                
 %      COPY '#RELEASE PUNCH BFILE.PCH'                                           
 %      COPY '#LIST 16'
-%      COPY '#USE NEW16BIT.PCH'
+%      COPY '#USE H-restraints.PCH'
 %      COPY 'END'
 %      COPY '#SUM L 16'
 %      COPY 'END'
