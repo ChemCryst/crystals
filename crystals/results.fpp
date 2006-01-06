@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.106  2005/11/16 11:25:06  djw
+C Skip LIST 6 items for cif if there is no LIST 6
+C
 C Revision 1.105  2005/10/25 16:32:06  djw
 C Fix the number of decimal places in H-bond info to keep Bill happy
 C
@@ -2083,7 +2086,7 @@ C----- CHECK FOR ESD PRESENT, OR NON-INTEGER VALUE
              WRITE(NCFPU1, '(/A)') CLINE(1:N)
              WRITE(NCFPU1,2556)
 2556        FORMAT ('_refine_ls_extinction_method ', /,4X,
-     1      '''Larson 1970 Crystallographic Computing eq 22''')
+     1      '''Larson (1970), Equation 22''')
             ELSE
               WRITE(NCFPU1,2557)
 2557        FORMAT (/'_refine_ls_extinction_method ', /,4X,'''None''')
@@ -3621,7 +3624,7 @@ C               15 = H-BOND
 C
       DIMENSION IVEC(20), KDEV(4)
       CHARACTER *80 CLINE, CBUF
-      CHARACTER *3 ctemp, cangl, cbond, cbond2
+      CHARACTER *4 ctemp, cangl, cbond, cbond2
       CHARACTER *4 CKEY
       CHARACTER *1 CODE
       CHARACTER CGEOM(4)*8
@@ -3641,9 +3644,9 @@ C
       DATA CGEOM /'_bond', '_angle', '_torsion', '_hbond' /
       DATA CTEXT /'_geom', '_distance'/
       DATA CKEY /'DATH'/
-      data cangl /'123'/
-      data cbond /'DHA'/
-      data cbond2 /'HAA'/
+      data cangl /'1234'/
+      data cbond /'DHA '/
+      data cbond2 /'HAA '/
 C
 CDJWMAY99 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
       CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
@@ -3667,7 +3670,6 @@ C      CLEAR THE STORE
       IPUB = KSTALL (28)
 cdjwmay05
 c----- check if there is any H-Bond data in MTE
-c      looping over file is a terrible wast of resources
       if (key .eq. 15) then
         rewind (mte)
 1       continue
@@ -4238,7 +4240,10 @@ c     call xrefpr (istore(lrefs),nrefs,mdrefs)
 C
 C################################################################
 C
-
+cdjwdec05  Extinction is printed in 
+c          we must set the reference in this subroutine
+            ival =014
+            ctemp = crefmk(istore(lrefs), nrefs, mdrefs, ival)
 C---- GET LIST 30 READY FOR UPDATING
       IF (JLOAD(9).LE.0) THEN
          WRITE (CMON,'(A)') 'List 30 not available - cif output abandone
@@ -6094,9 +6099,8 @@ cdjw090804^
                  write(cline,'(a)') 
      1           ' P=(max(Fo^2^,0) + 2Fc^2^)/3'
                 endif
-c                call xpcif (cline)
 cdjw011104
-                 ctext(1) = cline
+                 ctext(3) = ' ,where '//cline
 cdjw090804^
                 if (abs(store(l4+2))+abs(store(l4+3))+abs(store(l4+4))
      1          .le. 0.0) then
@@ -6107,7 +6111,6 @@ cdjw090804^
      1            ' w=1/[\\s^2^(F^2^) + (', store(l4),'P)^2^ +',
 #endif
      2              store(l4+1),'P]'
-                  ctext(3) = ' '
                   ctext(4) = ' '
                 else
                   write(ctext(3),'(a)') 

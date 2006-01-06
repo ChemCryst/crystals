@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.5  2005/01/23 08:29:12  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:05  rich
 C New CRYSTALS repository
 C
@@ -39,13 +43,14 @@ C
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST12.INC'
-C----- GET THE PUBLICATION FLAG FROM THE LEXICAL COMMON BLOCK
-      EQUIVALENCE (IPBFLG,MY)
       DATA IVERSN/202/
       DATA CBLANK /' '/
       DATA AZERO /0.0/
 C
       REWIND (MTE)
+c----- Set print flag to no
+CDJWJAN06
+      MY = 0
 C
 C--SET UP THE TIMING CONTROL
       CALL XTIME1(2)
@@ -83,6 +88,8 @@ C--PRINT THE INITIAL CAPTIONS
 C--SET THE ERROR COUNTERS
       LEF=0
       LSTLEF=0
+C----- GET THE PUBLICATION FLAG FROM THE LEXICAL COMMON BLOCK
+      IPBFLG = MY
 C
 C----- SET UP A BUFFER FOR THE PUBLICATION LISTING
       IPUB = KSTALL (24)
@@ -265,7 +272,9 @@ C--CALCULATE ANGLE OF VECTOR
       JB=IBASE4+4
       JD=IBASE4+8
 C--- NOTE THAT TWO ITEMS ARE OUTPUT EVEN WHEN ESDS ARE NOT COMPUTED
-      IF(IPBFLG .GT. 0) WRITE (MTE) 'T', ANGLE, AZERO,
+c--- use Carpenters rules as a guess at the esd
+      aesd=0.3
+      IF(IPBFLG .GT. 0) WRITE (MTE) 'T', ANGLE, AESD,
      1 (STORE(JPUB),STORE(JPUB+1), (ISTORE(KPUB),KPUB=JPUB+2,JPUB+6),
      2  JPUB=IPUB, IPUB+14, 7),
      3  STORE(JF), STORE(JF+1), (ISTORE(JE), JE=JB,JD)
