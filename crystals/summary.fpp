@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.68  2005/02/08 10:41:07  rich
+C Fix bug in completeness check when list 6 contains reflections with impossibly
+C high indices. No longer goes into infinite loop. (reported by A. vd Lee)
+C
 C Revision 1.67  2005/01/23 08:29:12  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -1131,6 +1135,8 @@ C -- SCAN LIST 6 FOR ALL REFLECTIONS
       IMINK = 0
       IMAXL = 0
       IMINL = 0
+      
+
 
 1100  CONTINUE
         ISTAT = KLDRNR ( 0 )
@@ -1426,6 +1432,8 @@ c      ITRSZ = IHTOT + 3*IKTOT + 2*ILTOT
       ITRSZ = IHTOT
 
 
+
+
 C If THBEST is -ve, its absolute value will be used, and it
 C will not be optimised.
 
@@ -1471,12 +1479,26 @@ CODE FOR XCOMPL
       INCLUDE 'XCONST.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'QSTORE.INC'
-      DIMENSION IHKLTR ( 3, ITRSZ + 1 )
+cdjw0106  problems with dynamic arrays if > about 90,000 refls
+c      DIMENSION IHKLTR ( 3, ITRSZ + 1 )
+      parameter (itrmax=100001)
+      DIMENSION IHKLTR ( 3, itrmax )
       DIMENSION ALLBIN ( 100 )
       DIMENSION FNDBIN ( 100 )
       DIMENSION ACTBIN ( 100 )
 
-
+      THBEST = 0.0
+      THBCMP = 0.0
+      if (itrsz+1 .gt. itrmax) then
+        WRITE ( CMON , '(a,2i8)' ) 
+     1 'Too many reflections to compute completeness ',itrsz,itrmax
+        CALL XPRVDU(NCVDU, 2,0)
+        if (issprt .eq. 0) then
+            write(ncwu,'(a)') cmon(1)(:)
+            return
+        endif
+      endif
+c
       DO I = 1, 100
         ALLBIN(I) = 0.0
         FNDBIN(I) = 0.0
@@ -1485,20 +1507,15 @@ CODE FOR XCOMPL
       CALL XFAL06(IULN, 0)
 
       NHKL = 0
-
       DO WHILE ( KLDRNR ( 0 ) .GE. 0 )
           NHKL = NHKL + 1
           ISTAT = KSYSAB ( 2 )
           DO I = 0,2
-            IHKLTR(I+1, NHKL) = STORE(M6+I)
+             IHKLTR(I+1, NHKL) = STORE(M6+I)
           END DO
       END DO
 
       CALL XSHELI ( IHKLTR, 3, 3, NHKL, NHKL*3, IHKLTR(1,NHKL+1))
-
-c      DO I = 1,NHKL
-c        WRITE(NCWU,'(3I4)') (IHKLTR(J,I),J=1,3)
-c      END DO
 
 
       NALLWD = 0
@@ -1554,13 +1571,15 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
                   END IF
                   IF ( IFOUND .EQ. 0 ) THEN
                     IF ((IPLOT.GE.0 ).AND.( IMISSI .EQ. 0)) THEN
-                      WRITE (NCWU,'(A,F5.2,A/A)')
-     1 ' The following reflections ( < ',THMAX, ' theta ) are missing:',
-     2 '   H    K    L   Theta '
+                    IF (ISSPRT .EQ. 0)  
+     1              WRITE (NCWU,'(A,F5.2,A/A)')
+     2 ' The following reflections ( < ',THMAX, ' theta ) are missing:',
+     3 '   H    K    L   Theta '
                     END IF
                     IMISSI = IMISSI + 1
                     IF ( IPLOT.GE.0 ) THEN
-                      WRITE (NCWU,'(3I5,F8.3)') IH,IK,IL,XTHETA(1)
+                            IF (ISSPRT .EQ. 0) 
+     1                      WRITE (NCWU,'(3I5,F8.3)') IH,IK,IL,XTHETA(1)
                     END IF
                     IF ( IGLST.GE.1 ) THEN
                       WRITE (CMON,'(A,3I5,F8.3)')
@@ -1583,8 +1602,9 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
 
 
       IF ( IPLOT .GE. 0 ) THEN
-        WRITE(NCWU,'(/A/2(A,I9)/)') ' Completeness of hkl data.',
-     1 ' Reflections expected: ', NALLWD, ' Reflections found: ', NFOUND
+        IF (ISSPRT .EQ. 0) 
+     1   WRITE(NCWU,'(/A/2(A,I9)/)') ' Completeness of hkl data.',
+     2 ' Reflections expected: ', NALLWD, ' Reflections found: ', NFOUND
       END IF
 
       THMCMP = FLOAT( NFOUND ) / FLOAT ( NALLWD )
@@ -1606,7 +1626,8 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
       CMPMIN  = 1.0
 
       IF ( IPLOT .GE. 0 ) THEN
-        WRITE(NCWU,'(A)') ' Theta  Completeness% Expected  Found '
+        IF (ISSPRT .EQ. 0) 
+     1   WRITE(NCWU,'(A)') ' Theta  Completeness% Expected  Found '
       ENDIF
 
 
@@ -1628,8 +1649,9 @@ C THMAX < 25 degrees, in which case it is 0.75*THMAX.
         END IF
         
         IF ( IPLOT .GE. 0 ) THEN
-          WRITE(NCWU,'(F6.2,F11.2,I11,I9)') THMAX*((I)/100.0),
-     1   COMP*100., NINT(ALLBIN(I)), NINT(FNDBIN(I))
+        IF (ISSPRT .EQ. 0) 
+     1   WRITE(NCWU,'(F6.2,F11.2,I11,I9)') THMAX*((I)/100.0),
+     2   COMP*100., NINT(ALLBIN(I)), NINT(FNDBIN(I))
         END IF
 
         IF ( THMAX*(I/100.0) .GE. THLOW ) THEN ! Theta_full shouldn't be too low
@@ -1641,11 +1663,10 @@ C THMAX < 25 degrees, in which case it is 0.75*THMAX.
       END DO
 
       IF ( IPLOT .GE. 0 ) THEN
-        WRITE(NCWU,'(/F6.2,F11.2,A)') THBEST, THBCMP,
-     1   '< best theta_full'
+        IF (ISSPRT .EQ. 0) 
+     1   WRITE(NCWU,'(/F6.2,F11.2,A)') THBEST, THBCMP,
+     2   '< best theta_full'
       END IF
-
-
       IF ( IPLOT .EQ. 1 ) THEN
         CMPMIN = 100.0 * MIN(0.99,CMPMIN)
         WRITE(CMON,'(A/A/A,F7.2,A/A/A/A)')
@@ -1677,7 +1698,6 @@ C THMAX < 25 degrees, in which case it is 0.75*THMAX.
         CALL XPRVDU(NCVDU, 2,0)
 
       END IF
-
 
       RETURN
       END
