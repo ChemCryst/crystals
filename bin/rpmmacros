@@ -3,8 +3,8 @@
 %vendor		University of Oxford
 
 %_topdir	../rpmbuild
-%_tmppath	/usr/tmp
-%_builddir	/usr/tmp
+%_tmppath       /tmp
+%_builddir      /tmp
 %_rpmtopdir	../rpmbuild
 %_sourcedir	../rpmbuild
 %_rpmdir	../installer
