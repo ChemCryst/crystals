@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  2005/02/08 14:43:33  stefan
+C 1. added a precompile if for the mac version
+C
 C Revision 1.14  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -153,6 +156,11 @@ C--REFORM THE REAL SPACE ORTHOGONALIZATION MATRIX
 C--START TO PASS THROUGH THE ATOMS
       JBASE=IBASE
       M5B=ISTART
+cdjwfeb06 compute the average and max volume
+      Avol=0.0
+      Bvol=0.0
+      Cvol=0.0
+      nvol=0
       DO 900 N=1,NATOM
 C-C-C-CHECK WHETHER ANISOTROPIC OR ISOTROPIC/SPHERE/LINE/RING
 CDJWJAN2000      IF(ABS(STORE(M5B+3))-UISO)1200,1700,1700
@@ -220,11 +228,17 @@ C----- INTERCHANGE EIGEN VECTORS
      1          18),STORE(LIST20+18),3)
                CALL XMOVE (STORE(M5B+4),STORE(LIST20+18),3)
             END IF
+cdjwfeb06  add in volume contributions
+cdjwfeb06 compute geometric mean
+            UEQUIV=(STORE(NE)*STORE(NE+1)*STORE(NE+2))
+            UEQUIV=SIGN(1.,UEQUIV)*(MAX(ZERO,ABS(UEQUIV)))**(1./3.)
+            avol = avol + uequiv
+            bvol = max (bvol, uequiv)
+            cvol = max (cvol, STORE(NE+2))
+            nvol = nvol + 1
+cdjwfeb06 recompute arithemtic mean if this is what the user needs
             IF (ISSUEQ.EQ.1) THEN
                UEQUIV=0.333333*(STORE(NE)+STORE(NE+1)+STORE(NE+2))
-            ELSE
-               UEQUIV=(STORE(NE)*STORE(NE+1)*STORE(NE+2))
-               UEQUIV=SIGN(1.,UEQUIV)*(MAX(ZERO,ABS(UEQUIV)))**(1./3.)
             END IF
             IF (IBASE.GT.0) STORE(JBASE)=UEQUIV
 C----- CHECK FOR SPLITTING
@@ -324,7 +338,7 @@ C
      1         CSHAPE, CTEXT
 830            FORMAT (1X,A4,F6.0,F10.4,5X,A12,6X,A24)
                CALL XPRVDU (NCVDU,1,0)
-               WRITE (NCAWU,'(A)') CMON(1)
+c               WRITE (NCAWU,'(A)') CMON(1)
             END IF
 C
          END IF
@@ -334,6 +348,23 @@ C--MOVE TO THE NEXT ATOM
          M5B=M5B+ISTEP
 900   CONTINUE
 C--FINAL CAPTION AND RETURN
+cdjwfeb06
+      if(list .gt. 0) then
+      if (nvol .gt. 0) then
+       write(cmon,'(A,i6,a,f8.4)')' Average volume of ',nvol,
+     1 ' atoms =',avol/float(nvol)
+       CALL XPRVDU (NCVDU,1,0)
+       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+       write(cmon,'(A,i6,a,f8.4)')' Maximum volume of ',nvol,
+     1 ' atoms =',bvol
+       CALL XPRVDU (NCVDU,1,0)
+       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+       write(cmon,'(A,i6,a,f8.4)')'   Maximum axis of ',nvol,
+     1 ' atoms =',cvol
+       CALL XPRVDU (NCVDU,1,0)
+       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+      endif
+      endif
 950   CONTINUE
 C----- RETURN WORKSPACE
       NFL=NA
