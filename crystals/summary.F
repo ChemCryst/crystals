@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.69  2006/01/18 17:18:05  djw
+C fix a weird (possibly compiler) error in XCOMPL.  The dynamic scratch area causes the program to die if there are more than about 90,000 reflections
+C
 C Revision 1.68  2005/02/08 10:41:07  rich
 C Fix bug in completeness check when list 6 contains reflections with impossibly
 C high indices. No longer goes into infinite loop. (reported by A. vd Lee)
@@ -3128,8 +3131,8 @@ CODE FOR XSGDST
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST30.INC'
-      DATA ICOMSZ / 4 /
-      DATA IVERSN /100/
+      DATA ICOMSZ / 5 /
+      DATA IVERSN /101/
 
 C -- SET THE TIMING AND READ THE CONSTANTS
 
@@ -3146,6 +3149,8 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       IPLOT2 = ISTORE(ICOMBF+1)
       ITYP06 = ISTORE(ICOMBF+2)
       IPLOT3 = ISTORE(ICOMBF+3)
+      ISKP28 = ISTORE(ICOMBF+4)
+
 
       IULN = KTYP06(ITYP06)
       CALL XFAL06 (IULN, 0)
@@ -3182,22 +3187,24 @@ C -- SCAN LIST 6 FOR REFLECTIONS
           END IF
         END IF
 
-        NTOT = NTOT + 1
-        CALL XSQRF(FOS, STORE(M6+3), FABS, SIGMA, STORE(M6+12))
-        JSIGS = 10 + NINT( (2.*FOS)/SIGMA )
-        JSIGS = MAX(JSIGS,1)
-        IF ( JSIGS .LE. 110 ) KSIGS(JSIGS) = KSIGS(JSIGS) + 1
-
-
-        SIGNOI = FOS/SIGMA
-        JSIGS = 3
-        IF ( SIGNOI .LT. 10 ) JSIGS = 2
-        IF ( SIGNOI .LT. 3 ) JSIGS = 1
-
-        MSIG = 1 + NINT( STORE(M6+16) * 25.0 / 0.5 )
-        MSIG = MAX ( 1,MSIG )
-        MSIG = MIN ( 25,MSIG )
-        LSIGS(MSIG,JSIGS) = LSIGS(MSIG,JSIGS) + 1
+        IF ((KALLOW(IN) .EQ. 0 ).or.(iskp28 .eq.0)) THEN
+         NTOT = NTOT + 1
+         CALL XSQRF(FOS, STORE(M6+3), FABS, SIGMA, STORE(M6+12))
+         JSIGS = 10 + NINT( (2.*FOS)/SIGMA )
+         JSIGS = MAX(JSIGS,1)
+         IF ( JSIGS .LE. 110 ) KSIGS(JSIGS) = KSIGS(JSIGS) + 1
+ 
+ 
+         SIGNOI = FOS/SIGMA
+         JSIGS = 3
+         IF ( SIGNOI .LT. 10 ) JSIGS = 2
+         IF ( SIGNOI .LT. 3 ) JSIGS = 1
+ 
+         MSIG = 1 + NINT( STORE(M6+16) * 25.0 / 0.5 )
+         MSIG = MAX ( 1,MSIG )
+         MSIG = MIN ( 25,MSIG )
+         LSIGS(MSIG,JSIGS) = LSIGS(MSIG,JSIGS) + 1
+        endif
 
 
       END DO
@@ -3234,11 +3241,14 @@ C -- SCAN LIST 6 FOR REFLECTIONS
      1  '^^PL SERIES 2 SERIESNAME ''Observations > I/sigma(I)''',
      1  '^^PL TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 7,0)
+        IF (ISSPRT .EQ. 0) write(ncwu,'(a)')'I/sig(i) distribution'
 
         DO I = 1, 110
           WRITE(CMON,'(A,1X,F5.1,1X,A,1X,I6,1X,I8)')
      1    '^^PL LABEL',(I-11)*.5,'DATA',KSIGS(I),NTOT
           CALL XPRVDU(NCVDU,1,0)
+          IF (ISSPRT .EQ. 0) write(ncwu,'(f5.1, i8, i8)')
+     1    (I-11)*.5, KSIGS(I), NTOT
           NTOT = NTOT - KSIGS(I)
         END DO
 
