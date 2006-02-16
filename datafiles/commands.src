@@ -3436,13 +3436,15 @@ WILSON             3    2
 SIGMADIST          2    2
   11    4096 CRYSTALSPROCESS6
     2    6
-   1.OUTPUT             3    1    0    0
-         3    3    3
+   1.OUTPUT             4    1    0    0
+         3    3    3    3
     .PLOT               1    0    1    2    0 NO
      NO             YES
     .RESOLUTION         2    0    1    2    0 NO
      NO             YES
     .PHASE              4    0    1    2    0 NO
+     NO             YES
+    .FILTER             5    0    1    2    0 NO
      NO             YES
    2.SIGMADIST          1    1    0    0
          1    
