@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.107  2006/01/06 10:08:57  djw
+C Fixes to cif output of torsion angles
+C
 C Revision 1.106  2005/11/16 11:25:06  djw
 C Skip LIST 6 items for cif if there is no LIST 6
 C
@@ -1387,7 +1390,7 @@ C----- CAPTIONS FOR CIF FILE
 
         WRITE (NCPU,'(''<H2>Parameters</H2>'')')
         WRITE( NCPU, 910)
-910     FORMAT ('<TABLE BORDER="1"><TR>',
+910     FORMAT ('<FONT SIZE="-1"><TABLE BORDER="1"><TR>',
      1  '<TD align="center">Label</TD>',/,
      1  '<TD align="center"><em>x</em></TD>',/,
      2  '<TD align="center"><em>y</em></TD>',/,
@@ -1682,7 +1685,7 @@ C -- UPDATE THE ATOM INFORMATION FOR THE NEXT ATOM
         M5=M5+MD5
         M5A=M5A+MD5
       END DO
-      IF ( IPCHCO .EQ. 3 ) WRITE(NCPU,'(''</TABLE>'')')
+      IF ( IPCHCO .EQ. 3 ) WRITE(NCPU,'(''</TABLE></FONT>'')')
 
       CALL XRDOPN(7, KDEV , CSSCIF, LSSCIF)
 
@@ -1763,7 +1766,7 @@ C----- CAPTIONS FOR CIF FILE
 
         WRITE (NCPU,'(''<H2>Thermal Parameters</H2>'')')
         WRITE( NCPU, 910)
-910     FORMAT ('<TABLE BORDER="1"><TR>',
+910     FORMAT ('<FONT SIZE="-1"><TABLE BORDER="1"><TR>',
      1  '<TD align="center">Label</TD>',/,
      1  '<TD align="center">U<sub>11<sub></TD>',/,
      1  '<TD align="center">U<sub>22<sub></TD>',/,
@@ -1954,7 +1957,7 @@ C
 C
 2250  CONTINUE
       MD5A=MD5
-      IF ( IPCHAN .EQ. 3 ) WRITE(NCPU,'(''</TABLE>'')')
+      IF ( IPCHAN .EQ. 3 ) WRITE(NCPU,'(''</TABLE></FONT>'')')
 C
       CALL XRDOPN(7, KDEV , CSSCIF, LSSCIF)
       RETURN
@@ -3536,10 +3539,11 @@ C
         CASE (3)
           WRITE(NCPU, '(''<H2>Torsion</H2>'')')
         END SELECT
-        WRITE(NCPU, '(''<TABLE BORDER="1">'')')
+        WRITE(NCPU, '(''<FONT SIZE="-1"><TABLE BORDER="1">'')')
 
         REWIND (MTE)
-
+cdjw0206  Two columns html
+        iline=-1
 1000    CONTINUE
           CALL XZEROF(STORE(IPUB), 28)
           READ (MTE, END=2500, ERR = 9000) CODE, TERM, ESD,
@@ -3555,7 +3559,8 @@ C-- GET ADDRESS OF LAST USEFUL ITEM - UP TO 4 (D, A or T)
             KPUB=0
           ENDIF
           CLINE = ' '
-          WRITE(NCPU,'(''<TR>'')')
+cdjw0206          WRITE(NCPU,'(''<TR>'')')
+         if (iline .le. 0)  WRITE(NCPU,'(''<TR>'')')
 1         FORMAT ('<TD>',A,'</TD>')
           DO JPUB = IPUB, KPUB, 7
 
@@ -3593,18 +3598,24 @@ C----- VALUE AND ESD
           CALL SNUM ( TERM, ESD, -3, 0, 8, IVEC )
           WRITE( CBUF, '(20A1)') (IVEC(I), I=1, 20)
           CALL XCRAS ( CBUF, N)
+
           SELECT CASE (KKEY)
           CASE (1)
-            WRITE(NCPU,1) CBUF(1:N)//'&Aring;'
+            WRITE(NCPU,1) CBUF(1:N)//'&Aring; '
           CASE (2,3)
-            WRITE(NCPU,1) CBUF(1:N)//'&deg;'
+            WRITE(NCPU,1) CBUF(1:N)//'&deg; '
           END SELECT
-          WRITE(NCPU,'(''</TR>'')')
+          if(iline .ge. 0)then
+             WRITE(NCPU,'(''</TR>'')')
+          else
+             WRITE(NCPU,'(''<TD width="15%">  </TD>'')')
+          endif
+          iline = -iline
         GOTO 1000
-
+c
 2500    CONTINUE  ! END OF MTE
 
-       WRITE(NCPU,'(''</TABLE>'')')
+       WRITE(NCPU,'(''</TABLE></FONT>'')')
 
 3000  CONTINUE
 
@@ -4004,12 +4015,18 @@ CDJWMAR99      DATA JDEV /'H','K','L','I'/
  
 1     FORMAT (A)
 2     FORMAT ('<TR><TD>',A,'</TD><TD>',A,'</TD></TR>')
+9002  FORMAT ('<TD>',A,'</TD><TD>',A,'</TD>')
 3     FORMAT ('<TR><TD>',A,'</TD><TD>',F5.2,'</TD></TR>')
+9003  FORMAT ('<TD>',A,'</TD><TD>',F5.2,'</TD>')
 4     FORMAT ('<TR><TD>',A,'</TD><TD>',I8,'</TD></TR>')
 5     FORMAT ('<TR><TD>',A,'</TD><TD>',F10.4,'</TD></TR>')
 6     FORMAT ('<TR><TD>',A,'</TD><TD>',I8,A,'</TD></TR>')
+9006  FORMAT ('<TD>',A,'</TD><TD>',I8,A,'</TD>')
 7     FORMAT ('<TR><TD>',A,'</TD><TD>',F10.2,A,'</TD></TR>')
 8     FORMAT ('<TR><TD>',A,'</TD><TD>',F10.3,'</TD></TR>')
+9     format ('<TR>')
+9009  format ('</TR>')
+
 
 CRICFEB03: Output one of 0=CIF, 1=PLAIN, 2=HTML
       CALL XCSAE
@@ -4284,7 +4301,7 @@ C----- SCALE DOWN THE ELEMENTS OF THE V/CV MATRIX
             ESD(6)=SQRT(STORE(M31+20)*SCALE)*RTD
          END IF
          IF ( IPUNCH .EQ. 2 ) THEN
-            WRITE (NCPU,'(''<TABLE>'')')
+            WRITE (NCPU,'(''<FONT SIZE="-1"><TABLE>'')')
          END IF
 
          IF ( IPUNCH .EQ. 0 ) THEN
@@ -4366,9 +4383,10 @@ C----- VALUE AND ESD
          ELSE IF ( IPUNCH .EQ. 1 ) THEN
            WRITE (CPAGE(7,1)(:),'(A,10X,A)') 'Volume',CBUF(1:N)
          ELSE IF ( IPUNCH .EQ. 2 ) THEN
-           WRITE (NCPU,'(''</TABLE>'')')
-           WRITE (NCPU,'(''<TABLE>'')')
-           WRITE (NCPU,2) 'Volume',CBUF(1:N)//' &Aring;&sup3;'
+           WRITE (NCPU,'(''</TABLE></FONT>'')')
+           WRITE (NCPU,'(''<FONT SIZE="-1"><TABLE>'')')
+           write(ncpu,9)
+           WRITE (NCPU,9002) 'Volume',CBUF(1:N)//' &Aring;&sup3;'
          END IF
       END IF
 C 
@@ -4396,8 +4414,9 @@ C----- CRYSTAL CLASS - FROM LIST 2
            CALL XPCIF (CLINE)
 850        FORMAT ('_symmetry_cell_setting',T35,'''',A,'''')
          ELSE IF ( IPUNCH .EQ. 2 ) THEN
-           WRITE (NCPU,'(''<TR><TD>Crystal Class</TD><TD>'',
-     1       A,''</TD></TR>'')') CBUF(1:J)
+           WRITE (NCPU,'(
+     1       ''<td width="15%"> </td><TD>Crystal Class</TD><TD>'',
+     2       A,''</TD></TR>'')') CBUF(1:J)
          END IF
 C 
 C ----- DISPLAY SPACE GROUP SYMBOL
@@ -4432,7 +4451,8 @@ C Subscript second number in screws: 21,31,32,41 etc.
                 END IF
              END DO
            END DO
-           WRITE (NCPU,2) 'Space group', CBUF(1:LEN_TRIM(CBUF))
+           write(ncpu,9)
+           WRITE (NCPU,9002) 'Space group', CBUF(1:LEN_TRIM(CBUF))
          END IF
  
          IF ( IPUNCH .EQ. 0 ) THEN
@@ -4536,8 +4556,8 @@ C Catch case where Z30 isn't set in L30 - assume = Z2.
       ELSE IF ( IPUNCH .EQ. 1 ) THEN
         WRITE (CPAGE(7,2)(:),'(A,19X,A)') 'Z ',CTEMP(1:LENGTH)
       ELSE IF ( IPUNCH .EQ. 2 ) THEN
-        WRITE (NCPU,'(''<TR><TD>Z =</TD><TD>'',A,''</TD></TR>'')')
-     1  CTEMP(1:LENGTH)
+        WRITE (NCPU,'(''<td width="15%"> </td><TD>Z =</TD><TD>'',
+     1 A,''</TD></TR>'')')  CTEMP(1:LENGTH)
       END IF
 
       ZPRIME = Z30 / Z2
@@ -4714,7 +4734,7 @@ C
           WRITE (CPAGE(2,2)(:),'(A)') CLINE(28:K)
         END IF
       ELSE IF ( IPUNCH .EQ. 2 ) THEN
-        WRITE (NCPU,'(''<TR><TD>Formula</TD><TD>'',A,''</TD></TR>'')')
+        WRITE (NCPU,'(''<TR><TD>Formula</TD><TD>'',A,''</TD>'')')
      1   CHLINE(1:JHTML)
       END IF
  
@@ -4748,16 +4768,20 @@ C----- LIST 30
           WRITE (CPAGE(10,2)(:),'(A,5X,I6)') 'Temperature (K)',
      1     NINT(STORE(L30CD+6))
         ELSE IF ( IPUNCH .EQ. 2 ) THEN
-          WRITE (NCPU,'(''<TR><TD>M<sub>r</sub></TD><TD>'',
-     1           F8.2,''</TD></TR>'')') STORE(L30GE+4)
-          WRITE (NCPU,6) 'Cell determined from',NINT(STORE(L30CD+3)),
+          WRITE (NCPU,'(
+     1           ''<td width="15%"> </td><TD>M<sub>r</sub></TD><TD>'',
+     2           F8.2,''</TD></TR>'')') STORE(L30GE+4)
+           write(ncpu,9)
+          WRITE (NCPU,9006) 'Cell determined from',NINT(STORE(L30CD+3)),
      1     ' reflections'
-          WRITE (NCPU,'(''<TR><TD>Cell &theta; range =</TD><TD>'',
-     1     I3,'' - '',I3,''&deg;</TD></TR>'')')
-     2     NINT(STORE(L30CD+4)),NINT(STORE(L30CD+5))
+          WRITE (NCPU,'(
+     1    ''<td width="15%"> </td><TD>Cell &theta; range =</TD><TD>'',
+     2     I3,'' - '',I3,''&deg;</TD></TR>'')')
+     3     NINT(STORE(L30CD+4)),NINT(STORE(L30CD+5))
           WRITE (NCPU,6) 'Temperature',NINT(STORE(L30CD+6)),'K'
           IF ( STORE(L30CF+12) .GT. 0.1 ) THEN
-            WRITE (NCPU,6) 'Pressure ',NINT(STORE(L30CF+12)),' kPa'
+           write(ncpu,9)
+            WRITE (NCPU,9006) 'Pressure ',NINT(STORE(L30CF+12)),' kPa'
           END IF
         END IF
  
@@ -4775,7 +4799,7 @@ C----- LIST 30
         ELSE IF ( IPUNCH .EQ. 1 ) THEN
           WRITE (CPAGE(12,2)(:),'(A,2X,A)') 'Shape',CTEMP(1:J)
         ELSE IF ( IPUNCH .EQ. 2 ) THEN
-          WRITE (NCPU,'(''<TR><TD>Shape</TD><TD>'',A,''</TD></TR>'')')
+          WRITE (NCPU,'(''<TD>Shape</TD><TD>'',A,''</TD></TR>'')')
      1    CTEMP(1:J)
         END IF
  
@@ -4789,7 +4813,7 @@ C----- LIST 30
         ELSE IF ( IPUNCH .EQ. 1 ) THEN
           WRITE (CPAGE(12,1)(:),'(A,1X,A)') 'Colour',CTEMP(1:J)
         ELSE IF ( IPUNCH .EQ. 2 ) THEN
-          WRITE (NCPU,'(''<TR><TD>Colour</TD><TD>'',A,''</TD></TR>'')')
+          WRITE (NCPU,'(''<TR><TD>Colour</TD><TD>'',A,''</TD>'')')
      1     CTEMP(1:J)
         END IF
  
@@ -4807,7 +4831,7 @@ C----- LIST 30
           WRITE (CPAGE(11,1)(:),'(A,13X,F5.2,''x'',F5.2,''x'',F5.2)')
      1     'Size',STORE(L30CD),STORE(L30CD+1),STORE(L30CD+2)
         ELSE IF ( IPUNCH .EQ.2 ) THEN
-          WRITE (NCPU,'(''<TR><TD>Size</TD><TD>'',
+          WRITE (NCPU,'(''<td width="15%"> </td><TD>Size</TD><TD>'',
      1   F5.2,'' &times; '',F5.2,'' &times; '',F5.2,'' mm</TD></TR>'')')
      1     STORE(L30CD),STORE(L30CD+1),STORE(L30CD+2)
         END IF
@@ -4821,7 +4845,7 @@ C----- LIST 30
           WRITE (CPAGE(9,1)(:),'(A,17X,F5.2)') 'Dx',STORE(L30GE+1)
         ELSE IF ( IPUNCH .EQ. 2 ) THEN
           WRITE (NCPU,'(''<TR><TD>D<sub>x</sub></TD><TD>'',F5.2,
-     1    '' Mg m<sup>-3</sup></TD></TR>'')') STORE(L30GE+1)
+     1    '' Mg m<sup>-3</sup></TD>'')') STORE(L30GE+1)
         END IF
  
         IF ( IPUNCH .EQ. 0 ) THEN
@@ -4845,8 +4869,8 @@ C
           ENDIF
           CALL XPCIF (CLINE)
         ELSE IF ( IPUNCH .EQ. 2 ) THEN
-          WRITE (NCPU,'(''<TR><TD>F000</TD><TD>'',F13.3,
-     1                ''</TD></TR>'')')  STORE(L30GE+2)
+          WRITE (NCPU,'(''<td width="15%"> </td><TD>F000</TD><TD>'',
+     1    F13.3,  ''</TD></TR>'')')  STORE(L30GE+2)
         END IF
  
         CBUF(1:15)='_exptl_absorpt_'
@@ -4980,7 +5004,7 @@ C
         END IF
 C 
         IF (J.GE.0) THEN
-          IF ( IPUNCH .EQ. 0 ) THEN
+          IF ( IPUNCH .ge. 0 ) THEN
             CLINE=' '
             WRITE (CLINE,'( A, ''process_details '')') CBUF(1:15)
             IVAL = IABSCD(IVAL)
@@ -4998,6 +5022,7 @@ C
               CALL XPCIF (';')
              END IF
             END IF
+            if ( ipunch .eq. 2 ) write(ncpu,9)
             DO I=1,3,2
               IF ( IPUNCH .EQ. 0 ) THEN
                 WRITE (CLINE,'(A,''correction_T_'', A, F8.2)')
@@ -5009,8 +5034,16 @@ C
      1           'Transmission range',
      2           STORE(L30AB-1+J+(1+1)/2)/STORE(L30AB+1+J)*TMAX,
      3           STORE(L30AB-1+J+(3+1)/2)/STORE(L30AB+1+J)*TMAX
+              ELSE IF ( IPUNCH .EQ. 2 ) THEN
+
+              WRITE (NCPU,'(a,a,a,F8.2)')
+     1           '<TD>T<sub>', csize(i), '</sub></TD> <TD>',
+     2           STORE(L30AB-1+J+(I+1)/2) / STORE(L30AB+1+J) * TMAX
+              write(ncpu,'(a)')'</td>' 
+              IF (i .EQ. 1) WRITE(NCPU,'(A)')'<td width="15%"> </td>'
               END IF
             END DO
+            if ( ipunch .eq. 2 ) write(ncpu,9009)
           END IF
         ELSE
            IF ( IPUNCH .EQ. 0 ) THEN
@@ -5024,8 +5057,11 @@ C
              WRITE (CPAGE(IDATA+1,2)(:),'(A,2X,2F5.2)')
      1        'Transmission range',TMIN,TMAX
            ELSE IF ( IPUNCH .EQ. 2 ) THEN
-             WRITE (NCPU,3)'T<sub>min</sub>',TMIN
-             WRITE (NCPU,3)'T<sub>max</sub>',TMAX
+           write(ncpu,9)
+             WRITE (NCPU,9003)'T<sub>min</sub>',TMIN
+             write(ncpu,'(a)')'<td width="15%"> </td>' 
+             WRITE (NCPU,9003)'T<sub>max</sub>',TMAX
+           write(ncpu,9009)
            END IF
         END IF
 
@@ -5033,9 +5069,9 @@ C
 
 
         IF ( IPUNCH .EQ. 2 ) THEN
-           WRITE (NCPU,'(''</TABLE>'')')
+           WRITE (NCPU,'(''</TABLE></FONT>'')')
            WRITE (NCPU,'(''<H2>Data Collection</H2>'')')
-           WRITE (NCPU,'(''<TABLE>'')')
+           WRITE (NCPU,'(''<FONT SIZE="-1"><TABLE>'')')
         END IF
 
 C----- PARAMETER 13 ON DIRECTIVE 2 IS A CHATACTER STRING: DIFFRACTOMETER MAKE
@@ -5518,9 +5554,9 @@ C----- RELECTION LIMITS IN DATA COLLECTION
 
 
          IF ( IPUNCH .EQ. 2 ) THEN
-           WRITE (NCPU,'(''</TABLE>'')')
+           WRITE (NCPU,'(''</TABLE></FONT>'')')
            WRITE (NCPU,'(''<H2>Refinement</H2>'')')
-           WRITE (NCPU,'(''<TABLE>'')')
+           WRITE (NCPU,'(''<FONT SIZE="-1"><TABLE>'')')
          END IF
 
          IF ( IPUNCH .EQ. 0 ) THEN
@@ -6030,7 +6066,7 @@ C
                  WRITE(NCPU,2) 'w =', CMOD(1:LMOD)//
      1           'w&prime; &times; w&prime;&prime;'
               END IF
-              WRITE (NCPU,'(''</TABLE>'')')
+              WRITE (NCPU,'(''</TABLE></FONT>'')')
             END IF
 
 
