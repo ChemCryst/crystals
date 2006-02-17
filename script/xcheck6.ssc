@@ -96,7 +96,7 @@
 ^^WI     }                                                                      
 ^^WI     @ 4,2 PLOTWINDOW _VSIGRES NROWS=20 NCOLS=64                            
 ^^WI      DEFINEPOPUPMENU POPUP 'Selection'                                     
-^^WI        ITEM _SDELA '&Reject data: rho > _X' 'RHOMIT_N_X'                   
+^^WI        ITEM _SDELA '&Reject data: rho > _X' 'RHOMIT1_N_X'                   
 ^^WI      ENDDEFINEMENU                                                         
 ^^WI    }                                                                       
 ^^WI    TAB _MAINTAB3 'Merging R' GRID _MAINTG3 NROWS=5 NCOLS=3                 
@@ -353,7 +353,7 @@
 %%                                                                              
 ^^CO SET PROGOUTPUT TEXT 'Calculating I/u(I) and I/u(I) vs rho distribution'    
 %  COPY '#SIGMADIST'                                                            
-%  COPY 'OUTPUT PLOT=YES RES=YES'                                               
+%  COPY 'OUTPUT PLOT=YES RES=YES FILTER=NO'                                               
 %  COPY 'END'                                                                   
 %%                                                                              
 %  IF ( LMAONCE ) THEN                                                          
@@ -530,7 +530,7 @@
 ^^CO SET PROGOUTPUT TEXT 'Ready'                                                
 %%                                                                              
 %  LOOP                                                                         
-%    VERIFY XC_BOK XC_REF RHOMIT RHOMIT2 SIGCUT ED28 ED02 ED29 SIGFULL -        
+%    VERIFY XC_BOK XC_REF RHOMIT1 RHOMIT2 SIGCUT ED28 ED02 ED29 SIGFULL -        
  WILFILT1 WILFILT2                                                              
 %    GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '                               
 %    CASE VALUE                                                                 
