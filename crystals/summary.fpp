@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.70  2006/02/16 18:44:47  djw
+C Enable filtering in Tabbed Analyse
+C
 C Revision 1.69  2006/01/18 17:18:05  djw
 C fix a weird (possibly compiler) error in XCOMPL.  The dynamic scratch area causes the program to die if there are more than about 90,000 reflections
 C
@@ -3112,9 +3115,11 @@ C To do - check dependencies at this point
 C
 CODE FOR XSGDST
       SUBROUTINE XSGDST
+c----- produce data for tabbed analysis display
       DIMENSION KSIGS(110)
       DIMENSION LSIGS(25,3)
       DIMENSION MSIGS(120)
+      dimension sios(25),nios(25)
       CHARACTER *15 HKLLAB
       PARAMETER ( RTDIV = 19.09859 ) ! Radians to divisions.
       INCLUDE 'ISTORE.INC'
@@ -3138,6 +3143,9 @@ C -- SET THE TIMING AND READ THE CONSTANTS
 
       CALL XTIME1 ( 2 )
       CALL XCSAE
+
+      sios=0.0
+      nios=0
 
 C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       ICOMBF = KSTALL( ICOMSZ )
@@ -3173,7 +3181,7 @@ C -- SCAN LIST 6 FOR REFLECTIONS
 
       NTOT = 0
       NALLOW = 0
-
+      nmax=0
 
 
 
@@ -3204,26 +3212,52 @@ C -- SCAN LIST 6 FOR REFLECTIONS
          MSIG = MAX ( 1,MSIG )
          MSIG = MIN ( 25,MSIG )
          LSIGS(MSIG,JSIGS) = LSIGS(MSIG,JSIGS) + 1
+         nmax=max(nmax,LSIGS(MSIG,JSIGS))
+         sios(msig)=sios(msig)+signoi
+         nios(msig)=nios(msig)+1
         endif
-
 
       END DO
 
+      if (issprt .eq. 0) write(ncwu,'(a)')'I/sig(i) vs resolution'
+      mios=0
+      smax=0.
+      slim=3.
+      do i=1,25
+            mios=mios+nios(I)
+            if(nios(i) .gt. 0) sios(i)=sios(i)/float(nios(i))
+            if((sios(I) .lt. slim).and.(sios(i).gt. 0.)) then
+            write(cmon,'(A,f4.1,a,f6.2)')
+     1      'I/sigma(I) falls below', slim,
+     2      ' at (sintheta/lambda)^2=',(float(i)*.4/25.0)
+            CALL XPRVDU(NCVDU, 1,0)
+            slim=slim-1.
+            endif
+            smax=max(smax,sios(I))
+            if (issprt .eq. 0) then
+            write(ncwu,'(f5.2,2i8,f10.3)') 
+     1      (float(i)*.4/25.),nios(I),mios,sios(I)
+            endif
+      enddo
 
-
+      nmax=10*nint(float(nmax)/(10.*smax))
+      nmax=min(90,nmax)
+      nmax=max(1,nmax)
       IF (IPLOT2 .EQ. 1) THEN
-        WRITE(CMON,'(A,5(/A))')
+        WRITE(CMON,'(A,5(/A),/a,i2,a)')
      1  '^^PL PLOTDATA _SIGRES SCATTER ATTACH _VSIGRES KEY',
-     1  '^^PL XAXIS TITLE ''(sin(theta)/lambda)**2'' NSERIES=3',
+     1  '^^PL XAXIS TITLE ''(sin(theta)/lambda)**2'' NSERIES=4',
      1  '^^PL LENGTH=25 YAXIS TITLE ''Frequency''',
      1  '^^PL SERIES 1 SERIESNAME ''I/sigma(I)<3.0'' TYPE LINE ',
      1  '^^PL SERIES 2 SERIESNAME ''I/sigma(I)<10.0'' TYPE LINE ',
-     1  '^^PL SERIES 3 SERIESNAME ''I/sigma(I)>10.0'' TYPE LINE '
-        CALL XPRVDU(NCVDU, 6,0)
+     1  '^^PL SERIES 3 SERIESNAME ''I/sigma(I)>10.0'' TYPE LINE ',
+     1  '^^PL SERIES 4 SERIESNAME ''', nmax,'*<I/sigma>'' TYPE LINE '
+        CALL XPRVDU(NCVDU, 7,0)
 
         DO I = 1,25
-          WRITE(CMON,'(A,3(F7.3,1X,I8,1X))')
-     1     '^^PL DATA ',((I*0.4/25.0),LSIGS(I,J),J=1,3)
+          WRITE(CMON,'(A,4(F7.3,1X,I8,1X))')
+     1     '^^PL DATA ',((I*0.4/25.0),LSIGS(I,J),J=1,3),
+     2     (I*0.4/25.0),nint(nmax*sios(I))
           CALL XPRVDU(NCVDU, 1,0)
         END DO
  
@@ -3241,8 +3275,8 @@ C -- SCAN LIST 6 FOR REFLECTIONS
      1  '^^PL SERIES 2 SERIESNAME ''Observations > I/sigma(I)''',
      1  '^^PL TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 7,0)
-        IF (ISSPRT .EQ. 0) write(ncwu,'(a)')'I/sig(i) distribution'
 
+        IF (ISSPRT .EQ. 0) write(ncwu,'(a)')'I/sig(i) distribution'
         DO I = 1, 110
           WRITE(CMON,'(A,1X,F5.1,1X,A,1X,I6,1X,I8)')
      1    '^^PL LABEL',(I-11)*.5,'DATA',KSIGS(I),NTOT

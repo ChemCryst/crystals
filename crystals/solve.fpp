@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.31  2005/05/31 12:43:50  djw
+C Try to sort out use of L33CD and M33CD in SOLVE.FPP
+C
 C Revision 1.30  2005/05/13 12:08:52  stefan
 C 1. Changed the call to the paramlist accumalation to work with the new version. Also made the matlab output output multi block normal matrices and sets it up to use the script collectBlocks to put it together in one matrix.
 C
@@ -420,6 +423,11 @@ C
          IF ( (JP .LE. 0) .OR.(METHOD .EQ. 0) ) THEN
 C-----  RE-USE OF MSTRIX OR CHOLESKI - GET SOME CORE FOR THE UPPER TRIAN
             L11C = KADD11(-101,MD11,NELEM)
+c oct-05
+C----- ALLOCATE SPACE FOR SCALE VECTOR
+            ISCL = KADD11( 1013, MD11, JY)
+c oct-05
+
          ELSE
 C-----  GET SOME CORE FOR THE FULL MATRIX
             L11C = KADD11( -101, MD11, JY*JY)
@@ -472,6 +480,22 @@ C     1           JY*(JY+1)/2, JY, 'NBackNorm')
 C            end if
 C      end if
       
+
+CDJW-OCT-05
+c      write(ncwu,'(a)') 'The normal vector'
+c         IDJW = L11C
+c         jdjw = iscl
+c         DO 2051 I = 1, JY
+c            str11(jdjw) = STR11(IDJW)
+c            IDJW = IDJW + JY - I + 1
+c            jdjw=jdjw+1
+2051     CONTINUE 
+c        call outv(str11(iscl),jy)
+CDJW-OCT-05
+
+
+
+
       
       IF (JP .GT. 0 ) THEN
 C----- CHOOSE INVERTOR
@@ -508,6 +532,7 @@ C-- If we are doing matlab punching then do it here.
             call matlab_add_matrix_to_cell(73, STR11(L11C), 
      1            JY*(JY+1)/2, JY, 'VC')
          end if
+
                  
 2050     CONTINUE
          L11RC = KADD11(-102,MD11R, JY)
@@ -1093,6 +1118,15 @@ C -- LIST 11 WRONG TYPE
 C
       END
 C
+CODE FOR OUTV
+      SUBROUTINE OUTV(A,N)
+      DIMENSION A(N)
+      INCLUDE 'XUNITS.INC'
+      WRITE(NCWU, 123) A
+123   FORMAT(9F15.0)
+      RETURN
+      END
+      
 C
 C
 CODE FOR XFILTR

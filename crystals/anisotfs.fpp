@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2006/02/14 10:38:59  djw
+C Compute some axes statistics in AXES
+C
 C Revision 1.15  2005/02/08 14:43:33  stefan
 C 1. added a precompile if for the mac version
 C
@@ -160,6 +163,7 @@ cdjwfeb06 compute the average and max volume
       Avol=0.0
       Bvol=0.0
       Cvol=0.0
+      Dvol=0.0
       nvol=0
       DO 900 N=1,NATOM
 C-C-C-CHECK WHETHER ANISOTROPIC OR ISOTROPIC/SPHERE/LINE/RING
@@ -233,6 +237,7 @@ cdjwfeb06 compute geometric mean
             UEQUIV=(STORE(NE)*STORE(NE+1)*STORE(NE+2))
             UEQUIV=SIGN(1.,UEQUIV)*(MAX(ZERO,ABS(UEQUIV)))**(1./3.)
             avol = avol + uequiv
+            dvol = dvol + uequiv*uequiv
             bvol = max (bvol, uequiv)
             cvol = max (cvol, STORE(NE+2))
             nvol = nvol + 1
@@ -351,17 +356,21 @@ C--FINAL CAPTION AND RETURN
 cdjwfeb06
       if(list .gt. 0) then
       if (nvol .gt. 0) then
-       write(cmon,'(A,i6,a,f8.4)')' Average volume of ',nvol,
-     1 ' atoms =',avol/float(nvol)
+       write(cmon,'(A,i6,a,f8.4,a,f8.4)')' Average volume of ',nvol,
+     1 ' atoms =',avol/float(nvol), ' rmsd ',
+     2   sqrt((nvol*dvol-avol*avol)/(nvol*(nvol-1)))
        CALL XPRVDU (NCVDU,1,0)
+       WRITE (NCAWU,'(A)') CMON(1)
        IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
        write(cmon,'(A,i6,a,f8.4)')' Maximum volume of ',nvol,
      1 ' atoms =',bvol
        CALL XPRVDU (NCVDU,1,0)
+       WRITE (NCAWU,'(A)') CMON(1)
        IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
        write(cmon,'(A,i6,a,f8.4)')'   Maximum axis of ',nvol,
      1 ' atoms =',cvol
        CALL XPRVDU (NCVDU,1,0)
+       WRITE (NCAWU,'(A)') CMON(1)
        IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
       endif
       endif
