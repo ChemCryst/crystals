@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.71  2006/02/17 14:51:54  djw
+C Fix some writes to monitir/listinganisotfs.fpp
+C
 C Revision 1.70  2006/02/16 18:44:47  djw
 C Enable filtering in Tabbed Analyse
 C
@@ -3144,8 +3147,8 @@ C -- SET THE TIMING AND READ THE CONSTANTS
       CALL XTIME1 ( 2 )
       CALL XCSAE
 
-      sios=0.0
-      nios=0
+      call xzerof (sios, 25)
+      call xzerof (nios, 25)
 
 C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       ICOMBF = KSTALL( ICOMSZ )
