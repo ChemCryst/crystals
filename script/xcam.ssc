@@ -99,6 +99,9 @@
 ^^WI   ITEM _SAVE '&Save enhanced metafile' '#SCRIPT XEMF_N_CAMERONVIEW'
 ^^WI   ITEM _CHIME 'Save &Chime' 'OUTPUT CHIME'
 ^^WI   SPLIT
+^^WI   ITEM _ARCH 'Archive present view' '#SCRIPT ARCHIVE_CAM'
+^^WI   ITEM _RETR 'Retrieve view from file' '#SCRIPT RETRIEVE_CAM'
+^^WI   SPLIT
 ^^WI   ITEM _PRINT 'Print...' '^^CO SET _CAMERONVIEW CHARTPRINT'
 ^^WI   ITEM _CLOSE '&Exit Cameron' 'END'
 ^^WI  ENDMENU
