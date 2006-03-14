@@ -1,9 +1,13 @@
-CRYSTALS CODE FOR OUTER.FOR                                                     
+C $Log: not supported by cvs2svn $
+C Revision 1.22  2006/03/14 17:59:29  arie
+C SLight cosmetic change for Archive and Retrieve
+C
+CRYSTALS CODE FOR OUTER.FOR
 CAMERON CODE FOR OUTER
 CODE FOR ZCAMER
 C      SUBROUTINE ZCAMER ( ITYPE , RCRYST, NSTORE , IDEVIC)
       SUBROUTINE ZCAMER ( ITYPE , ICAMS, ICAMF, IDEVIC)
-      
+
       INCLUDE 'CAMPAR.INC'
       INCLUDE 'CAMCOM.INC'
       INCLUDE 'CAMANA.INC'
@@ -25,7 +29,7 @@ C      SUBROUTINE ZCAMER ( ITYPE , RCRYST, NSTORE , IDEVIC)
 C      REAL RCRYST(NSTORE)
 CDJW99 this upsets FTN95      EXTERNAL ZBLOCK
       LOGICAL LEXIST
-#if defined(_DOS_) 
+#if defined(_DOS_)
       INCLUDE 'CAMWIN.INC'
       character*80 caption
 C ---- some initialisation
@@ -64,14 +68,14 @@ C      call CreateIOWindow(caption,DialogHandle)
       ICAMER = ITYPE
       IF (ICAMER.LT.2) THEN
 C SET UP FLAG POSITIONS FOR LARGE VERSION OF CAMERON
-CDJWSEP2000  SET UP DATA SIZES SO THAT POINTERS CAN BE 
+CDJWSEP2000  SET UP DATA SIZES SO THAT POINTERS CAN BE
 C      MORE EASILY UPDATED.
 C        JCOORD = 13
 C   INCREASE TO MAKE ROOM FOR GROUP AND NAME VALUES
 C        JCOORD = 15
 CNOV2000   INCREASE AGAIN FOR RICHARDS WORK
         JCOORD = 19
-        JPCK = 2        
+        JPCK = 2
         JXYZO = 16
         JATTYP = 9
         JBOND = 2
@@ -86,7 +90,7 @@ C        ILAB = 43
 C        ISYM = 48
 cdjwjan99 - make room for the shape flag
 c        IPACKT = 49 + 1
-C  COMPUTE THE ADDRESSES INSTEAD 
+C  COMPUTE THE ADDRESSES INSTEAD
         IPCK = 1+JCOORD
         IXYZO = IPCK + JPCK
         IATTYP = IXYZO + JXYZO
@@ -142,7 +146,7 @@ C
 CODE FOR ZCANAL
 C THIS IS THE COMMAND ANALYSIS
       SUBROUTINE ZCANAL
-      
+
       INCLUDE 'CAMPAR.INC'
       INCLUDE 'CAMCOM.INC'
       INCLUDE 'CAMANA.INC'
@@ -169,6 +173,8 @@ C IT IS DIRECTLY CODED FROM THE FLOW CHART - HENCE THE 'BOX' NOTATION.
 C BOX 1
 C READ IN THE NEXT WORD
 100   CONTINUE
+c      write(CLINE,'('' in outer, before zword'')')
+c      call zmore(cline,0)
       CALL ZWORD (IERR)
       IF (IERR.EQ.3) THEN
 C NO NEXT WORD ON THIS LINE
@@ -240,7 +246,7 @@ C GO TO CHARACTER INPUT
      c  GOTO 500
 C
 C GOTO BOX 5 IF WE DONT HAVE A NUMBER!
- 
+
 C BOX 3
 C DO WE WANT A NUMBER?
        CALL ZCICNT (2,IERR)
@@ -259,7 +265,7 @@ C DO WE WANT A NUMBER?
            IPROC = 2
            RETURN
          ENDIF
- 
+
 C BOX 4
 C YES WE DO WANT A NUMBER - WHICH ONE?
        IF (IINT(2).NE.0) THEN
@@ -275,14 +281,14 @@ C REAL
       ENDIF
       GOTO 100
 C RETURN TO THE START
- 
+
 C BOX 5
 C DO WE HAVE A PREVIOUS COMMAND?
 500    CONTINUE
         IF (ICPOS.EQ.1) GOTO 1300
 C       IF (IHEAD.EQ.1) GOTO 1300
 C NO - LOOK FOR A HEADER COMMAND AT BOX 13
- 
+
 C BOX 6
 C DO WE HAVE A SUB COMMAND?
       ID = ICOMMD (ICPOS-1)
@@ -297,7 +303,7 @@ C BE SURROUNDED WITH QUOTES.
       ENDIF
       IF (ICNUM.EQ.-1) GOTO 1000
 C IF NO SUB COMMAND GOTO BOX 10
- 
+
 C BOX 7
 C IS IT A DIRECT SUB COMMAND?
 C DO WE HAVE ALL THE INFO FOR THE PREVIOUS COMMAND?
@@ -329,7 +335,7 @@ C DO WE HAVE ALL THE INFO FOR THE PREVIOUS COMMAND?
           IPROC = 2
           RETURN
         ENDIF
- 
+
 C BOX 8
 C IS THE SUB COMMAND VALID?
       CALL ZCILD (2,ICNUM)
@@ -349,7 +355,7 @@ C NEED TO RESET USING XCILD
           RETURN
         ENDIF
       ENDIF
- 
+
 C BOX 9
 C UPDATE COMMAND INFO ,COUNTS ETC
 C STORE INFO FOR PREVIOUS COMMAND
@@ -366,7 +372,7 @@ C STORE INFO FOR PREVIOUS COMMAND
       ICPROC = IBEG - 1
       GOTO 100
 C RETURN TO THE START
- 
+
 C BOX 10
 C DO WE NEED CHARACTER INPUT?
 1000  CONTINUE
@@ -403,7 +409,7 @@ C ADDED BEFORE THE XCICNT TEST IS CARRIED OUT
        IF (IERR.EQ.3) IC = IC + 1
        GOTO 100
 C RETURN TO THE START
- 
+
 C BOX 13
 C SEARCH FOR A NEW HEADER COMMAND
 1300  CONTINUE
@@ -490,9 +496,9 @@ C       ICABAN = ICABAN - IEND + IBEG - 2
        RETURN
 C GO BACK AND PROCESS COMMAND
        END
- 
- 
- 
+
+
+
 CODE FOR ZCOMDO [ COMMAND DO ! ]
       SUBROUTINE ZCOMDO
 C This routine unpicks the command line.
@@ -514,7 +520,7 @@ C     INCNT,IRCNT,ICCNT - count along the argument arrays.
 C     IPROC is passed in so that its value can be altered to zero
 C     this causes all commands on the line to be abandoned after an
 C     error.
-      
+
       INCLUDE 'CAMPAR.INC'
       INCLUDE 'CAMCOM.INC'
       INCLUDE 'CAMANA.INC'
@@ -533,7 +539,7 @@ C     error.
       INCLUDE 'CAMBLK.INC'
       INCLUDE 'XIOBUF.INC'
 C
-#if defined(_DOS_) 
+#if defined(_DOS_)
       INCLUDE 'CAMWIN.INC'
 #endif
       LOGICAL LFILES
@@ -545,6 +551,8 @@ C OBTAIN THE COMMAND NUMBER
       IF (IPROC.EQ.0) GOTO 9999
       ID = ABS(NINT(RSTORE(ICOM+((ICOMMD(ICNT)-ICOM)/ISCOM)*ISRCOM)))
 C USE AN 'ON GOTO' TO ANALYSE THE COMMANDS
+c      write(CLINE,'('' command number'',i5)')ID
+c      call zmore(cline,0)
       GOTO (100,200,300,400,400,600,700,800,900,1000,1100,1200,
      c 1300,1400,1500,1600,1700,1800,1900,2000,2100,2200,2300,
      c 2400) ID/100
@@ -638,7 +646,7 @@ C END WILL RETURN TO CRYSTALS
         ID = 920
         CALL ZCMD9(ID)
         ICAMER = -1
-#if defined(_DOS_) 
+#if defined(_DOS_)
       GraphicsHandle = 0
       call window_update@(GraphicsHandle)
 #endif
@@ -683,10 +691,10 @@ C LIST12
       ENDIF
       RETURN
       END
- 
+
 CODE FOR ZCONTR
       SUBROUTINE ZCONTR
-      
+
       INCLUDE 'CAMPAR.INC'
       INCLUDE 'CAMCOM.INC'
       INCLUDE 'CAMANA.INC'
@@ -1086,13 +1094,15 @@ C LOOK FOR THE CAMERON.LJP TITLE FILE
         IF (IFIRST.EQ.1) RETURN
         IFIRST = 1
         IPCX = 0
-        IF (.NOT.LFILES (-1,'TITLE.CMN',IINPT)) THEN
+c        IF (.NOT.LFILES (-1,'TITLE.CMN',IINPT)) THEN
           CALL ZMORE('CAMERON',0)
           CALL ZMORE('L.J. Pearce, Dr. D.J. Watkin.',0)
           CALL ZMORE('Chemical Crystallography Lab., Oxford.',0)
-          CALL ZMORE('TITLE.CMN not available.',0)
+c          CALL ZMORE('TITLE.CMN not available.',0)
+          CALL ZMORE('Archive and retrieve option added (13-03-2006):
+     & A. van der Lee',0)
           RETURN
-        ENDIF
+c        ENDIF
 10      CONTINUE
         READ (IINPT,'(A80)',END=11) CC
         CALL ZMORE(CC,0)
@@ -1174,7 +1184,7 @@ C CONVERT TO UPPERCASE FOR ANALYSIS
             LLINE(ILINE)=' '
             CTEMP=' '
             RETURN
-      ENDIF      
+      ENDIF
 
 13    CALL ZCANAL
       IF (IPROC.EQ.1) THEN
@@ -1224,7 +1234,7 @@ C      GOTO 10
 C
 CODE FOR ZSMALL
       SUBROUTINE ZSMALL ( RCRYST, NSTORE, IDEVIC )
-      
+
       INCLUDE 'CAMPAR.INC'
       INCLUDE 'CAMCOM.INC'
       INCLUDE 'CAMANA.INC'
