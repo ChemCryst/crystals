@@ -3,13 +3,13 @@ US 10  0  0  8
 #TCameron Manual#
 #Ccameron#
 #ZINTRODUCTION#
-#PCAMERON was designed and built in the Chemical Crystallography 
- Laboratory, Oxford, by Lisa Pearce, Keith Prout and David Watkin. Many 
-people have contributed ides for improvements, and Louis Ferrugia 
+#PCAMERON was designed and built in the Chemical Crystallography
+ Laboratory, Oxford, by Lisa Pearce, Keith Prout and David Watkin. Many
+people have contributed ides for improvements, and Louis Ferrugia
 pioneerd a completely WINDOWS based version.
 #YHOW TO CONTROL THE PROGRAM#
 #PThe program is controlled by typing commands at the keyboard,
-by use of a mouse to pick items from a menu, or by using the mouse 
+by use of a mouse to pick items from a menu, or by using the mouse
 to manipulate the diagram.
 #YCommand Groups#
 #PThe commands have been collected into groups (twenty-three at present).
@@ -24,7 +24,7 @@ For example :-
 #J
 XROT 20 YROT 30 VIEW LINE ALL
 #
-#P_b{XROT, _b{YROT  and _b{VIEW  are all in the same group but _b{LINE 
+#P_b{XROT, _b{YROT  and _b{VIEW  are all in the same group but _b{LINE
  (a command that
 sets the drawing style) is not. When the command processor reaches the
 _b{LINE command it will then execute the previous commands ie _b{XROT
@@ -57,11 +57,11 @@ will execute the three commands without the need for _b{LINE.
 input by the user. The computer checks for two types of error:
 #
 #J
-1. Whether a command / sub-command combination is valid. 
+1. Whether a command / sub-command combination is valid.
 2. Whether the arguments supplied after a command are valid and also if there is
-the correct number of arguments. 
+the correct number of arguments.
 #
-#PThe action taken after an error depends upon the setting of the 
+#PThe action taken after an error depends upon the setting of the
 _b{EDIT flag. If EDIT is OFF, only an error message is displayed.
 If EDIT is ON, the faulty input can be edited.
 Once an error has been detected the
@@ -260,9 +260,9 @@ OUPUT CSR FRACT mydata.css
 the current list. The following commands are available -
 #IRENAME#
 The syntax is:
-#J RENAME at1 at2 
+#J RENAME at1 at2
     or:
- RENAME el1 el2. 
+ RENAME el1 el2.
 #
 #PArguments are entered in
 pairs - the first is renamed to the second - and must be like with like.
@@ -293,6 +293,30 @@ will cause the OBEYed file to be closed. OBEY files may themselves
 contain the names of other files to be OBEYed.
 #
 #PRelated commands : LOG
+#ZArchiving and retrieving views#
+#XCameron - Archiving and retrieving views#
+#PThe user can archive the present structure view on disk or retrieve a
+previously archived view from disk. At present only structure views residing
+in the same directory as the crfilev2.dsc (the working directory) can be
+retrieved. Equally well, views can only be archived in the working directory.
+As an alternative to the line commands, the user may choose the commands
+that are available in the pull-down menu 'File'.
+The following commands are available -
+#IARCHIVE#
+The syntax is:
+#J ARCHIVE "foo.foo"
+#
+#P
+Note that the quotes (") are necessary to avoid confusion with non-existing
+sub-commands to this command. The filename must not exceed 12 characters.
+#
+#IRETRIEVE#
+The syntax is:
+#J RETRIEVE "foo.foo"
+#
+#P
+Note that the quotes (") are necessary to avoid confusion with non-existing
+sub-commands to this command. The filename must not exceed 12 characters.
 #ZGRAPHICAL OUTPUT DEVICES#
 #XCameron - Output devies#
 #PThe user has to specify a graphical output device before the command
