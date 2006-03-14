@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2006/03/13 15:59:47  arie
+C Added functionalities (archive and retrieve)
+C These are FILE commands
+C
+C Revision 1.24  2005/02/08 15:59:47  stefan
+C 1. Added precompiler if's for the mac source
+C
 C Revision 1.23  2005/01/23 09:52:52  rich
 C Reinstate old history for Cameron files. History for changes since Dec 23 is
 C lost, but changes are not!
@@ -81,7 +88,7 @@ CODE FOR ZCMD1
       SUBROUTINE ZCMD1 (ID)
 C This is the code for the VIEW group of commands.
       SAVE OLDSCL
-      
+
       INCLUDE 'CAMPAR.INC'
       INCLUDE 'CAMCOM.INC'
       INCLUDE 'CAMANA.INC'
@@ -115,6 +122,8 @@ C This is the code for the VIEW group of commands.
       DATA IAXDAT /1,4,3/
 
       ID = ID - (ID/100)*100 + 1
+c      write(cline,'('' jump to '',i5)')id
+c      call zmore(cline,0)
       GOTO (100,101,1222,103,104,105,106,122,108,109,110,111,112,113,
      c 114,115,116,117,118,119,120,121,122,123,124,125,112,113,
      c 128,129,130) ID
@@ -146,16 +155,16 @@ C        ISCAL = ISCALS
         IBNDCL = IBNDCS
         ICLDEF = ICLDES
 C        IFONT = 12 (changed from IFSIZE by DJW)
-#if defined(_DOS_) 
+#if defined(_DOS_)
         ILSIZE = 8
 #endif
-#if defined(_GID_) 
+#if defined(_GID_)
         ILSIZE = 60
 #endif
 #if defined(_GIL_)  || defined(_MAC_)
         ILSIZE = 60
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)
         ILSIZE = 60
 C MOVE OVER THE COLOUR NUMBERS
 #endif
@@ -330,7 +339,7 @@ C
 C SAVE THE SCALE and centre
       OLDSCL = SCALE
       XCENOL = XCEN
-c- note that this changes scale 
+c- note that this changes scale
       CALL ZATMUL(0,0,0)
 c
       IF (ISTREO.EQ.1) THEN
@@ -340,7 +349,7 @@ C       THIS IS 3.5 CM IN POINTS
 C----- SET CENTRE SO THAT FIGURE FITS IN 2* DXOFF BOX
         DXOFF = 3.5 *  720 / 2.58
         XCEN =  DXOFF
-c- note that this changes scale 
+c- note that this changes scale
         CALL ZATMUL(0,0,0)
 c       restore xcen
         XCEN = XCENOL
@@ -371,16 +380,16 @@ C NEED TO UP THE RESOLUTION
       ENDIF
 c
       SCALE = SCALE * RES
-#if defined(_DOS_) 
+#if defined(_DOS_)
       ILSIZE = NINT (8 * RES)
 #endif
-#if defined(_GID_) 
+#if defined(_GID_)
       ILSIZE = NINT (60 * RES)
 #endif
 #if defined(_GIL_)  || defined(_MAC_)
       ILSIZE = NINT (60 * RES)
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)
       ILSIZE = NINT (60 * RES)
 #endif
       SCLSAV = SCALE
@@ -393,7 +402,7 @@ cmay2000        CALL ZROT (-ANG,2)
         XOFF = -DXOFF
         YOFF = 0.0
         CALL ZATMUL(0,0,0)
-        SCALE  = SCLSAV 
+        SCALE  = SCLSAV
        ENDIF
 C
       CALL ZDOVI
@@ -424,7 +433,7 @@ C      RESET THE SCALE
 cdjwjun2002
       write(cline,'(a,2f10.3)') ' scale', scale, oldscl
       call zmore(cline,0)
-      SCALE  = OLDSCL 
+      SCALE  = OLDSCL
       ares = 1./res
       res = 1.
       CALL ZCLEAR
@@ -476,6 +485,15 @@ C ROTATE
       CALL ZROT (ANG,2)
       ANG = RCOMMD (IRCNT+2)*PI/180.0
       CALL ZROT (ANG,3)
+      call zmore(' rotation matrix after rotate',0)
+      write(cline,'(4f9.4)')(mat1(1,i),i=1,4)
+      call zmore(cline,0)
+      write(cline,'(4f9.4)')(mat1(2,i),i=1,4)
+      call zmore(cline,0)
+      write(cline,'(4f9.4)')(mat1(3,i),i=1,4)
+      call zmore(cline,0)
+      write(cline,'(4f9.4)')(mat1(4,i),i=1,4)
+      call zmore(cline,0)
       GOTO 9999
 108   CONTINUE
 C PLANE
@@ -746,16 +764,16 @@ C        ISCAL = ISCALS
         IBNDCL = IBNDCS
         ICLDEF = ICLDES
 C        IFSIZE = 12
-#if defined(_DOS_) 
+#if defined(_DOS_)
         ILSIZE = 8
 #endif
-#if defined(_GID_) 
+#if defined(_GID_)
         ILSIZE = 60
 #endif
 #if defined(_GIL_)  || defined(_MAC_)
         ILSIZE = 60
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)
         ILSIZE = 60
 C MOVE OVER THE COLOUR NUMBERS
 #endif
@@ -788,141 +806,141 @@ C      CALL ZATMUL(0,0,0)
       CALL ZDOVI
       ANG = -5.0*PI/180.0
 
-#if defined(_GID_) 
+#if defined(_GID_)
       CALL ZMORE('^^CO SET _CAMERONVIEW CURSORKEYS=YES',0)
       IUNIT = 5
 #endif
 #if defined(_GIL_)  || defined(_MAC_)
       CALL ZMORE('^^CO SET _CAMERONVIEW CURSORKEYS=YES',0)
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)
       CALL ZMORE('^^CO SET _CAMERONVIEW CURSORKEYS=YES',0)
 #endif
 #if defined(_GIL_)  || defined(_MAC_)
       IUNIT = 5
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)
       IUNIT = 5
 #endif
 1150  CONTINUE
-#if defined(_DOS_) 
+#if defined(_DOS_)
       CALL ZGETKY(K)
 #endif
-#if defined(_GID_) 
+#if defined(_GID_)
       K = KRDLIN ( IUNIT, CLINE, LENUSE )
 #endif
 #if defined(_GIL_)  || defined(_MAC_)
       K = KRDLIN ( IUNIT, CLINE, LENUSE )
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)
       K = KRDLIN ( IUNIT, CLINE, LENUSE )
 #endif
-#if defined(_DOS_) || defined(_LIN_) 
+#if defined(_DOS_) || defined(_LIN_)
       IF (K.EQ.0) GOTO 1150
 #endif
       CALL ZCLARE(0,IDEVCL(IBACK+1))
       ICURS = 1
-#if defined(_DOS_) || defined(_LIN_) 
+#if defined(_DOS_) || defined(_LIN_)
         IF (K.EQ.ICLEFT) THEN
 #endif
-#if defined(_GID_) 
+#if defined(_GID_)
         IF (CLINE(1:1).EQ.'L') THEN
 #endif
 #if defined(_GIL_)  || defined(_MAC_)
         IF (CLINE(1:1).EQ.'L') THEN
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)
         IF (CLINE(1:1).EQ.'L') THEN
 C LEFT
 #endif
         ANG = ABS(ANG)
         CALL ZROT(ANG,2)
-#if defined(_DOS_) || defined(_LIN_) 
+#if defined(_DOS_) || defined(_LIN_)
       ELSE IF (K.EQ.ICRGHT) THEN
 #endif
-#if defined(_GID_) 
+#if defined(_GID_)
       ELSE IF (CLINE(1:1).EQ.'R') THEN
 #endif
 #if defined(_GIL_)  || defined(_MAC_)
       ELSE IF (CLINE(1:1).EQ.'R') THEN
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)
       ELSE IF (CLINE(1:1).EQ.'R') THEN
 C RIGHT
 #endif
         ANG = -ABS(ANG)
         CALL ZROT(ANG,2)
 C UP
-#if defined(_DOS_) || defined(_LIN_) 
+#if defined(_DOS_) || defined(_LIN_)
       ELSE IF (K.EQ.ICUP) THEN
 #endif
-#if defined(_GID_) 
+#if defined(_GID_)
       ELSE IF (CLINE(1:1).EQ.'U') THEN
 #endif
 #if defined(_GIL_)  || defined(_MAC_)
       ELSE IF (CLINE(1:1).EQ.'U') THEN
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)
       ELSE IF (CLINE(1:1).EQ.'U') THEN
 #endif
         ANG = ABS(ANG)
         CALL ZROT(ANG,1)
 C DOWN
-#if defined(_DOS_) || defined(_LIN_) 
+#if defined(_DOS_) || defined(_LIN_)
       ELSE IF (K.EQ.ICDOWN) THEN
 #endif
-#if defined(_GID_) 
+#if defined(_GID_)
       ELSE IF (CLINE(1:1).EQ.'D') THEN
 #endif
 #if defined(_GIL_)  || defined(_MAC_)
       ELSE IF (CLINE(1:1).EQ.'D') THEN
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)
       ELSE IF (CLINE(1:1).EQ.'D') THEN
 #endif
         ANG = -ABS(ANG)
         CALL ZROT(ANG,1)
 C ANTICLOCKWISE
-#if defined(_DOS_) || defined(_LIN_) 
+#if defined(_DOS_) || defined(_LIN_)
       ELSE IF (K.EQ.ICANTI) THEN
 #endif
-#if defined(_GID_) 
+#if defined(_GID_)
       ELSE IF (CLINE(1:1).EQ.'A') THEN
 #endif
 #if defined(_GIL_)  || defined(_MAC_)
       ELSE IF (CLINE(1:1).EQ.'A') THEN
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)
       ELSE IF (CLINE(1:1).EQ.'A') THEN
 #endif
         ANG = -ABS(ANG)
         CALL ZROT(ANG,3)
 C CLOCKWISE
-#if defined(_DOS_) || defined(_LIN_) 
+#if defined(_DOS_) || defined(_LIN_)
       ELSE IF (K.EQ.ICCLCK) THEN
 #endif
-#if defined(_GID_) 
+#if defined(_GID_)
       ELSE IF (CLINE(1:1).EQ.'C') THEN
 #endif
 #if defined(_GIL_)  || defined(_MAC_)
       ELSE IF (CLINE(1:1).EQ.'C') THEN
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)
       ELSE IF (CLINE(1:1).EQ.'C') THEN
 #endif
         ANG = ABS(ANG)
         CALL ZROT(ANG,3)
-#if defined(_DOS_) || defined(_LIN_) 
+#if defined(_DOS_) || defined(_LIN_)
       ELSE IF (K.NE.0) THEN
 #endif
-#if defined(_GID_) 
-      ELSE 
+#if defined(_GID_)
+      ELSE
 #endif
-#if defined(_WXS_) 
-      ELSE 
+#if defined(_WXS_)
+      ELSE
 #endif
 #if defined(_GIL_)  || defined(_MAC_)
-      ELSE 
+      ELSE
 #endif
         ICURS = 0
         CALL ZATMUL(0,0,0)
@@ -981,13 +999,16 @@ C OPEN THE FILE
       ITCNT = ITCNT + 1
 C CHECK WHETHER IT EXISTS
       INQUIRE (FILE=FILENM , EXIST=LEXIST)
+      ILENGTE=4*16+4*(IRLAST-IRELM+1+ITOT-IREND+1)+
+     &ILEN*(ICLAST-ICELM+1+ITOT-(IGRP-NGRP*2-1)+1)
+c      call zmore(cline,0)
       IF (LEXIST) THEN
 C IS THERE A FILE OPEN ALREADY?
         INQUIRE (UNIT=IVOUT, OPENED=LEXIST)
         IF (LEXIST) THEN
           CLOSE(IVOUT)
         ENDIF
-        OPEN (UNIT=IVOUT, FILE=FILENM, ACCESS='DIRECT', RECL=140,
+        OPEN (UNIT=IVOUT, FILE=FILENM, ACCESS='SEQUENTIAL',
      c  FORM = 'UNFORMATTED',STATUS='OLD',ERR=1220)
 C OPEN THE FILE AND READ THE NUMBER OF RECORDS
         IVNUM = 0
@@ -998,11 +1019,12 @@ C OPEN THE FILE AND READ THE NUMBER OF RECORDS
 1211    CONTINUE
         IVNUM = IVNUM - 1
       ELSE
-        OPEN (UNIT=IVOUT, FILE=FILENM, ACCESS='DIRECT', RECL=140,
+        OPEN (UNIT=IVOUT, FILE=FILENM, ACCESS='SEQUENTIAL',
      c  FORM = 'UNFORMATTED',STATUS='NEW')
         IVNUM = 0
       ENDIF
-      GOTO 9999
+C      GOTO 9999
+       GOTO 123
 1220  CONTINUE
 C ERROR IN FILE OPEN
       CALL ZBEEP
@@ -1011,62 +1033,198 @@ C ERROR IN FILE OPEN
       CALL ZMORE1(CLINE,0)
 1221  FORMAT (A12 ,' is not a file of the correct type.')
       IPROC = 0
-      GOTO 9999
+      GOTO 123
 123   CONTINUE
-C STORE
+C STORE   will be essentially skipped (avdl)
 C GET THE TEXT
+       goto 1229
       IF (ICCMMD(ICCNT).GT.6) ICCMMD(ICCNT) = 6
       CTEXT = '                                                  '//
      c '                      '
       DO 1230 I = 1 , ICCMMD ( ICCNT )
         CTEXT((I-1)*12 + 1:(I-1)*12 + 12) = CTCOMD ( ITCNT + I - 1 )
 1230  CONTINUE
-C WRITE OUT THE TEXT AND THE MATRIX
-C GET THE DEORTHOG MATRIX
-C      CALL ZMOVE (RSTORE(ICRYST+15),ORTHI,9)
-C      CALL ZPTMAT (ORTHI,MAT)
-C      DO 1232 I = 1, 4
-C        MAT(4,I) = 0.0
-C        MAT(I,4) = 0.0
-C        MAT(4,4) = 1.0
-C1232  CONTINUE
-C      CALL ZMOVE(MAT1,MATDUM,16)
-C      CALL ZMATM4 (MAT,MATDUM)
-      IVNUM = IVNUM + 1
-      WRITE ( IVOUT,REC=IVNUM) CTEXT , MAT1
-      WRITE (CLINE,1231) IVNUM
+cavdl WRITE ( IVOUT,REC=IVNUM) CTEXT , MAT1
+ 1229 WRITE (IVOUT)
+C COMMON BLOCK /ZCOMAN/ (CAMANA.INC) (35*4)
+     c IPROC,IMENCN,ILINE,IBEG,IEND,IN,IR,IC,IINT
+     c ,IRL,ICHARS,ICTYPE,INCOM,IPREV,IHEAD,ICC,ICN,ICR,ISTORE,IFOBEY,
+     c ICABAN ,ICLOG, IVNUM,
+C COMMON BLOCKS /ZSTORI/ AND /ZSTORZ/ (CAMCOM.INC) (2*10000*4)
+     c ISTACK,ZSTACK,
+C COMMON BLOCK /ZSTORA/ (CAMCOM.INC) (19*4+7*INARGS*4)
+     c ICPOS,ICCPOS,ICRPOS,ICTPOS,ICNT,ICCNT,IRCNT,
+     c INCNT,ITCNT,ICOMMD,RCOMMD,NCOMMD,INFCMD,ICCMMD,ICNPOS,
+     c ICINPS, ICMULT, IXYZO , IATTYP, IPCK , IBOND , ILAB, ISYM,
+     c IPACKT , NSCRAT , NELM ,
+C COMMON BLOCK /ZDATAC/ (CAMDAT.INC) (32*4)
+     c ICOM,IRELM,ICELM,ICATOM,IRATOM,IRLAST,ICLAST,IREND,
+     c ICRYST,NSYMM,ISVIEW,ISYMED,ICELLC,IPACK,INATOM,IELROT,
+     c IFVIEW,ISINIT,IFINIT,NGRP,IGRP,IKEY,ITEXT,INTXT,ITNUMB,IGG,ICTXT,
+     c IGPCK, ICLST5, ICONBG, ICONED, IFIRST ,
+C COMMON BLOCK /ZCALCU/ (CAMCAL.INC) (830*4+NBDMAX*3*4)
+     c DISEND,DISBEG,ANGEND,ANGBEG,CENTR,NDIST1,PKMIN,
+     c PKMAX,PCMIN,PCMAX,PKCNF,PKCNA,D000,AMSYMM,AMTRAN,MAT1,MAT2,
+     c ROT,XC,YC,ZC,XCOS,XSIN,PI,ISSPRT,IBDORD,IORD,ISFLAG,ITFLAG,NDIST2
+     c ,RSTOL, ISPECL,IENCAT ,
+C COMMON BLOCK /ZMCONT/ (CAMMSE.INC) (2*4)
+     c IMOUSE,NMOUSE,
+C COMMON BLOCK/ZMNUSS/ (CAMMEN.INC) (81*4)
+     c IMENU,IMENX,IMENY,IMENAR,IMNTOP,IMPOS,IMENVT,NITEM,
+     c IMCHAR,ICHEAD,ISHEAD,IHMAX,IHNUM,IMENWD,IMOLD,INFOLL,
+C COMMON BLOCK /ZCHARA/ (CAMCHR.INC) (3587*4+21*ICLEN4+80*IMENCL*4)
+     c LINE,CHELP,CSUB,CTCOMD,LLINE,CGRAPH,
+     c CMENUS , CBUFF , CLINE, CTITLE ,
+C COMMON BLOCK /ZCOLOU/ (CAMCHR.INC)  (2*ICLMAX*6)
+     c COLNAM, COLGRY,
+C COMMON BLOCK /ZGRAPH/ (CAMGRP.INC (44*4+3*ICLMAX*4)
+     c YCEN,XCEN,SCLLIM,JPAGE,RES,IPOST,IFONT,
+     c IHAND,XCP,YCP,SCALE,IVCHAN,ISLCNT, RELSCL,IBUFF,SCLFIX,
+     c IDEVCH,IDEVCS,IDEVCL,XCENS,XCENH,YCENS,YCENH,SCLIMS,SCLIMH,
+     c IBACKS,IBACKH,IFOREH,IFORES,ILABCS,ILABCH,IBNDCS,IBNDCH,ICLDES,
+     c ICLDEH,ISCALS,ISCALH, INLINE, XOFF, YOFF,XEMIN,XEMAX,YEMIN,
+     c YEMAX, STRANG, PMAXX, PMAXY ,
+C COMMON BLOCK /ZCOLNU/ (CAMCOL.INC) (4*3*ICLMAX*4)
+     c IVGACL,IGREYC, ICOLS, IPSTCL,
+C COMMON BLOCK /ZFLGSS/ (CAMFLG.INC) (49*4)
+     c ISCRN,IELTYP,IOVER,IDEV,IHARD,
+     c ISQR,IDOKEY,NKEY,ICOLL,IPPCK,ITYPCK,IAXIS,IMAXIM,DBDMAX,RNUISO,
+     c IPLAB,ILSEC,ILSIZE,RTAPER,RTHICK,IMTFLG,IFILL,IEXFLG,
+     c IFRAME,ICURS,ILABFG,IPCOLL,COLTOL,ICELL,IFOLAP,ITCOL,IENCL, IPCX
+     c ,ILOG , IPHOTO, ICLDEF, ICAMER , IEDIT , ICBUFF, ITEKFG
+     c , IBACK,IFORE,ILABCL,IBNDCL, ICPOST, IENCAP, ISTREO, ISVGA,
+     c ITITLE ,
+C COMMON BLOCK /ZINST2/ (CAMSHR.INC) (2000*2) integer*2
+     c IXX2,IYY2 ,
+C COMMON BLOCK /ZVERSI/  (CAMVER.INC) (1*4)
+     c VERS,
+C COMMON BLOCK /BUTTON/ (CAMBTN.INC) (8*MAXBUT*4+8*4+3*NBDMAX*4)
+     c IBUTTS,IBBACK,IBTEXT,IBBORD,ICENTR,IBUTNO,IWIDTH,
+     c IHEIGT,IBNWID,IBNHEI,
+C COMMON BLOCK /BUTCHA/  (CAMBTN.INC) (100*MAXBUT)
+     c CBUTTS,CBUTTX,
+C COMMON  BLOCK /CAMBLK/ (CAMBLK.INC) (256)
+     c CHRBUF,
+C COMMON BLOCK /CAMLOG/ (CAMBLK.INC) (1)
+     c LCLOSE,
+C COMMON BLOCK /XIOBUF/ (XIOBUF.INC) (136)
+     c CIOBUF, CCRCHR, MACDUM ,
+C COMMON BLOCK /XCIOBF/ (XIOBUF.INC) (3*LINBUF*256)
+     c CCVDU, CCEROR, CMON ,
+C COMMON /XIIOBF/ (XIOBUF.INC) (4*4)
+     c LVDU, MVDU, LEROR, MEROR,
+C writing the relevant parts of RSTORE and CSTORE
+C 4*16+4*(IRLAST-IRELM+1+ITOT-IREND+1)+ILEN*(ICLAST-ICELM+1+ITOT-(IGRP-NGRP*2-1)+1)
+     c (RSTORE(I),I=IRELM,IRLAST),
+     c (RSTORE(I),I=IREND,ITOT),
+     c (CSTORE(I),I=ICELM,ICLAST),(CSTORE(I),I=IGRP-NGRP*2-1,ITOT)
+      WRITE (CLINE,1231) FILENM
       CALL ZMORE(CLINE,0)
       CALL ZMORE1(CLINE,0)
-1231  FORMAT ('The current view has been assigned matrix number ',I4)
+1231  FORMAT ('The current view has been saved in file ',A60)
       GOTO 9999
 124   CONTINUE
-C RETRIEVE THE MATRIX
-C CHECK THAT THIS NUMBER EXISTS
-      IF (NCOMMD(INCNT).GT.IVNUM) THEN
-        CALL ZBEEP
-        CALL ZMORE( 'Record number not found',0)
-        IPROC = 0
-        RETURN
+cavdl** start old retrieve command, never used by Pearce
+cavdl** start new retrieve command
+C OPEN THE FILE
+      FILENM = CTCOMD ( ITCNT )
+      ITCNT = ITCNT + 1
+C CHECK WHETHER IT EXISTS
+      INQUIRE (FILE=FILENM , EXIST=LEXIST)
+      IF (LEXIST) THEN
+C IS THERE A FILE OPEN ALREADY?
+        INQUIRE (UNIT=IVOUT, OPENED=LEXIST)
+        IF (LEXIST) THEN
+          CLOSE(IVOUT)
+        ENDIF
+        OPEN (UNIT=IVOUT, FILE=FILENM, ACCESS='SEQUENTIAL',
+     c  FORM = 'UNFORMATTED',STATUS='OLD',ERR=1220)
+      ELSE
+         write(CLINE,'('' File does not exist, try again'')')
+         call zmore(cline,0)
+         return
       ENDIF
-      READ (IVOUT , REC=NCOMMD(INCNT) ) CTEXT, MAT1
-C      CALL ZMOVE ( RSTORE(ICRYST+6),ORTH,9)
-C      CALL ZPTMAT (ORTH,MAT)
-C      DO 1242 I = 1, 4
-C        MAT(4,I) = 0.0
-C        MAT(I,4) = 0.0
-C        MAT(4,4) = 1.0
-C1242  CONTINUE
-C      CALL ZMATM4 (ORTH,MAT)
-C      CALL ZMOVE (MAT,MAT1,16)
-      WRITE (CLINE,1240) NCOMMD(INCNT)
+      READ (IVOUT)
+C COMMON BLOCK /ZCOMAN/ (CAMANA.INC) (35*4)
+     c IPROC,IMENCN,ILINE,IBEG,IEND,IN,IR,IC,IINT
+     c ,IRL,ICHARS,ICTYPE,INCOM,IPREV,IHEAD,ICC,ICN,ICR,ISTORE,IFOBEY,
+     c ICABAN ,ICLOG, IVNUM,
+C COMMON BLOCKS /ZSTORI/ AND /ZSTORZ/ (CAMCOM.INC) (2*10000*4)
+     c ISTACK,ZSTACK,
+C COMMON BLOCK /ZSTORA/ (CAMCOM.INC) (19*4+7*INARGS*4)
+     c ICPOS,ICCPOS,ICRPOS,ICTPOS,ICNT,ICCNT,IRCNT,
+     c INCNT,ITCNT,ICOMMD,RCOMMD,NCOMMD,INFCMD,ICCMMD,ICNPOS,
+     c ICINPS, ICMULT, IXYZO , IATTYP, IPCK , IBOND , ILAB, ISYM,
+     c IPACKT , NSCRAT , NELM ,
+C COMMON BLOCK /ZDATAC/ (CAMDAT.INC) (32*4)
+     c ICOM,IRELM,ICELM,ICATOM,IRATOM,IRLAST,ICLAST,IREND,
+     c ICRYST,NSYMM,ISVIEW,ISYMED,ICELLC,IPACK,INATOM,IELROT,
+     c IFVIEW,ISINIT,IFINIT,NGRP,IGRP,IKEY,ITEXT,INTXT,ITNUMB,IGG,ICTXT,
+     c IGPCK, ICLST5, ICONBG, ICONED, IFIRST ,
+C COMMON BLOCK /ZCALCU/ (CAMCAL.INC) (830*4+NBDMAX*3*4)
+     c DISEND,DISBEG,ANGEND,ANGBEG,CENTR,NDIST1,PKMIN,
+     c PKMAX,PCMIN,PCMAX,PKCNF,PKCNA,D000,AMSYMM,AMTRAN,MAT1,MAT2,
+     c ROT,XC,YC,ZC,XCOS,XSIN,PI,ISSPRT,IBDORD,IORD,ISFLAG,ITFLAG,NDIST2
+     c ,RSTOL, ISPECL,IENCAT ,
+C COMMON BLOCK /ZMCONT/ (CAMMSE.INC) (2*4)
+     c IMOUSE,NMOUSE,
+C COMMON BLOCK/ZMNUSS/ (CAMMEN.INC) (81*4)
+     c IMENU,IMENX,IMENY,IMENAR,IMNTOP,IMPOS,IMENVT,NITEM,
+     c IMCHAR,ICHEAD,ISHEAD,IHMAX,IHNUM,IMENWD,IMOLD,INFOLL,
+C COMMON BLOCK /ZCHARA/ (CAMCHR.INC) (3587*4+21*ICLEN4+80*IMENCL*4)
+     c LINE,CHELP,CSUB,CTCOMD,LLINE,CGRAPH,
+     c CMENUS , CBUFF , CLINE, CTITLE ,
+C COMMON BLOCK /ZCOLOU/ (CAMCHR.INC)  (2*ICLMAX*6)
+     c COLNAM, COLGRY,
+C COMMON BLOCK /ZGRAPH/ (CAMGRP.INC (44*4+3*ICLMAX*4)
+     c YCEN,XCEN,SCLLIM,JPAGE,RES,IPOST,IFONT,
+     c IHAND,XCP,YCP,SCALE,IVCHAN,ISLCNT, RELSCL,IBUFF,SCLFIX,
+     c IDEVCH,IDEVCS,IDEVCL,XCENS,XCENH,YCENS,YCENH,SCLIMS,SCLIMH,
+     c IBACKS,IBACKH,IFOREH,IFORES,ILABCS,ILABCH,IBNDCS,IBNDCH,ICLDES,
+     c ICLDEH,ISCALS,ISCALH, INLINE, XOFF, YOFF,XEMIN,XEMAX,YEMIN,
+     c YEMAX, STRANG, PMAXX, PMAXY ,
+C COMMON BLOCK /ZCOLNU/ (CAMCOL.INC) (4*3*ICLMAX*4)
+     c IVGACL,IGREYC, ICOLS, IPSTCL,
+C COMMON BLOCK /ZFLGSS/ (CAMFLG.INC) (49*4)
+     c ISCRN,IELTYP,IOVER,IDEV,IHARD,
+     c ISQR,IDOKEY,NKEY,ICOLL,IPPCK,ITYPCK,IAXIS,IMAXIM,DBDMAX,RNUISO,
+     c IPLAB,ILSEC,ILSIZE,RTAPER,RTHICK,IMTFLG,IFILL,IEXFLG,
+     c IFRAME,ICURS,ILABFG,IPCOLL,COLTOL,ICELL,IFOLAP,ITCOL,IENCL, IPCX
+     c ,ILOG , IPHOTO, ICLDEF, ICAMER , IEDIT , ICBUFF, ITEKFG
+     c , IBACK,IFORE,ILABCL,IBNDCL, ICPOST, IENCAP, ISTREO, ISVGA,
+     c ITITLE ,
+C COMMON BLOCK /ZINST2/ (CAMSHR.INC) (2000*2) integer*2
+     c IXX2,IYY2 ,
+C COMMON BLOCK /ZVERSI/  (CAMVER.INC) (1*4)
+     c VERS,
+C COMMON BLOCK /BUTTON/ (CAMBTN.INC) (8*MAXBUT*4+8*4+3*NBDMAX*4)
+     c IBUTTS,IBBACK,IBTEXT,IBBORD,ICENTR,IBUTNO,IWIDTH,
+     c IHEIGT,IBNWID,IBNHEI,
+C COMMON BLOCK /BUTCHA/  (CAMBTN.INC) (100*MAXBUT)
+     c CBUTTS,CBUTTX,
+C COMMON  BLOCK /CAMBLK/ (CAMBLK.INC) (256)
+     c CHRBUF,
+C COMMON BLOCK /CAMLOG/ (CAMBLK.INC) (1)
+     c LCLOSE,
+C COMMON BLOCK /XIOBUF/ (XIOBUF.INC) (136)
+     c CIOBUF, CCRCHR, MACDUM ,
+C COMMON BLOCK /XCIOBF/ (XIOBUF.INC) (3*LINBUF*256)
+     c CCVDU, CCEROR, CMON ,
+C COMMON /XIIOBF/ (XIOBUF.INC) (4*4)
+     c LVDU, MVDU, LEROR, MEROR,
+C writing the relevant parts of RSTORE and CSTORE
+     c (RSTORE(I),I=IRELM,IRLAST),
+     c (RSTORE(I),I=IREND,ITOT),
+     c (CSTORE(I),I=ICELM,ICLAST),(CSTORE(I),I=IGRP-NGRP*2-1,ITOT)
+      WRITE (CLINE,1233) FILENM
       CALL ZMORE(CLINE,0)
-      WRITE (CLINE,'(A80)') CTEXT
-      CALL ZMORE (CLINE,0)
-1240  FORMAT ('View matrix ',I4,' description: ')
+      CALL ZMORE1(CLINE,0)
+cavdl set ivchan = 1 because there is a new view matrix
       IVCHAN = 1
+1233  FORMAT ('An archived  view was read from file ',A60)
       GOTO 9999
 125   CONTINUE
-C LIST THE MATRIX
+c LIST THE MATRIX
       DO 1250 I = 1 , IVNUM
         READ ( IVOUT , REC=I) CTEXT  , MATDUM
         WRITE (CLINE,1251) I , CTEXT
@@ -1074,6 +1232,7 @@ C LIST THE MATRIX
 1250  CONTINUE
 1251  FORMAT ('Record number ',I4,' description :',/,A)
       GOTO 9999
+c128   CONTINUE
 128   CONTINUE
 C STEREO
       ISTREO = 1
@@ -2005,7 +2164,7 @@ C REMOVE THE REFERENCE FROM THIS END
 CODE FOR ZCMD4
       SUBROUTINE ZCMD4 (ID)
 C This routine deals with the ADD and MOVE commands.
-      
+
       INCLUDE 'CAMPAR.INC'
       INCLUDE 'CAMCOM.INC'
       INCLUDE 'CAMANA.INC'
@@ -2264,7 +2423,7 @@ C CHECK FOR ROOM
 9999  CONTINUE
       RETURN
       END
- 
+
 CODE FOR ZCMD6
       SUBROUTINE ZCMD6 (ID)
 C This routine does the ENCLOSURE commands.
@@ -2619,7 +2778,7 @@ CODE FOR ZCMD8 [ COMMAND GROUP 800 ]
       SUBROUTINE ZCMD8 (ID)
 C THIS IS THE CODE FOR THE 800 GROUP OF COMMANDS IE LABEL ETC
 C
-      
+
       INCLUDE 'CAMPAR.INC'
       INCLUDE 'CAMCOM.INC'
       INCLUDE 'CAMANA.INC'
@@ -2708,12 +2867,12 @@ C ACTIVATE SECONDARY BOND CHECKING
 9999  CONTINUE
       RETURN
       END
- 
+
 CODE FOR ZCMD9 [ COMMAND GROUP 900 ]
       SUBROUTINE ZCMD9 (ID)
 C THIS IS THE CODE FOR THE 900 GROUP OF COMMANDS IE INPUT ETC
 C
-      
+
       INCLUDE 'CAMPAR.INC'
       INCLUDE 'CAMCOM.INC'
       INCLUDE 'CAMANA.INC'
@@ -2839,6 +2998,7 @@ C ARCHIVE
 C THESE ARE THE COMMON BLOCKS
 C VARIABLES USED WITH COMMAND STORAGE
        WRITE (99) VERS
+        CALL ZMORE('START stroing:',0)
 C VARIABLES USED WITH COMMAND STORAGE - BUT NOT RSTORE
        WRITE (99) ICPOS,ICCPOS,ICRPOS,ICTPOS,ICNT,ICCNT,IRCNT,
      c INCNT,ITCNT,ICOMMD,RCOMMD,NCOMMD,INFCMD,ICCMMD,ICNPOS,
@@ -2912,6 +3072,7 @@ C RESTORE
       IF (NINT(VERS*10).EQ.1) THEN
 C THESE ARE THE COMMON BLOCKS
 C VARIABLES USED WITH COMMAND STORAGE (BUT NOT RSTORE)
+        CALL ZMORE('START retrieving:',0)
        READ (99) ICPOS,ICCPOS,ICRPOS,ICTPOS,ICNT,ICCNT,IRCNT,
      c INCNT,ITCNT,ICOMMD,RCOMMD,NCOMMD,INFCMD,ICCMMD,ICNPOS,
      c ICINPS, ICMULT, IXYZO , IATTYP, IPCK , IBOND , ILAB, ISYM,
@@ -3078,13 +3239,13 @@ C PCSEND
 9999  CONTINUE
       RETURN
       END
- 
+
 CODE FOR ZCMD10 [ 1000 GROUP OBEY ]
       SUBROUTINE ZCMD10 (ID)
 C This routines takes in a command file - either a .INI or a cameron
 C file and tries to interpret it.
 C OBEY AND USE ARE EQUIVALENT COMMANDS
-      
+
       INCLUDE 'CAMPAR.INC'
       INCLUDE 'CAMCOM.INC'
       INCLUDE 'CAMANA.INC'
@@ -3376,7 +3537,7 @@ C     c IBNDCS,ICLDES
 
         KID = ID - 2
         XCENS = RCAMDV ( KID * 3 + 1 )
-        YCENS = RCAMDV ( KID * 3 + 2 ) 
+        YCENS = RCAMDV ( KID * 3 + 2 )
         SCLIMS= RCAMDV ( KID * 3 + 3 ) 
         IBACKS= ICAMDV ( KID * 5 + 1 )
         IFORES= ICAMDV ( KID * 5 + 2 )
