@@ -83,7 +83,7 @@ CF IFILL      ball fill/unfill
 CF IFORE      foreground colour
 CF IFRAME     frame/noframe flag
 CF ILABCL     default label colour
-CF ILABFG     labelling on/off
+CF ILABFG     labelling on (=1 during session, =-1 in archived views)/off (=0)
 CF ILSEC      secondary bonds labelling search on/off
 CF ILSIZE     label size
 CF IMAXIM     picture maximise on/off
