@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.54  2005/10/14 13:18:21  djw
+C If the first parameter in the derived Shedrick weighting scheme converges to zero, reset it to 0.1 for output
+C
 C Revision 1.53  2005/06/02 14:52:07  djw
 C Include observed sigma to protect against zero division if the users sets QUASI to 0.0
 C
@@ -506,6 +509,7 @@ C For each grid point (9x9) calculate 10 wD^2 values corresponding to Fc range.
              WRITE(CMON,'(/A,2F10.4,A)')' Best fit this cycle: ',
      1       SXA,SXB, ' .0 .0 .0 .333'
              CALL XPRVDU(NCVDU,2,0)
+             IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1),cmon(2)
              WDTO = 0.0
 
              CALL XFAL06(IULN06, 0)   ! Load READ ONLY
@@ -534,6 +538,8 @@ C For each grid point (9x9) calculate 10 wD^2 values corresponding to Fc range.
      1        '           <wdelsq> : ', WDTO,
      2        '          S : ', SGOF
              CALL XPRVDU(NCVDU,2,0)
+             IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1),cmon(2)
+
 C Best fit at a high edge of the grid: increase spacing.
              IF ( KBESA .EQ. 4 ) SXAG = SXAG * 2.0
              IF ( KBESB .EQ. 4 ) SXBG = SXBG * 2.0
@@ -549,10 +555,11 @@ C Converged!
                 SXA = 0.2
                 SXB = 0.0
              END IF
-             if (sxa .le. 0.) then
-               sxa = 0.1
+             if (sxa .lt. 0.) then
+               sxa = 0.001
                write(cmon,'(A, 2f10.4)') 'Forced reset of P1', sxa, sxb
                call xprvdu(ncvdu,1,0)
+               IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1)
              endif
              EXIT
 
@@ -560,6 +567,7 @@ C Converged!
           WRITE ( CMON,'(A,2F10.4,A)') '     Weights applied: ',SXA,SXB,
      1                             ' .0 .0 .0 .333'
           CALL XPRVDU(NCVDU,1,0)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1)
           CALL XCSAE                     ! CLEAR THE LIST ENTRIES
           IRCZAP = 0
       INCLUDE 'IDIM04.INC'
@@ -685,8 +693,8 @@ C--ASSIGN A FEW POINTERS
         IF ( IERFLG .LT. 0 ) GO TO 9900
         FOAV = STORE(L6DTL+3*MD6DTL + 2)
 cdjwjun05
-        write(cmon,'(a,f12.3,a,f12.3)') 'Foav=',foav
-        call xprvdu (NCVDU, 1,0)
+c        write(cmon,'(a,f12.3,a,f12.3)') 'Foav=',foav
+c        call xprvdu (NCVDU, 1,0)
 
         FCAV = STORE(L6DTL+5*MD6DTL + 2)
         CALL XIRTAC(5)       ! CLEAR THE ACCUMULATION AREA FOR THE WEIGHT
