@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.108  2006/02/16 15:37:37  djw
+C Compress the HTML Publish file
+C
 C Revision 1.107  2006/01/06 10:08:57  djw
 C Fixes to cif output of torsion angles
 C
@@ -5277,23 +5280,6 @@ c
         END IF
 C
         IF ( IPUNCH .EQ. 0 ) THEN
-           IVAL = IREFCD(2,IDIFNO)
-           CTEMP = CREFMK(ISTORE(LREFS), NREFS, MDREFS, IVAL)
-           CALL XCTRIM (CTEMP,NCHAR)
-           WRITE (CLINE,'(''_computing_data_reduction'' )') 
-           IF ( NCHAR .LE. 45 ) THEN
-             WRITE(CLINE(35:),'('''''''',A,'''''''')')CTEMP(2:NCHAR-1)
-             CALL XPCIF (CLINE)
-           ELSE
-             CALL XPCIF (CLINE)
-             CALL XPCIF (';')
-             WRITE (CLINE,'(A )')CTEMP(1:NCHAR)
-             CALL XPCIF (CLINE)
-             CALL XPCIF (';')
-           END IF
-        END IF
-C
-        IF ( IPUNCH .EQ. 0 ) THEN
            IVAL = IREFCD(3,IDIFNO)
            CTEMP = CREFMK(ISTORE(LREFS), NREFS, MDREFS, IVAL)
            CALL XCTRIM (CTEMP,NCHAR)
@@ -5310,6 +5296,23 @@ C
            END IF
         END IF
 C
+C
+        IF ( IPUNCH .EQ. 0 ) THEN
+           IVAL = IREFCD(2,IDIFNO)
+           CTEMP = CREFMK(ISTORE(LREFS), NREFS, MDREFS, IVAL)
+           CALL XCTRIM (CTEMP,NCHAR)
+           WRITE (CLINE,'(''_computing_data_reduction'' )') 
+           IF ( NCHAR .LE. 45 ) THEN
+             WRITE(CLINE(35:),'('''''''',A,'''''''')')CTEMP(2:NCHAR-1)
+             CALL XPCIF (CLINE)
+           ELSE
+             CALL XPCIF (CLINE)
+             CALL XPCIF (';')
+             WRITE (CLINE,'(A )')CTEMP(1:NCHAR)
+             CALL XPCIF (CLINE)
+             CALL XPCIF (';')
+           END IF
+        END IF
 C----- DIRECT METHODS.
 C----- PARAMETER 13 ON DIRECTIVE 6 IS A CHARACTER STRING
         IF ( IPUNCH .EQ. 0 ) THEN
