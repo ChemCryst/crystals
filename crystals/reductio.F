@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2005/11/29 17:59:14  djw
+C Add code to permit use of data from multi-batch samples
+C
 C Revision 1.26  2005/09/08 13:10:56  djw
 C Store Rmerge as cif item Rint  (spotted by Andrew)
 C
@@ -809,7 +812,7 @@ C--SET UP LIST 6 FOR THE I/O OPERATIONS
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--CHECK THE TYPE OF OUTPUT MEDIUM
 cdjwmay99
-c      write(ncawu,*) 'medium=',medium
+c      write(ncawu,*) 'medium=',medium,'iuln=',iuln
       IF(MEDIUM)1150,1100,1150
 C--SAME AS BEFORE  -  SET THE 'MEDIUM' FLAG
 1100  CONTINUE
@@ -1248,13 +1251,17 @@ CDJW FEB03  ONLY UPDTE FOR LIST 6
 c----Sep05  Store Rmerge (25) as Rint for cif compatibility
       IF (IULN .EQ. 6) THEN
        IF (ISTORE(L13CD) .EQ. -1) THEN
-C------- FRIEDEL USED
+C------- FRIEDEL NOT USED
             STORE(L30DR+4) = FLOAT(N6W)
             STORE(L30DR+5) = WORK(25)
        ELSE
             STORE(L30DR+2) = min(FLOAT(N6W),STORE(L30DR+2))
             STORE(L30DR+3) = WORK(25)
        ENDIF
+      ELSE
+C------- ASSUME LIST 7 AND FRIEDEL USED
+            STORE(L30DR+2) = FLOAT(N6W)
+            STORE(L30DR+3) = WORK(25)
       ENDIF
       CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
  6520  CONTINUE
