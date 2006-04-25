@@ -1,6 +1,6 @@
 % SCRIPT XFRIEDEL                                                               
 % VARIABLE LOGICAL XQMERGE                                                      
-% VARIABLE INTEGER FRIEDELF                                                       
+% VARIABLE INTEGER FRIEDELF                                                     
 % VARIABLE REAL ZMAX WORK1 FCENTRO WAVE                                         
 % IF ( EXISTS ( 13 ) .NE. 1 ) THEN                                              
 %   COPY '#LIST 13'                                                             
@@ -41,16 +41,16 @@
 % END IF                                                                        
 %%                                                                              
 %%                                                                              
-% EVALUATE FRIEDELF = - 1                                                         
+% EVALUATE FRIEDELF = - 1                                                       
 %%                                                                              
 % IF ( FCENTRO .GT. 0.9 ) THEN                                                  
                                                                                 
 {I Centro-symmetric space-group.                                                
 {R * Friedel Pairs will be merged.                                              
-%   EVALUATE FRIEDELF = 0                                                         
+%   EVALUATE FRIEDELF = 0                                                       
 %   COPY '#GENERALEDIT 13'                                                      
 %   COPY 'LOCATE RECORDTYPE=101'                                                
-%   COPY 'TRANSFER TO OFFSET=0 FROM FRIEDELF'                                     
+%   COPY 'TRANSFER TO OFFSET=0 FROM FRIEDELF'                                   
 %   COPY 'WRITE'                                                                
 %   COPY 'END'                                                                  
 % END IF                                                                        
@@ -66,15 +66,22 @@
 ^^WI   }                                                                        
 ^^WI   @ 3,2 GRID FRIED NROWS=14 NCOLS=1 OUTLINE='Friedel Pairs (hkl,-h-k-l)'   
 ^^WI   {                                                                        
-^^WI      @ 5,1 STATIC MF1 'It is important not to invoke Friedels Law:'            
-^^WI  @ 6,1 STATIC MF1 'a) when determining the absolute structure parameter.'       
-^^WI  @ 7,1 STATIC MF1 'b) for structures with strong anomolous scatterers,'        
+^^WI      @ 5,1 STATIC MF1 'It is important not to invoke Friedels Law:'        
+^^WI  @ 6,1 STATIC MF1 'a) when determining the absolute structure parameter.'  
+^^WI  @ 7,1 STATIC MF1 'b) for structures with strong anomolous scatterers,'    
 ^^WI  @ 8,1 STATIC MF1 '   since pairs are not equivalent in these cases.'      
+%% 
+% IF ( FRIEDELF .GE. 0 )  THEN                                                   
 %%                                                                              
-% IF ( ZMAX .GT. 29.0 )  THEN                                                   
+^^WI      @ 2,1 RADIOBUTTON MFO 'Use Friedels Law' STATE=ON                             
+^^WI      @ 3,1 RADIOBUTTON KUN 'Do not use Friedels Law'               
+^^WI @ 10,1 STATIC MF2 'This structure is centrosymmetric'      
+^^WI @ 11,1 STATIC MF2 'Friedel pairs should generally be merged'   
 %%                                                                              
-^^WI      @ 2,1 RADIOBUTTON MFO 'Use Friedels Law'                           
-^^WI      @ 3,1 RADIOBUTTON KUN 'Do not use Friedels Law' STATE=ON                   
+% ELSE IF ( ZMAX .GT. 29.0 )  THEN                                                   
+%%                                                                              
+^^WI      @ 2,1 RADIOBUTTON MFO 'Use Friedels Law'                              
+^^WI      @ 3,1 RADIOBUTTON KUN 'Do not use Friedels Law' STATE=ON              
 ^^WI @ 10,1 STATIC MF2 'This structure has atoms heavier than Silicon, so'      
 ^^WI @ 11,1 STATIC MF2 'in the opinion of the IUCr, the Friedel pairs should'   
 ^^WI      @ 12,1 STATIC MF2 'NOT be merged. However to determine the absolute'  
@@ -83,8 +90,8 @@
 %%                                                                              
 % ELSE IF ( WAVE .GT. 1.5 ) THEN                                                
 %%                                                                              
-^^WI      @ 2,1 RADIOBUTTON MFO 'Use Friedels Law' STATE=ON                  
-^^WI      @ 3,1 RADIOBUTTON KUN 'Do not use Friedels Law'                            
+^^WI      @ 2,1 RADIOBUTTON MFO 'Use Friedels Law'                    
+^^WI      @ 3,1 RADIOBUTTON KUN 'Do not use Friedels Law'  STATE=ON                        
 ^^WI      @ 10,1 STATIC MF2 'However, this is a light-atom structure so the'    
 ^^WI      @ 11,1 STATIC MF2 'anomalous differences will be small. As you have'  
 ^^WI      @ 12,1 STATIC MF2 'used Cu radiation, you may be able to determine'   
@@ -93,8 +100,8 @@
 %%                                                                              
 % ELSE                                                                          
 %%                                                                              
-^^WI      @ 2,1 RADIOBUTTON MFO 'Use Friedels Law' STATE=ON                  
-^^WI      @ 3,1 RADIOBUTTON KUN 'Do not use Friedels Law'                            
+^^WI      @ 2,1 RADIOBUTTON MFO 'Use Friedels Law' STATE=ON                     
+^^WI      @ 3,1 RADIOBUTTON KUN 'Do not use Friedels Law'                       
 ^^WI      @ 10,1 STATIC MF2 'However, this is a light-atom structure so the'    
 ^^WI      @ 11,1 STATIC MF2 'anomalous differences will be small. As you have'  
 ^^WI @ 12,1 STATIC MF2 'used Mo radiation, you will not be able to determine'   
@@ -114,7 +121,7 @@
 ^^WI SHOW                                                                       
 ^^CR                                                                            
 % LOOP                                                                          
-% IF FRIEDELF .EQ. 0 THEN                                                         
+% IF FRIEDELF .EQ. 0 THEN                                                       
 %%CO SET MFO STATE=ON SET KUN STATE=OFF                                         
 %%CO SET MFO DISABLED=YES SET KUN DISABLED=YES                                  
 % END IF                                                                        
@@ -135,7 +142,7 @@
 ^^??  MFO STATE                                                                 
 %     VERIFY OFF ON                                                             
 %     GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                              
-%     EVALUATE FRIEDELF = VALUE - 2                                               
+%     EVALUATE FRIEDELF = VALUE - 2                                             
 ^^CO  DISPOSE XFRIEDEL                                                          
 %%                                                                              
 %%                                                                              
@@ -145,7 +152,7 @@
 %     END IF                                                                    
 %     COPY '#GENERALEDIT 13'                                                    
 %     COPY 'LOCATE RECORDTYPE=101'                                              
-%     COPY 'TRANSFER TO OFFSET=0 FROM FRIEDELF'                                   
+%     COPY 'TRANSFER TO OFFSET=0 FROM FRIEDELF'                                 
 %     COPY 'WRITE'                                                              
 %     COPY 'END'                                                                
 %     FINISH                                                                    
@@ -154,10 +161,10 @@
 %   VERIFY OFF ON                                                               
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'ON'                               
 %   IF VALUE .EQ. 1 THEN                                                        
-{I Merge set off
+{I Merge set off                                                                
 %%CO SET MFO DISABLED=YES SET KUN DISABLED=YES                                  
 %   ELSE                                                                        
-{I Merge set on
+{I Merge set on                                                                 
 %%CO SET MFO DISABLED=NO SET KUN DISABLED=NO                                    
 %   END IF                                                                      
 %%                                                                              
