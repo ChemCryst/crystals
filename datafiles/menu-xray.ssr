@@ -5,7 +5,7 @@
 ^^WI     ITEM RC93 'Run &RC93 - Cad 4 data' '#SCRIPT RC93'
 ^^WI     ITEM DIPIN 'Run &Dipin - DIP2000 data' '#SCRIPT DIP'
 ^^WI   ENDMENU
-^^WI   ITEM INKC  'Use &KCCDIN ouput' '#SCRIPT XKCCDIN'
+^^WI   ITEM INKC  'Use &KCCDIN output' '#SCRIPT XKCCDIN'
 ^^WI   ITEM INCA  'Use &RC93 output' '#SCRIPT XINRC93'
 ^^WI   ITEM INDIP 'Use &DIPIN output' '#SCRIPT XDIPIN'
 ^^WI   SPLIT
