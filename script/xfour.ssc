@@ -699,7 +699,7 @@ To change this click on the 'Set Map Ranges' button.
 The second part of the information, such as the type of map,                    
 is provided by this dialog.                                                     
                                                                                 
-In the ouput listing, new peaks are labelled, with the                          
+In the output listing, new peaks are labelled, with the                          
 following meanings                                                              
                                                                                 
 GOOD PEAK - The peak centre was determined by Least-Squares.                    
