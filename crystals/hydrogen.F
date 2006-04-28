@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:09  rich
 C New CRYSTALS repository
 C
@@ -964,7 +968,8 @@ C         2 ON SP3 , 1 ON SP2 OR 0 ON SP1
             END IF
          ELSE IF (NBONDS.EQ.1) THEN
 C         3 ON SP3 , 2 ON SP2 OR 1 ON SP1
-            IF (DELTA.GE..05) THEN
+cdjwapr06            IF (DELTA.GE..05) THEN
+            IF (DELTA.GE. .01) THEN
                LHYB=NHYB
             ELSE
                SOP=XDSTN2(STORE(IADD(1)+7),STORE(ISEC+7))
