@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.26  2006/04/28 16:39:38  djw
+C Tune Sp3 hydrogen detection
+C
 C Revision 1.25  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -548,7 +551,7 @@ C
       CHARACTER *12 CTEMP
 C----- PATH AND FILENAME FOR RIDING CONSTRAINTS
       CHARACTER *256 CPATH, CPATH2
-      DIMENSION JFRN(4), KFRN(4)
+      DIMENSION JFRN(4), KFRN(4), LFRN(4)
 C--
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM12.INC'
@@ -578,6 +581,8 @@ C
 C
       DATA JFRN /'F', 'R', 'N', '1'/
       DATA KFRN /'F', 'R', 'N', '2'/
+CAPR06 USE THE OLD COMMON BLOCK FILE AS A WORK FILE
+      DATA LFRN /'E', 'X', 'C', 'O'/
 CC
 C----- SET THE SYMBOL FOR CARBON AND NITROGEN
       DATA ICARB /'C   '/, INTRO/'N   '/
@@ -766,6 +771,9 @@ C----- OPEN A FILE FOR THE RIDING RESTRAINTS
          CPATH2='PERH.DAT'
          LPATH2=KPATH(CPATH2)
          CALL XRDOPN (6,KFRN(1),CPATH2(1:LPATH2)//'PERH.DAT',LPATH2+8)
+         CPATH2='DELH.DAT'
+         LPATH2=KPATH(CPATH2)
+         CALL XRDOPN (6,LFRN(1),CPATH2(1:LPATH2)//'DELH.DAT',LPATH2+8)
       END IF
       WRITE (CMON,'(11X,A)') 'Putting riding Constraints in RIDEH.DAT'
       CALL XPRVDU (NCVDU,1,1)
@@ -785,6 +793,7 @@ C----- OPEN A FILE FOR THE RIDING RESTRAINTS
          CALL XISRC (CSRQ)
       END IF
       IF (JACT.GE.2) THEN
+         WRITE (NCCBU,'(A)') '#EDIT'
          WRITE (NCFPU2,'(A10,1X,I2,1X,I2)') '#HYDROGENS',
      1    KTYP05(MX),KTYP05(MY)
          WRITE (NCFPU2,'(A5,F6.3)') 'DIST ',SX
@@ -1180,6 +1189,7 @@ C
       END IF
       IF (JACT.GE.2) THEN
          WRITE (NCFPU2,'(A3)') 'END'
+         WRITE (NCCBU, '(A)') 'END'
       END IF
 C
 C -- END ROUTINE
@@ -1198,8 +1208,12 @@ C -- FINAL MESSAGES
 C
 C----- CLOSE THE RIDING RESTRAINT FILE
       CALL XRDOPN (7,JFRN(1),CPATH(1:LPATH)//'RIDEH.DAT',LPATH+9)
-      IF (JACT.GE.2) CALL XRDOPN (7,KFRN(1),CPATH2(1:LPATH2)//'PERH.DAT'
+      IF (JACT.GE.2) THEN
+            CALL XRDOPN (7,KFRN(1),CPATH2(1:LPATH2)//'PERH.DAT'
      1,LPATH+8)
+            CALL XRDOPN (7,LFRN(1),CPATH2(1:LPATH2)//'DELH.DAT'
+     1,LPATH+8)
+      ENDIF
 C
       CALL XOPMSG (IOPHYD,IOPEND,410)
 C
@@ -1471,7 +1485,7 @@ C
 C THRESHOLD VALUES FOR BOND LENGTHS FOR COMPARISON WITH SHORTEST BOND.
 C       3/2, 2/1 THRESHOLD PAIRS
       DATA THRESH
-     2   / 1.45, 1.23, 1.41, 1.22, 1.35, 1.17, 1.34, 1.15,
+     2   / 1.43, 1.23, 1.41, 1.22, 1.35, 1.17, 1.34, 1.15,
      3     1.82, 1.60, 1.60, 1.40, 1.50, 1.40 /
 C
       KHYB = 0
@@ -1484,23 +1498,27 @@ C
       I = (I+3)/4
       D1 = DIST - THRESH(1,I)
       D2 = DIST - THRESH(2,I)
-      IF (ABS(D1) .LT. ABS(D2)) THEN
+capr06      IF (ABS(D1) .LT. ABS(D2)) THEN
 C----- SP2/SP3 INTERFACE
             IF (D1 .GT. 0.) THEN
                   KHYB = 3
-            ELSE
-                  KHYB = 2
-            ENDIF
-            DELTA = D1
-      ELSE
+                  DELTA = D1
+            ELSE if (d2 .le. 0) then
 C----- SP1/SP2 INTERFACE
-            IF (D2 .GT. 0.) THEN
-                  KHYB = 2
-            ELSE
                   KHYB = 1
+                  DELTA = D2
+            else 
+                  khyb = 2
+                  delta = min(abs(d1), abs(d2))
             ENDIF
-            DELTA = D2
-      ENDIF
+capr06      ELSE
+capr06            IF (D2 .GT. 0.) THEN
+capr06                  KHYB = 2
+capr06            ELSE
+capr06                  KHYB = 1
+capr06            ENDIF
+capr06            DELTA = D2
+capr06      ENDIF
       RETURN
       END
 C
@@ -1729,6 +1747,7 @@ C
       ENDIF
       IF (JACT .GE. 2) THEN
        WRITE (NCFPU2,'(''SERIAL '', I7)') ISER
+      write(nCCBU,'(a,i5,a)') 'delete h(',iser,')'
       ENDIF
 C
 C START WRITING COMMAND TO CWRITE
@@ -1829,6 +1848,7 @@ C
       ENDIF
       IF (JACT .GE. 2) THEN
        WRITE (NCFPU2,'(''SERIAL '', I7)') ISER
+      write(ncCBU,'(a,i5,a)') 'delete h(',iser,')'
       ENDIF
 C
 C WRITE ATOM SPECIFICATIONS TO CATOM(N)(1:LCATOM(N)) (N = 1 TO 3)
@@ -1960,6 +1980,16 @@ C
       ENDIF
       IF (JACT .GE. 2) THEN
        WRITE (NCFPU2,'(''SERIAL '', I7)') ISER
+      if (ctype .eq. '12') then
+        write(ncCBU,'(a,i5,a)') 'delete h(',iser,')'
+      else if (ctype .eq. '33') then
+        write(ncCBU,'(a,i5,a)') 'delete h(',iser,')'
+        write(ncCBU,'(a,i5,a)') 'delete h(',iser+1,')'
+        write(ncCBu,'(a,i5,a)') 'delete h(',iser+2,')'
+      else
+        write(ncCBu,'(a,i5,a)') 'delete h(',iser,')'
+        write(ncCBu,'(a,i5,a)') 'delete h(',iser+1,')'
+      endif
       ENDIF
 C
 C WRITE ATOM SPECIFICATIONS TO CATOM(N)(1:LCATOM(N)), N = 1 TO 3

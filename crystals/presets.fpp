@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.50  2005/02/25 17:25:20  stefan
+C 1. Added some preprocessor if defined lines for the mac version.
+C
 C Revision 1.49  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -831,7 +834,7 @@ C
       DATA IFLSTA(1)  / 3 / , IFLSTA(2)  / 1 / , IFLSTA(3)  / 1 /
       DATA IFLSTA(4)  / 2 / , IFLSTA(5)  / 2 / , IFLSTA(6)  / 2 /
       DATA IFLSTA(7)  / 2 / , IFLSTA(8)  / 2 / , IFLSTA(9)  / 2 /
-      DATA IFLSTA(10) / 4 / , IFLSTA(11) / 1 / , IFLSTA(12) / 1 /
+      DATA IFLSTA(10) / 3 / , IFLSTA(11) / 1 / , IFLSTA(12) / 1 /
       DATA IFLSTA(13) / 1 / , IFLSTA(14) / 1 / , IFLSTA(15) / 1 /
       DATA IFLSTA(16) / 4 / , IFLSTA(17) / 4 / , IFLSTA(18) / 4 /
       DATA IFLSTA(19) / 4 / , IFLSTA(20) / 4 / , IFLSTA(21) / 4 /
@@ -907,7 +910,7 @@ C
       DATA IFLLCK(1)  / 2 / , IFLLCK(2)  / 1 / , IFLLCK(3)  / 2 /
       DATA IFLLCK(4)  / 1 / , IFLLCK(5)  / 1 / , IFLLCK(6)  / 1 /
       DATA IFLLCK(7)  / 1 / , IFLLCK(8)  / 2 / , IFLLCK(9)  / 1 /
-      DATA IFLLCK(10) / 2 / , IFLLCK(11) / 2 / , IFLLCK(12) / 1 /
+      DATA IFLLCK(10) / 1 / , IFLLCK(11) / 2 / , IFLLCK(12) / 1 /
       DATA IFLLCK(13) / 1 / , IFLLCK(14) / 1 / , IFLLCK(15) / 1 /
       DATA IFLLCK(16) / 1 / , IFLLCK(17) / 1 / , IFLLCK(18) / 1 /
       DATA IFLLCK(19) / 1 / , IFLLCK(20) / 1 / , IFLLCK(21) / 1 /
