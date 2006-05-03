@@ -1,77 +1,114 @@
-%SCRIPT XCIFNOSU
-%% The variables needed by XQUESTIO
-% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
-% VARIABLE LOGICAL   ANSWER
-
- * CIF listing of all data
-
-%    COPY "#BONDCALC FORCE"
-%    COPY "END"
-%    COPY "#STORE CSYS CIF 'publish.cif'"
-%    COPY '#APPEND PUNCH '
-%    COPY '#CIF '
-%    COPY 'END'
-%    COPY '#PARAMETERS'
-%    COPY 'LAYOUT INSET = 1 NCHAR = 120 ESD=NO'
-%    COPY 'COORD SELECT=ALL MONITOR=LOW PRINT=YES PUNCH=CIF NCHAR=14'
-%    COPY "U'S MONITOR=OFF, PRINT=NO, PUNCH=NO, NCHAR=14"
-%    COPY 'END'
-%    COPY '#DIST'
-%    COPY 'SELECT RANGE=L41'
-%    COPY 'OUTPUT MON=DIST PUNCH=CIF'
-%    COPY 'END'
-%%
-%%
-%    EVALUATE QTITLE = 'Parameter CIF'
-%    EVALUATE QLINE1 = 'CIF saved as publish.cif.'
-%    EVALUATE QLINE2 = 'Do you want to open it for editing?'
-%    EVALUATE BUTTOK = '&Yes'
-%    EVALUATE BUTTXX = '&No'
-%    COPY '#SCRIPT XQUESTIO'
-%    IF ANSWER .EQ. TRUE THEN
-%      COPY '#SPAWN +notepad publish.cif'
+%SCRIPT XCIFNOSU                                                                
+%% The variables needed by XQUESTIO                                             
+% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
+% VARIABLE LOGICAL   ANSWER                                                     
+%% check a few lists 
+%  BLOCK
+%    IF ( EXISTS 4 .NE. 1 ) THEN
+{E **** WARNING: Default LIST 4 created
+%    copy "#list 4"
+%    copy "end"
 %    END IF
-  Parameters saved in {&publish.cif{&
-%%
-^^WI WINDOW CIFREF 'Reflection CIF?'
-^^WI   MODAL COMMIT='CIFBOK' CANCEL='CIFBXX'
-^^WI GRID GRIDLR NROWS=1 NCOLS=2
-^^WI {
-^^WI   @ 1,1 GRID GRIDL NROWS=7 NCOLS=3
-^^WI   {
-^^WI     @ 1,2 STATIC CF1 'Prepare a CIF reflection listing with:'
-^^WI     @ 3,2 RADIOBUTTON RF '&Fo, Fc and sigma(Fo)'
-^^WI           STATE=ON
-^^WI     @ 4,2 RADIOBUTTON RS 'Fo^2, Fc^2, and sigma(Fo^2)'
-^^WI           STATE=OFF
-^^WI     @ 6,2 STATIC CF2 'CIF will be saved as publish.fcf'
-^^WI   }
-^^WI   @ 1,2 GRID GRIDR NROWS=5 NCOLS=2
-^^WI   {
-^^WI     @ 2,1 BUTTON CIFBOK '&Yes' COMMIT DEFAULT
-^^WI     @ 4,1 BUTTON CIFBXX '&No' CANCEL
-^^WI   }
-^^WI }
-^^WI SHOW
-^^CR
-%    VERIFY CIFBOK CIFBXX
-%    GET SILENT NOSTORE ABBREVIATED 'CIFBOK=Process'
-%    IF VALUE .EQ. 2 THEN
-^^CO DISPOSE CIFREF
-%         FINISH
+%  END BLOCK
+%  BLOCK
+%    IF ( EXISTS 23 .NE. 1 ) THEN
+{E **** WARNING: Default LIST 23 created
+%    copy "#list 23"
+%    copy "end"
 %    END IF
-^^?? RF STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE ABBREVIATED 'On=Fs'
-^^CO DISPOSE CIFREF
-%    COPY '#OPEN FRN1 publish.fcf'
-%    IF VALUE .EQ. 1 THEN
-%      COPY '#PUNCH 6 B'
-%    ELSE
-%      COPY '#PUNCH 6 E'
+%  END BLOCK
+%  BLOCK
+%    IF ( EXISTS 28 .NE. 1 ) THEN
+{E **** WARNING: Default LIST 28 created
+%    copy "#list 28"
+%    copy "end"
 %    END IF
+%  END BLOCK
+%  BLOCK
+%    IF ( EXISTS 31 .NE. 1 ) THEN
+{E **** WARNING: Default LIST 31 created
+%    copy "#list 31"
+%    copy "end"
+%    END IF
+%  END BLOCK
+                                                                                
+ * CIF listing of all data                                                      
+                                                                                
+%    COPY "#BONDCALC FORCE"                                                     
+%    COPY "END"                                                                 
+%    COPY "#STORE CSYS CIF 'publish.cif'"                                       
+%    COPY '#APPEND PUNCH '                                                      
+%    COPY '#CIF '                                                               
+%    COPY 'END'                                                                 
+%    COPY '#PARAMETERS'                                                         
+%    COPY 'LAYOUT INSET = 1 NCHAR = 120 ESD=NO'                                 
+%    COPY 'COORD SELECT=ALL MONITOR=LOW PRINT=YES PUNCH=CIF NCHAR=14'           
+%    COPY "U'S MONITOR=OFF, PRINT=NO, PUNCH=NO, NCHAR=14"                       
+%    COPY 'END'                                                                 
+%    COPY '#DIST'                                                               
+%    COPY 'SELECT RANGE=L41'                                                    
+%    COPY 'OUTPUT MON=DIST PUNCH=CIF'                                           
 %    COPY 'END'
-%    COPY '#RELEASE FRN1 BFILE.FRN'
- Reflections saved in {&publish.fcf{&
-%%
-%END SCRIPT
+%      COPY '#DISTANCE '                                                        
+%      COPY 'OUT PUNCh=H-CIF mon=ang'                                           
+%      COPY 'SELECT RANGE=LIMIT'                                                
+%      COPY 'LIMIT 0.7 2.2 0.7 2.2 '                                            
+%      COPY 'PIVOT H '                                                          
+%      COPY 'BOND O N '                                                         
+%      COPY 'END '                                                              
+                                                                 
+%%                                                                              
+%%                                                                              
+%    EVALUATE QTITLE = 'Parameter CIF'                                          
+%    EVALUATE QLINE1 = 'CIF saved as publish.cif.'                              
+%    EVALUATE QLINE2 = 'Do you want to open it for editing?'                    
+%    EVALUATE BUTTOK = '&Yes'                                                   
+%    EVALUATE BUTTXX = '&No'                                                    
+%    COPY '#SCRIPT XQUESTIO'                                                    
+%    IF ANSWER .EQ. TRUE THEN                                                   
+%      COPY '#SPAWN +notepad publish.cif'                                       
+%    END IF                                                                     
+  Parameters saved in {&publish.cif{&                                           
+%%                                                                              
+^^WI WINDOW CIFREF 'Reflection CIF?'                                            
+^^WI   MODAL COMMIT='CIFBOK' CANCEL='CIFBXX'                                    
+^^WI GRID GRIDLR NROWS=1 NCOLS=2                                                
+^^WI {                                                                          
+^^WI   @ 1,1 GRID GRIDL NROWS=7 NCOLS=3                                         
+^^WI   {                                                                        
+^^WI     @ 1,2 STATIC CF1 'Prepare a CIF reflection listing with:'              
+^^WI     @ 3,2 RADIOBUTTON RF '&Fo, Fc and sigma(Fo)'                           
+^^WI           STATE=ON                                                         
+^^WI     @ 4,2 RADIOBUTTON RS 'Fo^2, Fc^2, and sigma(Fo^2)'                     
+^^WI           STATE=OFF                                                        
+^^WI     @ 6,2 STATIC CF2 'CIF will be saved as publish.fcf'                    
+^^WI   }                                                                        
+^^WI   @ 1,2 GRID GRIDR NROWS=5 NCOLS=2                                         
+^^WI   {                                                                        
+^^WI     @ 2,1 BUTTON CIFBOK '&Yes' COMMIT DEFAULT                              
+^^WI     @ 4,1 BUTTON CIFBXX '&No' CANCEL                                       
+^^WI   }                                                                        
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+%    VERIFY CIFBOK CIFBXX                                                       
+%    GET SILENT NOSTORE ABBREVIATED 'CIFBOK=Process'                            
+%    IF VALUE .EQ. 2 THEN                                                       
+^^CO DISPOSE CIFREF                                                             
+%         FINISH                                                                
+%    END IF                                                                     
+^^?? RF STATE                                                                   
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE ABBREVIATED 'On=Fs'                                     
+^^CO DISPOSE CIFREF                                                             
+%    COPY '#OPEN FRN1 publish.fcf'                                              
+%    IF VALUE .EQ. 1 THEN                                                       
+%      COPY '#PUNCH 6 B'                                                        
+%    ELSE                                                                       
+%      COPY '#PUNCH 6 E'                                                        
+%    END IF                                                                     
+%    COPY 'END'                                                                 
+%    COPY '#RELEASE FRN1 BFILE.FRN'                                             
+ Reflections saved in {&publish.fcf{&                                           
+%%                                                                              
+%END SCRIPT                                                                     

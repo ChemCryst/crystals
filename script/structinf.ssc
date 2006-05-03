@@ -15,17 +15,20 @@
 {1,11       Sir97 file                                                          
 {1,11 Edit co-ordinates         {12,11Invoke a text editor or the CRYSTALS      
 {1,11                           {12,11editor to modify the structure            
-{1,11 Invert co-ordinates       {12,11Invert the structure through the origin   
+{1,11 Invert co-ordinates       {12,11Invert the structure through the origin 
+{1,11 Change atom TYPES         {12,11Change the element types of atoms  
 {1,11 Number atoms sequentially {12,11Renumber the atoms so that they follow    
-{1,11                           {12,11sequentially through the structure 
-{1,11 Allocate Part Nos         {12,11Allocate part numbers to fragements
-{1,11                           {12,11in disordered structures
-{1,11 Remove Part Nos           {12,11Remove part identifiers for all atoms
+{1,11                           {12,11sequentially through the structure
+{1,11 Allocate Residue Numbers  {12,11Add a unique identifier for each 
+{1,11                           {12,11residue        
+{1,11 Allocate Part Nos         {12,11Allocate part numbers to fragements       
+{1,11                           {12,11in disordered structures                  
+{1,11 Remove Part Nos           {12,11Remove part identifiers for all atoms     
 {1,11 Collect atoms             {12,11Re-order atom list to that atoms          
 {1,11                           {12,11adjacent in space are adjacent in the     
 {1,11                           {12,11list (assemble molecules)                 
 {1,11 Distances                 {12,11List interatomic distances                
-{1,11 Make and Break bonds      {12,11Edit bonding information table                
+{1,11 Make and Break bonds      {12,11Edit bonding information table            
 {1,11 Add hydrogen geometrically{12,11Add H atoms where ever possible           
 {1,11                           {12,11using geometrical rules                   
 {1,11 Add hydrogen + fourier    {12,11Show peaks from a difference synthesis    

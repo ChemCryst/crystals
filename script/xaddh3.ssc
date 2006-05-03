@@ -1,245 +1,245 @@
-%SCRIPT XADDH3
-% VARIABLE INTEGER LOOPAGAIN HTYPE NARGS
-% VARIABLE CHARACTER CATOM1 CATOM2 CATOM3 CATOM4 CATOM5 CATOM6
-% EVALUATE LOOPAGAIN = 0
-% VARIABLE CHARACTER C CAT1 CAT2 CAT3 CAT4 CAT5 CAT6 CTYPE
-% VARIABLE INTEGER IAT1 IAT2 IAT3 IAT4 IAT5 IAT6 NSER
-% VARIABLE INTEGER NEXTFREE STARTFROM
-% VARIABLE REAL S
-% VARIABLE REAL OCC1 OCC2 OCC3 OCC4 OCC5 OCC6 OCC
-% EVALUATE CAT1 = UPPERCASE FIRSTSTR ( CATOM1 )
-% EVALUATE CAT2 = UPPERCASE FIRSTSTR ( CATOM2 )
-% EVALUATE CAT3 = UPPERCASE FIRSTSTR ( CATOM3 )
-% EVALUATE CAT4 = UPPERCASE FIRSTSTR ( CATOM4 )
-% EVALUATE CAT5 = UPPERCASE FIRSTSTR ( CATOM5 )
-% EVALUATE CAT6 = UPPERCASE FIRSTSTR ( CATOM6 )
-% EVALUATE IAT1 = FIRSTINT ( CATOM1 )
-% EVALUATE IAT2 = FIRSTINT ( CATOM2 )
-% EVALUATE IAT3 = FIRSTINT ( CATOM3 )
-% EVALUATE IAT4 = FIRSTINT ( CATOM4 )
-% EVALUATE IAT5 = FIRSTINT ( CATOM5 )
-% EVALUATE IAT6 = FIRSTINT ( CATOM6 )
-%%
-%% Find next free H serial after IAT1*10
-%%
-% EVALUATE NSER = ( IAT1 * 10 )
-% IF NSER .GE. 10000 THEN
-%   EVALUATE NSER = NSER / 10
-% END IF
-% EVALUATE STARTFROM = NSER
-% EVALUATE CTYPE = 'H   '
-% COPY '#SCRIPT NEXTFREE'
-% EVALUATE NSER = NEXTFREE
-%%
-% COPY '#GENERALEDIT 5'
-% COPY 'LOCATE RECORDTYPE=101'
-% COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-% EVALUATE OCC = 1.0
-% LOOP
-%     ON EDITERROR TERMINATE
-%     COPY 'TRANSFER FROM OFFSET=0 TO C'
-%     COPY 'TRANSFER FROM OFFSET=1 TO S'
-%     IF ( CAT1 .EQ. C ) .AND. ( IAT1 .EQ. INTEGER ( S ) ) THEN
-%        COPY 'TRANSFER FROM OFFSET=2 TO OCC1'
-%        IF OCC1 .LT. OCC THEN
-%           EVALUATE OCC = OCC1
-%        END IF
-%     END IF
-%     IF ( CAT2 .EQ. C ) .AND. ( IAT2 .EQ. INTEGER ( S ) ) THEN
-%        COPY 'TRANSFER FROM OFFSET=2 TO OCC2'
-%        IF OCC2 .LT. OCC THEN
-%           EVALUATE OCC = OCC2
-%        END IF
-%     END IF
-%     IF ( CAT3 .EQ. C ) .AND. ( IAT3 .EQ. INTEGER ( S ) ) THEN
-%        COPY 'TRANSFER FROM OFFSET=2 TO OCC3'
-%        IF OCC3 .LT. OCC THEN
-%           EVALUATE OCC = OCC3
-%        END IF
-%     END IF
-%     IF ( CAT4 .EQ. C ) .AND. ( IAT4 .EQ. INTEGER ( S ) ) THEN
-%        COPY 'TRANSFER FROM OFFSET=2 TO OCC4'
-%        IF OCC4 .LT. OCC THEN
-%           EVALUATE OCC = OCC4
-%        END IF
-%     END IF
-%     IF ( CAT5 .EQ. C ) .AND. ( IAT5 .EQ. INTEGER ( S ) ) THEN
-%        COPY 'TRANSFER FROM OFFSET=2 TO OCC5'
-%        IF OCC5 .LT. OCC THEN
-%           EVALUATE OCC = OCC5
-%        END IF
-%     END IF
-%     IF ( CAT6 .EQ. C ) .AND. ( IAT6 .EQ. INTEGER ( S ) ) THEN
-%        COPY 'TRANSFER FROM OFFSET=2 TO OCC6'
-%        IF OCC6 .LT. OCC THEN
-%           EVALUATE OCC = OCC6
-%        END IF
-%     END IF
-%     COPY 'NEXT'
-% END LOOP
-% COPY 'END'
-^^WI WINDOW ADDH 'Add hydrogen'
-^^WI POSITION=CENTRED '_MAINTEXTOUTPUT'
-^^WI GRID M NROWS=9 NCOLS=3 {
-^^WI   @ 2,2 GRID E NROWS=2 NCOLS=1 {
-^^WI     @ 1,1 STATIC S1 'Choose bond length and atom'
-^^WI     @ 2,1 STATIC S2 'occupancy.'
-^^WI   }
-^^WI   @ 4,2 GRID C NROWS=1 NCOLS=3 {
-^^WI     @ 1,1 GRID HHH NROWS=1 NCOLS=1 { @ 1,1 BITMAP H33 FILE
-%        CASE HTYPE
-%         BLOCK
-^^WI       'h33.bmp'
-%         END BLOCK
-%         BLOCK
-^^WI       'h23.bmp'
-%         END BLOCK
-%         BLOCK
-^^WI       'h13.bmp'
-%         END BLOCK
-%         BLOCK
-^^WI       'h22.bmp'
-%         END BLOCK
-%         BLOCK
-^^WI       'h12.bmp'
-%         END BLOCK
-%         BLOCK
-^^WI       'h11.bmp'
-%         END BLOCK
-%         BLOCK
-^^WI       'hphen.bmp'
-%         END BLOCK
-%        END CASE
-^^WI  }  @ 1,3 GRID F NROWS=13 NCOLS=5 {
-^^WI       @ 1,1 STATIC A0 'Position'
-^^WI       @ 1,3 STATIC A0 'Atom'
-^^WI       @ 1,5 STATIC A0 'Occupancy'
-^^WI       @ 3,1 STATIC A1 'X'
-% TRANSFER "^^WI @ 3,3 STATIC E1 '" // CATOM1 // "'" TO DISPLAY
-%          CLEAR
-%          INSERT "^^WI @ 3,5 STATIC O1 "
-%          STORE FORMAT /(F6.3)/ LENGTH 6 REAL OCC1
-%          OUTPUT
-^^WI       @ 5,1 STATIC A2 'R1'
-% TRANSFER "^^WI @ 5,3 STATIC E2 '" // CATOM2 // "'" TO DISPLAY
-%          CLEAR
-%          INSERT "^^WI @ 5,5 STATIC O2 "
-%          STORE FORMAT /(F6.3)/ LENGTH 6 REAL OCC2
-%          OUTPUT
-%          IF NARGS .GE. 3 THEN
-^^WI       @ 7,1 STATIC A3 'R2'
-% TRANSFER "^^WI @ 7,3 STATIC E3 '" // CATOM3 // "'" TO DISPLAY
-%          CLEAR
-%          INSERT "^^WI @ 7,5 STATIC O3 "
-%          STORE FORMAT /(F6.3)/ LENGTH 6 REAL OCC3
-%          OUTPUT
-%          END IF
-%          IF NARGS .GE. 4 THEN
-^^WI       @ 9,1 STATIC A4 'R3'
-% TRANSFER "^^WI @ 9,3 STATIC E4 '" // CATOM4 // "'" TO DISPLAY
-%          CLEAR
-%          INSERT "^^WI @ 9,5 STATIC O4 "
-%          STORE FORMAT /(F6.3)/ LENGTH 6 REAL OCC4
-%          OUTPUT
-%          END IF
-%          IF NARGS .EQ. 6 THEN
-^^WI       @ 11,1 STATIC A5 'R4'
-% TRANSFER "^^WI @ 11,3 STATIC E5 '" // CATOM5 // "'" TO DISPLAY
-%          CLEAR
-%          INSERT "^^WI @ 11,5 STATIC O5 "
-%          STORE FORMAT /(F6.3)/ LENGTH 6 REAL OCC5
-%          OUTPUT
-^^WI       @ 13,1 STATIC A4 'R5'
-% TRANSFER "^^WI @ 13,3 STATIC E6 '" // CATOM6 // "'" TO DISPLAY
-%          CLEAR
-%          INSERT "^^WI @ 13,5 STATIC O6 "
-%          STORE FORMAT /(F6.3)/ LENGTH 6 REAL OCC6
-%          OUTPUT
-%          END IF
-^^WI     }
-^^WI   }
-^^WI   @ 6,2 GRID B NROWS=3 NCOLS=5 {
-^^WI     @ 1,1 STATIC M1 'Occupancy'
-%        CLEAR
-%        INSERT "^^WI @ 1,3 EDITBOX P1 '"
-%        STORE FORMAT /(F6.3)/ LENGTH 6 REAL OCC
-%        INSERT "' REAL CHARS=8"
-%        OUTPUT
-^^WI     @ 3,1 STATIC M2 'Bond length'
-^^WI     @ 3,3 EDITBOX P2 '1.00' REAL CHARS=8
-^^WI     @ 3,5 STATIC M3 'angstroms'
-^^WI   }
-^^WI   @ 8,2 GRID B NROWS=1 NCOLS=5 {
-^^WI     @ 1,1 BUTTON BBB '< &Back'
-^^WI     @ 1,3 BUTTON BOK '&Finish' COMMIT DEFAULT
-^^WI     @ 1,5 BUTTON BXX '&Cancel' CANCEL
-^^WI   }
-^^WI }
-^^WI SHOW
-^^CR
-%     VERIFY BOK BBB BXX
-%     GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
-%     CASE VALUE
-%       BLOCK       %Finish%
-%%
-^^??      P1 TEXT
-%         GET SILENT NOSTORE REAL ' ' ' '
-%         EVALUATE OCC = VALUE
-%%
-%         COPY '#HYDROGENS'
-%         CLEAR
-%         INSERT 'DISTANCE '
-^^??      P2 TEXT
-%         GET SILENT REAL ' ' ' '
-%         SEND
-%         CLEAR
-%         INSERT 'SERIAL '
-%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER NSER
-%         SEND
-%         CLEAR
-%         CASE HTYPE
-%          INSERT 'H33 '
-%          INSERT 'H23 '
-%          INSERT 'H13 '
-%          INSERT 'H22 ' 
-%          INSERT 'H12 '
-%          INSERT 'H11 '
-%          INSERT 'PHENYL '
-%         END CASE
-%         TRANSFER CATOM1 // " " // CATOM2 // " " TO BUFFER
-%         IF NARGS .GE. 3 THEN
-%           TRANSFER CATOM3 // " " TO BUFFER
-%         END IF
-%         IF NARGS .GE. 4 THEN
-%           TRANSFER CATOM4 // " " TO BUFFER
-%         END IF
-%         IF NARGS .EQ. 6 THEN
-%           TRANSFER CATOM5 // " " // CATOM6 TO BUFFER
-%         END IF
-%         SEND
-%         COPY 'END'
-%         IF OCC .NE. 1.0 THEN
-%           COPY '#EDIT'
-%           CLEAR
-%           INSERT 'CHANGE H('
-%           STORE FORMAT /(I5)/ LENGTH 5 INTEGER NSER
-%           INSERT ',OCC) UNTIL LAST '
-%           STORE FORMAT /(F8.4)/ LENGTH 8 REAL OCC
-%           OUTPUT
-%           SEND
-%           COPY 'END'
-%         END IF
-^^CO      DISPOSE ADDH
-%         FINISH
-%       END BLOCK
-%       BLOCK       %BACK BBB%
-%         EVALUATE LOOPAGAIN = 1
-^^CO      DISPOSE ADDH
-%         FINISH
-%       END BLOCK
-%       BLOCK       %CANCEL BXX%
-^^CO      DISPOSE ADDH
-%         FINISH
-%       END BLOCK
-%     END CASE
-%END SCRIPT
+%SCRIPT XADDH3                                                                  
+% VARIABLE INTEGER LOOPAGAIN HTYPE NARGS                                        
+% VARIABLE CHARACTER CATOM1 CATOM2 CATOM3 CATOM4 CATOM5 CATOM6                  
+% EVALUATE LOOPAGAIN = 0                                                        
+% VARIABLE CHARACTER C CAT1 CAT2 CAT3 CAT4 CAT5 CAT6 CTYPE                      
+% VARIABLE INTEGER IAT1 IAT2 IAT3 IAT4 IAT5 IAT6 NSER                           
+% VARIABLE INTEGER NEXTFREE STARTFROM                                           
+% VARIABLE REAL S                                                               
+% VARIABLE REAL OCC1 OCC2 OCC3 OCC4 OCC5 OCC6 OCC                               
+% EVALUATE CAT1 = UPPERCASE FIRSTSTR ( CATOM1 )                                 
+% EVALUATE CAT2 = UPPERCASE FIRSTSTR ( CATOM2 )                                 
+% EVALUATE CAT3 = UPPERCASE FIRSTSTR ( CATOM3 )                                 
+% EVALUATE CAT4 = UPPERCASE FIRSTSTR ( CATOM4 )                                 
+% EVALUATE CAT5 = UPPERCASE FIRSTSTR ( CATOM5 )                                 
+% EVALUATE CAT6 = UPPERCASE FIRSTSTR ( CATOM6 )                                 
+% EVALUATE IAT1 = FIRSTINT ( CATOM1 )                                           
+% EVALUATE IAT2 = FIRSTINT ( CATOM2 )                                           
+% EVALUATE IAT3 = FIRSTINT ( CATOM3 )                                           
+% EVALUATE IAT4 = FIRSTINT ( CATOM4 )                                           
+% EVALUATE IAT5 = FIRSTINT ( CATOM5 )                                           
+% EVALUATE IAT6 = FIRSTINT ( CATOM6 )                                           
+%%                                                                              
+%% Find next free H serial after IAT1*10                                        
+%%                                                                              
+% EVALUATE NSER = ( IAT1 * 10 )                                                 
+% IF NSER .GE. 10000 THEN                                                       
+%   EVALUATE NSER = NSER / 10                                                   
+% END IF                                                                        
+% EVALUATE STARTFROM = NSER                                                     
+% EVALUATE CTYPE = 'H   '                                                       
+% COPY '#SCRIPT NEXTFREE'                                                       
+% EVALUATE NSER = NEXTFREE                                                      
+%%                                                                              
+% COPY '#GENERALEDIT 5'                                                         
+% COPY 'LOCATE RECORDTYPE=101'                                                  
+% COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                       
+% EVALUATE OCC = 1.0                                                            
+% LOOP                                                                          
+%     ON EDITERROR TERMINATE                                                    
+%     COPY 'TRANSFER FROM OFFSET=0 TO C'                                        
+%     COPY 'TRANSFER FROM OFFSET=1 TO S'                                        
+%     IF ( CAT1 .EQ. C ) .AND. ( IAT1 .EQ. INTEGER ( S ) ) THEN                 
+%        COPY 'TRANSFER FROM OFFSET=2 TO OCC1'                                  
+%        IF OCC1 .LT. OCC THEN                                                  
+%           EVALUATE OCC = OCC1                                                 
+%        END IF                                                                 
+%     END IF                                                                    
+%     IF ( CAT2 .EQ. C ) .AND. ( IAT2 .EQ. INTEGER ( S ) ) THEN                 
+%        COPY 'TRANSFER FROM OFFSET=2 TO OCC2'                                  
+%        IF OCC2 .LT. OCC THEN                                                  
+%           EVALUATE OCC = OCC2                                                 
+%        END IF                                                                 
+%     END IF                                                                    
+%     IF ( CAT3 .EQ. C ) .AND. ( IAT3 .EQ. INTEGER ( S ) ) THEN                 
+%        COPY 'TRANSFER FROM OFFSET=2 TO OCC3'                                  
+%        IF OCC3 .LT. OCC THEN                                                  
+%           EVALUATE OCC = OCC3                                                 
+%        END IF                                                                 
+%     END IF                                                                    
+%     IF ( CAT4 .EQ. C ) .AND. ( IAT4 .EQ. INTEGER ( S ) ) THEN                 
+%        COPY 'TRANSFER FROM OFFSET=2 TO OCC4'                                  
+%        IF OCC4 .LT. OCC THEN                                                  
+%           EVALUATE OCC = OCC4                                                 
+%        END IF                                                                 
+%     END IF                                                                    
+%     IF ( CAT5 .EQ. C ) .AND. ( IAT5 .EQ. INTEGER ( S ) ) THEN                 
+%        COPY 'TRANSFER FROM OFFSET=2 TO OCC5'                                  
+%        IF OCC5 .LT. OCC THEN                                                  
+%           EVALUATE OCC = OCC5                                                 
+%        END IF                                                                 
+%     END IF                                                                    
+%     IF ( CAT6 .EQ. C ) .AND. ( IAT6 .EQ. INTEGER ( S ) ) THEN                 
+%        COPY 'TRANSFER FROM OFFSET=2 TO OCC6'                                  
+%        IF OCC6 .LT. OCC THEN                                                  
+%           EVALUATE OCC = OCC6                                                 
+%        END IF                                                                 
+%     END IF                                                                    
+%     COPY 'NEXT'                                                               
+% END LOOP                                                                      
+% COPY 'END'                                                                    
+^^WI WINDOW ADDH 'Add hydrogen'                                                 
+^^WI POSITION=CENTRED '_MAINTEXTOUTPUT'                                         
+^^WI GRID M NROWS=9 NCOLS=3 {                                                   
+^^WI   @ 2,2 GRID E NROWS=2 NCOLS=1 {                                           
+^^WI     @ 1,1 STATIC S1 'Choose bond length and atom'                          
+^^WI     @ 2,1 STATIC S2 'occupancy.'                                           
+^^WI   }                                                                        
+^^WI   @ 4,2 GRID C NROWS=1 NCOLS=3 {                                           
+^^WI     @ 1,1 GRID HHH NROWS=1 NCOLS=1 { @ 1,1 BITMAP H33 FILE                 
+%        CASE HTYPE                                                             
+%         BLOCK                                                                 
+^^WI       'h33.bmp'                                                            
+%         END BLOCK                                                             
+%         BLOCK                                                                 
+^^WI       'h23.bmp'                                                            
+%         END BLOCK                                                             
+%         BLOCK                                                                 
+^^WI       'h13.bmp'                                                            
+%         END BLOCK                                                             
+%         BLOCK                                                                 
+^^WI       'h22.bmp'                                                            
+%         END BLOCK                                                             
+%         BLOCK                                                                 
+^^WI       'h12.bmp'                                                            
+%         END BLOCK                                                             
+%         BLOCK                                                                 
+^^WI       'h11.bmp'                                                            
+%         END BLOCK                                                             
+%         BLOCK                                                                 
+^^WI       'hphen.bmp'                                                          
+%         END BLOCK                                                             
+%        END CASE                                                               
+^^WI  }  @ 1,3 GRID F NROWS=13 NCOLS=5 {                                        
+^^WI       @ 1,1 STATIC A0 'Position'                                           
+^^WI       @ 1,3 STATIC A0 'Atom'                                               
+^^WI       @ 1,5 STATIC A0 'Occupancy'                                          
+^^WI       @ 3,1 STATIC A1 'X'                                                  
+% TRANSFER "^^WI @ 3,3 STATIC E1 '" // CATOM1 // "'" TO DISPLAY                 
+%          CLEAR                                                                
+%          INSERT "^^WI @ 3,5 STATIC O1 "                                       
+%          STORE FORMAT /(F9.6)/ LENGTH 9 REAL OCC1                             
+%          OUTPUT                                                               
+^^WI       @ 5,1 STATIC A2 'R1'                                                 
+% TRANSFER "^^WI @ 5,3 STATIC E2 '" // CATOM2 // "'" TO DISPLAY                 
+%          CLEAR                                                                
+%          INSERT "^^WI @ 5,5 STATIC O2 "                                       
+%          STORE FORMAT /(F9.6)/ LENGTH 9 REAL OCC2                             
+%          OUTPUT                                                               
+%          IF NARGS .GE. 3 THEN                                                 
+^^WI       @ 7,1 STATIC A3 'R2'                                                 
+% TRANSFER "^^WI @ 7,3 STATIC E3 '" // CATOM3 // "'" TO DISPLAY                 
+%          CLEAR                                                                
+%          INSERT "^^WI @ 7,5 STATIC O3 "                                       
+%          STORE FORMAT /(F9.6)/ LENGTH 9 REAL OCC3                             
+%          OUTPUT                                                               
+%          END IF                                                               
+%          IF NARGS .GE. 4 THEN                                                 
+^^WI       @ 9,1 STATIC A4 'R3'                                                 
+% TRANSFER "^^WI @ 9,3 STATIC E4 '" // CATOM4 // "'" TO DISPLAY                 
+%          CLEAR                                                                
+%          INSERT "^^WI @ 9,5 STATIC O4 "                                       
+%          STORE FORMAT /(F9.6)/ LENGTH 9 REAL OCC4                             
+%          OUTPUT                                                               
+%          END IF                                                               
+%          IF NARGS .EQ. 6 THEN                                                 
+^^WI       @ 11,1 STATIC A5 'R4'                                                
+% TRANSFER "^^WI @ 11,3 STATIC E5 '" // CATOM5 // "'" TO DISPLAY                
+%          CLEAR                                                                
+%          INSERT "^^WI @ 11,5 STATIC O5 "                                      
+%          STORE FORMAT /(F9.6)/ LENGTH 9 REAL OCC5                             
+%          OUTPUT                                                               
+^^WI       @ 13,1 STATIC A4 'R5'                                                
+% TRANSFER "^^WI @ 13,3 STATIC E6 '" // CATOM6 // "'" TO DISPLAY                
+%          CLEAR                                                                
+%          INSERT "^^WI @ 13,5 STATIC O6 "                                      
+%          STORE FORMAT /(F9.6)/ LENGTH 9 REAL OCC6                             
+%          OUTPUT                                                               
+%          END IF                                                               
+^^WI     }                                                                      
+^^WI   }                                                                        
+^^WI   @ 6,2 GRID B NROWS=3 NCOLS=5 {                                           
+^^WI     @ 1,1 STATIC M1 'Occupancy'                                            
+%        CLEAR                                                                  
+%        INSERT "^^WI @ 1,3 EDITBOX P1 '"                                       
+%        STORE FORMAT /(F9.6)/ LENGTH 9 REAL OCC                                
+%        INSERT "' REAL CHARS=8"                                                
+%        OUTPUT                                                                 
+^^WI     @ 3,1 STATIC M2 'Bond length'                                          
+^^WI     @ 3,3 EDITBOX P2 '1.00' REAL CHARS=8                                   
+^^WI     @ 3,5 STATIC M3 'angstroms'                                            
+^^WI   }                                                                        
+^^WI   @ 8,2 GRID B NROWS=1 NCOLS=5 {                                           
+^^WI     @ 1,1 BUTTON BBB '< &Back'                                             
+^^WI     @ 1,3 BUTTON BOK '&Finish' COMMIT DEFAULT                              
+^^WI     @ 1,5 BUTTON BXX '&Cancel' CANCEL                                      
+^^WI   }                                                                        
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+%     VERIFY BOK BBB BXX                                                        
+%     GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '                              
+%     CASE VALUE                                                                
+%       BLOCK       %Finish%                                                    
+%%                                                                              
+^^??      P1 TEXT                                                               
+%         GET SILENT NOSTORE REAL ' ' ' '                                       
+%         EVALUATE OCC = VALUE                                                  
+%%                                                                              
+%         COPY '#HYDROGENS'                                                     
+%         CLEAR                                                                 
+%         INSERT 'DISTANCE '                                                    
+^^??      P2 TEXT                                                               
+%         GET SILENT REAL ' ' ' '                                               
+%         SEND                                                                  
+%         CLEAR                                                                 
+%         INSERT 'SERIAL '                                                      
+%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER NSER                             
+%         SEND                                                                  
+%         CLEAR                                                                 
+%         CASE HTYPE                                                            
+%          INSERT 'H33 '                                                        
+%          INSERT 'H23 '                                                        
+%          INSERT 'H13 '                                                        
+%          INSERT 'H22 '                                                        
+%          INSERT 'H12 '                                                        
+%          INSERT 'H11 '                                                        
+%          INSERT 'PHENYL '                                                     
+%         END CASE                                                              
+%         TRANSFER CATOM1 // " " // CATOM2 // " " TO BUFFER                     
+%         IF NARGS .GE. 3 THEN                                                  
+%           TRANSFER CATOM3 // " " TO BUFFER                                    
+%         END IF                                                                
+%         IF NARGS .GE. 4 THEN                                                  
+%           TRANSFER CATOM4 // " " TO BUFFER                                    
+%         END IF                                                                
+%         IF NARGS .EQ. 6 THEN                                                  
+%           TRANSFER CATOM5 // " " // CATOM6 TO BUFFER                          
+%         END IF                                                                
+%         SEND                                                                  
+%         COPY 'END'                                                            
+%         IF OCC .NE. 1.0 THEN                                                  
+%           COPY '#EDIT'                                                        
+%           CLEAR                                                               
+%           INSERT 'CHANGE H('                                                  
+%           STORE FORMAT /(I5)/ LENGTH 5 INTEGER NSER                           
+%           INSERT ',OCC) UNTIL LAST '                                          
+%           STORE FORMAT /(F8.4)/ LENGTH 8 REAL OCC                             
+%           OUTPUT                                                              
+%           SEND                                                                
+%           COPY 'END'                                                          
+%         END IF                                                                
+^^CO      DISPOSE ADDH                                                          
+%         FINISH                                                                
+%       END BLOCK                                                               
+%       BLOCK       %BACK BBB%                                                  
+%         EVALUATE LOOPAGAIN = 1                                                
+^^CO      DISPOSE ADDH                                                          
+%         FINISH                                                                
+%       END BLOCK                                                               
+%       BLOCK       %CANCEL BXX%                                                
+^^CO      DISPOSE ADDH                                                          
+%         FINISH                                                                
+%       END BLOCK                                                               
+%     END CASE                                                                  
+%END SCRIPT                                                                     
