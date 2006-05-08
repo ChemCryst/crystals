@@ -5684,8 +5684,12 @@ bond, c(1) to c(20).
  then generates \HYDROGEN commands to create any necessary hydrogen atoms.
  Existing Hydrogen atoms are not replaced by this routine.
 #PThe generated commands may be processed internally by CRYSTALS without
- the user needing to see them, or they may be sent to the PUNCH file for
- manual editing and then be USEd by CRYSTALS.
+ the user needing to see them, or they may be sent to the external files for
+ later use. This is the default mode. If no new hydrogen atoms are 
+ generated, no new external files are created.
+#PThe external files are called DELH.DAT and PERH.DAT, with DELH 
+ containing an entry for every atom created by PERH.  Executing DELH and 
+ PERH will delete existing named atoms, and recreate them geometrically.
 #I\PERHYDRO INPUTLIST= OUTPUTLIST=#
 #KINPUTLIST=#
 #J
@@ -5727,8 +5731,8 @@ bond, c(1) to c(20).
 #KMODE#
 #J
       NORMAL
-      PUNCH   -  Default value.
-      BOTH
+      PUNCH
+      BOTH     -  Default value.
 #
  NORMAL causes internal commands to be generated and executed. PUNCH causes
  output to the PUNCH file only. BOTH forces both actions.
@@ -6100,7 +6104,8 @@ hybridisation states of C are more clearly defined.
 #N   7#
 #J
    \REGULARISE
-   target C(10) until C(16)
+   group 16
+   target C(10) until C(26)
    ideal  C(60) until C(76)
    cameron
    map    C(51) until C(99)
