@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2006/05/08 13:23:45  djw
+C Create a delete file for hydrogens  created by perhydro
+C
 C Revision 1.27  2006/05/03 14:23:40  djw
 C Write names of created hydrogens to a delete hydrogens file on unit NCCBU (the old common block file). Set attributes to CIF and unlocked
 C
@@ -1216,15 +1219,15 @@ C -- FINAL MESSAGES
 C
 C----- CLOSE THE RIDING RESTRAINT FILE
       CALL XRDOPN (7,JFRN(1),CPATH(1:LPATH)//'RIDEH.DAT',LPATH+9)
+C^MAY06
       IF (JACT.GE.2) THEN
             CALL XRDOPN (7,KFRN(1),CPATH2(1:LPATH2)//'PERH.TMP'
      1        ,LPATH+8)
             ISTAT = KSCTRN ( 1 , 'PERH:NHADD' , nhadd, 1 )
-            WRITE(CMON,'(I9,A)') NHADD,' Hydrogen atoms added'
-            CALL XPRVDU (NCVDU,1,0)
             CALL XRDOPN (7,LFRN(1),CPATH2(1:LPATH2)//'DELH.TMP'
      1        ,LPATH+8)
-C^MAY06
+            WRITE(CMON,'(I9,A)') NHADD,' Hydrogen atoms added'
+            CALL XPRVDU (NCVDU,1,0)
 C----- IF SOME HATOMS CREATED, COPY TEMP FILES TO DAT FILES
         IF (NHADD .GT. 0) THEN
             REWIND (NCFPU2)
@@ -1233,11 +1236,14 @@ C----- IF SOME HATOMS CREATED, COPY TEMP FILES TO DAT FILES
      1        ,LPATH+8)
             CALL XRDOPN (6,LFRN(1),CPATH2(1:LPATH2)//'DELH.DAT'
      1        ,LPATH+8)
-      DO  
-      READ(NCFPU2, '(A)', END=2) CLINE
-      WRITE(NCCBU, '(A)') CLINE
-      ENDDO
-2      CONTINUE
+         WRITE (CMON,'(11X,A)') 'Copying DELH.TMP to DELH.DAT'
+         CALL XPRVDU (NCVDU,1,1)
+            DO  
+              READ(NCFPU2, '(A)', END=2) CLINE
+              CALL XCTRIM(CLINE,NCHAR)
+              WRITE(NCCBU, '(A)') CLINE(1:NCHAR)
+            ENDDO
+2           CONTINUE
             CALL XRDOPN (7,KFRN(1),CPATH2(1:LPATH2)//'DELH.TMP'
      1        ,LPATH+8)
             CALL XRDOPN (7,LFRN(1),CPATH2(1:LPATH2)//'DELH.DAT'
@@ -1249,11 +1255,14 @@ C^
      1        ,LPATH+8)
             CALL XRDOPN (6,LFRN(1),CPATH2(1:LPATH2)//'PERH.DAT'
      1        ,LPATH+8)
-      DO  
-      READ(NCFPU2, '(A)', END=3) CLINE
-      WRITE(NCCBU, '(A)') CLINE
-      ENDDO
-3      CONTINUE
+         WRITE (CMON,'(11X,A)') 'Copying PERH.TMP to PERH.DAT'
+         CALL XPRVDU (NCVDU,1,1)
+            DO  
+              READ(NCFPU2, '(A)', END=3) CLINE
+              CALL XCTRIM(CLINE,NCHAR)
+              WRITE(NCCBU, '(A)') CLINE(1:NCHAR)
+            ENDDO
+3           CONTINUE
             CALL XRDOPN (7,KFRN(1),CPATH2(1:LPATH2)//'PERH.TMP'
      1        ,LPATH+8)
             CALL XRDOPN (7,LFRN(1),CPATH2(1:LPATH2)//'PERH.DAT'
