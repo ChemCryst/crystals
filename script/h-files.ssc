@@ -1,0 +1,31 @@
+%SCRIPT H-FILES
+%% Use preexisting files to delete or add hydrogen atoms
+%% The variables needed by XQUESTIO                                             
+% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
+% VARIABLE LOGICAL   ANSWER                                                     
+%%
+%    IF ( FILEEXISTS ( 'DELH.DAT' ) ) THEN
+%     EVALUATE QTITLE = 'Delete Hydrogen'                                         
+%     EVALUATE QLINE1 = 'You have a DELH.DAT file'                                   
+%     EVALUATE QLINE2 = 'Do you want to execute it?'                                
+%     EVALUATE BUTTOK = '&Yes'                                                     
+%     EVALUATE BUTTXX = '&No'                                                    
+%     COPY '#SCRIPT XQUESTIO'                                                     
+%     IF ANSWER .EQ. TRUE THEN  
+%      copy "#use DELH.dat"
+%     END IF                                                                      
+%     IF ( FILEEXISTS ( 'PERH.DAT' ) ) THEN
+%      EVALUATE QTITLE = 'Compute Hydrogen'                                         
+%      EVALUATE QLINE1 = 'You have a PERH.DAT file'                                   
+%      EVALUATE QLINE2 = 'Do you want to execute it?'                                
+%      EVALUATE BUTTOK = '&Yes'                                                     
+%      EVALUATE BUTTXX = '&No'                                                    
+%      COPY '#SCRIPT XQUESTIO'                                                     
+%      IF ANSWER .EQ. TRUE THEN                                                   
+%       copy "#use PERH.dat"
+%      END IF                                                                      
+%     END IF
+%    ELSE
+{I You do not have any H-placement files
+%    END IF
+%END SCRIPT
