@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2006/05/03 14:23:40  djw
+C Write names of created hydrogens to a delete hydrogens file on unit NCCBU (the old common block file). Set attributes to CIF and unlocked
+C
 C Revision 1.26  2006/04/28 16:39:38  djw
 C Tune Sp3 hydrogen detection
 C
@@ -549,6 +552,7 @@ C
 C
       CHARACTER *80 CSRQ
       CHARACTER *12 CTEMP
+      CHARACTER *80 CLINE
 C----- PATH AND FILENAME FOR RIDING CONSTRAINTS
       CHARACTER *256 CPATH, CPATH2
       DIMENSION JFRN(4), KFRN(4), LFRN(4)
@@ -764,16 +768,20 @@ C--MAIN TERMINATION ROUTINES
 1400  CONTINUE
 C
 C
+C----- SET NUMBER OF HYDROGENS ADDED
+      NHADD = 0
 C----- OPEN A FILE FOR THE RIDING RESTRAINTS
       IF (JACT.GE.2) THEN
-         WRITE (CMON,'(11X,A)') 'Putting Perhydro commands in PERH.DAT'
+         WRITE (CMON,'(11X,A)') 'Putting Perhydro commands in PERH.TMP'
          CALL XPRVDU (NCVDU,1,1)
-         CPATH2='PERH.DAT'
+         CPATH2='PERH.TMP'
          LPATH2=KPATH(CPATH2)
-         CALL XRDOPN (6,KFRN(1),CPATH2(1:LPATH2)//'PERH.DAT',LPATH2+8)
-         CPATH2='DELH.DAT'
+         CALL XRDOPN (6,KFRN(1),CPATH2(1:LPATH2)//'PERH.TMP',LPATH2+8)
+         WRITE (CMON,'(11X,A)') 'Putting delete H commands in DELH.TMP'
+         CALL XPRVDU (NCVDU,1,1)
+         CPATH2='DELH.TMP'
          LPATH2=KPATH(CPATH2)
-         CALL XRDOPN (6,LFRN(1),CPATH2(1:LPATH2)//'DELH.DAT',LPATH2+8)
+         CALL XRDOPN (6,LFRN(1),CPATH2(1:LPATH2)//'DELH.TMP',LPATH2+8)
       END IF
       WRITE (CMON,'(11X,A)') 'Putting riding Constraints in RIDEH.DAT'
       CALL XPRVDU (NCVDU,1,1)
@@ -1015,7 +1023,7 @@ cdjwapr06            IF (DELTA.GE..05) THEN
          IF (NHYB.GT.0) THEN
 C----   WRITE COMMAND TO FILE.
             CALL HPLACE (NBONDS,NHYB,M5A,IADD,AOTEMP,APTEMP,NDTEMP,JACT,
-     1       ISEC)
+     1       ISEC, NHADD)
          ELSE
             IF (ISSPRT.EQ.0) WRITE (NCWU,1750) CTEMP(1:LTEMP)
             WRITE (CMON,1750) CTEMP(1:LTEMP)
@@ -1167,7 +1175,7 @@ C
         IF (NHYB.GT.0) THEN
 C----   WRITE COMMAND TO FILE.
            CALL HPLACE (NBONDS,NHYB,M5A,IADD,AOTEMP,
-     1      APTEMP,NDTEMP,JACT,ISEC)
+     1      APTEMP,NDTEMP,JACT,ISEC,NHADD)
         ELSE
         END IF
       END IF
@@ -1209,10 +1217,49 @@ C
 C----- CLOSE THE RIDING RESTRAINT FILE
       CALL XRDOPN (7,JFRN(1),CPATH(1:LPATH)//'RIDEH.DAT',LPATH+9)
       IF (JACT.GE.2) THEN
-            CALL XRDOPN (7,KFRN(1),CPATH2(1:LPATH2)//'PERH.DAT'
-     1,LPATH+8)
+            CALL XRDOPN (7,KFRN(1),CPATH2(1:LPATH2)//'PERH.TMP'
+     1        ,LPATH+8)
+            ISTAT = KSCTRN ( 1 , 'PERH:NHADD' , nhadd, 1 )
+            WRITE(CMON,'(I9,A)') NHADD,' Hydrogen atoms added'
+            CALL XPRVDU (NCVDU,1,0)
+            CALL XRDOPN (7,LFRN(1),CPATH2(1:LPATH2)//'DELH.TMP'
+     1        ,LPATH+8)
+C^MAY06
+C----- IF SOME HATOMS CREATED, COPY TEMP FILES TO DAT FILES
+        IF (NHADD .GT. 0) THEN
+            REWIND (NCFPU2)
+            REWIND (NCCBU)
+            CALL XRDOPN (6,KFRN(1),CPATH2(1:LPATH2)//'DELH.TMP'
+     1        ,LPATH+8)
+            CALL XRDOPN (6,LFRN(1),CPATH2(1:LPATH2)//'DELH.DAT'
+     1        ,LPATH+8)
+      DO  
+      READ(NCFPU2, '(A)', END=2) CLINE
+      WRITE(NCCBU, '(A)') CLINE
+      ENDDO
+2      CONTINUE
+            CALL XRDOPN (7,KFRN(1),CPATH2(1:LPATH2)//'DELH.TMP'
+     1        ,LPATH+8)
             CALL XRDOPN (7,LFRN(1),CPATH2(1:LPATH2)//'DELH.DAT'
-     1,LPATH+8)
+     1        ,LPATH+8)
+C^
+            REWIND (NCFPU2)
+            REWIND (NCCBU)
+            CALL XRDOPN (6,KFRN(1),CPATH2(1:LPATH2)//'PERH.TMP'
+     1        ,LPATH+8)
+            CALL XRDOPN (6,LFRN(1),CPATH2(1:LPATH2)//'PERH.DAT'
+     1        ,LPATH+8)
+      DO  
+      READ(NCFPU2, '(A)', END=3) CLINE
+      WRITE(NCCBU, '(A)') CLINE
+      ENDDO
+3      CONTINUE
+            CALL XRDOPN (7,KFRN(1),CPATH2(1:LPATH2)//'PERH.TMP'
+     1        ,LPATH+8)
+            CALL XRDOPN (7,LFRN(1),CPATH2(1:LPATH2)//'PERH.DAT'
+     1        ,LPATH+8)
+
+        ENDIF
       ENDIF
 C
       CALL XOPMSG (IOPHYD,IOPEND,410)
@@ -1525,7 +1572,7 @@ C
 C
 CODE FOR HPLACE
       SUBROUTINE HPLACE
-     1 (NBONDS,NHYB,M5A,IADD,AOTEMP,APTEMP,NDTEMP,JACT,ISEC)
+     1 (NBONDS,NHYB,M5A,IADD,AOTEMP,APTEMP,NDTEMP,JACT,ISEC,NHADD)
 C
 C USING NHYB AND NBONDS, WRITE THE APPROPRIATE HYDROGEN PLACING
 C COMMAND USING ONE OF THE WRITNM ROUTINES.
@@ -1546,12 +1593,14 @@ C
                 IF (ISEC .GT. 0) THEN
 C
                    CALL XWRT03(M5A,IADD(1),ISEC,1,'33', JACT)
+                   NHADD = NHADD + 3
                 ELSE
                    CALL XERWH (M5A,'33')
                 ENDIF
 C
              ELSE IF (NBONDS .EQ. 2) THEN
                 CALL XWRT03(M5A,IADD(1),IADD(2),1,'23', JACT)
+                NHADD = NHADD + 2
              ELSE IF (NBONDS .EQ. 3) THEN
                 CALL XWRT13(IADD,M5A, JACT)
 C
@@ -1565,6 +1614,7 @@ C
                   IF (ISEC .GT. 0) THEN
 C
                      CALL XWRT03 (M5A,IADD(1),ISEC,1,'22', JACT)
+                     NHADD = NHADD + 2
                   ELSE
                      CALL XERWH (M5A,'22')
                   ENDIF
@@ -1572,6 +1622,7 @@ C
                ELSE IF (NBONDS .EQ. 2) THEN
 C
                   CALL XWRT03 (M5A, IADD(1), IADD(2), 1, '12', JACT)
+                  NHADD = NHADD + 1
 C
                ENDIF
 C
@@ -1580,6 +1631,7 @@ C SP1
        IF (NBONDS .EQ. 1) THEN
 C
                      CALL XWRT11 (IADD, M5A, JACT)
+                     NHADD = NHADD + 1
 C
        ENDIF
 C
