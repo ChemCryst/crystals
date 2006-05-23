@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.72  2006/03/09 19:03:31  djw
+C Correct initialisation of sios and nios
+C
 C Revision 1.71  2006/02/17 14:51:54  djw
 C Fix some writes to monitir/listinganisotfs.fpp
 C
@@ -1925,8 +1928,8 @@ C----- COMPUTE AND STORE R-VALUES
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1215 ) N6D , N6ACC
       WRITE ( CMON , 1215 ) N6D, N6ACC
       CALL XPRVDU(NCVDU, 1,0)
-1215  FORMAT ( 1X , 'List 6 contains ' , I5 , ' reflections' ,
-     1 ' of which ' , I5 , ' are accepted by LIST 28')
+1215  FORMAT ( 1X , 'List 6 contains ' , I6 , ' reflections' ,
+     1 ' of which ' , I6 , ' are accepted by LIST 28')
 C
 C
 C -- PRINT THE R VALUE ETC.
