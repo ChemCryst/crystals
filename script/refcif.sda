@@ -76,7 +76,7 @@ _publ_section_comment
 # Text of the paper
 # Note that atoms are referenced as N2, not N(2) or N~2~
 # If text containing () occur within (), the outer ones should be []
-# Figures should be referenced as Fih.
+# Figures should be referenced as Fig.
 ;
 ?
 ;
