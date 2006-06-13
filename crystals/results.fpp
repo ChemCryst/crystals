@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.109  2006/04/19 08:08:59  djw
+C More cif changes for Cleggie
+C
 C Revision 1.108  2006/02/16 15:37:37  djw
 C Compress the HTML Publish file
 C
@@ -1985,6 +1988,9 @@ C      NL                 NUMBER OF LINES PRINTED. INITIALLY SET AT
 C                         END OF PAGE.
 C
       DIMENSION KDEV(4)
+      CHARACTER *80 CTEMP
+      CHARACTER *76 CREFMK
+
       CHARACTER *80 CLINE
       CHARACTER *80 CFORM, CBUF
       CHARACTER *10 COVER(6)
@@ -4260,10 +4266,12 @@ c     call xrefpr (istore(lrefs),nrefs,mdrefs)
 C
 C################################################################
 C
-cdjwdec05  Extinction is printed in 
-c          we must set the reference in this subroutine
+cdjwdec05  Extinction is printed 
+cdjwjun06  only if esd GE zero
+      if ((jload(9) .ge. 1) .and. (store(l30cf+8) .ge. zero)) then
             ival =014
             ctemp = crefmk(istore(lrefs), nrefs, mdrefs, ival)
+      endif
 C---- GET LIST 30 READY FOR UPDATING
       IF (JLOAD(9).LE.0) THEN
          WRITE (CMON,'(A)') 'List 30 not available - cif output abandone
@@ -4857,8 +4865,11 @@ C----- LIST 30
      1       STORE(L30GE)
           ELSE
             WRITE (CLINE,1850) CBUF(1:15),'density_meas','?'
-1850        FORMAT (A,A,T35,A)
             CALL XPCIF (CLINE)
+            WRITE (CLINE,1850) CBUF(1:15),'density_method',
+     1      '''not measured'''
+            CALL XPCIF (CLINE)
+1850        FORMAT (A,A,T35,A)
           END IF
 C
           WRITE (CLINE,'(''# Non-dispersive F(000):'')')
