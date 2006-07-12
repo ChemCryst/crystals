@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.46  2005/12/07 10:29:20  djw
+c New code to control near-singularities for planar/linear/circular groups
+c
 c Revision 1.45  2005/06/22 12:48:29  rich
 c Oops. SG op used in #MATCH pseudo-sg measure had rotational part transposed.
 c
@@ -556,6 +559,8 @@ CDJWAPR2001
       ENDIF
 C     RE-INITIALISE THINGS
       IMATRIX = -1
+cdjwjul06
+      ishape = 0
       NATMD=0
       NOLD=0
       NNEW=0
@@ -598,10 +603,14 @@ C -- CONVERT ORIGIN TO CRYSTAL FRACTIONS
       GO TO 8000
 2700  CONTINUE
 C -- 'PHENYL' DIRECTIVE
+cdjwjul06
+      ishape = 1
       CALL XRGPLG (IHEX(1),6,1.39,1.39,0.0,ZEROSH(1),UNITMX(1))
       GO TO 8000
 2800  CONTINUE
 C -- 'HEXAGON' DIRECTIVE
+cdjwjul06
+      ishape = 1
       SCALE=XLXRDV(1.)
       CALL XRGPLG (IHEX(1),6,SCALE,SCALE,0.0,ZEROSH(1),UNITMX(1))
       GO TO 8000
@@ -616,6 +625,8 @@ C -- SET METHOD TO THIS VALUE
       GO TO 8000
 3000  CONTINUE
 C -- 'SQUARE' DIRECTIVE
+cdjwjul06
+      ishape = 1
 C -- READ SCALE FACTOR
       XSCAL = XLXRDV( 1.)
       YSCAL = XLXRDV( XSCAL)
@@ -624,6 +635,8 @@ C -- PLACE GROUP. SCALE FACTOR IS APPLIED TO X AND Y
       GO TO 8000
 3100  CONTINUE
 C -- 'OCTAHEDRON' DIRECTIVE
+cdjwjul06
+      ishape = 1
 C -- READ SCALE FACTOR FOR X AND Y
       XSCAL = XLXRDV( 1.)
       YSCAL = XLXRDV( XSCAL)
@@ -635,6 +648,8 @@ C -- PLACE GROUP, USING SCALE FACTORS
       GO TO 8000
 3200  CONTINUE
 C -- 'SQP' = 'SQUARE PYRAMID' DIRECTIVE
+cdjwjul06
+      ishape = 1
 C -- SEE COMMENTS AFTER 'OCTAHEDRON'
       XSCAL = XLXRDV( 1.)
       YSCAL = XLXRDV( XSCAL)
@@ -643,6 +658,8 @@ C -- SEE COMMENTS AFTER 'OCTAHEDRON'
       GO TO 8000
 3300  CONTINUE
 C -- TRIGONAL BIPYRAMID
+cdjwjul06
+      ishape = 1
 C -- SEE COMMENTS AFTER 'OCTAHEDRON'
       XYSCAL=XLXRDV(1.)
       ZSCAL=XLXRDV(XYSCAL)
@@ -669,11 +686,15 @@ C----- AUGMENT
       GO TO 8000
 C TETRAHEDRON -  LISA PEARCE
 3800  CONTINUE
+cdjwjul06
+      ishape = 1
       SCALE=XLXRDV(1.)
       CALL XRGPLG(ITET(1),5,SCALE,SCALE,SCALE,ZEROSH(1),UNITMX(1))
       GOTO 8000
 3900  CONTINUE
 C CP RING -  LISA PEARCE
+cdjwjul06
+      ishape = 1
       SCALE=XLXRDV(1.4)
 C 1.17557 IS 2* SIN OF 36 DEGREES
       SCALE=SCALE/1.17557
@@ -2512,12 +2533,13 @@ C RMS deviation of bonds
       BNDMAX = 0.0
       BNDMIN = 1000.0
 
+cdjwjul06
+      if (ishape .eq. 0) then
       IF (NOLD .GE. 1) THEN
         IF (ISSPRT .EQ. 0) 
      C  WRITE(NCWU,'(/,A)')'Bond length deviations'
-      ENDIF
 
-      DO I=1,NOLD
+       outerloop: DO I=1,NOLD
         INDOLD=LOLD+MDOLD*(I-1)
         INDNEW=LNEW+MDNEW*(I-1)
         INDATM=LATMD+MDATMD*(I-1)
@@ -2541,6 +2563,7 @@ c        CALL XPRVDU(NCVDU,1,0)
         IF ( K .LT. 0 ) THEN
            WRITE (CMON,'(A)')'"KDIST4" returned an error.'
            CALL XPRVDU(NCVDU,1,0)
+           IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
            CYCLE
         END IF
 
@@ -2565,8 +2588,8 @@ C Find the pivot atom (M5A) in the first group.
           BNDMIN = MIN(BNDMIN, DEV)
           BNDMAX = MAX(BNDMAX, DEV)
           NUMB = NUMB + 1
-
-      IF (ISSPRT .EQ. 0) THEN
+ 
+        IF (ISSPRT .EQ. 0) THEN
           WRITE(NCWU,'(4(1X,A,I4),F8.3)')
      4                            ISTORE(MOPIV),NINT(STORE(MOPIV+1)),
      2                            ISTORE(MOBNd),NINT(STORE(MOBND+1)),
@@ -2574,7 +2597,7 @@ C Find the pivot atom (M5A) in the first group.
      3                            ISTORE(MNBND),NINT(STORE(MNBND+1)),
      1     DEV
 C          CALL XPRVDU(NCVDU,1,0)
-      ENDIF
+        ENDIF
 C Really check if the bond MNBND - MNPIV is in the bond list.
           
           IFBND = 0
@@ -2604,11 +2627,12 @@ C Really check if the bond MNBND - MNPIV is in the bond list.
             END IF
             WRITE (CMON,'(A)')'{E Warning: bond mismatch'
             CALL XPRVDU(NCVDU,1,0)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
           END IF
         END DO    DISTLOOP
-      END DO
+       END DO  outerloop
 
-      IF (NOLD .GE. 1) THEN
+       IF (NOLD .GE. 1) THEN
         IF (ISSPRT .EQ. 0) 
      1  WRITE(NCWU,'(/,A)')'Torsion angle deviations'
       ENDIF
@@ -2633,7 +2657,7 @@ C Old one will be MOC - MOA - MOB - MOD
       TOR2MIN = 1000.0
       NUMT = 0
 
-      DO I=1,NOLD
+      outer2: DO I=1,NOLD
         INDOLD=LOLD+MDOLD*(I-1)
         INDNEW=LNEW+MDNEW*(I-1)
         INDATM=LATMD+MDATMD*(I-1)
@@ -2821,7 +2845,9 @@ C If angles differ by more than 180, take 360 - diff.
             END DO ATOMBLOOP
           END DO ATOMALOOP
         END DO DLOOP
-      END DO
+      END DO outer2
+      endif
+      endif
 
 
       IF (NUMB .GT. 0) THEN
