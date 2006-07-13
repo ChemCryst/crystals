@@ -33,6 +33,10 @@ are carried out in CRYSTALS, so there is no need to 'save' the current state.
 current dsc file. After the copy has been saved, the current dsc file is
 closed, and the new copy is opened.
 #
+#IOpen Instruction File (USE file)#
+#PCause CRYSTALS to execute (USE) a pre-prepared text file containing 
+CRYSTALS commands and/or data lists
+#
 #IExit Crystals#
 #PCloses the program.#
 #YX-ray data#
