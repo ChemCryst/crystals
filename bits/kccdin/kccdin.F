@@ -298,7 +298,7 @@ C            scale the variances
          SIGGAM=SIGGAM*SIGGAM*DTR*DTR/AMULT
          WRITE (NOUTF,'(a)') '#LIST 31'
          WRITE (NOUTF,'(a,F11.8)') 'AMULT ',AMULT
-         WRITE (NOUTF,'(2(3(a,F11.8,1x),/),a)') 'MATRIX   V(11)=',SIGA,'
+         WRITE (NOUTF,'(2(3(a,F13.6,1x),/),a)') 'MATRIX   V(11)=',SIGA,'
      1V(22)=',SIGB,'V(33)=',SIGC,'CONTINUE V(44)=',SIGALP,'V(55)=',
      2    SIGBET,'V(66)=',SIGGAM,'END'
       END IF
