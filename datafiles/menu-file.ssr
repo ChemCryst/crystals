@@ -8,6 +8,8 @@
 ^^WI                '#SCRIPT CIF2CRY' DISABLEIF='IN'
 ^^WI   ITEM SAVE    '&Save Datafile' '#SCRIPT XSAVEEXP' DISABLEIF='IN'
 ^^WI   ITEM SAVEAS  'Save Datafile &As' '#SCRIPT XSAVEAS' DISABLEIF='IN'
+^^WI   ITEM INSTRUCTION    'Open instruction file &(Use file)' 
+^^WI                '#SCRIPT XUSE' DISABLEIF='IN'
 ^^WI   SPLIT
 ^^WI   ITEM FH      'File menu &help'
 ^^WI        '$"crysdir:manual/tools-menus.html#menus.file"'
