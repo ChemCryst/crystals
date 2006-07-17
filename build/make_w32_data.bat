@@ -46,13 +46,18 @@ rmdir /q /s dscbuild
 rmdir /q /s nket\cvs
 rmdir /q /s mce\cvs
 rmdir /q /s example\cvs
+
 rmdir /q /s demo\cvs
 rmdir /q /s demo\cyclo\cvs
-rmdir /q /s demo\zoltan\cvs
-rmdir /q /s demo\mogul\cvs
 rmdir /q /s demo\demo\cvs
+rmdir /q /s demo\disorder\cvs
 rmdir /q /s demo\editor\cvs
+rmdir /q /s demo\example\cvs
 rmdir /q /s demo\keen\cvs
+rmdir /q /s demo\kpenv\cvs
+rmdir /q /s demo\LLewellyn\cvs
+rmdir /q /s demo\mogul\cvs
+rmdir /q /s demo\nket\cvs
 rmdir /q /s demo\peach\cvs
 rmdir /q /s demo\quick\cvs
 rmdir /q /s demo\shape\cvs
@@ -61,8 +66,8 @@ rmdir /q /s demo\twin\cvs
 rmdir /q /s demo\twin2\cvs
 rmdir /q /s demo\twin3\cvs
 rmdir /q /s demo\ylid\cvs
-rmdir /q /s demo\disorder\cvs
-rmdir /q /s demo\kpenv\cvs
+rmdir /q /s demo\zoltan\cvs
+
 rmdir /q /s script\cvs
 
 :exit
