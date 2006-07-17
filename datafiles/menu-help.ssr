@@ -2,35 +2,68 @@
 ^^WI   ITEM HTIPS '&Tip of the day'                                             
 ^^WI   '#SCRIPT TIPS' DISABLEIF='IN'                                            
 ^^WI   ITEM HSTAR '&Read me first' '#SCRIPT XREADME' DISABLEIF='IN'             
-^^WI   ITEM HSTAR '&Getting started'             
-^^WI     '#SPAWN CRYSDIR:manual/readme.html' DISABLEIF='IN'                   
-^^WI   ITEM HSTAR '&COMMAND line' '#SCRIPT XSTART' DISABLEIF='IN'            
-^^WI   MENU HDEMO '&Worked Examples' 
-
-^^WI     ITEM DEMO '&Basic' 
-^^WI     '#SPAWN CRYSDIR:DEMO/CYCLO/CYCLO-ROUTINE.PDF' DISABLEIF='IN'
-
-^^WI     ITEM DEMO '&Editing' 
-^^WI     '#SPAWN CRYSDIR:DEMO/EDITOR/EDITORS.PDF' DISABLEIF='IN'
-
-^^WI     ITEM DEMO '&Twin-KEEN' 
-^^WI     '#SPAWN CRYSDIR:DEMO/KEEN/KEEN-TWIN.PDF' DISABLEIF='IN'
-
-^^WI     ITEM DEMO '&Twin' 
-^^WI     '#SPAWN CRYSDIR:DEMO/TWIN/TIN-TWIN.PDF' DISABLEIF='IN'
-
-^^WI     ITEM DEMO '&Twin-2' 
-^^WI     '#SPAWN CRYSDIR:DEMO/TWIN2/TWIN-2.PDF' DISABLEIF='IN'
+^^WI   ITEM HSTAR '&Getting started'                                            
+^^WI     '#SPAWN CRYSDIR:manual/readme.html' DISABLEIF='IN'                     
+^^WI   ITEM HSTAR '&COMMAND line' '#SCRIPT XSTART' DISABLEIF='IN'               
+^^WI   SPLIT 
 
 
-^^WI   ENDMENU
+^^WI   MENU HDEMO '&Simple Worked Examples'                                            
+^^WI     ITEM DEMO '&Basic'                                                     
+^^WI     '#SPAWN CRYSDIR:DEMO/CYCLO/CYCLO-ROUTINE.PDF' DISABLEIF='IN'           
+
+^^WI     ITEM DEMO '&Ylid'                                                     
+^^WI     '#SPAWN CRYSDIR:DEMO/YLID/YLID.PDF' DISABLEIF='IN'
+
+^^WI     ITEM DEMO '&Peach'                                                     
+^^WI     '#SPAWN CRYSDIR:DEMO/PEACH/PEACH.PDF' DISABLEIF='IN'           
+           
+^^WI   ENDMENU                                                                  
+
+^^WI   MENU HDEMO '&Advanced Worked Examples'                                            
+                                                                                
+^^WI     ITEM DEMO '&Editing'                                                   
+^^WI     '#SPAWN CRYSDIR:DEMO/EDITOR/EDITORS.PDF' DISABLEIF='IN'                
+                                                                                
+^^WI     ITEM DEMO '&Wrong S.G.'                                                   
+^^WI     '#SPAWN CRYSDIR:DEMO/LLEWELLYN/Llewellyn.PDF' DISABLEIF='IN'                
+                                                                                
+^^WI     ITEM DEMO '&Weak Data'                                                   
+^^WI     '#SPAWN CRYSDIR:DEMO/QUICK/Tetra.PDF' DISABLEIF='IN'                
+
+^^WI     ITEM DEMO '&Disorder'                                                   
+^^WI     '#SPAWN CRYSDIR:DEMO/DISORDER/DISORDER.PDF' DISABLEIF='IN'                
+
+^^WI     ITEM DEMO '&Special Shapes'                                                   
+^^WI     '#SPAWN CRYSDIR:DEMO/SHAPE/SHAPE.PDF' DISABLEIF='IN'                
+^^WI   ENDMENU                                                                  
+
+^^WI   MENU HDEMO '&Twin Worked Examples'                                            
+^^WI     ITEM DEMO '&Twin-KEEN'                                                 
+^^WI     '#SPAWN CRYSDIR:DEMO/KEEN/KEEN-TWIN.PDF' DISABLEIF='IN'                
+                                                                                
+^^WI     ITEM DEMO '&Twin'                                                      
+^^WI     '#SPAWN CRYSDIR:DEMO/TWIN/TIN-TWIN.PDF' DISABLEIF='IN'                 
+                                                                                
+^^WI     ITEM DEMO '&Twin-2'                                                    
+^^WI     '#SPAWN CRYSDIR:DEMO/TWIN2/TWIN-2.PDF' DISABLEIF='IN'                  
+^^WI   ENDMENU                                                                  
+
+^^WI   MENU HDEMO '&Command Line Examples'                                            
+^^WI     ITEM DEMO '&Command Line'                                                   
+^^WI     '#SPAWN CRYSDIR:DEMO/Advanced.PDF' DISABLEIF='IN'                
+^^WI   ENDMENU                                                                  
+                                                                                
+^^WI     SPLIT 
+                                                                                
+^^WI   ITEM DEMO 'Workshop / &Demo' '#SCRIPT DEMODIR' DISABLEIF='IN'            
+^^WI   SPLIT                                                                    
+
 ^^WI   MENU HELP '&Help topics'                                                 
 ^^WI     ITEM TOPIC '&Strategy' '#SCRIPT HSTRAT' DISABLEIF='IN'                 
 ^^WI     ITEM TOPIC '&Crystals Lists' '#SCRIPT HLISTS' DISABLEIF='IN'           
 ^^WI   ENDMENU                                                                  
-^^WI   SPLIT                                                                    
-^^WI   ITEM DEMO 'Workshop / &Demo' '#SCRIPT DEMODIR' DISABLEIF='IN'            
-^^WI   SPLIT                                                                    
+                                                                   
 ^^WI   MENU HELP '&Manual'                                                      
 ^^WI    ITEM FAQ '&Faq' '#SPAWN CRYSDIR:manual/faq-1.html' DISABLEIF='IN'       
 ^^WI    MENU PR '&Primer'                                                       
