@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.32  2006/02/17 14:51:54  djw
+C Fix some writes to monitir/listinganisotfs.fpp
+C
 C Revision 1.31  2005/05/31 12:43:50  djw
 C Try to sort out use of L33CD and M33CD in SOLVE.FPP
 C
@@ -161,6 +164,7 @@ C
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XWORK.INC'
       INCLUDE 'XWORKA.INC'
+      common /xpatch/djwscl
       INCLUDE 'XPDS.INC'
       INCLUDE 'XLST01.INC'
       INCLUDE 'XLST05.INC'
@@ -482,21 +486,18 @@ C      end if
       
 
 CDJW-OCT-05
-c      write(ncwu,'(a)') 'The normal vector'
-c         IDJW = L11C
-c         jdjw = iscl
-c         DO 2051 I = 1, JY
-c            str11(jdjw) = STR11(IDJW)
-c            IDJW = IDJW + JY - I + 1
-c            jdjw=jdjw+1
+      write(ncwu,'(a)') 'The scaling vector'
+         IDJW = L11C
+         jdjw = iscl
+         DO 2051 I = 1, JY
+            str11(jdjw) = STR11(IDJW)
+            IDJW = IDJW + JY - I + 1
+            jdjw=jdjw+1
 2051     CONTINUE 
-c        call outv(str11(iscl),jy)
+C        call outv(str11(iscl),jy)
 CDJW-OCT-05
 
-
-
-
-      
+   
       IF (JP .GT. 0 ) THEN
 C----- CHOOSE INVERTOR
             IF (METHOD .LE. 0) THEN
@@ -1076,6 +1077,11 @@ C--SHUFFLE THE RESULTS FOR X, Y AND Z
       JF=JF+MW
       JG=JG+1
 5150  CONTINUE
+cdjwaug06
+c----- DU[ISO] in SFLSG needs to be scaled if there are
+c      partial shifts
+      djwscl =  store(jc)
+C^^
 C
 C--PREPARE THE LIST 24 FOR OUTPUT
       CALL XCSAE
@@ -1663,6 +1669,7 @@ C
 C
       COMMON /XWORK/F,BC(11),IBC(14)
       INCLUDE 'XWORKA.INC'
+      common /xpatch/djwscl
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XLST01.INC'
       INCLUDE 'XLST05.INC'
@@ -1944,7 +1951,11 @@ C--CHECK ON THE DUMMY OVERALL TEMPERATURE FACTOR
 C--CALCULATE THE NECESSARY CORRECTION TERM
 1600  CONTINUE
       JX=(ISTORE(M12A)-1)*MD24+L24
-      B=STORE(JX+1)-B
+cdjwjul07
+c----- DU[ISO] in SFLSG needs to be scaled if there are
+c      partial shifts by factor from SFLSE
+      B=STORE(JX+1)-B * DJWSCL
+c^^
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1650)B
       ENDIF
