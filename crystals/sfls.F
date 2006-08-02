@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.48  2005/05/31 11:34:58  djw
+C Try to sort out use of L33CD and M33CD in SFLS.FPP
+C
 C Revision 1.47  2005/05/26 10:10:47  djw
 C Enable REF and CALC to be given in the same SFLS instruction.  CALC must be last command
 C
@@ -2073,14 +2076,15 @@ C----- ENATIOMER SENSITIVE REFLECTIONS
 C
 C Only print disagreeable reflections during calc.
       IF( SFLS_TYPE .EQ. SFLS_CALC ) THEN
-        WRITE (CMON ,'(/'' Target GOF ='',F6.2)') SQRT(AMINF/FLOAT(NT))
+        WRITE (CMON ,'(/'' Target Weighted Residual ='',F6.2)') 
+     1  SQRT(AMINF/FLOAT(NT))
         CALL XPRVDU(NCVDU, 2,0)
         IF(ISSPRT.EQ.0) WRITE(NCWU, '(//)')
         IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') CMON(2)(:)
         WRITE ( CMON ,11)
         CALL XPRVDU(NCVDU, 1,0)
         IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') CMON(1)(:)
-11      FORMAT(2('   h   k  l     Fo      Fc   GOF Fo/Fc','  '))
+11      FORMAT(2('   h   k  l     Fo      Fc  wDel Fo/Fc','  '))
         DO MSORT = LSORT, LSORT+(NSORT-1)*MDSORT, 2*MDSORT
           WRITE ( CMON ,
      *     '(3I4, 2F7.1, F7.2, F5.2,2X,3I4, 2F7.1, F7.2, F5.2)')
