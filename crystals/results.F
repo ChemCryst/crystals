@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.110  2006/06/13 10:02:03  djw
+C More cif goodies suggested by Judy Flippen Anderson
+C
 C Revision 1.109  2006/04/19 08:08:59  djw
 C More cif changes for Cleggie
 C
@@ -1288,6 +1291,7 @@ C      NL                 NUMBER OF LINES PRINTED. INITIALLY SET AT
 C                         END OF PAGE.
 C
       CHARACTER CLINE *160, CTEM *4, CHTML*20, CSGRD*4, CTU*2, CP*1
+      character cspec *7
       CHARACTER CASDA*4, CASDG*4
       INCLUDE 'TSSCHR.INC'
       INCLUDE 'ISTORE.INC'
@@ -1390,6 +1394,7 @@ C----- CAPTIONS FOR CIF FILE
      1 '_atom_site_refinement_flags_occupancy'  /
      1 '_atom_site_disorder_assembly'  /
      1 '_atom_site_disorder_group'  /
+     1 '_oxford_atom_site_special_shape' /
      2 '_atom_site_attached_hydrogens' )
 
       ELSE IF (IPCHCO .EQ. 3) THEN    !HEADERS FOR HTML TABLE
@@ -1501,20 +1506,45 @@ c            CALL XCRAS(CHTML,NHTML)
         END DO
 cdjw99[
 C--CHECK IF THIS ATOM IS ANISO OR ISO
+        cspec = 'error'
         if (nint(store(m5+3)) .eq. 0) then
 c----- aniso
 C----- CALCULATE U[EQUIV]
           CTEM = 'Uani'
+          cspec = '.'
           BUFF(2)= STORE(JBASE)
 C----- SET ESD=0.
           BPD(2)=0.
 C----- INDICATE THAT THERE ARE SOME U[ANISO] TO PRINT
           IUIJ=1
 1150      CONTINUE
-        else
+        else if (nint(store(m5+3)) .eq. 1) then
           CTEM = 'Uiso'
+          cspec = '.'
           BUFF(2)= STORE(m5+7)
           bpd(2) = bpd(6)
+        else if (nint(store(m5+3)) .eq. 2) then
+          CTEM = 'Uiso'
+          cspec = 'Sphere'
+          BUFF(2)= STORE(m5+7)
+          bpd(2) = bpd(6)
+
+        else if (nint(store(m5+3)) .eq. 3) then
+          CTEM = 'Uiso'
+          cspec = 'Rod'
+          BUFF(2)= STORE(m5+7)
+          bpd(2) = bpd(6)
+
+
+        else if (nint(store(m5+3)) .eq. 4) then
+          CTEM = 'Uiso'
+          cspec = 'Annulus'
+          BUFF(2)= STORE(m5+7)
+          bpd(2) = bpd(6)
+
+        else
+         ctem ='none'
+
         endif
         JBASE = JBASE + 4
         LOJ = J+6
@@ -1666,7 +1696,10 @@ C            IST = KCCNEQ (CLINE, 1, ' ')+1
             CALL XCREMS( CLINE, CLINE, NCHAR)
             WRITE(CLINE(NCHAR+1:),'(6(1X,A))') 
      1      CSGRD(1:NSGRD),CTU(1:NSGTU),CP,CASDA(1:NASDA),
-     2      CASDG(1:NASDG),'.'
+     2      CASDG(1:NASDG)
+            CALL XCREMS( CLINE, CLINE, NCHAR)
+            write(cline(nchar+1:),'(3(1x,a))')
+     1      cspec(1:),'.'
             CALL XCREMS( CLINE, CLINE, NCHAR)
             WRITE(NCFPU1,'(A)') CLINE(1:NCHAR)
         ENDIF
@@ -1714,6 +1747,9 @@ C      'TYPE' IS THE TYPE OF ATOM TO BE PRINTED. THE VALUE '    ' WILL
 C      MATCH EVERY ATOM ( I.E. ALL BUT , '    ' WOULD PRINT NOTHING )
 C
       DIMENSION KDEV(4)
+c----- nspbuf - a buffer for special shape lines
+      parameter (nspbuf=5)
+      character *84 cspbuf(nspbuf)
       CHARACTER *160 CLINE
       CHARACTER *4 CTEM
       CHARACTER *20 CHTML
@@ -1754,6 +1790,11 @@ C
 CDJWMAY99 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
       CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
       CALL XRDOPN(8, KDEV , CSSCIF, LSSCIF)
+c----- clear the special shape buffer
+      jspbuf = 0
+      do 1, j=1,nspbuf
+      cspbuf(j)(:) = ' '
+1     continue
 
       M5=L5
       IF ( IPESD .NE. 0 ) M12=L12
@@ -1791,10 +1832,11 @@ C--CHECK IF THIS ATOM HAS AN ANISO TEMPERATURE FACTOR
 C-C-C-CHECK IF THIS ATOM HAS AN ANISO T.F. OR A SPECIAL PARAMETER
       U=STORE(M5+3)
 C      IF ( ABS(U) .GE. UISO ) GO TO 2200
-      IF ( ABS(NINT(U)) .EQ. 1.0 ) GO TO 2200
 C-C-C-THE LAST STATEMENT MIGHT CAUSE DIFFICULTIES WITH DATA OF OLD
 C-C-C-FORMAT ! IN THIS CASE USE THE FOLLOWING:
 C      IF ((ABS(U) .GE. UISO) .AND. (ABS(NINT(U)) .LT. 2.0)) GO TO 2200
+      iflag = ABS(NINT(U))
+      IF ( iflag .eq. 1 ) GO TO 2200
 C -- CHECK FOR MATCH
       MATCH = -1
       IF ( TYPE .EQ. STORE(M5) ) MATCH = 1
@@ -1837,11 +1879,19 @@ cnov98      CALL SNUM(STORE(M5+3),0.0,1,0,(IFIR+9),LINEA)
 C--LOOP OVER THE PARAMETERS
       MP=M5+7
       MPD=6
-      DO 1750 L=1,6
+      if (iflag .eq. 0) then
+            ll = 6
+      else if (iflag .eq. 2) then
+            ll = 2
+      else if (iflag .eq. 3) then
+            ll = 4
+      else if (iflag .eq. 4) then
+            ll = 4
+      endif
+      DO 1750 L=1,ll
       LOJ = J + 6
       J=J+NUF
       CALL SNUM(STORE(MP),BPD(MPD),NUD,NOP,J,LINEA)
-
       IF (IPCHCO .EQ. 3) THEN  
 #if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
           WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
@@ -1855,6 +1905,20 @@ C--LOOP OVER THE PARAMETERS
       MP=MP+1
       MPD=MPD+1
 1750  CONTINUE
+
+      if (iflag .ge. 2) then
+c---- save special shape
+            if (jspbuf .lt. nspbuf) then
+                  jspbuf = jspbuf + 1
+                  write(cspbuf(jspbuf)(:),'(i1,80a1)')
+     1            iflag, (linea(jr), jr=1,80)
+            else
+                   write(cmon,'(a)') 'Too many special shapes'
+                   call xprvdu(ncvdu, 1,0)
+            endif
+            goto 2200
+      endif
+
       IF ( IPCHAN .EQ. 3 ) WRITE(NCPU,'(''</TR>'')')
 C--CHECK FOR DOUBLE SPACING
 1800  CONTINUE
@@ -1964,6 +2028,37 @@ C
 2250  CONTINUE
       MD5A=MD5
       IF ( IPCHAN .EQ. 3 ) WRITE(NCPU,'(''</TABLE></FONT>'')')
+c
+c     
+      if ((ipchan .eq. 2) .and. (jspbuf .gt. 0)) then
+c--- write special shapes to cif file
+        write(ncfpu1,3000)
+3000    format(/ 
+     1  '# special_uiso is a measure of the thickness of the shape'/
+     2  '# special_size is the length of the line'/
+     3  '# or the radius of the annulus or sphere'/
+     4  '# special_declination and azimuth define the direction'/
+     5  '# of the line or normal to the annulus'/
+     6  '# Because CHECKCIF rejects occupancies greater than unity'/
+     7  '# it will generate incorrect formulae, and derived values')
+        WRITE( NCFPU1, 3001)
+3001    FORMAT ('loop_'/
+     1 '_atom_site_oxford_special_label'/
+     2 '_atom_site_oxford_special_uiso'/
+     2 '_atom_site_oxford_special_size'/
+     3 '_atom_site_oxford_special_declination'/
+     4 '_atom_site_oxford_special_azimuth')
+c
+        do 3100 j = 1,jspbuf
+        read(cspbuf(j), '(i1,a)') iflag,cmon(1)
+        call xctrim(cmon(1), nchar)
+        if (iflag .eq. 2) write(cmon(1)(nchar+1:),'(a)') ' . . '
+        call xcrems(cmon(1), cmon(1), nchar)
+        write(ncfpu1,'(a)') cmon(1)(1:nchar)
+3100    continue
+
+      endif
+
 C
       CALL XRDOPN(7, KDEV , CSSCIF, LSSCIF)
       RETURN
