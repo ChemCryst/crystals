@@ -7351,6 +7351,7 @@ are only going to be calculated.
  ORIGIN            E.S.D  FOR 'PARAMETER SPECIFICATIONS'
  SUM               E.S.D  FOR 'PARAMETER SPECIFICATIONS'
  AVERAGE           E.S.D  FOR 'PARAMETER SPECIFICATIONS'
+ SAME       BOND-ESD ANGLE-ESD FOR GROUP-1 AND GROUP-2 AND ...       
  RESTRAIN   VALUE, E.S.D= TEXT
  DEFINE NAME = TEXT
  COMPILER
@@ -7651,6 +7652,59 @@ are only going to be calculated.
  with an e.s.d. of 'E.S.D.'.
  The parameters are as for the 'SUM' directive above.
 #
+# SAME BOND-ESD ANGLE-ESD FOR GRUOP-1 AND GROUP-2 AND ...#
+ The first group on the card is the 'target'
+ all following groups are mapped onto it (in order specified) and the distances and
+ angles restrained - using the connectivity of the first group.
+#
+ The first two arguments are the e.s.d for bond length restraints and the e.s.d
+ for angle restraints. Groups are seperated by the word 'AND'.
+ NOTE the andence of the usual '=' sign.
+ I.E:
+#J
+ SAME 0.01, 0.1 FOR RESI(1) AND RESI(2)
+   maps all atoms in resi(1) onto all the atoms in resi(2) - note that
+   although this shorthand is appealing, the order of resi(1) and resi(2)
+   must be identical in List 5, although the residues may interpenetrate.
+
+ SAME 0.01 , 0.1 
+ CONT C(17)  C(18)  H(183) H(182) H(181) AND
+ CONT C(17)  C(18)  H(182) H(181) H(183)
+   imposes 3-fold symmetry on a single methyl group.
+
+ SAME 0.01 , 0.1 
+ CONT C(17)  C(18)  H(183) H(182) H(181) AND
+ CONT C(17)  C(19)  H(193) H(192) H(191) AND
+ CONT C(8)   C(9)   H(93)  H(92)  H(91) AND
+ CONT C(8)   C(10)  H(103) H(102) H(101) AND
+ CONT C(14)  C(15)  H(153) H(152) H(151) AND
+ CONT C(14)  C(16)  H(163) H(162) H(161)
+   restrains six methyl groups to have the same geometry as each
+   other. Combining the last two restraints would make all the
+   methyls have 3 fold symmetry, and all be the same.
+#
+#P Errors are generated if
+   1) the size of any of the groups on the SAME card is not the
+      same as the first group.
+   2) the element type in a group does not match the corresponding
+      element type in the first group.
+#
+ Warnings are printed if there are zero bonds to any of the atoms
+ in the first group.
+#
+ The comma separating the e.s.d arguments, and the 'FOR' separating the
+ e.s.d.s from the atom specifications are optional.
+ The second e.s.d is optional, the default is 0.1 degrees.
+ The first e.s.d is optional unless you wish to specify the second, the
+ default is 0.01 Angstroms.
+#
+ List 41 (bonds) is loaded by the restraint generating routine, if it
+ does not exist an error will occur. (By default L41 is kept up to date
+ with the current model.)
+#
+
+
+
 
 #YGeneral restraints#
 #HSgeneral#
