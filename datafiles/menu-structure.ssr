@@ -25,6 +25,8 @@
 ^^WI       '#SCRIPT XPARTS' DISABLEIF='IN' ENABLEIF='L2 L1 L5'                  
 ^^WI   ITEM XPARTB '&Remove Part Nos'                                           
 ^^WI       '#SCRIPT XNOPART' DISABLEIF='IN' ENABLEIF='L2 L1 L5'                 
+^^WI   ITEM XPARTC '&Set Part occupations'
+^^WI       '#SCRIPT XSETOCC' DISABLEIF='IN' ENABLEIF='L2 L1 L5'                 
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM COLL '&Collect atoms by symmetry' '#SCRIPT XCOLLECT'                
 ^^WI        DISABLEIF='IN' ENABLEIF='L2 L1 L5'                                  
@@ -41,7 +43,7 @@
 ^^WI              DISABLEIF='IN' ENABLEIF='L1 L2 L5'                            
 ^^WI   ITEM REMH '&Remove hydrogen' '#EDIT_NSELECT TYPE NE H_NEND'              
 ^^WI                                DISABLEIF='IN'  ENABLEIF='L5'               
-^^WI   ITEM REMH '&Use H-files' '#SCRIPT H-FILES'              
+^^WI   ITEM REMH '&Use H-files' '#SCRIPT H-FILES'                               
 ^^WI                                DISABLEIF='IN'  ENABLEIF='L5'               
 ^^WI   ITEM REMF '&Remove Fourier peaks'                                        
 ^^WI             '#SCRIPT XDELQ'                                                
