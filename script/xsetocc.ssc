@@ -1,0 +1,223 @@
+%script xdjw
+%                                                                               
+%% GENEDIT should be set true while a GENERALEDIT instruction is still active.  
+%%         If you add new code, you must set this as appropriate, especially    
+%%         if you are issuing other instructions.                               
+%% GENCNT  counts the number of TRANSFER directives within GENERALEDIT that     
+%%         have been issued. If it gets to 1000, the current instruction is     
+%%         ended, and GENEDIT is set to false. (The limit is 9999 TRANSFERS).   
+%                                                                               
+%                                                                               
+%% Declare variables                                                            
+%                                                                               
+%                                                                               
+%% VARIABLE INTEGER IGROUP IASSEMB ISELGR 
+%% VARIABLE INTEGER NEWGR NEWPR TOTGR TOTPR 
+%% VARIABLE LOGICAL GRCHNG PRCHALL                         
+%% VARIABLE CHARACTER CATOM CSEEK                                                
+%% VARIABLE REAL RSER 
+%%
+% VARIABLE INTEGER ICUR ISELPR GENCNT ISER                
+% VARIABLE INTEGER  MAXPR MAXGR
+% VARIABLE LOGICAL PRCHNG ATCHNG GENEDIT WAITING
+% VARIABLE INTEGER PART1 PART2
+% VARIABLE REAL OCC1 OCC2
+% VARIABLE INTEGER IDJW1 IDJW2 IDJW3 IDJW4 
+%%                                                                              
+% EVALUATE PRCHNG = FALSE                                                       
+% EVALUATE ATCHNG = FALSE                                                       
+% EVALUATE WAITING = FALSE                                                       
+% EVALUATE MAXGR = 0                                                            
+%%                                                                               
+%% Create the window                                                            
+%                                                                               
+%                                                                               
+^^WI WINDOW XGROUPS 'Known Parts' KEEP SIZE  MODAL              
+^^WI COMMIT='PR_BOK' CANCEL='PR_QUIT'                                            
+%                                                                               
+^^WI GRID MAIN NROWS=3 NCOLS=3                                                  
+^^WI {                                                                          
+^^WI  @ 2,2 GRID LEFT NROWS=1 NCOLS=1  
+^^WI  {                                
+^^WI   @ 1,1 GRID LEFT NROWS=7 NCOLS=7
+^^WI   {                                                                        
+^^WI    @ 1,1 STATIC T1 'Known Parts'
+^^WI    @ 2,1 LISTBOX XPPARTS VISLINES=9 INFORM=YES ADDTOLIST ' ' NULL         
+^^WI    @ 3,3 STATIC STAT 'Type in pairs of Part numbers and Occ'     
+^^WI    @ 4,3 STATIC STAT 'Click execute to accept the pairs'
+%%
+^^WI    @ 5,1 STATIC T1 'First Part'                                       
+^^WI    @ 5,3 EDITBOX P1 '0' CHARS=5 INTEGER
+^^WI    @ 5,5 STATIC T1 'Occupation Factor'                                       
+^^WI    @ 5,7 EDITBOX O1 '0.5' CHARS=6 REAL                                   
+%%
+^^WI    @ 6,1 STATIC T1 'Second Part'                                       
+^^WI    @ 6,3 EDITBOX P2 '0' CHARS=5 INTEGER                                   
+^^WI    @ 6,5 STATIC T1 'Occupation Factor'                                       
+^^WI    @ 6,7 EDITBOX O2 '0.5' CHARS=6 REAL                                   
+^^WI    @ 7,3 BUTTON PR_EVAL 'Execute' DEFAULT                                    
+^^WI    @ 7,7 BUTTON PR_BOK 'Done' DEFAULT                                    
+%%
+^^WI   }                                                                        
+%%
+^^WI  }                                                                         
+%%
+^^WI }                                                                          
+%%                                                                               
+^^WI SHOW                                                                       
+^^CR                                                                            
+%%
+%% sTART BUILDING EDITS IN SCRIPT QUEUE
+%  COPY '#RELEASE SCPQUEUE scpocclst.dat'                                       
+%  QUEUE REWIND                                            
+%  QUEUE COPY #edit              
+%  QUEUE COPY MONITOR LOW       
+%%
+%%
+%% Window created. Open a generaledit command.                                  
+%                                                                               
+% COPY '#GENERALEDIT 5'                                                         
+% COPY 'LOCATE RECORD=101'                                                     
+% COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                       
+% EVALUATE GENEDIT = TRUE                                                       
+% EVALUATE GENCNT = 0                                                           
+%                                                                               
+%% Loop back to here every time...                                              
+%                                                                               
+% LOOP                                                                          
+% EVALUATE WAITING = TRUE
+%                                                                               
+%%                                                                               
+%     COPY 'TOP'                                                                
+%%                                                                               
+%% Sort into order of ASSEMBLY number.                                          
+%% NB: Offset for sort is 1-based, offset for transfer is 0-based.             
+%% SORT 'PART'
+%     COPY 'SORT 15 INTEGER ASCEND'                                             
+%                                                                               
+%% Find and output parts
+%     COPY 'TOP'                                                                
+%%CO  SET XPPARTS REMOVE 0                                                      
+%     EVALUATE ICUR = 0                                                         
+%     LOOP                                                                      
+%       ON EDITERROR TERMINATE                                                  
+%       COPY 'TRANSFER FROM OFFSET=14 TO IDJW1'                                
+%       COPY 'TRANSFER TO OFFSET=13 FROM IDJW2'                               
+%       EVALUATE IDJW3 = ( IDJW1 IDECMASK 111000 ) / 1000                    
+%       EVALUATE IDJW4 = ( IDJW1 IDECMASK 111 )                              
+%       IF IDJW1 .LT. 0 THEN                                                   
+%         EVALUATE IDJW4 = - IDJW4                                          
+% TRANSFER 'Group was negative ' // CHARACTER ( IGROUP ) TO DISPLAY             
+%       END IF                                                                  
+%       EVALUATE GENCNT = GENCNT + 1
+%       if ( idjw1 .gt. 0 ) then
+%         if ( idjw1 .gt. maxpr ) then
+%% TRANSFER 'Part number = ' // CHARACTER ( idjw1 ) TO DISPLAY
+%%
+%%
+%%
+%           TRANSFER "^^CO SET XPPARTS ADDTOLIST '" // CHARACTER IDJW1 -      
+            // "' NULL" TO DISPLAY                                              
+%%
+%%
+%%
+%         EVALUATE MAXPR = IDJW1
+%         END IF
+%       end if
+%       COPY 'NEXT'                                                             
+%     END LOOP                                                                  
+%% Find currently selected PART:         
+%   CLEAR                                                                       
+%   INSERT '^^?? XPPARTS LISTTEXT '                                            
+^^?? XPPARTS SELECTED                                                          
+%   GET SILENT INTEGER ' '                                                      
+%   OUTPUT                                                                      
+%   GET SILENT KEYWORD ' ' '-1'                                                 
+%   EVALUATE ISELPR = FIRSTINT ( CVALUE )                                       
+%% TRANSFER 'Selected Part = ' // CHARACTER ( ISELPR ) TO DISPLAY
+%                                                                               
+%%%                                                                             
+%                                                                               
+%% End of the action. Now wait for a user generated event.                      
+%                                                                               
+%   VERIFY PR_EVAL PR_BOK XPPARTS PR_QUIT    
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                
+%                                                                               
+%% Got an event, now act upon it.                                               
+%        
+%   CASE VALUE                                                                  
+%%                                                                              
+%     BLOCK                                                %PR_EVAL%             
+%%                                                                              
+^^??    P1 TEXT                                                                 
+%       GET NOSTORE SILENT INTEGER ' ' '0'
+%       EVALUATE PART1 = VALUE 
+^^??    P2 TEXT                                                                 
+%       GET NOSTORE SILENT INTEGER ' ' '0'
+%       EVALUATE PART2 = VALUE 
+^^??    O1 TEXT                                                                 
+%       GET NOSTORE SILENT REAL ' ' '0.5'                                       
+%       EVALUATE OCC1 = VALUE 
+^^??    O2 TEXT                                                                 
+%       GET NOSTORE SILENT REAL ' ' '0.5'                                       
+%       EVALUATE OCC2 = VALUE 
+%% SHOW PART1 OCC1 PART2 OCC2
+% TRANSFER 'Part(1) = ' // CHARACTER ( part1 ) TO DISPLAY             
+% TRANSFER 'Part(2) = ' // CHARACTER ( part2 ) TO DISPLAY             
+%       CLEAR                                                                 
+%       INSERT 'RESET OCC ' 
+%       STORE FORMAT /(F8.4)/ LENGTH 8 REAL OCC1                   
+%       INSERT 'PART('
+%       STORE FORMAT /(I5)/ LENGTH 5 INTEGER PART1                   
+%       INSERT ') '                                                            
+%       QUEUE SEND                                                            
+%       CLEAR                                                                 
+%       INSERT 'RESET OCC ' 
+%       STORE FORMAT /(F8.4)/ LENGTH 8 REAL OCC2
+%       INSERT 'PART('
+%       STORE FORMAT /(I5)/ LENGTH 5 INTEGER PART2                   
+%       INSERT ') '                                                            
+%       QUEUE SEND                                                            
+%       EVALUATE WAITING = FALSE
+%     END BLOCK                                                                 
+%%
+%     BLOCK                                              %PR_BOK
+%       IF ( GENEDIT ) THEN                                                     
+%         COPY 'END'                                                            
+%       END IF                  
+^^CO    DISPOSE XGROUPS                                                         
+%% SHOW PART1 OCC1 PART2 OCC2
+%       QUEUE COPY END
+%       COPY '#RELEASE SCPQUEUE bfile.spq'                                           
+%       IF ( PART1 .EQ. 0 ) .OR. ( PART2 .EQ. 0 ) THEN
+{E You have not selected enough parts
+%       ELSE
+%         COPY '#USE SCPOCCLST.DAT'
+%       END IF
+%       FINISH                                                                  
+%     END BLOCK                                                                 
+%%
+%%                                                                              
+%     BLOCK                                                %XPPARTS%          
+%       GET NOSTORE SILENT INTEGER ' ' '0'                                      
+%       EVALUATE ISER = VALUE
+%       SHOW ISER
+%       EVALUATE PRCHNG = TRUE                                                  
+%     END BLOCK                                                                 
+%%                                                                              
+%     BLOCK                                                %PR_QUIT%           
+^^CO    DISPOSE XGROUPS                                                         
+%       COPY '#RELEASE SCPQUEUE bfile.spq'                                           
+%       FINISH
+%     END BLOCK                                                                 
+%%                                                                              
+%%                                                                              
+%   END CASE
+%%
+% END LOOP
+%                                                                               
+%     if ( genedit .eq. true ) then
+%        copy 'end'
+%     end if
+%end script
+
