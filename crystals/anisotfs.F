@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.17  2006/02/17 14:51:54  djw
+C Fix some writes to monitir/listinganisotfs.fpp
+C
 C Revision 1.16  2006/02/14 10:38:59  djw
 C Compute some axes statistics in AXES
 C
@@ -1169,17 +1172,11 @@ C----- USE SYSTEM-WIDE CONVENTION
 C--OUTPUT AN INITIAL CAPTION
       IF (IMODE.GT.0) THEN
          CALL XPRTCN
-         IF (ISSPRT.EQ.0) THEN
-            WRITE (NCWU,50)
-         END IF
-         WRITE (NCAWU,50)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,50)
          WRITE (CMON,50)
          CALL XPRVDU (NCVDU,1,0)
 50       FORMAT (' Analysis of rigid body motion')
-         IF (ISSPRT.EQ.0) THEN
-            WRITE (NCWU,100) CF
-         END IF
-         WRITE (NCAWU,100) CF
+         IF (ISSPRT.EQ.0) WRITE (NCWU,100) CF
          WRITE (CMON,100) CF
          CALL XPRVDU (NCVDU,1,0)
 100      FORMAT (' Input centre of libration (crystal fractions) ',4X,
@@ -1232,10 +1229,8 @@ C----- INCLUDE ISOTROPIC ATOMS AT THIS STAGE
       CF(1)=CF(1)/FLOAT(NATOM)
       CF(2)=CF(2)/FLOAT(NATOM)
       CF(3)=CF(3)/FLOAT(NATOM)
-      IF (ISSPRT.EQ.0) THEN
-         WRITE (NCWU,400) CF
-      END IF
       IF (IMODE.GT.0) THEN
+         IF (ISSPRT.EQ.0) WRITE (NCWU,400) CF
          WRITE (NCAWU,400) CF
          WRITE (CMON,400) CF
          CALL XPRVDU (NCVDU,1,0)
@@ -1255,11 +1250,9 @@ C---CHECK IF ATOM IS ISOTROPIC
          IF (ABS(STORE(JB+3))-UISO) 600,500,500
 500      CONTINUE
          IF (IMODE.GT.0) THEN
-            IF (ISSPRT.EQ.0) THEN
-               WRITE (NCWU,550) STORE(JB),STORE(JB+1)
-            END IF
-550         FORMAT (' Atom  ',A4,F5.0,'  is isotropic and has been ignor
-     1ed')
+            IF (ISSPRT.EQ.0) WRITE (NCWU,550) STORE(JB),STORE(JB+1)
+550         FORMAT (' Atom  ',A4,F5.0,'  is isotropic and has been',
+     1      'ignored')
          END IF
          GO TO 850
 600      CONTINUE
@@ -1416,7 +1409,6 @@ C----- COPY MATRICES FOR SAVING IN LIST 20
       CALL XMLTTM (WB,WA,AS,3,3,3)
 C---OUTPUT NEW TENSORS
       IF (ISSPRT.EQ.0) WRITE (NCWU,1750)
-      WRITE (NCAWU,1750)
       WRITE(CMON,1750)
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       CALL ZMORE(CMON,0)
@@ -1435,12 +1427,12 @@ C---SHIFT ORIGIN TO MAKE S SYMMETRIC
       I=KINV2(3,WA,WB,9,1,WD,WC,3)
       DO 1650 I=1,3
          CF(I)=CF(I)+WC(I)
-1650     WA(I,I)=0.
+         WA(I,I)=0.
+1650  CONTINUE
       WRITE (CMON,1700) CF
-      WRITE (NCAWU,'(A)') CMON(1)(:)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)') CMON(1)(:)
       CALL XPRVDU (NCVDU,1,0)
-1700  FORMAT (/' Centre for which s is symmetric :             ',4X,3F8.
+1700  FORMAT (' Centre for which s is symmetric :             ',4X,3F8.
      14)
 C---TRANSFORM TENSORS TO NEW ORIGIN
       WA(1,2)=WD(3)/RAD
@@ -1486,16 +1478,12 @@ C---CALCULATE REDUCED T AND S, AND SCREW PITCHES
 2050  CONTINUE
 C---OUTPUT FINAL REDUCED TENSORS
       IF (ISSPRT.EQ.0) WRITE (NCWU,2100)
-      WRITE (NCAWU,2100)
       WRITE (CMON,2100)
       CALL XPRVDU (NCVDU,1,0)
 2100  FORMAT (' Final reduced tensors')
       CALL RSUB11 (2)
 C---OUTPUT SCREW PITCHES
-      IF (ISSPRT.EQ.0) THEN
-         WRITE (NCWU,2150) WD
-      END IF
-      WRITE (NCAWU,2150) WD
+      IF (ISSPRT.EQ.0) WRITE (NCWU,2150) WD
       WRITE (CMON,2150) WD
       CALL XPRVDU (NCVDU,1,0)
 2150  FORMAT (' Screw pitches (angstrom/degree) :',12X,3F7.2)
@@ -1559,10 +1547,7 @@ C--COMPUTE AND PRINT THE TOTALS FOR ALL THE ATOMS
       UFAC=DELU/SUMU*100.
       SFAC=SQRT(DELS/SUMS)*100.
       RMSU=SQRT(DELS/ANUMB)
-      IF (ISSPRT.EQ.0) THEN
-         WRITE (NCWU,2550) UFAC,SFAC,RMSU
-      END IF
-      WRITE (NCAWU,2550) UFAC,SFAC,RMSU
+      IF (ISSPRT.EQ.0) WRITE (NCWU,2550) UFAC,SFAC,RMSU
       WRITE (CMON,2550) UFAC,SFAC,RMSU
       CALL XPRVDU (NCVDU,4,0)
 2550  FORMAT (/6X,'           R-Factor for U''S = ',F7.2,/6X,'  Weighted
@@ -1933,10 +1918,7 @@ C--THE EIGENVALUE HAS TOO SMALL A VALUE
          DO 200 K=1,J
             WE(K)=0.
 200      CONTINUE
-         IF (ISSPRT.EQ.0) THEN
-            WRITE (NCWU,250) J,IB,IQ1(1)
-         END IF
-         WRITE (NCAWU,300)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,250) J,IB,IQ1(1)
 250      FORMAT (//' CRYSTALS is having difficulties withe the analysis'
      1    ,//' The inverse of the eigenvalues from 1 to ',I2,'  have bee
      2n set to zero',A1,'and marked by a ''',A1,''' in the listing below
@@ -1966,9 +1948,7 @@ C--CHECK IF THE EIGENVALUES AND VECTORS SHOULD BE PRINTED
       IF (IPRINT) 1050,1050,700
 C--PRINT THE VALUES
 700   CONTINUE
-      IF (ISSPRT.EQ.0) THEN
-         WRITE (NCWU,750)
-      END IF
+      IF (ISSPRT.EQ.0) WRITE (NCWU,750)
 750   FORMAT (//,' Eigenvalues and eigenvectors of the normal matrix',
      14X,'(Vector components multiplied by 1000)',//,1X,21X,'T11  T22  T
      233  T23  T13  T12  L11  L22  L33  L23  L13  L12','  S11  S12  S13
@@ -1984,9 +1964,7 @@ C--THIS ONE WAS DELETED
          CALL XMOVE (IQ1(1),IW(21),1)
 C--PRINT THE VALUES
 900      CONTINUE
-         IF (ISSPRT.EQ.0) THEN
-            WRITE (NCWU,950) J,AR(J),IW(21),(IW(K),K=1,20)
-         END IF
+         IF (ISSPRT.EQ.0) WRITE(NCWU,950)J,AR(J),IW(21),(IW(K),K=1,20)
 950      FORMAT (1X,I3,E12.3,1X,A1,2X,20I5)
 1000  CONTINUE
 C---TRANSFORM BACK TO ORIGINAL PARAMETER SET
