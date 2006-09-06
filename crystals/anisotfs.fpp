@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  2006/08/18 13:51:22  djw
+C Reinstate lost output
+C
 C Revision 1.17  2006/02/17 14:51:54  djw
 C Fix some writes to monitir/listinganisotfs.fpp
 C
@@ -1669,14 +1672,14 @@ C
          WRITE (CMON,50)
          CALL XPRVDU (NCVDU,3,0)
       END IF
-50    FORMAT (/1X,10X,'L',23X,'T',18X,'S'/)
+50    FORMAT (/1X,14X,'L',27X,'T',26X,'S'/)
       DO 100 I=1,3
          WRITE (CMON,150) (AL(I,J),J=1,3),(AT(I,J),J=1,3),(AS(I,J),
      1   J=1,3)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
          IF (MON.EQ.2) CALL XPRVDU (NCVDU,1,0)
 100   CONTINUE
-150   FORMAT ((3(3F7.2,2X)))
+150   FORMAT ((3(3F9.4,X)))
       CALL XLINES
       RETURN
       END
