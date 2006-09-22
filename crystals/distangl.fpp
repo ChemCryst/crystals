@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.76  2005/10/13 15:48:32  stefan
+C 1. Increased the length of the file names allowed in XBCALC from 80 to 255.
+C
 C Revision 1.75  2005/06/28 13:00:22  djw
 C Correct multiplier for Uequiv in H restraints
 C
@@ -1373,6 +1376,23 @@ C Check if the H is riding, or the esd happens to be zero.
 C----- INITIALIZE BUFFER
          IJX=IJW
          IF (IPUNCH .EQ. 3) THEN
+cdjwsep06 find unique H atoms
+          j = 1+(js-nflbas)/nw
+          j1 = nint(store(istore(nflbas)+1))
+          j2 = nint(store(istore(nflbas+nw)+1))
+          j3 = nint(store(istore(nflbas+2*nw)+1))
+          if (j .eq. 3) then
+           if ((j3 .eq. j2) .or. (j3 .eq. j1))     then
+           j = j-1
+           js = js-nw
+           endif
+          endif
+          if(j .eq. 2) then
+           if (j2 .eq. j1) then
+           j = j-1
+           js = js-nw
+           endif
+          endif
 C----- SCRIPT DATA PUBLICATION
 2185      FORMAT( 'RIDE ',50(A4,'(',I4,',X''S)',1X) )
           WRITE(NCPU,2185) STORE(M5P), NINT(STORE(M5P+1)),
