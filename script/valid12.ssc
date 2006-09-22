@@ -1,40 +1,63 @@
-%SCRIPT VALID12
-%% Ensures that we have at least a minimum valid LIST12
+%SCRIPT VALID12                                                                 
+%% Ensures that we have at least a minimum valid LIST12                         
+%%                                                                              
+%  VARIABLE LOGICAL L12SMASK                                                    
+%  VARIABLE INTEGER L12SER                                                      
+%%                                                                              
+%  BLOCK                                                                        
+%    ON ERROR TERMINATE                                                         
+%    COPY '#LIST 22'                                                            
+%    COPY 'END'                                                                 
+%%                                                                              
+%%{R  CRYSTALS refinement directives (LIST 12):                                 
+%%                                                                              
+%    COPY '#PRINT 12'                                                           
+%    COPY 'END'                                                                 
+{R  Directives are valid, but that does not necessarily mean 'suitable'!        
+%    FINISH                                                                     
+%  END BLOCK                                                                    
+{E  CRYSTALS DOES NOT have valid refinement directives (LIST 12)                
+{S  * Saving the existing refinement directives. (LIST 12)                      
+%  COPY '#RELEASE PUNCH bad12.pch'                                              
+%  COPY '#PUNCH 12'                                                             
+%  COPY 'END'                                                                   
+%  COPY '#RELEASE PUNCH bfile.pch'                                              
+{I  Bad refinement directives saved to: {&bad12.pch{&                           
 %%
-%  VARIABLE LOGICAL L12SMASK
-%  VARIABLE INTEGER L12SER
-%%
-%  BLOCK
+%  BLOCK                                                                        
 %    ON ERROR TERMINATE
-%    COPY '#LIST 22'
-%    COPY 'END'
-%% 
-%%{R  CRYSTALS refinement directives (LIST 12):
-%% 
-%    COPY '#PRINT 12'
-%    COPY 'END'
-{R  Directives are valid, but that does not necessarily mean 'suitable'!
-%    FINISH
-%  END BLOCK
-{E  CRYSTALS DOES NOT have valid refinement directives (LIST 12)
-{S  * Backing up existing refinement directives. (LIST 12)
-%  COPY '#RELEASE PUNCH bad12.pch'
-%  COPY '#PUNCH 12'
-%  COPY 'END'
-%  COPY '#RELEASE PUNCH bfile.pch'
-{I  Bad refinement directives saved to: {&bad12.pch{&
-{S  * Creating a minimum valid refinement list.
-%  COPY '#LIST 12'
-%  COPY 'FULL'
-%  COPY 'END'
-%  COPY '#PRINT 12'
-%  COPY 'END'
-{R  This 'valid' list may not be suitable for refinement, but
-{R  will be fine for Fourier and calculation of scale and R-factor.
-%  COPY '#GENERALEDIT 12'
-%  COPY 'GETSERIAL L12SER'
-%  COPY 'END'
-%  EVALUATE L12SMASK = TRUE
-%  COPY '#SCRIPT XPUTINFO'
-%END SCRIPT
- 
+{4,0 CRYSTALS has created faulty refinement directives.
+{4,0 You may be able to correct them with an edit
+{4,0 Common problems are:
+{4,0 The same atom parameters referred to twice on a RIDE card
+{4,0 Two different atoms with the same type and serial in LIST 5
+{4,0 To fix that, exit this dialogue and edit the model
+                                                                                
+%%                                                                              
+%    EVALUATE QTITLE = 'Bad Refinement Directives'                                    
+%    EVALUATE QLINE1 = 'CRYSTALS has created a faulty LIST 12'              
+%    EVALUATE QLINE2 = 'You may be able to correct them with an edit'           
+%    EVALUATE BUTTOK = '&Edit'                                              
+%    EVALUATE BUTTXX = '&Do not edit'                                      
+%    COPY '#SCRIPT XQUESTIO'                                                    
+%    IF ANSWER .EQ. TRUE THEN                                                  
+%      copy '#script edlist12'                                                                                
+%      FINISH                                                                   
+%    END IF                                                                     
+%%                                                                              
+%  END BLOCK                                                                    
+{S  * Creating a minimum valid refinement list.                                 
+%  COPY '#LIST 12'                                                              
+%  COPY 'FULL'                                                                  
+%  COPY 'END'                                                                   
+%  COPY '#PRINT 12'                                                             
+%  COPY 'END'                                                                   
+{R  This 'valid' list may not be suitable for refinement, but                   
+{R  will be fine for Fourier and calculation of scale and R-factor.             
+%  COPY '#GENERALEDIT 12'                                                       
+%  COPY 'GETSERIAL L12SER'                                                      
+%  COPY 'END'                                                                   
+%  EVALUATE L12SMASK = TRUE                                                     
+%  COPY '#SCRIPT XPUTINFO'                                                      
+%END SCRIPT                                                                     
+                                                                                
