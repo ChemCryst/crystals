@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.29  2006/05/08 16:11:37  djw
+C new DELH and PERH file system
+C
 C Revision 1.28  2006/05/08 13:23:45  djw
 C Create a delete file for hydrogens  created by perhydro
 C
@@ -848,7 +851,9 @@ C --- CHECK NITROGEN ALLOWED
       NHYB=0
       NBONDS=0
 C --  COMPUTE DISTANCE STACK TO A TWO BOND MAXIMUM
-      NDIST=KDIST1(N5,JL,JT,0,TOLER,ITRANS,0,4,0)
+cdjwaug06
+c      NDIST=KDIST1(N5,JL,JT,0,TOLER,ITRANS,0,4,0)
+      NDIST=KDIST1(N5,JL,JT,0,TOLER,ITRANS,0,4,1)
 C---- JK IS CURRENT NEXT FREE ADDRESS - SAVE AND SET LAST ENTRY
       NFL=JL
       JK=JL-JT
@@ -1709,7 +1714,9 @@ C        THE START OF THE NEW STACK
          JJE=JL
          M5=L5
 C
-         NDTEMP = KDIST1( N5, JJJE, JT, 0, TOLER, ITRANS, 0, 4, 0)
+cdjwaug06
+c         NDTEMP = KDIST1( N5, JJJE, JT, 0, TOLER, ITRANS, 0, 4, 0)
+         NDTEMP = KDIST1( N5, JJJE, JT, 0, TOLER, ITRANS, 0, 4, 1)
          IF (NDTEMP .LT. 2)    GOTO 1630
 C
 C
