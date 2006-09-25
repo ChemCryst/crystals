@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2006/09/25 09:53:23  djw
+C Add SIMU and improve DELU commands
+C
 C Revision 1.9  2005/11/01 16:22:00  djw
 C Improve conditioning of Normal Matrix by using a softer restraint for floating origins
 C
@@ -646,8 +649,8 @@ C Set the relevant REF bit.
 c
 c
 CDJW-AUG06
-      write(cmon,'(i5,a,2i5)')  ngroup, ' Groups', natoms, jatoms
-      call xprvdu(ncvdu,1,0)
+c      write(cmon,'(i5,a,2i5)')  ngroup, ' Groups', natoms, jatoms
+c      call xprvdu(ncvdu,1,0)
 
       IF ((MG .EQ.21) .AND. ( NGROUP .LE. 1 )) THEN
         WRITE (CMON,'(A)') 'Only one group given on SAME card.'
