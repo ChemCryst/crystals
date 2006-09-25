@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2005/11/01 16:22:00  djw
+C Improve conditioning of Normal Matrix by using a softer restraint for floating origins
+C
 C Revision 1.8  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -316,7 +319,7 @@ C   5.VIBRATIONS     6.COMPILER       7.EXECUTION      8.NO
 C   9.FUNCTION      10.U(IJ)'S       11.TERM          12.EQUATE
 C  13.PLANAR        14.SUM           15.FORM          16.AVERAGE
 C  17.LIMIT         18.ENERGY        19.ORIGIN        20.REM
-C  21.SAME
+C  21.SAME          22.DELU          23.SIMU
 C
 C----- ISTORE (LCG + 1) OPERATIONS
 C      1  DEFINE    2  RESTRAIN  3  DISTANCE 4
@@ -324,6 +327,8 @@ C      5            6  ANGLE     7           8
 C      9  VIBRATION 10 EXECUTION 11 NOLIST   12 UIJ
 C      13 EQUATE    14 PLANAR    15 SUM      16 FORM
 C      17 AVERAGE   18 LIMIT     19 ENERGY   20 ORIGIN
+C      21 REM       22 SAME      23 DELU     24 SIMU
+C 
       INCLUDE 'ICOM05.INC'
       INCLUDE 'ICOM12.INC'
       INCLUDE 'ICOM26.INC'
@@ -432,7 +437,7 @@ C--RECORD THE NUMBER OF ERRORS SO FAR
 C--JUMP ON THE FUNCTION OF THE CARD
       GOTO(1300,1350,1500,1800,1850,2050,2100,2150,2200,2250,
      2     2300,2450,4050,4550,5400,5650,5660,7000,7200,1150,
-     3     1810,1250), MG
+     3     1810,1810, 1810,1250), MG
 1250  CONTINUE
       CALL XOPMSG (IOPL16, IOPINT, 0)
       GOTO 9900
@@ -460,7 +465,7 @@ C--'DISTANCE' CARD
 1550  CONTINUE
       L=3
       M=5
-      I=KRCI(LN)  ! Check for normal, mean, or distance format.
+      I=KRCI(LN)  ! Check for normal, mean, or difference format.
       IF(I)5850,1700,1650
 1650  CONTINUE    ! A Diff or Mean distance.
       ISTORE(LCG+1)=ISTORE(LCG+1)+I
@@ -480,8 +485,12 @@ C--'ANGLE' CARD
       GOTO 1550
 
 C
-C--'SAME' CARD
+C--'SAME', 'DELU' or SIMU CARD
 1810  CONTINUE
+cdjw sep06
+c The same syntax can be used for SAME, DELU and SIMU, except that there
+c is no need for a second atom list for the adps
+c
 C This restraint is going to generate a lot of distance and
 C angle constraints.
 C The syntax is SAME At1 At2 At3 At4 and At5 At6 At7 At8 and ... etc
@@ -496,16 +505,33 @@ C
 C      OME = ME ! Save the current lexical pointers.
 C      OMF = MF
 C
-
-      DISTW = 0.01
-      ANGLW = 0.1
-
+      IF (MG .EQ. 21) THEN
+            IDJW = 1
+      ELSE IF (MG .EQ. 22) THEN
+            IDJW = 2
+      ELSE IF (MG .EQ. 23) THEN
+            IDJW = 3
+      ELSE
+      WRITE(CMON,'(A)') 'MG MIS-SET'
+           CALL XPRVDU(NCVDU,1,0)
+      ENDIF
+        DISTW = 0.01
+        ANGLW = 0.1
+        DELUW = 0.01
+        SIMUW = 0.04
+C
       I = KSYNUM(Z)
       IF (I.GT.0) GOTO 2700
       IF (I .EQ. 0 ) THEN
         ME=ME-1
         MF=MF+LK2
-        DISTW = Z       ! The weight for distance restraints.
+        IF (MG .EQ. 21) THEN
+          DISTW = Z       ! The weight for distance restraints.
+        ELSE IF (MG .EQ. 22) THEN
+          DELUW = Z       ! The weight for delu restraints.
+        ELSE IF (MG .EQ. 23) THEN
+          SIMUW = Z       ! The weight for simu restraints.
+        END IF
         IF(KOP(8).LT.0) THEN   ! CHECK FOR OPTIONAL ',' SIGN
            WRITE(CMON,'(A)') 'End of SAME directive found too soon.'
            CALL XPRVDU(NCVDU,1,0)
@@ -528,7 +554,7 @@ C
       IF ( ( DISTW.LE.0.0 ) .OR. ( ANGLW.LE.0.0 ) ) THEN
         CALL XPCLNN(LN)
         IF (ISSPRT .EQ. 0) WRITE(NCWU,1815)
-        WRITE(NCAWU,1815)
+C        WRITE(NCAWU,1815)
         WRITE ( CMON ,1815)
         CALL XPRVDU(NCVDU, 1,0)
 1815    FORMAT(' Negative or zero e.s.d.')
@@ -617,16 +643,28 @@ C Set the relevant REF bit.
         END DO
         JATOMS = JATOMS + N5A
       END DO
-      IF ( NGROUP .LE. 1 ) THEN
+c
+c
+CDJW-AUG06
+      write(cmon,'(i5,a,2i5)')  ngroup, ' Groups', natoms, jatoms
+      call xprvdu(ncvdu,1,0)
+
+      IF ((MG .EQ.21) .AND. ( NGROUP .LE. 1 )) THEN
         WRITE (CMON,'(A)') 'Only one group given on SAME card.'
         CALL XPRVDU(NCVDU,1,0)
         GOTO 5850
-      END IF
-      IF ( NATOMS .NE. JATOMS ) THEN
-        WRITE (CMON,'(A)') 'Last group different size from first.'
+      ELSE IF (((MG .EQ.22) .or.(mg.eq.23))
+     1  .AND. ( NGROUP .LE. 0 )) THEN
+        WRITE (CMON,'(A)') 'Not enough atoms for DELU/SIMU'
         CALL XPRVDU(NCVDU,1,0)
         GOTO 5850
       END IF
+        IF ((ngroup .gt. 1) .and. ( NATOMS .NE. JATOMS )) THEN
+          WRITE (CMON,'(A)') 'Last group different size from first.'
+          CALL XPRVDU(NCVDU,1,0)
+          GOTO 5850
+        END IF
+c
 C Get the distances and angles. One at a time.
       M5A=L5
       MATVCA = LATVC
@@ -660,8 +698,13 @@ C Get the distances and angles. One at a time.
         ELSE IF ( K .EQ. 0 ) THEN
            CALL CATSTR(STORE(M5A),STORE(M5A+1),1,1,0,0,0,
      2     CATOM1,LATOM1)
+           IF ( MG .EQ. 21) THEN
            WRITE (CMON,'(3A)')'SAME restraint warning: Atom ',
      2      CATOM1(1:LATOM1), ' has no bonded contacts.'
+           ELSE
+           WRITE (CMON,'(3A)')'DELU/SIMU restraint warning: Atom ',
+     2      CATOM1(1:LATOM1), ' has no bonded contacts.'
+           END IF
            CALL XPRVDU(NCVDU,1,0)
           CYCLE MAINLOOP
         END IF
@@ -678,7 +721,7 @@ C Find the pivot atom (M5A) in the first group.
              EXIT
           END IF
         END DO
-        IF ( IND1 .GE. 0 ) THEN
+        IF (( IND1 .GE. 0 ) .and. (mg .eq. 21)) THEN
           WRITE (CMON,'(A)') 'Programming error [1] in XPRC16.'
           CALL XPRVDU(NCVDU,1,0)  
           GOTO 5850
@@ -689,19 +732,21 @@ C Find the pivot atom (M5A) in the first group.
         DISTLOOP: DO J = NFLBAS, JS-JT, JT
 
           L=ISTORE(J)  ! Get the address in L5 of this atom.
-
-C          IF ( L .GE. M5A ) THEN
-C            CALL CATSTR(STORE(M5A),STORE(M5A+1),1,1,0,0,0,
-C     1      CATOM1,LATOM1)
-C            CALL CATSTR (STORE(L), STORE(L+1),
-C     1      ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
-C     2      ISTORE(J+6), CATOM2, LATOM2)
-C            LATOM1 = MIN(10, LATOM1)
-C            WRITE ( CMON ,2804) CATOM1(1:LATOM1),STORE(J+10),
-C     1      CATOM2(1:25)
-C            CALL XPRVDU(NCVDU, 1,0)
-C2804        FORMAT ( A,' ',F6.3,'A from ',A)
-C          END IF
+CDJW DEBUGGING
+c          IF ( L .GE. M5A ) THEN
+c            CALL CATSTR(STORE(M5A),STORE(M5A+1),1,1,0,0,0,
+c     1      CATOM1,LATOM1)
+c            CALL CATSTR (STORE(L), STORE(L+1),
+c     1      ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
+c     2      ISTORE(J+6), CATOM2, LATOM2)
+c            LATOM1 = MIN(10, LATOM1)
+c            WRITE ( CMON ,2804) CATOM1(1:LATOM1),STORE(J+10),
+c     1      CATOM2(1:25)
+c            CALL XPRVDU(NCVDU, 1,0)
+2804        FORMAT ( A,' ',F6.3,'A from ',A)
+c            WRITE(NCWU,'(A)') CMON(1)(:)
+c          END IF
+CDJW DEBUGGING
 
 C Find the second atom in the first group.
           IND2 = ( L - L5 ) / MD5
@@ -712,16 +757,31 @@ C Find the second atom in the first group.
                EXIT
             END IF
           END DO
-          IF ( IND2 .GE. 0 ) THEN
+          IF (( IND2 .GE. 0 ) .and. (mg .eq. 21)) THEN
             WRITE (CMON,'(A)') 'Programming error [2] in XPRC16.'
             CALL XPRVDU(NCVDU,1,0)  
             GOTO 5850
           END IF
           IND2 = -IND2 ! groups vectors at JATD.
           IF ( L .GE. M5A ) THEN
-
-            ISTORE(LCG+1)=5     ! Mean
-            STORE(LCG+3)=1./(DISTW*DISTW)  ! Weight (1/variance)
+C
+            IF (MG .EQ. 21) THEN
+              idjw1=3
+              idjw2=5
+              ISTORE(LCG+1)=5                             ! Mean
+              STORE(LCG+3)=1./(DISTW*DISTW)  ! Weight (1/variance)
+            ELSE if (MG .eq. 22) THEN
+              idjw1=9
+              idjw2=5
+              ISTORE(LCG+1)=9                             ! Vibration
+              STORE(LCG+3)=1./(DELUW*DELUW)  ! Weight (1/variance)
+            ELSE IF (MG .EQ. 23) THEN
+              idjw1=6
+              idjw2=8
+              ISTORE(LCG+1)=12                            ! U[IJ]
+              STORE(LCG+3)=1./(SIMUW*SIMUW)  ! Weight (1/variance)
+            ENDIF
+C
             STORE(LCG+4)=0.0    ! Target (difference).
 C The first group's atom1:
             MQ=MCG ! Next free word (we'll store atom header here)
@@ -741,7 +801,7 @@ C The first group's atom1:
             ISTORE(MCA+6)=NOWT          ! SET UP THE PARAMETER BLOCKS
             MCA=MDCG                    ! UPDATE 'MCA' TO ITS TRUE VALUE
             ISTORE(MCA)=NOWT
-            IDUM=KPARIN(MQ,3,5,LFL)
+            IDUM=KPARIN(MQ,idjw1,idjw2,LFL)
 C The first group's atom2:
             MQ=MCG ! Next free word (we'll store atom header here)
             CALL XFILL(NOWT,ISTORE(MQ),17)
@@ -756,21 +816,26 @@ C The first group's atom2:
             ISTORE(MCA+6)=NOWT          ! SET UP THE PARAMETER BLOCKS
             MCA=MDCG                    ! UPDATE 'MCA' TO ITS TRUE VALUE
             ISTORE(MCA)=NOWT
-            IDUM=KPARIN(MQ,3,5,LFL)
+            IDUM=KPARIN(MQ,idjw1,idjw2,LFL)
 
             DO K = 0,NGROUP-2
               M5P = L5 + MD5 * ISTORE(JATD+IND1+K*NATOMS)
               M5Q = L5 + MD5 * ISTORE(JATD+IND2+K*NATOMS)
-C              CALL CATSTR(STORE(M5P),STORE(M5P+1),1,1,0,0,0,
-C     1        CATOM1,LATOM1)
-C              CALL CATSTR (STORE(M5Q), STORE(M5Q+1),
-C     1        ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
-C     2        ISTORE(J+6), CATOM2, LATOM2)
-C              LATOM1 = MIN(10, LATOM1)
-C              WRITE(CMON,2804)CATOM1(1:LATOM1),STORE(J+10),
-C     2        CATOM2(1:25)
-C              CALL XPRVDU(NCVDU,1,0)
-
+CDJW - DEBUGGING
+c              write(cmon,'(a,i5)') ' Processing group ',K+1
+c              CALL XPRVDU(NCVDU,1,0)
+c              WRITE(NCWU,'(A)') CMON(1)(:)
+c              CALL CATSTR(STORE(M5P),STORE(M5P+1),1,1,0,0,0,
+c     1        CATOM1,LATOM1)
+c              CALL CATSTR (STORE(M5Q), STORE(M5Q+1),
+c     1        ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
+c     2        ISTORE(J+6), CATOM2, LATOM2)
+c              LATOM1 = MIN(10, LATOM1)
+c              WRITE(CMON,2804)CATOM1(1:LATOM1),STORE(J+10),
+c     2        CATOM2(1:25)
+c              CALL XPRVDU(NCVDU,1,0)
+c              WRITE(NCWU,'(A)') CMON(1)(:)
+CDJW - DEBUGGING
               MQ=MCG ! Next free word (we'll store atom1 header here)
               CALL XFILL(NOWT,ISTORE(MQ),17)
               ISTORE(MQ+1) = 0    ! Length of entry
@@ -788,7 +853,7 @@ C              CALL XPRVDU(NCVDU,1,0)
               ISTORE(MCA+6)=NOWT          ! SET UP THE PARAMETER BLOCKS
               MCA=MDCG                    ! UPDATE 'MCA' TO ITS TRUE VALUE
               ISTORE(MCA)=NOWT
-              IDUM=KPARIN(MQ,3,5,LFL)
+              IDUM=KPARIN(MQ,idjw1,idjw2,LFL)
               MQ=MCG ! Next free word (we'll store atom2 header here)
               CALL XFILL(NOWT,ISTORE(MQ),17)
               ISTORE(MQ+1) = 0    ! Length of entry
@@ -802,7 +867,7 @@ C              CALL XPRVDU(NCVDU,1,0)
               ISTORE(MCA+6)=NOWT          ! SET UP THE PARAMETER BLOCKS
               MCA=MDCG                    ! UPDATE 'MCA' TO ITS TRUE VALUE
               ISTORE(MCA)=NOWT
-              IDUM=KPARIN(MQ,3,5,LFL)
+              IDUM=KPARIN(MQ,idjw1,idjw2,LFL)
             END DO
 
             MDCS = MDCS - NGROUP
@@ -813,6 +878,7 @@ C              CALL XPRVDU(NCVDU,1,0)
             MZ=0
           END IF
 
+          IF (MG .EQ. 21) THEN
 C Given this bond, loop through rest of atoms to make angles:
           ANGLELOOP: DO JAN = J+JT, JS-JT, JT
 
@@ -864,7 +930,7 @@ C The first group's atom2:
             ISTORE(MCA+6)=NOWT          ! SET UP THE PARAMETER BLOCKS
             MCA=MDCG                    ! UPDATE 'MCA' TO ITS TRUE VALUE
             ISTORE(MCA)=NOWT
-            IDUM=KPARIN(MQ,3,5,LFL)
+            IDUM=KPARIN(MQ,idjw1,idjw2,LFL)
 C The first group's atom1:
             MQ=MCG ! Next free word (we'll store atom header here)
             CALL XFILL(NOWT,ISTORE(MQ),17)
@@ -883,7 +949,7 @@ C The first group's atom1:
             ISTORE(MCA+6)=NOWT          ! SET UP THE PARAMETER BLOCKS
             MCA=MDCG                    ! UPDATE 'MCA' TO ITS TRUE VALUE
             ISTORE(MCA)=NOWT
-            IDUM=KPARIN(MQ,3,5,LFL)
+            IDUM=KPARIN(MQ,idjw1,idjw2,LFL)
 C The first group's atom3:
             MQ=MCG ! Next free word (we'll store atom header here)
             CALL XFILL(NOWT,ISTORE(MQ),17)
@@ -898,7 +964,7 @@ C The first group's atom3:
             ISTORE(MCA+6)=NOWT          ! SET UP THE PARAMETER BLOCKS
             MCA=MDCG                    ! UPDATE 'MCA' TO ITS TRUE VALUE
             ISTORE(MCA)=NOWT
-            IDUM=KPARIN(MQ,3,5,LFL)
+            IDUM=KPARIN(MQ,idjw1,idjw2,LFL)
 
             DO K = 0,NGROUP-2
               M5P = L5 + MD5 * ISTORE(JATD+IND1+K*NATOMS)
@@ -931,7 +997,7 @@ C              CALL XPRVDU(NCVDU,1,0)
               ISTORE(MCA+6)=NOWT          ! SET UP THE PARAMETER BLOCKS
               MCA=MDCG                    ! UPDATE 'MCA' TO ITS TRUE VALUE
               ISTORE(MCA)=NOWT
-              IDUM=KPARIN(MQ,3,5,LFL)
+              IDUM=KPARIN(MQ,idjw1,idjw2,LFL)
               MQ=MCG ! Next free word (we'll store atom1 header here)
               CALL XFILL(NOWT,ISTORE(MQ),17)
               ISTORE(MQ+1) = 0    ! Length of entry
@@ -949,7 +1015,7 @@ C              CALL XPRVDU(NCVDU,1,0)
               ISTORE(MCA+6)=NOWT          ! SET UP THE PARAMETER BLOCKS
               MCA=MDCG                    ! UPDATE 'MCA' TO ITS TRUE VALUE
               ISTORE(MCA)=NOWT
-              IDUM=KPARIN(MQ,3,5,LFL)
+              IDUM=KPARIN(MQ,idjw1,idjw2,LFL)
               MQ=MCG ! Next free word (we'll store atom3 header here)
               CALL XFILL(NOWT,ISTORE(MQ),17)
               ISTORE(MQ+1) = 0    ! Length of entry
@@ -963,7 +1029,7 @@ C              CALL XPRVDU(NCVDU,1,0)
               ISTORE(MCA+6)=NOWT          ! SET UP THE PARAMETER BLOCKS
               MCA=MDCG                    ! UPDATE 'MCA' TO ITS TRUE VALUE
               ISTORE(MCA)=NOWT
-              IDUM=KPARIN(MQ,3,5,LFL)
+              IDUM=KPARIN(MQ,idjw1,idjw2,LFL)
             END DO
             MDCS = MDCS - NGROUP
             ISTORE(LCG+2) = MDCS
@@ -972,9 +1038,10 @@ C              CALL XPRVDU(NCVDU,1,0)
             LSTLEF=LEF   ! RECORD THE NUMBER OF ERRORS SO FAR
             MZ=0
           END DO ANGLELOOP
+          ENDIF
         END DO DISTLOOP
       END DO MAINLOOP
-
+C     END OF 'SAME' OR 'DELU' INSTRUCTION
       GOTO 1150
 C
 C--'VIBRATION' CARD
@@ -1026,7 +1093,7 @@ C--ERROR BECAUSE THERE IS NO ARGUMENT
 2350  CONTINUE
       CALL XPCL16
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2400)
-      WRITE(NCAWU,2400)
+C      WRITE(NCAWU,2400)
       WRITE ( CMON ,2400)
       CALL XPRVDU(NCVDU, 1,0)
 2400  FORMAT(' This instruction requires one numeric argument')
@@ -1130,7 +1197,7 @@ C--E.S.D. IS NOT CORRECT
 3650  CONTINUE
       CALL XPCL16
       IF (ISSPRT .EQ. 0) WRITE(NCWU,3700)
-      WRITE(NCAWU,3700)
+C      WRITE(NCAWU,3700)
       WRITE ( CMON ,3700)
       CALL XPRVDU(NCVDU, 1,0)
 3700  FORMAT(' Negative or zero e.s.d.')
@@ -1291,7 +1358,7 @@ C--THIS DOES NOT DEFINE THE GROUP
 5500  CONTINUE
       CALL XPCL16
       IF (ISSPRT .EQ. 0) WRITE(NCWU,5550)
-      WRITE(NCAWU,5550)
+C      WRITE(NCAWU,5550)
       WRITE ( CMON ,5550)
       CALL XPRVDU(NCVDU, 1,0)
 5550  FORMAT(' The atomic group has not been defined')
@@ -1467,7 +1534,7 @@ C--CHECK THAT THE E.S.D. IS NOT ZERO
 1300  CONTINUE
       CALL XPCLNN(LN)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1350)
-      WRITE(NCAWU,1350)
+C      WRITE(NCAWU,1350)
       WRITE ( CMON ,1350)
       CALL XPRVDU(NCVDU, 1,0)
 1350  FORMAT(' Negative or zero e.s.d.')
@@ -1702,7 +1769,7 @@ C--CHECK IF WE CAN PRINT THE CARD POSITION
 C--NO CARD POSITION
 1000  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1050)
-      WRITE(NCAWU,1050)
+C      WRITE(NCAWU,1050)
       WRITE ( CMON ,1050)
       CALL XPRVDU(NCVDU, 1,0)
 1050  FORMAT(' '' RESTRAINT'' format error',A1,
@@ -1711,7 +1778,7 @@ C--NO CARD POSITION
 C--PRINT THE CARD POSITION
 1100  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1050)IB,ISTORE(MF+1)
-      WRITE(NCAWU,1050)IB,ISTORE(MF+1)
+C      WRITE(NCAWU,1050)IB,ISTORE(MF+1)
       WRITE ( CMON ,1050)IB,ISTORE(MF+1)
       CALL XPRVDU(NCVDU, 1,0)
 C--UPDATE THE ERROR COUNTER
