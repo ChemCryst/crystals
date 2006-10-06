@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.111  2006/08/02 06:21:49  djw
+C special shapes and other changes from Judith Flippenanderson
+C
 C Revision 1.110  2006/06/13 10:02:03  djw
 C More cif goodies suggested by Judy Flippen Anderson
 C
@@ -5563,7 +5566,7 @@ C----- FRIEDELS LAW USED
      1      STORE(L30DR+1+I)*.01
         ELSE IF ( IPUNCH .EQ. 2 ) THEN
            WRITE (NCPU,4) 'Independent reflections', J
-           WRITE (NCPU,5) 'Rint ', STORE(L30DR+1+I)*.01
+           WRITE (NCPU,5) 'Rint ', STORE(L30DR+1+I)
         ELSE IF ( IPUNCH .EQ. 0 ) THEN
            CLINE=' '
            WRITE (CLINE,'(''_reflns_number_total '')')
