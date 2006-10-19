@@ -1,62 +1,88 @@
-%SCRIPT XPOST  %Script for outputting a Cameron postscript file%
-% VARIABLE INTEGER IFILET ITYPE IPRINT FILEOK
-% VARIABLE CHARACTER FILENAME FILETYPE
-^^WI WINDOW XPOST 'Save View' MODAL
-^^WI GRID G1 NROWS=3 NCOLS=5
-^^WI {
-^^WI  @ 2,2 GRID GL NROWS=3 NCOLS=1
-^^WI  {
-^^WI   @ 1,1 GRID GB NROWS=1 NCOLS=3
-^^WI   {
+%SCRIPT ARCHIVE_CAM  %Script for archiving current view%                
+% VARIABLE INTEGER IFILET ITYPE IPRINT FILEOK                                   
+% VARIABLE CHARACTER FILENAME FILETYPE newfile
+% VARIABLE LOGICAL SAME
+
+% EVALUATE SAME = TRUE
+% evaluate newfile = ' ' // filename
+0
+% show newfile
+% if  newfile  .eq. " " then                                  
+%       evaluate filename = 'view1.cam'
+%       evaluate same = false
+% end if
+1
+% show filename
+
+
+^^WI WINDOW XPOST 'Archive Current View' MODAL                                             
+^^WI GRID G1 NROWS=3 NCOLS=5                                                    
+^^WI {                                                                          
+^^WI  @ 2,2 GRID GL NROWS=3 NCOLS=1                                             
+^^WI  {                                                                         
+^^WI   @ 1,1 GRID GB NROWS=1 NCOLS=3                                            
+^^WI   {                                                                        
 ^^WI    @ 1,1 STATIC  T1 'Filename: '
-^^WI    @ 1,3 EDITBOX E1 'view1.cam' CHARS=15 INFORM=NO
-^^WI   }
-^^WI  }
-^^WI  @ 2,4 GRID   GR NROWS=3 NCOLS=3
-^^WI  {
-^^WI   @ 1,2 BUTTON      BTOK 'Ok' DEFAULT
-^^WI   @ 3,2 BUTTON      BTXX 'Cancel'
-^^WI  }
-^^WI }
-^^WI SHOW
-^^CR
-% LOOP
-%   VERIFY BTOK BTXX
-%   GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%   CASE VALUE
-%     BLOCK        %BTNOK%
-^^??   E1 TEXT
-%      GET SILENT KEYWORD 'New filename: '
-%      EVALUATE FILENAME = CVALUE
+%    if same .eq. true then                                           
+^^WI    @ 1,3 EDITBOX E1 'same filename?' CHARS=15 INFORM=NO                         
+%    else
+^^WI    @ 1,3 EDITBOX E1 'view1.cam' CHARS=15 INFORM=NO                         
+% end if
+^^WI   }                                                                        
+^^WI  }                                                                         
+^^WI  @ 2,4 GRID   GR NROWS=3 NCOLS=3                                           
+^^WI  {                                                                         
+^^WI   @ 1,2 BUTTON      BTOK 'Ok' DEFAULT                                      
+^^WI   @ 3,2 BUTTON      BTXX 'Cancel'                                          
+^^WI  }                                                                         
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+% LOOP                                                                          
+%   VERIFY BTOK BTXX                                                            
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' '                                    
+%   CASE VALUE                                                                  
+%     BLOCK        %BTNOK%                                                      
+^^??   E1 TEXT                                                                  
+%      GET SILENT KEYWORD 'New filename: '                                      
+%      EVALUATE newfile = CVALUE                                               
 %      EVALUATE FILEOK = 1
-%      IF .NOT. ( FILEEXISTS ( FILENAME ) ) THEN
-^^WI   DISPOSE XPOST
-^^CR
-%% DJW MAY2000 RICJUN2001 - can't do this or impos to set other bw schemes.
-%%        IF FILETYPE .EQ. 'POST' .OR. FILETYPE .EQ. 'ENCAP' THEN
-%%          TRANSFER -
-%%"UNFILL COLOUR BOND ALL WHITE COLOUR BACK GREY COLOUR ALL BLACK VIEW " -
-%%TO  CRYSTALS
-%%%        END IF
-%% DJW MAY2000
-%% RIC AUG2000 - Add quotes around the filename...
-%        TRANSFER 'ARCHIVE "' // FILENAME // '"' TO CRYSTALS
-%        TRANSFER '   ' TO CRYSTALS
-%        TRANSFER 'Output file: {&' // FILENAME // '{& ' TO DISPLAY
-%        FINISH
-%      END IF
-%     END BLOCK
-%     BLOCK     %BTNXX%
-^^WI     DISPOSE XPOST
-^^CR
-%        FINISH
-%     END BLOCK
-%   END CASE
-%   VARIABLE CHARACTER QLINE1 QLINE2 QTITLE BUTTOK
-%   EVALUATE QLINE1 = "The chosen filename already"
-%   EVALUATE QLINE2 = "exists, please choose another."
-%   EVALUATE QTITLE = "File exists"
-%   EVALUATE BUTTOK = "OK"
-%   COPY '#SCRIPT XMESSAGE'
-% END LOOP
-%END SCRIPT
+2
+%       show newfile
+%      if newfile .eq. 'same' then
+%            evaluate newfile = gettitle ( filename )
+3
+%            show newfile
+%            evaluate filename = newfile // '.cam'
+4
+%            show filename
+%      else
+%            evaluate filename = newfile
+%      end if
+5
+%      show filename
+                                                      
+%      IF .NOT. ( FILEEXISTS ( FILENAME ) ) THEN                                
+^^WI   DISPOSE XPOST                                                            
+^^CR                                                                            
+%% RIC AUG2000 - Add quotes around the filename...                              
+%        TRANSFER 'ARCHIVE "' // FILENAME // '"' TO CRYSTALS                    
+%        TRANSFER '   ' TO CRYSTALS                                             
+%        TRANSFER 'Output file: {&' // FILENAME // '{& ' TO DISPLAY             
+%        FINISH                                                                 
+%      END IF                                                                   
+%     END BLOCK                                                                 
+%     BLOCK     %BTNXX%                                                         
+^^WI     DISPOSE XPOST                                                          
+^^CR                                                                            
+%        FINISH                                                                 
+%     END BLOCK                                                                 
+%   END CASE                                                                    
+%   VARIABLE CHARACTER QLINE1 QLINE2 QTITLE BUTTOK                              
+%   EVALUATE QLINE1 = "The chosen filename already"                             
+%   EVALUATE QLINE2 = "exists, please choose another."                          
+%   EVALUATE QTITLE = "File exists"                                             
+%   EVALUATE BUTTOK = "OK"                                                      
+%   COPY '#SCRIPT XMESSAGE'                                                     
+% END LOOP                                                                      
+%END SCRIPT                                                                     

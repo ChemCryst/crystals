@@ -1,104 +1,92 @@
-%SCRIPT XPOST  %Script for outputting a Cameron postscript file%
-% VARIABLE INTEGER IFILET ITYPE IPRINT FILEOK
-% VARIABLE CHARACTER FILENAME FILETYPE
-^^WI WINDOW XPOST 'Save Image' MODAL
-^^WI GRID G1 NROWS=3 NCOLS=5
-^^WI {
-^^WI  @ 2,2 GRID GL NROWS=9 NCOLS=1
-^^WI  {
-^^WI   @ 1,1 CHECKBOX    XCOLOUR 'Colour' STATE=ON INFORM=NO
-^^WI   @ 8,1 CHECKBOX    XPRINT 
-^^WI     'Print now (only for Postscript Printer)?' STATE=OFF INFORM=NO
-^^WI   @ 3,1 RADIOBUTTON RPOST 'Postscript' STATE=ON IGNORE
-^^WI   @ 4,1 RADIOBUTTON RENCA 'Encapsulated Postscript' IGNORE
-^^WI   @ 6,1 GRID GB NROWS=1 NCOLS=3
-^^WI   {
-^^WI    @ 1,1 STATIC  T1 'Filename: '
-^^WI    @ 1,3 EDITBOX E1 'pic1.ps' CHARS=15 INFORM=NO
-^^WI   }
-^^WI  }
-^^WI  @ 2,4 GRID   GR NROWS=3 NCOLS=3
-^^WI  {
-^^WI   @ 1,2 BUTTON      BTOK 'Ok' DEFAULT
-^^WI   @ 3,2 BUTTON      BTXX 'Cancel'
-^^WI  }
-^^WI }
-^^WI SHOW
-^^CR
-% LOOP
-%   VERIFY BTOK BTXX
-%   GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%   CASE VALUE
-%     BLOCK        %BTNOK%
-^^WI   GETVALUE RPOST
-^^CR
-%      VERIFY ON OFF
-%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%      EVALUATE IFILET = VALUE
-^^??   XCOLOUR STATE
-^^CR
-%      VERIFY ON OFF
-%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%%If not colour add 2 to the value of ifilet to give itype
-%      EVALUATE ITYPE = ( ( VALUE  - 1 ) * 2 ) + IFILET
-^^??   E1 TEXT
-%      GET SILENT KEYWORD 'New filename: '
-%      EVALUATE FILENAME = CVALUE
-%%DJWDEC99
-^^??   XPRINT STATE
-^^CR
-%      VERIFY ON OFF
-%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%      EVALUATE IPRINT = VALUE
-%%DJWDEC99
-%      CASE ITYPE
-%          EVALUATE FILETYPE = 'CPOST'
-%          EVALUATE FILETYPE = 'CENCAP'
-%          EVALUATE FILETYPE = 'POST'
-%          EVALUATE FILETYPE = 'ENCAP'
-%      END CASE
-%      EVALUATE FILEOK = 1
-%      IF .NOT. ( FILEEXISTS ( FILENAME ) ) THEN
-^^WI   DISPOSE XPOST
-^^CR
-%% DJW MAY2000 RICJUN2001 - can't do this or impos to set other bw schemes.
-%%        IF FILETYPE .EQ. 'POST' .OR. FILETYPE .EQ. 'ENCAP' THEN
-%%          TRANSFER -
-%%"UNFILL COLOUR BOND ALL WHITE COLOUR BACK GREY COLOUR ALL BLACK VIEW " -
-%%TO  CRYSTALS
-%%%        END IF
-%% DJW MAY2000
-%% RIC AUG2000 - Add quotes around the filename...
-%        TRANSFER 'HARDCOPY ' // FILETYPE TO CRYSTALS
-%        TRANSFER 'VIEW   ' TO CRYSTALS
-%        TRANSFER 'COPY "' // FILENAME // '"' TO CRYSTALS
-%        TRANSFER '   ' TO CRYSTALS
-%        TRANSFER 'Output file: {&' // FILENAME // '{& ' TO DISPLAY
-%            IF IPRINT .EQ. 1 THEN
-%% RIC MAR2001 Remove quotes - print doesn't seem to like them?
-%        TRANSFER 'PRINT ' // FILENAME TO CRYSTALS
-%            END IF
-%% DJW MAY2000 - RIC JUN2000 Removed this.
-%%        IF FILETYPE .EQ. 'POST' .OR. FILETYPE .EQ. 'ENCAP' THEN
-%%          TRANSFER -
-%%"FILL COLOUR BOND ALL BLACK COLOUR BACK WHITE COLOUR DEFA VIEW " -
-%%TO  CRYSTALS
-%%        END IF
-%% DJW MAY2000
-%        FINISH
-%      END IF
-%     END BLOCK
-%     BLOCK     %BTNXX%
-^^WI     DISPOSE XPOST
-^^CR
-%        FINISH
-%     END BLOCK
-%   END CASE
-%   VARIABLE CHARACTER QLINE1 QLINE2 QTITLE BUTTOK
-%   EVALUATE QLINE1 = "The chosen filename already"
-%   EVALUATE QLINE2 = "exists, please choose another."
-%   EVALUATE QTITLE = "File exists"
-%   EVALUATE BUTTOK = "OK"
-%   COPY '#SCRIPT XMESSAGE'
-% END LOOP
-%END SCRIPT
+%SCRIPT XPOST  %Script for outputting a Cameron postscript file%                
+% VARIABLE INTEGER IFILET ITYPE IPRINT FILEOK                                   
+% VARIABLE CHARACTER FILENAME FILETYPE                                          
+^^WI WINDOW XPOST 'Save Image' MODAL                                            
+^^WI GRID G1 NROWS=3 NCOLS=5                                                    
+^^WI {                                                                          
+^^WI  @ 2,2 GRID GL NROWS=9 NCOLS=1                                             
+^^WI  {                                                                         
+^^WI   @ 1,1 CHECKBOX    XCOLOUR 'Colour' STATE=ON INFORM=NO                    
+^^WI   @ 8,1 CHECKBOX    XPRINT                                                 
+^^WI     'Print now (only for Postscript Printer)?' STATE=OFF INFORM=NO         
+^^WI   @ 3,1 RADIOBUTTON RPOST 'Postscript' STATE=ON IGNORE                     
+^^WI   @ 4,1 RADIOBUTTON RENCA 'Encapsulated Postscript' IGNORE                 
+^^WI   @ 6,1 GRID GB NROWS=1 NCOLS=3                                            
+^^WI   {                                                                        
+^^WI    @ 1,1 STATIC  T1 'Filename: '                                           
+^^WI    @ 1,3 EDITBOX E1 'pic1.ps' CHARS=15 INFORM=NO                           
+^^WI   }                                                                        
+^^WI  }                                                                         
+^^WI  @ 2,4 GRID   GR NROWS=3 NCOLS=3                                           
+^^WI  {                                                                         
+^^WI   @ 1,2 BUTTON      BTOK 'Ok' DEFAULT                                      
+^^WI   @ 3,2 BUTTON      BTXX 'Cancel'                                          
+^^WI  }                                                                         
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+% LOOP                                                                          
+%   VERIFY BTOK BTXX                                                            
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' '                                    
+%   CASE VALUE                                                                  
+%     BLOCK        %BTNOK%                                                      
+^^WI   GETVALUE RPOST                                                           
+^^CR                                                                            
+%      VERIFY ON OFF                                                            
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '                                 
+%      EVALUATE IFILET = VALUE                                                  
+^^??   XCOLOUR STATE                                                            
+^^CR                                                                            
+%      VERIFY ON OFF                                                            
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '                                 
+%%If not colour add 2 to the value of ifilet to give itype                      
+%      EVALUATE ITYPE = ( ( VALUE  - 1 ) * 2 ) + IFILET                         
+^^??   E1 TEXT                                                                  
+%      GET SILENT KEYWORD 'New filename: '                                      
+%      EVALUATE FILENAME = CVALUE                                               
+%%DJWDEC99                                                                      
+^^??   XPRINT STATE                                                             
+^^CR                                                                            
+%      VERIFY ON OFF                                                            
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '                                 
+%      EVALUATE IPRINT = VALUE                                                  
+%%DJWDEC99                                                                      
+%      CASE ITYPE                                                               
+%          EVALUATE FILETYPE = 'CPOST'                                          
+%          EVALUATE FILETYPE = 'CENCAP'                                         
+%          EVALUATE FILETYPE = 'POST'                                           
+%          EVALUATE FILETYPE = 'ENCAP'                                          
+%      END CASE                                                                 
+%      EVALUATE FILEOK = 1                                                      
+%      IF .NOT. ( FILEEXISTS ( FILENAME ) ) THEN                                
+^^WI   DISPOSE XPOST                                                            
+^^CR                                                                            
+%% RIC AUG2000 - Add quotes around the filename...                              
+%        TRANSFER 'HARDCOPY ' // FILETYPE TO CRYSTALS                           
+%        TRANSFER 'VIEW   ' TO CRYSTALS                                         
+%        TRANSFER 'COPY "' // FILENAME // '"' TO CRYSTALS                       
+%        TRANSFER '   ' TO CRYSTALS                                             
+%        TRANSFER 'Output file: {&' // FILENAME // '{& ' TO DISPLAY             
+%            IF IPRINT .EQ. 1 THEN                                              
+%% RIC MAR2001 Remove quotes - print doesn't seem to like them?                 
+%        TRANSFER 'PRINT ' // FILENAME TO CRYSTALS                              
+%            END IF                                                             
+%%DJWOct06
+%        TRANSFER '#SCRIPT ARCHIVE_CAM ' TO CRYSTALS
+%        FINISH                                                                 
+%      END IF                                                                   
+%     END BLOCK                                                                 
+%     BLOCK     %BTNXX%                                                         
+^^WI     DISPOSE XPOST                                                          
+^^CR                                                                            
+%        FINISH                                                                 
+%     END BLOCK                                                                 
+%   END CASE                                                                    
+%   VARIABLE CHARACTER QLINE1 QLINE2 QTITLE BUTTOK                              
+%   EVALUATE QLINE1 = "The chosen filename already"                             
+%   EVALUATE QLINE2 = "exists, please choose another."                          
+%   EVALUATE QTITLE = "File exists"                                             
+%   EVALUATE BUTTOK = "OK"                                                      
+%   COPY '#SCRIPT XMESSAGE'                                                     
+% END LOOP                                                                      
+%END SCRIPT                                                                     
