@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2006/09/06 06:55:44  djw
+C Output more decimal places for matrices
+C
 C Revision 1.18  2006/08/18 13:51:22  djw
 C Reinstate lost output
 C
@@ -1553,9 +1556,10 @@ C--COMPUTE AND PRINT THE TOTALS FOR ALL THE ATOMS
       IF (ISSPRT.EQ.0) WRITE (NCWU,2550) UFAC,SFAC,RMSU
       WRITE (CMON,2550) UFAC,SFAC,RMSU
       CALL XPRVDU (NCVDU,4,0)
-2550  FORMAT (/6X,'           R-Factor for U''S = ',F7.2,/6X,'  Weighted
-     1 R-Factor for U''S = ',F7.2,/6X,' R.M.S. discrepancy for U''S = ',
-     2F7.4)
+2550  FORMAT (/6X,
+     1'          R1-Factor for U''S = ',F7.2,/6X,
+     2'         R^2-Factor for U''S = ',F7.2,/6X,
+     3' R.M.S. discrepancy for U''S = ',2F7.4)
 C
 2600  CONTINUE
       IRTLS=1
