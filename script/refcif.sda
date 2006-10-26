@@ -137,6 +137,31 @@ _publ_section_exptl_prep
 ?
 ;
 
+# Hand-made tables can be put in the cif. The number of columns
+# is set in the loop header.
+# The contants of each column can either be a piece of text
+# without any spaces (eg a number) or other text enclosed in " "
+# Remove the leading # in the following example
+
+#geom_extra_table_head_A
+#;
+#Table 2.
+#Molecular parameters deviating most from MOGUL averages
+#;
+#
+#loop_
+#_geom_extra_tableA_col_1
+#_geom_extra_tableA_col_2
+#_geom_extra_tableA_col_3
+#_geom_extra_tableA_col_4
+#
+#Parameter   "Observed Value"  "MOGUL Value"  "MOGUL e.s.d"
+#N5-C6-C4     129               124            "7 (\%)"
+#C3-O10-C2    105               109            "2 (\%)"
+#C6-O7        1.25              1.22           ".02 (\%A)"
+#
+
+
 
 # PROCESSING SUMMARY (IUCr Office Use Only):
 _journal_date_recd_electronic     ?
