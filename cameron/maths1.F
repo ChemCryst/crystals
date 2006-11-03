@@ -3835,7 +3835,7 @@ C        WRITE (NCWU,'(I4, 4(4F6.2,X),2X,3F5.1)') IPKNO, OPER, TRANS
 C        WRITE (NCWU,'(I4, 4(3F6.2,X),2X,3F5.1)') IPKNO, OPER3, TRANS
         CALL XSUMOP(OPER3, TRANS, CLINE, LEN, 1)
         WRITE (NCWU,'(A, I4, 4X,A)') 'CAMERON packing Operator ', 
-     1  IPKNO, CLINE(1:LEN)
+     1  IPKNO-1, CLINE(1:LEN)
       ENDIF
       RETURN
       END
