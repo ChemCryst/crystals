@@ -689,7 +689,8 @@ C MOVE OVER THE NUMBER
       DO 1100 J = ICLP , 1 , -1
         CC(ILL+2+ICLP-J:ILL+2+ICLP-J) = CLNUM(J:J)
 1100    CONTINUE
-      ILL = ILL + ICLP+1
+cdjw      ILL = ILL + ICLP+1
+      ill = index(cc,' ')
       ELSE
       CC = CSTORE(IL)
       ENDIF

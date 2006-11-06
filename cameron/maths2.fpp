@@ -1,5 +1,22 @@
 CRYSTALS CODE FOR MATHS2.FOR                                                    
 CAMERON CODE FOR MATHS2
+code for zroman
+      subroutine zroman(idecimal,croman)
+c---- return roman character representation of integer number
+      parameter (nromtxt = 10)
+      character *4 croman, cromtxt(nromtxt)
+      data cromtxt/'i','ii','iii','iv','v','vi','vii',
+     1 'viii','ix','x'/
+cdjw convert to roman
+      if ((idecimal .gt. 0) .and. (idecimal .le. nromtxt)) then
+       croman = cromtxt(idecimal)
+      else
+       croman = ' '
+      endif
+      write(ncwu, '(i4,3x,a)') ippack, croman
+      return
+      end
+
 CODE FOR ZPRELS
       SUBROUTINE ZPRELS(EIGS,AXES,ELROT,MROT1,E1,E2,PP)
 C This is a test program for the ellipse drawing routines.
@@ -977,7 +994,10 @@ CODE FOR ZPLABL
       INCLUDE 'CAMBTN.INC'
       INCLUDE 'CAMBLK.INC'
       INCLUDE 'XIOBUF.INC'
+      
+      include 'xunits.inc'
 
+      character *4  crmlb
       CHARACTER*(*) CLAB
       CHARACTER*10 CLNUM
       CHARACTER*1 CNUMS(10)
@@ -987,6 +1007,7 @@ CODE FOR ZPLABL
 C CONVERT THE PACK NUMBER
       KK = (I-ISINIT)/IPACKT + ICATOM
       IPPACK = NINT(RSTORE(I+IPCK))
+      call zroman(ippack,crmlb)
       ICLP = 1
 1000  CONTINUE
       IPN = MOD (IPPACK,10)
@@ -998,9 +1019,11 @@ C CONVERT THE PACK NUMBER
       ENDIF
 C MOVE OVER THE NUMBER
       CLAB(1:IL+1) = CSTORE(KK)(1:IL)//'_'
-      DO 1100 J = ICLP , 1 , -1
-        CLAB(IL+2+ICLP-J:IL+2+ICLP-J) = CLNUM(J:J)
-1100  CONTINUE
+cdjw      DO 1100 J = ICLP , 1 , -1
+cdjw        CLAB(IL+2+ICLP-J:IL+2+ICLP-J) = CLNUM(J:J)
+cdjw1100  CONTINUE
+c-move over the roman number
+      clab(il+2:) = crmlb(:)
       IL = INDEX (CLAB,' ') - 1
       RETURN
       END

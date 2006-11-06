@@ -113,7 +113,7 @@ C      WRITE (IGOUT,'(2I5)') IX,IY,ITEK
 500   CONTINUE
 C POSTSCRIPT
       IF (IPOST.EQ.0) THEN
-C CLEAR IS AT BEGINNING OF DEVICE
+C CLEAR IF AT BEGINNING OF DEVICE
         IF (IENCAP.EQ.1) THEN
           WRITE (IFOUT,'(23A)') '%!PS-Adobe-2.0 EPSF-1.2'
 C NOTE THAT THE PAGE SIZE WAS SCALED UP BY A FACTOR OF 10 TO
@@ -141,6 +141,18 @@ CDJW
           WRITE (IFOUT,'(38A)') '{ gsave g setgray fill grestore } if'
           WRITE (IFOUT,'(33A)') '0.0 setgray stroke grestore } def'
         ENDIF
+cdjwNov06
+        write(ifout,'(a)') '%Superscript'
+        write(ifout,'(a)') '/Roman' 
+        write(ifout,'(a)') '{ gsave /Courier  findfont '
+        write(ifout,'(a)') 
+     1  ' [ dsize 0.65 mul 0 0 dsize 0.6 mul 0 0 ] '
+        write(ifout,'(a)') ' makefont setfont '
+        write(ifout,'(a)') ' 0 dsize  2 div  rmoveto '
+        write(ifout,'(a)') ' djw show grestore } def '
+        write(ifout,'(a,i6,a)') ' gsave /Courier findfont', IFONT,
+     1                     ' scalefont setfont grestore'
+        write(ifout,'(///)')
         IPOST = 1
       ENDIF
       IF (IPOST.EQ.1) THEN
@@ -675,6 +687,7 @@ CODE FOR ZDRTEX
       INTEGER IX,IY,ICOL
       INTEGER ITEK(4)
       CHARACTER*(*) TEXT
+      CHARACTER *12 CNAME, CSUPER
       CHARACTER*1 HEX(16),CGS,CHY,CLY,CLX,CHX,CUS
       SAVE HEX
       DATA HEX/'0','1','2','3','4','5','6','7','8','9','A',
@@ -734,8 +747,23 @@ c      WRITE (IFOUT,'(7A)') 'setfont'
       WRITE (IFOUT,501) (IX+INT(XCEN+XOFF))/10.0,
      + (IY+INT(YCEN+YOFF))/10.0
 501   FORMAT (F7.2,2X,F7.2,' ywid sub moveto')
-      WRITE (IFOUT,502) TEXT
-502   FORMAT ('(',A,') show')
+cdjwnov07
+c-look for _ for superscript
+      IDJW = INDEX(TEXT,'_')
+      IF (IDJW .EQ. 0) THEN
+        WRITE (IFOUT,502) TEXT
+502     FORMAT ('(',A,') show')
+      ELSE
+CSPLIT INTO PARTS
+        CNAME(1:) = TEXT(1:IDJW-1)
+        CSUPER(1:) = TEXT(IDJW+1:)
+        CALL XCTRIM(CNAME,NNAME)
+        CALL XCTRIM(CSUPER,NSUPER)
+        WRITE(IFOUT,502) CNAME(1:NNAME-1)
+        WRITE(IFOUT,'(A,I6,A,A,A)') 
+     1  '/dsize ',IFONT, ' def /djw (',CSUPER(1:NSUPER-1),') def Roman'
+      ENDIF
+C
 9999  CONTINUE
       RETURN
       END
