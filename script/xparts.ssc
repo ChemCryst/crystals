@@ -11,7 +11,7 @@
 %% Declare variables                                                            
 %                                                                               
 %                                                                               
-% VARIABLE INTEGER IGROUP IASSEMB ICUR ISELGR ISELPR GENCNT ISER                  
+% VARIABLE INTEGER IGROUP IASSEMB ICUR ISELGR ISELPR GENCNT ISER                
 % VARIABLE INTEGER NEWGR NEWPR TOTGR TOTPR MAXGR MAXPR                          
 % VARIABLE LOGICAL GRCHNG PRCHNG ATCHNG GENEDIT PRCHALL                         
 % VARIABLE CHARACTER CATOM CSEEK                                                
@@ -28,54 +28,93 @@
 %                                                                               
 %                                                                               
 {1,11Naming the Parts
-{1,11
-{1,11In CRYSTALS
-{1,11If a strcuture contains two or more discrete molecular fragments,
-{1,11these are called {12,11RESIDUES
-{1,11AtomS can be allocated to a RESIDUE, and the RESIDUE number be
-{1,11used to identify all those atoms e.g. RESIDUE(2)
-{1,11A RESIDUE can be divided (by the user) into {12,11PARTS
-{1,11
-{1,11A PART is usually a bit of a RESIDUE of special interest - 
-{1,11e.g. disordered.
-{1,11
-{1,11A PART has an identifier corresponding to 2 components: 
-{1,11 {12,11ASSEMBLIES and {12,11GROUPS
-{1,11
-{1,11Different disordered regions are assigned to diferent 
-{1,11 {12,11ASSEMBLIES
-{1,11
-{1,11Atoms in each part of a disordered region are assigned to a 
-{1,11 {12,11GROUP
-{1,11
-{1,11PART_ID = 1000*ASSEMBLY_ID + GROUP_ID
-{1,11
+{1,11                                                                           
+{1,11In CRYSTALS                                                                
+{1,11If a strcuture contains two or more discrete molecular fragments,          
+{1,11these are called {12,11RESIDUES                                            
+{1,11Atoms can be allocated to a RESIDUE, and the RESIDUE number be             
+{1,11used to identify all those atoms e.g. RESIDUE(2)                           
+{1,11A RESIDUE can be divided (by the user) into {12,11PARTS                    
+{1,11                                                                           
+{1,11A PART is usually a bit of a RESIDUE of special interest -                 
+{1,11e.g. disordered fragment.                                                           
+{1,11                                                                           
+{1,11A PART has an identifier corresponding to 2 components:                    
+{1,11 {12,11ASSEMBLIES and {12,11GROUPS                                         
+{1,11                                                                           
+{1,11Different disordered regions are assigned to diferent                      
+{1,11 {12,11ASSEMBLIES                                                          
+{1,11                                                                           
+{1,11Atoms in each part of a disordered region are assigned to a                
+{1,11 {12,11GROUP                                                               
+{1,11                                                                           
+{1,11PART_ID = 1000*ASSEMBLY_ID + GROUP_ID                                      
+{1,11                                                                           
+{1,11PARTS can be used to identify groups of atoms, e.g. IN #EDIT
+{1,11                                                                           
+{12,11CHANGE PART(1001,OCC) PART(1002,OCC) 0.5
 {1,0                                                                            
 %% Create the window                                                            
 %                                                                               
 %                                                                               
-^^WI WINDOW XGROUPS 'Assembly & Group definitions' KEEP SIZE MODAL                 
+^^WI WINDOW XGROUPS 'Assembly & Group definitions' KEEP SIZE  MODAL              
 ^^WI COMMIT='PR_BOK' CANCEL='PR_BOK'                                            
 %                                                                               
 ^^WI GRID MAIN NROWS=3 NCOLS=5                                                  
 ^^WI {                                                                          
-^^WI  @ 2,2 GRID LEFT NROWS=4 NCOLS=1                                           
+^^WI  @ 2,2 GRID LEFT NROWS=23 NCOLS=1                                           
 ^^WI  {                                                                         
 ^^WI   @ 1,1 GRID LEFT NROWS=10 NCOLS=5                                         
 ^^WI   {                                                                        
-^^WI    @ 1,1 STATIC T1 Assembly
-^^WI    @ 1,3 STATIC T1 Group                                                    
+^^WI    @ 1,1 STATIC T1 Assembly                                                
+^^WI    @ 1,3 STATIC T1 Group                                                   
 ^^WI    @ 1,5 STATIC T1 Atoms                                                   
-^^WI    @ 2,1 LISTBOX XPASSEMBS VISLINES=9 INFORM=YES ADDTOLIST '0' NULL         
-^^WI    @ 2,3 LISTBOX XPGROUPS VISLINES=9 INFORM=YES ADDTOLIST '0' NULL          
+^^WI    @ 2,1 LISTBOX XPASSEMBS VISLINES=9 INFORM=YES ADDTOLIST '0' NULL        
+^^WI    @ 2,3 LISTBOX XPGROUPS VISLINES=9 INFORM=YES ADDTOLIST '0' NULL         
 ^^WI    @ 2,5 LISTBOX XPATOMS VISLINES=9 ADDTOLIST 'MM(0000)' NULL              
-^^WI    @ 5,1 BUTTON XPBGRA 'New assembly'                                         
-^^WI    @ 7,1 BUTTON XPBGRR 'Remove assembly'                                      
-^^WI    @ 5,3 BUTTON XPBPTA 'New group'                                          
-^^WI    @ 7,3 BUTTON XPBPTR 'Remove group'                                       
-^^WI    @ 5,5 BUTTON XPBARA 'Remove atom' DISABLED=YES                          
+^^WI    @ 5,1 BUTTON XPBGRA 'New assembly'                                      
+^^WI    @ 7,1 BUTTON XPBGRR 'Remove assembly'                                   
+^^WI    @ 5,3 BUTTON XPBPTA 'New group'                                         
+^^WI    @ 7,3 BUTTON XPBPTR 'Remove group'                                      
+^^WI    @ 5,5 BUTTON XPBARA 'Remove atom' DISABLED=YES 
+^^WI    @ 7,5 BUTTON PR_BOK 'Close' DEFAULT                                    
+                         
 ^^WI   }                                                                        
-^^WI   @ 3,1 STATIC STAT 'Click atoms to add to current assembly and group'         
+^^WI @ 3,1 STATIC STAT 'CLICK atoms to add to current assembly and group'     
+
+^^WI @ 5,1 STATIC STAT 
+^^WI 'If a structure contains two or more discrete molecular fragments,'
+^^WI @ 6,1 STATIC STAT 
+^^WI 'these are called RESIDUES'
+^^WI @ 7,1 STATIC STAT 
+^^WI 'AtomS can be allocated to a RESIDUE, and the RESIDUE number be'
+^^WI @ 8,1 STATIC STAT 
+^^WI 'used to identify all those atoms e.g. RESIDUE(2)'
+^^WI @ 9,1 STATIC STAT 
+^^WI 'A RESIDUE can be divided (by the user) into PARTS'
+
+^^WI @ 11,1 STATIC STAT 
+^^WI 'A PART is usually a bit of a RESIDUE of special interest -'
+^^WI @ 12,1 STATIC STAT 
+^^WI 'e.g. disordered fragment.'
+                                                                           
+^^WI @ 14,1 STATIC STAT 
+^^WI 'A PART has an identifier corresponding to 2 components:'
+^^WI @ 15,1 STATIC STAT 
+^^WI ' ASSEMBLIES and GROUPS'
+^^WI @ 16,1 STATIC STAT 
+^^WI 'Different disordered regions are assigned to diferent ASSEMBLIES'
+                                                                           
+^^WI @ 18,1 STATIC STAT 
+^^WI 'Atoms in each part of a disordered region are assigned to a GROUP'
+^^WI @ 19,1 STATIC STAT 
+^^WI 'PART_ID = 1000*ASSEMBLY_ID + GROUP_ID'
+
+^^WI @ 21,1 STATIC STAT 
+^^WI 'PARTS can be used to identify groups of atoms, e.g. IN #EDIT'
+^^WI @ 22,1 STATIC STAT 
+^^WI 'CHANGE PART(1001,OCC) PART(1002,OCC) 0.5'
+
 ^^WI  }                                                                         
 %                                                                               
 ^^WI  @ 2,4 GRID RIGHT NROWS=1 NCOLS=1                                          
@@ -102,21 +141,21 @@
 %                                                                               
 % LOOP                                                                          
 %                                                                               
-%% Find currently selected assembly:                                               
+%% Find currently selected assembly:                                            
 %                                                                               
 %   CLEAR                                                                       
-%   INSERT '^^?? XPASSEMBS LISTTEXT '                                            
-^^?? XPASSEMBS SELECTED                                                          
+%   INSERT '^^?? XPASSEMBS LISTTEXT '                                           
+^^?? XPASSEMBS SELECTED                                                         
 %   GET SILENT INTEGER ' '                                                      
 %   OUTPUT                                                                      
 %   GET SILENT INTEGER ' ' '-1'                                                 
 %   EVALUATE ISELGR = VALUE                                                     
 %                                                                               
-%% Find currently selected group:                                                
+%% Find currently selected group:                                               
 %                                                                               
 %   CLEAR                                                                       
-%   INSERT '^^?? XPGROUPS LISTTEXT '                                             
-^^?? XPGROUPS SELECTED                                                           
+%   INSERT '^^?? XPGROUPS LISTTEXT '                                            
+^^?? XPGROUPS SELECTED                                                          
 %   GET SILENT INTEGER ' '                                                      
 %   OUTPUT                                                                      
 %   GET SILENT KEYWORD ' ' '-1'                                                 
@@ -125,14 +164,14 @@
 %                                                                               
 %   IF ( GRCHNG ) THEN                                                          
 %                                                                               
-%% Fill in the ASSEMBLIES list.                                                     
+%% Fill in the ASSEMBLIES list.                                                 
 %                                                                               
 %     EVALUATE TOTGR = 1                                                        
 %     EVALUATE MAXGR = 0                                                        
 %     EVALUATE GRCHNG = FALSE                                                   
 %     EVALUATE PRCHNG = TRUE                                                    
 %     EVALUATE ISELGR = - 1                                                     
-^^CO  SET XPASSEMBS REMOVE 0                                                     
+^^CO  SET XPASSEMBS REMOVE 0                                                    
 %                                                                               
 %     IF ( GENEDIT .EQ. FALSE ) THEN                                            
 %       COPY '#GENERALEDIT 5'                                                   
@@ -142,58 +181,58 @@
 %       EVALUATE GENCNT = 0                                                     
 %     END IF                                                                    
 %                                                                               
-%% Find a unique list of assembly numbers...                                       
+%% Find a unique list of assembly numbers...                                    
 %                                                                               
-%% Move the ASSEMBLY number into SPARE.                                            
+%% Move the ASSEMBLY number into SPARE.                                         
 %     COPY 'TOP'                                                                
 %     LOOP                                                                      
 %       ON EDITERROR TERMINATE                                                  
-%       COPY 'TRANSFER FROM OFFSET=14 TO IGROUP'                                 
-%       EVALUATE IASSEMB = ( IGROUP IDECMASK 111000 ) / 1000                      
-%       COPY 'TRANSFER TO OFFSET=13 FROM IASSEMB'                                
-%       IF ( IASSEMB .GT. MAXGR ) THEN                                           
-%         EVALUATE MAXGR = IASSEMB                                               
+%       COPY 'TRANSFER FROM OFFSET=14 TO IGROUP'                                
+%       EVALUATE IASSEMB = ( IGROUP IDECMASK 111000 ) / 1000                    
+%       COPY 'TRANSFER TO OFFSET=13 FROM IASSEMB'                               
+%       IF ( IASSEMB .GT. MAXGR ) THEN                                          
+%         EVALUATE MAXGR = IASSEMB                                              
 %       END IF                                                                  
 %       COPY 'NEXT'                                                             
 %       EVALUATE GENCNT = GENCNT + 1                                            
 %     END LOOP                                                                  
 %     COPY 'TOP'                                                                
 %                                                                               
-%% Sort into order of ASSEMBLY number.                                             
+%% Sort into order of ASSEMBLY number.                                          
 %% NB: Offset for sort is 1-based, offset for transfer is 0-based.              
 %                                                                               
 %     COPY 'SORT 14 INTEGER ASCEND'                                             
 %                                                                               
-%% Find and output assemblies.                                                      
+%% Find and output assemblies.                                                  
 %     COPY 'TOP'                                                                
-^^CO  SET XPASSEMBS ADDTOLIST '0' 'NULL'                                         
+^^CO  SET XPASSEMBS ADDTOLIST '0' 'NULL'                                        
 %     EVALUATE ICUR = 0                                                         
 %     EVALUATE ISELGR = 0                                                       
 %     LOOP                                                                      
 %       ON EDITERROR TERMINATE                                                  
-%       COPY 'TRANSFER FROM OFFSET=13 TO IASSEMB'                                
+%       COPY 'TRANSFER FROM OFFSET=13 TO IASSEMB'                               
 %       EVALUATE GENCNT = GENCNT + 1                                            
-%       IF ( ICUR .NE. IASSEMB ) THEN                                            
-%         IF ( NEWGR .GT. 0 ) .AND. ( IASSEMB .GT. NEWGR ) THEN                  
+%       IF ( ICUR .NE. IASSEMB ) THEN                                           
+%         IF ( NEWGR .GT. 0 ) .AND. ( IASSEMB .GT. NEWGR ) THEN                 
 %           EVALUATE TOTGR = TOTGR + 1                                          
 %           EVALUATE ISELGR = NEWGR                                             
-%           TRANSFER "^^CO SET XPASSEMBS ADDTOLIST '" // CHARACTER NEWGR -       
+%           TRANSFER "^^CO SET XPASSEMBS ADDTOLIST '" // CHARACTER NEWGR -      
             // "' NULL" TO DISPLAY                                              
-%           TRANSFER "^^CO SET XPASSEMBS SELECTION=" // CHARACTER TOTGR -        
+%           TRANSFER "^^CO SET XPASSEMBS SELECTION=" // CHARACTER TOTGR -       
             TO DISPLAY                                                          
 %           IF ( NEWGR .GT. MAXGR ) THEN                                        
 %             EVALUATE MAXGR = NEWGR                                            
 %           END IF                                                              
 %           EVALUATE NEWGR = 0                                                  
 %         END IF                                                                
-%         EVALUATE ICUR = IASSEMB                                                
-%         TRANSFER '^^CO SET XPASSEMBS ADDTOLIST ' // CHARACTER ( ICUR ) // -    
+%         EVALUATE ICUR = IASSEMB                                               
+%         TRANSFER '^^CO SET XPASSEMBS ADDTOLIST ' // CHARACTER ( ICUR ) // -   
           ' NULL' TO DISPLAY                                                    
 %         EVALUATE TOTGR = TOTGR + 1                                            
-%         IF ( IASSEMB .EQ. NEWGR ) THEN                                         
+%         IF ( IASSEMB .EQ. NEWGR ) THEN                                        
 %           EVALUATE ISELGR = NEWGR                                             
 %           EVALUATE NEWGR = 0                                                  
-%           TRANSFER "^^CO SET XPASSEMBS SELECTION=" // -                        
+%           TRANSFER "^^CO SET XPASSEMBS SELECTION=" // -                       
             CHARACTER TOTGR TO DISPLAY                                          
 %         END IF                                                                
 %       END IF                                                                  
@@ -203,9 +242,9 @@
 %     IF ( NEWGR .GT. 0 ) THEN                                                  
 %       EVALUATE TOTGR = TOTGR + 1                                              
 %       EVALUATE ISELGR = NEWGR                                                 
-%       TRANSFER "^^CO SET XPASSEMBS ADDTOLIST '" // CHARACTER NEWGR -           
+%       TRANSFER "^^CO SET XPASSEMBS ADDTOLIST '" // CHARACTER NEWGR -          
         // "' NULL" TO DISPLAY                                                  
-%       TRANSFER "^^CO SET XPASSEMBS SELECTION=" // CHARACTER TOTGR -            
+%       TRANSFER "^^CO SET XPASSEMBS SELECTION=" // CHARACTER TOTGR -           
         TO DISPLAY                                                              
 %       IF ( NEWGR .GT. MAXGR ) THEN                                            
 %         EVALUATE MAXGR = NEWGR                                                
@@ -233,14 +272,14 @@
 %                                                                               
 %   IF ( PRCHNG ) THEN                                                          
 %                                                                               
-%% For the selected ASSEMBLY, fill in the GROUPS list.                              
+%% For the selected ASSEMBLY, fill in the GROUPS list.                          
 %                                                                               
 %     EVALUATE PRCHNG = FALSE                                                   
 %     EVALUATE ATCHNG = TRUE                                                    
 %     EVALUATE TOTPR = 0                                                        
 %     EVALUATE MAXPR = 0                                                        
 %     EVALUATE ISELPR = - 1                                                     
-^^CO  SET XPGROUPS REMOVE 0                                                      
+^^CO  SET XPGROUPS REMOVE 0                                                     
 %                                                                               
 %     IF ( GENEDIT .EQ. FALSE ) THEN                                            
 %       COPY '#GENERALEDIT 5'                                                   
@@ -250,71 +289,71 @@
 %       EVALUATE GENCNT = 0                                                     
 %     END IF                                                                    
 %                                                                               
-%% Find a unique list of group numbers, for a given assembly...                     
+%% Find a unique list of group numbers, for a given assembly...                 
 %                                                                               
-%% Move the GROUP number into SPARE.                                             
+%% Move the GROUP number into SPARE.                                            
 %                                                                               
 %     COPY 'TOP'                                                                
 %     LOOP                                                                      
 %       ON EDITERROR TERMINATE                                                  
-%       COPY 'TRANSFER FROM OFFSET=14 TO IGROUP'                                 
-%       EVALUATE IASSEMB = ( IGROUP IDECMASK 111 )                                
-%       IF IGROUP .LT. 0 THEN                                                    
-%         EVALUATE IASSEMB = - IASSEMB                                            
-% TRANSFER 'Group was negative ' // CHARACTER ( IGROUP ) TO DISPLAY               
+%       COPY 'TRANSFER FROM OFFSET=14 TO IGROUP'                                
+%       EVALUATE IASSEMB = ( IGROUP IDECMASK 111 )                              
+%       IF IGROUP .LT. 0 THEN                                                   
+%         EVALUATE IASSEMB = - IASSEMB                                          
+% TRANSFER 'Group was negative ' // CHARACTER ( IGROUP ) TO DISPLAY             
 %       END IF                                                                  
-%       COPY 'TRANSFER TO OFFSET=13 FROM IASSEMB'                                
+%       COPY 'TRANSFER TO OFFSET=13 FROM IASSEMB'                               
 %       COPY 'NEXT'                                                             
 %       EVALUATE GENCNT = GENCNT + 2                                            
 %     END LOOP                                                                  
 %     COPY 'TOP'                                                                
 %                                                                               
-%% Sort into order of GROUP number.                                              
+%% Sort into order of GROUP number.                                             
 %% NB: Offset for sort is 1-based, offset for transfer is 0-based.              
 %                                                                               
 %     COPY 'SORT 14 INTEGER ASCEND'                                             
 %                                                                               
-%% Find unique GROUPS within selected ASSEMBLY.                                     
+%% Find unique GROUPS within selected ASSEMBLY.                                 
 %                                                                               
 %     COPY 'TOP'                                                                
 %     EVALUATE ICUR = - 1                                                       
-%% Always have a assembly 0 group 0, even if empty.                                 
+%% Always have a assembly 0 group 0, even if empty.                             
 %     IF ( ISELGR .EQ. 0 ) THEN                                                 
-^^CO    SET XPGROUPS ADDTOLIST '0' 'NULL'                                        
+^^CO    SET XPGROUPS ADDTOLIST '0' 'NULL'                                       
 %       EVALUATE TOTPR = 1                                                      
 %       EVALUATE ICUR = 0                                                       
 %       EVALUATE ISELPR = 0                                                     
 %     END IF                                                                    
 %     LOOP                                                                      
 %       ON EDITERROR TERMINATE                                                  
-%       COPY 'TRANSFER FROM OFFSET=13 TO IASSEMB'                                
-%       COPY 'TRANSFER FROM OFFSET=14 TO IGROUP'                                 
+%       COPY 'TRANSFER FROM OFFSET=13 TO IASSEMB'                               
+%       COPY 'TRANSFER FROM OFFSET=14 TO IGROUP'                                
 %       EVALUATE GENCNT = GENCNT + 2                                            
-%       IF ( ( ( IGROUP IDECMASK 111000 ) / 1000 ) .EQ. ISELGR ) THEN            
-%         IF ( ICUR .NE. IASSEMB ) THEN                                          
-%           IF ( IASSEMB .GT. MAXPR ) THEN                                       
-%             EVALUATE MAXPR = IASSEMB                                           
+%       IF ( ( ( IGROUP IDECMASK 111000 ) / 1000 ) .EQ. ISELGR ) THEN           
+%         IF ( ICUR .NE. IASSEMB ) THEN                                         
+%           IF ( IASSEMB .GT. MAXPR ) THEN                                      
+%             EVALUATE MAXPR = IASSEMB                                          
 %           END IF                                                              
-%           IF ( NEWPR .GT. 0 ) .AND. ( IASSEMB .GT. NEWPR ) THEN                
+%           IF ( NEWPR .GT. 0 ) .AND. ( IASSEMB .GT. NEWPR ) THEN               
 %             EVALUATE TOTPR = TOTPR + 1                                        
 %             EVALUATE ISELPR = NEWPR                                           
-%             TRANSFER "^^CO SET XPGROUPS ADDTOLIST '" // CHARACTER NEWPR -      
+%             TRANSFER "^^CO SET XPGROUPS ADDTOLIST '" // CHARACTER NEWPR -     
               // "' NULL" TO DISPLAY                                            
-%             TRANSFER "^^CO SET XPGROUPS SELECTION=" // CHARACTER TOTPR -       
+%             TRANSFER "^^CO SET XPGROUPS SELECTION=" // CHARACTER TOTPR -      
               TO DISPLAY                                                        
 %             IF ( NEWPR .GT. MAXPR ) THEN                                      
 %               EVALUATE MAXPR = NEWPR                                          
 %             END IF                                                            
 %             EVALUATE NEWPR = 0                                                
 %           END IF                                                              
-%           EVALUATE ICUR = IASSEMB                                              
-%           TRANSFER "^^CO SET XPGROUPS ADDTOLIST '" // -                        
+%           EVALUATE ICUR = IASSEMB                                             
+%           TRANSFER "^^CO SET XPGROUPS ADDTOLIST '" // -                       
             CHARACTER ( ICUR ) //  "' NULL" TO DISPLAY                          
 %           EVALUATE TOTPR = TOTPR + 1                                          
-%           IF ( IASSEMB .EQ. NEWPR ) THEN                                       
+%           IF ( IASSEMB .EQ. NEWPR ) THEN                                      
 %             EVALUATE ISELPR = NEWPR                                           
 %             EVALUATE NEWPR = 0                                                
-%             TRANSFER "^^CO SET XPGROUPS SELECTION=" // -                       
+%             TRANSFER "^^CO SET XPGROUPS SELECTION=" // -                      
               CHARACTER TOTPR TO DISPLAY                                        
 %           END IF                                                              
 %           IF ( ISELPR .EQ. - 1 ) THEN                                         
@@ -328,9 +367,9 @@
 %     IF ( NEWPR .GT. 0 ) THEN                                                  
 %       EVALUATE TOTPR = TOTPR + 1                                              
 %       EVALUATE ISELPR = NEWPR                                                 
-%       TRANSFER "^^CO SET XPGROUPS ADDTOLIST '" // CHARACTER NEWPR -            
+%       TRANSFER "^^CO SET XPGROUPS ADDTOLIST '" // CHARACTER NEWPR -           
         // "' NULL" TO DISPLAY                                                  
-%       TRANSFER "^^CO SET XPGROUPS SELECTION=" // CHARACTER TOTPR -             
+%       TRANSFER "^^CO SET XPGROUPS SELECTION=" // CHARACTER TOTPR -            
         TO DISPLAY                                                              
 %       IF ( NEWPR .GT. MAXPR ) THEN                                            
 %         EVALUATE MAXPR = NEWPR                                                
@@ -340,7 +379,7 @@
 %%                                                                              
 %   END IF                                                                      
 %                                                                               
-%%  For assembly 0, group 0, disable the Remove atom button                         
+%%  For assembly 0, group 0, disable the Remove atom button                     
 %   IF ( ISELGR .LE. 0 ) .AND. ( ISELPR .LE. 0 ) THEN                           
 ^^CO SET XPBARA DISABLED=YES                                                    
 %   ELSE                                                                        
@@ -357,7 +396,7 @@
 %                                                                               
 %   IF ( ATCHNG ) THEN                                                          
 %                                                                               
-%% For the selected ASSEMBLY and GROUP, fill in the ATOMS list.                     
+%% For the selected ASSEMBLY and GROUP, fill in the ATOMS list.                 
 %                                                                               
 %     EVALUATE ATCHNG = FALSE                                                   
 ^^CO  SET XPATOMS REMOVE 0                                                      
@@ -374,15 +413,15 @@
 %     EVALUATE ICUR = 0                                                         
 %     LOOP                                                                      
 %       ON EDITERROR TERMINATE                                                  
-%       COPY 'TRANSFER FROM OFFSET=14 TO IGROUP'                                 
+%       COPY 'TRANSFER FROM OFFSET=14 TO IGROUP'                                
 %       EVALUATE GENCNT = GENCNT + 1                                            
-%       EVALUATE IASSEMB = ( IGROUP IDECMASK 111 )                                
-%       IF IGROUP .LT. 0 THEN                                                    
-%         EVALUATE IASSEMB = - IASSEMB                                            
-% TRANSFER 'Group was negative ' // CHARACTER ( IGROUP ) TO DISPLAY               
+%       EVALUATE IASSEMB = ( IGROUP IDECMASK 111 )                              
+%       IF IGROUP .LT. 0 THEN                                                   
+%         EVALUATE IASSEMB = - IASSEMB                                          
+% TRANSFER 'Group was negative ' // CHARACTER ( IGROUP ) TO DISPLAY             
 %       END IF                                                                  
-%       IF ( IASSEMB .EQ. ISELPR ) THEN                                          
-%         IF ( ( ( IGROUP IDECMASK 111000 ) / 1000 ) .EQ. ISELGR ) THEN          
+%       IF ( IASSEMB .EQ. ISELPR ) THEN                                         
+%         IF ( ( ( IGROUP IDECMASK 111000 ) / 1000 ) .EQ. ISELGR ) THEN         
 %           COPY 'TRANSFER FROM OFFSET=0 TO CATOM'                              
 %           COPY 'TRANSFER FROM OFFSET=1 TO RSER'                               
 %           TRANSFER "^^CO SET XPATOMS ADDTOLIST '" // CATOM // ' ' // -        
@@ -407,7 +446,7 @@
 %                                                                               
 %% End of the action. Now wait for a user generated event.                      
 %                                                                               
-%   VERIFY PR_BOK XPASSEMBS XPGROUPS ATOM XPBGRA XPBPTA XPBGRR XPBPTR XPBARA      
+%   VERIFY PR_BOK XPASSEMBS XPGROUPS ATOM XPBGRA XPBPTA XPBGRR XPBPTR XPBARA    
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                
 %                                                                               
 %% Got an event, now act upon it.                                               
@@ -418,16 +457,16 @@
 %       IF ( GENEDIT ) THEN                                                     
 %         COPY 'END'                                                            
 %       END IF                                                                  
-^^CO    DISPOSE XGROUPS                                                          
+^^CO    DISPOSE XGROUPS                                                         
 %       FINISH                                                                  
 %     END BLOCK                                                                 
 %%                                                                              
-%     BLOCK                                                %XPASSEMBS%           
+%     BLOCK                                                %XPASSEMBS%          
 %       GET NOSTORE SILENT INTEGER ' ' '0'                                      
 %       EVALUATE PRCHNG = TRUE                                                  
 %     END BLOCK                                                                 
 %%                                                                              
-%     BLOCK                                                %XPGROUPS%            
+%     BLOCK                                                %XPGROUPS%           
 %       GET NOSTORE SILENT INTEGER ' ' '0'                                      
 %       EVALUATE ATCHNG = TRUE                                                  
 %     END BLOCK                                                                 
@@ -440,14 +479,14 @@
 %                                                                               
 %       IF ( ISELGR .LT. 0 ) THEN                                               
 %          EVALUATE ISELGR = 0                                                  
-^^CO       SET XPASSEMBS ADDTOLIST 0 NULL                                        
-%          TRANSFER "^^CO SET XPASSEMBS SELECTION=" // -                         
+^^CO       SET XPASSEMBS ADDTOLIST 0 NULL                                       
+%          TRANSFER "^^CO SET XPASSEMBS SELECTION=" // -                        
            CHARACTER ( TOTGR + 1 ) TO DISPLAY                                   
 %       END IF                                                                  
 %       IF ( ISELPR .LT. 0 ) THEN                                               
 %          EVALUATE ISELPR = 0                                                  
-^^CO       SET XPGROUPS ADDTOLIST 0 NULL                                         
-%          TRANSFER "^^CO SET XPGROUPS SELECTION=" // -                          
+^^CO       SET XPGROUPS ADDTOLIST 0 NULL                                        
+%          TRANSFER "^^CO SET XPGROUPS SELECTION=" // -                         
            CHARACTER ( TOTPR + 1 ) TO DISPLAY                                   
 %       END IF                                                                  
 %       EVALUATE ICUR = ( ISELGR * 1000 ) + ISELPR                              
@@ -466,13 +505,13 @@
 %         COPY 'TRANSFER FROM OFFSET=1 TO RSER'                                 
 %         IF ( CATOM .EQ. CSEEK ) .AND. ( ( INTEGER RSER ) .EQ. ISER ) THEN     
 %           EVALUATE LOOPEND = LOOPCOUNTER                                      
-%           COPY 'TRANSFER FROM OFFSET=14 TO IGROUP'                             
-%           IF ( ( ( ( IGROUP IDECMASK 111111 ) ) .EQ. 0 ) .OR. -                
-                     ( PRCHALL ) )  THEN                                        
+%           COPY 'TRANSFER FROM OFFSET=14 TO IGROUP'                            
+%           IF ( ( ( ( IGROUP IDECMASK 111111 ) ) .EQ. 0 ) .OR. -               
+                     ( PRCHALL ) )  THEN 
 %             COPY 'TRANSFER TO OFFSET=14 FROM ICUR'                            
 %             EVALUATE GENCNT = GENCNT + 1                                      
 %           ELSE                                                                
-^^WI WINDOW QUESTION 'Change group number?' MODAL                                
+^^WI WINDOW QUESTION 'Change group number?' MODAL                               
 ^^WI COMMIT='PR_BCH'  CANCEL='PRNO' POSITION=CENTRED 'MODELPR'                  
 ^^WI GRID GTB NROWS=5 NCOLS=5                                                   
 ^^WI {                                                                          
@@ -480,10 +519,10 @@
 ^^WI   @ 2,4 GRID TL NROWS=3 NCOLS=5                                            
 ^^WI   {                                                                        
 ^^WI     @ 1,3 STATIC T1                                                        
-% TRANSFER "^^WI 'Atom " // CVALUE // " is already in assembly " // CHARACTER -    
- ( ( IGROUP IDECMASK 111000 ) / 1000 ) // " group " // CHARACTER ( IGROUP -        
+% TRANSFER "^^WI 'Atom " // CVALUE // " is already in assembly " // CHARACTER - 
+ ( ( IGROUP IDECMASK 111000 ) / 1000 ) // " group " // CHARACTER ( IGROUP -     
  IDECMASK 111 ) // "'" TO DISPLAY                                               
-^^WI     @ 2,3 STATIC T2 'Do you want to move it to this assembly?'                
+^^WI     @ 2,3 STATIC T2 'Do you want to move it to this assembly?'             
 ^^WI   }                                                                        
 ^^WI   @ 4,4 GRID LOWER NROWS=1 NCOLS=7                                         
 ^^WI   {                                                                        
@@ -520,14 +559,14 @@
 %     END BLOCK                                                                 
 %%                                                                              
 %     BLOCK                                                %XPBGRA%             
-^^WI WINDOW NEWASSEMB 'New assembly number?' MODAL                                  
+^^WI WINDOW NEWASSEMB 'New assembly number?' MODAL                              
 ^^WI COMMIT='NGBT'  CANCEL='NGNO' POSITION=CENTRED 'MODELPR'                    
 ^^WI GRID GTB NROWS=5 NCOLS=5                                                   
 ^^WI {                                                                          
 ^^WI   @ 2,2 ICON MYICON QUERY                                                  
 ^^WI   @ 2,4 GRID TL NROWS=3 NCOLS=5                                            
 ^^WI   {                                                                        
-^^WI     @ 2,2 STATIC T1 'New assembly number (0-999):'                            
+^^WI     @ 2,2 STATIC T1 'New assembly number (0-999):'                         
 %       IF ( MAXGR .GT. 998 ) THEN                                              
 %         EVALUATE MAXGR = 998                                                  
 %       END IF                                                                  
@@ -553,22 +592,22 @@
 %         GET NOSTORE SILENT INTEGER ' '                                        
 %         EVALUATE NEWGR = VALUE                                                
 %         IF NEWGR .GT. 999 .OR. NEWGR .LT. 0 THEN                              
-{E Assembly number out of range. Set to zero.                                      
+{E Assembly number out of range. Set to zero.                                   
 %           EVALUATE NEWGR = 0                                                  
 %         END IF                                                                
 %       END IF                                                                  
-^^CO DISPOSE NEWASSEMB                                                           
+^^CO DISPOSE NEWASSEMB                                                          
 %     END BLOCK                                                                 
 %%                                                                              
 %     BLOCK                                                %XPBPTA%             
-^^WI WINDOW NEWGROUP 'New group number?' MODAL                                    
+^^WI WINDOW NEWGROUP 'New group number?' MODAL                                  
 ^^WI COMMIT='NPBT'  CANCEL='NPNO' POSITION=CENTRED 'MODELPR'                    
 ^^WI GRID GTB NROWS=5 NCOLS=5                                                   
 ^^WI {                                                                          
 ^^WI   @ 2,2 ICON MYICON QUERY                                                  
 ^^WI   @ 2,4 GRID TL NROWS=3 NCOLS=5                                            
 ^^WI   {                                                                        
-^^WI     @ 2,2 STATIC T1 'New group number (0-999):'                             
+^^WI     @ 2,2 STATIC T1 'New group number (0-999):'                            
 %       IF ( MAXPR .GT. 998 ) THEN                                              
 %         EVALUATE MAXPR = 998                                                  
 %       END IF                                                                  
@@ -594,16 +633,16 @@
 %         GET NOSTORE SILENT INTEGER ' '                                        
 %         EVALUATE NEWPR = VALUE                                                
 %         IF NEWPR .GT. 999 .OR. NEWPR .LT. 0 THEN                              
-{E Group number out of range. Set to zero.                                       
+{E Group number out of range. Set to zero.                                      
 %           EVALUATE NEWPR = 0                                                  
 %         END IF                                                                
 %       END IF                                                                  
-^^CO DISPOSE NEWGROUP                                                            
+^^CO DISPOSE NEWGROUP                                                           
 %     END BLOCK                                                                 
 %%                                                                              
 %     BLOCK                                                %XPBGRR%             
 %%                                                                              
-%       TRANSFER '{I Removing all of assembly ' // CHARACTER ( ISELGR ) -          
+%       TRANSFER '{I Removing all of assembly ' // CHARACTER ( ISELGR ) -       
         TO DISPLAY                                                              
 %       IF ( GENEDIT .EQ. FALSE ) THEN                                          
 %         COPY '#GENERALEDIT 5'                                                 
@@ -616,9 +655,9 @@
 %       LOOP                                                                    
 %         ON EDITERROR TERMINATE                                                
 %         COPY 'TRANSFER FROM OFFSET=14 TO ICUR'                                
-%         EVALUATE IASSMEB = ( ICUR IDECMASK 111000 ) / 1000                     
-%         IF ( IASSEMB .EQ. ISELGR ) THEN                                        
-%           EVALUATE ICUR = 0                                                   
+%         EVALUATE IASSMEB = ( ICUR IDECMASK 111000 ) / 1000                    
+%         IF ( IASSEMB .EQ. ISELGR ) THEN                                       
+%           EVALUATE ICUR = 0
 %           COPY 'TRANSFER TO OFFSET=14 FROM ICUR'                              
 %         END IF                                                                
 %         COPY 'NEXT'                                                           
@@ -635,8 +674,8 @@
 %%                                                                              
 %     BLOCK                                                %XPBPTR%             
 %%                                                                              
-%       TRANSFER '{I Removing all of assembly ' // CHARACTER ( ISELGR ) -          
-        // ' Group ' // CHARACTER ( ISELPR ) TO DISPLAY                          
+%       TRANSFER '{I Removing all of assembly ' // CHARACTER ( ISELGR ) -       
+        // ' Group ' // CHARACTER ( ISELPR ) TO DISPLAY                         
 %       IF ( GENEDIT .EQ. FALSE ) THEN                                          
 %         COPY '#GENERALEDIT 5'                                                 
 %         COPY 'LOCATE RECORDT=101'                                             
@@ -648,13 +687,13 @@
 %       LOOP                                                                    
 %         ON EDITERROR TERMINATE                                                
 %         COPY 'TRANSFER FROM OFFSET=14 TO ICUR'                                
-%         EVALUATE IASSEMB = ( ICUR IDECMASK 111000 ) / 1000                     
-%         EVALUATE IGROUP = ( ICUR IDECMASK 000111 )                             
+%         EVALUATE IASSEMB = ( ICUR IDECMASK 111000 ) / 1000                    
+%         EVALUATE IGROUP = ( ICUR IDECMASK 000111 )                            
 %         IF ( ICUR .LT. 0 ) THEN                                               
-%           EVALUATE IGROUP = - IGROUP                                            
+%           EVALUATE IGROUP = - IGROUP                                          
 %         END IF                                                                
-%         IF ( IASSEMB .EQ. ISELGR ) .AND. ( IGROUP .EQ. ISELPR ) THEN            
-%           EVALUATE ICUR = 0                                                   
+%         IF ( IASSEMB .EQ. ISELGR ) .AND. ( IGROUP .EQ. ISELPR ) THEN          
+%           EVALUATE ICUR = 0
 %           COPY 'TRANSFER TO OFFSET=14 FROM ICUR'                              
 %         END IF                                                                
 %         COPY 'NEXT'                                                           
@@ -696,7 +735,7 @@
 %         COPY 'TRANSFER FROM OFFSET=0 TO CATOM'                                
 %         COPY 'TRANSFER FROM OFFSET=1 TO RSER'                                 
 %         IF ( CATOM .EQ. CSEEK ) .AND. ( ( INTEGER RSER ) .EQ. ISER ) THEN     
-%           EVALUATE ICUR = 0                                                   
+%           EVALUATE ICUR = 0
 %           COPY 'TRANSFER TO OFFSET=14 FROM ICUR'                              
 %           EVALUATE LOOPEND = LOOPCOUNTER                                      
 %         END IF                                                                
