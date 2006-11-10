@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.33  2006/08/02 06:20:31  djw
+C Ensure that partial shifts are applied to Du[iso] corections
+C
 C Revision 1.32  2006/02/17 14:51:54  djw
 C Fix some writes to monitir/listinganisotfs.fpp
 C
@@ -486,13 +489,13 @@ C      end if
       
 
 CDJW-OCT-05
-      write(ncwu,'(a)') 'The scaling vector'
-         IDJW = L11C
-         jdjw = iscl
-         DO 2051 I = 1, JY
-            str11(jdjw) = STR11(IDJW)
-            IDJW = IDJW + JY - I + 1
-            jdjw=jdjw+1
+c      write(ncwu,'(a)') 'The scaling vector'
+c         IDJW = L11C
+c         jdjw = iscl
+c         DO 2051 I = 1, JY
+c            str11(jdjw) = STR11(IDJW)
+c            IDJW = IDJW + JY - I + 1
+c            jdjw=jdjw+1
 2051     CONTINUE 
 C        call outv(str11(iscl),jy)
 CDJW-OCT-05
