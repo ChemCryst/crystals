@@ -144,13 +144,13 @@ CDJW
 cdjwNov06
         write(ifout,'(a)') '%Superscript'
         write(ifout,'(a)') '/Roman' 
-        write(ifout,'(a)') '{ gsave /Courier  findfont '
+        write(ifout,'(a)') '{ gsave /Courier-BOld  findfont '
         write(ifout,'(a)') 
      1  ' [ dsize 0.65 mul 0 0 dsize 0.6 mul 0 0 ] '
         write(ifout,'(a)') ' makefont setfont '
         write(ifout,'(a)') ' 0 dsize  2 div  rmoveto '
         write(ifout,'(a)') ' djw show grestore } def '
-        write(ifout,'(a,i6,a)') ' gsave /Courier findfont', IFONT,
+        write(ifout,'(a,i6,a)') ' gsave /Courier-Bold findfont', IFONT,
      1                     ' scalefont setfont grestore'
         write(ifout,'(///)')
         IPOST = 1
@@ -664,7 +664,7 @@ C FOR SINGLE LINES DRAW IN COLOUR
       END
  
 CODE FOR ZDRTEX
-      SUBROUTINE ZDRTEX(IX,IY,TEXT,ICOL)
+      SUBROUTINE ZDRTEX(IdjwX,IdjwY,TEXT,ICOL)
       
       INCLUDE 'CAMPAR.INC'
       INCLUDE 'CAMCOM.INC'
@@ -692,6 +692,10 @@ CODE FOR ZDRTEX
       SAVE HEX
       DATA HEX/'0','1','2','3','4','5','6','7','8','9','A',
      c 'B','C','D','E','F'/
+
+      ix = idjwx
+cdjwnov06 - adjust for height of text
+      iy = idjwy - ifont/2
       GOTO (100,200,300,400,500,500,100,500) ISCRN
 100   CONTINUE
 C VGA
@@ -730,6 +734,9 @@ C TEK
       GOTO 9999
 500   CONTINUE
 C POSTSCRIPT
+cdjwnov06 - origin of Y is reversed in POSTSCRIPT
+      ix = ix + ifont
+      iy = iy + 4 * ifont
       IF (ISCRN.EQ.8) THEN
         WRITE (IFOUT,'(14A)') '0 0 0 setrgbcolor'
       ELSE

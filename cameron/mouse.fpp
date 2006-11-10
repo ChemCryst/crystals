@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  2005/02/08 16:13:13  stefan
+C 1. Removed a conflict line which I had missed.
+C
 C Revision 1.13  2005/02/08 15:59:47  stefan
 C 1. Added precompiler if's for the mac source
 C
@@ -191,6 +194,7 @@ C IS A LABEL UNDER THE MOUSE CURSOR.
       INCLUDE 'CAMBTN.INC'
       INCLUDE 'CAMBLK.INC'
       INCLUDE 'XIOBUF.INC'
+      include 'XUNITS.INC'
 
       CHARACTER*20 CLAB
       INTEGER IMX,IMY,IX,IY,ICOL,IB,KK
@@ -250,6 +254,8 @@ C CHECK FOR PACK LABELLING
               CALL ZPLABL (I,CLAB,IL)
             ELSE
               CLAB = CSTORE(ILL)
+cdjwnov06
+              IL = max(1, INDEX (CSTORE(ILL),' ') - 1)
             ENDIF
 C DRAW THE LABEL
             CALL ZDRTEX(IX,IY,CLAB(1:IL),IDEVCL(ILABCL+1))
@@ -283,6 +289,8 @@ C CHECK FOR PACK LABELLING
         CALL ZPLABL (ILNO,CLAB,IL)
       ELSE
         CLAB = CSTORE(ILL)
+cdjwnov06
+        IL = max(1, INDEX (CSTORE(ILL),' ') - 1)
       ENDIF
 C FIND OUT THE LABEL LENGTH
       LABLN = TENPIX * REAL(IL) * 0.8
