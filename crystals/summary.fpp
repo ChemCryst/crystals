@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.73  2006/05/23 12:30:25  djw
+C Increase format for No of reflections
+C
 C Revision 1.72  2006/03/09 19:03:31  djw
 C Correct initialisation of sios and nios
 C
@@ -3229,12 +3232,13 @@ C -- SCAN LIST 6 FOR REFLECTIONS
       mios=0
       smax=0.
       slim=3.
+      call outcol(6)
       do i=1,25
             mios=mios+nios(I)
             if(nios(i) .gt. 0) sios(i)=sios(i)/float(nios(i))
             if((sios(I) .lt. slim).and.(sios(i).gt. 0.)) then
             write(cmon,'(A,f4.1,a,f6.2)')
-     1      'I/sigma(I) falls below', slim,
+     1      '<I/sigma(I)> falls below', slim,
      2      ' at (sintheta/lambda)^2=',(float(i)*.4/25.0)
             CALL XPRVDU(NCVDU, 1,0)
             slim=slim-1.
@@ -3245,6 +3249,7 @@ C -- SCAN LIST 6 FOR REFLECTIONS
      1      (float(i)*.4/25.),nios(I),mios,sios(I)
             endif
       enddo
+      call outcol(1)
 
       nmax=10*nint(float(nmax)/(10.*smax))
       nmax=min(90,nmax)
