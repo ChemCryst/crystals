@@ -997,7 +997,7 @@ CODE FOR ZPLABL
       INCLUDE 'CAMBLK.INC'
       INCLUDE 'XIOBUF.INC'
       
-      include 'xunits.inc'
+      include 'XUNITS.INC'
 
       character *4  crmlb
       CHARACTER*(*) CLAB

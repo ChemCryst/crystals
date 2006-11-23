@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.112  2006/10/06 08:58:51  djw
+C Put Rint on correct scale in HTML output
+C
 C Revision 1.111  2006/08/02 06:21:49  djw
 C special shapes and other changes from Judith Flippenanderson
 C
@@ -5794,8 +5797,12 @@ C
              WRITE (NCFPU1,
      1      '(''# well as the _gt R-factors:'')')
            END IF
-C
-           WRITE(CBUF, '(''I>'',F6.1,''\s(I)'')') STORE(L30CF+0)
+CDJWNOV06
+#if  !defined(_LIN_) 
+           WRITE(CBUF,'(''I>'',F6.1,''\\s(I)'')') STORE(L30CF+0)
+#else
+           WRITE(CBUF,'(''I>'',F6.1,''\s(I)'')') STORE(L30CF+0)
+#endif
            CALL XCRAS (CBUF,NCHAR)
            WRITE (NCFPU1,'(''_reflns_threshold_expression '',T35,A)')
      1     CBUF(1:NCHAR)
