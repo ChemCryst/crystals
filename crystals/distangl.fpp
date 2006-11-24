@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.77  2006/09/22 08:17:54  djw
+C Fix multiple reference to same H on RIDE command
+C
 C Revision 1.76  2005/10/13 15:48:32  stefan
 C 1. Increased the length of the file names allowed in XBCALC from 80 to 255.
 C
@@ -1726,6 +1729,9 @@ C----- COMPRESS ATOMS INTO CHARACTER FORM
      2           STORE(J+10),(STORE(J+JAR),JAR=7,9)
                 ENDIF
                 CALL XPRVDU(NCVDU, 1,0)
+c^^djwnov06
+                IF ((ISSPRT .EQ. 0) .and. (level .eq.0) )
+     1          WRITE(NCWU, '(A)') CMON( 1)(:)
 2806            FORMAT (A,A,' - ',A, F6.3, F6.3, 1X, 3F6.3)
 2807            FORMAT (A,A,' - ',A, F6.3, 6X,   1X, 3F6.3)
               ENDIF
@@ -1783,10 +1789,10 @@ C
               IF ((LEVEL2 .EQ. 0) .AND. (LEVEL .GE. 0)) THEN
 C----- WRITE A CAPTION
                 IF (LEVEL .EQ. 0) THEN
-                  IF (ISSPRT .EQ. 0) THEN
-                    WRITE(NCWU,2825) STORE(M5P),STORE(M5P+1)
-                  ENDIF
-2825              FORMAT(/,1X,'Pivot atom   ',A4,F5.0)
+C                  IF (ISSPRT .EQ. 0) THEN
+C                    WRITE(NCWU,2825) STORE(M5P),STORE(M5P+1)
+C                  ENDIF
+2825              FORMAT(/,'Pivot ',A4,F5.0)
                 ELSE IF (LEVEL .GE. 1) THEN
                   IF (ISSPRT .EQ. 0) THEN
                     WRITE(NCWU,1850) STORE(M5P),STORE(M5P+1),
@@ -1796,32 +1802,32 @@ C----- WRITE A CAPTION
                 LEVEL2 = 1
               ENDIF
               IF (LEVEL.EQ.0)THEN
-
+cdjwnov06
 C----- STORE CURRENT DISTANCE IN BUFFER
-                STORE(IJX)=STORE(L)
-                STORE(IJX+1)= STORE(L+1)
-                STORE(IJX+2)=STORE(J+10)
-                IJX=IJX+4
-                IF(IJX.GT.IJY) THEN
+c                STORE(IJX)=STORE(L)
+c                STORE(IJX+1)= STORE(L+1)
+c                STORE(IJX+2)=STORE(J+10)
+c                IJX=IJX+4
+c                IF(IJX.GT.IJY) THEN
 C----- PRINT BUFFER
-                  IJX=IJX-4
+c                  IJX=IJX-4
 C -- CHECK FOR E.S.D.
-                  IF (IESD .LT. 0) THEN
-                    IF (ISSPRT .EQ. 0) THEN
-                      WRITE(NCWU,2850)
-     1                      ((STORE(IJZ),IJZ=I1,I1+2),I1=IJW,IJX,4)
-                    ENDIF
+c                  IF (IESD .LT. 0) THEN
+c                    IF (ISSPRT .EQ. 0) THEN
+c                      WRITE(NCWU,2850)
+c     1                      ((STORE(IJZ),IJZ=I1,I1+2),I1=IJW,IJX,4)
+c                    ENDIF
 2850                FORMAT(11X,4(5X,A4,F5.0,F7.3,6X))
-                  ELSE
-                    IF (ISSPRT .EQ. 0) THEN
-                      WRITE(NCWU,2851)
-     1                      ((STORE(IJZ),IJZ=I1,I1+3),I1=IJW,IJX,4)
-                    ENDIF
+c                  ELSE
+c                    IF (ISSPRT .EQ. 0) THEN
+c                      WRITE(NCWU,2851)
+c     1                      ((STORE(IJZ),IJZ=I1,I1+3),I1=IJW,IJX,4)
+c                    ENDIF
 2851                FORMAT(11X,4(5X,A4,F5.0,F7.3,F6.3))
-                  ENDIF
-                  IJX=IJW
-                END IF
-
+c                  ENDIF
+c                  IJX=IJW
+c                END IF
+c
               ELSE IF ( LEVEL.GT.0 ) THEN                      !  FULL PRINT
 
 C----- CHECK IF THE TRANSFORMED COORDINATES ARE TO BE PRINTED
@@ -1899,7 +1905,7 @@ C--MOVE THE DATA
 C--UPDATE THE CURRENT LAST POINTER
           K=K+NW
          END DO PRINTLOOP
-
+CDJWNOV06
 C----- EMPTY PRINT BUFFER
          IF(IJX.GT.IJW) THEN
           IJX=IJX-4
@@ -1946,6 +1952,13 @@ C----- WRITE A CAPTION
               ENDIF
               LEVEL2 = 1
             ENDIF
+Cdjwnov06^^
+                IF (LEVEL .EQ. 0) THEN
+                  IF (ISSPRT .EQ. 0) THEN
+                    WRITE(NCWU,2825) STORE(M5a),STORE(M5a+1)
+                  ENDIF
+                END IF
+c
             IF (LEVEL.GT.0)THEN
               IF (ISSPRT .EQ. 0) THEN
                 WRITE(NCWU,4050)STORE(M5A),STORE(M5A+1)
