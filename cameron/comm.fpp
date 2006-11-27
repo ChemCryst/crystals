@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.26  2006/03/16 11:36:38  arie
+C Archive and Retrieve option improved for labels
+C
 C Revision 1.25  2006/03/13 15:59:47  arie
 C Added functionalities (archive and retrieve)
 C These are FILE commands
@@ -5080,12 +5083,13 @@ CODE FOR ZCMD20 [ COMMAND GROUP 2000 - INFO]
       INCLUDE 'CAMBTN.INC'
       INCLUDE 'CAMBLK.INC'
       INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XUNITS.INC'
 
       CHARACTER*12 DUMP(6)
-      CHARACTER*50 SWORD
+      CHARACTER*50 SWORD, cDLINE
       INTEGER K
-      REAL SYMM(4,4)
-      REAL RTX, RTY , RTZ
+      REAL SYMM(4,4), DSYMM(4,4)
+      REAL RTX, RTY , RTZ, rtxyz(3)
       INTEGER ILNO
 C This routine displays information on the data held within the program.
       ID = ID - (ID/100)*100 + 1
@@ -5246,26 +5250,38 @@ C INFO PACKNUMBERS
       DO 2601 I = INCNT , INCNT+ICN-1
         ILNO = NCOMMD(I)
         IF (ILNO.GE.NSCRAT) THEN
-          WRITE (CLINE,'(A,I3,A)') 'Pack number ',ILNO, 'not stored.'
+          WRITE (CLINE,'(A,I3,A)') 'Pack number ',ILNO, ' not stored.'
           CALL ZMORE(CLINE,0)
           GOTO 2601
         ENDIF
 C GET THE INFO FROM THE SCRATCH FILE
         READ (ISCRAT,REC=ILNO+1) SYMM, RTX, RTY , RTZ
+c^^djwnov06
+       RTXYZ(1) = RTX
+       RTXYZ(2) = RTY
+       RTXYZ(3) = RTZ
+       do idjw = 1,4
+        DSYMM(1,idjw) = SYMM(1,idjw)
+        DSYMM(2,idjw) = SYMM(2,idjw)
+        DSYMM(3,idjw) = SYMM(3,idjw)
+        DSYMM(4,idjw) = SYMM(4,idjw)
+       enddo
         CALL ZSOUT (SYMM,SWORD,ISLEN)
-        WRITE (CLINE,2602) ILNO , RTX ,RTY, RTZ
+        WRITE (CLINE,2602) ILNO , SWORD(1:ISLEN-1), rtx,rty, rtz
+2602   FORMAT ('Atoms labelled',I5 , ' use operator ', A,
+     1  ' plus ',3f4.0 )
         CALL ZMORE(CLINE,0)
-        WRITE (CLINE,2603) SWORD(1:ISLEN)
-        CALL ZMORE(CLINE,0)
-2602   FORMAT ('Atoms labelled ',I5 ,
-     + ' Translations ',3(F5.2,2X))
-2603  FORMAT ('Operator ',A)
+        call xctrim(cline,idjw)
+        CALL ZSYMPK (ILNO+1, DSYMM, RTXYZ, cDLINE)
+        call xctrim(cdline,Jdjw)
+        if (issprt .GE. 0)
+     1  write(ncwu,'(a,a,a)') cline(1:idjw),' = ', cdline(1:jdjw)
 2601  CONTINUE
 9999  CONTINUE
 2012  FORMAT (6(A12,1X))
       RETURN
       END
- 
+C 
 CODE FOR ZCMD21 [ COMMAND GROUP 2100 - DEFGROUP ]
       SUBROUTINE ZCMD21 (ID)
       
