@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.78  2006/11/24 18:04:52  djw
+C Improve layout of low level listing so that it can be pulled into Excel
+C
 C Revision 1.77  2006/09/22 08:17:54  djw
 C Fix multiple reference to same H on RIDE command
 C
@@ -2330,7 +2333,9 @@ C--- ATOM 3
 C--- DUMMY
      5          IB, ZERO, 1,1,0,0,0
 CDJW160804
-              else if ((ipunch .eq. 11) .and. (term .ge. 120.)) then
+cdjwnov06
+              else if ((ipunch .eq. 11) .and. (term .ge. 120.) .and.
+     1          (dd1 .ge. 1.2)) then
                 WRITE(MTE) 'H',TERM,ESD,
      1          STORE(IXX), STORE(IXX+1), ISTORE(NA+2),
      1          ISTORE(NA+3), ISTORE(NA+4), ISTORE(NA+5), ISTORE(NA+6),
