@@ -1,4 +1,4 @@
-  41 items  - See the CRYSTALS manual for a description of the format.
+  42 items  - See the CRYSTALS manual for a description of the format.
 #001 USER DEFINED STRUCTURE SOLUTION
 User-defined structure solution reference
 
@@ -51,6 +51,23 @@ Beurskens, P.T., Beurskens, G., Bosman, W.P., de Gelder, R.,
 Garcia Granda, S., Gould, R.O.,  Israel, R.  &  Smits J.M.M. (1996).
 University of Nijmegen, Toernooiveld 1,  6525 ED  Nijmegen,
 The Netherlands.
+
+#042 Superflip (Palatinus & Chapuis, 2006)
+Palatinus, L. & Chapuis, G. (2006). Superflip - a computer program for solution
+of crystal structures by charge flipping in arbitrary dimensions. EPFL
+Lausanne, http://superspace.epfl.ch/superflip
+
+#043 Sir2002 (Burla et al., 2002)
+Burla, M. C., Camalli, M. B., Carrozzini,  G. L., Cascarano, R.,
+Giacovazzo,   C., Polidori,  G. & Spagna,  R., J. Appl. Crystallogr.,
+2003, 36, 1103.
+
+
+#044 Sir2004 (Burla et al., 2005)
+Burla, M. C. , Caliandro, R., Camalli,  M., Carrozzini,  B., Cascarano, G. L., De
+Caro,  L. , Giacovazzo, C., Polidori,  G.,  & Spagna  R. J. Appl. Cryst. (2005). 38,
+381-388.
+
 
 #032 SORTAV (Blessing)
 Blessing, SORTAV ( )
@@ -133,7 +150,7 @@ Stoe & Cie (1996). IPDS Software.
 Stoe & Cie (1996). XRED V1.08.
 
 #013 CAD4 EXPRESS, (Straver, 1992)
-Straver, L. H. (1992). CAD4-EXPRESS, Nonius, Delft, The Netherlands.  
+Straver, L. H. (1992). CAD4-EXPRESS, Nonius, Delft, The Netherlands.
 
 
 #021 DIFABS (Walker & Stuart, 1983)

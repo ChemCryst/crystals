@@ -12,10 +12,10 @@
 % VARIABLE REAL THOMAX TEMP STDS DECAY INTRVL RCOUNT                            
 % VARIABLE INTEGER SCAN INST                                                    
 % VARIABLE REAL HMIN HMAX KMIN KMAX LMIN LMAX THMIN THMAX THFULL                
-% VARIABLE REAL ANALMIN ANALMAX THETAMIN THETAMAX EMPMIN EMPMAX                   
-% VARIABLE REAL REFDELFMIN REFDELFMAX ABSMIN ABSMAX                               
+% VARIABLE REAL ANALMIN ANALMAX THETAMIN THETAMAX EMPMIN EMPMAX                 
+% VARIABLE REAL REFDELFMIN REFDELFMAX ABSMIN ABSMAX                             
 % VARIABLE INTEGER ABSTYPE                                                      
-% VARIABLE REAL DOBS DCALC MU MOLWT CELLZ FLACK FLESD PRESS                     
+% VARIABLE REAL DOBS DCALC MU MOLWT CELLZ FLACK FLESD PRESS
 % VARIABLE INTEGER SOLUTN                                                       
 % VARIABLE INTEGER COL1 COL2 COL3 COL4 COL5 COL6 COL7 COL8                      
 % VARIABLE INTEGER SHA1 SHA2 SHA3 SHA4 SHA5 SHA6 SHA7 SHA8                      
@@ -63,14 +63,14 @@
 % COPY 'TRANSFER FROM OFFSET = 6 TO THMIN'                                      
 % COPY 'TRANSFER FROM OFFSET = 7 TO THMAX'                                      
 % COPY 'LOCATE RECORDTYPE = 105'                                                
-% COPY 'TRANSFER FROM OFFSET = 0 TO ANALMIN'                                     
-% COPY 'TRANSFER FROM OFFSET = 1 TO ANALMAX'                                     
+% COPY 'TRANSFER FROM OFFSET = 0 TO ANALMIN'                                    
+% COPY 'TRANSFER FROM OFFSET = 1 TO ANALMAX'                                    
 % COPY 'TRANSFER FROM OFFSET = 2 TO THETAMIN'                                   
 % COPY 'TRANSFER FROM OFFSET = 3 TO THETAMAX'                                   
 % COPY 'TRANSFER FROM OFFSET = 4 TO EMPMIN'                                     
-% COPY 'TRANSFER FROM OFFSET = 5 TO EMPMAX'                                     
-% COPY 'TRANSFER FROM OFFSET = 6 TO REFDELFMIN'                                  
-% COPY 'TRANSFER FROM OFFSET = 7 TO REFDELFMAX'                                  
+% COPY 'TRANSFER FROM OFFSET = 5 TO EMPMAX'
+% COPY 'TRANSFER FROM OFFSET = 6 TO REFDELFMIN'                                 
+% COPY 'TRANSFER FROM OFFSET = 7 TO REFDELFMAX'                                 
 % COPY 'TRANSFER FROM OFFSET = 8 TO ABSTYPE'                                    
 % COPY 'LOCATE RECORDTYPE = 106'                                                
 % COPY 'TRANSFER FROM OFFSET = 0 TO DOBS'                                       
@@ -121,7 +121,7 @@
 ^^WI    @ 1,1 GRID GRIDAAA NROWS=2 NCOLS=11                                     
 ^^WI              COMMAND='OBSERVE'                                             
 ^^WI    {                                                                       
-^^WI     @ 1,1 STATIC ED30T 'Reflections measured'                              
+^^WI     @ 1,1 STATIC ED30T 'Reflections measured'
 ^^WI     @ 1,3 EDITBOX NREFS '0' CHARS=11 INTEGER INFORM=YES                    
 ^^WI     @ 1,5  STATIC ED30T 'Instrument'                                       
 ^^WI     @ 1,7 DROPDOWN INST INFORM=YES ADDTOLIST                               
@@ -174,8 +174,8 @@
 ^^WI    {                                                                       
 ^^WI     @ 1,1  STATIC ED30T 'Cell measurement refls:'                          
 ^^WI     @ 1,3  EDITBOX NORIEN '0' CHARS=7 INTEGER INFORM=YES                   
-^^WI     @ 1,5  STATIC ED30T 'Theta min'                                        
-^^WI     @ 1,7  EDITBOX THOMIN '0' CHARS=9 REAL INFORM=YES                      
+^^WI     @ 1,5  STATIC ED30T 'Theta min'
+^^WI     @ 1,7  EDITBOX THOMIN '0' CHARS=9 REAL INFORM=YES
 ^^WI     @ 1,9  STATIC ED30T 'Theta max'                                        
 ^^WI     @ 1,11 EDITBOX THOMAX '0' CHARS=9 REAL INFORM=YES                      
 ^^WI     @ 2,1  STATIC ED30T 'Intensity standards:'                             
@@ -188,16 +188,16 @@
 ^^WI     @ 2,15 EDITBOX RCOUNT '0' CHARS=7 REAL INFORM=YES                      
 ^^WI    }                                                                       
 ^^WI   }                                                                        
-^^WI   @ 4,2 GRID GRIDAB NROWS=1 NCOLS=7 OUTLINE='Software'                     
+^^WI   @ 4,2 GRID GRIDAB NROWS=1 NCOLS=8 OUTLINE='Software'
 ^^WI              COMMAND='SOFTWARE'                                            
 ^^WI   {                                                                        
 ^^WI    @ 1,1 STATIC ED30T 'Data reduction'                                     
 ^^WI    @ 1,3 DROPDOWN REDUC INFORM=YES ADDTOLIST                               
 ^^WI    'Unknown' 'RC93' 'Denzo' 'Shelx' 'CrysAlis' 'NULL'                      
 ^^WI    @ 1,5 STATIC ED30T 'Structure solution'                                 
-^^WI    @ 1,7 DROPDOWN SOLUTN INFORM=YES ADDTOLIST                              
-^^WI    'Unknown' 'Shelxs' 'Sir88' 'Sir92' 'Patterson'                          
-^^WI    'Sir97' 'Dirdif' 'NULL'                                                 
+^^WI    @ 1,8 DROPDOWN SOLUTN INFORM=YES ADDTOLIST
+^^WI    'Unknown' 'Shelxs' 'Sir88' 'Sir92' 'Patterson'
+^^WI    'Sir97' 'Dirdif' 'Superflip' 'Sir2002', 'Sir2004', 'NULL'
 ^^WI   }                                                                        
 ^^WI   @ 6,2 GRID GRIDAC NROWS=3 NCOLS=1 OUTLINE='Crystal'                      
 ^^WI              COMMAND='CRYSTAL'                                             
@@ -227,7 +227,7 @@
 ^^WI      @ 1,1  STATIC ED30T 'Density: Observed'                               
 ^^WI      @ 1,3  EDITBOX DOBS '0' CHARS=7 REAL INFORM=YES                       
 ^^WI      @ 1,5  STATIC ED30T 'Calculated'                                      
-^^WI      @ 1,7  EDITBOX DCALC '0' CHARS=7 REAL INFORM=YES                      
+^^WI      @ 1,7  EDITBOX DCALC '0' CHARS=7 REAL INFORM=YES
 ^^WI      @ 1,9  STATIC ED30T 'Mol. weight'                                     
 ^^WI      @ 1,11  EDITBOX MOLWT '0' CHARS=10 REAL INFORM=YES                    
 ^^WI      @ 2,1  STATIC ED30T 'Z'                                               
@@ -245,7 +245,7 @@
 ^^WI    @ 1,3 DROPDOWN ABSTYPE INFORM=YES ADDTOLIST                             
 ^^WI     'None' 'DifAbs' 'Empirical' 'Multi-scan' 'SadAbs '                     
 ^^WI     'SortAV' 'ShelxA' 'Gaussian' 'Analytical' 'Numerical'                  
-^^WI     'Integration' 'Spherical' 'Cylindrical' 'Psi-Scan' 'NULL'                         
+^^WI     'Integration' 'Spherical' 'Cylindrical' 'Psi-Scan' 'NULL'              
 ^^WI    @ 1,5  STATIC ABSMINT 'Empirical min'                                   
 ^^WI    @ 1,7  EDITBOX ABSMIN '0' CHARS=11 REAL INFORM=YES                      
 ^^WI    @ 1,9  STATIC ABSMAXT 'Empirical max'                                   
@@ -280,7 +280,7 @@
 %  STORE FORMAT /(I2)/ LENGTH 2 INTEGER ( IREDUC + 1 )                          
 %  OUTPUT                                                                       
 %  CLEAR                                                                        
-%  INSERT '^^CO SET SOLUTN SELECTION='                                          
+%  INSERT '^^CO SET SOLUTN SELECTION='
 %  STORE FORMAT /(I2)/ LENGTH 2 INTEGER ( SOLUTN + 1 )                          
 %  OUTPUT                                                                       
 %  CLEAR                                                                        
@@ -393,19 +393,19 @@
 ^^CO SET ABSMINT TEXT 'Not set' SET ABSMAXT TEXT 'Not set'                      
 %    CLEAR                                                                      
 %    INSERT '^^CO SET ABSMIN TEXT '                                             
-%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL 0.0                                 
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL 0.0                                    
 %    INSERT ' SET ABSMAX TEXT '                                                 
-%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL 0.0                                 
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL 0.0                                    
 %    OUTPUT                                                                     
 %   END BLOCK                                                                   
 %   BLOCK                                                                       
 ^^CO SET ABSTYPE SELECTION=2                                                    
-^^CO SET ABSMINT TEXT 'Refdelf min' SET ABSMAXT TEXT 'Refdelf max'                
+^^CO SET ABSMINT TEXT 'Refdelf min' SET ABSMAXT TEXT 'Refdelf max'              
 %    CLEAR                                                                      
 %    INSERT '^^CO SET ABSMIN TEXT '                                             
-%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL REFDELFMIN                              
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL REFDELFMIN                             
 %    INSERT ' SET ABSMAX TEXT '                                                 
-%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL REFDELFMAX                              
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL REFDELFMAX                             
 %    OUTPUT                                                                     
 %   END BLOCK                                                                   
 %   BLOCK                                                                       
@@ -413,9 +413,9 @@
 ^^CO SET ABSMINT TEXT 'Empirical min' SET ABSMAXT TEXT 'Empirical max'          
 %    CLEAR                                                                      
 %    INSERT '^^CO SET ABSMIN TEXT '                                             
-%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMIN                               
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMIN                                 
 %    INSERT ' SET ABSMAX TEXT '                                                 
-%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMAX                               
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMAX                                 
 %    OUTPUT                                                                     
 %   END BLOCK                                                                   
 %   BLOCK                                                                       
@@ -430,7 +430,7 @@
 %   END BLOCK                                                                   
 %   BLOCK                                                                       
 ^^CO SET ABSTYPE SELECTION=5                                                    
-^^CO SET ABSMINT TEXT 'Sadabs min' SET ABSMAXT TEXT 'Sadabs max'                      
+^^CO SET ABSMINT TEXT 'Sadabs min' SET ABSMAXT TEXT 'Sadabs max'                
 %    CLEAR                                                                      
 %    INSERT '^^CO SET ABSMIN TEXT '                                             
 %    STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMIN                                 
@@ -440,7 +440,7 @@
 %   END BLOCK                                                                   
 %   BLOCK                                                                       
 ^^CO SET ABSTYPE SELECTION=6                                                    
-^^CO SET ABSMINT TEXT 'Sortav min' SET ABSMAXT TEXT 'Sortav max'                      
+^^CO SET ABSMINT TEXT 'Sortav min' SET ABSMAXT TEXT 'Sortav max'                
 %    CLEAR                                                                      
 %    INSERT '^^CO SET ABSMIN TEXT '                                             
 %    STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMIN                                 
@@ -450,77 +450,77 @@
 %   END BLOCK                                                                   
 %   BLOCK                                                                       
 ^^CO SET ABSTYPE SELECTION=7                                                    
-^^CO SET ABSMINT TEXT 'SHELXA min' SET ABSMAXT TEXT 'SHELXA max'                      
+^^CO SET ABSMINT TEXT 'SHELXA min' SET ABSMAXT TEXT 'SHELXA max'                
 %    CLEAR                                                                      
 %    INSERT '^^CO SET ABSMIN TEXT '                                             
-%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL REFDELFMIN                                 
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL REFDELFMIN                             
 %    INSERT ' SET ABSMAX TEXT '                                                 
-%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL REFDELFMAX                                 
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL REFDELFMAX                             
 %    OUTPUT                                                                     
 %   END BLOCK                                                                   
 %   BLOCK                                                                       
 ^^CO SET ABSTYPE SELECTION=8                                                    
-^^CO SET ABSMINT TEXT 'Gaussian min' SET ABSMAXT TEXT 'Gaussian max'                      
+^^CO SET ABSMINT TEXT 'Gaussian min' SET ABSMAXT TEXT 'Gaussian max'            
 %    CLEAR                                                                      
 %    INSERT '^^CO SET ABSMIN TEXT '                                             
-%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMIN                                 
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMIN                                
 %    INSERT ' SET ABSMAX TEXT '                                                 
-%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMAX                                 
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMAX                                
 %    OUTPUT                                                                     
 %   END BLOCK                                                                   
 %   BLOCK                                                                       
 ^^CO SET ABSTYPE SELECTION=9                                                    
-^^CO SET ABSMINT TEXT 'Analytic min' SET ABSMAXT TEXT 'Analytic max'                      
+^^CO SET ABSMINT TEXT 'Analytic min' SET ABSMAXT TEXT 'Analytic max'            
 %    CLEAR                                                                      
 %    INSERT '^^CO SET ABSMIN TEXT '                                             
-%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMIN                                 
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMIN                                
 %    INSERT ' SET ABSMAX TEXT '                                                 
-%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMAX                                 
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMAX                                
 %    OUTPUT                                                                     
 %   END BLOCK                                                                   
 %   BLOCK                                                                       
 ^^CO SET ABSTYPE SELECTION=10                                                   
-^^CO SET ABSMINT TEXT 'Numerical min' SET ABSMAXT TEXT 'Numerical max'                      
+^^CO SET ABSMINT TEXT 'Numerical min' SET ABSMAXT TEXT 'Numerical max'          
 %    CLEAR                                                                      
 %    INSERT '^^CO SET ABSMIN TEXT '                                             
-%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMIN                                 
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMIN                                
 %    INSERT ' SET ABSMAX TEXT '                                                 
-%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMAX                                 
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMAX                                
 %    OUTPUT                                                                     
 %   END BLOCK                                                                   
 %   BLOCK                                                                       
 ^^CO SET ABSTYPE SELECTION=11                                                   
-^^CO SET ABSMINT TEXT 'Integration min' SET ABSMAXT TEXT 'Integration max'                      
+^^CO SET ABSMINT TEXT 'Integration min' SET ABSMAXT TEXT 'Integration max'      
 %    CLEAR                                                                      
 %    INSERT '^^CO SET ABSMIN TEXT '                                             
-%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMIN                                 
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMIN                                
 %    INSERT ' SET ABSMAX TEXT '                                                 
-%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMAX                                 
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMAX                                
 %    OUTPUT                                                                     
 %   END BLOCK                                                                   
 %   BLOCK                                                                       
 ^^CO SET ABSTYPE SELECTION=12                                                   
-^^CO SET ABSMINT TEXT 'Spherical min' SET ABSMAXT TEXT 'Spherical max'                      
+^^CO SET ABSMINT TEXT 'Spherical min' SET ABSMAXT TEXT 'Spherical max'          
 %    CLEAR                                                                      
 %    INSERT '^^CO SET ABSMIN TEXT '                                             
-%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL THETAMIN                                 
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL THETAMIN                               
 %    INSERT ' SET ABSMAX TEXT '                                                 
-%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL THETAMAX                                 
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL THETAMAX                               
 %    OUTPUT                                                                     
 %   END BLOCK                                                                   
 %   BLOCK                                                                       
 ^^CO SET ABSTYPE SELECTION=13                                                   
-^^CO SET ABSMINT TEXT 'Cylindrical min' SET ABSMAXT TEXT 'Cylindrical max'                      
+^^CO SET ABSMINT TEXT 'Cylindrical min' SET ABSMAXT TEXT 'Cylindrical max'      
 %    CLEAR                                                                      
 %    INSERT '^^CO SET ABSMIN TEXT '                                             
-%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL THETAMIN                                 
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL THETAMIN                               
 %    INSERT ' SET ABSMAX TEXT '                                                 
-%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL THETAMAX                                 
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL THETAMAX                               
 %    OUTPUT                                                                     
 %   END BLOCK                                                                   
 %   BLOCK                                                                       
 ^^CO SET ABSTYPE SELECTION=14                                                   
-^^CO SET ABSMINT TEXT 'Psi-scan min' SET ABSMAXT TEXT 'Psi-scan max'                      
+^^CO SET ABSMINT TEXT 'Psi-scan min' SET ABSMAXT TEXT 'Psi-scan max'            
 %    CLEAR                                                                      
 %    INSERT '^^CO SET ABSMIN TEXT '                                             
 %    STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMIN                                 
@@ -655,147 +655,147 @@
 %            EVALUATE FABSTYPE = TRUE                                           
 %            GET NOSTORE SILENT INTEGER ' ' ' '                                 
 %            CASE VALUE                                                         
-%               BLOCK                                                                       
-%%^^CO SET ABSTYPE SELECTION=1                                                    
+%               BLOCK                                                           
+%%^^CO SET ABSTYPE SELECTION=1                                                  
 ^^CO SET ABSMINT TEXT 'Not set' SET ABSMAXT TEXT 'Not set'                      
 %                CLEAR                                                          
-%                INSERT '^^CO SET ABSMIN TEXT '                                             
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL 0.0                                 
-%                INSERT ' SET ABSMAX TEXT '                                                 
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL 0.0                                 
-%                OUTPUT                                                                     
-%               END BLOCK                                                                   
-%               BLOCK                                                                       
-%%^^CO SET ABSTYPE SELECTION=2                                                    
-^^CO SET ABSMINT TEXT 'Refdelf min' SET ABSMAXT TEXT 'Refdelf max'                
-%                CLEAR                                                                      
-%                INSERT '^^CO SET ABSMIN TEXT '                                             
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL REFDELFMIN                              
-%                INSERT ' SET ABSMAX TEXT '                                                 
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL REFDELFMAX                              
-%                OUTPUT                                                                     
-%               END BLOCK                                                                   
-%               BLOCK                                                                       
-%%^^CO SET ABSTYPE SELECTION=3                                                    
+%                INSERT '^^CO SET ABSMIN TEXT '                                 
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL 0.0                        
+%                INSERT ' SET ABSMAX TEXT '                                     
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL 0.0                        
+%                OUTPUT                                                         
+%               END BLOCK                                                       
+%               BLOCK                                                           
+%%^^CO SET ABSTYPE SELECTION=2                                                  
+^^CO SET ABSMINT TEXT 'Refdelf min' SET ABSMAXT TEXT 'Refdelf max'              
+%                CLEAR                                                          
+%                INSERT '^^CO SET ABSMIN TEXT '                                 
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL REFDELFMIN                 
+%                INSERT ' SET ABSMAX TEXT '                                     
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL REFDELFMAX                 
+%                OUTPUT                                                         
+%               END BLOCK                                                       
+%               BLOCK                                                           
+%%^^CO SET ABSTYPE SELECTION=3                                                  
 ^^CO SET ABSMINT TEXT 'Empirical min' SET ABSMAXT TEXT 'Empirical max'          
-%                CLEAR                                                                      
-%                INSERT '^^CO SET ABSMIN TEXT '                                             
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMIN                               
-%                INSERT ' SET ABSMAX TEXT '                                                 
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMAX                               
-%                OUTPUT                                                                     
-%               END BLOCK                                                                   
-%               BLOCK                                                                       
-%%^^CO SET ABSTYPE SELECTION=4                                                    
+%                CLEAR                                                          
+%                INSERT '^^CO SET ABSMIN TEXT '                                 
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMIN                     
+%                INSERT ' SET ABSMAX TEXT '                                     
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMAX                     
+%                OUTPUT                                                         
+%               END BLOCK                                                       
+%               BLOCK                                                           
+%%^^CO SET ABSTYPE SELECTION=4                                                  
 ^^CO SET ABSMINT TEXT 'Multiscan min' SET ABSMAXT TEXT 'Multiscan max'          
-%                CLEAR                                                                      
-%                INSERT '^^CO SET ABSMIN TEXT '                                             
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMIN                                 
-%                INSERT ' SET ABSMAX TEXT '                                                 
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMAX                                 
-%                OUTPUT                                                                     
-%               END BLOCK                                                                   
-%               BLOCK                                                                       
-%%^^CO SET ABSTYPE SELECTION=5                                                    
-^^CO SET ABSMINT TEXT 'Sadabs min' SET ABSMAXT TEXT 'Sadabs max'                      
-%                CLEAR                                                                      
-%                INSERT '^^CO SET ABSMIN TEXT '                                             
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMIN                                 
-%                INSERT ' SET ABSMAX TEXT '                                                 
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMAX                                 
-%                OUTPUT                                                                     
-%               END BLOCK                                                                   
-%               BLOCK                                                                       
-%%^^CO SET ABSTYPE SELECTION=6                                                    
-^^CO SET ABSMINT TEXT 'Sortav min' SET ABSMAXT TEXT 'Sortav max'                      
-%                CLEAR                                                                      
-%                INSERT '^^CO SET ABSMIN TEXT '                                             
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMIN                                 
-%                INSERT ' SET ABSMAX TEXT '                                                 
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMAX                                 
-%                OUTPUT                                                                     
-%               END BLOCK                                                                   
-%               BLOCK                                                                       
-%%^^CO SET ABSTYPE SELECTION=7                                                    
-^^CO SET ABSMINT TEXT 'SHELXA min' SET ABSMAXT TEXT 'SHELXA max'                      
-%                CLEAR                                                                      
-%                INSERT '^^CO SET ABSMIN TEXT '                                             
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL REFDELFMIN                                 
-%                INSERT ' SET ABSMAX TEXT '                                                 
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL REFDELFMAX                                 
-%                OUTPUT                                                                     
-%               END BLOCK                                                                   
-%               BLOCK                                                                       
-%%^^CO SET ABSTYPE SELECTION=8                                                    
-^^CO SET ABSMINT TEXT 'Gaussian min' SET ABSMAXT TEXT 'Gaussian max'                      
-%                CLEAR                                                                      
-%                INSERT '^^CO SET ABSMIN TEXT '                                             
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMIN                                 
-%                INSERT ' SET ABSMAX TEXT '                                                 
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMAX                                 
-%                OUTPUT                                                                     
-%               END BLOCK                                                                   
-%               BLOCK                                                                       
-%%^^CO SET ABSTYPE SELECTION=9                                                    
-^^CO SET ABSMINT TEXT 'Analytic min' SET ABSMAXT TEXT 'Analytic max'                      
-%                CLEAR                                                                      
-%                INSERT '^^CO SET ABSMIN TEXT '                                             
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMIN                                 
-%                INSERT ' SET ABSMAX TEXT '                                                 
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMAX                                 
-%                OUTPUT                                                                     
-%               END BLOCK                                                                   
-%               BLOCK                                                                       
-%%^^CO SET ABSTYPE SELECTION=10                                                   
-^^CO SET ABSMINT TEXT 'Numerical min' SET ABSMAXT TEXT 'Numerical max'                      
-%                CLEAR                                                                      
-%                INSERT '^^CO SET ABSMIN TEXT '                                             
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMIN                                 
-%                INSERT ' SET ABSMAX TEXT '                                                 
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMAX                                 
-%                OUTPUT                                                                     
-%               END BLOCK                                                                   
-%               BLOCK                                                                       
-%%^^CO SET ABSTYPE SELECTION=11                                                   
-^^CO SET ABSMINT TEXT 'Integration min' SET ABSMAXT TEXT 'Integration max'                      
-%                CLEAR                                                                      
-%                INSERT '^^CO SET ABSMIN TEXT '                                             
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMIN                                 
-%                INSERT ' SET ABSMAX TEXT '                                                 
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMAX                                 
-%                OUTPUT                                                                     
-%               END BLOCK                                                                   
-%               BLOCK                                                                       
-%%^^CO SET ABSTYPE SELECTION=12                                                   
-^^CO SET ABSMINT TEXT 'Spherical min' SET ABSMAXT TEXT 'Spherical max'                      
-%                CLEAR                                                                      
-%                INSERT '^^CO SET ABSMIN TEXT '                                             
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL THETAMIN                                 
-%                INSERT ' SET ABSMAX TEXT '                                                 
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL THETAMAX                                 
-%                OUTPUT                                                                     
-%               END BLOCK                                                                   
-%               BLOCK                                                                       
-%%^^CO SET ABSTYPE SELECTION=13                                                   
-^^CO SET ABSMINT TEXT 'Cylindrical min' SET ABSMAXT TEXT 'Cylindrical max'                      
-%                CLEAR                                                                      
-%                INSERT '^^CO SET ABSMIN TEXT '                                             
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL THETAMIN                                 
-%                INSERT ' SET ABSMAX TEXT '                                                 
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL THETAMAX                                 
-%                OUTPUT                                                                     
-%               END BLOCK                                                                   
-%               BLOCK                                                                       
-%%^^CO SET ABSTYPE SELECTION=14                                                   
-^^CO SET ABSMINT TEXT 'Psi-scan min' SET ABSMAXT TEXT 'Psi-scan max'                      
-%                CLEAR                                                                      
-%                INSERT '^^CO SET ABSMIN TEXT '                                             
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMIN                                 
-%                INSERT ' SET ABSMAX TEXT '                                                 
-%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMAX                                 
-%                OUTPUT                                                                     
-%               END BLOCK                                                                   
-%              END CASE                                                                     
+%                CLEAR                                                          
+%                INSERT '^^CO SET ABSMIN TEXT '                                 
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMIN                     
+%                INSERT ' SET ABSMAX TEXT '                                     
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMAX                     
+%                OUTPUT                                                         
+%               END BLOCK                                                       
+%               BLOCK                                                           
+%%^^CO SET ABSTYPE SELECTION=5                                                  
+^^CO SET ABSMINT TEXT 'Sadabs min' SET ABSMAXT TEXT 'Sadabs max'                
+%                CLEAR                                                          
+%                INSERT '^^CO SET ABSMIN TEXT '                                 
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMIN                     
+%                INSERT ' SET ABSMAX TEXT '                                     
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMAX                     
+%                OUTPUT                                                         
+%               END BLOCK                                                       
+%               BLOCK                                                           
+%%^^CO SET ABSTYPE SELECTION=6                                                  
+^^CO SET ABSMINT TEXT 'Sortav min' SET ABSMAXT TEXT 'Sortav max'                
+%                CLEAR                                                          
+%                INSERT '^^CO SET ABSMIN TEXT '                                 
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMIN                     
+%                INSERT ' SET ABSMAX TEXT '                                     
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMAX                     
+%                OUTPUT                                                         
+%               END BLOCK                                                       
+%               BLOCK                                                           
+%%^^CO SET ABSTYPE SELECTION=7                                                  
+^^CO SET ABSMINT TEXT 'SHELXA min' SET ABSMAXT TEXT 'SHELXA max'                
+%                CLEAR                                                          
+%                INSERT '^^CO SET ABSMIN TEXT '                                 
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL REFDELFMIN                 
+%                INSERT ' SET ABSMAX TEXT '                                     
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL REFDELFMAX                 
+%                OUTPUT                                                         
+%               END BLOCK                                                       
+%               BLOCK                                                           
+%%^^CO SET ABSTYPE SELECTION=8                                                  
+^^CO SET ABSMINT TEXT 'Gaussian min' SET ABSMAXT TEXT 'Gaussian max'            
+%                CLEAR                                                          
+%                INSERT '^^CO SET ABSMIN TEXT '                                 
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMIN                    
+%                INSERT ' SET ABSMAX TEXT '                                     
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMAX                    
+%                OUTPUT                                                         
+%               END BLOCK                                                       
+%               BLOCK                                                           
+%%^^CO SET ABSTYPE SELECTION=9                                                  
+^^CO SET ABSMINT TEXT 'Analytic min' SET ABSMAXT TEXT 'Analytic max'            
+%                CLEAR                                                          
+%                INSERT '^^CO SET ABSMIN TEXT '                                 
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMIN                    
+%                INSERT ' SET ABSMAX TEXT '                                     
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMAX                    
+%                OUTPUT                                                         
+%               END BLOCK                                                       
+%               BLOCK                                                           
+%%^^CO SET ABSTYPE SELECTION=10                                                 
+^^CO SET ABSMINT TEXT 'Numerical min' SET ABSMAXT TEXT 'Numerical max'          
+%                CLEAR                                                          
+%                INSERT '^^CO SET ABSMIN TEXT '                                 
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMIN                    
+%                INSERT ' SET ABSMAX TEXT '                                     
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMAX                    
+%                OUTPUT                                                         
+%               END BLOCK                                                       
+%               BLOCK                                                           
+%%^^CO SET ABSTYPE SELECTION=11                                                 
+^^CO SET ABSMINT TEXT 'Integration min' SET ABSMAXT TEXT 'Integration max'      
+%                CLEAR                                                          
+%                INSERT '^^CO SET ABSMIN TEXT '                                 
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMIN                    
+%                INSERT ' SET ABSMAX TEXT '                                     
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL ANALMAX                    
+%                OUTPUT                                                         
+%               END BLOCK                                                       
+%               BLOCK                                                           
+%%^^CO SET ABSTYPE SELECTION=12                                                 
+^^CO SET ABSMINT TEXT 'Spherical min' SET ABSMAXT TEXT 'Spherical max'          
+%                CLEAR                                                          
+%                INSERT '^^CO SET ABSMIN TEXT '                                 
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL THETAMIN                   
+%                INSERT ' SET ABSMAX TEXT '                                     
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL THETAMAX                   
+%                OUTPUT                                                         
+%               END BLOCK                                                       
+%               BLOCK                                                           
+%%^^CO SET ABSTYPE SELECTION=13                                                 
+^^CO SET ABSMINT TEXT 'Cylindrical min' SET ABSMAXT TEXT 'Cylindrical max'      
+%                CLEAR                                                          
+%                INSERT '^^CO SET ABSMIN TEXT '                                 
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL THETAMIN                   
+%                INSERT ' SET ABSMAX TEXT '                                     
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL THETAMAX                   
+%                OUTPUT                                                         
+%               END BLOCK                                                       
+%               BLOCK                                                           
+%%^^CO SET ABSTYPE SELECTION=14                                                 
+^^CO SET ABSMINT TEXT 'Psi-scan min' SET ABSMAXT TEXT 'Psi-scan max'            
+%                CLEAR                                                          
+%                INSERT '^^CO SET ABSMIN TEXT '                                 
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMIN                     
+%                INSERT ' SET ABSMAX TEXT '                                     
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMAX                     
+%                OUTPUT                                                         
+%               END BLOCK                                                       
+%              END CASE                                                         
 %          END BLOCK                                                            
 %        END CASE                                                               
 %      END BLOCK                                                                
@@ -1086,10 +1086,10 @@
 %              GET NOSTORE SILENT INTEGER ' ' ' '                               
 %              EVALUATE ABSTYPE = VALUE - 1                                     
 %              COPY 'TRANSFER TO OFFSET = 8 FROM ABSTYPE'                       
-%              CASE ( ABSTYPE + 1 )    
+%              CASE ( ABSTYPE + 1 )                                             
 %                BLOCK                                                          
-%%                  COPY 'TRANSFER TO OFFSET = 0 FROM ABSMIN'                    
-%%                  COPY 'TRANSFER TO OFFSET = 1 FROM ABSMAX'                    
+%%                  COPY 'TRANSFER TO OFFSET = 0 FROM ABSMIN'                   
+%%                  COPY 'TRANSFER TO OFFSET = 1 FROM ABSMAX'                   
 %                END BLOCK                                                      
 %                BLOCK                                                          
 %                  COPY 'TRANSFER TO OFFSET = 6 FROM ABSMIN'                    
