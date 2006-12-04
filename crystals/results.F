@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.113  2006/11/23 12:50:58  djw
+C Bugs spotted by Pascal Parios
+C
 C Revision 1.112  2006/10/06 08:58:51  djw
 C Put Rint on correct scale in HTML output
 C
@@ -1490,7 +1493,7 @@ C Check if riding H ESD to be omitted
         IF ( ( AND(ISTORE(M5+15),KBREFB(3)).GT.0 ) .AND.                 
      1                   (ISTORE(M5).EQ.KHYD) )THEN              
           IF (IPESD .eq. 2) BPD(MPD) = 0.0                                               
-        ENDIF                                                          
+        ENDIF
 C
           LOJ = J+6
           J=J+NXF
@@ -4031,19 +4034,19 @@ CODE FOR XCIFX
       SUBROUTINE XCIFX
 CDJWMAR99[      CIF OUTPUT DIRECTED TO NCFPU1, PERMITTING TEXT OUTPUT TO
 C               BE SENT TO THE PUNCH UNIT AS A TABLE
-C 
+C
       PARAMETER (NCOL=2,NROW=49)
       PARAMETER (IDATA=15,IREF=23)
       CHARACTER*35 CPAGE(NROW,NCOL)
       CHARACTER*76 CREFMK
       PARAMETER (IDIFMX=8)
       DIMENSION IREFCD(3,IDIFMX)
-      PARAMETER (ISOLMX=7)
+      PARAMETER (ISOLMX=10)
       DIMENSION ISOLCD(ISOLMX)
       PARAMETER (IABSMX=14)
       DIMENSION IABSCD(IABSMX)
 
-C 
+C
 CDJWMAR99 MANY CHANGES TO BRING UP TO DATE WITH NEW CIFDIC
       PARAMETER (NTERM=4)
       PARAMETER (NNAMES=30)
@@ -4059,10 +4062,10 @@ C
       CHARACTER*15 CINSTR,CDIR,CPARAM,CVALUE,CDEF
       CHARACTER*26 UPPER,LOWER
       CHARACTER*3 CSSUBS(11)
-      CHARACTER*17 CWT 
+      CHARACTER*17 CWT
       CHARACTER*22 CFM, CFMC ! 'F<sub>obs</sub>&sup2;'
       CHARACTER*35 CMOD
-C                      
+C
       INCLUDE 'TSSCHR.INC'
       INCLUDE 'ICOM30.INC'
       INCLUDE 'ICOM31.INC'
@@ -4091,24 +4094,24 @@ C
       INCLUDE 'XLST31.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XFLAGS.INC'
-C 
-C 
+C
+C
       INCLUDE 'QLST30.INC'
       INCLUDE 'QLST31.INC'
       INCLUDE 'QSTORE.INC'
 
       V(CA,CB,CC,AL,BE,GA)=CA*CB*CC * SQRT(1-COS(AL)**2-COS(BE)**2-
      1   COS(GA)**2 + 2 * COS(AL) * COS(BE) * COS(GA))
-C 
+C
 C------ REFERENCE CODES FOR THE DIFFRACTOMETERS
       DATA IREFCD /4,5,6, 13,24,13, 13,24,13, 25,17,17, 15,17,17,
      1 26,27,27, 20,19,20,  37,36,36 /
 C------ REFERENCE CODES FOR DIRECT METHODS
-      DATA ISOLCD /1,18,30,11,22,28,29/
+      DATA ISOLCD /1,18,30,11,22,28,29,42,43,44/
 C------ REFERENCE CODES FOR ABSORPTION METHOD
       DATA IABSCD /7,21,16,17,31,32,33,39,40,40,39,7,7,16/
 
-C 
+C
       DATA UPPER/'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
       DATA LOWER/'abcdefghijklmnopqrstuvwxyz'/
 C                  1 2 3 4 5 6  7  8  9  10 11 12
@@ -4171,7 +4174,7 @@ C----- SET REFLECTION LISTING TYPE
       ELSE
          CALL XSFLSB(-1,ITYP06)
       ENDIF
- 
+
       CALL XRSL
       CALL XCSAE
 
@@ -4914,7 +4917,7 @@ C----- LIST 30
           WRITE (NCPU,'(''<TD>Shape</TD><TD>'',A,''</TD></TR>'')')
      1    CTEMP(1:J)
         END IF
- 
+
         WRITE (CLINE,'(3X,8A4)') (ISTORE(K),K=L30CL,L30CL+MD30CL-1)
         CALL XCCLWC (CLINE(1:),CTEMP(1:))
         CALL XCTRIM (CTEMP,J)
@@ -5117,7 +5120,7 @@ C
         ELSE IF ( IPUNCH .EQ. 2 ) THEN
            WRITE (NCPU,2) 'Absorption correction', CVALUE
         END IF
-C 
+C
         IF (J.GE.0) THEN
           IF ( IPUNCH .ge. 0 ) THEN
             CLINE=' '
@@ -5436,7 +5439,7 @@ C----- PARAMETER 13 ON DIRECTIVE 6 IS A CHARACTER STRING
            IVAL = ISOLCD(IVAL+1)
            CTEMP = CREFMK(ISTORE(LREFS), NREFS, MDREFS, IVAL)
            CALL XCTRIM (CTEMP,NCHAR)
-           WRITE (CLINE,'(''_computing_structure_solution '' )') 
+           WRITE (CLINE,'(''_computing_structure_solution '' )')
            IF ( NCHAR .LE. 45 ) THEN
              WRITE(CLINE(35:),'('''''''',A,'''''''')')CTEMP(2:NCHAR-1)
              CALL XPCIF (CLINE)
@@ -5497,7 +5500,7 @@ C----- PARAMETER 13 ON DIRECTIVE 6 IS A CHARACTER STRING
 C
 
 
-C 
+C
         IF ( IPUNCH .EQ. 0 ) THEN
           CALL XPCIF (' ')
           CBUF(1:18)='_diffrn_standards_'

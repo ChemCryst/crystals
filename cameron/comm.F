@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2006/11/27 16:49:01  djw
+C INFO PACKNO shows the complete symmetry operator in the listing file
+C
 C Revision 1.26  2006/03/16 11:36:38  arie
 C Archive and Retrieve option improved for labels
 C
@@ -1127,6 +1130,9 @@ C 4*16+4*(IRLAST-IRELM+1+ITOT-IREND+1)+ILEN*(ICLAST-ICELM+1+ITOT-(IGRP-NGRP*2-1)
       CALL ZMORE(CLINE,0)
       CALL ZMORE1(CLINE,0)
 1231  FORMAT ('The current view has been saved in file ',A60)
+cavdldec06 change back ILABFG to positive after file has been archived
+      IF (IABS(ILABFG).EQ.1)ILABFG=1
+      CLOSE(IVOUT)
       GOTO 9999
 124   CONTINUE
 cavdl** start old retrieve command, never used by Pearce
@@ -1227,6 +1233,7 @@ C writing the relevant parts of RSTORE and CSTORE
 cavdl set ivchan = 1 because there is a new view matrix
       IVCHAN = 1
 1233  FORMAT ('An archived  view was read from file ',A60)
+      CLOSE(IVOUT)
       GOTO 9999
 125   CONTINUE
 c LIST THE MATRIX

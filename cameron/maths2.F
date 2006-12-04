@@ -325,7 +325,10 @@ C          ENDIF
 C VIEW MATRIX HAS CHANGED - NEED TO RECALCULATE LABELS
 CAVDL HOWEVER LABELS NEED NOT BE RECALCULATED IF AN
 CAVDL ARCHIVED VIEW WITH LABELS WAS READ. THIS IS TRIGGERED
-CAVDL WITH ILABFG=-1
+CAVDL WITH ILABFG=-1. This is necessary if a label was moved using the mouse
+CAVDLdec06 HOWEVER, IT SHOULD BE DONE ONLY ONCE RIGHT AFTER
+CAVDLdec06 an archived view is extracted. Thus set back to positive right
+CAVDLdec06 after these commands have been issued.
           IF ((IVCHAN.EQ.1).AND.(ILABFG.EQ.1)) THEN
             RSTORE (I+ILAB) = 0.0
             RSTORE (I+ILAB+1) = 0.0
@@ -633,6 +636,9 @@ C FORCE LABELLING
           ENDIF
         IDLAB = 0
 10      CONTINUE
+cavdldec06 set back ILABFG to positive right after the archived
+cavdldec06 view was displayed.
+        IF (IABS(ILABFG).EQ.1)ILABFG=1
         IVCHAN = 0
         RETURN
         END
