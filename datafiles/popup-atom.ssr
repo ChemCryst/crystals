@@ -1,4 +1,4 @@
-^^WI                  DEFINEPOPUPMENU 3 POPUP3 'Single'
+^^WI                 DEFINEPOPUPMENU 3 POPUP3 'Single'
 ^^WI                    ITEM _EDA 'Ed&it' '#SCRIPT XPARAM_N_A' DISABLEIF='IN'
 ^^WI                    ITEM _DELA '&Delete _A' '#EDIT_NDELETE _A_NEND'
 ^^WI                                                         DISABLEIF='IN'
