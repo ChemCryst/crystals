@@ -1,4 +1,4 @@
-%SCRIPT ARCHIVE_CAM  %Script for archiving current view%
+%SCRIPT ARCHIVE_CAM   %Script for archiving current view%
 % VARIABLE INTEGER IFILET ITYPE IPRINT FILEOK                                   
 % VARIABLE CHARACTER FILENAME FILETYPE newfile                                  
 % VARIABLE LOGICAL SAME                                                         
