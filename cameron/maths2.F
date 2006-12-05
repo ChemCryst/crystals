@@ -1,4 +1,4 @@
-CRYSTALS CODE FOR MATHS2.FOR                                                    
+CRYSTALS CODE FOR MATHS2.FOR                                                     
 CAMERON CODE FOR MATHS2
 code for zroman
       subroutine zroman(idecimal,croman)
