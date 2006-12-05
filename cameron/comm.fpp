@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: not supported by cvs2svn $ 
+C Revision 1.28  2006/12/04 15:17:52  arie
+C *** empty log message ***
+C
 C Revision 1.27  2006/11/27 16:49:01  djw
 C INFO PACKNO shows the complete symmetry operator in the listing file
 C
