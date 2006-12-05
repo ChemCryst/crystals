@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.114  2006/12/04 15:22:18  arie
+C *** empty log message ***
+C
 C Revision 1.113  2006/11/23 12:50:58  djw
 C Bugs spotted by Pascal Parios
 C
@@ -1560,7 +1563,7 @@ C----- INDICATE THAT THERE ARE SOME U[ANISO] TO PRINT
         J=J+NUF
 C----- PRINT THE ISO OR EQUIV TEMPERATURE FACTOR
         CALL SNUM(BUFF(2),BPD(2),NUD,NOP,J,LINEA)
-        IF (IPCHCO .EQ. 3) THEN  
+        IF (IPCHCO .EQ. 3) THEN
 #if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
           WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
 #else
@@ -4041,6 +4044,7 @@ C
       CHARACTER*76 CREFMK
       PARAMETER (IDIFMX=8)
       DIMENSION IREFCD(3,IDIFMX)
+CAVDL more solution packages in cif-goodies
       PARAMETER (ISOLMX=10)
       DIMENSION ISOLCD(ISOLMX)
       PARAMETER (IABSMX=14)
@@ -4107,6 +4111,7 @@ C------ REFERENCE CODES FOR THE DIFFRACTOMETERS
       DATA IREFCD /4,5,6, 13,24,13, 13,24,13, 25,17,17, 15,17,17,
      1 26,27,27, 20,19,20,  37,36,36 /
 C------ REFERENCE CODES FOR DIRECT METHODS
+CAVDLdec06 updating references in reftab.sda with numbers 42, 43, and 44
       DATA ISOLCD /1,18,30,11,22,28,29,42,43,44/
 C------ REFERENCE CODES FOR ABSORPTION METHOD
       DATA IABSCD /7,21,16,17,31,32,33,39,40,40,39,7,7,16/
