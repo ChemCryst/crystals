@@ -8,8 +8,10 @@
 ^^WI                                        DISABLEIF='IN'
 ^^WI     ITEM _SIR '&Input results' '#SCRIPT XSIR97IN' DISABLEIF='IN'
 ^^WI    ENDMENU
+^^WI    ITEM _FLIP 'Superflip' '#SCRIPT XFLIP' ENABLEIF='L1 L2 L6'
+^^WI                                        DISABLEIF='IN'
 ^^WI    SPLIT
 ^^WI    ITEM _FRESH 'Fresh start' '#SCRIPT FRESH' ENABLEIF='L1 L2 L6'
 ^^WI                                              DISABLEIF='IN'
-^^WI    ITEM _FRESH 'Known facts' '#SCRIPT XGUIDEK' DISABLEIF='IN'
-^^WI  ENDMENU
+^^WI    ITEM _FRESH 'Known facts' '#SCRIPT XGUIDEK' DISABLEIF='IN'              
+^^WI  ENDMENU                                                                   
