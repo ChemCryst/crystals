@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: link.fpp
+C Revision 1.53  2005/02/25 17:25:20  stefan
+C 1. Added some preprocessor if defined lines for the mac version.
+C
 C Revision 1.52  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -232,7 +235,7 @@ C
 C      PREPARE DATA FOR FOREIGN PROGRAMS
 C      ILINK  SELECTS THE SORT OF OUTPUT TO PRODUCE
 C-     ILINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
-C-                 5:SIR88,  6:SIR92,   7:SIR97,    8:PLATON,  9:CSD 10:MOL2
+C-                 5:SIR88,  6:SIR92,   7:SIR97,    8:PLATON,  9:CSD 10:MOL2 11:SUPERFLIP
 C      IEFORT SELECTS POWER SETTING OF FOREIGN CALL
 C           FOR SHELXS86     IEFORT = 1, NORMAL
 C                                     2, DIFFICULT
@@ -241,12 +244,17 @@ C                                     4, PATTERSON
 C
 C           FOR SIR**        IEFORT = 1, NORMAL
 C                                     2, DIFFICULT
+CavdLdec06  FOR SUPERFLIP    IEFORT = 1, NORMAL
+C                            IEFORT = 2, DIFFICULT (weak data)
 c           for cameron      iefort = 1, normal
 c                                     2, dont create new cameron files
 C           FOR CSD          IEFORT = 1, normal - 2d structure
 C                                     2, special - just cell search
 C
-      PARAMETER (NLINK=10, NLIST=8)
+Cavdldec06 - now eleven links (NLINK=11)
+
+      PARAMETER (NLINK=11, NLIST=8)
+      PARAMETER ( NWORK = 1000 )
 C      IMETHD SELECTS SOME SORT OF ALTERNATIVE METHOD FOR THE
 C      FOREIGN CALL.
 C           FOR SIR92 (only)  IMETHD = 0, NORMAL
@@ -257,12 +265,25 @@ C---- FOR EACH TYPE OF LINK, INDICATE WHICH LISTS MUST BE LOADED
 C
 C----- FOR SHELXS86
       CHARACTER *32 OPERAT
-      CHARACTER *32 DECML
+      CHARACTER *32 DECML,DECMT
 C
 C----- FOR SIR**
 cdjw aug99
       CHARACTER *1 CARROW
       CHARACTER *160 CSOURC, CSPACE, CL29, CRESLT, CHARTC
+      CHARACTER *16 CTEMP
+C----- FOR Superflip**
+cavdl dec06
+      INTEGER IMAXIND(3),IVOXEL(3)
+      CHARACTER *1 CBLANK
+      CHARACTER *4 CATOM(15)
+      CHARACTER *21 CDUMF
+      CHARACTER *10 CSPG
+      REAL*8 XCEN,YCEN,ZCEN
+      DIMENSION TEMP(10), ITEMP(10), JXT1(288),XT2(12),XT3(500)
+      EQUIVALENCE (ITEMP(1),TEMP(1))
+
+
 C
       REAL MAT(3)
 C----- FOR CSD & MOL2
@@ -273,6 +294,8 @@ C----- FOR CSD & MOL2
 C
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM31.INC'
+      INCLUDE 'ICOM02.INC'
+      INCLUDE 'ICOM14.INC'
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
@@ -286,6 +309,7 @@ C
       INCLUDE 'XLST06.INC'
       INCLUDE 'XLST13.INC'
       INCLUDE 'XLST29.INC'
+      INCLUDE 'XLST30.INC'
       INCLUDE 'XLST31.INC'
       INCLUDE 'XLST40.INC'
       INCLUDE 'XLST41.INC'
@@ -294,12 +318,14 @@ C
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XCARDS.INC'
       INCLUDE 'CAMBLK.INC'
+      INCLUDE 'QLST02.INC'
+
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST31.INC'
 C
 C- ILINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
-C-             5:SIR88,  6:SIR92,   7:SIR97,    8:PLATON,  9:CSD, 10:MOL2
+C-             5:SIR88,  6:SIR92,   7:SIR97,    8:PLATON,  9:CSD, 10:MOL2, 11: SUPERFLIP
 C- POINTER TO LIST
       DATA LISTS /1, 2, 5, 0, 0,  0,  0,  0,
      2            1, 2, 5, 0, 0,  0,  0,  0,
@@ -310,12 +336,17 @@ C- POINTER TO LIST
      7            1, 2, 3, 0, 6, 13, 29,  0,
      8            1, 2, 3, 5, 6, 13, 29, 31,
      9            1, 3, 5,29,41,  0,  0,  0,
-     1            1, 2, 3, 5, 0, 29, 40, 41/
+     1            1, 2, 3, 5, 0, 29, 40, 41,
+     2            1, 2, 3,30, 6, 13, 29, 31/
 C
-      DATA KHYD /'H   '/
+      DATA KHYD,CBLANK /'H   ',' '/
 
       DATA CBONDS / '1','2','3','4','ar','un','de','un','pi'/
-
+c      DATA IDIMBF / 2 /
+      ICOMBF = KSTALL ( IDIMBF )
+c      CALL XZEROF (STORE(ICOMBF), IDIMBF)
+c      INCLUDE 'IDIM02.INC'
+c      INCLUDE 'IDIM14.INC'
 
 C
       IULN6 = 6
@@ -330,6 +361,7 @@ C--FIND OUT IF LISTS EXIST
       IERROR = 1
       DO 1300 N=1 , NLIST
         LSTNUM = LISTS(N,ILINK)
+
       IF (LSTNUM .EQ. 0 ) GOTO 1300
         IF (  KEXIST ( LSTNUM )  ) 1210 , 1200 , 1220
 1200    CONTINUE
@@ -367,6 +399,8 @@ C --        CONVERT ANGLES TO DEGREES.
             CALL XFAL13
         ELSE IF (LSTNUM .EQ. 29) THEN
             CALL XFAL29
+        ELSE IF (LSTNUM .EQ. 30) THEN
+            CALL XFAL30
         ELSE IF (LSTNUM .EQ. 31) THEN
 C--         LOAD LIST 31 FROM DISC
       INCLUDE 'IDIM31.INC'
@@ -389,21 +423,24 @@ C-----      SCALE DOWN THE ELEMENTS OF THE V/CV MATRIX
 C
 1400  CONTINUE
 C----- OPEN THE OUTPUT DEVICES
-#if defined(_PPC_) 
+#if defined(_PPC_)
       CALL stuser
 #endif
+
       IF (KLNKIO (ILINK) .LE. 0 ) GOTO 9900
-#if defined(_PPC_) 
+
+#if defined(_PPC_)
       CALL stcrys
 C
 C
 C            SNOOPI, CAMERON, SHELXS86,
 C            MULTAN, SIR88,   SIR92,
-C            SIR97,  PLATON,  CSD,   MOL2
+C            SIR97,  PLATON,  CSD,   MOL2 , SUPERFLIP
+CAVDLdec06 added superflip
 #endif
       GOTO ( 1600,   1700,    1800,
      1       2000,   1900,    1900,
-     2       1900,   1860,    1870,  1880 ), ILINK
+     2       1900,   1860,    1870,  1880 , 1890), ILINK
 C
 1600  CONTINUE
 C
@@ -415,19 +452,19 @@ C
      2
 C--WRITE THE PARAMETER FILE TYPE
         WRITE ( NCFPU1 ,  '(''LIST5'')' )
-#if defined(_PPC_) 
+#if defined(_PPC_)
       WRITE ( NCFPU1 ,  '(''CRUSE:SNOOPI.L5'')' )
 #endif
-#if defined(_VAX_) 
+#if defined(_VAX_)
       WRITE ( NCFPU1 ,  '(''USER:SNOOPI.L5'')' )
 #endif
-#if defined(_DOS_) 
+#if defined(_DOS_)
       WRITE ( NCFPU1 ,  '(''SNOOPI.L5'')' )
 #endif
-#if defined(_H_P_) 
+#if defined(_H_P_)
       WRITE ( NCFPU1 ,  '(''SNOOPI.L5'')' )
 #endif
-#if defined(_CYB_) 
+#if defined(_CYB_)
       WRITE ( NCFPU1 ,  '(''SNOOPI.L5'')' )
 #endif
       WRITE ( NCFPU1 ,' ( ''$SYMM'' )' )
@@ -484,34 +521,34 @@ C
      2
 C--WRITE THE PARAMETER FILE TYPE
         WRITE ( NCFPU1 ,  '(''LIST5'')' )
-#if defined(_PPC_) 
+#if defined(_PPC_)
       WRITE ( NCFPU1 ,  '(''CRUSE:CAMERON.L5I'')' )
 #endif
-#if defined(_VAX_) 
+#if defined(_VAX_)
       WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 #endif
-#if defined(_DOS_) 
+#if defined(_DOS_)
       WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 #endif
-#if defined(_DVF_) 
+#if defined(_DVF_)
       WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 #endif
-#if defined(_LIN_) 
+#if defined(_LIN_)
       WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 #endif
 #if defined(_GIL_)  || defined(_MAC_)
       WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)
       WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 #endif
-#if defined(_GID_) 
+#if defined(_GID_)
       WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 #endif
-#if defined(_H_P_) 
+#if defined(_H_P_)
       WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 #endif
-#if defined(_CYB_) 
+#if defined(_CYB_)
       WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 #endif
       WRITE ( NCFPU1 ,' ( ''$SYMM'' )' )
@@ -569,7 +606,7 @@ C----- OUTPUT A TITLE, FIRST 40 CHARACTERS ONLY
       WRITE(NCFPU1,'(''TITL '',10A4)') (KTITL(I),I=1,10)
       WRITE(NCFPU1, '(''CELL '', F8.5, 3F7.3, 3F8.3)')
      1 STORE(L13DC), (STORE(I),I=L1P1,L1P1+5)
-      WRITE(NCFPU1,1810) NINT(T2), 
+      WRITE(NCFPU1,1810) NINT(T2),
      1 STORE(L31), STORE(L31+6), STORE(L31+11),
      2 RTD*STORE(L31+15),RTD*STORE(L31+18),RTD*STORE(L31+20)
 1810  FORMAT ('ZERR ', I4, 6F7.4)
@@ -663,8 +700,255 @@ CDJWMAR99]
 1850  CONTINUE
 C----- END OF DATA - WRITE A BLANK LINE
       WRITE (NCFPU1,'(/)')
+C----- END OF SHELXS DATA
       GOTO 8000
+CAVDLdec06 continue with superflip data
+1890  CONTINUE
+C     LINK TO WRITE OUTPUT FOR SUPERFLIP ---------------------
+C----- OUTPUT A TITLE, FIRST 40 CHARACTERS ONLY
+      WRITE(NCFPU1,'(''title '',10A4)') (KTITL(I),I=1,10)
+      WRITE(NCFPU1,'(''perform CF'')')
+      WRITE(NCFPU1,'(''outputfile sflip.m81 sflip.m80'')')
+      WRITE(NCFPU1,'(''outputformat jana'')')
+      WRITE(NCFPU1,'(''dataformat intensity'')')
+      WRITE(NCFPU1,'(''dimension  3'')')
+C---- voxel calculation, needed information hmax, kmax, lmax and crystal system
+c      write(CMON, '('' Laue number'',i5)') LAUENO
+c      CALL XPRVDU(NCVDU, 1,0)
+      J  = L2SG + MD2SG - 1
+      CSOURC = ' '
+      CSPACE = ' '
+      WRITE(CSOURC, '(4(A4,1X) )') (ISTORE(I), I = L2SG, J)
+      CALL XCREMS (CSOURC, CSPACE, ISP )
+CavdLdec06 try to get LAUENO
+      READ ( CSPACE(1:10), '(10A1)' ) (ITEMP(J), J = 1,10)
+C
+      CALL SGROUP ( TEMP ,
+     2 LAUENO , NAXIS , NCENT , LCENT ,
+     3 N2 , NPOL , JXT1,
+     4 XT2 , N2P ,
+     5 NCAWU , NCAWU , XT3)
+      ILAUE=1
+C----- CRYSTAL CLASS - FROM LIST 2
+      J=L2CC+MD2CC-1
+c      WRITE(CMON,4351) (ISTORE(I),I=L2CC,J)
+c      CALL XPRVDU(NCVDU, 1,0)
+c4351  FORMAT (4(A4))
+      WRITE ( CTEMP , '(4A4)') (ISTORE(I),I=L2CC,J)
+      IF (CTEMP(1:4).EQ.'Mono') ILAUE=2
+      IF (CTEMP(1:4).EQ.'Orth') ILAUE=2
+      IF (CTEMP(1:4).EQ.'Tetr') ILAUE=4
+      IF (CTEMP(1:4).EQ.'Trig') ILAUE=3
+      IF (CTEMP(1:4).EQ.'Hexa') ILAUE=6
+      IF (CTEMP(1:4).EQ.'Cubi') THEN
+CavdL if LAUENO.EQ.13 then also ILAUE=4 finally? (and not 3)
+        IF (LAUENO.EQ.13) ILAUE=4
+        IF (LAUENO.EQ.14) ILAUE=4
+      ENDIF
+C----- RELECTION LIMITS IN DATA COLLECTION
+       K=0
+        DO I=1,3
+         IMAXIND(I)=0
+             DO J=1,3,2
+               IMAXIND(I)=MAX(IMAXIND(I),ABS(NINT(STORE(L30IX+K))))
+             K=K+1
+           END DO
+         END DO
+         DO I=1,3
+         IDUM=IMAXIND(I)*2/ILAUE
+         IVOXEL(I)=(IDUM+1)*ILAUE
 
+c         WRITE ( CMON, '('' voxel '',2i5,A4 )') IDUM,ILAUE,CTEMP(1:4)
+c        CALL XPRVDU(NCVDU, 1,0)
+
+      END DO
+CavdL voxel division should also be compatible with cell metrics
+Cavdl this is not said in the manual! MAXIND need not to be compatable with that
+CavdL take the maximum value
+      IF ((CTEMP(1:4).EQ.'Tetr').OR. (CTEMP(1:4).EQ.'Trig').OR.
+     &(CTEMP(1:4).EQ.'Hexa')) THEN
+        IVOXEL(1)=MAX(IVOXEL(1),IVOXEL(2))
+        IVOXEL(2)=MAX(IVOXEL(1),IVOXEL(2))
+      ENDIF
+      IF (CTEMP(1:4).EQ.'Cubi') THEN
+        IVOXEL(1)=MAX(IVOXEL(1),IVOXEL(2))
+        IVOXEL(1)=MAX(IVOXEL(1),IVOXEL(3))
+        IVOXEL(2)=MAX(IVOXEL(1),IVOXEL(2))
+        IVOXEL(2)=MAX(IVOXEL(2),IVOXEL(3))
+        IVOXEL(3)=MAX(IVOXEL(1),IVOXEL(3))
+        IVOXEL(3)=MAX(IVOXEL(2),IVOXEL(3))
+      ENDIF
+      WRITE(NCFPU1, '(''voxel '', 3i6)')(ivoxel(i),i=1,3)
+      WRITE(NCFPU1, '(''cell '', 3F7.3, 3F8.3)')
+     1 , (STORE(I),I=L1P1,L1P1+5)
+       WRITE(NCFPU1, '(''spacegroup '', A )') CSPACE(1:ISP)
+       LATTYP = ((2*IC) -1) * IL
+       IF (LATTYP.GT.0)THEN
+         WRITE(NCFPU1, '(''centro yes'')')
+       ELSE
+         WRITE(NCFPU1, '(''centro no'')')
+       ENDIF
+       WRITE(NCFPU1, '(''centers'')')
+       XCEN=0.000000d0
+       YCEN=0.000000d0
+       ZCEN=0.000000d0
+       WRITE(NCFPU1, '(3F14.10)')XCEN,YCEN,ZCEN
+       IF (LATTYP.EQ.2)THEN
+           XCEN=0.500000d0
+           YCEN=0.500000d0
+           ZCEN=0.500000d0
+           WRITE(NCFPU1, '(3F14.10)')XCEN,YCEN,ZCEN
+       ENDIF
+       IF (LATTYP.EQ.3)THEN
+           XCEN=2.0d0/3.0d0
+           YCEN=1.0d0/3.0d0
+           ZCEN=1.0d0/3.0d0
+           WRITE(NCFPU1, '(3F14.10)')XCEN,YCEN,ZCEN
+           XCEN=1.0/3.0d0
+           YCEN=2.0/3.0d0
+           ZCEN=2.0/3.0d0
+           WRITE(NCFPU1, '(3F14.10)')XCEN,YCEN,ZCEN
+       ENDIF
+       IF (LATTYP.EQ.4)THEN
+           XCEN=0.500000d0
+           YCEN=0.500000d0
+           ZCEN=0.000000d0
+           WRITE(NCFPU1, '(3F14.10)')XCEN,YCEN,ZCEN
+           XCEN=0.500000d0
+           YCEN=0.000000d0
+           ZCEN=0.500000d0
+           WRITE(NCFPU1, '(3F14.10)')XCEN,YCEN,ZCEN
+           XCEN=0.000000d0
+           YCEN=0.500000d0
+           ZCEN=0.500000d0
+           WRITE(NCFPU1, '(3F14.10)')XCEN,YCEN,ZCEN
+       ENDIF
+       IF (LATTYP.EQ.5)THEN
+          XCEN=0.000000d0
+          YCEN=0.500000d0
+          ZCEN=0.500000d0
+          WRITE(NCFPU1, '(3F14.10)')XCEN,YCEN,ZCEN
+       ENDIF
+       IF (LATTYP.EQ.6)THEN
+          XCEN=0.500000d0
+          YCEN=0.000000d0
+          ZCEN=0.500000d0
+          WRITE(NCFPU1, '(3F14.10)')XCEN,YCEN,ZCEN
+       ENDIF
+       IF (LATTYP.EQ.7)THEN
+          XCEN=0.500000d0
+          YCEN=0.500000d0
+          ZCEN=0.000000d0
+          WRITE(NCFPU1, '(3F14.10)')XCEN,YCEN,ZCEN
+       ENDIF
+       WRITE(NCFPU1, '(''endcenters'')')
+      WRITE(NCFPU1, '(''symmetry'')')
+       DO 1821 I = L2,M2,MD2
+            CALL XSUMOP( STORE(I), STORE(L2P), OPERAT, LENGTH,0)
+            DO J=1,2
+               IU=INDEX(OPERAT(1:LENGTH),',')
+               WRITE(OPERAT(IU:IU),'(A1)')CBLANK
+            END DO
+            CALL XCONFLIP (OPERAT, LENGTH, DECML, LDEC, DECMT,
+     &                     LDEC2, LATTYP)
+            WRITE(NCFPU1,'(A)')DECML(1:LDEC)
+            IF (LATTYP.GT.0)WRITE(NCFPU1,'(A)')DECMT(1:LDEC2)
+1821   CONTINUE
+      WRITE(NCFPU1, '(''endsymmetry'')')
+      IF (IEFORT.EQ.1)THEN
+        RWEAK=0.00
+        RBISO=0.0
+      ELSE
+        RWEAK=0.2
+        RBISO=2.5
+      ENDIF
+      WRITE(NCFPU1, '(/,''# Keywords for charge flipping'',/,
+     &                  ''delta AUTO'',/,
+     &                  ''weakratio'',f12.3,/,
+     &                  ''Biso  '',f12.3,/,
+     &                  ''randomseed AUTO'',/,
+     &                  ''searchsymmetry average'',/,
+     &                  ''# End of keywords for charge flipping'')')
+     &                    RWEAK,RBISO
+      WRITE(NCFPU1, '(/,''# EDMA-specific keywords'',/,
+     &                  ''inputfile sflip.m81'',/,
+     &                  ''outputbase sflip'',/,
+     &                  ''export sflip.ins'',/,
+     &                  ''numberofatoms  0'')')
+      IF ( N29 .LE. 0 ) THEN
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU , 18300 )
+        WRITE ( NCAWU , 18300 )
+        WRITE ( CMON, 18300 )
+        CALL XPRVDU(NCVDU, 1,0)
+18300    FORMAT ( 1X , 'No atom details stored in list 29' )
+        GOTO 9900
+      ELSE
+C----- WRITE ATOM INFORMATION
+        IAT=1
+        M29 = L29 + (N29-1)*MD29
+        M3 = L3 + (N3-1)*MD3
+        DO 18390 J = L29, M29, MD29
+          DO 18320 K = L3, M3, MD3
+           IF (ISTORE(J) .EQ. ISTORE(K)) GOTO 18380
+18320      CONTINUE
+18380    CONTINUE
+        WRITE ( CATOM(IAT) , '(A4)') ISTORE(J)
+CAvdLdec06 EDMA wants the second character of an element symbol in lower case
+        CALL XCCLWC ( CATOM(IAT)(2:2), CSOURC(2:2))
+        WRITE(CATOM(IAT)(2:2),'(A1)')CSOURC(2:2)
+        IAT=IAT+1
+18390   CONTINUE
+       IAT=IAT-1
+       IHYD=0
+CAVDLdec06 Don't use hydrogens, because EDMA gets confused
+       cdumf='(''composition '',3A4)'
+       DO I=1,IAT
+       IF (IHYD.EQ.1)CATOM(I-1)=CATOM(I)
+       IF (CATOM(I)(1:1).EQ.'H')IHYD=1
+       END DO
+       IF (IHYD.EQ.1)IAT=IAT-1
+       WRITE(CDUMF(17:17),'(I1)')IAT
+c       write(*,'('' format: '',a21)')cdumf(1:21)
+       WRITE(NCFPU1,CDUMF)(CATOM(I),I=1,IAT)
+      ENDIF
+      WRITE(NCFPU1, '(''maxima all'',/,
+     &                ''fullcell no'',/,
+     &                ''scale fractional'',/,
+     &                  ''plimit    0.0000'',/,
+     &                  ''centerofcharge yes'',/,
+     &                  ''chlimit    0.2500'',/,
+     &                  ''chlimlist    0.1125 relative'',/,
+     &                  ''# End of EDMA-specific keywords'')')
+       WRITE(NCFPU1, '(/,''electrons 0.0000'',/)')
+       WRITE(NCFPU1, '(''fbegin'')')
+       I = 0
+       J= 0
+       K=0
+       FS=0.00000
+       S=0.100000
+       WRITE(NCFPU1, '(3I5, 2F15.3)') I, J, K, FS, S
+C----- LOOP OVER DATA
+      IN = 0
+18409 CONTINUE
+      ISTAT = KLDRNR (IN)
+      IF (ISTAT .LT. 0) GOTO 18509
+      I = NINT(STORE(M6))
+      J = NINT(STORE(M6+1))
+      K = NINT(STORE(M6+2))
+CDJWMAR99[
+      CALL XSQRF(FS, STORE(M6+3), FABS, S, STORE(M6+12))
+      IF ((S .LE. ZERO) .AND. (STORE(M6+20) .GT. ZERO))
+     1 S = ABS(FS) / STORE(M6+20)
+CDJWMAR99]
+       WRITE(NCFPU1, '(3I5, 2F15.3)') I, J, K, FS, S
+      GOTO 18409
+18509 CONTINUE
+       WRITE(NCFPU1, '(''endf'')')
+       GOTO 8000
+CAVDLdec06 --- end superflip input file
+
+C
+C
 1860  CONTINUE
 C     LINK TO WRITE OUTPUT FOR PLATON ---------------------
 C
@@ -675,7 +959,7 @@ C----- OUTPUT A TITLE, FIRST 40 CHARACTERS ONLY
       WRITE(NCFPU1,'(''TITL '',10A4)') (KTITL(I),I=1,10)
       WRITE(NCFPU1, '(''CELL '', F8.5, 3F7.3, 3F8.3)')
      1 STORE(L13DC), (STORE(I),I=L1P1,L1P1+5)
-      WRITE(NCFPU1,1810) NINT(T2), 
+      WRITE(NCFPU1,1810) NINT(T2),
      1 STORE(L31), STORE(L31+6), STORE(L31+11),
      2 RTD*STORE(L31+15),RTD*STORE(L31+18),RTD*STORE(L31+20)
 C----- FIND LATTICE TYPE
@@ -758,7 +1042,7 @@ CDJWMAR99]
       GOTO 1862
 1863  CONTINUE
 C----- END OF DATA - WRITE A BLANK LINE
-      WRITE (NCFPU2,'(/)') 
+      WRITE (NCFPU2,'(/)')
       GOTO 8000
 
 
@@ -800,7 +1084,7 @@ C CALCULATE MATRIX TRANSFORMING FROM CRYSTAL SYSTEM TO BEST PLANE AND BACK
 C TRANSLATE CO-ORDINATES TO PLACE CENTROIDS AT ORIGIN.
 
       CALL XMXTRL (STORE(KNFREE),STORE(ICENT),4,NNH)
- 
+
 C ROTATE GROUPS TO THEIR BEST PLANE AXES.
 
       CALL XMXRTI (STORE(KNFREE),STORE(ICF2BP),4,NNH)
@@ -1542,7 +1826,7 @@ cdjw1999
        IF (IEFORT .EQ. 1) THEN
       WRITE(NCFPU1,1941) CARROW,CARROW,CARROW,CARROW,
      1 CARROW,CARROW,CARROW
-      ELSE IF (IEFORT .EQ. 2) then 
+      ELSE IF (IEFORT .EQ. 2) then
        WRITE(NCFPU1, 1941) ' ', ' ',' ',
      1 ' ',' ',' ',' '
       ELSE IF (IEFORT .EQ. 5) THEN
@@ -1605,7 +1889,8 @@ C
 C----- TIDY UP
 C
 C     SNOOPI, CAMERON, SHELXS86, MULTAN, SIRxx
-      GOTO (8010,8020,8030,9000,8030,8030,8030,8040,8030,8030),ILINK
+      GOTO (8010,8020,8030,9000,8030,8030,8030,8040,8030,8030,8030)
+     &,ILINK
       GOTO 9100
 C
 8010  CONTINUE
@@ -1613,7 +1898,7 @@ C----- SNOOPI - 2 FILES TO CLOSE AND START PROGRAM
       I = KFLCLS(NCFPU1)
       I = KFLCLS(NCFPU2)
 C -- SPAWN SNOOPI
-#if defined(_PPC_) 
+#if defined(_PPC_)
 CS***
       CALL stsnpi
 CE***
@@ -1647,7 +1932,7 @@ C - Could move these to ZCAMER.
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
         CALL ZCAMER ( 1, 0 , 0 , 0)
 #endif
-#if defined(_DOS_) || defined(_WXS_) 
+#if defined(_DOS_) || defined(_WXS_)
         CALL ZCAMER ( 1, 0 , 0 , 0)
 
 #endif
@@ -1661,7 +1946,7 @@ C - Could move these to ZCAMER.
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
          CALL ZCONTR
 #endif
-#if defined(_DOS_) || defined(_WXS_) 
+#if defined(_DOS_) || defined(_WXS_)
          CALL ZCONTR
 #endif
       GOTO 8025
@@ -1669,6 +1954,7 @@ C - Could move these to ZCAMER.
 8030  CONTINUE
 C----- ENSURE THE UNITS ARE CLOSED
       I = KFLCLS(NCFPU1)
+
       GOTO 9000
 
 8040  CONTINUE
@@ -1701,7 +1987,7 @@ C
 C
 9900  CONTINUE
 C -- ERRORS DETECTED
-#if defined(_PPC_) 
+#if defined(_PPC_)
       CALL stcrys
 #endif
       I = KFLCLS(NCFPU1)
@@ -1716,7 +2002,7 @@ C
 C----- RETURNS NEGATIVE IF FAILURE
 C      ILINK - THPE OF FOREIGN PROGRAM
       CHARACTER *256 CPATH
-      PARAMETER (NFILE = 12)
+      PARAMETER (NFILE = 13)
       CHARACTER *16 CFILE(NFILE)
 C
       DIMENSION JFRN(4,2),  LFILE(NFILE)
@@ -1725,14 +2011,16 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XERVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
       DATA CFILE / 'SNOOPI.INI' ,  'SNOOPI.L5' ,
      1             'SHELXS.INS' ,  'SIRDATA.DAT',
      2             'CAMERON.INI' ,  'CAMERON.L5I',
      3             'SIR92.INI', 'SIR97.INI',
      4             'PLATON.RES','PLATON.HKL',
-     5             'CRYSTALS.CON', 'crystals.mol2' /
-      DATA LFILE / 10,  9,  10,  11, 11, 11, 9, 9, 10, 10, 12, 13 /
+     5             'CRYSTALS.CON', 'crystals.mol2' , 'sflip.inflip' /
+C
+      DATA LFILE / 10,  9,  10,  11, 11, 11, 9, 9, 10, 10, 12, 13 , 12 /
 C
       DATA JFRN /'F', 'R', 'N', '1',
      1           'F', 'R', 'N', '2'/
@@ -1742,11 +2030,14 @@ C
       KLOOP = 1
       KLNKIO = -1
       LPATH  = KPATH( CPATH)
-C     SNOOPI, CAMERON, SHELXS86, MULTAN, SIR88, SIR92, SIR97, PLATON,CSD,MOL2
+C     SNOOPI, CAMERON, SHELXS86, MULTAN, SIR88, SIR92, SIR97, PLATON,CSD,MOL2,superflip
 C
 C----- OPEN THE FIRST FILE
       JFILE = 1
-      GOTO ( 110, 120, 130, 140, 150, 160, 170, 180, 190, 195 ), ILINK
+
+      GOTO ( 110, 120, 130, 140, 150, 160, 170, 180, 190, 195 , 196 )
+     &, ILINK
+
 C
 110   CONTINUE
       IFILE = 1
@@ -1781,9 +2072,14 @@ C
 195   CONTINUE
       IFILE=12
       GOTO 1000
+Cavdldec06 added superflip file
+196   CONTINUE
+      IFILE=13
+      GOTO 1000
 C
 C
 1000  CONTINUE
+
       CALL XRDOPN ( 5 , JFRN(1,JFILE) ,
 
 #if !defined(_GIL_) && !defined(_WXS_) && !defined(_MAC_)
@@ -2227,7 +2523,7 @@ C
 CODE FOR GROWFR
       SUBROUTINE GROWFR
 C To be called from a routine that has L5 already loaded, and doesn't
-C care if we extend it. L40 should also be loaded as bonds will be calculated. 
+C care if we extend it. L40 should also be loaded as bonds will be calculated.
       CHARACTER *18 CLAB, CLAB2
       INCLUDE 'XLST05.INC'
       INCLUDE 'XIOBUF.INC'
@@ -2481,7 +2777,7 @@ c      WRITE ( CMON,'(A)') 'Done.'
 C Layer 1 of sym atoms complete. Start on layer 2.
 
 c         WRITE ( CMON,'(A)') 'Seeking 2nd level bonds across sym ops.'
-c         CALL XPRVDU(NCVDU, 1,0)  
+c         CALL XPRVDU(NCVDU, 1,0)
 
 C Move new atoms up and insert existing L5 block.
          IF ( JNEWAT .GT. 0 ) 
@@ -2745,4 +3041,126 @@ C TODO - change L41 pointers.
 
 
 
+      SUBROUTINE XCONFLIP (TXTIN,LIN,TXTOUT1,LOUT1,TXTOUT2,LOUT2,ICEN)
+C
+C-----CONVERT X, Y, Z to x1, x2, x3 and add inversion centre related operations
+C
+C      TXTIN      TEXT OF FRACTIONAL OPERATOR (FROM XSUMOP)
+C      LIN        LENGTH OF TEXT
+C      TXTOUT     TEXT OF DECIMAL OPERATOR
+C      LOUT       LENGTH OF TEXT
+C
+      CHARACTER *(*) TXTIN
+      CHARACTER *(*) TXTOUT1,TXTOUT2
+      CHARACTER *50 CBUFFER
+      CHARACTER *3 CXYZ
+      CHARACTER *6 CX1X2X3
+      CHARACTER *1 CBLANK
+      CHARACTER *10 CNUM
+C
+C
+      DATA CNUM / '1234567890' /
+      DATA CXYZ / 'XYZ'/
+      DATA CX1X2X3 / 'x1x2x3'/
+      DATA CBLANK /' '/
+C
+C----- CLEAR BUFFER
+      TXTOUT1 = ' '
+      TXTOUT2 = ' '
+      LOUT1 = LIN
+      CBUFFER=TXTIN
+      I=1
+C
+1000  CONTINUE
+        JSIGN = INDEX(CBUFFER,CXYZ(I:I))
+        IF (JSIGN.EQ.0) THEN
+         GOTO 1001
+        ENDIF
+        IF (JSIGN.GT.1)THEN
+          WRITE(TXTOUT1(1:JSIGN-1),'(A)')CBUFFER(1:JSIGN-1)
+        ENDIF
+        WRITE(TXTOUT1(JSIGN:JSIGN+1),'(A2)')CX1X2X3(I*2-1:I*2)
+        IF (JSIGN.LT.LIN+I-1)THEN
+         WRITE(TXTOUT1(JSIGN+2:LOUT1+I),'(A)')
+     &         CBUFFER(JSIGN+1:LOUT1+I-1)
+        ENDIF
+        CBUFFER=TXTOUT1
+        LOUT1=LOUT1+1
+c        write(*,'(3x,a)')txtout1(1:LOUT1)
+       GOTO 1000
+C- the centrosymmetric part if it exists
+ 1001 I=I+1
+      IF (I.LT.4) GOTO 1000
+      IU=1
+      LOUT2=LOUT1
+      CBUFFER=TXTOUT1
+      IF (ICEN.GT.0)THEN
+ 1002    JSIGN = INDEX(CBUFFER(IU:LOUT2),'x')+IU-1
+         ITEL=1
+         IF (JSIGN.EQ.IU-1) GOTO 1003
+           IF (JSIGN.EQ.1) THEN
+             TXTOUT2(1:2)='-x'
+             TXTOUT2(3:LOUT2+1)=CBUFFER(JSIGN+1:LOUT2)
+             LOUT2=LOUT2+1
+             ITEL=2
+           ELSE
+             IF (CBUFFER(JSIGN-1:JSIGN-1).EQ.'+')THEN
+               TXTOUT2(1:JSIGN)=CBUFFER(1:JSIGN)
+               TXTOUT2(JSIGN-1:JSIGN-1)='-'
+               TXTOUT2(JSIGN+1:LOUT2)=CBUFFER(JSIGN+1:LOUT2)
+             ENDIF
+             IF (CBUFFER(JSIGN-1:JSIGN-1).EQ.'-')THEN
+               TXTOUT2(1:JSIGN)=CBUFFER(1:JSIGN)
+               TXTOUT2(JSIGN-1:JSIGN-1)='+'
+               TXTOUT2(JSIGN+1:LOUT1)=CBUFFER(JSIGN+1:LOUT2)
+             ENDIF
+             IF (CBUFFER(JSIGN-1:JSIGN-1).EQ.CBLANK)THEN
+               TXTOUT2(1:JSIGN-1)=CBUFFER(1:JSIGN-1)
+               TXTOUT2(JSIGN:JSIGN)='-'
+               TXTOUT2(JSIGN+1:LOUT2+1)=CBUFFER(JSIGN:LOUT2)
+               LOUT2=LOUT2+1
+               ITEL=2
+             ENDIF
+          ENDIF
+          IU=JSIGN+ITEL
+          CBUFFER=TXTOUT2
+c          write(*,'(3x,a)')txtout2(1:LOUT2)
+          IF (IU.LT.LOUT2) GOTO 1002
+ 1003 CONTINUE
+
+C---- CHeck for fractions which have to be inverted
+      IU=1
+ 1004  JSIGN = INDEX(CBUFFER(IU:LOUT2),'/')+IU-1
+        IF (JSIGN.EQ.IU-1) GOTO 1005
+        IF((CBUFFER(JSIGN+1:JSIGN+1).EQ.'3').AND.
+     &     (CBUFFER(JSIGN-1:JSIGN-1).EQ.'1'))
+     &   WRITE(TXTOUT2(JSIGN-1:JSIGN-1),'(A1)')
+     &         CNUM(2:2)
+        IF((CBUFFER(JSIGN+1:JSIGN+1).EQ.'3').AND.
+     &     (CBUFFER(JSIGN-1:JSIGN-1).EQ.'2'))
+     &   WRITE(TXTOUT2(JSIGN-1:JSIGN-1),'(A1)')
+     &         CNUM(1:1)
+        IF((CBUFFER(JSIGN+1:JSIGN+1).EQ.'4').AND.
+     &     (CBUFFER(JSIGN-1:JSIGN-1).EQ.'1'))
+     &   WRITE(TXTOUT2(JSIGN-1:JSIGN-1),'(A1)')
+     &         CNUM(3:3)
+        IF((CBUFFER(JSIGN+1:JSIGN+1).EQ.'4').AND.
+     &     (CBUFFER(JSIGN-1:JSIGN-1).EQ.'3'))
+     &   WRITE(TXTOUT2(JSIGN-1:JSIGN-1),'(A1)')
+     &         CNUM(1:1)
+        IF((CBUFFER(JSIGN+1:JSIGN+1).EQ.'6').AND.
+     &     (CBUFFER(JSIGN-1:JSIGN-1).EQ.'1'))
+     &   WRITE(TXTOUT2(JSIGN-1:JSIGN-1),'(A1)')
+     &         CNUM(5:5)
+        IF((CBUFFER(JSIGN+1:JSIGN+1).EQ.'6').AND.
+     &     (CBUFFER(JSIGN-1:JSIGN-1).EQ.'5'))
+     &   WRITE(TXTOUT2(JSIGN-1:JSIGN-1),'(A1)')
+     &         CNUM(1:1)
+       IU=JSIGN+1
+       IF (IU.LT.LOUT2) GOTO 1004
+      ENDIF
+ 1005 CONTINUE
+c      write(*,'(3x,a)')txtout2(1:LOUT2)
+      RETURN
+      END
 
