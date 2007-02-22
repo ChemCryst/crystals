@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.79  2006/11/30 08:34:13  djw
+C Remove h-bonds if D-H .gt. 1.2
+C
 C Revision 1.78  2006/11/24 18:04:52  djw
 C Improve layout of low level listing so that it can be pulled into Excel
 C
@@ -1384,16 +1387,18 @@ C----- INITIALIZE BUFFER
          IF (IPUNCH .EQ. 3) THEN
 cdjwsep06 find unique H atoms
           j = 1+(js-nflbas)/nw
-          j1 = nint(store(istore(nflbas)+1))
-          j2 = nint(store(istore(nflbas+nw)+1))
-          j3 = nint(store(istore(nflbas+2*nw)+1))
           if (j .eq. 3) then
+           j1 = nint(store(istore(nflbas)+1))
+           j2 = nint(store(istore(nflbas+nw)+1))
+           j3 = nint(store(istore(nflbas+2*nw)+1))
            if ((j3 .eq. j2) .or. (j3 .eq. j1))     then
            j = j-1
            js = js-nw
            endif
           endif
           if(j .eq. 2) then
+           j1 = nint(store(istore(nflbas)+1))
+           j2 = nint(store(istore(nflbas+nw)+1))
            if (j2 .eq. j1) then
            j = j-1
            js = js-nw
