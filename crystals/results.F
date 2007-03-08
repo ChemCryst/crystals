@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.115  2006/12/05 12:37:33  arie
+C Adding Superflip, Sir2002, Sir2004 to structure solution package list in CIF goodies
+C
 C Revision 1.114  2006/12/04 15:22:18  arie
 C *** empty log message ***
 C
@@ -4549,7 +4552,7 @@ C ----- DISPLAY SPACE GROUP SYMBOL
          CALL XCTRIM (CBUF,J)
          WRITE (CLINE,950) CBUF(1:J)
 950      FORMAT ('_symmetry_space_group_name_H-M',T35,'''',A,'''')
-951      FORMAT ('_symmetry_space_group_name_Hall',T35,'''?''')
+951      FORMAT ('_symmetry_space_group_name_Hall',T35,'?')
 CRicMay99 Changed 10X to 1X: CPAGE is only 35 chars wide so it is
 C         easy to overflow with eg. 17 character spacegroup symbols.
 C         This will spoil the formatting. Maybe it would be better
@@ -5805,12 +5808,7 @@ C
              WRITE (NCFPU1,
      1      '(''# well as the _gt R-factors:'')')
            END IF
-CDJWNOV06
-#if  !defined(_LIN_) 
-           WRITE(CBUF,'(''I>'',F6.1,''\\s(I)'')') STORE(L30CF+0)
-#else
            WRITE(CBUF,'(''I>'',F6.1,''\s(I)'')') STORE(L30CF+0)
-#endif
            CALL XCRAS (CBUF,NCHAR)
            WRITE (NCFPU1,'(''_reflns_threshold_expression '',T35,A)')
      1     CBUF(1:NCHAR)
