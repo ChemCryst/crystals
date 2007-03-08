@@ -1,121 +1,122 @@
-%SCRIPT XGUIDERC
-%  VARIABLE INTEGER SETADP
-%  VARIABLE LOGICAL REFREQD DOEXTNC
-%  VARIABLE LOGICAL VALIDPASS VALIDFAIL VALIDCYCLE VALIDWEIGHT
-%%
-%% Set refreqd before calling XGUIDE at the end, if you want it
-%% to recommend a few cycles of refinement (if appropriate).
-%%
-%  VERIFY GR_BOK GR_BXX GR_BHELP GR_BRESET
-%  GET SILENT NOSTORE ABBREVIATED 'Continue?' 'GR_BXX'
-%  CASE VALUE
-%    BLOCK  %BOK%
-^^?? _XG_LIST SELECTED
+%SCRIPT XGUIDERC                                                                
+%  VARIABLE INTEGER SETADP                                                      
+%  VARIABLE LOGICAL REFREQD DOEXTNC                                             
+%  VARIABLE LOGICAL VALIDPASS VALIDFAIL VALIDCYCLE VALIDWEIGHT 
+%  variable integer idjwtemp                 
+%%                                                                              
+%% Set refreqd before calling XGUIDE at the end, if you want it                 
+%% to recommend a few cycles of refinement (if appropriate).                    
+%%                                                                              
+%  VERIFY GR_BOK GR_BXX GR_BHELP GR_BRESET                                      
+%  GET SILENT NOSTORE ABBREVIATED 'Continue?' 'GR_BXX'                          
+%  CASE VALUE                                                                   
+%    BLOCK  %BOK%                                                               
+^^?? _XG_LIST SELECTED                                                          
 %      GET SILENT NOSTORE INTEGER 'Choice number'
-%      CASE VALUE
-%%
-%        BLOCK % KSVIEW 1
-%          COPY '#SCRIPT PLOT'
-%        END BLOCK
-%%
-%        BLOCK % KSFOUR 2
-%          COPY '#SCRIPT XAFOUR'
-%        END BLOCK
-%%
-%        BLOCK % KSLSQ1 3
-%          EVALUATE SETADP = 1
-%          COPY '#SCRIPT XWRITE5'
-%        END BLOCK
-%%
-%        BLOCK % KSLSQ2 4
-%          COPY '#EDIT'
-%          COPY 'MONITOR OFF'
-%% Just in case we get here from aniso
-%          COPY 'UEQUIV FIRST UNTIL LAST'
-%          COPY 'MONITOR MEDIUM'
-%          COPY 'END'
-%          EVALUATE SETADP = 2
-%          COPY '#SCRIPT XWRITE5'
-%        END BLOCK
-%%
-%        BLOCK % KSLSQ3 5
-%          EVALUATE SETADP = 3
-%          COPY '#SCRIPT XWRITE5'
-%        END BLOCK
-%%
-%        BLOCK % KSHYDR 6
-%          VARIABLE LOGICAL XGRETURN
-%          EVALUATE XGRETURN = TRUE
-%          COPY '#SCRIPT GFINDH'
-%% GFINDH drops back to control (direct) so don't
-%% put anything else useful within this block!
-%        END BLOCK
-%%
-%        BLOCK % KSEXTN 7
-%          COPY '#SCRIPT XEXTIN12'
-%          IF ( DOEXTNC ) THEN
-%            EVALUATE SETADP = 3
-%            COPY '#SCRIPT XWRITE5'
-%          END IF
-%        END BLOCK
-%%
-%        BLOCK % KSWEIG 8
-%          COPY '#SCRIPT XWEIGHTS'
-%          EVALUATE REFREQD = TRUE
-%        END BLOCK
-%%
-%        BLOCK % n-CYCLES 9
-%          COPY '#SCRIPT XNCYCLES'
-%        END BLOCK
-%%
-%        BLOCK % 6-CYCLES 10
-%          COPY '#SCRIPT SIXCYCLE'
-%        END BLOCK
-%%
-%        BLOCK % VALIDATE 11
-%          COPY '#SCRIPT ACTA'
-%        END BLOCK
-%%
-%        BLOCK % PUBLISH 12
-%          COPY '#SCRIPT XPUBL'
-%          FINISH
-%        END BLOCK
-%%
-%        BLOCK % FOURPEAKS 13
-%          COPY '#PEAKS'
-%          COPY '#COLLECT'
-%          COPY 'END'
-%        END BLOCK
-%%
-%      END CASE
-%    END BLOCK
-%%
-%%
-%    BLOCK  %BXX%
-^^WI   DISPOSE XGUIDER
-^^CR
-%      FINISH
-%    END BLOCK
-%%
-%%
-%    BLOCK  %BHELP%
-%      COPY '#SCRIPT XHELP12'
-%      GET SILENT NOSTORE TEXT ' ' ' '
-%    END BLOCK
-%%
-%%
-%    BLOCK %BRESET%
-%      COPY '#SCRIPT XGUIDEK'
-%    END BLOCK
-%%
-%  END CASE
-%%
-%%
-%%
-%%
-%%
-%%
-%% Back to the GUIDE:
-%%
-%  COPY '#SCRIPT XGUIDE'
-%END SCRIPT
+%% evaluate idjwtemp = value
+%% show idjwtemp                
+%      CASE VALUE                                                               
+%%                                                                              
+%        BLOCK % KSVIEW 1                                                       
+%          COPY '#SCRIPT PLOT'                                                  
+%        END BLOCK                                                              
+%%                                                                              
+%        BLOCK % KSFOUR 2                                                       
+%          COPY '#SCRIPT XAFOUR'                                                
+%        END BLOCK                                                              
+%%                                                                              
+%        BLOCK % KSLSQ1 3                                                       
+%          EVALUATE SETADP = 1                                                  
+%          COPY '#SCRIPT XWRITE5'                                               
+%        END BLOCK                                                              
+%%                                                                              
+%        BLOCK % KSLSQ2 4                                                       
+%          COPY '#EDIT'                                                         
+%          COPY 'MONITOR OFF'                                                   
+%% Just in case we get here from aniso                                          
+%          COPY 'UEQUIV FIRST UNTIL LAST'                                       
+%          COPY 'MONITOR MEDIUM'                                                
+%          COPY 'END'                                                           
+%          EVALUATE SETADP = 2                                                  
+%          COPY '#SCRIPT XWRITE5'                                               
+%        END BLOCK                                                              
+%%                                                                              
+%        BLOCK % KSLSQ3 5                                                       
+%          EVALUATE SETADP = 3                                                  
+%          COPY '#SCRIPT XWRITE5'                                               
+%        END BLOCK                                                              
+%%                                                                              
+%        BLOCK % KSHYDR 6                                                       
+%          VARIABLE LOGICAL XGRETURN                                            
+%          EVALUATE XGRETURN = TRUE                                             
+%          COPY '#SCRIPT GFINDH'                                                
+%% GFINDH drops back to control (direct) so don't                               
+%% put anything else useful within this block!                                  
+%        END BLOCK                                                              
+%%                                                                              
+%        BLOCK % KSEXTN 7                                                       
+%          COPY '#SCRIPT XEXTIN12'                                              
+%          IF ( DOEXTNC ) THEN                                                  
+%            EVALUATE SETADP = 3                                                
+%            COPY '#SCRIPT XWRITE5'                                             
+%          END IF                                                               
+%        END BLOCK                                                              
+%%                                                                              
+%        BLOCK % KSWEIG 8                                                       
+%          COPY '#SCRIPT XWEIGHTS'                                              
+%          EVALUATE REFREQD = TRUE                                              
+%        END BLOCK                                                              
+%%                                                                              
+%        BLOCK % n-CYCLES 9                                                     
+%          COPY '#SCRIPT XNCYCLES'                                              
+%        END BLOCK                                                              
+%%                                                                              
+%        BLOCK % 6-CYCLES 10                                                    
+%          COPY '#SCRIPT SIXCYCLE'                                              
+%        END BLOCK                                                              
+%%                                                                              
+%        BLOCK % VALIDATE 11                                                    
+%          COPY '#SCRIPT ACTA'                                                  
+%        END BLOCK                                                              
+%%                                                                              
+%        BLOCK % PUBLISH 12                                                     
+%          COPY '#SCRIPT XPUBL'                                                 
+%          FINISH                                                               
+%        END BLOCK                                                              
+%%                                                                              
+%        BLOCK % H-ref 13                                                   
+%          COPY '#SCRIPT GXREFH'
+%        END BLOCK                                                              
+%%                                                                              
+%      END CASE                                                                 
+%    END BLOCK                                                                  
+%%                                                                              
+%%                                                                              
+%    BLOCK  %BXX%                                                               
+^^WI   DISPOSE XGUIDER                                                          
+^^CR                                                                            
+%      FINISH                                                                   
+%    END BLOCK                                                                  
+%%                                                                              
+%%                                                                              
+%    BLOCK  %BHELP%                                                             
+%      COPY '#SCRIPT XHELP12'                                                   
+%      GET SILENT NOSTORE TEXT ' ' ' '                                          
+%    END BLOCK                                                                  
+%%                                                                              
+%%                                                                              
+%    BLOCK %BRESET%                                                             
+%      COPY '#SCRIPT XGUIDEK'                                                   
+%    END BLOCK                                                                  
+%%                                                                              
+%  END CASE                                                                     
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%% Back to the GUIDE:                                                           
+%%                                                                              
+%  COPY '#SCRIPT XGUIDE'                                                        
+%END SCRIPT                                                                     
