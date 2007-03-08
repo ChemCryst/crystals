@@ -7352,6 +7352,8 @@ are only going to be calculated.
  SUM               E.S.D  FOR 'PARAMETER SPECIFICATIONS'
  AVERAGE           E.S.D  FOR 'PARAMETER SPECIFICATIONS'
  SAME       BOND-ESD ANGLE-ESD FOR GROUP-1 AND GROUP-2 AND ...       
+ DELU       ADP-ESD  GROUP-1 (AND GROUP-2 AND ...)       
+ SIMU       ADP-ESD  GROUP-1 (AND GROUP-2 AND ...)       
  RESTRAIN   VALUE, E.S.D= TEXT
  DEFINE NAME = TEXT
  COMPILER
@@ -7652,14 +7654,15 @@ are only going to be calculated.
  with an e.s.d. of 'E.S.D.'.
  The parameters are as for the 'SUM' directive above.
 #
-# SAME BOND-ESD ANGLE-ESD FOR GRUOP-1 AND GROUP-2 AND ...#
- The first group on the card is the 'target'
+#
+#DSAME BOND-ESD ANGLE-ESD FOR GROUP-1 AND GROUP-2 AND ...#
+ The first group on the card is the 'target' - 
  all following groups are mapped onto it (in order specified) and the distances and
  angles restrained - using the connectivity of the first group.
 #
  The first two arguments are the e.s.d for bond length restraints and the e.s.d
  for angle restraints. Groups are seperated by the word 'AND'.
- NOTE the andence of the usual '=' sign.
+ NOTE the absence of the usual '=' sign.
  I.E:
 #J
  SAME 0.01, 0.1 FOR RESI(1) AND RESI(2)
@@ -7697,6 +7700,74 @@ are only going to be calculated.
  The second e.s.d is optional, the default is 0.1 degrees.
  The first e.s.d is optional unless you wish to specify the second, the
  default is 0.01 Angstroms.
+#
+ List 41 (bonds) is loaded by the restraint generating routine, if it
+ does not exist an error will occur. (By default L41 is kept up to date
+ with the current model.)
+#
+#DDELU ADP-ESD  FOR GROUP-1 (AND GROUP-2 AND ...)#
+ The adps of all pairs of bonded atoms in each group are restrained
+ to be equal in the direction of the bond.  Unlike SAME, a single
+ group can be given.
+#
+ The first argument is the e.s.d for adp-restraint,  
+ I.E:
+#J
+ DELU 0.01, 0.1 FOR RESI(1) AND RESI(2)
+#
+   Restrains the adps of all pairs on bonded atoms in RESIDUE(1) and 
+ (2). Note that
+   although this shorthand is appealing, the order of resi(1) and resi(2)
+   must be identical in List 5, although the residues may interpenetrate.
+
+#
+#P Errors are generated if
+   1) the size of any of the groups on the DELU card is not the
+      same as the first group.
+   2) the element type in a group does not match the corresponding
+      element type in the first group.
+#
+ Warnings are printed if there are zero bonds to any of the atoms
+ in the first group.
+#
+ The  'FOR' separating the
+ e.s.d.s from the atom specifications is optional.
+ The first e.s.d is optional, the
+ default is 0.01 Angstroms.
+#
+ List 41 (bonds) is loaded by the restraint generating routine, if it
+ does not exist an error will occur. (By default L41 is kept up to date
+ with the current model.)
+#
+#DSIMU ADP-ESD  FOR GROUP-1 (AND GROUP-2 AND ...)#
+ The adps of all pairs of bonded atoms in each group are restrained
+ to be similar.  Unlike SAME, a single
+ group can be given.
+#
+ The first argument is the e.s.d for adp-restraint. 
+ I.E:
+#J
+ SIMU 0.01, 0.1 FOR RESI(1) AND RESI(2)
+#
+   Restrains the adps of all pairs on bonded atoms in RESIDUE(1) and 
+ (2). Note that
+   although this shorthand is appealing, the order of resi(1) and resi(2)
+   must be identical in List 5, although the residues may interpenetrate.
+
+#
+#P Errors are generated if
+   1) the size of any of the groups on the DELU card is not the
+      same as the first group.
+   2) the element type in a group does not match the corresponding
+      element type in the first group.
+#
+ Warnings are printed if there are zero bonds to any of the atoms
+ in the first group.
+#
+ The  'FOR' separating the
+ e.s.d.s from the atom specifications is optional.
+ The first e.s.d is optional, the
+ default is 0.04 Angstroms.
 #
  List 41 (bonds) is loaded by the restraint generating routine, if it
  does not exist an error will occur. (By default L41 is kept up to date
@@ -10269,7 +10340,7 @@ file.
  If hydrogen atom restraints are being generated, the following target 
 values are used:
 #J
-No H   No #H  U mult   dist
+No.H  No.H   U mult     dist
 C-H
 >4            1.5      .96 disorder
 1      1      1.2      .93 C C-H (acetylene)
@@ -10773,7 +10844,7 @@ the surface.
 #Q
 #DPUNCH#
 #PThis directive causes the orthogonal coordinates of the atoms of any plane or
- line computed or EVALUATED in the current task to be output to the 'punch'
+ line computed or EVALUATED in subsequent tasks to be output to the 'punch'
  file. For a TLS calculation, it causes  a restraint list to be output 
  to TLSREST.DAT
 #Q
