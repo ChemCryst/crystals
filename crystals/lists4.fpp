@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:08  rich
 C New CRYSTALS repository
 C
@@ -1618,8 +1622,8 @@ C----- EVERYTHING FRACTIONAL
       M=-1
       CALL XMVSPD(M, ISTORE(L33ST),N)
 C----- NOW A FEW MAXIMAL
-      M=0
-      CALL XMVSPD(M, ISTORE(L33ST+4),11)
+cdjwdec06      M=0
+cdjwdec06      CALL XMVSPD(M, ISTORE(L33ST+4),11)
 C--SET THE FLAGS FOR THE SHIFT VALUES RECORD
       CALL XDIRFL(NSHIFT,ICOM33,IDIM33)
 C--CREATE A DATA RECORD FOR THIS DIRECTIVE
@@ -1638,13 +1642,10 @@ C----- UNITY FOR FRACTIONAL
       A=1.
       CALL XMVSPF(A,STORE(L33SV),N)
 C----- CONVENTIONAL UNITS FOR MAXIMAL
-      STORE(L33SV+4)=1.
-      STORE(L33SV+5)=0.05
-      CALL XMVSPF(1.,STORE(L33SV+6),3)
-      CALL XMVSPF(.05,STORE(L33SV+9),6)
-C
-C
-C
+cdjwdec06      STORE(L33SV+4)=1.
+cdjwdec06      STORE(L33SV+5)=0.05
+cdjwdec06      CALL XMVSPF(1.,STORE(L33SV+6),3)
+cdjwdec06      CALL XMVSPF(.05,STORE(L33SV+9),6)
 C
 C--SET THE FLAGS FOR THE CYCLE CONTROL RECORD
       CALL XDIRFL(NREFNE,ICOM33,IDIM33)

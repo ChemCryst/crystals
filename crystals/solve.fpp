@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.34  2006/11/10 08:38:46  djw
+C Remove old debugging print
+C
 C Revision 1.33  2006/08/02 06:20:31  djw
 C Ensure that partial shifts are applied to Du[iso] corections
 C
@@ -115,6 +118,8 @@ C  1  NUMBER OF PARAMETERS REFINED IN THIS GROUP
 C  2  SUM OF THE CALCULATED SHIFTS
 C  3  SUM OF THE CALCULATED SHIFTS SQUARED
 C  4  NUMBER OF CHANGES OF SIGN COMPARED WITH THE LAST CYCLE
+c  5  MAX SHIFT
+C  6  RMS (SHIFT/ESD)
 C
 C--THIS IS REPEATED FOR THE FOLLOWING GROUPS :
 C
@@ -197,8 +202,8 @@ C
       INCLUDE 'QLST33.INC'
 C
 C
-C
-      DATA MW/6/
+C---- no of words in summary stack
+      DATA MW/7/
 C
 C----- SET THE PRINT THRESHOLDS
       DATA RMAX/3./, SOESD/1./, CCOEF/.8/
@@ -209,7 +214,7 @@ C      DATA RMSSM/ 0.3/
      1 'Min function'/
 
 C
-      DATA IVERSN /404/
+      DATA IVERSN /410/
 C
 C
 C--INITIALISE THE TIMING FUNCTION
@@ -226,6 +231,15 @@ C--LOAD THE CONTROL LISTS
       INCLUDE 'IDIM33.INC'
       CALL XFAL33
       IF ( IERFLG .LT. 0 ) GO TO 9900
+cdjwdec06 - save the sparsity flag. 0=sparse
+      ispar = istore(m33cd+13)
+cdjwdec06 - save the last r-factor
+      rlast = store(l30rf)
+C--LOAD A FEW MORE LISTS
+      CALL XFAL01
+      CALL XFAL05
+      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30
+c
 C--PRINT OUT THE PAGE HEADING
       CALL XPRTCN
       I=NINT(STORE(M33V))
@@ -265,6 +279,12 @@ C--SET UP THE SHIFT AREA
       NMW=MD33ST-1
       JC=KCHLFL(MW*NMW)
       JD=JC+(NMW-1)*MW
+cdec06
+         if (ispar .eq.0) then
+c-----    set general shift to 0.8 for sparse build
+          store(m33sv)=min(store(m33sv), 0.8)
+         endif
+c
 C--FIND THE POINTERS TO THE SHIFT INFORMATION
       JA=M33ST+1
       JB=M33SV+1
@@ -276,10 +296,16 @@ C--SET UP THE PARAMETER GROUP SHIFT LOCATIONS
          STORE(I+3)=0.
          STORE(I+4)=0.
          STORE(I+5) = 0.
+         store(i+6) = 0.
 C--CHECK IF A SHIFT FACTOR HAS BEEN GIVEN IN LIST 33
          IF(ISTORE(JA))1050,1100,1100
 C--MOVE THE SHIFT FACTOR FROM LIST 33
 1050     CONTINUE
+cdec06
+         if (ispar .eq.0) then
+c-----    set maximal shift to 0.8 for sparse build
+          store(jb)=min(store(jb), 0.8)
+         endif
          STORE(I)=STORE(JB)
 C--INCREMENT THE POINTERS
 1100     CONTINUE
@@ -287,9 +313,6 @@ C--INCREMENT THE POINTERS
          JB=JB+1
 1150  CONTINUE
 C
-C--LOAD A FEW MORE LISTS
-      CALL XFAL01
-      CALL XFAL05
       IF (METHOD .EQ. 1) THEN
         IF (ISSPRT .EQ. 0) WRITE(NCWU,1151)  AUGFAC, FILTER, DISCRM
 1151    FORMAT(1X, ' Eigen filters ', 3(G10.4,3X) )
@@ -497,7 +520,7 @@ c            str11(jdjw) = STR11(IDJW)
 c            IDJW = IDJW + JY - I + 1
 c            jdjw=jdjw+1
 2051     CONTINUE 
-C        call outv(str11(iscl),jy)
+c        call outv(str11(iscl),jy)
 CDJW-OCT-05
 
    
@@ -569,6 +592,22 @@ C
             S=0.0
             C=0.
 C----- LOOK FOR PATAMETER 'JT'
+C      JT            ABSOLUTE L.S. PARAMETER NO.
+C      JS            PHYSICAL PARAMETER NO FROM WHICH TO START SEARCH
+C      JR            SINGULARITY SYMBOL
+C      JO            SHIFT ADDRESS
+C      JX            RELATIVE PARAMETER NO
+C      JC            SHIFT DETAILS ADDRESS
+C      JQ            ADDRESS IN LIST 11
+C      JZ             BLOCK NUMBER
+C      ICAPT          CAPTION FLAG
+C      E             SIG W DELSQ / N-M
+C      C             SHIFT RATIO
+C      A             ESD
+C      S             SHIFT/ESD
+C      ILEVEL        MONITORING LEVEL
+C      MW            NO OF ITEMS PER ENTRY IN SHIFT DETAILS
+c
             IHIT = KFLSP (JT, JS, JR, JO, JX, JC, JQ, JZ, ICAPT,
      1                   E, C, A, S, RMAX, SOESD, ILEVEL, MW, CTEXT)
             IF (IHIT .EQ. 0) GOTO  3450
@@ -668,6 +707,7 @@ C-C-C-RING (---> SHIFT OF AZIMUTH OF RINGNORMAL)
             STORE(JD+2)=STORE(JD+2)+STORE(JO)
             STORE(JD+3)=STORE(JD+3)+STORE(JO)*STORE(JO)
             STORE(JD+5) = AMAX1(STORE(JD+5), ABS(STORE(JO)) )
+            store(jd+6)=store(jd+6)+s*s
 C--CHECK IF THE SIGN HAS CHANGED COMPARED WITH THE LAST CYCLE
             IF(C)3350,3400,3400
 C--THE SIGN HAS CHANGED
@@ -699,8 +739,10 @@ C--CHANGE TO THE NEXT BLOCK - UPDATE DISK ADDRESSES
       end if
 C--PRINT THE OVERALL STATISTICS
       ICONVG = 0
+c save sum of squares
+      sssr = f
       IF (ISSPRT .EQ. 0) WRITE(NCWU,3550) F
-
+c
 3550  FORMAT( 
      1 ' Sum of the squares of the ratio',' (Shift/e.s.d.) =',F16.4)
 C
@@ -934,17 +976,82 @@ C----- MAXIMUM SHIFT/ESD
 C--OUTPUT THE INFORMATION FOR THE CALCULATED SHIFTS
       IF (ISSPRT .EQ. 0) WRITE(NCWU,4500)
 4500  FORMAT(////,' Calculated shifts')
-C--COMPUTE THE TOTALS TO BE PRINTED
+c shift info is held at m33sv+ and JC+
+c j    0 = general
+c      1 = overall  = JC
+c      4 = occ      = JC+3mw  = JE
+c      5 = Uiso     = Jc+4mw
+c      6 = x        = JC+5mw
+c      9 = U11      = JC+8mw
+c
+c----- find average adp and position
+c      reversals and s/esd
+      ovrtms=0.
+      ovrrev=0.
+      ovrsoe=0.
+      adptms=0.
+      adprev=0.
+      adpsoe=0.
+      xyztms=0.
+      xyzrev=0.
+      xyzsoe=0.
+C--COMPUTE THE mean TOTALS TO BE PRINTED
       Y=0.
       Z=0.
+      j = 0
       DO 4550 I=JC,JD,MW
+      j = j + 1
+      terms = store(i+1)
+         select case(j)
+            case(1)
+c  overall
+              ovrtms = ovrtms+terms
+              ovrsoe = ovrsoe +store(i+6)
+            case(5,9,10,11)
+c  adp
+              adptms=adptms+terms
+              adpsoe=adpsoe+store(i+6)            
+            case(6,7,8)
+c   xyz
+              xyztms=xyztms+terms
+              xyzsoe=xyzsoe+store(i+6)            
+         end select
+c
+c      check no of reversals is valid
+       if (store(i+4) .gt. zero) then
+         select case(j)
+            case(5,9,10,11)
+c  adp
+              adprev=adprev+store(i+4)            
+            case(6,7,8)
+c   xyz
+              xyzrev=xyzrev+store(i+4)            
+         end select
+       endif
       Y=Y+STORE(I+1)
+      Z=Z+STORE(I+4)
       STORE(I+1)=1./AMAX1(STORE(I+1),1.)
       STORE(I+2)=STORE(I+2)*STORE(I+1)
       STORE(I+3)=SQRT(STORE(I+3)*STORE(I+1))
-      Z=Z+STORE(I+4)
       STORE(I+4)=STORE(I+4)*STORE(I+1)*100.
+      store(i+6)=SQRT(STORE(I+6)*STORE(I+1))
 4550  CONTINUE
+c
+c      write(ncwu,'(3(a,g16.4))')'adptms',adptms,' xyztms',xyztms,
+c     1 ' ovrtms',ovrtms 
+c      write(ncwu,'(3(a,g16.4))')'adpsoe',adpsoe,' xyzsoe',xyzsoe,
+c     1 ' ovrsoe',ovrsoe 
+      ovrsoe=sqrt(ovrsoe/max(1.,ovrtms))
+      adpsoe=sqrt(adpsoe/max(1.,adptms))
+      xyzsoe=sqrt(xyzsoe/max(1.,xyztms))
+      adprev=100. * adprev/max(1.,adptms)
+      xyzrev=100. * xyzrev/max(1.,xyztms)
+c      write(ncwu,'(3(a,g16.4))')'adpsoe',adpsoe,' xyzsoe',xyzsoe,
+c     1 ' ovrsoe',ovrsoe 
+c      write(ncwu,'(3(a,g16.4))')'adprev',adprev,' xyzrev',xyzrev,
+c     1 ' ovrrev',ovrrev 
+c
+c
 C--CONVERT THE MEAN, RMS AND MAX POSN. COORDS. TO ANGSTROM
       JF=JC+5*MW
       JG=L1P1
@@ -959,29 +1066,35 @@ C--CONVERT THE MEAN, RMS AND MAX POSN. COORDS. TO ANGSTROM
 C--PRINT THE RESULTS
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,4650)
-      WRITE(NCWU,4651)STORE(JC+2),(STORE(I+2),I=JE,JC+13*MW,MW),
-     2 (A1(I),I=1,3),
-     3 STORE(JC+3),(STORE(I+3),I=JE,JC+13*MW,MW),(A1(I),I=4,6)
 4650  FORMAT(
      1 /13X,'Overall',4X,'Occ',5X,'U[iso]',4X,'X',8X,'Y',8X,'Z',
      2 7X,'U[11]',4X,'U[22]',4X,'U[33]',4X,'U[23]',4X,'U[13]',4X,
      3 'U[12]'//)
+c
+      WRITE(NCWU,4651)STORE(JC+2),(STORE(I+2),I=JE,JC+13*MW,MW),
+     2 (A1(I),I=1,3),
+     3 STORE(JC+3),(STORE(I+3),I=JE,JC+13*MW,MW),(A1(I),I=4,6)
 4651  FORMAT(' Mean      ',12F9.5
      5 /           38X,3F9.5
      6 //' R.M.S.    ',12F9.5
      7 /           38X,3F9.5)
+c
+      WRITE(NCWU,4653) STORE(JC+6),(STORE(I+6),I=JE,JC+13*MW,MW)
+4653  FORMAT(/' RMS sh/esd',12F9.5,
+     1 /           38X,3F9.5)
+c
       WRITE(NCWU,4660) STORE(JC+5),(STORE(I+5),I=JE,JC+13*MW,MW),
      1 (B1(I),I=1,3)
-      ENDIF
 4660  FORMAT(/' Maximum   ',12F9.5,
      1 /           38X,3F9.5)
+      ENDIF
 C--CHECK IF WE MUST PRINT THE SIGN CHANGE INFORMATION
       IF(M24)4800,4800,4700
 4700  CONTINUE
       Z=Z/Y*100.
       IF (ISSPRT .EQ. 0) THEN
-C      WRITE(NCWU,4750)STORE(JC+4),(STORE(I+4),I=JE,JD,MW),Z
-      WRITE(NCWU,4750)STORE(JC+4),(STORE(I+4),I=JE,JC+13*MW,MW)
+c      WRITE(NCWU,4750)STORE(JC+4),(STORE(I+4),I=JE,JD,MW),Z
+      WRITE(NCWU,4750)STORE(JC+4),(STORE(I+4),I=JE,JC+13*MW,MW),z
       ENDIF
 c      WRITE(CMON,'(''Shift Reversals'')')
 c      CALL XPRVDU(NCVDU, 1,0)
@@ -992,30 +1105,34 @@ c      CALL XPRVDU(NCVDU, 1,0)
       WRITE(CMON,4702)STORE(JC+4),(STORE(I+4),I=JE,JC+13*MW,MW)
 4702  FORMAT(' Reversals',3(1X,F5.1),3(F5.1),6(1X,F5.1))
       CALL XPRVDU(NCVDU, 1,0)
-C4750  FORMAT(/10H Reversals,12F9.2///
-C     2 44H Reversals is the percentage of shifts whose,
-C     3 41H signs have changed since the last cycle,,8H and is ,F6.2,
-C     4 20H for all parameters.)
-4750  FORMAT(/' Reversals ',12F9.2/)
+4750  FORMAT(/10H Reversals,12F9.2///
+     2 44H Reversals is the percentage of shifts whose,
+     3 41H signs have changed since the last cycle,,8H and is ,F6.2,
+     4 20H for all parameters.)
+c4750  FORMAT(/' Reversals ',12F9.2/)
+c
 C-C-C-PRINT THE RESULTS (FOR SPECIAL SHIFTS)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,4760)
-      ENDIF
-4760  FORMAT(/' Calculated shifts for special parameters')
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,4770)(STORE(I+2),I=JC+14*MW,JC+23*MW,MW),
-     2 (STORE(I+3),I=JC+14*MW,JC+23*MW,MW)
-4770  FORMAT(/13X,'UisoSph',2X,'RadSph',3X,
-     2 'UisoLin',2X,'LenLin',3X,'DecLin',3X,'AziLin',3X,
-     3 'UisoRin',2X,'RadRin',3X,'DecRin',3X,'AziRin'
-     4 //' Mean      ',10F9.5//' R.M.S.    ',10F9.5)
-      WRITE(NCWU,4775) (STORE(I+5),I=JC+14*MW,JC+23*MW,MW)
-      ENDIF
+c      IF (ISSPRT .EQ. 0) THEN
+c      WRITE(NCWU,4760)
+c      ENDIF
+c4760  FORMAT(/' Calculated shifts for special parameters')
+c      IF (ISSPRT .EQ. 0) THEN
+c      WRITE(NCWU,4770)(STORE(I+2),I=JC+14*MW,JC+23*MW,MW),
+c     2 (STORE(I+3),I=JC+14*MW,JC+23*MW,MW)
+c4770  FORMAT(/13X,'UisoSph',2X,'RadSph',3X,
+c     2 'UisoLin',2X,'LenLin',3X,'DecLin',3X,'AziLin',3X,
+c     3 'UisoRin',2X,'RadRin',3X,'DecRin',3X,'AziRin'
+c     4 //' Mean      ',10F9.5//' R.M.S.    ',10F9.5)
+c      WRITE(NCWU,4653) (STORE(I+6),I=JC+14*MW,JC+23*MW,MW)
+c      WRITE(NCWU,4775) (STORE(I+5),I=JC+14*MW,JC+23*MW,MW)
 4775  FORMAT(/' Maximum   ',10F9.5)
+c      ENDIF
+c
+c
 C--CHECK IF WE MUST PRINT THE SIGN CHANGE INFORMATION
       IF(M24)4800,4800,4780
 4780  CONTINUE
-      Z=Z/Y*100.
+c      Z=Z/Y*100.
 CDJW0105
       DO I =1,3
        C1(I) = STORE(JE+4+(I+1)*MW)
@@ -1024,15 +1141,17 @@ C- USED WHEN TRYING TO OPTIMISE THE LS WEIGHTING
 C- OUTPUTS THE SHIFT INFO FOR CURRENT CYCLE TO PUNCH FILE
 C      CALL XLSDEL (A1,B1,C1)
 CDJW0105
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,4785)(STORE(I+4),I=JC+14*MW,JC+23*MW,MW),Z
-      ENDIF
-4785  FORMAT(/' Reversals',10F9.2///
-     2 ' Reversals is the percentage of shifts whose',
-     3 ' signs have changed since the last cycle,'/,' and is ',F6.2,
-     4 ' for all parameters.')
-C--COMPUTE THE SHIFT FACTORS TO APPLY IF ANY
+c      IF (ISSPRT .EQ. 0) THEN
+c      WRITE(NCWU,4785)(STORE(I+4),I=JC+14*MW,JC+23*MW,MW),Z
+c      ENDIF
+c4785  FORMAT(/' Reversals',10F9.2///
+c     2 ' Reversals is the percentage of shifts whose',
+c     3 ' signs have changed since the last cycle,'/,' and is ',F6.2,
+c     4 ' for all parameters.')
 4800  CONTINUE
+c
+c
+C--COMPUTE THE SHIFT FACTORS TO APPLY IF ANY
       J=M33ST+1
       K=M33SV+1
 C--STORE THE SHIFTS INFORMATION IN ANGSTROM FOR X, Y AND Z
@@ -1046,45 +1165,227 @@ C----- USE MAXIMUM NOT RMS
 C--SEE IF THE SHIFTS HAVE TO BE CALCULATED
       DO 5100 I=JC,JD,MW
       IF(ISTORE(J))5050,4900,4950
-C--CHECK IF THE R.M.S. VALUE IS TOO LARGE
-CDJS0102 CHANGED TO WORK ON MAXIMUM VALUE
 4900  CONTINUE
+c----- TYPE eq 0 -MAX- check actual values
+C--CHECK IF THE R.M.S. VALUE IS TOO LARGE
+CDJW0102 CHANGED TO WORK ON MAXIMUM VALUE. 
+c      Store(k) is a list33 value, store(i+3) is rms shift
       IF(STORE(K)-STORE(I+3))4950,5050,5050
 C--CALCULATE THE NEW SHIFT FACTOR
+c----- TYPE eq 1 - FORCE- force shifts to max, even if lower
 4950  CONTINUE
 CDJW0102--- CHANGE TO ZERO (FROM SQ) TO AVOID
 C      MASSIVE SHIFTS IF MAXIMUM SHIFT IS SMALL
       IF(STORE(I+3)-ZERO)5050,5050,5000
 5000  CONTINUE
+c     new shift = list33 shift/ rms shift
       STORE(I)=STORE(K)/STORE(I+3)
-C--COMPUTE THE NEW TOTALS AFTER THE NEW SHIFT FACTOR HAS BEEN APPLIED
+      goto 5060
 5050  CONTINUE
+cdjwdec06
+c      store(i) = min(store(I), store(k))
+5060  continue
+c----- TYPE eq -1 - normal scale factors
+C--COMPUTE THE NEW TOTALS AFTER THE NEW SHIFT FACTOR HAS BEEN APPLIED
+cdjwdec06
+c---- reset values in list 33
+      istore(j) = -1
+      store(k) = store(i)
+cdjwdec06
       STORE(I+2)=STORE(I+2)*STORE(I)
       STORE(I+3)=STORE(I+3)*STORE(I)
       J=J+1
       K=K+1
 5100  CONTINUE
-      IF ( ISSPRT .EQ. 0 ) WRITE(NCWU,5105)
-     2 STORE(JC),(STORE(I),I=JE,JC+23*MW,MW)
-5105  FORMAT(
+c
+cdjwdec06
+c      Code to catch run-away refinements, especially
+c      with the sparse matrix build.
+c      xyz,occ,ext,Flack are caught as absolute values in KFLSP
+c      adp and overall are caught here (SFLSE) by looking at 
+c      shift/esd, reversals and R-factor.
+c
+      if (ispar .eq.0) then
+       adpshift = min(1., 4./adpsoe)
+       ovrshift = min(1., 4./ovrsoe)
+       xyzshift = min(1., 8./xyzsoe)
+      else
+       adpshift = min(1., 15./adpsoe)
+       ovrshift = min(1., 15./ovrsoe)
+       xyzshift = min(1., 15./xyzsoe)
+      endif
+c
+      usershift = store(m33sv+1)      !current overall
+      oldshift = usershift
+c
+c--- check for old shift factor for adps
+      if (m33sv .gt. l33sv) then
+c        write(ncwu,'(a)') 'old and new shift factors'
+c        write(ncwu,'(20i5)')(istore(jjdjw),jjdjw=m33st,m33st+md33st-1)
+c        write(ncwu,'(20f5.2)') 
+c     1  (store(jjdjw-md33sv),jjdjw=m33sv,m33sv+md33sv-1)
+c        write(ncwu,'(20f5.2)')(store(jjdjw),jjdjw=m33sv,m33sv+md33sv-1)
+c
+c       Find minimum of current and oldshifts
+
+        k=0      !general
+        if (istore(k+m33st) .eq. -1) 
+     1    oldshift= min(store(k+m33sv-md33sv),oldshift)
+        k=1      !overall
+        if (istore(k+m33st) .eq. -1) 
+     1   oldshift= min(store(k+m33sv-md33sv),oldshift)
+        k=5      !Uiso
+        if (istore(k+m33st) .eq. -1) 
+     1   oldshift= min(store(k+m33sv-md33sv),oldshift)
+        do k=9,11      !Uii
+        if (istore(k+m33st) .eq. -1) 
+     1   oldshift= min(store(k+m33sv-md33sv),oldshift)
+        enddo
+      endif         
+c
+c
+      rfshift = 1.
+      if (ispar .eq. 0) then
+c-- sparse build - modify shift factor depending upon R
+       if (rlast .ge. 30.) then
+        rfshift = .3
+       else if (rlast .ge. 20.) then
+        rfshift = .5
+       else
+        rfshift = .8
+       endif 
+      endif
+c
+       revshift = 1.0
+       if ((adprev .gt. 0.0) .and. (adpsoe .gt. 2.)) then
+c  reversal info if large shifts
+         if (adprev .gt. 80.) then
+           revshift =  0.41
+         else if (adprev .gt. 70.) then
+           revshift =  0.71
+         else if (adprev .lt. 35.) then
+           revshift = 1.09
+         endif
+       endif
+      if (revshift .le. 1.0) then
+      adpshift=min(1.,usershift,rfshift,adpshift,revshift)
+      else
+      adpshift=revshift*adpshift
+      endif
+c
+c now overall
+      ovrshift=ovrshift * revshift
+c
+c      now do something about xyz
+       revshift = 1.0
+       if ((xyzrev .gt. 0.0) .and. (xyzsoe .gt. 3.)) then
+c  reversal info if large shifts
+         if (xyzrev .gt. 80.) then
+           revshift =  0.41
+         else if (xyzrev .gt. 70.) then
+           revshift =  0.71
+         else if (xyzrev .lt. 35.) then
+           revshift = 1.09
+         endif
+       endif
+      if (revshift .le. 1.0) then
+      xyzshift=min(1.,usershift,rfshift,xyzshift,revshift)
+      else
+      xyzshift=revshift*xyzshift
+      endif
+
+c
+c
+c      write(ncwu,'(8(a,f8.4,x))')'usershift',usershift,
+c     1 'oldshift',oldshift,'rfshift',rfshift,'adpshift',adpshift,
+c     2 'revshift',revshift,'adp',adpshift,' xyz',xyzshift,' Over',
+c     3 ovrshift
+c
+5102  format(a,f8.1,a,f6.2,a,f6.2,2(a,2f6.2),a,f6.2,
+     1 a,f6.3,a,f6.3,a,f6.3)
+c      write(ncwu,5102)
+c     1 'Sssr=',sssr, ' Smax=',smax,' Rmss=',rmss,
+c     2 ' Av Rev ', adprev,xyzrev,
+c     3 ' Av shift/esd', adpsoe,xyzsoe, 
+c     4 ' R= ',store(l30rf),' adp=',adpshift,' Xyz', xyzshift,
+c     5 ' Over', ovrshift
+
+c
+c       write(ncwu,'(a)') 'Current shift factors'
+c       write(ncwu,'(20i5)') (istore(jjdjw),jjdjw=m33st,m33st+md33st-1)
+c       write(ncwu,'(20f5.2)') (store(jjdjw),jjdjw=m33sv,m33sv+md33sv-1)
+c
+c write back to list 33
+       k=0 !general
+         if (istore(k+m33st) .eq. -1) 
+     1    store(k+m33sv)= min(adpshift,store(k+m33sv))
+       k=1 !overall
+         if (istore(k+m33st) .eq. -1) 
+     1    store(k+m33sv)= min(adpshift, ovrshift,store(k+m33sv))
+       k=5 !Uiso
+         if (istore(k+m33st) .eq. -1) 
+     1    store(k+m33sv)= min(adpshift,store(k+m33sv))
+       do k=6,8 ! xyz
+         if (istore(k+m33st) .eq. -1) 
+     1    store(k+m33sv)= xyzshift
+       enddo
+       do k=9,14 !adp
+         if (istore(k+m33st) .eq. -1) 
+     1    store(k+m33sv)= min(adpshift, store(k+m33sv))
+       enddo
+c
+c       
+c       write(ncwu,'(/a)') 'New shift factors'
+c       write(ncwu,'(20f5.2)') (store(jjdjw),jjdjw=m33sv,m33sv+md33sv-1)
+c
+      J=M33ST+1
+      k=m33sv+1
+c--see if the shifts have to be adjusted
+      do i=jc,jd,mw
+       if(istore(j) .EQ. -1)  then
+        store(i) = store(k)
+        store(i+2)=store(i+2)*store(i)
+        store(i+3)=store(i+3)*store(i)
+       endif
+       j=j+1
+       k=k+1
+      enddo
+c
+c
+      if ( issprt .eq. 0 ) write(ncwu,5105)
+     2 store(jc),(store(i),i=je,jc+23*mw,mw)
+5105  format(
      2       //' Shift',
      3        /' factors   ',12F9.5,
      4        /'           ',12F9.5)
-C--SHUFFLE THE RESULTS FOR X, Y AND Z
-      JF=JC+5*MW
-      JG=L1P1
-      DO 5150 I=1,3
-      A1(I)=STORE(JF+2)*STORE(JG)
-      A1(I+3)=STORE(JF+3)
-      STORE(JF+3)=STORE(JF+3)/STORE(JG)
-      JF=JF+MW
-      JG=JG+1
-5150  CONTINUE
+c--shuffle the results for x, y and z
+      jf=jc+5*mw
+      jg=l1p1
+      do 5150 i=1,3
+      a1(i)=store(jf+2)*store(jg)
+      a1(i+3)=store(jf+3)
+      store(jf+3)=store(jf+3)/store(jg)
+      jf=jf+mw
+      jg=jg+1
+5150  continue
 cdjwaug06
 c----- DU[ISO] in SFLSG needs to be scaled if there are
 c      partial shifts
-      djwscl =  store(jc)
-C^^
+c
+      scalsv = ovrshift
+      if (ovrshift .lt. 1.0) then
+        write(cmon,'(a,f4.2)') 'Over-all rescaling factor ', scalsv
+        call outcol(9)
+        call xprvdu(ncvdu, 1,0)
+        call outcol(1)
+        if (issprt .eq. 0) write(ncwu,'(//a//)') cmon(1)
+      endif
+      djwscl =  min(shift, scalsv)
+C
+cdjwdec06
+c----- rewrite list 33 to disk in case scalefactors have been changed
+      CALL XWLSTD(33,ICOM33,IDIM33,-1,-1)
+c
 C
 C--PREPARE THE LIST 24 FOR OUTPUT
       CALL XCSAE
@@ -1132,7 +1433,7 @@ CODE FOR OUTV
       DIMENSION A(N)
       INCLUDE 'XUNITS.INC'
       WRITE(NCWU, 123) A
-123   FORMAT(9F15.0)
+123   FORMAT(10F13.0)
       RETURN
       END
       
@@ -1466,21 +1767,30 @@ C---------  SAVE THE HIT VALUES
             IP(3) = L12
             IP(4) = JS
             KFLSP = JW
+            js2 = 0
 C---------  COMPUTE ESD
             A=STR11(JQ)
             A=SQRT(A*E)
 C--CHECK IF WE ARE USING AN OLD LIST 24
 cdjw0202
+            c = 0.
+            idjw = iquest
             IF(M24 .GT. 0) THEN
 C---------- USING AN OLD LIST 24 - CHECK THAT SHIFT IS NOT SINGULAR
 C---------- COMPUTE THE RATIO OF THE TWO SHIFTS
-            IF (ABS(STORE(M24)) .GT. ZEROSQ) C = STORE(JO) / STORE(M24)
+cdjwdec06
+             IF (ABS(STORE(M24)) .GT. ZEROSQ) then
+                  C = STORE(JO) / STORE(M24)
+             endif
             ENDIF
+            edjw = c
 C--IF THIS PARAMETER IS NOT SINGULAR,  COMPUTE THE SHIFT/E.S.D. RATIO
             IF ( A .GT. ZEROSQ) THEN
                   S = STORE(JO) / A
             ELSE
 C----------  IT IS SINGULAR
+cdjwdec06
+                  s = 0.
                   JR = IQUEST
                   FLAG = JQUEST
                   ITYPE = 1
@@ -1495,26 +1805,37 @@ C--------- THE SHIFT / ESD
                   ITYPE = 1
                   FLAG = IOESD
             ENDIF
-            IF (ITYPE .NE. 1) THEN
+cdec06            IF (ITYPE .NE. 1) THEN
 C------------- CHECK IF SHIFT TOO BIG
                   IF((M12 .NE. L12O) .AND. (M12 .NE. L12LS) .AND.
      1            (M12 .NE. L12ES) .AND. (M12 .NE. L12BS)) THEN
 C------------- ATOMIC PARAMETER
+                  js2 = js
+                  idjw = istore(m5)
                   IF (JS .GE. 5 .AND. JS .LE. 7) THEN
-                        IF (ABS( STORE(JO) ) * STORE( L1P1 + JS -4 )
+                        IF (ABS( STORE(JO) ) * STORE(L1P1+JS-5)
      1                      .GT. PARVAL(JS) ) THEN
                                     ITYPE=1
                                     FLAG = TOOBIG
                         ENDIF
+cdjwdec06
+                        adjw = a*STORE(L1P1+JS-5)
+                        bdjw = abs(store(jo))*STORE(L1P1+JS-5)
+                        cdjw = store(m5+js-1)*STORE(L1P1+JS-5)
                   ELSE
                         IF (ABS(STORE(JO)) .GT. PARVAL(JS)) THEN
                                     ITYPE = 1
                                     FLAG = TOOBIG
                         ENDIF
+cdjwdec06
+                        adjw = a
+                        bdjw = abs(store(jo))
+                        cdjw = store(m5+js-1)
                   ENDIF
                   ELSE
                         IF (M12 .EQ. L12O) THEN
 C------------- AN OVERALL PARAMETER
+                              js2 = 20+js
                               M5G = L5O
                         ELSE IF (M12 .EQ. L12LS) THEN
 C------------- LAYER SCALE
@@ -1540,11 +1861,75 @@ C------------  EXTINCTION PARAM
                             ITYPE = 1
                             FLAG = TOOBIG
                         ENDIF
+                        adjw = a
+                        bdjw = abs(store(jo))
+                        cdjw = store(m5g+js-1)
+
                   ENDIF
-            ENDIF
+cdec06            ENDIF
+cdec06 Set maximal shifts for positions and occupation.
+c      cannot do same for adps and scale because they
+c      are seriously correlated so must be dealt with
+c      by setting shift factors.
+c-----       get the sign of the shift
+            djwsin = sign(1.,store(jo))
+            select case(js2)
+            case(3)
+c  occ - delta max = .7
+             if (bdjw .ge. .7) then
+cjan07              store(jo)=djwsin*0.33
+cjan07              call rstmsg(idjw,store(m5+1),js2,bdjw, store(jo),a)
+             endif
+            case(5,6,7)
+c  xyz - delta max = .2A
+             if (bdjw .ge. .2) then
+cjan07              store(jo)=djwsin*.2/(store(l1p1+js2-5))
+cjan07              call rstmsg(idjw,store(m5+1),js2,bdjw, store(jo),a)
+             endif
+            case(8,9,10,23)
+c  uii or iso
+c             if (bdjw .ge. .02) then
+c                  store(jo)=djwsin*.02
+c                  call rstmsg(idjw,store(m5+1),js2,bdjw, store(jo),a)
+c             endif
+            case(11,12,13)
+c  uij
+c             if (bdjw .ge. 15.*adjw) then
+c                  store(jo)=15.*djwsin*adjw
+c                  call rstmsg(idjw,store(m5+1),js2,bdjw, store(jo),a)
+c             endif
+            case(21)
+c  scale
+c             if (bdjw .ge. cdjw) then 
+c                  if (store(jo) .gt. 0.) store(jo)=cdjw
+c                  if (store(jo) .lt. 0.) store(jo)=-.5*cdjw
+c                  call rstmsg(idjw,store(m5+1),js2,bdjw, store(jo),a)
+c             endif
+            case(22)
+c  DU[iso]
+c             if (bdjw .ge. .01) then
+c                  store(jo)=djwsin*.01
+c                  call rstmsg(idjw,store(m5+1),js2,bdjw, store(jo),a)
+c             endif
+            case(24,25)
+c  polarity and Flack
+             if (bdjw .ge. 15.*adjw) then
+                  store(jo)=djwsin*15.*adjw
+                  call rstmsg(idjw,store(m5+1),js2,bdjw, store(jo),a)
+             endif
+            case(26)
+c  Extinction
+             if (bdjw .ge. 0.2*cdjw) then
+                  store(jo)=djwsin*0.2*cdjw
+                  call rstmsg(idjw,store(m5+1),js2,bdjw, store(jo),a)
+             endif
+            end select
+
+
 C--------- NOW ADJUST THE PRINT LEVEL IF NECESSARY
             IF ( ITYPE .EQ. 1 ) IPRINT = 1
       ENDIF
+
 C
       IF (ICAPT .EQ. 0) THEN
         IF (IPRINT .EQ. 1) THEN
@@ -1958,7 +2343,7 @@ cdjwjul07
 c----- DU[ISO] in SFLSG needs to be scaled if there are
 c      partial shifts by factor from SFLSE
       B=STORE(JX+1)-B * DJWSCL
-c^^
+c
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1650)B
       ENDIF
@@ -2212,6 +2597,45 @@ C -- ERRORS
       GO TO 9900
 C
       END
+c
+c
+CODE FOR RSTMSG
+      SUBROUTINE RSTMSG(idjw,serial,js2,OLD,update,esd)
+C      IDJW      ATOM NAME IN A4 CHARATER FORM
+C      SERIAL    ATOM SERIAL NUMBER
+C      JS2       PARAMETER ID (X=5,SCALE=21)
+C      OLD       LSQ SHIFT
+C      UPDATE    MODIFIED SHIFT
+C      ESD       ESD
+C
+      character *6 ctype(11)
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'QSTORE.INC'
+      data ctype/'Occ', 'U[iso]', 'x','y','z','U[11]','U[22]','U[33]', 
+     1 'U[23]', 'U[13]', 'U[12]'/ 
+      A=SIGN(1.,UPDATE)
+      if (js .le. 13 ) then
+        WRITE ( CMON,'(A, A4,I4,1x,A6,3(2x,a,F10.5))') 
+     1 'Resetting shift for ',
+     2  idjw,NINT(SERIAL),ctype(js2-2),'Shift= ', A*OLD, 'Esd= ',esd,
+     3  'New shift= ',UPDATE
+      else
+        WRITE ( CMON,'(A, A4,I4,3(2x,a,F10.5))') 'Resetting shift for ',
+     1  idjw,js2,'Shift= ', A*OLD, 'Esd= ',esd,
+     2  'New shift= ',UPDATE
+      endif
+      CALL OUTCOL(3)
+      CALL XPRVDU(NCVDU, 4,0)
+      CALL OUTCOL(1)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+      WRITE(NCPU,'(A)') CMON(1)
+      RETURN
+      END
+c^^
+C
 C
 CODE FOR XAPSCL
       SUBROUTINE XAPSCL(IFIRST,IPRINT)
