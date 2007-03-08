@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.57  2005/02/25 17:25:20  stefan
+C 1. Added some preprocessor if defined lines for the mac version.
+C
 C Revision 1.56  2005/01/23 08:29:12  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -4854,7 +4857,7 @@ C
         IFLIND = IFLIND + 1
         IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
          WRITE(NCWU,1006) IFLIND, JDEV , ' ScriptQ'
-1006     FORMAT(' Opening File index=',I3, ' Unit =',I4,A)
+1006     FORMAT(' Opening File index=',I4, ' Unit =',I5,A)
         ENDIF
 C
         IRDCPY(IFLIND) = 0
