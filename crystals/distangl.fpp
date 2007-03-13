@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.80  2007/02/22 10:51:42  djw
+C Bugfix in sorting out unique H atoms
+C
 C Revision 1.79  2006/11/30 08:34:13  djw
 C Remove h-bonds if D-H .gt. 1.2
 C
@@ -2340,7 +2343,7 @@ C--- DUMMY
 CDJW160804
 cdjwnov06
               else if ((ipunch .eq. 11) .and. (term .ge. 120.) .and.
-     1          (dd1 .ge. 1.2)) then
+     1          (dd1 .lt. 1.2)) then
                 WRITE(MTE) 'H',TERM,ESD,
      1          STORE(IXX), STORE(IXX+1), ISTORE(NA+2),
      1          ISTORE(NA+3), ISTORE(NA+4), ISTORE(NA+5), ISTORE(NA+6),
