@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.81  2007/03/13 18:26:15  djw
+C Bug in H-bond generation
+C
 C Revision 1.80  2007/02/22 10:51:42  djw
 C Bugfix in sorting out unique H atoms
 C
@@ -2342,8 +2345,10 @@ C--- DUMMY
      5          IB, ZERO, 1,1,0,0,0
 CDJW160804
 cdjwnov06
+cdjwmar07
               else if ((ipunch .eq. 11) .and. (term .ge. 120.) .and.
-     1          (dd1 .lt. 1.2)) then
+     1          ((dd1.lt.1.2).or.(dd3.lt.1.2))   ) then
+      write(ncpu, '(3f12.3)') term,dd1,dd3
                 WRITE(MTE) 'H',TERM,ESD,
      1          STORE(IXX), STORE(IXX+1), ISTORE(NA+2),
      1          ISTORE(NA+3), ISTORE(NA+4), ISTORE(NA+5), ISTORE(NA+6),
