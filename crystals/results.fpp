@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.116  2007/03/08 11:58:41  djw
+C Fix format
+C
 C Revision 1.115  2006/12/05 12:37:33  arie
 C Adding Superflip, Sir2002, Sir2004 to structure solution package list in CIF goodies
 C
@@ -5517,14 +5520,14 @@ C
            WRITE (CLINE,'(A, ''interval_time '',I8)') CBUF(1:18),
      1      NINT(STORE(L30CD+10))
           ELSE
-           WRITE (CLINE,'(A, ''interval_time  ?'')') CBUF(1:18)
+           WRITE (CLINE,'(A, ''interval_time  .'')') CBUF(1:18)
           END IF
           CALL XPCIF (CLINE)
           IF (NINT(STORE(L30CD+11)) .GT. 0 ) THEN
            WRITE (CLINE,'(A, ''interval_count '',I8)') CBUF(1:18),
      1      NINT(STORE(L30CD+11))
           ELSE
-           WRITE (CLINE,'(A, ''interval_count  ?'')') CBUF(1:18)
+           WRITE (CLINE,'(A, ''interval_count  .'')') CBUF(1:18)
           END IF
           CALL XPCIF (CLINE)
 C 
