@@ -1,56 +1,67 @@
-%SCRIPT XRENUMB
-%%
-%   COPY '#SCRIPT XRETYPE'
-%%
-^^WI WINDOW XRNB 'Renumber' MODAL COMMIT='BAUTO' CANCEL='BNONE'
-^^WI GRID GRIDM NROWS=5 NCOLS=3
-^^WI {
-^^WI   @ 4,2 GRID GRIDB NROWS=1 NCOLS=5
-^^WI   {
-^^WI     @ 1,1 BUTTON BAUTO '&Automatic' DEFAULT
-^^WI     @ 1,3 BUTTON BMANUAL '&Manual'
-^^WI     @ 1,5 BUTTON BNONE   '&None'
-^^WI   }
-^^WI   @ 2,2 GRID GRIDQ NROWS=1 NCOLS=3 OUTLINE=''
-^^WI   {
-^^WI     @ 1,1 ICON IM QUERY
-^^WI     @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
-^^WI     {
-^^WI       @ 1,1 STATIC T1 'Renumber the structure? Automatic attempts to'
-^^WI       @ 2,1 STATIC T2 'number bonded atoms sequentially. Manual lets'
-^^WI       @ 3,1 STATIC T3 'you define your own numbering scheme.'
-^^WI     }
-^^WI   }
-^^WI }
-^^WI SHOW
-^^CR
-%   VERIFY BAUTO BMANUAL BNONE
-%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-^^CO DISPOSE XRNB
-%   CASE VALUE
-%     BLOCK    %AUTO
-%       COPY '#EDIT'
-%       COPY 'MONITOR OFF'
-%       COPY 'SORT'
-%       COPY 'INSERT RELAX'
+%SCRIPT XRENUMB                                                                 
+%%                                                                              
+%%   COPY '#SCRIPT XRETYPE'                                                      
+%%                                                                              
+^^WI WINDOW XRNB 'Renumber' MODAL COMMIT='BAUTO' CANCEL='BNONE'                 
+^^WI GRID GRIDM NROWS=5 NCOLS=3                                                 
+^^WI {                                                                          
+^^WI   @ 4,2 GRID GRIDB NROWS=1 NCOLS=5                                         
+^^WI   {                                                                        
+^^WI     @ 1,1 BUTTON BAUTO '&Automatic' DEFAULT                                
+^^WI     @ 1,3 BUTTON BMANUAL '&Manual'                                         
+^^WI     @ 1,5 BUTTON BNONE   '&None'                                           
+^^WI   }                                                                        
+^^WI   @ 2,2 GRID GRIDQ NROWS=1 NCOLS=3 OUTLINE=''                              
+^^WI   {                                                                        
+^^WI     @ 1,1 ICON IM QUERY                                                    
+^^WI     @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                        
+^^WI     {                                                                      
+^^WI       @ 1,1 STATIC T1 'Renumber the structure? Automatic attempts to'      
+^^WI       @ 2,1 STATIC T2 'number bonded atoms sequentially. Manual lets'      
+^^WI       @ 3,1 STATIC T3 'you define your own numbering scheme.'              
+^^WI     }                                                                      
+^^WI   }                                                                        
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+%   VERIFY BAUTO BMANUAL BNONE                                                  
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                
+^^CO DISPOSE XRNB                                                               
+%   CASE VALUE                                                                  
+%     BLOCK    %AUTO                                                            
+%% sORTING BY ELECTRON COUNT ENSURES THAT NUMBERING STARTS WITH
+%% THE HEAVIEST ATOM
+%% SORTING BY RELAX ENSURES THAT THE MOST UNIQUE ATOM IS FIRST
+%% SOMETIMES THESE ARE THE SAME
+%       COPY '#EDIT'                                                            
+%       COPY 'MONITOR OFF'                                                      
+%       COPY 'RESET RESIDUE 0.0 ALL '                                                  
+%       COPY 'INSERT RESIDUE'
+%       copy 'INSERT ELECTRON'
 %       COPY 'DSORT SPARE'
-%% Relax leaves stupidly hugely numbers in SPARE, which will
-%% break punching of L5 sometimes - (e.g. Cameron link) - so:
-%       COPY 'INSERT ELECTRON'
-%       COPY 'END'
-%       COPY '#REGROUP'
-%       COPY 'SELECT TYPE=ALL SEQUENCE=YES MOVE=-0.2'
-%       COPY 'END'
-%     END BLOCK
-%     BLOCK    %MANUAL
-%       COPY '#SCRIPT XRENUM'
-%     END BLOCK
-%     BLOCK    %NOTHING
-{I Renumbering skipped. Any atom name/serial clashes will be removed.
-%       COPY '#EDIT'
-%       COPY 'CLASH FIXLATTER'
-%       COPY 'END'
-%     END BLOCK
-%   END CASE
-% END SCRIPT
-
+%       COPY 'KEEP 1 ALL'
+%       copy 'end'
+%%       COPY '#edit'                                                             
+%%       COPY 'INSERT RELAX'                                                     
+%%       COPY 'DSORT SPARE'                                                      
+%% Relax leaves stupidly hugely numbers in SPARE, which will                    
+%% break punching of L5 sometimes - (e.g. Cameron link) - so:                   
+%%       COPY 'RESET RESIDUE 0.0 ALL'                                                   
+%%       COPY 'INSERT RESIDUE'                                                  
+%%       COPY 'END'                                                              
+%       COPY '#REGROUP'                                                         
+%       COPY 'SELECT TYPE=ALL SEQUENCE=YES MOVE=-0.2'                           
+%       COPY 'END'                                                              
+%     END BLOCK                                                                 
+%     BLOCK    %MANUAL                                                          
+%       COPY '#SCRIPT XRENUM'                                                   
+%     END BLOCK                                                                 
+%     BLOCK    %NOTHING                                                         
+{I Renumbering skipped. Any atom name/serial clashes will be removed.           
+%       COPY '#EDIT'                                                            
+%       COPY 'CLASH FIXLATTER'                                                  
+%       COPY 'END'                                                              
+%     END BLOCK                                                                 
+%   END CASE                                                                    
+% END SCRIPT                                                                    
+                                                                                

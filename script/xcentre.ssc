@@ -1,0 +1,21 @@
+%SCRIPT XCENTRE
+%%                                                                              
+%%  CENTRE STRUCTURE IN CELL                                                    
+%      COPY '#EDIT'                                                             
+%      COPY 'ATOM Q 1 X=.5 .5 .5'                                               
+%      COPY 'MOVE Q(1)'                                                         
+%      COPY 'END'                                                               
+%      COPY '#COLL'                                                             
+%      COPY 'SEL TYP=ALL TOL=20'                                                 
+%      COPY 'END'                                                               
+%      COPY '#COLL'                                                             
+%      COPY 'SEL TYP=ALL TOL=2'                                                 
+%      COPY 'END'                                                               
+%      COPY '#COLL'                                                             
+%      COPY 'SEL TYPE=ALL '                                                     
+%      COPY 'END'                                                               
+%      COPY '#EDIT'                                                             
+%      COPY 'SEL TYPE NE Q'  
+%      COPY 'END'                                                               
+%%                                                                              
+%END SCRIPT                                                                     

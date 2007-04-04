@@ -10,58 +10,19 @@
 %      COPY '#EDIT'                                                             
 %      COPY 'MON OFF'                                                           
 %      COPY 'REFORMAT ALL'                                                      
-%      COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0' 
-%      COPY 'INSERT RESIDUE'                                 
+%      COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0'                                  
+%      COPY 'INSERT RESIDUE'                                                    
 %      COPY 'END'                                                               
 %      IF ( EXISTS ( 5 ) .NE. 1 ) THEN                                          
 %        FINISH                                                                 
-%      END IF               
-%%
-%%  CENTRE STRUCTURE IN CELL
-%      COPY '#EDIT'
-%      COPY 'ATOM Q 1 X=.5 .5 .5'
-%      COPY 'MOVE Q(1)'
-%      COPY 'END'
-%      COPY '#COLL'
-%      COPY 'SEL TYP=ALL TOL=4'
-%      COPY 'END'
-%      COPY '#COLL'
-%      COPY 'SEL TYP=ALL TOL=2'
-%      COPY 'END'
-%      COPY '#COLL'
-%      COPY 'SEL TYPE=ALL '
-%      COPY 'END'
-%      COPY '#EDIT'
-%      COPY 'SEL TYPE NE Q'
-%      COPY 'END'
-%%                                                    
-%%                                                                              
-%% Commented out - GUI makes this a bit obsolete. You can choose it             
-%% manually for non-routine structures.                                         
-%%                                                                              
-%%      BLOCK                                                                   
-%%      EVALUATE QTITLE = 'Use Cameron?'                                        
-%%      EVALUATE QLINE1 = 'Do you want to use CAMERON '                         
-%%      EVALUATE QLINE2 = 'to examine the model '                               
-%%      EVALUATE BUTTOK = '&Yes'                                                
-%%      EVALUATE BUTTXX = '&No'                                                 
-%%      COPY '#SCRIPT XQUESTIO'                                                 
-%%      IF ANSWER .EQ. TRUE THEN                                                
-%%       VARIABLE LOGICAL NOXCAMQ LNEWL5                                        
-%%       EVALUATE LNEWL5 = TRUE                                                 
-%%       EVALUATE NOXCAMQ = TRUE                                                
-%%       COPY '#SCRIPT XCAM'                                                    
-%%      END IF                                                                  
-%%      END BLOCK                                                               
+%      END IF                                                                   
 %%                                                                              
 %      BLOCK                                                                    
+%%  CENTRE STRUCTURE IN CELL                                                    
+%       COPY '#SCRIPT XCENTRE'                                                             
 %       COPY '#SCRIPT XRENUMB'                                                  
 %      END BLOCK                                                                
 %%                                                                              
-%      BLOCK                                                                    
-%        COPY '#DISTANCES'                                                      
-%        COPY 'END'                                                             
-%      END BLOCK                                                                
 %%                                                                              
 %% SET Solution type                                                            
 %%                                                                              
