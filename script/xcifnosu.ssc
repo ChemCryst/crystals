@@ -52,9 +52,9 @@
 %      COPY '#DISTANCE '                                                        
 %      COPY 'OUT PUNCh=H-CIF mon=ang'                                           
 %      COPY 'SELECT RANGE=LIMIT'                                                
-%      COPY 'LIMIT 0.7 2.2 0.7 2.2 '                                            
+%      COPY 'LIMIT 0.7 2.6 0.7 2.6 '                                            
 %      COPY 'PIVOT H '                                                          
-%      COPY 'BOND O N '                                                         
+%      COPY 'BOND O N C'                                                         
 %      COPY 'END '                                                              
                                                                  
 %%                                                                              
