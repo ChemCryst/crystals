@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.35  2007/03/08 11:50:38  djw
+C Partial shifts for Stefans code
+C
 C Revision 1.34  2006/11/10 08:38:46  djw
 C Remove old debugging print
 C
@@ -201,7 +204,6 @@ C
       INCLUDE 'QLST24.INC'
       INCLUDE 'QLST33.INC'
 C
-C
 C---- no of words in summary stack
       DATA MW/7/
 C
@@ -233,12 +235,12 @@ C--LOAD THE CONTROL LISTS
       IF ( IERFLG .LT. 0 ) GO TO 9900
 cdjwdec06 - save the sparsity flag. 0=sparse
       ispar = istore(m33cd+13)
-cdjwdec06 - save the last r-factor
-      rlast = store(l30rf)
 C--LOAD A FEW MORE LISTS
       CALL XFAL01
       CALL XFAL05
       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30
+cdjwdec06 - save the last r-factor
+      rlast = store(l30rf)
 c
 C--PRINT OUT THE PAGE HEADING
       CALL XPRTCN
@@ -2079,8 +2081,14 @@ C
       INCLUDE 'QLST30.INC'
 C
 C
-      DATA IVERSN / 300 /
+      DATA IVERSN / 301/
 C
+C---- CARBON
+      data JCARB/'C   '/
+C
+C      INITIALISE C ESD
+      AESDC = 0.0
+      NESDC = 0
 C
 C--INITIALISE THE TIMING ROUTINES
       CALL XTIME1(2)
@@ -2110,6 +2118,8 @@ C----- SAVE SOME SPACE FOR THE U AXES
 C--LOAD A FEW LISTS
       CALL XFAL01
       CALL XFAL05
+capr07
+      CALL XFAL30
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C----- SET THE OCCUPANCIES
       IF (IUPDAT .GE. 0) THEN
@@ -2295,20 +2305,20 @@ C------     AND FUDGE THE SHIFT AND ESD
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1400)MD5O
       ENDIF
-      IF (  KEXIST ( 30 ) .GE. 1 )   THEN
+CAPR07      IF (  KEXIST ( 30 ) .GE. 1 )   THEN
 C----- SAVE THE 'FLACK' INFORMATION IN LIST 30
-        IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30
+CAPR07        IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30
         IF (BPD(5) .GE. ZERO) THEN
           IF( MD30GE .GE. 6) THEN
             STORE(L30GE+6) = STORE(L5O+4)
             STORE(L30GE+7) = BPD(5)
           ENDIF
-        ENDIF
+CAPR07        ENDIF
 C----- SAVE THE 'EXTINCTION ESD' INFORMATION IN LIST 30
         IF( MD30CF .GE. 8) THEN
           STORE(L30CF+8) = BPD(6)
         ENDIF
-        CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
+CAPR07        CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
       ENDIF
 C<DJWSEP96
 1400  FORMAT(///1X,I2,'  Overall parameter(s)'/)
@@ -2490,10 +2500,10 @@ C--PRINT THE SHIFTS AND E.S.D.'S
         IF (ISSPRT .EQ. 0) THEN
 C         WRITE(NCWU,2500)(APD(J),J=1,N5A)
           WRITE(NCWU,2500)(APD(1)),(APD(J),J=3,N5A)
-        ENDIF
+C        ENDIF
 C2500   FORMAT(19X,11F9.5)
 2500    FORMAT(19X,F9.5,9X,9F9.5)
-        IF (ISSPRT .EQ. 0) THEN
+C        IF (ISSPRT .EQ. 0) THEN
 C         WRITE(NCWU,2500)(BPD(J),J=1,N5A)
           WRITE(NCWU,2500)(BPD(1)),(BPD(J),J=3,N5A)
         ENDIF
@@ -2508,9 +2518,11 @@ C--CHECK IF THE E.S.D.'S ETC. ARE TO BE PRINTED
         IF(IPRINT)2850,2520,2850
 C--PRINT THE SHIFTS AND E.S.D.'S
 2520    CONTINUE
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,2525)(APD(1)),(APD(J),J=3,N5A)
+        IF (ISSPRT .EQ. 0) THEN
+            WRITE(NCWU,2525)(APD(1)),(APD(J),J=3,N5A)
+            WRITE(NCWU,2525)(BPD(1)),(BPD(J),J=3,N5A)
 2525    FORMAT(19X,F9.5,9X,9F9.5)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,2525)(BPD(1)),(BPD(J),J=3,N5A)
+        END IF
         GOTO 2750
 C-C-C-LINE/RING- PRINT
 2530    CONTINUE
@@ -2522,9 +2534,11 @@ C--CHECK IF THE E.S.D.'S ETC. ARE TO BE PRINTED
         IF(IPRINT)2850,2540,2850
 C--PRINT THE SHIFTS AND E.S.D.'S
 2540    CONTINUE
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,2545)(APD(1)),(APD(J),J=3,N5A)
+        IF (ISSPRT .EQ. 0) THEN 
+            WRITE(NCWU,2545)(APD(1)),(APD(J),J=3,N5A)
+            WRITE(NCWU,2545)(BPD(1)),(BPD(J),J=3,N5A)
 2545    FORMAT(19X,F9.5,9X,9F9.5)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,2545)(BPD(1)),(BPD(J),J=3,N5A)
+        END IF
         GOTO 2750
 C--ANISO- PRINT
 2550    CONTINUE
@@ -2563,6 +2577,11 @@ C--PRINT THE POSITIONAL E.S.D.'S IN ANGSTROM
         BPD(3)=BPD(3)*STORE(L1P1)
         BPD(4)=BPD(4)*STORE(L1P1+1)
         BPD(5)=BPD(5)*STORE(L1P1+2)
+CAPR07
+        IF (ISTORE(M5) .EQ. JCARB) THEN
+         AESDC = AESDC + BPD(3)+BPD(4)+BPD(5)
+         NESDC=NESDC+3
+        ENDIF
         IF (ISSPRT .EQ. 0) WRITE(NCWU,2800)(BPD(J),J=3,5)
 2800    FORMAT(37X,3F9.5)
 C--UPDATE FOR THE NEXT ATOM
@@ -2576,6 +2595,12 @@ C--END OF THE UPDATING  -  PREPARE TO OUTPUT A NEW LIST 5
       INCLUDE 'IDIM05.INC'
 C--OUTPUT THE NEW LIST 5
       CALL XWLSTD(5,ICOM05,IDIM05,0,-1)
+C----- SAVE THE MEAN C-C ESD
+      IF (ISSPRT .EQ.0) WRITE(NCWU,'(A,F8.4)')
+     1  'Mean C-C su = ',AESDC/MAX(1.0, FLOAT(NESDC))
+      STORE(L30CF+14) = AESDC/MAX(1.0, FLOAT(NESDC))
+       CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
+C
 C----- CHECK THE ANISO TFS
 C----- SET THE AUXILLIARY LIST 5 ADDRESSES
       L5A=L5
