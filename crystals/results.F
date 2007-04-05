@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.117  2007/04/04 08:23:56  djw
+C Put Rint as fraction, not %
+C
 C Revision 1.116  2007/03/08 11:58:41  djw
 C Fix format
 C
@@ -3764,15 +3767,20 @@ C
       CHARACTER CTEXT(2)*9
       INCLUDE 'TSSCHR.INC'
       INCLUDE 'ISTORE.INC'
+      INCLUDE 'ICOM30.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XTAPES.INC'
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XCONST.INC'
       INCLUDE 'XLST02.INC'
+      INCLUDE 'XLST30.INC'
       INCLUDE 'QSTORE.INC'
       INCLUDE 'UFILE.INC'
       INCLUDE 'XSSCHR.INC'
+c
+      INCLUDE 'QLST30.INC'
+
 C
       DATA CGEOM /'_bond', '_angle', '_torsion', '_hbond' /
       DATA CTEXT /'_geom', '_distance'/
@@ -3795,6 +3803,7 @@ C      CLEAR THE STORE
       CALL XRSL
       CALL XCSAE
       CALL XFAL02
+      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30
       IF (STORE(L2C) .LE. ZERO) THEN
             JA = 1
       ELSE
@@ -3998,7 +4007,7 @@ cdjwoct05. More fiddles to keep Bill happy
       J = J + N + 1
       if (key .eq. 15) then
 C----- H-bonds AND ESDs
-      do itmp =ipub+21, ipub+23, 2
+       do itmp =ipub+21, ipub+23, 2
         CALL XFILL (IB, IVEC, 20)
 c        CALL SNUM ( store(itmp),store(itmp+1),  -3, 0, 10, IVEC )
         CALL SNUM ( store(itmp), 0.0,  -2, 0, 10, IVEC )
@@ -4006,19 +4015,23 @@ c        CALL SNUM ( store(itmp),store(itmp+1),  -3, 0, 10, IVEC )
         CALL XCRAS ( CBUF, N)
         CLINE(J:J+N-1) = CBUF(1:N)
         J = J + N + 1
-      enddo
-      dadist = sqrt(
+       enddo
+       dadist = sqrt(
      1  store(ipub+21)*store(Ipub+21) + store(ipub+23)*store(Ipub+23)
      2  -2.*store(ipub+21)*store(Ipub+23)*cos(term*dtr))
-      call xfill (ib, ivec, 20)
-cdjwoct05. More fiddles to keep Bill happy
-      call snum ( dadist, 0.002,  -3, 0, 10, ivec )
-      write( cbuf, '(20a1)') (ivec(i), i=1, 20)
-      call xcras ( cbuf, n)
-      cline(j:j+n-1) = cbuf(1:n)
-      j = j + n + 1
-c----- force printing
-       noh = 0
+       call xfill (ib, ivec, 20)
+cdjwoct05. More fiddles to keep Bill happy. Use mean c-c esd
+       call snum ( dadist, 1.414*store(l30cf+14),  -3, 0, 10, ivec )
+       write( cbuf, '(20a1)') (ivec(i), i=1, 20)
+       call xcras ( cbuf, n)
+       cline(j:j+n-1) = cbuf(1:n)
+       j = j + n + 1
+c----- LIMIT PRINTING
+       if (dadist .le. 4.1) then
+        noh = 0
+       else
+        noh = 1
+       endif
       endif
 C
       N = INDEX (CLINE(1:J), 'H')
