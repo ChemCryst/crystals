@@ -1553,7 +1553,7 @@ New CIF extensions
     .COMPL-FULL         0    0    1    0    1 0.
     .PRESSURE           0    0    1    0    1 0.
     .NRESTUSED          0    0    1    0    1 0.
-    .ZZ15               0    0    1    0    1 0.
+    .CCESD              0    0    1    0    1 0.
     .XMIN               0    0    1    0    1 0.
     .YMIN               0    0    1    0    1 0.
     .ZMIN               0    0    1    0    1 0.
