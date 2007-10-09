@@ -166,8 +166,8 @@
 %        INSERT "' REAL CHARS=8"                                                
 %        OUTPUT                                                                 
 ^^WI     @ 3,1 STATIC M2 'Bond length'                                          
-^^WI     @ 3,3 EDITBOX P2 '1.00' REAL CHARS=8                                   
-^^WI     @ 3,5 STATIC M3 'angstroms'                                            
+^^WI     @ 3,3 EDITBOX P2 '0.95' REAL CHARS=8                                   
+^^WI     @ 3,5 STATIC M3 'Angstroms'                                            
 ^^WI   }                                                                        
 ^^WI   @ 8,2 GRID B NROWS=1 NCOLS=5 {                                           
 ^^WI     @ 1,1 BUTTON BBB '< &Back'                                             
