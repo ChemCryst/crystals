@@ -1,906 +1,916 @@
-%SCRIPT XLIST28 
-% VARIABLE LOGICAL LNEWRAT LNEWRHO 
-% VARIABLE REAL    NEWRAT  NEWRHO SIGMACUT
-% VARIABLE INTEGER NOMITS  NCONDS  FTYPE NINDCD OMU
-% VARIABLE CHARACTER CW
-% VARIABLE REAL RW OMH OMK OML OMP OMQ OMR OMS OMT
-% EVALUATE NOMITS = 0
-% EVALUATE NCONDS = 0
-% EVALUATE NINDCD = 0
-% EVALUATE SIGMACUT = - 10.0
-%%
-%%
-% IF ( EXISTS 28 .NE. 1 ) THEN
-%%   No list 28 - recommended defaults:
-{R There are no conditions in the current list 28.
-%% FIND OUT IF F OR FSQ REFINEMENT
-%    COPY '#GENERALEDIT 23'
-%    COPY 'LOCATE RECORDTYPE=103'
-%    COPY 'TRANSFER FROM OFFSET=1 TO FTYPE'
-%    COPY 'END'
-%    COPY '#LIST 28'
-%    CLEAR
-%    INSERT 'MINIMA '
-%    IF FTYPE .NE. 0 THEN
-{I For F refinement, a default I/u(I) minimum of 3.0 is recommended.
-%      INSERT 'RATIO=3.0 '
-%    END IF
-{I A default sin(theta)/lambda minimum of 0.01 is recommended.
-%    INSERT 'SINT=0.01 '
-%    SEND
-%    COPY 'END'
+%SCRIPT XLIST28                                                                 
+% VARIABLE LOGICAL LNEWRAT LNEWRHO                                              
+% VARIABLE REAL    NEWRAT  NEWRHO SIGMACUT                                      
+% VARIABLE INTEGER NOMITS  NCONDS  FTYPE NINDCD OMU                             
+% VARIABLE CHARACTER CW                                                         
+% VARIABLE REAL RW OMH OMK OML OMP OMQ OMR OMS OMT                              
+% EVALUATE NOMITS = 0                                                           
+% EVALUATE NCONDS = 0                                                           
+% EVALUATE NINDCD = 0                                                           
+% EVALUATE SIGMACUT = - 10.0                                                    
+%%                                                                              
+% IF ( EXISTS 23 .NE. 1 ) THEN
+%    COPY '#SCRIPT XQCK23'
 % END IF
-%%
-%%
-^^WI WINDOW XLIST28 'Filter reflections' MODAL
-^^WI COMMIT='BOK' CANCEL='BXX'
-^^WI GRID MAIN NROWS=7 NCOLS=3 
-^^WI {
-^^WI  @ 2,2 TABCTRL MOGULTABS
-^^WI  {
-^^WI   TAB MGTAB0 'Ranges' GRID X28T NROWS=1 NCOLS=1
-^^WI   {
-^^WI    @ 1,1 GRID M NROWS=11 NCOLS=9 COMMAND='UPDATE'
-^^WI         OUTLINE='Min and max acceptable limits'
-^^WI    {
-^^WI     @ 1,1 STATIC SBH  'H' 
-^^WI     @ 2,1 STATIC SBK  'K' 
-^^WI     @ 3,1 STATIC SBL  'L' 
-^^WI     @ 4,1 STATIC SBFO 'FObs' 
-^^WI     @ 5,1 STATIC SBFC 'FCalc' 
-^^WI     @ 6,1 STATIC SBELEM 'Twin Elements' 
-^^WI     @ 7,1 STATIC SBSG 'Sigma(Fo)'
-^^WI     @ 8,1 STATIC SBPH 'Phase' 
-^^WI     @ 9,1 STATIC SBRA 'I/Sigma(I)'
-^^WI     @ 10,1 STATIC SBSQ 'Sqrt(W)' 
-^^WI     @ 11,1 STATIC SBTH '[Sin theta/lambda]**2'
-^^WI     @ 1,3 CHECKBOX LBH    'is at least' STATE=OFF INFORM=YES
-^^WI     @ 2,3 CHECKBOX LBK    'is at least' STATE=OFF INFORM=YES
-^^WI     @ 3,3 CHECKBOX LBL    'is at least' STATE=OFF INFORM=YES
-^^WI     @ 4,3 CHECKBOX LBFO   'is at least' STATE=OFF INFORM=YES
-^^WI     @ 5,3 CHECKBOX LBFC   'is at least' STATE=OFF INFORM=YES
-^^WI     @ 6,3 CHECKBOX LBELEM 'is at least' STATE=OFF INFORM=YES
-^^WI     @ 7,3 CHECKBOX LBSGMA 'is at least' STATE=OFF INFORM=YES
-^^WI     @ 8,3 CHECKBOX LBPHAS 'is at least' STATE=OFF INFORM=YES
-^^WI     @ 9,3 CHECKBOX LBRATI 'is at least' STATE=OFF INFORM=YES
-^^WI     @ 10,3 CHECKBOX LBSQRW 'is at least' STATE=OFF INFORM=YES
-^^WI     @ 11,3 CHECKBOX LBTHET 'is at least' STATE=OFF INFORM=YES
-^^WI     @ 1,5 EDITBOX BH    '' DISABLED = YES
-^^WI     @ 2,5 EDITBOX BK    '' DISABLED = YES
-^^WI     @ 3,5 EDITBOX BL    '' DISABLED = YES
-^^WI     @ 4,5 EDITBOX BFO   '' DISABLED = YES
-^^WI     @ 5,5 EDITBOX BFC   '' DISABLED = YES
-^^WI     @ 6,5 EDITBOX BELEM '' DISABLED = YES
-^^WI     @ 7,5 EDITBOX BSGMA '' DISABLED = YES
-^^WI     @ 8,5 EDITBOX BPHAS '' DISABLED = YES
-^^WI     @ 9,5 EDITBOX BRATI '' DISABLED = YES
-^^WI     @ 10,5 EDITBOX BSQRW '' DISABLED = YES
-^^WI     @ 11,5 EDITBOX BTHET '' DISABLED = YES
-^^WI     @ 1,7 CHECKBOX LTH    'and is at most' STATE = OFF INFORM=YES
-^^WI     @ 2,7 CHECKBOX LTK    'and is at most' STATE = OFF INFORM=YES
-^^WI     @ 3,7 CHECKBOX LTL    'and is at most' STATE = OFF INFORM=YES
-^^WI     @ 4,7 CHECKBOX LTFO   'and is at most' STATE = OFF INFORM=YES
-^^WI     @ 5,7 CHECKBOX LTFC   'and is at most' STATE = OFF INFORM=YES
-^^WI     @ 6,7 CHECKBOX LTELEM 'and is at most' STATE = OFF INFORM=YES
-^^WI     @ 7,7 CHECKBOX LTSGMA 'and is at most' STATE = OFF INFORM=YES
-^^WI     @ 8,7 CHECKBOX LTPHAS 'and is at most' STATE = OFF INFORM=YES
-^^WI     @ 9,7 CHECKBOX LTRATI 'and is at most' STATE = OFF INFORM=YES
-^^WI     @ 10,7 CHECKBOX LTSQRW 'and is at most' STATE = OFF INFORM=YES
-^^WI     @ 11,7 CHECKBOX LTTHET 'and is at most' STATE = OFF INFORM=YES
-^^WI     @ 1,9 EDITBOX TH    '' DISABLED = YES
-^^WI     @ 2,9 EDITBOX TK    '' DISABLED = YES
-^^WI     @ 3,9 EDITBOX TL    '' DISABLED = YES
-^^WI     @ 4,9 EDITBOX TFO   '' DISABLED = YES
-^^WI     @ 5,9 EDITBOX TFC   '' DISABLED = YES
-^^WI     @ 6,9 EDITBOX TELEM '' DISABLED = YES
-^^WI     @ 7,9 EDITBOX TSGMA '' DISABLED = YES
-^^WI     @ 8,9 EDITBOX TPHAS '' DISABLED = YES
-^^WI     @ 9,9 EDITBOX TRATI '' DISABLED = YES
-^^WI     @ 10,9 EDITBOX TSQRW '' DISABLED = YES
-^^WI     @ 11,9 EDITBOX TTHET '' DISABLED = YES
-^^WI    }
-^^WI   }
-^^WI   TAB MGTAB0 'Omit' GRID X28T2 NROWS=1 NCOLS=1
-^^WI   {
-^^WI    @ 1,1 GRID CONS NROWS=1 NCOLS=3
-^^WI    {
-^^WI     @ 1,1 GRID OMIT NROWS=5 NCOLS=1 OUTLINE='Omit'
-^^WI     {
-^^WI       @ 5,1 LISTBOX L28OMIT VISLINES=4 ADDTOLIST
-%          BLOCK
-%          ON EDITERROR TERMINATE
-%          COPY '#GENERALEDIT 28'
-%          COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%          COPY 'LOCATE RECORDTYPE = 104'
-%          COPY 'TOP'
-%          LOOP
-%           ON EDITERROR TERMINATE
-%           COPY 'TRANSFER FROM OFFSET = 0 TO OMH'
-%           COPY 'TRANSFER FROM OFFSET = 1 TO OMK'
-%           COPY 'TRANSFER FROM OFFSET = 2 TO OML'
-%           CLEAR
-%           INSERT "^^WI '"
-%           STORE FORMAT /(I4)/ LENGTH 4 INTEGER INTEGER OMH
-%           STORE FORMAT /(I4)/ LENGTH 4 INTEGER INTEGER OMK
-%           STORE FORMAT /(I4)/ LENGTH 4 INTEGER INTEGER OML
-%           INSERT "'"
-%           OUTPUT
-%           EVALUATE NOMITS = NOMITS + 1
-%           COPY 'NEXT'
-%          END LOOP
-%          END BLOCK
-%          IF NOMITS .GT. 0 THEN
-^^WI        NULL
-%          ELSE
-^^WI        '  0   0   0 ' NULL
-%          END IF
-%          COPY 'END'
-^^WI       @ 3,1 GRID OMITB NROWS=1 NCOLS=3
-^^WI       {
-^^WI         @ 1,1 BUTTON BADD 'Add'
-^^WI         @ 1,3 BUTTON BREM 'Remove'
-%            IF NOMITS .EQ. 0 THEN
-^^WI           DISABLED = YES
-%            END IF
-^^WI       }
-^^WI       @ 1,1 GRID OMITI NROWS=1 NCOLS=8
-^^WI       {
-^^WI         @ 1,1 EDITBOX OMH '' CHARS=5
-^^WI         @ 1,2 STATIC OMHT ' h'
-^^WI         @ 1,4 EDITBOX OMK '' CHARS=5
-^^WI         @ 1,5 STATIC OMHT ' k'
-^^WI         @ 1,7 EDITBOX OML '' CHARS=5
-^^WI         @ 1,8 STATIC OMHT ' l'
-^^WI       }
-^^WI     }
-%%
-%%
-^^WI     @ 1,3 GRID OMIT NROWS=6 NCOLS=1 OUTLINE='Index conditions'
-^^WI     {
-^^WI @ 5,1 STATIC T1 'Conditions tested in order, until a match occurs.'
-^^WI       @ 6,1 STATIC T2 'If no matches, refln is accepted.'
-^^WI       @ 3,1 LISTBOX L28INDCD VISLINES=4 ADDTOLIST
-%          BLOCK
-%          ON EDITERROR TERMINATE
-%          COPY '#GENERALEDIT 28'
-%          COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%          COPY 'LOCATE RECORDTYPE = 105'
-%          COPY 'TOP'
-%          LOOP
-%           ON EDITERROR TERMINATE
-%           COPY 'TRANSFER FROM OFFSET = 0 TO OMP'
-%           COPY 'TRANSFER FROM OFFSET = 1 TO OMQ'
-%           COPY 'TRANSFER FROM OFFSET = 2 TO OMR'
-%           COPY 'TRANSFER FROM OFFSET = 3 TO OMS'
-%           COPY 'TRANSFER FROM OFFSET = 4 TO OMT'
-%           COPY 'TRANSFER FROM OFFSET = 5 TO OMU'
-%           CLEAR
-%           INSERT "^^WI '"
-%           CASE OMU + 1
-%             INSERT 'Reject'
-%             INSERT 'Accept'
-%           END CASE
-%%      
-%           STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMP
-%           STORE CHARACTER 'h +'
-%           STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMQ
-%           STORE CHARACTER 'k +'
-%           STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMR
-%           STORE CHARACTER 'l +'
-%           STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMS
-%           STORE CHARACTER ' ='
-%           STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMT
-%           STORE CHARACTER 'n'
-%           INSERT "'"
-%           OUTPUT
-%           EVALUATE NINDCD = NINDCD + 1
-%           COPY 'NEXT'
-%          END LOOP
-%          END BLOCK
-%%          IF NINDCD .GT. 0 THEN
-^^WI        'NULL'
-%%          END IF
-%          COPY 'END'
-^^WI       @ 1,1 GRID OMITI NROWS=3 NCOLS=1
-^^WI       {
-^^WI         @ 1,1 GRID OMITC NROWS=1 NCOLS=10
-^^WI         {
-^^WI           @ 1,1 EDITBOX OMP '' CHARS=5
-^^WI           @ 1,2 STATIC OMPT ' h + '
-^^WI           @ 1,3 EDITBOX OMQ '' CHARS=5
-^^WI           @ 1,4 STATIC OMPT ' k + '
-^^WI           @ 1,5 EDITBOX OMR '' CHARS=5
-^^WI           @ 1,6 STATIC OMPT ' l + '
-^^WI           @ 1,7 EDITBOX OMS '' CHARS=5
-^^WI           @ 1,8 STATIC OMPT ' = '
-^^WI           @ 1,9 EDITBOX OMT '' CHARS=5
-^^WI           @ 1,10 STATIC OMPT ' n'
-^^WI         }
-^^WI         @ 3,1 GRID OMITD NROWS=1 NCOLS=5
-^^WI         {
-^^WI           @ 1,1 DROPDOWN OMU
-^^WI           ADDTOLIST 'Reject' 'Accept' 'NULL'
-^^WI           @ 1,3 BUTTON CADD 'Add'
-^^WI           @ 1,5 BUTTON CREM 'Remove'
-%              IF NINDCD .EQ. 0 THEN
-^^WI             DISABLED = YES
-%              END IF
-^^WI         }
-^^WI       }
-^^WI     }
-^^WI    }
-^^WI   }
-^^WI   @ 4,2 GRID ADVISE NROWS=4 NCOLS=1 OUTLINE='Recommended settings'
-^^WI   {
-^^WI     @ 1,1 STATIC SBH
-^^WI 'Min I/sigma(I) should usually be about 3.0 for initial F refinement.'
-^^WI     @ 2,1 STATIC SBH
-^^WI 'For F**2 refinement a minimum I/sigma(I) cutoff is not required.'
-^^WI     @ 3,1 STATIC SBH
-^^WI '[Sin theta/lambda]**2 at least 0.01 helps to eliminate reflections'
-^^WI     @ 4,1 STATIC SBH
-^^WI 'that may be poorly measured in the vicinity of the beam stop.'
-^^WI   }
-^^WI   @ 6,2 GRID RIGHT NROWS=1 NCOLS=8
-^^WI   {
-^^WI     @ 1,1 STRETCH SSS HORIZONTAL
-^^WI     @ 1,4 BUTTON BOK '&OK' COMMIT DEFAULT
-^^WI     @ 1,6 BUTTON BXX '&Cancel' CANCEL
-^^WI     @ 1,8 BUTTON BHH '&Help'
-^^WI   }
-^^WI }
-^^WI SHOW
-^^CR
-% IF NOMITS .EQ. 0 THEN
-^^CO SET L28OMIT REMOVE 1
-% END IF
-% BLOCK
-%  BLOCK
-%   ON ERROR TERMINATE
-%   ON EDITERROR TERMINATE
-%   COPY '#GENERALEDIT 28'
-%   COPY 'LOCATE RECORDTYPE = 1101'
-%   COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'
-%   COPY 'TOP'
-%   EVALUATE NCONDS = NCONDS + 1
-%   LOOP
-%     ON EDITERROR TERMINATE
-%     ON ERROR TERMINATE
-%     COPY 'TRANSFER FROM OFFSET=0 TO CW'
-%     COPY 'TRANSFER FROM OFFSET=3 TO RW'
-%     IF ( CW STARTSWITH 'H   ' ) THEN
-%       CLEAR
-%       INSERT '^^CO SET LBH STATE=ON SET BH DISABLED=NO TEXT '
-%       STORE FORMAT '(I5)' LENGTH 5 INTEGER INTEGER RW
-%       OUTPUT
-%     ELSE IF ( CW STARTSWITH 'K   ' ) THEN
-%       CLEAR
-%       INSERT '^^CO SET LBK STATE=ON SET BK DISABLED=NO TEXT '
-%       STORE FORMAT '(I5)' LENGTH 5 INTEGER INTEGER RW
-%       OUTPUT
-%     ELSE IF ( CW STARTSWITH 'L   ' ) THEN
-%       CLEAR
-%       INSERT '^^CO SET LBL STATE=ON SET BL DISABLED=NO TEXT '
-%       STORE FORMAT '(I5)' LENGTH 5 INTEGER INTEGER RW
-%       OUTPUT
-%     ELSE IF ( CW STARTSWITH '/FO/' ) THEN
-%       CLEAR
-%       INSERT '^^CO SET LBFO STATE=ON SET BFO DISABLED=NO TEXT '
-%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW
-%       OUTPUT
-%     ELSE IF ( CW STARTSWITH '/FC/' ) THEN
-%       CLEAR
-%       INSERT '^^CO SET LBFC STATE=ON SET BFC DISABLED=NO TEXT '
-%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW
-%       OUTPUT
-%     ELSE IF ( CW STARTSWITH 'ELEM' ) THEN
-%       CLEAR
-%       INSERT '^^CO SET LBELEM STATE=ON SET BELEM DISABLED=NO TEXT '
-%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW
-%       OUTPUT
-%     ELSE IF ( CW STARTSWITH 'SIGM' ) THEN
-%       CLEAR
-%       INSERT '^^CO SET LBSGMA STATE=ON SET BSGMA DISABLED=NO TEXT '
-%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW
-%       OUTPUT
-%     ELSE IF ( CW STARTSWITH 'PHAS' ) THEN
-%       CLEAR
-%       INSERT '^^CO SET LBPHAS STATE=ON SET BPHAS DISABLED=NO TEXT '
-%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW
-%       OUTPUT
-%     ELSE IF ( CW STARTSWITH 'RATI' ) THEN
-%       CLEAR
-%       INSERT '^^CO SET LBRATI STATE=ON SET BRATI DISABLED=NO TEXT '
-%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW
-%       OUTPUT
-%     ELSE IF ( CW STARTSWITH 'SQRT' ) THEN
-%       CLEAR
-%       INSERT '^^CO SET LBSQRW STATE=ON SET BSQRW DISABLED=NO TEXT '
-%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW
-%       OUTPUT
-%     ELSE IF ( CW STARTSWITH 'SINT' ) THEN
-%       CLEAR
-%       INSERT '^^CO SET LBTHET STATE=ON SET BTHET DISABLED=NO TEXT '
-%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW
-%       OUTPUT
-%     END IF
-%     COPY 'NEXT'
-%     EVALUATE NCONDS = NCONDS + 1
-%   END LOOP
-%  END BLOCK
-%  BLOCK
-%   ON ERROR TERMINATE
-%   ON EDITERROR TERMINATE
-%   COPY 'LOCATE RECORDTYPE = 1102'
-%   COPY 'TOP'
-%   EVALUATE NCONDS = NCONDS + 1
-%   LOOP
-%     ON EDITERROR TERMINATE
-%     ON ERROR TERMINATE
-%     COPY 'TRANSFER FROM OFFSET=0 TO CW'
-%     COPY 'TRANSFER FROM OFFSET=3 TO RW'
-%     IF ( CW STARTSWITH 'H   ' ) THEN
-%       CLEAR
-%       INSERT '^^CO SET LTH STATE=ON SET TH DISABLED=NO TEXT '
-%       STORE FORMAT '(I5)' LENGTH 5 INTEGER INTEGER RW
-%       OUTPUT
-%     ELSE IF ( CW STARTSWITH 'K   ' ) THEN
-%       CLEAR
-%       INSERT '^^CO SET LTK STATE=ON SET TK DISABLED=NO TEXT '
-%       STORE FORMAT '(I5)' LENGTH 5 INTEGER INTEGER RW
-%       OUTPUT
-%     ELSE IF ( CW STARTSWITH 'L   ' ) THEN
-%       CLEAR
-%       INSERT '^^CO SET LTL STATE=ON SET TL DISABLED=NO TEXT '
-%       STORE FORMAT '(I5)' LENGTH 5 INTEGER INTEGER RW
-%       OUTPUT
-%     ELSE IF ( CW STARTSWITH '/FO/' ) THEN
-%       CLEAR
-%       INSERT '^^CO SET LTFO STATE=ON SET TFO DISABLED=NO TEXT '
-%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW
-%       OUTPUT
-%     ELSE IF ( CW STARTSWITH '/FC/' ) THEN
-%       CLEAR
-%       INSERT '^^CO SET LTFC STATE=ON SET TFC DISABLED=NO TEXT '
-%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW
-%       OUTPUT
-%     ELSE IF ( CW STARTSWITH 'ELEM' ) THEN
-%       CLEAR
-%       INSERT '^^CO SET LTELEM STATE=ON SET TELEM DISABLED=NO TEXT '
-%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW
-%       OUTPUT
-%     ELSE IF ( CW STARTSWITH 'SIGM' ) THEN
-%       CLEAR
-%       INSERT '^^CO SET LTSGMA STATE=ON SET TSGMA DISABLED=NO TEXT '
-%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW
-%       OUTPUT
-%     ELSE IF ( CW STARTSWITH 'PHAS' ) THEN
-%       CLEAR
-%       INSERT '^^CO SET LTPHAS STATE=ON SET TPHAS DISABLED=NO TEXT '
-%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW
-%       OUTPUT
-%     ELSE IF ( CW STARTSWITH 'RATI' ) THEN
-%       CLEAR
-%       INSERT '^^CO SET LTRATI STATE=ON SET TRATI DISABLED=NO TEXT '
-%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW
-%       OUTPUT
-%     ELSE IF ( CW STARTSWITH 'SQRT' ) THEN
-%       CLEAR
-%       INSERT '^^CO SET LTSQRW STATE=ON SET TSQRW DISABLED=NO TEXT '
-%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW
-%       OUTPUT
-%     ELSE IF ( CW STARTSWITH 'SINT' ) THEN
-%       CLEAR
-%       INSERT '^^CO SET LTTHET STATE=ON SET TTHET DISABLED=NO TEXT '
-%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW
-%       OUTPUT
-%     END IF
-%     COPY 'NEXT'
-%     EVALUATE NCONDS = NCONDS + 1
-%   END LOOP
-% END BLOCK
-% COPY 'END'
-% IF ( LNEWRAT ) THEN
-%   CLEAR
-%   INSERT '^^CO SET LBRATI STATE=ON SET BRATI DISABLED=NO TEXT '
-%   STORE FORMAT '(F10.4)' LENGTH 10 REAL NEWRAT
-%   OUTPUT
-%   EVALUATE NCONDS = 1
-% END IF
-% IF ( LNEWRHO ) THEN
-%   CLEAR
-%   INSERT '^^CO SET LTTHET STATE=ON SET TTHET DISABLED=NO TEXT '
-%   STORE FORMAT '(F10.4)' LENGTH 10 REAL NEWRHO
-%   OUTPUT
-%   EVALUATE NCONDS = 1
-% END IF
-% IF ( NCONDS .EQ. 0 ) THEN
-{I No filter conditions found in List 28
-%% {I I/sigma(I) ratio of three will be set by default.
-%% ^^CO SET LBRATI STATE=ON SET BRATI DISABLED=NO TEXT 3.0
-% END IF
-%%
-% LOOP
-%  VERIFY BXX BHH BADD BREM CADD CREM BOK UPDATE
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%  CASE VALUE
-%   BLOCK                      %BXX
-^^WI DISPOSE XLIST28
-^^CR
-%    FINISH
-%   END BLOCK
-%   BLOCK                      %BHH
-%    COPY '#SCRIPT XHELP1'
-
-This dialog allows unreliable or unwanted data to
-be removed from the refinement.
-One of the most commonly used measures of reliability 
-is the ratio of F (intensity of a reflection) to sigma(F)
-(the estimated standard deviation of that reflection).
-
-When initial data is merged before refinement, reflections
-with a low F/s(F) are usually in very bad agreement (due to
-the fact that they are imprecisely measured). The level at
-which you choose to cut your data may be determined by a plot
-of merging R at various F/s(F) levels.
-
-Recommended levels are up to about 4.0
-
-Increasing the rejection limit will reduce the number of data,
-therefore decreasing the reflection:parameter ratio. Also because
-you are rejecting data that is inconsistent *with itself*, the
-R-factor will drop.
-
-CRYSTALS does not throw away the reflections that you reject, merely
-ignores them in the refinement. You may return to this dialog at
-any time and change the rejection limit.
-
-Setting the rejection limit to zero will reject reflections
-with a negative intensity. To remove all rejection criteria type:
-#LIST 28
-END
-or uncheck all the boxes in the dialog.
-
-%    COPY '#SCRIPT XHELP2'
-%   END BLOCK
-%   BLOCK               %BADD
-%     EVALUATE NOMITS = NOMITS + 1
-%     CLEAR
-%     INSERT "^^WI    '"
-^^?? OMH TEXT
-%     GET NOSTORE SILENT INTEGER ' ' '0'
-%     STORE FORMAT /(I4)/ LENGTH 4 INTEGER VALUE
-^^?? OMK TEXT
-%     GET NOSTORE SILENT INTEGER ' ' '0'
-%     STORE FORMAT /(I4)/ LENGTH 4 INTEGER VALUE
-^^?? OML TEXT
-%     GET NOSTORE SILENT INTEGER ' ' '0'
-%     STORE FORMAT /(I4)/ LENGTH 4 INTEGER VALUE
-%     INSERT "' NULL"
-^^WI SET L28OMIT ADDTOLIST
-%     OUTPUT
-^^CR
-^^CO SET OMH TEXT '' SET OMK TEXT '' SET OML TEXT ''
-^^CO SET BREM DISABLED = NO
-%   END BLOCK
-%   BLOCK               %BREM
-^^?? L28OMIT SELECTED
-%     CLEAR
-%     INSERT "^^CO SET L28OMIT REMOVE "
-%     GET SILENT INTEGER ' ' '0'
-%     IF VALUE .GT. 0 .AND. NOMITS .GT. 0 THEN
-%       OUTPUT
-%       EVALUATE NOMITS = NOMITS - 1
-^^CO SET L28OMIT SELECTION=1
-%     END IF
-%     IF NOMITS .EQ. 0 THEN
-^^CO SET BREM DISABLED = YES
-%     END IF
-%   END BLOCK
-%   BLOCK               %CADD
-%     EVALUATE NINDCD = NINDCD + 1
-%     CLEAR
-%     INSERT "^^WI    '"
-^^??  OMU SELECTED
-%     VERIFY 1 2
-%     GET SILENT FINAL NOSTORE ABBREVIATED ' '
-%     CASE VALUE
-%       INSERT 'Reject'
-%       INSERT 'Accept'
-%     END CASE
-^^?? OMP TEXT
-%     GET NOSTORE SILENT INTEGER ' ' '0'
-%     STORE FORMAT /(I3)/ LENGTH 3 INTEGER VALUE
-%     STORE CHARACTER 'h +'
-^^?? OMQ TEXT
-%     GET NOSTORE SILENT INTEGER ' ' '0'
-%     STORE FORMAT /(I3)/ LENGTH 3 INTEGER VALUE
-%     STORE CHARACTER 'k +'
-^^?? OMR TEXT
-%     GET NOSTORE SILENT INTEGER ' ' '0'
-%     STORE FORMAT /(I3)/ LENGTH 3 INTEGER VALUE
-%     STORE CHARACTER 'l +'
-^^?? OMS TEXT
-%     GET NOSTORE SILENT INTEGER ' ' '0'
-%     STORE FORMAT /(I3)/ LENGTH 3 INTEGER VALUE
-%     STORE CHARACTER ' = '
-^^?? OMT TEXT
-%     GET NOSTORE SILENT INTEGER ' ' '0'
-%     STORE FORMAT /(I3)/ LENGTH 3 INTEGER VALUE
-%     STORE CHARACTER 'n'
-%     INSERT "' NULL"
-^^WI SET L28INDCD ADDTOLIST
-%     OUTPUT
-^^CR
-^^CO SET CREM DISABLED = NO
-%   END BLOCK
-%   BLOCK               %CREM
-^^?? L28INDCD SELECTED
-%     CLEAR
-%     INSERT "^^CO SET L28INDCD REMOVE "
-%     GET SILENT INTEGER ' ' '0'
-%     IF VALUE .GT. 0 .AND. NINDCD .GT. 0 THEN
-%       OUTPUT
-%       EVALUATE NINDCD = NINDCD - 1
-%     END IF
-%     IF NINDCD .EQ. 0 THEN
-^^CO SET CREM DISABLED = YES
-%     END IF
-%   END BLOCK
-%   BLOCK               %BOK
-{S Gathering data. Creating new list 28. Please wait.
-%    COPY '#LIST 28'
-%    COPY 'MINIMA'
-%%
-^^?? LBH STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      INSERT 'CONT H = '
-^^??   BH TEXT
-%      GET SILENT REAL ' ' '0.0'
-%      SEND
-%    END IF
-%%    
-^^?? LBK STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      INSERT 'CONT K= '
-^^??   BK TEXT
-%      GET SILENT REAL ' ' '0.0'
-%      SEND
-%    END IF
-%%    
-^^?? LBL STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      INSERT 'CONT L='
-^^??   BL TEXT
-%      GET SILENT REAL ' ' '0.0'
-%      SEND
-%    END IF
-%%    
-^^?? LBFO STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      INSERT 'CONT /FO/ = '
-^^??   BFO TEXT
-%      GET SILENT REAL ' ' '0.0'
-%      SEND
-%    END IF
-%%    
-^^?? LBFC STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      INSERT 'CONT /FC/ = '
-^^??   BFC TEXT
-%      GET SILENT REAL ' ' '0.0'
-%      SEND
-%    END IF
-%%    
-^^?? LBELEM STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      INSERT 'CONT ELEM = '
-^^??   BELEM TEXT
-%      GET SILENT REAL ' ' '0.0'
-%      SEND
-%    END IF
-%%    
-^^?? LBSGMA STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      INSERT 'CONT SIGMA = '
-^^??   BSGMA TEXT
-%      GET SILENT REAL ' ' '0.0'
-%      SEND
-%    END IF
-%%    
-^^?? LBPHAS STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      INSERT 'CONT PHASE = '
-^^??   BPHAS TEXT
-%      GET SILENT REAL ' ' '0.0'
-%      SEND
-%    END IF
-%%    
-^^?? LBRATI STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      INSERT 'CONT RATIO = '
-^^??   BRATI TEXT
-%      GET SILENT REAL ' ' '0.0'
-%      EVALUATE SIGMACUT = VALUE
-%      SEND
-%    END IF
-%%    
-^^?? LBSQRW STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      INSERT 'CONT SQRT = '
-^^??   BSQRW TEXT
-%      GET SILENT REAL ' ' '0.0'
-%      SEND
-%    END IF
-%%    
-^^?? LBTHET STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      INSERT 'CONT SINT = '
-^^??   BTHET TEXT
-%      GET SILENT REAL ' ' '0.0'
-%      SEND
-%    END IF
-%%    
-%    COPY 'MAXIMA'
-%%
-^^?? LTH STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      INSERT 'CONT H = '
-^^??   TH TEXT
-%      GET SILENT REAL ' ' '0.0'
-%      SEND
-%    END IF
-%%    
-^^?? LTK STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      INSERT 'CONT K= '
-^^??   TK TEXT
-%      GET SILENT REAL ' ' '0.0'
-%      SEND
-%    END IF
-%%    
-^^?? LTL STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      INSERT 'CONT L='
-^^??   TL TEXT
-%      GET SILENT REAL ' ' '0.0'
-%      SEND
-%    END IF
-%%    
-^^?? LTFO STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      INSERT 'CONT /FO/ = '
-^^??   TFO TEXT
-%      GET SILENT REAL ' ' '0.0'
-%      SEND
-%    END IF
-%%    
-^^?? LTFC STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      INSERT 'CONT /FC/ = '
-^^??   TFC TEXT
-%      GET SILENT REAL ' ' '0.0'
-%      SEND
-%    END IF
-%%    
-^^?? LTELEM STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      INSERT 'CONT ELEM = '
-^^??   TELEM TEXT
-%      GET SILENT REAL ' ' '0.0'
-%      SEND
-%    END IF
-%%    
-^^?? LTSGMA STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      INSERT 'CONT SIGMA = '
-^^??   TSGMA TEXT
-%      GET SILENT REAL ' ' '0.0'
-%      SEND
-%    END IF
-%%    
-^^?? LTPHAS STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      INSERT 'CONT PHASE = '
-^^??   TPHAS TEXT
-%      GET SILENT REAL ' ' '0.0'
-%      SEND
-%    END IF
-%%    
-^^?? LTRATI STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      INSERT 'CONT RATIO = '
-^^??   TRATI TEXT
-%      GET SILENT REAL ' ' '0.0'
-%      SEND
-%    END IF
-%%    
-^^?? LTSQRW STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      INSERT 'CONT SQRT = '
-^^??   TSQRW TEXT
-%      GET SILENT REAL ' ' '0.0'
-%      SEND
-%    END IF
-%%    
-^^?? LTTHET STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      INSERT 'CONT SINT = '
-^^??   TTHET TEXT
-%      GET SILENT REAL ' ' '0.0'
-%      SEND
-%    END IF
-%%
-%    IF ( NOMITS .GT. 0 ) .OR. ( NINDCD .GT. 0 ) THEN
-%      CLEAR
-%      INSERT 'READ NOMISSION='
-%      STORE FORMAT /(I5)/ LENGTH 5 INTEGER NOMITS
-%      INSERT ' NCOND='
-%      STORE FORMAT /(I5)/ LENGTH 5 INTEGER NINDCD
-%      SEND
-%    END IF
-%
-%%
-%    IF NOMITS .GT. 0 THEN
-%      LOOP NOMITS TIMES
-%        CLEAR
-%        INSERT "OMIT "
-% TRANSFER '^^?? L28OMIT LISTTEXT ' // CHARACTER ( LOOPCOUNTER ) TO DISPLAY
-%        GET TEXT ' ' '0 0 0'
-%        SEND
-%      END LOOP
-%    END IF
-%%
-%    IF NINDCD .GT. 0 THEN
-%      LOOP NINDCD TIMES
-%        CLEAR
-% TRANSFER '^^?? L28INDCD LISTTEXT ' // CHARACTER ( LOOPCOUNTER ) TO DISPLAY
-%        VERIFY ACCEPT REJECT
-%        GET NOSTORE KEYWORD 'Accept' 'Accept'
-%        EVALUATE CW = CVALUE
-%        INSERT "COND "
-%        GET NOSTORE KEYWORD ' ' '0'
-%        EVALUATE OMP = REAL FIRSTINT ( CVALUE )
-%        STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMP
-%        GET NOSTORE KEYWORD ' ' '0'
-%        GET NOSTORE KEYWORD ' ' '0'
-%        EVALUATE OMP = REAL FIRSTINT ( CVALUE )
-%        STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMP
-%        GET NOSTORE KEYWORD ' ' '0'
-%        GET NOSTORE KEYWORD ' ' '0'
-%        EVALUATE OMP = REAL FIRSTINT ( CVALUE )
-%        STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMP
-%        GET NOSTORE KEYWORD ' ' '0'
-%        GET NOSTORE KEYWORD ' ' '0'
-%        EVALUATE OMP = REAL FIRSTINT  ( CVALUE )
-%        STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMP
-%        GET NOSTORE KEYWORD ' ' '0'
-%        GET NOSTORE KEYWORD ' ' '0'
-%        EVALUATE OMP = REAL FIRSTINT ( CVALUE )
-%        STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMP
-%        INSERT 'TYPE='
-%        STORE CHARACTER CW
-%        SEND
-%      END LOOP
-%    END IF
-%%
-%    COPY 'END'
-^^WI DISPOSE XLIST28
-^^CR
-{S * Done. New List 28 (reflection filter conditions) created:
-%    COPY '#SUM L 28'
-%    COPY 'END'
-%%
-%    COPY '#GENERALEDIT 30'
-%    COPY 'LOCATE RECORDTYPE=103'
-%    COPY 'TRANSFER TO OFFSET = 3 FROM SIGMACUT'
-%    COPY 'WRITE OVERWRITE=OVERWRITE'
-%    COPY 'END'
-%    FINISH
-%   END BLOCK
-%   BLOCK % UPDATE - disable / undisable edit boxes as checkboxes change.
-%    VERIFY LTH LTK LTL LTFO LTFC LTELEM LTSGMA LTPHAS LTRATI LTSQRW LTTHET -
-            LBH LBK LBL LBFO LBFC LBELEM LBSGMA LBPHAS LBRATI LBSQRW LBTHET
-%    GET SILENT NOSTORE FINAL ABBREVIATED 'CB?' 'LBSQRW'
-%    CLEAR
-%    CASE VALUE
-%      INSERT '^^CO SET TH DISABLED='
-%      INSERT '^^CO SET TK DISABLED='
-%      INSERT '^^CO SET TL DISABLED='
-%      INSERT '^^CO SET TFO DISABLED='
-%      INSERT '^^CO SET TFC DISABLED='
-%      INSERT '^^CO SET TELEM DISABLED='
-%      INSERT '^^CO SET TSGMA DISABLED='
-%      INSERT '^^CO SET TPHAS DISABLED='
-%      INSERT '^^CO SET TRATI DISABLED='
-%      INSERT '^^CO SET TSQRW DISABLED='
-%      INSERT '^^CO SET TTHET DISABLED='
-%      INSERT '^^CO SET BH DISABLED='
-%      INSERT '^^CO SET BK DISABLED='
-%      INSERT '^^CO SET BL DISABLED='
-%      INSERT '^^CO SET BFO DISABLED='
-%      INSERT '^^CO SET BFC DISABLED='
-%      INSERT '^^CO SET BELEM DISABLED='
-%      INSERT '^^CO SET BSGMA DISABLED='
-%      INSERT '^^CO SET BPHAS DISABLED='
-%      INSERT '^^CO SET BRATI DISABLED='
-%      INSERT '^^CO SET BSQRW DISABLED='
-%      INSERT '^^CO SET BTHET DISABLED='
-%    END CASE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'ON'
-%    CASE VALUE
-%      INSERT 'NO'
-%      INSERT 'YES'
-%    END CASE
-%    OUTPUT
-%   END BLOCK
-%  END CASE
-% END LOOP
-%END SCRIPT
+%%                                                                              
+% IF ( EXISTS 28 .NE. 1 ) THEN                                                  
+%%   No list 28 - recommended defaults:                                         
+{R There are no conditions in the current list 28.                              
+%% FIND OUT IF F OR FSQ REFINEMENT                                              
+%    COPY '#GENERALEDIT 23'                                                     
+%    COPY 'LOCATE RECORDTYPE=103'                                               
+%    COPY 'TRANSFER FROM OFFSET=1 TO FTYPE'                                     
+%    COPY 'END'                                                                 
+%    evaluate ftype = ftype + 1                                                 
+%    COPY '#LIST 28'                                                            
+%    CLEAR                                                                      
+%    INSERT 'MINIMA '                                                           
+%    IF FTYPE .eq. 0 THEN                                                       
+{I For F refinement, a default I/u(I) minimum of 3.0 is recommended.            
+%      INSERT 'RATIO=3.0 '                                                      
+%    ELSE                                                                       
+{I For FSQ refinement, a default I/u(I) minimum of -3.0 is recommended.         
+%      INSERT 'RATIO=-3.0 '                                                     
+                                                                                
+%    END IF                                                                     
+{I A default sin(theta)/lambda minimum of 0.01 is recommended.                  
+%    INSERT 'SINT=0.01 '                                                        
+%    SEND                                                                       
+%    COPY 'END'                                                                 
+% END IF                                                                        
+%%                                                                              
+%%                                                                              
+^^WI WINDOW XLIST28 'Filter reflections' MODAL                                  
+^^WI COMMIT='BOK' CANCEL='BXX'                                                  
+^^WI GRID MAIN NROWS=7 NCOLS=3                                                  
+^^WI {                                                                          
+^^WI  @ 2,2 TABCTRL MOGULTABS                                                   
+^^WI  {                                                                         
+^^WI   TAB MGTAB0 'Ranges' GRID X28T NROWS=1 NCOLS=1                            
+^^WI   {                                                                        
+^^WI    @ 1,1 GRID M NROWS=11 NCOLS=9 COMMAND='UPDATE'                          
+^^WI         OUTLINE='Min and max acceptable limits'                            
+^^WI    {                                                                       
+^^WI     @ 1,1 STATIC SBH  'H'                                                  
+^^WI     @ 2,1 STATIC SBK  'K'                                                  
+^^WI     @ 3,1 STATIC SBL  'L'                                                  
+^^WI     @ 4,1 STATIC SBFO 'FObs'                                               
+^^WI     @ 5,1 STATIC SBFC 'FCalc'                                              
+^^WI     @ 6,1 STATIC SBELEM 'Twin Elements'                                    
+^^WI     @ 7,1 STATIC SBSG 'Sigma(Fo)'                                          
+^^WI     @ 8,1 STATIC SBPH 'Phase'                                              
+^^WI     @ 9,1 STATIC SBRA 'I/Sigma(I)'                                         
+^^WI     @ 10,1 STATIC SBSQ 'Sqrt(W)'                                           
+^^WI     @ 11,1 STATIC SBTH '[Sin theta/lambda]**2'                             
+^^WI     @ 1,3 CHECKBOX LBH    'is at least' STATE=OFF INFORM=YES               
+^^WI     @ 2,3 CHECKBOX LBK    'is at least' STATE=OFF INFORM=YES               
+^^WI     @ 3,3 CHECKBOX LBL    'is at least' STATE=OFF INFORM=YES               
+^^WI     @ 4,3 CHECKBOX LBFO   'is at least' STATE=OFF INFORM=YES               
+^^WI     @ 5,3 CHECKBOX LBFC   'is at least' STATE=OFF INFORM=YES               
+^^WI     @ 6,3 CHECKBOX LBELEM 'is at least' STATE=OFF INFORM=YES               
+^^WI     @ 7,3 CHECKBOX LBSGMA 'is at least' STATE=OFF INFORM=YES               
+^^WI     @ 8,3 CHECKBOX LBPHAS 'is at least' STATE=OFF INFORM=YES               
+^^WI     @ 9,3 CHECKBOX LBRATI 'is at least' STATE=OFF INFORM=YES               
+^^WI     @ 10,3 CHECKBOX LBSQRW 'is at least' STATE=OFF INFORM=YES              
+^^WI     @ 11,3 CHECKBOX LBTHET 'is at least' STATE=OFF INFORM=YES              
+^^WI     @ 1,5 EDITBOX BH    '' DISABLED = YES                                  
+^^WI     @ 2,5 EDITBOX BK    '' DISABLED = YES                                  
+^^WI     @ 3,5 EDITBOX BL    '' DISABLED = YES                                  
+^^WI     @ 4,5 EDITBOX BFO   '' DISABLED = YES                                  
+^^WI     @ 5,5 EDITBOX BFC   '' DISABLED = YES                                  
+^^WI     @ 6,5 EDITBOX BELEM '' DISABLED = YES                                  
+^^WI     @ 7,5 EDITBOX BSGMA '' DISABLED = YES                                  
+^^WI     @ 8,5 EDITBOX BPHAS '' DISABLED = YES                                  
+^^WI     @ 9,5 EDITBOX BRATI '' DISABLED = YES                                  
+^^WI     @ 10,5 EDITBOX BSQRW '' DISABLED = YES                                 
+^^WI     @ 11,5 EDITBOX BTHET '' DISABLED = YES                                 
+^^WI     @ 1,7 CHECKBOX LTH    'and is at most' STATE = OFF INFORM=YES          
+^^WI     @ 2,7 CHECKBOX LTK    'and is at most' STATE = OFF INFORM=YES          
+^^WI     @ 3,7 CHECKBOX LTL    'and is at most' STATE = OFF INFORM=YES          
+^^WI     @ 4,7 CHECKBOX LTFO   'and is at most' STATE = OFF INFORM=YES          
+^^WI     @ 5,7 CHECKBOX LTFC   'and is at most' STATE = OFF INFORM=YES          
+^^WI     @ 6,7 CHECKBOX LTELEM 'and is at most' STATE = OFF INFORM=YES          
+^^WI     @ 7,7 CHECKBOX LTSGMA 'and is at most' STATE = OFF INFORM=YES          
+^^WI     @ 8,7 CHECKBOX LTPHAS 'and is at most' STATE = OFF INFORM=YES          
+^^WI     @ 9,7 CHECKBOX LTRATI 'and is at most' STATE = OFF INFORM=YES          
+^^WI     @ 10,7 CHECKBOX LTSQRW 'and is at most' STATE = OFF INFORM=YES         
+^^WI     @ 11,7 CHECKBOX LTTHET 'and is at most' STATE = OFF INFORM=YES         
+^^WI     @ 1,9 EDITBOX TH    '' DISABLED = YES                                  
+^^WI     @ 2,9 EDITBOX TK    '' DISABLED = YES                                  
+^^WI     @ 3,9 EDITBOX TL    '' DISABLED = YES                                  
+^^WI     @ 4,9 EDITBOX TFO   '' DISABLED = YES                                  
+^^WI     @ 5,9 EDITBOX TFC   '' DISABLED = YES                                  
+^^WI     @ 6,9 EDITBOX TELEM '' DISABLED = YES                                  
+^^WI     @ 7,9 EDITBOX TSGMA '' DISABLED = YES                                  
+^^WI     @ 8,9 EDITBOX TPHAS '' DISABLED = YES                                  
+^^WI     @ 9,9 EDITBOX TRATI '' DISABLED = YES                                  
+^^WI     @ 10,9 EDITBOX TSQRW '' DISABLED = YES                                 
+^^WI     @ 11,9 EDITBOX TTHET '' DISABLED = YES                                 
+^^WI    }                                                                       
+^^WI   }                                                                        
+^^WI   TAB MGTAB0 'Omit' GRID X28T2 NROWS=1 NCOLS=1                             
+^^WI   {                                                                        
+^^WI    @ 1,1 GRID CONS NROWS=1 NCOLS=3                                         
+^^WI    {                                                                       
+^^WI     @ 1,1 GRID OMIT NROWS=5 NCOLS=1 OUTLINE='Omit'                         
+^^WI     {                                                                      
+^^WI       @ 5,1 LISTBOX L28OMIT VISLINES=4 ADDTOLIST                           
+%          BLOCK                                                                
+%          ON EDITERROR TERMINATE                                               
+%          COPY '#GENERALEDIT 28'                                               
+%          COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'              
+%          COPY 'LOCATE RECORDTYPE = 104'                                       
+%          COPY 'TOP'                                                           
+%          LOOP                                                                 
+%           ON EDITERROR TERMINATE                                              
+%           COPY 'TRANSFER FROM OFFSET = 0 TO OMH'                              
+%           COPY 'TRANSFER FROM OFFSET = 1 TO OMK'                              
+%           COPY 'TRANSFER FROM OFFSET = 2 TO OML'                              
+%           CLEAR                                                               
+%           INSERT "^^WI '"                                                     
+%           STORE FORMAT /(I4)/ LENGTH 4 INTEGER INTEGER OMH                    
+%           STORE FORMAT /(I4)/ LENGTH 4 INTEGER INTEGER OMK                    
+%           STORE FORMAT /(I4)/ LENGTH 4 INTEGER INTEGER OML                    
+%           INSERT "'"                                                          
+%           OUTPUT                                                              
+%           EVALUATE NOMITS = NOMITS + 1                                        
+%           COPY 'NEXT'                                                         
+%          END LOOP                                                             
+%          END BLOCK                                                            
+%          IF NOMITS .GT. 0 THEN                                                
+^^WI        NULL                                                                
+%          ELSE                                                                 
+^^WI        '  0   0   0 ' NULL                                                 
+%          END IF                                                               
+%          COPY 'END'                                                           
+^^WI       @ 3,1 GRID OMITB NROWS=1 NCOLS=3                                     
+^^WI       {                                                                    
+^^WI         @ 1,1 BUTTON BADD 'Add'                                            
+^^WI         @ 1,3 BUTTON BREM 'Remove'                                         
+%            IF NOMITS .EQ. 0 THEN                                              
+^^WI           DISABLED = YES                                                   
+%            END IF                                                             
+^^WI       }                                                                    
+^^WI       @ 1,1 GRID OMITI NROWS=1 NCOLS=8                                     
+^^WI       {                                                                    
+^^WI         @ 1,1 EDITBOX OMH '' CHARS=5                                       
+^^WI         @ 1,2 STATIC OMHT ' h'                                             
+^^WI         @ 1,4 EDITBOX OMK '' CHARS=5                                       
+^^WI         @ 1,5 STATIC OMHT ' k'                                             
+^^WI         @ 1,7 EDITBOX OML '' CHARS=5                                       
+^^WI         @ 1,8 STATIC OMHT ' l'                                             
+^^WI       }                                                                    
+^^WI     }                                                                      
+%%                                                                              
+%%                                                                              
+^^WI     @ 1,3 GRID OMIT NROWS=6 NCOLS=1 OUTLINE='Index conditions'             
+^^WI     {                                                                      
+^^WI @ 5,1 STATIC T1 'Conditions tested in order, until a match occurs.'        
+^^WI       @ 6,1 STATIC T2 'If no matches, refln is accepted.'                  
+^^WI       @ 3,1 LISTBOX L28INDCD VISLINES=4 ADDTOLIST                          
+%          BLOCK                                                                
+%          ON EDITERROR TERMINATE                                               
+%          COPY '#GENERALEDIT 28'                                               
+%          COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'              
+%          COPY 'LOCATE RECORDTYPE = 105'                                       
+%          COPY 'TOP'                                                           
+%          LOOP                                                                 
+%           ON EDITERROR TERMINATE                                              
+%           COPY 'TRANSFER FROM OFFSET = 0 TO OMP'                              
+%           COPY 'TRANSFER FROM OFFSET = 1 TO OMQ'                              
+%           COPY 'TRANSFER FROM OFFSET = 2 TO OMR'                              
+%           COPY 'TRANSFER FROM OFFSET = 3 TO OMS'                              
+%           COPY 'TRANSFER FROM OFFSET = 4 TO OMT'                              
+%           COPY 'TRANSFER FROM OFFSET = 5 TO OMU'                              
+%           CLEAR                                                               
+%           INSERT "^^WI '"                                                     
+%           CASE OMU + 1                                                        
+%             INSERT 'Reject'                                                   
+%             INSERT 'Accept'                                                   
+%           END CASE                                                            
+%%                                                                              
+%           STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMP                    
+%           STORE CHARACTER 'h +'                                               
+%           STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMQ                    
+%           STORE CHARACTER 'k +'                                               
+%           STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMR                    
+%           STORE CHARACTER 'l +'                                               
+%           STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMS                    
+%           STORE CHARACTER ' ='                                                
+%           STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMT                    
+%           STORE CHARACTER 'n'                                                 
+%           INSERT "'"                                                          
+%           OUTPUT                                                              
+%           EVALUATE NINDCD = NINDCD + 1                                        
+%           COPY 'NEXT'                                                         
+%          END LOOP                                                             
+%          END BLOCK                                                            
+%%          IF NINDCD .GT. 0 THEN                                               
+^^WI        'NULL'                                                              
+%%          END IF                                                              
+%          COPY 'END'                                                           
+^^WI       @ 1,1 GRID OMITI NROWS=3 NCOLS=1                                     
+^^WI       {                                                                    
+^^WI         @ 1,1 GRID OMITC NROWS=1 NCOLS=10                                  
+^^WI         {                                                                  
+^^WI           @ 1,1 EDITBOX OMP '' CHARS=5                                     
+^^WI           @ 1,2 STATIC OMPT ' h + '                                        
+^^WI           @ 1,3 EDITBOX OMQ '' CHARS=5                                     
+^^WI           @ 1,4 STATIC OMPT ' k + '                                        
+^^WI           @ 1,5 EDITBOX OMR '' CHARS=5                                     
+^^WI           @ 1,6 STATIC OMPT ' l + '                                        
+^^WI           @ 1,7 EDITBOX OMS '' CHARS=5                                     
+^^WI           @ 1,8 STATIC OMPT ' = '                                          
+^^WI           @ 1,9 EDITBOX OMT '' CHARS=5                                     
+^^WI           @ 1,10 STATIC OMPT ' n'                                          
+^^WI         }                                                                  
+^^WI         @ 3,1 GRID OMITD NROWS=1 NCOLS=5                                   
+^^WI         {                                                                  
+^^WI           @ 1,1 DROPDOWN OMU                                               
+^^WI           ADDTOLIST 'Reject' 'Accept' 'NULL'                               
+^^WI           @ 1,3 BUTTON CADD 'Add'                                          
+^^WI           @ 1,5 BUTTON CREM 'Remove'                                       
+%              IF NINDCD .EQ. 0 THEN                                            
+^^WI             DISABLED = YES                                                 
+%              END IF                                                           
+^^WI         }                                                                  
+^^WI       }                                                                    
+^^WI     }                                                                      
+^^WI    }                                                                       
+^^WI   }                                                                        
+^^WI   @ 4,2 GRID ADVISE NROWS=4 NCOLS=1 OUTLINE='Recommended settings'         
+^^WI   {                                                                        
+^^WI     @ 1,1 STATIC SBH                                                       
+^^WI 'Min I/sigma(I) should usually be about 3.0 for initial F refinement.'     
+^^WI     @ 2,1 STATIC SBH                                                       
+^^WI 'For F**2 refinement a minimum I/sigma(I)=-3.0 eliminates outliers.'       
+^^WI     @ 3,1 STATIC SBH                                                       
+^^WI '[Sin theta/lambda]**2 at least 0.01 helps to eliminate reflections'       
+^^WI     @ 4,1 STATIC SBH                                                       
+^^WI 'that may be poorly measured in the vicinity of the beam stop.'            
+^^WI   }                                                                        
+^^WI   @ 6,2 GRID RIGHT NROWS=1 NCOLS=8                                         
+^^WI   {                                                                        
+^^WI     @ 1,1 STRETCH SSS HORIZONTAL                                           
+^^WI     @ 1,4 BUTTON BOK '&OK' COMMIT DEFAULT                                  
+^^WI     @ 1,6 BUTTON BXX '&Cancel' CANCEL                                      
+^^WI     @ 1,8 BUTTON BHH '&Help'                                               
+^^WI   }                                                                        
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+% IF NOMITS .EQ. 0 THEN                                                         
+^^CO SET L28OMIT REMOVE 1                                                       
+% END IF                                                                        
+% BLOCK                                                                         
+%  BLOCK                                                                        
+%   ON ERROR TERMINATE                                                          
+%   ON EDITERROR TERMINATE                                                      
+%   COPY '#GENERALEDIT 28'                                                      
+%   COPY 'LOCATE RECORDTYPE = 1101'                                             
+%   COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'           
+%   COPY 'TOP'                                                                  
+%   EVALUATE NCONDS = NCONDS + 1                                                
+%   LOOP                                                                        
+%     ON EDITERROR TERMINATE                                                    
+%     ON ERROR TERMINATE                                                        
+%     COPY 'TRANSFER FROM OFFSET=0 TO CW'                                       
+%     COPY 'TRANSFER FROM OFFSET=3 TO RW'                                       
+%     IF ( CW STARTSWITH 'H   ' ) THEN                                          
+%       CLEAR                                                                   
+%       INSERT '^^CO SET LBH STATE=ON SET BH DISABLED=NO TEXT '                 
+%       STORE FORMAT '(I5)' LENGTH 5 INTEGER INTEGER RW                         
+%       OUTPUT                                                                  
+%     ELSE IF ( CW STARTSWITH 'K   ' ) THEN                                     
+%       CLEAR                                                                   
+%       INSERT '^^CO SET LBK STATE=ON SET BK DISABLED=NO TEXT '                 
+%       STORE FORMAT '(I5)' LENGTH 5 INTEGER INTEGER RW                         
+%       OUTPUT                                                                  
+%     ELSE IF ( CW STARTSWITH 'L   ' ) THEN                                     
+%       CLEAR                                                                   
+%       INSERT '^^CO SET LBL STATE=ON SET BL DISABLED=NO TEXT '                 
+%       STORE FORMAT '(I5)' LENGTH 5 INTEGER INTEGER RW                         
+%       OUTPUT                                                                  
+%     ELSE IF ( CW STARTSWITH '/FO/' ) THEN                                     
+%       CLEAR                                                                   
+%       INSERT '^^CO SET LBFO STATE=ON SET BFO DISABLED=NO TEXT '               
+%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW                                
+%       OUTPUT                                                                  
+%     ELSE IF ( CW STARTSWITH '/FC/' ) THEN                                     
+%       CLEAR                                                                   
+%       INSERT '^^CO SET LBFC STATE=ON SET BFC DISABLED=NO TEXT '               
+%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW                                
+%       OUTPUT                                                                  
+%     ELSE IF ( CW STARTSWITH 'ELEM' ) THEN                                     
+%       CLEAR                                                                   
+%       INSERT '^^CO SET LBELEM STATE=ON SET BELEM DISABLED=NO TEXT '           
+%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW                                
+%       OUTPUT                                                                  
+%     ELSE IF ( CW STARTSWITH 'SIGM' ) THEN                                     
+%       CLEAR                                                                   
+%       INSERT '^^CO SET LBSGMA STATE=ON SET BSGMA DISABLED=NO TEXT '           
+%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW                                
+%       OUTPUT                                                                  
+%     ELSE IF ( CW STARTSWITH 'PHAS' ) THEN                                     
+%       CLEAR                                                                   
+%       INSERT '^^CO SET LBPHAS STATE=ON SET BPHAS DISABLED=NO TEXT '           
+%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW                                
+%       OUTPUT                                                                  
+%     ELSE IF ( CW STARTSWITH 'RATI' ) THEN                                     
+%       CLEAR                                                                   
+%       INSERT '^^CO SET LBRATI STATE=ON SET BRATI DISABLED=NO TEXT '           
+%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW                                
+%       OUTPUT                                                                  
+%     ELSE IF ( CW STARTSWITH 'SQRT' ) THEN                                     
+%       CLEAR                                                                   
+%       INSERT '^^CO SET LBSQRW STATE=ON SET BSQRW DISABLED=NO TEXT '           
+%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW                                
+%       OUTPUT                                                                  
+%     ELSE IF ( CW STARTSWITH 'SINT' ) THEN                                     
+%       CLEAR                                                                   
+%       INSERT '^^CO SET LBTHET STATE=ON SET BTHET DISABLED=NO TEXT '           
+%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW                                
+%       OUTPUT                                                                  
+%     END IF                                                                    
+%     COPY 'NEXT'                                                               
+%     EVALUATE NCONDS = NCONDS + 1                                              
+%   END LOOP                                                                    
+%  END BLOCK                                                                    
+%  BLOCK                                                                        
+%   ON ERROR TERMINATE                                                          
+%   ON EDITERROR TERMINATE                                                      
+%   COPY 'LOCATE RECORDTYPE = 1102'                                             
+%   COPY 'TOP'                                                                  
+%   EVALUATE NCONDS = NCONDS + 1                                                
+%   LOOP                                                                        
+%     ON EDITERROR TERMINATE                                                    
+%     ON ERROR TERMINATE                                                        
+%     COPY 'TRANSFER FROM OFFSET=0 TO CW'                                       
+%     COPY 'TRANSFER FROM OFFSET=3 TO RW'                                       
+%     IF ( CW STARTSWITH 'H   ' ) THEN                                          
+%       CLEAR                                                                   
+%       INSERT '^^CO SET LTH STATE=ON SET TH DISABLED=NO TEXT '                 
+%       STORE FORMAT '(I5)' LENGTH 5 INTEGER INTEGER RW                         
+%       OUTPUT                                                                  
+%     ELSE IF ( CW STARTSWITH 'K   ' ) THEN                                     
+%       CLEAR                                                                   
+%       INSERT '^^CO SET LTK STATE=ON SET TK DISABLED=NO TEXT '                 
+%       STORE FORMAT '(I5)' LENGTH 5 INTEGER INTEGER RW                         
+%       OUTPUT                                                                  
+%     ELSE IF ( CW STARTSWITH 'L   ' ) THEN                                     
+%       CLEAR                                                                   
+%       INSERT '^^CO SET LTL STATE=ON SET TL DISABLED=NO TEXT '                 
+%       STORE FORMAT '(I5)' LENGTH 5 INTEGER INTEGER RW                         
+%       OUTPUT                                                                  
+%     ELSE IF ( CW STARTSWITH '/FO/' ) THEN                                     
+%       CLEAR                                                                   
+%       INSERT '^^CO SET LTFO STATE=ON SET TFO DISABLED=NO TEXT '               
+%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW                                
+%       OUTPUT                                                                  
+%     ELSE IF ( CW STARTSWITH '/FC/' ) THEN                                     
+%       CLEAR                                                                   
+%       INSERT '^^CO SET LTFC STATE=ON SET TFC DISABLED=NO TEXT '               
+%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW                                
+%       OUTPUT                                                                  
+%     ELSE IF ( CW STARTSWITH 'ELEM' ) THEN                                     
+%       CLEAR                                                                   
+%       INSERT '^^CO SET LTELEM STATE=ON SET TELEM DISABLED=NO TEXT '           
+%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW                                
+%       OUTPUT                                                                  
+%     ELSE IF ( CW STARTSWITH 'SIGM' ) THEN                                     
+%       CLEAR                                                                   
+%       INSERT '^^CO SET LTSGMA STATE=ON SET TSGMA DISABLED=NO TEXT '           
+%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW                                
+%       OUTPUT                                                                  
+%     ELSE IF ( CW STARTSWITH 'PHAS' ) THEN                                     
+%       CLEAR                                                                   
+%       INSERT '^^CO SET LTPHAS STATE=ON SET TPHAS DISABLED=NO TEXT '           
+%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW                                
+%       OUTPUT                                                                  
+%     ELSE IF ( CW STARTSWITH 'RATI' ) THEN                                     
+%       CLEAR                                                                   
+%       INSERT '^^CO SET LTRATI STATE=ON SET TRATI DISABLED=NO TEXT '           
+%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW                                
+%       OUTPUT                                                                  
+%     ELSE IF ( CW STARTSWITH 'SQRT' ) THEN                                     
+%       CLEAR                                                                   
+%       INSERT '^^CO SET LTSQRW STATE=ON SET TSQRW DISABLED=NO TEXT '           
+%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW                                
+%       OUTPUT                                                                  
+%     ELSE IF ( CW STARTSWITH 'SINT' ) THEN                                     
+%       CLEAR                                                                   
+%       INSERT '^^CO SET LTTHET STATE=ON SET TTHET DISABLED=NO TEXT '           
+%       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW                                
+%       OUTPUT                                                                  
+%     END IF                                                                    
+%     COPY 'NEXT'                                                               
+%     EVALUATE NCONDS = NCONDS + 1                                              
+%   END LOOP                                                                    
+% END BLOCK                                                                     
+% COPY 'END'                                                                    
+% IF ( LNEWRAT ) THEN                                                           
+%   CLEAR                                                                       
+%   INSERT '^^CO SET LBRATI STATE=ON SET BRATI DISABLED=NO TEXT '               
+%   STORE FORMAT '(F10.4)' LENGTH 10 REAL NEWRAT                                
+%   OUTPUT                                                                      
+%   EVALUATE NCONDS = 1                                                         
+% END IF                                                                        
+% IF ( LNEWRHO ) THEN                                                           
+%   CLEAR                                                                       
+%   INSERT '^^CO SET LTTHET STATE=ON SET TTHET DISABLED=NO TEXT '               
+%   STORE FORMAT '(F10.4)' LENGTH 10 REAL NEWRHO                                
+%   OUTPUT                                                                      
+%   EVALUATE NCONDS = 1                                                         
+% END IF                                                                        
+% IF ( NCONDS .EQ. 0 ) THEN                                                     
+{I No filter conditions found in List 28                                        
+%% {I I/sigma(I) ratio of three will be set by default.                         
+%% ^^CO SET LBRATI STATE=ON SET BRATI DISABLED=NO TEXT 3.0                      
+% END IF                                                                        
+%%                                                                              
+% LOOP                                                                          
+%  VERIFY BXX BHH BADD BREM CADD CREM BOK UPDATE                                
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%  CASE VALUE                                                                   
+%   BLOCK                      %BXX                                             
+^^WI DISPOSE XLIST28                                                            
+^^CR                                                                            
+%    FINISH                                                                     
+%   END BLOCK                                                                   
+%   BLOCK                      %BHH                                             
+%    COPY '#SCRIPT XHELP1'                                                      
+                                                                                
+This dialog allows unreliable or unwanted data to                               
+be removed from the refinement.                                                 
+One of the most commonly used measures of reliability                           
+is the ratio of F (intensity of a reflection) to sigma(F)                       
+(the estimated standard deviation of that reflection).                          
+                                                                                
+When initial data is merged before refinement, reflections                      
+with a low F/s(F) are usually in very bad agreement (due to                     
+the fact that they are imprecisely measured). The level at                      
+which you choose to cut your data may be determined by a plot                   
+of merging R at various F/s(F) levels.                                          
+                                                                                
+Recommended levels are up to about 4.0                                          
+                                                                                
+Increasing the rejection limit will reduce the number of data,                  
+therefore decreasing the reflection:parameter ratio. Also because               
+you are rejecting data that is inconsistent *with itself*, the                  
+R-factor will drop.                                                             
+                                                                                
+CRYSTALS does not throw away the reflections that you reject, merely            
+ignores them in the refinement. You may return to this dialog at                
+any time and change the rejection limit.                                        
+                                                                                
+Setting the rejection limit to zero will reject reflections                     
+with a negative intensity. To remove all rejection criteria type:               
+#LIST 28                                                                        
+END                                                                             
+or uncheck all the boxes in the dialog.                                         
+                                                                                
+%    COPY '#SCRIPT XHELP2'                                                      
+%   END BLOCK                                                                   
+%   BLOCK               %BADD                                                   
+%     EVALUATE NOMITS = NOMITS + 1                                              
+%     CLEAR                                                                     
+%     INSERT "^^WI    '"                                                        
+^^?? OMH TEXT                                                                   
+%     GET NOSTORE SILENT INTEGER ' ' '0'                                        
+%     STORE FORMAT /(I4)/ LENGTH 4 INTEGER VALUE                                
+^^?? OMK TEXT                                                                   
+%     GET NOSTORE SILENT INTEGER ' ' '0'                                        
+%     STORE FORMAT /(I4)/ LENGTH 4 INTEGER VALUE                                
+^^?? OML TEXT                                                                   
+%     GET NOSTORE SILENT INTEGER ' ' '0'                                        
+%     STORE FORMAT /(I4)/ LENGTH 4 INTEGER VALUE                                
+%     INSERT "' NULL"                                                           
+^^WI SET L28OMIT ADDTOLIST                                                      
+%     OUTPUT                                                                    
+^^CR                                                                            
+^^CO SET OMH TEXT '' SET OMK TEXT '' SET OML TEXT ''                            
+^^CO SET BREM DISABLED = NO                                                     
+%   END BLOCK                                                                   
+%   BLOCK               %BREM                                                   
+^^?? L28OMIT SELECTED                                                           
+%     CLEAR                                                                     
+%     INSERT "^^CO SET L28OMIT REMOVE "                                         
+%     GET SILENT INTEGER ' ' '0'                                                
+%     IF VALUE .GT. 0 .AND. NOMITS .GT. 0 THEN                                  
+%       OUTPUT                                                                  
+%       EVALUATE NOMITS = NOMITS - 1                                            
+^^CO SET L28OMIT SELECTION=1                                                    
+%     END IF                                                                    
+%     IF NOMITS .EQ. 0 THEN                                                     
+^^CO SET BREM DISABLED = YES                                                    
+%     END IF                                                                    
+%   END BLOCK                                                                   
+%   BLOCK               %CADD                                                   
+%     EVALUATE NINDCD = NINDCD + 1                                              
+%     CLEAR                                                                     
+%     INSERT "^^WI    '"                                                        
+^^??  OMU SELECTED                                                              
+%     VERIFY 1 2                                                                
+%     GET SILENT FINAL NOSTORE ABBREVIATED ' '                                  
+%     CASE VALUE                                                                
+%       INSERT 'Reject'                                                         
+%       INSERT 'Accept'                                                         
+%     END CASE                                                                  
+^^?? OMP TEXT                                                                   
+%     GET NOSTORE SILENT INTEGER ' ' '0'                                        
+%     STORE FORMAT /(I3)/ LENGTH 3 INTEGER VALUE                                
+%     STORE CHARACTER 'h +'                                                     
+^^?? OMQ TEXT                                                                   
+%     GET NOSTORE SILENT INTEGER ' ' '0'                                        
+%     STORE FORMAT /(I3)/ LENGTH 3 INTEGER VALUE                                
+%     STORE CHARACTER 'k +'                                                     
+^^?? OMR TEXT                                                                   
+%     GET NOSTORE SILENT INTEGER ' ' '0'                                        
+%     STORE FORMAT /(I3)/ LENGTH 3 INTEGER VALUE                                
+%     STORE CHARACTER 'l +'                                                     
+^^?? OMS TEXT                                                                   
+%     GET NOSTORE SILENT INTEGER ' ' '0'                                        
+%     STORE FORMAT /(I3)/ LENGTH 3 INTEGER VALUE                                
+%     STORE CHARACTER ' = '                                                     
+^^?? OMT TEXT                                                                   
+%     GET NOSTORE SILENT INTEGER ' ' '0'                                        
+%     STORE FORMAT /(I3)/ LENGTH 3 INTEGER VALUE                                
+%     STORE CHARACTER 'n'                                                       
+%     INSERT "' NULL"                                                           
+^^WI SET L28INDCD ADDTOLIST                                                     
+%     OUTPUT                                                                    
+^^CR                                                                            
+^^CO SET CREM DISABLED = NO                                                     
+%   END BLOCK                                                                   
+%   BLOCK               %CREM                                                   
+^^?? L28INDCD SELECTED                                                          
+%     CLEAR                                                                     
+%     INSERT "^^CO SET L28INDCD REMOVE "                                        
+%     GET SILENT INTEGER ' ' '0'                                                
+%     IF VALUE .GT. 0 .AND. NINDCD .GT. 0 THEN                                  
+%       OUTPUT                                                                  
+%       EVALUATE NINDCD = NINDCD - 1                                            
+%     END IF                                                                    
+%     IF NINDCD .EQ. 0 THEN                                                     
+^^CO SET CREM DISABLED = YES                                                    
+%     END IF                                                                    
+%   END BLOCK                                                                   
+%   BLOCK               %BOK                                                    
+{S Gathering data. Creating new list 28. Please wait.                           
+%    COPY '#LIST 28'                                                            
+%    COPY 'MINIMA'                                                              
+%%                                                                              
+^^?? LBH STATE                                                                  
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
+%    IF VALUE .EQ. 1 THEN                                                       
+%      CLEAR                                                                    
+%      INSERT 'CONT H = '                                                       
+^^??   BH TEXT                                                                  
+%      GET SILENT REAL ' ' '0.0'                                                
+%      SEND                                                                     
+%    END IF                                                                     
+%%                                                                              
+^^?? LBK STATE                                                                  
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
+%    IF VALUE .EQ. 1 THEN                                                       
+%      CLEAR                                                                    
+%      INSERT 'CONT K= '                                                        
+^^??   BK TEXT                                                                  
+%      GET SILENT REAL ' ' '0.0'                                                
+%      SEND                                                                     
+%    END IF                                                                     
+%%                                                                              
+^^?? LBL STATE                                                                  
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
+%    IF VALUE .EQ. 1 THEN                                                       
+%      CLEAR                                                                    
+%      INSERT 'CONT L='                                                         
+^^??   BL TEXT                                                                  
+%      GET SILENT REAL ' ' '0.0'                                                
+%      SEND                                                                     
+%    END IF                                                                     
+%%                                                                              
+^^?? LBFO STATE                                                                 
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
+%    IF VALUE .EQ. 1 THEN                                                       
+%      CLEAR                                                                    
+%      INSERT 'CONT /FO/ = '                                                    
+^^??   BFO TEXT                                                                 
+%      GET SILENT REAL ' ' '0.0'                                                
+%      SEND                                                                     
+%    END IF                                                                     
+%%                                                                              
+^^?? LBFC STATE                                                                 
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
+%    IF VALUE .EQ. 1 THEN                                                       
+%      CLEAR                                                                    
+%      INSERT 'CONT /FC/ = '                                                    
+^^??   BFC TEXT                                                                 
+%      GET SILENT REAL ' ' '0.0'                                                
+%      SEND                                                                     
+%    END IF                                                                     
+%%                                                                              
+^^?? LBELEM STATE                                                               
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
+%    IF VALUE .EQ. 1 THEN                                                       
+%      CLEAR                                                                    
+%      INSERT 'CONT ELEM = '                                                    
+^^??   BELEM TEXT                                                               
+%      GET SILENT REAL ' ' '0.0'                                                
+%      SEND                                                                     
+%    END IF                                                                     
+%%                                                                              
+^^?? LBSGMA STATE                                                               
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
+%    IF VALUE .EQ. 1 THEN                                                       
+%      CLEAR                                                                    
+%      INSERT 'CONT SIGMA = '                                                   
+^^??   BSGMA TEXT                                                               
+%      GET SILENT REAL ' ' '0.0'                                                
+%      SEND                                                                     
+%    END IF                                                                     
+%%                                                                              
+^^?? LBPHAS STATE                                                               
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
+%    IF VALUE .EQ. 1 THEN                                                       
+%      CLEAR                                                                    
+%      INSERT 'CONT PHASE = '                                                   
+^^??   BPHAS TEXT                                                               
+%      GET SILENT REAL ' ' '0.0'                                                
+%      SEND                                                                     
+%    END IF                                                                     
+%%                                                                              
+^^?? LBRATI STATE                                                               
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
+%    IF VALUE .EQ. 1 THEN                                                       
+%      CLEAR                                                                    
+%      INSERT 'CONT RATIO = '                                                   
+^^??   BRATI TEXT                                                               
+%      GET SILENT REAL ' ' '0.0'                                                
+%      EVALUATE SIGMACUT = VALUE                                                
+%      SEND                                                                     
+%    END IF                                                                     
+%%                                                                              
+^^?? LBSQRW STATE                                                               
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
+%    IF VALUE .EQ. 1 THEN                                                       
+%      CLEAR                                                                    
+%      INSERT 'CONT SQRT = '                                                    
+^^??   BSQRW TEXT                                                               
+%      GET SILENT REAL ' ' '0.0'                                                
+%      SEND                                                                     
+%    END IF                                                                     
+%%                                                                              
+^^?? LBTHET STATE                                                               
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
+%    IF VALUE .EQ. 1 THEN                                                       
+%      CLEAR                                                                    
+%      INSERT 'CONT SINT = '                                                    
+^^??   BTHET TEXT                                                               
+%      GET SILENT REAL ' ' '0.0'                                                
+%      SEND                                                                     
+%    END IF                                                                     
+%%                                                                              
+%    COPY 'MAXIMA'                                                              
+%%                                                                              
+^^?? LTH STATE                                                                  
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
+%    IF VALUE .EQ. 1 THEN                                                       
+%      CLEAR                                                                    
+%      INSERT 'CONT H = '                                                       
+^^??   TH TEXT                                                                  
+%      GET SILENT REAL ' ' '0.0'                                                
+%      SEND                                                                     
+%    END IF                                                                     
+%%                                                                              
+^^?? LTK STATE                                                                  
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
+%    IF VALUE .EQ. 1 THEN                                                       
+%      CLEAR                                                                    
+%      INSERT 'CONT K= '                                                        
+^^??   TK TEXT                                                                  
+%      GET SILENT REAL ' ' '0.0'                                                
+%      SEND                                                                     
+%    END IF                                                                     
+%%                                                                              
+^^?? LTL STATE                                                                  
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
+%    IF VALUE .EQ. 1 THEN                                                       
+%      CLEAR                                                                    
+%      INSERT 'CONT L='                                                         
+^^??   TL TEXT                                                                  
+%      GET SILENT REAL ' ' '0.0'                                                
+%      SEND                                                                     
+%    END IF                                                                     
+%%                                                                              
+^^?? LTFO STATE                                                                 
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
+%    IF VALUE .EQ. 1 THEN                                                       
+%      CLEAR                                                                    
+%      INSERT 'CONT /FO/ = '                                                    
+^^??   TFO TEXT                                                                 
+%      GET SILENT REAL ' ' '0.0'                                                
+%      SEND                                                                     
+%    END IF                                                                     
+%%                                                                              
+^^?? LTFC STATE                                                                 
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
+%    IF VALUE .EQ. 1 THEN                                                       
+%      CLEAR                                                                    
+%      INSERT 'CONT /FC/ = '                                                    
+^^??   TFC TEXT                                                                 
+%      GET SILENT REAL ' ' '0.0'                                                
+%      SEND                                                                     
+%    END IF                                                                     
+%%                                                                              
+^^?? LTELEM STATE                                                               
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
+%    IF VALUE .EQ. 1 THEN                                                       
+%      CLEAR                                                                    
+%      INSERT 'CONT ELEM = '                                                    
+^^??   TELEM TEXT                                                               
+%      GET SILENT REAL ' ' '0.0'                                                
+%      SEND                                                                     
+%    END IF                                                                     
+%%                                                                              
+^^?? LTSGMA STATE                                                               
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
+%    IF VALUE .EQ. 1 THEN                                                       
+%      CLEAR                                                                    
+%      INSERT 'CONT SIGMA = '                                                   
+^^??   TSGMA TEXT                                                               
+%      GET SILENT REAL ' ' '0.0'                                                
+%      SEND                                                                     
+%    END IF                                                                     
+%%                                                                              
+^^?? LTPHAS STATE                                                               
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
+%    IF VALUE .EQ. 1 THEN                                                       
+%      CLEAR                                                                    
+%      INSERT 'CONT PHASE = '                                                   
+^^??   TPHAS TEXT                                                               
+%      GET SILENT REAL ' ' '0.0'                                                
+%      SEND                                                                     
+%    END IF                                                                     
+%%                                                                              
+^^?? LTRATI STATE                                                               
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
+%    IF VALUE .EQ. 1 THEN                                                       
+%      CLEAR                                                                    
+%      INSERT 'CONT RATIO = '                                                   
+^^??   TRATI TEXT                                                               
+%      GET SILENT REAL ' ' '0.0'                                                
+%      SEND                                                                     
+%    END IF                                                                     
+%%                                                                              
+^^?? LTSQRW STATE                                                               
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
+%    IF VALUE .EQ. 1 THEN                                                       
+%      CLEAR                                                                    
+%      INSERT 'CONT SQRT = '                                                    
+^^??   TSQRW TEXT                                                               
+%      GET SILENT REAL ' ' '0.0'                                                
+%      SEND                                                                     
+%    END IF                                                                     
+%%                                                                              
+^^?? LTTHET STATE                                                               
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
+%    IF VALUE .EQ. 1 THEN                                                       
+%      CLEAR                                                                    
+%      INSERT 'CONT SINT = '                                                    
+^^??   TTHET TEXT                                                               
+%      GET SILENT REAL ' ' '0.0'                                                
+%      SEND                                                                     
+%    END IF                                                                     
+%%                                                                              
+%    IF ( NOMITS .GT. 0 ) .OR. ( NINDCD .GT. 0 ) THEN                           
+%      CLEAR                                                                    
+%      INSERT 'READ NOMISSION='                                                 
+%      STORE FORMAT /(I5)/ LENGTH 5 INTEGER NOMITS                              
+%      INSERT ' NCOND='                                                         
+%      STORE FORMAT /(I5)/ LENGTH 5 INTEGER NINDCD                              
+%      SEND                                                                     
+%    END IF                                                                     
+%                                                                               
+%%                                                                              
+%    IF NOMITS .GT. 0 THEN                                                      
+%      LOOP NOMITS TIMES                                                        
+%        CLEAR                                                                  
+%        INSERT "OMIT "                                                         
+% TRANSFER '^^?? L28OMIT LISTTEXT ' // CHARACTER ( LOOPCOUNTER ) TO DISPLAY     
+%        GET TEXT ' ' '0 0 0'                                                   
+%        SEND                                                                   
+%      END LOOP                                                                 
+%    END IF                                                                     
+%%                                                                              
+%    IF NINDCD .GT. 0 THEN                                                      
+%      LOOP NINDCD TIMES                                                        
+%        CLEAR                                                                  
+% TRANSFER '^^?? L28INDCD LISTTEXT ' // CHARACTER ( LOOPCOUNTER ) TO DISPLAY    
+%        VERIFY ACCEPT REJECT                                                   
+%        GET NOSTORE KEYWORD 'Accept' 'Accept'                                  
+%        EVALUATE CW = CVALUE                                                   
+%        INSERT "COND "                                                         
+%        GET NOSTORE KEYWORD ' ' '0'                                            
+%        EVALUATE OMP = REAL FIRSTINT ( CVALUE )                                
+%        STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMP                       
+%        GET NOSTORE KEYWORD ' ' '0'                                            
+%        GET NOSTORE KEYWORD ' ' '0'                                            
+%        EVALUATE OMP = REAL FIRSTINT ( CVALUE )                                
+%        STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMP                       
+%        GET NOSTORE KEYWORD ' ' '0'                                            
+%        GET NOSTORE KEYWORD ' ' '0'                                            
+%        EVALUATE OMP = REAL FIRSTINT ( CVALUE )                                
+%        STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMP                       
+%        GET NOSTORE KEYWORD ' ' '0'                                            
+%        GET NOSTORE KEYWORD ' ' '0'                                            
+%        EVALUATE OMP = REAL FIRSTINT  ( CVALUE )                               
+%        STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMP                       
+%        GET NOSTORE KEYWORD ' ' '0'                                            
+%        GET NOSTORE KEYWORD ' ' '0'                                            
+%        EVALUATE OMP = REAL FIRSTINT ( CVALUE )                                
+%        STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMP                       
+%        INSERT 'TYPE='                                                         
+%        STORE CHARACTER CW                                                     
+%        SEND                                                                   
+%      END LOOP                                                                 
+%    END IF                                                                     
+%%                                                                              
+%    COPY 'END'                                                                 
+^^WI DISPOSE XLIST28                                                            
+^^CR                                                                            
+{S * Done. New List 28 (reflection filter conditions) created:                  
+%    COPY '#SUM L 28'                                                           
+%    COPY 'END'                                                                 
+%%                                                                              
+%    COPY '#GENERALEDIT 30'                                                     
+%    COPY 'LOCATE RECORDTYPE=103'                                               
+%    COPY 'TRANSFER TO OFFSET = 3 FROM SIGMACUT'                                
+%    COPY 'WRITE OVERWRITE=OVERWRITE'                                           
+%    COPY 'END'                                                                 
+%    FINISH                                                                     
+%   END BLOCK                                                                   
+%   BLOCK % UPDATE - disable / undisable edit boxes as checkboxes change.       
+%    VERIFY LTH LTK LTL LTFO LTFC LTELEM LTSGMA LTPHAS LTRATI LTSQRW LTTHET -   
+            LBH LBK LBL LBFO LBFC LBELEM LBSGMA LBPHAS LBRATI LBSQRW LBTHET     
+%    GET SILENT NOSTORE FINAL ABBREVIATED 'CB?' 'LBSQRW'                        
+%    CLEAR                                                                      
+%    CASE VALUE                                                                 
+%      INSERT '^^CO SET TH DISABLED='                                           
+%      INSERT '^^CO SET TK DISABLED='                                           
+%      INSERT '^^CO SET TL DISABLED='                                           
+%      INSERT '^^CO SET TFO DISABLED='                                          
+%      INSERT '^^CO SET TFC DISABLED='                                          
+%      INSERT '^^CO SET TELEM DISABLED='                                        
+%      INSERT '^^CO SET TSGMA DISABLED='                                        
+%      INSERT '^^CO SET TPHAS DISABLED='                                        
+%      INSERT '^^CO SET TRATI DISABLED='                                        
+%      INSERT '^^CO SET TSQRW DISABLED='                                        
+%      INSERT '^^CO SET TTHET DISABLED='                                        
+%      INSERT '^^CO SET BH DISABLED='                                           
+%      INSERT '^^CO SET BK DISABLED='                                           
+%      INSERT '^^CO SET BL DISABLED='                                           
+%      INSERT '^^CO SET BFO DISABLED='                                          
+%      INSERT '^^CO SET BFC DISABLED='                                          
+%      INSERT '^^CO SET BELEM DISABLED='                                        
+%      INSERT '^^CO SET BSGMA DISABLED='                                        
+%      INSERT '^^CO SET BPHAS DISABLED='                                        
+%      INSERT '^^CO SET BRATI DISABLED='                                        
+%      INSERT '^^CO SET BSQRW DISABLED='                                        
+%      INSERT '^^CO SET BTHET DISABLED='                                        
+%    END CASE                                                                   
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'ON'                              
+%    CASE VALUE                                                                 
+%      INSERT 'NO'                                                              
+%      INSERT 'YES'                                                             
+%    END CASE                                                                   
+%    OUTPUT                                                                     
+%   END BLOCK                                                                   
+%  END CASE                                                                     
+% END LOOP                                                                      
+%END SCRIPT                                                                     
+{I For F refinement, a default I/u(I) minimum of 3.0 is recommended.            
+%      INSERT 'RATIO=3.0 '                                                      
