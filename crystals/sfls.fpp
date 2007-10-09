@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.49  2006/08/02 06:21:04  djw
+C Change captions to most disagreeable reflection list
+C
 C Revision 1.48  2005/05/31 11:34:58  djw
 C Try to sort out use of L33CD and M33CD in SFLS.FPP
 C
@@ -594,8 +597,9 @@ C -- INVALID TEMPERATURE FACTOR
          CALL XFAL06(IULN,1)
 
          S6SIG = -10.0   ! SIGMA THRESHOLD
-         IF ( MODE.EQ.-1 ) RALL(1) = 2.0
-         IF ( N28MN .GT. 0 ) THEN
+         rall(1) = 2.0
+         IF ( MODE.ge. 0 ) then
+          IF ( N28MN .GT. 0 ) THEN
             INDNAM = L28CN
             DO I = L28MN , M28MN , MD28MN
                WRITE ( CTEMP , '(3A4)') (ISTORE(J), J = INDNAM,INDNAM+2)
@@ -605,7 +609,8 @@ C -- INVALID TEMPERATURE FACTOR
                ENDIF
                INDNAM = INDNAM + MD28CN
             END DO
-         END IF
+          END IF
+         endif
          IF ( IERFLG .LT. 0 ) GO TO 9900
 
          CALL XIRTAC(6)   ! INITIALISE THE COLLECTION OF THE DETAILS FOR /FC/ AND PHASE
@@ -888,20 +893,22 @@ C--
       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30
       IF (KHUNTR (11,0, IADDL,IADDR,IADDD, -1) .EQ. 0) THEN
         STORE(L30RF +0 ) = R   ! 'REFINE' 
-        STORE(L30GE +10 ) = R  ! UPDATE LIST 30
+cdjwmay07 L30GE is filled in ANALYSE and lets the user see the effect
+c         of changing the thresholds.
+cdjwmay07        STORE(L30GE +10 ) = R  ! UPDATE LIST 30
         STORE(L30RF +1 ) = RW
-        STORE(L30GE +11 ) = RW
+cdjwmay07        STORE(L30GE +11 ) = RW
         IF(STORE(L11P+23) .GT.ZERO) STORE(L30RF +2 ) = STORE(L11P+23)
         IF (STORE(L11P+16) .GT. ZERO) THEN
           STORE(L30RF +4 ) = SQRT(AMINF / STORE(L11P+16))
         ENDIF
 
         STORE(L30RF +8 ) = STORE(L11P+24)  ! NUMBER OF REFLECTIONS USED
-        STORE(L30GE +9 ) = STORE(L11P+24)
+cdjwmay07        STORE(L30GE +9 ) = STORE(L11P+24)
 
         IF ( SFLS_TYPE .NE. SFLS_REFINE )  THEN
             STORE(L30RF+3) = S6SIG  ! SIGMA THRESHOLD FOR REFINEMENT
-            STORE(L30GE+8) = S6SIG
+cdjwmay07            STORE(L30GE+8) = S6SIG
         ENDIF
 
         STORE(L30IX+6) = RTD*ASIN(WAVE*SMIN)  ! STORE THETA LIMITS
@@ -914,9 +921,9 @@ C--
       IF( SFLS_TYPE .EQ. SFLS_CALC ) THEN  ! 'CALC' ONLY
 
           STORE(L30RF +0 ) = R
-          STORE(L30GE +10 ) = R
+cdjwmay07          STORE(L30GE +10 ) = R
           STORE(L30RF +1 ) = RW
-          STORE(L30GE +11 ) = RW
+cdjwmay07          STORE(L30GE +11 ) = RW
 
           STORE(L30CF)=RALL(1)
           STORE(L30CF+1)=RALL(2)
@@ -946,25 +953,24 @@ C--
      1    '% Rw ',F5.2,'% with I/u(I) from List 28')
 6261      FORMAT (2X,I7,' reflections   R ',F5.2,
      1    '% Rw ',F5.2,'% with I/u(I) >',F6.1)
-
+            if (issprt .eq.0) write(ncwu,'(//)')
             CALL OUTCOL(6)
             WRITE ( CMON, 6262) 
      1       NT, MIN(99.99,STORE(L30RF)),MIN(99.99,STORE(L30RF+1))
             CALL XPRVDU(NCVDU, 1, 0)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
 
             WRITE ( CMON, 6261)
      1       NINT(RALL(7)), MIN(99.99,STORE(L30CF+6)),
      2                      MIN(99.99,STORE(L30CF+7)), -10.0
-            IF (ISSPRT .EQ. 0) WRITE(NCWU,6260) 
-     1       -10., NINT(RALL(7)), STORE(L30CF+6), STORE(L30CF+7)
             CALL XPRVDU(NCVDU, 1, 0)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
 
             WRITE ( CMON, 6261)  
      1       NINT(RALL(2)), MIN(99.99,STORE(L30CF+2)),
      2                      MIN(99.99,STORE(L30CF+3)), RALL(1)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU,6260)
-     1       RALL(1), NINT(RALL(2)), STORE(L30CF+2), STORE(L30CF+3) 
             CALL XPRVDU(NCVDU, 1, 0)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
             CALL OUTCOL(1)
       ENDIF
       CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
