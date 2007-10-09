@@ -1,301 +1,302 @@
-%SCRIPT XMOGULGO
-%%
-% VARIABLE CHARACTER CTYPE
-% VARIABLE INTEGER IDIST IANG IGUI
-% VARIABLE INTEGER EXPECTED EXPECTALL NH29 NH5 
-% VARIABLE CHARACTER MOGULLOC
-%%
-^^CO GETREG "Software\CCDC\" "MogulLatestVersion"
-%GET SILENT NOSTORE TEXT 'Latest mogul?' ' '
-%TRANSFER '^^CO GETREG "Software\CCDC\Mogul\' // CVALUE // -
- '\" Executable' TO DISPLAY
-% GET SILENT NOSTORE TEXT 'Exec?' 'BLANK'
-% EVALUATE MOGULLOC = CVALUE
-%%
-%%
-% IF ( CVALUE .EQ. 'BLANK' ) THEN
-^^WI WINDOW MOGULMISS 'Mogul missing' MODAL KEEP SIZE LARGE
-^^WI COMMIT='MM_OK' CANCEL='MM_OK' POSITION=CENTRED '_MAINTEXTOUTPUT'
-^^WI GRID MMM NROWS=5 NCOLS=3
-^^WI {
-^^WI   @ 2,2 GRID TOP NROWS=1 NCOLS=3
-^^WI   {
-^^WI     @ 1,1 GRID LOG NROWS=1 NCOLS=1
-^^WI     {
-^^WI       @ 1,1 BITMAP LOGO TRANS FILE 'ccdclogo.bmp'
-^^WI     }
-^^WI     @ 1,3 GRID HOLD NROWS=1 NCOLS=1
-^^WI     {
-^^WI       @ 1,1 TEXTOUT MMEXPLAIN 'Could not find the Mogul executable.'
-^^WI NROWS=10 NCOLS=40 TRANSPARENT
-^^WI TEXT ' '
-^^WI TEXT ' Is it installed? If so, click Browse and locate mogul.exe.'
-^^WI TEXT ' '
-^^WI TEXT ' Mogul should be distributed with each main CSD release.'
-^^WI TEXT ' See {&http://www.ccdc.cam.ac.uk/{&'
-^^WI TEXT ' '
-^^WI TEXT ' Close this dialog, install Mogul then try again.'
-^^WI TEXT ' '
-^^WI VIEWTOP
-^^WI     }
-^^WI   }
-^^WI   @ 4,2 GRID BOTTOM NROWS=1 NCOLS=5
-^^WI   {
-^^WI     @ 1,1 STRETCH S1 HORIZONTAL
-^^WI     @ 1,2 BUTTON MM_OK 'Close' COMMIT CANCEL DEFAULT
-^^WI     @ 1,4 BUTTON MM_BRWS 'Browse for mogul.exe...'
-^^WI     @ 1,5 STRETCH S2 HORIZONTAL
-^^WI   }
-^^WI }
-^^WI SHOW
-^^CR
-^^CO  SET MMEXPLAIN VIEWTOP
-%     LOOP
-%       VERIFY #$ MM_OK MM_BRWS
-%       GET SILENT NOSTORE ABBREVIATED ' ' ' '
-%       CASE VALUE
-%         BLOCK  %#$command%
-%           CLEAR
-%           INSERT '#SPAWN '
-%           GET SILENT FINAL TEXT ' ' ' '
-%           OUTPUT
-%           SEND
-%         END BLOCK
-%         BLOCK                                %XX
-^^CO        DISPOSE MOGULMISS
-%           FINISH
-%         END BLOCK
-%         BLOCK                                %MM_BRWS
-
-  Where is the mogul executable (mogul.exe)?
-  Hint: Try looking in c:\program files\ccdc\
-
-^^CO SYSOPENFILE 'mogul*.exe' 'Mogul executable'
-
-%           GET SILENT NOSTORE TEXT 'Mogul location:'
-%           IF CVALUE .NE. 'CANCEL' THEN
-%             EVALUATE MOGULLOC = CVALUE
-%             EVALUATE LOOPEND = LOOPCOUNTER
-^^CO          DISPOSE MOGULMISS
-%           ELSE
-^^CO          DISPOSE MOGULMISS
-%             FINISH
-%           END IF
-%         END BLOCK
-%       END CASE
-%     END LOOP
-%   END IF
-%  END IF
-% END IF
-%%
-%%
-^^WI WINDOW XMOGULGO 'Mogul Search' MODAL KEEP SIZE LARGE
-^^WI               COMMIT='MG_OK' CANCEL='MG_XX'
-^^WI POSITION=CENTRED '_MAINTEXTOUTPUT'
-^^WI GRID MGM NROWS=5 NCOLS=5
-^^WI {
-^^WI   @ 2,2 GRID LOG NROWS=1 NCOLS=1
-^^WI   {
-^^WI      @ 1,1 BITMAP LOGO TRANS FILE 'ccdclogo.bmp'
-^^WI   }
-^^WI   @ 2,4 TABCTRL MOGULTABS
-^^WI   {
-^^WI     TAB MGTAB0 'Information' GRID MGG0 NROWS=1 NCOLS=1
-^^WI     {
-^^WI       @ 1,1 TEXTOUT MGEXPLAIN 
-^^WI ' Mogul is a library containing nearly all the bond length,'
-^^WI NROWS=10 NCOLS=40 TRANSPARENT
-^^WI TEXT ' valence and torsion angles in the Cambridge Structural'
-^^WI TEXT ' database. It is designed to allow very fast access to this'
-^^WI TEXT ' information, making it possible to compare your molecular'
-^^WI TEXT ' geometry against hundreds of thousands of published structures'
-^^WI TEXT ' in a matter of minutes.'
-^^WI TEXT ' '
-^^WI TEXT ' From CRYSTALS there are three modes of operation available:'
-^^WI TEXT ' '
-^^WI TEXT '    1) Check geometry of whole structure.'
-^^WI TEXT ' '
-^^WI TEXT '    2) Check geometry of a single bond or angle.'
-^^WI TEXT ' '
-^^WI TEXT '    3) Start Mogul and run interactively.'
-^^WI TEXT ' '
-^^WI TEXT ' For further information see: '
-^^WI TEXT '       {&http://www.xtl.ox.ac.uk/mogul.html{&'
-^^WI TEXT ' '
-^^WI TEXT ' '
-^^WI VIEWTOP
-^^WI     }
-^^WI     TAB MGTAB1 'Search' GRID MGG1 NROWS=2 NCOLS=4
-^^WI     {
-^^WI       @ 1,1 GRID G1L NROWS=7 NCOLS=1 OUTLINE='Full search'
-^^WI       {
-^^WI         @ 1,1 RADIOBUTTON MGALL 'All fragments' STATE=ON
-^^WI         @ 2,1 RADIOBUTTON MGDIS 'Distance fragments' 
-^^WI         @ 3,1 RADIOBUTTON MGANG 'Angle fragments'
-^^WI         @ 4,1 CHECKBOX MGOGUI 'Open graphics' STATE=OFF
-^^WI         @ 6,1 BUTTON MG_SEARCH 'Run Search'
-^^WI       }
-^^WI       @ 1,3 GRID G1R NROWS=4 NCOLS=1 OUTLINE='Single'
-^^WI       {
-^^WI         @ 1,1 STATIC MGT 'Define a fragment and search.'
-^^WI         @ 2,1 STRETCH V VERTICAL
-^^WI         @ 3,1 BUTTON MG_SING 'Single fragment search'
-^^WI         @ 4,1 STRETCH V VERTICAL
-^^WI       }
-^^WI     }
-^^WI     TAB MGTAB2 'Special' GRID MGG2 NROWS=3 NCOLS=1
-^^WI     {
-^^WI       @ 1,1 GRID G1L NROWS=2 NCOLS=3 OUTLINE='Re-open'
-^^WI       {
-^^WI         @ 2,1 STATIC MGT 'Re-open the results of the last mogul search.'
-^^WI         @ 2,2 STRETCH B HORIZONTAL
-^^WI         @ 2,3 BUTTON MG_ROP 'Stats'
-%  IF FILEEXISTS ( 'mogul.stat' ) .EQ. FALSE THEN
-^^WI          DISABLED=YES
-%  END IF
-^^WI       }
-^^WI       @ 3,1 GRID G1L NROWS=2 NCOLS=3 OUTLINE='Mogul'
-^^WI       {
-^^WI         @ 2,1 STATIC MGT 'Just run Mogul.'
-^^WI         @ 2,2 STRETCH B HORIZONTAL
-^^WI         @ 2,3 BUTTON MG_RUN 'Mogul'
-^^WI       }
-^^WI     }
-^^WI   }
-^^WI   @ 4,4 GRID MGC NROWS=1 NCOLS=2
-^^WI   {
-^^WI     @ 1,1 STRETCH B HORIZONTAL
-^^WI     @ 1,2 BUTTON MG_XX 'Cancel' CANCEL COMMIT DEFAULT
-^^WI   }
-^^WI }
-^^WI SHOW
-^^CR
-^^CO SET MGEXPLAIN VIEWTOP
-%%
-%% Check H's
-%%
-%COPY '#SCRIPT GETEXP' 
-%EVALUATE NH29 = EXPECTALL - EXPECTED
-%EVALUATE NH5 = 0
-%COPY '#GENERALEDIT 5'
-%COPY 'LOCATE RECORDTYPE=101'
-%COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'
-%COPY 'TOP'
-%LOOP
-%  ON EDITERROR TERMINATE
-%  COPY 'NEXT'
-%  COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
-%  IF ( CTYPE .EQ. 'H' ) THEN
-%    EVALUATE NH5 = NH5 + 1
-%  END IF
-%END LOOP
-%COPY 'END'
-%IF NH5 .LT. NH29 THEN
-%    VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK
-%    EVALUATE QTITLE = 'Hydrogen atoms'
-%    EVALUATE QLINE1 = 'Warning. Cell contents indicates: ' // -
-     CHARACTER ( NH29 ) // 'H atoms'
-%    EVALUATE QLINE2 = 'Model has ' // CHARACTER ( NH5 ) -
-      // ' H atoms. Make sure either ALL or NONE are present.'
-%    EVALUATE BUTTOK = 'OK'
-%    COPY '#SCRIPT XMESSAGE'
-%END IF
-%LOOP
-% VERIFY #$ MG_XX MG_RUN MG_ROP MG_SEARCH MG_SING
-% GET SILENT NOSTORE ABBREVIATED ' ' ' '
-% CASE VALUE
-% BLOCK  %#$command%
-%           CLEAR
-%           INSERT '#SPAWN '
-%           GET SILENT FINAL TEXT ' ' ' '
-%           OUTPUT
-%           SEND
-%  END BLOCK
-% BLOCK                                %XX
-^^CO DISPOSE XMOGULGO
-%    FINISH
-% END BLOCK
-% BLOCK                                %RUN
-{I * Generating mol2 structure file for Mogul...
-%  COPY '#FOREIGN MOL2'
-%  COPY 'END'
-{R * Done.
-{I * Writing instructions for Mogul...
-%  COPY '#CLOSE SCPDATA'
-%  COPY '#RELEASE PUNCH crystals.qf'
-%  TRANSFER 'MOGUL GUI OPEN 3D' TO PUNCH
-%  TRANSFER 'MOGUL MOLECULE FILE crystals.mol2' TO PUNCH
-%  COPY '#RELEASE PUNCH bfile.pch'
-{I * Running Mogul.
-% TRANSFER '#SPAWN "' // MOGULLOC // '" -ins crystals.qf' TO CRYSTALS
-{R * Done.
-^^CO DISPOSE XMOGULGO
-%  FINISH
-% END BLOCK
-% BLOCK                                %ROP
-^^CO DISPOSE XMOGULGO
-%  COPY '#SCRIPT MOGULRES'
-%  FINISH
-% END BLOCK
-% BLOCK                                %SEARCH
-%   EVALUATE IDIST = 1
-%   EVALUATE IANG = 1
-^^?? MGDIS STATE
-%   VERIFY ON OFF
-%   GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%   IF VALUE .EQ. 1 THEN
-%      EVALUATE IANG = 0
-%   END IF
-^^?? MGANG STATE
-%   VERIFY ON OFF
-%   GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%   IF VALUE .EQ. 1 THEN
-%      EVALUATE IDIST = 0
-%   END IF
-^^?? MGOGUI STATE
-%   VERIFY ON OFF
-%   GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%   EVALUATE IGUI = VALUE 
-{I * Generating mol2 structure file for Mogul...
-%  COPY '#FOREIGN MOL2'
-%  COPY 'END'
-{R * Done.
-{I * Writing instructions for Mogul...
-%  COPY '#CLOSE SCPDATA'
-%  COPY '#RELEASE PUNCH crystals.qf'
-%  IF IGUI .EQ. 1 THEN
-%    TRANSFER 'MOGUL GUI OPEN 3D' TO PUNCH
-%  END IF
-%  TRANSFER 'MOGUL MOLECULE FILE crystals.mol2' TO PUNCH
-%  TRANSFER 'MOGUL OUTPUT FILE mogul.stat' TO PUNCH
-%%
-%% Do distances and angles in blocks - makes mogul go faster as data
-%% are in different libraries.
-%%
-%  IF IDIST .EQ. 1 THEN
-%   COPY '#DISTANCES'
-%   COPY 'OUT MON=DIST PUNCH=MOGUL'
-%   COPY 'EXCLUDE H'
-%   COPY 'END'
-%  END IF
-%  IF IANG .EQ. 1 THEN
-%   COPY '#DISTANCES'
-%   COPY 'OUT MON=ANGLE PUNCH=MOGUL'
-%   COPY 'EXCLUDE H'
-%   COPY 'END'
-%  END IF
-%  COPY '#RELEASE PUNCH bfile.pch'
-{R * Done.
-{I * Running Mogul.
-% TRANSFER '#SPAWN + "' // MOGULLOC // '" -ins crystals.qf' TO CRYSTALS
-{R * Done.
-^^CO DISPOSE XMOGULGO
-%  COPY '#SCRIPT MOGULRES'
-%  FINISH
-% END BLOCK
-% BLOCK                                %SINGLE
-   {E Not done yet.                    
-% END BLOCK
-% END CASE
-%END LOOP
-%END SCRIPT
+%SCRIPT XMOGULGO                                                                
+%%                                                                              
+% VARIABLE CHARACTER CTYPE                                                      
+% VARIABLE INTEGER IDIST IANG IGUI                                              
+% VARIABLE INTEGER EXPECTED EXPECTALL NH29 NH5                                  
+% VARIABLE CHARACTER MOGULLOC                                                   
+%%                                                                              
+^^CO GETREG "Software\CCDC\" "MogulLatestVersion"                               
+%GET SILENT NOSTORE TEXT 'Latest mogul?' ' '                                    
+%TRANSFER ' GETREG "Software\CCDC\Mogul\' // CVALUE // -                    
+ '\" Executable' TO DISPLAY                                                     
+%TRANSFER '^^CO GETREG "Software\CCDC\Mogul\' // CVALUE // -                    
+ '\" Executable' TO DISPLAY                                                     
+% GET SILENT NOSTORE TEXT 'Exec?' 'BLANK'                                       
+%TRANSFER CVALUE TO DISPLAY
+% EVALUATE MOGULLOC = CVALUE                                                    
+%%                                                                              
+%%                                                                              
+% IF ( CVALUE .EQ. 'BLANK' ) THEN                                               
+^^WI WINDOW MOGULMISS 'Mogul missing' MODAL KEEP SIZE LARGE                     
+^^WI COMMIT='MM_OK' CANCEL='MM_OK' POSITION=CENTRED '_MAINTEXTOUTPUT'           
+^^WI GRID MMM NROWS=5 NCOLS=3                                                   
+^^WI {                                                                          
+^^WI   @ 2,2 GRID TOP NROWS=1 NCOLS=3                                           
+^^WI   {                                                                        
+^^WI     @ 1,1 GRID LOG NROWS=1 NCOLS=1                                         
+^^WI     {                                                                      
+^^WI       @ 1,1 BITMAP LOGO TRANS FILE 'ccdclogo.bmp'                          
+^^WI     }                                                                      
+^^WI     @ 1,3 GRID HOLD NROWS=1 NCOLS=1                                        
+^^WI     {                                                                      
+^^WI       @ 1,1 TEXTOUT MMEXPLAIN 'Could not find the Mogul executable.'       
+^^WI NROWS=10 NCOLS=40 TRANSPARENT                                              
+^^WI TEXT ' '                                                                   
+^^WI TEXT ' Is it installed? If so, click Browse and locate mogul.exe.'         
+^^WI TEXT ' '                                                                   
+^^WI TEXT ' Mogul should be distributed with each main CSD release.'            
+^^WI TEXT ' See {&http://www.ccdc.cam.ac.uk/{&'                                 
+^^WI TEXT ' '                                                                   
+^^WI TEXT ' Close this dialog, install Mogul then try again.'                   
+^^WI TEXT ' '                                                                   
+^^WI VIEWTOP                                                                    
+^^WI     }                                                                      
+^^WI   }                                                                        
+^^WI   @ 4,2 GRID BOTTOM NROWS=1 NCOLS=5                                        
+^^WI   {                                                                        
+^^WI     @ 1,1 STRETCH S1 HORIZONTAL                                            
+^^WI     @ 1,2 BUTTON MM_OK 'Close' COMMIT CANCEL DEFAULT                       
+^^WI     @ 1,4 BUTTON MM_BRWS 'Browse for mogul.exe...'                         
+^^WI     @ 1,5 STRETCH S2 HORIZONTAL                                            
+^^WI   }                                                                        
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+^^CO  SET MMEXPLAIN VIEWTOP                                                     
+%     LOOP                                                                      
+%       VERIFY #$ MM_OK MM_BRWS                                                 
+%       GET SILENT NOSTORE ABBREVIATED ' ' ' '                                  
+%       CASE VALUE                                                              
+%         BLOCK  %#$command%                                                    
+%           CLEAR                                                               
+%           INSERT '#SPAWN '                                                    
+%           GET SILENT FINAL TEXT ' ' ' '                                       
+%           OUTPUT                                                              
+%           SEND                                                                
+%         END BLOCK                                                             
+%         BLOCK                                %XX                              
+^^CO        DISPOSE MOGULMISS                                                   
+%           FINISH                                                              
+%         END BLOCK                                                             
+%         BLOCK                                %MM_BRWS                         
+                                                                                
+  Where is the mogul executable (mogul.exe)?                                    
+  Hint: Try looking in c:\program files\ccdc\                                   
+                                                                                
+^^CO SYSOPENFILE 'mogul*.exe' 'Mogul executable'                                
+                                                                                
+%           GET SILENT NOSTORE TEXT 'Mogul location:'                           
+%           IF CVALUE .NE. 'CANCEL' THEN                                        
+%             EVALUATE MOGULLOC = CVALUE                                        
+%             EVALUATE LOOPEND = LOOPCOUNTER                                    
+^^CO          DISPOSE MOGULMISS                                                 
+%           ELSE                                                                
+^^CO          DISPOSE MOGULMISS                                                 
+%             FINISH                                                            
+%           END IF                                                              
+%         END BLOCK                                                             
+%       END CASE                                                                
+%     END LOOP                                                                  
+% END IF                                                                        
+%%                                                                              
+%%                                                                              
+^^WI WINDOW XMOGULGO 'Mogul Search' MODAL KEEP SIZE LARGE                       
+^^WI               COMMIT='MG_OK' CANCEL='MG_XX'                                
+^^WI POSITION=CENTRED '_MAINTEXTOUTPUT'                                         
+^^WI GRID MGM NROWS=5 NCOLS=5                                                   
+^^WI {                                                                          
+^^WI   @ 2,2 GRID LOG NROWS=1 NCOLS=1                                           
+^^WI   {                                                                        
+^^WI      @ 1,1 BITMAP LOGO TRANS FILE 'ccdclogo.bmp'                           
+^^WI   }                                                                        
+^^WI   @ 2,4 TABCTRL MOGULTABS                                                  
+^^WI   {                                                                        
+^^WI     TAB MGTAB0 'Information' GRID MGG0 NROWS=1 NCOLS=1                     
+^^WI     {                                                                      
+^^WI       @ 1,1 TEXTOUT MGEXPLAIN                                              
+^^WI ' Mogul is a library containing nearly all the bond length,'               
+^^WI NROWS=10 NCOLS=40 TRANSPARENT                                              
+^^WI TEXT ' valence and torsion angles in the Cambridge Structural'             
+^^WI TEXT ' database. It is designed to allow very fast access to this'         
+^^WI TEXT ' information, making it possible to compare your molecular'          
+^^WI TEXT ' geometry against hundreds of thousands of published structures'     
+^^WI TEXT ' in a matter of minutes.'                                            
+^^WI TEXT ' '                                                                   
+^^WI TEXT ' From CRYSTALS there are three modes of operation available:'        
+^^WI TEXT ' '                                                                   
+^^WI TEXT '    1) Check geometry of whole structure.'                           
+^^WI TEXT ' '                                                                   
+^^WI TEXT '    2) Check geometry of a single bond or angle.'                    
+^^WI TEXT ' '                                                                   
+^^WI TEXT '    3) Start Mogul and run interactively.'                           
+^^WI TEXT ' '                                                                   
+^^WI TEXT ' For further information see: '                                      
+^^WI TEXT '       {&http://www.xtl.ox.ac.uk/mogul.html{&'                       
+^^WI TEXT ' '                                                                   
+^^WI TEXT ' '                                                                   
+^^WI VIEWTOP                                                                    
+^^WI     }                                                                      
+^^WI     TAB MGTAB1 'Search' GRID MGG1 NROWS=2 NCOLS=4                          
+^^WI     {                                                                      
+^^WI       @ 1,1 GRID G1L NROWS=7 NCOLS=1 OUTLINE='Full search'                 
+^^WI       {                                                                    
+^^WI         @ 1,1 RADIOBUTTON MGALL 'All fragments' STATE=ON                   
+^^WI         @ 2,1 RADIOBUTTON MGDIS 'Distance fragments'                       
+^^WI         @ 3,1 RADIOBUTTON MGANG 'Angle fragments'                          
+^^WI         @ 4,1 CHECKBOX MGOGUI 'Open graphics' STATE=OFF                    
+^^WI         @ 6,1 BUTTON MG_SEARCH 'Run Search'                                
+^^WI       }                                                                    
+^^WI       @ 1,3 GRID G1R NROWS=4 NCOLS=1 OUTLINE='Single'                      
+^^WI       {                                                                    
+^^WI         @ 1,1 STATIC MGT 'Define a fragment and search.'                   
+^^WI         @ 2,1 STRETCH V VERTICAL                                           
+^^WI         @ 3,1 BUTTON MG_SING 'Single fragment search'                      
+^^WI         @ 4,1 STRETCH V VERTICAL                                           
+^^WI       }                                                                    
+^^WI     }                                                                      
+^^WI     TAB MGTAB2 'Special' GRID MGG2 NROWS=3 NCOLS=1                         
+^^WI     {                                                                      
+^^WI       @ 1,1 GRID G1L NROWS=2 NCOLS=3 OUTLINE='Re-open'                     
+^^WI       {                                                                    
+^^WI         @ 2,1 STATIC MGT 'Re-open the results of the last mogul search.'   
+^^WI         @ 2,2 STRETCH B HORIZONTAL                                         
+^^WI         @ 2,3 BUTTON MG_ROP 'Stats'                                        
+%  IF FILEEXISTS ( 'mogul.stat' ) .EQ. FALSE THEN                               
+^^WI          DISABLED=YES                                                      
+%  END IF                                                                       
+^^WI       }                                                                    
+^^WI       @ 3,1 GRID G1L NROWS=2 NCOLS=3 OUTLINE='Mogul'                       
+^^WI       {                                                                    
+^^WI         @ 2,1 STATIC MGT 'Just run Mogul.'                                 
+^^WI         @ 2,2 STRETCH B HORIZONTAL                                         
+^^WI         @ 2,3 BUTTON MG_RUN 'Mogul'                                        
+^^WI       }                                                                    
+^^WI     }                                                                      
+^^WI   }                                                                        
+^^WI   @ 4,4 GRID MGC NROWS=1 NCOLS=2                                           
+^^WI   {                                                                        
+^^WI     @ 1,1 STRETCH B HORIZONTAL                                             
+^^WI     @ 1,2 BUTTON MG_XX 'Cancel' CANCEL COMMIT DEFAULT                      
+^^WI   }                                                                        
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+^^CO SET MGEXPLAIN VIEWTOP                                                      
+%%                                                                              
+%% Check H's                                                                    
+%%                                                                              
+%COPY '#SCRIPT GETEXP'                                                          
+%EVALUATE NH29 = EXPECTALL - EXPECTED                                           
+%EVALUATE NH5 = 0                                                               
+%COPY '#GENERALEDIT 5'                                                          
+%COPY 'LOCATE RECORDTYPE=101'                                                   
+%COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'              
+%COPY 'TOP'                                                                     
+%LOOP                                                                           
+%  ON EDITERROR TERMINATE                                                       
+%  COPY 'NEXT'                                                                  
+%  COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'                                       
+%  IF ( CTYPE .EQ. 'H' ) THEN                                                   
+%    EVALUATE NH5 = NH5 + 1                                                     
+%  END IF                                                                       
+%END LOOP                                                                       
+%COPY 'END'                                                                     
+%IF NH5 .LT. NH29 THEN                                                          
+%    VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK                             
+%    EVALUATE QTITLE = 'Hydrogen atoms'                                         
+%    EVALUATE QLINE1 = 'Warning. Cell contents indicates: ' // -                
+     CHARACTER ( NH29 ) // 'H atoms'                                            
+%    EVALUATE QLINE2 = 'Model has ' // CHARACTER ( NH5 ) -                      
+      // ' H atoms. Make sure either ALL or NONE are present.'                  
+%    EVALUATE BUTTOK = 'OK'                                                     
+%    COPY '#SCRIPT XMESSAGE'                                                    
+%END IF                                                                         
+%LOOP                                                                           
+% VERIFY #$ MG_XX MG_RUN MG_ROP MG_SEARCH MG_SING                               
+% GET SILENT NOSTORE ABBREVIATED ' ' ' '                                        
+% CASE VALUE                                                                    
+% BLOCK  %#$command%                                                            
+%           CLEAR                                                               
+%           INSERT '#SPAWN '                                                    
+%           GET SILENT FINAL TEXT ' ' ' '                                       
+%           OUTPUT                                                              
+%           SEND                                                                
+%  END BLOCK                                                                    
+% BLOCK                                %XX                                      
+^^CO DISPOSE XMOGULGO                                                           
+%    FINISH                                                                     
+% END BLOCK                                                                     
+% BLOCK                                %RUN                                     
+{I * Generating mol2 structure file for Mogul...                                
+%  COPY '#FOREIGN MOL2'                                                         
+%  COPY 'END'                                                                   
+{R * Done.                                                                      
+{I * Writing instructions for Mogul...                                          
+%  COPY '#CLOSE SCPDATA'                                                        
+%  COPY '#RELEASE PUNCH crystals.qf'                                            
+%  TRANSFER 'MOGUL GUI OPEN 3D' TO PUNCH                                        
+%  TRANSFER 'MOGUL MOLECULE FILE crystals.mol2' TO PUNCH                        
+%  COPY '#RELEASE PUNCH bfile.pch'                                              
+{I * Running Mogul.                                                             
+% TRANSFER '#SPAWN "' // MOGULLOC // '" -ins crystals.qf' TO CRYSTALS           
+{R * Done.                                                                      
+^^CO DISPOSE XMOGULGO                                                           
+%  FINISH                                                                       
+% END BLOCK                                                                     
+% BLOCK                                %ROP                                     
+^^CO DISPOSE XMOGULGO                                                           
+%  COPY '#SCRIPT MOGULRES'                                                      
+%  FINISH                                                                       
+% END BLOCK                                                                     
+% BLOCK                                %SEARCH                                  
+%   EVALUATE IDIST = 1                                                          
+%   EVALUATE IANG = 1                                                           
+^^?? MGDIS STATE                                                                
+%   VERIFY ON OFF                                                               
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' '                                    
+%   IF VALUE .EQ. 1 THEN                                                        
+%      EVALUATE IANG = 0                                                        
+%   END IF                                                                      
+^^?? MGANG STATE                                                                
+%   VERIFY ON OFF                                                               
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' '                                    
+%   IF VALUE .EQ. 1 THEN                                                        
+%      EVALUATE IDIST = 0                                                       
+%   END IF                                                                      
+^^?? MGOGUI STATE                                                               
+%   VERIFY ON OFF                                                               
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' '                                    
+%   EVALUATE IGUI = VALUE                                                       
+{I * Generating mol2 structure file for Mogul...                                
+%  COPY '#FOREIGN MOL2'                                                         
+%  COPY 'END'                                                                   
+{R * Done.                                                                      
+{I * Writing instructions for Mogul...                                          
+%  COPY '#CLOSE SCPDATA'                                                        
+%  COPY '#RELEASE PUNCH crystals.qf'                                            
+%  IF IGUI .EQ. 1 THEN                                                          
+%    TRANSFER 'MOGUL GUI OPEN 3D' TO PUNCH                                      
+%  END IF                                                                       
+%  TRANSFER 'MOGUL MOLECULE FILE crystals.mol2' TO PUNCH                        
+%  TRANSFER 'MOGUL OUTPUT FILE mogul.stat' TO PUNCH                             
+%%                                                                              
+%% Do distances and angles in blocks - makes mogul go faster as data            
+%% are in different libraries.                                                  
+%%                                                                              
+%  IF IDIST .EQ. 1 THEN                                                         
+%   COPY '#DISTANCES'                                                           
+%   COPY 'OUT MON=DIST PUNCH=MOGUL'                                             
+%   COPY 'EXCLUDE H'                                                            
+%   COPY 'END'                                                                  
+%  END IF                                                                       
+%  IF IANG .EQ. 1 THEN                                                          
+%   COPY '#DISTANCES'                                                           
+%   COPY 'OUT MON=ANGLE PUNCH=MOGUL'                                            
+%   COPY 'EXCLUDE H'                                                            
+%   COPY 'END'                                                                  
+%  END IF                                                                       
+%  COPY '#RELEASE PUNCH bfile.pch'                                              
+{R * Done.                                                                      
+{I * Running Mogul.                                                             
+% TRANSFER '#SPAWN + "' // MOGULLOC // '" -ins crystals.qf' TO CRYSTALS         
+{R * Done.                                                                      
+^^CO DISPOSE XMOGULGO                                                           
+%  COPY '#SCRIPT MOGULRES'                                                      
+%  FINISH                                                                       
+% END BLOCK                                                                     
+% BLOCK                                %SINGLE                                  
+   {E Not done yet.                                                             
+% END BLOCK                                                                     
+% END CASE                                                                      
+%END LOOP                                                                       
+%END SCRIPT                                                                     
