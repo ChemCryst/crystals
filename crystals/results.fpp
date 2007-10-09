@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.118  2007/04/05 14:46:45  djw
+C More h-bond nonsense
+C
 C Revision 1.117  2007/04/04 08:23:56  djw
 C Put Rint as fraction, not %
 C
@@ -4061,12 +4064,12 @@ C
       PARAMETER (IDATA=15,IREF=23)
       CHARACTER*35 CPAGE(NROW,NCOL)
       CHARACTER*76 CREFMK
-      PARAMETER (IDIFMX=8)
+      PARAMETER (IDIFMX=9)
       DIMENSION IREFCD(3,IDIFMX)
 CAVDL more solution packages in cif-goodies
       PARAMETER (ISOLMX=10)
       DIMENSION ISOLCD(ISOLMX)
-      PARAMETER (IABSMX=14)
+      PARAMETER (IABSMX=15)
       DIMENSION IABSCD(IABSMX)
 
 C
@@ -4128,12 +4131,12 @@ C
 C
 C------ REFERENCE CODES FOR THE DIFFRACTOMETERS
       DATA IREFCD /4,5,6, 13,24,13, 13,24,13, 25,17,17, 15,17,17,
-     1 26,27,27, 20,19,20,  37,36,36 /
+     1 26,27,27, 20,19,20,  37,36,36, 45,45,45  /
 C------ REFERENCE CODES FOR DIRECT METHODS
 CAVDLdec06 updating references in reftab.sda with numbers 42, 43, and 44
       DATA ISOLCD /1,18,30,11,22,28,29,42,43,44/
 C------ REFERENCE CODES FOR ABSORPTION METHOD
-      DATA IABSCD /7,21,16,17,31,32,33,39,40,40,39,7,7,16/
+      DATA IABSCD /7,21,16,17,31,32,33,39,40,40,39,7,7,16,45/
 
 C
       DATA UPPER/'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
@@ -4211,7 +4214,7 @@ C----- CLEAR OUT THE PAGE BUFFER
       CALL XDATER (CBUF(1:8))
 
       IF ( IPUNCH .EQ. 0 ) THEN
-        WRITE (NCFPU1,'(''data_CRYSTALS_cif '')')
+        WRITE (NCFPU1,'(''data_global '')')
         WRITE (NCFPU1,'(''_audit_creation_date  '',6X, 3(A2,A))')
      1         CBUF(7:8),'-',CBUF(4:5),'-',CBUF(1:2)
         WRITE (NCFPU1,
@@ -4262,9 +4265,39 @@ C----- OUTPUT A TITLE, FIRST 44 CHARACTERS ONLY
         CALL XCTRIM (CLINE,NCHAR)
         WRITE (NCPU,'(''<P>'',A,''</P>'')') CLINE(1:NCHAR)
       END IF
+C###################################################################
+      IF ( IPUNCH .EQ. 0 ) THEN
+        CALL XPCIF ('#looking for refcif ')
+        CALL XPCIF (' ')
+C-----  COPY HEADER INFORMATION FROM .CIF FILE
+        CALL XMOVEI (KEYFIL(1,2),JDEV,4)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+        CALL XRDOPN(6,JDEV,'CRYSDIR:script\refcif.dat',25)
+#else
+        CALL XRDOPN(6,JDEV,'CRYSDIR:script/refcif.dat',25)
 
-
-
+#endif
+        IF (IERFLG.GE.0) THEN
+          CLINE=' '
+100       CONTINUE
+          READ (NCARU,'(A)',ERR=100,END=150) CLINE
+          call xpcif (CLINE)
+          GO TO 100
+150       CONTINUE
+C----- CLOSE THE FILE
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+          CALL XRDOPN(7,JDEV,'CRYSDIR:script\refcif.dat',25)
+#else
+          CALL XRDOPN(7,JDEV,'CRYSDIR:script/refcif.dat',25)
+#endif
+        ELSE
+          WRITE (CMON,'('' cif header file not available'')')
+          CALL XPRVDU (NCVDU,1,0)
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
+          IERFLG=0
+        END IF
+      END IF
+      CALL XPCIF ('#end of refcif ')
 
 C################################################################
  
@@ -5110,6 +5143,9 @@ C           AREA DETECTOR
         ELSE IF (IVAL.EQ.14) THEN
             CVALUE='psi-scan'
             J=4
+        ELSE IF (IVAL.EQ.15) THEN
+            CVALUE='Multi-scan'
+            J=4
         ELSE
             CVALUE='?'
             J=-1
@@ -5233,8 +5269,8 @@ cdjw0705
              CALL XPCIF (CLINE)
         ENDIF
 
-C UNKNOWN CAD4 MACH3 KAPPACCD DIP SMART IPDS XCALIBUR
-C    1     2       3     4    5     6    7   8
+C UNKNOWN CAD4 MACH3 KAPPACCD DIP SMART IPDS XCALIBUR APEX2
+C    1     2       3     4    5     6    7   8        9
         IDIFNO = IVAL+1
         CALL XCREMS (CVALUE,CVALUE,NCHAR)
         CALL XCTRIM (CVALUE,NCHAR)
@@ -5269,11 +5305,25 @@ C- IPDS
            ELSE IF (IDIFNO .EQ. 8) THEN
 C- XCALIBUR
              CTEMP='Oxford Diffraction XCALIBUR'
+           ELSE IF (IDIFNO .EQ. 9) THEN
+C- Apex2
+             CTEMP='Bruker Kappa Apex2'
            ELSE IF (IDIFNO .GT. IDIFMX) THEN
              WRITE(CMON,'(A)') 'Unknown Diffractometer type'
              CALL XPRVDU(NCVDU,1,0)
              CTEMP='Unknown'
              IDIFNO = 1
+           ENDIF
+           CALL XCTRIM (CTEMP,NCHAR)
+C
+           WRITE (CLINE,'(''_diffrn_measurement_device'',
+     1      T35,'''''''',A,'''''''')') CTEMP(1:NCHAR-1)
+           CALL XPCIF (CLINE)
+c
+           IF (IDIFNO .LE. 3) THEN
+            CTEMP = 'Serial'
+           ELSE
+            CTEMP = 'Area'
            ENDIF
            CALL XCTRIM (CTEMP,NCHAR)
 C
@@ -5764,7 +5814,6 @@ cdjwnov05-end of list 6 goodies
            END IF
            CALL XPCIF (' ')
            CALL XPCIF (' ')
-
            IF ( STORE(L30RF+3) .LT. -9.9 ) THEN
              LCUTUS = 0
            ELSE
@@ -5772,83 +5821,93 @@ cdjwnov05-end of list 6 goodies
            END IF
 
 
-           CBUF(1:11)='_refine_ls_'
 C 
-           WRITE (CLINE,'(A, ''number_reflns '', I10)') CBUF(1:11),
-     1      NINT(STORE(L30RF+8))
-           CALL XPCIF (CLINE)
+      call xpcif
+     1 ('# The current dictionary definitions do not cover the')
+      call xpcif
+     1 ('# situation where the reflections used for refinement were')
+      call xpcif
+     1 ('# selected by a user-defined sigma threshold ')
+           CALL XPCIF (' ')
+           CALL XPCIF (' ')
 
+           CALL XPCIF 
+     1     ('# The values actually used during refinement')
+           WRITE(CBUF,'(''I>'',F6.1,''\s(I)'')') STORE(L30RF+3)
+           CALL XCRAS (CBUF,NCHAR)
+           WRITE (NCFPU1,'(''_oxford_reflns_threshold_expression_ref '',
+     1                    T45,A)')  CBUF(1:NCHAR) 
+           CBUF(1:11)='_refine_ls_'
+           WRITE (CLINE,'(A, ''number_reflns '', I10)') CBUF(1:11),
+     1                    NINT(STORE(L30RF+8))
+           CALL XPCIF (CLINE)
            WRITE (CLINE,'(A, ''number_restraints '', I10)') CBUF(1:11),
-     1      NINT(STORE(L30CF+13))
+     1                   NINT(STORE(L30CF+13))
            CALL XPCIF (CLINE)
-C 
            WRITE (CLINE,'(A, ''number_parameters '', I10)') CBUF(1:11),
-     1      NINT(STORE(L30RF+2))
+     1                   NINT(STORE(L30RF+2))
            CALL XPCIF (CLINE)
-C
-           CALL XPCIF (' ')
-           WRITE (CLINE,'(''#'',A,''R_factor_ref '',F10.4)') CBUF(1:11),
-     1              STORE(L30RF+0)*0.01
+           WRITE (CLINE,'(''_oxford'',A,''R_factor_ref '',F10.4)') 
+     1                   CBUF(1:11), STORE(L30RF+0)*0.01
            CALL XPCIF (CLINE)
-C
            WRITE (CLINE,'(A, ''wR_factor_ref '', F10.4)') CBUF(1:11),
-     1              STORE(L30RF+1)*0.01
+     1                   STORE(L30RF+1)*0.01
            CALL XPCIF (CLINE)
-C
            WRITE (CLINE,'(A, ''goodness_of_fit_ref '', F10.4)')
-     1      CBUF(1:11),STORE(L30RF+4)
+     1                   CBUF(1:11),STORE(L30RF+4)
            CALL XPCIF (CLINE)
+           WRITE (CLINE,'(A, ''shift/su_max '', F10.6)') CBUF(1:11),
+     1            STORE(L30RF+7)
+           CALL XPCIF (CLINE)
+           CALL XPCIF (' ')
 C
            CALL XPCIF (' ')
-           WRITE (CLINE,'(''#_reflns_number_all '', I10)')
-     1      NINT(STORE(L30CF+5))
+           CALL XPCIF 
+     1     ('# The values computed from all data')
+
+           WRITE (CLINE,'(''_oxford_reflns_number_all '', I10)')
+     1                  NINT(STORE(L30CF+5))
            CALL XPCIF (CLINE)
-C
            WRITE (CLINE,'(''_refine_ls_R_factor_all '', F10.4)')
-     1      STORE(L30CF+6)*0.01
+     1                  STORE(L30CF+6)*0.01
            CALL XPCIF (CLINE)
-C 
            WRITE (CLINE,'(''_refine_ls_wR_factor_all '', F10.4)')
-     1      STORE(L30CF+7)*0.01
+     1                  STORE(L30CF+7)*0.01
            CALL XPCIF (CLINE)
 C
            CALL XPCIF (' ')
-           IF ( LCUTUS .EQ. 0 ) THEN
-             WRITE (NCFPU1,1)
-     1       '# No actual I/u(I) cutoff was used for refinement. The'
-             WRITE (NCFPU1,1)
-     1       '# threshold below is used for "_gt" information ONLY:'
-           ELSE
-             WRITE (NCFPU1,
-     1    '(''# The I/u(I) cutoff below was used for refinement as '')')
-             WRITE (NCFPU1,
-     1      '(''# well as the _gt R-factors:'')')
-           END IF
+cdjw may07 - removed so that 2 sigma cut is always shown
+c           IF ( LCUTUS .EQ. 0 ) THEN
+c             WRITE (NCFPU1,1)
+c     1       '# No actual I/u(I) cutoff was used for refinement. The'
+c             WRITE (NCFPU1,1)
+c     1       '# threshold below is used for "_gt" information ONLY:'
+c           ELSE
+c             WRITE (NCFPU1,
+c     1    '(''# The I/u(I) cutoff below was used for refinement as '')')
+c             WRITE (NCFPU1,
+c     1      '(''# well as the _gt R-factors:'')')
+c           END IF
+           CALL XPCIF 
+     1     ('# The values computed with a 2 sigma cutoff - a la SHELX')
+
            WRITE(CBUF,'(''I>'',F6.1,''\s(I)'')') STORE(L30CF+0)
            CALL XCRAS (CBUF,NCHAR)
            WRITE (NCFPU1,'(''_reflns_threshold_expression '',T35,A)')
-     1     CBUF(1:NCHAR)
-C
-           WRITE (CLINE,'(''_reflns_number_gt '', I10)')
-     1     NINT(STORE(L30CF+1))
-           CALL XPCIF (CLINE)
-C
-           WRITE (CLINE,'(''_refine_ls_R_factor_gt '', F10.4)')
-     1     STORE(L30CF+2)*0.01
-           CALL XPCIF (CLINE)
-C
-           WRITE (CLINE,'(''_refine_ls_wR_factor_gt '', F10.4)')
-     1     STORE(L30CF+3)*0.01
-           CALL XPCIF (CLINE)
-C
-C
+     1                 CBUF(1:NCHAR)
            CBUF(1:11)='_refine_ls_'
-C
-           CALL XPCIF (' ')
-           WRITE (CLINE,'(A, ''shift/su_max '', F10.6)') CBUF(1:11),
-     1      STORE(L30RF+7)
+           WRITE (CLINE,'(''_reflns_number_gt '', I10)')
+     1                 NINT(STORE(L30CF+1))
+           CALL XPCIF (CLINE)
+           WRITE (CLINE,'(''_refine_ls_R_factor_gt '', F10.4)')
+     1                 STORE(L30CF+2)*0.01
+           CALL XPCIF (CLINE)
+           WRITE (CLINE,'(''_refine_ls_wR_factor_gt '', F10.4)')
+     1                 STORE(L30CF+3)*0.01
            CALL XPCIF (CLINE)
            CALL XPCIF (' ')
+C
+C
         ELSE IF ( IPUNCH .EQ. 1 ) THEN
 C 
            WRITE (CPAGE(IREF+3,1)(:),'(A,6X,F10.2)') 'Delta Rho min',
@@ -5898,6 +5957,7 @@ C----- PACK UP THE FLACK PARAMETER AND ITS ESD
             WRITE (CTEMP,'(16A1)') (IVEC(J),J=1,16)
             CALL XCRAS (CTEMP,N)
               
+            CBUF(1:11)='_refine_ls_'
             IF ( IPUNCH .EQ. 0 ) THEN
               WRITE (CLINE,'(A, ''abs_structure_Flack  '', 4X, A )')
      2         CBUF(1:11),CTEMP(1:N)
@@ -6315,37 +6375,6 @@ cdjw090804^
         END IF
       END IF
 C 
-      IF ( IPUNCH .EQ. 0 ) THEN
-        CALL XPCIF (' ')
-        CALL XPCIF (' ')
-C----- COPY HEADER INFORMATION FROM .CIF FILE
-       CALL XMOVEI (KEYFIL(1,2),JDEV,4)
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
-      CALL XRDOPN(6,JDEV,'CRYSDIR:script\refcif.dat',25)
-#else
-      CALL XRDOPN(6,JDEV,'CRYSDIR:script/refcif.dat',25)
-
-#endif
-        IF (IERFLG.GE.0) THEN
-          CLINE=' '
-100       CONTINUE
-          READ (NCARU,'(A)',ERR=100,END=150) CLINE
-          call xpcif (CLINE)
-          GO TO 100
-150       CONTINUE
-C----- CLOSE THE FILE
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
-       CALL XRDOPN(7,JDEV,'CRYSDIR:script\refcif.dat',25)
-#else
-       CALL XRDOPN(7,JDEV,'CRYSDIR:script/refcif.dat',25)
-#endif
-        ELSE
-          WRITE (CMON,'('' cif header file not available'')')
-          CALL XPRVDU (NCVDU,1,0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
-          IERFLG=0
-        END IF
-      END IF
 
       IF ( IPUNCH .EQ. 0 ) THEN
 C - NOW LIST THE REFERENCES
