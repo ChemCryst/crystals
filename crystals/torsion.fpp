@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2006/01/06 10:08:57  djw
+C Fixes to cif output of torsion angles
+C
 C Revision 1.5  2005/01/23 08:29:12  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -22,9 +25,11 @@ C--MAIN TORSION ANGLE CALCULATION ROUTINE
 C
 C--
       DIMENSION LATOM(4)
+      dimension r(4,3), sd(4,3), xyz(3)
       CHARACTER *12 CBUFF
       CHARACTER *32 CATOM(4), CBLANK
       INCLUDE 'ICOM12.INC'
+      INCLUDE 'ICOM30.INC'
       INCLUDE 'ISTORE.INC'
 C
       INCLUDE 'STORE.INC'
@@ -37,13 +42,15 @@ C
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST12.INC'
+      INCLUDE 'XLST30.INC'
       INCLUDE 'XLEXIC.INC'
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XIOBUF.INC'
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST12.INC'
-      DATA IVERSN/202/
+      INCLUDE 'QLST30.INC'
+      DATA IVERSN  /203/
       DATA CBLANK /' '/
       DATA AZERO /0.0/
 C
@@ -63,6 +70,14 @@ C--CLEAR THE CORE
 C--LOAD THE RELEVANT LISTS
       CALL XFAL01
       CALL XFAL02
+      call xfal30
+c----- store mean sigma
+      do i=1,3
+      do j=1,3
+            sd(j,i)= store(l30cf+14)
+      enddo
+      enddo
+c
       IULN5=KTYP05(MX)
       CALL XLDR05(IULN5)
       IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -196,6 +211,21 @@ C--SET POINTERS TO THE REMAINING ATOMS IN THE STACK
 C--SET UP SPACE FOR ROTATION MATRIX AT 'MAT'
       MAT=NFL
       NFL=NFL+9
+cdjwapr07      
+c--- store orthogonal atoms for tors2
+      CALL XMLTTM(STORE(L1O1),STORE(ibase1),xyz,3,3,1)
+      r(1,1)=xyz(1)
+      r(1,2)=xyz(2)
+      r(1,3)=xyz(3)
+      CALL XMLTTM(STORE(L1O1),STORE(ibase2),xyz,3,3,1)
+      r(2,1)=xyz(1)
+      r(2,2)=xyz(2)
+      r(2,3)=xyz(3)
+      CALL XMLTTM(STORE(L1O1),STORE(ibase3),xyz,3,3,1)
+      r(3,1)=xyz(1)
+      r(3,2)=xyz(2)
+      r(3,3)=xyz(3)
+
 C--STORE FIRST TWO VECTORS AT 'IBASE1', 'IBASE2'
       STORE(IBASE1)=STORE(IBASE1)-STORE(IBASE2)
       STORE(IBASE1+1)=STORE(IBASE1+1)-STORE(IBASE2+1)
@@ -213,6 +243,8 @@ C--POINT TO THE SECOND VECTOR
 2200  CONTINUE
       JB=IBASE2
 2250  CONTINUE
+
+
 C--SET A POINTER FOR THE ATOM NUMBER
       JQ=1
 C--PRINT THE FIRST THREE ATOMS OF THE TORSION ANGLE
@@ -254,6 +286,12 @@ C--LOOP OVER ALL THE NEXT ATOM IN THE STACK AND COMPUTE IS ANGLE
       IBASE4=IBASE4+NW
 C--DECREMENT THE NUMBER OF ATOMS
       NATOM=NATOM-1
+c-save 4th atom for tors2
+      CALL XMLTTM(STORE(L1O1),STORE(ibase4),xyz,3,3,1)
+      r(4,1)=xyz(1)
+      r(4,2)=xyz(2)
+      r(4,3)=xyz(3)
+
 C--FORM THIRD VECTOR AT IBASE4
       STORE(IBASE4)=STORE(IBASE4)-STORE(IBASE3)
       STORE(IBASE4+1)=STORE(IBASE4+1)-STORE(IBASE3+1)
@@ -271,10 +309,10 @@ C--CALCULATE ANGLE OF VECTOR
       JG=NINT(STORE(JF+1))
       JB=IBASE4+4
       JD=IBASE4+8
+cdjwapr07      
+      CALL TORS2(R,SD,TAU,SIGTAU,KTR)
 C--- NOTE THAT TWO ITEMS ARE OUTPUT EVEN WHEN ESDS ARE NOT COMPUTED
-c--- use Carpenters rules as a guess at the esd
-      aesd=0.3
-      IF(IPBFLG .GT. 0) WRITE (MTE) 'T', ANGLE, AESD,
+      IF(IPBFLG .GT. 0) WRITE (MTE) 'T', ANGLE, SIGTAU,
      1 (STORE(JPUB),STORE(JPUB+1), (ISTORE(KPUB),KPUB=JPUB+2,JPUB+6),
      2  JPUB=IPUB, IPUB+14, 7),
      3  STORE(JF), STORE(JF+1), (ISTORE(JE), JE=JB,JD)
@@ -284,11 +322,11 @@ C----- COMPRESS ATOMS INTO CHARACTER FORM
      1 ,ISTORE(JB+1) ,ISTORE(JB+2) ,ISTORE(JB+3) ,ISTORE(JB+4),
      2 CATOM(4), LATOM(4))
         WRITE ( CMON ,2806)(
-     1 CBLANK(1: 15-LATOM(II)), CATOM(II)(1:LATOM(II)),II=1,4)
-     2 ,ANGLE
+     1 CBLANK(1: 10-LATOM(II)), CATOM(II)(1:LATOM(II)),II=1,4)
+     2 ,ANGLE, SIGTAU
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
-2806  FORMAT (2A, ' to ', 2A, ' to ', 2A, ' to ', 2A, F8.3)
+2806  FORMAT (2A, ' to ', 2A, ' to ', 2A, ' to ', 2A, 2F8.1)
 C--CHECK IF THERE ARE MORE ATOMS
       IF(NATOM)1200,1200,2500
 C
@@ -339,4 +377,65 @@ C -- INPUT ERROR
       CALL XOPMSG ( IOPTOR , IOPABN , 0 )
       GO TO 9900
       END
-
+C
+CODE FOR TORS2
+      SUBROUTINE TORS2(R,SD,TAU,SIGTAU,KTR)
+C----- CODE DONATED BY MARIO NARDELLI
+C-----This routine calculates the torsion angle formed by the atoms
+C-----1-2-3-4.The angle is positive when the 1-2 bond, view down the
+C-----2-3 bond, will eclipse the 3-4 bond when rotates less than 180
+C-----deg in a clockwise direction ("right-hand rule",Klyne,W.&
+C-----Prelog,V. (1960), Experientia, 16, 521).
+C-----S.u. following Stanford & Waser (1972). Acta Cryst.A28,213.
+      REAL M(3,3)
+      DIMENSION R(4,3),DLT(3,3),DST(3),SD(4,3),DS(4)
+      KTR=0
+      sigtau = 0.0
+      tau = 0.0
+      DO 1 J=1,3
+      DLT(1,J)=R(2,J)-R(1,J)
+      DLT(2,J)=R(2,J)-R(3,J)
+      DLT(3,J)=R(4,J)-R(3,J)
+    1 CONTINUE
+      DO 2 I=1,3
+      DST(I)=SQRT(DLT(I,1)**2+DLT(I,2)**2+DLT(I,3)**2)
+      IF(DST(I).EQ.0.) GO TO 4
+   2  CONTINUE
+      DO 3 I=1,3
+      DO 3 J=1,3
+      M(I,J)=DLT(I,J)/DST(I)
+   3  CONTINUE
+      CF1=M(1,1)*M(2,1)+M(1,2)*M(2,2)+M(1,3)*M(2,3)
+      CF2=M(2,1)*M(3,1)+M(2,2)*M(3,2)+M(2,3)*M(3,3)
+      IF(ABS(CF1).GT..999990.OR.ABS(CF2).GT..999990)GO TO 4
+      SF1=SQRT(1.-CF1**2)
+      SF2=SQRT(1.-CF2**2)
+      P=SF1*SF2
+      IF(ABS(P).LT.1.E-5)GO TO 4
+      STAU=(M(3,1)*(M(2,2)*M(1,3)-M(1,2)*M(2,3))
+     1 +M(3,2)*(M(1,1)*M(2,3)-M(1,3)*M(2,1))
+     2 +M(3,3)*(M(2,1)*M(1,2)-M(1,1)*M(2,2)))/P
+      CTAU=((M(2,2)*M(1,3)-M(1,2)*M(2,3))*( M(3,2)*M(2,3)-M(2,2)*M(3,3)
+     1 )+(M(2,3)*M(1,1)-M(2,1)*M(1,3))*(M(3,3)*M(2,1)-M(3,1)*M(2,3))
+     2 +(M(2,1)*M(1,2)-M(1,1)*M(2,2))*(M(3,1)*M(2,2)-M(2,1)*M(3,2)))/P
+      RR=57.295779
+      TAU1=ATAN2(STAU,CTAU)
+      TAU=RR*TAU1
+      IF(TAU.GT.180.)TAU=TAU-360.
+      DO 6 I=1,4
+      DS(I)=(SD(I,1)**2+SD(I,2)**2+SD(I,3)**2)/3.
+6     DS(I)=SQRT(DS(I))
+      S1=(DS(1)/(DST(1)*SF1))**2
+      A1=(DST(2)-DST(1)*CF1)/(DST(1)*SF1)
+      A2=(DST(2)-DST(3)*CF2)/(DST(3)*SF2)
+      S2=(DS(2)/DST(2))**2*(A1**2-2.*A1*(CF2/SF2)*CTAU+(CF2/SF2)**2)
+      S3=(DS(3)/DST(2))**2*(A2**2-2.*A2*(CF1/SF1)*CTAU+(CF1/SF1)**2)
+      S4=(DS(4)/(DST(3)*SF2))**2
+      IF((S1+S2+S3+S4).LT.0.) GO TO 4
+      SIGTAU=RR*SQRT(S1+S2+S3+S4)
+      GO TO 5
+   4  KTR=1
+   5  RETURN
+      END
+c 
+c
