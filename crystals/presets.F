@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.51  2006/05/03 14:23:40  djw
+C Write names of created hydrogens to a delete hydrogens file on unit NCCBU (the old common block file). Set attributes to CIF and unlocked
+C
 C Revision 1.50  2005/02/25 17:25:20  stefan
 C 1. Added some preprocessor if defined lines for the mac version.
 C
@@ -1507,10 +1510,10 @@ C
 #if defined(_DVF_) || defined(_GID_) 
       DATA CSSMAC / 'Intel Pentium' /
       DATA LSSMAC / 13 /
-      DATA CSSOPS / 'WIN 95' /
+      DATA CSSOPS / 'WIN XP' /
       DATA LSSOPS / 6 /
-      DATA CSSDAT / 'December 1998' /
-      DATA LSSDAT / 13 /
+      DATA CSSDAT / 'June 2007' /
+      DATA LSSDAT / 9  /
 #endif
 #if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       DATA CSSMAC / 'Intel Pentium' /
