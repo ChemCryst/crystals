@@ -1,73 +1,28 @@
-%SCRIPT STATWT
-In the agreement analysis, check that the column <wdeltasq>, the
-weighted residual, is approximately constant, and that the final
-value is about unity.
-%%  FTYPE is 0 for Fo ref and 1 for Fsq ref
-%  VARIABLE INTEGER FTYPE
-%%
-%%
-%          COPY '#LIST 4'
-%          COPY 'SCHEME NUMBER=16, NPARAM=6'
-%          COPY 'PARAM 1 0 0 0 0 .333'
-%          COPY 'END'
-{I            Quasi-statistical weighting , P(1)=1
-%          COPY '#ANALYSE'
-%          COPY 'END'
-%%
-%          COPY '#LIST 4'
-%          COPY 'SCHEME NUMBER=16, NPARAM=6'
+%SCRIPT STATWT                                                                  
+In the agreement analysis, check that the column <wdeltasq>, the                
+weighted residual, is approximately constant, and that the final                
+value is about unity.                                                           
+%%  FTYPE is 0 for Fo ref and 1 for Fsq ref                                     
+%  VARIABLE INTEGER FTYPE                                                       
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%          COPY '#LIST 4'                                                       
+%          COPY 'SCHEME NUMBER=16, NPARAM=6'                                    
 %          IF FTYPE .EQ. 0 THEN
-{I            Quasi-statistical weighting , P(1)=.01
-%             COPY 'PARAM .01 0 0 0 0 .333'
-%          ELSE
-{I            Quasi-statistical weighting , P(1)=.1
-%          COPY 'PARAM .1 0 0 0 0 .333'
-%          END IF  
-%          COPY 'END'
-%          COPY '#ANALYSE'
-%          COPY 'END'
-%%
-%%
-%          COPY '#LIST 4'
-%          COPY 'SCHEME NUMBER=16, NPARAM=6'
-%          IF FTYPE .NE. 0 THEN
-{I            Quasi-statistical weighting , P(1)=.01
-%             COPY 'PARAM .01 0 0 0 0 .333'
-%          ELSE
-{I            Quasi-statistical weighting , P(1)=.1
-%          COPY 'PARAM .1 0 0 0 0 .333'
-%          END IF  
-%          COPY 'END'
-%          COPY '#ANALYSE'
-%          COPY 'END'
-%%
-%%
-%%
-%          LOOP
-%            ON END TERMINATE
-%            VERIFY YES NO
-%            GET NOSTORE ABBREVIATED -
-  'Do you want to change the final parameter' 'NO'
-%            IF ( VALUE .EQ. 2 ) THEN
-%              FINISH
-%            END IF
-%            COPY '#LIST 4'
-%            CLEAR
-%            IF FTYPE .EQ. 0 THEN
-%% Fo default
-%              GET NOSTORE REAL 'Multiplier' '0.01'
-%            ELSE
-%% Fsq default
-%              GET NOSTORE REAL 'Multiplier' '0.1'
-%            END IF
-%              COPY 'SCHEME NUMBER=16 NPARAM=6'
-%              CLEAR
-%              INSERT 'PARAM '
-%              STORE REAL VALUE
-%              INSERT ' 0 0 0 0 .3333'
-%              SEND
-%            COPY 'END'
-%            COPY '#ANALYSE'
-%            COPY 'END'
-%          END LOOP
-%END SCRIPT
+%% FO                                                 
+{I            Quasi-statistical weighting , P(1)=.01                             
+%             COPY 'PARAM .01 0 0 0 0 .333'                                         
+%          else
+%% FSQ                                                 
+{I            Quasi-statistical weighting , P(1)=.1                            
+%             COPY 'PARAM .1 0 0 0 0 .333'                                     
+%          END IF                                                               
+%          COPY 'END'                                                           
+%          COPY '#ANALYSE'                                                      
+%          COPY 'END'                                                           
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%END SCRIPT                                                                     
