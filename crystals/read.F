@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.52  2005/03/10 12:12:48  djw
+C Coppy COMMAND list to listing file
+C
 C Revision 1.51  2005/02/25 17:25:20  stefan
 C 1. Added some preprocessor if defined lines for the mac version.
 C
@@ -527,6 +530,12 @@ C
 C --  CHECK TYPE OF CARD.
 C
       IF ( IMAGE(1) .EQ. IH ) THEN
+cdjwjun07
+        write(cmon,'(80a1)') (image(idjw),idjw=1,80)
+        if ((issprt .eq. 0) .and. (cmon(1)(2:4) .eq. 'SCR')) then
+            write(ncwu,'(A)') cmon(1)(:)
+        endif
+cdjwjun07
         IHFLAG = 0
         NC = 2
         IF ( IMAGE(2) .EQ. IB ) GO TO 1000
