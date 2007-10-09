@@ -27,7 +27,7 @@
 % EVALUATE MAXPR = 0                                                            
 %                                                                               
 %                                                                               
-{1,11Naming the Parts
+{1,11Naming the Parts                                                           
 {1,11                                                                           
 {1,11In CRYSTALS                                                                
 {1,11If a strcuture contains two or more discrete molecular fragments,          
@@ -37,7 +37,7 @@
 {1,11A RESIDUE can be divided (by the user) into {12,11PARTS                    
 {1,11                                                                           
 {1,11A PART is usually a bit of a RESIDUE of special interest -                 
-{1,11e.g. disordered fragment.                                                           
+{1,11e.g. disordered fragment.                                                  
 {1,11                                                                           
 {1,11A PART has an identifier corresponding to 2 components:                    
 {1,11 {12,11ASSEMBLIES and {12,11GROUPS                                         
@@ -50,19 +50,19 @@
 {1,11                                                                           
 {1,11PART_ID = 1000*ASSEMBLY_ID + GROUP_ID                                      
 {1,11                                                                           
-{1,11PARTS can be used to identify groups of atoms, e.g. IN #EDIT
+{1,11PARTS can be used to identify groups of atoms, e.g. IN #EDIT               
 {1,11                                                                           
-{12,11CHANGE PART(1001,OCC) PART(1002,OCC) 0.5
+{12,11RESET OCC .5 PART(1001) PART(1002)                                  
 {1,0                                                                            
 %% Create the window                                                            
 %                                                                               
 %                                                                               
-^^WI WINDOW XGROUPS 'Assembly & Group definitions' KEEP SIZE  MODAL              
+^^WI WINDOW XGROUPS 'Assembly & Group definitions' KEEP SIZE  MODAL             
 ^^WI COMMIT='PR_BOK' CANCEL='PR_BOK'                                            
 %                                                                               
 ^^WI GRID MAIN NROWS=3 NCOLS=5                                                  
 ^^WI {                                                                          
-^^WI  @ 2,2 GRID LEFT NROWS=23 NCOLS=1                                           
+^^WI  @ 2,2 GRID LEFT NROWS=23 NCOLS=1                                          
 ^^WI  {                                                                         
 ^^WI   @ 1,1 GRID LEFT NROWS=10 NCOLS=5                                         
 ^^WI   {                                                                        
@@ -76,45 +76,45 @@
 ^^WI    @ 7,1 BUTTON XPBGRR 'Remove assembly'                                   
 ^^WI    @ 5,3 BUTTON XPBPTA 'New group'                                         
 ^^WI    @ 7,3 BUTTON XPBPTR 'Remove group'                                      
-^^WI    @ 5,5 BUTTON XPBARA 'Remove atom' DISABLED=YES 
-^^WI    @ 7,5 BUTTON PR_BOK 'Close' DEFAULT                                    
-                         
+^^WI    @ 5,5 BUTTON XPBARA 'Remove atom' DISABLED=YES                          
+^^WI    @ 7,5 BUTTON PR_BOK 'Close' DEFAULT                                     
+                                                                                
 ^^WI   }                                                                        
-^^WI @ 3,1 STATIC STAT 'CLICK atoms to add to current assembly and group'     
-
-^^WI @ 5,1 STATIC STAT 
-^^WI 'If a structure contains two or more discrete molecular fragments,'
-^^WI @ 6,1 STATIC STAT 
-^^WI 'these are called RESIDUES'
-^^WI @ 7,1 STATIC STAT 
-^^WI 'AtomS can be allocated to a RESIDUE, and the RESIDUE number be'
-^^WI @ 8,1 STATIC STAT 
-^^WI 'used to identify all those atoms e.g. RESIDUE(2)'
-^^WI @ 9,1 STATIC STAT 
-^^WI 'A RESIDUE can be divided (by the user) into PARTS'
-
-^^WI @ 11,1 STATIC STAT 
-^^WI 'A PART is usually a bit of a RESIDUE of special interest -'
-^^WI @ 12,1 STATIC STAT 
-^^WI 'e.g. disordered fragment.'
-                                                                           
-^^WI @ 14,1 STATIC STAT 
-^^WI 'A PART has an identifier corresponding to 2 components:'
-^^WI @ 15,1 STATIC STAT 
-^^WI ' ASSEMBLIES and GROUPS'
-^^WI @ 16,1 STATIC STAT 
-^^WI 'Different disordered regions are assigned to diferent ASSEMBLIES'
-                                                                           
-^^WI @ 18,1 STATIC STAT 
-^^WI 'Atoms in each part of a disordered region are assigned to a GROUP'
-^^WI @ 19,1 STATIC STAT 
-^^WI 'PART_ID = 1000*ASSEMBLY_ID + GROUP_ID'
-
-^^WI @ 21,1 STATIC STAT 
-^^WI 'PARTS can be used to identify groups of atoms, e.g. IN #EDIT'
-^^WI @ 22,1 STATIC STAT 
-^^WI 'CHANGE PART(1001,OCC) PART(1002,OCC) 0.5'
-
+^^WI @ 3,1 STATIC STAT 'CLICK atoms to add to current assembly and group'       
+                                                                                
+^^WI @ 5,1 STATIC STAT                                                          
+^^WI 'If a structure contains two or more discrete molecular fragments,'        
+^^WI @ 6,1 STATIC STAT                                                          
+^^WI 'these are called RESIDUES'                                                
+^^WI @ 7,1 STATIC STAT                                                          
+^^WI 'AtomS can be allocated to a RESIDUE, and the RESIDUE number be'           
+^^WI @ 8,1 STATIC STAT                                                          
+^^WI 'used to identify all those atoms e.g. RESIDUE(2)'                         
+^^WI @ 9,1 STATIC STAT                                                          
+^^WI 'A RESIDUE can be divided (by the user) into PARTS'                        
+                                                                                
+^^WI @ 11,1 STATIC STAT                                                         
+^^WI 'A PART is usually a bit of a RESIDUE of special interest -'               
+^^WI @ 12,1 STATIC STAT                                                         
+^^WI 'e.g. disordered fragment.'                                                
+                                                                                
+^^WI @ 14,1 STATIC STAT                                                         
+^^WI 'A PART has an identifier corresponding to 2 components:'                  
+^^WI @ 15,1 STATIC STAT                                                         
+^^WI ' ASSEMBLIES and GROUPS'                                                   
+^^WI @ 16,1 STATIC STAT                                                         
+^^WI 'Different disordered regions are assigned to diferent ASSEMBLIES'         
+                                                                                
+^^WI @ 18,1 STATIC STAT                                                         
+^^WI 'Atoms in each part of a disordered region are assigned to a GROUP'        
+^^WI @ 19,1 STATIC STAT                                                         
+^^WI 'PART_ID = 1000*ASSEMBLY_ID + GROUP_ID'                                    
+                                                                                
+^^WI @ 21,1 STATIC STAT                                                         
+^^WI 'PARTS can be used to identify groups of atoms, e.g. IN #EDIT'             
+^^WI @ 22,1 STATIC STAT                                                         
+^^WI 'CHANGE PART(1001,OCC) PART(1002,OCC) 0.5'                                 
+                                                                                
 ^^WI  }                                                                         
 %                                                                               
 ^^WI  @ 2,4 GRID RIGHT NROWS=1 NCOLS=1                                          
@@ -188,7 +188,7 @@
 %     LOOP                                                                      
 %       ON EDITERROR TERMINATE                                                  
 %       COPY 'TRANSFER FROM OFFSET=14 TO IGROUP'                                
-%       EVALUATE IASSEMB = ( IGROUP IDECMASK 111000 ) / 1000                    
+%       EVALUATE IASSEMB = ( IGROUP IDECMASK 001000 ) / 1000                    
 %       COPY 'TRANSFER TO OFFSET=13 FROM IASSEMB'                               
 %       IF ( IASSEMB .GT. MAXGR ) THEN                                          
 %         EVALUATE MAXGR = IASSEMB                                              
@@ -507,7 +507,7 @@
 %           EVALUATE LOOPEND = LOOPCOUNTER                                      
 %           COPY 'TRANSFER FROM OFFSET=14 TO IGROUP'                            
 %           IF ( ( ( ( IGROUP IDECMASK 111111 ) ) .EQ. 0 ) .OR. -               
-                     ( PRCHALL ) )  THEN 
+                     ( PRCHALL ) )  THEN                                        
 %             COPY 'TRANSFER TO OFFSET=14 FROM ICUR'                            
 %             EVALUATE GENCNT = GENCNT + 1                                      
 %           ELSE                                                                
@@ -657,7 +657,7 @@
 %         COPY 'TRANSFER FROM OFFSET=14 TO ICUR'                                
 %         EVALUATE IASSMEB = ( ICUR IDECMASK 111000 ) / 1000                    
 %         IF ( IASSEMB .EQ. ISELGR ) THEN                                       
-%           EVALUATE ICUR = 0
+%           EVALUATE ICUR = 0                                                   
 %           COPY 'TRANSFER TO OFFSET=14 FROM ICUR'                              
 %         END IF                                                                
 %         COPY 'NEXT'                                                           
@@ -693,7 +693,7 @@
 %           EVALUATE IGROUP = - IGROUP                                          
 %         END IF                                                                
 %         IF ( IASSEMB .EQ. ISELGR ) .AND. ( IGROUP .EQ. ISELPR ) THEN          
-%           EVALUATE ICUR = 0
+%           EVALUATE ICUR = 0                                                   
 %           COPY 'TRANSFER TO OFFSET=14 FROM ICUR'                              
 %         END IF                                                                
 %         COPY 'NEXT'                                                           
@@ -735,7 +735,7 @@
 %         COPY 'TRANSFER FROM OFFSET=0 TO CATOM'                                
 %         COPY 'TRANSFER FROM OFFSET=1 TO RSER'                                 
 %         IF ( CATOM .EQ. CSEEK ) .AND. ( ( INTEGER RSER ) .EQ. ISER ) THEN     
-%           EVALUATE ICUR = 0
+%           EVALUATE ICUR = 0                                                   
 %           COPY 'TRANSFER TO OFFSET=14 FROM ICUR'                              
 %           EVALUATE LOOPEND = LOOPCOUNTER                                      
 %         END IF                                                                
