@@ -1408,9 +1408,9 @@ Data reduction details
     .ZZ4                0    0    1    0    0.0
     .ZZ5                0    0    1    0    0.0
     .ZZ6                0    0    1    0    0.0
-    .REDUCTION          0    0    1    6    0 UNKNOWN
+    .REDUCTION          0    0    1    7    0 UNKNOWN
      UNKNOWN        RC93           DENZO          SHELX          XRED
-     CRYSALIS-RED
+     CRYSALIS-RED   SAINT
    2.CONDITIONS        13    1    0    0   13    1  102    5   30
          1    1    1    1    1    1    0    0    0    0
 Data collection details
@@ -1430,9 +1430,9 @@ Data collection details
      2THETA/OMEGA   OMEGA          PHI            PHIOMEGA       UNKNOWN
     .INTERVAL           0    0    1    0    1 0.
     .COUNT              0    0    1    0    1 0.
-    .INSTRUMENT         0    0    1    8    0 UNKNOWN
+    .INSTRUMENT         0    0    1    9    0 UNKNOWN
      UNKNOWN        CAD4           MACH3          KAPPACCD       DIP
-     SMART          IPDS           XCALIBUR
+     SMART          IPDS           XCALIBUR       APEX2
    3.REFINEMENT        13    1    0    0   13    1  103    9   30
          1    1    1    1    1    1    0    0    0    0
 Refimenent details
@@ -1481,10 +1481,10 @@ New Absorption correction details
     .EMPMAX             0    0    1    0    1 0.
     .DIFABSMIN          0    0    1    0    1 0.
     .DIFABSMAX          0    0    1    0    1 0.
-    .ABSTYPE            0    0    1   14    0 NONE
+    .ABSTYPE            0    0    1   15    0 NONE
      NONE           DIFABS         EMPIRICAL      MULTI-SCAN     SADABS
      SORTAV         SHELXA         GAUSSIAN       ANALYTICAL     NUMERICAL
-     INTEGRATION    SPHERICAL      CYLINDRICAL    PSI-SCAN
+     INTEGRATION    SPHERICAL      CYLINDRICAL    PSI-SCAN       SAINT
    6.GENERAL           13    1    0    0   13    1  106   21   30
          1    1    1    1    1    1    0    0    0    0
 Various bits and pieces
@@ -2705,6 +2705,15 @@ REGULARISE        27    4
          3
     .MODE              35    0    1    4    1 COMPARE
      REPLACE        COMPARE        KEEP           AUGMENT
+HNAME              1    3
+  11    4096 CRYSTALSALTER5
+    5   40   41
+   1.HNAME              2    1    0    0    0    0    0    0    0
+         1    1    3
+    .INPUTLIST          1    0    1    2    1         5
+              5        10
+    .OUTPUTLIST         2    0    1    2    1         5
+              5        10
 PERHYDRO           5    3
    7    4096 CRYSTALSALTER5
     1    2    5
@@ -3801,8 +3810,8 @@ TRIAL              5    5
     .Z-COMPONENT        9   -1    1    0    0
 FOREIGN            1    0
    1    4096 CRYSTALSFOREIGN
-   1.FOREIGN            3    1    0    0
-         3    3    3
+   1.FOREIGN            4    1    0    0
+         3    3    3    1
     .PROGRAM            1   -1    1   11    1
      SNOOPI         CAMERON        SHELXS         MULTAN         SIR88
      SIR92          SIR97          PLATON         CSD            MOL2
@@ -3812,6 +3821,8 @@ FOREIGN            1    0
      LONG
     .METHOD             3    0    1    2    0 NORMAL
      NORMAL         FILTERED
+    .INPUTLIST          4    0    1    2    1         6
+              6         7
 XCAMERON           1    0
    1    4096 CRYSTALSFOREIGN
    1.XCAMERON           2    1    0    0
