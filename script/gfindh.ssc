@@ -6,7 +6,7 @@
 % VARIABLE CHARACTER CATOM CEL CTYPE                                            
 % VARIABLE REAL SX SY SZ SS SERI                                                
 % VARIABLE LOGICAL HQEXEC L12SMASK T                                            
-% VARIABLE LOGICAL HDONE HMASK FOUREF AHFOUND REGUL                             
+% VARIABLE LOGICAL HDONE HMASK FOUREF AHFOUND REGUL RENUMB                             
 % VARIABLE INTEGER L12SER                                                       
 %% The variables needed by XQUESTIO                                             
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
@@ -43,7 +43,7 @@
 ^^WI   @ 2,2 GRID GRIDQ NROWS=1 NCOLS=3 OUTLINE=''                              
 ^^WI   {                                                                        
 ^^WI     @ 1,1 ICON IM INFO                                                     
-^^WI     @ 1,3 GRID EXP2 NROWS=6 NCOLS=1                                        
+^^WI     @ 1,3 GRID EXP2 NROWS=7 NCOLS=1                                        
 ^^WI     {                                                                      
 ^^WI       @ 1,1 STATIC T1                                                      
 ^^WI 'Key: H (white) - Geometric H positions, QH (pink) - Diff Fourier peaks.'  
@@ -56,6 +56,8 @@
 ^^WI       @ 5,1 STATIC T5                                                      
 ^^WI 'If the structure is complete, check "All H atoms have been found" below.' 
 ^^WI       @ 6,1 STATIC T6                                                      
+^^WI 'Renumbering will create systematic numbers for changed atoms'
+^^WI       @ 7,1 STATIC T7                                                      
 ^^WI 'Regularisation will optimise the H positions using the X-ray data'        
 ^^WI     }                                                                      
 ^^WI   }                                                                        
@@ -74,12 +76,14 @@
 ^^WI            ATTACH L5 RADSCALE=250 RADTYPE=COV                              
 ^^WI            MOUSEACTION=HEADERATOM                                          
 ^^WI   }                                                                        
-^^WI   @ 6,2 GRID CHECKB NROWS=1 NCOLS=5                                        
+^^WI   @ 6,2 GRID CHECKB NROWS=1 NCOLS=7                                        
 ^^WI     @ 1,1 CHECKBOX AHFOUND                                                 
 ^^WI       'All H atoms have been found' STATE=OFF                              
-^^WI     @ 1,3 CHECKBOX REGUL                                                   
-^^WI       'Advanced: Regularise the H using restraints' STATE=ON               
-^^WI     @ 1,5 CHECKBOX FOUREF                                                  
+^^WI     @ 1,3 CHECKBOX RENUMB                                                  
+^^WI       'Create systematic numbers' STATE=ON              
+^^WI     @ 1,5 CHECKBOX REGUL                                                   
+^^WI       'Regularise the H using restraints' STATE=ON               
+^^WI     @ 1,7 CHECKBOX FOUREF                                                  
 ^^WI       'Advanced: Fourier refinement using QH peaks' STATE=OFF              
 ^^WI   }                                                                        
 ^^WI   @ 8,2 GRID BTNS NROWS=1 NCOLS=7                                          
@@ -211,6 +215,13 @@
 %      IF ( VALUE .EQ. 1 ) THEN                                                 
 %        EVALUATE REGUL = TRUE                                                  
 %      END IF                                                                   
+^^??   RENUMB STATE                                                              
+%      VERIFY ON OFF                                                            
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                             
+%      EVALUATE RENUMB = FALSE                                                   
+%      IF ( VALUE .EQ. 1 ) THEN                                                 
+%        EVALUATE RENUMB = TRUE                                                  
+%      END IF                                                                   
 ^^??   AHFOUND STATE                                                            
 %      VERIFY ON OFF                                                            
 %      GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                             
@@ -242,6 +253,11 @@
 %        COPY 'SEL TYPE NE Q'                                                   
 %        COPY 'END'                                                             
 %      END IF                                                                   
+%      IF ( RENUMB .EQ. TRUE ) THEN
+{I * Renumbering found atoms.
+%            COPY '#HNAME'
+%            COPY 'END'
+%      END IF
 %      IF ( REGUL .EQ. TRUE ) THEN                                              
 %        COPY '#RELEASE PUNCH SAV1216.DAT'                                      
 %        COPY '#PUNCH 12'                                                       
@@ -259,12 +275,12 @@
 %        COPY 'GETSERIAL L12SER'                                                
 %        COPY 'END'                                                             
 %        EVALUATE L12SMASK = TRUE                                               
-
-% VARIABLE LOGICAL HRMASK
-% VARIABLE INTEGER HRTYP
-% EVALUATE HRMASK = TRUE
-% EVALUATE HRTYP = 10
-
+                                                                                
+% VARIABLE LOGICAL HRMASK                                                       
+% VARIABLE INTEGER HRTYP                                                        
+% EVALUATE HRMASK = TRUE                                                        
+% EVALUATE HRTYP = 10                                                           
+                                                                                
 %        COPY '#SCRIPT XPUTINFO'                                                
 %      END IF                                                                   
  * Remember - the data may not be good enough to reveal all H atoms.            
