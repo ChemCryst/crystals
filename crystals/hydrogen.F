@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.30  2006/09/22 08:20:51  djw
+C use bondtable for perhydro generation
+C
 C Revision 1.29  2006/05/08 16:11:37  djw
 C new DELH and PERH file system
 C
@@ -173,8 +176,10 @@ C--SET UP THE CORE AREA TO HOLD THE GENERATED HYDROGEN ATOMS
 C--SET THE SYSTEM DEFAULT CONSTANTS
       SY=0.05
       JZ = 1
-      UMULT = 1.2
-      SX=1.0
+      UDEF = 1.2
+      UMULT = udef
+      SDEF=0.95
+      SX = SDEF
       SW=1.0
       SV=1.0
       KPR = 0
@@ -203,6 +208,7 @@ C1200  STOP346
 C
 C--'DISTANCE' INSTRUCTION
 1250  CONTINUE
+      SX = SDEF
       IF(ME)1300,1300,1400
 1300  CONTINUE
       CALL XPCLNN(LN)
@@ -249,7 +255,7 @@ C--CHECK IF THIS IS A 'CARB' DIRECTIVE
 C----- GET THE U MULTIPLIER
       ME = ME - 1
 C----- RE-SET THE DEFAULT TEMPERATURE FACTOR MULTIPLIER
-      UMULT = 1.0
+      UMULT = udef
       IF (ME .LE. 0) GOTO 4250
       MF = MF + LK2
       IF (ISTORE(MF) .NE. 0) GOTO 1450
@@ -639,9 +645,12 @@ C----- NO ANGLES TO BE LOOKED FOR
       BT=0.
       BC=0.
 C--SET THE INPUT PARAMETER DEFAULTS
-      SX=1.0
       JS=0
       JZ=0
+      UDEF = 1.2
+      UMULT = udef
+      SDEF=0.95
+      SX = SDEF
 C----- SET THE TYPE TO C (2 = C & N)
       ITYPEF=1
 C----- LOAD LISTS 1 AND 2, AND SET UP SOME CONSTANTS
@@ -2992,3 +3001,107 @@ C
       RETURN
       END
 
+CODE FOR XSYSTH
+      SUBROUTINE XSYSTH
+
+      INCLUDE 'ISTORE.INC'
+c
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST41.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XOPVAL.INC'
+C
+      INCLUDE 'QSTORE.INC'
+C
+      DIMENSION ID(2)
+      DATA KHYD/'H   '/
+c
+C--SET THE TIMING
+      CALL XTIME1 (2)
+C--READ THE REMAINING DATA
+      IF (KRDDPV(ISTORE(NFL),2).LT.0) GO TO 550
+      IULN=KTYP05(ISTORE(NFL))
+      LNOUT=KTYP05(ISTORE(NFL+1))
+C--CLEAR THE STORE
+      CALL XCSAE
+      CALL XRSL
+C--LOAD THE LISTS
+      IF (KHUNTR (41,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL41
+      CALL XLDR05 (IULN)
+      IF (IERFLG.LT.0) GO TO 500
+      m5 = l5
+C
+      LBUF=NFL
+      NBUF=2
+      NHB=0
+      M41B=L41B
+c
+C----- CREATE A LIST OF BONDS TO HYDROGEN, WITH HETRO ATOM FIRST
+      DO 1000 I = 1,N41B
+            IAT1 = ISTORE(M5+md5*ISTORE(M41B))
+            IAT2 = ISTORE(M5+md5*ISTORE(M41B+6))
+            IF (IAT1 .EQ. KHYD) THEN
+                  ISTORE(NFL)=ISTORE(M41B+6)
+                  ISTORE(NFL+1)=ISTORE(M41B)
+                  NFL=NFL+2
+                  NHB=NHB+1
+            ELSE IF (IAT2 .EQ. KHYD) THEN
+                  ISTORE(NFL)=ISTORE(M41B)
+                  ISTORE(NFL+1)=ISTORE(M41B+6)
+                  NFL=NFL+2
+                  NHB=NHB+1
+            ENDIF
+            M41B=M41B+MD41B
+1000  CONTINUE
+C
+      MBUF=LBUF
+      CALL SSORTI(MBUF, NHB, NBUF, 1)
+C
+      IAT=-1
+      DO 3000, I=0,NHB-1
+        IBUF1=MBUF + I*NBUF
+        IAT1=ISTORE(IBUF1)
+        IF (IAT .EQ. IAT1) CYCLE
+        SER=STORE(1+M5+MD5*IAT1)
+        SER=10.*SER+1
+        STORE(1+M5+MD5*ISTORE(IBUF1+1))=SER
+C
+        
+        DO 3500 J=I+1,NHB-1
+            IBUF2=MBUF + J*NBUF
+            IAT2=ISTORE(IBUF2)
+            IF (IAT2 .EQ.IAT1) THEN
+              SER = SER + 1
+              STORE(1+M5+MD5*ISTORE(IBUF2+1))=SER
+              IAT = IAT2
+            ENDIF
+3500    CONTINUE
+3000  CONTINUE
+      NEW=-1
+      IF (IULN-LNOUT) 350,400,350
+350   CONTINUE
+      NEW=1
+400   CONTINUE
+C--FINAL TERMINATION MESSAGES
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,50) nhb
+      WRITE ( CMON, 50) nhb
+      CALL XPRVDU(NCVDU, 1,0)
+50    FORMAT(i6,' Hydrogen atoms relabelled ')
+      CALL XSTR05 (LNOUT,0,NEW)
+450   CONTINUE
+      CALL XOPMSG (IOPHYD,IOPEND,410)
+      CALL XTIME2 (2)
+      RETURN
+C
+500   CONTINUE
+      CALL XOPMSG (IOPHYD,IOPABN,0)
+      GO TO 450
+550   CONTINUE
+C -- COMMAND INPUT ERRORS
+      CALL XOPMSG (IOPHYD,IOPCMI,0)
+      GO TO 500
+      END
