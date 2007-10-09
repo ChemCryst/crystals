@@ -1,183 +1,190 @@
-%SCRIPT XWEIGHTS
-% VARIABLE LOGICAL SCRIPTEXT LED23
-A SCRIPT to assist with the weighting of least squares refinement
-%  IF EXISTS 6 .LT. 1 THEN
- * You have no reflection data stored. You cannot use this script!
-%    FINISH
+%SCRIPT XWEIGHTS                                                                
+% VARIABLE LOGICAL SCRIPTEXT LED23                                              
+A SCRIPT to assist with the weighting of least squares refinement               
+%  IF EXISTS 6 .LT. 1 THEN                                                      
+ * You have no reflection data stored. You cannot use this script!              
+%    FINISH                                                                     
+%  END IF                                                                       
+%  VARIABLE LOGICAL WMASK WDONE                                                 
+%  EVALUATE WMASK = TRUE                                                        
+%  EVALUATE WDONE = TRUE                                                        
+%  COPY '#SCRIPT XPUTINFO'                                                      
+%%                                                                              
+%% FIND OUT IF F OR FSQ REFINEMENT                                              
+%  VARIABLE INTEGER FTYPE                                                       
+%  COPY '#GENERALEDIT 23'                                                       
+%  COPY 'LOCATE RECORDTYPE=103'                                                 
+%  COPY 'TRANSFER FROM OFFSET=1 TO FTYPE'                                       
+%  COPY 'END'                                                                   
+%  evaluate ftype = ftype + 1
+^^WI WINDOW XWEIGHT 'Weighting schemes' MODAL                                   
+^^WI COMMIT='BOK' CANCEL='BXX'                                                  
+^^WI GRID OUTER NROWS=3 NCOLS=7                                                 
+^^WI {                                                                          
+^^WI   @ 2,2 GRID WORD NROWS=3 NCOLS=1                                          
+^^WI   {                                                                        
+% IF ( LED23 ) THEN                                                             
+^^WI     @ 1,1 STATIC TO 'Choose a weighting scheme. When swapping'             
+^^WI     @ 2,1 STATIC T1 'to F2 refinement, simple Statistical weights '          
+^^WI     @ 3,1 STATIC T2 'are essential until after a cycle of refinement.'         
+% ELSE                                                                          
+^^WI     @ 1,1 STATIC TO 'Choose a weighting scheme, or'                        
+^^WI     @ 2,1 STATIC T1 'Analyse to see the current'                           
+^^WI     @ 3,1 STATIC T2 'agreement analysis.'                                  
+% END IF                                                                        
+^^WI   }                                                                        
+^^WI   @ 2,4 LISTBOX XW_LIST VISLINES=8 ADDTOLIST                               
+^^WI         'Quasi-Unit' 'Statistical' 'Chebychev' 'Auto-statistical'          
+^^WI         'Optimal' NULL                                                     
+^^WI   @ 2,6 GRID BTNS NROWS=7 NCOLS=1                                          
+^^WI   {                                                                        
+^^WI     @ 1,1 BUTTON BOK '&Ok' DEFAULT COMMIT                                  
+^^WI     @ 3,1 BUTTON BAA '&Analyse'                                            
+^^WI     @ 5,1 BUTTON BXX '&Cancel' CANCEL                                      
+^^WI     @ 7,1 BUTTON BHH '&Help'                                               
+^^WI   }                                                                        
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR        
+% IF ( LED23 ) THEN                                                             
+%  IF ( FTYPE .eq. 0 ) THEN                                                 
+^^CO SET XW_LIST SELECTION=1                                                    
+%  ELSE                                                                          
+^^CO SET XW_LIST SELECTION=2                                                    
 %  END IF
-%  VARIABLE LOGICAL WMASK WDONE
-%  EVALUATE WMASK = TRUE
-%  EVALUATE WDONE = TRUE
-%  COPY '#SCRIPT XPUTINFO'
-%%
-%% FIND OUT IF F OR FSQ REFINEMENT
-%  VARIABLE INTEGER FTYPE
-%  COPY '#GENERALEDIT 23'
-%  COPY 'LOCATE RECORDTYPE=103'
-%  COPY 'TRANSFER FROM OFFSET=1 TO FTYPE'
-%  COPY 'END'
-^^WI WINDOW XWEIGHT 'Weighting schemes' MODAL
-^^WI COMMIT='BOK' CANCEL='BXX'
-^^WI GRID OUTER NROWS=3 NCOLS=7
-^^WI {
-^^WI   @ 2,2 GRID WORD NROWS=3 NCOLS=1
-^^WI   {
-% IF ( LED23 ) THEN
-^^WI     @ 1,1 STATIC TO 'Choose a weighting scheme. When swapping'
-^^WI     @ 2,1 STATIC T1 'to F/F2 refinement, QUASI-UNIT weights are '
-^^WI     @ 3,1 STATIC T2 'essential until after a cycle of refinement.'
 % ELSE
-^^WI     @ 1,1 STATIC TO 'Choose a weighting scheme, or'
-^^WI     @ 2,1 STATIC T1 'Analyse to see the current'
-^^WI     @ 3,1 STATIC T2 'agreement analysis.'
+%  IF ( FTYPE .eq. 0 ) THEN                                                 
+^^CO SET XW_LIST SELECTION=5                                                    
+%  ELSE                                                                          
+^^CO SET XW_LIST SELECTION=4                                                    
+%  END IF                                                                        
 % END IF
-^^WI   }
-^^WI   @ 2,4 LISTBOX XW_LIST VISLINES=8 ADDTOLIST
-^^WI         'Quasi-Unit' 'Statistical' 'Chebychev' 'Auto-statistical'
-^^WI         'Optimal' NULL
-^^WI   @ 2,6 GRID BTNS NROWS=7 NCOLS=1
-^^WI   {
-^^WI     @ 1,1 BUTTON BOK '&Ok' DEFAULT COMMIT
-^^WI     @ 3,1 BUTTON BAA '&Analyse'
-^^WI     @ 5,1 BUTTON BXX '&Cancel' CANCEL
-^^WI     @ 7,1 BUTTON BHH '&Help'
-^^WI   }
-^^WI }
-^^WI SHOW
-^^CR
-% IF ( LED23 ) THEN
-^^CO SET XW_LIST SELECTION=1
-% ELSE IF ( FTYPE .NE. 0 ) THEN
-^^CO SET XW_LIST SELECTION=5
-% ELSE
-^^CO SET XW_LIST SELECTION=4
-% END IF
-%  LOOP
-%    VERIFY BXX BHH BAA BOK
-%    GET SILENT NOSTORE ABBREVIATED 'Option' 'BXX'
-%    CLEAR
-%    CASE VALUE
-%      BLOCK                            %BXX%
-^^WI       DISPOSE XWEIGHT
-^^CR
-%          FINISH
-%      END BLOCK
-%      BLOCK                            %BHH%
-%          COPY '#SCRIPT XHELP1'
-QUASI-UNIT WEIGHTS
-      (w = 1 for F refinement, 1/(2F) for Fsq refinement)
-      This scheme is the most suitable for initial refinements,
-ie until the model is fully parameterised.  It is rarely advisable
-for the final refinement since it leads to poor error estimates.
-
-STATISTICAL WEIGHTS
-      (w=1/SigmaSq + modifiers)
-      This scheme is most suitable for final refinement of good 
-quality data free from serious systematic error, and where there 
-the model is complete and well behaved. 
-
-CHEBYCHEV WEIGHTS
-      (w=function of residual)
-      This scheme is most suitable for final refinement of dubious
-data and poor models.  It tries to compensate for errors in both
-the data and te model, and give optimal parameters for those 
-parameters which are being refined.
-
-AUTO-STATISTICAL
-      w= 1.0 / ( sigma^2 + (aP)^2 + bP ), P = (Fo + 2Fc)/3
-      or P=(Fo^2 + 2Fc^2)/3 depending on refinement against F or F^2.
- This is a very popular weighting scheme. The parameters a and b
- are determined automatically in order to give a goodness of fit of
- approximately one and a flat analysis of variance across all ranges
- of Fc.
-
-OPTIMAL
-       Another name for Chebychev weights.
-
-ANALYSIS OF RESIDUALS      w(Fo - Fc)**2 versus /Fc/
-In the table, examine the weighted residual
-(headed w(delta)**2, column 3 from the right). Towards
-the end of a refinement, this should be approximately
-constant as a function of Fo (or any other systematic
-ranking). If there is a systematic trend, then there
-is a systematic trend in the data which has not been
-modeled in the structure. You should verify that the
-structure is essentially correct, i.e. not in a false
-minimum. In particular, check columns 2 and 3, sum Fo
-and sum Fc. If, towards the bottom (i.e. strong
-reflections), sum Fo is less than sum Fc, you may need
-to include an isotropic EXTINCTION parameter in the least
-squares. Restore unit weights before starting the
-extinction parameter refinement.
-
-If the parameters you are refining have 'reasonable'
-values, you should attempt to correct the data for this
-trend, or introduce suitable additional parameters to
-the model. See, for example, DIFABS.
-
-If you can do neither of these, then you should modify
-the refinement weights to minimise the problem.
-
-In the absence of specific technical advice, try automatic
-weighting. CRYSTALS  uses different methods for F and Fsq
-refinement. Choose the scheme which gives a sufficiently
-constant distribution with the minimum number of parameters.
-
-Occasional ranges having a large residual can be ignored in
-routine work.
-%          COPY '#SCRIPT XHELP2'
-%      END BLOCK
-%      BLOCK                                          %BAA%
-%          COPY '#ANALYSE'
-%          COPY 'END'
-%      END BLOCK
-%      BLOCK                                          %BOK%
-^^?? XW_LIST SELECTED
-%         GET SILENT NOSTORE INTEGER 'Choice number'
-^^WI DISPOSE XWEIGHT
-^^CR
-%         CASE VALUE
-%            BLOCK                                    %UNIT%
- *   Unit weighting
-%                COPY '#LIST 4'
-%                COPY 'END'
-%                COPY '#ANALYSE'
-%                COPY 'END'
-%%                COPY '#PAUSE 5'
-%                EVALUATE WMASK = TRUE
-%                EVALUATE WDONE = FALSE
-%                COPY '#SCRIPT XPUTINFO'
-%            END BLOCK
-%            BLOCK                                    %STATISTICAL%
-%                COPY '#SCRIPT STATWT'
-%            END BLOCK
-%            BLOCK                                    %CHEBYCHEV%
-%                IF FTYPE .NE. 0 THEN
-%% Fo refinement
-%                    COPY '#SCRIPT XFOPTWT'
-%                ELSE
-%                    COPY '#SCRIPT XFSQWT'
-%                END IF
-%            END BLOCK
-%            BLOCK                                   %AUTO-STAT%
-%                COPY '#LIST 4'
-%                COPY 'SCHEME 17'
-%                COPY 'END'
-%                COPY '#WEIGHT'
-%                COPY 'END'
-%                COPY '#SCRIPT XANAL'
-%            END BLOCK
-%            BLOCK                                    %OPTIMAL (CHEBYCHEV)%
-%                IF FTYPE .NE. 0 THEN
-%% Fo refinement
-%                    COPY '#SCRIPT XFOPTWT'
-%                ELSE
-%                    COPY '#SCRIPT XFSQWT'
-%                END IF
-%            END BLOCK
-%         END CASE
-%         FINISH
-%      END BLOCK
-%    END CASE
-%  END LOOP
-%END SCRIPT
+%  LOOP                                                                         
+%    VERIFY BXX BHH BAA BOK                                                     
+%    GET SILENT NOSTORE ABBREVIATED 'Option' 'BXX'                              
+%    CLEAR                                                                      
+%    CASE VALUE                                                                 
+%      BLOCK                            %BXX%                                   
+^^WI       DISPOSE XWEIGHT                                                      
+^^CR                                                                            
+%          FINISH                                                               
+%      END BLOCK                                                                
+%      BLOCK                            %BHH%                                   
+%          COPY '#SCRIPT XHELP1'                                                
+QUASI-UNIT WEIGHTS                                                              
+      (w = 1 for F refinement, 1/(2F) for Fsq refinement)                       
+      This scheme is the most suitable for initial refinements,                 
+ie until the model is fully parameterised.  It is rarely advisable              
+for the final refinement since it leads to poor error estimates.                
+                                                                                
+STATISTICAL WEIGHTS                                                             
+      (w=1/SigmaSq + modifiers)                                                 
+      This scheme is most suitable for final refinement of good                 
+quality data free from serious systematic error, and where there                
+the model is complete and well behaved.                                         
+                                                                                
+CHEBYCHEV WEIGHTS                                                               
+      (w=function of residual)                                                  
+      This scheme is most suitable for final refinement of dubious              
+data and poor models.  It tries to compensate for errors in both                
+the data and te model, and give optimal parameters for those                    
+parameters which are being refined.                                             
+                                                                                
+AUTO-STATISTICAL                                                                
+      w= 1.0 / ( sigma^2 + (aP)^2 + bP ), P = (Fo + 2Fc)/3                      
+      or P=(Fo^2 + 2Fc^2)/3 depending on refinement against F or F^2.           
+ This is a very popular weighting scheme. The parameters a and b                
+ are determined automatically in order to give a goodness of fit of             
+ approximately one and a flat analysis of variance across all ranges            
+ of Fc.                                                                         
+                                                                                
+OPTIMAL                                                                         
+       Another name for Chebychev weights.                                      
+                                                                                
+ANALYSIS OF RESIDUALS      w(Fo - Fc)**2 versus /Fc/                            
+In the table, examine the weighted residual                                     
+(headed w(delta)**2, column 3 from the right). Towards                          
+the end of a refinement, this should be approximately                           
+constant as a function of Fo (or any other systematic                           
+ranking). If there is a systematic trend, then there                            
+is a systematic trend in the data which has not been                            
+modeled in the structure. You should verify that the                            
+structure is essentially correct, i.e. not in a false                           
+minimum. In particular, check columns 2 and 3, sum Fo                           
+and sum Fc. If, towards the bottom (i.e. strong                                 
+reflections), sum Fo is less than sum Fc, you may need                          
+to include an isotropic EXTINCTION parameter in the least                       
+squares. Restore unit weights before starting the                               
+extinction parameter refinement.                                                
+                                                                                
+If the parameters you are refining have 'reasonable'                            
+values, you should attempt to correct the data for this                         
+trend, or introduce suitable additional parameters to                           
+the model. See, for example, DIFABS.                                            
+                                                                                
+If you can do neither of these, then you should modify                          
+the refinement weights to minimise the problem.                                 
+                                                                                
+In the absence of specific technical advice, try automatic                      
+weighting. CRYSTALS  uses different methods for F and Fsq                       
+refinement. Choose the scheme which gives a sufficiently                        
+constant distribution with the minimum number of parameters.                    
+                                                                                
+Occasional ranges having a large residual can be ignored in                     
+routine work.                                                                   
+%          COPY '#SCRIPT XHELP2'                                                
+%      END BLOCK                                                                
+%      BLOCK                                          %BAA%                     
+%          COPY '#ANALYSE'                                                      
+%          COPY 'END'                                                           
+%      END BLOCK                                                                
+%      BLOCK                                          %BOK%                     
+^^?? XW_LIST SELECTED                                                           
+%         GET SILENT NOSTORE INTEGER 'Choice number'                            
+^^WI DISPOSE XWEIGHT                                                            
+^^CR                                                                            
+%         CASE VALUE                                                            
+%            BLOCK                                    %UNIT%                    
+ *   Unit weighting                                                             
+%                COPY '#LIST 4'                                                 
+%                COPY 'END'                                                     
+%                COPY '#ANALYSE'                                                
+%                COPY 'END'                                                     
+%%                COPY '#PAUSE 5'                                               
+%                EVALUATE WMASK = TRUE                                          
+%                EVALUATE WDONE = FALSE                                         
+%                COPY '#SCRIPT XPUTINFO'                                        
+%            END BLOCK                                                          
+%            BLOCK                                    %STATISTICAL%             
+%                COPY '#SCRIPT STATWT'                                          
+%            END BLOCK                                                          
+%            BLOCK                                    %CHEBYCHEV%               
+%                IF FTYPE .NE. 0 THEN                                           
+%% Fo refinement                                                                
+%                    COPY '#SCRIPT XFOPTWT'                                     
+%                ELSE                                                           
+%                    COPY '#SCRIPT XFSQWT'                                      
+%                END IF                                                         
+%            END BLOCK                                                          
+%            BLOCK                                   %AUTO-STAT%                
+%                COPY '#LIST 4'                                                 
+%                COPY 'SCHEME 17'                                               
+%                COPY 'END'                                                     
+%                COPY '#WEIGHT'                                                 
+%                COPY 'END'                                                     
+%                COPY '#SCRIPT XANAL'                                           
+%            END BLOCK                                                          
+%            BLOCK                                    %OPTIMAL (CHEBYCHEV)%     
+%                IF FTYPE .NE. 0 THEN                                           
+%% Fo refinement                                                                
+%                    COPY '#SCRIPT XFOPTWT'                                     
+%                ELSE                                                           
+%                    COPY '#SCRIPT XFSQWT'                                      
+%                END IF                                                         
+%            END BLOCK                                                          
+%         END CASE                                                              
+%         FINISH                                                                
+%      END BLOCK                                                                
+%    END CASE                                                                   
+%  END LOOP                                                                     
+%END SCRIPT                                                                     
