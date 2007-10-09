@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:11  rich
 C New CRYSTALS repository
 C
@@ -53,7 +57,8 @@ C--CHECK IF WE SHOULD RETURN
       IF(NUM.LE.0) RETURN
 
 C--BRANCH ON THE TYPE OF OPERATION
-      GO TO ( 200,300,400,800, 810, 820, 500, 600, 700, 830, 9910 ),NUM
+      GO TO ( 200,300,400,800, 810, 820, 500, 600, 700, 830, 840, 
+     1 9910 ),NUM
       GO TO 9910
 
 C--ROUTINES TO MODIFY LIST 5
@@ -104,6 +109,11 @@ C -- 'REGULARISE' INSTRUCTION
 C -- 'MATCH' INSTRUCTION
 830   CONTINUE
       CALL XMATCH
+      RETURN
+
+C -- 'HNAME' INSTRUCTION
+840   CONTINUE
+      CALL XSYSTH
       RETURN
 C
 9910  CONTINUE
