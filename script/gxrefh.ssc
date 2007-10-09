@@ -1,0 +1,60 @@
+%SCRIPT GXREFH                                                                  
+%% VARIABLES NEEDED FOR XREGULH.SCP
+% VARIABLE CHARACTER CTYPE                                                      
+% VARIABLE INTEGER HFOUND                                                       
+% VARIABLE REAL SERIAL                                                          
+%%                                                                              
+%% VARIABLE CHARACTER CATOM CEL CTYPE                                            
+%% VARIABLE REAL SX SY SZ SS SERI                                                
+% VARIABLE LOGICAL HQEXEC L12SMASK T  HMASK REGUL 
+%% VARIABLE LOGICAL HDONEFOUREF AHFOUND                          
+% VARIABLE INTEGER L12SER                                                       
+%% The variables needed by XQUESTIO                                             
+%% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
+%% VARIABLE LOGICAL   ANSWER                                                     
+%% Variable returned by assess5                                                 
+% VARIABLE REAL HFIRST                                                          
+% EVALUATE REGUL = TRUE
+
+{I * Deleting remaining QH atoms.                                               
+%        COPY '#PEAK 5 5'                                                       
+%        COPY 'SEL TYPE=PEAK'                                                   
+%        COPY 'END'                                                             
+%        COPY '#EDIT'                                                           
+%        COPY 'SEL TYPE NE QH'                                                  
+%        COPY 'SEL TYPE NE QN'                                                  
+%        COPY 'SEL TYPE NE Q'                                                   
+%        COPY 'END'                                                             
+%      IF ( REGUL .EQ. TRUE ) THEN                                              
+%        COPY '#RELEASE PUNCH SAV1216.DAT'                                      
+%        COPY '#PUNCH 12'                                                       
+%        COPY 'END'                                                             
+%        COPY '#PUNCH 16'                                                       
+%        COPY 'END'                                                             
+%        COPY '#RELEASE PUNCH BFILE.PCH'                                        
+%%                                                                              
+%        COPY '#SCRIPT XREGULH'                                                 
+%%                                                                              
+%        COPY '#USE SAV1216.DAT'                                                
+%        EVALUATE T = FILEDELETE ( 'SAV1216.DAT' )                              
+%% Store the current L12 serial, so other scripts know.                         
+%        COPY '#GENERALEDIT 12'                                                 
+%        COPY 'GETSERIAL L12SER'                                                
+%        COPY 'END'                                                             
+%        EVALUATE L12SMASK = TRUE                                               
+                                                                                
+% VARIABLE LOGICAL HRMASK                                                       
+% VARIABLE INTEGER HRTYP                                                        
+% EVALUATE HRMASK = TRUE                                                        
+% EVALUATE HRTYP = 10                                                           
+                                                                                
+%        COPY '#SCRIPT XPUTINFO'                                                
+%      END IF                                                                   
+
+%      COPY '#SFLS'                                                             
+%      COPY 'CALC'                                                              
+%      COPY 'END'                                                               
+%      VARIABLE LOGICAL REFREQD                                                 
+%      EVALUATE REFREQD = TRUE                                                  
+
+%END SCRIPT                                                                     
