@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.36  2007/04/05 14:30:18  djw
+C New adaptive damping for Stefans code, save C-C esd for printcif
+C
 C Revision 1.35  2007/03/08 11:50:38  djw
 C Partial shifts for Stefans code
 C
@@ -1858,15 +1861,17 @@ C------------  PROFILE PARAM
 C------------  EXTINCTION PARAM
                               M5G = L5EX
                         ENDIF
-                        IF(ABS(STORE(JO)) .GT. .1*STORE(M5G-1+JS))
-     1                  THEN
+c                       check we are not just starting from zero
+                        if (abs(store(jo)) .ge. zero) then
+                         IF(ABS(STORE(JO)) .GT. .1*STORE(M5G-1+JS))
+     1                   THEN
                             ITYPE = 1
                             FLAG = TOOBIG
-                        ENDIF
+                         ENDIF
+                        endif
                         adjw = a
                         bdjw = abs(store(jo))
                         cdjw = store(m5g+js-1)
-
                   ENDIF
 cdec06            ENDIF
 cdec06 Set maximal shifts for positions and occupation.
@@ -1921,9 +1926,13 @@ c  polarity and Flack
              endif
             case(26)
 c  Extinction
-             if (bdjw .ge. 0.2*cdjw) then
+c aug07
+      write(ncwu,'(4f10.5)')bdjw,cdjw,djwsin,a
+             if (cdjw .ge. zero) then
+              if (bdjw .ge. 0.2*cdjw) then
                   store(jo)=djwsin*0.2*cdjw
                   call rstmsg(idjw,store(m5+1),js2,bdjw, store(jo),a)
+              endif
              endif
             end select
 
@@ -2642,14 +2651,15 @@ C
       data ctype/'Occ', 'U[iso]', 'x','y','z','U[11]','U[22]','U[33]', 
      1 'U[23]', 'U[13]', 'U[12]'/ 
       A=SIGN(1.,UPDATE)
-      if (js .le. 13 ) then
+      if (js2 .le. 13 ) then
         WRITE ( CMON,'(A, A4,I4,1x,A6,3(2x,a,F10.5))') 
      1 'Resetting shift for ',
      2  idjw,NINT(SERIAL),ctype(js2-2),'Shift= ', A*OLD, 'Esd= ',esd,
      3  'New shift= ',UPDATE
       else
-        WRITE ( CMON,'(A, A4,I4,3(2x,a,F10.5))') 'Resetting shift for ',
-     1  idjw,js2,'Shift= ', A*OLD, 'Esd= ',esd,
+        WRITE ( CMON,'(A, I4,3(2x,a,F10.5))') 
+     1  'Resetting shift, Parameter type',
+     1  js2,'Shift= ', A*OLD, 'Esd= ',esd,
      2  'New shift= ',UPDATE
       endif
       CALL OUTCOL(3)
