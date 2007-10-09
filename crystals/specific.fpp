@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.56  2005/02/25 17:25:21  stefan
+C 1. Added some preprocessor if defined lines for the mac version.
+C
 C Revision 1.55  2005/01/23 08:29:12  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -3022,18 +3025,35 @@ C----- FIND NO LINES IN CURRENT MENU
 C      FIND THE LINE AND COLUMN ADDRESSES
       CALL XMNADD ( MNLICM)
 C
+C----- RECOVER SCRIPT NAME
+      ISTAT = KSCIDN (2, 3, 'SCRIPTNAME', 1, IS, IDSCP, ISCPNM, 1)
+      ISTAT = KSCSDC ( ISCPNM, CSCPNM, LENNM)
+      IF (CSCPNM .NE. CLSTNM) CPRVNM = CLSTNM
+      CLSTNM = CSCPNM(1:LENNM)
+
+cdjwjun07
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a,a)' ) 
+     1 'Testing',cscpnm(1:lennm)
+      IF ( CPRVNM(1:3) .NE. CSPACE(1:3) ) THEN
+      WRITE(CMON(1),'(5A)')
+     1'Script: ',CSCPNM(1:LENNM),
+     1   ' called from:', CPRVNM
+      ELSE
+      WRITE(CMON(1),'(3A)')'Script: ',
+     1  CSCPNM(1:LENNM), ''''
+      ENDIF
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) cmon(1)(:)
+cdjwjun07
+
+
+
+
 C----- PUSH PLAIN TEXT UP TO MAKE ROOM FOR MENU
 #if defined(_VAX_) 
       DO  I = 1, NLNFR + 3
       WRITE( NCAWU, '(1X)')
       END DO
 C
-cC----- RECOVER SCRIPT NAME
-c      ISTAT = KSCIDN (2, 3, 'SCRIPTNAME', 1, IS, IDSCP, ISCPNM, 1)
-c      ISTAT = KSCSDC ( ISCPNM, CSCPNM, LENNM)
-c      IF (CSCPNM .NE. CLSTNM) CPRVNM = CLSTNM
-c      CLSTNM = CSCPNM(1:LENNM)
-c
 c&&&GILGIDWXS          WRITE(CMON(1),'(A)')
 c&&&GILGIDWXS     1 '^^WI SET PROGOUTPUT TEXT = '
 c&&&GILGIDWXS      IF ( CPRVNM(1:3) .NE. CSPACE(1:3) ) THEN
