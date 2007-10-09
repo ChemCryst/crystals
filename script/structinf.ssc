@@ -16,8 +16,7 @@
 {1,11 Edit co-ordinates         {12,11Invoke a text editor or the CRYSTALS      
 {1,11                           {12,11editor to modify the structure            
 {1,11 Invert co-ordinates       {12,11Invert the structure through the origin   
-{1,11 Change atom TYPES         {12,11Change the element types of atoms
-{1,11 Centre Molecules          {12,11Move moleules near centre of cell         
+{1,11 Change atom TYPES         {12,11Change the element types of atoms         
 {1,11 Number atoms sequentially {12,11Renumber the atoms so that they follow    
 {1,11                           {12,11sequentially through the structure        
 {1,11 Allocate Residue Numbers  {12,11Add a unique identifier for each          
@@ -38,6 +37,7 @@
 {1,11                           {12,11placing allowing user to specify          
 {1,11                           {12,11hybridisation to be used.                 
 {1,11 Remove hydrogen           {12,11Remove all H atoms from structure         
+{1,11 Renumber hydrogen         {12,11Renumber hydrogen atoms systematically
 {1,11 Remove Fourier peaks      {12,11Remove all Q* atoms from strucuture       
 {1,11 Information               {12,11This document                             
 {1,0                                                                            
