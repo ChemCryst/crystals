@@ -1,77 +1,87 @@
-%SCRIPT XGUIDESC
-%%
-%%  1 Run SIR92
-%%  2 Run SHELXS
-%%  3 Run SIR97
-%%  4 Import Sir92 data.
-%%  5 Import Sir97 data.
-%%  6 Shelx file.
-%%  7 Cameron file.
-%%  8 Initial analysis.
-%%
-%  VERIFY GS_BOK GS_BXX GS_BHELP
-%  GET SILENT NOSTORE ABBREVIATED 'Continue?' 'GS_BXX'
-%  CASE VALUE
-%    BLOCK  %BOK%
-^^?? _XG_LIST SELECTED
-%      GET SILENT NOSTORE INTEGER 'Choice number'
-%      CASE VALUE
-%%
-%        BLOCK % 1
-%          COPY '#SCRIPT XSIR92'
-%        END BLOCK
-%%
-%        BLOCK % 2
-%          COPY '#SCRIPT XSHELXS'
-%        END BLOCK
-%%
-%        BLOCK % 3
-%          COPY '#SCRIPT XSIR97'
-%        END BLOCK
-%%
-%        BLOCK % 4
-%          COPY '#SCRIPT XSIR92IN'
-%        END BLOCK
-%%
-%        BLOCK % 5
-%          COPY '#SCRIPT XSIR97IN'
-%        END BLOCK
-%%
-%        BLOCK % 6
-%          COPY '#SCRIPT XSHELXIN'
-%        END BLOCK
-%%
-%        BLOCK % 7
-%          COPY '#USE cameron.l5'
-%        END BLOCK
-%%
-%        BLOCK % 8
-%          COPY '#SCRIPT XCHECK6'
-%        END BLOCK
-%%
-%      END CASE
-%    END BLOCK
-%%
-%%
-%    BLOCK  %BXX%
-^^CO   DISPOSE XGUIDES
-%      FINISH
-%    END BLOCK
-%%
-%%
-%    BLOCK  %BHELP%
-%      COPY '#SCRIPT XHELP12'
-%      GET SILENT NOSTORE TEXT ' ' ' '
-%    END BLOCK
-%%
-%  END CASE
-%%
-%%
-%%
-%%
-%%
-%%
-%% Back to the GUIDE:
-%%
-%  COPY '#SCRIPT XGUIDE'
-%END SCRIPT
+%SCRIPT XGUIDESC                                                                
+%%                                                                              
+%%  1 Run SIR92                                                                 
+%%  2 Run SHELXS                                                                
+%%  3 Run SIR97                                                                 
+%%  4 Run SUPERFLIP
+%%  5 Import Sir92 data.                                                        
+%%  6 Import Sir97 data.                                                        
+%%  7 Import Superflip data.                                                        
+%%  8 Shelx file.                                                               
+%%  9 Cameron file.                                                             
+%%  10 Initial analysis.                                                         
+%%                                                                              
+%  VERIFY GS_BOK GS_BXX GS_BHELP                                                
+%  GET SILENT NOSTORE ABBREVIATED 'Continue?' 'GS_BXX'                          
+%  CASE VALUE                                                                   
+%    BLOCK  %BOK%                                                               
+^^?? _XG_LIST SELECTED                                                          
+%      GET SILENT NOSTORE INTEGER 'Choice number'                               
+%      CASE VALUE                                                               
+%%                                                                              
+%        BLOCK % 1                                                              
+%          COPY '#SCRIPT XSIR92'                                                
+%        END BLOCK                                                              
+%%                                                                              
+%        BLOCK % 2                                                              
+%          COPY '#SCRIPT XSHELXS'                                               
+%        END BLOCK                                                              
+%%                                                                              
+%        BLOCK % 3                                                              
+%          COPY '#SCRIPT XSIR97'                                                
+%        END BLOCK                                                              
+%%                                                                              
+%        BLOCK % 4                                                              
+%          COPY '#SCRIPT XFLIP'                                                
+%        END BLOCK                                                              
+%%                                                                              
+%        BLOCK % 5                                                              
+%          COPY '#SCRIPT XSIR92IN'                                              
+%        END BLOCK                                                              
+%%                                                                              
+%        BLOCK % 6                                                              
+%          COPY '#SCRIPT XSIR97IN'                                              
+%        END BLOCK                                                              
+%%                                                                              
+%        BLOCK % 7                                                              
+%          COPY '#SCRIPT XSUPERFLIPIN'                                              
+%        END BLOCK                                                              
+%%                                                                              
+%        BLOCK % 8                                                              
+%          COPY '#SCRIPT XSHELXIN'                                              
+%        END BLOCK                                                              
+%%                                                                              
+%        BLOCK % 9                                                              
+%          COPY '#USE cameron.l5'                                               
+%        END BLOCK                                                              
+%%                                                                              
+%        BLOCK % 10                                                              
+%          COPY '#SCRIPT XCHECK6'                                               
+%        END BLOCK                                                              
+%%                                                                              
+%      END CASE                                                                 
+%    END BLOCK                                                                  
+%%                                                                              
+%%                                                                              
+%    BLOCK  %BXX%                                                               
+^^CO   DISPOSE XGUIDES                                                          
+%      FINISH                                                                   
+%    END BLOCK                                                                  
+%%                                                                              
+%%                                                                              
+%    BLOCK  %BHELP%                                                             
+%      COPY '#SCRIPT XHELP12'                                                   
+%      GET SILENT NOSTORE TEXT ' ' ' '                                          
+%    END BLOCK                                                                  
+%%                                                                              
+%  END CASE                                                                     
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%% Back to the GUIDE:                                                           
+%%                                                                              
+%  COPY '#SCRIPT XGUIDE'                                                        
+%END SCRIPT                                                                     
