@@ -1,373 +1,381 @@
-%SCRIPT ED30
-%%
-%% Facilitates editing list 23. 
-%%
-% VARIABLE INTEGER IANOMA IEXTIN IFLACK
-% VARIABLE INTEGER ISINGU IFORFS IREFLS IRESTR
-% VARIABLE INTEGER ISPECI IUPDAT
-% VARIABLE REAL    RTOLER
-% VARIABLE REAL    RRMIN RRMAX RWMIN RWMAX RSMIN RSMAX RUMIN
-% VARIABLE INTEGER FOLD FNEW
-% EVALUATE FOLD = - 100
-% EVALUATE FNEW = - 100
-%% The variables needed by XQUESTIO
-% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
-% VARIABLE LOGICAL   ANSWER LED23
-% EVALUATE LED23 = TRUE
-%%
-%%
-%%
-% IF  EXISTS ( 23 ) .LE. 0 THEN
-%   COPY '#LIST 23'
-%   COPY 'END'
-% END IF
-%%
-% COPY '#GENERALEDIT 23'
-% COPY 'LOCATE RECORDTYPE = 103'
-% COPY 'TRANSFER FROM OFFSET = 0 TO ISINGU'
-% COPY 'TRANSFER FROM OFFSET = 1 TO IFORFS'
-% COPY 'TRANSFER FROM OFFSET = 2 TO IRESTR'
-% COPY 'TRANSFER FROM OFFSET = 3 TO IREFLS'
-% COPY 'LOCATE RECORDTYPE = 101'
-% COPY 'TRANSFER FROM OFFSET = 0 TO IANOMA'
-% COPY 'TRANSFER FROM OFFSET = 1 TO IEXTIN'
-% COPY 'TRANSFER FROM OFFSET = 6 TO IFLACK'
-% COPY 'LOCATE RECORDTYPE = 104'
-% COPY 'TRANSFER FROM OFFSET = 0 TO RRMIN'
-% COPY 'TRANSFER FROM OFFSET = 1 TO RRMAX'
-% COPY 'TRANSFER FROM OFFSET = 2 TO RWMIN'
-% COPY 'TRANSFER FROM OFFSET = 3 TO RWMAX'
-% COPY 'TRANSFER FROM OFFSET = 4 TO RSMIN'
-% COPY 'TRANSFER FROM OFFSET = 5 TO RSMAX'
-% COPY 'TRANSFER FROM OFFSET = 8 TO RUMIN'
-% COPY 'LOCATE RECORDTYPE = 106'
-% COPY 'TRANSFER FROM OFFSET = 0 TO ISPECI'
-% COPY 'TRANSFER FROM OFFSET = 1 TO IUPDAT'
-% COPY 'TRANSFER FROM OFFSET = 5 TO RTOLER'
-% COPY 'END'
-% EVALUATE FOLD = IFORFS
-%%
-^^WI WINDOW ED23 'SFLS control' MODAL
-^^WI COMMIT='BOK' CANCEL='BXX'
-^^WI GRID OUTER NROWS=1 NCOLS=2
-^^WI {
-^^WI  @ 1,2 GRID GRIDB NROWS=9 NCOLS=3
-^^WI  {
-^^WI    @ 2,2 BUTTON BOK '&Ok' DEFAULT
-^^WI    @ 4,2 BUTTON BXX '&Cancel'
-^^WI    @ 8,2 BUTTON BDEF '&Defaults'
-^^WI  }
-^^WI  @ 1,1 GRID A NROWS=9 NCOLS=3
-^^WI  {
-^^WI   @ 2,2 GRID AA NROWS=3 NCOLS=1  OUTLINE='Modifications'
-^^WI   {
-^^WI    @ 1,1 CHECKBOX IANOMA 'Anomalous scattering' INFORM=NO
-%             IF ( IANOMA .EQ. 0 ) THEN
-^^WI            STATE=ON
-%             END IF
-^^WI    @ 2,1 CHECKBOX IEXTIN 'Extinction correction' INFORM=NO
-%             IF ( IEXTIN .EQ. 0 ) THEN
-^^WI            STATE=ON
-%             END IF
-^^WI    @ 3,1 CHECKBOX IFLACK 'Flack enantiopole parameter' INFORM=NO
-%             IF ( IFLACK .EQ. 0 ) THEN
-^^WI            STATE=ON
-%             END IF
-^^WI   }
-^^WI   @ 4,2 GRID AB NROWS=4 NCOLS=1 OUTLINE='Minimisation'
-^^WI   {
-^^WI    @ 1,1 GRID ABA NROWS=1 NCOLS=3
-^^WI    {
-^^WI     @ 1,1 RADIOBUTTON IF 'F' 
-%              IF ( IFORFS .EQ. - 1 ) THEN
-^^WI             STATE=ON
-%               END IF
-^^WI     @ 1,3 RADIOBUTTON IFS 'F-squared' 
-%              IF ( IFORFS .NE. - 1 ) THEN
-^^WI             STATE=ON
-%               END IF
-^^WI    }
-^^WI    @ 2,1 GRID ABB NROWS=1 NCOLS=5
-^^WI    {
-^^WI     @ 1,1 STATIC T1 'Allow'
-^^WI     @ 1,3 EDITBOX ISINGU
-%              CLEAR
-%              INSERT '^^WI '
-%              STORE INTEGER ISINGU
-%              OUTPUT
-^^WI           CHARS=7 INTEGER
-^^WI     @ 1,5 STATIC T2 'singularities'
-^^WI    }
-^^WI    @ 3,1 CHECKBOX IREFLS 'Use reflections'
-%             IF ( IREFLS .EQ. 0 ) THEN
-^^WI            STATE=ON
-%             END IF
-^^WI    @ 4,1 CHECKBOX IRESTR 'Use restraints'
-%             IF ( IRESTR .EQ. 0 ) THEN
-^^WI            STATE=ON
-%             END IF
-^^WI   }
-^^WI   @ 6,2 GRID AC NROWS=7 NCOLS=1 OUTLINE='Special positions'
-^^WI   {
-^^WI    @ 1,1 RADIOBUTTON ISPECA 'Do nothing' 
-%             IF ( ISPECI .EQ. - 1 ) THEN
-^^WI            STATE=ON
-%             END IF
-^^WI    @ 2,1 RADIOBUTTON ISPECB 'Restrain floating origins' 
-%             IF ( ISPECI .EQ. 1 ) THEN
-^^WI            STATE=ON
-%             END IF
-^^WI    @ 3,1 RADIOBUTTON ISPECC 'Restrain origins + special position'
-%             IF ( ISPECI .EQ. 2 ) THEN
-^^WI            STATE=ON
-%             END IF
-^^WI    @ 4,1 RADIOBUTTON ISPECD 'Constrain (Default)'
-%             IF ( ISPECI .GE. 3 ) THEN
-^^WI            STATE=ON
-%             END IF
-^^WI    @ 5,1 GRID ACA NROWS=3 NCOLS=3
-^^WI    {
-^^WI     @ 1,1 STATIC T3 'Atoms on special positions. Update:'
-^^WI     @ 1,3 DROPDOWN IUPDAT ADDTOLIST 'Nothing' 'Occupancy' 'All' 'NULL'
-%              CASE IUPDAT + 2
-%               TRANSFER  '^^WI SELECTION = 1' TO DISPLAY
-%               TRANSFER  '^^WI SELECTION = 2' TO DISPLAY
-%               TRANSFER  '^^WI SELECTION = 3' TO DISPLAY
-%              END CASE
-^^WI     @ 3,1 STATIC T4 'Snap onto position if within:'
-^^WI     @ 3,3 EDITBOX RTOLER
-%              CLEAR
-%              INSERT '^^WI '
-%              STORE REAL RTOLER
-%              OUTPUT
-^^WI           CHARS=7 REAL
-^^WI    }
-^^WI   }
-^^WI   @ 8,2 GRID AD NROWS=7 NCOLS=11 OUTLINE='Stop cycling if:'
-^^WI   {
-^^WI    @ 1,1  STATIC TD1 'R <' 
-^^WI    @ 3,1  STATIC TD2 'Rw <'
-^^WI    @ 5,1  STATIC TD3 'rms((shft)^2/esd) <'
-^^WI    @ 1,5  STATIC TD4 '%' 
-^^WI    @ 3,5  STATIC TD5 '%'
-^^WI    @ 1,11 STATIC TD6 '%' 
-^^WI    @ 3,11 STATIC TD7 '%'
-^^WI    @ 1,7  STATIC TD8 'R >' 
-^^WI    @ 3,7  STATIC TD9 'Rw >'
-^^WI    @ 5,7  STATIC TD10 'rms((shft)^2/esd) >'
-^^WI    @ 7,1  STATIC TD11 'min(Uij) <'
-^^WI    @ 1,3 EDITBOX RRMIN 
-%              CLEAR
-%              INSERT '^^WI '
-%              STORE REAL RRMIN
-%              OUTPUT
-^^WI           CHARS=7 REAL
-^^WI    @ 1,9 EDITBOX RRMAX 
-%              CLEAR
-%              INSERT '^^WI '
-%              STORE REAL RRMAX
-%              OUTPUT
-^^WI           CHARS=7 REAL
-^^WI    @ 3,3 EDITBOX RWMIN 
-%              CLEAR
-%              INSERT '^^WI '
-%              STORE REAL RWMIN
-%              OUTPUT
-^^WI           CHARS=7 REAL
-^^WI    @ 3,9 EDITBOX RWMAX 
-%              CLEAR
-%              INSERT '^^WI '
-%              STORE REAL RWMAX
-%              OUTPUT
-^^WI           CHARS=7 REAL
-^^WI    @ 5,3 EDITBOX RSMIN 
-%              CLEAR
-%              INSERT '^^WI '
-%              STORE REAL RSMIN
-%              OUTPUT
-^^WI           CHARS=7 REAL
-^^WI    @ 5,9 EDITBOX RSMAX 
-%              CLEAR
-%              INSERT '^^WI '
-%              STORE REAL RSMAX
-%              OUTPUT
-^^WI           CHARS=7 REAL
-^^WI    @ 7,3 EDITBOX RUMIN 
-%              CLEAR
-%              INSERT '^^WI '
-%              STORE REAL RUMIN
-%              OUTPUT
-^^WI           CHARS=7 REAL
-^^WI   }
-^^WI  }
-^^WI }
-^^WI SHOW
-^^CR
-% VERIFY BOK BXX BDEF
-% GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-% CASE VALUE
-%   BLOCK         % BOK %
-%%
-%%
-%     COPY '#LIST 23'
-%     CLEAR
-%     INSERT 'MODIFY ANOM='
-^^??  IANOMA STATE
-%     VERIFY ON OFF
-%     GET SILENT NOSTORE FINAL ABBREVIATED ' ' 
-%     CASE VALUE
-%       INSERT 'YES'
-%       INSERT 'NO'
-%     END CASE
-%     INSERT 'EXTI='
-^^??  IEXTIN STATE
-%     VERIFY ON OFF
-%     GET SILENT NOSTORE FINAL ABBREVIATED ' ' 
-%     CASE VALUE
-%       INSERT 'YES'
-%       INSERT 'NO'
-%     END CASE
-%     INSERT 'ENANT='
-^^??  IFLACK STATE
-%     VERIFY ON OFF
-%     GET SILENT NOSTORE FINAL ABBREVIATED ' ' 
-%     CASE VALUE
-%       INSERT 'YES'
-%       INSERT 'NO'
-%     END CASE
-%     SEND
-%%
-%     CLEAR
-%     INSERT 'MINIM NSINGU='
-^^??  ISINGU TEXT
-%     GET SILENT TEXT ' ' ' '
-%     INSERT 'F-SQ='
-^^??  IFS STATE
-%     VERIFY ON OFF
-%     GET SILENT NOSTORE FINAL ABBREVIATED ' ' 
-%     CASE VALUE
-%       BLOCK
-%         INSERT 'YES'
-%          EVALUATE FNEW = 0
-%       END BLOCK
-%       BLOCK
-%         INSERT 'NO'
-%          EVALUATE FNEW = - 1
-%       END BLOCK
-%     END CASE
-%     INSERT 'REFLE='
-^^??  IREFLS STATE
-%     VERIFY ON OFF
-%     GET SILENT NOSTORE FINAL ABBREVIATED ' ' 
-%     CASE VALUE
-%       INSERT 'YES'
-%       INSERT 'NO'
-%     END CASE
-%     INSERT 'RESTR='
-^^??  IRESTR STATE
-%     VERIFY ON OFF
-%     GET SILENT NOSTORE FINAL ABBREVIATED ' ' 
-%     CASE VALUE
-%       INSERT 'YES'
-%       INSERT 'NO'
-%     END CASE
-%     SEND
-%%
-%     CLEAR
-%     INSERT 'REFINE SPEC='
-^^??  ISPECA STATE
-%     VERIFY ON OFF
-%     GET SILENT NOSTORE FINAL ABBREVIATED ' ' 
-%     IF VALUE .EQ. 1 THEN
-%       INSERT 'NO'
-%     ELSE
-^^??    ISPECB STATE
-%       VERIFY ON OFF
-%       GET SILENT NOSTORE FINAL ABBREVIATED ' ' 
-%       IF VALUE .EQ. 1 THEN
-%         INSERT 'ORIG'
-%       ELSE
-^^??      ISPECC STATE
-%         VERIFY ON OFF
-%         GET SILENT NOSTORE FINAL ABBREVIATED ' ' 
-%         IF VALUE .EQ. 1 THEN
-%           INSERT 'REST'
-%         ELSE
-%           INSERT 'CONS'
-%         END IF
-%       END IF
-%     END IF
-%     INSERT 'UPDATE='
-^^??  IUPDAT SELECTED
-%     GET SILENT NOSTORE INTEGER ' ' ' '
-%     CASE VALUE
-%       INSERT 'NO'
-%       INSERT 'OCC'
-%       INSERT 'PARAM'
-%     END CASE
-%     INSERT 'TOLER='
-^^??  RTOLER TEXT
-%     GET SILENT TEXT ' ' ' '
-%     SEND
-%%
-%     CLEAR
-%     INSERT 'ALLC '
-^^??  RRMIN TEXT
-%     GET SILENT REAL ' ' ' '
-^^??  RRMAX TEXT
-%     GET SILENT REAL ' ' ' '
-^^??  RWMIN TEXT
-%     GET SILENT REAL ' ' ' '
-^^??  RWMAX TEXT
-%     GET SILENT REAL ' ' ' '
-%     SEND
-%     CLEAR
-%     INSERT 'CONT MIN-SUMSQ='
-^^??  RSMIN TEXT
-%     GET SILENT REAL ' ' ' '
-^^??  RSMAX TEXT
-%     GET SILENT REAL ' ' ' '
-%     INSERT 'U[MIN]='
-^^??  RUMIN TEXT
-%     GET SILENT REAL ' ' ' '
-%     SEND
-%     COPY 'END'
-{I * List 23 updated.
-%   END BLOCK         
-%   BLOCK             % BXX %
-^^CO  DISPOSE ED23
-{I * No changes to list 23.
-%     FINISH
-%   END BLOCK         
-%   BLOCK             % BDEF %
-{I * Restoring default list 23.
-%     COPY '#LIST 23'
-%     COPY 'END'
-%     EVALUATE FNEW = - 1
-%   END BLOCK         
-% END CASE
-^^CO DISPOSE ED23
-% IF FNEW .NE. FOLD THEN
-%   EVALUATE QTITLE = 'Minimisation function changed'
-%   IF FNEW .EQ. 0 THEN
-%     EVALUATE QTITLE = 'Min. function changed to F**2'
-%   EVALUATE QLINE2 = 'Recommended: Remove I/sigma(I) cutoff.'
-%   ELSE IF FNEW .EQ. - 1 THEN
-%     EVALUATE QTITLE = 'Min. function changed to F'
-%   EVALUATE QLINE2 = 'Recommended: Add min I/sigma(I) cutoff of 2.0'
-%   END IF
-%   EVALUATE QLINE1 = 'Do you want to change the reflection filtering?'
-%   EVALUATE BUTTOK = ' &Yes '
-%   EVALUATE BUTTXX = ' &No '
-%   COPY '#SCRIPT XQUESTIO'
-%   IF ANSWER .EQ. TRUE THEN
-%     COPY '#SCRIPT XLIST28' 
-%   END IF
-%   EVALUATE QLINE1 = 'Do you want a new weighting scheme? Recommended'
-%   EVALUATE QLINE2 = 'scheme: "Quasi-unit" until after more refinement.'
-%   COPY '#SCRIPT XQUESTIO'
-%   IF ANSWER .EQ. TRUE THEN
-%     COPY '#SCRIPT XWEIGHTS' 
-%   END IF
-% END IF
-%END SCRIPT
+%SCRIPT ED23                                                                    
+%%                                                                              
+%% Facilitates editing list 23.                                                 
+%%                                                                              
+% VARIABLE INTEGER IANOMA IEXTIN IFLACK                                         
+% VARIABLE INTEGER ISINGU IFORFS IREFLS IRESTR                                  
+% VARIABLE INTEGER ISPECI IUPDAT                                                
+% VARIABLE REAL    RTOLER                                                       
+% VARIABLE REAL    RRMIN RRMAX RWMIN RWMAX RSMIN RSMAX RUMIN                    
+% VARIABLE INTEGER FOLD FNEW ftype                                              
+% EVALUATE FOLD = - 100                                                         
+% EVALUATE FNEW = - 100                                                         
+%% The variables needed by XQUESTIO                                             
+% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
+% VARIABLE LOGICAL   ANSWER LED23                                               
+% EVALUATE LED23 = TRUE                                                         
+%%                                                                              
+%%                                                                              
+%%                                                                              
+% IF  EXISTS ( 23 ) .LE. 0 THEN                                                 
+%   COPY '#LIST 23'                                                             
+%   COPY 'END'                                                                  
+% END IF                                                                        
+%%                                                                              
+% COPY '#GENERALEDIT 23'                                                        
+% COPY 'LOCATE RECORDTYPE = 103'                                                
+% COPY 'TRANSFER FROM OFFSET = 0 TO ISINGU'                                     
+% COPY 'TRANSFER FROM OFFSET = 1 TO IFORFS'                                     
+% COPY 'TRANSFER FROM OFFSET = 2 TO IRESTR'                                     
+% COPY 'TRANSFER FROM OFFSET = 3 TO IREFLS'                                     
+% COPY 'LOCATE RECORDTYPE = 101'                                                
+% COPY 'TRANSFER FROM OFFSET = 0 TO IANOMA'                                     
+% COPY 'TRANSFER FROM OFFSET = 1 TO IEXTIN'                                     
+% COPY 'TRANSFER FROM OFFSET = 6 TO IFLACK'                                     
+% COPY 'LOCATE RECORDTYPE = 104'                                                
+% COPY 'TRANSFER FROM OFFSET = 0 TO RRMIN'                                      
+% COPY 'TRANSFER FROM OFFSET = 1 TO RRMAX'                                      
+% COPY 'TRANSFER FROM OFFSET = 2 TO RWMIN'                                      
+% COPY 'TRANSFER FROM OFFSET = 3 TO RWMAX'                                      
+% COPY 'TRANSFER FROM OFFSET = 4 TO RSMIN'                                      
+% COPY 'TRANSFER FROM OFFSET = 5 TO RSMAX'                                      
+% COPY 'TRANSFER FROM OFFSET = 8 TO RUMIN'                                      
+% COPY 'LOCATE RECORDTYPE = 106'                                                
+% COPY 'TRANSFER FROM OFFSET = 0 TO ISPECI'                                     
+% COPY 'TRANSFER FROM OFFSET = 1 TO IUPDAT'                                     
+% COPY 'TRANSFER FROM OFFSET = 5 TO RTOLER'                                     
+% COPY 'END'                                                                    
+% EVALUATE FOLD = IFORFS                                                        
+% evaluate ftype = iforfs                                                       
+%%                                                                              
+^^WI WINDOW ED23 'SFLS control' MODAL                                           
+^^WI COMMIT='BOK' CANCEL='BXX'                                                  
+^^WI GRID OUTER NROWS=1 NCOLS=2                                                 
+^^WI {                                                                          
+^^WI  @ 1,2 GRID GRIDB NROWS=9 NCOLS=3                                          
+^^WI  {                                                                         
+^^WI    @ 2,2 BUTTON BOK '&Ok' DEFAULT                                          
+^^WI    @ 4,2 BUTTON BXX '&Cancel'                                              
+^^WI    @ 8,2 BUTTON BDEF '&Defaults'                                           
+^^WI  }                                                                         
+^^WI  @ 1,1 GRID A NROWS=9 NCOLS=3                                              
+^^WI  {                                                                         
+^^WI   @ 2,2 GRID AA NROWS=3 NCOLS=1  OUTLINE='Modifications'                   
+^^WI   {                                                                        
+^^WI    @ 1,1 CHECKBOX IANOMA 'Anomalous scattering' INFORM=NO                  
+%             IF ( IANOMA .EQ. 0 ) THEN                                         
+^^WI            STATE=ON                                                        
+%             END IF                                                            
+^^WI    @ 2,1 CHECKBOX IEXTIN 'Extinction correction' INFORM=NO                 
+%             IF ( IEXTIN .EQ. 0 ) THEN                                         
+^^WI            STATE=ON                                                        
+%             END IF                                                            
+^^WI    @ 3,1 CHECKBOX IFLACK 'Flack enantiopole parameter' INFORM=NO           
+%             IF ( IFLACK .EQ. 0 ) THEN                                         
+^^WI            STATE=ON                                                        
+%             END IF                                                            
+^^WI   }                                                                        
+^^WI   @ 4,2 GRID AB NROWS=4 NCOLS=1 OUTLINE='Minimisation'                     
+^^WI   {                                                                        
+^^WI    @ 1,1 GRID ABA NROWS=1 NCOLS=3                                          
+^^WI    {                                                                       
+^^WI     @ 1,1 RADIOBUTTON IF 'F'                                               
+%              IF ( IFORFS .EQ. - 1 ) THEN                                      
+^^WI             STATE=ON                                                       
+%               END IF                                                          
+^^WI     @ 1,3 RADIOBUTTON IFS 'F-squared'                                      
+%              IF ( IFORFS .NE. - 1 ) THEN                                      
+^^WI             STATE=ON                                                       
+%               END IF                                                          
+^^WI    }                                                                       
+^^WI    @ 2,1 GRID ABB NROWS=1 NCOLS=5                                          
+^^WI    {                                                                       
+^^WI     @ 1,1 STATIC T1 'Allow'                                                
+^^WI     @ 1,3 EDITBOX ISINGU                                                   
+%              CLEAR                                                            
+%              INSERT '^^WI '                                                   
+%              STORE INTEGER ISINGU                                             
+%              OUTPUT                                                           
+^^WI           CHARS=7 INTEGER                                                  
+^^WI     @ 1,5 STATIC T2 'singularities'                                        
+^^WI    }                                                                       
+^^WI    @ 3,1 CHECKBOX IREFLS 'Use reflections'                                 
+%             IF ( IREFLS .EQ. 0 ) THEN                                         
+^^WI            STATE=ON                                                        
+%             END IF                                                            
+^^WI    @ 4,1 CHECKBOX IRESTR 'Use restraints'                                  
+%             IF ( IRESTR .EQ. 0 ) THEN                                         
+^^WI            STATE=ON                                                        
+%             END IF                                                            
+^^WI   }                                                                        
+^^WI   @ 6,2 GRID AC NROWS=7 NCOLS=1 OUTLINE='Special positions'                
+^^WI   {                                                                        
+^^WI    @ 1,1 RADIOBUTTON ISPECA 'Do nothing'                                   
+%             IF ( ISPECI .EQ. - 1 ) THEN                                       
+^^WI            STATE=ON                                                        
+%             END IF                                                            
+^^WI    @ 2,1 RADIOBUTTON ISPECB 'Restrain floating origins'                    
+%             IF ( ISPECI .EQ. 1 ) THEN                                         
+^^WI            STATE=ON                                                        
+%             END IF                                                            
+^^WI    @ 3,1 RADIOBUTTON ISPECC 'Restrain origins + special position'          
+%             IF ( ISPECI .EQ. 2 ) THEN                                         
+^^WI            STATE=ON                                                        
+%             END IF                                                            
+^^WI    @ 4,1 RADIOBUTTON ISPECD 'Constrain (Default)'                          
+%             IF ( ISPECI .GE. 3 ) THEN                                         
+^^WI            STATE=ON                                                        
+%             END IF                                                            
+^^WI    @ 5,1 GRID ACA NROWS=3 NCOLS=3                                          
+^^WI    {                                                                       
+^^WI     @ 1,1 STATIC T3 'Atoms on special positions. Update:'                  
+^^WI     @ 1,3 DROPDOWN IUPDAT ADDTOLIST 'Nothing' 'Occupancy' 'All' 'NULL'     
+%              CASE IUPDAT + 2                                                  
+%               TRANSFER  '^^WI SELECTION = 1' TO DISPLAY                       
+%               TRANSFER  '^^WI SELECTION = 2' TO DISPLAY                       
+%               TRANSFER  '^^WI SELECTION = 3' TO DISPLAY                       
+%              END CASE                                                         
+^^WI     @ 3,1 STATIC T4 'Snap onto position if within:'                        
+^^WI     @ 3,3 EDITBOX RTOLER                                                   
+%              CLEAR                                                            
+%              INSERT '^^WI '                                                   
+%              STORE REAL RTOLER                                                
+%              OUTPUT                                                           
+^^WI           CHARS=7 REAL                                                     
+^^WI    }                                                                       
+^^WI   }                                                                        
+^^WI   @ 8,2 GRID AD NROWS=7 NCOLS=11 OUTLINE='Stop cycling if:'                
+^^WI   {                                                                        
+^^WI    @ 1,1  STATIC TD1 'R <'                                                 
+^^WI    @ 3,1  STATIC TD2 'Rw <'                                                
+^^WI    @ 5,1  STATIC TD3 'rms((shft)^2/esd) <'                                 
+^^WI    @ 1,5  STATIC TD4 '%'                                                   
+^^WI    @ 3,5  STATIC TD5 '%'                                                   
+^^WI    @ 1,11 STATIC TD6 '%'                                                   
+^^WI    @ 3,11 STATIC TD7 '%'                                                   
+^^WI    @ 1,7  STATIC TD8 'R >'                                                 
+^^WI    @ 3,7  STATIC TD9 'Rw >'                                                
+^^WI    @ 5,7  STATIC TD10 'rms((shft)^2/esd) >'                                
+^^WI    @ 7,1  STATIC TD11 'min(Uij) <'                                         
+^^WI    @ 1,3 EDITBOX RRMIN                                                     
+%              CLEAR                                                            
+%              INSERT '^^WI '                                                   
+%              STORE REAL RRMIN                                                 
+%              OUTPUT                                                           
+^^WI           CHARS=7 REAL                                                     
+^^WI    @ 1,9 EDITBOX RRMAX                                                     
+%              CLEAR                                                            
+%              INSERT '^^WI '                                                   
+%              STORE REAL RRMAX                                                 
+%              OUTPUT                                                           
+^^WI           CHARS=7 REAL                                                     
+^^WI    @ 3,3 EDITBOX RWMIN                                                     
+%              CLEAR                                                            
+%              INSERT '^^WI '                                                   
+%              STORE REAL RWMIN                                                 
+%              OUTPUT                                                           
+^^WI           CHARS=7 REAL                                                     
+^^WI    @ 3,9 EDITBOX RWMAX                                                     
+%              CLEAR                                                            
+%              INSERT '^^WI '                                                   
+%              STORE REAL RWMAX                                                 
+%              OUTPUT                                                           
+^^WI           CHARS=7 REAL                                                     
+^^WI    @ 5,3 EDITBOX RSMIN                                                     
+%              CLEAR                                                            
+%              INSERT '^^WI '                                                   
+%              STORE REAL RSMIN                                                 
+%              OUTPUT                                                           
+^^WI           CHARS=7 REAL                                                     
+^^WI    @ 5,9 EDITBOX RSMAX                                                     
+%              CLEAR                                                            
+%              INSERT '^^WI '                                                   
+%              STORE REAL RSMAX                                                 
+%              OUTPUT                                                           
+^^WI           CHARS=7 REAL                                                     
+^^WI    @ 7,3 EDITBOX RUMIN                                                     
+%              CLEAR                                                            
+%              INSERT '^^WI '                                                   
+%              STORE REAL RUMIN                                                 
+%              OUTPUT                                                           
+^^WI           CHARS=7 REAL                                                     
+^^WI   }                                                                        
+^^WI  }                                                                         
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+% VERIFY BOK BXX BDEF                                                           
+% GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                  
+% CASE VALUE                                                                    
+%   BLOCK         % BOK %                                                       
+%%                                                                              
+%%                                                                              
+%     COPY '#LIST 23'                                                           
+%     CLEAR                                                                     
+%     INSERT 'MODIFY ANOM='                                                     
+^^??  IANOMA STATE                                                              
+%     VERIFY ON OFF                                                             
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' '                                  
+%     CASE VALUE                                                                
+%       INSERT 'YES'                                                            
+%       INSERT 'NO'                                                             
+%     END CASE                                                                  
+%     INSERT 'EXTI='                                                            
+^^??  IEXTIN STATE                                                              
+%     VERIFY ON OFF                                                             
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' '                                  
+%     CASE VALUE                                                                
+%       INSERT 'YES'                                                            
+%       INSERT 'NO'                                                             
+%     END CASE                                                                  
+%     INSERT 'ENANT='                                                           
+^^??  IFLACK STATE                                                              
+%     VERIFY ON OFF                                                             
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' '                                  
+%     CASE VALUE                                                                
+%       INSERT 'YES'                                                            
+%       INSERT 'NO'                                                             
+%     END CASE                                                                  
+%     SEND                                                                      
+%%                                                                              
+%     CLEAR                                                                     
+%     INSERT 'MINIM NSINGU='                                                    
+^^??  ISINGU TEXT                                                               
+%     GET SILENT TEXT ' ' ' '                                                   
+%     INSERT 'F-SQ='                                                            
+^^??  IFS STATE                                                                 
+%     VERIFY ON OFF                                                             
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' '                                  
+%     CASE VALUE                                                                
+%       BLOCK                                                                   
+%         INSERT 'YES'                                                          
+%          EVALUATE FNEW = 0                                                    
+%          evaluate ftype = 1                                                   
+%       END BLOCK                                                               
+%       BLOCK                                                                   
+%         INSERT 'NO'                                                           
+%          EVALUATE FNEW = - 1                                                  
+%          evaluate ftype = 0                                                   
+%       END BLOCK                                                               
+%     END CASE                                                                  
+%     INSERT 'REFLE='                                                           
+^^??  IREFLS STATE                                                              
+%     VERIFY ON OFF                                                             
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' '                                  
+%     CASE VALUE                                                                
+%       INSERT 'YES'                                                            
+%       INSERT 'NO'                                                             
+%     END CASE                                                                  
+%     INSERT 'RESTR='                                                           
+^^??  IRESTR STATE                                                              
+%     VERIFY ON OFF                                                             
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' '                                  
+%     CASE VALUE                                                                
+%       INSERT 'YES'                                                            
+%       INSERT 'NO'                                                             
+%     END CASE                                                                  
+%     SEND                                                                      
+%%                                                                              
+%     CLEAR                                                                     
+%     INSERT 'REFINE SPEC='                                                     
+^^??  ISPECA STATE                                                              
+%     VERIFY ON OFF                                                             
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' '                                  
+%     IF VALUE .EQ. 1 THEN                                                      
+%       INSERT 'NO'                                                             
+%     ELSE                                                                      
+^^??    ISPECB STATE                                                            
+%       VERIFY ON OFF                                                           
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '                                
+%       IF VALUE .EQ. 1 THEN                                                    
+%         INSERT 'ORIG'                                                         
+%       ELSE                                                                    
+^^??      ISPECC STATE                                                          
+%         VERIFY ON OFF                                                         
+%         GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
+%         IF VALUE .EQ. 1 THEN                                                  
+%           INSERT 'REST'                                                       
+%         ELSE                                                                  
+%           INSERT 'CONS'                                                       
+%         END IF                                                                
+%       END IF                                                                  
+%     END IF                                                                    
+%     INSERT 'UPDATE='                                                          
+^^??  IUPDAT SELECTED                                                           
+%     GET SILENT NOSTORE INTEGER ' ' ' '                                        
+%     CASE VALUE                                                                
+%       INSERT 'NO'                                                             
+%       INSERT 'OCC'                                                            
+%       INSERT 'PARAM'                                                          
+%     END CASE                                                                  
+%     INSERT 'TOLER='                                                           
+^^??  RTOLER TEXT                                                               
+%     GET SILENT TEXT ' ' ' '                                                   
+%     SEND                                                                      
+%%                                                                              
+%     CLEAR                                                                     
+%     INSERT 'ALLC '                                                            
+^^??  RRMIN TEXT                                                                
+%     GET SILENT REAL ' ' ' '                                                   
+^^??  RRMAX TEXT                                                                
+%     GET SILENT REAL ' ' ' '                                                   
+^^??  RWMIN TEXT                                                                
+%     GET SILENT REAL ' ' ' '                                                   
+^^??  RWMAX TEXT                                                                
+%     GET SILENT REAL ' ' ' '                                                   
+%     SEND                                                                      
+%     CLEAR                                                                     
+%     INSERT 'CONT MIN-SUMSQ='                                                  
+^^??  RSMIN TEXT                                                                
+%     GET SILENT REAL ' ' ' '                                                   
+^^??  RSMAX TEXT                                                                
+%     GET SILENT REAL ' ' ' '                                                   
+%     INSERT 'U[MIN]='                                                          
+^^??  RUMIN TEXT                                                                
+%     GET SILENT REAL ' ' ' '                                                   
+%     SEND                                                                      
+%     COPY 'END'                                                                
+{I * List 23 updated.                                                           
+%   END BLOCK                                                                   
+%   BLOCK             % BXX %                                                   
+^^CO  DISPOSE ED23                                                              
+{I * No changes to list 23.                                                     
+%     FINISH                                                                    
+%   END BLOCK                                                                   
+%   BLOCK             % BDEF %                                                  
+{I * Restoring default list 23.                                                 
+%     COPY '#LIST 23'                                                           
+%     COPY 'END'                                                                
+%     EVALUATE FNEW = - 1                                                       
+%     evaluate ftype = 0                                                        
+%   END BLOCK                                                                   
+% END CASE                                                                      
+^^CO DISPOSE ED23                                                               
+% IF FNEW .NE. FOLD THEN                                                        
+%   EVALUATE QTITLE = 'Minimisation function changed'                           
+%   IF FNEW .EQ. 0 THEN                                                         
+%     EVALUATE QTITLE = 'Min. function changed to F**2'                         
+%     EVALUATE QLINE2 = 'Recommended: Set min I/sigma(I) cutoff to -3.0.'                
+%   ELSE IF FNEW .EQ. - 1 THEN                                                  
+%     EVALUATE QTITLE = 'Min. function changed to F'                            
+%     EVALUATE QLINE2 = 'Recommended: Set min I/sigma(I) cutoff to 2.0'         
+%   END IF                                                                      
+%   EVALUATE QLINE1 = 'Do you want to change the reflection filtering?'         
+%   EVALUATE BUTTOK = ' &Yes '                                                  
+%   EVALUATE BUTTXX = ' &No '                                                   
+%   COPY '#SCRIPT XQUESTIO'                                                     
+%   IF ANSWER .EQ. TRUE THEN                                                    
+%     COPY '#SCRIPT XLIST28'                                                    
+%   END IF                                                                      
+%   EVALUATE QLINE1 = 'Do you want a new weighting scheme? Recommended'         
+%   IF FNEW .EQ. - 1 THEN                                                       
+%    EVALUATE QLINE2 = 'scheme: "Quasi-unit" until after more refinement.'      
+%   ELSE                                                                        
+%    EVALUATE QLINE2 = 'scheme: "Statistical" until after more refinement.'     
+%   END IF                                                                      
+%   COPY '#SCRIPT XQUESTIO'                                                     
+%   IF ANSWER .EQ. TRUE THEN                                                    
+%     COPY '#SCRIPT XWEIGHTS'                                                   
+%   END IF                                                                      
+% END IF                                                                        
+%END SCRIPT                                                                     

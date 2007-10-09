@@ -1,83 +1,90 @@
-%SCRIPT FRESH
-%%
-%% Call this script when a new model has been read-in.
-%%
-%% It will clear out 12 and 16, make sure F or F2 is stored
-%% correctly in L30 and reset all the flags used by "The Guide".
-%%
-% VARIABLE LOGICAL L12SMASK
-% VARIABLE INTEGER L12SER
-% BLOCK
-%  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
-%  VARIABLE LOGICAL   ANSWER
-%  IF ( EXISTS 5 .EQ. 1 ) THEN
-%   EVALUATE QTITLE = 'New structure'
-%   EVALUATE QLINE1 = 'Do you want to remove information pertaining to the' 
-%   EVALUATE QLINE2 = 'old structure, eg. restraints, constraints, weights?'
-%   EVALUATE BUTTOK = '&Yes'
-%   EVALUATE BUTTXX = '&No'
-%   COPY '#SCRIPT XQUESTIO'
-%   IF ANSWER .EQ. FALSE THEN
-%    FINISH
-%   END IF
+%SCRIPT FRESH                                                                   
+%%                                                                              
+%% Call this script when a new model has been read-in.                          
+%%                                                                              
+%% It will clear out 12 and 16, make sure F or F2 is stored                     
+%% correctly in L30 and reset all the flags used by "The Guide".                
+%%                                                                              
+% VARIABLE LOGICAL L12SMASK                                                     
+% VARIABLE INTEGER L12SER                                                       
+% BLOCK                                                                         
+%  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                        
+%  VARIABLE LOGICAL   ANSWER                                                    
+%  IF ( EXISTS 5 .EQ. 1 ) THEN                                                  
+%   EVALUATE QTITLE = 'New structure'                                           
+%   EVALUATE QLINE1 = 'Do you want to remove information pertaining to the'     
+%   EVALUATE QLINE2 = 'old structure, eg. restraints, constraints, weights?'    
+%   EVALUATE BUTTOK = '&Yes'                                                    
+%   EVALUATE BUTTXX = '&No'                                                     
+%   COPY '#SCRIPT XQUESTIO'                                                     
+%   IF ANSWER .EQ. FALSE THEN                                                   
+%    FINISH                                                                     
+%   END IF                                                                      
+%  END IF                                                                       
+% END BLOCK                                                                     
+%%                                                                              
+{S * Clearing old restraints, constraints and refinement directives.            
+% BLOCK                                                                         
+%  COPY '#CLEAR 12'                                                             
+%  COPY 'END'                                                                   
+%%                                                                              
+%% Keep List 39 sweet.                                                          
+%%                                                                              
+%  COPY '#GENERALEDIT 12'                                                       
+%  COPY 'GETSERIAL L12SER'                                                      
+%  COPY 'END'                                                                   
+%  EVALUATE L12SMASK = TRUE                                                     
+%  COPY '#SCRIPT XPUTINFO'                                                      
+%  COPY '#CLEAR 16'                                                             
+%  COPY 'END'                                                                   
+% END BLOCK                                                                     
+%%                                                                              
+%%                                                                              
+%%{S * Synchronising refinement coefficient in L30 with that in L23.            
+%  VARIABLE INTEGER FOLD  FTYPE
+% BLOCK                                                                         
+%  EVALUATE FOLD = 1                                                            
+%  IF EXISTS 23 .GE. 1 THEN                                                     
+%   COPY '#GENERALEDIT 23'                                                      
+%   COPY 'LOCATE RECORDTYPE = 103'                                              
+%   COPY 'TRANSFER FROM OFFSET =  1 TO FOLD'                                    
+%   COPY 'END'                                                                  
+%%       FOLD = -1 for F, or 0 for F**2                                         
+%%  FTYPE NEEDED FOR SCRIPT STATWT
+%   EVALUATE FTYPE = FOLD + 1
+%   EVALUATE FOLD = FOLD + 2                                                   
+%%  Now, FOLD =  1 for F, or 2 for F**2.                                        
+%  END IF                                                                       
+%  COPY '#GENERALEDIT 30'                                                       
+%  COPY 'LOCATE RECORDTYPE=103'                                                 
+%  COPY 'TRANSFER TO OFFSET=12 FROM FOLD'                                       
+%  COPY 'WRITE OVERWRITE=OVERWRITE'                                             
+%  COPY 'END'                                                                   
+% END BLOCK                                                                     
+%%                                                                              
+%%                                                                              
+%  IF FOLD .EQ. 1 THEN
+{S * Reset weighting scheme to unit weights.                                  
+%   COPY '#LIST 4'                                                                
+%   COPY 'END'          
+%  ELSE                                                          
+{S * Reset weighting scheme to statistical weights.                                  
+%   COPY '#SCRIPT STATWT'
 %  END IF
-% END BLOCK
-%%
-{S * Clearing old restraints, constraints and refinement directives.
-% BLOCK
-%  COPY '#CLEAR 12'
-%  COPY 'END'
-%%
-%% Keep List 39 sweet.
-%%
-%  COPY '#GENERALEDIT 12'
-%  COPY 'GETSERIAL L12SER'
-%  COPY 'END'
-%  EVALUATE L12SMASK = TRUE
-%  COPY '#SCRIPT XPUTINFO'
-%  COPY '#CLEAR 16'
-%  COPY 'END'
-% END BLOCK
-%%
-%%
-%%{S * Synchronising refinement coefficient in L30 with that in L23.
-% BLOCK
-%  VARIABLE INTEGER FOLD
-%  EVALUATE FOLD = 1
-%  IF EXISTS 23 .GE. 1 THEN
-%   COPY '#GENERALEDIT 23'
-%   COPY 'LOCATE RECORDTYPE = 103'
-%   COPY 'TRANSFER FROM OFFSET =  1 TO FOLD'
-%   COPY 'END'
-%%       FOLD = -1 for F, or 0 for F**2
-%   EVALUATE FOLD = FOLD + 2
-%%  Now, FOLD =  1 for F, or 2 for F**2.
-%  END IF
-%  COPY '#GENERALEDIT 30'
-%  COPY 'LOCATE RECORDTYPE=103'
-%  COPY 'TRANSFER TO OFFSET=12 FROM FOLD'
-%  COPY 'WRITE OVERWRITE=OVERWRITE' 
-%  COPY 'END'
-% END BLOCK
-%%
-%%
-%%{S * Reset weighting scheme to unit weights.
-% COPY '#LIST 4'
-% COPY 'END'
-%%
-%%
-%%{S * Reset known facts for "The Guide"
-% BLOCK
-%  VARIABLE LOGICAL HMASK EMASK WMASK PMASK
-%  VARIABLE LOGICAL HDONE EDONE WDONE PDONE
-%  EVALUATE WMASK = TRUE
-%  EVALUATE WDONE = FALSE
-%  EVALUATE EMASK = TRUE
-%  EVALUATE EDONE = FALSE
-%  EVALUATE HMASK = TRUE
-%  EVALUATE HDONE = FALSE
-%  EVALUATE PMASK = TRUE
-%  EVALUATE PDONE = FALSE
-%  COPY '#SCRIPT XPUTINFO'
-% END BLOCK   
-%END SCRIPT
+%%                                                                              
+%%                                                                              
+%%{S * Reset known facts for "The Guide"                                        
+% BLOCK                                                                         
+%  VARIABLE LOGICAL HMASK EMASK WMASK PMASK                                     
+%  VARIABLE LOGICAL HDONE EDONE WDONE PDONE                                     
+%  EVALUATE WMASK = TRUE                                                        
+%  EVALUATE WDONE = FALSE                                                       
+%  EVALUATE EMASK = TRUE                                                        
+%  EVALUATE EDONE = FALSE                                                       
+%  EVALUATE HMASK = TRUE                                                        
+%  EVALUATE HDONE = FALSE                                                       
+%  EVALUATE PMASK = TRUE                                                        
+%  EVALUATE PDONE = FALSE                                                       
+%  COPY '#SCRIPT XPUTINFO'                                                      
+% END BLOCK                                                                     
+%END SCRIPT                                                                     
