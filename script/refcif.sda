@@ -11,8 +11,7 @@ _publ_contact_letter
 ;
                                  Please consider this CIF submission for
                                  publication as a Short Format Paper in Acta
-                                 Crystallographica E.  The figures will be
-                                 sent by e-mail.
+                                 Crystallographica E.
 ;
 _publ_contact_author_name        'Anthony Other'
 _publ_contact_author_address
@@ -72,6 +71,24 @@ _publ_section_abstract
 ;
 ?
 ;
+
+_publ_section_related_literature          # Not in version 2.3.1
+###############################################################
+# Essential references (e.g. to the origin of the material studied, related
+# structural studies, and to information supporting the reported structure)
+# should be cited in this section, with appropriate very brief explanatory
+# text, for example `The synthesis of the complex is described by Jones
+# (2001). The anhydrous complex has essentially the same coordination
+# geometry (Smith, 2003).' In addition, all references included in the
+# supplementary materials, but not elsewhere in the published article,
+# should be given here. The simple text `For related literature, see:...'
+# may be used, but further details should be provided in the Comment
+# section, which forms part of the supplementary material.
+###############################################################
+; 
+?
+;
+
 _publ_section_comment                                 
 # Text of the paper
 # Note that atoms are referenced as N2, not N(2) or N~2~
@@ -93,6 +110,9 @@ probability level.  H atoms are shown as spheres of
 arbitary radius.
 
 ;
+
+
+data_1
 
 _publ_section_exptl_refinement
 # Some potentially useful phrases are donated by Bill Clegg:
@@ -160,34 +180,4 @@ _publ_section_exptl_prep
 #C3-O10-C2    105               109            "2 (\%)"
 #C6-O7        1.25              1.22           ".02 (\%A)"
 #
-
-
-
-# PROCESSING SUMMARY (IUCr Office Use Only):
-_journal_date_recd_electronic     ?
-_journal_date_to_coeditor         ?
-_journal_date_from_coeditor       ?
-_journal_date_accepted            ?
-_journal_date_printers_first      ?
-_journal_date_printers_final      ?
-_journal_date_proofs_out          ?
-_journal_date_proofs_in           ?
-_journal_coeditor_name            ?
-_journal_coeditor_code            ?
-_journal_coeditor_notes           ?
-_journal_techeditor_code          ?
-_journal_techeditor_notes         ?
-_journal_coden_ASTM               ?
-_journal_name_full                ?
-_journal_year                     ?
-_journal_volume                   ?
-_journal_issue                    ?
-_journal_page_first               ?
-_journal_page_last                ?
-_journal_suppl_publ_number        ?
-_journal_suppl_publ_pages         ?
-
-#  End of 'script/refcif.dat'
-
-
-
+#  End of 'script/refcif-b.dat'
