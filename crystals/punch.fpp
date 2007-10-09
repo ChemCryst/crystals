@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.43  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:08  rich
 C New CRYSTALS repository
 C
@@ -991,7 +995,7 @@ CDJW02      CALL XRDOPN(6, KDEV , CSSFCF, LSSFCF)
       END IF
 
       SCALE6 = STORE(L5O)
-      WRITE(NCFPU1, '(''data_CRYSTALS_cif '')')
+      WRITE(NCFPU1, '(''data_1 '')')
       WRITE(NCFPU1, '(''#  '',10A4)') (KTITL(I),I=1,10)
       CALL XDATER ( CBUF(1:8))
       WRITE(NCFPU1,'(''_audit_creation_date  '',6X, 3(A2,A))')
