@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:08  rich
 C New CRYSTALS repository
 C
@@ -198,7 +202,7 @@ C--
       INCLUDE 'ICOM30.INC'
 C
 C
-      CHARACTER*24 CCAPT1
+      CHARACTER*32 CCAPT1
       CHARACTER*32 CCAPT2
       DIMENSION AA(10), YCARD1(82), YCARD2(82), IFORM(40)
       DIMENSION IPARTS(4), ICAD4(11), ISLX(4), JSIGMA(1), JRATIO(1)
