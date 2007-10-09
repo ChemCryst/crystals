@@ -196,7 +196,7 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
-      DATA ICOMSZ / 3 /
+      DATA ICOMSZ / 4 /
 C
 C----- ALLOCATE ROOM FOR INPUT VALUES
 CMAR98
@@ -207,10 +207,12 @@ C
       IF ( ISTAT .LT. 0 ) GO TO 9910
       ITYPE = ISTORE(ICOMBF + 1)
       IMETH = ISTORE(ICOMBF + 2)
+      ITYP06= ISTORE(ICOMBF + 3)
+c      IULN6 = KTYP06(ITYP06)
 C
 C-     LINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
 C-                5:SIR88, 6:SIR92, 7:SIR97, 8:PLATON 9:CSD 10:MOL2
-      CALL XLNK (ISTORE(ICOMBF), ITYPE, IMETH)
+      CALL XLNK (ISTORE(ICOMBF), ITYPE, IMETH, ityp06)
 C
 C
 9000  CONTINUE
@@ -230,7 +232,7 @@ C
       END
 C
 CODE FOR XLNK
-      SUBROUTINE XLNK (ILINK, IEFORT, IMETHD)
+      SUBROUTINE XLNK (ILINK, IEFORT, IMETHD, ityp06)
 C
 C      PREPARE DATA FOR FOREIGN PROGRAMS
 C      ILINK  SELECTS THE SORT OF OUTPUT TO PRODUCE
@@ -242,14 +244,20 @@ C                                     2, DIFFICULT
 C                                     3, SPECIAL - PUNCH ATOMS
 C                                     4, PATTERSON
 C
-C           FOR SIR**        IEFORT = 1, NORMAL
+C           FOR SIR92        IEFORT = 1, NORMAL
 C                                     2, DIFFICULT
+C                                     3, SPECIAL - PUNCH ATOMS
+C                                     4, PATTERSON
+C                                     5, HARD
+C                                     6, LONG
+
 CavdLdec06  FOR SUPERFLIP    IEFORT = 1, NORMAL
 C                            IEFORT = 2, DIFFICULT (weak data)
 c           for cameron      iefort = 1, normal
 c                                     2, dont create new cameron files
 C           FOR CSD          IEFORT = 1, normal - 2d structure
 C                                     2, special - just cell search
+c      ITYP06                6 OR 7
 C
 Cavdldec06 - now eleven links (NLINK=11)
 
@@ -347,9 +355,8 @@ c      DATA IDIMBF / 2 /
 c      CALL XZEROF (STORE(ICOMBF), IDIMBF)
 c      INCLUDE 'IDIM02.INC'
 c      INCLUDE 'IDIM14.INC'
-
 C
-      IULN6 = 6
+cdjwsep07      IULN6 = 6
       IF ((ILINK .LE. 0) .OR. (ILINK .GT. NLINK)) GOTO 9100
       IF ((ILINK .EQ. 1) .OR. (ILINK .EQ. 2)) THEN
 C -- CHECK THAT OPERATION IS BEING PERFORMED IN INTERACTIVE MODE
@@ -361,7 +368,11 @@ C--FIND OUT IF LISTS EXIST
       IERROR = 1
       DO 1300 N=1 , NLIST
         LSTNUM = LISTS(N,ILINK)
-
+cdjwsep07 check the type of reflections
+        if (lstnum .eq. 6) then
+          IULN6 = KTYP06(ITYP06)
+        endif
+c
       IF (LSTNUM .EQ. 0 ) GOTO 1300
         IF (  KEXIST ( LSTNUM )  ) 1210 , 1200 , 1220
 1200    CONTINUE
@@ -778,28 +789,35 @@ CavdL take the maximum value
         IVOXEL(3)=MAX(IVOXEL(1),IVOXEL(3))
         IVOXEL(3)=MAX(IVOXEL(2),IVOXEL(3))
       ENDIF
-      WRITE(NCFPU1, '(''voxel '', 3i6)')(ivoxel(i),i=1,3)
+cavdlsep07 new Superflip version (sep2007) gives the possibility for
+c---- voxel calculation inside Superflip. If this works correctly than
+c---- the foregoing voxel calculation can be skipped
+C     WRITE(NCFPU1, '(''voxel '', 3i6)')(ivoxel(i),i=1,3)
+      WRITE(NCFPU1, '(''voxel AUTO'')')
       WRITE(NCFPU1, '(''cell '', 3F7.3, 3F8.3)')
      1 , (STORE(I),I=L1P1,L1P1+5)
        WRITE(NCFPU1, '(''spacegroup '', A )') CSPACE(1:ISP)
        LATTYP = ((2*IC) -1) * IL
+c       write(CMON, '('' LATTYP'',i5)') LATTYP
+c       CALL XPRVDU(NCVDU, 1,0)
        IF (LATTYP.GT.0)THEN
          WRITE(NCFPU1, '(''centro yes'')')
        ELSE
          WRITE(NCFPU1, '(''centro no'')')
        ENDIF
+cavdlsep07- change to absolute value of lattyp for writing translation vectors for non-centro as well
        WRITE(NCFPU1, '(''centers'')')
        XCEN=0.000000d0
        YCEN=0.000000d0
        ZCEN=0.000000d0
        WRITE(NCFPU1, '(3F14.10)')XCEN,YCEN,ZCEN
-       IF (LATTYP.EQ.2)THEN
+       IF (ABS(LATTYP).EQ.2)THEN
            XCEN=0.500000d0
            YCEN=0.500000d0
            ZCEN=0.500000d0
            WRITE(NCFPU1, '(3F14.10)')XCEN,YCEN,ZCEN
        ENDIF
-       IF (LATTYP.EQ.3)THEN
+       IF (ABS(LATTYP).EQ.3)THEN
            XCEN=2.0d0/3.0d0
            YCEN=1.0d0/3.0d0
            ZCEN=1.0d0/3.0d0
@@ -809,7 +827,7 @@ CavdL take the maximum value
            ZCEN=2.0/3.0d0
            WRITE(NCFPU1, '(3F14.10)')XCEN,YCEN,ZCEN
        ENDIF
-       IF (LATTYP.EQ.4)THEN
+       IF (ABS(LATTYP).EQ.4)THEN
            XCEN=0.500000d0
            YCEN=0.500000d0
            ZCEN=0.000000d0
@@ -823,19 +841,19 @@ CavdL take the maximum value
            ZCEN=0.500000d0
            WRITE(NCFPU1, '(3F14.10)')XCEN,YCEN,ZCEN
        ENDIF
-       IF (LATTYP.EQ.5)THEN
+       IF (ABS(LATTYP).EQ.5)THEN
           XCEN=0.000000d0
           YCEN=0.500000d0
           ZCEN=0.500000d0
           WRITE(NCFPU1, '(3F14.10)')XCEN,YCEN,ZCEN
        ENDIF
-       IF (LATTYP.EQ.6)THEN
+       IF (ABS(LATTYP).EQ.6)THEN
           XCEN=0.500000d0
           YCEN=0.000000d0
           ZCEN=0.500000d0
           WRITE(NCFPU1, '(3F14.10)')XCEN,YCEN,ZCEN
        ENDIF
-       IF (LATTYP.EQ.7)THEN
+       IF (ABS(LATTYP).EQ.7)THEN
           XCEN=0.500000d0
           YCEN=0.500000d0
           ZCEN=0.000000d0
@@ -868,6 +886,8 @@ CavdL take the maximum value
      &                  ''Biso  '',f12.3,/,
      &                  ''randomseed AUTO'',/,
      &                  ''searchsymmetry average'',/,
+cavdlsep07
+     &                  ''derivesymmetry YES'',/,
      &                  ''# End of keywords for charge flipping'')')
      &                    RWEAK,RBISO
       WRITE(NCFPU1, '(/,''# EDMA-specific keywords'',/,
@@ -950,6 +970,7 @@ CAVDLdec06 --- end superflip input file
 C
 C
 1860  CONTINUE
+CAVDLdec06 continue with superflip data
 C     LINK TO WRITE OUTPUT FOR PLATON ---------------------
 C
 C  NCFPU1 will be a SHELX format RES file with atoms.
@@ -1821,7 +1842,13 @@ cdjw1999
      8 '  seed 8823'/
      8 '%fourier'/
      9 '>  recycle  n')
-            CARROW = '>'
+1944  FORMAT(
+     1 '%normal'/
+     8 '%fourier'/
+     9 'fragment frag.dat')
+C
+C
+       CARROW = '>'
        IF (ILINK .EQ. 6) THEN
        IF (IEFORT .EQ. 1) THEN
       WRITE(NCFPU1,1941) CARROW,CARROW,CARROW,CARROW,
@@ -1829,6 +1856,8 @@ cdjw1999
       ELSE IF (IEFORT .EQ. 2) then
        WRITE(NCFPU1, 1941) ' ', ' ',' ',
      1 ' ',' ',' ',' '
+      ELSE IF (IEFORT .EQ. 3) THEN
+       WRITE(NCFPU1, 1944)
       ELSE IF (IEFORT .EQ. 5) THEN
        WRITE(NCFPU1, 1942)
       ELSE IF (IEFORT .EQ. 6) THEN
@@ -1841,6 +1870,18 @@ cdjw1999
        endif
       WRITE(NCFPU1, '(''%continue'')' )
 C
+      IF ((ILINK .EQ. 6) .AND. (IEFORT .EQ. 3 )) THEN
+C----- OUTPUT ATOMS FOR SUPERFLIP RECYCLING
+      IF (KHUNTR (5,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL05
+      M5=L5
+      DO 1949, I=1,N5
+            WRITE(NCFPU2,'(A4,3F12.6)') ISTORE(M5), 
+     1      STORE(M5+4), STORE(M5+5), STORE(M5+6)
+            M5 = M5+MD5
+1949  CONTINUE
+      ENDIF
+C
+c
       SCALE = 1.0
 C----- LOOP OVER DATA
       IN = 0
@@ -1882,7 +1923,7 @@ C
 2000  CONTINUE
 C----- LINK TO MULTAN ------------------------------------
 C
-      CALL XLNKMN
+      CALL XLNKMN(ITYP06)
       GOTO 9000
 C
 8000  CONTINUE
@@ -1954,6 +1995,7 @@ C - Could move these to ZCAMER.
 8030  CONTINUE
 C----- ENSURE THE UNITS ARE CLOSED
       I = KFLCLS(NCFPU1)
+      I = KFLCLS(NCFPU2)
 
       GOTO 9000
 
@@ -2002,7 +2044,7 @@ C
 C----- RETURNS NEGATIVE IF FAILURE
 C      ILINK - THPE OF FOREIGN PROGRAM
       CHARACTER *256 CPATH
-      PARAMETER (NFILE = 13)
+      PARAMETER (NFILE = 14)
       CHARACTER *16 CFILE(NFILE)
 C
       DIMENSION JFRN(4,2),  LFILE(NFILE)
@@ -2013,14 +2055,24 @@ C
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XIOBUF.INC'
 C
-      DATA CFILE / 'SNOOPI.INI' ,  'SNOOPI.L5' ,
-     1             'SHELXS.INS' ,  'SIRDATA.DAT',
-     2             'CAMERON.INI' ,  'CAMERON.L5I',
-     3             'SIR92.INI', 'SIR97.INI',
-     4             'PLATON.RES','PLATON.HKL',
-     5             'CRYSTALS.CON', 'crystals.mol2' , 'sflip.inflip' /
+      DATA CFILE / 
+     1  'SNOOPI.INI' ,
+     2  'SNOOPI.L5' ,
+     3  'SHELXS.INS' ,
+     4  'SIRDATA.DAT',
+     5  'CAMERON.INI' ,
+     6  'CAMERON.L5I',
+     7  'SIR92.INI',
+     8  'frag.dat', 
+     9  'SIR97.INI',
+     c  'PLATON.RES',
+     1  'PLATON.HKL',
+     2  'CRYSTALS.CON',
+     3  'crystals.mol2' ,
+     4  'sflip.inflip'/
 C
-      DATA LFILE / 10,  9,  10,  11, 11, 11, 9, 9, 10, 10, 12, 13 , 12 /
+      DATA LFILE / 10,  9,  10,  11, 11, 11, 9, 8, 9, 10, 10, 12, 13 ,
+     1             12  /
 C
       DATA JFRN /'F', 'R', 'N', '1',
      1           'F', 'R', 'N', '2'/
@@ -2030,7 +2082,8 @@ C
       KLOOP = 1
       KLNKIO = -1
       LPATH  = KPATH( CPATH)
-C     SNOOPI, CAMERON, SHELXS86, MULTAN, SIR88, SIR92, SIR97, PLATON,CSD,MOL2,superflip
+C     SNOOPI, CAMERON, SHELXS86, MULTAN, SIR88, SIR92, SIR97, PLATON, 
+c     CSD, MOL2, superflip
 C
 C----- OPEN THE FIRST FILE
       JFILE = 1
@@ -2040,41 +2093,57 @@ C----- OPEN THE FIRST FILE
 
 C
 110   CONTINUE
+c      snoopi
       IFILE = 1
+c      and 2
       KLOOP = 2
       GOTO 1000
 120   CONTINUE
+c      cameron
       IFILE = 5
+c      and 6
       KLOOP = 2
       GOTO 1000
 130   CONTINUE
+c      shelxs86
       IFILE=3
       GOTO 1000
 140   CONTINUE
+c      multan
       IFILE=0
       GOTO 9000
 150   CONTINUE
+c      sir88
       IFILE=4
       GOTO 1000
 160   CONTINUE
+c      sir92
+      KLOOP = 2
       IFILE=7
+c      and 8
       GOTO 1000
 170   CONTINUE
-      IFILE=8
+c      sir97
+      IFILE=9
       GOTO 1000
 180   CONTINUE
-      IFILE=9
+c      platon
+      IFILE=10
+c      and 11
       KLOOP = 2
       GOTO 1000
 190   CONTINUE
-      IFILE=11
+c     CSD
+      IFILE=12
       GOTO 1000
 195   CONTINUE
-      IFILE=12
+c       MOL2
+      IFILE=13
       GOTO 1000
 Cavdldec06 added superflip file
 196   CONTINUE
-      IFILE=13
+c       superflip
+      IFILE=14
       GOTO 1000
 C
 C
@@ -2323,7 +2392,7 @@ C
 C
 C
 CODE FOR XLNKMN
-      SUBROUTINE XLNKMN
+      SUBROUTINE XLNKMN(ITYP06)
 C
 C     LINK TO WRITE OUTPUT FOR MULTAN84
 C
@@ -2359,7 +2428,7 @@ C
       DATA JFRN1 /'F', 'R', 'N', '1'/
       DATA JFRN2 /'F', 'R', 'N', '2'/
 C
-      IULN6 = 6
+C      IULN6 = ITYP06
       IERROR = 1
 C---- GET THE PATH NAME
       LPATH  = KPATH( CPATH)
@@ -2377,6 +2446,11 @@ C--FIND OUT WHICH LISTS EXIST
 C
       DO 1300 N=1 , NLISTS
         LSTNUM = LISTS(N)
+cdjwsep07 check the type of reflections
+        if (lstnum .eq. 6) then
+          IULN6 = KTYP06(ITYP06)
+        endif
+c
         IF (  KEXIST ( LSTNUM )  ) 1210 , 1200 , 1220
 C
 1200    CONTINUE
