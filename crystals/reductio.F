@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2006/04/24 13:12:33  djw
+C Update Rint etc from LIST 7 for total with Friedels Law
+C
 C Revision 1.27  2005/11/29 17:59:14  djw
 C Add code to permit use of data from multi-batch samples
 C
@@ -611,6 +614,7 @@ C
       INCLUDE 'STORE.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XUNITS.INC'
 C
       INCLUDE 'QSTORE.INC'
 C
@@ -666,6 +670,7 @@ C--CHECK IF WE SHOULD GENERATE A NEW SET OF INDICES
       IF(IN)1950,1950,1550
 C--CHECK IF THESE ARE GOOD TRANSFORMS FOR OUTPUT
 1550  CONTINUE
+c      fried=1.
       DO 1900 J=1,IN
       IF(NINT(HG(3)-HMAX(3)))1800,1600,1700
 1600  CONTINUE
@@ -677,8 +682,10 @@ C--THIS SET IS A BETTER SET  -  STORE THEM
       DO 1750 K=1,3
       HMAX(K)=HG(K)
 1750  CONTINUE
+c      afried = fried
 C--INVERT THE INDICES FOR THE NEXT POSSIBLE PASS
 1800  CONTINUE
+c      fried = 2.
       DO 1850 K=1,3
       HG(K)=-HG(K)
 1850  CONTINUE
@@ -690,6 +697,8 @@ C--WRITE THE NEW INDICES BACK IN LIST 6
       STORE(K)=HMAX(I)
       K=K+1
 2000  CONTINUE
+c      write(ncwu,'(3f4.0, 4f10.4)') hmax, store(m6+6),
+c     1 store(m6+13), store(m6+15), afried
       KSYSAB=0
 2050  CONTINUE
       RETURN
@@ -1591,15 +1600,22 @@ C----- WORK(29) IS MINIMUM JCODE
 C--WORK 28 = 24 = SIGMA W DELTA SQ
       WORK(28)=WORK(28)+WORK(6)
 C--WEIGHTED AVERAGE
-      IF (WORK(4) .GT. ZERO) THEN
-        WORK(9)=WORK(6)/WORK(4)
-        WORK(10)=WORK(8)/WORK(4)
-      ELSE
-        WORK(9)=WORK(6)/FLOAT(NREF)
-        WORK(10)=WORK(8)/FLOAT(NREF)
-      ENDIF
-      WORK(9)=SQRT(WORK(9))
-      WORK(10)=SQRT(WORK(10))
+cdjwsep07
+c      IF (WORK(4) .GT. ZERO) THEN
+c        WORK(9)=WORK(6)/WORK(4)
+c        WORK(10)=WORK(8)/WORK(4)
+c      ELSE
+c        WORK(9)=WORK(6)/FLOAT(NREF)
+c        WORK(10)=WORK(8)/FLOAT(NREF)
+c      ENDIF
+
+      IF (WORK(4) .LE. ZERO) work(4) = FLOAT(NREF)
+      WORK(9)=WORK(6)/WORK(4)
+      WORK(10)=WORK(8)/WORK(4)
+C
+c adjust sigmas - An Intro to Error Analysis, Taylor, pp89
+      WORK(9)=SQRT(WORK(9))/SQRT(FLOAT(NREF))
+      WORK(10)=SQRT(WORK(10))/SQRT(FLOAT(NREF))
       WORK(9)=AMAX1(0.01,WORK(9))
       WORK(10)=AMAX1(0.01,WORK(10))
 
@@ -1757,7 +1773,7 @@ C  N6DEAD  THE NUMBER OF REFLECTIONS REJECTED SO FAR.
 C  N6MAX   THE MAXIMUM NUMBER OF REJECTED REFLECTIONS TO BE PRINTED.
 C  IFO     THE POSITION OF /FO/ IN THE LIST 6 BUFFER  -  RANGE 0 TO
 C          'MD6'-1.
-C  CCAPT   A 24 CHARACTER CAPTION TO PRECEDE THE REFLECTION.
+C  CCAPT   A CHARACTER CAPTION TO PRECEDE THE REFLECTION.
 C
 C--
 C
