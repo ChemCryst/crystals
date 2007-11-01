@@ -264,6 +264,19 @@ c
      1    store(l30ge+6), store(l30ge+7)
           CALL XPRVDU(NCVDU, 1,0)
           IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A)') CMON(1 )(:)
+
+          if (store(l30ge+7) .ge. .3) then
+            write(cmon,'(/a/a/)') 
+     1 'The absolute configuration has not been reliably determined',
+     1 'Flack & Bernardinelli., J. Appl. Cryst. (2000). 33, 1143-1148'
+          CALL XPRVDU(NCVDU, 4,0)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A)') CMON(2 )(:)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(3 )(:)
+          endif
+
+
+
+
           WRITE (CMON,'(a,2f10.4)') 'Hooft Parameter & su', tony,tonsy
           CALL XPRVDU(NCVDU, 1,0)
           IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
