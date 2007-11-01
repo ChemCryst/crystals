@@ -193,7 +193,7 @@
 ^^WI   {                                                                        
 ^^WI    @ 1,1 STATIC ED30T 'Data reduction'                                     
 ^^WI    @ 1,3 DROPDOWN REDUC INFORM=YES ADDTOLIST                               
-^^WI    'Unknown' 'RC93' 'Denzo' 'Shelx' 'CrysAlis' 'Saint' 'NULL'                      
+^^WI    'Unknown' 'RC93' 'Denzo' 'Shelx' 'CrysAlis' 'APEX2' 'NULL'                      
 ^^WI    @ 1,5 STATIC ED30T 'Structure solution'                                 
 ^^WI    @ 1,8 DROPDOWN SOLUTN INFORM=YES ADDTOLIST                              
 ^^WI    'Unknown' 'Shelxs' 'Sir88' 'Sir92' 'Patterson'                          
@@ -245,7 +245,7 @@
 ^^WI    @ 1,3 DROPDOWN ABSTYPE INFORM=YES ADDTOLIST                             
 ^^WI     'None' 'DifAbs' 'Empirical' 'Multi-scan' 'SadAbs '                     
 ^^WI     'SortAV' 'ShelxA' 'Gaussian' 'Analytical' 'Numerical'                  
-^^WI     'Integration' 'Spherical' 'Cylindrical' 'Psi-Scan' 'Saint' 'NULL'              
+^^WI     'Integration' 'Spherical' 'Cylindrical' 'Psi-Scan' 'APEX2' 'NULL'              
 ^^WI    @ 1,5  STATIC ABSMINT 'Empirical min'                                   
 ^^WI    @ 1,7  EDITBOX ABSMIN '0' CHARS=11 REAL INFORM=YES                      
 ^^WI    @ 1,9  STATIC ABSMAXT 'Empirical max'                                   
