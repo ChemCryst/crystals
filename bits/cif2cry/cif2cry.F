@@ -11,7 +11,7 @@ C<ric02>
       integer optlen
 C<ric02/>
 #include       "ciftbx.cmn"
-      logical       f1,f2,f3,f4,f5,f6
+      logical       f0,f1,f2,f3,f4,f5,f6
       character*32  name, response,buffer
       character*24  cspace, output_name
       character*33  output_hkl
@@ -568,6 +568,8 @@ C....... Read the Uij loop and store in the site list
         end do
         write(NOUTF,'(a)') 'END'
         write(NOUTF,'(a)') '#EDIT'           !This will fix clashing
+        write(NOUTF,'(a)') 'LIST LEVEL=OFF ' !serial numbers.
+        write(NOUTF,'(a)') 'MONITOR LEVEL=OFF ' !serial numbers.
         write(NOUTF,'(a)') 'CLASH FIXLATTER' !serial numbers.
         write(NOUTF,'(a)') 'END'
       end if
@@ -638,9 +640,12 @@ c.......=========================
 
       end if
 
+cdjw oct07 - read reflections
+
 
       nref = 0
       lftype = 0
+      rc = 0.
 
       do while (.true.)
 
@@ -661,9 +666,17 @@ c.......=========================
         if ( f1 .and. (lftype .ne. 1 ) ) then
           lftype = 2
           f1 = numb_('_refln_F_squared_sigma', rs, dum)
+          f0 = numb_('_refln_F_squared_calc', rc, dum)
           if ( .not. f1 ) then
             write(6,'(a,i7///)')
      *      ' >>>>> No Fsq sigma found in CIF for reflection ',NREF
+            nref = 0
+            exit
+          end if
+
+          if ( .not. f0 ) then
+            write(6,'(a,i7///)')
+     *      ' >>>>> No Fcalc found in CIF for reflection ',NREF
             nref = 0
             exit
           end if
@@ -671,6 +684,7 @@ c.......=========================
           lftype = 1
           f1 = numb_('_refln_F_meas', rf, dum)
           f1 = numb_('_refln_F_sigma', rs, dum).and.(f1)
+          f0 = numb_('_refln_F_calc', rc, dum)
           if ( .not. f1 ) then
             write(6,'(a,i7///)')
      *      ' >>>>> No F or sigmaF found in CIF for reflection ',NREF
@@ -685,14 +699,17 @@ c.......=========================
         end if
 
         if ( rf .lt. 100000 ) then
-          write ( noutr, '(3I4,2F8.2)' )NINT(rh),NINT(rk),NINT(rl),rf,rs
-        else if ( rf .lt. 1000000 ) then
-          write ( noutr, '(3I4,2F8.1)' )NINT(rh),NINT(rk),NINT(rl),rf,rs
+          write ( noutr, '(3I4,3F8.2)' )NINT(rh),NINT(rk),NINT(rl),rf,rs
+     1                                  ,rc
+        else if ( rf .lt. 100000 ) then
+          write ( noutr, '(3I4,3F8.1)' )NINT(rh),NINT(rk),NINT(rl),rf,rs
+     1                                  ,rc
         else if ( rf .lt. 10000000 ) then
-          write ( noutr, '(3I4,2F8.0)' )NINT(rh),NINT(rk),NINT(rl),rf,rs
+          write ( noutr, '(3I4,3F8.0)' )NINT(rh),NINT(rk),NINT(rl),rf,rs
+     1                                  ,rc
         else
-          write ( noutr, '(3I4,2I8)' )NINT(rh),NINT(rk),NINT(rl),
-     *                                NINT(rf),NINT(rs)
+          write ( noutr, '(3I4,3I8)' )NINT(rh),NINT(rk),NINT(rl),
+     *                                NINT(rf),NINT(rs),NINT(rc)
         end if
 
         if(.not.(loop_)) exit
@@ -707,16 +724,33 @@ c.......=========================
      *                      output_hkl(1:len_trim(output_hkl))//'"'
         write(NOUTF,'(a)')'#HKLI'
         if ( lftype .eq. 2 ) then
-          write(NOUTF,'(a)')'READ F''S=FSQ NCOEF=5 TYPE=FIXED CHECK=NO'
+          write(NOUTF,'(a)')'READ F''S=FSQ NCOEF=6 TYPE=FIXED CHECK=NO'
         else
-          write(NOUTF,'(a)')'READ F''S=FO NCOEF=5 TYPE=FIXED CHECK=NO'
+          write(NOUTF,'(a)')'READ F''S=FO NCOEF=6 TYPE=FIXED CHECK=NO'
         end if
-        write(NOUTF,'(a)')'INPUT H K L /FO/ SIGMA(/FO/)'
-        write(NOUTF,'(a)')'FORMAT (3F4.0, 2F8.0)'
-        write(NOUTF,'(a)')'STORE NCOEF=6'
-        write(NOUTF,'(a)')'OUTP INDI /FO/ SIG RATIO/J CORR SERI'
+        write(NOUTF,'(a)')'INPUT H K L /FO/ SIGMA(/FO/) /Fc/'
+        write(NOUTF,'(a)')'FORMAT (3F4.0, 3F8.0)'
+        write(NOUTF,'(a)')'STORE NCOEF=7'
+        write(NOUTF,'(a)')'OUTP INDI /FO/ SIG RATIO/J CORR SERI /Fc/'
         write(NOUTF,'(a)')'END'
         write(NOUTF,'(a)')'#CLOSE HKLI'
+
+        write(NOUTF,'(a)')'#GENERALEDIT 13'
+        write(NOUTF,'(a)')'LOCATE RECORDTYPE = 101'
+        write(NOUTF,'(a)')'CHANGE OFFSET=0  MODE =INTEGER  INTEGER=-1 '
+        write(NOUTF,'(a)')'WRITE OVERWRITE=OVERWRITE'
+        write(NOUTF,'(a)')'END'
+
+
+        write(NOUTF,'(a)')'#GENERALEDIT 23'
+        write(NOUTF,'(a)')'LOCATE RECORDTYPE=103'
+        write(NOUTF,'(a)')'CHANGE OFFSET=1 MODE=INTEGER INTEGER=0'
+        write(NOUTF,'(a)')'WRITE OVERWRITE=OVERWRITE'
+        write(NOUTF,'(a)')'END'
+
+
+
+
         write(NOUTF,'(a)')'#SYSTEMATIC'
         write(NOUTF,'(a)')'#SORT'
         write(NOUTF,'(a)')'#MERGE'
