@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.29  2007/10/09 06:59:40  djw
+C Adjust calculation of sigmas in merge
+C
 C Revision 1.28  2006/04/24 13:12:33  djw
 C Update Rint etc from LIST 7 for total with Friedels Law
 C
@@ -597,6 +600,7 @@ C      IF 'IN' IS 1, A NEW SET OF INDICES IS COMPUTED, BUT FRIEDEL'S
 C      LAW IS NOT USED.
 C      IF 'IN' IS 2, A NEW SET OF INDICES IS COMPUTED USING FRIEDEL'S LA
 C
+cdjw  Store the Friedel flag in the phase slot
 C
 C--THE NEW SET OF INDICES HAS THE MAXIMUM VALUE OF 'L' FROM AMONGST THE
 C  SYMMETRY EQUIVALENT SET. FROM THE REFLECTIONS WITH THIS VALUE OF 'L',
@@ -619,6 +623,8 @@ C
       INCLUDE 'QSTORE.INC'
 C
 C--CHECK IF THERE ARE ANY NON-PRIMITIVE TRANSLATIONS TO LOOK FOR
+      fried=1.
+      afried=fried
       IF(N2P-1)1150,1150,1000
 C--CHECK NON-PRIMITIVE CONDITIONS
 1000  CONTINUE
@@ -670,7 +676,6 @@ C--CHECK IF WE SHOULD GENERATE A NEW SET OF INDICES
       IF(IN)1950,1950,1550
 C--CHECK IF THESE ARE GOOD TRANSFORMS FOR OUTPUT
 1550  CONTINUE
-c      fried=1.
       DO 1900 J=1,IN
       IF(NINT(HG(3)-HMAX(3)))1800,1600,1700
 1600  CONTINUE
@@ -682,23 +687,27 @@ C--THIS SET IS A BETTER SET  -  STORE THEM
       DO 1750 K=1,3
       HMAX(K)=HG(K)
 1750  CONTINUE
-c      afried = fried
+      fried=2.
 C--INVERT THE INDICES FOR THE NEXT POSSIBLE PASS
 1800  CONTINUE
-c      fried = 2.
       DO 1850 K=1,3
       HG(K)=-HG(K)
 1850  CONTINUE
 1900  CONTINUE
 1950  CONTINUE
+      afried=fried
 C--WRITE THE NEW INDICES BACK IN LIST 6
       K=M6
       DO 2000 I=1,3
       STORE(K)=HMAX(I)
       K=K+1
 2000  CONTINUE
-c      write(ncwu,'(3f4.0, 4f10.4)') hmax, store(m6+6),
-c     1 store(m6+13), store(m6+15), afried
+c      write(ncwu,'(3f4.0, 4f10.4,2i6)') hmax, store(m6+6),
+c     1 store(m6+13), store(m6+15), afried, ic, in
+c----- store the friedel flag in the phase slot
+c      1 = original index
+c      2 = Friedel pair
+      store(m6+6) = afried
       KSYSAB=0
 2050  CONTINUE
       RETURN
