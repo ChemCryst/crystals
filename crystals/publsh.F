@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:08  rich
 C New CRYSTALS repository
 C
@@ -56,7 +60,7 @@ C--BRANCH ON THE TYPE OF OPERATION
 C
 C  REFLECTIONS  PARAMETERS  SUMMARY  GENERALEDIT  CIFOUT
 C
-      GO TO ( 2100, 2200, 2300, 2400, 2600, 2700, 1500 ) , NUM
+      GO TO ( 2100, 2200, 2300, 2400, 2600, 2700, 2800, 1500 ) , NUM
 1500  CONTINUE
       CALL XERHND ( IERPRG )
 C
@@ -87,11 +91,16 @@ C
 C----- CIFOUT CIF OUTPUT
       CALL XCIFX
       RETURN
-
+c
 2700  CONTINUE
 C----- THLIM - work out completeness, and stick in L30.
       CALL XTHX
       RETURN
+c
+2800  continue
+c----- Ton Speks enantiopole
+      call xton
+      return
 C
       END
 C
@@ -105,6 +114,18 @@ CODE FOR XTHX
       IULN = KTYP06(IPROCS(2))
       IGLST = IPROCS(3)
       IF (I.GE.0) CALL XTHLIM(RICA,RICB,RICC,RICD,RICE,IPLOT,IULN,IGLST)
+      RETURN
+      END
+
+CODE FOR xton
+      SUBROUTINE xton
+      DIMENSION IPROCS(3)
+      CALL XCSAE
+      I = KRDDPV ( IPROCS , 3 )
+      IPLOT = IPROCS(1)
+      ktyp06 = IPROCS(2)
+      IGLST = IPROCS(3)
+      IF (I.GE.0) CALL tonspk(IPLOT,IGLST,ktyp06)
       RETURN
       END
 
