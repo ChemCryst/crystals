@@ -1,13 +1,18 @@
-%SCRIPT CIFPROC
-%%
-%% A call to this script is inserted between each
-%% structure extracted from a CIF by ciftocry.
-%%
-%% This script checks for the existence of cifproc.dat
-%% and uses it if it is present.
-%%
-% IF FILEEXISTS "cifproc.dat" THEN
-%   COPY "#use cifproc.dat"
-% END IF
-%END SCRIPT
-
+%SCRIPT CIFPROC                                                                 
+%%                                                                              
+% VARIABLE LOGICAL MATCH
+%% A call to this script is inserted between each                               
+%% structure extracted from a CIF by ciftocry.                                  
+%%                                                                              
+%% This script checks for the existence of cifproc.dat                          
+%% and uses it if it is present.                                                
+%%                                                                              
+% IF MATCH THEN
+%   IF FILEEXISTS "cifproc.dat" THEN                                              
+%     COPY "#use cifproc.dat"                                                     
+%   ELSE IF FILEEXISTS "CRYSDIR:SCRIPT\CIFPROC.DAT" THEN
+%     COPY "#use CRYSDIR:SCRIPT\cifproc.dat"                                                     
+%   END IF
+% END IF                                                                        
+%END SCRIPT                                                                     
+                                                                                
