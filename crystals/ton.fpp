@@ -9,6 +9,8 @@ C
 C
       DIMENSION LISTS( 6 )
       dimension datc(401)
+      character *80 line
+      character *20 form
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
@@ -101,6 +103,8 @@ c      plus and minus accumulators
         nspm_161 = nspt_201 - NSP1 
         nspp_241 = nspt_201 + NSP1 
         CALL xzerof (DATC, nstp_401)
+c yslope is gradient of normal probability plot
+c should be about unity anyway
         yslope = 1.
 c
       IN = 0
@@ -192,8 +196,8 @@ c  opposite sign
               ENDIF
       ENDIF
    70     CONTINUE
- 
-
+c 
+c
       end if
       h1 = h2
       FOK1 = FOK2
@@ -204,18 +208,13 @@ C      GET NEXT REFLECTION
 2000  CONTINUE
 c---- all refelctions processed.
 c---- compute goodies
-      write(ncwu,'(A)') 'Compute the goodies'
-
           SUM = SUM / SUMW 
-c^^
 c  yslope is the gradient of the normal probability plot
           IF (nfried .NE. 0) THEN
-          write(ncwu,'(a,f12.4)') 'yslope', yslope
             DO 75 J = 1, nstp_401 
               DATC(J) = DATC(J) / YSLOPE**2 
    75       CONTINUE
           ENDIF
-c^^      write(ncwu,'(f12.4)') datc
 C DETERMINE LARGEST LOG-PROBABILITY FOR SCALING
           DATCM = DATC(1)
           DO 80 J = 2, nstp_401 
@@ -238,14 +237,45 @@ c  su 'G' parameter
             YK  = (J - nspt_201) * STEP 
             XG2 = XG2 + (YK - XG)**2 * EXP (DATC(J) - DATCM)
   100     CONTINUE
-c  Flack Parameters
+          XGS = SQRT(XG2/XG0)
+c  Pseudo-Flack Parameters
           tony = (1.0 - XG) / 2.0
           tonsy = SQRT (XG2 / XG0) / 2.0
-          WRITE (ncwu,'(a,2f10.4)') 'Flack Parameter & su', 
+          write(cmon,'(/)')
+          CALL XPRVDU(NCVDU, 1,0)
+          CALL XPRVDU(NCVDU, 1,0)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+          WRITE ( CMON,'(10(a,i7))')
+     1 '       No of Friedel Pairs =', nfried
+          CALL XPRVDU(NCVDU, 1,0)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A)') CMON(1 )(:)
+          WRITE (CMON,'(A)') 
+     1    'Flack parameter obtained from original refinement'
+          CALL XPRVDU(NCVDU, 1,0)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+c
+          WRITE (CMON,'(A)') 
+     1    'Hooft parameter obtained with Flack x set to zero'
+          CALL XPRVDU(NCVDU, 1,0)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+c
+          WRITE (CMON,'(a,2f10.4)') 'Flack Parameter & su', 
      1    store(l30ge+6), store(l30ge+7)
-          WRITE (ncwu,'(a,2f10.4)') 'Ton y Parameter & su', tony, tonsy
-          write(ncwu,'(a,4f10.4)')  '          Ton G & su', xg, xg2/xg0
-
+          CALL XPRVDU(NCVDU, 1,0)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A)') CMON(1 )(:)
+          WRITE (CMON,'(a,2f10.4)') 'Hooft Parameter & su', tony,tonsy
+          CALL XPRVDU(NCVDU, 1,0)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+          WRITE (CMON,'(a,4f10.4)') '          Ton G & su', xg,xgs
+          CALL XPRVDU(NCVDU, 1,0)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+          write(cmon,'(/)')
+          CALL XPRVDU(NCVDU, 1,0)
+          CALL XPRVDU(NCVDU, 1,0)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+c
 C CALCULATE P3(0),P3(TW),P3(1)  
           XPLLL = DATC(nspp_241) - DATCM 
           XMNLL = DATC(nspm_161) - DATCM
@@ -268,9 +298,102 @@ C CALCULATE P3(0),P3(TW),P3(1)
           ELSE
             RCO = 0.0
           ENDIF
-      write(ncwu,'(10f12.4)') rco, xpll2, xplll, xtwll, xmnll
-      write(ncwu,'(10i12)') npls,nmin, nfried
 C
+          IF (ISSPRT .EQ. 0) then
+99991 FORMAT ('Aver. Ratio', F10.3)
+            WRITE (LINE, 99970) RCO 
+99970 FORMAT ('RC .........', F9.3)
+            WRITE (ncwu,  99968) LINE
+          endif
+
+C P2(True)
+            IF (XPLL2 .GT. 0.001) THEN
+              WRITE (FORM, 99961) XPLL2
+99961 FORMAT (F9.3)
+            ELSE IF (XPLL2 .LT. 0.0) THEN
+              WRITE (FORM, 99955)
+99955 FORMAT (6X, 'n/a')
+            ELSE
+              WRITE (FORM, 99962) XPLL2
+99962 FORMAT (E9.1)
+            ENDIF
+            WRITE (LINE, 99956) FORM 
+99956 FORMAT ('P2(true)    ', A)
+          write(cmon,99968) line
+          CALL XPRVDU(NCVDU, 1,0)
+          IF (ISSPRT .EQ. 0) WRITE (ncwu,  99968) LINE
+99968 FORMAT (A)
+
+C P3(True)
+            IF (XPLLL .GT. 0.001) THEN
+              WRITE (FORM, 99961) XPLLL
+            ELSE IF (XPLLL .LT. 0.0) THEN
+              WRITE (FORM, 99955) 
+            ELSE
+              WRITE (FORM, 99962) XPLLL
+            ENDIF
+            WRITE (LINE, 99979) FORM 
+99979 FORMAT ('P3(true)    ', A)
+          write(cmon,99968) line
+          CALL XPRVDU(NCVDU, 1,0)
+          IF (ISSPRT .EQ. 0) WRITE (ncwu,  99968) LINE
+
+C P3(Twin)
+            IF (XTWLL .GT. 0.001) THEN
+              WRITE (FORM, 99961) XTWLL
+            ELSE IF (XTWLL .LT. 0.0) THEN
+              WRITE (FORM, 99955)
+            ELSE
+              WRITE (FORM, 99962) XTWLL
+            ENDIF
+            WRITE (LINE, 99977) FORM  
+99977 FORMAT ('P3(rac-twin)', A)
+          write(cmon,99968) line
+          CALL XPRVDU(NCVDU, 1,0)
+          IF (ISSPRT .EQ. 0) WRITE (ncwu,  99968) LINE
+C P3(False)
+            IF (XMNLL .GT. 0.001) THEN
+              WRITE (FORM, 99961) XMNLL
+            ELSE IF (XMNLL .LT. 0.0) THEN
+              WRITE (FORM, 99955)
+            ELSE
+              WRITE (FORM, 99962) XMNLL
+            ENDIF
+            WRITE (LINE, 99978) FORM 
+99978 FORMAT ('P3(false)   ', A)
+          write(cmon,99968) line
+          CALL XPRVDU(NCVDU, 1,0)
+          IF (ISSPRT .EQ. 0) WRITE (ncwu,  99968) LINE
+            WRITE (LINE, 99972) XG    
+99972 FORMAT ('G           ', F9.4)
+          IF (ISSPRT .EQ. 0) WRITE (ncwu,  99968) LINE
+             YUNK = SQRT (XG2 / XG0)
+            IF (YUNK .GT. 0.0001) THEN
+              WRITE (FORM, 99960) YUNK 
+99960 FORMAT (F9.4)
+            ELSE
+              WRITE (FORM, 99962) YUNK 
+            ENDIF
+            WRITE (LINE, 99971) FORM 
+99971 FORMAT ('G S.U.      ', A)
+          IF (ISSPRT .EQ. 0) WRITE (ncwu,  99968) LINE
+            WRITE (LINE, 99976) tony  
+99976 FORMAT ('FLEQ        ', F9.3)
+          IF (ISSPRT .EQ. 0) WRITE (ncwu,  99968) LINE
+            IF (tonsy .GT. 0.001) THEN
+              WRITE (FORM, 99961) tonsy 
+            ELSE
+              WRITE (FORM, 99962) tonsy
+            ENDIF
+            WRITE (LINE, 99975) FORM   
+99975 FORMAT ('FLEQ S.U.   ', A)
+          IF (ISSPRT .EQ. 0) WRITE (ncwu,  99968) LINE
+
+          write(cmon,'(/)')
+          CALL XPRVDU(NCVDU, 1,0)
+          CALL XPRVDU(NCVDU, 1,0)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 C
       RETURN
 C
