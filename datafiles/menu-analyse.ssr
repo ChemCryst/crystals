@@ -14,6 +14,8 @@
 ^^WI   ITEM AGREE '&Tabbed initial analyses' '#SCRIPT XCHECK6'                  
 ^^WI               ENABLEIF='L6' DISABLEIF='IN'                                 
 ^^WI   SPLIT                                                                    
+^^WI   ITEM HOOFT '&Absoulte config' '#SCRIPT TON'                          
+^^WI               ENABLEIF='L5 L6 L30' DISABLEIF='IN'                              
 ^^WI   ITEM DIFAB '&Difabs analysis' '#SCRIPT XDIFABS'                          
 ^^WI               ENABLEIF='L5 L6' DISABLEIF='IN'                              
 ^^WI   MENU XROTAX '&Rotax analysis/twins'                                      
@@ -38,7 +40,7 @@
 ^^WI   ENDMENU                                                                  
 ^^WI   ITEM CSDV '&Mogul Geometry Check'                                        
 ^^WI   '#SCRIPT XMOGULGO' DISABLEIF='IN' ENABLEIF='L1 L2 L5'                    
-^^WI   SPLIT
-^^WI   ITEM HLPB 'Help'                                                        
-^^WI   '#SPAWN CRYSDIR:manual/analyse/analysis.html' DISABLEIF='IN'                
+^^WI   SPLIT                                                                    
+^^WI   ITEM HLPB 'Help'                                                         
+^^WI   '#SPAWN CRYSDIR:manual/analyse/analysis.html' DISABLEIF='IN'             
 ^^WI  ENDMENU                                                                   

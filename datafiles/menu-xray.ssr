@@ -39,5 +39,5 @@
 ^^WI                                                  DISABLEIF='IN'
 ^^WI   SPLIT
 ^^WI   ITEM XH      'X-ray data menu &help'
-^^WI        '$"crysdir:manual/tools-menus.html#menus.xraydata"'
+^^WI        '$"crysdir:manual/tools-menus.html"'
 ^^WI  ENDMENU

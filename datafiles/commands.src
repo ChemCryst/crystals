@@ -4176,3 +4176,16 @@ MASK               3    4
      SHOW           SETFC
     .INPUTLIST          2    0    1    2    1         5
               5        10
+TONSPEK            2    1
+   7    4096 CRYSTALSPUBLISH
+    5       
+   1.OUTPUT             2    1    0    0
+         3    3
+    .PLOT               1    0    1    2    0 NO
+     NO             YES
+    .GLIST              3    0    1    2    0 NO
+     NO             YES
+   2.TONSPEK            1    1    0    0
+         1    
+    .INPUTLIST          2    0    1    2    1         7
+              6         7
