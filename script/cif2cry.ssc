@@ -1,124 +1,143 @@
-%SCRIPT CIF2CRY
-%%
-%% Run cif2cry with common options.
-%%
-% VARIABLE CHARACTER CIF COUT CARG
-% VARIABLE LOGICAL RUNNOW
-% EVALUATE RUNNOW = FALSE
-%%
-^^WI WINDOW CIF2CRY 'cif2cry' MODAL COMMIT='CFBOK' CANCEL='CFBXX'
-^^WI GRID GRIDM NROWS=10 NCOLS=3
-^^WI {
-^^WI  @ 2,2 GRID CFG NROWS=1 NCOLS=3 OUTLINE='CIF to convert:'
-^^WI  {
-^^WI    @ 1,1 EDITBOX CIFILE ' ' CHARS=48 INFORM=NO INPUT
-^^WI    @ 1,3 BUTTON BROWSE 'Browse...'
-^^WI  }
-^^WI  @ 4,2 GRID TX NROWS=4 NCOLS=1 OUTLINE='Extract'
-^^WI  {
-^^WI     @ 1,1 RADIOBUTTON FO 'first or only data block' STATE=ON INFORM
-^^WI     @ 2,1 RADIOBUTTON AO 'all data blocks to a single file' INFORM
-^^WI     @ 3,1 RADIOBUTTON AN 'all data blocks to multiple files' INFORM
-^^WI  }
-^^WI  @ 6,2 GRID GB NROWS=3 NCOLS=3
-^^WI  {
-^^WI    @ 1,1 STATIC T1 'Output file:'
-^^WI    @ 3,1 STATIC T2 'Output extension:'
-^^WI    @ 1,3 EDITBOX OFNAM 'cif2cry.out'
-^^WI    @ 3,3 EDITBOX OENAM '.out' DISABLED=YES
-^^WI  }
-^^WI  @ 7,2 CHECKBOX RF 'Read converted file into CRYSTALS now' STATE=OFF
-^^WI  @ 9,2 GRID GB NROWS=1 NCOLS=3
-^^WI  {
-^^WI    @ 1,1 BUTTON CFBOK '&Ok' DEFAULT
-^^WI    @ 1,3 BUTTON CFBXX '&Cancel'
-^^WI  }
-^^WI }
-^^WI SHOW
-^^CR
-% LOOP
-%   VERIFY BROWSE CFBXX CFBOK FO AO AN
-%   GET SILENT NOSTORE FINAL ABBREVIATED 'BXX?' 'BXX'
-%   CASE VALUE
-%     BLOCK                         %BROWSE%
-^^WI    SYSOPENFILE '*.cif;*.cmf;*.fcf' 'CIF format (*.cif,*.cmf,*.fcf)'
-^^CR
-%       GET SILENT TEXT 'New filename:'
-%       IF CVALUE .NE. 'CANCEL' THEN
-%         CLEAR
-^^WI      SET CIFILE TEXT
-%         TRANSFER "^^WI '" // CVALUE // "'" TO DISPLAY
-^^CR
-%         EVALUATE CIF = CVALUE
-%         IF ( .NOT. ( FILEEXISTS CIF ) ) THEN
-{E Error: Filename given does not exist.
-%         END IF
-%       END IF
-%     END BLOCK
-%     BLOCK                         %CFBXX%
-^^CO    DISPOSE CIF2CRY
-%       FINISH
-%     END BLOCK
-%     BLOCK                         %CFBOK%
-^^??    CIFILE TEXT
-%       GET SILENT TEXT 'CIF name '
-%       EVALUATE CIF = CVALUE
-%       IF ( .NOT. ( FILEEXISTS CIF ) ) THEN
-{E Error: Filename given does not exist.
-%       ELSE
-^^??      RF STATE
-%         VERIFY ON OFF
-%         GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%         IF ( VALUE .EQ. 1 ) THEN
-%           EVALUATE RUNNOW = TRUE
-%         END IF
-^^??      AN STATE
-%         VERIFY ON OFF
-%         GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%         IF ( VALUE .EQ. 1 ) THEN
-%           EVALUATE CARG = ' -a -n '
-^^??        OENAM TEXT
-%           GET SILENT TEXT 'Output extension '
-%           EVALUATE COUT = CVALUE
-%         ELSE
-^^??        OFNAM TEXT
-%           GET SILENT TEXT 'Output file '
-%           EVALUATE COUT = CVALUE
-^^??        FO STATE
-%           VERIFY ON OFF
-%           GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%           IF ( VALUE .EQ. 1 ) THEN
-%             EVALUATE CARG = ' -f -o '
-%           ELSE
-%             EVALUATE CARG = ' -a -o '
-%           END IF
-%         END IF
-^^CO      DISPOSE CIF2CRY
-%         EVALUATE LOOPEND = LOOPCOUNTER
-%       END IF
-%     END BLOCK
-%     BLOCK                         %FO%
-^^CO    SET OFNAM DISABLED=NO SET OENAM DISABLED=YES
-^^CO    SET RF DISABLED=NO
-%     END BLOCK
-%     BLOCK                         %AO%
-^^CO    SET OFNAM DISABLED=NO SET OENAM DISABLED=YES
-^^CO    SET RF DISABLED=NO
-%     END BLOCK
-%     BLOCK                         %AN%
-^^CO    SET OFNAM DISABLED=YES SET OENAM DISABLED=NO
-^^CO    SET RF STATE=OFF DISABLED=YES
-%     END BLOCK
-%   END CASE
-% END LOOP
-%%
-%% Launch CIF2CRY
-%%
-% TRANSFER '#SPAWN + "CRYSDIR:cif2cry.exe" ' // CARG // '"' // COUT -
-  // '" "' // CIF // '"' TO CRYSTALS
-%%
-% IF RUNNOW THEN
-%   TRANSFER '#USE ' // COUT TO CRYSTALS
-% END IF
-%%
-%END SCRIPT
+%SCRIPT CIF2CRY                                                                 
+%%                                                                              
+%% Run cif2cry with common options.                                             
+%%                                                                              
+% VARIABLE CHARACTER CIF COUT CARG                                              
+% VARIABLE LOGICAL RUNNOW                                                       
+% EVALUATE RUNNOW = FALSE                                                       
+% VARIABLE LOGICAL MATCH                                                       
+% EVALUATE MATCH = FALSE                                                       
+%%                                                                              
+^^WI WINDOW CIF2CRY 'cif2cry' MODAL COMMIT='CFBOK' CANCEL='CFBXX'               
+^^WI GRID GRIDM NROWS=10 NCOLS=3                                                
+^^WI {                                                                          
+^^WI  @ 2,2 GRID CFG NROWS=1 NCOLS=3 OUTLINE='CIF to convert:'                  
+^^WI  {                                                                         
+^^WI    @ 1,1 EDITBOX CIFILE ' ' CHARS=48 INFORM=NO INPUT                       
+^^WI    @ 1,3 BUTTON BROWSE 'Browse...'                                         
+^^WI  }                                                                         
+^^WI  @ 4,2 GRID TX NROWS=4 NCOLS=1 OUTLINE='Extract'                           
+^^WI  {                                                                         
+^^WI     @ 1,1 RADIOBUTTON FO 'first or only data block' STATE=ON INFORM        
+^^WI     @ 2,1 RADIOBUTTON AO 'all data blocks to a single file' INFORM         
+^^WI     @ 3,1 RADIOBUTTON AN 'all data blocks to multiple files' INFORM        
+^^WI  }                                                                         
+^^WI  @ 6,2 GRID GB NROWS=3 NCOLS=3                                             
+^^WI  {                                                                         
+^^WI    @ 1,1 STATIC T1 'Output file:'                                          
+^^WI    @ 3,1 STATIC T2 'Output extension:'                                     
+^^WI    @ 1,3 EDITBOX OFNAM 'cif2cry.out'                                       
+^^WI    @ 3,3 EDITBOX OENAM '.out' DISABLED=YES                                 
+^^WI  }                                                                         
+^^WI  @ 7,2 CHECKBOX RF 'Read converted file into CRYSTALS now' STATE=OFF       
+^^WI  @ 8,2 CHECKBOX XM 'MATCH Z-prime=2 structures?' STATE=OFF       
+^^WI  @ 9,2 GRID GB NROWS=1 NCOLS=3                                             
+^^WI  {                                                                         
+^^WI    @ 1,1 BUTTON CFBOK '&Ok' DEFAULT                                        
+^^WI    @ 1,3 BUTTON CFBXX '&Cancel'                                            
+^^WI  }                                                                         
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+% LOOP                                                                          
+%   VERIFY BROWSE CFBXX CFBOK FO AO AN                                          
+%   GET SILENT NOSTORE FINAL ABBREVIATED 'BXX?' 'BXX'                           
+%   CASE VALUE                                                                  
+%     BLOCK                         %BROWSE%                                    
+^^WI    SYSOPENFILE '*.cif;*.cmf;*.fcf' 'CIF format (*.cif,*.cmf,*.fcf)'        
+^^CR                                                                            
+%       GET SILENT TEXT 'New filename:'                                         
+%       IF CVALUE .NE. 'CANCEL' THEN                                            
+%         CLEAR                                                                 
+^^WI      SET CIFILE TEXT                                                       
+%         TRANSFER "^^WI '" // CVALUE // "'" TO DISPLAY                         
+^^CR                                                                            
+%         EVALUATE CIF = CVALUE                                                 
+%         IF ( .NOT. ( FILEEXISTS CIF ) ) THEN                                  
+{E Error: Filename given does not exist.                                        
+%         END IF                                                                
+%       END IF                                                                  
+%     END BLOCK                                                                 
+%     BLOCK                         %CFBXX%                                     
+^^CO    DISPOSE CIF2CRY                                                         
+%       FINISH                                                                  
+%     END BLOCK                                                                 
+%     BLOCK                         %CFBOK%                                     
+^^??    CIFILE TEXT                                                             
+%       GET SILENT TEXT 'CIF name '                                             
+%       EVALUATE CIF = CVALUE                                                   
+%       IF ( .NOT. ( FILEEXISTS CIF ) ) THEN                                    
+{E Error: Filename given does not exist.                                        
+%       ELSE                                                                    
+^^??      RF STATE                                                              
+%         VERIFY ON OFF                                                         
+% VARIABLE LOGICAL RUNNOW                                                       
+% EVALUATE RUNNOW = FALSE                                                       
+%         GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
+%         IF ( VALUE .EQ. 1 ) THEN                                              
+%           EVALUATE RUNNOW = TRUE                                              
+%         END IF                                                                
+
+^^??      XM STATE                                                              
+%         VERIFY ON OFF                                                         
+%         GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
+%         IF ( VALUE .EQ. 1 ) THEN                                              
+%           EVALUATE MATCH = TRUE                                              
+%         END IF                                                                
+
+^^??      AN STATE                                                              
+%         VERIFY ON OFF                                                         
+%         GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
+%         IF ( VALUE .EQ. 1 ) THEN                                              
+%           EVALUATE CARG = ' -a -n '                                           
+^^??        OENAM TEXT                                                          
+%           GET SILENT TEXT 'Output extension '                                 
+%           EVALUATE COUT = CVALUE                                              
+%         ELSE                                                                  
+^^??        OFNAM TEXT                                                          
+%           GET SILENT TEXT 'Output file '                                      
+%           EVALUATE COUT = CVALUE                                              
+^^??        FO STATE                                                            
+%           VERIFY ON OFF                                                       
+%           GET SILENT NOSTORE FINAL ABBREVIATED ' '                            
+%           IF ( VALUE .EQ. 1 ) THEN                                            
+%             EVALUATE CARG = ' -f -o '                                         
+%           ELSE                                                                
+%             EVALUATE CARG = ' -a -o '                                         
+%           END IF                                                              
+%         END IF                                                                
+^^CO      DISPOSE CIF2CRY                                                       
+%         EVALUATE LOOPEND = LOOPCOUNTER                                        
+%       END IF                                                                  
+%     END BLOCK                                                                 
+%     BLOCK                         %FO%                                        
+^^CO    SET OFNAM DISABLED=NO SET OENAM DISABLED=YES                            
+^^CO    SET RF DISABLED=NO                                                      
+%     END BLOCK                                                                 
+%     BLOCK                         %AO%                                        
+^^CO    SET OFNAM DISABLED=NO SET OENAM DISABLED=YES                            
+^^CO    SET RF DISABLED=NO                                                      
+%     END BLOCK                                                                 
+%     BLOCK                         %AN%                                        
+^^CO    SET OFNAM DISABLED=YES SET OENAM DISABLED=NO                            
+^^CO    SET RF STATE=OFF DISABLED=YES                                           
+%     END BLOCK                                                                 
+%   END CASE                                                                    
+% END LOOP                                                                      
+%%                                                                              
+%% create list 23 if it doesnt exist
+%  IF ( EXISTS 23 .NE. 1 ) THEN                                                 
+%    COPY '#LIST 23'                                                            
+%    COPY 'END'                                                                 
+%  END IF                                                                       
+
+%% Launch CIF2CRY                                                               
+%%                                                                              
+% TRANSFER '#SPAWN + "CRYSDIR:cif2cry.exe" ' // CARG // '"' // COUT -           
+  // '" "' // CIF // '"' TO CRYSTALS                                            
+%%                                                                              
+% IF RUNNOW THEN                                                                
+%   TRANSFER '#USE ' // COUT TO CRYSTALS                                        
+% END IF                                                                        
+%%                                                                              
+%END SCRIPT                                                                     
