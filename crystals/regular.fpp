@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.47  2006/07/12 09:59:30  djw
+c Inhibit bond length, angle and torsion calculations if the second group is simply a shape
+c
 c Revision 1.46  2005/12/07 10:29:20  djw
 c New code to control near-singularities for planar/linear/circular groups
 c
@@ -755,11 +758,15 @@ C -- WRITE FINAL MESSAGES
 C -- FINISH ROUTINE
 9200  CONTINUE
       IF (NUMDEV .GT. 0) THEN
+       write(cmon,'(/)')
+       CALL XPRVDU(NCVDU, 1,0)
        WRITE ( CMON,'(I5,A)') NUMDEV, ' Poorly mapping groups'
        CALL OUTCOL(9)
        CALL XPRVDU(NCVDU, 1,0)
        CALL OUTCOL(1)
-       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A//)') CMON(1)(:)
+       write(cmon,'(/)')
+       CALL XPRVDU(NCVDU, 1,0)
       ENDIF
 C -- RESTORE LAST CARD IMAGE READ IN
       CALL XMOVEI(ISAVE(1),IMAGE(1),99)
@@ -840,6 +847,11 @@ C
 C -- THERE ARE 3 WAYS, AT PRESENT, OF CALCULATING THE BEST FIT MATRIX.
 C    THE PARTICULAR ONE OF THESE USED IN EACH CASE DEPENDS ON THE
 C    VALUE OF THE VARIABLE 'IMETHD'.
+
+c      imethd 1 Rotation part of general transformation
+c      imethd 2 for general rotation-dilation
+c      imethd 3 for Kabsch pure rotation
+c
 C    THIS IS USED IN THIS SUBROUTINE TO SELECT ONE OF THE POSSIBLE
 C    CALLS WHICH WILL CALCULATE A MATRIX.
 C 
@@ -903,6 +915,22 @@ C
 
       IF (NOLD.LT.NATMD) GO TO 1950
       IF (NNEW.LT.NATMD) GO TO 2050
+c
+      cmon =' '
+      if (imethd .eq. 1) then
+            write(cmon,'(a)')
+     1 'Matching by Rotation/inversion'
+      else if (imethd .eq. 2) then
+            write(cmon,'(a)')
+     1 'Matching by Rotation/dilation'
+      else if (imethd .eq. 3) then
+            write(cmon,'(a)')
+     1 'Matching by Pure Rotation (Kabsch)'
+      endif
+      call xprvdu(ncvdu,1,0)
+      if (issprt .eq. 0) write(ncwu, '(a)') cmon(1)(:)
+
+
 C----- COPY OLD WEIGHT TO NEW
       MOLD=LOLD
       MNEW=LNEW
@@ -947,7 +975,8 @@ Cdjwnov99      WRITE ( CMON , 2006 ) CENTO , CENTN
 200      FORMAT (1X,'Centroids of old and new groups ',
      1 '( in crystal fractions ) ',/,1X,2(3F8.4,3X))
         IF (IPCHRE.GE.0)THEN
-         WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(6(A,F9.4))')
+         WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,6(A,F9.4))')
+     1   char(9),' Centroids ', 
      1   (CHAR(9),CENTO(I),I=1,3),(CHAR(9),CENTN(I),I=1,3)
          CALL XCREMS(CPCH,CPCH,LENFIL)
         END IF
@@ -972,7 +1001,8 @@ C-----
 300      FORMAT (1X,'Principal moments of inertia of old and new groups'
      1    ,/1X,2(3F8.3,3X))
          IF (IPCHRE.GE.0)THEN
-          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(6(A,F9.4))')
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,6(A,F9.4))')
+     1    Char(9),' Axes of Inertia ',
      1    (CHAR(9),ROOTO(I),I=1,3),(CHAR(9),ROOTN(I),I=1,3)
           CALL XCREMS(CPCH,CPCH,LENFIL)
          END IF
@@ -1101,13 +1131,15 @@ C
 900      FORMAT (1X,'Average and difference of centroids ',
      1 '( in crystal fractions ) ',/,1X,2(3F8.4,3X))
          IF (IPCHRE.GE.0)THEN
-          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(6(A,F9.4))')
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,6(A,F9.4))')
+     1    char(9),' Sum & delta Centroids', 
      1    (CHAR(9),AVCNT(I),I=1,3),(CHAR(9),DELCNT(I),I=1,3)
           CALL XCREMS(CPCH,CPCH,LENFIL)
          END IF
 C 
          IF (IPCHRE.GE.0)THEN
-          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(9(A,F9.4))')
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,9(A,F9.4))')
+     1    char(9),'Transformation ',
      1    ((CHAR(9),WSPAC3(I,J),I=1,3),J=1,3)
           CALL XCREMS(CPCH,CPCH,LENFIL)
          END IF
@@ -1119,13 +1151,13 @@ C      GET THE DETERMINANT AND TRACE
          TRACE=WSPAC3(1,1)+WSPAC3(2,2)+WSPAC3(3,3)
 C Output determinant and trace
          IF (IPCHRE.GE.0)THEN
-          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(2(A,F7.4))')
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,2(A,F7.4))')
+     1    char(9), 'Det and trace ',
      1    CHAR(9),DET,CHAR(9),TRACE
           CALL XCREMS(CPCH,CPCH,LENFIL)
          END IF
          DETTRC=DET+TRACE
 
-         IF (IPCHRE.GE.0)THEN
 
 C Work out closeness to an ideal space group rotation.
           CLOSEX =   ( WSPAC3(1,1)-NINT(WSPAC3(1,1)) )**2
@@ -1138,10 +1170,6 @@ C Work out closeness to an ideal space group rotation.
      3             + ( WSPAC3(3,2)-NINT(WSPAC3(3,2)) )**2
      6             + ( WSPAC3(3,3)-NINT(WSPAC3(3,3)) )**2
      
-          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,F13.5)')
-     1    CHAR(9),SQRT(CLOSEX/9.0)
-          CALL XCREMS(CPCH,CPCH,LENFIL)
-
 C Work out closeness to a group operator.
           CALL XMLTMM(WSPAC3,DELCNT,ATEMP,3,3,1)
           CALL XADDR(DELCNT,ATEMP,ATEMP,3)
@@ -1151,24 +1179,38 @@ C ATEMP should be some kind of unit translation.
            CLOSEN = CLOSEN + ( ATEMP(IJ) - NINT(ATEMP(IJ)))**2 
           END DO
           CLOSEN = SQRT(CLOSEN/3.0)
-          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,F13.5)')
+c
+         IF (IPCHRE.GE.0)THEN
+
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,A,F13.5)')
+     1    char(9), 'Closeness to ideal rotation', 
+     1    CHAR(9),SQRT(CLOSEX/9.0)
+          CALL XCREMS(CPCH,CPCH,LENFIL)
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,A,F13.5)')
+     1    char(9), 'Closeness to group operator', 
      1    CHAR(9),CLOSEN
           CALL XCREMS(CPCH,CPCH,LENFIL)
+         endif
 
 C Output the atemp vector for inspection:
-          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(3(A,F8.3))')
-     1    (CHAR(9),ATEMP(IJ),IJ=1,3)
+         if ((ilstre .eq. 3) .and. (ipchre .ge. 0)) then
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,3(F8.3))')
+     1    'Atemp vector',
+     1    (ATEMP(IJ),IJ=1,3)
           CALL XCREMS(CPCH,CPCH,LENFIL)
+         endif
 
 C Combine both measures above
           DO IJ = 1,3
            CLOSEX = CLOSEX + (   ATEMP(IJ) - NINT( ATEMP(IJ) )   )**2
           END DO
-           
-          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,F13.5)')
+
+         IF (IPCHRE.GE.0)THEN
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,A,F13.5)')
+     1    CHAR(9), 'Combined measure of closeness',
      1    CHAR(9),SQRT(CLOSEX/12.0)
           CALL XCREMS(CPCH,CPCH,LENFIL)
-
+         endif
 
 C THIS IS IT. See how well operator fits into current space group.
 
@@ -1241,7 +1283,7 @@ C Multiply new op by old one, and store in 2nd half of LSGT array.
 
 C Debug: Print out the generators.
 
-
+          if (ilstre .ge. 2) then
           DO K1 = 0, (MLTPLY/2) - 1
             K2 = LSGT + K1 * 16
             K3 = LSGT + ( K1+(MLTPLY/2) ) * 16 
@@ -1252,7 +1294,7 @@ C Debug: Print out the generators.
      1            (STORE(K3+J2+J3),J2=0,12,4), J3=0,3)
             CALL XPRVDU(NCVDU,4,0)
           END DO
-
+          endif
 C 2) We now have N operators. We know that the first N/2, multiplied
 C    by themselves will give only existing ops, so they can be ignored.
 C    We loop through doing the product of all new generators with
@@ -1314,10 +1356,11 @@ C Do the comparison.
                   END IF
               END DO
 
-              WRITE(CMON,'(A,I2,A,F9.4)')'Best match for ( OP#',
+              if (ilstre .ge. 1) then
+              WRITE(NCWU,'(A,I2,A,F9.4)')'Best match for ( OP#',
      1        (K2-LSGT)/16,' ) x OPN is:',BEST
-              CALL XPRVDU(NCVDU,1,0)
-
+CDJWNOV07              CALL XPRVDU(NCVDU,1,0)
+              endif
               IF ( BEST .GT. RWORST ) THEN
                 RWORST = BEST
                 IWORS = NRCOMP
@@ -1335,12 +1378,14 @@ C Invert new op (OPN) ready for second loop.
 c            CALL XMXMPI ( OPM(1,1), OPN(1,1), 4 )
             I=KINV2(4,OPM(1,1),OPN(1,1),16,0,OTEMP,OTEMP,4)
 
-            WRITE(CMON,'(/2X,''OPN:'',42X,''inv(OPN):'')')
-            CALL XPRVDU(NCVDU,2,0)
-            WRITE(CMON,'(4(2(4F9.3,8X)/))')
+            if (ilstre .ge. 1) then
+            WRITE(NCWU,'(/2X,''OPN:'',42X,''inv(OPN):'')')
+CDJWNOV07            CALL XPRVDU(NCVDU,2,0)
+            WRITE(NCWU,'(4(2(4F9.3,8X)/))')
      1            ( (OPM(J2,J3),J3=1,4),
      1              (OPN(J2,J4),J4=1,4), J2=1,4)
-            CALL XPRVDU(NCVDU,4,0)
+CDJWNOV07            CALL XPRVDU(NCVDU,4,0)
+            endif
 
             IF ( I .GT. 0 ) THEN
               WRITE(CMON,'(/''Singular operator matrix found'')')
@@ -1355,6 +1400,9 @@ c            CALL XMXMPI ( OPM(1,1), OPN(1,1), 4 )
 
           RAVERAGE = RAVERAGE / FLOAT(NRCOMP)
 
+        if ((ilstre .ge. 1) .and. (ipchre .ge. 0) .AND. 
+     1   (ISSPRT .EQ. 0)) then
+C^^
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,F13.9)')
      1    CHAR(9),RWORST
           CALL XCREMS(CPCH,CPCH,LENFIL)
@@ -1371,18 +1419,15 @@ c            CALL XMXMPI ( OPM(1,1), OPN(1,1), 4 )
      1    (CHAR(9),IBMA(K3),K3=1,16)
           CALL XCREMS(CPCH,CPCH,LENFIL)
 
-          WRITE(CMON,'(A,F9.4,A,I3)')'Lowest best match in last row: ',
+          WRITE(NCWU,'(A,F9.4,A,I3)')'Lowest best match in last row: ',
      1     RWORST, ' to op# ', IWORS
-          CALL XPRVDU(NCVDU,1,0)
-          WRITE(CMON,'(A,F9.4)')'Average best in last row: ',RAVERAGE
-          CALL XPRVDU(NCVDU,1,0)
+CDJWNOV07          CALL XPRVDU(NCVDU,1,0)
+          WRITE(NCWU,'(A,F9.4)')'Average best in last row: ',RAVERAGE
+CDJWNOV07          CALL XPRVDU(NCVDU,1,0)
+        endif
 
 
-
-         ENDIF
-
-
-         IF (IPCHRE.GE.0)THEN
+        IF (IPCHRE.GE.0)THEN
            IF ( (ABS(1.-ABS(DET)).LE..05) .AND.
      1        (ABS(TRACE - NINT(TRACE)).LE..1)) THEN
              I=1+NINT(ABS(DETTRC))
@@ -1402,7 +1447,9 @@ c            CALL XMXMPI ( OPM(1,1), OPN(1,1), 4 )
              CALL XCREMS(CPCH,CPCH,LENFIL)
            END IF
          END IF
+c^^        endif
 
+c^^         
 
          IF (ABS(1.-ABS(DET)).LE..05) THEN
             I=1+NINT(ABS(DETTRC))
@@ -1429,6 +1476,7 @@ c            CALL XMXMPI ( OPM(1,1), OPN(1,1), 4 )
              CALL XCREMS(CPCH,CPCH,LENFIL)
             END IF
          END IF
+C 
 C 
          DO 1150 J=1,3
             ITEMP(J)=10
@@ -2424,6 +2472,8 @@ C Our torsion is C-A-B-D
       INCLUDE 'XLST41.INC'
       INCLUDE 'XCOMPD.INC'
       INCLUDE 'QSTORE.INC'
+c
+      data cnull/'    '/
 C
       CALL XZEROF ( SUM(1) , 4 )
       RADIUS = 0.0
@@ -2436,14 +2486,22 @@ C -- PRINT HEADER
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 1305  FORMAT ( 1X , 'Deviations  in best plane system after fitting' ,
      1 ' ( Angstrom )           ' )
-
+C
+      IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)')
+     1 '"Angle" is the angular separation of the atoms as seen from',
+     2 ' the centre of gravity'
       IF (ISSPRT .EQ. 0)  WRITE ( NCWU , 1725 )
 1725  FORMAT ( /,1X , 'Position' , 2X , 'Type  Serial' ,4X,
      2 'old(x)',2X,'old(y)',2X, 'old(z)',7X, 'new(x)',2X,
      3 'new(y)',2X,'new(z)', 8X,'d(x)',4X,'d(y)',4X,'d(z)',
      4 7X,'Distance',4X,'Angle',/)
-
-
+cdjwnov07
+      dismax=0.
+      dtype=cnull
+      dser =cnull
+      angmax=0.
+      atype=cnull
+      aser =cnull
       DO I=1,NOLD
         INDOLD=LOLD+MDOLD*(I-1)
         INDNEW=LNEW+MDNEW*(I-1)
@@ -2473,6 +2531,17 @@ C -- PRINT APPROPRIATE DATA
      2         (STORE(J),J=INDOLD,INDOLD+2),
      3         (STORE(J),J=INDNEW,INDNEW+2), DELTA
             ENDIF
+            if (delta(4) .gt. dismax) then
+                  dismax=delta(4)
+                  dtype = store(indatm)
+                  dser  = store(indatm+1)
+            endif
+c
+            if (delta(5) .gt. angmax) then
+                  angmax=delta(5)
+                  atype = store(indatm)
+                  aser  = store(indatm+1)
+            endif
         ENDIF
 
 
@@ -2524,6 +2593,13 @@ C -- CALCULATE TOTAL SQUARED DEVIATION AND RMS DEVIATIONS
      4 1X , 'RMS deviations          ' , 3F8.3 ,
      5 2X , 'Mean' , F8.3 )
 
+       IF (ISSPRT .EQ. 0) THEN
+            write(ncwu,25061)dtype, nint(dser), 
+     1      dismax, atype, nint(aser), angmax
+25061  format(54x, 'Maximum distance',3x, a4,i4,f10.3,/
+     1 54x,'Maximum angle   ',3x,a4,i4,f10.3)
+       endif
+c
 
 C RMS deviation of bonds
 
@@ -3174,8 +3250,8 @@ C
       NMATCHED = 0
 
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,'(1X,A,7X,A,8X,A,6X,A)')
-     1 'Improving','onto','giving', 'distance'
+      WRITE(NCWU,'(A,7x,A,3X,A,5X,A)')
+     1 'Improving:','Mapping ','onto','distance'
       ENDIF
  
       IF (NOLD.LE.0) GO TO 200
@@ -3193,14 +3269,14 @@ C   I think this info is lost by now.)
          IF ( ( LSPARE .EQ. 0 ) .OR.
      1        ( ISTORE(IONTO+4) .EQ. 1 ) .OR.
      2        ( I .EQ. 0 ) ) THEN              !Just match it.
-
-           IF (ISSPRT .EQ. 0) THEN
-           WRITE(NCWU,'(A,A4,7I9)')'Old atom: ',ISTORE(IOLD5),
-     1     NINT(STORE(IOLD5+1)),NINT(STORE(IOLD5+13)), LSPARE,
-     2     ISTORE(IONTO+1),ISTORE(IONTO+2),
-     3     ISTORE(IONTO+3),ISTORE(IONTO+4)
-           ENDIF
-
+cdjwnov07
+c           IF (ISSPRT .EQ. 0) THEN
+c           WRITE(NCWU,'(A,A4,7I9)')'Old atom: ',ISTORE(IOLD5),
+c     1     NINT(STORE(IOLD5+1)),NINT(STORE(IOLD5+13)), LSPARE,
+c     2     ISTORE(IONTO+1),ISTORE(IONTO+2),
+c     3     ISTORE(IONTO+3),ISTORE(IONTO+4)
+c           ENDIF
+cdjwnov07
            DO J=I,NNEW-1           !Loop over unmatched new atoms.
              INDNEW=LNEW+MDNEW*J         !Address of XYZnew
              INEW5 = L5 + (ISTORE(LMAP+J*MDATVC)) * MD5
@@ -3219,11 +3295,13 @@ C Only consider atom if spare matches when LSPARE is one.
                  DISTSQ=DISTSQ+DELTSQ
                END DO
 
-               IF (ISSPRT .EQ. 0) THEN
-               WRITE(NCWU,'(A,A4,2I9,F15.8)')'Match: ',ISTORE(INEW5),
-     1         NINT(STORE(INEW5+1)), J, DISTSQ
-               ENDIF
-             
+cdjwnov07
+c               IF (ISSPRT .EQ. 0) THEN
+c               WRITE(NCWU,'(A,A4,2I9,F15.8)')'Match: ',ISTORE(INEW5),
+c     1         NINT(STORE(INEW5+1)), J, DISTSQ
+c               ENDIF
+cdjwnov07
+c             
                IF (DISTSQ.LT.DISMIN) THEN
                  DISMIN=DISTSQ
                  INDDIS=J
@@ -3261,12 +3339,13 @@ C Swap atoms at LMAP(I) and LMAP(J)
           STORE(LRENM+NMATCHED*MDRENM+5) = STORE(INEW5+1)+ZORIG
 
           NMATCHED = NMATCHED + 1
-
+c^^
+1234      format(A,A4,I4,' - ',A4,I4,F8.3)
           IF (ISSPRT .EQ. 0) THEN
-          WRITE(NCWU,
-     1    '( A4,I4,I10,3X,A4,I4,I10,3X,F7.4)')
-     1    STORE(IOLD5),NINT(STORE(IOLD5+1)),NINT(STORE(IOLD5+13)),
-     2    STORE(INEW5),NINT(STORE(INEW5+1)),NINT(STORE(INEW5+13)),DISMIN
+          WRITE(NCWU,1234)
+     1    'Matching:       ',
+     2    STORE(IOLD5),NINT(STORE(IOLD5+1)),
+     3    STORE(INEW5),NINT(STORE(INEW5+1)),DISMIN
           ENDIF
 
          ELSE
@@ -3371,9 +3450,9 @@ c                       CALL XPRVDU(NCVDU,1,0)
                           DELTSQ=DELTA**2
                           DISTSQ=DISTSQ+DELTSQ
                          END DO
-
+c^^
                          IF (ISSPRT .EQ. 0) THEN
-                         WRITE(NCWU,'(A,2(A4,I6,1x),F8.3)')
+                         WRITE(NCWU,1234)
      1                    'Possible match: ',
      1                   ISTORE(INEWB), NINT(STORE(INEWB+1)),
      1                   ISTORE(IOLDB), NINT(STORE(IOLDB+1)), DISTSQ
@@ -3433,13 +3512,12 @@ C Rearrange the 'old' vectors:
                     STORE(LRENM+NMATCHED*MDRENM+1) = STORE(IOLD5+1)
                     STORE(LRENM+NMATCHED*MDRENM+4)=STORE(INEW5)
                     STORE(LRENM+NMATCHED*MDRENM+5)=STORE(INEW5+1)+ZORIG
-
+c^^
                     IF (ISSPRT .EQ. 0) THEN
-                    WRITE(NCWU,
-     1              '(A,2(A4,I4,I10,3X),F7.4)'), 'Matched: ',
+                    WRITE(NCWU,1234)
+     2              'Matched:        ',
      1              STORE(IOLD5),NINT(STORE(IOLD5+1)),
-     1              NINT(STORE(IOLD5+13)), STORE(INEW5),
-     1              NINT(STORE(INEW5+1)),NINT(STORE(INEW5+13)),DISMIN
+     3              STORE(INEW5),NINT(STORE(INEW5+1)),DISMIN
                     ENDIF
 
 
@@ -3692,6 +3770,11 @@ CODE FOR XMATCH
       SUBROUTINE XMATCH
 C-- CALCULATE A MATCH OR MATCHES BETWEEN TWO FRAGMENTS, AND RUN REGU COMPARE
 C-- TO FIND THE BEST ONE.
+c
+c       Structure matching: measures of similarity and pseudosymmetry
+c       A.  Collins, R. I.  Cooper and D. J.  Watkin
+c       Journal of Applied Crystallography 2006;39(6):842-849
+c
       INCLUDE 'ISTORE.INC'
       DIMENSION PROCS(1)
       DIMENSION KATV(5)
@@ -3727,9 +3810,20 @@ C
       DATA IPEAK/'Q   '/
 C
       DATA IVERSN /100/
-
+c
+c     CPCH is a character buffer for punched output
+c
       CALL XTIME1(2)                       ! SET THE TIMING FUNCTION
       CALL XCSAE
+c
+      write(cmon,'(a/a/a)')
+     1 'Structure matching: measures of similarity and pseudosymmetry',
+     2 'A.  Collins, R. I.  Cooper and D. J.  Watkin',
+     3 'Journal of Applied Crystallography 2006;39(6):842-849'
+       CALL XPRVDU(NCVDU,3,0)
+      if (issprt.eq.0) 
+     1 write(ncwu,'(a/a/a)') cmon(1),cmon(2),cmon(3)
+c
 
       MQ = KSTALL ( 100 )         ! ALLOCATE A BUFFER FOR COMMAND PROCESSING
 
@@ -3746,6 +3840,8 @@ C
       IEQATM = 0
       WRITE (CPCH,'(15A4)') (KTITL(I),I=1,15)
 
+C--PRINT THE INITIAL CAPTIONS
+        CALL XPRTCN
 
 C INSTRUCTION READING LOOP
       DO WHILE (.TRUE.)
@@ -3754,6 +3850,7 @@ C        CALL XPRVDU(NCVDU,1,0)
         IDIRNM = KLXSNG(ISTORE(ICOMBF),IDIMBF,INEXTD) ! READ A DIRECTIVE
         IF (IDIRNM .LT. 0) CYCLE
         IF (IDIRNM .EQ. 0) EXIT
+
 
         SELECT CASE (IDIRNM)
 
@@ -3816,7 +3913,9 @@ C          CALL XPRVDU(NCVDU,1,0)
         END SELECT
       END DO              ! COMMAND INPUT COMPLETE. CHECK FOR ERRORS:
 
+      ILSTRE = ISTORE(JCOMBF+1)
       IPCHRE = ISTORE(JCOMBF+2)
+      WRITE(NCWU,'(A,2I6)') 'ILSTRE', ILSTRE, IPCHRE
 
       IF ( LEF .GT. 0 ) GO TO 9910
 
