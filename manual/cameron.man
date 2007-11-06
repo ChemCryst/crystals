@@ -321,7 +321,7 @@ sub-commands to this command. The filename must not exceed 12 characters.
 #XCameron - Output devies#
 #PThe user has to specify a graphical output device before the command
 VIEW can be used. This is done with the command SCREEN. Note that if the
-title screen file CAMERON.LJP is present the screen is automatically set
+title screen file CAMERON.SRT is present the screen is automatically set
 to VGA.
 #ISCREEN#
 The following devices are currently supported:-
@@ -1973,7 +1973,7 @@ This command allows the user to begin again without having to exit and
 reload CAMERON. All current flags will be set to their initial states. 
 Note that if a CAMERON.INI file is present it will not be obeyed after a
 RESET command. The screen will be set to VGA automatically (as on 
-startup) if a CAMERON.LJP file is present.
+startup) if a CAMERON.SRT file is present.
 #ILOG#
 The LOG command is used to generate a log of the CAMERON session, this
 may be OBEYed later if required.

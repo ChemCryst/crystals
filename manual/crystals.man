@@ -17,7 +17,7 @@ US 10  0  0  8
 # #Ratomparams#      Atoms and Parameters
 # #Rsfandls#      Structure factors and least squares
 # #Rfouandpat#      Fourier and Patterson maps
-# #Rgeomandres#     Geometry and printing results
+# #Rgeomandres#     Geometry and Results
 # #Rgrcameron#     Graphics - CAMERON
 # #Rtwinning#     Twinned Data
 # #Rmatrixcalc#     The Basic Matrix Calculator
@@ -3599,7 +3599,7 @@ For example
 #N   8#
 #J
  \SYSTEMATIC INPUTLIST=
- STORE MEDIUM= F'S= NEWINDICES=
+ STORE MEDIUM= F'S= NEWINDICES=  FRIEDEL=
  END
 #
 For example:
@@ -3628,7 +3628,12 @@ For example:
  DIFABS),original indices should be preserved. Note that in this case,
  only exactly equivalent reflections will be merged, and care must be
  taken when computing Fourier maps. See the sections on Fourier maps, 
- #RFOURIER# and DIFABS #RDIFABS#.
+ #RFOURIER# and DIFABS #RDIFABS#.  
+#PIf FRIEDEL is set to "YES", Friedel's law is applied whatever the 
+ space group.  A flag is set in the 'phase' slot for each reflcetion 
+ to indicate if the law was invoked or not.  If the data is then
+ sorted byt not merged, Friedel pairs will be adjacent and flagged. Use
+ by the function "\TON" for evaluating absolute configuration.
 #
 #Q
 #I\SYSTEMATIC#
@@ -3656,6 +3661,14 @@ For example:
       FO      -      Default
       FSQ            Indicating that square roots were not taken at
                      input time.
+#
+#
+#KFRIEDEL=#
+#N   3#
+#J
+      No      -      Default
+      YES            Indicating that Friedels law should be applied 
+                     whatever the space group.
 #
 #KNEWINDICES=#
  Determines whether new indices are computed.
@@ -4057,6 +4070,7 @@ For example
  Conversion of temperature factors                - \CONVERT
  Hydrogen placing                                 - \HYDROGENS
  Per-hydrogenation                                - \PERHYDRO
+ Re-numbering hydrogen atoms                      - \HNAME
  Regularisation of groups in LIST 5               - \REGULARISE
 #
 #
@@ -4473,6 +4487,7 @@ done automatically.
  be included (LIST 13 and LIST 23).
  See Howard Flack, Acta Cryst, 1983, A39, 876-881. This parameter
  is more robust than the POLARITY parameter.
+ See also section in Results.
 #KEXTPARAM#
  This parameter is Larson's extinction parameter , r*, (equation 22 in
    A.C. Larson, Crystallographic Computing, 1970, 291-294, ed F.R.
@@ -5747,11 +5762,29 @@ bond, c(1) to c(20).
 #
  C enables the program to place hydrogen atoms on carbon atoms.
 #
- P enables the program to place hydrogen atoms on nitrogen.
+ N enables the program to place hydrogen atoms on nitrogen.
 #
 It is advisable to perform placement on C before N, since the
 hybridisation states of C are more clearly defined.
 #
+#Q
+#
+#XHNAME#
+#XHydrogen - automatic renumbering  #
+#YHydrogen re-numbering - \HNAME#
+#HShnumber#
+#N   4#
+#J
+ \HNAME INPUTLIST= OUTPUTLIST=
+ END
+#
+#N   3#
+#J
+ \HNAME
+ END
+#
+ This command automatically renumbers hydrogen atoms so that their
+ serial numbers are related to the bonded non-hydrogen atom.
 #Q
 #XREGULARISE#
 #XRegularisation of atomic groups#
@@ -10217,6 +10250,7 @@ section #RLIST20#).
  Void search                                    VOIDS
  Global Geometry (planes,lines & libration)     GEOMETRY
  Torsion angles                                 TORSION
+ Absolute Configuration                         TON
  Publication listing of the atomic parameters   PARAMETERS
  Publication listing of the reflections         REFLECTIONS
  Summary of data lists                          SUMMARY
@@ -11040,6 +11074,37 @@ the file open on the CRYSTALS PUNCH unit.
  ATOMS C(3) C(4) C(5) C(6) O(1)
  END
 #
+
+#Q
+#XTON#
+#XHooft-Straver-Spek#
+#YAbsolute Configuration  -  \TON#
+#HSconfiguration#
+#N   8#
+#J
+ \TON 
+ END
+
+#
+#PCompute the Hooft-Straver-Spek parameter for comparisonm with the 
+Flack parameter
+#Q
+#I\TON#
+#Q
+#PThis instruction evaluates a function of (Fo+h - Fo-h) and  (Fo+h - Fo-h)
+ for all Friedel pairs. It uses LIST 7, which must be sorted to that 
+ Friedel pairs are adjacent and with the same index signs, and with a 
+ flag to indicate if the sign has been changed in 'phase'.
+#P The data is most conveniently prepared useing the SCRIPT TON towards 
+the end of a refinement.
+#
+#
+
+
+
+
+
+
 #Q
 #XPARAMETERS#
 #XPublication tables of atomic parameters#
