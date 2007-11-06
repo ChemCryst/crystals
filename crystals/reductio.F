@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.30  2007/11/01 11:05:53  djw
+C Store Friedel flag in phase slot in list 7 for Ton
+C
 C Revision 1.29  2007/10/09 06:59:40  djw
 C Adjust calculation of sigmas in merge
 C
@@ -600,7 +603,7 @@ C      IF 'IN' IS 1, A NEW SET OF INDICES IS COMPUTED, BUT FRIEDEL'S
 C      LAW IS NOT USED.
 C      IF 'IN' IS 2, A NEW SET OF INDICES IS COMPUTED USING FRIEDEL'S LA
 C
-cdjw  Store the Friedel flag in the phase slot
+cdjw-oct07  Store the Friedel flag in the phase slot
 C
 C--THE NEW SET OF INDICES HAS THE MAXIMUM VALUE OF 'L' FROM AMONGST THE
 C  SYMMETRY EQUIVALENT SET. FROM THE REFLECTIONS WITH THIS VALUE OF 'L',
