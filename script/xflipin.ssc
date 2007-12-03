@@ -329,30 +329,30 @@
 %%                                                                              
 %          BLOCK                                                                
 %% Only renumber if importing solution (i.e. Qs).                               
-%%            IF LQS .EQ. TRUE THEN                                              
-%              IF ( EXISTS ( 30 ) .EQ. 1 ) THEN                                          
-%                   VARIABLE REAL SCALEO SCALEW
-%                   COPY '#GENERALEDIT 30'                                                       
-%                   COPY 'LOCATE RECORDTYPE = 101'                                              
-%                   COPY 'TRANSFER FROM OFFSET =  7 TO SCALEO'                                    
-%                   COPY 'END'                                                                   
-%                   EVALUATE SCALEW = SQRT ( 1. / SCALEO )
-%                   if scalew .le. 0.05 then
-%                     evaluate scalew = 1.0
-%                   end if
-Writing Wilson Scale to LIST 5
-%                    COPY '#GENERALEDIT 5'                                                       
-%                    COPY 'LOCATE RECORDTYPE=102'                                                 
-%                    COPY 'TRANSFER TO OFFSET=1 FROM SCALEW'                                       
-%                    COPY 'WRITE OVERWRITE=OVERWRITE'                                             
-%                    COPY 'END'
-%              END IF
-%%
-%%                  CENTRE STRUCTURE IN CELL                                                    
-%                   COPY '#SCRIPT AVERAGE'                                               
-%                   COPY '#SCRIPT XCENTRE'                                                  
-%                   COPY '#SCRIPT XRENUMB'                                                  
-%%              END IF                                                             
+%%            IF LQS .EQ. TRUE THEN                                             
+%              IF ( EXISTS ( 30 ) .EQ. 1 ) THEN                                 
+%                   VARIABLE REAL SCALEO SCALEW                                 
+%                   COPY '#GENERALEDIT 30'                                      
+%                   COPY 'LOCATE RECORDTYPE = 101'                              
+%                   COPY 'TRANSFER FROM OFFSET =  7 TO SCALEO'                  
+%                   COPY 'END'                                                  
+%                   EVALUATE SCALEW = SQRT ( 1. / SCALEO )                      
+%                   if scalew .le. 0.05 then                                    
+%                     evaluate scalew = 1.0                                     
+%                   end if                                                      
+Writing Wilson Scale to LIST 5                                                  
+%                    COPY '#GENERALEDIT 5'                                      
+%                    COPY 'LOCATE RECORDTYPE=102'                               
+%                    COPY 'TRANSFER TO OFFSET=1 FROM SCALEW'                    
+%                    COPY 'WRITE OVERWRITE=OVERWRITE'                           
+%                    COPY 'END'                                                 
+%              END IF                                                           
+%%                                                                              
+%%                  CENTRE STRUCTURE IN CELL                                    
+%                   COPY '#SCRIPT AVERAGE'                                      
+%                   COPY '#SCRIPT XCENTRE'                                      
+%                   COPY '#SCRIPT XRENUMB'                                      
+%%              END IF                                                          
 %          END BLOCK                                                            
 %%                                                                              
 %% SET Solution type (only if atoms were passed in!)                            
@@ -369,19 +369,7 @@ Writing Wilson Scale to LIST 5
 % EVALUATE BUTTXX = 'no'                                                        
 % COPY '#SCRIPT XQUESTIO'                                                       
 % IF ANSWER .EQ. TRUE THEN                                                      
-%      copy '#FOREIGN SIR92 SPECIAL'                                            
-%      COPY 'END'                                                               
-%      COPY '#SPAWN + "CRYSDIR:SIR92.EXE" sir92.ini sir92.lis'                  
-                                                                                
-%       EVALUATE QTITLE = 'Tangent Recycling'                                   
-%       EVALUATE QLINE1 = 'Superflip structure processed by SIR92'              
-%       EVALUATE QLINE2 = 'Would you like to input the new structure?'          
-%       EVALUATE BUTTOK = 'Yes'                                                 
-%       EVALUATE BUTTXX = 'no'                                                  
-%       COPY '#SCRIPT XQUESTIO'                                                 
-%       IF ANSWER .EQ. TRUE THEN                                                
-%            copy '#script xsir92in'                                            
-%       END IF                                                                  
+%      copy '#script XTANGENT'                                            
 % end if                                                                        
 %%                                                                              
 %        FINISH                                                                 
