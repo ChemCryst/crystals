@@ -9,6 +9,7 @@
 ^^WI    ITEM CIN5 '&Cameron.l5 file' '#USE CAMERON.L5' DISABLEIF='IN'           
 ^^WI    ITEM SIN5 'Sir9&2 file' '#SCRIPT XSIR92IN' DISABLEIF='IN'               
 ^^WI    ITEM S7N5 'Sir9&7 file' '#SCRIPT XSIR97IN' DISABLEIF='IN'               
+^^WI    ITEM SFN5 'Superflip file' '#SCRIPT XFLIPIN' DISABLEIF='IN'               
 ^^WI   ENDMENU                                                                  
 ^^WI   ITEM EIN5 '&Edit co-ordinates' '#SCRIPT SYSED5'                          
 ^^WI       DISABLEIF='IN' ENABLEIF='L5'                                         
@@ -43,7 +44,7 @@
 ^^WI              DISABLEIF='IN' ENABLEIF='L1 L2 L5'                            
 ^^WI   ITEM REMH '&Remove hydrogen' '#EDIT_NSELECT TYPE NE H_NEND'              
 ^^WI                                DISABLEIF='IN'  ENABLEIF='L5'               
-^^WI   ITEM REMH '&Renumber hydrogen' '#HNAME_NEND'              
+^^WI   ITEM REMH '&Renumber hydrogen' '#HNAME_NEND'                             
 ^^WI                                DISABLEIF='IN'  ENABLEIF='L5'               
 ^^WI   ITEM REMH '&Use H-files' '#SCRIPT H-FILES'                               
 ^^WI                                DISABLEIF='IN'  ENABLEIF='L5'               

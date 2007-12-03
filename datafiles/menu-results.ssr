@@ -1,34 +1,36 @@
-^^WI  MENU _RESULTS 'Res&ults'
-^^WI   ITEM PUBL 'Output &CIF file' '#SCRIPT XCIF'  DISABLEIF='IN QS'
-^^WI                                ENABLEIF='L1 L2 L3 L5 L6'
-^^WI   ITEM SUMM 'Output &HTML summary' '#SCRIPT XHTML' DISABLEIF='IN QS'
-^^WI                                ENABLEIF='L1 L2 L3 L5 L6'
-^^WI   ITEM SUMM 'Output &Summary file' '#SCRIPT SUM' DISABLEIF='IN QS'
-^^WI                                ENABLEIF='L1 L2 L3 L5 L6'
-^^WI   ITEM SUMM 'Output &other tables' '#SCRIPT XPUBLISH'
-^^WI   MENU RESM 'Sp&ecial'
-^^WI   ITEM PUSU '&CIF file no esds' '#SCRIPT XCIFNOSU'  DISABLEIF='IN'
-^^WI                                ENABLEIF='L1 L2 L3 L5'
-^^WI   ENDMENU
-^^WI   SPLIT
-^^WI   ITEM ED30 'Edit CIF &goodies' '#SCRIPT ED30' DISABLEIF='IN'
-^^WI               ENABLEIF='L1 L2 L5' DISABLEIF='IN'
-^^WI   SPLIT
-^^WI   ITEM ACTA  '&Acta checks' '#SCRIPT ACTA'
-^^WI               ENABLEIF='L1 L2 L5' DISABLEIF='IN'
-
-^^WI   ITEM CWEB 'Checkcif on the &web'
-^^WI '$http://journals.iucr.org/services/cif/checking/checkform.html'
-
-^^WI   ITEM AWEB 'Alternative &Checkcif'
-^^WI '$http://checkcif.iucr.org'
-
-^^WI   ITEM PWEB 'Printcif on the &web'
-^^WI '$http://journals.iucr.org/services/cif/printcif.html'
-
-^^WI   ITEM P 'Checkcif in &platon'
-^^WI    '#SCRIPT PLATONC' DISABLEIF='IN'
-^^WI   SPLIT
-^^WI   ITEM RH      'Results menu he&lp'
-^^WI        '$"crysdir:manual/tools-menus.html#menus.results"'
-^^WI  ENDMENU
+^^WI  MENU _RESULTS 'Res&ults'                                                  
+^^WI   ITEM PUBL 'Output &CIF file' '#SCRIPT XCIF'  DISABLEIF='IN QS'           
+^^WI                                ENABLEIF='L1 L2 L3 L5 L6'                   
+^^WI   ITEM SUMM 'Output &HTML summary' '#SCRIPT XHTML' DISABLEIF='IN QS'       
+^^WI                                ENABLEIF='L1 L2 L3 L5 L6'                   
+^^WI   ITEM SUMM 'Output &Summary file' '#SCRIPT SUM' DISABLEIF='IN QS'         
+^^WI                                ENABLEIF='L1 L2 L3 L5 L6'                   
+^^WI   ITEM SUMM 'Output &other tables' '#SCRIPT XPUBLISH'                      
+^^WI   MENU RESM 'Sp&ecial'                                                     
+^^WI   ITEM PUSU '&CIF file no esds' '#SCRIPT XCIFNOSU'  DISABLEIF='IN'         
+^^WI                                ENABLEIF='L1 L2 L3 L5'                      
+^^WI   ENDMENU                                                                  
+^^WI   SPLIT                                                                    
+^^WI   ITEM ED30 'Edit CIF &goodies' '#SCRIPT ED30' DISABLEIF='IN'              
+^^WI               ENABLEIF='L1 L2 L5' DISABLEIF='IN'                           
+^^WI   SPLIT                                                                    
+^^WI   ITEM ACTA  '&Acta checks' '#SCRIPT ACTA'                                 
+^^WI               ENABLEIF='L1 L2 L5' DISABLEIF='IN'                           
+                                                                                
+^^WI   ITEM CWEB 'Checkcif on the &web'                                         
+^^WI '$http://journals.iucr.org/services/cif/checking/checkform.html'           
+                                                                                
+^^WI   ITEM AWEB 'Alternative &Checkcif'                                        
+^^WI '$http://checkcif.iucr.org'                                                
+                                                                                
+^^WI   ITEM PWEB 'Printcif on the &web'                                         
+^^WI '$http://journals.iucr.org/services/cif/printcif.html'                     
+                                                                                
+^^WI   ITEM P 'Checkcif in &platon'                                             
+^^WI    '#SCRIPT PLATONC' DISABLEIF='IN'                                        
+^^WI   SPLIT                                                                    
+^^WI   ITEM RH      'Results menu he&lp'                                        
+^^WI        '$"crysdir:manual/tools-menus.html#menus.results"'                  
+^^WI   ITEM RA      'Analyse menu he&lp'                                        
+^^WI        '$"crysdir:manual/analyse/analysis.html"'                  
+^^WI  ENDMENU                                                                   
