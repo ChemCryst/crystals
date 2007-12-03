@@ -5,10 +5,8 @@
 {R SHELX Script version by R. Cooper. Based on the fortran program SXTOCA by    
 {R R.O. Gould, The University of Edinburgh, March 1994.                         
 %%                                                                              
-{R Setting refinement to use F-squared
-%      COPY '#LIST 23'                                                          
-%      COPY 'MINIMISE F-SQ=YES'                                                 
-%      COPY 'END'                                                               
+{R Setting refinement type
+%      COPY '#SCRIPT XQCK23'                                                          
 %%                                                                              
 % VARIABLE CHARACTER CFILE CENTRO CLATYP CUNIT CSFAC CTEM                       
 % VARIABLE CHARACTER SPACEHOOK INSTITLE HKLTITLE SPACEREAD                      

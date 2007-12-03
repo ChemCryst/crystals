@@ -75,12 +75,10 @@ END
  it.
 %   END BLOCK
 %   BLOCK     %TIP9%
+ For'Routine' work try following the menus from left
+ to right.
  You can't access most menu commands while a script
- is running. If you are used to using the 'Routine'
- script mode then try following the menus from left
- to right instead. Each section is basically the same
- as that driven by the routine script but you will
- have a lot more freedom if things get complicated.
+ is running. 
 %   END BLOCK
 %   BLOCK     %TIP10%
  If the scripts get into a tangle then it is probably

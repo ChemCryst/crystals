@@ -1,147 +1,166 @@
-%SCRIPT XSHELXS
-%   VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
-%   VARIABLE LOGICAL ANSWER LCRY
-%   VARIABLE INTEGER IRUN
-%   IF EXISTS 6 .LT. 1 THEN
-            You do not have any reflections stored.
-            It is impossible to proceed without data.
-%       FINISH
-%   END IF
+%SCRIPT XSHELXS                                                                 
+%   VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                       
+%   VARIABLE LOGICAL ANSWER LCRY                                                
+%   VARIABLE INTEGER IRUN                                                       
+%   IF EXISTS 6 .LT. 1 THEN                                                     
+            You do not have any reflections stored.                             
+            It is impossible to proceed without data.                           
+%       FINISH                                                                  
+%   END IF                                                                      
+%%                                                                              
+%% write a SHELXS data file                                                     
+%%                                                                              
+%   BLOCK                                                                       
+^^WI WINDOW SHELX 'Shelxs Preparation'                                          
+^^WI   MODAL COMMIT='BOK' CANCEL='BXX'                                          
+^^WI GRID GRIDLR NROWS=1 NCOLS=2                                                
+^^WI {                                                                          
+^^WI   @ 1,1 GRID GRIDL NROWS=4 NCOLS=3                                         
+^^WI   {                                                                        
+^^WI     @ 1,2 RADIOBUTTON RS '&Default Shelxs parameters'                      
+^^WI           STATE=ON                                                         
+^^WI     @ 2,2 RADIOBUTTON RD '&Alternative Shelxs parameters'                  
+^^WI           STATE=OFF                                                        
+^^WI     @ 3,2 CHECKBOX CED '&Edit Shelxs file before processing'               
+^^WI           STATE=OFF                                                        
+^^WI     @ 4,2 CHECKBOX CRUN '&Run Shelxs now'                                  
+^^WI           STATE=ON                                                         
+^^WI   }                                                                        
+^^WI   @ 1,2 GRID GRIDR NROWS=5 NCOLS=2                                         
+^^WI   {                                                                        
+^^WI     @ 2,1 BUTTON BOK '&Ok'                                                 
+^^WI     @ 4,1 BUTTON BXX '&Cancel'                                             
+^^WI   }                                                                        
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+%      VERIFY BOK BXX                                                           
+%      GET SILENT NOSTORE ABBREVIATED 'BOK=Process'                             
+%      IF VALUE .EQ. 2 THEN                                                     
+^^WI      DISPOSE SHELX                                                         
+^^CR                                                                            
+%         FINISH                                                                
+%      END IF                                                                   
+^^??   RS STATE                                                                 
+%      VERIFY ON OFF                                                            
+%      GET SILENT NOSTORE ABBREVIATED 'On=Simple job'                           
+%      IF ( VALUE .EQ. 1 ) THEN                                                 
+%          COPY '#FOREIGN SHELXS '                                              
+%          COPY 'END'                                                           
+%      ELSE                                                                     
+%          COPY '#FOREIGN SHELXS DIFFICULT'                                     
+%          COPY 'END'                                                           
+%      END IF                                                                   
+^^??   CRUN STATE                                                               
+%      VERIFY ON OFF                                                            
+%      GET SILENT NOSTORE ABBREVIATED 'ON=Run shelxs now'                       
+%      EVALUATE IRUN = VALUE                                                    
+^^??   CED STATE                                                                
+%      VERIFY ON OFF                                                            
+%      GET SILENT NOSTORE ABBREVIATED 'ON=Edit first'                           
+^^WI   DISPOSE SHELX                                                            
+^^CR                                                                            
+%      IF ( VALUE .EQ. 1 ) THEN                                                 
+%           COPY '#SPAWN +notepad.exe shelxs.ins'                               
+%           EVALUATE QTITLE = 'Shelxs Preparation'                              
+%           EVALUATE QLINE1 = 'Do you want to'                                  
+%           EVALUATE QLINE2 = 'run SHELXS now?'                                 
+%           EVALUATE BUTTOK = '&Yes'                                            
+%           EVALUATE BUTTXX = '&No'                                             
+%           COPY '#SCRIPT XQUESTIO'                                             
+%           IF ANSWER .EQ. FALSE THEN                                           
+%               FINISH                                                          
+%           END IF                                                              
+%      END IF                                                                   
+%      IF ( IRUN .EQ. 2 ) THEN                                                  
+%           FINISH                                                              
+%      END IF                                                                   
+%      COPY '#SPAWN % "CRYSDIR:shelxs.exe"'                                     
+%      COPY '#TYPE SHELXS.LIS'                                                  
+%   END BLOCK                                                                   
+%   BLOCK                                                                       
+%      EVALUATE QTITLE = 'Shelxs Results'                                       
+%      EVALUATE QLINE1 = 'Do you want to use the structure'                     
+%      EVALUATE QLINE2 = 'from Shelxs ?'                                        
+%      EVALUATE BUTTOK = '&Yes'                                                 
+%      EVALUATE BUTTXX = '&No'                                                  
+%      COPY '#SCRIPT XQUESTIO'                                                  
+%      IF ANSWER .EQ. FALSE THEN                                                
+%          COPY '#SCRIPT XHELP1'                                                
+   If the structure will not solve:                                             
+   1) Try the "Alternative Shelxs parameters" option.                           
+   2) Try DirDif or Sir92.                                                      
+   3) Read the SHELXS manual for help. (not provided)                           
+   4) Be sure that the space group is correct.                                  
+%          COPY '#SCRIPT XHELP2'                                                
+%          FINISH                                                               
+%      END IF                                                                   
+%      EVALUATE LCRY = TRUE                                                     
+%%                                                                              
+%      COPY '#SCRIPT FRESH'                                                     
+%%                                                                              
+%      COPY '#OPEN SCPDATA SHELXS.CRY'                                          
+%      COPY '#SCRIPT ZSHELXIN'                                                  
+%%DJW      COPY '#SCRIPT INshelxs'                                              
+%      COPY '#CLOSE SCPDATA'                                                    
+%      COPY '#EDIT'                                                             
+%      COPY 'TYPECHANGE TYPE EQ Q C'                                            
+%      COPY 'END'                                                               
+%      COPY '#EDIT'                                                             
+%      COPY 'MON OFF'                                                           
+%      COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0'                                  
+%      COPY 'MON MEDIUM'                                                        
+%      COPY 'END'                                                               
+%%                                                                              
+%      BLOCK                                                                    
+%      EVALUATE QTITLE = 'Use Cameron?'                                         
+%      EVALUATE QLINE1 = 'Do you want to use CAMERON '                          
+%      EVALUATE QLINE2 = 'to examine the model '                                
+%      EVALUATE BUTTOK = '&Yes'                                                 
+%      EVALUATE BUTTXX = '&No'                                                  
+%      COPY '#SCRIPT XQUESTIO'                                                  
+%      IF ANSWER .EQ. TRUE THEN                                                 
+%       VARIABLE LOGICAL NOXCAMQ LNEWL5                                         
+%       EVALUATE NOXCAMQ = TRUE                                                 
+%       EVALUATE LNEWL5 = TRUE                                                  
+%       COPY '#SCRIPT XCAM'                                                     
+%      END IF                                                                   
+%      END BLOCK                                                                
+%%                                                                              
+%      BLOCK                                                                    
+%      IF ( EXISTS ( 30 ) .EQ. 1 ) THEN                                          
+%       VARIABLE REAL SCALEO SCALEW
+%       COPY '#GENERALEDIT 30'                                                       
+%       COPY 'LOCATE RECORDTYPE = 101'                                              
+%       COPY 'TRANSFER FROM OFFSET =  7 TO SCALEO'                                    
+%       COPY 'END'                                                                   
+%       EVALUATE SCALEW = SQRT ( 1. / SCALEO )
+%        if scalew .le. 0.05 then
+%          evaluate scalew = 1.0
+%        end if
+Writing Wilson Scale to LIST 5
+%        COPY '#GENERALEDIT 5'                                                       
+%        COPY 'LOCATE RECORDTYPE=102'                                                 
+%        COPY 'TRANSFER TO OFFSET=1 FROM SCALEW'                                       
+%        COPY 'WRITE OVERWRITE=OVERWRITE'                                             
+%        COPY 'END'
+%       END IF
 %%
-%% write a SHELXS data file
-%%
-%   BLOCK
-^^WI WINDOW SHELX 'Shelxs Preparation'
-^^WI   MODAL COMMIT='BOK' CANCEL='BXX'
-^^WI GRID GRIDLR NROWS=1 NCOLS=2
-^^WI {
-^^WI   @ 1,1 GRID GRIDL NROWS=4 NCOLS=3
-^^WI   {
-^^WI     @ 1,2 RADIOBUTTON RS '&Default Shelxs parameters'
-^^WI           STATE=ON
-^^WI     @ 2,2 RADIOBUTTON RD '&Alternative Shelxs parameters'
-^^WI           STATE=OFF
-^^WI     @ 3,2 CHECKBOX CED '&Edit Shelxs file before processing'
-^^WI           STATE=OFF
-^^WI     @ 4,2 CHECKBOX CRUN '&Run Shelxs now'
-^^WI           STATE=ON
-^^WI   }
-^^WI   @ 1,2 GRID GRIDR NROWS=5 NCOLS=2
-^^WI   {
-^^WI     @ 2,1 BUTTON BOK '&Ok'
-^^WI     @ 4,1 BUTTON BXX '&Cancel'
-^^WI   }
-^^WI }
-^^WI SHOW
-^^CR
-%      VERIFY BOK BXX
-%      GET SILENT NOSTORE ABBREVIATED 'BOK=Process'
-%      IF VALUE .EQ. 2 THEN
-^^WI      DISPOSE SHELX
-^^CR
-%         FINISH
-%      END IF
-^^??   RS STATE
-%      VERIFY ON OFF
-%      GET SILENT NOSTORE ABBREVIATED 'On=Simple job'
-%      IF ( VALUE .EQ. 1 ) THEN
-%          COPY '#FOREIGN SHELXS '
-%          COPY 'END'
-%      ELSE
-%          COPY '#FOREIGN SHELXS DIFFICULT'
-%          COPY 'END'
-%      END IF
-^^??   CRUN STATE
-%      VERIFY ON OFF
-%      GET SILENT NOSTORE ABBREVIATED 'ON=Run shelxs now'
-%      EVALUATE IRUN = VALUE
-^^??   CED STATE
-%      VERIFY ON OFF
-%      GET SILENT NOSTORE ABBREVIATED 'ON=Edit first'
-^^WI   DISPOSE SHELX
-^^CR
-%      IF ( VALUE .EQ. 1 ) THEN
---GILLIN%           COPY '#SPAWN +notepad.exe shelxs.ins'
-++GILLIN%           COPY '#SPAWN +nedit SHELXS.INS'
-%           EVALUATE QTITLE = 'Shelxs Preparation'
-%           EVALUATE QLINE1 = 'Do you want to'
-%           EVALUATE QLINE2 = 'run SHELXS now?'
-%           EVALUATE BUTTOK = '&Yes'
-%           EVALUATE BUTTXX = '&No'
-%           COPY '#SCRIPT XQUESTIO'
-%           IF ANSWER .EQ. FALSE THEN
-%               FINISH
-%           END IF
-%      END IF
-%      IF ( IRUN .EQ. 2 ) THEN
-%           FINISH
-%      END IF
---LINGIL%      COPY '#SPAWN % "CRYSDIR:shelxs.exe"'
-++LINGIL%      COPY '#SPAWN % "CRYSDIR:shelxs"'
-%      COPY '#TYPE SHELXS.LIS'
-%   END BLOCK
-%   BLOCK
-%      EVALUATE QTITLE = 'Shelxs Results'
-%      EVALUATE QLINE1 = 'Do you want to use the structure'
-%      EVALUATE QLINE2 = 'from Shelxs ?'
-%      EVALUATE BUTTOK = '&Yes'
-%      EVALUATE BUTTXX = '&No'
-%      COPY '#SCRIPT XQUESTIO'
-%      IF ANSWER .EQ. FALSE THEN
-%          COPY '#SCRIPT XHELP1'
-   If the structure will not solve:
-   1) Try the "Alternative Shelxs parameters" option.
-   2) Try DirDif or Sir92.
-   3) Read the SHELXS manual for help. (not provided)
-   4) Be sure that the space group is correct.
-%          COPY '#SCRIPT XHELP2'
-%          FINISH
-%      END IF
-%      EVALUATE LCRY = TRUE
-%%
-%      COPY '#SCRIPT FRESH'
-%%
-%      COPY '#OPEN SCPDATA SHELXS.CRY'
-%      COPY '#SCRIPT ZSHELXIN'
-%%DJW      COPY '#SCRIPT INshelxs'
-%      COPY '#CLOSE SCPDATA'
-%      COPY '#EDIT'
-%      COPY 'TYPECHANGE TYPE EQ Q C'
-%      COPY 'END'
-%      COPY '#EDIT'
-%      COPY 'MON OFF'
-%      COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0'
-%      COPY 'MON MEDIUM'
-%      COPY 'END'
-%%
-%      BLOCK
-%      EVALUATE QTITLE = 'Use Cameron?'
-%      EVALUATE QLINE1 = 'Do you want to use CAMERON '
-%      EVALUATE QLINE2 = 'to examine the model '
-%      EVALUATE BUTTOK = '&Yes'
-%      EVALUATE BUTTXX = '&No'
-%      COPY '#SCRIPT XQUESTIO'
-%      IF ANSWER .EQ. TRUE THEN
-%       VARIABLE LOGICAL NOXCAMQ LNEWL5
-%       EVALUATE NOXCAMQ = TRUE
-%       EVALUATE LNEWL5 = TRUE
-%       COPY '#SCRIPT XCAM'
-%      END IF
-%      END BLOCK
-%%
-%      BLOCK
-%       COPY '#SCRIPT XRENUMB'
-%      END BLOCK
-%% SET Solution type
-%%
-%      COPY '#GENERALEDIT 30'
-%      COPY 'LOCATE RECORDTYPE=106'
-%      COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=1'
-%      COPY 'WRITE OVERWRITE=OVERWRITE'
-%      COPY 'END'
-%   END BLOCK
- * Done. Shelxs input complete.
-%END SCRIPT
- 
- 
- 
+%%                                                                              
+%%  CENTRE STRUCTURE IN CELL                                                    
+%       COPY '#SCRIPT XCENTRE'                                                  
+%       COPY '#SCRIPT XRENUMB'                                                  
+%      END BLOCK                                                                
+%%                                                                              
+%% SET Solution type                                                            
+%      COPY '#GENERALEDIT 30'                                                   
+%      COPY 'LOCATE RECORDTYPE=106'                                             
+%      COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=1'                           
+%      COPY 'WRITE OVERWRITE=OVERWRITE'                                         
+%      COPY 'END'                                                               
+%   END BLOCK                                                                   
+ * Done. Shelxs input complete.                                                 
+%END SCRIPT                                                                     
+                                                                                
+                                                                                
+                                                                                

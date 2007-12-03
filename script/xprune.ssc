@@ -1,361 +1,367 @@
-%SCRIPT XPRUNE
-% VARIABLE CHARACTER CLTYPE CPK CATOM CTYPE
-% VARIABLE LOGICAL CALLED QSONLY NOINI5
-% VARIABLE INTEGER N29 NSEL
-% EVALUATE NSEL = 1
-% EVALUATE QSONLY = TRUE
-%%
-%%
-^^WI WINDOW XPRUNE 'Peak results' KEEP SIZE MODAL
-^^WI COMMIT='XP_BOK' CANCEL='XP_BOK'
-^^WI GRID MAIN NROWS=2 NCOLS=1
-^^WI {
-^^WI  @ 1,1 GRID PRIME NROWS=7 NCOLS=3
-^^WI  {
-^^WI   @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
-^^WI   {
-^^WI     @ 1,1 LISTBOX _PEAKS VISLINES=9 ADDTOLIST
-^^WI  'Q(999) height:   00.00, no near contacts....'
-%%
-%  COPY '#DIST'
-%  COPY 'OUT MON=PEAKSTOGUI'
-%  COPY 'PIVOT Q'
-%  COPY 'NOTBONDED Q'
-%  COPY 'END'
-%%
-^^WI     'NULL'
-^^WI     @ 1,3 GRID BLAH NROWS=9 NCOLS=1
-^^WI     {
-^^WI       @ 1,1 BUTTON XPRMS 'Remove selected >>'
-^^WI       @ 3,1 GRID CHNG NROWS=1 NCOLS=3
-^^WI       {
-^^WI         @ 1,1 BUTTON XPCHG 'Change to'
-^^WI         @ 1,3 DROPDOWN _CHTO ADDTOLIST
-%  EVALUATE N29 = 0
-%  IF ( EXISTS 29 .EQ. 1 ) THEN
-%    COPY '#GENERALEDIT 29'
-%    COPY 'LOCATE RECORDTYPE=101'
-%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%    LOOP
-%      ON EDITERROR TERMINATE
-%      COPY 'TRANSFER FROM OFFSET=0 TO CLTYPE'
-%      TRANSFER '^^WI ' // CLTYPE TO DISPLAY
-%      EVALUATE N29 = N29 + 1
-%      COPY 'NEXT'
-%    END LOOP
-%    COPY 'END'
-%  END IF
-%  IF ( N29 .EQ. 0 ) THEN
-^^WI    'C' 'H' 'N' 'O'
-%  END IF
-^^WI         'Q' 'NULL'
-^^WI       }
-^^WI       @ 5,1 BUTTON XPRMB 'Remove all below selected >>>'
-^^WI       @ 7,1 BUTTON XPRMA 'Remove All >>>>'
-^^WI       @ 9,1 BUTTON XPRAA 'Replace All <<<<'
-^^WI     }
-^^WI   }
-^^WI   @ 4,2 TABCTRL _GRAPHORMODEL
-^^WI   {
-^^WI      TAB _GOMTAB0 'Peak heights' GRID _GOMTG0 NROWS=3 NCOLS=1
-^^WI      {
-^^WI         @ 1,1 PLOTWINDOW _VPARAM NROWS=20 NCOLS=64
-^^WI           DEFINEPOPUPMENU POPS 'Graph'
-^^WI             ITEM _SDELA '&Remove _X' 'MRM_N_X'
-^^WI             ITEM _SDELA '&Remove all <= _Y' 'PLRB_N_X_N_Y'
-^^WI           ENDDEFINEMENU
-^^WI         @ 2,1 STATIC _T 'Right click bars for options'
-^^WI         @ 3,1 CHECKBOX PQS 'Include all atoms on graph'
-^^WI               INFORM=YES STATE=OFF
-^^WI      }
-^^WI      TAB _GOMTAB1 'Model'        GRID _GOMTG1 NROWS=2 NCOLS=1
-^^WI      {
-^^WI         @ 1,1 MODELWINDOW MODEL01 'N' NROWS=5 NCOLS=65
-^^WI            ATTACH L5 RADSCALE=250 RADTYPE=COV
-^^WI            MOUSEACTION SELECTATOM
-^^WI            DEFINEPOPUPMENU 2 POPUP2 'Selection'
-^^WI             ITEM _SDELA '&Delete _A' 'MRM_N_A'
-^^WI             SPLIT
-^^WI             ITEM _GDELA 'Dele&te group' 'GMRM_N_GEND'
-^^WI             MENU _SRETY '&Change types to...'
-%                EVALUATE N29 = 0
-%                IF ( EXISTS 29 .EQ. 1 ) THEN
-%                  COPY '#GENERALEDIT 29'
-%                  COPY 'LOCATE RECORDTYPE=101'
-%                  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%                  LOOP
-%                    ON EDITERROR TERMINATE
-%                    COPY 'TRANSFER FROM OFFSET=0 TO CLTYPE'
-%                    TRANSFER "^^WI ITEM '" // CLTYPE // "' '" // CLTYPE // -
-                     "' 'GCHT_N" // CLTYPE // "_N_GEND'" TO DISPLAY
-%                    EVALUATE N29 = N29 + 1
-%                    COPY 'NEXT'
-%                  END LOOP
-%                  COPY 'END'
-%                END IF
-%                IF ( N29 .EQ. 0 ) THEN
-^^WI                ITEM C C 'GCHT_NC_N_GEND'
-^^WI                ITEM H H 'GCHT_NH_N_GEND'
-^^WI                ITEM N N 'GCHT_NN_N_GEND'
-^^WI                ITEM O O 'GCHT_NO_N_GEND'
-%                END IF
-^^WI             ITEM Q Q 'GCHT_NQ_GEND'
-^^WI             ENDMENU
-^^WI            ENDDEFINEMENU
-^^WI            DEFINEPOPUPMENU 3 POPUP3 'Single'
-^^WI             ITEM _DELA '&Delete _A' 'MRM_N_A'
-^^WI             MENU _SRETY '&Change type'
-%                  EVALUATE N29 = 0
-%                  IF ( EXISTS 29 .EQ. 1 ) THEN
-%                  COPY '#GENERALEDIT 29'
-%                  COPY 'LOCATE RECORDTYPE=101'
-%                  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%                  LOOP
-%                    ON EDITERROR TERMINATE
-%                    COPY 'TRANSFER FROM OFFSET=0 TO CLTYPE'
-%                    TRANSFER "^^WI ITEM '" // CLTYPE // "' '" // CLTYPE // -
-                     "' 'CHT_N" // CLTYPE // "_N_A'" TO DISPLAY
-%                    EVALUATE N29 = N29 + 1
-%                    COPY 'NEXT'
-%                  END LOOP
-%                  COPY 'END'
-%                END IF
-%                IF ( N29 .EQ. 0 ) THEN
-^^WI                ITEM C C 'CHT_NC_N_A'
-^^WI                ITEM H H 'CHT_NH_N_A'
-^^WI                ITEM N N 'CHT_NN_N_A'
-^^WI                ITEM O O 'CHT_NO_N_A'
-%                END IF
-^^WI                ITEM Q Q 'CHT_NQ_N_A'
-^^WI             ENDMENU
-^^WI            ENDDEFINEMENU
-^^WI         @ 2,1 STATIC _T 'Click atoms to select, right-click for options'
-^^WI      }
-^^WI   }
-^^WI   @ 6,2 GRID CLOSE NROWS=1 NCOLS=3
-^^WI   {
-^^WI     @ 1,1 CHECKBOX CKRMEX 'Delete remaining peaks on exit' 
-%%     IF NOINI5 .EQ. FALSE THEN
-%%^^WI        STATE=ON
-%%     END IF
-^^WI     @ 1,2 STRETCH _H HORIZONTAL
-^^WI     @ 1,3 BUTTON XP_BOK '&Exit' DEFAULT
-^^WI   }
-^^WI  }
-^^WI }
-^^WI SHOW
-^^CR
-%%
-%%
-%  LOOP
-%%
-%%
-^^CO SET _PEAKS REMOVE 0
-^^WI SET _PEAKS ADDTOLIST
-%%
-%    COPY '#DIST'
-%    COPY 'OUT MON=PEAKSTOGUI'
-%    COPY 'PIVOT Q'
-%    COPY 'NOTBONDED Q'
-%    COPY 'END'
-%%
-^^WI     'NULL'
-% TRANSFER '^^WI SELECTION=' // CHARACTER ( NSEL ) TO DISPLAY
-^^CR
-%    COPY '#edit'
-%    COPY 'monitor off'
-%    IF ( QSONLY ) THEN
-%       COPY 'select type eq q'
-%    ELSE
-%       COPY 'dsort spare'
-%    END IF
-%    COPY 'graph of=spare'
-%    COPY 'exec'
-%    COPY 'quit'
-%    COPY 'END'
-%%
-%%
-%%
-%%
-%%
-%%
-%%
-%    VERIFY XP_BOK XPRMS XPCHG XPRMB XPRAA XPRMA MRM GMRM CHT GCHT PLRB PQS
-%%
-%%
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%    CASE VALUE
-%      BLOCK %Close
-^^??    CKRMEX STATE
-%       VERIFY ON OFF
-%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%       IF VALUE .EQ. 1 THEN
-%         COPY '#EDIT'
-%         COPY 'monitor off'
-%         COPY 'SELECT TYPE NE Q'
-%         COPY 'SELECT TYPE NE QH'
-%         COPY 'SELECT TYPE NE QN'
-%         COPY 'END'
-%       END IF
-^^CO    DISPOSE XPRUNE
-%       FINISH
-%      END BLOCK
-%      BLOCK   %Remove selected
-%       CLEAR
-%       INSERT '^^?? _PEAKS LISTTEXT '
-^^??    _PEAKS SELECTED
-%       GET SILENT INTEGER ' '
-%       EVALUATE NSEL = VALUE
-%       OUTPUT
-%       GET SILENT NOSTORE KEYWORD ' ' 'ERROR'
-%       EVALUATE CPK = CVALUE
-%       GET SILENT NOSTORE TEXT ' ' 'ERROR'
-%       COPY '#EDIT'
-%       COPY 'monitor off'
-%       TRANSFER 'DELETE ' // CPK TO CRYSTALS
-%       COPY 'END'
-%      END BLOCK
-%      BLOCK     %Change peak
-%% Get atom to change
-%       CLEAR
-%       INSERT '^^?? _PEAKS LISTTEXT '
-^^??    _PEAKS SELECTED
-%       GET SILENT INTEGER ' '
-%       EVALUATE NSEL = VALUE
-%       OUTPUT
-%       GET SILENT NOSTORE KEYWORD ' ' 'ERROR'
-%       EVALUATE CATOM = CVALUE
-%       GET SILENT NOSTORE TEXT ' ' 'ERROR'
-%% Get atom type
-%       CLEAR
-%       INSERT '^^?? _CHTO LISTTEXT '
-^^??    _CHTO SELECTED
-%       GET SILENT INTEGER ' '
-%       OUTPUT
-%       GET SILENT NOSTORE KEYWORD ' ' 'ERROR'
-%       EVALUATE CTYPE = CVALUE
-%% Use YRETYPE as it checks for clashes:
-%       EVALUATE CALLED = TRUE
-%       QUEUE REWIND
-%       COPY '#SCRIPT YRETYPE'
-%       COPY '#EDIT'
-%       COPY 'monitor off'
-%       QUEUE PROCESS
-%       COPY 'END'
-%      END BLOCK
-%      BLOCK     %Remove below
-%       CLEAR
-%       INSERT '^^?? _PEAKS LISTTEXT '
-^^??    _PEAKS SELECTED
-%       GET SILENT INTEGER ' '
-%       EVALUATE NSEL = VALUE - 1
-%       OUTPUT
-%       GET SILENT NOSTORE KEYWORD ' ' 'ERROR'
-%       EVALUATE CPK = CVALUE
-%       GET SILENT NOSTORE TEXT ' ' 'ERROR'
-%       COPY '#EDIT'
-%       COPY 'monitor off'
-%       TRANSFER 'DELETE ' // CPK // ' UNTIL LAST' TO CRYSTALS
-%       COPY 'END'
-%      END BLOCK
-%      BLOCK     %Restore all peaks.
-%        COPY '#PEAKS'
-%        COPY '#COLLECT'
-%        COPY 'SELECT TYPE = PEAKS'
-%        COPY 'END'
-%      END BLOCK
-%      BLOCK     %Remove all peaks
-%        COPY '#EDIT'
-%        COPY 'monitor off'
-%        COPY 'SELECT TYPE NE Q'
-%        COPY 'END'
-%      END BLOCK
-%      BLOCK     %Model menu or Plot: Remove atom
-%       COPY '#EDIT'
-%       COPY 'monitor off'
-%       CLEAR
-%       INSERT 'DELETE '
-%       GET SILENT TEXT 'Atom?' 'ERROR'
-%       SEND
-%       COPY 'END'
-%      END BLOCK
-%      BLOCK     %Model menu: Remove group of atoms
-%       COPY '#EDIT'
-%       COPY 'monitor off'
-%       LOOP
-%        ON END TERMINATE
-%        CLEAR
-%        INSERT 'DELETE '
-%        GET TEXT 'Atom?' ' '
-%        SEND
-%       END LOOP
-%       COPY 'END'
-%      END BLOCK
-%      BLOCK     % Change type
-%% Get atom type
-%       GET SILENT NOSTORE KEYWORD ' ' 'ERROR'
-%       EVALUATE CTYPE = CVALUE
-%% Get atom to change
-%       GET SILENT NOSTORE KEYWORD ' ' 'ERROR'
-%       EVALUATE CATOM = CVALUE
-%% Use YRETYPE as it checks for clashes:
-%       EVALUATE CALLED = TRUE
-%       QUEUE REWIND
-%       COPY '#SCRIPT YRETYPE'
-%       COPY '#EDIT'
-%       COPY 'monitor off'
-%       QUEUE PROCESS
-%       COPY 'END'
-%      END BLOCK
-%      BLOCK    % Change types
-%% Get atom type
-%       GET SILENT NOSTORE KEYWORD ' ' 'ERROR'
-%       EVALUATE CTYPE = CVALUE
-%% Use YRETYPE as it checks for clashes:
-%       EVALUATE CALLED = TRUE
-%       QUEUE REWIND
-%       LOOP
-%         ON END TERMINATE
-%% Get atoms to change
-%         GET SILENT NOSTORE KEYWORD ' ' 'ERROR'
-%         EVALUATE CATOM = CVALUE
-%         COPY '#SCRIPT YRETYPE'
-%       END LOOP
-%       COPY '#EDIT'
-%       COPY 'monitor off'
-%       QUEUE PROCESS
-%       COPY 'END'
-%      END BLOCK
-%      BLOCK     %Remove bar and all below
-%% In QSONLY mode: remove from clicked peak until LAST; when all atoms
-%% are present: remove all below clicked SPARE value.
-%       COPY '#EDIT'
-%       COPY 'monitor off'
-%       IF QSONLY THEN
-%         CLEAR
-%         INSERT 'DELETE '
-%         GET SILENT TEXT 'Atom?' 'ERROR'
-%         GET SILENT NOSTORE TEXT 'Value?' 'ERROR'
-%         INSERT ' UNTIL LAST'
-%       ELSE
-%         CLEAR
-%         INSERT 'SELECT SPARE GT '
-%         GET SILENT NOSTORE TEXT 'Atom?' 'ERROR'
-%         GET SILENT TEXT 'Value?' 'ERROR'
-%       END IF
-%       SEND
-%       COPY 'END'
-%      END BLOCK
-%      BLOCK    % Show all atoms or just Q's in the plot.
-%       VERIFY ON OFF
-%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%       IF VALUE .EQ. 1 THEN
-%          EVALUATE QSONLY = FALSE
-%       ELSE
-%          EVALUATE QSONLY = TRUE
-%       END IF
-%      END BLOCK
-%    END CASE
-%  END LOOP
-%END SCRIPT
-
+%SCRIPT XPRUNE                                                                  
+% VARIABLE CHARACTER CLTYPE CPK CATOM CTYPE                                     
+% VARIABLE LOGICAL CALLED QSONLY NOINI5                                         
+% VARIABLE INTEGER N29 NSEL                                                     
+% EVALUATE NSEL = 1                                                             
+% EVALUATE QSONLY = TRUE                                                        
+%%                                                                              
+%%                                                                              
+^^WI WINDOW XPRUNE 'Peak results' KEEP SIZE MODAL                               
+^^WI COMMIT='XP_BOK' CANCEL='XP_BOK'                                            
+^^WI GRID MAIN NROWS=2 NCOLS=1                                                  
+^^WI {                                                                          
+^^WI  @ 1,1 GRID PRIME NROWS=7 NCOLS=3                                          
+^^WI  {                                                                         
+^^WI   @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                               
+^^WI   {                                                                        
+^^WI     @ 1,1 LISTBOX _PEAKS VISLINES=9 ADDTOLIST                              
+^^WI  'Q(999) height:   00.00, no near contacts....'                            
+%%                                                                              
+%  COPY '#DIST'                                                                 
+%  COPY 'OUT MON=PEAKSTOGUI'                                                    
+%  COPY 'PIVOT Q'                                                               
+%  COPY 'NOTBONDED Q'                                                           
+%  COPY 'END'                                                                   
+%%                                                                              
+^^WI     'NULL'                                                                 
+^^WI     @ 1,3 GRID BLAH NROWS=9 NCOLS=1                                        
+^^WI     {                                                                      
+^^WI       @ 1,1 BUTTON XPRMS 'Remove selected >>'                              
+^^WI       @ 3,1 GRID CHNG NROWS=1 NCOLS=3                                      
+^^WI       {                                                                    
+^^WI         @ 1,1 BUTTON XPCHG 'Change to'                                     
+^^WI         @ 1,3 DROPDOWN _CHTO ADDTOLIST                                     
+%  EVALUATE N29 = 0                                                             
+%  IF ( EXISTS 29 .EQ. 1 ) THEN                                                 
+%    COPY '#GENERALEDIT 29'                                                     
+%    COPY 'LOCATE RECORDTYPE=101'                                               
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                    
+%    LOOP                                                                       
+%      ON EDITERROR TERMINATE                                                   
+%      COPY 'TRANSFER FROM OFFSET=0 TO CLTYPE'                                  
+%      TRANSFER '^^WI ' // CLTYPE TO DISPLAY                                    
+%      EVALUATE N29 = N29 + 1                                                   
+%      COPY 'NEXT'                                                              
+%    END LOOP                                                                   
+%    COPY 'END'                                                                 
+%  END IF                                                                       
+%  IF ( N29 .EQ. 0 ) THEN                                                       
+^^WI    'C' 'H' 'N' 'O'                                                         
+%  END IF                                                                       
+^^WI         'Q' 'NULL'                                                         
+^^WI       }                                                                    
+^^WI       @ 5,1 BUTTON XPRMB 'Remove all below selected >>>'                   
+^^WI       @ 7,1 BUTTON XPRMA 'Remove All >>>>'                                 
+^^WI       @ 9,1 BUTTON XPRAA 'Replace All <<<<'                                
+^^WI     }                                                                      
+^^WI   }                                                                        
+^^WI   @ 4,2 TABCTRL _GRAPHORMODEL                                              
+^^WI   {                                                                        
+^^WI      TAB _GOMTAB0 'Peak heights' GRID _GOMTG0 NROWS=3 NCOLS=1              
+^^WI      {                                                                     
+^^WI         @ 1,1 PLOTWINDOW _VPARAM NROWS=20 NCOLS=64                         
+^^WI           DEFINEPOPUPMENU POPS 'Graph'                                     
+^^WI             ITEM _SDELA '&Remove _X' 'MRM_N_X'                             
+^^WI             ITEM _SDELA '&Remove all <= _Y' 'PLRB_N_X_N_Y'                 
+^^WI           ENDDEFINEMENU                                                    
+^^WI         @ 2,1 STATIC _T 'Right click bars for options'                     
+^^WI         @ 3,1 CHECKBOX PQS 'Include all atoms on graph'                    
+^^WI               INFORM=YES STATE=OFF                                         
+^^WI      }                                                                     
+^^WI      TAB _GOMTAB1 'Model'        GRID _GOMTG1 NROWS=2 NCOLS=1              
+^^WI      {                                                                     
+^^WI         @ 1,1 MODELWINDOW MODEL01 'N' NROWS=5 NCOLS=65                     
+^^WI            ATTACH L5 RADSCALE=250 RADTYPE=COV                              
+^^WI            MOUSEACTION SELECTATOM                                          
+^^WI            DEFINEPOPUPMENU 2 POPUP2 'Selection'                            
+^^WI             ITEM _SDELA '&Delete _A' 'MRM_N_A'                             
+^^WI             SPLIT                                                          
+^^WI             ITEM _GDELA 'Dele&te group' 'GMRM_N_GEND'                      
+^^WI             MENU _SRETY '&Change types to...'                              
+%                EVALUATE N29 = 0                                               
+%                IF ( EXISTS 29 .EQ. 1 ) THEN                                   
+%                  COPY '#GENERALEDIT 29'                                       
+%                  COPY 'LOCATE RECORDTYPE=101'                                 
+%                  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'      
+%                  LOOP                                                         
+%                    ON EDITERROR TERMINATE                                     
+%                    COPY 'TRANSFER FROM OFFSET=0 TO CLTYPE'                    
+%                    TRANSFER "^^WI ITEM '" // CLTYPE // "' '" // CLTYPE // -   
+                     "' 'GCHT_N" // CLTYPE // "_N_GEND'" TO DISPLAY             
+%                    EVALUATE N29 = N29 + 1                                     
+%                    COPY 'NEXT'                                                
+%                  END LOOP                                                     
+%                  COPY 'END'                                                   
+%                END IF                                                         
+%                IF ( N29 .EQ. 0 ) THEN                                         
+^^WI                ITEM C C 'GCHT_NC_N_GEND'                                   
+^^WI                ITEM H H 'GCHT_NH_N_GEND'                                   
+^^WI                ITEM N N 'GCHT_NN_N_GEND'                                   
+^^WI                ITEM O O 'GCHT_NO_N_GEND'                                   
+%                END IF                                                         
+^^WI             ITEM Q Q 'GCHT_NQ_GEND'                                        
+^^WI             ENDMENU                                                        
+^^WI            ENDDEFINEMENU                                                   
+^^WI            DEFINEPOPUPMENU 3 POPUP3 'Single'                               
+^^WI             ITEM _DELA '&Delete _A' 'MRM_N_A'                              
+^^WI             MENU _SRETY '&Change type'                                     
+%                  EVALUATE N29 = 0                                             
+%                  IF ( EXISTS 29 .EQ. 1 ) THEN                                 
+%                  COPY '#GENERALEDIT 29'                                       
+%                  COPY 'LOCATE RECORDTYPE=101'                                 
+%                  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'      
+%                  LOOP                                                         
+%                    ON EDITERROR TERMINATE                                     
+%                    COPY 'TRANSFER FROM OFFSET=0 TO CLTYPE'                    
+%                    TRANSFER "^^WI ITEM '" // CLTYPE // "' '" // CLTYPE // -   
+                     "' 'CHT_N" // CLTYPE // "_N_A'" TO DISPLAY                 
+%                    EVALUATE N29 = N29 + 1                                     
+%                    COPY 'NEXT'                                                
+%                  END LOOP                                                     
+%                  COPY 'END'                                                   
+%                END IF                                                         
+%                IF ( N29 .EQ. 0 ) THEN                                         
+^^WI                ITEM C C 'CHT_NC_N_A'                                       
+^^WI                ITEM H H 'CHT_NH_N_A'                                       
+^^WI                ITEM N N 'CHT_NN_N_A'                                       
+^^WI                ITEM O O 'CHT_NO_N_A'                                       
+%                END IF                                                         
+^^WI                ITEM Q Q 'CHT_NQ_N_A'                                       
+^^WI             ENDMENU                                                        
+^^WI            ENDDEFINEMENU                                                   
+^^WI         @ 2,1 STATIC _T 'Click atoms to select, right-click for options'   
+^^WI      }                                                                     
+^^WI   }                                                                        
+^^WI   @ 6,2 GRID CLOSE NROWS=1 NCOLS=3                                         
+^^WI   {                                                                        
+^^WI     @ 1,1 CHECKBOX CKRMEX 'Delete remaining peaks on exit  '                 
+%%     IF NOINI5 .EQ. FALSE THEN                                                
+%%^^WI        STATE=ON                                                          
+%%     END IF                                                                   
+^^WI     @ 1,2   CHECKBOX CKQTOC 'Change peaks to carbon on exit  '                                           
+^^WI     @ 1,3 BUTTON XP_BOK '&Exit' DEFAULT                                    
+^^WI   }                                                                        
+^^WI  }                                                                         
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+%%                                                                              
+%%                                                                              
+%  LOOP                                                                         
+%%                                                                              
+%%                                                                              
+^^CO SET _PEAKS REMOVE 0                                                        
+^^WI SET _PEAKS ADDTOLIST                                                       
+%%                                                                              
+%    COPY '#DIST'                                                               
+%    COPY 'OUT MON=PEAKSTOGUI'                                                  
+%    COPY 'PIVOT Q'                                                             
+%    COPY 'NOTBONDED Q'                                                         
+%    COPY 'END'                                                                 
+%%                                                                              
+^^WI     'NULL'                                                                 
+% TRANSFER '^^WI SELECTION=' // CHARACTER ( NSEL ) TO DISPLAY                   
+^^CR                                                                            
+%    COPY '#edit'                                                               
+%    COPY 'monitor off'                                                         
+%    IF ( QSONLY ) THEN                                                         
+%       COPY 'select type eq q'                                                 
+%    ELSE                                                                       
+%       COPY 'dsort spare'                                                      
+%    END IF                                                                     
+%    COPY 'graph of=spare'                                                      
+%    COPY 'exec'                                                                
+%    COPY 'quit'                                                                
+%    COPY 'END'                                                                 
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%    VERIFY XP_BOK XPRMS XPCHG XPRMB XPRAA XPRMA MRM GMRM CHT GCHT PLRB PQS     
+%%                                                                              
+%%                                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                               
+%    CASE VALUE                                                                 
+%      BLOCK %Close                                                             
+^^??    CKQTOC STATE                                                            
+%       VERIFY ON OFF                                                           
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '                                
+%       IF VALUE .EQ. 1 THEN                                                    
+%         COPY '#EDIT'                                                          
+%         COPY 'monitor off'                                                    
+%         COPY 'TYPECHANGE TYPE EQ Q C'                                               
+%         COPY 'TYPECHANGE TYPE EQ QH C'                                               
+%         COPY 'TYPECHANGE TYPE EQ QN C'                                               
+%         COPY 'END'                                                            
+%       END IF                                                                  
+^^??    CKRMEX STATE                                                            
+%       VERIFY ON OFF                                                           
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '                                
+%       IF VALUE .EQ. 1 THEN                                                    
+%         COPY '#SCRIPY XDELQ'
+%       END IF                                                                  
+^^CO    DISPOSE XPRUNE                                                          
+%       FINISH                                                                  
+%      END BLOCK                                                                
+%      BLOCK   %Remove selected                                                 
+%       CLEAR                                                                   
+%       INSERT '^^?? _PEAKS LISTTEXT '                                          
+^^??    _PEAKS SELECTED                                                         
+%       GET SILENT INTEGER ' '                                                  
+%       EVALUATE NSEL = VALUE                                                   
+%       OUTPUT                                                                  
+%       GET SILENT NOSTORE KEYWORD ' ' 'ERROR'                                  
+%       EVALUATE CPK = CVALUE                                                   
+%       GET SILENT NOSTORE TEXT ' ' 'ERROR'                                     
+%       COPY '#EDIT'                                                            
+%       COPY 'monitor off'                                                      
+%       TRANSFER 'DELETE ' // CPK TO CRYSTALS                                   
+%       COPY 'END'                                                              
+%      END BLOCK                                                                
+%      BLOCK     %Change peak                                                   
+%% Get atom to change                                                           
+%       CLEAR                                                                   
+%       INSERT '^^?? _PEAKS LISTTEXT '                                          
+^^??    _PEAKS SELECTED                                                         
+%       GET SILENT INTEGER ' '                                                  
+%       EVALUATE NSEL = VALUE                                                   
+%       OUTPUT                                                                  
+%       GET SILENT NOSTORE KEYWORD ' ' 'ERROR'                                  
+%       EVALUATE CATOM = CVALUE                                                 
+%       GET SILENT NOSTORE TEXT ' ' 'ERROR'                                     
+%% Get atom type                                                                
+%       CLEAR                                                                   
+%       INSERT '^^?? _CHTO LISTTEXT '                                           
+^^??    _CHTO SELECTED                                                          
+%       GET SILENT INTEGER ' '                                                  
+%       OUTPUT                                                                  
+%       GET SILENT NOSTORE KEYWORD ' ' 'ERROR'                                  
+%       EVALUATE CTYPE = CVALUE                                                 
+%% Use YRETYPE as it checks for clashes:                                        
+%       EVALUATE CALLED = TRUE                                                  
+%       QUEUE REWIND                                                            
+%       COPY '#SCRIPT YRETYPE'                                                  
+%       COPY '#EDIT'                                                            
+%       COPY 'monitor off'                                                      
+%       QUEUE PROCESS                                                           
+%       COPY 'END'                                                              
+%      END BLOCK                                                                
+%      BLOCK     %Remove below                                                  
+%       CLEAR                                                                   
+%       INSERT '^^?? _PEAKS LISTTEXT '                                          
+^^??    _PEAKS SELECTED                                                         
+%       GET SILENT INTEGER ' '                                                  
+%       EVALUATE NSEL = VALUE - 1                                               
+%       OUTPUT                                                                  
+%       GET SILENT NOSTORE KEYWORD ' ' 'ERROR'                                  
+%       EVALUATE CPK = CVALUE                                                   
+%       GET SILENT NOSTORE TEXT ' ' 'ERROR'                                     
+%       COPY '#EDIT'                                                            
+%       COPY 'monitor off'                                                      
+%       TRANSFER 'DELETE ' // CPK // ' UNTIL LAST' TO CRYSTALS                  
+%       COPY 'END'                                                              
+%      END BLOCK                                                                
+%      BLOCK     %Restore all peaks.                                            
+%        COPY '#PEAKS'                                                          
+%        COPY '#COLLECT'                                                        
+%        COPY 'SELECT TYPE = PEAKS'                                             
+%        COPY 'END'                                                             
+%      END BLOCK                                                                
+%      BLOCK     %Remove all peaks                                              
+%        COPY '#EDIT'                                                           
+%        COPY 'monitor off'                                                     
+%        COPY 'SELECT TYPE NE Q'                                                
+%        COPY 'END'                                                             
+%      END BLOCK                                                                
+%      BLOCK     %Model menu or Plot: Remove atom                               
+%       COPY '#EDIT'                                                            
+%       COPY 'monitor off'                                                      
+%       CLEAR                                                                   
+%       INSERT 'DELETE '                                                        
+%       GET SILENT TEXT 'Atom?' 'ERROR'                                         
+%       SEND                                                                    
+%       COPY 'END'                                                              
+%      END BLOCK                                                                
+%      BLOCK     %Model menu: Remove group of atoms                             
+%       COPY '#EDIT'                                                            
+%       COPY 'monitor off'                                                      
+%       LOOP                                                                    
+%        ON END TERMINATE                                                       
+%        CLEAR                                                                  
+%        INSERT 'DELETE '                                                       
+%        GET TEXT 'Atom?' ' '                                                   
+%        SEND                                                                   
+%       END LOOP                                                                
+%       COPY 'END'                                                              
+%      END BLOCK                                                                
+%      BLOCK     % Change type                                                  
+%% Get atom type                                                                
+%       GET SILENT NOSTORE KEYWORD ' ' 'ERROR'                                  
+%       EVALUATE CTYPE = CVALUE                                                 
+%% Get atom to change                                                           
+%       GET SILENT NOSTORE KEYWORD ' ' 'ERROR'                                  
+%       EVALUATE CATOM = CVALUE                                                 
+%% Use YRETYPE as it checks for clashes:                                        
+%       EVALUATE CALLED = TRUE                                                  
+%       QUEUE REWIND                                                            
+%       COPY '#SCRIPT YRETYPE'                                                  
+%       COPY '#EDIT'                                                            
+%       COPY 'monitor off'                                                      
+%       QUEUE PROCESS                                                           
+%       COPY 'END'                                                              
+%      END BLOCK                                                                
+%      BLOCK    % Change types                                                  
+%% Get atom type                                                                
+%       GET SILENT NOSTORE KEYWORD ' ' 'ERROR'                                  
+%       EVALUATE CTYPE = CVALUE                                                 
+%% Use YRETYPE as it checks for clashes:                                        
+%       EVALUATE CALLED = TRUE                                                  
+%       QUEUE REWIND                                                            
+%       LOOP                                                                    
+%         ON END TERMINATE                                                      
+%% Get atoms to change                                                          
+%         GET SILENT NOSTORE KEYWORD ' ' 'ERROR'                                
+%         EVALUATE CATOM = CVALUE                                               
+%         COPY '#SCRIPT YRETYPE'                                                
+%       END LOOP                                                                
+%       COPY '#EDIT'                                                            
+%       COPY 'monitor off'                                                      
+%       QUEUE PROCESS                                                           
+%       COPY 'END'                                                              
+%      END BLOCK                                                                
+%      BLOCK     %Remove bar and all below                                      
+%% In QSONLY mode: remove from clicked peak until LAST; when all atoms          
+%% are present: remove all below clicked SPARE value.                           
+%       COPY '#EDIT'                                                            
+%       COPY 'monitor off'                                                      
+%       IF QSONLY THEN                                                          
+%         CLEAR                                                                 
+%         INSERT 'DELETE '                                                      
+%         GET SILENT TEXT 'Atom?' 'ERROR'                                       
+%         GET SILENT NOSTORE TEXT 'Value?' 'ERROR'                              
+%         INSERT ' UNTIL LAST'                                                  
+%       ELSE                                                                    
+%         CLEAR                                                                 
+%         INSERT 'SELECT SPARE GT '                                             
+%         GET SILENT NOSTORE TEXT 'Atom?' 'ERROR'                               
+%         GET SILENT TEXT 'Value?' 'ERROR'                                      
+%       END IF                                                                  
+%       SEND                                                                    
+%       COPY 'END'                                                              
+%      END BLOCK                                                                
+%      BLOCK    % Show all atoms or just Q's in the plot.                       
+%       VERIFY ON OFF                                                           
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '                                
+%       IF VALUE .EQ. 1 THEN                                                    
+%          EVALUATE QSONLY = FALSE                                              
+%       ELSE                                                                    
+%          EVALUATE QSONLY = TRUE                                               
+%       END IF                                                                  
+%      END BLOCK                                                                
+%    END CASE                                                                   
+%  END LOOP                                                                     
+%END SCRIPT                                                                     
+                                                                                

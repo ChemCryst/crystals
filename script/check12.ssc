@@ -1,143 +1,144 @@
-%SCRIPT VALID12
-%% Ensures that we have at least a minimum valid LIST12
- 
- * Ensuring that refinement directives exist and are valid.
- 
-%  VARIABLE LOGICAL EXTINCT DOEXTINC DOCHECK
-%  VARIABLE INTEGER ADP IKEY IOLDS ISER
-%  VARIABLE CHARACTER CLAST CPARAM CPARAM2 CKEY
-%% The variables needed by XQUESTIO
-%  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
-%  VARIABLE LOGICAL   ANSWER
-%%
-%  EVALUATE DOCHECK = TRUE
-%%%% CALL THIS ONCE FROM XAUTO12 - otherwise the extinct
-%%%% flag gets set to false before extinction is refined.
-%%%%  COPY '#SCRIPT CHECK5'
-%%
-%%
-%  EVALUATE IOLDS = - 2
-%  IF EXISTS 39 .GE. 1 THEN
-%   COPY '#GENERALEDIT 39'
-%   COPY 'LOCATE RECORDTYPE = 101'
-%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%   LOOP
-%    ON EDITERROR TERMINATE
-%    COPY 'TRANSFER FROM OFFSET=0 TO CKEY'
-%    COPY 'TRANSFER FROM OFFSET=2 TO IKEY'
-%    IF CKEY .EQ. 'L12S' THEN
-%      EVALUATE IOLDS = IKEY
-%    END IF
-%    COPY 'NEXT'
-%   END LOOP
-%   COPY 'END'
-%   COPY '#GENERALEDIT 12'
-%   COPY 'GETSERIAL ISER'
-%   COPY 'END'
-%   IF ( ( ISER .EQ. IOLDS ) .OR. ( IOLDS .EQ. 0  ) ) THEN
-%     EVALUATE DOCHECK = FALSE
-%   END IF
-%  END IF
- 
-% IF DOCHECK THEN
-%  BLOCK
-%    ON ERROR TERMINATE
-%    COPY '#LIST 22'
-%    COPY 'END'
- 
- * CRYSTALS already has a valid refinement list, LIST 12:
- 
-%    COPY '#PRINT 12'
-%    COPY 'END'
- 
- * Remember that a valid list may not be a suitable list
- 
-%%
-%    EVALUATE QTITLE = 'List 12 has changed'
-%    EVALUATE QLINE1 = 'This script will overwrite any refinement'
-%    EVALUATE QLINE2 = 'instructions that you have created (List 12)'
-%    EVALUATE BUTTOK = '&Continue'
-%    EVALUATE BUTTXX = '&Do not overwrite'
-%    COPY '#SCRIPT XQUESTIO'
-%    IF ANSWER .EQ. FALSE THEN
- 
-{4,0 As you have chosen to keep your existing list 12,
-{4,0 you must manually update list 12 if you wish to
-{4,0 change the parameters which are being refined.
- 
-%      FINISH
-%    END IF
-%%
-%  END BLOCK
-% END IF
-%%
-%%
-% IF EXISTS 5 .GE. 1 THEN
- * CRYSTALS is creating a minimum valid LIST 12
-%   IF ADP .LE. 0 THEN
-%     EVALUATE CPARAM = " X'S "
-{4,1 Atomic positions will be refined
-%   ELSE IF ADP .EQ. 1 THEN
-%     EVALUATE CPARAM = " X'S, U[ISO] "
-{4,1 Positions and isotropic temperature factors will be refined
-%   ELSE IF ADP .EQ. 2 THEN
-%     EVALUATE CPARAM = " X'S, U'S "
-{4,1 Positions and anisotropic temperature factors will be refined
-%   END IF
-%   IF DOEXTINC .EQ. TRUE THEN
-%     EVALUATE CPARAM2 = " EXTPARAM "
-{4,1 EXTINCTION will be refined
-%   ELSE
-%     EVALUATE CPARAM2 = "  "
-{4,1 EXTINCTION will not be refined
-%   END IF
-%   QUEUE REWIND
-%   QUEUE COPY #LIST 12
-%   CLEAR
-%   STORE CHARACTER -
-    'FULL ' // cparam2 // ' First(' // CPARAM // ') until '
+%SCRIPT VALID12                                                                 
+%% Ensures that we have at least a minimum valid LIST12                         
+                                                                                
+ * Ensuring that refinement directives exist and are valid.                     
+                                                                                
+%  VARIABLE LOGICAL EXTINCT DOEXTINC DOCHECK                                    
+%  VARIABLE INTEGER ADP IKEY IOLDS ISER                                         
+%  VARIABLE CHARACTER CLAST CPARAM CPARAM2 CKEY                                 
+%% The variables needed by XQUESTIO                                             
+%  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                        
+%  VARIABLE LOGICAL   ANSWER                                                    
+%%                                                                              
+%  EVALUATE DOCHECK = TRUE                                                      
+%%%% CALL THIS ONCE FROM XAUTO12 - otherwise the extinct                        
+%%%% flag gets set to false before extinction is refined.                       
+%%%%  COPY '#SCRIPT CHECK5'                                                     
+%%                                                                              
+%%                                                                              
+%  EVALUATE IOLDS = - 2                                                         
+%  IF EXISTS 39 .GE. 1 THEN                                                     
+%   COPY '#GENERALEDIT 39'                                                      
+%   COPY 'LOCATE RECORDTYPE = 101'                                              
+%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                     
+%   LOOP                                                                        
+%    ON EDITERROR TERMINATE                                                     
+%    COPY 'TRANSFER FROM OFFSET=0 TO CKEY'                                      
+%    COPY 'TRANSFER FROM OFFSET=2 TO IKEY'                                      
+%    IF CKEY .EQ. 'L12S' THEN                                                   
+%      EVALUATE IOLDS = IKEY                                                    
+%    END IF                                                                     
+%    COPY 'NEXT'                                                                
+%   END LOOP                                                                    
+%   COPY 'END'                                                                  
+%   COPY '#GENERALEDIT 12'                                                      
+%   COPY 'GETSERIAL ISER'                                                       
+%   COPY 'END'                                                                  
+%   IF ( ( ISER .EQ. IOLDS ) .OR. ( IOLDS .EQ. 0  ) ) THEN                      
+%     EVALUATE DOCHECK = FALSE                                                  
+%   END IF                                                                      
+%  END IF                                                                       
+                                                                                
+% IF DOCHECK THEN                                                               
+%  BLOCK                                                                        
+%    ON ERROR TERMINATE                                                         
+%    COPY '#LIST 22'                                                            
+%    COPY 'END'                                                                 
+                                                                                
+ * CRYSTALS already has a valid refinement list, LIST 12:                       
+                                                                                
+%    COPY '#PRINT 12'                                                           
+%    COPY 'END'                                                                 
+                                                                                
+ * Remember that a valid list may not be a suitable list                        
+                                                                                
+%%                                                                              
+%    EVALUATE QTITLE = 'List 12 has changed'                                    
+%    EVALUATE QLINE1 = 'This script will overwrite any refinement'              
+%    EVALUATE QLINE2 = 'instructions that you have created (List 12)'           
+%    EVALUATE BUTTOK = '&Continue'                                              
+%    EVALUATE BUTTXX = '&Do not overwrite'                                      
+%    COPY '#SCRIPT XQUESTIO'                                                    
+%    IF ANSWER .EQ. FALSE THEN                                                  
+                                                                                
+{4,0 As you have chosen to keep your existing list 12,                          
+{4,0 you must manually update list 12 if you wish to                            
+{4,0 change the parameters which are being refined.                             
+                                                                                
+%      FINISH                                                                   
+%    END IF                                                                     
+%%                                                                              
+%  END BLOCK                                                                    
+% END IF                                                                        
+%%                                                                              
+%%                                                                              
+% IF EXISTS 5 .GE. 1 THEN                                                       
+ * CRYSTALS is creating a minimum valid LIST 12                                 
+%   IF ADP .LE. 0 THEN                                                          
+%     EVALUATE CPARAM = " X'S "                                                 
+{4,1 Atomic positions will be refined                                           
+%   ELSE IF ADP .EQ. 1 THEN                                                     
+%     EVALUATE CPARAM = " X'S, U[ISO] "                                         
+{4,1 Positions and isotropic temperature factors will be refined                
+%   ELSE IF ADP .EQ. 2 THEN                                                     
+%     EVALUATE CPARAM = " X'S, U'S "                                            
+{4,1 Positions and anisotropic temperature factors will be refined              
+%   END IF                                                                      
+%   IF DOEXTINC .EQ. TRUE THEN                                                  
+%     EVALUATE CPARAM2 = " EXTPARAM "                                           
+{4,1 EXTINCTION will be refined                                                 
+%   ELSE                                                                        
+%     EVALUATE CPARAM2 = "  "                                                   
+{4,1 EXTINCTION will not be refined                                             
+%   END IF                                                                      
+%   QUEUE REWIND                                                                
+%   QUEUE COPY #LIST 12                                                         
+%   CLEAR                                                                       
+%   STORE CHARACTER -                                                           
+    'FULL ' // cparam2 
 %   QUEUE SEND
-%   CLEAR
-%   STORE CHARACTER "CONTINUE " // CLAST
-%   QUEUE SEND
-%   TRANSFER "END" TO CRYSTALS
-%   QUEUE COPY END
-%   QUEUE PROCESS
-%% Store L12 serial in L39 so that we know if it is manually updated.
-%   IF EXISTS 39 .LT. 1 THEN
-%      COPY '#LIST 39'
-%      COPY 'END'
-%   END IF
-%   VARIABLE INTEGER I1
-%   VARIABLE LOGICAL DOINSERT
-%   COPY '#GENERALEDIT 12'
-%   COPY 'GETSERIAL I1'
-%   COPY 'END'
-%   COPY '#GENERALEDIT 39'
-%   COPY 'LOCATE RECORDTYPE = 101'
-%   COPY 'KEY OFFSET = 0 LENGTH = 1 MODE = CHARACTER'
-%   COPY 'GROUP MODE = INTEGER'
-%   COPY 'RECORD MODE = INTEGER'
-%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%   EVALUATE DOINSERT = TRUE
-%   BLOCK
-%     ON EDITERROR TERMINATE
-%     COPY 'CHECK'
-%     COPY 'SEARCH CHAR = L12S'
-%     EVALUATE DOINSERT = FALSE
-%   END BLOCK
-%   IF DOINSERT THEN
-%      COPY 'INSERT'
-%   END IF
-%   COPY 'CHANGE 0 CHAR CHAR = L12S'
-%   COPY 'CHANGE 1 INTEGER INTEGER = 0'
-%   CLEAR
-%   INSERT 'CHANGE 2 INTEGER INTEGER = '
-%   STORE FORMAT /(I8)/ LENGTH 8 INTEGER I1
-%   SEND
-%   COPY 'WRITE OVERWRITE=OVERWRITE'
-%   COPY 'END'
-%  END IF
- * Done
-%END SCRIPT
- 
+%   CLEAR 
+%   STORE CHARACTER 'CONTINUE ' // CPARAM // ' '                     
+%   QUEUE SEND 
+%   CLEAR                                                                 
+%%   TRANSFER "END" TO CRYSTALS                                                  
+%   QUEUE COPY END                                                              
+%   QUEUE PROCESS                                                               
+%% Store L12 serial in L39 so that we know if it is manually updated.           
+%   IF EXISTS 39 .LT. 1 THEN                                                    
+%      COPY '#LIST 39'                                                          
+%      COPY 'END'                                                               
+%   END IF                                                                      
+%   VARIABLE INTEGER I1                                                         
+%   VARIABLE LOGICAL DOINSERT                                                   
+%   COPY '#GENERALEDIT 12'                                                      
+%   COPY 'GETSERIAL I1'                                                         
+%   COPY 'END'                                                                  
+%   COPY '#GENERALEDIT 39'                                                      
+%   COPY 'LOCATE RECORDTYPE = 101'                                              
+%   COPY 'KEY OFFSET = 0 LENGTH = 1 MODE = CHARACTER'                           
+%   COPY 'GROUP MODE = INTEGER'                                                 
+%   COPY 'RECORD MODE = INTEGER'                                                
+%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                     
+%   EVALUATE DOINSERT = TRUE                                                    
+%   BLOCK                                                                       
+%     ON EDITERROR TERMINATE                                                    
+%     COPY 'CHECK'                                                              
+%     COPY 'SEARCH CHAR = L12S'                                                 
+%     EVALUATE DOINSERT = FALSE                                                 
+%   END BLOCK                                                                   
+%   IF DOINSERT THEN                                                            
+%      COPY 'INSERT'                                                            
+%   END IF                                                                      
+%   COPY 'CHANGE 0 CHAR CHAR = L12S'                                            
+%   COPY 'CHANGE 1 INTEGER INTEGER = 0'                                         
+%   CLEAR                                                                       
+%   INSERT 'CHANGE 2 INTEGER INTEGER = '                                        
+%   STORE FORMAT /(I8)/ LENGTH 8 INTEGER I1                                     
+%   SEND                                                                        
+%   COPY 'WRITE OVERWRITE=OVERWRITE'                                            
+%   COPY 'END'                                                                  
+%  END IF                                                                       
+ * Done                                                                         
+%END SCRIPT                                                                     
+                                                                                

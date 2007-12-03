@@ -41,7 +41,7 @@
 %%                                                                              
 %%                                                                              
 %%{S * Synchronising refinement coefficient in L30 with that in L23.            
-%  VARIABLE INTEGER FOLD  FTYPE
+%  VARIABLE INTEGER FOLD  FTYPE                                                 
 % BLOCK                                                                         
 %  EVALUATE FOLD = 1                                                            
 %  IF EXISTS 23 .GE. 1 THEN                                                     
@@ -50,9 +50,9 @@
 %   COPY 'TRANSFER FROM OFFSET =  1 TO FOLD'                                    
 %   COPY 'END'                                                                  
 %%       FOLD = -1 for F, or 0 for F**2                                         
-%%  FTYPE NEEDED FOR SCRIPT STATWT
-%   EVALUATE FTYPE = FOLD + 1
-%   EVALUATE FOLD = FOLD + 2                                                   
+%%  FTYPE NEEDED FOR SCRIPT STATWT                                              
+%   EVALUATE FTYPE = FOLD + 1                                                   
+%   EVALUATE FOLD = FOLD + 2                                                    
 %%  Now, FOLD =  1 for F, or 2 for F**2.                                        
 %  END IF                                                                       
 %  COPY '#GENERALEDIT 30'                                                       
@@ -62,15 +62,23 @@
 %  COPY 'END'                                                                   
 % END BLOCK                                                                     
 %%                                                                              
+%%  Get a Wilson scale factor
+%    COPY '#WILSON'
+%    COPY 'OUTPUT PLOT=no NZ=no STATS=no'
+%    COPY 'FILTER LIST28 = NO'
+%    COPY 'END'
 %%                                                                              
-%  IF FOLD .EQ. 1 THEN
-{S * Reset weighting scheme to unit weights.                                  
-%   COPY '#LIST 4'                                                                
-%   COPY 'END'          
-%  ELSE                                                          
-{S * Reset weighting scheme to statistical weights.                                  
-%   COPY '#SCRIPT STATWT'
-%  END IF
+%  IF FOLD .EQ. 1 THEN                                                          
+{S * Reset weighting scheme to unit weights.                                    
+%   COPY '#LIST 4'                                                              
+%   COPY 'END'                                                                  
+%  ELSE                                                                         
+{S * Reset weighting scheme to statistical weights.                             
+%%   COPY '#SCRIPT STATWT'                                                       
+%% re-instate old weights because of instabilities in some cases 11/11/07
+%   COPY '#LIST 4'                                                              
+%   COPY 'END'                                                                  
+%  END IF                                                                       
 %%                                                                              
 %%                                                                              
 %%{S * Reset known facts for "The Guide"                                        

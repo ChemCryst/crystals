@@ -1,319 +1,251 @@
-%SCRIPT XINLIST3
-% VARIABLE REAL MULT NUMBER WAVE
-% VARIABLE CHARACTER CNUMB CELEM CTEM CTEST
-% VARIABLE INTEGER ECOUNT RADIATION ORIENTTYPE SWITCH
-% VARIABLE LOGICAL LCANCEL LNEW29 EDLIST3 LXIN3CANCEL
-% VARIABLE CHARACTER SPACEHOOK
-% VARIABLE CHARACTER CTYPE
-%% The variables needed by XQUESTIO
-% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
-% VARIABLE LOGICAL   ANSWER
-%%
-% EVALUATE LCANCEL = FALSE
-% EVALUATE LXIN3CANCEL = FALSE
-% CLEAR
-^^WI WINDOW INLIST3 'InList3' MODAL SIZE
-^^WI COMMIT=BOK CANCEL=BXX
-^^WI GRID             G1 NROWS=9 NCOLS=5
-^^WI {
-^^WI  @ 2,2 GRID G2 NROWS=3 NCOLS=2 OUTLINE='Diffraction Experiment'
-^^WI  {
-^^WI   @ 1,1 RADIOBUTTON COP 'Copper' STATE=OFF INFORM
-^^WI   @ 2,1 RADIOBUTTON MOL 'Molybdenum' STATE=ON INFORM
-^^WI   @ 3,1 RADIOBUTTON OTH 'Other:' STATE=OFF INFORM
-^^WI   @ 1,2 CHECKBOX FRIE 'Apply Friedels Law during merge' STATE=ON
-^^WI   @ 2,2 CHECKBOX MATR 'Input crystal orientation (advanced)' STATE=OFF
-^^WI   @ 3,2 EDITBOX WAVEL '0.71073' NCOLS=10 LIMIT=20 REAL DISABLED=YES
-^^WI  }
-^^WI  @ 4,2 STATIC T1 'Enter the cell contents here:'
-^^WI  @ 5,2 EDITBOX LE ' ' NCOLS=80 LIMIT=80
-^^WI  @ 7,2 STATIC T2 'Enter element symbol followed by number in cell,'
-^^WI  @ 8,2 STATIC T3 'e.g. C 8 H 13 N 1 O 4 - use spaces.'
-^^WI  @ 2,4 GRID B2 NROWS=3 NCOLS=1
-^^WI  {
-^^WI   @ 1,1 BUTTON    BOK 'Ok' DEFAULT COMMIT
-^^WI   @ 3,1 BUTTON    BXX 'Cancel' CANCEL
-^^WI  }
-^^WI }
-^^CR
-^^WI SHOW
-^^CR
-% IF ( EXISTS 13 .EQ. 1 ) THEN
-%   COPY '#GENERALEDIT 13'
-%   COPY 'LOCATE RECORDTYPE=103'
-%   COPY 'TRANSFER FROM OFFSET=0 TO WAVE'
-%   COPY 'END'
-%   TRANSFER "^^CO SET WAVEL TEXT " // CHARACTER WAVE TO DISPLAY
-%   IF ( WAVE .GT. 1.5417 ) .AND. ( WAVE .LT. 1.5419 ) THEN
-^^CO   SET COP STATE=ON SET MOL STATE=OFF
-%   ELSE IF ( WAVE .LT. 0.7107 ) .OR. ( WAVE .GT. 0.7108 ) THEN
-^^CO   SET OTH STATE=ON SET MOL STATE=OFF SET WAVEL DISABLED=NO
-%      IF ( .NOT. EDLIST3 ) THEN
-%       EVALUATE QTITLE = 'Warning - non-standard wavelength'
-%       EVALUATE QLINE1 = 'Any anomalous scattering values that you have'
-%       EVALUATE QLINE2 = 'already entered will be overwritten. Continue?'
-%       EVALUATE BUTTOK = '&Yes'
-%       EVALUATE BUTTXX = '&No'
-%       COPY '#SCRIPT XQUESTIO'
-%       IF ANSWER .EQ. FALSE THEN
-^^CO     DISPOSE INLIST3
-%        FINISH
-%       END IF
-%      END IF
-%   END IF
-% END IF
-%%
-% IF ( EXISTS 2 .NE. 1 ) THEN
-%    EVALUATE SPACEHOOK = 'Space group required before Cell Contents:'
-%    COPY '#SCRIPT XSPACE'
-%    IF ( LCANCEL .EQ. TRUE ) THEN
-^^WI    DISPOSE INLIST3
-^^CR
-%       EVALUATE LXIN3CANCEL = TRUE
-%       FINISH
-%    END IF
-% END IF
-% BLOCK
-%   ON ERROR TERMINATE
-%   ON EDITERROR TERMINATE
-%   COPY '#GENERALEDIT 2'
-%   COPY 'LOCATE RECORDTYPE=101'
-%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%   COPY 'TRANSFER FROM OFFSET=3 TO MULT'
-%   COPY 'END'
-% END BLOCK
-% IF ( EXISTS 29 .NE. 1 ) THEN
-^^CO SET LE TEXT='C 1.0 H 1.0 O 1.0 N 1.0'
-% ELSE
-^^CO SET LE TEXT=''
-%   COPY '#GENERALEDIT 29'
-%   COPY 'LOCATE RECORDTYPE=101'
-%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%   EVALUATE ECOUNT = 0
-%   LOOP
-%       ON EDITERROR TERMINATE
-%       COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
-%       COPY 'TRANSFER FROM OFFSET=4 TO NUMBER'
-%       EVALUATE NUMBER = NUMBER * MULT
-%       EVALUATE ECOUNT = ECOUNT + 1
-%       IF ( NUMBER - REAL ( INTEGER ( NUMBER ) ) .LT. 0.01 ) THEN
-%         EVALUATE CTEST = COMPRESS ( CTEST // ' ' // CTYPE // ' ' // -
-                            CHARACTER ( INTEGER ( NUMBER ) ) )
-%       ELSE
-%         EVALUATE CTEST = COMPRESS ( CTEST // ' ' // CTYPE // ' ' // -
-                            CHARACTER ( NUMBER ) )
-%       END IF
-%       COPY 'NEXT'
-%   END LOOP
-%   TRANSFER '^^CO SET LE TEXT="' // CTEST // '"' TO DISPLAY
-%   IF ECOUNT .EQ. 0 THEN
-^^CO   SET LE TEXT='C 1.0 H 1.0 O 1.0 N 1.0'
-%   END IF
-%   COPY 'END'
-% END IF
-%%
-% LOOP
-%  IF ( LNEW29 ) THEN
-%   EVALUATE SWITCH = 2
-%  ELSE
-%   VERIFY BXX BOK MOL COP OTH
-%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%   EVALUATE SWITCH = VALUE
-%  END IF
-%  CASE SWITCH
-%    BLOCK        %BXX%
-^^WI   DISPOSE INLIST3
-^^CR
-%      EVALUATE LCANCEL = FALSE
-%      EVALUATE LXIN3CANCEL = TRUE
-%      FINISH
-%    END BLOCK
-%    BLOCK        %BOK%
-%      COPY '#LIST 13'
-%      COPY 'END'
+%SCRIPT XINLIST3 
+% VARIABLE REAL MULT NUMBER WAVE                                                
+% VARIABLE CHARACTER CNUMB CELEM CTEM CTEST                                     
+% VARIABLE INTEGER ECOUNT RADIATION ORIENTTYPE SWITCH                           
+% VARIABLE LOGICAL LCANCEL LNEW29 EDLIST3 LXIN3CANCEL                           
+% VARIABLE CHARACTER SPACEHOOK                                                  
+% VARIABLE CHARACTER CTYPE                                                      
+%% The variables needed by XQUESTIO                                             
+% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
+% VARIABLE LOGICAL   ANSWER                                                     
+%%                                                                              
+% EVALUATE LCANCEL = FALSE                                                      
+% EVALUATE LXIN3CANCEL = FALSE                                                  
+% CLEAR                                                                         
+^^WI WINDOW INLIST3 'InList3' MODAL SIZE                                        
+^^WI COMMIT=BOK CANCEL=BXX                                                      
+^^WI GRID             G1 NROWS=9 NCOLS=5                                        
+^^WI {                                                                          
+^^WI  @ 2,2 GRID G2 NROWS=3 NCOLS=2 OUTLINE='Diffraction Experiment'            
+^^WI  {                                                                         
+^^WI   @ 1,1 RADIOBUTTON COP 'Copper' STATE=OFF INFORM                          
+^^WI   @ 2,1 RADIOBUTTON MOL 'Molybdenum' STATE=ON INFORM                       
+^^WI   @ 3,1 RADIOBUTTON OTH 'Other:' STATE=OFF INFORM                          
+^^WI   @ 1,2 CHECKBOX FRIE 'Apply Friedels Law during merge' STATE=ON           
+^^WI   @ 3,2 EDITBOX WAVEL '0.71073' NCOLS=10 LIMIT=20 REAL DISABLED=YES        
+^^WI  }                                                                         
+^^WI  @ 4,2 STATIC T1 'Enter the cell contents here:'                           
+^^WI  @ 5,2 EDITBOX LE ' ' NCOLS=80 LIMIT=80                                    
+^^WI  @ 7,2 STATIC T2 'Enter element symbol followed by number in cell,'        
+^^WI  @ 8,2 STATIC T3 'e.g. C 8 H 13 N 1 O 4 - use spaces.'                     
+^^WI  @ 2,4 GRID B2 NROWS=3 NCOLS=1                                             
+^^WI  {                                                                         
+^^WI   @ 1,1 BUTTON    BOK 'Ok' DEFAULT COMMIT                                  
+^^WI   @ 3,1 BUTTON    BXX 'Cancel' CANCEL                                      
+^^WI  }                                                                         
+^^WI }                                                                          
+^^CR                                                                            
+^^WI SHOW                                                                       
+^^CR                                                                            
+% IF ( EXISTS 13 .NE. 1 ) THEN                                                  
+%   copy '#script inlist13'
+% END IF                                                                        
+%   COPY '#GENERALEDIT 13'                                                      
+%   COPY 'LOCATE RECORDTYPE=103'                                                
+%   COPY 'TRANSFER FROM OFFSET=0 TO WAVE'                                       
+%   COPY 'END'                                                                  
+%   TRANSFER "^^CO SET WAVEL TEXT " // CHARACTER WAVE TO DISPLAY                
+%   IF ( WAVE .GT. 1.5417 ) .AND. ( WAVE .LT. 1.5419 ) THEN                     
+^^CO   SET COP STATE=ON SET MOL STATE=OFF                                       
+%   ELSE IF ( WAVE .LT. 0.7107 ) .OR. ( WAVE .GT. 0.7108 ) THEN                 
+^^CO   SET OTH STATE=ON SET MOL STATE=OFF SET WAVEL DISABLED=NO                 
+%      IF ( .NOT. EDLIST3 ) THEN                                                
+%       EVALUATE QTITLE = 'Warning - non-standard wavelength'                   
+%       EVALUATE QLINE1 = 'Any anomalous scattering values that you have'       
+%       EVALUATE QLINE2 = 'already entered will be overwritten. Continue?'      
+%       EVALUATE BUTTOK = '&Yes'                                                
+%       EVALUATE BUTTXX = '&No'                                                 
+%       COPY '#SCRIPT XQUESTIO'                                                 
+%       IF ANSWER .EQ. FALSE THEN                                               
+^^CO     DISPOSE INLIST3                                                        
+%        FINISH                                                                 
+%       END IF                                                                  
+%      END IF                                                                   
+%   END IF                                                                      
+%%                                                                              
+% IF ( EXISTS 2 .NE. 1 ) THEN                                                   
+%    EVALUATE SPACEHOOK = 'Space group required before Cell Contents:'          
+%    COPY '#SCRIPT XSPACE'                                                      
+%    IF ( LCANCEL .EQ. TRUE ) THEN                                              
+^^WI    DISPOSE INLIST3                                                         
+^^CR                                                                            
+%       EVALUATE LXIN3CANCEL = TRUE                                             
+%       FINISH                                                                  
+%    END IF                                                                     
+% END IF                                                                        
+% BLOCK                                                                         
+%   ON ERROR TERMINATE                                                          
+%   ON EDITERROR TERMINATE                                                      
+%   COPY '#GENERALEDIT 2'                                                       
+%   COPY 'LOCATE RECORDTYPE=101'                                                
+%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                     
+%   COPY 'TRANSFER FROM OFFSET=3 TO MULT'                                       
+%   COPY 'END'                                                                  
+% END BLOCK                                                                     
+% IF ( EXISTS 29 .NE. 1 ) THEN                                                  
+^^CO SET LE TEXT='C 1.0 H 1.0 O 1.0 N 1.0'                                      
+% ELSE                                                                          
+^^CO SET LE TEXT=''                                                             
+%   COPY '#GENERALEDIT 29'                                                      
+%   COPY 'LOCATE RECORDTYPE=101'                                                
+%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                     
+%   EVALUATE ECOUNT = 0                                                         
+%   LOOP                                                                        
+%       ON EDITERROR TERMINATE                                                  
+%       COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'                                  
+%       COPY 'TRANSFER FROM OFFSET=4 TO NUMBER'                                 
+%       EVALUATE NUMBER = NUMBER * MULT                                         
+%       EVALUATE ECOUNT = ECOUNT + 1                                            
+%       IF ( NUMBER - REAL ( INTEGER ( NUMBER ) ) .LT. 0.01 ) THEN              
+%         EVALUATE CTEST = COMPRESS ( CTEST // ' ' // CTYPE // ' ' // -         
+                            CHARACTER ( INTEGER ( NUMBER ) ) )                  
+%       ELSE                                                                    
+%         EVALUATE CTEST = COMPRESS ( CTEST // ' ' // CTYPE // ' ' // -         
+                            CHARACTER ( NUMBER ) )                              
+%       END IF                                                                  
+%       COPY 'NEXT'                                                             
+%   END LOOP                                                                    
+%   TRANSFER '^^CO SET LE TEXT="' // CTEST // '"' TO DISPLAY                    
+%   IF ECOUNT .EQ. 0 THEN                                                       
+^^CO   SET LE TEXT='C 1.0 H 1.0 O 1.0 N 1.0'                                    
+%   END IF                                                                      
+%   COPY 'END'                                                                  
+% END IF                                                                        
+%%                                                                              
+% LOOP                                                                          
+%  IF ( LNEW29 ) THEN                                                           
+%   EVALUATE SWITCH = 2                                                         
+%  ELSE                                                                         
+%   VERIFY BXX BOK MOL COP OTH                                                  
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                
+%   EVALUATE SWITCH = VALUE                                                     
+%  END IF                                                                       
+%  CASE SWITCH                                                                  
+%    BLOCK        %BXX%                                                         
+^^WI   DISPOSE INLIST3                                                          
+^^CR                                                                            
+%      EVALUATE LCANCEL = FALSE                                                 
+%      EVALUATE LXIN3CANCEL = TRUE                                              
+%      FINISH                                                                   
+%    END BLOCK                                                                  
+%    BLOCK        %BOK%                                                         
+%    IF ( EXISTS 13 .NE. 1 ) THEN                                                  
+                                                                                
+{I * Writing a default LIST 13 - should never happen.
+                                                                                
+%      copy '#list 13'
+%    END IF                                                                        
+                                                                                
+{I * Getting composition contents info                                          
+                                                                                
+%      CLEAR                                                                    
+%      QUEUE REWIND                                                             
+%      INSERT 'CONTENTS'                                                        
+^^??   LE TEXT                                                                  
+%      GET SILENT KEYWORD 'Element' 'fini'                                      
+%      EVALUATE CELEM = CVALUE                                                  
+%      LOOP 18 TIMES                                                            
+%        GET NOPROMPT KEYWORD 'Number' 'fini'                                   
+%        EVALUATE CNUMB = CVALUE                                                
+%        IF ( CELEM .EQ. CNUMB ) .OR. -                                         
+            ( CELEM .EQ. 'fini' ) .OR. ( CNUMB .EQ. 'fini' ) THEN               
+%          EVALUATE LOOPEND = LOOPCOUNTER                                       
+%        ELSE                                                                   
+%          QUEUE SEND                                                           
+%          OUTPUT                                                               
+%          CLEAR                                                                
+%          INSERT 'CONTINUE '                                                   
+%          GET NOPROMPT KEYWORD 'Element' 'fini'                                
+%          EVALUATE CELEM = CVALUE                                              
+%        END IF                                                                 
+%      END LOOP                                                                 
+%%                                                                              
+%      QUEUE COPY SCATT CRYSDIR:script/scatt.dat                                
+%      QUEUE COPY PROPERTIES CRYSDIR:script/propwin.dat                         
+                                                                                
+{I * Updating List 13 info                                                      
 
-{I * Getting composition contents info
-
-%      CLEAR
-%      QUEUE REWIND
-%      INSERT 'CONTENTS'
-^^??   LE TEXT
-%      GET SILENT KEYWORD 'Element' 'fini'
-%      EVALUATE CELEM = CVALUE
-%      LOOP 18 TIMES
-%        GET NOPROMPT KEYWORD 'Number' 'fini'
-%        EVALUATE CNUMB = CVALUE
-%        IF ( CELEM .EQ. CNUMB ) .OR. -
-            ( CELEM .EQ. 'fini' ) .OR. ( CNUMB .EQ. 'fini' ) THEN
-%          EVALUATE LOOPEND = LOOPCOUNTER
-%        ELSE
-%          QUEUE SEND
-%          OUTPUT
-%          CLEAR
-%          INSERT 'CONTINUE '
-%          GET NOPROMPT KEYWORD 'Element' 'fini'
-%          EVALUATE CELEM = CVALUE
-%        END IF
-%      END LOOP
+% VARIABLE INTEGER IDJW                                                                                
+%      COPY '#GENERALEDIT 13'                                                          
+%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                     
+^^??   COP STATE                                                                
+%      VERIFY ON OFF                                                            
+%      GET SILENT NOSTORE VERIFIED 'ON or Off' ' '                              
+%      IF VALUE .EQ. 1 THEN                                                     
+%        EVALUATE RADIATION = 1                                                 
+%      ELSE                                                                     
+^^??     MOL STATE                                                              
+%        VERIFY ON OFF                                                          
+%        GET SILENT NOSTORE VERIFIED 'ON or Off' ' '                            
+%        IF VALUE .EQ. 1 THEN                                                   
+%          EVALUATE RADIATION = 2                                               
+%        ELSE                                                                   
+%          EVALUATE RADIATION = 3                                               
+%        END IF                                                                 
+%      END IF                                                                   
+^^??   FRIE STATE                                                               
+%      VERIFY ON OFF                                                            
+%      GET SILENT NOSTORE VERIFIED 'ON or Off' ' '                              
+%      IF VALUE .EQ. 1 THEN                                                     
+%        EVALUATE IDJW = 0                                        
+%      ELSE                                                                     
+%        EVALUATE IDJW = - 1                                        
+%      END IF                                                                   
+%      COPY 'LOCATE RECORD=101'                                                    
+%      COPY 'TRANSFER TO OFFSET=0 FROM IDJW'                                       
+%      COPY 'WRITE'                                                                
 %%
-%      QUEUE COPY SCATT CRYSDIR:script/scatt.dat
-%      QUEUE COPY PROPERTIES CRYSDIR:script/propwin.dat
-
-{I * Updating List 13 info
-
-%      COPY '#LIST 13'
-^^??   COP STATE
-%      VERIFY ON OFF
-%      GET SILENT NOSTORE VERIFIED 'ON or Off' ' '
-%      IF VALUE .EQ. 1 THEN
-%        EVALUATE RADIATION = 1
-%      ELSE
-^^??     MOL STATE
-%        VERIFY ON OFF
-%        GET SILENT NOSTORE VERIFIED 'ON or Off' ' '
-%        IF VALUE .EQ. 1 THEN
-%          EVALUATE RADIATION = 2
-%        ELSE
-%          EVALUATE RADIATION = 3
-%        END IF
-%      END IF
-%      CLEAR
-^^??   FRIE STATE
-%      VERIFY ON OFF
-%      GET SILENT NOSTORE VERIFIED 'ON or Off' ' '
-%      IF VALUE .EQ. 1 THEN
-%        INSERT 'CRYSTAL FRIEDEL = YES '
-%      ELSE
-%        INSERT 'CRYSTAL FRIEDEL = NO '
-%      END IF
-%      SEND
-%      CLEAR
-%      CASE RADIATION
-%       INSERT 'CONDITION 1.5418 13.218 90 0.5871488 0.6425348 0.0001788' %CU%
-%       INSERT 'CONDITION 0.71073 6.05  90 0.5871488 0.6425348 0.0001788' %MO%
-%       BLOCK                                                          %OTHER%
-%         INSERT 'CONDITION '
-^^??      WAVEL TEXT
-%         GET SILENT REAL 'Wave' '0.0123'
-%         INSERT ' 6.05  90 0.5871488 0.6425348 0.0001788'
-%         EVALUATE CTEST = CHARACTER ( VALUE )
-%       END BLOCK
-%      END CASE
-%      SEND
-%      CLEAR
-^^??   MATR STATE
-%      VERIFY ON OFF
-%      GET SILENT NOSTORE VERIFIED 'On or Off' ' '
-^^WI   DISPOSE INLIST3
-^^CR
-%      IF ( VALUE .EQ. 1 ) THEN
-%        ON END TERMINATE
-%        INSERT 'DIFFRACTION GEOMETRY ='
-%        VERIFY CAD4 KAPPA EQUI ROLLETT NONE
-%        GET VERIFIED 'Diffraction geometry' 'ROLLETT'
-NOTE - 'ROLLETT' is a theoretical geometry described in Crystallographic
-Computing, 1969, and gives approximate corrections for most machines.
-%        EVALUATE CTYPE = CVALUE
-%        SEND
-%        CLEAR
-%        IF CTYPE .EQ. 'EQUI' THEN
-Give the zone axis, ( P, Q, R, S)
-%           ON END TERMINATE
-%          CLEAR
-%          INSERT 'AXIS '
-%          GET INTEGER 'P'
-%          GET INTEGER 'Q'
-%          GET INTEGER 'R'
-%          GET FINAL INTEGER 'S'
-%          SEND
-%          CLEAR
-%        END IF
-%        VERIFY MATRIX TWO THREE
-%        GET NOSTORE FINAL ABBREV -
-         'How do you want to specify the orientation of your crystal'
-%        EVALUATE ORIENTTYPE = VALUE
-%        CASE ORIENTTYPE RANGE 1 2
-%          BLOCK                                                      %MATRIX%
-You must specify nine elements for the orientation matrix (R11 - R33)
-%            ON END TERMINATE
-%            CLEAR
-%            INSERT 'MATRIX'
-%            GET REAL 'R11'
-%            GET REAL 'R12'
-%            GET REAL 'R13'
-%            SEND
-%            CLEAR
-%            INSERT 'CONTINUE'
-%            GET REAL 'R21'
-%            GET REAL 'R22'
-%            GET REAL 'R23'
-%            SEND
-%            CLEAR
-%            INSERT 'CONTINUE'
-%            GET REAL 'R31'
-%            GET REAL 'R32'
-%            GET FINAL REAL 'R33'
-%            SEND
-%          END BLOCK
-%          BLOCK
-Give index and seting angles (H,K,L, theta, omega, chi, phi, kappa, psi)
-%            LOOP ORIENTTYPE TIMES               %TWO AND THREE%
-%              ON END TERMINATE
-%              CLEAR
-%              STORE KEYWORD ORIENTTYPE
-%              GET INTEGER 'H'
-%              GET INTEGER 'K'
-%              GET INTEGER 'L'
-%              SEND
-%              CLEAR
-%              INSERT 'CONTINUE'
-%              GET REAL 'THETA'
-%              GET REAL 'OMEGA'
-%              GET REAL 'CHI'
-%              GET REAL 'PHI'
-%              GET REAL 'KAPPA'
-%              GET FINAL REAL 'PSI'
-%              SEND
-%              CLEAR
-%            END LOOP
-%          END BLOCK
-%        END CASE
-%      END IF
-%      COPY 'END'
-{I * Updating composition info
-%      COPY '#COMPOSITION'
-%      QUEUE PROCESS
-%      COPY 'END'
-
-%      COPY '#SUM L 29'
-%      COPY 'END'
+% VARIABLE REAL ADJW
+%      CASE RADIATION                                                           
+%       EVALUATE ADJW = 1.5418  %CU%  
+%       EVALUATE ADJW = 0.71073 %MO%  
+%       BLOCK                   %OTHER%  
+^^??      WAVEL TEXT                                                            
+%         GET SILENT REAL 'Wave' '0.0123'                                       
+%         EVALUATE CTEST = CHARACTER ( VALUE )                                  
+%         EVALUATE ADJW = VALUE  
+%       END BLOCK                                                               
+%      END CASE                
+%      COPY 'LOCATE RECORD=103'                                                    
+%      COPY 'TRANSFER TO OFFSET=0 FROM ADJW'                                       
+%      COPY 'WRITE'                                                                
+%      COPY 'END'                                                               
 %%
 %%
-%      IF ( ( RADIATION .EQ. 3 ) .AND. ( .NOT. EDLIST3 ) ) THEN 
-%         EVALUATE QTITLE = 'Odd wavelength: ' // CTEST
-%         EVALUATE QLINE1 = 'Do you want to input anomalous scattering'
-%         EVALUATE QLINE2 = 'factors for these elements?'
-%         EVALUATE BUTTOK = '&Yes'
-%         EVALUATE BUTTXX = '&No'
-%         COPY '#SCRIPT XQUESTIO'
-%         IF ANSWER .EQ. TRUE THEN
-%           COPY '#SCRIPT EDLIST3'
-%         END IF
-%      END IF
-%%
-%      EVALUATE LXIN3CANCEL = FALSE
-%      FINISH
-%
-%    END BLOCK
-%    BLOCK    %MOL
-^^CO SET WAVEL DISABLED=YES TEXT='0.71073'
-%    END BLOCK
-%    BLOCK    %COP
-^^CO SET WAVEL DISABLED=YES TEXT='1.5418'
-%    END BLOCK
-%    BLOCK    %OTH
-^^CO SET WAVEL DISABLED=NO
-%    END BLOCK                          
-%  END CASE
-% END LOOP
-%END SCRIPT
+{I * Updating composition info                                                  
+%      COPY '#COMPOSITION'                                                      
+%      QUEUE PROCESS                                                            
+%      COPY 'END'                                                               
+                                                                                
+%      COPY '#SUM L 29'                                                         
+%      COPY 'END'                                                               
+%%                                                                              
+%%                                                                              
+%      IF ( ( RADIATION .EQ. 3 ) .AND. ( .NOT. EDLIST3 ) ) THEN                 
+%         EVALUATE QTITLE = 'Odd wavelength: ' // CTEST                         
+%         EVALUATE QLINE1 = 'Do you want to input anomalous scattering'         
+%         EVALUATE QLINE2 = 'factors for these elements?'                       
+%         EVALUATE BUTTOK = '&Yes'                                              
+%         EVALUATE BUTTXX = '&No'                                               
+%         COPY '#SCRIPT XQUESTIO'                                               
+%         IF ANSWER .EQ. TRUE THEN                                              
+%           COPY '#SCRIPT EDLIST3'                                              
+%         END IF                                                                
+%      END IF                                                                   
+%%                                                                              
+%      EVALUATE LXIN3CANCEL = FALSE                                             
+%      FINISH                                                                   
+%                                                                               
+%    END BLOCK                                                                  
+%    BLOCK    %MOL                                                              
+^^CO SET WAVEL DISABLED=YES TEXT='0.71073'                                      
+%    END BLOCK                                                                  
+%    BLOCK    %COP                                                              
+^^CO SET WAVEL DISABLED=YES TEXT='1.5418'                                       
+%    END BLOCK                                                                  
+%    BLOCK    %OTH                                                              
+^^CO SET WAVEL DISABLED=NO                                                      
+%    END BLOCK                                                                  
+%  END CASE                                                                     
+% END LOOP                                                                      
+%END SCRIPT                                                                     
