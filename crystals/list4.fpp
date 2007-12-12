@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.55  2006/04/03 07:50:23  djw
+C Another patch to Sheldrick Weighting.
+C
 C Revision 1.54  2005/10/14 13:18:21  djw
 C If the first parameter in the derived Shedrick weighting scheme converges to zero, reset it to 0.1 for output
 C
@@ -303,6 +306,20 @@ C----- NO OF PARAMETERS EXPECTED FOR EACH SCHEME. 0 = UNDEFINED
 C---- SORT OUT THE INPUT
       CALL XMOVEI(IPROC4, IGUI4, 2)
       IULN06 = KTYP06(IPROC4(3))
+      call xmove(iproc4(4), factor, 1)
+      if (factor .le. zero) then
+            if (store(l30rf+4) .ge. zero) then
+                  factor = 1./store(l30rf+4)
+            else
+                  factor = 1.
+            endif
+      endif
+      if (abs (factor -1.) .ge. zero) then
+         write(cmon,'(A, 2f10.4)') 
+     1 'Rescaling weights by a factor of',factor, store(l30rf+4)
+         call xprvdu(ncvdu,1,0)
+         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1)
+      endif
 C
       IF (ISTORE(L13CD+1) .LE. -1) THEN    ! F = FO
             ITWIN = 3
@@ -1084,8 +1101,9 @@ C--APPLY DUNITZ-SEILER TO ANY WEIGHTING SCHEME (except 13!)
           NMX = NMX + 1
         END IF
 
-
         AW=SQRT(AW)             ! STORE THE SQUARE ROOT OF THE WEIGHT
+c      scale the weight
+        aw = aw * factor
 
 
         STORE(M6+4)=AM*AW   !STORE THE LAST REFLECTION

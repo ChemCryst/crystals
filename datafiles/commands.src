@@ -2755,10 +2755,11 @@ WEIGHT             2    6
      OFF            ON
     .OUTLIERS           2    0    1    2    0 OFF
      OFF            ON
-   2.WEIGHT             1    1    0    0
-         1
+   2.WEIGHT             2    1    0    0
+         1    2
     .INPUTLIST          3    0    1    2    1         6
               6         7
+    .FACTOR             4    0    1    0    0 1.00
 ANALYSE           11    5
    2    4096 CRYSTALSWEIGHT
     1    4    5    6   36

@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2005/01/23 08:29:12  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:11  rich
 C New CRYSTALS repository
 C
@@ -49,16 +53,16 @@ CODE FOR XWAITS
       SUBROUTINE XWAITS
 C--SUBROUTINE TO CONTROL THE APPLICATION OF LIST 4 AND CHECK THE RESULTS
 C
-      PARAMETER (NPROC4=3)
+      PARAMETER (NPROC4=4)
       DIMENSION IPROC4(NPROC4)
-C
       INCLUDE 'XUNITS.INC'
+C
 C--LOAD THE NEXT '#INSTRUCTION'
       NUM=KNXTOP(LSTOP,LSTNO,ICLASS)
 C--CHECK IF WE SHOULD RETURN
       IF(NUM.LE.0) RETURN
 C--BRANCH ON THE TYPE OF OPERATION
-      GOTO (2000,3000,1300,8000,8100,1300),NUM
+      GOTO (2000,3000,1300,8000,8100,4000,1300),NUM
 1300  CALL GUEXIT(601)
 
 C--ROUTINE TO APPLY THE PARAMETERS IN LIST 4
@@ -76,7 +80,13 @@ C--ROUTINE TO CHECK THE WEIGHTING SCHEME
 3000  CONTINUE
       CALL XANAL
       RETURN
-
+c
+c----- Scale the weights
+4000  continue
+c      call xrewt
+      write(ncwu,*)' Not available'
+      return
+c
 C--'#END' INSTRUCTION
 8000  CONTINUE
       CALL XMONTR(-1)
