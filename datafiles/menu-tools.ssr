@@ -29,6 +29,11 @@
 ++GILLIN^^WI   ITEM CONY 's&x2cry' '$% CRYSDIR:sxtocry' 
 ^^WI            DISABLEIF='IN'
 ^^WI   SPLIT                                                                    
+^^WI   MENU NEW '&New Things'                                                
+^^WI    ITEM XSPEK '&Spek' '#SCRIPT TON' DISABLEIF='IN'              
+^^WI    ITEM XREWT '&Reweight' '#SCRIPT XREWEIGHT' DISABLEIF='IN'              
+^^WI   ENDMENU                                                                  
+^^WI   SPLIT                                                                    
 ^^WI   MENU OBSOLETE '&Obsolete'                                                
 ^^WI    ITEM XCONTROL '&Control' '#SCRIPT XCONTROL' DISABLEIF='IN'              
 ^^WI    ITEM XROUTINE '&Routine' '#SCRIPT ROUTINE' DISABLEIF='IN'               
