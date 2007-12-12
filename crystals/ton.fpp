@@ -320,6 +320,9 @@ C
           endif
 
 C P2(True)
+      write(cmon,'(a,a)') 'For an enantiopure material,', 
+     1                    'there are 2 choices'
+          IF (ISSPRT .EQ. 0) WRITE (ncwu,'(a)') cmon(1)
             IF (XPLL2 .GT. 0.001) THEN
               WRITE (FORM, 99961) XPLL2
 99961 FORMAT (F9.3)
@@ -331,13 +334,16 @@ C P2(True)
 99962 FORMAT (E9.1)
             ENDIF
             WRITE (LINE, 99956) FORM 
-99956 FORMAT ('P2(true)    ', A)
+99956 FORMAT ('P2(correct) ', A)
           write(cmon,99968) line
           CALL XPRVDU(NCVDU, 1,0)
           IF (ISSPRT .EQ. 0) WRITE (ncwu,  99968) LINE
 99968 FORMAT (A)
 
 C P3(True)
+      write(cmon,'(a,a)') 'If twinning is possible,', 
+     1                    'there are 3 choices'
+          IF (ISSPRT .EQ. 0) WRITE (ncwu,'(a)') cmon(1)
             IF (XPLLL .GT. 0.001) THEN
               WRITE (FORM, 99961) XPLLL
             ELSE IF (XPLLL .LT. 0.0) THEN
@@ -346,7 +352,7 @@ C P3(True)
               WRITE (FORM, 99962) XPLLL
             ENDIF
             WRITE (LINE, 99979) FORM 
-99979 FORMAT ('P3(true)    ', A)
+99979 FORMAT ('P3(correct) ', A)
           write(cmon,99968) line
           CALL XPRVDU(NCVDU, 1,0)
           IF (ISSPRT .EQ. 0) WRITE (ncwu,  99968) LINE
@@ -373,7 +379,7 @@ C P3(False)
               WRITE (FORM, 99962) XMNLL
             ENDIF
             WRITE (LINE, 99978) FORM 
-99978 FORMAT ('P3(false)   ', A)
+99978 FORMAT ('P3(inverse) ', A)
           write(cmon,99968) line
           CALL XPRVDU(NCVDU, 1,0)
           IF (ISSPRT .EQ. 0) WRITE (ncwu,  99968) LINE
