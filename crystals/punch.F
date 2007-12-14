@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.44  2007/10/09 06:55:22  djw
+C Add support for multi-struxture cifs
+C
 C Revision 1.43  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -304,6 +307,7 @@ C
       INCLUDE 'XCONST.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XCOMPD.INC'
 C
       INCLUDE 'QSTORE.INC'
       data ihyd /'H   '/
@@ -312,6 +316,8 @@ C--LOAD LIST 3, TO FIND THE FORM FACTORS TO BE USED
       IF (KHUNTR (3,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL03
       IF (KHUNTR (5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
       IF ( IERFLG .LT. 0 ) GO TO 9900
+C----- OUTPUT A TITLE, FIRST 40 CHARACTERS ONLY
+      WRITE(NCPU,'(''TITL '',10A4)') (KTITL(I),I=1,10)
       M5=L5
       L5A=NFL
       M5A=L5A
