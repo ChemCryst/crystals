@@ -41,11 +41,6 @@ C--FIND OUT IF LISTS EXIST
       IERROR = 1
       DO 1300 N=1 , NLISTS
        LSTNUM = LISTS(N)
-cdjwsep07 check the type of reflections
-       if (lstnum .eq. 6) then
-          IULN6 = KTYP06(ITYP06)
-       endif
-c
        IF (LSTNUM .EQ. 0 ) GOTO 1300
         IF (  KEXIST ( LSTNUM )  ) 1210 , 1200 , 1220
 1200    CONTINUE
@@ -70,6 +65,8 @@ c
         else IF (LSTNUM .EQ. 30) THEN
             CALL XFAL30
         ELSE IF (LSTNUM .EQ. 6) THEN
+cdjwsep07 check the type of reflections
+            IULN6 = KTYP06(ITYP06)
             CALL XFAL06(IULN6,0)
         ENDIF
 1300  CONTINUE

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2007/10/09 06:58:23  djw
+C Correct absences message
+C
 C Revision 1.22  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -113,6 +116,35 @@ C      RESERVE THE SCRATCH AREA
        KZ = KSTALL(4)
        CALL XZEROF(STORE(KZ),4)
 C
+       lstnum = 6
+       IF (LSTNUM .EQ. 0 ) GOTO 1300
+        IF (  KEXIST ( LSTNUM )  ) 1210 , 1200 , 1220
+1200    CONTINUE
+          WRITE ( NCAWU , 1205 ) LSTNUM
+          IF ( ISSPRT .EQ. 0) WRITE(NCWU, 1205) LSTNUM
+          WRITE ( CMON, 1205 ) LSTNUM
+          CALL XPRVDU(NCEROR, 1,0)
+1205      FORMAT ( 1X , 'List ' , I2 , ' contains errors')
+          IERROR = -1
+          GOTO 1300
+1210    CONTINUE
+          WRITE ( NCAWU , 1215 ) LSTNUM
+          IF ( ISSPRT .EQ. 0) WRITE(NCWU, 1215) LSTNUM
+          WRITE ( CMON, 1215 ) LSTNUM
+          CALL XPRVDU(NCEROR, 1,0)
+1215      FORMAT ( 1X , 'List' , I2 , ' does not exist' )
+          IERROR = -1
+          GOTO 1300
+1220    CONTINUE
+        IF (LSTNUM .EQ. 6) THEN
+            CALL XFAL06(IULN1,0)
+        ENDIF
+1300  CONTINUE
+      IF ( IERROR .LE. 0 ) GOTO 9900
+
+
+
+
       IDWZAP = 0
 C      FIRST - READ LIST 6 
       CALL XFAL06(IULN1,0)
