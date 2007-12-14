@@ -1,6 +1,17 @@
 %SCRIPT ton                                                                     
+%  BLOCK
+%    IF ( EXISTS 6 .NE. 1 ) THEN
+{E **** FATAL: There are no reflections to work with
+%      FINISH
+%    END IF
+%  END BLOCK
 %COPY '#copy 6 7'                                                               
 %copy 'end'                                                                     
+%    IF ( EXISTS 7 .NE. 1 ) THEN
+{E **** FATAL: The reflection convertion failed
+%      FINISH
+%    END IF
+%  END BLOCK
 %copy '#sfls in=7'                                                                 
 %copy 'calc'                                                                    
 %copy 'end'                                                                     
