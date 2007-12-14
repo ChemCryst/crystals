@@ -1,5 +1,4 @@
 #include       "ciftbx.for"
-
 C<ric02>
 #if defined(_DVF_) || defined(_GID_)
       use dflib
@@ -47,6 +46,9 @@ C<ric02/>
 #if defined(_GIL_) || defined(_LIN_) || defined(_MAC_) || defined(_WXS_)
       call no_stdout_buffer()
 #endif      
+cdjw open a file for errors since DOS window closes too fast
+c    lots of writes to 17 later
+      open(17,file='Cif2CRY',status='unknown')
 
 C<ric02>
 C Read data from the commandline:
@@ -133,6 +135,8 @@ C</ric02>
 C.......  Enter the name of Cif file
         write (6, '(1x,a)') 
      *      "Enter name of the Cif file (e.g. test.cif):  "
+        write (17, '(1x,a)') 
+     *      "Enter name of the Cif file (e.g. test.cif):  "
 
 C<ric02>
         read (*, '(a)') infil
@@ -143,6 +147,7 @@ C<ric02>
       if(.not.(open_(infil)))then
 C</ric02>
         write(6,'(a///)')  ' >>>>> CIF cannot be opened'
+        write(17,'(a///)')  ' >>>>> CIF cannot be opened'
         goto 9999
       endif
 
@@ -150,12 +155,14 @@ C....... Assign the data block to be accessed
 
 10    if(.not.(data_(' '))) then
         write(6,'(/a/)')   ' >>>>> No data_ statement found'
+        write(17,'(/a/)')   ' >>>>> No data_ statement found'
         goto 9999
       else
         if (bloc_ =="global") then
           goto 10
         else
           write(6,'(/a,3x,a)') 'The first crystal data is',bloc_
+          write(17,'(/a,3x,a)') 'The first crystal data is',bloc_
         endif 
       endif
         
@@ -165,6 +172,8 @@ C<ric02>
 120   if ( ( .not. loutfl ) .and. ( .not. namebl ) ) then
 C.......  Enter the name of the output file
         write (6, '(/a)')
+     *         " Enter name of the output file [cifin.dat]: "
+        write (17, '(/a)')
      *         " Enter name of the output file [cifin.dat]: "
 C</ric02>
 
@@ -218,6 +227,7 @@ C Any other case, just open it:
         OPEN (NOUTF,FILE=outfil, STATUS='UNKNOWN')
       end if
       write(6,'(''Output: '',A)') output_name
+      write(17,'(''Output: '',A)') output_name
 
       option = bloc_
       DO N = 1,LEN_TRIM(option)    !Remove illegal chars
@@ -252,23 +262,29 @@ C....... f1 ends up false if any of these functions fail.
 
       if(.not.(f1)) then
         write(6,'(a)') '>>>>> No cell data in this block.'
-      endif
-
+        write(17,'(a)') '>>>>> No cell data in this block.'
+      else
 C....... Write out a crystals instruction:
 
       write(NOUTF,'(a)') '#LIST 1'
       write(NOUTF,'(a,6f11.4)') 'REAL',cela,celb,celc,
      *                              celalp,celbet,celgam
       write(NOUTF,'(a)') 'END'
+      endif
 
 
 C....... Extract space group notation (expected char string):
 C....... =============================
 
       f1 = char_('_symmetry_space_group_name_H-M', name)
+cdjwdec07  Note new alternative identifier
+      if (.not. (f1)) then
+        f1 = char_('_space_group_name_H-M_alt', name)
+      endif
 
       if(.not.(f1)) then
          write(6,'(/a/)')   ' >>>>> No spacegroup found'
+         write(17,'(/a/)')   ' >>>>> No spacegroup found'
       else   
         write(NOUTF,'(a)') '# The spacegroup symbol must have '//
      *                  'a space between each of the operators.'
@@ -294,6 +310,14 @@ C If 2nd char is not a space this is definitely wrong.
      *        'this cif file is', name
           write (6, '(a)')
      *              'Please enter the new space group (e.g. P n m a): '
+
+          write(17,'(/a)') '# The spacegroup symbol must have '//
+     *                  'a space between each of the operators.'
+          write (17, '(/a,3x,a/)') 'The space group symbol in '//
+     *        'this cif file is', name
+          write (17, '(a)')
+     *              'Please enter the new space group (e.g. P n m a): '
+
           read (*, '(a)') name
           write(NOUTF,'(2a)') 'SYMBOL ',name
           write(NOUTF,'(a)') 'END'
@@ -307,9 +331,9 @@ C....... Extract cell formula units Z
       f1 = numb_('_cell_formula_units_Z', unitZ, dum)
       if(.not.(f1)) then
         write(6,'(/a/)')   ' >>>>> No cell_formula_units_Z found'
+        write(17,'(/a/)')   ' >>>>> No cell_formula_units_Z found'
+        unitZ = 1.
       endif
-
-
 C....... Extract composition data (expected char string)
 C....... =========================
          
@@ -320,6 +344,7 @@ C....... =========================
          
       if(.not.(f1)) then
         write(6,'(/a/)')   ' >>>>> No composition data found'
+        write(17,'(/a/)')   ' >>>>> No composition data found'
         nocomp = 1
 
       else
@@ -380,6 +405,7 @@ C....... =================================
       f1 = char_('_atom_site_label', label(nsite,1))
       if(.not.(f1)) then
         write(6,'(/a/)')   ' >>>>> No atom_site_label found'
+        write(17,'(/a/)')   ' >>>>> No atom_site_label found'
         nsite=nsite-1
         goto 241
       endif
@@ -447,6 +473,11 @@ C........Store serial number:
         write(6, '(a,2x,a,2x,a,2x,a3,a)') 'atom name',
      *          label(nsite,1), 'changed to',
      *            label(nsite,2), label(nsite,3) 
+
+        write(17, '(a,2x,a,2x,a,2x,a3,a)') 'atom name',
+     *          label(nsite,1), 'changed to',
+     *            label(nsite,2), label(nsite,3) 
+
       endif
 
       f2 = numb_('_atom_site_fract_x',  xf(nsite), sx)
@@ -454,6 +485,7 @@ C........Store serial number:
       f2 = numb_('_atom_site_fract_z',  zf(nsite), sz).AND.(f2)
       if(.not.(f2)) then
          write(6,'(/a/)')' >>>>> atom_site_fract_ missing'
+         write(17,'(/a/)')' >>>>> atom_site_fract_ missing'
       endif
          
       f2 = numb_('_atom_site_U_iso_or_equiv',  uisoeq(nsite), su)
@@ -670,12 +702,17 @@ cdjw oct07 - read reflections
           if ( .not. f1 ) then
             write(6,'(a,i7///)')
      *      ' >>>>> No Fsq sigma found in CIF for reflection ',NREF
+
+            write(17,'(a,i7///)')
+     *      ' >>>>> No Fsq sigma found in CIF for reflection ',NREF
             nref = 0
             exit
           end if
 
           if ( .not. f0 ) then
             write(6,'(a,i7///)')
+     *      ' >>>>> No Fcalc found in CIF for reflection ',NREF
+            write(17,'(a,i7///)')
      *      ' >>>>> No Fcalc found in CIF for reflection ',NREF
             nref = 0
             exit
@@ -688,11 +725,15 @@ cdjw oct07 - read reflections
           if ( .not. f1 ) then
             write(6,'(a,i7///)')
      *      ' >>>>> No F or sigmaF found in CIF for reflection ',NREF
+            write(17,'(a,i7///)')
+     *      ' >>>>> No F or sigmaF found in CIF for reflection ',NREF
             nref = 0
             exit
           end if
         else
           write(6,'(a,i7///)')
+     *    ' >>>>> No data found in CIF for reflection ',NREF
+          write(17,'(a,i7///)')
      *    ' >>>>> No data found in CIF for reflection ',NREF
           nref = 0
           exit
@@ -766,8 +807,11 @@ cdjw oct07 - read reflections
 
       write(6,'(/a, a/)') output_name, 
      *             'has been sucessfully created.'
+      write(17,'(/a, a/)') output_name, 
+     *             'has been created.'
 
 9900  write(6,'(a)') 'Check new crystal data ... ...'
+      write(17,'(a)') 'Check new crystal data ... ...'
     
       if(.not.(data_(' '))) then
         write (6, '(a)') ' ---------------------------------' 
@@ -776,12 +820,25 @@ cdjw oct07 - read reflections
         write(6,'(/I4, 2x, a/, a)') ndata, 
      *        'structure(s) processed. Final message', 
      *          ' Program is finished.'  
+
+        write (17, '(a)') ' ---------------------------------' 
+        write(17,'(a)')   ' *** No more structures found ***'
+        write (17, '(a)') ' ---------------------------------' 
+        write(17,'(/I4, 2x, a/, a)') ndata, 
+     *        'structure(s) processed. Final message', 
+     *          ' Program is finished.'  
+
         goto 9999
       else 
         write (6, '(a)') ' -----------------------------------'
         write  (6, '(2x,a)') '*** New structure found ***'
         write (6, '(2x,a,a,a)') '(', bloc_, ')'
         write (6, '(a)') ' -----------------------------------' 
+
+        write (17, '(a)') ' -----------------------------------'
+        write  (17, '(2x,a)') '*** New structure found ***'
+        write (17, '(2x,a,a,a)') '(', bloc_, ')'
+        write (17, '(a)') ' -----------------------------------' 
 
 c<ric02>
         if ( allbl ) then     !User has req. all blocks on cmd line.              
@@ -791,6 +848,7 @@ c<ric02>
         if ( lfirst ) goto 9999  !User only wants first block.
 c<ric02/>
           write (6, '(a)') ' Continue y/n? [y]'
+          write (17, '(a)') ' Continue y/n? [y]'
           read (*, '(a)') response
           if (response == 'y' .or. response == 'Y' .or. 
      *                                    response == ' ') then
@@ -798,6 +856,8 @@ c<ric02/>
             goto 120
           else if (response == 'n'.or. response == 'N') then
             write (6, '(I4,2x,a)') ndata, 
+     *          'structure(s) processed. Final message.' 
+            write (17, '(I4,2x,a)') ndata, 
      *          'structure(s) processed. Final message.' 
             goto 9999
           endif                 
@@ -807,6 +867,9 @@ C<ric02>
       goto 9999
 8000  CONTINUE    !Usage error
       write(6,'(/3a/)')  'Usage: ',prognm(1:LEN_TRIM(prognm)),
+     1 ' [-f|a] [[-n blockname]Ý[-o outputfile]] [inputfile]'
+
+      write(17,'(/3a/)')  'Usage: ',prognm(1:LEN_TRIM(prognm)),
      1 ' [-f|a] [[-n blockname]Ý[-o outputfile]] [inputfile]'
 
 
