@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.82  2007/03/20 15:39:21  djw
+C Filter out improbable H-bonds
+C
 C Revision 1.81  2007/03/13 18:26:15  djw
 C Bug in H-bond generation
 C
@@ -1132,12 +1135,29 @@ C--SET A FEW AREAS OF CORE FOR E.S.D. CALCLATION
         JN=JM
         JP=JM+NWDT*NWDT
         JQ=JP
+cnov07
+c          NWDT=6 or 12
+c          NWAT=9 or 15
+c          NWD=6
+c          NWA=9
+c          NWS=4
+c          NW=13
+c
+c      JA > 9X4X50 = 1800                  NWA.NWS.MXPPT
+C      JD > 9X9 OR 15X15 = 81 0R 225       NWAT.NWAT
+C      JE > 9X9 OR 15X15 = 81 0R 225       NWAT.NWAT
+C      JF > 9X9 OR 15X15 = 81 0R 225       NWAT.NWAT
+C      JG = JH > 6X6 = 36                  NWD.NWD
+C      JJ = JK > 9X9 = 81                  NWA.NWA
+C      JM = JN > 12X12 = 144               NWDT.NWDT
+C      JP = JQ > 15X15 = 225               NWAT.NWAT
 C--COMPUTE THE LENGTH OF THE DATA AREA
         JS=JP+NWAT*NWAT-NFL
 C--ALLOCATE THE SPACE
         LN=9
         IREC=1001
         I=KCHNFL(JS)
+c
 C--ZERO THE AREA INITIALLY
         CALL XZEROF(STORE(JA),JS)
 C--SET UP THE UNIT MATRIX SYMMETRY OPERATOR FOR THE FIRST ATOM
@@ -1151,6 +1171,8 @@ C  IN THE AREA FOR DISTANCES AND ANGLES
           JQ=JQ+2*(NWAT+1)
         END DO
         JL=JK+3*(NWA+1)
+
+c
 C--LOAD LIST 11
         CALL XFAL11(1,1)
         IF ( IERFLG .LT. 0 ) THEN
@@ -1181,6 +1203,11 @@ C--APPLY THE CORRECT MULTIPLICATION FACTOR TO THE MATRIX
         END DO
 
 C--PREPARE TO INITIATE THE CELL ERROR AREA IF NECESSARY
+c  computes M31T as metric tensor x diagonal matrix with elements
+c  1./cell-edge
+c  plus 3-vector of term like -a.b.sin(gamma)
+c  expands vCv matrix into full squares in param vCv area for dist (jM)
+c  and angles (jp)
         IF(ICELL.GE.0)THEN
            CALL XFAL31(JM,JP)
            IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -1666,15 +1693,63 @@ C Check if the H is riding, or the esd happens to be zero.
                    LHFIXD(2) = .TRUE.
                  ENDIF
                 ENDIF
-C--SET UP THE V/CV MATRIX AT 'JD'
+
+cnov07
+c          NWDT=6 or 12 =(6+6)
+c          NWAT=9 or 15 =(9+6)
+c          NWD=6
+c          NWA=9
+c          NWS=4
+c          NW=13
+c
+c      JA > 9X4X50 = 1800                  NWA.NWS.MXPPT
+C      JD > 9X9 OR 15X15 = 81 0R 225       NWAT.NWAT
+C      JE > 9X9 OR 15X15 = 81 0R 225       NWAT.NWAT
+C      JF > 9X9 OR 15X15 = 81 0R 225       NWAT.NWAT
+C      JG = JH > 6X6 = 36                  NWD.NWD
+C      JJ = JK > 9X9 = 81                  NWA.NWA
+C      JM = JN > 12X12 = 36 or 144         NWDT.NWDT
+C      JP = JQ > 15X15 = 81 or 225         NWAT.NWAT
+c
+C--SET UP THE V/CV MATRIX (6x6) AT 'JD' and diagonal weight matrix at JE
+c  note the diagonal matrix at JE is now a unit matrix, and could be 
+c  removed from code
+c  JD is a temporary location - matrix is moved to lower right (JN) of full 
+c  vCv matrix at JM
                 CALL XCOVAR( JA, NWD, NWS, JD, JE, IPART, 2)
+
 C--SET UP THE RELEVANT SYMMETRY MATRIX  AT JH
+c-- second atom only - unit matrix for 1st atom already set at JG
+
                 CALL XMVCSP(J,JH,NWD)
-C--APPLY THE SYMMETRY MATRIX AND STORE THE TRANSFORMATION MATRIX AT 'JF'
+C--APPLY THE weight matrix to the SYMMETRY MATRIX 
+C  AND STORE THE TRANSFORMATION MATRIX AT 'JF'
+c  JG is same as JH, the address of the two-block symmetry matrix
+c  JF is the address of the two-block result.
                 CALL XMD3B(JE,JG,JF,2,NWD)
-C--MOVE THE V/CV MATRIX TO DISTANCE V/CV AREA  (THIS WILL INCLUDE CELL)
+cnov07
+c      write(ncwu,'(a,i8)') 'jf',jf
+c      write(ncwu,'(6f16.12)') (store(idjw),idjw=jf,jf+35)
+c      write(ncwu,'(/)')
+
+C--MOVE THE V/CV MATRIX TO DISTANCE V/CV AREA  
+c  The cell vCv matrix at JM already set by XFAL31
+c  JN is pointer to start of positional vCv
+c  move nwd*nwd = 6x6 items into nwdt*nwdt matrix 
+c      JD, original vCv matrix
+c      JN  start of vCv matrix in overall vCv matrix
+c      jm  start of overall vCv matrix, cell upper left block, atoms
+c          lower right
+c
+
                 CALL XMVCD(JD,NWD,JN,NWDT)
+cnov07
+c      write(ncwu,'(2(a,i8))') 'jm',jm, '  jn',jn
+c      write(ncwu,'(12f16.12)') (store(idjw),idjw=jm,jm+143)
+c      write(ncwu,'(/)')
+
 C--CALCULATE 'DX','DY' AND 'DZ', store results in B(1 to 3)
+c  x,y z all fractionsal, those at J+7 have symmetry applied
                 CALL XSUBTR(STORE(M5A+4),STORE(J+7),B(1),3)
 C--CALCULATE THE RECIPROCAL OF THE DISTANCE
                 F=1./STORE(J+10)
@@ -1682,15 +1757,18 @@ C--CALCULATE THE RECIPROCAL OF THE DISTANCE
 C--CHECK IF THE CELL ERRORS ARE TO BE USED
                 IF(ICELL.GE.0)THEN 
 C--CALCULATE THE CELL ERRORS
+c  note   EQUIVALENCE (B(1),C) above
+c  6-vector of derivatives d(D)/d(a) ... d(D)/d(gamma) at NY
                   CALL XAPP31(NY)
                   NY=NY+6
                 END IF
 C--CALCULATE THE ERROR CONTRIBUTIONS FOR ATOM ONE 
                 CALL XMULTR(B(1),F,B(1),3)
-C B(1) now is: Delta X / Distance
+C B(1) now is: Delta(X) / Distance
 C Multiply by metrix tensor
                 CALL XMLTMM(STORE(L1M1),B(1),BPD(4),3,3,1)
 C--APPLY THE DERIVATIVE VECTOR TO THE TRANSFORMATION MATRIX
+c  JF is 6x6 transformation matrix = [3x3 0] [0 3x3]
                 J1=JF
                 DO I1=1,3
                   STORE(NY)=   STORE(J1)*   BPD(4)+
@@ -2348,7 +2426,7 @@ cdjwnov06
 cdjwmar07
               else if ((ipunch .eq. 11) .and. (term .ge. 120.) .and.
      1          ((dd1.lt.1.2).or.(dd3.lt.1.2))   ) then
-      write(ncpu, '(3f12.3)') term,dd1,dd3
+                write(ncpu, '(3f12.3)') term,dd1,dd3
                 WRITE(MTE) 'H',TERM,ESD,
      1          STORE(IXX), STORE(IXX+1), ISTORE(NA+2),
      1          ISTORE(NA+3), ISTORE(NA+4), ISTORE(NA+5), ISTORE(NA+6),
@@ -4674,9 +4752,9 @@ C--LOAD LIST 31 INTO STORE AND SET UP THE CONSTANTS TO ALLOW FOR CELL
 C  PARAMETER ERRORS
 C
 C  IADDD  ADDRESS OF THE AREA ASSIGNED TO THE DISTANCE V/VC MATRIX
-C         (AN AREA OF 144 WORDS)
+C         (AN AREA OF 12x12 = 144 WORDS)
 C  IADDA  ADDRESS OF THE AREA ASSIGNED TO THE ANGLES V/CV MATRIX.
-C         (225 WORDS LONG)
+C         (15x15 = 225 WORDS LONG)
 C
 C
 C--LIST 1 MUST ALREADY HAVE BEEN LOADED
@@ -4704,7 +4782,7 @@ C--LOAD LIST 31 FROM DISC
       INCLUDE 'IDIM31.INC'
       CALL XLDLST(31,ICOM31,IDIM31,0)
       IF ( IERFLG .LT. 0 ) GO TO 9900
-C----- SCALE DOWN THE ELEMENTS OF THE V/CV MATRIX
+C----- SCALE THE ELEMENTS OF THE V/CV MATRIX
       A = STORE(L31K)
       M31 = L31
       M31L = M31 + MD31 -1
@@ -4713,9 +4791,12 @@ C----- SCALE DOWN THE ELEMENTS OF THE V/CV MATRIX
 900   CONTINUE
 C--FORM THE WORK AREA
       M31T=L31T
+c      real metric tensor
       L=L1M1
+c      real cell parameters
       N=L1P1
 C--SET UP THE TERMS FOR THE CELL LENGTHS
+c      [metric tensor] x [1/a(i) along diagonal]
       DO 1050 I=1,3
       A=1./STORE(N)
       DO 1000 J=1,3
@@ -4726,10 +4807,13 @@ C--SET UP THE TERMS FOR THE CELL LENGTHS
       N=N+1
 1050  CONTINUE
 C--SET UP THE TERMS FOR THE ANGLES
+c      b x c x sin(alpha) etc
       STORE(M31T)=-STORE(L1P1+1)*STORE(L1P1+2)*SIN(STORE(L1P1+3))
       STORE(M31T+1)=-STORE(L1P1)*STORE(L1P1+2)*SIN(STORE(L1P1+4))
       STORE(M31T+2)=-STORE(L1P1)*STORE(L1P1+1)*SIN(STORE(L1P1+5))
+c
 C--SET UP THE V/VC MATRIX IN THE DISTANCE AND ANGLES AREAS
+c     12x12 at iaddd and 15x15 at iadda. Top 6x6 filled-in cell vcv
       M31=L31
       I=IADDD
       M=IADDA
@@ -4956,6 +5040,7 @@ C  LS  ADDRESS OF THE FIRST WORD OF THE STACK
 C  NS  NUMBER OF ENTRIES IN THE STACK
 C  NW  NUMBER OF WORDS PER ENTRY IN THE STACK
 C  LF  ADDRESS AT WHICH TO SET UP THE V/CV MATRIX
+c      size is NWD or NWA square.
 C  JA  ADDRESS AT WHICH TO SET UP THE 'MULTIPLIERS' OR 'WEIGHTS'
 C      AS A DIAGONAL MATRIX
 C  IPART(NATOM) HOLDS THE NUMBER OF 'PARTS' FOR EACH ATOM
