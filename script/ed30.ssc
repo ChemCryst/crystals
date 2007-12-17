@@ -246,9 +246,9 @@
 ^^WI     'None' 'DifAbs' 'Empirical' 'Multi-scan' 'SadAbs '                     
 ^^WI     'SortAV' 'ShelxA' 'Gaussian' 'Analytical' 'Numerical'                  
 ^^WI     'Integration' 'Spherical' 'Cylindrical' 'Psi-Scan' 'APEX2' 'NULL'              
-^^WI    @ 1,5  STATIC ABSMINT 'Empirical min'                                   
+^^WI    @ 1,5  STATIC ABSMINT 'Empirical min  '                                   
 ^^WI    @ 1,7  EDITBOX ABSMIN '0' CHARS=11 REAL INFORM=YES                      
-^^WI    @ 1,9  STATIC ABSMAXT 'Empirical max'                                   
+^^WI    @ 1,9  STATIC ABSMAXT 'Empirical max  '                                   
 ^^WI    @ 1,11 EDITBOX ABSMAX '0' CHARS=11 REAL INFORM=YES                      
 ^^WI   }                                                                        
 ^^WI  }                                                                         
