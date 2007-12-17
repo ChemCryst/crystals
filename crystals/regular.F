@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.48  2007/11/06 14:39:01  djw
+c Tidy up automatic matching
+c
 c Revision 1.47  2006/07/12 09:59:30  djw
 c Inhibit bond length, angle and torsion calculations if the second group is simply a shape
 c
@@ -417,6 +420,9 @@ CDJWNOV99      NATOMP = 14
       MDNEW = 4
       MDUIJ = 7
       NNEW = 0
+cdjwdec07
+c      allow geometrical deviations
+      nogeom = 1
 C -- DEFAULT METHOD IS 1 (ROTATION COMPONENT OF ROTATION-DILATION
 C    MATRIX ONLY)
       IMETHD=1
@@ -455,13 +461,14 @@ C Space for upper triangle, each matrix has 16 entries. (N(N-1)/2 ops)
 C -- ALLOCATE SPACE FOR A BUFFER FOR LEXICAL SCANNER
       LLXSPC = KSTALL(4000)
 C -- SET VALUES IN ATOM
+C----- CLEAR ATOM INFO  
+      CALL XZEROF(ATOM(1), NATOMP )
+      iatom(1)= IH
 C -- OCCUPANCY=1.
       ATOM(3)=1.
 CDJWNOV99
 C----- FLAG
       ATOM(4)=1.0
-C----- U'S and SPARE 
-      CALL XZEROF(ATOM(8), NATOMP-11 )
 C----- SET UISO
       ATOM(8) = 0.05
 C----- SET PART, REF, HYB, NEW
@@ -591,7 +598,15 @@ C -- 'NEW' DIRECTIVE
 
 C -- 'SYSTEM' DIRECTIVE
       CALL XRGRCS
+c      inhibit geometrical deviations
+      nogeom = -1
+      write(cmon,'(a,a)')
+     1'Distance and torsion deviations are not computed if one',
+     2 ' of the fragments is from a different unit cell'
+      CALL XPRVDU(NCVDU, 1,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
       GO TO 8000
+c
 2500  CONTINUE
 C -- 'ATOM' DIRECTIVE
       CALL XRGRDA
@@ -682,6 +697,8 @@ C    SET FLAG TO REPLACE
 C -- KEEP DIRECTIVE
 C    SET FLAG
       IFLCMP=3
+C -- SET NUMBER OF ATOMS
+      dkeep=XLXRDV(0.)
       GO TO 8000
 3700  CONTINUE
 C----- AUGMENT
@@ -1637,7 +1654,15 @@ C -- COPY ATOMS IN GROUP TO THE END OF THE NEW LIST 5
       IF (NATMD.GT.0) THEN
          ISIZE=MDATMD*NATMD
          IADDR=KSTALL(ISIZE)
-         CALL XMOVE (STORE(LATMD),STORE(IADDR),ISIZE)
+CDJWDEC07
+         JDJW = LATMD
+         KDJW = IADDR
+         DO IDJW = 1,NATMD
+          CALL XMOVE (STORE(JDJW),STORE(KDJW),MDATMD)
+          STORE(KDJW+1) = STORE(KDJW+1) + DKEEP
+          JDJW = JDJW + MDATMD
+          KDJW = KDJW + MDATMD
+         ENDDO
       END IF
 C -- INCREASE NUMBER OF ATOMS
       NNEWL5=NNEWL5+NATMD
@@ -2601,6 +2626,8 @@ C -- CALCULATE TOTAL SQUARED DEVIATION AND RMS DEVIATIONS
        endif
 c
 
+CDJWDEC07
+      IF (NOGEOM .LE. 0) GOTO 9000
 C RMS deviation of bonds
 
       JT = 12 ! Number of words per returned distance
@@ -2963,7 +2990,7 @@ C If angles differ by more than 180, take 360 - diff.
      1        WRITE(99,'(15A4,3(A,F12.5))')(KTITL(I),I=1,15),
      1       CHAR(9),RMSDEV(4),CHAR(9),SBDEV,CHAR(9),STDEV
       END IF
-
+9000  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9010 )
 9010  FORMAT (//)
       RETURN
