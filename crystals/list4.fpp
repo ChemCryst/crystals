@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.56  2007/12/12 16:05:12  djw
+C Normlise GOF
+C
 C Revision 1.55  2006/04/03 07:50:23  djw
 C Another patch to Sheldrick Weighting.
 C
@@ -3515,3 +3518,109 @@ C
       RETURN
       END
 
+CODE FOR XREWT
+      SUBROUTINE XREWT
+C
+C----- apply overall scale to weights
+c      If the FACTOR is zero, try to get scale from
+c      GOF in LIST 30
+C
+
+      PARAMETER (nprocs=2)
+      DIMENSION PROCS(NPROCS)
+C
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'ICOM06.INC'
+      INCLUDE 'ICOM07.INC'
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XDISCS.INC'
+      INCLUDE 'XTAPES.INC'
+      INCLUDE 'XLST06.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XOPVAL.INC'
+C
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'QLST06.INC'
+      INCLUDE 'QLST07.INC'
+C
+      INCLUDE 'IDIM06.INC'
+C
+C---- NOTHING TO DO IF NO LIST 6
+      IF (KEXIST(6) .LE. 0) THEN
+        WRITE (CMON,'(A)') ' No LIST 6'
+        CALL XPRVDU(NCVDU,1,0)
+        WRITE (NCAWU,'(a)') CMON(1)
+        IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+        RETURN
+      ENDIF
+C
+C--READ THE NEXT DIRECTIVE CARD FROM THE INPUT STREAM
+C--READ THE CONTROL DATA
+      IF ( KRDDPV ( PROCS , NPROCS )  .LT. 0 ) GO TO 9910
+C--FIND THE TYPE OF LISTS   IULN1 IS USUALY 6
+      CALL XMOVEI(PROCS(1), IULN1 , 1)
+      FACTOR = PROCS(2)
+      IULN1=KTYP06(IULN1)
+      factor = sqrt(factor)
+C--CLEAR THE STORE
+      CALL XRSL
+      CALL XCSAE
+C
+C      RESERVE THE SCRATCH AREA
+       KZ = KSTALL(4)
+       CALL XZEROF(STORE(KZ),4)
+C
+      IDWZAP = 0
+C      FIRST - READ LIST 6 
+      CALL XFAL06(IULN1,0)
+C-----CHECK REFLECTIONS ALREADY ON DISK
+      IF (L6D .LE. 0) THEN
+       WRITE(CMON,'(A)')' Reflections not in DSC file'
+       CALL XPRVDU (NCVDU,1,0)
+       IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+       GOTO 9910
+      ENDIF
+C
+C
+C     START UPDATING WEIGHTS
+       WRITE(CMON,120)
+       CALL XPRVDU (NCVDU,1,0)
+       IF (ISSPRT .EQ. 0)  WRITE(NCWU, 120)
+120    FORMAT( ' Updating weights')
+C
+C    NOW SET UP LIST 6 FOR OUTPUT
+        CALL XSTR06( IULN1, 0, 0, 0, 0)
+C
+C     START FETCHING THE REFLECTIONS
+20    CONTINUE
+      IF ( KLDRNR(0) .LE. -1) GOTO 100
+C
+      store(m6+4) = store(m6+4)* factor
+C     STORE THIS REFLECTION
+      CALL XSLR(IDWZAP)
+C     LOOP FOR NEXT REFLECTION
+      GO TO 20
+100   CONTINUE
+C
+C     CLOSE NEW LIST 6
+      CALL XERT(IULN1)
+1810  CONTINUE
+      CALL XOPMSG ( IOPREF , IOPEND , 200 )
+      CALL XTIME2(2)
+      CALL XRSL
+      CALL XCSAE
+      RETURN
+9900  CONTINUE
+C -- ERRORS
+      CALL XOPMSG ( IOPREF , IOPABN , 0 )
+      GO TO 1810
+9910  CONTINUE
+C -- INPUT ERROR
+      CALL XOPMSG ( IOPREF , IOPCMI , 0 )
+      GO TO 9900
+      END
+C
