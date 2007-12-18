@@ -5921,6 +5921,8 @@ hybridisation states of C are more clearly defined.
  calculated transformations applied. The TARGET atoms are
  kept, and atoms  whose parameters have been
  calculated will be stored at the end of the new LIST 5.
+ NOTE. If KEEP is given as a keyword, it can be followed by an offset
+ to be used for the new serial numbers
 #PREPLACE        The specified groups will be compared and the
  calculated transformations applied. The new atoms whose parameters
  have been calculated will
@@ -5935,14 +5937,15 @@ hybridisation states of C are more clearly defined.
  in what orientation and with what atom identifiers the model is to be placed.
  That is, the TARGET structure is replaced by the IDEAL.
 #
+#DKEEP  Z#
 #DCOMPARE#
-#DKEEP#
 #DREPLACE#
 #DAUGMENT#
 #PThese 4 directives override the option specified by the MODE parameter of
  the REGULARISE command. The next group calculated will be treated
  in the specified mode. See the description of MODE for
- details. There are no parameters
+ details. If the mode is KEEP, an offset Z can be given to be added to 
+ther SERIAL of kept atoms (default 0) otherwise there are no parameters.
 #DMETHOD NUMBER#
 #PThis directive selects the method for matching the
  groups by giving its number from the
@@ -6152,6 +6155,100 @@ hybridisation states of C are more clearly defined.
  Don't read the atoms back into CRYSTALS when closing CAMERON - they're in
  orthogonal coordinates.
 #
+#D - Comparing two structures#
+ The SYSTEM and ATOM directives enable one to compare one structure with
+atoms from a second structure. However, since the second structure is 
+not part of the main model, CRYSTALS knows nothing about the 
+connectivity.  Using the KEEP z directive, the second strcuture can be 
+added to the DSC file, enabling a complete calculation to be performed.
+# In the following example, O(16) is in a quite distinctly different 
+position in the two structures, so place holder Q(16) is used during the 
+first mapping. The input coordinates are added to the DSC file with 
+SERIAL numbers off-set by 400.
+#
+In the second calculation O(16) of the original structure is compared 
+with Q(416) of the input structure. 
+#J
+\regular keep
+keep 400
+group 7
+old mo(1) o(11) o(12) o(13) o(14) o(15) q(16)
+system 8.4830 10.1870 11.0340 105.260 95.290 95.100 909.60
+atom 0.1570 0.5269 0.2514
+atom 0.1356 0.5975 0.1278  
+atom -0.0296 0.4567 0.2632  
+atom 0.2258 0.3448 0.1750  
+atom 0.1693 0.6928 0.3850  
+atom 0.4211 0.5669 0.2567  
+atom 0.7960 0.1904 0.1727  
+
+
+\regular compare
+group 7
+old mo(1) o(11) until o(16)
+new mo(401) until q(416)
+end
+#
+
+#Q
+#XMATCH#
+#XMap two atomic groups together#
+#YMap two atomic groups together - \MATCH#
+#HSMATCH#
+#N  06#
+#J
+ \MATCH
+ MAP Atom Specifications
+ ONTO Atom Specifications
+ RENAME n
+ EQUALATOM
+ END
+#
+#Q
+#N   5#
+#J
+ \MATCH
+ MAP RESIDUE(1)
+ ONTO RESIDUE(2)
+ RENAME 100
+ END
+#
+#PThis routine  uses the mapping routines in REGULARISE to compare
+two residues.  Unlike REGULARISE itself, the user does not have
+to list the atoms in any special order - the routine attempts to make
+pairwise assigments. Initially this is done via a topographical search,
+and refined by minimising cartesian residuals whenever degeneracy is 
+found.
+
+#DMAP#
+#PThe following list of atoms is the ideal fragment with ideal atom 
+types and numbers
+#
+#DONTO#
+#PThe following list of atoms is the fragment ot be compared with the 
+ideal.  There must be the same number of atoms in both fragments, but 
+not necessarily in the same order. Inclusion of any Q atoms sets the 
+EQUALATOM flag, ie the atom types are ignored.
+#
+#DEQUALATOM#
+#PIf this parameter is included, the atom types in the "ONTO" list are 
+ignored - they can even be Q atoms
+#
+#DRENAME  n#
+#PIf the mapping is succerssful, atoms in the ONTO list are given the 
+same type as the corresponding atom in the MAP list, and the same SERIAL 
+plus "n".
+#
+#DOUTPUT LIST= PUNCH=#
+#POutput takes the values OFF, LOW, MEDIUM, HIGH.
+#Punch takes the values OFF, RESULTS#
+#PResults creates an ASCII file that could be processed by EXCEL or 
+other spreadsheet.
+
+#
+
+
+
 #Q
 #XBONDCALC#
 #XCalculation of interatomic bonds#
@@ -8342,8 +8439,30 @@ Indicates which reflection list to use.
       6      Default
       7      Alternative reflection list
 #
+#Q
+
+
+#YRe-weighting the reflections - REWEIGHT#
+#HSreweight#
+#I\REWEIGHT INPUT= FACTOR=#
+#KINPUT#
+Indicates which reflection list to use.
+#J
+      6      Default
+      7      Alternative reflection list
+#
+#KFACTOR#
+# If FACTOR is less or equal zero, the code tries to compute a value
+ which will make S (GoF) about unity.  It is important that the GoF 
+ stored in LIST 30 is up to date. The SCRIPT REWEIGHT will try to do this 
+ for you.
+#
+If FACTOR is greater than zero, all weights will be multiplied by this 
+amount.  The default value is inity.
+#
 
 #Q
+
 #XLIST 28#
 #XReflection restriction#
 #XOmitting reflections#
@@ -12874,4 +12993,12 @@ crystallographic information.
  \ plot half of z up the page negatively
  THROUGH 51 0 0 -0.01
  \FINISH
+#
+#
+#
+#ZCRYSTALS Manual#
+#P 
+#J
+
+#
 #

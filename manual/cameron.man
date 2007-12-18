@@ -2049,3 +2049,9 @@ EXCLUDE ALL INCLUDE AREA
 Then use the mouse to draw round the bit you want to keep.
 #
 #
+#ZCAMERON MANUAL#
+#P 
+#J
+
+#
+#
