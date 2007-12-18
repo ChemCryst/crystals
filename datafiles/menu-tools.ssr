@@ -5,33 +5,22 @@
 ^^WI   ITEM PLAT  '&Platon' '#SCRIPT PLATON'                                    
 ^^WI               ENABLEIF='L1 L2 L3 L5 L6'                                    
 ^^WI   SPLIT                                                                    
-^^WI   ITEM XINTWIN 'Input twinned data' '#SCRIPT ED25'                         
-^^WI               ENABLEIF='L5 L6' DISABLEIF='IN'                              
-^^WI   SPLIT                                                                    
 ^^WI   ITEM CANON '&Systematic Naming' '#SCRIPT DCANON'                         
 ^^WI               ENABLEIF='L1 L2 L5' DISABLEIF='IN'                           
 ^^WI   ITEM PROBE '&Probe minima' '#SCRIPT XPROBE'                              
 ^^WI               ENABLEIF='L1 L2 L5 L6' DISABLEIF='IN'                        
+--GILLIN^^WI   ITEM CONY '&DelRed' '$% "CRYSDIR:delred.exe"' 
+++GILLIN^^WI   ITEM CONY '&DelRed' '$% CRYSDIR:delred'
+^^WI            DISABLEIF='IN'
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM SPTEST '&Spacegroup quiz' '#SCRIPT SPACETEST'                       
 ^^WI   ITEM WWTB   '&Who wants to be..'  '#SCRIPT WWTB'                         
 ^^WI   SPLIT                                                                    
-^^WI   ITEM CONY 'Co&ntour' '$"CRYSDIR:contour.exe"' DISABLEIF='IN'             
-^^WI   ITEM CONY 'Husak' '#SCRIPT HUSAK' DISABLEIF='IN'
-^^WI   ITEM CONY 'csd2cry' '$% "CRYSDIR:csd2cry.exe"' DISABLEIF='IN'              
---GILLIN^^WI   ITEM CONY '&DelRed' '$% "CRYSDIR:delred.exe"' 
-++GILLIN^^WI   ITEM CONY '&DelRed' '$% CRYSDIR:delred'
-^^WI            DISABLEIF='IN'
---GILLIN^^WI   ITEM CONY '&Re-index' '$% "CRYSDIR:reindex.exe"'
-++GILLIN^^WI   ITEM CONY '&Re-index' '$% CRYSDIR:reindex' 
-^^WI            DISABLEIF='IN'            
---GILLIN^^WI   ITEM CONY 's&x2cry' '$% "CRYSDIR:sxtocry.exe"' 
-++GILLIN^^WI   ITEM CONY 's&x2cry' '$% CRYSDIR:sxtocry' 
-^^WI            DISABLEIF='IN'
-^^WI   SPLIT                                                                    
 ^^WI   MENU NEW '&New Things'                                                
 ^^WI    ITEM XSPEK '&Spek' '#SCRIPT TON' DISABLEIF='IN'              
 ^^WI    ITEM XREWT '&Reweight' '#SCRIPT XREWEIGHT' DISABLEIF='IN'              
+^^WI   ITEM INFO 'Information' '#SCRIPT NEWINF'
+^^WI              DISABLEIF='IN'
 ^^WI   ENDMENU                                                                  
 ^^WI   SPLIT                                                                    
 ^^WI   MENU OBSOLETE '&Obsolete'                                                
@@ -41,5 +30,18 @@
 ^^WI    ITEM XINCAD4 'In Cad&4' '#SCRIPT XINCAD4'                               
 ^^WI    ITEM XINRC93 'In &RC-93' '#SCRIPT XINRC93'                              
 ^^WI    ITEM XINSTRC 'Input &structure' '#SCRIPT XSTRUCTU'                      
+^^WI    ITEM XINTWIN 'Input twinned data' '#SCRIPT ED25'                         
+^^WI               ENABLEIF='L5 L6' DISABLEIF='IN'                              
+^^WI    ITEM CONY 'Co&ntour' '$"CRYSDIR:contour.exe"' DISABLEIF='IN'             
+^^WI    ITEM CONY 'Husak' '#SCRIPT HUSAK' DISABLEIF='IN'
+^^WI    ITEM CONY 'csd2cry' '$% "CRYSDIR:csd2cry.exe"' DISABLEIF='IN'              
+--GILLIN^^WI   ITEM CONY '&Re-index' '$% "CRYSDIR:reindex.exe"'
+++GILLIN^^WI   ITEM CONY '&Re-index' '$% CRYSDIR:reindex' 
+^^WI            DISABLEIF='IN'            
+--GILLIN^^WI   ITEM CONY 's&x2cry' '$% "CRYSDIR:sxtocry.exe"' 
+++GILLIN^^WI   ITEM CONY 's&x2cry' '$% CRYSDIR:sxtocry' 
+^^WI            DISABLEIF='IN'
 ^^WI   ENDMENU                                                                  
+^^WI   ITEM INFO 'Information' '#SCRIPT TOOLINF'
+^^WI              DISABLEIF='IN'
 ^^WI  ENDMENU                                                                   
