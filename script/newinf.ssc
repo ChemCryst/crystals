@@ -1,0 +1,21 @@
+%SCRIPT NEWINF
+%%scriptdata
+%% GUIMENU TOOLS
+%% Information about the items in the new-TOOLS drop-down
+%%
+%%
+
+New Things
+{1,11 Spek       {12,11Hoof-Straver-Spek Absolute configuration test.
+{1,11            {12,11  
+{1,11            {12,11At the ned of an absolute structure determination the
+{1,11            {12,11Flack parameter is set to zero, structure factors calculated
+{1,11            {12,11and some hypothoses tested
+{1,11            {12,11
+{1,11 Reweight   {12,11Rescale refinement weights.  
+{1,11            {12,11This utility may be able to get a GooF to unity by rescaling
+{1,11            {12,11all the weights by a constant. This will not change the 
+{1,11            {12,11parameter values, but will afectect their esds.
+
+{1,0
+%END SCRIPT
