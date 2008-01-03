@@ -1,0 +1,55 @@
+%SCRIPT XSIR02IN                                                                
+%    VARIABLE CHARACTER CTEXT
+%    COPY '#OPEN SCPDATA SIR02.CRY'                                           
+%    QUEUE REWIND                                                               
+%    EXTRACT NEXT                                                               
+%    LOOP                                                                       
+%      ON ERROR TERMINATE                                                       
+%% CLEAR THE COMMAND BUFFER                      
+%      CLEAR                                                                    
+%% NOW COPY FROM FILE TO USER I/O BUFFER         
+%      EXTRACT TRANSFER INPUT                                                   
+%      CLEAR                                                                    
+%% AND READ IT                                   
+%      GET NOSTORE NOPROMPT TEXT '%%' '%%'                                      
+%% CHECK FOR 'LIST'       
+%      IF CVALUE .EQ. '#list 5'  THEN                                                
+Found LIST 5 - Atoms
+%% NOW COPY FROM FILE TO USER I/O BUFFER         
+%          EXTRACT TRANSFER INPUT                                               
+%          CLEAR                                                                
+%          GET APPEND NOPROMPT TEXT NULLSTRING                                  
+%%                                SEND IT TO THE OUTPUT QUEUE                   
+%          QUEUE SEND                                                           
+%%                                GET THE NEXT FILE RECORD AND LOOP             
+%          EXTRACT NEXT                                                         
+%% LOOP OVER REST OF FILE
+%            loop
+%                  ON ERROR TERMINATE                                                       
+%                  CLEAR                                                                    
+%                  EXTRACT TRANSFER INPUT                                               
+%                  CLEAR                                                                
+%                  GET APPEND NOPROMPT TEXT NULLSTRING                                  
+%                  QUEUE SEND                                                           
+%                  extract next
+%            end loop
+%      ELSE                                                                     
+%        CLEAR                                                                  
+%        EXTRACT NEXT                                                           
+%      END IF                                                                   
+%    END LOOP                                                                   
+%    QUEUE PROCESS                                                              
+%    EXTRACT CLOSE                                                              
+%%
+%% Empty input buffer                                                           
+%  GET NOPROMPT NOSTORE TEXT ' ' ' '  
+%%                                          
+%% SIR02 produces an old format LIST 5
+Reformatting atom list
+%  COPY '#EDIT'                                                              
+%  COPY 'REFORMAT ALL'                                                       
+%  COPY 'END'                                                                
+%  copy '#clear 12'
+%  copy 'end'
+%%                                                                              
+%END SCRIPT                                                                     
