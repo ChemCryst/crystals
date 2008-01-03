@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2005/01/23 08:29:12  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:07  rich
 C New CRYSTALS repository
 C
@@ -640,6 +644,7 @@ C         2  FC
 C         3  DF
 C         4  FO PATTERSON
 C         5  FC PATTERSON
+c         6  2Fo-Fc
 C  ITHRES PRINT 0 FOR ALL VALUES LESS THAN THIS
 C  SCALE  MAP SCALE FACTOR
 C  IWT    WEIGHTING
@@ -666,7 +671,7 @@ C
       DIMENSION APD(13)
       DIMENSION A1(26)
       DIMENSION AMIN(3),XYZ(3)
-      CHARACTER*16 CMAPTP(5)
+      CHARACTER*16 CMAPTP(6)
       CHARACTER*8  WTED
       CHARACTER*24 CSERI
       DIMENSION KDEV(4)
@@ -716,7 +721,7 @@ C
 C
       DATA CMAPTP / '    F-Obs map   ' , '   F-Calc map   ' ,
      2              ' Difference map ' , '  FO-Patterson  ' ,
-     3              '  FC-Patterson  ' /
+     3              '  FC-Patterson  ' , '    2Fo-Fc      '/
 C
 C
       NW=7
@@ -998,7 +1003,7 @@ C--THIS REFLECTION IS UNIQUE
 C
 C--MAIN LOOP FOR ADDING IN THE GENERATED REFLECTIONS
       DO 2550 I=JA,JB,NW
-      GOTO(2100,2150,2200,2250,2300,2050),IN
+      GOTO(2100,2150,2200,2250,2300,2310,2050),IN
 C2050  STOP 275
 2050  CALL GUEXIT(275)
 C--'FO' FOURIER
@@ -1020,6 +1025,11 @@ C--'FO' PATTERSON
 C--'FC' PATTERSON
 2300  CONTINUE
       F=STORE(I+5)*STORE(I+5)
+      GOTO 2350
+c--'2Fo-Fc' Fourier
+2310  continue
+      F=2.*STORE(I+3)-STORE(I+5)
+      GOTO 2350
 C--ACCUMULATE THE ORIGIN FOR SCALING
 2350  CONTINUE
       STORE(I+6)=0.
@@ -1071,7 +1081,7 @@ C--GO BACK FOR MORE REFLECTIONS
 C
 C--END OF THE MAP  -  CALCULATE THE SCALE FACTORS
 2600  CONTINUE
-      GOTO(2700,2700,2700,2750,2750,2650),IN
+      GOTO(2700,2700,2700,2750,2750,2700,2650),IN
 C2650  STOP 344
 2650  CALL GUEXIT(344)
 2700  CONTINUE
