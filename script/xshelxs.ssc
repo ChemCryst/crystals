@@ -15,15 +15,17 @@
 ^^WI   MODAL COMMIT='BOK' CANCEL='BXX'                                          
 ^^WI GRID GRIDLR NROWS=1 NCOLS=2                                                
 ^^WI {                                                                          
-^^WI   @ 1,1 GRID GRIDL NROWS=4 NCOLS=3                                         
+^^WI   @ 1,1 GRID GRIDL NROWS=5 NCOLS=3                                         
 ^^WI   {                                                                        
 ^^WI     @ 1,2 RADIOBUTTON RS '&Default Shelxs parameters'                      
 ^^WI           STATE=ON                                                         
 ^^WI     @ 2,2 RADIOBUTTON RD '&Alternative Shelxs parameters'                  
 ^^WI           STATE=OFF                                                        
-^^WI     @ 3,2 CHECKBOX CED '&Edit Shelxs file before processing'               
+^^WI     @ 3,2 RADIOBUTTON RP '&Shelxs Patterson'                  
 ^^WI           STATE=OFF                                                        
-^^WI     @ 4,2 CHECKBOX CRUN '&Run Shelxs now'                                  
+^^WI     @ 4,2 CHECKBOX CED '&Edit Shelxs file before processing'               
+^^WI           STATE=OFF                                                        
+^^WI     @ 5,2 CHECKBOX CRUN '&Run Shelxs now'                                  
 ^^WI           STATE=ON                                                         
 ^^WI   }                                                                        
 ^^WI   @ 1,2 GRID GRIDR NROWS=5 NCOLS=2                                         
@@ -41,16 +43,31 @@
 ^^CR                                                                            
 %         FINISH                                                                
 %      END IF                                                                   
+%%
 ^^??   RS STATE                                                                 
 %      VERIFY ON OFF                                                            
 %      GET SILENT NOSTORE ABBREVIATED 'On=Simple job'                           
 %      IF ( VALUE .EQ. 1 ) THEN                                                 
 %          COPY '#FOREIGN SHELXS '                                              
 %          COPY 'END'                                                           
-%      ELSE                                                                     
+%      END IF
+%%                                                                    
+^^??   RD STATE                                                                 
+%      VERIFY ON OFF                                                            
+%      GET SILENT NOSTORE ABBREVIATED 'On=Hard job'                           
+%      IF ( VALUE .EQ. 1 ) THEN                                                 
 %          COPY '#FOREIGN SHELXS DIFFICULT'                                     
 %          COPY 'END'                                                           
-%      END IF                                                                   
+%      END IF
+%%
+^^??   RP STATE                                                                 
+%      VERIFY ON OFF                                                            
+%      GET SILENT NOSTORE ABBREVIATED 'On=Patterson'                           
+%      IF ( VALUE .EQ. 1 ) THEN                                                 
+%          COPY '#FOREIGN SHELXS PATTERSON'                                     
+%          COPY 'END'                                                           
+%      END IF
+%%
 ^^??   CRUN STATE                                                               
 %      VERIFY ON OFF                                                            
 %      GET SILENT NOSTORE ABBREVIATED 'ON=Run shelxs now'                       
@@ -128,24 +145,24 @@
 %      END BLOCK                                                                
 %%                                                                              
 %      BLOCK                                                                    
-%      IF ( EXISTS ( 30 ) .EQ. 1 ) THEN                                          
-%       VARIABLE REAL SCALEO SCALEW
-%       COPY '#GENERALEDIT 30'                                                       
-%       COPY 'LOCATE RECORDTYPE = 101'                                              
-%       COPY 'TRANSFER FROM OFFSET =  7 TO SCALEO'                                    
-%       COPY 'END'                                                                   
-%       EVALUATE SCALEW = SQRT ( 1. / SCALEO )
-%        if scalew .le. 0.05 then
-%          evaluate scalew = 1.0
-%        end if
-Writing Wilson Scale to LIST 5
-%        COPY '#GENERALEDIT 5'                                                       
-%        COPY 'LOCATE RECORDTYPE=102'                                                 
-%        COPY 'TRANSFER TO OFFSET=1 FROM SCALEW'                                       
-%        COPY 'WRITE OVERWRITE=OVERWRITE'                                             
-%        COPY 'END'
-%       END IF
-%%
+%      IF ( EXISTS ( 30 ) .EQ. 1 ) THEN                                         
+%       VARIABLE REAL SCALEO SCALEW                                             
+%       COPY '#GENERALEDIT 30'                                                  
+%       COPY 'LOCATE RECORDTYPE = 101'                                          
+%       COPY 'TRANSFER FROM OFFSET =  7 TO SCALEO'                              
+%       COPY 'END'                                                              
+%       EVALUATE SCALEW = SQRT ( 1. / SCALEO )                                  
+%        if scalew .le. 0.05 then                                               
+%          evaluate scalew = 1.0                                                
+%        end if                                                                 
+Writing Wilson Scale to LIST 5                                                  
+%        COPY '#GENERALEDIT 5'                                                  
+%        COPY 'LOCATE RECORDTYPE=102'                                           
+%        COPY 'TRANSFER TO OFFSET=1 FROM SCALEW'                                
+%        COPY 'WRITE OVERWRITE=OVERWRITE'                                       
+%        COPY 'END'                                                             
+%       END IF                                                                  
+%%                                                                              
 %%                                                                              
 %%  CENTRE STRUCTURE IN CELL                                                    
 %       COPY '#SCRIPT XCENTRE'                                                  

@@ -1,467 +1,465 @@
-%SCRIPT XCONT
-%%
-% VARIABLE REAL XMIN XMAX YMIN YMAX STEPX STEPY MINX MINY
-% VARIABLE REAL ZSECT MINZ STEPZ RESOL BORDER WIDTH 
-% VARIABLE CHARACTER CFILE
-% VARIABLE INTEGER IMAP DOSCALE DOCALC RUNVIEWER OLDSER DOVOID STEREO
-%%
-% VARIABLE LOGICAL TWINNED LMCE LMAPV
-% EVALUATE TWINNED = FALSE
-%  BLOCK
-%    VARIABLE INTEGER ITMP
-%    IF ( EXISTS 13 .NE. 0 ) THEN
-%        COPY '#GENERALEDIT 13'
-%        COPY 'LOCATE RECORDTYPE=101'
-%        COPY 'TRANSFER FROM OFFSET=1 TO ITMP'
-%        IF ( ITMP .GE. 0 ) THEN
-%         EVALUATE TWINNED = TRUE
-%        ELSE
-%         EVALUATE TWINNED = FALSE
-%        END IF
-%        COPY 'END'
-%    END IF
-%  END BLOCK
-%%
-% COPY '#MOLAX'
-% COPY 'ATOM '
-% BLOCK
-% LOOP
-%   ON END TERMINATE
-%   CLEAR
-%   INSERT 'CONTINUE '
-%   GET SILENT FINAL TEXT 'Plane defining atom labels (END to finish)'
-%   SEND
-% END LOOP
-% END BLOCK
-% COPY 'PLANE'
-% COPY 'SAVE'
-% COPY 'END'
-%%
-%     EVALUATE LMCE = FALSE
--GIL% IF FILEEXISTS 'c:/progra~1/marchi~1/MarchingCubeELD.exe' -
--GIL .OR. FILEEXISTS 'crysdir:mce/mce.exe' THEN
-+GIL% IF FILEEXISTS 'crysdir:MarchingCubeELD.exe' THEN
-%       EVALUATE LMCE = TRUE
-%     END IF
-%     EVALUATE LMAPV = FALSE
--GIL% IF FILEEXISTS 'WINGXDIR:/for_prog/mapview.exe' THEN
-+GIL% IF FILEEXISTS 'WINGXDIR:/for_prog/mapview' THEN
-%       EVALUATE LMAPV = TRUE
-%     END IF
-%%
-%%
-^^WI WINDOW XCONT 'Slant Fourier' MODAL
-^^WI COMMIT='BOK' CANCEL='BXX'
-^^WI GRID GRIDM NROWS=5 NCOLS=1
-^^WI {
-^^WI  @ 1,1 GRID TOP NROWS=1 NCOLS=2
-^^WI  {
-^^WI   @ 1,2 GRID GRIDB NROWS=10 NCOLS=3
-^^WI   {
-^^WI     @ 2,2 BUTTON BOK '&Ok' DEFAULT
-^^WI     @ 4,2 BUTTON BXX '&Cancel'
-^^WI     @ 6,2 BUTTON BHELP    '&Help'
-^^WI     @ 10,2 BUTTON BMOLAX  '&Define plane'
-^^WI   }
-^^WI   @ 1,1 GRID GRIDA NROWS=7 NCOLS=3
-^^WI   {
-^^WI    @ 2,2 GRID GRIDAA NROWS=1 NCOLS=3 OUTLINE='Recompute'
-^^WI    {
-^^WI     @ 1,1 CHECKBOX XSCALE 'Overall Scale' INFORM=NO
-^^WI     @ 1,3 CHECKBOX XCALC 'Phases' INFORM=NO
-^^WI       STATE = ON
-^^WI    }
-^^WI    @ 4,2 GRID GRIDAB NROWS=2 NCOLS=5
-^^WI    {
-^^WI      @ 1,1 STATIC TEXT1 'Compute a'
-^^WI      @ 1,3 DROPDOWN XFLIST 
-^^WI            ADDTOLIST 'F-Obs'        'Difference'
-^^WI                      'F-Calc'       'Fo-Patterson'
-^^WI                      'Fc-Patterson' 'NULL'
-^^WI      @ 1,5 STATIC TEXT1 'map'
-^^WI    }
-^^WI    @ 6,2 GRID GSIZE NROWS=3 NCOLS=5
-^^WI    {
-^^WI      @ 1,1 STATIC T1 'Section width'
-^^WI      @ 1,3 EDITBOX EW '8.0' CHARS=8 REAL
-^^WI      @ 1,5 STATIC T2 'angstroms.'
-^^WI      @ 2,1 STATIC T3 'Resolution'
-^^WI      @ 2,3 EDITBOX ER '0.25' CHARS=8 REAL
-^^WI      @ 2,5 STATIC T4 'angstroms.'
-^^WI      @ 3,1 STATIC T5 'Compute an extra'
-^^WI      @ 3,3 EDITBOX ES '2' CHARS=8 INTEGER
-^^WI      @ 3,5 STATIC T5 'sections each side.'
-^^WI    }
-^^WI   }
-^^WI  }
-^^WI  @ 2,1 GRID BOTTOM NROWS=2 NCOLS=3
-^^WI  {
-^^WI   @ 1,2 GRID GMAPS NROWS=1 NCOLS=4 OUTLINE='Save map as'
-^^WI   {
-^^WI    @ 1,2 EDITBOX E1 'slant.fou' CHARS=50 INFORM=NO
-^^WI    @ 1,4 BUTTON BROWSE '&Choose'
-^^WI   }
-^^WI  }
-^^WI  @ 3,1 GRID VBOTTOM NROWS=1 NCOLS=9
-^^WI  {
-% IF ( LMCE ) THEN
-^^WI   @ 1,2 RADIOBUTTON XC 'Run CONTOUR'  INFORM
-^^WI   @ 1,4 RADIOBUTTON XM 'Run MCE' STATE=ON INFORM
-% ELSE
-^^WI   @ 1,2 RADIOBUTTON XC 'Run CONTOUR' STATE=ON INFORM
-^^WI   @ 1,4 RADIOBUTTON XM 'Run MCE' DISABLED=YES INFORM
-% END IF
-^^WI   @ 1,6 RADIOBUTTON XV 'Run MapView' INFORM
-% IF ( .NOT. LMAPV ) THEN
-^^WI      DISABLED=YES
-% END IF
-^^WI   @ 1,8 RADIOBUTTON XN 'Do not run viewer' INFORM
-^^WI  }
-^^WI  @ 4,1 GRID VBOTTOM NROWS=2 NCOLS=9 OUTLINE='MCE advanced'
-^^WI  {
-^^WI   @ 1,2 CHECKBOX XMVOID 'Save void map'
-% IF ( .NOT. LMCE ) THEN
-^^WI       DISABLED=YES
-% END IF
-^^WI   @ 1,4 CHECKBOX XMCEPF 'HW page flipping stereo'
-% IF ( .NOT. LMCE ) THEN
-^^WI       DISABLED=YES
-% END IF
-^^WI   @ 1,6 CHECKBOX XMCEIF 'Interlaced stereo'
-% IF ( .NOT. LMCE ) THEN
-^^WI       DISABLED=YES
-% END IF
-^^WI    @ 1,8 BUTTON MCEHH 'MCE Help' 
-^^WI  }
-^^WI }
-^^WI SHOW
-^^CR
-% LOOP
-%   VERIFY XC XM XV XN BXX BROWSE BMOLAX BHELP BOK MCEHH
-%   GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
-%   CASE VALUE
-%     BLOCK                       % XC
-^^CO    SET E1 DISABLED=NO SET BROWSE DISABLED=NO SET XMVOID DISABLED=YES
-^^CO    SET XMCEPF DISABLED=YES SET XMCEIF DISABLED=YES
-%     END BLOCK
-%     BLOCK                       % XM
-^^CO    SET E1 DISABLED=NO SET BROWSE DISABLED=NO SET XMVOID DISABLED=NO
-^^CO    SET XMCEPF DISABLED=NO SET XMCEIF DISABLED=NO
-%     END BLOCK
-%     BLOCK                       % XV
-^^CO    SET E1 DISABLED=YES SET BROWSE DISABLED=YES SET XMVOID DISABLED=YES
-^^CO    SET XMCEPF DISABLED=YES SET XMCEIF DISABLED=YES
-%     END BLOCK
-%     BLOCK                       % XN
-^^CO    SET E1 DISABLED=NO SET BROWSE DISABLED=NO SET XMVOID DISABLED=YES
-^^CO    SET XMCEPF DISABLED=YES SET XMCEIF DISABLED=YES
-%     END BLOCK
-%     BLOCK                       % BXX
-^^WI    DISPOSE XCONT
-^^CR
-%       FINISH
-%     END BLOCK
-%     BLOCK                       % BROWSE
-%       ON ERROR REPEAT
-%       CLEAR
-^^WI    SYSSAVEFILE 'Slant.fou' '*.fou' 'Fourier map ascii file (*.fou)'
-^^CR
-%       GET SILENT FINAL TEXT 'Filename for map' 'Slant.fou'
-%       IF CVALUE .NE. 'CANCEL' THEN
-%         TRANSFER "^^CO SET E1 TEXT " // CVALUE TO DISPLAY
-%       END IF
-%     END BLOCK
-%     BLOCK                       % BMOLAX
-
-This feature is missing. Write it into xcont.scp.
-
-%     END BLOCK
-%     BLOCK                       % BHELP
-%       COPY '#SCRIPT XHELP1'
-A slant fourier is one that is calculated through any general
-plane of the unit cell. For such a fourier the normal Beevers-
-Lipson expansion of the fourier summation cannot be used, so
-that such fouriers take many orders of magnitude longer than a
-conventional one.
-
-This script allows you to define a plane in which to calculate
-a fourier section. You may also specify the width of the plane,
-and the number of sections on each side of the plane to include.
-
-Choose one of the programs "Contour" or "MarchingCubesELD" to
-view the generated sections.
-%       COPY '#SCRIPT XHELP2'
-%     END BLOCK
-%     BLOCK                       % BOK
-%%
-^^??    EW TEXT
-%       GET NOSTORE SILENT REAL ' ' '8.5'
-%       EVALUATE WIDTH = VALUE / 2.0
-%%
-^^??    ER TEXT
-%       GET NOSTORE SILENT REAL ' ' '0.25'
-%       EVALUATE RESOL = VALUE
-%%
-^^??    ES TEXT
-%       GET NOSTORE SILENT REAL ' ' '2'
-%       EVALUATE ZSECT = VALUE
-%%
-^^??    XFLIST SELECTED
-%       GET NOSTORE SILENT INTEGER ' ' '2'
-%       EVALUATE IMAP = VALUE
-%%
-^^??    XSCALE STATE
-%       VERIFY ON OFF
-%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%       EVALUATE DOSCALE = VALUE
-%%
-^^??    XMVOID STATE
-%       VERIFY ON OFF
-%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%       EVALUATE DOVOID = VALUE
-%%
-^^??    XMCEPF STATE
-%       VERIFY OFF ON
-%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%       EVALUATE STEREO = VALUE
-%%
-^^??    XMCEIF STATE
-%       VERIFY OFF ON
-%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%       IF VALUE .EQ. 2 THEN
-%        EVALUATE STEREO = 3
-%       END IF
-%%
-^^??    XCALC STATE
-%       VERIFY ON OFF
-%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%       EVALUATE DOCALC = VALUE
-%%
-^^??    E1 TEXT
-%       GET NOSTORE SILENT TEXT ' ' 'slant.fou'
-%       EVALUATE CFILE = CVALUE
-%       TRANSFER "#STORE CSYS MAP '" // CFILE // "'" TO CRYSTALS
-%%
-^^??    XC STATE
-%       VERIFY ON OFF
-%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%       IF VALUE .EQ. 1 THEN
-%         EVALUATE RUNVIEWER = 1
-%       ELSE
-^^??      XN STATE
-%         VERIFY ON OFF
-%         GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%         IF VALUE .EQ. 1 THEN
-%           EVALUATE RUNVIEWER = 0
-%         ELSE
-^^??        XV STATE
-%           VERIFY ON OFF
-%           GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%           IF VALUE .EQ. 1 THEN
-%             EVALUATE RUNVIEWER = 3
-%             TRANSFER "#STORE CSYS MAP 'Mapfile'" TO CRYSTALS
-%           ELSE
-%             EVALUATE RUNVIEWER = 2
-%           END IF
-%         END IF
-%       END IF
-%       BLOCK
-%         ON ERROR TERMINATE
-%         IF DOSCALE .EQ. 1 .OR. DOCALC .EQ. 1 THEN
-%% Remove any Q atoms, but restore again later.
-%           COPY '#GENERALEDIT 5'
-%           COPY 'GETSERIAL OLDSER'
-%           COPY '#EDIT'
-%           COPY 'SELECT TYPE NE Q'
-%           COPY 'SELECT TYPE NE QH'
-%           COPY 'SELECT TYPE NE QN'
-%           COPY 'END'
-%           IF DOSCALE .EQ. 1 THEN
-%             COPY '#SFLS'
-%             IF TWINNED .EQ. TRUE THEN
-%               COPY 'SCALE /FO/=SCALED-/FOT/'
-%             ELSE
-%               COPY 'SCALE'
-%             END IF
-%             COPY 'END'
-%           END IF
-%           IF DOCALC .EQ. 1 THEN
-%             COPY '#SFLS'
-%             IF TWINNED .EQ. TRUE THEN
-%               COPY 'CALC /FO/=SCALED-/FOT/'
-%             ELSE
-%               COPY 'CALC'
-%             END IF
-%             COPY 'END'
-%           END IF
-%% Restore the list 5 (may have Q atoms in it).
-%           COPY '#DISK'
-%           CLEAR
-%           INSERT 'RESET 5 '
-%           STORE INTEGER OLDSER
-%           SEND
-%           COPY '#SUM L 5'
-%           COPY 'END'
-%         END IF
-%       END BLOCK
-%       BLOCK
-%         EVALUATE XMIN = 0.0 - WIDTH
-%         EVALUATE XMAX = WIDTH
-%         EVALUATE YMIN = 0.0 - WIDTH
-%         EVALUATE YMAX = WIDTH
-%         EVALUATE BORDER = 0.25
-%         EVALUATE MINX = ( XMIN - BORDER )
-%         EVALUATE MINY = ( YMIN - BORDER )
-%         EVALUATE STEPX = ( ( XMAX + BORDER ) - MINX ) / RESOL
-%         EVALUATE STEPY = ( ( YMAX + BORDER ) - MINY ) / RESOL
-%         EVALUATE STEPX = 1. + STEPX
-%         EVALUATE STEPY = 1. + STEPY
-%         BLOCK
-%           QUEUE REWIND
-%           CLEAR
-%           INSERT 'MAP TYPE = '
-%           CASE IMAP
-%             INSERT 'F-O'
-%             INSERT 'DIF'
-%             INSERT 'F-C'
-%             INSERT 'FO-PAT'
-%             INSERT 'FC-PAT'
-%           END CASE
-%           IF ( IMAP .EQ. 2 ) THEN
-%             INSERT ' MIN-RHO = -1000'
-%           ELSE
-%             INSERT ' MIN-RHO = 0'
-%           END IF
-%           IF RUNVIEWER .EQ. 3 THEN
-%           INSERT ' 10 FILE=MAPVIEW'
-%           ELSE
-%           INSERT ' 10 FILE=YES'
-%           END IF
-%           QUEUE SEND
-%           CLEAR
-%           STORE CHARACTER 'SAVE MOLAX'
-%           QUEUE SEND
-%           CLEAR
-%           INSERT 'DOWN '
-%           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINX
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPX
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL
-%           QUEUE SEND
-%           CLEAR
-%           INSERT 'ACROSS '
-%           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINY
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPY
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL
-%           QUEUE SEND
-%           CLEAR
-%           INSERT 'SECTION '
-%           EVALUATE MINZ = - 1.0 * RESOL * ZSECT
-%           EVALUATE STEPZ = 1.0 + 2.0 * ZSECT
-%           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINZ
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPZ
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL
-%           QUEUE SEND
-%         END BLOCK
-%         COPY '#SLANT'
-%            QUEUE PROCESS
-%         COPY 'END'
-{R * Done. Slant fourier complete.
-%%
-%         IF DOVOID .EQ. 1 THEN
-%          BLOCK
-%           TRANSFER "#STORE CSYS MAP 'void.fou'" TO CRYSTALS
-%           QUEUE REWIND
-%           CLEAR
-%           INSERT 'MAP FILE=YES'
-%           QUEUE SEND
-%           CLEAR
-%           STORE CHARACTER 'SAVE MOLAX'
-%           QUEUE SEND
-%           CLEAR
-%           INSERT 'DOWN '
-%           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINX
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPX
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL
-%           QUEUE SEND
-%           CLEAR
-%           INSERT 'ACROSS '
-%           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINY
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPY
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL
-%           QUEUE SEND
-%           CLEAR
-%           INSERT 'SECTION '
-%           EVALUATE MINZ = - 1.0 * RESOL * ZSECT
-%           EVALUATE STEPZ = 1.0 + 2.0 * ZSECT
-%           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINZ
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPZ
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL
-%           QUEUE SEND
-%          END BLOCK
-%          COPY '#VSLANT'
-%            QUEUE PROCESS
-%          COPY 'END'
-{R * Done. Slant void complete.
-%         END IF
-%%
-%         IF TWINNED .EQ. TRUE THEN
-%           BLOCK
-%           ON ERROR TERMINATE
-%             IF DOSCALE .EQ. 1 THEN
-{S * Twinned data restoring overall scale.
-%               COPY '#SFLS'
-%               COPY 'SCALE'
-%               COPY 'END'
-%             END IF
-%             IF DOCALC .EQ. 1 THEN
-{S * Twinned data restoring phases.
-%               COPY '#SFLS'
-%               COPY 'CALC'
-%               COPY 'END'
-%             END IF
-%           END BLOCK
-%         END IF
-^^CO    DISPOSE XCONT
-^^CO SET PROGOUTPUT TEXT='Slant Fourier complete.' 
-%         CASE RUNVIEWER + 1
-%           BLOCK    % Don't run
-%             TRANSFER 'Map file saved as: ' // CFILE TO DISPLAY
-%           END BLOCK
-%           BLOCK    %Run contour
-%             TRANSFER '#SPAWN "CRYSDIR:contour.exe" ' // CFILE TO CRYSTALS
-%           END BLOCK
-%           BLOCK    %Run marchingcubesELD viewer
-%             CASE STEREO
-%                EVALUATE CFILE = CFILE
-%                EVALUATE CFILE = '-s ' // CFILE
-%                EVALUATE CFILE = '-i ' // CFILE
-%             END CASE
-%             IF DOVOID .EQ. 1 THEN
-%                EVALUATE CFILE = CFILE // ' void.fou'
-%             END IF
- * Starting MCE Fourier viewer by Michal Husak. Please wait while it loads ...
--GIL% IF FILEEXISTS 'CRYSDIR:mce/mce.exe' THEN
--GIL%   TRANSFER '#SPAWN "CRYSDIR:mce/mce.exe" ' // CFILE TO CRYSTALS
--GIL% ELSE
--GIL%   TRANSFER '#SPAWN "C:/PROGRA~1/MARCHI~1/MarchingCubeELD.exe" ' -
--GIL    // CFILE TO CRYSTALS
--GIL% END IF
-%%
-+GIL% TRANSFER '#SPAWN "CRYSDIR:MarchingCubeELD.exe" ' -
-+GIL   // CFILE TO CRYSTALS
-%           END BLOCK
-%           BLOCK    %Run MapView
-%             TRANSFER '#SPAWN "WINGXDIR:/for_prog/mapview.exe" Mapfile' -
- TO CRYSTALS
-%           END BLOCK
-%         END CASE
-%         FINISH
-%       END BLOCK
-%     END BLOCK
-%     BLOCK                        % MCE help
-%       COPY '#SPAWN http://makeashorterlink.com/?E15F244E7'
-%     END BLOCK
-%   END CASE
-% END LOOP
-%END SCRIPT
-
+%SCRIPT XCONT                                                                   
+%%                                                                              
+% VARIABLE REAL XMIN XMAX YMIN YMAX STEPX STEPY MINX MINY                       
+% VARIABLE REAL ZSECT MINZ STEPZ RESOL BORDER WIDTH                             
+% VARIABLE CHARACTER CFILE                                                      
+% VARIABLE INTEGER IMAP DOSCALE DOCALC RUNVIEWER OLDSER DOVOID STEREO           
+%%                                                                              
+% VARIABLE LOGICAL TWINNED LMCE LMAPV                                           
+% EVALUATE TWINNED = FALSE                                                      
+%  BLOCK                                                                        
+%    VARIABLE INTEGER ITMP                                                      
+%    IF ( EXISTS 13 .NE. 0 ) THEN                                               
+%        COPY '#GENERALEDIT 13'                                                 
+%        COPY 'LOCATE RECORDTYPE=101'                                           
+%        COPY 'TRANSFER FROM OFFSET=1 TO ITMP'                                  
+%        IF ( ITMP .GE. 0 ) THEN                                                
+%         EVALUATE TWINNED = TRUE                                               
+%        ELSE                                                                   
+%         EVALUATE TWINNED = FALSE                                              
+%        END IF                                                                 
+%        COPY 'END'                                                             
+%    END IF                                                                     
+%  END BLOCK                                                                    
+%%                                                                              
+% COPY '#MOLAX'                                                                 
+% COPY 'ATOM '                                                                  
+% BLOCK                                                                         
+% LOOP                                                                          
+%   ON END TERMINATE                                                            
+%   CLEAR                                                                       
+%   INSERT 'CONTINUE '                                                          
+%   GET SILENT FINAL TEXT 'Plane defining atom labels (END to finish)'          
+%   SEND                                                                        
+% END LOOP                                                                      
+% END BLOCK                                                                     
+% COPY 'PLANE'                                                                  
+% COPY 'SAVE'                                                                   
+% COPY 'END'                                                                    
+%%                                                                              
+%     EVALUATE LMCE = FALSE                                                     
+% IF FILEEXISTS 'c:/progra~1/marchi~1/MarchingCubeELD.exe' -                    
+ .OR. FILEEXISTS 'crysdir:mce/mce.exe' THEN                                     
+%       EVALUATE LMCE = TRUE                                                    
+%     END IF                                                                    
+%     EVALUATE LMAPV = FALSE                                                    
+% IF FILEEXISTS 'WINGXDIR:/for_prog/mapview.exe' THEN                           
+%       EVALUATE LMAPV = TRUE                                                   
+%     END IF                                                                    
+%%                                                                              
+%%                                                                              
+^^WI WINDOW XCONT 'Slant Fourier' MODAL                                         
+^^WI COMMIT='BOK' CANCEL='BXX'                                                  
+^^WI GRID GRIDM NROWS=5 NCOLS=1                                                 
+^^WI {                                                                          
+^^WI  @ 1,1 GRID TOP NROWS=1 NCOLS=2                                            
+^^WI  {                                                                         
+^^WI   @ 1,2 GRID GRIDB NROWS=10 NCOLS=3                                        
+^^WI   {                                                                        
+^^WI     @ 2,2 BUTTON BOK '&Ok' DEFAULT                                         
+^^WI     @ 4,2 BUTTON BXX '&Cancel'                                             
+^^WI     @ 6,2 BUTTON BHELP    '&Help'                                          
+^^WI     @ 10,2 BUTTON BMOLAX  '&Define plane'                                  
+^^WI   }                                                                        
+^^WI   @ 1,1 GRID GRIDA NROWS=7 NCOLS=3                                         
+^^WI   {                                                                        
+^^WI    @ 2,2 GRID GRIDAA NROWS=1 NCOLS=3 OUTLINE='Recompute'                   
+^^WI    {                                                                       
+^^WI     @ 1,1 CHECKBOX XSCALE 'Overall Scale' INFORM=NO                        
+^^WI     @ 1,3 CHECKBOX XCALC 'Phases' INFORM=NO                                
+^^WI       STATE = ON                                                           
+^^WI    }                                                                       
+^^WI    @ 4,2 GRID GRIDAB NROWS=2 NCOLS=5                                       
+^^WI    {                                                                       
+^^WI      @ 1,1 STATIC TEXT1 'Compute a'                                        
+^^WI      @ 1,3 DROPDOWN XFLIST                                                 
+^^WI            ADDTOLIST 'F-Obs'        'Difference'                           
+^^WI                      'F-Calc'       'Fo-Patterson'                         
+^^WI                      'Fc-Patterson' '2Fo-Fc'
+^^WI                      'NULL'                                 
+^^WI      @ 1,5 STATIC TEXT1 'map'                                              
+^^WI    }                                                                       
+^^WI    @ 6,2 GRID GSIZE NROWS=3 NCOLS=5                                        
+^^WI    {                                                                       
+^^WI      @ 1,1 STATIC T1 'Section width'                                       
+^^WI      @ 1,3 EDITBOX EW '8.0' CHARS=8 REAL                                   
+^^WI      @ 1,5 STATIC T2 'angstroms.'                                          
+^^WI      @ 2,1 STATIC T3 'Resolution'                                          
+^^WI      @ 2,3 EDITBOX ER '0.25' CHARS=8 REAL                                  
+^^WI      @ 2,5 STATIC T4 'angstroms.'                                          
+^^WI      @ 3,1 STATIC T5 'Compute an extra'                                    
+^^WI      @ 3,3 EDITBOX ES '2' CHARS=8 INTEGER                                  
+^^WI      @ 3,5 STATIC T5 'sections each side.'                                 
+^^WI    }                                                                       
+^^WI   }                                                                        
+^^WI  }                                                                         
+^^WI  @ 2,1 GRID BOTTOM NROWS=2 NCOLS=3                                         
+^^WI  {                                                                         
+^^WI   @ 1,2 GRID GMAPS NROWS=1 NCOLS=4 OUTLINE='Save map as'                   
+^^WI   {                                                                        
+^^WI    @ 1,2 EDITBOX E1 'slant.fou' CHARS=50 INFORM=NO                         
+^^WI    @ 1,4 BUTTON BROWSE '&Choose'                                           
+^^WI   }                                                                        
+^^WI  }                                                                         
+^^WI  @ 3,1 GRID VBOTTOM NROWS=1 NCOLS=9                                        
+^^WI  {                                                                         
+% IF ( LMCE ) THEN                                                              
+^^WI   @ 1,2 RADIOBUTTON XC 'Run CONTOUR'  INFORM                               
+^^WI   @ 1,4 RADIOBUTTON XM 'Run MCE' STATE=ON INFORM                           
+% ELSE                                                                          
+^^WI   @ 1,2 RADIOBUTTON XC 'Run CONTOUR' STATE=ON INFORM                       
+^^WI   @ 1,4 RADIOBUTTON XM 'Run MCE' DISABLED=YES INFORM                       
+% END IF                                                                        
+^^WI   @ 1,6 RADIOBUTTON XV 'Run MapView' INFORM                                
+% IF ( .NOT. LMAPV ) THEN                                                       
+^^WI      DISABLED=YES                                                          
+% END IF                                                                        
+^^WI   @ 1,8 RADIOBUTTON XN 'Do not run viewer' INFORM                          
+^^WI  }                                                                         
+^^WI  @ 4,1 GRID VBOTTOM NROWS=2 NCOLS=9 OUTLINE='MCE advanced'                 
+^^WI  {                                                                         
+^^WI   @ 1,2 CHECKBOX XMVOID 'Save void map'                                    
+% IF ( .NOT. LMCE ) THEN                                                        
+^^WI       DISABLED=YES                                                         
+% END IF                                                                        
+^^WI   @ 1,4 CHECKBOX XMCEPF 'HW page flipping stereo'                          
+% IF ( .NOT. LMCE ) THEN                                                        
+^^WI       DISABLED=YES                                                         
+% END IF                                                                        
+^^WI   @ 1,6 CHECKBOX XMCEIF 'Interlaced stereo'                                
+% IF ( .NOT. LMCE ) THEN                                                        
+^^WI       DISABLED=YES                                                         
+% END IF                                                                        
+^^WI    @ 1,8 BUTTON MCEHH 'MCE Help'                                           
+^^WI  }                                                                         
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+% LOOP                                                                          
+%   VERIFY XC XM XV XN BXX BROWSE BMOLAX BHELP BOK MCEHH                        
+%   GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '                                
+%   CASE VALUE                                                                  
+%     BLOCK                       % XC                                          
+^^CO    SET E1 DISABLED=NO SET BROWSE DISABLED=NO SET XMVOID DISABLED=YES       
+^^CO    SET XMCEPF DISABLED=YES SET XMCEIF DISABLED=YES                         
+%     END BLOCK                                                                 
+%     BLOCK                       % XM                                          
+^^CO    SET E1 DISABLED=NO SET BROWSE DISABLED=NO SET XMVOID DISABLED=NO        
+^^CO    SET XMCEPF DISABLED=NO SET XMCEIF DISABLED=NO                           
+%     END BLOCK                                                                 
+%     BLOCK                       % XV                                          
+^^CO    SET E1 DISABLED=YES SET BROWSE DISABLED=YES SET XMVOID DISABLED=YES     
+^^CO    SET XMCEPF DISABLED=YES SET XMCEIF DISABLED=YES                         
+%     END BLOCK                                                                 
+%     BLOCK                       % XN                                          
+^^CO    SET E1 DISABLED=NO SET BROWSE DISABLED=NO SET XMVOID DISABLED=YES       
+^^CO    SET XMCEPF DISABLED=YES SET XMCEIF DISABLED=YES                         
+%     END BLOCK                                                                 
+%     BLOCK                       % BXX                                         
+^^WI    DISPOSE XCONT                                                           
+^^CR                                                                            
+%       FINISH                                                                  
+%     END BLOCK                                                                 
+%     BLOCK                       % BROWSE                                      
+%       ON ERROR REPEAT                                                         
+%       CLEAR                                                                   
+^^WI    SYSSAVEFILE 'Slant.fou' '*.fou' 'Fourier map ascii file (*.fou)'        
+^^CR                                                                            
+%       GET SILENT FINAL TEXT 'Filename for map' 'Slant.fou'                    
+%       IF CVALUE .NE. 'CANCEL' THEN                                            
+%         TRANSFER "^^CO SET E1 TEXT " // CVALUE TO DISPLAY                     
+%       END IF                                                                  
+%     END BLOCK                                                                 
+%     BLOCK                       % BMOLAX                                      
+                                                                                
+This feature is missing. Write it into xcont.scp.                               
+                                                                                
+%     END BLOCK                                                                 
+%     BLOCK                       % BHELP                                       
+%       COPY '#SCRIPT XHELP1'                                                   
+A slant fourier is one that is calculated through any general                   
+plane of the unit cell. For such a fourier the normal Beevers-                  
+Lipson expansion of the fourier summation cannot be used, so                    
+that such fouriers take many orders of magnitude longer than a                  
+conventional one.                                                               
+                                                                                
+This script allows you to define a plane in which to calculate                  
+a fourier section. You may also specify the width of the plane,                 
+and the number of sections on each side of the plane to include.                
+                                                                                
+Choose one of the programs "Contour" or "MarchingCubesELD" to                   
+view the generated sections.                                                    
+%       COPY '#SCRIPT XHELP2'                                                   
+%     END BLOCK                                                                 
+%     BLOCK                       % BOK                                         
+%%                                                                              
+^^??    EW TEXT                                                                 
+%       GET NOSTORE SILENT REAL ' ' '8.5'                                       
+%       EVALUATE WIDTH = VALUE / 2.0                                            
+%%                                                                              
+^^??    ER TEXT                                                                 
+%       GET NOSTORE SILENT REAL ' ' '0.25'                                      
+%       EVALUATE RESOL = VALUE                                                  
+%%                                                                              
+^^??    ES TEXT                                                                 
+%       GET NOSTORE SILENT REAL ' ' '2'                                         
+%       EVALUATE ZSECT = VALUE                                                  
+%%                                                                              
+^^??    XFLIST SELECTED                                                         
+%       GET NOSTORE SILENT INTEGER ' ' '2'                                      
+%       EVALUATE IMAP = VALUE                                                   
+%%                                                                              
+^^??    XSCALE STATE                                                            
+%       VERIFY ON OFF                                                           
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '                                
+%       EVALUATE DOSCALE = VALUE                                                
+%%                                                                              
+^^??    XMVOID STATE                                                            
+%       VERIFY ON OFF                                                           
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '                                
+%       EVALUATE DOVOID = VALUE                                                 
+%%                                                                              
+^^??    XMCEPF STATE                                                            
+%       VERIFY OFF ON                                                           
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '                                
+%       EVALUATE STEREO = VALUE                                                 
+%%                                                                              
+^^??    XMCEIF STATE                                                            
+%       VERIFY OFF ON                                                           
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '                                
+%       IF VALUE .EQ. 2 THEN                                                    
+%        EVALUATE STEREO = 3                                                    
+%       END IF                                                                  
+%%                                                                              
+^^??    XCALC STATE                                                             
+%       VERIFY ON OFF                                                           
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '                                
+%       EVALUATE DOCALC = VALUE                                                 
+%%                                                                              
+^^??    E1 TEXT                                                                 
+%       GET NOSTORE SILENT TEXT ' ' 'slant.fou'                                 
+%       EVALUATE CFILE = CVALUE                                                 
+%       TRANSFER "#STORE CSYS MAP '" // CFILE // "'" TO CRYSTALS                
+%%                                                                              
+^^??    XC STATE                                                                
+%       VERIFY ON OFF                                                           
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '                                
+%       IF VALUE .EQ. 1 THEN                                                    
+%         EVALUATE RUNVIEWER = 1                                                
+%       ELSE                                                                    
+^^??      XN STATE                                                              
+%         VERIFY ON OFF                                                         
+%         GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
+%         IF VALUE .EQ. 1 THEN                                                  
+%           EVALUATE RUNVIEWER = 0                                              
+%         ELSE                                                                  
+^^??        XV STATE                                                            
+%           VERIFY ON OFF                                                       
+%           GET SILENT NOSTORE FINAL ABBREVIATED ' '                            
+%           IF VALUE .EQ. 1 THEN                                                
+%             EVALUATE RUNVIEWER = 3                                            
+%             TRANSFER "#STORE CSYS MAP 'Mapfile'" TO CRYSTALS                  
+%           ELSE                                                                
+%             EVALUATE RUNVIEWER = 2                                            
+%           END IF                                                              
+%         END IF                                                                
+%       END IF                                                                  
+%       BLOCK                                                                   
+%         ON ERROR TERMINATE                                                    
+%         IF DOSCALE .EQ. 1 .OR. DOCALC .EQ. 1 THEN                             
+%% Remove any Q atoms, but restore again later.                                 
+%           COPY '#GENERALEDIT 5'                                               
+%           COPY 'GETSERIAL OLDSER'                                             
+%           COPY '#EDIT'                                                        
+%           COPY 'SELECT TYPE NE Q'                                             
+%           COPY 'SELECT TYPE NE QH'                                            
+%           COPY 'SELECT TYPE NE QN'                                            
+%           COPY 'END'                                                          
+%           IF DOSCALE .EQ. 1 THEN                                              
+%             COPY '#SFLS'                                                      
+%             IF TWINNED .EQ. TRUE THEN                                         
+%               COPY 'SCALE /FO/=SCALED-/FOT/'                                  
+%             ELSE                                                              
+%               COPY 'SCALE'                                                    
+%             END IF                                                            
+%             COPY 'END'                                                        
+%           END IF                                                              
+%           IF DOCALC .EQ. 1 THEN                                               
+%             COPY '#SFLS'                                                      
+%             IF TWINNED .EQ. TRUE THEN                                         
+%               COPY 'CALC /FO/=SCALED-/FOT/'                                   
+%             ELSE                                                              
+%               COPY 'CALC'                                                     
+%             END IF                                                            
+%             COPY 'END'                                                        
+%           END IF                                                              
+%% Restore the list 5 (may have Q atoms in it).                                 
+%           COPY '#DISK'                                                        
+%           CLEAR                                                               
+%           INSERT 'RESET 5 '                                                   
+%           STORE INTEGER OLDSER                                                
+%           SEND                                                                
+%           COPY '#SUM L 5'                                                     
+%           COPY 'END'                                                          
+%         END IF                                                                
+%       END BLOCK                                                               
+%       BLOCK                                                                   
+%         EVALUATE XMIN = 0.0 - WIDTH                                           
+%         EVALUATE XMAX = WIDTH                                                 
+%         EVALUATE YMIN = 0.0 - WIDTH                                           
+%         EVALUATE YMAX = WIDTH                                                 
+%         EVALUATE BORDER = 0.25                                                
+%         EVALUATE MINX = ( XMIN - BORDER )                                     
+%         EVALUATE MINY = ( YMIN - BORDER )                                     
+%         EVALUATE STEPX = ( ( XMAX + BORDER ) - MINX ) / RESOL                 
+%         EVALUATE STEPY = ( ( YMAX + BORDER ) - MINY ) / RESOL                 
+%         EVALUATE STEPX = 1. + STEPX                                           
+%         EVALUATE STEPY = 1. + STEPY                                           
+%         BLOCK                                                                 
+%           QUEUE REWIND                                                        
+%           CLEAR                                                               
+%           INSERT 'MAP TYPE = '                                                
+%           CASE IMAP                                                           
+%             INSERT 'F-O'                                                      
+%             INSERT 'DIF'                                                      
+%             INSERT 'F-C'                                                      
+%             INSERT 'FO-PAT'                                                   
+%             INSERT 'FC-PAT' 
+%             INSERT '2FO-FC'                                                  
+%           END CASE                                                            
+%           IF ( IMAP .EQ. 2 ) THEN                                             
+%             INSERT ' MIN-RHO = -1000'                                         
+%           ELSE                                                                
+%             INSERT ' MIN-RHO = 0'                                             
+%           END IF                                                              
+%           IF RUNVIEWER .EQ. 3 THEN                                            
+%           INSERT ' 10 FILE=MAPVIEW'                                           
+%           ELSE                                                                
+%           INSERT ' 10 FILE=YES'                                               
+%           END IF                                                              
+%           QUEUE SEND                                                          
+%           CLEAR                                                               
+%           STORE CHARACTER 'SAVE MOLAX'                                        
+%           QUEUE SEND                                                          
+%           CLEAR                                                               
+%           INSERT 'DOWN '                                                      
+%           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINX                            
+%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPX                           
+%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                           
+%           QUEUE SEND                                                          
+%           CLEAR                                                               
+%           INSERT 'ACROSS '                                                    
+%           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINY                            
+%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPY                           
+%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                           
+%           QUEUE SEND                                                          
+%           CLEAR                                                               
+%           INSERT 'SECTION '                                                   
+%           EVALUATE MINZ = - 1.0 * RESOL * ZSECT                               
+%           EVALUATE STEPZ = 1.0 + 2.0 * ZSECT                                  
+%           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINZ                            
+%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPZ                           
+%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                           
+%           QUEUE SEND                                                          
+%         END BLOCK                                                             
+%         COPY '#SLANT'                                                         
+%            QUEUE PROCESS                                                      
+%         COPY 'END'                                                            
+{R * Done. Slant fourier complete.                                              
+%%                                                                              
+%         IF DOVOID .EQ. 1 THEN                                                 
+%          BLOCK                                                                
+%           TRANSFER "#STORE CSYS MAP 'void.fou'" TO CRYSTALS                   
+%           QUEUE REWIND                                                        
+%           CLEAR                                                               
+%           INSERT 'MAP FILE=YES'                                               
+%           QUEUE SEND                                                          
+%           CLEAR                                                               
+%           STORE CHARACTER 'SAVE MOLAX'                                        
+%           QUEUE SEND                                                          
+%           CLEAR                                                               
+%           INSERT 'DOWN '                                                      
+%           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINX                            
+%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPX                           
+%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                           
+%           QUEUE SEND                                                          
+%           CLEAR                                                               
+%           INSERT 'ACROSS '                                                    
+%           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINY                            
+%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPY                           
+%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                           
+%           QUEUE SEND                                                          
+%           CLEAR                                                               
+%           INSERT 'SECTION '                                                   
+%           EVALUATE MINZ = - 1.0 * RESOL * ZSECT                               
+%           EVALUATE STEPZ = 1.0 + 2.0 * ZSECT                                  
+%           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINZ                            
+%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPZ                           
+%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                           
+%           QUEUE SEND                                                          
+%          END BLOCK                                                            
+%          COPY '#VSLANT'                                                       
+%            QUEUE PROCESS                                                      
+%          COPY 'END'                                                           
+{R * Done. Slant void complete.                                                 
+%         END IF                                                                
+%%                                                                              
+%         IF TWINNED .EQ. TRUE THEN                                             
+%           BLOCK                                                               
+%           ON ERROR TERMINATE                                                  
+%             IF DOSCALE .EQ. 1 THEN                                            
+{S * Twinned data restoring overall scale.                                      
+%               COPY '#SFLS'                                                    
+%               COPY 'SCALE'                                                    
+%               COPY 'END'                                                      
+%             END IF                                                            
+%             IF DOCALC .EQ. 1 THEN                                             
+{S * Twinned data restoring phases.                                             
+%               COPY '#SFLS'                                                    
+%               COPY 'CALC'                                                     
+%               COPY 'END'                                                      
+%             END IF                                                            
+%           END BLOCK                                                           
+%         END IF                                                                
+^^CO    DISPOSE XCONT                                                           
+^^CO SET PROGOUTPUT TEXT='Slant Fourier complete.'                              
+%         CASE RUNVIEWER + 1                                                    
+%           BLOCK    % Don't run                                                
+%             TRANSFER 'Map file saved as: ' // CFILE TO DISPLAY                
+%           END BLOCK                                                           
+%           BLOCK    %Run contour                                               
+%             TRANSFER '#SPAWN "CRYSDIR:contour.exe" ' // CFILE TO CRYSTALS     
+%           END BLOCK                                                           
+%           BLOCK    %Run marchingcubesELD viewer                               
+%             CASE STEREO                                                       
+%                EVALUATE CFILE = CFILE                                         
+%                EVALUATE CFILE = '-s ' // CFILE                                
+%                EVALUATE CFILE = '-i ' // CFILE                                
+%             END CASE                                                          
+%             IF DOVOID .EQ. 1 THEN                                             
+%                EVALUATE CFILE = CFILE // ' void.fou'                          
+%             END IF                                                            
+ * Starting MCE Fourier viewer by Michal Husak. Please wait while it loads ...  
+% IF FILEEXISTS 'CRYSDIR:mce/mce.exe' THEN                                      
+%   TRANSFER '#SPAWN "CRYSDIR:mce/mce.exe" ' // CFILE TO CRYSTALS               
+% ELSE                                                                          
+%   TRANSFER '#SPAWN "C:/PROGRA~1/MARCHI~1/MarchingCubeELD.exe" ' -             
+    // CFILE TO CRYSTALS                                                        
+% END IF                                                                        
+%%                                                                              
+%           END BLOCK                                                           
+%           BLOCK    %Run MapView                                               
+%             TRANSFER '#SPAWN "WINGXDIR:/for_prog/mapview.exe" Mapfile' -      
+ TO CRYSTALS                                                                    
+%           END BLOCK                                                           
+%         END CASE                                                              
+%         FINISH                                                                
+%       END BLOCK                                                               
+%     END BLOCK                                                                 
+%     BLOCK                        % MCE help                                   
+%       COPY '#SPAWN http://makeashorterlink.com/?E15F244E7'                    
+%     END BLOCK                                                                 
+%   END CASE                                                                    
+% END LOOP                                                                      
+%END SCRIPT                                                                     
+                                                                                
