@@ -8,10 +8,15 @@
 ^^WI                                        DISABLEIF='IN'                      
 ^^WI     ITEM _SIR '&Input results' '#SCRIPT XSIR97IN' DISABLEIF='IN'           
 ^^WI    ENDMENU                                                                 
+^^WI    MENU _SIR02 'Sir 0&2'                                                   
+^^WI     ITEM _SIR '&Create files' '#SCRIPT XSIR02' ENABLEIF='L1 L2 L6'         
+^^WI                                        DISABLEIF='IN'                      
+^^WI     ITEM _SIR '&Input results' '#SCRIPT XSIR02IN' DISABLEIF='IN'           
+^^WI    ENDMENU                                                                 
 ^^WI    ITEM _FLIP 'Superflip' '#SCRIPT XFLIP' ENABLEIF='L1 L2 L6'              
 ^^WI                                        DISABLEIF='IN'                      
 ^^WI    SPLIT                                                                   
-^^WI    ITEM _CYCLE 'Recycle'  '#SCRIPT XTANGENT' ENABLEIF='L1 L2 L5 L6'
+^^WI    ITEM _CYCLE 'Recycle'  '#SCRIPT XTANGENT' ENABLEIF='L1 L2 L5 L6'        
 ^^WI                                        DISABLEIF='IN'                      
 ^^WI    SPLIT                                                                   
 ^^WI    ITEM _FRESH 'Fresh start' '#SCRIPT FRESH' ENABLEIF='L1 L2 L6'           
