@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2007/12/14 16:37:22  djw
+C Trap missing list 6 case
+C
 C Revision 1.23  2007/10/09 06:58:23  djw
 C Correct absences message
 C
@@ -117,6 +120,7 @@ C      RESERVE THE SCRATCH AREA
        CALL XZEROF(STORE(KZ),4)
 C
        lstnum = 6
+       ierror = 1
        IF (LSTNUM .EQ. 0 ) GOTO 1300
         IF (  KEXIST ( LSTNUM )  ) 1210 , 1200 , 1220
 1200    CONTINUE
