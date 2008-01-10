@@ -45,7 +45,7 @@
 %  IF ( NELEM .EQ. 2 ) THEN
 %    COPY '#SCRIPT addtwin'
 %  ELSE
-{I Edit the head of the reflection list to include the number of
+{I Edit the head of the parameters (list 5) to include the number of
 {I twin elements, and their starting values
 {I e.g.
 

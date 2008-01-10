@@ -41,4 +41,6 @@
 %    COPY 'MATRIX 1 0 0  0 1 0  0 0 1'
 %    QUEUE PROCESS
 %    COPY 'END'
+%    copy '#sum list 25'
+%    COPY 'END'
 % END SCRIPT

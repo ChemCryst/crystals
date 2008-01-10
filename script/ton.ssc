@@ -7,30 +7,33 @@
 %  END BLOCK
 %COPY '#copy 6 7'                                                               
 %copy 'end'                                                                     
+%  BLOCK
 %    IF ( EXISTS 7 .NE. 1 ) THEN
 {E **** FATAL: The reflection convertion failed
 %      FINISH
 %    END IF
 %  END BLOCK
-%copy '#sfls in=7'                                                                 
-%copy 'calc'                                                                    
-%copy 'end'                                                                     
-%copy '#syst in=7 fried=yes'                                                    
-%copy 'end'                                                                     
-%copy '#sort in=7'                                                              
-%copy 'end'                                                                     
 %copy '#disk'                                                                   
 %copy 'retain 5'                                                                
 %copy 'end'                                                                     
 %copy '#edit'                                                                   
 %copy 'change enantio 0'                                                        
 %copy 'end'                                                                     
-%copy '#purge  list=7'                                                          
-%copy 'end'  
-%copy 'reset 5 0 -1'                                                            
-%copy 'end'                                                                     
-%copy '#ton'                                                                    
+%copy '#sfls in=7'                                                                 
+%copy 'calc'                                                                    
 %copy 'end'                                                                     
 %copy '#disk'                                                                   
-                                                                   
+%copy 'reset 5 0 -1'                                                            
+%copy 'end'                                                                     
+%copy '#syst in=7 fried=yes'                                                    
+%copy 'end'                                                                     
+%copy '#sort in=7'                                                              
+%copy 'end'                                                                     
+%copy '#purge  list=7'                                                          
+%copy 'end'  
+%copy '#ton'                                                                    
+%copy 'end'                                                                     
+%COPY '#DISK'
+%COPY 'DEL 7'
+%COPY 'END'
 %END SCRIPT                                                                     
