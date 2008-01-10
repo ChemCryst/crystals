@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.120  2007/12/17 18:04:16  djw
+C XTON moved into results
+C
 C Revision 1.119  2007/10/09 07:02:08  djw
 C use mean C-C esd, output more R-factors, support multi-structure cifs, support APEX2
 C
@@ -6653,15 +6656,14 @@ c yslope is gradient of normal probability plot
 c should be about unity anyway
         yslope = 1.
 c
+1700  continue
       IN = 0
 C----- GET FIRST REFLECTION
       ISTAT = KLDRNR (IN)
       IF (ISTAT .LT. 0) GOTO 2000
-      IF (KALLOW(IN) .LT. 0) THEN
-            JCODE = 1
-      ELSE
-            JCODE = 0
-      ENDIF
+cdjwjan08 - kallow doesnt look at list 7
+c      IF (KALLOW(IN) .LT. 0) goto 1700
+      nrefin = 1
       I = NINT(STORE(M6))
       J = NINT(STORE(M6+1))
       K = NINT(STORE(M6+2))
@@ -6681,15 +6683,12 @@ C----- LOOP OVER REST OF DATA
 1800  CONTINUE
       ISTAT = KLDRNR (IN)
       IF (ISTAT .LT. 0) GOTO 2000
-      IF (KALLOW(IN) .LT. 0) THEN
-            JCODE = 1
-      ELSE
-            JCODE = 0
-      ENDIF
+c      IF (KALLOW(IN) .LT. 0) goto 1800
+      nrefin = nrefin + 1
       I = NINT(STORE(M6))
       J = NINT(STORE(M6+1))
       K = NINT(STORE(M6+2))
-c       pack into h1
+c       pack into h2
       h2 = npak*npak*(i+n2) +npak*(j+n2) +k+n2
       FSIGN = STORE(M6+3)
       SIG = STORE(M6+12)
@@ -6752,6 +6751,7 @@ c
 C      GET NEXT REFLECTION
       GOTO 1800
 2000  CONTINUE
+      if (nfried .gt. 0) then
 c---- all refelctions processed.
 c---- compute goodies
           SUM = SUM / SUMW 
@@ -6761,10 +6761,12 @@ c  yslope is the gradient of the normal probability plot
               DATC(J) = DATC(J) / YSLOPE**2 
    75       CONTINUE
           ENDIF
-C DETERMINE LARGEST LOG-PROBABILITY FOR SCALING
+C DETERMINE LARGEST and smallest LOG-PROBABILITY FOR SCALING
           DATCM = DATC(1)
+          DATCL = DATC(1)
           DO 80 J = 2, nstp_401 
             IF (DATC(J) .GT. DATCM) DATCM = DATC(J)
+            IF (DATC(J) .LT. DATCL) DATCL = DATC(J)
    80     CONTINUE
 C CALCULATE G, SIGMA(G), FLEQ AND SIGMA(FLEQ) WITH BAYESIAN STATISTICS
           XG0 = 0.0
@@ -6793,7 +6795,8 @@ c  Pseudo-Flack Parameters
           IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
           IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
           WRITE ( CMON,'(10(a,i7))')
-     1 '       No of Friedel Pairs =', nfried
+     1 'No of Reflections processed =', nrefin,
+     2 '        No of Friedel Pairs =', nfried
           CALL XPRVDU(NCVDU, 1,0)
           IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A)') CMON(1 )(:)
           WRITE (CMON,'(A)') 
@@ -6821,10 +6824,6 @@ c
           IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A)') CMON(2 )(:)
           IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(3 )(:)
           endif
-
-
-
-
           WRITE (CMON,'(a,2f10.4)') 'Hooft Parameter & su', tony,tonsy
           CALL XPRVDU(NCVDU, 1,0)
           IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
@@ -6837,42 +6836,45 @@ c
           IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
           IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 c
-C CALCULATE P3(0),P3(TW),P3(1)  
           XPLLL = DATC(nspp_241) - DATCM 
           XMNLL = DATC(nspm_161) - DATCM
+c
+c
+c
+c values can be massive - can scaling be improved?
+c      write(ncwu,'(10f12.2)') datc
+c      write(ncwu,'(//4f12.4)') xplll,xmnll, datcm, datcl
           XPLLL = EXP(XPLLL)
           XMNLL = EXP(XMNLL)
+c      write(ncwu,'(3e12.4)') xplll,xmnll, xplll+xmnll
+c
+c
+
+          WRITE (CMON,'(14x,a)') 'Probabilities'
+          CALL XPRVDU(NCVDU, 1,0)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+          write(cmon,'(/)')
+          CALL XPRVDU(NCVDU, 1,0)
+
+c
+          IF (RCN .NE. 0) THEN
+            RCO = RCT / RCN
+          ELSE
+            RCO = 0.0
+          ENDIF
+          IF (ISSPRT .EQ. 0) then
+            WRITE (LINE, 99970) RCO 
+99970 FORMAT ('RC .........', F9.3)
+            WRITE (ncwu,  99968) LINE
+          endif
+c
+C CALCULATE P2(0)
           IF (ABS(ABS(tony - 0.5) - 0.5) .LT.
      1        MAX (0.1, 3 * tonsy)) THEN
             XPLL2 = XPLLL / (XPLLL + XMNLL)
           ELSE
             XPLL2 = -1.0 
           ENDIF
-          XTWLL = DATC(nspt_201) - DATCM 
-          XTWLL = EXP(XTWLL)
-          XSMLL = XPLLL + XTWLL + XMNLL
-          XPLLL = XPLLL / XSMLL
-          XMNLL = XMNLL / XSMLL
-          XTWLL = XTWLL / XSMLL
-          IF (RCN .NE. 0) THEN
-            RCO = RCT / RCN
-          ELSE
-            RCO = 0.0
-          ENDIF
-C
-          IF (ISSPRT .EQ. 0) then
-99991 FORMAT ('Aver. Ratio', F10.3)
-            WRITE (LINE, 99970) RCO 
-99970 FORMAT ('RC .........', F9.3)
-            WRITE (ncwu,  99968) LINE
-          endif
-
-          WRITE (CMON,'(14x,a)') 'Probability'
-          CALL XPRVDU(NCVDU, 1,0)
-          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
-          write(cmon,'(/)')
-          CALL XPRVDU(NCVDU, 1,0)
-
 C P2(True)
       write(cmon,'(a,a)') 'For an enantiopure material,', 
      1                    'there are 2 choices'
@@ -6895,11 +6897,22 @@ C P2(True)
           IF (ISSPRT .EQ. 0) WRITE (ncwu,  99968) LINE
 99968 FORMAT (A)
 
-C P3(True)
-      write(cmon,'(a,a)') 'If twinning is possible,', 
+
+C CALCULATE P3(0),P3(TW),P3(1)  
+      write(cmon,'(/a,a)') 'If 50:50 twinning is possible,', 
      1                    'there are 3 choices'
-          CALL XPRVDU(NCVDU, 1,0)
-          IF (ISSPRT .EQ. 0) WRITE (ncwu,'(a)') cmon(1)
+          CALL XPRVDU(NCVDU, 2,0)
+          IF (ISSPRT .EQ. 0) WRITE (ncwu,'(a)') cmon(1),cmon(2)
+          XTWLL = DATC(nspt_201) - DATCM 
+          XTWLL = EXP(XTWLL)
+          XSMLL = XPLLL + XTWLL + XMNLL
+c         write(ncwu,'(4e16.4)') xtwll,xplll, xmnll, xsmll
+         if (xsmll .gt. zerosq) then 
+          XPLLL = XPLLL / XSMLL
+          XMNLL = XMNLL / XSMLL
+          XTWLL = XTWLL / XSMLL
+
+C P3(True)
             IF (XPLLL .GT. 0.001) THEN
               WRITE (FORM, 99961) XPLLL
             ELSE IF (XPLLL .LT. 0.0) THEN
@@ -6923,9 +6936,9 @@ C P3(Twin)
             ENDIF
             WRITE (LINE, 99977) FORM  
 99977 FORMAT ('P3(rac-twin)', A)
-          write(cmon,99968) line
-          CALL XPRVDU(NCVDU, 1,0)
-          IF (ISSPRT .EQ. 0) WRITE (ncwu,  99968) LINE
+            write(cmon,99968) line
+            CALL XPRVDU(NCVDU, 1,0)
+            IF (ISSPRT .EQ. 0) WRITE (ncwu,  99968) LINE
 C P3(False)
             IF (XMNLL .GT. 0.001) THEN
               WRITE (FORM, 99961) XMNLL
@@ -6936,12 +6949,12 @@ C P3(False)
             ENDIF
             WRITE (LINE, 99978) FORM 
 99978 FORMAT ('P3(inverse) ', A)
-          write(cmon,99968) line
-          CALL XPRVDU(NCVDU, 1,0)
-          IF (ISSPRT .EQ. 0) WRITE (ncwu,  99968) LINE
+            write(cmon,99968) line
+            CALL XPRVDU(NCVDU, 1,0)
+            IF (ISSPRT .EQ. 0) WRITE (ncwu,  99968) LINE
             WRITE (LINE, 99972) XG    
 99972 FORMAT ('G           ', F9.4)
-          IF (ISSPRT .EQ. 0) WRITE (ncwu,  99968) LINE
+            IF (ISSPRT .EQ. 0) WRITE (ncwu,  99968) LINE
              YUNK = SQRT (XG2 / XG0)
             IF (YUNK .GT. 0.0001) THEN
               WRITE (FORM, 99960) YUNK 
@@ -6962,14 +6975,24 @@ C P3(False)
             ENDIF
             WRITE (LINE, 99975) FORM   
 99975 FORMAT ('FLEQ S.U.   ', A)
-          IF (ISSPRT .EQ. 0) WRITE (ncwu,  99968) LINE
+            IF (ISSPRT .EQ. 0) WRITE (ncwu,  99968) LINE
 
-          write(cmon,'(/)')
-          CALL XPRVDU(NCVDU, 1,0)
+            write(cmon,'(/)')
+            CALL XPRVDU(NCVDU, 1,0)
+            CALL XPRVDU(NCVDU, 1,0)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+          else
+            write(cmon,'(a//)') 'Data do not resolve the P3 hypothesis'
+            CALL XPRVDU(NCVDU, 2,0)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A//)') CMON(1 )(:)
+          endif
+      else
+          write(cmon,'(a)') 'No Friedel Pairs found'
           CALL XPRVDU(NCVDU, 1,0)
           IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
-          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
-C
+          goto 9900
+      endif
       RETURN
 C
 9900  CONTINUE
