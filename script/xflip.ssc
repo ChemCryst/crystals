@@ -2,8 +2,8 @@
 %   VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                       
 %   VARIABLE LOGICAL ANSWER LCRY T                                              
 %   VARIABLE INTEGER IRUN                                                       
-%   VARIABLE INTEGER ITMP                                                        
-%   VARIABLE LOGICAL TWINNED MERGED                                              
+%   VARIABLE INTEGER ITMP                                                       
+%   VARIABLE LOGICAL TWINNED MERGED                                             
 %%                                                                              
 %  COPY '#GENERALEDIT 13'                                                       
 %  COPY 'LOCATE RECORDTYPE=101'                                                 
@@ -39,7 +39,7 @@
 ^^WI   {                                                                        
 ^^WI     @ 1,2 STATIC T1 'Note: data should be merged for Superflip'            
 ^^WI     @ 2,2 CHECKBOX CME '&Merge before going on'                            
-^^WI           STATE=OFF                                                        
+^^WI           STATE=ON                                                        
 ^^WI     @ 3,2 RADIOBUTTON RD '&Default Superflip parameters'                   
 ^^WI           STATE=ON                                                         
 ^^WI     @ 4,2 RADIOBUTTON RS '&Superflip parameters for strong data'           
@@ -63,15 +63,15 @@
 ^^WI      DISPOSE FLIP                                                          
 ^^CR                                                                            
 %         FINISH                                                                
-%      END IF
-%%
-%      VARIABLE  character F67                                                        
-%      EVALUATE F67 = '6'                                                        
+%      END IF                                                                   
+%%                                                                              
+%      VARIABLE  character F67                                                  
+%      EVALUATE F67 = '6'                                                       
 ^^??   CME STATE                                                                
 %      VERIFY ON OFF                                                            
 %      GET SILENT NOSTORE ABBREVIATED 'ON=Merge first'                          
 %      IF ( VALUE .EQ. 1 ) THEN                                                 
-%       IF ( exists 7 .le. 0 ) THEN                                      
+%       IF ( exists 7 .le. 0 ) THEN                                             
 {I Copying reflection list to temporary storage.                                
 %         COPY '#COPY 6 7'                                                      
 %         COPY 'END'                                                            
@@ -79,25 +79,25 @@
 %         COPY '#SYST 7 FRIEDEL=YES '                                           
 %         COPY 'END'                                                            
 {I Sorting temporary reflection list.                                           
-
+                                                                                
 %         COPY '#SORT 7'                                                        
 %         COPY 'END'                                                            
 {I Merging temporary reflection list.                                           
 %         COPY '#MERGE 7 NO'                                                    
 %         COPY 'END'                                                            
-%         EVALUATE F67 = '7'                                                      
+%         EVALUATE F67 = '7'                                                    
 %       END IF                                                                  
 %      END IF                                                                   
-%%                                                                   
+%%                                                                              
 ^^??   RS STATE                                                                 
 %      VERIFY ON OFF                                                            
 %      GET SILENT NOSTORE ABBREVIATED 'On=Simple job'                           
 %      IF ( VALUE .EQ. 1 ) THEN                                                 
-%       TRANSFER '#FOREIGN SUPERFLIP IN= ' // F67 // ' ' TO CRYSTALS              
-%       COPY 'END'                                                           
+%       TRANSFER '#FOREIGN SUPERFLIP IN= ' // F67 // ' ' TO CRYSTALS            
+%       COPY 'END'                                                              
 %      ELSE                                                                     
-%       TRANSFER '#FOREIGN SUPERFLIP DIFFICULT IN= ' // F67 // ' ' TO CRYSTALS
-%       COPY 'END'                                                           
+%       TRANSFER '#FOREIGN SUPERFLIP DIFFICULT IN= ' // F67 // ' ' TO CRYSTALS  
+%       COPY 'END'                                                              
 %      END IF                                                                   
 ^^??   CRUN STATE                                                               
 %      VERIFY ON OFF                                                            
@@ -134,7 +134,7 @@
 %      EVALUATE QLINE1 = 'Do you want to use the structure'                     
 %      EVALUATE QLINE2 = 'from Superflip ?'                                     
 %      EVALUATE BUTTOK = '&Yes'                                                 
-%      EVALUATE BUTTXX = '&No'                                                  
+%      EVALUATE BUTTXX = '&Not yet'                                                  
 %      COPY '#SCRIPT XQUESTIO'                                                  
 %      IF ANSWER .EQ. FALSE THEN                                                
 %          COPY '#SCRIPT XHELP1'                                                
@@ -145,56 +145,20 @@
    4) Be sure that the space group is correct.                                  
 %          COPY '#SCRIPT XHELP2'                                                
 %          FINISH                                                               
+%      ELSE 
+%        COPY '#SCRIPT XSFLIPIN'
 %      END IF                                                                   
-%      EVALUATE LCRY = TRUE                                                     
-%%AvdL it is here that the output file should be read                           
-%%AvdL Do a collect atoms by symmetry, necessary!                               
-%      COPY '#SCRIPT FRESH'                                                     
+%   END BLOCK                                                                
 %%                                                                              
-%      COPY '#SCRIPT XFLIPIN'                                                   
-%      COPY '#SCRIPT XCOLLECT'                                                  
-%      COPY '#EDIT'                                                             
-%      COPY 'MON OFF'                                                           
-%      COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0'                                  
-%      COPY 'MON MEDIUM'                                                        
-%      COPY 'END'                                                               
+%% clear out merged reflection list                                             
 %%                                                                              
-%      BLOCK                                                                    
-%      EVALUATE QTITLE = 'Use Cameron?'                                         
-%      EVALUATE QLINE1 = 'Do you want to use CAMERON '                          
-%      EVALUATE QLINE2 = 'to examine the model '                                
-%      EVALUATE BUTTOK = '&Yes'                                                 
-%      EVALUATE BUTTXX = '&No'                                                  
-%      COPY '#SCRIPT XQUESTIO'                                                  
-%      IF ANSWER .EQ. TRUE THEN                                                 
-%       VARIABLE LOGICAL NOXCAMQ LNEWL5                                         
-%       EVALUATE NOXCAMQ = TRUE                                                 
-%       EVALUATE LNEWL5 = TRUE                                                  
-%       COPY '#SCRIPT XCAM'                                                     
-%      END IF                                                                   
-%      END BLOCK                                                                
-%%                                                                              
-%      BLOCK                                                                    
-%       COPY '#SCRIPT XRENUMB'                                                  
-%      END BLOCK                                                                
-%% SET Solution type                                                            
-%%                                                                              
-%      COPY '#GENERALEDIT 30'                                                   
-%      COPY 'LOCATE RECORDTYPE=106'                                             
-%      COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=1'                           
-%      COPY 'WRITE OVERWRITE=OVERWRITE'                                         
-%      COPY 'END'                                                               
-%%
-%   END BLOCK                                                                   
-%% clear out merged reflection list
-%%
-%      if ( exists 7 .gt. 0 ) then
-%        copy '#disk'
-%        copy 'del 7'
-%        copy 'end'
-%        copy '#purge list=7'
-%        copy 'end'
-%      end if
+%      if ( exists 7 .gt. 0 ) then                                              
+%        copy '#disk'                                                           
+%        copy 'del 7'                                                           
+%        copy 'end'                                                             
+%        copy '#purge list=7'                                                   
+%        copy 'end'                                                             
+%      end if                                                                   
  * Done. Superflip input complete.                                              
 %END SCRIPT                                                                     
                                                                                 

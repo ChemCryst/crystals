@@ -1,22 +1,11 @@
-%SCRIPT XTANGENT
-%% TANGEBT RE-CYCLING USING SIR
-%% variables used by the question box below                                     
-% VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                         
-% VARIABLE LOGICAL ANSWER                                                       
-%%
-% EVALUATE QTITLE = 'Tangent Recycling'                                         
-% EVALUATE QLINE1 = 'Partial structures can be passed to SIR92'                
-% EVALUATE QLINE2 = 'Would you like tangent formula recycling?'                 
-% EVALUATE BUTTOK = 'Yes'                                                       
-% EVALUATE BUTTXX = 'no'                                                        
-% COPY '#SCRIPT XQUESTIO'                                                       
-% IF ANSWER .EQ. TRUE THEN 
+%SCRIPT XTANGENT                                                                
+%% TANGENT RE-CYCLING USING SIR                                                 
+%%                                                                              
 %      copy '#script xdelq'                                                     
 %      copy '#FOREIGN SIR92 SPECIAL'                                            
 %      COPY 'END'                                                               
 %      COPY '#SPAWN + "CRYSDIR:SIR92.EXE" sir92.ini sir92.lis'                  
-                                                                                
-%       EVALUATE QTITLE = 'Tangent Recycling'                                   
+%       EVALUATE QTITLE = 'Tangent Recycling Completed'                                   
 %       EVALUATE QLINE1 = 'Superflip structure processed by SIR92'              
 %       EVALUATE QLINE2 = 'Would you like to input the new structure?'          
 %       EVALUATE BUTTOK = 'Yes'                                                 
@@ -25,5 +14,4 @@
 %       IF ANSWER .EQ. TRUE THEN                                                
 %            copy '#script xsir92in'                                            
 %       END IF                                                                  
-% end if                                                                        
 %%                                                                              

@@ -275,6 +275,7 @@
 %        COPY '#CLOSE SCPDATA'                                                  
 %        IF ( ATOMCOUNT .EQ. 0 ) THEN                                           
 {I No atoms found                                                               
+%          FINISH
 %        ELSE                                                                   
 %          BLOCK                                                                
 %            IF LQS .EQ. TRUE THEN                                              
@@ -291,45 +292,11 @@
 %              END IF                                                           
 %            END IF                                                             
 %%                                                                              
-%% Change SHELX occupancies (cryst) to CRYSTALS occupancies (chem)              
-%%                                                                              
-%            BLOCK                                                              
-%%                                                                              
-%% Put crystallographic occupancy into 'SPARE' (offset 13)                      
-%%                                                                              
-%             COPY '#SPEC TEST PARAMETER .01'                                   
-%             COPY 'END'                                                        
-%%                                                                              
-%             ON EDITERROR TERMINATE                                            
-%             COPY '#GENERALEDIT 5'                                             
-%             COPY 'LOCATE RECORDTYPE=101'                                      
-%             COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'           
-%             LOOP                                                              
-%              ON EDITERROR TERMINATE                                           
-%              COPY 'TRANSFER FROM OFFSET=2 TO SXOCC'                           
-%              COPY 'TRANSFER FROM OFFSET=13 TO SPECOCC'                        
-%%                                                                              
-%% Divide shelx occ by SPARE to give chemical occupancy.                        
-%%                                                                              
-%              IF ( SPECOCC .LE. 0.0 ) THEN                                     
-%                EVALUATE SPECOCC = 1.0                                         
-%              END IF                                                           
-%              EVALUATE CRYOCC = SXOCC / SPECOCC                                
-%              COPY 'TRANSFER TO OFFSET=2 FROM CRYOCC'                          
-%              COPY 'NEXT'                                                      
-%             END LOOP                                                          
-%%                                                                              
-%% End of list 5 - EditError jumps out of loop.                                 
-%%                                                                              
-%             COPY 'WRITE'                                                      
-%             COPY 'END'                                                        
-%            END BLOCK                                                          
 %          END BLOCK                                                            
 %%                                                                              
 %%                                                                              
 %          BLOCK                                                                
-%% Only renumber if importing solution (i.e. Qs).                               
-%%            IF LQS .EQ. TRUE THEN                                             
+%% Set scale factor
 %              IF ( EXISTS ( 30 ) .EQ. 1 ) THEN                                 
 %                   VARIABLE REAL SCALEO SCALEW                                 
 %                   COPY '#GENERALEDIT 30'                                      
@@ -340,7 +307,14 @@
 %                   if scalew .le. 0.05 then                                    
 %                     evaluate scalew = 1.0                                     
 %                   end if                                                      
+%% SET Solution type 
+%                   COPY 'LOCATE RECORDTYPE=106'                                         
+%                   COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=1'                       
+%                   COPY 'WRITE'                                                         
+%                   COPY 'END'                                                           
+%              END IF
 Writing Wilson Scale to LIST 5                                                  
+%              IF ( EXISTS ( 5 ) .EQ. 1 ) THEN                                 
 %                    COPY '#GENERALEDIT 5'                                      
 %                    COPY 'LOCATE RECORDTYPE=102'                               
 %                    COPY 'TRANSFER TO OFFSET=1 FROM SCALEW'                    
@@ -348,29 +322,8 @@ Writing Wilson Scale to LIST 5
 %                    COPY 'END'                                                 
 %              END IF                                                           
 %%                                                                              
-%%                  CENTRE STRUCTURE IN CELL                                    
-%                   COPY '#SCRIPT AVERAGE'                                      
-%                   COPY '#SCRIPT XCENTRE'                                      
-%                   COPY '#SCRIPT XRENUMB'                                      
-%%              END IF                                                          
 %          END BLOCK                                                            
 %%                                                                              
-%% SET Solution type (only if atoms were passed in!)                            
-%          COPY '#GENERALEDIT 30'                                               
-%          COPY 'LOCATE RECORDTYPE=106'                                         
-%          COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=1'                       
-%          COPY 'WRITE'                                                         
-%          COPY 'END'                                                           
 %        END IF                                                                 
-% EVALUATE QTITLE = 'Tangent Recycling'                                         
-% EVALUATE QLINE1 = 'Superflip structure can be passed to SIR92'                
-% EVALUATE QLINE2 = 'Would you like tangent formula recycling?'                 
-% EVALUATE BUTTOK = 'Yes'                                                       
-% EVALUATE BUTTXX = 'no'                                                        
-% COPY '#SCRIPT XQUESTIO'                                                       
-% IF ANSWER .EQ. TRUE THEN                                                      
-%      copy '#script XTANGENT'                                            
-% end if                                                                        
-%%                                                                              
 %        FINISH                                                                 
 %END SCRIPT                                                                     
