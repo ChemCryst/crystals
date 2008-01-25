@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.121  2008/01/10 15:50:40  djw
+C update link top Tons code
+C
 C Revision 1.120  2007/12/17 18:04:16  djw
 C XTON moved into results
 C
@@ -6557,12 +6560,13 @@ C     TON SPEK'S ENANTIOPOLE
 c seriously based on ton's own code with his permission and help
 C
 C
-      INCLUDE 'ISTORE.INC'
 C
       DIMENSION LISTS( 6 )
       dimension datc(401)
       character *80 line
       character *20 form
+C
+      INCLUDE 'ISTORE.INC'
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
@@ -6571,6 +6575,7 @@ C
       INCLUDE 'XCONST.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST28.INC'
       INCLUDE 'XLST30.INC'
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XOPVAL.INC'
@@ -6578,8 +6583,9 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
-      DATA NLISTS / 3 /
-      DATA LISTS(1)/5/, LISTS(2)/6/, LISTS(3)/30/
+      DATA NLISTS / 5 /
+      DATA LISTS(1)/5/, LISTS(2)/6/, LISTS(3)/28/, LISTS(4)/30/, 
+     1 LISTS(5)/1/
 C
 c      set packing constants
       parameter(npak=256)
@@ -6612,10 +6618,14 @@ C--FIND OUT IF LISTS EXIST
           IERROR = -1
           GOTO 1300
 1220    CONTINUE
-        IF (LSTNUM .EQ.  5) THEN
-            CALL XFAL05
+        IF (LSTNUM .EQ.  1) THEN
+      IF (KHUNTR (1,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL01
+        else IF (LSTNUM .EQ. 5) THEN
+      IF (KHUNTR (5,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL05
+        else IF (LSTNUM .EQ. 28) THEN
+      IF (KHUNTR (28,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL28
         else IF (LSTNUM .EQ. 30) THEN
-            CALL XFAL30
+      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30
         ELSE IF (LSTNUM .EQ. 6) THEN
 cdjwsep07 check the type of reflections
             IULN6 = KTYP06(ITYP06)
@@ -6628,13 +6638,9 @@ C----- OUTPUT A TITLE, FIRST 20 CHARACTERS ONLY
 C      WRITE(NCFPU1,1320) (KTITL(I),I=1,20)
 1320  FORMAT(' ',20A4)
 C
-C--- LOAD LIST 5
-      CALL XFAL05
       SCALE = STORE(L5O)
       SCALE = 1./(SCALE*SCALE)
 C
-C----- LOAD LIST 6
-      CALL XFAL06(IULN6,0)
 C
 c----- initialise tons accumulators etc
 c      accumulators 
@@ -6659,7 +6665,8 @@ c
 1700  continue
       IN = 0
 C----- GET FIRST REFLECTION
-      ISTAT = KLDRNR (IN)
+c      ISTAT = KLDRNR (IN)
+      istat = kfnr(0)
       IF (ISTAT .LT. 0) GOTO 2000
 cdjwjan08 - kallow doesnt look at list 7
 c      IF (KALLOW(IN) .LT. 0) goto 1700
@@ -6681,7 +6688,8 @@ C      FROM A SIGNED STRUCTURE FACTOR
       nfried = 0
 C----- LOOP OVER REST OF DATA
 1800  CONTINUE
-      ISTAT = KLDRNR (IN)
+c      ISTAT = KLDRNR (IN)
+      istat = kfnr(0)
       IF (ISTAT .LT. 0) GOTO 2000
 c      IF (KALLOW(IN) .LT. 0) goto 1800
       nrefin = nrefin + 1
@@ -6877,7 +6885,7 @@ C CALCULATE P2(0)
           ENDIF
 C P2(True)
       write(cmon,'(a,a)') 'For an enantiopure material,', 
-     1                    'there are 2 choices'
+     1                    ' there are 2 choices, P2'
           CALL XPRVDU(NCVDU, 1,0)
           IF (ISSPRT .EQ. 0) WRITE (ncwu,'(a)') cmon(1)
             IF (XPLL2 .GT. 0.001) THEN
@@ -6900,7 +6908,7 @@ C P2(True)
 
 C CALCULATE P3(0),P3(TW),P3(1)  
       write(cmon,'(/a,a)') 'If 50:50 twinning is possible,', 
-     1                    'there are 3 choices'
+     1                    ' there are 3 choices, P3'
           CALL XPRVDU(NCVDU, 2,0)
           IF (ISSPRT .EQ. 0) WRITE (ncwu,'(a)') cmon(1),cmon(2)
           XTWLL = DATC(nspt_201) - DATCM 
@@ -6988,6 +6996,16 @@ C P3(False)
             IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A//)') CMON(1 )(:)
           endif
       else
+          write(cmon,'(/)')
+          CALL XPRVDU(NCVDU, 1,0)
+          CALL XPRVDU(NCVDU, 1,0)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+          WRITE ( CMON,'(10(a,i7))')
+     1 'No of Reflections processed =', nrefin,
+     2 '        No of Friedel Pairs =', nfried
+          CALL XPRVDU(NCVDU, 1,0)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A)') CMON(1 )(:)
           write(cmon,'(a)') 'No Friedel Pairs found'
           CALL XPRVDU(NCVDU, 1,0)
           IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
