@@ -156,9 +156,10 @@
 % COPY 'ACTION BOTH'                                                            
 % COPY 'END'                                                                    
 %% Remove possible duplicate H atoms if pivot lies on a symmetry element
-% COPY '#PEAK 5 5'
-% COPY 'SELECT TYPE=AVERAGE'
-% COPY 'END'
+%% removed djw Jan08 because it may eliminate split atoms
+%% COPY '#PEAK 5 5'
+%% COPY 'SELECT TYPE=AVERAGE'
+%% COPY 'END'
 %% Copy peaks from L10 into L5                                                  
 % QUEUE REWIND                                                                  
 % COPY '#GENERALEDIT 10'                                                        
