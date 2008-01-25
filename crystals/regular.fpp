@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.49  2007/12/17 17:31:20  djw
+c Inhibit distance and torsion comparisons for external matches, add offset to KEEP directive
+c
 c Revision 1.48  2007/11/06 14:39:01  djw
 c Tidy up automatic matching
 c
@@ -933,7 +936,7 @@ C
       IF (NOLD.LT.NATMD) GO TO 1950
       IF (NNEW.LT.NATMD) GO TO 2050
 c
-      cmon =' '
+      cmon(1) =' '
       if (imethd .eq. 1) then
             write(cmon,'(a)')
      1 'Matching by Rotation/inversion'
@@ -2485,6 +2488,7 @@ C Our torsion is C-A-B-D
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
+      INCLUDE 'XCHARS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XRGCOM.INC'
       INCLUDE 'XRGLST.INC'
@@ -2498,7 +2502,9 @@ C Our torsion is C-A-B-D
       INCLUDE 'XCOMPD.INC'
       INCLUDE 'QSTORE.INC'
 c
-      data cnull/'    '/
+C      data cnull/'    '/
+      EQUIVALENCE (ANULL,INULL)
+      INULL = IB
 C
       CALL XZEROF ( SUM(1) , 4 )
       RADIUS = 0.0
@@ -2522,11 +2528,11 @@ C
      4 7X,'Distance',4X,'Angle',/)
 cdjwnov07
       dismax=0.
-      dtype=cnull
-      dser =cnull
+      dtype=anull
+      dser =0.0
       angmax=0.
-      atype=cnull
-      aser =cnull
+      atype=anull
+      aser =0.0
       DO I=1,NOLD
         INDOLD=LOLD+MDOLD*(I-1)
         INDNEW=LNEW+MDNEW*(I-1)
@@ -2632,7 +2638,7 @@ C RMS deviation of bonds
 
       JT = 12 ! Number of words per returned distance
       BDEV = 0.0
-      NUMB = 0
+      NUMBR = 0
       BNDMAX = 0.0
       BNDMIN = 1000.0
 
@@ -2690,7 +2696,7 @@ C Find the pivot atom (M5A) in the first group.
           BDEV = BDEV + DEV**2
           BNDMIN = MIN(BNDMIN, DEV)
           BNDMAX = MAX(BNDMAX, DEV)
-          NUMB = NUMB + 1
+          NUMBR = NUMBR + 1
  
         IF (ISSPRT .EQ. 0) THEN
           WRITE(NCWU,'(4(1X,A,I4),F8.3)')
@@ -2953,8 +2959,8 @@ C If angles differ by more than 180, take 360 - diff.
       endif
 
 
-      IF (NUMB .GT. 0) THEN
-       SBDEV = SQRT(BDEV / NUMB)
+      IF (NUMBR .GT. 0) THEN
+       SBDEV = SQRT(BDEV / NUMBR)
       ELSE
        SBDEV = 0.
       ENDIF
