@@ -18,6 +18,8 @@
 ^^WI   ITEM IN6 'Import re&flection data' '#SCRIPT XINLIST6' DISABLEIF='IN'
 ^^WI   ITEM XCIF  'Import CIF file'
 ^^WI              '#SCRIPT CIF2CRY' DISABLEIF='IN'
+^^WI   ITEM XTWN  'Import hklf5 file'
+^^WI              '#SCRIPT HKLF52CRY' DISABLEIF='IN'
 ^^WI   SPLIT
 ^^WI   MENU _EXPORT 'File export'
 ^^WI    ITEM EXPORT 'Enable auto-export' '#SET EXPORT ON' DISABLEIF='IN'
