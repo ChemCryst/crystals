@@ -44,7 +44,7 @@
 ^^WI              DISABLEIF='IN' ENABLEIF='L1 L2 L5'                            
 ^^WI   ITEM REMH '&Remove hydrogen' '#EDIT_NSELECT TYPE NE H_NEND'              
 ^^WI                                DISABLEIF='IN'  ENABLEIF='L5'               
-^^WI   ITEM REMH '&Renumber hydrogen' '#HNAME_NEND'                             
+^^WI   ITEM REMH '&Renumber hydrogen' '#SCRIPT HNAM'                             
 ^^WI                                DISABLEIF='IN'  ENABLEIF='L5'               
 ^^WI   ITEM REMH '&Use H-files' '#SCRIPT H-FILES'                               
 ^^WI                                DISABLEIF='IN'  ENABLEIF='L5'               
