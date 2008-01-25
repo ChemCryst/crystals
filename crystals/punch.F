@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.45  2007/12/14 16:38:20  djw
+C Output structure name into data files
+C
 C Revision 1.44  2007/10/09 06:55:22  djw
 C Add support for multi-struxture cifs
 C
@@ -464,10 +467,12 @@ C----- CELL PARAMETERS
 C----- RECIPROCAL ORTHOGONALISATION MATRIX
       K=L1O2
       DO 1 J=1,3
-      WRITE(NCFPU1,9150) J,(STORE(I),I=K,K+2)
+      WRITE(NCFPU1,9150) J,(STORE(I),I=K,K+2), 0.0
       K=K+3
 1     CONTINUE
-9150  FORMAT('SCALE',I1,3F12.4) 
+9150  FORMAT('SCALE',4X,I1,3F10.5,5X,F10.5) 
+C---- FROM CCDC - JAN08
+C     FORMAT(6A1,4X,3F10.5,5X,F10.5)
       M5 = L5
       DO 100 I = 1, N5
 C--COMPUTE THE ORTHOGONAL COORDINATES OF THE ATOM
