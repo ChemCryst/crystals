@@ -1,164 +1,164 @@
-%SCRIPT PUBLISH
-% VARIABLE LOGICAL CIFDONE
-% EVALUATE CIFDONE = FALSE
-% VARIABLE INTEGER PFLAG
-% EVALUATE PFLAG = 0
-%%
- * The publication tables will be in a file 'PUBLISH.LIS'
- 
-%  LOOP
-%    ON ERROR TERMINATE ABANDONED
-^^?? XPUB EXISTS
-%    VERIFY TRUE FALSE
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%    IF VALUE .EQ. 2  THEN
-^^WI  WINDOW XPUB 'Publish tables' MODAL
-^^WI  COMMIT='BOK' CANCEL='BXX'
-^^WI  GRID OUTER NROWS=3 NCOLS=7
-^^WI  {
-^^WI   @ 2,2 GRID WORD NROWS=3 NCOLS=1
-^^WI   {
-^^WI     @ 1,1 STATIC TO 'Select a publication option.'
-^^WI     @ 2,1 STATIC T1 '"CIF" - for CIF files, "Summary" '
-^^WI     @ 3,1 STATIC T2 'for a full listing.'
-^^WI   }
-^^WI   @ 2,4 LISTBOX PUB_LIST VISLINES=10 ADDTOLIST
-^^WI         'Cif format' 'XYZ table' 'Aniso parameters' 'Distances'
-^^WI         'Chime file' 'Shelx file' 'Reflection data'
-^^WI         'Summary' 'Residuals' 'Save'
-^^WI         NULL
-^^WI   @ 2,6 GRID BTNS NROWS=7 NCOLS=1
-^^WI   {
-^^WI     @ 1,1 BUTTON PUB_BOK '&Ok' 
-^^WI     @ 3,1 BUTTON PUB_BHH '&Help'
-^^WI     @ 4,1 STRETCH V VERTICAL
-^^WI     @ 5,1 BUTTON PUB_BXX '&Close' DEFAULT COMMIT CANCEL
-^^WI   }
-^^WI  }
-^^WI  SHOW
-^^CR
-%    END IF
-%    VERIFY PUB_BXX PUB_BHH PUB_BOK
-%    GET SILENT NOSTORE FINAL ABBREVIATED 'Option?' 'PUB_BXX'
-%    CASE VALUE
-%      BLOCK      %BXX%
-^^CO     DISPOSE XPUB
-%        EVALUATE LOOPEND = LOOPCOUNTER
-%      END BLOCK
-%      BLOCK      %BHH%
-%        COPY '#SCRIPT XHELP1'
- This SCRIPT helps with production of tables for publication. The output
- is displayed on the screen and listing file, together with a 'flat'
- ASCII file suitable for sending to a laser printer or inputting to a
- word processor.
- The esds of coordinates and distance-angles are derived from the full
- least squares matrix. After the final round of least squares, DO NOT
- MODIFY the atom coordinate list (LIST 5) IN ANY WAY at all, otherwise
- CRYSTALS will detect a mis match with the matrix and abort the
- calculation.
- The ASCII data is in the PUBLISH.LIS
- A full analysis of residuals may reveal remaining deficiencies in the
- refinement.
- 
- CIF         Produce a CIF file
- XYZ         Coordinate listing
- ANISO       Temperature factor listing
- DISTANCES   Distance-angle listing
- CHIME       Output a CHIME .PDB file
- SHELX       A Minimal SHELXS file
- REFLECTIONS Reflection listing
- SUMMARY     A summary of all data stored
- RESIDUALS   A full analysis of residuals (Fo-Fc)
- GEOMETRY    The SCRIPT for evaluating molecular parameters.
- SAVE        A SCRIPT to save the best of the goodies.
- DIRECT      Go to CRYSTALS direct command input.
- 
-%        COPY '#SCRIPT XHELP2'
-%      END BLOCK
-%      BLOCK        %BOK%
-^^??     PUB_LIST SELECTED
-%        GET SILENT NOSTORE FINAL INTEGER ' ' '1'
-%        IF PFLAG .LE. 0 THEN
-%          COPY '#RELEASE PUNCH PUBLISH.LIS'
-%          EVALUATE PFLAG = 1
-%        END IF
-%        CASE VALUE
-%          BLOCK                                         %CIF%
- 
- *  The cif file is in  'PUBLISH.CIF'
- 
-%            COPY '#SCRIPT XCIF'
-%            EVALUATE CIFDONE = TRUE
-%          END BLOCK
-%%
-%          BLOCK                                         %XYZ%
-^^CO         DISPOSE XPUB
-%            COPY '#SCRIPT PUBXYZ'
-%          END BLOCK
-%%
-%          BLOCK                                         %ANISO%
-^^CO         DISPOSE XPUB
-%            COPY '#SCRIPT PUBANISO'
-%          END BLOCK
-%%
-%          BLOCK                                         %DISTANCES%
-^^CO         DISPOSE XPUB
-%            COPY '#SCRIPT PUBDIST'
-%          END BLOCK
-%%
-%          BLOCK                                         %CHIME%
-%            COPY '#PUNCH 5 D'
-%            COPY 'END'
- Chime output to {&publish.pdb{&
-%          END BLOCK
-%          BLOCK                                         %SHELX%
-%            COPY '#FOREIGN SHELX SPECIAL'
-%            COPY 'END'
- Shelx output to shelxs.ins
-%          END BLOCK
-%%
-%          BLOCK                                         %REFLECTIONS%
-^^CO         DISPOSE XPUB
-%            COPY '#SCRIPT PUBREFL'
-%          END BLOCK
-%%
-%          BLOCK                                         %SUMMARY%
-%            COPY '#SUMMARY EVERYTHING'
-%            COPY 'END'
-%          END BLOCK
-%%
-%          BLOCK                                         %RESIDUALS%
-%            COPY '#ANALYSE'
-%            COPY 'LIST LEVEL=HIGH'
-%            COPY 'END'
-%          END BLOCK
-%%
-%          BLOCK                                         %SAVE%
-^^CO         DISPOSE XPUB
-%            COPY '#SCRIPT ARCHIVE'
-%            COPY 'END'
-%          END BLOCK
-%%
-%        END CASE
-%      END BLOCK
-%%
-%    END CASE
-%  END LOOP
-%%
-%  IF CIFDONE .EQ. FALSE THEN
- 
-{I * Info: You have not saved a CIF file.
- 
-%%    VERIFY YES NO
-%%    GET NOSTORE FINAL ABBREVIATED 'Do you want a CIF file?' 'YES'
-%%    IF VALUE .EQ. 2 THEN
-%%            FINISH
-%%    ELSE
-%%      BLOCK                                         %CIF%
-%%        COPY '#SCRIPT XCIF'
-%%        COPY 'END'
-%%      END BLOCK
-%%    END IF
-%  END IF
-%  COPY '#CLOSE FRN1'
-%END SCRIPT
+%SCRIPT PUBLISH                                                                 
+% VARIABLE LOGICAL CIFDONE                                                      
+% EVALUATE CIFDONE = FALSE                                                      
+% VARIABLE INTEGER PFLAG                                                        
+% EVALUATE PFLAG = 0                                                            
+%%                                                                              
+ * The publication tables will be in a file 'PUBLISH.LIS'                       
+                                                                                
+%  LOOP                                                                         
+%    ON ERROR TERMINATE ABANDONED                                               
+^^?? XPUB EXISTS                                                                
+%    VERIFY TRUE FALSE                                                          
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                               
+%    IF VALUE .EQ. 2  THEN                                                      
+^^WI  WINDOW XPUB 'Publish tables' MODAL                                        
+^^WI  COMMIT='BOK' CANCEL='BXX'                                                 
+^^WI  GRID OUTER NROWS=3 NCOLS=7                                                
+^^WI  {                                                                         
+^^WI   @ 2,2 GRID WORD NROWS=3 NCOLS=1                                          
+^^WI   {                                                                        
+^^WI     @ 1,1 STATIC TO 'Select a publication option.'                         
+^^WI     @ 2,1 STATIC T1 '"CIF" - for CIF files, "Summary" '                    
+^^WI     @ 3,1 STATIC T2 'for a full listing.'                                  
+^^WI   }                                                                        
+^^WI   @ 2,4 LISTBOX PUB_LIST VISLINES=10 ADDTOLIST                             
+^^WI         'Cif format' 'XYZ table' 'Aniso parameters' 'Distances'            
+^^WI         'PDB file' 'Shelx file' 'Reflection data'                        
+^^WI         'Summary' 'Residuals' 'Save'                                       
+^^WI         NULL                                                               
+^^WI   @ 2,6 GRID BTNS NROWS=7 NCOLS=1                                          
+^^WI   {                                                                        
+^^WI     @ 1,1 BUTTON PUB_BOK '&Ok'                                             
+^^WI     @ 3,1 BUTTON PUB_BHH '&Help'                                           
+^^WI     @ 4,1 STRETCH V VERTICAL                                               
+^^WI     @ 5,1 BUTTON PUB_BXX '&Close' DEFAULT COMMIT CANCEL                    
+^^WI   }                                                                        
+^^WI  }                                                                         
+^^WI  SHOW                                                                      
+^^CR                                                                            
+%    END IF                                                                     
+%    VERIFY PUB_BXX PUB_BHH PUB_BOK                                             
+%    GET SILENT NOSTORE FINAL ABBREVIATED 'Option?' 'PUB_BXX'                   
+%    CASE VALUE                                                                 
+%      BLOCK      %BXX%                                                         
+^^CO     DISPOSE XPUB                                                           
+%        EVALUATE LOOPEND = LOOPCOUNTER                                         
+%      END BLOCK                                                                
+%      BLOCK      %BHH%                                                         
+%        COPY '#SCRIPT XHELP1'                                                  
+ This SCRIPT helps with production of tables for publication. The output        
+ is displayed on the screen and listing file, together with a 'flat'            
+ ASCII file suitable for sending to a laser printer or inputting to a           
+ word processor.                                                                
+ The esds of coordinates and distance-angles are derived from the full          
+ least squares matrix. After the final round of least squares, DO NOT           
+ MODIFY the atom coordinate list (LIST 5) IN ANY WAY at all, otherwise          
+ CRYSTALS will detect a mis match with the matrix and abort the                 
+ calculation.                                                                   
+ The ASCII data is in the PUBLISH.LIS                                           
+ A full analysis of residuals may reveal remaining deficiencies in the          
+ refinement.                                                                    
+                                                                                
+ CIF         Produce a CIF file                                                 
+ XYZ         Coordinate listing                                                 
+ ANISO       Temperature factor listing                                         
+ DISTANCES   Distance-angle listing                                             
+ PDB         Output a PDB file                                           
+ SHELX       A Minimal SHELXS file                                              
+ REFLECTIONS Reflection listing                                                 
+ SUMMARY     A summary of all data stored                                       
+ RESIDUALS   A full analysis of residuals (Fo-Fc)                               
+ GEOMETRY    The SCRIPT for evaluating molecular parameters.                    
+ SAVE        A SCRIPT to save the best of the goodies.                          
+ DIRECT      Go to CRYSTALS direct command input.                               
+                                                                                
+%        COPY '#SCRIPT XHELP2'                                                  
+%      END BLOCK                                                                
+%      BLOCK        %BOK%                                                       
+^^??     PUB_LIST SELECTED                                                      
+%        GET SILENT NOSTORE FINAL INTEGER ' ' '1'                               
+%        IF PFLAG .LE. 0 THEN                                                   
+%          COPY '#RELEASE PUNCH PUBLISH.LIS'                                    
+%          EVALUATE PFLAG = 1                                                   
+%        END IF                                                                 
+%        CASE VALUE                                                             
+%          BLOCK                                         %CIF%                  
+                                                                                
+ *  The cif file is in  'PUBLISH.CIF'                                           
+                                                                                
+%            COPY '#SCRIPT XCIF'                                                
+%            EVALUATE CIFDONE = TRUE                                            
+%          END BLOCK                                                            
+%%                                                                              
+%          BLOCK                                         %XYZ%                  
+^^CO         DISPOSE XPUB                                                       
+%            COPY '#SCRIPT PUBXYZ'                                              
+%          END BLOCK                                                            
+%%                                                                              
+%          BLOCK                                         %ANISO%                
+^^CO         DISPOSE XPUB                                                       
+%            COPY '#SCRIPT PUBANISO'                                            
+%          END BLOCK                                                            
+%%                                                                              
+%          BLOCK                                         %DISTANCES%            
+^^CO         DISPOSE XPUB                                                       
+%            COPY '#SCRIPT PUBDIST'                                             
+%          END BLOCK                                                            
+%%                                                                              
+%          BLOCK                                         %PDB%                
+%            COPY '#PUNCH 5 D'                                                  
+%            COPY 'END'                                                         
+ PDB output to {&publish.pdb{&                                                
+%          END BLOCK                                                            
+%          BLOCK                                         %SHELX%                
+%            COPY '#FOREIGN SHELX SPECIAL'                                      
+%            COPY 'END'                                                         
+ Shelx output to shelxs.ins                                                     
+%          END BLOCK                                                            
+%%                                                                              
+%          BLOCK                                         %REFLECTIONS%          
+^^CO         DISPOSE XPUB                                                       
+%            COPY '#SCRIPT PUBREFL'                                             
+%          END BLOCK                                                            
+%%                                                                              
+%          BLOCK                                         %SUMMARY%              
+%            COPY '#SUMMARY EVERYTHING'                                         
+%            COPY 'END'                                                         
+%          END BLOCK                                                            
+%%                                                                              
+%          BLOCK                                         %RESIDUALS%            
+%            COPY '#ANALYSE'                                                    
+%            COPY 'LIST LEVEL=HIGH'                                             
+%            COPY 'END'                                                         
+%          END BLOCK                                                            
+%%                                                                              
+%          BLOCK                                         %SAVE%                 
+^^CO         DISPOSE XPUB                                                       
+%            COPY '#SCRIPT ARCHIVE'                                             
+%            COPY 'END'                                                         
+%          END BLOCK                                                            
+%%                                                                              
+%        END CASE                                                               
+%      END BLOCK                                                                
+%%                                                                              
+%    END CASE                                                                   
+%  END LOOP                                                                     
+%%                                                                              
+%  IF CIFDONE .EQ. FALSE THEN                                                   
+                                                                                
+{I * Info: You have not saved a CIF file.                                       
+                                                                                
+%%    VERIFY YES NO                                                             
+%%    GET NOSTORE FINAL ABBREVIATED 'Do you want a CIF file?' 'YES'             
+%%    IF VALUE .EQ. 2 THEN                                                      
+%%            FINISH                                                            
+%%    ELSE                                                                      
+%%      BLOCK                                         %CIF%                     
+%%        COPY '#SCRIPT XCIF'                                                   
+%%        COPY 'END'                                                            
+%%      END BLOCK                                                               
+%%    END IF                                                                    
+%  END IF                                                                       
+%  COPY '#CLOSE FRN1'                                                           
+%END SCRIPT                                                                     
