@@ -1,5 +1,8 @@
 %SCRIPT XTANGENT                                                                
 %% TANGENT RE-CYCLING USING SIR                                                 
+%% The variables QLINE1, QLINE2 BUTTXX and BUTTOK are used by XQUESTIO
+% VARIABLE CHARACTER QLINE1 QLINE2 QTITLE BUTTOK BUTTXX
+% VARIABLE LOGICAL ANSWER
 %%                                                                              
 %      copy '#script xdelq'                                                     
 %      copy '#FOREIGN SIR92 SPECIAL'                                            
