@@ -43,6 +43,12 @@ CRYSTALS commands and/or data lists
 #HSxraydata#
 #PThe X-ray data menu is concerned with the input, export or editing of 
 experimental X-ray observations and data.#
+
+#IGuided Import#
+#PStarts up "The Guide". 
+The Guide tries to suggest a strategy for working with 'routine' 
+structures.
+
 #IPre-process#
 #PSubmenu. See section #RPreprocess#.
 #IUse KCCDIN output#
@@ -69,6 +75,18 @@ file name. You will need to know the space group symbol.
 #IImport reflection data#
 #POpens a dialog which allows the import of reflection data in a variety
 of formats, most commonly, SHELX HKLF4 format.#
+
+#IImport "cif" files#
+#POpens a dialog which allows the import of data from "cif"  and "fcf" 
+files.
+#PIf the "cif" file contains more than one structure, the data from 
+each may either be put into separate CRYSTALS format files, or into one
+single file. If there is a single file, it can be imported directly into
+CRYSTALS.  If the "cif" file contians a Z'=2 structure, the two 
+molecules can be 'matched', ie tested for similarity.
+
+
+
 #IFile Export#
 #PEnables the creation of text files in various formats#
 #IFilter reflections#
