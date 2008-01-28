@@ -16,6 +16,7 @@ DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\csd2cry\csd2cry.fpp /optimize
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\delred\delred.fpp /optimize:4 /MD
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\dipin\dipin.fpp /optimize:4 /MD
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\hklf5\ctwin.fpp /optimize:4 /MD
+DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\hklf5\hklf52cry.fpp /optimize:4 /MD
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\kccdin\kccdin.fpp /optimize:4 /MD
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\rc93\rc93.fpp  /automatic /optimize:4 /MD
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\reindex\reindex.fpp /optimize:4 /MD
