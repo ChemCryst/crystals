@@ -6246,8 +6246,32 @@ plus "n".
 other spreadsheet.
 
 #
+#DComparing lots of Z'=2 structures#
+#PIf one has a single cif file containing many Z'=2 structures, the whole 
+ file can be processed structure-by-structure automatically, with 
+ automatic matching of the structures.
+#PTo do this, extract the structures from the CSD saving the results to 
+ a single file using the operation 'Import CIF file' from the drop-down 
+ menu 'X-ray Data'.  Before starting, 
+ ensure that a file titled "cifproc.dat" is in the same folder as the 
+ composite cif file and that it says:
 
-
+#J
+/TITLE LOCAL FILE
+/edit
+mon off
+list off
+insert resi
+sel type ne h
+end
+/match
+output punch=results
+map resi(1)
+onto resi(2)
+end
+/purge
+end
+#
 
 #Q
 #XBONDCALC#
