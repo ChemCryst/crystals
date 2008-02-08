@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.50  2008/01/25 15:03:28  djw
+c correct initialisation of cmon
+c
 c Revision 1.49  2007/12/17 17:31:20  djw
 c Inhibit distance and torsion comparisons for external matches, add offset to KEEP directive
 c
@@ -242,7 +245,7 @@ C            IMETHD                 CALCULATION METHOD.A NUMBER BETWEEN
 C                                   1 AND 3. DEFAULT VALUE SET IS 1.
 C                                   UPPER LIMIT IS CHECKED BY ROUTINE
 C                                   XRGSMD
-C                  VALUE ( ONE OF ) : 1/2/3 ( SEE XRGCLC FOR MEANINGS )
+C                  VALUE ( ONE OF ) : 1/2/3/4 ( SEE XRGCLC FOR MEANINGS )
 C
 C
 C            ICMPDF         SETS COMPARE/REPLACE/KEEP FLAG FOR
@@ -530,6 +533,10 @@ CDJWAPR01 - COMPUTE TRANSFORMATION FOR GROUP
       IF (NATMD .GT. 0) THEN
             CALL XRGCLC(IMATRIX,0)
             IMATRIX = +1
+      else
+        write(cmon,'(a)')' No atoms have been selected'
+        call xprvdu(ncvdu, 1,0)
+        if (issprt .eq. 0) write(ncwu, '(a)') cmon(1)(:)
       ENDIF
 C     RE-INITIALISE THINGS
       NATMD=0
@@ -551,6 +558,10 @@ CRICJAN03 - COMPUTE TRANSFORMATION FOR GROUP
       IF (NATMD .GT. 0) THEN
             CALL XRGCLC(IMATRIX,0)
             IMATRIX = +2
+      else
+        write(cmon,'(a)')' No atoms have been selected'
+        call xprvdu(ncvdu, 1,0)
+        if (issprt .eq. 0) write(ncwu, '(a)') cmon(1)(:)
       ENDIF
 C     RE-INITIALISE THINGS
       NATMD=0
@@ -569,6 +580,10 @@ C -- DO CALCULATION FOR PREVIOUS GROUP IF NECESSARY
 CDJWAPR2001
       IF (NATMD .GT. 0) THEN
              CALL XRGCLC(IMATRIX,0)
+      else
+        write(cmon,'(a)')' No atoms have been selected'
+        call xprvdu(ncvdu, 1,0)
+        if (issprt .eq. 0) write(ncwu, '(a)') cmon(1)(:)
       ENDIF
 C     RE-INITIALISE THINGS
       IMATRIX = -1
@@ -743,6 +758,10 @@ C -- THERE MAY BE A CALCULATION OUTSTANDING WHICH SHOULD BE PERFORMED
 C    IF THERE HAS BEEN NO ERROR
       IF (NATMD .GT. 0) THEN
         IF (IERFLG.GE.0) CALL XRGCLC(IMATRIX,0)
+      else
+        write(cmon,'(a)')' No atoms have been selected'
+        call xprvdu(ncvdu, 1,0)
+        if (issprt .eq. 0) write(ncwu, '(a)') cmon(1)(:)
       ENDIF
 C -- CHECK IF A NEW LIST 5 IS TO BE PRODUCED
       IF (NEWLIS) 9050,9100,9150
@@ -864,13 +883,14 @@ C                           THE INTERNAL COPY OF LIST 5 IS UPDATED.
 C                           THIS WILL BE WRITTEN TO DISC IF THIS HAS
 C                           BEEN REQUESTED.
 C 
-C -- THERE ARE 3 WAYS, AT PRESENT, OF CALCULATING THE BEST FIT MATRIX.
+C -- THERE ARE 4 WAYS coded for CALCULATING THE BEST FIT MATRIX.
 C    THE PARTICULAR ONE OF THESE USED IN EACH CASE DEPENDS ON THE
 C    VALUE OF THE VARIABLE 'IMETHD'.
 
 c      imethd 1 Rotation part of general transformation
 c      imethd 2 for general rotation-dilation
 c      imethd 3 for Kabsch pure rotation
+c      imethd 4 for Kabsch permitting -ve rotation
 c
 C    THIS IS USED IN THIS SUBROUTINE TO SELECT ONE OF THE POSSIBLE
 C    CALLS WHICH WILL CALCULATE A MATRIX.
@@ -946,6 +966,9 @@ c
       else if (imethd .eq. 3) then
             write(cmon,'(a)')
      1 'Matching by Pure Rotation (Kabsch)'
+      else if (imethd .eq. 4) then
+            write(cmon,'(a)')
+     1 'Matching Permitting Improper Rotation (Kabsch)'
       endif
       call xprvdu(ncvdu,1,0)
       if (issprt .eq. 0) write(ncwu, '(a)') cmon(1)(:)
@@ -996,7 +1019,7 @@ Cdjwnov99      WRITE ( CMON , 2006 ) CENTO , CENTN
      1 '( in crystal fractions ) ',/,1X,2(3F8.4,3X))
         IF (IPCHRE.GE.0)THEN
          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,6(A,F9.4))')
-     1   char(9),' Centroids ', 
+     1   char(9),':Centroids ', 
      1   (CHAR(9),CENTO(I),I=1,3),(CHAR(9),CENTN(I),I=1,3)
          CALL XCREMS(CPCH,CPCH,LENFIL)
         END IF
@@ -1022,7 +1045,7 @@ C-----
      1    ,/1X,2(3F8.3,3X))
          IF (IPCHRE.GE.0)THEN
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,6(A,F9.4))')
-     1    Char(9),' Axes of Inertia ',
+     1    Char(9),':Axes of Inertia ',
      1    (CHAR(9),ROOTO(I),I=1,3),(CHAR(9),ROOTN(I),I=1,3)
           CALL XCREMS(CPCH,CPCH,LENFIL)
          END IF
@@ -1058,7 +1081,7 @@ C
 Cdjwapr2001
       IF (IMATRIX.LE.-1) THEN
 C -- CALCULATE BEST FIT MATRIX BY CALLING THE APPROPRIATE ROUTINE
-         GO TO (400,450,500,2250),IMETHD
+         GO TO (400,450,500,500,2250),IMETHD
          GO TO 2250
 400      CONTINUE
 C 
@@ -1073,7 +1096,7 @@ C -- CALCULATE FULL ROTATION-DILATION MATRIX
 C 
 500      CONTINUE
 C -- CALCULATE ROTATION MATRIX BY KABSCH METHOD
-         CALL XRGCKB (RESULT(1,1))
+         CALL XRGCKB (imethd,RESULT(1,1))
          GO TO 550
 C 
 550      CONTINUE
@@ -1152,14 +1175,14 @@ C
      1 '( in crystal fractions ) ',/,1X,2(3F8.4,3X))
          IF (IPCHRE.GE.0)THEN
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,6(A,F9.4))')
-     1    char(9),' Sum & delta Centroids', 
+     1    char(9),':Sum & delta Centroids', 
      1    (CHAR(9),AVCNT(I),I=1,3),(CHAR(9),DELCNT(I),I=1,3)
           CALL XCREMS(CPCH,CPCH,LENFIL)
          END IF
 C 
          IF (IPCHRE.GE.0)THEN
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,9(A,F9.4))')
-     1    char(9),'Transformation ',
+     1    char(9),':Transformation ',
      1    ((CHAR(9),WSPAC3(I,J),I=1,3),J=1,3)
           CALL XCREMS(CPCH,CPCH,LENFIL)
          END IF
@@ -1172,7 +1195,7 @@ C      GET THE DETERMINANT AND TRACE
 C Output determinant and trace
          IF (IPCHRE.GE.0)THEN
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,2(A,F7.4))')
-     1    char(9), 'Det and trace ',
+     1    char(9), ':Det and trace ',
      1    CHAR(9),DET,CHAR(9),TRACE
           CALL XCREMS(CPCH,CPCH,LENFIL)
          END IF
@@ -1203,11 +1226,11 @@ c
          IF (IPCHRE.GE.0)THEN
 
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,A,F13.5)')
-     1    char(9), 'Closeness to ideal rotation', 
+     1    char(9), ':Closeness to ideal rotation', 
      1    CHAR(9),SQRT(CLOSEX/9.0)
           CALL XCREMS(CPCH,CPCH,LENFIL)
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,A,F13.5)')
-     1    char(9), 'Closeness to group operator', 
+     1    char(9), ':Closeness to group operator', 
      1    CHAR(9),CLOSEN
           CALL XCREMS(CPCH,CPCH,LENFIL)
          endif
@@ -1227,7 +1250,7 @@ C Combine both measures above
 
          IF (IPCHRE.GE.0)THEN
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,A,F13.5)')
-     1    CHAR(9), 'Combined measure of closeness',
+     1    CHAR(9), ':Combined measure of closeness',
      1    CHAR(9),SQRT(CLOSEX/12.0)
           CALL XCREMS(CPCH,CPCH,LENFIL)
          endif
@@ -1420,9 +1443,11 @@ CDJWNOV07            CALL XPRVDU(NCVDU,4,0)
 
           RAVERAGE = RAVERAGE / FLOAT(NRCOMP)
 
-        if ((ilstre .ge. 1) .and. (ipchre .ge. 0) .AND. 
-     1   (ISSPRT .EQ. 0)) then
-C^^
+        if (ipchre .ge. 0)  then
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,A)')
+     1    CHAR(9),':Rworst & Raverage'
+          CALL XCREMS(CPCH,CPCH,LENFIL)
+
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,F13.9)')
      1    CHAR(9),RWORST
           CALL XCREMS(CPCH,CPCH,LENFIL)
@@ -1435,10 +1460,11 @@ C^^
      1    CHAR(9),IWORS
           CALL XCREMS(CPCH,CPCH,LENFIL)
 
-          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(16(A,I3))')
-     1    (CHAR(9),IBMA(K3),K3=1,16)
-          CALL XCREMS(CPCH,CPCH,LENFIL)
-
+c          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(16(A,I3))')
+c     1    (CHAR(9),IBMA(K3),K3=1,16)
+c          CALL XCREMS(CPCH,CPCH,LENFIL)
+        endif
+        if ((ilstre .ge. 1) .AND. (ISSPRT .EQ. 0)) then
           WRITE(NCWU,'(A,F9.4,A,I3)')'Lowest best match in last row: ',
      1     RWORST, ' to op# ', IWORS
 CDJWNOV07          CALL XPRVDU(NCVDU,1,0)
@@ -1447,7 +1473,11 @@ CDJWNOV07          CALL XPRVDU(NCVDU,1,0)
         endif
 
 
-        IF (IPCHRE.GE.0)THEN
+         IF (IPCHRE.GE.0)THEN
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,A)')
+     1    CHAR(9),':Symmetry'
+          CALL XCREMS(CPCH,CPCH,LENFIL)
+
            IF ( (ABS(1.-ABS(DET)).LE..05) .AND.
      1        (ABS(TRACE - NINT(TRACE)).LE..1)) THEN
              I=1+NINT(ABS(DETTRC))
@@ -1467,7 +1497,6 @@ CDJWNOV07          CALL XPRVDU(NCVDU,1,0)
              CALL XCREMS(CPCH,CPCH,LENFIL)
            END IF
          END IF
-c^^        endif
 
 c^^         
 
@@ -1483,6 +1512,11 @@ c^^
             WRITE (CMON,1050) CSYM(1:2)
             CALL XPRVDU (NCVDU,1,0)
             IF (IPCHRE.GE.0)THEN
+
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,A)')
+     1       CHAR(9),':Pseudo'
+             CALL XCREMS(CPCH,CPCH,LENFIL)
+
              WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(2A)')
      1       CHAR(9),CSYM(1:2)
              CALL XCREMS(CPCH,CPCH,LENFIL)
@@ -1519,6 +1553,11 @@ C
             WRITE (CMON,1250) (ATEMP(J),CTEMP(J),J=1,3)
             CALL XPRVDU (NCVDU,1,0)
             IF (IPCHRE.GE.0)THEN
+
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,A)')
+     1       CHAR(9),':Operator'
+             CALL XCREMS(CPCH,CPCH,LENFIL)
+
              WRITE(CPCH(LEN_TRIM(CPCH)+1:),
      1       '(A,3(F6.2,A2,2X))') CHAR(9),(ATEMP(J),CTEMP(J),J=1,3)
              CALL XCREMS(CPCH,CPCH,LENFIL)
@@ -1536,6 +1575,9 @@ C
 
 C Output number of atoms.
          IF (IPCHRE.GE.0)THEN
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,A)')
+     1    CHAR(9),':No_Atoms'
+          CALL XCREMS(CPCH,CPCH,LENFIL)
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,I6)')
      1    CHAR(9),NOLD
           CALL XCREMS(CPCH,CPCH,LENFIL)
@@ -1543,6 +1585,10 @@ C Output number of atoms.
 
 C Output space group symbol.
          IF (IPCHRE.GE.0)THEN
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,A)')
+     1       CHAR(9),':S.G.'
+             CALL XCREMS(CPCH,CPCH,LENFIL)
+
           J  = L2SG + MD2SG - 1
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,4(1X,A4))')
      1    CHAR(9),(ISTORE(I), I = L2SG, J)
@@ -1551,8 +1597,15 @@ C Output space group symbol.
 
 C Output cell.
          IF (IPCHRE.GE.0)THEN
-          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(6(A,F9.4))')
-     1    (CHAR(9),STORE(I), I = L1P1, L1P1+5)
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,A)')
+     1       CHAR(9),':Cell'
+             CALL XCREMS(CPCH,CPCH,LENFIL)
+
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(3(A,F9.4))')
+     1    (CHAR(9),STORE(I), I = L1P1, L1P1+2)
+          CALL XCREMS(CPCH,CPCH,LENFIL)
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(3(A,F9.4))')
+     1    (CHAR(9),STORE(I)*rtd, I = L1P1+3, L1P1+5)
           CALL XCREMS(CPCH,CPCH,LENFIL)
          END IF
 
@@ -1868,9 +1921,24 @@ c
       det3 = xdetr3(rotdil)
 
 c djwdec05 These are not always fixing the problem. Skip round them
-      goto 12345
-      IF (ABS(ROTDIL(1,1)) .LE. 0.0001*NNEW) ROTDIL(1,1)=
+cjan08      goto 12345
+c      The December 05 fix had the repercussion of distorting the
+c      rotation matrix, leading to distorsions in the model. The
+c      orignal 1988 code has been restored for the moment.  The
+c      problem remains of preventing instability when invertng the 
+c      dilation matrix in order to extract the rotation matrix
+c
+c      The old fix assumes that the main dilations will be roughly
+c      along the inertial axes. This is not always true.
+c
+      IF (ABS(ROTDIL(1,1)) .LE. 0.0001*NNEW) then 
+       write(cmon,'(a,f12.6)') 'Fixing Rotdil(1,1) - old value =',
+     1 rotdil(1,1) 
+       call xprvdu(ncvdu,1,0)
+       if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
+       ROTDIL(1,1)=
      1 SQRT(1.-ROTDIL(1,2)*ROTDIL(1,2)-ROTDIL(1,3)*ROTDIL(1,3))
+      endif
 C
       IF (ABS(ROTDIL(2,2)) .LE. 0.0001*NNEW) THEN
         WRITE(CMON,1300) ROTDIL(2,2)
@@ -1878,9 +1946,11 @@ C
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
 1300    FORMAT(1X, 'One group is almost colinear - sigma(Y**2) = '
      1  ,F12.8)
-
-c        ROTDIL(2,2)=SIGN( SQRT(1.-ROTDIL(2,1)*ROTDIL(2,1)-
-c     1  ROTDIL(2,3)*ROTDIL(2,3)), ROTDIL(2,2))
+       write(cmon,'(a,f12.6)') 'Fixing Rotdil(2,2) - old value =',
+     1 rotdil(2,2) 
+       call xprvdu(ncvdu,1,0)
+       if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
+c
 C Sqrt may be negative above, try this instead:
         ROTDIL(2,2)=SIGN( SQRT(ABS(1.-ROTDIL(2,1)*ROTDIL(2,1)-
      1  ROTDIL(2,3)*ROTDIL(2,3))), ROTDIL(2,2))
@@ -1892,8 +1962,10 @@ C
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
 1200    FORMAT(1X, 'One group is almost coplanar - sigma(Z**2) = '
      1  ,F12.8)
-c        ROTDIL(3,3)= SQRT(1.-ROTDIL(3,1)*ROTDIL(3,1)-
-c     1  ROTDIL(3,2)*ROTDIL(3,2))
+       write(cmon,'(a,f12.6)') 'Fixing Rotdil(3,3) - old value =',
+     1 rotdil(3,3) 
+       call xprvdu(ncvdu,1,0)
+       if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
 c Sqrt may be negative, try this:
         ROTDIL(3,3)= SQRT(ABS(1.-ROTDIL(3,1)*ROTDIL(3,1)-
      1  ROTDIL(3,2)*ROTDIL(3,2)))
@@ -1918,14 +1990,9 @@ C -- CALCULATE SQUARE ROOTS OF EIGENVALUES
       DO 7100 I=1,3
 C -- IF UVEC(I) IS CLOSE TO ZERO THEN DO NOT ATTEMPT SQUARE ROOT
       IF (UVEC(I) .gt. zero)  UVEC(I)=SQRT(UVEC(I))
-cdjwdec05. Try to fix the problem via the eigenvalues
-      if((uvec(i) .gt. 1.2) .or. (uvec(i) .lt. 0.8)) then
-         write(cmon,'(a,i2,f12.6,a )') 
-     1   ' Excessive dilation. Eigenvalue',i,uvec(i),' reset to unity'
-          call xprvdu(ncvdu,1,0)
-          if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
-         uvec(i)=1.0
-      endif
+c
+cjan08 - move fixing problem until after rotation found.
+c
 7100  CONTINUE
 c
       CALL XMXMFV (UVEC(1),UMAT(1,1),3)
@@ -1943,6 +2010,29 @@ C    ( ROTATION ) = ( ROTATION-DILATION ) * ( W3 )
       IF ( IERFLG .LT. 0 ) RETURN
       CALL XMLTMM ( ROTDIL(1,1),WSPAC3(1,1),ROTATN(1,1) , 3,3,3 )
 C
+cdjwdec05. Try to fix the problem via the eigenvalues
+cjan08 now try to fix up dilation
+c
+c      This all needs a re-think.  We need an algorithm which finds a
+c      proper or improper rotation directly, without any implied 
+c      dilation.
+Cdone - feb08 - Kabsch method 4
+c
+c      if(uvec(i) .gt. 1.2)  then
+c         write(cmon,'(a,i2,f12.6,a )') 
+c     1   ' Excessive dilation. Eigenvalue',i,uvec(i),' reset to unity'
+c          call xprvdu(ncvdu,1,0)
+c          if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
+c         uvec(i)=1.0
+c      elseif (uvec(i) .lt. 0.8) then
+c         write(cmon,'(a,i2,f12.6,a )') 
+c     1   ' Excessive contraction. Eigenvalue',
+c     2     i,uvec(i),' reset to unity'
+c          call xprvdu(ncvdu,1,0)
+c          if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
+c         uvec(i)=1.0
+c      endif
+c
 C
 C -- CALCULATE EIGENVALUES AND VECTORS OF CALCULATED MATRICES
       CALL XMXEGV ( DILATN(1,1) , WSPAC1(1,1) , DILNEV(1) )
@@ -2006,7 +2096,7 @@ C
 C --
 C
 CODE FOR XRGCKB
-      SUBROUTINE XRGCKB(RESULT)
+      SUBROUTINE XRGCKB(imethd, RESULT)
       DIMENSION RESULT(3,3)
       DIMENSION WSPAC1(3,3),WSPAC2(3,3),WSPAC3(3,3)
       DIMENSION VMAT(3,3),UVEC(3)
@@ -2016,13 +2106,15 @@ C --
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCONST.INC'
       INCLUDE 'XRGLST.INC'
+      INCLUDE 'XIOBUF.INC'
       INCLUDE 'QSTORE.INC'
 C --
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE (NCWU,1500)
-      ENDIF
-1500  FORMAT (' Calculation of rotation matrix by Kabsch method  ',//)
+        write(cmon,1500) 
+        call xprvdu(ncvdu,1,0)
+        if (issprt .eq. 0) write (ncwu,'(a//)') cmon(1)
+1500  FORMAT (' Calculation of rotation matrix by Kabsch method  ')
 C --
       DO 1600 I=1,3
       SIG(I)=1.0
@@ -2046,8 +2138,30 @@ C -- CHANGE ORDER
 C -- INTERCHANGE COLUMNS 1 AND 3 SO THAT EIGENVALUES
 C    ARE IN DESCENDING ORDER
       CALL XINT2 (3,VMAT(1,1),9,UVEC(1),3,1,3,1)
-C -- SET THIRD VECTOR TO CROSS PRODUCT OF OTHER TWO
-      I=NCROP3 (VMAT(1,1),VMAT(1,2),VMAT(1,3))
+cdjwjan08  see if the best best involves inversion
+         DET=XDETR3(vmat)
+      if (det .le. 0.0) then
+         write(cmon,'(a,f12.6)') 
+     1  '{E Non-positive Determinant =', det
+         call xprvdu(ncvdu,1,0)
+         if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
+      endif
+cdjwjan08
+      if ((imethd .eq. 3) .or. (abs(det) .le. zero)) then
+         write(cmon,'(a)') 
+     1  ' Ensuring pure rotation'
+         call xprvdu(ncvdu,1,0)
+         if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
+c -- set third vector to cross product of other two
+         i=ncrop3 (vmat(1,1),vmat(1,2),vmat(1,3))
+      endif
+      det=xdetr3(VMAT)
+      write(cmon,'(a,f12.6)') 
+     1' Using Matrix with Determinant =', det
+      call xprvdu(ncvdu,1,0)
+      if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
+
+
 C -- B=RV
       CALL XMLTMM(WSPAC1(1,1),VMAT(1,1),WSPAC3(1,1),3,3,3)
 C -- NORMALISE B VECTORS AND FORM CROSS PRODUCT
@@ -2067,9 +2181,8 @@ C -- CALCULATE E
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 2105 ) RESULT
       ENDIF
-2105  FORMAT ( 1X , 'Pure rotation matrix' , / ,
+2105  FORMAT ( 1X , 'Rotation Matrix' , / ,
      2 3 ( 1X , 3F10.5 , / ) )
-C
 C
       RETURN
       END
@@ -2720,12 +2833,9 @@ C Really check if the bond MNBND - MNPIV is in the bond list.
             END IF
           END DO
           IF ( IFBND .EQ. 0 ) THEN !  BOND not FOUND !
-            IF (IPCHRE.GE.0)THEN
+            IF ((ilstre.GE.0) .and. (issprt .eq. 0)) THEN
              IF ( MISMAT .EQ. 0 ) THEN
-              WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(2A)')
-     1        CHAR(9),'Bond mismatch'
-              CALL XCREMS(CPCH,CPCH,LENFIL)
-              WRITE(99,'(15A4,2A,4(1X,A,I4))')(KTITL(II),II=1,15),
+              WRITE(ncwu,'(15A4,2A,4(1X,A,I4))')(KTITL(II),II=1,15),
      1        CHAR(9),'Bond mismatch',
      4                            ISTORE(MOPIV),NINT(STORE(MOPIV+1)),
      2                            ISTORE(MOBNd),NINT(STORE(MOBND+1)),
@@ -2985,11 +3095,34 @@ C If angles differ by more than 180, take 360 - diff.
      1 WRITE(NCWU,'(17X,A/A,3F12.4)')'rms pos    rms bond     rms tors',
      2 ' Deviations  ',RMSDEV(4), SBDEV, STDEV
 
-
       IF (IPCHRE.GE.0)THEN
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,A)')
+     1       CHAR(9),':Sum dev sq'
+             CALL XCREMS(CPCH,CPCH,LENFIL)
              WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(14(A,F9.4))')
-     1       (CHAR(9),SUM(I),I=1,4),(CHAR(9),RMSDEV(I),I=1,4),
-     1       CHAR(9),SBDEV,CHAR(9),STDEV,CHAR(9),BNDMIN,CHAR(9),BNDMAX,
+     1       (CHAR(9),SUM(I),I=1,4)
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,A)')
+     1       CHAR(9),':RMS dev'
+             CALL XCREMS(CPCH,CPCH,LENFIL)
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(14(A,F9.4))')
+     2       (CHAR(9),RMSDEV(I),I=1,4)
+
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,A)')
+     1       CHAR(9),':RMS bond and tors dev'
+             CALL XCREMS(CPCH,CPCH,LENFIL)
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(14(A,F9.4))')
+     1       CHAR(9),SBDEV,CHAR(9),STDEV
+
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,A)')
+     1       CHAR(9),':Min and Max bond dev'
+             CALL XCREMS(CPCH,CPCH,LENFIL)
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(14(A,F9.4))')
+     2       CHAR(9),BNDMIN,CHAR(9),BNDMAX
+
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,A)')
+     1       CHAR(9),':Min and Max tors dev'
+             CALL XCREMS(CPCH,CPCH,LENFIL)
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(14(A,F9.4))')
      1       CHAR(9),TORMIN,CHAR(9),TORMAX
              CALL XCREMS(CPCH,CPCH,LENFIL)
              IF ( MISMAT .EQ. 0 )
@@ -3096,7 +3229,7 @@ C --
       IMETHD=IVALUE
       IF ( IMETHD.LT.0 ) GO TO 9800
       IF ( IMETHD.EQ.0 ) GO TO 9900
-      IF ( IMETHD.GT.3 ) GO TO 9800
+      IF ( IMETHD.GT.4 ) GO TO 9800
       RETURN
 9800  CONTINUE
         WRITE(CMON,9810)
@@ -3872,7 +4005,8 @@ c
       IPCHRE = -1
       IEQATM = 0
       WRITE (CPCH,'(15A4)') (KTITL(I),I=1,15)
-
+c----- enable printing of Torsions etc
+      nogeom = 1      
 C--PRINT THE INITIAL CAPTIONS
         CALL XPRTCN
 
@@ -3948,10 +4082,7 @@ C          CALL XPRVDU(NCVDU,1,0)
 
       ILSTRE = ISTORE(JCOMBF+1)
       IPCHRE = ISTORE(JCOMBF+2)
-      WRITE(NCWU,'(A,2I6)') 'ILSTRE', ILSTRE, IPCHRE
-
       IF ( LEF .GT. 0 ) GO TO 9910
-
       IF ( IEQATM .EQ. 0 ) THEN
         IF (KELECN().LT.0) GO TO 9900    ! Put electron count into SPARE
 C Check for Q atoms amongst the fragments, if present, the use
@@ -4807,7 +4938,9 @@ C -- SET INITIAL VALUES IN COMMON
       MDUIJ = 7
       NNEW = 0
 
-      IMETHD=1       ! DEFAULT METHOD 1 (ROTATION COMPONENT OF ROTATION-DILATION MATRIX ONLY)
+cdjwjan08
+c      IMETHD=1       ! DEFAULT METHOD 1 (ROTATION COMPONENT OF ROTATION-DILATION MATRIX ONLY)
+      IMETHD=4       ! DEFAULT METHOD 4 (Kabsch rotation/inversion)
       IGRPNO=0       ! SET GROUP SERIAL NUMBER TO ZERO
       ICMPDF=2       ! DEFAULT VALUE OF THE 'COMPARE/REPLACE/KEEP' FLAG
       IFLCMP=ICMPDF  ! SET REPLACE/COMPARE FLAG TO DEFAULT VALUE
@@ -4828,20 +4961,19 @@ C Space for upper triangle, each matrix has 16 entries. (N(N-1)/2 ops)
       MSGT = 8*MLTPLY*(MLTPLY+1)
       LSGT = KSTALL(MSGT)
       CALL XZEROF(STORE(LSGT),MSGT)
-
-
+c
 C     SAVE NFL and LFL
       IRNFL = NFL
       IRLFL = LFL
-
+c
 C Tell it how big the unique group is.
-
+c
       NATMD = IUNIQ
       NOLD = IUNIQ
       NNEW = IUNIQ
       IGRPNO=IGRPNO+1             ! INCREMENT GROUP SERIAL NUMBER
       IFLCMP=2                    ! SET REPLACE/COMPARE FLAG TO COMPARE
-
+c
 C LRENM,MDRENM will contain the old atoms (MAP) followed by the
 C new atoms (ONTO). In this routine, the type and serial are set.
 C Form is:  0  TYPE  of old (ONTO) atom       NB. These aren't paired 
@@ -4850,11 +4982,10 @@ C           2  TYPE of new (MAP) atom             held in the same
 C           3  SERIAL of new (MAP) atom.          vector.
 C           4  L5 address of OLD, overwritten later if using for RENAME
 C           5  L5 address of NEW, overwritten later if using for RENAME
-
+c
 c      WRITE(CMON,'(A/3(3F10.3/))')'L1O1 XRG1:',(STORE(L1O1+I),I=0,8)
 c      CALL XPRVDU(NCVDU,3,0)
-
-
+c
       MNEW = LNEW
       MUIJ = LUIJ
       MRENM = LRENM
@@ -4890,7 +5021,6 @@ c      CALL XPRVDU(NCVDU,3,0)
           MRENM = MRENM + 6
         END IF
       END DO
-
 
       WRITE ( CMON,'(A,I5,A)') 'Initially matching ', IUNIQ,' atoms.'
       CALL XPRVDU(NCVDU, 1,0)
@@ -4992,8 +5122,8 @@ C Use the better match to get a better matrix.
         MDOLD = 4
         MDNEW = 4
 
-        IMETHD=1       ! DEFAULT METHOD 1 (ROTATION COMPONENT OF ROTATION-DILATION MATRIX ONLY)
-        CALL XMOVE(STORE(L1O2),RGOM(1,1),9) ! SET DEFAULT COORDINATES SYSTEM TO (1. 1. 1. 90. 90. 90.)
+c        IMETHD=1       ! DEFAULT METHOD 1 (ROTATION COMPONENT OF ROTATION-DILATION MATRIX ONLY)
+        IMETHD=4       ! DEFAULT METHOD 4 (Kabsch rotation/inversion)
         CALL XZEROF(ORIGIN(1),3)   ! ZERO ORIGIN
         CALL XUNTM3(RGMAT(1,1))    ! SET TO ZERO ROTATION
         MDRENM = 6
