@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.83  2007/12/14 16:39:57  djw
+C Add more comments
+C
 C Revision 1.82  2007/03/20 15:39:21  djw
 C Filter out improbable H-bonds
 C
@@ -1717,6 +1720,12 @@ c  removed from code
 c  JD is a temporary location - matrix is moved to lower right (JN) of full 
 c  vCv matrix at JM
                 CALL XCOVAR( JA, NWD, NWS, JD, JE, IPART, 2)
+cdjwfeb08
+c      write(ncwu,'(a)') 'VcV matrix'
+c      write(ncwu,'(6f12.9 )') (store(jd+ifeb08-1), ifeb08=1,nwd*nwd)
+c      write(ncwu,'(a)') 'multipliers'
+c      write(ncwu,'(6f12.4 )') (store(je+ifeb08-1), ifeb08=1,nwd*nwd)
+cdjwfeb08
 
 C--SET UP THE RELEVANT SYMMETRY MATRIX  AT JH
 c-- second atom only - unit matrix for 1st atom already set at JG
@@ -1744,9 +1753,11 @@ c
 
                 CALL XMVCD(JD,NWD,JN,NWDT)
 cnov07
+cdjwfeb08
 c      write(ncwu,'(2(a,i8))') 'jm',jm, '  jn',jn
-c      write(ncwu,'(12f16.12)') (store(idjw),idjw=jm,jm+143)
+c      write(ncwu,'(12f12.9)') (store(idjw),idjw=jm,jm+143)
 c      write(ncwu,'(/)')
+cdjwfeb08
 
 C--CALCULATE 'DX','DY' AND 'DZ', store results in B(1 to 3)
 c  x,y z all fractionsal, those at J+7 have symmetry applied
