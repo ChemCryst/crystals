@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2006/10/19 13:58:14  djw
+C Correct labelling of final R factors
+C
 C Revision 1.19  2006/09/06 06:55:44  djw
 C Output more decimal places for matrices
 C
@@ -130,7 +133,7 @@ C---- SET LIST 5 AUXILLIARY ADDRESSES
 100      FORMAT (' Principal axes and ''direction''',' cosines of the th
      1ermal ellipsoids',///,1X,'Type',1X,'Serial',5X,'m.s.d.',9X,'a*',
      2    8X,'b''',9X,'c',10X,'a',9X,'b',9X,'c')
-         WRITE (NCAWU,150)
+cfeb08         WRITE (NCAWU,150)
          IF (LIST.GT.0) THEN
             WRITE (CMON,150)
             CALL XPRVDU (NCVDU,1,0)
@@ -272,7 +275,7 @@ C-----   PRINT A CAPTION THE FIRST TIME
                IF (NNPD.LE.0) THEN
                   NNPD=1
                   IF (ISSPRT.EQ.0) WRITE (NCWU,500)
-                  WRITE (NCAWU,500)
+cfeb08                  WRITE (NCAWU,500)
                   WRITE (CMON,500)
                   CALL XPRVDU (NCVDU,1,0)
 500               FORMAT (' The following atoms should be carefully exam
@@ -285,8 +288,8 @@ C-----   PRINT A CAPTION THE FIRST TIME
                WRITE (CMON,550) STORE(M5B),STORE(M5B+1),(STORE(III),III=
      1          NE,J),CTEXT
                CALL XPRVDU (NCVDU,1,0)
-               WRITE (NCAWU,550) STORE(M5B),STORE(M5B+1),(STORE(III),
-     1          III=NE,J),CTEXT
+cfeb08               WRITE (NCAWU,550) STORE(M5B),STORE(M5B+1),(STORE(III),
+cfeb08     1          III=NE,J),CTEXT
 550            FORMAT (1X,A4,F6.0,3F10.4,3X,A24)
                IF (ISSPRT.EQ.0) WRITE (NCWU,600) STORE(M5B),STORE(M5B+1)
      1          ,(STORE(I),I=NF,K),CTEXT
@@ -297,7 +300,7 @@ C-----   PRINT A CAPTION THE FIRST TIME
      1          NE,J),CTEXT
                CALL XPRVDU (NCVDU,1,0)
                IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
-               WRITE (NCAWU,'(A)') CMON(1)
+cfeb08               WRITE (NCAWU,'(A)') CMON(1)
             END IF
             GO TO 850
          ELSE
@@ -325,7 +328,7 @@ C-----   PRINT A CAPTION THE FIRST TIME
                IF (NNPD.LE.0) THEN
                   NNPD=1
                   IF (ISSPRT.EQ.0) WRITE (NCWU,500)
-                  WRITE (NCAWU,500)
+cfeb08                  WRITE (NCAWU,500)
                   WRITE (CMON,500)
                   CALL XPRVDU (NCVDU,1,0)
                END IF
@@ -369,17 +372,17 @@ cdjwfeb06
      1 ' atoms =',avol/float(nvol), ' rmsd ',
      2   sqrt((nvol*dvol-avol*avol)/(nvol*(nvol-1)))
        CALL XPRVDU (NCVDU,1,0)
-       WRITE (NCAWU,'(A)') CMON(1)
+cfeb08       WRITE (NCAWU,'(A)') CMON(1)
        IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
        write(cmon,'(A,i6,a,f8.4)')' Maximum volume of ',nvol,
      1 ' atoms =',bvol
        CALL XPRVDU (NCVDU,1,0)
-       WRITE (NCAWU,'(A)') CMON(1)
+cfeb08       WRITE (NCAWU,'(A)') CMON(1)
        IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
        write(cmon,'(A,i6,a,f8.4)')'   Maximum axis of ',nvol,
      1 ' atoms =',cvol
        CALL XPRVDU (NCVDU,1,0)
-       WRITE (NCAWU,'(A)') CMON(1)
+cfeb08       WRITE (NCAWU,'(A)') CMON(1)
        IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
       endif
       endif
@@ -633,7 +636,7 @@ C--NO ATOMS ON THIS CARD
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,900)
       END IF
-      WRITE (NCAWU,900)
+cfeb08      WRITE (NCAWU,900)
       WRITE (CMON,900)
       CALL XPRVDU (NCVDU,1,0)
 900   FORMAT (' No atoms found')
@@ -653,13 +656,13 @@ C--CHECK IF ANY ERRORS HAVE BEEN GENERATED DURING THE INPUT OF THE ATOMS
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,1050)
       END IF
-      WRITE (NCAWU,1050)
+cfeb08      WRITE (NCAWU,1050)
       WRITE (CMON,1050)
       CALL XPRVDU (NCVDU,1,0)
 1050  FORMAT (' Instruction ignored because of previous errors')
       GO TO 100
 1100  CONTINUE
-      WRITE (NCAWU,1150) NGP
+cfeb08      WRITE (NCAWU,1150) NGP
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,1150) NGP
       END IF
@@ -684,7 +687,7 @@ C----- CLEAR THE REJECT AND LIMIT CONDITIONS
          NDEL=0
          CALL XZEROF (JDEL(1),20)
       ELSE
-         WRITE (NCAWU,1200)
+cfeb08         WRITE (NCAWU,1200)
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,1200)
          END IF
@@ -716,7 +719,7 @@ C -- CHECK THERE ARE SOME ATOMS
       IF (NATOM.LE.0) GO TO 3700
 C----- COMPUTE DISTANCES AND ANGLES
       CALL RDSTAN (JBASE,LBASE,NATOM,MD5A)
-      WRITE (NCAWU,1600)
+cfeb08      WRITE (NCAWU,1600)
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,1600)
       END IF
@@ -782,7 +785,7 @@ C--START TO PROCESS THE CARD
 C--PRINT A CAPTION
 2500  CONTINUE
       IF (IRPL.EQ.0) THEN
-         WRITE (NCAWU,2550)
+cfeb08         WRITE (NCAWU,2550)
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,2550)
          END IF
@@ -856,7 +859,7 @@ C----- 'STORE' INSTRUCTION
          CALL XMOVE (STORE(KWORK+9),STORE(M20I),9)
          CALL XMOVE (STORE(KWORK+18),STORE(M20V),3)
          IUPDT=1
-         WRITE (NCAWU,2850) CCALC(ISHIFT-1)
+cfeb08         WRITE (NCAWU,2850) CCALC(ISHIFT-1)
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,2850) CCALC(ISHIFT-1)
          END IF
@@ -873,7 +876,7 @@ C---ERROR MODES FOR 'CENTRE' INSTRUCTION
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,2950) I
       END IF
-      WRITE (NCAWU,2950)
+cfeb08      WRITE (NCAWU,2950)
       WRITE (CMON,2950)
       CALL XPRVDU (NCVDU,1,0)
 2950  FORMAT (' Spurious character at about column',I5)
@@ -882,7 +885,7 @@ C---ERROR MODES FOR 'CENTRE' INSTRUCTION
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,3050)
       END IF
-      WRITE (NCAWU,3050)
+cfeb08      WRITE (NCAWU,3050)
       WRITE (CMON,3050)
       CALL XPRVDU (NCVDU,1,0)
 3050  FORMAT (' Too many or too few numbers')
@@ -894,7 +897,7 @@ C--ERROR BECAUSE TLS  HAS NOT BEEN CALCULATED
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,3150)
       END IF
-      WRITE (NCAWU,3150)
+cfeb08      WRITE (NCAWU,3150)
       WRITE (CMON,3150)
       CALL XPRVDU (NCVDU,1,0)
 3150  FORMAT (1X,' Instruction ignored. TLS have not been',' successfull
@@ -918,7 +921,7 @@ C
 3300  CONTINUE
       IF (IMOD5.GT.0) THEN
          CALL XSTR05 (IULN5,0,1)
-         WRITE (NCAWU,3350)
+cfeb08         WRITE (NCAWU,3350)
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,3350)
          END IF
@@ -928,7 +931,7 @@ C
       END IF
       IF (IUPDT.GT.0) THEN
          CALL XSTR20 (20,0,1)
-         WRITE (NCAWU,3400)
+cfeb08         WRITE (NCAWU,3400)
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,3400)
          END IF
@@ -945,7 +948,7 @@ C
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,3500) N
          END IF
-         WRITE (NCAWU,3500) N
+cfeb08         WRITE (NCAWU,3500) N
          WRITE (CMON,3500) N
          CALL XPRVDU (NCVDU,1,0)
 3500     FORMAT (' WARNING. The requested update to LIST ',I4,' has not
@@ -953,7 +956,7 @@ C
       END IF
       IF (IUPDT.GT.0) THEN
          N=20
-         WRITE (NCAWU,3500) N
+cfeb08         WRITE (NCAWU,3500) N
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,3500) N
             WRITE (CMON,3500) N
@@ -978,7 +981,7 @@ C
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,3750)
       END IF
-      WRITE (NCAWU,3750)
+cfeb08      WRITE (NCAWU,3750)
       WRITE (CMON,3750)
       CALL XPRVDU (NCVDU,1,0)
 3750  FORMAT (1X,'No atoms have been specified ')
@@ -1061,13 +1064,13 @@ C-----    WRITE NEW PARAMETERS
      1         (STORE(J),J=JJ,JJ+8)
                CALL XPRVDU(NCVDU,1,0)
                IF (ISSPRT.EQ.0) WRITE(NCWU,'(A)') CMON(1)(1:)
-               WRITE (NCAWU,'(A)') CMON(1)(1:)
+cfeb08               WRITE (NCAWU,'(A)') CMON(1)(1:)
 100            FORMAT (1X,A4,F4.0,3F8.4,6F8.3)
                WRITE(CMON,150)  (STORE(J),J=JWORK,JWORK+5)
 150            FORMAT (1X,32X,6F8.3)
                CALL XPRVDU(NCVDU,1,0)
                IF (ISSPRT.EQ.0) WRITE(NCWU,'(A)') CMON(1)(1:)
-               WRITE (NCAWU,'(A)') CMON(1)(1:)
+cfeb08               WRITE (NCAWU,'(A)') CMON(1)(1:)
                IF (IRPL.EQ.1) THEN
 C-----           REPLACE
                  CALL XMOVE (STORE(JWORK),STORE(ISAVE+7),6)
@@ -1093,14 +1096,14 @@ C-C-C-ISOTROPIC/SPHERE/LINE/RING
                   WRITE (NCWU,100) STORE(ISTART),STORE(ISTART+1),
      1             (STORE(J),J=JJ,JJJ),STORE(ISTART+7)
                END IF
-               WRITE (NCAWU,100) STORE(ISTART),STORE(ISTART+1),(STORE(J)
-     1          ,J=JJ,JJJ),STORE(ISTART+7)
+cfeb08               WRITE (NCAWU,100) STORE(ISTART),STORE(ISTART+1),(STORE(J)
+cfeb08     1          ,J=JJ,JJJ),STORE(ISTART+7)
             END IF
          ISAVE=ISAVE+ISTEP
 200   CONTINUE
       GO TO 400
 250   CONTINUE
-      WRITE (NCAWU,300)
+cfeb08      WRITE (NCAWU,300)
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,300)
       END IF
@@ -1108,7 +1111,7 @@ C-C-C-ISOTROPIC/SPHERE/LINE/RING
       CALL XPRVDU (NCVDU,1,0)
 300   FORMAT (' Errors in atom definitions')
       IF (IRPL.GT.0) THEN
-         WRITE (NCAWU,350)
+cfeb08         WRITE (NCAWU,350)
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,350)
          END IF
@@ -1119,7 +1122,7 @@ C-C-C-ISOTROPIC/SPHERE/LINE/RING
       END IF
 400   CONTINUE
       IF (IMOD5*IRPL.GT.0) THEN
-         WRITE (NCAWU,450)
+cfeb08         WRITE (NCAWU,450)
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,450)
          END IF
@@ -1237,7 +1240,7 @@ C----- INCLUDE ISOTROPIC ATOMS AT THIS STAGE
       CF(3)=CF(3)/FLOAT(NATOM)
       IF (IMODE.GT.0) THEN
          IF (ISSPRT.EQ.0) WRITE (NCWU,400) CF
-         WRITE (NCAWU,400) CF
+cfeb08         WRITE (NCAWU,400) CF
          WRITE (CMON,400) CF
          CALL XPRVDU (NCVDU,1,0)
 400      FORMAT (' Centre of gravity, used as centre of libration',4X,
