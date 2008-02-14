@@ -1,0 +1,28 @@
+@call make_w32_include.bat
+@if "%1" == "clean" goto clean
+@if "%1" == "tidy" goto tidy
+
+SETLOCAL
+@set OPATH=%PATH%
+@set OLIB=%LIB%
+call "c:\program files\microsoft visual studio\df98\bin\dfvars.bat"
+
+DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\cif2cry\cif2cry.fpp /optimize:4 /MD
+@set PATH=%OPATH%
+@set LIB=%OLIB%
+ENDLOCAL
+
+CL ..\bits\loader\crysload.cc %CDEF% /EHs /W3 /TP /O2 /D"NDEBUG" /MD /link shell32.lib advapi32.lib user32.lib
+del crysload.obj
+
+goto exit
+
+:clean
+del cif2cry.exe convplat.exe csd2cry.exe delred.exe dipin.exe ctwin.exe
+del kccdin.exe rc93.exe reindex.exe shelxs.exe sxtocry.exe sir92.exe
+del rc93.src form.dat crysload.exe
+
+:tidy
+del sir92.o norm92.o
+
+:exit
