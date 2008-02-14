@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.84  2008/02/12 09:01:16  djw
+C Matrix work diagnostics
+C
 C Revision 1.83  2007/12/14 16:39:57  djw
 C Add more comments
 C
@@ -7522,11 +7525,11 @@ C -- to look for a 'significant' change in co-ordinates.
 
 C Significant Shift ( F is dist squared ):
          IF ( F .GT. STORE(L40T+4)**2 ) THEN
-           IF (ISSPRT .EQ. 0) THEN
-             WRITE(NCWU,'(a/a,I4,2F15.8)')
-     + 'Bonds: Update required - Significant change in L5',
-     + 'Atom#, tol^2, F^2 = ',I+1,STORE(L40T+4)**2,F
-           endif
+cfeb08           IF (ISSPRT .EQ. 0) THEN
+cfeb08             WRITE(NCWU,'(a,a,I4,2F15.8)')
+cfeb08     + 'Bonds: Update required - Significant change in L5',
+cfeb08     + 'Atom#, tol^2, F^2 = ',I+1,STORE(L40T+4)**2,F
+cfeb08           endif
            RETURN
          ENDIF
          
