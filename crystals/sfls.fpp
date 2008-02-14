@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.50  2007/10/09 07:03:15  djw
+C Output more R-factors to cif
+C
 C Revision 1.49  2006/08/02 06:21:04  djw
 C Change captions to most disagreeable reflection list
 C
@@ -2759,7 +2762,7 @@ c               reflection will reduce the JPNXth parameter's variance.
        RETURN
       END
 
-
+CODE FOR XSFLSX
       SUBROUTINE XSFLSX
 C
 C--MAIN S.F.L.S. LOOP  -  CALCULATES A AND B AND THEIR DERIVATIVES
@@ -2916,20 +2919,26 @@ C--THIS IS THE END OF THE STACK  -  WE MUST DO A CALCULATION HERE
       NM=NM+1
 
       IF(ISTACK.LT.0)RETURN  ! CHECK IF WE MUST CALCULATE THIS REFLECTION
-
-C--CALCULATE THE INFORMATION FOR THE SYMMETRY POSITIONS
+c Rollett 5.12.5-7
+c--calculate the information for the symmetry positions
       M2=L2
       M2T=L2T
       DO LJZ=1,N2
+c compute h' = S.h
         STORE(M2T)=STORE(M6)*STORE(M2)+STORE(M6+1)*STORE(M2+3)
      2   +STORE(M6+2)*STORE(M2+6)
         STORE(M2T+1)=STORE(M6)*STORE(M2+1)+STORE(M6+1)*STORE(M2+4)
      2   +STORE(M6+2)*STORE(M2+7)
         STORE(M2T+2)=STORE(M6)*STORE(M2+2)+STORE(M6+1)*STORE(M2+5)
      2   +STORE(M6+2)*STORE(M2+8)
+c calculate the h.t terms
         STORE(M2T+3)=(STORE(M6)*STORE(M2+9)+STORE(M6+1)*STORE(M2+10)
-     2   +STORE(M6+2)*STORE(M2+11))*TWOPI  ! CALCULATE THE H.T TERMS
-        IF ( ( LJZ .EQ. 1 ) .OR. ( .NOT. ISO_ONLY ) ) THEN ! ANISO CONTRIBUTIONS ARE REQUIRED
+     2   +STORE(M6+2)*STORE(M2+11))
+        IF ( ( LJZ .EQ. 1 ) .OR. ( .NOT. ISO_ONLY ) ) THEN 
+c
+c aniso contributions are required
+c compute h'.h', h'.k' etc 
+c
           STORE(M2T+4)=STORE(M2T)*STORE(M2T)
           STORE(M2T+5)=STORE(M2T+1)*STORE(M2T+1)
           STORE(M2T+6)=STORE(M2T+2)*STORE(M2T+2)
@@ -2940,22 +2949,32 @@ C--CALCULATE THE INFORMATION FOR THE SYMMETRY POSITIONS
         STORE(M2T)=STORE(M2T)*TWOPI
         STORE(M2T+1)=STORE(M2T+1)*TWOPI
         STORE(M2T+2)=STORE(M2T+2)*TWOPI
+        STORE(M2T+3)=STORE(M2T+3)*TWOPI
         M2=M2+MD2
         M2T=M2T+MD2T
       END DO
-C--CALCULATE SIN(THETA)/LAMBDA SQUARED
+c
+c--calculate sin(theta)/lambda squared
+c Rollett 5.12.8  h"= Uh, U is reciprocal orhogonalisation matrix
+c Rollett 5.12.8  sst = h"^t.h" = [sin(theta)/lambda]^2
+c
       SST=STORE(L1S)*STORE(L2T+4)+STORE(L1S+1)*STORE(L2T+5)
      2 +STORE(L1S+2)*STORE(L2T+6)+STORE(L1S+3)*STORE(L2T+7)
      3 +STORE(L1S+4)*STORE(L2T+8)+STORE(L1S+5)*STORE(L2T+9)
       ST=SQRT(SST)
       SMIN=MIN(SMIN,ST)
       SMAX=MAX(SMAX,ST)
-C--CALCULATE THE TEMPERATURE FACTOR COEFFICIENT
+c
+c--The temperature factor coefficient TC = -8 Pi^2 [sin(theta)/lambda]^2
+c
       TC=-SST*TWOPIS*4.
 C--CHECK IF THE ANISO TERMS ARE REQUIRED
       IF(.NOT. ISO_ONLY) THEN 
         M2T=L2T
         DO LJZ=1,N2
+c
+c compute h* = h'.k'.a*.b* etc.
+c
           STORE(M2T+4)=STORE(M2T+4)*STORE(L1A)
           STORE(M2T+5)=STORE(M2T+5)*STORE(L1A+1)
           STORE(M2T+6)=STORE(M2T+6)*STORE(L1A+2)
@@ -2965,9 +2984,22 @@ C--CHECK IF THE ANISO TERMS ARE REQUIRED
           M2T=M2T+MD2T
         END DO
       END IF
-
+c
+c  st  the value of sin(theta)/lambda for the calculation
+c  l3tr and l3ti the real and imaginary components of the scattering factor
+c
       CALL XSCATT(ST)  ! CALCULATE THE FORM FACTORS
-      M3TR=L3TR  ! COMPUTE THE RATIO OF IMAGINARY TO REAL FORM FACTORS
+c
+c compute the ratio of imaginary to real form (scattering) factors
+c This will be a computational convenience later
+c Results stored in a stack with one row per element type
+c G2 is number of Non-primitive lattice translations (*2 if centre of symmetry)
+C T2 is the total number of operators = G2*NOP
+c
+c For efficiency, the formfactor is multiplied by the number of 
+c non-unique operators, G2 before summation over the unique operators
+c
+      M3TR=L3TR  
       M3TI=L3TI
       DO LJZ=1,N3
         STORE(M3TR)=STORE(M3TR)*G2
@@ -3021,29 +3053,52 @@ C
 
         M3TR=L3TR+ISTORE(M5A)  ! PICK UP THE FORM FACTORS FOR THIS ATOM
         M3TI=L3TI+ISTORE(M5A)
-        FOCC = STORE(M3TR) * STORE(M5A+2) * STORE(M5A+13) ! MODIFY FOCC FOR OTHER FC CORRECTIONS
+c
+c focc   formfactor * site occ * chemical occ * difabs corection
+c modify focc for other fc corrections 
+c
+        FOCC = STORE(M3TR) * STORE(M5A+2) * STORE(M5A+13) 
 
         FLAG=STORE(M5A+3)   ! PICK UP THE TYPE OF THIS ATOM
         IF(NINT(FLAG) .EQ. 1) THEN  ! CHECK THE TEMPERAURE TYPE FOR THIS ATOM
-          T=EXP(STORE(M5A+7)*TC)  ! CALCULATE THE ISO-TEMPERATURE FACTOR COEFFICIENTS FOR THIS ATOM
+c
+c calculate the iso-temperature factor coefficients for this atom
+c TC = -8 Pi^2 [sin(theta)/lambda]^2
+c T = exp(Uiso *TC)
+c
+          T=EXP(STORE(M5A+7)*TC)  
           TFOCC=T*FOCC
         END IF
-
+c
+c L2T is address of symmetry transformed index
+c
         M2T=L2T
         M2=L2   ! M2 (ADDR. FOR TRANSF.MAT.) IS RESET TO ADDR. FOR 1ST SYM.OP.
-        DO LJX=1,N2T  ! LOOP CYCLING OVER THE DIFFERENT EQUIVALENT POSITIONS FOR THIS ATOM
+c
+c loop cycling over the different equivalent reflections for this atom
+c
+c  calculate a = h'.x + h.t
+        DO LJX=1,N2T  
           A=STORE(M5A+4)*STORE(M2T)+STORE(M5A+5)*STORE(M2T+1)
-     2     +STORE(M5A+6)*STORE(M2T+2)+STORE(M2T+3)              ! CALCULATE H'.X+H.T
-          SLRFAC=1.0    ! STARTING-VALUES FOR ADDITIONAL FACTOR AND DERIVATIVES
+     2     +STORE(M5A+6)*STORE(M2T+2)+STORE(M2T+3)              
+c  slrfac starting-values for special shape factors and derivatives
+          SLRFAC=1.0 
           DSIZE=1.0
           DDECLINA=1.0
           DAZIMUTH=1.0
 
-          IF (NINT(FLAG) .EQ. 0) THEN   ! CALCULATE THE ANISO-TEMPERATURE FACTOR
+          IF (NINT(FLAG) .EQ. 0) THEN   
+c
+c  calculate the aniso-temperature factor
+c  T=exp(h*Uij + ...)
+c  store(mt2+..) is h* where h* = h'.k'.a*.b* etc.
+
+c
             T=EXP(STORE(M5A+7)*STORE(M2T+4)+STORE(M5A+8)*STORE(M2T+5)
      2       +STORE(M5A+9)*STORE(M2T+6)+STORE(M5A+10)*STORE(M2T+7)
      3       +STORE(M5A+11)*STORE(M2T+8)+STORE(M5A+12)*STORE(M2T+9))
             TFOCC=T*FOCC
+c
           ELSE IF ( NINT(FLAG) .GE. 2) THEN
             IF (NINT(FLAG) .EQ. 2) THEN  ! CALC SPHERE TF
               CALL XSPHERE (ST, M5A, SLRFAC, DSIZE)
@@ -3058,6 +3113,9 @@ C
           ENDIF
 
 C--CALCULATE THE SIN/COS TERMS   (NB This is a Chebychev approximation - v. fast)
+c  dd = 1.0/twopi
+c  a = h'.x + h.t
+c
           A=A*DD
           A=4.*(A-FLOAT(INT(A)))
           IF(A .EQ. 0) THEN
@@ -3087,17 +3145,21 @@ C--CALCULATE THE SIN/COS TERMS   (NB This is a Chebychev approximation - v. fast
             A=2.-A
           END IF
           B=A*A
+c
+c c = Cos(h'x+ht)
           C=C*(C0+B*(C1+B*(C2+B*C3)))
-
+c
+c Test if  centro with no refinement  -  only cos terms needed
           IF(COS_ONLY) GOTO 8900
-
+c
+c s = Sin(h'x+ht)
           S=S*A*(S0+B*(S1+B*(S2+B*S3)))
-
+c
 8850      CONTINUE
 C--CALCULATE THE B CONTRIBUTION
           BP=S*TFOCC
           BT=BT+BP
-
+c
 C--CALCULATE THE A CONTRIBUTION
 8900      CONTINUE
           AP=C*TFOCC
@@ -3105,6 +3167,12 @@ C--CALCULATE THE A CONTRIBUTION
 
 C--CHECK IF ANY REFINEMENT IS BEING DONE
           IF(ATOM_REFINE)THEN
+c
+c  store(mt2+ 0 to 2) is h' 
+c  store(mt2+ 4 to 9) is h* where h* = h'.k'.a*.b* etc.
+c  T=exp(h*Uij + ... ) where h* = h'.k'.a*.b* etc.
+c  c = cos(hx)
+c
 C-CALCULATE THE PARTIAL DERIVATIVES W.R.T. A FOR X,Y AND Z
 C-C-C-CALCULATE THE PARTIAL DERIVATIVES W.R.T. A FOR OCC,X,Y AND Z
             ALPD(1)=ALPD(1)+T*C*SLRFAC
@@ -3315,7 +3383,7 @@ C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR U[ISO]
       RETURN
       END
 
-
+CODE FOR XAB2FC
       SUBROUTINE XAB2FC
 C--CONVERSION OF THE A AND B PARTS INTO /FC/ TERMS
 C
