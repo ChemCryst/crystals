@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.51  2008/02/08 14:26:36  djw
+c Enable improper rotation in Kabsch method
+c
 c Revision 1.50  2008/01/25 15:03:28  djw
 c correct initialisation of cmon
 c
@@ -1018,12 +1021,19 @@ Cdjwnov99      WRITE ( CMON , 2006 ) CENTO , CENTN
 200      FORMAT (1X,'Centroids of old and new groups ',
      1 '( in crystal fractions ) ',/,1X,2(3F8.4,3X))
         IF (IPCHRE.GE.0)THEN
+c
+cdjwfeb08
+         IF (INTSYM.EQ.0) THEN
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+     1    CHAR(9)//'Asymmetric'
+         END IF
+c
          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,6(A,F9.4))')
-     1   char(9),':Centroids ', 
+     1   char(9),':Centroids ',
      1   (CHAR(9),CENTO(I),I=1,3),(CHAR(9),CENTN(I),I=1,3)
          CALL XCREMS(CPCH,CPCH,LENFIL)
         END IF
-
+cdjwfeb08
 C 
 C -- CALCULATE THE BEST PLANE THROUGH THE ATOMS IN EACH GROUP
 C 
@@ -1567,8 +1577,8 @@ C
      1       3(F6.2,A2,2X))
          ELSE
             IF (IPCHRE.GE.0)THEN
-             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(2A)')
-     1       CHAR(9),'none'
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(4A)')
+     1       CHAR(9),':Operator', CHAR(9),'none'
              CALL XCREMS(CPCH,CPCH,LENFIL)
             END IF
          END IF
@@ -4168,6 +4178,7 @@ C Sort each set of atoms into order of cardinality.
 
 C Count to work out the uniqueness of each atom and store in 5th vector.
       ICUR = ISTORE(3+LATVC)
+      INTSYM = 0
       INUM = 0
       IPREV= 0
       IUNIQ= 0
@@ -4252,8 +4263,9 @@ c        CALL XPRVDU(NCVDU,1,0)
 
       IF ( JOBDON .EQ. 0 ) THEN
 
-       IF ( IDOUB .GE. 1 ) THEN ! Try to break sym. Twice.
 
+       IF ( IDOUB .GE. 1 ) THEN ! Try to break sym. Twice.
+         INTSYM = INTSYM + 1
          IF (IPCHRE.GE.0)THEN
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1    CHAR(9)//'Internal_symmetry_2'
@@ -4546,21 +4558,25 @@ C Further ensure fragments are 2D identical.
 
            IF (JOBDON.EQ.0) THEN
             IF ( IDOUB .GE. 1 ) THEN 
+               INTSYM = INTSYM + 2
                IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1         CHAR(9)//'More_Internal_symmetry_2'
                ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 12, 1 )
                GOTO 9900
             ELSE IF ( ITRIP .GE. 1 ) THEN 
+               INTSYM = INTSYM + 3
                IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1         CHAR(9)//'More_Internal_symmetry_3'
                ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 13, 1 )
                GOTO 9900
             ELSE IF ( IQUAD .GE. 1 ) THEN
+               INTSYM = INTSYM + 4
                IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1         CHAR(9)//'More_Internal_symmetry_4'
                ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 14, 1 )
                GOTO 9900
             ELSE
+               INTSYM = INTSYM + 5
                IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1         CHAR(9)//'Internal_symmetry_lots'
                ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 15, 1 )
@@ -4570,27 +4586,31 @@ C Further ensure fragments are 2D identical.
          END DO
 
        ELSE IF ( ITRIP .GE. 1 ) THEN ! Try to break sym. Three times.
+        INTSYM = INTSYM + 1
         IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1   CHAR(9)//'Internal_symmetry_3'
         ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 16, 1 )
           GOTO 9900
 
        ELSE IF ( IQUAD .GE. 1 ) THEN ! Try to break sym. Four times.
+       INTSYM = INTSYM + 1
         IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1   CHAR(9)//'Internal_symmetry_4'
         ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 17, 1 )
           GOTO 9900
 
        ELSE
+        INTSYM = INTSYM + 1
         IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1   CHAR(9)//'Internal_symmetry_lots'
         ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 18, 1 )
           GOTO 9900
 
        END IF
+      else
+c
       END IF
-
-
+c
       IF ( NEWLIS .GT. 0 ) THEN       ! WRITE OUT NEW LIST
          LN=5
          IREC=101
