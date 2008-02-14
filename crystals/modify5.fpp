@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.49  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:08  rich
 C New CRYSTALS repository
 C
@@ -640,7 +644,7 @@ C -- INDICATE TO THE USER WHICH ATOMS WILL BE 'KEPT'
             IADDR=L5+(NKEEP-1)*MD5
             IF (ISSPRT.EQ.0) WRITE (NCWU,450) NKEEP,STORE(IADDR),
      1       STORE(IADDR+1)
-            WRITE (NCAWU,450) NKEEP,STORE(IADDR),STORE(IADDR+1)
+cfeb08            WRITE (NCAWU,450) NKEEP,STORE(IADDR),STORE(IADDR+1)
             WRITE (CMON,450) NKEEP,STORE(IADDR),STORE(IADDR+1)
             CALL XPRVDU (NCVDU,1,0)
 450         FORMAT (1X,'The ',I5,' atoms up to ',A4,F5.0,' will be KEPT'
@@ -681,7 +685,7 @@ C
 C    THIS DIRECTIVE HAS BEEN SUPERSEDED BY 'ATOM' AND IS NO LONGER
 C    SUPPORTED.
       IF (ISSPRT.EQ.0) WRITE (NCWU,550)
-      WRITE (NCAWU,550)
+cfeb08      WRITE (NCAWU,550)
       WRITE (CMON,550)
       CALL XPRVDU (NCVDU,1,0)
 550   FORMAT (1X,'The READ directive has been replaced by ATOM')
@@ -1002,7 +1006,7 @@ C
 C -- IF 'KEEP' HAS BEEN USED, RESET NOW
       IF (MKEEP.GT.0) THEN
          IF (ISSPRT.EQ.0) WRITE (NCWU,2800)
-         WRITE (NCAWU,2800)
+cfeb08         WRITE (NCAWU,2800)
          WRITE (CMON,2800)
          CALL XPRVDU (NCVDU,1,0)
 2800     FORMAT (1X,'Previous KEEP instruction(s) cancelled')
@@ -2050,8 +2054,8 @@ C----- Z
          M5A=M5A+MD5A
 6200  CONTINUE
       IF (IDIRNM.EQ.5) THEN
-         WRITE (NCAWU,6250) NPERT,SQRT(ZZ),PERTOT/FLOAT(NPERT),
-     1    SQRT(PERTSQ/FLOAT(NPERT))
+cfeb08         WRITE (NCAWU,6250) NPERT,SQRT(ZZ),PERTOT/FLOAT(NPERT),
+cfeb08     1    SQRT(PERTSQ/FLOAT(NPERT))
          IF (ISSPRT.EQ.0) WRITE (NCWU,6250) NPERT,SQRT(ZZ),PERTOT/
      1    FLOAT(NPERT),SQRT(PERTSQ/FLOAT(NPERT))
          WRITE (CMON,6250) NPERT,SQRT(ZZ),PERTOT/FLOAT(NPERT),
@@ -2728,7 +2732,7 @@ C
 C -- **** NON-FATAL ERRORS AND WARNINGS ****
 C
       IF (ISSPRT.EQ.0) WRITE (NCWU,7150)
-      WRITE (NCAWU,7150)
+cfeb08      WRITE (NCAWU,7150)
       WRITE (CMON,7150)
       CALL XPRVDU (NCVDU,1,0)
 7150  FORMAT (1X,'The previous directive has been ignored')
@@ -2738,7 +2742,7 @@ C
 C
 7200  CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,7250)
-      WRITE (NCAWU,7250)
+cfeb08      WRITE (NCAWU,7250)
       WRITE (CMON,7250)
       CALL XPRVDU (NCVDU,1,0)
 7250  FORMAT (1X,'The previous directive should have been followed',' by
@@ -2747,7 +2751,7 @@ C
 C
 7300  CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,7350)
-      WRITE (NCAWU,7350)
+cfeb08      WRITE (NCAWU,7350)
       WRITE (CMON,7350)
       CALL XPRVDU (NCVDU,1,0)
 7350  FORMAT (1X,'No arguments found')
@@ -2755,7 +2759,7 @@ C
 C
 7400  CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,7450)
-      WRITE (NCAWU,7450)
+cfeb08      WRITE (NCAWU,7450)
       WRITE (CMON,7450)
       CALL XPRVDU (NCVDU,1,0)
 7450  FORMAT (1X,'Parameter specifications are illegal for this ','instr
@@ -2764,7 +2768,7 @@ C
 C
 7500  CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,7550)
-      WRITE (NCAWU,7550)
+cfeb08      WRITE (NCAWU,7550)
       WRITE (CMON,7550)
       CALL XPRVDU (NCVDU,1,0)
 7550  FORMAT (1X,'Argument missing or of wrong type')
@@ -2772,7 +2776,7 @@ C
 C
 7600  CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,7650)
-      WRITE (NCAWU,7650)
+cfeb08      WRITE (NCAWU,7650)
       WRITE (CMON,7650)
       CALL XPRVDU (NCVDU,1,0)
 7650  FORMAT (1X,'Wrong number of parameters specified')
@@ -2780,7 +2784,7 @@ C
 C
 7700  CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,7750)
-      WRITE (NCAWU,7750)
+cfeb08      WRITE (NCAWU,7750)
       WRITE (CMON,7750)
       CALL XPRVDU (NCVDU,1,0)
 7750  FORMAT (1X,'Incorrect parameter type specified')
@@ -2788,7 +2792,7 @@ C
 C
 7800  CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,7850)
-      WRITE (NCAWU,7850)
+cfeb08      WRITE (NCAWU,7850)
       WRITE (CMON,7850)
       CALL XPRVDU (NCVDU,1,0)
 7850  FORMAT (1X,'Only one argument group is allowed with this ','direct
@@ -2797,7 +2801,7 @@ C
 C
 7900  CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,7950)
-      WRITE (NCAWU,7950)
+cfeb08      WRITE (NCAWU,7950)
       WRITE (CMON,7950)
       CALL XPRVDU (NCVDU,1,0)
 7950  FORMAT (1X,'Only one atom may be specified')
@@ -2805,7 +2809,7 @@ C
 C
 8000  CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,8050)
-      WRITE (NCAWU,8050)
+cfeb08      WRITE (NCAWU,8050)
       WRITE (CMON,8050)
       CALL XPRVDU (NCVDU,1,0)
 8050  FORMAT (1X,' Atom not found in LIST 5')
@@ -2813,7 +2817,7 @@ C
 C
 8100  CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,8150)
-      WRITE (NCAWU,8150)
+cfeb08      WRITE (NCAWU,8150)
       WRITE (CMON,8150)
       CALL XPRVDU (NCVDU,1,0)
 8150  FORMAT (1X,' Atom already in LIST 5')
@@ -3022,7 +3026,7 @@ C
 200   CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,250) LB
       IF ( MONLVL .GT. 0 ) THEN
-        WRITE (NCAWU,250) LB
+cfeb08        WRITE (NCAWU,250) LB
         WRITE (CMON,250) LB
         CALL XPRVDU (NCVDU,1,0)
 250     FORMAT (1X,'No new list ',I3,' will be created')
@@ -3031,14 +3035,14 @@ C
       GO TO 150
 300   CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,350) LA
-      WRITE (NCAWU,350) LA
+cfeb08      WRITE (NCAWU,350) LA
       WRITE (CMON,350) LA
       CALL XPRVDU (NCVDU,1,0)
 350   FORMAT (1X,'List ',I3,' has not been changed ')
       GO TO 200
 400   CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,450) LA
-      WRITE (NCAWU,450) LA
+cfeb08      WRITE (NCAWU,450) LA
       WRITE (CMON,450) LA
       CALL XPRVDU (NCVDU,1,0)
 450   FORMAT (1X,'Errors during processing of list ',I3)
@@ -3047,7 +3051,7 @@ C -- THIS CONDITION IS AN ERROR
       GO TO 200
 500   CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,550) LA
-      WRITE (NCAWU,550) LA
+cfeb08      WRITE (NCAWU,550) LA
       IF ( MONLVL .GT. 0 ) THEN
         WRITE (CMON,550) LA
         CALL XPRVDU (NCVDU,1,0)
@@ -3285,7 +3289,7 @@ C
 C
 600   CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,650)
-      WRITE (NCAWU,650)
+cfeb08      WRITE (NCAWU,650)
       WRITE (CMON,650)
       CALL XPRVDU (NCVDU,1,0)
 650   FORMAT (1X,'Illegal LEVEL value selected')
@@ -3382,19 +3386,19 @@ C
 50       FORMAT (' The list currently contains ',I5,A)
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
-         WRITE (NCAWU,'(A)') CMON(1)
+cfeb08         WRITE (NCAWU,'(A)') CMON(1)
 C
 CDJWMAR99[
          IF (ICONTL(IMDLVL).EQ.2) THEN
             WRITE (CMON,100)
             CALL XPRVDU (NCVDU,1,0)
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
-            WRITE (NCAWU,'(A)') CMON(1)
+cfeb08            WRITE (NCAWU,'(A)') CMON(1)
          ELSE IF (ICONTL(IMDLVL).EQ.3) THEN
             WRITE (CMON,150)
             CALL XPRVDU (NCVDU,2,0)
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1),CMON(2)
-            WRITE (NCAWU,'(A)') CMON(1),CMON(2)
+cfeb08            WRITE (NCAWU,'(A)') CMON(1),CMON(2)
          END IF
 100      FORMAT (2(9X,'Occ',4X,'x',5X,'y',5X,'z',7X,'U',3X))
 150      FORMAT (9X,'Occ',4X,'x',5X,'y',5X,'z',6X,'U11',3X,'U22',3X,'U33
@@ -3412,18 +3416,18 @@ C
          WRITE (CMON,200) ACTTYP(1:LENGTH),OPERAT(1:LOPER)
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
-         WRITE (NCAWU,'(A)') CMON(1)
+cfeb08         WRITE (NCAWU,'(A)') CMON(1)
 C
          IF (ICONTL(IMDLVL).EQ.2) THEN
             WRITE (CMON,100)
             CALL XPRVDU (NCVDU,1,0)
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
-            WRITE (NCAWU,'(A)') CMON(1)
+cfeb08            WRITE (NCAWU,'(A)') CMON(1)
          ELSE IF (ICONTL(IMDLVL).EQ.3) THEN
             WRITE (CMON,150)
             CALL XPRVDU (NCVDU,2,0)
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1),CMON(2)
-            WRITE (NCAWU,'(A)') CMON(1),CMON(2)
+cfeb08            WRITE (NCAWU,'(A)') CMON(1),CMON(2)
          END IF
 CDJWMAR99]
 200      FORMAT (1X,'The following',A,' will be ',A)
@@ -3439,7 +3443,7 @@ C
 300   CONTINUE
 C -- BRIEF PRINT
       IF (ISSPRT.EQ.0) WRITE (NCWU,350) (A(I),NINT(A(I+1)),I=1,NA,2)
-      WRITE (NCAWU,350) (A(I),NINT(A(I+1)),I=1,NA,2)
+cfeb08      WRITE (NCAWU,350) (A(I),NINT(A(I+1)),I=1,NA,2)
       WRITE (CMON,350) (A(I),NINT(A(I+1)),I=1,NA,2)
       CALL XPRVDU (NCVDU,1,0)
 350   FORMAT (1X,7(A4,I4,3X))
@@ -3452,7 +3456,7 @@ Cdjwmar99 print Uiso/Uii - 8 items
      1NINT(A(I+3)),A(I+7),I=1,NA,8)
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
-      WRITE (NCAWU,'(A)') CMON(1)(:)
+cfeb08      WRITE (NCAWU,'(A)') CMON(1)(:)
 450   FORMAT (2(A4,I4,F5.2,3F6.3,I2,F6.3,1X))
       GO TO 1000
 C
@@ -3463,20 +3467,20 @@ C -- FULL PRINT
      2IB(I+14),I=1,NA,15)
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
-      WRITE (NCAWU,'(A)') CMON(1)(:)
+cfeb08      WRITE (NCAWU,'(A)') CMON(1)(:)
 550   FORMAT (A4,I4,F5.2,3F6.3,I2,3F6.3,3F5.2,F10.3,I4)
       GO TO 1000
 600   CONTINUE
 C -- LOW LEVEL PRINT FOR OVERALL PARAMETERS
       IF (ISSPRT.EQ.0) WRITE (NCWU,650) (A(I),I=1,NA)
-      WRITE (NCAWU,650) (A(I),I=1,NA)
+cfeb08      WRITE (NCAWU,650) (A(I),I=1,NA)
       WRITE (CMON,650) (A(I),I=1,NA)
 650   FORMAT (1X,8(2A4,1X))
       GO TO 1000
 700   CONTINUE
 C -- MEDIUM/HIGH LEVEL PRINT FOR OVERALL PARAMETERS
       IF (ISSPRT.EQ.0) WRITE (NCWU,750) (A(I),I=1,NA)
-      WRITE (NCAWU,750) (A(I),I=1,NA)
+cfeb08      WRITE (NCAWU,750) (A(I),I=1,NA)
       WRITE (CMON,750) (A(I),I=1,NA)
       CALL XPRVDU (NCVDU,1,0)
 750   FORMAT (1X,4(2A4,F9.3,2X))
@@ -3484,7 +3488,7 @@ C -- MEDIUM/HIGH LEVEL PRINT FOR OVERALL PARAMETERS
 800   CONTINUE
 C -- LOW LEVEL PRINT FOR LAYER/BATCH/ELEMENT SCALE FACTORS
       IF (ISSPRT.EQ.0) WRITE (NCWU,850) (A(I),I=1,NA)
-      WRITE (NCAWU,850) (A(I),I=1,NA)
+cfeb08      WRITE (NCAWU,850) (A(I),I=1,NA)
       WRITE (CMON,850) (A(I),I=1,NA)
       CALL XPRVDU (NCVDU,1,0)
 850   FORMAT (1X,5(2A4,F4.0,3X))
@@ -3492,7 +3496,7 @@ C -- LOW LEVEL PRINT FOR LAYER/BATCH/ELEMENT SCALE FACTORS
 900   CONTINUE
 C -- MEDIUM/HIGH LEVEL PRINT FOR LAYER/BATCH/ELEMENT SCALE FACTORS
       IF (ISSPRT.EQ.0) WRITE (NCWU,950) (A(I),I=1,NA)
-      WRITE (NCAWU,950) (A(I),I=1,NA)
+cfeb08      WRITE (NCAWU,950) (A(I),I=1,NA)
       WRITE (CMON,950) (A(I),I=1,NA)
       CALL XPRVDU (NCVDU,1,0)
 950   FORMAT (1X,4(2A4,F4.0,F6.3,1X))
@@ -3656,14 +3660,14 @@ C
 C
 350   CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,400)
-      WRITE (NCAWU,400)
+cfeb08      WRITE (NCAWU,400)
       WRITE (CMON,400)
       CALL XPRVDU (NCVDU,1,0)
 400   FORMAT (1X,'No arguments found')
       GO TO 300
 450   CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,500)
-      WRITE (NCAWU,500)
+cfeb08      WRITE (NCAWU,500)
       WRITE (CMON,500)
       CALL XPRVDU (NCVDU,1,0)
 500   FORMAT (1X,'Parameter specifications are illegal for this ','instr
@@ -3671,7 +3675,7 @@ C
       GO TO 300
 550   CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,600)
-      WRITE (NCAWU,600)
+cfeb08      WRITE (NCAWU,600)
       WRITE (CMON,600)
       CALL XPRVDU (NCVDU,1,0)
 600   FORMAT (1X,'An atom may not be KEPT more than once')
@@ -3902,7 +3906,7 @@ C
 C
 100   CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,150) ICOMP
-      WRITE (NCAWU,150) ICOMP
+cfeb08      WRITE (NCAWU,150) ICOMP
       WRITE (CMON,150) ICOMP
       CALL XPRVDU (NCVDU,1,0)
 150   FORMAT (1X,'Type ',A4,' has been repeated')

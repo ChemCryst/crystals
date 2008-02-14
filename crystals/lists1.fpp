@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:09  rich
 C New CRYSTALS repository
 C
@@ -208,7 +212,7 @@ C -- New style date format.
 901    FORMAT
      1 (' List',I3,' Serial',I5,' Original',I4,' Address',I7,' Size',
      2 I7,14X,' Date ',A24,'   To Disc')
-        WRITE ( NCAWU,910) LN,LSN,CDT
+cfeb08        WRITE ( NCAWU,910) LN,LSN,CDT
         WRITE ( CMON, 910) LN,LSN,CDT
         CALL XPRVDU(NCVDU, 1,0)
 910     FORMAT(1X,'List ',I4,' Serial ',I4,'  Date ',A24,
@@ -686,7 +690,7 @@ C--NEW ENTRY  -  LIST DOES NOT EXIST
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1050)LN,LSN
       ENDIF
-      WRITE(NCAWU,1050)LN,LSN
+cfeb08      WRITE(NCAWU,1050)LN,LSN
       WRITE ( CMON, 1050) LN,LSN
       CALL XPRVDU(NCEROR, 1,0)
 1050  FORMAT(' List type ',I5,'  with serial number ',I8,
@@ -905,7 +909,7 @@ C -- Old style date format.
            WRITE(NCWU,1050)CINDEX(IN),ID(IL+2),ID(IL+3),
      1                       ID(IL+6),ID(IL+7),ID(IL+8)
         ENDIF
-        WRITE ( NCAWU , 1060 ) CINDEX(IN), ID(IL+2), ID(IL+7), ID(IL+8)
+cfeb08        WRITE ( NCAWU , 1060 ) CINDEX(IN), ID(IL+2), ID(IL+7), ID(IL+8)
         WRITE ( CMON , 1060 ) CINDEX(IN),  ID(IL+2), ID(IL+7), ID(IL+8)
         CALL XPRVDU(NCVDU, 1,0)
       ELSE
@@ -914,7 +918,7 @@ C -- New style date format.
         IF (ISSPRT .EQ. 0) THEN
           WRITE (NCWU,1051) CINDEX(IN),ID(IL+2),ID(IL+3),ID(IL+6),CDT
         ENDIF
-        WRITE ( NCAWU , 1061 ) CINDEX(IN), ID(IL+2), CDT
+cfeb08        WRITE ( NCAWU , 1061 ) CINDEX(IN), ID(IL+2), CDT
         WRITE ( CMON , 1061 ) CINDEX(IN),  ID(IL+2), CDT
         CALL XPRVDU(NCVDU, 1,0)
       END IF
@@ -924,7 +928,7 @@ C
       ENDIF
 1100  FORMAT ( 17X , 'List type    Serial no.       Address        ' ,
      2 'Use flag  Orig. serial    Date created' / )
-      WRITE ( NCAWU , 1110 )
+cfeb08      WRITE ( NCAWU , 1110 )
       WRITE ( CMON, 1110)
       CALL XPRVDU(NCVDU, 1,0)
 1110  FORMAT (1X,
@@ -976,8 +980,8 @@ C New style date format:
 C
       IF ( ID(I+6) .NE. 0 ) THEN
 C Old style date format:
-        WRITE ( NCAWU, 1452) ID(I), ID(I+1), ID(I+4), ID(I+5),
-     2   ID(I+6) , ID(I+7) , CERROR(IERROR)(1:5), CDELET(IDELET)
+cfeb08        WRITE ( NCAWU, 1452) ID(I), ID(I+1), ID(I+4), ID(I+5),
+cfeb08     2   ID(I+6) , ID(I+7) , CERROR(IERROR)(1:5), CDELET(IDELET)
         WRITE ( CMON, 1452) ID(I), ID(I+1), ID(I+4), ID(I+5),
      2   ID(I+6) , ID(I+7) , CERROR(IERROR)(1:5), CDELET(IDELET)
         CALL XPRVDU(NCVDU, 1,0)
@@ -987,8 +991,8 @@ C Old style date format:
       ELSE
 C New style date format:
         CALL XCDATE(ID(I+7),CDT)
-        WRITE ( NCAWU, 1453) ID(I), ID(I+1), ID(I+4), ID(I+5),
-     2   CDT , CERROR(IERROR)(1:5), CDELET(IDELET)
+cfeb08        WRITE ( NCAWU, 1453) ID(I), ID(I+1), ID(I+4), ID(I+5),
+cfeb08     2   CDT , CERROR(IERROR)(1:5), CDELET(IDELET)
         WRITE ( CMON, 1453) ID(I), ID(I+1), ID(I+4), ID(I+5),
      2   CDT , CERROR(IERROR)(1:5), CDELET(IDELET)
         CALL XPRVDU(NCVDU, 1,0)
@@ -1418,7 +1422,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 2105 )
       ENDIF
-      WRITE ( NCAWU , 2105 )
+cfeb08      WRITE ( NCAWU , 2105 )
       WRITE ( CMON, 2105 )
       CALL XPRVDU(NCEROR, 1,0)
 2105  FORMAT ( 1X , 'The disc file has been corrupted or is ' ,
@@ -1429,7 +1433,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 2205 )
       ENDIF
-      WRITE ( NCAWU , 2205 )
+cfeb08      WRITE ( NCAWU , 2205 )
       WRITE ( CMON, 2205 )
       CALL XPRVDU(NCEROR, 1,0)
 2205  FORMAT ( 1X , 'The file index has been corrupted' )
@@ -1439,7 +1443,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 2305 )
       ENDIF
-      WRITE ( NCAWU , 2305 )
+cfeb08      WRITE ( NCAWU , 2305 )
       WRITE ( CMON, 2305 )
       CALL XPRVDU(NCEROR, 1,0)
 2305  FORMAT ( 1X , 'The current list index has been corrupted' )
@@ -1583,7 +1587,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9915 ) LN
       ENDIF
-      WRITE ( NCAWU , 9915 ) LN
+cfeb08      WRITE ( NCAWU , 9915 ) LN
       WRITE ( CMON, 9915 ) LN
       CALL XPRVDU(NCEROR, 1,0)
 9915  FORMAT ( 1X , I8 , ' is not a valid list type number' )
@@ -1593,7 +1597,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9925 ) LSER
       ENDIF
-      WRITE ( NCAWU , 9925 ) LSER
+cfeb08      WRITE ( NCAWU , 9925 ) LSER
       WRITE ( CMON, 9925 ) LSER
       CALL XPRVDU(NCEROR, 1,0)
 9925  FORMAT ( 1X , I8 , ' is not a valid list serial number' )
@@ -1603,7 +1607,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9935 ) LN
       ENDIF
-      WRITE ( NCAWU , 9935 ) LN
+cfeb08      WRITE ( NCAWU , 9935 ) LN
       WRITE ( CMON, 9935 ) LN
       CALL XPRVDU(NCEROR, 1,0)
 9935  FORMAT ( 1X , 'No list of type ' , I8 , ' stored' )
@@ -1613,7 +1617,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9945 ) LN , LSER
       ENDIF
-      WRITE ( NCAWU , 9945 ) LN , LSER
+cfeb08      WRITE ( NCAWU , 9945 ) LN , LSER
       WRITE ( CMON, 9945 ) LN , LSER
       CALL XPRVDU(NCEROR, 1,0)
 9945  FORMAT ( 1X , 'No list of type ' , I8 , ' and serial ' , I8 ,
@@ -1624,7 +1628,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9955 ) LN , LSER
       ENDIF
-      WRITE ( NCAWU , 9955 ) LN , LSER
+cfeb08      WRITE ( NCAWU , 9955 ) LN , LSER
       WRITE ( CMON, 9955 ) LN , LSER
       CALL XPRVDU(NCEROR, 1,0)
 9955  FORMAT ( 1X , 'List type ' , I8 , ' with serial ' , I8 ,
@@ -1635,7 +1639,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9965 ) LN , LSER
       ENDIF
-      WRITE ( NCAWU , 9965 ) LN , LSER
+cfeb08      WRITE ( NCAWU , 9965 ) LN , LSER
       WRITE ( CMON, 9965 ) LN , LSER
       CALL XPRVDU(NCEROR, 1,0)
 9965  FORMAT ( 1X , 'List type ' , I8 , ' with serial ' , I8 ,
@@ -1646,7 +1650,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9975 ) LN , LSER
       ENDIF
-      WRITE ( NCAWU , 9975 ) LN , LSER
+cfeb08      WRITE ( NCAWU , 9975 ) LN , LSER
       WRITE ( CMON, 9975 ) LN , LSER
       CALL XPRVDU(NCEROR, 1,0)
 9975  FORMAT ( 1X , 'List type ' , I8 , ' with serial ' , I8 ,
@@ -1759,7 +1763,7 @@ C -- CURRENT VERSION TO BE ALTERED. WARN USER, IF DELETE FLAG SET
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 3005 ) LN , LSNCUR
       ENDIF
-      WRITE ( NCAWU , 3005 ) LN , LSNCUR
+cfeb08      WRITE ( NCAWU , 3005 ) LN , LSNCUR
       WRITE ( CMON, 3005 ) LN , LSNCUR
       CALL XPRVDU(NCEROR, 2,0)
 3005  FORMAT ( 1X , 'List type ' , I3 , ' with serial number ' , I5 ,

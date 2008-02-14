@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:10  rich
 C New CRYSTALS repository
 C
@@ -236,7 +240,7 @@ C
       WRITE ( CMON, 9915 ) ITEMP, ISSBFS, ISSNBF
       CALL XPRVDU(NCEROR, 1,0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)
-      WRITE ( NCAWU , '(A)' ) CMON(1)
+cjan08      WRITE ( NCAWU , '(A)' ) CMON(1)
 9915  FORMAT (' Insufficient space allocated for disc buffers',3I6)
       CALL XERHND ( IERPRG )
       RETURN
@@ -351,7 +355,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9915 )
       ENDIF
-      WRITE ( NCAWU , 9915 )
+cjan08      WRITE ( NCAWU , 9915 )
       WRITE ( CMON, 9915 )
       CALL XPRVDU(NCEROR, 1,0)
 9915  FORMAT ( 1X , 'No buffers allocated to disc routines' )
@@ -361,7 +365,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9925 )
       ENDIF
-      WRITE ( NCAWU , 9925 )
+cjan08      WRITE ( NCAWU , 9925 )
       WRITE ( CMON, 9925 )
       CALL XPRVDU(NCEROR, 1,0)
 9925  FORMAT ( 1X , 'Disc transfer ended in error' )
@@ -584,7 +588,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 2110) NU , IREQ
       ENDIF
-      WRITE ( NCAWU , 2110 ) NU , IREQ
+cjan08      WRITE ( NCAWU , 2110 ) NU , IREQ
 2110  FORMAT ( 1X , ' Disc file on unit ' , I3 , ' extended by ' ,
      1 I5 , ' records ' )
 C
@@ -598,7 +602,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU,9910 ) NU , N
       ENDIF
-      WRITE ( NCAWU,9910 ) NU , N
+cjan08      WRITE ( NCAWU,9910 ) NU , N
       WRITE ( CMON, 9910 ) NU, N
       CALL XPRVDU(NCEROR, 2,0)
 9910  FORMAT ( 1X , 'Fatal read error on unit ' , I3 ,
@@ -668,7 +672,7 @@ C
       IF (IOS .NE. ISSOKF) GOTO 100
       RETURN
 100   CONTINUE
-       WRITE(NCAWU,200) NU,N
+cjan08       WRITE(NCAWU,200) NU,N
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,200) NU,N
       ENDIF
@@ -768,7 +772,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 1010 ) IDUNIT , NEWNAM
       ENDIF
-      WRITE ( NCAWU , 1010 ) IDUNIT , NEWNAM
+cjan08      WRITE ( NCAWU , 1010 ) IDUNIT , NEWNAM
 1010  FORMAT ( // , 1X , 72 ( '*' ) , / ,
      2 1X , 'A new direct access file has been created ' ,
      3 'on unit ' , I3 , ' -- ' , A10 , ' file' , / ,
@@ -835,7 +839,7 @@ C -- ERROR WHILE EXTENDING DISC FILE
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9910 ) IUNIT
       ENDIF
-      WRITE ( NCAWU , 9910 ) IUNIT
+cjan08      WRITE ( NCAWU , 9910 ) IUNIT
       WRITE ( CMON, 9910 ) IUNIT
       CALL XPRVDU(NCEROR, 1,0)
 9910  FORMAT ( 1X , 'An error has occured while extending file ' ,
@@ -847,7 +851,7 @@ C -- SIZE TOO GREAT
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9925 ) IUNIT
       ENDIF
-      WRITE ( NCAWU , 9925 ) IUNIT
+cjan08      WRITE ( NCAWU , 9925 ) IUNIT
       WRITE ( CMON, 9925 ) IUNIT
       CALL XPRVDU(NCEROR, 1,0)
 9925  FORMAT ( 1X , 'The maximum size of the file on unit ' , I3 ,
@@ -974,14 +978,14 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 1005 ) NWDUSE
       ENDIF
-      WRITE ( NCAWU , 1005 ) NWDUSE
+cjan08      WRITE ( NCAWU , 1005 ) NWDUSE
 1005  FORMAT ( / , 1X , 'Next free disc address is ' , I7 , / ,
      1 11X , 'Records' , 5X, 'Blocks' , 7X , 'Kbytes' )
 C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 1010 ) CPLACE(1) , NRCUSE , NBLUSE , NKBUSE
       ENDIF
-      WRITE ( NCAWU , 1010 ) CPLACE(1) , NRCUSE , NBLUSE , NKBUSE
+cjan08      WRITE ( NCAWU , 1010 ) CPLACE(1) , NRCUSE , NBLUSE , NKBUSE
       IF(IPUNCH.EQ.1)WRITE(NCPU,1010) CPLACE(1),NRCUSE,NBLUSE,NKBUSE
 1010  FORMAT ( 1X , A , 4X , I5 , 5X , I5 , 8X , I5 )
 C
@@ -990,14 +994,14 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 1010 ) CPLACE(2) , NRCFIL , NBLFIL , NKBFIL
       ENDIF
-      WRITE ( NCAWU , 1010 ) CPLACE(2) , NRCFIL , NBLFIL , NKBFIL
+cjan08      WRITE ( NCAWU , 1010 ) CPLACE(2) , NRCFIL , NBLFIL , NKBFIL
 C
 9000  CONTINUE
 C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9005 )
       ENDIF
-      WRITE ( NCAWU , 9005 )
+cjan08      WRITE ( NCAWU , 9005 )
 9005  FORMAT ( / )
 C
       RETURN
