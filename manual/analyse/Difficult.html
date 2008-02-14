@@ -1,0 +1,431 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title> Analyses in CRYSTALS </title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<style type=”text/css”>
+body { background-color:white; color:black;
+#para2 { font-family:fantasy; color:blue }
+p { font-size:12pt; }
+p:first-letter {font-size: 200%; color:red }
+h3 { font-family:monospace; color:#ff00ff }
+h1 {  color:green }
+</style>
+</head>
+<body>
+
+<center><h1>Dealing with Difficult Structures.</h1></center>
+<p>
+If you cannot solve a structure to get an approximate model, CRYSTALS
+can offer only limited help. 
+CRYSTALS has no in-built structure solution routines - we depend 
+entirely upon programs such as SIR, Superflip and SHELXS to get an 
+approximate starting model.</p>
+Sometimes a structure will solve, but be difficult to refine.
+<p>
+We can define a 'difficult structure' as one which solves but
+does not easily (or 
+even at all) satisfy the checkCIF requirements.  Symptoms of a difficult 
+structure include</p>
+
+<ol>
+<li>Conventional R-factor unexpectedly high</li>
+<li>Unusual/unreasonable bond lengths or angles</li>
+<li>Unreasonable adps</li>
+<li>Poor observation:parameter ratio</li>
+<li>Failure to converge</li>
+</ol>
+
+<br>     
+There is no universal recipe for resolving difficult structures. The 
+following information comes from a data set we were asked to look at 
+because the original worker was having problems.  Only the metals were 
+being refined anisotropically.  Full aniso refinement 'blew up' 
+(R-factor increased, adps became unrealistic, atoms moved to non-bonded 
+positions).
+<br>There are two molecules in the asymmetric unit including 5 
+perfluorophenyl groups between them, plus 17 carbonyl groups.
+
+
+
+<table width="100%" border="1" cellspacing="0" cellpadding="10" >
+<tr>
+<td>
+Formula = C63 H10 F35 O17 P4 Ru6<br>
+S.G. P21/a<br>
+No non-H atoms = 125<br>
+</td>
+<td>
+Nref = 34420<br>
+Nref (2 sigma) = 7572<br>
+Ru aniso, others iso<br>
+</td>
+<td>
+R(all) = 43%<br>
+Rw(all) = 29%<br>
+R(2sigma) = 14%<br>
+Rw(2sigma) = 23%<br>
+</td>
+</tr>
+</table>
+<br>
+
+<table width="100%" border="1" cellspacing="0" cellpadding="10" >
+<tr>
+<td width="40%">
+<h2> Fo vs Fc plot</h2><br>
+Note the very large numbers of reflections omitted by the 2-sigma
+cut off. Note also the dozen or so reflections having a very small
+Fo value, but large Fc values.   These outliers have been excluded
+manually.  However, if Friedel pairs are not merged, it is seen
+that both reflections are outliers, indicating something
+systematically wrong with either the data or the model.
+</td>
+<td>
+&nbsp;
+<img id="1" src="./Bad-Fo-Fc.JPG"    align="left" width="600"
+ alt="Not Available">
+</td>
+</tr>
+
+<tr>
+<td width="40%">
+<h2> Completeness</h2><br>
+The curve is visibly ragged towards the high angle end.  In fact,
+the situation is much worse than it seems because most of the
+high angle reflections which are present in the hkli file are
+worthless.  See the Wilson plot.
+</td>
+<td>
+&nbsp;
+<img id="2" src="./Incompleteness.JPG"    align="left" width="600"
+ alt="Not Available">
+</td>
+</tr>
+
+<tr>
+<td width="40%">
+<h2> Wilson Plot plot</h2><br>
+The Wilson plot has a negative gradient, indicating a negative
+overall atomic displacement parameter - which is physically impossible.
+This effect is characteristic of a very large number of
+missing high angle reflections. Selecting a reflection filter at about
+rho = (sin(theta)/lambda)^2 = 0.22 will cut out much of the faulty data.
+<br>
+Note that a poor Wilson plot may prevent SIR from finding a structure 
+(or even cause it to crash).  Edit the SIR input file and remove the
+comment character (&gt;) from the line<i> &gt;  rhomax 0.33 </i>
+and set the maximum value you want to use.
+</td>
+<td>
+&nbsp;
+<img id="3" src="./Very-bad-Wilson.JPG"    align="left" width="600"
+ alt="Not Available">
+</td>
+</tr>
+
+
+<tr>
+<td width="40%">
+<h2> Other Diagnostics</h2><br>
+<h3>Systematic Absences</h3>
+As the reflections are read in to CRYSTALS, the systematic absences are
+identified, statistics accumulated about them, and then they are 
+eliminated.
+<br>
+This information appears on the screen, but is also saved in the listing 
+file.  In this example the rms Fo/sigma(Fo) for the unobserved data is
+1.8 - i.e. the unobserved data is being over-estimated.
+</td>
+<td>
+&nbsp;
+
+<pre>
+    926 absences,   mean Fo =   0.876,   rms Fo/sigma(Fo)=   1.830
+Fo range            -ve   1.000   2.000   4.000   8.000  16.000  Remainder
+Mean Fo          -6.919   0.136   1.503   3.149   6.011  10.754  19.483
+Number              423      10      18      82     204     167      22>
+
+Fo/sigma range      -ve   1.000   2.000   4.000   8.000  16.000  Remainder
+
+Number              423     210     144     125      24       0       0
+</pre>                                                                                                                                                                                                                                                               
+</td>
+</tr>
+
+<tr>
+<td width="40%">
+<h2> Other Diagnostics</h2><br>
+<h3>Merging Equivalent Reflections</h3><br>
+Note that only 13% of the data is observed at 3 sigma(I) - the analysis 
+will certainly be difficult.<br>
+Note also that Rint for the strong data is 0.051 - there is fair 
+self-consistency amongst the properly observed data.  However, the 
+overall Rint is very poor, and the very weak reflections are not 
+self-consistent.
+</td>
+<td>
+&nbsp;
+<pre>
+ 17845 Merged reflections output     0 Merged reflections rejected
+
+  2317 Reflections greater than 3 sigma(I),  12.984 percent of data
+
+ Rint     = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]             =  0.454
+ Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.275
+
+ Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma
+               0.051           0.192          2.353
+</pre>
+</td>
+</tr>
+
+<tr>
+<td width="40%">
+<h2> Data Quality</h2><br>
+The small green hump is the good data, the large red hump is the
+weak/unobserved data. The yellow curve shows that the mean I/sigma(I)
+falls below 3.0 at rho = 0.12.  There will still be some 'observed' data
+beyond this limit, but mixed in with a lot of rubbish.
+</td>
+<td>
+&nbsp;
+<img id="4" src="./Quality.JPG"    align="left" width="600"
+ alt="Not Available">
+</td>
+</tr>
+
+
+<tr>
+<td width="40%">
+<h2> Twinning</h2><br>
+One cause of a refinement failing to progress is unidentified twinning.
+The utility ROTAX examines the residuals F0-Fc to see if they can be 
+accounted for by twinning by rotation. Choose the drop doen menu
+<i>Analyse</i> and <i>Rotax</i>.  In this case no evidence was found for 
+twinning.
+</td>
+<td>
+&nbsp;
+<img id="8" src="./Rotax-start.JPG"    align="left" width="300"
+ alt="Not Available">
+</td>
+</tr>
+
+
+<tr>
+<td width="40%">
+<h2> Rescuing the Structure</h2><br>
+This data was collected on a conventional CCD instrument with Mo
+radiation at room temperature from a crystal measuring 
+0.1 * 0.07 * 0.025 mm.  The crystal was then lost and there is no more 
+material.  Chemically the material is very interesting, with one of the 
+two molecules having a C=O group replaced by a C<sub>6</sub>F<sub>5</sub> group - i.e. not 
+quite a Z'=2 structure.  Careful examination of Fourier and Fourier 
+Difference maps virtually rules out the possibility that the gross 
+connectivity is wrong.  <br>
+Unless more material can be synthesised (not the job of the 
+crystallographer) the best plan would be to refine the material
+with chemically sensible restraints.  There are 5 C<sub>6</sub>F<sub>5</sub> groups, which 
+could all be restrained to be similar, and 17 C=O groups which also 
+should be similar.  <br>
+Setting up the restraints one-by-one would be very tedious, but the 
+RESIDUE and PART utilities can help.
+</td>
+<td>
+&nbsp;
+<img id="5" src="./C6F5.JPG"    align="left" width="600"
+ alt="Not Available">
+</td>
+</tr>
+
+<tr>
+<td width="40%">
+<h2> Residues</h2><br>
+Residues are used to associate together the atoms in discrete molecules. 
+RESIDUE numbers can be inserted by hand using #EDIT, by editing the 
+parameter list below the image, or from the drop-down menu under 
+<i>Structure</i>. An atom with a RESIDUE number of zero means that the atom 
+has 
+not been allocated to a residue. Clicking <i>Allocate Residue Number</i>
+causes CRYSTALS to look through the atom list.  If any atom is already 
+in a residue, any other atom bonded to it and with a RESIDUE number of 
+zero is allocated the same RESIDUE number as the atom it is bonded to.
+<br>
+If all of the RESIDUE numbers are zero, CRYSTALS allocates a unique 
+RESIDUE number to all the atoms making up each discrete 'molecule'.  
+Using the <i>Bond Type</i> tool in the graphics window, bonds can be 
+removed so that a single molecule can be broken into molecular fragments.
+</td>
+<td>
+&nbsp;
+<pre> 
+#EDIT
+# remove any previous residue allocations
+RESET RESIDUE 0 ALL
+END
+
+Menu: Structure: Allocate Residue Nos.
+
+#EDIT
+# get the atoms into a tidy order
+SORT RU P C O F H
+SORT RESIDUE
+END
+
+Residues can now be referenced directly in most CRYSTALS commands:
+e.g.
+#LIST 12
+BLOCK SCALE RESIDUE(1,X'S,U[ISO]) RESIDUE(2,X'S,U'S)
+END
+#CHECK
+END
+</pre>
+</td>
+</tr>
+
+<tr>
+<td width="40%">
+<h2> Parts</h2><br>
+PARTS give the user even finer access to groups of atoms. Normally
+they are used to control bonding and simplify the treatment of 
+disordered fragments. 
+<br>
+They can also be used to single out molecular fragments for special
+treatment.
+<br>
+PART numbers can be allocated manually via #EDIT, via the parameter pane 
+beneath the model viewer, or via the dropdown menu <i>Structure</i> and 
+<i>Allocate Part Nos</i>.
+<br>
+A PART identifier is built from two components: 
+<strong>ASSEMBLY</strong> and <strong>GROUP</strong>. <br>
+A GROUP number is allocated to a list of atoms that are to be treated
+together, and will appear connected by bonds.<br>
+An ASSEMBLY is a collection of GROUPS that can be processed 
+together.<br>
+These two components are combined:<br>
+PART = 1000*ASSEMBLY + GROUP
+
+</td>
+<td>
+&nbsp;
+<img id="2" src="./Parts.JPG"    align="left" width="600"
+ alt="Not Available">
+</td>
+</tr>
+
+<tr>
+<td width="40%">
+<h2> Parts</h2><br>
+In addition to dealing with disorder, PARTS can be used to simplify the 
+treatment of difficult refinements, in particular, the application of 
+restraints.<br>
+In this example, we could expect the five C<sub>6</sub>F<sub>5</sub> groups to have similar 
+bond lengths and angles, and for the adps within each residue to be 
+related.<br>
+For the C<sub>6</sub>F<sub>5</sub> groups, use the <i>Structure</i> and <i>Allocate Part Nos</i>.
+menus.
+<br>
+ Put all the C<sub>6</sub>F<sub>5</sub> moieties into a single RESIDUE, and put all the 
+atoms of each moiety into a single GROUP. The parameter window will show 
+the RESIDUE and GROUP numbers.
+<br>
+There is little to be gained by allocating PART numbers to the carbonyl 
+groups.
+</td>
+<td>
+&nbsp;
+<img id="6" src="./Parts-2.JPG"    align="left" width="400"
+ alt="Not Available">
+<br>
+<img id="7" src="./Parts-3.JPG"    align="left" width="400"
+ alt="Not Available">
+</td>
+</tr>
+
+<tr>
+<td width="40%">
+<h2> Setting up Restraints</h2><br>
+We verified above that the data in this example is of very low quality. 
+It cannot be re-collected, but the structure is chemically interesting. 
+We have to make the best of it that we can.<br>
+One acceptable strategy is to feed chemical and physical knowledge into 
+the calculation.  
+<br>This can be done by making rigid groups of atoms conform to a
+standard geometry and then refining them as rigid groups.
+<br>
+It can also be easily done by adding restraints. The advantage of 
+restraints over constraints is that the additional information is 
+introduced with a measure of ones confidence in it.
+For simple cases CRYSTALS can set up some restraints for you.  In this 
+example, it must be done manually.<br>
+The physical knowledge we might want to introduce is:
+<br>
+<ul>
+<li>
+All the C-C bonds in the C<sub>6</sub>F<sub>5</sub> groups will be 
+equal at the resolution of this data, as will all the C-F bonds.
+<li>
+The amplitude of vibration of the atoms at each end of a bond will be 
+similar (the Hirshfeld condition).
+<li>
+The isotropic adps of adjacent atoms will be similar
+<li>
+The Ru-C-O bonds will be co-linear
+</ul>
+
+</td>
+<td>
+&nbsp;
+<pre>
+#LIST     16                                                                    
+# get similar local geometry for each C<sub>6</sub>F<sub>5</sub> group
+SAME PART(1001) AND PART(1002) 
+SAME PART(1001) AND PART(1003) 
+SAME PART(1002) AND PART(1003) 
+# etc..
+# set up the Hirshfeld condition
+DELU PART(1001) AND PART(1002) 
+DELU PART(1001) AND PART(1003) 
+DELU PART(1002) AND PART(1003) 
+# etc..
+# Make adjacent adps similar
+SIMU PART(1001) AND PART(1002) 
+SIMU PART(1001) AND PART(1003) 
+SIMU PART(1002) AND PART(1003) 
+# etc..
+# Make all the C-O dirtances equal to their mean value
+DIST 0.0,.01=MEAN 
+CONT C(47) TO O(47), C(48) TO O(24) 
+CONT C(52) TO O(52), C(51) TO O(51) 
+# etc..
+# Set up the Hirshfeld condition
+VIB 0.0,.001= 
+CONT C(47) TO O(47), C(48) TO O(24) 
+CONT C(52) TO O(52), C(51) TO O(51) 
+# etc..
+# set up adp similarities for adjacent atoms
+U(IJ) 0.0,.005= 
+CONT C(47) TO O(47), C(48) TO O(24) 
+CONT C(52) TO O(52), C(51) TO O(51) 
+# etc..
+# Make the Ru-C bonds equal
+DIST 0.0,.001 = MEAN 
+CONT RU(1) TO C(8), RU(1) TO C(14) 
+# etc..
+# Make the Ru-C-O groups linear
+ANGLE 180,1.0= 
+CONT RU(1) TO C(8) TO O(8),RU(1) TO C(14) TO O(14) 
+END 
+# check for typing errors or atoms mis-named/numbered
+#CHECK HIGH
+END
+</pre>
+</tr>
+
+</table>
+<br>
+
+</body>
+</html>
