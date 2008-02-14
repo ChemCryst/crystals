@@ -41,6 +41,10 @@
 ^^WI   ITEM CSDV '&Mogul Geometry Check'                                        
 ^^WI   '#SCRIPT XMOGULGO' DISABLEIF='IN' ENABLEIF='L1 L2 L5'                    
 ^^WI   SPLIT                                                                    
-^^WI   ITEM HLPB 'Help'                                                         
-^^WI   '#SPAWN CRYSDIR:manual/analyse/analysis.html' DISABLEIF='IN'             
+^^WI   MENU XHELP 'Help'
+^^WI     ITEM HLPB 'Evaluation'                                                         
+^^WI     '#SPAWN CRYSDIR:manual/analyse/analysis.html' DISABLEIF='IN'             
+^^WI     ITEM HLPB 'Difficult'                                                         
+^^WI     '#SPAWN CRYSDIR:manual/analyse/Difficult.html' DISABLEIF='IN'             
+^^WI   ENDMENU
 ^^WI  ENDMENU                                                                   
