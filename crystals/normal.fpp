@@ -645,6 +645,12 @@ C     LINE PRINTER PLOT AT 50 VALUES OF RHO
       DIMENSION FH(6),RH(6),M(117),R(4),AD(4),AW(4),AWC(4)                     
       DATA IST,ISP,ICW,ICD/1H*,1H ,1HW,1HD/                             
 C     DETERMINE RANGES OF LOGS                                          
+cdjwfeb08
+      if (iplotw .eq.1) then
+       write(ncpu,'(a)')'Wilson Plot'
+       write(ncpu,123)
+123   format(10x,'s^2',5x,'Best Line',3x,'Obs Wilson'2x,'Calc Wilson')
+      endif
       RX=AVR(NB)                                                        
       FX=FLGK                                                           
       FN=SLOPE*RX+FLGK                                                  
@@ -731,6 +737,9 @@ C STORE K-CURVE
      1      '^^PL DATA ', SVAL , 0.02*FLOAT(I-1)*RX, WVAL,
      2      0.02*FLOAT(I-1)*RX, WCVAL , 0.02*FLOAT(I-1)*RX
             CALL XPRVDU(NCVDU, 1,0)
+cdjwfeb08
+            write(ncpu,'(i4,4f12.4)') i, 0.02*FLOAT(I-1)*RX, sval,
+     1      wval,wcval
           END IF
 
           XMIN = MIN(XMIN, SVAL,WVAL)
