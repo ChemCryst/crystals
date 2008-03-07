@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.46  2008/01/25 14:59:47  djw
+C re-format bdp to conform to Mercury
+C
 C Revision 1.45  2007/12/14 16:38:20  djw
 C Output structure name into data files
 C
@@ -603,7 +606,7 @@ C -- ERRORS
       END
 C
 CODE FOR XPCH6S
-      SUBROUTINE XPCH6S(IULN)
+      SUBROUTINE XPCH6S(IULN, iuln2)
 C--PUNCH LIST 6 IN S.F.L.S. FORMAT
 C
 C--
@@ -628,6 +631,19 @@ C--SET UP LIST 6 FOR READING ONLY
       IN = 0
       CALL XFAL06(IULN, IN)
       IF ( IERFLG .LT. 0 ) GO TO 9900
+
+CDJW mar08
+      lout = ln6
+      if (iuln .ne. iuln2) then
+            if (lout.eq.6) then 
+                  lout=7
+                  write(ncpu,100) 6,7
+            else
+                  lout=6
+                  write(ncpu,100) 7,6
+            endif
+100   format('# punching list', i3, ' as list',i3)
+      endif            
 c
 cdjwjan2001
 C -- CHECK IF 'FO ' OR 'FOT' HAS BEEN SAVED
@@ -641,10 +657,10 @@ c         IF ((ISTORE(I)-M6).EQ.JFOO(1)) IRFO=JFOO(1)
 c         IF ((ISTORE(I)-M6).EQ.JFOT(1)) IRFT=JFOT(1)
 c         ISTORE(I)=ISTORE(I)-M6+ISTORE(KX+1)
 c1900  CONTINUE
-
+c
 cdjwjan2001
 C--PUNCH THE INITIAL HEADING
-      CALL XPCHLH(LN6)
+      CALL XPCHLH(lout)
 C--PUNCH THE 'READ', 'INPUT' AND 'FORMAT' CARDS
       if (jnft .ge. 1) then
       WRITE(NCPU,1000)
@@ -652,20 +668,27 @@ C--PUNCH THE 'READ', 'INPUT' AND 'FORMAT' CARDS
       write (ncpu,1001)
       endif
 C>DJW280896
+C-------      TWINNED
 1000  FORMAT('READ NCOEFFICIENT = 11, TYPE = FIXED, UNIT = DATAFILE' ,
      1 ', CHECK=NO' /
      2 'INPUT H K L /FO/ SIGMA(/FO/) /FC/ PHASE /FOT/ ELEMENTS'
      4 ,' SQRTW CORRECT' /
      3 'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, F10.2, ',
-     4 'F10.0, / G12.5, F10.5)'
-     5 / 'END')
+     4 'F10.0, / G12.5, F10.5)'/
+     4 'store ncoef=10'/
+     5 'outPUT indices /FO/ SQRT /FC/ BATCH RATIO SIGMA CORRECT ',
+     5 ' /FOT/ ELEMENTS',/
+     5 'END')
 c
+C------      NOT TWINNED
 1001  FORMAT('READ NCOEFFICIENT = 9, TYPE = FIXED, UNIT = DATAFILE' ,
      1 ', CHECK=NO' /
      2 'INPUT H K L /FO/ SIGMA(/FO/) /FC/ PHASE'
      4 ,' SQRTW CORRECT' /
      3 'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, G12.5, F10.5)'
-     5 / 'END')
+     4 'store ncoef=8'/
+     5 'outPUT indices /FO/ SQRT /FC/ BATCH RATIO SIGMA CORRECT ',
+     5 'END')
 C<DJW280896
 C--FETCH THE NEXT REFLECTION
 1050  CONTINUE

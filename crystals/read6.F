@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2008/01/10 15:51:19  djw
+C Check for list 6 before copying to LIST 7
+C
 C Revision 1.24  2007/12/14 16:37:22  djw
 C Trap missing list 6 case
 C
@@ -49,6 +52,85 @@ C
 C
 CODE FOR XCPY67
       SUBROUTINE XCPY67
+C
+C------ RE-WRITE TO GET AVOID PROBLEMS WITH GETTING DISK POINTERS 
+c------ simply writes out one list as another
+C       ALIGNED
+      DIMENSION IBUF(7)
+      DIMENSION PROCS(2)
+C
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'ICOM06.INC'
+      INCLUDE 'ICOM07.INC'
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST07.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XOPVAL.INC'
+C
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'QLST06.INC'
+      INCLUDE 'QLST07.INC'
+      EQUIVALENCE (PROCS(1),IULN1)
+      EQUIVALENCE (PROCS(2),IULN2)
+C
+C
+      INCLUDE 'IDIM06.INC'
+      INCLUDE 'IDIM07.INC'
+C
+C--READ THE NEXT DIRECTIVE CARD FROM THE INPUT STREAM
+C--READ THE CONTROL DATA
+      IF ( KRDDPV ( PROCS , 2 )  .LT. 0 ) GO TO 9910
+C--FIND THE TYPE OF LISTS   IULN1 IS USUALY 6
+      IULN1=KTYP06(IULN1)
+      IULN2=KTYP06(IULN2)
+      IF (IULN1 .EQ. IULN2) THEN
+            WRITE(CMON,'(A)')
+     1    ' Input and Output lists cannot be the same'
+            CALL XPRVDU(NCVDU,1,0)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+            GOTO 9910
+      ENDIF
+      WRITE(NCWU,'(A,2I6)') 'List types', iuln1, iuln2
+C---- NOTHING TO DO IF NO LIST 6
+      IF (KEXIST(6) .LE. 0) THEN
+        WRITE (CMON,'(A)') ' No LIST 6'
+        CALL XPRVDU(NCVDU,1,0)
+        WRITE (NCAWU,'(a)') CMON(1)
+        IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+      RETURN
+      ENDIF
+C--CLEAR THE STORE
+      CALL XRSL
+      CALL XCSAE
+c do something
+      call xpch6s(iuln1,iuln2)
+1810  CONTINUE
+      CALL XOPMSG ( IOPREF , IOPEND , 200 )
+      CALL XTIME2(2)
+      CALL XRSL
+      CALL XCSAE
+      RETURN
+9900  CONTINUE
+C -- ERRORS
+      CALL XOPMSG ( IOPREF , IOPABN , 0 )
+      GO TO 1810
+9910  CONTINUE
+C -- INPUT ERROR
+      CALL XOPMSG ( IOPREF , IOPCMI , 0 )
+      GO TO 9900
+      END
+      end
+C
+      
+
+
+CODE FOR oldXCPY67
+      SUBROUTINE oldXCPY67
 C------CREATE A LIST 7 FROM A LIST 6
 C      THIS REQUIRES A LIST 7 TO EXIST AS A PLACEHOLDER BEFORE THE COPY
 C      IF ONE DOES NOT EXIST, THE AUTOMATIC GENERATION FACILITY IN

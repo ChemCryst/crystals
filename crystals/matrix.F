@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  2005/05/14 13:28:14  stefan
+C 1. Corrected a mistake I made with a format statement.
+C
 C Revision 1.17  2005/05/13 12:03:23  stefan
 C 1. Added some of my own routines for accessing the triangular normal matrix or any other trianglare matrix.
 C
@@ -472,6 +475,18 @@ C
       A(3,1) = A(1,3)
       A(1,3) = T
       END
+C
+CODE FOR XNEGMT
+      SUBROUTINE XNEGMT(A,M,N)
+C--NEGATE ALL ELEMENTS OF A MATRIX
+      DIMENSION A(M,N)
+      DO I=1,N
+            DO J=1,M
+                  A(M,N)=-A(M,N)
+            ENDDO
+      ENDDO
+      END
+C
 CODE FOR XNEGTR
       SUBROUTINE XNEGTR(A,B,N)
 C--NEGATE THE 'N' ELEMENTS OF 'A' TO 'B'.
@@ -705,6 +720,24 @@ C--ZERO THE MATRIX
       AMAT(1)=1.
       AMAT(5)=1.
       AMAT(9)=1.
+      RETURN
+      END
+C
+CODE FOR XUNTMM3
+      SUBROUTINE XUNTMM3(AMAT)
+C--SET UP A 3*3 UNIT MATRIX IN 'AMAT'
+C
+C  AMAT  THE MATRIX TO BE SET UP AS A UNIT MATRIX.
+C
+C--
+C
+      DIMENSION AMAT(9)
+C
+C--ZERO THE MATRIX
+      CALL XZEROF(AMAT(1),9)
+      AMAT(1)=-1.
+      AMAT(5)=-1.
+      AMAT(9)=-1.
       RETURN
       END
 C

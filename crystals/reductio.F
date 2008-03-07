@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.31  2007/11/06 14:38:28  djw
+C Connected with #TON
+C
 C Revision 1.30  2007/11/01 11:05:53  djw
 C Store Friedel flag in phase slot in list 7 for Ton
 C
@@ -687,6 +690,7 @@ C--CHECK IF THESE ARE GOOD TRANSFORMS FOR OUTPUT
       IF(NINT(HG(1)-HMAX(1)))1800,1800,1700
 1700  CONTINUE
 C--THIS SET IS A BETTER SET  -  STORE THEM
+      isav = i
       DO 1750 K=1,3
       HMAX(K)=HG(K)
 1750  CONTINUE
@@ -707,10 +711,10 @@ C--WRITE THE NEW INDICES BACK IN LIST 6
 2000  CONTINUE
 c      write(ncwu,'(3f4.0, 4f10.4,2i6)') hmax, store(m6+6),
 c     1 store(m6+13), store(m6+15), afried, ic, in
-c----- store the friedel flag in the phase slot
+c----- store the friedel flag in the corrections slot
 c      1 = original index
 c      2 = Friedel pair
-      store(m6+6) = afried
+      store(m6+27) = afried
       KSYSAB=0
 2050  CONTINUE
       RETURN

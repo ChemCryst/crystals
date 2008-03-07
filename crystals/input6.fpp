@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:09  rich
 C New CRYSTALS repository
 C
@@ -185,7 +189,8 @@ C--NORMAL PUNCH FORMAT
       RETURN
 C--NORMAL DATA, ONE REFLECTION PRE CARD
 7320  CONTINUE
-      CALL XPCH6S(LSTNO)
+cdjwmar08 - ENSURE LIST 6 IS PUNCH AS LIST 6
+      CALL XPCH6S(LSTNO,LSTNO)
       RETURN
 C--OBSERVED QUANTITIES ONLY
 7330  CONTINUE

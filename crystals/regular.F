@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.52  2008/02/14 10:28:09  djw
+c Simplify output to PCH file
+c
 c Revision 1.51  2008/02/08 14:26:36  djw
 c Enable improper rotation in Kabsch method
 c
@@ -1198,7 +1201,7 @@ C
          END IF
 
 CDJWMAR2000
-C FIND PSEUDO OPERATOR - GIACOVAZZO, PAGE 43
+C FIND PSEUDO OPERATOR - GIACOVAZZO, Section 1.d
 C      GET THE DETERMINANT AND TRACE
          DET=XDETR3(WSPAC3)
          TRACE=WSPAC3(1,1)+WSPAC3(2,2)+WSPAC3(3,3)
@@ -2148,16 +2151,30 @@ C -- CHANGE ORDER
 C -- INTERCHANGE COLUMNS 1 AND 3 SO THAT EIGENVALUES
 C    ARE IN DESCENDING ORDER
       CALL XINT2 (3,VMAT(1,1),9,UVEC(1),3,1,3,1)
+c
+c
 cdjwjan08  see if the best best involves inversion
-         DET=XDETR3(vmat)
+c         det=xdetr3(vmat)
+c      write(ncwu,'(a,3(3f8.2,3x))') 'Vmat', vmat
+c      write(ncwu,'(a,4f12.6)') 'Eigenvalues ', uvec, det
       if (det .le. 0.0) then
          write(cmon,'(a,f12.6)') 
      1  '{E Non-positive Determinant =', det
          call xprvdu(ncvdu,1,0)
          if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
       endif
-cdjwjan08
-      if ((imethd .eq. 3) .or. (abs(det) .le. zero)) then
+c
+c
+
+c      if ((imethd .eq. 4) .and. (det .lt. zero)) then
+c       write(ncwu,'(a)')'Inverting'
+c       call xnegmt(a,3,3)
+c       det=xdetr3(vmat)
+c      endif
+c
+c
+c      if ((imethd .eq. 3) .or. (abs(det) .le. zero)) then
+      if (abs(det) .le. zero) then
          write(cmon,'(a)') 
      1  ' Ensuring pure rotation'
          call xprvdu(ncvdu,1,0)
@@ -2165,9 +2182,11 @@ cdjwjan08
 c -- set third vector to cross product of other two
          i=ncrop3 (vmat(1,1),vmat(1,2),vmat(1,3))
       endif
-      det=xdetr3(VMAT)
+c
+c
+      det2=xdetr3(VMAT)
       write(cmon,'(a,f12.6)') 
-     1' Using Matrix with Determinant =', det
+     1' Using Matrix with Determinant =', det2
       call xprvdu(ncvdu,1,0)
       if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
 
@@ -3239,7 +3258,7 @@ C --
       IMETHD=IVALUE
       IF ( IMETHD.LT.0 ) GO TO 9800
       IF ( IMETHD.EQ.0 ) GO TO 9900
-      IF ( IMETHD.GT.4 ) GO TO 9800
+      IF ( IMETHD.GE.4 ) GO TO 9800
       RETURN
 9800  CONTINUE
         WRITE(CMON,9810)
@@ -3985,7 +4004,7 @@ C
       DATA IDIMN /3/
       DATA IPEAK/'Q   '/
 C
-      DATA IVERSN /100/
+      DATA IVERSN /101/
 c
 c     CPCH is a character buffer for punched output
 c
@@ -4014,6 +4033,8 @@ c
       ZORIG  = 0.0
       IPCHRE = -1
       IEQATM = 0
+C -- SET MATCHING METHOD TO ROTATION/INVERSION
+      CALL XRGSMD(4)
       WRITE (CPCH,'(15A4)') (KTITL(I),I=1,15)
 c----- enable printing of Torsions etc
       nogeom = 1      
@@ -4033,7 +4054,7 @@ C        CALL XPRVDU(NCVDU,1,0)
 
         CASE(1)     ! 'OUTPUT'
 
-        CASE(6)     ! 'MATCH'
+        CASE(7)     ! 'MATCH'
           IULN = ISTORE(JCOMBF+1)   
           IULN = KTYP05 (IULN)
           CALL XLDR05 (IULN)       ! LOAD LIST 5/10
@@ -4083,6 +4104,11 @@ C          CALL XPRVDU(NCVDU,1,0)
 
         CASE (5)    ! 'EQUALATOM'
           IEQATM=1
+
+        CASE (6)    ! 'METHOD'
+          METH=NINT(XLXRDV(4.))
+C -- SET METHOD TO THIS VALUE
+         CALL XRGSMD(METH)
 
         CASE DEFAULT   !ERROR
           GOTO 9910
@@ -4960,7 +4986,8 @@ C -- SET INITIAL VALUES IN COMMON
 
 cdjwjan08
 c      IMETHD=1       ! DEFAULT METHOD 1 (ROTATION COMPONENT OF ROTATION-DILATION MATRIX ONLY)
-      IMETHD=4       ! DEFAULT METHOD 4 (Kabsch rotation/inversion)
+C      IMETHD=4       ! DEFAULT METHOD 4 (Kabsch rotation/inversion)
+C  IMETHD NOW FOUND FROM METHOD CARD
       IGRPNO=0       ! SET GROUP SERIAL NUMBER TO ZERO
       ICMPDF=2       ! DEFAULT VALUE OF THE 'COMPARE/REPLACE/KEEP' FLAG
       IFLCMP=ICMPDF  ! SET REPLACE/COMPARE FLAG TO DEFAULT VALUE
@@ -5143,7 +5170,9 @@ C Use the better match to get a better matrix.
         MDNEW = 4
 
 c        IMETHD=1       ! DEFAULT METHOD 1 (ROTATION COMPONENT OF ROTATION-DILATION MATRIX ONLY)
-        IMETHD=4       ! DEFAULT METHOD 4 (Kabsch rotation/inversion)
+C        IMETHD=4       ! DEFAULT METHOD 4 (Kabsch rotation/inversion)
+      if (imethd .eq. 3) imethd = 3
+C  IMETHD NOW FOUND FROM METHOD CARD
         CALL XZEROF(ORIGIN(1),3)   ! ZERO ORIGIN
         CALL XUNTM3(RGMAT(1,1))    ! SET TO ZERO ROTATION
         MDRENM = 6

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.122  2008/01/25 14:36:47  djw
+C Enable Kallow in #Ton
+C
 C Revision 1.121  2008/01/10 15:50:40  djw
 C update link top Tons code
 C
@@ -6557,8 +6560,11 @@ CODE FOR TONSPK
       SUBROUTINE TONSPK(iplot, itemp, ITYP06)
 C
 C     TON SPEK'S ENANTIOPOLE
+c March 2008
 c seriously based on ton's own code with his permission and help
-C
+c Requires the user to set up a LIST 7 with the Friedel flag
+c set in the CORRECTIONS field.  
+C This can be done with the script COPY67
 C
 C
       DIMENSION LISTS( 6 )
@@ -6684,7 +6690,7 @@ C      FROM A SIGNED STRUCTURE FACTOR
       FOK1 = FSQ*SCALE
       SIG1 = SIGSQ*SCALE
       FCK1 = STORE(M6+5)*STORE(M6+5)
-      FRIED1 = STORE(M6+6)
+      FRIED1 = STORE(M6+27)
       nfried = 0
 C----- LOOP OVER REST OF DATA
 1800  CONTINUE
