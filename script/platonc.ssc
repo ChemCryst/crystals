@@ -40,10 +40,11 @@
 %%                                                                              
 %%                                                                              
 %  EVALUATE CDIR = GETPATH ( CFILE )                                            
-%  IF FILEEXISTS ( CDIR // 'check.def' ) .EQ. FALSE THEN                              
-%   TRANSFER '#spawn +copy "' // CDIR // 'check.def" .' TO DISPLAY               
-%   TRANSFER '#spawn +copy "' // CDIR // 'check.def" .' TO CRYSTALS              
-%  END IF
+
+%  IF FILEEXISTS ( CDIR // 'check.def' ) .EQ. TRUE THEN                        
+%   TRANSFER '#spawn +copy "' // CDIR // 'check.def" .' TO DISPLAY              
+%   TRANSFER '#spawn +copy "' // CDIR // 'check.def" .' TO CRYSTALS             
+%  END IF                                                                       
 %  TRANSFER '#SPAWN + "' // CFILE // '" -u publish.cif' TO DISPLAY              
 %  TRANSFER '#SPAWN + "' // CFILE // '" -u publish.cif' TO CRYSTALS             
 %%                                                                              
