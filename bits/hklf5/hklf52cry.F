@@ -1,6 +1,6 @@
 CODE FOR HKLF52CRY
       PROGRAM HKL52CRY
-C----- BASED UPON sIMON pARSONS ctwin.t90
+C----- BASED UPON SIMON PARSONS ctwin.t90
 C      IO BASED UPON rICHARD cOOPERS cif2cry.fpp
 c
       DIMENSION INDEX(3), VALUE(2)
@@ -17,10 +17,10 @@ c
       WRITE(11,"('READ NCOEFF=6 TYPE=FIXED F''S=FSQ', 
      1 ' UNIT=DATAFILE CHECK=NO')")
       WRITE(11,"('INPUT H K L /FO/ SIGMA(/FO/) ELEMENTS')")
-      WRITE(11,"('FORMAT (3F4.0,2F8.2,I9)')")
-      WRITE(11,"('STORE NCOEFF=11')")
-      WRITE(11,"('OUTPUT  h k l /fo/ sigma(/fo/) /fc/ ',
-     1 ' phase ratio  /fot/ elements sqrtw')")
+      WRITE(11,"('FORMAT (3F4.0,2F8.2,F9.0)')")
+      WRITE(11,"('STORE NCOEFF=10')")
+      WRITE(11,"('OUTPUT INDICES /FO/ SQRT /FC/ BATCH RATIO ',
+     1 'SIGMA CORRECT /FOT/ ELEMENTS')")
       WRITE(11,"('END')")
 C
       JELEM = 0
@@ -33,7 +33,7 @@ C
      1            INDEX,VALUE,KEY
                   IF (KEY .GT. 0) THEN
                       JELEM = KKEY(KEY,JELEM)
-                     WRITE(11,'(3I4,2F8.2,I9)') 
+                     WRITE(11,'(3I4,2F8.2,F9.0)') 
      1               INDEX,VALUE,JELEM
                      JELEM = 0
                      GOTO 800
@@ -42,7 +42,7 @@ C
 800         CONTINUE
       ELSE
             JELEM = ABS(KEY)
-            WRITE(11,'(3I4,2F8.2,I9)') 
+            WRITE(11,'(3I4,2F8.2,F9.0)') 
      1      INDEX,VALUE,JELEM
             JELEM = 0
       ENDIF
