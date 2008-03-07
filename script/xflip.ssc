@@ -39,7 +39,7 @@
 ^^WI   {                                                                        
 ^^WI     @ 1,2 STATIC T1 'Note: data should be merged for Superflip'            
 ^^WI     @ 2,2 CHECKBOX CME '&Merge before going on'                            
-^^WI           STATE=ON                                                        
+^^WI           STATE=ON                                                         
 ^^WI     @ 3,2 RADIOBUTTON RD '&Default Superflip parameters'                   
 ^^WI           STATE=ON                                                         
 ^^WI     @ 4,2 RADIOBUTTON RS '&Superflip parameters for strong data'           
@@ -71,10 +71,9 @@
 %      VERIFY ON OFF                                                            
 %      GET SILENT NOSTORE ABBREVIATED 'ON=Merge first'                          
 %      IF ( VALUE .EQ. 1 ) THEN                                                 
-%%       IF ( exists 7 .le. 0 ) THEN                                             
+%%       IF ( exists 7 .le. 0 ) THEN                                            
 {I Copying reflection list to temporary storage.                                
-%         COPY '#COPY 6 7'                                                      
-%         COPY 'END'                                                            
+%         COPY '#SCRIPT COPY67'                                                      
 {I Calculating unique reflections using Friedel's law.                          
 %         COPY '#SYST 7 FRIEDEL=YES '                                           
 %         COPY 'END'                                                            
@@ -87,7 +86,7 @@
 %         COPY 'END'                                                            
 %         EVALUATE F67 = '7'                                                    
 %       END IF                                                                  
-%%      END IF                                                                   
+%%      END IF                                                                  
 %%                                                                              
 ^^??   RS STATE                                                                 
 %      VERIFY ON OFF                                                            
@@ -134,7 +133,7 @@
 %      EVALUATE QLINE1 = 'Do you want to use the structure'                     
 %      EVALUATE QLINE2 = 'from Superflip ?'                                     
 %      EVALUATE BUTTOK = '&Yes'                                                 
-%      EVALUATE BUTTXX = '&Not yet'                                                  
+%      EVALUATE BUTTXX = '&Not yet'                                             
 %      COPY '#SCRIPT XQUESTIO'                                                  
 %      IF ANSWER .EQ. FALSE THEN                                                
 %          COPY '#SCRIPT XHELP1'                                                
@@ -145,10 +144,10 @@
    4) Be sure that the space group is correct.                                  
 %          COPY '#SCRIPT XHELP2'                                                
 %          FINISH                                                               
-%      ELSE 
-%        COPY '#SCRIPT XSFLIPIN'
+%      ELSE                                                                     
+%        COPY '#SCRIPT XSFLIPIN'                                                
 %      END IF                                                                   
-%   END BLOCK                                                                
+%   END BLOCK                                                                   
 %%                                                                              
 %% clear out merged reflection list                                             
 %%                                                                              
