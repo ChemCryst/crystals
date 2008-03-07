@@ -2825,9 +2825,12 @@ for publication.
  Mode controls the format of the output.
 #J
       A - Output the reflections in a compressed format - Default.
-      B - Output the reflections in 'cif' format.
-      C - Output Fo, Fc, phase information in tabulated format.
-      E - Output Fo and other input information in tabulated format.
+      B - Output the reflections in 'cif' format. F's
+      C - Output stored information in tabulated format.
+      D - Output original information in tabulated format.
+      E - Output the reflections in 'cif' format. F^s
+      F - Output Fo, sigma information in SHELX format.
+      G - SHELX output with statistically generated sigmas
 #
 #PLIST 6 is also output by the links to the direct methods programs. In
  these files, the magnitudes of Fo or Fsq are scaled so that the largest
@@ -5950,7 +5953,7 @@ ther SERIAL of kept atoms (default 0) otherwise there are no parameters.
 #PThis directive selects the method for matching the
  groups by giving its number from the
  following list:-
-#N  13#
+#N  18#
 #J
       Number     Method
       ------     ------
@@ -5961,6 +5964,7 @@ ther SERIAL of kept atoms (default 0) otherwise there are no parameters.
        3        Pure  rotation matrix  calculated  by the
                 Kabsch method and applied. This algorithm
                 preserves chirality.
+       4        Enable improper rotation in Kabsch method
 #
 #DGROUP NUMBER#
 #PThis directive specifies the number of atoms in the groups to be matched.
@@ -6218,7 +6222,7 @@ two residues.  Unlike REGULARISE itself, the user does not have
 to list the atoms in any special order - the routine attempts to make
 pairwise assigments. Initially this is done via a topographical search,
 and refined by minimising cartesian residuals whenever degeneracy is 
-found.
+found.  The final coordinate matching is done using the Kabsch method 4.
 
 #DMAP#
 #PThe following list of atoms is the ideal fragment with ideal atom 
@@ -6249,7 +6253,10 @@ other spreadsheet.
 #DComparing lots of Z'=2 structures#
 #PIf one has a single cif file containing many Z'=2 structures, the whole 
  file can be processed structure-by-structure automatically, with 
- automatic matching of the structures.
+ automatic matching of the structures. See
+ Structure matching: measures of similarity and pseudosymmetry. 
+ A.  Collins, R. I.  Cooper and D. J.  Watkin. 
+ Journal of Applied Crystallography 2006;39(6):842-849.
 #PTo do this, extract the structures from the CSD saving the results to 
  a single file using the operation 'Import CIF file' from the drop-down 
  menu 'X-ray Data'.  Before starting, 
@@ -6257,7 +6264,6 @@ other spreadsheet.
  composite cif file and that it says:
 
 #J
-/TITLE LOCAL FILE
 /edit
 mon off
 list off
@@ -6271,6 +6277,63 @@ onto resi(2)
 end
 /purge
 end
+#
+#Q
+#DOutput from MATCH#
+#PIf the output is set to PUNCH=RESULTS, a summary of the result of 
+each matching operation is copied to the Punch file (Usually BFILE.PCH)
+All the information for each match is appended to a single line. The 
+items are "tab deliminated" to facilitate reading them into 
+spreadsheets. The keywords are preceeded by a ":" so that an editor can 
+be used to break the line as necessary.
+#PDescription of output:#
+#J
+CSD_CIF_AANHOX01  
+:Centroids    (the x,y and z coordinates of both centroids)
+:Axes of Inertia    (the three axes of inertia of both molecules)
+:Sum dev sq   (sum of the squares of the deviations in x,y,z and delta-d)
+:RMS dev   (rms deviations in x,y,z and delta-d)
+:RMS bond and tors dev     
+:Min and Max bond dev     
+:Min and Max tors dev   
+:Sum & delta Centroids   
+:Transformation    (matrix transforming one molecule to the other)
+:Det and trace     (of the matrix - -ve indicates inversion)
+:Closeness to ideal rotation   
+:Closeness to group operator   
+:Combined measure of closeness   
+:Rworst & Raverage   
+:Symmetry   
+:Pseudo   
+:Operator   
+:No_Atoms   
+:S.G.   
+:Cell  
+#
+#Q
+#PExample of output#
+#J
+CSD_CIF_AANHOX01 
+:Centroids       0.9169 0.6281 0.3346 1.0255 0.8741 0.8117 
+:Axes of Inertia 59.3690 10.0284 0.1392 59.1659 10.1380 0.0762 
+:Sum dev sq      0.0014 0.0014 0.0726 0.0754 
+:RMS dev         0.0115 0.0114 0.0812 0.0828 
+:RMS bond and tors dev 0.0040 2.3978 
+:Min and Max bond dev  0.0003 0.0094 
+:Min and Max tors dev  0.2952 6.1112 
+:Sum & delta Centroids 0.9712 0.7511 0.5731 0.1086 0.2461 0.4771 
+:Transformation 0.9662 0.1296 -0.071 -0.237 0.961 0.146 -0.476 0.292 -0.960
+:Det and trace -1.0000 0.9679 
+:Closeness to ideal rotation 0.21507 
+:Closeness to group operator 0.21567 
+:Combined measure of closeness 0.21522 
+:Rworst & Raverage 0.203432098 0.186725736 10 
+:Symmetry m 
+:Pseudo m 
+:Operator 0.11+X 0.25+Y 1.15-Z 
+:No_Atoms 11 
+:S.G. P N A 21 
+:Cell 7.5570 11.4580 17.6020 90.0000 90.0000 90.0000
 #
 
 #Q
