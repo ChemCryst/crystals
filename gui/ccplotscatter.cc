@@ -11,6 +11,10 @@
 //BIG NOTICE: PlotScatter is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.25  2005/01/23 10:20:24  rich
+// Reinstate CVS log history for C++ files and header files. Recent changes
+// are lost from the log, but not from the files!
+//
 // Revision 1.2  2005/01/14 12:10:58  rich
 // Fixed reflection indices for omitted reflections in Fo vs Fc graph.
 //
@@ -436,7 +440,7 @@ PlotDataPopup CcPlotScatter::GetDataFromPoint(CcPoint *point)
                             ret.m_SeriesName = m_Series[i].m_SeriesName;
                             popup << m_Series[i].m_SeriesName << "; ";
                         }
-                        if ( its != m_Series[0].m_Label.end() && *its != "")
+                        if ( its != m_Series[ind].m_Label.end() && *its != "")
                         {
                             ret.m_Label = *its;
                             popup << *its << "; ";
@@ -452,7 +456,7 @@ PlotDataPopup CcPlotScatter::GetDataFromPoint(CcPoint *point)
                     }
                 }
                 ity++;
-                if ( its != m_Series[0].m_Label.end() ) its++;
+                if ( its != m_Series[ind].m_Label.end() ) its++;
             }
         }
     }
