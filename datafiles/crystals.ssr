@@ -4,7 +4,7 @@
 #SET AUTOUPDT OFF
 #STORE SYST VERS 1285
 #STORE CSYS OPER 'Win 32' MACH 'i386'
-#STORE CSYS DATE '9 Jan, 2008'
+#STORE CSYS DATE '1 Apr, 2008'
 #
 # ensure that file names are fully lower case
 #SET FILE MIXED
