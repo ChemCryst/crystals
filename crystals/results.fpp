@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.123  2008/03/07 16:09:48  djw
+C changes to help with the correct computation of Fourier maps from twinned crystals.  THe old COPY67 subroutine did not pack the data properly unless the keys were the default keys.  The job is now done
+C
 C Revision 1.122  2008/01/25 14:36:47  djw
 C Enable Kallow in #Ton
 C
@@ -6563,7 +6566,7 @@ C     TON SPEK'S ENANTIOPOLE
 c March 2008
 c seriously based on ton's own code with his permission and help
 c Requires the user to set up a LIST 7 with the Friedel flag
-c set in the CORRECTIONS field.  
+c set in the JCODE field.  
 C This can be done with the script COPY67
 C
 C
@@ -6690,7 +6693,7 @@ C      FROM A SIGNED STRUCTURE FACTOR
       FOK1 = FSQ*SCALE
       SIG1 = SIGSQ*SCALE
       FCK1 = STORE(M6+5)*STORE(M6+5)
-      FRIED1 = STORE(M6+27)
+      FRIED1 = STORE(M6+18)
       nfried = 0
 C----- LOOP OVER REST OF DATA
 1800  CONTINUE
@@ -6712,7 +6715,7 @@ C      FROM A SIGNED STRUCTURE FACTOR
       FOK2 = FSQ*SCALE
       SIG2 = SIGSQ*SCALE
       FCK2 = STORE(M6+5)*STORE(M6+5)
-      FRIED2 = STORE(M6+6)
+      FRIED2 = STORE(M6+18)
 C
       IF (H1 .EQ. H2) THEN
       nfried = nfried + 1

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.32  2008/03/07 16:09:48  djw
+C changes to help with the correct computation of Fourier maps from twinned crystals.  THe old COPY67 subroutine did not pack the data properly unless the keys were the default keys.  The job is now done
+C
 C Revision 1.31  2007/11/06 14:38:28  djw
 C Connected with #TON
 C
@@ -71,6 +74,13 @@ C During merge, output a file called mergingr.dat for later use.
 C
 C Revision 1.11  2001/02/26 10:29:09  richard
 C Added changelog to top of file
+C     H              K              L              /FO/           SQRTW
+C     /FC/           PHASE          A-PART         B-PART         TBAR
+C     /FOT/          ELEMENTS       SIGMA(/FO/)    BATCH          INDICES
+C     BATCH/PHASE    SINTH/L**2     FO/FC          JCODE          SERIAL
+C     RATIO          THETA          OMEGA          CHI            PHI
+C     KAPPA          PSI            CORRECTIONS    FACTOR1        FACTOR2
+C     FACTOR3        RATIO/JCODE    NOTHING
 C
 C
 CODE FOR XLP
@@ -606,7 +616,7 @@ C      IF 'IN' IS 1, A NEW SET OF INDICES IS COMPUTED, BUT FRIEDEL'S
 C      LAW IS NOT USED.
 C      IF 'IN' IS 2, A NEW SET OF INDICES IS COMPUTED USING FRIEDEL'S LA
 C
-cdjw-oct07  Store the Friedel flag in the phase slot
+cdjw-oct07  Store the Friedel flag in the JCODE slot
 C
 C--THE NEW SET OF INDICES HAS THE MAXIMUM VALUE OF 'L' FROM AMONGST THE
 C  SYMMETRY EQUIVALENT SET. FROM THE REFLECTIONS WITH THIS VALUE OF 'L',
@@ -711,10 +721,10 @@ C--WRITE THE NEW INDICES BACK IN LIST 6
 2000  CONTINUE
 c      write(ncwu,'(3f4.0, 4f10.4,2i6)') hmax, store(m6+6),
 c     1 store(m6+13), store(m6+15), afried, ic, in
-c----- store the friedel flag in the corrections slot
+c----- store the friedel flag in the JCODE slot
 c      1 = original index
 c      2 = Friedel pair
-      store(m6+27) = afried
+      store(m6+18) = afried
       KSYSAB=0
 2050  CONTINUE
       RETURN

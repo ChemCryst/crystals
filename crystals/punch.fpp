@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.47  2008/03/07 16:09:48  djw
+C changes to help with the correct computation of Fourier maps from twinned crystals.  THe old COPY67 subroutine did not pack the data properly unless the keys were the default keys.  The job is now done
+C
 C Revision 1.46  2008/01/25 14:59:47  djw
 C re-format bdp to conform to Mercury
 C
@@ -626,6 +629,14 @@ C
       DATA JFOT(1)/10/
       DATA JFOO(1)/3/
 C
+C     H              K              L              /FO/           SQRTW
+C     /FC/           PHASE          A-PART         B-PART         TBAR
+C     /FOT/          ELEMENTS       SIGMA(/FO/)    BATCH          INDICES
+C     BATCH/PHASE    SINTH/L**2     FO/FC          JCODE          SERIAL
+C     RATIO          THETA          OMEGA          CHI            PHI
+C     KAPPA          PSI            CORRECTIONS    FACTOR1        FACTOR2
+C     FACTOR3        RATIO/JCODE    NOTHING
+C
       IF (KEXIST(1) .GE. 1) CALL XFAL01
 C--SET UP LIST 6 FOR READING ONLY
       IN = 0
@@ -671,24 +682,23 @@ C>DJW280896
 C-------      TWINNED
 1000  FORMAT('READ NCOEFFICIENT = 11, TYPE = FIXED, UNIT = DATAFILE' ,
      1 ', CHECK=NO' /
-     2 'INPUT H K L /FO/ SIGMA(/FO/) /FC/ PHASE /FOT/ ELEMENTS'
-     4 ,' SQRTW CORRECT' /
+     2 'INPUT H K L /FO/ SIGMA /FC/ PHASE /FOT/ ELEMENTS'
+     4 ,' SQRTW JCODE' /
      3 'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, F10.2, ',
-     4 'F10.0, / G12.5, F10.5)'/
-     4 'store ncoef=10'/
-     5 'outPUT indices /FO/ SQRT /FC/ BATCH RATIO SIGMA CORRECT ',
+     4 'F10.0, / G12.5, F4.0)'/
+     4 'store ncoef=9'/
+     5 'outPUT indices /FO/ SIGMA SQRTW /FC/ PHASE RATIO/JCODE ',
      5 ' /FOT/ ELEMENTS',/
      5 'END')
 c
 C------      NOT TWINNED
 1001  FORMAT('READ NCOEFFICIENT = 9, TYPE = FIXED, UNIT = DATAFILE' ,
      1 ', CHECK=NO' /
-     2 'INPUT H K L /FO/ SIGMA(/FO/) /FC/ PHASE'
-     4 ,' SQRTW CORRECT' /
-     3 'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, G12.5, F10.5)'
-     4 'store ncoef=8'/
-     5 'outPUT indices /FO/ SQRT /FC/ BATCH RATIO SIGMA CORRECT ',
-     5 'END')
+     2 'INPUT H K L /FO/ SIGMA /FC/ PHASE SQRTW JCODE' /
+     3 'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, G12.5, F4.0)'/
+     4 'store ncoef=7'/
+     5 'outPUT indices /FO/ SIGMA SQRTW /FC/ PHASE RATIO/JCODE ',/
+     6 'END')
 C<DJW280896
 C--FETCH THE NEXT REFLECTION
 1050  CONTINUE
@@ -705,14 +715,17 @@ C--FIX THE ELEMENTS
       ISTORE(M6+11)=NINT(STORE(M6+11))
 C--PUNCH THE REFLECTION
       if (jnft .ge. 1) then
+C  TWINNED
       WRITE(NCPU,1200)(ISTORE(I),I=M6,J),STORE(M6+3),STORE(M6+12),
      2 STORE(M6+5),STORE(M6+6),STORE(M6+10),ISTORE(M6+11),
-     3 STORE(M6+4), STORE(M6+27)
-1200  FORMAT(3I4,F10.2,F8.2,F10.2,F8.4,F10.2,I10,/G12.5,F10.5)
+     3 STORE(M6+4), NINT(STORE(M6+18))
+1200  FORMAT(3I4,F10.2,F8.2,F10.2,F8.4,F10.2,I10, / G12.5,I4)
       else
+C  nOT TWINNED
       WRITE(NCPU,1201)(ISTORE(I),I=M6,J),STORE(M6+3),STORE(M6+12),
-     2 STORE(M6+5),STORE(M6+6),STORE(M6+4),STORE(M6+27)
-1201  FORMAT(3I4,F10.2,F8.2,F10.2,F8.4,G12.5,F10.5)
+     2 STORE(M6+5),STORE(M6+6),STORE(M6+4),NINT(STORE(M6+18))
+
+1201  FORMAT(3I4,F10.2,F8.2,F10.2,F8.4,G12.5,I4)
       endif
       GOTO 1050
 C--TERMINATE THE LIST

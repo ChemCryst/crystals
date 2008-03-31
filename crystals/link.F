@@ -211,7 +211,7 @@ C
 c      IULN6 = KTYP06(ITYP06)
 C
 C-     LINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
-C-                 5:SIR88,  6:SIR92,   7:SIR97,    8:PLATON,  9:CSD 10:MOL2 
+C-                5:SIR88, 6:SIR92, 7:SIR97, 8:PLATON 9:CSD 10:MOL2
 C                 11:SUPERFLIP         12:SIR02
       CALL XLNK (ISTORE(ICOMBF), ITYPE, IMETH, ityp06)
 C
@@ -263,7 +263,6 @@ c      ITYP06                6 OR 7
 C
 Cavdldec06 - now eleven links (NLINK=11)
 CDJWJAN08     ADD SIR02
-
       PARAMETER (NLINK=12, NLIST=8)
       PARAMETER ( NWORK = 1000 )
 C      IMETHD SELECTS SOME SORT OF ALTERNATIVE METHOD FOR THE
@@ -290,7 +289,8 @@ cavdl dec06
       CHARACTER *4 CATOM(15)
       CHARACTER *21 CDUMF
       CHARACTER *10 CSPG
-      REAL*8 XCEN,YCEN,ZCEN
+      CHARACTER LOCASE*(200)
+      REAL*8 XCEN,YCEN,ZCEN, ACELL(6)
       DIMENSION TEMP(10), ITEMP(10), JXT1(288),XT2(12),XT3(500)
       EQUIVALENCE (ITEMP(1),TEMP(1))
 
@@ -721,10 +721,10 @@ C----- END OF SHELXS DATA
 CAVDLdec06 continue with superflip data
 1890  CONTINUE
 C     LINK TO WRITE OUTPUT FOR SUPERFLIP ---------------------
-C----- OUTPUT A TITLE, FIRST 40 CHARACTERS ONLY
-      WRITE(NCFPU1,'(''title '',10A4)') (KTITL(I),I=1,10)
+C----- OUTPUT A TITLE, FIRST 72 CHARACTERS ONLY
+      WRITE(NCFPU1,'(''title '',18A4)') (KTITL(I),I=1,18)
       WRITE(NCFPU1,'(''perform CF'')')
-      WRITE(NCFPU1,'(''outputfile sflip.m81 sflip.m80'')')
+      WRITE(NCFPU1,'(''outputfile sflip.m81 sflip.m80 sflip_sym.ins'')')
       WRITE(NCFPU1,'(''outputformat jana'')')
       WRITE(NCFPU1,'(''dataformat intensity'')')
       WRITE(NCFPU1,'(''dimension  3'')')
@@ -744,22 +744,76 @@ C
      3 N2 , NPOL , JXT1,
      4 XT2 , N2P ,
      5 NCAWU , NCAWU , XT3)
+c      WRITE(CMON,4359) LAUENO
+c      CALL XPRVDU(NCVDU, 1,0)
+c4359  FORMAT ('Laue number',I5)
+
       ILAUE=1
 C----- CRYSTAL CLASS - FROM LIST 2
       J=L2CC+MD2CC-1
 c      WRITE(CMON,4351) (ISTORE(I),I=L2CC,J)
 c      CALL XPRVDU(NCVDU, 1,0)
 c4351  FORMAT (4(A4))
-      WRITE ( CTEMP , '(4A4)') (ISTORE(I),I=L2CC,J)
-      IF (CTEMP(1:4).EQ.'Mono') ILAUE=2
-      IF (CTEMP(1:4).EQ.'Orth') ILAUE=2
-      IF (CTEMP(1:4).EQ.'Tetr') ILAUE=4
-      IF (CTEMP(1:4).EQ.'Trig') ILAUE=3
-      IF (CTEMP(1:4).EQ.'Hexa') ILAUE=6
-      IF (CTEMP(1:4).EQ.'Cubi') THEN
-CavdL if LAUENO.EQ.13 then also ILAUE=4 finally? (and not 3)
-        IF (LAUENO.EQ.13) ILAUE=4
-        IF (LAUENO.EQ.14) ILAUE=4
+cavdl-- pick up the cell parameters
+      J=L1P1
+      DO I=1,6
+        ACELL(I)=STORE(J)
+        J=J+1
+      ENDDO
+c      WRITE ( CTEMP , '(4A4)') (ISTORE(I),I=L2CC,J)
+c      WRITE(CMON,4351) CTEMP(1:4)
+c      CALL XPRVDU(NCVDU, 1,0)
+c4351  FORMAT ('Laue group',A4)
+      IF (LAUENO.EQ.1) THEN
+         ILAUE=1
+      ENDIF
+      IF (LAUENO.EQ.2) THEN
+         ILAUE=2
+         ACELL(4)=90.000d0
+         ACELL(6)=90.000d0
+      ENDIF
+      IF (LAUENO.EQ.3) THEN
+         ILAUE=2
+         ACELL(4)=90.000d0
+         ACELL(5)=90.000d0
+         ACELL(6)=90.000d0
+      ENDIF
+      IF ((LAUENO.EQ.4).OR.(LAUENO.EQ.5)) THEN
+         ILAUE=4
+         ACELL(2)=ACELL(1)
+         ACELL(4)=90.000d0
+         ACELL(5)=90.000d0
+         ACELL(6)=90.000d0
+      ENDIF
+      IF ((LAUENO.EQ.6).OR.(LAUENO.EQ.7)) THEN
+         ILAUE=2
+         ACELL(2)=ACELL(1)
+         ACELL(3)=ACELL(1)
+         ACELL(5)=ACELL(4)
+         ACELL(6)=ACELL(4)
+      ENDIF
+      IF ((LAUENO.GE.8).AND.(LAUENO.LE.10)) THEN
+         ILAUE=3
+         ACELL(2)=ACELL(1)
+         ACELL(4)=90.000d0
+         ACELL(5)=90.000d0
+         ACELL(6)=120.000d0
+      ENDIF
+      IF ((LAUENO.GE.11).AND.(LAUENO.LE.12)) THEN
+         ILAUE=6
+         ACELL(2)=ACELL(1)
+         ACELL(4)=90.000d0
+         ACELL(5)=90.000d0
+         ACELL(6)=120.000d0
+      ENDIF
+
+      IF ((LAUENO.EQ.13).OR.(LAUENO.EQ.14)) THEN
+         ILAUE=4
+         ACELL(2)=ACELL(1)
+         ACELL(3)=ACELL(2)
+         ACELL(4)=90.000d0
+         ACELL(5)=90.000d0
+         ACELL(6)=90.000d0
       ENDIF
 C----- RELECTION LIMITS IN DATA COLLECTION
        K=0
@@ -771,22 +825,61 @@ C----- RELECTION LIMITS IN DATA COLLECTION
            END DO
          END DO
          DO I=1,3
-         IDUM=IMAXIND(I)*2/ILAUE
-         IVOXEL(I)=(IDUM+1)*ILAUE
-
-c         WRITE ( CMON, '('' voxel '',2i5,A4 )') IDUM,ILAUE,CTEMP(1:4)
+c         IDUM=IMAXIND(I)*2/ILAUE
+c         IVOXEL(I)=(IDUM+1)*ILAUE
+          IVOXEL(I)=(IMAXIND(I)+3)*2
+c         WRITE ( CMON, '('' voxel '',2i5)') IVOXEL(I),ILAUE
 c        CALL XPRVDU(NCVDU, 1,0)
 
       END DO
+      IF (LAUENO.EQ.1) THEN
+       DO I=1,3
+         IDUM=IVOXEL(I)
+         IVOXEL(I)=IDUM+1
+       END DO
+      ENDIF
+      IF ((LAUENO.EQ.2).OR.(LAUENO.EQ.3)) THEN
+       DO I=1,3
+         IDUM=IVOXEL(I)/ILAUE
+         IVOXEL(I)=(IDUM+1)*ILAUE
+       END DO
+      ENDIF
+      IF ((LAUENO.EQ.4).OR.(LAUENO.EQ.5)) THEN
+         IDUM=IVOXEL(3)/ILAUE
+         IVOXEL(3)=(IDUM+1)*ILAUE
+         IDUM=IVOXEL(1)/2
+         IVOXEL(1)=(IDUM+1)*ILAUE
+         IDUM=IVOXEL(2)/2
+         IVOXEL(2)=(IDUM+1)*ILAUE
+      ENDIF
+      IF ((LAUENO.EQ.6).OR.(LAUENO.EQ.7)) THEN
+         IDUM=IVOXEL(3)/ILAUE
+         IVOXEL(3)=(IDUM+1)*ILAUE
+         IDUM=IVOXEL(1)/2
+         IVOXEL(1)=(IDUM+1)*2
+         IDUM=IVOXEL(2)/2
+         IVOXEL(2)=(IDUM+1)*2
+      ENDIF
+      IF ((LAUENO.GE.8).AND.(LAUENO.LE.12)) THEN
+         IDUM=IVOXEL(3)/ILAUE
+         IVOXEL(3)=(IDUM+1)*ILAUE
+         IDUM=IVOXEL(1)/2
+         IVOXEL(1)=(IDUM+1)*2
+         IDUM=IVOXEL(2)/2
+         IVOXEL(2)=(IDUM+1)*2
+      ENDIF
+      IF ((LAUENO.GE.13).AND.(LAUENO.LE.14)) THEN
+         IDUM=IVOXEL(I)/ILAUE
+         IVOXEL(I)=(IDUM+1)*ILAUE
+      ENDIF
 CavdL voxel division should also be compatible with cell metrics
 Cavdl this is not said in the manual! MAXIND need not to be compatable with that
 CavdL take the maximum value
-      IF ((CTEMP(1:4).EQ.'Tetr').OR. (CTEMP(1:4).EQ.'Trig').OR.
-     &(CTEMP(1:4).EQ.'Hexa')) THEN
+      IF ((LAUENO.GE.4).AND.(LAUENO.LE.12))THEN
         IVOXEL(1)=MAX(IVOXEL(1),IVOXEL(2))
         IVOXEL(2)=MAX(IVOXEL(1),IVOXEL(2))
       ENDIF
-      IF (CTEMP(1:4).EQ.'Cubi') THEN
+      IF((LAUENO.GE.13).AND.(LAUENO.LE.14))THEN
         IVOXEL(1)=MAX(IVOXEL(1),IVOXEL(2))
         IVOXEL(1)=MAX(IVOXEL(1),IVOXEL(3))
         IVOXEL(2)=MAX(IVOXEL(1),IVOXEL(2))
@@ -794,13 +887,18 @@ CavdL take the maximum value
         IVOXEL(3)=MAX(IVOXEL(1),IVOXEL(3))
         IVOXEL(3)=MAX(IVOXEL(2),IVOXEL(3))
       ENDIF
+c      WRITE(CMON,'('' voxel'',3i5,2i6)')(ivoxel(i),i=1,3),laueno
+c     &,ilaue
+c        CALL XPRVDU(NCVDU, 1,0)
 cavdlsep07 new Superflip version (sep2007) gives the possibility for
 c---- voxel calculation inside Superflip. If this works correctly than
 c---- the foregoing voxel calculation can be skipped
-C     WRITE(NCFPU1, '(''voxel '', 3i6)')(ivoxel(i),i=1,3)
-      WRITE(NCFPU1, '(''voxel AUTO'')')
+      WRITE(NCFPU1, '(''voxel '', 3i6)')(ivoxel(i),i=1,3)
+c      WRITE(NCFPU1, '(''voxel AUTO'')')
       WRITE(NCFPU1, '(''cell '', 3F7.3, 3F8.3)')
-     1 , (STORE(I),I=L1P1,L1P1+5)
+c     1 , (STORE(I),I=L1P1,L1P1+5)
+     1  (ACELL(I),I=1,6)
+       CSPACE(2:ISP)=LOCASE(CSPACE(2:ISP),isp-2+1)
        WRITE(NCFPU1, '(''spacegroup '', A )') CSPACE(1:ISP)
        LATTYP = ((2*IC) -1) * IL
 c       write(CMON, '('' LATTYP'',i5)') LATTYP
@@ -892,7 +990,7 @@ cavdlsep07- change to absolute value of lattyp for writing translation vectors f
      &                  ''randomseed AUTO'',/,
      &                  ''searchsymmetry average'',/,
 cavdlsep07
-     &                  ''derivesymmetry YES'',/,
+     &                  ''derivesymmetry USE'',/,
      &                  ''# End of keywords for charge flipping'')')
      &                    RWEAK,RBISO
       WRITE(NCFPU1, '(/,''# EDMA-specific keywords'',/,
@@ -939,10 +1037,10 @@ c       write(*,'('' format: '',a21)')cdumf(1:21)
       WRITE(NCFPU1, '(''maxima all'',/,
      &                ''fullcell no'',/,
      &                ''scale fractional'',/,
-     &                  ''plimit    0.0000'',/,
+cavdljan08 -- change to new default 1.5 sigma
+     &                  ''plimit    1.5 sigma '',/,
      &                  ''centerofcharge yes'',/,
      &                  ''chlimit    0.2500'',/,
-     &                  ''chlimlist    0.1125 relative'',/,
      &                  ''# End of EDMA-specific keywords'')')
        WRITE(NCFPU1, '(/,''electrons 0.0000'',/)')
        WRITE(NCFPU1, '(''fbegin'')')
@@ -2844,3 +2942,27 @@ c      write(*,'(3x,a)')txtout2(1:LOUT2)
       RETURN
       END
 
+C >>>>> Convert name string to lower case
+C
+         function locase(name,isp)
+C
+c      INCLUDE 'CIF1.INC'
+c      INCLUDE 'CIFSYS.INC'
+         character    locase*(200)
+         character    temp*(200),name*(*)
+         character    low*26,cap*26,c*1
+         integer i,j
+         data  cap /'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
+         data  low /'abcdefghijklmnopqrstuvwxyz'/
+C
+         temp(1:isp)=name(1:isp)
+         do 100 i=1,isp
+         c=temp(i:i)
+         if(c.eq.' ') goto 100
+c         if(c.eq.tab) goto 100
+         j=index(cap,c)
+         if(j.ne.0) temp(i:i)=low(j:j)
+100      continue
+200      locase=temp
+         return
+         end
