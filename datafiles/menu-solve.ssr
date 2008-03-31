@@ -16,7 +16,7 @@
 ^^WI    MENU _SFLIP 'Superflip'                                                   
 ^^WI     ITEM _FLIP '&Create files' '#SCRIPT XFLIP' ENABLEIF='L1 L2 L6'         
 ^^WI                                        DISABLEIF='IN'                      
-^^WI     ITEM _FLIP '&Input results' '#SCRIPT XSFLIPIN' DISABLEIF='IN'           
+^^WI     ITEM _FLIP '&Input results' '#SCRIPT XFLIPIN' DISABLEIF='IN'           
 ^^WI    ENDMENU
 ^^WI    SPLIT                                                                   
 ^^WI    ITEM _CYCLE 'Tangent Recycle'  '#SCRIPT XTANGENT' ENABLEIF='L1 L2 L5 L6'        
