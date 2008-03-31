@@ -1,32 +1,28 @@
-%SCRIPT XSFLIPIN
+%SCRIPT XFLIPIN2
 %% READ IN SUPERFLIP RESULTS
-%%AvdL it is here that the output file should be read                           
-%%AvdL Do a collect atoms by symmetry, necessary!                               
-%%
-%% variables used by the question box below                                     
-% VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                         
-% VARIABLE LOGICAL ANSWER                                                       
-%%
-%      COPY '#SCRIPT FRESH'                                                     
-%%                                                                              
-%      COPY '#SCRIPT XFLIPIN'                                                   
-%      COPY '#SCRIPT XCOLLECT'                                                  
-%      COPY '#EDIT'                                                             
+%%AvdL it is here that the output file should be read
+%%AvdL Do a collect atoms by symmetry, necessary!
+% VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
+% VARIABLE LOGICAL ANSWER
+%
+%      COPY '#SCRIPT XFLIPINSTRUC'
+%      COPY '#SCRIPT XCOLLECT'
+%      COPY '#EDIT'
 %      COPY 'MON OFF'                                                           
 %      COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0'                                  
 %      COPY 'MON MEDIUM'                                                        
-%      COPY 'END'                                                               
-%%                                                                              
-
+%      COPY 'END'
+%%
+                                                                                
 % EVALUATE QTITLE = 'Tangent Recycling'                                         
-% EVALUATE QLINE1 = 'Superflip structure can be passed to SIR92'                
+% EVALUATE QLINE1 = 'Superflip structure can be passed to SIR92'
 % EVALUATE QLINE2 = 'Would you like tangent formula recycling?'                 
 % EVALUATE BUTTOK = 'Yes'                                                       
 % EVALUATE BUTTXX = 'no'                                                        
 % COPY '#SCRIPT XQUESTIO'                                                       
 % IF ANSWER .EQ. TRUE THEN                                                      
 %      copy '#script XTANGENT'                                                  
-% ELSE
+% ELSE                                                                          
 %      BLOCK                                                                    
 %      EVALUATE QTITLE = 'Use Cameron?'                                         
 %      EVALUATE QLINE1 = 'Do you want to use CAMERON '                          
@@ -40,10 +36,10 @@
 %       EVALUATE LNEWL5 = TRUE                                                  
 %       COPY '#SCRIPT XCAM'                                                     
 %      END IF                                                                   
-%      END BLOCK
-%%     CENTRE STRUCTURE IN CELL                                    
-%      COPY '#SCRIPT AVERAGE'                                      
-%      COPY '#SCRIPT XCENTRE'                                      
-%      COPY '#SCRIPT XRENUMB'                                      
-% END IF                                                                        
+%      END BLOCK                                                                
+%%     CENTRE STRUCTURE IN CELL                                                 
+%      COPY '#SCRIPT AVERAGE'                                                   
+%      COPY '#SCRIPT XCENTRE'                                                   
+%      COPY '#SCRIPT XRENUMB'                                                   
+% END IF
 %END SCRIPT

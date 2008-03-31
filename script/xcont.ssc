@@ -5,22 +5,10 @@
 % VARIABLE CHARACTER CFILE                                                      
 % VARIABLE INTEGER IMAP DOSCALE DOCALC RUNVIEWER OLDSER DOVOID STEREO           
 %%                                                                              
+% VARIABLE INTEGER F67
 % VARIABLE LOGICAL TWINNED LMCE LMAPV                                           
 % EVALUATE TWINNED = FALSE                                                      
-%  BLOCK                                                                        
-%    VARIABLE INTEGER ITMP                                                      
-%    IF ( EXISTS 13 .NE. 0 ) THEN                                               
-%        COPY '#GENERALEDIT 13'                                                 
-%        COPY 'LOCATE RECORDTYPE=101'                                           
-%        COPY 'TRANSFER FROM OFFSET=1 TO ITMP'                                  
-%        IF ( ITMP .GE. 0 ) THEN                                                
-%         EVALUATE TWINNED = TRUE                                               
-%        ELSE                                                                   
-%         EVALUATE TWINNED = FALSE                                              
-%        END IF                                                                 
-%        COPY 'END'                                                             
-%    END IF                                                                     
-%  END BLOCK                                                                    
+%
 %%                                                                              
 % COPY '#MOLAX'                                                                 
 % COPY 'ATOM '                                                                  
@@ -274,25 +262,10 @@ view the generated sections.
 %           COPY 'SELECT TYPE NE Q'                                             
 %           COPY 'SELECT TYPE NE QH'                                            
 %           COPY 'SELECT TYPE NE QN'                                            
-%           COPY 'END'                                                          
-%           IF DOSCALE .EQ. 1 THEN                                              
-%             COPY '#SFLS'                                                      
-%             IF TWINNED .EQ. TRUE THEN                                         
-%               COPY 'SCALE /FO/=SCALED-/FOT/'                                  
-%             ELSE                                                              
-%               COPY 'SCALE'                                                    
-%             END IF                                                            
-%             COPY 'END'                                                        
-%           END IF                                                              
-%           IF DOCALC .EQ. 1 THEN                                               
-%             COPY '#SFLS'                                                      
-%             IF TWINNED .EQ. TRUE THEN                                         
-%               COPY 'CALC /FO/=SCALED-/FOT/'                                   
-%             ELSE                                                              
-%               COPY 'CALC'                                                     
-%             END IF                                                            
-%             COPY 'END'                                                        
-%           END IF                                                              
+%           COPY 'END'
+%%
+%         COPY '#SCRIPT SFLS67'
+%%                                                          
 %% Restore the list 5 (may have Q atoms in it).                                 
 %           COPY '#DISK'                                                        
 %           CLEAR                                                               
@@ -361,8 +334,13 @@ view the generated sections.
 %           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPZ                           
 %           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                           
 %           QUEUE SEND                                                          
-%         END BLOCK                                                             
-%         COPY '#SLANT'                                                         
+%         END BLOCK
+%%DJWMAR08
+%         IF F67 .EQ. 6 THEN         
+%           COPY '#SLANT 6 '
+%         ELSE
+%           COPY '#SLANT 7 '
+%         END IF                                                      
 %            QUEUE PROCESS                                                      
 %         COPY 'END'                                                            
 {R * Done. Slant fourier complete.                                              

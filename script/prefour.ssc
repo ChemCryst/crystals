@@ -10,67 +10,12 @@
 %  VARIABLE INTEGER ITMP                                                        
 %  VARIABLE LOGICAL TWINNED MERGED                                              
 %%                                                                              
-%  COPY '#GENERALEDIT 13'                                                       
-%  COPY 'LOCATE RECORDTYPE=101'                                                 
-%  COPY 'TRANSFER FROM OFFSET=0 TO ITMP'                                        
-%  IF ( ITMP .GE. 0 ) THEN                                                      
-%    EVALUATE MERGED = TRUE                                                     
-%  ELSE                                                                         
-%    EVALUATE MERGED = FALSE                                                    
-%  END IF                                                                       
-%  COPY 'TRANSFER FROM OFFSET=1 TO ITMP'                                        
-%  IF ( ITMP .GE. 0 ) THEN                                                      
-%    EVALUATE TWINNED = TRUE                                                    
-%  ELSE                                                                         
-%   EVALUATE TWINNED = FALSE                                                    
-%  END IF                                                                       
-%  COPY 'END'                                                                   
 %%                                                                              
 %%djw                                                                           
 %  VARIABLE  INTEGER F67                                                        
-%       EVALUATE F67 = 6                                                        
-%       IF ( TWINNED .EQ. TRUE ) THEN                                           
-{I Computing de-twinned Fo values.                                              
-{I This may change the R-value temporarily                                      
-%         COPY '#SFLS '                                                         
-%         COPY 'CALC  /FO/=SCALED-/FOT/'                                        
-%         COPY 'END'                                                            
-{I Copying reflection list to temporary storage.                                
-%         COPY '#SCRIPT COPY67'                                                      
-%% djw SYST/SORT/MERGE  removed because one cannot merge phases
-%%{I Calculating unique reflections using Friedel's law.                          
-%%         COPY '#SYST 7 FRIEDEL=YES '                                           
-%%         COPY 'END'                                                            
-%%{I Sorting temporary reflection list.                                           
-%%         COPY '#SORT 7'                                                        
-%%         COPY 'END'                                                            
-%%{I Merging temporary reflection list.                                           
-%%        COPY '#MERGE 7 NO'                                                    
-%%         COPY 'END'                                                            
-%         EVALUATE F67 = 7                                                      
-%%                                                                              
-%       ELSE IF ( MERGED .EQ. FALSE ) THEN                                      
-{I Copying reflection list to temporary storage.                                
-%         COPY '#SCRIPT COPY67'                                                      
-{I Calculating unique reflections using Friedel's law.                          
-%         COPY '#SYST 7 FRIEDEL=YES '                                           
-%         COPY 'END'                                                            
-{I Sorting temporary reflection list.                                           
-%         COPY '#SORT 7'                                                        
-%         COPY 'END'                                                            
-{I Merging temporary reflection list.                                           
-%         COPY '#MERGE 7 NO'                                                    
-%         COPY 'END'                                                            
-{I Computing Merged Fo.                                                         
-%         COPY '#SFLS 7'                                                        
-%         COPY 'CALC'                                                           
-%         COPY 'END'                                                            
-%         EVALUATE F67 = 7                                                      
-%%                                                                              
-%       ELSE                                                                    
-%         EVALUATE F67 = 6                                                      
-%       END IF                                                                  
-%%                                                                              
+%%
+%      COPY '#SCRIPT SFLS67'
+% 
 %      IF ( F67 .EQ. 6 ) THEN                                                   
 %        COPY '#FOURIER 6'                                                      
 %      ELSE                                                                     
