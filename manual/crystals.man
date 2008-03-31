@@ -6206,6 +6206,7 @@ end
  ONTO Atom Specifications
  RENAME n
  EQUALATOM
+ METHOD
  END
 #
 #Q
@@ -6222,7 +6223,7 @@ two residues.  Unlike REGULARISE itself, the user does not have
 to list the atoms in any special order - the routine attempts to make
 pairwise assigments. Initially this is done via a topographical search,
 and refined by minimising cartesian residuals whenever degeneracy is 
-found.  The final coordinate matching is done using the Kabsch method 4.
+found.  By default, the final coordinate matching is done using method 1.
 
 #DMAP#
 #PThe following list of atoms is the ideal fragment with ideal atom 
@@ -6237,6 +6238,10 @@ EQUALATOM flag, ie the atom types are ignored.
 #DEQUALATOM#
 #PIf this parameter is included, the atom types in the "ONTO" list are 
 ignored - they can even be Q atoms
+#
+#DMETHOD#
+#POne of the METHODS available in REGULARISE#
+The default is method 1.
 #
 #DRENAME  n#
 #PIf the mapping is succerssful, atoms in the ONTO list are given the 
