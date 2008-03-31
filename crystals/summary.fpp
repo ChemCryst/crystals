@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.74  2006/11/10 08:28:08  djw
+C Small format change
+C
 C Revision 1.73  2006/05/23 12:30:25  djw
 C Increase format for No of reflections
 C
@@ -2043,8 +2046,8 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
-      DATA CCRYST / 'Friedel''s Law is used' ,
-     2 'The crystal is twinned' /
+      DATA CCRYST / 'Friedel''s Law is ' ,
+     2 'Twin Laws are ' /
       DATA CSPRED / 'Gaussian' , 'Lorentzian' /
       DATA CGEOMY /
      1 'NORMAL', 'EQUI', 'ANTI', 'PRECESSION', 'UNKNOWN',
@@ -2057,11 +2060,14 @@ C
       IND13 = L13CD
       DO 1100 I = 1 , NCRYST
         IF ( ISTORE(IND13) .GE. 0 ) THEN
-          IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1025 ) CCRYST(I)
-          WRITE ( CMON , 1025 ) CCRYST(I)
-          CALL XPRVDU(NCVDU, 1,0)
-1025      FORMAT ( 1X , A )
+          WRITE ( CMON , 1025 ) CCRYST(I), 'used'
+        else
+          WRITE ( CMON , 1025 ) CCRYST(I), 'not used'
         ENDIF
+        call xcrems(cmon(1), cmon(1), len)
+          CALL XPRVDU(NCVDU, 1,0)
+1025      FORMAT ( 1X , A, A )
+          IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) cmon(1)
         IND13 = IND13 + 1
 1100  CONTINUE
 C
