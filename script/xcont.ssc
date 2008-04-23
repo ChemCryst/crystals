@@ -5,10 +5,10 @@
 % VARIABLE CHARACTER CFILE                                                      
 % VARIABLE INTEGER IMAP DOSCALE DOCALC RUNVIEWER OLDSER DOVOID STEREO           
 %%                                                                              
-% VARIABLE INTEGER F67
+% VARIABLE INTEGER F67                                                          
 % VARIABLE LOGICAL TWINNED LMCE LMAPV                                           
 % EVALUATE TWINNED = FALSE                                                      
-%
+%                                                                               
 %%                                                                              
 % COPY '#MOLAX'                                                                 
 % COPY 'ATOM '                                                                  
@@ -62,9 +62,9 @@
 ^^WI      @ 1,1 STATIC TEXT1 'Compute a'                                        
 ^^WI      @ 1,3 DROPDOWN XFLIST                                                 
 ^^WI            ADDTOLIST 'F-Obs'        'Difference'                           
-^^WI                      'F-Calc'       'Fo-Patterson'                         
-^^WI                      'Fc-Patterson' '2Fo-Fc'
-^^WI                      'NULL'                                 
+^^WI                      '2Fo-Fc'       'F-Calc'                               
+^^WI                      'Fo-Patterson' 'Fc-Patterson'                         
+^^WI                      'NULL'                                                
 ^^WI      @ 1,5 STATIC TEXT1 'map'                                              
 ^^WI    }                                                                       
 ^^WI    @ 6,2 GRID GSIZE NROWS=3 NCOLS=5                                        
@@ -119,12 +119,13 @@
 ^^WI       DISABLED=YES                                                         
 % END IF                                                                        
 ^^WI    @ 1,8 BUTTON MCEHH 'MCE Help'                                           
+^^WI    @ 2,2 STATIC T10 'Rohlicek J., Husak M. (2007) J. Appl. Cryst. 40, 600' 
 ^^WI  }                                                                         
 ^^WI }                                                                          
 ^^WI SHOW                                                                       
 ^^CR                                                                            
 % LOOP                                                                          
-%   VERIFY XC XM XV XN BXX BROWSE BMOLAX BHELP BOK MCEHH                        
+%   VERIFY XC XM XV XN BXX BROWSE BMOLAX BHELP MCEHH  BOK                       
 %   GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '                                
 %   CASE VALUE                                                                  
 %     BLOCK                       % XC                                          
@@ -179,6 +180,10 @@ Choose one of the programs "Contour" or "MarchingCubesELD" to
 view the generated sections.                                                    
 %       COPY '#SCRIPT XHELP2'                                                   
 %     END BLOCK                                                                 
+%     BLOCK                        % MCE help                                   
+%       COPY '#SPAWN CRYSDIR:manual/analyse/mce.html'   
+%     END BLOCK                                                                 
+%%                                                                              
 %     BLOCK                       % BOK                                         
 %%                                                                              
 ^^??    EW TEXT                                                                 
@@ -206,6 +211,7 @@ view the generated sections.
 %       VERIFY ON OFF                                                           
 %       GET SILENT NOSTORE FINAL ABBREVIATED ' '                                
 %       EVALUATE DOVOID = VALUE                                                 
+% SHOW DOVOID                                                                   
 %%                                                                              
 ^^??    XMCEPF STATE                                                            
 %       VERIFY OFF ON                                                           
@@ -252,6 +258,10 @@ view the generated sections.
 %           END IF                                                              
 %         END IF                                                                
 %       END IF                                                                  
+                                                                                
+% SHOW IMAP DOVOID                                                              
+                                                                                
+%      IF IMAP .NE. 0 THEN                                                      
 %       BLOCK                                                                   
 %         ON ERROR TERMINATE                                                    
 %         IF DOSCALE .EQ. 1 .OR. DOCALC .EQ. 1 THEN                             
@@ -262,10 +272,10 @@ view the generated sections.
 %           COPY 'SELECT TYPE NE Q'                                             
 %           COPY 'SELECT TYPE NE QH'                                            
 %           COPY 'SELECT TYPE NE QN'                                            
-%           COPY 'END'
-%%
-%         COPY '#SCRIPT SFLS67'
-%%                                                          
+%           COPY 'END'                                                          
+%%                                                                              
+%           COPY '#SCRIPT SFLS67'                                               
+%%                                                                              
 %% Restore the list 5 (may have Q atoms in it).                                 
 %           COPY '#DISK'                                                        
 %           CLEAR                                                               
@@ -275,8 +285,6 @@ view the generated sections.
 %           COPY '#SUM L 5'                                                     
 %           COPY 'END'                                                          
 %         END IF                                                                
-%       END BLOCK                                                               
-%       BLOCK                                                                   
 %         EVALUATE XMIN = 0.0 - WIDTH                                           
 %         EVALUATE XMAX = WIDTH                                                 
 %         EVALUATE YMIN = 0.0 - WIDTH                                           
@@ -288,101 +296,65 @@ view the generated sections.
 %         EVALUATE STEPY = ( ( YMAX + BORDER ) - MINY ) / RESOL                 
 %         EVALUATE STEPX = 1. + STEPX                                           
 %         EVALUATE STEPY = 1. + STEPY                                           
-%         BLOCK                                                                 
-%           QUEUE REWIND                                                        
-%           CLEAR                                                               
-%           INSERT 'MAP TYPE = '                                                
-%           CASE IMAP                                                           
-%             INSERT 'F-O'                                                      
-%             INSERT 'DIF'                                                      
-%             INSERT 'F-C'                                                      
-%             INSERT 'FO-PAT'                                                   
-%             INSERT 'FC-PAT' 
-%             INSERT '2FO-FC'                                                  
-%           END CASE                                                            
-%           IF ( IMAP .EQ. 2 ) THEN                                             
-%             INSERT ' MIN-RHO = -1000'                                         
-%           ELSE                                                                
-%             INSERT ' MIN-RHO = 0'                                             
-%           END IF                                                              
-%           IF RUNVIEWER .EQ. 3 THEN                                            
+%         QUEUE REWIND                                                          
+%         CLEAR                                                                 
+%         INSERT 'MAP TYPE = '                                                  
+%         CASE IMAP                                                             
+%           INSERT 'F-O'                                                        
+%           INSERT 'DIF'                                                        
+%           INSERT '2FO-FC'                                                     
+%           INSERT 'F-C'                                                        
+%           INSERT 'FO-PAT'                                                     
+%           INSERT 'FC-PAT'                                                     
+%         END CASE                                                              
+%         IF ( IMAP .EQ. 2 ) THEN                                               
+%           INSERT ' MIN-RHO = -1000'                                           
+%         ELSE                                                                  
+%           INSERT ' MIN-RHO = 0'                                               
+%         END IF                                                                
+%         IF RUNVIEWER .EQ. 3 THEN                                              
 %           INSERT ' 10 FILE=MAPVIEW'                                           
-%           ELSE                                                                
+%         ELSE                                                                  
 %           INSERT ' 10 FILE=YES'                                               
-%           END IF                                                              
-%           QUEUE SEND                                                          
-%           CLEAR                                                               
-%           STORE CHARACTER 'SAVE MOLAX'                                        
-%           QUEUE SEND                                                          
-%           CLEAR                                                               
-%           INSERT 'DOWN '                                                      
-%           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINX                            
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPX                           
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                           
-%           QUEUE SEND                                                          
-%           CLEAR                                                               
-%           INSERT 'ACROSS '                                                    
-%           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINY                            
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPY                           
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                           
-%           QUEUE SEND                                                          
-%           CLEAR                                                               
-%           INSERT 'SECTION '                                                   
-%           EVALUATE MINZ = - 1.0 * RESOL * ZSECT                               
-%           EVALUATE STEPZ = 1.0 + 2.0 * ZSECT                                  
-%           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINZ                            
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPZ                           
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                           
-%           QUEUE SEND                                                          
-%         END BLOCK
-%%DJWMAR08
-%         IF F67 .EQ. 6 THEN         
-%           COPY '#SLANT 6 '
-%         ELSE
-%           COPY '#SLANT 7 '
-%         END IF                                                      
-%            QUEUE PROCESS                                                      
-%         COPY 'END'                                                            
+%         END IF                                                                
+%         QUEUE SEND                                                            
+%         CLEAR                                                                 
+%         STORE CHARACTER 'SAVE MOLAX'                                          
+%         QUEUE SEND                                                            
+%         CLEAR                                                                 
+%         INSERT 'DOWN '                                                        
+%         STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINX                              
+%         STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPX                             
+%         STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                             
+%         QUEUE SEND                                                            
+%         CLEAR                                                                 
+%         INSERT 'ACROSS '                                                      
+%         STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINY                              
+%         STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPY                             
+%         STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                             
+%         QUEUE SEND                                                            
+%         CLEAR                                                                 
+%         INSERT 'SECTION '                                                     
+%         EVALUATE MINZ = - 1.0 * RESOL * ZSECT                                 
+%         EVALUATE STEPZ = 1.0 + 2.0 * ZSECT                                    
+%         STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINZ                              
+%         STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPZ                             
+%         STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                             
+%         QUEUE SEND                                                            
+%       END BLOCK                                                               
+%%                                                                              
+%       IF F67 .EQ. 6 THEN                                                      
+%           COPY '#SLANT 6 '                                                    
+%       ELSE                                                                    
+%           COPY '#SLANT 7 '                                                    
+%       END IF                                                                  
+%       QUEUE PROCESS                                                           
+%       COPY 'END'                                                              
+%       COPY '#PURGE LIST =7'                                                   
+%       COPY 'END'                                                              
 {R * Done. Slant fourier complete.                                              
 %%                                                                              
-%         IF DOVOID .EQ. 1 THEN                                                 
-%          BLOCK                                                                
-%           TRANSFER "#STORE CSYS MAP 'void.fou'" TO CRYSTALS                   
-%           QUEUE REWIND                                                        
-%           CLEAR                                                               
-%           INSERT 'MAP FILE=YES'                                               
-%           QUEUE SEND                                                          
-%           CLEAR                                                               
-%           STORE CHARACTER 'SAVE MOLAX'                                        
-%           QUEUE SEND                                                          
-%           CLEAR                                                               
-%           INSERT 'DOWN '                                                      
-%           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINX                            
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPX                           
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                           
-%           QUEUE SEND                                                          
-%           CLEAR                                                               
-%           INSERT 'ACROSS '                                                    
-%           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINY                            
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPY                           
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                           
-%           QUEUE SEND                                                          
-%           CLEAR                                                               
-%           INSERT 'SECTION '                                                   
-%           EVALUATE MINZ = - 1.0 * RESOL * ZSECT                               
-%           EVALUATE STEPZ = 1.0 + 2.0 * ZSECT                                  
-%           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINZ                            
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPZ                           
-%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                           
-%           QUEUE SEND                                                          
-%          END BLOCK                                                            
-%          COPY '#VSLANT'                                                       
-%            QUEUE PROCESS                                                      
-%          COPY 'END'                                                           
-{R * Done. Slant void complete.                                                 
-%         END IF                                                                
-%%                                                                              
-%         IF TWINNED .EQ. TRUE THEN                                             
+%       IF TWINNED .EQ. TRUE THEN                                               
 %           BLOCK                                                               
 %           ON ERROR TERMINATE                                                  
 %             IF DOSCALE .EQ. 1 THEN                                            
@@ -398,16 +370,62 @@ view the generated sections.
 %               COPY 'END'                                                      
 %             END IF                                                            
 %           END BLOCK                                                           
-%         END IF                                                                
-^^CO    DISPOSE XCONT                                                           
+%       END IF                                                                  
+%      END IF                                                                   
+                                                                                
+%      IF DOVOID .EQ. 2 THEN                                                    
+%       BLOCK                                                                   
+%        TRANSFER "#STORE CSYS MAP 'void.fou'" TO CRYSTALS                      
+%        QUEUE REWIND                                                           
+%        CLEAR                                                                  
+%        INSERT 'MAP FILE=YES'                                                  
+%        QUEUE SEND                                                             
+%        CLEAR                                                                  
+%        STORE CHARACTER 'SAVE MOLAX'                                           
+%        QUEUE SEND                                                             
+%        CLEAR                                                                  
+%        INSERT 'DOWN '                                                         
+%        STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINX                               
+%        STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPX                              
+%        STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                              
+%        QUEUE SEND                                                             
+%        CLEAR                                                                  
+%        INSERT 'ACROSS '                                                       
+%        STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINY                               
+%        STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPY                              
+%        STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                              
+%        QUEUE SEND                                                             
+%        CLEAR                                                                  
+%        INSERT 'SECTION '                                                      
+%        EVALUATE MINZ = - 1.0 * RESOL * ZSECT                                  
+%        EVALUATE STEPZ = 1.0 + 2.0 * ZSECT                                     
+%        STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINZ                               
+%        STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPZ                              
+%        STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                              
+%        QUEUE SEND                                                             
+%       END BLOCK                                                               
+%       COPY '#VSLANT'                                                          
+%       QUEUE PROCESS                                                           
+%       COPY 'END'                                                              
+{R * Done. Slant void complete.                                                 
+%%                                                                              
+%      END IF                                                                   
+%%                                                                              
+                                                                                
+^^CO DISPOSE XCONT                                                              
 ^^CO SET PROGOUTPUT TEXT='Slant Fourier complete.'                              
+%%                                                                              
+% SHOW RUNVIEWER                                                                
+%%                                                                              
 %         CASE RUNVIEWER + 1                                                    
 %           BLOCK    % Don't run                                                
 %             TRANSFER 'Map file saved as: ' // CFILE TO DISPLAY                
 %           END BLOCK                                                           
+%%                                                                              
 %           BLOCK    %Run contour                                               
 %             TRANSFER '#SPAWN "CRYSDIR:contour.exe" ' // CFILE TO CRYSTALS     
 %           END BLOCK                                                           
+%%                                                                              
 %           BLOCK    %Run marchingcubesELD viewer                               
 %             CASE STEREO                                                       
 %                EVALUATE CFILE = CFILE                                         
@@ -426,17 +444,14 @@ view the generated sections.
 % END IF                                                                        
 %%                                                                              
 %           END BLOCK                                                           
+%%                                                                              
 %           BLOCK    %Run MapView                                               
 %             TRANSFER '#SPAWN "WINGXDIR:/for_prog/mapview.exe" Mapfile' -      
- TO CRYSTALS                                                                    
+              TO CRYSTALS                                                       
 %           END BLOCK                                                           
 %         END CASE                                                              
 %         FINISH                                                                
 %       END BLOCK                                                               
-%     END BLOCK                                                                 
-%     BLOCK                        % MCE help                                   
-%       COPY '#SPAWN http://makeashorterlink.com/?E15F244E7'                    
-%     END BLOCK                                                                 
 %   END CASE                                                                    
 % END LOOP                                                                      
 %END SCRIPT                                                                     
