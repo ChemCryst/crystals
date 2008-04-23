@@ -1,108 +1,109 @@
-%SCRIPT CHECK3
-%%
-% VARIABLE LOGICAL END5 FAILED QSIN5
-% VARIABLE INTEGER NT N5 NAT
-% VARIABLE REAL SER
-% VARIABLE CHARACTER CELE5 CACH1 CACH2 CACH3 CACH4
-% VARIABLE CHARACTER QLINE1 QLINE2 QTITLE BUTTOK
-% EVALUATE QSIN5 = FALSE
-% 
-%% Set up a little cache of some of list3.
-% COPY '#GENERALEDIT 3'
-% COPY 'LOCATE RECORDTYPE=101'
-% COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-% EVALUATE FAILED = TRUE
-% LOOP 4 TIMES
-%  ON EDITERROR TERMINATE
-%  CASE LOOPCOUNTER
-%   COPY 'TRANSFER FROM OFFSET=0 TO CACH1'
-%   COPY 'TRANSFER FROM OFFSET=0 TO CACH2'
-%   COPY 'TRANSFER FROM OFFSET=0 TO CACH3'
-%   COPY 'TRANSFER FROM OFFSET=0 TO CACH4'
-%  END CASE
-%  COPY 'NEXT'
-% END LOOP
-% COPY 'END'
-%%
-% COPY '#GENERALEDIT 5'
-% COPY 'TRANSHEAD FROM OFFSET=3 TO N5'
-% COPY 'END'
-%
-% EVALUATE NAT = 0
-% LOOP N5 TIMES
-%    EVALUATE NAT = NAT + 1
-%    COPY '#GENERALEDIT 5'
-%    COPY 'LOCATE RECORDTYPE=101'
-%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%% Get type for the NTth atom:
-%    EVALUATE NT = NAT - 1
-%    BLOCK
-%       ON EDITERROR TERMINATE
-%       EVALUATE END5 = TRUE
-%% Skip to the atom we want:
-%       LOOP NT TIMES
-%          ON EDITERROR TERMINATE
-%          COPY 'NEXT'
-%       END LOOP
-%% Skip until find an atom not in the cache.
-%       LOOP
-%          ON EDITERROR TERMINATE
-%          COPY 'TRANSFER FROM OFFSET=0 TO CELE5'
-%          IF ( CELE5 .EQ. CACH1 .OR. CELE5 .EQ. CACH2 .OR. -
-                CELE5 .EQ. CACH3 .OR. CELE5 .EQ. CACH4 ) THEN
-%             EVALUATE NAT = NAT + 1
-%             COPY 'NEXT'
-%          ELSE IF ( NAT .GT. N5 ) THEN
-%             EVALUATE LOOPEND = LOOPCOUNTER
-%          ELSE
-%             EVALUATE LOOPEND = LOOPCOUNTER
-%             EVALUATE END5 = FALSE
-%          END IF
-%       END LOOP
-%    END BLOCK
-%    IF ( END5 ) THEN
-%      COPY 'END'
-%      IF ( QSIN5 ) THEN
-%        COPY '#SCRIPT XDELQ'
-%      END IF
-%      FINISH
-%    END IF
-%    COPY 'END'
-%%
-%    IF ( CELE5 STARTSWITH 'Q' .OR. CELE5 .EQ. 'R' .OR. CELE5 .EQ. 'M' -
- .OR. CELE5 .EQ. 'L' ) THEN
-%      EVALUATE QSIN5 = TRUE
-%    ELSE
-%%
-%%
-%      COPY '#GENERALEDIT 3'
-%      COPY 'LOCATE RECORDTYPE=101'
-%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%      EVALUATE FAILED = TRUE
-%      LOOP
-%       ON EDITERROR TERMINATE
-%       COPY 'TRANSFER FROM OFFSET=0 TO CACH4'
-%       IF CACH4 .EQ. CELE5 THEN
-%          EVALUATE LOOPEND = LOOPCOUNTER
-%          EVALUATE FAILED = FALSE
-%       END IF
-%       COPY 'NEXT'
-%      END LOOP
-%      COPY 'END'
-%      IF ( FAILED ) THEN
-%        EVALUATE QTITLE = 'Missing scattering factors'
-%        EVALUATE QLINE1 = 'Scattering factores are not known for ' // CELE5
-%        EVALUATE QLINE2 = 'Please add this element into the cell contents.'
-%        EVALUATE BUTTOK = 'OK'
-
-% TRANSFER '{I * Scattering factors are not known for ' // CELE5 TO DISPLAY
-
-%        COPY '#SCRIPT XMESSAGE'
-%        COPY '#SCRIPT XINLIST3'
-%      END IF
-%    END IF
-% END LOOP
-% IF ( QSIN5 ) THEN
-%   COPY '#SCRIPT XDELQ'
-% END IF
-%END SCRIPT
+%SCRIPT CHECK3                                                                  
+%%                                                                              
+% VARIABLE LOGICAL END5 FAILED QSIN5                                            
+% VARIABLE INTEGER NT N5 NAT                                                    
+% VARIABLE REAL SER                                                             
+% VARIABLE CHARACTER CELE5 CACH1 CACH2 CACH3 CACH4                              
+% VARIABLE CHARACTER QLINE1 QLINE2 QTITLE BUTTOK                                
+% EVALUATE QSIN5 = FALSE                                                        
+%                                                                               
+%% Set up a little cache of some of list3.                                      
+% COPY '#GENERALEDIT 3'                                                         
+% COPY 'LOCATE RECORDTYPE=101'                                                  
+% COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                       
+% EVALUATE FAILED = TRUE                                                        
+% LOOP 4 TIMES                                                                  
+%  ON EDITERROR TERMINATE                                                       
+%  CASE LOOPCOUNTER                                                             
+%   COPY 'TRANSFER FROM OFFSET=0 TO CACH1'                                      
+%   COPY 'TRANSFER FROM OFFSET=0 TO CACH2'                                      
+%   COPY 'TRANSFER FROM OFFSET=0 TO CACH3'                                      
+%   COPY 'TRANSFER FROM OFFSET=0 TO CACH4'                                      
+%  END CASE                                                                     
+%  COPY 'NEXT'                                                                  
+% END LOOP                                                                      
+% COPY 'END'                                                                    
+%%                                                                              
+% COPY '#GENERALEDIT 5'                                                         
+% COPY 'TRANSHEAD FROM OFFSET=3 TO N5'                                          
+% COPY 'END'                                                                    
+%                                                                               
+% EVALUATE NAT = 0                                                              
+% LOOP N5 TIMES                                                                 
+%    EVALUATE NAT = NAT + 1                                                     
+%    COPY '#GENERALEDIT 5'                                                      
+%    COPY 'LOCATE RECORDTYPE=101'                                               
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                    
+%% Get type for the NTth atom:                                                  
+%    EVALUATE NT = NAT - 1                                                      
+%    BLOCK                                                                      
+%       ON EDITERROR TERMINATE                                                  
+%       EVALUATE END5 = TRUE                                                    
+%% Skip to the atom we want:                                                    
+%       LOOP NT TIMES                                                           
+%          ON EDITERROR TERMINATE                                               
+%          COPY 'NEXT'                                                          
+%       END LOOP                                                                
+%% Skip until find an atom not in the cache.                                    
+%       LOOP                                                                    
+%          ON EDITERROR TERMINATE                                               
+%          COPY 'TRANSFER FROM OFFSET=0 TO CELE5'                               
+%          IF ( CELE5 .EQ. CACH1 .OR. CELE5 .EQ. CACH2 .OR. -                   
+                CELE5 .EQ. CACH3 .OR. CELE5 .EQ. CACH4 ) THEN                   
+%             EVALUATE NAT = NAT + 1                                            
+%             COPY 'NEXT'                                                       
+%          ELSE IF ( NAT .GT. N5 ) THEN                                         
+%             EVALUATE LOOPEND = LOOPCOUNTER                                    
+%          ELSE                                                                 
+%             EVALUATE LOOPEND = LOOPCOUNTER                                    
+%             EVALUATE END5 = FALSE                                             
+%          END IF                                                               
+%       END LOOP                                                                
+%    END BLOCK                                                                  
+%    IF ( END5 ) THEN                                                           
+%      COPY 'END'                                                               
+%      IF ( QSIN5 ) THEN                                                        
+%        COPY '#SCRIPT XDELQ'                                                   
+%      END IF                                                                   
+%      FINISH                                                                   
+%    END IF                                                                     
+%    COPY 'END'                                                                 
+%%                                                                              
+%    IF ( CELE5 STARTSWITH 'Q' .OR. CELE5 .EQ. 'R' .OR. CELE5 .EQ. 'M' -        
+ .OR. CELE5 .EQ. 'L' ) THEN                                                     
+%      EVALUATE QSIN5 = TRUE                                                    
+{E non-atomic element name (Q etc) in atom list
+%    ELSE                                                                       
+%%                                                                              
+%%                                                                              
+%      COPY '#GENERALEDIT 3'                                                    
+%      COPY 'LOCATE RECORDTYPE=101'                                             
+%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                  
+%      EVALUATE FAILED = TRUE                                                   
+%      LOOP                                                                     
+%       ON EDITERROR TERMINATE                                                  
+%       COPY 'TRANSFER FROM OFFSET=0 TO CACH4'                                  
+%       IF CACH4 .EQ. CELE5 THEN                                                
+%          EVALUATE LOOPEND = LOOPCOUNTER                                       
+%          EVALUATE FAILED = FALSE                                              
+%       END IF                                                                  
+%       COPY 'NEXT'                                                             
+%      END LOOP                                                                 
+%      COPY 'END'                                                               
+%      IF ( FAILED ) THEN                                                       
+%        EVALUATE QTITLE = 'Missing scattering factors'                         
+%        EVALUATE QLINE1 = 'Scattering factores are not known for ' // CELE5    
+%        EVALUATE QLINE2 = 'Please add this element into the cell contents.'    
+%        EVALUATE BUTTOK = 'OK'                                                 
+                                                                                
+% TRANSFER '{I * Scattering factors are not known for ' // CELE5 TO DISPLAY     
+                                                                                
+%        COPY '#SCRIPT XMESSAGE'                                                
+%        COPY '#SCRIPT XINLIST3'                                                
+%      END IF                                                                   
+%    END IF                                                                     
+% END LOOP                                                                      
+% IF ( QSIN5 ) THEN                                                             
+%   COPY '#SCRIPT XDELQ'                                                        
+% END IF                                                                        
+%END SCRIPT                                                                     
