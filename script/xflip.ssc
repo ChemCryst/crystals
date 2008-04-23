@@ -1,171 +1,143 @@
-%SCRIPT XFLIP
-%   VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                       
-%   VARIABLE LOGICAL ANSWER LCRY T                                              
-%   VARIABLE INTEGER IRUN  F67              
-%   VARIABLE LOGICAL TWINNED MERGED DOCALC DOSCALE 
-%   EVALUATE DOCALC = FALSE
-%   EVALUATE DOSCALE = FALSE
+% SCRIPT XFLIP                                                                  
+%  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                        
+%  VARIABLE LOGICAL ANSWER LCRY T                                               
+%  VARIABLE INTEGER IRUN F67                                                    
+%  VARIABLE LOGICAL TWINNED MERGED DOCALC DOSCALE                               
+%  EVALUATE DOCALC = FALSE                                                      
+%  EVALUATE DOSCALE = FALSE                                                     
+%% variables used by the question box below                                     
+%  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                        
+%  VARIABLE LOGICAL ANSWER                                                      
 %%                                                                              
-%   IF EXISTS 6 .LT. 1 THEN                                                     
-            You do not have any reflections stored.
-            It is impossible to proceed without data.                           
-%       FINISH                                                                  
-%   END IF                                                                      
-%   IF ( FILEEXISTS ( 'sflip.inflip' ) ) THEN                                   
-%      EVALUATE T = FILEDELETE ( 'sflip.inflip' )
-%   END IF
-%   IF ( FILEEXISTS ( 'sflip.sflog' ) ) THEN
-%          EVALUATE T = FILEDELETE ( 'sflip.sflog' )
-%   END IF
-%   IF ( FILEEXISTS ( 'sflip.inflip' ) ) THEN
-%          EVALUATE T = FILEDELETE ( 'sflip.inflip' )
-%   END IF
-%   IF ( FILEEXISTS ( 'sflip.ins' ) ) THEN
-%          EVALUATE T = FILEDELETE ( 'sflip.ins' )
-%   END IF
-%   IF ( FILEEXISTS ( 'sflip_sym.ins' ) ) THEN
-%          EVALUATE T = FILEDELETE ( 'sflip_sym.ins' )
-%   END IF
-%   IF ( FILEEXISTS ( 'sflip.m80' ) ) THEN
-%          EVALUATE T = FILEDELETE ( 'sflip.m80' )
-%   END IF
-%   IF ( FILEEXISTS ( 'sflip.m81' ) ) THEN
-%          EVALUATE T = FILEDELETE ( 'sflip.m81' )
-%   END IF
-%   IF ( FILEEXISTS ( 'sflip.coo' ) ) THEN
-%          EVALUATE T = FILEDELETE ( 'sflip.coo' )
-%   END IF
-%%
-%% write a Superflip data file
-%%
-%   BLOCK
-^^WI WINDOW FLIP 'Superflip Preparation'
-^^WI   MODAL COMMIT='BOK' CANCEL='BXX'
-^^WI GRID GRIDLR NROWS=1 NCOLS=2
-^^WI {
-^^WI   @ 1,1 GRID GRIDL NROWS=6 NCOLS=3
-^^WI   {
-^^WI     @ 1,2 STATIC T1 'Note: data should be merged for Superflip'
-^^WI     @ 2,2 CHECKBOX CME '&Merge before going on'
-^^WI           STATE=ON
-^^WI     @ 3,2 RADIOBUTTON RD '&Default Superflip parameters'
-^^WI           STATE=ON
-^^WI     @ 4,2 RADIOBUTTON RS '&Superflip parameters for strong data'
-^^WI           STATE=OFF
-^^WI     @ 5,2 CHECKBOX CED '&Edit Superflip file before processing'
-^^WI           STATE=OFF                                                        
-^^WI     @ 6,2 CHECKBOX CRUN '&Run Superflip now'                               
-^^WI           STATE=ON                                                         
-^^WI   }                                                                        
-^^WI   @ 1,2 GRID GRIDR NROWS=5 NCOLS=2                                         
-^^WI   {                                                                        
-^^WI     @ 2,1 BUTTON BOK '&Ok'                                                 
-^^WI     @ 4,1 BUTTON BXX '&Cancel'                                             
-^^WI   }                                                                        
+%%                                                                              
+%  IF EXISTS 6 .LT. 1 THEN                                                      
+ You do not have any reflections stored.                                        
+ It is impossible to proceed without data.                                      
+%    FINISH                                                                     
+%  END IF                                                                       
+%  IF ( FILEEXISTS ( 'sflip.inflip' ) ) THEN                                    
+%    EVALUATE T = FILEDELETE ( 'sflip.inflip' )                                 
+%  END IF                                                                       
+%  COPY '#CLOSE SCPDATA'
+%  IF ( FILEEXISTS ( 'sflip.sflog' ) ) THEN                                     
+%    EVALUATE T = FILEDELETE ( 'sflip.sflog' )                                  
+%  END IF                                                                       
+%  IF ( FILEEXISTS ( 'sflip.inflip' ) ) THEN                                    
+%    EVALUATE T = FILEDELETE ( 'sflip.inflip' )                                 
+%  END IF                                                                       
+%  IF ( FILEEXISTS ( 'sflip.ins' ) ) THEN                                       
+%    EVALUATE T = FILEDELETE ( 'sflip.ins' )                                    
+%  END IF                                                                       
+%  IF ( FILEEXISTS ( 'sflip_sym.ins' ) ) THEN                                   
+%    EVALUATE T = FILEDELETE ( 'sflip_sym.ins' )                                
+%  END IF                                                                       
+%  IF ( FILEEXISTS ( 'sflip.m80' ) ) THEN                                       
+%    EVALUATE T = FILEDELETE ( 'sflip.m80' )                                    
+%  END IF                                                                       
+%  IF ( FILEEXISTS ( 'sflip.m81' ) ) THEN                                       
+%    EVALUATE T = FILEDELETE ( 'sflip.m81' )                                    
+%  END IF                                                                       
+%  IF ( FILEEXISTS ( 'sflip.coo' ) ) THEN                                       
+%    EVALUATE T = FILEDELETE ( 'sflip.coo' )                                    
+%  END IF                                                                       
+%%                                                                              
+%% write a Superflip data file                                                  
+%%                                                                              
+%  BLOCK                                                                        
+^^WI WINDOW FLIP 'Superflip Preparation'                                        
+^^WI MODAL COMMIT='BOK' CANCEL='BXX'                                            
+^^WI GRID GRIDLR NROWS=1 NCOLS=2                                                
+^^WI {                                                                          
+^^WI @ 1,1 GRID GRIDL NROWS=6 NCOLS=3                                           
+^^WI {                                                                          
+^^WI @ 1,2 STATIC T1 'Note: data should be merged for Superflip'                
+^^WI @ 2,2 CHECKBOX CME '&Merge before going on'                                
+^^WI STATE=ON                                                                   
+^^WI @ 3,2 RADIOBUTTON RD '&Default Superflip parameters'                       
+^^WI STATE=ON                                                                   
+^^WI @ 4,2 RADIOBUTTON RS '&Superflip parameters for strong data'               
+^^WI STATE=OFF                                                                  
+^^WI @ 5,2 CHECKBOX CED '&Edit Superflip file before processing'                
+^^WI STATE=OFF                                                                  
+^^WI @ 6,2 CHECKBOX CRUN '&Run Superflip now'                                   
+^^WI STATE=ON                                                                   
+^^WI }                                                                          
+^^WI @ 1,2 GRID GRIDR NROWS=5 NCOLS=2                                           
+^^WI {                                                                          
+^^WI @ 2,1 BUTTON BOK '&Ok'                                                     
+^^WI @ 4,1 BUTTON BXX '&Cancel'                                                 
+^^WI }                                                                          
 ^^WI }                                                                          
 ^^WI SHOW                                                                       
 ^^CR                                                                            
-%      VERIFY BOK BXX                                                           
-%      GET SILENT NOSTORE ABBREVIATED 'BOK=Process'                             
-%      IF VALUE .EQ. 2 THEN                                                     
-^^WI      DISPOSE FLIP                                                          
+%    VERIFY BOK BXX                                                             
+%    GET SILENT NOSTORE ABBREVIATED 'BOK=Process'                               
+%    IF VALUE .EQ. 2 THEN                                                       
+^^WI DISPOSE FLIP                                                               
 ^^CR                                                                            
-%         FINISH                                                                
-%      END IF                                                                   
+%      FINISH                                                                   
+%    END IF                                                                     
 %%                                                                              
-%      VARIABLE  CHARACTER C67                                                  
-%      EVALUATE C67 = '6'
-%      EVALUATE F67 =  6
-^^??   CME STATE                                                                
-%      VERIFY ON OFF                                                            
-%      GET SILENT NOSTORE ABBREVIATED 'ON=Merge first'                          
-%      IF ( VALUE .EQ. 1 ) THEN                                                 
-%        EVALUATE MERGED = FALSE
-%      END IF
-%%
-%      IF MERGED .EQ. FALSE THEN
-%         COPY '#SCRIPT COPY67'         
-%         EVALUATE C67 = '7'
-%         EVALUATE F67 =  7
-%      END IF
-%%
-^^??   RS STATE
-%      VERIFY ON OFF
-%      GET SILENT NOSTORE ABBREVIATED 'On=Simple job'
-%      IF ( VALUE .EQ. 1 ) THEN
-%       TRANSFER '#FOREIGN SUPERFLIP IN= ' // C67 // ' ' TO CRYSTALS
-%       COPY 'END'
-%      ELSE
-%       TRANSFER '#FOREIGN SUPERFLIP DIFFICULT IN= ' // C67 // ' ' TO CRYSTALS
-%       COPY 'END'
-%      END IF
-^^??   CRUN STATE
-%      VERIFY ON OFF
-%      GET SILENT NOSTORE ABBREVIATED 'ON=Run Superflip now'
-%      EVALUATE IRUN = VALUE
-^^??   CED STATE
-%      VERIFY ON OFF
-%      GET SILENT NOSTORE ABBREVIATED 'ON=Edit first'
-^^WI   DISPOSE FLIP
-^^CR
-%      IF ( VALUE .EQ. 1 ) THEN
-%           COPY '#SPAWN +notepad.exe sflip.inflip'
-%%++GILLIN%           COPY '#SPAWN +nedit SFLIP.INFLIP'
-%           EVALUATE QTITLE = 'Superflip Preparation'
-%           EVALUATE QLINE1 = 'Do you want to'
-%           EVALUATE QLINE2 = 'run Superflip now?'
-%           EVALUATE BUTTOK = '&Yes'
-%           EVALUATE BUTTXX = '&No'
-%           COPY '#SCRIPT XQUESTIO'
-%           IF ANSWER .EQ. FALSE THEN
-%               FINISH
-%           END IF
-%      END IF
-%      IF ( IRUN .EQ. 2 ) THEN
-%           FINISH
-%      END IF
-%      COPY '#SPAWN + "CRYSDIR:superflip.EXE" sflip.inflip'
-%      COPY '#TYPE sflip.sflog'
-%%AvdL read in the spacegroup proposed by SUPERFLIP and create new SFLIP file to be
-%%     processed by EDMA
-%      COPY '#SCRIPT XFLIPINSPG'
-{I Final setting of space group may differ from this one; use "print 2" to check the setting
-%%      FINISH
-%      EVALUATE T = FILEDELETE ( 'sflip.inflip' )
-%      TRANSFER '#FOREIGN SUPERFLIP IN= ' // C67 // ' ' TO CRYSTALS
+%    VARIABLE CHARACTER C67                                                     
+%    EVALUATE C67 = '6'                                                         
+%    EVALUATE F67 = 6                                                           
+^^?? CME STATE                                                                  
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE ABBREVIATED 'ON=Merge first'                            
+%    IF ( VALUE .EQ. 1 ) THEN                                                   
+%      EVALUATE MERGED = FALSE                                                  
+%    END IF                                                                     
+%%                                                                              
+%    IF MERGED .EQ. FALSE THEN                                                  
+%      COPY '#SCRIPT COPY67'                                                    
+%      COPY '#SYST IN=7 FRIED=YES'                                                    
+%      COPY 'END'                                                                     
+%      COPY '#SORT IN=7'                                                              
+%      COPY 'END'                                                                     
+%      COPY '#MERGE 7'
 %      COPY 'END'
-%      COPY '#SPAWN + "CRYSDIR:edma.EXE" sflip.inflip'
-%%++LINGIL%      COPY '#SPAWN % "superflip"'
-%   END BLOCK
-%   BLOCK
-%      EVALUATE QTITLE = 'Superflip Results'
-%      EVALUATE QLINE1 = 'Do you want to use the structure'
-%      EVALUATE QLINE2 = 'from Superflip ?'
-%      EVALUATE BUTTOK = '&Yes'
-%      EVALUATE BUTTXX = '&Not yet'
-%      COPY '#SCRIPT XQUESTIO'
-%      IF ANSWER .EQ. FALSE THEN
-%          COPY '#SCRIPT XHELP1'
-   If the structure will not solve:
-   1) Try the "Alternative Superflip parameters" option.
-   2) Try DirDif or Sir92.
-   3) Read the Superflip manual for help.
-   4) Be sure that the space group is correct.
-%          COPY '#SCRIPT XHELP2'
-%          FINISH
-%      ELSE
-%        COPY '#SCRIPT FRESH'
-%        COPY '#SCRIPT XFLIPIN2'
-%      END IF
-%   END BLOCK
-%%
-%% clear out merged reflection list
-%%
-%      if ( exists 7 .gt. 0 ) then
-%        copy '#purge list=7'
-%        copy 'end'
-%      end if
- * Done. Superflip input complete.
-%END SCRIPT
-
-
+%      COPY '#PURGE  LIST=7'                                                          
+%      COPY 'END'                                                                     
+%      EVALUATE C67 = '7'                                                       
+%      EVALUATE F67 = 7                                                         
+%    END IF                                                                     
+%%                                                                              
+^^?? RS STATE                                                                   
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE ABBREVIATED 'On=Simple job'                             
+%    IF ( VALUE .EQ. 1 ) THEN                                                   
+%      TRANSFER '#FOREIGN SUPERFLIP IN= ' // C67 // ' ' TO CRYSTALS             
+%      COPY 'END'                                                               
+%      ELSE                                                                     
+%      TRANSFER '#FOREIGN SUPERFLIP DIFFICULT IN= ' // C67 // ' ' TO CRYSTALS   
+%      COPY 'END'                                                               
+%    END IF                                                                     
+^^?? CRUN STATE                                                                 
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE ABBREVIATED 'ON=Run Superflip now'                      
+%    EVALUATE IRUN = VALUE                                                      
+^^?? CED STATE                                                                  
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE ABBREVIATED 'ON=Edit first'                             
+^^WI DISPOSE FLIP                                                               
+^^CR                                                                            
+%    IF ( VALUE .EQ. 1 ) THEN                                                   
+%      COPY '#SPAWN +notepad.exe sflip.inflip'                                  
+%%++GILLIN% COPY '#SPAWN +nedit SFLIP.INFLIP'                                   
+%      EVALUATE QTITLE = 'Superflip Preparation'                                
+%      EVALUATE QLINE1 = 'Do you want to'                                       
+%      EVALUATE QLINE2 = 'run Superflip now?'                                   
+%      EVALUATE BUTTOK = '&Yes'                                                 
+%      EVALUATE BUTTXX = '&No'                                                  
+%      COPY '#SCRIPT XQUESTIO'                                                  
+%      IF ANSWER .EQ. FALSE THEN                                                
+%        FINISH                                                                 
+%      END IF                                                                   
+%    END IF                                                                     
+%    IF ( IRUN .EQ. 2 ) THEN                                                    
+%      FINISH                                                                   
+%    END IF                                                                     
+%    copy '#script xfliprun'                                                    
+%   END BLOCK                                                                   
+%%                                                                              
+%END SCRIPT                                                                     
