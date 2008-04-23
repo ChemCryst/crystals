@@ -16,6 +16,8 @@
 ^^WI    MENU _SFLIP 'Superflip'                                                   
 ^^WI     ITEM _FLIP '&Create files' '#SCRIPT XFLIP' ENABLEIF='L1 L2 L6'         
 ^^WI                                        DISABLEIF='IN'                      
+^^WI     ITEM -RFLIP '&Run files' '#SCRIPT XFLIPRUN' DISABLEIF='IN'           
+^^WI                                        DISABLEIF='IN'                      
 ^^WI     ITEM _FLIP '&Input results' '#SCRIPT XFLIPIN' DISABLEIF='IN'           
 ^^WI    ENDMENU
 ^^WI    SPLIT                                                                   
