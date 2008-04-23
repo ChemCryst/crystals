@@ -2,35 +2,36 @@
 %% The variables needed by XQUESTIO                                             
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
 % VARIABLE LOGICAL   ANSWER                                                     
-%% check a few lists 
-%  BLOCK
-%    IF ( EXISTS 4 .NE. 1 ) THEN
-{E **** WARNING: Default LIST 4 created
-%    copy "#list 4"
-%    copy "end"
-%    END IF
-%  END BLOCK
-%  BLOCK
-%    IF ( EXISTS 23 .NE. 1 ) THEN
-{E **** WARNING: Default LIST 23 created
-%    copy "#list 23"
-%    copy "end"
-%    END IF
-%  END BLOCK
-%  BLOCK
-%    IF ( EXISTS 28 .NE. 1 ) THEN
-{E **** WARNING: Default LIST 28 created
-%    copy "#list 28"
-%    copy "end"
-%    END IF
-%  END BLOCK
-%  BLOCK
-%    IF ( EXISTS 31 .NE. 1 ) THEN
-{E **** WARNING: Default LIST 31 created
-%    copy "#list 31"
-%    copy "end"
-%    END IF
-%  END BLOCK
+%% check a few lists                                                            
+%  BLOCK                                                                        
+%    IF ( EXISTS 4 .NE. 1 ) THEN                                                
+{E **** WARNING: Default LIST 4 created                                         
+%    copy "#list 4"                                                             
+%    copy "end"                                                                 
+%    END IF                                                                     
+%  END BLOCK                                                                    
+%  BLOCK                                                                        
+%    IF ( EXISTS 23 .NE. 1 ) THEN                                               
+{E **** WARNING: Default LIST 23 created                                        
+%    copy "#list 23"                                                            
+%    copy "end"                                                                 
+%    END IF                                                                     
+%  END BLOCK                                                                    
+%  BLOCK                                                                        
+%    IF ( EXISTS 28 .NE. 1 ) THEN                                               
+{E **** WARNING: Default LIST 28 created                                        
+%    copy "#list 28"                                                            
+%    copy "end"                                                                 
+%    END IF                                                                     
+%  END BLOCK                                                                    
+%  BLOCK                                                                        
+%    IF ( EXISTS 31 .NE. 1 ) THEN                                               
+{E **** WARNING: Default LIST 31 created                                        
+%    copy "#list 31"                                                            
+%    copy "end"                                                                 
+%    END IF                                                                     
+%  END BLOCK                                                                    
+%  COPY '#SCRIPT CHECK3'
                                                                                 
  * CIF listing of all data                                                      
                                                                                 
@@ -48,15 +49,15 @@
 %    COPY '#DIST'                                                               
 %    COPY 'SELECT RANGE=L41'                                                    
 %    COPY 'OUTPUT MON=DIST PUNCH=CIF'                                           
-%    COPY 'END'
+%    COPY 'END'                                                                 
 %      COPY '#DISTANCE '                                                        
 %      COPY 'OUT PUNCh=H-CIF mon=ang'                                           
 %      COPY 'SELECT RANGE=LIMIT'                                                
 %      COPY 'LIMIT 0.7 2.6 0.7 2.6 '                                            
 %      COPY 'PIVOT H '                                                          
-%      COPY 'BOND O N C'                                                         
+%      COPY 'BOND O N C'                                                        
 %      COPY 'END '                                                              
-                                                                 
+                                                                                
 %%                                                                              
 %%                                                                              
 %    EVALUATE QTITLE = 'Parameter CIF'                                          
