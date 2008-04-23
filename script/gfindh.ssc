@@ -19,22 +19,9 @@
 % COPY 'GETSERIAL OLDSER'                                                       
 % COPY 'END'                                                                    
 %%                                                                              
-% VARIABLE LOGICAL TWINNED                                                      
+% VARIABLE LOGICAL TWINNED  MERGED
 % EVALUATE TWINNED = FALSE                                                      
-%  BLOCK                                                                        
-%    VARIABLE INTEGER ITMP                                                      
-%    IF ( EXISTS 13 .GT. 0 ) THEN                                               
-%        COPY '#GENERALEDIT 13'                                                 
-%        COPY 'LOCATE RECORDTYPE=101'                                           
-%        COPY 'TRANSFER FROM OFFSET=1 TO ITMP'                                  
-%        IF ( ITMP .GE. 0 ) THEN                                                
-%         EVALUATE TWINNED = TRUE                                               
-%        ELSE                                                                   
-%         EVALUATE TWINNED = FALSE                                              
-%        END IF                                                                 
-%        COPY 'END'                                                             
-%    END IF                                                                     
-%  END BLOCK                                                                    
+% EVALUATE MERGED = FALSE                                                      
 %%                                                                              
 ^^WI WINDOW FINDH 'Add Hydrogen' MODAL KEEP SIZE LARGE COMMIT='FHBOK'           
 ^^WI CANCEL='FHBXX'                                                             
@@ -130,12 +117,6 @@
 ^^CO SET GFT1 TEXT 'Calculating phases from model.'                             
 % COPY '#SCRIPT XDELQ'                                                          
 % COPY '#SCRIPT VALID12'                                                        
-% COPY '#SFLS'                                                                  
-% IF TWINNED .EQ. TRUE THEN                                                     
-%    COPY 'CALC /FO/=SCALED-/FOT/'                                              
-% ELSE                                                                          
-%    COPY 'CALC'                                                                
-% END IF                                                                        
 %%                                                                              
 ^^CO SET GFT1 TEXT 'Difference Fourier map.'                                    
 % COPY '#SCRIPT PREFOUR'                                                        
@@ -155,11 +136,11 @@
 % COPY '#PERHYDRO 5 5'                                                          
 % COPY 'ACTION BOTH'                                                            
 % COPY 'END'                                                                    
-%% Remove possible duplicate H atoms if pivot lies on a symmetry element
-%% removed djw Jan08 because it may eliminate split atoms
-%% COPY '#PEAK 5 5'
-%% COPY 'SELECT TYPE=AVERAGE'
-%% COPY 'END'
+%% Remove possible duplicate H atoms if pivot lies on a symmetry element        
+%% removed djw Jan08 because it may eliminate split atoms                       
+%% COPY '#PEAK 5 5'                                                             
+%% COPY 'SELECT TYPE=AVERAGE'                                                   
+%% COPY 'END'                                                                   
 %% Copy peaks from L10 into L5                                                  
 % QUEUE REWIND                                                                  
 % COPY '#GENERALEDIT 10'                                                        
