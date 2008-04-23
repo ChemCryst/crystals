@@ -561,7 +561,7 @@ Cdjw      type 897
      5ar)m1 trigonal/rhomboedric(hex. setting)',/,' 8         3(bar)1m t
      6rigonal',/,' 9         6/m      hexagonal',/,' 10        6/mmm    
      7hexagonal',/,' 11        m3(bar)  cubic',/,' 12        m3(bar)m cu
-     8bic',/,' give space group type number :',$)
+     8bic',/,' give space group type number :',/)
 Cdjw      accept 896,i_value
       READ (5,100) I_VALUE
 100   FORMAT (I5)
@@ -574,7 +574,7 @@ Cdjw      accept 896,i_value
       DOUBLE=.FALSE.
       NOTM=.FALSE.
 C      type 1899
-C1899      FORMAT(' Accepted ratio int/sigma:',$)
+C1899      FORMAT(' Accepted ratio int/sigma:',/)
 C      accept 1898,X
 C1898      format(f10.2)
 C 
@@ -1013,64 +1013,67 @@ CJDS      if (sumint(i,14) .eq. sumint(i,1)) goto 55
 C 
 C      write output
 C 
-      WRITE(LP,*) '          group             condition             con
-     1dit','ion'
-      WRITE(LP,*) 'class   condition:            true                  f
-     1alse'
-      WRITE(LP,*) ' '
-      WRITE(LP,*) '                       nref   weak   <I>  <s(I)>  nre
-     1f  ',' weak   <I>  <s(I)>'
-      WRITE(LO,*) '          group             condition             con
-     1dit','ion'
-      WRITE(LO,*) 'class   condition:            true                  f
-     1alse'
-      WRITE(LO,*) ' '
-      WRITE(LO,*) '                       nref   weak   <I>  <s(I)>  nre
-     1f  ',' weak   <I>  <s(I)>'
+12    format(11x,'Group',13x,'condition',13x,'condition'/
+     1 'class',3x,'condition:',
+     2 12x,'true',19x,'False',/)
+13    format(23x,'nref   weak   <I>  <s(I)>  nref  ',
+     1 ' weak   <I>  <s(I)>')
+      write(lp,12)
+      write(lp,13)
+      write(lo,12)
+      write(lo,13)
 C 
-      CALL PRIRES (4,1,1,1,0)
+                  CALL PRIRES (4,1,1,1,0)
       IF (DOUBLE) CALL PRIRES (4,1,5,17,1)
-      IF (FULL) CALL PRIRES (4,1,3,20,1)
-      IF (FULL) CALL PRIRES (4,1,7,21,1)
-      CALL PRIRES (2,2,1,2,0)
+        IF (FULL) CALL PRIRES (4,1,3,20,1)
+        IF (FULL) CALL PRIRES (4,1,7,21,1)
+                  CALL PRIRES (2,2,1,2,0)
       IF (DOUBLE) CALL PRIRES (2,2,5,18,1)
-      IF (FULL) CALL PRIRES (2,2,3,22,1)
-      IF (FULL) CALL PRIRES (2,2,7,23,1)
-      CALL PRIRES (1,3,1,3,0)
+        IF (FULL) CALL PRIRES (2,2,3,22,1)
+        IF (FULL) CALL PRIRES (2,2,7,23,1)
+                  CALL PRIRES (1,3,1,3,0)
       IF (DOUBLE) CALL PRIRES (1,3,5,19,1)
-      IF (FULL) CALL PRIRES (1,3,3,24,1)
-      IF (FULL) CALL PRIRES (1,3,7,25,1)
-      CALL PRIRES (3,2,1,4,0)
-      CALL PRIRES (3,3,1,5,1)
-      CALL PRIRES (3,6,1,6,1)
+        IF (FULL) CALL PRIRES (1,3,3,24,1)
+        IF (FULL) CALL PRIRES (1,3,7,25,1)
+                  CALL PRIRES (3,2,1,4,0)
+                  CALL PRIRES (3,3,1,5,1)
+                  CALL PRIRES (3,6,1,6,1)
       IF (DOUBLE) CALL PRIRES (3,6,5,28,1)
-      CALL PRIRES (5,1,1,7,0)
-      CALL PRIRES (5,3,1,8,1)
-      CALL PRIRES (5,5,1,9,1)
+                  CALL PRIRES (5,1,1,7,0)
+                  CALL PRIRES (5,3,1,8,1)
+                  CALL PRIRES (5,5,1,9,1)
       IF (DOUBLE) CALL PRIRES (5,5,5,29,1)
-      CALL PRIRES (6,1,1,10,0)
-      CALL PRIRES (6,2,1,11,1)
-      CALL PRIRES (6,4,1,12,1)
+                  CALL PRIRES (6,1,1,10,0)
+                  CALL PRIRES (6,2,1,11,1)
+                  CALL PRIRES (6,4,1,12,1)
       IF (DOUBLE) CALL PRIRES (6,4,5,30,1)
-      CALL PRIRES (7,6,1,13,0)
-      CALL PRIRES (7,5,1,14,1)
-      CALL PRIRES (7,4,1,15,1)
-      CALL PRIRES (7,7,1,16,1)
-      IF (FULL) CALL PRIRES (7,8,3,26,0)
-      IF (FULL) CALL PRIRES (7,9,3,27,1)
-      IF (FULL) CALL PRIRES (8,3,1,31,0)
-      IF (FULL) CALL PRIRES (8,10,5,32,1)
-      IF (FULL) CALL PRIRES (9,3,1,33,0)
-      IF (FULL) CALL PRIRES (9,10,5,34,1)
-      IF (FULL) CALL PRIRES (10,2,1,35,0)
-      IF (FULL) CALL PRIRES (10,11,5,36,1)
-      IF (FULL) CALL PRIRES (11,2,1,37,0)
-      IF (FULL) CALL PRIRES (11,11,5,38,1)
-      IF (FULL) CALL PRIRES (12,1,1,39,0)
-      IF (FULL) CALL PRIRES (12,12,5,40,1)
-      IF (FULL) CALL PRIRES (13,1,1,41,0)
-      IF (FULL) CALL PRIRES (13,12,5,42,1)
+                  CALL PRIRES (7,6,1,13,0)
+                  CALL PRIRES (7,5,1,14,1)
+                  CALL PRIRES (7,4,1,15,1)
+                  CALL PRIRES (7,7,1,16,1)
+        IF (FULL) CALL PRIRES (7,8,3,26,0)
+        IF (FULL) CALL PRIRES (7,9,3,27,1)
+        IF (FULL) CALL PRIRES (8,3,1,31,0)
+        IF (FULL) CALL PRIRES (8,10,5,32,1)
+        IF (FULL) CALL PRIRES (9,3,1,33,0)
+        IF (FULL) CALL PRIRES (9,10,5,34,1)
+        IF (FULL) CALL PRIRES (10,2,1,35,0)
+        IF (FULL) CALL PRIRES (10,11,5,36,1)
+        IF (FULL) CALL PRIRES (11,2,1,37,0)
+        IF (FULL) CALL PRIRES (11,11,5,38,1)
+        IF (FULL) CALL PRIRES (12,1,1,39,0)
+        IF (FULL) CALL PRIRES (12,12,5,40,1)
+        IF (FULL) CALL PRIRES (13,1,1,41,0)
+        IF (FULL) CALL PRIRES (13,12,5,42,1)
 C 
+cdjw08
+c      write(lo,'(a)') 'Sumint '
+c      write(lo,'(i3, 15f8.2)')  (i, (sumint(i,j), j=1,15),i=1,42)
+      write(lo,'(a)') ' Systematic absences are:'
+      do 123 i=24,1,-1
+       if(sumint(i,15) .gt. 0.0) call operators(i,lp,lo)
+123   continue
+
 C 
 CJDS      open (itbl,file='dka0:[jd.space]space.tbl;1',status='unknown')
 C 
@@ -1090,14 +1093,30 @@ C
 1400  CONTINUE
       WRITE(LP,*) ' '
       WRITE(LP,1450) CSYS(ISP)
-1450  format     ('For the ',a11,'system, possible space groups are:',
-     1'    frequency of')
+      write(lp,1451)
+      write(lp,1452)
+
+      WRITE(Lo,1450) CSYS(ISP)
+      write(lo,1451)
+      write(lo,1452)
+1450  format     ('For the ',a11,' system, standard space groups are ',
+     1 'as follows')
+1451  format(' If the setting is NOT a b c, you should re-index',
+     1 ' the data')
+1452  format(/, 52x, '    frequency of')
+c
+c
       WRITE(LP,*) ' spacegr number setting cen axis choice  full symbol'
      1,'    occurrence sigma'
       WRITE(LO,1450) CSYS(ISP)
       WRITE(LO,*) ' spacegr number setting cen axis choice  full symbol'
      1,'    occurrence sigma'
 c      IF (ISP.EQ.8) GO TO 3050
+cdjw08
+c      write(lo,11) isp, j, f(j), ires_ip(f(j)), ichoice(f(j))
+c      write(lp,11) isp, j, f(j), ires_ip(f(j)), ichoice(f(j))
+11    format('djw ',4i4,  a1)
+
 
       if(isp .eq. 8) then
            DO 1401 J=1,J1
@@ -1250,11 +1269,15 @@ C
          DO 1900 J=1,42
             IDUMMY(J)=ISPACE(J,2)
 1900     CONTINUE
-CCCCD      write (lo,*) (idummy(j),j=1,42)
-CCCCD      write (lo,*) (iperm(j,ip),j=1,42)
          DO 1950 J=1,42
             ISPACE(J,1)=IDUMMY(IPERM(J,IP))
 1950     CONTINUE
+c
+cdjw08 
+c      write(lo,'(/a,i5)') 'ip=', ip
+c      write (lo,'(3i6)') (j,ispace(j,1),ispace(j,2),iperm(j,ip),j=1,42)
+cdjw08
+c
          ICENTR=0
          JDSEXT=0
 C 
@@ -1413,6 +1436,8 @@ C ---  PICK UP ALL SPACE GROUPS WITH THIS SIGMA
          IF (J1.NE.0) THEN
 2900        CONTINUE
             DO 3000 J4=1,J1
+cdjw08
+c            write(lo,'(a,i4)')'F(j)=', f(j4)
 C ---  F77
                DO 2950 J5=J4+1,J1
 C ---  SORT ON DECREASING PROBABILITY
@@ -1635,3 +1660,98 @@ C
       RETURN
       END
 
+      subroutine operators(i,lp,lo)
+      character *20 ccond(42), coper(42)
+      data ccond/
+     *  'h00 h=2n',
+     *  '0k0 k=2n',
+     *  '00l l=2n',
+     *  '0kl k=2n',
+     *  '0kl l=2n',
+     *  '0kl k+l=2n',
+     *  'h0l h=2n',
+     *  'h0l l=2n',
+     *  'h0l h+l+2n',
+     *  'hk0 h=2n',
+     *  'hk0 k=2n',
+     *  'hk0 h+k=2n',
+     *  'hkl k+l=2n',
+     *  'hkl h+l=2n',
+     *  'hkl h+k=2n',
+     *  'hkl h+k+l=2n',
+     *  'h00 h=4n',
+     *  '0k0 k=4n',
+     *  '00l l=4n',
+     *  'h00 h=3n',
+     *  'h00 h=6n',
+     *  '0k0 k=3n',
+     *  '0k0 k=6n',
+     *  '00l l=3n',
+     *  '00l l=6n',
+     *  'hkl -h+k+l=3n',
+     *  'hkl h-k+l=3n',
+     *  '0kl k+l=4n',
+     *  'h0l h+l=4n',
+     *  'hk0 h+k=4n',
+     *  'hkl h=k l=2n',
+     *  'hkl h=k 2h+l=4n',
+     *  'hkl h=-k l=2n',
+     *  'hkl h=-k 2h+l=4n',
+     *  'hkl h=l k=2n',
+     *  'hkl h=l 2h+k=4n',
+     *  'hkl h=-l k=2n',
+     *  'hkl h=-l 2h+k=4n',
+     *  'hkl k=l h=2n',
+     *  'hkl k=l 2k+h=4n',
+     *  'hkl k=-l h=2n',
+     *  'hkl k=-l 2k+h=4n'/
+
+
+
+      data coper/
+     *  '2-fold screw along a',
+     *  '2-fold screw along b',
+     *  '2-fold screw along c',
+     *  'b-glide perp. to a',
+     *  'c-glide perp. to a',
+     *  'n-glide perp. to a',
+     *  'a-glide perp. to b',
+     *  'c-glide perp. to b',
+     *  'n-glide perp. to b',
+     *  'a-glide perp. to c',
+     *  'b-glide perp. to c',
+     *  'n-glide perp. to c',
+     *  'A-centered lattice',
+     *  'B-centered lattice',
+     *  'C-centered lattice',
+     *  'I-centered lattice',
+     *  '4-fold screw along a',
+     *  '4-fold screw along b',
+     *  '4-fold screw along c',
+     *  '3-fold screw along a',
+     *  '6-fold screw along a',
+     *  '3-fold screw along b',
+     *  '6-fold screw along b',
+     *  '3-fold screw along c',
+     *  '6-fold screw along c',
+     *  'R-centered lattice',
+     *  'R-centered lattice',
+     *  'd-glide perp. to a',
+     *  'd-glide perp. to b',
+     *  'd-glide perp. to c',
+     *  'c,n-glide perp. to c',
+     *  'd-glide perp. to c',
+     *  'c,n-glide perp. to c',
+     *  'd-glide perp. to c',
+     *  'b,n-glide perp. to b',
+     *  'd-glide perp. to b',
+     *  'b,n-glide perp. to b',
+     *  'd-glide perp. to b',
+     *  'a,n-glide perp. to a',
+     *  'd-glide perp. to a',
+     *  'a,n-glide perp. to a',
+     *  'd-glide perp. to a'/
+      write(lp,'(a,a)') ccond(i), coper(i)
+      write(lo,'(a,a)') ccond(i), coper(i)
+      return
+      end

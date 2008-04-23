@@ -215,9 +215,10 @@ C
 C----- reflections all read - check space group with Nonius code
       write(6,'(a)') 'Space Group Code provided by Enraf-Nonius'
       CALL SGROUP
-      WRITE (6,'(A,a,a)') 'Input FULL space group symbol',
+      WRITE (6,'(A,a,a)') 'Input space group symbol',
      1' with spaces between the components',
      2 ' e.g. P n a 21'
+      write(6,'(a)') 'For monoclinic systems, input the full symbol'
       READ (5,'(a)') CSPACE
 C 
 C 
