@@ -6,7 +6,7 @@
       open(in1,file='PLATON6',status='old')
       open(in2,file='platon.hkp',status='old')
       open(out1,file='LIST6.ABC',status='unknown')
-      do 1 i=1,8
+      do 1 i=1,10
       read(in1,'(a)') cline
 1     continue 
 c
@@ -14,7 +14,7 @@ c
      * 'READ NCOEFFICIENT = 11, TYPE = FIXED, UNIT = DATAFILE' ,
      1 ', CHECK=NO' /
      2 'INPUT H K L /FO/ SIGMA(/FO/) /FC/ PHASE'
-     4 ,' SQRTW CORRECT A-PART B-PART' /
+     4 ,' SQRTW JCODE A-PART B-PART' /
      3 ,'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, G12.5, F10.5'
      * ,'/2F8.2)'/
      * ,'STORE NCOEF=10'/
