@@ -156,6 +156,8 @@
 ^^WI    SPLIT                                                                   
 ^^WI    ITEM TI 'Inde&x'                                                        
 ^^WI    '#SPAWN CRYSDIR:manual/manindex.html' DISABLEIF='IN'                    
+^^WI    ITEM PDF 'Manual.pdf'
+^^WI    '#SPAWN CRYSDIR:CRYSTALS.PDF' DISABLEIF='IN'                    
 ^^WI   ENDMENU                                                                  
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM CK '&Check for updates'                                             
