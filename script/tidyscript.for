@@ -8,7 +8,7 @@
       call xcrems( cbuff, cfile, lenfil)
       write(*,'(a,a)') cfile(1:lenfil-1),' '
       dfile = cfile
-      open(10, file=cfile(1:lenfil-1)//'.scp', status='old',err=9999)
+      open(10, file=cfile(1:lenfil-1)//'.ssc', status='old',err=9999)
       open(11, file=cfile(1:lenfil-1)//'.out', 
      1 status='unknown',err=9999)
       open(12, file=cfile(1:lenfil-1)//'.lis', 
