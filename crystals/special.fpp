@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2005/05/20 13:49:01  djw
+C Output special position into to GUI in 'TEST' mode
+C
 C Revision 1.8  2005/01/23 08:29:12  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -800,8 +803,10 @@ C------ RESET COUNTER IF UPDATING OF LIST 5 NOT REQUIRED
 C          DO 545, K =1,9
 C-C-C-FLEXIBILISATION OF SPECIAL-CHECK CORRESPONDING TO ATOM-TYPE
           DO 545, K =1,KK
-            IF (ABS(XO(K) - STORE(M5+3+K)) .GE. ZERO ) THEN
-              CALL XMOVE(XO(1), STORE(M5+4), 9)
+            IF (ABS(XO(K) - STORE(M5+3+K)) .GE. ZEROSQ ) THEN
+djw-apr-08
+c              CALL XMOVE(XO(1), STORE(M5+4), 9)
+              CALL XMOVE(XO(1), STORE(M5+4), kk)
               MUPDAT = MUPDAT + 1
               GOTO 546
             ENDIF
