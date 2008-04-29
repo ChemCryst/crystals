@@ -990,7 +990,7 @@ cavdlsep07- change to absolute value of lattyp for writing translation vectors f
      &                  ''randomseed AUTO'',/,
      &                  ''searchsymmetry average'',/,
 cavdlsep07
-     &                  ''derivesymmetry USE'',/,
+     &                  ''derivesymmetry use'',/,
      &                  ''# End of keywords for charge flipping'')')
      &                    RWEAK,RBISO
       WRITE(NCFPU1, '(/,''# EDMA-specific keywords'',/,
