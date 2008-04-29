@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.26  2008/03/07 16:09:48  djw
+C changes to help with the correct computation of Fourier maps from twinned crystals.  THe old COPY67 subroutine did not pack the data properly unless the keys were the default keys.  The job is now done
+C
 C Revision 1.25  2008/01/10 15:51:19  djw
 C Check for list 6 before copying to LIST 7
 C
@@ -1152,7 +1155,8 @@ C----- RESET TO UNITY SINCE WE DONT NEED IT AGAIN
 C--CHECK THAT THE GIVEN VALUES OF /FO/ ARE NOT ZERO
          IF (STORE(JFO).GT.ZERO) GO TO 4750
 C--CHECK IF THIS IS THE FIRST REJECTED REFLECTION
-         CALL XL6RRP (N6NEG,1000,IFO,CCAPT1)
+cdjwapr08  Dont print any message
+c         CALL XL6RRP (N6NEG,1000,IFO,CCAPT1)
 C--SEE IF WE SOULD REJECT THIS REFLECTION
          IF (ICHECK.GE.0) THEN
             N6DEAD=N6DEAD+1
