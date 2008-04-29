@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:10  rich
 C New CRYSTALS repository
 C
@@ -1275,18 +1279,21 @@ C----- INITIALISE MIN AND MAX CORRECTION
       AMAX = -10000.
       SFACT = STORE(L5O)
 C
-      IF (IMODE .EQ. 0) THEN
+cdjwapr08
+      if (iactn . ne. -1 ) then
+       IF (IMODE .EQ. 0) THEN
             WRITE(CMON,110) 'Fo'
-      ELSE IF (IMODE .EQ. 1) THEN
+       ELSE IF (IMODE .EQ. 1) THEN
             WRITE(CMON,110) 'Fc'
-      ELSE
+       ELSE
             WRITE(CMON,111)
-      ENDIF
-      CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(A)') CMON( 1)(:)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+       ENDIF
+       CALL XPRVDU(NCVDU, 1,0)
+       WRITE(NCAWU, '(A)') CMON( 1)(:)
+       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 110    FORMAT ('       DIFABS correction applied to ', A)
 111    FORMAT (' Transfering correction from Fc to Fo')
+      endif
 C
 C
 C      READ LIST 6 AGAIN
