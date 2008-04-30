@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.53  2008/03/07 16:09:48  djw
+c changes to help with the correct computation of Fourier maps from twinned crystals.  THe old COPY67 subroutine did not pack the data properly unless the keys were the default keys.  The job is now done
+c
 c Revision 1.52  2008/02/14 10:28:09  djw
 c Simplify output to PCH file
 c
@@ -431,6 +434,7 @@ CDJWNOV99      NATOMP = 14
       NOLD = 0
       MDNEW = 4
       MDUIJ = 7
+      MDOCC = 2
       NNEW = 0
 cdjwdec07
 c      allow geometrical deviations
@@ -476,8 +480,8 @@ C -- SET VALUES IN ATOM
 C----- CLEAR ATOM INFO  
       CALL XZEROF(ATOM(1), NATOMP )
       iatom(1)= IH
-C -- OCCUPANCY=1.
-      ATOM(3)=1.
+C -- OCCUPANCY= 1.
+      ATOM(3)=1.0
 CDJWNOV99
 C----- FLAG
       ATOM(4)=1.0
@@ -1131,6 +1135,7 @@ C    SOME ATOMIC COORDINATES UNDEFINED.
 C 
          MNEW=LNEW+(NNEW-1)*MDNEW
          MUIJ=LUIJ+(NNEW-1)*MDUIJ
+         MOCC=LOCC+(NNEW-1)*MDOCC
          IDEFIN=1
 C 
          DO 700 I=1,3
@@ -1673,8 +1678,10 @@ C -- CALCULATE THE POSITIONS TO MOVE THE COORDINATES BETWEEN
         INDATM=LATMD+(I-1)*MDATMD+4
         INDNEW=LNEW+(I-1)*MDNEW
         INDUIJ=LUIJ+(I-1)*MDUIJ
+        INDOCC=LOCC+(I-1)*MDOCC
         CALL XMOVE (STORE(INDNEW),STORE(INDATM),3)
         CALL XMOVE (STORE(INDUIJ+1),STORE(INDATM+3),6)
+C - IS THERE ROOM FOR OCC?        
       END DO
  
 C -- FORM NEW LIST 5
@@ -2246,6 +2253,7 @@ C -- SET UP BLOCKS
       LOLD=KSTALL(NATMD*MDOLD)
       LNEW=KSTALL(NATMD*MDNEW)
       LUIJ=KSTALL(NATMD*MDUIJ)
+      LOCC=KSTALL(NATMD*MDOCC)
 C -- INCREMENT GROUP SERIAL NUMBER
       IF (ICODE .EQ. 1) IGRPNO=IGRPNO+1
 C -- SET REPLACE/COMPARE FLAG TO DEFAULT VALUE
@@ -2280,7 +2288,9 @@ C -- CALCULATE WHERE THIS ATOM IS GOING TO GO
       INDATM=LATMD+(NNEW-1)*MDATMD
       INDNEW=LNEW+(NNEW-1)*MDNEW
       INDUIJ=LUIJ+(NNEW-1)*MDUIJ
+      INDOCC=LOCC+(NNW-1)*MDOCC
 C -- COPY ATOM EXCEPT TYPE AND SERIAL
+      CALL XMOVE( PLATOM(1), STORE(INDOCC), 1)
       CALL XMOVE( PLATOM(3), STORE(INDATM+2), NLATOM-2)
       CALL XMOVE( PLATOM(4), STORE(INDUIJ), 1)
       CALL XMOVE( PLATOM(8), STORE(INDUIJ+1), 6)
@@ -2309,7 +2319,7 @@ C --
 C
 CODE FOR XRGPLG
       SUBROUTINE XRGPLG(IATOMS,NATOMS,XSCALE,YSCALE,ZSCALE,SHIFT,ROTN)
-C -- SUBROUTINE TO PLACE A GROUP OF NEW ATOMS
+C -- SUBROUTINE TO PLACE A PRE-DEFINED GROUP OF NEW ATOMS
 C    IATOMS CONTAINS LIST OF THE ATOM INDEXES REFERING TO
 C    AN ARRAY GRPATM(3,NNNNN) IN COMMON BLOCK XRGGRP
 C    NATOMS IS THE NUMBER OF ATOMS IN THE GROUP
@@ -2325,6 +2335,7 @@ C --
       INCLUDE 'XLST01.INC'
       INCLUDE 'XRGCOM.INC'
       INCLUDE 'XRGRP.INC'
+      INCLUDE 'XRGLST.INC'
 C --
 C -- CALCULATE ROTATION MATRIX
       ITMP1=KSTALL(9)
@@ -2332,6 +2343,9 @@ C -- CALCULATE ROTATION MATRIX
 C -- ALLOCATE WORK SPACE FOR ATOM COORDINATES
       ITMP2=KSTALL(3)
       ITMP3=KSTALL(3)
+CDJW-APR-08
+C---- SETT OCC
+      ATOM(3) = GPOCC
 cdjw nov99
       DO 4000 I=1,NATOMS
 C -- MOVE COORDINATES FOR EACH ATOM AND THEN CREATE THE ATOM
@@ -2399,6 +2413,9 @@ C
       INCLUDE 'XRGLST.INC'
       INCLUDE 'QSTORE.INC'
       INCLUDE 'XIOBUF.INC'
+cdjw apr-08
+      noccin = 0
+      sumocc = 0.0
 CDJWapr2001
       MRENM = LRENM
       CALL XUNTM3 (UNIT(1,1)) !SET UNIT MATRIX
@@ -2517,7 +2534,11 @@ C -- CHECK FOR EACH OLD ATOM SPECIFICATION GIVEN SO FAR
 
 4420     CONTINUE                               !ATOM IS NOT IN LIST ALREADY
          CALL XZEROF(STORE(INDATM+4), MDATMD-4)     !CLEAR THE AREA
-         CALL XMOVE(STORE(IADATM),STORE(INDATM),2)  !COPY SERIAL AND TYPE
+CDJWAPR08
+C         CALL XMOVE(STORE(IADATM),STORE(INDATM),2)  !COPY SERIAL AND TYPE
+         CALL XMOVE(STORE(IADATM),STORE(INDATM),3)  !COPY SERIAL, TYPE, OCC
+         noccin = noccin + 1
+         sumocc = sumocc + store(indatm+2)
 CDJWAPR2001
          CALL XMOVE(STORE(IADATM),STORE(MRENM),2)
 CRICJAN2003
@@ -2552,6 +2573,20 @@ C -- RELEASE OLD ATOM SPACE
       CALL XSTRLL(IADR)
 C -- RESTORE LIST 5
       L5=L5SAVE
+CDJW-APR-08  cOMPUTE AVERATE OCCUPATION NO.
+      IF (NOCCIN .GT. 0) THEN
+        GPOCC = SUMOCC / FLOAT(NOCCIN)
+        if (abs(1.-gpocc) .gt. zero) then
+         CALL OUTCOL(9)
+         WRITE(CMON, '(A,F9.6)')'Group occupation not unity: ', gpocc
+         CALL XPRVDU(NCVDU,1,0)
+         CALL XPRVDU(NCVDU,1,0)
+         CALL OUTCOL(1)
+         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        endif 
+      ELSE
+        GPOCC = 1.
+      ENDIF
       RETURN
 9800  CONTINUE
         WRITE(CMON,9801)
@@ -4982,6 +5017,7 @@ C -- SET INITIAL VALUES IN COMMON
       NOLD = 0
       MDNEW = 4
       MDUIJ = 7
+      MDOCC = 2
       NNEW = 0
 
 cdjwjan08
@@ -5001,6 +5037,7 @@ C -- SET UP BLOCKS
       LOLD=KSTALL(NMAP*MDOLD)
       LNEW=KSTALL(NMAP*MDNEW)
       LUIJ=KSTALL(NMAP*MDUIJ)
+      LOCC=KSTALL(NMAP*MDOCC)
       LRENM = KSTALL(MDRENM*NMAP)  ! ALLOCATE SPACE FOR RENAMING
 C Allocate space for new space group closed set testing 
       MLTPLY = 2 * N2 * N2P * ( IC + 1 ) ! Twice current multiplicity.
@@ -5035,11 +5072,13 @@ c      CALL XPRVDU(NCVDU,3,0)
 c
       MNEW = LNEW
       MUIJ = LUIJ
+      MOCC = LOCC
       MRENM = LRENM
       MATMD = LATMD
       DO I = 0, NMAP-1
         IF ( ISTORE(4+LMAP+I*MDATVC) .EQ. 1 ) THEN
           I5 = L5 + ( (ISTORE(LMAP+I*MDATVC)) * MD5 )
+          CALL XMOVE (STORE(I5+2),STORE(MOCC),1)    ! OCC
           CALL XMOVE (STORE(I5+4),STORE(MNEW),3)    ! XYZ
           CALL XMOVE (STORE(I5+3),STORE(MUIJ),1)    ! Flag
           CALL XMOVE (STORE(I5+7),STORE(MUIJ+1),6)  ! Uijs
@@ -5052,6 +5091,7 @@ c
           MRENM = MRENM + 6
           MATMD = MATMD + MDATMD
           MUIJ = MUIJ + MDUIJ
+          MOCC = MOCC + MDOCC
         END IF
       END DO
 
@@ -5095,10 +5135,12 @@ C saw to that earlier).
       MRENM = LRENM
       MATMD = LATMD
       MUIJ = LUIJ
+      MOCC = LOCC
       DO I = 0, NMAP-1
           I5 = L5 + ( (ISTORE(LMAP+I*MDATVC)) * MD5 )
 c          WRITE(CMON,'(2(A,I7))')'I5MAP:',I5,STORE(I5),NINT(STORE(I5+1))
 c          CALL XPRVDU(NCVDU,1,0)
+          CALL XMOVE (STORE(I5+2),STORE(MOCC),1)
           CALL XMOVE (STORE(I5+4),STORE(MNEW),3)
           CALL XMOVE (STORE(I5+3),STORE(MUIJ),1)
           CALL XMOVE (STORE(I5+7),STORE(MUIJ+1),6)
@@ -5110,6 +5152,7 @@ c          WRITE(CMON,'(A,I10)')'MRENM+5: ',ISTORE(MRENM+5)
 c          CALL XPRVDU(NCVDU,1,0)
           MNEW = MNEW + 4
           MUIJ = MUIJ + MDUIJ
+          MOCC = MOCC + MDOCC
           MRENM = MRENM + 6
           MATMD = MATMD + MDATMD
       END DO
@@ -5183,10 +5226,12 @@ C  IMETHD NOW FOUND FROM METHOD CARD
         NNEW = NMAP
         MNEW = LNEW
         MUIJ = LUIJ
+        MOCC = LOCC
         MRENM = LRENM
         MATMD = LATMD
         DO I = 0, NMAP-1
           I5 = L5 + ( (ISTORE(LMAP+I*MDATVC)) * MD5 )
+          CALL XMOVE (STORE(I5+2),STORE(MOCC),1)
           CALL XMOVE (STORE(I5+4),STORE(MNEW),3)
           CALL XMOVE (STORE(I5+3),STORE(MUIJ),1)
           CALL XMOVE (STORE(I5+7),STORE(MUIJ+1),6)
@@ -5200,6 +5245,7 @@ c          CALL XPRVDU(NCVDU,1,0)
 
           MNEW = MNEW + 4
           MUIJ = MUIJ + MDUIJ
+          MOCC = MOCC + MDOCC
           MRENM = MRENM + 6
           MATMD = MATMD + MDATMD
         END DO
@@ -5237,10 +5283,12 @@ C Use the better matrix to do a final mapping:
         NNEW = NMAP
         MNEW = LNEW
         MUIJ = LUIJ
+        MOCC = LOCC
         MATMD = LATMD
         MRENM = LRENM
         DO I = 0, NMAP-1
           I5 = L5 + ( (ISTORE(LMAP+I*MDATVC)) * MD5 )
+          CALL XMOVE (STORE(I5+2),STORE(MOCC),1)
           CALL XMOVE (STORE(I5+4),STORE(MNEW),3)
           CALL XMOVE (STORE(I5+3),STORE(MUIJ),1)
           CALL XMOVE (STORE(I5+7),STORE(MUIJ+1),6)
@@ -5250,6 +5298,7 @@ C Use the better matrix to do a final mapping:
           ISTORE(MRENM+5) = I5
           MNEW = MNEW + 4
           MUIJ = MUIJ + MDUIJ
+          MOCC = MOCC + MDOCC
           MRENM = MRENM + 6
           MATMD = MATMD + MDATMD
         END DO
