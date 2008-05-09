@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.57  2007/10/09 07:05:48  djw
+C Get script name for output
+C
 C Revision 1.56  2005/02/25 17:25:21  stefan
 C 1. Added some preprocessor if defined lines for the mac version.
 C
@@ -621,6 +624,7 @@ C
       INTEGER IDUNIT , IFSTAT , IFMODE
       CHARACTER*(*) CFNAME
       CHARACTER *256 CLCNAM, FILNAM
+      character *10 cnumber
 C
 C
       CHARACTER*7 FLSTAT(4)
@@ -633,7 +637,9 @@ C
 
 
       DATA FLSTAT / 'OLD    ' , 'NEW    ' , 'CIF    ','SCRATCH' /
+      data cnumber/'0123456789'/
       CLCNAM =  ' '
+
       FILNAM = CFNAME
 
 #if defined(_CYB_) 
@@ -680,11 +686,48 @@ C      if a 'new' file already exists, return a proper message
       IF ((FLSTAT(IFSTAT) .EQ. 'NEW' ) .AND. (FILNAM .NE. ' '))THEN
        lexist = .false.
        inquire(file=clcnam(1:namlen), exist=lexist)
-       if (lexist ) goto 9920
+c
+cdjwapr08 - autoincrement file root
+2010   continue
+       if (lexist) then
+        write(cmon,'(a,a,a)')
+     1  ' The D/A file ( ', clcnam(1:namlen) ,
+     2  ' )already exists'
+        call xprvdu(nceror, 1, 0)
+        if (issprt .eq. 0) write (ncwu, '(A)' ) CMON(1)
+c
+        i =index(clcnam(1:namlen),'.')-1
+        if (i .le. 0) goto 9920
+        j =index(cnumber, clcnam(i:i))
+        if (j .eq. 10) then
+          write(cmon,'(a)')
+     1    ' Only 9 generations permitted'
+          call xprvdu(nceror, 1, 0)
+          if (issprt .eq. 0) write (ncwu, '(A)' ) CMON(1)
+          goto 9920
+        endif
+        if (j .le. 0) then
+          do k  = namlen, namlen-3, -1
+             clcnam(k+2:k+2)= clcnam(k:k)
+          enddo
+          clcnam(i+1:i+2)='#0'
+          namlen=namlen+2
+        else
+          clcnam(i:i)=cnumber(j+1:j+1)
+        endif
+        inquire(file=clcnam(1:namlen), exist=lexist)
+        if (lexist ) goto 2010
+       endif
       endif
-
+        write(cmon,'(a,a,a)')
+     1  ' A new D/A file ( ', clcnam(1:namlen) ,
+     2  ' )will be created'
+        CALL XPRVDU(NCEROR, 1, 0)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU, '(a)' ) cmon(1)
+c
+c
       IF ( IFMODE .EQ. ISSREA ) GO TO 2500
-
+c
       IF ( FILNAM .EQ. ' ' ) THEN
         OPEN ( UNIT   = IDUNIT ,
      1         STATUS = ACSTAT ,
