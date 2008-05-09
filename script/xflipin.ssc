@@ -1,4 +1,4 @@
-%SCRIPT XFLIPIN                                                                 
+%SCRIPT XFLIPIN
 %% READ IN SUPERFLIP RESULTS                                                    
 %%AvdL it is here that the output file should be read                           
 %%AvdL Do a collect atoms by symmetry, necessary!                               
@@ -28,7 +28,7 @@
 %      ELSE                                                                     
 %          COPY '#SCRIPT FRESH'                                                     
 %          COPY '#SCRIPT XFLIPIN2'                                                  
-%      END IF                                                                   
+%      END IF
 %   END BLOCK                                                                   
 %  ELSE
 {E No superflip output - job may have failed                                                               
