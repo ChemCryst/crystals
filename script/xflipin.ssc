@@ -27,7 +27,6 @@
 %          FINISH                                                               
 %      ELSE                                                                     
 %          COPY '#SCRIPT FRESH'                                                     
-%          COPY '#SCRIPT XFLIPINSPG'                                                
 %          COPY '#SCRIPT XFLIPIN2'                                                  
 %      END IF                                                                   
 %   END BLOCK                                                                   

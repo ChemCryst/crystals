@@ -3,13 +3,13 @@
 %%  1 Run SIR92                                                                 
 %%  2 Run SHELXS                                                                
 %%  3 Run SIR97                                                                 
-%%  4 Run SUPERFLIP
+%%  4 Run SUPERFLIP                                                             
 %%  5 Import Sir92 data.                                                        
 %%  6 Import Sir97 data.                                                        
-%%  7 Import Superflip data.                                                        
+%%  7 Import Superflip data.                                                    
 %%  8 Shelx file.                                                               
 %%  9 Cameron file.                                                             
-%%  10 Initial analysis.                                                         
+%%  10 Initial analysis.                                                        
 %%                                                                              
 %  VERIFY GS_BOK GS_BXX GS_BHELP                                                
 %  GET SILENT NOSTORE ABBREVIATED 'Continue?' 'GS_BXX'                          
@@ -32,7 +32,7 @@
 %        END BLOCK                                                              
 %%                                                                              
 %        BLOCK % 4                                                              
-%          COPY '#SCRIPT XFLIP'                                                
+%          COPY '#SCRIPT XFLIP'                                                 
 %        END BLOCK                                                              
 %%                                                                              
 %        BLOCK % 5                                                              
@@ -44,7 +44,7 @@
 %        END BLOCK                                                              
 %%                                                                              
 %        BLOCK % 7                                                              
-%          COPY '#SCRIPT XSUPERFLIPIN'                                              
+%          COPY '#SCRIPT XFLIPIN'                                          
 %        END BLOCK                                                              
 %%                                                                              
 %        BLOCK % 8                                                              
@@ -55,7 +55,7 @@
 %          COPY '#USE cameron.l5'                                               
 %        END BLOCK                                                              
 %%                                                                              
-%        BLOCK % 10                                                              
+%        BLOCK % 10                                                             
 %          COPY '#SCRIPT XCHECK6'                                               
 %        END BLOCK                                                              
 %%                                                                              
