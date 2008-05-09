@@ -43,6 +43,10 @@ c
 c Alison
 c
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2005/01/23 08:29:12  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:06  rich
 C New CRYSTALS repository
 C
@@ -112,6 +116,8 @@ C
       PARAMETER ( MAXN2 = 24 )
       PARAMETER ( NWORK = 1000 )
 C
+      CHARACTER *32 CLINE
+      CHARACTER *10 SGRP
       CHARACTER *1 XYZ(3)
       CHARACTER*20 CBUFF1 , CBUFF2
       PARAMETER ( NBUFF2 = 10 )
@@ -119,7 +125,7 @@ C
 C
       PARAMETER ( COSMIN = 0.003 )
 C
-      DIMENSION  RMI(3), RMA(3), ABC(6), JAXIS(3)
+      DIMENSION  RMI(3), RMA(3), ABC(6), JAXIS(3), SPG(10)
 C
       DIMENSION TRANS(0:10)
       PARAMETER ( SIXTH =  1. / 6. , THIRD  = 1. / 3. )
@@ -320,6 +326,17 @@ C
 C----  FIND THE FOURIER LIMITS
       CALL XZEROF (RMI, 3)
       CALL XZEROF (RMA, 3)
+C
+
+C----- DISPLAY SPACE GROUP SYMBOL
+      J  = L2SG + MD2SG - 1
+      WRITE(NCWU,2101) (ISTORE(I), I = L2SG, J)
+2101  FORMAT('Space group symbol is ', 2X, 4(A4,1X))
+      WRITE(CLINE,'(4a4)') (ISTORE(I), I = L2SG, J)
+      CALL XCREMS(CLINE,SGRP,NCHAR)
+      read(sgrp,'(10a1)') spg
+
+C
       CALL   CDFOUN (LAUENO, NCENT, N2, N2P, ABC, ISTORE(L2),
      1 ISTORE(L2P), SPG, RMI, RMA, JAXIS )
 C
@@ -2280,12 +2297,34 @@ C
      $  (IDMXYZ(1),IDMX),(IDMXYZ(2),IDMY),(IDMXYZ(3),IDMZ)
       DATA IAX/1,2,3, 3,1,2, 2,3,1, 3,2,1, 1,3,2, 2,1,3/
       DATA LET/'X','Y','Z'/
+C
 C----- CONVERT SYMBOL TO CHARACTER FORM
       WRITE(SGDUM,10000) SPG
 10000 FORMAT(10A1)
+C
+c     LAUE,ICEN,NEQV,NCV,ABC,JRT,CEN,SPG,RMI, RMA, JAXIS
+
+
+C      write(ncwu,'(//a/)') 'Dump'
+C      write(ncwu,'(10a1)') spg
+C      write(ncwu,'(10a4)') spg
+C      write(ncwu,*) laue,icen
+C      write(ncwu,*) neqv,nvc
+C      write(ncwu,*) abc
+C      write(ncwu,'(4(3I12/)/)') (((jrt(I,J,K),I=1,3),J=1,4),K=1,NEQV)
+C      write(ncwu,*) cen
+C      write(ncwu,*) rmi
+C      write(ncwu,*) rma
+C      write(ncwu,*) jaxis
+
+
+
+
+
 C-----------------------------------------------------------------------
 C  Initialize for the limit search
 C-----------------------------------------------------------------------
+
       ICENT = ICEN + 1
       ICELL = 48
       ICELL2 = ICELL + ICELL
@@ -2555,3 +2594,325 @@ C----- SAVE JAXIS
       RETURN
       END
 
+CODE FOR FOULIM
+      SUBROUTINE FOULIM
+C----- FIND AN ASYMMETRIC UNIT FOR FOURIERS ETC
+C
+C-----------------------------------------------------------------------
+C  Get the cell-search fractions depending on the Laue group as follows
+C
+C  Laue Group     Number      Nx  Ny  Nz         Comment
+C      1             1         4   4   4     Triclinic
+C     2/m            2         8   8   8     Monoclinic
+C     mmm            3         8   8   8     Orthorhombic  (Fddd 16)
+C     4/m            4         8   8  16     Tetragonal
+C     4/mmm          5         8   8  16     Tetragonal
+C     -3R            6         8   8   8     Rhombohedral
+C     -3mR           7         8   8   8     Rhombohedral
+C     -3             8        12  12  24     Hexagonal
+C     -3m1           9        12  12  24     Hexagonal
+C     -31m          10        12  12  24     Hexagonal
+C     6/m           11        12  12  24     Hexagonal
+C     6/mmm         12        12  12  24     Hexagonal
+C     m3            13        16  16  16     Cubic
+C     m3m           14        16  16  16     Cubic
+C  The values for groups 8 and 9 are OK for the order X,Y,Z, if the 2
+C  other orders are searched NX and NY should be 24
+C-----------------------------------------------------------------------
+      DIMENSION  RMI(3), RMA(3), ABC(6), JAXIS(3), SPG(10)
+
+      CHARACTER *16 SGRP
+      CHARACTER *1 XYZ(3)
+      CHARACTER *32 CLINE
+C
+      PARAMETER ( NWORK = 1000 )
+C
+      PARAMETER ( SIXTH =  1. / 6. , THIRD  = 1. / 3. )
+      PARAMETER ( TWOTHD = 2. / 3. , FIVSXT = 5. / 6. )
+C
+      PARAMETER ( NNPLAT = 7 )
+      DIMENSION XNPLAT(NNPLAT)
+C
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'ICOM02.INC'
+      INCLUDE 'ICOM14.INC'
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST02.INC'
+      INCLUDE 'XLST14.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XIOBUF.INC'
+C
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'QLST02.INC'
+      INCLUDE 'QLST14.INC'
+C
+
+      DATA XYZ /'X', 'Y', 'Z' /
+      DATA XNPLAT / 1. , 5. , 6. , 7. , 2. , 4. , 3. /
+      DATA IDIMBF / 1 /
+      DATA IVERSN / 100 /
+
+C
+CMAR98
+      ICOMBF = KSTALL ( IDIMBF )
+      CALL XZEROF (STORE(ICOMBF), IDIMBF)
+C
+      INCLUDE 'IDIM02.INC'
+      INCLUDE 'IDIM14.INC'
+C      INITIALISE THE COMMON BLOCKS
+      IDWZAP = 0
+      CALL XFILL (IDWZAP, ICOM02, IDIM02)
+      CALL XFILL (IDWZAP, ICOM14, IDIM14)
+C
+      IULN = 2
+C
+C -- COMMAND INPUT SECTION - DONE 'BY HAND'
+C
+C -- READ DIRECTIVE CARD
+1000  CONTINUE
+      ISTAT = KRDNDC ( ISTORE(ICOMBF) , IDIMBF )
+      IF ( ISTAT .LT. 0 ) THEN
+        GO TO 2000
+      ELSE IF ( ISTAT .EQ. 0 ) THEN
+        CALL XMONTR ( 0 )
+        GO TO 1000
+      ENDIF
+C
+C -- NORMAL DIRECTIVE. READ THE PARAMETER VALUE
+1050  CONTINUE
+      IDWZAP = 0
+      IF ( KFNDNP ( IDWZAP ) .LE. 0 ) GO TO 1000
+      ISTAT = KRDPV ( ISTORE(ICOMBF) , IDIMBF )
+      IF ( ISTAT .LT. 0 ) GO TO 1000
+      IF ( ISTAT .EQ. 0 ) GO TO 1050
+      GO TO 9820
+C
+2000  CONTINUE
+C
+C -- INPUT COMPLETED
+C
+C -- CHECK FOR ERRORS DURING INPUT
+C
+      IF ( LEF .GT. 0 ) GO TO 9930
+      IF ( IERFLG .LT. 0 ) GO TO 9900
+C
+      LAUENO = ISTORE(ICOMBF)
+C
+C -- RESET STORE AFTER INPUT PHASE
+C
+      CALL XCSAE
+      CALL XRSL
+C
+C -- ALLOCATE WORK SPACE REQUIRED BY INTERPRETATION ROUTINE
+      IWORK = KSTALL ( NWORK )
+C
+C----- TRY TO LOAD LIST 1
+        IF ( KEXIST ( 1 ) .GT. 0 ) THEN
+          CALL XFAL01
+      IF ( IERFLG .LT. 0 ) GO TO 9900
+            ABC(1) = STORE(L1P1  )
+            ABC(2) = STORE(L1P1+1)
+            ABC(3) = STORE(L1P1+2)
+            ABC(4) = ABS ( COS ( STORE(L1P1+3) ) )
+            ABC(5) = ABS ( COS ( STORE(L1P1+4) ) )
+            ABC(6) = ABS ( COS ( STORE(L1P1+5) ) )
+      ELSE
+C-----      SET DUMMY CELL PARAMETERS
+            ABC(1) = 10.
+            ABC(2) = 10.
+            ABC(3) = 10.
+            ABC(4) = 0.
+            ABC(5) = 0.
+            ABC(6) = 0.
+      ENDIF
+C TRY TO LOAD LIST 2
+      IF ( KEXIST ( 2 ) .GT. 0 ) THEN
+          CALL XFAL02
+      ELSE
+         WRITE(NCWU,'(A)') 'List 2 does not exist'
+         RETURN
+      ENDIF
+C
+C--------------------------------------------------------------------
+C----- DISPLAY SPACE GROUP SYMBOL
+      J  = L2SG + MD2SG - 1
+      WRITE(NCWU,2100) (ISTORE(I), I = L2SG, J)
+2100  FORMAT('Space group symbol is ', 2X, 4(A4,1X))
+      WRITE(CLINE,'(4a4)') (ISTORE(I), I = L2SG, J)
+      CALL XCREMS(CLINE,SGRP,NCHAR)
+      read(sgrp,'(10a1)') spg
+C
+C -- CONVERT OPERATORS TO REAL FORM, TRANSLATE CODES FOR TRANSLATIONAL
+C    PART, TRANSPOSE MATRIX
+C
+      M2 = L2 + ( N2 - 1 ) * MD2
+      DO 5100 I = L2 , M2 , MD2
+C-- REORDER
+        SAVE = STORE(I+1)
+        ISTORE(I+1) = nint(STORE(I+3))
+        ISTORE(I+3) = nint(SAVE)
+C
+        SAVE = STORE(I+2)
+        ISTORE(I+2) = nint(STORE(I+6))
+        ISTORE(I+6) = nint(SAVE)
+C
+        SAVE = STORE(I+5)
+        ISTORE(I+5) = nint(STORE(I+7))
+        ISTORE(I+7) = nint(SAVE)
+C
+        ISTORE(I)   = nint(STORE(I))
+        ISTORE(I+4) = nint(STORE(I+4))
+        ISTORE(I+8) = nint(STORE(I+8))
+
+C
+c
+c      DATA TRANS / 0.00          , 0.00 ,
+c     2             SIXTH         , 0.25 ,
+c     3             THIRD         , 0.00 ,
+c     4             0.50          , 0.00 ,
+c     5             TWOTHD        , 0.75 ,
+c     6             FIVSXT        /
+C
+        DO 5070 J = I + 9 , I + 11
+C          STORE(J) = TRANS ( ISTORE(J) )
+C  RECOVER THE KEYS
+C
+           IF (STORE(J) .LE. ZERO) THEN
+            ISTORE(J) = 0
+           ELSE IF (STORE(J) .LE. ZERO+SIXTH) THEN
+            ISTORE(J) = 2
+           ELSE IF (STORE(J) .LE. ZERO+.25) THEN
+            ISTORE(J) = 3
+           ELSE IF (STORE(J) .LE. ZERO+THIRD) THEN
+            ISTORE(J) = 4
+           ELSE IF (STORE(J) .LE. ZERO+.5) THEN
+            ISTORE(J) = 6
+           ELSE IF (STORE(J) .LE. ZERO+TWOTHD) THEN
+            ISTORE(J) = 8
+           ELSE IF (STORE(J) .LE. ZERO+.75) THEN
+            ISTORE(J) = 9
+           ELSE IF (STORE(J) .LE. ZERO+FIVSXT) THEN
+            ISTORE(J) = 10
+           ENDIF
+5070    CONTINUE
+C
+5100  CONTINUE
+C
+C
+      IC = NINT (STORE(L2C))
+      G2 = STORE(L2C+2) 
+      T2 = STORE(L2C+3) 
+      NCENT = IC
+C--------------------------------------------------------------------
+C
+C----  FIND THE FOURIER LIMITS
+      CALL XZEROF (RMI, 3)
+      CALL XZEROF (RMA, 3)
+      CALL   CDFOUN (LAUENO, NCENT, N2, N2P, ABC, ISTORE(L2),
+     1 ISTORE(L2P), SPG, RMI, RMA, JAXIS )
+C
+C----- LOAD LIST 14 FOR UPDATING
+      CALL XFAL14
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE(NCWU, 2400)
+      ENDIF
+2400  FORMAT(/,1X, '   Fourier limits are :-')
+C----- STORE REAL CELL LIMITS
+      M14 = L14
+      DO 2600 J = 1, 3
+        DO 2550 L = 1, 3
+            IF (JAXIS(L) .EQ. J) THEN
+              STORE(M14  ) = RMI(JAXIS(L))
+              STORE(M14+2) = RMA(JAXIS(L))
+      IF (ISSPRT .EQ. 0) THEN
+              WRITE(NCWU,2410) XYZ(J), STORE(M14), STORE(M14+2)
+      ENDIF
+2410  FORMAT(30X, A1, ' axis from ', F6.3, ' to ', F6.3)
+            ENDIF
+2550    CONTINUE
+        M14 = M14 + MD14
+2600  CONTINUE
+C
+C----- THE SORT DIRECTIONS
+      DO 2650 J = 1,3
+        ISTORE(L14O +J-1) = JAXIS(J)
+2650  CONTINUE
+C
+C
+C----  FIND THE PATTERSON LIMITS
+      CALL XZEROF (RMI, 3)
+      CALL XZEROF (RMA, 3)
+C----- COPY THE SYMMETRY MATRICES, REMOVING THE TRANSLATIONAL PARTS
+      CALL XMOVE(ISTORE(L2), ISTORE(IWORK), 288)
+      J = IWORK + 9
+      DO 2500 I = 1,24
+            CALL XZEROF(ISTORE(J), 3)
+            J = J + 12
+2500  CONTINUE
+      CALL   CDFOUN (LAUENO, 1, N2, N2P, ABC, ISTORE(IWORK),
+     1 ISTORE(L2P), SPG, RMI, RMA, JAXIS )
+C
+C----- THE PATTERSON LIMITS - IN SAME ORDER AS REAL CELL
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE(NCWU, 2420)
+      ENDIF
+2420  FORMAT(/,1X, '  Patterson limits are :-')
+C
+      M14P = L14P
+      DO 2750 J = 1, 3
+        DO 2700 L = 0, 2
+            IF (ISTORE(L14O+L) .EQ. J) THEN
+                  STORE(M14P  ) = RMI(J)
+                  STORE(M14P+2) = RMA(J)
+      IF (ISSPRT .EQ. 0) THEN
+              WRITE(NCWU,2410) XYZ(J), STORE(M14P), STORE(M14P+2)
+      ENDIF
+            ENDIF
+2700    CONTINUE
+        M14P = M14P + MD14P
+2750  CONTINUE
+C
+C
+C -- SAVE NEW LIST 14
+      CALL XWLSTD ( 14 , ICOM14 , IDIM14 , 0 , 1 )
+      RETURN
+C
+9800  CONTINUE
+      LEF = LEF + 1
+      GO TO 1000
+9810  CONTINUE
+      CALL XMONTR(0)
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , 9815 )
+      ENDIF
+      WRITE ( CMON, 9815 )
+      CALL XPRVDU(NCEROR, 1,0)
+9815  FORMAT ( 1X, 'Illegal Fourier limit card ')
+      GO TO 9800
+9820  CONTINUE
+      CALL XMONTR(0)
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , 9825 )
+      ENDIF
+      WRITE ( CMON, 9825 )
+      CALL XPRVDU(NCEROR, 1,0)
+9825  FORMAT ( 1X , 'Parameter type is illegal for FLIMIT' )
+      CALL XERHND ( IERPRG )
+      GO TO 9800
+9900  CONTINUE
+      CALL XOPMSG (IOPSGP, IOPABN, 0)
+      IDIRFL = -1
+      RETURN
+9930  CONTINUE
+      CALL XOPMSG (IOPSGP, IOPCMI, 0)
+      GO TO 9900
+      END
