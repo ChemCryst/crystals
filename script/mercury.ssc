@@ -1,156 +1,157 @@
-%SCRIPT MERCURY
-%% JustRunIt is set TRUE if publish.cif already exists.
-% VARIABLE LOGICAL JUSTRUNIT
-%%
-% VARIABLE CHARACTER FMERC
-%
-%%
-%% Check registry for location of Mercury 1.2.1, 1.2, then manual set
-%%
-^^CO GETREG "Software\CCDC\Mercury\1.2.1\" "InstallDir"
-% GET SILENT NOSTORE TEXT 'Latest mogul?' ' '
-% EVALUATE FMERC = CVALUE // 'mercury.exe'
-% TRANSFER FMERC TO DISPLAY
-%%
-% IF ( .NOT. FILEEXISTS FMERC ) THEN
-^^CO GETREG "Software\CCDC\Mercury\1.2\" "InstallDir"
-%  GET SILENT NOSTORE TEXT 'Latest mogul?' ' '
-%  EVALUATE FMERC = CVALUE // 'mercury.exe'
-%  TRANSFER FMERC TO DISPLAY
-%%
-%  IF ( .NOT. FILEEXISTS FMERC ) THEN
-^^CO GETKEY MERCURYDIR
-%   GET SILENT NOSTORE FINAL TEXT '1' '1'
-%   EVALUATE FMERC = CVALUE
-%   IF FMERC .EQ. '1' .OR. FILEEXISTS ( FMERC ) .EQ. FALSE THEN
-%%
-^^WI WINDOW MERCMISS 'Mercury missing' MODAL KEEP SIZE LARGE
-^^WI COMMIT='MM_OK' CANCEL='MM_OK' POSITION=CENTRED '_MAINTEXTOUTPUT'
-^^WI GRID MMM NROWS=5 NCOLS=3
-^^WI {
-^^WI   @ 2,2 GRID TOP NROWS=1 NCOLS=3
-^^WI   {
-^^WI     @ 1,1 GRID LOG NROWS=1 NCOLS=1
-^^WI     {
-^^WI       @ 1,1 BITMAP LOGO TRANS FILE 'ccdclogo.bmp'
-^^WI     }
-^^WI     @ 1,3 GRID HOLD NROWS=1 NCOLS=1
-^^WI     {
-^^WI       @ 1,1 TEXTOUT MMEXPLAIN 'Could not find the Mercury executable.'
-^^WI NROWS=10 NCOLS=40 TRANSPARENT
-^^WI TEXT ' '
-^^WI TEXT ' Is it installed?'
-^^WI TEXT ' '
-^^WI TEXT ' Mercury is a free program from CCDC for easy crystal structure'
-^^WI TEXT ' visualisation and exploration.'
-^^WI TEXT ' It can be downloaded from: '
-^^WI TEXT '  {&http://www.ccdc.cam.ac.uk/products/csd_system/mercury/{&'
-^^WI TEXT ' '
-^^WI TEXT ' Close this dialog, download and install Mercury then try again.'
-^^WI TEXT ' '
-^^WI VIEWTOP
-^^WI     }
-^^WI   }
-^^WI   @ 4,2 GRID BOTTOM NROWS=1 NCOLS=5
-^^WI   {
-^^WI     @ 1,1 STRETCH S1 HORIZONTAL
-^^WI     @ 1,2 BUTTON MM_OK 'Close' COMMIT CANCEL DEFAULT
-^^WI     @ 1,4 BUTTON MM_BRWS 'Browse for mercury.exe...'
-^^WI     @ 1,5 STRETCH S2 HORIZONTAL
-^^WI   }
-^^WI }
-^^WI SHOW
-^^CR
-^^CO  SET MMEXPLAIN VIEWTOP
-%     LOOP
-%       VERIFY #$ MM_OK MM_BRWS
-%       GET SILENT NOSTORE ABBREVIATED ' ' ' '
-%       CASE VALUE
-%         BLOCK  %#$command%
-%           CLEAR
-%           INSERT '#SPAWN '
-%           GET SILENT FINAL TEXT ' ' ' '
-%           OUTPUT
-%           SEND
-%         END BLOCK
-%         BLOCK                                %XX
-^^CO        DISPOSE MERCMISS
-%           FINISH
-%         END BLOCK
-%         BLOCK                                %MM_BRWS
-
-  Where is the mercury executable (mercury.exe)?
-  Hint: Try looking in c:\program files\ccdc\
-
-^^CO SYSOPENFILE 'mercury*.exe' 'Mercury executable'
-
-%           CLEAR
-%           INSERT '^^CO SETKEY MERCURYDIR "'
-%           GET SILENT TEXT 'Mercury location:'
-%           IF CVALUE .NE. 'CANCEL' THEN
-%             EVALUATE FMERC = CVALUE
-%             INSERT '"'
-%             OUTPUT
-%             EVALUATE LOOPEND = LOOPCOUNTER
-^^CO          DISPOSE MERCMISS
-%           ELSE
-^^CO          DISPOSE MERCMISS
-%             FINISH
-%           END IF
-%         END BLOCK
-%       END CASE
-%     END LOOP
-%   END IF
-%  END IF
-% END IF
-%%
-%%
-% IF ( .NOT. JUSTRUNIT ) THEN
-%%
-%% Check for reflections. Make dummy list 6 if none found.
-%%
-%%
-%   IF ( EXISTS 6 .NE. 1 ) THEN
-{I Creating a dummy list 6 (reflections) to keep the CIF routines happy.
-%    COPY '#LIST 6'
-%    COPY 'READ NCOEFFICIENT = 9, TYPE = FIXED, UNIT = DATAFILE, CHECK=NO'
-%    COPY 'INPUT H K L /FO/ SIGMA(/FO/) /FC/ PHASE SQRTW CORRECT'
-%    COPY 'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, G12.5, F10.5)'
-%    COPY 'END'
-%    COPY '-512'
-%   END IF
-%   IF ( EXISTS 23 .NE. 1 ) THEN
-{I Creating dummy list 23 (refinement control) to keep the CIF routines happy.
-%    COPY '#LIST 23'
-%    COPY 'END'
-%   END IF
-%   IF ( EXISTS 31 .NE. 1 ) THEN
-{I Creating dummy list 31 (cell esds) to keep the CIF routines happy.
-%    COPY '#LIST 31'
-%    COPY 'END'
-%   END IF
-%%
-%%
-%% CIF listing of all data
-%%
-%%
-{I Creating a CIF
-%   COPY "#STORE CSYS CIF 'mercury.cif'"
-%   COPY '#APPEND PUNCH '
-%   COPY '#CIF '
-%   COPY 'END'
-%   COPY '#PARAMETERS'
-%   COPY 'LAYOUT INSET = 1 NCHAR = 120 ESD=NO'
-%   COPY 'COORD SELECT=ALL MONITOR=LOW PRINT=YES PUNCH=CIF NCHAR=14'
-%   COPY "U'S MONITOR=OFF, PRINT=NO, PUNCH=NO, NCHAR=14"
-%   COPY 'END'
-%%  
-%%
-%   TRANSFER '#SPAWN "' // FMERC // '" mercury.cif' TO DISPLAY
-%   TRANSFER '#SPAWN "' // FMERC // '" mercury.cif' TO CRYSTALS
-% ELSE
-%   TRANSFER '#SPAWN "' // FMERC // '" publish.cif' TO DISPLAY
-%   TRANSFER '#SPAWN "' // FMERC // '" publish.cif' TO CRYSTALS
-% END IF
-%%
-%END SCRIPT
+%SCRIPT MERCURY                                                                 
+%% JustRunIt is set TRUE if publish.cif already exists.                         
+% VARIABLE LOGICAL JUSTRUNIT                                                    
+%%                                                                              
+% VARIABLE CHARACTER FMERC                                                      
+%                                                                               
+%%                                                                              
+%% Check registry for location of Mercury 1.2.1, 1.2, then manual set           
+%%                                                                              
+^^CO GETREG "Software\CCDC\Mercury\1.2.1\" "InstallDir"                         
+% GET SILENT NOSTORE TEXT 'Latest mogul?' ' '                                   
+% EVALUATE FMERC = CVALUE // 'mercury.exe'                                      
+% TRANSFER FMERC TO DISPLAY                                                     
+%%                                                                              
+% IF ( .NOT. FILEEXISTS FMERC ) THEN                                            
+^^CO GETREG "Software\CCDC\Mercury\1.2\" "InstallDir"                           
+%  GET SILENT NOSTORE TEXT 'Latest mogul?' ' '                                  
+%  EVALUATE FMERC = CVALUE // 'mercury.exe'                                     
+%  TRANSFER FMERC TO DISPLAY                                                    
+%%                                                                              
+%  IF ( .NOT. FILEEXISTS FMERC ) THEN                                           
+^^CO GETKEY MERCURYDIR                                                          
+%   GET SILENT NOSTORE FINAL TEXT '1' '1'                                       
+%   EVALUATE FMERC = CVALUE                                                     
+%   IF FMERC .EQ. '1' .OR. FILEEXISTS ( FMERC ) .EQ. FALSE THEN                 
+%%                                                                              
+^^WI WINDOW MERCMISS 'Mercury missing' MODAL KEEP SIZE LARGE                    
+^^WI COMMIT='MM_OK' CANCEL='MM_OK' POSITION=CENTRED '_MAINTEXTOUTPUT'           
+^^WI GRID MMM NROWS=5 NCOLS=3                                                   
+^^WI {                                                                          
+^^WI   @ 2,2 GRID TOP NROWS=1 NCOLS=3                                           
+^^WI   {                                                                        
+^^WI     @ 1,1 GRID LOG NROWS=1 NCOLS=1                                         
+^^WI     {                                                                      
+^^WI       @ 1,1 BITMAP LOGO TRANS FILE 'ccdclogo.bmp'                          
+^^WI     }                                                                      
+^^WI     @ 1,3 GRID HOLD NROWS=1 NCOLS=1                                        
+^^WI     {                                                                      
+^^WI       @ 1,1 TEXTOUT MMEXPLAIN 'Could not find the Mercury executable.'     
+^^WI NROWS=10 NCOLS=40 TRANSPARENT                                              
+^^WI TEXT ' '                                                                   
+^^WI TEXT ' Is it installed?'                                                   
+^^WI TEXT ' '                                                                   
+^^WI TEXT ' Mercury is a free program from CCDC for easy crystal structure'     
+^^WI TEXT ' visualisation and exploration.'                                     
+^^WI TEXT ' It can be downloaded from: '                                        
+^^WI TEXT '  {&http://www.ccdc.cam.ac.uk/products/csd_system/mercury/{&'        
+^^WI TEXT ' '                                                                   
+^^WI TEXT ' Close this dialog, download and install Mercury then try again.'    
+^^WI TEXT ' '                                                                   
+^^WI VIEWTOP                                                                    
+^^WI     }                                                                      
+^^WI   }                                                                        
+^^WI   @ 4,2 GRID BOTTOM NROWS=1 NCOLS=5                                        
+^^WI   {                                                                        
+^^WI     @ 1,1 STRETCH S1 HORIZONTAL                                            
+^^WI     @ 1,2 BUTTON MM_OK 'Close' COMMIT CANCEL DEFAULT                       
+^^WI     @ 1,4 BUTTON MM_BRWS 'Browse for mercury.exe...'                       
+^^WI     @ 1,5 STRETCH S2 HORIZONTAL                                            
+^^WI   }                                                                        
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+^^CO  SET MMEXPLAIN VIEWTOP                                                     
+%     LOOP                                                                      
+%       VERIFY #$ MM_OK MM_BRWS                                                 
+%       GET SILENT NOSTORE ABBREVIATED ' ' ' '                                  
+%       CASE VALUE                                                              
+%         BLOCK  %#$command%                                                    
+%           CLEAR                                                               
+%           INSERT '#SPAWN '                                                    
+%           GET SILENT FINAL TEXT ' ' ' '                                       
+%           OUTPUT                                                              
+%           SEND                                                                
+%         END BLOCK                                                             
+%         BLOCK                                %XX                              
+^^CO        DISPOSE MERCMISS                                                    
+%           FINISH                                                              
+%         END BLOCK                                                             
+%         BLOCK                                %MM_BRWS                         
+                                                                                
+  Where is the mercury executable (mercury.exe)?                                
+  Hint: Try looking in c:\program files\ccdc\                                   
+                                                                                
+^^CO SYSOPENFILE 'mercury*.exe' 'Mercury executable'                            
+                                                                                
+%           CLEAR                                                               
+%           INSERT '^^CO SETKEY MERCURYDIR "'                                   
+%           GET SILENT TEXT 'Mercury location:'                                 
+%           IF CVALUE .NE. 'CANCEL' THEN                                        
+%             EVALUATE FMERC = CVALUE                                           
+%             INSERT '"'                                                        
+%             OUTPUT                                                            
+%             EVALUATE LOOPEND = LOOPCOUNTER                                    
+^^CO          DISPOSE MERCMISS                                                  
+%           ELSE                                                                
+^^CO          DISPOSE MERCMISS                                                  
+%             FINISH                                                            
+%           END IF                                                              
+%         END BLOCK                                                             
+%       END CASE                                                                
+%     END LOOP                                                                  
+%   END IF                                                                      
+%  END IF                                                                       
+% END IF                                                                        
+%%                                                                              
+%%                                                                              
+% IF ( .NOT. JUSTRUNIT ) THEN                                                   
+%%                                                                              
+%% Check for reflections. Make dummy list 6 if none found.                      
+%%                                                                              
+%%                                                                              
+%   IF ( EXISTS 6 .NE. 1 ) THEN                                                 
+{I Creating a dummy list 6 (reflections) to keep the CIF routines happy.        
+%    COPY '#LIST 6'                                                             
+%    COPY 'READ NCOEFFICIENT = 9, TYPE = FIXED, UNIT = DATAFILE, CHECK=NO'      
+%    COPY 'INPUT H K L /FO/ SIGMA(/FO/) /FC/ PHASE SQRTW CORRECT'               
+%    COPY 'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, G12.5, F10.5)'              
+%    COPY 'END'                                                                 
+%    COPY '-512'                                                                
+%   END IF                                                                      
+%   IF ( EXISTS 23 .NE. 1 ) THEN                                                
+{I Creating dummy list 23 (refinement control) to keep the CIF routines happy.  
+%    COPY '#LIST 23'                                                            
+%    COPY 'END'                                                                 
+%   END IF                                                                      
+%   IF ( EXISTS 31 .NE. 1 ) THEN                                                
+{I Creating dummy list 31 (cell esds) to keep the CIF routines happy.           
+%    COPY '#LIST 31'                                                            
+%    COPY 'END'                                                                 
+%   END IF                                                                      
+%%                                                                              
+%   COPY '#SCRIPT CHECK3'
+%%                                                                              
+%% CIF listing of all data                                                      
+%%                                                                              
+%%                                                                              
+{I Creating a CIF                                                               
+%   COPY "#STORE CSYS CIF 'mercury.cif'"                                        
+%   COPY '#APPEND PUNCH '                                                       
+%   COPY '#CIF '                                                                
+%   COPY 'END'                                                                  
+%   COPY '#PARAMETERS'                                                          
+%   COPY 'LAYOUT INSET = 1 NCHAR = 120 ESD=NO'                                  
+%   COPY 'COORD SELECT=ALL MONITOR=LOW PRINT=YES PUNCH=CIF NCHAR=14'            
+%   COPY "U'S MONITOR=OFF, PRINT=NO, PUNCH=NO, NCHAR=14"                        
+%   COPY 'END'                                                                  
+%%                                                                              
+%%                                                                              
+%   TRANSFER '#SPAWN "' // FMERC // '" mercury.cif' TO DISPLAY                  
+%   TRANSFER '#SPAWN "' // FMERC // '" mercury.cif' TO CRYSTALS                 
+% ELSE                                                                          
+%   TRANSFER '#SPAWN "' // FMERC // '" publish.cif' TO DISPLAY                  
+%   TRANSFER '#SPAWN "' // FMERC // '" publish.cif' TO CRYSTALS                 
+% END IF                                                                        
+%%                                                                              
+%END SCRIPT                                                                     
