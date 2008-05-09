@@ -4193,3 +4193,9 @@ TONSPEK            2    1
          1    
     .INPUTLIST          2    0    1    2    1         7
               6         7
+FLIMIT             1    3
+   3    4096 CRYSTALSFOREIGN
+    1    2   14
+   1.FLIMIT             1    1    0    0
+         1
+    .LAUENO             1    0    1    0    0         1
