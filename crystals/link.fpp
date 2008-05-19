@@ -289,12 +289,11 @@ cavdl dec06
       CHARACTER *4 CATOM(15)
       CHARACTER *21 CDUMF
       CHARACTER *10 CSPG
+      character *32 CLINE
       CHARACTER LOCASE*(200)
       REAL*8 XCEN,YCEN,ZCEN, ACELL(6)
-      DIMENSION TEMP(10), ITEMP(10), JXT1(288),XT2(12),XT3(500)
-      EQUIVALENCE (ITEMP(1),TEMP(1))
-
-
+      DIMENSION   temp(10), itemp(10)
+      equivalence (temp(1), itemp(1))
 C
       REAL MAT(3)
 C----- FOR CSD & MOL2
@@ -729,25 +728,32 @@ C----- OUTPUT A TITLE, FIRST 72 CHARACTERS ONLY
       WRITE(NCFPU1,'(''dataformat intensity'')')
       WRITE(NCFPU1,'(''dimension  3'')')
 C---- voxel calculation, needed information hmax, kmax, lmax and crystal system
-c      write(CMON, '('' Laue number'',i5)') LAUENO
-c      CALL XPRVDU(NCVDU, 1,0)
+C----- DISPLAY SPACE GROUP SYMBOL
       J  = L2SG + MD2SG - 1
       CSOURC = ' '
       CSPACE = ' '
       WRITE(CSOURC, '(4(A4,1X) )') (ISTORE(I), I = L2SG, J)
       CALL XCREMS (CSOURC, CSPACE, ISP )
-CavdLdec06 try to get LAUENO
       READ ( CSPACE(1:10), '(10A1)' ) (ITEMP(J), J = 1,10)
+c      write(ncwu,'(a)') cspace(1:10)
+c      write(ncwu,'(10a1)') itemp
 C
-      CALL SGROUP ( TEMP ,
-     2 LAUENO , NAXIS , NCENT , LCENT ,
-     3 N2 , NPOL , JXT1,
-     4 XT2 , N2P ,
-     5 NCAWU , NCAWU , XT3)
-c      WRITE(CMON,4359) LAUENO
-c      CALL XPRVDU(NCVDU, 1,0)
-c4359  FORMAT ('Laue number',I5)
-
+c djw declare workspace
+c
+       jxt1 = KSTALL ( 288 )
+       xt2  = KSTALL ( 12 )
+       xt3  = KSTALL ( 500 )
+       CALL XZEROF (STORE(jxt1), 228)
+       CALL XZEROF (STORE(xt2), 12)
+       CALL XZEROF (STORE(xt3), 500)
+c
+       CALL SGROUP ( temp ,
+     2  LAUENO , NAXIS , NCENT , LCENT ,
+     3  N2 , NPOL , istore(JXT1),
+     4  store(XT2) , N2P ,
+     5  NCAWU , NCAWU , store(XT3) )
+       WRITE(NCWU,4359) LAUENO
+4359   FORMAT ('Laue number',I5)
       ILAUE=1
 C----- CRYSTAL CLASS - FROM LIST 2
       J=L2CC+MD2CC-1
@@ -887,9 +893,9 @@ CavdL take the maximum value
         IVOXEL(3)=MAX(IVOXEL(1),IVOXEL(3))
         IVOXEL(3)=MAX(IVOXEL(2),IVOXEL(3))
       ENDIF
-c      WRITE(CMON,'('' voxel'',3i5,2i6)')(ivoxel(i),i=1,3),laueno
-c     &,ilaue
-c        CALL XPRVDU(NCVDU, 1,0)
+      WRITE(CMON,'('' voxel'',3i5,2i6)')(ivoxel(i),i=1,3),laueno
+     &,ilaue
+        CALL XPRVDU(NCVDU, 1,0)
 cavdlsep07 new Superflip version (sep2007) gives the possibility for
 c---- voxel calculation inside Superflip. If this works correctly than
 c---- the foregoing voxel calculation can be skipped
@@ -898,8 +904,20 @@ c      WRITE(NCFPU1, '(''voxel AUTO'')')
       WRITE(NCFPU1, '(''cell '', 3F7.3, 3F8.3)')
 c     1 , (STORE(I),I=L1P1,L1P1+5)
      1  (ACELL(I),I=1,6)
+c
        CSPACE(2:ISP)=LOCASE(CSPACE(2:ISP),isp-2+1)
+cavdlmay08--- for monoclinic space groups do not export the '1's in the space group symbol
+       IF (LAUENO.EQ.2)THEN
+           I0=INDEX(CSPACE(1:ISP),'1')
+cavdl-- normally I0 should be 3
+           I1=INDEX(CSPACE(I0+2:ISP),' ')+I0+1
+           IDUM=I1-(I0+2)
+           CTEMP(1:IDUM)=CSPACE(I0+2:I1-1)
+           CSPACE(3:3+IDUM-1)=CTEMP(1:IDUM)
+           ISP=3+IDUM-1
+       ENDIF
        WRITE(NCFPU1, '(''spacegroup '', A )') CSPACE(1:ISP)
+c
        LATTYP = ((2*IC) -1) * IL
 c       write(CMON, '('' LATTYP'',i5)') LATTYP
 c       CALL XPRVDU(NCVDU, 1,0)

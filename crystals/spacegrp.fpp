@@ -43,6 +43,9 @@ c
 c Alison
 c
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2008/05/09 11:10:48  djw
+C FLIM to find fourier limits from LIST 2 input. User must know the Gabe Lauegroup code number
+C
 C Revision 1.6  2005/01/23 08:29:12  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -612,6 +615,7 @@ C-----------------------------------------------------------------------
 101   CONTINUE
       WRITE (CSPG,10000) SPG
 10000 FORMAT (10A1)
+c      write(ncwu,'(a,10a1)')'Space group=',spg
 C-----------------------------------------------------------------------
 C  CHECK THAT THERE ARE BLANKS IN THE SYMBOL, SO THAT IT HAS AT LEAST A
 C  SPORTING CHANCE OF BEING INTERPRETED CORRECTLY
@@ -2033,12 +2037,12 @@ C
       WRITE (NCWU,10000) SPG,NC(NCENT + 1),
      $                  LTYP(1,LCENT),LTYP(2,LCENT),LTYP(3,LCENT),
      $                  SYST(1,LSYS),SYST(2,LSYS),SYST(3,LSYS),
-     $                  LAUE(1,LAUENO),LAUE(2,LAUENO),MULT
+     $                  LAUE(1,LAUENO),LAUE(2,LAUENO),MULT,LAUENO
       ENDIF
       WRITE ( CMON, 10000) SPG,NC(NCENT + 1),
      2                  LTYP(1,LCENT),LTYP(2,LCENT),LTYP(3,LCENT),
      3                  SYST(1,LSYS),SYST(2,LSYS),SYST(3,LSYS),
-     2                  LAUE(1,LAUENO),LAUE(2,LAUENO),MULT
+     2                  LAUE(1,LAUENO),LAUE(2,LAUENO),MULT,LAUENO
       CALL XPRVDU(NCVDU, 3,1)
       IF (NAXIS .GT. 0) THEN
       IF (ISSPRT .EQ. 0) THEN
@@ -2060,7 +2064,8 @@ C
 10000 FORMAT (1X,' Space Group ',10A1/
      $        '  The Space Group is ',A1,'Centric',6A4,
      $        '  Laue Symmetry ',2A4/
-     $        '  Multiplicity of a General Site is',I4)
+     $        '  Multiplicity of a General Site is',I4,
+     $        '  Laue-no is',I4)
 11000 FORMAT ('  The Unique Axis is ',A1)
 12000 FORMAT ('  The location of the origin is arbitrary in ',A3)
 13000 FORMAT (1X,' The Equivalent Positions are:'/)
@@ -2750,6 +2755,28 @@ C----- DISPLAY SPACE GROUP SYMBOL
       WRITE(CLINE,'(4a4)') (ISTORE(I), I = L2SG, J)
       CALL XCREMS(CLINE,SGRP,NCHAR)
       read(sgrp,'(10a1)') spg
+c
+      IF (LAUENO .LE. -1) THEN
+CavdLdec06 try to get LAUENO
+C
+       jxt1 = KSTALL ( 288 )
+       xt2  = KSTALL ( 12 )
+       xt3  = KSTALL ( 500 )
+       CALL XZEROF (STORE(jxt1), 228)
+       CALL XZEROF (STORE(xt2), 12)
+       CALL XZEROF (STORE(xt3), 500)
+c^^^
+c
+       CALL SGROUP ( spg ,
+     2  LAUENO , NAXIS , NCENT , LCENT ,
+     3  N2 , NPOL , istore(JXT1),
+     4  store(XT2) , N2P ,
+     5  NCAWU , NCAWU , store(XT3) )
+       WRITE(NCWU,4359) LAUENO
+4359   FORMAT ('Laue number',I5)
+      ENDIF
+
+C--------------------------------------------------------------------
 C
 C -- CONVERT OPERATORS TO REAL FORM, TRANSLATE CODES FOR TRANSLATIONAL
 C    PART, TRANSPOSE MATRIX
