@@ -18,7 +18,7 @@
 ^^WI   SPLIT                                                                    
 ^^WI   MENU NEW '&New Things'                                                
 ^^WI    ITEM XSPEK '&Spek' '#SCRIPT TON' DISABLEIF='IN'              
-^^WI    ITEM XREWT '&Reweight' '#SCRIPT XREWEIGHT' DISABLEIF='IN'              
+^^WI    ITEM XREWT '&Reweight' '#SCRIPT REWEIGHT' DISABLEIF='IN'              
 ^^WI   ITEM INFO 'Information' '#SCRIPT NEWINF'
 ^^WI              DISABLEIF='IN'
 ^^WI   ENDMENU                                                                  
