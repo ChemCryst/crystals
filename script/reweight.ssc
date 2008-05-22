@@ -1,0 +1,18 @@
+%SCRIPT REWEIGHT
+%% Try to normalise the GOF.
+% COPY '#SCRIPT XANAL'
+% COPY '#weight'
+% COPY 'end'
+% COPY '#sfls'
+% COPY 'refINE'
+% COPY 'shift general=0'
+% COPY 'end'
+% COPY '#weight factor=0'
+% COPY 'end'
+% COPY '#sfls'
+% COPY 'refine'
+% COPY 'shift general=0'
+% COPY 'end'
+% COPY '#SCRIPT XANAL'
+%END SCRIPT
+
