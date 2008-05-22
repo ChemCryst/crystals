@@ -1,4 +1,4 @@
-%SCRIPT XINLIST3 
+%SCRIPT XINLIST3                                                                
 % VARIABLE REAL MULT NUMBER WAVE                                                
 % VARIABLE CHARACTER CNUMB CELEM CTEM CTEST                                     
 % VARIABLE INTEGER ECOUNT RADIATION ORIENTTYPE SWITCH                           
@@ -13,7 +13,7 @@
 % EVALUATE LXIN3CANCEL = FALSE                                                  
 % CLEAR                                                                         
 ^^WI WINDOW INLIST3 'InList3' MODAL SIZE                                        
-^^WI COMMIT=BOK CANCEL=BXX                                                      
+^^WI COMMIT=BOKI3 CANCEL=BXXI3                                                      
 ^^WI GRID             G1 NROWS=9 NCOLS=5                                        
 ^^WI {                                                                          
 ^^WI  @ 2,2 GRID G2 NROWS=3 NCOLS=2 OUTLINE='Diffraction Experiment'            
@@ -30,15 +30,15 @@
 ^^WI  @ 8,2 STATIC T3 'e.g. C 8 H 13 N 1 O 4 - use spaces.'                     
 ^^WI  @ 2,4 GRID B2 NROWS=3 NCOLS=1                                             
 ^^WI  {                                                                         
-^^WI   @ 1,1 BUTTON    BOK 'Ok' DEFAULT COMMIT                                  
-^^WI   @ 3,1 BUTTON    BXX 'Cancel' CANCEL                                      
+^^WI   @ 1,1 BUTTON    BOKI3 'Ok' DEFAULT COMMIT                                  
+^^WI   @ 3,1 BUTTON    BXXI3 'Cancel' CANCEL                                      
 ^^WI  }                                                                         
 ^^WI }                                                                          
 ^^CR                                                                            
 ^^WI SHOW                                                                       
 ^^CR                                                                            
 % IF ( EXISTS 13 .NE. 1 ) THEN                                                  
-%   copy '#script inlist13'
+%   copy '#script inlist13'                                                     
 % END IF                                                                        
 %   COPY '#GENERALEDIT 13'                                                      
 %   COPY 'LOCATE RECORDTYPE=103'                                                
@@ -116,25 +116,25 @@
 %  IF ( LNEW29 ) THEN                                                           
 %   EVALUATE SWITCH = 2                                                         
 %  ELSE                                                                         
-%   VERIFY BXX BOK MOL COP OTH                                                  
+%   VERIFY BXXI3 BOKI3 MOL COP OTH                                                  
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                
 %   EVALUATE SWITCH = VALUE                                                     
 %  END IF                                                                       
 %  CASE SWITCH                                                                  
-%    BLOCK        %BXX%                                                         
+%    BLOCK        %BXXI3%                                                         
 ^^WI   DISPOSE INLIST3                                                          
 ^^CR                                                                            
 %      EVALUATE LCANCEL = FALSE                                                 
 %      EVALUATE LXIN3CANCEL = TRUE                                              
 %      FINISH                                                                   
 %    END BLOCK                                                                  
-%    BLOCK        %BOK%                                                         
-%    IF ( EXISTS 13 .NE. 1 ) THEN                                                  
+%    BLOCK        %BOKI3%                                                         
+%    IF ( EXISTS 13 .NE. 1 ) THEN                                               
                                                                                 
-{I * Writing a default LIST 13 - should never happen.
+{I * Writing a default LIST 13 - should never happen.                           
                                                                                 
-%      copy '#list 13'
-%    END IF                                                                        
+%      copy '#list 13'                                                          
+%    END IF                                                                     
                                                                                 
 {I * Getting composition contents info                                          
                                                                                 
@@ -164,10 +164,10 @@
 %      QUEUE COPY PROPERTIES CRYSDIR:script/propwin.dat                         
                                                                                 
 {I * Updating List 13 info                                                      
-
-% VARIABLE INTEGER IDJW                                                                                
-%      COPY '#GENERALEDIT 13'                                                          
-%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                     
+                                                                                
+% VARIABLE INTEGER IDJW                                                         
+%      COPY '#GENERALEDIT 13'                                                   
+%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                  
 ^^??   COP STATE                                                                
 %      VERIFY ON OFF                                                            
 %      GET SILENT NOSTORE VERIFIED 'ON or Off' ' '                              
@@ -187,31 +187,31 @@
 %      VERIFY ON OFF                                                            
 %      GET SILENT NOSTORE VERIFIED 'ON or Off' ' '                              
 %      IF VALUE .EQ. 1 THEN                                                     
-%        EVALUATE IDJW = 0                                        
+%        EVALUATE IDJW = 0                                                      
 %      ELSE                                                                     
-%        EVALUATE IDJW = - 1                                        
+%        EVALUATE IDJW = - 1                                                    
 %      END IF                                                                   
-%      COPY 'LOCATE RECORD=101'                                                    
-%      COPY 'TRANSFER TO OFFSET=0 FROM IDJW'                                       
-%      COPY 'WRITE'                                                                
-%%
-% VARIABLE REAL ADJW
+%      COPY 'LOCATE RECORD=101'                                                 
+%      COPY 'TRANSFER TO OFFSET=0 FROM IDJW'                                    
+%      COPY 'WRITE'                                                             
+%%                                                                              
+% VARIABLE REAL ADJW                                                            
 %      CASE RADIATION                                                           
-%       EVALUATE ADJW = 1.5418  %CU%  
-%       EVALUATE ADJW = 0.71073 %MO%  
-%       BLOCK                   %OTHER%  
+%       EVALUATE ADJW = 1.5418  %CU%                                            
+%       EVALUATE ADJW = 0.71073 %MO%                                            
+%       BLOCK                   %OTHER%                                         
 ^^??      WAVEL TEXT                                                            
 %         GET SILENT REAL 'Wave' '0.0123'                                       
 %         EVALUATE CTEST = CHARACTER ( VALUE )                                  
-%         EVALUATE ADJW = VALUE  
+%         EVALUATE ADJW = VALUE                                                 
 %       END BLOCK                                                               
-%      END CASE                
-%      COPY 'LOCATE RECORD=103'                                                    
-%      COPY 'TRANSFER TO OFFSET=0 FROM ADJW'                                       
-%      COPY 'WRITE'                                                                
+%      END CASE                                                                 
+%      COPY 'LOCATE RECORD=103'                                                 
+%      COPY 'TRANSFER TO OFFSET=0 FROM ADJW'                                    
+%      COPY 'WRITE'                                                             
 %      COPY 'END'                                                               
-%%
-%%
+%%                                                                              
+%%                                                                              
 {I * Updating composition info                                                  
 %      COPY '#COMPOSITION'                                                      
 %      QUEUE PROCESS                                                            
@@ -233,7 +233,8 @@
 %         END IF                                                                
 %      END IF                                                                   
 %%                                                                              
-%      EVALUATE LXIN3CANCEL = FALSE                                             
+%      EVALUATE LXIN3CANCEL = FALSE
+^^CO   DISPOSE INLIST3
 %      FINISH                                                                   
 %                                                                               
 %    END BLOCK                                                                  
