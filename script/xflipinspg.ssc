@@ -1,178 +1,178 @@
 % SCRIPT XFLIPINSPG
+%%                                                                              
+%% Read in a space group from a superflip shelx file.                           
+%%                                                                              
+{R Script version by R. Cooper. Based on the fortran program SXTOCA by          
+{R R.O. Gould, The University of Edinburgh, March 1994.                         
+{R Slightly modified for use with Superflip                                     
+%%                                                                              
+%%                                                                              
+%  VARIABLE CHARACTER CFILE CENTRO CLATYP CUNIT CSFAC CTEM CLAT                 
+%  VARIABLE CHARACTER SPACEHOOK INSTITLE HKLTITLE SPACEREAD SPACEREADOLD        
+%  VARIABLE INTEGER ILATT NSYMS SCOUNT SXF LEND                                 
+%  VARIABLE LOGICAL SFILERR LCANCEL LCRY SXGETALL LQS SPACETEXT                 
+%  VARIABLE REAL SUA SUB SUC SUAL SUBE SUGA                                     
+%  VARIABLE REAL SXX SXY SXZ SXO SXU11 SXU22 WAVE CELLZ                         
+%  VARIABLE REAL SXU33 SXU23 SXU13 SXU12                                        
+%  VARIABLE REAL SXOCC CRYOCC SPECOCC                                           
+%  VARIABLE INTEGER ATOMCOUNT                                                   
+%  VARIABLE LOGICAL SGOK SFLIPSYM SPGTRIC                                       
+%%                                                                              
+%  EVALUATE SXGETALL = FALSE                                                    
+%%                                                                              
+%% variables used by the question box below                                     
+%  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                        
+%  VARIABLE LOGICAL ANSWER                                                      
 %%
-%% Read in a space group from a superflip shelx file.
-%%
-{R Script version by R. Cooper. Based on the fortran program SXTOCA by
-{R R.O. Gould, The University of Edinburgh, March 1994.
-{R Slightly modified for use with Superflip
-%%
-%%
-%  VARIABLE CHARACTER CFILE CENTRO CLATYP CUNIT CSFAC CTEM CLAT
-%  VARIABLE CHARACTER SPACEHOOK INSTITLE HKLTITLE SPACEREAD SPACEREADOLD
-%  VARIABLE INTEGER ILATT NSYMS SCOUNT SXF LEND
-%  VARIABLE LOGICAL SFILERR LCANCEL LCRY SXGETALL LQS SPACETEXT
-%  VARIABLE REAL SUA SUB SUC SUAL SUBE SUGA
-%  VARIABLE REAL SXX SXY SXZ SXO SXU11 SXU22 WAVE CELLZ
-%  VARIABLE REAL SXU33 SXU23 SXU13 SXU12
-%  VARIABLE REAL SXOCC CRYOCC SPECOCC
-%  VARIABLE INTEGER ATOMCOUNT
-%  VARIABLE LOGICAL SGOK SFLIPSYM SPGTRIC
-%%  
-%  EVALUATE SXGETALL = FALSE  
-%%  
-%% variables used by the question box below  
-%  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2  
-%  VARIABLE LOGICAL ANSWER
-%%  
-%  EVALUATE LCRY = FALSE  
-%%  
-%%  
-%%  
+%  EVALUATE LCRY = FALSE                                                        
+%%                                                                              
+%%                                                                              
+%%                                                                              
 %% Get first the old space group name for information, take it from the sflip.in
-%%  
-%  EVALUATE CFILE = 'SFLIP.INFLIP'  
-%  TRANSFER '#OPEN SCPD "' // CFILE // '"' TO CRYSTALS  
-%   
-
-{I Scanning SUPERFLIP inflip file for information.
-%  EXTRACT REWIND  
-%  EVALUATE SFILERR = TRUE  
-%  LOOP  
-%    ON ERROR TERMINATE ABANDONED  
-%    ON END TERMINATE  
-%    EXTRACT NEXT  
-%    CLEAR  
-%    EXTRACT TRANSFER INPUT  
-%    CLEAR  
-%    GET NOSTORE NOPROMPT NOMESSAGE KEYWORD NULLSTRING  
-%% TRANSFER 'WHAT IS IT ' // CVALUE TO DISPLAY  
-%    IF CVALUE .EQ. 'spacegroup' THEN  
-%      EVALUATE SFILERR = FALSE  
-%      EVALUATE LOOPEND = LOOPCOUNTER  
-%      CLEAR  
-%      GET TEXT 'SPG'  
+%%                                                                              
+%  EVALUATE CFILE = 'SFLIP.INFLIP'                                              
+%  TRANSFER '#OPEN SCPD "' // CFILE // '"' TO CRYSTALS                          
+%                                                                               
+                                                                                
+{I Scanning SUPERFLIP inflip file for information.                              
+%  EXTRACT REWIND                                                               
+%  EVALUATE SFILERR = TRUE                                                      
+%  LOOP                                                                         
+%    ON ERROR TERMINATE ABANDONED                                               
+%    ON END TERMINATE                                                           
+%    EXTRACT NEXT                                                               
+%    CLEAR                                                                      
+%    EXTRACT TRANSFER INPUT                                                     
+%    CLEAR                                                                      
+%    GET NOSTORE NOPROMPT NOMESSAGE KEYWORD NULLSTRING                          
+%% TRANSFER 'WHAT IS IT ' // CVALUE TO DISPLAY                                  
+%    IF CVALUE .EQ. 'spacegroup' THEN
+%      EVALUATE SFILERR = FALSE                                                 
+%      EVALUATE LOOPEND = LOOPCOUNTER                                           
+%      CLEAR                                                                    
+%      GET TEXT 'SPG'                                                           
 %      EVALUATE SPACEREADOLD = CVALUE
-%    END IF
-%  END LOOP
-%  IF SFILERR .EQ. TRUE THEN
-{E *** No space group proposed superflip ins file. Strange.
-%    ELSE
-%    TRANSFER 'Old space group read: ' // SPACEREADOLD TO DISPLAY
-%  END IF
-%% COPY '#CLOSE SCPDATA'
-%%
-%%
-%% scan first the log-file to find out whether there is acceptable  symmetry in the file
-%
-%
-%% check the Superflip log-file whether acceptable symmetry is found
-%  EVALUATE CFILE = 'SFLIP.SFLOG'
-%  TRANSFER '#OPEN SCPD "' // CFILE // '"' TO CRYSTALS
-%
-
-{I Scanning SUPERFLIP log file for information.
-%  EXTRACT REWIND
-%  EVALUATE SFILERR = TRUE
-%  LOOP
-%    ON ERROR TERMINATE ABANDONED
-%    ON END TERMINATE
+%    END IF                                                                     
+%  END LOOP                                                                     
+%  IF SFILERR .EQ. TRUE THEN                                                    
+{E *** No space group proposed superflip ins file. Strange.                     
+%    ELSE                                                                       
+%    TRANSFER 'Old space group read: ' // SPACEREADOLD TO DISPLAY               
+%  END IF                                                                       
+%% COPY '#CLOSE SCPDATA'                                                        
+%%                                                                              
+%%                                                                              
+%% scan first the log-file to find out whether there is acceptable  symmetry in 
+%                                                                               
+%                                                                               
+%% check the Superflip log-file whether acceptable symmetry is found            
+%  EVALUATE CFILE = 'SFLIP.SFLOG'                                               
+%  TRANSFER '#OPEN SCPD "' // CFILE // '"' TO CRYSTALS                          
+%                                                                               
+                                                                                
+{I Scanning SUPERFLIP log file for information.                                 
+%  EXTRACT REWIND                                                               
+%  EVALUATE SFILERR = TRUE                                                      
+%  LOOP                                                                         
+%    ON ERROR TERMINATE ABANDONED                                               
+%    ON END TERMINATE                                                           
 %    EXTRACT NEXT
-%    CLEAR
-%    EXTRACT TRANSFER INPUT
-%    CLEAR
-%    GET NOSTORE NOPROMPT NOMESSAGE KEYWORD NULLSTRING
-%%    TRANSFER 'WHAT IS IT ' // CVALUE TO DISPLAY
-%    IF CVALUE .EQ. 'No' THEN
+%    CLEAR                                                                      
+%    EXTRACT TRANSFER INPUT                                                     
+%    CLEAR                                                                      
+%    GET NOSTORE NOPROMPT NOMESSAGE KEYWORD NULLSTRING                          
+%%    TRANSFER 'WHAT IS IT ' // CVALUE TO DISPLAY                               
+%    IF CVALUE .EQ. 'No' THEN                                                   
+%        EVALUATE SFILERR = FALSE                                               
+%        EVALUATE LOOPEND = LOOPCOUNTER                                         
+%        CLEAR                                                                  
+%        LOOP                                                                   
+%          GET NOSTORE NOPROMPT KEYWORD ' ' '_NOMORE_'                          
+%          IF CVALUE .EQ. '_NOMORE_' THEN                                       
+%            EVALUATE LOOPEND = LOOPCOUNTER                                     
+%          END IF                                                               
+%          IF CVALUE .EQ. 'symmetry' THEN                                       
+%            EVALUATE SFLIPSYM = FALSE                                          
+%          END IF                                                               
+%        END LOOP                                                               
+%    END IF                                                                     
+%  END LOOP                                                                     
+%    COPY '#CLOSE SCPDATA'                                                      
+%    COPY 'END'                                                                 
+%
+%% if convergence detected and no symmetry than it can be P1, thus only         
+%% quit if it is not triclinic from the beginning                               
+%   IF ( ( SPACEREADOLD .NE. 'P -1' ) .AND. ( SPACEREADOLD .NE. 'P 1' ) ) THEN  
+%      IF SFLIPSYM .EQ. FALSE THEN                                              
+%        TRANSFER 'Superflip does not find acceptable symmetry' TO DISPLAY
+%        EVALUATE QLINE1 = 'Superflip did not find acceptable symmetry'         
+%        EVALUATE QLINE2 = 'Use advanced options or ask an expert'              
+%        EVALUATE BUTTOK = 'Yes'                                                
+%        EVALUATE BUTTXX = 'No'                                                 
+%        EVALUATE QTITLE = 'Symmetry analysis'                                  
+%        COPY '#SCRIPT XQUESTIO'                                                
+%        COPY 'END'                                                             
+%        FINISH                                                                 
+%      END IF                                                                   
+%   ELSE                                                                        
+%        EVALUATE SPGTRIC = TRUE                                                
+%   END IF                                                                      
+%   IF ( FILEEXISTS ( 'sflip_sym.ins' ) ) THEN                                  
+%     EVALUATE CFILE = 'SFLIP_SYM.INS'                                          
+%     TRANSFER '#OPEN SCPD "' // CFILE // '"' TO CRYSTALS                       
+%%                                                                              
+%%                                                                              
+{I Scanning SUPERFLIP symmetry file for information.                            
+%    EXTRACT REWIND                                                             
+%    EVALUATE SFILERR = TRUE                                                    
+%    LOOP                                                                       
+%      ON ERROR TERMINATE                                                       
+%      ON END TERMINATE                                                         
+%      EXTRACT NEXT                                                             
+%      CLEAR
+%% EXTRACT TRANSFER COMMAND
+%% EXECUTE SEND
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET NOSTORE NOPROMPT KEYWORD NULLSTRING
+%      IF CVALUE .EQ. 'TITL' THEN
 %        EVALUATE SFILERR = FALSE
 %        EVALUATE LOOPEND = LOOPCOUNTER
 %        CLEAR
+%%AvdL - keep old title, experience shows that sflip title is attached, which
+%% makes growing the title upon multiple sflip runs.
+%% INSERT '#TITLE '
+%% GET NOPROMPT NOREMOVE TEXT ' ' 'Default Title'
+%% SEND
+%% COPY 'END'
+%% CLEAR
+%        EVALUATE SPACETEXT = FALSE
+%        EVALUATE SPACEREAD = ' '
 %        LOOP
 %          GET NOSTORE NOPROMPT KEYWORD ' ' '_NOMORE_'
 %          IF CVALUE .EQ. '_NOMORE_' THEN
 %            EVALUATE LOOPEND = LOOPCOUNTER
+%            ELSE IF SPACETEXT THEN
+%            EVALUATE SPACEREAD = SPACEREAD // CVALUE // ' '
 %          END IF
-%          IF CVALUE .EQ. 'symmetry' THEN
-%            EVALUATE SFLIPSYM = FALSE
+%          IF CVALUE .EQ. 'Superflip:' THEN
+%            EVALUATE SPACEREAD = ' '
+%            EVALUATE SPACETEXT = TRUE
 %          END IF
 %        END LOOP
-%    END IF
-%  END LOOP
-%    COPY '#CLOSE SCPDATA'
-%    COPY 'END'
-%
-%% if convergence detected and no symmetry than it can be P1, thus only
-%% quit if it is not triclinic from the beginning
-%   IF ( ( SPACEREADOLD .NE. 'P -1' ) .AND. ( SPACEREADOLD .NE. 'P 1' ) ) THEN
-%      IF SFLIPSYM .EQ. FALSE THEN
-%        TRANSFER 'Superflip does not find acceptable symmetry' TO DISPLAY
-%        EVALUATE QLINE1 = 'Superflip did not find acceptable symmetry'
-%        EVALUATE QLINE2 = 'Use advanced options or ask an expert'
-%        EVALUATE BUTTOK = 'Yes'
-%        EVALUATE BUTTXX = 'No'
-%        EVALUATE QTITLE = 'Symmetry analysis'
-%        COPY '#SCRIPT XQUESTIO'
-%        COPY 'END'
-%        FINISH
 %      END IF
-%   ELSE
-%        EVALUATE SPGTRIC = TRUE
-%   END IF
-%   IF ( FILEEXISTS ( 'sflip_sym.ins' ) ) THEN
-%     EVALUATE CFILE = 'SFLIP_SYM.INS'
-%     TRANSFER '#OPEN SCPD "' // CFILE // '"' TO CRYSTALS
-%%
-%%
-{I Scanning SUPERFLIP symmetry file for information.
-%    EXTRACT REWIND
-%    EVALUATE SFILERR = TRUE
-%    LOOP
-%      ON ERROR TERMINATE
-%      ON END TERMINATE  
-%      EXTRACT NEXT
-%      CLEAR  
-%% EXTRACT TRANSFER COMMAND  
-%% EXECUTE SEND  
-%      EXTRACT TRANSFER INPUT  
-%      CLEAR  
-%      GET NOSTORE NOPROMPT KEYWORD NULLSTRING  
-%      IF CVALUE .EQ. 'TITL' THEN  
-%        EVALUATE SFILERR = FALSE  
-%        EVALUATE LOOPEND = LOOPCOUNTER  
-%        CLEAR  
-%%AvdL - keep old title, experience shows that sflip title is attached, which  
-%% makes growing the title upon multiple sflip runs.  
-%% INSERT '#TITLE '  
-%% GET NOPROMPT NOREMOVE TEXT ' ' 'Default Title'  
-%% SEND  
-%% COPY 'END'  
-%% CLEAR  
-%        EVALUATE SPACETEXT = FALSE  
-%        EVALUATE SPACEREAD = ' '  
-%        LOOP  
-%          GET NOSTORE NOPROMPT KEYWORD ' ' '_NOMORE_'  
-%          IF CVALUE .EQ. '_NOMORE_' THEN  
-%            EVALUATE LOOPEND = LOOPCOUNTER  
-%            ELSE IF SPACETEXT THEN  
-%            EVALUATE SPACEREAD = SPACEREAD // CVALUE // ' '  
-%          END IF  
-%          IF CVALUE .EQ. 'Superflip:' THEN  
-%            EVALUATE SPACEREAD = ' '  
-%            EVALUATE SPACETEXT = TRUE  
-%          END IF  
-%        END LOOP  
-%      END IF  
-%    END LOOP  
-%    IF SFILERR .EQ. TRUE THEN  
-{E *** No "TITL" card found in SHELX file. Never mind.  
+%    END LOOP
+%    IF SFILERR .EQ. TRUE THEN
+{E *** No "TITL" card found in SHELX file. Never mind.
 %      ELSE
 {R Space group proposed by Superflip found.
 %    END IF
-%%  
-%    EVALUATE SPACEREAD = SPGTOCRY ( SPACEREAD )  
-%% TRANSFER ' SPACEREAD ' // SPACEREAD TO DISPLAY  
-%    TRANSFER 'Space group read from TITL card: ' // SPACEREAD TO DISPLAY  
+%%
+%    EVALUATE SPACEREAD = SPGTOCRY ( SPACEREAD )
+%% TRANSFER ' SPACEREAD ' // SPACEREAD TO DISPLAY
+%    TRANSFER 'Space group read from TITL card: ' // SPACEREAD TO DISPLAY
 
-%    IF ( SPACEREAD .EQ. SPACEREADOLD ) THEN  
+%    IF ( SPACEREAD .EQ. SPACEREADOLD ) THEN
 %       EVALUATE QTITLE = SPACEREAD
 %       EVALUATE QLINE1 = 'Superflip confirms the original space group'
 %       EVALUATE QLINE2 = 'The symmetry operators are updated.'
@@ -202,139 +202,152 @@
 %        ON ERROR TERMINATE
 %        ON END TERMINATE
 %        EXTRACT NEXT
-%        CLEAR  
-%% EXTRACT TRANSFER COMMAND  
-%% EXECUTE SEND  
-%        EXTRACT TRANSFER INPUT  
-%        CLEAR  
-%        GET NOSTORE NOPROMPT NOMESSAGE KEYWORD NULLSTRING  
-%        IF CVALUE .EQ. 'LATT' THEN  
-%          EVALUATE LOOPEND = LOOPCOUNTER  
-%          LOOP  
-%            GET NOSTORE NOPROMPT KEYWORD ' ' '99'  
-%% TRANSFER 'WHAT IS IT ' // CVALUE TO DISPLAY  
-%            IF CVALUE .EQ. '99' THEN  
-%              EVALUATE LOOPEND = LOOPCOUNTER  
-%              ELSE  
-%              EVALUATE CLATYP = CVALUE  
-%% TRANSFER 'CLATYP ' // CLATYP TO DISPLAY  
-%            END IF  
-%          END LOOP  
-%        END IF  
-%      END LOOP  
-%       
-%% loop to get number of symmetry elements and queue symops  
-%      QUEUE REWIND  
-%      EVALUATE LEND = 0  
-%      LOOP  
-%        ON ERROR TERMINATE  
-%        ON END TERMINATE  
-%        EXTRACT NEXT  
-%        CLEAR  
-%        EXTRACT TRANSFER INPUT  
-%        CLEAR  
+%        CLEAR
+%% EXTRACT TRANSFER COMMAND
+%% EXECUTE SEND
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
 %        GET NOSTORE NOPROMPT NOMESSAGE KEYWORD NULLSTRING
-%% TRANSFER 'WHAT IS IT ' // CVALUE TO DISPLAY  
-%        IF CVALUE .EQ. 'END' THEN  
-%          EVALUATE LOOPEND = LOOPCOUNTER  
-%        END IF  
-%        IF CVALUE .EQ. 'SYMM' THEN  
-%          EVALUATE LEND = LEND + 1  
-%% TRANSFER 'SYMOP FOUND ' // CVALUE TO DISPLAY  
-%          INSERT 'SYMM '  
-%          GET TEXT 'SYMOP'  
-%          INSERT ' '  
-%          GET NOSTORE NOPROMPT NOMESSAGE TEXT 'END'  
-%          QUEUE SEND  
-%        END IF  
-%      END LOOP  
-%% FINISH  
-%% Start writing LIST 2 info  
-%      EVALUATE LEND = LEND + 1  
-%% TRANSFER 'NUMBER SYMOPS ' // CVALUE TO DISPLAY  
-%      COPY '#LIST 2'  
-%      CLEAR  
-%      INSERT 'CELL NSYM = '  
-%      STORE INTEGER LEND  
-%      IF CLATYP .EQ. '1' THEN  
-%        INSERT ' LATTICE = P '  
-%        INSERT ' CENTRIC = YES '  
-%      END IF  
-%      IF CLATYP .EQ. '-1' THEN  
-%        INSERT ' LATTICE = P '  
-%        INSERT ' CENTRIC = NO '  
-%      END IF  
-%      IF CLATYP .EQ. '2' THEN  
-%        INSERT ' LATTICE = I '  
-%        INSERT ' CENTRIC = YES '  
-%      END IF  
-%      IF CLATYP .EQ. '-2' THEN  
-%        INSERT ' LATTICE = I '  
-%        INSERT ' CENTRIC = NO '  
-%      END IF  
-%      IF CLATYP .EQ. '3' THEN  
-%        INSERT ' LATTICE = R '  
-%        INSERT ' CENTRIC = YES '  
-%      END IF  
-%      IF CLATYP .EQ. '-3' THEN  
-%        INSERT ' LATTICE = R '  
-%        INSERT ' CENTRIC = NO '  
-%      END IF  
-%      IF CLATYP .EQ. '4' THEN  
-%        INSERT ' LATTICE = F '  
-%        INSERT ' CENTRIC = YES '  
-%      END IF  
-%      IF CLATYP .EQ. '-4' THEN  
-%        INSERT ' LATTICE = F '  
+%        IF CVALUE .EQ. 'LATT' THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%          LOOP
+%            GET NOSTORE NOPROMPT KEYWORD ' ' '99'
+%% TRANSFER 'WHAT IS IT ' // CVALUE TO DISPLAY
+%            IF CVALUE .EQ. '99' THEN
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%              ELSE
+%              EVALUATE CLATYP = CVALUE
+%% TRANSFER 'CLATYP ' // CLATYP TO DISPLAY
+%            END IF
+%          END LOOP
+%        END IF
+%      END LOOP
+%
+%% loop to get number of symmetry elements and queue symops
+%      QUEUE REWIND
+%      EVALUATE LEND = 0
+%      LOOP
+%        ON ERROR TERMINATE
+%        ON END TERMINATE
+%        EXTRACT NEXT
+%        CLEAR
+%        EXTRACT TRANSFER INPUT                                                 
+%        CLEAR                                                                  
+%        GET NOSTORE NOPROMPT NOMESSAGE KEYWORD NULLSTRING                      
+%% TRANSFER 'WHAT IS IT ' // CVALUE TO DISPLAY                                  
+%        IF CVALUE .EQ. 'END' THEN                                              
+%          EVALUATE LOOPEND = LOOPCOUNTER                                       
+%        END IF                                                                 
+%        IF CVALUE .EQ. 'SYMM' THEN                                             
+%          EVALUATE LEND = LEND + 1                                             
+%% TRANSFER 'SYMOP FOUND ' // CVALUE TO DISPLAY                                 
+%          INSERT 'SYMM '                                                       
+%          GET TEXT 'SYMOP'                                                     
+%          INSERT ' '                                                           
+%          GET NOSTORE NOPROMPT NOMESSAGE TEXT 'END'                            
+%          QUEUE SEND                                                           
+%        END IF                                                                 
+%      END LOOP                                                                 
+%% FINISH                                                                       
+%% Start writing LIST 2 info                                                    
+%      EVALUATE LEND = LEND + 1                                                 
+%% TRANSFER 'NUMBER SYMOPS ' // CVALUE TO DISPLAY                               
+%      COPY '#LIST 2'                                                           
+%      CLEAR                                                                    
+%      INSERT 'CELL NSYM = '                                                    
+%      STORE INTEGER LEND                                                       
+%      IF CLATYP .EQ. '1' THEN                                                  
+%        INSERT ' LATTICE = P '                                                 
+%        INSERT ' CENTRIC = YES '
+%      END IF                                                                   
+%      IF CLATYP .EQ. '-1' THEN                                                 
+%        INSERT ' LATTICE = P '                                                 
+%        INSERT ' CENTRIC = NO '                                                
+%      END IF
+%      IF CLATYP .EQ. '2' THEN                                                  
+%        INSERT ' LATTICE = I '                                                 
+%        INSERT ' CENTRIC = YES '                                               
+%      END IF                                                                   
+%      IF CLATYP .EQ. '-2' THEN                                                 
+%        INSERT ' LATTICE = I '                                                 
+%        INSERT ' CENTRIC = NO '                                                
+%      END IF                                                                   
+%      IF CLATYP .EQ. '3' THEN                                                  
+%        INSERT ' LATTICE = R '                                                 
+%        INSERT ' CENTRIC = YES '                                               
+%      END IF                                                                   
+%      IF CLATYP .EQ. '-3' THEN                                                 
+%        INSERT ' LATTICE = R '                                                 
 %        INSERT ' CENTRIC = NO '
-%      END IF  
-%      IF CLATYP .EQ. '5' THEN  
-%        INSERT ' LATTICE = A '  
-%        INSERT ' CENTRIC = YES '  
-%      END IF  
-%      IF CLATYP .EQ. '-5' THEN  
-%        INSERT ' LATTICE = A '  
-%        INSERT ' CENTRIC = NO '  
-%      END IF  
-%      IF CLATYP .EQ. '6' THEN  
-%        INSERT ' LATTICE = B '  
-%        INSERT ' CENTRIC = YES '  
-%      END IF  
-%      IF CLATYP .EQ. '-6' THEN  
-%        INSERT ' LATTICE = B '  
-%        INSERT ' CENTRIC = NO '  
-%      END IF  
-%      IF CLATYP .EQ. '7' THEN  
-%        INSERT ' LATTICE = C '  
-%        INSERT ' CENTRIC = YES '  
-%      END IF  
-%      IF CLATYP .EQ. '-7' THEN  
-%        INSERT ' LATTICE = C '  
-%        INSERT ' CENTRIC = NO '  
-%      END IF  
-%      SEND  
-%      CLEAR  
-%      INSERT 'SYM X, Y, Z'  
-%      SEND  
-%      CLEAR  
-%      IF ( LEND .GT. 1 ) THEN  
-%        QUEUE PROCESS  
-%      END IF  
-%      CLEAR  
-%      TRANSFER 'SPACEGROUP ' // SPACEREAD TO CRYSTALS  
-%% TRANSFER 'SPACEGROUP ' // SPACEREAD TO DISPLAY  
-%      COPY 'END'  
-%      COPY '#CLOSE SCPDATA'  
-%      COPY 'END'  
-%      EVALUATE SGOK = TRUE  
+%      END IF                                                                   
+%      IF CLATYP .EQ. '4' THEN                                                  
+%        INSERT ' LATTICE = F '                                                 
+%        INSERT ' CENTRIC = YES '                                               
+%      END IF                                                                   
+%      IF CLATYP .EQ. '-4' THEN                                                 
+%        INSERT ' LATTICE = F '                                                 
+%        INSERT ' CENTRIC = NO '                                                
+%      END IF                                                                   
+%      IF CLATYP .EQ. '5' THEN                                                  
+%        INSERT ' LATTICE = A '                                                 
+%        INSERT ' CENTRIC = YES '                                               
+%      END IF                                                                   
+%      IF CLATYP .EQ. '-5' THEN                                                 
+%        INSERT ' LATTICE = A '                                                 
+%        INSERT ' CENTRIC = NO '                                                
+%      END IF                                                                   
+%      IF CLATYP .EQ. '6' THEN                                                  
+%        INSERT ' LATTICE = B '                                                 
+%        INSERT ' CENTRIC = YES '                                               
+%      END IF                                                                   
+%      IF CLATYP .EQ. '-6' THEN                                                 
+%        INSERT ' LATTICE = B '                                                 
+%        INSERT ' CENTRIC = NO '                                                
+%      END IF
+%      IF CLATYP .EQ. '7' THEN                                                  
+%        INSERT ' LATTICE = C '                                                 
+%        INSERT ' CENTRIC = YES '                                               
+%      END IF                                                                   
+%      IF CLATYP .EQ. '-7' THEN                                                 
+%        INSERT ' LATTICE = C '                                                 
+%        INSERT ' CENTRIC = NO '                                                
+%      END IF
+%      SEND                                                                     
+%      CLEAR                                                                    
+%      INSERT 'SYM X, Y, Z'
+%      SEND
+%      CLEAR
+%      IF ( LEND .GT. 1 ) THEN
+%        QUEUE PROCESS                                                          
+%      END IF                                                                   
+%      CLEAR                                                                    
+%      TRANSFER 'SPACEGROUP ' // SPACEREAD TO CRYSTALS
+%% TRANSFER 'SPACEGROUP ' // SPACEREAD TO DISPLAY                               
+%      COPY 'END'                                                               
+%      COPY '#CLOSE SCPDATA'                                                    
+%      COPY 'END'
+%      EVALUATE SGOK = TRUE
+{I
+{I CRYSTALS calculates new Fourier limits
+{I
+%%   calculate new Fourier limits
+%      COPY '#FLIMIT'
+%      COPY 'END'
+{I
+{I Re-import reflection data because space group has changed
+{I
+%%   re-import reflection data in case of a space group change
+%    IF ( SPACEREAD .NE. SPACEREADOLD ) THEN
+%        COPY '#SCRIPT XFLIPINLIST6'
+%    END IF
 %    ELSE
-{I CRYSTALS recommends that you edit the Space Group in 
+{I CRYSTALS recommends that you edit the Space Group in
 {I your basic data files to that proposed by superflip
 {I and re-input the reflection data.
 %      FINISH
-%    END IF  
-%  END IF  
-%%  
-%%  
-% FINISH  
-% END SCRIPT  
+%    END IF
+%  END IF
+%%
+%%
+% FINISH
+% END SCRIPT

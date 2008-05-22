@@ -9,6 +9,16 @@
 %  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                        
 %  VARIABLE LOGICAL ANSWER                                                      
 %%                                                                              
+%      EVALUATE QTITLE = 'Backup before superflip'                                
+%      EVALUATE QLINE1 = 'Do you want to backup your'                                       
+%      EVALUATE QLINE2 = 'dsc before running supeflip?'                                   
+%      EVALUATE BUTTOK = '&Yes'                                                 
+%      EVALUATE BUTTXX = '&No'                                                  
+%      COPY '#SCRIPT XQUESTIO'                                                  
+%      IF ANSWER .EQ. TRUE THEN                                                
+%        COPY '#PURGE pre-superflip'
+%        copy 'end'                                                      
+%      END IF                                                                   
 %%                                                                              
 %  IF EXISTS 6 .LT. 1 THEN                                                      
  You do not have any reflections stored.                                        
@@ -18,7 +28,7 @@
 %  IF ( FILEEXISTS ( 'sflip.inflip' ) ) THEN                                    
 %    EVALUATE T = FILEDELETE ( 'sflip.inflip' )                                 
 %  END IF                                                                       
-%  COPY '#CLOSE SCPDATA'
+%  COPY '#CLOSE SCPDATA'                                                        
 %  IF ( FILEEXISTS ( 'sflip.sflog' ) ) THEN                                     
 %    EVALUATE T = FILEDELETE ( 'sflip.sflog' )                                  
 %  END IF                                                                       
@@ -90,14 +100,14 @@
 %%                                                                              
 %    IF MERGED .EQ. FALSE THEN                                                  
 %      COPY '#SCRIPT COPY67'                                                    
-%      COPY '#SYST IN=7 FRIED=YES'                                                    
-%      COPY 'END'                                                                     
-%      COPY '#SORT IN=7'                                                              
-%      COPY 'END'                                                                     
-%      COPY '#MERGE 7'
-%      COPY 'END'
-%      COPY '#PURGE  LIST=7'                                                          
-%      COPY 'END'                                                                     
+%      COPY '#SYST IN=7 FRIED=YES'                                              
+%      COPY 'END'                                                               
+%      COPY '#SORT IN=7'                                                        
+%      COPY 'END'                                                               
+%      COPY '#MERGE 7'                                                          
+%      COPY 'END'                                                               
+%      COPY '#PURGE  LIST=7'                                                    
+%      COPY 'END'                                                               
 %      EVALUATE C67 = '7'                                                       
 %      EVALUATE F67 = 7                                                         
 %    END IF                                                                     
