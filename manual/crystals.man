@@ -2717,7 +2717,20 @@ these to the same values as in REFINEMENT above.
  (section #RLIST07#).
  The user can indicate to most commands which use reflections whether 
  to use LIST 6 or LIST 7, but by default all use LIST 6 for backwards 
- compatibility. The experienced or adventurous user can of course use 
+ compatibility. 
+#When working from the menus, CRYSTALS tries to determine whether a LIST 
+ 6 or a LIST 7 would be most appropriate.  If a LIST 7 is required, the 
+ SCRIPT COPY67 is activated to output a LIST 6 as a temporary file, and 
+ re-input it as a LIST 7.  This can then be manupulated independently of 
+ the original LIST 6.
+#LIST 7s are currenlty automatically created for:
+#J
+      Fourier Maps
+      Slant Fourier Maps
+      Superflip Structure Solution
+      The Hooft/Straver/Spek configuration parameter
+#
+#The experienced or adventurous user can of course use 
  LIST 6 and LIST 7 quite independently for different purposes.
 
 #
@@ -9623,9 +9636,10 @@ has three values:
 #HSscope#
 #PIn this section of the user guide, the lists and commands
  relating to the Fourier routines are described.
-#N   8#
+#N   9#
 #J
       Input of the Fourier section limits                  -  \LIST 14
+      Compute Fourier linits from the symmetry operators   -  \FLIMIT
       Fourier calculations                                 -  \FOURIER
       Processing of the peaks list                         -   LIST 10
       Elimination of duplicated entries in LISTS 5 and 10  -  \PEAKS
@@ -9755,6 +9769,47 @@ has three values:
 #Q
 #I\PRINT 14#
 #PThere is no command available for punching LIST 14.
+#
+#Q
+#XFLIMIT#
+#XConpute Fourier limits#
+#YCompute Fourier limits from the symmetry#
+#AFLIMIT#
+#HSinput#
+#N   3#
+#J
+ \FLIMIT LAUE=
+#
+#N   3#
+#J
+ \FLIMIT
+ END
+#
+#PThis command uses the same algorithms as \SPACEGROUP 
+ to create a LIST 14. This will be a valid
+ choice, but may not be optimal.  The parameter LAUE takes a
+ value from this table:
+#N  20#
+#J
+
+  Laue Group     Number      Nx  Ny  Nz         Comment
+     -1                   Default value     Compute from operators
+      1             1         4   4   4     Triclinic
+     2/m            2         8   8   8     Monoclinic
+     mmm            3         8   8   8     Orthorhombic  (Fddd 16)
+     4/m            4         8   8  16     Tetragonal
+     4/mmm          5         8   8  16     Tetragonal
+     -3R            6         8   8   8     Rhombohedral
+     -3mR           7         8   8   8     Rhombohedral
+     -3             8        12  12  24     Hexagonal
+     -3m1           9        12  12  24     Hexagonal
+     -31m          10        12  12  24     Hexagonal
+     6/m           11        12  12  24     Hexagonal
+     6/mmm         12        12  12  24     Hexagonal
+     m3            13        16  16  16     Cubic
+     m3m           14        16  16  16     Cubic
+  The values for groups 8 and 9 are OK for the order X,Y,Z, if the 2
+  other orders are searched NX and NY should be 24
 #
 #Q
 #XFOURIER#

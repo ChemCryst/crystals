@@ -304,7 +304,8 @@ that are available in the pull-down menu 'File'.
 The following commands are available -
 #IARCHIVE#
 The syntax is:
-#J ARCHIVE "foo.foo"
+#J
+ ARCHIVE "foo.foo"
 #
 #P
 Note that the quotes (") are necessary to avoid confusion with non-existing
@@ -312,7 +313,8 @@ sub-commands to this command. The filename must not exceed 12 characters.
 #
 #IRETRIEVE#
 The syntax is:
-#J RETRIEVE "foo.foo"
+#J 
+RETRIEVE "foo.foo"
 #
 #P
 Note that the quotes (") are necessary to avoid confusion with non-existing
