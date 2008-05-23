@@ -45,7 +45,7 @@ Name: {app}\mce\manual
 [Files]                                                     
 Source: ..\build\*.*; DestDir: {app}\; Excludes: "make*,buildfile.bat,code.bat";
 Source: ..\build\script\*.*; DestDir: {app}\script\;
-Source: ..\build\mce\*.*; DestDir: {app}\mce\;  Flags: replacesameversion            
+Source: ..\build\mce\*.*; DestDir: {app}\mce\;  Flags: ignoreversion;            
 Source: ..\build\mce\manual\*.*; DestDir: {app}\mce\manual\;
 Source: ..\build\manual\*.*; DestDir: {app}\manual\;
 Source: ..\build\manual\analyse\*.*; DestDir: {app}\manual\analyse\;
