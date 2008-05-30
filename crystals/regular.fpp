@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.54  2008/04/30 10:51:46  djw
+c Enable copying of partial occupancies to defined groups during replexe/augment
+c
 c Revision 1.53  2008/03/07 16:09:48  djw
 c changes to help with the correct computation of Fourier maps from twinned crystals.  THe old COPY67 subroutine did not pack the data properly unless the keys were the default keys.  The job is now done
 c
@@ -2160,8 +2163,8 @@ C    ARE IN DESCENDING ORDER
       CALL XINT2 (3,VMAT(1,1),9,UVEC(1),3,1,3,1)
 c
 c
-cdjwjan08  see if the best best involves inversion
-c         det=xdetr3(vmat)
+cdjwjan08  see if the best match involves inversion
+         det=xdetr3(vmat)
 c      write(ncwu,'(a,3(3f8.2,3x))') 'Vmat', vmat
 c      write(ncwu,'(a,4f12.6)') 'Eigenvalues ', uvec, det
       if (det .le. 0.0) then
