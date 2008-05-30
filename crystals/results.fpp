@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.124  2008/03/31 14:54:08  djw
+C Move the Firedel flag in SYST into the JCODE slot. Previously (in corrections of phase) it zapped Fourier maps
+C
 C Revision 1.123  2008/03/07 16:09:48  djw
 C changes to help with the correct computation of Fourier maps from twinned crystals.  THe old COPY67 subroutine did not pack the data properly unless the keys were the default keys.  The job is now done
 C
@@ -5962,8 +5965,8 @@ C
         IF (STORE(L30GE+7).GT.ZERO) THEN
             IF (STORE(L30GE+6).GT.0.5+ZERO) THEN
                WRITE (CMON,2400)
-2400           FORMAT ('The Flack parameter is greater than 0.5','The st
-     1ructure may need inverting')
+2400           FORMAT ('The Flack parameter is greater than 0.5',
+     1         'The structure may need inverting')
                CALL XPRVDU (NCVDU,1,0)
             END IF
 C----- PACK UP THE FLACK PARAMETER AND ITS ESD
@@ -5971,7 +5974,13 @@ C----- PACK UP THE FLACK PARAMETER AND ITS ESD
             CALL SNUM (STORE(L30GE+6),STORE(L30GE+7),-0,0,7,IVEC)
             WRITE (CTEMP,'(16A1)') (IVEC(J),J=1,16)
             CALL XCRAS (CTEMP,N)
-              
+            IF ((ISTORE(L13CD) .EQ. 0) .and. 
+     1          (STORE(L30GE+7) .GT. ZERO)) THEN
+             WRITE(CLINE,'(A,A)')  
+     1       '# The Flack parameter was determined before',
+     2       ' Friedel pairs were merged'
+             CALL XPCIF (CLINE)
+            ENDIF
             CBUF(1:11)='_refine_ls_'
             IF ( IPUNCH .EQ. 0 ) THEN
               WRITE (CLINE,'(A, ''abs_structure_Flack  '', 4X, A )')
