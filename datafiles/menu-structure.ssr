@@ -22,6 +22,8 @@
 ^^WI       '#SCRIPT XCENTRE' DISABLEIF='IN' ENABLEIF='L2 L1 L5'                 
 ^^WI   ITEM RESA '&Renumber atoms'                                              
 ^^WI       '#SCRIPT XRENUMB' DISABLEIF='IN' ENABLEIF='L2 L1 L5'                 
+^^WI   ITEM RESA '&Re-sequence atoms'                                              
+^^WI       '#SCRIPT XRESEQ' DISABLEIF='IN' ENABLEIF='L2 L1 L5'                 
 ^^WI   ITEM XALRES '&Allocate Residue Nos' '#EDIT_NINSERT RESIDUE_NEND'         
 ^^WI                                DISABLEIF='IN'  ENABLEIF='L5'               
 ^^WI   ITEM XPARTA '&Allocate Part Nos'                                         
