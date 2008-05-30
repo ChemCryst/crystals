@@ -17,6 +17,8 @@
 {1,11                           {12,11editor to modify the structure            
 {1,11 Invert co-ordinates       {12,11Invert the structure through the origin   
 {1,11 Change atom TYPES         {12,11Change the element types of atoms         
+{1,11 Renumber Atoms            {12,11Renumber the atoms so that the heaviest    
+{1,11                           {12,11come first        
 {1,11 Number atoms sequentially {12,11Renumber the atoms so that they follow    
 {1,11                           {12,11sequentially through the structure        
 {1,11 Allocate Residue Numbers  {12,11Add a unique identifier for each          
