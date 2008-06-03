@@ -7,6 +7,10 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.37  2005/01/23 10:20:24  rich
+//  Reinstate CVS log history for C++ files and header files. Recent changes
+//  are lost from the log, but not from the files!
+//
 //  Revision 1.1.1.1  2004/12/13 11:16:18  rich
 //  New CRYSTALS repository
 //
@@ -289,9 +293,10 @@ class CxModel : public BASEMODEL
     CStatic* m_TextPopup;
 
     HGLRC m_hGLContext;                                  //The rendering context handle.
+    HDC m_hdc;
 
-    BOOL SetWindowPixelFormat(HDC hDC);
-    BOOL CreateViewGLContext(HDC hDC);
+    BOOL SetWindowPixelFormat();
+    BOOL CreateViewGLContext();
     CBitmap m_bitmap;
     CPalette m_pal;
 

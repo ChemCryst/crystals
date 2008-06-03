@@ -17,6 +17,10 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.40  2005/01/23 10:20:24  rich
+// Reinstate CVS log history for C++ files and header files. Recent changes
+// are lost from the log, but not from the files!
+//
 // Revision 1.1.1.1  2004/12/13 11:16:17  rich
 // New CRYSTALS repository
 //
@@ -542,43 +546,13 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
    nRes = CRMAX ( 4,  nRes );
    style->normal_res = nRes;
 
-#ifndef __WXMAC__
-   if ( !feedback ) {
-      glDeleteLists(ATOMLIST,1);
-      glNewList( ATOMLIST, GL_COMPILE);
-   }
-#endif
 
    retval |= RenderAtoms(style, feedback);
 
-#ifndef __WXMAC__
-   if ( !feedback )
-   {
-      glEndList();
-      glDeleteLists(BONDLIST,1);
-      glNewList( BONDLIST, GL_COMPILE);
-   }
-#endif
-
    retval |= RenderBonds(style, feedback);
-
-#ifndef __WXMAC__
-   if ( !feedback )
-   {
-      glEndList();
-      glDeleteLists(XOBJECTLIST,1);
-      glNewList( XOBJECTLIST, GL_COMPILE);
-   }
-#endif
 
    retval |= RenderExcluded(style, feedback);
 
-#ifndef __WXMAC__
-   if ( !feedback )
-   {
-      glEndList();
-   }
-#endif
    m_glIDsok = true;
 
    return retval;
