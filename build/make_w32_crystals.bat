@@ -3,6 +3,7 @@
 
 @if "%1" == "clean" goto clean
 @if "%1" == "tidy" goto tidy
+@if "%1" == "link" goto link
 
 @if exist ..\crystals.exe del ..\crystals.exe
 @if exist ..\crystalsd.exe del ..\crystalsd.exe
@@ -22,6 +23,7 @@ call buildfile.bat lapack
 @if "%COMPCODE%" == "GID" rc /d__CR_WIN__ /fo script1.res ..\gui\script1.rc
 
 @if "%CRDEBUG%" == "TRUE"  goto debug
+:link
 @%LD% %OPT% %LDFLAGS% obj\*.obj %LIBS% %OUT%crystals.exe >link.lis
 @goto fini
 
