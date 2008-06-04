@@ -294,9 +294,12 @@ class CxModel : public BASEMODEL
 
     HGLRC m_hGLContext;                                  //The rendering context handle.
     HDC m_hdc;
+    static HDC last_hdc;   //only one thread, so static approximates thread based object.
 
     BOOL SetWindowPixelFormat();
     BOOL CreateViewGLContext();
+    bool setCurrentGL();
+
     CBitmap m_bitmap;
     CPalette m_pal;
 

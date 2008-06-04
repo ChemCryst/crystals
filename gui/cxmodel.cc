@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////
-//  CRYSTALS Interface      Class CxModel
+// CRYSTALS Interface      Class CxModel
 ////////////////////////////////////////////////////////////////////////
 
 #include    "crystalsinterface.h"
@@ -47,6 +47,7 @@ void mywxStaticText::OnRButtonUp( wxMouseEvent & event ) { event.m_x += GetRect(
 
 
 int CxModel::mModelCount = kModelBase;
+HDC CxModel::last_hdc = NULL;
 
 CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 {
@@ -67,7 +68,7 @@ CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
   theModel -> SetFont(CcController::mp_font);
 
   CRect rect;
-  CClientDC dc(theModel);
+//  CClientDC dc(theModel);
 
   theModel->m_hdc = ::GetDC(theModel->GetSafeHwnd());
 
@@ -84,7 +85,6 @@ CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 
 
   theModel->Setup();
-
 
 #endif
 #ifdef __BOTHWX__
@@ -168,6 +168,7 @@ CxModel::~CxModel()
 
 #ifdef __CR_WIN__
   wglMakeCurrent(NULL,NULL);
+  CxModel::last_hdc = NULL;
   wglDeleteContext(m_hGLContext);
   ::ReleaseDC(GetSafeHwnd(), m_hdc);
   if ( m_hPalette ) DeleteObject(m_hPalette);
@@ -227,17 +228,15 @@ void CxModel::OnPaint()
 {
     CPaintDC dc(this); // device context for painting
 
-//    HDC hOldDC = wglGetCurrentDC();
-//    HGLRC hOldRC = wglGetCurrentContext();
-    wglMakeCurrent(m_hdc, m_hGLContext);
+    setCurrentGL();
 #endif
 
 #ifdef __BOTHWX__
 
 void CxModel::OnPaint(wxPaintEvent &event)
 {
-    wxPaintDC dc (this);
-    dc.SetUserScale( 1.0,1.0 );
+//    wxPaintDC dc (this);
+//    dc.SetUserScale( 1.0,1.0 );
 
     if ( m_NotSetupYet ) Setup();
 
@@ -255,7 +254,16 @@ void CxModel::OnPaint(wxPaintEvent &event)
 //    TEXTOUT ( string((int)this) + " OnPaint" );
     bool ok_to_draw = true;
 
+#ifndef __WXMAC__
+    if (m_bModelChanged)
+    {
+// re-render the full detail model.
+//      TEXTOUT ( "Redrawing model from scratch" );
+      ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderModel();
+    }
+#else
     ok_to_draw = true;
+#endif
 
     if ( ok_to_draw )
     {
@@ -296,7 +304,13 @@ void CxModel::OnPaint(wxPaintEvent &event)
       ModelSetup();
       ModelBackground();
 
+#ifndef __WXMAC__
+      glCallList( ATOMLIST );
+      glCallList( BONDLIST );
+      glCallList( XOBJECTLIST );
+#else
       ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderModel();
+#endif
 
       glMatrixMode ( GL_PROJECTION );
       glPopMatrix();
@@ -313,7 +327,7 @@ void CxModel::OnPaint(wxPaintEvent &event)
       SwapBuffers();
 #endif
 
-
+/*
       if ( ! m_selectionPoints.empty() )
       {
 //Draw in polygon so far:
@@ -340,16 +354,44 @@ void CxModel::OnPaint(wxPaintEvent &event)
             ccpi++;
          }
       }
+      */
     }
     else
     {
 //      TEXTOUT ( "No model. Displaying banner instead" );
 //      PaintBannerInstead ( &dc );
-    }
+      glRenderMode ( GL_RENDER ); //Switching to render mode.
+      glViewport(0,0,GetWidth(),GetHeight());
+#ifdef __CR_WIN__
+      int col = GetSysColor(COLOR_3DFACE);
+      glClearColor( GetRValue(col)/255.0f,
+                    GetGValue(col)/255.0f,
+                    GetBValue(col)/255.0f,  0.0f);
+#endif
+#ifdef __BOTHWX__
+      wxColour col = wxSystemSettings::GetSystemColour( wxSYS_COLOUR_3DFACE );
+      glClearColor( col.Red()/255.0f,
+                    col.Green()/255.0f,
+                    col.Blue()/255.0f,  0.0f);
+#endif
+      glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+      glMatrixMode ( GL_PROJECTION );
+      glLoadIdentity();
+      ModelBackground();
+      glMatrixMode ( GL_PROJECTION );
+      glPopMatrix();
+      glMatrixMode ( GL_MODELVIEW );
 
 #ifdef __CR_WIN__
-    wglMakeCurrent( NULL,NULL );
+      SwapBuffers(m_hdc);
 #endif
+#ifdef __BOTHWX__
+      SwapBuffers();
+#endif
+
+
+    }
+
 }
 
 
@@ -962,11 +1004,12 @@ void CxModel::OnRButtonUp( wxMouseEvent & event )
 void CxModel::Setup()
 {
 
+   setCurrentGL();
+
 #ifdef __BOTHWX__
 
    if( !GetContext() ) return;
    m_NotSetupYet = false;
-   SetCurrent();
 
 #endif
    glEnable(GL_NORMALIZE);
@@ -1005,7 +1048,7 @@ void CxModel::Setup()
 
 #ifdef __CR_WIN__
 
-        m_bitmapok = true;
+/*        m_bitmapok = true;
 
         LPCTSTR lpszResourceName = (LPCTSTR)IDB_SPLASH;
         HBITMAP hBmp = (HBITMAP)::LoadImage( AfxGetInstanceHandle(),
@@ -1058,7 +1101,7 @@ void CxModel::Setup()
                 delete[] pLP;
                 delete[] pRGB;
         }
-
+  */
 #endif
 
 //        m_bitmapinfo = NULL;
@@ -1070,14 +1113,7 @@ void CxModel::Setup()
 
 void CxModel::NewSize(int cx, int cy)
 {
-#ifdef __CR_WIN__
-//    HDC hOldDC = wglGetCurrentDC();
-//    HGLRC hOldRC = wglGetCurrentContext();
-    wglMakeCurrent(m_hdc, m_hGLContext);
-#endif
-#ifdef __BOTHWX__
-      SetCurrent();
-#endif
+    setCurrentGL();
     m_stretchX = 1.0f;
     m_stretchY = 1.0f;
 
@@ -1086,9 +1122,6 @@ void CxModel::NewSize(int cx, int cy)
     if ( cy > cx ) m_stretchY = (float)cy / (float)cx;
     else           m_stretchX = (float)cx / (float)cy;
 
-#ifdef __CR_WIN__
-    wglMakeCurrent( NULL,NULL );
-#endif
 
 }
 
@@ -1110,6 +1143,19 @@ void CxModel::ModelSetup()
    glScalef     ( m_xScale, m_xScale, m_xScale );
 }
 
+
+bool CxModel::setCurrentGL() {
+#ifdef __CR_WIN__
+      if ( m_hdc == NULL ) return false;
+      if ( CxModel::last_hdc == m_hdc ) return true;
+      CxModel::last_hdc = m_hdc;
+      return wglMakeCurrent(m_hdc, m_hGLContext);
+#endif
+#ifdef __BOTHWX__
+      SetCurrent();
+      return true;
+#endif
+}
 
 void CxModel::ModelBackground()
 {
@@ -1141,11 +1187,11 @@ BOOL CxModel::SetWindowPixelFormat()
     pixelDesc.nSize = sizeof(PIXELFORMATDESCRIPTOR);
     pixelDesc.nVersion = 1;
 
-    pixelDesc.dwFlags = PFD_SUPPORT_COMPOSITION |
-                        PFD_DRAW_TO_WINDOW |
+    pixelDesc.dwFlags = PFD_DRAW_TO_WINDOW |
                         PFD_SUPPORT_OPENGL |
                         PFD_STEREO_DONTCARE|
-                        PFD_DOUBLEBUFFER;
+                        PFD_DOUBLEBUFFER|
+			PFD_SUPPORT_COMPOSITION;
 
     pixelDesc.iPixelType = PFD_TYPE_RGBA;
     pixelDesc.cColorBits = 32;
@@ -1230,7 +1276,7 @@ BOOL CxModel::CreateViewGLContext()
     return false;
   }
 
-  if(wglMakeCurrent(m_hdc, m_hGLContext) == false)
+  if(setCurrentGL() == false)
   {
     CHAR sz[80];
     DWORD dw = GetLastError();
@@ -1246,15 +1292,7 @@ BOOL CxModel::CreateViewGLContext()
 
 int CxModel::IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject **outObject, bool atomsOnly)
 {
-#ifdef __CR_WIN__
-//   HDC hOldDC = wglGetCurrentDC();
-//   HGLRC hOldRC = wglGetCurrentContext();
-   wglMakeCurrent(m_hdc, m_hGLContext);
-#endif
-#ifdef __BOTHWX__
-      SetCurrent();
-#endif
-
+   setCurrentGL();
    GLint viewport[4];
    glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
 
@@ -1290,9 +1328,15 @@ int CxModel::IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject *
      CameraSetup();
      ModelSetup();
 
+#ifndef __WXMAC__
+     glCallList( ATOMLIST );
+     if ( tolerance == 0 && !atomsOnly )
+        glCallList( BONDLIST ); // Only select bonds if right over them.
+#else
      bool o = ((CrModel*)ptr_to_crObject)->RenderAtoms();
      if ( tolerance == 0 && !atomsOnly )
         o = ((CrModel*)ptr_to_crObject)->RenderBonds();
+#endif
 
 #ifdef __CR_WIN__
 //For debug uncomment next line and comment the glRenderMode line above.
@@ -1318,9 +1362,6 @@ int CxModel::IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject *
 // uint Name
 
 
-#ifdef __CR_WIN__
-     wglMakeCurrent( NULL, NULL );
-#endif
 
    if ( hits )
    {
@@ -1378,8 +1419,13 @@ void CxModel::AutoScale()
      glMatrixMode ( GL_MODELVIEW );
      glLoadIdentity();
      glMultMatrixf ( mat );
+#ifndef __WXMAC__
+     glCallList( ATOMLIST );
+     glCallList( BONDLIST );
+#else
      bool o = ((CrModel*)ptr_to_crObject)->RenderAtoms();
      o = ((CrModel*)ptr_to_crObject)->RenderBonds();
+#endif
      glMatrixMode ( GL_PROJECTION );
      glMatrixMode ( GL_MODELVIEW );
 
@@ -1669,7 +1715,7 @@ void CxModel::PaintBannerInstead( CPaintDC * dc )
 
 BOOL CxModel::OnEraseBkgnd( CDC* pDC )
 {
-    return ( 1 ) ; //prevent flicker
+    return ( TRUE ) ; //prevent flicker
 }
 
 #endif
@@ -1875,14 +1921,7 @@ void CxModel::PolyCheck()
 {
    if ( m_selectionPoints.size() < 3 ) return;
 
-#ifdef __CR_WIN__
-//   HDC hOldDC = wglGetCurrentDC();
-//   HGLRC hOldRC = wglGetCurrentContext();
-   wglMakeCurrent(m_hdc, m_hGLContext);
-#endif
-#ifdef __BOTHWX__
-      SetCurrent();
-#endif
+   setCurrentGL();
 
    GLint viewport[4];
    glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
@@ -2044,9 +2083,6 @@ void CxModel::PolyCheck()
 
    delete [] feedbuf;
 
-#ifdef __CR_WIN__
-    wglMakeCurrent( NULL,NULL );
-#endif
 
 }
 
@@ -2054,15 +2090,7 @@ void CxModel::PolyCheck()
 
 void CxModel::SelectBoxedAtoms(CcRect rectangle, bool select)
 {
-#ifdef __CR_WIN__
-//   HDC hOldDC = wglGetCurrentDC();
-//   HGLRC hOldRC = wglGetCurrentContext();
-   wglMakeCurrent(m_hdc, m_hGLContext);
-#endif
-#ifdef __BOTHWX__
-      SetCurrent();
-#endif
-
+   setCurrentGL();
    GLint viewport[4];
    glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
 
@@ -2087,7 +2115,11 @@ void CxModel::SelectBoxedAtoms(CcRect rectangle, bool select)
      gluPickMatrix ( rectangle.MidX(), viewport[3] - rectangle.MidY(), rectangle.Sort().Width(), rectangle.Sort().Height(), viewport );
      CameraSetup();
      ModelSetup();
+#ifndef __WXMAC__
+     glCallList( ATOMLIST );
+#else
      bool o = ((CrModel*)ptr_to_crObject)->RenderAtoms();
+#endif
      glMatrixMode ( GL_PROJECTION );
      glPopMatrix();
      glMatrixMode ( GL_MODELVIEW );
@@ -2123,7 +2155,4 @@ void CxModel::SelectBoxedAtoms(CcRect rectangle, bool select)
    }
    delete [] selectbuf;
 
-#ifdef __CR_WIN__
-    wglMakeCurrent( NULL,NULL );
-#endif
 }
