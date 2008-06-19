@@ -1,10 +1,11 @@
-%SCRIPT XDELQ           
-                                                        
-{E Removing all Q and Q-type atoms                                                
-
+%SCRIPT XDELQ                                                                   
+                                                                                
+{E Removing all Q and Q-type atoms                                              
+                                                                                
 % COPY '#EDIT'                                                                  
 % COPY 'MONITOR OFF'                                                            
 % COPY 'SELECT TYPE NE Q'                                                       
+% COPY 'SELECT TYPE NE QC'                                                      
 % COPY 'SELECT TYPE NE QH'                                                      
 % COPY 'SELECT TYPE NE QN'                                                      
 % COPY 'SELECT TYPE NE R'                                                       

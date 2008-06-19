@@ -1,12 +1,13 @@
-%SCRIPT XCENTRE
+%SCRIPT XCENTRE                                                                 
 %%                                                                              
 %%  CENTRE STRUCTURE IN CELL                                                    
 %      COPY '#EDIT'                                                             
+%      copy 'CENT 100 ALL'
 %      COPY 'ATOM Q 1 X=.5 .5 .5'                                               
-%      COPY 'MOVE Q(1)'                                                         
+%      COPY 'MOVE Q(1) QC(100)'                                                         
 %      COPY 'END'                                                               
 %      COPY '#COLL'                                                             
-%      COPY 'SEL TYP=ALL TOL=20'                                                 
+%      COPY 'SEL TYP=ALL TOL=20'                                                
 %      COPY 'END'                                                               
 %      COPY '#COLL'                                                             
 %      COPY 'SEL TYP=ALL TOL=2'                                                 
@@ -14,8 +15,6 @@
 %      COPY '#COLL'                                                             
 %      COPY 'SEL TYPE=ALL '                                                     
 %      COPY 'END'                                                               
-%      COPY '#EDIT'                                                             
-%      COPY 'SEL TYPE NE Q'  
-%      COPY 'END'                                                               
+%      COPY '#SCRIPT XDELQ'
 %%                                                                              
 %END SCRIPT                                                                     
