@@ -21,7 +21,7 @@
 ^^WI           STATE=ON                                                         
 ^^WI     @ 2,2 RADIOBUTTON RD '&Alternative Shelxs parameters'                  
 ^^WI           STATE=OFF                                                        
-^^WI     @ 3,2 RADIOBUTTON RP '&Shelxs Patterson'                  
+^^WI     @ 3,2 RADIOBUTTON RP '&Shelxs Patterson'                               
 ^^WI           STATE=OFF                                                        
 ^^WI     @ 4,2 CHECKBOX CED '&Edit Shelxs file before processing'               
 ^^WI           STATE=OFF                                                        
@@ -43,31 +43,31 @@
 ^^CR                                                                            
 %         FINISH                                                                
 %      END IF                                                                   
-%%
+%%                                                                              
 ^^??   RS STATE                                                                 
 %      VERIFY ON OFF                                                            
 %      GET SILENT NOSTORE ABBREVIATED 'On=Simple job'                           
 %      IF ( VALUE .EQ. 1 ) THEN                                                 
 %          COPY '#FOREIGN SHELXS '                                              
 %          COPY 'END'                                                           
-%      END IF
-%%                                                                    
+%      END IF                                                                   
+%%                                                                              
 ^^??   RD STATE                                                                 
 %      VERIFY ON OFF                                                            
-%      GET SILENT NOSTORE ABBREVIATED 'On=Hard job'                           
+%      GET SILENT NOSTORE ABBREVIATED 'On=Hard job'                             
 %      IF ( VALUE .EQ. 1 ) THEN                                                 
 %          COPY '#FOREIGN SHELXS DIFFICULT'                                     
 %          COPY 'END'                                                           
-%      END IF
-%%
+%      END IF                                                                   
+%%                                                                              
 ^^??   RP STATE                                                                 
 %      VERIFY ON OFF                                                            
-%      GET SILENT NOSTORE ABBREVIATED 'On=Patterson'                           
+%      GET SILENT NOSTORE ABBREVIATED 'On=Patterson'                            
 %      IF ( VALUE .EQ. 1 ) THEN                                                 
 %          COPY '#FOREIGN SHELXS PATTERSON'                                     
 %          COPY 'END'                                                           
-%      END IF
-%%
+%      END IF                                                                   
+%%                                                                              
 ^^??   CRUN STATE                                                               
 %      VERIFY ON OFF                                                            
 %      GET SILENT NOSTORE ABBREVIATED 'ON=Run shelxs now'                       
@@ -117,8 +117,15 @@
 %      COPY '#SCRIPT FRESH'                                                     
 %%                                                                              
 %      COPY '#OPEN SCPDATA SHELXS.CRY'                                          
+%      VARIABLE INTEGER ATOMCOUNT
 %      COPY '#SCRIPT ZSHELXIN'                                                  
-%%DJW      COPY '#SCRIPT INshelxs'                                              
+%%DJW      COPY '#SCRIPT INshelxs'
+%      IF ATOMCOUNT .LE. 0 THEN
+{E                                                   
+{E     SHELXS failed to find any atoms                                              
+{E                                                   
+%        FINISH
+%      END IF                                              
 %      COPY '#CLOSE SCPDATA'                                                    
 %      COPY '#EDIT'                                                             
 %      COPY 'TYPECHANGE TYPE EQ Q C'                                            
