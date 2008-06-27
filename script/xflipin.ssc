@@ -6,8 +6,8 @@
 %% variables used by the question box below                                     
 % VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                         
 % VARIABLE LOGICAL ANSWER                                                       
-%%    DID SUPERFLIP WORK?
-%  IF  ( FILEEXISTS ( 'sflip.ins' ) ) THEN                                
+%%    DID SUPERFLIP WORK?                                                       
+%  IF  ( FILEEXISTS ( 'sflip.ins' ) ) THEN                                      
 %%                                                                              
 %   BLOCK                                                                       
 %      EVALUATE QTITLE = 'Superflip Results'                                    
@@ -18,25 +18,26 @@
 %      COPY '#SCRIPT XQUESTIO'                                                  
 %      IF ANSWER .EQ. FALSE THEN                                                
 %          COPY '#SCRIPT XHELP1'                                                
-   If the structure will not solve:                                             
-   1) Try the "Alternative Superflip parameters" option.                        
-   2) Try DirDif or Sir92.                                                      
-   3) Read the Superflip manual for help.                                       
-   4) Be sure that the space group is correct.                                  
+   If the structure will not solve:                         
+   1) Run Superflip once more using default options.
+   1) Try the "Superflip parameters for difficult structures" option.
+   2) Try DirDif or Sir92.
+   3) Read the Superflip manual for help.
+   4) Ask an expert.                                  
 %          COPY '#SCRIPT XHELP2'                                                
 %          FINISH                                                               
 %      ELSE                                                                     
-%          COPY '#SCRIPT FRESH'                                                     
-%          COPY '#SCRIPT XFLIPIN2'                                                  
-%      END IF
+%          COPY '#SCRIPT FRESH'                                                 
+%          COPY '#SCRIPT XFLIPIN2'                                              
+%      END IF                                                                   
 %   END BLOCK                                                                   
-%  ELSE
-{E No superflip output - job may have failed                                                               
-
+%  ELSE                                                                         
+{E No superflip output - job may have failed                                    
+                                                                                
    If the structure will not solve:                                             
    1) Try the "Alternative Superflip parameters" option.                        
    2) Try DirDif or Sir92.                                                      
    3) Read the Superflip manual for help.                                       
    4) Be sure that the space group is correct.                                  
-%  END IF
+%  END IF                                                                       
 %END SCRIPT                                                                     

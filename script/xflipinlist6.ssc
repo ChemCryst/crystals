@@ -11,7 +11,7 @@
 %
 %        EVALUATE QTITLE = 'Re-import of reflection data'
 %        EVALUATE QLINE1 = 'The space group has changed.'
-%        EVALUATE QLINE2 = 'It is strongly advised to re-import the reflection data.'
+% EVALUATE QLINE2 = 'It is strongly advised to re-import the reflection data.'
 %        EVALUATE BUTTOK = 'OK'
 %        COPY '#SCRIPT XMESSAGE'
 %        COPY 'END'

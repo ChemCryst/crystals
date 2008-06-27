@@ -1,4 +1,4 @@
-%SCRIPT XFLIPINSTRUC                                                            
+%SCRIPT XFLIPINSTRUC
 %%                                                                              
 %% Read in a structure from a superflip shelx-type file.                        
 %%                                                                              
@@ -17,7 +17,7 @@
 % VARIABLE REAL SXOCC CRYOCC SPECOCC                                            
 % VARIABLE INTEGER ATOMCOUNT                                                    
 %%                                                                              
-% EVALUATE SXGETALL = FALSE                                                     
+% EVALUATE SXGETALL = TRUE                                                     
 %%                                                                              
 %% variables used by the question box below                                     
 % VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2 QLINE3                  
@@ -33,7 +33,7 @@
 %%                                                                              
 %%                                                                              
 %% SFAC and UNIT cards can be skipped for SUPERFLIP & EDMA                      
-%% Find the SFAC and UNIT cards which give respectively, a                      
+%% Find the SFAC and UNIT cards which give respectively, a
 %% list of the elements and a list of how many of each element                  
 %% is in the unit cell.                                                         
 %%                                                                              
@@ -54,7 +54,7 @@
 %%           EXTRACT TRANSFER COMMAND                                           
 %%           EXECUTE SEND                                                       
 %           EXTRACT TRANSFER INPUT                                              
-%           CLEAR                                                               
+%           CLEAR
 %           GET NOSTORE NOPROMPT KEYWORD NULLSTRING                             
 %           IF CVALUE .EQ. 'SFAC' THEN                                          
 {R SFAC card found.                                                             
@@ -89,7 +89,7 @@
 %           IF LEND .GT. 1000 THEN                                              
 %             EVALUATE LOOPEND = LOOPCOUNTER                                    
 %           END IF                                                              
-%         END LOOP                                                              
+%         END LOOP
 %         IF LEND .LT. 1001 THEN                                                
 {E *** No valid "SFAC and UNIT" card pair found in SHELX file.                  
 {E     You must enter your own LIST3 and LIST29.                                
@@ -100,116 +100,107 @@
 %%                                                                              
 %%                                                                              
 %   TRANSFER 'CSFAC: ' // CSFAC TO DISPLAY                                      
-%   TRANSFER 'CUNIT: ' // CUNIT TO DISPLAY                                      
-%%                                                                              
-%% This routine uses the new TRANSFER TO INPUT code to copy                     
-%% a character string to the users input buffer, the string                     
-%% can then be picked apart one keyword at a time. This bit                     
-%% of code copies CSFAC to the input, gets a keyword (ie. 'C'),                 
-%% gets the rest of the text and puts it back into CSFAC. It                    
-%% then does the same for CUNIT, and loops until the character                  
-%% strings are exhausted.                                                       
-%%                                                                              
-% EVALUATE QTITLE = 'Importing structural formula from Superflip'               
-% EVALUATE QLINE1 = 'Keep original scattering types?'                           
-% EVALUATE QLINE2 = 'Note: importing will loosing H scattering type'
-% EVALUATE BUTTOK = 'Yes'                                                       
-% EVALUATE BUTTXX = 'No'                                                        
-% COPY '#SCRIPT XQUESTIO'                                                       
-% IF ANSWER .EQ. FALSE THEN                                                     
-%%                                                                              
-%          COPY '#COMPOSIT'                                                     
-%          CLEAR                                                                
-%           INSERT 'CONTE '                                                     
-%%                                                                              
-%           LOOP                                                                
-%%                                                                              
-%             TRANSFER CSFAC TO INPUT                                           
-%             GET KEYWORD 'SFAC1' ' '                                           
-%             EVALUATE CTEM = CVALUE                                            
-%%%     TRANSFER 'CSFAC, READ: ' // CVALUE TO DISPLAY                           
-%%                                                                              
-%             GET NOSTORE NOPROMPT TEXT 'Rest of line' ' '                      
-%             EVALUATE CSFAC = CVALUE                                           
-%%                                                                              
-%             IF CSFAC .EQ. ' ' THEN                                            
-%               EVALUATE LOOPEND = LOOPCOUNTER                                  
-%             END IF                                                            
-%%                                                                              
-%% There seems to be a bug in the script processor, whereby if                  
-%% we read the last thing on a line with a GET KEYWORD, you can                 
-%% then read it again with a GET TEXT. This works around it, by                 
-%% spotting that the same thing has been read twice:                            
-%%                                                                              
-%             IF CSFAC .EQ. CTEM THEN                                           
-%               EVALUATE LOOPEND = LOOPCOUNTER                                  
-%             END IF                                                            
-%%                                                                              
-%             IF CTEM .EQ. ' ' THEN                                             
-%               EVALUATE LOOPEND = LOOPCOUNTER                                  
-%             ELSE                                                              
-%%%% TRANSFER 'CSFAC is now ' // CSFAC TO DISPLAY                               
-%%                                                                              
-%               TRANSFER CUNIT TO INPUT                                         
-%               GET NOPROMPT KEYWORD ' '                                        
-%               EVALUATE CTEM = CVALUE                                          
-%%%% TRANSFER 'CUNIT, READ: ' // CVALUE TO DISPLAY                              
-%%                                                                              
-%               GET NOSTORE NOPROMPT TEXT 'Rest of line' ' '                    
-%               EVALUATE CUNIT = CVALUE                                         
-%%                                                                              
-%               IF CUNIT .EQ. ' ' THEN                                          
-%                 EVALUATE LOOPEND = LOOPCOUNTER                                
-%               END IF                                                          
-%%                                                                              
-%               IF CTEM .EQ. ' ' THEN                                           
-%                 EVALUATE LOOPEND = LOOPCOUNTER                                
-%               ELSE                                                            
-%%%%% TRANSFER 'CUNIT is now ' // CUNIT TO DISPLAY                              
-%               END IF                                                          
-%             END IF                                                            
-%           END LOOP                                                            
-%           SEND                                                                
-%           OUTPUT                                                              
-%           COPY 'SCATT CRYSDIR:script/scatt.dat'                               
-%           COPY 'PROPERTIES CRYSDIR:script/propwin.dat'                        
-%           COPY 'END'                                                          
-%%                                                                              
-%% Now, experience shows that the SCPDATA file is closed and                    
-%% used for something else during the #COMPOSITION command.                     
-%% We must reopen it before continuing.                                         
-%%                                                                              
-%           TRANSFER '#OPEN SCPDATA "' // CFILE // '"' TO CRYSTALS              
-%         END IF                                                                
-%         EXTRACT REWIND                                                        
-%%                                                                              
-% END IF                                                                        
-%%                                                                              
-%%                                                                              
-%%                                                                              
-%% Now, experience shows that the SCPDATA file is closed and                    
-%% used for something else during the #COMPOSITION command.                     
-%% We must reopen it before continuing.                                         
-%%                                                                              
-%           TRANSFER '#OPEN SCPDATA "' // CFILE // '"' TO CRYSTALS              
-%         EXTRACT REWIND                                                        
-%%                                                                              
-%%                                                                              
-%% Finally, find the atoms and peaks.                                           
-%% Assume all lines not beginning with a recognised SHELX keyword               
-%% are atom records. This causes failure for files with reflections             
-%% in, though I'm sure someone could fix this by making it stop                 
-%% at an HKLF instruction.                                                      
-%%                                                                              
-%        COPY '#SCRIPT ZSHELXIN'                                                
-{R Shelx file processed.                                                        
-%        COPY '#CLOSE SCPDATA'                                                  
-%        IF ( ATOMCOUNT .EQ. 0 ) THEN                                           
-{I No atoms found                                                               
-%          FINISH                                                               
-%        ELSE                                                                   
-%          BLOCK                                                                
-%            IF LQS .EQ. TRUE THEN                                              
+%   TRANSFER 'CUNIT: ' // CUNIT TO DISPLAY
+%%
+%% This routine uses the new TRANSFER TO INPUT code to copy
+%% a character string to the users input buffer, the string
+%% can then be picked apart one keyword at a time. This bit
+%% of code copies CSFAC to the input, gets a keyword (ie. 'C'),
+%% gets the rest of the text and puts it back into CSFAC. It
+%% then does the same for CUNIT, and loops until the character
+%% strings are exhausted.
+%%
+%          COPY '#COMPOSIT'
+%          CLEAR
+%           INSERT 'CONTE '
+%%
+%           LOOP
+%%
+%             TRANSFER CSFAC TO INPUT
+%             GET KEYWORD 'SFAC1' ' '
+%             EVALUATE CTEM = CVALUE
+%%%     TRANSFER 'CSFAC, READ: ' // CVALUE TO DISPLAY
+%%
+%             GET NOSTORE NOPROMPT TEXT 'Rest of line' ' '
+%             EVALUATE CSFAC = CVALUE
+%%
+%             IF CSFAC .EQ. ' ' THEN
+%               EVALUATE LOOPEND = LOOPCOUNTER
+%             END IF
+%%
+%% There seems to be a bug in the script processor, whereby if
+%% we read the last thing on a line with a GET KEYWORD, you can
+%% then read it again with a GET TEXT. This works around it, by
+%% spotting that the same thing has been read twice:
+%%
+%             IF CSFAC .EQ. CTEM THEN
+%               EVALUATE LOOPEND = LOOPCOUNTER
+%             END IF
+%%
+%             IF CTEM .EQ. ' ' THEN
+%               EVALUATE LOOPEND = LOOPCOUNTER
+%             ELSE
+%%%% TRANSFER 'CSFAC is now ' // CSFAC TO DISPLAY
+%%
+%               TRANSFER CUNIT TO INPUT
+%               GET NOPROMPT KEYWORD ' '
+%               EVALUATE CTEM = CVALUE
+%%%% TRANSFER 'CUNIT, READ: ' // CVALUE TO DISPLAY
+%%
+%               GET NOSTORE NOPROMPT TEXT 'Rest of line' ' '
+%               EVALUATE CUNIT = CVALUE
+%%
+%               IF CUNIT .EQ. ' ' THEN
+%                 EVALUATE LOOPEND = LOOPCOUNTER
+%               END IF
+%%
+%               IF CTEM .EQ. ' ' THEN
+%                 EVALUATE LOOPEND = LOOPCOUNTER
+%               ELSE
+%%%%% TRANSFER 'CUNIT is now ' // CUNIT TO DISPLAY
+%               END IF
+%             END IF
+%           END LOOP
+%           SEND
+%           OUTPUT
+%           COPY 'SCATT CRYSDIR:script/scatt.dat'
+%           COPY 'PROPERTIES CRYSDIR:script/propwin.dat'
+%           COPY 'END'
+%%
+%% Now, experience shows that the SCPDATA file is closed and
+%% used for something else during the #COMPOSITION command.
+%% We must reopen it before continuing.
+%%
+%           TRANSFER '#OPEN SCPDATA "' // CFILE // '"' TO CRYSTALS
+%         END IF
+%         EXTRACT REWIND
+%%
+%%
+%%
+%%
+%% Now, experience shows that the SCPDATA file is closed and
+%% used for something else during the #COMPOSITION command.
+%% We must reopen it before continuing.
+%%
+%           TRANSFER '#OPEN SCPDATA "' // CFILE // '"' TO CRYSTALS
+%         EXTRACT REWIND
+%%
+%%
+%% Finally, find the atoms and peaks.
+%% Assume all lines not beginning with a recognised SHELX keyword
+%% are atom records. This causes failure for files with reflections
+%% in, though I'm sure someone could fix this by making it stop
+%% at an HKLF instruction.
+%%
+%        COPY '#SCRIPT ZSHELXIN'
+{R Shelx file processed.
+%        COPY '#CLOSE SCPDATA'
+%        IF ( ATOMCOUNT .EQ. 0 ) THEN
+{I No atoms found
+%          FINISH
+%        ELSE
+%          BLOCK
+%            IF LQS .EQ. TRUE THEN
 %              EVALUATE QTITLE = 'Change Q atoms?'                              
 %              EVALUATE QLINE1 = 'Do you want to change all Q'                  
 %              EVALUATE QLINE2 = 'atoms to Carbon?'                             
@@ -222,7 +213,7 @@
 %               COPY 'END'                                                      
 %              END IF                                                           
 %            END IF                                                             
-%%                                                                              
+%%
 %          END BLOCK                                                            
 %%                                                                              
 %%                                                                              
@@ -257,4 +248,4 @@ Writing Wilson Scale to LIST 5
 %%                                                                              
 %        END IF                                                                 
 %        FINISH                                                                 
-%END SCRIPT                                                                     
+%END SCRIPT
