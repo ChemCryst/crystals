@@ -1,3 +1,4 @@
+Cavdlmay29-fixed problem in trigonal groups
 C $Log: link.fpp
 C Revision 1.53  2005/02/25 17:25:20  stefan
 C 1. Added some preprocessor if defined lines for the mac version.
@@ -292,7 +293,7 @@ cavdl dec06
       character *32 CLINE
       CHARACTER LOCASE*(200)
       REAL*8 XCEN,YCEN,ZCEN, ACELL(6)
-      DIMENSION   temp(10), itemp(10)
+      DIMENSION   temp(10), itemp(10),cbuff1(10)
       equivalence (temp(1), itemp(1))
 C
       REAL MAT(3)
@@ -335,7 +336,7 @@ C
       INCLUDE 'QLST31.INC'
 C
 C- ILINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
-C-                 5:SIR88,  6:SIR92,   7:SIR97,    8:PLATON,  9:CSD 10:MOL2 
+C-                 5:SIR88,  6:SIR92,   7:SIR97,    8:PLATON,  9:CSD 10:MOL2
 C                 11:SUPERFLIP         12:SIR02
 C- POINTER TO LIST
       DATA LISTS /1, 2, 5, 0, 0,  0,  0,  0,
@@ -355,6 +356,7 @@ C
 
       DATA CBONDS / '1','2','3','4','ar','un','de','un','pi'/
 c      DATA IDIMBF / 2 /
+      INCLUDE 'IDIM02.INC'
       ICOMBF = KSTALL ( IDIMBF )
 c      CALL XZEROF (STORE(ICOMBF), IDIMBF)
 c      INCLUDE 'IDIM02.INC'
@@ -729,6 +731,17 @@ C----- OUTPUT A TITLE, FIRST 72 CHARACTERS ONLY
       WRITE(NCFPU1,'(''dimension  3'')')
 C---- voxel calculation, needed information hmax, kmax, lmax and crystal system
 C----- DISPLAY SPACE GROUP SYMBOL
+Cavdl do a check on the symbol (script sometimes creates a 'wrong' symbol)
+c      CALL XSPCGR
+cavdl-- pick up the cell parameters
+      J=L1P1
+      DO I=1,6
+        ACELL(I)=STORE(J)
+        J=J+1
+      ENDDO
+c      WRITE ( CTEMP , '(4A4)') (ISTORE(I),I=L2CC,J)
+c      WRITE(CMON,4351) CTEMP(1:4)
+c      CALL XPRVDU(NCVDU, 1,0)
       J  = L2SG + MD2SG - 1
       CSOURC = ' '
       CSPACE = ' '
@@ -756,33 +769,28 @@ c
 4359   FORMAT ('Laue number',I5)
       ILAUE=1
 C----- CRYSTAL CLASS - FROM LIST 2
+cavdlmay08 set the crystal class here in case a change was made by Superflip
       J=L2CC+MD2CC-1
 c      WRITE(CMON,4351) (ISTORE(I),I=L2CC,J)
 c      CALL XPRVDU(NCVDU, 1,0)
-c4351  FORMAT (4(A4))
-cavdl-- pick up the cell parameters
-      J=L1P1
-      DO I=1,6
-        ACELL(I)=STORE(J)
-        J=J+1
-      ENDDO
-c      WRITE ( CTEMP , '(4A4)') (ISTORE(I),I=L2CC,J)
-c      WRITE(CMON,4351) CTEMP(1:4)
-c      CALL XPRVDU(NCVDU, 1,0)
+4351  FORMAT (4(A4))
 c4351  FORMAT ('Laue group',A4)
       IF (LAUENO.EQ.1) THEN
          ILAUE=1
+         CTEMP(1:16)='triclinic       '
       ENDIF
       IF (LAUENO.EQ.2) THEN
          ILAUE=2
          ACELL(4)=90.000d0
          ACELL(6)=90.000d0
+         CTEMP(1:16)='monoclinic      '
       ENDIF
       IF (LAUENO.EQ.3) THEN
-         ILAUE=2
+         ILAUE=4
          ACELL(4)=90.000d0
          ACELL(5)=90.000d0
          ACELL(6)=90.000d0
+         CTEMP(1:16)='orthorhombic    '
       ENDIF
       IF ((LAUENO.EQ.4).OR.(LAUENO.EQ.5)) THEN
          ILAUE=4
@@ -790,6 +798,7 @@ c4351  FORMAT ('Laue group',A4)
          ACELL(4)=90.000d0
          ACELL(5)=90.000d0
          ACELL(6)=90.000d0
+         CTEMP(1:16)='tetragonal      '
       ENDIF
       IF ((LAUENO.EQ.6).OR.(LAUENO.EQ.7)) THEN
          ILAUE=2
@@ -797,13 +806,17 @@ c4351  FORMAT ('Laue group',A4)
          ACELL(3)=ACELL(1)
          ACELL(5)=ACELL(4)
          ACELL(6)=ACELL(4)
+         CTEMP(1:16)='rhombohedral    '
       ENDIF
       IF ((LAUENO.GE.8).AND.(LAUENO.LE.10)) THEN
-         ILAUE=3
+cavdlmay08: there may be 1/2 components along the c-axis (P31c) so the multiplier
+c           is rather 3*2
+         ILAUE=3*2
          ACELL(2)=ACELL(1)
          ACELL(4)=90.000d0
          ACELL(5)=90.000d0
          ACELL(6)=120.000d0
+         CTEMP(1:16)='trigonal        '
       ENDIF
       IF ((LAUENO.GE.11).AND.(LAUENO.LE.12)) THEN
          ILAUE=6
@@ -811,6 +824,7 @@ c4351  FORMAT ('Laue group',A4)
          ACELL(4)=90.000d0
          ACELL(5)=90.000d0
          ACELL(6)=120.000d0
+         CTEMP(1:16)='hexagonal       '
       ENDIF
 
       IF ((LAUENO.EQ.13).OR.(LAUENO.EQ.14)) THEN
@@ -820,7 +834,13 @@ c4351  FORMAT ('Laue group',A4)
          ACELL(4)=90.000d0
          ACELL(5)=90.000d0
          ACELL(6)=90.000d0
+         CTEMP(1:16)='cubic           '
       ENDIF
+       READ ( CTEMP(1:16), '(4A4)' )(ISTORE(I), I = L2CC,J)
+c     WRITE(CMON,4351) (ISTORE(I),I=L2CC,J)
+c     CALL XPRVDU(NCVDU, 1,0)
+cavdlmay08 - store crystals class on disk
+      CALL XWLSTD(2,ICOM02,IDIM02,-1,1)
 C----- RELECTION LIMITS IN DATA COLLECTION
        K=0
         DO I=1,3
@@ -833,9 +853,9 @@ C----- RELECTION LIMITS IN DATA COLLECTION
          DO I=1,3
 c         IDUM=IMAXIND(I)*2/ILAUE
 c         IVOXEL(I)=(IDUM+1)*ILAUE
-          IVOXEL(I)=(IMAXIND(I)+3)*2
+          IVOXEL(I)=(NINT(IMAXIND(I)*1.10)+3)*2
 c         WRITE ( CMON, '('' voxel '',2i5)') IVOXEL(I),ILAUE
-c        CALL XPRVDU(NCVDU, 1,0)
+c         CALL XPRVDU(NCVDU, 1,0)
 
       END DO
       IF (LAUENO.EQ.1) THEN
@@ -875,8 +895,10 @@ c        CALL XPRVDU(NCVDU, 1,0)
          IVOXEL(2)=(IDUM+1)*2
       ENDIF
       IF ((LAUENO.GE.13).AND.(LAUENO.LE.14)) THEN
-         IDUM=IVOXEL(I)/ILAUE
-         IVOXEL(I)=(IDUM+1)*ILAUE
+         DO I=1,3
+           IDUM=IVOXEL(I)/ILAUE
+           IVOXEL(I)=(IDUM+1)*ILAUE
+         END DO
       ENDIF
 CavdL voxel division should also be compatible with cell metrics
 Cavdl this is not said in the manual! MAXIND need not to be compatable with that
@@ -893,9 +915,9 @@ CavdL take the maximum value
         IVOXEL(3)=MAX(IVOXEL(1),IVOXEL(3))
         IVOXEL(3)=MAX(IVOXEL(2),IVOXEL(3))
       ENDIF
-      WRITE(CMON,'('' voxel'',3i5,2i6)')(ivoxel(i),i=1,3),laueno
-     &,ilaue
-        CALL XPRVDU(NCVDU, 1,0)
+c      WRITE(CMON,'('' voxel'',3i5,2i6)')(ivoxel(i),i=1,3),laueno
+c     &,ilaue
+c        CALL XPRVDU(NCVDU, 1,0)
 cavdlsep07 new Superflip version (sep2007) gives the possibility for
 c---- voxel calculation inside Superflip. If this works correctly than
 c---- the foregoing voxel calculation can be skipped
@@ -909,13 +931,24 @@ c
 cavdlmay08--- for monoclinic space groups do not export the '1's in the space group symbol
        IF (LAUENO.EQ.2)THEN
            I0=INDEX(CSPACE(1:ISP),'1')
-cavdl-- normally I0 should be 3
-           I1=INDEX(CSPACE(I0+2:ISP),' ')+I0+1
-           IDUM=I1-(I0+2)
-           CTEMP(1:IDUM)=CSPACE(I0+2:I1-1)
-           CSPACE(3:3+IDUM-1)=CTEMP(1:IDUM)
-           ISP=3+IDUM-1
+cavdl-- normally I0 should be 3, but it could be that the 1's are not anymore there
+           IF ((I0.EQ.3).OR.(I0.EQ.7))THEN
+             I0=3
+             I1=INDEX(CSPACE(I0+2:ISP),' ')+I0+1
+             IDUM=I1-(I0+2)
+             CTEMP(1:IDUM)=CSPACE(I0+2:I1-1)
+             CSPACE(3:3+IDUM-1)=CTEMP(1:IDUM)
+             ISP=3+IDUM-1
+           ENDIF
        ENDIF
+cavdltest --- do not export spaces in symbol to allow for a clearer comparaison with Superflip
+4965   I0=INDEX(CSPACE(1:ISP),' ')
+       IF (I0.GE.1)THEN
+         CSPACE(I0:ISP-1)=CSPACE(I0+1:ISP)
+         ISP=ISP-1
+         GOTO 4965
+       ENDIF
+
        WRITE(NCFPU1, '(''spacegroup '', A )') CSPACE(1:ISP)
 c
        LATTYP = ((2*IC) -1) * IL
@@ -994,9 +1027,11 @@ cavdlsep07- change to absolute value of lattyp for writing translation vectors f
             IF (LATTYP.GT.0)WRITE(NCFPU1,'(A)')DECMT(1:LDEC2)
 1821   CONTINUE
       WRITE(NCFPU1, '(''endsymmetry'')')
+cavdlmay08 - the alternative Superflip options (IEFORT.EQ.1) used to be RWEAK=0.00 and RBISO=0.0
+cavdlmay08 - change now to normalize local, combined with RWEAK=0.2 and RBISO=0.0
       IF (IEFORT.EQ.1)THEN
-        RWEAK=0.00
-        RBISO=0.0
+         RWEAK=0.2
+         RBISO=0.0
       ELSE
         RWEAK=0.2
         RBISO=2.5
@@ -1008,9 +1043,11 @@ cavdlsep07- change to absolute value of lattyp for writing translation vectors f
      &                  ''randomseed AUTO'',/,
      &                  ''searchsymmetry average'',/,
 cavdlsep07
-     &                  ''derivesymmetry use'',/,
-     &                  ''# End of keywords for charge flipping'')')
+     &                  ''derivesymmetry use'')')
      &                    RWEAK,RBISO
+cavdlmay05
+      IF (IEFORT.EQ.1)WRITE(NCFPU1, '(''normalize local'')')
+      WRITE(NCFPU1, '(''# End of keywords for charge flipping'')')
       WRITE(NCFPU1, '(/,''# EDMA-specific keywords'',/,
      &                  ''inputfile sflip.m81'',/,
      &                  ''outputbase sflip'',/,
@@ -1040,14 +1077,15 @@ CAvdLdec06 EDMA wants the second character of an element symbol in lower case
         IAT=IAT+1
 18390   CONTINUE
        IAT=IAT-1
-       IHYD=0
+c       IHYD=0
 CAVDLdec06 Don't use hydrogens, because EDMA gets confused
+cavdljun08 This is not true anymore, so leave H-atoms
        cdumf='(''composition '',3A4)'
-       DO I=1,IAT
-       IF (IHYD.EQ.1)CATOM(I-1)=CATOM(I)
-       IF (CATOM(I)(1:1).EQ.'H')IHYD=1
-       END DO
-       IF (IHYD.EQ.1)IAT=IAT-1
+c       DO I=1,IAT
+c       IF (IHYD.EQ.1)CATOM(I-1)=CATOM(I)
+c       IF (CATOM(I)(1:1).EQ.'H')IHYD=1
+c       END DO
+c       IF (IHYD.EQ.1)IAT=IAT-1
        WRITE(CDUMF(17:17),'(I1)')IAT
 c       write(*,'('' format: '',a21)')cdumf(1:21)
        WRITE(NCFPU1,CDUMF)(CATOM(I),I=1,IAT)
@@ -1067,7 +1105,7 @@ cavdljan08 -- change to new default 1.5 sigma
        K=0
        FS=0.00000
        S=0.100000
-       WRITE(NCFPU1, '(3I5, 2F15.3)') I, J, K, FS, S
+       WRITE(NCFPU1, '(3I5, 2F20.3)') I, J, K, FS, S
 C----- LOOP OVER DATA
       IN = 0
 18409 CONTINUE
@@ -1311,7 +1349,7 @@ C
 C  NCFPU1 will be a MOL2 format file.
 C
 c              WRITE ( CMON,'(A)') 'Start of MOL2 format routine'
-c              CALL XPRVDU(NCVDU, 1,0)  
+c              CALL XPRVDU(NCVDU, 1,0)
 
 C Grow list 5 to a depth of 4 symmetry related atoms. (This will only
 C affect polymeric and Z'<1 structures.
