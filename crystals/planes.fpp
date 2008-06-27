@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.4  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.2  2004/12/13 16:16:08  rich
 C Changed GIL to _GIL_ etc.
 C
@@ -429,6 +433,10 @@ C--PRINT THE CO-ORDINATES OF THE ATOMS DEFINING THE PLANE:/LINE
 C
       IF (JPUNCH .NE. 0) WRITE(NCPU,'(''# Plane no '',I4)') NP
 C--COMPUTE A FEW ADDRESSES
+cdjwjun08  compute mean and esd deviation
+      nitem = 0
+      sumdev = 0.
+      sumdsq = 0.
       JO = JBASE + (N-1) * MD5A
       I=JO
 C--LOOP OVER EACH ATOM IN TURN
@@ -436,8 +444,11 @@ C--LOOP OVER EACH ATOM IN TURN
       CALL XSUBTR(STORE(I+4),XCF,STORE(I+4),3)
       CALL XMLTMM(RCA,STORE(I+4),STORE(I+10),3,3,1)
       IF (JJ .NE. 1) THEN
-      DEL = SQRT( STORE(I+10)**2+ STORE(I+11)**2 )
-      IF (ISSPRT .EQ. 0) THEN
+       sumdev = sumdev + store(I+12)
+       sumdsq = sumdsq + store(I+12)*store(I+12)
+       nitem = nitem + 1
+       DEL = SQRT( STORE(I+10)**2+ STORE(I+11)**2 )
+       IF (ISSPRT .EQ. 0) THEN
         IF (JTYPE .EQ. 1) THEN
           WRITE(NCWU,2800)STORE(I),STORE(I+1),STORE(I+7),STORE(I+10),
      2 STORE(I+11),STORE(I+12), DEL
@@ -445,21 +456,21 @@ C--LOOP OVER EACH ATOM IN TURN
           WRITE(NCWU,2800)STORE(I),STORE(I+1),STORE(I+7),STORE(I+10),
      2 STORE(I+11),STORE(I+12)
         ENDIF
-      ENDIF
-2800  FORMAT(5X,A4,F9.0,5X,F9.3,1X,4F10.3)
-      IF (JTYPE .EQ. 1) THEN
-      WRITE ( NCAWU,2801)STORE(I),STORE(I+1),STORE(I+10),
+       ENDIF
+2800   FORMAT(5X,A4,F9.0,5X,F9.3,1X,4F10.3)
+       IF (JTYPE .EQ. 1) THEN
+        WRITE ( NCAWU,2801)STORE(I),STORE(I+1),STORE(I+10),
      2 STORE(I+11),STORE(I+12), DEL
-      WRITE ( CMON ,2801)STORE(I),STORE(I+1),STORE(I+10),
+        WRITE ( CMON ,2801)STORE(I),STORE(I+1),STORE(I+10),
      2 STORE(I+11),STORE(I+12), DEL
-      CALL XPRVDU(NCVDU, 1,0)
-      ELSE
-      WRITE ( NCAWU,2801)STORE(I),STORE(I+1),STORE(I+10),
+        CALL XPRVDU(NCVDU, 1,0)
+       ELSE
+        WRITE ( NCAWU,2801)STORE(I),STORE(I+1),STORE(I+10),
      2 STORE(I+11),STORE(I+12)
-      WRITE ( CMON ,2801)STORE(I),STORE(I+1),STORE(I+10),
+        WRITE ( CMON ,2801)STORE(I),STORE(I+1),STORE(I+10),
      2 STORE(I+11),STORE(I+12)
-      CALL XPRVDU(NCVDU, 1,0)
-      ENDIF
+        CALL XPRVDU(NCVDU, 1,0)
+       ENDIF
 2801    FORMAT(5X,A4,F9.0,2X,4F10.3)
       ENDIF
       IF (JPUNCH .NE. 0) THEN
@@ -469,6 +480,12 @@ C--LOOP OVER EACH ATOM IN TURN
 2802    FORMAT('ATOM ',A4,F9.0,' X= ',3F10.3)
       I=I-MD5A
 2850  CONTINUE
+cdjwjun08
+      meand = sumdev/float(nitem)
+      sigdev = sqrt((sumdsq - float(nitem)*meand*meand)/float(nitem))
+2504  format('    mean deviation from plane = ',f10.3,3x,'(',f6.3,')')
+      if (jpunch .ne. 0) write(ncpu,2504) meand, sigdev
+c 
 C----- DO WE WANT THE OVERALL GOODIES ON SCREEN?
       IF (JJ .NE. 1) THEN
 C---- COMPUTE AXIS RATIOS
