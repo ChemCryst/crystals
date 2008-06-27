@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.55  2008/05/30 12:28:43  djw
+c Enable copying of partial occupancies to defined groups during replace/augment
+c
 c Revision 1.54  2008/04/30 10:51:46  djw
 c Enable copying of partial occupancies to defined groups during replexe/augment
 c
@@ -2184,7 +2187,8 @@ c      endif
 c
 c
 c      if ((imethd .eq. 3) .or. (abs(det) .le. zero)) then
-      if (abs(det) .le. zero) then
+cdjwmay08      if (abs(det) .le. zero) then
+      if ((det) .le. zero) then
          write(cmon,'(a)') 
      1  ' Ensuring pure rotation'
          call xprvdu(ncvdu,1,0)
