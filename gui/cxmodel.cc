@@ -316,9 +316,14 @@ void CxModel::OnPaint(wxPaintEvent &event)
       glPopMatrix();
       glMatrixMode ( GL_MODELVIEW );
 
+// next lines suggested by Oleg, Jum 28-08
+#ifdef __WIN32__
+      GdiFlush();
+#endif
 //This is only needed while we draw directly onto the GDI
-//      glFinish();
-// if we changed to GLUT fonts instead, we could just call glFlush(), which doesn't block.
+      glFinish();
+// if we changed to GLUT fonts instead, we could just call glFlush(), 
+// which doesn't block.
 
 #ifdef __CR_WIN__
       SwapBuffers(m_hdc);
