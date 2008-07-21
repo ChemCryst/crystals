@@ -3,7 +3,9 @@
 %EVALUATE HELPSIZE = 2
 %COPY '#SCRIPT XHELP1'
 
-These are the new references for CRYSTALS and CAMERON, please give them with
+This is CRYSTALS version 1286c, Jult 2008
+
+These are the references for CRYSTALS and CAMERON, please give them with
 each structure you publish. In the current difficult financial atmosphere in 
 the UK, employers have begun to count the numbers of citations for work, as 
 well as publications, so we will need clear support from the user community 
@@ -22,6 +24,24 @@ RC93
      Watkin, D.J., Prout, C.K., Lilley, P.M.deQ. (1994),
      RC93, Chemical Crystallography Laboratory, University
      of Oxford, Oxford.
+
+MCE  (Marching Cubes)
+      Rohlicek J., Husak M.: J. Appl. Cryst. 40, 600 (2007) 
+      http://www.vscht.cz/min/mce/versions.html
+
+SIR92 
+      Altomare, A., Cascarano, G., Giacovazzo, C., Guagliardi, A., Burla, M.C.,
+      Polidori, G.  & Camalli, M. (1994). J. Appl. Cryst. 27, 435.            
+
+Superflip 
+      Palatinus, L. & Chapuis, G. (2007). J. Appl. Cryst. 40, 786-790.
+
+SHELXS 86
+      Sheldrick, G. M. (2008). Acta Cryst A64, 112-122.
+
+PLATON
+      A.L.Spek (2005), A Multipurpose Crystallographic Tool, 
+      Utrecht University, Utrecht, The Netherlands.
 
 %COPY '#SCRIPT XHELP2'
 
