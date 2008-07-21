@@ -45,10 +45,10 @@ CRYSTALS commands and/or data lists
 experimental X-ray observations and data.#
 
 #IGuided Import#
-#PStarts up "The Guide". 
+#PStarts up "The Guide".# 
 The Guide tries to suggest a strategy for working with 'routine' 
 structures.
-
+#
 #IPre-process#
 #PSubmenu. See section #RPreprocess#.
 #IUse KCCDIN output#

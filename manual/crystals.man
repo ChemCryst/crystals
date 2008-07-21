@@ -2730,11 +2730,11 @@ these to the same values as in REFINEMENT above.
       Superflip Structure Solution
       The Hooft/Straver/Spek configuration parameter
 #
-#The experienced or adventurous user can of course use 
+# The experienced or adventurous user can of course use 
  LIST 6 and LIST 7 quite independently for different purposes.
 
 #
-#Q
+#
 #XLIST 6#
 #XF or Fsq data#
 #YSimple input of F or Fsq data - LIST 6#
