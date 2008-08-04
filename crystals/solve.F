@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.37  2007/10/09 07:04:41  djw
+C Final tweaks to Stefans code
+C
 C Revision 1.36  2007/04/05 14:30:18  djw
 C New adaptive damping for Stefans code, save C-C esd for printcif
 C
@@ -2322,13 +2325,16 @@ CAPR07        IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30
             STORE(L30GE+6) = STORE(L5O+4)
             STORE(L30GE+7) = BPD(5)
           ENDIF
+        ENDIF
 CAPR07        ENDIF
 C----- SAVE THE 'EXTINCTION ESD' INFORMATION IN LIST 30
-        IF( MD30CF .GE. 8) THEN
+caug08
+c        IF (BPD(6) .GE. ZERO) THEN
+         IF( MD30CF .GE. 8) THEN
           STORE(L30CF+8) = BPD(6)
-        ENDIF
+         ENDIF
+c        ENDIF
 CAPR07        CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
-      ENDIF
 C<DJWSEP96
 1400  FORMAT(///1X,I2,'  Overall parameter(s)'/)
       IF (ISSPRT .EQ. 0) THEN
