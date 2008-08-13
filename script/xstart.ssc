@@ -248,8 +248,8 @@ manipulation and evaluation of structures. It has its own manual
 showing parts of a diagram as ball-and-stick or as ellipsoids. Bonds can be
 drawn solid, dotted or tapered. Connections may be made or removed. Labels
 can be placed automatically or under mouse control, and the point size can be
-varied.  Output is in black&white or colour Postscript or encapsulated post
-script.   If you activate CAMERON via the SCRIPT PLOT, and if you
+varied.  Output is in black&white or colour Postscript.
+   If you activate CAMERON via the SCRIPT PLOT, and if you
 intend to reimport coordinates from the screen model take care that the final
 diagram is not a packing diagram, otherwise the coordinte list (LIST 5) will
 contain all the equivalent atoms!
