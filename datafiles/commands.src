@@ -4193,6 +4193,16 @@ TONSPEK            2    1
          1    
     .INPUTLIST          2    0    1    2    1         7
               6         7
+BENFORD            1    1
+   8    4096 CRYSTALSPUBLISH
+    6       
+   1.BENFORD            3    1    0    0
+         3    2    1    
+    .KEYWORD            1    0    1    5    1 FO
+     FO             SIGMA          FC             PHASE          WEIGHT   
+    .SCALE              3    0    1    0    0 100.0
+    .INPUTLIST          2    0    1    2    1         6
+              6         7
 FLIMIT             1    3
    3    4096 CRYSTALSFOREIGN
     1    2   14
