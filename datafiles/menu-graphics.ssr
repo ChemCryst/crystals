@@ -15,5 +15,5 @@
 ^^WI   ITEM CHIME 'View CHIME file'  '#SPAWN chime.pdb'
 ^^WI   SPLIT
 ^^WI   ITEM XH      'Graphics menu &help'
-^^WI        '$ "crysdir:manual/tools-menus.html#menus.graphics"'
+^^WI        '$ "crysdir:manual/tools-menus.html"'
 ^^WI  ENDMENU

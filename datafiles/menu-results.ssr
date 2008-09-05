@@ -30,7 +30,7 @@
 ^^WI    '#SCRIPT PLATONC' DISABLEIF='IN'                                        
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM RH      'Results menu he&lp'                                        
-^^WI        '$"crysdir:manual/tools-menus.html#menus.results"'                  
+^^WI        '$"crysdir:manual/tools-menus.html"'                  
 ^^WI   ITEM RA      'Analyse menu he&lp'                                        
 ^^WI        '$"crysdir:manual/analyse/analysis.html"'                  
 ^^WI  ENDMENU                                                                   
