@@ -62,11 +62,11 @@
 %  COPY 'END'                                                                   
 % END BLOCK                                                                     
 %%                                                                              
-%%  Get a Wilson scale factor
-%    COPY '#WILSON'
-%    COPY 'OUTPUT PLOT=no NZ=no STATS=no'
-%    COPY 'FILTER LIST28 = NO'
-%    COPY 'END'
+%%  Get a Wilson scale factor                                                   
+%    COPY '#WILSON'                                                             
+%    COPY 'OUTPUT PLOT=no NZ=no STATS=no'                                       
+%    COPY 'FILTER LIST28 = NO'                                                  
+%    COPY 'END'                                                                 
 %%                                                                              
 %  IF FOLD .EQ. 1 THEN                                                          
 {S * Reset weighting scheme to unit weights.                                    
@@ -74,10 +74,10 @@
 %   COPY 'END'                                                                  
 %  ELSE                                                                         
 {S * Reset weighting scheme to statistical weights.                             
-%%   COPY '#SCRIPT STATWT'                                                       
-%% re-instate old weights because of instabilities in some cases 11/11/07
-%   COPY '#LIST 4'                                                              
-%   COPY 'END'                                                                  
+%% statistical weights seem to cause instabilities in some cases 11/11/07       
+%   COPY '#SCRIPT STATWT'                                                      
+%%   COPY '#LIST 4'                                                              
+%%   COPY 'END'                                                                  
 %  END IF                                                                       
 %%                                                                              
 %%                                                                              

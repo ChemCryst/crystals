@@ -1,116 +1,118 @@
-%SCRIPT INLIST23
-% VARIABLE INTEGER FSQ
-% CLEAR
-% BLOCK
-%   ON ERROR REPEAT
-%%   ON END TERMINATE
-%   QUEUE REWIND
-%   CLEAR
- Structure factor control list
- -----------------------------
-%%                                             use  END  to abandon input
-%    CLEAR
-%    VERIFY YES NO
-%      GET NOSTORE FINAL ABBREVIATED  -
- 'Should /FC/ be modified for anomalous scattering' 'NO'
-%    INSERT 'MODIFY ANOMALOUS='
-%    STORE KEYWORD VALUE
-%      GET NOSTORE FINAL ABBREVIATED  -
- 'Will you refine the Flack enantiopole parameter ' 'NO'
-%    INSERT ' ENANTIO='
-%    STORE KEYWORD VALUE
-%      GET NOSTORE FINAL ABBREVIATED  -
- 'Do you wish to allow for the effects of extinction' 'NO'
-%    INSERT ' EXTINCTION='
-%    STORE KEYWORD VALUE
-%    QUEUE SEND
-%    CLEAR
-%%
-%    VERIFY YES NO
-%      GET NOSTORE FINAL ABBREVIATED  -
- 'Do you wish to use LIST 6 reflections? ' 'YES'
-%    INSERT 'MINIMISE REFLECTION='
-%    STORE KEYWORD VALUE
-%      GET NOSTORE FINAL ABBREVIATED  -
- 'Do you wish to use LIST 16 restraints? ' 'YES'
-%    INSERT ' RESTRAIN='
-%    STORE KEYWORD VALUE
-%      GET NOSTORE FINAL ABBREVIATED  -
- 'Do you wish to refine against F squared? ' 'NO'
-%    EVALUATE FSQ =  VALUE
-%    INSERT ' F-SQ='
-%    STORE KEYWORD VALUE
-%    QUEUE SEND
-%    CLEAR
-%%
-%    VERIFY NO TEST ORIGIN RESTRAIN CONSTRAIN
-%GET NOSTORE VERIFIED 'How shall we treat space group symmetry? ' 'CONSTRAIN'
-%    INSERT 'REFINE SPECIAL = '
-%    STORE KEYWORD VALUE
-%    VERIFY NO OCC PARAM
-%    GET NOSTORE VERIFIED 'Shall we update atoms on special positions? ' 'OCC'
-%    INSERT ' UPDATE ='
-%    STORE KEYWORD VALUE
-%    GET NOSTORE REAL 'Tolerance for coincidence? ' '.6'
-%    INSERT ' TOLER ='
-%    STORE REAL VALUE
-%    QUEUE SEND
-%    CLEAR
-%    GET NOSTORE REAL 'Minimum acceptable Ui? ' '.01'
-%    INSERT 'ALLCYCLES U[MIN]='
-%    STORE REAL VALUE
-%    QUEUE SEND
-%%
-%    BLOCK
-%    VARIABLE INTEGER FOLD
-%    EVALUATE FOLD = - 100
-%      IF EXISTS 23 .GE. 1 THEN
-%       COPY '#GENERALEDIT 23'
-%       COPY 'LOCATE RECORDTYPE = 103'
-%       COPY 'TRANSFER FROM OFFSET =  1 TO FOLD'
-%       COPY 'END'
-%       EVALUATE FOLD = 1 - FOLD
-%      END IF
-%      IF FSQ .NE. FOLD THEN
-%       IF FSQ .EQ. 1 THEN
-    The weights have been adjusted for F sq refinement.
-    Check the manual for details
-%        COPY '#GENERALEDIT 30'
-%        COPY 'LOCATE RECORDTYPE=103'
-%%       SET modify fsq=yes
-%        COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=2'
-%        COPY 'WRITE OVERWRITE=OVERWRITE'
-%        COPY 'END'
-%%        COPY '#LIST 4'
-%%        COPY 'SCHEME 9 '
-%%        COPY 'END'
-%%         COPY '#WEIGHT'
-%%         COPY 'END'
-%       ELSE
-    The weights have been adjusted for F  refinement.
-    Check the manual for details
-%        COPY '#GENERALEDIT 30'
-%        COPY 'LOCATE RECORDTYPE=103'
-%%       SET modify fsq=no
-%        COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=1'
-%        COPY 'WRITE OVERWRITE=OVERWRITE'
-%        COPY 'END'
-%%        COPY '#LIST 4'
-%%        COPY 'SCHEME 9 '
-%%        COPY 'END'
-%%         COPY '#WEIGHT'
-%%         COPY 'END'
-%       END IF
-%      END IF
-%   END BLOCK
-%%
-%    COPY '#LIST 23'
-%    QUEUE PROCESS
-%    COPY  'END'
-% END BLOCK
-% COPY '#WEIGHT'
-% COPY 'END'
-% COPY '#ANALYSE'
-% COPY 'END'
-%%
-%END SCRIPT
+%SCRIPT INLIST23                                                                
+% VARIABLE INTEGER FSQ                                                          
+% CLEAR                                                                         
+% BLOCK                                                                         
+%   ON ERROR REPEAT                                                             
+%%   ON END TERMINATE                                                           
+%   QUEUE REWIND                                                                
+%   CLEAR                                                                       
+ Structure factor control list                                                  
+ -----------------------------                                                  
+%%                                             use  END  to abandon input       
+%    CLEAR                                                                      
+%    VERIFY YES NO                                                              
+%      GET NOSTORE FINAL ABBREVIATED  -                                         
+ 'Should /FC/ be modified for anomalous scattering' 'NO'                        
+%    INSERT 'MODIFY ANOMALOUS='                                                 
+%    STORE KEYWORD VALUE                                                        
+%      GET NOSTORE FINAL ABBREVIATED  -                                         
+ 'Will you refine the Flack enantiopole parameter ' 'NO'                        
+%    INSERT ' ENANTIO='                                                         
+%    STORE KEYWORD VALUE                                                        
+%      GET NOSTORE FINAL ABBREVIATED  -                                         
+ 'Do you wish to allow for the effects of extinction' 'NO'                      
+%    INSERT ' EXTINCTION='                                                      
+%    STORE KEYWORD VALUE                                                        
+%    QUEUE SEND                                                                 
+%    CLEAR                                                                      
+%%                                                                              
+%    VERIFY YES NO                                                              
+%      GET NOSTORE FINAL ABBREVIATED  -                                         
+ 'Do you wish to use LIST 6 reflections? ' 'YES'                                
+%    INSERT 'MINIMISE REFLECTION='                                              
+%    STORE KEYWORD VALUE                                                        
+%      GET NOSTORE FINAL ABBREVIATED  -                                         
+ 'Do you wish to use LIST 16 restraints? ' 'YES'                                
+%    INSERT ' RESTRAIN='                                                        
+%    STORE KEYWORD VALUE                                                        
+%      GET NOSTORE FINAL ABBREVIATED  -                                         
+ 'Do you wish to refine against F squared? ' 'NO'                               
+%    EVALUATE FSQ =  VALUE                                                      
+%    INSERT ' F-SQ='                                                            
+%    STORE KEYWORD VALUE                                                        
+%    QUEUE SEND                                                                 
+%    CLEAR                                                                      
+%%                                                                              
+%    VERIFY NO TEST ORIGIN RESTRAIN CONSTRAIN                                   
+%GET NOSTORE VERIFIED 'How shall we treat space group symmetry? ' 'CONSTRAIN'   
+%    INSERT 'REFINE SPECIAL = '                                                 
+%    STORE KEYWORD VALUE                                                        
+%    VERIFY NO OCC PARAM                                                        
+%    GET NOSTORE VERIFIED 'Shall we update atoms on special positions? ' 'OCC'  
+%    INSERT ' UPDATE ='                                                         
+%    STORE KEYWORD VALUE                                                        
+%    GET NOSTORE REAL 'Tolerance for coincidence? ' '.6'                        
+%    INSERT ' TOLER ='                                                          
+%    STORE REAL VALUE                                                           
+%    QUEUE SEND                                                                 
+%    CLEAR                                                                      
+%    GET NOSTORE REAL 'Minimum acceptable Ui? ' '.01'                           
+%    INSERT 'ALLCYCLES U[MIN]='                                                 
+%    STORE REAL VALUE                                                           
+%    QUEUE SEND                                                                 
+%%                                                                              
+%    BLOCK                                                                      
+%    VARIABLE INTEGER FOLD                                                      
+%    EVALUATE FOLD = - 100                                                      
+%      IF EXISTS 23 .GE. 1 THEN                                                 
+%       COPY '#GENERALEDIT 23'                                                  
+%       COPY 'LOCATE RECORDTYPE = 103'                                          
+%       COPY 'TRANSFER FROM OFFSET =  1 TO FOLD'                                
+%       COPY 'END'                                                              
+%       EVALUATE FOLD = 1 - FOLD                                                
+%      END IF                                                                   
+%      IF FSQ .NE. FOLD THEN                                                    
+%       IF FSQ .EQ. 1 THEN                                                      
+    The weights have been adjusted for F sq refinement.                         
+    Check the manual for details                                                
+%        COPY '#GENERALEDIT 30'                                                 
+%        COPY 'LOCATE RECORDTYPE=103'                                           
+%%       SET modify fsq=yes                                                     
+%        COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=2'                         
+%        COPY 'WRITE OVERWRITE=OVERWRITE'                                       
+%        COPY 'END'                                                             
+%% djw Sep08
+%        COPY '#LIST 4'                                                        
+%        COPY 'SCHEME 9 '                                                      
+%        COPY 'END'                                                            
+%%         COPY '#WEIGHT'                                                       
+%%         COPY 'END'                                                           
+%       ELSE                                                                    
+    The weights have been adjusted for F  refinement.                           
+    Check the manual for details                                                
+%        COPY '#GENERALEDIT 30'                                                 
+%        COPY 'LOCATE RECORDTYPE=103'                                           
+%%       SET modify fsq=no                                                      
+%        COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=1'                         
+%        COPY 'WRITE OVERWRITE=OVERWRITE'                                       
+%        COPY 'END'                                                             
+%   COPY '#SCRIPT STATWT'                                                      
+%%        COPY '#LIST 4'                                                        
+%%        COPY 'SCHEME 9 '                                                      
+%%        COPY 'END'                                                            
+%%         COPY '#WEIGHT'                                                       
+%%         COPY 'END'                                                           
+%       END IF                                                                  
+%      END IF                                                                   
+%   END BLOCK                                                                   
+%%                                                                              
+%    COPY '#LIST 23'                                                            
+%    QUEUE PROCESS                                                              
+%    COPY  'END'                                                                
+% END BLOCK                                                                     
+% COPY '#WEIGHT'                                                                
+% COPY 'END'                                                                    
+% COPY '#ANALYSE'                                                               
+% COPY 'END'                                                                    
+%%                                                                              
+%END SCRIPT                                                                     
