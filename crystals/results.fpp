@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.125  2008/05/30 10:07:53  djw
+C Insert comment if Flack has been refined but Friedel pairs were later merged
+C
 C Revision 1.124  2008/03/31 14:54:08  djw
 C Move the Firedel flag in SYST into the JCODE slot. Previously (in corrections of phase) it zapped Fourier maps
 C
@@ -7034,5 +7037,129 @@ C
 9900  CONTINUE
 C -- ERRORS DETECTED
       CALL XERHND ( IERWRN )
+      RETURN
+      END
+C
+C
+CODE FOR BENFRD
+      SUBROUTINE BENFRD(ityp06,keywrd,scale)
+C--APPLY BENFORD'S LAW TO THE PHASES
+C
+C--
+      INCLUDE 'ISTORE.INC'
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCOMPD.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST28.INC'
+      INCLUDE 'XLST30.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XIOBUF.INC'
+c
+      dimension mm(9)
+      dimension am(9)
+C
+      INCLUDE 'QSTORE.INC'
+C
+      IERROR = 1
+C
+      call xrsl
+      call xcsae
+      call xzerof(mm, 9)
+      call xzerof(am, 9)
+C    CONVERT RADIANS TO THOUSANDTHS OF A REVOLUTION
+      RTOH = 1000./TWOPI
+      IF (KEXIST(1) .GE. 1) CALL XFAL01
+C--SET UP LIST 6 FOR READING ONLY
+      IN = 0
+cdjwsep07 check the type of reflections
+            IULN6 = KTYP06(ITYP06)
+            CALL XFAL06(IULN6,0)
+      IF ( IERFLG .LT. 0 ) GO TO 9900
+C
+      NTERM = 0
+C--FETCH THE NEXT REFLECTION
+1050  CONTINUE
+C  ONLY USE THE  REFLECTIONS USED IN REFINEMENT
+      IF (KFNR(IN)) 1250, 1100, 1100
+C      IF (KLDRNR(IN)) 1250, 1100, 1100
+C
+1100  continue
+      if (keywrd .eq. 1 ) then
+c      fo
+        a = store(m6+3)
+      else if (keywrd .eq. 2 ) then
+c      sigma
+        a = 100. * store(m6+12)*store(m6+12)
+      else if (keywrd .eq. 3 ) then
+c      fc
+        a = store(m6+5)
+      else if (keywrd .eq. 4 ) then
+c       phase
+        a = STORE(M6+6) 
+        if (a .le. 0.) a = a+twopi
+        a = a * rtoH
+      else if (keywrd .eq. 5 ) then
+c      wt
+        a = 100. * store(m6+4)
+      else
+        write(cmon,'(A,i4)') 'Unknown keyword', keywrd
+        goto  9900
+      endif
+      a = scale*abs(a )
+c      write(ncpu,'(f10.4)') a
+c      write(*,*)m,a
+      if(a .gt.0) then
+       nterm = nterm + 1
+       f = log10(a)
+       j = int(f)
+       b = a/10.0**j
+       n =int(b)
+      WRITE(NCPU,'(i6,2f10.4,i10,f10.4,i6)') NTERM,a,f,j,b,n
+       if(n .le. 0) goto 9800
+       mm(n) = mm(n) + 1
+      endif
+      GOTO 1050
+C
+C--TERMINATE THE LIST
+1250  CONTINUE
+      n = 0
+      do i=1,9
+        n = n + mm(i)
+      enddo
+
+      write(cmon,'(a,9I6,3x,A)')'Value   ', (i,i=1,9), 'items'
+      CALL XPRVDU(NCVDU,1,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+      do i=1,9
+            am(i) = (100.*float(mm(i))/float(n))
+      enddo
+      write(CMON,'(a, 9f6.1,2i6)')'Observed  ',  am, n, nterm
+      CALL XPRVDU(NCVDU,1,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+
+      do i=1,9
+            am(i) = 100.0*log10((float(i+1))/float(i))
+      enddo
+      write(CMON,'(a, 9f6.1)')'Calculated',  am
+      CALL XPRVDU(NCVDU,1,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+C
+      RETURN
+C
+9800  continue
+      write(cmon,'(a,f6.2)') 
+     c 'Items less than unity: Raise the scale factor from', scale
+      CALL XPRVDU(NCVDU,1,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+      RETURN
+9900  CONTINUE
+C -- ERRORS
+      CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       RETURN
       END
