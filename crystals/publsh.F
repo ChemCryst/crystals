@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2007/11/01 11:04:00  djw
+C add access to Tons code
+C
 C Revision 1.11  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -60,7 +63,8 @@ C--BRANCH ON THE TYPE OF OPERATION
 C
 C  REFLECTIONS  PARAMETERS  SUMMARY  GENERALEDIT  CIFOUT
 C
-      GO TO ( 2100, 2200, 2300, 2400, 2600, 2700, 2800, 1500 ) , NUM
+      GO TO ( 2100, 2200, 2300, 2400, 2600, 2700, 2800, 
+     1  2900, 1500 ) , NUM
 1500  CONTINUE
       CALL XERHND ( IERPRG )
 C
@@ -101,10 +105,16 @@ c
 c----- Ton Speks enantiopole
       call xton
       return
+c
+2900  continue
+c----- Benfords Law
+      call bensrt
+      return
+c
 C
       END
 C
-
+c
 CODE FOR XTHX
       SUBROUTINE XTHX
       DIMENSION IPROCS(3)
@@ -116,7 +126,7 @@ CODE FOR XTHX
       IF (I.GE.0) CALL XTHLIM(RICA,RICB,RICC,RICD,RICE,IPLOT,IULN,IGLST)
       RETURN
       END
-
+c
 CODE FOR xton
       SUBROUTINE xton
       DIMENSION IPROCS(3)
@@ -126,6 +136,19 @@ CODE FOR xton
       ktyp06 = IPROCS(2)
       IGLST = IPROCS(3)
       IF (I.GE.0) CALL tonspk(IPLOT,IGLST,ktyp06)
+      RETURN
+      END
+c
+CODE FOR xton
+      SUBROUTINE bensrt
+      DIMENSION IPROCS(3), PROCS(3)
+      EQUIVALENCE (PROCS(1),IPROCS(1))
+      CALL XCSAE
+      I = KRDDPV ( IPROCS , 3 )
+      keywrd = IPROCS(1)
+      ktyp06 = IPROCS(2)
+      scale  = PROCS(3)
+      IF (I.GE.0) CALL benfrd(ktyp06,keywrd,scale)
       RETURN
       END
 
