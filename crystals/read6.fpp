@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2008/04/29 15:30:31  djw
+C New version of COPY67, uses a scratch file rather than on DSC directly
+C
 C Revision 1.26  2008/03/07 16:09:48  djw
 C changes to help with the correct computation of Fourier maps from twinned crystals.  THe old COPY67 subroutine did not pack the data properly unless the keys were the default keys.  The job is now done
 C
@@ -1234,7 +1237,9 @@ C        STORE(L30IX+7) = ASIN(SQRT(STORE(LIX+1))*WAVE)*RTD
        ENDIF
       ENDIF
 C----- WRITE LIST 13 TO DISK IF TYPE IS TWIN
-      IF ((ITYPE6.EQ.5).OR.(IFO.EQ.JFOT(1))) THEN
+cdjwsep08      IF ((ITYPE6.EQ.5).OR.(IFO.EQ.JFOT(1))) THEN
+      WRITE(NCWU,*) 'IRFT', IRFT
+      IF ((ITYPE6.EQ.5).OR.(IRFT .GE. 0)) THEN
          WRITE (CMON,'(a)') 'Upating List 13 for twinned data'
          CALL XPRVDU (NCVDU,1,0)
          WRITE (NCAWU,'(a)') CMON(1)
