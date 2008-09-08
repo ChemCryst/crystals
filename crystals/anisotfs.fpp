@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2008/09/08 07:19:24  djw
+C In AXES, ouput adp volumes
+C
 C Revision 1.21  2008/02/14 11:04:02  djw
 C remove prints to NCAWU
 C
@@ -63,7 +66,7 @@ C
 C
 CODE FOR XPRAXI
       SUBROUTINE XPRAXI (ILIST1,ILIST5,IBASE,ISTART,ISTEP,NATOM,LIST,
-     1LIST20)
+     1LIST20, JPUNCH)
 C--CALCULATE AND PRINT THE PRINCIPAL AXES OF THERMAL ELLIPSOIDS
 C
 C--
@@ -80,6 +83,7 @@ C      LIST   .EQ. 1  BRIEF LISTINGS
 C      LIST   .EQ. 2  FULL LISTINGS
 C      LIST20 ADDRESS FOR MATRICES FOR LIST 20
 C              IF ZERO, NOT SAVED
+C      JPUNCH >0 = OUTPUT OT PUNCH FILE
 C
 C -- IF 'LIST' IS SET GREATER THAN ZERO, THE RESULTS ARE PRINTED. IF
 C    NOT, NO RESULTS ARE PRINTED.
@@ -128,22 +132,24 @@ C---- SET LIST 5 AUXILLIARY ADDRESSES
          CALL XFAL01
          IF (IERFLG.LT.0) GO TO 1000
       END IF
+C
+C
       IF (LIST.GT.0) THEN
          CALL XPRTCN
          IF (ISSPRT.EQ.0) THEN
-            IF (LIST.GT.0) WRITE (NCWU,100)
+            WRITE (NCWU,100)
          END IF
 100      FORMAT (' Principal axes and ''direction''',' cosines of the th
      1ermal ellipsoids',///,1X,'Type',1X,'Serial',5X,'m.s.d.',9X,'a*',
      2    8X,'b''',9X,'c',10X,'a',9X,'b',9X,'c',4x,'Uarith',5x,'Ugeom')
 cfeb08         WRITE (NCAWU,150)
-         IF (LIST.GT.0) THEN
             WRITE (CMON,150)
             CALL XPRVDU (NCVDU,2,0)
-         END IF
 150      FORMAT (' Principal axes of the thermal ellipsoids, A**2'/
      1 14x,' Min  ',4x,' Med  ',4x,' Max  ',4x,' Uarith     Ugeom')
       END IF
+      IF (JPUNCH .GT. 0) WRITE(NCPU,150)
+C
 C--SET UP VARIOUS STORAGE LOCATIONS
       NA=NFL
       NB=NA+9
@@ -307,6 +313,11 @@ cfeb08     1          III=NE,J),CTEXT
                IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
 cfeb08               WRITE (NCAWU,'(A)') CMON(1)
             END IF
+CDJWSEP08
+            IF (JPUNCH .GT. 0) THEN
+               WRITE (NCPU,550) STORE(M5B),STORE(M5B+1),(STORE(III),III=
+     1          NE,J),UARITH, UGEOM
+            END IF
             GO TO 850
          ELSE
 C-C-C-   ISOTROPIC ATOMS/SPHERE/LINE/RING
@@ -433,7 +444,7 @@ C-C-C-CHECK WHETHER ATOM IS ANISOTROPIC OR ISOTROPIC/SPHERE/LINE/RING
 C----- ATOM IS ANISOTROPIC SO COMPUTE UEQUIV
          IF (MODE.EQ.1) THEN
 C         WELL ORGANISED CALLING ROUTINE
-            CALL XPRAXI (1,1,IBASE,IATOM,NPAR,1,-1,0)
+            CALL XPRAXI (1,1,IBASE,IATOM,NPAR,1,-1,0,0)
          ELSE
 C         AN APPROXIMATION FOR POOR CALLING ROUTINES
             UEQUIV=(STORE(IATOM+7)+STORE(IATOM+8)+STORE(IATOM+9))
@@ -523,6 +534,8 @@ C--INDICATE THAT LIST 12 IS NOT TO BE USED
       DO 50 I=1,IDIM12
          ICOM12(I)=NOWT
 50    CONTINUE
+CDJWSEP08      TURN OFF PUNCHING
+      JPUNCH = -1
 C
 C--MAIN INSTRUCTION CYCLING LOOP
 100   CONTINUE
@@ -842,8 +855,8 @@ C----- 'AXES' INSTRUCTION
       LBASE=NFL
 C----- CHECK WORKSPACE FOR NEXT SUBROUTINE
       NFL=KSTALL(4*NATOM)
-cdjwmar00      CALL XPRAXI (1,1,LBASE,JBASE,MD5A,NATOM,2,KWORK)
-      CALL XPRAXI (1,1,0,JBASE,MD5A,NATOM,2,0)
+cdjwmar00      CALL XPRAXI (1,1,LBASE,JBASE,MD5A,NATOM,2,KWORK,JPUNCH)
+      CALL XPRAXI (1,1,0,JBASE,MD5A,NATOM,2,0, JPUNCH)
 C--MARK THE CALCULATION AS ACCEPTABLE
       IOK=-1
       IERR=1

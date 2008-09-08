@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.126  2008/09/08 07:15:47  djw
+C More Benford updates
+C
 C Revision 1.125  2008/05/30 10:07:53  djw
 C Insert comment if Flack has been refined but Friedel pairs were later merged
 C
@@ -1136,7 +1139,7 @@ C----- SET AUXILLIARY LIST 5 ADDRESSES
       N5A=N5
       MD5A=MD5
       M5A=L5
-      CALL XPRAXI( 1, 1, JBASE, L5A, MD5A, N5A, LSTAXS, 0)
+      CALL XPRAXI( 1, 1, JBASE, L5A, MD5A, N5A, LSTAXS, 0, 0)
       IF ( IERFLG .LT. 0 ) GO TO 2450
 C -- PRINT TYPE / SERIAL / X / Y / Z / U[ISO]
 C

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.38  2008/08/04 16:50:03  djw
+C Restore storage of extinction esd - it had got lost
+C
 C Revision 1.37  2007/10/09 07:04:41  djw
 C Final tweaks to Stefans code
 C
@@ -2622,7 +2625,7 @@ C----- SET THE AUXILLIARY LIST 5 ADDRESSES
       N5A=N5
       MD5A=MD5
       M5A=M5
-      CALL XPRAXI( -1, 1, 0, L5A, MD5A, N5A, 0, 0)
+      CALL XPRAXI( -1, 1, 0, L5A, MD5A, N5A, 0, 0, 0)
 2975  CONTINUE
       CALL XOPMSG ( IOPGNP , IOPEND , IVERSN )
       CALL XTIME2(2)

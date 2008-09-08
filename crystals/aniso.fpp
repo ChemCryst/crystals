@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.5  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:11  rich
 C New CRYSTALS repository
 C
@@ -43,7 +47,7 @@ C--BRANCH ON THE TYPE OF OPERATION
 
 C--COMPUT THE COMPONENTS AND COSINES FROM THE ANISO T.F.'S
 2000  CONTINUE
-      CALL XPRAXI( -1, -1, 0, J, K, L, 2, 0)
+      CALL XPRAXI( -1, -1, 0, J, K, L, 2, 0, 0)
       RETURN
 C
 C--TLS CALCULATIONS
