@@ -1,4 +1,9 @@
+c
+c
 C $Log: not supported by cvs2svn $
+C Revision 1.127  2008/09/08 10:18:32  djw
+C Enable/inhibit punching of ADP info from XPRAXI
+C
 C Revision 1.126  2008/09/08 07:15:47  djw
 C More Benford updates
 C
