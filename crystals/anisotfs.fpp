@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2008/02/14 11:04:02  djw
+C remove prints to NCAWU
+C
 C Revision 1.20  2006/10/19 13:58:14  djw
 C Correct labelling of final R factors
 C
@@ -132,13 +135,14 @@ C---- SET LIST 5 AUXILLIARY ADDRESSES
          END IF
 100      FORMAT (' Principal axes and ''direction''',' cosines of the th
      1ermal ellipsoids',///,1X,'Type',1X,'Serial',5X,'m.s.d.',9X,'a*',
-     2    8X,'b''',9X,'c',10X,'a',9X,'b',9X,'c')
+     2    8X,'b''',9X,'c',10X,'a',9X,'b',9X,'c',4x,'Uarith',5x,'Ugeom')
 cfeb08         WRITE (NCAWU,150)
          IF (LIST.GT.0) THEN
             WRITE (CMON,150)
-            CALL XPRVDU (NCVDU,1,0)
+            CALL XPRVDU (NCVDU,2,0)
          END IF
-150      FORMAT (' Principal axes of the thermal ellipsoids, A**2')
+150      FORMAT (' Principal axes of the thermal ellipsoids, A**2'/
+     1 14x,' Min  ',4x,' Med  ',4x,' Max  ',4x,' Uarith     Ugeom')
       END IF
 C--SET UP VARIOUS STORAGE LOCATIONS
       NA=NFL
@@ -195,7 +199,6 @@ C--DIAGONALIZE THE TENSOR
                TENS(ITEMP3,ITEMP2)=DBLE(STORE(ITEMP1))
                ITEMP1=ITEMP1+1
 300         CONTINUE
-
 C            I=0
 C            CALL F02ABF (TENS,3,3,ROOTS,VECT,3,WORK,I)
             INFO = 0
@@ -205,7 +208,7 @@ C            CALL F02ABF (TENS,3,3,ROOTS,VECT,3,WORK,I)
                 VECT(ITEMP2,ITEMP3) = TENS(ITEMP2,ITEMP3)
               END DO
             END DO
-
+c
             ITEMP1=NE
             ITEMP2=NG
             DO 350 ITEMP3=1,3
@@ -246,8 +249,10 @@ C----- INTERCHANGE EIGEN VECTORS
             END IF
 cdjwfeb06  add in volume contributions
 cdjwfeb06 compute geometric mean
-            UEQUIV=(STORE(NE)*STORE(NE+1)*STORE(NE+2))
-            UEQUIV=SIGN(1.,UEQUIV)*(MAX(ZERO,ABS(UEQUIV)))**(1./3.)
+            UGEOM=(STORE(NE)*STORE(NE+1)*STORE(NE+2))
+            UGEOM=SIGN(1.,UGEOM)*(MAX(ZERO,ABS(UGEOM)))**(1./3.)
+            UARITH = (STORE(NE)+STORE(NE+1)+STORE(NE+2))/3.
+            UEQUIV = UGEOM
             avol = avol + uequiv
             dvol = dvol + uequiv*uequiv
             bvol = max (bvol, uequiv)
@@ -255,7 +260,7 @@ cdjwfeb06 compute geometric mean
             nvol = nvol + 1
 cdjwfeb06 recompute arithemtic mean if this is what the user needs
             IF (ISSUEQ.EQ.1) THEN
-               UEQUIV=0.333333*(STORE(NE)+STORE(NE+1)+STORE(NE+2))
+               UEQUIV=UARITH
             END IF
             IF (IBASE.GT.0) STORE(JBASE)=UEQUIV
 C----- CHECK FOR SPLITTING
@@ -286,18 +291,18 @@ cfeb08                  WRITE (NCAWU,500)
             K=NF+20
             IF (LIST.GT.0) THEN
                WRITE (CMON,550) STORE(M5B),STORE(M5B+1),(STORE(III),III=
-     1          NE,J),CTEXT
+     1          NE,J),UARITH, UGEOM, CTEXT
                CALL XPRVDU (NCVDU,1,0)
 cfeb08               WRITE (NCAWU,550) STORE(M5B),STORE(M5B+1),(STORE(III),
 cfeb08     1          III=NE,J),CTEXT
-550            FORMAT (1X,A4,F6.0,3F10.4,3X,A24)
+550            FORMAT (1X,A4,F6.0,5F10.4,3X,A24)
                IF (ISSPRT.EQ.0) WRITE (NCWU,600) STORE(M5B),STORE(M5B+1)
-     1          ,(STORE(I),I=NF,K),CTEXT
+     1          ,(STORE(I),I=NF,K),UARITH, UGEOM, CTEXT
 600            FORMAT (/1X,A4,F7.0,2X,F9.5,2(1X,3F10.5),2(/14X,F9.5,
-     1          2(1X,3F10.5)),A24)
+     1          2(1X,3F10.5)),2F10.5,A24)
             ELSE IF ((LIST.EQ.0).AND.(CTEXT.NE.' ')) THEN
                WRITE (CMON,550) STORE(M5B),STORE(M5B+1),(STORE(III),III=
-     1          NE,J),CTEXT
+     1          NE,J),UARITH,UGEOM,CTEXT
                CALL XPRVDU (NCVDU,1,0)
                IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
 cfeb08               WRITE (NCAWU,'(A)') CMON(1)
