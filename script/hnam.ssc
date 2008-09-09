@@ -1,0 +1,10 @@
+%SCRIPT HNAM
+%% Rename H atoms to match parent atom, resolving clashes.
+% copy '#hnam'
+% copy 'end'
+%%
+% copy '#edit'
+% copy 'clash fixlatter'
+% copy 'end'
+%END SCRIPT
+

@@ -1,0 +1,177 @@
+% SCRIPT HKLF52CRY  
+%%  
+%% Run hklf52cry with common options.  
+%%  
+%  VARIABLE CHARACTER CIN COUT CARG  
+%  VARIABLE LOGICAL RUNNOW NEW25  
+%  VARIABLE REAL VOLF  
+%  VARIABLE INTEGER N25 NEL  
+%  EVALUATE N25 = 0
+%  EVALUATE RUNNOW = FALSE  
+%  EVALUATE NEW25 = FALSE  
+%%  
+^^WI WINDOW HKLF52CRY 'hklf5cry' MODAL COMMIT='CFBOK' CANCEL='CFBXX'  
+^^WI GRID GRIDM NROWS=8 NCOLS=3  
+^^WI {  
+^^WI @ 2,2 GRID CFG NROWS=1 NCOLS=3 OUTLINE='hklf5 to convert:'  
+^^WI {  
+^^WI @ 1,1 EDITBOX CINILE ' ' CHARS=48 INFORM=NO INPUT  
+^^WI @ 1,3 BUTTON BROWSE 'Browse...'  
+^^WI }  
+  
+^^WI @ 4,2 GRID GB NROWS=3 NCOLS=3  
+^^WI {  
+^^WI @ 1,1 STATIC T1 'Output file:'  
+^^WI @ 1,3 EDITBOX OFNAM 'hklf52cry.out'  
+^^WI }  
+^^WI @ 5,2 CHECKBOX RF 'Read converted file into CRYSTALS now' STATE=ON  
+^^WI @ 6,2 CHECKBOX RM 'Input new twin laws now' STATE=OFF  
+^^WI @ 7,2 GRID GB NROWS=1 NCOLS=3  
+^^WI {  
+^^WI @ 1,1 BUTTON CFBOK '&Ok' DEFAULT  
+^^WI @ 1,3 BUTTON CFBXX '&Cancel'  
+^^WI }  
+^^WI }  
+^^WI SHOW  
+^^CR  
+%  LOOP  
+%    VERIFY BROWSE CFBXX CFBOK  
+%    GET SILENT NOSTORE FINAL ABBREVIATED 'BXX?' 'BXX'  
+%    CASE VALUE  
+%      BLOCK %BROWSE%  
+^^WI SYSOPENFILE '*.hkl;*.dat;' 'HKL format (*.hkl,*.dat)'  
+^^CR  
+%        GET SILENT TEXT 'New filename:'  
+%        IF CVALUE .NE. 'CANCEL' THEN  
+%          CLEAR  
+^^WI SET CINILE TEXT  
+%          TRANSFER "^^WI '" // CVALUE // "'" TO DISPLAY  
+^^CR  
+%          EVALUATE CIN = CVALUE  
+%          IF ( .NOT. ( FILEEXISTS CIN ) ) THEN  
+{E Error: Filename given does not exist.  
+%          END IF  
+%        END IF  
+%      END BLOCK  
+%      BLOCK %CFBXX%  
+^^CO DISPOSE HKLF52CRY  
+%        FINISH  
+%      END BLOCK  
+%      BLOCK %CFBOK%  
+^^?? CINILE TEXT  
+%        GET SILENT TEXT 'CIN name '  
+%        EVALUATE CIN = CVALUE  
+%        IF ( .NOT. ( FILEEXISTS CIN ) ) THEN  
+{E Error: Filename given does not exist.  
+%          ELSE  
+^^?? RF STATE  
+%          VERIFY ON OFF  
+%          VARIABLE LOGICAL RUNNOW  
+%          EVALUATE RUNNOW = FALSE  
+%          GET SILENT NOSTORE FINAL ABBREVIATED ' '  
+%          IF ( VALUE .EQ. 1 ) THEN  
+%            EVALUATE RUNNOW = TRUE  
+%          END IF  
+%%  
+^^?? RM STATE  
+%          VERIFY ON OFF  
+%          EVALUATE NEW25 = FALSE  
+%          GET SILENT NOSTORE FINAL ABBREVIATED ' '  
+%          IF ( VALUE .EQ. 1 ) THEN  
+%            EVALUATE NEW25 = TRUE  
+%          END IF  
+%%  
+^^?? OFNAM TEXT  
+%          GET SILENT TEXT 'Output file '  
+%          EVALUATE COUT = CVALUE  
+%%  
+^^CO DISPOSE HKLF52CRY  
+%          EVALUATE LOOPEND = LOOPCOUNTER  
+%        END IF  
+%      END BLOCK  
+%    END CASE  
+%  END LOOP  
+  
+%% Launch HKLF5 TO CRY  
+%%  
+  
+%  variable character ccommand  
+%  evaluate ccommand = '#SPAWN + "CRYSDIR:hklf52cry.exe " ' -  
+// cin // ' -o ' // cout  
+%  TRANSFER ccommand TO display  
+%  TRANSFER ccommand TO CRYSTALS  
+%%  
+%%  
+%  IF RUNNOW THEN  
+%    TRANSFER '#USE ' // COUT TO CRYSTALS  
+%  end if  
+%%  
+%  IF .NOT. NEW25 THEN  
+%    FINISH
+%  END IF
+%%
+%    copy '#script inlist25'  
+%    VARIABLE INTEGER ITMP  
+%    COPY '#GENERALEDIT 13'  
+%    COPY 'LOCATE RECORDTYPE=101'  
+%% Check for twin laws. If present, restore L13 flag.  
+%    IF ( EXISTS 25 .EQ. 1 ) THEN  
+Found List 25 (twin laws), enabling twin flag  
+%      EVALUATE ITMP = 0  
+%      COPY 'TRANSFER TO OFFSET=1 FROM ITMP'  
+%      COPY 'WRITE'  
+%    END IF  
+%    COPY 'END'  
+%%  
+%%  
+%%  
+%    EVALUATE VOLF = 1.  
+%    IF ( ( EXISTS 25 ) .GE. 1 ) THEN  
+%      COPY '#GENERALEDIT 25'  
+%      COPY 'TRANSHEAD FROM OFFSET=3 TO N25'  
+%      COPY 'GETSERIAL ORIGSER'  
+%      COPY 'END'  
+%      EVALUATE VOLF = 1. / REAL N25  
+%    END IF  
+%%  
+%    IF N25 .GE. 2 THEN  
+%     IF ( EXISTS 5 .NE. 1 ) THEN  
+
+You can only input twin laws and fractions if you have a model
+(LIST 5)
+%       FINISH
+%     END IF
+
+* Resetting element scale factors  
+%      COPY '#GENERALEDIT 5'  
+%      COPY 'TRANSHEAD FROM OFFSET=22 TO NEL'  
+%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'  
+%      COPY 'LOCATE RECORDTYPE=105'  
+%% Insert new record.  
+%      COPY 'TRANSHEAD TO OFFSET=22 FROM N25'  
+%      COPY 'INSERT'  
+%      IF NEL .GT. 0 THEN  
+%% Remove old record  
+%        COPY 'DELETE'  
+%      END IF  
+%      COPY 'TRANSHEAD TO OFFSET=22 FROM N25'  
+%      COPY 'TOP'  
+%      LOOP N25 TIMES  
+%        CASE LOOPCOUNTER  
+%          COPY 'TRANSFER TO OFFSET = 0 FROM VOLF'  
+%          COPY 'TRANSFER TO OFFSET = 1 FROM VOLF'  
+%          COPY 'TRANSFER TO OFFSET = 2 FROM VOLF'  
+%          COPY 'TRANSFER TO OFFSET = 3 FROM VOLF'  
+%          COPY 'TRANSFER TO OFFSET = 4 FROM VOLF'  
+%          COPY 'TRANSFER TO OFFSET = 5 FROM VOLF'  
+%          COPY 'TRANSFER TO OFFSET = 6 FROM VOLF'  
+%          COPY 'TRANSFER TO OFFSET = 7 FROM VOLF'  
+%          COPY 'TRANSFER TO OFFSET = 8 FROM VOLF'  
+%        END CASE  
+%      END LOOP  
+%      COPY 'WRITE'  
+%      COPY 'END'  
+%    END IF  
+%%  
+%%  
+% END SCRIPT  
