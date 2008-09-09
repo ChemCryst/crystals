@@ -1,0 +1,1268 @@
+%!PS
+/top  720 def /bottom   50 def /indent   10 def 
+/linegap   10 def /leftmargin  108 def /right  543 def 
+/ytitle  756 def /ybanner  264 def 
+/pageno    0 def /chapno    0 def /sectno    0 def /point   10 def 
+%begin postscript header                                                        
+/num 10 string def                                                              
+%                                                                               
+/Banner                                                                         
+{                                                                               
+pageno 0 ne {showpage} if                                                       
+/Times-Roman findfont 30 scalefont setfont                                      
+/ypos ybanner def                                                               
+/wid banner stringwidth pop def                                                 
+/w right wid sub def                                                            
+w ypos moveto                                                                   
+banner show                                                                     
+/Times-Roman findfont point scalefont setfont                                   
+}                                                                               
+def                                                                             
+%                                                                               
+/Newpage                                                                        
+{                                                                               
+pageno 0 ne {showpage} if                                                       
+/Times-Roman findfont 10 scalefont setfont                                      
+/ypos ytitle def                                                                
+leftmargin ypos moveto                                                          
+title show                                                                      
+/Times-Roman findfont point scalefont setfont                                   
+pageno -1 gt {                                                                  
+/pageno pageno 1 add def                                                        
+right ypos moveto                                                               
+pageno num cvs show }                                                           
+if                                                                              
+pageno -1 eq                                                                    
+{                                                                               
+right ypos moveto                                                               
+(i) show                                                                        
+}                                                                               
+if                                                                              
+pageno -2 eq                                                                    
+{                                                                               
+right ypos moveto                                                               
+(ii) show                                                                       
+}                                                                               
+if                                                                              
+pageno -3 eq                                                                    
+{                                                                               
+right ypos moveto                                                               
+(iii) show                                                                      
+}                                                                               
+if                                                                              
+pageno -4 eq                                                                    
+{                                                                               
+right ypos moveto                                                               
+(iv) show                                                                       
+}                                                                               
+if                                                                              
+pageno -5 eq                                                                    
+{                                                                               
+right ypos moveto                                                               
+(v) show                                                                        
+}                                                                               
+if                                                                              
+pageno -6 eq                                                                    
+{                                                                               
+right ypos moveto                                                               
+(vi) show                                                                       
+}                                                                               
+if                                                                              
+pageno -7 eq                                                                    
+{                                                                               
+right ypos moveto                                                               
+(vii) show                                                                      
+}                                                                               
+if                                                                              
+pageno -8 eq                                                                    
+{                                                                               
+right ypos moveto                                                               
+(viii) show                                                                     
+}                                                                               
+if                                                                              
+pageno -9 eq                                                                    
+{                                                                               
+right ypos moveto                                                               
+(ix) show                                                                       
+}                                                                               
+if                                                                              
+pageno -10 eq                                                                   
+{                                                                               
+right ypos moveto                                                               
+(x) show                                                                        
+}                                                                               
+if                                                                              
+pageno 0 lt                                                                     
+{                                                                               
+/pageno pageno 1 sub def                                                        
+}                                                                               
+if                                                                              
+/ypos top def                                                                   
+}                                                                               
+def                                                                             
+                                                                                
+/Chapter                                                                        
+{                                                                               
+ypos top ne                                                                     
+{ Newpage } if                                                                  
+/chap (Chapter ) def                                                            
+/Times-Bold findfont 14 scalefont setfont                                       
+/chapno chapno 1 add def                                                        
+/wid chap stringwidth pop def                                                   
+/n chapno num cvs def                                                           
+/wnum n stringwidth pop def                                                     
+/wid wid wnum add def                                                           
+/w right leftmargin sub wid sub 2 div leftmargin add def                        
+w ypos moveto                                                                   
+chap show                                                                       
+n show                                                                          
+%draw line                                                                      
+/x currentpoint pop def                                                         
+/ypos ypos 5 sub def                                                            
+newpath                                                                         
+x ypos moveto                                                                   
+w ypos lineto                                                                   
+0 setgray                                                                       
+stroke                                                                          
+/sectno 0 def                                                                   
+/ypos ypos linegap sub  def                                                     
+/Times-Roman findfont point scalefont setfont                                   
+%add other text if required                                                     
+ichap 1 eq                                                                      
+{ /wid chaptext stringwidth pop def                                             
+/w right leftmargin sub wid sub 2 div leftmargin add def                        
+w ypos moveto                                                                   
+chaptext show                                                                   
+/ypos ypos linegap sub linegap sub def                                          
+/ichap 0 def                                                                    
+}                                                                               
+if                                                                              
+}                                                                               
+def                                                                             
+                                                                                
+                                                                                
+/Write                                                                          
+                                                                                
+{ /Times-Roman findfont point scalefont setfont                                 
+/linewidth right left sub def                                                   
+/wid textstring stringwidth pop def                                             
+/ckern linewidth wid sub def                                                    
+last 1 eq                                                                       
+{ /ckern 0 def } if                                                             
+ckern 0 ne                                                                      
+{ /ckern ckern numspace div def } if                                            
+left ypos moveto %set starting position of text                                 
+ckern 0 8#040 textstring widthshow                                              
+%adds ckern to each space ( 8#040 )                                             
+%wstring show                                                                   
+/ypos ypos linegap sub def % move down the page                                 
+} def                                                                           
+                                                                                
+/WriteCalc                                                                      
+                                                                                
+{ /Times-Roman findfont point scalefont setfont                                 
+left ypos moveto                                                                
+/linewidth right left sub def                                                   
+/wid textstring stringwidth pop def                                             
+/ckern linewidth wid sub def                                                    
+last 1 eq                                                                       
+{ /ckern 0 def } if                                                             
+ckern 0 ne                                                                      
+{ /ckern ckern numspace div def } if                                            
+} def                                                                           
+                                                                                
+/WritePart                                                                      
+{                                                                               
+ckern 0 8#040 textstring widthshow                                              
+%adds ckern to each space ( 8#040 )                                             
+%wstring show                                                                   
+} def                                                                           
+                                                                                
+/WriteBold                                                                      
+{                                                                               
+/Times-Bold findfont point scalefont setfont                                    
+ckern 0 8#040 textstring widthshow                                              
+/Times-Roman findfont point scalefont setfont                                   
+} def                                                                           
+                                                                                
+/WriteItalic                                                                    
+{                                                                               
+/Times-Italic findfont point scalefont setfont                                  
+ckern 0 8#040 textstring widthshow                                              
+/Times-Roman findfont point scalefont setfont                                   
+} def                                                                           
+                                                                                
+/Literal                                                                        
+{                                                                               
+/Courier-BoldOblique findfont litpoint scalefont setfont                        
+left ypos moveto                                                                
+litstring show                                                                  
+/ypos ypos litgap sub def                                                       
+/Times-Roman findfont point scalefont setfont                                   
+}                                                                               
+def                                                                             
+                                                                                
+                                                                                
+/Blank                                                                          
+{                                                                               
+ypos top ne                                                                     
+{ /ypos ypos linegap sub def } if                                               
+} def                                                                           
+                                                                                
+/LitBlank                                                                       
+{                                                                               
+ypos top ne                                                                     
+{ /ypos ypos litgap sub def } if                                                
+} def                                                                           
+                                                                                
+/Instruction                                                                    
+{                                                                               
+%ind is the indent required specified previously                                
+/Times-Bold findfont point scalefont setfont                                    
+left ypos moveto                                                                
+instr show                                                                      
+/ypos ypos linegap sub def                                                      
+/left left indent add def                                                       
+%indenting for text following                                                   
+/Times-Roman findfont point scalefont setfont                                   
+/ypos ypos linegap def                                                          
+}                                                                               
+def                                                                             
+                                                                                
+/Section                                                                        
+                                                                                
+{ /left leftmargin def                                                          
+%bold and underlined followed by text secttext                                  
+/Times-Bold findfont point scalefont setfont                                    
+/sectno sectno 1 add def                                                        
+left ypos moveto                                                                
+/n chapno num cvs def                                                           
+n show                                                                          
+(.) show                                                                        
+/n sectno num cvs def                                                           
+n show                                                                          
+( ) show                                                                        
+secttext show                                                                   
+/x currentpoint pop def                                                         
+/ypos ypos 4 sub def                                                            
+newpath                                                                         
+0 setgray                                                                       
+x ypos moveto                                                                   
+left ypos lineto                                                                
+stroke                                                                          
+/Times-Roman findfont point scalefont setfont                                   
+/ypos ypos linegap sub def                                                      
+}                                                                               
+def                                                                             
+                                                                                
+/List                                                                           
+{                                                                               
+/Times-Bold findfont point scalefont setfont                                    
+/listno listno 1 add def                                                        
+/n listno num cvs def                                                           
+left ypos moveto                                                                
+n show                                                                          
+(\)) show                                                                       
+/Times-Roman findfont point scalefont setfont                                   
+left indent add ypos moveto                                                     
+liststring show                                                                 
+/ypos ypos linegap sub def                                                      
+}                                                                               
+def                                                                             
+                                                                                
+/Docontents                                                                     
+{                                                                               
+/pageno -1 def                                                                  
+Newpage                                                                         
+/ctext (Table of Contents) def                                                  
+/Times-Bold findfont 14 scalefont setfont                                       
+/wid ctext stringwidth pop def                                                  
+/w right leftmargin sub wid sub 2 div leftmargin add def                        
+w ypos moveto                                                                   
+ctext show                                                                      
+/x currentpoint pop def                                                         
+/ypos ypos 5 sub def                                                            
+newpath                                                                         
+x ypos moveto                                                                   
+w ypos lineto                                                                   
+0 setgray                                                                       
+stroke                                                                          
+/ypos ypos linegap sub def                                                      
+/Times-Roman findfont point scalefont setfont                                   
+}                                                                               
+def                                                                             
+                                                                                
+/Indexchapter                                                                   
+{                                                                               
+/ypos ypos linegap sub def                                                      
+ypos bottom lt                                                                  
+{ Newpage } if                                                                  
+/left leftmargin indent add def                                                 
+left ypos moveto                                                                
+(Chapter ) show                                                                 
+/n chapno num cvs def                                                           
+n show                                                                          
+( : ) show                                                                      
+Indextext show                                                                  
+right indent sub ypos moveto                                                    
+/n Indexpage num cvs def                                                        
+n show                                                                          
+}                                                                               
+def                                                                             
+                                                                                
+/Indexsection                                                                   
+{                                                                               
+/ypos ypos linegap sub def                                                      
+ypos bottom lt                                                                  
+{ Newpage } if                                                                  
+/left leftmargin indent add indent add def                                      
+left ypos moveto                                                                
+Indextext show                                                                  
+right indent sub ypos moveto                                                    
+/n Indexpage num cvs def                                                        
+n show                                                                          
+}                                                                               
+def                                                                             
+                                                                                
+/Endcontents                                                                    
+{                                                                               
+ypos top ne { Newpage } if                                                      
+}                                                                               
+def                                                                             
+                                                                                
+/Doindex                                                                        
+{                                                                               
+ypos top ne {Newpage} if                                                        
+/itext (Index) def                                                              
+%djw /Times-Bold findfont 14 scalefont setfont                                  
+/Times-Bold findfont 12 scalefont setfont                                       
+/wid itext stringwidth pop def                                                  
+/w right leftmargin sub wid sub 2 div leftmargin add def                        
+w ypos moveto                                                                   
+itext show                                                                      
+/x currentpoint pop def                                                         
+/ypos ypos 5 sub def                                                            
+newpath                                                                         
+x ypos moveto                                                                   
+w ypos lineto                                                                   
+0 setgray                                                                       
+stroke                                                                          
+/ypos ypos linegap sub def                                                      
+%djw /Times-Roman findfont 10 scalefont setfont                                 
+/Times-Roman findfont 8 scalefont setfont                                       
+/oldtext ( ) def                                                                
+/indexline 15 def                                                               
+/indexflag 0 def                                                                
+/column2 right leftmargin sub 2 div leftmargin add def                          
+/yindtop ypos def                                                               
+}                                                                               
+def                                                                             
+                                                                                
+/Index                                                                          
+{                                                                               
+Indextext oldtext eq                                                            
+  {                                                                             
+  (,) show                                                                      
+   /n Indexpage num cvs def                                                     
+   n show                                                                       
+  }                                                                             
+if                                                                              
+Indextext oldtext ne                                                            
+  {                                                                             
+%djw  /ypos ypos indexline sub def                                              
+  /ypos ypos linegap sub def                                                    
+  ypos bottom lt                                                                
+    {                                                                           
+    indexflag 0 eq                                                              
+      {                                                                         
+      /indexflag 2 def                                                          
+      /ypos yindtop indexline sub def                                           
+      }                                                                         
+    if                                                                          
+    indexflag 1 eq                                                              
+      {                                                                         
+      Newpage                                                                   
+      /yindtop ypos def                                                         
+      /indexflag 0 def                                                          
+%djw      /Times-Roman findfont 10 scalefont setfont                            
+      /Times-Roman findfont 8 scalefont setfont                                 
+      }                                                                         
+    if                                                                          
+    indexflag 2 eq                                                              
+      {                                                                         
+      /indexflag 1 def                                                          
+      }                                                                         
+    if                                                                          
+    indexflag 3 eq                                                              
+      {                                                                         
+      Newpage                                                                   
+      /yindtop ypos def                                                         
+%djw      /Times-Roman findfont 10 scalefont setfont                            
+      /Times-Roman findfont 8 scalefont setfont                                 
+      }                                                                         
+    if                                                                          
+    }                                                                           
+  if                                                                            
+  indexflag 0 eq                                                                
+    {                                                                           
+    leftmargin ypos moveto                                                      
+    }                                                                           
+  if                                                                            
+  indexflag 1 eq                                                                
+    {                                                                           
+    column2 ypos moveto                                                         
+    }                                                                           
+  if                                                                            
+  indexflag 3 eq                                                                
+    {                                                                           
+    leftmargin ypos moveto                                                      
+    }                                                                           
+  if                                                                            
+  Indextext show                                                                
+  (  ) show                                                                     
+  /n Indexpage num cvs def                                                      
+  n show                                                                        
+  /oldtext Indextext def                                                        
+  }                                                                             
+if                                                                              
+}                                                                               
+def                                                                             
+%end postscript header                                                          
+/title (               Overview) def                                                                                                                                                                                                                                                                        
+/banner (Overview) def                                                                                                                                                                                                                                                                                      
+Newpage
+/chaptext (Overview) def                                                                                                                                                                                                                                                                                    
+/ichap 1 def                                                                                                                                                                                                                                                                                                
+Chapter 
+/left leftmargin def 
+/secttext (Overview of the graphical user interface) def Section                                                                                                                                                                                                                                            
+Blank
+/title (               The Menus) def                                                                                                                                                                                                                                                                       
+/banner (The Menus) def                                                                                                                                                                                                                                                                                     
+Newpage
+/chaptext (The Menus) def                                                                                                                                                                                                                                                                                   
+/ichap 1 def                                                                                                                                                                                                                                                                                                
+Chapter 
+/left leftmargin def 
+/secttext (File) def Section                                                                                                                                                                                                                                                                                
+/left leftmargin def 
+/instr (New Working Dir) def Instruction                                                                                                                                                                                                                                                                    
+/left  118 def /ipflag    0 def /numspace   19 def
+/textstring (
+Choosing this item will display a dialog box allowing you to choose a new folder to work in. The current
+) def
+/last 0 def 
+Write
+/left  118 def /ipflag    0 def /numspace   20 def
+/textstring (
+dsc file will be closed, and the working folder will change to the new one. If the new folder contains an
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+existing crfilev2.dsc, this will be opened. 
+) def
+Write
+Blank
+/left leftmargin def 
+/instr (Open Datafile) def Instruction                                                                                                                                                                                                                                                                      
+/left  118 def /ipflag    0 def /numspace   20 def
+/textstring (
+Choose this item to open a new CRYSTALS dsc file. The current dsc file will be closed, and the new one
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+opened. The working directory will change to the folder containing the new dsc file. 
+) def
+Write
+Blank
+/left leftmargin def 
+/instr (Save Datafile) def Instruction                                                                                                                                                                                                                                                                      
+/left  118 def /ipflag    0 def /numspace   17 def
+/textstring (
+No action will be taken. The DSC file is constantly updated as operations are carried out in CRYSTALS,
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+so there is no need to 'save' the current state. 
+) def
+Write
+Blank
+/left leftmargin def 
+/instr (Save Datafile As) def Instruction                                                                                                                                                                                                                                                                   
+/left  118 def /ipflag    0 def /numspace   22 def
+/textstring (
+A dialog box will allow you to choose a filename to save a copy of the current dsc file. After the copy has
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+been saved, the current dsc file is closed, and the new copy is opened. 
+) def
+Write
+Blank
+/left leftmargin def 
+/instr (Open Instruction File \(USE file\)) def Instruction                                                                                                                                                                                                                                                 
+/left  118 def /ipflag    0 def /numspace   12 def
+/textstring (
+Cause CRYSTALS to execute \(USE\) a pre-prepared text file containing CRYSTALS commands and\/or
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+data lists 
+) def
+Write
+Blank
+/left leftmargin def 
+/instr (Exit Crystals) def Instruction                                                                                                                                                                                                                                                                      
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Closes the program.# 
+) def
+Write
+/secttext (X-ray data) def Section                                                                                                                                                                                                                                                                          
+/left  118 def /ipflag    1 def /numspace   15 def
+/textstring (
+The X-ray data menu is concerned with the input, export or editing of experimental X-ray observations
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  108 def
+/last 1 def 
+/textstring (
+and data.# 
+) def
+Write
+/left leftmargin def 
+/instr (Guided Import) def Instruction                                                                                                                                                                                                                                                                      
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Starts up "The Guide".# The Guide tries to suggest a strategy for working with 'routine' structures. 
+) def
+Write
+Blank
+/left leftmargin def 
+/instr (Pre-process) def Instruction                                                                                                                                                                                                                                                                        
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Submenu. See section Preprocess . 
+) def
+Write
+/left leftmargin def 
+/instr (Use KCCDIN output) def Instruction                                                                                                                                                                                                                                                                  
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Reads in CRYSTALS format data files produced by the KCCDIN program# 
+) def
+Write
+/left leftmargin def 
+/instr (Use RC93 output) def Instruction                                                                                                                                                                                                                                                                    
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Reads in CRYSTALS format data files produced by the RC93 program# 
+) def
+Write
+/left leftmargin def 
+/instr (Use DIPIN output) def Instruction                                                                                                                                                                                                                                                                   
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Reads in CRYSTALS format data files produced by the DIPIN program# 
+) def
+Write
+/left leftmargin def 
+/instr (Input\/Edit Cell) def Instruction                                                                                                                                                                                                                                                                   
+/left  118 def /ipflag    0 def /numspace   14 def
+/textstring (
+Displays a dialog box for inputing or editing the cell parameters and their associated standard
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+uncertainties. 
+) def
+Write
+/left leftmargin def 
+/instr (Input\/Edit SpaceGroup) def Instruction                                                                                                                                                                                                                                                             
+/left  118 def /ipflag    0 def /numspace   17 def
+/textstring (
+Displays a dialog box for entering the space group symbol. It may either be hand-typed, in which case
+) def
+/last 0 def 
+Write
+/left  118 def /ipflag    0 def /numspace   19 def
+/textstring (
+there must be a space between each operator, or it may be selected from a list of the most common
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+settings of every space group. 
+) def
+Write
+Blank
+/left leftmargin def 
+/instr (Input\/Edit Cell Contents) def Instruction                                                                                                                                                                                                                                                          
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Displays a dialog box for entering the type and number of every element present in the unit cell.# 
+) def
+Write
+/left leftmargin def 
+/instr (Import Shelx file \(INS or RES\)) def Instruction                                                                                                                                                                                                                                                   
+/left  118 def /ipflag    0 def /numspace   20 def
+/textstring (
+Opens a dialog to help import SHELX .ins or .res files. Choose the file name. You will need to know the
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+space group symbol. 
+) def
+Write
+/left leftmargin def 
+/instr (Import reflection data) def Instruction                                                                                                                                                                                                                                                             
+/left  118 def /ipflag    0 def /numspace   16 def
+/textstring (
+Opens a dialog which allows the import of reflection data in a variety of formats, most commonly,
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+SHELX HKLF4 format.# 
+) def
+Write
+/left leftmargin def 
+/instr (Import "cif" files) def Instruction                                                                                                                                                                                                                                                                 
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Opens a dialog which allows the import of data from "cif" and "fcf" files. 
+) def
+Write
+/left  128 def /ipflag    1 def /numspace   18 def
+/textstring (
+If the "cif" file contains more than one structure, the data from each may either be put into separate
+) def
+/last 0 def 
+Write
+/left  118 def /ipflag    0 def /numspace   19 def
+/textstring (
+CRYSTALS format files, or into one single file. If there is a single file, it can be imported directly into
+) def
+/last 0 def 
+Write
+/left  118 def /ipflag    0 def /numspace   17 def
+/textstring (
+CRYSTALS. If the "cif" file contians a Z'=2 structure, the two molecules can be 'matched', ie tested for
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+similarity. 
+) def
+Write
+/left leftmargin def 
+/instr (File Export) def Instruction                                                                                                                                                                                                                                                                        
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Enables the creation of text files in various formats# 
+) def
+Write
+/left leftmargin def 
+/instr (Filter reflections) def Instruction                                                                                                                                                                                                                                                                 
+Newpage
+/left  118 def /ipflag    0 def /numspace   16 def
+/textstring (
+Allows filters to be specified for rejecting certain categories of reflections. If no filters are present, the
+) def
+/last 0 def 
+Write
+/left  118 def /ipflag    0 def /numspace   15 def
+/textstring (
+dialog will offer a default of rejecting reflections where I\/sigma\(I\)<3.0 and also some very low angle
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+reflections.# 
+) def
+Write
+/left leftmargin def 
+/instr (Edit goodies) def Instruction                                                                                                                                                                                                                                                                       
+/left  118 def /ipflag    0 def /numspace   19 def
+/textstring (
+Allows editing of the 'goodies' - lots of information that is required for a useful CIF is stored here. This
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+dialog provides a convenient way to view and edit it.# 
+) def
+Write
+/left leftmargin def 
+/instr (View Reflections) def Instruction                                                                                                                                                                                                                                                                   
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+This item will write the current list of reflections to a file and open that file for you to inspect them.# 
+) def
+Write
+/secttext (X-ray data -> Pre-process) def Section                                                                                                                                                                                                                                                           
+/left leftmargin def 
+/instr (Run KccdIn \(Kccd data\)) def Instruction                                                                                                                                                                                                                                                           
+/left  118 def /ipflag    0 def /numspace   13 def
+/textstring (
+KccdIn takes an import.cif file, generated by Nonius Kappa CCD diffractomer software and produces
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+input files suitable for reading into Crystals. 
+) def
+Write
+/left leftmargin def 
+/instr (Run RC93 \(Cad4 data\)) def Instruction                                                                                                                                                                                                                                                             
+/left  118 def /ipflag    0 def /numspace   14 def
+/textstring (
+RC93 takes cpd.dat and cpd.psi files, generated by Nonius CAD 4 diffractomer software and produces
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+input files suitable for reading into Crystals. 
+) def
+Write
+/left leftmargin def 
+/instr (Run DipIn \(DIP2000 data\)) def Instruction                                                                                                                                                                                                                                                         
+/left  118 def /ipflag    0 def /numspace   13 def
+/textstring (
+RC93 takes reflection and listing files, generated by DIP2000 diffractomer software and produces input
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+files suitable for reading into Crystals. 
+) def
+Write
+/secttext (Solve) def Section                                                                                                                                                                                                                                                                               
+/secttext (Structure) def Section                                                                                                                                                                                                                                                                           
+/left leftmargin def 
+/instr (Undo) def Instruction                                                                                                                                                                                                                                                                               
+/left  128 def /ipflag    1 def /numspace   19 def
+/textstring (
+Allows you to step back to any previous model \(List 5\) stored in the DSC file. All models are stored
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+unless you PURGE the DSC datafile, or explicitly delete them using this dialog. 
+) def
+Write
+/left  128 def /ipflag    1 def /numspace   17 def
+/textstring (
+Note: If you use the GUIDE, and automatic purge occurs after you have checked for extinction - any
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+models marked explicilty as 'to be retained' will not be PURGED.# 
+) def
+Write
+/secttext (Fourier) def Section                                                                                                                                                                                                                                                                             
+/secttext (Refinement) def Section                                                                                                                                                                                                                                                                          
+/secttext (Results) def Section                                                                                                                                                                                                                                                                             
+/left leftmargin def 
+/instr (Likely H-bonds) def Instruction                                                                                                                                                                                                                                                                     
+/left  118 def /ipflag    0 def /numspace   17 def
+/textstring (
+Finds all X--H distances \(X=O or N\) where the bond distance falls between 1.5 and 2.2 Angstroms. Also
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+lists the X-H--X angles so that you can decide if the X--H is an acceptable hydrogen bond. 
+) def
+Write
+/left leftmargin def 
+/instr (Agreement analysis) def Instruction                                                                                                                                                                                                                                                                 
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Displays graphs of four different analyses of variance.# 
+) def
+Write
+/left leftmargin def 
+/instr (Difabs analysis) def Instruction                                                                                                                                                                                                                                                                    
+/left  118 def /ipflag    0 def /numspace   17 def
+/textstring (
+Creates a contour map of the difabs absorption correction that WOULD BE applied if you were to run
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+DIFABS. The flatter the map the better.# 
+) def
+Write
+/left leftmargin def 
+/instr (Rotax analysis\/twins) def Instruction                                                                                                                                                                                                                                                              
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Submenu, see section rotax 
+) def
+Write
+/left leftmargin def 
+/instr (Edit CIF goodies) def Instruction                                                                                                                                                                                                                                                                   
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Allows you to edit some of the values that will be put in the final CIF# 
+) def
+Write
+/left leftmargin def 
+/instr (Publication tables) def Instruction                                                                                                                                                                                                                                                                 
+/left leftmargin def 
+/instr (Allows you to output data in a variety of ways. CIF is probably the most) def Instruction                                                                                                                                                                                                           
+/left  118 def /ipflag    0 def /numspace   16 def
+/textstring (
+commonly used format. Please note that the standard uncertainties output in CIF files follow the 'Rule of
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+19', as requesed by Acta Cryst: 
+) def
+Write
+/ipflag    1 def /left  128 def
+/last 1 def 
+/textstring (
+What it means is as follows.... 
+) def
+Write
+/left leftmargin def 
+/litpoint     8 def 
+/litgap     8 def 
+LitBlank
+/litstring 
+(SU values are quoted to two digits precision if they are <= 19.) def Literal                                                                                                                                                                                                                               
+/litstring 
+(E.g.) def Literal                                                                                                                                                                                                                                                                                          
+/litstring 
+(rule of 9:    5.548\(1\)   1.453\(2\)    3.921\(3\)    1.2287\(8\)) def Literal                                                                                                                                                                                                                            
+/litstring 
+(rule of 19:   5.5483\(9\)  1.4532\(16\)  3.921\(3\)    1.2287\(8\)) def Literal                                                                                                                                                                                                                            
+/litstring 
+(rule of 29:   5.5483\(9\)  1.4532\(16\)  3.9214\(29\)  1.2287\(9\)) def Literal                                                                                                                                                                                                                            
+LitBlank
+/ipflag    1 def /left  128 def
+/last 1 def 
+/textstring (
+The object of this approach is to provide a more consistent distribution of precision across all values. 
+) def
+Write
+/left leftmargin def 
+/instr (Summary file) def Instruction                                                                                                                                                                                                                                                                       
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Produces a human-readable summary file of the crystal structure# 
+) def
+Write
+/left leftmargin def 
+/instr (Acta checks) def Instruction                                                                                                                                                                                                                                                                        
+/left  118 def /ipflag    0 def /numspace   16 def
+/textstring (
+Performs some basic validation checks on a complete or almost complete structure, to try to catch any
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+problems remaining.# 
+) def
+Write
+/left leftmargin def 
+/instr (Checkcif on the web) def Instruction                                                                                                                                                                                                                                                                
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Just a link to the IUCr cif checking website.# 
+) def
+Write
+/left leftmargin def 
+/instr (Platon) def Instruction                                                                                                                                                                                                                                                                             
+/left  118 def /ipflag    0 def /numspace   19 def
+/textstring (
+Writes files for and runs Platon, if you haven't run it before, you will be asked to browse for the
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+PLATON.EXE file on your hard disk.# 
+) def
+Write
+/secttext (Results -> Rotax) def Section                                                                                                                                                                                                                                                                    
+/left leftmargin def 
+/instr (ROTAX) def Instruction                                                                                                                                                                                                                                                                              
+/left  118 def /ipflag    0 def /numspace   16 def
+/textstring (
+Runs the Rotax procedure for looking for twin-laws. Output consists of a selection of possible twin laws
+) def
+/last 0 def 
+Write
+/left  118 def /ipflag    0 def /numspace   14 def
+/textstring (
+with associated figures-of-merit. Figures closer to zero are best, but beware figures of exactly zero
+) def
+/last 0 def 
+Write
+/left  118 def /ipflag    0 def /numspace   16 def
+/textstring (
+\(corresponding to exact lattice overlap\), since they are probably just part of the point group symmetry of
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+your structure. 
+) def
+Write
+Newpage
+/ipflag    1 def /left  128 def
+/last 1 def 
+/textstring (
+You may choose a twin law to be applied# 
+) def
+Write
+/left leftmargin def 
+/instr (Input twinned structure) def Instruction                                                                                                                                                                                                                                                            
+/left  118 def /ipflag    0 def /numspace   18 def
+/textstring (
+Allows you to give a known twin-law. The ROTAX option above is probably easier to use, even if you
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+already know the twin law.# 
+) def
+Write
+/left leftmargin def 
+/instr (Remove twin laws) def Instruction                                                                                                                                                                                                                                                                   
+/left  118 def /ipflag    0 def /numspace   18 def
+/textstring (
+Removes the twin laws \(List 25\), removes the twin scales from the model \(List 5\) and reverts to the
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+original reflection listing. \(Saved during the application of the twin-law\). 
+) def
+Write
+/secttext (Graphics) def Section                                                                                                                                                                                                                                                                            
+/left leftmargin def 
+/instr (Cameron Graphics) def Instruction                                                                                                                                                                                                                                                                   
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Starts Cameron, a program for visualising crystals structure packing and producing publication diagrams# 
+) def
+Write
+/left leftmargin def 
+/instr (Special) def Instruction                                                                                                                                                                                                                                                                            
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Submenu. See section special . 
+) def
+Write
+/left leftmargin def 
+/instr (Import last Cameron output) def Instruction                                                                                                                                                                                                                                                         
+/left  118 def /ipflag    0 def /numspace   20 def
+/textstring (
+Reads in the model which Cameron wrote at the end of its last run. Could be useful if you've trashed the
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+model since then \(although, see also: Structure -> Undo, section undo \). 
+) def
+Write
+/left leftmargin def 
+/instr (Import last Cameron input) def Instruction                                                                                                                                                                                                                                                          
+/left  118 def /ipflag    0 def /numspace   18 def
+/textstring (
+Reads in the model which CRYSTALS last wrote to send to Cameron. Could be useful if you trashed the
+) def
+/last 0 def 
+Write
+/left  118 def /ipflag    0 def /numspace   14 def
+/textstring (
+model in Cameron and then accidentally brought it back into CRYSTALS. \(Although, see also: Structure
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+-> Undo, section undo \). 
+) def
+Write
+/left leftmargin def 
+/instr (View CHIME file) def Instruction                                                                                                                                                                                                                                                                    
+/left  118 def /ipflag    0 def /numspace   19 def
+/textstring (
+If you have saved a CHIME file whilst in CAMERON, this opens it. If you don't have a .pdb viewer
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+installed, you will get a 'Choose Program' dialog instead.# 
+) def
+Write
+/secttext (Graphics -> Special) def Section                                                                                                                                                                                                                                                                 
+/left leftmargin def 
+/instr (Cameron \(use existing input files\)) def Instruction                                                                                                                                                                                                                                               
+/left  118 def /ipflag    0 def /numspace   16 def
+/textstring (
+Starts Cameron without writing new input files for it. Useful if you have an external program that
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+produces cameron.ini and cameron.l5i files. 
+) def
+Write
+/secttext (Appearance) def Section                                                                                                                                                                                                                                                                          
+/left leftmargin def 
+/instr (Atoms) def Instruction                                                                                                                                                                                                                                                                              
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Submenu. See section atoms . 
+) def
+Write
+/left leftmargin def 
+/instr (Model) def Instruction                                                                                                                                                                                                                                                                              
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Submenu. See section model . 
+) def
+Write
+/left leftmargin def 
+/instr (Auto scale \(zoom off\)) def Instruction                                                                                                                                                                                                                                                            
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Restores the model to its original view, if it has been zoomed.# 
+) def
+Write
+/left leftmargin def 
+/instr (Set Text Font) def Instruction                                                                                                                                                                                                                                                                      
+/left  118 def /ipflag    0 def /numspace   19 def
+/textstring (
+Allows you to choose a font for the text output window. I recommend Lucida Console, or Courier - in any
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+case use a fixed\/monospaced font, otherwise the output of tables will not make much sense. 
+) def
+Write
+/left leftmargin def 
+/instr (Set Input Font) def Instruction                                                                                                                                                                                                                                                                     
+/left  118 def /ipflag    0 def /numspace   17 def
+/textstring (
+Lets you choose a font for the input editbox. Might be useful if you are demonstrating command line
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+features on a high-res screen.# 
+) def
+Write
+/secttext (Appearance -> Atoms) def Section                                                                                                                                                                                                                                                                 
+/left leftmargin def 
+/instr (Covalent) def Instruction                                                                                                                                                                                                                                                                           
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Sets radius of atoms displayed in the main model window to be 1\/4 of their covalent radius.# 
+) def
+Write
+/left leftmargin def 
+/instr (Van der Walls) def Instruction                                                                                                                                                                                                                                                                      
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Sets the radius of atoms displayed in the main model window to be the VDW radius.# 
+) def
+Write
+/left leftmargin def 
+/instr (Thermal) def Instruction                                                                                                                                                                                                                                                                            
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Displays atoms as either ellipse representation of ADPs, or sphere representing U[iso].# 
+) def
+Write
+/left leftmargin def 
+/instr (Quarter size) def Instruction                                                                                                                                                                                                                                                                       
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Set radius to 1\/4 of given value \(either covalent, vdw or thermal\).# 
+) def
+Write
+/left leftmargin def 
+/instr (Half size) def Instruction                                                                                                                                                                                                                                                                          
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Set radius to 1\/2 of given value \(either covalent, vdw or thermal\).# 
+) def
+Write
+/left leftmargin def 
+/instr (Full size) def Instruction                                                                                                                                                                                                                                                                          
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Set radius to given value \(either covalent, vdw or thermal\).# 
+) def
+Write
+/secttext (Appearance -> Model) def Section                                                                                                                                                                                                                                                                 
+/left leftmargin def 
+/instr (Update model) def Instruction                                                                                                                                                                                                                                                                       
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+If automatic update is disabled, this command updates the model# 
+) def
+Write
+/left leftmargin def 
+/instr (Auto update OFF) def Instruction                                                                                                                                                                                                                                                                    
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Disables auto update. Useful for big structures where the drawing is significantly slowing the program# 
+) def
+Write
+/left leftmargin def 
+/instr (Auto update ON) def Instruction                                                                                                                                                                                                                                                                     
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Enables auto update of the model window.# 
+) def
+Write
+/left leftmargin def 
+/instr (Set wallpaper) def Instruction                                                                                                                                                                                                                                                                      
+/left  118 def /ipflag    0 def /numspace   16 def
+/textstring (
+Experimental feature. Allows you to set the background of the model window with a bitmap. The bitmap
+) def
+/last 0 def 
+Write
+/left  118 def /ipflag    0 def /numspace   16 def
+/textstring (
+is stretched or shrunk to fit the window. Significantly slows the drawing on slower machines. Also, the
+) def
+/last 0 def 
+Write
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+width of the bitmap in pixels must be a multiple of 4.# 
+) def
+Write
+/left leftmargin def 
+/instr (No wallpaper) def Instruction                                                                                                                                                                                                                                                                       
+/ipflag    0 def /left  118 def
+/last 1 def 
+/textstring (
+Removes the model background if present# 
+) def
+Write
+/secttext (Development) def Section                                                                                                                                                                                                                                                                         
+/left  118 def /ipflag    1 def /numspace   15 def
+/textstring (
+This menu contains items that are currently under development. They are not documented yet, and you
+) def
+/last 0 def 
+Write
+Newpage
+/left  108 def /ipflag    0 def /numspace   19 def
+/textstring (
+should not need to use them. If you wish to experiment, please make a copy of your structure and experiment
+) def
+/last 0 def 
+Write

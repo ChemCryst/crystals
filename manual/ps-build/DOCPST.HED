@@ -1,0 +1,425 @@
+%begin postscript header
+/num 10 string def 
+%
+/Banner
+{
+pageno 0 ne {showpage} if
+/Times-Roman findfont 30 scalefont setfont
+/ypos ybanner def
+/wid banner stringwidth pop def
+/w right wid sub def
+w ypos moveto
+banner show
+/Times-Roman findfont point scalefont setfont
+}
+def
+%
+/Newpage
+{
+pageno 0 ne {showpage} if
+/Times-Roman findfont 10 scalefont setfont
+/ypos ytitle def
+leftmargin ypos moveto
+title show
+/Times-Roman findfont point scalefont setfont
+pageno -1 gt {
+/pageno pageno 1 add def
+right ypos moveto
+pageno num cvs show }
+if
+pageno -1 eq
+{
+right ypos moveto
+(i) show
+}
+if
+pageno -2 eq
+{
+right ypos moveto
+(ii) show
+}
+if
+pageno -3 eq
+{
+right ypos moveto
+(iii) show
+}
+if
+pageno -4 eq
+{
+right ypos moveto
+(iv) show
+}
+if
+pageno -5 eq
+{
+right ypos moveto
+(v) show
+}
+if
+pageno -6 eq
+{
+right ypos moveto
+(vi) show
+}
+if
+pageno -7 eq
+{
+right ypos moveto
+(vii) show
+}
+if
+pageno -8 eq
+{
+right ypos moveto
+(viii) show
+}
+if
+pageno -9 eq
+{
+right ypos moveto
+(ix) show
+}
+if
+pageno -10 eq
+{
+right ypos moveto
+(x) show
+}
+if
+pageno 0 lt
+{
+/pageno pageno 1 sub def
+}
+if
+/ypos top def
+}
+def
+ 
+/Chapter
+{
+ypos top ne
+{ Newpage } if
+/chap (Chapter ) def
+/Times-Bold findfont 14 scalefont setfont
+/chapno chapno 1 add def
+/wid chap stringwidth pop def
+/n chapno num cvs def
+/wnum n stringwidth pop def
+/wid wid wnum add def
+/w right leftmargin sub wid sub 2 div leftmargin add def
+w ypos moveto
+chap show
+n show
+%draw line
+/x currentpoint pop def
+/ypos ypos 5 sub def
+newpath
+x ypos moveto
+w ypos lineto
+0 setgray
+stroke
+/sectno 0 def
+/ypos ypos linegap sub  def
+/Times-Roman findfont point scalefont setfont
+%add other text if required
+ichap 1 eq
+{ /wid chaptext stringwidth pop def
+/w right leftmargin sub wid sub 2 div leftmargin add def
+w ypos moveto
+chaptext show
+/ypos ypos linegap sub linegap sub def
+/ichap 0 def
+}
+if
+}
+def
+ 
+ 
+/Write
+ 
+{ /Times-Roman findfont point scalefont setfont
+/linewidth right left sub def
+/wid textstring stringwidth pop def
+/ckern linewidth wid sub def
+last 1 eq
+{ /ckern 0 def } if
+ckern 0 ne
+{ /ckern ckern numspace div def } if
+left ypos moveto %set starting position of text
+ckern 0 8#040 textstring widthshow 
+%adds ckern to each space ( 8#040 )
+%wstring show
+/ypos ypos linegap sub def % move down the page
+} def
+
+/WriteCalc
+ 
+{ /Times-Roman findfont point scalefont setfont
+left ypos moveto
+/linewidth right left sub def
+/wid textstring stringwidth pop def
+/ckern linewidth wid sub def
+last 1 eq
+{ /ckern 0 def } if
+ckern 0 ne
+{ /ckern ckern numspace div def } if
+} def
+ 
+/WritePart
+{
+ckern 0 8#040 textstring widthshow 
+%adds ckern to each space ( 8#040 )
+%wstring show
+} def
+
+/WriteBold
+{
+/Times-Bold findfont point scalefont setfont
+ckern 0 8#040 textstring widthshow
+/Times-Roman findfont point scalefont setfont
+} def
+
+/WriteItalic
+{
+/Times-Italic findfont point scalefont setfont
+ckern 0 8#040 textstring widthshow
+/Times-Roman findfont point scalefont setfont
+} def
+
+/Literal
+{
+/Courier-BoldOblique findfont litpoint scalefont setfont
+left ypos moveto
+litstring show
+/ypos ypos litgap sub def
+/Times-Roman findfont point scalefont setfont
+}
+def
+ 
+
+/Blank
+{
+ypos top ne
+{ /ypos ypos linegap sub def } if
+} def
+ 
+/LitBlank
+{
+ypos top ne
+{ /ypos ypos litgap sub def } if
+} def
+
+/Instruction
+{
+%ind is the indent required specified previously
+/Times-Bold findfont point scalefont setfont
+left ypos moveto
+instr show
+/ypos ypos linegap sub def
+/left left indent add def
+%indenting for text following
+/Times-Roman findfont point scalefont setfont
+/ypos ypos linegap def
+}
+def
+ 
+/Section
+ 
+{ /left leftmargin def
+%bold and underlined followed by text secttext
+/Times-Bold findfont point scalefont setfont
+/sectno sectno 1 add def
+left ypos moveto
+/n chapno num cvs def
+n show
+(.) show
+/n sectno num cvs def
+n show
+( ) show
+secttext show
+/x currentpoint pop def
+/ypos ypos 4 sub def
+newpath
+0 setgray
+x ypos moveto
+left ypos lineto
+stroke
+/Times-Roman findfont point scalefont setfont
+/ypos ypos linegap sub def
+}
+def
+ 
+/List
+{
+/Times-Bold findfont point scalefont setfont
+/listno listno 1 add def
+/n listno num cvs def
+left ypos moveto
+n show
+(\)) show
+/Times-Roman findfont point scalefont setfont
+left indent add ypos moveto
+liststring show
+/ypos ypos linegap sub def
+}
+def
+ 
+/Docontents
+{
+/pageno -1 def
+Newpage
+/ctext (Table of Contents) def
+/Times-Bold findfont 14 scalefont setfont
+/wid ctext stringwidth pop def
+/w right leftmargin sub wid sub 2 div leftmargin add def
+w ypos moveto
+ctext show
+/x currentpoint pop def
+/ypos ypos 5 sub def
+newpath
+x ypos moveto
+w ypos lineto
+0 setgray
+stroke
+/ypos ypos linegap sub def
+/Times-Roman findfont point scalefont setfont
+}
+def
+ 
+/Indexchapter
+{
+/ypos ypos linegap sub def
+ypos bottom lt
+{ Newpage } if
+/left leftmargin indent add def
+left ypos moveto
+(Chapter ) show
+/n chapno num cvs def
+n show
+( : ) show
+Indextext show
+right indent sub ypos moveto
+/n Indexpage num cvs def
+n show
+}
+def
+ 
+/Indexsection
+{
+/ypos ypos linegap sub def
+ypos bottom lt
+{ Newpage } if
+/left leftmargin indent add indent add def
+left ypos moveto
+Indextext show
+right indent sub ypos moveto
+/n Indexpage num cvs def
+n show
+}
+def
+ 
+/Endcontents
+{
+ypos top ne { Newpage } if
+}
+def
+ 
+/Doindex
+{
+ypos top ne {Newpage} if
+/itext (Index) def
+%djw /Times-Bold findfont 14 scalefont setfont
+/Times-Bold findfont 12 scalefont setfont
+/wid itext stringwidth pop def
+/w right leftmargin sub wid sub 2 div leftmargin add def
+w ypos moveto
+itext show
+/x currentpoint pop def
+/ypos ypos 5 sub def
+newpath
+x ypos moveto
+w ypos lineto
+0 setgray
+stroke
+/ypos ypos linegap sub def
+%djw /Times-Roman findfont 10 scalefont setfont
+/Times-Roman findfont 8 scalefont setfont
+/oldtext ( ) def
+/indexline 15 def
+/indexflag 0 def
+/column2 right leftmargin sub 2 div leftmargin add def
+/yindtop ypos def
+}
+def
+ 
+/Index
+{
+Indextext oldtext eq
+  {
+  (,) show
+   /n Indexpage num cvs def
+   n show 
+  }
+if
+Indextext oldtext ne
+  {
+%djw  /ypos ypos indexline sub def
+  /ypos ypos linegap sub def
+  ypos bottom lt
+    {
+    indexflag 0 eq
+      {
+      /indexflag 2 def
+      /ypos yindtop indexline sub def
+      }
+    if
+    indexflag 1 eq
+      {
+      Newpage
+      /yindtop ypos def
+      /indexflag 0 def
+%djw      /Times-Roman findfont 10 scalefont setfont 
+      /Times-Roman findfont 8 scalefont setfont 
+      }
+    if    
+    indexflag 2 eq
+      {
+      /indexflag 1 def
+      }
+    if
+    indexflag 3 eq
+      {
+      Newpage
+      /yindtop ypos def
+%djw      /Times-Roman findfont 10 scalefont setfont 
+      /Times-Roman findfont 8 scalefont setfont 
+      }
+    if    
+    }
+  if
+  indexflag 0 eq
+    {
+    leftmargin ypos moveto
+    }
+  if
+  indexflag 1 eq
+    {
+    column2 ypos moveto
+    }
+  if
+  indexflag 3 eq
+    {
+    leftmargin ypos moveto
+    }
+  if
+  Indextext show
+  (  ) show
+  /n Indexpage num cvs def
+  n show
+  /oldtext Indextext def
+  } 
+if
+}
+def
+%end postscript header

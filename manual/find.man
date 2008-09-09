@@ -1,0 +1,316 @@
+US 10  0  0  8
+   1.50   0.70   1.00   0.70   0.15   0.15   0.50
+#TFragment Search
+#ZFRAGMENT SEARCH#
+#YFragment Search - \FIND#
+#PFIND uses a CCDC-type QUEST file to search out molecular fragments in 
+the structure, and then set up CRYSTALS commands using the atoms found.
+#N   6#
+#J
+\FIND
+CTRL APPEND= EXTEND= OVERLAP= MCS= SOURCE=
+QUERY FILE= MULTIPLE= OVERLAP=
+OUTFILE QUERY= OPTION= OCCURRENCE= ACTION= FILE=
+PARAMETER RMIN= RMAX= THRESHOLD= MAXISO=
+#
+
+#I\FIND#
+#PThe search string (QUERY) and CRYSATALS commands (OPTIONS) are usually
+stored in a pre-prepared file.
+#Q
+#DCTRL APPEND= EXTEND= OVERLAP= MCS= SOURCE=#
+#PThe CTRL directive sets up the overall control of the search, and
+defaults for the output. 
+
+#KAPPEND=# 
+#PDetermines how, by default, any output (i.e. template commands) is
+added to its chosen file.  APPEND=YES will append output, otherwise the
+file will be overwritten.  The APPEND action defined here can be
+overridden by the OUTFILE directive. 
+#J
+      YES (Default)
+      NO
+#
+#KEXTEND=# 
+#PDetermines whether to extend the structure (if it is of LIST 5
+format) using the symmetry + connectivity extension algorithm described in
+Kinna Thesis, Chapter 4. 
+#J
+      YES (Default)
+      NO
+#
+
+#KOVERLAP=# 
+#PSpecifies whether, by default, different queries are allowed to
+overlap in the structure.  This is overridden by the OVERLAP parameter of
+the QUERY directive. 
+#J
+      YES 
+      NO (Default)
+#
+
+#KSORT=# 
+#PIf YES, requests that multiple queries are sorted into descending
+order of size before being searched for in the sorted order, rather than
+in the order in which they occur in the #FIND command.  This may be useful
+when specifying non-overlapping multiple queries for which the smaller
+queries may be substructures of the larger queries.  For example, Glycine
+is a substructure of all amino acids. 
+#J
+      YES  
+      NO (Default)
+#
+
+#KMCS=#
+#P Not yet implemented.  Requests maximal common subgraph search.
+#J
+      YES 
+      NO (Default)
+#
+
+
+#KSOURCE=#
+#PDefines where the structure is to be found. 
+     The FILE parameter, to take structure input from a #FIND - type query
+file, is not yet fully implemented. 
+#J
+      LIST5 (Default)
+      LIST10
+      FILE 
+#
+#KGRAPH=#
+#PDefines the type of graph to be used to represent structure and
+query. 
+#J
+      ATOM (Default)
+      BOND 
+#
+#DQUERY FILE= MULTIPLE= OVERLAP=#
+#PThis directive defines the source of query files.  There is no limit
+other than computer memory on the number of queries to be held for a
+particular search. 
+
+#KFILE=# 
+#PThis is a filename (no default) and must be the last parameter to the 
+QUERY directive, and specifies
+the file from which the query will be taken.  All other parameters of this
+QUERY directive refer to the search for this file. 
+
+#KMULTIPLE=# 
+#PIf YES is given, #FIND attempts to locate the query as many times as
+possible in the structure.  If NO, the search will terminate after the
+query has been found once.  If YES, multiple occurrences will be searched
+for but output will not be generated for automorphisms.  For example, the
+topological symmetry of a six- membered ring query means that it can be
+mapped six times onto the same six- membered ring from the structure, but
+output will only be written for the first of these mappings.  A specific
+mapping can be requested using the KNOWN directive. 
+#J
+      YES (Default)
+      NO
+#
+
+#KOVERLAP=#
+#PDefines whether this query is allowed to overlap with any others, or
+other occurrences of itself in the structure.  If not, the effect will be
+to delete the query from the structure each time it is located, before
+continuing the search.  This overrides the default OVERLAP behaviour
+specified in the CTRL directive. 
+#J
+      YES
+      NO (Default)
+#
+
+#DOUTFILE QUERY= OPTION= OCCURRENCE= ACTION= FILE=#
+#PThis is an
+optional directive controlling specifically the destination of the output
+for the results of the template search. 
+     
+#KFILE=#
+#PThis is a filename (no default) and must be the last parameter to 
+the OUTFILE directive, and
+specifies an output file. 
+#PThe default output file is different for each query, and is given by
+the stem of the query filename + an extension determined by the number of
+the occurrence of that query.  For example, by default the output
+corresponding to the first occurrence of the query defined in file
+`query.dat' is sent to file `query.1'.  If a file with this extension
+number already exists, the number is incremented until a new file can be
+created (for example, if files `query.1', `query.2' and `query.3' already
+exist, the output for the first occurrence of the query in file
+`query.dat' is written to file `query.4'. 
+
+#KQUERY=#
+#PDefines the integer number, from the order in which they are specified in the
+#FIND command, of the query to which the current OUTFILE directive is
+relevant.  By default the current OUTFILE directive refers to the query
+file most recently specified.  For example: 
+
+sends output for query file QUERY1.DAT to file OUTPUT.OUT
+
+#KOPTION=# 
+#P An integer specifying 
+a single command group (first command group is group 1) to
+which this OUTFILE directive applies.  If the OPTION parameter is not set,
+all command groups for the relevant query are sent to this file. 
+
+#KOCCURRENCE=#
+#P An integer
+specifying a single occurrence of this query (if multiple occurrences
+of the query are being sought) to which this OUTFILE directive applies. 
+If the OCCURRENCE parameter is not set, output relevant all occurrences of
+the query are sent to this file. 
+
+#KACTION=#
+     For the output being sent to the file being specified by this OUTFILE
+directive, defines whether to overwrite or append to this file.
+#J
+      APPEND (Default)
+      OVERWRITE 
+#
+#DKNOWN QUERY= SATOM= QATOM=
+#PNot yet fully implemented.  This forces the search to attempt a
+mapping between query and structure satisfying a defined mapping between
+an atom in the structure and one in the query.  This could be used to
+request a particular mapping when a symmetric query could be mapped in
+several ways onto the same atom from the structure, or when the same query
+could be found multiply in the structure but only one particular
+occurrence is required. 
+
+#KQUERY=# 
+#PAn integer
+definING the number, from the order in which they are specified in the
+\FIND command, of the query to which the current KNOWN directive is
+relevant.  By default (as with OUTFILE) the current KNOWN directive refers
+to the query file most recently specified.
+
+#KSATOM=# 
+#PThis gives the atom specification of the structure atom. 
+
+#KQATOM=# 
+#PThis gives the atom specification of the query atom.
+#N   7#
+#J
+example: 
+      \FIND
+      QUERY FILE=QUERY1.DAT
+      QUERY FILE=QUERY2.DAT
+      KNOWN SATOM=C(1) QATOM=2
+      END
+#
+will look in the structure for the particular occurrence of QUERY2.DAT, if
+it exists, which has C(1) from the structure corresponding to the second
+atom from the template file definition.
+
+#DPARAMETER RMIN= RMAX= THRESHOLD= MAXISO=#
+#PThis directive specifies parameters of the search. 
+
+#KRMIN=# 
+#PThis specifies the minimum distance (default 0.5 Angstrom)
+used in determining connections in the graph of the structure.
+Two atoms are not considered connected for the purpose of the connectivity
+search if their separation is less than RMIN.
+
+#KRMAX=#
+#PThis specifies the maximum distance (default 2.0 Angstrom)
+used in determining connections in the graph of the structure.
+Two atoms are not considered connected for the purpose of the connectivity
+search if their separation is greater than RMAX.
+
+For example, the following searches for the query defined in query.find
+within a graph of the structure constructed by considering as bonded only
+those atoms within range 0.9 - 1.7 Angstrom.
+#J
+      \FIND
+      QUERY FILE=QUERY.DAT
+      PARAM RMIN=0.9 RMAX=1.7
+      END
+#
+#PIf distance information is specified in the query file definition, the
+range limits defined by RMIN and RMAX are used to determine connections in
+the structure only if they exceed the limits implied by the distance
+specification (see `Query File Specification' below).
+
+#KTHRESHOLD=# 
+#PThis is only available when using the GRAPH=BOND option.  It allows
+the user, at the command level, to vary the precision with which any
+distances required by the geometric search are enforced. 
+
+#P(See `query file definition' below) A distance between two atoms in a
+geometric search is constrained using two two real numbers.  In the case
+of the GRAPH=BOND option, these are taken to be the mean bond length and
+its standard deviation. 
+
+#PAssuming that the bond lengths are drawn from a non-normalised
+Gaussian probability density function with maximum value 1 (at the mean),
+the THRESHOLD parameter can be used to set the value of this function
+which a bond length in the structure must have if it is to be a possible
+mapping for this distance in the query. 
+
+#KMAXISO=# 
+#PThis is the maximum number of occurrences of the query that will be
+searched for in the structure.  A default 
+(the number of atoms in LIST 5) is supplied because the number
+of possible subgraph isomorphisms can easily become overwhelming, or an
+exhaustive search may take a long time. 
+
+#PAs an example, the line `PARAM MAXISO=100' will stop the search for
+the query after the first 100 occurrences of the structure have been
+found.
+
+#IQUERY File Specification#
+     Interpretation of all the template file lines is not case sensitive. 
+
+#IConnectivity definition#
+(This is an extract from the comments at the top of routine xfitob.f - any 
+further
+changes will be documented there)  
+#J    
+ TEMPLATE FILE FORMAT:    
+ 0. files are read from top to bottom  
+    in 80-character records.  Line lengths > 80 are truncated.
+ 0.5 file reading is not case-sensitive 
+ 1. spaces at the beginning of lines are ignored.  
+ 2. until a line beginning `end' is found, only lines starting
+    with `at' or `bo' are read.  
+ 3. if an `end' is not found, the file read is aborted in error.
+ 4. when loading a graph, stop reading at the `end' line.
+ 4.5 `at' records look like this:
+      at3 c 3 e  
+ 5. i.e. the `at' is followed immediately by an integer serial 
+    number for the atom.  This serial number, rather than the
+    order of the atom in the file, gives the atom serial number.
+ 6. the second item in an `at' record is the atomic species.
+ 7. The next item is the number of connected atoms.  Unlike a
+    CSD file, hydrogen atoms count in this.
+ 8. `e' indicates that there must be exactly this number of   
+     connected atoms
+ 8.5 `bo' records look like this:  
+      bo 3 14 1  
+ 9. `bo' records follow.  They consist of `bo' followed by the
+    two integer serial numbers (from the above list of atoms) 
+    which the bond is between, separated by any number of    
+    spaces.
+ 10. the third integer in a `bo' record is the bond order, not 
+     used at present, but may eventually be used, possibly with
+     a lookup table of bond lengths, to give a bond length.  
+     currently the default bond order is `any', i.e., equivalent
+     to CSD 99.
+ 11. out of order integers/characters will cause an error.  
+ 12. anything else in a `bo' record is ignored.  
+ 13. after the first `bo' record, `at' records cause an error 
+ 14. inconsistencies between `bo' and `at' records will cause
+     an error.  
+ 15. duplicate bonds are not checked for    
+ 16. a contiguous series of atomic serial numbers starting at
+     1 must be given  
+   
+ how it works:    
+  read the atoms & the bonds into store below lfl    
+  when they're all there (ie when 'end' is read) copy them down
+  in the necessary format (ie bonds as nodes or atoms as nodes) 
+  create the atom list at the end of the graph  
+
+#
+#Q
+#
