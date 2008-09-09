@@ -1,0 +1,17 @@
+      PROGRAM PS2EPS
+      CHARACTER *32 CINFIL, COUTFL
+10    CONTINUE
+      WRITE(*,*) 'FILE TO BE SCANNED'
+      READ(*,'(A)') CINFIL
+      OPEN (10, FILE=CINFIL, STATUS='OLD',ERR=10)
+20    CONTINUE
+      WRITE(*,*) 'FILE TO BE CREATED'
+      READ(*,'(A)') COUTFL
+      OPEN (11, FILE=COUTFL, STATUS='UNKNOWN',ERR=20)
+      WRITE(*,*) 'New Font please'
+      READ(*,*) IFONT
+      CALL XPOST (10, 11, IFONT)
+      STOP
+      END
+
+
