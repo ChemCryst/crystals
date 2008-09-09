@@ -1,0 +1,241 @@
+%SCRIPT XFLIPRUN
+%% RUN PRE-PREPARED FILES IN SUPERFLIP
+%%
+% VARIABLE CHARACTER C67 CFILE NEXTWORD SPACEREADOLD
+%% variables used by the question box below
+% VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
+% VARIABLE LOGICAL ANSWER SFILERR SPGTRIC
+% VARIABLE LOGICAL LCRY T  SGOK  SFLIPSOL SFLIPSYM
+%  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
+%  EVALUATE SFLIPSOL = FALSE
+%  EVALUATE SFLIPSYM = FALSE
+%  EVALUATE SGOK = FALSE
+%  EVALUATE SPGTRIC = FALSE                                                     
+%%                                                                              
+%   BLOCK                                                                       
+%      COPY '#SPAWN + "CRYSDIR:superflip.EXE" sflip.inflip'                     
+%      COPY '#TYPE sflip.sflog'                                                 
+%% check the Superflip log-file for convergence indications                     
+%  EVALUATE CFILE = 'SFLIP.SFLOG'                                               
+%  TRANSFER '#OPEN SCPD "' // CFILE // '"' TO CRYSTALS                          
+%                                                                               
+                                                                                
+{I Scanning SUPERFLIP log file for information.                                 
+%  EXTRACT REWIND                                                               
+%  LOOP
+%    ON ERROR TERMINATE ABANDONED
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    CLEAR
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET NOSTORE NOPROMPT NOMESSAGE KEYWORD NULLSTRING
+%%    TRANSFER 'WHAT IS IT ' // CVALUE TO DISPLAY
+%    IF CVALUE .EQ. 'Calculation' THEN
+%        EVALUATE SFILERR = FALSE
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%        CLEAR
+%        LOOP
+%          GET NOSTORE NOPROMPT KEYWORD ' ' '_NOMORE_'
+%          IF CVALUE .EQ. '_NOMORE_' THEN
+%            EVALUATE LOOPEND = LOOPCOUNTER
+%          END IF
+%          IF CVALUE .EQ. 'successfully' THEN
+%            EVALUATE SFLIPSOL = TRUE
+%          END IF
+%        END LOOP
+%    END IF
+%  END LOOP
+%    COPY '#CLOSE SCPDATA'
+%    COPY 'END'
+%
+%
+%% scan again the log-file to find out whether there is acceptable  symmetry
+%% this can be done probably better in the foregoing loop
+%
+%%  At some occasions no convergence is detected, but acceptable symmetry is
+%%  present; this means that the structure is solved anyhow, so check for
+%% symmetry agreement
+%  EVALUATE CFILE = 'SFLIP.SFLOG'
+%  TRANSFER '#OPEN SCPD "' // CFILE // '"' TO CRYSTALS
+%
+%
+{I Scanning SUPERFLIP log file for information.
+%  EXTRACT REWIND
+%  EVALUATE SFILERR = TRUE
+%  LOOP
+%    ON ERROR TERMINATE ABANDONED
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    CLEAR
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET NOSTORE NOPROMPT NOMESSAGE KEYWORD NULLSTRING
+%%    TRANSFER 'WHAT IS IT ' // CVALUE TO DISPLAY
+%    IF CVALUE .EQ. 'No' THEN
+%        EVALUATE SFILERR = FALSE
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%        CLEAR
+%        LOOP
+%          GET NOSTORE NOPROMPT KEYWORD ' ' '_NOMORE_'
+%          IF CVALUE .EQ. '_NOMORE_' THEN
+%            EVALUATE LOOPEND = LOOPCOUNTER
+%          END IF
+%          IF CVALUE .EQ. 'symmetry' THEN
+%            EVALUATE SFLIPSYM = FALSE
+%          END IF
+%        END LOOP
+%    ELSE
+%%AvdL - to be able to abort superflip run with CTRL-C and have the message 
+%% that the program did not solve the structure
+%       IF ( CVALUE .NE. ' ' ) THEN
+%          EVALUATE SFLIPSYM = TRUE
+%       END IF
+%      COPY 'END'
+%    END IF
+%  END LOOP
+%    COPY '#CLOSE SCPDATA'
+%    COPY 'END'
+%%  IF  ( SFLIPSYM .EQ. TRUE )  THEN
+%% TRANSFER 'Sflipsym is true ' TO DISPLAY
+%%      COPY 'END'
+%%   END IF
+%
+%%
+%% Get  the old space group name for information, take it from the sflip.in
+%%
+%  EVALUATE CFILE = 'SFLIP.INFLIP'
+%  TRANSFER '#OPEN SCPD "' // CFILE // '"' TO CRYSTALS
+%
+%
+{I Scanning SUPERFLIP inflip file for information.
+%  EXTRACT REWIND
+%  EVALUATE SFILERR = TRUE
+%  LOOP
+%    ON ERROR TERMINATE ABANDONED
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    CLEAR
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET NOSTORE NOPROMPT NOMESSAGE KEYWORD NULLSTRING
+%% TRANSFER 'WHAT IS IT ' // CVALUE TO DISPLAY
+%    IF CVALUE .EQ. 'spacegroup' THEN
+%      EVALUATE SFILERR = FALSE
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%      CLEAR
+%      GET TEXT 'SPG'
+%      EVALUATE SPACEREADOLD = CVALUE
+%    END IF
+%  END LOOP
+%  IF SFILERR .EQ. TRUE THEN
+{E *** No space group proposed superflip ins file. Strange.
+%    ELSE
+%    TRANSFER 'Old space group read: ' // SPACEREADOLD TO DISPLAY
+%  END IF
+% COPY '#CLOSE SCPDATA'
+%%
+%%
+%
+%
+%      EVALUATE QTITLE = 'Charge flipping solution'
+%  IF ( ( SFLIPSOL .EQ. FALSE ) .AND. ( SFLIPSYM .EQ. FALSE ) ) THEN
+% TRANSFER 'Superflip thinks that the structure is not solved ' TO DISPLAY
+%      COPY 'END'
+%%{E *** No space group proposed superflip ins file. Strange.
+%        EVALUATE QLINE1 = 'Superflip did not solve the structure'
+%        EVALUATE QLINE2 = 'Use advanced options, or ask an expert'
+%        EVALUATE BUTTOK = 'OK'
+%        COPY '#SCRIPT XMESSAGE'
+%        COPY 'END'
+%        FINISH
+%  END IF
+%
+%  IF ( ( SFLIPSOL .EQ. FALSE ) .AND. ( SFLIPSYM .EQ. TRUE ) ) THEN
+% TRANSFER 'Superflip did not find convergence' TO DISPLAY
+% TRANSFER 'There is good symmetry agreement' TO DISPLAY
+% TRANSFER 'The structure is likely to be solved ' TO DISPLAY
+%      COPY 'END'
+%        EVALUATE QLINE1 = 'Superflip solved the structure'
+%        EVALUATE QLINE2 = 'Continue analysing the symmetry?'
+%        EVALUATE BUTTOK = 'Yes'
+%        EVALUATE BUTTXX = 'No'
+%        COPY '#SCRIPT XQUESTIO'
+%        COPY 'END'
+%        IF ANSWER .EQ. FALSE THEN
+%          FINISH
+%        END IF
+%  END IF
+%
+%  IF ( ( SFLIPSOL .EQ. TRUE ) .AND. ( SFLIPSYM .EQ. TRUE ) ) THEN
+% TRANSFER 'Superflip solved the structure' TO DISPLAY
+% TRANSFER 'There is convergence and also good symmetry agreement.' TO DISPLAY
+%      COPY 'END'
+%        EVALUATE QLINE1 = 'Superflip solved the structure'
+%        EVALUATE QLINE2 = 'Continue analysing the symmetry?'
+%        EVALUATE BUTTOK = 'Yes'
+%        EVALUATE BUTTXX = 'No'
+%        COPY '#SCRIPT XQUESTIO'
+%        COPY 'END'
+%        IF ANSWER .EQ. FALSE THEN
+%          FINISH
+%        END IF
+%  END IF
+%
+%  IF ( ( SFLIPSOL .EQ. TRUE ) .AND. ( SFLIPSYM .EQ. FALSE ) ) THEN
+% TRANSFER 'Superflip solved the structure' TO DISPLAY
+% TRANSFER 'There is convergence but no good symmetry agreement' TO DISPLAY
+% TRANSFER 'A finer analysis is needed; continue ' TO DISPLAY
+%      COPY 'END'
+%        EVALUATE QLINE1 = 'Superflip solved the structure'
+%        EVALUATE QLINE2 = 'Continue analysing the symmetry?'
+%        EVALUATE BUTTOK = 'Yes'
+%        EVALUATE BUTTXX = 'No'
+%        COPY '#SCRIPT XQUESTIO'
+%        COPY 'END'
+%        IF ANSWER .EQ. FALSE THEN
+%          FINISH
+%        END IF
+%  END IF
+%
+%%
+% if ( .NOT.  fileexists ( 'sflip_sym.ins' ) ) then
+{E                                                                              
+{E superflip has not created a new symmetry file.                               
+{E superflip may have failed                                                    
+{E                                                                              
+%      FINISH
+% END IF                                                                        
+%%                                                                              
+%%AvdL read in the spacegroup proposed by SUPERFLIP and create new SFLIP file to
+%%     be processed by EDMA                                                     
+%      COPY '#SCRIPT XFLIPINSPG'                                                
+%  IF ( ( SFLIPSYM .EQ. FALSE ) .AND. ( SPGTRIC .NE. TRUE ) ) THEN              
+{E Structure solved but no acceptable symmetry found. Twinning? Wrong lattice?  
+{E The superflip SCRIPTS will close down to enable you to reconsider            
+{E the basic data                                                               
+%      FINISH
+%   END IF                                                                      
+%  IF SGOK .EQ. FALSE THEN                                                      
+{E Space Group change recommended                                               
+{E The superflip SCRIPTS will close down to enable you to re-input              
+{E the basic data with the suggested space group                                
+%      FINISH                                                                   
+%  END IF                                                                       
+%  IF ( FILEEXISTS ( 'sflip.inflip' ) ) THEN                                    
+%      COPY '#CLOSE SCPD'                                                       
+%      EVALUATE T = FILEDELETE ( 'sflip.inflip' )                               
+%  END IF                                                                       
+%      TRANSFER '#FOREIGN SUPERFLIP IN= ' // C67 // ' ' TO CRYSTALS             
+%      COPY 'END'                                                               
+%      COPY '#SPAWN + "CRYSDIR:edma.EXE" sflip.inflip'                          
+%   END BLOCK                                                                   
+%%  clear out merged reflection list                                            
+%%                                                                              
+%    if ( exists 7 .gt. 0 ) then                                                
+%      copy '#purge list=7'                                                     
+%      copy 'end'                                                               
+%    end if                                                                     
+%%                                                                              
+%   COPY '#SCRIPT XFLIPIN'                                                      
+%END SCRIPT                                                                     
