@@ -1,19 +1,36 @@
 %SCRIPT XINLIST3                                                                
 % VARIABLE REAL MULT NUMBER WAVE                                                
 % VARIABLE CHARACTER CNUMB CELEM CTEM CTEST                                     
-% VARIABLE INTEGER ECOUNT RADIATION ORIENTTYPE SWITCH                           
+% VARIABLE INTEGER ECOUNT RADIATION ORIENTTYPE SWITCH ITMP                           
 % VARIABLE LOGICAL LCANCEL LNEW29 EDLIST3 LXIN3CANCEL                           
 % VARIABLE CHARACTER SPACEHOOK                                                  
 % VARIABLE CHARACTER CTYPE                                                      
+% VARIABLE LOGICAL FRIEDEL
 %% The variables needed by XQUESTIO                                             
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
 % VARIABLE LOGICAL   ANSWER                                                     
 %%                                                                              
+%% Ensure we have a LIST 13
+% IF ( EXISTS 13 .NE. 1 ) THEN                                                  
+%   copy '#script inlist13'                                                     
+% END IF                                                                        
+%   COPY '#GENERALEDIT 13'                                                      
+%   COPY 'LOCATE RECORDTYPE=103'                                                
+%   COPY 'TRANSFER FROM OFFSET=0 TO WAVE'                                       
+%   COPY 'LOCATE RECORDTYPE=101'                                           
+%   COPY 'TRANSFER FROM OFFSET=0 TO ITMP'                                  
+%   IF ( ITMP .GE. 0 ) THEN                                                
+%         EVALUATE FRIEDEL = TRUE                                               
+%   ELSE                                                                   
+%         EVALUATE FRIEDEL = FALSE                                              
+%   END IF                                                                 
+%   COPY 'END'                                                                  
+
 % EVALUATE LCANCEL = FALSE                                                      
 % EVALUATE LXIN3CANCEL = FALSE                                                  
 % CLEAR                                                                         
 ^^WI WINDOW INLIST3 'InList3' MODAL SIZE                                        
-^^WI COMMIT=BOKI3 CANCEL=BXXI3                                                      
+^^WI COMMIT=BOKI3 CANCEL=BXXI3                                                  
 ^^WI GRID             G1 NROWS=9 NCOLS=5                                        
 ^^WI {                                                                          
 ^^WI  @ 2,2 GRID G2 NROWS=3 NCOLS=2 OUTLINE='Diffraction Experiment'            
@@ -21,7 +38,12 @@
 ^^WI   @ 1,1 RADIOBUTTON COP 'Copper' STATE=OFF INFORM                          
 ^^WI   @ 2,1 RADIOBUTTON MOL 'Molybdenum' STATE=ON INFORM                       
 ^^WI   @ 3,1 RADIOBUTTON OTH 'Other:' STATE=OFF INFORM                          
-^^WI   @ 1,2 CHECKBOX FRIE 'Apply Friedels Law during merge' STATE=ON           
+^^WI   @ 1,2 CHECKBOX FRIE 'Apply Friedels Law during merge' 
+%    IF ( FRIEDEL )  THEN                         
+^^WI      STATE=ON                                                              
+%    ELSE                                                                       
+^^WI      STATE=OFF                                                             
+%    END IF                                                                     
 ^^WI   @ 3,2 EDITBOX WAVEL '0.71073' NCOLS=10 LIMIT=20 REAL DISABLED=YES        
 ^^WI  }                                                                         
 ^^WI  @ 4,2 STATIC T1 'Enter the cell contents here:'                           
@@ -30,20 +52,13 @@
 ^^WI  @ 8,2 STATIC T3 'e.g. C 8 H 13 N 1 O 4 - use spaces.'                     
 ^^WI  @ 2,4 GRID B2 NROWS=3 NCOLS=1                                             
 ^^WI  {                                                                         
-^^WI   @ 1,1 BUTTON    BOKI3 'Ok' DEFAULT COMMIT                                  
-^^WI   @ 3,1 BUTTON    BXXI3 'Cancel' CANCEL                                      
+^^WI   @ 1,1 BUTTON    BOKI3 'Ok' DEFAULT COMMIT                                
+^^WI   @ 3,1 BUTTON    BXXI3 'Cancel' CANCEL                                    
 ^^WI  }                                                                         
 ^^WI }                                                                          
 ^^CR                                                                            
 ^^WI SHOW                                                                       
 ^^CR                                                                            
-% IF ( EXISTS 13 .NE. 1 ) THEN                                                  
-%   copy '#script inlist13'                                                     
-% END IF                                                                        
-%   COPY '#GENERALEDIT 13'                                                      
-%   COPY 'LOCATE RECORDTYPE=103'                                                
-%   COPY 'TRANSFER FROM OFFSET=0 TO WAVE'                                       
-%   COPY 'END'                                                                  
 %   TRANSFER "^^CO SET WAVEL TEXT " // CHARACTER WAVE TO DISPLAY                
 %   IF ( WAVE .GT. 1.5417 ) .AND. ( WAVE .LT. 1.5419 ) THEN                     
 ^^CO   SET COP STATE=ON SET MOL STATE=OFF                                       
@@ -116,19 +131,19 @@
 %  IF ( LNEW29 ) THEN                                                           
 %   EVALUATE SWITCH = 2                                                         
 %  ELSE                                                                         
-%   VERIFY BXXI3 BOKI3 MOL COP OTH                                                  
+%   VERIFY BXXI3 BOKI3 MOL COP OTH                                              
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                
 %   EVALUATE SWITCH = VALUE                                                     
 %  END IF                                                                       
 %  CASE SWITCH                                                                  
-%    BLOCK        %BXXI3%                                                         
+%    BLOCK        %BXXI3%                                                       
 ^^WI   DISPOSE INLIST3                                                          
 ^^CR                                                                            
 %      EVALUATE LCANCEL = FALSE                                                 
 %      EVALUATE LXIN3CANCEL = TRUE                                              
 %      FINISH                                                                   
 %    END BLOCK                                                                  
-%    BLOCK        %BOKI3%                                                         
+%    BLOCK        %BOKI3%                                                       
 %    IF ( EXISTS 13 .NE. 1 ) THEN                                               
                                                                                 
 {I * Writing a default LIST 13 - should never happen.                           
@@ -168,7 +183,7 @@
 % VARIABLE INTEGER IDJW                                                         
 %      COPY '#GENERALEDIT 13'                                                   
 %      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                  
-^^??   COP STATE                                                                
+^^??   COPY STATE                                                                
 %      VERIFY ON OFF                                                            
 %      GET SILENT NOSTORE VERIFIED 'ON or Off' ' '                              
 %      IF VALUE .EQ. 1 THEN                                                     
@@ -233,8 +248,8 @@
 %         END IF                                                                
 %      END IF                                                                   
 %%                                                                              
-%      EVALUATE LXIN3CANCEL = FALSE
-^^CO   DISPOSE INLIST3
+%      EVALUATE LXIN3CANCEL = FALSE                                             
+^^CO   DISPOSE INLIST3                                                          
 %      FINISH                                                                   
 %                                                                               
 %    END BLOCK                                                                  
