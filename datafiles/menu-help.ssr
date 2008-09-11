@@ -64,8 +64,10 @@
 ^^WI     ITEM TOPIC '&Crystals Lists' '#SCRIPT HLISTS' DISABLEIF='IN'           
 ^^WI   ENDMENU                                                                  
                                                                    
-^^WI   MENU HELP '&Manual'                                                      
+^^WI   MENU HELP '&Online Manuals'                                                      
 ^^WI    ITEM FAQ '&Faq' '#SPAWN CRYSDIR:manual/faq-1.html' DISABLEIF='IN'       
+^^WI    ITEM TI 'Inde&x'                                                        
+^^WI    '#SPAWN CRYSDIR:manual/manindex.html' DISABLEIF='IN'                    
 ^^WI    MENU CM '&Full Manual'                                                  
 ^^WI     ITEM T1 '&Introduction to the System'                                  
 ^^WI     '#SPAWN CRYSDIR:manual/crystalsmanual-intro.html'                      
@@ -94,10 +96,20 @@
 ^^WI     DISABLEIF='IN'                                                         
 ^^WI    ENDMENU                                                                 
 ^^WI    SPLIT                                                                   
-^^WI    ITEM TI 'Inde&x'                                                        
-^^WI    '#SPAWN CRYSDIR:manual/manindex.html' DISABLEIF='IN'                    
-^^WI    ITEM PDF 'Manual.pdf'
+^^WI   ENDMENU                                                                  
+
+
+^^WI   MENU HELP '&PDF Manuals'                                                      
+^^WI    ITEM PDF 'CRYSTALS Manual'
 ^^WI    '#SPAWN CRYSDIR:CRYSTALS.PDF' DISABLEIF='IN'                    
+^^WI    ITEM PDF 'CAMERON Manual'
+^^WI    '#SPAWN CRYSDIR:CAMERON.PDF' DISABLEIF='IN'                    
+^^WI    ITEM PDF 'Supeflip Manual'
+^^WI    '#SPAWN CRYSDIR:superflip_user_manual.pdf' DISABLEIF='IN'
+^^WI    ITEM PDF 'EDMA Manual'
+^^WI    '#SPAWN CRYSDIR:EDMA_user_manual.pdf' DISABLEIF='IN'
+^^WI    ITEM PDF 'Marching Cube Manual'
+^^WI    '#SPAWN CRYSDIR:mce\MCE_manual.html' DISABLEIF='IN'                    
 ^^WI   ENDMENU                                                                  
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM CK '&Check for updates'                                             
