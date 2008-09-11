@@ -183,7 +183,7 @@
 % VARIABLE INTEGER IDJW                                                         
 %      COPY '#GENERALEDIT 13'                                                   
 %      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                  
-^^??   COPY STATE                                                                
+^^??   COP STATE                                                                
 %      VERIFY ON OFF                                                            
 %      GET SILENT NOSTORE VERIFIED 'ON or Off' ' '                              
 %      IF VALUE .EQ. 1 THEN                                                     
