@@ -236,6 +236,7 @@ END
 # Display the "Tip of the day". This line can be removed
 # if it really annoys you:
 --LINDVF#SCRIPT TIPAUTO
+--LINDVF#SCRIPT GUIDEAUTO
 -DVF#USE CRYUSEFILE:
 #
 #USE CONTROL

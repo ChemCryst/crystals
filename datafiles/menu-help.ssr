@@ -1,13 +1,13 @@
 ^^WI  MENU HELP '&Help'                                                         
 ^^WI   ITEM HTIPS '&Tip of the day'                                             
 ^^WI   '#SCRIPT TIPS' DISABLEIF='IN'                                            
+^^WI   ITEM HGUIDE '&Start the Guide'                                             
+^^WI   '#SCRIPT GUIDESTART' DISABLEIF='IN'                                            
 ^^WI   ITEM HSTAR '&Read me first' '#SCRIPT XREADME' DISABLEIF='IN'             
 ^^WI   ITEM HSTAR '&Getting started'                                            
 ^^WI     '#SPAWN CRYSDIR:manual/readme.html' DISABLEIF='IN'                     
 ^^WI   ITEM HSTAR '&COMMAND line' '#SCRIPT XSTART' DISABLEIF='IN'               
 ^^WI   SPLIT 
-
-
 ^^WI   MENU HDEMO '&Simple Worked Examples'                                            
 ^^WI     ITEM DEMO '&Basic'                                                     
 ^^WI     '#SPAWN CRYSDIR:DEMO/CYCLO/CYCLO-ROUTINE.PDF' DISABLEIF='IN'           
