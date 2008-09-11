@@ -9,7 +9,7 @@
 ^^WI   @ 2,2 TEXTOUT XGUIDETEXT '' NROWS=10 NCOLS=80 TRANSPARENT
 ^^WI   @ 4,2 GRID BTNS NROWS=1 NCOLS=9
 ^^WI   {
-^^WI     @ 1,1 CHECKBOX STAS '&Show GUIDE tips at startup'
+^^WI     @ 1,1 CHECKBOX STAS '&Enable GUIDE at startup'
 ^^WI           INFORM=NO STATE=ON
 ^^WI     @ 1,7 BUTTON MORE '&More'
 ^^WI     @ 1,9 BUTTON BOK  '&Close'
