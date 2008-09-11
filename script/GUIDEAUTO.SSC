@@ -1,0 +1,11 @@
+%SCRIPT GUIDEAUTO
+%%
+%% Check if automatic guide have been turned off.
+%%
+^^?? GETKEY GUIDE
+%    GET SILENT NOSTORE FINAL TEXT '1' '1'
+%    IF CVALUE .NE. '1' THEN
+%      FINISH
+%    END IF
+%    COPY '#SCRIPT GUIDEUP'
+%END SCRIPT
