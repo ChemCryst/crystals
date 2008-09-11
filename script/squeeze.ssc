@@ -1,6 +1,34 @@
 %SCRIPT SQUEEZE
 %  VARIABLE CHARACTER CDIR CFILE
 %  VARIABLE LOGICAL T
+%% variables used by the question box below                                     
+%  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                        
+%  VARIABLE LOGICAL ANSWER                                                      
+{1,9  Running PLATON/SQUEEZE in CRYSTALS modifies the Fcalc part
+{1,9  of reflections by storing the real and imaginary parts of
+{1,9  the strcuture factor.
+{1,9  This change is recorded by setting a flag in LIST 23 and
+{1,9  increasing the storage for LIST 6.
+{1,9  CRYSTALS recommends that you save you dsc file before
+{1,9  running SQUEEZE in case you wish to revert to a normal
+{1,9  refinement
+%%                                                                              
+%      EVALUATE QTITLE = 'Backup before SQUEEZE'                              
+%      EVALUATE QLINE1 = 'Do you want to backup your'                           
+%      EVALUATE QLINE2 = 'dsc before running SQUEEZE?'                         
+%      EVALUATE BUTTOK = '&Yes'                                                 
+%      EVALUATE BUTTXX = '&No'                                                  
+%      COPY '#SCRIPT XQUESTIO'                                                  
+%      IF ANSWER .EQ. TRUE THEN                                                 
+%        COPY '#PURGE pre-squeeze'                                            
+%        copy 'end'                                                             
+%      END IF                                                                   
+%%                                                                              
+%  IF EXISTS 6 .LT. 1 THEN                                                      
+ You do not have any reflections stored.                                        
+ It is impossible to proceed without data.                                      
+%    FINISH                                                                     
+%  END IF                                                                       
 %  COPY '#FOREIGN PLATON'
 %  COPY 'END'
 %  COPY '#RELE PUNCH PLATON6'
@@ -35,8 +63,11 @@
 %%
 %  TRANSFER '#SPAWN + "' // CFILE // '" -q  platon.res' TO CRYSTALS
 %%
-%   VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
-%   VARIABLE LOGICAL ANSWER
+%  IF ( .not. FILEEXISTS ( 'platon.hkp' ) ) THEN                                    
+{1,9  PLATON/SQUEEZE has not created a suitable output file.
+{1,9  There nay not be any voids in your structure
+%    FINISH
+%  END IF                                                                       
 %   BLOCK
 %      EVALUATE QTITLE = 'Squeeze has ended'
 %      EVALUATE QLINE1 = 'Do you want to apply the results'
