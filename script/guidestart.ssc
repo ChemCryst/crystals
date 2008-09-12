@@ -1,8 +1,7 @@
-%SCRIPT GUIDEUP                                                                 
+%SCRIPT GUIDESTART
 %% Restart the GUIDE                                                            
 %%                                                                              
 ^^WI WINDOW XGUIDE 'Restart the GUIDE' MODAL SIZE KEEP
-^^CO     SETKEY GUIDE 1                                                         
 ^^CR                                                                            
 ^^CO  DISPOSE XGUIDE                                                            
 %  COPY '#SCRIPT GUIDEUP'
