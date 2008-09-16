@@ -10,6 +10,7 @@
 %    GET SILENT NOSTORE FINAL INTEGER '1'  '1'                                      
 %    EVALUATE IGUIDE = VALUE
 %    IF IGUIDE .NE. 1 THEN                                                    
+{1,9 You can turn ON automatic initiation of the GUIDE from the HELP menu
 %      FINISH                                                                   
 %    END IF                                                                     
 %    COPY '#SCRIPT XGUIDE'                                                     
