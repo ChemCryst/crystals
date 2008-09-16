@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.53  2007/10/09 06:57:17  djw
+C Output script name to listing file
+C
 C Revision 1.52  2005/03/10 12:12:48  djw
 C Coppy COMMAND list to listing file
 C
@@ -940,6 +943,7 @@ C --  IF LOGGING WRITE LINE BACK TO LOG CHANNEL
         IF ( IRDLOG(IFLIND) .EQ. 1 ) THEN
          WRITE ( NCLU , 500 ) CRDLWC(1:80)
 500      FORMAT ( A )
+501      FORMAT ('# ',A)
         ENDIF
         KRDSYS = -1
         RETURN
@@ -956,14 +960,16 @@ C      RELE(ASE)   USE         MANUAL      TYPE        REMO(VE)
 C      STOR(E)     STAR(T)     SCRI(PT)    COMM(ANDS)  CLOS(E)
 C      SPAW(N)     $           APPE(ND)    BENCH       DEFI(NE)
 C
-C----- DO NOT LOG SCRIPT INSTRUCTIONS
-CRIC0101 DO NOT LOG USE,$,or SPAWN INSTRUCTIONS EITHER.
-      IF (( ISYSIN .NE. ISCRIP) .AND. ( ISYSIN .NE. IUSE )
-     1.AND.(ISYSIN .NE. IDOLLA) .AND. ( ISYSIN .NE. ISPAWN) ) THEN
 C --  IF LOGGING WRITE LINE BACK TO LOG CHANNEL
-        IF ( IRDLOG(IFLIND) .EQ. 1 ) THEN
+      IF ( IRDLOG(IFLIND) .EQ. 1 ) THEN
+C-----   DO NOT LOG SCRIPT INSTRUCTIONS
+CRIC0101 DO NOT LOG USE,$,or SPAWN INSTRUCTIONS EITHER.
+         IF (( ISYSIN .NE. ISCRIP) .AND. ( ISYSIN .NE. IUSE )
+     1   .AND.(ISYSIN .NE. IDOLLA) .AND. ( ISYSIN .NE. ISPAWN) ) THEN
           WRITE ( NCLU , 500 ) CRDLWC(1:80)
-        ENDIF
+         ELSE
+          WRITE ( NCLU , 501 ) CRDLWC(1:80)
+         ENDIF
       END IF
 C
 C
