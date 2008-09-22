@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.38  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.1.1.1  2004/12/13 11:16:18  rich
 //   New CRYSTALS repository
 //
@@ -1023,8 +1027,8 @@ CcRect CrWindow::GetScreenArea()
 #ifdef __BOTHWX__
       retVal.mTop = 0;
       retVal.mLeft = 0;
-      retVal.mBottom = wxSystemSettings::GetSystemMetric(wxSYS_SCREEN_Y);
-      retVal.mRight =  wxSystemSettings::GetSystemMetric(wxSYS_SCREEN_X);
+      retVal.mBottom = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
+      retVal.mRight =  wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
 
 //      cerr << "Screen Area: " << retVal.mRight << "," << retVal.mBottom << "\n";
 #endif

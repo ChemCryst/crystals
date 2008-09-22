@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.20  2005/01/23 10:20:24  rich
+// Reinstate CVS log history for C++ files and header files. Recent changes
+// are lost from the log, but not from the files!
+//
 // Revision 1.1.1.1  2004/12/13 11:16:18  rich
 // New CRYSTALS repository
 //
@@ -94,7 +98,8 @@ CxDropDown *    CxDropDown::CreateCxDropDown( CrDropDown * container, CxGrid * g
     theDropDown->SetFont(CcController::mp_font);
 #endif
 #ifdef __BOTHWX__
-      theDropDown->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10),0,NULL);
+      wxArrayString a;
+      theDropDown->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10),a);
 #endif
     return theDropDown;
 }
@@ -258,7 +263,7 @@ int CxDropDown::GetIdealWidth()
         GetTextExtent( GetString(i), &cx, &cy );
         maxSiz = CRMAX (maxSiz, cx);
     }
-    return ( maxSiz + (3 * wxSystemSettings::GetSystemMetric(wxSYS_VSCROLL_X ) ) ); 
+    return ( maxSiz + (3 * wxSystemSettings::GetMetric(wxSYS_VSCROLL_X ) ) ); 
 #endif
 }
 

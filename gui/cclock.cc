@@ -85,7 +85,7 @@ void CcLock::Enter()
     if (!( m_CSMutex -> Lock() == wxMUTEX_NO_ERROR) )
     {
        ostringstream strm;
-       strm << "----Failed to lock mutex " << (int)this << "\n";
+       strm << "----Failed to lock mutex " << (long)this << "\n";
        LOGSTAT (strm.str());
     }
     m_Locked ++;

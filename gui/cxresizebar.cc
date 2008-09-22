@@ -7,6 +7,10 @@
 //   Filename:  CxResizeBar.cc
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.1.1.1  2004/12/13 11:16:18  rich
 //   New CRYSTALS repository
 //
@@ -484,9 +488,9 @@ void CxResizeBar::OnPaint()
 void CxResizeBar::OnPaint(wxPaintEvent & event)
 {
     wxPaintDC dc(this); // device context for painting
-    wxPen penHigh(wxSystemSettings::GetSystemColour(wxSYS_COLOUR_3DHIGHLIGHT ),1,wxSOLID);
-    wxPen penMid (wxSystemSettings::GetSystemColour(wxSYS_COLOUR_3DLIGHT ),1,wxSOLID);
-    wxPen penLow (wxSystemSettings::GetSystemColour(wxSYS_COLOUR_3DSHADOW),1,wxSOLID);
+    wxPen penHigh(wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT ),1,wxSOLID);
+    wxPen penMid (wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT ),1,wxSOLID);
+    wxPen penLow (wxSystemSettings::GetColour(wxSYS_COLOUR_3DSHADOW),1,wxSOLID);
 #endif
 
     CcRect rect1, rect2, rect3, rect4;

@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.42  2008/06/04 15:21:57  djw
+// More fixes for OpenGL problem.
+//
 // Revision 1.40  2005/01/23 10:20:24  rich
 // Reinstate CVS log history for C++ files and header files. Recent changes
 // are lost from the log, but not from the files!
@@ -295,7 +298,7 @@ void CcModelDoc::Clear()
 void CcModelDoc::AddModelView(CrModel * aView)
 {
         ostringstream strm;
-        strm << attachedViews.size() << " " << (int) aView << " " << (int) this;
+        strm << attachedViews.size() << " " << (long) aView << " " << (long) this;
 	LOGSTAT ( "Adding CrModel View to list in CcModelDoc. Current list size: " + strm.str() );
     attachedViews.remove(aView);    // Ensure only exists once in list.
     attachedViews.push_back(aView);

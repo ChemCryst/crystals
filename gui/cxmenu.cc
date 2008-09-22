@@ -47,7 +47,8 @@ int CxMenu::AddMenu(CxMenu * menuToAdd, const string & text, int position)
 #ifdef __BOTHWX__
       Append( id, text.c_str(), menuToAdd);
       ostringstream strm;
-      strm <<  "cxmenu " << (int)this << " adding submenu called " << text;
+      strm <<  "cxmenu " << (long)this << " adding submenu called " << 
+text;
       LOGSTAT ( strm.str() );
 #endif
       return id;
@@ -62,7 +63,7 @@ int CxMenu::AddItem(const string & text, int position)
 #ifdef __BOTHWX__
       Append( id, wxString(text.c_str()), wxString("") );
       ostringstream strm;
-      strm << "cxmenu " << (int)this << " adding item called " << text ;
+      strm << "cxmenu " << (long)this << " adding item called " << text ;
       LOGSTAT (strm.str());
 #endif
     return id;

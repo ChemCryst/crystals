@@ -17,6 +17,10 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.21  2005/01/23 10:20:24  rich
+// Reinstate CVS log history for C++ files and header files. Recent changes
+// are lost from the log, but not from the files!
+//
 // Revision 1.2  2005/01/17 14:19:37  rich
 // Bring new repository into line up-to-date with old. (Fix Cameron font face and size.)
 //
@@ -505,7 +509,7 @@ void CcChartDoc::FastText( const int &x, const int &y,
       }
       else
       {
-         yoffs = -fs * 13.333;
+         yoffs = - ((double) fs) * 13.333;
          xoffs = yoffs * 10;
          item->Init(x, y, x+xoffs, y+yoffs, text , false );
       }

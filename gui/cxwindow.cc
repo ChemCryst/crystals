@@ -9,6 +9,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.40  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.2  2005/01/12 16:11:31  rich
 //   Use system metrics if available under WX. (Probably still not on MAC).
 //
@@ -124,7 +128,7 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
 {
 
   ostringstream strm;
-  strm << "CxWindow created. Parent = " << (int)parentWindow;
+  strm << "CxWindow created. Parent = " << (long)parentWindow;
   LOGSTAT ( strm.str() );
 
   CxWindow *theWindow = new CxWindow( container, attributes & kSize );
@@ -417,7 +421,7 @@ void CxWindow::OnUpdateTools(CCmdUI* pCmdUI)
 #ifdef __BOTHWX__
 void CxWindow::OnUpdateMenuItem(wxUpdateUIEvent & pCmdUI)
 {
-    CcMenuItem* theItem = CrMenu::FindMenuItem(pCmdUI.m_id);
+    CcMenuItem* theItem = CrMenu::FindMenuItem(pCmdUI.GetId());
     if(theItem == nil) return;
 
     if ( (CcController::theController)->status.ShouldBeEnabled( theItem->enable, theItem->disable ) )
@@ -524,7 +528,7 @@ void CxWindow::OnMenuSelected(UINT nID)
 #ifdef __BOTHWX__
 void CxWindow::OnMenuSelected(wxCommandEvent & event)
 {
-      int nID = event.m_id;
+      int nID = event.GetId();
 #endif
     ((CrWindow*)ptr_to_crObject)->MenuSelected( nID );
 
@@ -539,7 +543,7 @@ void CxWindow::OnToolSelected(UINT nID)
 #ifdef __BOTHWX__
 void CxWindow::OnToolSelected(wxCommandEvent & event)
 {
-      int nID = event.m_id;
+      int nID = event.GetId();
 #endif
     ((CrWindow*)ptr_to_crObject)->ToolSelected( nID );
 }

@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.32  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.1.1.1  2004/12/13 11:16:18  rich
 //   New CRYSTALS repository
 //
@@ -1204,7 +1208,7 @@ void CxPlot::OnMenuSelected(UINT nID)
 #ifdef __BOTHWX__
 void CxPlot::OnMenuSelected(wxCommandEvent & event)
 {
-      int nID = event.m_id;
+      int nID = event.GetId();
      ((CrPlot*)ptr_to_crObject)->MenuSelected( nID );
 }
 #endif

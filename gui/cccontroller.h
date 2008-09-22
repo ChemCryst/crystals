@@ -100,7 +100,7 @@ class   CcController
                 const string& pairopen  = "<!\"'",
                 const string& pairclose = ">!\"'"  );
 
-    static int CcController::GetDescriptor( string &token, int descriptorClass );
+    static int GetDescriptor( string &token, int descriptorClass );
 
     void UpdateToolBars();
     void ScriptsExited();
@@ -311,6 +311,10 @@ enum
 
 
 //   $Log: not supported by cvs2svn $
+//   Revision 1.48  2005/02/07 14:19:52  stefan
+//   1. Changed the type of the interface command queue to be a listenable queue.
+//   2. Added the event for the wx version to the file.
+//
 //   Revision 1.47  2005/02/02 15:30:39  stefan
 //   1. Replaces the to deques for the thread comunication with CcSafeDeque.
 //

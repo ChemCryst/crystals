@@ -212,7 +212,9 @@ void CxModList::AddRow(int id, vector<string> & rowOfStrings, bool selected,
             for( int j=0; j<m_numcols; j++) {
               info.m_text = rowOfStrings[j].c_str();
               info.m_col = j;
+              m_ProgSelecting = 2;
               SetItem( info );
+              m_ProgSelecting = 0;
             }
 #endif
 
@@ -252,20 +254,25 @@ void CxModList::AddRow(int id, vector<string> & rowOfStrings, bool selected,
           m_colTypes[j] = CRMAX(m_colTypes[j], type);
         }
     }
-    if ( selected )
+    if ( selected ) {
 #ifdef __CR_WIN__
        SetItemState(nItem, LVIS_SELECTED, LVIS_SELECTED);
 #endif
 #ifdef __BOTHWX__
+       m_ProgSelecting = 2;
        SetItemState(nItem, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+       m_ProgSelecting = 0;
 #endif
-    else
+    } else {
 #ifdef __CR_WIN__
        SetItemState(nItem, 0, LVIS_SELECTED);
 #endif
 #ifdef __BOTHWX__
+       m_ProgSelecting = 2;
        SetItemState(nItem, 0, wxLIST_STATE_SELECTED);
+       m_ProgSelecting = 0;
 #endif
+    }
 
     return;
 }
@@ -554,29 +561,41 @@ void CxModList::ItemChanged( NMHDR * pNMHDR, LRESULT* pResult )
 #endif
 
 #ifdef __BOTHWX__
-
 void CxModList::ItemSelected ( wxListEvent& event )
 {
-  int item = event.m_itemIndex;
-  ostringstream strm;
-  strm << "SELECTED_N" << item + 1;
-  ((CrModList*)ptr_to_crObject)->SendValue( strm.str() ); //Send the index only.
+    if(m_ProgSelecting > 0)
+    {
+        m_ProgSelecting--;
+    }
+    else
+    {
+      int item = event.m_itemIndex;
+      ostringstream strm;
+      strm << "SELECTED_N" << item + 1;
+      ((CrModList*)ptr_to_crObject)->SendValue( strm.str() ); //Send the index only.
 
-  int id = IDlist[item]-1;
-//  TEXTOUT ( "Select. item=" + string(item) + ", id=" + string(id) );
-  ((CrModList*)ptr_to_crObject)->SelectAtomByPosn(id,true);
+      int id = IDlist[item]-1;
+      TEXTOUT ( "Select. item=" + string(item) + ", id=" + string(id) );
+      ((CrModList*)ptr_to_crObject)->SelectAtomByPosn(id,true);
+    }
 }
 
 void CxModList::ItemDeselected ( wxListEvent& event )
 {
-  int item = event.m_itemIndex;
-  ostringstream strm;
-  strm << "UNSELECTED_N" << item + 1;
-  ((CrModList*)ptr_to_crObject)->SendValue( strm.str() ); //Send the index
-
-  int id = IDlist[item]-1;
-//  TEXTOUT ( "Unselect. item=" + string(item) + ", id=" + string(id) );
-  ((CrModList*)ptr_to_crObject)->SelectAtomByPosn(id,false);
+    if(m_ProgSelecting > 0)
+    {
+        m_ProgSelecting--;
+    }
+    else
+    {
+      int item = event.m_itemIndex;
+      ostringstream strm;
+      strm << "UNSELECTED_N" << item + 1;
+      ((CrModList*)ptr_to_crObject)->SendValue( strm.str() ); //Send the index
+      int id = IDlist[item]-1;
+      TEXTOUT ( "Unselect. item=" + string(item) + ", id=" + string(id) );
+      ((CrModList*)ptr_to_crObject)->SelectAtomByPosn(id,false);
+    }
 }
 #endif
 

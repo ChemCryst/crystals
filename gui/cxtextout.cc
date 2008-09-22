@@ -75,7 +75,7 @@ CxTextOut::CxTextOut( CrTextOut * container )
     m_BackCol = GetSysColor( COLOR_WINDOW );
 #endif
 #ifdef __BOTHWX__
-    m_BackCol = wxSystemSettings::GetSystemColour( wxSYS_COLOUR_WINDOW );
+    m_BackCol = wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW );
     m_pen     = new wxPen(m_BackCol,1,wxSOLID);
     m_brush   = new wxBrush(m_BackCol,wxSOLID);
 #endif
@@ -177,9 +177,9 @@ void CxTextOut::Init()
     wxFont* pFont = new wxFont(12,wxMODERN,wxNORMAL,wxNORMAL);
 
 #ifndef _WINNT
-    *pFont = wxSystemSettings::GetSystemFont( wxSYS_ANSI_FIXED_FONT );
+    *pFont = wxSystemSettings::GetFont( wxSYS_ANSI_FIXED_FONT );
 #else
-    *pFont = wxSystemSettings::GetSystemFont( wxDEVICE_DEFAULT_FONT );
+    *pFont = wxSystemSettings::GetFont( wxDEVICE_DEFAULT_FONT );
 #endif  // !_WINNT
 
     string temp;
@@ -657,13 +657,13 @@ void CxTextOut::OnScroll(wxScrollWinEvent & evt )
         int nUBound = CRMAX(GetLineCount() - 1, GetMaxViewableLines() - 1);
         if ( evt.GetOrientation() == wxVERTICAL )
         {
-          if ( evt.m_eventType == wxEVT_SCROLLWIN_TOP ) {
+          if ( evt.GetEventType() == wxEVT_SCROLLWIN_TOP ) {
                  SetHead( GetMaxViewableLines() - 1 );
           }
-          else if ( evt.m_eventType == wxEVT_SCROLLWIN_BOTTOM ) {
+          else if ( evt.GetEventType() == wxEVT_SCROLLWIN_BOTTOM ) {
                  SetHead( nUBound );
           }
-          else if ( evt.m_eventType == wxEVT_SCROLLWIN_PAGEUP ) {
+          else if ( evt.GetEventType() == wxEVT_SCROLLWIN_PAGEUP ) {
                  if( m_nHead > GetMaxViewableLines() - 1 )
                  {
                    m_nHead -= GetMaxViewableLines()/2;
@@ -671,14 +671,14 @@ void CxTextOut::OnScroll(wxScrollWinEvent & evt )
                    SetHead( m_nHead );
                  }
           }
-          else if ( evt.m_eventType == wxEVT_SCROLLWIN_LINEUP ) {
+          else if ( evt.GetEventType() == wxEVT_SCROLLWIN_LINEUP ) {
                  if( m_nHead > GetMaxViewableLines() - 1 )
                  {
                    m_nHead--;
                    SetHead( m_nHead );
                  }
           }
-          else if ( evt.m_eventType == wxEVT_SCROLLWIN_PAGEDOWN ) {
+          else if ( evt.GetEventType() == wxEVT_SCROLLWIN_PAGEDOWN ) {
                  if( m_nHead < nUBound )
                  {
                    m_nHead += (int) GetMaxViewableLines()/2;
@@ -686,7 +686,7 @@ void CxTextOut::OnScroll(wxScrollWinEvent & evt )
                    SetHead( m_nHead );
                  };
           }
-          else if ( evt.m_eventType == wxEVT_SCROLLWIN_LINEDOWN ) {
+          else if ( evt.GetEventType() == wxEVT_SCROLLWIN_LINEDOWN ) {
                  if( m_nHead < nUBound )
                  {
                    m_nHead++;
@@ -694,7 +694,7 @@ void CxTextOut::OnScroll(wxScrollWinEvent & evt )
                  };
           }
 
-          else if (( evt.m_eventType == wxEVT_SCROLLWIN_THUMBRELEASE )|| ( evt.m_eventType == wxEVT_SCROLLWIN_THUMBTRACK )) {
+          else if (( evt.GetEventType() == wxEVT_SCROLLWIN_THUMBRELEASE )|| ( evt.GetEventType() == wxEVT_SCROLLWIN_THUMBTRACK )) {
                  SetHead( evt.GetPosition() + GetMaxViewableLines() - 1 );
           }
         }
@@ -703,29 +703,29 @@ void CxTextOut::OnScroll(wxScrollWinEvent & evt )
           wxSize clientRc = GetClientSize( );
           int nMax = m_nMaxWidth - clientRc.GetWidth();
 
-          if ( evt.m_eventType == wxEVT_SCROLLWIN_TOP ) {
+          if ( evt.GetEventType() == wxEVT_SCROLLWIN_TOP ) {
                  m_nXOffset = 0;
           }
-          else if ( evt.m_eventType == wxEVT_SCROLLWIN_BOTTOM ) {
+          else if ( evt.GetEventType() == wxEVT_SCROLLWIN_BOTTOM ) {
                  m_nXOffset = nMax;
           }
-          else if ( evt.m_eventType == wxEVT_SCROLLWIN_PAGEUP ) {
+          else if ( evt.GetEventType() == wxEVT_SCROLLWIN_PAGEUP ) {
                  m_nXOffset -= clientRc.GetWidth()/2;
                  if( m_nXOffset < 0 ) m_nXOffset = 0;
           }
-          else if ( evt.m_eventType == wxEVT_SCROLLWIN_LINEUP ) {
+          else if ( evt.GetEventType() == wxEVT_SCROLLWIN_LINEUP ) {
                  m_nXOffset -= m_nAvgCharWidth;
                  if( m_nXOffset < 0 ) m_nXOffset = 0;
           }
-          else if ( evt.m_eventType == wxEVT_SCROLLWIN_PAGEDOWN ) {
+          else if ( evt.GetEventType() == wxEVT_SCROLLWIN_PAGEDOWN ) {
                  m_nXOffset += clientRc.GetWidth()/2;
                  if( m_nXOffset > nMax ) m_nXOffset = nMax;
           }
-          else if ( evt.m_eventType == wxEVT_SCROLLWIN_LINEDOWN ) {
+          else if ( evt.GetEventType() == wxEVT_SCROLLWIN_LINEDOWN ) {
                  m_nXOffset += m_nAvgCharWidth;
                  if( m_nXOffset > nMax ) m_nXOffset = nMax;
           }
-          else if (( evt.m_eventType == wxEVT_SCROLLWIN_THUMBRELEASE ) || (evt.m_eventType == wxEVT_SCROLLWIN_THUMBTRACK )) {
+          else if (( evt.GetEventType() == wxEVT_SCROLLWIN_THUMBRELEASE ) || (evt.GetEventType() == wxEVT_SCROLLWIN_THUMBTRACK )) {
                  m_nXOffset = evt.GetPosition();
           }
           SetScrollbar( wxHORIZONTAL, m_nXOffset, CRMIN(clientRc.GetWidth(),m_nMaxWidth) , m_nMaxWidth );
@@ -1384,9 +1384,9 @@ void CxTextOut::ChooseFont()
     if ( m_pFont == NULL )
     {
 #ifndef _WINNT
-        *pFont = wxSystemSettings::GetSystemFont( wxSYS_ANSI_FIXED_FONT );
+        *pFont = wxSystemSettings::GetFont( wxSYS_ANSI_FIXED_FONT );
 #else
-        *pFont = wxSystemSettings::GetSystemFont( wxDEVICE_DEFAULT_FONT );
+        *pFont = wxSystemSettings::GetFont( wxDEVICE_DEFAULT_FONT );
 #endif  // !_WINNT
      }
      else

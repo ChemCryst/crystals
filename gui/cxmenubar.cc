@@ -47,7 +47,7 @@ int CxMenuBar::AddMenu(CxMenu * menuToAdd, const string & text, int position)
 #endif
 #ifdef __BOTHWX__
       ostringstream strm;
-      strm << "cxmenubar " << (int)this << " adding menu called " << text << (int)menuToAdd;
+      strm << "cxmenubar " << (long)this << " adding menu called " << text << (long)menuToAdd;
       if ( Append( menuToAdd, text.c_str()) )
           LOGSTAT ( strm.str() );
       else

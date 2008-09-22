@@ -7,6 +7,9 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.39  2008/06/04 15:21:57  djw
+//  More fixes for OpenGL problem.
+//
 //  Revision 1.37  2005/01/23 10:20:24  rich
 //  Reinstate CVS log history for C++ files and header files. Recent changes
 //  are lost from the log, but not from the files!
@@ -288,6 +291,9 @@ class CxModel : public BASEMODEL
     float m_stretchY ;
     bool  m_bitmapok;
     bool m_bMouseLeaveInitialised;
+
+    bool setCurrentGL();
+
 #ifdef __CR_WIN__
     HPALETTE m_hPalette;
     CStatic* m_TextPopup;
@@ -298,7 +304,6 @@ class CxModel : public BASEMODEL
 
     BOOL SetWindowPixelFormat();
     BOOL CreateViewGLContext();
-    bool setCurrentGL();
 
     CBitmap m_bitmap;
     CPalette m_pal;

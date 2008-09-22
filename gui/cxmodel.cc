@@ -47,7 +47,9 @@ void mywxStaticText::OnRButtonUp( wxMouseEvent & event ) { event.m_x += GetRect(
 
 
 int CxModel::mModelCount = kModelBase;
+#ifdef __CR_WIN__
 HDC CxModel::last_hdc = NULL;
+#endif
 
 CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 {
@@ -287,7 +289,7 @@ void CxModel::OnPaint(wxPaintEvent &event)
                     GetBValue(col)/255.0f,  0.0f);
 #endif
 #ifdef __BOTHWX__
-      wxColour col = wxSystemSettings::GetSystemColour( wxSYS_COLOUR_3DFACE );
+      wxColour col = wxSystemSettings::GetColour( wxSYS_COLOUR_3DFACE );
       glClearColor( col.Red()/255.0f,
                     col.Green()/255.0f,
                     col.Blue()/255.0f,  0.0f);
@@ -374,7 +376,7 @@ void CxModel::OnPaint(wxPaintEvent &event)
                     GetBValue(col)/255.0f,  0.0f);
 #endif
 #ifdef __BOTHWX__
-      wxColour col = wxSystemSettings::GetSystemColour( wxSYS_COLOUR_3DFACE );
+      wxColour col = wxSystemSettings::GetColour( wxSYS_COLOUR_3DFACE );
       glClearColor( col.Red()/255.0f,
                     col.Green()/255.0f,
                     col.Blue()/255.0f,  0.0f);
@@ -1122,7 +1124,7 @@ void CxModel::NewSize(int cx, int cy)
     m_stretchX = 1.0f;
     m_stretchY = 1.0f;
 
-    glViewport(0,0,cx,cy);
+    if ( !m_NotSetupYet ) glViewport(0,0,cx,cy);
 
     if ( cy > cx ) m_stretchY = (float)cy / (float)cx;
     else           m_stretchX = (float)cx / (float)cy;
@@ -1529,7 +1531,7 @@ void CxModel::OnMenuSelected(UINT nID)
 #ifdef __BOTHWX__
 void CxModel::OnMenuSelected(wxCommandEvent & event)
 {
-      int nID = event.m_id;
+      int nID = event.GetId();
 #endif
 
     ((CrModel*)ptr_to_crObject)->MenuSelected( nID );

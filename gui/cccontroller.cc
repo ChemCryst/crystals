@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.110  2005/02/22 22:41:46  stefan
+// 1. Removal of useless intermediat string
+//
 // Revision 1.109  2005/02/07 14:18:31  stefan
 // 1. Replaced the idle timer with a sequance listener which puts a message on the event queue when the crystals thread sends something for the gui. This has been done for both the windows and the wx version.
 //
@@ -1058,7 +1061,7 @@ bool CcController::ParseInput( deque<string> & tokenList )
                 CrWindow* mWindowToClose = (CrWindow*)FindObject(tokenList.front()); //Find window by name.
                 tokenList.pop_front();
                 ostringstream strstrm;
-                strstrm << (int) mWindowToClose;
+                strstrm << (long) mWindowToClose;
                 LOGSTAT("CcController: Found window " + strstrm.str() );
                 mWindowList.remove(mWindowToClose);
                 delete mWindowToClose;
@@ -2651,9 +2654,9 @@ void CcController::CcChooseFont()
   if ( CcController::mp_inputfont == NULL )
   {
 #ifndef _WINNT
-    *pFont = wxSystemSettings::GetSystemFont( wxSYS_ANSI_FIXED_FONT );
+    *pFont = wxSystemSettings::GetFont( wxSYS_ANSI_FIXED_FONT );
 #else
-    *pFont = wxSystemSettings::GetSystemFont( wxDEVICE_DEFAULT_FONT );
+    *pFont = wxSystemSettings::GetFont( wxDEVICE_DEFAULT_FONT );
 #endif  // !_WINNT
    }
    else

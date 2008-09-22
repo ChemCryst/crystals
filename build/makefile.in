@@ -33,7 +33,7 @@ else
     LD = g++
     F77 = g77
     F77FLAGS = -fexceptions -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D _$(COMPCODE)_
-    OPT = -O2
+    OPT = -ggdb
 
     INSTALL=/usr/bin/install
 
