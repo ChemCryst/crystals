@@ -1,6 +1,9 @@
 c
 c
 C $Log: not supported by cvs2svn $
+C Revision 1.128  2008/09/08 14:04:42  djw
+C test
+C
 C Revision 1.127  2008/09/08 10:18:32  djw
 C Enable/inhibit punching of ADP info from XPRAXI
 C
@@ -5862,7 +5865,11 @@ C
 
            CALL XPCIF 
      1     ('# The values actually used during refinement')
+#if !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
            WRITE(CBUF,'(''I>'',F6.1,''\s(I)'')') STORE(L30RF+3)
+#else
+           WRITE(CBUF,'(''I>'',F6.1,''\\s(I)'')') STORE(L30RF+3)
+#endif
            CALL XCRAS (CBUF,NCHAR)
            WRITE (NCFPU1,'(''_oxford_reflns_threshold_expression_ref '',
      1                    T45,A)')  CBUF(1:NCHAR) 
@@ -5920,7 +5927,11 @@ c           END IF
            CALL XPCIF 
      1     ('# The values computed with a 2 sigma cutoff - a la SHELX')
 
+#if !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
            WRITE(CBUF,'(''I>'',F6.1,''\s(I)'')') STORE(L30CF+0)
+#else
+           WRITE(CBUF,'(''I>'',F6.1,''\\s(I)'')') STORE(L30CF+0)
+#endif
            CALL XCRAS (CBUF,NCHAR)
            WRITE (NCFPU1,'(''_reflns_threshold_expression '',T35,A)')
      1                 CBUF(1:NCHAR)
