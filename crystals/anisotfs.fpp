@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2008/09/08 10:18:32  djw
+C Enable/inhibit punching of ADP info from XPRAXI
+C
 C Revision 1.22  2008/09/08 07:19:24  djw
 C In AXES, ouput adp volumes
 C
@@ -141,12 +144,14 @@ C
          END IF
 100      FORMAT (' Principal axes and ''direction''',' cosines of the th
      1ermal ellipsoids',///,1X,'Type',1X,'Serial',5X,'m.s.d.',9X,'a*',
-     2    8X,'b''',9X,'c',10X,'a',9X,'b',9X,'c',4x,'Uarith',5x,'Ugeom')
+     2    8X,'b''',9X,'c',10X,'a',9X,'b',9X,'c',4x,'Uarith',5x,'Ugeom'
+     3    4x,'Uprime')
 cfeb08         WRITE (NCAWU,150)
             WRITE (CMON,150)
             CALL XPRVDU (NCVDU,2,0)
 150      FORMAT (' Principal axes of the thermal ellipsoids, A**2'/
-     1 14x,' Min  ',4x,' Med  ',4x,' Max  ',4x,' Uarith     Ugeom')
+     1 14x,' Min  ',4x,' Med  ',4x,' Max  ',4x,' Uarith     Ugeom',
+     2 4x,'Uprime')
       END IF
       IF (JPUNCH .GT. 0) WRITE(NCPU,150)
 C
@@ -256,8 +261,11 @@ C----- INTERCHANGE EIGEN VECTORS
 cdjwfeb06  add in volume contributions
 cdjwfeb06 compute geometric mean
             UGEOM=(STORE(NE)*STORE(NE+1)*STORE(NE+2))
-            UGEOM=SIGN(1.,UGEOM)*(MAX(ZERO,ABS(UGEOM)))**(1./3.)
+            UGEOM=sign(1.,ugeom)*abs(UGEOM)**0.33333
             UARITH = (STORE(NE)+STORE(NE+1)+STORE(NE+2))/3.
+cdjwsep08
+            UPRIME =SIGN(1.,STORE(NE))* ABS(STORE(NE+2)*STORE(NE+1))/
+     1      ABS(STORE(NE))
             UEQUIV = UGEOM
             avol = avol + uequiv
             dvol = dvol + uequiv*uequiv
@@ -297,18 +305,16 @@ cfeb08                  WRITE (NCAWU,500)
             K=NF+20
             IF (LIST.GT.0) THEN
                WRITE (CMON,550) STORE(M5B),STORE(M5B+1),(STORE(III),III=
-     1          NE,J),UARITH, UGEOM, CTEXT
+     1          NE,J),UARITH, UGEOM, UPRIME, CTEXT
                CALL XPRVDU (NCVDU,1,0)
-cfeb08               WRITE (NCAWU,550) STORE(M5B),STORE(M5B+1),(STORE(III),
-cfeb08     1          III=NE,J),CTEXT
-550            FORMAT (1X,A4,F6.0,5F10.4,3X,A24)
+550            FORMAT (1X,A4,F6.0,6F10.4,3X,A24)
                IF (ISSPRT.EQ.0) WRITE (NCWU,600) STORE(M5B),STORE(M5B+1)
-     1          ,(STORE(I),I=NF,K),UARITH, UGEOM, CTEXT
+     1          ,(STORE(I),I=NF,K),UARITH, UGEOM, UPRIME, CTEXT
 600            FORMAT (/1X,A4,F7.0,2X,F9.5,2(1X,3F10.5),2(/14X,F9.5,
-     1          2(1X,3F10.5)),2F10.5,A24)
+     1          2(1X,3F10.5)),3F10.5,A24)
             ELSE IF ((LIST.EQ.0).AND.(CTEXT.NE.' ')) THEN
                WRITE (CMON,550) STORE(M5B),STORE(M5B+1),(STORE(III),III=
-     1          NE,J),UARITH,UGEOM,CTEXT
+     1          NE,J),UARITH,UGEOM,UPRIME, CTEXT
                CALL XPRVDU (NCVDU,1,0)
                IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
 cfeb08               WRITE (NCAWU,'(A)') CMON(1)
@@ -316,7 +322,7 @@ cfeb08               WRITE (NCAWU,'(A)') CMON(1)
 CDJWSEP08
             IF (JPUNCH .GT. 0) THEN
                WRITE (NCPU,550) STORE(M5B),STORE(M5B+1),(STORE(III),III=
-     1          NE,J),UARITH, UGEOM
+     1          NE,J),UARITH, UGEOM, UPRIME
             END IF
             GO TO 850
          ELSE
@@ -383,24 +389,28 @@ C--MOVE TO THE NEXT ATOM
 C--FINAL CAPTION AND RETURN
 cdjwfeb06
       if(list .gt. 0) then
-      if (nvol .gt. 0) then
-       write(cmon,'(A,i6,a,f8.4,a,f8.4)')' Average volume of ',nvol,
+       if (nvol .gt. 1) then
+         write(cmon,'(A,i6,a,f8.4,a,f8.4)')' Average radius of ',nvol,
      1 ' atoms =',avol/float(nvol), ' rmsd ',
      2   sqrt((nvol*dvol-avol*avol)/(nvol*(nvol-1)))
-       CALL XPRVDU (NCVDU,1,0)
-cfeb08       WRITE (NCAWU,'(A)') CMON(1)
-       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
-       write(cmon,'(A,i6,a,f8.4)')' Maximum volume of ',nvol,
+         CALL XPRVDU (NCVDU,1,0)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+c
+         write(cmon,'(A,i6,a,f8.4)')' Maximum radius of ',nvol,
      1 ' atoms =',bvol
-       CALL XPRVDU (NCVDU,1,0)
-cfeb08       WRITE (NCAWU,'(A)') CMON(1)
-       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
-       write(cmon,'(A,i6,a,f8.4)')'   Maximum axis of ',nvol,
+         CALL XPRVDU (NCVDU,1,0)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+c
+         write(cmon,'(A,i6,a,f8.4)')'   Maximum axis of ',nvol,
      1 ' atoms =',cvol
-       CALL XPRVDU (NCVDU,1,0)
-cfeb08       WRITE (NCAWU,'(A)') CMON(1)
-       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
-      endif
+         CALL XPRVDU (NCVDU,1,0)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+c
+         write(cmon,'(a)') 'for Uprime',
+     1   ' see Acta Cryst (2000). B56, 747-749'
+         CALL XPRVDU (NCVDU,1,0)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+       endif
       endif
 950   CONTINUE
 C----- RETURN WORKSPACE
@@ -424,7 +434,7 @@ CODE FOR XEQUIV
       SUBROUTINE XEQUIV (MODE,IATOM,NPAR,IBASE)
 C----- COMPUTE THE U EQUIVALENT FOR THE ATOM AT STORE(IATOM)
 C      WITH NPAR PARAMETERS PER ATOM
-C      IBASE IS 4 WORD AREA CONTAUNING UEQUIV, UMIN, UMED, UMAX
+C      IBASE IS 5 WORD AREA CONTAUNING UEQUIV, UMIN, UMED, UMAX
 C
 C----- USE MODE = 1 IF CALLING ROUTINE HANDLES LFL AND LFL CORRECTLY,
 C      OTHERWISE USE MODE = 0
@@ -457,7 +467,6 @@ C         AN APPROXIMATION FOR POOR CALLING ROUTINES
       ELSE
 C----- ATOM IS ISOTROPIC ANYWAY
 C-C-C-ATOM IS ISOTROPIC ANYWAY (OR SPHERE/LINE/RING)
-C        STORE (IBASE) = STORE(IATOM+3)
          STORE(IBASE)=STORE(IATOM+7)
          STORE(IBASE+1)=0.0
          STORE(IBASE+2)=0.0
