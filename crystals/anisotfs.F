@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2008/09/22 15:23:24  djw
+C Output U-prime in AXES and fix long standing bug in calls rom XEQUIV - turned out NFL was mis-set
+C
 C Revision 1.23  2008/09/08 10:18:32  djw
 C Enable/inhibit punching of ADP info from XPRAXI
 C
@@ -144,7 +147,7 @@ C
          END IF
 100      FORMAT (' Principal axes and ''direction''',' cosines of the th
      1ermal ellipsoids',///,1X,'Type',1X,'Serial',5X,'m.s.d.',9X,'a*',
-     2    8X,'b''',9X,'c',10X,'a',9X,'b',9X,'c',4x,'Uarith',5x,'Ugeom'
+     2    8X,'b''',9X,'c',10X,'a',9X,'b',9X,'c',4x,'Uarith',5x,'Ugeom',
      3    4x,'Uprime')
 cfeb08         WRITE (NCAWU,150)
             WRITE (CMON,150)
