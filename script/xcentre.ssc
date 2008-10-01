@@ -9,6 +9,9 @@
 %      COPY '#COLL'                                                             
 %      COPY 'SEL TYP=ALL TOL=20'                                                
 %      COPY 'END'                                                               
+%      COPY '#EDIT'
+%      COPY 'DEL Q(1)'
+%      COPY 'END'
 %      COPY '#COLL'                                                             
 %      COPY 'SEL TYP=ALL TOL=2'                                                 
 %      COPY 'END'                                                               
@@ -16,5 +19,7 @@
 %      COPY 'SEL TYPE=ALL '                                                     
 %      COPY 'END'                                                               
 %      COPY '#SCRIPT XDELQ'
+%      COPY 'PURGE LIST=41'                                                               
+%      COPY 'END'                                                               
 %%                                                                              
 %END SCRIPT                                                                     
