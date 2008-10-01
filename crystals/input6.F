@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2008/03/07 16:09:48  djw
+C changes to help with the correct computation of Fourier maps from twinned crystals.  THe old COPY67 subroutine did not pack the data properly unless the keys were the default keys.  The job is now done
+C
 C Revision 1.11  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -172,7 +175,6 @@ C--NOT LIST 6  -  AN ERROR
 7100  CONTINUE
       CALL XERHDR(0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,7200)LSTNO,IH
-      WRITE ( NCAWU , 7200 ) LSTNO , IH
       WRITE ( CMON, 7200) LSTNO, IH
       CALL XPRVDU(NCVDU, 1,0)
 7200  FORMAT(' Illegal list number for ''',A1,'punch''')
@@ -180,37 +182,48 @@ C--NOT LIST 6  -  AN ERROR
       RETURN
 C--CHECK THE TYPE OF PUNCH
 7300  CONTINUE
-C           A     B     C     D     E     F     G
-      GOTO (7310, 7340, 7320, 7330, 7350, 7360, 7370 ) ICLASS+2
+C           A    B    C    D    E    F    G    H
+      GOTO (7310,7340,7320,7330,7350,7360,7370,7380 ) ICLASS+2
+71    CONTINUE
+      CALL XERHDR(0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,72)ICLASS
+      WRITE ( CMON, 72) ICLASS
+      CALL XPRVDU(NCVDU, 1,0)
+72    FORMAT(' Illegal list 6 punch type', i4)
+      CALL XERHND ( IERERR )
       RETURN
-C--NORMAL PUNCH FORMAT
+C--NORMAL PUNCH FORMAT - A
 7310  CONTINUE
       CALL XPCH6G(LSTNO,ICLASS)
       RETURN
-C--NORMAL DATA, ONE REFLECTION PRE CARD
+C--NORMAL DATA, ONE REFLECTION PRE CARD - C
 7320  CONTINUE
 cdjwmar08 - ENSURE LIST 6 IS PUNCH AS LIST 6
       CALL XPCH6S(LSTNO,LSTNO)
       RETURN
-C--OBSERVED QUANTITIES ONLY
+C--OBSERVED QUANTITIES ONLY - D
 7330  CONTINUE
       CALL XPCH6O(LSTNO)
       RETURN
-C----- CIF OUTPUT F's
+C----- CIF OUTPUT F's - B
 7340  CONTINUE
       CALL XPCH6C(LSTNO,0)
       RETURN
-C----- CIF OUTPUT F^2's
+C----- CIF OUTPUT F^2's - E
 7350  CONTINUE
       CALL XPCH6C(LSTNO,1)
       RETURN
-C----- PLAIN SHELX HKL OUTPUT
+C----- PLAIN SHELX HKL OUTPUT  - F
 7360  CONTINUE
       CALL XPCH6X(LSTNO,0)
       RETURN
-C----- SHELX HKL OUTPUT of FC with made up sigmas.
+C----- SHELX HKL OUTPUT of FC with made up sigmas. - G
 7370  CONTINUE
       CALL XPCH6X(LSTNO,1)
+C----- CIF OUTPUT F^2's  on scale of Fc- H
+7380  CONTINUE
+      CALL XPCH6C(LSTNO,2)
+      RETURN
       RETURN
       END
 
