@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2008/09/08 07:18:10  djw
+C Link to Benfords Law
+C
 C Revision 1.12  2007/11/01 11:04:00  djw
 C add access to Tons code
 C
@@ -129,17 +132,18 @@ CODE FOR XTHX
 c
 CODE FOR xton
       SUBROUTINE xton
-      DIMENSION IPROCS(3)
+      DIMENSION IPROCS(3), PROCS(3)
+      EQUIVALENCE (PROCS(1),IPROCS(1))
       CALL XCSAE
       I = KRDDPV ( IPROCS , 3 )
-      IPLOT = IPROCS(1)
+      CRITER = PROCS(1)
       ktyp06 = IPROCS(2)
-      IGLST = IPROCS(3)
-      IF (I.GE.0) CALL tonspk(IPLOT,IGLST,ktyp06)
+      IPLOT = IPROCS(3)
+      IF (I.GE.0) CALL tonspk(IPLOT,CRITER,ktyp06)
       RETURN
       END
 c
-CODE FOR xton
+CODE FOR bensrt
       SUBROUTINE bensrt
       DIMENSION IPROCS(3), PROCS(3)
       EQUIVALENCE (PROCS(1),IPROCS(1))
