@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.32  2008/09/22 15:23:24  djw
+C Output U-prime in AXES and fix long standing bug in calls rom XEQUIV - turned out NFL was mis-set
+C
 C Revision 1.31  2007/10/09 06:50:37  djw
 C reset C-H distance to 0.95, add autorenumbering
 C
@@ -1343,7 +1346,8 @@ C
 C
         EQUIVALENCE (TOLER, DISTS(4))
 C
-        DATA IHYD / 'H  ' /
+        DATA KHYD / 'H  ' /
+        DATA KDET / 'D  ' /
 C---USE THE SPECIFIED CONTACT FROM THE FIRST DISTANCE STACK
 C---AS A PIVOT FOR A NEW STACK AND FIND ALL CONTACTS
 C
@@ -1703,7 +1707,8 @@ C
 C      EQUIVALENCE (TOLER,DISTS(4))
       DATA TOLER /0.6/, ITRANS / 0 /
 C
-      DATA IHYD / 'H   ' /
+      DATA KHYD / 'H   ' /
+      DATA KDET / 'D   ' /
 C----- USE THE SHORTEST CONTACT FROM THE FIRST DISTANCE STACK
 C      AS A PIVOT FOR A NEW STACK. SEARCH THIS NEW STACK FOR
 C      AN ATOM IN COMMON WITH THE FIRST. CHOOSE A NON-H ATOM
@@ -1754,7 +1759,8 @@ C      AND A 1 - 2 CONTACT WITH THE INTERMEDIATE.
      1             (STORE(IJE +10) .GT. 1.9)     .AND.
      1             (STORE(IJJE+10) .LE. 1.9)   ) THEN
                 ISEC = IJE
-                IF (ISTORE(ISTORE(ISEC)) .NE. IHYD) GOTO 1700
+                IF( (ISTORE(ISTORE(ISEC)) .NE. KHYD) .AND. 
+     1          (ISTORE(ISTORE(ISEC)) .NE. KDET)) GOTO 1700
              ENDIF
 C
 1590        CONTINUE
@@ -2141,6 +2147,13 @@ C----- WRITE A RIDE INSTRUCTION
       WRITE(CWRITE,1000) STORE(IATOM1), NINT(STORE(IATOM1+1)),
      1  ISER,' ',ISER+1,' ',ISER+2
       ENDIF
+cdjwsep08
+      write(ncpu,'(3(a,i6))') 
+     1 store(iatom1),nint(store(iatom1+1)),
+     2 store(iatom2),nint(store(iatom2+1)),
+     3 store(iatom3),nint(store(iatom3+1))
+
+cdjwsep08
 1000  FORMAT('RIDE ', A4,'(', I4, ',X''S)',
      1 ' H(',I4,',X''S)', A,'H(',I4,',X''S)',
      2  A,'H(',I4,',X''S)')
@@ -3050,6 +3063,7 @@ C
 C
       DIMENSION ID(2)
       DATA KHYD/'H   '/
+      DATA KDET/'D   '/
 c
 C--SET THE TIMING
       CALL XTIME1 (2)
@@ -3075,12 +3089,12 @@ C----- CREATE A LIST OF BONDS TO HYDROGEN, WITH HETRO ATOM FIRST
       DO 1000 I = 1,N41B
             IAT1 = ISTORE(M5+md5*ISTORE(M41B))
             IAT2 = ISTORE(M5+md5*ISTORE(M41B+6))
-            IF (IAT1 .EQ. KHYD) THEN
+            IF( (IAT1 .EQ. KHYD) .OR. (IAT1 .EQ. KDET)) THEN
                   ISTORE(NFL)=ISTORE(M41B+6)
                   ISTORE(NFL+1)=ISTORE(M41B)
                   NFL=NFL+2
                   NHB=NHB+1
-            ELSE IF (IAT2 .EQ. KHYD) THEN
+            ELSE IF( (IAT2 .EQ. KHYD) .OR. (IAT2 .EQ. KDET)) THEN
                   ISTORE(NFL)=ISTORE(M41B)
                   ISTORE(NFL+1)=ISTORE(M41B+6)
                   NFL=NFL+2

@@ -113,7 +113,8 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
-      DATA IHYD /'H   '/
+      DATA KHYD /'H   '/
+      DATA KDET /'D   '/
 C
 C--SET UP THE TIMING
 C----- SET SWITCH FOR NON-POSITIVE DEFINATE ATOM CAPTION
@@ -336,7 +337,8 @@ C----- SET TO U[ISO]
             END IF
 CFEB00
 C-----      DONT BOTHER WITH H
-            IF (ISTORE(M5B) .EQ. IHYD) GOTO 850
+            IF ((ISTORE(M5B) .EQ. KHYD).OR.(ISTORE(M5B) .EQ. KDET)) 
+     1      GOTO 850
 C-----      CHECK FOR SPLITTING
             CSHAPE = ' '
             CTEXT=' '

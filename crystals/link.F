@@ -352,7 +352,7 @@ C- POINTER TO LIST
      2            1, 2, 3,30, 6, 13, 29, 31,
      7            1, 2, 3, 0, 6, 13, 29,  0/
 C
-      DATA KHYD,CBLANK /'H   ',' '/
+      DATA KHYD,KDET,CBLANK /'H   ','D   ',' '/
 
       DATA CBONDS / '1','2','3','4','ar','un','de','un','pi'/
 c      DATA IDIMBF / 2 /
@@ -1238,7 +1238,7 @@ C Work out best plane projection for all non-H
       NNH = 0
       DO I = 0,N5-1
          IAP = L5 + I * MD5
-         IF ( ISTORE(IAP) .NE. KHYD ) THEN
+         IF( (ISTORE(IAP) .NE. KHYD).AND.(ISTORE(IAP) .NE. KDET)) THEN
            CALL XMOVE(STORE(IAP+4),STORE(KNFREE + NNH * 4),4)
            STORE(KNFREE+3+NNH*4) = 1.0
            NNH = NNH + 1
@@ -1307,13 +1307,13 @@ C Work out number of connected atoms and H atoms...
          IA2 = ISTORE(L41B+6+I*MD41B)
          IAT1P = L5 + IA1 * MD5
          IAT2P = L5 + IA2 * MD5
-         IF ( ISTORE(IAT2P) .EQ. KHYD ) THEN
+         IF((ISTORE(IAT2P).EQ.KHYD) .OR. (ISTORE(IAT2P).EQ.KDET))THEN
             ISTORE(INHY+IA1) = ISTORE(INHY+IA1) + 1
             ISTORE(L41B+I*MD41B) = -1    !Flag not to be included
          ELSE
             ISTORE(INCA+IA1) = ISTORE(INCA+IA1) + 1
          ENDIF
-         IF ( ISTORE(IAT1P) .EQ. KHYD ) THEN
+         IF( (ISTORE(IAT1P).EQ.KHYD) .OR. (ISTORE(IAT1P).EQ.KHYD))THEN
             ISTORE(INHY+IA2) = ISTORE(INHY+IA2) + 1
             ISTORE(L41B+I*MD41B) = -1    !Flag not to be included
          ELSE
@@ -1323,7 +1323,8 @@ C Work out number of connected atoms and H atoms...
 
       J = 0
       DO I = 0, N5-1
-        IF ( ISTORE(L5+I*MD5) .EQ. KHYD) CYCLE
+        IF( 
+     1  (ISTORE(L5+I*MD5).EQ.KHYD).OR.(ISTORE(L5+I*MD5).EQ.KDET))CYCLE
         WRITE(CLAB,'(A,I4)') 'AT',J+1
         CALL XCRAS(CLAB,LLAB)
         WRITE(NCFPU1,'(A,A,2I4,A,2I5)')

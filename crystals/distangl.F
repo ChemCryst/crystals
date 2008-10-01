@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.85  2008/02/14 11:03:21  djw
+C Remove bond update diagnostics
+C
 C Revision 1.84  2008/02/12 09:01:16  djw
 C Matrix work diagnostics
 C
@@ -485,6 +488,7 @@ C             8 NONBONDED RESTRAINTS
 C             9 HTML OUTPUT
 C            10 HYDROGEN RESTRAINTS
 C            11 HYDROGEN BONDING
+c            12 HYDROGEN RIDES
 C
 C  ISYMOD   SYMMETRY MODIFIER
 C           -1  PATTERSON
@@ -608,6 +612,8 @@ C
      1 ,IRDUS,IDSPDA,IPUNCH,ISYMOD,ITRANS,IHFIXD,DDEV1,DDEV2,SDEV1,SDEV2
      2 ,SNBVAL,SNBPOW 
       COMMON /XDISTW/A,BB,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y
+c
+c
       INCLUDE 'XLEXIC.INC'
       INCLUDE 'XWORKA.INC'
       INCLUDE 'XPDS.INC'
@@ -664,6 +670,7 @@ C----- MAXIMUM PARTS PER PARAMETER
       DATA MXPPP /50/
 
       DATA KHYD /'H   '/, KCARB /'C   '/, KAZOT/'N   '/, KOXY/'O   '/
+      DATA KDET /'D   '/
 
       PIVINI = .FALSE.
       BONINI = .FALSE.
@@ -1015,9 +1022,9 @@ C We need to know about terminal atoms. (Excluding H).
             J52 = ISTORE(M41B+6)
             I51 = L5 + J51 * MD5
             I52 = L5 + J52 * MD5
-            IF (ISTORE(I52).NE.KHYD)
+            IF ((ISTORE(I52).NE.KHYD) .AND. (ISTORE(I52).NE.KDET))
      1                     ISTORE(INHVEC+J51)=ISTORE(INHVEC+J51)+1
-            IF (ISTORE(I51).NE.KHYD)
+            IF ((ISTORE(I51).NE.KHYD) .AND. (ISTORE(I51).NE.KDET))
      1                     ISTORE(INHVEC+J52)=ISTORE(INHVEC+J52)+1
          END DO
       END IF    
@@ -1245,7 +1252,6 @@ C--PREPARE ONE EMPTY SLOT AT THE TOP AS WELL
       endif
 C
 C
-C
 C --             **** MAIN DISTANCE / ANGLES LOOP ****
 
       M5A=L5
@@ -1413,7 +1419,7 @@ C--SET UP THE ATOM STACK FOR THE PIVOT ATOM
           CALL XFPCES( M12A, JB, NWS, IPART(1) )
           LHFIXD(1) = .FALSE.
 C Check if it is a H
-          IF (ISTORE(M5P).EQ.KHYD)THEN
+          IF ((ISTORE(M5P).EQ.KHYD) .OR. (ISTORE(M5P).EQ.KDET)) THEN
 C Check if the H is riding, or the esd happens to be zero.          
             IF ( ( AND(ISTORE(M5A+15),KBREFB(3)).GT.0 ) .OR.
      1                                   (ISTORE(JA) .LT. 0 ))THEN
@@ -1423,7 +1429,7 @@ C Check if the H is riding, or the esd happens to be zero.
          END IF
 C----- INITIALIZE BUFFER
          IJX=IJW
-         IF (IPUNCH .EQ. 3) THEN
+      IF (IPUNCH .EQ. 3) THEN
 cdjwsep06 find unique H atoms
           j = 1+(js-nflbas)/nw
           if (j .eq. 3) then
@@ -1431,38 +1437,42 @@ cdjwsep06 find unique H atoms
            j2 = nint(store(istore(nflbas+nw)+1))
            j3 = nint(store(istore(nflbas+2*nw)+1))
            if ((j3 .eq. j2) .or. (j3 .eq. j1))     then
-           j = j-1
-           js = js-nw
+            j = j-1
+            js = js-nw
            endif
           endif
           if(j .eq. 2) then
            j1 = nint(store(istore(nflbas)+1))
            j2 = nint(store(istore(nflbas+nw)+1))
            if (j2 .eq. j1) then
-           j = j-1
-           js = js-nw
+            j = j-1
+            js = js-nw
            endif
           endif
 C----- SCRIPT DATA PUBLICATION
 2185      FORMAT( 'RIDE ',50(A4,'(',I4,',X''S)',1X) )
           WRITE(NCPU,2185) STORE(M5P), NINT(STORE(M5P+1)),
      1    (STORE(ISTORE(J)),NINT(STORE(ISTORE(J)+1)),J=NFLBAS,JS,NW)
-         ELSE IF (IPUNCH .EQ. 10) THEN
 C
-C---- FIND HYDROGEN RESTRAINTS  ^^^
+C
+C
+      ELSE IF ((IPUNCH.EQ.10).OR.(IPUNCH.EQ.12)) THEN
+C 
+C
+C---- FIND HYDROGEN CONSTRAINTS/RESTRAINTS  
 C
 C----- THE ATOMS BONDED TO A PIVOT ARE PUT INTO A STACK 'CBONDA'
-C      TOGETER WITH A FLAG IN IHY TO MARK H ATOMS.  tHE HYBRIDISATION
+C      TOGETER WITH A FLAG IN IHY TO MARK H ATOMS.  THE HYBRIDISATION
 C      IS DETECTED AND RESTRAINTS WRITTEN TO THE PUNCH FILE
 C
           CALL XZEROF (IHY,NBONDA)
           NHY = 0
           NNHY = 0
           KHY = 0
-          IF (ISTORE(M5P) .NE. KHYD) THEN
+          IF ((ISTORE(M5P).NE.KHYD).AND.(ISTORE(M5P).NE.KDET))THEN
            WRITE(CATOM1,'(A4''('',I6,'')'')')STORE(M5P),
      1     NINT(STORE(M5P+1))
-           LOOP16: DO  J = NFLBAS, JS, NW 
+           DO 65430 J = NFLBAS, JS, NW 
 C-----  FORM ATOM NAME INTO CHARACTERS
             L=ISTORE(J)
             KHY = KHY + 1
@@ -1471,7 +1481,8 @@ C
             CALL CATSTR (STORE(L), STORE(L+1),
      1  ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
      2  ISTORE(J+6), CATOM2, LATOM2)
-            IF (ISTORE(ISTORE(J)) .EQ. KHYD) THEN
+            IF((ISTORE(ISTORE(J)).EQ.KHYD).OR.
+     1      (ISTORE(ISTORE(J)).EQ.KDET)) THEN
                 NHY = NHY + 1
                 IHY(KHY) = 1
             ELSE
@@ -1480,28 +1491,51 @@ C
             ENDIF
             IPARTH(KHY)=ISTORE(L+14)
             CBONDA(KHY)(:) = CATOM2(1:LATOM2)
-           END DO LOOP16
+65430      CONTINUE
 C
-C----- FIND A UEQUIV TO USE FOR FOR THE H ATOMS 
-C      RESCALED LATER BY 1.25 FOR ME AND OH
-       CALL XEQUIV (0, M5P, N5P, NBASE)
-       UEQUIV = STORE(NBASE) * 1.2
+C-----     FIND A UEQUIV TO USE FOR FOR THE H ATOMS 
+C          RESCALED LATER BY 1.25 FOR ME AND OH
+cdjwsep08       CALL XEQUIV (0, M5P, N5P, NBASE)
+           CALL XEQUIV (1, M5P, N5P, NBASE)
+           UEQUIV = STORE(NBASE) * 1.2
+C
+      if (ipunch .eq. 12) then
+C PUNCH CONSTRAINTS
+c^^^
+             if (nhy .ge. 1) then
+              IDJW=INDEX(CATOM1,')')
+              CATOM1(IDJW:)=',X''s) '
+              WRITE (CLINE,'(a,a)') 'RIDE ',CATOM1
+              CALL XCREMS (CLINE,CLINE,NCH)
+              DO 65433 J=1,KHY
+               IF (IHY(J).EQ.1) THEN
+                IDJW=INDEX(CBONDA(J),',')
+                IF (IDJW.LE.0) IDJW=INDEX(CBONDA(J),')')
+                CBONDA(J)(IDJW:)=',X''s) '
+                WRITE (CLINE(NCH:),'(1x,a)') CBONDA(J)
+                CALL XCREMS (CLINE,CLINE,NCH)
+               END IF
+65433         continue
+              WRITE(NCPU,'(A)') CLINE
+             endif
+c^^^
+      else if (ipunch .eq. 10) then
 C----- C-H RESTRAINTS
            IF ((ISTORE(M5P) .EQ. KCARB) .AND. 
      1                (NHY .GE. 1)) THEN
 C----- WRITE THE HYDROGEN ATOMS TO THE SCRIPT DATA FILE
-        do idjw=1,khy
-         if (ihy(idjw) .eq. 1) then
-          write(cline,'(a,a,a,a,a,a )') 
-     2    cbonda(idjw)
-          j = index(cline,')')
-          write(cline(j:),'(a)') ,',x''s)'
-          call xcrems( cline, cline, nch)
-          write(ncque,'(a)') cline(1:nch)
-         endif
-        enddo
-
-            
+             do 65431 idjw=1,khy
+               if (ihy(idjw) .eq. 1) then
+                write(cline,'(a,a,a,a,a,a )') 
+     2          cbonda(idjw)
+                j = index(cline,')')
+                write(cline(j:),'(a)') ,',x''s)'
+                call xcrems( cline, cline, nch)
+                write(ncque,'(a)') cline(1:nch)
+               endif
+65431        continue
+C
+C               
             IF (KHY .GT. 4) THEN
              WRITE(NCPU,'(A,I6)')
      1      'REM Probably disordered, No of H atoms=', NHY
@@ -1616,10 +1650,11 @@ C----- O-H
             UEQUIV = UEQUIV * 1.25
             CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.82)
            ENDIF
+      endif                                 ! end of ipunch 10/12 switch
           ENDIF
-c
-         ENDIF
-
+C
+      ENDIF
+C^^^
          IF ( IDSPDA .EQ. -1 ) JS = NFLBAS
 
 C--PRINT THE CALCULATED DISTANCES
@@ -1692,7 +1727,8 @@ C--ADD THE SECOND ATOM INTO THE STACK
                 CALL XFPCES( ISTORE(J+12), JC, NWS, IPART(2) )
                 LHFIXD(2) = .FALSE.
 C Check if it is a H
-                IF (ISTORE(L).EQ.KHYD)THEN
+                IF ((ISTORE(L).EQ.KHYD) .OR.
+     1          (ISTORE(L).EQ.KDET)) THEN
 C Check if the H is riding, or the esd happens to be zero.          
                  IF ( ( AND(ISTORE(L+15),KBREFB(3)).GT.0 ) .OR.
      1                                   (ISTORE(JB) .LT. 0 ))THEN
@@ -2122,7 +2158,8 @@ C--INSERT THE SECOND ATOM  -  ATOM (B)
               CALL XFPCES( ISTORE(NZ+12), JC, NWS, IPART(2) )
               LHFIXD(2) = .FALSE.
               IF((ISTORE(JB).LT.0).AND.
-     1           (ISTORE(ISTORE(NZ)).EQ.KHYD)) LHFIXD(2) = .TRUE.
+     1        ((ISTORE(ISTORE(NZ)).EQ.KHYD)
+     2        .OR.(ISTORE(ISTORE(NZ)).EQ.KDET)) ) LHFIXD(2) = .TRUE.
               CALL XMVCSP(NZ,JK,NWA)
 C--STARTING FROM THE FIRST ATOM OF THE CURRENT LIST ,
 C  CALCULATE ALL THE ANGLES TO THE PRESENT ATOM
@@ -2229,18 +2266,22 @@ C--ADD THE THIRD ATOM (C) INTO THE STACK
                 CALL XFPCES( ISTORE(NA+12), NF, NWS, IPART(3) )
                 LHFIXD(3) = .FALSE.
                 IF ( (ISTORE(JC).LT.0).AND.
-     1                  (ISTORE(ISTORE(NA)).EQ.KHYD))THEN
+     1            ((ISTORE(ISTORE(NA)).EQ.KHYD) .OR.
+     1             (ISTORE(ISTORE(NA)).EQ.KDET)) ) THEN
                   LHFIXD(3) = .TRUE.
                 ENDIF
 C Check if any of the atoms are hydrogens riding.
                 IZZ = ISTORE(NZ)
                 IXX = ISTORE(NA)
                 IF (  (AND( ISTORE(M5A+15),KBREFB(3) ).GT.0).AND.
-     1                (ISTORE(M5A).EQ.KHYD)  ) LHFIXD(3) = .TRUE.
+     1                ((ISTORE(M5A).EQ.KHYD).OR.
+     2                 (ISTORE(M5A).EQ.KDET)  )) LHFIXD(3) = .TRUE.
                 IF (  (AND( ISTORE(IXX+15),KBREFB(3) ).GT.0).AND.
-     1                (ISTORE(IXX).EQ.KHYD)  ) LHFIXD(3) = .TRUE.
+     1                ((ISTORE(IXX).EQ.KHYD).OR.
+     2                 (ISTORE(IXX).EQ.KDET)  )) LHFIXD(3) = .TRUE.
                 IF (  (AND( ISTORE(IZZ+15),KBREFB(3) ).GT.0).AND.
-     1                (ISTORE(IZZ).EQ.KHYD)  ) LHFIXD(3) = .TRUE.
+     1                ((ISTORE(IZZ).EQ.KHYD).OR. 
+     2                 (ISTORE(IZZ).EQ.KDET)  )) LHFIXD(3) = .TRUE.
 C--CALCULATE THE V/CV MATRIX FOR THE POSITIONAL ERRORS
                 CALL XCOVAR( JA, NWA, NWS, JD, JE, IPART, 3)
 C--MOVE THE V/CV MATRIX TO THE FINAL AREA, WHICH CONTAIN THE CELL ERRORS

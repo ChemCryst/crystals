@@ -1,5 +1,9 @@
 C234567890C234567890C234567890C234567890C234567890C234567890C234567890123
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:11  rich
 C New CRYSTALS repository
 C
@@ -1336,6 +1340,7 @@ C\TLST18
       DATA IOFF /4/    !Offset of positional parameters in LIST 5.
 C                      !Needed when using a compressed L5 during FOURIER.
       DATA KHYD /'H   '/
+      DATA KDET /'D   '/
 
       DATA EL/'C ','H ','AC','AG','AL','AM','AR','AS','AT','AU','B ',
      +     'BA','BE','BI','BK','BR','CA','CD','CE','CF','CL','CM','CO',

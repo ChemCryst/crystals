@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:09  rich
 C New CRYSTALS repository
 C
@@ -1592,7 +1596,8 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'XFLAGS.INC'
 C
-      DATA IHYD /'H   '/
+      DATA KHYD /'H   '/
+      DATA KDET /'D   '/
       DATA IDELIM(1)/'AND '/
       DATA DFUISO /.05/
 C
@@ -1936,7 +1941,8 @@ C--SET UP THE PARAMETER AND ATOM HEADER BLOCK POINTERS
 1750  CONTINUE
 CDJWOCT2000>
 C----- SKIP H FOR IMPLICIT PARAMETERS
-      if ((ijmh .eq. 1) .and. (istore(m5a) .eq. ihyd))goto 1850
+      if ((ijmh .eq. 1) .and. 
+     1 ((istore(m5a).eq.khyd).or.(istore(m5a).eq.kdet)))goto 1850
 CDJWOCT2000>
       MR=ISTORE(MQ+5)
       MS=ISTORE(MQ+6)+MQ
@@ -2032,7 +2038,7 @@ C----- RIDING MODEL - CHECK WE HAVE CORRECT NO OF PARAMETERS
                GOTO 1550
             ENDIF
 CRICJUN03 Set the riding group flag if appropriate. (Hydrogen only).
-            if (istore(m5a) .eq. ihyd) then
+            if ((istore(m5a).eq.khyd).or.(istore(m5a).eq.kdet)) then
                ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFB(3) )
             end if
 C----- SET INCREMENT FOR RIDE CARD

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.48  2008/03/31 14:54:08  djw
+C Move the Firedel flag in SYST into the JCODE slot. Previously (in corrections of phase) it zapped Fourier maps
+C
 C Revision 1.47  2008/03/07 16:09:48  djw
 C changes to help with the correct computation of Fourier maps from twinned crystals.  THe old COPY67 subroutine did not pack the data properly unless the keys were the default keys.  The job is now done
 C
@@ -319,7 +322,8 @@ C
       INCLUDE 'XCOMPD.INC'
 C
       INCLUDE 'QSTORE.INC'
-      data ihyd /'H   '/
+      DATA KHYD /'H   '/
+      DATA KDET /'D   '/
 C
 C--LOAD LIST 3, TO FIND THE FORM FACTORS TO BE USED
       IF (KHUNTR (3,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL03
@@ -395,8 +399,9 @@ C--PUNCH EACH ATOM  -  ONE AT A TIME
       ENDIF
 
       HFIX = 0.0
-      IF ( ISTORE(M5A) .EQ. IHYD ) HFIX = 10.0
-
+      IF( (ISTORE(M5A).EQ.KHYD) .OR. (ISTORE(M5A).EQ.KDET))
+     1  HFIX = 10.0
+C
 C--CHECK WHETHER ISO OR ANISO
 C-C-C-CHECK WHETHER ANISO OR ISO/SPHERE/LINE/RING
       IF(ABS(STORE(M5+3))-UISO)1250,1350,1350
@@ -990,6 +995,7 @@ CODE FOR XPCH6C
       SUBROUTINE XPCH6C(IULN,KF)
 C KF  0 - F's
 C     1 - F^2's
+C     2 - F^2'S ON SCALE OF FC
 C----- CIF FORMAT PUNCH
 CDJWMAY99 - OUTPUT TO FOREIGN PUNCH UNIT
       CHARACTER*80 CBUF
@@ -1087,17 +1093,21 @@ C---- SCALE DOWN THE ELEMENTS OF THE V/CV MATRIX
           M1P1=M1P1+1
       END DO
 
-
-      WRITE(NCFPU1,'(/''# NOTE Fc on scale of Fo, '', F12.5)')SCALE6
+      IF (KF .EQ. 2) THEN
+       WRITE(NCFPU1,'(/''# NOTE FO on scale of Fc, '', F12.5)')
+     1               1./SCALE6
+      ELSE
+       WRITE(NCFPU1,'(/''# NOTE Fc on scale of Fo, '', F12.5)')SCALE6
+      ENDIF
       WRITE(NCFPU1,'(''# Status flags: '')')
       WRITE(NCFPU1,'(''#    o - used in refinement '')')
       WRITE(NCFPU1,'(''#    < - excluded by I/sigmaI cutoff '')')
       WRITE(NCFPU1,'(''#    x - excluded for another reason  '')')
 
-      IF ( KF.EQ.1 )  THEN
-         WRITE(NCFPU1,1001)
-      ELSE
+      IF ( KF.EQ. 0 )  THEN
          WRITE(NCFPU1,1000)
+      ELSE
+         WRITE(NCFPU1,1001)
       END IF
 1000  FORMAT ( /,'loop_',/,'_refln_index_h'/,'_refln_index_k'/,
      1 '_refln_index_l'/,'_refln_F_meas'/,'_refln_F_calc'/,
@@ -1129,13 +1139,19 @@ C---- GET SIGMA THRESHOLD FROM L28
       I = NINT(STORE(M6))
       J = NINT(STORE(M6+1))
       K = NINT(STORE(M6+2))
-      FO = STORE(M6+3)
-      FC = STORE(M6+5) * SCALE6
-      S =  MAX(0.0,STORE(M6+12))
-
-
-      IF ( KF.EQ.1 ) THEN
-         CALL XSQRF(FOS, FO, FABS, SIGMA, STORE(M6+12))
+      IF (KF .EQ. 2) THEN
+       FO = STORE(M6+3)/ SCALE6
+       FC = STORE(M6+5)
+       S =  MAX(0.0,STORE(M6+12))/ SCALE6
+      ELSE
+       FO = STORE(M6+3)
+       FC = STORE(M6+5) * SCALE6
+       S =  MAX(0.0,STORE(M6+12))
+      ENDIF
+C
+C
+      IF ( KF.NE. 0 ) THEN
+         CALL XSQRF(FOS, FO, FABS, SIGMA, S)
          FCS = FC*FC
       END IF
 
@@ -1147,7 +1163,7 @@ C---- GET SIGMA THRESHOLD FROM L28
         IALW = 1                    !Used.
       END IF
 
-      IF ( KF.EQ.1 ) THEN
+      IF ( KF.NE. 0 ) THEN
         WRITE(NCFPU1,'(3I4,3F12.2,1X,A1)')I,J,K,FOS,FCS,SIGMA,CALW(IALW)
       ELSE
          WRITE(NCFPU1,'(3I4,3F12.2,1X,A1)')I, J, K, FO, FC, S,CALW(IALW)

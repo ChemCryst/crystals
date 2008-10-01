@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.51  2008/09/08 10:18:32  djw
+C Enable/inhibit punching of ADP info from XPRAXI
+C
 C Revision 1.50  2008/02/14 10:27:25  djw
 C Remove writes to ncawu
 C
@@ -390,6 +393,7 @@ C
       DATA ICOND(4)/'LE  '/,ICOND(5)/'GT  '/,ICOND(6)/'GE  '/
 C
       DATA KHYD /'H   '/
+      DATA KDET /'D   '/
 
       DATA IMONSZ/5/
 C
