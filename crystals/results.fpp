@@ -1,6 +1,9 @@
 c
 c
 C $Log: not supported by cvs2svn $
+C Revision 1.130  2008/10/01 11:03:21  djw
+C Include support for outlier elimination (See PLATON)
+C
 C Revision 1.129  2008/09/22 12:30:17  rich
 C Escape backslashes in strings on unix versions
 C
@@ -5992,7 +5995,7 @@ C
            WRITE (NCPU,5) '&Delta;/&sigma;<sub>max</sub>',STORE(L30RF+7)
         END IF
 C 
-        IF (STORE(L30GE+7).GT.ZERO) THEN
+        IF (STORE(L30GE+7).GT.ZEROSQ) THEN
             IF (STORE(L30GE+6).GT.0.5+ZERO) THEN
                WRITE (CMON,2400)
 2400           FORMAT ('The Flack parameter is greater than 0.5',
@@ -6001,7 +6004,7 @@ C
             END IF
 C----- PACK UP THE FLACK PARAMETER AND ITS ESD
             CALL XFILL (IB,IVEC,16)
-            CALL SNUM (STORE(L30GE+6),STORE(L30GE+7),-0,0,7,IVEC)
+            CALL SNUM (STORE(L30GE+6),STORE(L30GE+7),-0,0,10,IVEC)
             WRITE (CTEMP,'(16A1)') (IVEC(J),J=1,16)
             CALL XCRAS (CTEMP,N)
             IF ((ISTORE(L13CD) .EQ. 0) .and. 
@@ -6611,7 +6614,7 @@ C
       DIMENSION LISTS(6)
       DIMENSION DATC(401)
       CHARACTER*80 LINE
-      CHARACTER*20 FORM
+      CHARACTER*30 FORM
 C 
       INCLUDE 'ISTORE.INC'
 C 
@@ -6996,8 +6999,8 @@ C P2(True)
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
          IF (XPLL2.GT.0.001) THEN
-            WRITE (FORM,750) XPLL2
-750         FORMAT (F9.3)
+            WRITE (FORM,750) XPLL2, XPLL2
+750         FORMAT (F9.3, 3X, '(', E9.1, ')' )
          ELSE IF (XPLL2.LT.0.0) THEN
             WRITE (FORM,800)
 800         FORMAT (6X,'n/a')
@@ -7026,7 +7029,7 @@ C         write(ncwu,'(4e16.4)') xtwll,xplll, xmnll, xsmll
             XTWLL=XTWLL/XSMLL
 C P3(True)
             IF (XPLLL.GT.0.001) THEN
-               WRITE (FORM,750) XPLLL
+               WRITE (FORM,750) XPLLL, XPLLL
             ELSE IF (XPLLL.LT.0.0) THEN
                WRITE (FORM,800)
             ELSE
@@ -7039,7 +7042,7 @@ C P3(True)
             IF (ISSPRT.EQ.0) WRITE (NCWU,950) LINE
 C P3(Twin)
             IF (XTWLL.GT.0.001) THEN
-               WRITE (FORM,750) XTWLL
+               WRITE (FORM,750) XTWLL, XTWLL
             ELSE IF (XTWLL.LT.0.0) THEN
                WRITE (FORM,800)
             ELSE
@@ -7052,7 +7055,7 @@ C P3(Twin)
             IF (ISSPRT.EQ.0) WRITE (NCWU,950) LINE
 C P3(False)
             IF (XMNLL.GT.0.001) THEN
-               WRITE (FORM,750) XMNLL
+               WRITE (FORM,750) XMNLL, XMNLL
             ELSE IF (XMNLL.LT.0.0) THEN
                WRITE (FORM,800)
             ELSE
@@ -7080,7 +7083,7 @@ C P3(False)
 1300        FORMAT ('FLEQ        ',F9.3)
             IF (ISSPRT.EQ.0) WRITE (NCWU,950) LINE
             IF (TONSY.GT.0.001) THEN
-               WRITE (FORM,750) TONSY
+               WRITE (FORM,750) TONSY, TONSY
             ELSE
                WRITE (FORM,850) TONSY
             END IF
