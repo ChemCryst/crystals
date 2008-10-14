@@ -689,6 +689,16 @@ C----- REQUEST STRUCTURE SOLUTION
             WRITE(NCFPU1, '(''TREF '')')
       ENDIF
 C----- OUTPUT ON ACTUAL SCALE
+cdjwoct08
+c----- rescale incase there are any very big numbers
+C----- FIND SCALE FROM MAXIMUM FO (ITEM 3)
+      IN = L6DTL + MD6DTL * 3
+      IF (STORE(IN+3) .LE. ZERO) THEN
+      SCALE = 1.0
+      ELSE
+      SCALE =  STORE(IN+1) / 3000.
+      ENDIF
+      write(ncwu,'(a,f12.5)') 'Scale', scale
 C
       WRITE(NCFPU1, '(''HKLF  -4'' )')
 C----- LOOP OVER DATA
@@ -700,7 +710,9 @@ C----- LOOP OVER DATA
       J = NINT(STORE(M6+1))
       K = NINT(STORE(M6+2))
 CDJWMAR99[
-      CALL XSQRF(FS, STORE(M6+3), FABS, S, STORE(M6+12))
+      CALL XSQRF
+cdjwoct08
+     1 (FS, scale*STORE(M6+3), FABS, S, scale*STORE(M6+12))
       IF ((S .LE. ZERO) .AND. (STORE(M6+20) .GT. ZERO))
      1 S = ABS(FS) / STORE(M6+20)
 CDJWMAR99]
