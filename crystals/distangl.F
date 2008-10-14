@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.86  2008/10/01 11:11:54  djw
+C Support for treatment of Deuterium as hydrogen
+C
 C Revision 1.85  2008/02/14 11:03:21  djw
 C Remove bond update diagnostics
 C
@@ -1124,10 +1127,10 @@ C--SET VARIOUS CONSTANTS FOR E.S.D. CALCULATIONS
         NWS=4
         NW=13
 C----- SAVE SOME SPACE FOR THE TARGET RADIUS IN RESTRAINTS
-        IF (IPUNCH .EQ. 0) NW = 14
+        IF (IPUNCH .EQ. 0) NW=14
 cdjw130804
 C----- SAVE SOME SPACE FOR THE ESDS FOR H-BONDS
-        IF (IPUNCH .EQ. 11) NW = 15
+        IF (IPUNCH .EQ. 11) NW=15
         JU=1
         JV=3
         NCOL=5
@@ -1154,7 +1157,7 @@ c          NWAT=9 or 15
 c          NWD=6
 c          NWA=9
 c          NWS=4
-c          NW=13
+c          NW=13, 14 or 15
 c
 c      JA > 9X4X50 = 1800                  NWA.NWS.MXPPT
 C      JD > 9X9 OR 15X15 = 81 0R 225       NWAT.NWAT
@@ -1472,7 +1475,7 @@ C
           IF ((ISTORE(M5P).NE.KHYD).AND.(ISTORE(M5P).NE.KDET))THEN
            WRITE(CATOM1,'(A4''('',I6,'')'')')STORE(M5P),
      1     NINT(STORE(M5P+1))
-           DO 65430 J = NFLBAS, JS, NW 
+           LOOP16: DO J = NFLBAS, JS, NW 
 C-----  FORM ATOM NAME INTO CHARACTERS
             L=ISTORE(J)
             KHY = KHY + 1
@@ -1491,7 +1494,7 @@ C
             ENDIF
             IPARTH(KHY)=ISTORE(L+14)
             CBONDA(KHY)(:) = CATOM2(1:LATOM2)
-65430      CONTINUE
+           END DO LOOP16
 C
 C-----     FIND A UEQUIV TO USE FOR FOR THE H ATOMS 
 C          RESCALED LATER BY 1.25 FOR ME AND OH
@@ -1500,14 +1503,14 @@ cdjwsep08       CALL XEQUIV (0, M5P, N5P, NBASE)
            UEQUIV = STORE(NBASE) * 1.2
 C
       if (ipunch .eq. 12) then
+c
 C PUNCH CONSTRAINTS
-c^^^
              if (nhy .ge. 1) then
               IDJW=INDEX(CATOM1,')')
               CATOM1(IDJW:)=',X''s) '
               WRITE (CLINE,'(a,a)') 'RIDE ',CATOM1
               CALL XCREMS (CLINE,CLINE,NCH)
-              DO 65433 J=1,KHY
+              DO  J=1,KHY
                IF (IHY(J).EQ.1) THEN
                 IDJW=INDEX(CBONDA(J),',')
                 IF (IDJW.LE.0) IDJW=INDEX(CBONDA(J),')')
@@ -1515,16 +1518,16 @@ c^^^
                 WRITE (CLINE(NCH:),'(1x,a)') CBONDA(J)
                 CALL XCREMS (CLINE,CLINE,NCH)
                END IF
-65433         continue
+              END DO
               WRITE(NCPU,'(A)') CLINE
              endif
-c^^^
+c
       else if (ipunch .eq. 10) then
 C----- C-H RESTRAINTS
            IF ((ISTORE(M5P) .EQ. KCARB) .AND. 
      1                (NHY .GE. 1)) THEN
 C----- WRITE THE HYDROGEN ATOMS TO THE SCRIPT DATA FILE
-             do 65431 idjw=1,khy
+             do idjw=1,khy
                if (ihy(idjw) .eq. 1) then
                 write(cline,'(a,a,a,a,a,a )') 
      2          cbonda(idjw)
@@ -1533,7 +1536,7 @@ C----- WRITE THE HYDROGEN ATOMS TO THE SCRIPT DATA FILE
                 call xcrems( cline, cline, nch)
                 write(ncque,'(a)') cline(1:nch)
                endif
-65431        continue
+             END DO
 C
 C               
             IF (KHY .GT. 4) THEN
@@ -1742,7 +1745,7 @@ c          NWAT=9 or 15 =(9+6)
 c          NWD=6
 c          NWA=9
 c          NWS=4
-c          NW=13
+c          NW=13, 14 0r 15
 c
 c      JA > 9X4X50 = 1800                  NWA.NWS.MXPPT
 C      JD > 9X9 OR 15X15 = 81 0R 225       NWAT.NWAT
@@ -1838,7 +1841,7 @@ C -- CALCULATE E.S.D. FROM THE VARIANCE, PRODUCING NEGATIVE E.S.D.'S
 C    FROM 'NEGATIVE VARIANCES'
                 STORE(JF) = XDSESD ( STORE(JF) , STORE(JN) , NWDT )
                 STORE(IJX+3)=STORE(JF)
-              END IF     
+              END IF                          ! end of esd calculation
 CDJW130804
 C----- SAVE THE ESD IF NECESSARY
               IF (IPUNCH .EQ. 11) STORE(J+14) = STORE(JF)
@@ -1848,8 +1851,8 @@ C----- COMPRESS ATOMS INTO CHARACTER FORM
               CALL CATSTR (STORE(L), STORE(L+1),
      1         ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
      2         ISTORE(J+6), CATOM2, LATOM2)
-
-
+c
+c
               IF ( IDSPDA .EQ. -1 ) THEN
                 LATOM1 = MIN(10, LATOM1)
                 WRITE ( CMON ,2804)
