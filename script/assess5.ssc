@@ -68,7 +68,7 @@
 %    COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
 %    COPY 'TRANSFER FROM OFFSET=3 TO FLAG'
 %    COPY 'TRANSFER FROM OFFSET=7 TO U11'
-%    IF ( CTYPE .NE. 'H' ) THEN
+%    IF ( ( CTYPE .NE. 'H' ) .and. ( CTYPE .NE. 'D' ) ) THEN
 %      IF  ( FLAG .LE. 0.0 ) THEN
 %        EVALUATE ADP = 3
 %      ELSE IF ( ADP .LT. 3 ) .AND. ( UONE .NE. U11 ) THEN

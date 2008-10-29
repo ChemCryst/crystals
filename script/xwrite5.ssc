@@ -454,7 +454,7 @@
 {I Detected old L5 entry with invalid RESIDUE numbers. Correcting.
 %        COPY 'TRANSFER TO OFFSET=16 FROM RESI'
 %      END IF
-%      IF ( CTYPE .EQ. 'H' ) THEN
+%      IF ( ( CTYPE .EQ. 'H' ) .or. ( CTYPE .EQ. 'D' ) ) THEN
 %        IF ( REFLAG .NE. HMODE ) THEN
 %          IF ( REFLAG .GE.  0 )  THEN
 %% Non-sticky atom, just change the value.
@@ -540,6 +540,13 @@
 %       IF ( CTYPE .EQ. 'H' ) .AND. ( REFLAG .LT. 0 ) THEN
 %         CLEAR
 %         INSERT 'CONT H('
+%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
+%         INSERT ')'
+%%         OUTPUT
+%         QUEUE SEND
+%       ELSE IF ( CTYPE .EQ. 'D' ) .AND. ( REFLAG .LT. 0 ) THEN
+%         CLEAR
+%         INSERT 'CONT D('
 %         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
 %         INSERT ')'
 %%         OUTPUT
@@ -639,6 +646,14 @@
 %         EVALUATE HRIDE = TRUE
 %         CLEAR
 %         INSERT 'CONT H('
+%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
+%         INSERT ')'
+%%         OUTPUT
+%         QUEUE SEND
+%       ELSE IF ( CTYPE .EQ. 'D' ) .AND. ( REFLAG .EQ. 10 ) THEN
+%         EVALUATE HRIDE = TRUE
+%         CLEAR
+%         INSERT 'CONT D('
 %         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
 %         INSERT ')'
 %%         OUTPUT
