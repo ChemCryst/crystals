@@ -1,6 +1,9 @@
 c
 c
 C $Log: not supported by cvs2svn $
+C Revision 1.131  2008/10/14 17:20:29  djw
+C increase number of sig fig output from Flack and Spek parameters
+C
 C Revision 1.130  2008/10/01 11:03:21  djw
 C Include support for outlier elimination (See PLATON)
 C
@@ -6600,6 +6603,7 @@ C----- PRINT OUT THE USED-REFERENCES
 #endif
       RETURN
       END
+c
 CODE FOR TONSPK
       SUBROUTINE TONSPK (IPLOT,CRITER,ITYP06)
 C 
@@ -7000,12 +7004,12 @@ C P2(True)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
          IF (XPLL2.GT.0.001) THEN
             WRITE (FORM,750) XPLL2, XPLL2
-750         FORMAT (F9.3, 3X, '(', E9.1, ')' )
+750         FORMAT (X,F9.4, 3X, '(', E12.6, ')' )
          ELSE IF (XPLL2.LT.0.0) THEN
             WRITE (FORM,800)
 800         FORMAT (6X,'n/a')
          ELSE
-            WRITE (FORM,850) XPLL2
+            WRITE (FORM,750) XPLL2, XPLL2
 850         FORMAT (E9.1)
          END IF
          WRITE (LINE,900) FORM
@@ -7033,7 +7037,7 @@ C P3(True)
             ELSE IF (XPLLL.LT.0.0) THEN
                WRITE (FORM,800)
             ELSE
-               WRITE (FORM,850) XPLLL
+               WRITE (FORM,750) XPLLL, XPLLL
             END IF
             WRITE (LINE,1000) FORM
 1000        FORMAT ('P3(correct) ',A)
@@ -7046,7 +7050,7 @@ C P3(Twin)
             ELSE IF (XTWLL.LT.0.0) THEN
                WRITE (FORM,800)
             ELSE
-               WRITE (FORM,850) XTWLL
+               WRITE (FORM,750) XTWLL, XTWLL
             END IF
             WRITE (LINE,1050) FORM
 1050        FORMAT ('P3(rac-twin)',A)
@@ -7059,7 +7063,7 @@ C P3(False)
             ELSE IF (XMNLL.LT.0.0) THEN
                WRITE (FORM,800)
             ELSE
-               WRITE (FORM,850) XMNLL
+               WRITE (FORM,750) XMNLL, XMNLL
             END IF
             WRITE (LINE,1100) FORM
 1100        FORMAT ('P3(inverse) ',A)
@@ -7074,7 +7078,7 @@ C P3(False)
                WRITE (FORM,1200) YUNK
 1200           FORMAT (F9.4)
             ELSE
-               WRITE (FORM,850) YUNK
+               WRITE (FORM,750) YUNK, YUNK
             END IF
             WRITE (LINE,1250) FORM
 1250        FORMAT ('G S.U.      ',A)
@@ -7085,7 +7089,7 @@ C P3(False)
             IF (TONSY.GT.0.001) THEN
                WRITE (FORM,750) TONSY, TONSY
             ELSE
-               WRITE (FORM,850) TONSY
+               WRITE (FORM,750) TONSY, TONSY
             END IF
             WRITE (LINE,1350) FORM
 1350        FORMAT ('FLEQ S.U.   ',A)
