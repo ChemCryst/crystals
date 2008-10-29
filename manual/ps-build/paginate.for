@@ -514,13 +514,13 @@ C NOW BEGIN TO LOOP OVER THE LINE
            ITSTAR = 1
            ITEND = IB
            CALL XCCHECK (COUTLN, CL, ITSTAR, ITEND)
-           WRITE (IUNIT2,'(A)') '/textstring ('
-           WRITE (IUNIT2,'(A)') CL(1:ITEND)
-           WRITE (IUNIT2,'(5A)') ') def'
+
+           WRITE (IUNIT2,'(3A)') '/textstring (', CL(1:ITEND),') def'
+
            WRITE (IUNIT2,'(A)') '/last 0 def '
-           WRITE (IUNIT7,'(A)') '/textstring ('
-           WRITE (IUNIT7,'(A)') CL(1:ITEND)
-           WRITE (IUNIT7,'(5A)') ') def'
+
+           WRITE (IUNIT7,'(3A)') '/textstring (', CL(1:ITEND),') def'
+
            WRITE (IUNIT7,'(A)') '/last 0 def '
            IF (IWPOS .EQ. 0) THEN
                 WRITE (IUNIT2, '(A)') 'Write'
@@ -655,12 +655,9 @@ C NOW BEGIN TO LOOP OVER THE LINE
            ITSTAR = 1
            ITEND = IB
            CALL XCCHECK (COUTLN, CL, ITSTAR, ITEND)
-           WRITE (IUNIT2,'(A)') '/textstring ('
-           WRITE (IUNIT2,'(A)') CL(1:ITEND)
-           WRITE (IUNIT2,'(5A)') ') def'
-           WRITE (IUNIT7,'(A)') '/textstring ('
-           WRITE (IUNIT7,'(A)') CL(1:ITEND)
-           WRITE (IUNIT7,'(5A)') ') def'
+           WRITE (IUNIT2,'(3A)') '/textstring (', CL(1:ITEND), ') def'
+
+           WRITE (IUNIT7,'(3A)') '/textstring (', CL(1:ITEND),') def'
            IF (IWPOS .EQ. 0) THEN
                 WRITE (IUNIT2, '(A)') 'Write'
                 WRITE (IUNIT7, '(A)') 'Write'
