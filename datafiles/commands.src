@@ -36,9 +36,9 @@ PUNCH              1    0
    1.PUNCH              2    1    0    0
          1    3
      LIST               1   -1    1    0    0
-     CLASS              2    0    1    7   -1 A
+     CLASS              2    0    1    8   -1 A
      A              B              C              D              E
-     F              G
+     F              G              H
 LIST 1             9    2
    1   40960 CRYSTALSINPUT
    20   30
@@ -2863,10 +2863,10 @@ DISTANCES         12    8
      PEAKSTOGUI     OFF            DISTANCES      ANGLES         ALL
     .LIST              19    0    1    5   -1 HIGH
      OFF            LOW            MEDIUM         HIGH           DEBUG
-    .PUNCH             23    0    1   13   -1 NOTHING
+    .PUNCH             23    0    1   14   -1 NOTHING
      NOTHING        RESTRAIN       PUBLISH        CIF            SCRIPT
      MOGUL          SIMPLE         DELU           SIMU           NONBONDED
-     HTML           H-RESTRAIN     H-CIF
+     HTML           H-RESTRAIN     H-CIF          H-RIDE
     .HESD              26    0    1    2    0 ALL
      ALL            NONFIXED
     .D1DEV             27    0    1    0    0 0.002
@@ -4180,19 +4180,16 @@ MASK               3    4
      SHOW           SETFC
     .INPUTLIST          2    0    1    2    1         5
               5        10
-TONSPEK            2    1
+TONSPEK            1    1
    7    4096 CRYSTALSPUBLISH
     5       
-   1.OUTPUT             2    1    0    0
-         3    3
-    .PLOT               1    0    1    2    0 NO
-     NO             YES
-    .GLIST              3    0    1    2    0 NO
-     NO             YES
-   2.TONSPEK            1    1    0    0
-         1    
+   1.TONSPEK            3    1    0    0
+         2    1    3    
+    .CRITER             1    0    1    0    0 999.9
     .INPUTLIST          2    0    1    2    1         7
               6         7
+    .PLOT               3    0    1    2    0 NO
+     NO             YES
 BENFORD            1    1
    8    4096 CRYSTALSPUBLISH
     6       
