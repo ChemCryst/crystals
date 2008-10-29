@@ -6,6 +6,8 @@
 ^^WI          ENABLEIF='L1 L2 L3 L5 L6' DISABLEIF='QS IN'
 ^^WI   ITEM _REF '&Refine' '#SCRIPT XREFINE'
 ^^WI          ENABLEIF='L1 L2 L3 L5 L6' DISABLEIF='QS IN'
+^^WI   ITEM _REF '&Refine H' '#SCRIPT GXREFH'
+^^WI          ENABLEIF='L1 L2 L3 L5 L6' DISABLEIF='QS IN'
 ^^WI   SPLIT
 ^^WI   ITEM ED12  'Edit directives and &constraints' '#SCRIPT EDLIST12'
 ^^WI                              DISABLEIF='IN'
