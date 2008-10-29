@@ -209,7 +209,7 @@
 %      VERIFY ON OFF
 %      GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %      IF ( VALUE .EQ. 1 ) THEN
-%        COPY '#PUNCH 6 E'
+%        COPY '#PUNCH 6 H'
 %      ELSE
 %        COPY '#PUNCH 6 B'
 %      END IF
