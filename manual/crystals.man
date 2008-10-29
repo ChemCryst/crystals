@@ -2841,9 +2841,10 @@ for publication.
       B - Output the reflections in 'cif' format. F's
       C - Output stored information in tabulated format.
       D - Output original information in tabulated format.
-      E - Output the reflections in 'cif' format. F^s
+      E - Output the reflections in 'cif' format. F^s, scale of Fo
       F - Output Fo, sigma information in SHELX format.
       G - SHELX output with statistically generated sigmas
+      H - Output the reflections in 'cif' format. F^s, scale of Fc
 #
 #PLIST 6 is also output by the links to the direct methods programs. In
  these files, the magnitudes of Fo or Fsq are scaled so that the largest
@@ -10633,6 +10634,7 @@ section #RLIST20#).
 # H-RESTRAIN  - Produces a list of H-C,N and O distance and angle 
  restraints in the PUNCH file, and a list of the referenced H atoms in 
  the SCRIPTQUEUE file.
+# H-RIDE      - Produces a list of H-C,N and O RIDE instructions.
 # H-CIF       - Puts hydrogen bond donor and acceptors into the cif 
 file.
 #Q
