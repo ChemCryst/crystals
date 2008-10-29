@@ -4,7 +4,7 @@
 %  VARIABLE LOGICAL SERR 
 %  VARIABLE REAL CRITER
 %  EVALUATE SERR = TRUE                                                         
-%  EVALUATE CRITER = 100.0
+%  EVALUATE CRITER = 999.0
 %%                                                                              
 %%                                                                              
 ^^WI WINDOW XHOOFT 'Absolute Configuration' MODAL                            
