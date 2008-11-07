@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.87  2008/10/14 16:13:07  djw
+C Restore Richards END-DOs
+C
 C Revision 1.86  2008/10/01 11:11:54  djw
 C Support for treatment of Deuterium as hydrogen
 C
@@ -6668,8 +6671,15 @@ C Remember a few pointers
 
       KBL29 = L29
       KBN29 = N29
-
-
+cdjwoct08
+c     dont look for bonds if less than 2 atoms
+      if (n5 .lt. 2) then
+            write (cmon,'(a,i4,a)') 'Only', n5, ' atoms'
+            call xprvdu(ncvdu,2,0)
+            if (issprt .eq. 0) write(ncwu, '(a)') cmon( 1)(:)
+            goto 3350
+      endif
+c
       IF ( ( IPROCS(1) .EQ. 0 ) .AND. ( K41DEP() .GE. 1 ) ) THEN
          WRITE(CMON,'(A/A)')'No need to recalculate bonds. Use ',
      1                    '#BONDCALC FORCE to force a calculation.'
@@ -7181,10 +7191,12 @@ C -- the list can be used as is.
       IF ( INTERN .EQ. 2 ) THEN  ! Call from #EDIT, potentially messy.
 C This is my work around:
          NFL = KBNFL
-      END IF
+cdjwoct08  Only restore L29 pointers for external calls
+      else
 C Restore those old pointers
-      L29 = KBL29
-      N29 = KBN29
+       L29 = KBL29
+       N29 = KBN29
+      END IF
 
       CALL XOPMSG (IOPBND, IOPEND, 201)
       CALL XTIME2(1)

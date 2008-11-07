@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.52  2008/10/01 11:11:54  djw
+C Support for treatment of Deuterium as hydrogen
+C
 C Revision 1.51  2008/09/08 10:18:32  djw
 C Enable/inhibit punching of ADP info from XPRAXI
 C
@@ -477,15 +480,18 @@ C Or on the directive FOLLOWING an EXEC.
       IGUIUP =0
 C
 100   CONTINUE
-
-      IF (MONGUI.GE.2) THEN
+cdjwoct08
+c      only if more than one atom
+      if (n5 .gt. 1) then
+       IF (MONGUI.GE.2) THEN
         IF ( IGUIUP .EQ. 0 ) THEN
           IGUIUP = 1
         ELSE
           CALL XBCALC(2)    ! Re-calculate bonding
           CALL XGUIUP (-5)  ! Update GUI model
         END IF
-      END IF
+       END IF
+      endif
 C
 C -- **** MAIN INSTRUCTION LOOP ****
 C
