@@ -5349,6 +5349,14 @@ bond, c(1) to c(20).
  This parameter has a default value of 2.0, and is the distance
  below which atoms or peaks are considered to be bonded, and are thus
  moved about the cell and relocated in LIST 5 (atomic parameters).
+#P
+ If the MOVE parameter is -ve, then a covalent radius used, and the
+ absolute value of MOVE is used as a TOLERANCE, such that bonds are formed
+ if D < COV1+COV2+TOLERANCE.
+#
+
+
+
 #KKEEP=#
  This is the maximum number of atoms that the final output list can
  contain. If this parameter is omitted, all the atoms are output.
