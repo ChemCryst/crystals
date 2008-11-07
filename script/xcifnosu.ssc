@@ -37,7 +37,7 @@
                                                                                 
 %    COPY "#BONDCALC FORCE"                                                     
 %    COPY "END"                                                                 
-%    COPY "#STORE CSYS CIF 'publish.cif'"                                       
+%    COPY "#STORE CSYS CIF 'Noesds.cif'"                                       
 %    COPY '#APPEND PUNCH '                                                      
 %    COPY '#CIF '                                                               
 %    COPY 'END'                                                                 
@@ -61,15 +61,15 @@
 %%                                                                              
 %%                                                                              
 %    EVALUATE QTITLE = 'Parameter CIF'                                          
-%    EVALUATE QLINE1 = 'CIF saved as publish.cif.'                              
+%    EVALUATE QLINE1 = 'CIF saved as Noesds.cif.'                              
 %    EVALUATE QLINE2 = 'Do you want to open it for editing?'                    
 %    EVALUATE BUTTOK = '&Yes'                                                   
 %    EVALUATE BUTTXX = '&No'                                                    
 %    COPY '#SCRIPT XQUESTIO'                                                    
 %    IF ANSWER .EQ. TRUE THEN                                                   
-%      COPY '#SPAWN +notepad publish.cif'                                       
+%      COPY '#SPAWN +notepad Noesds.cif'                                       
 %    END IF                                                                     
-  Parameters saved in {&publish.cif{&                                           
+  Parameters saved in {&Noedsd.cif{&                                           
 %%                                                                              
 ^^WI WINDOW CIFREF 'Reflection CIF?'                                            
 ^^WI   MODAL COMMIT='CIFBOK' CANCEL='CIFBXX'                                    
@@ -82,7 +82,7 @@
 ^^WI           STATE=ON                                                         
 ^^WI     @ 4,2 RADIOBUTTON RS 'Fo^2, Fc^2, and sigma(Fo^2)'                     
 ^^WI           STATE=OFF                                                        
-^^WI     @ 6,2 STATIC CF2 'CIF will be saved as publish.fcf'                    
+^^WI     @ 6,2 STATIC CF2 'CIF will be saved as Noesds.fcf'                    
 ^^WI   }                                                                        
 ^^WI   @ 1,2 GRID GRIDR NROWS=5 NCOLS=2                                         
 ^^WI   {                                                                        
@@ -102,7 +102,7 @@
 %    VERIFY ON OFF                                                              
 %    GET SILENT NOSTORE ABBREVIATED 'On=Fs'                                     
 ^^CO DISPOSE CIFREF                                                             
-%    COPY '#OPEN FRN1 publish.fcf'                                              
+%    COPY '#OPEN FRN1 Noesds.fcf'                                              
 %    IF VALUE .EQ. 1 THEN                                                       
 %      COPY '#PUNCH 6 B'                                                        
 %    ELSE                                                                       
@@ -110,6 +110,6 @@
 %    END IF                                                                     
 %    COPY 'END'                                                                 
 %    COPY '#RELEASE FRN1 BFILE.FRN'                                             
- Reflections saved in {&publish.fcf{&                                           
+ Reflections saved in {&Noesds.fcf{&                                           
 %%                                                                              
 %END SCRIPT                                                                     
