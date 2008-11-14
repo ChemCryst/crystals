@@ -696,8 +696,9 @@ C----- FIND SCALE FROM MAXIMUM FO (ITEM 3)
       IF (STORE(IN+3) .LE. ZERO) THEN
       SCALE = 1.0
       ELSE
-      SCALE =  STORE(IN+1) / 3000.
+      SCALE =  99998./(STORE(IN+1)*store(in+1)) 
       ENDIF
+      write(ncwu,*) store(in+1),store(in+2),store(in+3)
       write(ncwu,'(a,f12.5)') 'Scale', scale
 C
       WRITE(NCFPU1, '(''HKLF  -4'' )')
@@ -711,10 +712,12 @@ C----- LOOP OVER DATA
       K = NINT(STORE(M6+2))
 CDJWMAR99[
       CALL XSQRF
-cdjwoct08
-     1 (FS, scale*STORE(M6+3), FABS, S, scale*STORE(M6+12))
+     1 (FS, STORE(M6+3), FABS, S, STORE(M6+12))
       IF ((S .LE. ZERO) .AND. (STORE(M6+20) .GT. ZERO))
      1 S = ABS(FS) / STORE(M6+20)
+cdjwoct08
+      fs = scale*fs
+      s  = scale*s
 CDJWMAR99]
       IF (FS.LE.9999.) THEN
        WRITE(NCFPU1, '(3I4, 2F8.3)') I, J, K, FS, S
