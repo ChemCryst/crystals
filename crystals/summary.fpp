@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.75  2008/03/31 14:48:15  djw
+C output more info from L13
+C
 C Revision 1.74  2006/11/10 08:28:08  djw
 C Small format change
 C
@@ -981,6 +984,34 @@ C
 1045   FORMAT ( 1X , 'The maximum weight is ' , G12.5 )
       endif
 C
+check for SHELX out of range
+      if (imode .GE.1) then
+       IF ((ITYPE .EQ. 16) .OR. (ITYPE .EQ. 17)) THEN
+       SXB = STORE(L4+1)
+c-Acta/PLATON tests
+C>> ALERT A for > 50
+C>> ALERT B for > 25
+C>> ALERT C for > 5
+          IF (SXB .GT. 50. ) THEN
+            WRITE(CMON,'(A,F8.2)') '{E P(2) too large - Acta Alert A',
+     1       SXB
+            call xprvdu(ncvdu,1,0)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/)') cmon(1)(3:)            
+          ELSE IF (SXB .GT. 25. )THEN
+            WRITE(CMON,'(A,F6.2)') '{E P(2) too large - Acta Alert B',
+     1       SXB
+            call xprvdu(ncvdu,1,0)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/)') cmon(1)(3:)            
+          ELSE IF (SXB .GT. 5.) THEN
+            WRITE(CMON,'(A,F6.2)') '{E P(2) too large - Acta Alert C', 
+     1       SXB
+            call xprvdu(ncvdu,1,0)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/)') cmon(1)(3:)            
+          ENDIF
+c
+C
+       ENDIF
+      endif
       RETURN
       END
 C
@@ -1745,6 +1776,7 @@ C
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'TYPE11.INC'
       INCLUDE 'XSTR11.INC'
+      INCLUDE 'XSIZES.INC'
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QSTR11.INC'
@@ -1759,13 +1791,15 @@ C
       DATA CNAME/ 'H','K','L','Fo','Weight','Fc',6*' ',
      1 'Sigma',3*' ','Sth/L**2','Fo/Fc',17*' '/
 C
-      DATA MAX11 /16777216/
+CDJW08      DATA MAX11 /16777216/
 C
 c      DIMENSION X(N6D)
 c      DIMENSION Y(N6D)
 
       DIMENSION TEMP(2)
-
+CDJW08
+      MAX11 = ISIZ11
+C
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
       IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL23
@@ -1836,6 +1870,13 @@ C
       SIGTOP = 0.0
       N6ACC = 0
       FCMAX = 0
+c----- totals for slope and intercept
+        ss = 0.
+        sx = 0.
+        sy = 0.
+        sxx = 0.
+        sxy = 0.
+
 1100  CONTINUE
         ISTAT = KFNR ( 0 )
         IF ( ISTAT .LT. 0 ) GO TO 1200
@@ -1895,7 +1936,6 @@ C If you have more than 8.8 million reflections you might be in trouble.
             FO = STORE(M6+3)
             FC = SCALE * STORE(M6+5)
             FCMAX = MAX( FCMAX, FC )
-
             WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
      1      NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
             CALL XCRAS(HKLLAB, IHKLLEN)
@@ -1960,8 +2000,8 @@ C -- PRINT THE R VALUE ETC.
           CALL XPRVDU(NCVDU,1,0)
           N6ACC = MAX11/2
         END IF
-        WRITE(CMON,'(A,I8,A)') 'Computing normal probability plot for ',
-     1    N6ACC, 'reflections.'
+        WRITE(CMON,'(A,I8,A)')' Computing normal probability plot for',
+     1    N6ACC, ' reflections.'
         CALL XPRVDU(NCVDU,1,0)
 C Sort the sqrt(W)*(Fo2-Fc2) into ascending order.
         CALL XSHELQ(STR11,2,1,N6ACC,N6ACC*2,TEMP)
@@ -1981,13 +2021,18 @@ C Unpack HKL
            if (I.LE.N6ACC/2) Z=-Z
 c debug          WRITE(CMON,'(I5,2F15.2)') I,STR11(I*2-1),Z
 c debug          CALL XPRVDU(NCVDU,1,0)
-
+c
+           ss =  ss  + 1.
+           sx =  sx  + z
+           sy =  sy  + str11(i*2-1)
+           sxx = sxx + z*z
+           sxy = sxy + str11(i*2-1)*z
+c
            WRITE(HKLLAB, '(2(I4,A),I4)') MH, ',', MK, ',', ML
            CALL XCRAS(HKLLAB, IHKLLEN)
            WRITE(CMON,'(3A,2F11.3)')
      1     '^^PL LABEL ''',HKLLAB(1:IHKLLEN),''' DATA ',Z,STR11(I*2-1)
             CALL XPRVDU(NCVDU, 1,0)
-
         END DO
 
       END IF
@@ -1997,8 +2042,31 @@ C -- FINISH THE GRAPH DEFINITION
         WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
         CALL XPRVDU(NCVDU, 2,0)
       ENDIF
-
-
+      if (level .eq. 5) then
+c      find slope and intercept
+c      determinant
+        deter = ss*sxx-sx*sx
+        cutter = (sxx*sy-sx*sxy)/deter
+        slope = (ss*sxy-sx*sy)/deter
+        yslope = slope
+        write(cmon,'(a,a)')' The slope shoud be unity and the intercept'
+     1  ,' zero'
+         call xprvdu(ncvdu, 1,0)
+         if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+        write(cmon,460) slope, cutter
+460     format(' Slope and intercept of Normal Probability Plot =',
+     1  2f10.5)
+        call xprvdu(ncvdu, 1,0)
+         if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+         if ( (slope .gt. 1.1) .or. (slope .lt. 0.9) .or.
+     1      (cutter .lt. -.05) .or. (cutter .gt. .05)) then
+          WRITE(CMON,'(A)') 
+     1 '{E CRYSTALS suggests that you check your weighting scheme'
+         call xprvdu(ncvdu, 1,0)
+         if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+         endif
+      endif
+c
 C----- UPDATE LIST 30
 C----- DONT UPDATE LIST 30 -  THE USER MIGHT BE FIDDLING WITH LIST 28
 C      STORE(L30RF) = RFACT
