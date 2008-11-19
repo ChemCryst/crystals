@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.57  2007/12/17 18:05:04  djw
+C Add REWEIGHT
+C
 C Revision 1.56  2007/12/12 16:05:12  djw
 C Normlise GOF
 C
@@ -577,9 +580,9 @@ C Converged!
              END IF
              if (sxa .lt. 0.) then
                sxa = 0.001
-               write(cmon,'(A, 2f10.4)') 'Forced reset of P1', sxa, sxb
+               write(cmon,'(A, 2f10.4)') '{E Forced reset of P1', sxa, sxb
                call xprvdu(ncvdu,1,0)
-               IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1)
+               IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1)(3:)
              endif
              EXIT
 
@@ -587,7 +590,30 @@ C Converged!
           WRITE ( CMON,'(A,2F10.4,A)') '     Weights applied: ',SXA,SXB,
      1                             ' .0 .0 .0 .333'
           CALL XPRVDU(NCVDU,1,0)
-          IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU,'(//A//)') cmon(1)
+c-Acta/PLATON tests
+C>> ALERT A for > 50
+C>> ALERT B for > 25
+C>> ALERT C for > 5
+
+          IF (SXB .GT. 50. ) THEN
+            WRITE(CMON,'(A,F8.2)') '{E P(2) too large - Acta ALERT A',
+     1       SXB
+            call xprvdu(ncvdu,1,0)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/)') cmon(1)(3:)            
+          ELSE IF (SXB .GT. 25. )THEN
+            WRITE(CMON,'(A,F6.2)') '{E P(2) too large - Acta ALERT B',
+     1       SXB
+            call xprvdu(ncvdu,1,0)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/)') cmon(1)(3:)            
+          ELSE IF (SXB .GT. 5.) THEN
+            WRITE(CMON,'(A,F6.2)') '{E P(2) too large - Acta ALERT C', 
+     1       SXB
+            call xprvdu(ncvdu,1,0)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/)') cmon(1)(3:)            
+          ENDIF
+c
+c
           CALL XCSAE                     ! CLEAR THE LIST ENTRIES
           IRCZAP = 0
       INCLUDE 'IDIM04.INC'
