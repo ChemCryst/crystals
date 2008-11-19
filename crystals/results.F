@@ -1,6 +1,9 @@
 c
 c
 C $Log: not supported by cvs2svn $
+C Revision 1.132  2008/10/29 09:13:56  djw
+C Add 'Scientific notation' output of probabilities
+C
 C Revision 1.131  2008/10/14 17:20:29  djw
 C increase number of sig fig output from Flack and Spek parameters
 C
@@ -6615,10 +6618,14 @@ C set in the JCODE field.
 C This can be done with the script COPY67
 C 
 C 
+      PARAMETER (NPLT=7)
+      DIMENSION IFOPLT(2*NPLT+1), IFCPLT(2*NPLT+1)
       DIMENSION LISTS(6)
       DIMENSION DATC(401)
+      DIMENSION TEMP(2)
       CHARACTER*80 LINE
       CHARACTER*30 FORM
+      CHARACTER *15 HKLLAB
 C 
       INCLUDE 'ISTORE.INC'
 C 
@@ -6634,8 +6641,12 @@ C
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XIOBUF.INC'
+      INCLUDE 'TYPE11.INC'
+      INCLUDE 'XSTR11.INC'
+      INCLUDE 'XSIZES.INC'
 C 
       INCLUDE 'QSTORE.INC'
+      INCLUDE 'QSTR11.INC'
 C 
       DATA NLISTS/5/
       DATA LISTS(1)/5/,LISTS(2)/6/,LISTS(3)/28/,LISTS(4)/30/,LISTS(5)/1/
@@ -6647,6 +6658,10 @@ C      set packing constants
 C 
       CALL XRSL
       CALL XCSAE
+c----- sort out plot level
+      if (iplot .eq. 0 ) level=0
+      if (iplot .eq. 1 ) level=4
+      if (iplot .eq. 2 ) level=5
 C--FIND OUT IF LISTS EXIST
       IERROR=1
       DO 300 N=1,NLISTS
@@ -6696,22 +6711,66 @@ C
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(4x,a,4x,a,4x,a,1x,a)') 
      1 'Number','Delta-Fo','Delta-Fc','esd of difference'
 C 
-C----- initialise tons accumulators etc
+C
+C------ SET UP PLOT OUTPUT
+      MAX11 = ISIZ11
+      IF ( LEVEL .EQ. 4 ) THEN                 ! Fo vs Fc scatter
+        WRITE(CMON,'(A,/,A,/,A)')
+     1  '^^PL PLOTDATA _FOFC SCATTER ATTACH _VFOFC',
+     1  '^^PL XAXIS TITLE Delta-Fc NSERIES=1 LENGTH=2000',
+     1  '^^PL YAXIS TITLE Delta-Fo SERIES 1 TYPE SCATTER'
+        CALL XPRVDU(NCVDU, 3,0)
+      END IF
+      IF ( LEVEL .EQ. 5 ) THEN                 ! Normal probability plot
+        WRITE(CMON,'(A,/,A,/,A)')
+     1  '^^PL PLOTDATA _NORMPP SCATTER ATTACH _VNORMPP',
+     1  '^^PL XAXIS TITLE ''Expected (Z-score)'' NSERIES=1 LENGTH=2000',
+     1  '^^PL YAXIS TITLE ''Residual'' SERIES 1 TYPE SCATTER'
+        CALL XPRVDU(NCVDU, 3,0)
+      END IF
+
+C
+CC----- initialise tons accumulators etc
 C      accumulators
       RCT=0.0
       RCN=0.0
 C      plus and minus accumulators
       NPLS=0
       NMIN=0
+C NPP ACCUMULATORS AND POINTERS
+      TOP = 0.0
+      BOTTOM = 0.0
+      WTOP = 0.0
+      WBOT = 0.0
+      SIGTOP = 0.0
+      N6ACC = 0
+C
 C      plus and minus sums
       NPFO=0
       NNFO=0
+      FOMAX=0.
+      FCMAX=0.
+      FCMIN=1000000.
       SPFO=0.
       SPFOSQ=0.
       SNFO=0.
       SNFOSQ=0.
       NPFC=0
       NNFC=0
+c----- totals for slope and intercept
+        ss = 0.
+        sx = 0.
+        sy = 0.
+        sxx = 0.
+        syy = 0.
+        sxy = 0.
+C
+        fss = 0.
+        fsx = 0.
+        fsy = 0.
+        fsxx = 0.
+        fsyy = 0.
+        fsxy = 0.
       SPFC=0.
       SPFCSQ=0.
       SNFC=0.
@@ -6725,8 +6784,10 @@ C      plus and minus sums
       NSPM_161=NSPT_201-NSP1
       NSPP_241=NSPT_201+NSP1
       CALL XZEROF (DATC,NSTP_401)
+      CALL XZEROF (IFOPLT,2*NPLT+1)
+      CALL XZEROF (IFCPLT,2*NPLT+1)
 C yslope is gradient of normal probability plot
-C should be about unity anyway
+C should be about unity anyway.  Will be computed later
       YSLOPE=1.
 C 
       IN=0
@@ -6779,12 +6840,47 @@ C
          MFRIED=MFRIED+1
          FOKD=FOK1-FOK2
          FCKD=FCK1-FCK2
+         FOMAX= MAX(FOMAX, FOKD)
+         FCMAX= MAX(FCMAX, FCKD)
+         FCMIN= MIN(FCMIN, FCKD)
          SIGM=SQRT(SIG1*SIG1+SIG2*SIG2)
+C ZH = SIGNAL:NOISE
          ZH=(FCKD-FOKD)/SIGM
          QH=(-FCKD-FOKD)/SIGM
+C SIGNAL:NOISE FOR DELTA FO AND FC
+         STNFO=FOKD/SIGM
+         STNFC=FCKD/SIGM
+         NFO = NINT(STNFO)+NPLT+1
+         NFO = MAX(NFO,1)
+         NFO = MIN(NFO,2*NPLT+1)
+         NFC = NINT(STNFC)+NPLT+1
+         NFC = MAX(NFC,1)
+         NFC = MIN(NFC,2*NPLT+1)
+         IFOPLT(NFO) = IFOPLT(NFO) +1
+         IFCPLT(NFC) = IFCPLT(NFC) +1
 C 
 C COLLECT PROBABILITY DISTRIBUTION DATA FOR FLEQ (SFLEQ)
          IF (ABS(FOKD).LT.CRITER*ABS(FCKD)) THEN
+
+
+c----- Fo/Fc plot
+          IF ( LEVEL .EQ. 4 ) THEN
+           WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
+     1     NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
+           CALL XCRAS(HKLLAB, IHKLLEN)
+           WRITE(CMON,'(3A,2F10.2)')
+     1   '^^PL LABEL ''', HKLLAB(1:IHKLLEN), ''' DATA ', FCKD ,FOKD
+           CALL XPRVDU(NCVDU, 1,0)
+          ENDIF
+C STORE SIGNA:NOISE FOR NORMAL PROBABILITY PLOT
+C If you have more than 8.8 million reflections you might be in trouble.
+           N6ACC = N6ACC + 1
+           IF ( N6ACC .LE. MAX11/2 ) THEN
+            STR11(N6ACC*2-1) = ZH     !Format:   [WDEL,INDICES]
+            STR11(N6ACC*2) = STORE(M6)+STORE(M6+1)*256.+STORE(M6+2)
+     1      *65536.
+           END IF
+c
             NFRIED=NFRIED+1
             IF (NFRIED.LE.100) THEN
                IF (ISSPRT.EQ.0) WRITE (NCWU,'(i10,3f12.4)') NFRIED,FOKD,
@@ -6849,11 +6945,115 @@ C
       FOK1=FOK2
       SIG1=SIG2
       FCK1=FCK2
+c
+c      totals for Fo/Fc plot
+           fss =  fss  + 1.
+           fsx =  fsx  + FcKD
+           fsy =  fsy  + FoKD
+           fsxx = fsxx + FcKD*FcKD
+           fsyy = fsyy + FoKD*FoKD
+           fsxy = fsxy + FOKD*FCKD
+c
 C     GET NEXT REFLECTION
       GO TO 350
 450   CONTINUE
-      IF (NFRIED.GT.0) THEN
+      IF (LEVEL .EQ. 4) THEN
+c Also add A SERIES FOR STRAIGHT LINE (y=x) .
+        WRITE(CMON,'(A/ (2(A,2F10.2)) )')
+     1  '^^PL ADDSERIES ''Fo=Fc'' TYPE LINE',
+     2  '^^PL DATA ', -fcmax, -fcmax, ' DATA ', FCMAX, FCMAX
+        CALL XPRVDU(NCVDU,2,0)
+      ENDIF
 C---- all refelctions processed.
+c
+c
+c-----
+c      find slope and intercept of Fo/Fc plot
+c      determinant
+        deter = fss*fsxx-fsx*fsx
+        cutter = (fsxx*fsy-fsx*fsxy)/deter
+        slope = (fss*fsxy-fsx*fsy)/deter
+        denom = (fss*fsxx-fsx*fsx)*(fss*fsyy-fsy*fsy)
+        if (denom .ge. 0.) denom=sqrt(denom)
+        correl = (fss*fsxy - fsx*fsy)/denom
+        write(cmon,470) slope, cutter, correl
+470     format(' Slope, intercept and Cc of delta-Fo vs delta-Fc Plot =',
+     1  f7.3,f10.2,f10.5)
+        call xprvdu(ncvdu, 1,0)
+        if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+c
+c
+      IF (NFRIED.GT.0) THEN
+C----- SHOW NORMAL PROBABILITY PLOT
+C
+        IF ( N6ACC .GT. MAX11/2 ) THEN
+          WRITE(CMON,'(A,I8)') '{E Too many reflections: ', N6ACC
+          CALL XPRVDU(NCVDU,1,0)
+          N6ACC = MAX11/2
+        END IF
+        WRITE(CMON,'(A,I8,A)')' Computing normal probability plot for',
+     1    N6ACC, ' reflections.'
+        CALL XPRVDU(NCVDU,1,0)
+C Sort the sqrt(W)*(Fo2-Fc2) into ascending order.
+        CALL XSHELQ(STR11,2,1,N6ACC,N6ACC*2,TEMP)
+        DO I=1,N6ACC
+           PC = (I-0.5)/float(N6ACC)
+           A = sqrt(-2.*log(.5-abs(PC-.5)))
+           B = 0.27061*A+2.30753
+           C = A*(A*.04481+.99229)+1
+           Z = A-B/C
+C Unpack HKL
+           D=FLOAT(NINT(STR11(I*2)/256.))
+           MH=STR11(I*2)-D*256.
+           ML=FLOAT(NINT(D/256.))
+           MK=D-ML*256.
+           if (I.LE.N6ACC/2) Z=-Z
+c
+           ss =  ss  + 1.
+           sx =  sx  + z
+           sy =  sy  + str11(i*2-1)
+           sxx = sxx + z*z
+           sxy = sxy + str11(i*2-1)*z
+c
+
+           IF ( LEVEL .EQ. 5 ) THEN
+            WRITE(HKLLAB, '(2(I4,A),I4)') MH, ',', MK, ',', ML
+            CALL XCRAS(HKLLAB, IHKLLEN)
+            WRITE(CMON,'(3A,2F11.3)')
+     1     '^^PL LABEL ''',HKLLAB(1:IHKLLEN),''' DATA ',Z,STR11(I*2-1)
+            CALL XPRVDU(NCVDU, 1,0)
+           endif
+        END DO
+c-----
+c      find slope and intercept of NPP
+c      determinant
+        deter = ss*sxx-sx*sx
+        cutter = (sxx*sy-sx*sxy)/deter
+        slope = (ss*sxy-sx*sy)/deter
+        yslope = slope
+        write(cmon,460) slope, cutter
+460     format(' Slope and intercept of Normal Probability Plot =',
+     1  2f10.5)
+        call xprvdu(ncvdu, 1,0)
+        if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+        if ( (slope .gt. 1.1) .or. (slope .lt. 0.9) .or.
+     1      (cutter .lt. -.05) .or. (cutter .gt. .05)) then
+         write(cmon,'(a,a)')' The slope shoud be unity and the'
+     1  ,' intercept zero'
+         call xprvdu(ncvdu, 1,0)
+         if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+         write(cmon,'(a)') 
+     1 '{E CRYSTALS suggests that you check your weighting scheme'
+         call xprvdu(ncvdu, 1,0)
+         if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+        endif
+c
+C -- FINISH THE GRAPH DEFINITION
+         IF ( ( LEVEL .EQ. 4 ).OR.( LEVEL .EQ. 5 )) THEN
+           WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
+           CALL XPRVDU(NCVDU, 2,0)
+         ENDIF
+C
 C---- compute goodies
          SUM=SUM/SUMW
 C  yslope is the gradient of the normal probability plot
@@ -6895,7 +7095,7 @@ C  Pseudo-Flack Parameters
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
-         WRITE (CMON,'(10(a,i7))') 'No of Reflections processed =',
+         WRITE (CMON,'(10(a,i7))') ' No of Reflections processed =',
      1    NREFIN
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)') CMON(1)(:)
@@ -6904,19 +7104,19 @@ C  Pseudo-Flack Parameters
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
          WRITE (CMON,'(A)') 
-     1   'Flack parameter obtained from original refinement'
+     1   ' Flack parameter obtained from original refinement'
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
 C 
          WRITE (CMON,'(A)') 
-     1  'Hooft parameter obtained with Flack x set to zero'
+     1  ' Hooft parameter obtained with Flack x set to zero'
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
 C 
          WRITE (CMON,'(/)')
          CALL XPRVDU (NCVDU,1,0)
-         WRITE (CMON,'(a,2f10.4)') 'Flack Parameter & su',STORE(L30GE+6)
-     1    ,STORE(L30GE+7)
+         WRITE (CMON,'(a,2f10.4)') ' Flack Parameter & su',
+     1   STORE(L30GE+6) ,STORE(L30GE+7)
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)') CMON(1)(:)
 C 
@@ -6928,10 +7128,10 @@ C
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)') CMON(2)(:)
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(3)(:)
          END IF
-         WRITE (CMON,'(a,2f10.4)') 'Hooft Parameter & su',TONY,TONSY
+         WRITE (CMON,'(a,2f10.4)') ' Hooft Parameter & su',TONY,TONSY
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
-         WRITE (CMON,'(a,4f10.4)') '          Ton G & su',XG,XGS
+         WRITE (CMON,'(a,4f10.4)') '           Ton G & su',XG,XGS
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
          WRITE (CMON,'(/)')
@@ -6971,12 +7171,16 @@ C
      1      npfc, SPFC/FLOAT(NPFC), SQRT(SPFCSQ/FLOAT(NPFC)),
      2      nnfc, SNFC/FLOAT(NNFC), SQRT(SNFCSQ/FLOAT(NNFC))
             write(ncwu,705)
-705         format ('No of reflections for which delta(Fo)',
+705         format (//'No of reflections for which delta(Fo)',
      1      ' has same sign as delta(Fc)')
             write(ncwu,706)
 706         format('Same sign',3x,'Opposite sign')
             write(ncwu,707) npls, nmin
 707         format(i8,6x,i8)
+            WRITE(NCWU,'(//A)')' Distribution of Delta(F)/sigma(F)'
+            WRITE(NCWU,'(a,15I6)') 'Fo',IFOPLT
+            WRITE(NCWU,'(a,15I6)') 'Fc',IFCPLT
+            WRITE(NCWU,'(a,15I6)') 'n ',(KDJW,KDJW=-NPLT,NPLT,1)
          END IF
 C 
 C 
@@ -6991,6 +7195,9 @@ C
          ELSE
             RCO=0.0
          END IF
+c-WHAT IS RCO? Correlation coeficient for NPP?
+c         IF (ISSPRT.EQ.0)
+c     1   WRITE(NCWU,'(A,F12.3)') 'Tons Rc = ', rco
 C CALCULATE P2(0)
          IF (ABS(ABS(TONY-0.5)-0.5).LT.MAX(0.1,3*TONSY)) THEN
             XPLL2=XPLLL/(XPLLL+XMNLL)
@@ -6998,7 +7205,7 @@ C CALCULATE P2(0)
             XPLL2=-1.0
          END IF
 C P2(True)
-         WRITE (CMON,'(a,a)') 'For an enantiopure material,',
+         WRITE (CMON,'(a,a)') ' For an enantiopure material,',
      1   ' there are 2 choices, P2'
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
@@ -7019,7 +7226,7 @@ C P2(True)
          IF (ISSPRT.EQ.0) WRITE (NCWU,950) LINE
 950      FORMAT (A)
 C CALCULATE P3(0),P3(TW),P3(1)
-         WRITE (CMON,'(/a,a)') 'If 50:50 twinning is possible,',
+         WRITE (CMON,'(/a,a)') ' If 50:50 twinning is possible,',
      1   ' there are 3 choices, P3'
          CALL XPRVDU (NCVDU,2,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1),CMON(2)
