@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.76  2008/11/19 18:30:00  djw
+C Compute slope and intercept for normal probability plot
+C
 C Revision 1.75  2008/03/31 14:48:15  djw
 C output more info from L13
 C
@@ -1875,6 +1878,7 @@ c----- totals for slope and intercept
         sx = 0.
         sy = 0.
         sxx = 0.
+        syy = 0.
         sxy = 0.
 
 1100  CONTINUE
@@ -2026,6 +2030,7 @@ c
            sx =  sx  + z
            sy =  sy  + str11(i*2-1)
            sxx = sxx + z*z
+           syy = syy + str11(i*2-1)*str11(i*2-1)
            sxy = sxy + str11(i*2-1)*z
 c
            WRITE(HKLLAB, '(2(I4,A),I4)') MH, ',', MK, ',', ML
@@ -2046,25 +2051,47 @@ C -- FINISH THE GRAPH DEFINITION
 c      find slope and intercept
 c      determinant
         deter = ss*sxx-sx*sx
-        cutter = (sxx*sy-sx*sxy)/deter
-        slope = (ss*sxy-sx*sy)/deter
-        yslope = slope
-        write(cmon,'(a,a)')' The slope shoud be unity and the intercept'
-     1  ,' zero'
-         call xprvdu(ncvdu, 1,0)
-         if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
-        write(cmon,460) slope, cutter
-460     format(' Slope and intercept of Normal Probability Plot =',
+        if (deter .ne. 0.) then
+          cutter = (sxx*sy-sx*sxy)/deter
+          slope = (ss*sxy-sx*sy)/deter
+          yslope = slope
+          write(cmon,'(a,a)')' The slope shoud be unity and'
+     1  ,' the intercept zero'
+          call xprvdu(ncvdu, 1,0)
+          if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+          denom = (ss*sxx-sx*sx)*(ss*syy-sy*sy)
+          if (denom .gt. 0.) then
+            denom=sqrt(denom)
+            correl = (ss*sxy - sx*sy)/denom
+            write(cmon,470) slope, cutter, correl
+470      format(' Slope, intercept and Cc of Normal Probability Plot =',
+     1  f7.3,f10.2,f10.5)
+            call xprvdu(ncvdu, 1,0)
+            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+          else
+            write(cmon,471) 
+471         format ('Correlation coefficient cannot be computed')
+            call xprvdu(ncvdu, 1,0)
+            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            write(cmon,460) slope, cutter
+460        format(' Slope and intercept of Normal Probability Plot =',
      1  2f10.5)
-        call xprvdu(ncvdu, 1,0)
-         if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
-         if ( (slope .gt. 1.1) .or. (slope .lt. 0.9) .or.
+            call xprvdu(ncvdu, 1,0)
+            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            if ( (slope .gt. 1.1) .or. (slope .lt. 0.9) .or.
      1      (cutter .lt. -.05) .or. (cutter .gt. .05)) then
-          WRITE(CMON,'(A)') 
+              WRITE(CMON,'(A)') 
      1 '{E CRYSTALS suggests that you check your weighting scheme'
-         call xprvdu(ncvdu, 1,0)
-         if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
-         endif
+             call xprvdu(ncvdu, 1,0)
+             if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+               endif
+            endif
+        else
+            write(cmon,472) 
+472         format ('Slope and Intercept cannot be computed')
+            call xprvdu(ncvdu, 1,0)
+            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+        endif
       endif
 c
 C----- UPDATE LIST 30

@@ -1,6 +1,9 @@
 c
 c
 C $Log: not supported by cvs2svn $
+C Revision 1.133  2008/11/19 18:31:38  djw
+C Do plots and statistics for NPP and Fo/Fc in Spek/Hooft code
+C
 C Revision 1.132  2008/10/29 09:13:56  djw
 C Add 'Scientific notation' output of probabilities
 C
@@ -6968,19 +6971,38 @@ C---- all refelctions processed.
 c
 c
 c-----
-c      find slope and intercept of Fo/Fc plot
+c      find slope and intercept of FO/fc plot
 c      determinant
         deter = fss*fsxx-fsx*fsx
-        cutter = (fsxx*fsy-fsx*fsxy)/deter
-        slope = (fss*fsxy-fsx*fsy)/deter
-        denom = (fss*fsxx-fsx*fsx)*(fss*fsyy-fsy*fsy)
-        if (denom .ge. 0.) denom=sqrt(denom)
-        correl = (fss*fsxy - fsx*fsy)/denom
-        write(cmon,470) slope, cutter, correl
-470     format(' Slope, intercept and Cc of delta-Fo vs delta-Fc Plot =',
-     1  f7.3,f10.2,f10.5)
-        call xprvdu(ncvdu, 1,0)
-        if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+        if (deter .ne. 0.) then
+         cutter = (fsxx*fsy-fsx*fsxy)/deter
+         slope = (fss*fsxy-fsx*fsy)/deter
+         denom = (fss*fsxx-fsx*fsx)*(fss*fsyy-fsy*fsy)
+         if (denom .gt. 0.) then
+            denom=sqrt(denom)
+            correl = (fss*fsxy - fsx*fsy)/denom
+            write(cmon,470) slope, cutter, correl
+470         format(' Slope, intercept and Cc of Fo/Fc ',
+     1      ' Plot =',f7.3,f10.2,f10.5)
+            call xprvdu(ncvdu, 1,0)
+            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+         else
+            write(cmon,471) 
+471         format ('Correlation coefficient cannot be computed')
+            call xprvdu(ncvdu, 1,0)
+            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            write(cmon,472) slope, cutter 
+472         format(' Slope and intercept of Fo/Fc',
+     1      ' Plot =',f7.3,f10.2,f10.5)
+            call xprvdu(ncvdu, 1,0)
+            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+         endif
+        else
+            write(cmon,473) 
+473         format ('Slope and Intercept cannot be computed')
+            call xprvdu(ncvdu, 1,0)
+            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+        endif
 c
 c
       IF (NFRIED.GT.0) THEN
