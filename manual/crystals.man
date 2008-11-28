@@ -7957,7 +7957,7 @@ are only going to be calculated.
  The first argument is the e.s.d for adp-restraint,  
  I.E:
 #J
- DELU 0.01, 0.1 FOR RESI(1) AND RESI(2)
+ DELU 0.01  FOR RESI(1) AND RESI(2)
 #
    Restrains the adps of all pairs on bonded atoms in RESIDUE(1) and 
  (2). Note that
@@ -7976,8 +7976,7 @@ are only going to be calculated.
 #
  The  'FOR' separating the
  e.s.d.s from the atom specifications is optional.
- The first e.s.d is optional, the
- default is 0.01 Angstroms.
+ The e.s.d is optional, the  default is 0.01 Angstroms.
 #
  List 41 (bonds) is loaded by the restraint generating routine, if it
  does not exist an error will occur. (By default L41 is kept up to date
@@ -7988,10 +7987,10 @@ are only going to be calculated.
  to be similar.  Unlike SAME, a single
  group can be given.
 #
- The first argument is the e.s.d for adp-restraint. 
+ The first argument is the e.s.d for adp-restraint.
  I.E:
 #J
- SIMU 0.01, 0.1 FOR RESI(1) AND RESI(2)
+ SIMU 0.04  FOR RESI(1) AND RESI(2)
 #
    Restrains the adps of all pairs on bonded atoms in RESIDUE(1) and 
  (2). Note that
@@ -8010,8 +8009,7 @@ are only going to be calculated.
 #
  The  'FOR' separating the
  e.s.d.s from the atom specifications is optional.
- The first e.s.d is optional, the
- default is 0.04 Angstroms.
+ The e.s.d is optional, the  default is 0.04 Angstroms.
 #
  List 41 (bonds) is loaded by the restraint generating routine, if it
  does not exist an error will occur. (By default L41 is kept up to date
