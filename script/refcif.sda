@@ -112,8 +112,6 @@ arbitary radius.
 ;
 
 
-data_1
-
 _publ_section_exptl_refinement
 # Some potentially useful phrases are donated by Bill Clegg:
 ;
@@ -180,4 +178,15 @@ _publ_section_exptl_prep
 #C3-O10-C2    105               109            "2 (\%)"
 #C6-O7        1.25              1.22           ".02 (\%A)"
 #
-#  End of 'script/refcif-b.dat'
+
+data_1
+
+_exptl_special_details
+;
+?
+;
+_refine_special_details
+;
+?
+;
+#  End of 'script/refcif.dat'
