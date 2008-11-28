@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.88  2008/11/07 08:41:17  djw
+C Dont try to update L41 if there is only one atom
+C
 C Revision 1.87  2008/10/14 16:13:07  djw
 C Restore Richards END-DOs
 C
@@ -597,7 +600,7 @@ C
       INCLUDE 'TYPE11.INC'
       INCLUDE 'ISTORE.INC'
 C
-c----- to hold h/nh flag, length of atom names
+c----- to hold h/nh flag, length of atom names, part ID
       parameter (nbonda=12)
       dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
       character *32 cbonda(nbonda)
@@ -1598,6 +1601,7 @@ C
 C----- N-H 
            ELSE IF ((ISTORE(M5P) .EQ. KAZOT) .AND. (NHY .GE. 1)) THEN
             IF (KHY .GE. 4) THEN
+C---- 4 OR MORE BONDS
              WRITE(NCPU,'(A,I6)')
      1      'REM Possibly disordered, No of H atoms=', NHY
                   UEQUIV = UEQUIV * 1.25
@@ -1607,15 +1611,18 @@ C----- N-H
             ELSE
              IF      (NHY .EQ. 1) THEN
                 IF       (NNHY .EQ. 1) THEN
+C 1H, 1NOT-H
                   WRITE(NCPU,'(A)') 'REM            H1-N-R1'
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.86)
                   CALL HCC120(KHY, IHY, CATOM1, CBONDA)
                 ELSE IF (NNHY .EQ. 2) THEN
+C 1H, 2NOT-H
                   WRITE(NCPU,'(A)') 'REM            H1-N-R2'
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.86)
                   CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
-                  CALL PLANH(KHY, IHY, CATOM1, CBONDA)
+camber-08                  CALL PLANH(KHY, IHY, CATOM1, CBONDA)
                 ELSE IF (NNHY .EQ. 3) THEN
+C 1H, 3NOT-H
                   WRITE(NCPU,'(A)') 'REM            H1-N-R3'
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.89)
                   CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
@@ -1625,11 +1632,13 @@ C----- N-H
 
              ELSE IF (NHY .EQ. 2) THEN
                 IF       (NNHY .EQ. 1) THEN
+C 2H, 1NOT-H
                   WRITE(NCPU,'(A)') 'REM            H2-N-R'
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.86)
                   CALL HCC120(KHY, IHY, CATOM1, CBONDA)
-                  CALL PLANH(KHY, IHY, CATOM1, CBONDA)
+camber-08                  CALL PLANH(KHY, IHY, CATOM1, CBONDA)
                 ELSE IF (NNHY .EQ. 2) THEN
+C 2H, 2NOT-H
                   WRITE(NCPU,'(A)') 'REM            H2-N-R2'
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.89)
                   CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
@@ -1640,6 +1649,7 @@ C----- N-H
 
              ELSE IF (NHY .EQ. 3) THEN
                 IF       (NNHY .EQ. 1) THEN
+C 3H, 1NOT-H
                   WRITE(NCPU,'(A)') 'REM            H3-N-R'
                   UEQUIV = UEQUIV * 1.25
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.89)
@@ -7655,57 +7665,88 @@ c
       END
 c
 CODE FOR ANG180
-      SUBROUTINE ANG180(khy, ihy, catom1, cbonda)
+      SUBROUTINE ANG180(KHY, IHY, CATOM1, CBONDA)
 c----- set h-c-c angle to 180.0
 c
       INCLUDE 'XUNITS.INC'
-      character*132 cline
+      CHARACTER*132 CLINE
       CHARACTER catom1*(*), cbonda(4)*(*)
-      parameter (nbonda=12)
-      dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
-c
-      do j=1,khy
-       if (ihy(j) .eq. 1) then
-        i = j
-       else if (ihy(j) .eq. 2) then
-        k = j
-       endif
-      enddo
-        write(cline,'(a,a,a,a,a,a )') 
-     1  'angle 180., 2.0 = ', cbonda(i), ' to ', catom1, ' to ', 
-     2  cbonda(k)
-        call xcrems( cline, cline, nch)
-        write(ncpu,'(a)') cline(1:nch)
+      PARAMETER (NBONDA=12)
+      DIMENSION IHY(NBONDA), LBONDA(NBONDA),IPARTH(NBONDA)
+C
+      DO J=1,KHY
+       IF (IHY(J) .EQ. 1) THEN
+        I = J
+       ELSE IF (IHY(J) .EQ. 2) THEN
+        K = J
+       ENDIF
+      ENDDO
+        WRITE(CLINE,'(A,A,A,A,A,A )') 
+     1  'ANGLE 180., 2.0 = ', CBONDA(I), ' TO ', CATOM1, ' TO ', 
+     2  CBONDA(K)
+        CALL XCREMS( CLINE, CLINE, NCH)
+        WRITE(NCPU,'(A)') CLINE(1:NCH)
       RETURN
       END
 c
 CODE FOR hccav
-      SUBROUTINE hccav(khy, ihy, catom1, cbonda)
+      SUBROUTINE HCCAV(KHY, IHY, CATOM1, CBONDA)
 c----- set h-c-c angle to mean of group
 c
       INCLUDE 'XUNITS.INC'
-      character*132 cline
+      CHARACTER*132 CLINE
       CHARACTER catom1*(*), cbonda(4)*(*)
-      parameter (nbonda=12)
-      dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
-c
-      write(cline,'(a )') 'angle 0.0, 2.0 = mean'
-      call xcrems( cline, cline, nch)
-      write(ncpu,'(a)') cline(1:nch)
+      PARAMETER (NBONDA=12)
+      DIMENSION IHY(NBONDA), LBONDA(NBONDA),IPARTH(NBONDA)
+C
+      WRITE(CLINE,'(A )') 'ANGLE 0.0, 2.0 = MEAN'
+      CALL XCREMS( CLINE, CLINE, NCH)
+      WRITE(NCPU,'(A)') CLINE(1:NCH)
 
-      do i=1,khy
-       if (ihy(i) .eq. 1) then
-        do j=1,khy
-         if (ihy(j) .eq. 2) then
-          write(cline,'(a,a,a,a,a,a )') 'cont ',
-     1    cbonda(i), ' to ', catom1, ' to ', 
-     2    cbonda(j)
-          call xcrems( cline, cline, nch)
-          write(ncpu,'(a)') cline(1:nch)
-         endif
-        enddo
-       endif
-      enddo
+      DO I=1,KHY
+       IF (IHY(I) .EQ. 1) THEN
+        DO J=1,KHY
+         IF (IHY(J) .EQ. 2) THEN
+          WRITE(CLINE,'(A,A,A,A,A,A )') 'CONT ',
+     1    CBONDA(I), ' TO ', CATOM1, ' TO ', 
+     2    CBONDA(J)
+          CALL XCREMS( CLINE, CLINE, NCH)
+          WRITE(NCPU,'(A)') CLINE(1:NCH)
+         ENDIF
+        ENDDO
+       ENDIF
+      ENDDO
+      RETURN
+      END
+c
+c
+CODE FOR cchav
+      SUBROUTINE CCHAV(KHY, IHY, CATOM1, CBONDA)
+c----- set c-c-h angle to mean of group of several h's
+c
+      INCLUDE 'XUNITS.INC'
+      CHARACTER*132 CLINE
+      CHARACTER catom1*(*), cbonda(4)*(*)
+      PARAMETER (NBONDA=12)
+      DIMENSION IHY(NBONDA), LBONDA(NBONDA),IPARTH(NBONDA)
+C
+      WRITE(CLINE,'(A )') 'ANGLE 0.0, 2.0 = MEAN'
+      CALL XCREMS( CLINE, CLINE, NCH)
+      WRITE(NCPU,'(A)') CLINE(1:NCH)
+
+      DO I=1,KHY
+       IF (IHY(I) .EQ. 2) THEN
+        DO J=1,KHY
+         IF (IHY(J) .EQ. 1) THEN
+          WRITE(CLINE,'(A,A,A,A,A,A )') 'CONT ',
+     1    CBONDA(I), ' TO ', CATOM1, ' TO ', 
+     2    CBONDA(J)
+          CALL XCREMS( CLINE, CLINE, NCH)
+          WRITE(NCPU,'(A)') CLINE(1:NCH)
+         ENDIF
+        ENDDO
+       ENDIF
+      ENDDO
       RETURN
       END
 c
