@@ -59,8 +59,10 @@ C for aniso
 C
       DIMENSION VA(3), EQU(3), RPCA(3,3), RPCF(3,3), ROF(3,3), RCA(3,3)
       DIMENSION RCF(3,3), XCA(3), XCF(3), XCR(3)
-      DIMENSION DCOSA(3)
-      DIMENSION DCOSB(3)
+c      DIMENSION DCOSA(3)
+c      DIMENSION DCOSB(3)
+cdjwdec09
+      DOUBLE PRECISION dcosa(3), dcosb(3), DACCUM, DACCA, DACCB
       INTEGER BTARG,CTARG
       DIMENSION BTARG(1)
       DIMENSION CTARG(1)
@@ -750,12 +752,19 @@ C--THIS IS THE SECOND PLANE NUMBER
       DCOSB(1)=STORE(K+1)
       DCOSB(2)=STORE(K+2)
       DCOSB(3)=STORE(K+3)
-      F=0.
-      DO 890 J=1,3
-890      F=F+DCOSA(J)*DCOSB(J)
-      IF (ABS(F)-1.0) 910,910,900
-900   F=SIGN(1.0,F)
-910   F=ACOS(F)*RTD
+cdjwdec09
+      DACCUM=0.0D0
+      DACCA =0.0D0
+      DACCB =0.0D0
+      DO  J=1,3
+        DACCUM=DACCUM+DCOSA(J)*DCOSB(J)
+        DACCA = DACCA + DCOSA(J)*DCOSA(J)
+        DACCB = DACCB + DCOSB(J)*DCOSB(J)
+      ENDDO
+      DACCUM = DACCUM/(DSQRT(DACCA)*DSQRT(DACCB))
+      DACCUM = DABS(daccum)
+      F = SNGL(DACCUM)
+      F = ACOS(F)*RTD
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,920) JH,JK,F
       END IF
