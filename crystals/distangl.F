@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.89  2008/11/28 14:45:24  djw
+C Remove planrity restraint from some N-H restraints
+C
 C Revision 1.88  2008/11/07 08:41:17  djw
 C Dont try to update L41 if there is only one atom
 C
@@ -6683,12 +6686,13 @@ C Remember a few pointers
       KBN29 = N29
 cdjwoct08
 c     dont look for bonds if less than 2 atoms
-      if (n5 .lt. 2) then
-            write (cmon,'(a,i4,a)') 'Only', n5, ' atoms'
-            call xprvdu(ncvdu,2,0)
-            if (issprt .eq. 0) write(ncwu, '(a)') cmon( 1)(:)
-            goto 3350
-      endif
+cdjwnov08 - fix causes=d looping if no list 41 exists
+c      if (n5 .lt. 2) then
+c            write (cmon,'(a,i4,a)') 'Only', n5, ' atoms'
+c            call xprvdu(ncvdu,2,0)
+c            if (issprt .eq. 0) write(ncwu, '(a)') cmon( 1)(:)
+c            goto 3350
+c      endif
 c
       IF ( ( IPROCS(1) .EQ. 0 ) .AND. ( K41DEP() .GE. 1 ) ) THEN
          WRITE(CMON,'(A/A)')'No need to recalculate bonds. Use ',
