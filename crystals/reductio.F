@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.33  2008/03/31 14:54:08  djw
+C Move the Firedel flag in SYST into the JCODE slot. Previously (in corrections of phase) it zapped Fourier maps
+C
 C Revision 1.32  2008/03/07 16:09:48  djw
 C changes to help with the correct computation of Fourier maps from twinned crystals.  THe old COPY67 subroutine did not pack the data properly unless the keys were the default keys.  The job is now done
 C
@@ -587,8 +590,12 @@ C
 C
 CDJWAPR99 UPDATE LIST 30
        IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) . LT. 0) CALL XFAL30
-              STORE(L30DR) = max(FLOAT(N6W),STORE(L30DR))
-              STORE(L30DR+2) = min(FLOAT(N6W),STORE(L30DR+2))
+cdjw dec08
+c              STORE(L30DR) = max(FLOAT(N6W),STORE(L30DR))
+c              STORE(L30DR+2) = min(FLOAT(N6W),STORE(L30DR+2))
+c Dont fiddle with the merged totals, just account for systematic 
+c absences
+              STORE(L30DR) = min(FLOAT(N6W),STORE(L30DR))
         CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
 1810  CONTINUE
       CALL XOPMSG ( IOPSSM , IOPEND , 200 )
@@ -596,6 +603,7 @@ CDJWAPR99 UPDATE LIST 30
       CALL XRSL
       CALL XCSAE
       RETURN
+
 9900  CONTINUE
 C -- ERRORS
       CALL XOPMSG ( IOPSSM , IOPABN , 0 )
@@ -1290,7 +1298,9 @@ C------- FRIEDEL NOT USED
             STORE(L30DR+4) = FLOAT(N6W)
             STORE(L30DR+5) = WORK(25)
        ELSE
-            STORE(L30DR+2) = min(FLOAT(N6W),STORE(L30DR+2))
+c            STORE(L30DR+2) = min(FLOAT(N6W),STORE(L30DR+2))
+c only set merged totals if MERGE was done
+            STORE(L30DR+2) = FLOAT(N6W)
             STORE(L30DR+3) = WORK(25)
        ENDIF
       ELSE
