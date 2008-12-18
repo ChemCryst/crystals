@@ -1,6 +1,9 @@
 c
 c
 C $Log: not supported by cvs2svn $
+C Revision 1.134  2008/11/21 16:05:06  djw
+C Improvements in formatting output, trap negative sqrts and zero denominators
+C
 C Revision 1.133  2008/11/19 18:31:38  djw
 C Do plots and statistics for NPP and Fo/Fc in Spek/Hooft code
 C
@@ -6626,6 +6629,7 @@ C
       DIMENSION LISTS(6)
       DIMENSION DATC(401)
       DIMENSION TEMP(2)
+
       CHARACTER*80 LINE
       CHARACTER*30 FORM
       CHARACTER *15 HKLLAB
@@ -6973,6 +6977,9 @@ c
 c-----
 c      find slope and intercept of FO/fc plot
 c      determinant
+        write(cmon,'(a)')' Plotting delta(Fo) vs delta(Fc)'
+        call xprvdu(ncvdu, 1,0)
+        if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
         deter = fss*fsxx-fsx*fsx
         if (deter .ne. 0.) then
          cutter = (fsxx*fsy-fsx*fsxy)/deter
@@ -6982,13 +6989,13 @@ c      determinant
             denom=sqrt(denom)
             correl = (fss*fsxy - fsx*fsy)/denom
             write(cmon,470) slope, cutter, correl
-470         format(' Slope, intercept and Cc of Fo/Fc ',
+470         format(' Slope, intercept and Cc (R) of Fo/Fc ',
      1      ' Plot =',f7.3,f10.2,f10.5)
             call xprvdu(ncvdu, 1,0)
             if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
          else
             write(cmon,471) 
-471         format ('Correlation coefficient cannot be computed')
+471         format (' Correlation coefficient cannot be computed')
             call xprvdu(ncvdu, 1,0)
             if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
             write(cmon,472) slope, cutter 
@@ -7035,6 +7042,7 @@ c
            sx =  sx  + z
            sy =  sy  + str11(i*2-1)
            sxx = sxx + z*z
+           syy = syy + str11(i*2-1)*str11(i*2-1)
            sxy = sxy + str11(i*2-1)*z
 c
 
@@ -7050,14 +7058,37 @@ c-----
 c      find slope and intercept of NPP
 c      determinant
         deter = ss*sxx-sx*sx
+        if (deter .ne. 0.) then
         cutter = (sxx*sy-sx*sxy)/deter
         slope = (ss*sxy-sx*sy)/deter
         yslope = slope
-        write(cmon,460) slope, cutter
-460     format(' Slope and intercept of Normal Probability Plot =',
-     1  2f10.5)
-        call xprvdu(ncvdu, 1,0)
-        if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+         denom = (ss*sxx-sx*sx)*(ss*syy-sy*sy)
+         if (denom .gt. 0.) then
+            denom=sqrt(denom)
+            correl = (ss*sxy - sx*sy)/denom
+            write(cmon,460) slope, cutter, correl
+460         format(' Slope, intercept and Cc (R) of  NPP  ',
+     1      ' Plot =',f7.3,f10.2,f10.5)
+            call xprvdu(ncvdu, 1,0)
+            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+         else
+            write(cmon,461) 
+461         format (' Correlation coefficient cannot be computed')
+            call xprvdu(ncvdu, 1,0)
+            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            write(cmon,462) slope, cutter 
+462         format(' Slope and intercept of NPP',
+     1      ' Plot =',f7.3,f10.2,f10.5)
+            call xprvdu(ncvdu, 1,0)
+            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+         endif
+        else
+            write(cmon,463) 
+463         format ('Slope and Intercept cannot be computed')
+            call xprvdu(ncvdu, 1,0)
+            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+        endif
+C
         if ( (slope .gt. 1.1) .or. (slope .lt. 0.9) .or.
      1      (cutter .lt. -.05) .or. (cutter .gt. .05)) then
          write(cmon,'(a,a)')' The slope shoud be unity and the'
@@ -7348,6 +7379,7 @@ C P3(False)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
          GO TO 1400
       END IF
+C
       RETURN
 C 
 1400  CONTINUE
@@ -7476,5 +7508,87 @@ C
 9900  CONTINUE
 C -- ERRORS
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
+      RETURN
+      END
+C
+CODE FOR CCOEF
+      SUBROUTINE CCOEF(MODE, X, Y, N, A, SLOPE, RINTER, CORREL)
+C compute correlation coefficient for x-y data.
+C MODE:      0 FOR INITIALISATION
+C            1 FOR ACCUMULATION
+C            2 FOR RESULTS
+C MODE:      3 FOR SUCCESS
+C            4 FOR NO CORRELATION COEFFICIENT
+C            5 FOR FAILURE
+C X,Y        DATA POINTS
+C N          NUMBER OF ITEMS
+C SLOPE      SLOPE
+C RINTER      INTERCEPT
+C CORREL     CORRELATION COEFFICIENT
+C IUPDATE    0 DO NOT UPDATE LIST 30
+C
+      DIMENSION A(6)
+c
+      INCLUDE 'ICOM30.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XLST30.INC'
+c
+      IF ( MODE .EQ. 0) THEN
+C INITIALISE
+        a(1) = 0.
+        a(2) = 0.
+        a(3) = 0.
+        a(4) = 0.
+        a(5) = 0.
+        a(6) = 0.
+      ELSE IF (MODE .EQ. 1) THEN
+c      totals for plot
+           a(1) =  a(1)  + 1.
+           a(2) =  a(2)  + X
+           a(3) =  a(3)  + Y
+           a(4) = a(4) + X*X
+           a(5) = a(5) + Y*Y
+           a(6) = a(6) + X*Y
+      ELSE
+       slope = 0.
+       inter = 0.
+       correl = 0.
+       n = nint(a(1))
+c      determinant
+       deter = a(1)*a(4)-a(2)*a(2)
+        if (deter .ne. 0.) then
+         mode = 3
+         slope = (a(1)*a(6)-a(2)*a(3))/deter
+         rinter = (a(4)*a(3)-a(2)*a(6))/deter
+         denom = (a(1)*a(4)-a(2)*a(2))*(a(1)*a(5)-a(3)*a(3))
+         if (denom .gt. 0.) then
+            denom=sqrt(denom)
+            correl = (a(1)*a(6) - a(2)*a(3))/denom
+            write(cmon,470) slope, rinter, correl
+470         format(' Slope, intercept and Cc of plot = ',
+     1      3g10.3)
+c            call xprvdu(ncvdu, 1,0)
+            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+         else
+            mode = 4
+            write(cmon,471) 
+471         format ('Correlation coefficient cannot be computed')
+            call xprvdu(ncvdu, 1,0)
+            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            write(cmon,472) slope, rinter 
+472         format(' Slope and intercept of plot =',
+     1      3g10.3)
+c            call xprvdu(ncvdu, 1,0)
+            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+         endif
+        else
+            mode = 5
+            write(cmon,473) 
+473         format ('Slope and Intercept cannot be computed')
+            call xprvdu(ncvdu, 1,0)
+            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+        endif
+      ENDIF
       RETURN
       END
