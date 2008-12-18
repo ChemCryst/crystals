@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2008/09/08 07:17:06  djw
+C Dont unset twin flag in LIST 13 if the data has FOT set
+C
 C Revision 1.27  2008/04/29 15:30:31  djw
 C New version of COPY67, uses a scratch file rather than on DSC directly
 C
@@ -1218,7 +1221,7 @@ C----- IF ITYPE6 .NE. 'COPY'  OR 'TWIN' WE WERE PROBABLY READING RAW DATA
 C         IF (STORE(L30DR).LE.ZERO) STORE(L30DR)=FLOAT(N6W)
 C         IF (STORE(L30DR+2).LE.ZERO) STORE(L30DR+2)=FLOAT(N6W)
          STORE(L30DR)=FLOAT(N6W)
-         STORE(L30DR+2)=FLOAT(N6W)
+cdjwdec08         STORE(L30DR+2)=FLOAT(N6W)
 C----- MIN AND MAX INDICES, FROM L6 DETAILS
          LIX=L6DTL
          STORE(L30IX)=STORE(LIX)
