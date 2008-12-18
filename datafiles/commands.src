@@ -2746,7 +2746,7 @@ VOIDS              4    3
               5        10
     .OUTPUTLIST        37    0    1    2    1         5
               5        10
-WEIGHT             2    6
+WEIGHT             3    6
    1    4096 CRYSTALSWEIGHT
     1    4    5    6   13   23
    1.GUI                2    1    0    0
@@ -2755,7 +2755,11 @@ WEIGHT             2    6
      OFF            ON
     .OUTLIERS           2    0    1    2    0 OFF
      OFF            ON
-   2.WEIGHT             2    1    0    0
+   2.LIST               1    1    0    0
+         3
+    .LEVEL              5    0    1    4    0 LOW
+     OFF            LOW            MEDIUM         HIGH
+   3.WEIGHT             2    1    0    0
          1    2
     .INPUTLIST          3    0    1    2    1         6
               6         7
