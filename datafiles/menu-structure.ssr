@@ -18,6 +18,8 @@
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM RESN '&Change types of atoms'                                       
 ^^WI       '#SCRIPT XRETYPE' DISABLEIF='IN' ENABLEIF='L2 L1 L5'                 
+^^WI   ITEM COLL '&Collect atoms by symmetry' '#SCRIPT XCOLLECT'                
+^^WI        DISABLEIF='IN' ENABLEIF='L2 L1 L5'                                  
 ^^WI   ITEM CENT '&Centre Molecules'                                            
 ^^WI       '#SCRIPT XCENTRE' DISABLEIF='IN' ENABLEIF='L2 L1 L5'                 
 ^^WI   ITEM RESA '&Renumber atoms'                                              
@@ -34,8 +36,6 @@
 ^^WI   ITEM XPARTB '&Remove Part Nos'                                           
 ^^WI       '#SCRIPT XNOPART' DISABLEIF='IN' ENABLEIF='L2 L1 L5'                 
 ^^WI   SPLIT                                                                    
-^^WI   ITEM COLL '&Collect atoms by symmetry' '#SCRIPT XCOLLECT'                
-^^WI        DISABLEIF='IN' ENABLEIF='L2 L1 L5'                                  
 ^^WI   ITEM DIST '&Distances' '#DISTANCES_NEND' DISABLEIF='IN'                  
 ^^WI                                            ENABLEIF='L2 L1 L5'             
 ^^WI   ITEM XBONDS '&Add and remove bonds'                                      
