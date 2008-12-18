@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2007/12/12 16:05:12  djw
+C Normlise GOF
+C
 C Revision 1.10  2005/01/23 08:29:12  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -53,7 +56,7 @@ CODE FOR XWAITS
       SUBROUTINE XWAITS
 C--SUBROUTINE TO CONTROL THE APPLICATION OF LIST 4 AND CHECK THE RESULTS
 C
-      PARAMETER (NPROC4=4)
+      PARAMETER (NPROC4=5)
       DIMENSION IPROC4(NPROC4)
       INCLUDE 'XUNITS.INC'
 C
