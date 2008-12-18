@@ -85,10 +85,12 @@
 {1,8 Set SHELX default weights
 %% statistical weights seem to cause instabilities in some cases 11/11/07       
 %% Sept 08.  Problem was probably due to absence of Fc values
+%% Dec 08. Now problems with Cu data (Peach)
 %          COPY '#LIST 4'                                                       
-%          COPY 'SCHEME NUMBER=16, NPARAM=6'                                    
+%% temp-dec-08          COPY 'SCHEME NUMBER=16, NPARAM=6'                                    
 {I         Quasi-statistical weighting , P(1)=.1 ,p(5)=0.33333
-%          COPY 'PARAM .1 0 0 0 0 0.33333'                                     
+%% temp-dec-08         COPY 'PARAM .1 0 0 0 0 0.33333'                                     
+%         COPY 'END'
 %    END IF                                                                       
 %   END IF                                                                       
 %  END BLOCK                                                                     
@@ -321,6 +323,9 @@
 %%                                                                              
 %%                                                                              
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.15  2008/09/16 10:58:15  djw
+%%  Remove Fc from SHELX weigting until after a model has been input and a scalefactor found
+%%
 %%  Revision 1.14  2007/03/08 08:51:38  djw
 %%  Provide menu item for refineing only H atoms
 %%                                                       
