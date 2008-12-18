@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.58  2007/03/08 11:51:48  djw
+C Increase filed in FORMAT expression
+C
 C Revision 1.57  2005/02/25 17:25:20  stefan
 C 1. Added some preprocessor if defined lines for the mac version.
 C
@@ -2512,6 +2515,9 @@ C
 C
       PARAMETER ( JVALUE = 1 , JVTYPE = 2 , JCTYPE = 3 )
       PARAMETER ( JPOSTK = 4 )
+CDEC08  1 NEW UNARY OPERATOR
+C       REAL=ABS(REAL)
+C
 CJAN02  1 NEW UNARY OPERATOR
 C       CHAR=GETENV(CHAR)
 C
@@ -2542,7 +2548,8 @@ CJUN03  2 NEW UNARY OPS:
 C       CHAR=COMPRESS(CHAR) - removes extra spaces
 C       CHAR=SPGTOCRY(CHAR) - tries to fix up Xprep style space groups
 C
-      PARAMETER ( NOPER = 54 , NUBASE = 28 )
+cdjwdec08
+      PARAMETER ( NOPER = 55 , NUBASE = 28 )
       PARAMETER ( NARGMX = 3 , NOTYPE = 14 )
 C
       PARAMETER ( JNONE = 0 )
@@ -2584,10 +2591,10 @@ C
       DATA IDEFOP / 1 , 1 , 2 , 2 , 2 , 2 , 3 , 3 , 3 , 3 ,
      2              2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 5 , 5 ,
      3              6 , 7 , 11, 11, 2,  2 , 2 , 2 ,
-CJAN99
+CJAN99  abs dec08
      4           8 , 9 ,  9 , 10 ,  8 , 10 ,  4 , 12 , 13 , 10 ,
      5          12 ,12 , 12,   4 , 12 , 12 , 12 , 12 , 12 , 12 ,
-     6          12 ,12 , 13,  12 , 12 , 12 /
+     6          12 ,12 , 13,  12 , 12 , 12 ,  4 /
 C
       DATA NARGS  /0 , 2 , 2 , 1 , 2 , 2 , 3 , 1 , 1 , 1 , 2 , 1 , 1, 0/
       DATA NRESLT /0 , 1 , 1 , 1 , 1 , 2 , 1 , 1 , 1 , 1 , 1 , 1 , 1, 1/
@@ -2963,11 +2970,11 @@ C
 C
       GO TO ( 5010 , 8000 , 5020 , 5030 , 8000 ,
      2        5040 , 5050 , 5060 , 5070 , 5080 ,
-CJAN99
+CJAN99  abs dec08
      3        5090 , 5100,  5110 , 5120 , 5130 ,
      3        5140 , 5150,  5160 , 5170 , 5180 , 
      4        5190 , 5200,  5210 , 5220 , 5230 ,
-     5        5240,  9940 ) , IUOPER
+     5        5240 , 5250,  9940 ) , IUOPER
       GO TO 9940
 C
 C
@@ -3614,6 +3621,18 @@ C (7) There is always a space before -, and one digit after.
       ICODE(JVTYPE,IARG(1)) = 4
       GO TO 8000
 C
+5250  CONTINUE
+C
+C -- 'ABS'  dec08
+C
+C Return the absolute of the argument. 
+C
+        XCODE(JVALUE,IARG(1)) = ABS ( XCODE(JVALUE,IARG(1)) ) 
+        ICODE(JVTYPE,IARG(1)) = 2
+C
+C
+      GO TO 8000
+C
 8000  CONTINUE
 C
 C
@@ -3854,8 +3873,8 @@ C
 C
       PARAMETER ( IBASBR = 1               , NBROPR =  2 )
       PARAMETER ( IBASBI = IBASBR + NBROPR , NBOPER = 26 )
-CJAN99
-      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 26 )
+CJAN99  'ABS' dec08
+      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 27 )
       PARAMETER ( NOPER = IBASUN + NUOPER - 1 )
       PARAMETER ( LOPER = 10 )
 C
@@ -3895,12 +3914,12 @@ C
 C
      8                '.NOT.' ,   '+'   ,   '-'   , 'EXISTS' ,     !29-32
      9                '.IF.'  , 'REAL'  ,'INTEGER', '.VALUE.',     !33-36
-CJAN99
+CJAN99 'ABS' dec08
      *                'CHARACTER','KEYWORD','UPPERCASE','FIRSTSTR',!37-40
      1                'FIRSTINT','SQRT','GETPATH','GETFILE',       !41-44
      2                'GETTITLE','FILEEXISTS','FILEDELETE',        !45-47
      3                'FILEISOPEN','GETEXTN','GETCWD','RANDOM' ,   !48-51
-     4                'GETENV','COMPRESS','SPGTOCRY'/              !52-54
+     4                'GETENV','COMPRESS','SPGTOCRY','ABS'/        !52-55
 C
       DATA IPRECD /      0    ,   200   ,    0    ,
      2                  100   ,   100   ,   120   ,   120   ,
@@ -3913,12 +3932,12 @@ C
 C
      8                   90   ,   180   ,   180   ,   180   ,
      9                   40   ,   180   ,   180   ,   180   ,
-CJAN99
+CJAN99 'ABS' dec08
      *                  180   ,   180   ,   180   ,   180   ,
      1                  180   ,   180   ,   180   ,   180   ,
      2                  180   ,   180   ,   180   ,
      3                  180   ,   180   ,   180   ,   200   ,
-     4                  180   ,   180   ,   180 /
+     4                  180   ,   180   ,   180   ,   180 /
 C
       DATA CDATAT / '<invalid>', 'integer', 'real', 'logical',
      2             'character' /
