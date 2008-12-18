@@ -5,11 +5,12 @@
 %   FINISH                                                                      
 % END IF                                                                        
 %%                                                                              
+% VARIABLE REAL SLOPE3 SLOPE4 SLOPE5 CORR3 CORR4 CORR5
 %%                                                                              
-^^WI WINDOW XFOPTW 'Chebychev Weighting analysis for Fsq' SIZE KEEP MODAL       
+^^WI WINDOW XFOPTW 'Chebychev Weighting analysis for F' SIZE KEEP MODAL         
 ^^WI GRID BOSS NROWS=4 NCOLS=3                                                  
 ^^WI {                                                                          
-^^WI   @ 1,2 GRID EXPL NROWS=1 NCOLS=5                                          
+^^WI   @ 1,2 GRID EXPL NROWS=1 NCOLS=3                                          
 ^^WI   {                                                                        
 ^^WI     @ 1,1 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
 ^^WI     {                                                                      
@@ -77,11 +78,12 @@
 ^^WI       @ 7,1 BUTTON BTPAR3 'Use 3 parameter scheme' COMMIT DEFAULT          
 ^^WI     }                                                                      
 ^^WI   }                                                                        
-^^WI   @ 3,2 GRID STUFF NROWS=1 NCOLS=5                                         
+^^WI   @ 3,2 GRID STUFF NROWS=1 NCOLS=7                                         
 ^^WI   {                                                                        
 ^^WI     @ 1,1 STRETCH XWS HORIZONTAL                                           
-^^WI     @ 1,2 BUTTON XWHELP '&Help'                                            
-^^WI     @ 1,4 BUTTON XWCLOSE '&Cancel (use unit weights)' CANCEL               
+^^WI     @ 1,2 BUTTON XWAUTO '&Auto'                                            
+^^WI     @ 1,4 BUTTON XWHELP '&Help'                                            
+^^WI     @ 1,6 BUTTON XWCLOSE '&Cancel (use unit weights)' CANCEL               
 ^^WI   }                                                                        
 ^^WI }                                                                          
 ^^WI SHOW                                                                       
@@ -96,16 +98,24 @@
 {S * Chebychev weighting with 5 parameters                                      
 {I   Estimated delta(F)**2 as a function of F:                                  
 %          COPY '#LIST 4'                                                       
-%          COPY 'SCHEME NUMBER=14, NPARAM=5 type=ch wei=1'                      
+%          COPY 'SCHEME NUMBER=14, NPARAM=5  type=ch wei=1'                                    
 %          COPY 'END'                                                           
 %          COPY '#WEIGHT'                                                       
 %          COPY 'GUI GRAPH=ON OUTL=ON'                                          
+%          COPY 'LIST OFF'
 %          COPY 'END'                                                           
 %          COPY '#ANALYSE'                                                      
 %          COPY 'LIST LEVEL=HIGH'                                               
 %          COPY 'PLOTFO DELTA ON WDELSQ'                                        
 {I   Agreement analysis:                                                        
 %          COPY 'END'                                                           
+%%
+%    COPY '#GENERALEDIT 30'                                                     
+%    COPY 'LOCATE RECORDTYPE = 101'                                             
+%    COPY 'TRANSFER FROM OFFSET = 10 TO SLOPE5'                                   
+%    COPY 'TRANSFER FROM OFFSET = 11 TO CORR5'                                   
+%    COPY 'END'                                                                 
+%%
 ^^CO RENAME _VFO _VF1      RENAME _VF2 _VFO                                     
 ^^CO RENAME _RWGHT _RWGH1  RENAME _RWGH2 _RWGHT                                 
 ^^CO RENAME _COUT _COU1  RENAME _COU2 _COUT                                     
@@ -113,16 +123,24 @@
 {S * Chebychev weighting with 4 parameters                                      
 {I   Estimated delta(F)**2 as a function of F:                                  
 %          COPY '#LIST 4'                                                       
-%          COPY 'SCHEME NUMBER=14, NPARAM=4 type=ch wei=1'                      
+%          COPY 'SCHEME NUMBER=14, NPARAM=4  type=ch wei=1'                                    
 %          COPY 'END'                                                           
 %          COPY '#WEIGHT'                                                       
 %          COPY 'GUI GRAPH=ON OUTL=ON'                                          
+%          COPY 'LIST OFF'
 %          COPY 'END'                                                           
 %          COPY '#ANALYSE'                                                      
 %          COPY 'LIST LEVEL=HIGH'                                               
 %          COPY 'PLOTFO DELTA OFF WDELSQ'                                       
 {I   Agreement analysis:                                                        
 %          COPY 'END'                                                           
+%%
+%    COPY '#GENERALEDIT 30'                                                     
+%    COPY 'LOCATE RECORDTYPE = 101'                                             
+%    COPY 'TRANSFER FROM OFFSET = 10 TO SLOPE4'                                   
+%    COPY 'TRANSFER FROM OFFSET = 11 TO CORR4'                                   
+%    COPY 'END'                                                                 
+%%
 ^^CO RENAME _VFO _VF2       RENAME _VF3 _VFO                                    
 ^^CO RENAME _RWGHT _RWGH2   RENAME _RWGH3 _RWGHT                                
 ^^CO RENAME _COUT _COU2  RENAME _COU3 _COUT                                     
@@ -130,23 +148,31 @@
 {S * Chebychev weighting with 3 parameters                                      
 {I   Estimated delta(F)**2 as a function of F:                                  
 %          COPY '#LIST 4'                                                       
-%          COPY 'SCHEME NUMBER=14, NPARAM=3 type=ch wei=1'                      
+%          COPY 'SCHEME NUMBER=14, NPARAM=3  type=ch wei=1'                                    
 %          COPY 'END'                                                           
 %          COPY '#WEIGHT'                                                       
 %          COPY 'GUI GRAPH=ON OUTL=ON'                                          
+%          COPY 'LIST OFF'
 %          COPY 'END'                                                           
 %          COPY '#ANALYSE'                                                      
 %          COPY 'LIST LEVEL=HIGH'                                               
 %          COPY 'PLOTFO DELTA OFF WDELSQ'                                       
 {I   Agreement analysis:                                                        
 %          COPY 'END'                                                           
+%%
+%    COPY '#GENERALEDIT 30'                                                     
+%    COPY 'LOCATE RECORDTYPE = 101'                                             
+%    COPY 'TRANSFER FROM OFFSET = 10 TO SLOPE3'                                   
+%    COPY 'TRANSFER FROM OFFSET = 11 TO CORR3'                                   
+%    COPY 'END'                                                                 
+%%
 %%                                                                              
 %%                                                                              
 %% Wait for the users response:                                                 
 %%                                                                              
 %%                                                                              
 % LOOP                                                                          
-%   VERIFY XWCLOSE XWHELP BTPAR3 BTPAR4 BTPAR5                                  
+%   VERIFY XWCLOSE XWHELP XWAUTO BTPAR3 BTPAR4 BTPAR5                                  
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                
 %%                                                                              
 %%                                                                              
@@ -156,6 +182,7 @@
 %        COPY '#LIST 4'                                                         
 %        COPY 'END'                                                             
 %        COPY '#WEIGHT'                                                         
+%        COPY 'LIST OFF'
 %        COPY 'END'                                                             
                                                                                 
 {S * Unit weights are being used.                                               
@@ -175,26 +202,89 @@ This analysis shows schemes using 5, 4 and 3 term polynomials, you must
 decide which is best.                                                           
                                                                                 
 The top graph shows the estimated reciprocal weight against Fo. This            
-should roughly parallel the RED bars in the lower graph (an analysis            
-of <|Fo-Fc|> for given bins of Fo. (That is to say: where the red bars          
+should roughly parallel the BLUE bars in the lower graph (an analysis           
+of <|Fo-Fc|> for given bins of Fo. (That is to say: where the blue bars         
 are high == bad agreement, thus the weight for those reflections should         
 be low == high reciprocal weight...)                                            
                                                                                 
 The graph should be smoothly varying and have no pronounced local maxima -      
 in general it can peak at the ends of the graph, but not in the middle.         
                                                                                 
-The bottom graph shows the residual itself. The red bars are simply             
-<|Fo-Fc|> and the blue bars are <w|Fo-Fc|>. The blue bars represent the         
+The bottom graph shows the residual itself. The blue bars are simply            
+<|Fo-Fc|> and the red bars are <w|Fo-Fc|>. The red bars represent the           
 residual after the weighting scheme has been applied, in other words, how       
-well the scheme manages to model the differences in Fo and Fc. The blue         
+well the scheme manages to model the differences in Fo and Fc. The red          
 bars should be as close to unity as possible across the whole range of /Fo/.    
                                                                                 
 %        COPY '#SCRIPT XHELP2'                                                  
 %     END BLOCK                                                                 
+%     BLOCK                %XWAUTO%
+^^CO     DISPOSE XFOPTW                                                         
+
+%      VARIABLE INTEGER SLOPE CORREL
+%      VARIABLE REAL RSLOPE RCORREL
+%      EVALUATE SLOPE = 3
+%      EVALUATE RSLOPE = SLOPE3
+%      IF SLOPE4 .LT. RSLOPE THEN
+%        EVALUATE RSLOPE = SLOPE4
+%        EVALUATE SLOPE = 4
+%      END IF
+%      IF SLOPE5 .LT. RSLOPE THEN
+%        EVALUATE RSLOPE = SLOPE5
+%        EVALUATE SLOPE = 5
+%      END IF
+%%
+%      EVALUATE CORREL = 3
+%      EVALUATE RCORREL = CORR3
+%      IF CORR4 .LT. RCORREL THEN
+%        EVALUATE RCORREL = CORR4
+%        EVALUATE CORREL = 4
+%      END IF
+%      IF CORR5 .LT. RCORREL THEN
+%        EVALUATE RCORREL = CORR5
+%        EVALUATE CORREL = 5
+%      END IF
+
+Auto Choosing Scheme
+
+Best slope for: 
+%  TRANSFER ' Scheme ' // CHARACTER ( slope ) // ', Slope '  -
+// CHARACTER ( RSLOPE ) // ' ' TO DISPLAY       
+
+Lowest correlation coefficient for: 
+%  TRANSFER ' Scheme ' // CHARACTER ( correl ) // ', C-c '  -
+// CHARACTER ( RCORREL ) // ' ' TO DISPLAY       
+
+%      IF SLOPE .NE. CORREL THEN
+
+{4,9 Slope - correlation mis-match
+
+%      END IF
+%      IF ABS ( RSLOPE ) .GT. 0.05 .AND. ABS ( RCORREL ) .GT. 0.1 THEN
+
+{4,9 The weighted residual seems to be correlated with the magnitude
+{4,9 of Fo.  CRYSTALS suggest you try a different weighting scheme
+
+%      END IF
+% TRANSFER ' Choosing scheme ' // CHARACTER ( slope ) // ' ' TO DISPLAY 
+%        COPY '#LIST 4'
+%        CLEAR         
+%        INSERT 'SCHEME NUMBER=14, NPARAM=' 
+%        STORE FORMAT "(I4)" INTEGER SLOPE
+%        INSERT ' type=ch wei=1'                                      
+%        SEND          
+%        COPY 'END'    
+%        COPY '#WEIGHT'                                                         
+%        COPY 'LIST OFF'
+%        COPY 'END'                                                             
+%%
+%      FINISH
+%     END BLOCK
+%%
 %     BLOCK                %BTPAR3%                                             
 ^^CO     DISPOSE XFOPTW                                                         
 %        COPY '#LIST 4'                                                         
-%        COPY 'SCHEME NUMBER=14, NPARAM=3 type=ch wei=1'                        
+%        COPY 'SCHEME NUMBER=14, NPARAM=3   type=ch wei=1'                                      
 %        COPY 'END'                                                             
 %        COPY '#WEIGHT'                                                         
 %        COPY 'END'                                                             
@@ -207,7 +297,7 @@ bars should be as close to unity as possible across the whole range of /Fo/.
 %     BLOCK                %BTPAR4%                                             
 ^^CO     DISPOSE XFOPTW                                                         
 %        COPY '#LIST 4'                                                         
-%        COPY 'SCHEME NUMBER=14, NPARAM=4 type=ch wei=1'                        
+%        COPY 'SCHEME NUMBER=14, NPARAM=4   type=ch wei=1'                                      
 %        COPY 'END'                                                             
 %        COPY '#WEIGHT'                                                         
 %        COPY 'END'                                                             
@@ -220,7 +310,7 @@ bars should be as close to unity as possible across the whole range of /Fo/.
 %     BLOCK                %BTPAR5%                                             
 ^^CO     DISPOSE XFOPTW                                                         
 %        COPY '#LIST 4'                                                         
-%        COPY 'SCHEME NUMBER=14, NPARAM=5 type=ch wei=1'                        
+%        COPY 'SCHEME NUMBER=14, NPARAM=5  type=ch wei=1'                                      
 %        COPY 'END'                                                             
 %        COPY '#WEIGHT'                                                         
 %        COPY 'END'                                                             
