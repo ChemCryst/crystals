@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.58  2008/11/19 18:25:52  djw
+C Include into about the new checkcif SHELX weights alerts
+C
 C Revision 1.57  2007/12/17 18:05:04  djw
 C Add REWEIGHT
 C
@@ -176,7 +179,6 @@ C
 C Revision 1.11  2001/02/26 10:28:02  richard
 C RIC: Added changelog to top of file
 C
-C
 CODE FOR XAPP04
       SUBROUTINE XAPP04(IPROC4,NPROC4)
 C--CALCULATE THE WEIGHTS AND STORE THEM
@@ -313,6 +315,7 @@ C---- SORT OUT THE INPUT
       CALL XMOVEI(IPROC4, IGUI4, 2)
       IULN06 = KTYP06(IPROC4(3))
       call xmove(iproc4(4), factor, 1)
+      call xmovei(iproc4(5), LEVEL, 1)
       if (factor .le. zero) then
             if (store(l30rf+4) .ge. zero) then
                   factor = 1./store(l30rf+4)
@@ -1195,11 +1198,13 @@ C--PRINT THE PLOT OF PREDICTED W*DELTA**2 AGAINST /FO/
           CALL XPRTCN
           CALL XLINES
           IF (ISSPRT .EQ. 0) WRITE(NCWU,6150)ITL,ITL
-          WRITE(CMON,6150)ITL,ITL
-          CALL XPRVDU(NCVDU, 5,0)
-          WRITE(CMON,6160) ITL
-          CALL XPRVDU(NCVDU, 1,0)
-
+          IF (LEVEL .GE. 1) THEN
+           WRITE(CMON,6150)ITL,ITL
+           CALL XPRVDU(NCVDU, 5,0)
+           WRITE(CMON,6160) ITL
+           CALL XPRVDU(NCVDU, 1,0)
+          ENDIF
+c
           IF ( IGUI4(1) .EQ. 1 ) THEN
             WRITE(CMON,'(A,/,A,/,A)')
      1      '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _RWGHT',
@@ -1270,8 +1275,10 @@ C--PRINT THE LINE FOR THIS /FO/
             IF (ISSPRT .EQ. 0)WRITE(NCWU,6600)EDW,WDW,(L,JJ=1,JDW)
 6600        FORMAT(1H ,E12.4,E13.2,2H I,101A1)
             JDW=MIN0(JDW,57)
-            WRITE(CMON,6630)EDW ,WDW, (L,JJ=1,JDW)
-            CALL XPRVDU(NCVDU, 1,0)
+            IF (LEVEL .GE. 1) THEN
+             WRITE(CMON,6630)EDW ,WDW, (L,JJ=1,JDW)
+             CALL XPRVDU(NCVDU, 1,0)
+            ENDIF
             IF ( IGUI4(1) .EQ. 1 ) THEN
               WRITE(CMON,'(A,F7.2,A,F15.7)')'^^PL LABEL ',
      2         EDW,' DATA ', WDW
@@ -1281,8 +1288,10 @@ C--PRINT THE LINE FOR THIS /FO/
             CYCLE
 6650        CONTINUE
             IF (ISSPRT .EQ. 0) WRITE(NCWU,6600)EDW,WDW
-            WRITE(CMON,6630) EDW,WDW
-            CALL XPRVDU(NCVDU, 1,0)
+            IF (LEVEL .GE. 1) THEN
+             WRITE(CMON,6630) EDW,WDW
+             CALL XPRVDU(NCVDU, 1,0)
+            ENDIF
             IF ( IGUI4(1) .EQ. 1 ) THEN
               WRITE(CMON,'(A,F7.2,A,F15.7)')'^^PL LABEL ',
      2         EDW,' DATA ', WDW
@@ -1465,8 +1474,8 @@ C
 9991  FORMAT(7X ,'Reflections (LIST 6/7) not on disk',
      1 7X , 'Weighting abandoned' )
       GOTO 5560
-C
       END
+C
 C
 C
 cCODE FOR KHIST
@@ -2076,7 +2085,7 @@ C----- RESET INTERVAL TO GIVE 20 VALUES
         VV = SQRT(SCALF*STORE(L6DTL+3*MD6DTL+1)) /20.
         WRITE(NCAWU,'(''Resetting interval '', 2F10.3)') VV
       ENDIF
-      CALL XSCAN(-1)
+      CALL XSCAN(-1, SLOPE, CORREL)
 C--SET UP THE RETURN VALUES FOR THE AGREEMENT ANALYSIS PRINT
       ASSIGN 1800 TO NCT
       ASSIGN 3250 TO K2T
@@ -2165,7 +2174,7 @@ C--SET UP THE SECOND PASS
       CALL XIRTAC(4)
       NFL=I
 C--MAKE THE SECOND PASS
-      CALL XSCAN(MM2)
+      CALL XSCAN(MM2, SLOPE, CORREL)
       ASSIGN 2450 TO K2T
 C--CHECK IF ALL THE REFLECTIONS WERE PROCESSED
       IF ( NOCC .GT. 0 ) GO TO 9910
@@ -2260,6 +2269,10 @@ CNOV98----- LOAD LIST 30 FOR UPDATING
         STORE(L30GE+9) = TEMP30(1)
         STORE(L30GE+10) = TEMP30(2)
         STORE(L30GE+11) = TEMP30(3)
+        IF (ABS(CORREL).GE. ZEROSQ ) THEN
+            STORE(L30DR+10)=SLOPE
+            STORE(L30DR+11)=CORREL
+        ENDIF
         CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
       ENDIF
       CALL XOPMSG ( IOPANA , IOPEND , 610 )
@@ -3177,7 +3190,7 @@ C -- NORMAL AND ERROR RETURN
       END
 C
 CODE FOR XSCAN
-      SUBROUTINE XSCAN(MM2)
+      SUBROUTINE XSCAN(MM2, SLOPE, CORREL)
 C--SCANS THE REFLECTIONS AND ACCUMMULATES THE NECESSARY TOTALS
 C
 C  MM2  THIS CONTROLS THE OUTPUT OF REFLECTIONS TO THE DISC AND THE
@@ -3187,11 +3200,16 @@ C       -1  LAYER SCALE FOR EACH GROUP IS 1.0
 C        0  LAYER SCALE FOR EACH GROUP IS STORED, WHERE NECESSARY
 C        1  LAYER SCALE FOR EACH GROUP IS STORED, WHERE NECESSARY,
 C           AND SHOULD BE APPLIED TO THE STORED REFLECTIONS
+c
+C  SLOPE   THE GRADIENT OF THE RESIDUAL
+C  CORREL  THE CORRELATION COEFICIENT
 C
 C--
       INCLUDE 'ISTORE.INC'
 C
       INCLUDE 'STORE.INC'
+C----- CORRELATION COEFFICIENT ACCUMULATOR
+      DIMENSION ACOEF(6)
 C
       COMMON /XWTWK/SCALF,R,RW,FOT,FCT,DFT,WDFT,E,F,AP,BP,AT,BT,AC,BC,
      2 ACI,BCI,ACT,BCT,FO,FC,VV,WW,DF,WDF,TC,T,NOCC,TFOCC,SS,S,H(3),
@@ -3199,6 +3217,7 @@ C
       COMMON /XWTWKA/SCALC,IBASE(3),NW,ISTEP,NR,HMIN(3),HMAX(3),ITYPE,
      2 IPAR,IGEN,ICLS,JA,I,J,K,L,M,N,NX,NY,NZ,K1,K2,K3,NC,N1,JAA
       INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XLISTI.INC'
       INCLUDE 'XCONST.INC'
@@ -3248,9 +3267,12 @@ C------ 12 ADDED MAY 97
 1250  CONTINUE
       APD(12) = 0.
       N=0
+CLEAR CORRELATION COEFFICIENT ACCUMULATORS
+      CALL CCOEF(0, X, Y, NCOEF, ACOEF, SLOPE, RINTER, CORREL)
       GOTO 2100
 C
-C--PROCESS THE LAYER SCALE INFORMATION FOR THE NEXT REFLECTION  -  FETCH
+C--PROCESS THE LAYER SCALE INFORMATION FOR THE NEXT REFLECTION  -  
+C FETCH NEXT REFLECTION
 1300  CONTINUE
       H(1)=STORE(M6)
       H(2)=STORE(M6+1)
@@ -3308,6 +3330,24 @@ C--COMPUTE THE WEIGHTED DELTA SQUARED
 1400  CONTINUE
       BCI=S*ACT
       AP=S*FO*FC
+C
+C--FORMAT OF THE ENTRY AT NOC :
+C
+C  0  LAYER SCALE FOR THIS GROUP (IF NEC.) 
+C  1  NUMBER OF OBSERVATIONS                 +1
+C  2  SUM OF /FO/                            +FO
+C  3  SUM OF /FC/                            +FC
+C  4  SUM OF /DF/                            +ABS(ABS(FO)-FC)
+C  5  SUM OF W* /FO/ **2                     +ACI
+C  6  SUM OF W* /DF/ **2                     +BCI
+C  7  SUM OF W* /FO/ * /FC/                  +AP
+C  8  SUM OF /DF/ **2                        +ACT
+C  9  SUM OF ABS(FO)                         +ABS(FO)
+C
+C ADD INTO CORRELATION COEFFICIENT ACCUMULATORS
+      CALL CCOEF(1, FC, BCI, NCOEF, ACOEF, SLOPE, RINTER, CORREL)
+c      WRITE(NCPU,'(6F15.3)') H(1), H(2), H(3),FC, BCI, act
+C
 C--ADD IN OVERALL TOTALS
       APD(1)=APD(1)+FO
       APD(2)=APD(2)+FC
@@ -3402,6 +3442,20 @@ C--FETCH THE NEXT REFLECTION
 C
 C--EXIT
 2150  CONTINUE
+C COMPUTE CORRELLATION COEFFICIENT
+      imode = 2
+      CALL CCOEF(imode, X, Y, NCOEF, ACOEF, SLOPE, RINTER, CORREL)
+      write(cmon,2151)
+2151  format(/' Analysis of residuals:'/
+     1'The slope and correlation coefficient should be small')
+       call xprvdu(ncvdu, 3,0)
+      if (imode .eq. 3) then
+       write(cmon,'(3(a,f12.3))') 
+     1 'Slope= ', slope, ' Intercept =', rinter, ' C-Coef=', correl
+       call xprvdu(ncvdu, 1,0)
+        if (issprt.eq.0) write (ncwu,'(A)') cmon(1)
+      endif
+C
       RETURN
       END
 C
@@ -3413,15 +3467,16 @@ C  NOC  LOCATION OF THE ENTRY TO BE INCREMENTED
 C
 C--FORMAT OF THE ENTRY AT NOC :
 C
-C  0  LAYER SCALE FOR THIS GROUP (IF NEC.)
-C  1  NUMBER OF OBSERVATIONS
-C  2  SUM OF /FO/
-C  3  SUM OF /FC/
-C  4  SUM OF /DF/
-C  5  SUM OF W* /FO/ **2
-C  6  SUM OF W* /DF/ **2
-C  7  SUM OF W* /FO/ * /FC/
-C  8  SUM OF /DF/ **2
+C  0  LAYER SCALE FOR THIS GROUP (IF NEC.) 
+C  1  NUMBER OF OBSERVATIONS                 +1
+C  2  SUM OF /FO/                            +FO
+C  3  SUM OF /FC/                            +FC
+C  4  SUM OF /DF/                            +ABS(ABS(FO)-FC)
+C  5  SUM OF W* /FO/ **2                     +ACI
+C  6  SUM OF W* /DF/ **2                     +BCI
+C  7  SUM OF W* /FO/ * /FC/                  +AP
+C  8  SUM OF /DF/ **2                        +ACT
+C  9  SUM OF ABS(FO)                         +ABS(FO)
 C
 C--
       INCLUDE 'ISTORE.INC'
@@ -3579,7 +3634,6 @@ C---- NOTHING TO DO IF NO LIST 6
       IF (KEXIST(6) .LE. 0) THEN
         WRITE (CMON,'(A)') ' No LIST 6'
         CALL XPRVDU(NCVDU,1,0)
-        WRITE (NCAWU,'(a)') CMON(1)
         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
         RETURN
       ENDIF
