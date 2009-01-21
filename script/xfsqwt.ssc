@@ -220,9 +220,17 @@ bars should be as close to unity as possible across the whole range of /Fo/.
 %     END BLOCK                                                                 
 %     BLOCK                %XWAUTO%
 ^^CO     DISPOSE XFOPTW                                                         
-
 %      VARIABLE INTEGER SLOPE CORREL
 %      VARIABLE REAL RSLOPE RCORREL
+%%
+%      EVALUATE SLOPE3 = ABS ( SLOPE3 )
+%      EVALUATE SLOPE4 = ABS ( SLOPE4 )
+%      EVALUATE SLOPE5 = ABS ( SLOPE5 )
+%%
+%      EVALUATE CORR3 = ABS ( CORR3 )
+%      EVALUATE CORR4 = ABS ( CORR4 )
+%      EVALUATE CORR5 = ABS ( CORR5 )
+%%
 %      EVALUATE SLOPE = 3
 %      EVALUATE RSLOPE = SLOPE3
 %      IF SLOPE4 .LT. RSLOPE THEN
