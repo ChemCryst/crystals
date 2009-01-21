@@ -1,6 +1,9 @@
 c
 c
 C $Log: not supported by cvs2svn $
+C Revision 1.135  2008/12/18 16:39:25  djw
+C Create subroutine for computing correlation coefficients
+C
 C Revision 1.134  2008/11/21 16:05:06  djw
 C Improvements in formatting output, trap negative sqrts and zero denominators
 C
@@ -6614,7 +6617,7 @@ C----- PRINT OUT THE USED-REFERENCES
       END
 c
 CODE FOR TONSPK
-      SUBROUTINE TONSPK (IPLOT,CRITER,ITYP06)
+      SUBROUTINE TONSPK (IPLOT,CRITER,ITYP06,IPUNCH)
 C 
 C     TON SPEK'S ENANTIOPOLE
 C March 2008
@@ -6715,9 +6718,6 @@ C
       WRITE (CMON,'(a,f12.4)') ' Outlier Criterion = ',CRITER
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(4x,a,4x,a,4x,a,1x,a)') 
-     1 'Number','Delta-Fo','Delta-Fc','esd of difference'
-C 
 C
 C------ SET UP PLOT OUTPUT
       MAX11 = ISIZ11
@@ -6797,17 +6797,30 @@ C yslope is gradient of normal probability plot
 C should be about unity anyway.  Will be computed later
       YSLOPE=1.
 C 
+C
+      IF (IPUNCH .GE. 1) WRITE(NCPU,335)
+335   FORMAT(3X,'H',3X,'K',3X,'L',17X,'Fo+', 13X,'Sig', 13X, 'Fc+', 
+     1 13X,'Fo-', 13X,'Sig', 13X, 'Fc-')
+C
       IN=0
-C----- GET FIRST REFLECTION
+      NREFIN=0
+      LFRIED=0
+      NFRIED=0
+      MFRIED=0
+C----- GET REFLECTION(1)
+340   CONTINUE
 C      ISTAT = KLDRNR (IN)
       ISTAT=KFNR(0)
       IF (ISTAT.LT.0) GO TO 450
 Cdjwjan08 - kallow doesnt look at list 7
 C      IF (KALLOW(IN) .LT. 0) goto 1700
-      NREFIN=1
+      NREFIN=NREFIN+1
       I=NINT(STORE(M6))
       J=NINT(STORE(M6+1))
       K=NINT(STORE(M6+2))
+      I1=I
+      J1=J
+      K1=K
 C       pack into h1
       H1=NPAK*NPAK*(I+N2)+NPAK*(J+N2)+K+N2
       FSIGN=STORE(M6+3)
@@ -6819,10 +6832,11 @@ C      FROM A SIGNED STRUCTURE FACTOR
       SIG1=SIGSQ*SCALE
       FCK1=STORE(M6+5)*STORE(M6+5)
       FRIED1=STORE(M6+18)
-      NFRIED=0
-      MFRIED=0
+C
 C----- LOOP OVER REST OF DATA
+C
 350   CONTINUE
+C GET REFLECTION(2)
 C      ISTAT = KLDRNR (IN)
       ISTAT=KFNR(0)
       IF (ISTAT.LT.0) GO TO 450
@@ -6843,10 +6857,14 @@ C      FROM A SIGNED STRUCTURE FACTOR
       FCK2=STORE(M6+5)*STORE(M6+5)
       FRIED2=STORE(M6+18)
 C 
+COMPARE PACKED INDICES
       IF (H1.EQ.H2) THEN
          MFRIED=MFRIED+1
          FOKD=FOK1-FOK2
          FCKD=FCK1-FCK2
+         IF (IPUNCH .GE. 1) 
+     1   write(ncpu,'(3i4,2i2, 6f16.4)') i,j,k, nint(fried1), 
+     2   nint(fried2), fok1, sig1, fck1, fok2, sig2, fck2
          FOMAX= MAX(FOMAX, FOKD)
          FCMAX= MAX(FCMAX, FCKD)
          FCMIN= MIN(FCMIN, FCKD)
@@ -6869,7 +6887,6 @@ C
 C COLLECT PROBABILITY DISTRIBUTION DATA FOR FLEQ (SFLEQ)
          IF (ABS(FOKD).LT.CRITER*ABS(FCKD)) THEN
 
-
 c----- Fo/Fc plot
           IF ( LEVEL .EQ. 4 ) THEN
            WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
@@ -6889,10 +6906,6 @@ C If you have more than 8.8 million reflections you might be in trouble.
            END IF
 c
             NFRIED=NFRIED+1
-            IF (NFRIED.LE.100) THEN
-               IF (ISSPRT.EQ.0) WRITE (NCWU,'(i10,3f12.4)') NFRIED,FOKD,
-     1          FCKD,SIGM
-            END IF
 C DATC is x(gamma), YK is gamma
             DO 400 J=1,NSTP_401
                YK=(J-NSPT_201)*STEP
@@ -6946,23 +6959,35 @@ C  opposite sign
             END IF
 C 
          END IF
-C 
-      END IF
-      H1=H2
-      FOK1=FOK2
-      SIG1=SIG2
-      FCK1=FCK2
 c
 c      totals for Fo/Fc plot
-           fss =  fss  + 1.
-           fsx =  fsx  + FcKD
-           fsy =  fsy  + FoKD
-           fsxx = fsxx + FcKD*FcKD
-           fsyy = fsyy + FoKD*FoKD
-           fsxy = fsxy + FOKD*FCKD
-c
-C     GET NEXT REFLECTION
-      GO TO 350
+         fss =  fss  + 1.
+         fsx =  fsx  + FcKD
+         fsy =  fsy  + FoKD
+         fsxx = fsxx + FcKD*FcKD
+         fsyy = fsyy + FoKD*FoKD
+         fsxy = fsxy + FOKD*FCKD
+         GOTO 340    !FOR NEXT REFLECTION(1) 
+C 
+      ELSE
+C----- UNPAIRED
+         IF (IPUNCH .GE. 1) 
+     1   write(ncpu,'(3i4,I2,2X, 3f16.4)') i1,j1,k1, 
+     2   nint(fried1),fok1, sig1, fck1
+         CONTINUE
+         LFRIED = LFRIED + 1
+         I1=I
+         J1=J
+         K1=K
+         H1=H2
+         FOK1=FOK2
+         SIG1=SIG2
+         FCK1=FCK2
+         FRIED1 = FRIED2
+         GO TO 350    !GET NEXT REFLECTION(2)
+      END IF
+C
+C
 450   CONTINUE
       IF (LEVEL .EQ. 4) THEN
 c Also add A SERIES FOR STRAIGHT LINE (y=x) .
@@ -7152,10 +7177,17 @@ C  Pseudo-Flack Parameters
      1    NREFIN
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)') CMON(1)(:)
+C
          WRITE (CMON,'(10(a,i7))') ' No of Friedel Pairs found =',
      1    MFRIED,' No of Friedel Pairs used  =',NFRIED
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
+c
+         WRITE (CMON,'(10(a,i7))') ' No of Unpaired Reflections =',
+     1    LFRIED
+         CALL XPRVDU (NCVDU,1,0)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
+C
          WRITE (CMON,'(A)') 
      1   ' Flack parameter obtained from original refinement'
          CALL XPRVDU (NCVDU,1,0)
