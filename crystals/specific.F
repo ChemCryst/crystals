@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.58  2008/05/09 11:09:12  djw
+C Enable generation Nos for dsc files
+C
 C Revision 1.57  2007/10/09 07:05:48  djw
 C Get script name for output
 C
@@ -710,7 +713,8 @@ c
           do k  = namlen, namlen-3, -1
              clcnam(k+2:k+2)= clcnam(k:k)
           enddo
-          clcnam(i+1:i+2)='#0'
+cdjwjan09 - replace # with -
+          clcnam(i+1:i+2)='-0'
           namlen=namlen+2
         else
           clcnam(i:i)=cnumber(j+1:j+1)
