@@ -21,6 +21,7 @@
 {1,11                           {12,11come first        
 {1,11 Number atoms sequentially {12,11Renumber the atoms so that they follow    
 {1,11                           {12,11sequentially through the structure        
+{1,11 Fix Clashes               {12,11Change serial numbers of clashing names
 {1,11 Allocate Residue Numbers  {12,11Add a unique identifier for each          
 {1,11                           {12,11residue                                   
 {1,11 Allocate Part Nos         {12,11Allocate part numbers to fragements       
