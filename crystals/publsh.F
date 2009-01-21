@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  2008/10/01 11:08:15  djw
+C Support ofr outlier exclusion in Tons code
+C
 C Revision 1.13  2008/09/08 07:18:10  djw
 C Link to Benfords Law
 C
@@ -132,14 +135,16 @@ CODE FOR XTHX
 c
 CODE FOR xton
       SUBROUTINE xton
-      DIMENSION IPROCS(3), PROCS(3)
+      PARAMETER (NPROCS=4)
+      DIMENSION IPROCS(NPROCS), PROCS(NPROCS)
       EQUIVALENCE (PROCS(1),IPROCS(1))
       CALL XCSAE
-      I = KRDDPV ( IPROCS , 3 )
+      I = KRDDPV ( IPROCS , NPROCS )
       CRITER = PROCS(1)
-      ktyp06 = IPROCS(2)
+      KTYP06 = IPROCS(2)
       IPLOT = IPROCS(3)
-      IF (I.GE.0) CALL tonspk(IPLOT,CRITER,ktyp06)
+      IPUNCH = IPROCS(4)
+      IF (I.GE.0) CALL TONSPK(IPLOT,CRITER,KTYP06,IPUNCH)
       RETURN
       END
 c
