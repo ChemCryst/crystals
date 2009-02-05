@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.77  2008/11/21 16:05:06  djw
+C Improvements in formatting output, trap negative sqrts and zero denominators
+C
 C Revision 1.76  2008/11/19 18:30:00  djw
 C Compute slope and intercept for normal probability plot
 C
@@ -3053,8 +3056,9 @@ C
       INCLUDE 'ISTORE.INC'
       INCLUDE 'QSTORE.INC'
       INCLUDE 'XLST40.INC'
-
-
+      INCLUDE 'XSSVAL.INC'
+C
+C
 C--OUTPUT DEFAULTS CARD:
        WRITE(CMON,21)NINT(STORE(L40T)),STORE(L40T+1),
      1 NINT(STORE(L40T+2)), NINT(STORE(L40T+3)),STORE(L40T+4)
@@ -3064,54 +3068,82 @@ C--OUTPUT DEFAULTS CARD:
      4        ' No symmetry calculation = ',I4,' (0=symm,1=nosymm)',/,
      5        ' Significant atom movement =',F10.5,' Angstroms',//)
        CALL XPRVDU(NCVDU,7,0)
-     
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,21)NINT(STORE(L40T)),STORE(L40T+1)
+     1 ,NINT(STORE(L40T+2)), NINT(STORE(L40T+3)),STORE(L40T+4)
+C     
 C--OUTPUT ANY ELEMENT CARDS
       IF ( N40E .GT. 0 ) THEN 
-        WRITE(CMON,'(A//A/)')
+32    FORMAT (A//A/)
+        WRITE(CMON,32)
      1  'Over-ride List 29 covalent radii and maximum no. of bonds:',
      2  '  Element  Covalent Radius  Maximum Bonds'
         CALL XPRVDU(NCVDU,4,0)
+       IF (ISSPRT .EQ. 0) WRITE(NCWU,32)
+     1  'Over-ride List 29 covalent radii and maximum no. of bonds:',
+     2  '  Element  Covalent Radius  Maximum Bonds'
+C
         DO I = L40E,L40E+(MD40E*(N40E-1)),MD40E
           WRITE(CMON,22) ISTORE(I), STORE(I+1), NINT(STORE(I+2))
 22        FORMAT(4X,A4,6X,F8.4,10X,I4)
           CALL XPRVDU(NCVDU,1,0)
+          IF (ISSPRT .EQ. 0)
+     1    WRITE(NCWU,22) ISTORE(I), STORE(I+1), NINT(STORE(I+2))
         END DO
       ELSE
-        WRITE(CMON,'(A//A)')
+33    FORMAT (A//A)
+        WRITE(CMON,33)
      1  'Over-ride List 29 covalent radii and maximum no. of bonds:',
      2  '  There are no element directives.'
         CALL XPRVDU(NCVDU,3,0)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,33)
+     1  'Over-ride List 29 covalent radii and maximum no. of bonds:',
+     2  '  There are no element directives.'
       ENDIF
-
+C
 C--OUTPUT ANY PAIR CARDS
-      WRITE(CMON,'(/A//)')
+34    FORMAT(/A//)
+      WRITE(CMON,34)
      1  'Over-ride covalent radii for a pair of elements:'
       CALL XPRVDU(NCVDU,3,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,34)
+     1  'Over-ride covalent radii for a pair of elements:'
       IF (N40P .GT. 0) THEN
-        WRITE(CMON,'(A/)')
+35    FORMAT (A/)
+        WRITE(CMON,35)
      1    '  Element  Element  Min-Dist  Max-Dist  Bond Type'
         CALL XPRVDU(NCVDU,2,0)
+      IF (ISSPRT .EQ. 0)WRITE(NCWU,35)
+     1    '  Element  Element  Min-Dist  Max-Dist  Bond Type'
+C
         DO I = L40P,L40P+(MD40P*(N40P-1)),MD40P
           WRITE(CMON,23) ISTORE(I), ISTORE(I+1),STORE(I+2),
-     1                 STORE(I+3), NINT(STORE(I+4))
+     1    STORE(I+3), NINT(STORE(I+4))
 23        FORMAT(4X,A4,5X,A4,4X,F6.3,4X,F6.3,5X,I4)
           CALL XPRVDU(NCVDU,1,0)
+          IF (ISSPRT .EQ. 0) 
+     1    WRITE(NCWU,23) ISTORE(I), ISTORE(I+1),STORE(I+2),
+     2    STORE(I+3), NINT(STORE(I+4))
          END DO
        ELSE
         WRITE(CMON,'(A)')'  There are no pair directives.'
         CALL XPRVDU(NCVDU,1,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')
+     1 '  There are no pair directives.'
        END IF
-
-
 24      FORMAT (2A, ' to ', A, I4)
 25      FORMAT (2A, ' to ', A)
 
       WRITE(CMON,'(//A/)') 'Additional bonds to make:'
       CALL XPRVDU(NCVDU,3,0)
+      IF (ISSPRT .EQ. 0)WRITE(NCWU,'(//A/)') 
+     1 'Additional bonds to make:'
+C
       IF (N40M.GT.0)THEN
         WRITE(CMON,'(A/)')
      1 '                    Bond                             Type'
         CALL XPRVDU(NCVDU,2,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A/)')
+     1 '                    Bond                             Type'
 C--OUTPUT ANY BONDS TO MAKE
         DO I = L40M,L40M+(MD40M*(N40M-1)),MD40M
           CALL CATSTR (STORE(I),FLOAT(ISTORE(I+1)),
@@ -3125,19 +3157,26 @@ C--OUTPUT ANY BONDS TO MAKE
           WRITE (CMON,24) CBLANK(1: 21-LATOM1),
      2                  CATOM1(1:LATOM1), CATOM2,ISTORE(I+14)
           CALL XPRVDU(NCVDU,1,0)
+      IF (ISSPRT .EQ. 0)WRITE (NCWU,24) CBLANK(1: 21-LATOM1),
+     2                  CATOM1(1:LATOM1), CATOM2,ISTORE(I+14)
         END DO
       ELSE
         WRITE(CMON,'(A)')'  There are no make directives.'
         CALL XPRVDU(NCVDU,1,0)
+      IF (ISSPRT .EQ. 0)WRITE(NCWU,'(A)')
+     1 '  There are no make directives.'
       ENDIF
-
-
+C
       WRITE(CMON,'(//A/)') 'Bonds to break:'
       CALL XPRVDU(NCVDU,3,0)
+      IF (ISSPRT .EQ. 0)WRITE(NCWU,'(//A/)') 'Bonds to break:'
       IF (N40B.GT.0)THEN
         WRITE(CMON,'(A/)')
      1 '                    Bond'
         CALL XPRVDU(NCVDU,2,0)
+      IF (ISSPRT .EQ. 0)WRITE(NCWU,'(A/)')
+     1 '                    Bond'
+C
 C--OUTPUT ANY BONDS TO BREAK
         DO I = L40B,L40B+(MD40B*(N40B-1)),MD40B
           CALL CATSTR (STORE(I),FLOAT(ISTORE(I+1)),
@@ -3151,16 +3190,19 @@ C--OUTPUT ANY BONDS TO BREAK
           WRITE (CMON,25)CBLANK(1: 21-LATOM1),
      2                   CATOM1(1:LATOM1), CATOM2(1:LATOM2)
           CALL XPRVDU(NCVDU,1,0)
+      IF (ISSPRT .EQ. 0)WRITE (NCWU,25)CBLANK(1: 21-LATOM1),
+     2                   CATOM1(1:LATOM1), CATOM2(1:LATOM2)
         END DO
       ELSE
         WRITE(CMON,'(A)')'  There are no break directives.'
         CALL XPRVDU(NCVDU,1,0)
+        IF (ISSPRT .EQ. 0)WRITE(NCWU,'(A)')
+     1  '  There are no break directives.'
       ENDIF
-
       RETURN
       END
-
-
+C
+C
 CODE FOR XSUM41
       SUBROUTINE XSUM41
 C
@@ -3174,25 +3216,33 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'XLST41.INC'
       INCLUDE 'XLST05.INC'
+      INCLUDE 'XSSVAL.INC'
+C
       CHARACTER * 32 CATOM1, CATOM2, CBLANK
       DATA CBLANK /' '/
-
+C
       IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
-
-
-      WRITE(CMON,'(/,A,//A//,2X,I6,6X,I9,5X,I5,9X,I6//)')
+100   FORMAT (/,A,//A//,2X,I6,6X,I9,5X,I5,9X,I6//)
+C
+      WRITE(CMON,100)
      1 'Dependencies:',
      1 ' List5 size   List5 CRC  List5 serial  List40 serial',
      2 (ISTORE(L41D+J),J=0,3)
       CALL XPRVDU(NCVDU,9,0)
-
+      IF (ISSPRT .EQ. 0)      WRITE(NCWU,100)
+     1 'Dependencies:',
+     1 ' List5 size   List5 CRC  List5 serial  List40 serial',
+     2 (ISTORE(L41D+J),J=0,3)
+C
 C To do - check dependencies at this point
-
-      WRITE(CMON,'(A,//,A,35x,A/)')'Bonds:',
+110   FORMAT (A,//,A,35x,A/)
+      WRITE(CMON,110)'Bonds:',
      1 '                    Bond','Type   Length'
-
+C
       CALL XPRVDU(NCVDU,4,0)
-
+      IF (ISSPRT .EQ. 0)      WRITE(NCWU,110)'Bonds:',
+     1 '                    Bond','Type   Length'
+C
 24      FORMAT (2A, ' to ', A, I4,1x,F10.3)
 
       DO M41B = L41B, L41B+(N41B-1)*MD41B, MD41B
@@ -3213,15 +3263,14 @@ C To do - check dependencies at this point
      2                  CATOM1(1:LATOM1), CATOM2,ISTORE(M41B+12),
      3                  STORE(M41B+13)
           CALL XPRVDU(NCVDU,1,0)
-
+      IF (ISSPRT .EQ. 0) WRITE (NCWU,24) CBLANK(1: 21-LATOM1),
+     2                  CATOM1(1:LATOM1), CATOM2,ISTORE(M41B+12),
+     3                  STORE(M41B+13)
       END DO
-
-
+C
       RETURN
       END
-
-
-
+C
 C
 CODE FOR XSGDST
       SUBROUTINE XSGDST
