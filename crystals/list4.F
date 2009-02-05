@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.59  2008/12/18 16:42:11  djw
+C Inhibit voluminous output if not required.
+C Compute slope, interecept and correllation coefficient of agreement analysis.  This
+C may enable automatic choosing of Chebychev scheme
+C
 C Revision 1.58  2008/11/19 18:25:52  djw
 C Include into about the new checkcif SHELX weights alerts
 C
@@ -276,11 +281,11 @@ c      DIMENSION SHFO(N6D), SHFC(N6D), SIG(N6D)
 C Space for automatic determination of Scheme 16 parameters.
       DIMENSION WD(-4:4,-4:4,20), SGF(-4:4,-4:4)
       DIMENSION RWD(20), BMEAN(20)
-
+c function statements
       FPSX(FOBS,FCALC)      = AMAX1(0.,0.333*FOBS)+0.667*FCALC
       DELSQ(FOBS,FCALC)     = (FOBS-FCALC)**2
       WGHT(SIGS,FP,SXA,SXB) = 1./(SIGS+(SXA*FP)**2+SXB*FP)
-
+c
 
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST04.INC'
@@ -484,7 +489,9 @@ C For each grid point (9x9) calculate 10 wD^2 values corresponding to Fc range.
                  SHFC = STORE(M6+5)
                  SIG = STORE(M6+12) / MAX(.0001,A)
                 END IF
-
+cdhwfeb09 - catch case when there are no Fc computed yet
+                IF (SHFC .LE. 0.) SHFC = SHFO
+C
                 FRACC = MAX(.0000001, SHFC/FCMAX )
                 IF (IFSQ .GE. 0) THEN
                    KDIV = MIN(20,INT(20.*SQRT(SQRT(FRACC)))+1)
@@ -1382,6 +1389,9 @@ C----- WARN OF MAXIMAL WEIGHTS
      1 ' weight of ', F10.2)
       ENDIF
 C----- WARN OF OUTLIERS
+      noutl = jprint
+cdjw jan 09 Save info for scripts
+      ISTAT = KSCTRN ( 1 , 'L4:NREF' ,FLOAT(noutl), 1 )
       IF(JPRINT .GT. 0) THEN
             WRITE(CMON,5585) JPRINT
             CALL XPRVDU(NCVDU, 2,0)
@@ -1853,7 +1863,7 @@ C--
       INCLUDE 'ISTORE.INC'
       DIMENSION NOPE(4,30),KN(5),KM(5)
 C----- FOR LIST 30 UPDATING
-      DIMENSION TEMP30(4)
+      DIMENSION TEMP30(6)
       CHARACTER *4 CFY(16),CFYY(16),CFN(16),CFH(6),CFC(6),CFO(6),CFS(6)
       CHARACTER *1 CH(3)
 C
@@ -2026,7 +2036,7 @@ C--SET THE ORIGINAL VARIABLES FROM THE NEW INPUT ROUTINE
       PKHKL=ISTORE(NFL+20)
       PWDSQ=ISTORE(NFL+21)
 C      CLEAR THE LIST 30 VARIABLES
-      CALL XZEROF(TEMP30,4)
+      CALL XZEROF(TEMP30,6)
 C--SET UP THE PLOT CONSTANTS
       NCHAR = 13
       ICENT=(NCHAR+1)/2
@@ -2270,8 +2280,16 @@ CNOV98----- LOAD LIST 30 FOR UPDATING
         STORE(L30GE+10) = TEMP30(2)
         STORE(L30GE+11) = TEMP30(3)
         IF (ABS(CORREL).GE. ZEROSQ ) THEN
-            STORE(L30DR+10)=SLOPE
-            STORE(L30DR+11)=CORREL
+c            STORE(L30DR+8)=APD(4)
+c            STORE(L30DR+9)=FLOAT(JPRINT)
+c            STORE(L30DR+10)=SLOPE
+c            STORE(L30DR+11)=CORREL
+cdjw jan 09 Save info for scripts
+            ISTAT = KSCTRN ( 1 , 'L4:WDEL' ,APD(4), 1 )
+c doe above - before jprint cleared
+c            ISTAT = KSCTRN ( 1 , 'L4:NREF' ,FLOAT(noutl), 1 )
+            ISTAT = KSCTRN ( 1 , 'L4:SLOPE' ,SLOPE, 1 )
+            ISTAT = KSCTRN ( 1 , 'L4:CORREL' ,CORREL, 1 )
         ENDIF
         CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
       ENDIF
