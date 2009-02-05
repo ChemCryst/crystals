@@ -1,6 +1,9 @@
 c
 c
 C $Log: not supported by cvs2svn $
+C Revision 1.136  2009/01/21 17:06:54  djw
+C Add keyword to enable output of Friedel Pairs
+C
 C Revision 1.135  2008/12/18 16:39:25  djw
 C Create subroutine for computing correlation coefficients
 C
@@ -7005,6 +7008,12 @@ c      determinant
         write(cmon,'(a)')' Plotting delta(Fo) vs delta(Fc)'
         call xprvdu(ncvdu, 1,0)
         if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+c
+        write(cmon,'(a,9x,2f12.3)') ' Gradient for zero intercept = '
+     1  ,fsxy/fsxx
+        call xprvdu(ncvdu, 1,0)
+        if (issprt.eq.0) write (ncwu,'(a)') cmon(1)(:)
+c
         deter = fss*fsxx-fsx*fsx
         if (deter .ne. 0.) then
          cutter = (fsxx*fsy-fsx*fsxy)/deter
@@ -7045,8 +7054,8 @@ C
           CALL XPRVDU(NCVDU,1,0)
           N6ACC = MAX11/2
         END IF
-        WRITE(CMON,'(A,I8,A)')' Computing normal probability plot for',
-     1    N6ACC, ' reflections.'
+        WRITE(CMON,'(A,6x,I8,A)')
+     1 ' Computing normal probability plot for',N6ACC, ' reflections.'
         CALL XPRVDU(NCVDU,1,0)
 C Sort the sqrt(W)*(Fo2-Fc2) into ascending order.
         CALL XSHELQ(STR11,2,1,N6ACC,N6ACC*2,TEMP)
@@ -7082,6 +7091,10 @@ c
 c-----
 c      find slope and intercept of NPP
 c      determinant
+        write(cmon,'(a,9x,2f12.3)') ' Gradient for zero intercept = ',
+     1  sxy/sxx
+        call xprvdu(ncvdu, 1,0)
+        if (issprt.eq.0) write (ncwu,'(a)') cmon(1)(:)
         deter = ss*sxx-sx*sx
         if (deter .ne. 0.) then
         cutter = (sxx*sy-sx*sxy)/deter
@@ -7178,7 +7191,7 @@ C  Pseudo-Flack Parameters
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)') CMON(1)(:)
 C
-         WRITE (CMON,'(10(a,i7))') ' No of Friedel Pairs found =',
+         WRITE (CMON,'(10(a,2x,i7))') ' No of Friedel Pairs found =',
      1    MFRIED,' No of Friedel Pairs used  =',NFRIED
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
@@ -7262,10 +7275,10 @@ C
 706         format('Same sign',3x,'Opposite sign')
             write(ncwu,707) npls, nmin
 707         format(i8,6x,i8)
-            WRITE(NCWU,'(//A)')' Distribution of Delta(F)/sigma(F)'
-            WRITE(NCWU,'(a,15I6)') 'Fo',IFOPLT
-            WRITE(NCWU,'(a,15I6)') 'Fc',IFCPLT
-            WRITE(NCWU,'(a,15I6)') 'n ',(KDJW,KDJW=-NPLT,NPLT,1)
+            WRITE(NCWU,'(//A)')' Distribution of Delta(F^2)/sigma(Fo^2)'
+            WRITE(NCWU,'(a,15I6)') 'Delta Fo^2',IFOPLT
+            WRITE(NCWU,'(a,15I6)') 'Delta Fc^2',IFCPLT
+            WRITE(NCWU,'(a,15I6)') '    n     ',(KDJW,KDJW=-NPLT,NPLT,1)
          END IF
 C 
 C 
