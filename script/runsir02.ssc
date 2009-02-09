@@ -1,0 +1,35 @@
+%SCRIPT SIR02                                                                  
+%  VARIABLE CHARACTER CDIR CFILE                                                
+%  VARIABLE LOGICAL  T
+%%                                                                              
+^^CO GETKEY SIR02DIR                                                           
+%%                                                                              
+%%                                                                              
+%  GET SILENT NOSTORE FINAL TEXT '1' '1'                                        
+%  EVALUATE CFILE = CVALUE                                                      
+%  IF CFILE .EQ. '1' .OR. FILEEXISTS ( CFILE ) .EQ. FALSE THEN                  
+                                                                                
+  Where is the SIR 2002 executable?                                               
+                                                                                
+^^CO SYSOPENFILE 'sir2002.exe' 'Sir executable'                              
+                                                                                
+%    CLEAR                                                                      
+%    INSERT '^^CO SETKEY SIR02DIR "'                                           
+%    GET SILENT TEXT 'Sir2002 location:'                                         
+%    IF CVALUE .NE. 'CANCEL' THEN                                               
+%      EVALUATE CFILE = CVALUE                                                  
+%      INSERT '"'                                                               
+%      OUTPUT                                                                   
+%    ELSE                                                                       
+%      FINISH                                                                   
+%    END IF                                                                     
+%  END IF                                                                       
+%%                                                                              
+%%                                                                              
+%  EVALUATE CDIR = GETPATH ( CFILE )                                            
+%  TRANSFER '#SPAWN + "' // CFILE // '" ' TO DISPLAY                  
+%  TRANSFER '#SPAWN + "' // CFILE // '" ' TO CRYSTALS                 
+%%                                                                              
+%%  COPY '#spawn notepad platon.lis'                                             
+%%                                                                              
+%END SCRIPT                                                                     
