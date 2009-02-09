@@ -1,11 +1,11 @@
-%SCRIPT VERIFY
-%% A SCRIPt to set the 'VERIFY' status
-%  VERIFY YES NO
-%  GET NOSTORE ABBREVIATED -
-  'Set VERIFY ON? ' 'NO'
-%  IF ( VALUE .EQ. 1 ) THEN
-%    SET VERIFY TRUE
-%  ELSE
-%    SET VERIFY FALSE
-%  END IF
-%END SCRIPT
+%SCRIPT VERIFY                                                                  
+%% A SCRIPt to set the 'VERIFY' status                                          
+%  VERIFY ON OFF                                                                
+%  GET NOSTORE ABBREVIATED -                                                    
+  'Set VERIFY ON? ' 'ON'                                                        
+%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%    SET VERIFY TRUE                                                            
+%  ELSE                                                                         
+%    SET VERIFY FALSE                                                           
+%  END IF                                                                       
+%END SCRIPT                                                                     
