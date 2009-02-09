@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.90  2008/12/18 16:32:18  djw
+C Remove test for less than 2 atoms - it causes looping in creaton of list 41
+C
 C Revision 1.89  2008/11/28 14:45:24  djw
 C Remove planrity restraint from some N-H restraints
 C
@@ -7206,11 +7209,13 @@ C -- the list can be used as is.
 C This is my work around:
          NFL = KBNFL
 cdjwoct08  Only restore L29 pointers for external calls
-      else
+cdjwfeb09  restore RICs code
+c      else
+      endif
 C Restore those old pointers
        L29 = KBL29
        N29 = KBN29
-      END IF
+c      END IF
 
       CALL XOPMSG (IOPBND, IOPEND, 201)
       CALL XTIME2(1)
