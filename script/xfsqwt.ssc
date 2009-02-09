@@ -1,11 +1,26 @@
-%SCRIPT XFSQWT                                                                      
+%SCRIPT XFSQWT                                                                  
 % IF EXISTS 6 .NE. 1 THEN                                                       
 {I  No reflections have been stored.                                            
 {I  Agreement analysis is not possible.                                         
 %   FINISH                                                                      
 % END IF                                                                        
 %%                                                                              
-% VARIABLE REAL SLOPE3 SLOPE4 SLOPE5 CORR3 CORR4 CORR5
+% VARIABLE REAL SLOPE3 SLOPE4 SLOPE5 CORR3 CORR4 CORR5                          
+% VARIABLE REAL WDEL3 WDEL4 WDEL5 OUTL2 OUTL3 OUTL4 OUTL5
+% VARIABLE REAL NREF WDEL OUTL
+% VARIABLE REAL L4:WDEL L4:NREF L4:SLOPE L4:CORREL
+% VARIABLE INTEGER ORIGSER
+%   COPY '#DISK'
+%   COPY 'RETAIN 4'
+%   COPY 'END'
+%   COPY '#GENERALEDIT 4'                                                      
+%   COPY 'GETSERIAL ORIGSER'                                                    
+%   COPY 'END'     
+% SHOW ORIGSER
+%   IF ORIGSER .LE. 0 THEN
+%    EVALUATE ORIGSER = - ORIGSER 
+%   END IF
+% SHOW ORIGSER
 %%                                                                              
 ^^WI WINDOW XFOPTW 'Chebychev Weighting analysis for F' SIZE KEEP MODAL         
 ^^WI GRID BOSS NROWS=4 NCOLS=3                                                  
@@ -78,12 +93,13 @@
 ^^WI       @ 7,1 BUTTON BTPAR3 'Use 3 parameter scheme' COMMIT DEFAULT          
 ^^WI     }                                                                      
 ^^WI   }                                                                        
-^^WI   @ 3,2 GRID STUFF NROWS=1 NCOLS=7                                         
+^^WI   @ 3,2 GRID STUFF NROWS=1 NCOLS=9                                         
 ^^WI   {                                                                        
 ^^WI     @ 1,1 STRETCH XWS HORIZONTAL                                           
 ^^WI     @ 1,2 BUTTON XWAUTO '&Auto'                                            
-^^WI     @ 1,4 BUTTON XWHELP '&Help'                                            
-^^WI     @ 1,6 BUTTON XWCLOSE '&Cancel (use unit weights)' CANCEL               
+^^WI     @ 1,4 BUTTON XWHELP '&Help'   
+^^WI     @ 1,6 BUTTON XUNIT  '&Unit Wt'                                         
+^^WI     @ 1,8 BUTTON XWCLOSE '&Cancel' CANCEL               
 ^^WI   }                                                                        
 ^^WI }                                                                          
 ^^WI SHOW                                                                       
@@ -98,24 +114,29 @@
 {S * Chebychev weighting with 5 parameters                                      
 {I   Estimated delta(F)**2 as a function of F:                                  
 %          COPY '#LIST 4'                                                       
-%          COPY 'SCHEME NUMBER=14, NPARAM=5  type=ch wei=1'                                    
+%          COPY 'SCHEME NUMBER=14, NPARAM=5  type=ch wei=1'                     
 %          COPY 'END'                                                           
 %          COPY '#WEIGHT'                                                       
 %          COPY 'GUI GRAPH=ON OUTL=ON'                                          
-%          COPY 'LIST OFF'
+%          COPY 'LIST OFF'                                                      
 %          COPY 'END'                                                           
 %          COPY '#ANALYSE'                                                      
 %          COPY 'LIST LEVEL=HIGH'                                               
 %          COPY 'PLOTFO DELTA ON WDELSQ'                                        
 {I   Agreement analysis:                                                        
 %          COPY 'END'                                                           
-%%
+%%                                                                              
 %    COPY '#GENERALEDIT 30'                                                     
-%    COPY 'LOCATE RECORDTYPE = 101'                                             
-%    COPY 'TRANSFER FROM OFFSET = 10 TO SLOPE5'                                   
-%    COPY 'TRANSFER FROM OFFSET = 11 TO CORR5'                                   
+%    COPY 'LOCATE RECORDTYPE = 103'                                             
+%    COPY 'TRANSFER FROM OFFSET = 9 TO NREF'                                 
 %    COPY 'END'                                                                 
-%%
+%    EVALUATE OUTL5 = L4:NREF
+%    EVALUATE WDEL5 = L4:WDEL
+%    EVALUATE SLOPE5 = L4:SLOPE
+%    EVALUATE CORR5 = L4:CORREL
+% SHOW OUTL5 WDEL5 SLOPE5 CORR5 NREF
+%    EVALUATE NREF = 1000. * NREF
+%%                                                                              
 ^^CO RENAME _VFO _VF1      RENAME _VF2 _VFO                                     
 ^^CO RENAME _RWGHT _RWGH1  RENAME _RWGH2 _RWGHT                                 
 ^^CO RENAME _COUT _COU1  RENAME _COU2 _COUT                                     
@@ -123,24 +144,29 @@
 {S * Chebychev weighting with 4 parameters                                      
 {I   Estimated delta(F)**2 as a function of F:                                  
 %          COPY '#LIST 4'                                                       
-%          COPY 'SCHEME NUMBER=14, NPARAM=4  type=ch wei=1'                                    
+%          COPY 'SCHEME NUMBER=14, NPARAM=4  type=ch wei=1'                     
 %          COPY 'END'                                                           
 %          COPY '#WEIGHT'                                                       
 %          COPY 'GUI GRAPH=ON OUTL=ON'                                          
-%          COPY 'LIST OFF'
+%          COPY 'LIST OFF'                                                      
 %          COPY 'END'                                                           
 %          COPY '#ANALYSE'                                                      
 %          COPY 'LIST LEVEL=HIGH'                                               
 %          COPY 'PLOTFO DELTA OFF WDELSQ'                                       
 {I   Agreement analysis:                                                        
 %          COPY 'END'                                                           
-%%
+%%                                                                              
 %    COPY '#GENERALEDIT 30'                                                     
-%    COPY 'LOCATE RECORDTYPE = 101'                                             
-%    COPY 'TRANSFER FROM OFFSET = 10 TO SLOPE4'                                   
-%    COPY 'TRANSFER FROM OFFSET = 11 TO CORR4'                                   
+%    COPY 'LOCATE RECORDTYPE = 103'                                             
+%    COPY 'TRANSFER FROM OFFSET = 9 TO NREF'                                 
 %    COPY 'END'                                                                 
-%%
+%    EVALUATE OUTL4 = L4:NREF
+%    EVALUATE WDEL4 = L4:WDEL
+%    EVALUATE SLOPE4 = L4:SLOPE
+%    EVALUATE CORR4 = L4:CORREL
+% SHOW OUTL4 WDEL4 SLOPE4 CORR4 NREF
+%    EVALUATE NREF = 1000. * NREF
+%%                                                                              
 ^^CO RENAME _VFO _VF2       RENAME _VF3 _VFO                                    
 ^^CO RENAME _RWGHT _RWGH2   RENAME _RWGH3 _RWGHT                                
 ^^CO RENAME _COUT _COU2  RENAME _COU3 _COUT                                     
@@ -148,41 +174,70 @@
 {S * Chebychev weighting with 3 parameters                                      
 {I   Estimated delta(F)**2 as a function of F:                                  
 %          COPY '#LIST 4'                                                       
-%          COPY 'SCHEME NUMBER=14, NPARAM=3  type=ch wei=1'                                    
+%          COPY 'SCHEME NUMBER=14, NPARAM=3  type=ch wei=1'                     
 %          COPY 'END'                                                           
 %          COPY '#WEIGHT'                                                       
 %          COPY 'GUI GRAPH=ON OUTL=ON'                                          
-%          COPY 'LIST OFF'
+%          COPY 'LIST OFF'                                                      
 %          COPY 'END'                                                           
 %          COPY '#ANALYSE'                                                      
 %          COPY 'LIST LEVEL=HIGH'                                               
 %          COPY 'PLOTFO DELTA OFF WDELSQ'                                       
 {I   Agreement analysis:                                                        
 %          COPY 'END'                                                           
-%%
+%%                                                                              
 %    COPY '#GENERALEDIT 30'                                                     
-%    COPY 'LOCATE RECORDTYPE = 101'                                             
-%    COPY 'TRANSFER FROM OFFSET = 10 TO SLOPE3'                                   
-%    COPY 'TRANSFER FROM OFFSET = 11 TO CORR3'                                   
+%    COPY 'LOCATE RECORDTYPE = 103'                                             
+%    COPY 'TRANSFER FROM OFFSET = 9 TO NREF'                                 
 %    COPY 'END'                                                                 
-%%
+%    EVALUATE OUTL3 = L4:NREF
+%    EVALUATE WDEL3 = L4:WDEL
+%    EVALUATE SLOPE3 = L4:SLOPE
+%    EVALUATE CORR3 = L4:CORREL
+% SHOW OUTL3 WDEL3 SLOPE3 CORR3 NREF
+%    EVALUATE NREF = 1000. * NREF
+%%                                                                              
 %%                                                                              
 %%                                                                              
 %% Wait for the users response:                                                 
 %%                                                                              
 %%                                                                              
 % LOOP                                                                          
-%   VERIFY XWCLOSE XWHELP XWAUTO BTPAR3 BTPAR4 BTPAR5                                  
+%   VERIFY XWCLOSE XUNIT XWHELP XWAUTO BTPAR3 BTPAR4 BTPAR5                           
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                
 %%                                                                              
 %%                                                                              
 %   CASE VALUE                                                                  
+%%
 %     BLOCK  %CLOSE%                                                            
+^^CO     DISPOSE XFOPTW                                                         
+%        COPY '#DISK'                                                          
+%        CLEAR                                                                 
+%        INSERT 'RESET 4 '                                                    
+%        STORE INTEGER ORIGSER                                                 
+%        SEND   
+%        CLEAR                                                               
+%        INSERT 'RETAIN 4 '                                                    
+%        STORE INTEGER ORIGSER                                                 
+%        INSERT 'ACTION = NO'
+%        SEND   
+%        COPY 'END'                                                            
+%        COPY '#WEIGHT'                                                         
+%        COPY 'LIST OFF'                                                        
+%        COPY 'END'                                                             
+                                                                                
+{S * Original weighting scheme restored                                               
+                                                                                
+%        COPY '#SUM L 4'
+%        COPY 'END'
+%        FINISH                                                                 
+%     END BLOCK                                                                 
+%     BLOCK  %UNIT%                                                            
 ^^CO     DISPOSE XFOPTW                                                         
 %        COPY '#LIST 4'                                                         
 %        COPY 'END'                                                             
 %        COPY '#WEIGHT'                                                         
-%        COPY 'LIST OFF'
+%        COPY 'LIST OFF'                                                        
 %        COPY 'END'                                                             
                                                                                 
 {S * Unit weights are being used.                                               
@@ -190,6 +245,7 @@
                                                                                 
 %        FINISH                                                                 
 %     END BLOCK                                                                 
+%%
 %     BLOCK  %HELP%                                                             
 %        COPY '#SCRIPT XHELP1'                                                  
                                                                                 
@@ -202,97 +258,133 @@ This analysis shows schemes using 5, 4 and 3 term polynomials, you must
 decide which is best.                                                           
                                                                                 
 The top graph shows the estimated reciprocal weight against Fo. This            
-should roughly parallel the BLUE bars in the lower graph (an analysis           
-of <|Fo-Fc|> for given bins of Fo. (That is to say: where the blue bars         
+should roughly parallel the red bars in the lower graph (an analysis           
+of <|Fo-Fc|> for given bins of Fo. (That is to say: where the red bars         
 are high == bad agreement, thus the weight for those reflections should         
 be low == high reciprocal weight...)                                            
                                                                                 
 The graph should be smoothly varying and have no pronounced local maxima -      
 in general it can peak at the ends of the graph, but not in the middle.         
                                                                                 
-The bottom graph shows the residual itself. The blue bars are simply            
-<|Fo-Fc|> and the red bars are <w|Fo-Fc|>. The red bars represent the           
+The bottom graph shows the residual itself. The red bars are simply            
+<|Fo-Fc|> and the blue bars are <w|Fo-Fc|>. The blue bars represent the           
 residual after the weighting scheme has been applied, in other words, how       
-well the scheme manages to model the differences in Fo and Fc. The red          
+well the scheme manages to model the differences in Fo and Fc. The blue          
 bars should be as close to unity as possible across the whole range of /Fo/.    
                                                                                 
 %        COPY '#SCRIPT XHELP2'                                                  
 %     END BLOCK                                                                 
-%     BLOCK                %XWAUTO%
+%     BLOCK                %XWAUTO%                                             
 ^^CO     DISPOSE XFOPTW                                                         
-%      VARIABLE INTEGER SLOPE CORREL
-%      VARIABLE REAL RSLOPE RCORREL
+%      VARIABLE INTEGER SLOPE CORREL                                            
+%      VARIABLE REAL RSLOPE RCORREL                                             
+%%                                                                              
+%      EVALUATE SLOPE3 = ABS ( SLOPE3 )                                         
+%      EVALUATE SLOPE4 = ABS ( SLOPE4 )                                         
+%      EVALUATE SLOPE5 = ABS ( SLOPE5 )                                         
+%%                                                                              
+%      EVALUATE CORR3 = ABS ( CORR3 )                                           
+%      EVALUATE CORR4 = ABS ( CORR4 )                                           
+%      EVALUATE CORR5 = ABS ( CORR5 )                                           
+%%                               
+%      EVALUATE RSLOPE = 101.                                                
+%      EVALUATE RCORREL = 1.1                                                 
 %%
-%      EVALUATE SLOPE3 = ABS ( SLOPE3 )
-%      EVALUATE SLOPE4 = ABS ( SLOPE4 )
-%      EVALUATE SLOPE5 = ABS ( SLOPE5 )
+%    IF WDEL3 .GE. 0.6 .AND. OUTL3 .LE. NREF THEN
+%      IF SLOPE3 .LT. RSLOPE THEN                                               
+%        EVALUATE RSLOPE = SLOPE3                                               
+%        EVALUATE SLOPE = 3                                                     
+%      END IF                                                                   
+%      IF CORR3 .LT. RCORREL THEN                                               
+%        EVALUATE RCORREL = CORR3                                               
+%        EVALUATE CORREL = 3                                                    
+%      END IF                                                                   
+%    END IF
 %%
-%      EVALUATE CORR3 = ABS ( CORR3 )
-%      EVALUATE CORR4 = ABS ( CORR4 )
-%      EVALUATE CORR5 = ABS ( CORR5 )
-%%
-%      EVALUATE SLOPE = 3
-%      EVALUATE RSLOPE = SLOPE3
-%      IF SLOPE4 .LT. RSLOPE THEN
-%        EVALUATE RSLOPE = SLOPE4
-%        EVALUATE SLOPE = 4
-%      END IF
-%      IF SLOPE5 .LT. RSLOPE THEN
-%        EVALUATE RSLOPE = SLOPE5
-%        EVALUATE SLOPE = 5
-%      END IF
-%%
-%      EVALUATE CORREL = 3
-%      EVALUATE RCORREL = CORR3
-%      IF CORR4 .LT. RCORREL THEN
-%        EVALUATE RCORREL = CORR4
-%        EVALUATE CORREL = 4
-%      END IF
-%      IF CORR5 .LT. RCORREL THEN
-%        EVALUATE RCORREL = CORR5
-%        EVALUATE CORREL = 5
-%      END IF
+%    IF WDEL4 .GE. 0.6 .AND. OUTL4 .LE. NREF THEN
+%      IF SLOPE4 .LT. RSLOPE THEN                                               
+%        EVALUATE RSLOPE = SLOPE4                                               
+%        EVALUATE SLOPE = 4                                                     
+%      END IF                                                                   
+%      IF CORR4 .LT. RCORREL THEN                                               
+%        EVALUATE RCORREL = CORR4                                               
+%        EVALUATE CORREL = 4                                                    
+%      END IF                                                                   
+%    END IF
+%%                                                                              
+%    IF WDEL5 .GE. 0.6 .AND. OUTL5 .LE. NREF THEN
+%      IF SLOPE5 .LT. RSLOPE THEN                                               
+%        EVALUATE RSLOPE = SLOPE5                                               
+%        EVALUATE SLOPE = 5                                                     
+%      END IF                                                                   
+%      IF CORR5 .LT. RCORREL THEN                                               
+%        EVALUATE RCORREL = CORR5                                               
+%        EVALUATE CORREL = 5                                                    
+%      END IF                                                                   
+%    END IF
+%    IF  RSLOPE .GE. 100. THEN
 
-Auto Choosing Scheme
-
-Best slope for: 
-%  TRANSFER ' Scheme ' // CHARACTER ( slope ) // ', Slope '  -
-// CHARACTER ( RSLOPE ) // ' ' TO DISPLAY       
-
-Lowest correlation coefficient for: 
-%  TRANSFER ' Scheme ' // CHARACTER ( correl ) // ', C-c '  -
-// CHARACTER ( RCORREL ) // ' ' TO DISPLAY       
-
-%      IF SLOPE .NE. CORREL THEN
-
-{4,9 Slope - correlation mis-match
-
-%      END IF
-%      IF ABS ( RSLOPE ) .GT. 0.05 .AND. ABS ( RCORREL ) .GT. 0.1 THEN
-
-{4,9 The weighted residual seems to be correlated with the magnitude
-{4,9 of Fo.  CRYSTALS suggest you try a different weighting scheme
-
-%      END IF
-% TRANSFER ' Choosing scheme ' // CHARACTER ( slope ) // ' ' TO DISPLAY 
-%        COPY '#LIST 4'
-%        CLEAR         
-%        INSERT 'SCHEME NUMBER=14, NPARAM=' 
-%        STORE FORMAT "(I4)" INTEGER SLOPE
-%        INSERT ' type=ch wei=1'                                      
-%        SEND          
-%        COPY 'END'    
+{4,9 None of the schemes seems suitable.
+{4,9 Restoring the original scheme.
+%        COPY '#DISK'                                                          
+%        CLEAR                                                                 
+%        INSERT 'RESET 4 '                                                    
+%        STORE INTEGER ORIGSER                                                 
+%        SEND   
+%        CLEAR                                                               
+%        INSERT 'RETAIN 4 '                                                    
+%        STORE INTEGER ORIGSER                                                 
+%        INSERT 'ACTION = NO'
+%        SEND   
+%        COPY 'END'                                                            
 %        COPY '#WEIGHT'                                                         
-%        COPY 'LIST OFF'
+%        COPY 'LIST OFF'                                                        
 %        COPY 'END'                                                             
-%%
-%      FINISH
-%     END BLOCK
-%%
+%        COPY '#SUM L 4'
+%        COPY 'END'
+%        FINISH
+%    END IF
+                                                                                
+Auto Choosing Scheme                                                            
+                                                                                
+Best slope for:                                                                 
+%  TRANSFER ' Scheme ' // CHARACTER ( slope ) // ', Slope= '  -                  
+// CHARACTER ( RSLOPE ) // ' ' TO DISPLAY                                       
+                                                                                
+Lowest correlation coefficient for:                                             
+%  TRANSFER ' Scheme ' // CHARACTER ( correl ) // ', C-c= '  -                   
+// CHARACTER ( RCORREL ) // ' ' TO DISPLAY                                      
+                                                                                
+%      IF SLOPE .NE. CORREL THEN                                                
+                                                                                
+{4,9 Slope - correlation mis-match                                              
+                                                                                
+%      END IF                                                                   
+%      IF ABS ( RSLOPE ) .GT. 0.05 .AND. ABS ( RCORREL ) .GT. 0.1 THEN          
+                                                                                
+{4,9 The weighted residual seems to be correlated with the magnitude            
+{4,9 of Fo.  CRYSTALS suggest you try a different weighting scheme              
+                                                                                
+%      END IF                                                                   
+% TRANSFER ' Choosing scheme ' // CHARACTER ( slope ) // ' ' TO DISPLAY         
+%        COPY '#LIST 4'                                                         
+%        CLEAR                                                                  
+%        INSERT 'SCHEME NUMBER=14, NPARAM='                                     
+%        STORE FORMAT "(I4)" INTEGER SLOPE                                      
+%        INSERT ' type=ch wei=1'                                                
+%        SEND                                                                   
+%        COPY 'END'                                                             
+%        COPY '#WEIGHT'                                                         
+%        COPY 'LIST OFF'                                                        
+%        COPY 'END'                                                             
+%%                                                                              
+%      FINISH                                                                   
+%     END BLOCK                                                                 
+%%                                                                              
 %     BLOCK                %BTPAR3%                                             
 ^^CO     DISPOSE XFOPTW                                                         
 %        COPY '#LIST 4'                                                         
-%        COPY 'SCHEME NUMBER=14, NPARAM=3   type=ch wei=1'                                      
+%        COPY 'SCHEME NUMBER=14, NPARAM=3   type=ch wei=1'                      
 %        COPY 'END'                                                             
 %        COPY '#WEIGHT'                                                         
 %        COPY 'END'                                                             
@@ -305,7 +397,7 @@ Lowest correlation coefficient for:
 %     BLOCK                %BTPAR4%                                             
 ^^CO     DISPOSE XFOPTW                                                         
 %        COPY '#LIST 4'                                                         
-%        COPY 'SCHEME NUMBER=14, NPARAM=4   type=ch wei=1'                                      
+%        COPY 'SCHEME NUMBER=14, NPARAM=4   type=ch wei=1'                      
 %        COPY 'END'                                                             
 %        COPY '#WEIGHT'                                                         
 %        COPY 'END'                                                             
@@ -318,7 +410,7 @@ Lowest correlation coefficient for:
 %     BLOCK                %BTPAR5%                                             
 ^^CO     DISPOSE XFOPTW                                                         
 %        COPY '#LIST 4'                                                         
-%        COPY 'SCHEME NUMBER=14, NPARAM=5  type=ch wei=1'                                      
+%        COPY 'SCHEME NUMBER=14, NPARAM=5  type=ch wei=1'                       
 %        COPY 'END'                                                             
 %        COPY '#WEIGHT'                                                         
 %        COPY 'END'                                                             
