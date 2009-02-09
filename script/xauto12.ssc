@@ -312,7 +312,7 @@
 %             EVALUATE OPTIM = TRUE
 %           END BLOCK
 %           BLOCK % n-CYCLES 9
-%             COPY '#SCRIPT NCYCLES'
+%             COPY '#SCRIPT XNCYCLES'
 %           END BLOCK
 %           BLOCK % 6-CYCLES 10
 %             COPY '#SCRIPT SIXCYCLE'
