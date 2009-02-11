@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2008/10/01 11:11:54  djw
+C Support for treatment of Deuterium as hydrogen
+C
 C Revision 1.15  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -2107,10 +2110,11 @@ C----- CARD HAS AN 'AND' OPERATOR. CHECK NO OF ARGUMENTS
       IF (IMP - LIMP) 2030, 2040, 2030
 2030  CONTINUE
       IF ( ML .EQ. 5 ) GOTO 2040 ! Number do not have to match for SUMFIX
-      IF (ISSPRT .EQ. 0) WRITE(NCWU ,2035)
-      WRITE( CMON ,2035)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU ,2035) imp, limp
+      WRITE( CMON ,2035)imp, limp
       CALL XPRVDU(NCVDU, 1,0)
-2035  FORMAT(' Number of parameters before and after AND do not match')
+2035  FORMAT(' Number of parameters before and after AND do not match'
+     1 ,2i20)
       GOTO 2050
 2040  CONTINUE
 C
