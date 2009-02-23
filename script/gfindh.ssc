@@ -1,6 +1,6 @@
 %SCRIPT GFINDH                                                                  
 % VARIABLE CHARACTER CTYPE                                                      
-% VARIABLE INTEGER HFOUND                                                       
+% VARIABLE INTEGER HFOUND  DOCALC
 % VARIABLE REAL SERIAL                                                          
 %%                                                                              
 % VARIABLE CHARACTER CATOM CEL CTYPE                                            
@@ -19,9 +19,9 @@
 % COPY 'GETSERIAL OLDSER'                                                       
 % COPY 'END'                                                                    
 %%                                                                              
-% VARIABLE LOGICAL TWINNED  MERGED
+% VARIABLE LOGICAL TWINNED  MERGED                                              
 % EVALUATE TWINNED = FALSE                                                      
-% EVALUATE MERGED = FALSE                                                      
+% EVALUATE MERGED = FALSE                                                       
 %%                                                                              
 ^^WI WINDOW FINDH 'Add Hydrogen' MODAL KEEP SIZE LARGE COMMIT='FHBOK'           
 ^^WI CANCEL='FHBXX'                                                             
@@ -115,6 +115,7 @@
 % END IF                                                                        
 %%                                                                              
 ^^CO SET GFT1 TEXT 'Calculating phases from model.'                             
+% EVALUATE DOCALC = 1
 % COPY '#SCRIPT XDELQ'                                                          
 % COPY '#SCRIPT VALID12'                                                        
 %%                                                                              
