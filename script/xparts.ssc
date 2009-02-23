@@ -113,7 +113,7 @@
 ^^WI @ 21,1 STATIC STAT                                                         
 ^^WI 'PARTS can be used to identify groups of atoms, e.g. IN #EDIT'             
 ^^WI @ 22,1 STATIC STAT                                                         
-^^WI 'CHANGE PART(1001,OCC) PART(1002,OCC) 0.5'                                 
+^^WI 'RESET OCC 0.5 PART(1001) PART(1002) '                                 
                                                                                 
 ^^WI  }                                                                         
 %                                                                               
