@@ -40,7 +40,10 @@
 %   EVALUATE MTYPE = VALUE                                                      
 %  END IF                                                                       
 %%                                                                              
-%  copy '#script xdelq'                                                         
+%% CHECK IF LIST 5 XISTS                                                      
+%  IF ( EXISTS 5 .GE. 1 ) THEN                                                 
+%    copy '#script xdelq'                                                         
+%  END IF                                                                       
 %%                                                                              
 %%                                                                              
 %  VARIABLE REAL HEIGHT                                                         
@@ -251,9 +254,9 @@
 %%djw - check that map is not a Patterson                                       
 %       IF ( IMAP .LE. 5 ) THEN                                                 
 %        EVALUATE F67 = 6                                                       
-%%
-%         COPY '#SCRIPT SFLS67'
-%%
+%%                                                                              
+%         COPY '#SCRIPT SFLS67'                                                 
+%%                                                                              
 %       ELSE                                                                    
 {Patterson map - remove all knowlwdge about twinning.                           
 %         IF ( ( EXISTS 25 ) .EQ. 1 ) THEN                                      
