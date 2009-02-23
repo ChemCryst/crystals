@@ -18,6 +18,14 @@
 % COPY '#GENERALEDIT 5'                                                         
 % COPY 'GETSERIAL OLDSER'                                                       
 % COPY 'END'                                                                    
+% VARIABLE LOGICAL IS41 
+% VARIABLE INTEGER ORIG41 NEW41 
+% EVALUATE IS41 =  ( ( EXISTS 41 ) .GE. 1 )                                     
+% IF ( IS41 ) THEN                                                              
+%   COPY '#GENERALEDIT 41'                                                      
+%   COPY 'GETSERIAL ORIG41'                                                    
+%   COPY 'END'                                                                  
+% END IF
 %%                                                                              
 % VARIABLE LOGICAL TWINNED  MERGED                                              
 % EVALUATE TWINNED = FALSE                                                      
@@ -283,6 +291,24 @@
 %      VARIABLE LOGICAL REFREQD                                                 
 %      EVALUATE REFREQD = TRUE                                                  
 ^^CO   DISPOSE FINDH                                                            
+%%
+%      EVALUATE IS41 =  ( ( EXISTS 41 ) .GE. 1 )                                     
+%      IF ( IS41 ) THEN                                                              
+%        COPY '#GENERALEDIT 41'                                                      
+%        COPY 'GETSERIAL NEW41'                                                    
+%        COPY 'END'                                                                  
+%        IF ( NEW41 .GT. ORIG41 ) THEN
+%          COPY '#PURGE LIST = 41'
+%          COPY 'END'
+%          COPY '#PURGE LIST = 22'
+%          COPY 'END'
+%          COPY '#PURGE LIST = 33'
+%          COPY 'END'
+%          COPY '#PURGE LIST = 36'
+%          COPY 'END'
+%        END IF
+%      END IF
+%%
 %      FINISH                                                                   
 %    END BLOCK                                                                  
 %    BLOCK      %BXX                                                            
