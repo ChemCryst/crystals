@@ -719,7 +719,11 @@ cdjwoct08
       fs = scale*fs
       s  = scale*s
 CDJWMAR99]
-      IF (FS.LE.9999.) THEN
+      IF (FS.LE.-1000.) THEN
+       WRITE(NCFPU1, '(3I4, 2F8.1)') I, J, K, FS, S
+      ELSE IF (FS.LE.0.) THEN
+       WRITE(NCFPU1, '(3I4, 2F8.2)') I, J, K, FS, S
+      ELSE IF (FS.LE.9999.) THEN
        WRITE(NCFPU1, '(3I4, 2F8.3)') I, J, K, FS, S
       ELSE IF (FS.LE.99999.) THEN
        WRITE(NCFPU1, '(3I4, 2F8.2)') I, J, K, FS, S
