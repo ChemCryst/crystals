@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.51  2008/02/14 11:04:16  djw
+C Add more comments
+C
 C Revision 1.50  2007/10/09 07:03:15  djw
 C Output more R-factors to cif
 C
@@ -660,6 +663,11 @@ cdjw0302 - allow twin with extparam:  NA=-1
            I=KCHNFL(MD5ES)
            J=M5ES
            K=L5ES
+cdjwMar09 - fix sum if scales go -ve
+           elesum = 0.
+           nneg = 0
+c turn on red
+           CALL OUTCOL(9)
            DO I=1,MD5ES   ! FORM THE SQUARE ROOT OF THE ELEMENT SCALES
              IF (STORE(K) .LT. 0) THEN
                IF (ISSPRT .EQ. 0) WRITE(NCWU,2301) I, STORE(K)
@@ -667,8 +675,27 @@ cdjw0302 - allow twin with extparam:  NA=-1
                CALL XPRVDU(NCVDU, 1,0)
 2301           FORMAT(' Twin element error, Scale',I3,' = ',F8.4)
                STORE(K) = 0.0
+               nneg = nneg + 1
              ENDIF
-             STORE(J)=SQRT(STORE(K))
+             elesum = elesum + store(k)
+             K=K+1
+           END DO
+           if (nneg .gt. 0) then
+             elescl = 1./ elesum
+             IF (ISSPRT .EQ. 0) WRITE(NCWU,2302) elescl
+             WRITE ( CMON, 2302)  elescl
+             CALL XPRVDU(NCVDU, 1,0)
+2302         FORMAT(' Rescaling element scales by  ',f10.4)
+           end if
+c turn off red
+           CALL OUTCOL(9)
+           K=L5ES
+           DO I=1,MD5ES   ! FORM THE SQUARE ROOT OF THE ELEMENT SCALES
+             if ( nneg .gt. 0) then
+               STORE(J)=SQRT(STORE(K)*elescl)
+             else
+               STORE(J)=SQRT(STORE(K))
+             end if
              J=J+1
              K=K+1
            END DO
