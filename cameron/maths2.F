@@ -1,22 +1,5 @@
 CRYSTALS CODE FOR MATHS2.FOR                                                     
 CAMERON CODE FOR MATHS2
-code for zroman
-      subroutine zroman(idecimal,croman)
-c---- return roman character representation of integer number
-      parameter (nromtxt = 10)
-      character *4 croman, cromtxt(nromtxt)
-      data cromtxt/'i','ii','iii','iv','v','vi','vii',
-     1 'viii','ix','x'/
-cdjw convert to roman
-      if ((idecimal .gt. 0) .and. (idecimal .le. nromtxt)) then
-       croman = cromtxt(idecimal)
-      else
-       croman = ' '
-      endif
-      write(ncwu, '(i4,3x,a)') ippack, croman
-      return
-      end
-
 CODE FOR ZPRELS
       SUBROUTINE ZPRELS(EIGS,AXES,ELROT,MROT1,E1,E2,PP)
 C This is a test program for the ellipse drawing routines.
