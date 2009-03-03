@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.37  2005/01/23 08:29:12  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.2  2004/12/13 16:16:09  rich
 C Changed GIL to _GIL_ etc.
 C
@@ -2216,5 +2220,172 @@ c9900  CONTINUE ! Something bad. (No list 39).
 c      CALL XOPMSG ( IOPSLA , IOPABN , 0 )
 c      GOTO 9000
 c      END
+code for oldroman
+      subroutine oldroman(idecimal,croman)
+c---- return roman character representation of integer number
+      parameter (nromtxt = 10)
+      character *4 croman, cromtxt(nromtxt)
+      data cromtxt/'i','ii','iii','iv','v','vi','vii',
+     1 'viii','ix','x'/
+cdjw convert to roman
+      if ((idecimal .gt. 0) .and. (idecimal .le. nromtxt)) then
+       croman = cromtxt(idecimal)
+      else
+       croman = ' '
+      endif
+      write(ncwu, '(i4,3x,a)') ippack, croman
+      return
+      end
+CRYSTALS CODE FOR ZROMAN
+      SUBROUTINE ZROMAN(ARB, ROM)
+!***********************************************************************************************************************************
+!  AR2ROM
+!
+!  This function converts an Arabic numeral to a Roman numeral.
+!
+!  Author:       Dr. David G. Simpson
+!                Laurel, Maryland
+!  Input:
+!     ARB    -  Arabic numeral (integer)
+!  Outputs:
+!     ROM    -  Roman numeral (character string)
+!     VALID  -  Returns .TRUE. if input was valid, .FALSE. if invalid
+!
+!   This function will set the VALID flag to .FALSE. if the input Arabic numeral is negative or zero.
+!***********************************************************************************************************************************
+C      SUBROUTINE AR2ROM (ARB, ROM, VALID)
 
+      IMPLICIT NONE
 
+      INTEGER, INTENT(IN) :: ARB                                                    ! input Arabic numeral
+      CHARACTER(LEN=*), INTENT(OUT) :: ROM                                          ! output Roman numeral string
+C      LOGICAL, INTENT(OUT) :: VALID                                                 ! output valid flag
+      INTEGER :: I, J, LEFT
+!
+!     Start of code.
+!     Check for invalid Arabic numeral (non-positive).
+!     If invalid, set VALID flag to .FALSE. and exit.
+!
+      ROM = ' '
+      IF (ARB .LE. 0) THEN
+C         VALID = .FALSE.
+         RETURN
+      END IF
+!
+!     Initialize variables.
+!
+C      VALID = .TRUE.
+      LEFT = ARB
+      J = 1
+!
+!     Begin successive subtractions from Arabic numeral to find corresponding Roman numerals.
+!     Note that multiple I, X, C, or M may occur, but only (at most) one each of:  IV, V, IX, XL, L, XC, CD, D, CM.
+!
+!     Account for 1000's (M).
+!
+      DO WHILE (LEFT .GE. 1000)
+         LEFT = LEFT - 1000
+         ROM(J:J) = 'M'
+         J = J + 1
+      END DO
+!
+!     Account for 900 (CM).
+!
+      IF (LEFT .GE. 900) THEN
+         LEFT = LEFT - 900
+         ROM(J:J+1) = 'CM'
+         J = J + 2
+      END IF
+!
+!     Account for 500 (D).
+!
+      IF (LEFT .GE. 500) THEN
+         LEFT = LEFT - 500
+         ROM(J:J) = 'D'
+         J = J + 1
+      END IF
+!
+!     Account for 400 (CD).
+!
+      IF (LEFT .GE. 400) THEN
+         LEFT = LEFT - 400
+         ROM(J:J+1) = 'CD'
+         J = J + 2
+      END IF
+!
+!     Account for 100's (C).
+!
+      DO WHILE (LEFT .GE. 100)
+         LEFT = LEFT - 100
+         ROM(J:J) = 'C'
+         J = J + 1
+      END DO
+!
+!     Account for 90 (XC).
+!
+      IF (LEFT .GE. 90) THEN
+      LEFT = LEFT - 90
+         ROM(J:J+1) = 'XC'
+         J = J + 2
+      END IF
+!
+!     Account for 50 (L).
+!
+      IF (LEFT .GE. 50) THEN
+         LEFT = LEFT - 50
+         ROM(J:J) = 'L'
+         J = J + 1
+      END IF
+!
+!     Account for 40 (XL).
+!
+      IF (LEFT .GE. 40) THEN
+         LEFT = LEFT - 40
+         ROM(J:J+1) = 'XL'
+         J = J + 2
+      END IF
+!
+!     Account for 10's (X).
+!
+      DO WHILE (LEFT .GE. 10)
+         LEFT = LEFT - 10
+         ROM(J:J) = 'X'
+         J = J + 1
+      END DO
+!
+!     Account for 9 (IX).
+!
+      IF (LEFT .GE. 9) THEN
+         LEFT = LEFT - 9
+         ROM(J:J+1) = 'IX'
+         J = J + 2
+      END IF
+!
+!     Account for 5 (V).
+!
+      IF (LEFT .GE. 5) THEN
+         LEFT = LEFT - 5
+         ROM(J:J) = 'V'
+         J = J + 1
+      END IF
+!
+!     Account for 4 (IV).
+!
+      IF (LEFT .GE. 4) THEN
+         LEFT = LEFT - 4
+         ROM(J:J+1) = 'IV'
+         J = J + 2
+      END IF
+!
+!     Account for 1's (I).
+!
+      DO WHILE (LEFT .GE. 1)
+         LEFT = LEFT - 1
+         ROM(J:J) = 'I'
+         J = J + 1
+      END DO
+!
+!     End of code - return Roman numeral string and VALID flag.
+!
+      RETURN
+      END SUBROUTINE ZROMAN
