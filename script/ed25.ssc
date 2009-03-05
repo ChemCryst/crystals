@@ -530,8 +530,15 @@
 %       INSERT 'MATRIX TWINTOL='
 ^^?? TOL25 TEXT
 %       GET SILENT REAL ' ' '0.0'
+%       variable real twintol
+%       evaluate twintol = value
 %       SEND
 %       COPY 'END'
+
+
+% TRANSFER '{R Twin tollerance: ' // CHARACTER twintol // 'A^-1' TO DISPLAY           
+
+
 %       EVALUATE QTITLE = 'View List 6?'
 %       EVALUATE QLINE1 = 'Do you want to look at the reflection'
 %       EVALUATE QLINE2 = 'file to verify the ELEMENT assignments?'

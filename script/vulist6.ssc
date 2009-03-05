@@ -1,21 +1,34 @@
 %SCRIPT VULIST6
 %%
+%  VARIABLE LOGICAL ADD25
 %  IF ( EXISTS 6 .NE. 1 ) THEN
 {E No LIST 6 present. Get some reflections from somewhere first.
 %    FINISH
 %  END IF
 %%
-%  COPY '#OPEN FRN1 SCPLST6.DAT'                                                          
+%  COPY '#RELEASE PUNCH SCPLST6.DAT'
 %  ON ERROR CONTINUE
 %  BLOCK
+%   IF ( ADD25 ) THEN
+%    TRANSFER '# This file is not automatically read back into' TO PUNCH
+%    TRANSFER '# CRYSTALS. If you want to manually edit your ' TO PUNCH
+%    TRANSFER '# reflections, you should go back to the original' TO PUNCH
+%    TRANSFER '# data. Reading this file back in will lead to' TO PUNCH
+%    TRANSFER '# rounding errors. However, if you can accept' TO PUNCH
+%    TRANSFER '# this, read back in with #USE SCPLST6.DAT' TO PUNCH
+%    TRANSFER ' ' TO PUNCH
+%    COPY '#PUNCH 6 C'
+%   ELSE
 %    TRANSFER '# These are F^2 reflections in fcf format' TO PUNCH
 %    TRANSFER ' ' TO PUNCH
 %    COPY '#PUNCH 6 H'
-%    COPY 'END'
+%   END IF
+%   COPY 'END'
 %  END BLOCK
-%  COPY '#CLOSE FRN1 SCPLST6.DAT'                                                          
+%  COPY '#RELEASE PUNCH bfile.pch'
 %%
 %  CLEAR
-%    INSERT '#use crysdir:script/vulist6.dat'
+-GIL%    INSERT '#use crysdir:script\vulist6.dat'
++GIL%    INSERT '#use crysdir:script/vulist6.dat'
 %  SEND
 %END SCRIPT
