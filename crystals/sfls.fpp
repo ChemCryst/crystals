@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.52  2009/03/02 09:52:36  djw
+C If a twin scale factor goes negative, reset it to zero and scale remaining factors so that sum is unity otherwise SUMFIX uses incorrect target
+C
 C Revision 1.51  2008/02/14 11:04:16  djw
 C Add more comments
 C
@@ -1783,13 +1786,17 @@ C--CHECK IF WE SHOULD INCLUDE EXTINCTION
           CALL XACRT(9)
         END IF
 
-        A=FO*W    ! ADD IN THE COMPUTED VALUES OF /FC/ ETC., TO THE OVERALL TOTALS
+c        A=FO*W    ! ADD IN THE COMPUTED VALUES OF /FC/ ETC., TO THE OVERALL TOTALS
+c Add abs to deniminator
+        A=abs(FO)*W    ! ADD IN THE COMPUTED VALUES OF /FC/ ETC., TO THE OVERALL TOTALS
         DF=FO-FCEXS
         WDF=W*DF
         S=SCALEK
 
         IF(NV.GE.0)THEN ! 4500,4450,4450 ! CHECK IF WE REFINING AGAINST /FO/ **2
-          A=ABS(FO)*FO*W  ! COMPUTE W-DELTA FOR /FO/ **2 REFINEMENT
+c          A=ABS(FO)*FO*W  ! COMPUTE W-DELTA FOR /FO/ **2 REFINEMENT
+c remove abs Mar2009
+          A=FO*FO*W  ! COMPUTE W-DELTA FOR /FO/ **2 REFINEMENT
           DF=ABS(FO)*FO-FCEXS*FCEXS
           WDF=W*DF
           S=SCALEK*SCALEK
@@ -2199,7 +2206,7 @@ C------ SIGMA W*FO*FO .LE. ZERO ---- SUGGESTS PROBABLY NO WEIGHTS
       CALL XPRVDU(NCVDU, 2,0)
 19935 FORMAT(1X,'The denominator for the weighted R factor ',
      1 'is less than or equal to zero.'/
-     2 ' Check that you have applied weights.')
+     2 ' Check that you have computed Fc and applied weights.')
       CALL XERHND ( IERERR )
       GOTO 19900
 C
