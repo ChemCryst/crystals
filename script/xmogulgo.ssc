@@ -7,12 +7,12 @@
 %%                                                                              
 ^^CO GETREG "Software\CCDC\" "MogulLatestVersion"                               
 %GET SILENT NOSTORE TEXT 'Latest mogul?' ' '                                    
-%TRANSFER ' GETREG "Software\CCDC\Mogul\' // CVALUE // -                    
+%TRANSFER ' GETREG "Software\CCDC\Mogul\' // CVALUE // -                        
  '\" Executable' TO DISPLAY                                                     
 %TRANSFER '^^CO GETREG "Software\CCDC\Mogul\' // CVALUE // -                    
  '\" Executable' TO DISPLAY                                                     
 % GET SILENT NOSTORE TEXT 'Exec?' 'BLANK'                                       
-%TRANSFER CVALUE TO DISPLAY
+%TRANSFER CVALUE TO DISPLAY                                                     
 % EVALUATE MOGULLOC = CVALUE                                                    
 %%                                                                              
 %%                                                                              
@@ -288,7 +288,22 @@
 %  COPY '#RELEASE PUNCH bfile.pch'                                              
 {R * Done.                                                                      
 {I * Running Mogul.                                                             
+
+^^WI WINDOW MOGULRUN 'M1' 
+^^WI GRID MGR NROWS=3 NCOLS=3                                                   
+^^WI {                                                                          
+^^WI  @ 1,1 STATIC T1 'MOGUL running - wait'                                          
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+
+
+
+
 % TRANSFER '#SPAWN + "' // MOGULLOC // '" -ins crystals.qf' TO CRYSTALS         
+
+^^CO DISPOSE MOGULRUN
+
 {R * Done.                                                                      
 ^^CO DISPOSE XMOGULGO                                                           
 %  COPY '#SCRIPT MOGULRES'                                                      
