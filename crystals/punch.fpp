@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.49  2008/10/01 11:11:54  djw
+C Support for treatment of Deuterium as hydrogen
+C
 C Revision 1.48  2008/03/31 14:54:08  djw
 C Move the Firedel flag in SYST into the JCODE slot. Previously (in corrections of phase) it zapped Fourier maps
 C
@@ -330,7 +333,7 @@ C--LOAD LIST 3, TO FIND THE FORM FACTORS TO BE USED
       IF (KHUNTR (5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C----- OUTPUT A TITLE, FIRST 40 CHARACTERS ONLY
-      WRITE(NCPU,'(''TITL '',10A4)') (KTITL(I),I=1,10)
+      WRITE(NCPU,'(''REM TITL '',10A4)') (KTITL(I),I=1,10)
       M5=L5
       L5A=NFL
       M5A=L5A
