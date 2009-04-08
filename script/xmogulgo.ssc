@@ -289,7 +289,7 @@
 {R * Done.                                                                      
 {I * Running Mogul.                                                             
 
-^^WI WINDOW MOGULRUN 'M1' 
+^^WI WINDOW MOGULRUN 'Mogul' 
 ^^WI GRID MGR NROWS=3 NCOLS=3                                                   
 ^^WI {                                                                          
 ^^WI  @ 1,1 STATIC T1 'MOGUL running - wait'                                          
