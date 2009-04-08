@@ -1,6 +1,9 @@
 c
 c
 C $Log: not supported by cvs2svn $
+C Revision 1.137  2009/02/05 11:39:52  djw
+C Tidy up output for the absolute configuration code.  Enable O/P of Friedel pairs, average and difference
+C
 C Revision 1.136  2009/01/21 17:06:54  djw
 C Add keyword to enable output of Friedel Pairs
 C
@@ -5053,7 +5056,7 @@ C----- LIST 30
         IF ( IPUNCH .EQ. 0 ) THEN
           DO I=1,3
            IF ( STORE(L30CD+I-1) .GT. ZERO ) THEN
-            WRITE(CLINE,'(A,''size_'',A,T35,F5.2)')CBUF(1:15),CSIZE(I),
+            WRITE(CLINE,'(A,''size_'',A,T35,F6.3)')CBUF(1:15),CSIZE(I),
      1       STORE(L30CD+I-1)
            ELSE
             WRITE(CLINE,'(A,''size_'',A,T35,''?'')')CBUF(1:15),CSIZE(I)
