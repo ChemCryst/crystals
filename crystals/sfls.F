@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.53  2009/03/17 07:34:22  djw
+C Watch out for -ve values in the denominator of R and Rw
+C
 C Revision 1.52  2009/03/02 09:52:36  djw
 C If a twin scale factor goes negative, reset it to zero and scale remaining factors so that sum is unity otherwise SUMFIX uses incorrect target
 C
@@ -572,7 +575,16 @@ C -- INVALID TEMPERATURE FACTOR
         M5 = M5 + MD5
       END DO
       NFL= J
-
+cdjwapr09 Check the Flack Enantiopole Parameter.
+c If this is the first time it has been refined, set it to 0.5
+      if (( enantio .eq. .true.) .and. (abs(store (L5o+4)) .le. zerosq)
+     1 .and. (store(l30ge+6) .le. zero)) then
+            store(L5O+4) = 0.5
+            WRITE ( CMON, '(A)')'Starting FLACK refinement from 0.5' 
+            CALL XPRVDU(NCVDU, 1,0)
+            IF (ISSPRT .EQ. 0)  WRITE(NCWU, '(A)') CMON(1)(:)
+      endif
+c
       SCALE = STORE(L5O) 
       IF (SCALE .LE. 0.000001) THEN  ! CHECK THAT THE SCALE FACTOR GIVEN IS NOT ZERO
         IF (ISSPRT .EQ. 0) WRITE(NCWU,1420)
