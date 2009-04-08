@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.54  2009/04/08 07:33:02  djw
+C Start Flack parameter from 0.5 if it has not previously been refined
+C
 C Revision 1.53  2009/03/17 07:34:22  djw
 C Watch out for -ve values in the denominator of R and Rw
 C
@@ -244,9 +247,14 @@ C
 C
       EQUIVALENCE (IWORKA(1),JI)
 C----- V 810 INCLUDES THE SPECIAL SHAPES
+#if !defined(_HOL_) 
       DATA JFRN /'F', 'R', 'N', '1',
      1           'F', 'R', 'N', '2'/
-      DATA IVERSN /811/
+#else
+      DATA JFRN /1HF, 1HR, 1HN, 1H1,
+     1           1HF, 1HR, 1HN, 1H2/
+#endif
+	 DATA IVERSN /811/
       INTEGER PARAM_LIST_MAKE
 
 C----- ACCEPT -VE FLACK PARAMETER
@@ -577,7 +585,7 @@ C -- INVALID TEMPERATURE FACTOR
       NFL= J
 cdjwapr09 Check the Flack Enantiopole Parameter.
 c If this is the first time it has been refined, set it to 0.5
-      if (( enantio .eq. .true.) .and. (abs(store (L5o+4)) .le. zerosq)
+      if (( enantio .eqv. .true.) .and. (abs(store (L5o+4)) .le. zerosq)
      1 .and. (store(l30ge+6) .le. zero)) then
             store(L5O+4) = 0.5
             WRITE ( CMON, '(A)')'Starting FLACK refinement from 0.5' 
