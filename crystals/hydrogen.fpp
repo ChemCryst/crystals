@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.33  2008/10/01 11:11:54  djw
+C Support for treatment of Deuterium as hydrogen
+C
 C Revision 1.32  2008/09/22 15:23:24  djw
 C Output U-prime in AXES and fix long standing bug in calls rom XEQUIV - turned out NFL was mis-set
 C
@@ -600,6 +603,7 @@ C
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST12.INC'
+      INCLUDE 'XLST29.INC'
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XIOBUF.INC'
@@ -636,12 +640,14 @@ C
       WRITE (CMON,50)
       CALL XPRVDU (NCVDU,2,1)
 50    FORMAT (10X,' Per-hydrogenation of Carbon atoms')
-      WRITE (CMON,'(a)') ' Including Nitrogen'
+      WRITE (CMON,'(10x,a)') ' Including Nitrogen'
       CALL XPRVDU (NCVDU,2,1)
 C--LOAD THE INPUT LIST
       LN1=KTYP05(MX)
       CALL XLDR05 (LN1)
       IF (IERFLG.LT.0) GO TO 2550
+cdjwmar09
+      IF (KHUNTR (29,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL29
 C--FIND THE OUTPUT LIST TYPE
       LN2=KTYP05(MY)
 C----- SET THE DEFAULT TEMPERATURE FACTOR OR MULTIPLIER
@@ -891,15 +897,16 @@ C-------- CHECK FOR ERRORS AND ISOLATED ATOMS
 
 C TODO: Check for bonding to more than one non-zero part. If this happens,
 C each part should be treated independently.
-
-c      WRITE(CMON,'(A,I4,1X,A4,I4)')'Bonds found: ',NDIST,
+cdjwmar09
+c       if (issprt .eq. 0) then
+c         WRITE(ncwu,'(/A,I3,6X,A4,I4)')'Bonds found: ',NDIST,
 c     1   ISTORE(M5A),NINT(STORE(M5A+1))
-c      DO MMMI=JE,JE+JT*(NDIST-1),JT
-c         WRITE(CMON,'(A,A4,I4)')'Found bond to:',
-c     1   ISTORE(ISTORE(MMMI)),NINT(STORE(ISTORE(MMMI)+1))
-c         CALL XPRVDU(NCVDU,1,0)
-c      END DO
-
+c         DO MMMI=JE,JE+JT*(NDIST-1),JT
+c          WRITE(ncwu,'(A,A4,I4,f6.3)')'Found bond to:',
+c     1    ISTORE(ISTORE(MMMI)),NINT(STORE(ISTORE(MMMI)+1)),
+c     2    STORE(MMMI+10)
+c         END DO
+c      endif
 
       IF (NDIST .GE. 2) THEN   !If there are more than two atoms found:
         L = JE     ! 1st atom
@@ -930,29 +937,42 @@ C SHUFFLE ITEMS UP IF ADDRESSES DIFFERENT
         IF (L .LT. JL-JT) GOTO 1960
 
         JK=JL-JT
-
       ENDIF
 
-c      WRITE(CMON,'(A,I4,1X,A4,I4)')'Filtered bonds found: ',NDIST,
-c     1   ISTORE(M5A),NINT(STORE(M5A+1))
-c      CALL XPRVDU(NCVDU,1,0)
-c      DO MMMI=JE,JE+JT*(NDIST-1),JT
-c         WRITE(CMON,'(A,A4,I4)')'Found bond to:',
-c     1   ISTORE(ISTORE(MMMI)),NINT(STORE(ISTORE(MMMI)+1))
-c         CALL XPRVDU(NCVDU,1,0)
-c      END DO
-
-
+cdjwmar09
+      if (issprt .eq. 0) then
+         WRITE(ncwu,'(/A,I3,6X,A4,I4)')'Filtered bonds found: ',NDIST,
+     1   ISTORE(M5A),NINT(STORE(M5A+1))
+       DO MMMI=JE,JE+JT*(NDIST-1),JT
+         WRITE(ncwu,'(A,A4,I4,f6.3)')'Found bond to:',
+     1   ISTORE(ISTORE(MMMI)),NINT(STORE(ISTORE(MMMI)+1)),
+     2    STORE(MMMI+10)
+       END DO
+      endif
+c
 C
 C
 C----CALCULATE THE NUMBER OF BONDED ATOMS AND THEIR ADDRESSES IN
 C----THE FIRST STACK.
+cdjwmar09
+c----- get the pivot atom id
+      write (ctemp,'(a4,''('',i4,'')'')') store(m5a),nint(store(m5a+1))
+      call xcras (ctemp,ltemp)
+      if (issprt .eq. 0) then
+       write(ncwu,'(a,a)') 'Atoms bonded to ', ctemp(1:ltemp)
+      endif
       NBONDS=KBNDED(JE,JK,JT,IADD,DIST)
+cdjwmar09
+         if ((issprt .eq. 0) .and. (nbonds .gt. 0)) then
+          do idjw=1,nbonds
+            jdjw=iadd(idjw)
+            write(ncwu,'(10x, a4,i2,f6.2)') istore(istore(jdjw)),
+     1       nint(store(istore(jdjw)+1)),store(jdjw+10)
+          enddo
+         endif
 C
 C-------- CHECK FOR ERRORS AND ISOLATED ATOMS
-C----- GET THE ATOM ID
-      WRITE (CTEMP,'(A4,''('',I4,'')'')') STORE(M5A),NINT(STORE(M5A+1))
-      CALL XCRAS (CTEMP,LTEMP)
+
       IF (NBONDS.GT.4) THEN
          IF (ISSPRT.EQ.0) WRITE (NCWU,1550) NBONDS,ISTORE(M5A),
      1    CTEMP(1:LTEMP)
@@ -971,14 +991,14 @@ C       CALCULATE THE HYBRIDISATION BASED ON SHORTEST BOND
          MHYB=0
          DELTA2=0.
          IF (NBONDS.GE.2) THEN
-C         GET THE NEXT SHORTEST BOND
+C           GET THE NEXT SHORTEST BOND
             MHYB=KHYB(IADD(2),STORE(IADD(2)+10),DELTA2)
          END IF
 C-----  LOOK FOR SECONDARY CONTACTS
          ISEC=KSEC(AOTEMP,APTEMP,NDTEMP,IADD,NBONDS,IZ)
          LHYB=0
-         DELTAA=100.
-         DEV=100.
+         DELTAA=999.
+         DEV=999.
          IF (NBONDS.EQ.3) THEN
 C         1 ON SP3 OR 0 ON SP2
 C         COMPUTE A PLANE
@@ -1039,15 +1059,15 @@ cdjwapr06            IF (DELTA.GE..05) THEN
                WRITE (CMON,1700) CTEMP(1:LTEMP),NHYB,LHYB,NBONDS,LHYB
                CALL XPRVDU (NCVDU,1,0)
                IF (ISSPRT.EQ.0) THEN
-                  WRITE (NCWU,'(A)') CMON(1)(:)
                   WRITE (NCWU,1650) CTEMP(1:LTEMP),NHYB,DELTA,MHYB,
      1             DELTA2,DEV,DELTAA
+                  WRITE (NCWU,'(A)') CMON(1)(:)
                END IF
             END IF
-1650        FORMAT (A,1X,'sp',I1,' delta ',F6.2,'sp',I1,' delta',F6.2,'
-     1planarity ',F7.2,' angle delta ',F7.2)
-1700        FORMAT (A,' hybridisation uncertain (',I1,'/',I1,')',I3,' Bo
-     1nds,',' sp',I1,' used')
+1650        FORMAT (A,1X,' sp',I1,' delta ',F6.2,' sp',I1,' delta',F6.2,
+     1' planarity ',F7.2,' angle delta ',F7.2)
+1700        FORMAT (A,' hybridisation uncertain (',I1,'/',I1,')',I3,
+     1' Bonds,',' sp',I1,' used')
             NHYB=LHYB
          END IF
          IF (NHYB.GT.0) THEN
@@ -1495,10 +1515,12 @@ C
 C
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
+      INCLUDE 'XLST29.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'QSTORE.INC'
-      DATA RADIUS/2.0/
+c
+C      DATA RADIUS/2.2/
 C
 C KBNDED - THE NUMBER OF ATOMS WITHIN 'RADIUS' ANGSTROM OF THE TARGET
 C
@@ -1512,7 +1534,17 @@ C
       CALL XFILL(-10000, IADD, 4)
       NBONDS=0
       DO 1000 I=JE,JK,JT
+       COV = 0.771
        DIST = STORE(I+10)
+       itype = istore(istore(i))
+C Look for properties in L29:
+       DO M29 = L29, L29+(N29-1)*MD29, MD29
+                 IF ( ISTORE(M29) .EQ. itype ) THEN
+                    COV = STORE(M29+1)
+                    EXIT
+                 ENDIF
+       END DO
+       RADIUS = 1.1*(0.77+COV)
        IF (DIST .LT. RADIUS) THEN
          IF (NBONDS .EQ. 0) THEN
             NBONDS = 1
@@ -1897,6 +1929,11 @@ C
       IF (JACT .GE. 2) THEN
        WRITE(NCFPU2,FMT=CFORM) CWRITE(1:LCWRIT)
       ENDIF
+cdjwmar09
+c      write to list file
+      if (issprt.eq. 0) then
+            write(ncwu,fmt=cform)cwrite(1:lcwrit)
+      endif
 C
 C----- WRITE A RIDE INSTRUCTION
       WRITE(CWRITE,1000) STORE(M5A), NINT(STORE(M5A+1)), ISER
@@ -2009,6 +2046,11 @@ C
       IF (JACT .GE. 2) THEN
        WRITE (NCFPU2,FMT=CFORM) CWRITE(1:LCWRIT)
       ENDIF
+cdjwmar09
+c      write to list file
+      if (issprt.eq. 0) then
+            write(ncwu,fmt=cform)cwrite(1:lcwrit)
+      endif
 C
 C----- WRITE A RIDE INSTRUCTION
       WRITE(CWRITE,1000) STORE(M5A), NINT(STORE(M5A+1)), ISER
@@ -2135,6 +2177,11 @@ C
       IF (JACT .GE. 2) THEN
        WRITE (NCFPU2,FMT=CFORM) CWRITE(1:LCWRIT)
       ENDIF
+cdjwmar09
+c      write to list file
+      if (issprt.eq. 0) then
+            write(ncwu,fmt=cform)cwrite(1:lcwrit)
+      endif
 C
 C----- WRITE A RIDE INSTRUCTION
       IF (CTYPE(1:1) .EQ. '1') THEN
