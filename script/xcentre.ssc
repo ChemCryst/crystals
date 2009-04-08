@@ -18,6 +18,70 @@
 %      COPY '#COLL'                                                             
 %      COPY 'SEL TYPE=ALL '                                                     
 %      COPY 'END'                                                               
+%%
+%% ensure QC is in cell
+%  VARIABLE REAL SERIAL X Y Z XS YS ZS
+%  VARIABLE CHARACTER CTYPE CISER CLAST
+%       EVALUATE CLAST = " LAST"
+%       EVALUATE XS = 0.
+%       EVALUATE YS = 0.
+%       EVALUATE ZS = 0.
+%%
+%  IF EXISTS 5 .LE. 0 THEN
+WARNING - You have no atoms
+%    FINISH
+%  END IF
+%%
+%% FIND QC
+% TRANSFER "#GENERALEDIT 5" TO CRYSTALS
+% TRANSFER "LOCATE RECORDTYPE=101" TO CRYSTALS
+% TRANSFER "ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR" -
+  TO CRYSTALS
+% TRANSFER "TOP" TO CRYSTALS
+%% get serial and type
+% EVALUATE SERIAL = - 1.0
+% LOOP
+%   ON EDITERROR TERMINATE
+%   TRANSFER "NEXT" TO CRYSTALS
+%%  get element type
+%   TRANSFER "TRANSFER FROM OFFSET=0 TO CTYPE" TO CRYSTALS
+%   IF ( ctype  .EQ. "QC" ) THEN
+%%    GET SERIAL, X,Y,Z
+%     TRANSFER "TRANSFER FROM OFFSET=1 TO SERIAL" TO CRYSTALS
+%     TRANSFER "TRANSFER FROM OFFSET=4 TO X" TO CRYSTALS
+%     TRANSFER "TRANSFER FROM OFFSET=5 TO Y" TO CRYSTALS
+%     TRANSFER "TRANSFER FROM OFFSET=6 TO Z" TO CRYSTALS
+%     EVALUATE LOOPEND = LOOPCOUNTER
+%   END IF
+% END LOOP
+% TRANSFER "END" TO CRYSTALS
+%SHOW CTYPE SERIAL X Y Z
+% IF SERIAL .GT. 0.0 THEN
+%% START SHIFTING ATOMS - WE REALLY NEED A MOD INSTRUCTION IN SCRIPTS
+%   IF X .LT. 0.0 THEN
+%      EVALUATE XS = 1.
+%   ELSE IF X .GT. 1. THEN
+%      EVALUATE XS = - 1.
+%   END IF
+
+%   IF Y .LT. 0.0 THEN
+%      EVALUATE YS = 1.
+%   ELSE IF Y .GT. 1. THEN
+%      EVALUATE YS = - 1.
+%   END IF
+
+%   IF Z .LT. 0.0 THEN
+%      EVALUATE ZS = 1.
+%   ELSE IF Z .GT. 1. THEN
+%      EVALUATE ZS = - 1.
+%   END IF
+%   COPY '#EDIT'
+%   CLEAR
+%   INSERT 'SHIFT'
+%   STORE FORMAT "(F12.4)" REAL XS YS ZS 
+%   INSERT ' ALL'
+%   SEND
+% END IF
 %      COPY '#SCRIPT XDELQ'
 %      COPY 'PURGE LIST=41'                                                               
 %      COPY 'END'                                                               
