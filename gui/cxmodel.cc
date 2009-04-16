@@ -1124,7 +1124,12 @@ void CxModel::NewSize(int cx, int cy)
     m_stretchX = 1.0f;
     m_stretchY = 1.0f;
 
+#ifdef __CR_WIN__
+    glViewport(0,0,cx,cy);
+#endif
+#ifdef __BOTHWX__
     if ( !m_NotSetupYet ) glViewport(0,0,cx,cy);
+#endif
 
     if ( cy > cx ) m_stretchY = (float)cy / (float)cx;
     else           m_stretchX = (float)cx / (float)cy;
