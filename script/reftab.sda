@@ -1,4 +1,4 @@
-  46 items  - See the CRYSTALS manual for a description of the format.
+  47 items  - #nnn "CIF-text" <CR> References, aphabetical order<CR>
 #001 USER DEFINED STRUCTURE SOLUTION                                            
 User-defined structure solution reference                                       
                                                                                 
@@ -33,14 +33,14 @@ spare 10
 #033 SHELXA (Anonymous, 1997)                                                   
 Anonymous, (1997)                                                               
                                                                                 
-#011 SIR92 (Altomare et al., 1994)                                              
-Altomare, A., Cascarano, G., Giacovazzo, C., Guagliardi, A., Burla, M.C.,       
-Polidori, G.  & Camalli, M. (1994). J. Appl. Cryst. 27, 435.                    
-                                                                                
 #028 SIR97 (Altomare et al., 1999)                                              
 Altomare, A., Burla, M.C., Camalli, M., Cascarano, G.L., Giacovazzo, C.,        
 Guagliardi, A., Grazia, A., Moliterni, G., Polidori, G. & Spagna, R.            
 (1999). J. App. Cryst. 32, 115-119.                                             
+                                                                                
+#011 SIR92 (Altomare et al., 1994)                                              
+Altomare, A., Cascarano, G., Giacovazzo, C., Guagliardi, A., Burla, M.C.,       
+Polidori, G.  & Camalli, M. (1994). J. Appl. Cryst. 27, 435.                    
                                                                                 
 #022 CRYSTALS (Betteridge et al., 2003)                                         
 Betteridge, P.W.,  Carruthers, J.R.,  Cooper, R.I.,                             
@@ -52,23 +52,28 @@ Garcia Granda, S., Gould, R.O.,  Israel, R.  &  Smits J.M.M. (1996).
 University of Nijmegen, Toernooiveld 1,  6525 ED  Nijmegen,                     
 The Netherlands.                                                                
                                                                                 
-#042 Superflip (Palatinus & Chapuis, 2007)
-Palatinus, L. & Chapuis, G. (2007). J. Appl. Cryst. 40, 786-790.
+                                                                                
+#032 SORTAV (Blessing)                                                          
+Blessing, SORTAV ( )                                                            
+                                                                                
+#045 Apex2 (Bruker AXS, 2006)                                                   
+Bruker Analytical X-ray Systems, Inc., 2006.  <i>Apex2</i>,                     
+Version 2 User Manual, M86-E01078, Madison, WI.                                 
+                                                                                
+#046 Bruker-Nonius Kappa Apex II  (Bruker AXS, 2006)                            
+Bruker Analytical X-ray Systems, Inc., 2006.  <i>Apex2</i>,                     
+Version 2 User Manual, M86-E01078, Madison, WI.                                 
 
-#043 Sir2002 (Burla et al., 2002)
-Burla, M. C., Camalli, M. B., Carrozzini,  G. L., Cascarano, R.,
-Giacovazzo,   C., Polidori,  G. & Spagna,  R., J. Appl. Crystallogr.,
-2003, 36, 1103.                                                                 
-                                                                                
-                                                                                
 #044 Sir2004 (Burla et al., 2005)                                               
 Burla, M. C. , Caliandro, R., Camalli,  M., Carrozzini,  B., Cascarano, G. L., D
 Caro,  L. , Giacovazzo, C., Polidori,  G.,  & Spagna  R. J. Appl. Cryst. (2005).
 381-388.                                                                        
                                                                                 
+#043 Sir2002 (Burla et al., 2002)
+Burla, M. C., Camalli, M. B., Carrozzini,  G. L., Cascarano, R.,
+Giacovazzo,   C., Polidori,  G. & Spagna,  R., J. Appl. Crystallogr.,
+2003, 36, 1103.                                                                 
                                                                                 
-#032 SORTAV (Blessing)                                                          
-Blessing, SORTAV ( )                                                            
                                                                                 
 #030 SIR88 (Burla et al., )                                                     
 Burla,M.C., Camalli, M., Cascarano, G., Giacovazzo, C.,                         
@@ -113,6 +118,12 @@ Oxford Diffraction, (2002). CrysAlis RED.
 #037 Xcalibur, (Oxford Diffraction, 2002)                                       
 Oxford Diffraction, (2002). Xcalibur User Manual.                               
                                                                                 
+#047 Gemini, (Oxford Diffraction, 2006)
+Oxford Diffraction, (2006). Gemini User Manual.
+
+#042 Superflip (Palatinus & Chapuis, 2007)
+Palatinus, L. & Chapuis, G. (2007). J. Appl. Cryst. 40, 786-790.
+
 #038 Robust Weighting (Prince, 1982)                                            
 Prince, E.                                                                      
 Mathematical Techniques in Crystallography                                      
@@ -123,6 +134,12 @@ Springer-Verlag, New York, 1982.
 Siemens Industrial Automation, Inc (1993).                                      
 SMART: Area-Detector Software Package; Madison, WI.                             
                                                                                 
+#018 SHELXS 86 (Sheldrick, 1986)                                                
+Sheldrick, G. M. (2008). Acta Cryst A64, 112-122.                               
+                                                                                
+#034 SHELXL 97 (Sheldrick, 1997)                                                
+Sheldrick, G. M. (2008). Acta Cryst A64, 112-122.                               
+                                                                                
 #027 SAINT (Siemens ,1995)                                                      
 Siemens Industrial Automation, Inc (1995).                                      
 SAINT: Area-Detector Integration Software.; Madison, WI.                        
@@ -130,12 +147,6 @@ SAINT: Area-Detector Integration Software.; Madison, WI.
 #031 SADABS (Siemens, 1996)                                                     
 Siemens Industrial Automation, Inc (1996).                                      
 SADABS: Area-Detector Absorption Correction;: Madison, WI.                      
-                                                                                
-#018 SHELXS 86 (Sheldrick, 1986)                                                
-Sheldrick, G. M. (2008). Acta Cryst A64, 112-122.                               
-                                                                                
-#034 SHELXL 97 (Sheldrick, 1997)                                                
-Sheldrick, G. M. (2008). Acta Cryst A64, 112-122.                               
                                                                                 
 #019 XRED (Stoe & Cie 1996)                                                     
 Stoe & Cie (1996). IPDS Software.                                               
@@ -162,10 +173,11 @@ Crystallography Laboratory, Oxford, UK.
 Watkin, D.J., Prout, C.K. & Lilley, P.M.deQ. (1994). RC93, Chemical             
 Crystallography Laboratory, Oxford, UK.                                         
                                                                                 
-#045 Apex2 (Bruker AXS, 2006)                                                   
-Bruker Analytical X-ray Systems, Inc., 2006.  <i>Apex2</i>,                     
-Version 2 User Manual, M86-E01078, Madison, WI.                                 
+#027 SAINT (Siemens ,1995)                                                      
+Siemens Industrial Automation, Inc (1995).                                      
+SAINT: Area-Detector Integration Software.; Madison, WI.                        
                                                                                 
-#046 Bruker-Nonius Kappa Apex II  (Bruker AXS, 2006)                            
-Bruker Analytical X-ray Systems, Inc., 2006.  <i>Apex2</i>,                     
-Version 2 User Manual, M86-E01078, Madison, WI.                                 
+#031 SADABS (Siemens, 1996)                                                     
+Siemens Industrial Automation, Inc (1996).                                      
+SADABS: Area-Detector Absorption Correction;: Madison, WI.                      
+                                                                                
