@@ -26,7 +26,7 @@
 ^^WI       '#SCRIPT XRENUMB' DISABLEIF='IN' ENABLEIF='L2 L1 L5'                 
 ^^WI   ITEM RESA '&Re-sequence atoms'                                              
 ^^WI       '#SCRIPT XRESEQ' DISABLEIF='IN' ENABLEIF='L2 L1 L5'                 
-^^WI   ITEM CLSH '&Fix Clashes' '#EDIT_NCLASH FIXLAST_NEND'         
+^^WI   ITEM CLSH '&Fix Clashes' '#EDIT_NCLASH FIXLATTER_NEND'         
 ^^WI                                DISABLEIF='IN'  ENABLEIF='L5'               
 ^^WI   ITEM XALRES '&Allocate Residue Nos' '#EDIT_NINSERT RESIDUE_NEND'         
 ^^WI                                DISABLEIF='IN'  ENABLEIF='L5'               
