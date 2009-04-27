@@ -1,6 +1,9 @@
 c
 c
 C $Log: not supported by cvs2svn $
+C Revision 1.138  2009/04/08 07:34:06  djw
+C Increase number of decimal places in SIZE
+C
 C Revision 1.137  2009/02/05 11:39:52  djw
 C Tidy up output for the absolute configuration code.  Enable O/P of Friedel pairs, average and difference
 C
@@ -4127,7 +4130,7 @@ C
       PARAMETER (IDATA=15,IREF=23)
       CHARACTER*35 CPAGE(NROW,NCOL)
       CHARACTER*76 CREFMK
-      PARAMETER (IDIFMX=9)
+      PARAMETER (IDIFMX=10)
       DIMENSION IREFCD(3,IDIFMX)
 CAVDL more solution packages in cif-goodies
       PARAMETER (ISOLMX=10)
@@ -4194,7 +4197,7 @@ C
 C
 C------ REFERENCE CODES FOR THE DIFFRACTOMETERS
       DATA IREFCD /4,5,6, 13,24,13, 13,24,13, 25,17,17, 15,17,17,
-     1 26,27,27, 20,19,20,  37,36,36, 45,45,45  /
+     1 26,27,27, 20,19,20,  37,36,36, 45,45,45, 47,36,36  /
 C------ REFERENCE CODES FOR DIRECT METHODS
 CAVDLdec06 updating references in reftab.sda with numbers 42, 43, and 44
       DATA ISOLCD /1,18,30,11,22,28,29,42,43,44/
@@ -5333,8 +5336,8 @@ cdjw0705
              CALL XPCIF (CLINE)
         ENDIF
 
-C UNKNOWN CAD4 MACH3 KAPPACCD DIP SMART IPDS XCALIBUR APEX2
-C    1     2       3     4    5     6    7   8        9
+C UNKNOWN CAD4 MACH3 KAPPACCD DIP SMART IPDS XCALIBUR APEX2 GEMINI
+C    1     2       3     4    5     6    7   8        9      10
         IDIFNO = IVAL+1
         CALL XCREMS (CVALUE,CVALUE,NCHAR)
         CALL XCTRIM (CVALUE,NCHAR)
@@ -5372,6 +5375,10 @@ C- XCALIBUR
            ELSE IF (IDIFNO .EQ. 9) THEN
 C- Apex2
              CTEMP='Bruker Kappa Apex2'
+           ELSE IF (IDIFNO .EQ. 10) THEN
+C- GEMINI
+             CTEMP='Oxford Diffraction Gemini'
+C- Unknown
            ELSE IF (IDIFNO .GT. IDIFMX) THEN
              WRITE(CMON,'(A)') 'Unknown Diffractometer type'
              CALL XPRVDU(NCVDU,1,0)
