@@ -110,6 +110,8 @@
 ^^WI    '#SPAWN CRYSDIR:EDMA_user_manual.pdf' DISABLEIF='IN'
 ^^WI    ITEM PDF 'Marching Cube Manual'
 ^^WI    '#SPAWN CRYSDIR:mce\MCE_manual.html' DISABLEIF='IN'                    
+^^WI    ITEM PDF 'MOGUL in CRYSTALS Manual'
+^^WI    '#SPAWN CRYSDIR:mce\mogul.html' DISABLEIF='IN'                    
 ^^WI   ENDMENU                                                                  
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM CK '&Check for updates'                                             
