@@ -1430,9 +1430,9 @@ Data collection details
      2THETA/OMEGA   OMEGA          PHI            PHIOMEGA       UNKNOWN
     .INTERVAL           0    0    1    0    1 0.
     .COUNT              0    0    1    0    1 0.
-    .INSTRUMENT         0    0    1    9    0 UNKNOWN
+    .INSTRUMENT         0    0    1   10    0 UNKNOWN
      UNKNOWN        CAD4           MACH3          KAPPACCD       DIP
-     SMART          IPDS           XCALIBUR       APEX2
+     SMART          IPDS           XCALIBUR       APEX2          GEMINI
    3.REFINEMENT        13    1    0    0   13    1  103    9   30
          1    1    1    1    1    1    0    0    0    0
 Refimenent details
@@ -4189,7 +4189,7 @@ TONSPEK            1    1
     5       
    1.TONSPEK            4    1    0    0
          2    1    3    3
-    .CRITER             1    0    1    0    0 999.9
+    .CRITERION          1    0    1    0    0 999.9
     .INPUTLIST          2    0    1    2    1         7
               6         7
     .PLOT               3    0    1    3    0 NO
