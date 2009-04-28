@@ -1,6 +1,9 @@
 c
 c
 C $Log: not supported by cvs2svn $
+C Revision 1.139  2009/04/27 16:35:18  djw
+C Add references for GEMINI
+C
 C Revision 1.138  2009/04/08 07:34:06  djw
 C Increase number of decimal places in SIZE
 C
@@ -5931,9 +5934,15 @@ C
            WRITE (CLINE,'(A, ''goodness_of_fit_ref '', F10.4)')
      1                   CBUF(1:11),STORE(L30RF+4)
            CALL XPCIF (CLINE)
-           WRITE (CLINE,'(A, ''shift/su_max '', F10.6)') CBUF(1:11),
+           WRITE (CLINE,'(A, ''shift/su_max '', F10.7)') CBUF(1:11),
      1            STORE(L30RF+7)
            CALL XPCIF (CLINE)
+c-try to catch old DSC files where +11 held minimisation function
+           IF (STORE(L30RF+11) .LE. 10.) THEN
+            WRITE (CLINE,'(A, ''shift/su_mean '', F10.7)') CBUF(1:11),
+     1            STORE(L30RF+11)
+            CALL XPCIF (CLINE)
+           END IF
            CALL XPCIF (' ')
 C
            CALL XPCIF (' ')

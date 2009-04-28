@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.39  2008/09/08 10:18:32  djw
+C Enable/inhibit punching of ADP info from XPRAXI
+C
 C Revision 1.38  2008/08/04 16:50:03  djw
 C Restore storage of extinction esd - it had got lost
 C
@@ -397,7 +400,9 @@ C--CHECK THAT THE NUMBER OF DEGREES OF FREEDOM IS POSITIVE
       ENDIF
 C--CHECK THE TYPE OF LIST 11
 1500  CONTINUE
-      F=0.0
+cdjwapr09 F is counter for sum of squares, ABSF for sum abs(shift/esd)
+      F = 0.0
+      FABS = 0
       JP=ISTORE(L11P+15)
 C--CHECK IF THE MATRIX IS OF AN ACCEPTABLE TYPE
       IF ( IABS(JP) .NE. 1 ) GO TO 9910
@@ -624,7 +629,8 @@ c
             IF (IHIT .EQ. 0) GOTO  3450
 C--PARAMETER HAS BEEN FOUND  -  CALCULATE THE RESULTS
 C----- SUM OF SQUARES SHIFT / ESD
-            F=F+S*S
+            F = F + S*S
+            ABSF = ABSF + ABS(S)
 C ----- FIND THE MAXIMUM SHIFT /ESD
 C>DJWOCT96
             IF (ABS(S) .GT. SMAX) THEN
@@ -761,21 +767,24 @@ C----- TIDY UP PARAMETER NAME
       CALL XCRAS ( CSAVE, LENNAM )
 C----- COMPUTE AND STORE RMS SHIFT/ESD
       RMSS=SQRT(F/STORE(L11P+23))
+C MEAN ABSOLUTE SHIFT/ESD
+      ABSFM = ABSF/STORE(L11P+23)
       STORE(M33V+3)=RMSS
 C----- STORE MAXIMUM SHIFT/ESD
 CDJW0202      STORE(M33V+3) = ABS(SMAX)
 
-      IF (ISSPRT .EQ. 0) WRITE( NCWU,3556) RMSS
-3556  FORMAT(27X,' The rms (shift/esd) =', F16.7)
+      IF (ISSPRT .EQ. 0) WRITE( NCWU,3556) RMSS,absfm 
+3556  FORMAT(27X,'    The rms (shift/su)  =', F16.7/
+     1 27x,      ' The mean abs(shift/su) =', F16.7)
 
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,3557) SMAX, JSAVE, CSAVE(1:LENNAM)
 3557  FORMAT(' The largest (shift/esd) =',F10.6,
      1 ', for Parameter ', I4,', ', A)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,3557) SMAX, JSAVE, CSAVE(1:LENNAM)
 
 
       WRITE ( CMON, 
-     1 '('' Shift/su ratio: sumsq='',G9.3,'' rms='',G9.3,
-     2 '' max='',F9.5,'' for '',A)'')'),
+     1 '('' Shift/su: sumsq='',G9.3,'' rms='',G9.3,
+     2 '' max='',G9.3,'' for '',A)'')'),
      3 F, RMSS, SMAX, CSAVE(1:LENNAM)
       CALL XPRVDU(NCVDU, 1,0)
 
@@ -982,7 +991,10 @@ C----- MAXIMUM SHIFT/ESD
       STORE(L30RF +8 ) = STORE(L11P+24)
       IF (STORE(L11P+24) .GT. ZERO) STORE(L30RF +9 ) = STORE(L11P+25)
       IF (STORE(L11P+27) .GT. ZERO) STORE(L30RF +10 ) = STORE(L11P+28)
-      IF (C .GT. ZERO)              STORE(L30RF +11 ) = STORE(L11P+17)
+CDJWAPR09
+C      IF (C .GT. ZERO)              STORE(L30RF +11 ) = STORE(L11P+17)
+C MEAN ABS(SHIFT/SU)
+      STORE(L30RF+11) = ABSFM
       CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
 C--OUTPUT THE INFORMATION FOR THE CALCULATED SHIFTS
       IF (ISSPRT .EQ. 0) WRITE(NCWU,4500)
