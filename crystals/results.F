@@ -1,6 +1,9 @@
 c
 c
 C $Log: not supported by cvs2svn $
+C Revision 1.140  2009/04/28 09:51:44  djw
+C Compute mean(abs(shift/su)) for CIF compliance.  Store in STORE(L30RF+11), in place of total minimisation function, which was never used
+C
 C Revision 1.139  2009/04/27 16:35:18  djw
 C Add references for GEMINI
 C
@@ -4124,6 +4127,7 @@ C
       CALL XRDOPN(7, KDEV , CSSCIF, LSSCIF)
       RETURN
       END
+C
 CODE FOR XCIFX
       SUBROUTINE XCIFX
 CDJWMAR99[      CIF OUTPUT DIRECTED TO NCFPU1, PERMITTING TEXT OUTPUT TO
@@ -4160,6 +4164,8 @@ C
       CHARACTER*17 CWT
       CHARACTER*22 CFM, CFMC ! 'F<sub>obs</sub>&sup2;'
       CHARACTER*35 CMOD
+cdjwapr09
+      INTEGER  IFARG      ! F OR F^2^ FOR WEIGHTING SCHEME
 C
       INCLUDE 'TSSCHR.INC'
       INCLUDE 'ICOM30.INC'
@@ -6110,8 +6116,10 @@ C----- PARAMETER 13 ON DIRECTIVE 3 IS A CHARACTER STRING
      1    IVAL,JVAL,VAL,JTYPE)
         IF (IVAL.EQ.1) THEN
             CTYPE='F'
+            IFARG = 1
         ELSE
             CTYPE='Fsqd'
+            IFARG = 2
         END IF
         CLINE=' '
         IF ( IPUNCH .EQ. 0 ) THEN
@@ -6420,21 +6428,42 @@ C------ SIGMA WEIGHTS
                write(ctext(3),'(a)') ' A~i~ are:'
                ival = 38
              else if ((itype .eq. 16) .or.  (itype .eq. 17)) then
+c
 c               SHELX type
                 ival = 0
-cdjw090804^
+cdjw090804
                 if (nint(1000. * store(l4+5)) .ne. 333) then
-                 write(cline,'(a)') 
-     1           ' P=p(6)*max(Fo^2^,0) + (1-p(6))Fc^2^'
+                 IF (IFARG .EQ. 1) THEN
+                   write(cline,'(a)') 
+     1             ' P=p(6)*max(Fo,0) + (1-p(6))Fc'
+                 ELSE
+                   write(cline,'(a)') 
+     1             ' P=p(6)*max(Fo^2^,0) + (1-p(6))Fc^2^'
+                 ENDIF
                 else
-                 write(cline,'(a)') 
-     1           ' P=(max(Fo^2^,0) + 2Fc^2^)/3'
+                 IF (IFARG .EQ. 1) THEN
+                   write(cline,'(a)') 
+     1             ' P=(max(Fo,0) + 2Fc)/3'
+                 ELSE
+                   write(cline,'(a)') 
+     1             ' P=(max(Fo^2^,0) + 2Fc^2^)/3'
+                 ENDIF
                 endif
 cdjw011104
                  ctext(3) = ' ,where '//cline
-cdjw090804^
+cdjw090804
                 if (abs(store(l4+2))+abs(store(l4+3))+abs(store(l4+4))
      1          .le. 0.0) then
+
+                 IF (IFARG .EQ. 1 ) THEN
+                  write(ctext(2),'(a,f5.2,a,f5.2,a)')
+#if !defined(_GIL_) && !defined(_LIN_)  && !defined(_WXS_) && !defined(_MAC_)
+     1            ' w=1/[\s^2^(F) + (', store(l4),'P)^2^ +',
+#else
+     1            ' w=1/[\\s^2^(F) + (', store(l4),'P)^2^ +',
+#endif
+     2              store(l4+1),'P]'
+                  ELSE
                   write(ctext(2),'(a,f5.2,a,f5.2,a)')
 #if !defined(_GIL_) && !defined(_LIN_)  && !defined(_WXS_) && !defined(_MAC_)
      1            ' w=1/[\s^2^(F^2^) + (', store(l4),'P)^2^ +',
@@ -6442,6 +6471,7 @@ cdjw090804^
      1            ' w=1/[\\s^2^(F^2^) + (', store(l4),'P)^2^ +',
 #endif
      2              store(l4+1),'P]'
+                  ENDIF
                   ctext(4) = ' '
                 else
                   write(ctext(3),'(a)') 
