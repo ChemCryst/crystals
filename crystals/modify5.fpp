@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.53  2008/11/07 08:41:17  djw
+C Dont try to update L41 if there is only one atom
+C
 C Revision 1.52  2008/10/01 11:11:54  djw
 C Support for treatment of Deuterium as hydrogen
 C
@@ -1378,6 +1381,7 @@ C----- FIDDLE SERIAL
 C----- COMPUTE SPLITTING
          IF (STORE(M5+3).LE.UISO) THEN
             CALL XPRAXI (1,1,IBASE,M5,MD5,1,-1,JBASE,0)
+C----- UEQUIV * COMPONENTS OF LONG VECTOR
             DX=STORE(IBASE+3)*STORE(JBASE+9)
             DY=STORE(IBASE+3)*STORE(JBASE+10)
             DZ=STORE(IBASE+3)*STORE(JBASE+11)
