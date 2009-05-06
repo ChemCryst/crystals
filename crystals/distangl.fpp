@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.91  2009/02/09 08:04:08  djw
+C Restore resetting oh L29 addresses, fouled up at version 1.88, when tried to inhibit updating of L41 when there was only one atom.
+C
 C Revision 1.90  2008/12/18 16:32:18  djw
 C Remove test for less than 2 atoms - it causes looping in creaton of list 41
 C
@@ -1445,15 +1448,26 @@ C Check if the H is riding, or the esd happens to be zero.
 C----- INITIALIZE BUFFER
          IJX=IJW
       IF (IPUNCH .EQ. 3) THEN
-cdjwsep06 find unique H atoms
-          j = 1+(js-nflbas)/nw
+cdjwsep06 get serial numbers to find unique H atoms
+c
+           j  = 1+(js-nflbas)/nw
+           if (j .gt. 3) then
+            WRITE(NCPU,2184) STORE(M5P), NINT(STORE(M5P+1)),J
+2184       format('REM too many H atoms on ' a4,'(',i4,'), -',i2)
+           endif
+cdjwmay09
           if (j .eq. 3) then
            j1 = nint(store(istore(nflbas)+1))
            j2 = nint(store(istore(nflbas+nw)+1))
            j3 = nint(store(istore(nflbas+2*nw)+1))
            if ((j3 .eq. j2) .or. (j3 .eq. j1))     then
+c           discard last
             j = j-1
             js = js-nw
+           else if (j1 .eq. j2) then
+c           discard first
+            j = j-1
+            nflbas = nflbas+nw
            endif
           endif
           if(j .eq. 2) then
@@ -1464,7 +1478,7 @@ cdjwsep06 find unique H atoms
             js = js-nw
            endif
           endif
-C----- SCRIPT DATA PUBLICATION
+C----- SCRIPT READABLE RIDE LINES
 2185      FORMAT( 'RIDE ',50(A4,'(',I4,',X''S)',1X) )
           WRITE(NCPU,2185) STORE(M5P), NINT(STORE(M5P+1)),
      1    (STORE(ISTORE(J)),NINT(STORE(ISTORE(J)+1)),J=NFLBAS,JS,NW)
