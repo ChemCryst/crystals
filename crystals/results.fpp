@@ -1,6 +1,9 @@
 c
 c
 C $Log: not supported by cvs2svn $
+C Revision 1.141  2009/05/01 08:45:39  djw
+C Fix cif text for SHELX weights
+C
 C Revision 1.140  2009/04/28 09:51:44  djw
 C Compute mean(abs(shift/su)) for CIF compliance.  Store in STORE(L30RF+11), in place of total minimisation function, which was never used
 C
@@ -3772,6 +3775,7 @@ cdjw0206          WRITE(NCPU,'(''<TR>'')')
             CALL XCRAS( CLINE, J)
 
 C----- CHECK SYMMETRY INFORMATION
+cdjwmay09 - replace with a call to SYMCODE (one day)
             IF (
      1       (ISTORE(JPUB+2)+ISTORE(JPUB+3)+ISTORE(JPUB+4)
      2       +ISTORE(JPUB+5)+ISTORE(JPUB+6) .EQ. 2) .AND.
@@ -3792,7 +3796,7 @@ C----- CHECK SYMMETRY INFORMATION
               WRITE(NCPU,1) CLINE(1:J+2)
             ENDIF
           END DO
-
+C
 C----- VALUE AND ESD
           CALL XFILL (IB, IVEC, 20)
           CALL SNUM ( TERM, ESD, -3, 0, 8, IVEC )
@@ -4039,6 +4043,8 @@ C----- ATOM NUMBER
         J = J+N+1
 C
 C----- SYMMETRY INFORMATION
+c
+cdjwmay09 - replace with a call to SYMCODE (one day)
         IF (
      1 (ISTORE(JPUB+2)+ISTORE(JPUB+3)+ISTORE(JPUB+4)
      2  +ISTORE(JPUB+5)+ISTORE(JPUB+6) .EQ. 2) .AND.
@@ -7684,5 +7690,37 @@ c            call xprvdu(ncvdu, 1,0)
             if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
         endif
       ENDIF
+      RETURN
+      END
+CODE FOR SYMCODE
+      SUBROUTINE SYMCODE(M,J,N2P,L2C)
+C RETURN X-RAY STYLE SYMMETRY CODES
+cdjwmay09
+c      M      RETURN VALUE
+c      J1     S
+c      J2     L
+c      J3     TX
+c      J4     TY
+c      J5     TZ
+c      N2P    No OF OPERATORS
+c      L2C    CENTRIC SWITCH
+C
+      INCLUDE 'XUNITS.INC'
+      include 'ISTORE.INC'
+      DIMENSION J(5)
+C
+       M = 0
+       IF (ISTORE(L2C) .LE. ZERO) THEN
+            JA = 1
+       ELSE
+            JA = 2
+       ENDIF
+       M = 1+
+     1 (ABS(J(1))-1) * N2P * JA +
+     2 (J(2)-1) * JA +
+     3 (-SIGN(1,J(1))+1)/2
+       M=1000*M+100*(5+J(3))+10*(5+J(4))
+     1 +(5+J(5))
+      WRITE(NCWU,'(8I10)') M,J,N2P,L2C
       RETURN
       END
