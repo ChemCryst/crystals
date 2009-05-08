@@ -31,7 +31,9 @@
 {1,11 Recalculate phases 
 
 {1,11 PLATON Squeeze               {12,11Prepare data for PLATON, run SQUEEZE
-{1,11                              {12,11and update CRYSTALS reflections.
+{1,11                              {12,11Updated reflections are automatically 
+{1,11                              {12,11read back into CRYSTALS
+
 {1,11                              {12,11Note that CRYSTALS updates the 
 {1,11                              {12,11reflection flags so that it can store 
 {1,11                              {12,11the returned A nd B parts rather than 
