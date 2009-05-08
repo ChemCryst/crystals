@@ -1,5 +1,5 @@
 %SCRIPT FSQWT                                                                  
-%% WEIGHT FOR OPTIMISING WIGHTS FOR Fo REFINEMENT                               
+%% SCRIPT FOR OPTIMISING WIGHTS FOR Fsq REFINEMENT                               
 %%                                                                              
 We will try 5, 4 and 3 parameter schemes, in that order since the 3 parameter   
 scheme is most often satisfactory, and will by default be left in force. You    
