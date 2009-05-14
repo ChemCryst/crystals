@@ -24,7 +24,7 @@
 ^^WI   }                                                                        
 ^^WI   @ 2,4 LISTBOX PUB_LIST VISLINES=10 ADDTOLIST                             
 ^^WI         'Cif format' 'XYZ table' 'Aniso parameters' 'Distances'            
-^^WI         'PDB file' 'Shelx file' 'Reflection data'                        
+^^WI         'PDB file' 'Shelx INS file' 'Shelx HKL file' 'Reflection table'
 ^^WI         'Summary' 'Residuals' 'Save'                                       
 ^^WI         NULL                                                               
 ^^WI   @ 2,6 GRID BTNS NROWS=7 NCOLS=1                                          
@@ -65,8 +65,9 @@
  ANISO       Temperature factor listing                                         
  DISTANCES   Distance-angle listing                                             
  PDB         Output a PDB file                                           
- SHELX       A Minimal SHELXS file                                              
- REFLECTIONS Reflection listing                                                 
+ SHELX       A Minimal SHELXS INS file
+ SHELX HKL   SHELX HKL file                                              
+ REFLECTIONS Reflection table in A4 format                                                 
  SUMMARY     A summary of all data stored                                       
  RESIDUALS   A full analysis of residuals (Fo-Fc)                               
  GEOMETRY    The SCRIPT for evaluating molecular parameters.                    
@@ -109,14 +110,21 @@
 %          BLOCK                                         %PDB%                
 %            COPY '#PUNCH 5 D'                                                  
 %            COPY 'END'                                                         
- PDB output to {&publish.pdb{&                                                
+ PDB output to {&PUBLISH.PDB{&                                                
 %          END BLOCK                                                            
-%          BLOCK                                         %SHELX%                
+%          BLOCK                                         %SHELX INS%                
 %            COPY '#FOREIGN SHELX SPECIAL'                                      
 %            COPY 'END'                                                         
  Shelx output to shelxs.ins                                                     
 %          END BLOCK                                                            
 %%                                                                              
+%          BLOCK                                         %SHELX HKL% 
+%            COPY '#RELE PUNCH SHELX.HKL'
+%            COPY '#PUNCH 6 F'
+%            COPY 'END'
+%            COPY '#RELE PUNCH BFILE.PCH'
+ Shelx output to {&SHELXS.HKL{&                                                     
+%          END BLOCK                                                            
 %          BLOCK                                         %REFLECTIONS%          
 ^^CO         DISPOSE XPUB                                                       
 %            COPY '#SCRIPT PUBREFL'                                             
