@@ -5,11 +5,12 @@
 % EVALUATE TWINNED = FALSE                                                      
 % EVALUATE NOINI5 = FALSE                                                       
 % VARIABLE LOGICAL SCRIPTEXT                                                    
-% VARIABLE LOGICAL LCONTOUR LSECTION COLLECTNEW                                 
+% VARIABLE LOGICAL LCONTOUR LSECTION COLLECTNEW LPRINT                               
 % VARIABLE LOGICAL PEAKCHANGE REDRAW XFCALLED                                   
 % VARIABLE INTEGER DOSCALE DOCALC DOMAP NPEAKS IMAP IWEI N5O N10 N5N            
 % VARIABLE INTEGER DOPEAKS DOCOLLECT MTYPE DOALL DOXPR                          
-% VARIABLE INTEGER F67                                                          
+% VARIABLE INTEGER F67
+% EVALUATE LPRINT = FALSE                                                          
 %%                                                                              
 %% The variables needed by XQUESTIO                                             
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
@@ -131,12 +132,13 @@
 ^^WI   }                                                                        
 ^^WI   @ 10,2 GRID GMAPS NROWS=3 NCOLS=1 OUTLINE='Maps'                         
 ^^WI   {                                                                        
-^^WI     @ 1,1 GRID VBOTTOM NROWS=2 NCOLS=3                                     
+^^WI     @ 1,1 GRID VBOTTOM NROWS=3 NCOLS=3                                     
 ^^WI     {                                                                      
 ^^WI      @ 1,1 RADIOBUTTON XMCON 'Save CONTOUR file'                           
 ^^WI      @ 2,1 RADIOBUTTON XMMCE 'Save MCE file'                               
 ^^WI      @ 1,3 RADIOBUTTON XMLOU 'Save Mapview file'                           
 ^^WI      @ 2,3 RADIOBUTTON XMNON 'No map output' STATE=ON                      
+^^WI      @ 3,1 RADIOBUTTON XLIST 'Print Map' STATE=OFF  
 ^^WI     }                                                                      
 ^^WI     @ 3,1 BUTTON BSETMAP '&Set Map Ranges...'                              
 ^^WI   }                                                                        
@@ -248,6 +250,14 @@
 %         END IF                                                                
 %        END IF                                                                 
 %       END IF                                                                  
+^^??      XLIST STATE
+%         GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
+%         IF VALUE .EQ. 1 THEN                                                  
+%          EVALUATE LPRINT = TRUE
+%         ELSE                                                                  
+%          EVALUATE LPRINT = FALSE
+%         END IF                                                                
+
 ^^WI    DISPOSE FOURIER                                                         
 ^^CR                                                                            
 %%                                                                              
@@ -302,7 +312,10 @@
 %       ELSE                                                                    
 %           EVALUATE MAPTYPE = 'FC-PAT'                                         
 %           INSERT 'FC-PAT'                                                     
-%       END IF                                                                  
+%       END IF   
+%       IF LPRINT .EQ. TRUE THEN
+%           INSERT 'PRINT=YES'
+%       END IF                                                               
 %       IF DOMAP .EQ. 3 THEN                                                    
 %           BLOCK                                                               
 %              ON ERROR REPEAT                                                  
