@@ -38,7 +38,7 @@ Input a coordinate list in SHELX.CRY or SHELXS.RES format.
 %    IF FILESCAN THEN
 Reading atoms from a local modification if SHELXS which separates
 the atom type and serial.
-%      COPY '#OPEN SCPDATA SHELXS.CRY'
+%      COPY '#OPEN SCPDATA shelxs.cry'
 %      LOOP
 %        ON ERROR TERMINATE
 %        ON END TERMINATE
@@ -112,7 +112,7 @@ Reading from a standard SHELXS.RES file
 %      IF FILESCAN THEN
      All atoms from the SHELXS.RES file will have a TYPE 'Q' and
      the serial number will be their position in the list.
-%        COPY '#OPEN SCPDATA SHELXS.RES'
+%        COPY '#OPEN SCPDATA shelxs.res'
 %      LOOP
 %          ON ERROR TERMINATE
 %          ON END TERMINATE

@@ -93,7 +93,7 @@
 %           FINISH                                                              
 %      END IF                                                                   
 %      COPY '#SPAWN % "CRYSDIR:shelxs.exe"'                                     
-%      COPY '#TYPE SHELXS.LIS'                                                  
+%      COPY '#TYPE shelxs.lis'                                                  
 %   END BLOCK                                                                   
 %   BLOCK                                                                       
 %      EVALUATE QTITLE = 'Shelxs Results'                                       
@@ -116,7 +116,7 @@
 %%                                                                              
 %      COPY '#SCRIPT FRESH'                                                     
 %%                                                                              
-%      COPY '#OPEN SCPDATA SHELXS.CRY'                                          
+%      COPY '#OPEN SCPDATA shelxs.cry'                                          
 %      VARIABLE INTEGER ATOMCOUNT
 %      COPY '#SCRIPT ZSHELXIN'                                                  
 %%DJW      COPY '#SCRIPT INshelxs'

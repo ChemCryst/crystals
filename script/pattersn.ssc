@@ -22,7 +22,7 @@
 %      GET NOSTORE FINAL ABBREVIATED  -
     'Do you want to run SHELXS on-line? ' 'NO'
 %        IF ( VALUE .EQ. 1 ) THEN
-%          COPY '#SPAWN SHELXS SHELXS'
+%          COPY '#SPAWN SHELXS shelxs'
 %          COPY '#SCRIPT MODEL'
 %          FINISH
 %

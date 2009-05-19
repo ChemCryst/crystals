@@ -255,17 +255,17 @@
 %      END IF                                                                   
 %      IF ( REGUL .EQ. TRUE ) THEN                                              
 %% remove old file if it exists
-%        EVALUATE T = FILEDELETE ( 'SAV1216.DAT' )                              
-%        COPY '#RELEASE PUNCH SAV1216.DAT'                                      
+%        EVALUATE T = FILEDELETE ( 'sav1216.dat' )                              
+%        COPY '#RELEASE PUNCH sav1216.dat'                                      
 %        COPY '#PUNCH 12'                                                       
 %        COPY 'END'                                                             
 %        COPY '#PUNCH 16'                                                       
 %        COPY 'END'                                                             
-%        COPY '#RELEASE PUNCH BFILE.PCH'                                        
+%        COPY '#RELEASE PUNCH bfile.pch'                                        
 %%                                                                              
 %        COPY '#SCRIPT XREGULH'                                                 
 %%                                                                              
-%        COPY '#USE SAV1216.DAT'                                                
+%        COPY '#USE sav1216.dat'                                                
 %% Store the current L12 serial, so other scripts know.                         
 %        COPY '#GENERALEDIT 12'                                                 
 %        COPY 'GETSERIAL L12SER'                                                
