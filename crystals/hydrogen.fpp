@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.34  2009/04/08 07:35:38  djw
+C Use covalent radii to refine hydrogen placement of pi ligands near metals
+C
 C Revision 1.33  2008/10/01 11:11:54  djw
 C Support for treatment of Deuterium as hydrogen
 C
@@ -808,20 +811,20 @@ C----- OPEN A FILE FOR THE RIDING RESTRAINTS
       IF (JACT.GE.2) THEN
          WRITE (CMON,'(11X,A)') 'Putting Perhydro commands in PERH.TMP'
          CALL XPRVDU (NCVDU,1,1)
-         CPATH2='PERH.TMP'
+         CPATH2='perh.tmp'
          LPATH2=KPATH(CPATH2)
-         CALL XRDOPN (6,KFRN(1),CPATH2(1:LPATH2)//'PERH.TMP',LPATH2+8)
+         CALL XRDOPN (6,KFRN(1),CPATH2(1:LPATH2)//'perh.tmp',LPATH2+8)
          WRITE (CMON,'(11X,A)') 'Putting delete H commands in DELH.TMP'
          CALL XPRVDU (NCVDU,1,1)
-         CPATH2='DELH.TMP'
+         CPATH2='delh.tmp'
          LPATH2=KPATH(CPATH2)
-         CALL XRDOPN (6,LFRN(1),CPATH2(1:LPATH2)//'DELH.TMP',LPATH2+8)
+         CALL XRDOPN (6,LFRN(1),CPATH2(1:LPATH2)//'delh.tmp',LPATH2+8)
       END IF
       WRITE (CMON,'(11X,A)') 'Putting riding Constraints in RIDEH.DAT'
       CALL XPRVDU (NCVDU,1,1)
-      CPATH='RIDEH.DAT'
+      CPATH='rideh.dat'
       LPATH=KPATH(CPATH)
-      CALL XRDOPN (6,JFRN(1),CPATH(1:LPATH)//'RIDEH.DAT',LPATH+9)
+      CALL XRDOPN (6,JFRN(1),CPATH(1:LPATH)//'rideh.dat',LPATH+9)
       IF (JACT.LE.2) THEN
          CSRQ=' '
          WRITE (CSRQ,'(A10,1X,I2,1X,I2)') '#HYDROGENS',
@@ -1265,13 +1268,13 @@ C -- FINAL MESSAGES
 2500  CONTINUE
 C
 C----- CLOSE THE RIDING RESTRAINT FILE
-      CALL XRDOPN (7,JFRN(1),CPATH(1:LPATH)//'RIDEH.DAT',LPATH+9)
+      CALL XRDOPN (7,JFRN(1),CPATH(1:LPATH)//'rideh.dat',LPATH+9)
 C^MAY06
       IF (JACT.GE.2) THEN
-            CALL XRDOPN (7,KFRN(1),CPATH2(1:LPATH2)//'PERH.TMP'
+            CALL XRDOPN (7,KFRN(1),CPATH2(1:LPATH2)//'perh.tmp'
      1        ,LPATH+8)
             ISTAT = KSCTRN ( 1 , 'PERH:NHADD' , nhadd, 1 )
-            CALL XRDOPN (7,LFRN(1),CPATH2(1:LPATH2)//'DELH.TMP'
+            CALL XRDOPN (7,LFRN(1),CPATH2(1:LPATH2)//'delh.tmp'
      1        ,LPATH+8)
             WRITE(CMON,'(I9,A)') NHADD,' Hydrogen atoms added'
             CALL XPRVDU (NCVDU,1,0)
@@ -1279,9 +1282,9 @@ C----- IF SOME HATOMS CREATED, COPY TEMP FILES TO DAT FILES
         IF (NHADD .GT. 0) THEN
             REWIND (NCFPU2)
             REWIND (NCCBU)
-            CALL XRDOPN (6,KFRN(1),CPATH2(1:LPATH2)//'DELH.TMP'
+            CALL XRDOPN (6,KFRN(1),CPATH2(1:LPATH2)//'delh.tmp'
      1        ,LPATH+8)
-            CALL XRDOPN (6,LFRN(1),CPATH2(1:LPATH2)//'DELH.DAT'
+            CALL XRDOPN (6,LFRN(1),CPATH2(1:LPATH2)//'delh.dat'
      1        ,LPATH+8)
          WRITE (CMON,'(11X,A)') 'Copying DELH.TMP to DELH.DAT'
          CALL XPRVDU (NCVDU,1,1)
@@ -1291,16 +1294,16 @@ C----- IF SOME HATOMS CREATED, COPY TEMP FILES TO DAT FILES
               WRITE(NCCBU, '(A)') CLINE(1:NCHAR)
             ENDDO
 2           CONTINUE
-            CALL XRDOPN (7,KFRN(1),CPATH2(1:LPATH2)//'DELH.TMP'
+            CALL XRDOPN (7,KFRN(1),CPATH2(1:LPATH2)//'delh.tmp'
      1        ,LPATH+8)
-            CALL XRDOPN (7,LFRN(1),CPATH2(1:LPATH2)//'DELH.DAT'
+            CALL XRDOPN (7,LFRN(1),CPATH2(1:LPATH2)//'delh.dat'
      1        ,LPATH+8)
 C^
             REWIND (NCFPU2)
             REWIND (NCCBU)
-            CALL XRDOPN (6,KFRN(1),CPATH2(1:LPATH2)//'PERH.TMP'
+            CALL XRDOPN (6,KFRN(1),CPATH2(1:LPATH2)//'perh.tmp'
      1        ,LPATH+8)
-            CALL XRDOPN (6,LFRN(1),CPATH2(1:LPATH2)//'PERH.DAT'
+            CALL XRDOPN (6,LFRN(1),CPATH2(1:LPATH2)//'perh.dat'
      1        ,LPATH+8)
          WRITE (CMON,'(11X,A)') 'Copying PERH.TMP to PERH.DAT'
          CALL XPRVDU (NCVDU,1,1)
@@ -1310,9 +1313,9 @@ C^
               WRITE(NCCBU, '(A)') CLINE(1:NCHAR)
             ENDDO
 3           CONTINUE
-            CALL XRDOPN (7,KFRN(1),CPATH2(1:LPATH2)//'PERH.TMP'
+            CALL XRDOPN (7,KFRN(1),CPATH2(1:LPATH2)//'perh.tmp'
      1        ,LPATH+8)
-            CALL XRDOPN (7,LFRN(1),CPATH2(1:LPATH2)//'PERH.DAT'
+            CALL XRDOPN (7,LFRN(1),CPATH2(1:LPATH2)//'perh.dat'
      1        ,LPATH+8)
 
         ENDIF

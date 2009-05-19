@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.56  2008/06/27 14:42:05  djw
+c minor bugfix
+c
 c Revision 1.55  2008/05/30 12:28:43  djw
 c Enable copying of partial occupancies to defined groups during replace/augment
 c
@@ -1495,8 +1498,17 @@ CDJWNOV07          CALL XPRVDU(NCVDU,1,0)
           WRITE(NCWU,'(A,F9.4)')'Average best in last row: ',RAVERAGE
 CDJWNOV07          CALL XPRVDU(NCVDU,1,0)
         endif
-
-
+c
+cdjwmay09
+          write(cmon,1049) trace, det, dettrc
+1049      format(/' Trace =',f6.3,' Determinant =',f6.3,
+     1    ' Tr+Det =',f6.3/' see Giacovazzo, Sect 1.D',/
+     2    ' Element:  1  2  3  4  6 -1 -2 -3 -4 -6'/
+     3    ' Tr_det:   4  0  1  2  3 -4  0 -1 -2 -3')
+          CALL XPRVDU (NCVDU,5,0)
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:),
+     1    CMON(2)(:),CMON(3)(:), CMON(4)(:),CMON(5)(:)
+c
          IF (IPCHRE.GE.0)THEN
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,A)')
      1    CHAR(9),':Symmetry'
@@ -1521,10 +1533,10 @@ CDJWNOV07          CALL XPRVDU(NCVDU,1,0)
              CALL XCREMS(CPCH,CPCH,LENFIL)
            END IF
          END IF
-
-c^^         
-
-         IF (ABS(1.-ABS(DET)).LE..05) THEN
+c         
+cdjwmay09         IF (ABS(1.-ABS(DET)).LE..05) THEN
+           IF ( (ABS(1.-ABS(DET)).LE..05) .AND.
+     1        (ABS(TRACE - NINT(TRACE)).LE..1)) THEN
             I=1+NINT(ABS(DETTRC))
             CSYM=' '
             CSYM(2:2)=CELEMT(I:I)
@@ -1545,6 +1557,7 @@ c^^
      1       CHAR(9),CSYM(1:2)
              CALL XCREMS(CPCH,CPCH,LENFIL)
             END IF
+c
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A/)') CMON(1)(:)
 1050        FORMAT (' Pseudo-symmetry element ',A2,' detected')
          ELSE

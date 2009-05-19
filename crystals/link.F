@@ -1540,7 +1540,7 @@ C
 C----- WRITE THIS LINE FOR GRAPHICAL RUN
         WRITE(NCFPU1, '(''%WINDOW 960 700 '')')
 C----- SET UP THE FILE SPECIFICATIONS
-        WRITE(NCFPU1, '(''%FILE SIRDATA.BIN  SIR.CRY '')')
+        WRITE(NCFPU1, '(''%FILE sirdata.bin  sir.cry '')')
 C----- OUTPUT A TITLE, FIRST 20 WORDS ONLY
         WRITE(NCFPU1, '(''%INITIALISE'', /, ''%JOB '',20A4)')
      1 (KTITL(I),I=1,20)
@@ -1562,9 +1562,9 @@ C
 C----- SET UP THE FILE SPECIFICATIONS
         WRITE(NCFPU1, '(''%Window '')')
         if (ilink .eq. 12) then
-          WRITE(NCFPU1, '(''%structure  SIR02 '')')
+          WRITE(NCFPU1, '(''%structure  sir02 '')')
         else
-          WRITE(NCFPU1, '(''%structure  SIR9x '')')
+          WRITE(NCFPU1, '(''%structure  sir9X '')')
         endif
 C----- OUTPUT A TITLE, FIRST 20 WORDS ONLY
         WRITE(NCFPU1, '(''%init'', /, ''%job '',20A4)')
@@ -1831,21 +1831,21 @@ C
       INCLUDE 'XIOBUF.INC'
 C
       DATA CFILE / 
-     1  'SNOOPI.INI' ,
-     2  'SNOOPI.L5' ,
-     3  'SHELXS.INS' ,
-     4  'SIRDATA.DAT',
-     5  'CAMERON.INI' ,
-     6  'CAMERON.L5I',
-     7  'SIR92.INI',
-     8  'frag.dat', 
-     9  'SIR97.INI',
-     c  'PLATON.RES',
-     1  'PLATON.HKL',
-     2  'CRYSTALS.CON',
+     1  'snoopi.ini' ,
+     2  'snoopi.l5' ,
+     3  'shelxs.ins' ,
+     4  'sirdata.dat',
+     5  'cameron.ini' ,
+     6  'cameron.l5i',
+     7  'sir92.ini',
+     8  'FRAG.DAT', 
+     9  'sir97.ini',
+     C  'platon.res',
+     1  'platon.hkl',
+     2  'crystals.con',
      3  'crystals.mol2' ,
      4  'sflip.inflip',
-     5  'SIR02.SIR'/
+     5  'sir02.sir'/
 C
       DATA LFILE / 10,  9,  10,  11, 11, 11, 9, 8, 9, 10, 10, 12, 13 ,
      1             12,  9  /
