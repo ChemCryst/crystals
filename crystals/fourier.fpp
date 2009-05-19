@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.2  2004/12/13 16:16:08  rich
 C Changed GIL to _GIL_ etc.
 C
@@ -577,6 +581,25 @@ cfeb03
         ENDIF
        ENDIF
       ENDIF
+cdjwmay09
+c---- commented out - list 5 has been overwritten with list 29 info
+      IF (IOUFIL .EQ. 1) THEN
+3301  FORMAT(A)
+3302  FORMAT(I8)
+3303  FORMAT(F15.8)
+        WRITE(NCFPU1,3301)'LIST5'
+        WRITE(NCFPU1,3302)N5,MD5
+        M5 = L5
+        DO I = 1, N5
+            WRITE(NCFPU1,3301) STORE(M5)
+            DO J = M5+1,M5+MD5-1
+                WRITE(NCFPU1,3303) STORE(J)
+            END DO
+            M5 = M5 + MD5
+        END DO
+        WRITE ( NCFPU1 , '(''END'')' )
+      END IF
+c
 C--CHECK IF WE HAVE BEEN DOING OUTPUT
       IF( IOUTAP .GT. 0 ) THEN
           ENDFILE MT1
@@ -1596,7 +1619,12 @@ C SET UP TRANSFORMATION MATRIX  (BRIEFLY)
           STORE(NFL+2+IAXIS(2)) = 1.0
           STORE(NFL+5+IAXIS(3)) = 1.0
           IF (XDETR3 (STORE(NFL)) .LE. 0) STORE(NFL+5+IAXIS(3)) = -1.0
-
+cdjwmay09
+      write(ncwu,'(3f10.3)') (store(i),i=l1o1,l1o1+8)
+      write(ncwu,'(3i10)')  (istore(i),i=l14o,l14o+2)
+      call xmove(store(l1o1  +3*(iaxis(1)-1)), store(nfl  ),3)
+      call xmove(store(l1o1  +3*(iaxis(2)-1)), store(nfl+3),3)
+      call xmove(store(l1o1  +3*(iaxis(3)-1)), store(nfl+6),3)
 C WRITE THE M/T HEADER  DETAILS
 3751      FORMAT(A)
 3752      FORMAT(F15.8)
@@ -1607,12 +1635,17 @@ C WRITE THE M/T HEADER  DETAILS
           WRITE (NCFPU1,3751) 'CELL'
           WRITE (NCFPU1,3752) (C1ORIG(I), I = 1, 6)
           WRITE (NCFPU1,3751) 'L14 '
-          WRITE (NCFPU1,3752) ((STORE(J),J=I,I+3),I=L14,2*MD14+L14,MD14)
+c          WRITE (NCFPU1,3752) ((STORE(J),J=I,I+3),I=L14,2*MD14+L14,MD14)
+            m14=l14
+            do k=1,3
+             write(ncfpu1,3752) (store(l1p1+iaxis(k)-1)*store(m14+j)
+     1       ,j = 0,3)
+             m14 = m14+md14
+            end do
           WRITE (NCFPU1,3751) 'SIZE'
           WRITE (NCFPU1,3753) (NUM(I),I=1,3)
+
       ENDIF
-
-
       IF ( IOUFIL .EQ. 2 ) THEN
 
 C AN OUTPUT FILE IS REQUIRED
