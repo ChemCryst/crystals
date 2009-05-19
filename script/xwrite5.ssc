@@ -566,8 +566,8 @@
 %     COPY 'exclude'
 %     COPY '#use someh.12'
 %     COPY 'END'
-%     COPY '#RELEASE PUNCH BFILE.PCH'
-%     COPY '#RELEASE SCPQ BFILE.SPQ'
+%     COPY '#RELEASE PUNCH bfile.pch'
+%     COPY '#RELEASE SCPQ bfile.spq'
 %%
 %% Now take all the atoms in restdat.12 and set their refine flag to 1,
 %% (or 2 if HMODE=2). Set STUCK true so that a custom L12 is written.
@@ -666,14 +666,14 @@
 %% If HRIDE is still set, we found some atoms to ride.
 %  IF ( HRIDE ) THEN
  Calculating RIDES.
-%     COPY '#RELEASE PUNCH RIDEDAT.12'
+%     COPY '#RELEASE PUNCH ridedat.12'
 %     COPY '#DISTANCES'
 %     COPY 'OUTPUT MON=OFF PUNCH=SCRIPT'
 %     COPY 'SELECT SYMMETRY=NONE  RANGE=L41'
 %     COPY 'BONDED'
 %     QUEUE PROCESS
 %     COPY 'END'
-%     COPY '#RELEASE PUNCH BFILE.PCH'
+%     COPY '#RELEASE PUNCH bfile.pch'
 %  END IF
 %%
 %  IF ( STUCK ) THEN
@@ -786,7 +786,7 @@
 %      COPY 'SUMFIX ELEMENT SCALES'
 %    END IF
 %    IF ( HMODE .EQ. 10 ) THEN
-%      COPY '#USE RIDEDAT.12'
+%      COPY '#USE ridedat.12'
 %    ELSE IF ( HMODE .GE. 1 ) THEN
 %      CLEAR
 %      INSERT "CONT H("

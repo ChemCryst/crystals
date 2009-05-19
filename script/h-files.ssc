@@ -4,7 +4,7 @@
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
 % VARIABLE LOGICAL   ANSWER                                                     
 %%
-%    IF ( FILEEXISTS ( 'DELH.DAT' ) ) THEN
+%    IF ( FILEEXISTS ( 'delh.dat' ) ) THEN
 %     EVALUATE QTITLE = 'Delete Hydrogen'                                         
 %     EVALUATE QLINE1 = 'You have a DELH.DAT file'                                   
 %     EVALUATE QLINE2 = 'Do you want to execute it?'                                
@@ -12,9 +12,9 @@
 %     EVALUATE BUTTXX = '&No'                                                    
 %     COPY '#SCRIPT XQUESTIO'                                                     
 %     IF ANSWER .EQ. TRUE THEN  
-%      copy "#use DELH.dat"
+%      copy "#use delh.dat"
 %     END IF                                                                      
-%     IF ( FILEEXISTS ( 'PERH.DAT' ) ) THEN
+%     IF ( FILEEXISTS ( 'perh.dat' ) ) THEN
 %      EVALUATE QTITLE = 'Compute Hydrogen'                                         
 %      EVALUATE QLINE1 = 'You have a PERH.DAT file'                                   
 %      EVALUATE QLINE2 = 'Do you want to execute it?'                                
@@ -22,7 +22,7 @@
 %      EVALUATE BUTTXX = '&No'                                                    
 %      COPY '#SCRIPT XQUESTIO'                                                     
 %      IF ANSWER .EQ. TRUE THEN                                                   
-%       copy "#use PERH.dat"
+%       copy "#use perh.dat"
 %      END IF                                                                      
 %     END IF
 %    ELSE
