@@ -51,6 +51,6 @@
 ^^WI     ITEM HLPB 'Evaluation'                                                         
 ^^WI     '#SPAWN CRYSDIR:manual/analyse/analysis.html' DISABLEIF='IN'             
 ^^WI     ITEM HLPB 'Difficult'                                                         
-^^WI     '#SPAWN CRYSDIR:manual/analyse/Difficult.html' DISABLEIF='IN'             
+^^WI     '#SPAWN CRYSDIR:manual/analyse/difficult.html' DISABLEIF='IN'             
 ^^WI   ENDMENU
 ^^WI  ENDMENU                                                                   

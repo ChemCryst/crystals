@@ -23,9 +23,10 @@
 ^^WI   ITEM DWEB 'Alternative(2) &Checkcif on the web'                                        
 ^^WI '$http://journals.iucr.org/services/cif/checking/checkbasic.html'                                                
 ^^WI     ITEM P '&Checkcif in platon' '#SCRIPT PLATONC' DISABLEIF='IN'          
+^^WI     ITEM HLPB 'PLATON Help'                                                         
+^^WI     '#SPAWN CRYSDIR:manual/analyse/platon.html' DISABLEIF='IN'             
 ^^WI     ITEM HLPB 'CIF Help'                                                         
 ^^WI     '#SPAWN CRYSDIR:manual/analyse/cifcheck.html' DISABLEIF='IN'             
-
 ^^WI   SPLIT                                                                                
 ^^WI   ITEM PWEB 'Printcif on the &web'                                         
 ^^WI '$http://journals.iucr.org/services/cif/printcif.html'                     
