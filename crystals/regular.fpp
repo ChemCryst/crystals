@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.57  2009/05/19 14:35:52  djw
+c More lower case filename changes
+c
 c Revision 1.56  2008/06/27 14:42:05  djw
 c minor bugfix
 c
@@ -282,10 +285,13 @@ C            IFLCMP         THE FLAG WHICH DETERMINES WHETHER THE
 C                           CURRENT GROUP IS THE SUBJECT OF A COMP-
 C                           ARE/REPLACE/KEEP OPERATION. ITS DEFAULT
 C                           VALUE IS 'ICMPDF'
-C                  VALUE ( ONE OF ) : THOSE FOR ICMPDF
+C                  VALUE ( ONE OF ) : 1          2          3
+C                                     (REPLACE)  (COMPARE)  (KEEP)
+C                                    4           5          6
+C                                    (AUGMENT)   (RENAME)   (CAMERON)
 C                           THE VALUE 5 CAN ONLY BE SET BY A 'RENAME' 
 C                           COMMAND
-C                           THE VALUE 5 CAN ONLY BE SET BY A 'CAMERON' 
+C                           THE VALUE 6 CAN ONLY BE SET BY A 'CAMERON' 
 C                           COMMAND
 C
 C
@@ -734,7 +740,7 @@ C    SET FLAG TO REPLACE
 C -- KEEP DIRECTIVE
 C    SET FLAG
       IFLCMP=3
-C -- SET NUMBER OF ATOMS
+C -- SET SERIAL OFFsET OF ATOMS
       dkeep=XLXRDV(0.)
       GO TO 8000
 3700  CONTINUE
@@ -978,20 +984,19 @@ c
       cmon(1) =' '
       if (imethd .eq. 1) then
             write(cmon,'(a)')
-     1 'Matching by Rotation/inversion'
+     1 'Matching by Rotation/inversion (Method 1)'
       else if (imethd .eq. 2) then
             write(cmon,'(a)')
-     1 'Matching by Rotation/dilation'
+     1 'Matching by Rotation/dilation (Method 2)'
       else if (imethd .eq. 3) then
             write(cmon,'(a)')
-     1 'Matching by Pure Rotation (Kabsch)'
+     1 'Matching by Pure Rotation (Method 3, Kabsch)'
       else if (imethd .eq. 4) then
             write(cmon,'(a)')
-     1 'Matching Permitting Improper Rotation (Kabsch)'
+     1 'Matching Permitting Improper Rotation (Method 4, Kabsch)'
       endif
       call xprvdu(ncvdu,1,0)
       if (issprt .eq. 0) write(ncwu, '(a)') cmon(1)(:)
-
 
 C----- COPY OLD WEIGHT TO NEW
       MOLD=LOLD
@@ -1694,6 +1699,7 @@ C    SHOULD BE CHANGED.
 C -- COPY COORDINATES BACK TO ATOM DEFINTION BLOCK
       DO I=1,NATMD
 C -- CALCULATE THE POSITIONS TO MOVE THE COORDINATES BETWEEN
+c    note offset of +4 (x) added here
         INDATM=LATMD+(I-1)*MDATMD+4
         INDNEW=LNEW+(I-1)*MDNEW
         INDUIJ=LUIJ+(I-1)*MDUIJ
@@ -1754,6 +1760,7 @@ CDJWDEC07
          KDJW = IADDR
          DO IDJW = 1,NATMD
           CALL XMOVE (STORE(JDJW),STORE(KDJW),MDATMD)
+c - Add offset to serial
           STORE(KDJW+1) = STORE(KDJW+1) + DKEEP
           JDJW = JDJW + MDATMD
           KDJW = KDJW + MDATMD
@@ -2284,11 +2291,14 @@ C
 C --
 C
 CODE FOR XRGPLA
-      SUBROUTINE XRGPLA( PLATOM, NLATOM, XMATR)
+      SUBROUTINE XRGPLA( PLATOM, NLATOM, XMATR,ITYPE)
 C -- THIS SUBROUTINE IS USED TO DEFINE EACH NEW ATOM IN THE GROUP
 C    PLATOM( ) CONTAINS THE DETAILS OF THE ATOM IN THE USUAL LIST 5
 C    FORMAT. THE ROTATION MATRIX XMATR(9) IS APPLIED TO THE COORDINATES
 C    A ORIGIN SHIFT AND GENERAL ROTATION MATRIX ARE ALSO APPLIED
+CDJWJUN09
+C    ITYPE - 1 = NORMAL
+C            0 = GEOMETRICAL SHAPE
       DIMENSION XMATR(9), PLATOM(NLATOM)
       DIMENSION TEMP(3)
       INCLUDE 'STORE.INC'
@@ -2297,7 +2307,12 @@ C    A ORIGIN SHIFT AND GENERAL ROTATION MATRIX ARE ALSO APPLIED
       INCLUDE 'XRGCOM.INC'
       INCLUDE 'XRGLST.INC'
       INCLUDE 'XIOBUF.INC'
+c
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'QSTORE.INC'
 C --
+c    platom are 'new'atoms (1)=type, (3)=occ, (8)=u11
+c
 C -- INCREMENT NEW ATOM COUNT
       NNEW=NNEW+1
 CDJWAPR2001
@@ -2310,8 +2325,15 @@ C -- CALCULATE WHERE THIS ATOM IS GOING TO GO
       INDUIJ=LUIJ+(NNEW-1)*MDUIJ
       INDOCC=LOCC+(NNW-1)*MDOCC
 C -- COPY ATOM EXCEPT TYPE AND SERIAL
-      CALL XMOVE( PLATOM(1), STORE(INDOCC), 1)
-      CALL XMOVE( PLATOM(3), STORE(INDATM+2), NLATOM-2)
+cdjwjun09 Only copy x's, flag and u's
+cdjwjun09      CALL XMOVE( PLATOM(1), STORE(INDOCC), 1)
+cdjwjun09      CALL XMOVE( PLATOM(3), STORE(INDATM+2), NLATOM-2)
+cdjwjun09      CALL XMOVE( PLATOM(5), STORE(INDATM+4), NLATOM-4)
+CDJWJUN09  MOVE OCC AND FLAG IF THE SHAPE IS GEOMETRICAL AUGMENTATION
+      IF (ITYPE .EQ. 0) THEN
+        CALL XMOVE( PLATOM(3), STORE(INDATM+2), 2)
+      ENDIF
+      CALL XMOVE( PLATOM(5), STORE(INDATM+4), 3)
       CALL XMOVE( PLATOM(4), STORE(INDUIJ), 1)
       CALL XMOVE( PLATOM(8), STORE(INDUIJ+1), 6)
 C -- APPLY REQUIRED MATRIX TO COORDINATES
@@ -2363,9 +2385,6 @@ C -- CALCULATE ROTATION MATRIX
 C -- ALLOCATE WORK SPACE FOR ATOM COORDINATES
       ITMP2=KSTALL(3)
       ITMP3=KSTALL(3)
-CDJW-APR-08
-C---- SETT OCC
-      ATOM(3) = GPOCC
 cdjw nov99
       DO 4000 I=1,NATOMS
 C -- MOVE COORDINATES FOR EACH ATOM AND THEN CREATE THE ATOM
@@ -2378,7 +2397,16 @@ C -- APPLY ROTATION TO ATOMS
       CALL XMLTMM(STORE(ITMP1),STORE(ITMP2),STORE(ITMP3),3,3,1)
 C -- APPLY SHIFT
       CALL XADDR(STORE(ITMP3),SHIFT(1),ATOM(5),3)
-      CALL XRGPLA (ATOM(1), NATOMP, STORE(L1O2) )
+CDJW-APR-08
+C---- SETT OCC
+      ATOM(3) = GPOCC
+      IF (IFLCMP .EQ. 4) THEN
+C           AUGMENT - FILL IN DEFAULT OCC AND FLAG
+            ITYPE=0
+      ELSE
+            ITYPE=1
+      ENDIF
+      CALL XRGPLA (ATOM(1), NATOMP, STORE(L1O2), ITYPE )
 C -- CHECK FOR ERROR
       IF (IERFLG.LT.0) RETURN
 4000  CONTINUE
@@ -2400,7 +2428,7 @@ C --
       ATOM(6)=XLXRVN(98765.)
       ATOM(7)=XLXRVN(98765.)
 C -- PLACE THIS ATOM USING CURRENT COORDINATE SYSTEM
-      CALL XRGPLA (ATOM(1), NATOMP, RGOM(1,1) )
+      CALL XRGPLA (ATOM(1), NATOMP, RGOM(1,1), 1 )
       RETURN
       END
 C
@@ -2557,8 +2585,13 @@ C -- CHECK FOR EACH OLD ATOM SPECIFICATION GIVEN SO FAR
 CDJWAPR08
 C         CALL XMOVE(STORE(IADATM),STORE(INDATM),2)  !COPY SERIAL AND TYPE
          CALL XMOVE(STORE(IADATM),STORE(INDATM),3)  !COPY SERIAL, TYPE, OCC
-         noccin = noccin + 1
-         sumocc = sumocc + store(indatm+2)
+cdjwjun09
+         CALL XMOVE(STORE(IADATM+7),STORE(INDATM+7),mdatmd-7)  !COPY uij etc
+cdjwjun09 - only add in non-zero occupation numbers
+         if (store(indatm+2) .gt. zero) then
+          noccin = noccin + 1
+          sumocc = sumocc + store(indatm+2)
+         endif
 CDJWAPR2001
          CALL XMOVE(STORE(IADATM),STORE(MRENM),2)
 CRICJAN2003
@@ -2575,7 +2608,7 @@ CDJWAPR2001
          CALL XMOVE(STORE(IADATM),STORE(MRENM+2),2)
          ISTORE(MRENM+5) = IADATM
          MRENM = MRENM + MDRENM
-         CALL XRGPLA (STORE(LATMP), MDATMD, UNIT(1,1) ) !NEW ATOMS
+         CALL XRGPLA (STORE(LATMP), MDATMD, UNIT(1,1), 1 ) !NEW ATOMS
 
 
 4800     CONTINUE
