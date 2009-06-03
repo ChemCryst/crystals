@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.55  2009/04/08 08:45:14  rich
+C Use .EQV. not .EQ. for logical operands at line 588
+C
 C Revision 1.54  2009/04/08 07:33:02  djw
 C Start Flack parameter from 0.5 if it has not previously been refined
 C
@@ -586,7 +589,7 @@ C -- INVALID TEMPERATURE FACTOR
 cdjwapr09 Check the Flack Enantiopole Parameter.
 c If this is the first time it has been refined, set it to 0.5
       if (( enantio .eqv. .true.) .and. (abs(store (L5o+4)) .le. zerosq)
-     1 .and. (store(l30ge+6) .le. zero)) then
+     1 .and. (abs(store(l30ge+6)) .le. zero)) then
             store(L5O+4) = 0.5
             WRITE ( CMON, '(A)')'Starting FLACK refinement from 0.5' 
             CALL XPRVDU(NCVDU, 1,0)
