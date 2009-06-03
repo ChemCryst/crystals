@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.40  2009/04/28 09:51:44  djw
+C Compute mean(abs(shift/su)) for CIF compliance.  Store in STORE(L30RF+11), in place of total minimisation function, which was never used
+C
 C Revision 1.39  2008/09/08 10:18:32  djw
 C Enable/inhibit punching of ADP info from XPRAXI
 C
@@ -822,7 +825,7 @@ C----- SINGULARITY SITUATION IS OKAY
             IF ( ISSPRT .EQ. 0 ) WRITE(NCWU, 3651) JA, ISTORE(L23MN)
             WRITE ( CMON, 3650) JA, ISTORE(L23MN)
             CALL XPRVDU(NCVDU, 2,0)
-3651        FORMAT( ' The number of singularities, ', I4,
+3651        FORMAT( '{E The number of singularities, ', I4,
      1 ' exceeds the permited limit ', I4/
      2 ' Terminating after this cycle')
       ENDIF

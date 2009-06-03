@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2008/03/07 16:09:48  djw
+C changes to help with the correct computation of Fourier maps from twinned crystals.  THe old COPY67 subroutine did not pack the data properly unless the keys were the default keys.  The job is now done
+C
 C Revision 1.18  2005/05/14 13:28:14  stefan
 C 1. Corrected a mistake I made with a format statement.
 C
@@ -1443,7 +1446,7 @@ C
       WRITE(NCAWU,1000) LS
       WRITE ( CMON, 1000) LS
       CALL XPRVDU(NCVDU, 1,0)
-1000  FORMAT(' Singularity - relative parameter',I5)
+1000  FORMAT('{E Singularity - relative parameter',I5)
       LS=IBASE+NOC
       DO 1150 LT=1,N
       STR11(LS)=0.0
