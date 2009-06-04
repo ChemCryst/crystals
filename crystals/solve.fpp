@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.41  2009/06/03 09:04:04  djw
+C Highlight singularities in RED on monitor
+C
 C Revision 1.40  2009/04/28 09:51:44  djw
 C Compute mean(abs(shift/su)) for CIF compliance.  Store in STORE(L30RF+11), in place of total minimisation function, which was never used
 C
@@ -929,11 +932,11 @@ C--CALCULATE THE HAMILTON WEIGHTED R-VALUES
      2 +STORE(L11P+29)))
       ENDIF
 C--DETERMINE THE NUMBER OF OBSERVATIONS ETC.
-      I=NINT(STORE(L11P+23))
-      J=NINT(STORE(L11P+24))
-      K=NINT(STORE(L11P+27))
+      I=NINT(STORE(L11P+23))   !LS parameters
+      J=NINT(STORE(L11P+24))   !No X-ray observations
+      K=NINT(STORE(L11P+27))   !No of restraints
       L=J+K
-      M=NINT(STORE(L11P+16))
+      M=NINT(STORE(L11P+16))   !No of X-rays + restraints
 C--PRINT THE HEADING AND THE VARIOUS DETAILS AMASSED
       CALL XPRTCN
       IF (C .LE. ZERO) THEN
@@ -979,23 +982,28 @@ C----- UPDATE LIST 30
       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30
 C>DJWSEP96
 C----- Rw
-      STORE(L30RF +1 ) = A
+      STORE(L30RF+1 ) = A
 C----- NO. PARAM
-      STORE(L30RF +2 ) = STORE(L11P+23)
+      STORE(L30RF+2 ) = STORE(L11P+23)
 C----- Number of restraints
-      STORE(L30CF +13 ) = STORE(L11P+27)
+      STORE(L30CF+13 ) = STORE(L11P+27)
 C----- S GOONDNESS OF FIT - ONLY IF SOME OBSERVATIONS
       IF (STORE(L11P+24)+STORE(L11P+27) .GT. STORE(L30RF+2)) THEN
-            STORE(L30RF +4 ) = SQRT(STORE(L11P+17) /
-     1      (STORE(L11P+24)+ STORE(L11P+27)- STORE(L30RF+2)))
+cdjwjun09  This GOF originally included efffect of restraintS in denom. 
+c          Rewritten to just use X-rays
+c            STORE(L30RF+4 ) = SQRT(STORE(L11P+17) /
+c     1      (STORE(L11P+24)+ STORE(L11P+27)- STORE(L30RF+2)))
+             STORE(L30RF+4) = SQRT(STORE(L11P+25) / 
+     1       (STORE(L11P+24)-store(l11p+23)))
+cdjwjun09
       ENDIF
 C----- MAXIMUM SHIFT/ESD
-      STORE(L30RF +7 ) = SMAX
-      STORE(L30RF +8 ) = STORE(L11P+24)
-      IF (STORE(L11P+24) .GT. ZERO) STORE(L30RF +9 ) = STORE(L11P+25)
-      IF (STORE(L11P+27) .GT. ZERO) STORE(L30RF +10 ) = STORE(L11P+28)
+      STORE(L30RF+7 ) = SMAX
+      STORE(L30RF+8 ) = STORE(L11P+24)
+      IF (STORE(L11P+24) .GT. ZERO) STORE(L30RF+9 ) = STORE(L11P+25)
+      IF (STORE(L11P+27) .GT. ZERO) STORE(L30RF+10 ) = STORE(L11P+28)
 CDJWAPR09
-C      IF (C .GT. ZERO)              STORE(L30RF +11 ) = STORE(L11P+17)
+C      IF (C .GT. ZERO)              STORE(L30RF+11 ) = STORE(L11P+17)
 C MEAN ABS(SHIFT/SU)
       STORE(L30RF+11) = ABSFM
       CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)

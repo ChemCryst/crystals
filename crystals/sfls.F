@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.56  2009/06/03 15:26:01  djw
+C Add missing ABS() in enantiopole checking
+C
 C Revision 1.55  2009/04/08 08:45:14  rich
 C Use .EQV. not .EQ. for logical operands at line 588
 C
@@ -608,7 +611,7 @@ c
       ENDIF
 
       NEWLHS = .FALSE.  ! CHECK ON THE TYPE OF MATRIX TO USE
-      IF ( ISTORE( M33CD + 6) .EQ. -1 ) NEWLHS = .TRUE.
+      IF ( ISTORE( M33CD+6) .EQ. -1 ) NEWLHS = .TRUE.
       ISTAT2 = ISTORE (M33CD+3)  ! SET THE STORE MAP LEVEL
 
       IF ( IREFLS .GE. 0 ) THEN            ! Not Restraints only
@@ -948,19 +951,18 @@ C--
       CALL XWLSTD(33,ICOM33,IDIM33,-1,-1)   ! OUTPUT THE NEW LIST 33 TO DISC
       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30
       IF (KHUNTR (11,0, IADDL,IADDR,IADDD, -1) .EQ. 0) THEN
-        STORE(L30RF +0 ) = R   ! 'REFINE' 
+        STORE(L30RF+0 ) = R   ! 'REFINE' 
 cdjwmay07 L30GE is filled in ANALYSE and lets the user see the effect
 c         of changing the thresholds.
-cdjwmay07        STORE(L30GE +10 ) = R  ! UPDATE LIST 30
-        STORE(L30RF +1 ) = RW
-cdjwmay07        STORE(L30GE +11 ) = RW
-        IF(STORE(L11P+23) .GT.ZERO) STORE(L30RF +2 ) = STORE(L11P+23)
+cdjwmay07        STORE(L30GE+10 ) = R  ! UPDATE LIST 30
+        STORE(L30RF+1 ) = RW
+cdjwmay07        STORE(L30GE+11 ) = RW
+        IF(STORE(L11P+23) .GT.ZERO) STORE(L30RF+2 ) = STORE(L11P+23)
         IF (STORE(L11P+16) .GT. ZERO) THEN
-          STORE(L30RF +4 ) = SQRT(AMINF / STORE(L11P+16))
+          STORE(L30RF+4 ) = SQRT(AMINF / STORE(L11P+16))
         ENDIF
-
-        STORE(L30RF +8 ) = STORE(L11P+24)  ! NUMBER OF REFLECTIONS USED
-cdjwmay07        STORE(L30GE +9 ) = STORE(L11P+24)
+        STORE(L30RF+8 ) = STORE(L11P+24)  ! NUMBER OF REFLECTIONS USED
+cdjwmay07        STORE(L30GE+9 ) = STORE(L11P+24)
 
         IF ( SFLS_TYPE .NE. SFLS_REFINE )  THEN
             STORE(L30RF+3) = S6SIG  ! SIGMA THRESHOLD FOR REFINEMENT
@@ -970,16 +972,16 @@ cdjwmay07            STORE(L30GE+8) = S6SIG
         STORE(L30IX+6) = RTD*ASIN(WAVE*SMIN)  ! STORE THETA LIMITS
         STORE(L30IX+7) = RTD*ASIN(WAVE*SMAX)
 
-        ISTORE(L30RF +12 ) = NV + 2   ! REFINEMENT TYPE
+        ISTORE(L30RF+12 ) = NV + 2   ! REFINEMENT TYPE
 
       ENDIF
 
       IF( SFLS_TYPE .EQ. SFLS_CALC ) THEN  ! 'CALC' ONLY
 
-          STORE(L30RF +0 ) = R
-cdjwmay07          STORE(L30GE +10 ) = R
-          STORE(L30RF +1 ) = RW
-cdjwmay07          STORE(L30GE +11 ) = RW
+          STORE(L30RF+0 ) = R
+cdjwmay07          STORE(L30GE+10 ) = R
+          STORE(L30RF+1 ) = RW
+cdjwmay07          STORE(L30GE+11 ) = RW
 
           STORE(L30CF)=RALL(1)
           STORE(L30CF+1)=RALL(2)
