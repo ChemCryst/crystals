@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.29  2008/12/18 16:33:56  djw
+C Dont update number of merged reflections unless an actual MERGE is performed (previously was set to
+C same number as read-in in case data was already pre-merged
+C
 C Revision 1.28  2008/09/08 07:17:06  djw
 C Dont unset twin flag in LIST 13 if the data has FOT set
 C
@@ -1241,7 +1245,6 @@ C        STORE(L30IX+7) = ASIN(SQRT(STORE(LIX+1))*WAVE)*RTD
       ENDIF
 C----- WRITE LIST 13 TO DISK IF TYPE IS TWIN
 cdjwsep08      IF ((ITYPE6.EQ.5).OR.(IFO.EQ.JFOT(1))) THEN
-      WRITE(NCWU,*) 'IRFT', IRFT
       IF ((ITYPE6.EQ.5).OR.(IRFT .GE. 0)) THEN
          WRITE (CMON,'(a)') 'Upating List 13 for twinned data'
          CALL XPRVDU (NCVDU,1,0)
