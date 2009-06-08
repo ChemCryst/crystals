@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.35  2009/05/19 14:35:52  djw
+C More lower case filename changes
+C
 C Revision 1.34  2009/04/08 07:35:38  djw
 C Use covalent radii to refine hydrogen placement of pi ligands near metals
 C
@@ -943,15 +946,15 @@ C SHUFFLE ITEMS UP IF ADDRESSES DIFFERENT
       ENDIF
 
 cdjwmar09
-      if (issprt .eq. 0) then
-         WRITE(ncwu,'(/A,I3,6X,A4,I4)')'Filtered bonds found: ',NDIST,
-     1   ISTORE(M5A),NINT(STORE(M5A+1))
-       DO MMMI=JE,JE+JT*(NDIST-1),JT
-         WRITE(ncwu,'(A,A4,I4,f6.3)')'Found bond to:',
-     1   ISTORE(ISTORE(MMMI)),NINT(STORE(ISTORE(MMMI)+1)),
-     2    STORE(MMMI+10)
-       END DO
-      endif
+c      if (issprt .eq. 0) then
+c         WRITE(ncwu,'(/A,I3,6X,A4,I4)')'Filtered bonds found: ',NDIST,
+c     1   ISTORE(M5A),NINT(STORE(M5A+1))
+c       DO MMMI=JE,JE+JT*(NDIST-1),JT
+c         WRITE(ncwu,'(A,A4,I4,f6.3)')'Found bond to:',
+c     1   ISTORE(ISTORE(MMMI)),NINT(STORE(ISTORE(MMMI)+1)),
+c     2    STORE(MMMI+10)
+c       END DO
+c      endif
 c
 C
 C
@@ -959,20 +962,20 @@ C----CALCULATE THE NUMBER OF BONDED ATOMS AND THEIR ADDRESSES IN
 C----THE FIRST STACK.
 cdjwmar09
 c----- get the pivot atom id
-      write (ctemp,'(a4,''('',i4,'')'')') store(m5a),nint(store(m5a+1))
-      call xcras (ctemp,ltemp)
-      if (issprt .eq. 0) then
-       write(ncwu,'(a,a)') 'Atoms bonded to ', ctemp(1:ltemp)
-      endif
+c      write (ctemp,'(a4,''('',i4,'')'')') store(m5a),nint(store(m5a+1))
+c      call xcras (ctemp,ltemp)
+c      if (issprt .eq. 0) then
+c       write(ncwu,'(a,a)') 'Atoms bonded to ', ctemp(1:ltemp)
+c      endif
       NBONDS=KBNDED(JE,JK,JT,IADD,DIST)
 cdjwmar09
-         if ((issprt .eq. 0) .and. (nbonds .gt. 0)) then
-          do idjw=1,nbonds
-            jdjw=iadd(idjw)
-            write(ncwu,'(10x, a4,i2,f6.2)') istore(istore(jdjw)),
-     1       nint(store(istore(jdjw)+1)),store(jdjw+10)
-          enddo
-         endif
+c         if ((issprt .eq. 0) .and. (nbonds .gt. 0)) then
+c          do idjw=1,nbonds
+c            jdjw=iadd(idjw)
+c            write(ncwu,'(10x, a4,i2,f6.2)') istore(istore(jdjw)),
+c     1       nint(store(istore(jdjw)+1)),store(jdjw+10)
+c          enddo
+c         endif
 C
 C-------- CHECK FOR ERRORS AND ISOLATED ATOMS
 
