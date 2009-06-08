@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.57  2009/06/04 14:32:11  djw
+C compute GOF for X-ray data only
+C
 C Revision 1.56  2009/06/03 15:26:01  djw
 C Add missing ABS() in enantiopole checking
 C
@@ -591,13 +594,17 @@ C -- INVALID TEMPERATURE FACTOR
       NFL= J
 cdjwapr09 Check the Flack Enantiopole Parameter.
 c If this is the first time it has been refined, set it to 0.5
-      if (( enantio .eqv. .true.) .and. (abs(store (L5o+4)) .le. zerosq)
-     1 .and. (abs(store(l30ge+6)) .le. zero)) then
-            store(L5O+4) = 0.5
-            WRITE ( CMON, '(A)')'Starting FLACK refinement from 0.5' 
-            CALL XPRVDU(NCVDU, 1,0)
-            IF (ISSPRT .EQ. 0)  WRITE(NCWU, '(A)') CMON(1)(:)
-      endif
+c
+c moved to LIST12.fpp because it can clash with POLARITY refinement
+c if the user forgets to reset list 23
+c
+c      if (( enantio .eqv. .true.) .and. (abs(store (L5o+4)) .le. zerosq)
+c     1 .and. (abs(store(l30ge+6)) .le. zero)) then
+c            store(L5O+4) = 0.5
+c            WRITE ( CMON, '(A)')'Starting FLACK refinement from 0.5' 
+c            CALL XPRVDU(NCVDU, 1,0)
+c            IF (ISSPRT .EQ. 0)  WRITE(NCWU, '(A)') CMON(1)(:)
+c      endif
 c
       SCALE = STORE(L5O) 
       IF (SCALE .LE. 0.000001) THEN  ! CHECK THAT THE SCALE FACTOR GIVEN IS NOT ZERO

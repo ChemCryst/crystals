@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.17  2009/02/11 11:32:14  djw
+C Print out number of arguments when there is a mis-match on the LINK card.  NOTE that LINK only
+C seems to work with either a single atom and it parameters or an UNTIL sequence. It fails for
+C a list of atoms or a PART descriptor.   Fix not obvious
+C
 C Revision 1.16  2008/10/01 11:11:54  djw
 C Support for treatment of Deuterium as hydrogen
 C
@@ -236,6 +241,8 @@ C
 C
       DIMENSION IL23I(6), IL23F(5)
       DIMENSION IGHD(3), IPHD(5)
+c- overall parameter refinement status
+      dimension sdopee(6)
       INCLUDE 'HEADES.INC'
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOMLX.INC'
@@ -1053,58 +1060,71 @@ C--CHECK IF WE ARE PROCESSING THE OVERALL PARAMETERS
       IF(M12-L12O)5350,5300,5350
 C--PROCESSING THE OVERALL PARAMETERS  - ALTER THEIR POINTER
 5300  CONTINUE
-C----- NEED OVERALL PARAMETERS?
+C----- CHECK OVERALL PARAMETERS?
       L12A = ISTORE(L12O+1)
       IF(L12A .GT. 0) THEN
         MD12A = ISTORE(L12A+1)
         M12A  = ISTORE(L12A+2)
         L     = ISTORE(L12A+3)
-C----- POLARITY?
-        LL = M12A + 3*MD12A
-        IF (( LL .LE. L) .AND. (ISTORE(LL) .GT. 0) ) THEN
-          MOD23 = MOD23 + 2
-          LL = M12A + 4*MD12A
-          IF ( (( LL .LE. L) .AND. (ISTORE(LL) .GT. 0)) .OR.
-     1      (ISTORE(IL23F(4)+L23M) .GE. 0) )  THEN
+        NUNREF = ISTORE(L12A+4)
+cdjwjun09
+        call xzerof(sdopee,6)      
+C
+        ipos = 1 + nunref
+C
+        do  i = m12a , l , md12a
+c          write(ncwu,*) ipos, istore(i)
+          sdopee(ipos) = istore(i)
+          ipos = ipos + 1
+        enddo
+C
+C----- Polarity and Enantiopole
+        if((sdopee(4) .ne. 0).and.(sdopee(5).ne.0)) then
             IF (ISSPRT .EQ. 0) WRITE(NCWU,5665)
             WRITE ( CMON ,5665)
             CALL XPRVDU(NCVDU, 1,0)
 5665        FORMAT(' Polarity and enantiopole should not be',
      1      ' refined together')
             GOTO 5850
-          ENDIF
-C>DJWSEP96
-        IF (NINT(STORE(L2C)) .GT. 0) THEN
-            IF (ISSPRT .EQ. 0) WRITE(NCWU,5665)
-            WRITE ( CMON ,5666)
-            CALL XPRVDU(NCVDU, 1,0)
-5666        FORMAT(' WARNING - it is dangerous to refine Polarity'
-     C      ,' in a centrosymmetric structure')
-        ENDIF
-C<DJWSEP96
-        ENDIF
-C----- ENANTIOPOLE?
-        LL = M12A + 4*MD12A
-        IF (( LL .LE. L) .AND. (ISTORE(LL) .GT. 0) ) THEN
-          MOD23 = MOD23 + 4
-          MOD23 = MOD23 + 2
-C>DJWSEP96
-        IF (NINT(STORE(L2C)) .GT. 0) THEN
+        endif
+c
+c---- Polarity or Enatio and Centro
+        if(((sdopee(4) .ne. 0).or.(sdopee(5).ne.0)).and.
+     1  (nint(store(l2c)).gt.0)) then
             IF (ISSPRT .EQ. 0) WRITE(NCWU,5667)
             WRITE ( CMON ,5667)
             CALL XPRVDU(NCVDU, 1,0)
 5667        FORMAT(' You must not refine the chirality',
      C      ' of a centrosymmetric structure')
             GOTO 5850
-        ENDIF
-C<DJWSEP96
-        ENDIF
-C----- EXTINCTION?
-        LL = M12A + 5*MD12A
-        IF (( LL .LE. L) .AND. (ISTORE(LL) .GT. 0) ) THEN
-          MOD23 = MOD23 + 8
-        ENDIF
-      ENDIF
+        endif
+c
+        if(sdopee(4).ne. 0) then
+c--- Polarity
+            mod23=mod23+2
+c - make sure FLACK is Zero
+            store(l50+4) = 0.
+        else if(sdopee(5).ne. 0) then
+            mod23 = mod23+6
+c - make sure POLARITY is Zero
+            store(l50+3) = 0.
+c if FLACK is exactly zero, probably first cycle - set to 0.5
+            if (abs(store (L5o+4)) .le. zerosq) then
+                  WRITE ( CMON, '(A,G8.2,A)')
+     1 'Flack = ',store(l5o+4),'Starting FLACK refinement from 0.5'
+                  CALL XPRVDU(NCVDU, 1,0)
+                  IF (ISSPRT .EQ. 0)  WRITE(NCWU, '(A)') CMON(1)(:)
+                  store(L5O+4) = 0.5
+            endif
+        endif
+c
+        if(sdopee(6).ne. 0) then
+c--- extinction
+            mod23=mod23+8
+        endif
+      endif
+c
+c
       L12O=LAST
       GOTO 5600
 C--CHECK IF WE ARE PROCESSING THE FIRST ATOM
