@@ -66,6 +66,24 @@ CONT U[23]= -0.01334
 ATOM C 14   X= -0.27187 0.89631 0.48482     OCC=  1.00 0                        
 CONT U[11]= 0.05007  0.09032  0.09550  U[12]= -0.01325  U[13]= -0.01007         
 CONT U[23]= -0.01713                                                            
+# djw jun09
+#LIST 13                                                                        
+CRYSTAL FRIEDEL = NO
+CONDITION 0.71073 6.05 90 0.5871488 0.6425348 0.0001788
+END
+#COMPOSITION                                                                    
+CONTENTS c 1
+CONTINUE  s 1
+CONTINUE  n 1
+CONTINUE  h 1
+CONTINUE  o 1
+SCATT CRYSDIR:script/scatt.dat
+PROPERTIES CRYSDIR:script/propwin.dat
+END
+#space                                                                          
+sym p -1
+end
+# djw jun09
 \SET MONITOR ON
 \HYDROGEN                                                                       
 PHENYL C(6) C(7) C(2) UNTIL C(5)                                                
