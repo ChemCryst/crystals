@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.52  2007/10/09 06:54:09  djw
+C Indicate avalable wiht Win XP
+C
 C Revision 1.51  2006/05/03 14:23:40  djw
 C Write names of created hydrogens to a delete hydrogens file on unit NCCBU (the old common block file). Set attributes to CIF and unlocked
 C
@@ -2230,7 +2233,7 @@ C --- UFILE ---
       END DO
       IFLCHR(1) = 1 
       IFLCHR(2) = 2
-      IRDLOG(2) = 0
+cdjwjun09      IRDLOG(2) = 0
       IRDCAT(1) = 1
       IRDCMS(1) = 1
 
