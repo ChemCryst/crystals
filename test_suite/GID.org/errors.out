@@ -550,7 +550,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     4     serial number        1     Address     4205     Length      48     Created on      
+ Print list type     4     serial number        1     Address     4205     Length      49     Created on      
 
 
  Record  101    LGRP   15  NGRP      1   PARAMETERS THAT ARE USED TO COMPUTE THE WEIGHT FOR A GIVEN REFLECTION           
@@ -570,12 +570,12 @@ REAL
         5              3              0              0
 
 
- Record  103    LGRP    5  NGRP      1   REAL PARAMETERS REQUIRED TO DEFINE THE WEIGHTING SCHEME TO BE USED              
+ Record  103    LGRP    6  NGRP      1   REAL PARAMETERS REQUIRED TO DEFINE THE WEIGHTING SCHEME TO BE USED              
 
 
-    WEIGHT         MAXIMUM        TOLER          DS1            DS2         
+    WEIGHT         MAXIMUM        TOLER          DS1            DS2            QUASI       
 
-   2.0000     10000.0000         6.0000         1.0000         1.0000
+   2.0000     10000.0000         6.0000         1.0000         1.0000         0.2500
 
 
 
@@ -584,7 +584,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     4     serial number        2     Address     4253     Length      36     Created on      
+ Print list type     4     serial number        2     Address     4254     Length      37     Created on      
 
 
  Record  101    LGRP    3  NGRP      1   PARAMETERS THAT ARE USED TO COMPUTE THE WEIGHT FOR A GIVEN REFLECTION           
@@ -603,12 +603,12 @@ REAL
         6              3              0              0
 
 
- Record  103    LGRP    5  NGRP      1   REAL PARAMETERS REQUIRED TO DEFINE THE WEIGHTING SCHEME TO BE USED              
+ Record  103    LGRP    6  NGRP      1   REAL PARAMETERS REQUIRED TO DEFINE THE WEIGHTING SCHEME TO BE USED              
 
 
-    WEIGHT         MAXIMUM        TOLER          DS1            DS2         
+    WEIGHT         MAXIMUM        TOLER          DS1            DS2            QUASI       
 
-   2.0000     10000.0000         6.0000         1.0000         1.0000
+   2.0000     10000.0000         6.0000         1.0000         1.0000         0.2500
 
 
 
@@ -633,7 +633,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     3     serial number        1     Address     4289     Length      66     Created on      
+ Print list type     3     serial number        1     Address     4291     Length      66     Created on      
 
 
  Record  101    LGRP   12  NGRP      3   THE ATOMIC SCATTERING FACTORS IN EXPONENTIAL FORMAT                             
@@ -682,7 +682,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     5     serial number        1     Address     4355     Length      83     Created on      
+ Print list type     5     serial number        1     Address     4357     Length      83     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -781,7 +781,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    13     serial number        1     Address     4777     Length     155     Created on      
+ Print list type    13     serial number        1     Address     4779     Length     155     Created on      
 
 
  Record  101    LGRP    3  NGRP      1   DATA PERTAINING TO THE CRYSTALS ITSELF (-1 FOR NO, 0 FOR YES)                   
@@ -869,7 +869,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    14     serial number        1     Address     4932     Length      72     Created on      
+ Print list type    14     serial number        1     Address     4934     Length      72     Created on      
 
 
  Record  102    LGRP    3  NGRP      1   ORIENTATION PARAMETERS FOR THE MAP CALCULATION AND PRINTING                     
@@ -910,7 +910,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    23     serial number        1     Address     5004     Length      76     Created on      
+ Print list type    23     serial number        1     Address     5006     Length      76     Created on      
 
 
  Record  101    LGRP    7  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
@@ -962,7 +962,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    25     serial number        1     Address     5080     Length      52     Created on      
+ Print list type    25     serial number        1     Address     5082     Length      52     Created on      
 
 
  Record  101    LGRP    9  NGRP      2   THE MATRICES THAT TRANSFORM THE STANDARD INDICES INTO EACH ELEMENT              
@@ -1011,11 +1011,11 @@ REAL
 
 
 
- Physical reads         93 Physical writes        210 Cache hits       8252
- Cache hit distribution     5759     368     269      86     199     193
- Cache hit distribution       84      34      42     188     197     181
- Cache hit distribution      157     205      59      50      88      40
- Cache hit distribution       18      14      19       1       0       1
+ Physical reads         97 Physical writes        210 Cache hits       8396
+ Cache hit distribution     5767     406     275     150      30     189
+ Cache hit distribution      182      60      27     130     217     132
+ Cache hit distribution      150     246     113     111      92      61
+ Cache hit distribution       26      15      15       1       1       0
 
 
           : Job ends ok       with     0 warnings and     9 errors
