@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.54  2008/09/16 16:04:16  djw
+C Enable SCRIPT command copying to .log file as comments
+C
 C Revision 1.53  2007/10/09 06:57:17  djw
 C Output script name to listing file
 C
@@ -535,7 +538,9 @@ C
       IF ( IMAGE(1) .EQ. IH ) THEN
 cdjwjun07
         write(cmon,'(80a1)') (image(idjw),idjw=1,80)
-        if ((issprt .eq. 0) .and. (cmon(1)(2:4) .eq. 'SCR')) then
+cdjwjun09 copy all # lines
+c        if ((issprt .eq. 0) .and. (cmon(1)(2:4) .eq. 'SCR')) then
+        if (issprt .eq. 0)  then
             write(ncwu,'(A)') cmon(1)(:)
         endif
 cdjwjun07
