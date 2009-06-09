@@ -1,20 +1,53 @@
+#TITLE P6122 TEST DECK FROM LARSON  -  MUCH MODIFIED FOR CRYSTALS                                                                                                                                                                                               
+#SET MONITOR OFF                                                                                                                                                                                                                                                
+#LIST 1                                                                                                                                                                                                                                                         
+#LIST 20                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
+#LIST 30                                                                                                                                                                                                                                                        
+#LIST 1                                                                                                                                                                                                                                                         
   Disc file on unit   1 extended by     1 records 
+#LIST 2                                                                                                                                                                                                                                                         
   Disc file on unit   1 extended by     1 records 
+#LIST 3                                                                                                                                                                                                                                                         
+#LIST 13                                                                                                                                                                                                                                                        
+#LIST 29                                                                                                                                                                                                                                                        
+#LIST 5                                                                                                                                                                                                                                                         
 Bonds: Update required - There is no list 41
   Disc file on unit   1 extended by     1 records 
+#LIST 12                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
+#LIST 23                                                                                                                                                                                                                                                        
+#SET MONITOR ON                                                                                                                                                                                                                                                 
+#USE TDLIST6.HKL                                                                                                                                                                                                                                                
+#LIST 1                                                                                                                                                                                                                                                         
   Disc file on unit   1 extended by     1 records 
+# THIS LIST 6 IS USED BY MANY TEST DECKS                                                                                                                                                                                                                        
+#LIST 6                                                                                                                                                                                                                                                         
+#LIST 28                                                                                                                                                                                                                                                        
+#LIST 6                                                                                                                                                                                                                                                         
   Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
 
 
 
       92 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
+ IRFT          -1
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     5 records 
   Disc file on unit   1 extended by     1 records 
+#SFLS                                                                                                                                                                                                                                                           
+#LIST 4                                                                                                                                                                                                                                                         
+#CLEAR 16                                                                                                                                                                                                                                                       
+#LIST  16                                                                                                                                                                                                                                                       
+#CLEAR 17                                                                                                                                                                                                                                                       
+#LIST  17                                                                                                                                                                                                                                                       
+#LIST 26                                                                                                                                                                                                                                                        
+#WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
+#SFLS                                                                                                                                                                                                                                                           
+#SPEC  NO  NO                                                                                                                                                                                                                                                   
+#CALCULAT   1                                                                                                                                                                                                                                                   
+#CYCLENDS                                                                                                                                                                                                                                                       
  Initialising Special positions
 
 
@@ -56,8 +89,8 @@ Bonds: Update required - There is no list 41
 
 
 
- Target GOF = 14.77                                                                                                                                                                                                                                             
-   h   k  l     Fo      Fc   GOF Fo/Fc     h   k  l     Fo      Fc   GOF Fo/Fc                                                                                                                                                                                  
+ Target Weighted Residual = 14.77                                                                                                                                                                                                                               
+   h   k  l     Fo      Fc  wDel Fo/Fc     h   k  l     Fo      Fc  wDel Fo/Fc                                                                                                                                                                                  
    0   0  12   48.4   11.0  37.47 4.41     1   1   4   81.4   52.9  28.55 1.54                                                                                                                                                                                  
    0   2   6   60.3   32.0  28.30 1.88     0   2   3   54.1   26.4  27.69 2.05                                                                                                                                                                                  
    0   0   6   39.4   12.1  27.32 3.26     1   1   8   42.2   16.4  25.78 2.57                                                                                                                                                                                  
@@ -86,17 +119,22 @@ Bonds: Update required - There is no list 41
 
      2395.4         1271.7          1142.1                                   On scale of /FC/
 
-     2395.4         1271.7          1142.1           0.20075641E+05          On scale of /FO/
+     2395.4         1271.7          1142.1           0.20075643E+05          On scale of /FO/
 
  New scale factor (G) is    1.00000,      92 reflections used in refinement
 
  Structure factor least squares calculation    1  ends  3
 
- With Sigma(I) cutoff= -10.00, there are       92 reflections
- R-value= 47.677                                   Rw= 47.802
 
- With Sigma(I) cutoff=   2.00, there are        0 reflections
- R-value=  0.000                                   Rw=  0.000
+
+       92 reflections   R 47.68% Rw 47.80% with I/u(I) from List 28                                                                                                                                                                                             
+       92 reflections   R 47.68% Rw 47.80% with I/u(I) > -10.0                                                                                                                                                                                                  
+        0 reflections   R  0.00% Rw  0.00% with I/u(I) >   2.0                                                                                                                                                                                                  
+#TITLE SLANT FOURIER TESTS IN P6122                                                                                                                                                                                                                             
+#SLANT                                                                                                                                                                                                                                                          
+# NOTE BIZARE LIMITS = JUST TO TEST IT                                                                                                                                                                                                                          
+# WORKS OUTSIDE THE BASIC UNIT CELL                                                                                                                                                                                                                             
+#SLANT                                                                                                                                                                                                                                                          
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -119,6 +157,7 @@ Bonds: Update required - There is no list 41
     3 *   35  41  35  20   0   0
 
     4 *    0   0   0   0   0   0
+#SLANT                                                                                                                                                                                                                                                          
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -161,6 +200,7 @@ Bonds: Update required - There is no list 41
    14 *   -3  -1   0  -2  -4  -5  -6 -10 -13 -10   0  11  16  12
 
    15 *   -3  -3  -3  -3  -2  -1  -3  -8 -10  -3  12  27  32  24
+#TRIAL                                                                                                                                                                                                                                                          
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -299,16 +339,24 @@ Bonds: Update required - There is no list 41
    11 *  174 177 147 153 204 178 169 168 136 144 192 158 159 155 122 132 176 143 148 143 112 126 169 131 148 130
 
    12 *  195 174 177 147 153 204 178 169 168 136 144 192 158 159 155 122 132 176 143 148 143 112 126 169 131 148
+# DEMONSTRATE SLANT FOURIERS THROUGH ANISOTROPIC                                                                                                                                                                                                                
+# PLANAR GROUP, AND 'SPLITTING' OF ATOM                                                                                                                                                                                                                         
+#DISK                                                                                                                                                                                                                                                           
+#LIST 1                                                                                                                                                                                                                                                         
   Disc file on unit   1 extended by     1 records 
+#SPACE                                                                                                                                                                                                                                                          
+#LIST 14                                                                                                                                                                                                                                                        
+#SPACE                                                                                                                                                                                                                                                          
   Space Group P 4       
   The Space Group is ACentric  Primitive Tetragonal    Laue Symmetry 4/m     
-  Multiplicity of a General Site is   4
+  Multiplicity of a General Site is   4  Laue-no is   4
   The location of the origin is arbitrary in z  
   The Equivalent Positions are:
 
        x      y      z       -y      x      z 
       -x     -y      z        y     -x      z 
  
+Space group symbol is   P    4             
 
     Fourier limits are :-
                               X axis from  0.000 to  0.500
@@ -320,20 +368,39 @@ Bonds: Update required - There is no list 41
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
   Disc file on unit   1 extended by     1 records 
+#LIST 3                                                                                                                                                                                                                                                         
+#                                                                                                                                                                                                                                                               
+# PUNCHED ON 26-JAN93 AT 11:35:34                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#LIST      5                                                                                                                                                                                                                                                    
 Bonds: Update required - List5 length change
+#                                                                                                                                                                                                                                                               
+# PUNCHED ON 26-JAN93 AT 11:35:36                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#LIST      6                                                                                                                                                                                                                                                    
   Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
 
 
 
      631 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
+ IRFT          -1
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by    40 records 
   Disc file on unit   1 extended by     1 records 
+#EDIT                                                                                                                                                                                                                                                           
  The following atom(s) will be kept                                                                                                                                                                                                                             
     C   0      C   1      C   2      C   3      C   4      C   5      C  25
  List   5 now contains      7 atom(s)
+#LIST 12                                                                                                                                                                                                                                                        
+#SFLS                                                                                                                                                                                                                                                           
+#LIST 26                                                                                                                                                                                                                                                        
+#WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
+#SFLS                                                                                                                                                                                                                                                           
+#SPEC  NO  NO                                                                                                                                                                                                                                                   
+#CALCULAT   1                                                                                                                                                                                                                                                   
+#CYCLENDS                                                                                                                                                                                                                                                       
  Initialising Special positions
 
 
@@ -375,8 +442,8 @@ Bonds: Update required - List5 length change
 
 
 
- Target GOF =  0.04                                                                                                                                                                                                                                             
-   h   k  l     Fo      Fc   GOF Fo/Fc     h   k  l     Fo      Fc   GOF Fo/Fc                                                                                                                                                                                  
+ Target Weighted Residual =  0.04                                                                                                                                                                                                                               
+   h   k  l     Fo      Fc  wDel Fo/Fc     h   k  l     Fo      Fc  wDel Fo/Fc                                                                                                                                                                                  
    0   3   1   41.3   41.3   0.06 1.00     3   6   2    2.4    2.5   0.06 0.97                                                                                                                                                                                  
    1   1   7    8.3    8.3   0.06 0.99    -1   1   7    8.3    8.3   0.06 0.99                                                                                                                                                                                  
   -1   3  11   13.6   13.7   0.06 1.00     3   1  11   13.6   13.7   0.06 1.00                                                                                                                                                                                  
@@ -411,11 +478,12 @@ Bonds: Update required - List5 length change
 
  Structure factor least squares calculation    1  ends  3
 
- With Sigma(I) cutoff= -10.00, there are      631 reflections
- R-value=  0.246                                   Rw=  0.205
 
- With Sigma(I) cutoff=   2.00, there are        0 reflections
- R-value=  0.000                                   Rw=  0.000
+
+      631 reflections   R  0.25% Rw  0.21% with I/u(I) from List 28                                                                                                                                                                                             
+      631 reflections   R  0.25% Rw  0.21% with I/u(I) > -10.0                                                                                                                                                                                                  
+        0 reflections   R  0.00% Rw  0.00% with I/u(I) >   2.0                                                                                                                                                                                                  
+#EDIT                                                                                                                                                                                                                                                           
  The following atom(s) will be created                                                                                                                                                                                                                          
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare  Part                                                                                                                                                                                
                                    Uiso  Size D/100 A/100                                                                                                                                                                                                       
@@ -424,6 +492,7 @@ Bonds: Update required - List5 length change
  List   5 now contains      9 atom(s)
   Disc file on unit   1 extended by     1 records 
 Bonds: Update required - List5 length change
+#MOLAX                                                                                                                                                                                                                                                          
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -469,7 +538,7 @@ Bonds: Update required - List5 length change
 plane-vector (in polar coord.):Input ONLY in units of 100 DEGREES !!!
 
 DECLINAT =  -180.00     DECLINAT/100 =  -1.8000
-AZIMUTH  =    44.96     AZIMUTH /100 =   0.4496
+AZIMUTH  =    44.97     AZIMUTH /100 =   0.4497
  Deviations from the plane, in angstrom, are given by  Zp  
   Co-ordinates of the defining atoms projected onto the best  plane
 
@@ -485,6 +554,7 @@ AZIMUTH  =    44.96     AZIMUTH /100 =   0.4496
 
  LIST 20 has been updated
 
+#ANISO                                                                                                                                                                                                                                                          
  Results for group number    1
 
 
@@ -508,37 +578,37 @@ AZIMUTH  =    44.96     AZIMUTH /100 =   0.4496
 
  Eigenvalues and eigenvectors of the normal matrix    (Vector components multiplied by 1000)
 
-                      T11  T22  T33  T23  T13  T12  L11  L22  L33  L23  L13  L12  S11  S12  S13  S21  S22  S23  S31  S32
+                      T11  T22  T33  T23  T13  T12  L11  L22  L33  L23  L13  L12  S11  S12  S13 S21  S22  S23  S31  S32
 
-   1   0.396E-09 ?      0    0    0    0    0    0  551 -641    0    0    0  535    1   -1    0   -1   -1    0    0    0
-   2   0.129E+00        0    0 -791    0    0    0  470  390    0    0    0  -17    0   -1    0    1    0    0    0    0
+   1   0.396E-09 ?      0    0    0    0    0    0 -551  641    0    0    0 -535   -1    1    0    1    1    0    0    0
+   2   0.129E+00        0    0  791    0    0    0 -470 -390    0    0    0   17    0    1    0   -1    0    0    0    0
    3   0.198E+00        0   -1    0    0    0    0    1   -1    1    0    0    0 -706  -32    0   33  706    0    0    0
    4   0.300E+00      475  522    0    0    0   41    0    0 -707    0    0    0   -1    2    0   -1    1    0    0    0
-   5   0.334E+00        0    0    0  462 -465    0    0    0    0  534 -534    0    0    0    0    0    0    0    2    2
-   6   0.395E+00        0    0    0  531  527    0    0    0    0  469  469    0    0    0    1    0    0    0    2   -2
-   7   0.918E+00        0    0    0    1    1    0    0    0    0    0    0    0    0    0 -707    0    0  707    0    0
+   5   0.334E+00        0    0    0 -462  465    0    0    0    0 -534  534    0    0    0    0    0    0    0   -2   -2
+   6   0.395E+00        0    0    0 -531 -527    0    0    0    0 -469 -469    0    0    0   -1    0    0    0   -2    2
+   7   0.918E+00        0    0    0   -1   -1    0    0    0    0    0    0    0    0    0  707    0    0 -707    0    0
    8   0.984E+00        0    0    0    2    3    0    0    0    0    0    0    0    0    0    0    0    0    0 -707  707
    9   0.985E+00        0    0    0    0    0    0    0    0    0    0    0    2  -95  714    0  687  -95    0    0    0
-  10   0.100E+01     -481  375    0    0    0  792    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+  10   0.100E+01      481 -375    0    0    0 -792    0    0    0    0    0    0    0    0    0    0    0    0    0    0
   11   0.100E+01     -563  560    0    0    0 -607    0    0    0    0    0    0    0    0    0    0    0    0    0    0
   12   0.100E+01        2    2    1    0    0    0    0    0    0    0    0    0   32 -693    0  720  -32    0    0    0
   13   0.102E+01        0    0    0   -3    3    0    0    0    0    0    0    0    0    0    0    0    0    0  707  707
   14   0.108E+01        0    0    0   -1    1    0    0    0    0    0    0    0    0    0  707    0    0  707    0    0
-  15   0.137E+01        0    0 -123    0    0    0 -439  316    0    0    0  832    0   -1    0   -1    1    0    0    0
+  15   0.137E+01        0    0  123    0    0    0  439 -316    0    0    0 -832    0    1    0    1   -1    0    0    0
   16   0.150E+01        0    0    0  532 -536    0    0    0    0 -464  464    0    0    0    1    0    0    1    2    2
   17   0.170E+01     -475 -522    0    0    0  -41    0    0 -707    0    0    0    0   -2    0    2    0    0    0    0
-  18   0.177E+01        0    0    0 -471 -467    0    0    0    0  529  529    0    0    0    0    0    0    0   -1    2
+  18   0.177E+01        0    0    0  471  467    0    0    0    0 -529 -529    0    0    0    0    0    0    0    1   -2
   19   0.182E+01        0    0    0    0    0    0    0    0    0    0    0    0 -701  -97    0  -93 -701    0    0    0
   20   0.251E+01        0    0 -599    0    0    0 -532 -580    0    0    0 -148    0   -1    0    0    0    0    0    0
 
 
  Tensors with respect to the above centre and orthogonal axes (A*, B' and C)
 
-           L                       T                  S
+               L                           T                          S
 
-   8.71  -0.12   0.00     0.02   0.00   0.00     0.00   0.00   0.00                                                                                                                                                                                             
-  -0.12   6.28   0.00     0.00   0.02   0.00     0.00   0.00   0.00                                                                                                                                                                                             
-   0.00   0.00  44.10     0.00   0.00   0.01     0.00   0.00   0.00                                                                                                                                                                                             
+   8.7088  -0.1217   0.0000    0.0214  -0.0020   0.0000   -0.0001  -0.0005   0.0000                                                                                                                                                                             
+  -0.1217   6.2815   0.0000   -0.0020   0.0192   0.0000    0.0001   0.0001   0.0000                                                                                                                                                                             
+   0.0000   0.0000  44.1048    0.0000   0.0000   0.0100    0.0000   0.0000   0.0000                                                                                                                                                                             
 
 
 
@@ -561,15 +631,16 @@ AZIMUTH  =    44.96     AZIMUTH /100 =   0.4496
 
  Tensors with respect to principal axes of L
 
-           L                       T                  S
+               L                           T                          S
 
-   6.28   0.00   0.00     0.02   0.00   0.00     0.00   0.00   0.00                                                                                                                                                                                             
-   0.00   8.71   0.00     0.00   0.02   0.00     0.00   0.00   0.00                                                                                                                                                                                             
-   0.00   0.00  44.10     0.00   0.00   0.01     0.00   0.00   0.00                                                                                                                                                                                             
+   6.2754   0.0000   0.0000    0.0190  -0.0018   0.0000    0.0001   0.0001   0.0000                                                                                                                                                                             
+   0.0000   8.7149   0.0000   -0.0018   0.0216   0.0000   -0.0005  -0.0001   0.0000                                                                                                                                                                             
+   0.0000   0.0000  44.1048    0.0000   0.0000   0.0100    0.0000   0.0000   0.0000                                                                                                                                                                             
 
 
 
-                                                                                                                                                                                                                                                                
+
+ Centre for which s is symmetric :                   0.0000  0.0000  0.0000                                                                                                                                                                                     
  Axial displacements for which S becomes diagonal  (Angstroms along principal axes of L)
                                  Shift directions
                               1         2         3
@@ -581,11 +652,11 @@ AZIMUTH  =    44.96     AZIMUTH /100 =   0.4496
                  Axis 3      0.00      0.00
  Final reduced tensors
 
-           L                       T                  S
+               L                           T                          S
 
-   6.28   0.00   0.00     0.02   0.00   0.00     0.00   0.00   0.00                                                                                                                                                                                             
-   0.00   8.71   0.00     0.00   0.02   0.00     0.00   0.00   0.00                                                                                                                                                                                             
-   0.00   0.00  44.10     0.00   0.00   0.01     0.00   0.00   0.00                                                                                                                                                                                             
+   6.2754   0.0000   0.0000    0.0190  -0.0018   0.0000    0.0001   0.0000   0.0000                                                                                                                                                                             
+   0.0000   8.7149   0.0000   -0.0018   0.0216   0.0000    0.0000  -0.0001   0.0000                                                                                                                                                                             
+   0.0000   0.0000  44.1048    0.0000   0.0000   0.0100    0.0000   0.0000   0.0000                                                                                                                                                                             
 
 
 
@@ -612,8 +683,8 @@ AZIMUTH  =    44.96     AZIMUTH /100 =   0.4496
                                                                 0.021   0.019   0.010   0.000   0.000  -0.002
 
 
-                 R-Factor for U'S =    1.34
-        Weighted R-Factor for U'S =    1.72
+                R1-Factor for U'S =    1.34
+               R^2-Factor for U'S =    1.72
        R.M.S. discrepancy for U'S =  0.0005
  LIST 20  TLS record will be updated 
 
@@ -624,20 +695,21 @@ AZIMUTH  =    44.96     AZIMUTH /100 =   0.4496
  Principal axes and 'direction' cosines of the thermal ellipsoids
 
 
- Type Serial     m.s.d.         a*        b'         c          a         b         c
+ Type Serial     m.s.d.         a*        b'         c          a         b         c    Uarith     Ugeom    Uprime
 
  C       25.    0.02000    0.00000   0.00000   1.00000    0.00000   0.00000   1.00000
                 0.04000   -0.86602   0.50001   0.00000   -0.86602   0.50001   0.00000
-                0.26999   -0.50001  -0.86602   0.00000   -0.50001  -0.86602   0.00000                        
+                0.26999   -0.50001  -0.86602   0.00000   -0.50001  -0.86602   0.00000   0.11000   0.06000   0.53995                        
  LIST 20 AXIS record will be updated 
   Disc file on unit   1 extended by     1 records 
  LIST 20 has been updated
+#PRINT 20                                                                                                                                                                                                                                                       
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
 
 
- Print list type    20     serial number        6     Address    33073     Length     234     Created on      
+ Print list type    20     serial number        6     Address    33076     Length     234     Created on      
 
 
  Record  101    LGRP    9  NGRP     10   MATRICES FOR FOREWARD TRANSFORMATION                                            
@@ -756,6 +828,8 @@ AZIMUTH  =    44.96     AZIMUTH /100 =   0.4496
 
 
 
+# GIVE A MATRIX EXPLICITLY                                                                                                                                                                                                                                      
+#SLANT                                                                                                                                                                                                                                                          
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -806,6 +880,8 @@ AZIMUTH  =    44.96     AZIMUTH /100 =   0.4496
     8 *    0   0   0   0   0   0  43 117 204 274 301 275 206 122  48   0   0   0   0   0
 
     9 *    0   0   0   0   0   0  44 114 197 265 291 264 197 113  39   0   0   0   0   0
+# USE SAVED MATRICES AND CENTROIDS                                                                                                                                                                                                                              
+#SLANT                                                                                                                                                                                                                                                          
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -856,6 +932,7 @@ AZIMUTH  =    44.96     AZIMUTH /100 =   0.4496
     8 *    0   0   0   0   0   0  43 117 204 274 301 275 207 122  48   0   0   0   0   0
 
     9 *    0   0   0   0   0   0  44 114 197 265 291 265 197 113  39   0   0   0   0   0
+#SLANT                                                                                                                                                                                                                                                          
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -906,6 +983,7 @@ AZIMUTH  =    44.96     AZIMUTH /100 =   0.4496
     8 *    0   0   3  16  18   6   0   0   0   0  42 127 215 278 293 253 173  80   3   0
 
     9 *    0   0   0   0   0   0   0   0   0   0  37 103 173 222 232 196 127  48   0   0
+#SLANT                                                                                                                                                                                                                                                          
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -956,6 +1034,8 @@ AZIMUTH  =    44.96     AZIMUTH /100 =   0.4496
     8 *    0   0   3  16  18   6   0   0   0   0  42 127 215 278 293 253 173  80   3   0
 
     9 *    0   0   0   0   0   0   0   0   0   0  37 103 173 222 232 196 127  48   0   0
+# LOOK AT SECTIONS ABOVE AND BELOW PRINCIPAL PLANE                                                                                                                                                                                                              
+#SLANT                                                                                                                                                                                                                                                          
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -984,6 +1064,7 @@ AZIMUTH  =    44.96     AZIMUTH /100 =   0.4496
     3 *   54  -1  -1  -1  -1  10   8  -1  -1
 
     4 *   52  -1  -1  -1  -1  10  40  54  52
+#SLANT                                                                                                                                                                                                                                                          
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -1012,6 +1093,7 @@ AZIMUTH  =    44.96     AZIMUTH /100 =   0.4496
     3 *   54  -1  -1  -1  -1  10   8  -1  -1
 
     4 *   52  -1  -1  -1  -1  10  40  54  52
+#SLANT                                                                                                                                                                                                                                                          
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -1040,6 +1122,7 @@ AZIMUTH  =    44.96     AZIMUTH /100 =   0.4496
     3 *   54   0   0   0   0  10   8   0   0
 
     4 *   52   0   0   0   0  10  40  54  52
+#SLANT                                                                                                                                                                                                                                                          
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -1068,6 +1151,7 @@ AZIMUTH  =    44.96     AZIMUTH /100 =   0.4496
     3 *   54   0   0   0   0  10   8   0   0
 
     4 *   52   0   0   0   0  10  40  54  52
+#SLANT                                                                                                                                                                                                                                                          
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -1096,6 +1180,7 @@ AZIMUTH  =    44.96     AZIMUTH /100 =   0.4496
     3 *   54   0   0   0   0  10   8   0   0
 
     4 *   52   0   0   0   0  10  40  54  52
+#SLANT                                                                                                                                                                                                                                                          
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -1124,6 +1209,7 @@ AZIMUTH  =    44.96     AZIMUTH /100 =   0.4496
     3 *   54   1   1   1   1  10   8   1   1
 
     4 *   52   1   1   1   1  10  40  54  52
+#SLANT                                                                                                                                                                                                                                                          
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -1152,11 +1238,12 @@ AZIMUTH  =    44.96     AZIMUTH /100 =   0.4496
     3 *   54   1   1   1   1  10   8   1   1
 
     4 *   52   1   1   1   1  10  40  54  52
- Physical reads       1253 Physical writes        806 Cache hits      32617
- Cache hit distribution    28236    1095     559     247     263     302
- Cache hit distribution      124     102     108     225     217     181
- Cache hit distribution      111      84     132     101      99      83
- Cache hit distribution       70      82      62      29      59      46
+#FINI                                                                                                                                                                                                                                                           
+ Physical reads       1257 Physical writes        806 Cache hits      32673
+ Cache hit distribution    28244    1130     565     243     236     318
+ Cache hit distribution      103      83     106     227     240     176
+ Cache hit distribution      108      94     134     109     133      64
+ Cache hit distribution       72      75      75      45      54      39
 
 
           : Job ends ok       with     0 warnings and     0 errors
