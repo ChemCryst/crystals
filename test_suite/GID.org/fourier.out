@@ -1,5 +1,21 @@
+#USE CYCLO.IN                                                                                                                                                                                                                                                   
+#SET COMMUNIC SLOW                                                                                                                                                                                                                                              
+#SET WATCH 5                                                                                                                                                                                                                                                    
+#CLEAR 12                                                                                                                                                                                                                                                       
+#LIST  12                                                                                                                                                                                                                                                       
+#CLEAR 16                                                                                                                                                                                                                                                       
+#LIST  16                                                                                                                                                                                                                                                       
+#                                                                                                                                                                                                                                                               
+#TITLE CYCLO IN P 21 21 21                                                                                                                                                                                                                                      
+#LIST 1                                                                                                                                                                                                                                                         
+#LIST 20                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
+#LIST 30                                                                                                                                                                                                                                                        
+#LIST 1                                                                                                                                                                                                                                                         
+#SPACE                                                                                                                                                                                                                                                          
   Disc file on unit   1 extended by     1 records 
+#LIST 14                                                                                                                                                                                                                                                        
+#SPACE                                                                                                                                                                                                                                                          
   Space Group P21 21 21 
   The Space Group is ACentric  Primitive Orthorhombic  Laue Symmetry mmm     
   Multiplicity of a General Site is   4  Laue-no is   3
@@ -20,8 +36,26 @@ Space group symbol is   P    21   21   21
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
   Disc file on unit   1 extended by     1 records 
+# WORK GET SCATTERING FACTORS AND PUT THEM INTO LIST 3                                                                                                                                                                                                          
+#COMPOSIT                                                                                                                                                                                                                                                       
+#LIST 13                                                                                                                                                                                                                                                        
+#COMPOSIT                                                                                                                                                                                                                                                       
+#LIST 3                                                                                                                                                                                                                                                         
+#LIST 29                                                                                                                                                                                                                                                        
+#LIST 29                                                                                                                                                                                                                                                        
+#LIST 5                                                                                                                                                                                                                                                         
+#                                                                                                                                                                                                                                                               
+#           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.                                                                                                                                                                                           
+#                                                                                                                                                                                                                                                               
   Disc file on unit   1 extended by     1 records 
 Bonds: Update required - There is no list 41
+#LIST 4                                                                                                                                                                                                                                                         
+#                                         WEISSENBERG DIFFRACTOMETER.                                                                                                                                                                                           
+#LIST 13                                                                                                                                                                                                                                                        
+#LIST 28                                                                                                                                                                                                                                                        
+# HOOK UP THE REFLECTION FILE                                                                                                                                                                                                                                   
+#OPEN HKLI  "CYCLO.HKL"                                                                                                                                                                                                                                         
+#HKLI                                                                                                                                                                                                                                                           
   Disc file on unit   1 extended by     1 records 
 
  No scales found
@@ -34,6 +68,8 @@ Bonds: Update required - There is no list 41
 
     1866 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
  IRFT          -1
+#SYST                                                                                                                                                                                                                                                           
+#SORT                                                                                                                                                                                                                                                           
   Disc file on unit   1 extended by     1 records 
 
 
@@ -76,9 +112,11 @@ rms (Fo/sigma)    2.167   0.782   1.690   3.065   5.459  11.667   0.000
 Number                4       1       2       5       4       1       0                                                                                                                                                                                         
                                                                                                                                                                                                                                                                 
    1849 reflections accepted              17 reflections rejected                                                                                                                                                                                               
+#MERGE                                                                                                                                                                                                                                                          
   Disc file on unit   1 extended by     1 records 
  After   1 pass    1849 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
+#LIST 6                                                                                                                                                                                                                                                         
   Disc file on unit   1 extended by     1 records 
 
 
@@ -206,12 +244,15 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.015                                                                                                                                                                                               
  Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma                                                                                                                                                                                                             
                0.014           0.106          0.529                                                                                                                                                                                                             
+#                           STORE REFLECTIONS ON DISC FOR FUTURE USE                                                                                                                                                                                            
  Disc file extended by    74 record(s) for new list    6
 
 
 
     1133 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
  IRFT          -1
+# DO A PRETTY PICTURE:                                                                                                                                                                                                                                          
+#MOLAX                                                                                                                                                                                                                                                          
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -264,7 +305,18 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
                      .   .                                                                                             
                      .  C10                                                                                            
                    C11..                                                                                               
+#                                         NOFSQ, NOANOM                                                                                                                                                                                                         
+#LIST 23                                                                                                                                                                                                                                                        
+#SFLS                                                                                                                                                                                                                                                           
+#CLEAR 17                                                                                                                                                                                                                                                       
+#LIST  17                                                                                                                                                                                                                                                       
+#LIST 26                                                                                                                                                                                                                                                        
+#WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
+#SFLS                                                                                                                                                                                                                                                           
+#SPEC  NO  NO                                                                                                                                                                                                                                                   
+#SCALE      1                                                                                                                                                                                                                                                   
+#CYCLENDS                                                                                                                                                                                                                                                       
  Initialising Special positions
 
 
@@ -321,6 +373,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  New scale factor (G) is    1.45602,    1133 reflections used in refinement
 
  Structure factor least squares calculation    1  ends  1
+#FOUR                                                                                                                                                                                                                                                           
  Initialising Special positions
  Number of new peaks to be retained is :     14
 
@@ -1949,6 +2002,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
                   The deepest hole is at    0.688   0.111   0.063                                                                                                                                                                                               
  Mean electron density at original atomic sites is    -0.11
                       with an R.M.S. deviation of      0.61
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -3697,6 +3752,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
   Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -1.48      12.0    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.641   0.333   0.096                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -5475,6 +5532,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
   Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -1.28      13.3    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.106   0.958   0.149                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -7253,6 +7312,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
   Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -1.97      11.9    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.644   0.333   0.096                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -9061,6 +9122,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
   Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -6.11      15.7    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.203   0.093   0.103                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -10296,6 +10359,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
   Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -140.     0.179E+04electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.500   0.153   0.500                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -11473,6 +11538,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  The new list  10 contains    14 atoms
  The minimum and maximum map densities are  -73.3      814.    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.000   0.256   0.418                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -12652,6 +12719,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
   Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -19.7      230.    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.500   0.500   0.330                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -13828,6 +13897,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
   Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -88.3      981.    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.121   0.364   0.500                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -15583,6 +15654,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
                   The deepest hole is at    0.750   0.139   0.188                                                                                                                                                                                               
  Mean electron density at original atomic sites is     1.89
                       with an R.M.S. deviation of      2.61
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -17368,6 +17441,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
   Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -5.66      15.6    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.231   0.198   0.187                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -19221,6 +19296,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
   Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -5.54      15.6    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.226   0.393   0.195                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -21073,6 +21150,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
   Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -5.85      15.5    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.373   0.798   0.214                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -22923,6 +23002,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
   Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -6.11      15.7    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.203   0.093   0.103                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -24158,6 +24239,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
   Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -140.     0.179E+04electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.500   0.153   0.500                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -25335,6 +25418,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  The new list  10 contains    14 atoms
  The minimum and maximum map densities are  -73.3      814.    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.000   0.256   0.418                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -26514,6 +26599,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
   Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -19.7      230.    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.500   0.500   0.330                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -27690,6 +27777,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
   Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -88.3      981.    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.121   0.364   0.500                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#LIST 4                                                                                                                                                                                                                                                         
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -27808,12 +27897,21 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
+#WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
+#LIST 12                                                                                                                                                                                                                                                        
+#SFLS                                                                                                                                                                                                                                                           
   Disc file on unit   1 extended by     1 records 
+#SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
+#REFINE     1                                                                                                                                                                                                                                                   
+#LIST 22                                                                                                                                                                                                                                                        
  Initialising Special positions
 Refining    34 parameters in    1 block :      679 elements in the LS matrix.
  Space required on DISK is    2 records,     6  Blocks,     3 Kbytes. 
+#LIST 17                                                                                                                                                                                                                                                        
+#REFINE     1                                                                                                                                                                                                                                                   
+#RESTRAIN                                                                                                                                                                                                                                                       
  Initialising Special positions
   Disc file on unit   1 extended by     1 records 
 
@@ -27871,7 +27969,12 @@ Refining    34 parameters in    1 block :      679 elements in the LS matrix.
  New scale factor (G) is    1.45602,    1133 reflections used in refinement
 
  Structure factor least squares calculation    2  ends  2
+#LIST 26                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
+#RESTRAIN                                                                                                                                                                                                                                                       
+#INVERT  CHOL                                                                                                                                                                                                                                                   
+#NEWSHIFTS                                                                                                                                                                                                                                                      
+#INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -27948,6 +28051,7 @@ All cycle   4       0.00          0.100E+16      0.982E+04
  Shift
  factors     1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+#SOLVE                                                                                                                                                                                                                                                          
  Initialising Special positions
 
 
@@ -28033,7 +28137,11 @@ All cycle   4       0.00          0.100E+16      0.982E+04
                      0.00000           0.00258  0.00110  0.00076  0.00000
                                        0.01269  0.01208  0.01170
 Mean C-C su =   0.0111
+#CYCLENDS                                                                                                                                                                                                                                                       
+#SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
+#REFINE     1                                                                                                                                                                                                                                                   
+#RESTRAIN                                                                                                                                                                                                                                                       
  Initialising Special positions
 
 
@@ -28090,6 +28198,7 @@ Mean C-C su =   0.0111
  New scale factor (G) is    1.45656,    1133 reflections used in refinement
 
  Structure factor least squares calculation    3  ends  2
+#INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -28166,6 +28275,7 @@ Inter cycle   4       0.00          0.100E+16       121.
  Shift
  factors     1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+#SOLVE                                                                                                                                                                                                                                                          
  Initialising Special positions
 
 
@@ -28252,7 +28362,11 @@ Inter cycle   4       0.00          0.100E+16       121.
                                        0.01258  0.01200  0.01161
   Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0110
+#CYCLENDS                                                                                                                                                                                                                                                       
+#SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
+#REFINE     1                                                                                                                                                                                                                                                   
+#RESTRAIN                                                                                                                                                                                                                                                       
  Initialising Special positions
 
 
@@ -28309,6 +28423,7 @@ Mean C-C su =   0.0110
  New scale factor (G) is    1.45699,    1133 reflections used in refinement
 
  Structure factor least squares calculation    4  ends  2
+#INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -28376,6 +28491,7 @@ All cycle   3      0.300E-01      0.100E+05      0.212E-01
  Shift
  factors     1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+#SOLVE                                                                                                                                                                                                                                                          
  Initialising Special positions
 
 
@@ -28461,12 +28577,22 @@ All cycle   3      0.300E-01      0.100E+05      0.212E-01
                      0.00000           0.00255  0.00109  0.00076  0.00000
                                        0.01257  0.01199  0.01160
 Mean C-C su =   0.0110
+#CYCLENDS                                                                                                                                                                                                                                                       
+#LIST 12                                                                                                                                                                                                                                                        
+#SFLS                                                                                                                                                                                                                                                           
+#LIST 12                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
+#SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
+#REFINE     1                                                                                                                                                                                                                                                   
+#LIST 22                                                                                                                                                                                                                                                        
  Initialising Special positions
 Refining    45 parameters in    1 block :     1141 elements in the LS matrix.
  Space required on DISK is    3 records,     9  Blocks,     5 Kbytes. 
+#LIST 17                                                                                                                                                                                                                                                        
+#REFINE     1                                                                                                                                                                                                                                                   
+#RESTRAIN                                                                                                                                                                                                                                                       
  Initialising Special positions
   Disc file on unit   1 extended by     2 records 
 
@@ -28524,6 +28650,11 @@ Refining    45 parameters in    1 block :     1141 elements in the LS matrix.
  New scale factor (G) is    1.45700,    1133 reflections used in refinement
 
  Structure factor least squares calculation    5  ends  2
+#LIST 26                                                                                                                                                                                                                                                        
+#RESTRAIN                                                                                                                                                                                                                                                       
+#INVERT  CHOL                                                                                                                                                                                                                                                   
+#NEWSHIFTS                                                                                                                                                                                                                                                      
+#INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -28599,6 +28730,7 @@ All cycle   4       0.00          0.100E+16      0.970E+04
  Shift
  factors     1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+#SOLVE                                                                                                                                                                                                                                                          
  Initialising Special positions
 
 
@@ -28685,7 +28817,11 @@ All cycle   4       0.00          0.100E+16      0.970E+04
                                        0.01265  0.01209  0.01169
   Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0111
+#CYCLENDS                                                                                                                                                                                                                                                       
+#SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
+#REFINE     1                                                                                                                                                                                                                                                   
+#RESTRAIN                                                                                                                                                                                                                                                       
  Initialising Special positions
 
 
@@ -28742,6 +28878,7 @@ Mean C-C su =   0.0111
  New scale factor (G) is    1.48260,    1133 reflections used in refinement
 
  Structure factor least squares calculation    6  ends  2
+#INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -28826,6 +28963,7 @@ Inter cycle   4       0.00          0.100E+16      0.108E+04
  Shift
  factors     1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+#SOLVE                                                                                                                                                                                                                                                          
  Initialising Special positions
 
 
@@ -28912,7 +29050,11 @@ Inter cycle   4       0.00          0.100E+16      0.108E+04
                                        0.01216  0.01160  0.01110
   Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0104
+#CYCLENDS                                                                                                                                                                                                                                                       
+#SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
+#REFINE     1                                                                                                                                                                                                                                                   
+#RESTRAIN                                                                                                                                                                                                                                                       
  Initialising Special positions
 
 
@@ -28969,6 +29111,7 @@ Mean C-C su =   0.0104
  New scale factor (G) is    1.48818,    1133 reflections used in refinement
 
  Structure factor least squares calculation    7  ends  2
+#INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -29046,6 +29189,7 @@ Inter cycle   4       0.00          0.100E+16       58.8
  Shift
  factors     1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+#SOLVE                                                                                                                                                                                                                                                          
  Initialising Special positions
 
 
@@ -29131,7 +29275,11 @@ Inter cycle   4       0.00          0.100E+16       58.8
                      0.00000           0.00246  0.00104  0.00072  0.00256
                                        0.01209  0.01152  0.01105
 Mean C-C su =   0.0104
+#CYCLENDS                                                                                                                                                                                                                                                       
+#SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
+#REFINE     1                                                                                                                                                                                                                                                   
+#RESTRAIN                                                                                                                                                                                                                                                       
  Initialising Special positions
 
 
@@ -29188,6 +29336,7 @@ Mean C-C su =   0.0104
  New scale factor (G) is    1.48767,    1133 reflections used in refinement
 
  Structure factor least squares calculation    8  ends  2
+#INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -29267,6 +29416,7 @@ Inter cycle   4       0.00          0.100E+16       1.07
  Shift
  factors     1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+#SOLVE                                                                                                                                                                                                                                                          
  Initialising Special positions
 
 
@@ -29353,12 +29503,21 @@ Inter cycle   4       0.00          0.100E+16       1.07
                                        0.01212  0.01154  0.01108
   Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0104
+#CYCLENDS                                                                                                                                                                                                                                                       
+#LIST 12                                                                                                                                                                                                                                                        
+#SFLS                                                                                                                                                                                                                                                           
+#SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
+#REFINE     1                                                                                                                                                                                                                                                   
+#LIST 22                                                                                                                                                                                                                                                        
  Initialising Special positions
   Disc file on unit   1 extended by     1 records 
 Refining    68 parameters in    1 block :     2498 elements in the LS matrix.
  Space required on DISK is    5 records,    20  Blocks,    10 Kbytes. 
      11 Atoms modified;   New  LIST 5 written to DISK
+#LIST 17                                                                                                                                                                                                                                                        
+#REFINE     1                                                                                                                                                                                                                                                   
+#RESTRAIN                                                                                                                                                                                                                                                       
  Initialising Special positions
   Disc file on unit   1 extended by     5 records 
 
@@ -29416,6 +29575,11 @@ Refining    68 parameters in    1 block :     2498 elements in the LS matrix.
  New scale factor (G) is    1.48755,    1133 reflections used in refinement
 
  Structure factor least squares calculation    9  ends  2
+#LIST 26                                                                                                                                                                                                                                                        
+#RESTRAIN                                                                                                                                                                                                                                                       
+#INVERT  CHOL                                                                                                                                                                                                                                                   
+#NEWSHIFTS                                                                                                                                                                                                                                                      
+#INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -29527,6 +29691,7 @@ All cycle   4       0.00          0.100E+16      0.856E+04
  Shift
  factors     1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+#SOLVE                                                                                                                                                                                                                                                          
  Initialising Special positions
 
 
@@ -29613,7 +29778,11 @@ All cycle   4       0.00          0.100E+16      0.856E+04
                                        0.00000  0.00000  0.00000
   Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0000
+#CYCLENDS                                                                                                                                                                                                                                                       
+#SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
+#REFINE     1                                                                                                                                                                                                                                                   
+#RESTRAIN                                                                                                                                                                                                                                                       
  Initialising Special positions
 
 
@@ -29670,6 +29839,7 @@ Mean C-C su =   0.0000
  New scale factor (G) is    1.66402,    1133 reflections used in refinement
 
  Structure factor least squares calculation   10  ends  2
+#INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -29760,6 +29930,7 @@ Inter cycle   4       0.00          0.100E+16      0.314E+04
  Shift
  factors     1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+#SOLVE                                                                                                                                                                                                                                                          
  Initialising Special positions
 
 
@@ -29846,6 +30017,9 @@ Inter cycle   4       0.00          0.100E+16      0.314E+04
                                        0.00000  0.00000  0.00000
   Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0000
+#CYCLENDS                                                                                                                                                                                                                                                       
+#LIST 4                                                                                                                                                                                                                                                         
+#WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
                                                                                                                                                                                                                                                                 
  Best fit this cycle:     0.0800    0.0800 .0 .0 .0 .333                                                                                                                                                                                                        
@@ -29876,6 +30050,7 @@ Mean C-C su =   0.0000
      Weights applied:     0.0689    0.0861 .0 .0 .0 .333                                                                                                                                                                                                        
 
 
+#FOUR                                                                                                                                                                                                                                                           
  Initialising Special positions
  Number of new peaks to be retained is :     14
 
@@ -31508,6 +31683,8 @@ Mean C-C su =   0.0000
                   The deepest hole is at    0.688   0.111   0.042                                                                                                                                                                                               
  Mean electron density at original atomic sites is    -0.73
                       with an R.M.S. deviation of      0.20
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -33261,6 +33438,8 @@ Mean C-C su =   0.0000
   Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -2.08      9.22    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.104   0.961   0.149                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -35044,6 +35223,8 @@ Mean C-C su =   0.0000
   Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -2.07      9.68    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.099   0.956   0.151                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -36827,6 +37008,8 @@ Mean C-C su =   0.0000
   Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -2.09      8.77    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.101   0.965   0.148                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -38631,6 +38814,8 @@ Mean C-C su =   0.0000
   Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -4.91      12.6    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.391   0.238   0.209                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -39858,6 +40043,8 @@ Mean C-C su =   0.0000
   Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -31.2      679.    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.000   0.000   0.000                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -40980,6 +41167,8 @@ Mean C-C su =   0.0000
  The new list  10 contains     2 atoms
  The minimum and maximum map densities are  -11.3      248.    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.500   0.500   0.100                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -42104,6 +42293,8 @@ Mean C-C su =   0.0000
  The new list  10 contains     1 atoms
  The minimum and maximum map densities are  -4.64      116.    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.000   0.000   0.000                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FOUR                                                                                                                                                                                                                                                           
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -43242,6 +43433,8 @@ Mean C-C su =   0.0000
   Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -20.4      431.    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.446   0.446   0.000                                                                                                                                                                                               
+#PRINT 10                                                                                                                                                                                                                                                       
+#FINISH                                                                                                                                                                                                                                                         
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
