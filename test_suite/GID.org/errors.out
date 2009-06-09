@@ -1,5 +1,14 @@
+#TITLE TEST LIST INPUT                                                                                                                                                                                                                                          
+# THE \SIMULATE IS TO PERMIT CONTINUATION AFTER ERRORS IN BATCHMODE                                                                                                                                                                                             
+#SIMULATE                                                                                                                                                                                                                                                       
+#LIST TYPE= 1                                                                                                                                                                                                                                                   
+#LIST 20                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
+#LIST 30                                                                                                                                                                                                                                                        
+#LIST TYPE= 1                                                                                                                                                                                                                                                   
+#PRINT 1                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
+#LIST 1                                                                                                                                                                                                                                                         
 
 
  TEST LIST INPUT                                                                      Date              Time          
@@ -105,6 +114,8 @@
 
 
 
+#PRINT 1                                                                                                                                                                                                                                                        
+#LIST 1                                                                                                                                                                                                                                                         
 
 
  TEST LIST INPUT                                                                      Date              Time          
@@ -212,6 +223,7 @@
 
  The following character string does not uniquely define one  DIRECTIVE  : 
 RE
+#LIST 1                                                                                                                                                                                                                                                         
  A directive has been omitted leaving the parameters below undefined
  Directive : REAL        
  Parameter   1  has no default value and has been omitted
@@ -221,6 +233,7 @@ RE
  Parameter   3  has no default value and has been omitted
  Parameter keyword : C           
 
+#LIST 1                                                                                                                                                                                                                                                         
  A directive has been omitted leaving the parameters below undefined
  Directive : REAL        
  Parameter   1  has no default value and has been omitted
@@ -231,6 +244,7 @@ RE
  Parameter keyword : C           
 
  The user directive has been omitted or does not begin in column one
+#LIST 1                                                                                                                                                                                                                                                         
  A directive has been omitted leaving the parameters below undefined
  Directive : REAL        
  Parameter   1  has no default value and has been omitted
@@ -241,6 +255,7 @@ RE
  Parameter keyword : C           
 
  The directive on the last card is illegal with this '#Instruction'
+#LIST 1                                                                                                                                                                                                                                                         
  A directive has been omitted leaving the parameters below undefined
  Directive : REAL        
  Parameter   1  has no default value and has been omitted
@@ -252,8 +267,11 @@ RE
 
  The directive above may not follow a card containing the directive : 
 REAL        
+#LIST 1                                                                                                                                                                                                                                                         
  The last directive has appeared too many times,
  or should not have appeared at all
+#LIST 1                                                                                                                                                                                                                                                         
+#LIST 1                                                                                                                                                                                                                                                         
  A directive has been omitted leaving the parameters below undefined
  Directive : REAL        
  Parameter   1  has no default value and has been omitted
@@ -265,7 +283,10 @@ REAL
 
  Parameter     1  has appeared too many times
  Parameter keyword : A           
+#LIST 2                                                                                                                                                                                                                                                         
   Disc file on unit   1 extended by     1 records 
+#PRINT 2                                                                                                                                                                                                                                                        
+#LIST 2                                                                                                                                                                                                                                                         
 
 
  TEST LIST INPUT                                                                      Date              Time          
@@ -373,7 +394,10 @@ REAL
 
  CRYSTALS -- ERROR
 
+#LIST 2                                                                                                                                                                                                                                                         
+#PRINT 2                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
+#LIST 4                                                                                                                                                                                                                                                         
 
 
  TEST LIST INPUT                                                                      Date              Time          
@@ -545,6 +569,8 @@ REAL
 
 
 
+#PRINT 4                                                                                                                                                                                                                                                        
+#LIST 4                                                                                                                                                                                                                                                         
 
 
  TEST LIST INPUT                                                                      Date              Time          
@@ -579,6 +605,8 @@ REAL
 
 
 
+#PRINT 4                                                                                                                                                                                                                                                        
+#LIST 4                                                                                                                                                                                                                                                         
 
 
  TEST LIST INPUT                                                                      Date              Time          
@@ -618,6 +646,7 @@ REAL
 
  CRYSTALS -- ERROR
 
+#LIST 2                                                                                                                                                                                                                                                         
  A directive has been omitted leaving the parameters below undefined
  Directive : CELL        
  Parameter   1  has no default value and has been omitted
@@ -628,6 +657,9 @@ REAL
 
  CRYSTALS -- ERROR
 
+#LIST 3                                                                                                                                                                                                                                                         
+#PRINT 3                                                                                                                                                                                                                                                        
+#LIST 5                                                                                                                                                                                                                                                         
 
 
  TEST LIST INPUT                                                                      Date              Time          
@@ -661,6 +693,7 @@ REAL
 
  Unknown parameter keyword : 
  U[ISO]
+#PRINT 5                                                                                                                                                                                                                                                        
  CRYSTALS command input error 
 
  CRYSTALS -- ERROR
@@ -669,6 +702,7 @@ REAL
 
  CRYSTALS -- ERROR
 
+#LIST 5                                                                                                                                                                                                                                                         
  No list of type        5 stored
 
  CRYSTALS -- ERROR
@@ -677,6 +711,8 @@ REAL
 
 
 
+#PRINT 5                                                                                                                                                                                                                                                        
+#LIST TYPE= 1                                                                                                                                                                                                                                                   
 
 
  TEST LIST INPUT                                                                      Date              Time          
@@ -752,7 +788,9 @@ REAL
 
 
 
+#LIST 2                                                                                                                                                                                                                                                         
   Disc file on unit   1 extended by     1 records 
+#LIST 13                                                                                                                                                                                                                                                        
  Absorption correction -- Internal consistency check failed
 
  CRYSTALS -- PROGRAMMING ERROR
@@ -776,6 +814,8 @@ REAL
                         0.0000    0.0000    0.0000
 
                         0.0000    0.0000    0.0000
+#PRINT 13                                                                                                                                                                                                                                                       
+#LIST 14                                                                                                                                                                                                                                                        
 
 
  TEST LIST INPUT                                                                      Date              Time          
@@ -864,6 +904,8 @@ REAL
 
 
 
+#PRINT 14                                                                                                                                                                                                                                                       
+#LIST 23                                                                                                                                                                                                                                                        
 
 
  TEST LIST INPUT                                                                      Date              Time          
@@ -905,6 +947,8 @@ REAL
 
 
 
+#PRINT 23                                                                                                                                                                                                                                                       
+#LIST 25                                                                                                                                                                                                                                                        
 
 
  TEST LIST INPUT                                                                      Date              Time          
@@ -957,6 +1001,8 @@ REAL
 
 
   Disc file on unit   1 extended by     1 records 
+#PRINT 25                                                                                                                                                                                                                                                       
+#LIST 28                                                                                                                                                                                                                                                        
 
 
  TEST LIST INPUT                                                                      Date              Time          
@@ -1003,6 +1049,7 @@ REAL
 
  CRYSTALS -- ERROR
 
+#PRINT 28                                                                                                                                                                                                                                                       
  No list of type       28 stored
 
  CRYSTALS -- ERROR
@@ -1011,6 +1058,7 @@ REAL
 
 
 
+#FINISH                                                                                                                                                                                                                                                         
  Physical reads         97 Physical writes        210 Cache hits       8396
  Cache hit distribution     5767     406     275     150      30     189
  Cache hit distribution      182      60      27     130     217     132
