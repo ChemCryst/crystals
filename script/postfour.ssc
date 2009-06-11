@@ -20,7 +20,7 @@ Found List 25 (twin laws), re-enabling twin flag after Fourier.
 %  IF ( ITMP .LT. 0 ) THEN
 {I Removing temporary reflection storage.
 %    COPY '#DISK'
-%    COPY 'DELETE 7'
+%%    COPY 'DELETE 7'
 %    COPY '#PURGE LIST=7 MON=LOW'
 %    COPY 'END'
 %  END IF
