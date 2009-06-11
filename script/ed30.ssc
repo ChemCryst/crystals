@@ -126,7 +126,7 @@
 ^^WI     @ 1,5  STATIC ED30T 'Instrument'                                       
 ^^WI     @ 1,7 DROPDOWN INST INFORM=YES ADDTOLIST                               
 ^^WI     'Unknown' 'CAD4' 'Mach3' 'KappaCCD' 'Dip' 'Smart'                      
-^^WI     'IPDS' 'Xcalibur'  'APEX2' 'Gemini' 'NULL'                                      
+^^WI     'IPDS' 'Xcalibur'  'APEX2' 'Gemini' 'NULL'                             
 ^^WI     @ 1,9  STATIC ED30T 'Scan'                                             
 ^^WI     @ 1,11  DROPDOWN SCAN INFORM=YES ADDTOLIST                             
 ^^WI     '2theta/omega' 'Omega' 'Phi' 'Phi and omega' 'unknown' 'NULL'          
@@ -138,12 +138,12 @@
 ^^WI     @ 1,3 EDITBOX NREFMG '0' CHARS=11 INTEGER INFORM=YES                   
 ^^WI     @ 1,5 STATIC ED30T 'R merge'                                           
 ^^WI     @ 1,7 EDITBOX RMERGE '0' CHARS=11 REAL INFORM=YES                      
-^^WI     @ 1,9 STATIC ED30T '(Friedels merged)'                                 
+^^WI     @ 1,9 STATIC ED30T '(Friedels not merged)'                                 
 ^^WI     @ 2,1 STATIC ED30T 'Reflections after merge'                           
 ^^WI     @ 2,3 EDITBOX NMGFRD '0' CHARS=11 INTEGER INFORM=YES                   
 ^^WI     @ 2,5 STATIC ED30T 'R merge'                                           
 ^^WI     @ 2,7 EDITBOX RMGFRD '0' CHARS=11 REAL INFORM=YES                      
-^^WI     @ 2,9 STATIC ED30T '(Friedels not merged)'                             
+^^WI     @ 2,9 STATIC ED30T '(Friedels merged)'                             
 ^^WI    }                                                                       
 ^^WI    @ 3,1 GRID GRIDAAC NROWS=2 NCOLS=15 COMMAND='INDICES'                   
 ^^WI    {                                                                       
@@ -193,7 +193,7 @@
 ^^WI   {                                                                        
 ^^WI    @ 1,1 STATIC ED30T 'Data reduction'                                     
 ^^WI    @ 1,3 DROPDOWN REDUC INFORM=YES ADDTOLIST                               
-^^WI    'Unknown' 'RC93' 'Denzo' 'Shelx' 'CrysAlis' 'APEX2' 'NULL'                      
+^^WI    'Unknown' 'RC93' 'Denzo' 'Shelx' 'CrysAlis' 'APEX2' 'NULL'              
 ^^WI    @ 1,5 STATIC ED30T 'Structure solution'                                 
 ^^WI    @ 1,8 DROPDOWN SOLUTN INFORM=YES ADDTOLIST                              
 ^^WI    'Unknown' 'Shelxs' 'Sir88' 'Sir92' 'Patterson'                          
@@ -245,10 +245,10 @@
 ^^WI    @ 1,3 DROPDOWN ABSTYPE INFORM=YES ADDTOLIST                             
 ^^WI     'None' 'DifAbs' 'Empirical' 'Multi-scan' 'SadAbs '                     
 ^^WI     'SortAV' 'ShelxA' 'Gaussian' 'Analytical' 'Numerical'                  
-^^WI     'Integration' 'Spherical' 'Cylindrical' 'Psi-Scan' 'APEX2' 'NULL'              
-^^WI    @ 1,5  STATIC ABSMINT 'Empirical min  '                                   
+^^WI     'Integration' 'Spherical' 'Cylindrical' 'Psi-Scan' 'APEX2' 'NULL'      
+^^WI    @ 1,5  STATIC ABSMINT 'Empirical min  '                                 
 ^^WI    @ 1,7  EDITBOX ABSMIN '0' CHARS=11 REAL INFORM=YES                      
-^^WI    @ 1,9  STATIC ABSMAXT 'Empirical max  '                                   
+^^WI    @ 1,9  STATIC ABSMAXT 'Empirical max  '                                 
 ^^WI    @ 1,11 EDITBOX ABSMAX '0' CHARS=11 REAL INFORM=YES                      
 ^^WI   }                                                                        
 ^^WI  }                                                                         
@@ -528,9 +528,9 @@
 %    STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMAX                                 
 %    OUTPUT                                                                     
 %   END BLOCK                                                                   
-%   BLOCK
-^^CO SET ABSTYPE SELECTION=15
-^^CO SET ABSMINT TEXT 'Saint min' SET ABSMAXT TEXT 'Saint max'            
+%   BLOCK                                                                       
+^^CO SET ABSTYPE SELECTION=15                                                   
+^^CO SET ABSMINT TEXT 'Saint min' SET ABSMAXT TEXT 'Saint max'                  
 %    CLEAR                                                                      
 %    INSERT '^^CO SET ABSMIN TEXT '                                             
 %    STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMIN                                 
@@ -821,13 +821,14 @@
  Reflections measured                                                           
     The number of reflections actually measured in the diffraction              
     experiment.                                                                 
- Reflections after merge (Friedels merged)                                      
+ Reflections after merge (Friedels not merged)                                      
     Number of unique reflections remaining after merging equivalents            
-    applying Friedels Law. Merging R factor (R int) applying Friedels Law.      
- Reflections after merge (Friedels not merged)                                  
+    without applying Friedels Law. Merging R factor (R int) without
+    applying Friedels Law.      
+ Reflections after merge (Friedels merged)                                  
     Number of unique reflections remaining after merging equivalents            
-    without applying Friedels Law. Merging R factor (R int) without             
-    applying Friedels Law.                                                      
+    applying Friedels Law. 
+    Merging R factor (R int) applying Friedels Law.                                                      
  Scan                                                                           
     Data collection scan method.                                                
                                                                                 
@@ -894,28 +895,28 @@
 %              COPY 'TRANSFER TO OFFSET = 0 FROM NREFS'                         
 %            END IF                                                             
 %            IF FNREFMG .OR. LNEW30 THEN                                        
- * Updating Number of merged reflections. (Friedels merged).                    
+ * Updating Number of merged reflections. (Friedels not merged).                    
 ^^?? NREFMG TEXT                                                                
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '                            
 %              EVALUATE NREFMG = VALUE                                          
 %              COPY 'TRANSFER TO OFFSET = 2 FROM NREFMG'                        
 %            END IF                                                             
 %            IF FRMERGE .OR. LNEW30 THEN                                        
- * Updating R merge. (Friedels merged).                                         
+ * Updating R merge. (Friedels not merged).                                         
 ^^?? RMERGE TEXT                                                                
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '                            
 %              EVALUATE RMERGE = VALUE                                          
 %              COPY 'TRANSFER TO OFFSET = 3 FROM RMERGE'                        
 %            END IF                                                             
 %            IF FNMGFRD .OR. LNEW30 THEN                                        
- * Updating Number of merged reflections. (Friedels not merged).                
+ * Updating Number of merged reflections. (Friedels merged).                
 ^^?? NMGFRD TEXT                                                                
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '                            
 %              EVALUATE NMGFRD = VALUE                                          
 %              COPY 'TRANSFER TO OFFSET = 4 FROM NMGFRD '                       
 %            END IF                                                             
 %            IF FRMGFRD .OR. LNEW30 THEN                                        
- * Updating R merge. (Friedels not merged).                                     
+ * Updating R merge. (Friedels merged).                                     
 ^^?? RMGFRD TEXT                                                                
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '                            
 %              EVALUATE RMGFRD = VALUE                                          
