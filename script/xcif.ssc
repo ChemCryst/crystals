@@ -156,6 +156,8 @@
 %    VERIFY ON OFF
 %    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %    IF ( VALUE .EQ. 1 ) THEN
+%  VARIABLE  INTEGER F67                                                        
+%  EVALUATE F67 = 7
 %% A final difference map.
 %      COPY '#SCRIPT PREFOUR'
 %      COPY 'MAP TYPE=DIFF'
