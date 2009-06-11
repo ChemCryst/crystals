@@ -11,9 +11,9 @@
 ^^WI   }
 ^^WI   @ 2,4 GRID RIGHT NROWS=5 NCOLS=1
 ^^WI   {
-^^WI    @ 1,1 BUTTON XU_BOK '&Ok' DEFAULT COMMIT
-^^WI    @ 3,1 BUTTON XU_BXX '&Cancel'
-^^WI    @ 5,1 BUTTON XU_BRW '&Browse'
+^^WI    @ 1,1 BUTTON XU_BRW '&Browse'
+^^WI    @ 3,1 BUTTON XU_BOK '&Ok' DEFAULT COMMIT
+^^WI    @ 5,1 BUTTON XU_BXX '&Cancel'
 ^^WI   }
 ^^WI }
 ^^WI SHOW
