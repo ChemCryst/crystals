@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.60  2009/02/05 11:37:52  djw
+C Pass slope,gradient,outlier and wdelsq to SCRIPTS, catch cases where Fc is uncomputed in SHELX weights
+C
 C Revision 1.59  2008/12/18 16:42:11  djw
 C Inhibit voluminous output if not required.
 C Compute slope, interecept and correllation coefficient of agreement analysis.  This
@@ -796,10 +799,17 @@ cdjw aug99 - try to controll weighting of Fsq refinenent for small Fs
 C--CHECK IF WE ARE REFINING AGAINST /FO/ **2
 
         IF(JTYPE.EQ.1) THEN      ! WGHTS FRM /FO/, MODIFD TO BE AGAINST FO**2
-          am = 0.5 / max(fo, quasi*foav, aw)
+c
+cdjwjun09 romove Chris Hardings optimisation.
+c its use restricts the final convergence of the test data
+c It may work better if re-weighting is applied between each cycle
+c
+cdjwjun09          am = 0.5 / max(fo, quasi*foav, aw)
+          am = 0.5 / max(fo, fc, aw, 2.)
         ELSE IF ( JTYPE .GE. 2 ) THEN    ! WEIGHTS COMPUTED FROM /FO/ **2,
           if (fo .le. aw) then           ! SO COMPUTE SIGMA**2
-            AW=2.0*AW*max(FO, quasi*foav, aw)   
+cdjwjun09            AW=2.0*AW*max(FO, quasi*foav, aw)   
+            AW=2.0*AW*max(FO, fc, aw, 2.)   
           else
             AW=2.0*AW*FO
           endif
