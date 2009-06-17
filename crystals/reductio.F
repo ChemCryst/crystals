@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.34  2008/12/18 16:36:01  djw
+C Don't fiddle with MERGED totals, jus note removed systematic absences
+C
 C Revision 1.33  2008/03/31 14:54:08  djw
 C Move the Firedel flag in SYST into the JCODE slot. Previously (in corrections of phase) it zapped Fourier maps
 C
@@ -589,14 +592,18 @@ C
      2 ' reflections rejected' )
 C
 CDJWAPR99 UPDATE LIST 30
-       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) . LT. 0) CALL XFAL30
+cdjwjun09 - only for LIST type 6
+      if (iuln .eq. 6) then
+        IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) . LT. 0) CALL XFAL30
 cdjw dec08
 c              STORE(L30DR) = max(FLOAT(N6W),STORE(L30DR))
 c              STORE(L30DR+2) = min(FLOAT(N6W),STORE(L30DR+2))
 c Dont fiddle with the merged totals, just account for systematic 
 c absences
-              STORE(L30DR) = min(FLOAT(N6W),STORE(L30DR))
+CDJWJUN09
+              STORE(L30DR) = FLOAT(N6W)
         CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
+      ENDIF       
 1810  CONTINUE
       CALL XOPMSG ( IOPSSM , IOPEND , 200 )
       CALL XTIME2(2)
@@ -1275,41 +1282,26 @@ C----- LOAD DATA IF LIST 30 NOT ALREADY IN CORE
       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
       IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
       IF (IERFLG .LT. 0) GOTO 6520
-CDJW FEB03 DONT CHANGE INDEX RANGES
-C      IF (ABS(STORE(L30IX))+ABS(STORE(L30IX+1))+
-C     1 ABS(STORE(L30IX+2))+ABS(STORE(L30IX+3))+
-C     2 ABS(STORE(L30IX+4))+ABS(STORE(L30IX+5)) .LE. ZERO ) THEN
-C----- MIN AND MAX INDICES, FROM L6 DETAILS
-C        LIX = L6DTL
-C        STORE(L30IX) = STORE(LIX)
-C        STORE(L30IX+1) = STORE(LIX+1)
-C        LIX = LIX + MD6DTL
-C        STORE(L30IX+2) = STORE(LIX)
-C        STORE(L30IX+3) = STORE(LIX+1)
-C        LIX = LIX + MD6DTL
-C        STORE(L30IX+4) = STORE(LIX)
-C        STORE(L30IX+5) = STORE(LIX+1)
-C      ENDIF
-CDJW FEB03  ONLY UPDTE FOR LIST 6
+cdjwjun09 do for list 6
+      if (iuln .eq. 6) then
 c----Sep05  Store Rmerge (25) as Rint for cif compatibility
-      IF (IULN .EQ. 6) THEN
-       IF (ISTORE(L13CD) .EQ. -1) THEN
+         IF (ISTORE(L13CD) .EQ. -1) THEN
 C------- FRIEDEL NOT USED
+            STORE(L30DR+2) = FLOAT(N6W)
+            STORE(L30DR+3) = WORK(25)
+         ELSE
             STORE(L30DR+4) = FLOAT(N6W)
             STORE(L30DR+5) = WORK(25)
-       ELSE
-c            STORE(L30DR+2) = min(FLOAT(N6W),STORE(L30DR+2))
-c only set merged totals if MERGE was done
-            STORE(L30DR+2) = FLOAT(N6W)
-            STORE(L30DR+3) = WORK(25)
-       ENDIF
-      ELSE
-C------- ASSUME LIST 7 AND FRIEDEL USED
-            STORE(L30DR+2) = FLOAT(N6W)
-            STORE(L30DR+3) = WORK(25)
-      ENDIF
+         ENDIF
+      endif
+cdjwjun09 assume Friedel used if list is type 7 (we dont
+c have access to the IFRIED variable on SYST)
+      if (iuln .eq. 7) then
+            STORE(L30DR+4) = FLOAT(N6W)
+            STORE(L30DR+5) = WORK(25)
+      endif
       CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
- 6520  CONTINUE
+ 6520 CONTINUE
       IF(N6D)4200,4200,4150
 4150  CONTINUE
 C--AND NOW THE TERMINATION MESSAGES
