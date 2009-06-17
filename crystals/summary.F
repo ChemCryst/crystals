@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.78  2009/02/05 11:40:53  djw
+C Output summary of lists 40 and 41 to printer for Dave.
+C
 C Revision 1.77  2008/11/21 16:05:06  djw
 C Improvements in formatting output, trap negative sqrts and zero denominators
 C
@@ -2707,10 +2710,11 @@ C
      2 'ABSORPTION', 'GENERAL', 'COLOUR', 'SHAPE', 'CIF'/
 C
       DATA (CKEY(I,1),I=1,MAXKEY)/
-     1 'Total measured', '*', 'No. merged with Friedel',
-     2 'R merged with Friedel',  'No. merged no Friedel',
-     3 'R merged no Friedel', 'Wilson B factor', 'Wilson scale factor',
-     4 11*'*'
+     1 'Total measured', '*',
+     2  'No. Friedel separate', 'Rint Friedel separate',
+     3  'No. Friedel merged',   'Rint Friedel merged',
+     4  'Wilson B factor', 'Wilson scale factor',
+     5  11*'*'
      * /
       DATA (CKEY(I,2),I=1,MAXKEY)/
      1 'Smallest dimension', 'Medium dimension', 'Maximum Dimension',
