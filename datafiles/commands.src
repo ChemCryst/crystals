@@ -4194,8 +4194,8 @@ TONSPEK            1    1
               6         7
     .PLOT               3    0    1    3    0 NO
      NO             FOFC           NPP
-    .PUNCH              4    0    1    2    0 NO
-     NO             YES
+    .PUNCH              4    0    1    3    0 NO
+     NO             YES            RESTRAINT
 BENFORD            1    1
    8    4096 CRYSTALSPUBLISH
     6       
