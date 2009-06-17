@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  2009/06/08 14:24:39  djw
+C Fix checking of polarity and enantiopole in LIST 12, and move initialisation of FLack refinement from SFLS to LIST12
+C
 C Revision 1.17  2009/02/11 11:32:14  djw
 C Print out number of arguments when there is a mis-match on the LINK card.  NOTE that LINK only
 C seems to work with either a single atom and it parameters or an UNTIL sequence. It fails for
@@ -242,7 +245,7 @@ C
       DIMENSION IL23I(6), IL23F(5)
       DIMENSION IGHD(3), IPHD(5)
 c- overall parameter refinement status
-      dimension sdopee(6)
+      dimension isdopee(6)
       INCLUDE 'HEADES.INC'
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOMLX.INC'
@@ -358,7 +361,10 @@ C--SET THE OPERAND BIT CHECK PATTERNS
       IOC(5)=1280
 C----- INITIALISE LIST 23 MODIFICATION FLAG - INCREMENTS BY POWERS
 C      OF 2 FOR ANOMALOUS, ENANTIOPOLE, EXTINCTION
+C----- INDICATE NO CHANGES TO LIST 23 YET
       MOD23 = 0
+      imod23 = 0
+      imod5 = 0 
       CALL XFAL23
 C----- GET THE ACTION AND UPDADTE CONDITIONS
       IACTN = ISTORE(L23SP)
@@ -387,7 +393,7 @@ C - Clear all the bits that L22 could possibly set.
 C
 C-----  LOAD LIST 2 AND INITIALISE SPECIAL POSITION CODE
         CALL XFAL02
-        NUPDAT = 0
+c        NUPDAT = 0
         IF ( KSPINI ( -1, ABTOL) .LE. 0) GOTO 9800
 C       INITIALISE BARI CODE
 C
@@ -1068,18 +1074,15 @@ C----- CHECK OVERALL PARAMETERS?
         L     = ISTORE(L12A+3)
         NUNREF = ISTORE(L12A+4)
 cdjwjun09
-        call xzerof(sdopee,6)      
-C
-        ipos = 1 + nunref
-C
+        ipos = 1
+        call xzerof(isdopee,6)      
         do  i = m12a , l , md12a
-c          write(ncwu,*) ipos, istore(i)
-          sdopee(ipos) = istore(i)
+          isdopee(ipos) = istore(i)
           ipos = ipos + 1
         enddo
 C
 C----- Polarity and Enantiopole
-        if((sdopee(4) .ne. 0).and.(sdopee(5).ne.0)) then
+        if((isdopee(4) .ne. 0).and.(isdopee(5).ne.0)) then
             IF (ISSPRT .EQ. 0) WRITE(NCWU,5665)
             WRITE ( CMON ,5665)
             CALL XPRVDU(NCVDU, 1,0)
@@ -1089,7 +1092,7 @@ C----- Polarity and Enantiopole
         endif
 c
 c---- Polarity or Enatio and Centro
-        if(((sdopee(4) .ne. 0).or.(sdopee(5).ne.0)).and.
+        if(((isdopee(4) .ne. 0).or.(isdopee(5).ne.0)).and.
      1  (nint(store(l2c)).gt.0)) then
             IF (ISSPRT .EQ. 0) WRITE(NCWU,5667)
             WRITE ( CMON ,5667)
@@ -1099,34 +1102,47 @@ c---- Polarity or Enatio and Centro
             GOTO 5850
         endif
 c
-        if(sdopee(4).ne. 0) then
-c--- Polarity
-            mod23=mod23+2
+c----- now set the LIST data
+        if(isdopee(4).ne. 0) then
+c--- Polarity - turn on AMOMALOUS, off ENANTIO
 c - make sure FLACK is Zero
+c            mod23 = 2
+            imod23 = imod23 +1
+            istore(l23m) = 0
+            istore(l23m+6) = -1
             store(l50+4) = 0.
-        else if(sdopee(5).ne. 0) then
-            mod23 = mod23+6
+            imod5 = imod5 + 1
+        else if(isdopee(5).ne. 0) then
+c           turn on anomalous and enantio
 c - make sure POLARITY is Zero
-            store(l50+3) = 0.
-c if FLACK is exactly zero, probably first cycle - set to 0.5
+c            mod23 = 2
+            imod23 = imod23 +1
+            istore(l23m) = 0
+            istore(l23m+6) = 0
+            store(l5o+3) = 0.
+            imod5 = imod5 + 1
+c       if FLACK is exactly zero, probably first cycle - set to 0.5
             if (abs(store (L5o+4)) .le. zerosq) then
                   WRITE ( CMON, '(A,G8.2,A)')
      1 'Flack = ',store(l5o+4),'Starting FLACK refinement from 0.5'
                   CALL XPRVDU(NCVDU, 1,0)
                   IF (ISSPRT .EQ. 0)  WRITE(NCWU, '(A)') CMON(1)(:)
                   store(L5O+4) = 0.5
+                  imod5 = imod5 + 1
             endif
         endif
 c
-        if(sdopee(6).ne. 0) then
+        if(isdopee(6).ne. 0) then
 c--- extinction
-            mod23=mod23+8
+c            mod23 = 2
+            imod23 = imod23 +1
+            istore(l23m+1) = 0
         endif
       endif
-c
-c
       L12O=LAST
+      write(ncwu,*)'Mod23=',mod23
       GOTO 5600
+c
 C--CHECK IF WE ARE PROCESSING THE FIRST ATOM
 5350  CONTINUE
       IF(M12-L12)5450,5400,5450
@@ -1134,6 +1150,7 @@ C--SET THE FLAG FOR THE FIRST ATOM
 5400  CONTINUE
       L12=LAST
       GOTO 5600
+c
 C--CHECK IF WE ARE PROCESSING A GROUP OF SCALE FACTORS
 5450  CONTINUE
       J=IDIM12-3
@@ -1149,6 +1166,7 @@ C----- SET LIST 23 POINTER
       ICOM12(I)=LAST
       GOTO 5600
 5550  CONTINUE
+c
 C--MOVE TO THE NEXT GROUP
 5600  CONTINUE
       M12=ISTORE(M12)
@@ -1190,8 +1208,6 @@ C
       IF (IACTN .EQ. 3) THEN
 C----- WRITE AN END TO THE SRQ
           CALL XISRC ( CEND)
-C----- INDICATE NO CHANGES TO LIST 23 YET
-        IMOD23 = 0
 C----- CHECK IF WE NEED UPDATE LIST 23
         IF (NRESTR .GT. 0) THEN
           IF (ISSPRT .EQ. 0) WRITE(NCWU,560) NRESTR
@@ -1201,7 +1217,7 @@ C----- UPDATE LIST 23 TO INDICATE THAT RESTRAINTS HAVE BEEN GENERATED
             IF (ISSPRT .EQ. 0)WRITE(NCWU,561)
 561   FORMAT('LIST 23 updated to activate restraints')
             ISTORE(L23MN + 2) = 0
-            IMOD23 = 1
+            IMOD23 = IMOD23 + 1
           ENDIF
         ELSE
 C----- NO RESTRAINTS, SO WE CAN REWIND THE SRQ AND JUNK THE L17 HEADER
@@ -1219,51 +1235,46 @@ C----- ANY SPECIAL MODIFIERS REQUESTED (EXTINCTION,POLARITY,ENANTIOPOLE)
           J = IL23F(N) + L23M
           IF (ISTORE(J) .NE. 0) THEN
             ISTORE(J) = 0
-            IMOD23 = 2
+            IMOD23 = IMOD23 + 1
           ENDIF
           MOD23 = MOD23 - M
         ENDIF
         M = M / 2
 6100    CONTINUE
-
 C        IF (MOD23 .NE. 0) STOP 'MOD23 ERROR IN PRC12'
         IF (MOD23 .NE. 0) CALL GUEXIT(2012)
 C----- ANY GROUPS?
-
         IF(NGPDIR .GT. 0) THEN
-
           IF (ISTORE(L23SP + 3) .NE. 0) THEN
             ISTORE(L23SP + 3) = 0
             IMOD23 = 2
           ENDIF
-
         ELSE
-
           IF (ISTORE(L23SP + 3) .NE. -1) THEN
             ISTORE(L23SP + 3) = -1
             IMOD23 = 2
           ENDIF
-
         ENDIF
-
       ENDIF
-
+c
         IF (IMOD23 .NE. 0) THEN
-
-          IF(IMOD23 .EQ. 2) THEN
             IF (ISSPRT .EQ. 0) WRITE(NCWU,6150)
-6150      FORMAT(' LIST 23 has been modified to match LIST 12')
-          ENDIF
-
-          J = 23
-          IF (ISSPRT .EQ. 0)
-     1        WRITE ( NCWU,'('' New LIST 23 written to disk'')')
-          CALL XWLSTD ( J, ICOM23, IDIM23, 1, -1)
+            write ( cmon ,6150)
+            call xprvdu(ncvdu, 1,0)
+6150        FORMAT(' LIST 23 has been modified to match LIST 12')
+            IF (ISSPRT .EQ. 0) WRITE ( NCWU,6151)
+            write ( cmon ,6151)
+            call xprvdu(ncvdu, 1,0)
+6151        format(' New LIST 23 written to disk')
+            CALL XWLSTD ( 23, ICOM23, IDIM23, 1, -1)
         ENDIF
 C
 C----- WAS LIST 5 MODIFIED?
+      nupdat = nupdat + imod5
 C
       IF (NUPDAT .GT. 0) THEN
+          write ( cmon ,580)
+          call xprvdu(ncvdu, 1,0)
           IF (ISSPRT .EQ. 0) WRITE(NCWU,580) NUPDAT
 580       FORMAT(1X,I6,' Atoms modified;',
      1 '   New  LIST 5 written to DISK')
@@ -1301,13 +1312,10 @@ C -- ERRORS
 C -- INPUT ERRORS
       CALL XOPMSG ( IOPL12 , IOPCMI , 0 )
       GO TO 9900
-C
       END
-C
 C
 CODE FOR XSPCON
       SUBROUTINE XSPCON(NRESTR)
-C
 C      NRESTR  NO OF RESTRAINTS WRITTEN TO NEW SRQ
 C
 C----- CHECK FOR ATOMS ON SPECIAL POSITIONS, AND EITHER ESTABLISH

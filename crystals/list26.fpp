@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.2  2004/12/13 16:16:08  rich
 C Changed GIL to _GIL_ etc.
 C
@@ -493,8 +497,8 @@ C--'VIBRATION' RESTRAINT
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,2250)A,(MSD(M),M=1,3),B,C
       ENDIF
-2250  FORMAT(/1X ,F4.0,'   Restrain the difference in the' ,2A4,A1,
-     2 ' along a bond to be',/,F9.5,
+2250  FORMAT(/1X,F4.0,'DELU - Restrain the difference in the',2A4,A1,
+     2 ' along a bond to be',/6x,F9.5,
      3 '  angstrom squared, with an E.S.D. of',F9.5)
       WRITE(CMON,2260)NINT(A+1), 'Vibration difference', B,C
       CALL XPRVDU(NCVDU, 1,0)
@@ -522,7 +526,11 @@ C--'U(IJ)' RESTRAINT
 2450  CONTINUE
       CALL XDUIJ
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,2250)A,(UIJ(M),M=1,3),B,C
+      WRITE(NCWU,2251)A,(UIJ(M),M=1,3),B,C
+2251  FORMAT(/4X ,F4.0,'SIMU - Restrain the difference',
+     1 ' in the components of',  2A4,A1,
+     2 ' to be',/6x,F9.5,
+     3 '  angstrom squared, with an E.S.D. of',F9.5)
       ENDIF
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,2300)(NUMB(N),(UIJ(M),M=1,3),N=2,3),IB
@@ -536,7 +544,7 @@ C
 C--GENERAL PRINT ROUTINES
 2500  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,2900)
+        WRITE(NCWU,2900)
       ENDIF
       M22PD=KNEXTF(L22PD)
       JA=LCA
@@ -674,19 +682,20 @@ C--CHECK THAT BOTH ATOMS ARE ANISO
 CDJWAPR99 - REMEBER THAT JS+6 IS JUST A FLAG NOW, AND RESULT SHOULD BE
 C           BE ZERO
 C      IF(ABS(STORE(JS+6))+ABS(STORE(JT+6))-2.*UISO)3350,3500,3500
-      IF(ABS(STORE(JS+6))+ABS(STORE(JT+6))-UISO)3350,3500,3500
-3350  CONTINUE
-      DO 3450 JJ=8,13
-      A1(3)=STORE(L22PD+2)
-      A1(2)=2.*SQRT(STORE(L22PD+3))
-      A1(1)=0.5*(A1(2)-A1(3))
-      A1(2)=A1(2)-A1(1)-B
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,3250)KF,STORE(JA+2),ISTORE(JA+3),(ISTORE(M),M=JD,JE),
+cdjwjun09 - print out names of iso atoms
+      IF(ABS(STORE(JS+6))+ABS(STORE(JT+6)).lt.UISO) then
+3350   CONTINUE
+       DO 3450 JJ=8,13
+       A1(3)=STORE(L22PD+2)
+       A1(2)=2.*SQRT(STORE(L22PD+3))
+       A1(1)=0.5*(A1(2)-A1(3))
+       A1(2)=A1(2)-A1(1)-B
+       IF (ISSPRT .EQ. 0) THEN
+       WRITE(NCWU,3250)KF,STORE(JA+2),ISTORE(JA+3),(ISTORE(M),M=JD,JE),
      2 A1(1),STORE(JB+2),ISTORE(JB+3),(ISTORE(M),M=JF,JG),(A1(M),M=2,3)
      3 ,(ICOORD(JK,JJ),JK=1,NWKA)
-      ENDIF
-      IF ( (IMON .GT. 0 ) .OR. (ABS(A1(3)) .GE. C ))  THEN
+       ENDIF
+       IF ( (IMON .GT. 0 ) .OR. (ABS(A1(3)) .GE. C ))  THEN
          WRITE(NCAWU,3251) KF, STORE(JA+2), ISTORE(JA+3), A1(1),
      2   STORE(JB+2),ISTORE(JB+3),A1(2),A1(3),
      3   (ICOORD(JK,JJ),JK=1,NWKA)
@@ -696,18 +705,27 @@ C      IF(ABS(STORE(JS+6))+ABS(STORE(JT+6))-2.*UISO)3350,3500,3500
      3   (ICOORD(JK,JJ),JK=1,NWKA)
          CALL XPRVDU(NCVDU, 1,0)
          ENDIF
-      ENDIF
+       ENDIF
 C--ACCUMUALTE THE MEANS ETC.
-      O=O+A1(3)
-      P=P+A1(3)*A1(3)
-      Q=Q+0.5*(A1(1)+A1(2)+B)
+       O=O+A1(3)
+       P=P+A1(3)*A1(3)
+       Q=Q+0.5*(A1(1)+A1(2)+B)
 C--CHECK IF THIS IS THE LAST U(IJ) FOR THIS ATOM
-      IF(JJ-13)3400,3450,3400
-3400  CONTINUE
-      CALL XDOWNF(M22PD,STORE(L22PD),4)
-      M22PD=M22PD+KINCRF(ISTORE(L22PD))
-      NCA=NCA+1
-3450  CONTINUE
+       IF(JJ-13)3400,3450,3400
+3400   CONTINUE
+       CALL XDOWNF(M22PD,STORE(L22PD),4)
+       M22PD=M22PD+KINCRF(ISTORE(L22PD))
+       NCA=NCA+1
+3450   CONTINUE
+      else
+       if(issprt.eq.0) WRITE(ncwu,'(2x,A1,2(8X,A4,I5,31x),A)')
+     2 KF,STORE(JA+2),ISTORE(JA+3), STORE(JB+2),ISTORE(JB+3),
+     3 'Isotropic'
+       write(cmon,'(1x,a1,2x,2(2x,a4,i4,10x),a)')
+     2 KF,STORE(JA+2),ISTORE(JA+3), STORE(JB+2),ISTORE(JB+3),
+     3 'Isotropic'
+       call xprvdu(ncvdu, 1,0)
+      endif
 C--CHANGE ATOMS
 3500  CONTINUE
       JA=ISTORE(JB)

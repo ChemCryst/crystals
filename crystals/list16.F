@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2006/09/25 12:31:50  djw
+C Remove some output statements
+C
 C Revision 1.10  2006/09/25 09:53:23  djw
 C Add SIMU and improve DELU commands
 C
@@ -324,9 +327,9 @@ C  13.PLANAR        14.SUM           15.FORM          16.AVERAGE
 C  17.LIMIT         18.ENERGY        19.ORIGIN        20.REM
 C  21.SAME          22.DELU          23.SIMU
 C
-C----- ISTORE (LCG + 1) OPERATIONS
-C      1  DEFINE    2  RESTRAIN  3  DISTANCE 4
-C      5            6  ANGLE     7           8
+C----- ISTORE (LCG+1) OPERATIONS
+C      1  DEFINE    2  RESTRAIN  3  DISTANCE 4  mean D
+C      5  diff D    6  ANGLE     7  mean A   8  diff D
 C      9  VIBRATION 10 EXECUTION 11 NOLIST   12 UIJ
 C      13 EQUATE    14 PLANAR    15 SUM      16 FORM
 C      17 AVERAGE   18 LIMIT     19 ENERGY   20 ORIGIN
@@ -506,7 +509,7 @@ C to check at this time whether the number match (essential) and
 C whether the element types match (warn).
 C
 C      OME = ME ! Save the current lexical pointers.
-C      OMF = MF
+C      OMF = MF ! Not used
 C
       IF (MG .EQ. 21) THEN
             IDJW = 1
@@ -590,6 +593,7 @@ C Also fill in the include/exclude vector (LATVC) for KDIST4.
           IF ( NGROUP .GT. 1 ) THEN   ! It is not the first group.
             IF ( NATOMS .NE. JATOMS ) THEN  ! Check number atoms matches first group.
               WRITE (CMON,'(A)') 'A group is different size from first'
+              if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
               CALL XPRVDU(NCVDU,1,0)
               GOTO 5850
             END IF
@@ -605,6 +609,7 @@ C Also fill in the include/exclude vector (LATVC) for KDIST4.
         IF ( MS .LE. 0 ) THEN
           WRITE (CMON,'(A)') 'Error reading atom from SAME directive.'
           CALL XPRVDU(NCVDU,1,0)
+          if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
           GOTO 5850
         END IF
         INDATM = ( M5A - L5 ) / MD5
@@ -633,6 +638,8 @@ C Check types match.
      1         'have different element types: ',CATOM1(1:LATOM1),
      1         ' and ', CATOM2(1:LATOM2)
               CALL OUTCOL(9)
+              if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
+              if (issprt.eq.0) write(ncwu,'(a)') cmon(2)(:)
               CALL XPRVDU(NCVDU,2,0)
               CALL OUTCOL(1)
               GOTO 5850
@@ -654,16 +661,19 @@ c      call xprvdu(ncvdu,1,0)
 
       IF ((MG .EQ.21) .AND. ( NGROUP .LE. 1 )) THEN
         WRITE (CMON,'(A)') 'Only one group given on SAME card.'
+        if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
         CALL XPRVDU(NCVDU,1,0)
         GOTO 5850
       ELSE IF (((MG .EQ.22) .or.(mg.eq.23))
      1  .AND. ( NGROUP .LE. 0 )) THEN
         WRITE (CMON,'(A)') 'Not enough atoms for DELU/SIMU'
+        if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
         CALL XPRVDU(NCVDU,1,0)
         GOTO 5850
       END IF
         IF ((ngroup .gt. 1) .and. ( NATOMS .NE. JATOMS )) THEN
           WRITE (CMON,'(A)') 'Last group different size from first.'
+          if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
           CALL XPRVDU(NCVDU,1,0)
           GOTO 5850
         END IF
@@ -697,6 +707,7 @@ C Get the distances and angles. One at a time.
         IF ( K .LT. 0 ) THEN
            WRITE (CMON,'(A)')'"KDIST4" returned an error.'
            CALL XPRVDU(NCVDU,1,0)
+           if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
            GOTO 5850
         ELSE IF ( K .EQ. 0 ) THEN
            CALL CATSTR(STORE(M5A),STORE(M5A+1),1,1,0,0,0,
@@ -708,7 +719,8 @@ C Get the distances and angles. One at a time.
            WRITE (CMON,'(3A)')'DELU/SIMU restraint warning: Atom ',
      2      CATOM1(1:LATOM1), ' has no bonded contacts.'
            END IF
-           CALL XPRVDU(NCVDU,1,0)
+           if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
+          CALL XPRVDU(NCVDU,1,0)
           CYCLE MAINLOOP
         END IF
 
@@ -724,9 +736,11 @@ C Find the pivot atom (M5A) in the first group.
              EXIT
           END IF
         END DO
-        IF (( IND1 .GE. 0 ) .and. (mg .eq. 21)) THEN
-          WRITE (CMON,'(A)') 'Programming error [1] in XPRC16.'
+        IF (( IND1 .GE. 0 ) .and. (mg .ge. 21)) THEN
+          WRITE (CMON,'(A,i5,a)')'Programming error [1]',
+     1    mg,' in XPRC16.'
           CALL XPRVDU(NCVDU,1,0)  
+          if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
           GOTO 5850
         END IF
         IND1 = -IND1 ! This are now index into the JATD vector.
@@ -746,7 +760,7 @@ c            LATOM1 = MIN(10, LATOM1)
 c            WRITE ( CMON ,2804) CATOM1(1:LATOM1),STORE(J+10),
 c     1      CATOM2(1:25)
 c            CALL XPRVDU(NCVDU, 1,0)
-2804        FORMAT ( A,' ',F6.3,'A from ',A)
+c2804        FORMAT ( A,' ',F6.3,'A from ',A)
 c            WRITE(NCWU,'(A)') CMON(1)(:)
 c          END IF
 CDJW DEBUGGING
@@ -760,8 +774,10 @@ C Find the second atom in the first group.
                EXIT
             END IF
           END DO
-          IF (( IND2 .GE. 0 ) .and. (mg .eq. 21)) THEN
-            WRITE (CMON,'(A)') 'Programming error [2] in XPRC16.'
+        IF (( IND2 .GE. 0 ) .and. (mg .ge. 21)) THEN
+          WRITE (CMON,'(A,i5,a)')'Programming error [2]',
+     1    mg,' in XPRC16.'
+            if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
             CALL XPRVDU(NCVDU,1,0)  
             GOTO 5850
           END IF
@@ -769,17 +785,17 @@ C Find the second atom in the first group.
           IF ( L .GE. M5A ) THEN
 C
             IF (MG .EQ. 21) THEN
-              idjw1=3
+              idjw1=3      !3 parameters starting at 5 (x)
               idjw2=5
               ISTORE(LCG+1)=5                             ! Mean
               STORE(LCG+3)=1./(DISTW*DISTW)  ! Weight (1/variance)
             ELSE if (MG .eq. 22) THEN
-              idjw1=9
-              idjw2=5
+              idjw1=6      !6 parameters starting at 8 (Uii) 
+              idjw2=8
               ISTORE(LCG+1)=9                             ! Vibration
               STORE(LCG+3)=1./(DELUW*DELUW)  ! Weight (1/variance)
             ELSE IF (MG .EQ. 23) THEN
-              idjw1=6
+              idjw1=6      !6 parameters starting at 8 (U11)
               idjw2=8
               ISTORE(LCG+1)=12                            ! U[IJ]
               STORE(LCG+3)=1./(SIMUW*SIMUW)  ! Weight (1/variance)
@@ -886,20 +902,22 @@ C Given this bond, loop through rest of atoms to make angles:
           ANGLELOOP: DO JAN = J+JT, JS-JT, JT
 
             LAN=ISTORE(JAN)
-C            CALL CATSTR(STORE(M5A),STORE(M5A+1),1,1,0,0,0,
-C     1      CATOM1,LATOM1)
-C            CALL CATSTR (STORE(L), STORE(L+1),
-C     1      ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
-C     2      ISTORE(J+6), CATOM2, LATOM2)
-C            LATOM1 = MIN(10, LATOM1)
-C            LATOM2 = MIN(10, LATOM2)
-C            CALL CATSTR (STORE(LAN), STORE(LAN+1),
-C     1      ISTORE(JAN+2), ISTORE(JAN+3), ISTORE(JAN+4),
-C     2      ISTORE(JAN+5), ISTORE(JAN+6), CATOM3, LATOM3)
-C            WRITE(CMON,2805)CATOM2(1:LATOM2),CATOM1(1:LATOM1),
-C     1      CATOM3(1:25)
-C            CALL XPRVDU(NCVDU, 1,0)
-C2805        FORMAT ( A, ' to ', A, ' to ', A)
+cdjwdebugging
+c            CALL CATSTR(STORE(M5A),STORE(M5A+1),1,1,0,0,0,
+c     1      CATOM1,LATOM1)
+c            CALL CATSTR (STORE(L), STORE(L+1),
+c     1      ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
+c     2      ISTORE(J+6), CATOM2, LATOM2)
+c            LATOM1 = MIN(10, LATOM1)
+c            LATOM2 = MIN(10, LATOM2)
+c            CALL CATSTR (STORE(LAN), STORE(LAN+1),
+c     1      ISTORE(JAN+2), ISTORE(JAN+3), ISTORE(JAN+4),
+c     2      ISTORE(JAN+5), ISTORE(JAN+6), CATOM3, LATOM3)
+c            WRITE(CMON,2805)CATOM2(1:LATOM2),CATOM1(1:LATOM1),
+c     1      CATOM3(1:25)
+c            CALL XPRVDU(NCVDU, 1,0)
+c2805        FORMAT ( A, ' to ', A, ' to ', A)
+cdjwdebugging
 C Find third atom of angle in the first group of SAME.
             IND3 = ( LAN - L5 ) / MD5
             DO K = 1,NATOMS
@@ -973,19 +991,21 @@ C The first group's atom3:
               M5P = L5 + MD5 * ISTORE(JATD+IND1+K*NATOMS)
               M5Q = L5 + MD5 * ISTORE(JATD+IND2+K*NATOMS)
               M5R = L5 + MD5 * ISTORE(JATD+IND3+K*NATOMS)
-C              CALL CATSTR(STORE(M5P),STORE(M5P+1),1,1,0,0,0,
-C     1        CATOM1,LATOM1)
-C              LATOM1 = MIN(10, LATOM1)
-C              CALL CATSTR (STORE(M5Q), STORE(M5Q+1),
-C     1        ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
-C     2        ISTORE(J+6), CATOM2, LATOM2)
-C              LATOM2 = MIN(25, LATOM2)
-C              CALL CATSTR (STORE(M5R), STORE(M5R+1),
-C     1        ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
-C     2        ISTORE(J+6), CATOM3, LATOM3)
-C              WRITE(CMON,2805)CATOM2(1:LATOM2),CATOM1(1:LATOM1),
-C     1        CATOM3(1:25)
-C              CALL XPRVDU(NCVDU,1,0)
+cdjwdebugging
+c              CALL CATSTR(STORE(M5P),STORE(M5P+1),1,1,0,0,0,
+c     1        CATOM1,LATOM1)
+c              LATOM1 = MIN(10, LATOM1)
+c              CALL CATSTR (STORE(M5Q), STORE(M5Q+1),
+c     1        ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
+c     2        ISTORE(J+6), CATOM2, LATOM2)
+c              LATOM2 = MIN(25, LATOM2)
+c              CALL CATSTR (STORE(M5R), STORE(M5R+1),
+c     1        ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
+c     2        ISTORE(J+6), CATOM3, LATOM3)
+c              WRITE(CMON,2805)CATOM2(1:LATOM2),CATOM1(1:LATOM1),
+c     1        CATOM3(1:25)
+c              CALL XPRVDU(NCVDU,1,0)
+cdjwdebugging
 
               MQ=MCG ! Next free word (we'll store atom2 header here)
               CALL XFILL(NOWT,ISTORE(MQ),17)
