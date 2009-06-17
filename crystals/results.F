@@ -1,6 +1,9 @@
 c
 c
 C $Log: not supported by cvs2svn $
+C Revision 1.142  2009/05/08 15:09:31  djw
+C Create SYMCODE subroutine for X-tal type codes
+C
 C Revision 1.141  2009/05/01 08:45:39  djw
 C Fix cif text for SHELX weights
 C
@@ -5718,13 +5721,18 @@ C
             WRITE (NCPU,4) 'Reflections measured', NINT(STORE(L30DR))
         END IF
  
-        IF (STORE(L30DR+4).LE.ZERO) THEN
+
+      write(ncwu,*)'List 6 total', n6d, store(l30dr), store(l30dr+2),
+     1 store(l30dr+4)
+        IF (n6d .gt. nint(STORE(L30DR+4))) THEN
+           IF (ISSPRT .EQ. 0) WRITE(NCWU,'(a)') 'Friedels Law used'
 C----- FRIEDELS LAW USED
            I=2
         ELSE
            I=4
         END IF
-        J=MIN(NINT(STORE(L30DR+I)),NINT(STORE(L30DR)))
+cdjwjun09        J=MIN(NINT(STORE(L30DR+I)),NINT(STORE(L30DR)))
+        J=NINT(STORE(L30DR+I))
         IF ( IPUNCH .EQ. 1 ) THEN
            WRITE (CPAGE(IDATA+2,2)(:),
      1      '(''Independent reflections'',I7)') J
@@ -5743,11 +5751,11 @@ C----- FRIEDELS LAW USED
      1      CBUF(1:15), STORE(L30DR+1+I)
            CALL XPCIF (CLINE)
            WRITE (CLINE,'(A,I6)')
-     1      '# Number of reflections with Friedels Law is ',
+     1      '# Number of reflections without Friedels Law is ',
      2      NINT(STORE(L30DR+2))
            CALL XPCIF (CLINE)
            WRITE (CLINE,'(A,I6)')
-     1      '# Number of reflections without Friedels Law is ',
+     1      '# Number of reflections with Friedels Law is ',
      2      NINT(STORE(L30DR+4))
            CALL XPCIF (CLINE)
 C----- TRY FOR A FRIEDEL MERGE ESTIMATE
@@ -6684,6 +6692,9 @@ C Requires the user to set up a LIST 7 with the Friedel flag
 C set in the JCODE field.
 C This can be done with the script COPY67
 C 
+c      iplot   Fo/Fc or NPP
+c      Criter  default 999.
+c      ipunch  no/yes/rest  0/1/2
 C 
       PARAMETER (NPLT=7)
       DIMENSION IFOPLT(2*NPLT+1), IFCPLT(2*NPLT+1)
@@ -6691,6 +6702,7 @@ C
       DIMENSION DATC(401)
       DIMENSION TEMP(2)
 
+      CHARACTER *1 CSIGN
       CHARACTER*80 LINE
       CHARACTER*30 FORM
       CHARACTER *15 HKLLAB
@@ -6836,6 +6848,8 @@ C
         fsxx = 0.
         fsyy = 0.
         fsxy = 0.
+c----- restraint counter
+      nrest = 0
       SPFC=0.
       SPFCSQ=0.
       SNFC=0.
@@ -6856,9 +6870,12 @@ C should be about unity anyway.  Will be computed later
       YSLOPE=1.
 C 
 C
-      IF (IPUNCH .GE. 1) WRITE(NCPU,335)
-335   FORMAT(3X,'H',3X,'K',3X,'L',17X,'Fo+', 13X,'Sig', 13X, 'Fc+', 
-     1 13X,'Fo-', 13X,'Sig', 13X, 'Fc-')
+      IF (IPUNCH .eq. 1) then 
+       WRITE(NCPU,335)
+335    FORMAT(3X,'H',3X,'K',3X,'L',11X,'Fo+', 7X,'Sig', 7X, 'Fc+',
+     1 7X,'Fo-', 7X,'Sig', 7X, 'Fc-',
+     2 'Delta(Fo)/<Fo>',2x,'Delta(Fc)/<Fc>' )
+      endif
 C
       IN=0
       NREFIN=0
@@ -6920,19 +6937,56 @@ COMPARE PACKED INDICES
          MFRIED=MFRIED+1
          FOKD=FOK1-FOK2
          FCKD=FCK1-FCK2
-         IF (IPUNCH .GE. 1) 
-     1   write(ncpu,'(3i4,2i2, 6f16.4)') i,j,k, nint(fried1), 
-     2   nint(fried2), fok1, sig1, fck1, fok2, sig2, fck2
+         FOKS=0.5*(FOK1+FOK2)
+         FCKS=0.5*(FCK1+FCK2)
          FOMAX= MAX(FOMAX, FOKD)
          FCMAX= MAX(FCMAX, FCKD)
          FCMIN= MIN(FCMIN, FCKD)
          SIGM=SQRT(SIG1*SIG1+SIG2*SIG2)
+c -- Normalise the differences by dividing by the average.
+c -- we have to beware that either or both Fo may be negative
+c    giving incipient division by zero
+c
+         fod    = 100.*fokd/(.5*(abs(fok1)+abs(fok2)))
+         fcd    = 100.*fckd/abs(fcks)
+         sigdif = 100.*sigm /(.5*(abs(fok1)+abs(fok2))+abs(fcks))   
+c
+         IF (IPUNCH .eq. 1) then
+           write(ncpu,'(3i4,2i2, 10f10.2)') i,j,k, nint(fried1), 
+     1     nint(fried2), fok1, sig1, fck1, fok2, sig2, fck2, fokd, 
+     2     fckd, fod, fcd
+c
+
+         else if (ipunch .eq. 2) then
+cdjwjun09
+c
+           if((abs(foks) .gt. zero).and.(abs(fcks).gt.zero).and.
+     1     ( abs(fcd).gt.sigdif) ) then
+             if (FCKD .lt. zero) then
+              CSIGN = '-'
+             else
+              CSIGN = '+' 
+             endif
+             nrest = nrest + 1
+             write(ncpu, 351) 
+     1       fod, sigdif, CSIGN, abs(fcd), i,j,k, abs(fod-fcd)/sigdif
+351          format('restrain ', f9.2,', ',  f8.2, ' = ',
+     1       a, ' ( 1. - ( 2. * enantio ) ) * ', f9.2,20x,3i5,f9.3) 
+           endif
+         endif  
+
 C ZH = SIGNAL:NOISE
          ZH=(FCKD-FOKD)/SIGM
          QH=(-FCKD-FOKD)/SIGM
 C SIGNAL:NOISE FOR DELTA FO AND FC
-         STNFO=FOKD/SIGM
-         STNFC=FCKD/SIGM
+c         STNFO=FOKD/SIGM
+c         STNFC=FCKD/SIGM
+
+         stnfo=0.1*fod
+         stnfc=0.1*fcd
+c           stnfo=fod/fcd  ! just a test
+c           stnfc=fokd/fckd !just a test
+
          NFO = NINT(STNFO)+NPLT+1
          NFO = MAX(NFO,1)
          NFO = MIN(NFO,2*NPLT+1)
@@ -7029,8 +7083,8 @@ c      totals for Fo/Fc plot
 C 
       ELSE
 C----- UNPAIRED
-         IF (IPUNCH .GE. 1) 
-     1   write(ncpu,'(3i4,I2,2X, 3f16.4)') i1,j1,k1, 
+         IF (IPUNCH .eq. 1) 
+     1   write(ncpu,'(3i4,I2,2X, 3f10.2)') i1,j1,k1, 
      2   nint(fried1),fok1, sig1, fck1
          CONTINUE
          LFRIED = LFRIED + 1
@@ -7047,6 +7101,8 @@ C----- UNPAIRED
 C
 C
 450   CONTINUE
+      if (ipunch .eq. 2) 
+     1 write(ncpu,'(a,i8,a)') 'REM ', nrest, ' restraints written out'
       IF (LEVEL .EQ. 4) THEN
 c Also add A SERIES FOR STRAIGHT LINE (y=x) .
         WRITE(CMON,'(A/ (2(A,2F10.2)) )')
@@ -7060,9 +7116,9 @@ c
 c-----
 c      find slope and intercept of FO/fc plot
 c      determinant
-        write(cmon,'(a)')' Plotting delta(Fo) vs delta(Fc)'
-        call xprvdu(ncvdu, 1,0)
-        if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+        write(cmon,'(/a)')' Plotting delta(Fo) vs delta(Fc)'
+        call xprvdu(ncvdu, 2,0)
+        if (issprt.eq.0) write (ncwu,'(/a)') cmon(2)(:)
 c
         write(cmon,'(a,9x,2f12.3)') ' Gradient for zero intercept = '
      1  ,fsxy/fsxx
@@ -7081,7 +7137,7 @@ c
 470         format(' Slope, intercept and Cc (R) of Fo/Fc ',
      1      ' Plot =',f7.3,f10.2,f10.5)
             call xprvdu(ncvdu, 1,0)
-            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            if (issprt.eq.0) write (ncwu,'(a)') cmon(1)(:)
          else
             write(cmon,471) 
 471         format (' Correlation coefficient cannot be computed')
@@ -7091,7 +7147,7 @@ c
 472         format(' Slope and intercept of Fo/Fc',
      1      ' Plot =',f7.3,f10.2,f10.5)
             call xprvdu(ncvdu, 1,0)
-            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            if (issprt.eq.0) write (ncwu,'(a)') cmon(1)(:)
          endif
         else
             write(cmon,473) 
@@ -7109,9 +7165,10 @@ C
           CALL XPRVDU(NCVDU,1,0)
           N6ACC = MAX11/2
         END IF
-        WRITE(CMON,'(A,6x,I8,A)')
+        WRITE(CMON,'(/A,6x,I8,A)')
      1 ' Computing normal probability plot for',N6ACC, ' reflections.'
-        CALL XPRVDU(NCVDU,1,0)
+        CALL XPRVDU(NCVDU,2,0)
+        if (issprt.eq.0) write (ncwu,'(/a)') cmon(2)(:)
 C Sort the sqrt(W)*(Fo2-Fc2) into ascending order.
         CALL XSHELQ(STR11,2,1,N6ACC,N6ACC*2,TEMP)
         DO I=1,N6ACC
@@ -7163,7 +7220,7 @@ c      determinant
 460         format(' Slope, intercept and Cc (R) of  NPP  ',
      1      ' Plot =',f7.3,f10.2,f10.5)
             call xprvdu(ncvdu, 1,0)
-            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            if (issprt.eq.0) write (ncwu,'(a)') cmon(1)(:)
          else
             write(cmon,461) 
 461         format (' Correlation coefficient cannot be computed')
@@ -7173,7 +7230,7 @@ c      determinant
 462         format(' Slope and intercept of NPP',
      1      ' Plot =',f7.3,f10.2,f10.5)
             call xprvdu(ncvdu, 1,0)
-            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            if (issprt.eq.0) write (ncwu,'(a)') cmon(1)(:)
          endif
         else
             write(cmon,463) 
@@ -7251,7 +7308,7 @@ C
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
 c
-         WRITE (CMON,'(10(a,i7))') ' No of Unpaired Reflections =',
+         WRITE (CMON,'(10(a,i7))') ' No of Unpaired Reflections  =',
      1    LFRIED
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
@@ -7307,19 +7364,19 @@ C
          IF (ISSPRT.EQ.0) THEN
 C
             WRITE(NCWU,704)
-704         FORMAT('deltaF = F(+) - F(-)')
+704         FORMAT('deltaF = F^2(+) - F^2(-)')
             write(ncwu, 700)
-700         format('Number +ve',3x,'mean(deltaF)',3x,'rms(deltaF)',
-     1      3x,'Number -ve',3x,'mean(deltaF)',3x,'rms(deltaF)')
+700         format(10x,'Number +ve',3x,'mean(deltaF)',3x,'rms(deltaF)'
+     1      ,3x,'Number -ve',3x,'mean(deltaF)',3x,'rms(deltaF)')
             write(ncwu, 701)
-701         format('Totals for Fo')
+701         format('For Fo')
             WRITE(NCWU,703)
      1      npfo, SPFO/FLOAT(NPFO), SQRT(SPFOSQ/FLOAT(NPFO)),
      2      nnfo, SNFO/FLOAT(NNFO), SQRT(SNFOSQ/FLOAT(NNFO))
-703         FORMAT(i6,3x,F12.4,3x,f12.4,7x,i6,3x,f12.4,2x,f12.4)
+703         FORMAT(10x,i6,3x,F12.4,3x,f12.4,7x,i6,3x,f12.4,2x,f12.4)
 C
             write(ncwu, 702)
-702         format('Totals for Fc')
+702         format('For Fc')
             WRITE(NCWU,703) 
      1      npfc, SPFC/FLOAT(NPFC), SQRT(SPFCSQ/FLOAT(NPFC)),
      2      nnfc, SNFC/FLOAT(NNFC), SQRT(SNFCSQ/FLOAT(NNFC))
@@ -7330,7 +7387,7 @@ C
 706         format('Same sign',3x,'Opposite sign')
             write(ncwu,707) npls, nmin
 707         format(i8,6x,i8)
-            WRITE(NCWU,'(//A)')' Distribution of Delta(F^2)/sigma(Fo^2)'
+            WRITE(NCWU,'(//A)')' Distribution of Delta(F^2)/<F^2>'
             WRITE(NCWU,'(a,15I6)') 'Delta Fo^2',IFOPLT
             WRITE(NCWU,'(a,15I6)') 'Delta Fc^2',IFCPLT
             WRITE(NCWU,'(a,15I6)') '    n     ',(KDJW,KDJW=-NPLT,NPLT,1)
@@ -7431,7 +7488,7 @@ C P3(False)
             CALL XPRVDU (NCVDU,1,0)
             IF (ISSPRT.EQ.0) WRITE (NCWU,950) LINE
             WRITE (LINE,1150) XG
-1150        FORMAT ('G           ',F9.4)
+1150        FORMAT ('G            ',F9.4)
             IF (ISSPRT.EQ.0) WRITE (NCWU,950) LINE
             YUNK=SQRT(XG2/XG0)
             IF (YUNK.GT.0.0001) THEN
@@ -7441,7 +7498,7 @@ C P3(False)
                WRITE (FORM,750) YUNK, YUNK
             END IF
             WRITE (LINE,1250) FORM
-1250        FORMAT ('G S.U.      ',A)
+1250        FORMAT ('G S.U.       ',A)
             IF (ISSPRT.EQ.0) WRITE (NCWU,950) LINE
             WRITE (LINE,1300) TONY
 1300        FORMAT ('FLEQ        ',F9.3)
