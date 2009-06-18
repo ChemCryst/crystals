@@ -115,11 +115,9 @@
 %copy '#generaledit 5'                                                      
 %copy 'getserial l5ser'
 %copy 'end'                                                                  
-% show l5ser
 % if l5ser .lt. 0 then
 %  evaluate l5ser = - l5ser
 % end if
-% show l5ser
 %copy '#edit'                                                                   
 %copy 'change enantio 0'                                                        
 %copy 'end'                                                                     
