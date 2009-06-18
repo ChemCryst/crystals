@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.58  2009/06/08 14:24:39  djw
+C Fix checking of polarity and enantiopole in LIST 12, and move initialisation of FLack refinement from SFLS to LIST12
+C
 C Revision 1.57  2009/06/04 14:32:11  djw
 C compute GOF for X-ray data only
 C
@@ -573,8 +576,8 @@ C -- INVALID TEMPERATURE FACTOR
         CALL OUTCOL(1)
         CALL XPRVDU(NCVDU, 1,0)
         WRITE(NCWU, '(A)') CMON(1)(:)
-3345    FORMAT(1X,'Extinction parameter out of range. (',F6.3,' ) ')
-        STORE(L5O+5) = -ZERO
+3345    FORMAT(1X,'Extinction parameter negative. (',F12.6,' ) ')
+        STORE(L5O+5) = 0.0
       ENDIF
 
       IF (IUPDAT .GE. 0)  I = KSPINI( -1, STOLER) ! SET THE OCCUPANCIES
