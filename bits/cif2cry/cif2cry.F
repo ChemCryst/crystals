@@ -661,7 +661,7 @@ c.......=========================
      *          'KMIN=',  int(kmin),'KMAX=', int(kmax), 'LMIN=', 
      *          int(lmin),'LMAX=', int(lmax), 'CONT', 'THETAMIN = ',
      *          thetamin, 'THETAMAX = ', thetamax 
-        write (NOUTF, '(a,2x, 4(a, f6.2))') 'GENERAL', 'DOBS = ',
+        write (NOUTF, '(a,2x, 4(a, f8.2))') 'GENERAL', 'DOBS = ',
      *          dobs, ' DCALC = ', dcalc, ' MOLWT = ', molwt, ' Z = ', 
      *          unitZ 
         write(NOUTF, '(2a/,2a)') 'COLOUR ', colour, 'SHAPE ', shape
