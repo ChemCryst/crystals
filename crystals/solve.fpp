@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.42  2009/06/04 14:32:11  djw
+C compute GOF for X-ray data only
+C
 C Revision 1.41  2009/06/03 09:04:04  djw
 C Highlight singularities in RED on monitor
 C
@@ -1887,7 +1890,7 @@ C------------  CELL PARAM
 C------------  PROFILE PARAM
                               M5G = L5PR
                         ELSE
-C------------  EXTINCTION PARAM
+C------------  ANISO-EXTINCTION PARAM
                               M5G = L5EX
                         ENDIF
 c                       check we are not just starting from zero
@@ -2675,6 +2678,7 @@ C      UPDATE    MODIFIED SHIFT
 C      ESD       ESD
 C
       character *6 ctype(11)
+      character *10 Covera(6)
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'XIOBUF.INC'
@@ -2682,6 +2686,8 @@ C
       INCLUDE 'QSTORE.INC'
       data ctype/'Occ', 'U[iso]', 'x','y','z','U[11]','U[22]','U[33]', 
      1 'U[23]', 'U[13]', 'U[12]'/ 
+      data covera/'Scale', 'D[u]', 'O[u]', 'Polarity', 'Enantio',
+     1 'Extinction'/
       A=SIGN(1.,UPDATE)
       if (js2 .le. 13 ) then
         WRITE ( CMON,'(A, A4,I4,1x,A6,3(2x,a,F10.5))') 
@@ -2689,9 +2695,10 @@ C
      2  idjw,NINT(SERIAL),ctype(js2-2),'Shift= ', A*OLD, 'Esd= ',esd,
      3  'New shift= ',UPDATE
       else
-        WRITE ( CMON,'(A, I4,3(2x,a,F10.5))') 
-     1  'Resetting shift, Parameter type',
-     1  js2,'Shift= ', A*OLD, 'Esd= ',esd,
+c        Overall parameters
+        WRITE ( CMON,'(A, A,3(2x,a,F10.5))') 
+     1  'Resetting shift for ',covera(js2-20),
+     1  'Shift= ', A*OLD, 'Esd= ',esd,
      2  'New shift= ',UPDATE
       endif
       CALL OUTCOL(3)
