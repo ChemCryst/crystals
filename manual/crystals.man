@@ -5722,7 +5722,8 @@ hybridisation states of C are more clearly defined.
  a system defined  by the user,   or a predefined group may be used.
  In any case all the positional parameters of
  the atoms in the  'IDEAL' group will be known before the
- calculation begins.
+ calculation begins. Finally, various pre-defined geometrical groups are
+ available.
 #IOutput from REGULARISE#
 #PThe output from REGULARISE  includes the fragment centroids, their
  sums and differences and the
