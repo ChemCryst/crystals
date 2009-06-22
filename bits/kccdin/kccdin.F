@@ -13,6 +13,7 @@
       CHARACTER*6 LABEL(1000,3)
 C         CHARACTER*26  alpha
       CHARACTER*10 NUMER
+      character*132 filename
       REAL CELA,CELB,CELC,SIGA,SIGB,SIGC
       REAL CELALP,CELBET,CELGAM,SIGALP,SIGBET,SIGGAM
       REAL X,Y,Z,U,SX,SY,SZ,SU
@@ -30,13 +31,15 @@ C
 #if defined(_GIL_) || defined (_MAC_) || defined (_LIN_) || defined (_WXS_)
       call no_stdout_buffer()
 #endif
-C 
+C set default output filename
+	filename='kccd.hkl' 
 C----- GET DATE
+
       I=IGDAT(CDATE)
 C 
 C....... Open our files for writing
       OPEN (NOUTF,FILE='kccd.ins',STATUS='UNKNOWN')
-      OPEN (NHKL,FILE='kccd.hkl',STATUS='UNKNOWN')
+      OPEN (NHKL,FILE=filename, STATUS='UNKNOWN')
       OPEN (NCIF,FILE='kccd.cif',STATUS='UNKNOWN')
 C 
 C....... Call the CIFTBX code to INITialise read/WRITE units
@@ -214,7 +217,51 @@ C
 300   CONTINUE
 C----- reflections all read - check space group with Nonius code
       write(6,'(a)') 'Space Group Code provided by Enraf-Nonius'
-      CALL SGROUP
+c----------------------------------------------------------------
+      i_value=0
+	isa = 0
+      isb = 0
+	if (abs(90.-celalp) .le. .001) isa=isa+1
+	if (abs(90.-celbet) .le. .001) isa=isa+1
+	if (abs(90.-celgam) .le. .001) isa=isa+1
+
+	if (abs(cela-celb) .le. (siga+sigb)) isb=isb+1
+	if (abs(cela-celc) .le. (siga+sigc)) isb=isb+1
+	if (abs(celc-celb) .le. (sigc+sigb)) isb=isb+1
+	write(6,*) isa, isb
+	if (isb .le. 0) then
+		if(isa .eq. 0) isa=1
+            i_value=isa
+	endif
+	write(6,*)filename, I_value
+      if (i_value .eq. 0)       WRITE(6,555)
+555   FORMAT (' Possible space group types :',/,' Number:   Group:      
+     1       ',/,
+
+     * ' 1         1(bar)   triclinic',/,
+     * ' 2         2/m      monoclinic(b)',/,
+     * ' 3         mmm      orthorhombic',/,
+     * ' 4         4/m      tetragonal',/,
+     * ' 5         4/mmm    tetragonal',/,
+     * ' 6         3(bar)   trigonal/rhomboedric(hex. setting)',/,
+     * ' 7         3(bar)m1 trigonal/rhomboedric(hex. setting)',/,
+     * ' 8         3(bar)1m trigonal',/,
+     * ' 9         6/m      hexagonal',/,
+     * ' 10        6/mmm    hexagonal',/,
+     * ' 11        m3(bar)  cubic',/,
+     * ' 12        m3(bar)m cubic',/)
+
+C
+      if (i_value .eq. 0) then
+            write(6,556)
+            READ (5,556) I_VALUE
+      endif
+557   format(/,' give space group type number :',/)
+556   FORMAT (I5)
+	write(6,*)filename, I_value
+c----------------------------------------------------------------
+
+      CALL SGROUP(filename, i_value)
       WRITE (6,'(A,a,a)') 'Input space group symbol',
      1' with spaces between the components',
      2 ' e.g. P n a 21'
@@ -493,11 +540,27 @@ C
 C 
          IF (ZL/ZS.LT.1.5) THEN
             WRITE (CSPACE,'(a)') 'block'
-         ELSE IF (ZL/ZM.GT.ZM/ZS) THEN
+         ELSE IF (ZL/ZD.GT.ZD/ZS) THEN
             WRITE (CSPACE,'(a)') 'prism'
          ELSE
             WRITE (CSPACE,'(a)') 'plate'
          END IF
+         WRITE (NOUTF,'(a,a)') '# shape ',CSPACE
+
+      if (ZS .le. .5*ZD) then
+        if (ZD .le. .5*ZL) then
+            WRITE (CSPACE,'(a)')'lath'
+        else
+            WRITE (CSPACE,'(a)')'plate'
+        endif
+      else
+        if (ZD .le. .5*ZL) then
+           WRITE (CSPACE,'(a)')'prism'
+        else
+            WRITE (CSPACE,'(a)')'block'
+        endif
+      endif
+c
          WRITE (NOUTF,'(a,a)') 'shape ',CSPACE
 C 
          WRITE (NOUTF,'(a)') 'indexran'

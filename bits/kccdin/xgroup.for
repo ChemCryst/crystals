@@ -1,4 +1,4 @@
-      SUBROUTINE SGROUP
+      SUBROUTINE SGROUP(file_name, i_value)
 C 
 C 
       LOGICAL NOT6
@@ -42,7 +42,7 @@ C
       LOGICAL CHECK,NOT2,NOT3,NOT4,FULL,DOUBLE,NOTM
       LOGICAL ALPHA,BETA,GAMMA
 C      INTEGER            STR$TRIM
-      CHARACTER*64 FILE_NAME
+      CHARACTER*(*) FILE_NAME
       CHARACTER*64 FILE_NAME1
       CHARACTER*78 TEXT2(10),TEXT1
       INTEGER SPACE_NUMBER
@@ -549,22 +549,34 @@ C LI = CAD4.DAT , LO = SPACE.OUT , ITBL = SPACE.TBL
       OPEN( UNIT=LO,FILE='SPACE.OUT',STATUS='UNKNOWN')
 Cdjw      type 899
 Cdjw      accept 898,FILE_NAME
-      FILE_NAME='kccd.hkl'
+cdjw09      FILE_NAME='kccd.hkl'
 Cdjw      type 897
-      WRITE(LP,50)
-      WRITE(LO,50)
-50    FORMAT (' Possible space group types :',/,' Number:   Group:      
-     1       ',/,' 1         1(bar)   triclinic',/,' 2         2/m      
-     2monoclinic(b)',/,' 3         mmm      orthorhombic',/,' 4         
-     34/m      tetragonal',/,' 5         4/mmm    tetragonal',/,' 6     
-     4    3(bar)   trigonal/rhomboedric(hex. setting)',/,' 7         3(b
-     5ar)m1 trigonal/rhomboedric(hex. setting)',/,' 8         3(bar)1m t
-     6rigonal',/,' 9         6/m      hexagonal',/,' 10        6/mmm    
-     7hexagonal',/,' 11        m3(bar)  cubic',/,' 12        m3(bar)m cu
-     8bic',/,' give space group type number :',/)
-Cdjw      accept 896,i_value
+
+      if (I_value .le. 0) then
+      WRITE(LP,555)
+      WRITE(LO,555)
+555   FORMAT (' Possible space group types :',/,' Number:   Group:      
+     1       ',/,
+
+     * ' 1         1(bar)   triclinic',/,
+     * ' 2         2/m      monoclinic(b)',/,
+     * ' 3         mmm      orthorhombic',/,
+     * ' 4         4/m      tetragonal',/,
+     * ' 5         4/mmm    tetragonal',/,
+     * ' 6         3(bar)   trigonal/rhomboedric(hex. setting)',/,
+     * ' 7         3(bar)m1 trigonal/rhomboedric(hex. setting)',/,
+     * ' 8         3(bar)1m trigonal',/,
+     * ' 9         6/m      hexagonal',/,
+     * ' 10        6/mmm    hexagonal',/,
+     * ' 11        m3(bar)  cubic',/,
+     * ' 12        m3(bar)m cubic',/,
+     * ' give space group type number :',/)
+	write(lo,*)file_name, I_value
       READ (5,100) I_VALUE
 100   FORMAT (I5)
+      endif
+
+
       IF (I_VALUE.LT.1) I_VALUE=1
       IF (I_VALUE.GT.12) I_VALUE=1
       IPS=BTRANS(I_VALUE)
@@ -621,7 +633,8 @@ C
 C 
       READ (UNIT=BUF,FMT=400,ERR=450) INDEX(1),INDEX(2),INDEX(3),REFINT,
      1SIGINT
-400   FORMAT (I3,2I4,F10.1,F10.1)
+cdjw09400   FORMAT (I3,2I4,F10.1,F10.1)
+400   FORMAT (3I4,2F8.2)
       GO TO 750
 450   READ (UNIT=BUF,FMT=500,ERR=550) INDEX(1),INDEX(2),INDEX(3),I,
      1SIGINT
