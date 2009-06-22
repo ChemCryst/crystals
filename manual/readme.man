@@ -26,9 +26,8 @@ Use notepad, EDIT, or some other _I{ASCII text editor.
 folder containing your data. Click OK.
 
 #P4. The CRYSTALS window is divided into several areas:
-# On the right: _B{The _B{model _B{window, initially filled with a pretty
-backdrop of Oxford (submissions of new backdrops for future releases
-are welcome!). This will display the model once the structure is solved.
+# On the right: _B{The _B{model _B{window. 
+This will display the model once the structure is solved.
 
 # Above the model: _B{The _B{model _B{toolbar, lets you change the appearance
 and functioning of the model window.
@@ -64,7 +63,7 @@ off. All other files may be opened with a text editor e.g.
 notepad, wordpad, or edit.
 # Double clicking on the .DSC file will start CRYSTALS in that folder, using
 that .DSC file.
-# _B{Text _B{files BETACRYS.L_I{nn and BETACRYS.M_I{nn. The number _I{nn
+# _B{Text _B{files bfile.l_I{nn and bfile.m_I{nn. The number _I{nn
 is automatically incremented with each run of the program. These files can
 generally be deleted without looking at them unless the analysis begins to go
 wrong. They provide post-mortem information.
@@ -78,6 +77,14 @@ To make things happen, try clicking the "GUIDE" button in the
 toolbar. The GUIDE assesses where a structure analysis has got to, and
 will provide a list of possible options in a pull-down menu. Choose the
 required option and click OK.
+#
+#
+An explanation of the screen layout can be found on the menu bar 
+under:
+#
+_B{Appearance / _B{Screen _B{Layout 
+#
+
 
 #ZImporting SHELX data#
 #P It is best to import the .INS or .RES file first. You can import
@@ -92,4 +99,11 @@ will be imported. (You will be asked for the spacegroup).
 The default settings are for a SHELX hkl file, so just type or browse
 for the required file, and click OK.
 
+#
+#
 
+A description of the relationship between CRYSTALS and SHELX commands, 
+including examples of their use, can be found on the menu bar under:
+#
+_B{Help / _B{Migrating _B{from _B{SHELX 
+#
