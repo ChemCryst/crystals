@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2009/06/17 13:41:49  djw
+C Fix #CHECK HI crash.  Actual error was in wrong values for idjw1 & idjw2 for DELU
+C  restraint in LIST 16.  Several messages cleaned up, more diagnostics for error conditions.
+C
 C Revision 1.18  2009/06/08 14:24:39  djw
 C Fix checking of polarity and enantiopole in LIST 12, and move initialisation of FLack refinement from SFLS to LIST12
 C
@@ -1114,12 +1118,12 @@ c            mod23 = 2
             imod5 = imod5 + 1
         else if(isdopee(5).ne. 0) then
 c           turn on anomalous and enantio
-c - make sure POLARITY is Zero
+c - make sure POLARITY is unity
 c            mod23 = 2
             imod23 = imod23 +1
             istore(l23m) = 0
             istore(l23m+6) = 0
-            store(l5o+3) = 0.
+            store(l5o+3) = 1.
             imod5 = imod5 + 1
 c       if FLACK is exactly zero, probably first cycle - set to 0.5
             if (abs(store (L5o+4)) .le. zerosq) then
@@ -1140,7 +1144,6 @@ c            mod23 = 2
         endif
       endif
       L12O=LAST
-      write(ncwu,*)'Mod23=',mod23
       GOTO 5600
 c
 C--CHECK IF WE ARE PROCESSING THE FIRST ATOM
