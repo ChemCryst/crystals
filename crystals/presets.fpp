@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.53  2009/06/08 14:23:19  djw
+C Re-enable loggin of the primary input file so that the detailed action of SCRIPTS can be followed
+C
 C Revision 1.52  2007/10/09 06:54:09  djw
 C Indicate avalable wiht Win XP
 C
@@ -2233,7 +2236,7 @@ C --- UFILE ---
       END DO
       IFLCHR(1) = 1 
       IFLCHR(2) = 2
-cdjwjun09      IRDLOG(2) = 0
+      IRDLOG(2) = 0
       IRDCAT(1) = 1
       IRDCMS(1) = 1
 
