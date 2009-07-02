@@ -114,19 +114,36 @@ C      WRITE (IGOUT,'(2I5)') IX,IY,ITEK
 C POSTSCRIPT
       IF (IPOST.EQ.0) THEN
 C CLEAR IF AT BEGINNING OF DEVICE
-        IF (IENCAP.EQ.1) THEN
-          WRITE (IFOUT,'(23A)') '%!PS-Adobe-2.0 EPSF-1.2'
-C NOTE THAT THE PAGE SIZE WAS SCALED UP BY A FACTOR OF 10 TO
-C ALLOW FOR BETTER RESOLUTION.
-CDJW - CALL ZESCAL ENSURE THAT THE CORRECT SCALE IS IN THE HEADER
-C- CAUSING PROBLEMS REMOVED AGAIN MAR97 -          CALL ZESCAL
-          WRITE (IFOUT,503) XEMIN*0.1*RES,YEMIN*0.1*RES
-     c    ,XEMAX*0.1*RES,YEMAX*0.1*RES
+cdjwjul09
+c       Make encap and PS the same except for header
+C         note that the page size was scaled up by a factor of 10 to
+C         allow for better resolution.
+Cdjw -    call zescal ensure that the correct scale is in the header
+C-        causing problems removed again mar97 -          call zescal
+cdjwjul09          WRITE (IFOUT,'(A)') '%!PS-Adobe-2.0 EPSF-1.2'
+cdjwjul09          WRITE (IFOUT,503) XEMIN*0.1*RES,YEMIN*0.1*RES
+cdjwjul09     c    ,XEMAX*0.1*RES,YEMAX*0.1*RES
 503       FORMAT ('%%BoundingBox: ',4F8.0)
-CDJW
-          WRITE (IFOUT,'(13A)') '%%EndComments'
+cdjwjul09          WRITE (IFOUT,'(A)') '%%EndComments'
+c
+        IF (IENCAP.EQ.1) THEN
+          WRITE (IFOUT,'(A)') '%!PS-Adobe-2.0 EPSF-1.2'
+        ELSE
+          WRITE (IFOUT,'(A)') '%!PS-Adobe-2.0 '
         ENDIF
-        WRITE (IFOUT,'(2A)') '%!PS'
+cdjwjun09
+        WRITE (IFOUT,'(A)') '%%Title:  Cameron'
+        WRITE (IFOUT,'(A)') '%%Creator: CRYSTALS'
+        WRITE (IFOUT,'(A,A)')
+     1  '%%DocumentNeededResources:',
+     2  ' font Courier-Bold Arial-BoldMT Symbol'
+        WRITE (IFOUT,'(A)') '%%BoundingBox: 0 0 600 840'
+        WRITE (IFOUT,'(A)') '%%Pages: 1'
+        WRITE (IFOUT,'(A)') '%%EndComments'
+        WRITE (IFOUT,'(A)') '%%BeginProlog%!PS'
+        WRITE (IFOUT,'(//)')
+cdjwjun09
+c
         WRITE (IFOUT,'(12A)') '/Ellipse'
         WRITE (IFOUT,'(41A)')
      c  '{gsave x y translate rot rotate 1.0 s scale'
@@ -144,7 +161,7 @@ CDJW
 cdjwNov06
         write(ifout,'(a)') '%Superscript'
         write(ifout,'(a)') '/Roman' 
-        write(ifout,'(a)') '{ gsave /Courier-BOld  findfont '
+        write(ifout,'(a)') '{ gsave /Courier-Bold  findfont '
         write(ifout,'(a)') 
      1  ' [ dsize 0.65 mul 0 0 dsize 0.6 mul 0 0 ] '
         write(ifout,'(a)') ' makefont setfont '
@@ -152,24 +169,35 @@ cdjwNov06
         write(ifout,'(a)') ' djw show grestore } def '
         write(ifout,'(a,i6,a)') ' gsave /Courier-Bold findfont', IFONT,
      1                     ' scalefont setfont grestore'
+cdjwjun09
+        write(ifout,'(a)') '%%EndProlog'
+        write(ifout,'(a)') '%%BeginSetup'
         write(ifout,'(///)')
         IPOST = 1
       ENDIF
       IF (IPOST.EQ.1) THEN
-        IF (IENCAP.EQ.0) THEN
+cdjwjul09  ALL IMAGES IN LANDSCAPE MODE
+cdjwjul09        IF (IENCAP.EQ.0) THEN
           WRITE (IFOUT,'(47A)')
      C   '300 420 translate 90 rotate -420 -300 translate'
           WRITE (IFOUT,501) 1.0/RES, 1.0/RES
 501       FORMAT (F4.2,2X,F4.2,' scale')
-CDJWMAR97 ENDIF MOVED UP 2 LINES
-        ENDIF
+cdjwjul09        ENDIF
 C SET LINE WIDTH
           WRITE (IFOUT,502) 0.5*RES
 502       FORMAT (F4.2,' setlinewidth')
+cdjwjun09
+          write(ifout,'(a)') '%%EndSetup'
+          write(ifout,'(a)') '%%Page: 1 1'
       ENDIF
       IF (IPOST.EQ.2) THEN
 C CLEAR IF AT END OF PAGE
-        IF (IENCAP.EQ.0)  WRITE (IFOUT,'(8A)') 'showpage'
+cdjwjul09 - treat as if normal postscript
+cdjwjul09        IF (IENCAP.EQ.0)  WRITE (IFOUT,'(8A)') 'showpage'
+        WRITE (IFOUT,'(8A)') 'showpage'
+cdjwjun09
+        write(ifout,'(a)') '%%Trailer'
+        write(ifout,'(a)') '%%EOF'
         IPOST = 1
       ENDIF
       GOTO 9999

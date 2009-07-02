@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $ 
+C $Log: not supported by cvs2svn $
+C Revision 1.29  2006/12/05 12:42:58  arie
+C Bug fix in archiving and retrieving with labels; closing archive files correctly
+C 
 C Revision 1.28  2006/12/04 15:17:52  arie
 C *** empty log message ***
 C
@@ -300,13 +303,14 @@ C CHECK THE FILENAME
         CALL ZMORE1 ('File created as :'//cfort ,0)
         IPOST = 0
 C OPEN THE FILE
-C^DJWNOV2001 HOOK IN SCRATCH FILE FOR EPS WORKFILE
-        if (iencap .ne. 0) then
+CDJWNOV2001 HOOK IN SCRATCH FILE FOR EPS WORKFILE
+cdjwjul09 - output encap same as normal
+cdjwjul09         if (iencap .ne. 0) then
 c        open IFOUT as scratchfile (not normal see below)
-         idjw = LFILES ( 9 , CFORT , IFOUT )
-        else
+cdjwjul09          idjw = LFILES ( 9 , CFORT , IFOUT )
+cdjwjul09         else
          idjw = LFILES ( 5 , CFORT , IFOUT )
-        endif
+cdjwjul09         endif
         IF (.NOT. idjw) THEN
           IPROC = 0
           CALL ZMORE ('Error on file open:',0)
@@ -447,18 +451,19 @@ cdjwjun2002
       res = 1.
       CALL ZCLEAR
 cdjwnov2001 - post-process encapsulated postscript
-      if (iencap .gt. 0) then
+cdjwjul09  encap reteated as normal PS
+cdjwjul09       if (iencap .gt. 0) then
 c        open real file on scratchfile unit not normal!
-         idjw = LFILES ( 5 , CFORT , ISCRAT )
-        IF (.NOT. idjw) THEN
-          IPROC = 0
-          CALL ZMORE ('Error on file open:',0)
-          CALL ZMORE (CFORT,0)
-          CALL ZMORE1 ('Error on file open:'// cfort ,0)
-          RETURN
-        ENDIF
-       call xpostp (IFOUT, ISCRAT, IFONT, ares)
-      endif
+cdjwjul09          idjw = LFILES ( 5 , CFORT , ISCRAT )
+cdjwjul09         IF (.NOT. idjw) THEN
+cdjwjul09           IPROC = 0
+cdjwjul09           CALL ZMORE ('Error on file open:',0)
+cdjwjul09           CALL ZMORE (CFORT,0)
+cdjwjul09           CALL ZMORE1 ('Error on file open:'// cfort ,0)
+cdjwjul09           RETURN
+cdjwjul09         ENDIF
+cdjwjul09        call xpostp (IFOUT, ISCRAT, IFONT, ares)
+cdjwjul09       endif
 cdjwdec99
 c 'copy' finished - close the files
       LITEMP = LFILES ( 0 , CFORT , IFOUT )
@@ -5782,10 +5787,12 @@ CODE FOR CAMPRESETS
      3                 5200.0,3700.0,300.0,
      4                  550.0, 360.0, 40.0,
      5                 4100.0,3000.0,300.0,
-     6                 3000.0,3000.0,300.0,
+c     6                 3000.0,3000.0,300.0,
+     6                 4100.0,3000.0,300.0,
      7                  320.0, 240.0, 30.0,
      8                 4100.0,3000.0,300.0,
-     9                 3000.0,3000.0,300.0 /
+c     9                 3000.0,3000.0,300.0 /
+     9                 4100.0,3000.0,300.0 /
 
       DATA ICAMDV / 15, 0, 0, 0, 0,
      2               0,15, 8, 0, 0,
