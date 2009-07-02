@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.59  2008/12/18 16:34:46  djw
+C Add ABS(REAL) function
+C
 C Revision 1.58  2007/03/08 11:51:48  djw
 C Increase filed in FORMAT expression
 C
@@ -2510,8 +2513,12 @@ C            NUBASE      NUMBER OF UNARY OPERATORS KNOWN
 C            NARGMX      MAXIMUM NUMBER OF ARGUMENTS FOR AN OPERATOR
 C            NOTYPE      NUMBER OF OPERATOR CLASSES
 C
+cdjwjul09
+c            cfmat       format expression for internal writes of 
+c                        floating numbers
+      character*32  cfmat
 C
-      CHARACTER*(*) CTEXT
+      CHARACTER*(*) CTEXT 
 C
       PARAMETER ( JVALUE = 1 , JVTYPE = 2 , JCTYPE = 3 )
       PARAMETER ( JPOSTK = 4 )
@@ -3065,7 +3072,10 @@ C
         IF ( IDTYPE .EQ. 1 ) THEN
           WRITE ( CWORK1 , '(I12)' ) ICODE(JVALUE,IARG(1))
         ELSE IF ( IDTYPE .EQ. 2 ) THEN
-          WRITE ( CWORK1 , '(F12.5)' ) XCODE(JVALUE,IARG(1))
+cdjw jul09
+C          WRITE ( CWORK1 , '(F12.5)' ) XCODE(JVALUE,IARG(1))
+          CALL DFORM(XCODE(JVALUE,IARG(1)), CFMAT)
+          WRITE ( CWORK1 , CFMAT ) XCODE(JVALUE,IARG(1))
           DO IZ = 12,9,-1     ! Remove trailing zeroes, except the one after the point
             IF ( CWORK1(IZ:IZ) .EQ. '0' ) THEN
               CWORK1(IZ:IZ) = ' '
@@ -5867,6 +5877,10 @@ C      LOCAL VARIABLES :-
 C            CLOG        TEXT REPRESENTATIONS OF THE TWO POSSIBLE
 C                        LOGICAL VALUES ( TRUE AND FALSE )
 C
+cdjwjul09
+c            cfmat       format expression for internal writes of 
+c                        floating numbers
+      character*32  cfmat
 C
       INCLUDE 'PSCRPT.INC'
 C
@@ -5913,7 +5927,10 @@ C
           WRITE ( CVALUE , '(I12)' ) IVALUE
         LENVAL = 12
         ELSE IF ( ITYPE .EQ. 2 ) THEN
-          WRITE ( CVALUE , '(F12.5)' ) XVALUE
+Cdjwjul09
+c          WRITE ( CVALUE , '(F12.5)' ) XVALUE
+          call dform(xvalue, cfmat)
+          WRITE ( CVALUE , cfmat ) XVALUE
         LENVAL = 12
         ELSE IF ( ITYPE .EQ. 3 ) THEN
           CVALUE = CLOG(IVALUE)
@@ -6133,8 +6150,11 @@ C
 C            CLOGIC      CHARACTER REPRESENTATIONS OF LOGICAL VALUES
 C
 C
-C
-C
+cdjwjul09
+c            cfmat       format expression for internal writes of 
+c                        floating numbers
+      character*32  cfmat
+c
 C
       INCLUDE 'PSCRPT.INC'
       INCLUDE 'PSCMSG.INC'
@@ -6242,7 +6262,10 @@ C
         IF ( LSPCFM ) THEN
           WRITE ( CCOMBF(ICOMLN+1:) , CFORM ) VALUE
         ELSE
-          WRITE ( CCOMBF(ICOMLN+1:) , '(F12.6)' ) VALUE
+cdjwjul09
+c          WRITE ( CCOMBF(ICOMLN+1:) , '(F12.6)' ) VALUE
+          call dform(value,cfmat)
+          WRITE ( CCOMBF(ICOMLN+1:) , cfmat ) VALUE
         ENDIF
       ELSE IF ( IVALTP .EQ. ITPKEY ) THEN
         CCOMBF(ICOMLN+1:) = CCHECK(IVALUE)
