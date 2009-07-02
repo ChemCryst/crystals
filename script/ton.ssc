@@ -4,7 +4,7 @@
 %  VARIABLE LOGICAL SERR 
 %  VARIABLE REAL CRITER
 %  EVALUATE SERR = TRUE                                                         
-%  EVALUATE CRITER = 999.0
+%  EVALUATE CRITER = 999.9
 %  VARIABLE INTEGER IPLOT L5SER
 %  EVALUATE IPLOT = 0
 %%                                                                              
@@ -23,7 +23,7 @@
 ^^WI    @ 1,1 STATIC T1 'Criterion'                
 ^^WI    @ 1,3 EDITBOX NC                                                        
 %        TRANSFER "^^WI '  " // CHARACTER ( CRITER )  // "'" TO DISPLAY         
-^^WI     CHARS=8 REAL         
+^^WI     CHARS=12 REAL         
 ^^WI   }                                                                        
 ^^WI    @ 6,1 GRID AC NROWS=1 NCOLS=3 OUTLINE='Plots'                
 ^^WI    {                                                                        
