@@ -1,6 +1,10 @@
 c
 c
 C $Log: not supported by cvs2svn $
+C Revision 1.143  2009/06/17 13:45:10  djw
+C Correct inof about merge in LIST 30.
+C Also, early version of FLack restraint
+C
 C Revision 1.142  2009/05/08 15:09:31  djw
 C Create SYMCODE subroutine for X-tal type codes
 C
@@ -6785,7 +6789,7 @@ C
       SCALE=STORE(L5O)
       SCALE=1./(SCALE*SCALE)
 C 
-      WRITE (CMON,'(a,f12.4)') ' Outlier Criterion = ',CRITER
+      WRITE (CMON,'(a,f18.4)') ' Outlier Criterion = ',CRITER
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:)
 C
@@ -6961,7 +6965,8 @@ c
 cdjwjun09
 c
            if((abs(foks) .gt. zero).and.(abs(fcks).gt.zero).and.
-     1     ( abs(fcd).gt.sigdif) ) then
+cdjwjun09     1     ( abs(fcd).gt.sigdif) ) then
+     1     ( abs(fokd).lt.criter*abs(fckd)) ) then
              if (FCKD .lt. zero) then
               CSIGN = '-'
              else
