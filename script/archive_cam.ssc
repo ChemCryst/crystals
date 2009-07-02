@@ -2,19 +2,14 @@
 % VARIABLE INTEGER IFILET ITYPE IPRINT FILEOK                                   
 % VARIABLE CHARACTER FILENAME FILETYPE newfile                                  
 % VARIABLE LOGICAL SAME                                                         
-                                                                                
+%%                                                                                
 % EVALUATE SAME = TRUE                                                          
 % evaluate newfile = ' ' // filename                                            
-0                                                                               
-% show newfile                                                                  
 % if  newfile  .eq. " " then                                                    
 %       evaluate filename = 'view1.cam'                                         
 %       evaluate same = false                                                   
 % end if                                                                        
-1                                                                               
-% show filename                                                                 
-                                                                                
-                                                                                
+%%                                                                                
 ^^WI WINDOW XPOST 'Archive Current View' MODAL                                  
 ^^WI GRID G1 NROWS=3 NCOLS=5                                                    
 ^^WI {
@@ -26,7 +21,7 @@
 ^^WI   {
 ^^WI    @ 1,1 STATIC  T1 'Filename: '
 %    if same .eq. true then
-^^WI    @ 1,3 EDITBOX E1 'same filename?' CHARS=15 INFORM=NO
+^^WI    @ 1,3 EDITBOX E1 'same_filename?' CHARS=15 INFORM=NO
 %    else
 ^^WI    @ 1,3 EDITBOX E1 'view1.cam' CHARS=15 INFORM=NO                         
 % end if                                                                        
@@ -49,26 +44,18 @@
 %      GET SILENT KEYWORD 'New filename: '                                      
 %      EVALUATE newfile = CVALUE                                                
 %      EVALUATE FILEOK = 1                                                      
-2                                                                               
-%       show newfile                                                            
-%      if newfile .eq. 'same' then                                              
+%      if newfile .eq. 'same_filename?' then                                              
 %            evaluate newfile = gettitle ( filename )                           
-3                                                                               
-%            show newfile                                                       
 %            evaluate filename = newfile // '.cam'                              
-4                                                                               
-%            show filename                                                      
 %      else                                                                     
-%            evaluate filename = newfile                                        
-%      end if                                                                   
-5                                                                               
-%      show filename                                                            
-                                                                                
+%            evaluate filename = gettitle ( newfile ) // '.cam'                                        
+%      end if
 %      IF .NOT. ( FILEEXISTS ( FILENAME ) ) THEN                                
 ^^WI   DISPOSE XPOST                                                            
 ^^CR                                                                            
 %% RIC AUG2000 - Add quotes around the filename...                              
 %        TRANSFER 'ARCHIVE "' // FILENAME // '"' TO CRYSTALS                    
+%        TRANSFER '   ' TO CRYSTALS                                             
 %        TRANSFER '   ' TO CRYSTALS                                             
 %        TRANSFER 'Output file: {&' // FILENAME // '{& ' TO DISPLAY             
 %        FINISH                                                                 
