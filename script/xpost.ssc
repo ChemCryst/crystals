@@ -1,21 +1,21 @@
 %SCRIPT XPOST  %Script for outputting a Cameron postscript file%                
 % VARIABLE INTEGER IFILET ITYPE IPRINT FILEOK                                   
-% VARIABLE CHARACTER FILENAME FILETYPE                                          
+% VARIABLE CHARACTER FILENAME FILETYPE  FILEXT
 ^^WI WINDOW XPOST 'Save Image' MODAL                                            
 ^^WI GRID G1 NROWS=3 NCOLS=5                                                    
 ^^WI {                                                                          
 ^^WI  @ 2,2 GRID GL NROWS=9 NCOLS=1                                             
 ^^WI  {                                                                         
 ^^WI   @ 1,1 CHECKBOX    XCOLOUR 'Colour' STATE=ON INFORM=NO                    
-^^WI   @ 8,1 CHECKBOX    XPRINT                                                 
-^^WI     'Print now (only for Postscript Printer)?' STATE=OFF INFORM=NO         
 ^^WI   @ 3,1 RADIOBUTTON RPOST 'Postscript' STATE=ON IGNORE                     
-%% encap removed    @ 4,1 RADIOBUTTON RENCA 'Encapsulated Postscript' IGNORE                 
+^^WI   @ 4,1 RADIOBUTTON RENCA 'Encapsulated Postscript' IGNORE                 
 ^^WI   @ 6,1 GRID GB NROWS=1 NCOLS=3                                            
 ^^WI   {                                                                        
 ^^WI    @ 1,1 STATIC  T1 'Filename: '                                           
-^^WI    @ 1,3 EDITBOX E1 'pic1.ps' CHARS=15 INFORM=NO                           
+^^WI    @ 1,3 EDITBOX E1 'pic1' CHARS=15 INFORM=NO                           
 ^^WI   }                                                                        
+^^WI   @ 8,1 CHECKBOX    XPRINT                                                 
+^^WI     'Print now (Default Postscript Printer)?' STATE=OFF INFORM=NO         
 ^^WI  }                                                                         
 ^^WI  @ 2,4 GRID   GR NROWS=3 NCOLS=3                                           
 ^^WI  {                                                                         
@@ -51,25 +51,37 @@
 %      GET SILENT NOSTORE FINAL ABBREVIATED ' '                                 
 %      EVALUATE IPRINT = VALUE                                                  
 %%DJWDEC99                                                                      
-%      CASE ITYPE                                                               
+%      CASE ITYPE
+%        BLOCK                                                               
 %          EVALUATE FILETYPE = 'CPOST'                                          
+%          EVALUATE FILEXT = '.ps'
+%        END BLOCK                                                               
+%        BLOCK                                                               
 %          EVALUATE FILETYPE = 'CENCAP'                                         
+%          EVALUATE FILEXT = '.eps'
+%        END BLOCK                                                               
+%        BLOCK                                                               
 %          EVALUATE FILETYPE = 'POST'                                           
+%          EVALUATE FILEXT = '.ps'
+%        END BLOCK                                                               
+%        BLOCK                                                               
 %          EVALUATE FILETYPE = 'ENCAP'                                          
+%          EVALUATE FILEXT = '.eps'
+%        END BLOCK                                                               
 %      END CASE                                                                 
 %      EVALUATE FILEOK = 1                                                      
-%      IF .NOT. ( FILEEXISTS ( FILENAME ) ) THEN                                
+%      IF .NOT. ( FILEEXISTS ( FILENAME // FILEXT ) ) THEN                                
 ^^WI   DISPOSE XPOST                                                            
 ^^CR                                                                            
 %% RIC AUG2000 - Add quotes around the filename...                              
 %        TRANSFER 'HARDCOPY ' // FILETYPE TO CRYSTALS                           
 %        TRANSFER 'VIEW   ' TO CRYSTALS                                         
-%        TRANSFER 'COPY "' // FILENAME // '"' TO CRYSTALS                       
+%        TRANSFER 'COPY "' // FILENAME // FILEXT // '"' TO CRYSTALS                       
 %        TRANSFER '   ' TO CRYSTALS                                             
-%        TRANSFER 'Output file: {&' // FILENAME // '{& ' TO DISPLAY             
+%   TRANSFER 'Output file: {&' // FILENAME // FILEXT // '{& ' TO DISPLAY
 %            IF IPRINT .EQ. 1 THEN                                              
 %% RIC MAR2001 Remove quotes - print doesn't seem to like them?                 
-%        TRANSFER 'PRINT ' // FILENAME TO CRYSTALS                              
+%        TRANSFER 'PRINT ' // FILENAME // FILEXT // TO CRYSTALS                              
 %            END IF                                                             
 %%DJWOct06                                                                      
 %        TRANSFER '#SCRIPT ARCHIVE_CAM ' TO CRYSTALS                            
