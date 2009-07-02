@@ -1,6 +1,9 @@
 CRYSTALS CODE FOR CCONTROL.FOR
 
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2005/02/08 15:59:47  stefan
+C 1. Added precompiler if's for the mac source
+C
 C Revision 1.21  2005/01/23 09:52:52  rich
 C Reinstate old history for Cameron files. History for changes since Dec 23 is
 C lost, but changes are not!
@@ -1763,6 +1766,7 @@ C        = 6 we need a sub command to be added to the line
 C EDIT IS TURNED OFF
         CALL ZBEEP
         CALL ZMORE('ERROR. Re-enter command.',0)
+        CALL ZMORE(ERRTXT,0)
         CALL ZMORE1('ERROR. Re-enter command. See main window',0)
         IERRH = 1
         RETURN
