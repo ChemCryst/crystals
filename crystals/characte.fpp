@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.2  2004/12/13 16:16:07  rich
 C Changed GIL to _GIL_ etc.
 C
@@ -1015,4 +1019,55 @@ C      WRITE(*,*) 'ERROR CONDITION'
 300   CONTINUE
       RETURN
       END
-
+C
+CODE FOR DFORM
+      SUBROUTINE DFORM(VALUE,CFORM)
+C----- TRY TO FIND A SUITABLE FORMAT STATEMENT FOR THE INPUT
+C      VALUE.  REMEMBER THAT 32BIT FLOATING ONLY HAS 6-7 SIGNIFICANT
+C      PLACES
+C----- DJW JUL 09
+      CHARACTER *1 CMATCH
+      CHARACTER*64 CVALUE
+      CHARACTER *(*) CFORM
+      data cmatch /'0'/
+      parameter (ndp=7)
+      write(cvalue,'(f64.32)') value
+      write(*,'(a)') cvalue
+      do k=1,64
+            if(
+     1      (cvalue(k:k) .ne. ' ' ) .and.
+     2      (cvalue(k:k) .ne. '0' ) .and.
+     2      (cvalue(k:k) .ne. '-' ) .and.
+     3      (cvalue(k:k) .ne. '.' ) ) goto 300
+      enddo
+      k=64
+300   continue
+c
+      i = index  (cvalue,'.')
+      j = i-k
+      if (j .ge. ndp) then
+            n=j+1
+            m=0
+      else
+        if(j .gt. 0) then              
+            m=k+ndp
+            do nn = m,i+1,-1
+                if (cvalue(nn:nn) .ne. '0') goto 200
+            enddo
+            nn = i
+200         continue
+            m = nn-i
+            n = j+1+m
+        else
+            k = i
+            m = ndp-j
+            n = 2+m
+        endif
+      endif            
+c
+      if (value .lt. 0.) n=n+1
+      write(cform,99)n+1,m
+99    format ('(F',i2,'.'i2,')')
+      return
+      end
+C
