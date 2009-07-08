@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2009/07/02 09:18:11  djw
+C New subroutine DFORM which tries to create a suitable format statement to cover large
+C  range of values taking intomaccount the limited precission of 32bit floats
+C
 C Revision 1.7  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -1026,13 +1030,18 @@ C----- TRY TO FIND A SUITABLE FORMAT STATEMENT FOR THE INPUT
 C      VALUE.  REMEMBER THAT 32BIT FLOATING ONLY HAS 6-7 SIGNIFICANT
 C      PLACES
 C----- DJW JUL 09
-      CHARACTER *1 CMATCH
-      CHARACTER*64 CVALUE
-      CHARACTER *(*) CFORM
+      double precision dvalue, avalue, asign
+      character *1 cmatch
+      character*64 cvalue
+      character *(*) cform
       data cmatch /'0'/
       parameter (ndp=7)
+c
+c
       write(cvalue,'(f64.32)') value
+      dvalue = value
       write(*,'(a)') cvalue
+c
       do k=1,64
             if(
      1      (cvalue(k:k) .ne. ' ' ) .and.
@@ -1046,10 +1055,27 @@ c
       i = index  (cvalue,'.')
       j = i-k
       if (j .ge. ndp) then
+c very large number - no fractional part
             n=j+1
             m=0
+c--------------------------------------
+c      horrid kludge to make least significant parts zero
+       mdp = n-ndp
+       if (mdp .gt. 0) then
+        avalue = abs(dvalue)
+        asign = sign(1., dvalue)
+        nvalue = nint ( dvalue * 10. ** -mdp)
+        if ( dvalue .ge. 10. ** mdp) then
+             dvalue = asign*float(nvalue)*10.**mdp
+c             write(*,*) avalue, asign*float(nvalue)*10.**mdp
+c             write(*,*)  dvalue
+             value = dvalue
+        endif
+       end if
+c--------------------------------------
       else
-        if(j .gt. 0) then              
+        if(j .gt. 0) then
+c middling number greater than unity
             m=k+ndp
             do nn = m,i+1,-1
                 if (cvalue(nn:nn) .ne. '0') goto 200
@@ -1059,6 +1085,7 @@ c
             m = nn-i
             n = j+1+m
         else
+c  number less than unity
             k = i
             m = ndp-j
             n = 2+m
@@ -1066,6 +1093,7 @@ c
       endif            
 c
       if (value .lt. 0.) n=n+1
+c  leave room for minus sign
       write(cform,99)n+1,m
 99    format ('(F',i2,'.'i2,')')
       return
