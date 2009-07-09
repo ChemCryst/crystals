@@ -15,6 +15,7 @@ copy ..\manual\*.jpg manual
 copy ..\manual\*.gif manual
 copy ..\manual\*.css manual
 copy ..\manual\*.pdf manual
+copy ..\manual\*.pst manual
 copy ..\manual\analyse\*.html manual\analyse
 copy ..\manual\analyse\*.jpg  manual\analyse
 copy ..\manual\analyse\*.gif  manual\analyse
