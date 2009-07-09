@@ -18,6 +18,7 @@ copy ..\manual\*.pdf manual
 copy ..\manual\analyse\*.html manual\analyse
 copy ..\manual\analyse\*.jpg  manual\analyse
 copy ..\manual\analyse\*.gif  manual\analyse
+copy ..\manual\analyse\*.tif  manual\analyse
 copy ..\manual\analyse\*.css  manual\analyse
 copy ..\manual\analyse\*.pdf  manual\analyse
 ENDLOCAL
