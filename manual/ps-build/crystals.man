@@ -35,7 +35,7 @@ US 10  0  0  8
 #PThis version of CRYSTALS continues to be based on a
  version (Issue 2) written by J.R. Carruthers in collaboration with
  J.S.Rollett during 1977-78, which was a rewrite of the 1975 CRYSTALS 
- system implemented
+ system implemented  
  on the ICL 1900 series of computers. It contains significant
  contributions by Paul Betteridge, David Kinna, Lisa Pearce, Allen Larson,
  and Eric Gabe and many students and visitors to the Chemical
@@ -58,190 +58,6 @@ have been retained for experienced users, or users wishing to explore
 new ideas. The 'SCRIPTing' language has been extended to enable full
 control and design of the user interface to be handled from ASCII files.
 #Q
-#YMAJOR CHANGES for WINDOWS#
-#HSchanges#
-#Q
-#PThe majority of the changes (many thousand edits) are
-concerned with the GUI, the screen and file output, and the internal
-database.
-#Q
-#P
-Major changes are:
-#J
-1      New .DSC file
-2      Extended LIST 5 format (the model parameters)
-3      New ADP handling
-4      New weighting for Fsq
-5      More items stored in LIST 30
-6      Easier handling of twins
-7      More robust creation of cifs
-8      HTML versions of the manuals
-#
-#Q
-#INew .DSC File#
-The internal format of some of the lists has been extended to
-accommodate information needed to meet current publication requirements.
-There is some degree of compatibility between old format .DSC files and
-the new CRYSTALS. A facility in /EDIT attempts to do the internal
-reformatting. There is no backwards compatibility. There is full
-forward compatibility at the ASCII level - the old LISTS 5 
-(the model parameters), 
-6 (reflections), 12 (constraints) and 16 (restraints) can be input into the 
-new program.
-#Q
-#Q
-#INew Temperature Factor (ADP) handling#
-In the original version of CRYSTALS, the _i{value of Uiso was used to
-indicate whether it was a real usable value (e.g. 0.055), or a flag
-indicating that the atom was anisotropic (e.g. 0.00).
-
-#PThis location in LIST 5 (the model parameters) has now 
-been changed to a proper flag, whose
-value indicates what kind of information is stored after the positional
-parameters. This has enabled us to have more complex models for the
-electron distribution.
-
-#J
-original keys:
-
-      type serial occ u[iso] x y z u[11] u[22] u[33] u[23] u[13] u[12] spare
-
-revised keys
-
-      type serial occ FLAG x y z u[11]  u[22] u[33] u[23] u[13] u[12] spare
-                                 U[ISO]                               spare
-                                 U[ISO] SIZE                          spare
-                                 U[ISO] SIZE  DECLINAT AZIMUTH        spare
-
-#
-
-The value of 'FLAG' is used on input of atoms to indicate what kind of
-patameters will follow, and is used during calculations for the
-interpretation of the parameters.
-
-#DFLAG interpretation#
-The following table shows the interpretation of the FLAG parameter.
-#J
-
-FLAG  meaning    parameters
-'old' types of atoms:
-
- 0    Aniso ADP  u[11]  u[22] u[33] u[23] u[13] u[12]
- 1    Iso ADP    U[ISO]
-
-New 'special' shapes:
-
- 2    Sphere     U[ISO] SIZE
- 3    Line       U[ISO] SIZE  DECLINAT AZIMUTH
- 4    Ring       U[ISO] SIZE  DECLINAT AZIMUTH
-
-#
-
-#PThe parameters have the following meaning for the new special shapes:
-#DSpecial U[iso]#
-U[iso] is related to the 'thickness' of the line, annulus or shell.
-#DSpecial SIZE#
-SIZE is the length of the line, or the radius of the annulus or shell.
-#DSpecial DECLINAT#
-DECLINAT is the declination angle between the line axis or annulus normal and the
-  _i{z
-axis of the usual CRYSTALS orthogonal coordinate system, in
-degrees/100.
-#DSpecial AZIMUTH#
-AZIMUTH is the azumuthal angle between the projection of the
-line axis or annulus normal onto the _i{x - _i{y plane and the _i{x
-axis of the usual CRYSTALS orthogonal coordinate system, in
-degrees/100.
-
-#PIf either of these angles is input with a value greater than 5.0, it
-is assumed that the user has forgotten to divide by 100, which is thus
-done automatically.
-
-#DAccessing 'Special shapes'#
-The special shape parameters can be accessed just like any traditional
-parameters. FLAG is not a refinable parameter, and should only be
-changed in /EDIT if corresponding changes are to be made to the actual
-parameter values. This is normally automatic if the FLAG is changed to 0
-or 1. To facilitate the generation of special shapes from groups of
-atoms, the following directives are available in /EDIT.
-
-#DSPHERE newserial atomlist#
-This creates a 'shell' shape from the specified atom list. The centre of
-the shell is at the centre of gravity, the size is the mean distance of
-the given atoms from the centre, and the occupancy is equal to  the sum of
-the occupancies
-of the atoms listed. U[iso] is the mean of the U[iso] or Ueqiv of the
-listed atoms.
- The atom TYPE is QS, with the given serial number. The
-original atoms are not deleted, though they should be or their occupancy
-set to zero. The atom type, QS, should be changed to something
-appropriate.
-#
-#DRING newserial atomlist#
-This creates an 'annulus' shape from the specified atom list. The centre of
-the ring is at the centre of gravity, the size is the mean distance of
-the given atoms from the centre, and the occupancy is equal to the sum of
-the occupancies
-of the atoms listed. U[iso] is the mean of the U[iso] or Ueqiv of the
-listed atoms.
-The atom TYPE is QR, with the given serial number. The
-original atoms are not deleted, though they should be or their occupancy
-set to zero. The atom type, QS, should be changed to something
-appropriate. The DECLINATION and AZIMUTH are computed from the
-constituent atoms.
-#
-#DLINE newserial atomlist#
-This creates an 'line' shape from the specified atom list. The centre of
-the line is at the centre of gravity, the size is twice the mean distance of
-the given atoms from the centre, and the occupancy is equal to the sum of
-the occupancies
-of the atoms listed. U[iso] is the mean of the U[iso] or Ueqiv of the
-listed atoms.
-The atom TYPE is QL, with the given serial number. The
-original atoms are not deleted, though they should be or their occupancy
-set to zero. The atom type, QS, should be changed to something
-appropriate. The DECLINATION and AZIMUTH are computed from the
-constituent atoms.
-#
-#DREFORMAT#
-This command converts an old (non-FLAG) version of LIST 5 
-(atomic parameters) to the new format.
-
-#
-#PCurrently, no action is taken by CRYSTALS for special shapes lying on
-positions of special site symmetry. The user must set up the appropriate
-constraints in LIST 12 (section #RLIST12#) (usually preventing the refinement 
-of one or more parameters), and set up the correct occupancy in LIST 5 
-(atomic parameters).
-
-#
-#PSince the special shapes can coexist with normal atoms, it is possible
-to embed normal atoms in the special shapes to give a 'peakey' electron
-distribtion. The sums of the occupancies will need to be constrained.
-
-
-
-
-#P
-#INew Weighting for Fsq refinement#
-Scheme 14 (Chebychev weighting) has been made more robust to ragged
-distributions of delta squared. The major influence is in Fsq
-refinement, though there is also a small (improved) effect on F
-refinement.
-#
-#INew items stored in LIST 30#
-LIST 30 (section #RLIST30#) has been extended because 
-of changes in the new CIF dictionary.
-#
-
-#P
-#IEasier handling of twins#
-Although CRYSTALS has been able to handle twinned data since the program
-was first designed in the 1970's, the input was very general, and not
-easily understood. Now that area detector diffractometers are able to
-routinely handle TLS and TLQS twins, the input has been revised to
-handle these special sitautions routinely. The old format input, for
-twins with up to 9 components, is still available (see section #Rtwinning#)
 #Q
 #ZDEFINITIONS AND CONVENTIONS#
 #HCdefinition#
@@ -612,7 +428,8 @@ Times for a Microvax 3800 (circa 1995) are printed for comparison.
  The maximum value of 'interval' is 200 seconds.
 #I\SET LOG state#
 #PIf state = ON  then all user input commands are written
- to a log file.#
+ to a log file.
+#
 If  state = OFF  then subsequent commands are not written
  to the log. Any change made to
  the log state applies only to the current level of USE file and any
@@ -690,7 +507,8 @@ opened with any other program.
 #KThe listing file: #
 this will be called bfilenn.lis where nn is a number
 from 00-99, incremented each time the program is run. When nn reaches 99
-this file will be continuously overwritten every time CRYSTALS is run.#
+this file will be continuously overwritten every time CRYSTALS is run.
+#
 The listing file contains verbose output about all the calculations that
 take place.
 #KThe punch file: #
@@ -1048,7 +866,8 @@ that list number is output.
  to an earlier version and punch that instead.
  If the disk file becomes totally
  unusable, delete it, read in the reflections again, and then read in
- these 'punched' lists (\USE savedlists.pch).#
+ these 'punched' lists (\USE savedlists.pch).
+#
  If only certain lists are unusable,
  use the DELETE directive in \DISK to mark defective LISTS for
  deletion, and then use \PURGE NEW to create a new disk file (by 
@@ -2841,9 +2660,10 @@ for publication.
       B - Output the reflections in 'cif' format. F's
       C - Output stored information in tabulated format.
       D - Output original information in tabulated format.
-      E - Output the reflections in 'cif' format. F^s
+      E - Output the reflections in 'cif' format. F^s, scale of Fo
       F - Output Fo, sigma information in SHELX format.
       G - SHELX output with statistically generated sigmas
+      H - Output the reflections in 'cif' format. F^s, scale of Fc
 #
 #PLIST 6 is also output by the links to the direct methods programs. In
  these files, the magnitudes of Fo or Fsq are scaled so that the largest
@@ -3352,17 +3172,20 @@ Note that H, K, and L are compressed into one key: 'INDICES'.
 #
 #
 #
-Directives found in HKLI commands, but not in LIST 6 commands are:#
+Directives found in HKLI commands, but not in LIST 6 commands are:
+#
 #DCORRECTIONS NSCALE= NFACTOR=#
 
 #KNSCALE=#
  Set to 1 or 2 to select the first or second scale factor in LIST 27
- (see section #RLIST27#).#
+ (see section #RLIST27#).
+#
  The default is 2.
 #KNFACTOR=#
  Up to three correction per reflection to be applied to the input
  observations can be included in the input file. This keyword specifies
- how many to use.#
+ how many to use.
+#
  The default is 0.
 #Q
 #DFACTORS COEFFICIENT(1)= COEFFICIENT(2)= .  .#
@@ -3537,17 +3360,20 @@ Directives found in HKLI commands, but not in LIST 6 commands are:#
  not used.
 #KRAWSCALE=#
  This parameter gives the initial scale factor, computed directly
- from the intensities of the standard reflections.#
+ from the intensities of the standard reflections.
+#
  There is no default.
 #KSMOOTHSCALE=#
  This parameter gives the scale factor after the raw scale factors have been
- smoothed, so that a continuous curve is fitted to all the data.#
+ smoothed, so that a continuous curve is fitted to all the data.
+#
  There is no default.
 #KSERIALNUMBER=#
  This parameter gives the serial number of the first standard reflection
  contributing to this scale.
  The data reduction programs use the  SERIAL to locate the correct
- scales to use for a given reflection.#
+ scales to use for a given reflection.
+#
  There is no default.
 #
 #Q
@@ -4939,8 +4765,9 @@ section #RLIST05#).
 #
 #DSPLIT Z ATOM-SPECIFICATION ...#
  Two new isotropic atoms are added to the end of the atom list for every
- atom referenced in the atom-specification. These atoms lie at each end
- of the principal axis of the original atoms anisotropic adp ellipsoid.
+ atom referenced in the atom-specification. These atoms lie on
+ of the principal axis of the original atoms anisotropic adp ellipsoid 
+ and U[iso] set to U[meadian] of the original adp.
 #PThe original atoms are not deleted.
  The sequence Z ATOM-SPECIFICATIONS can be repeated.
  The new serial numbers are given by
@@ -5348,6 +5175,14 @@ bond, c(1) to c(20).
  This parameter has a default value of 2.0, and is the distance
  below which atoms or peaks are considered to be bonded, and are thus
  moved about the cell and relocated in LIST 5 (atomic parameters).
+#P
+ If the MOVE parameter is -ve, then a covalent radius used, and the
+ absolute value of MOVE is used as a TOLERANCE, such that bonds are formed
+ if D < COV1+COV2+TOLERANCE.
+#
+
+
+
 #KKEEP=#
  This is the maximum number of atoms that the final output list can
  contain. If this parameter is omitted, all the atoms are output.
@@ -5887,7 +5722,8 @@ hybridisation states of C are more clearly defined.
  a system defined  by the user,   or a predefined group may be used.
  In any case all the positional parameters of
  the atoms in the  'IDEAL' group will be known before the
- calculation begins.
+ calculation begins. Finally, various pre-defined geometrical groups are
+ available.
 #IOutput from REGULARISE#
 #PThe output from REGULARISE  includes the fragment centroids, their
  sums and differences and the
@@ -7259,7 +7095,7 @@ are only going to be calculated.
 #HSspecconst#
 #N   5#
 #J
- \SPECIAL  ACTION= UPDATE= TOLERANCE=#
+ \SPECIAL  ACTION= UPDATE= TOLERANCE=
  END
 
  \SPECIAL
@@ -7948,7 +7784,7 @@ are only going to be calculated.
  The first argument is the e.s.d for adp-restraint,  
  I.E:
 #J
- DELU 0.01, 0.1 FOR RESI(1) AND RESI(2)
+ DELU 0.01  FOR RESI(1) AND RESI(2)
 #
    Restrains the adps of all pairs on bonded atoms in RESIDUE(1) and 
  (2). Note that
@@ -7967,8 +7803,7 @@ are only going to be calculated.
 #
  The  'FOR' separating the
  e.s.d.s from the atom specifications is optional.
- The first e.s.d is optional, the
- default is 0.01 Angstroms.
+ The e.s.d is optional, the  default is 0.01 Angstroms.
 #
  List 41 (bonds) is loaded by the restraint generating routine, if it
  does not exist an error will occur. (By default L41 is kept up to date
@@ -7979,10 +7814,10 @@ are only going to be calculated.
  to be similar.  Unlike SAME, a single
  group can be given.
 #
- The first argument is the e.s.d for adp-restraint. 
+ The first argument is the e.s.d for adp-restraint.
  I.E:
 #J
- SIMU 0.01, 0.1 FOR RESI(1) AND RESI(2)
+ SIMU 0.04  FOR RESI(1) AND RESI(2)
 #
    Restrains the adps of all pairs on bonded atoms in RESIDUE(1) and 
  (2). Note that
@@ -8001,8 +7836,7 @@ are only going to be calculated.
 #
  The  'FOR' separating the
  e.s.d.s from the atom specifications is optional.
- The first e.s.d is optional, the
- default is 0.04 Angstroms.
+ The e.s.d is optional, the  default is 0.04 Angstroms.
 #
  List 41 (bonds) is loaded by the restraint generating routine, if it
  does not exist an error will occur. (By default L41 is kept up to date
@@ -8345,8 +8179,8 @@ are only going to be calculated.
  in the  SCHEME  directive above. This choice would be suitable for the
  Chebychev weighting schemes.
 #I\LIST 4#
-#DSCHEME= NUMBER= NPARAMETERS= TYPE= WEIGHT= MAXIMUM=#
-#KNUMBER=#
+#DSCHEME NUMBER= NPARAMETERS= TYPE= WEIGHT= MAXIMUM=#
+#KNUMBER#
  The number of the weighting scheme to be used
  (see below). The default value is  9 (unit weights).
 #KNPARAMETERS=#
@@ -8545,8 +8379,10 @@ Indicates which reflection list to use.
       7      Alternative reflection list
 #
 #Q
-
-
+#DLIST LEVEL=#
+#KLEVEL#
+LEVEL is OFF, LOW, MEDIUM or HIGH 
+#
 #YRe-weighting the reflections - REWEIGHT#
 #HSreweight#
 #I\REWEIGHT INPUT= FACTOR=#
@@ -8563,7 +8399,7 @@ Indicates which reflection list to use.
  for you.
 #
 If FACTOR is greater than zero, all weights will be multiplied by this 
-amount.  The default value is inity.
+amount.  The default value is unity.
 #
 
 #Q
@@ -9363,7 +9199,8 @@ Indicates which reflection list to use.
  N. Walker and D. Stuart, 1983, Acta Cryst., A39, 158 - 166.
  The code is incorporated with the permission of Dr N. Walker
 #
-#PImplementation#
+#PImplementation
+#
 #PThe correction is evaluated using observed structure factors, /Fo/, corrected
  for Lorentz-polarisation effects and any decay in intensity standards during
  data collection, with systematically absent reflections removed. Since
@@ -10622,9 +10459,7 @@ section #RLIST20#).
 # HTML        - Produce an HTML format listing
 # CIF         - Produce a listing in CIF format.
 # H-CIF       - Produce a listing of the H-bonds in CIF format.
-
 # SCRIPT      - Lists bonds in a easily machine readable format.
-
 # RESTRAIN    - Produce a proforma LIST 16 (restraints - #RLIST16#).  Use the RANGE, 
   LIMIT, TYPE INCLUDE and EXCLUDE parameters to restrict the restraints produced.
 # DELU        - Proforma LIST 16 for delta U restraints
@@ -10633,6 +10468,7 @@ section #RLIST20#).
 # H-RESTRAIN  - Produces a list of H-C,N and O distance and angle 
  restraints in the PUNCH file, and a list of the referenced H atoms in 
  the SCRIPTQUEUE file.
+# H-RIDE      - Produces a list of H-C,N and O RIDE instructions.
 # H-CIF       - Puts hydrogen bond donor and acceptors into the cif 
 file.
 #Q
@@ -11798,6 +11634,50 @@ and LIST30 (section #RLIST30#). The
 weighted R is not affected.
 #
 #Q
+
+#XTONSPEK#
+#XEstimation of Absolute configuration# 
+#YEstimation of Absolute configuration - \TONSPEK# 
+#ATONSPEK#
+#HStonspek#
+
+#N   4#
+#J
+\TONSPEK CRITERION= INPUT= PLOT=
+END
+#
+#PThis routine contains code kindly donated by Ton Spek for the 
+ computation of the Hooft 'y' parameter. 
+ Rob W. W. Hooft, Leo H. Straver and Anthony L. Spek, 
+ J. Appl. Cryst. (2008). 41, 96–103.  It required the current LIST 6 to 
+ be comverted to a LIST 7 in which Friedel pairs are adjacent and in 
+ which Fc has been computed with the Flack 'x' parameter set to zero.
+#PThe pre-preparation for using this routine has been packaged into a 
+ script available from the Analyse menu.  The current value of the 
+ Flaxk paraemter should already be stored in LIST 30.
+#
+#I\TONSPEK CRITERION= INPUT= PLOT=#
+#KCRITERION#
+ If the Friedel Difference exceeds CRITERION times its standard deviation
+ the difference is regarded as improbably large, and the reflection is
+ excluded from the calculation. The default value of 999.9 effectively
+ includes almost all reflections.
+#KINPUT#
+Indicates which reflection list to use.
+#J
+      6      Default
+      7      Alternative reflection list
+#
+#Q
+#KPLOT#
+ When called from a SCRIPT, this flag enables plotting of the data
+#J
+      NO      Default value
+      FOFC    Plots the observed versus the calculated Friedel difference
+      NPP     Plots the Normal Probability Plot of the Friedel differences
+#
+#Q
+
 #XCIF#
 #YCIF lists - \CIF#
 #HScif#

@@ -35,7 +35,7 @@ US 10  0  0  8
 #PThis version of CRYSTALS continues to be based on a
  version (Issue 2) written by J.R. Carruthers in collaboration with
  J.S.Rollett during 1977-78, which was a rewrite of the 1975 CRYSTALS 
- system implemented
+ system implemented  
  on the ICL 1900 series of computers. It contains significant
  contributions by Paul Betteridge, David Kinna, Lisa Pearce, Allen Larson,
  and Eric Gabe and many students and visitors to the Chemical
