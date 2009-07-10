@@ -106,6 +106,8 @@
 ^^WI    '#SPAWN CRYSDIR:manual/crystals.pdf' DISABLEIF='IN'                    
 ^^WI    ITEM PDF 'CAMERON Manual'
 ^^WI    '#SPAWN CRYSDIR:manual/cameron.pdf' DISABLEIF='IN'                    
+^^WI    ITEM PDF 'Sir92 Manual'
+^^WI    '#SPAWN CRYSDIR:manual/guide92.pdf' DISABLEIF='IN'
 ^^WI    ITEM PDF 'Supeflip Manual'
 ^^WI    '#SPAWN CRYSDIR:manual/superflip_user_manual.pdf' DISABLEIF='IN'
 ^^WI    ITEM PDF 'EDMA Manual'
