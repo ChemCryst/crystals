@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.30  2009/06/05 15:09:21  djw
+C Remove debugging output (IRFT)
+C
 C Revision 1.29  2008/12/18 16:33:56  djw
 C Dont update number of merged reflections unless an actual MERGE is performed (previously was set to
 C same number as read-in in case data was already pre-merged
@@ -1178,7 +1181,9 @@ C -- CALCULATE RATIO OF (FO)**2 AND SIGMA((FO)**2),IF IT HAS NOT BEEN IN
             IF (STORE(M6+12).LE.ZERO) THEN
                STORE(M6+20)=0.0
             ELSE
-               STORE(M6+20)=MIN(STORE(JFO)/(2.*STORE(M6+12)),999.)
+cdjwjul09
+               STORE(M6+20)=
+     1     MIN(abs(STORE(JFO))/(2.*STORE(M6+12)),999.)
             END IF
          END IF
 C
