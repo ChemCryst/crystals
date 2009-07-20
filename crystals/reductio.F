@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.36  2009/07/13 08:35:48  djw
+C watch out for -ve Fo values when computing RATIO
+C
 C Revision 1.35  2009/06/17 13:46:47  djw
 C Sort out storage og merge info in LIST 30. Updating only done in MERGE itself
 C
@@ -1178,7 +1181,7 @@ CDJWMAP99]
 C--STORE THE REFLECTION
 3600  CONTINUE
 C----- COMPUTE NEW 'RATIO'
-      STORE(M6+20) = MIN (111.0, abs(STORE(JFO)) / (2.*STORE(M6+12)))
+      STORE(M6+20) = MIN (111.0, STORE(JFO) / (2.*STORE(M6+12)))
       CALL XSLR(1)
 C--ACCUMULATE THE REFLECTION DETAILS INFORMATION
       DO 3650 I=1,MD6
