@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.31  2009/07/13 08:35:48  djw
+C watch out for -ve Fo values when computing RATIO
+C
 C Revision 1.30  2009/06/05 15:09:21  djw
 C Remove debugging output (IRFT)
 C
@@ -1183,7 +1186,7 @@ C -- CALCULATE RATIO OF (FO)**2 AND SIGMA((FO)**2),IF IT HAS NOT BEEN IN
             ELSE
 cdjwjul09
                STORE(M6+20)=
-     1     MIN(abs(STORE(JFO))/(2.*STORE(M6+12)),999.)
+     1     MIN(STORE(JFO)/(2.*STORE(M6+12)),999.)
             END IF
          END IF
 C
