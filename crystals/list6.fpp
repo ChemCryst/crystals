@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  2005/02/25 17:25:20  stefan
+C 1. Added some preprocessor if defined lines for the mac version.
+C
 C Revision 1.14  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -41,6 +44,14 @@ C RIC: New processing of SLICES and CONDITIONS in KALLOW.
 C
 C Revision 1.5  2001/02/26 10:28:02  richard
 C RIC: Added changelog to top of file
+C
+C     H              K              L              /FO/           SQRTW
+C     /FC/           PHASE          A-PART         B-PART         TBAR
+C     /FOT/          ELEMENTS       SIGMA(/FO/)    BATCH          INDICES
+C     BATCH/PHASE    SINTH/L**2     FO/FC          JCODE          SERIAL
+C     RATIO          THETA          OMEGA          CHI            PHI
+C     KAPPA          PSI            CORRECTIONS    FACTOR1        FACTOR2
+C     FACTOR3        RATIO/JCODE    NOTHING
 C
 C
 CODE FOR XPRT6C
@@ -942,6 +953,7 @@ C
       INCLUDE 'XCONST.INC'
       INCLUDE 'XLST06.INC'
       INCLUDE 'XLST28.INC'
+      INCLUDE 'XUNITS.INC'
 C
       INCLUDE 'QSTORE.INC'
 C
@@ -1303,6 +1315,9 @@ C -- CHECK IF THE RATIO AND JCODE SHOULD BE UNPACKED
       IF ( JCDRAR .GE. 0 ) THEN
         STORE(M6+20) = AINT(STORE(M6+31)*0.1+0.005) * 0.1
         STORE(M6+18) = STORE(M6+31) - ( 100. * STORE(M6+20) )
+cdjwjul09 Try to fix up unpacking if Fo was -ve
+        if(store(m6+18) .lt. zero) 
+     1  store(m6+18) = 10. + store(m6+18)
       ENDIF
       STORE(M6+13) = AMAX1 ( STORE(M6+13) , 1.0 )
 C
