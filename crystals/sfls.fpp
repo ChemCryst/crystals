@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.59  2009/06/18 07:11:20  djw
+C Message when extparam goes -ve
+C
 C Revision 1.58  2009/06/08 14:24:39  djw
 C Fix checking of polarity and enantiopole in LIST 12, and move initialisation of FLack refinement from SFLS to LIST12
 C
@@ -2127,6 +2130,7 @@ C----- ENATIOMER SENSITIVE REFLECTIONS
 6112      FORMAT(I6,' low leverage reflections.')
           WRITE ( CMON, 6112) MIN(30,ILEVPR)
           CALL XPRVDU(NCVDU, 1,0)
+          IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') CMON(1)(:)
           RLEVNM = 0.0
           RLEVDN = 0.0
           DO  MLEVER = LLEVER, LLEVER+(NLEVER-1)*MDLEVE, MDLEVE
@@ -2137,10 +2141,12 @@ C----- ENATIOMER SENSITIVE REFLECTIONS
           WRITE(CMON,'(''R(lowleverage) = <Fo-Fc>/<Fo> ='',F9.2,''%'')')
      1     100.*RLEVNM/MAX(.001,RLEVDN)
           CALL XPRVDU(NCVDU,1,0)
+          IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') CMON(1)(:)
 
           WRITE(CMON,6113)
 6113      FORMAT (2('   h   k   l sintl2 Leverage    FO-FC    '))
           CALL XPRVDU(NCVDU, 1,0)
+          IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') CMON(1)(:)
 
           DO  MLEVER = LLEVER, LLEVER+(NLEVER-1)*MDLEVE, 2*MDLEVE
             WRITE (CMON,'(2(3I4,F6.3,X,F7.5,F10.3,5X))')
@@ -2149,6 +2155,7 @@ C----- ENATIOMER SENSITIVE REFLECTIONS
      2       STORE(JXAP+5)-STORE(JXAP+6),
      3       JXAP= MLEVER, MLEVER+MDLEVE, MDLEVE)
             CALL XPRVDU(NCVDU, 1,0)
+            IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') CMON(1)(:)
           END DO
       ENDIF
 C
