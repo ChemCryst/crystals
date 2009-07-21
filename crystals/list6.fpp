@@ -1,4 +1,9 @@
+c
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2009/07/20 10:57:22  djw
+C Retro-fix for unpacking Ratio/JCODE. If Fo was -ve, JCODE also becomes -ve.  Fix (for
+C  cases seen anyway) by adding +10
+C
 C Revision 1.15  2005/02/25 17:25:20  stefan
 C 1. Added some preprocessor if defined lines for the mac version.
 C
