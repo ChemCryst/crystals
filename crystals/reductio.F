@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.37  2009/07/20 10:41:46  djw
+C Restore previous version (without ABS in computing ratio/Jcode).  The recovered RATIO
+C  is correct with the original code for +/- Fo values, but JCODE is fouled up for -ve
+C  Fos.  Does not look as it it can be fixed retrospectively since values stored in
+C  DSC files are invalid
+C
 C Revision 1.36  2009/07/13 08:35:48  djw
 C watch out for -ve Fo values when computing RATIO
 C
@@ -1277,8 +1283,9 @@ C
         END DO
         DO I = 1,100
           IF(ABS(RINTF(I)) .GT. ZERO) RINTF(I) = (RINTF(I+100)/RINTF(I))
+cdjwjul09 add a bit to Rint to avoid zero entries in the graphs
           WRITE (NCFPU1,'(F4.1,3X,F15.7,3X,2I8)')
-     1    (I-1)/2.0, RINTF(I)*100., NINT(RINTF(I+200)), NTOT
+     1    (I-1)/2.0, 0.1+RINTF(I)*100., NINT(RINTF(I+200)), NTOT
           NTOT = NTOT - NINT(RINTF(I+300))
         END DO
         I = KFLCLS(NCFPU1)
