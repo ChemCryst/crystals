@@ -12,6 +12,7 @@
 #include    "cxmodel.h"
 #include    "crmodel.h"
 #include    "ccmodelatom.h"
+#include    "ccmodeldoc.h"
 #include    "creditbox.h"
 #include    "cccontroller.h"
 #include    "resource.h"
@@ -125,8 +126,8 @@ CxModel::CxModel(CrModel* container)
   m_bMouseLeaveInitialised = false;
   m_bitmapok = false;
   m_bNeedReScale = true;
-  m_bModelChanged = true;
-  m_bFullListOk = false;
+  m_bPickListOK = false;
+  m_bFullListOK = false;
   m_bOkToDraw = false;
   m_fastrotate = false;
   m_LitObject = nil;
@@ -237,50 +238,46 @@ void CxModel::OnPaint()
 
 void CxModel::OnPaint(wxPaintEvent &event)
 {
-//    wxPaintDC dc (this);
-//    dc.SetUserScale( 1.0,1.0 );
 
+	wxPaintDC(this);
     if ( m_NotSetupYet ) Setup();
-
     if ( m_NotSetupYet ) return;
 
     SetCurrent();
     if ( m_DoNotPaint )
     {
-//      TEXTOUT ( string((int)this) + " OnPaint: Not painting" );
       m_DoNotPaint = false;
       return;
     }
 #endif
 
-//    TEXTOUT ( string((int)this) + " OnPaint" );
-    bool ok_to_draw = true;
 
-#ifndef __WXMAC__
-    if (m_bModelChanged)
-    {
-// re-render the full detail model.
-//      TEXTOUT ( "Redrawing model from scratch" );
-      ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderModel();
-    }
-#else
-    ok_to_draw = true;
-#endif
+	bool ok_to_draw = true;
+	
+	if ( ! m_bFullListOK ) {
+        glDeleteLists(MODELLIST,1);
+        glNewList( MODELLIST, GL_COMPILE);
+        glEnable(GL_LIGHTING);
+	    glEnable (GL_BLEND); 
+	    glEnable (GL_DITHER);  
+        glEnable (GL_COLOR_MATERIAL ) ;
+        glEnable(GL_LIGHT0);
+	    glShadeModel (GL_SMOOTH);
+		ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderModel();
+		glEndList();
+	}
 
     if ( ok_to_draw )
     {
-        m_bFullListOk = true;
-        m_bModelChanged = false;
-//      TEXTOUT ( string((int)this) + " Displaying model" );
-      if ( m_Autosize && m_bNeedReScale )
-      {
-        AutoScale();
-        m_bNeedReScale = false;
-      }
+        m_bFullListOK = true;
+        if ( m_Autosize && m_bNeedReScale )
+        {
+          AutoScale();
+          m_bNeedReScale = false;
+        }
 
-      glRenderMode ( GL_RENDER ); //Switching to render mode.
-
-      glViewport(0,0,GetWidth(),GetHeight());
+        glRenderMode ( GL_RENDER ); //Switching to render mode.
+        glViewport(0,0,GetWidth(),GetHeight());
 
 #ifdef __CR_WIN__
       int col = GetSysColor(COLOR_3DFACE);
@@ -290,43 +287,30 @@ void CxModel::OnPaint(wxPaintEvent &event)
 #endif
 #ifdef __BOTHWX__
       wxColour col = wxSystemSettings::GetColour( wxSYS_COLOUR_3DFACE );
-      glClearColor( col.Red()/255.0f,
-                    col.Green()/255.0f,
-                    col.Blue()/255.0f,  0.0f);
+      glClearColor( col.Red()/255.0f, col.Green()/255.0f, col.Blue()/255.0f,  0.0f);
+//      glClearColor( 0.0f,1.0f,0.0f,0.0f);
 #endif
 
-//      glClearColor( 1.0f,1.0f,1.0f,0.0f);
       glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	  
+  
       glMatrixMode ( GL_PROJECTION );
+
       glLoadIdentity();
       CameraSetup();
-
+	  glPushMatrix();
       GLDrawStyle();
-
       ModelSetup();
-      ModelBackground();
-
-#ifndef __WXMAC__
-      glCallList( ATOMLIST );
-      glCallList( BONDLIST );
-      glCallList( XOBJECTLIST );
-#else
-      ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderModel();
-#endif
+	  
+      glCallList( MODELLIST );
 
       glMatrixMode ( GL_PROJECTION );
       glPopMatrix();
       glMatrixMode ( GL_MODELVIEW );
-
-// next lines suggested by Oleg, Jum 28-08
-#ifdef __WIN32__
-      GdiFlush();
-#endif
-//This is only needed while we draw directly onto the GDI
-      glFinish();
-// if we changed to GLUT fonts instead, we could just call glFlush(), 
-// which doesn't block.
-
+	  
+      glLoadIdentity();
+	  
+	  
 #ifdef __CR_WIN__
       SwapBuffers(m_hdc);
 #endif
@@ -334,34 +318,34 @@ void CxModel::OnPaint(wxPaintEvent &event)
       SwapBuffers();
 #endif
 
-/*
+
       if ( ! m_selectionPoints.empty() )
       {
 //Draw in polygon so far:
-         list<CcPoint>::iterator ccpi = m_selectionPoints.begin();
-#ifdef __CR_WIN__
-         dc.SetROP2( R2_COPYPEN );
-         dc.MoveTo((*ccpi).x, (*ccpi).y);
-#endif         
-#ifdef __BOTHWX__
-          dc.SetLogicalFunction( wxCOPY );
-          list<CcPoint>::iterator ccpi2 = ccpi;
-#endif
 
-         ccpi++;
-         while ( ccpi != m_selectionPoints.end() )
-         {
-#ifdef __BOTHWX__
-            dc.DrawLine((*ccpi2).x,(*ccpi2).y,(*ccpi).x,(*ccpi).y);
-            ccpi2 = ccpi;
-#endif
-#ifdef __CR_WIN__
-            dc.LineTo((*ccpi).x,(*ccpi).y);
-#endif
-            ccpi++;
-         }
-      }
-      */
+		glMatrixMode (GL_PROJECTION);
+		glLoadIdentity();
+		glOrtho(0, GetWidth(), 0, GetHeight(), 1, -1);
+		glMatrixMode (GL_MODELVIEW);
+		glLoadIdentity();
+		glDisable(GL_LIGHTING); //turn off lighting effects
+	    glEnable(GL_COLOR_LOGIC_OP);
+        glLogicOp(GL_XOR);
+		glDisable(GL_DEPTH_TEST);
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+		glBegin(GL_LINES);
+        list<CcPoint>::iterator ccpi = m_selectionPoints.begin();
+        while ( ccpi != m_selectionPoints.end() ) {
+			glVertex2i((*ccpi).x,GetHeight() - (*ccpi).y);
+		}
+    	glEnd();
+
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glEnable(GL_DEPTH_TEST);
+        glDisable(GL_COLOR_LOGIC_OP);
+	  }
     }
     else
     {
@@ -450,6 +434,8 @@ void CxModel::OnLButtonUp( wxMouseEvent & event )
       if(m_fastrotate)
       {
         m_fastrotate = false;
+        m_bFullListOK = false;  //Redraw double bonds perpendicular to viewer
+        m_bPickListOK = false;  //Redraw double bonds perpendicular to viewer
         NeedRedraw();
       }
       break;
@@ -572,7 +558,6 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
         {
 // Click within 4 pixels of first point to close, or
 // Click same point twice to auto-close.
-
           m_selectionPoints.push_back(m_selectionPoints.front()); // close loop
           CxModel::PolyCheck();   //Do selection
           ModelChanged(false);
@@ -580,47 +565,8 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
         }
         else
         {
-
 //Add point to list of selected points.
           m_selectionPoints.push_back(point);
-
-
-#ifdef __CR_WIN__
-//Erase previous line
-          CClientDC dc(this);
-          dc.SetROP2( R2_NOTXORPEN );
-          dc.MoveTo(m_selectionPoints.back().x,m_selectionPoints.back().y);
-          dc.LineTo(m_movingPoint.x,m_movingPoint.y);
-#endif
-#ifdef __BOTHWX__
-          wxClientDC dc(this);
-          dc.SetLogicalFunction( wxINVERT );
-          dc.DrawLine(m_selectionPoints.back().x,m_selectionPoints.back().y,m_movingPoint.x,m_movingPoint.y);
-#endif
-
-//Draw in polygon so far:
-          list<CcPoint>::iterator ccpi = m_selectionPoints.begin();
-
-#ifdef __CR_WIN__
-          dc.SetROP2( R2_COPYPEN );
-          dc.MoveTo((*ccpi).x, (*ccpi).y);
-#endif         
-#ifdef __BOTHWX__
-          dc.SetLogicalFunction( wxCOPY );
-          list<CcPoint>::iterator ccpi2 = ccpi;
-#endif
-          ccpi++;
-          while ( ccpi != m_selectionPoints.end() )
-          {
-#ifdef __BOTHWX__
-            dc.DrawLine((*ccpi2).x,(*ccpi2).y,(*ccpi).x,(*ccpi).y);
-            ccpi2 = ccpi;
-#endif
-#ifdef __CR_WIN__
-            dc.LineTo((*ccpi).x,(*ccpi).y);
-#endif
-            ccpi++;
-          }
         }
       }
       else
@@ -628,8 +574,6 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
 //First point: Add point to list of selected points.
         m_selectionPoints.push_back(point);
       }
-
-
       break;
     }
     case CXZOOM:
@@ -834,24 +778,33 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
       ChooseCursor(CURSORCROSS);
       if (leftDown)
       {
-#ifdef __CR_WIN__
-        CClientDC dc(this);
         CcRect newRect = m_selectRect;
         newRect.mBottom = point.y;
         newRect.mRight  = point.x;
-        dc.DrawDragRect(&newRect.Sort().Native(), CSize(1,1), &m_selectRect.Sort().Native(), CSize(1,1),NULL,NULL);
+
+        glRenderMode ( GL_RENDER ); //Switching to render mode.
+		glViewport(0, 0, GetWidth(), GetHeight());
+		glMatrixMode (GL_PROJECTION);
+		glLoadIdentity();
+		glOrtho(0, GetWidth(), 0, GetHeight(), 1, -1);
+		glMatrixMode (GL_MODELVIEW);
+		glLoadIdentity();
+		glDisable(GL_LIGHTING); //turn off lighting effects
+		glDrawBuffer(GL_FRONT);
+	    glEnable(GL_COLOR_LOGIC_OP);
+        glLogicOp(GL_XOR);
+		glDisable(GL_DEPTH_TEST);
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glRecti(newRect.mLeft, GetHeight() - newRect.mTop, newRect.mRight,GetHeight() - newRect.mBottom);
+        glRecti(m_selectRect.mLeft, GetHeight() - m_selectRect.mTop, m_selectRect.mRight,GetHeight() - m_selectRect.mBottom);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glEnable(GL_DEPTH_TEST);
+        glDisable(GL_COLOR_LOGIC_OP);
+		glDrawBuffer(GL_BACK);
+		glFlush();
+
         m_selectRect = newRect;
-#endif
-#ifdef __BOTHWX__
-        wxClientDC dc(this);
-        CcRect newRect = m_selectRect;
-        newRect.mBottom = point.y;
-        newRect.mRight  = point.x;
-        dc.SetLogicalFunction( wxINVERT );
-        dc.DrawRectangle(newRect.mLeft, newRect.mTop, newRect.Width(), newRect.Height() );
-        dc.DrawRectangle(m_selectRect.mLeft, m_selectRect.mTop, m_selectRect.Width(), m_selectRect.Height() );
-        m_selectRect = newRect;
-#endif
       }
       break;
     }
@@ -869,33 +822,38 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
 
       if ( !m_selectionPoints.empty() )
       {
-//Erase previous line
-#ifdef __CR_WIN__
-        CClientDC dc(this);
-        CPen pen(PS_SOLID,1,PALETTERGB(0,0,0)), *oldpen;  
-        oldpen = dc.SelectObject(&pen);
-        dc.SetROP2( R2_NOTXORPEN );
-        dc.MoveTo(m_selectionPoints.back().x,m_selectionPoints.back().y);
-        dc.LineTo(m_movingPoint.x,m_movingPoint.y);
-#endif
-#ifdef __BOTHWX__
-        wxClientDC dc(this);
-        dc.SetLogicalFunction( wxINVERT );
-        dc.DrawLine(m_movingPoint.x,m_movingPoint.y,
-                    m_selectionPoints.back().x,m_selectionPoints.back().y);
-#endif
+	  
+        glRenderMode ( GL_RENDER ); //Switching to render mode.
+		glViewport(0, 0, GetWidth(), GetHeight());
+		glMatrixMode (GL_PROJECTION);
+		glLoadIdentity();
+		glOrtho(0, GetWidth(), 0, GetHeight(), 1, -1);
+		glMatrixMode (GL_MODELVIEW);
+		glLoadIdentity();
+		glDisable(GL_LIGHTING); //turn off lighting effects
+		glDrawBuffer(GL_FRONT);
+	    glEnable(GL_COLOR_LOGIC_OP);
+        glLogicOp(GL_XOR);
+		glDisable(GL_DEPTH_TEST);
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+		glBegin(GL_LINES);
+		glVertex2i(m_selectionPoints.back().x,GetHeight() - m_selectionPoints.back().y);
+		glVertex2i(m_movingPoint.x,GetHeight() - m_movingPoint.y);
+    	glEnd();
+		glBegin(GL_LINES);
+		glVertex2i(m_selectionPoints.back().x,GetHeight() - m_selectionPoints.back().y);
+		glVertex2i(point.x,GetHeight() - point.y);
+    	glEnd();
+
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glEnable(GL_DEPTH_TEST);
+        glDisable(GL_COLOR_LOGIC_OP);
+		glDrawBuffer(GL_BACK);
+		glFlush();
+
         m_movingPoint.Set(point.x,point.y);
-//Draw new line
-#ifdef __CR_WIN__
-        dc.MoveTo(m_selectionPoints.back().x,m_selectionPoints.back().y);
-        dc.LineTo(m_movingPoint.x,m_movingPoint.y);
-        dc.SelectObject(oldpen);
-        dc.SetROP2( R2_COPYPEN );
-#endif
-#ifdef __BOTHWX__
-        dc.DrawLine(m_selectionPoints.back().x,m_selectionPoints.back().y,
-                     m_movingPoint.x,m_movingPoint.y);
-#endif
       }
       break;
     }
@@ -1202,8 +1160,8 @@ BOOL CxModel::SetWindowPixelFormat()
     pixelDesc.dwFlags = PFD_DRAW_TO_WINDOW |
                         PFD_SUPPORT_OPENGL |
                         PFD_STEREO_DONTCARE|
-                        PFD_DOUBLEBUFFER|
-			PFD_SUPPORT_COMPOSITION;
+//						PFD_SUPPORT_COMPOSITION|
+                        PFD_DOUBLEBUFFER;
 
     pixelDesc.iPixelType = PFD_TYPE_RGBA;
     pixelDesc.cColorBits = 32;
@@ -1304,102 +1262,89 @@ BOOL CxModel::CreateViewGLContext()
 
 int CxModel::IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject **outObject, bool atomsOnly)
 {
-   setCurrentGL();
-   GLint viewport[4];
-   glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
 
-   GLuint selectbuf[400]; //space for 100 hits.
-   glSelectBuffer ( 400, selectbuf ); //Allocate space for 100 hit objects
+	bool ok_to_draw = true;
 
-// Correct for strange "3 pixels out in the vertical" effect.
-// This effect seems to have fixed itself. Commented out correction.
-//   yPos += 3;
+	if ( ! m_bPickListOK ) {
+		glDeleteLists(PICKLIST,1);
+		glNewList( PICKLIST, GL_COMPILE);
+		bool tex2DIsEnabled = glIsEnabled(GL_TEXTURE_2D);
+		glDisable(GL_TEXTURE_2D);
+		bool fogIsEnabled = glIsEnabled(GL_FOG);
+		glDisable(GL_FOG);
+		bool lightIsEnabled = glIsEnabled(GL_LIGHTING);
+		glDisable(GL_LIGHTING);
+		 
+		glDisable (GL_BLEND); 
+		glDisable (GL_DITHER);  
+		glDisable (GL_TEXTURE_1D); 
+		glShadeModel (GL_FLAT);
+		glDisable ( GL_COLOR_MATERIAL ) ;
 
-/*   if (atomsOnly) {
-      LOGERR( string((int)this) + "IAC? " + string(xPos) + " " + string (yPos)+
-      string(viewport[0])+" "+string(viewport[1])+" "+string(viewport[2])+" "+string(viewport[3])+" " );
-   }*/
+		glDisable(GL_LIGHT0);
+	  
+		 
+	    ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderAtoms(true);
+		ok_to_draw |= ((CrModel*)ptr_to_crObject)->RenderBonds(true);
 
-   bool repeat = true;
-   int tolerance = 0;
-   int hits = 0;
-  
-   while ( repeat )
-   {
-       
-//For debugging comment out next line and uncomment the SwapBuffers line below.
-     glRenderMode ( GL_SELECT ); //Instead of rendering, tell OpenGL to put stuff in the SelectBuffer.
-
-     glInitNames();  //Initialise names stack (names are just INTs, but will be unique for each atom and bond.)
-     glPushName( 0 ); //Push a value onto the stack, it is replaced by each LoadName call during rendering.
-
-
-     glMatrixMode ( GL_PROJECTION );
-     glLoadIdentity();
-     gluPickMatrix ( xPos, viewport[3] - yPos, tolerance+1, tolerance+1, viewport );
-     CameraSetup();
-     ModelSetup();
-
-#ifndef __WXMAC__
-     glCallList( ATOMLIST );
-     if ( tolerance == 0 && !atomsOnly )
-        glCallList( BONDLIST ); // Only select bonds if right over them.
-#else
-     bool o = ((CrModel*)ptr_to_crObject)->RenderAtoms();
-     if ( tolerance == 0 && !atomsOnly )
-        o = ((CrModel*)ptr_to_crObject)->RenderBonds();
-#endif
-
-#ifdef __CR_WIN__
-//For debug uncomment next line and comment the glRenderMode line above.
-//    HDC hdc = ::GetDC ( GetSafeHwnd() ); wglMakeCurrent(hdc, m_hGLContext); SwapBuffers (hdc);
-#endif
-
-     hits = glRenderMode ( GL_RENDER ); //Switching back to render mode, return value is number of objects hit.
-
-     if ( hits || tolerance )  repeat = false;
-     tolerance = 19; // If nothing under the mouse select things close by.
-   }
-
-   if ( hits < 0 )
-   {
-     hits = -hits;
-     LOGERR ( "Hit test buffer overflow - contact richard.cooper@chem.ox.ac.uk");
-   }
-
-//Hit records in selectbuf have the form:
-// uint Number of names (this will always be 1, because we are careful only to call PushName once.)
-// uint Min depth of hit primitive
-// uint Max depth of hit primitive      
-// uint Name
+		if ( tex2DIsEnabled ) glEnable(GL_TEXTURE_2D);
+		if ( fogIsEnabled )  glEnable(GL_FOG);
+		if ( lightIsEnabled ) glEnable(GL_LIGHTING);
+		
+		glEndList();
+    }
 
 
+	
+	if ( ok_to_draw ) {
 
-   if ( hits )
-   {
-//     TEXTOUT ( string ( hits ) + " hits" );
-     GLuint highest_point = selectbuf[1];
-     GLuint highest_name = selectbuf[3];
-     for ( int i = 1; i<hits; i++ )
-     {
-       if ( selectbuf[ (i*4) + 2 ] < highest_point )
-       {
-         highest_point = selectbuf[ (i*4) + 1 ];
-         highest_name  = selectbuf[ (i*4) + 3 ];
-       }
-     }
+		m_bPickListOK = true;
+	
+		setCurrentGL();
+		glRenderMode ( GL_RENDER ); //Switching to render mode.
 
-//     if (atomsOnly) { LOGERR( "HitGLID: " + string((int)highest_name) ); }
+		GLint viewport[4];
+		glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
 
-     *outObject = ((CrModel*)ptr_to_crObject)->FindObjectByGLName ( highest_name );
+		
+	  
+		glMatrixMode ( GL_PROJECTION );
+		glLoadIdentity();
+		CameraSetup();
+		ModelSetup();
+		 
+		glClearColor( 0.0f, 0.0f, 0.0f, 0.0f);
+		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-     if ( *outObject )
-     {
-       *atomname = (*outObject)->Label();
-       return (*outObject)->Type();
-     }
+		glCallList( PICKLIST );
+		 
+		
+	//Read back test pixel
+		unsigned char pixel[3];
+		glReadBuffer(GL_BACK);
+		glReadPixels(xPos, viewport[3] - yPos, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
 
-   }
+//		ostringstream o;
+//		o << xPos << " " << viewport[3] << " " << yPos << " " << pixel[2];
+//		LOGERR(o.str());
+
+	
+		int rgbHit= ((pixel[0]&0xff)<<16) | ((pixel[1]&0xff)<<8) | (pixel[2]&0xff);
+
+	/*	ostringstream rrr;
+		rrr << (pixel[0]&0xffffff) << " " << (pixel[1]&0xffffff) << " "  << (pixel[2]&0xffffff);
+		LOGERR(rrr.str());*/
+		 
+		if ( rgbHit != 0 ) {
+
+			*outObject = ((CrModel*)ptr_to_crObject)->FindObjectByGLName ( rgbHit );
+			if ( *outObject )
+			{
+				*atomname = (*outObject)->Label();
+				return (*outObject)->Type();
+			}
+	   }
+	}
    return 0;
 }
 
@@ -1407,126 +1352,18 @@ int CxModel::IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject *
 void CxModel::AutoScale()
 {
 
-   GLint viewport[4];
-   glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
+   CcRect extentOf2DProjection = ((CrModel*)ptr_to_crObject)->FindModel2DExtent(mat);
 
-   GLfloat *feedbuf;
+   float wscale = 10000.0f  * m_stretchX / (float)(extentOf2DProjection.Width());
+   float hscale = 10000.0f  * m_stretchY / (float)(extentOf2DProjection.Height());
 
-   bool bigger_buf_needed = true;
-   int hits = 0;
-
-   while ( bigger_buf_needed )
-   {
-
-     feedbuf = new GLfloat[m_fbsize];
-
-     glFeedbackBuffer ( m_fbsize, GL_2D, feedbuf ); 
-  
-     glRenderMode ( GL_FEEDBACK ); //Instead of rendering, tell OpenGL to put stuff in the FeedBackBuffer.
-
-     glMatrixMode ( GL_PROJECTION );
-     glLoadIdentity();
-     CameraSetup();
-//Can't use ModelSetup() as it translates & scales the molecule!
-     glMatrixMode ( GL_MODELVIEW );
-     glLoadIdentity();
-     glMultMatrixf ( mat );
-#ifndef __WXMAC__
-     glCallList( ATOMLIST );
-     glCallList( BONDLIST );
-#else
-     bool o = ((CrModel*)ptr_to_crObject)->RenderAtoms();
-     o = ((CrModel*)ptr_to_crObject)->RenderBonds();
-#endif
-     glMatrixMode ( GL_PROJECTION );
-     glMatrixMode ( GL_MODELVIEW );
-
-     hits = glRenderMode ( GL_RENDER ); //Switching back to render mode, return value is number of objects hit.
-
-     if ( hits < 0 )
-     {
-       delete [] feedbuf;
-       m_fbsize = m_fbsize * 2;
-       ostringstream message;
-       message << "Feedback buffer overflows, doubling size to " << m_fbsize;
-       LOGSTAT ( message.str() );
-       bigger_buf_needed = true;
-     }
-     else
-     {
-       bigger_buf_needed = false;
-     }        
-   }
-
-   CcRect enclosed;
-   enclosed.Set( viewport[3], viewport[2],
-                 viewport[1], viewport[0] );
-
-   int point = hits, nVert, token;
-   while ( point > 0 )
-   {
-     token = (int)feedbuf [ hits - point ];
-     switch ( token ) {
-     case GL_PASS_THROUGH_TOKEN:
-       point--;
-       point--;
-       break;
-     case GL_POINT_TOKEN:
-     case GL_BITMAP_TOKEN:
-     case GL_DRAW_PIXEL_TOKEN:
-     case GL_COPY_PIXEL_TOKEN:
-       point--;
-       point -= AdjustEnclose( &enclosed, feedbuf, hits-point );
-       break;
-     case GL_LINE_TOKEN:
-     case GL_LINE_RESET_TOKEN:
-       point--;
-       point -= AdjustEnclose( &enclosed, feedbuf, hits-point );
-       point -= AdjustEnclose( &enclosed, feedbuf, hits-point );
-       break;
-     case GL_POLYGON_TOKEN:
-       point--;
-       nVert = (int)feedbuf[hits-point];
-       point--;
-       for (; nVert > 0; nVert--)
-         point -= AdjustEnclose( &enclosed, feedbuf, hits-point );
-       break;
-     default:
-       LOGERR ( "Unknown GL feedback token - contact richard.cooper@chem.ox.ac.uk");
-       point--;
-     }
-   }
-
-
-   float wscale = (float)viewport[2] / (float)enclosed.Width() ;
-   float hscale = (float)viewport[3] / (float)enclosed.Height() ;
-
-   m_xScale = CRMIN ( hscale , wscale ) * 0.9f; //Allow a margin.
-
-   float xpoffset = ((float)viewport[2]/2.0f)-(float)enclosed.MidX();
-   float ypoffset = ((float)viewport[3]/2.0f)-(float)enclosed.MidY();
-
-   float xmoffset = xpoffset * 10000.0f / (float) CRMIN ( viewport[2], viewport[3] );
-   float ymoffset = ypoffset * 10000.0f / (float) CRMIN ( viewport[2], viewport[3] );
-
-   m_xTrans = xmoffset * m_xScale;
-   m_yTrans = ymoffset * m_xScale;
-
-   delete [] feedbuf;
-
+   m_xScale = CRMIN ( hscale , wscale ) * 0.95f; //Allow a margin.
+   m_xTrans = -(float)(extentOf2DProjection.MidX()) * m_xScale;
+   m_yTrans = -(float)(extentOf2DProjection.MidY()) * m_xScale;
 
 }
 
 
-
-int CxModel::AdjustEnclose( CcRect* enc, GLfloat* buf, int point )
-{
-  enc->mLeft   = CRMIN( (int)buf[point],   enc->mLeft );
-  enc->mRight  = CRMAX( (int)buf[point],   enc->mRight );
-  enc->mTop    = CRMIN( (int)buf[point+1], enc->mTop );
-  enc->mBottom = CRMAX( (int)buf[point+1], enc->mBottom );
-  return 2;
-}
 
 #ifdef __CR_WIN__
 void CxModel::OnMenuSelected(UINT nID)
@@ -1629,9 +1466,10 @@ void CxModel::NeedRedraw(bool needrescale)
 
 void CxModel::ModelChanged(bool needrescale) 
 {
-//  TEXTOUT ( "Model " + string((int)this) + "changed" );
-  m_bModelChanged = true;
-  m_bFullListOk = false;
+
+  m_bFullListOK = false;
+  m_bPickListOK = false;
+
   NeedRedraw(needrescale);
 }
 
@@ -1658,6 +1496,30 @@ void CxModel::ChooseCursor( int cursor )
                         break;
                 default:
                         SetCursor( AfxGetApp()->LoadCursor(IDC_CURSOR1) );
+                        break;
+        }
+#endif
+#ifdef __BOTHWX__
+
+        switch ( cursor )
+        {
+                case CURSORZOOMIN:
+                        SetCursor( wxCURSOR_MAGNIFIER );
+                        break;
+                case CURSORZOOMOUT:
+                        SetCursor( wxCURSOR_MAGNIFIER );
+                        break;
+                case CURSORNORMAL:
+                        SetCursor( wxCURSOR_ARROW );
+                        break;
+                case CURSORCROSS:
+                        SetCursor( wxCURSOR_CROSS );
+                        break;
+                case CURSORCOPY:
+                        SetCursor( wxCURSOR_BULLSEYE );
+                        break;
+                default:
+                        SetCursor( wxCURSOR_ARROW );
                         break;
         }
 #endif
@@ -1931,240 +1793,97 @@ void CxModel::LoadDIBitmap(string filename)
 
 void CxModel::PolyCheck()
 {
-   if ( m_selectionPoints.size() < 3 ) return;
+    if ( m_selectionPoints.size() < 3 ) return;
 
-   setCurrentGL();
-
-   GLint viewport[4];
-   glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
-
-   GLfloat *feedbuf;
-
-   bool bigger_buf_needed = true;
-   int hits = 0;
-
-   while ( bigger_buf_needed )
-   {
-
-     feedbuf = new GLfloat[m_fbsize];
-
-     glFeedbackBuffer ( m_fbsize, GL_2D, feedbuf ); 
-  
-     glRenderMode ( GL_FEEDBACK ); //Instead of rendering, tell OpenGL to put stuff in the FeedBackBuffer.
-
-     glMatrixMode ( GL_PROJECTION );
-     glLoadIdentity();
-     CameraSetup();
-     ModelSetup();
-     ((CrModel*)ptr_to_crObject)->RenderModel(true);
-
-     glMatrixMode ( GL_PROJECTION );
-     glMatrixMode ( GL_MODELVIEW );
-
-     hits = glRenderMode ( GL_RENDER ); //Switching back to render mode, return value is number of objects hit.
-
-     if ( hits < 0 )
-     {
-       delete [] feedbuf;
-       m_fbsize = m_fbsize * 2;
-       ostringstream message;
-       message << "Feedback buffer overflows, doubling size to " << m_fbsize;
-       LOGSTAT ( message.str() );
-       bigger_buf_needed = true;
-     }
-     else
-     {
-       bigger_buf_needed = false;
-     }        
-   }
-
-   int point = hits, nVert, token;
-
-   int currentGLID = 0, lastGLID = -1;
-   int curX = 0, curY = 0;
-
-   while ( point > 0 )
-   {
-     token = (int)feedbuf [ hits - point ];
-     switch ( token ) {
-     case GL_PASS_THROUGH_TOKEN:
-       point--;
-       currentGLID = (int) feedbuf [ hits - point ];
-       point--;
-       break;
-     case GL_POINT_TOKEN:
-     case GL_BITMAP_TOKEN:
-     case GL_DRAW_PIXEL_TOKEN:
-     case GL_COPY_PIXEL_TOKEN:
-       point--;
-       curX = (int) feedbuf [ hits - point ];
-       point--;
-       curY = (int) feedbuf [ hits - point ];
-       point--;
-       break;
-     case GL_LINE_TOKEN:
-     case GL_LINE_RESET_TOKEN:
-       point--;
-       curX = (int) feedbuf [ hits - point ];
-       point--;
-       curY = (int) feedbuf [ hits - point ];
-       feedbuf [ hits - point ] = (float) RC_NEXT_LINE_TOKEN;
-       break;
-     case RC_NEXT_LINE_TOKEN:
-       point--;
-       curX = (int) feedbuf [ hits - point ];
-       point--;
-       curY = (int) feedbuf [ hits - point ];
-       point--;
-       break;
-     case GL_POLYGON_TOKEN:
-       point--;
-       nVert = (int)feedbuf[hits-point];
-       point--;
-       nVert--;
-       curX = (int) feedbuf [ hits - point ];
-       if ( nVert > 0 ) feedbuf [ hits - point ] = (float) GL_POLYGON_TOKEN;
-       else point--;
-       curY = (int) feedbuf [ 1 + hits - point ];
-       if ( nVert > 0 ) feedbuf [ 1 + hits - point ] = (float) nVert;
-       else point--;
-       break;
-     default:
-       LOGERR ( "Unknown GL feedback token - contact richard.cooper@chem.ox.ac.uk");
-       point--;
-     }
-
-     if ( ( currentGLID > 0 ) && ( currentGLID != lastGLID ) && ( curX > 0 ) )
-     {
-
-// Imagine a horizontal line drawn from the current polygon of the
-// current atom to the right. If it cuts the polygon an odd number
+    std::list<Cc2DAtom> atoms = ((CrModel*)ptr_to_crObject)->AtomCoords2D(mat);
+	for ( std::list<Cc2DAtom>::iterator atom=atoms.begin(); atom != atoms.end(); ++atom) {
+		CcPoint atomxy = AtomCoordsToScreenCoords((*atom).p);
+// Imagine a horizontal line drawn from the current atom 
+// to the right. If it cuts the polygon an odd number
 // of times, then it is inside.
-// Check each polygon segment in turn and add up the number of crossings.
-// A crossing occurs if:
+// Check each atom in turn and add up the number of crossings.
+// A crossing occurs iff:
 //   1. The y-coord of the atom lies inbetween the y-coords of
 //      the ends of the line.
 //   2. The point of intersection of our imaginary horizonatal line and
 //      the extrapolated polygon line lies on the polygon line.
 //   3. The x-coord of our atom is less than the x-coord of intersection.
+		int crossings = 0;
+		list<CcPoint>::iterator line_start, line_end;
+		line_start = line_end = m_selectionPoints.begin();
+		line_end++;
+		while ( line_end != m_selectionPoints.end() ) {
+            if (  ( ( (*line_start).y < atomxy.y ) && ( (*line_end).y > atomxy.y ) ) ||
+               ( ( (*line_start).y > atomxy.y ) && ( (*line_end).y < atomxy.y ) )    )  { // line ends y range includes this atom	
+			    float invgrad = 1000000.0f; // Avoid divide by zero:
+                if ( (*line_end).y - (*line_start).y != 0 )  {
+			      invgrad = (float)((*line_end).x - (*line_start).x) / (float)((*line_end).y - (*line_start).y);
+			    }
+                float xCut = ( (*line_start).x + ( (atomxy.y - (*line_start).y) * invgrad ) );
 
-       curY = viewport[3] - curY; // Correct for sense of OpenGL coord system.
-
-       int crossings = 0;
-
-       list<CcPoint>::iterator p1, p2;
-       p1 = p2 = m_selectionPoints.begin();
-       p2++;
-       
-       while ( p2 != m_selectionPoints.end() )
-       {
-         if (  ( ( (*p1).y < curY ) && ( (*p2).y > curY ) ) ||
-               ( ( (*p1).y > curY ) && ( (*p2).y < curY ) )    )
-         {
-            float invgrad = 1000000.0f; // Avoid divide by zero:
-            if ( (*p2).y - (*p1).y != 0 ) invgrad = (float)((*p2).x - (*p1).x) / (float)((*p2).y - (*p1).y);
-
-            float xCut = ( (*p1).x + ( (curY - (*p1).y) * invgrad ) );
-
-            if ( ( ( ( (*p1).x < xCut ) && ( (*p2).x > xCut ) ) ||
-                   ( ( (*p1).x > xCut ) && ( (*p2).x < xCut ) )    ) &&
-                 ( curX < xCut ) )
-            {
-              crossings++;
+                if ( ( ( ( (*line_start).x < xCut ) && ( (*line_end).x > xCut ) ) ||
+                   ( ( (*line_start).x > xCut ) && ( (*line_end).x < xCut ) )    ) &&
+                 ( atomxy.x < xCut ) ) {
+                    crossings++;
+                }
             }
-         }
-         p1++;
-         p2++;
-       }
-
-       if ( crossings % 2 != 0 )
-       {
-         CcModelObject* atom;
-         atom = ((CrModel*)ptr_to_crObject)->FindObjectByGLName ( currentGLID );
-         if ( atom )
-         {
-           atom->Select(true);
-           lastGLID = currentGLID;
-         }
-       }
-     }
-
-     curX = -1;
-
-   }
-
-   delete [] feedbuf;
-
-
+            line_start++;
+            line_end++;
+        }
+        if ( crossings % 2 != 0 ) {
+  		    CcModelObject* atomp = ((CrModel*)ptr_to_crObject)->FindObjectByGLName((*atom).id);
+            if ( atomp ) atomp->Select(true);
+        }
+	}
 }
 
 
+CcPoint CxModel::AtomCoordsToScreenCoords(CcPoint atomCoords) {
+// normal display procedure:
+// take objects (atomcoords)
+// scale   (m_xscale)
+// rotate (mat)
+// translate a bit (m_xtrans)
+// display on 10000 x 10000-ish ortho projection.
+
+
+/*   float wscale = 10000.0f  * m_stretchX / (float)(extentOf2DProjection.Width());
+   float hscale = 10000.0f  * m_stretchY / (float)(extentOf2DProjection.Height());
+
+   m_xScale = CRMIN ( hscale , wscale ) * 0.95f; //Allow a margin.
+   m_xTrans = -(float)(extentOf2DProjection.MidX()) * m_xScale;
+   m_yTrans = -(float)(extentOf2DProjection.MidY()) * m_xScale;
+*/
+
+    CcPoint ret( (int)(atomCoords.x*m_xScale), -(int)(atomCoords.y*m_xScale));
+	ret += CcPoint((int)m_xTrans,-(int)m_yTrans);
+
+    setCurrentGL();
+    GLint viewport[4];
+    glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
+
+    ret.x = (int)(( ret.x * viewport[2] )/ (10000.0f  * m_stretchX ));
+    ret.y = (int)(( ret.y * viewport[3] )/ (10000.0f  * m_stretchY ));
+	
+	ret.x += ( viewport[2] / 2 );
+	ret.y += ( viewport[3] / 2 );
+	
+	return ret;
+}
 
 void CxModel::SelectBoxedAtoms(CcRect rectangle, bool select)
 {
-   setCurrentGL();
-   GLint viewport[4];
-   glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
+    std::list<Cc2DAtom> atoms = ((CrModel*)ptr_to_crObject)->AtomCoords2D(mat);
 
-   GLuint * selectbuf;
+	for ( std::list<Cc2DAtom>::iterator atom=atoms.begin(); atom != atoms.end(); ++atom) {
 
-   bool repeat = true;
-   int hits = 0;
-  
-   while ( repeat )
-   {
-     selectbuf = new GLuint[m_sbsize];
-     glSelectBuffer ( m_sbsize, selectbuf );
-       
-     glRenderMode ( GL_SELECT ); //Instead of rendering, tell OpenGL to put stuff in the SelectBuffer.
+		CcPoint c = AtomCoordsToScreenCoords((*atom).p);
 
-     glInitNames();  //Initialise names stack (names are just INTs, but will be unique for each atom and bond.)
-     glPushName( 0 ); //Push a value onto the stack, it is replaced by each LoadName call during rendering.
-
-     glMatrixMode ( GL_PROJECTION );
-     glPushMatrix();
-     glLoadIdentity();
-     gluPickMatrix ( rectangle.MidX(), viewport[3] - rectangle.MidY(), rectangle.Sort().Width(), rectangle.Sort().Height(), viewport );
-     CameraSetup();
-     ModelSetup();
-#ifndef __WXMAC__
-     glCallList( ATOMLIST );
-#else
-     bool o = ((CrModel*)ptr_to_crObject)->RenderAtoms();
-#endif
-     glMatrixMode ( GL_PROJECTION );
-     glPopMatrix();
-     glMatrixMode ( GL_MODELVIEW );
-
-     hits = glRenderMode ( GL_RENDER ); //Switching back to render mode, return value is number of objects hit.
-
-     if ( hits >= 0 )
-     {
-       repeat = false;
-     }
-     else
-     {
-       repeat = true;
-       delete [] selectbuf;
-       m_sbsize = m_sbsize * 2;
-       ostringstream message;
-       message << "Select buffer overflows, doubling size to " << m_sbsize;
-       LOGSTAT ( message.str() );
-     }
-   }
-
-//Hit records in selectbuf have the form:
-// uint Number of names (this will always be 1, because we are careful only to call PushName once.)
-// uint Min depth of hit primitive
-// uint Max depth of hit primitive
-// uint Name
-
-   CcModelAtom* atom;
-   for ( int i = 0; i<hits; i++ )
-   {
-     atom = (CcModelAtom*)((CrModel*)ptr_to_crObject)->FindObjectByGLName(selectbuf[(i*4)+3]);
-     if ( atom ) atom->Select();
-   }
-   delete [] selectbuf;
+		if ( rectangle.Contains( c.x, c.y ) ) {
+     		CcModelAtom* atomp = (CcModelAtom*)((CrModel*)ptr_to_crObject)->FindObjectByGLName((*atom).id);
+			if ( atomp ) atomp->Select();
+		}
+		
+	}
 
 }

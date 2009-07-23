@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.24  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.1.1.1  2004/12/13 11:16:17  rich
 //   New CRYSTALS repository
 //
@@ -108,24 +112,40 @@
 #include <list>
 using namespace std;
 
+#include "ccpoint.h"
 #include "ccmodelatom.h"
 #include "ccmodelbond.h"
 #include "ccmodelsphere.h"
 #include "ccmodeldonut.h"
 
 class CrModel;
+class CcRect;
 class CrModList;
 class CcModelStyle;
 class CcModelDoc;
 
+class Cc2DAtom
+{
+  public:
+	CcPoint p;
+	GLuint id;
+    Cc2DAtom(CcPoint p_in, GLuint id_in ) {
+		p = p_in;
+		id = id_in;
+	};
+};
+
+
+
 class CcModelDoc
 {
     public:
-
-        bool RenderModel( CcModelStyle *style, bool feedback=false );   // Called by CrModel
+        bool RenderModel( CcModelStyle *style );   // Called by CrModel
         bool RenderAtoms( CcModelStyle * style, bool feedback );
         bool RenderBonds( CcModelStyle * style, bool feedback );
-        bool RenderExcluded( CcModelStyle * style, bool feedback );
+        bool RenderExcluded( CcModelStyle * style );
+     	CcRect FindModel2DExtent(float * mat, CcModelStyle * style);
+		std::list<Cc2DAtom> CcModelDoc::AtomCoords2D(float * mat);
         void DocToList( CrModList* ml );                                // Called by CrModList
         void InvertSelection();                                         // Called by CrModel
         void SelectAllAtoms(bool select);                               // Called by CrModel
@@ -193,13 +213,12 @@ class CcModelDoc
         void     FlagFrag ( const string & atomname );
         string Compress(const string & atomname);
         
+		GLuint m_glIDs;
         int nSelected;
         int m_nAtoms;
         int m_TotX;
         int m_TotY;
         int m_TotZ;
-        bool m_glIDsok;
-        int m_glIDCount;
   
         list<CcModelAtom> mAtomList;
         list<CcModelBond> mBondList;

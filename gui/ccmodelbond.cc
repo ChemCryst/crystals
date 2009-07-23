@@ -137,7 +137,13 @@ void CcModelBond::Render(CcModelStyle *style, bool feedback)
    int detail = style->normal_res;
 
    GLUquadricObj* cylinder;
-   if ( m_excluded )
+
+   if (feedback) {
+
+	  glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
+
+   }
+   else if ( m_excluded )
    {
         GLfloat Surface[] = { 128.0f+(float)m_r/127.0f,128.0f+(float)m_g/127.0f,128.0f+(float)m_b/127.0f, 1.0f };
 //        GLfloat Diffuse[] = { 128.0f+(float)m_r/127.0f,128.0f+(float)m_g/127.0f,128.0f+(float)m_b/127.0f, 1.0f };

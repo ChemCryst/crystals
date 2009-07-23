@@ -1,6 +1,7 @@
 
 #include "crystalsinterface.h"
 #include <string>
+#include    <math.h>
 using namespace std;
 
 #include "crconstants.h"
@@ -8,6 +9,7 @@ using namespace std;
 #include "ccmodeldoc.h"
 #include "crmodel.h"
 #include "creditbox.h"
+#include "ccpoint.h"
 #include "cccontroller.h"
 
 CcModelAtom::CcModelAtom(CcModelDoc* parentptr)
@@ -182,15 +184,14 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
   float extra = 0.0f;
   int detail = style->normal_res ;
 
-  if (feedback) glPassThrough((float)m_glID);
+  if (feedback) {
 
-  if ( m_excluded )
-  {
+	  glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
+	  
+	  
+  } else if ( m_excluded ) {
     GLfloat Surface[] = { 128.0f+(float)r/127.0f,128.0f+(float)g/127.0f,128.0f+(float)b/127.0f, 1.0f };
-//    GLfloat Diffuse[] = { 128.0f+(float)r/127.0f,128.0f+(float)g/127.0f,128.0f+(float)b/127.0f, 1.0f };
-//    glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
-//    glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
-     glColor4fv( Surface );
+    glColor4fv( Surface );
     extra = 20.0f;
   }
   else if ( m_selected ) // highlighted
@@ -204,24 +205,22 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
 
     GLfloat Surface[] = { ((float)r+64)/319.0f,((float)g+64)/319.0f,((float)b+64)/319.0f, 1.0f };
     glColor4fv( Surface );
-//    detail = 4; 
     extra = 10.0f;
   }
   else if ( m_disabled )  // disabled atom
   {
     GLfloat Diffuse[] = { (float)r/512.0f,(float)g/512.0f,(float)b/512.0f, 1.0f };
-//    glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
     glColor4fv( Diffuse );
     extra = 20.0f;
   }
   else  // normal
   {
     GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 1.0f };
-//    GLfloat Diffuse[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 1.0f };
-//    glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
-//    glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
     glColor4fv( Surface );
   }
+
+
+
 
   if (style->radius_type == COVALENT)
   {
@@ -246,16 +245,13 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
   {
     if ( m_IsADP)
     {
-      glMultMatrixf(*&localmatrix);
-      gluSphere(sphere, ( 1.0f + (extra / 1000.0f) ), detail,detail);
+     glMultMatrixf(*&localmatrix);
+     gluSphere(sphere, ( 1.0f + (extra / 1000.0f) ), detail,detail);
 
+	  
+	 if ( !feedback) {
 
       GLfloat Surface[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-//      GLfloat Diffuse[] = { 0.0f, 0.0f, 0.0f, 1.0f }; 
-//      GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
-//      glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
-//      glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
-//      glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
       glColor4fv( Surface );
 
       GLUquadricObj* cylinder;
@@ -277,6 +273,7 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
       gluQuadricDrawStyle(cylinder,GLU_FILL);
       gluCylinder(cylinder,1.02f + ((float)extra / 1000.0f),1.02f + ((float)extra / 1000.0f),0.1f, detail, detail);
       gluDeleteQuadric(cylinder);
+	 }
     }
     else
     {
@@ -285,16 +282,58 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
   }
 
 
-  glDisable(GL_LIGHT1);
-
+  if ( m_selected && ! feedback ) { // highlighted
+	glDisable(GL_LIGHT1);
+  }
+  
   gluDeleteQuadric(sphere);
-
-  if (feedback)  glPassThrough(0.0);
-
   glPopMatrix();
 
-
 }
+
+// Return the radius of given atom, using the style settings provided.
+int CcModelAtom::Radius(CcModelStyle * style) {
+ 
+  int radius = 1;
+
+  if (style->radius_type == COVALENT)
+  {
+    radius = (int)(covrad * style->radius_scale);
+  }
+  else if(style->radius_type == VDW)
+  {
+    radius = (int)(vdwrad * style->radius_scale);
+  }
+  else if(style->radius_type == SPARE)
+  {
+    if ( m_label.length() && ( m_label[0] == 'Q' ) )
+    {
+      radius = (int)(sparerad * style->radius_scale);
+    }
+    else
+    {
+      radius =  (int)(covrad  * style->radius_scale);
+    }
+  }
+  else if(style->radius_type == THERMAL)
+  {
+  // Approximate method, consider action on three orthogonal vectors, and return largest
+  // there is potential to underestimate edge cases by a factor of about 1.4.
+     float r1 = fabs(x11) + fabs(x12) + fabs(x13);
+	 float r2 = fabs(x21) + fabs(x22) + fabs(x23);
+	 float r3 = fabs(x31) + fabs(x32) + fabs(x33);
+	 radius = (int) ((r1 > r2)? ((r1 > r3)? r1 : r3) : (( r2 > r3 )? r2:r3 ));
+  }
+  
+  return radius;
+}
+
+CcPoint CcModelAtom::GetAtom2DCoord(float * mat) {
+	int x2 = (int)((mat[0] * (float)x) + (mat[4] * (float)y) + (mat[8] * (float)z));
+	int y2 = (int)((mat[1] * (float)x) + (mat[5] * (float)y) + (mat[9] * (float)z));
+	return CcPoint(x2,y2);
+}
+
 
 void CcModelAtom::SendAtom(int style, bool output)
 {

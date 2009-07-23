@@ -7,7 +7,7 @@ class CcModelDoc;
 #include "ccmodelobject.h"
 
 class CcModelStyle;
-
+class CcPoint;
 
 class CcModelAtom : public CcModelObject
 {
@@ -33,6 +33,9 @@ class CcModelAtom : public CcModelObject
     int Y();
     int Z();
     float R();
+	int Radius(CcModelStyle * style);
+	CcPoint GetAtom2DCoord(float * mat);
+
     void ParseInput(deque<string> &  tokenList);
 
   public:

@@ -7,6 +7,11 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.40  2008/09/22 12:31:37  rich
+//  Upgrade GUI code to work with latest wxWindows 2.8.8
+//  Fix startup crash in OpenGL (cxmodel)
+//  Fix atom selection infinite recursion in cxmodlist
+//
 //  Revision 1.39  2008/06/04 15:21:57  djw
 //  More fixes for OpenGL problem.
 //
@@ -161,13 +166,16 @@ class CcModelObject;
 #define CXPOLYSEL     2
 #define CXZOOM        3
 
-#define ATOMLIST      1
-#define BONDLIST      2
-#define STYLIST       3
-#define QATOMLIST     4
-#define QBONDLIST     5
-#define XOBJECTLIST   6
-#define TORUS         7
+//#define ATOMLIST      1
+//#define BONDLIST      2
+//#define STYLIST       3
+//#define QATOMLIST     4
+//#define QBONDLIST     5
+//#define XOBJECTLIST   6
+//#define TORUS         7
+
+#define MODELLIST 8
+#define PICKLIST 9
 
 #ifdef __BOTHWX__
 class mywxStaticText : public wxStaticText
@@ -228,7 +236,6 @@ class CxModel : public BASEMODEL
     void Focus();
     void AutoScale();
     void PolyCheck();
-    int  AdjustEnclose( CcRect* enc, GLfloat* buf, int point );
     void CameraSetup();
     void ModelSetup();
     void ModelBackground();
@@ -272,6 +279,9 @@ class CxModel : public BASEMODEL
 
     void LoadDIBitmap(string filename);
 
+	CcPoint AtomCoordsToScreenCoords(CcPoint atomCoords);
+
+	
 #ifdef __CR_WIN__
     BYTE * m_bitmapbits;
     BITMAPINFO * m_bitmapinfo;
@@ -283,9 +293,9 @@ class CxModel : public BASEMODEL
     bool m_Hover;         // Highlight atoms on hover?
     bool m_Shading;       // Use fancy shading?
     bool m_bNeedReScale;
-    bool m_bModelChanged;
+    bool m_bPickListOK;
     bool m_bOkToDraw;
-    bool m_bFullListOk;
+    bool m_bFullListOK;
 //    bool m_bQuickListOk;
     float m_stretchX ;
     float m_stretchY ;

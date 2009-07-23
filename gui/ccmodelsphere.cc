@@ -104,13 +104,14 @@ void CcModelSphere::Render(CcModelStyle *style, bool feedback)
 {
   glPushMatrix();
 
-  if (feedback) glPassThrough((float)m_glID);
-
   float extra = 0.0;
 
   int detail = style->normal_res;
 
-  if ( m_excluded )
+   if (feedback) {
+	  glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
+   }
+   else if ( m_excluded )
   {
     GLfloat Surface[] = { 128.0f+(float)r/127.0f,128.0f+(float)g/127.0f,128.0f+(float)b/127.0f, 1.0f };
     glColor4fv( Surface );
@@ -202,8 +203,6 @@ void CcModelSphere::Render(CcModelStyle *style, bool feedback)
         }
       }
      }
-
-     if (feedback)  glPassThrough(0.0);
 
   glPopMatrix();
   glDisable(GL_LIGHT1);

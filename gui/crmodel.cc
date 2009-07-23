@@ -6,6 +6,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.35  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.1.1.1  2004/12/13 11:16:18  rich
 //   New CRYSTALS repository
 //
@@ -670,20 +674,32 @@ int CrModel::GetSelectionAction()
   return m_AtomSelectAction;
 }
 
-bool CrModel::RenderModel(bool feedback)
+bool CrModel::RenderModel()
 {
-    if(m_ModelDoc) return m_ModelDoc->RenderModel(&m_style,feedback);
+    if(m_ModelDoc) return m_ModelDoc->RenderModel(&m_style);
     return false;
 }
-bool CrModel::RenderAtoms()
+bool CrModel::RenderAtoms(bool feedback)
 {
-    if(m_ModelDoc) return m_ModelDoc->RenderAtoms(&m_style,false);
+    if(m_ModelDoc) return m_ModelDoc->RenderAtoms(&m_style,feedback);
     return false;
 }
-bool CrModel::RenderBonds()
+bool CrModel::RenderBonds(bool feedback)
 {
-    if(m_ModelDoc) return m_ModelDoc->RenderBonds(&m_style,false);
+    if(m_ModelDoc) return m_ModelDoc->RenderBonds(&m_style,feedback);
     return false;
+}
+
+CcRect CrModel::FindModel2DExtent(float * mat)
+{
+	if(m_ModelDoc) {
+		return m_ModelDoc->FindModel2DExtent(mat, &m_style);
+    }
+	return CcRect(0,0,1,1);
+}
+
+std::list<Cc2DAtom> CrModel::AtomCoords2D(float * mat) {
+	return m_ModelDoc->AtomCoords2D(mat);
 }
 
 

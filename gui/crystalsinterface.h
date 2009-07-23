@@ -3,6 +3,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.35  2005/01/23 10:20:24  rich
+// Reinstate CVS log history for C++ files and header files. Recent changes
+// are lost from the log, but not from the files!
+//
 // Revision 1.1.1.1  2004/12/13 11:16:18  rich
 // New CRYSTALS repository
 //
@@ -324,8 +328,8 @@ else {ptr_to_crObject->FocusToInput((char)nChar);}}
 #define CXGETGEOMETRIES(a)    \
 int a ::GetTop()  { return ( GetRect().y );}\
 int a ::GetLeft() { return ( GetRect().x );}\
-int a ::GetWidth() { return ( GetRect().GetWidth());}\
-int a ::GetHeight(){ return ( GetRect().GetHeight());}
+int a ::GetWidth() { return ( GetClientSize().x);}\
+int a ::GetHeight(){ return ( GetClientSize().y);}
 
 #define CXSETGEOMETRY(a)   \
 void a ::SetGeometry(int t,int l,int b,int r){SetSize(l,t,r-l,b-t);}

@@ -39,7 +39,7 @@ using namespace std;
 
 #endif
 #ifdef __BOTHWX__
-#define RGB wxColour
+//#define RGB wxColour
 #endif
 
 int CxTextOut::mTextOutCount = kTextOutBase;
@@ -90,6 +90,7 @@ CxTextOut::CxTextOut( CrTextOut * container )
 
     // Temporary...
 
+#ifdef __CR_WIN__
     m_ColTable[ COLOUR_WHITE ]      = RGB( 255, 255, 255 );  //0
     m_ColTable[ COLOUR_BLACK ]      = RGB( 0, 0, 0 );
     m_ColTable[ COLOUR_BLUE ]       = RGB( 0, 0, 128 );      //2
@@ -106,6 +107,25 @@ CxTextOut::CxTextOut( CrTextOut * container )
     m_ColTable[ COLOUR_PINK ]       = RGB( 255, 0, 255 );
     m_ColTable[ COLOUR_GREY ]       = RGB( 128, 128, 128 );
     m_ColTable[ COLOUR_LIGHTGREY ]  = RGB( 192, 192, 192 );  //15
+#endif
+#ifdef __BOTHWX__
+    m_ColTable[ COLOUR_WHITE ]      = wxColour( 255, 255, 255 );  //0
+    m_ColTable[ COLOUR_BLACK ]      = wxColour( 0, 0, 0 );
+    m_ColTable[ COLOUR_BLUE ]       = wxColour( 0, 0, 128 );      //2
+    m_ColTable[ COLOUR_GREEN ]      = wxColour( 0, 128, 0 );
+    m_ColTable[ COLOUR_LIGHTRED ]   = wxColour( 255, 0, 0 );
+    m_ColTable[ COLOUR_BROWN ]      = wxColour( 128, 0, 0 );      //5
+    m_ColTable[ COLOUR_PURPLE ]     = wxColour( 128, 0, 128 );
+    m_ColTable[ COLOUR_ORANGE ]     = wxColour( 128, 128, 0 );
+    m_ColTable[ COLOUR_YELLOW ]     = wxColour( 255, 255, 0 );
+    m_ColTable[ COLOUR_LIGHTGREEN ] = wxColour( 0, 255, 0 );
+    m_ColTable[ COLOUR_CYAN ]       = wxColour( 0, 128, 128 );    //10
+    m_ColTable[ COLOUR_LIGHTCYAN ]  = wxColour( 0, 255, 255 );
+    m_ColTable[ COLOUR_LIGHTBLUE ]  = wxColour( 0, 0, 255 );
+    m_ColTable[ COLOUR_PINK ]       = wxColour( 255, 0, 255 );
+    m_ColTable[ COLOUR_GREY ]       = wxColour( 128, 128, 128 );
+    m_ColTable[ COLOUR_LIGHTGREY ]  = wxColour( 192, 192, 192 );  //15
+#endif
 #ifdef __CR_WIN__
     m_hCursor = AfxGetApp()->LoadStandardCursor( IDC_IBEAM );
 #endif

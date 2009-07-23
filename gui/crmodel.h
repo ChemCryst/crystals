@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   10.6.1998 13:06 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.20  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.1.1.1  2004/12/13 11:16:18  rich
 //   New CRYSTALS repository
 //
@@ -65,6 +69,7 @@ class CcModelDoc;
 class CcModelAtom;
 class CcModelObject;
 class CrMenu;
+class Cc2DAtom;
 #define CR_SELECT   1
 #define CR_SENDA    2
 #define CR_SENDB    3
@@ -103,9 +108,12 @@ class   CrModel : public CrGUIElement
     void    SysKeyUp ( UINT nChar );
 
 // Called from CxModel:
-    bool RenderModel(bool feedback=false);
-    bool RenderAtoms();
-    bool RenderBonds();
+    bool RenderModel();
+    bool RenderAtoms(bool feedback=false);
+    bool RenderBonds(bool feedback=false);
+	CcRect FindModel2DExtent(float * mat);
+	std::list<Cc2DAtom> AtomCoords2D(float * mat);
+	
     void    MenuSelected(int id);
     void    ContextMenu(int x, int y, string atomname = "", int selection = 1, string atom2="");
     int     GetSelectionAction();
