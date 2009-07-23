@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.38  2009/03/03 09:59:27  djw
+C Save old CAMERON Roman numeral code ad oldroman, introduce new Roman Numeral code based on ar2rom. This permits proper labeling on packing diagrams with lots of symmetry equivalints
+C
 C Revision 1.37  2005/01/23 08:29:12  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -2257,9 +2260,12 @@ C      SUBROUTINE AR2ROM (ARB, ROM, VALID)
 
       IMPLICIT NONE
 
-      INTEGER, INTENT(IN) :: ARB                                                    ! input Arabic numeral
-      CHARACTER(LEN=*), INTENT(OUT) :: ROM                                          ! output Roman numeral string
+c      INTEGER, INTENT(IN) :: ARB                                                    ! input Arabic numeral
+       INTEGER ARB
+c      CHARACTER(LEN=*), INTENT(OUT) :: ROM                                          ! output Roman numeral string
+      CHARACTER*(*) ROM                                          ! output Roman numeral string
 C      LOGICAL, INTENT(OUT) :: VALID                                                 ! output valid flag
+       LOGICAL VALID
       INTEGER :: I, J, LEFT
 !
 !     Start of code.
