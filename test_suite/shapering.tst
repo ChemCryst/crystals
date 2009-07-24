@@ -10,6 +10,8 @@
 MODIFY EXTINCTION=YES ANOM=NO
 MINIMISE F-SQ=NO
 END
+#list 4
+end
 \USE shapering.ref
 
 #                                         NOFSQ, ANOM
@@ -18,6 +20,8 @@ END
 MODIFY EXTINCTION=YES ANOM=YES
 MINIMISE F-SQ=NO
 END
+#list 4
+end
 \USE shapering.ref
 
 #                                         FSQ, NOANOM
@@ -26,6 +30,8 @@ END
 MODIFY EXTINCTION=YES ANOM=NO
 MINIMISE F-SQ=YES
 END
+#list 4
+end
 \USE shapering.ref
 
 #                                         FSQ, ANOM
@@ -34,5 +40,7 @@ END
 MODIFY EXTINCTION=YES ANOM=YES
 MINIMISE F-SQ=YES
 END
+#list 4
+end
 \USE shapering.ref
 \FINI
