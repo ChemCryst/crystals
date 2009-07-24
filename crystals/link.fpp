@@ -1666,11 +1666,15 @@ C----- LOOP OVER DATA
       J = NINT(STORE(M6+1))
       K = NINT(STORE(M6+2))
       FS =  STORE(M6+3) * SCALE
-      IF (STORE(M6+20) .LE. ZERO) THEN
-      S = 0.0
-      ELSE
-      S = FS / STORE(M6+20)
-      ENDIF
+      if (store(m6+12) .ge. zero) then
+            s = store(m6+12)
+      else
+            IF (STORE(M6+20) .LE. ZERO) THEN
+            S = 0.0
+            ELSE
+            S = abs(FS / STORE(M6+20))
+            ENDIF
+      endif
       IF (ILINK .EQ. 5) THEN
          JCODE = 0
          IF (KALLOW(IN) .LT. 0) JCODE = 1
