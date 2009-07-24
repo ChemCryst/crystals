@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.38  2009/07/22 16:20:11  djw
+C Add 0.1 to Rmerge% to avoid totally empty bins, which cause CController warnings
+C
 C Revision 1.37  2009/07/20 10:41:46  djw
 C Restore previous version (without ABS in computing ratio/Jcode).  The recovered RATIO
 C  is correct with the original code for +/- Fo values, but JCODE is fouled up for -ve
@@ -1283,9 +1286,10 @@ C
         END DO
         DO I = 1,100
           IF(ABS(RINTF(I)) .GT. ZERO) RINTF(I) = (RINTF(I+100)/RINTF(I))
-cdjwjul09 add a bit to Rint to avoid zero entries in the graphs
+cdjwjul09 DO NOT add a bit to Rint to avoid zero entries in the graphs.
+c  jul09  Now fixed in the SCRIPTS XCHECK6 and XRMERGE
           WRITE (NCFPU1,'(F4.1,3X,F15.7,3X,2I8)')
-     1    (I-1)/2.0, 0.1+RINTF(I)*100., NINT(RINTF(I+200)), NTOT
+     1    (I-1)/2.0, RINTF(I)*100., NINT(RINTF(I+200)), NTOT
           NTOT = NTOT - NINT(RINTF(I+300))
         END DO
         I = KFLCLS(NCFPU1)
