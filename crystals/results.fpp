@@ -1,6 +1,7 @@
-c
-c
 C $Log: not supported by cvs2svn $
+C Revision 1.144  2009/07/02 09:19:13  djw
+C Increate format statement for CRITER, and use CRITER as thshold for writing out RESTRAINTS
+C
 C Revision 1.143  2009/06/17 13:45:10  djw
 C Correct inof about merge in LIST 30.
 C Also, early version of FLack restraint
@@ -3291,12 +3292,29 @@ C
 CODE FOR KCPROP
       FUNCTION KCPROP (A)
 C----- COMPUTE PROPERTIES OF CELL
+c From l 5
 C        A(1) = DENS
 C        A(2) = F000
 C        A(3) = ABSN
 C        A(4) = WEIGHT
+C        A(5) = F(electrons)
 C
-      DIMENSION A(10)
+C        A(11) = Freidif
+C        A(12) = <D^2>
+c
+c From L 29
+C        A(6) = DENS
+C        A(7) = F000
+C        A(8) = ABSN
+C        A(9) = WEIGHT
+C        A(10) = F(electrons)
+C
+cdjwjul09
+      real, dimension(:,:),allocatable :: table 
+      integer, dimension(:),allocatable :: type
+cdjwjul09
+c 
+      DIMENSION A(12)
       INCLUDE 'TSSCHR.INC'
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
@@ -3322,9 +3340,16 @@ C----- LOAD DATA IF NOT ALREADY IN CORE
       IF (KHUNTR (5,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL05
       IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL23
       IF (KHUNTR (29,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL29
-C-----  SET UP OCCUPANCIES
-        WRITE ( CMON, '(A)') ' Recomputing density and Mu'
+c
+        WRITE ( CMON, '(A)') ' Recomputing functions of composition'
         CALL XPRVDU(NCVDU, 1,0)
+cdjwjul09
+c      set up dynamic arrays for formula information
+      maxele = n3
+      allocate (table(maxele,4))
+      allocate (type(maxele))
+      nele = 0
+cdjwjul09
 cdjw feb2001
         iupdat = istore(l23sp+1)
         toler = store(l23sp+5)
@@ -3343,10 +3368,10 @@ C----- CLEAR THE CELL PROPERTY DETAILS
         I29=L29 + (N29-1)*MD29
         I5 = L5 + (N5-1)*MD5
 C
-        DO 1521 M29= L29,I29,MD29
+        DO 1510 M5=L5,I5,MD5
           CWGHT = 0.0
           CABSN = 0.0
-          DO 1510 M5=L5,I5,MD5
+          DO 1521 M29= L29,I29,MD29
             IF (ISTORE(M5) .EQ. ISTORE(M29)) THEN
 C----- MATCH
               if (iupdat .ge.0) then
@@ -3354,16 +3379,13 @@ C----- MATCH
               else
                 w = store(m5+2)
               endif
-              CWGHT = CWGHT + W
-              CABSN = CABSN + W
+              WEIGHT = WEIGHT + W * STORE(M29+6)
+              ABSN = ABSN + W * STORE(M29+5)
               ICHECK = ICHECK - 1
+              exit
             END IF
-1510      CONTINUE
-          WEIGHT = WEIGHT + CWGHT * STORE(M29+6)
-          ABSN = ABSN + CABSN * STORE(M29+5)
-1521    CONTINUE
-
-        DO 1530 M5=L5,I5,MD5
+1521      CONTINUE
+c
 C----- CHECK LIST 3
           DO M3 = L3, L3+(N3-1)*MD3, MD3
             IF (ISTORE(M5) .EQ. ISTORE(M3)) THEN
@@ -3371,6 +3393,28 @@ C----- CHECK LIST 3
               DO I = 1, 11, 2
                 F = F + STORE(M3+I)
               END DO
+c
+              ihit = 0
+              if (nele .gt. 0) then
+                do mele = 1,nele
+                    if(istore(m5) .eq. type(mele)) then
+                          ihit = mele
+                          exit
+                    endif
+                enddo
+              endif
+c
+              if (ihit .gt. 0) then
+                    table(ihit,1) = table(ihit,1) + w
+              else
+                    nele =  nele + 1
+                    type(nele)     = istore(m5)
+                    table(nele, 1) = w
+                    table(nele, 2) = f
+                    table(nele, 3) = store(m3+1)
+                    table(nele, 4) = store(m3+2)
+              endif
+c
               FREAL = FREAL + STORE(M5+2) * STORE(M5+13) * F
               FIMAG=STORE(M5+2)*STORE(M5+13)*STORE(M3+2)
               F = 0.0
@@ -3384,10 +3428,10 @@ C----- CHECK LIST 3
           END DO
 C----- NO MATCH -
           JCHECK= JCHECK + 1
-          GOTO 1530
+          GOTO 1510
 1528      CONTINUE
-          F000 = SQRT( FREAL*FREAL + FIMAG*FIMAG )
-1530    CONTINUE
+1510    CONTINUE
+        F000 = SQRT( FREAL*FREAL + FIMAG*FIMAG )
 
 C----- COMPUTE MU AND M
         IF (ICHECK .NE. 0 ) THEN
@@ -3455,6 +3499,45 @@ C
         A(9) = WEIGHT
         A(10) = FELEC * ASYM
 1600    CONTINUE
+c
+cdjwjul09
+c  compute Flack Friedif etc
+c note that Flack's spread sheet uses z rather than f at theta=0
+      sumy = 0.
+      sumx = 0.
+      sumz = 0.
+      do j=1,nele
+        sum1 = 0.
+        sum2 = 0.
+        sum3 = 0.
+        do i=1,nele
+          sum1 = sum1 + table(i,1)*table(i,4)*table(i,4)
+          sum2 = sum2 + table(i,1)*table(i,2)*table(i,4)
+          sum3 = sum3 + table(i,1)*table(i,2)*table(i,2)
+        enddo
+        sumy = sumy + table(j,1)*table(j,2)*table(j,2)*sum1
+     1          -2.0* table(j,1)*table(j,2)*table(j,4)*sum2
+     2              + table(j,1)*table(j,4)*table(j,4)*sum3
+        sumx = sumx + table(j,1)*table(j,2)*table(j,2)
+        sumz = sumz + table(j,1)*table(j,4)*table(j,4)
+      enddo
+c
+c      write(ncwu,'(6f12.4)') table
+c      write(ncwu,'(//3f12.4//)') sumy, sumx, sumz
+chi * 10^4
+      chi=20000. * sqrt(sumy)/(sumx+sumz)
+      A(11) = CHI
+      A(12) = SUMY
+      WRITE ( CMON, '(2x,A,F8.1,3x,A,F10.4)') 
+     1 'Friedif = ',chi,'Estimated Friedel difference = ',sqrt(sumy)
+      CALL XPRVDU(NCVDU, 1,0)
+      IF (ISSPRT .EQ. 0)  then
+       WRITE(NCWU,'(A)') CMON(1)(:)
+       WRITE(NCWU,'(A)') 
+     1 '  f computed from scattering factors, including f-prime'
+      ENDIF
+      deallocate (table)
+      deallocate (type)
       RETURN
       END
 C
@@ -4162,7 +4245,7 @@ C
 CDJWMAR99 MANY CHANGES TO BRING UP TO DATE WITH NEW CIFDIC
       PARAMETER (NTERM=4)
       PARAMETER (NNAMES=30)
-      DIMENSION A(10), JDEV(4), KDEV(4)
+      DIMENSION A(12), JDEV(4), KDEV(4)
       PARAMETER (NLST=12)
       DIMENSION LSTNUM(NLST), JLOAD(NLST)
       DIMENSION IVEC(16), ESD(6)
@@ -6705,6 +6788,7 @@ C
       DIMENSION LISTS(6)
       DIMENSION DATC(401)
       DIMENSION TEMP(2)
+      dimension aprop(12)
 
       CHARACTER *1 CSIGN
       CHARACTER*80 LINE
@@ -6718,6 +6802,7 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XCOMPD.INC'
       INCLUDE 'XCONST.INC'
+      INCLUDE 'XLST01.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST06.INC'
       INCLUDE 'XLST28.INC'
@@ -6738,6 +6823,7 @@ C
 C      set packing constants
       PARAMETER (NPAK=256)
       PARAMETER (N2=NPAK/2)
+      parameter (thresh=.5)
       IERROR=1
 C 
       CALL XRSL
@@ -6788,11 +6874,13 @@ C      WRITE(NCFPU1,1320) (KTITL(I),I=1,20)
 C 
       SCALE=STORE(L5O)
       SCALE=1./(SCALE*SCALE)
-C 
-      WRITE (CMON,'(a,f18.4)') ' Outlier Criterion = ',CRITER
-      CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:)
-C
+C----- MULTIPLIER TO CORRECT Fc FOR FLACK PARAMETER VALUE
+      PREFLACK = 1. - 2.* STORE(L30GE+6)
+C- COMPUTE Friedif and <D^2>
+      i = kcprop(aprop)
+      Friedif = aprop(11)
+c
+c
 C------ SET UP PLOT OUTPUT
       MAX11 = ISIZ11
       IF ( LEVEL .EQ. 4 ) THEN                 ! Fo vs Fc scatter
@@ -6825,6 +6913,10 @@ C NPP ACCUMULATORS AND POINTERS
       WBOT = 0.0
       SIGTOP = 0.0
       N6ACC = 0
+C
+C ACCUMULATORS FOR RESTRAINT R-FACTOR AND AVERAGES
+      FLRNUM = 0.
+      FLRDEN = 0.
 C
 C      plus and minus sums
       NPFO=0
@@ -6877,8 +6969,16 @@ C
       IF (IPUNCH .eq. 1) then 
        WRITE(NCPU,335)
 335    FORMAT(3X,'H',3X,'K',3X,'L',11X,'Fo+', 7X,'Sig', 7X, 'Fc+',
-     1 7X,'Fo-', 7X,'Sig', 7X, 'Fc-',
-     2 'Delta(Fo)/<Fo>',2x,'Delta(Fc)/<Fc>' )
+     1 7X,'Fo-', 7X,'Sig', 7X, 'Fc-',x,
+     2 'Delta(Fo)',2x,'Delta(Fc)',4x,'<Fo>',3x,'<Fc>' )
+      else if (ipunch .eq.2) then
+       write(ncpu,'(a,f8.2,a)')
+     1 'REM Restraint created if delta(Fo) and delta(Fc) >',thresh,
+     2 ' sigma(Fo+Fc)'
+       write(ncpu,336) 
+336    format(
+     1 'REM '5x,'Delata Fo',6x,'Sigma',33x,'Delta Fc'
+     2  24x,'h  k  l     DFo-Dfc/sig') 
       endif
 C
       IN=0
@@ -6947,26 +7047,24 @@ COMPARE PACKED INDICES
          FCMAX= MAX(FCMAX, FCKD)
          FCMIN= MIN(FCMIN, FCKD)
          SIGM=SQRT(SIG1*SIG1+SIG2*SIG2)
+         SIGD=1.41*SIGM
 c -- Normalise the differences by dividing by the average.
 c -- we have to beware that either or both Fo may be negative
 c    giving incipient division by zero
 c
-         fod    = 100.*fokd/(.5*(abs(fok1)+abs(fok2)))
-         fcd    = 100.*fckd/abs(fcks)
-         sigdif = 100.*sigm /(.5*(abs(fok1)+abs(fok2))+abs(fcks))   
 c
          IF (IPUNCH .eq. 1) then
-           write(ncpu,'(3i4,2i2, 10f10.2)') i,j,k, nint(fried1), 
-     1     nint(fried2), fok1, sig1, fck1, fok2, sig2, fck2, fokd, 
-     2     fckd, fod, fcd
+           write(ncpu,'(3i4,2i2, 12f10.2)') i,j,k, nint(fried1), 
+     1     nint(fried2), fok1, sig1, fck1, 
+     2     fok2, sig2, fck2, fokd, fckd, foks, fcks, sigm
 c
-
+c^^^
          else if (ipunch .eq. 2) then
-cdjwjun09
+cdjwjul09  Watch out for small/negative average Fo
+           if  ((foks .ge. thresh* sigm) 
+     1     .and.(fcks .ge. thresh* sigm) 
+     2     ) then
 c
-           if((abs(foks) .gt. zero).and.(abs(fcks).gt.zero).and.
-cdjwjun09     1     ( abs(fcd).gt.sigdif) ) then
-     1     ( abs(fokd).lt.criter*abs(fckd)) ) then
              if (FCKD .lt. zero) then
               CSIGN = '-'
              else
@@ -6974,24 +7072,24 @@ cdjwjun09     1     ( abs(fcd).gt.sigdif) ) then
              endif
              nrest = nrest + 1
              write(ncpu, 351) 
-     1       fod, sigdif, CSIGN, abs(fcd), i,j,k, abs(fod-fcd)/sigdif
+     1       fokd, sigm,  
+     2       CSIGN, abs(fckd),
+     3       i,j,k,abs(fokd-fckd)/sigm
 351          format('restrain ', f9.2,', ',  f8.2, ' = ',
      1       a, ' ( 1. - ( 2. * enantio ) ) * ', f9.2,20x,3i5,f9.3) 
+             flrnum = flrnum + abs (fokd - preflack*fckd)
+             flrden = flrden + abs(fokd)
            endif
-         endif  
-
+         ENDIF  
+c
 C ZH = SIGNAL:NOISE
          ZH=(FCKD-FOKD)/SIGM
          QH=(-FCKD-FOKD)/SIGM
 C SIGNAL:NOISE FOR DELTA FO AND FC
-c         STNFO=FOKD/SIGM
-c         STNFC=FCKD/SIGM
-
-         stnfo=0.1*fod
-         stnfc=0.1*fcd
-c           stnfo=fod/fcd  ! just a test
-c           stnfc=fokd/fckd !just a test
-
+         STNFO=FOKD/SIGM
+         STNFC=FCKD/SIGM
+c
+c
          NFO = NINT(STNFO)+NPLT+1
          NFO = MAX(NFO,1)
          NFO = MIN(NFO,2*NPLT+1)
@@ -7106,8 +7204,18 @@ C----- UNPAIRED
 C
 C
 450   CONTINUE
-      if (ipunch .eq. 2) 
-     1 write(ncpu,'(a,i8,a)') 'REM ', nrest, ' restraints written out'
+      if (ipunch .eq. 2) then
+        write(cmon,'(a,i8,a)') 'REM ', nrest, ' restraints written out'
+        call xprvdu(ncvdu,2,0)
+        write(ncpu,'(A)') cmon(1)(:)
+        if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+        if (nrest .gt. 0) then
+          write(cmon,'(a,f10.2)') 'Current restraint R-factor (%)=', 
+     1    100. *flrnum/flrden
+          call xprvdu(ncvdu,2,0)
+          if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+        endif
+      endif
       IF (LEVEL .EQ. 4) THEN
 c Also add A SERIES FOR STRAIGHT LINE (y=x) .
         WRITE(CMON,'(A/ (2(A,2F10.2)) )')
@@ -7121,7 +7229,7 @@ c
 c-----
 c      find slope and intercept of FO/fc plot
 c      determinant
-        write(cmon,'(/a)')' Plotting delta(Fo) vs delta(Fc)'
+        write(cmon,'(/a)')' Plotting (Fo+ - Fo-) vs (Fc+ - Fc-)'
         call xprvdu(ncvdu, 2,0)
         if (issprt.eq.0) write (ncwu,'(/a)') cmon(2)(:)
 c
@@ -7327,6 +7435,26 @@ C
      1  ' Hooft parameter obtained with Flack x set to zero'
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
+C
+      WRITE(CMON,'(/)')
+      CALL XPRVDU (NCVDU,1,0)
+      WRITE(cmon,'(1x,A,f10.2,a)') 
+     1 'Reflections only used if /Fo+ - Fo-/ <', CRITER,
+     2 ' * /Fc+ - Fc-/'
+      CALL XPRVDU (NCVDU,1,0)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:)
+c
+      write(cmon,'(1x,a,f10.2,a  )')
+     1 'Friedif = ', friedif,' Acta A63, (2007), 257-265'
+      CALL XPRVDU (NCVDU,1,0)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:)
+c
+      write(cmon,'(1x,a,/,1x,a)')
+     1'Flack & Bernardinelli (2008) recommend a value >200',
+     2'for general structures and >80 for enantiopure crystals'
+      CALL XPRVDU (NCVDU,2,0)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(a,/a)') CMON(1)(:), CMON(2)(:)
+C
 C 
          WRITE (CMON,'(/)')
          CALL XPRVDU (NCVDU,1,0)
@@ -7335,14 +7463,6 @@ C
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)') CMON(1)(:)
 C 
-         IF (STORE(L30GE+7).GE..3) THEN
-            WRITE (CMON,'(/a/a/)') 
-     1 'The absolute configuration has not been reliably determined',
-     2 'Flack & Bernardinelli., J. Appl. Cryst. (2000). 33, 1143-1148'
-            CALL XPRVDU (NCVDU,4,0)
-            IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)') CMON(2)(:)
-            IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(3)(:)
-         END IF
          WRITE (CMON,'(a,2f10.4)') ' Hooft Parameter & su',TONY,TONSY
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
@@ -7354,6 +7474,14 @@ C
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
+         IF (STORE(L30GE+7).GE..3) THEN
+            WRITE (CMON,'(a/a/)') 
+     1 ' The absolute configuration has not been reliably determined',
+     2 ' Flack & Bernardinelli., J. Appl. Cryst. (2000). 33, 1143-1148'
+            CALL XPRVDU (NCVDU,3,0)
+            IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)') CMON(1)(:)
+            IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(4)(:)
+         END IF
 C 
          XPLLL=DATC(NSPP_241)-DATCM
          XMNLL=DATC(NSPM_161)-DATCM
@@ -7506,7 +7634,7 @@ C P3(False)
 1250        FORMAT ('G S.U.       ',A)
             IF (ISSPRT.EQ.0) WRITE (NCWU,950) LINE
             WRITE (LINE,1300) TONY
-1300        FORMAT ('FLEQ        ',F9.3)
+1300        FORMAT ('FLEQ        ',F9.4)
             IF (ISSPRT.EQ.0) WRITE (NCWU,950) LINE
             IF (TONSY.GT.0.001) THEN
                WRITE (FORM,750) TONSY, TONSY
