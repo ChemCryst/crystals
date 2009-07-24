@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.61  2009/06/11 09:50:19  djw
+C Remove the use of Fo-average in pseudo unit weights for the time being. It improves
+C  initial convergence, but slows down the later stages. Performance migt improve if
+C  re-weighting is done from time to time to get nre estimates of Fo-av
+C
 C Revision 1.60  2009/02/05 11:37:52  djw
 C Pass slope,gradient,outlier and wdelsq to SCRIPTS, catch cases where Fc is uncomputed in SHELX weights
 C
@@ -2681,31 +2686,35 @@ C--- OUTPUT TO SCREEN
         WRITE(CMON,4910)
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
-
+cdjwjul09
       IF ( PLFOR .EQ. 1 ) THEN
-        WRITE(CMON,'(A,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A)') 
+        WRITE(CMON,'(A,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A)') 
      1 '^^PL PLOTDATA _FO BARGRAPH ATTACH _VFO', CSHK(PKFOR),
-     1 '^^PL NSERIES=3 LENGTH=20 XAXIS TITLE',
+     1 '^^PL NSERIES=4 LENGTH=20 XAXIS TITLE',
      1 '^^PL  ''<- Weak           Fc Range            Strong ->''',
      1 '^^PL YAXIS LOG TITLE "<Fo-Fc>**2" ZOOM 0.01 100',
      1 '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
      1 '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
      1 '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
      1 '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
-     1 '^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
-        CALL XPRVDU(NCVDU, 9,0)
+     1 '^^PL SERIES 3 TYPE LINE USERIGHTAXIS',
+     1 '^^PL SERIES 4 SERIESNAME ''100*(<Fo>/<Fc>)''',
+     1 '^^PL SERIES 4 TYPE LINE USERIGHTAXIS'
+        CALL XPRVDU(NCVDU, 11,0)
       ELSE IF ( PLFOR .EQ. 2 ) THEN
-        WRITE(CMON,'(A,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A)') 
+        WRITE(CMON,'(A,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A)') 
      1 '^^PL PLOTDATA _FOR BARGRAPH ATTACH _VFOR', CSHK(PLFOR),
-     1 '^^PL NSERIES=3 LENGTH=20 XAXIS TITLE',
+     1 '^^PL NSERIES=4 LENGTH=20 XAXIS TITLE',
      1 '^^PL  ''<- Weak           Fo Range            Strong ->''',
      1 '^^PL YAXIS TITLE ''R factor %''',
      1 '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
      1 '^^PL SERIES 1 SERIESNAME ''R %''',
      1 '^^PL SERIES 2 SERIESNAME ''Rw %''',
      1 '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
-     1 '^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
-        CALL XPRVDU(NCVDU, 9,0)
+     1 '^^PL SERIES 3 TYPE LINE USERIGHTAXIS',
+     1 '^^PL SERIES 4 SERIESNAME ''100*(<Fo>/<Fc>)''',
+     1 '^^PL SERIES 4 TYPE LINE USERIGHTAXIS'
+        CALL XPRVDU(NCVDU, 11,0)
       ENDIF
 
       IF ( PLEXT .GE. 1 ) THEN
@@ -2761,11 +2770,11 @@ C--- OUTPUT TO SCREEN
 
       IF ( PLFOR .EQ. 1 ) THEN
         WRITE(CMON,'(A,F7.0,1X,A)')'^^PL SET _FO LABEL ',ACI,
-     1                           ' DATA  1.0 1.0 0.0'
+     1                           ' DATA  1.0 1.0 0.0 0.0'
         CALL XPRVDU(NCVDU, 1,0)
       ELSE IF ( PLFOR .EQ. 2 ) THEN
         WRITE(CMON,'(A,F7.0,1X,A)')'^^PL SET _FOR LABEL ',ACI,
-     1                           ' DATA  0.0 0.0 0.0'
+     1                           ' DATA  0.0 0.0 0.0 0.0'
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
       IF ( PLEXT .GT. 0 ) THEN
@@ -2785,16 +2794,26 @@ C--- OUTPUT TO SCREEN
      2 (STORE(K+2),K=L+2,M) , IOUT
       CALL XPRVDU(NCVDU, 1,0)
       ENDIF
-
+cdjwjul09
+      if (store(l+2) .ge. 10.*store(l+3)) then
+            fovsfc = 1000.
+      else
+            fovsfc = 100. * (store(l+2)/store(l+3))
+      endif
       IF ( PLFOR .EQ. 1 ) THEN
-        WRITE(CMON,'(A,F7.0,A,2(1X,F15.7),I8)')'^^PL SET _FO LABEL ',
+        WRITE(CMON,'(A,F7.0,A,2(1X,F15.7),I8,1x,f15.7)')
+     1    '^^PL SET _FO LABEL ',
      1    ACI,' DATA ',STORE(L+4),STORE(L+5),ISTORE(L+1)
+     2    ,fovsfc
         CALL XPRVDU(NCVDU, 1,0)
       ELSE IF ( PLFOR .EQ. 2 ) THEN
-        WRITE(CMON,'(A,F7.0,A,2(1X,F15.7),I8)')'^^PL SET _FOR LABEL ',
+        WRITE(CMON,'(A,F7.0,A,2(1X,F15.7),I8,1x,f15.7)')
+     1    '^^PL SET _FOR LABEL ',
      1    ACI,' DATA ',STORE(L+6),STORE(L+7),ISTORE(L+1)
+     2    ,fovsfc
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
+cdjwjul09
       IF ( PLEXT .GT. 0 ) THEN
         WRITE(CMON,'(A,F7.0,A,1X,F15.7)')'^^PL SET _EXT LABEL ',ACI,
      1                                  ' DATA ',STORE(L+2)-STORE(L+3)
@@ -2853,31 +2872,35 @@ C--AGREEMENT ANALYSIS ON SIN(THETA)/LAMBDA RANGES
 5450    FORMAT(///,' Agreement analysis on [sin(theta)/lambda]sq')
         WRITE(NCWU,1000)(NOPE(J,2),J=1,4),KM
       ENDIF
-
+cdjwjul09
       IF ( PLTHE .EQ. 1 ) THEN
-        WRITE(CMON,'(A,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A)')
+        WRITE(CMON,'(A,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A)') 
      1'^^PL PLOTDATA _THETA BARGRAPH ATTACH _VSINT ', CSHK(PKTHE),
      1'^^PL YAXIS ZOOM 0.01 100 TITLE',
-     1'^^PL  "<Fo-Fc>**2" LOG NSERIES=3 LENGTH=10 XAXIS TITLE',
+     1'^^PL  "<Fo-Fc>**2" LOG NSERIES=4 LENGTH=10 XAXIS TITLE',
      1'^^PL ''<-Low angle    Sin(theta)/lambda   High angle->''',
      1'^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
      1 '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
      1 '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
      1 '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
-     1'^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
-        CALL XPRVDU(NCVDU, 9,0)
+     1 '^^PL SERIES 3 TYPE LINE USERIGHTAXIS',
+     1 '^^PL SERIES 4 SERIESNAME ''<Fo>/<Fc>''',
+     1 '^^PL SERIES 4 TYPE LINE USERIGHTAXIS'
+        CALL XPRVDU(NCVDU, 11,0)
       ELSE IF ( PLTHE .EQ. 2 ) THEN
-        WRITE(CMON,'(A,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A)')
+        WRITE(CMON,'(A,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A)') 
      1'^^PL PLOTDATA _INTR BARGRAPH ATTACH _VSINTR ', CSHK(PKTHE),
      1'^^PL YAXIS TITLE ''R factor %''',
-     1'^^PL NSERIES=3 LENGTH=10 XAXIS TITLE',
+     1'^^PL NSERIES=4 LENGTH=10 XAXIS TITLE',
      1'^^PL ''<-Low angle    Sin(theta)/lambda   High angle->''',
      1'^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
      1'^^PL SERIES 1 SERIESNAME ''R %''',
      1'^^PL SERIES 2 SERIESNAME ''Rw %''',
      1'^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
-     1'^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
-        CALL XPRVDU(NCVDU, 9,0)
+     1'^^PL SERIES 3 TYPE LINE USERIGHTAXIS',
+     1'^^PL SERIES 4 SERIESNAME ''<Fo>/<Fc>''',
+     1'^^PL SERIES 4 TYPE LINE USERIGHTAXIS'
+        CALL XPRVDU(NCVDU, 11,0)
       ENDIF
 
       IF (MONIT .NE. 1) THEN
@@ -2931,13 +2954,23 @@ C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,CFY)AC,ICE,IB,ISTORE(L+1),(STORE(K+2),K=L,M),IOUT
       ENDIF
+djwjul09
+      if (store(l+2) .ge. 10.*store(l+3)) then
+            fovsfc = 1000.
+      else
+            fovsfc = 100. * (store(l+2)/store(l+3))
+      endif
       IF ( PLTHE .EQ. 1 ) THEN
-        WRITE(CMON,'(A,F7.3,A,2(1X,F15.7),I8)') '^^PL LABEL ',AC,
-     1               ' DATA ',STORE(L+4),STORE(L+5),ISTORE(L+1)
+        WRITE(CMON,'(A,F7.3,A,2(1X,F15.7),I8,1x,f15.7)')
+     1    '^^PL LABEL ', AC,
+     1    ' DATA ',STORE(L+4),STORE(L+5),ISTORE(L+1)
+     2    ,fovsfc
         CALL XPRVDU(NCVDU, 1,0)
       ELSE IF ( PLTHE .EQ. 2 ) THEN
-        WRITE(CMON,'(A,F7.3,A,2(1X,F15.7),I8)') '^^PL LABEL ',AC,
-     1               ' DATA ',STORE(L+6),STORE(L+7),ISTORE(L+1)
+        WRITE(CMON,'(A,F7.3,A,2(1X,F15.7),I8,1x,f15.7)')
+     1    '^^PL LABEL ', AC,
+     1    ' DATA ',STORE(L+6),STORE(L+7),ISTORE(L+1)
+     2    ,fovsfc
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
 C--- OUTPUT TO SCREEN
