@@ -96,7 +96,7 @@
 ^^WI     }                                                                      
 ^^WI     @ 4,2 PLOTWINDOW _VSIGRES NROWS=20 NCOLS=64                            
 ^^WI      DEFINEPOPUPMENU POPUP 'Selection'                                     
-^^WI        ITEM _SDELA '&Reject data: rho > _X' 'RHOMIT1_N_X'                   
+^^WI        ITEM _SDELA '&Reject data: rho > _X' 'RHOMIT1_N_X'                  
 ^^WI      ENDDEFINEMENU                                                         
 ^^WI    }                                                                       
 ^^WI    TAB _MAINTAB3 'Merging R' GRID _MAINTG3 NROWS=5 NCOLS=3                 
@@ -186,12 +186,12 @@
 ^^WI     @ 6,2 CHECKBOX WILFILT1                                                
 ^^WI           'Show plot using only reflections allowed by List 28'            
 ^^WI           STATE=OFF INFORM=YES                                             
-^^WI     @ 8,2 GRID GSTAT NROWS=1 NCOLS=11                                 
+^^WI     @ 8,2 GRID GSTAT NROWS=1 NCOLS=11                                      
 ^^WI     {                                                                      
 ^^WI       @ 1,1 STATIC WBFS 'B factor:'                                        
 ^^WI       @ 1,3 STATIC _MW_BFACTR '0000.0000'                                  
 ^^WI       @ 1,5 STATIC WBFS 'Scale:'                                           
-^^WI       @ 1,7 STATIC _MW_BSCALE '0000.0000'  
+^^WI       @ 1,7 STATIC _MW_BSCALE '0000.0000'                                  
 ^^WI     @ 1,9 STATIC WBFS 'MOD(E**2-1)'                                        
 ^^WI     @ 1,11 STATIC _MW_E2MIN1 '000000.000'                                  
 ^^WI     }                                                                      
@@ -353,7 +353,7 @@
 %%                                                                              
 ^^CO SET PROGOUTPUT TEXT 'Calculating I/u(I) and I/u(I) vs rho distribution'    
 %  COPY '#SIGMADIST'                                                            
-%  COPY 'OUTPUT PLOT=YES RES=YES FILTER=NO'                                               
+%  COPY 'OUTPUT PLOT=YES RES=YES FILTER=NO'                                     
 %  COPY 'END'                                                                   
 %%                                                                              
 %  IF ( LMAONCE ) THEN                                                          
@@ -466,6 +466,10 @@
 %  IF MRGR .LT. 0.0 THEN                                                        
 %   EVALUATE MRGR = - MRGR                                                      
 %  END IF                                                                       
+%% avoid problems with Rmerge exactly zero
+%  IF MRGR .LT. 0.1 THEN                                                        
+%   EVALUATE MRGR = 0.1                                                      
+%  END IF                                                                       
 %  STORE REAL MRGR                                                              
 %  GET NOSTORE NOPROMPT INTEGER ' ' '-1'                                        
 %  GET NOPROMPT INTEGER ' ' '-1'                                                
@@ -530,7 +534,7 @@
 ^^CO SET PROGOUTPUT TEXT 'Ready'                                                
 %%                                                                              
 %  LOOP                                                                         
-%    VERIFY XC_BOK XC_REF RHOMIT1 RHOMIT2 SIGCUT ED28 ED02 ED29 SIGFULL -        
+%    VERIFY XC_BOK XC_REF RHOMIT1 RHOMIT2 SIGCUT ED28 ED02 ED29 SIGFULL -       
  WILFILT1 WILFILT2                                                              
 %    GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '                               
 %    CASE VALUE                                                                 

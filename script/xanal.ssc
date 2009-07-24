@@ -131,24 +131,34 @@
 %     BLOCK  %HELP%                                                             
 %        COPY '#SCRIPT XHELP1'                                                  
                                                                                 
-The residual, Fo-Fc, is analysed for systematic trends, which                   
-might indicate an incomplete model, or an unsatisfactory                        
-weighting scheme. There are more details in the chapter "Structure              
-Factors and Least Squares" in the CRYSTALS manual.                              
+The residual, Fo-Fc, is analysed for systematic trends.
+There are more details in the chapter "Structure              
+Factors and Least Squares" in the CRYSTALS manual.
+See also Watkin, J Appl Cryst (2008), 41, 491-522                              
                                                                                 
 The two graphs provide a comparison between Fo and Fc as a function of          
-the ranges of Fo, and the ranges of sin(theta)/lambda. For a well               
-refined structure with suitable weights, Fo/Fc should be about unity            
-for all Fo ranges and also for all sin(theta)/lambda ranges. A serious          
-imbalance in Fo/Fc may mean the structure is incomplete, or unsuitable          
-data reduction. A systemstic trend in Fo/Fc may mean unsuitable weights         
-are being used.                                                                 
+the ranges of Fo, and the ranges of sin(theta)/lambda.
+
+For a well behaved structure with suitable weights, <Fo>/<Fc> should be 
+about unity (times 100 on the chart) for all Fo ranges and also for all
+sin(theta)/lambda ranges (except empty bins). 
+A serious imbalance in <Fo>/<Fc> may mean the structure is incorrect, 
+incomplete, has unsuitable weights or there are problems with the 
+data reduction.  A large ratio for weak reflection bins may indicate
+an incorrect space group (see Walker et al, Acta Cryst (1999) B55, 
+607-616) 
+
+When suitable weights have been applied, the weighted residual
+- w(Fo^2-Fc^2) - should be approximately constant across the chart, 
+though there may be deviations for bins containing only a few 
+reflections.
+
 %        COPY '#SCRIPT XHELP2'                                                  
 %     END BLOCK                                                                 
 %   END CASE                                                                    
 % END LOOP                                                                      
 ^^CO DISPOSE A1                                                                 
 % END IF                                                                        
-% copy '#sum l 4'
-% copy 'end'
+% copy '#sum l 4'                                                               
+% copy 'end'                                                                    
 %END SCRIPT                                                                     
