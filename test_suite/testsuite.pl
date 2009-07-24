@@ -29,6 +29,8 @@ $CRYSEXE = $CRYSHOME . "crystals";    # Append exe name
 $CRYSDEXE = $CRYSHOME . "crystalsd";  # Append debug exe name
 
 
+print (" using $CRYSEXE \n");
+
 # Either clean up, or run the tests.
 
   if (TRUE eq contains("-c", @ARGV))
@@ -91,22 +93,23 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
 	    cleanUp(@cleanup);
 	}
 	print("Doing diff!\n");
-        print `diff $CROUTPUT $COMPCODE.org/$CROUTPUT > diffs/$name.diff`;
+        print ("diff $CROUTPUT $COMPCODE.org/$CROUTPUT diffs/$name.diff");
+        print `fc $CROUTPUT $COMPCODE.org/$CROUTPUT > diffs/$name.diff`;
 	
 	
-        $CROUTPUT="$name.d.out";      # Set environment variable
-        print("Deleting files... ");
-	unlink "$CROUTPUT";
-	unlink "crfilev2.dsc";
-        print("Running Crystals (debug version) on $name.tst\n");
-        `$CRYSDEXE`;                  # Run it
-	
-        if (TRUE ne contains("-l", @ARGV)) {
-            print("Removing bfiles (use '-l' to leave in place)\n");
-	    cleanUp(@cleanup);
-	}
-	print("Doing diff!\n");
-        print `diff $CROUTPUT $COMPCODE.org/$CROUTPUT > diffs/$name.d.diff`;
+#        $CROUTPUT="$name.d.out";      # Set environment variable
+#        print("Deleting files... ");
+# 	unlink "$CROUTPUT";
+# 	unlink "crfilev2.dsc";
+#        print("Running Crystals (debug version) on $name.tst\n");
+#        `$CRYSDEXE`;                  # Run it
+#	
+#        if (TRUE ne contains("-l", @ARGV)) {
+#            print("Removing bfiles (use '-l' to leave in place)\n");
+#	    cleanUp(@cleanup);
+#	}
+#	print("Doing diff!\n");
+#        print `diff $CROUTPUT $COMPCODE.org/$CROUTPUT > diffs/$name.d.diff`;
     }
 }
 
