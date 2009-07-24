@@ -11,6 +11,10 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.30  2005/01/23 10:20:24  rich
+// Reinstate CVS log history for C++ files and header files. Recent changes
+// are lost from the log, but not from the files!
+//
 // Revision 1.1.1.1  2004/12/13 11:16:17  rich
 // New CRYSTALS repository
 //
@@ -178,20 +182,23 @@ CcPlotData::CcPlotData( )
        m_Colour[2][i] = 0;   //All black
    }
 
-   m_Colour[0][0] = 255; //Red
+   m_Colour[0][0] = 240; //Red
 
-   m_Colour[1][2] = 255; //Blue
+   m_Colour[1][1] = 176; //Green
+   m_Colour[2][1] =   0; //Green
 
-   m_Colour[2][1] = 255; //Green
+   m_Colour[1][2] =  64; //Blue
+   m_Colour[2][2] = 240; //Blue
 
-   m_Colour[0][3] = 255;
-   m_Colour[1][3] = 255; //Magenta
+   m_Colour[0][3] =   0;
+   m_Colour[1][3] = 192; //Cyan
+   m_Colour[2][3] = 240; 
 
-   m_Colour[0][4] = 255;
-   m_Colour[2][4] = 255; //Cyan
+   m_Colour[0][4] = 240;
+   m_Colour[1][4] = 176; //Orange
 
-   m_Colour[1][5] = 255;
-   m_Colour[2][5] = 255; //Yellow
+   m_Colour[0][5] = 192;
+   m_Colour[2][5] = 240; //Purple
 
 
 
