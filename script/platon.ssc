@@ -1,10 +1,10 @@
 %SCRIPT PLATON                                                                  
 %  VARIABLE CHARACTER CDIR CFILE                                                
-%  VARIABLE LOGICAL VALID11 T
+%  VARIABLE LOGICAL VALID11 T                                                   
 %%                                                                              
 %    COPY "#BONDCALC FORCE"                                                     
 %    COPY "END"                                                                 
-%    COPY "#STORE CSYS CIF 'platon.cif'"                                        
+%    COPY "#STORE CSYS CIF 'platon123.cif'"                                        
 %    COPY '#APPEND PUNCH '                                                      
 %% Check list 11 is up to date                                                  
 %    COPY '#SCRIPT VALID11'                                                     
@@ -23,7 +23,7 @@
 %     COPY 'SELECT RANGE=L41'                                                   
 %     COPY 'OUTPUT MON=DIST PUNCH = CIF HESD=NONFIXED'                          
 %     COPY 'END'                                                                
-%    ELSE                                                                       
+%    ELSE 
 %     COPY '#CIF '                                                              
 %     COPY 'END'                                                                
 %     COPY '#PARAMETERS'                                                        
@@ -36,8 +36,14 @@
 %     COPY 'OUTPUT MON=DIST PUNCH=CIF'                                          
 %     COPY 'END'                                                                
 %    END IF                                                                     
-%%                                                                              
+%% 
+%      COPY '#OPEN FRN1 platon123.fcf'                                            
+%      COPY '#PUNCH 6 H'                                                      
+%      COPY 'END'                                                               
+  Reflections saved in {&publish.fcf{&                                          
+                                                                             
 %  COPY '#RELEASE PUNCH bfile.pch'                                              
+%  COPY '#RELEASE FRN1 BFILE.FRN'                                           
 %  EVALUATE T = FILEDELETE ( 'publish.chk' )                                    
 %%                                                                              
 ^^CO GETKEY PLATONDIR                                                           
@@ -65,12 +71,12 @@
 %%                                                                              
 %%                                                                              
 %  EVALUATE CDIR = GETPATH ( CFILE )                                            
-%  IF FILEEXISTS ( CDIR // 'check.def' ) .EQ. FALSE THEN                              
-%   TRANSFER '#spawn +copy "' // CDIR // 'check.def" .' TO DISPLAY               
-%   TRANSFER '#spawn +copy "' // CDIR // 'check.def" .' TO CRYSTALS              
-%  END IF
-%  TRANSFER '#SPAWN + "' // CFILE // '" platon.cif' TO DISPLAY                  
-%  TRANSFER '#SPAWN + "' // CFILE // '" platon.cif' TO CRYSTALS                 
+%  IF FILEEXISTS ( CDIR // 'check.def' ) .EQ. FALSE THEN                        
+%   TRANSFER '#spawn +copy "' // CDIR // 'check.def" .' TO DISPLAY              
+%   TRANSFER '#spawn +copy "' // CDIR // 'check.def" .' TO CRYSTALS             
+%  END IF                                                                       
+%  TRANSFER '#SPAWN + "' // CFILE // '" platon123.cif' TO DISPLAY                  
+%  TRANSFER '#SPAWN + "' // CFILE // '" platon123.cif' TO CRYSTALS                 
 %%                                                                              
 %  COPY '#spawn notepad platon.lis'                                             
 %%                                                                              
