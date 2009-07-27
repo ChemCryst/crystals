@@ -9,7 +9,8 @@
 ^^WI   ITEM _REF '&Refine H' '#SCRIPT GXREFH'
 ^^WI          ENABLEIF='L1 L2 L3 L5 L6' DISABLEIF='QS IN'
 ^^WI   SPLIT
-^^WI   ITEM DEL12  'Remove all directives and &constraints' '#CLEAR 12_NEND'
+^^WI   ITEM DEL12  'Remove all directives and &constraints' 
+^^WI                              '#SCRIPT CLEAR12'
 ^^WI                              DISABLEIF='IN'
 ^^WI   ITEM ED12  'Edit directives and &constraints' '#SCRIPT EDLIST12'
 ^^WI                              DISABLEIF='IN'
@@ -20,7 +21,8 @@
 ^^WI   ITEM _CUT '&Filter reflections' '#SCRIPT XLIST28'
 ^^WI          ENABLEIF='L6'
 ^^WI   SPLIT
-^^WI   ITEM DEL16  'Delete all &restraints' '#CLEAR 16_NEND'
+^^WI   ITEM DEL16  'Delete all &restraints' 
+^^WI                              '#SCRIPT CLEAR16'
 ^^WI                              DISABLEIF='IN'
 ^^WI   ITEM ED16  'Edit &restraints' '#SCRIPT EDLIST16'
 ^^WI                              DISABLEIF='IN'
