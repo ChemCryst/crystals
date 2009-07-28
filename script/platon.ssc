@@ -4,7 +4,7 @@
 %%                                                                              
 %    COPY "#BONDCALC FORCE"                                                     
 %    COPY "END"                                                                 
-%    COPY "#STORE CSYS CIF 'platon123.cif'"                                        
+%    COPY "#STORE CSYS CIF 'crysplat.cif'"                                        
 %    COPY '#APPEND PUNCH '                                                      
 %% Check list 11 is up to date                                                  
 %    COPY '#SCRIPT VALID11'                                                     
@@ -37,8 +37,8 @@
 %     COPY 'END'                                                                
 %    END IF                                                                     
 %% 
-%      COPY '#OPEN FRN1 platon123.fcf'                                            
-%      COPY '#PUNCH 6 H'                                                      
+%      COPY '#OPEN FRN1 crysplat.fcf'                                            
+%      COPY '#PUNCH 6 E'                                                      
 %      COPY 'END'                                                               
   Reflections saved in {&publish.fcf{&                                          
                                                                              
@@ -75,9 +75,9 @@
 %   TRANSFER '#spawn +copy "' // CDIR // 'check.def" .' TO DISPLAY              
 %   TRANSFER '#spawn +copy "' // CDIR // 'check.def" .' TO CRYSTALS             
 %  END IF                                                                       
-%  TRANSFER '#SPAWN + "' // CFILE // '" platon123.cif' TO DISPLAY                  
-%  TRANSFER '#SPAWN + "' // CFILE // '" platon123.cif' TO CRYSTALS                 
+%  TRANSFER '#SPAWN + "' // CFILE // '" crysplat.cif' TO DISPLAY                  
+%  TRANSFER '#SPAWN + "' // CFILE // '" crysplat.cif' TO CRYSTALS                 
 %%                                                                              
-%  COPY '#spawn notepad platon.lis'                                             
+%  COPY '#spawn notepad crysplat.lis'                                             
 %%                                                                              
 %END SCRIPT                                                                     
