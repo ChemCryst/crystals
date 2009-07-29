@@ -2,7 +2,7 @@
 ^^WI   ITEM NOTE '&Notepad' '$notepad' DISABLEIF='IN'                           
 ^^WI   ITEM DOSP '&Command prompt' '$command' DISABLEIF='IN'                    
 ^^WI   ITEM XBENCH '&Benchmark' '#SCRIPT XBENCH' DISABLEIF='IN'                 
-^^WI   ITEM XDELBF '&Delete bfiles' '#spawn crysdir:delbf'  DISABLEIF='IN'
+^^WI ITEM XDELBF '&Delete bfiles' '#spawn + "crysdir:delbf.BAT"' DISABLEIF='IN'
 ^^WI   ITEM PLAT  '&Platon' '#SCRIPT PLATON'                                    
 ^^WI               ENABLEIF='L1 L2 L3 L5 L6'                                    
 ^^WI   SPLIT                                                                    
