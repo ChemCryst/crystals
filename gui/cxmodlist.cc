@@ -869,8 +869,12 @@ int CxModList::WhichType(const string & text)
     string::size_type i, tbegin, tend;
 
 //Test one: Any characters other than space, number or point.
-    if ( text.find_first_not_of(" 1234567890-.") != string::npos ) 
-               return COL_TEXT;
+    if ( text.find_first_not_of(" 1234567890-.") != string::npos ) {
+		ostringstream o;
+		o << "Text contains non sp,num,point: " << text.find_first_not_of(" 1234567890-.") << " " << text;
+		LOGERR(o.str());
+        return COL_TEXT;
+	}
 
 //Test two: One token only.
     tbegin = text.find_first_not_of(" ");
@@ -878,12 +882,21 @@ int CxModList::WhichType(const string & text)
     {
        tend = text.find_first_of(" ",tbegin);
        if ( ( tend != string::npos ) && 
-            ( text.find_first_not_of(" ",tend) != string::npos ) )
-               return COL_TEXT;
-
+            ( text.find_first_not_of(" ",tend) != string::npos ) ) {
+				ostringstream o;
+				o << "Text contains 2 tokens: " << text;
+				LOGERR(o.str());
+				return COL_TEXT;
+			}
 //Test two(b): Minus sign in correct place if present.
-       if (text.find_last_of("-") != tbegin )
-               return COL_TEXT;
+       if (text.find_last_of("-") != string::npos ) {
+			if (text.find_last_of("-") != tbegin ) {
+   				ostringstream o;
+				o << "Text contains - tokens not a beginning: " << text;
+				LOGERR(o.str());
+				return COL_TEXT;
+			}
+		}
     }
 
 //Test three, check for one decimal point.
@@ -891,8 +904,12 @@ int CxModList::WhichType(const string & text)
     tbegin = text.find_first_of(".");
     tend = text.find_last_of(".");
 
-    if ( tbegin != tend ) return COL_TEXT;  // Two decimal points.
-
+    if ( tbegin != tend ) {
+		ostringstream o;
+		o << "Text contains 2 dps: " << text;
+		LOGERR(o.str());
+		return COL_TEXT;  // Two decimal points.
+	}
     if ( tbegin != string::npos ) return COL_REAL; // One decimal point
     
     return COL_INT;       // No decimal points.
