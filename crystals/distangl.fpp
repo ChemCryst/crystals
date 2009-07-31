@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.92  2009/05/06 13:02:13  djw
+C When generating RIDE cards, fix (some) treatment of H atoms related by symmetry
+C
 C Revision 1.91  2009/02/09 08:04:08  djw
 C Restore resetting oh L29 addresses, fouled up at version 1.88, when tried to inhibit updating of L41 when there was only one atom.
 C
@@ -2921,8 +2924,12 @@ C
 C
 #if !defined(_HOL_) 
       DATA JPEAK(1) /'Q   '/
+      DATA KHYD /'H   '/
+      DATA KDET /'D   '/
 #else
       DATA JPEAK(1) /4HQ   /
+      DATA KHYD /4HH   /
+      DATA KDET /4HD   /
 C
 C--CALLL THE TIMING FUNCTION
 #endif
@@ -3231,8 +3238,11 @@ cdjwoct2001
 
 C--UPDATE FOR THE NEXT PIVOT ATOM
 3350  CONTINUE
-      IF(ISEQ)3370,3360,3360
+      IF(ISEQ)3370,3360,3355
 C--CHANGE THE SERIAL NUMBER
+3355  continue
+c----- check for H or D
+      if ((istore(m5a).eq.khyd) .or. (istore(m5a).eq.kdet)) goto 3370
 3360  CONTINUE
       STORE(M5A+1)=SEQ
       SEQ=SEQ+1.0
