@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.145  2009/07/24 14:01:21  djw
+C Compute FRIEDIF, create Friedel restraints
+C
 C Revision 1.144  2009/07/02 09:19:13  djw
 C Increate format statement for CRITER, and use CRITER as thshold for writing out RESTRAINTS
 C
@@ -7356,10 +7359,6 @@ C
      1      (cutter .lt. -.05) .or. (cutter .gt. .05)) then
          write(cmon,'(a,a)')' The slope shoud be unity and the'
      1  ,' intercept zero'
-         call xprvdu(ncvdu, 1,0)
-         if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
-         write(cmon,'(a)') 
-     1 '{E CRYSTALS suggests that you check your weighting scheme'
          call xprvdu(ncvdu, 1,0)
          if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
         endif
