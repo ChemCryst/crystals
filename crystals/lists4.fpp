@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2007/03/08 11:50:38  djw
+C Partial shifts for Stefans code
+C
 C Revision 1.22  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -1535,7 +1538,7 @@ C--COMMANDS ARE STORED AND OUTPUT, AS NECCESSARY, IN THE ORDER :
 C
 C   -1    #SPECIAL
 C      0  #CALCULATE, #SCALE, #REFINE
-C      1  #CONSTRAIN
+C      1  #DORESTRAIN
 C      2  #INVERT
 C      3  #SOLVE
 C      4  #PUNCH
@@ -1578,7 +1581,7 @@ C
       DATA IRQ(1,1)/'    '/,IRQ(2,1)/'    '/,IRQ(3,1)/'    '/
       DATA IRQ(1,2)/'    '/,IRQ(2,2)/'    '/,IRQ(3,2)/'    '/
       DATA IRQ(1,3)/'    '/,IRQ(2,3)/'    '/,IRQ(3,3)/'    '/
-      DATA IRQ(1,4)/'REST'/,IRQ(2,4)/'RAIN'/,IRQ(3,4)/'    '/
+      DATA IRQ(1,4)/'DORE'/,IRQ(2,4)/'STRA'/,IRQ(3,4)/'IN  '/
       DATA IRQ(1,5)/'INVE'/,IRQ(2,5)/'RT  '/,IRQ(3,5)/'    '/
       DATA IRQ(1,6)/'SOLV'/,IRQ(2,6)/'E   '/,IRQ(3,6)/'    '/
       DATA IRQ(1,7)/'PUNC'/,IRQ(2,7)/'H  5'/,IRQ(3,7)/'    '/
