@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.79  2009/06/17 13:43:28  djw
+C Messages for merged data corrected to match COMMANDS.DSC
+C
 C Revision 1.78  2009/02/05 11:40:53  djw
 C Output summary of lists 40 and 41 to printer for Dave.
 C
@@ -2061,10 +2064,6 @@ c      determinant
           cutter = (sxx*sy-sx*sxy)/deter
           slope = (ss*sxy-sx*sy)/deter
           yslope = slope
-          write(cmon,'(a,a)')' The slope shoud be unity and'
-     1  ,' the intercept zero'
-          call xprvdu(ncvdu, 1,0)
-          if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
           denom = (ss*sxx-sx*sx)*(ss*syy-sy*sy)
           if (denom .gt. 0.) then
             denom=sqrt(denom)
@@ -2074,6 +2073,18 @@ c      determinant
      1  f7.3,f10.2,f10.5)
             call xprvdu(ncvdu, 1,0)
             if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+
+            if ( (slope .gt. 1.1) .or. (slope .lt. 0.9) .or.
+     1        (cutter .lt. -.05) .or. (cutter .gt. .05)) then
+              write(cmon,'(a,a)')' The slope shoud be unity and the'
+     1        ,' intercept zero'
+              call xprvdu(ncvdu, 1,0)
+              if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+                write(cmon,'(a)') 
+     1 '{E CRYSTALS suggests that you check your weighting scheme'
+                call xprvdu(ncvdu, 1,0)
+                if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            endif
           else
             write(cmon,471) 
 471         format ('Correlation coefficient cannot be computed')
