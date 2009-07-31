@@ -1,5 +1,8 @@
 c
 C $Log: not supported by cvs2svn $
+C Revision 1.17  2009/07/21 13:41:35  djw
+C test
+C
 C Revision 1.16  2009/07/20 10:57:22  djw
 C Retro-fix for unpacking Ratio/JCODE. If Fo was -ve, JCODE also becomes -ve.  Fix (for
 C  cases seen anyway) by adding +10
@@ -1321,8 +1324,10 @@ C -- CHECK IF THE RATIO AND JCODE SHOULD BE UNPACKED
         STORE(M6+20) = AINT(STORE(M6+31)*0.1+0.005) * 0.1
         STORE(M6+18) = STORE(M6+31) - ( 100. * STORE(M6+20) )
 cdjwjul09 Try to fix up unpacking if Fo was -ve
-        if(store(m6+18) .lt. zero) 
-     1  store(m6+18) = 10. + store(m6+18)
+c     this fixes the JCODE, but fouls up packing and unpacking 
+c     of sigma. 
+c        if(store(m6+18) .lt. 0.0) 
+c     1  store(m6+18) = 10. + store(m6+18)
       ENDIF
       STORE(M6+13) = AMAX1 ( STORE(M6+13) , 1.0 )
 C
