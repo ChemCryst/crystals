@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2008/01/03 13:10:46  djw
+C Add 2Fo-Fc map type
+C
 C Revision 1.20  2005/01/23 08:29:12  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -1516,23 +1519,26 @@ C----- SCAN LIST 5 SETTING SPARE TO VDW RADIUS
             JZ=M29+2
             IF (ISTORE(M5) .EQ. ISTORE(M29)) THEN
                STORE(M5+14) = STORE(JZ)
-               WRITE(CMON,'(3A,F7.3)')'Atom type: ',ISTORE(M5),
+               if ( issprt .eq.0 ) then
+                 WRITE(CMON,'(3A,F7.3)')'Atom type: ',ISTORE(M5),
      2           ' VDW radius set to ', STORE(M5+14)
-               CALL XPRVDU(NCVDU, 1,0)
-               IFOUND = 1
+                 IFOUND = 1
+               endif
             END IF
          END DO
          IF ( IFOUND .EQ. 0 ) THEN
            IF ( ISTORE(M5) .EQ. IPEAK ) THEN
             STORE(M5+14) = 0.0
-             WRITE(CMON,'(3A)')'Atom type: ',ISTORE(M5),
+               if ( issprt .eq.0 ) then
+                 WRITE(CMON,'(3A)')'Atom type: ',ISTORE(M5),
      2           ' ignored.'
-             CALL XPRVDU(NCVDU, 1,0)
+               endif
            ELSE
             STORE(M5+14) = 1.78
-             WRITE(CMON,'(3A)')'Atom type: ',ISTORE(M5),
+               if ( issprt .eq.0 ) then
+                 WRITE(CMON,'(3A)')'Atom type: ',ISTORE(M5),
      2           ' not in LIST 29 - using carbon VDW of 1.78A'
-             CALL XPRVDU(NCVDU, 1,0)
+               endif
            END IF
          END IF
       END DO
