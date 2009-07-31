@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.5  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:09  rich
 C New CRYSTALS repository
 C
@@ -866,6 +870,7 @@ C
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XERVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QSTR11.INC'
@@ -911,6 +916,15 @@ C--AND NOW RETURN
 C
 9900  CONTINUE
 C -- ERROR EXIT
+        IF ( IERFLG .LT. 0 ) THEN
+           IF (ISSPRT .EQ. 0) WRITE(NCWU,1405)
+           WRITE ( CMON ,1405)
+           CALL XPRVDU(NCVDU, 3,0)
+1405       FORMAT(
+     1     'The covariance matrix does not correspond to the atom list'/
+     2     'You have changed LIST 12 or LIST 5'/
+     3     'You must do another cycle of refinement')
+        ENDIF
       RETURN
       END
 C

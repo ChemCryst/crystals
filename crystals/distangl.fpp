@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.93  2009/07/31 12:41:20  djw
+C Add a switch to SEQUENCE so that H atoms are not changed
+C
 C Revision 1.92  2009/05/06 13:02:13  djw
 C When generating RIDE cards, fix (some) treatment of H atoms related by symmetry
 C
@@ -1210,13 +1213,14 @@ c
 C--LOAD LIST 11
         CALL XFAL11(1,1)
         IF ( IERFLG .LT. 0 ) THEN
-           IF (ISSPRT .EQ. 0) WRITE(NCWU,1405)
-           WRITE ( CMON ,1405)
-           CALL XPRVDU(NCVDU, 3,0)
-1405       FORMAT(
-     1     'The covariance matrix does not correspond to the atom list'/
-     2     'You have changed LIST 12 or LIST 5'/
-     3     'You must do another cycle of refinement')
+cdjwdec09 - moved into XFAL11 itself
+c           IF (ISSPRT .EQ. 0) WRITE(NCWU,1405)
+c           WRITE ( CMON ,1405)
+c           CALL XPRVDU(NCVDU, 3,0)
+c1405       FORMAT(
+c     1     'The covariance matrix does not correspond to the atom list'/
+c     2     'You have changed LIST 12 or LIST 5'/
+c     3     'You must do another cycle of refinement')
            GO TO 9900
         ENDIF
         IF(ISTORE(L11P+15).GE.0) THEN
