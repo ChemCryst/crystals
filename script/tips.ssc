@@ -1,323 +1,324 @@
-%SCRIPT TIPS
-%  VARIABLE INTEGER NTIPS CTIP ICHO
-%% Display a "tip of the day" at start up.
-%%
-^^WI WINDOW XTIP 'Tip of the day' MODAL SIZE KEEP
-^^WI COMMIT='BOK' CANCEL='BOK'
-^^WI GRID BIGG NROWS=5 NCOLS=3
-^^WI {
-^^WI   @ 2,2 TEXTOUT XTIPTEXT '' NROWS=10 NCOLS=80 TRANSPARENT
-^^WI   @ 4,2 GRID BTNS NROWS=1 NCOLS=9
-^^WI   {
-^^WI     @ 1,1 CHECKBOX STAS '&Show tips at startup'
-^^WI           INFORM=NO STATE=ON
-^^WI     @ 1,7 BUTTON MORE '&More'
-^^WI     @ 1,9 BUTTON BOK  '&Close'
-^^WI   }
-^^WI }
-^^WI SHOW
-^^CR
-^^WI SENDTEXTTO XTIPTEXT
-^^CR
-% LOOP
-%  EVALUATE NTIPS = 28
-^^CO  GETKEY TIP#
-%  GET SILENT NOSTORE FINAL INTEGER '1' '1'
-%  EVALUATE CTIP = VALUE
-%  CASE CTIP
-%   BLOCK     %TIP1%
-Did you know?
-To automatically renumber atoms so that adjacent atoms
-have adjacent serial numbers, type:
-#REGROUP
-SELECT TYPE=ALL SEQUENCE=YES
-END
-%   END BLOCK
-%   BLOCK     %TIP2%
- You don't need to click on the input line
- before typing. Just type and the focus will
- snap to the input box.
-%   END BLOCK
-%   BLOCK     %TIP3%
- While the input line has focus (flashing
- cursor), you can use the Up and Down cursor
- keys to review your command history.
-%   END BLOCK
-%   BLOCK     %TIP4%
- Choose Save As... from the File menu to write
- out a CRYSTALS DSC file with all the current
- data in. CRYSTALS will automatically re-start
- using this file.
-%   END BLOCK
-%   BLOCK     %TIP5%
- The script directory contains hundreds of files
- written in a simple scripting language. They may
- be used for anything from automating repetitive
- tasks to controlling the course of the whole
- analysis.
-%   END BLOCK
-%   BLOCK     %TIP6%
- When you are entering a block of commands (i.e.
- after you have type #something, you can add atoms
- to the command line by clicking them with the left
- mouse button.
-%   END BLOCK
-%   BLOCK     %TIP7%
- When you are not entering commands, left clicking
- on atom causes it to be selected. The right mouse
- button will display a context sensitive menu when
- clicked in the model window dependent on whether
- the click is in space, on an atom, or on an atom
- of a selected group.
-%   END BLOCK
-%   BLOCK     %TIP8%
- Drag the model with the left mouse button to rotate
- it.
-%   END BLOCK
-%   BLOCK     %TIP9%
- For'Routine' work try following the menus from left
- to right.
- You can't access most menu commands while a script
- is running. 
-%   END BLOCK
-%   BLOCK     %TIP10%
- If the scripts get into a tangle then it is probably
- the script-writers fault for not making allowance
- for user error :) Get out of script mode by typing
- DIRECT. If the scripts die and leave a window open
- which appears to be blocking your input, then clicking
- the close button 7 or 8 times in a row will cause
- it to failsafe and close.
-%   END BLOCK
-%   BLOCK     %TIP11%
- The CRYSTALS manuals can be found in the subdirectory
- \manuals\ where you installed the program. They are
- available in postscript and HTML.
-%   END BLOCK
-%   BLOCK     %TIP12%
-Common probelms:
-If no reflections are found during QUICKSTART, then the
-filename or the format statement may be incorrect.
-Check the filename, and that the format statement
-is enclosed in brackets.
-%   END BLOCK
-%   BLOCK     %TIP13%
-Common probelms:
-If structure factor calculations fail with error messages
-about atoms of type Q, then there are peaks remaining from
-a Fourier search still in the atom list. 
-Edit the atom list:
-1) With the mouse in the MODEL window
-2) From the menu item STRUCTURE / REMOVE FOURIER PEAKS
-3) Directly from the command line e.g.
-     #EDIT
-     SELECT TYPE NE Q
-     END
-%   END BLOCK
-%   BLOCK     %TIP14%
-Common probelms:
-If DIFABS fails, either there are no values for Fc, or
-no orientation matrix. Compute structure factors (#SFLS
-enter, CALC enter, END) or input a matrix (LIST 13,
-there is a script INLIST13).
-%   END BLOCK
-%   BLOCK     %TIP15%
-Did you know?
-Regarding partially occupied special positions: The
-occupation factor given in the atom parameter list,
-LIST 5, is the 'chemical' occupancy, and so is always unity
-for a non-disordered site.
-If the atom is on a special position, the 'crystallographic'
-occupancy (multiplicity) is computed automatically, and
-multiplied onto the 'chemical' occupancy.
-To force CRYSTALS to use unit crystallographic occupancy
-(and thus only use the term stored as occupancy in LIST 5),
-set the UPDATE parameter in LIST 23 to NO. There is a script,
-(INLIST23) to help you. You will then need to take care of all
-occupation factors manually.
-%   END BLOCK
-%   BLOCK     %TIP16%
-If you can only vaguely remember the syntax of a command,
-a) look in the PRIMER (chapter 16 & 17),
-b) if you have already started the command type a '?'
-   on the next line,
-c) issue #COMMANDS command
-%   END BLOCK
-%   BLOCK     %TIP17%
-Common problems:
-If you see Read/Write error on unit 1, (the data base),
-you may have filled you hard disk, or not enabled automatic
-disk file extension. Type:
-#DISK
-EXTEND SIZE=100 TRIES=100
-END
-%   END BLOCK
-%   BLOCK     %TIP18%
- Hold down CONTROL or SHIFT and click on the
- model with the left mouse button to zoom in
- and out.
-%   END BLOCK
-%   BLOCK     %TIP19%
-Use
-#LIST 28
-MINIMA RATIO=n
-END
-to set the threshold ratio I/sigma(I) for 'unobserved' reflections.
-%   END BLOCK
-%   BLOCK     %TIP20%
-Order the atoms in the atom list so that atoms which
-need to be addressed together are adjacent in the list.
-You can then use an 'UNTIL' sequence to refer to them.
-These commands contain facilities to help with this:
-#COLLECT
-#REGROUP
-#EDIT
-%   END BLOCK
-%   BLOCK     %TIP21%
-If you have multiple similar fragments (e.g. phenyl
-groups), number the atoms so that they can easily be
-addressed in commands with an editor
-e.g.
-c(101) until c(106), c(111) until c(116)
-%   END BLOCK
-%   BLOCK     %TIP22%
-If you have lots of phenyl groups, and not much data.
-Use restraints to permit a valid anisotropic refinement.
-E.g. for the group P(1)-C(1).....C(6)
- 
-#LIST 16
- 
-# first the geometry - this will enforce pseudo 6 fold symmetry, but you
-could make it 2 fold.
-PLANAR              P(1) C(1) UNTIL C(6)
-ANGLE 180, .1 =     P(1) to C(1) to C(4)
-DIST  0,  .01 =MEAN C(1) TO C(2) C(2) TO C(3) C(3) TO C(4)
-CONT                C(4) TO C(5) C(5) TO C(6) C(6) TO C(1)
-DIST  0,  .01 =MEAN C(1) TO C(3) C(2) TO C(4) C(3) TO C(5)
-CONT                C(4) TO C(6) C(5) TO C(1) C(6) TO C(2)
-DIST  0,  .01 =MEAN C(1) TO C(4) C(2) TO C(5) C(3) TO C(6)
- 
-# now bond stretching restraints
-VIB   0,  .01 =     C(1) TO C(2) C(2) TO C(3) C(3) TO C(4)
-CONT                C(4) TO C(5) C(5) TO C(6) C(6) TO C(1)
- 
-# now angle flexing restraints
-VIB   0,  .01 =     C(1) TO C(3) C(2) TO C(4) C(3) TO C(5)
-CONT                C(4) TO C(6) C(5) TO C(1) C(6) TO C(2)
-VIB   0,  .01 =     C(1) TO C(4) C(2) TO C(5) C(3) TO C(6)
- 
-# so far, we have no restraints on the out-of-plane components of Uij
-# set up similarity restraints.
-U(ij)  0, .02 =     C(1) TO C(2) C(2) TO C(3) C(3) TO C(4)
-CONT                C(4) TO C(5) C(5) TO C(6) C(6) TO C(1)
-U(ij)  0, .03 =     C(1) TO C(3) C(2) TO C(4) C(3) TO C(5)
-CONT                C(4) TO C(6) C(5) TO C(1) C(6) TO C(2)
-VIB    0, .03 =     C(1) TO C(4) C(2) TO C(5) C(3) TO C(6)
- 
-Note that the atom list on each bond restraint also occurs in
-a vibration restraint and a similarity restraint.
-There is a script which will set these up for you. The
-geometrical rigidity can also be imposed as a constraint
-(with GROUP in LIST 12), though in this case the group must
-be idealised before refinement begins (#REGULARISE).
-%   END BLOCK
-%   BLOCK     %TIP23%
-Hydrogen atoms can be found or placed geometrically
-(#PERHYDRO or #HYDROGEN). They can then be refined
-freely, or as riding atoms (RIDE, in LIST 12). I prefer
-NOT to refine them in the least squares (except perhaps
-for hydrogens in hydrogen bonds), but to delete them and
-recompute ideal positions after every 2 or 3 cycles. Put
-the instructions to delete and create the H atoms in a
-file, which can be #USEd as required.
-PERHYDRO also creates a pro-forma files for hydrogen re-
-placement and refinement -
-RIDEH.DAT
-PERH.DAT
-If you edit these for future use, remember to also change their name.
-%   END BLOCK
-%   BLOCK     %TIP24%
-Refinements of highly correlated parameters or ones ill-defined
-by the data tend to 'blow up'. Don't try to fix this by refining
-different parameters in different cycles - this only hides the
-problem. Use shift limiting restraints (in LIST 16).
-e.g.
-LIMIT .01 U[ISO].
-This will limit the shifts in U[iso] to about .01 per cycle.
-The effects of successive cycles are cumulative. All parameters
-can be limited like this. The units are the same as the parameters.
-%   END BLOCK
-%   BLOCK     %TIP25%
-To quickly see a slant Fourier map through a plane of atoms
-in your structure:
-1) Select the atoms to define a plane. (Click each once)
-2) Right click one of the selected atoms for a context-menu.
-3) Choose 'Slant Fourier Map'
-%   END BLOCK
-%   BLOCK     %TIP26%
-If the R factor is sticking at a high value, Use DIFABS in
-analyse mode. (Click Analyse, DIFABS)
-The map shows a function of the ratio Fo/Fc as a function of
-Crystal orientation. If thEre are high peaks or troughs, there
-may be something wrong with the data, e.g.
-Absorption
-Anisotropic extinction
-Crystal not centred
-Crystal badly mounted
-Crystal damaged
-%   END BLOCK
-%   BLOCK     %TIP27%
-For large structures, the time taken to update the model window
-may be excessive. It can be inhibited by creating a
-      CRYSINIT.DAT
-file in the current directory. This file can contain anything
-you wish to execute every time you start CRYSTALS on that
-compound - e.g.
- 
-#set autoupdate off
-#set export on
-#set watch 5
-#set lists both
- 
-Note: #set autoupdate on/off can be issued at any time CRYSTALS
-is running. The autoupdate flag is not used by #DISPLAY, which
-always updates the model.
-%   END BLOCK
-%   BLOCK % TIP28
-Do you know about the command #PURGE?  This clears space inside the .DSC
-for re-use. It does not make the .DSC smaller, but you could type
-#PURGE xxx
-to get a new, small file xxx.dsc
-or #PURGE DATE
-to get a file abcdef.DSC , where abcdef is the date and time.  Very
-useful for e-mailing or archiving CRYSTALS data.
-%   END BLOCK
-%  END CASE
-^^CO SET XTIPTEXT VIEWTOP
-%  EVALUATE CTIP = CTIP + 1
-%  IF CTIP .GT. NTIPS THEN
-%      EVALUATE CTIP = 1
-%  END IF
-%  CLEAR
-%  INSERT '^^CO SETKEY TIP# '
-%  STORE FORMAT /(I5)/ LENGTH 6 INTEGER ( CTIP )
-%  OUTPUT
-%%
-%  VERIFY BOK MORE
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%  IF VALUE .EQ. 1 THEN
-%     VERIFY ON OFF
-^^??  STAS STATE
-%     GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%     IF VALUE .EQ. 2 THEN
-^^CO     SETKEY TIPS 0
-%     ELSE
-^^CO     SETKEY TIPS 1
-%     END IF
-^^WI  DISPOSE XTIP
-^^CR
-%     FINISH
-%  END IF
-^^CO SET XTIPTEXT EMPTY
-% END LOOP
-%END SCRIPT
+%SCRIPT TIPS                                                                    
+%  VARIABLE INTEGER NTIPS CTIP ICHO                                             
+%% Display a "tip of the day" at start up.                                      
+%%                                                                              
+^^WI WINDOW XTIP 'Tip of the day' MODAL SIZE KEEP                               
+^^WI COMMIT='BOK' CANCEL='BOK'                                                  
+^^WI GRID BIGG NROWS=5 NCOLS=3                                                  
+^^WI {                                                                          
+^^WI   @ 2,2 TEXTOUT XTIPTEXT '' NROWS=10 NCOLS=80 TRANSPARENT                  
+^^WI   @ 4,2 GRID BTNS NROWS=1 NCOLS=9                                          
+^^WI   {                                                                        
+^^WI     @ 1,1 CHECKBOX STAS '&Show tips at startup'                            
+^^WI           INFORM=NO STATE=ON                                               
+^^WI     @ 1,7 BUTTON MORE '&More'                                              
+^^WI     @ 1,9 BUTTON BOK  '&Close'                                             
+^^WI   }                                                                        
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+^^WI SENDTEXTTO XTIPTEXT                                                        
+^^CR                                                                            
+% LOOP                                                                          
+%  EVALUATE NTIPS = 28                                                          
+^^CO  GETKEY TIP#                                                               
+%  GET SILENT NOSTORE FINAL INTEGER '1' '1'                                     
+%  EVALUATE CTIP = VALUE                                                        
+%  CASE CTIP                                                                    
+%   BLOCK     %TIP1%                                                            
+Did you know?                                                                   
+To automatically renumber atoms so that adjacent atoms                          
+have adjacent serial numbers, type:                                             
+#REGROUP                                                                        
+SELECT TYPE=ALL SEQUENCE=YES                                                    
+END                                                                             
+Using SEQUENCE=NOHYD leaves H atoms unchanged
+%   END BLOCK                                                                   
+%   BLOCK     %TIP2%                                                            
+ You don't need to click on the input line                                      
+ before typing. Just type and the focus will                                    
+ snap to the input box.                                                         
+%   END BLOCK                                                                   
+%   BLOCK     %TIP3%                                                            
+ While the input line has focus (flashing                                       
+ cursor), you can use the Up and Down cursor                                    
+ keys to review your command history.                                           
+%   END BLOCK                                                                   
+%   BLOCK     %TIP4%                                                            
+ Choose Save As... from the File menu to write                                  
+ out a CRYSTALS DSC file with all the current                                   
+ data in. CRYSTALS will automatically re-start                                  
+ using this file.                                                               
+%   END BLOCK                                                                   
+%   BLOCK     %TIP5%                                                            
+ The script directory contains hundreds of files                                
+ written in a simple scripting language. They may                               
+ be used for anything from automating repetitive                                
+ tasks to controlling the course of the whole                                   
+ analysis.                                                                      
+%   END BLOCK                                                                   
+%   BLOCK     %TIP6%                                                            
+ When you are entering a block of commands (i.e.                                
+ after you have type #something, you can add atoms                              
+ to the command line by clicking them with the left                             
+ mouse button.                                                                  
+%   END BLOCK                                                                   
+%   BLOCK     %TIP7%                                                            
+ When you are not entering commands, left clicking                              
+ on atom causes it to be selected. The right mouse                              
+ button will display a context sensitive menu when                              
+ clicked in the model window dependent on whether                               
+ the click is in space, on an atom, or on an atom                               
+ of a selected group.                                                           
+%   END BLOCK                                                                   
+%   BLOCK     %TIP8%                                                            
+ Drag the model with the left mouse button to rotate                            
+ it.                                                                            
+%   END BLOCK                                                                   
+%   BLOCK     %TIP9%                                                            
+ For'Routine' work try following the menus from left                            
+ to right.                                                                      
+ You can't access most menu commands while a script                             
+ is running.                                                                    
+%   END BLOCK                                                                   
+%   BLOCK     %TIP10%                                                           
+ If the scripts get into a tangle then it is probably                           
+ the script-writers fault for not making allowance                              
+ for user error :) Get out of script mode by typing                             
+ DIRECT. If the scripts die and leave a window open                             
+ which appears to be blocking your input, then clicking                         
+ the close button 7 or 8 times in a row will cause                              
+ it to failsafe and close.                                                      
+%   END BLOCK                                                                   
+%   BLOCK     %TIP11%                                                           
+ The CRYSTALS manuals can be found in the subdirectory                          
+ \manuals\ where you installed the program. They are                            
+ available in postscript and HTML.                                              
+%   END BLOCK                                                                   
+%   BLOCK     %TIP12%                                                           
+Common probelms:                                                                
+If no reflections are found during QUICKSTART, then the                         
+filename or the format statement may be incorrect.                              
+Check the filename, and that the format statement                               
+is enclosed in brackets.                                                        
+%   END BLOCK                                                                   
+%   BLOCK     %TIP13%                                                           
+Common probelms:                                                                
+If structure factor calculations fail with error messages                       
+about atoms of type Q, then there are peaks remaining from                      
+a Fourier search still in the atom list.                                        
+Edit the atom list:                                                             
+1) With the mouse in the MODEL window                                           
+2) From the menu item STRUCTURE / REMOVE FOURIER PEAKS                          
+3) Directly from the command line e.g.                                          
+     #EDIT                                                                      
+     SELECT TYPE NE Q                                                           
+     END                                                                        
+%   END BLOCK                                                                   
+%   BLOCK     %TIP14%                                                           
+Common probelms:                                                                
+If DIFABS fails, either there are no values for Fc, or                          
+no orientation matrix. Compute structure factors (#SFLS                         
+enter, CALC enter, END) or input a matrix (LIST 13,                             
+there is a script INLIST13).                                                    
+%   END BLOCK                                                                   
+%   BLOCK     %TIP15%                                                           
+Did you know?                                                                   
+Regarding partially occupied special positions: The                             
+occupation factor given in the atom parameter list,                             
+LIST 5, is the 'chemical' occupancy, and so is always unity                     
+for a non-disordered site.                                                      
+If the atom is on a special position, the 'crystallographic'                    
+occupancy (multiplicity) is computed automatically, and                         
+multiplied onto the 'chemical' occupancy.                                       
+To force CRYSTALS to use unit crystallographic occupancy                        
+(and thus only use the term stored as occupancy in LIST 5),                     
+set the UPDATE parameter in LIST 23 to NO. There is a script,                   
+(INLIST23) to help you. You will then need to take care of all                  
+occupation factors manually.                                                    
+%   END BLOCK                                                                   
+%   BLOCK     %TIP16%                                                           
+If you can only vaguely remember the syntax of a command,                       
+a) look in the PRIMER (chapter 16 & 17),                                        
+b) if you have already started the command type a '?'                           
+   on the next line,                                                            
+c) issue #COMMANDS command                                                      
+%   END BLOCK                                                                   
+%   BLOCK     %TIP17%                                                           
+Common problems:                                                                
+If you see Read/Write error on unit 1, (the data base),                         
+you may have filled you hard disk, or not enabled automatic                     
+disk file extension. Type:                                                      
+#DISK                                                                           
+EXTEND SIZE=100 TRIES=100                                                       
+END                                                                             
+%   END BLOCK                                                                   
+%   BLOCK     %TIP18%                                                           
+ Hold down CONTROL or SHIFT and click on the                                    
+ model with the left mouse button to zoom in                                    
+ and out.                                                                       
+%   END BLOCK                                                                   
+%   BLOCK     %TIP19%                                                           
+Use                                                                             
+#LIST 28                                                                        
+MINIMA RATIO=n                                                                  
+END                                                                             
+to set the threshold ratio I/sigma(I) for 'unobserved' reflections.             
+%   END BLOCK                                                                   
+%   BLOCK     %TIP20%                                                           
+Order the atoms in the atom list so that atoms which                            
+need to be addressed together are adjacent in the list.                         
+You can then use an 'UNTIL' sequence to refer to them.                          
+These commands contain facilities to help with this:                            
+#COLLECT                                                                        
+#REGROUP                                                                        
+#EDIT                                                                           
+%   END BLOCK                                                                   
+%   BLOCK     %TIP21%                                                           
+If you have multiple similar fragments (e.g. phenyl                             
+groups), number the atoms so that they can easily be                            
+addressed in commands with an editor                                            
+e.g.                                                                            
+c(101) until c(106), c(111) until c(116)                                        
+%   END BLOCK                                                                   
+%   BLOCK     %TIP22%                                                           
+If you have lots of phenyl groups, and not much data.                           
+Use restraints to permit a valid anisotropic refinement.                        
+E.g. for the group P(1)-C(1).....C(6)                                           
+                                                                                
+#LIST 16                                                                        
+                                                                                
+# first the geometry - this will enforce pseudo 6 fold symmetry, but you        
+could make it 2 fold.                                                           
+PLANAR              P(1) C(1) UNTIL C(6)                                        
+ANGLE 180, .1 =     P(1) to C(1) to C(4)                                        
+DIST  0,  .01 =MEAN C(1) TO C(2) C(2) TO C(3) C(3) TO C(4)                      
+CONT                C(4) TO C(5) C(5) TO C(6) C(6) TO C(1)                      
+DIST  0,  .01 =MEAN C(1) TO C(3) C(2) TO C(4) C(3) TO C(5)                      
+CONT                C(4) TO C(6) C(5) TO C(1) C(6) TO C(2)                      
+DIST  0,  .01 =MEAN C(1) TO C(4) C(2) TO C(5) C(3) TO C(6)                      
+                                                                                
+# now bond stretching restraints                                                
+VIB   0,  .01 =     C(1) TO C(2) C(2) TO C(3) C(3) TO C(4)                      
+CONT                C(4) TO C(5) C(5) TO C(6) C(6) TO C(1)                      
+                                                                                
+# now angle flexing restraints                                                  
+VIB   0,  .01 =     C(1) TO C(3) C(2) TO C(4) C(3) TO C(5)                      
+CONT                C(4) TO C(6) C(5) TO C(1) C(6) TO C(2)                      
+VIB   0,  .01 =     C(1) TO C(4) C(2) TO C(5) C(3) TO C(6)                      
+                                                                                
+# so far, we have no restraints on the out-of-plane components of Uij           
+# set up similarity restraints.                                                 
+U(ij)  0, .02 =     C(1) TO C(2) C(2) TO C(3) C(3) TO C(4)                      
+CONT                C(4) TO C(5) C(5) TO C(6) C(6) TO C(1)                      
+U(ij)  0, .03 =     C(1) TO C(3) C(2) TO C(4) C(3) TO C(5)                      
+CONT                C(4) TO C(6) C(5) TO C(1) C(6) TO C(2)                      
+VIB    0, .03 =     C(1) TO C(4) C(2) TO C(5) C(3) TO C(6)                      
+                                                                                
+Note that the atom list on each bond restraint also occurs in                   
+a vibration restraint and a similarity restraint.                               
+There is a script which will set these up for you. The                          
+geometrical rigidity can also be imposed as a constraint                        
+(with GROUP in LIST 12), though in this case the group must                     
+be idealised before refinement begins (#REGULARISE).                            
+%   END BLOCK                                                                   
+%   BLOCK     %TIP23%                                                           
+Hydrogen atoms can be found or placed geometrically                             
+(#PERHYDRO or #HYDROGEN). They can then be refined                              
+freely, or as riding atoms (RIDE, in LIST 12). I prefer                         
+NOT to refine them in the least squares (except perhaps                         
+for hydrogens in hydrogen bonds), but to delete them and                        
+recompute ideal positions after every 2 or 3 cycles. Put                        
+the instructions to delete and create the H atoms in a                          
+file, which can be #USEd as required.                                           
+PERHYDRO also creates a pro-forma files for hydrogen re-                        
+placement and refinement -                                                      
+RIDEH.DAT                                                                       
+PERH.DAT                                                                        
+If you edit these for future use, remember to also change their name.           
+%   END BLOCK                                                                   
+%   BLOCK     %TIP24%                                                           
+Refinements of highly correlated parameters or ones ill-defined                 
+by the data tend to 'blow up'. Don't try to fix this by refining                
+different parameters in different cycles - this only hides the                  
+problem. Use shift limiting restraints (in LIST 16).                            
+e.g.                                                                            
+LIMIT .01 U[ISO].                                                               
+This will limit the shifts in U[iso] to about .01 per cycle.                    
+The effects of successive cycles are cumulative. All parameters                 
+can be limited like this. The units are the same as the parameters.             
+%   END BLOCK                                                                   
+%   BLOCK     %TIP25%                                                           
+To quickly see a slant Fourier map through a plane of atoms                     
+in your structure:                                                              
+1) Select the atoms to define a plane. (Click each once)                        
+2) Right click one of the selected atoms for a context-menu.                    
+3) Choose 'Slant Fourier Map'                                                   
+%   END BLOCK                                                                   
+%   BLOCK     %TIP26%                                                           
+If the R factor is sticking at a high value, Use DIFABS in                      
+analyse mode. (Click Analyse, DIFABS)                                           
+The map shows a function of the ratio Fo/Fc as a function of                    
+Crystal orientation. If thEre are high peaks or troughs, there                  
+may be something wrong with the data, e.g.                                      
+Absorption                                                                      
+Anisotropic extinction                                                          
+Crystal not centred                                                             
+Crystal badly mounted                                                           
+Crystal damaged                                                                 
+%   END BLOCK                                                                   
+%   BLOCK     %TIP27%                                                           
+For large structures, the time taken to update the model window                 
+may be excessive. It can be inhibited by creating a                             
+      CRYSINIT.DAT                                                              
+file in the current directory. This file can contain anything                   
+you wish to execute every time you start CRYSTALS on that                       
+compound - e.g.                                                                 
+                                                                                
+#set autoupdate off                                                             
+#set export on                                                                  
+#set watch 5                                                                    
+#set lists both                                                                 
+                                                                                
+Note: #set autoupdate on/off can be issued at any time CRYSTALS                 
+is running. The autoupdate flag is not used by #DISPLAY, which                  
+always updates the model.                                                       
+%   END BLOCK                                                                   
+%   BLOCK % TIP28                                                               
+Do you know about the command #PURGE?  This clears space inside the .DSC        
+for re-use. It does not make the .DSC smaller, but you could type               
+#PURGE xxx                                                                      
+to get a new, small file xxx.dsc                                                
+or #PURGE DATE                                                                  
+to get a file abcdef.DSC , where abcdef is the date and time.  Very             
+useful for e-mailing or archiving CRYSTALS data.                                
+%   END BLOCK                                                                   
+%  END CASE                                                                     
+^^CO SET XTIPTEXT VIEWTOP                                                       
+%  EVALUATE CTIP = CTIP + 1                                                     
+%  IF CTIP .GT. NTIPS THEN                                                      
+%      EVALUATE CTIP = 1                                                        
+%  END IF                                                                       
+%  CLEAR                                                                        
+%  INSERT '^^CO SETKEY TIP# '                                                   
+%  STORE FORMAT /(I5)/ LENGTH 6 INTEGER ( CTIP )                                
+%  OUTPUT                                                                       
+%%                                                                              
+%  VERIFY BOK MORE                                                              
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' '                                     
+%  IF VALUE .EQ. 1 THEN                                                         
+%     VERIFY ON OFF                                                             
+^^??  STAS STATE                                                                
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' '                                  
+%     IF VALUE .EQ. 2 THEN                                                      
+^^CO     SETKEY TIPS 0                                                          
+%     ELSE                                                                      
+^^CO     SETKEY TIPS 1                                                          
+%     END IF                                                                    
+^^WI  DISPOSE XTIP                                                              
+^^CR                                                                            
+%     FINISH                                                                    
+%  END IF                                                                       
+^^CO SET XTIPTEXT EMPTY                                                         
+% END LOOP                                                                      
+%END SCRIPT                                                                     
