@@ -315,23 +315,24 @@
 %       COPY 'END'                                                              
 %      END BLOCK                                                                
 %      BLOCK    % Change types                                                  
-%% Get atom type                                                                
-%       GET SILENT NOSTORE KEYWORD ' ' 'ERROR'                                  
-%       EVALUATE CTYPE = CVALUE                                                 
-%% Use YRETYPE as it checks for clashes:                                        
-%       EVALUATE CALLED = TRUE                                                  
-%       QUEUE REWIND                                                            
-%       LOOP                                                                    
-%         ON END TERMINATE                                                      
-%% Get atoms to change                                                          
-%         GET SILENT NOSTORE KEYWORD ' ' 'ERROR'                                
-%         EVALUATE CATOM = CVALUE                                               
-%         COPY '#SCRIPT YRETYPE'                                                
-%       END LOOP                                                                
-%       COPY '#EDIT'                                                            
-%       COPY 'monitor off'                                                      
-%       QUEUE PROCESS                                                           
-%       COPY 'END'                                                              
+%       COPY '#SCRIPT YRETYPES'
+%%% Get atom type                                                                
+%%       GET SILENT NOSTORE KEYWORD ' ' 'ERROR'                                  
+%%       EVALUATE CTYPE = CVALUE                                                 
+%%% Use YRETYPE as it checks for clashes:                                        
+%%       EVALUATE CALLED = TRUE                                                  
+%%       QUEUE REWIND                                                            
+%%       LOOP                                                                    
+%%         ON END TERMINATE                                                      
+%%% Get atoms to change                                                          
+%%         GET SILENT NOSTORE KEYWORD ' ' 'ERROR'                                
+%%         EVALUATE CATOM = CVALUE                                               
+%%         COPY '#SCRIPT YRETYPE'                                                
+%%       END LOOP                                                                
+%%       COPY '#EDIT'                                                            
+%%       COPY 'monitor off'                                                      
+%%       QUEUE PROCESS                                                           
+%%       COPY 'END'                                                              
 %      END BLOCK                                                                
 %      BLOCK     %Remove bar and all below                                      
 %% In QSONLY mode: remove from clicked peak until LAST; when all atoms          
