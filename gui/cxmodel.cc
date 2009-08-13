@@ -1321,15 +1321,49 @@ int CxModel::IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject *
 		
 	//Read back test pixel
 		unsigned char pixel[3];
+		int rgbHit;
 		glReadBuffer(GL_BACK);
 		glReadPixels(xPos, viewport[3] - yPos, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
+		rgbHit= ((pixel[0]&0xff)<<16) | ((pixel[1]&0xff)<<8) | (pixel[2]&0xff);
 
+		if ( rgbHit == 0 ) {
+			for ( int range = 1; range < 4; range++ ) {
+				for ( int x1 = -range; x1 <= range; ++x1 ) {
+					glReadPixels(xPos + x1, viewport[3] - range - yPos, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
+					rgbHit= ((pixel[0]&0xff)<<16) | ((pixel[1]&0xff)<<8) | (pixel[2]&0xff);
+					if ( rgbHit ) break;
+				}
+				if ( rgbHit ) break;
+				for ( int x1 = -range; x1 <= range; ++x1 ) {
+					glReadPixels(xPos + x1, viewport[3] + range - yPos, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
+					rgbHit= ((pixel[0]&0xff)<<16) | ((pixel[1]&0xff)<<8) | (pixel[2]&0xff);
+					if ( rgbHit ) break;
+				}
+				if ( rgbHit ) break;
+				for ( int y1 = -range+1; y1 <= range-1; ++y1 ) {
+					glReadPixels(xPos - range, viewport[3] + y1 - yPos, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
+					rgbHit= ((pixel[0]&0xff)<<16) | ((pixel[1]&0xff)<<8) | (pixel[2]&0xff);
+					if ( rgbHit ) break;
+				}
+				if ( rgbHit ) break;
+				for ( int y1 = -range; y1 <= range; ++y1 ) {
+					glReadPixels(xPos + range, viewport[3] + y1 - yPos, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
+					rgbHit= ((pixel[0]&0xff)<<16) | ((pixel[1]&0xff)<<8) | (pixel[2]&0xff);
+					if ( rgbHit ) break;
+				}
+				if ( rgbHit ) break;
+			}
+		}
+		
+
+
+
+		
 //		ostringstream o;
 //		o << xPos << " " << viewport[3] << " " << yPos << " " << pixel[2];
 //		LOGERR(o.str());
 
 	
-		int rgbHit= ((pixel[0]&0xff)<<16) | ((pixel[1]&0xff)<<8) | (pixel[2]&0xff);
 
 	/*	ostringstream rrr;
 		rrr << (pixel[0]&0xffffff) << " " << (pixel[1]&0xffffff) << " "  << (pixel[2]&0xffffff);
