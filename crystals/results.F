@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.146  2009/07/31 12:43:54  djw
+C Remove a spurious message about weights
+C
 C Revision 1.145  2009/07/24 14:01:21  djw
 C Compute FRIEDIF, create Friedel restraints
 C
@@ -5812,7 +5815,7 @@ C
         END IF
  
 
-      write(ncwu,*)'List 6 total', n6d, store(l30dr), store(l30dr+2),
+c      write(ncwu,*)'List 6 total', n6d, store(l30dr), store(l30dr+2),
      1 store(l30dr+4)
         IF (n6d .gt. nint(STORE(L30DR+4))) THEN
            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(a)') 'Friedels Law used'
@@ -7449,7 +7452,7 @@ c
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:)
 c
       write(cmon,'(1x,a,/,1x,a)')
-     1'Flack & Bernardinelli (2008) recommend a value >200',
+     1'Flack & Shmueli (2007) recommend a value >200',
      2'for general structures and >80 for enantiopure crystals'
       CALL XPRVDU (NCVDU,2,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(a,/a)') CMON(1)(:), CMON(2)(:)
