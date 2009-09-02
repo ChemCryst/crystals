@@ -75,6 +75,9 @@
 %     ON EDITERROR TERMINATE                                                    
 %     COPY 'TRANSFER FROM OFFSET=3 TO UISOF'                                    
 %     IF ( UISOF .GT. 0.001 ) .AND. ( UISOF .LT. 0.98 ) THEN                    
+%         if olddsc1 .ne. true then
+  Old-style Uiso entry
+%         end if
 %         EVALUATE OLDDSC1 = TRUE                                               
 %     END IF                                                                    
 %     COPY 'NEXT'                                                               
@@ -91,6 +94,9 @@
 %  CLEAR                                                                        
 %  COPY 'TRANSHEAD FROM OFFSET = 2 TO MD '                                      
 %  IF ( MD .NE. 18 ) THEN                                                       
+%    if olddsc2 .ne. true then
+  Short atom record
+%    end if
 %    EVALUATE OLDDSC2 = TRUE                                                    
 %  END IF                                                                       
 %  COPY 'END'                                                                   
