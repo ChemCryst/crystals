@@ -16,11 +16,11 @@
 %   COPY '#GENERALEDIT 4'                                                      
 %   COPY 'GETSERIAL ORIGSER'                                                    
 %   COPY 'END'     
-% SHOW ORIGSER
+%% SHOW ORIGSER
 %   IF ORIGSER .LE. 0 THEN
 %    EVALUATE ORIGSER = - ORIGSER 
 %   END IF
-% SHOW ORIGSER
+%% SHOW ORIGSER
 %%                                                                              
 ^^WI WINDOW XFOPTW 'Chebychev Weighting analysis for F' SIZE KEEP MODAL         
 ^^WI GRID BOSS NROWS=4 NCOLS=3                                                  
@@ -134,7 +134,7 @@
 %    EVALUATE WDEL5 = L4:WDEL
 %    EVALUATE SLOPE5 = L4:SLOPE
 %    EVALUATE CORR5 = L4:CORREL
-% SHOW OUTL5 WDEL5 SLOPE5 CORR5 NREF
+%% SHOW OUTL5 WDEL5 SLOPE5 CORR5 NREF
 %    EVALUATE NREF = 1000. * NREF
 %%                                                                              
 ^^CO RENAME _VFO _VF1      RENAME _VF2 _VFO                                     
@@ -164,7 +164,7 @@
 %    EVALUATE WDEL4 = L4:WDEL
 %    EVALUATE SLOPE4 = L4:SLOPE
 %    EVALUATE CORR4 = L4:CORREL
-% SHOW OUTL4 WDEL4 SLOPE4 CORR4 NREF
+%% SHOW OUTL4 WDEL4 SLOPE4 CORR4 NREF
 %    EVALUATE NREF = 1000. * NREF
 %%                                                                              
 ^^CO RENAME _VFO _VF2       RENAME _VF3 _VFO                                    
@@ -194,7 +194,7 @@
 %    EVALUATE WDEL3 = L4:WDEL
 %    EVALUATE SLOPE3 = L4:SLOPE
 %    EVALUATE CORR3 = L4:CORREL
-% SHOW OUTL3 WDEL3 SLOPE3 CORR3 NREF
+%% SHOW OUTL3 WDEL3 SLOPE3 CORR3 NREF
 %    EVALUATE NREF = 1000. * NREF
 %%                                                                              
 %%                                                                              

@@ -201,7 +201,7 @@
 %     BLOCK                                                %XPPARTS%          
 %       GET NOSTORE SILENT INTEGER ' ' '0'                                      
 %       EVALUATE ISER = VALUE
-%       SHOW ISER
+%%       SHOW ISER
 %       EVALUATE PRCHNG = TRUE                                                  
 %     END BLOCK                                                                 
 %%                                                                              

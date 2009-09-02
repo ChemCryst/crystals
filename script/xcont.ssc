@@ -211,7 +211,7 @@ view the generated sections.
 %       VERIFY ON OFF                                                           
 %       GET SILENT NOSTORE FINAL ABBREVIATED ' '                                
 %       EVALUATE DOVOID = VALUE                                                 
-% SHOW DOVOID                                                                   
+%% SHOW DOVOID                                                                   
 %%                                                                              
 ^^??    XMCEPF STATE                                                            
 %       VERIFY OFF ON                                                           
@@ -259,7 +259,7 @@ view the generated sections.
 %         END IF                                                                
 %       END IF                                                                  
                                                                                 
-% SHOW IMAP DOVOID                                                              
+%% SHOW IMAP DOVOID                                                              
                                                                                 
 %      IF IMAP .NE. 0 THEN                                                      
 %       BLOCK                                                                   
@@ -415,7 +415,7 @@ view the generated sections.
 ^^CO DISPOSE XCONT                                                              
 ^^CO SET PROGOUTPUT TEXT='Slant Fourier complete.'                              
 %%                                                                              
-% SHOW RUNVIEWER                                                                
+%% SHOW RUNVIEWER                                                                
 %%                                                                              
 %         CASE RUNVIEWER + 1                                                    
 %           BLOCK    % Don't run                                                
