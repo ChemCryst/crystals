@@ -48,6 +48,7 @@ Found LIST 5 - Atoms
 Reformatting atom list                                                          
 %  COPY '#EDIT'                                                                 
 %  COPY 'REFORMAT ALL'                                                          
+%  COPY 'CHANGE FIRST(flag) UNTIL LAST 1.0'                                  
 %  COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0'                                  
 %  COPY 'INSERT RESIDUE'                                                    
 %  COPY 'END'                                                                   
