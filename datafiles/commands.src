@@ -703,7 +703,7 @@ EXTINCTION  PARAMETERS
 (1X,9F12.5)
          2
     .PARAMETER          0    0    1    0    0 0.0
-MATRIX    11       4    0
+LS-MATRIX 11       4    0
   11   40960 CRYSTALSINPUT
    1.L.H.S.             0    0    0    0    1   -4 -101    1   11
          0    0    0    0    0    0    0    0    0    0
