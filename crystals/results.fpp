@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.147  2009/09/02 07:03:37  djw
+C Remove debugging print, correct Flack refernce
+C
 C Revision 1.146  2009/07/31 12:43:54  djw
 C Remove a spurious message about weights
 C
@@ -5816,7 +5819,7 @@ C
  
 
 c      write(ncwu,*)'List 6 total', n6d, store(l30dr), store(l30dr+2),
-     1 store(l30dr+4)
+c     1 store(l30dr+4)
         IF (n6d .gt. nint(STORE(L30DR+4))) THEN
            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(a)') 'Friedels Law used'
 C----- FRIEDELS LAW USED
