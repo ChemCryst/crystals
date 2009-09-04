@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   10.6.1998 13:06 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.21  2009/07/23 14:15:42  rich
+//   Removed all uses of OpenGL feedback buffer - was dreadful slow on some new graphics cards.
+//
 //   Revision 1.20  2005/01/23 10:20:24  rich
 //   Reinstate CVS log history for C++ files and header files. Recent changes
 //   are lost from the log, but not from the files!
@@ -86,6 +89,7 @@ public:
    int radius_type;
    float radius_scale;
    int normal_res;
+   bool showh;
    CxModel* m_modview;
 };
 
@@ -179,6 +183,7 @@ class   CrModel : public CrGUIElement
 #define kSZoomSelected      "ZOOMATOMS"
 #define kSSelectFrag        "SELFRAG"
 #define kSLoadBitmap        "LOADBITMAP"
+#define kSShowH             "SHOWH"
 
 enum
 {
@@ -217,7 +222,8 @@ enum
  kTRotateTool,
  kTZoomSelected,
  kTSelectFrag,
- kTLoadBitmap
+ kTLoadBitmap,
+ kTShowH
 };
 
 

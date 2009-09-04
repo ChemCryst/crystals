@@ -1,28 +1,32 @@
-%
-%  The model window toolbar
-%
-^^WI               @ 1,1 TOOLBAR _MODBAR
-^^WI               {
-^^WI                 TOOL _MROT tool_rot.bmp 'Rotate'
-^^WI                 '#SCRIPT XMODVIEW_NROT' DISABLEIF='IN'
-^^WI                 ITEM _MROT STATE=ON
-^^WI                 TOOL _MRECT tool_rect.bmp 'Select'
-^^WI                 '#SCRIPT XMODVIEW_NSEL' DISABLEIF='IN'
-^^WI                 TOOL _MPOLY tool_poly.bmp 'Polygon'
-^^WI                 '#SCRIPT XMODVIEW_NPOLY' DISABLEIF='IN'
-^^WI                 TOOL _UNSEL tool_unsl.bmp 'UnSelect'
-^^WI                 '^^CO SET MODEL01 SELECT ALL=NO'
-^^WI                 ENABLEIF='L1 L2 L5' DISABLEIF='SEL0'
-^^WI                 SPLIT
-^^WI                 TOOL _MZOOM tool_zoom.bmp 'Zoom'
-^^WI                 '^^CO SET MODEL01 ZOOMATOMS YES' DISABLEIF='SEL0'
-^^WI                 TOOL _MZOOM tool_norm.bmp 'UnZoom'
-^^WI                 '^^CO SET MODEL01 AUTOSIZE=YES ZOOMATOMS=NO'
-^^WI                 ENABLEIF='ZOOMED'
-^^WI                 SPLIT
-^^WI                 TOOL _MBALL tool_ball.bmp 'Ball'
-^^WI                 '#SCRIPT XMODVIEW_NCOV' DISABLEIF='IN' ENABLEIF='L5'
-^^WI                 ITEM _MBALL STATE=ON
-^^WI                 TOOL _MADP tool_adp.bmp 'Ellipse'
-^^WI                 '#SCRIPT XMODVIEW_NTHERM' DISABLEIF='IN' ENABLEIF='L5'
-^^WI               }
+%                                                                               
+%  The model window toolbar                                                     
+%                                                                               
+^^WI               @ 1,1 TOOLBAR _MODBAR                                        
+^^WI               {                                                            
+^^WI                 TOOL _MROT tool_rot.bmp 'Rotate'                           
+^^WI                 '#SCRIPT XMODVIEW_NROT' DISABLEIF='IN'                     
+^^WI                 ITEM _MROT STATE=ON                                        
+^^WI                 TOOL _MRECT tool_rect.bmp 'Select'                         
+^^WI                 '#SCRIPT XMODVIEW_NSEL' DISABLEIF='IN'                     
+^^WI                 TOOL _MPOLY tool_poly.bmp 'Polygon'                        
+^^WI                 '#SCRIPT XMODVIEW_NPOLY' DISABLEIF='IN'                    
+^^WI                 TOOL _UNSEL tool_unsl.bmp 'UnSelect'                       
+^^WI                 '^^CO SET MODEL01 SELECT ALL=NO'                           
+^^WI                 ENABLEIF='L1 L2 L5' DISABLEIF='SEL0'                       
+^^WI                 SPLIT                                                      
+^^WI                 TOOL _MZOOM tool_zoom.bmp 'Zoom'                           
+^^WI                 '^^CO SET MODEL01 ZOOMATOMS YES' DISABLEIF='SEL0'          
+^^WI                 TOOL _MZOOM tool_norm.bmp 'UnZoom'                         
+^^WI                 '^^CO SET MODEL01 AUTOSIZE=YES ZOOMATOMS=NO'               
+^^WI                 ENABLEIF='ZOOMED'                                          
+^^WI                 SPLIT                                                      
+^^WI                 TOOL _MBALL tool_ball.bmp 'Ball'                           
+^^WI                 '#SCRIPT XMODVIEW_NCOV' DISABLEIF='IN' ENABLEIF='L5'       
+^^WI                 ITEM _MBALL STATE=ON                                       
+^^WI                 TOOL _MADP tool_adp.bmp 'Ellipse'                          
+^^WI                 '#SCRIPT XMODVIEW_NTHERM' DISABLEIF='IN' ENABLEIF='L5'     
+^^WI                 SPLIT                                                      
+^^WI                 TOOL _MSHOWH tool_showh.bmp 'Show/Hide Hydrogen'                           
+^^WI                 '#SCRIPT XMODVIEW_NTOGGLEH' DISABLEIF='IN' ENABLEIF='L5'       
+^^WI                 ITEM _MSHOWH STATE=ON                                       
+^^WI               }                                                            

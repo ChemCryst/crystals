@@ -7,6 +7,10 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:44
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.1.1.1  2004/12/13 11:16:18  rich
 //   New CRYSTALS repository
 //
@@ -62,6 +66,7 @@ class   CrToolBar : public CrGUIElement
    void    SetText( const string &text );
    CcTool* FindTool(int ID);
    void    CxEnable(bool enable, int id);
+	void  GetValue( deque<string> &  tokenList );
 
 
    static int FindFreeToolId();

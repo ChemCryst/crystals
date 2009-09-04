@@ -7,6 +7,9 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.41  2009/07/23 14:15:42  rich
+//  Removed all uses of OpenGL feedback buffer - was dreadful slow on some new graphics cards.
+//
 //  Revision 1.40  2008/09/22 12:31:37  rich
 //  Upgrade GUI code to work with latest wxWindows 2.8.8
 //  Fix startup crash in OpenGL (cxmodel)
@@ -287,7 +290,7 @@ class CxModel : public BASEMODEL
     BITMAPINFO * m_bitmapinfo;
 #endif
 
-
+protected:
     int m_DrawStyle;         // Rendering style
     bool m_Autosize;      // Resize when rotating?
     bool m_Hover;         // Highlight atoms on hover?

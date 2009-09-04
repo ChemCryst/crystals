@@ -115,6 +115,15 @@ void CcModelBond::ParseInput(deque<string> &  tokenList)
 void CcModelBond::Render(CcModelStyle *style, bool feedback)
 {
 
+	if ( !style->showh ) {
+		if (m_patms.size() > 1 ) {
+			if ( (m_patms[0]->Label().length() > 1) && (m_patms[0]->Label()[0] == 'H')&& (m_patms[0]->Label()[1] == '(')) return;
+			if ( (m_patms[1]->Label().length() > 1) && (m_patms[1]->Label()[0] == 'H')&& (m_patms[1]->Label()[1] == '(')) return;
+		}
+	}
+
+
+
    float vecX, vecY, vecZ;
 
    if ( ( m_bondtype >= 2 ) && ( m_bondtype <= 4 ) )

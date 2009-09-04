@@ -9,6 +9,11 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.111  2008/09/22 12:31:37  rich
+// Upgrade GUI code to work with latest wxWindows 2.8.8
+// Fix startup crash in OpenGL (cxmodel)
+// Fix atom selection infinite recursion in cxmodlist
+//
 // Revision 1.110  2005/02/22 22:41:46  stefan
 // 1. Removal of useless intermediat string
 //
@@ -2993,6 +2998,7 @@ int CcController::GetDescriptor( string &token, int descriptorClass )
                else DESCRIPTOR(PlotPrint)
                else DESCRIPTOR(PlotSave)
                else DESCRIPTOR(Save)
+               else DESCRIPTOR(ShowH)
              break;
 
       case kChartClass:

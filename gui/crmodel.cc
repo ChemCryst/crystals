@@ -6,6 +6,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.36  2009/07/23 14:15:42  rich
+//   Removed all uses of OpenGL feedback buffer - was dreadful slow on some new graphics cards.
+//
 //   Revision 1.35  2005/01/23 10:20:24  rich
 //   Reinstate CVS log history for C++ files and header files. Recent changes
 //   are lost from the log, but not from the files!
@@ -126,6 +129,7 @@ CrModel::CrModel( CrGUIElement * mParentPtr )
   m_style.radius_type = COVALENT;
   m_style.radius_scale = 0.25;
   m_style.m_modview = (CxModel*)ptr_to_cxObject;
+  m_style.showh = true;
 }
 
 CrModel::~CrModel()
@@ -253,6 +257,15 @@ CcParse CrModel::ParseInput( deque<string> &  tokenList )
         tokenList.pop_front(); // Remove that token!
         m_style.radius_scale = float(atoi(tokenList.front().c_str()))/1000.0f;
         tokenList.pop_front();
+        Update(true);
+        break;
+      }
+      case kTShowH:
+      {
+        tokenList.pop_front(); // Remove that token!
+        bool select = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes);
+        tokenList.pop_front();
+        m_style.showh = select;
         Update(true);
         break;
       }

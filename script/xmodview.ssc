@@ -1,29 +1,44 @@
-%SCRIPT XMODVIEW
-% VERIFY THERM COV ROT SEL POLY
-% GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-% CASE VALUE
-%  BLOCK
-^^CO SET _MODBAR ITEM _MADP STATE ON ITEM _MBALL STATE OFF
-^^CO SET MODEL01 RADTYPE=THERMAL RADSCALE=250
-%  END BLOCK
-%  BLOCK
-^^CO SET _MODBAR ITEM _MBALL STATE ON ITEM _MADP STATE OFF
-^^CO SET MODEL01 RADTYPE=COV RADSCALE=250
-%  END BLOCK
-%  BLOCK
-^^CO SET _MODBAR ITEM _MROT STATE ON
-^^CO SET _MODBAR ITEM _MRECT STATE OFF ITEM _MPOLY STATE OFF
-^^CO SET MODEL01 MODROTATE
-%  END BLOCK
-%  BLOCK
-^^CO SET _MODBAR ITEM _MRECT STATE ON
-^^CO SET _MODBAR ITEM _MROT STATE OFF ITEM _MPOLY STATE OFF
-^^CO SET MODEL01 MODSELECT
-%  END BLOCK
-%  BLOCK
-^^CO SET _MODBAR ITEM _MPOLY STATE ON
-^^CO SET _MODBAR ITEM _MROT STATE OFF ITEM _MRECT STATE OFF
-^^CO SET MODEL01 MODSELECT POLY
-%  END BLOCK
-% END CASE
-%END SCRIPT
+%SCRIPT XMODVIEW                                                                
+% VERIFY THERM COV ROT SEL POLY TOGGLEH
+% GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                  
+% CASE VALUE                                                                    
+%  BLOCK                                                                        
+^^CO SET _MODBAR ITEM _MADP STATE ON ITEM _MBALL STATE OFF                      
+^^CO SET MODEL01 RADTYPE=THERMAL RADSCALE=250                                   
+%  END BLOCK                                                                    
+%  BLOCK                                                                        
+^^CO SET _MODBAR ITEM _MBALL STATE ON ITEM _MADP STATE OFF                      
+^^CO SET MODEL01 RADTYPE=COV RADSCALE=250                                       
+%  END BLOCK                                                                    
+%  BLOCK                                                                        
+^^CO SET _MODBAR ITEM _MROT STATE ON                                            
+^^CO SET _MODBAR ITEM _MRECT STATE OFF ITEM _MPOLY STATE OFF                    
+^^CO SET MODEL01 MODROTATE                                                      
+%  END BLOCK                                                                    
+%  BLOCK                                                                        
+^^CO SET _MODBAR ITEM _MRECT STATE ON                                           
+^^CO SET _MODBAR ITEM _MROT STATE OFF ITEM _MPOLY STATE OFF                     
+^^CO SET MODEL01 MODSELECT                                                      
+%  END BLOCK                                                                    
+%  BLOCK                                                                        
+^^CO SET _MODBAR ITEM _MPOLY STATE ON                                           
+^^CO SET _MODBAR ITEM _MROT STATE OFF ITEM _MRECT STATE OFF                     
+^^CO SET MODEL01 MODSELECT POLY                                                 
+%  END BLOCK                                                                    
+%  BLOCK                                                                        
+^^?? _MODBAR STATE _MSHOWH
+%   VERIFY ON OFF
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                  
+%   CASE VALUE
+%    BLOCK
+^^CO SET _MODBAR ITEM _MSHOWH STATE OFF
+^^CO SET MODEL01 SHOWH NO
+%    END BLOCK                                                                    
+%    BLOCK
+^^CO SET _MODBAR ITEM _MSHOWH STATE ON
+^^CO SET MODEL01 SHOWH YES
+%    END BLOCK                                                                    
+%   END CASE                                                                      
+%  END BLOCK                                                                    
+% END CASE                                                                      
+%END SCRIPT                                                                     

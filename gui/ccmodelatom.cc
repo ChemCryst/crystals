@@ -222,16 +222,13 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
 
 
 
-  if (style->radius_type == COVALENT)
-  {
-    gluSphere(sphere, (covrad + extra ) * style->radius_scale,detail,detail);
-  }
-  else if(style->radius_type == VDW)
-  {
+  if ( (!style->showh) && ( m_label.length() > 1 ) && ( m_label[0] == 'H' ) && ( m_label[1] == '(' ) ) {
+		// draw nothing
+  } else if (style->radius_type == COVALENT) {
+		gluSphere(sphere, (covrad + extra ) * style->radius_scale,detail,detail);
+  } else if(style->radius_type == VDW) {
     gluSphere(sphere, ((float)vdwrad + extra ) * style->radius_scale,detail,detail);
-  }
-  else if(style->radius_type == SPARE)
-  {
+  } else if(style->radius_type == SPARE) {
     if ( m_label.length() && ( m_label[0] == 'Q' ) )
     {
       gluSphere(sphere, ((float)sparerad + extra ) * style->radius_scale,detail,detail);
@@ -240,11 +237,8 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
     {
       gluSphere(sphere, (covrad + extra ) * style->radius_scale,detail,detail);
     }
-  }
-  else if(style->radius_type == THERMAL)
-  {
-    if ( m_IsADP)
-    {
+  } else if(style->radius_type == THERMAL) {
+    if ( m_IsADP) {
      glMultMatrixf(*&localmatrix);
      gluSphere(sphere, ( 1.0f + (extra / 1000.0f) ), detail,detail);
 
@@ -274,9 +268,7 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
       gluCylinder(cylinder,1.02f + ((float)extra / 1000.0f),1.02f + ((float)extra / 1000.0f),0.1f, detail, detail);
       gluDeleteQuadric(cylinder);
 	 }
-    }
-    else
-    {
+    } else {
       gluSphere(sphere, x11 + extra, detail, detail);
     }
   }

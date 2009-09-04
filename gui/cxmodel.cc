@@ -1266,6 +1266,7 @@ int CxModel::IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject *
 	bool ok_to_draw = true;
 
 	if ( ! m_bPickListOK ) {
+		setCurrentGL();
 		glDeleteLists(PICKLIST,1);
 		glNewList( PICKLIST, GL_COMPILE);
 		bool tex2DIsEnabled = glIsEnabled(GL_TEXTURE_2D);

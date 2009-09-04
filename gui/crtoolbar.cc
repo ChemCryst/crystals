@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper
 //   Created:   26.1.2001 17:10 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.1.1.1  2004/12/13 11:16:18  rich
 //   New CRYSTALS repository
 //
@@ -229,6 +233,34 @@ CcParse CrToolBar::ParseInput( deque<string> & tokenList )
   }
   return ( retVal );
 }
+
+
+void  CrToolBar::GetValue( deque<string> &  tokenList )
+{
+    if( CcController::GetDescriptor( tokenList.front(), kQueryClass ) == kTQState ) {
+
+		tokenList.pop_front();
+		CcTool* nt = FindAnyTool(tokenList.front());
+        tokenList.pop_front();
+
+		bool on = false;
+		
+		if ( nt ) {
+           on = ((CxToolBar*)ptr_to_cxObject)->GetToolState(nt->CxID);
+		}
+		if ( on ) {
+            SendCommand( kSOn,true);
+        } else {
+            SendCommand( kSOff,true);
+		}
+    } else {
+        SendCommand( "ERROR",true );
+        LOGWARN( "CrCheckBox:GetValue Error unrecognised token." + tokenList.front() );
+        tokenList.pop_front();
+    }
+}
+
+
 
 void CrToolBar::CrFocus()
 {

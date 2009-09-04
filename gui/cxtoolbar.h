@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:50
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.1.1.1  2004/12/13 11:16:18  rich
 //   New CRYSTALS repository
 //
@@ -87,6 +91,7 @@ class CxToolBar : public BASETOOLBAR
      int GetIdealHeight();
      void CxEnable(bool enable, int id);
      void CheckTool(bool check, int id);
+     bool GetToolState(int id);
      void Focus();
      void CxDestroyWindow();
 

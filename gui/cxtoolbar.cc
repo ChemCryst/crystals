@@ -5,6 +5,11 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.21  2008/09/22 12:31:37  rich
+//   Upgrade GUI code to work with latest wxWindows 2.8.8
+//   Fix startup crash in OpenGL (cxmodel)
+//   Fix atom selection infinite recursion in cxmodlist
+//
 //   Revision 1.20  2005/01/23 10:20:24  rich
 //   Reinstate CVS log history for C++ files and header files. Recent changes
 //   are lost from the log, but not from the files!
@@ -517,9 +522,19 @@ void CxToolBar::CheckTool(bool check, int id)
 #ifdef __BOTHWX__
  m_ToolBar->ToggleTool(id, check);
 #endif
-
-
 }
+
+bool CxToolBar::GetToolState(int id) {
+	bool cstate = false;
+#ifdef __CR_WIN__
+	cstate = (m_ToolBar->GetState(id) & TBSTATE_CHECKED);
+#endif
+#ifdef __BOTHWX__
+	cstate = m_ToolBar->GetToolState(id);
+#endif
+	return cstate;
+}
+
 
 
 #ifdef __CR_WIN__
