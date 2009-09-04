@@ -65,6 +65,15 @@ CXSETGEOMETRY(CxListCtrl)
 CXGETGEOMETRIES(CxListCtrl)
 
 
+void CxListCtrl::CxClear(){
+    mItems = 0;
+    mVisibleLines = 0;
+    m_nHighlight = HIGHLIGHT_ROW;
+    bSortAscending = true;
+    DeleteAllItems();
+    m_originalIndex.clear();
+}
+
 int CxListCtrl::GetIdealWidth()
 {
     int totWidth = 15; // 5 pixels extra.

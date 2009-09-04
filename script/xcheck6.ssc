@@ -311,6 +311,7 @@
 ^^CO SENDPROGRESSTO _CHECKPR                                                    
 %%                                                                              
 % LOOP                                                                          
+^^CO SET LMISSING EMPTY
 ^^CO SET PROGOUTPUT TEXT 'Computing completeness'                               
 %  COPY '#THLIM'                                                                
 %  COPY 'OUTPUT PLOT=YES GLIST=YES'                                             
@@ -448,7 +449,7 @@
 ^^PL SERIES 1 SERIESNAME 'Merging R factor'                                     
 ^^PL SERIES 2 SERIESNAME 'Number > given I/sigma(I)' TYPE LINE USERIGHTAXIS     
 %%                                                                              
-% LOOP                                                                          
+% LOOP
 %  ON ERROR TERMINATE                                                           
 %  ON END TERMINATE                                                             
 %%                                                                              
@@ -466,9 +467,9 @@
 %  IF MRGR .LT. 0.0 THEN                                                        
 %   EVALUATE MRGR = - MRGR                                                      
 %  END IF                                                                       
-%% avoid problems with Rmerge exactly zero
+%% avoid problems with Rmerge exactly zero                                      
 %  IF MRGR .LT. 0.1 THEN                                                        
-%   EVALUATE MRGR = 0.1                                                      
+%   EVALUATE MRGR = 0.1                                                         
 %  END IF                                                                       
 %  STORE REAL MRGR                                                              
 %  GET NOSTORE NOPROMPT INTEGER ' ' '-1'                                        

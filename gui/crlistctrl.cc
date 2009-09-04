@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper
 //   Created:   10.11.1998 16:36
 //   $Log: not supported by cvs2svn $
+//   Revision 1.15  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.1.1.1  2004/12/13 11:16:17  rich
 //   New CRYSTALS repository
 //
@@ -182,6 +186,12 @@ CcParse CrListCtrl::ParseInput( deque<string> &  tokenList )
                   tokenList.pop_front(); //Remove SetSelection token!
                   ((CxListCtrl*)ptr_to_cxObject)->CxSetSelection(atoi ( tokenList.front().c_str() ));
                   tokenList.pop_front(); //Remove number token!
+                  break;
+            }
+            case kTEmpty:
+            {
+                  tokenList.pop_front(); //Remove Empty token!
+                  ((CxListCtrl*)ptr_to_cxObject)->CxClear();
                   break;
             }
             case kTSortColumn:
