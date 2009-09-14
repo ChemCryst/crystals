@@ -1,4 +1,4 @@
-%SCRIPT ROTAX
+%SCRIPT XROTAX
 % VARIABLE INTEGER NFOM
 % VARIABLE REAL TWINTOL BINMAX
 % VARIABLE LOGICAL L ADD25 CANCEL25
@@ -407,6 +407,24 @@
 %           COPY '#spawn rotax.lis'
 %         END BLOCK
 %         BLOCK
+%%
+%%
+%%                             
+                                                 
+%      EVALUATE QTITLE = 'Backup before ROTAX'                              
+%      EVALUATE QLINE1 = 'Do you want to backup your'                           
+%      EVALUATE QLINE2 = 'dsc before running ROTAX?'                         
+%      EVALUATE BUTTOK = '&Yes'                                                 
+%      EVALUATE BUTTXX = '&No'                                                  
+%      COPY '#SCRIPT XQUESTIO'                                                  
+%      IF ANSWER .EQ. TRUE THEN                                                 
+%        COPY '#PURGE pre-rotax'                                            
+%        copy 'end'                                                             
+%      END IF                                                                   
+%%                                                                              
+
+%%
+%%
 ^^??        M11 TEXT            
 %           GET NOSTORE SILENT REAL ' ' '1.0'
 %           EVALUATE MATRIX:M11 = VALUE
