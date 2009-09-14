@@ -655,7 +655,7 @@
 %       LOOP                                                                    
 %         ON EDITERROR TERMINATE                                                
 %         COPY 'TRANSFER FROM OFFSET=14 TO ICUR'                                
-%         EVALUATE IASSMEB = ( ICUR IDECMASK 111000 ) / 1000                    
+%         EVALUATE IASSEMB = ( ICUR IDECMASK 111000 ) / 1000                    
 %         IF ( IASSEMB .EQ. ISELGR ) THEN                                       
 %           EVALUATE ICUR = 0                                                   
 %           COPY 'TRANSFER TO OFFSET=14 FROM ICUR'                              
