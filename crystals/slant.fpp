@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2009/07/31 12:42:05  djw
+C Remove de-bugging out put from the monitor
+C
 C Revision 1.21  2008/01/03 13:10:46  djw
 C Add 2Fo-Fc map type
 C
@@ -1031,8 +1034,9 @@ C--'FC' PATTERSON
       GOTO 2350
 c--'2Fo-Fc' Fourier
 2310  continue
-      F=2.*STORE(I+3)-STORE(I+5)
-      GOTO 2350
+      F=2. * STORE(I+3)-STORE(I+5)
+csep09      GOTO 2350
+      GOTO 2400
 C--ACCUMULATE THE ORIGIN FOR SCALING
 2350  CONTINUE
       STORE(I+6)=0.
