@@ -20,7 +20,7 @@
 ^^WI SENDTEXTTO XTIPTEXT                                                        
 ^^CR                                                                            
 % LOOP                                                                          
-%  EVALUATE NTIPS = 28                                                          
+%  EVALUATE NTIPS = 30                                                          
 ^^CO  GETKEY TIP#                                                               
 %  GET SILENT NOSTORE FINAL INTEGER '1' '1'                                     
 %  EVALUATE CTIP = VALUE                                                        
@@ -292,6 +292,40 @@ to get a new, small file xxx.dsc
 or #PURGE DATE                                                                  
 to get a file abcdef.DSC , where abcdef is the date and time.  Very             
 useful for e-mailing or archiving CRYSTALS data.                                
+%   END BLOCK                                                                   
+%   BLOCK % TIP29
+If you try to use the tab "Files" to look at one of the active text 
+files (.lis, .log, .pch) you may get a warning that the file is already
+in use, depending upon what you have set as your default text editor.
+On the tab, note the name of the current file, and then on the Command 
+Line type (for example):
+
+$notapad bfile#02.lis
+
+%   END BLOCK                                                                   
+%   BLOCK % TIP30
+If you wish to make the smallest possible .dsc file to e-mail to someone,
+delete LISTS which can easily be re-created by the recipient.  Do:
+
+#disk
+del 11
+del 22
+del 26
+del 41
+end
+#purge newfile
+end
+
+The recipient then simply has to start CRYSTALS and issue:
+
+#sfls
+refine
+shift general=0
+end
+
+to recreate the full dsc file.  This job performs a cycle of refinement, 
+but does not apply the shifts. 
+
 %   END BLOCK                                                                   
 %  END CASE                                                                     
 ^^CO SET XTIPTEXT VIEWTOP                                                       
