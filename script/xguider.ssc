@@ -7,7 +7,7 @@
 %%                                                                              
 %  VARIABLE LOGICAL HDONE EDONE WDONE HINCELL                                   
 %  VARIABLE INTEGER ADP                                                         
-%  VARIABLE INTEGER FOLD  
+%  VARIABLE INTEGER FOLD                                                        
 %%                                                                              
 %  VARIABLE INTEGER KTDEFA                                                      
 %% KTDEFA  =                                                                    
@@ -71,35 +71,39 @@
 %    COPY '#SFLS'                                                               
 %    COPY 'SCALE'                                                               
 %    COPY 'END'                                                                 
-%  BLOCK                                                                         
-%   EVALUATE FOLD = 1                                                            
-%   IF EXISTS 23 .GE. 1 THEN                                                     
-%    COPY '#GENERALEDIT 23'                                                      
-%    COPY 'LOCATE RECORDTYPE = 103'                                              
-%    COPY 'TRANSFER FROM OFFSET =  1 TO FOLD'                                    
-%    COPY 'END'                                                                  
+%  BLOCK                                                                        
+%   EVALUATE FOLD = 1                                                           
+%   IF EXISTS 23 .GE. 1 THEN                                                    
+%    COPY '#GENERALEDIT 23'                                                     
+%    COPY 'LOCATE RECORDTYPE = 103'                                             
+%    COPY 'TRANSFER FROM OFFSET =  1 TO FOLD'                                   
+%    COPY 'END'                                                                 
 %%       FOLD = -1 for F, or 0 for F**2                                         
 %%                                                                              
-%    IF FOLD .EQ. 0 THEN                                                          
-%% FSQ                                                 
-{1,8 Set SHELX default weights
+%    IF FOLD .EQ. 0 THEN                                                        
+%% FSQ                                                                          
+{1,8 Set SHELX default weights                                                  
 %% statistical weights seem to cause instabilities in some cases 11/11/07       
-%% Sept 08.  Problem was probably due to absence of Fc values
-%% Dec 08. Now problems with Cu data (Peach)
+%% Sept 08.  Problem was probably due to absence of Fc values                   
+%% Dec 08. Now problems with Cu data (Peach) 
+%% Sept 09. More problems. Oxford Diffraction data is on massive scale.
+%% Need something much more clever. Re-introduce scheme 16 for moment                                   
 %          COPY '#LIST 4'                                                       
-%% temp-dec-08          COPY 'SCHEME NUMBER=16, NPARAM=6'                                    
-{I         Quasi-statistical weighting , P(1)=.1 ,p(5)=0.33333
-%% temp-dec-08         COPY 'PARAM .1 0 0 0 0 0.33333'                                     
-%         COPY 'END'
-%    END IF                                                                       
-%   END IF                                                                       
-%  END BLOCK                                                                     
+{I         Quasi-statistical weighting , P(1)=.1 ,p(5)=0.33333                  
+%% temp-dec-08          COPY 'SCHEME NUMBER=16, NPARAM=6'                       
+%          COPY 'SCHEME NUMBER=16, NPARAM=6'                       
+%% temp-dec-08         COPY 'PARAM .1 0 0 0 0 0.33333'                          
+%         COPY 'PARAM .1 0 0 0 0 0.33333'                          
+%         COPY 'END'                                                            
+%    END IF                                                                     
+%   END IF                                                                      
+%  END BLOCK                                                                    
 %    COPY '#SFLS'                                                               
 %    COPY 'SCALE'                                                               
 %    COPY 'END'                                                                 
-%    COPY '#SFLS'
-%    COPY 'CALC'
-%    COPY 'END'
+%    COPY '#SFLS'                                                               
+%    COPY 'CALC'                                                                
+%    COPY 'END'                                                                 
 %    COPY '#SCRIPT RFACTOR'                                                     
 %  END IF                                                                       
 %  EVALUATE RMIN = R                                                            
@@ -151,8 +155,8 @@
 ^^WI     'n-Cycles'                                                             
 ^^WI     '6-Cycles'                                                             
 ^^WI     'Validate'                                                             
-^^WI     'Publish'
-^^WI     'Refine Hydrogen'                                                              
+^^WI     'Publish'                                                              
+^^WI     'Refine Hydrogen'                                                      
 ^^WI     NULL                                                                   
 ^^WI   @ 3,1 GRID BTNS NROWS=1 NCOLS=4                                          
 ^^WI   {                                                                        
@@ -322,13 +326,16 @@
 %%                                                                              
 %%                                                                              
 %%                                                                              
-%%  $Log: not supported by cvs2svn $
-%%  Revision 1.15  2008/09/16 10:58:15  djw
-%%  Remove Fc from SHELX weigting until after a model has been input and a scalefactor found
-%%
-%%  Revision 1.14  2007/03/08 08:51:38  djw
-%%  Provide menu item for refineing only H atoms
-%%                                                       
+%%  $Log: not supported by cvs2svn $                                                       
+%%  Revision 1.16  2008/12/18 16:48:46  djw                                     
+%%  Still probelms with choosing weights at the start of a refinement - this tim
+%%                                                                              
+%%  Revision 1.15  2008/09/16 10:58:15  djw                                     
+%%  Remove Fc from SHELX weigting until after a model has been input and a scale
+%%                                                                              
+%%  Revision 1.14  2007/03/08 08:51:38  djw                                     
+%%  Provide menu item for refineing only H atoms                                
+%%                                                                              
 %%  Revision 1.13  2005/01/23 10:00:25  rich                                    
 %%  Reinstate CVS history for scripts. History from Dec23 - Jan23 is lost, but  
 %%  changes are not!                                                            
