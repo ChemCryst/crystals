@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.148  2009/09/02 08:42:12  djw
+C Fix typo
+C
 C Revision 1.147  2009/09/02 07:03:37  djw
 C Remove debugging print, correct Flack refernce
 C
@@ -4396,8 +4399,9 @@ C----- CLEAR OUT THE PAGE BUFFER
 
       IF ( IPUNCH .EQ. 0 ) THEN
         WRITE (NCFPU1,'(''data_global '')')
-        WRITE (NCFPU1,'(''_audit_creation_date  '',6X, 3(A2,A))')
-     1         CBUF(7:8),'-',CBUF(4:5),'-',CBUF(1:2)
+        WRITE (NCFPU1,'(''_audit_creation_date  '',6X, 
+     1  ''"'',3(A2,A))')
+     2  CBUF(7:8),'-',CBUF(4:5),'-',CBUF(1:2),'"'
         WRITE (NCFPU1,
      1   '(''_audit_creation_method CRYSTALS_ver_'',F5.2)')
      1    0.01*FLOAT(ISSVER)
@@ -6801,7 +6805,7 @@ C
 
       CHARACTER *1 CSIGN
       CHARACTER*80 LINE
-      CHARACTER*30 FORM
+      CHARACTER*40 FORM
       CHARACTER *15 HKLLAB
 C 
       INCLUDE 'ISTORE.INC'
@@ -7559,7 +7563,7 @@ C P2(True)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
          IF (XPLL2.GT.0.001) THEN
             WRITE (FORM,750) XPLL2, XPLL2
-750         FORMAT (X,F9.4, 3X, '(', E12.6, ')' )
+750         FORMAT (X,F9.4, 3X, 'i.e. ', E12.6 )
          ELSE IF (XPLL2.LT.0.0) THEN
             WRITE (FORM,800)
 800         FORMAT (6X,'n/a')
