@@ -1,4 +1,41 @@
 C $Log: not supported by cvs2svn $
+C  LIST 6 PUNCH KEYS
+C           A    B    C    D    E    F    G    H
+C      GOTO (7310,7340,7320,7330,7350,7360,7370,7380 ) ICLASS+2
+C--NORMAL PUNCH FORMAT - A
+C7310  CONTINUE
+C      CALL XPCH6G(LSTNO,ICLASS)
+C      RETURN
+C--NORMAL DATA, ONE REFLECTION PRE CARD - C
+C7320  CONTINUE
+cdjwmar08 - ENSURE LIST 6 IS PUNCHED AS LIST 6
+C      CALL XPCH6S(LSTNO,LSTNO)
+C      RETURN
+C--OBSERVED QUANTITIES ONLY - D
+C7330  CONTINUE
+C      CALL XPCH6O(LSTNO)
+C      RETURN
+C----- CIF OUTPUT F's - B
+C7340  CONTINUE
+C      CALL XPCH6C(LSTNO,0)
+C      RETURN
+C----- CIF OUTPUT F^2's - E
+C7350  CONTINUE
+C      CALL XPCH6C(LSTNO,1)
+C      RETURN
+C----- PLAIN SHELX HKL OUTPUT  - F
+C7360  CONTINUE
+C      CALL XPCH6X(LSTNO,0)
+C      RETURN
+C----- SHELX HKL OUTPUT of FC with made up sigmas. - G
+C7370  CONTINUE
+C      CALL XPCH6X(LSTNO,1)
+C----- CIF OUTPUT F^2's  on scale of Fc- H
+C7380  CONTINUE
+C      CALL XPCH6C(LSTNO,2)
+C Revision 1.50  2009/03/24 08:06:33  djw
+C Make the SHELX TITL card in the HKL file a REMark
+C
 C Revision 1.49  2008/10/01 11:11:54  djw
 C Support for treatment of Deuterium as hydrogen
 C
@@ -1054,8 +1091,9 @@ CDJW02      CALL XRDOPN(6, KDEV , CSSFCF, LSSFCF)
       WRITE(NCFPU1, '(''data_1 '')')
       WRITE(NCFPU1, '(''#  '',10A4)') (KTITL(I),I=1,10)
       CALL XDATER ( CBUF(1:8))
-      WRITE(NCFPU1,'(''_audit_creation_date  '',6X, 3(A2,A))')
-     1 CBUF(7:8),'-',CBUF(4:5),'-',CBUF(1:2)
+      WRITE(NCFPU1,'(''_audit_creation_date  '',6X, 
+     1 ''"'', 3(A2,A))')
+     2 CBUF(7:8),'-',CBUF(4:5),'-',CBUF(1:2),'"'
       WRITE(NCFPU1, '(''_audit_creation_method      CRYSTALS '',/)')
 
 C --  CONVERT ANGLES TO DEGREES.
