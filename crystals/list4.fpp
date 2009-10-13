@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.62  2009/07/24 14:02:15  djw
+C Add Fo/Fc plot
+C
 C Revision 1.61  2009/06/11 09:50:19  djw
 C Remove the use of Fo-average in pseudo unit weights for the time being. It improves
 C  initial convergence, but slows down the later stages. Performance migt improve if
@@ -1302,7 +1305,7 @@ C--PRINT THE LINE FOR THIS /FO/
              CALL XPRVDU(NCVDU, 1,0)
             ENDIF
             IF ( IGUI4(1) .EQ. 1 ) THEN
-              WRITE(CMON,'(A,F7.2,A,F15.7)')'^^PL LABEL ',
+              WRITE(CMON,'(A,F7.2,A,F21.7)')'^^PL LABEL ',
      2         EDW,' DATA ', WDW
               CALL XPRVDU(NCVDU, 1,0)
             ENDIF
@@ -1315,7 +1318,7 @@ C--PRINT THE LINE FOR THIS /FO/
              CALL XPRVDU(NCVDU, 1,0)
             ENDIF
             IF ( IGUI4(1) .EQ. 1 ) THEN
-              WRITE(CMON,'(A,F7.2,A,F15.7)')'^^PL LABEL ',
+              WRITE(CMON,'(A,F7.2,A,F21.7)')'^^PL LABEL ',
      2         EDW,' DATA ', WDW
             CALL XPRVDU(NCVDU, 1,0)
             ENDIF
@@ -2429,11 +2432,11 @@ C--NO REFLECTIONS IN THIS GROUP  -  PRINT ONLY THE RANGE
       ENDIF
 
       IF ( PLHKL .EQ. 1 ) THEN
-        WRITE(CMON,'(A,I4,A,2F15.7,I8)')'^^PL LABEL ',NX,
+        WRITE(CMON,'(A,I4,A,2F21.7,I8)')'^^PL LABEL ',NX,
      2   ' DATA ', 1.0,1.0,0
         CALL XPRVDU(NCVDU, 1,0)
       ELSE IF ( PLHKL .EQ. 2 ) THEN
-        WRITE(CMON,'(A,I4,A,2F15.7,I8)')'^^PL LABEL ',NX,
+        WRITE(CMON,'(A,I4,A,2F21.7,I8)')'^^PL LABEL ',NX,
      2   ' DATA ', 0.0,0.0,0
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
@@ -2446,12 +2449,12 @@ C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
       ENDIF
 
       IF ( PLHKL .EQ. 1 ) THEN
-        WRITE(CMON,'(A,I4,A,2(1X,F15.7),I8)')'^^PL LABEL ',NX,
+        WRITE(CMON,'(A,I4,A,2(1X,F21.7),I8)')'^^PL LABEL ',NX,
      2   ' DATA', STORE(L+4), STORE(L+5), ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
         HKLMX = MAX (HKLMX, STORE(L+5), STORE(L+6) )
       ELSE IF ( PLHKL .EQ. 2 ) THEN
-        WRITE(CMON,'(A,I4,A,2(1X,F15.7),I8)')'^^PL LABEL ',NX,
+        WRITE(CMON,'(A,I4,A,2(1X,F21.7),I8)')'^^PL LABEL ',NX,
      2   ' DATA', STORE(L+6), STORE(L+7), ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
@@ -2564,11 +2567,11 @@ C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
       CALL XCREMS(CNNN,COUT,LNNN)
 
       IF ( PLCLS .EQ. 1 ) THEN
-        WRITE(CMON,'(3A,2(1X,F15.7),I8)')'^^PL LABEL ''',
+        WRITE(CMON,'(3A,2(1X,F21.7),I8)')'^^PL LABEL ''',
      2   COUT(2:LNNN-1),''' DATA', STORE(L+4), STORE(L+5), ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
       ELSE IF ( PLCLS .EQ. 2 ) THEN
-        WRITE(CMON,'(3A,2(1X,F15.7),I8)')'^^PL LABEL ''',
+        WRITE(CMON,'(3A,2(1X,F21.7),I8)')'^^PL LABEL ''',
      2   COUT(2:LNNN-1),''' DATA', STORE(L+6), STORE(L+7), ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
@@ -2648,11 +2651,11 @@ C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
       CALL XCREMS(CNNN,COUT,LNNN)
 
       IF ( PLPAR .EQ. 1 ) THEN
-        WRITE(CMON,'(3A,2(1X,F15.7),I8)')'^^PL LABEL ''',
+        WRITE(CMON,'(3A,2(1X,F21.7),I8)')'^^PL LABEL ''',
      2   COUT(2:LNNN-1),''' DATA', STORE(L+4), STORE(L+5), ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
       ELSE IF ( PLPAR .EQ. 2 ) THEN
-        WRITE(CMON,'(3A,2(1X,F15.7),I8)')'^^PL LABEL ''',
+        WRITE(CMON,'(3A,2(1X,F21.7),I8)')'^^PL LABEL ''',
      2   COUT(2:LNNN-1),''' DATA',STORE(L+6),  STORE(L+7), ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
@@ -2801,13 +2804,13 @@ cdjwjul09
             fovsfc = 100. * (store(l+2)/store(l+3))
       endif
       IF ( PLFOR .EQ. 1 ) THEN
-        WRITE(CMON,'(A,F7.0,A,2(1X,F15.7),I8,1x,f15.7)')
+        WRITE(CMON,'(A,F7.0,A,2(1X,F21.7),I8,1x,f21.7)')
      1    '^^PL SET _FO LABEL ',
      1    ACI,' DATA ',STORE(L+4),STORE(L+5),ISTORE(L+1)
      2    ,fovsfc
         CALL XPRVDU(NCVDU, 1,0)
       ELSE IF ( PLFOR .EQ. 2 ) THEN
-        WRITE(CMON,'(A,F7.0,A,2(1X,F15.7),I8,1x,f15.7)')
+        WRITE(CMON,'(A,F7.0,A,2(1X,F21.7),I8,1x,f21.7)')
      1    '^^PL SET _FOR LABEL ',
      1    ACI,' DATA ',STORE(L+6),STORE(L+7),ISTORE(L+1)
      2    ,fovsfc
@@ -2815,7 +2818,7 @@ cdjwjul09
       ENDIF
 cdjwjul09
       IF ( PLEXT .GT. 0 ) THEN
-        WRITE(CMON,'(A,F7.0,A,1X,F15.7)')'^^PL SET _EXT LABEL ',ACI,
+        WRITE(CMON,'(A,F7.0,A,1X,F21.7)')'^^PL SET _EXT LABEL ',ACI,
      1                                  ' DATA ',STORE(L+2)-STORE(L+3)
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
@@ -2961,13 +2964,13 @@ djwjul09
             fovsfc = 100. * (store(l+2)/store(l+3))
       endif
       IF ( PLTHE .EQ. 1 ) THEN
-        WRITE(CMON,'(A,F7.3,A,2(1X,F15.7),I8,1x,f15.7)')
+        WRITE(CMON,'(A,F7.3,A,2(1X,F21.7),I8,1x,f21.7)')
      1    '^^PL LABEL ', AC,
      1    ' DATA ',STORE(L+4),STORE(L+5),ISTORE(L+1)
      2    ,fovsfc
         CALL XPRVDU(NCVDU, 1,0)
       ELSE IF ( PLTHE .EQ. 2 ) THEN
-        WRITE(CMON,'(A,F7.3,A,2(1X,F15.7),I8,1x,f15.7)')
+        WRITE(CMON,'(A,F7.3,A,2(1X,F21.7),I8,1x,f21.7)')
      1    '^^PL LABEL ', AC,
      1    ' DATA ',STORE(L+6),STORE(L+7),ISTORE(L+1)
      2    ,fovsfc
