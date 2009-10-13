@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.2  2004/12/13 16:16:08  rich
 C Changed GIL to _GIL_ etc.
 C
@@ -773,8 +777,8 @@ C
 C
 C -- ALLOCATE A BUFFER FOR COMMAND PROCESSING
 C -- 'MD' IS BEGINNING AND 'MG' IS THE END
-      MD = KSTALL ( 4000 )
-      MG = MD + 4000
+      MD = KSTALL ( 8000 )
+      MG = MD + 8000
 C -- SET DIRECTIVE TYPE FLAG
       ILAST = -1
 C
