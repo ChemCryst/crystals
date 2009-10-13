@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:09  rich
 C New CRYSTALS repository
 C
@@ -262,7 +266,7 @@ C--PRINT THE CORRELATION COEFFICIENTS ABOVE 0.25
 6610  CONTINUE
       CALL XPR11L(0.25)
       RETURN
-C--PRINT THE COMPLETE CORRELATION MATRIX
+C--PRINT THE COMPLETE COVARIANCE MATRIX
 6620  CONTINUE
       CALL XPR11C
       RETURN
