@@ -262,22 +262,22 @@
 %             INSERT 'MATRIX'                                                   
 ^^??          M11 TEXT                                                          
 %             GET SILENT REAL ' ' '1.0'                                         
-^^??          M21 TEXT                                                          
-%             GET SILENT REAL ' ' '0.0'                                         
-^^??          M31 TEXT                                                          
-%             GET SILENT REAL ' ' '0.0'                                         
 ^^??          M12 TEXT                                                          
+%             GET SILENT REAL ' ' '0.0'                                         
+^^??          M13 TEXT                                                          
+%             GET SILENT REAL ' ' '0.0'                                         
+^^??          M21 TEXT                                                          
 %             GET SILENT REAL ' ' '0.0'                                         
 %             QUEUE SEND                                                        
 %             CLEAR                                                             
 %             INSERT 'CONT'                                                     
 ^^??          M22 TEXT                                                          
 %             GET SILENT REAL ' ' '1.0'                                         
-^^??          M32 TEXT                                                          
-%             GET SILENT REAL ' ' '0.0'                                         
-^^??          M13 TEXT                                                          
-%             GET SILENT REAL ' ' '0.0'                                         
 ^^??          M23 TEXT                                                          
+%             GET SILENT REAL ' ' '0.0'                                         
+^^??          M31 TEXT                                                          
+%             GET SILENT REAL ' ' '0.0'                                         
+^^??          M32 TEXT                                                          
 %             GET SILENT REAL ' ' '0.0'                                         
 ^^??          M33 TEXT                                                          
 %             GET SILENT REAL ' ' '1.0'                                         
@@ -329,10 +329,10 @@ List 23 already in place.
 %         END IF                                                                
 %                                                                               
 %                                                                               
-%% REM DHW SEPT 08  LET WEIGHTS BE SET IN XQCK23
+%% REM DHW SEPT 08  LET WEIGHTS BE SET IN XQCK23                                
 {S * Applying unit/quasi-unit weights                                           
-%%         COPY '#LIST 4'                                                        
-%%         COPY 'END'                                                            
+%%         COPY '#LIST 4'                                                       
+%%         COPY 'END'                                                           
 %         COPY '#WEIGHT'                                                        
 %         COPY 'END'                                                            
 %%                                                                              
@@ -414,6 +414,9 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT                                                                     
 %%                                                                              
 %% $Log: not supported by cvs2svn $                                                       
+%% Revision 1.29  2008/09/05 10:29:23  djw                                      
+%% Make SHELX wts with P1=.1 defauly for Fsq ref                                
+%%                                                                              
 %% Revision 1.28  2005/01/23 10:00:25  rich                                     
 %% Reinstate CVS history for scripts. History from Dec23 - Jan23 is lost, but   
 %% changes are not!                                                             
