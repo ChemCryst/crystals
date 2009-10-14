@@ -20,7 +20,7 @@
 ^^WI SENDTEXTTO XTIPTEXT                                                        
 ^^CR                                                                            
 % LOOP                                                                          
-%  EVALUATE NTIPS = 30                                                          
+%  EVALUATE NTIPS = 31
 ^^CO  GETKEY TIP#                                                               
 %  GET SILENT NOSTORE FINAL INTEGER '1' '1'                                     
 %  EVALUATE CTIP = VALUE                                                        
@@ -326,6 +326,29 @@ end
 to recreate the full dsc file.  This job performs a cycle of refinement, 
 but does not apply the shifts. 
 
+%   END BLOCK                                                                   
+%   BLOCK % TIP31
+Changing atom SERIAL numbers
+CRYSTALS expects every TYPE(SERIAL) combination to be unique, e.g.
+C(1) C(2) O(2)
+For automatic hydrogen numbering, it is essential that the serial 
+numbers on the non-H atoms are totally unique.  CRYSTALS can do this for 
+you
+
+Structure/Renumber atoms
+
+If by mischance you end up with two atoms with the same identifier
+eg two S(1) atoms, 
+s 1 xxx yyy zzz etc
+s 1 aaa bbb ccc etc
+
+CRYSTALS will always choose the first one in the list. To change the 
+second sulphur to S(2), go to the atom list underneath the diagram.
+Click on S(1) and choose edit. 
+Change the atom type to z and apply the change
+Click on the remaining S(1) and change its serial numner to 2.  Apply.
+Click on the old S(1), now called Z(1), and change the type back to S.
+Apply
 %   END BLOCK                                                                   
 %  END CASE                                                                     
 ^^CO SET XTIPTEXT VIEWTOP                                                       
