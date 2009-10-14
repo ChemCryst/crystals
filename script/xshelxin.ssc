@@ -447,7 +447,8 @@
 %              EVALUATE BUTTXX = '&No'                                          
 %              COPY '#SCRIPT XQUESTIO'                                          
 %              IF ANSWER .EQ. TRUE THEN                                         
-%               COPY '#EDIT'                                                    
+%               COPY '#EDIT' 
+%               COPY 'MONITOR OFF'                                                   
 %               COPY 'TYPECHANGE TYPE EQ Q C'                                   
 %               COPY 'END'                                                      
 %              END IF                                                           
