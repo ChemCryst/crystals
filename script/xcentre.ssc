@@ -2,6 +2,7 @@
 %%                                                                              
 %%  CENTRE STRUCTURE IN CELL                                                    
 %      COPY '#EDIT'                                                             
+%      COPY 'MON  OFF'
 %      copy 'CENT 100 ALL'
 %      COPY 'ATOM Q 1 X=.5 .5 .5'                                               
 %      COPY 'MOVE Q(1) QC(100)'                                                         
@@ -10,6 +11,7 @@
 %      COPY 'SEL TYP=ALL TOL=20'                                                
 %      COPY 'END'                                                               
 %      COPY '#EDIT'
+%      COPY 'MON  OFF'
 %      COPY 'DEL Q(1)'
 %      COPY 'END'
 %      COPY '#COLL'                                                             
@@ -76,6 +78,7 @@ WARNING - You have no atoms
 %      EVALUATE ZS = - 1.
 %   END IF
 %   COPY '#EDIT'
+%   COPY 'MON  OFF'
 %   CLEAR
 %   INSERT 'SHIFT'
 %   STORE FORMAT "(F12.4)" REAL XS YS ZS 
