@@ -5,8 +5,8 @@
 {R SHELX Script version by R. Cooper. Based on the fortran program SXTOCA by    
 {R R.O. Gould, The University of Edinburgh, March 1994.                         
 %%                                                                              
-{R Setting refinement type
-%      COPY '#SCRIPT XQCK23'                                                          
+{R Setting refinement type                                                      
+%      COPY '#SCRIPT XQCK23'                                                    
 %%                                                                              
 % VARIABLE CHARACTER CFILE CENTRO CLATYP CUNIT CSFAC CTEM                       
 % VARIABLE CHARACTER SPACEHOOK INSTITLE HKLTITLE SPACEREAD                      
@@ -317,7 +317,7 @@
                   CVALUE STARTSWITH '4' THEN                                    
 %% This is an old-fashioned card with actual sfac details on. Carry on looping. 
 %                 EVALUATE LEND = LEND + 1                                      
-%              ELSE IF CVALUE STARTSWITH '5' .OR. CVALUE STARTSWITH '6' .OR. -   
+%              ELSE IF CVALUE STARTSWITH '5' .OR. CVALUE STARTSWITH '6' .OR. -  
                   CVALUE STARTSWITH '7' .OR. CVALUE STARTSWITH '8' .OR. -       
                   CVALUE STARTSWITH '9' THEN                                    
 %% This is an old-fashioned card with actual sfac details on. Carry on looping. 
@@ -447,8 +447,8 @@
 %              EVALUATE BUTTXX = '&No'                                          
 %              COPY '#SCRIPT XQUESTIO'                                          
 %              IF ANSWER .EQ. TRUE THEN                                         
-%               COPY '#EDIT' 
-%               COPY 'MONITOR OFF'                                                   
+%               COPY '#EDIT'                                                    
+%               COPY 'MONITOR OFF'                                              
 %               COPY 'TYPECHANGE TYPE EQ Q C'                                   
 %               COPY 'END'                                                      
 %              END IF                                                           
@@ -493,14 +493,13 @@
 %          BLOCK                                                                
 %% Only renumber if importing solution (i.e. Qs).                               
 %            IF LQS .EQ. TRUE THEN                                              
-%              COPY '#SCRIPT XRENUMB'                                           
+%              COPY '#SCRIPT XRENUM'                                           
 %            END IF                                                             
 %          END BLOCK                                                            
-%% Resolve clashes
-%        COPY '#EDIT'
-%        COPY 'MONITOR OFF'
-%        COPY 'CLASH FIXLATTER'
-%        COPY 'END'
+%%  Resolve clashes  
+%        COPY '#SCRIPT XRENUMB'                                                           
+%%  RESOLVE H ATOMS
+%        COPY '#SCRIPT HNAM'                                                           
 %%                                                                              
 %          BLOCK                                                                
 %             COPY '#DISTANCES'                                                 
