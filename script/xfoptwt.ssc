@@ -1,4 +1,4 @@
-%SCRIPT XFSQWT                                                                  
+%SCRIPT XFOPTWT
 % IF EXISTS 6 .NE. 1 THEN                                                       
 {I  No reflections have been stored.                                            
 {I  Agreement analysis is not possible.                                         
