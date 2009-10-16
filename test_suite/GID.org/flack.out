@@ -33,7 +33,6 @@
 
 
       46 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
   Disc file on unit   1 extended by     3 records 
 #WEIGHT                                                                                                                                                                                                                                                         
 #LIST 4                                                                                                                                                                                                                                                         
@@ -72,7 +71,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
      1 Symmetry restraints written to LIST 17
 #LIST 17                                                                                                                                                                                                                                                        
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -130,7 +129,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
  Structure factor least squares calculation    1  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
   Disc file on unit   1 extended by     1 records 
@@ -238,7 +237,7 @@ Mean C-C su =   0.0000
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -391,7 +390,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
      1 Symmetry restraints written to LIST 17
 #LIST 17                                                                                                                                                                                                                                                        
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -450,7 +449,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  Structure factor least squares calculation    3  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -562,7 +561,7 @@ Mean C-C su =   0.0000
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -713,7 +712,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
      1 Symmetry restraints written to LIST 17
 #LIST 17                                                                                                                                                                                                                                                        
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -767,7 +766,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  Structure factor least squares calculation    5  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -874,7 +873,7 @@ Mean C-C su =   0.0000
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -1044,7 +1043,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
      1 Symmetry restraints written to LIST 17
 #LIST 17                                                                                                                                                                                                                                                        
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -1119,7 +1118,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
  Structure factor least squares calculation    7  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -1232,7 +1231,7 @@ Mean C-C su =   0.0000
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -1401,7 +1400,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
      1 Symmetry restraints written to LIST 17
 #LIST 17                                                                                                                                                                                                                                                        
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -1454,7 +1453,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
  Structure factor least squares calculation    9  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -1567,7 +1566,7 @@ Mean C-C su =   0.0000
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -1737,7 +1736,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
      1 Symmetry restraints written to LIST 17
 #LIST 17                                                                                                                                                                                                                                                        
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -1812,7 +1811,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
  Structure factor least squares calculation   11  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -1925,7 +1924,7 @@ Mean C-C su =   0.0000
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -2094,13 +2093,12 @@ Mean C-C su =   0.0000
 #LIST 22                                                                                                                                                                                                                                                        
  Initialising Special positions
  Floating origin in  y direction
-Flack =  0.0    Starting FLACK refinement from 0.5                                                                                                                                                                                                              
 Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  Space required on DISK is    1 records,     1  Blocks,     1 Kbytes. 
      1 Symmetry restraints written to LIST 17
 #LIST 17                                                                                                                                                                                                                                                        
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -2153,7 +2151,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
  Structure factor least squares calculation   13  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -2266,7 +2264,7 @@ Mean C-C su =   0.0000
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Enantiopole parameter out of range. (-0.001 )                                                                                                                                                                                                                  
  Initialising Special positions
 
@@ -2437,7 +2435,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 #LIST 17                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -2512,7 +2510,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
  Structure factor least squares calculation   15  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -2624,7 +2622,7 @@ Mean C-C su =   0.0000
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -2799,7 +2797,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
      1 Symmetry restraints written to LIST 17
 #LIST 17                                                                                                                                                                                                                                                        
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -2874,7 +2872,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
  Structure factor least squares calculation   17  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -2991,7 +2989,7 @@ Mean C-C su =   0.0000
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -3153,7 +3151,7 @@ Mean C-C su =   0.0000
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -3310,7 +3308,7 @@ Mean C-C su =   0.0000
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -3494,7 +3492,7 @@ Refining     2 parameters in    1 block :       23 elements in the LS matrix.
      1 Symmetry restraints written to LIST 17
 #LIST 17                                                                                                                                                                                                                                                        
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -3570,7 +3568,7 @@ Refining     2 parameters in    1 block :       23 elements in the LS matrix.
  Structure factor least squares calculation   21  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -3686,7 +3684,7 @@ Mean C-C su =   0.0000
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Enantiopole parameter out of range. ( 1.005 )                                                                                                                                                                                                                  
  Initialising Special positions
 
@@ -3850,7 +3848,7 @@ Mean C-C su =   0.0000
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -4007,7 +4005,7 @@ Mean C-C su =   0.0000
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 

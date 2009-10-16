@@ -20,7 +20,6 @@
 
 
      631 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
 #                                                                                                                                                                                                                                                               
 # PUNCHED ON 14-MAY81 AT 10:38:11                                                                                                                                                                                                                               
 #                                                                                                                                                                                                                                                               
@@ -162,7 +161,7 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -1282,7 +1281,7 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 

@@ -57,7 +57,6 @@ Bonds: Update required - There is no list 41
 
 
     2803 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
   Disc file on unit   1 extended by   180 records 
   Disc file on unit   1 extended by     1 records 
 #                                                                                                                                                                                                                                                               
@@ -157,7 +156,7 @@ Refining    35 parameters in    1 block :      716 elements in the LS matrix.
      3 Symmetry restraints written to LIST 17
 #LIST 17                                                                                                                                                                                                                                                        
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
   Disc file on unit   1 extended by     2 records 
 
@@ -216,7 +215,7 @@ Refining    35 parameters in    1 block :      716 elements in the LS matrix.
 
  Structure factor least squares calculation    2  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
   Disc file on unit   1 extended by     1 records 
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
@@ -403,7 +402,7 @@ Mean C-C su =   0.0463
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -641,7 +640,7 @@ Mean C-C su =   0.0464
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -881,7 +880,7 @@ Mean C-C su =   0.0464
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -1142,7 +1141,7 @@ Mean C-C su =   0.0464
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -1546,7 +1545,7 @@ Mean C-C su =   0.1097
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -1940,7 +1939,7 @@ Mean C-C su =   0.0564
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -2285,7 +2284,7 @@ Mean C-C su =   0.0478
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -2534,7 +2533,7 @@ Mean C-C su =   0.0488
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -2768,7 +2767,7 @@ Mean C-C su =   0.0504
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -3008,7 +3007,7 @@ Mean C-C su =   0.0496
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -3266,7 +3265,7 @@ Mean C-C su =   0.0494
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -3776,7 +3775,6 @@ Space group symbol is   P    1
 
 
     2803 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by   180 records 
 #                                                                                                                                                                                                                                                               
@@ -3867,7 +3865,7 @@ Refining    35 parameters in    1 block :      716 elements in the LS matrix.
      3 Symmetry restraints written to LIST 17
 #LIST 17                                                                                                                                                                                                                                                        
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -3926,7 +3924,7 @@ Refining    35 parameters in    1 block :      716 elements in the LS matrix.
  Structure factor least squares calculation    2  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -4107,7 +4105,7 @@ Mean C-C su =   0.0456
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -4341,7 +4339,7 @@ Mean C-C su =   0.0465
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -4580,7 +4578,7 @@ Mean C-C su =   0.0465
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -4819,7 +4817,7 @@ Mean C-C su =   0.0465
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -5219,7 +5217,7 @@ Mean C-C su =   0.0545
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -5582,7 +5580,7 @@ Mean C-C su =   0.0455
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -5860,7 +5858,7 @@ Mean C-C su =   0.0470
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -6099,7 +6097,7 @@ Mean C-C su =   0.0484
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -6335,7 +6333,7 @@ Mean C-C su =   0.0482
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -6568,7 +6566,7 @@ Mean C-C su =   0.0481
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -7083,7 +7081,6 @@ Space group symbol is   P    1
 
 
     2803 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
   Disc file on unit   1 extended by   181 records 
 #                                                                                                                                                                                                                                                               
 #LIST     12                                                                                                                                                                                                                                                    
@@ -7173,7 +7170,7 @@ Refining    35 parameters in    1 block :      716 elements in the LS matrix.
 #LIST 17                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -7231,7 +7228,7 @@ Refining    35 parameters in    1 block :      716 elements in the LS matrix.
 
  Structure factor least squares calculation    2  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -7416,7 +7413,7 @@ Mean C-C su =   0.0445
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -7691,7 +7688,7 @@ Mean C-C su =   0.0455
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -7933,7 +7930,7 @@ Mean C-C su =   0.0455
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -8191,7 +8188,7 @@ Mean C-C su =   0.0455
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Atom C     100 has U-iso too small,  -0.0018                                                                                                                                                                                                                   
       1 temperature factors less than the lowest allowed value of    0.00000
   The minimum value  was   -0.00183
@@ -8590,7 +8587,7 @@ Mean C-C su =   0.0372
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -8976,7 +8973,7 @@ Mean C-C su =   0.0339
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -9354,7 +9351,7 @@ Mean C-C su =   0.0348
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -9738,7 +9735,7 @@ Mean C-C su =   0.0424
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -10046,7 +10043,7 @@ Mean C-C su =   0.0483
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -10287,7 +10284,7 @@ Mean C-C su =   0.0479
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -10526,7 +10523,7 @@ Mean C-C su =   0.0477
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -11033,7 +11030,6 @@ Space group symbol is   P    1
 
 
     2803 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
   Disc file on unit   1 extended by   181 records 
 #                                                                                                                                                                                                                                                               
 #LIST     12                                                                                                                                                                                                                                                    
@@ -11123,7 +11119,7 @@ Refining    35 parameters in    1 block :      716 elements in the LS matrix.
 #LIST 17                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -11181,7 +11177,7 @@ Refining    35 parameters in    1 block :      716 elements in the LS matrix.
 
  Structure factor least squares calculation    2  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -11366,7 +11362,7 @@ Mean C-C su =   0.0453
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -11644,7 +11640,7 @@ Mean C-C su =   0.0457
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -11884,7 +11880,7 @@ Mean C-C su =   0.0457
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -12144,7 +12140,7 @@ Mean C-C su =   0.0457
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -12549,7 +12545,7 @@ Mean C-C su =   0.0854
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -12945,7 +12941,7 @@ Mean C-C su =   0.0566
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -13310,7 +13306,7 @@ Mean C-C su =   0.0451
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -13576,7 +13572,7 @@ Mean C-C su =   0.0458
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -13811,7 +13807,7 @@ Mean C-C su =   0.0492
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -14123,7 +14119,7 @@ Mean C-C su =   0.0485
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -14364,7 +14360,7 @@ Mean C-C su =   0.0482
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 

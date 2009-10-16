@@ -38,7 +38,6 @@ Bonds: Update required - There is no list 41
 
 
      270 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT           4
 Upating List 13 for twinned data                                                                                                                                                                                                                                
   Disc file on unit   1 extended by     3 records 
   Disc file on unit   1 extended by     1 records 
@@ -157,7 +156,7 @@ Refining    44 parameters in    1 block :     1094 elements in the LS matrix.
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
   Disc file on unit   1 extended by     2 records 
 
@@ -191,7 +190,7 @@ Refining    44 parameters in    1 block :     1094 elements in the LS matrix.
 #LIST 26                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -1067,7 +1066,7 @@ Slope=       -0.001 Intercept =       1.235 C-Coef=      -0.062
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -1296,7 +1295,7 @@ Mean C-C su =   0.0000
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -1506,11 +1505,11 @@ Inter cycle   4       0.00          0.100E+16       24.9
 Mean C-C su =   0.0000
 #CYCLENDS                                                                                                                                                                                                                                                       
 #FINI                                                                                                                                                                                                                                                           
- Physical reads        727 Physical writes       1288 Cache hits      50774
- Cache hit distribution    44430    2199     714     388     302     343
- Cache hit distribution      147     126     161     249     192     139
- Cache hit distribution      149     140     139     155     116     125
- Cache hit distribution       96      85     113      98      91      77
+ Physical reads        728 Physical writes       1288 Cache hits      50777
+ Cache hit distribution    44430    2199     710     394     302     342
+ Cache hit distribution      147     127     158     246     199     139
+ Cache hit distribution      148     138     142     155     116     124
+ Cache hit distribution       96      83     116      98      88      80
 
 
           : Job ends ok       with     0 warnings and     0 errors

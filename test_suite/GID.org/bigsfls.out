@@ -198,7 +198,6 @@ Bonds: Update required - There is no list 41
    12575 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
  List 30 Serial    1 Original   1 Address   2699 Size    176 Write flag  0 Date                          From Disc
  List 30 Serial    2 Original   1 Address   2699 Size    176               Date                            To Disc
- IRFT          -1
  List  6 Serial    2 Original   1 Address  19645 Size    299 Write flag  0 Date                          From Disc
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by   810 records 
@@ -1782,7 +1781,7 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
  List  4 Serial    1 Original   1 Address   3347 Size     34 Write flag  0 Date                          From Disc
  List 13 Serial    1 Original   1 Address  18921 Size     54 Write flag  0 Date                          From Disc
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  List 13 Serial    1 Original   1 Address  18921 Size     54 Write flag  0 Date                          From Disc
  List 23 Serial    1 Original   1 Address  13173 Size     76 Write flag  0 Date                          From Disc
  List 33 Serial    2 Original   1 Address 458639 Size    183 Write flag  0 Date                          From Disc
@@ -3533,7 +3532,7 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
  List  4 Serial    1 Original   1 Address   3347 Size     34 Write flag  0 Date                          From Disc
  List 13 Serial    1 Original   1 Address  18921 Size     54 Write flag  0 Date                          From Disc
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  List 13 Serial    1 Original   1 Address  18921 Size     54 Write flag  0 Date                          From Disc
  List 23 Serial    1 Original   1 Address  13173 Size     76 Write flag  0 Date                          From Disc
  List 33 Serial    7 Original   6 Address 448761 Size    183 Write flag  0 Date                          From Disc
@@ -4546,7 +4545,7 @@ Refining   261 parameters in    1 block :    34729 elements in the LS matrix.
  List  4 Serial    1 Original   1 Address   3347 Size     34 Write flag  0 Date                          From Disc
  List 13 Serial    1 Original   1 Address  18921 Size     54 Write flag  0 Date                          From Disc
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  List 13 Serial    1 Original   1 Address  18921 Size     54 Write flag  0 Date                          From Disc
  List 23 Serial    1 Original   1 Address  13173 Size     76 Write flag  0 Date                          From Disc
  List 33 Serial   12 Original  11 Address 448761 Size    183 Write flag  0 Date                          From Disc
@@ -4784,7 +4783,7 @@ Refining   261 parameters in    1 block :    34729 elements in the LS matrix.
  List 30 Serial    9 Original   1 Address   2465 Size    176 Write flag  0 Date                          From Disc
  List  4 Serial    1 Original   1 Address   3347 Size     34 Write flag  0 Date                          From Disc
  List 13 Serial    1 Original   1 Address  18921 Size     54 Write flag  0 Date                          From Disc
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  List 23 Serial    1 Original   1 Address  13173 Size     76 Write flag  0 Date                          From Disc
  List  3 Serial    1 Original   1 Address   3225 Size    122 Write flag  0 Date                          From Disc
  List  5 Serial    3 Original   1 Address 450215 Size   2747 Write flag  0 Date                          From Disc
@@ -5492,7 +5491,7 @@ Mean C-C su =   0.0168
  List  4 Serial    1 Original   1 Address   3347 Size     34 Write flag  0 Date                          From Disc
  List 13 Serial    1 Original   1 Address  18921 Size     54 Write flag  0 Date                          From Disc
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  List 13 Serial    1 Original   1 Address  18921 Size     54 Write flag  0 Date                          From Disc
  List 23 Serial    1 Original   1 Address  13173 Size     76 Write flag  0 Date                          From Disc
  List 33 Serial   17 Original  16 Address 448761 Size    183 Write flag  0 Date                          From Disc

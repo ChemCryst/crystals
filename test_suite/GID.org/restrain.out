@@ -826,8 +826,8 @@ Refining    21 parameters in    4 block :      148 elements in the LS matrix.
         16   -0.8554739356E+00        17    0.3073288291E-08        18   -0.8554825187E+00        19   -0.5722547174E+00
         20   -0.1978992581E+01        21    0.8554739356E+00
 
-   8.   Restrain the difference in the M.S.D.'s along a bond to be
-  0.00000  angstrom squared, with an E.S.D. of  0.06000
+   8.DELU - Restrain the difference in the M.S.D.'s along a bond to be
+        0.00000  angstrom squared, with an E.S.D. of  0.06000
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
   
@@ -1171,8 +1171,8 @@ Refining    21 parameters in    4 block :      148 elements in the LS matrix.
         12    0.9999999023E+04              0.2334999852E-02              0.1913380111E-03
          6   -0.1000000000E+01        11    0.1000000000E+01        13    0.1000000000E+01        16   -0.1000000000E+01
 
-  13.   Restrain the difference in the  U(IJ)'s along a bond to be
-  0.00000  angstrom squared, with an E.S.D. of  0.01000
+     13.SIMU - Restrain the difference in the components of  U(IJ)'s to be
+        0.00000  angstrom squared, with an E.S.D. of  0.01000
 
             Atom  1    S(I) L TX TY TZ     U(IJ)'s          Atom  2    S(I) L TX TY TZ     U(IJ)'s    Delta     Coord.'S
   

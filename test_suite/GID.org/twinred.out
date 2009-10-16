@@ -46,7 +46,6 @@
 
 
       29 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
 #SYST                                                                                                                                                                                                                                                           
 #LIST 28                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
@@ -197,7 +196,6 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
       29 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
 #PUNCH 6 C                                                                                                                                                                                                                                                      
 #                                                                                                                                                                                                                                                               
 # THIS PROGRAM, INCLUDED AS CRYSTALS COMMENTS, MAY BE USED AS AN EXAMPLE                                                                                                                                                                                        
@@ -299,7 +297,6 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
       46 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT           4
 Upating List 13 for twinned data                                                                                                                                                                                                                                
   Disc file on unit   1 extended by     1 records 
 #SORT                                                                                                                                                                                                                                                           
@@ -315,11 +312,11 @@ Upating List 13 for twinned data
  The updated reflections are now on UNIT 53
   Disc file on unit   1 extended by     1 records 
 #FINI                                                                                                                                                                                                                                                           
- Physical reads        178 Physical writes        425 Cache hits      10604
- Cache hit distribution     8668     571     230     165      74     100
- Cache hit distribution       46      28      30      59      80     112
- Cache hit distribution       32      40      60      52      80      22
- Cache hit distribution       60      42      14       3      18      18
+ Physical reads        182 Physical writes        425 Cache hits      10605
+ Cache hit distribution     8668     571     230     161      84      94
+ Cache hit distribution       37      37      30      63      69     121
+ Cache hit distribution       32      32      67      54      75      18
+ Cache hit distribution       69      41      14       3      18      17
 
 
           : Job ends ok       with     0 warnings and     0 errors

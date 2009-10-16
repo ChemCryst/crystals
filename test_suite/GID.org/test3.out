@@ -95,7 +95,6 @@ Space group symbol is   P    1
 
 
        3 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
   Disc file on unit   1 extended by     1 records 
 # COMMENT                                                                                                                                                                                                                                                       
 #PRINT 6 C                                                                                                                                                                                                                                                      
@@ -203,7 +202,6 @@ Space group symbol is   P    1
 
 
        6 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
 #PRINT 6                                                                                                                                                                                                                                                        
 #PRINT 6 C                                                                                                                                                                                                                                                      
 
@@ -351,7 +349,6 @@ Space group symbol is   P    1
 
 
        9 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
   Disc file on unit   1 extended by     1 records 
 #PRINT 6                                                                                                                                                                                                                                                        
 #PRINT 6 C                                                                                                                                                                                                                                                      
@@ -547,7 +544,6 @@ Space group symbol is   P    1
 
 
        3 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
   Disc file on unit   1 extended by     1 records 
 #LIST 6                                                                                                                                                                                                                                                         
   Disc file on unit   1 extended by     1 records 
@@ -556,7 +552,6 @@ Space group symbol is   P    1
 
 
       96 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     6 records 
 #PRINT 6                                                                                                                                                                                                                                                        
@@ -699,7 +694,6 @@ Space group symbol is   P    1
 
 
      279 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by    18 records 
 #PRINT 6                                                                                                                                                                                                                                                        
@@ -1078,7 +1072,6 @@ Space group symbol is   P    1
 
 
      270 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
 #PRINT 6                                                                                                                                                                                                                                                        
@@ -1253,7 +1246,6 @@ Space group symbol is   P    1
 
 
      270 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     2 records 
 #PRINT 6                                                                                                                                                                                                                                                        
@@ -1430,7 +1422,6 @@ Space group symbol is   P    1
 
 
      270 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT           4
 Upating List 13 for twinned data                                                                                                                                                                                                                                
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by    17 records 
@@ -3104,7 +3095,6 @@ Upating List 13 for twinned data
 
 
        8 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT           4
 Upating List 13 for twinned data                                                                                                                                                                                                                                
   Disc file on unit   1 extended by     1 records 
 #LIST 1                                                                                                                                                                                                                                                         
@@ -3219,7 +3209,6 @@ No reflections found
 
 
        0 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
 #PRINT 6                                                                                                                                                                                                                                                        
 #SYST                                                                                                                                                                                                                                                           
 
@@ -3356,7 +3345,6 @@ No reflections found
 
 
        9 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
   Disc file on unit   1 extended by     1 records 
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 13                                                                                                                                                                                                                                                        
@@ -3474,7 +3462,6 @@ No reflections found
 
 
       92 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
   Disc file on unit   1 extended by     6 records 
   Disc file on unit   1 extended by     1 records 
 #LIST 1                                                                                                                                                                                                                                                         
@@ -5762,7 +5749,6 @@ Bonds: Update required - List5 length change
 
 
      270 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT           4
 Upating List 13 for twinned data                                                                                                                                                                                                                                
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     3 records 
@@ -5885,7 +5871,7 @@ Refining    44 parameters in    1 block :     1094 elements in the LS matrix.
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
   Disc file on unit   1 extended by     2 records 
 
@@ -5923,7 +5909,7 @@ Refining    44 parameters in    1 block :     1094 elements in the LS matrix.
 #LIST 26                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -6647,7 +6633,6 @@ Bonds: Update required - List5 length change
 
 
      220 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
   Disc file on unit   1 extended by    14 records 
 #SORT                                                                                                                                                                                                                                                           
 #PRINT 6                                                                                                                                                                                                                                                        
@@ -7022,7 +7007,7 @@ Refining    14 parameters in    4 block :       89 elements in the LS matrix.
       3 Atoms modified;   New  LIST 5 written to DISK
 #LIST 17                                                                                                                                                                                                                                                        
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -7271,7 +7256,7 @@ Refining    14 parameters in    4 block :       89 elements in the LS matrix.
 
  Structure factor least squares calculation    1  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -7423,7 +7408,7 @@ Mean C-C su =   0.0282
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -7755,7 +7740,6 @@ Mean C-C su =   0.0182
 
 
      735 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by    47 records 
 #LIST 5                                                                                                                                                                                                                                                         
@@ -7780,7 +7764,7 @@ Refining    37 parameters in    1 block :      793 elements in the LS matrix.
      1 Symmetry restraints written to LIST 17
 #LIST 17                                                                                                                                                                                                                                                        
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
   Disc file on unit   1 extended by     1 records 
 
@@ -7840,7 +7824,7 @@ Refining    37 parameters in    1 block :      793 elements in the LS matrix.
  Structure factor least squares calculation    1  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -8009,7 +7993,7 @@ Refining    37 parameters in    1 block :      793 elements in the LS matrix.
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -8532,7 +8516,6 @@ Mean C-C su =   0.0000
 
 
       92 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
 #LIST 5                                                                                                                                                                                                                                                         
@@ -9058,11 +9041,11 @@ Bonds: Update required - List5 length change
 
    12 *  195 174 177 147 153 204 178 169 168 136 144 192 158 159 155 122 132 176 143 148 143 112 126 169 131 148
 #END                                                                                                                                                                                                                                                            
- Physical reads       4317 Physical writes       4579 Cache hits     141844
- Cache hit distribution   116955    6322    3015    1886    1355    2043
- Cache hit distribution     1257     678     609    1256     596     494
- Cache hit distribution      648     665     678     259     700     295
- Cache hit distribution      374     343     357     372     360     327
+ Physical reads       4324 Physical writes       4579 Cache hits     141845
+ Cache hit distribution   116955    6322    3007    1904    1338    2054
+ Cache hit distribution     1254     682     601    1253     613     482
+ Cache hit distribution      650     668     679     261     702     291
+ Cache hit distribution      375     342     357     371     358     326
 
 
           : Job ends ok       with     7 warnings and     0 errors

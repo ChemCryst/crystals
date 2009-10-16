@@ -60,7 +60,6 @@ Bonds: Update required - There is no list 41
 
 
     2547 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
 #CLOSE HKLI                                                                                                                                                                                                                                                     
 #SYSTEMATIC                                                                                                                                                                                                                                                     
 #LIST 28                                                                                                                                                                                                                                                        
@@ -210,7 +209,6 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
     2547 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
 #USE NEUTRON.REF                                                                                                                                                                                                                                                
@@ -307,7 +305,7 @@ Refining    53 parameters in    1 block :     1553 elements in the LS matrix.
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
   Disc file on unit   1 extended by     3 records 
 
@@ -617,7 +615,7 @@ Mean C-C su =   0.0116
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -927,7 +925,7 @@ Mean C-C su =   0.0071
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -1229,7 +1227,7 @@ Mean C-C su =   0.0031
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -1496,7 +1494,7 @@ Mean C-C su =   0.0025
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -1761,7 +1759,7 @@ Mean C-C su =   0.0025
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -2039,7 +2037,7 @@ Mean C-C su =   0.0025
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -2311,11 +2309,13 @@ Mean C-C su =   0.0025
  Initialising Special positions
 Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
  Space required on DISK is   21 records,    84  Blocks,    43 Kbytes. 
+ LIST 23 has been modified to match LIST 12
+ New LIST 23 written to disk
      18 Atoms modified;   New  LIST 5 written to DISK
   Disc file on unit   1 extended by     1 records 
 #LIST 17                                                                                                                                                                                                                                                        
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
   Disc file on unit   1 extended by    21 records 
 
@@ -2374,7 +2374,7 @@ Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
 
  Structure factor least squares calculation    9  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
   Disc file on unit   1 extended by     1 records 
@@ -2399,7 +2399,7 @@ Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
 
  S/ESD     1           1           0.01693         0.00      0.00201          8.41                          SCALE   
    5.57321   1.00000   1.00000   0.38501
-Resetting shift, Parameter type  26  Shift=    5.57321  Esd=    0.38501  New shift=    0.20000                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.57321  Esd=    0.38501  New shift=    0.20000                                                                                                                                                                       
  LARGE     2           2           0.20000         0.00      0.38501         14.48                          EXTPARAM
  S/ESD     6           6           0.00339         0.00      0.00103          3.29        BR     1 U[11]   
  S/ESD     7           7           0.00544         0.00      0.00107          5.06        BR     1 U[22]   
@@ -2663,7 +2663,7 @@ Mean C-C su =   0.0026
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -2741,7 +2741,7 @@ Mean C-C su =   0.0026
 
  S/ESD     1           1           0.00193         0.11      0.00159          1.22                          SCALE   
    5.49846   1.20000   1.00000   0.29905
-Resetting shift, Parameter type  26  Shift=    5.49846  Esd=    0.29905  New shift=    0.24000                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.49846  Esd=    0.29905  New shift=    0.24000                                                                                                                                                                       
  LARGE     2           2           0.24000        27.49      0.29905         18.39                          EXTPARAM
  SRATIO    3           3           0.00007        -8.01      0.00027          0.25        BR     1 X       
  S/ESD     7           7           0.00108         0.20      0.00087          1.24        BR     1 U[22]   
@@ -2964,7 +2964,7 @@ Mean C-C su =   0.0020
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -3037,7 +3037,7 @@ Mean C-C su =   0.0020
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
    5.53186   1.44000   1.00000   0.30657
-Resetting shift, Parameter type  26  Shift=    5.53186  Esd=    0.30657  New shift=    0.28800                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.53186  Esd=    0.30657  New shift=    0.28800                                                                                                                                                                       
 
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
@@ -3234,7 +3234,7 @@ Mean C-C su =   0.0019
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -3307,7 +3307,7 @@ Mean C-C su =   0.0019
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
    5.56865   1.72800   1.00000   0.31895
-Resetting shift, Parameter type  26  Shift=    5.56865  Esd=    0.31895  New shift=    0.34560                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.56865  Esd=    0.31895  New shift=    0.34560                                                                                                                                                                       
 
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
@@ -4219,9 +4219,11 @@ Bonds: Update required - List5 length change
  Initialising Special positions
 Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
  Space required on DISK is   21 records,    84  Blocks,    43 Kbytes. 
+ LIST 23 has been modified to match LIST 12
+ New LIST 23 written to disk
 #LIST 17                                                                                                                                                                                                                                                        
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -4279,7 +4281,7 @@ Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
 
  Structure factor least squares calculation   14  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
   Disc file on unit   1 extended by     1 records 
@@ -4299,7 +4301,7 @@ Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
    5.58909   2.07360   1.00000   0.33381
-Resetting shift, Parameter type  26  Shift=    5.58909  Esd=    0.33381  New shift=    0.41472                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.58909  Esd=    0.33381  New shift=    0.41472                                                                                                                                                                       
 
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
@@ -4489,7 +4491,7 @@ Mean C-C su =   0.0019
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -4562,7 +4564,7 @@ Mean C-C su =   0.0019
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
    5.58386   2.48832   1.00000   0.35123
-Resetting shift, Parameter type  26  Shift=    5.58386  Esd=    0.35123  New shift=    0.49766                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.58386  Esd=    0.35123  New shift=    0.49766                                                                                                                                                                       
 
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
@@ -4755,7 +4757,7 @@ Mean C-C su =   0.0019
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -4828,7 +4830,7 @@ Mean C-C su =   0.0019
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
    5.53785   2.98598   1.00000   0.37161
-Resetting shift, Parameter type  26  Shift=    5.53785  Esd=    0.37161  New shift=    0.59720                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.53785  Esd=    0.37161  New shift=    0.59720                                                                                                                                                                       
 
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
@@ -5074,7 +5076,6 @@ Space group symbol is   P    1    21/N 1
 
 
     2547 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
 #CLOSE HKLI                                                                                                                                                                                                                                                     
 #SYSTEMATIC                                                                                                                                                                                                                                                     
 #SORT                                                                                                                                                                                                                                                           
@@ -5222,7 +5223,6 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
     2547 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
 #USE NEUTRON.REF                                                                                                                                                                                                                                                
@@ -5314,7 +5314,7 @@ Refining    53 parameters in    1 block :     1553 elements in the LS matrix.
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
   Disc file on unit   1 extended by     2 records 
   Disc file on unit   1 extended by     1 records 
@@ -5627,7 +5627,7 @@ Mean C-C su =   0.0106
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -5935,7 +5935,7 @@ Mean C-C su =   0.0072
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -6243,7 +6243,7 @@ Mean C-C su =   0.0032
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -6511,7 +6511,7 @@ Mean C-C su =   0.0026
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -6779,7 +6779,7 @@ Mean C-C su =   0.0025
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -7049,7 +7049,7 @@ Mean C-C su =   0.0025
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -7318,11 +7318,13 @@ Mean C-C su =   0.0025
   Disc file on unit   1 extended by     1 records 
 Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
  Space required on DISK is   21 records,    84  Blocks,    43 Kbytes. 
+ LIST 23 has been modified to match LIST 12
+ New LIST 23 written to disk
      18 Atoms modified;   New  LIST 5 written to DISK
   Disc file on unit   1 extended by     1 records 
 #LIST 17                                                                                                                                                                                                                                                        
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
   Disc file on unit   1 extended by    20 records 
   Disc file on unit   1 extended by     1 records 
@@ -7382,7 +7384,7 @@ Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
 
  Structure factor least squares calculation    9  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -7406,7 +7408,7 @@ Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
 
  S/ESD     1           1           0.01704         0.00      0.00201          8.47                          SCALE   
    5.57846   1.00000   1.00000   0.38499
-Resetting shift, Parameter type  26  Shift=    5.57846  Esd=    0.38499  New shift=    0.20000                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.57846  Esd=    0.38499  New shift=    0.20000                                                                                                                                                                       
  LARGE     2           2           0.20000         0.00      0.38499         14.49                          EXTPARAM
  S/ESD     6           6           0.00333         0.00      0.00103          3.23        BR     1 U[11]   
  S/ESD     7           7           0.00540         0.00      0.00108          5.01        BR     1 U[22]   
@@ -7673,7 +7675,7 @@ Mean C-C su =   0.0026
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -7751,7 +7753,7 @@ Mean C-C su =   0.0026
 
  S/ESD     1           1           0.00195         0.11      0.00159          1.23                          SCALE   
    5.50337   1.20000   1.00000   0.29962
-Resetting shift, Parameter type  26  Shift=    5.50337  Esd=    0.29962  New shift=    0.24000                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.50337  Esd=    0.29962  New shift=    0.24000                                                                                                                                                                       
  LARGE     2           2           0.24000        27.52      0.29962         18.37                          EXTPARAM
  SRATIO    3           3           0.00009         3.22      0.00027          0.33        BR     1 X       
  S/ESD     7           7           0.00107         0.20      0.00087          1.23        BR     1 U[22]   
@@ -7971,7 +7973,7 @@ Mean C-C su =   0.0020
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -8044,7 +8046,7 @@ Mean C-C su =   0.0020
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
    5.52641   1.44000   1.00000   0.30708
-Resetting shift, Parameter type  26  Shift=    5.52641  Esd=    0.30708  New shift=    0.28800                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.52641  Esd=    0.30708  New shift=    0.28800                                                                                                                                                                       
 
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
@@ -8245,7 +8247,7 @@ Mean C-C su =   0.0019
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -8318,7 +8320,7 @@ Mean C-C su =   0.0019
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
    5.56602   1.72800   1.00000   0.31899
-Resetting shift, Parameter type  26  Shift=    5.56602  Esd=    0.31899  New shift=    0.34560                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.56602  Esd=    0.31899  New shift=    0.34560                                                                                                                                                                       
 
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
@@ -9258,9 +9260,11 @@ Bonds: Update required - List5 length change
  Initialising Special positions
 Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
  Space required on DISK is   21 records,    84  Blocks,    43 Kbytes. 
+ LIST 23 has been modified to match LIST 12
+ New LIST 23 written to disk
 #LIST 17                                                                                                                                                                                                                                                        
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -9318,7 +9322,7 @@ Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
 
  Structure factor least squares calculation   14  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -9337,7 +9341,7 @@ Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
    5.58700   2.07360   1.00000   0.33376
-Resetting shift, Parameter type  26  Shift=    5.58700  Esd=    0.33376  New shift=    0.41472                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.58700  Esd=    0.33376  New shift=    0.41472                                                                                                                                                                       
 
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
@@ -9527,7 +9531,7 @@ Mean C-C su =   0.0019
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -9600,7 +9604,7 @@ Mean C-C su =   0.0019
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
    5.58139   2.48832   1.00000   0.35119
-Resetting shift, Parameter type  26  Shift=    5.58139  Esd=    0.35119  New shift=    0.49766                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.58139  Esd=    0.35119  New shift=    0.49766                                                                                                                                                                       
 
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
@@ -9801,7 +9805,7 @@ Mean C-C su =   0.0019
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -9874,7 +9878,7 @@ Mean C-C su =   0.0019
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
    5.53508   2.98598   1.00000   0.37157
-Resetting shift, Parameter type  26  Shift=    5.53508  Esd=    0.37157  New shift=    0.59720                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.53508  Esd=    0.37157  New shift=    0.59720                                                                                                                                                                       
 
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
@@ -10118,7 +10122,6 @@ Space group symbol is   P    1    21/N 1
 
 
     2547 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
 #CLOSE HKLI                                                                                                                                                                                                                                                     
 #SYSTEMATIC                                                                                                                                                                                                                                                     
 #SORT                                                                                                                                                                                                                                                           
@@ -10266,7 +10269,6 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
     2547 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is 1/FO
 #USE NEUTRON.REF                                                                                                                                                                                                                                                
@@ -10357,7 +10359,7 @@ Refining    53 parameters in    1 block :     1553 elements in the LS matrix.
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
   Disc file on unit   1 extended by     3 records 
 
@@ -10664,7 +10666,7 @@ Mean C-C su =   0.0102
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -10975,7 +10977,7 @@ Mean C-C su =   0.0064
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -11281,7 +11283,7 @@ Mean C-C su =   0.0026
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -11537,7 +11539,7 @@ Mean C-C su =   0.0025
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -11806,11 +11808,13 @@ Mean C-C su =   0.0025
   Disc file on unit   1 extended by     1 records 
 Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
  Space required on DISK is   21 records,    84  Blocks,    43 Kbytes. 
+ LIST 23 has been modified to match LIST 12
+ New LIST 23 written to disk
      18 Atoms modified;   New  LIST 5 written to DISK
   Disc file on unit   1 extended by     1 records 
 #LIST 17                                                                                                                                                                                                                                                        
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
   Disc file on unit   1 extended by    20 records 
   Disc file on unit   1 extended by     1 records 
@@ -11870,7 +11874,7 @@ Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
 
  Structure factor least squares calculation    7  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -11894,7 +11898,7 @@ Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
 
  S/ESD     1           1           0.00890         0.00      0.00107          8.35                          SCALE   
    5.29848   1.00000   1.00000   0.34412
-Resetting shift, Parameter type  26  Shift=    5.29848  Esd=    0.34412  New shift=    0.20000                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.29848  Esd=    0.34412  New shift=    0.20000                                                                                                                                                                       
  LARGE     2           2           0.20000         0.00      0.34412         15.40                          EXTPARAM
  S/ESD     6           6           0.00291         0.00      0.00095          3.05        BR     1 U[11]   
  S/ESD     7           7           0.00512         0.00      0.00104          4.91        BR     1 U[22]   
@@ -12168,7 +12172,7 @@ Mean C-C su =   0.0025
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -12246,7 +12250,7 @@ Mean C-C su =   0.0025
 
  S/ESD     1           1           0.00142         0.16      0.00078          1.83                          SCALE   
    5.00144   1.20000   1.00000   0.23701
-Resetting shift, Parameter type  26  Shift=    5.00144  Esd=    0.23701  New shift=    0.24000                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.00144  Esd=    0.23701  New shift=    0.24000                                                                                                                                                                       
  LARGE     2           2           0.24000        25.01      0.23701         21.10                          EXTPARAM
  S/ESD     7           7           0.00083         0.16      0.00075          1.10        BR     1 U[22]   
  S/ESD     8           8           0.00089        -0.29      0.00063          1.42        BR     1 U[33]   
@@ -12475,7 +12479,7 @@ Mean C-C su =   0.0017
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -12548,7 +12552,7 @@ Mean C-C su =   0.0017
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
    5.03378   1.44000   1.00000   0.24072
-Resetting shift, Parameter type  26  Shift=    5.03378  Esd=    0.24072  New shift=    0.28800                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.03378  Esd=    0.24072  New shift=    0.28800                                                                                                                                                                       
 
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
@@ -12739,7 +12743,7 @@ Mean C-C su =   0.0017
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -12812,7 +12816,7 @@ Mean C-C su =   0.0017
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
    5.09697   1.72800   1.00000   0.25095
-Resetting shift, Parameter type  26  Shift=    5.09697  Esd=    0.25095  New shift=    0.34560                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.09697  Esd=    0.25095  New shift=    0.34560                                                                                                                                                                       
 
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
@@ -13644,9 +13648,11 @@ Bonds: Update required - List5 length change
  Initialising Special positions
 Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
  Space required on DISK is   21 records,    84  Blocks,    43 Kbytes. 
+ LIST 23 has been modified to match LIST 12
+ New LIST 23 written to disk
 #LIST 17                                                                                                                                                                                                                                                        
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -13704,7 +13710,7 @@ Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
 
  Structure factor least squares calculation   12  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -13723,7 +13729,7 @@ Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
    5.14755   2.07360   1.00000   0.26319
-Resetting shift, Parameter type  26  Shift=    5.14755  Esd=    0.26319  New shift=    0.41472                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.14755  Esd=    0.26319  New shift=    0.41472                                                                                                                                                                       
 
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
@@ -13913,7 +13919,7 @@ Mean C-C su =   0.0016
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -13986,7 +13992,7 @@ Mean C-C su =   0.0016
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
    5.17650   2.48832   1.00000   0.27748
-Resetting shift, Parameter type  26  Shift=    5.17650  Esd=    0.27748  New shift=    0.49766                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.17650  Esd=    0.27748  New shift=    0.49766                                                                                                                                                                       
 
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
@@ -14180,7 +14186,7 @@ Mean C-C su =   0.0016
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -14253,7 +14259,7 @@ Mean C-C su =   0.0016
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
    5.16858   2.98598   1.00000   0.29409
-Resetting shift, Parameter type  26  Shift=    5.16858  Esd=    0.29409  New shift=    0.59720                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.16858  Esd=    0.29409  New shift=    0.59720                                                                                                                                                                       
 
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
@@ -14498,7 +14504,6 @@ Space group symbol is   P    1    21/N 1
 
 
     2547 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
 #CLOSE HKLI                                                                                                                                                                                                                                                     
 #SYSTEMATIC                                                                                                                                                                                                                                                     
 #SORT                                                                                                                                                                                                                                                           
@@ -14646,7 +14651,6 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
     2547 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
- IRFT          -1
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is 1/FO
 #USE NEUTRON.REF                                                                                                                                                                                                                                                
@@ -14738,7 +14742,7 @@ Refining    53 parameters in    1 block :     1553 elements in the LS matrix.
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
   Disc file on unit   1 extended by     2 records 
   Disc file on unit   1 extended by     1 records 
@@ -15046,7 +15050,7 @@ Mean C-C su =   0.0102
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -15364,7 +15368,7 @@ Mean C-C su =   0.0073
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -15672,7 +15676,7 @@ Mean C-C su =   0.0034
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -15940,7 +15944,7 @@ Mean C-C su =   0.0024
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -16204,11 +16208,13 @@ Mean C-C su =   0.0025
   Disc file on unit   1 extended by     1 records 
 Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
  Space required on DISK is   21 records,    84  Blocks,    43 Kbytes. 
+ LIST 23 has been modified to match LIST 12
+ New LIST 23 written to disk
      18 Atoms modified;   New  LIST 5 written to DISK
   Disc file on unit   1 extended by     1 records 
 #LIST 17                                                                                                                                                                                                                                                        
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
   Disc file on unit   1 extended by    20 records 
 
@@ -16268,7 +16274,7 @@ Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
  Structure factor least squares calculation    7  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -16292,7 +16298,7 @@ Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
 
  S/ESD     1           1           0.00890         0.00      0.00107          8.35                          SCALE   
    5.29851   1.00000   1.00000   0.34412
-Resetting shift, Parameter type  26  Shift=    5.29851  Esd=    0.34412  New shift=    0.20000                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.29851  Esd=    0.34412  New shift=    0.20000                                                                                                                                                                       
  LARGE     2           2           0.20000         0.00      0.34412         15.40                          EXTPARAM
  S/ESD     6           6           0.00291         0.00      0.00095          3.05        BR     1 U[11]   
  S/ESD     7           7           0.00513         0.00      0.00104          4.91        BR     1 U[22]   
@@ -16566,7 +16572,7 @@ Mean C-C su =   0.0025
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -16644,7 +16650,7 @@ Mean C-C su =   0.0025
 
  S/ESD     1           1           0.00142         0.16      0.00078          1.83                          SCALE   
    5.00144   1.20000   1.00000   0.23701
-Resetting shift, Parameter type  26  Shift=    5.00144  Esd=    0.23701  New shift=    0.24000                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.00144  Esd=    0.23701  New shift=    0.24000                                                                                                                                                                       
  LARGE     2           2           0.24000        25.01      0.23701         21.10                          EXTPARAM
  S/ESD     7           7           0.00083         0.16      0.00075          1.11        BR     1 U[22]   
  S/ESD     8           8           0.00089        -0.29      0.00063          1.41        BR     1 U[33]   
@@ -16872,7 +16878,7 @@ Mean C-C su =   0.0017
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -16945,7 +16951,7 @@ Mean C-C su =   0.0017
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
    5.03378   1.44000   1.00000   0.24072
-Resetting shift, Parameter type  26  Shift=    5.03378  Esd=    0.24072  New shift=    0.28800                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.03378  Esd=    0.24072  New shift=    0.28800                                                                                                                                                                       
 
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
@@ -17135,7 +17141,7 @@ Mean C-C su =   0.0017
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -17208,7 +17214,7 @@ Mean C-C su =   0.0017
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
    5.09698   1.72800   1.00000   0.25095
-Resetting shift, Parameter type  26  Shift=    5.09698  Esd=    0.25095  New shift=    0.34560                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.09698  Esd=    0.25095  New shift=    0.34560                                                                                                                                                                       
 
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
@@ -18041,9 +18047,11 @@ Bonds: Update required - List5 length change
  Initialising Special positions
 Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
  Space required on DISK is   21 records,    84  Blocks,    43 Kbytes. 
+ LIST 23 has been modified to match LIST 12
+ New LIST 23 written to disk
 #LIST 17                                                                                                                                                                                                                                                        
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -18101,7 +18109,7 @@ Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
 
  Structure factor least squares calculation   12  ends  2
 #LIST 26                                                                                                                                                                                                                                                        
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -18120,7 +18128,7 @@ Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
    5.14754   2.07360   1.00000   0.26319
-Resetting shift, Parameter type  26  Shift=    5.14754  Esd=    0.26319  New shift=    0.41472                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.14754  Esd=    0.26319  New shift=    0.41472                                                                                                                                                                       
 
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
@@ -18310,7 +18318,7 @@ Mean C-C su =   0.0016
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -18383,7 +18391,7 @@ Mean C-C su =   0.0016
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
    5.17650   2.48832   1.00000   0.27748
-Resetting shift, Parameter type  26  Shift=    5.17650  Esd=    0.27748  New shift=    0.49766                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.17650  Esd=    0.27748  New shift=    0.49766                                                                                                                                                                       
 
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
@@ -18577,7 +18585,7 @@ Mean C-C su =   0.0016
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
-#RESTRAIN                                                                                                                                                                                                                                                       
+#DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
 
 
@@ -18650,7 +18658,7 @@ Mean C-C su =   0.0016
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
    5.16858   2.98598   1.00000   0.29409
-Resetting shift, Parameter type  26  Shift=    5.16858  Esd=    0.29409  New shift=    0.59720                                                                                                                                                                  
+Resetting shift for Extinction  Shift=    5.16858  Esd=    0.29409  New shift=    0.59720                                                                                                                                                                       
 
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
@@ -18844,11 +18852,11 @@ Mean C-C su =   0.0016
 #CYCLENDS                                                                                                                                                                                                                                                       
 #                                         AND CLOSE THE PROGRAM.                                                                                                                                                                                                
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads      30416 Physical writes      27556 Cache hits     681409
- Cache hit distribution   573521   60891    8327    4064    4697    5443
- Cache hit distribution     2894    2924    3132    1992    1740    1454
- Cache hit distribution     1110    1468     941     695     892     382
- Cache hit distribution      473     726     932    1330     692     689
+ Physical reads      30418 Physical writes      27636 Cache hits     681916
+ Cache hit distribution   573893   60966    8344    4096    4652    5481
+ Cache hit distribution     2911    2927    3126    2001    1751    1412
+ Cache hit distribution     1137    1468     940     694     892     383
+ Cache hit distribution      475     716     938    1332     687     694
 
 
           : Job ends ok       with     0 warnings and     0 errors
