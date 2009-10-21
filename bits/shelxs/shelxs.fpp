@@ -38,10 +38,13 @@ CDOS      NAME=LINE(I+7:)
       LI=23
       OPEN(UNIT=LI,FILE='SHELXS.LIS',STATUS='UNKNOWN',ERR=5)
       LP=7
-CDJW      OPEN(UNIT=7,FILE=NAME(1:6)//'.RES',STATUS='NEW',
-      LINE = ' CRY '
-      OPEN(UNIT=7,FILE='SHELXS.CRY',STATUS='UNKNOWN',
+cdjw      OPEN(UNIT=7,FILE=NAME(1:6)//'.RES',STATUS='NEW',
+      OPEN(UNIT=7,FILE='SHELXS.RES',STATUS='UNKNOWN',
      1 ERR=5)
+      LINE = ' RES '
+cdjw      OPEN(UNIT=7,FILE='SHELXS.CRY',STATUS='UNKNOWN',
+cdjw     1 ERR=5)
+cdjw      LINE = ' CRY '
 C
 C ** SET BINARY (UNFORMATTED) SCRATCH UNITS (LA, LB, LF AND LG) **
 C ** (USUALLY 2, 4, 8 AND 9 RESP.).  ALL UNIT NUMBERS MUST BE   **
@@ -5077,22 +5080,30 @@ CDJW      GOTO 27
 CDJW  29  WRITE(LP,22)IH(43),IC(1),IC(2),IC(3),M,
 CDJW     +A(I+2),A(I+3),A(I+4),S
 CDJW
-      DO IDJW = 1,4
-        DO KI = 1,10
-            IF (IC(IDJW) .EQ. IH(KI)) GOTO 28
-        ENDDO
-      ENDDO
-      IDJW = 4
-28    CONTINUE
-      IF (IDJW .EQ. 1) THEN
-        WRITE(LP,29) IH(43), IH(20), IC(1), IC(2), IC(3), M,
-     +  A(I+2), A(I+3), A(I+4), S
-      ELSE
-        WRITE(LP,29) (IC(KI), KI=1,IDJW-1), IH(20), 
-     +  (IC(KI), KI=IDJW,4), M,
-     +  A(I+2), A(I+3), A(I+4), S
-      ENDIF
-29    FORMAT(5A1,I3,3F8.4,F10.6,'  0.05')
+        DO 28 KI=1,10
+        IF(IC(1).EQ.IH(KI))GOTO 29
+  28    CONTINUE
+      WRITE(LP,22)IC,M,A(I+2),A(I+3),A(I+4),S
+      GOTO 27
+  29  WRITE(LP,22)IH(43),IC(1),IC(2),IC(3),M,
+     +A(I+2),A(I+3),A(I+4),S
+CDJW
+c#djw      DO IDJW = 1,4
+c#djw        DO KI = 1,10
+c#djw            IF (IC(IDJW) .EQ. IH(KI)) GOTO 28
+c#djw        ENDDO
+c#djw      ENDDO
+c#djw      IDJW = 4
+c#djw28    CONTINUE
+c#djw      IF (IDJW .EQ. 1) THEN
+c#djw        WRITE(LP,29) IH(43), IH(20), IC(1), IC(2), IC(3), M,
+c#djw     +  A(I+2), A(I+3), A(I+4), S
+c#djw      ELSE
+c#djw        WRITE(LP,29) (IC(KI), KI=1,IDJW-1), IH(20), 
+c#djw     +  (IC(KI), KI=IDJW,4), M,
+c#djw     +  A(I+2), A(I+3), A(I+4), S
+c#djw      ENDIF
+c#djw29    FORMAT(5A1,I3,3F8.4,F10.6,'  0.05')
 CDJW
       GOTO 27
   30  WRITE(LP,24)
