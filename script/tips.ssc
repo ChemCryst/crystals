@@ -20,7 +20,7 @@
 ^^WI SENDTEXTTO XTIPTEXT                                                        
 ^^CR                                                                            
 % LOOP                                                                          
-%  EVALUATE NTIPS = 31
+%  EVALUATE NTIPS = 33
 ^^CO  GETKEY TIP#                                                               
 %  GET SILENT NOSTORE FINAL INTEGER '1' '1'                                     
 %  EVALUATE CTIP = VALUE                                                        
@@ -349,6 +349,20 @@ Change the atom type to z and apply the change
 Click on the remaining S(1) and change its serial numner to 2.  Apply.
 Click on the old S(1), now called Z(1), and change the type back to S.
 Apply
+%   END BLOCK                                                                   
+%   BLOCK % TIP32
+The version of SHELXS distributed with CRYSTALS was kindly
+given to us by George Sheldrick in 1986.
+If you have a newer version, simply replace shelxs.exe in
+the Wincrys folder by your newer version. You may need to
+rename it to shelxs.exe
+%   END BLOCK                                                                   
+%   BLOCK % TIP33
+The version of SIR92 included with CRYSTALS was kindly given
+to us by Carmelo Giacovazzo and his colleagues.  
+You will need to visit the Sirware website to obtain later
+versions. The input data is not backwards compatible, so
+CRYSTALS includes interfaces to several versions.
 %   END BLOCK                                                                   
 %  END CASE                                                                     
 ^^CO SET XTIPTEXT VIEWTOP                                                       
