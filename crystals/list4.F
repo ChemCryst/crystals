@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.63  2009/10/13 16:41:45  djw
+C Fix overflows in format statement when writing agreement analysis to plot window - spotted using OD data
+C
 C Revision 1.62  2009/07/24 14:02:15  djw
 C Add Fo/Fc plot
 C
@@ -2881,7 +2884,7 @@ cdjwjul09
      1'^^PL PLOTDATA _THETA BARGRAPH ATTACH _VSINT ', CSHK(PKTHE),
      1'^^PL YAXIS ZOOM 0.01 100 TITLE',
      1'^^PL  "<Fo-Fc>**2" LOG NSERIES=4 LENGTH=10 XAXIS TITLE',
-     1'^^PL ''<-Low angle    Sin(theta)/lambda   High angle->''',
+     1'^^PL ''<-Low angle  (Sin(theta)/lambda)^2 High angle->''',
      1'^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
      1 '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
      1 '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
