@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.149  2009/10/13 16:44:08  djw
+C Change Audit Date to make PLATON happy, change cif comment to make intention clearer
+C
 C Revision 1.148  2009/09/02 08:42:12  djw
 C Fix typo
 C
@@ -7074,6 +7077,9 @@ c
 c^^^
          else if (ipunch .eq. 2) then
 cdjwjul09  Watch out for small/negative average Fo
+C----- multiplier to correct fC for flack parameter value
+c assigned above      PREFLACK = 1. - 2.* STORE(L30GE+6)
+c
            if  ((foks .ge. thresh* sigm) 
      1     .and.(fcks .ge. thresh* sigm) 
      2     ) then
