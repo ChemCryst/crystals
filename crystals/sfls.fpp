@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.60  2009/07/20 10:35:18  djw
+C Copy low leverage reflctions to the screen
+C
 C Revision 1.59  2009/06/18 07:11:20  djw
 C Message when extparam goes -ve
 C
@@ -963,6 +966,12 @@ C--
 
       CALL XWLSTD(33,ICOM33,IDIM33,-1,-1)   ! OUTPUT THE NEW LIST 33 TO DISC
       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30
+cdjwoct09
+      IF (SFLS_TYPE .EQ. SFLS_SCALE) THEN
+C      update LIST 30 R and Rw values if only SCALE has been asked for
+        STORE(L30RF+0 ) = R  
+        STORE(L30RF+1 ) = RW
+      ENDIF
       IF (KHUNTR (11,0, IADDL,IADDR,IADDD, -1) .EQ. 0) THEN
         STORE(L30RF+0 ) = R   ! 'REFINE' 
 cdjwmay07 L30GE is filled in ANALYSE and lets the user see the effect
@@ -1076,6 +1085,9 @@ cdjwjan05
         else
             wscle = sqrt(1./store(l30dr+7))
         endif
+cdjwsep09
+        istat = ksctrn (1,'sfls:rscale', rscle, 1)
+        istat = ksctrn (1,'sfls:scale',  scale, 1)
         write(cmon,'(3(a,f10.3,6x))') 
      1  'SumFo/SumFc=', rscle, 
      2  'LS-scale=', scale,
