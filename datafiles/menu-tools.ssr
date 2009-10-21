@@ -1,3 +1,4 @@
+%%SSR MENU-TOOLS
 ^^WI  MENU _TOOLS '&Tools'                                                      
 ^^WI   ITEM NOTE '&Notepad' '$notepad' DISABLEIF='IN'                           
 ^^WI   ITEM DOSP '&Command prompt' '$command' DISABLEIF='IN'                    
@@ -107,3 +108,5 @@
 ^^WI   ITEM INFO 'Information' '#SCRIPT TOOLINF'
 ^^WI              DISABLEIF='IN'
 ^^WI  ENDMENU                                                                   
+%%END SSR
+

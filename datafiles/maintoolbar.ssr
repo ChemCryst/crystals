@@ -1,4 +1,4 @@
-%
+%%SSR MAINTOOLBAR
 % The main toolbar
 %
 ^^WI       @ 1,1 TOOLBAR _MAINBAR
@@ -41,3 +41,4 @@
 ^^WI         TOOL _MHL 'tool_help.bmp' 'Help'
 ^^WI         '$ "CRYSDIR:manual/readme.html"' DISABLEIF='IN'
 ^^WI       }
+%%SSR END

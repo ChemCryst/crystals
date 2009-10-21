@@ -1,3 +1,4 @@
+%%SSR MENU-GRAPHICS
 ^^WI  MENU CAME '&Graphics'
 ^^WI   ITEM CAM '&Cameron Graphics'
 ^^WI            '#SCRIPT XCAMNORM'
@@ -17,3 +18,5 @@
 ^^WI   ITEM XH      'Graphics menu &help'
 ^^WI        '$ "crysdir:manual/tools-menus.html"'
 ^^WI  ENDMENU
+%%SSR END
+

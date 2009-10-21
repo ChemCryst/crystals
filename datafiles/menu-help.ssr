@@ -1,3 +1,4 @@
+%%SSR MENU-HELP
 ^^WI  MENU HELP '&Help'                                                         
 ^^WI   ITEM HGUIDE '&Start the Guide'                                             
 ^^WI   '#SCRIPT GUIDESTART' DISABLEIF='IN'                                            
@@ -128,3 +129,5 @@
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM ABOUT '&About Crystals' '#SCRIPT XREFER' DISABLEIF='IN'             
 ^^WI  ENDMENU                                                                   
+%%SSR END
+

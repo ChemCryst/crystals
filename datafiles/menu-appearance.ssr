@@ -1,3 +1,4 @@
+%%SSR MENU-APPEARANCE
 ^^WI  MENU _VIEW    'A&ppearance'
 ^^WI    MENU SL '&Screen Layout'                                                       
 ^^WI     ITEM P1 '&HTML'                                             
@@ -39,3 +40,5 @@
 ^^WI    ITEM XH      'Appearance menu &help'                                    
 ^^WI        '$ "crysdir:manual/tools-menus.html"'              
 ^^WI  ENDMENU                                                                   
+%%SSR END
+

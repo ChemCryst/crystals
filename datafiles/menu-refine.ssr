@@ -1,3 +1,4 @@
+%%SSR MENU-REFINE
 ^^WI  MENU _REFINE '&Refinement'
 ^^WI   ITEM _REF '&The Guide' '#SCRIPT XGUIDE'  DISABLEIF='IN'
 ^^WI   ITEM _REF '&Setup directives and constraints' '#SCRIPT XWRITE5'
@@ -43,3 +44,5 @@
 ^^WI   ITEM INFO 'Information' '#SCRIPT REFINF'
 ^^WI              DISABLEIF='IN'
 ^^WI  ENDMENU
+%%END SSR
+

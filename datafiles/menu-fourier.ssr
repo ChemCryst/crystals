@@ -1,3 +1,4 @@
+%%SSR MENU-FOURIER
 ^^WI  MENU _FOURIER 'F&ourier'
 ^^WI   ITEM _DIFF '&Difference' '#SCRIPT XFOUR_NDIFF'
 ^^WI               ENABLEIF='L1 L2 L5 L6' DISABLEIF='IN'
@@ -22,3 +23,4 @@
 ^^WI   ITEM _FSET '&Set map ranges' '#SCRIPT XSECTION'
 ^^WI               ENABLEIF='L1 L2' DISABLEIF='IN'
 ^^WI  ENDMENU
+%%SSR END

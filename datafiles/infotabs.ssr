@@ -1,4 +1,4 @@
-%
+%%SSR INFOTABS
 %  The information tabs
 %
 ^^WI               @ 1,1 TABCTRL _MAINTABS
@@ -217,3 +217,4 @@
 ^^WI                   }
 ^^WI                 }
 ^^WI               }
+%%END SSR

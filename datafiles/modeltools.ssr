@@ -1,4 +1,4 @@
-%                                                                               
+%%SSR MODELTOOLS                                                                               
 %  The model window toolbar                                                     
 %                                                                               
 ^^WI               @ 1,1 TOOLBAR _MODBAR                                        
@@ -30,3 +30,5 @@
 ^^WI                 '#SCRIPT XMODVIEW_NTOGGLEH' DISABLEIF='IN' ENABLEIF='L5'       
 ^^WI                 ITEM _MSHOWH STATE=ON                                       
 ^^WI               }                                                            
+%%END SSR
+

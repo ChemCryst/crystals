@@ -1,3 +1,4 @@
+%%SSR MENU-FILE
 ^^WI  MENU _FILE    '&File'
 ^^WI   ITEM NEW     '&New Working Dir' '#SCRIPT XNEWDIR' DISABLEIF='IN'
 ^^WI   ITEM OPEND   '&Open CRYSTALS DSC file' '#SCRIPT XOPENDSC'
@@ -16,3 +17,5 @@
 ^^WI   SPLIT
 ^^WI   ITEM EXIT    'E&xit Crystals'        '_MAIN CLOSE'
 ^^WI  ENDMENU
+%%SSR END
+

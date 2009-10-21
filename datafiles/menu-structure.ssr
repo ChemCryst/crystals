@@ -1,3 +1,4 @@
+%%SSR MENU-STRUCTURE
 ^^WI  MENU _STRUC   '&Structure'                                                
 ^^WI   ITEM XDSC 'Undo/backup model' '#SCRIPT XDSCMAN'                          
 ^^WI                                              DISABLEIF='IN'                
@@ -64,3 +65,5 @@
 ^^WI   ITEM SHEL 'Help/Information' '#SCRIPT STRUCTINF'                         
 ^^WI              DISABLEIF='IN'                                                
 ^^WI  ENDMENU                                                                   
+%%SSR END
+

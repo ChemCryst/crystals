@@ -1,3 +1,4 @@
+%%SR MENU-SOLVE
 ^^WI  MENU _SOLVE 'Sol&ve'                                                      
 ^^WI    ITEM _SIR 'Sir9&2' '#SCRIPT XSIR92' ENABLEIF='L1 L2 L6'                 
 ^^WI                                        DISABLEIF='IN'                      
@@ -30,3 +31,5 @@
 ^^WI                                              DISABLEIF='IN'                
 ^^WI    ITEM _FRESH 'Known facts' '#SCRIPT XGUIDEK' DISABLEIF='IN'              
 ^^WI  ENDMENU                                                                   
+%%SSR END
+

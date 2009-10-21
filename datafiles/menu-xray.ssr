@@ -1,3 +1,4 @@
+%%SSR MENU-XRAY
 ^^WI  MENU _START   '&X-ray Data'
 ^^WI   ITEM _REF '&Guided import' '#SCRIPT XGUIDEI'  DISABLEIF='IN'
 ^^WI   MENU _PRE 'Pre-process'
@@ -43,3 +44,4 @@
 ^^WI   ITEM XH      'X-ray data menu &help'
 ^^WI        '$"crysdir:manual/tools-menus.html"'
 ^^WI  ENDMENU
+%%SSR END

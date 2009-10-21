@@ -1,3 +1,4 @@
+%%SSR POPUP-BOND
 ^^WI                   DEFINEPOPUPMENU 4 POPUP4 'NormalBond'
 ^^WI                    ITEM _SELEC '&Relocate symm atom'
 ^^WI                       '#EDIT_NTRANSFORM 1 0 0 0 1 0 0 0 1 _S_NEND'
@@ -25,3 +26,4 @@
 ^^WI                      ENABLEIF='L1 L2 L5' DISABLEIF='IN'
 ^^WI                    ENDMENU
 ^^WI                   ENDDEFINEMENU
+%%END SSR

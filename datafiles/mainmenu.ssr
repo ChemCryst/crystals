@@ -1,3 +1,5 @@
+
+%%SSR MAINMENU
 ^^WI DEFINEMENU MAIN 'NULL'
 !     menu-file.srt
 !     menu-xray.srt
@@ -12,4 +14,4 @@
 !     menu-tools.srt
 !     menu-help.srt
 ^^WI ENDDEFINEMENU
-
+%%END SSR

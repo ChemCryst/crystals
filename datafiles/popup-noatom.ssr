@@ -1,3 +1,4 @@
+%%SSR POPUP-NOATOM
 ^^WI                   DEFINEPOPUPMENU 1 POPUP1 'Not selected'
 ^^WI                    ITEM _SELEC '&Select All'
 ^^WI                           '^^CO SET MODEL01 SELECT ALL=YES'
@@ -48,3 +49,4 @@
 ^^WI                    ITEM _REFR 'Auto update ON'  '#SCRIPT updton'
 ^^WI                      DISABLEIF='IN'
 ^^WI                   ENDDEFINEMENU
+%%END SSR

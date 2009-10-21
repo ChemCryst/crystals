@@ -1,3 +1,4 @@
+%%SSR MENU-ANALYSE
 ^^WI  MENU _ANALYSE 'A&nalyse'                                                  
 ^^WI   ITEM AGREE '&Agreement analysis' '#SCRIPT XANAL'                         
 ^^WI               ENABLEIF='L5 L6' DISABLEIF='IN'                              
@@ -54,3 +55,4 @@
 ^^WI     '#SPAWN CRYSDIR:manual/analyse/difficult.html' DISABLEIF='IN'             
 ^^WI   ENDMENU
 ^^WI  ENDMENU                                                                   
+%%SSR END
