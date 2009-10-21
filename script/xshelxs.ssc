@@ -112,11 +112,12 @@
 %          COPY '#SCRIPT XHELP2'                                                
 %          FINISH                                                               
 %      END IF                                                                   
-%      EVALUATE LCRY = TRUE                                                     
+%%djwoct09      EVALUATE LCRY = TRUE                                                     
+%      EVALUATE LCRY = FALSE                                                     
 %%                                                                              
 %      COPY '#SCRIPT FRESH'                                                     
 %%                                                                              
-%      COPY '#OPEN SCPDATA shelxs.cry'                                          
+%      COPY '#OPEN SCPDATA shelxs.res'                                          
 %      VARIABLE INTEGER ATOMCOUNT
 %      COPY '#SCRIPT ZSHELXIN'                                                  
 %%DJW      COPY '#SCRIPT INshelxs'
