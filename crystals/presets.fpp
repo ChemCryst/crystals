@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.54  2009/06/24 07:23:14  djw
+C Turn global logging back off - it causes writes to FORT.8 before a file is assigned
+C  to the chanel. Rats.
+C
 C Revision 1.53  2009/06/08 14:23:19  djw
 C Re-enable loggin of the primary input file so that the detailed action of SCRIPTS can be followed
 C
@@ -1905,7 +1909,7 @@ C            7           PROGRAMMING ERROR. INPUT OF THIS LIST TYPE
 C                        SHOULD NOT BE HANDLED BY 'XLNIOA'
 C
       DATA ILSTHN / 1 , 2 , 3 , 3 , 4 , 7 , 6 , 6 , 6 , 4 ,
-     2              3 , 5 , 3 , 3 , 6 , 5 , 5 , 6 , 6 , 3 ,
+     2              3 , 5 , 3 , 3 , 6 , 5 , 5 , 5 , 6 , 3 ,
      3              6 , 6 , 3 , 3 , 3 , 7 , 3 , 3 , 3 , 4 ,
      4              3 , 6 , 7 , 6 , 6 , 6 , 6 , 3 , 3 , 3 ,
      5              3 , 6 , 6 , 6 , 6 , 6 , 6 , 6 , 6 , 6 /

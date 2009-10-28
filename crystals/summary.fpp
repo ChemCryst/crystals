@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.80  2009/07/31 12:44:47  djw
+C Insert a message about inapprpriate weights
+C
 C Revision 1.79  2009/06/17 13:43:28  djw
 C Messages for merged data corrected to match COMMANDS.DSC
 C
@@ -329,7 +332,7 @@ C
 C
 C----- SEE ALSO KSUMLN - FOR THE SAME DATA - SHOULD IT BE IN BLOCK DATA?
       DATA ISMTYP /  1 ,  2 ,  3 ,  4 ,  5 ,     6 ,  0 ,  0 ,  0 , 10 ,
-     2               0 , 12 , 13 , 14 ,  0 ,    16 , 17 ,  0 ,  0 ,  0 ,
+     2               0 , 12 , 13 , 14 ,  0 ,    16 , 17 , 18 ,  0 ,  0 ,
      3               0 ,  0 , 23 ,  0 , 25 ,     0 , 27 , 28 , 29 , 30 ,
      4               0 ,  0 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 , 40 ,
      5              41 , 42 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 ,  0 /
@@ -461,7 +464,7 @@ C      1 - 9 , 10 - 19 , 20 - 29 , 30 - 39 , 40 - 49 , 50
 C
 C----- SEE ALSO XSMMRY - FOR THE SAME DATA - SHOULD IT BE IN BLOCK DATA?
       DATA ISMTYP /  1 ,  2 ,  3 ,  4 ,  5 ,     6 ,  7 ,  0 ,  0 , 10 ,
-     2               0 , 12 , 13 , 14 ,  0 ,    16 , 17 ,  0 ,  0 ,  0 ,
+     2               0 , 12 , 13 , 14 ,  0 ,    16 , 17 , 18 ,  0 ,  0 ,
      3               0 ,  0 , 23 ,  0 , 25 ,     0 , 27 , 28 , 29 , 30 ,
      4               0 ,  0 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 , 40 ,
      5              41 , 42 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 ,  0 /
@@ -472,20 +475,20 @@ C
      3 'Reflection data', 
      * 'List 7', 2*'*', 'Peaks', '*', 'Refinement directives',
      4 'Diffraction conditions', 'Asymmetric section', '*',
-     5 'Restraints', 'Special restraints', 5*'*',
+     5 'Restraints', 'Special restraints', 'Smiles', 4*'*',
      6 'S.F. modifications', '*', 'Twin Laws', '*',
      7 'Raw data scale factors',
      8 'Reflection selection conditions', 'Elemental properties',
      9 'General details', 9*'*','Bonding information', 'Bonds',
      1 'Fourier mask' /
 C
-      DATA LLTYPE / 15, 8,
-     2 18, 16, 10,
-     3 15, 6, 1, 1,  5, 1,  21,
-     4 22, 18, 1,
-     5 10, 18, 1, 1, 1, 1, 1,
-     6 18, 1, 9, 1,
-     7 22,
+      DATA LLTYPE /
+     2 15,  8, 18, 16, 10,
+     3 15,  6,  1,  1,  5, 
+     4 1,  21, 22, 18,  1,
+     5 10, 18,  6,  1,  1,
+     6  1,  1, 18,  1,  9,
+     7  1, 22,
      8 31, 20,
      9 15,1,1,1,1,1,1,1,1,1,19,5,
      1 12 /
@@ -590,6 +593,10 @@ C
       ELSE IF ( LSTYPE .EQ. 16 ) THEN
         CALL XPRTLX ( LSTYPE , -1 )
       ELSE IF ( LSTYPE .EQ. 17 ) THEN
+        CALL XPRTLX ( LSTYPE , -1 )
+      ELSE IF ( LSTYPE .EQ. 18 ) THEN
+        CALL XPRTLX ( LSTYPE , -1 )
+      ELSE IF ( LSTYPE .EQ. 12 ) THEN
         CALL XPRTLX ( LSTYPE , -1 )
       ELSE IF ( LSTYPE .EQ. 23 ) THEN
         CALL XSUM23

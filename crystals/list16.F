@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2009/06/17 13:41:49  djw
+C Fix #CHECK HI crash.  Actual error was in wrong values for idjw1 & idjw2 for DELU
+C  restraint in LIST 16.  Several messages cleaned up, more diagnostics for error conditions.
+C
 C Revision 1.11  2006/09/25 12:31:50  djw
 C Remove some output statements
 C
@@ -739,8 +743,8 @@ C Find the pivot atom (M5A) in the first group.
         IF (( IND1 .GE. 0 ) .and. (mg .ge. 21)) THEN
           WRITE (CMON,'(A,i5,a)')'Programming error [1]',
      1    mg,' in XPRC16.'
-          CALL XPRVDU(NCVDU,1,0)  
           if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
+          CALL XPRVDU(NCVDU,1,0)  
           GOTO 5850
         END IF
         IND1 = -IND1 ! This are now index into the JATD vector.
@@ -785,16 +789,19 @@ C Find the second atom in the first group.
           IF ( L .GE. M5A ) THEN
 C
             IF (MG .EQ. 21) THEN
+C             SAME
               idjw1=3      !3 parameters starting at 5 (x)
               idjw2=5
               ISTORE(LCG+1)=5                             ! Mean
               STORE(LCG+3)=1./(DISTW*DISTW)  ! Weight (1/variance)
             ELSE if (MG .eq. 22) THEN
-              idjw1=6      !6 parameters starting at 8 (Uii) 
-              idjw2=8
+C             DELU
+              idjw1=9      !9 parameters starting at 5 (X) 
+              idjw2=5
               ISTORE(LCG+1)=9                             ! Vibration
               STORE(LCG+3)=1./(DELUW*DELUW)  ! Weight (1/variance)
             ELSE IF (MG .EQ. 23) THEN
+C             SIMU
               idjw1=6      !6 parameters starting at 8 (U11)
               idjw2=8
               ISTORE(LCG+1)=12                            ! U[IJ]
@@ -930,6 +937,7 @@ C Find third atom of angle in the first group of SAME.
             IF ( IND3 .GE. 0 ) THEN
               WRITE (CMON,'(A)') 'Programming error [3] in XPRC16.'
               CALL XPRVDU(NCVDU,1,0)  
+            if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
               GOTO 5850
             END IF
             IND3 = -IND3 ! Now index into the vector at JATD
@@ -1437,6 +1445,7 @@ C--CHECK THE PRINT FLAG
       GOTO 5900
 C--ERROR RETURN  -  PRINT THE CARD ABANDONED MESSAGE
 5850  CONTINUE
+      write(ncwu,'(a)') 'Error label 5850'
       CALL XPCA(ISTORE(MD+4))
       LEF=LEF+1
 C--AND NOW GO BACK FOR THE NEXT CARD
