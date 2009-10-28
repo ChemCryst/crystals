@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.26  2009/10/13 16:39:58  djw
+C Double the buffer size in XLXINI to enable very long CONTINUE lines to be processed (Spotted in DISTANGL trying to read in about 300 BONDED H atoms
+C
 C Revision 1.25  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -777,6 +780,7 @@ C
 C
 C -- ALLOCATE A BUFFER FOR COMMAND PROCESSING
 C -- 'MD' IS BEGINNING AND 'MG' IS THE END
+cdjwoct09 double buffer size
       MD = KSTALL ( 8000 )
       MG = MD + 8000
 C -- SET DIRECTIVE TYPE FLAG
