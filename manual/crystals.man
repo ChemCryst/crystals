@@ -1213,6 +1213,7 @@ This parameter has three values which indicate the level of detail
  Input of the contents of the unit cell           LIST 29
  Input of the crystal and data collection details LIST 13
  Input of general crystallographic data           LIST 30
+ Input of structural formula as a SMILES string   LIST 18
 #
 #Q
 #XQUICKSTART#
@@ -2440,6 +2441,50 @@ these to the same values as in REFINEMENT above.
 #I\PRINT 30#
 #PThis prints list 30. There is no command for punching LIST 30.
 #Q
+
+#XLIST 18#
+#XStructural Formula as a SMILES string#
+#YInput of Structural Formula as a SMILES string - LIST 30#
+#ALIST18#
+#HSSMILESs#
+#PThis list holds the structural formula as a SMILES string
+#N   4#
+#J
+ \LIST 18
+ SMILES    string.
+ END
+#
+For example
+#N   6#
+#J
+#list 18
+smile CC(C1=CC=CC=[N]1[Ga]2345[N](N=C(S5)Nc6ccccc6)=C(C)
+cont C7=CC=CC=[N]73)=[N]2N=C(S4)Nc8ccccc8
+smile n(o)(o)(o)
+end
+#
+#Q
+#I\LIST 18#
+#Q
+#DSMILE smiles text. Remeber there is an 80 character line length. Break
+ the SMILES at a suitable point and use a CONTINUATION card.
+#P If there is more than one discrete moiety in the cell, enter each on 
+its own SMILES card
+#
+#Q
+#YPrinting the SMILES string, LIST 18#
+#HSprintsmiles#
+#Q
+#I\PRINT 18#
+#PThis prints list 18. 
+#Q
+#YPunching the SMILES string, LIST 18#
+#HSpunchsmiles#
+#Q
+#I\PUNCH 18#
+#PThis punches list 18. 
+#Q
+
 #
 #ZREFLECTION DATA INPUT#
 #HCreflectionin#
@@ -6459,6 +6504,7 @@ to be created.
 # LIST 12  Refinement definitions (section #RLIST12#)
 # LIST 16  Restraints (section #RLIST16#)
 # LIST 17  Special position restraints (section #RLIST17#)
+# LIST 18  SMILES string (section #RLIST18#)
 # LIST 23  Structure factor control list (section #RLIST23#)
 # LIST 25  Twin laws, only for twinned refinements (section #RLIST25#)
 # LIST 28  Reflection control list (section #RLIST28#)
@@ -9439,11 +9485,12 @@ has three values:
 #PLIST 11 is printed by :
 #D\PRINT 11#
 #D\PRINT 11 A#
- Prints those correlation coefficients greater than 0.3.
+ Prints the largest 10 correlation coefficients whose magnitude is
+ greater than 0.25.
 #D\PRINT 11 B#
  Prints the correlation matrix.
 #D\PRINT 11 C#
- Prints the inverse matrix.
+ Prints the current matrix (usually the inverse matrix).
 #ILeast squares shift list  -  LIST 24#
 #ALIST24#
 #HSprintshift#
