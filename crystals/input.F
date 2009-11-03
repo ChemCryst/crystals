@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  2009/10/13 16:40:32  djw
+C Fix typo in old COMMENT card
+C
 C Revision 1.13  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -83,8 +86,10 @@ C--FIRST CONTROL ROUTINE FOR LIST INPUT AND OUTPUT.
       DATA CTXT   / 'LIST', 'END ', 'BLOC', 'NO  ' /
 
 C--LOAD THE NEXT '#INSTRUCTION'
+c      see also PRCSS.FPP
       NUM=KNXTOP(LSTOP,LSTNO,ICLASS)
-
+c      write(ncwu,'(4(a,i6))') 'INPUT  List op =', lstop, ' List no =',
+c     1  LSTNO, ' Iclass=', iclass, '  Num = ', num
 C--CHECK IF WE SHOULD RETURN
       IF(NUM.LE.0) RETURN
 
@@ -245,6 +250,7 @@ C--CHECK FOR A PRINT OF LIST 12 OR LIST 16
       IF ( LSTNO .EQ. 11 ) GO TO 6600
       IF ( LSTNO .EQ. 12 ) GO TO 6500
       IF ( LSTNO .EQ. 16 ) GO TO 6500
+      IF ( LSTNO .EQ. 18 ) GO TO 6500
 C      IF ( LSTNO .EQ. 37 ) GO TO 6500
 C--NORMAL LIST PRINT
       CALL XPRTLN(LSTNO)
@@ -321,8 +327,9 @@ C----- 'CHIME' XYZ FORMAT
       RETURN
 
 7400  CONTINUE
-C----- CHECK IF LIST 12, 16 OR 17
-      IF ((LSTNO .EQ. 16) .OR. (LSTNO .EQ. 17) ) THEN
+C----- CHECK IF LIST 12, 16 OR 17 or 18
+      IF ((LSTNO .EQ. 16) .OR. (LSTNO .EQ. 17)
+     1  .OR. (LSTNO .EQ. 18) ) THEN
             CALL XPRTLX (LSTNO, 1)
             RETURN
       ENDIF

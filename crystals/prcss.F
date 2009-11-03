@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.5  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:08  rich
 C New CRYSTALS repository
 C
@@ -31,13 +35,14 @@ C--LIST PROCESSING CONTROL ROUTINES
 C
       INCLUDE 'XUNITS.INC'
 C--
-C
+C      see also INPUT.FPP
 C--FETCH THE NEXT '#INSTRUCTION' FROM THE INPUT STREAM
       NUM=KNXTOP(LSTOP,LSTNO,ICLASS)
+c      write(ncwu,'(3(a,i6))') 'List op =', lstop, ' List no =', LSTNO,
+c     1 'Num = ', num
 C--CHECK IF WE SHOULD RETURN
       IF(NUM.LE.0) RETURN
 C--BRANCH ON THE TYPE OF OPERATION
-
       IF(LSTOP-1)1250,1250,3000
 C--LIST PROCESSING
 1250  CONTINUE
