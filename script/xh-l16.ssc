@@ -1,0 +1,16 @@
+%SCRIPT XH-L16
+%      COPY '#RELEASE PUNCH h-restraints.dat'                                        
+%      COPY '#CLOSE SCPQ'                                                        
+%      COPY '#CLOSE SCPDATA'                                                     
+%      COPY '#OPEN SCPQ restdat.12'                                              
+%      COPY '#DISTANCES'                                                         
+%      COPY 'OUTPUT MON=OFF PUNCH=H-REST'                                        
+%      COPY 'SELECT SYMMETRY=NONE RANGE=L41'
+%      COPY 'PIVOT C N O'
+%      COPY 'END'                                                                
+%      COPY '#RELEASE PUNCH bfile.pch'                                           
+%%      COPY '#TYPE h-restraints.pch'
+
+Hydrogen restraints have been  put in the file h-restraints.dat
+
+%END SCRIPT
