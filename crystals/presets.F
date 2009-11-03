@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.55  2009/10/28 16:27:56  djw
+C Add error print to .LIS as well as screen. Correct base address for parameters in DELU (was mistakenly changed in last update) list16.fpp
+C
 C Revision 1.54  2009/06/24 07:23:14  djw
 C Turn global logging back off - it causes writes to FORT.8 before a file is assigned
 C  to the chanel. Rats.
@@ -1382,7 +1385,7 @@ C  THE CHARACTER DEFINITIONS 'CSS***)
 C
 C
 #endif
-      DATA ISSISS     / 9 / ,     ISSVER     / 910 /
+      DATA ISSISS     / 14 / ,     ISSVER     / 1400 /
       DATA ISSSEG / -1 /
 C
       DATA ISSOLD / 1 / , ISSNEW / 2 / , ISSCIF / 3 /
