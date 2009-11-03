@@ -9,7 +9,7 @@
 ^^WI          ENABLEIF='L1 L2 L3 L5 L6' DISABLEIF='QS IN'
 ^^WI   ITEM _REF '&Refine H' '#SCRIPT GXREFH'
 ^^WI          ENABLEIF='L1 L2 L3 L5 L6' DISABLEIF='QS IN'
-^^WI   SPLIT
+^^WI  SPLIT
 ^^WI   ITEM DEL12  'Remove all directives and &constraints' 
 ^^WI                              '#SCRIPT CLEAR12'
 ^^WI                              DISABLEIF='IN'
@@ -21,7 +21,7 @@
 ^^WI          ENABLEIF='L1 L2 L3 L5 L6' DISABLEIF='QS IN'
 ^^WI   ITEM _CUT '&Filter reflections' '#SCRIPT XLIST28'
 ^^WI          ENABLEIF='L6'
-^^WI   SPLIT
+^^WI  SPLIT
 ^^WI   ITEM DEL16  'Delete all &restraints' 
 ^^WI                              '#SCRIPT CLEAR16'
 ^^WI                              DISABLEIF='IN'
@@ -33,12 +33,17 @@
 ^^WI            '#SCRIPT YDELU' DISABLEIF='IN' ENABLEIF='L5'
 ^^WI   ITEM SIMUS 'Add 1-2,1-3 thermal similarity restraints'
 ^^WI            '#SCRIPT YSIMU' DISABLEIF='IN' ENABLEIF='L5'
-^^WI   SPLIT
+^^WI   MENU NEW '&New Things'                                                
+^^WI    ITEM XSPEK '&create H restraints'  '#SCRIPT xh-l16' DISABLEIF='IN'              
+^^WI    ITEM XSPEK '&create H constraints' '#SCRIPT xh-l12' DISABLEIF='IN'              
+^^WI    ITEM XREWT '&Reweight' '#SCRIPT REWEIGHT' DISABLEIF='IN'              
+^^WI   ENDMENU                                                                  
+^^WI  SPLIT
 ^^WI   ITEM _SCALE 'Calculate &Scale factor' '#SFLS_NSCALE_NEND'
 ^^WI               ENABLEIF='L1 L2 L3 L5 L6'       DISABLEIF='IN'
 ^^WI   ITEM _CALC  'Recalculate &phases' '#SFLS_NCALC_NEND'
 ^^WI               ENABLEIF='L1 L2 L3 L5 L6'       DISABLEIF='IN'
-^^WI   SPLIT
+^^WI  SPLIT
 ^^WI   ITEM _SQUEEZE 'PLATON Squeeze' '#SCRIPT SQUEEZE'
 ^^WI               ENABLEIF='L1 L2 L3 L5 L6'       DISABLEIF='IN'
 ^^WI   ITEM INFO 'Information' '#SCRIPT REFINF'
