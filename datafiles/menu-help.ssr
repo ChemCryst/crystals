@@ -128,6 +128,7 @@
 ^^WI   '#SPAWN http://www.xtl.ox.ac.uk/news.html' DISABLEIF='IN'                
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM ABOUT '&About Crystals' '#SCRIPT XREFER' DISABLEIF='IN'             
+^^WI   ITEM COPYR 'Copyright' '#SPAWN CRYSDIR:manual/copyright.pdf'
 ^^WI  ENDMENU                                                                   
 %%SSR END
 
