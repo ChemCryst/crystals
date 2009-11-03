@@ -3,13 +3,13 @@
 ;
 ;Adjust the program names and version here as appropriate:
 ;
-AppVerName=CRYSTALS 12.90 (Jul 2009)
-AppVersion=12.90
-OutputBaseFilename=crystals-b1290-Jul09-setup
+AppVerName=CRYSTALS 14.00 (Nov 2009)
+AppVersion=14.00
+OutputBaseFilename=crystals-b1400-Nov09-setup
 
 AppName=CRYSTALS
 OutputDir=..\installer
-AppCopyright=Copyright ¸ Chemical Crystallography Laboratory, Oxford
+AppCopyright=Copyright (c) University of Oxford, 20 October 2009. All rights reserved.
 AppPublisher=Chemical Crystallography Laboratory, University of Oxford
 AppPublisherURL=http://www.xtl.ox.ac.uk/
 BackSolid=0
