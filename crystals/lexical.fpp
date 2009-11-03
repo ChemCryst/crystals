@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2009/10/28 16:25:55  djw
+C Add comment about buffer size
+C
 C Revision 1.26  2009/10/13 16:39:58  djw
 C Double the buffer size in XLXINI to enable very long CONTINUE lines to be processed (Spotted in DISTANGL trying to read in about 300 BONDED H atoms
 C
@@ -345,7 +348,7 @@ C      >1      DIRECTIVE NUMBER READ
 C
 C--
 C--
-      DIMENSION KMOUSE(5), KCONT(4), KALL(3)
+      DIMENSION KMOUSE(5), KCONT(4), KALL(3), KREM(3), KSMILE(3)
       CHARACTER *240 CMOUSE
       DIMENSION ICOMMN(IDIMN)
 C
@@ -377,9 +380,12 @@ C
       DATA KMOUSE/'M','O','U','S','E'/
       DATA KCONT/'C','O','N','T'/
       DATA KALL/'A','L','L'/
+      DATA KREM/'R','E','M'/
+      DATA KSMILE/'S','M','I'/
 C
 C----- SET NO MOUSE INPUT YET
       IMOUSE = 0
+      write(ncwu,'(a,i12)') 'Iskip=',iskip
 C
       NPTTOT = -1
       NPTCUR = -1
@@ -472,12 +478,35 @@ C----- LOOK FOR BLANK AFTER 'ALL'
           ENDIF
         ENDIF
       ENDIF
+C
 C -- STORE CURRENT CARD IMAGE
       CALL XFA4CS( IMAGE(1) , STORE(NXTCDI) , LASTCH )
 C -- UPDATE COUNTERS
       NCARD = NCARD + 1
       NCHRRD = NCHRRD + NWCARD
 C
+C--- LOOK FOR 'REM' OR 'SMILES'
+      IF ((KCOMP (3, IMAGE(1), KREM(1), 1, 3) .GT. 0) .or.
+     1   (KCOMP (3, IMAGE(1), KSMILE(1), 1, 3) .GT. 0)) then
+c         write(ncwu,'(256a1)') (image(itemp),itemp=1,lastch)
+c-----   set current position to after last character
+         nc = lastch+1
+         ISKIP = 1
+C---- DONT INTERPRET REM OR SMILES CARDS
+         goto 7000
+      ENDIF
+C
+C----- LOOK FOR 'CONT'
+      IF (KCOMP (3, IMAGE(1), KCONT(1), 1, 3) .GT. 0) THEN
+            IF (ISKIP .eq. 1) THEN
+C---- DONT INTERPRET IF LAST CARD WAS A REM OR SMILES CARD
+                  NC = LASTCH + 1
+                  GOTO 7000            
+            ENDIF
+      ENDIF
+C
+C----- RESET ISKIP TO NON-MESSAGE STATUS
+      ISKIP = 0
 C----- INITIALISE THE OPERATOR STATUS
       MA = 0
 1750  CONTINUE
