@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2009/11/03 11:18:20  djw
+C Add comments and set up processing for LIST 18, the SMILES string.  Improve handling of REM cards inside CONTINUE blocks
+C
 C Revision 1.27  2009/10/28 16:25:55  djw
 C Add comment about buffer size
 C
@@ -385,7 +388,6 @@ C
 C
 C----- SET NO MOUSE INPUT YET
       IMOUSE = 0
-      write(ncwu,'(a,i12)') 'Iskip=',iskip
 C
       NPTTOT = -1
       NPTCUR = -1
