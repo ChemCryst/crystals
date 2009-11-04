@@ -1,4 +1,4 @@
-% SCRIPT XFLIPINSPG
+%SCRIPT XFLIPINSPG
 %% AvdL advanced input of spacegroup symbol
 %%
 %% Read in a space group from a superflip shelx file.

@@ -1,5 +1,5 @@
-% SCRIPT XHELP12
-%      COPY '#SCRIPT XHELP1m'
+%SCRIPT XHELP12
+%      COPY '#SCRIPT XHELP1'
 {2,0 View Structure
       This activates the display module, CAMERON
 {2,0 Fourier Refinement
