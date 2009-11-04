@@ -1,4 +1,4 @@
-% SCRIPT XQCK23                                                                 
+%SCRIPT XQCK23                                                                 
 ^^WI WINDOW XQCK23 'Minimisation function' MODAL COMMIT='MF_F2' CANCEL='MF_FO'  
 ^^WI GRID MAIN NROWS=5 NCOLS=1                                                  
 ^^WI {                                                                          
@@ -65,4 +65,4 @@
 %   END BLOCK                                                                   
 %   END CASE                                                                    
 %  END LOOP                                                                     
-% END SCRIPT                                                                    
+%END SCRIPT                                                                    
