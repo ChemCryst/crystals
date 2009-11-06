@@ -127,8 +127,6 @@ Files INITIAL.* will be created in your directory. They may be important.
 %              END IF
 %            END IF
 %%
-%          COPY '#LIST 4'
-%          COPY 'END'
 %%
 %          TRANSFER '#OPEN HKLI "' //  HKLNAME // '" ' TO CRYSTALS
 %      END BLOCK
@@ -192,8 +190,6 @@ Files INITIAL.* will be created in your directory. They may be important.
 %  COPY '#LIST 6'
 %  COPY 'READ TYPE = COPY'
 %  COPY 'END'
-%  COPY '#LIST 4'
-%  COPY 'END'
 %%
 
 {I Give the minimum I/sigma(i) and [sin(theta)/lambda]sq to be 
@@ -211,6 +207,7 @@ Files INITIAL.* will be created in your directory. They may be important.
 %    COPY 'END'
 %  END IF
 %%
+%          COPY '#SCRIPT XWTINI'
 %%
  * Done. Dip data input complete.
 %END SCRIPT
