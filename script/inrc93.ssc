@@ -107,20 +107,4 @@ ABS file used...
 %%
 %%
 %  ON ERROR REPEAT
-%  VERIFY YES NO
-%  GET FINAL ABBREVIATED  -
-      'Do you want to try to solve the structure? ' 'YES'
-%  IF ( VALUE .EQ. 1 ) THEN
-            * Solve the structure
-%    IF EXISTS 6 .LT. 1 THEN
-            You do not have any reflections stored.
-            It is impossible to proceed without data.
-%      FINISH
-%    END IF
-%    COPY '#SCRIPT STRUCTUR'
-%  END IF
-%
-%  IF SOLVEMETHOD .NE. 0 THEN
-%    COPY '#SCRIPT MODEL'
-%  END IF
 %END SCRIPT
