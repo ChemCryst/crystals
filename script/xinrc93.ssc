@@ -135,7 +135,6 @@ Files INITIAL.* will be created in your directory. They may be important.
 %      END IF
 %    END BLOCK
 %%
-%    COPY '#SCRIPT XWTINI'
 %
 %%
 %  END BLOCK
@@ -168,12 +167,7 @@ Files INITIAL.* will be created in your directory. They may be important.
 %    COPY '#LIST 6'
 %    COPY 'READ TYPE = COPY'
 %    COPY 'END'
-%    COPY '#PUNCH 6'
-%    COPY 'END'
-%    COPY '#LIST 4'
-%    COPY 'END'
-%    COPY '#WEIGHT'
-%    COPY 'END'
+%    COPY '#SCRIPT XWTINI'
 %    COPY '#RELEASE PRINT BFILE.LIS'
 %    IF FILEEXISTS ( 'rc93.err' ) THEN
 %       COPY '#TYPE RC93.ERR'
