@@ -135,8 +135,7 @@ Files INITIAL.* will be created in your directory. They may be important.
 %      END IF
 %    END BLOCK
 %%
-%    COPY '#LIST 4'
-%    COPY 'END'
+%    COPY '#SCRIPT XWTINI'
 %
 %%
 %  END BLOCK
