@@ -26,14 +26,6 @@
 ^^WI   ENDMENU                                                                  
 ^^WI   SPLIT                                                                    
 ^^WI   MENU OBSOLETE '&Obsolete'                                                
-^^WI    ITEM XCONTROL '&Control' '#SCRIPT XCONTROL' DISABLEIF='IN'              
-^^WI    ITEM XROUTINE '&Routine' '#SCRIPT ROUTINE' DISABLEIF='IN'               
-^^WI    ITEM XNEWSTAR '&New Start' '#SCRIPT XNEWSTAR' DISABLEIF='IN'            
-^^WI    ITEM XINCAD4 'In Cad&4' '#SCRIPT XINCAD4'                               
-^^WI    ITEM XINRC93 'In &RC-93' '#SCRIPT XINRC93'                              
-^^WI    ITEM XINSTRC 'Input &structure' '#SCRIPT XSTRUCTU'                      
-^^WI    ITEM XINTWIN 'Input twinned data' '#SCRIPT ED25'                         
-^^WI               ENABLEIF='L5 L6' DISABLEIF='IN'                              
 ^^WI    ITEM CONY 'Co&ntour' '$"CRYSDIR:contour.exe"' DISABLEIF='IN'             
 ^^WI    ITEM CONY 'Husak' '#SCRIPT HUSAK' DISABLEIF='IN'
 ^^WI    ITEM CONY 'csd2cry' '$% "CRYSDIR:csd2cry.exe"' DISABLEIF='IN'              
