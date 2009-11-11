@@ -78,32 +78,13 @@
 %    COPY 'LOCATE RECORDTYPE = 103'                                             
 %    COPY 'TRANSFER FROM OFFSET =  1 TO FOLD'                                   
 %    COPY 'END'                                                                 
-%%       FOLD = -1 for F, or 0 for F**2                                         
+%    EVALUATE FOLD = FOLD + 2
+%%   FOLD = 1 for F, or 2 for F**2                                         
 %%                                                                              
-%    IF FOLD .EQ. 0 THEN                                                        
-%% FSQ                                                                          
-{1,8 Set SHELX default weights                                                  
-%% statistical weights seem to cause instabilities in some cases 11/11/07       
-%% Sept 08.  Problem was probably due to absence of Fc values                   
-%% Dec 08. Now problems with Cu data (Peach) 
-%% Sept 09. More problems. Oxford Diffraction data is on massive scale.
-%% Need something much more clever. Re-introduce scheme 16 for moment                                   
-%          COPY '#LIST 4'                                                       
-{I         Quasi-statistical weighting , P(1)=.1 ,p(5)=0.33333                  
-%% temp-dec-08          COPY 'SCHEME NUMBER=16, NPARAM=6'                       
-%          COPY 'SCHEME NUMBER=16, NPARAM=6'                       
-%% temp-dec-08         COPY 'PARAM .1 0 0 0 0 0.33333'                          
-%         COPY 'PARAM .1 0 0 0 0 0.33333'                          
-%         COPY 'END'                                                            
-%    END IF                                                                     
+%% Nov 09  Set weights and scale in XSCALE
+%    COPY '#SCRIPT XSCALE'
 %   END IF                                                                      
 %  END BLOCK                                                                    
-%    COPY '#SFLS'                                                               
-%    COPY 'SCALE'                                                               
-%    COPY 'END'                                                                 
-%    COPY '#SFLS'                                                               
-%    COPY 'CALC'                                                                
-%    COPY 'END'                                                                 
 %    COPY '#SCRIPT RFACTOR'                                                     
 %  END IF                                                                       
 %  EVALUATE RMIN = R                                                            
@@ -326,7 +307,12 @@
 %%                                                                              
 %%                                                                              
 %%                                                                              
-%%  $Log: not supported by cvs2svn $                                                       
+%%  $Log: not supported by cvs2svn $
+%%  Revision 1.17  2009/09/29 08:26:25  djw
+%%  More LIST 4 problems. In 2008 default SHELX type weights gave problems with "peach", so weights were
+%%  retuned to simple 1. or 1/F type.  This causes problems with Oxford Diffraction data, which seems to be on a massive scale
+%%  Restore SHELX weights for moment, but proble must be resolved in future
+%%                                                       
 %%  Revision 1.16  2008/12/18 16:48:46  djw                                     
 %%  Still probelms with choosing weights at the start of a refinement - this tim
 %%                                                                              
