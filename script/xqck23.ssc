@@ -33,6 +33,7 @@
 ^^WI }                                                                          
 ^^WI SHOW                                                                       
 ^^CR                                                                            
+%%Nov 09      Remove LIST 4 work from here and set it later in FRESH.SSC
 %  LOOP                                                                         
 %   VERIFY MF_FO MF_F2 MF_HELP                                                  
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'MF_F2'                            
@@ -41,9 +42,6 @@
 %      COPY '#LIST 23'                                                          
 %      COPY 'MINIMISE F-SQ=NO'                                                  
 %      COPY 'END'                                                               
-{S * Applying unit/quasi-unit weights                                           
-%         COPY '#LIST 4'                                                        
-%         COPY 'END'                                                            
 ^^CO   DISPOSE XQCK23                                                           
 %      FINISH                                                                   
 %   END BLOCK                                                                   
@@ -51,12 +49,6 @@
 %      COPY '#LIST 23'                                                          
 %      COPY 'MINIMISE F-SQ=YES'                                                 
 %      COPY 'END'                                                               
-{S * Applying sHELX type weights                                           
-%      COPY '#LIST 4'
-%      COPY 'SCHEME NUMBER=16, NPARAM=6'                                    
-{I            Quasi-statistical weighting , P(1)=.1                             
-%      COPY 'PARAM .1 0 0 0 0 .333'                                      
-%      COPY 'END'                                                            
 ^^CO   DISPOSE XQCK23                                                           
 %      FINISH                                                                   
 %   END BLOCK                                                                   
