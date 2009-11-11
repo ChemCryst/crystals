@@ -1,6 +1,6 @@
 %SCRIPT RFACTOR
 %% The variables R, OSCALE and RATIO may be needed in other scripts
-%  VARIABLE REAL R OSCALE RATIO
+%  VARIABLE REAL R OSCALE RATIO ARATIO
 %%       A dummy in case we have no Fc
 %      EVALUATE R = 100.
 %      EVALUATE RATIO = 100.
@@ -44,6 +44,8 @@
 %        STORE FORMAT '(F8.4)' LENGTH 8 REAL RATIO
 %        OUTPUT
 %      END BLOCK
+%%NOV-09     EVALAUTE THE ACTUAL RATIO 
+%      EVALUATE ARATIO = RATIO     
 %      IF RATIO .LT. 1.0 THEN
 %            EVALUATE RATIO = 1.0 / RATIO
 %      END IF
