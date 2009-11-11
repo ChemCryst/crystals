@@ -523,5 +523,7 @@
 %          EVALUATE INITSETUP = TRUE                                            
 %          COPY '#SCRIPT XINLIST6'                                              
 %        END IF                                                                 
+%% initialise the weights
+%          copy '#SCRIPT XWTINI'
 %        FINISH                                                                 
 %END SCRIPT                                                                     
