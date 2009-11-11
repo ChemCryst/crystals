@@ -16,24 +16,8 @@
 %      IF ( EXISTS ( 5 ) .NE. 1 ) THEN                                          
 %        FINISH                                                                 
 %      END IF                                                                   
-%      IF ( EXISTS ( 30 ) .EQ. 1 ) THEN                                          
-%       VARIABLE REAL SCALEO SCALEW
-%       COPY '#GENERALEDIT 30'                                                       
-%       COPY 'LOCATE RECORDTYPE = 101'                                              
-%       COPY 'TRANSFER FROM OFFSET =  7 TO SCALEO'                                    
-%       COPY 'END'                                                                   
-%       EVALUATE SCALEW = SQRT ( 1. / SCALEO )
-%                   if scalew .le. 0.05 then
-%                     evaluate scalew = 1.0
-%                   end if
-Writing Wilson Scale to LIST 5
-%        COPY '#GENERALEDIT 5'                                                       
-%        COPY 'LOCATE RECORDTYPE=102'                                                 
-%        COPY 'TRANSFER TO OFFSET=1 FROM SCALEW'                                       
-%        COPY 'WRITE OVERWRITE=OVERWRITE'                                             
-%        COPY 'END'
-%       END IF
 %%
+%      COPY '#SCRIPT XSCALE'
 %%                                                                              
 %      BLOCK                                                                    
 %%  CENTRE STRUCTURE IN CELL                                                    
