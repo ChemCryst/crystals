@@ -1,4 +1,6 @@
 %SCRIPT XFOPTWT
+%% GUI version of FOPTWT. It tries to choose a scheme based on slope
+%% and correlation cofficient
 % IF EXISTS 6 .NE. 1 THEN                                                       
 {I  No reflections have been stored.                                            
 {I  Agreement analysis is not possible.                                         
@@ -377,6 +379,14 @@ Lowest correlation coefficient for:
 %        COPY 'LIST OFF'                                                        
 %        COPY 'END'                                                             
 %%                                                                              
+%% clear flag on old scheme
+%        COPY '#DISK'                                                          
+%        CLEAR                                                               
+%        INSERT 'RETAIN 4 '                                                    
+%        STORE INTEGER ORIGSER                                                 
+%        INSERT 'ACTION = NO'
+%        SEND   
+%        COPY 'END'                                                            
 %      FINISH                                                                   
 %     END BLOCK                                                                 
 %%                                                                              
@@ -391,6 +401,14 @@ Lowest correlation coefficient for:
 {S * Weights are based on three-term Chebychev                                  
 {S   polynomial fitted to the residual.                                         
                                                                                 
+%% clear flag on old scheme
+%        COPY '#DISK'                                                          
+%        CLEAR                                                               
+%        INSERT 'RETAIN 4 '                                                    
+%        STORE INTEGER ORIGSER                                                 
+%        INSERT 'ACTION = NO'
+%        SEND   
+%        COPY 'END'                                                            
 %        FINISH                                                                 
 %     END BLOCK                                                                 
 %     BLOCK                %BTPAR4%                                             
@@ -404,6 +422,14 @@ Lowest correlation coefficient for:
 {S * Weights are based on four-term Chebychev                                   
 {S   polynomial fitted to the residual.                                         
                                                                                 
+%% clear flag on old scheme
+%        COPY '#DISK'                                                          
+%        CLEAR                                                               
+%        INSERT 'RETAIN 4 '                                                    
+%        STORE INTEGER ORIGSER                                                 
+%        INSERT 'ACTION = NO'
+%        SEND   
+%        COPY 'END'                                                            
 %        FINISH                                                                 
 %     END BLOCK                                                                 
 %     BLOCK                %BTPAR5%                                             
@@ -417,6 +443,14 @@ Lowest correlation coefficient for:
 {S * Weights are based on five-term Chebychev                                   
 {S   polynomial fitted to the residual.                                         
                                                                                 
+%% clear flag on old scheme
+%        COPY '#DISK'                                                          
+%        CLEAR                                                               
+%        INSERT 'RETAIN 4 '                                                    
+%        STORE INTEGER ORIGSER                                                 
+%        INSERT 'ACTION = NO'
+%        SEND   
+%        COPY 'END'                                                            
 %        FINISH                                                                 
 %     END BLOCK                                                                 
 %   END CASE                                                                    
