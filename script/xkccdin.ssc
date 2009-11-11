@@ -121,8 +121,8 @@ Files INITIAL.* will be created in your directory. They may be important.
 %              END IF                                                           
 %            END IF                                                             
 %%                                                                              
-%          COPY '#LIST 4'                                                       
-%          COPY 'END'                                                           
+%%          COPY '#LIST 4'       %%removed djw nov09
+%%          COPY 'END'                                                           
 %%                                                                              
 %          TRANSFER '#OPEN HKLI kccd.hkl' TO CRYSTALS                           
 %      END BLOCK                                                                
@@ -189,9 +189,10 @@ Files INITIAL.* will be created in your directory. They may be important.
 {S * Final copy to DSC file                                                     
 %  COPY '#LIST 6'                                                               
 %  COPY 'READ TYPE = COPY'                                                      
-%  COPY 'END'                                                                   
-%  COPY '#LIST 4'                                                               
-%  COPY 'END'                                                                   
+%  COPY 'END'                  
+%%                                                 
+%%  COPY '#LIST 4'             %%removed djwNov09
+%%  COPY 'END'                                                                   
 %%                                                                              
 %%                                                                              
 %  IF ( EXISTS 23 .NE. 1 ) THEN                                                 
