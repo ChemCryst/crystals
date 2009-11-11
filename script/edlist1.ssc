@@ -1,4 +1,5 @@
-%SCRIPT EDLIST1 %Cell parameter editor script%
+%SCRIPT EDLIST1 
+%%Cell parameter editor script%
 %  VARIABLE INTEGER SELECT
 %  VARIABLE REAL A B C ALPHA BETA GAMMA OLDVALUE NEWVALUE
 %
