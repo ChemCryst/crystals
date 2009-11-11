@@ -1,4 +1,4 @@
-%SCRIPT LIST2
+%SCRIPT LIST2F
  The space group symmetry list, LIST 2
 %    VARIABLE INTEGER INLIST2
 %    VERIFY YES NO

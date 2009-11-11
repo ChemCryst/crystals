@@ -1,4 +1,4 @@
-%SCRIPT LIST1
+%SCRIPT LIST1F
   The unit cell parameters, LIST 1
 %    VERIFY YES NO
 %    IF ( EXISTS 1 .EQ. 1 ) THEN

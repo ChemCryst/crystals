@@ -1,4 +1,4 @@
-%SCRIPT LIST23
+%SCRIPT LIST23F
   The structure factor control list, LIST 23
 %    IF ( EXISTS 23 .EQ. 1 ) THEN
 %    ELSE

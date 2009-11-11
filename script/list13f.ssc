@@ -1,4 +1,4 @@
-%SCRIPT LIST13
+%SCRIPT LIST13F
   The experimental conditions list, LIST 13
 %    IF ( EXISTS 13 .EQ. 1 ) THEN
 %    ELSE
