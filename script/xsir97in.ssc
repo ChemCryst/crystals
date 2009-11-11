@@ -23,6 +23,7 @@
 %       COPY '#SCRIPT XRENUMB'                                                  
 %      END BLOCK                                                                
 %%                                                                              
+%      COPY '#SCRIPT XSCALE'
 %%                                                                              
 %% SET Solution type                                                            
 %%                                                                              
