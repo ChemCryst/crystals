@@ -70,4 +70,7 @@ Reformatting atom list
 %      COPY 'WRITE OVERWRITE=OVERWRITE'                                         
 %      COPY 'END'                                                               
 %%                                                                             
+%% refresh lists
+%      COPY '#SCRIPT FRESH'
+%      COPY '#SCRIPT XSCALE'
 %END SCRIPT                                                                     
