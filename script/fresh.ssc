@@ -68,21 +68,8 @@
 %    COPY 'FILTER LIST28 = NO'                                                  
 %    COPY 'END'                                                                 
 %%                                                                              
-%  IF FOLD .EQ. 1 THEN                                                          
-{S * Reset weighting scheme to unit weights.                                    
-%   COPY '#LIST 4'                                                              
-%   COPY 'END'                                                                  
-%  ELSE                                                                         
-{S * Reset weighting scheme to statistical weights.                             
-%% statistical weights seem to cause instabilities in some cases 11/11/07       
-%% Sept 08.  Problem was probably due to absence of Fc values
-%          COPY '#LIST 4'                                                       
-%          COPY 'SCHEME NUMBER=16, NPARAM=6'                                    
-%% FSQ                                                 
-{I         Quasi-statistical weighting , P(1)=.1 ,p(5)=1.
-%          COPY 'PARAM .1 0 0 0 0 1.0'                                     
-%  END IF                                                                       
-%%                                                                              
+{SNOV 09  Check weighting scheme in XWTINI
+%    COPY '#SCRIPT XWTINI'
 %%                                                                              
 %%{S * Reset known facts for "The Guide"                                        
 % BLOCK                                                                         
