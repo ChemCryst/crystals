@@ -53,7 +53,7 @@
 ^^WI       DISPOSE GETINT
 ^^CR
 %          EVALUATE ININT = OUTINT
-%          SHOW ININT
+%%          SHOW ININT
 %          FINISH
 %    END BLOCK
 %   END CASE
