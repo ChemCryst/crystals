@@ -1,4 +1,4 @@
-%SCRIPT INBASICS
+%SCRIPT INFAST
 %% Input of basic data needed for data reduction
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
