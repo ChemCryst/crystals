@@ -1,6 +1,6 @@
 %SCRIPT XWTINI
 %% Set weighting type depending on LIST 23,
-%  VARIABLE INTEGER FOLD  
+%  VARIABLE INTEGER FOLD  FTYPE
 %% check if FOLD has been set earlier
 %  IF FOLD .EQ. 0 THEN
 %  IF EXISTS 23 .GE. 1 THEN                                                     
@@ -35,7 +35,7 @@
 %% FSQ                                                 
 {I         Quasi-statistical weighting , P(1)=.1 ,p(5)=1.
 %          COPY '#LIST 4'                                                       
-%          COPY 'SCHEME NUMBER=17, NPARAM=6'                                    
+%          COPY 'SCHEME NUMBER=16, NPARAM=6'                                    
 %          COPY 'PARAM .1 0 0 0 0 1.0'                                     
 %        END IF                                                                       
 %END SCRIPT
