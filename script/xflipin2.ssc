@@ -28,18 +28,6 @@
 %      copy '#script XTANGENT'                                                  
 % ELSE                                                                          
 %      BLOCK                                                                    
-%      EVALUATE QTITLE = 'Use Cameron?'                                         
-%      EVALUATE QLINE1 = 'Do you want to use CAMERON '                          
-%      EVALUATE QLINE2 = 'to examine the model '                                
-%      EVALUATE BUTTOK = '&Yes'                                                 
-%      EVALUATE BUTTXX = '&No'                                                  
-%      COPY '#SCRIPT XQUESTIO'                                                  
-%      IF ANSWER .EQ. TRUE THEN                                                 
-%       VARIABLE LOGICAL NOXCAMQ LNEWL5                                         
-%       EVALUATE NOXCAMQ = TRUE                                                 
-%       EVALUATE LNEWL5 = TRUE                                                  
-%       COPY '#SCRIPT XCAM'                                                     
-%      END IF                                                                   
 %      END BLOCK                                                                
 %%     CENTRE STRUCTURE IN CELL                                                 
 %      COPY '#SCRIPT XCENTRE'                                                   
