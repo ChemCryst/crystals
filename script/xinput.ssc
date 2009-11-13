@@ -1,0 +1,78 @@
+%SCRIPT XINPUT 
+%%                                                                              
+%%                                                                              
+%  VARIABLE INTEGER NCYCLE                                                      
+%  VARIABLE REAL RMIN R OSCALE                                               
+%%                                                                              
+%%                                                                              
+^^WI WINDOW XLISTS 'Least Squares Refinement' MODAL                            
+^^WI COMMIT='RF_BOK' CANCEL='RF_BXX'                                            
+^^WI GRID MAIN NROWS=4 NCOLS=7                                                  
+^^WI {                                                                          
+^^WI  @ 2,2 GRID L NROWS=5 NCOLS=1                                              
+^^WI  {                                                                       
+^^WI   @ 1,1 CHECKBOX NA  'Input Cell' STATE=OFF                                              
+^^WI   @ 3,1 CHECKBOX NB  'Input Space Group' STATE=OFF                                    
+^^WI   @ 4,1 CHECKBOX NC  'Input Formula/wavelength' STATE=OFF                
+^^WI  }                                                                         
+^^WI  @ 2,6 GRID R NROWS=3 NCOLS=1                                              
+^^WI  {                                                                         
+^^WI   @ 1,1 BUTTON RF_BOK '&OK' DEFAULT                                        
+^^WI   @ 3,1 BUTTON RF_BXX '&Cancel'                                            
+^^WI  }                                                                         
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+%%                                                                              
+%%                                                                              
+%%                                                                              
+% LOOP                                                                          
+%  ON ERROR TERMINATE                                                           
+%  VERIFY RF_BXX RF_BOK                                                         
+%  GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '                                 
+%  CASE VALUE                                                                   
+%   BLOCK                                                                       
+^^WI  DISPOSE XLISTS                                                           
+^^CR                                                                            
+%     FINISH                                                                    
+%   END BLOCK
+%%
+%%
+%%
+%%
+%   BLOCK                                                                       
+^^??   NA STATE                                                                 
+%      VERIFY ON OFF                                                            
+%      GET NOSTORE SILENT FINAL ABBREVIATED 'ONorOFF' ' '                       
+^^CR                                                                            
+%      IF VALUE .EQ. 1 THEN                                                     
+Na
+%        COPY '#SCRIPT XCELLIN'
+%      END IF                                                                   
+%%                                                                              
+^^??   NB STATE                                                                 
+%      VERIFY ON OFF                                                            
+%      GET NOSTORE SILENT FINAL ABBREVIATED 'ONorOFF' ' '                       
+^^CR                                                                            
+%      IF VALUE .EQ. 1 THEN                                                     
+NB
+%        COPY '#SCRIPT XSPACE'
+%      END IF                                                                   
+%%                                                                              
+
+^^??   NC STATE                                                                 
+%      VERIFY ON OFF                                                            
+%      GET NOSTORE SILENT FINAL ABBREVIATED 'ONorOFF' ' '                       
+^^CR                                                                            
+%      IF VALUE .EQ. 1 THEN                                                     
+Nc
+%        COPY '#SCRIPT XINLIST3'
+%      END IF                                                                   
+%%                                                                              
+
+%     FINISH                                                                    
+%   END BLOCK                                                                   
+%  END CASE                                                                     
+% END LOOP                                                                      
+%END SCRIPT                                                                     
+                                                                                
