@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.150  2009/10/21 10:36:49  djw
+C Add a comment about the PREFLACK parameter
+C
 C Revision 1.149  2009/10/13 16:44:08  djw
 C Change Audit Date to make PLATON happy, change cif comment to make intention clearer
 C
@@ -5508,7 +5511,7 @@ C- Unknown
            ENDIF
            CALL XCTRIM (CTEMP,NCHAR)
 C
-           WRITE (CLINE,'(''_diffrn_measurement_device'',
+           WRITE (CLINE,'(''_diffrn_measurement_device-type'',
      1      T35,'''''''',A,'''''''')') CTEMP(1:NCHAR-1)
            CALL XPCIF (CLINE)
 c
@@ -5519,7 +5522,7 @@ c
            ENDIF
            CALL XCTRIM (CTEMP,NCHAR)
 C
-           WRITE (CLINE,'(''_diffrn_measurement_device_type'',
+           WRITE (CLINE,'(''_diffrn_measurement_device'',
      1      T35,'''''''',A,'''''''')') CTEMP(1:NCHAR-1)
            CALL XPCIF (CLINE)
 C
