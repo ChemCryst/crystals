@@ -1,0 +1,34 @@
+%SCRIPT XSCALE
+%%  compute and set overall scale
+%  IF EXISTS 6 .GE. 1 THEN                                                     
+%    COPY '#SFLS'
+%    COPY 'CALC'
+%    COPY 'END'
+%  VARIABLE REAL R OSCALE RATIO ARATIO SCALEW
+%%NOV 09  See if setting the overall scale to make the ratio unity helps
+%% GET WILSON WEIGHT AND CONVERT IT
+%      IF ( EXISTS ( 30 ) .EQ. 1 ) THEN                                          
+%       VARIABLE REAL SCALEO SCALEW
+%       COPY '#GENERALEDIT 30'                                                       
+%       COPY 'LOCATE RECORDTYPE = 101'                                              
+%       COPY 'TRANSFER FROM OFFSET =  7 TO SCALEW'                                    
+%       COPY 'END'                               
+%       EVALUATE SCALEW = 1. / SCALEW
+%      END IF
+%    COPY '#SCRIPT RFACTOR'
+%    IF RATIO .GE. 1.25 THEN
+%           EVALUATE OSCALE = OSCALE * ARATIO
+%% save the overall scale factor
+%           COPY '#GENERALEDIT 5'
+% COPY "ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR"
+%           ON EDITERROR TERMINATE
+%           COPY 'LOCATE RECORDTYPE = 102'
+%           COPY 'TRANSFER TO OFFSET = 0 FROM OSCALE'
+%           COPY 'WRITE OVERWRITE=OVERWRITE'                                   
+%           COPY 'END'
+%           COPY '#SFLS'
+%           COPY 'CALC'
+%           COPY 'END'
+%    END IF
+%  END IF
+%END SCRIPT
