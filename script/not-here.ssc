@@ -1,5 +1,7 @@
-%SCRIPT NOT-HERE
-The calling SCRIPT has been removed.
-Please e-mail the .log file for this job to
-david.watkin@chem.ox.ac.uk
-%END SCRIPT
+%SCRIPT NOT-HERE                                                                
+{0,4
+{0,4The calling SCRIPT has been removed.                                            
+{0,4Please e-mail the .log file for this job to                                     
+{0,4david.watkin@chem.ox.ac.uk                                                      
+{0,4
+%END SCRIPT                                                                     
