@@ -44,7 +44,7 @@
 %        EVALUATE INBASICS = 1
 %        FINISH
 %      ELSE
-%        COPY '#SCRIPT INPUT'
+%        COPY '#SCRIPT XINPUT'
 %      END IF
 %    ELSE
 %      EVALUATE INBASICS = 1
