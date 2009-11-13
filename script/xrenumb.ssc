@@ -1,6 +1,6 @@
 %SCRIPT XRENUMB                                                                 
 %%                                                                              
-%   COPY '#SCRIPT XRETYPE'                                                      
+%%   COPY '#SCRIPT XRETYPE'                                                      
 %%                                                                              
 ^^WI WINDOW XRNB 'Renumber' MODAL COMMIT='BAUTO' CANCEL='BNONE'                 
 ^^WI GRID GRIDM NROWS=5 NCOLS=3                                                 
