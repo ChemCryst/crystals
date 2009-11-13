@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.64  2009/10/21 10:37:28  djw
+C Correct axis label for the residual vs resolution plot
+C
 C Revision 1.63  2009/10/13 16:41:45  djw
 C Fix overflows in format statement when writing agreement analysis to plot window - spotted using OD data
 C
@@ -503,27 +506,28 @@ C For each grid point (9x9) calculate 10 wD^2 values corresponding to Fc range.
                  SHFC = STORE(M6+5)
                  SIG = STORE(M6+12) / MAX(.0001,A)
                 END IF
-cdhwfeb09 - catch case when there are no Fc computed yet
-                IF (SHFC .LE. 0.) SHFC = SHFO
+cdjwfeb09 - catch case when there are no Fc computed yet
+                IF (SHFC .GT. 0.) THEN
 C
-                FRACC = MAX(.0000001, SHFC/FCMAX )
-                IF (IFSQ .GE. 0) THEN
-                   KDIV = MIN(20,INT(20.*SQRT(SQRT(FRACC)))+1)
-                ELSE
-                   KDIV = MIN(20,INT(20.*SQRT(FRACC))+1)
-                END IF
-                RWD(KDIV) = RWD(KDIV) + 1.0
-                BMEAN(KDIV) = BMEAN(KDIV) + SHFC
-                DO J = -4,4
-                   DO K = -4,4
-                      WD(J,K,KDIV) =  WD(J,K,KDIV)
-     1                                + ( DELSQ(SHFO,SHFC)
-     2                                  * WGHT( SIG**2,
-     3                                          FPSX(SHFO,SHFC),
-     4                                          SXA+(REAL(J)*SXAG),
-     5                                          SXB+(REAL(K)*SXBG) ) )
-                   END DO
-                END DO
+                  FRACC = MAX(.0000001, SHFC/FCMAX )
+                  IF (IFSQ .GE. 0) THEN
+                     KDIV = MIN(20,INT(20.*SQRT(SQRT(FRACC)))+1)
+                  ELSE
+                     KDIV = MIN(20,INT(20.*SQRT(FRACC))+1)
+                  END IF
+                  RWD(KDIV) = RWD(KDIV) + 1.0
+                  BMEAN(KDIV) = BMEAN(KDIV) + SHFC
+                  DO J = -4,4
+                     DO K = -4,4
+                        WD(J,K,KDIV) =  WD(J,K,KDIV)
+     1                                  + ( DELSQ(SHFO,SHFC)
+     2                                    * WGHT( SIG**2,
+     3                                            FPSX(SHFO,SHFC),
+     4                                            SXA+(REAL(J)*SXAG),
+     5                                            SXB+(REAL(K)*SXBG)))
+                     END DO
+                  END DO
+                ENDIF
              END DO                                
              GOOFIT = 999999999
              KBESA = -4
