@@ -73,35 +73,19 @@
 %      END IF                                                                   
 %      IF FSQ .NE. FOLD THEN                                                    
 %       IF FSQ .EQ. 1 THEN                                                      
-    The weights have been adjusted for F sq refinement.                         
-    Check the manual for details                                                
 %        COPY '#GENERALEDIT 30'                                                 
 %        COPY 'LOCATE RECORDTYPE=103'                                           
 %%       SET modify fsq=yes                                                     
 %        COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=2'                         
 %        COPY 'WRITE OVERWRITE=OVERWRITE'                                       
 %        COPY 'END'                                                             
-%% djw Sep08
-%        COPY '#LIST 4'                                                        
-%        COPY 'SCHEME 9 '                                                      
-%        COPY 'END'                                                            
-%%         COPY '#WEIGHT'                                                       
-%%         COPY 'END'                                                           
 %       ELSE                                                                    
-    The weights have been adjusted for F  refinement.                           
-    Check the manual for details                                                
 %        COPY '#GENERALEDIT 30'                                                 
 %        COPY 'LOCATE RECORDTYPE=103'                                           
 %%       SET modify fsq=no                                                      
 %        COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=1'                         
 %        COPY 'WRITE OVERWRITE=OVERWRITE'                                       
 %        COPY 'END'                                                             
-%   COPY '#SCRIPT STATWT'                                                      
-%%        COPY '#LIST 4'                                                        
-%%        COPY 'SCHEME 9 '                                                      
-%%        COPY 'END'                                                            
-%%         COPY '#WEIGHT'                                                       
-%%         COPY 'END'                                                           
 %       END IF                                                                  
 %      END IF                                                                   
 %   END BLOCK                                                                   
@@ -110,6 +94,8 @@
 %    QUEUE PROCESS                                                              
 %    COPY  'END'                                                                
 % END BLOCK                                                                     
+%%djwnov09
+% COPT '#SCRIPT XWTINI'
 % COPY '#WEIGHT'                                                                
 % COPY 'END'                                                                    
 % COPY '#ANALYSE'                                                               
