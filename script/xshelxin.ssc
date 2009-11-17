@@ -491,6 +491,8 @@
 %%                                                                              
 %%                                                                              
 %          BLOCK                                                                
+%            COPY '#SCRIPT XCENTRE'                                           
+%            COPY '#SCRIPT XRETYPE'                                           
 %% Only renumber if importing solution (i.e. Qs).                               
 %            IF LQS .EQ. TRUE THEN                                              
 %              COPY '#SCRIPT XRENUM'                                           

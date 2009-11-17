@@ -31,6 +31,7 @@
 %      END BLOCK                                                                
 %%     CENTRE STRUCTURE IN CELL                                                 
 %      COPY '#SCRIPT XCENTRE'                                                   
+%      COPY '#SCRIPT XRETYPE'
 %      COPY '#SCRIPT XRENUMB'
 % END IF                                                                        
 %END SCRIPT                                                                     
