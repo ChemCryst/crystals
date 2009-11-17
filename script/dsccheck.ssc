@@ -217,7 +217,28 @@
 %     IF ( MD .NE. 19 ) THEN                                                    
 %         EVALUATE OLDDSC1 = TRUE                                               
 %     END IF                                                                    
+%% Check Merging R values
+%  VARIABLE REAL WFRL NFRL WFRLS NFRLS
+%  COPY 'LOCATE RECORDTYPE=101'                                                 
+%  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                      
+%     COPY 'TRANSFER FROM OFFSET=4 TO WFRL'                                    
+%     COPY 'TRANSFER FROM OFFSET=5 TO WFRLS'                                    
+%     COPY 'TRANSFER FROM OFFSET=2 TO NFRL'                                    
+%     COPY 'TRANSFER FROM OFFSET=3 TO NFRLS'   
+% show  WFRL NFRL WFRLS NFRLS                                
+%     IF ( WFRL .GT. NFRL )  THEN                    
+%         if olddsc1 .ne. true then
+  Old-style Freidel pair entry
+%         end if
+%     COPY 'TRANSFER TO OFFSET=2 FROM WFRL'                                    
+%     COPY 'TRANSFER TO OFFSET=3 FROM WFRLS'                                    
+%     COPY 'TRANSFER TO OFFSET=4 FROM NFRL'                                    
+%     COPY 'TRANSFER TO OFFSET=5 FROM NFRLS'                                    
+%         EVALUATE OLDDSC1 = TRUE                                               
+%     END IF                                                                    
+%  COPY 'WRITE OVERWRITE = OVERWRITE'
 %  COPY 'END'                                                                   
+%%                                                                  
 %  IF ( OLDDSC1 ) THEN                                                          
 
 {E You have old format CIF info (List 30). CRYSTALS can not continue safely.    
