@@ -225,7 +225,6 @@
 %     COPY 'TRANSFER FROM OFFSET=5 TO WFRLS'                                    
 %     COPY 'TRANSFER FROM OFFSET=2 TO NFRL'                                    
 %     COPY 'TRANSFER FROM OFFSET=3 TO NFRLS'   
-% show  WFRL NFRL WFRLS NFRLS                                
 %     IF ( WFRL .GT. NFRL )  THEN                    
 %         if olddsc1 .ne. true then
   Old-style Freidel pair entry
