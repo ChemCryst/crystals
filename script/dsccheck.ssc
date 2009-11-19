@@ -208,6 +208,7 @@
 %%                                    %%                                        
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
 %%                                                                              
+%  VARIABLE REAL WFRL NFRL WFRLS NFRLS
 %%  LOOK FOR SHORT CIF RECORDS                                                  
 % IF ( EXISTS  30 .EQ. 1 ) THEN                                                 
 %  EVALUATE OLDDSC1 = FALSE                                                     
@@ -218,7 +219,6 @@
 %         EVALUATE OLDDSC1 = TRUE                                               
 %     END IF                                                                    
 %% Check Merging R values
-%  VARIABLE REAL WFRL NFRL WFRLS NFRLS
 %  COPY 'LOCATE RECORDTYPE=101'                                                 
 %  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                      
 %     COPY 'TRANSFER FROM OFFSET=4 TO WFRL'                                    
