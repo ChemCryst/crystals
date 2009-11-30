@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.39  2009/07/23 14:16:37  rich
+C Removed some Fortran90-isms, so that g77 can still cope.
+C
 C Revision 1.38  2009/03/03 09:59:27  djw
 C Save old CAMERON Roman numeral code ad oldroman, introduce new Roman Numeral code based on ar2rom. This permits proper labeling on packing diagrams with lots of symmetry equivalints
 C
@@ -1359,7 +1362,16 @@ C
 #endif
       LENGTH = LEN (CNAME)
 C----- FIND THE ACTUAL FILENAME
+CDJW-NOV-09  Try to spot paths with spaces in them
       I = KCCTRM ( 1, CNAME, ISTART, IEND)
+      iend = istart
+      do i = length,istart,-1
+            if (cname(I:I) .ne. ' ') then
+                  iend = i
+                  exit
+            end if
+      end do
+c
 C----- IF GENERATION NUMBER INDICATED BY ';' HACK OFF THE GENERATION
 C      NUMBER AND RETURN - PROBABLY VAX
       I = INDEX (CNAME(1:IEND) , ';' )
