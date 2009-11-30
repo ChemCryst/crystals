@@ -10,6 +10,9 @@
 % VARIABLE REAL NREF WDEL OUTL
 % VARIABLE REAL L4:WDEL L4:NREF L4:SLOPE L4:CORREL
 % VARIABLE INTEGER ORIGSER
+%      VARIABLE INTEGER SLOPE CORREL                                            
+%      VARIABLE REAL RSLOPE RCORREL                                             
+%%
 %   COPY '#DISK'
 %   COPY 'RETAIN 4'
 %   COPY 'END'
@@ -276,8 +279,6 @@ bars should be as close to unity as possible across the whole range of /Fo/.
 %     END BLOCK                                                                 
 %     BLOCK                %XWAUTO%                                             
 ^^CO     DISPOSE XFOPTW                                                         
-%      VARIABLE INTEGER SLOPE CORREL                                            
-%      VARIABLE REAL RSLOPE RCORREL                                             
 %%                                                                              
 %      EVALUATE SLOPE3 = ABS ( SLOPE3 )                                         
 %      EVALUATE SLOPE4 = ABS ( SLOPE4 )                                         
