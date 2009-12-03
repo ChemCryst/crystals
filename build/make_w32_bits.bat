@@ -11,7 +11,8 @@ DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\sir92\sir92.fpp /Fosir92.o /s
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\sir92\norm92.fpp /Fonorm92.o /nostatic /libs:qwin /optimize:4 /nolink
 DF sir92.o norm92.o /libs:qwin
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\cif2cry\cif2cry.fpp /optimize:4 /MD
-DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\contour\contour.fpp /optimize:4 /MD
+rem contour has not been updated to work woth the new graphics/compiler
+rem DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\contour\contour.fpp /optimize:4 /MD
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\convplat\convplat.fpp /optimize:4 /MD
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\csd2cry\csd2cry.fpp /optimize:4 /MD
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\delred\delred.fpp /optimize:4 /MD
