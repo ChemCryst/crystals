@@ -22,6 +22,7 @@ C<ric02/>
       real          cela,celb,celc,siga,sigb,sigc
       real          celalp,celbet,celgam,sigalp,sigbet,siggam
       real          x,y,z,u,sx,sy,sz,su
+      real          wave, wavesu
       real          numb,sdev,dum,unitZ
       real          uisoeq(maxat),natoms(maxat), occ(maxat)
       real          xf(maxat),yf(maxat),zf(maxat),uij(maxat,6)
@@ -247,8 +248,9 @@ C Any other case, just open it:
        END DO
        write(NOUTF,'(2a)') '#TITLE ', option(1:LEN_TRIM(option))
 
-C<ric02/>
 
+c
+C<ric02/>
 C....... Read in cell data and esds
 C....... ==========================
 C....... f1 ends up false if any of these functions fail.
@@ -266,12 +268,40 @@ C....... f1 ends up false if any of these functions fail.
       else
 C....... Write out a crystals instruction:
 
-      write(NOUTF,'(a)') '#LIST 1'
-      write(NOUTF,'(a,6f11.4)') 'REAL',cela,celb,celc,
+       write(NOUTF,'(a)') '#LIST 1'
+       write(NOUTF,'(a,6f11.4)') 'REAL',cela,celb,celc,
      *                              celalp,celbet,celgam
-      write(NOUTF,'(a)') 'END'
+       write(NOUTF,'(a)') 'END'
+       DTRSQ = .000305
+       write(NOUTF,'(a)') '#LIST 31'
+       write(NOUTF,'(a,1x,F12.10,A)') 'MATRIX', SIGA*SIGA,
+     1 ' 0.0 0.0 0.0 0.0 0.0 '
+       write(NOUTF,'(a,1x,F12.10,A)') 'CONT', SIGB*SIGB,
+     1 ' 0.0 0.0 0.0 0.0  '
+       write(NOUTF,'(a,1x,F12.10,A)') 'CONT', SIGC*SIGC,
+     1 ' 0.0 0.0 0.0  '
+       write(NOUTF,'(a,1x,F12.10,A)') 'CONT', 
+     1 SIGALP*SIGALP*DTRSQ,' 0.0 0.0  '
+       write(NOUTF,'(a,1x,F12.10,A)') 'CONT', 
+     1 SIGBET*SIGBET*DTRSQ,' 0.0  '
+       write(NOUTF,'(a,1x,F12.10,A)') 'CONT', 
+     1 SIGGAM*SIGGAM*DTRSQ,'  '
+       write(NOUTF,'(a)') 'END'
       endif
 
+c djwnov09
+c      read in wavelength
+      f1 = numb_('_diffrn_radiation_wavelength', wave, wavesu)
+      if(.not.(f1)) then
+        write(6,'(a)') '>>>>> No wavelength data in this block.'
+        write(17,'(a)') '>>>>> No wavelength data in this block.'
+      else
+C....... Write out a crystals instruction:
+       write(NOUTF,'(a)') '#LIST 13'
+       write(NOUTF,'(a,f12.10)') 'condition ', wave
+       write(NOUTF,'(a)') 'end'
+      endif
+c
 
 C....... Extract space group notation (expected char string):
 C....... =============================
