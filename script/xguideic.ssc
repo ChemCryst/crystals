@@ -1,19 +1,21 @@
 %SCRIPT XGUIDEIC
 % VARIABLE CHARACTER INSTITLE
 %%
+%% KTDEFA  = 
 %%  1 Run KCCDIN
 %%  2 Run RC93
 %%  3 Run DIPIN
-%%  4 Inport KCCDIN output.
+%%  4 Import KCCDIN output.
 %%  5 Import RC93 output
 %%  6 Import DIPIN output.
 %%  7 Import SHELX data.
-%%  8 Input cell
-%%  9 Input cell contents
-%%  10 Input space group.
-%%  11 Input reflection data.
-%%  12 Edit CIF type data
-%%  13 Read in CRYSTALS instructions.
+%%  8 Input reflection data.
+%%  9 Input cell
+%%  10 Input cell contents
+%%  11 Input space group.
+%%  12 Input CIF file
+%%  13 Edit CIF type data
+%%  14 Read in CRYSTALS instructions.
 %%
 %  VERIFY GI_BOK GI_BXX GI_BHELP
 %  GET SILENT NOSTORE ABBREVIATED 'Continue?' 'GI_BXX'
@@ -71,10 +73,16 @@
 %        END BLOCK
 %%
 %        BLOCK % 12
-%          COPY '#SCRIPT ED30'
+%%          COPY '#SCRIPT CIF2CRY'
+%%          Generates errors in CIFPRC called from CIF2CRY.EXE
+           'Not yet available' 
 %        END BLOCK
 %%
 %        BLOCK % 13
+%          COPY '#SCRIPT ED30'
+%        END BLOCK
+%%
+%        BLOCK % 14
 %          COPY '#SCRIPT XUSE'
 %        END BLOCK
 %%

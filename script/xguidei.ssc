@@ -18,8 +18,9 @@
 %%  9 Input cell
 %%  10 Input cell contents
 %%  11 Input space group.
-%%  12 Edit CIF type data
-%%  13 Read in CRYSTALS instructions.
+%%  12 Input CIF file
+%%  13 Edit CIF type data
+%%  14 Read in CRYSTALS instructions.
 %%%
 %%
 %% Check for windows already open
@@ -65,6 +66,7 @@
 ^^WI     'Input cell parameters'
 ^^WI     'Input molecular formula'
 ^^WI     'Input spacegroup'
+^^WI     'Input CIF data'
 ^^WI     'Edit extra (CIF) info'
 ^^WI     'Read from file (crystals)'
 ^^WI     NULL
@@ -112,6 +114,10 @@
 %END SCRIPT
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.11  2005/01/23 10:00:25  rich
+%%  Reinstate CVS history for scripts. History from Dec23 - Jan23 is lost, but
+%%  changes are not!
+%%
 %%  Revision 1.1.1.1  2004/12/13 11:16:23  rich
 %%  New CRYSTALS repository
 %%
