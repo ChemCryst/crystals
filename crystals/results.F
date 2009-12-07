@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.152  2009/12/07 10:54:20  djw
+C Update headers for PUNCH output in #TON (Experimental)
+C
 C Revision 1.151  2009/11/13 09:17:04  djw
 C Correct intrument details and type in cif generator
 C
@@ -6825,6 +6828,7 @@ C
       INCLUDE 'XCOMPD.INC'
       INCLUDE 'XCONST.INC'
       INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST02.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST06.INC'
       INCLUDE 'XLST28.INC'
@@ -6839,12 +6843,13 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QSTR11.INC'
 C 
-      DATA NLISTS/5/
+      DATA NLISTS/6/
       DATA LISTS(1)/5/,LISTS(2)/6/,LISTS(3)/28/,LISTS(4)/30/,LISTS(5)/1/
+      DATA LISTS(6)/2/
 C 
 C      set packing constants
       PARAMETER (NPAK=256)
-      PARAMETER (N2=NPAK/2)
+      PARAMETER (NN2=NPAK/2)
       parameter (thresh=.5)
       IERROR=1
 C 
@@ -6877,6 +6882,8 @@ C--FIND OUT IF LISTS EXIST
 250      CONTINUE
          IF (LSTNUM.EQ.1) THEN
             IF (KHUNTR(1,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL01
+         ELSE IF (LSTNUM.EQ.2) THEN
+            IF (KHUNTR(2,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL02
          ELSE IF (LSTNUM.EQ.5) THEN
             IF (KHUNTR(5,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL05
          ELSE IF (LSTNUM.EQ.28) THEN
@@ -7008,6 +7015,7 @@ C
       LFRIED=0
       NFRIED=0
       MFRIED=0
+      NCENTRIC=0
 C----- GET REFLECTION(1)
 340   CONTINUE
 C      ISTAT = KLDRNR (IN)
@@ -7023,7 +7031,7 @@ C      IF (KALLOW(IN) .LT. 0) goto 1700
       J1=J
       K1=K
 C       pack into h1
-      H1=NPAK*NPAK*(I+N2)+NPAK*(J+N2)+K+N2
+      H1=NPAK*NPAK*(I+NN2)+NPAK*(J+NN2)+K+NN2
       FSIGN=STORE(M6+3)
       SIG=STORE(M6+12)
 C----- RETURN THE SIGNED STRUCTURE AMPLITUDE AND THE CORRESPONDING SIGMA
@@ -7047,7 +7055,7 @@ C      IF (KALLOW(IN) .LT. 0) goto 1800
       J=NINT(STORE(M6+1))
       K=NINT(STORE(M6+2))
 C       pack into h2
-      H2=NPAK*NPAK*(I+N2)+NPAK*(J+N2)+K+N2
+      H2=NPAK*NPAK*(I+NN2)+NPAK*(J+NN2)+K+NN2
       FSIGN=STORE(M6+3)
       SIG=STORE(M6+12)
 C----- RETURN THE SIGNED STRUCTURE AMPLITUDE AND THE CORRESPONDING SIGMA
@@ -7076,8 +7084,12 @@ c    giving incipient division by zero
 c
 c
          IF (IPUNCH .eq. 1) then
-           write(ncpu,'(3i4,2i2, 6f10.2, 5f10.2, 5f10.2)') 
-     *     i,j,k, nint(fried1), nint(fried2), 
+           itemp = nint(fried1)
+           jtemp = nint(fried2)
+           if (itemp .lt. 0) itemp = 10 +itemp
+           if (jtemp .lt. 0) jtemp = 10 +jtemp
+           write(ncpu,'(3i4,2i2, 6f10.2, 5f10.2, 5f10.4)') 
+     *     i,j,k, itemp,jtemp, 
      1     fok1, sig1, fck1, fok2, sig2, fck2, 
      2     fokd, fckd, foks, fcks, sigm,
      3     abs(foks-fcks), abs(fokd), 
@@ -7216,9 +7228,15 @@ c      totals for Fo/Fc plot
 C 
       ELSE
 C----- UNPAIRED
-         IF (IPUNCH .eq. 1) 
-     1   write(ncpu,'(3i4,I2,2X, 3f10.2)') i1,j1,k1, 
-     2   nint(fried1),fok1, sig1, fck1
+CDJWDEC09
+C      CHECK FOR CENTRIC REFLECTIONS
+         ITEMP =  KTONCENT(I1,J1,K1,NCENTRIC)
+         IF (IPUNCH .eq. 1) then
+C          itemp = nint(fried1)
+C          if (itemp .lt. 0) itemp = 10 +itemp
+          write(ncpu,'(3i4,I2,2X, 3f10.2)') i1,j1,k1, 
+     2    itemp,fok1, sig1, fck1
+         ENDIF
          CONTINUE
          LFRIED = LFRIED + 1
          I1=I
@@ -7232,8 +7250,12 @@ C----- UNPAIRED
          GO TO 350    !GET NEXT REFLECTION(2)
       END IF
 C
-C
+C---- END OF REFLECTIONS
 450   CONTINUE
+C---- SPLIT UNPAIRD INTO REAL UNPAIRED AND CENTRIC
+C
+      LFRIED = LFRIED - NCENTRIC
+C
       if (ipunch .eq. 2) then
         write(cmon,'(a,i8,a)') 'REM ', nrest, ' restraints written out'
         call xprvdu(ncvdu,2,0)
@@ -7452,6 +7474,18 @@ c
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
 C
+
+         WRITE (CMON,'(10(a,i7))') ' No of Centric Reflections   =',
+     1    NCENTRIC
+         CALL XPRVDU (NCVDU,1,0)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
+C
+
+
+
+
+
+
          WRITE (CMON,'(A)') 
      1   ' Flack parameter obtained from original refinement'
          CALL XPRVDU (NCVDU,1,0)
@@ -7701,6 +7735,49 @@ C
 1400  CONTINUE
 C -- ERRORS DETECTED
       CALL XERHND (IERWRN)
+      RETURN
+      END
+C
+CDEC09
+CODE FOR XTONCENT
+      FUNCTION KTONCENT (I1,J1,K1,NCENTRIC)
+C
+      DIMENSION H(2), HG(3)
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST02.INC'
+      INCLUDE 'QSTORE.INC'
+C
+      KTONCENT = -1
+      H(1) = I1
+      H(2) = J1
+      H(3) = K1
+C--PASS THROUGH THE DIFFERENT SYMMETRY POSITIONS
+      DO 1950 I=L2I,M2I,MD2I
+C--CALCULATE THE TRANFORMED INDICES
+      HG(1)=H(1)*STORE(I)+H(2)*STORE(I+3)+H(3)*STORE(I+6)
+      HG(2)=H(1)*STORE(I+1)+H(2)*STORE(I+4)+H(3)*STORE(I+7)
+      HG(3)=H(1)*STORE(I+2)+H(2)*STORE(I+5)+H(3)*STORE(I+8)
+C--CHECK IF THE INDICES ARE THE SAME
+      DO 1250 K=1,3
+      IF(NINT(H(K)-HG(K)))1350,1250,1350
+1250  CONTINUE
+C--THE INDICES ARE THE SAME  
+      GOTO 1900
+C--THE REFLECTIONS ARE DIFFERENT
+1350  CONTINUE
+C--CHECK NEGATED
+      DO 1450 K=1,3
+      IF(NINT(H(K)+HG(K)))1550,1450,1550
+1450  CONTINUE
+C--THE NEGATED INDICES ARE THE SAME - CENTRIC REFLECTION
+      NCENTRIC = NCENTRIC+1
+      KTONCENT = 0
+      GOTO 2000
+1550  CONTINUE
+1900  CONTINUE
+1950  CONTINUE
+2000  CONTINUE
       RETURN
       END
 c

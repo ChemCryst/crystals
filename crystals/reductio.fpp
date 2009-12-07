@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.39  2009/07/24 14:00:20  djw
+C Un-fix patch to avoid controlled warnings - can be done in the script
+C
 C Revision 1.38  2009/07/22 16:20:11  djw
 C Add 0.1 to Rmerge% to avoid totally empty bins, which cause CController warnings
 C
@@ -669,6 +672,12 @@ C
       INCLUDE 'QSTORE.INC'
 C
 C--CHECK IF THERE ARE ANY NON-PRIMITIVE TRANSLATIONS TO LOOK FOR
+c----- store the friedel flag in the JCODE slot
+cdjwdec09
+c      0 = not part of a pair
+c      1 = original index
+c      2 = Friedel pair
+      store(m6+18) = 0.0
       fried=1.
       afried=fried
       IF(N2P-1)1150,1150,1000
@@ -752,6 +761,7 @@ C--WRITE THE NEW INDICES BACK IN LIST 6
 c      write(ncwu,'(3f4.0, 4f10.4,2i6)') hmax, store(m6+6),
 c     1 store(m6+13), store(m6+15), afried, ic, in
 c----- store the friedel flag in the JCODE slot
+c      0 = not part of a pair
 c      1 = original index
 c      2 = Friedel pair
       store(m6+18) = afried
