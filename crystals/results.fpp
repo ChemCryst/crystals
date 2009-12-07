@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.151  2009/11/13 09:17:04  djw
+C Correct intrument details and type in cif generator
+C
 C Revision 1.150  2009/10/21 10:36:49  djw
 C Add a comment about the PREFLACK parameter
 C
@@ -6989,7 +6992,7 @@ C
        WRITE(NCPU,335)
 335    FORMAT(3X,'H',3X,'K',3X,'L',11X,'Fo+', 7X,'Sig', 7X, 'Fc+',
      1 7X,'Fo-', 7X,'Sig', 7X, 'Fc-',x,
-     2 'Delta(Fo)',2x,'Delta(Fc)',4x,'<Fo>',3x,'<Fc>' )
+     2 '    Do   ',2x,'   Dc    ',4x,' Ao ',3x,' Ac ' )
       else if (ipunch .eq.2) then
        write(ncpu,'(a,f8.2,a)')
      1 'REM Restraint created if delta(Fo) and delta(Fc) >',thresh,
@@ -7073,9 +7076,14 @@ c    giving incipient division by zero
 c
 c
          IF (IPUNCH .eq. 1) then
-           write(ncpu,'(3i4,2i2, 12f10.2)') i,j,k, nint(fried1), 
-     1     nint(fried2), fok1, sig1, fck1, 
-     2     fok2, sig2, fck2, fokd, fckd, foks, fcks, sigm
+           write(ncpu,'(3i4,2i2, 6f10.2, 5f10.2, 5f10.2)') 
+     *     i,j,k, nint(fried1), nint(fried2), 
+     1     fok1, sig1, fck1, fok2, sig2, fck2, 
+     2     fokd, fckd, foks, fcks, sigm,
+     3     abs(foks-fcks), abs(fokd), 
+     4     abs(foks-fcks)/(.00001+abs(foks)),
+     5     abs(fokd)/(.00001+abs(foks)),
+     6     abs(fokd)/(.00001+abs(foks-fcks))
 c
 c^^^
          else if (ipunch .eq. 2) then
