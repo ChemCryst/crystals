@@ -605,15 +605,17 @@ C....... Read the Uij loop and store in the site list
         end if
 
         write(NOUTF,'(a)') '#LIST 5'
-        write(NOUTF,'(a)') 'OVERALL 1 0.5 0.5 1 0 1'
+        write(NOUTF,'(a)') 'OVERALL 1 0.05 0.05 0 0 0'
         write(NOUTF,'(a,i4,x,a)') 'READ NATOM = ',nsite,
      *      'NLAYER = 0 NELEMENT = 0 NBATCH = 0 '
 
         do i=1,nsite
           write(NOUTF,'(3(a,1x),f11.6,i4,3f11.6,1X,2a4)')
      *    'ATOM',label(i,2)(1:6),
-     *    label(i,3)(1:6),occ(i),flag(i),xf(i),yf(i),zf(i),'NEW=',
-     *    label(i,1)(1:4)
+cdjw     *    label(i,3)(1:6),occ(i),flag(i),xf(i),yf(i),zf(i),'NEW=',
+cdjw     *    label(i,1)(1:4)
+     *    label(i,3)(1:6),occ(i),flag(i),xf(i),yf(i),zf(i)
+c     *    label(i,1)(1:4)
           if (flag(i) .eq. 0 )then
             write(NOUTF,'(a,6f11.6)')'CON U[11]= ',(uij(i,j),j=1,6)
           else if (flag(i) .eq. 1) then
@@ -697,7 +699,7 @@ c.......=========================
         write(NOUTF, '(2a/,2a)') 'COLOUR ', colour, 'SHAPE ', shape
         write(NOUTF, '(a,2x, 2(a,f6.4,2x),a,i6,2x,a,f6.4)') 
      *          'REFINEMENT', 'R = ',r, 'RW = ', rw, 'NPARAM = ', 
-     *          int(nparam), 'S = ', s
+     *          int(nparam), 'GoF = ', s
         write(NOUTF, '(a)') 'END'
 
       end if
