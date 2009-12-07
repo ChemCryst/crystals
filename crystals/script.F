@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.60  2009/07/02 09:20:27  djw
+C Add character variable CFAMT for use with DFORM for outputting floating point variables
+C
 C Revision 1.59  2008/12/18 16:34:46  djw
 C Add ABS(REAL) function
 C
@@ -7855,6 +7858,10 @@ C
       INCLUDE 'XSCGBL.INC'
       INCLUDE 'XSCCHR.INC'
       INCLUDE 'XIOBUF.INC'
+cdjwdec09
+      INCLUDE 'XSCCHK.INC'
+      INCLUDE 'XMENUC.INC'
+      INCLUDE 'XMENUI.INC'
 C
       DATA CCOMP / 'SCRIPT      ' ,
      2 '(LABEL)     ', 'ACTIVATE    ', 'COPY        ',
@@ -7917,6 +7924,28 @@ C
       IF ( ISCCOM .LE. 0 ) ISCCOM = 0
 C
 C -- OUTPUT BASIC MESSAGE
+cdjwdec09
+C----- RECOVER SCRIPT NAME
+      ISTAT = KSCIDN (2, 3, 'SCRIPTNAME', 1, IS, IDSCP, ISCPNM, 1)
+      ISTAT = KSCSDC ( ISCPNM, CSCPNM, LENNM)
+      IF (CSCPNM .NE. CLSTNM) CPRVNM = CLSTNM
+      CLSTNM = CSCPNM(1:LENNM)
+c
+cdjwjun07
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a,a)' ) 
+     1 'Testing ',cscpnm(1:lennm)
+      IF ( CPRVNM(1:3) .NE. CSPACE(1:3) ) THEN
+      WRITE(CMON(1),'(5A)')
+     1'Script: ',CSCPNM(1:LENNM),
+     1   ' called from: ', CPRVNM
+      ELSE
+      WRITE(CMON(1),'(3A)')' Script: ',
+     1  CSCPNM(1:LENNM), ''''
+      ENDIF
+      CALL XPRVDU(NCVDU, 1,0)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) cmon(1)(:)
+cdjwjun07
+cdjwdec09
 C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 1005 ) IRDREC(IFLIND),CCOMP(ISCCOM),
