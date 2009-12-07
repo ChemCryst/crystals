@@ -136,6 +136,8 @@
 % TRANSFER '#SPAWN + "CRYSDIR:cif2cry.exe" ' // CARG // '"' // COUT -           
   // '" "' // CIF // '"' TO CRYSTALS                                            
 %%                                                                              
+%% show runnow
+%% set verify true
 % IF RUNNOW THEN                                                                
 %   TRANSFER '#USE ' // COUT TO CRYSTALS                                        
 % END IF                                                                        
