@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:09  rich
 C New CRYSTALS repository
 C
@@ -45,7 +49,7 @@ C--CHECK IF WE SHOULD RETURN
 C
 C--BRANCH ON THE TYPE OF OPERATION
 1200  CONTINUE
-      GOTO (2000,3000,3500,4000,5000,1300),NUM
+      GOTO (2000,3000,3500,4000,9000,9500,1300),NUM
 1300  CALL GUEXIT(342)
 C
 C--MOLECULAR AXES CALCULATION
@@ -63,14 +67,19 @@ C--COMBINED MOLAX/TLS
       CALL SGEOM
       RETURN
 C
-C--'#END' INSTRUCTION
+C--VCV MATRIX
 4000  CONTINUE
+      CALL VCV
+      RETURN
+C
+C--'#END' INSTRUCTION
+9000  CONTINUE
       CALL XMONTR(-1)
       CALL XEND
       RETURN
 
 C--'#TITLE' INSTRUCTION
-5000  CONTINUE
+9500  CONTINUE
       CALL XRCN
       RETURN
       END
