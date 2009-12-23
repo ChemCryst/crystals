@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.94  2008/12/15 14:57:44  djw
+C Move List 11 error messages into XFAL11 itself
+C
 C Revision 1.93  2009/07/31 12:41:20  djw
 C Add a switch to SEQUENCE so that H atoms are not changed
 C
@@ -1135,16 +1138,21 @@ C--LOAD LIST 12
 C--CHECK IF THE E.S.D.'S OF THE CELL PARAMETERS ARE TO INCLUDED
         IF(ICELL.LT.0)THEN
 C--DO NOT INCLUDE THE CELL ERRORS
+C      ATOMS 2X3
           NWDT=6
+C      ANGLES 2X3
           NWAT=9
         ELSE
 C--INCLUDE THE CELL ERRORS
-          NWDT=12
-          NWAT=15
+          NWDT=NWDT + 6
+          NWAT=NWAT + 6
         END IF
 C--SET VARIOUS CONSTANTS FOR E.S.D. CALCULATIONS
+C      DISTANCE
         NWD=6
+C      ANGLE
         NWA=9
+C      ?
         NWS=4
         NW=13
 C----- SAVE SOME SPACE FOR THE TARGET RADIUS IN RESTRAINTS
@@ -1198,6 +1206,7 @@ c
 C--ZERO THE AREA INITIALLY
         CALL XZEROF(STORE(JA),JS)
 C--SET UP THE UNIT MATRIX SYMMETRY OPERATOR FOR THE FIRST ATOM
+c---djw 6x6 and 9x9 - perhaps for 2 and 3 atoms? Dist and angle?
 C  IN THE AREA FOR DISTANCES AND ANGLES
         DO I=1,3
           STORE(JH)=1.
@@ -1440,8 +1449,14 @@ C--SET UP THE PROCESSING FLAGS
 C--CHECK IF ERRORS ARE TO BE CALCULATED
          IF(IESD.GE.0)THEN
 C--SET UP THE ATOM STACK FOR THE PIVOT ATOM
+c--- note mxppp (maximum number of parts per parameter)
+c      is set to 50. This is to reserve enough room at JA
           JB=JA
+c--- NWS = 4
+cdjwdec09
           CALL XFPCES( M12A, JB, NWS, IPART(1) )
+          write(ncwu,*) '1st dist atom  M12A=', M12A, 
+     1    ' JB=',JB, MWS, IPART(1)
           LHFIXD(1) = .FALSE.
 C Check if it is a H
           IF ((ISTORE(M5P).EQ.KHYD) .OR. (ISTORE(M5P).EQ.KDET)) THEN
@@ -1767,7 +1782,10 @@ C----- SET ESD TO ZERO
 C--CALCULATE THE E.S.D.
                 JC=JB
 C--ADD THE SECOND ATOM INTO THE STACK
+cdjedec09
                 CALL XFPCES( ISTORE(J+12), JC, NWS, IPART(2) )
+c          write(ncwu,*) '2nd dist atom  M12A=',ISTORE(J+12), 
+c     1  ' JC=',JC, NWS, IPART(2)
                 LHFIXD(2) = .FALSE.
 C Check if it is a H
                 IF ((ISTORE(L).EQ.KHYD) .OR.
@@ -1802,12 +1820,12 @@ c  removed from code
 c  JD is a temporary location - matrix is moved to lower right (JN) of full 
 c  vCv matrix at JM
                 CALL XCOVAR( JA, NWD, NWS, JD, JE, IPART, 2)
-cdjwfeb08
+cdjwdec09
 c      write(ncwu,'(a)') 'VcV matrix'
 c      write(ncwu,'(6f12.9 )') (store(jd+ifeb08-1), ifeb08=1,nwd*nwd)
 c      write(ncwu,'(a)') 'multipliers'
 c      write(ncwu,'(6f12.4 )') (store(je+ifeb08-1), ifeb08=1,nwd*nwd)
-cdjwfeb08
+cdjwdec09
 
 C--SET UP THE RELEVANT SYMMETRY MATRIX  AT JH
 c-- second atom only - unit matrix for 1st atom already set at JG
@@ -1818,7 +1836,7 @@ C  AND STORE THE TRANSFORMATION MATRIX AT 'JF'
 c  JG is same as JH, the address of the two-block symmetry matrix
 c  JF is the address of the two-block result.
                 CALL XMD3B(JE,JG,JF,2,NWD)
-cnov07
+cfeb08
 c      write(ncwu,'(a,i8)') 'jf',jf
 c      write(ncwu,'(6f16.12)') (store(idjw),idjw=jf,jf+35)
 c      write(ncwu,'(/)')
@@ -2199,6 +2217,8 @@ C--CHECK IF E.S.D.'S ARE REQUIRED
 C--INSERT THE SECOND ATOM  -  ATOM (B)
               JC=JB
               CALL XFPCES( ISTORE(NZ+12), JC, NWS, IPART(2) )
+c          write(ncwu,*) '2nd angle atom  M12A=',ISTORE(NZ+12), 
+c     1  ' JC=',JC, NWS, IPART(2)
               LHFIXD(2) = .FALSE.
               IF((ISTORE(JB).LT.0).AND.
      1        ((ISTORE(ISTORE(NZ)).EQ.KHYD)
@@ -2306,7 +2326,10 @@ C--CHECK IF THE E.S.D. IS TO BE CALCULATED
 C--CALCULATE THE E.S.D.
                 NF=JC
 C--ADD THE THIRD ATOM (C) INTO THE STACK
+cdjwdec09
                 CALL XFPCES( ISTORE(NA+12), NF, NWS, IPART(3) )
+c          write(ncwu,*) '3rd angle atom  M12A=',ISTORE(NA+12), 
+c     1  ' NF=',NF, NWS, IPART(3)
                 LHFIXD(3) = .FALSE.
                 IF ( (ISTORE(JC).LT.0).AND.
      1            ((ISTORE(ISTORE(NA)).EQ.KHYD) .OR.
@@ -2327,6 +2350,13 @@ C Check if any of the atoms are hydrogens riding.
      2                 (ISTORE(IZZ).EQ.KDET)  )) LHFIXD(3) = .TRUE.
 C--CALCULATE THE V/CV MATRIX FOR THE POSITIONAL ERRORS
                 CALL XCOVAR( JA, NWA, NWS, JD, JE, IPART, 3)
+cdjwdec09
+c      write(ncwu,'(a)') 'VcV matrix'
+c      write(ncwu,'(9f12.9 )') (store(jd+ifeb08-1), ifeb08=1,nwa*nwa)
+c      write(ncwu,'(a)') 'multipliers'
+c      write(ncwu,'(9f12.4 )') (store(je+ifeb08-1), ifeb08=1,nwa*nwa)
+cdjwdec09
+
 C--MOVE THE V/CV MATRIX TO THE FINAL AREA, WHICH CONTAIN THE CELL ERRORS
                 CALL XMVCD(JD,NWA,JQ,NWAT)
 C--ADD THE SYMMETRY MATRIX OF THE LAST ATOM
