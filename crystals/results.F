@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.153  2008/12/14 17:03:17  djw
+C Enable the centric reflections to be identified and counted
+C
 C Revision 1.152  2009/12/07 10:54:20  djw
 C Update headers for PUNCH output in #TON (Experimental)
 C
@@ -5139,7 +5142,7 @@ C----- LIST 30
         ELSE IF ( IPUNCH .EQ. 2 ) THEN
           WRITE (NCPU,'(
      1           ''<td width="15%"> </td><TD>M<sub>r</sub></TD><TD>'',
-     2           F8.2,''</TD></TR>'')') STORE(L30GE+4)
+     2           F8.2,''</TD></TR>'')') STORE(L30GE+4) / ZPRIME
            write(ncpu,9)
           WRITE (NCPU,9006) 'Cell determined from',NINT(STORE(L30CD+3)),
      1     ' reflections'
@@ -5517,7 +5520,7 @@ C- Unknown
            ENDIF
            CALL XCTRIM (CTEMP,NCHAR)
 C
-           WRITE (CLINE,'(''_diffrn_measurement_device-type'',
+           WRITE (CLINE,'(''_diffrn_measurement_device_type'',
      1      T35,'''''''',A,'''''''')') CTEMP(1:NCHAR-1)
            CALL XPCIF (CLINE)
 c
@@ -7084,6 +7087,11 @@ c    giving incipient division by zero
 c
 c
          IF (IPUNCH .eq. 1) then
+cdjwdec09 - add noise to Fc
+          anoise = xrand(1.,1)
+          anoise = sign(1.,anoise)*sqrt(abs(anoise))*sigm
+          fckn = fckd + anoise
+cdjwdec09
            itemp = nint(fried1)
            jtemp = nint(fried2)
            if (itemp .lt. 0) itemp = 10 +itemp
@@ -7092,10 +7100,11 @@ c
      *     i,j,k, itemp,jtemp, 
      1     fok1, sig1, fck1, fok2, sig2, fck2, 
      2     fokd, fckd, foks, fcks, sigm,
-     3     abs(foks-fcks), abs(fokd), 
-     4     abs(foks-fcks)/(.00001+abs(foks)),
-     5     abs(fokd)/(.00001+abs(foks)),
-     6     abs(fokd)/(.00001+abs(foks-fcks))
+     3     fckn
+c     3     abs(foks-fcks), abs(fokd), 
+c     4     abs(foks-fcks)/(.00001+abs(foks)),
+c     5     abs(fokd)/(.00001+abs(foks)),
+c     6     abs(fokd)/(.00001+abs(foks-fcks))
 c
 c^^^
          else if (ipunch .eq. 2) then
