@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.95  2009/12/23 08:24:43  djw
+C Add more comments to esd calculation
+C
 C Revision 1.94  2008/12/15 14:57:44  djw
 C Move List 11 error messages into XFAL11 itself
 C
@@ -1455,8 +1458,8 @@ c      is set to 50. This is to reserve enough room at JA
 c--- NWS = 4
 cdjwdec09
           CALL XFPCES( M12A, JB, NWS, IPART(1) )
-          write(ncwu,*) '1st dist atom  M12A=', M12A, 
-     1    ' JB=',JB, MWS, IPART(1)
+c          write(ncwu,*) '1st dist atom  M12A=', M12A, 
+c     1    ' JB=',JB, MWS, IPART(1)
           LHFIXD(1) = .FALSE.
 C Check if it is a H
           IF ((ISTORE(M5P).EQ.KHYD) .OR. (ISTORE(M5P).EQ.KDET)) THEN

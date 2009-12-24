@@ -146,7 +146,7 @@ C--ERRORS  -  INCREMENT THE ATOM ERROR COUNT
       IERR=-1
       GO TO 1500
 c
-C--MOVE ATOMS TO STACK WITH CORRECT CO-ORDINATES
+C--MOVE ATOMS TO STACK WITH CORRECT L5 and L12 addresses
 600   CONTINUE
       mstart = mq
       write(ncwu,*) ' '
@@ -168,9 +168,6 @@ C--MOVE ATOMS TO STACK WITH CORRECT CO-ORDINATES
             goto 620
       endif
       GO TO 350
-c
-c
-c
 c
 800   CONTINUE
       LEF2=LEF2+LEF
@@ -195,18 +192,11 @@ c
 C      'EXECUTE'
       write(ncwu,*) 'Execute.  Natom=', natom
       IF (NATOM.LE.0) GO TO 100
-C----- SET NPARAM PER ATOM
+C----- SET NPARAM PER ATOM (3 for x,y,z)
       NPARAM=3
 C--SET UP THE SYSTEM FOR E.S.D.'S
-C--DO NOT INCLUDE THE CELL ERRORS
-C      ATOMS 2X3
-C          NWDT=6
-      NWPT=NATOM*NPARAM
-C--SET VARIOUS CONSTANTS FOR E.S.D. CALCULATIONS
-C      DISTANCE
-C        NWD=6
-      NWP=NATOM*NPARAM
-c      NWS=NPARAM
+      NWPT= NATOM*NPARAM
+      NWP = NATOM*NPARAM
       nws = 4
       NW=13
       JU=1
@@ -216,17 +206,14 @@ C--SET A FEW AREAS OF CORE FOR E.S.D. CALCLATION
       MXPPP=50! MAXIMUM NUMBER OF PARTS PER PARAMETER.
 C        JD = JA + NWA * NWS * MXPPP
       JD=JA+NWP*NWS*MXPPP
-      NO=JD+NWAT*3-1
-C        NZ=NWAT*NWAT    !NWAT normally 9, but 15 if CELL errors are use
-      NZ=NWPT*NWPT!NWAT NORMALLY 9, BUT 15 IF CELL ERRORS ARE USED
+      NZ=NWPT*NWPT  !NWPT 
       JE=JD+NZ
       JF=JE+NZ
       JG=JF+NZ
       JH=JG
       JJ=JG+NWP*NWP
       JK=JJ
-C        JM=JJ+NWA*NWA
-      JM=JJ
+      JM=JJ+NWP*NWP
       JN=JM
       JP=JM+NWPT*NWPT
       JQ=JP
@@ -247,16 +234,19 @@ C----- now loop over the stored atoms
       DO 1450 I=1,NATOM
 
 
-      write(ncwu,'(7i6,3f12.4,2i6//)') (istore(istack+itmp),itmp=0,6),
+      write(ncwu,'(//7i6,3f12.4,2i6)') (istore(istack+itmp),itmp=0,6),
      1   (store(istack+itmp), itmp=7,9), istore(istack+10),
      2   istore(istack+12)
 
 
          M12A = ISTORE(ISTACK+12)
+         jtemp = jb
          CALL XFPCES (M12A,JB,NWS,ISTORE(IPART))
-          write(ncwu,*) I,'th dist atom  M12A=', M12A, 
+          write(ncwu,12345) I,'th dist stack  M12A=', M12A, 
      1    ' JB=',JB, NWS, istore(IPART)
-      write(ncwu,*) istore(jb),istore(jb+1),istore(jb+2),store(jb+3) 
+12345  format(i3,a,i12,a,4i12)
+      write(ncwu,*) 
+     1 istore(jtemp),istore(jtemp+1),istore(jtemp+2),store(jtemp+3) 
 1350     CONTINUE
          IPART = IPART + 1
          ISTACK = ISTACK + LSTACK
