@@ -2,82 +2,49 @@
 THE CRYSTALLOGRAPHIC SYSTEM 'CRYSTALS' LICENCE AGREEMENT
 --------------------------------------------------------
 
+This releaase of CRYSTALS comes complete with authorised versions of 
+SHELXS and SIR92.  These are covered by separate licences listed below.
+
 BY INSTALLING THIS SOFTWARE YOU ACCEPT ALL THE TERMS AND
 CONDITIONS OF THIS AGREEMENT.
 
-All material in the CRYSTALS distribution kit, including the
-Documentation, is Copyright Chemical Crystallography Laboratory, Oxford. 
+CRYSTALS: Copyright (c) University of Oxford, 20 October 2009. All rights reserved.
 
-This AGREEMENT is made between The Head of Laboratory, Chemical
-Crystallography Laboratory, Oxford ("CCLO") on behalf of the 
-University of Oxford and the end user of the 'CRYSTALS' Software.
+Redistribution and use in source and binary forms, with or without modification, are permitted
+provided that the following conditions are met:
+Redistributions of source code must retain the above copyright notice, this list of conditions and
+the following disclaimer.
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions
+and the following disclaimer in the documentation and/or other materials provided with the
+distribution.
+Neither the name of the University of Oxford nor the names of its contributors may be used to
+endorse or promote products derived from this Software without specific prior written
+permission.
+This Software is provided by the copyright holders and contributors "AS IS" and any express or
+implied warranties, including, but not limited to, the implied warranties of merchantability and
+fitness for a particular purpose are disclaimed. In no event shall the copyright holder or
+contributors be liable for any direct, indirect, incidental, special, exemplary, or consequential
+damages (including, but not limited to, procurement of substitute goods or services; loss of use,
+data, or profits; or business interruption) however caused and on any theory of liability, whether
+in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the
+use of this Software, even if advised of the possibility of such damage.
+The licensor and copyright holder is the Chancellor, Masters and Scholars of the University of
+Oxford, having an administrative office at Wellington Square, Oxford OX1 2JD, United Kingdom
+("University of Oxford").
+The software that is the subject of this licence ("the Software") is the body of source code,
+executable images, scripts, data files, test data, manuals and other documentation connected
+with the CRYSTALS Project. The function of the CRYSTALS software is to take single crystal Xray
+diffraction data and extract from it a detailed description of the molecules in the crystal. The
+software has two major parts: the underlying mathematical and crystallographic utilities written
+in FORTRAN and a graphical user interface written in C++.
 
-1. All the intellectual property and copyright in CRYSTALS is and 
-   will remain the property of CCLO.
 
-2. CCLO and the authors of 'CRYSTALS' accept no responsibility for 
-   any limitations of the program and documentation or for any liabilities 
-   or claims arising from its use.
 
-3. You undertake to indemnify CCLO against claims arising in any way
-   whatsoever, whether from negligence or otherwise, out of your use of
-   'CRYSTALS'.
-
-4. CCLO is under no obligation whatsoever to correct errors nor to notify 
-   you of errors in 'CRYSTALS'. Wherever practicable such errors will be 
-   corrected or users notified.
-
-5. Any modifications to 'CRYSTALS' supplied by or on behalf of CCLO will 
-   be covered by the terms of this AGREEMENT.
-
-6. You may on your own initiative make modifications to 'CRYSTALS' subject 
-   to the following conditions: You will notify CCLO of the modifications 
-   as soon as practicable.You will provide CCLO with full details of the 
-   modifications if requested to.
-
-7. All intellectual property in the modification will vest in CCLO who will 
-   have the right to distribute it to other institutions under the same terms 
-   as 'CRYSTALS'.The symbolic and executable versions of the program 'CRYSTALS' 
-   will not be shown to nor distributed to any third party without written 
-   permission of CCLO.
-
-8. This release of CRYSTALS is provided without charge to not-for-profit
-   organisations. Individuals at for-profit organisations may install this 
-   release of CRYSTALS for evaluation purposes only. After evaluating the 
-   release the software must either be uninstalled, or permission obtained from 
-   the head of the CCLO to continue using it.
-
-9. You may make such copies of the disks containing CRYSTALS as you reasonably 
-   require for your own working and back-up purposes.
-
-10. The manual and user guides may be copied and distributed to users
-   of CRYSTALS.
-
-11. You are responsible for devising job control language procedures
-    providing suitable environments for running CRYSTALS, and for devising 
-    suitable machine-specific modifications to the code where these are not 
-    already available from CCLO.
-
-12.  Published references to 'CRYSTALS' will be:
-
-   Betteridge, P. W.,  Carruthers, J. R.,  Cooper, R. I.,
-   Prout, K., Watkin, D. J. (2003). J. Appl. Cryst. 36, 1487.
-
-13.  Published references to 'CAMERON' will be:
-
-  Watkin D.J., Prout C.K., Pearce L.J. (1996). CAMERON, Chemical Crystallography
-  Laboratory, University of Oxford, Oxford.
-
-14.  CRYSTALS uses some functions from the LAPACK and BLAS mathematical libraries. 
+     CRYSTALS uses some functions from the LAPACK and BLAS mathematical libraries. 
      See the LAPACK user's guide, Anderson, E. and Bai, Z. and Bischof, C. and 
      Blackford, S. and Demmel, J. and Dongarra, J. and Du Croz, J. and Greenbaum, A. 
      and Hammarling, S. and McKenney, A. and Sorensen, D. Third edition published
      by Society for Industrial and Applied Mathematics, 1999.
-
-15.  This Agreement shall be governed by English law.
-
-
-By installing this software you indicate acceptance of this agreement.
 
 
 
