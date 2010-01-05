@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.96  2009/12/24 09:56:40  djw
+C Remove diagnostic printdistangl.fpp
+C
 C Revision 1.95  2009/12/23 08:24:43  djw
 C Add more comments to esd calculation
 C
@@ -1146,9 +1149,9 @@ C      ATOMS 2X3
 C      ANGLES 2X3
           NWAT=9
         ELSE
-C--INCLUDE THE CELL ERRORS
-          NWDT=NWDT + 6
-          NWAT=NWAT + 6
+C--INCLUDE THE CELL ERRORS (+6)
+          NWDT= 12
+          NWAT= 15
         END IF
 C--SET VARIOUS CONSTANTS FOR E.S.D. CALCULATIONS
 C      DISTANCE
@@ -5053,7 +5056,8 @@ C
       INCLUDE 'XSSVAL.INC'
 C
       INCLUDE 'QSTORE.INC'
-C
+C-dec09
+c      write(ncwu,*) 'fpces in ', iadd12, istack, nw, npart
       NPART = 0
 C----- GET THE FIRST PART HEADER
       J = KFPH (IADD12)
@@ -5082,6 +5086,10 @@ C--'WEIGHT' CAN DIFFER FROM UNITY
 1100  CONTINUE
       STORE(ISTACK+3)=STORE(K+1)
 1150  CONTINUE
+c dec09
+c      write(ncwu,'(a,4i12,2f12.4)')'         Stack',
+c     1 istack, istore(istack),istore(istack+1),
+c     2 istore(istack+2),store(istack+3)
       ISTACK=ISTACK+NW
 1200  CONTINUE
       NPART = NPART+1
@@ -5095,6 +5103,8 @@ C----- MORE PARTS TO BE SET UP
       GOTO 900
 1350  CONTINUE
 C
+c dec09
+c      write(ncwu,*) 'fpces out', iadd12, istack, nw, npart
       RETURN
       END
 C
@@ -5178,7 +5188,6 @@ C  LS  ADDRESS OF THE FIRST WORD OF THE STACK
 C  NS  NUMBER OF ENTRIES IN THE STACK
 C  NW  NUMBER OF WORDS PER ENTRY IN THE STACK
 C  LF  ADDRESS AT WHICH TO SET UP THE V/CV MATRIX
-c      size is NWD or NWA square.
 C  JA  ADDRESS AT WHICH TO SET UP THE 'MULTIPLIERS' OR 'WEIGHTS'
 C      AS A DIAGONAL MATRIX
 C  IPART(NATOM) HOLDS THE NUMBER OF 'PARTS' FOR EACH ATOM
@@ -5210,6 +5219,11 @@ C--
 C
       DATA NPAR/3/
 C
+c dec09
+c      write(ncwu,'(a,5i8,(10x,5i8))') 'Xcovar in ', 
+c     1 LS, NS, NW, LF, JA,
+c     2 (IPART(itemp), itemp=1, NATOM)
+
 C----- CHECK IF ALL ATOMS HAVE ONLY ONE PART, GET NO. OF LS PARAMETERS
       NLS = 0
       MPART = 0
@@ -5300,6 +5314,11 @@ C
       CALL XPRVDU(NCVDU, 1,0)
 9100  FORMAT(' Error allocating space for e.s.d. calculation')
 9900  CONTINUE
+c dec09
+c      write(ncwu,'(a,5i8,(10x,5i8))') 'Xcovar out', 
+c     1 LS, NS, NW, LF, JA,
+c     2 (IPART(itemp), itemp=1, NATOM)
+
       RETURN
       END
 C
