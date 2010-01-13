@@ -269,12 +269,12 @@ C....... f1 ends up false if any of these functions fail.
 C....... Write out a crystals instruction:
 
        write(NOUTF,'(a)') '#LIST 1'
-       write(NOUTF,'(a)') 'AMULT 1.0'
        write(NOUTF,'(a,6f11.4)') 'REAL',cela,celb,celc,
      *                              celalp,celbet,celgam
        write(NOUTF,'(a)') 'END'
        DTRSQ = .000305
        write(NOUTF,'(a)') '#LIST 31'
+       write(NOUTF,'(a)') 'AMULT 1.0'
        write(NOUTF,'(a,1x,F12.10,A)') 'MATRIX', SIGA*SIGA,
      1 ' 0.0 0.0 0.0 0.0 0.0 '
        write(NOUTF,'(a,1x,F12.10,A)') 'CONT', SIGB*SIGB,
