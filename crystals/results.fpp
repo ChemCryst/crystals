@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.154  2009/12/23 08:31:57  djw
+C In TON add column with noise added to Dfc
+C
 C Revision 1.153  2008/12/14 17:03:17  djw
 C Enable the centric reflections to be identified and counted
 C
@@ -4689,7 +4692,7 @@ C----- VALUE AND ESD
           DO I=0,2
             CALL XFILL (IB,IVEC,16)
 cdjwjul05
-            CALL SNUM (STORE(L1P1+3+I),ESD(I+4),-2,0,10,IVEC)
+            CALL SNUM (STORE(L1P1+3+I),ESD(I+4),-2,0,12,IVEC)
             WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
             CALL XCRAS (CBUF,N)
             J=INDEX(CBUF(1:N),'.')
@@ -7002,7 +7005,8 @@ C
        WRITE(NCPU,335)
 335    FORMAT(3X,'H',3X,'K',3X,'L',11X,'Fo+', 7X,'Sig', 7X, 'Fc+',
      1 7X,'Fo-', 7X,'Sig', 7X, 'Fc-',x,
-     2 '    Do   ',2x,'   Dc    ',4x,' Ao ',3x,' Ac ' )
+     2 '    Do   ',2x,'   Dc    ',4x,' Ao ',5x,' Ac ',
+     3 5x,'Sig(Do)',2x,'Dc(n)' )
       else if (ipunch .eq.2) then
        write(ncpu,'(a,f8.2,a)')
      1 'REM Restraint created if delta(Fo) and delta(Fc) >',thresh,
