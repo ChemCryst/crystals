@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.155  2010/01/13 13:41:27  djw
+C Increase field size for beta
+C
 C Revision 1.154  2009/12/23 08:31:57  djw
 C In TON add column with noise added to Dfc
 C
@@ -4683,7 +4686,7 @@ C----- SCALE DOWN THE ELEMENTS OF THE V/CV MATRIX
           DO I=0,2
 C----- VALUE AND ESD
             CALL XFILL (IB,IVEC,16)
-            CALL SNUM (STORE(L1P1+I),ESD(I+1),-2,0,10,IVEC)
+            CALL SNUM (STORE(L1P1+I),ESD(I+1),-2,0,12,IVEC)
             WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
             CALL XCRAS (CBUF,N)
             WRITE (NCFPU1,600) CCELL(I+1)(1:1),CBUF(1:N)
