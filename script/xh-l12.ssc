@@ -57,6 +57,10 @@ You have no atom for this structure
 Hydrogen RIDE constraints have been put into {&h-constraints.dat{&
 
 
+%  ELSE
+
+ No hydrogen atoms to constrain
+
 %  END IF
 %%
 % END SCRIPT
