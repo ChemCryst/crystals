@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.156  2010/01/18 16:19:10  djw
+C Increase figure field for cell edges too
+C
 C Revision 1.155  2010/01/13 13:41:27  djw
 C Increase field size for beta
 C
@@ -7032,7 +7035,9 @@ C      ISTAT = KLDRNR (IN)
       ISTAT=KFNR(0)
       IF (ISTAT.LT.0) GO TO 450
 Cdjwjan08 - kallow doesnt look at list 7
-C      IF (KALLOW(IN) .LT. 0) goto 1700
+c      IF (KALLOW(IN) .LT. 0) then
+c      goto 340
+c      endif
       NREFIN=NREFIN+1
       I=NINT(STORE(M6))
       J=NINT(STORE(M6+1))
@@ -7059,7 +7064,10 @@ C GET REFLECTION(2)
 C      ISTAT = KLDRNR (IN)
       ISTAT=KFNR(0)
       IF (ISTAT.LT.0) GO TO 450
-C      IF (KALLOW(IN) .LT. 0) goto 1800
+Cdjwjan08 - kallow doesnt look at list 7
+c      IF (KALLOW(IN) .LT. 0) then
+c      goto 350
+c      endif
       NREFIN=NREFIN+1
       I=NINT(STORE(M6))
       J=NINT(STORE(M6+1))
@@ -7113,7 +7121,6 @@ c     4     abs(foks-fcks)/(.00001+abs(foks)),
 c     5     abs(fokd)/(.00001+abs(foks)),
 c     6     abs(fokd)/(.00001+abs(foks-fcks))
 c
-c^^^
          else if (ipunch .eq. 2) then
 cdjwjul09  Watch out for small/negative average Fo
 C----- multiplier to correct fC for flack parameter value
@@ -7128,15 +7135,21 @@ c
              else
               CSIGN = '+' 
              endif
+c^^^
+            if (abs(fokd-fckd)/sigm .ge. 0.01) then
              nrest = nrest + 1
              write(ncpu, 351) 
-     1       fokd, sigm,  
-     2       CSIGN, abs(fckd),
+c     1       fokd, sigm, CSIGN, abs(fckd),
+c     1       fokd, abs(fckd/fcks), CSIGN, abs(fckd),
+c     1       fokd,  abs(fokd-fckd)/sigm , CSIGN, abs(fckd),
+c     1       fokd,  1.0 , CSIGN, abs(fckd),
+     1       fokd,  sigd , CSIGN, abs(fckd),
      3       i,j,k,abs(fokd-fckd)/sigm
 351          format('restrain ', f9.2,', ',  f8.2, ' = ',
-     1       a, ' ( 1. - ( 2. * enantio ) ) * ', f9.2,20x,3i5,f9.3) 
+     1       a, ' ( 1. - ( 2. * enantio ) ) * ', f9.2,  20x,3i5,f9.3)
              flrnum = flrnum + abs (fokd - preflack*fckd)
              flrden = flrden + abs(fokd)
+            endif
            endif
          ENDIF  
 c
