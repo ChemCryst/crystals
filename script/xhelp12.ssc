@@ -29,7 +29,8 @@
        Check that the structure meets the Acta Cryst requirements.
 {2,0 Publish
       Produce cif and tabular listsings.
-
+{2,0 Refine Hydrogen
+      Re-optimise hydrogen with restraints.
 {4,0 WARNING:
 {4,0   IF YOU HAVE CAREFULLY BUILT A REFINEMENT LIST,
 {4,0   LIST 12, THESE AUTOMATIC PROCEDURES WILL DESTROY IT!
