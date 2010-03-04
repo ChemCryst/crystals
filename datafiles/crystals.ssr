@@ -84,10 +84,11 @@
 #
 # set up scratch files - you may want to make some of them permanent to
 # preserve data between runs.
+# Start SPY only if you want to accumulate running statistics
 # STORE UNIT NCSU 11
 # ATTACH 11 SPY SEQUENTIAL SCRATCH FORMATTED WRITE FREE
+#ATTACH 11 SPY SEQUENTIAL CIF FORMATTED WRITE FREE
 # OPEN SPY
-# Start only if you want to accumulate running statistics
 # START SPY
 # STORE UNIT NCCB 14
 # ATTACH 14 EXCOMMON SEQUENTIAL SCRATCH FORMATTED WRITE FREE
