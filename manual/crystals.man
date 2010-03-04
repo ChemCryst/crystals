@@ -8581,7 +8581,8 @@ including negative ones.
  initial refinement.
 #KSTEP=#
  This is the skip step length, and has a default of 1, i.e. all reflections
- are accepted. A value 3 selects every third reflection.
+ are accepted. A value of 3 selects every third reflection for use in 
+ calculations (i.e. 2 out of 3 are skipped).
 
 
 
