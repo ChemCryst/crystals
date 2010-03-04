@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.43  2009/06/22 06:54:48  djw
+C Provide name (not just number) for overall parameters whose shift is reduced
+C
 C Revision 1.42  2009/06/04 14:32:11  djw
 C compute GOF for X-ray data only
 C
@@ -411,7 +414,7 @@ C--CHECK THE TYPE OF LIST 11
 1500  CONTINUE
 cdjwapr09 F is counter for sum of squares, ABSF for sum abs(shift/esd)
       F = 0.0
-      FABS = 0
+      ABSF = 0
       JP=ISTORE(L11P+15)
 C--CHECK IF THE MATRIX IS OF AN ACCEPTABLE TYPE
       IF ( IABS(JP) .NE. 1 ) GO TO 9910
