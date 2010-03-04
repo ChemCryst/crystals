@@ -54,7 +54,7 @@ You have no atom for this structure
 %     COPY 'END'
 %     COPY '#RELEASE PUNCH bfile.pch'
 
-Hydrogen RIDE constraints have been put into the file h-constraints.dat
+Hydrogen RIDE constraints have been put into {&h-constraints.dat{&
 
 
 %  END IF

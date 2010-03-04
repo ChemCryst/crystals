@@ -9,8 +9,7 @@
 %      COPY 'PIVOT C N O'
 %      COPY 'END'                                                                
 %      COPY '#RELEASE PUNCH bfile.pch'                                           
-%%      COPY '#TYPE h-restraints.pch'
 
-Hydrogen restraints have been  put in the file h-restraints.dat
+Hydrogen restraints have been  put in the file {&h-restraints.dat{&
 
 %END SCRIPT
