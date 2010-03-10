@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2009/07/31 12:42:05  djw
+C Remove de-bugging out put from the monitor
+C
 C Revision 1.26  2009/05/19 14:37:01  djw
 C Provide the orthogonalisation matrix as a rotation matrix, set the LIST 14 intervals in A
 C
@@ -1513,7 +1516,10 @@ C--CHECK IF AUTOMATIC SCALING IS REQUIRED
       IF(ISC)3550,3450,3550
 C--AUTOMATIC SCALING  -  CHECK THE TYPE
 3450  CONTINUE
-      IF (NTYP .NE. IPMAP) GOTO 3550
+cdjwmar2010      IF (NTYP .NE. IPMAP) GOTO 3550
+catch all the funny pattersons
+      IF (NTYP .lt. IPMAP) GOTO 3550
+      IF (NTYP .ge. 10) GOTO 3550
 C--COMPUTE THE SCALE FACTOR
       ISC=1
 C
