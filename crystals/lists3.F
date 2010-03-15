@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2005/03/07 16:04:14  djw
+C XGETAT - a stub to enable Stefan to get a list of atoms in form TYPE(SERIAL) from LIST 12 & 16 for the sparse project. formatCALL XGETAT(LTYPE, 1) - only one action for the moment
+C
 C Revision 1.22  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -967,16 +970,20 @@ C--NOT THE FIRST CARD
 1300  FORMAT(8X,20A4)
 1400  CONTINUE
       CALL XCTRIM (CLINE, NCHARS)
-      KK = MIN0 ( 78, NCHARS)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(1X,A)')  CLINE(1:KK)
-         WRITE ( CMON, '(1X,A)') CLINE(1:KK)
+cdjwMar2010 - allow full line length
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(1X,A)')  CLINE(1:NCHARS)
+         WRITE ( CMON, '(1X,A)') CLINE(1:NCHARS)
          CALL XPRVDU(NCVDU, 1,0)
-      IF (NCHARS .GE. 79) THEN
-       KK = KK + 1
-       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(9X,A)')  CLINE(KK:NCHARS)
-          WRITE ( CMON, '(9X,A)') CLINE(KK:NCHARS)
-          CALL XPRVDU(NCVDU, 1,0)
-      ENDIF
+c      KK = MIN0 ( 78, NCHARS)
+c      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(1X,A)')  CLINE(1:KK)
+c         WRITE ( CMON, '(1X,A)') CLINE(1:KK)
+c         CALL XPRVDU(NCVDU, 1,0)
+c      IF (NCHARS .GE. 79) THEN
+c       KK = KK + 1
+c       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(9X,A)')  CLINE(KK:NCHARS)
+c          WRITE ( CMON, '(9X,A)') CLINE(KK:NCHARS)
+c          CALL XPRVDU(NCVDU, 1,0)
+c      ENDIF
       GOTO 1000
       END
 C
