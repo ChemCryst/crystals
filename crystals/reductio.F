@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.40  2008/12/14 17:03:17  djw
+C Enable the centric reflections to be identified and counted
+C
 C Revision 1.39  2009/07/24 14:00:20  djw
 C Un-fix patch to avoid controlled warnings - can be done in the script
 C
@@ -1323,7 +1326,8 @@ C------- FRIEDEL NOT USED
       endif
 cdjwjun09 assume Friedel used if list is type 7 (we dont
 c have access to the IFRIED variable on SYST)
-      if (iuln .eq. 7) then
+cdjwapr2010 - dont fiddle with List 30 if values already set
+      if ((iuln .eq. 7) .and. (store(l30dr+4) .le. zero)) then
             STORE(L30DR+4) = FLOAT(N6W)
             STORE(L30DR+5) = WORK(25)
       endif
