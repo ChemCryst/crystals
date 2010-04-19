@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.97  2010/01/05 14:45:14  djw
+C Fix silly wrror in NWDT and NWAT
+C
 C Revision 1.96  2009/12/24 09:56:40  djw
 C Remove diagnostic printdistangl.fpp
 C
@@ -493,8 +496,9 @@ C
 C  LEVEL   CONTROLS LISTING LEVEL
 C            -1 OFF
 C             0 LOW
-C             1 HIGH
+C             1 MEDIUM
 C             2 HIGH
+C             3 DEBUG
 C
 C  IULN    THE INPUT LIST TYPE.
 C  IRDUS     TYPE OF RADIUS TO USE
@@ -7210,7 +7214,8 @@ C -- Copy data down.
      1    'Breaking bond from ',ISTORE(INFO51),NINT(STORE(INFO51+1)),
      1               ' to ',ISTORE(INFO52),NINT(STORE(INFO52+1))
 C            CALL XPRVDU(NCVDU, 1,0)
-             IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON( 1)(:)
+             IF ((ISSPRT .EQ. 0) .AND. (LEVEL.EQ.3))
+     1       WRITE(NCWU, '(A)') CMON( 1)(:)
             IF ( KM41B .NE. M41B ) THEN
                CALL XMOVE(STORE(M41B),STORE(KM41B),MD41B)
             END IF
