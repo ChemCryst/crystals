@@ -5,12 +5,12 @@
 % EVALUATE TWINNED = FALSE                                                      
 % EVALUATE NOINI5 = FALSE                                                       
 % VARIABLE LOGICAL SCRIPTEXT                                                    
-% VARIABLE LOGICAL LCONTOUR LSECTION COLLECTNEW LPRINT                               
+% VARIABLE LOGICAL LCONTOUR LSECTION COLLECTNEW LPRINT                          
 % VARIABLE LOGICAL PEAKCHANGE REDRAW XFCALLED                                   
 % VARIABLE INTEGER DOSCALE DOCALC DOMAP NPEAKS IMAP IWEI N5O N10 N5N            
 % VARIABLE INTEGER DOPEAKS DOCOLLECT MTYPE DOALL DOXPR                          
-% VARIABLE INTEGER F67
-% EVALUATE LPRINT = FALSE                                                          
+% VARIABLE INTEGER F67                                                          
+% EVALUATE LPRINT = FALSE                                                       
 %%                                                                              
 %% The variables needed by XQUESTIO                                             
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
@@ -41,9 +41,9 @@
 %   EVALUATE MTYPE = VALUE                                                      
 %  END IF                                                                       
 %%                                                                              
-%% CHECK IF LIST 5 XISTS                                                      
-%  IF ( EXISTS 5 .GE. 1 ) THEN                                                 
-%    copy '#script xdelq'                                                         
+%% CHECK IF LIST 5 XISTS                                                        
+%  IF ( EXISTS 5 .GE. 1 ) THEN                                                  
+%    copy '#script xdelq'                                                       
 %  END IF                                                                       
 %%                                                                              
 %%                                                                              
@@ -96,7 +96,7 @@
 ^^WI     @ 1,3 DROPDOWN XFLIST INFORM=YES                                       
 ^^WI           ADDTOLIST 'F-Obs' 'Difference' '2Fo-Fc'                          
 ^^WI                     'F-Calc' 'Optimal' 'Fo-Patterson'                      
-^^WI                     'Fc-Patterson' 'NULL'                                  
+^^WI                     'Fc-Patterson' 'Delta-Patt' 'NULL'                                  
 ^^WI     @ 1,5 STATIC TEXT1 'weights:'                                          
 ^^WI     @ 1,7 DROPDOWN XWLIST                                                  
 ^^WI           ADDTOLIST 'None' 'Sim' 'List-6' 'NULL'                           
@@ -138,7 +138,7 @@
 ^^WI      @ 2,1 RADIOBUTTON XMMCE 'Save MCE file'                               
 ^^WI      @ 1,3 RADIOBUTTON XMLOU 'Save Mapview file'                           
 ^^WI      @ 2,3 RADIOBUTTON XMNON 'No map output' STATE=ON                      
-^^WI      @ 3,1 RADIOBUTTON XLIST 'Print Map' STATE=OFF  
+^^WI      @ 3,1 RADIOBUTTON XLIST 'Print Map' STATE=OFF                         
 ^^WI     }                                                                      
 ^^WI     @ 3,1 BUTTON BSETMAP '&Set Map Ranges...'                              
 ^^WI   }                                                                        
@@ -157,7 +157,7 @@
 % GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                  
 % CASE VALUE                                                                    
 %   BLOCK           %XFLIST Change default peak height?%                        
-%       VERIFY 1 2 3 4 5 6 7                                                    
+%       VERIFY 1 2 3 4 5 6 7 8                                                    
 %       GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                            
 %       IF PEAKCHANGE .EQ. FALSE THEN                                           
 %           IF VALUE .EQ. 2 THEN                                                
@@ -197,7 +197,7 @@
 %       EVALUATE DOCALC = VALUE                                                 
 %% map type                                                                     
 ^^??    XFLIST SELECTED                                                         
-%       VERIFY 1 2 3 4 5 6 7                                                    
+%       VERIFY 1 2 3 4 5 6 7 8                                                   
 %       GET SILENT FINAL NOSTORE ABBREVIATED ' '                                
 %       EVALUATE IMAP = VALUE                                                   
 %% map weight                                                                   
@@ -250,19 +250,20 @@
 %         END IF                                                                
 %        END IF                                                                 
 %       END IF                                                                  
-^^??      XLIST STATE
+^^??      XLIST STATE                                                           
 %         GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
 %         IF VALUE .EQ. 1 THEN                                                  
-%          EVALUATE LPRINT = TRUE
+%          EVALUATE LPRINT = TRUE                                               
 %         ELSE                                                                  
-%          EVALUATE LPRINT = FALSE
+%          EVALUATE LPRINT = FALSE                                              
 %         END IF                                                                
-
+                                                                                
 ^^WI    DISPOSE FOURIER                                                         
 ^^CR                                                                            
 %%                                                                              
 %%djw - check that map is not a Patterson                                       
-%       IF ( IMAP .LE. 5 ) THEN                                                 
+%% disable check (was le 5)
+%       IF ( IMAP .LE. 8 ) THEN                                                 
 %        EVALUATE F67 = 6                                                       
 %%                                                                              
 %         COPY '#SCRIPT SFLS67'                                                 
@@ -309,13 +310,16 @@
 %       ELSE IF IMAP .EQ. 6 THEN                                                
 %           EVALUATE MAPTYPE = 'FO-PAT'                                         
 %           INSERT 'FO-PAT'                                                     
+%       ELSE IF IMAP .EQ. 7 THEN                                                
+%           EVALUATE MAPTYPE = 'Fc-PAT'                                         
+%           INSERT 'Fc-PAT'                                                     
 %       ELSE                                                                    
-%           EVALUATE MAPTYPE = 'FC-PAT'                                         
-%           INSERT 'FC-PAT'                                                     
-%       END IF   
-%       IF LPRINT .EQ. TRUE THEN
-%           INSERT 'PRINT=YES'
-%       END IF                                                               
+%           EVALUATE MAPTYPE = 'FoSq'                                         
+%           INSERT 'FoSq'                                                     
+%       END IF                                                                  
+%       IF LPRINT .EQ. TRUE THEN                                                
+%           INSERT 'PRINT=YES'                                                  
+%       END IF                                                                  
 %       IF DOMAP .EQ. 3 THEN                                                    
 %           BLOCK                                                               
 %              ON ERROR REPEAT                                                  
