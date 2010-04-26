@@ -4,7 +4,7 @@
 %  VARIABLE LOGICAL SERR                                                        
 %  VARIABLE REAL CRITER                                                         
 %  EVALUATE SERR = TRUE                                                         
-%  EVALUATE CRITER = 999.9                                                      
+%  EVALUATE CRITER = 99999                                                      
 %  VARIABLE INTEGER IPLOT IPUNCH L5SER L5NEW 
 %  VARIABLE CHARACTER CPLOT CPUNCH                                                
 %  EVALUATE IPLOT = 0                                                           
