@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.59  2010/04/26 15:05:02  djw
+c Update group occupancy, Uiso and FLAG for dummy atoms.  Lots of bits cleared out of XRGRDS, XRGPLA XRGPLG and a small bit added to XRGCLC.
+c
 c Revision 1.58  2009/06/03 10:33:01  djw
 c Preserve the original occupation number etc in REPLACE, KEEP, AUGMENT
 c
@@ -1723,7 +1726,7 @@ crats        CALL XMOVE (STORE(INDUIJ+1),STORE(INDATM+7),6)
         IF(STORE(INDATM+13) .LE. ZERO) THEN
             STORE(INDATM+2) = GPOCC
             STORE(INDATM+3) = 1
-            STORE(INDATM+7) = 0.5
+            STORE(INDATM+7) = 0.0501
         ENDIF
       END DO
  
