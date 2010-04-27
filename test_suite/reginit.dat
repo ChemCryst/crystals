@@ -1,4 +1,25 @@
 #set print off
+#TITLE 12241009    Compound X                      
+#LIST 1
+real a =       11.1709    b =      19.1475    c =       13.0203
+cont alpha =   90.0000    beta =  105.4849    gamma =   90.0000
+END
+#LIST 31
+AMULT  0.00001000
+MATRIX   V(11)=     0.004000 V(22)=     0.025000 V(33)=     0.036000
+CONTINUE V(44)=     0.000000 V(55)=     0.000000 V(66)=     0.000000
+END
+#SPACEGROUP
+SYMBOL p 1    
+END
+#LIST 13
+CONDITIONS WAVELENGTH =  0.71073
+END
+#COMPOSITION
+content  C 28.00  H 44.00  N 4.00  O 12.00 
+SCATTERING CRYSDIR:script/scatt.dat
+PROPERTIES CRYSDIR:script/propwin.dat
+END
 #
 # Punched on 26/04/10 at 14:41:14
 #
