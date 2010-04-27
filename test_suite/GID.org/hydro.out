@@ -280,11 +280,11 @@ H33 C(14) C(11) C(10)
  List now contains    32 atoms
 Bonds: Update required - List5 length change
 #FINI                                                                                                                                                                                                                                                           
- Physical reads        117 Physical writes        222 Cache hits       5805
- Cache hit distribution     4426     326     205      67      24      83
- Cache hit distribution       68      18      37     127      65      41
- Cache hit distribution       30      42      36      36      62      21
- Cache hit distribution       26      17      28      13       5       2
+ Physical reads        116 Physical writes        222 Cache hits       5756
+ Cache hit distribution     4423     318     205      59      69      37
+ Cache hit distribution       69      46      70      94      33      27
+ Cache hit distribution       38      42      45      40      42      21
+ Cache hit distribution       20      21      27       6       3       1
 
 
           : Job ends ok       with     0 warnings and     0 errors

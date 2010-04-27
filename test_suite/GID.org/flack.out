@@ -289,7 +289,7 @@ Mean C-C su =   0.0000
 
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.0000
                                The rms (shift/su)  =       0.0000660
-                            The mean abs(shift/su) =       0.2444721
+                            The mean abs(shift/su) =       0.0000660
  The largest (shift/esd) =  0.000066, for Parameter    1,                      
 All cycle   1       0.00           100.          0.489E-01
 All cycle   2       0.00           100.          0.490E-01
@@ -474,7 +474,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  LARGE     1           1           2.00282         0.00      0.33194          6.03                          POLARITY
  Sum of the squares of the ratio (Shift/e.s.d.) =         36.4052
                                The rms (shift/su)  =       6.0336690
-                            The mean abs(shift/su) =       6.2781410
+                            The mean abs(shift/su) =       6.0336690
  The largest (shift/esd) =  6.033669, for Parameter    1, POLARITY
 All cycle   1       0.00           100.           4.30    
 All cycle   2       0.00           100.           4.02    
@@ -604,7 +604,7 @@ Mean C-C su =   0.0000
 
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.2051
                                The rms (shift/su)  =       0.4528415
-                            The mean abs(shift/su) =       6.7309823
+                            The mean abs(shift/su) =       0.4528415
  The largest (shift/esd) =  0.452841, for Parameter    1, POLARITY
 All cycle   1       0.00           100.          0.487E-01
 All cycle   2       0.00           100.          0.490E-01
@@ -786,7 +786,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.0597
                                The rms (shift/su)  =       0.2444061
-                            The mean abs(shift/su) =       6.9753885
+                            The mean abs(shift/su) =       0.2444061
  The largest (shift/esd) =  0.244406, for Parameter    1, POLARITY
 All cycle   1       0.00           100.          0.491E-01
 All cycle   2       0.00           100.          0.491E-01
@@ -942,7 +942,7 @@ Mean C-C su =   0.0000
 
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.0000
                                The rms (shift/su)  =       0.0000660
-                            The mean abs(shift/su) =       6.9754543
+                            The mean abs(shift/su) =       0.0000660
  The largest (shift/esd) =  0.000066, for Parameter    1, POLARITY
 All cycle   1       0.00           100.          0.489E-01
 All cycle   2       0.00           100.          0.490E-01
@@ -1143,7 +1143,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  LARGE     1           1           2.00282         0.00      0.33194          6.03                          POLARITY
  Sum of the squares of the ratio (Shift/e.s.d.) =         36.4052
                                The rms (shift/su)  =       6.0336690
-                            The mean abs(shift/su) =      13.0091228
+                            The mean abs(shift/su) =       6.0336690
  The largest (shift/esd) =  6.033669, for Parameter    1, POLARITY
 All cycle   1       0.00           100.           4.30    
 All cycle   2       0.00           100.           4.02    
@@ -1291,7 +1291,7 @@ Mean C-C su =   0.0000
 
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.2051
                                The rms (shift/su)  =       0.4528415
-                            The mean abs(shift/su) =      13.4619646
+                            The mean abs(shift/su) =       0.4528415
  The largest (shift/esd) =  0.452841, for Parameter    1, POLARITY
 All cycle   1       0.00           100.          0.487E-01
 All cycle   2       0.00           100.          0.490E-01
@@ -1478,7 +1478,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  LARGE     1           1          -0.00099         0.00      0.00405         -0.24                          POLARITY
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.0597
                                The rms (shift/su)  =       0.2444061
-                            The mean abs(shift/su) =      13.7063704
+                            The mean abs(shift/su) =       0.2444061
  The largest (shift/esd) =  0.244406, for Parameter    1, POLARITY
 All cycle   1       0.00           100.          0.491E-01
 All cycle   2       0.00           100.          0.491E-01
@@ -1635,7 +1635,7 @@ Mean C-C su =   0.0000
 
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.0000
                                The rms (shift/su)  =       0.0000660
-                            The mean abs(shift/su) =      13.7064362
+                            The mean abs(shift/su) =       0.0000660
  The largest (shift/esd) =  0.000066, for Parameter    1, POLARITY
 All cycle   1       0.00           100.          0.489E-01
 All cycle   2       0.00           100.          0.490E-01
@@ -1836,7 +1836,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  LARGE     1           1          -2.00282         0.00      0.33194         -6.03                          POLARITY
  Sum of the squares of the ratio (Shift/e.s.d.) =         36.4052
                                The rms (shift/su)  =       6.0336695
-                            The mean abs(shift/su) =      19.7401047
+                            The mean abs(shift/su) =       6.0336695
  The largest (shift/esd) =  6.033669, for Parameter    1, POLARITY
 All cycle   1       0.00           100.           4.30    
 All cycle   2       0.00           100.           4.02    
@@ -1989,7 +1989,7 @@ Mean C-C su =   0.0000
  LARGE     1           1           0.00183         0.00      0.00403          0.45                          POLARITY
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.2052
                                The rms (shift/su)  =       0.4529521
-                            The mean abs(shift/su) =      20.1930561
+                            The mean abs(shift/su) =       0.4529521
  The largest (shift/esd) =  0.452952, for Parameter    1, POLARITY
 All cycle   1       0.00           100.          0.487E-01
 All cycle   2       0.00           100.          0.490E-01
@@ -2176,7 +2176,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  LARGE     1           1          -0.00093         0.00      0.00181         -0.51                          ENANTIO 
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.2608
                                The rms (shift/su)  =       0.5106685
-                            The mean abs(shift/su) =      20.7037239
+                            The mean abs(shift/su) =       0.5106685
  The largest (shift/esd) =  0.510669, for Parameter    1, ENANTIO
 All cycle   1       0.00           100.          0.491E-01
 All cycle   2       0.00           100.          0.491E-01
@@ -2334,7 +2334,7 @@ Mean C-C su =   0.0000
 
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.0000
                                The rms (shift/su)  =       0.0001485
-                            The mean abs(shift/su) =      20.7038727
+                            The mean abs(shift/su) =       0.0001485
  The largest (shift/esd) =  0.000148, for Parameter    1, ENANTIO
 All cycle   1       0.00           100.          0.488E-01
 All cycle   2       0.00           100.          0.490E-01
@@ -2535,7 +2535,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  LARGE     1           1          -0.99453         0.00      0.14850         -6.70                          ENANTIO 
  Sum of the squares of the ratio (Shift/e.s.d.) =         44.8523
                                The rms (shift/su)  =       6.6971893
-                            The mean abs(shift/su) =      27.4010620
+                            The mean abs(shift/su) =       6.6971893
  The largest (shift/esd) =  6.697189, for Parameter    1, ENANTIO
 All cycle   1       0.00           100.           4.30    
 All cycle   2       0.00           100.           4.02    
@@ -2687,7 +2687,7 @@ Mean C-C su =   0.0000
  LARGE     1           1          -0.00640         0.01      0.00204         -3.13                          ENANTIO 
  Sum of the squares of the ratio (Shift/e.s.d.) =          9.7958
                                The rms (shift/su)  =       3.1298268
-                            The mean abs(shift/su) =      30.5308895
+                            The mean abs(shift/su) =       3.1298268
  The largest (shift/esd) =  3.129827, for Parameter    1, ENANTIO
 All cycle   1       0.00           100.          0.547E-01
 All cycle   2       0.00           100.          0.554E-01
@@ -2897,7 +2897,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  S/ESD     1           1           0.01089         0.00      0.00195          5.58        CL     1 Z       
  Sum of the squares of the ratio (Shift/e.s.d.) =         31.0921
                                The rms (shift/su)  =       5.5760312
-                            The mean abs(shift/su) =      36.1069221
+                            The mean abs(shift/su) =       5.5760312
  The largest (shift/esd) =  5.576031, for Parameter    1, CL1Z
 All cycle   1       0.00           100.           16.1    
 All cycle   2       0.00           100.           18.7    
@@ -3054,7 +3054,7 @@ Mean C-C su =   0.0000
  S/ESD     1           1           0.00724         0.66      0.00116          6.24        CL     1 Z       
  Sum of the squares of the ratio (Shift/e.s.d.) =         38.9379
                                The rms (shift/su)  =       6.2400250
-                            The mean abs(shift/su) =      42.3469467
+                            The mean abs(shift/su) =       6.2400250
  The largest (shift/esd) =  6.240025, for Parameter    1, CL1Z
 All cycle   1       0.00           100.           6.43    
 All cycle   2       0.00           100.           7.52    
@@ -3216,7 +3216,7 @@ Mean C-C su =   0.0000
  S/ESD     1           1           0.00182         0.25      0.00027          6.67        CL     1 Z       
  Sum of the squares of the ratio (Shift/e.s.d.) =         44.4948
                                The rms (shift/su)  =       6.6704388
-                            The mean abs(shift/su) =      49.0173874
+                            The mean abs(shift/su) =       6.6704388
  The largest (shift/esd) =  6.670439, for Parameter    1, CL1Z
 All cycle   1       0.00           100.           1.22    
 All cycle   2       0.00           100.           1.44    
@@ -3373,7 +3373,7 @@ Mean C-C su =   0.0000
  S/ESD     1           1           0.00006         0.03      0.00001          4.61        CL     1 Z       
  Sum of the squares of the ratio (Shift/e.s.d.) =         21.2582
                                The rms (shift/su)  =       4.6106634
-                            The mean abs(shift/su) =      53.6280518
+                            The mean abs(shift/su) =       4.6106634
  The largest (shift/esd) =  4.610663, for Parameter    1, CL1Z
 All cycle   1       0.00           100.          0.651E-01
 All cycle   2       0.00           100.          0.663E-01
@@ -3593,7 +3593,7 @@ Refining     2 parameters in    1 block :       23 elements in the LS matrix.
  S/ESD     2           2           0.01089         0.00      0.00198          5.51        CL     1 Z       
  Sum of the squares of the ratio (Shift/e.s.d.) =         30.3841
                                The rms (shift/su)  =       3.8976994
-                            The mean abs(shift/su) =      29.5730782
+                            The mean abs(shift/su) =       2.7590528
  The largest (shift/esd) =  5.512176, for Parameter    2, CL1Z
 All cycle   1       0.00           100.           16.1    
 All cycle   2       0.00           100.           18.6    
@@ -3751,7 +3751,7 @@ Mean C-C su =   0.0000
  S/ESD     2           2           0.00724         0.66      0.00117          6.17        CL     1 Z       
  Sum of the squares of the ratio (Shift/e.s.d.) =         38.0930
                                The rms (shift/su)  =       4.3642287
-                            The mean abs(shift/su) =      32.7186813
+                            The mean abs(shift/su) =       3.1456027
  The largest (shift/esd) =  6.170776, for Parameter    2, CL1Z
 All cycle   1       0.00           100.           6.42    
 All cycle   2       0.00           100.           7.52    
@@ -3913,7 +3913,7 @@ Mean C-C su =   0.0000
  S/ESD     2           2           0.00181         0.25      0.00028          6.57        CL     1 Z       
  Sum of the squares of the ratio (Shift/e.s.d.) =         43.4749
                                The rms (shift/su)  =       4.6623445
-                            The mean abs(shift/su) =      36.2825050
+                            The mean abs(shift/su) =       3.5638208
  The largest (shift/esd) =  6.569921, for Parameter    2, CL1Z
 All cycle   1       0.00           100.           1.23    
 All cycle   2       0.00           100.           1.44    
@@ -4070,7 +4070,7 @@ Mean C-C su =   0.0000
  S/ESD     2           2           0.00006         0.03      0.00001          4.52        CL     1 Z       
  Sum of the squares of the ratio (Shift/e.s.d.) =         20.9029
                                The rms (shift/su)  =       3.2328680
-                            The mean abs(shift/su) =      38.8994331
+                            The mean abs(shift/su) =       2.6169260
  The largest (shift/esd) =  4.515118, for Parameter    2, CL1Z
 All cycle   1       0.00           100.          0.651E-01
 All cycle   2       0.00           100.          0.662E-01
@@ -4164,11 +4164,11 @@ Inter cycle   4       0.00          0.100E+16      0.334
 Mean C-C su =   0.0000
 #CYCLENDS                                                                                                                                                                                                                                                       
 #FINI                                                                                                                                                                                                                                                           
- Physical reads       2300 Physical writes       5664 Cache hits     130831
- Cache hit distribution   103808    8085    3254    1603    1699    1503
- Cache hit distribution      713     353    1019     934     762     596
- Cache hit distribution     1016     884     235     249     360     561
- Cache hit distribution      613     427     443     566     665     483
+ Physical reads       2124 Physical writes       5664 Cache hits     130667
+ Cache hit distribution   103698    7985    3180    1526    2585     975
+ Cache hit distribution      527     679     922     871     629     981
+ Cache hit distribution      764     634     345     262     365     735
+ Cache hit distribution      398     503     490     529     633     451
 
 
           : Job ends ok       with     0 warnings and     0 errors

@@ -84,7 +84,7 @@ Space group symbol is   P    -4   3    N
  Systematic absence            3.    3.    3.         1.3        0.2         0.        0.
  Systematic absence            4.    4.    1.         1.3        0.1         0.        0.
  Systematic absence            4.    4.    3.         1.5        0.1         0.        0.
- Systematic absence            5.    0.    0.        -0.5        0.7       -10.        0.
+ Systematic absence            5.    0.    0.        -0.5        0.7         0.        0.
  Systematic absence            5.    1.    1.         1.3        0.1         0.        0.
  Systematic absence            5.    2.    2.         0.7        0.4         0.        0.
  Systematic absence            5.    3.    3.         0.8        0.3         0.        0.
@@ -100,9 +100,9 @@ Space group symbol is   P    -4   3    N
  Systematic absence            7.    2.    2.         1.4        0.2         0.        0.
  Systematic absence            7.    3.    3.         0.9        0.5         0.        0.
  Systematic absence            7.    4.    4.         1.1        0.4         0.        0.
- Systematic absence            7.    5.    5.        -0.9        0.7       -10.        0.
+ Systematic absence            7.    5.    5.        -0.9        0.7         0.        0.
  Systematic absence            7.    6.    6.         0.4        0.9         0.        0.
- Systematic absence            7.    7.    1.        -0.7        0.9       -10.        0.
+ Systematic absence            7.    7.    1.        -0.7        0.9         0.        0.
  Systematic absence            7.    7.    3.         1.1        0.3         0.        0.
  Systematic absence            7.    7.    5.         1.3        0.4         0.        0.
  Systematic absence            7.    7.    7.         1.0        2.0         0.        0.
@@ -114,25 +114,25 @@ Space group symbol is   P    -4   3    N
  Systematic absence            9.    1.    1.         1.4        0.2         0.        0.
  Systematic absence            9.    2.    2.         0.9        0.7         0.        0.
  Systematic absence            9.    3.    3.         0.8        0.8         0.        0.
- Systematic absence            9.    4.    4.        -0.9        1.2       -10.        0.
- Systematic absence            9.    5.    5.        -1.0        0.6       -10.        0.
+ Systematic absence            9.    4.    4.        -0.9        1.2         0.        0.
+ Systematic absence            9.    5.    5.        -1.0        0.6         0.        0.
  Systematic absence            9.    6.    6.         1.1        0.7         0.        0.
  Systematic absence            9.    7.    7.         2.2        0.8         0.        0.
  Systematic absence            9.    9.    1.         0.9        1.9         0.        0.
- Systematic absence            9.    9.    3.        -0.3        2.1       -10.        0.
- Systematic absence            9.    9.    5.        -0.6        2.3       -10.        0.
- Systematic absence           10.   10.    1.        -0.5        4.2       -10.        0.
+ Systematic absence            9.    9.    3.        -0.3        2.1         0.        0.
+ Systematic absence            9.    9.    5.        -0.6        2.3         0.        0.
+ Systematic absence           10.   10.    1.        -0.5        4.2         0.        0.
  Systematic absence           11.    0.    0.         3.5        0.7         0.        0.
- Systematic absence           11.    1.    1.        -0.7        1.4       -10.        0.
+ Systematic absence           11.    1.    1.        -0.7        1.4         0.        0.
  Systematic absence           11.    2.    2.         1.6        0.4         0.        0.
  Systematic absence           11.    3.    3.         0.3        2.1         0.        0.
  Systematic absence           11.    4.    4.         1.3        0.8         0.        0.
  Systematic absence           11.    5.    5.         0.4        2.4         0.        0.
- Systematic absence           11.    6.    6.        -1.1        1.4       -10.        0.
- Systematic absence           13.    0.    0.        -1.2        1.4       -10.        0.
+ Systematic absence           11.    6.    6.        -1.1        1.4         0.        0.
+ Systematic absence           13.    0.    0.        -1.2        1.4         0.        0.
  Systematic absence           13.    1.    1.         0.3        2.2         0.        0.
  Systematic absence           13.    2.    2.         1.4        0.9         0.        0.
- Systematic absence           13.    3.    3.        -0.7        3.2       -10.        0.
+ Systematic absence           13.    3.    3.        -0.7        3.2         0.        0.
  Systematic absence           13.    4.    4.         1.9        1.0         0.        0.
  The updated reflections are now on UNIT 52
   Disc file on unit   1 extended by     1 records 
@@ -586,7 +586,7 @@ Mean C-C su =   0.0000
 
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.0003
                                The rms (shift/su)  =       0.0039610
-                            The mean abs(shift/su) =       0.0938130
+                            The mean abs(shift/su) =       0.0030949
  The largest (shift/esd) =  0.009136, for Parameter    3, GA1U[22]
 All cycle   1       0.00           100.           3.58    
 All cycle   2       0.00           100.           4.14    
@@ -797,7 +797,7 @@ Mean C-C su =   0.0000
  LARGE    16          16          -0.42847    -15011.64      0.11848         -3.62        C      1 SIZE    
  Sum of the squares of the ratio (Shift/e.s.d.) =        195.9886
                                The rms (shift/su)  =       3.4998980
-                            The mean abs(shift/su) =       2.5962472
+                            The mean abs(shift/su) =       2.5024343
  The largest (shift/esd) =  7.668805, for Parameter    7, O1Y
 All cycle   1       0.00           100.           11.9    
 All cycle   2       0.00           100.           12.6    
@@ -971,7 +971,7 @@ Mean C-C su =   0.0000
  LARGE    15          15          -0.27697        -1.81      0.08802         -3.15        C      1 U[ISO]  
  Sum of the squares of the ratio (Shift/e.s.d.) =        209.8792
                                The rms (shift/su)  =       3.6218023
-                            The mean abs(shift/su) =       4.8738885
+                            The mean abs(shift/su) =       2.2776411
  The largest (shift/esd) =  9.821123, for Parameter    7, O1Y
 All cycle   1       0.00           100.           6.55    
 All cycle   2       0.00           100.           6.81    
@@ -1155,7 +1155,7 @@ Mean C-C su =   0.0000
  S/ESD    15          15           0.02806        -0.10      0.00551          5.09        C      1 U[ISO]  
  Sum of the squares of the ratio (Shift/e.s.d.) =         56.1650
                                The rms (shift/su)  =       1.8735826
-                            The mean abs(shift/su) =       6.1459088
+                            The mean abs(shift/su) =       1.2720205
  The largest (shift/esd) =  5.089657, for Parameter   15, C1U[11]
 All cycle   1       0.00           100.           4.33    
 All cycle   2       0.00           100.           4.69    
@@ -1341,7 +1341,7 @@ Mean C-C su =   0.0000
  SRATIO   16          16          -0.01809         4.22      0.02154         -0.84        C      1 SIZE    
  Sum of the squares of the ratio (Shift/e.s.d.) =          4.3291
                                The rms (shift/su)  =       0.5201619
-                            The mean abs(shift/su) =       6.3943124
+                            The mean abs(shift/su) =       0.2484025
  The largest (shift/esd) =  1.836822, for Parameter   15, C1U[11]
 All cycle   1       0.00           100.           3.66    
 All cycle   2       0.00           100.           4.17    
@@ -1526,7 +1526,7 @@ Mean C-C su =   0.0000
 
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.0871
                                The rms (shift/su)  =       0.0737797
-                            The mean abs(shift/su) =       6.4266181
+                            The mean abs(shift/su) =       0.0323054
  The largest (shift/esd) =  0.267923, for Parameter   16, C1U[22]
 All cycle   1       0.00           100.           3.58    
 All cycle   2       0.00           100.           4.14    
@@ -1706,7 +1706,7 @@ Mean C-C su =   0.0000
 
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.0002
                                The rms (shift/su)  =       0.0031413
-                            The mean abs(shift/su) =       6.4281478
+                            The mean abs(shift/su) =       0.0015294
  The largest (shift/esd) =  0.010901, for Parameter   15, C1U[11]
 All cycle   1       0.00           100.           3.58    
 All cycle   2       0.00           100.           4.14    
@@ -1975,7 +1975,7 @@ Space group symbol is   P    -4   3    N
  Systematic absence            3.    3.    3.         1.3        0.2         0.        0.
  Systematic absence            4.    4.    1.         1.3        0.1         0.        0.
  Systematic absence            4.    4.    3.         1.5        0.1         0.        0.
- Systematic absence            5.    0.    0.        -0.5        0.7       -10.        0.
+ Systematic absence            5.    0.    0.        -0.5        0.7         0.        0.
  Systematic absence            5.    1.    1.         1.3        0.1         0.        0.
  Systematic absence            5.    2.    2.         0.7        0.4         0.        0.
  Systematic absence            5.    3.    3.         0.8        0.3         0.        0.
@@ -1991,9 +1991,9 @@ Space group symbol is   P    -4   3    N
  Systematic absence            7.    2.    2.         1.4        0.2         0.        0.
  Systematic absence            7.    3.    3.         0.9        0.5         0.        0.
  Systematic absence            7.    4.    4.         1.1        0.4         0.        0.
- Systematic absence            7.    5.    5.        -0.9        0.7       -10.        0.
+ Systematic absence            7.    5.    5.        -0.9        0.7         0.        0.
  Systematic absence            7.    6.    6.         0.4        0.9         0.        0.
- Systematic absence            7.    7.    1.        -0.7        0.9       -10.        0.
+ Systematic absence            7.    7.    1.        -0.7        0.9         0.        0.
  Systematic absence            7.    7.    3.         1.1        0.3         0.        0.
  Systematic absence            7.    7.    5.         1.3        0.4         0.        0.
  Systematic absence            7.    7.    7.         1.0        2.0         0.        0.
@@ -2005,25 +2005,25 @@ Space group symbol is   P    -4   3    N
  Systematic absence            9.    1.    1.         1.4        0.2         0.        0.
  Systematic absence            9.    2.    2.         0.9        0.7         0.        0.
  Systematic absence            9.    3.    3.         0.8        0.8         0.        0.
- Systematic absence            9.    4.    4.        -0.9        1.2       -10.        0.
- Systematic absence            9.    5.    5.        -1.0        0.6       -10.        0.
+ Systematic absence            9.    4.    4.        -0.9        1.2         0.        0.
+ Systematic absence            9.    5.    5.        -1.0        0.6         0.        0.
  Systematic absence            9.    6.    6.         1.1        0.7         0.        0.
  Systematic absence            9.    7.    7.         2.2        0.8         0.        0.
  Systematic absence            9.    9.    1.         0.9        1.9         0.        0.
- Systematic absence            9.    9.    3.        -0.3        2.1       -10.        0.
- Systematic absence            9.    9.    5.        -0.6        2.3       -10.        0.
- Systematic absence           10.   10.    1.        -0.5        4.2       -10.        0.
+ Systematic absence            9.    9.    3.        -0.3        2.1         0.        0.
+ Systematic absence            9.    9.    5.        -0.6        2.3         0.        0.
+ Systematic absence           10.   10.    1.        -0.5        4.2         0.        0.
  Systematic absence           11.    0.    0.         3.5        0.7         0.        0.
- Systematic absence           11.    1.    1.        -0.7        1.4       -10.        0.
+ Systematic absence           11.    1.    1.        -0.7        1.4         0.        0.
  Systematic absence           11.    2.    2.         1.6        0.4         0.        0.
  Systematic absence           11.    3.    3.         0.3        2.1         0.        0.
  Systematic absence           11.    4.    4.         1.3        0.8         0.        0.
  Systematic absence           11.    5.    5.         0.4        2.4         0.        0.
- Systematic absence           11.    6.    6.        -1.1        1.4       -10.        0.
- Systematic absence           13.    0.    0.        -1.2        1.4       -10.        0.
+ Systematic absence           11.    6.    6.        -1.1        1.4         0.        0.
+ Systematic absence           13.    0.    0.        -1.2        1.4         0.        0.
  Systematic absence           13.    1.    1.         0.3        2.2         0.        0.
  Systematic absence           13.    2.    2.         1.4        0.9         0.        0.
- Systematic absence           13.    3.    3.        -0.7        3.2       -10.        0.
+ Systematic absence           13.    3.    3.        -0.7        3.2         0.        0.
  Systematic absence           13.    4.    4.         1.9        1.0         0.        0.
  The updated reflections are now on UNIT 52
   Disc file on unit   1 extended by    30 records 
@@ -2294,7 +2294,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  S/ESD     1           1          -0.00350         0.00      0.00234         -1.49                          SCALE   
  Sum of the squares of the ratio (Shift/e.s.d.) =          4.8865
                                The rms (shift/su)  =       0.5526338
-                            The mean abs(shift/su) =       6.7945900
+                            The mean abs(shift/su) =       0.3664415
  The largest (shift/esd) =  1.494495, for Parameter    1, SCALE
 All cycle   1       0.00           100.           3.88    
 All cycle   2       0.00           100.           4.70    
@@ -2479,7 +2479,7 @@ Mean C-C su =   0.0000
  SRATIO   14          14          -0.00005        15.89      0.00177         -0.03        O      1 U[12]   
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.0063
                                The rms (shift/su)  =       0.0198963
-                            The mean abs(shift/su) =       6.8105249
+                            The mean abs(shift/su) =       0.0159357
  The largest (shift/esd) =  0.046631, for Parameter   11, O1U[33]
 All cycle   1       0.00           100.           3.88    
 All cycle   2       0.00           100.           4.57    
@@ -2689,7 +2689,7 @@ Mean C-C su =   0.0000
  LARGE    16          16          -0.19603       716.62      0.08345         -2.35        C      1 SIZE    
  Sum of the squares of the ratio (Shift/e.s.d.) =        158.1370
                                The rms (shift/su)  =       3.1438134
-                            The mean abs(shift/su) =       8.9179239
+                            The mean abs(shift/su) =       2.1073971
  The largest (shift/esd) =  9.238016, for Parameter    8, O1Z
 All cycle   1       0.00           100.           11.5    
 All cycle   2       0.00           100.           12.6    
@@ -2865,7 +2865,7 @@ Mean C-C su =   0.0000
  S/ESD    15          15          -0.03233        -1.15      0.02698         -1.20        C      1 U[ISO]  
  Sum of the squares of the ratio (Shift/e.s.d.) =         87.3980
                                The rms (shift/su)  =       2.3371723
-                            The mean abs(shift/su) =      10.6799240
+                            The mean abs(shift/su) =       1.7619983
  The largest (shift/esd) =  5.369246, for Parameter   11, O1U[33]
 All cycle   1       0.00           100.           5.06    
 All cycle   2       0.00           100.           5.47    
@@ -3049,7 +3049,7 @@ Mean C-C su =   0.0000
  S/ESD    13          13          -0.00220        -0.26      0.00168         -1.31        O      1 U[13]   
  Sum of the squares of the ratio (Shift/e.s.d.) =         11.8077
                                The rms (shift/su)  =       0.8590598
-                            The mean abs(shift/su) =      11.2851524
+                            The mean abs(shift/su) =       0.6052283
  The largest (shift/esd) =  2.063965, for Parameter   11, O1U[33]
 All cycle   1       0.00           100.           4.13    
 All cycle   2       0.00           100.           4.69    
@@ -3233,7 +3233,7 @@ Mean C-C su =   0.0000
 
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.0220
                                The rms (shift/su)  =       0.0370772
-                            The mean abs(shift/su) =      11.3108597
+                            The mean abs(shift/su) =       0.0257062
  The largest (shift/esd) =  0.077630, for Parameter   15, C1U[11]
 All cycle   1       0.00           100.           3.89    
 All cycle   2       0.00           100.           4.57    
@@ -3419,7 +3419,7 @@ Mean C-C su =   0.0000
 
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.0006
                                The rms (shift/su)  =       0.0060838
-                            The mean abs(shift/su) =      11.3148088
+                            The mean abs(shift/su) =       0.0039505
  The largest (shift/esd) =  0.018025, for Parameter   15, C1U[11]
 All cycle   1       0.00           100.           3.89    
 All cycle   2       0.00           100.           4.57    
@@ -3687,7 +3687,7 @@ Space group symbol is   P    -4   3    N
  Systematic absence            3.    3.    3.         1.3        0.2         0.        0.
  Systematic absence            4.    4.    1.         1.3        0.1         0.        0.
  Systematic absence            4.    4.    3.         1.5        0.1         0.        0.
- Systematic absence            5.    0.    0.        -0.5        0.7       -10.        0.
+ Systematic absence            5.    0.    0.        -0.5        0.7         0.        0.
  Systematic absence            5.    1.    1.         1.3        0.1         0.        0.
  Systematic absence            5.    2.    2.         0.7        0.4         0.        0.
  Systematic absence            5.    3.    3.         0.8        0.3         0.        0.
@@ -3703,9 +3703,9 @@ Space group symbol is   P    -4   3    N
  Systematic absence            7.    2.    2.         1.4        0.2         0.        0.
  Systematic absence            7.    3.    3.         0.9        0.5         0.        0.
  Systematic absence            7.    4.    4.         1.1        0.4         0.        0.
- Systematic absence            7.    5.    5.        -0.9        0.7       -10.        0.
+ Systematic absence            7.    5.    5.        -0.9        0.7         0.        0.
  Systematic absence            7.    6.    6.         0.4        0.9         0.        0.
- Systematic absence            7.    7.    1.        -0.7        0.9       -10.        0.
+ Systematic absence            7.    7.    1.        -0.7        0.9         0.        0.
  Systematic absence            7.    7.    3.         1.1        0.3         0.        0.
  Systematic absence            7.    7.    5.         1.3        0.4         0.        0.
  Systematic absence            7.    7.    7.         1.0        2.0         0.        0.
@@ -3717,25 +3717,25 @@ Space group symbol is   P    -4   3    N
  Systematic absence            9.    1.    1.         1.4        0.2         0.        0.
  Systematic absence            9.    2.    2.         0.9        0.7         0.        0.
  Systematic absence            9.    3.    3.         0.8        0.8         0.        0.
- Systematic absence            9.    4.    4.        -0.9        1.2       -10.        0.
- Systematic absence            9.    5.    5.        -1.0        0.6       -10.        0.
+ Systematic absence            9.    4.    4.        -0.9        1.2         0.        0.
+ Systematic absence            9.    5.    5.        -1.0        0.6         0.        0.
  Systematic absence            9.    6.    6.         1.1        0.7         0.        0.
  Systematic absence            9.    7.    7.         2.2        0.8         0.        0.
  Systematic absence            9.    9.    1.         0.9        1.9         0.        0.
- Systematic absence            9.    9.    3.        -0.3        2.1       -10.        0.
- Systematic absence            9.    9.    5.        -0.6        2.3       -10.        0.
- Systematic absence           10.   10.    1.        -0.5        4.2       -10.        0.
+ Systematic absence            9.    9.    3.        -0.3        2.1         0.        0.
+ Systematic absence            9.    9.    5.        -0.6        2.3         0.        0.
+ Systematic absence           10.   10.    1.        -0.5        4.2         0.        0.
  Systematic absence           11.    0.    0.         3.5        0.7         0.        0.
- Systematic absence           11.    1.    1.        -0.7        1.4       -10.        0.
+ Systematic absence           11.    1.    1.        -0.7        1.4         0.        0.
  Systematic absence           11.    2.    2.         1.6        0.4         0.        0.
  Systematic absence           11.    3.    3.         0.3        2.1         0.        0.
  Systematic absence           11.    4.    4.         1.3        0.8         0.        0.
  Systematic absence           11.    5.    5.         0.4        2.4         0.        0.
- Systematic absence           11.    6.    6.        -1.1        1.4       -10.        0.
- Systematic absence           13.    0.    0.        -1.2        1.4       -10.        0.
+ Systematic absence           11.    6.    6.        -1.1        1.4         0.        0.
+ Systematic absence           13.    0.    0.        -1.2        1.4         0.        0.
  Systematic absence           13.    1.    1.         0.3        2.2         0.        0.
  Systematic absence           13.    2.    2.         1.4        0.9         0.        0.
- Systematic absence           13.    3.    3.        -0.7        3.2       -10.        0.
+ Systematic absence           13.    3.    3.        -0.7        3.2         0.        0.
  Systematic absence           13.    4.    4.         1.9        1.0         0.        0.
  The updated reflections are now on UNIT 52
   Disc file on unit   1 extended by     1 records 
@@ -4000,7 +4000,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
 
  Sum of the squares of the ratio (Shift/e.s.d.) =          1.8246
                                The rms (shift/su)  =       0.3376931
-                            The mean abs(shift/su) =      11.5368462
+                            The mean abs(shift/su) =       0.2220373
  The largest (shift/esd) =  0.947385, for Parameter    1, C1U[22]
 All cycle   1       0.00           100.           3.56    
 All cycle   2       0.00           100.           8.53    
@@ -4180,7 +4180,7 @@ Mean C-C su =   0.0000
 
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.0036
                                The rms (shift/su)  =       0.0149277
-                            The mean abs(shift/su) =      11.5483723
+                            The mean abs(shift/su) =       0.0115258
  The largest (shift/esd) =  0.030688, for Parameter    1, C1U[22]
 All cycle   1       0.00           100.           3.63    
 All cycle   2       0.00           100.           8.41    
@@ -4391,7 +4391,7 @@ Mean C-C su =   0.0000
  LARGE    16          16          -0.33325     17937.30      0.10910         -3.05        C      1 SIZE    
  Sum of the squares of the ratio (Shift/e.s.d.) =        176.5195
                                The rms (shift/su)  =       3.3215158
-                            The mean abs(shift/su) =      13.9439955
+                            The mean abs(shift/su) =       2.3956218
  The largest (shift/esd) =  6.647728, for Parameter    6, O1X
 All cycle   1       0.00           100.           13.2    
 All cycle   2       0.00           100.           23.5    
@@ -4576,7 +4576,7 @@ Mean C-C su =   0.0000
  LARGE    16          16           0.10994        -0.33      0.05025          2.19        C      1 SIZE    
  Sum of the squares of the ratio (Shift/e.s.d.) =        125.8716
                                The rms (shift/su)  =       2.8048124
-                            The mean abs(shift/su) =      16.1093445
+                            The mean abs(shift/su) =       2.1653485
  The largest (shift/esd) =  6.175194, for Parameter    9, O1U[11]
 All cycle   1       0.00           100.           5.70    
 All cycle   2       0.00           100.           12.5    
@@ -4782,7 +4782,7 @@ Mean C-C su =   0.0000
  S/ESD    16          16           0.03712         0.34      0.03282          1.13        C      1 SIZE    
  Sum of the squares of the ratio (Shift/e.s.d.) =         42.6746
                                The rms (shift/su)  =       1.6331449
-                            The mean abs(shift/su) =      17.3837814
+                            The mean abs(shift/su) =       1.2744356
  The largest (shift/esd) =  3.540165, for Parameter    9, O1U[11]
 All cycle   1       0.00           100.           4.28    
 All cycle   2       0.00           100.           9.58    
@@ -4972,7 +4972,7 @@ Mean C-C su =   0.0000
  S/ESD    14          14           0.00163        -0.29      0.00155          1.05        O      1 U[12]   
  Sum of the squares of the ratio (Shift/e.s.d.) =          4.0066
                                The rms (shift/su)  =       0.5004117
-                            The mean abs(shift/su) =      17.7490425
+                            The mean abs(shift/su) =       0.3652614
  The largest (shift/esd) =  1.053082, for Parameter    9, O1U[11]
 All cycle   1       0.00           100.           3.79    
 All cycle   2       0.00           100.           8.51    
@@ -5158,7 +5158,7 @@ Mean C-C su =   0.0000
 
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.0230
                                The rms (shift/su)  =       0.0378926
-                            The mean abs(shift/su) =      17.7804832
+                            The mean abs(shift/su) =       0.0314401
  The largest (shift/esd) =  0.066517, for Parameter    9, O1U[11]
 All cycle   1       0.00           100.           3.63    
 All cycle   2       0.00           100.           8.42    
@@ -5338,7 +5338,7 @@ Mean C-C su =   0.0000
 
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.0004
                                The rms (shift/su)  =       0.0050339
-                            The mean abs(shift/su) =      17.7839317
+                            The mean abs(shift/su) =       0.0034474
  The largest (shift/esd) =  0.012983, for Parameter   15, C1U[11]
 All cycle   1       0.00           100.           3.64    
 All cycle   2       0.00           100.           8.41    
@@ -5606,7 +5606,7 @@ Space group symbol is   P    -4   3    N
  Systematic absence            3.    3.    3.         1.3        0.2         0.        0.
  Systematic absence            4.    4.    1.         1.3        0.1         0.        0.
  Systematic absence            4.    4.    3.         1.5        0.1         0.        0.
- Systematic absence            5.    0.    0.        -0.5        0.7       -10.        0.
+ Systematic absence            5.    0.    0.        -0.5        0.7         0.        0.
  Systematic absence            5.    1.    1.         1.3        0.1         0.        0.
  Systematic absence            5.    2.    2.         0.7        0.4         0.        0.
  Systematic absence            5.    3.    3.         0.8        0.3         0.        0.
@@ -5622,9 +5622,9 @@ Space group symbol is   P    -4   3    N
  Systematic absence            7.    2.    2.         1.4        0.2         0.        0.
  Systematic absence            7.    3.    3.         0.9        0.5         0.        0.
  Systematic absence            7.    4.    4.         1.1        0.4         0.        0.
- Systematic absence            7.    5.    5.        -0.9        0.7       -10.        0.
+ Systematic absence            7.    5.    5.        -0.9        0.7         0.        0.
  Systematic absence            7.    6.    6.         0.4        0.9         0.        0.
- Systematic absence            7.    7.    1.        -0.7        0.9       -10.        0.
+ Systematic absence            7.    7.    1.        -0.7        0.9         0.        0.
  Systematic absence            7.    7.    3.         1.1        0.3         0.        0.
  Systematic absence            7.    7.    5.         1.3        0.4         0.        0.
  Systematic absence            7.    7.    7.         1.0        2.0         0.        0.
@@ -5636,25 +5636,25 @@ Space group symbol is   P    -4   3    N
  Systematic absence            9.    1.    1.         1.4        0.2         0.        0.
  Systematic absence            9.    2.    2.         0.9        0.7         0.        0.
  Systematic absence            9.    3.    3.         0.8        0.8         0.        0.
- Systematic absence            9.    4.    4.        -0.9        1.2       -10.        0.
- Systematic absence            9.    5.    5.        -1.0        0.6       -10.        0.
+ Systematic absence            9.    4.    4.        -0.9        1.2         0.        0.
+ Systematic absence            9.    5.    5.        -1.0        0.6         0.        0.
  Systematic absence            9.    6.    6.         1.1        0.7         0.        0.
  Systematic absence            9.    7.    7.         2.2        0.8         0.        0.
  Systematic absence            9.    9.    1.         0.9        1.9         0.        0.
- Systematic absence            9.    9.    3.        -0.3        2.1       -10.        0.
- Systematic absence            9.    9.    5.        -0.6        2.3       -10.        0.
- Systematic absence           10.   10.    1.        -0.5        4.2       -10.        0.
+ Systematic absence            9.    9.    3.        -0.3        2.1         0.        0.
+ Systematic absence            9.    9.    5.        -0.6        2.3         0.        0.
+ Systematic absence           10.   10.    1.        -0.5        4.2         0.        0.
  Systematic absence           11.    0.    0.         3.5        0.7         0.        0.
- Systematic absence           11.    1.    1.        -0.7        1.4       -10.        0.
+ Systematic absence           11.    1.    1.        -0.7        1.4         0.        0.
  Systematic absence           11.    2.    2.         1.6        0.4         0.        0.
  Systematic absence           11.    3.    3.         0.3        2.1         0.        0.
  Systematic absence           11.    4.    4.         1.3        0.8         0.        0.
  Systematic absence           11.    5.    5.         0.4        2.4         0.        0.
- Systematic absence           11.    6.    6.        -1.1        1.4       -10.        0.
- Systematic absence           13.    0.    0.        -1.2        1.4       -10.        0.
+ Systematic absence           11.    6.    6.        -1.1        1.4         0.        0.
+ Systematic absence           13.    0.    0.        -1.2        1.4         0.        0.
  Systematic absence           13.    1.    1.         0.3        2.2         0.        0.
  Systematic absence           13.    2.    2.         1.4        0.9         0.        0.
- Systematic absence           13.    3.    3.        -0.7        3.2       -10.        0.
+ Systematic absence           13.    3.    3.        -0.7        3.2         0.        0.
  Systematic absence           13.    4.    4.         1.9        1.0         0.        0.
   Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
@@ -5931,7 +5931,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  S/ESD     8           8           0.00060         0.00      0.00055          1.09        O      1 Z       
  Sum of the squares of the ratio (Shift/e.s.d.) =          8.2114
                                The rms (shift/su)  =       0.7163867
-                            The mean abs(shift/su) =      18.3099861
+                            The mean abs(shift/su) =       0.5260549
  The largest (shift/esd) =  1.965649, for Parameter    1, SCALE
 All cycle   1       0.00           100.           3.88    
 All cycle   2       0.00           100.           9.82    
@@ -6111,7 +6111,7 @@ Mean C-C su =   0.0000
 
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.0246
                                The rms (shift/su)  =       0.0392369
-                            The mean abs(shift/su) =      18.3409195
+                            The mean abs(shift/su) =       0.0309319
  The largest (shift/esd) =  0.094650, for Parameter   14, O1U[12]
 All cycle   1       0.00           100.           3.97    
 All cycle   2       0.00           100.           9.36    
@@ -6296,7 +6296,7 @@ Mean C-C su =   0.0000
 
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.0006
                                The rms (shift/su)  =       0.0061825
-                            The mean abs(shift/su) =      18.3454456
+                            The mean abs(shift/su) =       0.0045275
  The largest (shift/esd) =  0.014003, for Parameter    8, O1Z
 All cycle   1       0.00           100.           3.98    
 All cycle   2       0.00           100.           9.36    
@@ -6506,7 +6506,7 @@ Mean C-C su =   0.0000
  LARGE    16          16           0.09099     -5316.01      0.08747          1.04        C      1 SIZE    
  Sum of the squares of the ratio (Shift/e.s.d.) =         80.2188
                                The rms (shift/su)  =       2.2391233
-                            The mean abs(shift/su) =      19.7912579
+                            The mean abs(shift/su) =       1.4458127
  The largest (shift/esd) =  6.769428, for Parameter    1, SCALE
 All cycle   1       0.00           100.           22.5    
 All cycle   2       0.00           100.           58.6    
@@ -6681,7 +6681,7 @@ Mean C-C su =   0.0000
  LARGE    16          16           0.07875         0.87      0.15303          0.51        C      1 SIZE    
  Sum of the squares of the ratio (Shift/e.s.d.) =         89.0359
                                The rms (shift/su)  =       2.3589709
-                            The mean abs(shift/su) =      21.4740181
+                            The mean abs(shift/su) =       1.6827623
  The largest (shift/esd) =  5.808882, for Parameter    7, O1Y
 All cycle   1       0.00           100.           7.17    
 All cycle   2       0.00           100.           17.5    
@@ -6859,7 +6859,7 @@ Mean C-C su =   0.0000
  LARGE    16          16           3.48590        44.27      0.66295          5.26        C      1 SIZE    
  Sum of the squares of the ratio (Shift/e.s.d.) =         59.0330
                                The rms (shift/su)  =       1.9208238
-                            The mean abs(shift/su) =      22.7005463
+                            The mean abs(shift/su) =       1.2265316
  The largest (shift/esd) =  5.258175, for Parameter   16, C1U[22]
 All cycle   1       0.00           100.           4.56    
 All cycle   2       0.00           100.           10.9    
@@ -7051,7 +7051,7 @@ Mean C-C su =   0.0000
  LARGE    16          16          -0.14663        -0.04      0.06911         -2.12        C      1 SIZE    
  Sum of the squares of the ratio (Shift/e.s.d.) =         13.9195
                                The rms (shift/su)  =       0.9327198
-                            The mean abs(shift/su) =      23.1767445
+                            The mean abs(shift/su) =       0.4761974
  The largest (shift/esd) =  2.952606, for Parameter   15, C1U[11]
 All cycle   1       0.00           100.           4.48    
 All cycle   2       0.00           100.           11.0    
@@ -7249,7 +7249,7 @@ Mean C-C su =   0.0000
  LARGE    16          16          -0.41192         2.81      0.14703         -2.80        C      1 SIZE    
  Sum of the squares of the ratio (Shift/e.s.d.) =          9.7690
                                The rms (shift/su)  =       0.7813858
-                            The mean abs(shift/su) =      23.6021442
+                            The mean abs(shift/su) =       0.4253997
  The largest (shift/esd) =  2.801545, for Parameter   16, C1U[22]
 All cycle   1       0.00           100.           4.39    
 All cycle   2       0.00           100.           10.7    
@@ -7431,7 +7431,7 @@ Mean C-C su =   0.0000
  LARGE    16          16           0.19063        -0.46      0.12467          1.53        C      1 SIZE    
  Sum of the squares of the ratio (Shift/e.s.d.) =          3.1822
                                The rms (shift/su)  =       0.4459688
-                            The mean abs(shift/su) =      23.8367805
+                            The mean abs(shift/su) =       0.2346339
  The largest (shift/esd) =  1.529133, for Parameter   16, C1U[22]
 All cycle   1       0.00           100.           4.33    
 All cycle   2       0.00           100.           10.6    
@@ -7611,7 +7611,7 @@ Mean C-C su =   0.0000
 
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.0287
                                The rms (shift/su)  =       0.0423380
-                            The mean abs(shift/su) =      23.8702049
+                            The mean abs(shift/su) =       0.0334268
  The largest (shift/esd) =  0.102413, for Parameter    1, C1U[22]
 All cycle   1       0.00           100.           4.30    
 All cycle   2       0.00           100.           10.6    
@@ -7797,7 +7797,7 @@ Mean C-C su =   0.0000
  SRATIO   15          15           0.00074        22.21      0.02555          0.03        C      1 U[ISO]  
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.0010
                                The rms (shift/su)  =       0.0078029
-                            The mean abs(shift/su) =      23.8743706
+                            The mean abs(shift/su) =       0.0041665
  The largest (shift/esd) =  0.029077, for Parameter   15, C1U[11]
 All cycle   1       0.00           100.           4.30    
 All cycle   2       0.00           100.           10.6    
@@ -7998,11 +7998,11 @@ Mean C-C su =   0.0000
 
 
 #FINI                                                                                                                                                                                                                                                           
- Physical reads       5285 Physical writes       9232 Cache hits     203528
- Cache hit distribution   161729   14713    6079    2921    1889    2421
- Cache hit distribution     1488     578     782    1125    1445     567
- Cache hit distribution      959    1177     438     330     666     534
- Cache hit distribution      547     423     501     725     835     656
+ Physical reads       4920 Physical writes       9232 Cache hits     203406
+ Cache hit distribution   161618   14575    6091    2417    3546    1584
+ Cache hit distribution     1298     886     801     965    1068    1486
+ Cache hit distribution      786     484     447     395     681     648
+ Cache hit distribution      465     458     618     638     796     655
 
 
           : Job ends ok       with     0 warnings and     0 errors

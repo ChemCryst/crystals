@@ -3811,7 +3811,7 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
  List 24 Serial    3 Original   3 Address 456631 Size     32 Write flag  0 Date                          From Disc
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.7149
                                The rms (shift/su)  =       0.3451747
-                            The mean abs(shift/su) =      25.1855774
+                            The mean abs(shift/su) =       0.2952510
  The largest (shift/esd) =  0.678038, for Parameter    1, IR1X
  List 11 Serial    4 Original   4 Address 456538 Size     93               Date                            To Disc
 All cycle   1       0.00           100.           16.7    
@@ -4883,7 +4883,7 @@ Refining   261 parameters in    1 block :    34729 elements in the LS matrix.
  S/ESD   245         245           0.00146         0.00      0.00114          1.28        C    431 Y       
  Sum of the squares of the ratio (Shift/e.s.d.) =       1816.7158
                                The rms (shift/su)  =       2.6382942
-                            The mean abs(shift/su) =       1.5268803
+                            The mean abs(shift/su) =       0.9479015
  The largest (shift/esd) = 21.229563, for Parameter  219, C414Z
  List 11 Serial    4 Original   4 Address 452962 Size  34518               Date                            To Disc
 All cycle   1       0.00           100.           16.7    
@@ -5652,7 +5652,7 @@ Mean C-C su =   0.0168
  S/ESD   224         224          -0.00164         0.41      0.00091         -1.79        C    416 Y       
  Sum of the squares of the ratio (Shift/e.s.d.) =        441.5985
                                The rms (shift/su)  =       1.3007492
-                            The mean abs(shift/su) =       1.9922789
+                            The mean abs(shift/su) =       0.4653989
  The largest (shift/esd) = 11.772340, for Parameter  219, C414Z
  List 11 Serial    8 Original   8 Address 452962 Size  34518               Date                            To Disc
 All cycle   1       0.00           100.           17.2    
@@ -6597,11 +6597,11 @@ Mean C-C su =   0.0141
  List  4 Serial    1 Original   1 Address   3347 Size     34 Write flag  0 Date                          From Disc
  List 13 Serial    1 Original   1 Address  16145 Size     54 Write flag  0 Date                          From Disc
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads      13744 Physical writes      11297 Cache hits     208925
- Cache hit distribution   189415   13506    2169     437     267     626
- Cache hit distribution      190     120     217     280     206     155
- Cache hit distribution      165     182     163     160     251      99
- Cache hit distribution       62      42      44      51      46      72
+ Physical reads      13693 Physical writes      11297 Cache hits     208847
+ Cache hit distribution   189389   13472    2136     459     445     455
+ Cache hit distribution      193     223     199     289     113     201
+ Cache hit distribution      157     139     189     117     211     125
+ Cache hit distribution       58      37      52      39      74      75
 
 
           : Job ends ok       with     1 warning  and     0 errors

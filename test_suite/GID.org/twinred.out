@@ -312,11 +312,11 @@ Upating List 13 for twinned data
  The updated reflections are now on UNIT 53
   Disc file on unit   1 extended by     1 records 
 #FINI                                                                                                                                                                                                                                                           
- Physical reads        182 Physical writes        425 Cache hits      10605
- Cache hit distribution     8668     571     230     161      84      94
- Cache hit distribution       37      37      30      63      69     121
- Cache hit distribution       32      32      67      54      75      18
- Cache hit distribution       69      41      14       3      18      17
+ Physical reads        170 Physical writes        425 Cache hits      10568
+ Cache hit distribution     8668     555     242     157     122      50
+ Cache hit distribution       46      39      43      83      41      93
+ Cache hit distribution       51      53      56      43      71      38
+ Cache hit distribution       47      16      10      10      19      15
 
 
           : Job ends ok       with     0 warnings and     0 errors

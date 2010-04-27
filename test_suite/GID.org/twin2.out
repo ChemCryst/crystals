@@ -1162,7 +1162,7 @@ Slope=       -0.001 Intercept =       1.235 C-Coef=      -0.062
  S/ESD    36          36          -0.00070         2.96      0.00056         -1.27        F      3 Y       
  Sum of the squares of the ratio (Shift/e.s.d.) =         20.5771
                                The rms (shift/su)  =       0.6838580
-                            The mean abs(shift/su) =       1.8258648
+                            The mean abs(shift/su) =       0.5449081
  The largest (shift/esd) =  1.617455, for Parameter   35, F3X
 All cycle   1       0.00           100.           2.74    
 All cycle   2       0.00           100.           3.79    
@@ -1371,7 +1371,7 @@ Mean C-C su =   0.0000
  SRATIO   21          21           0.00074        -8.22      0.00225          0.33        F      1 U[22]   
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.5676
                                The rms (shift/su)  =       0.1135757
-                            The mean abs(shift/su) =       1.9109511
+                            The mean abs(shift/su) =       0.0850867
  The largest (shift/esd) =  0.328908, for Parameter   21, F1U[22]
 All cycle   1       0.00           100.           2.76    
 All cycle   2       0.00           100.           3.62    
@@ -1505,11 +1505,11 @@ Inter cycle   4       0.00          0.100E+16       24.9
 Mean C-C su =   0.0000
 #CYCLENDS                                                                                                                                                                                                                                                       
 #FINI                                                                                                                                                                                                                                                           
- Physical reads        728 Physical writes       1288 Cache hits      50777
- Cache hit distribution    44430    2199     710     394     302     342
- Cache hit distribution      147     127     158     246     199     139
- Cache hit distribution      148     138     142     155     116     124
- Cache hit distribution       96      83     116      98      88      80
+ Physical reads        707 Physical writes       1288 Cache hits      50678
+ Cache hit distribution    44410    2165     696     415     471     186
+ Cache hit distribution      161     168     148     255     174     186
+ Cache hit distribution       91     121     141     106     142     120
+ Cache hit distribution       79     116      81     103      76      67
 
 
           : Job ends ok       with     0 warnings and     0 errors

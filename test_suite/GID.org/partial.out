@@ -790,7 +790,7 @@ Mean C-C su =   0.0298
  SRATIO  238         238          -0.00202         4.46      0.00355         -0.57        C    121 Z       
  Sum of the squares of the ratio (Shift/e.s.d.) =         27.7898
                                The rms (shift/su)  =       0.3053759
-                            The mean abs(shift/su) =       0.9902131
+                            The mean abs(shift/su) =       0.2153351
  The largest (shift/esd) =  1.361398, for Parameter    1, SCALE
 All cycle   1       0.00           100.           6.40    
 All cycle   2       0.00           100.           7.84    
@@ -1149,7 +1149,7 @@ Mean C-C su =   0.0280
  SRATIO  292         292           0.00023       -23.09      0.00198          0.12        N    102 Z       
  Sum of the squares of the ratio (Shift/e.s.d.) =          4.8995
                                The rms (shift/su)  =       0.1282233
-                            The mean abs(shift/su) =       1.0736347
+                            The mean abs(shift/su) =       0.0834219
  The largest (shift/esd) =  0.563293, for Parameter  230, C120U[11]
 All cycle   1       0.00           100.           6.31    
 All cycle   2       0.00           100.           7.81    
@@ -1524,7 +1524,7 @@ Mean C-C su =   0.0283
  SRATIO  298         298          -0.00006        -4.08      0.00629         -0.01        N    102 U[12]   
  Sum of the squares of the ratio (Shift/e.s.d.) =          1.9991
                                The rms (shift/su)  =       0.0819056
-                            The mean abs(shift/su) =       1.1208541
+                            The mean abs(shift/su) =       0.0472191
  The largest (shift/esd) =  0.439791, for Parameter  230, C120U[11]
 All cycle   1       0.00           100.           6.32    
 All cycle   2       0.00           100.           7.81    
@@ -2652,7 +2652,7 @@ Mean C-C su =   0.0284
  SRATIO  298         298           0.00043        -6.69      0.00604          0.07        N    102 U[12]   
  Sum of the squares of the ratio (Shift/e.s.d.) =          4.2846
                                The rms (shift/su)  =       0.1199074
-                            The mean abs(shift/su) =       1.2085873
+                            The mean abs(shift/su) =       0.0877320
  The largest (shift/esd) =  0.545829, for Parameter    1, SCALE
 All cycle   1       0.00           100.           6.32    
 All cycle   2       0.00           100.           14.8    
@@ -3005,7 +3005,7 @@ Mean C-C su =   0.0272
  SRATIO  293         293           0.00012        -3.74      0.00790          0.01        N    102 U[11]   
  Sum of the squares of the ratio (Shift/e.s.d.) =          1.0725
                                The rms (shift/su)  =       0.0599906
-                            The mean abs(shift/su) =       1.2437468
+                            The mean abs(shift/su) =       0.0351592
  The largest (shift/esd) =  0.354950, for Parameter  230, C120U[11]
 All cycle   1       0.00           100.           6.31    
 All cycle   2       0.00           100.           14.8    
@@ -3377,7 +3377,7 @@ Mean C-C su =   0.0273
  SRATIO  298         298          -0.00001        53.02      0.00603          0.00        N    102 U[12]   
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.4822
                                The rms (shift/su)  =       0.0402274
-                            The mean abs(shift/su) =       1.2665118
+                            The mean abs(shift/su) =       0.0227646
  The largest (shift/esd) =  0.250343, for Parameter  230, C120U[11]
 All cycle   1       0.00           100.           6.31    
 All cycle   2       0.00           100.           14.8    
@@ -3744,7 +3744,7 @@ Mean C-C su =   0.0273
  SRATIO  273         273           0.00000         4.85      0.00129          0.00        O    109 Y       
  Sum of the squares of the ratio (Shift/e.s.d.) =          0.2263
                                The rms (shift/su)  =       0.0275546
-                            The mean abs(shift/su) =       1.2812085
+                            The mean abs(shift/su) =       0.0146963
  The largest (shift/esd) =  0.172707, for Parameter  230, C120U[11]
 All cycle   1       0.00           100.           6.31    
 All cycle   2       0.00           100.           14.8    
@@ -4559,11 +4559,11 @@ Mean C-C su =   0.0273
 
 
 #END                                                                                                                                                                                                                                                            
- Physical reads       7596 Physical writes       5747 Cache hits     128218
- Cache hit distribution   117144    4190    1632     552     422     665
- Cache hit distribution       90     211     344     403     242     226
- Cache hit distribution      248     182     336     213     163     121
- Cache hit distribution      156      90     143     156     140     149
+ Physical reads       7529 Physical writes       5747 Cache hits     128118
+ Cache hit distribution   117101    4134    1581     659     699     314
+ Cache hit distribution      201     290     283     386     176     262
+ Cache hit distribution      284     228     273     124     163     118
+ Cache hit distribution      152     119     132     172     148     119
 
 
           : Job ends ok       with     0 warnings and     0 errors

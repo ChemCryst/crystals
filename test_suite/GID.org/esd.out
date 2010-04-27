@@ -1988,7 +1988,7 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
 
  Sum of the squares of the ratio (Shift/e.s.d.) =        335.2959
                                The rms (shift/su)  =       5.0785818
-                            The mean abs(shift/su) =       6.1028728
+                            The mean abs(shift/su) =       3.0676751
  The largest (shift/esd) = 13.418077, for Parameter    1, SCALE
 All cycle   1       0.00           100.           15.9    
 All cycle   2       0.00           100.           15.2    
@@ -2300,11 +2300,11 @@ Mean C-C su =   0.0048
 
   KEY                                                 1             2
 #FINI                                                                                                                                                                                                                                                           
- Physical reads        475 Physical writes        909 Cache hits      23200
- Cache hit distribution    18929    1256     488     292     158     247
- Cache hit distribution      115      87     134     168     187     105
- Cache hit distribution       69     102     105     110      82     135
- Cache hit distribution      136      87      88      57      40      23
+ Physical reads        508 Physical writes        909 Cache hits      23098
+ Cache hit distribution    18913    1217     474     278     324     122
+ Cache hit distribution      109     124     103     232     110     115
+ Cache hit distribution      102      82      84     105      85     112
+ Cache hit distribution      152      95      85      41      20      14
 
 
           : Job ends ok       with     0 warnings and     0 errors
