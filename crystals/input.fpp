@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  2009/11/03 11:17:43  djw
+C Add comments and set up processing for LIST 18, the SMILES string
+C
 C Revision 1.14  2009/10/13 16:40:32  djw
 C Fix typo in old COMMENT card
 C
@@ -319,7 +322,8 @@ C--'XRAY' FORMAT
       RETURN
 C--CAMBRIDGE FORMAT
 7330  CONTINUE
-      CALL XPCH5C(0)
+cdjwapr2010      CALL XPCH5C(0)
+      CALL XPCH5C(1)
       RETURN
 7340  CONTINUE
 C----- 'CHIME' XYZ FORMAT
