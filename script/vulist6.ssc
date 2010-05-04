@@ -1,15 +1,33 @@
 %SCRIPT VULIST6
 %%
-%  VARIABLE LOGICAL ADD25
+%% ADD25 SET IF CALLED FROM ED25.SCP
+%  VARIABLE LOGICAL ADD25 TWINNED
+%  IF ( ADD25 ) THEN
+%    EVALUATE TWINNED = TRUE
+%  ELSE
+%    EVALUATE TWINNED = FALSE
+%  END IF
 %  IF ( EXISTS 6 .NE. 1 ) THEN
 {E No LIST 6 present. Get some reflections from somewhere first.
 %    FINISH
 %  END IF
 %%
+%%
+%% MIGHT BE CALLED DIRECTLY
+% VARIABLE INTEGER ITMP
+% IF ( ( EXISTS 13 ) .EQ. 1 ) THEN
+%   COPY '#GENERALEDIT 13'
+%   COPY 'LOCATE RECORDTYPE=101'
+%   COPY 'TRANSFER FROM OFFSET=1 TO ITMP'
+%   IF ( ITMP .GE. 0 ) THEN
+%     EVALUATE TWINNED = TRUE
+%   END IF
+%   COPY 'END'
+% END IF
 %  COPY '#RELEASE PUNCH SCPLST6.DAT'
 %  ON ERROR CONTINUE
 %  BLOCK
-%   IF ( ADD25 ) THEN
+%   IF ( TWINNED ) THEN
 %    TRANSFER '# This file is not automatically read back into' TO PUNCH
 %    TRANSFER '# CRYSTALS. If you want to manually edit your ' TO PUNCH
 %    TRANSFER '# reflections, you should go back to the original' TO PUNCH
