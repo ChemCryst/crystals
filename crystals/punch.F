@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.51  2009/10/13 16:42:37  djw
+C Change format of Audit Date to keep PLATON happly
+C
 C  LIST 6 PUNCH KEYS
 C           A    B    C    D    E    F    G    H
 C      GOTO (7310,7340,7320,7330,7350,7360,7370,7380 ) ICLASS+2
@@ -429,7 +432,6 @@ C--PUNCH EACH ATOM  -  ONE AT A TIME
 
       IF ( ISPACE .EQ. 0 ) ITRIM = ITRIM + 1
 
-
       IF (J.LT.10) THEN
         WRITE( CATNM (ITRIM:), '(I1)') J
       ELSE IF (J.LT.100) THEN
@@ -437,6 +439,9 @@ C--PUNCH EACH ATOM  -  ONE AT A TIME
       ELSE 
         WRITE( CATNM (ITRIM:), '(I3)') J
       ENDIF
+
+cdjwapr2010
+c      call xcras ( catnm, itemp)
 
       HFIX = 0.0
       IF( (ISTORE(M5A).EQ.KHYD) .OR. (ISTORE(M5A).EQ.KDET))
