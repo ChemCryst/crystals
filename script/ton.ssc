@@ -4,7 +4,7 @@
 %  VARIABLE LOGICAL SERR                                                        
 %  VARIABLE REAL CRITER                                                         
 %  EVALUATE SERR = TRUE                                                         
-%  EVALUATE CRITER = 99999                                                      
+%  EVALUATE CRITER = 99999.                                                      
 %  VARIABLE INTEGER IPLOT IPUNCH L5SER L5NEW 
 %  VARIABLE CHARACTER CPLOT CPUNCH                                                
 %  EVALUATE IPLOT = 0                                                           
@@ -190,7 +190,8 @@
 %   COPY '#RELEASE PUNCH flack-restraint.pch'                                          
 % END IF
 % IF IPLOT .EQ. 0 THEN                                                          
-%   TRANSFER '#TON CRITER= ' // CHARACTER ( CRITER ) // '  PUNCH = ' //   CPUNCH TO CRYSTALS        
+%   TRANSFER '#TON CRITER= ' // CHARACTER ( CRITER ) // '  -
+PUNCH = ' //   CPUNCH TO CRYSTALS        
 %   TRANSFER "END" TO CRYSTALS                                                  
 %       IF IPUNCH = 2 THEN                                                                   
 %         COPY '#RELEASE PUNCH bfile.pch'                                          
@@ -227,7 +228,8 @@
 ^^CR                                                                            
 ^^CO SENDPROGRESSTO _FOFCPR                                                     
 %  LOOP                                                                         
-% TRANSFER '#TON CRITER= ' // CHARACTER ( CRITER ) // ' PLOT=FO PUNCH = ' // CPUNCH TO CRYSTALS   
+% TRANSFER '#TON CRITER= ' // CHARACTER ( CRITER ) // -
+' PLOT=FO PUNCH = ' // CPUNCH TO CRYSTALS   
 % TRANSFER "END" TO CRYSTALS                                                    
 %    VERIFY NPP_BOK OMIT                                                        
 %    GET SILENT NOSTORE FINAL ABBREVIATED '?' 'EXT_BOK'                         
@@ -274,7 +276,8 @@
 ^^CR                                                                            
 ^^CO SENDPROGRESSTO _FOFCPR                                                     
 %  LOOP                                                                         
-% TRANSFER '#TON CRITER= ' // CHARACTER ( CRITER ) // ' PLOT=NPP PUNCH = ' // CPUNCH  TO CRYSTALS  
+% TRANSFER '#TON CRITER= ' // CHARACTER ( CRITER ) // -
+' PLOT=NPP PUNCH = ' // CPUNCH  TO CRYSTALS  
 % TRANSFER "END" TO CRYSTALS                                                    
 %    VERIFY NPP_BOK OMIT                                                        
 %    GET SILENT NOSTORE FINAL ABBREVIATED '?' 'EXT_BOK'                         
