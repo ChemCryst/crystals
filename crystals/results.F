@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.158  2010/04/26 15:11:56  djw
+C Sets UNIT weights for restraints
+C
 C Revision 1.157  2010/03/04 15:14:50  djw
 C Set esd for Flack restriants to sigma(D)
 C
@@ -1539,7 +1542,7 @@ C----- CAPTIONS FOR CIF FILE
      1 '_atom_site_refinement_flags_occupancy'  /
      1 '_atom_site_disorder_assembly'  /
      1 '_atom_site_disorder_group'  /
-     1 '_oxford_atom_site_special_shape' /
+cdjwapr2010     1 '_oxford_atom_site_special_shape' /
      2 '_atom_site_attached_hydrogens' )
 
       ELSE IF (IPCHCO .EQ. 3) THEN    !HEADERS FOR HTML TABLE
@@ -1844,7 +1847,8 @@ C            IST = KCCNEQ (CLINE, 1, ' ')+1
      2      CASDG(1:NASDG)
             CALL XCREMS( CLINE, CLINE, NCHAR)
             write(cline(nchar+1:),'(3(1x,a))')
-     1      cspec(1:),'.'
+cdjwapr10     1      cspec(1:),'.'
+     1      '.'
             CALL XCREMS( CLINE, CLINE, NCHAR)
             WRITE(NCFPU1,'(A)') CLINE(1:NCHAR)
         ENDIF
@@ -1894,7 +1898,9 @@ C
       DIMENSION KDEV(4)
 c----- nspbuf - a buffer for special shape lines
       parameter (nspbuf=5)
-      character *84 cspbuf(nspbuf)
+cdjwapr10      character *84 cspbuf(nspbuf)
+      character *94 cspbuf(nspbuf)
+      character *8 cshape(3)
       CHARACTER *160 CLINE
       CHARACTER *4 CTEM
       CHARACTER *20 CHTML
@@ -1928,6 +1934,11 @@ C
       DATA IALATM /4H     /
 C
 #endif
+cdjwapr10
+      cshape(1)=' Sphere'
+      cshape(2)=' Rod'
+      cshape(3)=' Annulus'
+c
 1450  FORMAT ( // , 2X , 118A1 )
 1460  FORMAT(15X,A6,6X,A4,8X,A5,7X,A5)
 1550  FORMAT ( 2X , 118A1 )
@@ -2188,16 +2199,19 @@ c--- write special shapes to cif file
      7  '# it will generate incorrect formulae, and derived values')
         WRITE( NCFPU1, 3001)
 3001    FORMAT ('loop_'/
-     1 '_atom_site_oxford_special_label'/
-     2 '_atom_site_oxford_special_uiso'/
-     2 '_atom_site_oxford_special_size'/
-     3 '_atom_site_oxford_special_declination'/
-     4 '_atom_site_oxford_special_azimuth')
+     1 '_oxford_atom_site_label'/
+     2 '_oxford_atom_site_special_uiso'/
+     2 '_oxford_atom_site_special_size'/
+     3 '_oxford_atom_site_special_declination'/
+     4 '_oxford_atom_site_special_azimuth'/
+     4 '_oxford_atom_site_special_shape')
 c
         do 3100 j = 1,jspbuf
         read(cspbuf(j), '(i1,a)') iflag,cmon(1)
         call xctrim(cmon(1), nchar)
         if (iflag .eq. 2) write(cmon(1)(nchar+1:),'(a)') ' . . '
+        call xcrems(cmon(1), cmon(1), nchar)
+        write(cmon(1)(nchar+1:),'(a8)') cshape(iflag-1)(:)
         call xcrems(cmon(1), cmon(1), nchar)
         write(ncfpu1,'(a)') cmon(1)(1:nchar)
 3100    continue
@@ -5851,7 +5865,8 @@ C
 
 c      write(ncwu,*)'List 6 total', n6d, store(l30dr), store(l30dr+2),
 c     1 store(l30dr+4)
-        IF (n6d .gt. nint(STORE(L30DR+4))) THEN
+        IF ((n6d .gt. nint(STORE(L30DR+4))) .and. 
+     1     (store(l30dr+2).gt. zero)) THEN
            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(a)') 'Friedels Law used'
 C----- FRIEDELS LAW USED
            I=2
