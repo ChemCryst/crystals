@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.61  2009/10/21 10:39:13  djw
+C Also update list 30 if SCALE done.  This enable the SCRIPTS to make a better guess at the quality of the input model
+C
 C Revision 1.60  2009/07/20 10:35:18  djw
 C Copy low leverage reflctions to the screen
 C
@@ -1708,7 +1711,12 @@ C CHECK IF 'NL' HOLDS THE ELEMENT NUMBER OF THE GIVEN INDICES.
      2                      +STORE(M25+7)*SK+STORE(M25+8)*SL))
             IF ( NM .GE. N25 ) GO TO 19920  ! WE HAVE USED TOO MANY ELEMENTS
             CALL XSFLSX  ! THIS ELEMENT IS OKAY  -  ENTER THE S.F.L.S MAIN LOOP
+
           END DO  ! END OF THIS TWINNED REFLECTION  
+
+          store(m6)=ph  ! restore the nominal indices
+          store(m6+1)=pk
+          store(m6+2)=pl
 
           FCEXT=0.  !  WIND UP AND CALCULATE THE TOTAL VA
           JREF_STACK_PTR=JREF_STACK_START  ! CALCULATE /FC/ AND ITS DERIVATIVES FOR EACH ELEMENT
@@ -1798,7 +1806,7 @@ C--PRINT THIS CONTRIBUTOR
               CALL XADDPD ( A, LJX, JO, JQ, JR) 
             END DO
           END IF
-        END IF
+        END IF  ! end of twinned calculations
 
 C--FINISH OFF THIS REFLECTION  -  COMPUTE THE OVERALL TOTALS
         FCEXT=FC
