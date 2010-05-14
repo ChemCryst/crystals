@@ -63,7 +63,7 @@ CODE FOR KKEY
         ELSE
           kkey = JELEM + ABS(KEY)*10**(INT(1.+LOG10(FLOAT(JELEM))))
         ENDIF
-      write(123,*) '   KKey=', kkey, jelem
+c      write(123,*) '   KKey=', kkey, jelem
       RETURN
       END      
 c
