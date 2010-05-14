@@ -337,7 +337,8 @@ C -CELL
          WRITE (NOUTF,'(a)') 'END'
 C 
 C            scale the variances
-         AMULT=.00001
+c         AMULT=.00001
+         AMULT=.0000001
          SIGA=SIGA*SIGA/AMULT
          SIGB=SIGB*SIGB/AMULT
          SIGC=SIGC*SIGC/AMULT
