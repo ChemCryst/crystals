@@ -119,7 +119,7 @@
 %          END BLOCK                                                            
 %%                                                                              
 %          BLOCK                                         %SHELX HKL% 
-%            COPY '#RELE PUNCH SHELX.HKL'
+%            COPY '#RELE PUNCH SHELXS.HKL'
 %            COPY '#PUNCH 6 F'
 %            COPY 'END'
 %            COPY '#RELE PUNCH BFILE.PCH'
