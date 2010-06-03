@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.81  2009/10/28 16:27:56  djw
+C Add error print to .LIS as well as screen. Correct base address for parameters in DELU (was mistakenly changed in last update) list16.fpp
+C
 C Revision 1.80  2009/07/31 12:44:47  djw
 C Insert a message about inapprpriate weights
 C
@@ -3403,7 +3406,7 @@ C -- SCAN LIST 6 FOR REFLECTIONS
       if (issprt .eq. 0) write(ncwu,'(a)')'I/sig(i) vs resolution'
       mios=0
       smax=0.
-      slim=3.
+      slim=5.
       call outcol(6)
       do i=1,25
             mios=mios+nios(I)
