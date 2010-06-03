@@ -444,7 +444,7 @@
 ^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VRMERGE KEY                               
 ^^PL XAXIS TITLE 'I/sigma(I)'                                                   
 ^^PL YAXIS ZOOM 0 50 TITLE 'Merging R factor(%)'                                
-^^PL YAXISRIGHT TITLE 'Number Of Reflections'                                   
+^^PL YAXISRIGHT TITLE 'Number Of Reflections Output'                                   
 ^^PL NSERIES=2 LENGTH=100                                                       
 ^^PL SERIES 1 SERIESNAME 'Merging R factor'                                     
 ^^PL SERIES 2 SERIESNAME 'Number > given I/sigma(I)' TYPE LINE USERIGHTAXIS     
