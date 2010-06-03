@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2008/10/01 11:06:47  djw
+C Output LIST 6 on scale of Fc for use in PLATON
+C
 C Revision 1.12  2008/03/07 16:09:48  djw
 C changes to help with the correct computation of Fourier maps from twinned crystals.  THe old COPY67 subroutine did not pack the data properly unless the keys were the default keys.  The job is now done
 C
@@ -48,8 +51,8 @@ C put this to good use soon.
 C
 C Revision 1.4  2001/02/26 10:26:48  richard
 C Added changelog to top of file
-
-
+C
+C
 CODE FOR INPUT6
       SUBROUTINE INPUT6
       CALL XSYSDC(-1,1)
@@ -158,6 +161,24 @@ C--NORMAL LIST PRINT
       RETURN
 
 C--LIST PUNCH ROUTINE
+C
+C      A     COMPRESSED PUNCH FORMAT
+C                  XPCH6G(LSTNO,ICLASS)
+C      B     CIF OUTPUT F's
+C                  XPCH6C(LSTNO,0)
+C      C     NORMAL DATA, ONE REFLECTION PRE CARD
+C                  XPCH6S(LSTNO,LSTNO)
+C      D     OBSERVED QUANTITIES ONLY
+C                  XPCH6O(LSTNO)
+C      E     CIF OUTPUT F^2's
+C                  XPCH6C(LSTNO,1)
+C      F     PLAIN SHELX HKL OUTPUT
+C                  XPCH6X(LSTNO,0)
+C      G     SHELX HKL OUTPUT of FC with made up sigmas.
+C                  XPCH6X(LSTNO,1)
+C      H     CIF OUTPUT F^2's  on scale of Fc
+C                  XPCH6C(LSTNO,2)
+C
 7000  CONTINUE
       ITEMP1=NR60
       ITEMP2=NR61
@@ -192,7 +213,7 @@ C           A    B    C    D    E    F    G    H
 72    FORMAT(' Illegal list 6 punch type', i4)
       CALL XERHND ( IERERR )
       RETURN
-C--NORMAL PUNCH FORMAT - A
+C--COMPRESSED PUNCH FORMAT - A
 7310  CONTINUE
       CALL XPCH6G(LSTNO,ICLASS)
       RETURN
