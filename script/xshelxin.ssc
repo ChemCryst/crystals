@@ -1,4 +1,5 @@
 %SCRIPT XSHELXIN                                                                
+%%
 %%                                                                              
 %% Read in a the cell, symm and atoms from a shelx file.                        
 %%                                                                              
@@ -172,19 +173,19 @@
 %                 COPY 'WRITE OVERWRITE=OVERWRITE'                              
 %                 COPY 'END'                                                    
 %              END IF                                                           
-%              GET NOSTORE NOPROMPT REAL ' ' '0.0'                             
+%              GET NOSTORE NOPROMPT REAL ' ' '0.0'                              
 %              EVALUATE SUA = ( VALUE * 1000.0 ) * ( VALUE * 1000.0 )           
-%              GET NOSTORE NOPROMPT REAL ' ' '0.001'                             
+%              GET NOSTORE NOPROMPT REAL ' ' '0.001'                            
 %              EVALUATE SUB = ( VALUE * 1000.0 ) * ( VALUE * 1000.0 )           
-%              GET NOSTORE NOPROMPT REAL ' ' '0.001'                             
+%              GET NOSTORE NOPROMPT REAL ' ' '0.001'                            
 %              EVALUATE SUC = ( VALUE * 1000.0 ) * ( VALUE * 1000.0 )           
 %              GET NOSTORE NOPROMPT REAL ' ' '0.01'                             
 %              EVALUATE SUAL = ( VALUE * 17.45329 ) * ( VALUE * 17.45329 )      
 %              GET NOSTORE NOPROMPT REAL ' ' '0.01'                             
 %              EVALUATE SUBE = ( VALUE * 17.45329 ) * ( VALUE * 17.45329 )      
 %              GET NOSTORE NOPROMPT REAL ' ' '0.01'                             
-%              EVALUATE SUGA = ( VALUE * 17.45329 ) * ( VALUE * 17.45329 ) 
-%            if sua .gt. 0.0 then     
+%              EVALUATE SUGA = ( VALUE * 17.45329 ) * ( VALUE * 17.45329 )      
+%            if sua .gt. 0.0 then                                               
 %              COPY '#LIST 31'                                                  
 %              COPY 'AMULT 0.000001'                                            
 %              COPY 'MATRIX'                                                    
@@ -215,7 +216,7 @@
 %              COPY 'END'                                                       
 %              EVALUATE SFILERR = FALSE                                         
 %              EVALUATE LOOPEND = LOOPCOUNTER                                   
-%            end if
+%            end if                                                             
 %           END IF                                                              
 %         END LOOP                                                              
 %         IF SFILERR .EQ. TRUE THEN                                             
@@ -306,7 +307,7 @@
 %%           EXECUTE SEND                                                       
 %           EXTRACT TRANSFER INPUT                                              
 %           CLEAR                                                               
-%           GET NOSTORE NOPROMPT KEYWORD NULLSTRING                             
+%           GET NOSTORE NOPROMPT KEYWORD NULLSTRING  'None'                        
 %           IF CVALUE .EQ. 'SFAC' THEN                                          
 {R SFAC card found.                                                             
 %% First token is always an element.                                            
@@ -493,17 +494,17 @@
 %%                                                                              
 %%                                                                              
 %          BLOCK                                                                
-%            COPY '#SCRIPT XCENTRE'                                           
-%            COPY '#SCRIPT XRETYPE'                                           
+%            COPY '#SCRIPT XCENTRE'                                             
+%            COPY '#SCRIPT XRETYPE'                                             
 %% Only renumber if importing solution (i.e. Qs).                               
 %            IF LQS .EQ. TRUE THEN                                              
-%              COPY '#SCRIPT XRENUM'                                           
+%              COPY '#SCRIPT XRENUM'                                            
 %            END IF                                                             
 %          END BLOCK                                                            
-%%  Resolve clashes  
-%        COPY '#SCRIPT XRENUMB'                                                           
-%%  RESOLVE H ATOMS
-%        COPY '#SCRIPT HNAM'                                                           
+%%  Resolve clashes                                                             
+%        COPY '#SCRIPT XRENUMB'                                                 
+%%  RESOLVE H ATOMS                                                             
+%        COPY '#SCRIPT HNAM'                                                    
 %%                                                                              
 %          BLOCK                                                                
 %             COPY '#DISTANCES'                                                 
@@ -527,7 +528,7 @@
 %          EVALUATE INITSETUP = TRUE                                            
 %          COPY '#SCRIPT XINLIST6'                                              
 %        END IF                                                                 
-%% initialise the weights
-%          copy '#SCRIPT XWTINI'
+%% initialise the weights                                                       
+%          copy '#SCRIPT XWTINI'                                                
 %        FINISH                                                                 
 %END SCRIPT                                                                     
