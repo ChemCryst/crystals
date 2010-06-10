@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.62  2010/05/06 09:33:04  djw
+C Ensure original reflection indices are maintained in LIST 6 (ancient bug which only shows if elements are of the for 2 or 21 etc)
+C
 C Revision 1.61  2009/10/21 10:39:13  djw
 C Also update list 30 if SCALE done.  This enable the SCRIPTS to make a better guess at the quality of the input model
 C
@@ -1662,13 +1665,14 @@ C--CHECK IF THE PARTIAL CONTRIBUTIONS ARE TO BE ADDED IN
         FO=STORE(M6+3)  ! SET UP /FO/ ETC. FOR THIS REFLECTION
         W=STORE(M6+4)
         SCALEW=SCALEG*W
-
+ 
         NM=0  ! INITIALISE THE HOLDING STACK, DUMP ENTRIES
         NN=0
         JO=NO  ! Point JO back to beginning of PD list.
         JP=NP
 
-        IF(.NOT.TWINNED)THEN   ! CHECK IF THIS IS TWINNED CALCULATION
+C       CHECK IF THIS IS TWINNED CALCULATION
+        IF(.NOT.TWINNED)THEN   ! NOT TWINNED
           NL=0
           CALL XSFLSX
           JREF_STACK_PTR=ISTORE(JREF_STACK_START)
@@ -1691,13 +1695,47 @@ C--CHECK IF THE PARTIAL CONTRIBUTIONS ARE TO BE ADDED IN
           END DO
 
 C CHECK IF 'NL' HOLDS THE ELEMENT NUMBER OF THE GIVEN INDICES.
+c  Generate the principal indices
           M25I=L25I+(NL-1)*MD25I  ! COMPUTE THE INDICES IN THE STANDARD REFERENCE SYSTEM
           SH=STORE(M25I)*PH+STORE(M25I+1)*PK+STORE(M25I+2)*PL
           SK=STORE(M25I+3)*PH+STORE(M25I+4)*PK+STORE(M25I+5)*PL
           SL=STORE(M25I+6)*PH+STORE(M25I+7)*PK+STORE(M25I+8)*PL
+cdjwjun2010
+          ish = nint(sh)
+          isk = nint(sk)
+          isl = nint(sl)
+          sh = float(ish)
+          sk = float(isk)
+          sl = float(isl)
+c  For centred cells, CRYSTALS used the optimisation page 45 Rollett which adds together
+c  the contributions to A from atoms at x and x+1/2 (ie multiplies A by 2)
+c  For a systematic absence it should subtract the contrinution fro x+1/2, ie A=0 etc.
+c  As originally written, the program gets FC > 0 for absences.
+c  This should not matter for untwinned crystals, since the absences should have been removed.
+c  For twins, the second component may overlap with a systematic absence from the first
+c  component so we must check for this an ensure the contribution from the first is zero.
+c  Save G2, the number of non-primitice centrings
+          g2sav = g2
+c  check if the principal refelction is a centring absence
+          IF(N2P .gt. 1)then
+C         CHECK NON-PRIMITIVE CONDITIONS
+          M2P=L2P
+           sysabs: DO I=1,N2P
+            A=ABS(STORE(M2P)*sh+STORE(M2P+1)*sk
+     2       +STORE(M2P+2)*sl)
+            K=INT(A+0.01)
+            IF(A-FLOAT(K) .gt.0.01) then
+                  g2 = 0.0
+
+
+                  exit
+            endif
+            M2P=M2P+3
+           enddo sysabs
+          endif
+c
 
           NK=NJ  ! RESET THE FLAGS FOR THIS GROUP OF TWIN ELEMENTS, e.g. 1234
-
           DO WHILE ( NK .GT. 0 ) ! CHECK IF THERE ARE ANY MORE ELEMENTS TO PROCESS
             LJX=NK      ! FETCH THE NEXT ELEMENT
             NK=NK/10                                           ! e.g. 123
@@ -1711,7 +1749,8 @@ C CHECK IF 'NL' HOLDS THE ELEMENT NUMBER OF THE GIVEN INDICES.
      2                      +STORE(M25+7)*SK+STORE(M25+8)*SL))
             IF ( NM .GE. N25 ) GO TO 19920  ! WE HAVE USED TOO MANY ELEMENTS
             CALL XSFLSX  ! THIS ELEMENT IS OKAY  -  ENTER THE S.F.L.S MAIN LOOP
-
+c restore G2
+          g2 = g2sav
           END DO  ! END OF THIS TWINNED REFLECTION  
 
           store(m6)=ph  ! restore the nominal indices
@@ -3094,6 +3133,7 @@ C T2 is the total number of operators = G2*NOP
 c
 c For efficiency, the formfactor is multiplied by the number of 
 c non-unique operators, G2 before summation over the unique operators
+c  Rollett, page 45
 c
       M3TR=L3TR  
       M3TI=L3TI
