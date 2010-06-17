@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.32  2009/07/20 10:42:41  djw
+C Restore originl extraction of Ratio from packed value
+C
 C Revision 1.31  2009/07/13 08:35:48  djw
 C watch out for -ve Fo values when computing RATIO
 C
@@ -274,7 +277,7 @@ C      COPY THE COLLECTION DETAILS FROM 6 TO 7
        CALL XMOVE(STORE(ICOM07(25)), STORE(ICOM06(25)), MD6DTL*N6DTL)
 C
 C     START WRITING NEW LIST 6
-       WRITE(NCAWU, 120)
+c       WRITE(NCAWU, 120)
        IF (ISSPRT .EQ. 0)  WRITE(NCWU, 120)
 120    FORMAT( ' Creating new reflection list')
 C----- FIND OUT HOW MUCH ROOM WE NEED
@@ -286,7 +289,7 @@ C----- FIND OUT HOW MUCH ROOM WE NEED
         LSTLEN = (LENTOT / IBUF(1)) + 1
         IEXTN =  KDAFRE (NCDFU, -1, LSTLEN)
         IF (ISSPRT .EQ. 0) WRITE(NCWU, 150) IEXTN
-        WRITE(NCAWU, 150) IEXTN
+c        WRITE(NCAWU, 150) IEXTN
 150     FORMAT (/,' Disc file extended by ', I6, ' records')
 C
 C    NOW SET UP LIST 7 FOR OUTPUT
@@ -1222,7 +1225,7 @@ C--TERMINATE THE OUTPUT OF THE LIST
       WRITE (CMON,5100) N6W,N6DEAD
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
-      WRITE (NCAWU,'(A)') CMON(1)(:)
+c      WRITE (NCAWU,'(A)') CMON(1)(:)
 5100  FORMAT (1X,I7,' reflections accepted',5X,I7,' reflections rejected
      1')
 C----- ONLY UPDATE LIST 30 FOR LIST 6 TYPE INPUT
@@ -1256,7 +1259,7 @@ cdjwsep08      IF ((ITYPE6.EQ.5).OR.(IFO.EQ.JFOT(1))) THEN
       IF ((ITYPE6.EQ.5).OR.(IRFT .GE. 0)) THEN
          WRITE (CMON,'(a)') 'Upating List 13 for twinned data'
          CALL XPRVDU (NCVDU,1,0)
-         WRITE (NCAWU,'(a)') CMON(1)
+c         WRITE (NCAWU,'(a)') CMON(1)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
          ISTORE(L13CD+1)=0
          CALL XWLSTD (13,ICOM13,IDIM13,-1,-1)
@@ -1264,7 +1267,7 @@ cdjwsep08      IF ((ITYPE6.EQ.5).OR.(IFO.EQ.JFOT(1))) THEN
          IF (ISTORE(L13CD+1) .EQ. 0 ) THEN
          WRITE (CMON,'(a)') 'Resetting List 13 for un-twinned data'
          CALL XPRVDU (NCVDU,1,0)
-         WRITE (NCAWU,'(a)') CMON(1)
+c         WRITE (NCAWU,'(a)') CMON(1)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
          ISTORE(L13CD+1)=-1
          CALL XWLSTD (13,ICOM13,IDIM13,-1,-1)
