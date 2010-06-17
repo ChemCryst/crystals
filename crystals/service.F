@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.41  2010/03/04 15:12:44  djw
+C Enable tracking of work
+C
 C Revision 1.40  2009/11/30 18:01:20  djw
 C Enable path names with spaces, eg "My Files"
 C
@@ -1053,7 +1056,7 @@ C
      3 'Copyright Chemical Crystallogaphy Laboratory, Oxford' , / )
 C
 C -- THIS NEXT HEADER IS ONLY APPROPRIATE FOR INTERACTIVE JOBS
-      IF ( IQUN .EQ. JQUN ) WRITE ( NCAWU , 2110 )  IH , IH
+c      IF ( IQUN .EQ. JQUN ) WRITE ( NCAWU , 2110 )  IH , IH
 2110  FORMAT(
      5 9X , 'To get help, type ' , A1 , 'HELP HELP', /
      6 9X , 'To end, type      ' , A1 , 'FINISH' , / )
