@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.159  2010/05/06 10:04:16  djw
+C Set reflections used for hklf5 twinned data (cannot be merged in CRYSTALS), output special shapes in a Brian McMahon-friendly format
+C
 C Revision 1.158  2010/04/26 15:11:56  djw
 C Sets UNIT weights for restraints
 C
@@ -4338,6 +4341,7 @@ C
       INCLUDE 'XLST06.INC'
       INCLUDE 'XLST13.INC'
       INCLUDE 'XLST23.INC'
+      INCLUDE 'XLST25.INC'
       INCLUDE 'XLST28.INC'
       INCLUDE 'XLST29.INC'
       INCLUDE 'XLST30.INC'
@@ -4582,7 +4586,13 @@ C----- LOADED BY XFAL06          CALL XFAL28
  
          IF (IERFLG.GE.0) JLOAD(MLST)=1
       END DO
- 
+c we dont need LIST 25, but it it exists, we chould use it
+        if (kexist(25) .ge. 1)  then
+         if (khuntr (25,0, iaddl,iaddr,iaddd, -1) . lt. 0) call xfal25
+        else
+         n25=0
+        endif
+c
 C################################################################
 
       IF ( IPUNCH .EQ. 0 ) THEN
@@ -6844,6 +6854,7 @@ C
       DIMENSION DATC(401)
       DIMENSION TEMP(2)
       DIMENSION APROP(12)
+      DIMENSION HFLACK(8)
       CHARACTER*1 CSIGN
       CHARACTER*80 LINE
       CHARACTER*40 FORM
@@ -6884,6 +6895,8 @@ C      set packing constants
 C 
       CALL XRSL
       CALL XCSAE
+c zero the R factor accumulators
+      CALL XZEROF (HFLACK,8)
 C----- sort out plot level
       IF (IPLOT.EQ.0) LEVEL=0
       IF (IPLOT.EQ.1) LEVEL=4
@@ -7117,6 +7130,19 @@ COMPARE PACKED INDICES
          SIGM=SQRT(SIG1*SIG1+SIG2*SIG2)
          SIGD=1.41*SIGM
 C 
+C  Accumulate info to RA
+         HFLACK(1) = HFLACK(1) + ABS(FOKS-FCKS)
+         HFLACK(2) = HFLACK(2) + ABS(FOKS)
+C  Accumulate info to RD
+         HFLACK(3) = HFLACK(3) + ABS(FOKD-FCKD)
+         HFLACK(4) = HFLACK(4) + ABS(FOKD)
+C  Accumulate info to RA2
+         HFLACK(5) = HFLACK(5) + (FOKS-FCKS)*(FOKS-FCKS)
+         HFLACK(6) = HFLACK(6) + FOKS*FOKS
+C  Accumulate info to RD2
+         HFLACK(7) = HFLACK(7) + (FOKD-FCKD)*(FOKD-FCKD)
+         HFLACK(8) = HFLACK(8) + FOKD*FOKD
+c
          FLRNUM=FLRNUM+ABS(FOKD-PREFLACK*FCKD)
          FLRDEN=FLRDEN+ABS(FOKD)
 C 
@@ -7761,10 +7787,24 @@ C P3(False)
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
          ELSE
-            WRITE (CMON,'(a//)') 'Data do not resolve the P3 hypothesis'
+            WRITE (CMON,'(a//)')'Data do not resolve the P3 hypothesis'
             CALL XPRVDU (NCVDU,2,0)
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(A//)') CMON(1)(:)
          END IF
+c
+c      now Howards goodies
+            write(ncawu,2051)
+     1 '   RA   RD    RA2  RD2     Friedif  Flack esd',
+     2 '    Hooft  esd    Total  Pairs  Unpaired Centric'
+2051  format(a,a)
+         write(ncawu,2500) 
+     1      100.*HFLACK(1)/HFLACK(2),          
+     1      100.*HFLACK(3)/HFLACK(4),          
+     1      100.*SQRT(HFLACK(5)/HFLACK(6)),          
+     1      100.*SQRT(HFLACK(8)/HFLACK(8)),          
+     2      FRIEDIF, STORE(L30GE+6), STORE(L30GE+7),TONY, TONSY,
+     3      NREFIN, MFRIED, LFRIED, NCENTRIC
+2500        FORMAT(4F6.1,2X, F8.2, 2F6.2, 2X, 2F6.2, 4I7)
       ELSE
          WRITE (CMON,'(/)')
          CALL XPRVDU (NCVDU,1,0)
