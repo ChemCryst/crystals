@@ -1,6 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.82  2010/06/03 17:00:28  djw
+C Output thresholds upto 5 sigma (was 3)
+C
 C Revision 1.81  2009/10/28 16:27:56  djw
-C Add error print to .LIS as well as screen. Correct base address for parameters in DELU (was mistakenly changed in last update) list16.fpp
+C Add error print to .LIS as well as screen. Correct base address for parameters in 
+C DELU (was mistakenly changed in last update) list16.fpp
 C
 C Revision 1.80  2009/07/31 12:44:47  djw
 C Insert a message about inapprpriate weights
@@ -36,7 +40,8 @@ C Revision 1.70  2006/02/16 18:44:47  djw
 C Enable filtering in Tabbed Analyse
 C
 C Revision 1.69  2006/01/18 17:18:05  djw
-C fix a weird (possibly compiler) error in XCOMPL.  The dynamic scratch area causes the program to die if there are more than about 90,000 reflections
+C fix a weird (possibly compiler) error in XCOMPL.  The dynamic scratch area 
+C causes the program to die if there are more than about 90,000 reflections
 C
 C Revision 1.68  2005/02/08 10:41:07  rich
 C Fix bug in completeness check when list 6 contains reflections with impossibly
@@ -1177,6 +1182,7 @@ C
 C
       INCLUDE 'XLST01.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST25.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XCONST.INC'
@@ -1184,7 +1190,12 @@ C
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST30.INC'
-C
+        if (kexist(25) .ge. 1)  then
+         if (khuntr (25,0, iaddl,iaddr,iaddd, -1) . lt. 0) call xfal25
+        else
+         n25=0
+        endif
+c
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       IF (KHUNTR ( 2,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL02
       IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
@@ -1545,6 +1556,7 @@ CODE FOR XCOMPL
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST25.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XCONST.INC'
@@ -1787,6 +1799,7 @@ C
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST13.INC'
       INCLUDE 'XLST23.INC'
       INCLUDE 'XLST30.INC'
 C
@@ -1824,12 +1837,18 @@ CDJW08
 C
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
+      IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
       IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL23
       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
 
       IFSQ = ISTORE(L23MN+1)
-
-
+c set flag for twinned/normal data
+C
+      IF (ISTORE(L13CD+1) .LE. -1) THEN    ! F = FO
+            ITWIN = 3
+      ELSE                                 ! F = FOT
+            ITWIN = 10
+      ENDIF
 C--SETUP A GRAPH HERE
       IF ( LEVEL .EQ. 4 ) THEN                 ! Fo vs Fc scatter
         WRITE(CMON,'(A,/,A,/,A)')
@@ -1905,6 +1924,7 @@ c----- totals for slope and intercept
         IF ( ISTAT .LT. 0 ) GO TO 1200
 
         N6ACC = N6ACC + 1
+cjun2010  FO = STORE(M6+itwin)
         FO = STORE(M6+3)
         FC = SCALE * STORE(M6+5)
         FCMAX = MAX( FCMAX, FC )
@@ -1956,6 +1976,7 @@ C If you have more than 8.8 million reflections you might be in trouble.
         CALL XFAL06 (IULN, 0 )
         DO WHILE ( KLDRNR ( 0 ) .GE. 0 )
           IF (KALLOW(IN).LT.0) THEN
+cjun2010            FO = STORE(M6+itwin)
             FO = STORE(M6+3)
             FC = SCALE * STORE(M6+5)
             FCMAX = MAX( FCMAX, FC )
