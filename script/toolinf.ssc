@@ -1,27 +1,29 @@
-%SCRIPT TOOLINF
-%%scriptdata
-%% GUIMENU TOOLS
-%% Information about the items in the TOOLS drop-down
-%%
-%%
-{1,11 Notepad                      {12,11Open System Editor
-{1,11 Command prompt               {12,11Open a DOS Window
-{1,11 Benchmark                    {12,11Check the Speed of Your Computer
-{1,11 Platon                       {12,11Run Ton Spek's PLATON
-
-{1,11 Systematic Naming            {12,11Try this if the GUI version fails
-{1,11 Probe minima                 {12,11Check that the structure is stable
-{1,11 DelRed                       {12,11Delaunay Reduction
-
-{1,11 Spacegroup quiz              {12,11Quiz - add your own questions
-{1,11 Who wants to be..            {12,11Different Quiz
-
-New Things
-{1,11 Spek                         {12,11Hoof-Straver-Spek Absolute 
-{1,11                              {12,11configuration test.  
-{1,11 Reweight                     {12,11Rescale refinement weights. May be 
-{1,11                              {12,11able to set GooF to unity
-
-{1,11 Obsolete                     {12,11Old Scripts, no longer suported.
-{1,0
-%END SCRIPT
+%SCRIPT TOOLINF                                                                 
+%%scriptdata                                                                    
+%% GUIMENU TOOLS                                                                
+%% Information about the items in the TOOLS drop-down                           
+%%                                                                              
+%%                                                                              
+{1,11 Notepad                      {12,11Open System Editor                     
+{1,11 Command prompt               {12,11Open a DOS Window                      
+{1,11 Benchmark                    {12,11Check the Speed of Your Computer       
+{1,11 Platon                       {12,11Run Ton Spek's PLATON                  
+                                                                                
+{1,11 Systematic Naming            {12,11Try this if the GUI version fails      
+{1,11 Probe minima                 {12,11Check that the structure is stable     
+{1,11 DelRed                       {12,11Delaunay Reduction                     
+{1,11 Atom Properties              {12,11Change Default radii, colour etc
+{1,11 Edit F prime                 {12,11Edit F', F" or change wavelength                
+                                                                                
+{1,11 Spacegroup quiz              {12,11Quiz - add your own questions          
+{1,11 Who wants to be..            {12,11Different Quiz                         
+                                                                                
+New Things                                                                      
+{1,11 Spek                         {12,11Hoof-Straver-Spek Absolute             
+{1,11                              {12,11configuration test.                    
+{1,11 Reweight                     {12,11Rescale refinement weights. May be     
+{1,11                              {12,11able to set GooF to unity              
+                                                                                
+{1,11 Obsolete                     {12,11Old Scripts, no longer suported.       
+{1,0                                                                            
+%END SCRIPT                                                                     
