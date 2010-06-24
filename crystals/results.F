@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.160  2010/06/17 15:32:38  djw
+C Load L25 if it exists because it may be needed by KSYSAB.
+C Output Flack info to NCAWU
+C
 C Revision 1.159  2010/05/06 10:04:16  djw
 C Set reflections used for hklf5 twinned data (cannot be merged in CRYSTALS), output special shapes in a Brian McMahon-friendly format
 C
@@ -3674,8 +3678,9 @@ C---  CLEAR THE CORE
       CALL XCSAE
 C----- SET THE CONSTANTS
 C----- BLANKS AT START OF LINE
-      IFIR = 2
-      NSTA = 8
+      IFIR = 2 
+cjun2010      NSTA = 8 !no of characters in type and serial.  Forgot()!
+      NSTA = 10
       NFX = 8
       NXD = 2
       NOP = 0
