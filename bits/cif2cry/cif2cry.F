@@ -699,7 +699,8 @@ c.......=========================
      *          unitZ 
         write(NOUTF, '(2a/,2a)') 'COLOUR ', colour, 'SHAPE ', shape
         write(NOUTF, '(a,2x, 2(a,f6.4,2x),a,i6,2x,a,f6.4)') 
-     *          'REFINEMENT', 'R = ',r, 'RW = ', rw, 'NPARAM = ', 
+     *          'REFINEMENT', 'R = ',100.*r, 
+     *          'RW = ', 100.*rw, 'NPARAM = ', 
      *          int(nparam), 'GoF = ', s
         write(NOUTF, '(a)') 'END'
 
