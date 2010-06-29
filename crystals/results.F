@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.161  2010/06/24 08:00:09  djw
+C Ancient bug - TYPE(4)+SERIAL(4)+() is 10  (not 8) characters
+C
 C Revision 1.160  2010/06/17 15:32:38  djw
 C Load L25 if it exists because it may be needed by KSYSAB.
 C Output Flack info to NCAWU
@@ -7631,12 +7634,6 @@ C
          XMNLL=DATC(NSPM_161)-DATCM
 C 
 C 
-C values can be massive - can scaling be improved?
-C      write(ncwu,'(10f12.2)') datc
-C      write(ncwu,'(//4f12.4)') xplll,xmnll, datcm, datcl
-         XPLLL=EXP(XPLLL)
-         XMNLL=EXP(XMNLL)
-C      write(ncwu,'(3e12.4)') xplll,xmnll, xplll+xmnll
 C 
          IF (ISSPRT.EQ.0) THEN
 C 
@@ -7681,12 +7678,33 @@ C
          ELSE
             RCO=0.0
          END IF
+c
 C-WHAT IS RCO? Correlation coeficient for NPP?
 C         IF (ISSPRT.EQ.0)
 C     1   WRITE(NCWU,'(A,F12.3)') 'Tons Rc = ', rco
+c
+C values can be massive - can scaling be improved?
+c      write(ncwu,'(10f12.2)') datc
+c      write(ncwu,'(//4f12.4)') xplll,xmnll, datcm, datcl
+c save some goodies to avoid divide by zero later
+         xplll3 = xplll
+         xmnll3 = xmnll
+         XPLLL=EXP(XPLLL)
+         XMNLL=EXP(XMNLL)
+c      write(ncwu,'(3e12.4)') xplll,xmnll, xplll+xmnll
+c      write(ncwu,*) xplll,xmnll, xplll+xmnll
+c
 C CALCULATE P2(0)
          IF (ABS(ABS(TONY-0.5)-0.5).LT.MAX(0.1,3*TONSY)) THEN
-            XPLL2=XPLLL/(XPLLL+XMNLL)
+            if ((xplll+xmnll) .le. zero) then
+              if (xplll3 .le. xmnll3) then
+                  xpll2 = 0.0
+              else
+                  xpll2 = 1.0
+              endif
+            else  
+              XPLL2=XPLLL/(XPLLL+XMNLL)
+            endif
          ELSE
             XPLL2=-1.0
          END IF
