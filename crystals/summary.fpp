@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.83  2010/06/17 15:42:11  djw
+C Load L25 if it exists for KSYSAB
+C
 C Revision 1.82  2010/06/03 17:00:28  djw
 C Output thresholds upto 5 sigma (was 3)
 C
@@ -2016,9 +2019,9 @@ C----- COMPUTE AND STORE R-VALUES
       STORE(L6P+1) = RFACT
       STORE(L6P+2) = WRFAC
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1215 ) N6D , N6ACC
-      WRITE ( CMON , 1215 ) N6D, N6ACC
+      WRITE ( CMON , 1215 ) IULN, N6D, N6ACC
       CALL XPRVDU(NCVDU, 1,0)
-1215  FORMAT ( 1X , 'List 6 contains ' , I6 , ' reflections' ,
+1215  FORMAT ( 1X , 'List 'I3,' contains ' , I6 , ' reflections' ,
      1 ' of which ' , I6 , ' are accepted by LIST 28')
 C
 C
