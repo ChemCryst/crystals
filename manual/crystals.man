@@ -3000,7 +3000,7 @@ edges.
  FO/FC        Fo/Fc
  ELEMENTS     Integers corresponding to twin elements
  SERIAL       Serial number of reflection
- JCODE        reflection quality code. See RC93 manual
+ JCODE        reflection quality code. See below
  RATIO        Ratio Fo**2/sigma(Fo**2)
  RATIO/JCODE  Packed ratio and jcode
  TBAR         Absorption weighted X-ray path length
@@ -3020,7 +3020,21 @@ edges.
  coefficient, it value is set to zero except for BATCH (default is 1.0)
  and SINTH/L**2  (value computed from cell parameters). Packed INDICES are
  restricted to +/- 127, packed RATIO to range 0.0 - 999.0, JCODE to range
- 0 - 9.
+ 0 - 9. 
+#PJCODE valuse assigned by RC93 for MACH3 data are
+#N  11#
+#J
+            1     normal reflection
+            9     weak reflection
+            7     flagged strong S but not flagged D
+            2     deviates from expected position/peak shape, but not W
+            3     failed non-equal test at least once
+            6     flagged weak
+            4     reflection is bad
+            8     flagged strong T but not flagged D
+     The order of comparisons corresponds to the order of likelihood of
+     having a particular code.
+#
 #Q
 #YStorage of reflection data#
 #ASTOREREF#
