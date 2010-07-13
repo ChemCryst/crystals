@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.162  2010/06/29 12:00:43  djw
+C Trap potential zero divide in calculation of P(2)
+C
 C Revision 1.161  2010/06/24 08:00:09  djw
 C Ancient bug - TYPE(4)+SERIAL(4)+() is 10  (not 8) characters
 C
@@ -4223,9 +4226,11 @@ C----- IDENTITY
 2000  CONTINUE
 C
 C----- VALUE AND ESD
+c      write(ncawu,*) (store(idjw),idjw=ipub,ipub+27)
       CALL XFILL (IB, IVEC, 20)
 cdjw021204
-      if (key .eq. 15) esd = 0.
+c      if (key .eq. 15) esd = 0.
+      if (store(ipub+22) .le. zero) esd = 0.
       if ((noh .gt. 0 ).and.( esd .le. 0.).AND.(NATOUT .GE. 3)) then
 cdjwoct05. More fiddles to keep Bill happy
         if (key .eq. 15) then
@@ -4244,8 +4249,11 @@ cdjwoct05. More fiddles to keep Bill happy
 C----- H-bonds AND ESDs
        do itmp =ipub+21, ipub+23, 2
         CALL XFILL (IB, IVEC, 20)
-c        CALL SNUM ( store(itmp),store(itmp+1),  -3, 0, 10, IVEC )
-        CALL SNUM ( store(itmp), 0.0,  -2, 0, 10, IVEC )
+        if (esd .le. 0.) then
+          CALL SNUM ( store(itmp), 0.0,  -2, 0, 10, IVEC )
+        else
+          CALL SNUM ( store(itmp),store(itmp+1),  -3, 0, 10, IVEC )
+        endif
         WRITE( CBUF, '(20A1)') (IVEC(I), I=1, 20)
         CALL XCRAS ( CBUF, N)
         CLINE(J:J+N-1) = CBUF(1:N)
@@ -4254,9 +4262,13 @@ c        CALL SNUM ( store(itmp),store(itmp+1),  -3, 0, 10, IVEC )
        dadist = sqrt(
      1  store(ipub+21)*store(Ipub+21) + store(ipub+23)*store(Ipub+23)
      2  -2.*store(ipub+21)*store(Ipub+23)*cos(term*dtr))
+       
+c       Use mean c-c esd
+        ddesd = 1.414*store(l30cf+14)
+
        call xfill (ib, ivec, 20)
-cdjwoct05. More fiddles to keep Bill happy. Use mean c-c esd
-       call snum ( dadist, 1.414*store(l30cf+14),  -3, 0, 10, ivec )
+cdjwoct05. More fiddles to keep Bill happy. 
+       call snum ( dadist, ddesd,  -3, 0, 10, ivec )
        write( cbuf, '(20a1)') (ivec(i), i=1, 20)
        call xcras ( cbuf, n)
        cline(j:j+n-1) = cbuf(1:n)
@@ -7075,10 +7087,6 @@ C----- GET REFLECTION(1)
 C      ISTAT = KLDRNR (IN)
       ISTAT=KFNR(0)
       IF (ISTAT.LT.0) GO TO 650
-Cdjwjan08 - kallow doesnt look at list 7
-C      IF (KALLOW(IN) .LT. 0) then
-C      goto 340
-C      endif
       NREFIN=NREFIN+1
       I=NINT(STORE(M6))
       J=NINT(STORE(M6+1))
@@ -7104,11 +7112,7 @@ C
 C GET REFLECTION(2)
 C      ISTAT = KLDRNR (IN)
       ISTAT=KFNR(0)
-      IF (ISTAT.LT.0) GO TO 650
-Cdjwjan08 - kallow doesnt look at list 7
-C      IF (KALLOW(IN) .LT. 0) then
-C      goto 350
-C      endif
+      IF (ISTAT.LT.0) GO TO 649
       NREFIN=NREFIN+1
       I=NINT(STORE(M6))
       J=NINT(STORE(M6+1))
@@ -7135,7 +7139,8 @@ COMPARE PACKED INDICES
          FOMAX=MAX(FOMAX,FOKD)
          FCMAX=MAX(FCMAX,FCKD)
          FCMIN=MIN(FCMIN,FCKD)
-         SIGM=SQRT(SIG1*SIG1+SIG2*SIG2)
+         VAM = SIG1*SIG1+SIG2*SIG2
+         SIGM=SQRT(VAM)
          SIGD=1.41*SIGM
 C 
 C  Accumulate info to RA
@@ -7145,11 +7150,11 @@ C  Accumulate info to RD
          HFLACK(3) = HFLACK(3) + ABS(FOKD-FCKD)
          HFLACK(4) = HFLACK(4) + ABS(FOKD)
 C  Accumulate info to RA2
-         HFLACK(5) = HFLACK(5) + (FOKS-FCKS)*(FOKS-FCKS)
-         HFLACK(6) = HFLACK(6) + FOKS*FOKS
+         HFLACK(5) = HFLACK(5) + (FOKS-FCKS)*(FOKS-FCKS)/vam
+         HFLACK(6) = HFLACK(6) + FOKS*FOKS/vam
 C  Accumulate info to RD2
-         HFLACK(7) = HFLACK(7) + (FOKD-FCKD)*(FOKD-FCKD)
-         HFLACK(8) = HFLACK(8) + FOKD*FOKD
+         HFLACK(7) = HFLACK(7) + (FOKD-FCKD)*(FOKD-FCKD)/vam
+         HFLACK(8) = HFLACK(8) + FOKD*FOKD/vam
 c
          FLRNUM=FLRNUM+ABS(FOKD-PREFLACK*FCKD)
          FLRDEN=FLRDEN+ABS(FOKD)
@@ -7181,7 +7186,7 @@ C
                   CSIGN='+'
                END IF
 C^^^
-               ALT=1.0
+               ALT=sigm
                IF (ABS(FOKD-FCKD) .le. 3. * sigm) THEN
 c               IF ((FOKD .GE. -1.5* FCKD) .AND.
 c     1            (FOKD .LE. 1.5* FCKD)) THEN
@@ -7310,12 +7315,12 @@ CDJWDEC09
 C      CHECK FOR CENTRIC REFLECTIONS
          ITEMP=KTONCENT(I1,J1,K1,NCENTRIC)
          IF (IPUNCH.EQ.1) THEN
-C          itemp = nint(fried1)
-C          if (itemp .lt. 0) itemp = 10 +itemp
-            WRITE (NCPU,'(3i4,I2,2X, 3f10.2)') I1,J1,K1,ITEMP,FOK1,SIG1,
-     1       FCK1
+            WRITE (NCPU,'(3i4,I2,2X, 3f10.2)') I1,J1,K1,ITEMP,FOK1,
+     1       SIG1,FCK1
          END IF
-         LFRIED=LFRIED+1
+         if (itemp .eq. -1) then
+          LFRIED=LFRIED+1
+         endif
          I1=I
          J1=J
          K1=K
@@ -7329,10 +7334,13 @@ C        GET NEXT REFLECTION(2)
       END IF
 C 
 C---- END OF REFLECTIONS
+649   continue
+c     last unpaired reflection
+      lfried=lfried+1
 650   CONTINUE
 C---- SPLIT UNPAIRD INTO REAL UNPAIRED AND CENTRIC
 C 
-      LFRIED=LFRIED-NCENTRIC
+c      LFRIED=LFRIED-NCENTRIC
       IF (LEVEL.EQ.4) THEN
 C Also add A SERIES FOR STRAIGHT LINE (y=x) .
          WRITE (CMON,'(A/ (2(A,2F10.2)) )') 
@@ -7817,14 +7825,14 @@ C P3(False)
 c
 c      now Howards goodies
             write(ncawu,2051)
-     1 '   RA   RD    RA2  RD2     Friedif  Flack esd',
+     1 '   RA   RD    wRA2  wRD2   Friedif  Flack esd',
      2 '    Hooft  esd    Total  Pairs  Unpaired Centric'
 2051  format(a,a)
          write(ncawu,2500) 
      1      100.*HFLACK(1)/HFLACK(2),          
      1      100.*HFLACK(3)/HFLACK(4),          
      1      100.*SQRT(HFLACK(5)/HFLACK(6)),          
-     1      100.*SQRT(HFLACK(8)/HFLACK(8)),          
+     1      100.*SQRT(HFLACK(7)/HFLACK(8)),          
      2      FRIEDIF, STORE(L30GE+6), STORE(L30GE+7),TONY, TONSY,
      3      NREFIN, MFRIED, LFRIED, NCENTRIC
 2500        FORMAT(4F6.1,2X, F8.2, 2F6.2, 2X, 2F6.2, 4I7)
@@ -7854,6 +7862,8 @@ C -- ERRORS DETECTED
 CDEC09
 CODE FOR XTONCENT
       FUNCTION KTONCENT (I1,J1,K1,NCENTRIC)
+C     KTONCENT = -1 IF NON-CENTRIC
+C              =  0 IF CENTRIC
 C
       DIMENSION H(2), HG(3)
       INCLUDE 'ISTORE.INC'
