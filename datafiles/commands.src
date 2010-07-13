@@ -2286,7 +2286,7 @@ PURGE              1    0
     .LOG                6    0    1    2    0 OFF
      OFF            ON
     .LIST               7    0    1    0    0         0
-    .MONITOR            8    0    1    2    0 HIGH
+    .MONITOR            8    0    1    2    0 LOW
      HIGH           LOW
 SIMULATE          12    0
    6    4096 CRYSTALSFIDDLE
