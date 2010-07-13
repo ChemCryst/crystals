@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.98  2010/04/19 16:03:22  djw
+C Only print bond breaking messages in debug mode
+C
 C Revision 1.97  2010/01/05 14:45:14  djw
 C Fix silly wrror in NWDT and NWAT
 C
@@ -2564,7 +2567,7 @@ cdjwnov06
 cdjwmar07
               else if ((ipunch .eq. 11) .and. (term .ge. 120.) .and.
      1          ((dd1.lt.1.2).or.(dd3.lt.1.2))   ) then
-                write(ncpu, '(3f12.3)') term,dd1,dd3
+c                write(ncpu, '(6f12.3)') term,esd,dd1,ed1,dd3,ed3
                 WRITE(MTE) 'H',TERM,ESD,
      1          STORE(IXX), STORE(IXX+1), ISTORE(NA+2),
      1          ISTORE(NA+3), ISTORE(NA+4), ISTORE(NA+5), ISTORE(NA+6),
