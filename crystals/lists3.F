@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2010/03/15 12:17:31  djw
+C Output whole line in print 12 and 16
+C
 C Revision 1.23  2005/03/07 16:04:14  djw
 C XGETAT - a stub to enable Stefan to get a list of atoms in form TYPE(SERIAL) from LIST 12 & 16 for the sparse project. formatCALL XGETAT(LTYPE, 1) - only one action for the moment
 C
@@ -824,7 +827,7 @@ C
       END
 C
 CODE FOR XPRTLX
-      SUBROUTINE XPRTLX(IULN,ITYPE)
+      SUBROUTINE XPRTLX(IULN,ITYPE,NODEV)
 C--PRINT OR PUNCH THE OUTPUT FROM THE LEXICAL SCANNER
 C
 C  IULN    THE LIST NUMBER TO BE PRINTED.
@@ -833,14 +836,19 @@ C
 C          -1  PRINT ONLY THE CARD IMAGES STORED ON DISC.
 C           0  PRINT THE CARD IMAGES AND CRACKED CODE.
 C           1  PUNCH A REUSABLE LIST
+C  NODEV    THE OUTPUT DEVICE FORTRAN UNIT NUMBER (NCPU)
 C
 C--
+      DIMENSION KDEV(4)
+      INCLUDE 'TSSCHR.INC'
       INCLUDE 'HEADES.INC'
       INCLUDE 'ISTORE.INC'
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XSSCHR.INC'
 C
       INCLUDE 'QSTORE.INC'
 C
@@ -849,14 +857,33 @@ C--CHECK IF THE LIST IS AVAILABLE FOR PRINTING
 C--AND NOW RETURN
 1000  CONTINUE
       IF ( ITYPE .EQ. 1) THEN
-        CALL XPCHND
-        CALL XPCHUS
+        CALL XPCHND(nodev)
+        if (nodev .eq. ncpu) then
+            CALL XPCHUS(ncpu)
+        else
+            write(nodev,'(a)')';'
+c-          close cif chanel
+           CALL XRDOPN(7, KDEV , CSSCIF, LSSCIF)
+        endif
       ENDIF
       CALL XLINES
       RETURN
 C--SET THE POINTERS FOR THE PRINT
 1050  CONTINUE
-      IF ( ITYPE .EQ. 1) CALL XPCHLH ( IULN)
+        if (nodev .ne. ncpu) then
+C -       PREAPRE TO APPEND CIF OUTPUT ON FRN1
+          CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
+          CALL XRDOPN(8, KDEV , CSSCIF, LSSCIF)
+        endif
+      IF ( ITYPE .EQ. 1) then
+            if (nodev .ne.ncpu) then
+                  if (iuln.eq.12) write(nodev,'(//a/a)')
+     1  '_iucr_refine_instruction_details_constraints',';'
+                  if (iuln.eq.16) write(nodev,'(//a/a)')
+     1  '_iucr_refine_instruction_details_restraints',';'
+            endif
+            CALL XPCHLH ( IULN, nodev)
+      endif
       LAST=0
       N=-1
 C--LOAD THE NEXT HEADER BLOCK FROM THE DISC
@@ -869,7 +896,7 @@ C--CARD IMAGE  -  PRINT IT
 1200  CONTINUE
       N=N+1
       IF ( ITYPE .EQ. 1) THEN
-         CALL XPCHLX (N,IBUFF(4),IBUFF(5),IBUFF(6))
+         CALL XPCHLX (N,IBUFF(4),IBUFF(5),IBUFF(6),NODEV)
       ELSE
          CALL XPRTLC(N,IBUFF(4),IBUFF(5),IBUFF(6))
       END IF
@@ -2807,7 +2834,7 @@ C--SET THE POINTERS FOR THE PRINT
 1050  CONTINUE
       IF ( ITYPE .EQ. 1) THEN
 C----- PRINT A HEADER
-C      CALL XPCHLH ( IULN)
+C      CALL XPCHLH ( IULN,ncpu)
       ENDIF
       LAST=0
       N=-1

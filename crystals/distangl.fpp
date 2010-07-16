@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.99  2010/07/13 14:12:04  djw
+C Remove debugging print
+C
 C Revision 1.98  2010/04/19 16:03:22  djw
 C Only print bond breaking messages in debug mode
 C
@@ -1125,7 +1128,7 @@ C
 C----- SET LEVEL TO HIGH IF COORDINATES REQUESTED
       IF ((IP .GE. 0) .AND. (LEVEL . GE. 0)) LEVEL = 1
 C----- WRITE HEADER IF RESTRAINTS TO BE GENERATED
-      IF (IPUNCH .EQ. 0) CALL XPCHLH (16)
+      IF (IPUNCH .EQ. 0) CALL XPCHLH (16, ncpu)
 
 C----- ALLOCATE ONE SLOT FOR THE MOMENT
       JF = KSTALL(1)
@@ -2684,7 +2687,7 @@ C --                   **** MAIN LOOP COMPLETED ****
 C -- WRITE PUBLICATION LISTING
       IF (IPUNCH .EQ. 0) THEN
 C----- FINISH RESTRAINT LIST
-        CALL XPCHUS
+        CALL XPCHUS(ncpu)
       ELSE IF (IPUNCH .EQ. 1) THEN
         CALL XPRTDA(3,IESD,NCPU)
       ELSE IF (IPUNCH .EQ. 2) THEN

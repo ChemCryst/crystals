@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.29  2010/03/29 13:46:43  djw
+C Get hols of scale for difference Pattersons
+C
 C Revision 1.28  2010/03/10 12:26:17  djw
 C ensure correct scaling of all Pattersons
 C
@@ -3143,6 +3146,7 @@ C
       INCLUDE 'XLST06.INC'
       INCLUDE 'XTAPES.INC'
       INCLUDE 'XTAPED.INC'
+      INCLUDE 'XUNITS.INC'
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QFOURC.INC'
@@ -3165,6 +3169,16 @@ C----- CHECK FC GREATER THAN A FRATION OF FO, PLUS A RESIDUAL
       IF (ABS(STORE(M6+5))*SCALE .LT.
      1  0.001+ FFILTR(IALL)*ABS(STORE(M6+3))) GOTO 1000
       ENDIF
+cdjwjul2010      check first twin element is unity
+          LJXDJW = 1
+          NKDJW=NINT(STORE(M6+11))  ! FIND THE ELEMENT FOR WHICH THE INDICES ARE GIVEN
+          DO WHILE ( NKDJW .GT. 0 ) 
+            NLDJW=NKDJW
+            NKDJW=NKDJW/10
+            LJXDJW=NLDJW-NKDJW*10
+          END DO
+          IF (LJXDJW .NE. 1) GOTO 1000
+cdjwjul2010 
 C--SORT THE INDICES FOR THE DIFFERENT PROJECTIONS
 1250  CONTINUE
       RFL(1)=STORE(M6)

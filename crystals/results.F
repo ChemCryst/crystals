@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.163  2010/07/13 14:11:24  djw
+C Compute wRD etc using w = 1/sigmasq.
+C Correct unpaired reflection count
+C Sort out H-bind esds for compatibility with PLATON
+C
 C Revision 1.162  2010/06/29 12:00:43  djw
 C Trap potential zero divide in calculation of P(2)
 C
@@ -1495,8 +1500,8 @@ C
       DATA KDET /4HD   /
 C
 C
-CDJWMAY99 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
 #endif
+CDJWMAY99 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
       CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
       CALL XRDOPN(8, KDEV , CSSCIF, LSSCIF)
 C -- SET INITIAL VALUES.
@@ -3757,7 +3762,10 @@ C----- OUTPUT  SERIAL NUMBER
       CALL SUBZED(J,IND1,LINEA,  1)
 C--UPDATE THE CURRENT POSITION FLAG
       K=K+NSTA
-      IF (I .LT. NUM) LINEA(K-2) = MINUS
+c^^^
+c^^^      IF (I .LT. NUM) LINEA(K-2) = MINUS
+      IF (I .LT. NUM) LINEA(K) = MINUS
+      K=K+2
 2020  CONTINUE
       J=K + NFX
 C----- OUTPUT VALUE AND ESD
@@ -4229,8 +4237,10 @@ C----- VALUE AND ESD
 c      write(ncawu,*) (store(idjw),idjw=ipub,ipub+27)
       CALL XFILL (IB, IVEC, 20)
 cdjw021204
-c      if (key .eq. 15) esd = 0.
-      if (store(ipub+22) .le. zero) esd = 0.
+cdjwjul2010
+c     Key=15 for H-bonds. 4th atom slots used for DD1,ED1,D2,ED2,0,0,0
+c                              store(ipubl+22) == ED1
+      if ((key .eq. 15) .and. (store(ipub+22) .le. zero)) esd = 0.
       if ((noh .gt. 0 ).and.( esd .le. 0.).AND.(NATOUT .GE. 3)) then
 cdjwoct05. More fiddles to keep Bill happy
         if (key .eq. 15) then
@@ -7185,7 +7195,6 @@ C
                ELSE
                   CSIGN='+'
                END IF
-C^^^
                ALT=sigm
                IF (ABS(FOKD-FCKD) .le. 3. * sigm) THEN
 c               IF ((FOKD .GE. -1.5* FCKD) .AND.

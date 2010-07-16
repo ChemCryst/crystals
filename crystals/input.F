@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2010/05/04 10:40:42  djw
+C Call new-style (i.e. correct) SHELX atom output
+C
 C Revision 1.15  2009/11/03 11:17:43  djw
 C Add comments and set up processing for LIST 18, the SMILES string
 C
@@ -91,8 +94,8 @@ C--FIRST CONTROL ROUTINE FOR LIST INPUT AND OUTPUT.
 C--LOAD THE NEXT '#INSTRUCTION'
 c      see also PRCSS.FPP
       NUM=KNXTOP(LSTOP,LSTNO,ICLASS)
-c      write(ncwu,'(4(a,i6))') 'INPUT  List op =', lstop, ' List no =',
-c     1  LSTNO, ' Iclass=', iclass, '  Num = ', num
+      write(ncawu,'(4(a,i6))') 'INPUT  List op =', lstop, ' List no =',
+     1  LSTNO, ' Iclass=', iclass, '  Num = ', num
 C--CHECK IF WE SHOULD RETURN
       IF(NUM.LE.0) RETURN
 
@@ -261,7 +264,7 @@ C--NORMAL LIST PRINT
 C
 C--LEXICAL SCANNER PRINT
 6500  CONTINUE
-      CALL XPRTLX(LSTNO,ICLASS)
+      CALL XPRTLX(LSTNO,ICLASS,NCPU)
       RETURN
 C
 C--PRINT OF LIST 11
@@ -334,14 +337,20 @@ C----- 'CHIME' XYZ FORMAT
 C----- CHECK IF LIST 12, 16 OR 17 or 18
       IF ((LSTNO .EQ. 16) .OR. (LSTNO .EQ. 17)
      1  .OR. (LSTNO .EQ. 18) ) THEN
-            CALL XPRTLX (LSTNO, 1)
-            RETURN
+         IF ( ICLASS .EQ. -1 ) THEN  ! LIST AS CARD IMAGES
+            CALL XPRTLX (LSTNO, 1,NCPU)
+         ELSE 
+            CALL XPRTLX (LSTNO, 1,NCFPU1) !LIST TO CIF OUTPUT 
+         END IF
+         RETURN
       ENDIF
       IF (LSTNO .EQ. 12) THEN
-         IF ( ICLASS .EQ. -1 ) THEN
-            CALL XPRTLX (LSTNO, 1)
-         ELSE
+         IF ( ICLASS .EQ. 0 ) THEN ! LIST 22 AS COLUMN
             CALL XPCH22 (ICLASS+2)
+         ELSE IF ( ICLASS .EQ. -1 ) THEN  ! LIST 12 AS CARD IMAGES
+            CALL XPRTLX (LSTNO, 1,NCPU)
+         ELSE 
+            CALL XPRTLX (LSTNO, 1,NCFPU1) !LIST 12 TO CIF OUTPUT 
          END IF
          RETURN
       ENDIF

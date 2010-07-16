@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.42  2010/06/17 15:33:52  djw
+C Remove old Interactive mode header from NCAWU
+C
 C Revision 1.41  2010/03/04 15:12:44  djw
 C Enable tracking of work
 C
@@ -806,8 +809,8 @@ C--STANDARD TERMINATION SUBROUTINE
        CALL XMOVEI(KEYFIL(1,5), ISTORE(NFL), 4)
        CALL XRDOPN (5, ISTORE(NFL), 'export.dat', 10)
        IF (KEXIST(5) .EQ. 1) CALL XPCH5S(1)
-       IF (KEXIST(12) .EQ. 1) CALL XPRTLX (12, 1)
-       IF (KEXIST(16) .EQ. 1) CALL XPRTLX (16, 1)
+       IF (KEXIST(12) .EQ. 1) CALL XPRTLX (12, 1,NCPU)
+       IF (KEXIST(16) .EQ. 1) CALL XPRTLX (16, 1,NCPU)
        CALL XRDOPN (6, ISTORE(NFL), 'export.dat', 10)
       ENDIF
 CDJW99 SET TERMINAL UNKNOWN
