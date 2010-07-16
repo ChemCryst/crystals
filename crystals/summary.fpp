@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.84  2010/07/07 16:11:45  djw
+C Output corresct list tpe for 6/7
+C
 C Revision 1.83  2010/06/17 15:42:11  djw
 C Load L25 if it exists for KSYSAB
 C
@@ -596,19 +599,19 @@ C
       ELSE IF ( LSTYPE .EQ. 10 ) THEN
         CALL XSUM05 ( LSTYPE , LEVEL )
       ELSE IF ( LSTYPE .EQ. 12 ) THEN
-        CALL XPRTLX ( LSTYPE , -1 )
+        CALL XPRTLX ( LSTYPE , -1, NCPU )
       ELSE IF ( LSTYPE .EQ. 13 ) THEN
         CALL XSUM13
       ELSE IF ( LSTYPE .EQ. 14 ) THEN
         CALL XSUM14
       ELSE IF ( LSTYPE .EQ. 16 ) THEN
-        CALL XPRTLX ( LSTYPE , -1 )
+        CALL XPRTLX ( LSTYPE , -1, NCPU )
       ELSE IF ( LSTYPE .EQ. 17 ) THEN
-        CALL XPRTLX ( LSTYPE , -1 )
+        CALL XPRTLX ( LSTYPE , -1, NCPU )
       ELSE IF ( LSTYPE .EQ. 18 ) THEN
-        CALL XPRTLX ( LSTYPE , -1 )
+        CALL XPRTLX ( LSTYPE , -1, NCPU )
       ELSE IF ( LSTYPE .EQ. 12 ) THEN
-        CALL XPRTLX ( LSTYPE , -1 )
+        CALL XPRTLX ( LSTYPE , -1, NCPU )
       ELSE IF ( LSTYPE .EQ. 23 ) THEN
         CALL XSUM23
       ELSE IF ( LSTYPE .EQ. 25 ) THEN
