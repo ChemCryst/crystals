@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  2010/06/03 16:57:28  djw
+C Add comments to explain the different PUNCH 6 x types
+C
 C Revision 1.13  2008/10/01 11:06:47  djw
 C Output LIST 6 on scale of Fc for use in PLATON
 C
@@ -98,6 +101,7 @@ C--BRANCH ON THE TYPE OF OPERATION
       IF(LSTOP)1400,1400,1900
 C--THIS IS NOT A LIST INPUT OPERATION  -  BRANCH ON THE FUNCTION
 1400  CONTINUE
+cdjw2010 Why is this reset here?
       LSTNO=6
       GOTO (2100,2200,2600,2700,2300,1500),NUM
 1500  CALL GUEXIT(325)
@@ -149,11 +153,12 @@ C--PRINT THE LIST
       IF(ICLASS)6410,6420,6020
 C--PRINT ON THE SCALE OF /FO/
 6410  CONTINUE
-      CALL XPRT6C(-1)
+cdjwjul2010 - add list number
+      CALL XPRT6C(lstno, -1)
       RETURN
 C--PRINT ON THE SCALE OF /FC/
 6420  CONTINUE
-      CALL XPRT6C(+1)
+      CALL XPRT6C(lstno, +1)
       RETURN
 C--NORMAL LIST PRINT
 6020  CONTINUE

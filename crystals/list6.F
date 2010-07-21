@@ -1,5 +1,9 @@
 c
 C $Log: not supported by cvs2svn $
+C Revision 1.18  2009/07/31 12:40:25  djw
+C Remove the patch that sorted out -ve JCODES - it was fouling up the packing/unpacking of Ratio/JCODE.  Patch left in place for future reference.
+C In the future, we should look at computing RATIO on the fly from I and sigma
+C
 C Revision 1.17  2009/07/21 13:41:35  djw
 C test
 C
@@ -63,7 +67,7 @@ C     FACTOR3        RATIO/JCODE    NOTHING
 C
 C
 CODE FOR XPRT6C
-      SUBROUTINE XPRT6C(M1)
+      SUBROUTINE XPRT6C(lstno, M1)
 C--PRINT LIST 6 IN COMPRESSED FORMAT
 C
 C  M1  IF ZERO OR LESS THAN ZERO STRUCTURE FACTORS ARE PRINTED ON
@@ -73,7 +77,8 @@ C--
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
 C
-      CALL XPRT6Q(6,M1,IPAGE(4)-9,3)
+cdjwjul2010 - add lstno
+      CALL XPRT6Q(lstno,M1,IPAGE(4)-9,3)
       RETURN
       END
 C
