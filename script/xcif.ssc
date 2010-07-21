@@ -198,7 +198,12 @@
 %      COPY 'END '
 %    END IF
 %%
-%%^
+%%  Write LIST 12 and 16 to end of cif
+%      COPY '#PUNCH 12 C'
+%      COPY 'END'
+%      COPY '#PUNCH 16 C'
+%      COPY 'END'
+%%
   Parameters saved in {&publish.cif{&
 %%
 %%
