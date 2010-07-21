@@ -1,4 +1,13 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.63  2010/06/10 08:11:28  djw
+C c  For centred cells, CRYSTALS used the optimisation page 45 Rollett which adds together
+C c  the contributions to A from atoms at x and x+1/2 (ie multiplies A by 2)
+C c  For a systematic absence it should subtract the contrinution fro x+1/2, ie A=0 etc.
+C c  As originally written, the program gets FC > 0 for absences.
+C c  This should not matter for untwinned crystals, since the absences should have been removed.
+C c  For twins, the second component may overlap with a systematic absence from the first
+C c  component so we must check for this an ensure the contribution from the first is zero.
+C
 C Revision 1.62  2010/05/06 09:33:04  djw
 C Ensure original reflection indices are maintained in LIST 6 (ancient bug which only shows if elements are of the for 2 or 21 etc)
 C
@@ -1682,9 +1691,7 @@ C       CHECK IF THIS IS TWINNED CALCULATION
           PK=STORE(M6+1)
           PL=STORE(M6+2)
           NJ=NINT(STORE(M6+11))
-
           IF (NJ .EQ. 0) NJ = 12 ! IF THERE IS NO ELEMENT KEY, SET IT TO MOROHEDRAL TWINNING
-
           NK=NJ  ! FIND THE ELEMENT FOR WHICH THE INDICES ARE GIVEN
           DO WHILE ( NK .GT. 0 ) 
             NL=NK
@@ -1696,10 +1703,13 @@ C       CHECK IF THIS IS TWINNED CALCULATION
 
 C CHECK IF 'NL' HOLDS THE ELEMENT NUMBER OF THE GIVEN INDICES.
 c  Generate the principal indices
-          M25I=L25I+(NL-1)*MD25I  ! COMPUTE THE INDICES IN THE STANDARD REFERENCE SYSTEM
-          SH=STORE(M25I)*PH+STORE(M25I+1)*PK+STORE(M25I+2)*PL
-          SK=STORE(M25I+3)*PH+STORE(M25I+4)*PK+STORE(M25I+5)*PL
-          SL=STORE(M25I+6)*PH+STORE(M25I+7)*PK+STORE(M25I+8)*PL
+c          M25I=L25I+(NL-1)*MD25I  ! COMPUTE THE INDICES IN THE STANDARD REFERENCE SYSTEM
+c          SH=STORE(M25I)*PH+STORE(M25I+1)*PK+STORE(M25I+2)*PL
+c          SK=STORE(M25I+3)*PH+STORE(M25I+4)*PK+STORE(M25I+5)*PL
+c          SL=STORE(M25I+6)*PH+STORE(M25I+7)*PK+STORE(M25I+8)*PL
+           sh=ph
+           sk=pk
+           sl=pl
 cdjwjun2010
           ish = nint(sh)
           isk = nint(sk)
@@ -1707,36 +1717,21 @@ cdjwjun2010
           sh = float(ish)
           sk = float(isk)
           sl = float(isl)
-c  For centred cells, CRYSTALS used the optimisation page 45 Rollett which adds together
-c  the contributions to A from atoms at x and x+1/2 (ie multiplies A by 2)
-c  For a systematic absence it should subtract the contrinution fro x+1/2, ie A=0 etc.
+c  For centred cells, CRYSTALS used the optimisation page 45 Rollett which
+c  adds together the contributions to A from atoms at x and x+1/2 
+c  (ie multiplies A by 2)
+c  For a systematic absence it should subtract the contribution from x+1/2, 
+c  ie A=0 etc.
 c  As originally written, the program gets FC > 0 for absences.
-c  This should not matter for untwinned crystals, since the absences should have been removed.
-c  For twins, the second component may overlap with a systematic absence from the first
-c  component so we must check for this an ensure the contribution from the first is zero.
-c  Save G2, the number of non-primitice centrings
-          g2sav = g2
-c  check if the principal refelction is a centring absence
-          IF(N2P .gt. 1)then
-C         CHECK NON-PRIMITIVE CONDITIONS
-          M2P=L2P
-           sysabs: DO I=1,N2P
-            A=ABS(STORE(M2P)*sh+STORE(M2P+1)*sk
-     2       +STORE(M2P+2)*sl)
-            K=INT(A+0.01)
-            IF(A-FLOAT(K) .gt.0.01) then
-                  g2 = 0.0
-
-
-                  exit
-            endif
-            M2P=M2P+3
-           enddo sysabs
-          endif
+c  This should not matter for untwinned crystals, since the absences should 
+c  have been removed.
+c  For twins, the second component may overlap with a systematic absence 
+c  from the first component so we must check for this an ensure the 
+c  contribution from the first is zero.
 c
-
           NK=NJ  ! RESET THE FLAGS FOR THIS GROUP OF TWIN ELEMENTS, e.g. 1234
           DO WHILE ( NK .GT. 0 ) ! CHECK IF THERE ARE ANY MORE ELEMENTS TO PROCESS
+      if (nj .gt.9) then
             LJX=NK      ! FETCH THE NEXT ELEMENT
             NK=NK/10                                           ! e.g. 123
             NL=LJX-NK*10                                        ! e.g. 1234-1230 = 4
@@ -1748,15 +1743,46 @@ c
             STORE(M6+2)=FLOAT(NINT(STORE(M25+6)*SH
      2                      +STORE(M25+7)*SK+STORE(M25+8)*SL))
             IF ( NM .GE. N25 ) GO TO 19920  ! WE HAVE USED TOO MANY ELEMENTS
-            CALL XSFLSX  ! THIS ELEMENT IS OKAY  -  ENTER THE S.F.L.S MAIN LOOP
-c restore G2
-          g2 = g2sav
-          END DO  ! END OF THIS TWINNED REFLECTION  
+      else
+            nl=nj
+            nk = 0
+            store(m6) = sh
+            store(m6+1) = sk
+            store(m6+2) = sl
+      endif
 
+c  save the multiplier 
+            g2sav = g2
+c  check if the current reflection is a centring absence
+            IF(N2P .gt. 1)then
+C           CHECK NON-PRIMITIVE CONDITIONS
+             M2P=L2P
+             sysabs: DO I=1,N2P
+              A=ABS(STORE(M2P)*store(m6)+STORE(M2P+1)*store(m6+1)
+     2        +STORE(M2P+2)*store(m6+2))
+              K=INT(A+0.01)
+              IF(A-FLOAT(K) .gt.0.01) then
+                  g2 = 0.0
+                  exit
+              endif
+              M2P=M2P+3
+             enddo sysabs
+            endif
+
+c      write(ncpu,9753)'Given', ph,pk,pl, 'Transformed', store(m6),
+c     1 store(m6+1),store(m6+2), g2, store(m6+3),a,k
+9753  format(a,3f8.2,2x,a,3f8.2, '  G2,Fo,A,K ', 3f12.2,i5)
+c
+            CALL XSFLSX  ! ENTER THE S.F.L.S MAIN LOOP. G2 may be zero
+            g2 = g2sav
+          END DO  ! END OF THIS TWINNED REFLECTION  
+c
+c
+c
           store(m6)=ph  ! restore the nominal indices
           store(m6+1)=pk
           store(m6+2)=pl
-
+c
           FCEXT=0.  !  WIND UP AND CALCULATE THE TOTAL VA
           JREF_STACK_PTR=JREF_STACK_START  ! CALCULATE /FC/ AND ITS DERIVATIVES FOR EACH ELEMENT
           NQ=NM
@@ -1815,7 +1841,9 @@ C--PRINT THIS CONTRIBUTOR
           END IF
           FO=STORE(M6+10)      ! CALCULATE SOME NEEDED VALUES
           STORE(M6+5)=STORE(M6+5)*SCALES
-          P=0.
+cdjwjul2010 why set P to zero? Should it be M6+6?
+          p=store(m6+6)
+c          P=0.
           CALL XACRT(4)  ! ACCUMULATE THE /FO/ TOTALS
           IF (SFLS_TYPE .EQ. SFLS_REFINE) THEN ! CHECK IF WE ARE DOING REFINEMENT
             DO LJV=JO,JP  ! CALCULATE THE NECESSARY P.D.'S WITH RESPECT TO /FCT/.
@@ -1837,7 +1865,8 @@ C--PRINT THIS CONTRIBUTOR
             JREF_STACK_PTR=JREF_STACK_START
             NI=NM
             DO WHILE ( NI.GT.0 ) ! CHECK IF THERE ANY MORE SCALES TO PROCESS
-              JREF_STACK_PTR=ISTORE(JREF_STACK_PTR) ! FETCH THE INFORMATION FOR THE NEXT ELEMENT SCALE FACTOR
+c             FETCH THE INFORMATION FOR THE NEXT ELEMENT SCALE FACTOR
+              JREF_STACK_PTR=ISTORE(JREF_STACK_PTR)
               LJX=ISTORE(JREF_STACK_PTR+8)
               A=0.5*SCALEW
      1             *STORE(JREF_STACK_PTR+6)*STORE(JREF_STACK_PTR+6)/FC
@@ -1870,11 +1899,11 @@ C--CHECK IF WE SHOULD INCLUDE EXTINCTION
         END IF
 
         FCEXS=FCEXT*SCALEG ! THE VALUE OF /FC/ AFTER SCALE FACTOR APPLIED
-
-        IF(.NOT.TWINNED)THEN ! CHECK IF THIS IS A TWINNED STRUCTURE
+c skip the check since we now allow twinning and extinction
+cjun2010        IF(.NOT.TWINNED)THEN ! CHECK IF THIS IS A TWINNED STRUCTURE
           STORE(M6+5)=FCEXT*SCALES ! STORE FC AND PHASE IN THE LIST 6 SLOTS
           STORE(M6+6)=P
-        END IF
+cjun2010        END IF
 
         IF(ND.GE.0)THEN ! CHECK IF THE PARTIAL CONTRIBUTIONS ARE TO BE OUTPUT
           STORE(M6+7)=ACT ! STORE THE NEW CONTRIBUTIONS
@@ -1911,6 +1940,22 @@ C If #CALC, then L28 was adjusted earlier. Call KALLOW again to get normal R
           RW=RW+A*A
         ENDIF
 
+          UJ = FO*SCALEK
+          RDJW = ABS(WDF)
+          IF (RDJW .GT. ABS(XVALUR)) THEN
+C----  H,K,L,FO,FC,/WDELTA/,FO/FC
+            CALL XMOVE(STORE(M6), STORE(LTEMPR), 3)
+            STORE(LTEMPR+3) = UJ
+            STORE(LTEMPR+4) = FCEXT
+            STORE(LTEMPR+5) = RDJW
+            STORE(LTEMPR+6) = MIN(99., UJ / MAX(FCEXT , ZERO))
+            CALL SRTDWN(LSORT,MSORT,MDSORT,NSORT, JSORT, LTEMPR, 
+     1              XVALUR, 0, DEF)
+          ENDIF
+
+
+
+
         IF(REFPRINT)THEN !   CHECK IF A PRINT OF THE RELFECTIONS IS NEEDED
           P=P*D             ! PRINT ALL REFLECTIONS
           UJ=FO*SCALEK
@@ -1925,21 +1970,8 @@ C If #CALC, then L28 was adjusted earlier. Call KALLOW again to get normal R
      2      FCEXT,P,WJ,VJ,A,S,T,C,ST
           ENDIF
 4600    FORMAT(3X,3F6.0,3F9.1,E13.4,E13.4,F8.1,F8.1,F9.1,F10.1,F10.5)
-
+c
         ELSE   ! Only print worst 25 agreements.
-
-          UJ = FO*SCALEK
-          RDJW = ABS(WDF)
-          IF (RDJW .GT. ABS(XVALUR)) THEN
-C----  H,K,L,FO,FC,/WDELTA/,FO/FC
-            CALL XMOVE(STORE(M6), STORE(LTEMPR), 3)
-            STORE(LTEMPR+3) = UJ
-            STORE(LTEMPR+4) = FCEXT
-            STORE(LTEMPR+5) = RDJW
-            STORE(LTEMPR+6) = MIN(99., UJ / MAX(FCEXT , ZERO))
-            CALL SRTDWN(LSORT,MSORT,MDSORT,NSORT, JSORT, LTEMPR, 
-     1              XVALUR, 0, DEF)
-          ENDIF
           IF ( ABS(UJ-FCEXT) .GE. R*UJ .AND. IBADR .LE. 50 ) THEN
             IF (IBADR .LT. 0) THEN
               IF (ISSPRT .EQ. 0) WRITE(NCWU,4651)

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.41  2010/04/09 16:32:17  djw
+C Dont update list 30 Rint if current list is LIST 7 and Rint is already set
+C
 C Revision 1.40  2008/12/14 17:03:17  djw
 C Enable the centric reflections to be identified and counted
 C
@@ -442,6 +445,7 @@ C--SET THE /FO/ SLOT
       IFO=3
 C--LOAD LIST 13 FOR THE TWIN AND FRIEDEL FLAGS
       CALL XFAL13
+      IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) . LT. 0) CALL XFAL13
       IF ( IERFLG .LT. 0 ) GO TO 9900
       IF(ISTORE(L13CD+1))1150,1100,1100
 C--THIS STRUCTURE IS TWINNED
@@ -503,51 +507,55 @@ C IF IL28 is zero process normally, otherwise filter using L28 conditions.
       IF ( ( IL28 .NE. 0 ) .AND. ( KALLOW(I) .LT. 0 ) ) GOTO 1450
 C--CHECK IF THIS REFLECTION IS SYSTEMATICALLY ABSENT
       IF(KSYSAB(IN))1550,1600,1600
-C--REFLECTION IS NOT ALLOWED  -  CHECK IF IT IS THE FIRST
+c
 1550  CONTINUE
-      NABSNT = NABSNT + 1
-      FO = STORE(L6+3)
-      SUMI = SUMI + FO
-      DO 1560 I = 1,NTOT1-1
-      IF (FO .LT. RANGE(I)) THEN
+C--index is systematic absence.   
+c  reject it if there is only one component
+c^      if (store(l6+11) .le. 9) then
+c  CHECK IF IT IS THE FIRST
+       NABSNT = NABSNT + 1
+       FO = STORE(L6+3)
+       SUMI = SUMI + FO
+       DO 1560 I = 1,NTOT1-1
+       IF (FO .LT. RANGE(I)) THEN
             ATOT1(I) = ATOT1(I) + FO
             ITOT1(I) = ITOT1(I) + 1
             GOTO 1561
-      ENDIF
-1560  CONTINUE
-      ATOT1(NTOT1) = ATOT1(NTOT1) + FO
-      ITOT1(NTOT1) = ITOT1(NTOT1) + 1
-1561  CONTINUE
+       ENDIF
+1560   CONTINUE
+       ATOT1(NTOT1) = ATOT1(NTOT1) + FO
+       ITOT1(NTOT1) = ITOT1(NTOT1) + 1
+1561   CONTINUE
 
-      CALL XSQRF(FOS, FO, FABS, SIGMAS, STORE(M6+12))
+       CALL XSQRF(FOS, FO, FABS, SIGMAS, STORE(M6+12))
 
-      IF(SIGMAS.GT.2.*ZERO) THEN
-        SIGRAT = FOS/SIGMAS
-      ELSE 
-        SIGRAT = SIGMAS
-      END IF
+       IF(SIGMAS.GT.2.*ZERO) THEN
+         SIGRAT = FOS/SIGMAS
+       ELSE 
+         SIGRAT = SIGMAS
+       END IF
 
-      IF ( IULN .EQ. 6 ) THEN
+       IF ( IULN .EQ. 6 ) THEN
         WRITE(NCFPU1,'(3I4,2(1X,F12.3))') (NINT(STORE(L6+I)),I=0,2),
      1                                  SIGRAT,FOS
-      END IF
+       END IF
 
-      IF (STORE(L6+12) .LE. 2.*ZERO) GOTO 1563
-      RATIO = FO / STORE(L6+12)
-      SUMSTN = SUMSTN + RATIO*RATIO
-      DO 1562 I = 1,NTOT1-1
-      IF (RATIO .LT. RANGE(I)) THEN
+       IF (STORE(L6+12) .LE. 2.*ZERO) GOTO 1563
+       RATIO = FO / STORE(L6+12)
+       SUMSTN = SUMSTN + RATIO*RATIO
+       DO 1562 I = 1,NTOT1-1
+       IF (RATIO .LT. RANGE(I)) THEN
             ATOT2(I) = ATOT2(I) + RATIO*RATIO
             ITOT2(I) = ITOT2(I) + 1
             GOTO 1563
-      ENDIF
-1562  CONTINUE
-      ATOT2(NTOT1) = ATOT2(NTOT1) + RATIO*RATIO
-      ITOT2(NTOT1) = ITOT2(NTOT1) + 1
-1563  CONTINUE
-      CALL XL6RRP(N,1000,IFO,CCAPT)
-      GOTO 1450
-
+       ENDIF
+1562   CONTINUE
+       ATOT2(NTOT1) = ATOT2(NTOT1) + RATIO*RATIO
+       ITOT2(NTOT1) = ITOT2(NTOT1) + 1
+1563   CONTINUE
+       CALL XL6RRP(N,1000,IFO,CCAPT)
+       GOTO 1450
+c^      endif
 1600  CONTINUE
 C--STORE THE REFLECTION
       CALL XSLR(1)
@@ -666,10 +674,12 @@ C--
       INCLUDE 'ISTORE.INC'
 C
       DIMENSION H(3),HG(3),HMAX(3)
+      logical labsent
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST25.INC'
       INCLUDE 'XUNITS.INC'
 C
       INCLUDE 'QSTORE.INC'
@@ -683,19 +693,104 @@ c      2 = Friedel pair
       store(m6+18) = 0.0
       fried=1.
       afried=fried
+      labsent = .false.
       IF(N2P-1)1150,1150,1000
 C--CHECK NON-PRIMITIVE CONDITIONS
 1000  CONTINUE
       M2P=L2P
       DO 1100 I=1,N2P
-      A=ABS(STORE(M2P)*STORE(M6)+STORE(M2P+1)*STORE(M6+1)+STORE(M2P+2)
+       A=ABS(STORE(M2P)*STORE(M6)+STORE(M2P+1)*STORE(M6+1)+STORE(M2P+2)
      2 *STORE(M6+2))
-      K=INT(A+0.01)
-      IF(A-FLOAT(K)-0.01)1050,2100,2100
+       K=INT(A+0.01)
+       IF(A-FLOAT(K) .ge. 0.01)  then
+c----- absence
+        labsent  = .true.
+c
+c  for a twinned crystal, we must accept the reflection if any of the 
+c  tranformed indices is acceptable
+        if (n25 .gt. 0) then
+          NJ=NINT(STORE(M6+11))
+c
+c IF THERE IS NO ELEMENT KEY, SET IT TO MOROHEDRAL TWINNING
+          IF (NJ .EQ. 0) NJ = 12 
+c 
+          NK=NJ  ! FIND THE ELEMENT FOR WHICH THE INDICES ARE GIVEN
+          DO WHILE ( NK .GT. 0 ) 
+             NL=NK
+             NK=NK/10
+             LJX=NL-NK*10
+             IF ( LJX .LE. 0 ) GO TO 19910    ! CHECK THAT THIS IS A 
+             IF ( LJX .GT. N25 ) GO TO 19910  ! VALID ELEMENT NUMBER
+          END DO
+c
+C CHECK IF 'NL' HOLDS THE ELEMENT NUMBER OF THE GIVEN INDICES.
+c  Generate the principal indices
+c COMPUTE THE INDICES IN THE STANDARD REFERENCE SYSTEM
+          M25I=L25I+(NL-1)*MD25I  
+          SH=STORE(M25I)*store(m6)+STORE(M25I+1)*store(m6+1)+
+     1    STORE(M25I+2)*store(m6+2)
+          SK=STORE(M25I+3)*store(m6)+STORE(M25I+4)*store(m6+1)+
+     1    STORE(M25I+5)*store(m6+2)
+          SL=STORE(M25I+6)*store(m6)+STORE(M25I+7)*store(m6+1)+
+     1    STORE(M25I+8)*store(m6+2)
+          ish = nint(sh)
+          isk = nint(sk)
+          isl = nint(sl)
+          sh = float(ish)
+          sk = float(isk)
+          sl = float(isl)
+c      write(ncpu,1111) 'Given ', store(m6), store(m6+1), store(m6+2),
+c     1 ' Parent', sh,sk,sl, ' Element', nj
+1111  format(a,3f8.1,a,3f8.1, a,i4)
+c
+          NK=NJ  ! RESET THE FLAGS FOR THIS GROUP OF TWIN ELEMENTS, e.g. 1234
+c          CHECK IF THERE ARE ANY MORE ELEMENTS TO PROCESS
+          DO WHILE ( NK .GT. 0 ) 
+             LJX=NK      ! FETCH THE NEXT ELEMENT
+             NK=NK/10                                           ! e.g. 123
+             NL=LJX-NK*10                                        ! e.g. 1234-1230 = 4
+             M25=L25+(NL-1)*MD25   ! COMPUTE THE INDICES FOR THIS COMPONENT
+             ph=FLOAT(NINT(STORE(M25)*SH
+     2                    +STORE(M25+1)*SK+STORE(M25+2)*SL))
+             pk=FLOAT(NINT(STORE(M25+3)*SH
+     2                      +STORE(M25+4)*SK+STORE(M25+5)*SL))
+             pl=FLOAT(NINT(STORE(M25+6)*SH
+     2                      +STORE(M25+7)*SK+STORE(M25+8)*SL))
+c
+c  check if the current reflection is a centring absence
+             IF(N2P .gt. 1)then
+C  CHECK NON-PRIMITIVE CONDITIONS, skipping the identity
+              MM2P=L2P+3
+              sysabs: DO II=2,N2P
+               qh = store(mm2p+0)*ph
+               qk = store(mm2p+1)*pk
+               ql = store(mm2p+2)*pl
+               A=ABS(qh+qk+ql)
+               K=INT(A+0.01)
+               IF(A-FLOAT(K) .lt.0.01) then
+                  labsent = .false.
+c even just one 'present' absence means we have to keep the reflection
+                  goto 1150
+               else
+               endif
+               mm2p=mm2p+3
+              enddo sysabs
+             endif
+          END DO  
+          endif
+        endif
 1050  CONTINUE
-      M2P=M2P+3
+       M2P=M2P+3
 1100  CONTINUE
+      if (labsent) then
+            goto 2100        
+      endif
+c
+c
+c  no centring conditions
 1150  CONTINUE
+c
+c
 C--SET DEFAULT VALUES FOR THE INDICES AND TRANSFORMED INDICES
       K=M6
       DO 1200 I=1,3
@@ -776,6 +871,8 @@ C--THIS IS A REJECTED REFLECTION
 2100  CONTINUE
       KSYSAB=-1
       GOTO 2050
+19910 continue
+      stop 'panic'
       END
 C
 CODE FOR KCENTR
