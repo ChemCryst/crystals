@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.54  2010/07/16 11:35:31  djw
+C Enable XPCHLX to output lists 12 and 16 to the cif file.  This means carrying the I/O chanel (as NODEV)
+C in XPCHLX,XPCHLH,PPCHND and XPCHUS.
+C Fixed oversight in distangle for esds of H-bonds
+C
 C Revision 1.53  2010/06/03 16:58:11  djw
 C Add comments to expalin the different #PUNCH 6 x keys
 C
@@ -721,13 +726,13 @@ C>DJW280896
 C-------      TWINNED
 1000  FORMAT('READ NCOEFFICIENT = 11, TYPE = FIXED, UNIT = DATAFILE' ,
      1 ', CHECK=NO' /
-     2 'INPUT H K L /FO/ SIGMA /FC/ PHASE /FOT/ ELEMENTS'
-     4 ,' SQRTW JCODE' /
      3 'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, F10.2, ',
      4 'F10.0, / G12.5, F4.0)'/
      4 'store ncoef=9'/
      5 'outPUT indices /FO/ SIGMA SQRTW /FC/ PHASE RATIO/JCODE ',
      5 ' /FOT/ ELEMENTS',/
+     2 'INPUT H K L /FO/ SIGMA /FC/ PHASE /FOT/ ELEMENTS'
+     4 ,' SQRTW JCODE' /
      5 'END')
 c
 C------      NOT TWINNED
