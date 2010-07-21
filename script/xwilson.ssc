@@ -22,7 +22,7 @@
 % COPY '#SCRIPT XPUTINFO'                                                       
 %%                                                                              
 %%                                                                              
-^^WI WINDOW XCHECK6 'Initial Analyses' LARGE MODAL KEEP SIZE                    
+^^WI WINDOW XWILSON 'Wilson Plot' LARGE MODAL KEEP SIZE                    
 ^^WI COMMIT='XC_BOK' CANCEL='XC_BOK'                                            
 ^^WI GRID MAIN NROWS=3 NCOLS=1                                                  
 ^^WI {                                                                          
@@ -96,7 +96,7 @@
 ^^CO SET PROGOUTPUT TEXT 'Ready'                                                
 %%                                                                              
 %  LOOP                                                                         
-%    VERIFY XC_BOK XC_REF RHOMIT1 RHOMIT2 SIGCUT ED28 ED02 ED29 SIGFULL -       
+%    VERIFY XC_BOK XC_REF  RHOMIT2 SIGCUT ED28 ED02 ED29 SIGFULL -       
  WILFILT1                                                               
 %    GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '                               
 %    CASE VALUE                                                                 
@@ -105,14 +105,6 @@
 %        FINISH                                                                 
 %      END BLOCK                                                                
 %      BLOCK    %XC_REF                                                         
-%        EVALUATE LOOPCOUNTER = LOOPEND                                         
-%      END BLOCK                                                                
-%      BLOCK    %RHOMIT                                                         
-%        GET SILENT NOSTORE REAL ' ' ' '                                        
-%        EVALUATE NEWRHO = VALUE                                                
-%        EVALUATE LNEWRAT = FALSE                                               
-%        EVALUATE LNEWRHO = TRUE                                                
-%        COPY '#SCRIPT XLIST28'                                                 
 %        EVALUATE LOOPCOUNTER = LOOPEND                                         
 %      END BLOCK                                                                
 %      BLOCK    %RHOMIT2                                                        
