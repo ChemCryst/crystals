@@ -36,15 +36,16 @@
 %    TRANSFER '# this, read back in with #USE SCPLST6.DAT' TO PUNCH
 %    TRANSFER ' ' TO PUNCH
 %    COPY '#PUNCH 6 C'
+%    COPY 'END'
 %    COPY '#RELEASE PUNCH bfile.pch'
 %   ELSE
 %    COPY '#RELEASE FRN1 SCPLST6.DAT'
 %    TRANSFER '# These are F^2 reflections in fcf format' TO PUNCH
 %    TRANSFER ' ' TO PUNCH
 %    COPY '#PUNCH 6 H'
+%    COPY 'END'
 %    COPY '#RELEASE FRN1 bfile.frn'
 %   END IF
-%   COPY 'END'
 %  END BLOCK
 %%
 %  CLEAR
