@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.17  2010/07/16 11:35:31  djw
+C Enable XPCHLX to output lists 12 and 16 to the cif file.  This means carrying the I/O chanel (as NODEV)
+C in XPCHLX,XPCHLH,PPCHND and XPCHUS.
+C Fixed oversight in distangle for esds of H-bonds
+C
 C Revision 1.16  2010/05/04 10:40:42  djw
 C Call new-style (i.e. correct) SHELX atom output
 C
@@ -94,8 +99,8 @@ C--FIRST CONTROL ROUTINE FOR LIST INPUT AND OUTPUT.
 C--LOAD THE NEXT '#INSTRUCTION'
 c      see also PRCSS.FPP
       NUM=KNXTOP(LSTOP,LSTNO,ICLASS)
-      write(ncawu,'(4(a,i6))') 'INPUT  List op =', lstop, ' List no =',
-     1  LSTNO, ' Iclass=', iclass, '  Num = ', num
+c      write(ncawu,'(4(a,i6))') 'INPUT  List op =', lstop, ' List no =',
+c     1  LSTNO, ' Iclass=', iclass, '  Num = ', num
 C--CHECK IF WE SHOULD RETURN
       IF(NUM.LE.0) RETURN
 
