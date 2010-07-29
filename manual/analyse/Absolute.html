@@ -1,0 +1,376 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title> Absolute Structure </title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<style type=”text/css”>
+body { background-color:white; color:black;
+#para2 { font-family:fantasy; color:blue }
+p { font-size:12pt; }
+p:first-letter {font-size: 200%; color:red }
+h3 { font-family:monospace; color:#ff00ff }
+h1 {  color:green }
+</style>
+</head>
+<body>
+<center><h1>Absolute Structure Determination</h1></center> 
+
+
+<p>
+As Howard Flack has many times pointed out, one tasks for a 
+crystallogrpaher will be to determine the Absolute Structures of 
+non-centrosymmetric crystalline samples. 
+All materials in a non-centrosymmetric space group will have an absolute 
+structure.<br>
+This may arise either because the material is composed of 
+enantiopure chiral molecules (eg sucrose) or because achiral entities 
+are arranged into a chiral structure (e.g. SiO4 in quartz). For 
+non-centrosymmetric achiral materials, the crystal will have one or more 
+polar directions which must be correctly assigened if the Polar Axis 
+Dispersion Error.
+
+<br>
+ For non-centrosymmetric chiral
+ crystals, the Absolute Cofiguration of the material can be assigned
+if the absolute structure determination was successful.
+<br>
+
+For a quick overview of absolute structurures and configuration, see: 
+<i>Absolute Configuration Determination: Is There More Information in the 
+Data?. D.J. Watkin, and A.L. Thompson, Acta Cryst., A65, s307 
+(2009).</i>
+</p>
+
+
+
+<table width="100%" border="1" cellspacing="0" cellpadding="10" >
+
+
+
+<tr>
+<td width="50%">
+<h2> Analyse</h2>
+<h3> Absolute Configuration.  The Flack "x" parameter</h3>
+&nbsp;
+
+<a href="./Flack.pdf" >
+<img id="10c " src="./tn_Flack.jpg"  align="top"
+ alt="Not Available"><br>
+See: <i>H. D. Flack and G. Bernardinelli., J. 
+Appl. Cryst. (2000). 33, 1143-1148</i>.
+</a>
+</td>
+<td width="50%" >
+<p>
+CRYSTALS has two different refineable parameters to help with the 
+determination of absolute structure. <br>
+The oldest, the Rodger's "eta" parameter is a multiplier onto f", and 
+takes the value +1 if the model has the correct hand, and -1 if it needs 
+inverting. Flack showed that this parameter is unreliable as eta 
+approaches zero.<br>
+The Flack "x" parameter is the mixing term in 
+<br> F^2 = (1-x)F^2+h + xF^2-h <br>
+and takes the value zero if the model has the correct hand, and +1 if it needs 
+inverting.  <br>
+Either the Rodger's or Flack parameter should be refined simultaneously 
+with the other structural parameters since its value will influence 
+them, and they in turn will influence the s.u. on the absolute 
+configuration parameter.<br>
+<strong> Interpreting the Absolure Configuration Parameters</strong><br>
+<p style="font-size:80%">
+If the s.u. on the Flack parameter is greater than 0.30, the X-ray data 
+contain no significant anomalous information so that the absolute configuration
+cannot be assigned by X-ray means. The value of x can be set to zero and not refined.
+ (It may be appropriate to report x and its s.u. to demonstrate that the 
+calculation was actually performed).  <br>
+If the s.u. is small enough (<0.04), then the parameter itself can be evaluated.  
+If it falls close to zero or unity, then the absolute configuration has been determined.
+If it falls within this range, but is significantly distant from the bounds, 
+the material is probably twinned by inversion.
+</p>
+<p style="font-size:100%">
+</p>
+</td>
+</tr>
+
+
+<tr>
+<td width="50%">
+<h2> Absolute Config</h2>
+
+<img id="11c " src="./Absolute.jpg"  align="top"
+ alt="Not Available"><br>
+</td>
+<td width="50%">
+&nbsp;
+The default criterion ensures that all but the very large 
+DF<sup>2</sup>o/DF<sup>2</sup>c are 
+used in the calculation.<br>
+By defautlt, no plots are produced and no output is sent to the punch 
+file
+</td>
+</tr>
+
+
+
+<tr>
+<td width="50%">
+<h2> DFo/DFc plot</h2>
+
+<img id="12c " src="./tn_Ir-cpd.jpg"  align="top"
+ alt="Not Available"><br>
+</td>
+<td width="50%">
+&nbsp;
+The actual values plotted are DF<sup>2</sup>o/DF<sup>2</sup>c<br>
+For a sample with strong anonalous differences, this should be a line of 
+unit gradient, with little scatter. However, even if a clear trend is 
+not evident, the absolute structure may be indicated by the 
+refinement.<br><br>
+<img id="12c " src="./tn_vit-C.jpg"  align="top"
+ alt="Not Available">
+</td>
+</tr>
+
+
+
+
+<tr>
+<td width="50%">
+<h2> Normal Probability Plot</h2>
+Normal probability plot of the residual, DF<sup>2</sup>o.<br><br>
+
+<img id="12c " src="./tn_NPP.jpg"  align="top"
+ alt="Not Available"><br>
+</td>
+<td width="50%">
+&nbsp;
+For a sample with strong anonalous differences, this should be a line of 
+unit gradient, with little scatter and no curving tails. 
+If the gradient is not unity, there is suspicion that the least squares 
+weights are inappropriate. However, a few points off the unit gradient 
+line near the ends of the line are not important.<br><br>
+</td>
+</tr>
+
+
+
+
+
+
+<tr>
+<td colspan="2">
+<h2> Text output</h2>
+In addition to the graphs, a summary of textual output is sent to the 
+screen.  Full details are in the listing file (bfile#xx.lis).  This can 
+be viewed by going to the tab "Files" and selecting "View Listing".  You 
+may need to set your default file viewer to one which enables files to be 
+accessed even while they are in use by other applications (eg MS 
+Notepad)
+</td>
+</tr>
+
+
+<tr>
+<td width="50%">
+<h2> Plot Details</h2>
+<pre><code>
+ Floating origin in  z direction
+                 molecular weight,  calculated density, absorption coefficient
+                                        (gm/cm**3)                (cm-1)
+  From LIST    5        340.109              1.770                37.672
+  From LIST   29        340.109              1.770                37.672
+  Friedif =   1386.8   Estimated Friedel difference =   206.7876
+  f computed from scattering factors, including f-prime
+
+ Current Do-Dc R-factor (%)=     30.69
+
+ Plotting (Fo+ - Fo-) vs (Fc+ - Fc-)
+ Gradient for zero intercept =                 1.038
+ Slope, intercept and Cc (R) of Fo/Fc  Plot =  1.037    -78.70   0.96085
+
+ Computing normal probability plot for          1412 reflections.
+ Gradient for zero intercept =                 0.873
+ Slope, intercept and Cc (R) of  NPP   Plot =           0.873      0.12   0.99921
+
+ The slope shoud be unity and the intercept zero
+</code></pre>
+
+</td>
+<td width="50%">
+Numerical information about the DF<sup>2</sup>o/DF<sup>2</sup>c and 
+Normal Probability plots. The Do-Dc Rfactor is computed from<br>
+<pre><code>
+R = 100 * |DF<sup>2</sup>o - DF<sup>2</sup>c| / |DF<sup>2</sup>o|
+</code></pre>
+<br>
+Observed Friedif values much larger than the estimated Friedif values 
+indicate that there is a good probability that the absolute structure 
+can be reliably determined.
+</td>
+</tr>
+
+
+<tr>
+<td width="50%">
+<h2> X and Y parameters</h2>
+<pre><code>
+ No of Reflections processed =   2877
+ No of Friedel Pairs found =     1412 No of Friedel Pairs used  =     1412
+ No of Unpaired Reflections  =     53
+ No of Centric Reflections   =      0
+ Flack parameter obtained from original refinement
+ Hooft parameter obtained with Flack x set to zero
+ Reflections only used if /Fo+ - Fo-/ <  99999.00 * /Fc+ - Fc-/
+ Friedif =    1386.82 Acta A63, (2007), 257-265
+ Flack & Shmueli (2007) recommend a value >200
+ for general structures and >80 for enantiopure crystals
+
+ Flack Parameter & su   -0.0073    0.0069
+ Hooft Parameter & su   -0.0022    0.0047
+           Ton G & su    1.0043    0.0095
+</code</pre>
+
+
+</td>
+<td width="50%">
+Statistics about the refelction data. The number of Friedel Pairs used 
+in determining the Hooft(y) parameter depends upon the value of the 
+threshold.
+</td>
+</tr>
+
+
+<tr>
+<td width="50%">
+<h2>Distribution of Residuals</h2>
+<pre><code>
+deltaF = F^2(+) - F^2(-)
+          Number +ve   mean(deltaF)   rms(deltaF)   Number -ve   mean(deltaF)   rms(deltaF)
+For Fo
+             663      1514.7964      2316.3726          749     -1515.3495     2128.7029
+For Fc
+             714      1348.5111      2073.9597          698     -1406.4319     2031.7454
+
+
+No of reflections for which delta(Fo) has same sign as delta(Fc)
+Same sign   Opposite sign
+    1223           189
+
+
+ Distribution of Delta(F^2)/n&lt;F^2&gt;
+Delta Fo^2    31    25    43    54   110   153   220   222   202   116    87    61    36    23    29
+Delta Fc^2    27    23    35    50    82   134   209   284   221   135    72    57    35    23    25
+    n         -7    -6    -5    -4    -3    -2    -1     0     1     2     3     4     5     6     7
+</code></pre>
+</td>
+<td width="50%">
+The statistics for Fo and Fc should be roughly similar.
+<br><br>
+The number of reflections for which the residuals for Fo and Fc have the 
+same sign should exceed the number with opposite sign.
+<br><br>
+The distribtion for Fo should be similar to that for Fc.  For a poorly 
+determined absolute structure, the Fo distribution is oftem much wider 
+than the Fc distribution.
+
+</td>
+</tr>
+
+
+<tr>
+<td width="50%">
+<h2>The Hooft et al probabilities</h2>
+<pre><code>
+ For an enantiopure material, there are 2 choices, P2
+P2(correct)     1.0000   i.e. 0.100000E+01
+
+ If 50:50 twinning is possible, there are 3 choices, P3
+P3(correct)     1.0000   i.e. 0.100000E+01
+P3(rac-twin)    0.0000   i.e. 0.000000E+00
+P3(inverse)     0.0000   i.e. 0.000000E+00
+G               1.0043
+G S.U.          0.0095
+FLEQ           -0.0022
+FLEQ S.U.       0.0047   i.e. 0.472883E-02
+</code></pre>
+</td>
+<td width="50%">
+We do not have a means of assessing the probability of The Probability 
+being correct.
+</td>
+</tr>
+
+
+<tr>
+<td colspan="2">
+<h2> ASCII File Output</h2>
+</td>
+</tr>
+
+
+
+<tr>
+<td width="50%">
+<h2>Punch</h2>
+<pre><code><small>
+   H   K   L           Fo+       Sig       Fc+       Fo-       Sig       Fc-     Do        Dc         Ao       Ac      Sig(Do) 
+  -4   5   0 1 2  28762.53    706.45  29264.90  35556.04    701.30  35820.63  -6793.51  -6555.73  32159.28  32542.77    995.44
+  -1   5   0-1    16160.01    302.59  16617.79
+  -3   6   0 1 2  11109.57    313.61  11413.68  10339.38    196.65  10643.96    770.19    769.71  10724.47  11028.82    370.17
+   0   6   0 1 2  24984.76    493.82  25424.93  25433.55    616.86  25585.65   -448.79   -160.71  25209.16  25505.29    790.17
+  -5   7   0 1 2  11172.38    314.49  11542.74  14592.49    287.54  15679.00  -3420.11  -4136.27  12882.43  13610.87    426.13
+</small></code></pre>
+
+</td>
+<td width="50%">
+Choosing the button Punch causes information about the reflection data 
+to be output to the <i>bfile.pch</i> file.  The values for Friedel pairs 
+and derived values are output on each line.  As usual, Fo implies 
+F<sup>2</sup>o
+</td>
+</tr>
+
+
+
+<tr>
+<td width="50%">
+<h2>Restrain</h2>
+<pre><code>
+REM Restraint created if abs(Do-Dc) <    3.00 sigma(Ao)
+REM Flack parameter =   -0.0073 Pre-flack =   1.0145
+REM      Delata Fo            Sigma                                 Delta Fc        h     k    l    DFo-Dfc/sig
+restrain  -6793.51,       995.4366 = - ( 1. - ( 2. * enantio ) ) *   6555.73        -4    5    0    0.239    0.022
+restrain    770.19,       370.1651 = + ( 1. - ( 2. * enantio ) ) *    769.71        -3    6    0    0.001   -0.014
+...
+...
+restrain    707.42,       788.7247 = + ( 1. - ( 2. * enantio ) ) *    871.21        -1    4   16    0.208   -0.203
+restrain   -298.93,       986.2073 = + ( 1. - ( 2. * enantio ) ) *    178.23        -3    5   16    0.484   -2.692
+restrain    379.23,      1072.7726 = + ( 1. - ( 2. * enantio ) ) *     81.52         0    5   16    0.278    3.638
+REM     1410 restraints written out
+REM  restraints R-factor(%) =      30.62
+</code></pre>
+</td>
+<td width="50%">
+Choosing the button Restraints causes Parsons-type restraints on the 
+Flack parameter to be written to the <i>flack-restraint.pch</i>.<br>
+The columns headed : 
+<pre><code>
+h    k    l    DFo-Dfc/sig
+</code></pre> are beyond column 80 of the file, so are not seen by 
+CRYSTALS, and are for user-information only.<br>
+To make use of this file, include<br>
+<code>&#35;USE flack-restraint.pch</code> in your LIST 16.<br>
+The column headed Sigma is the su of delta(F<sup>2</sup>. We suspect 
+somone might find a better "su" to use for the restraints.
+</td>
+</tr>
+
+
+
+</table>
+
+</body>
+</html>
+
+
