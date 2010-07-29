@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.30  2010/07/16 11:35:31  djw
+C Enable XPCHLX to output lists 12 and 16 to the cif file.  This means carrying the I/O chanel (as NODEV)
+C in XPCHLX,XPCHLH,PPCHND and XPCHUS.
+C Fixed oversight in distangle for esds of H-bonds
+C
 C Revision 1.29  2010/03/29 13:46:43  djw
 C Get hols of scale for difference Pattersons
 C
@@ -3177,7 +3182,7 @@ cdjwjul2010      check first twin element is unity
             NKDJW=NKDJW/10
             LJXDJW=NLDJW-NKDJW*10
           END DO
-          IF (LJXDJW .NE. 1) GOTO 1000
+          IF (LJXDJW .NE. 1)   GOTO 1000
 cdjwjul2010 
 C--SORT THE INDICES FOR THE DIFFERENT PROJECTIONS
 1250  CONTINUE
