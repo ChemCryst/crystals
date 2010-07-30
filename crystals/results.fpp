@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.164  2010/07/16 11:35:31  djw
+C Enable XPCHLX to output lists 12 and 16 to the cif file.  This means carrying the I/O chanel (as NODEV)
+C in XPCHLX,XPCHLH,PPCHND and XPCHUS.
+C Fixed oversight in distangle for esds of H-bonds
+C
 C Revision 1.163  2010/07/13 14:11:24  djw
 C Compute wRD etc using w = 1/sigmasq.
 C Correct unpaired reflection count
@@ -7676,7 +7681,7 @@ C
 1650        FORMAT ('Same sign',3X,'Opposite sign')
             WRITE (NCWU,1700) NPLS,NMIN
 1700        FORMAT (I8,6X,I8)
-            WRITE (NCWU,'(//A)') ' Distribution of Delta(F^2)/<F^2>'
+            WRITE (NCWU,'(//A)') ' Distribution of Delta(F^2)/n<F^2>'
             WRITE (NCWU,'(a,15I6)') 'Delta Fo^2',IFOPLT
             WRITE (NCWU,'(a,15I6)') 'Delta Fc^2',IFCPLT
             WRITE (NCWU,'(a,15I6)') '    n     ',
