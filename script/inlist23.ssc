@@ -95,7 +95,7 @@
 %    COPY  'END'                                                                
 % END BLOCK                                                                     
 %%djwnov09
-% COPT '#SCRIPT XWTINI'
+% COPY '#SCRIPT XWTINI'
 % COPY '#WEIGHT'                                                                
 % COPY 'END'                                                                    
 % COPY '#ANALYSE'                                                               
