@@ -50,7 +50,7 @@
 {1,11 Refine hydrogen           {12,11Refine the hydrogen with automatically
 {1,11                           {12,11generated "soft restraints" 
 {1,11 Remove hydrogen           {12,11Remove all H atoms from structure         
-{1,11 Use H-files               {12,11Use preexisting files to delete or 
+{1,11 Use H-files               {12,11Use preexisting files to delete and/or 
 {1,11                           {12,11add hydrogen atoms; requires delh.dat
 {1,11                           {12,11and perh.dat
 {1,11 Create H restraints       {12,11Create file h-restraints.dat      
