@@ -1,26 +1,26 @@
-%%SSR MENU-FOURIER
-^^WI  MENU _FOURIER 'F&ourier'
-^^WI   ITEM _DIFF '&Difference' '#SCRIPT XFOUR_NDIFF'
-^^WI               ENABLEIF='L1 L2 L5 L6' DISABLEIF='IN'
-^^WI   ITEM _FOBS '&F-obs'      '#SCRIPT XFOUR_NFOBS'
-^^WI               ENABLEIF='L1 L2 L5 L6' DISABLEIF='IN'
-^^WI   ITEM _2FOC '&2Fo-Fc'     '#SCRIPT XFOUR_N2FO'
-^^WI               ENABLEIF='L1 L2 L5 L6' DISABLEIF='IN'
-^^WI   MENU _FOTH '&Others'
-^^WI    ITEM _FC '&F-calc'      '#SCRIPT XFOUR_NFCALC'
-^^WI               ENABLEIF='L1 L2 L5 L6' DISABLEIF='IN'
-^^WI    ITEM _FD '&Optimal'      '#SCRIPT XFOUR_NOPT'
-^^WI               ENABLEIF='L1 L2 L6' DISABLEIF='IN'
-^^WI    ITEM _FOP '&Fo-Patterson'  '#SCRIPT XFOUR_NFO-PAT'
-^^WI               ENABLEIF='L1 L2 L6' DISABLEIF='IN'
-^^WI    ITEM _FCP '&Fc-Patterson'  '#SCRIPT XFOUR_NFC-PAT'
-^^WI               ENABLEIF='L1 L2 L6' DISABLEIF='IN'
-^^WI   ENDMENU
-^^WI   SPLIT
-^^WI   ITEM FREMF '&Remove Fourier peaks' '#SCRIPT XDELQ'
-^^WI               DISABLEIF='IN'  ENABLEIF='L5 QS'
-^^WI   SPLIT
-^^WI   ITEM _FSET '&Set map ranges' '#SCRIPT XSECTION'
-^^WI               ENABLEIF='L1 L2' DISABLEIF='IN'
-^^WI  ENDMENU
-%%SSR END
+%%SSR MENU-FOURIER                                                              
+^^WI  MENU _FOURIER 'F&ourier'                                                  
+^^WI   ITEM _DIFF '&Difference' '#SCRIPT XFOUR_NDIFF'                           
+^^WI               ENABLEIF='L1 L2 L5 L6' DISABLEIF='IN'                        
+^^WI   ITEM _FOBS '&F-obs'      '#SCRIPT XFOUR_NFOBS'                           
+^^WI               ENABLEIF='L1 L2 L5 L6' DISABLEIF='IN'                        
+^^WI   ITEM _2FOC '&2Fo-Fc'     '#SCRIPT XFOUR_N2FO'                            
+^^WI               ENABLEIF='L1 L2 L5 L6' DISABLEIF='IN'                        
+^^WI   MENU _FOTH '&Others'                                                     
+^^WI    ITEM _FC '&F-calc'      '#SCRIPT XFOUR_NFCALC'                          
+^^WI               ENABLEIF='L1 L2 L5 L6' DISABLEIF='IN'                        
+^^WI    ITEM _FD '&Optimal'      '#SCRIPT XFOUR_NOPT'                           
+^^WI               ENABLEIF='L1 L2 L6' DISABLEIF='IN'                           
+^^WI    ITEM _FOP '&Fo-Patterson'  '#SCRIPT XFOUR_NFO-PAT'                      
+^^WI               ENABLEIF='L1 L2 L6' DISABLEIF='IN'                           
+^^WI    ITEM _FCP '&Fc-Patterson'  '#SCRIPT XFOUR_NFC-PAT'                      
+^^WI               ENABLEIF='L1 L2 L6' DISABLEIF='IN'                           
+^^WI   ENDMENU                                                                  
+^^WI   SPLIT                                                                    
+^^WI   ITEM FREMF '&Remove Q-peaks' '#SCRIPT XDELQ'                       
+^^WI               DISABLEIF='IN'  ENABLEIF='L5 QS'                             
+^^WI   SPLIT                                                                    
+^^WI   ITEM _FSET '&Set map ranges' '#SCRIPT XSECTION'                          
+^^WI               ENABLEIF='L1 L2' DISABLEIF='IN'                              
+^^WI  ENDMENU                                                                   
+%%SSR END                                                                       
