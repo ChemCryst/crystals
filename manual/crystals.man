@@ -22,17 +22,9 @@ US 10  0  0  8
 # #Rtwinning#     Twinned Data
 # #Rmatrixcalc#     The Basic Matrix Calculator
 #
-#PThis version of the manual, has been revised to
- coincide with the release of version 12.00 of CRYSTALS. This 
- revision includes further enhancements to the graphical user interface.
- Opportunity has also been taken to revise some features of the 
- underlying code. Brief details of the changes are in the web document
- #Uhttp://www.xtl.ox.ac.uk/fixes.html#. We have tried to mininise
- the impact on existing users, and we hope that the advantages brought
- about by the changes will become evident.
 
 #YStatus#
-#PThis version of CRYSTALS continues to be based on a
+#PVersion 14 of CRYSTALS continues to be based on a
  version (Issue 2) written by J.R. Carruthers in collaboration with
  J.S.Rollett during 1977-78, which was a rewrite of the 1975 CRYSTALS 
  system implemented  
