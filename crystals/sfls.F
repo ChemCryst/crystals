@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.64  2010/07/21 16:11:10  djw
+C Watch out for twinned centred cells. Originally Fc was obtained by doubling the contributio from the unique operators. This works for the 'presences', but gives non-zero results for the absences.  These must be kept incase a twin element contribution overlaps it.   Treat the left-most element as the parent. However, his leads to problems if the key is, for example, 21. because 2,1 are used to identify the twin scale factor (correclty) but the twin matix (incorreclty).
+C
+C TO BE SORTED OUT.
+C
 C Revision 1.63  2010/06/10 08:11:28  djw
 C c  For centred cells, CRYSTALS used the optimisation page 45 Rollett which adds together
 C c  the contributions to A from atoms at x and x+1/2 (ie multiplies A by 2)
@@ -1692,7 +1697,7 @@ C       CHECK IF THIS IS TWINNED CALCULATION
           PL=STORE(M6+2)
           NJ=NINT(STORE(M6+11))
           IF (NJ .EQ. 0) NJ = 12 ! IF THERE IS NO ELEMENT KEY, SET IT TO MOROHEDRAL TWINNING
-          NK=NJ  ! FIND THE ELEMENT FOR WHICH THE INDICES ARE GIVEN
+          NK=NJ  ! FIND THE ELEMENT FOR WHICH THE INDICES ARE GIVEN  (LEFT-MOST VALUE)
           DO WHILE ( NK .GT. 0 ) 
             NL=NK
             NK=NK/10
@@ -1700,9 +1705,8 @@ C       CHECK IF THIS IS TWINNED CALCULATION
             IF ( LJX .LE. 0 ) GO TO 19910    ! CHECK THAT THIS IS A 
             IF ( LJX .GT. N25 ) GO TO 19910  ! VALID ELEMENT NUMBER
           END DO
-
 C CHECK IF 'NL' HOLDS THE ELEMENT NUMBER OF THE GIVEN INDICES.
-c  Generate the principal indices
+c  Generate the principal indices (Why?)
 c          M25I=L25I+(NL-1)*MD25I  ! COMPUTE THE INDICES IN THE STANDARD REFERENCE SYSTEM
 c          SH=STORE(M25I)*PH+STORE(M25I+1)*PK+STORE(M25I+2)*PL
 c          SK=STORE(M25I+3)*PH+STORE(M25I+4)*PK+STORE(M25I+5)*PL
@@ -1710,13 +1714,7 @@ c          SL=STORE(M25I+6)*PH+STORE(M25I+7)*PK+STORE(M25I+8)*PL
            sh=ph
            sk=pk
            sl=pl
-cdjwjun2010
-          ish = nint(sh)
-          isk = nint(sk)
-          isl = nint(sl)
-          sh = float(ish)
-          sk = float(isk)
-          sl = float(isl)
+c      write(ncawu,'(i4,6x,3f4.0, 6x, 3f4.0)') nl, ph, pk, pl, sh,sk,sl
 c  For centred cells, CRYSTALS used the optimisation page 45 Rollett which
 c  adds together the contributions to A from atoms at x and x+1/2 
 c  (ie multiplies A by 2)
@@ -1731,8 +1729,8 @@ c  contribution from the first is zero.
 c
           NK=NJ  ! RESET THE FLAGS FOR THIS GROUP OF TWIN ELEMENTS, e.g. 1234
           DO WHILE ( NK .GT. 0 ) ! CHECK IF THERE ARE ANY MORE ELEMENTS TO PROCESS
-      if (nj .gt.9) then
-            LJX=NK      ! FETCH THE NEXT ELEMENT
+           if (nj .gt.9) then
+            LJX=NK      ! FETCH THE NEXT ELEMENT, STARTING AT RIGHT HAND SIDE
             NK=NK/10                                           ! e.g. 123
             NL=LJX-NK*10                                        ! e.g. 1234-1230 = 4
             M25=L25+(NL-1)*MD25   ! COMPUTE THE INDICES FOR THIS COMPONENT
@@ -1743,14 +1741,14 @@ c
             STORE(M6+2)=FLOAT(NINT(STORE(M25+6)*SH
      2                      +STORE(M25+7)*SK+STORE(M25+8)*SL))
             IF ( NM .GE. N25 ) GO TO 19920  ! WE HAVE USED TOO MANY ELEMENTS
-      else
+           else
             nl=nj
             nk = 0
             store(m6) = sh
             store(m6+1) = sk
             store(m6+2) = sl
-      endif
-
+           endif
+c
 c  save the multiplier 
             g2sav = g2
 c  check if the current reflection is a centring absence
@@ -1828,22 +1826,23 @@ C--PRINT THIS CONTRIBUTOR
           JP=NP
 
           IF(.NOT.SCALED_FOT) THEN  ! WHICH TYPE OF /FO/ AND /FC/ WE ARE TO OUTPUT
-            STORE(M6+3)=STORE(M6+10) ! OUTPUT THE TOTAL OVER ALL ELEMENTS
+C           SAVE THE TOTAL OVER ALL ELEMENTS
+            STORE(M6+3)=STORE(M6+10)
             STORE(M6+5)=FC
             STORE(M6+6)=0.
           ELSE
-            JREF_STACK_PTR=ISTORE(JREF_STACK_START) ! OUTPUT THE VALUES FOR THE GIVEN INDICES AND ELEMENT
+c           SAVE THE VALUE FOR THE MAIN ELEMENT
+            JREF_STACK_PTR=ISTORE(JREF_STACK_START) 
             LJV=ISTORE(JREF_STACK_PTR+8)+M5ES
             STORE(M6+3)=STORE(M6+10)
      1                    *STORE(JREF_STACK_PTR+6)*STORE(LJV)/FC
             STORE(M6+5)=STORE(JREF_STACK_PTR+6)*STORE(LJV)
             STORE(M6+6)=STORE(JREF_STACK_PTR+7)
           END IF
-          FO=STORE(M6+10)      ! CALCULATE SOME NEEDED VALUES
+          FO=STORE(M6+10)      
           STORE(M6+5)=STORE(M6+5)*SCALES
-cdjwjul2010 why set P to zero? Should it be M6+6?
+c          P=0. !cdjwjul2010 why set P to zero? Should it be M6+6?
           p=store(m6+6)
-c          P=0.
           CALL XACRT(4)  ! ACCUMULATE THE /FO/ TOTALS
           IF (SFLS_TYPE .EQ. SFLS_REFINE) THEN ! CHECK IF WE ARE DOING REFINEMENT
             DO LJV=JO,JP  ! CALCULATE THE NECESSARY P.D.'S WITH RESPECT TO /FCT/.
@@ -1875,36 +1874,41 @@ c             FETCH THE INFORMATION FOR THE NEXT ELEMENT SCALE FACTOR
             END DO
           END IF
         END IF  ! end of twinned calculations
-
-C--FINISH OFF THIS REFLECTION  -  COMPUTE THE OVERALL TOTALS
-        FCEXT=FC
+C--FINISH OFF THIS REFLECTION  
+C
 C--CHECK IF WE SHOULD INCLUDE EXTINCTION
         IF(EXTINCT)THEN ! WE SHOULD INCLUDE EXTINCTION
           A=AMIN1(1.,WAVE*ST)
           A=ASIN(A)*2.
- 
           PATH=STORE(M6+9)  ! CHECK MEAN PATH LENGTH
           IF(PATH.LE.ZERO) PATH = 1.
- 
           DELTA=DEL*PATH/SIN(A)  ! COMPUTE DELTA FOR NEUTRONS
           IF(NU.LT.0)THEN ! WE ARE USING XRAYS
             A=COS(A)
             A=A*A
             DELTA=DELTA*(POL1+POL2*A*A)/(POL1+POL2*A)
           END IF
-          EXT1=1.+2.*EXT*FC*FC*DELTA ! COMPUTE THE MODIFIED /FC/
-          EXT2=1.0+EXT*FC*FC*DELTA
-          EXT3=EXT2/(EXT1**(1.25))
-          FCEXT=FC*(EXT1**(-.25))
+           EXT1=1.+2.*EXT*FC*FC*DELTA
+           EXT2=1.0+EXT*FC*FC*DELTA
+           EXT3=EXT2/(EXT1**(1.25))
+           EXT4=(EXT1**(-.25))
+          FCEXT=FC*EXT4   ! COMPUTE THE MODIFIED /FC/
+        ELSE
+          EXT4=1.
+          FCEXT=FC
         END IF
-
+C
         FCEXS=FCEXT*SCALEG ! THE VALUE OF /FC/ AFTER SCALE FACTOR APPLIED
-c skip the check since we now allow twinning and extinction
-cjun2010        IF(.NOT.TWINNED)THEN ! CHECK IF THIS IS A TWINNED STRUCTURE
-          STORE(M6+5)=FCEXT*SCALES ! STORE FC AND PHASE IN THE LIST 6 SLOTS
-          STORE(M6+6)=P
-cjun2010        END IF
+      
+c
 
+        IF(TWINNED)THEN 
+          STORE(M6+5)=STORE(M6+5)*EXT4*SCALES
+        ELSE
+          STORE(M6+5)=FCEXT*SCALES ! STORE FC AND PHASE IN THE LIST 6 SLOTS
+        ENDIF
+        STORE(M6+6)=P
+C
         IF(ND.GE.0)THEN ! CHECK IF THE PARTIAL CONTRIBUTIONS ARE TO BE OUTPUT
           STORE(M6+7)=ACT ! STORE THE NEW CONTRIBUTIONS
           STORE(M6+8)=BCT
@@ -1918,7 +1922,7 @@ c Add abs to deniminator
         DF=FO-FCEXS
         WDF=W*DF
         S=SCALEK
-
+C
         IF(NV.GE.0)THEN ! 4500,4450,4450 ! CHECK IF WE REFINING AGAINST /FO/ **2
 c          A=ABS(FO)*FO*W  ! COMPUTE W-DELTA FOR /FO/ **2 REFINEMENT
 c remove abs Mar2009
@@ -1940,7 +1944,8 @@ C If #CALC, then L28 was adjusted earlier. Call KALLOW again to get normal R
           RW=RW+A*A
         ENDIF
 
-          UJ = FO*SCALEK
+
+          UJ=FO*SCALEK
           RDJW = ABS(WDF)
           IF (RDJW .GT. ABS(XVALUR)) THEN
 C----  H,K,L,FO,FC,/WDELTA/,FO/FC
@@ -1958,7 +1963,6 @@ C----  H,K,L,FO,FC,/WDELTA/,FO/FC
 
         IF(REFPRINT)THEN !   CHECK IF A PRINT OF THE RELFECTIONS IS NEEDED
           P=P*D             ! PRINT ALL REFLECTIONS
-          UJ=FO*SCALEK
           VJ=WDF*S
           WJ=DF*S
           A=SQRT(AC*AC+BC*BC)
