@@ -49,7 +49,7 @@ C<ric02/>
 #endif      
 cdjw open a file for errors since DOS window closes too fast
 c    lots of writes to 17 later
-      open(17,file='Cif2CRY',status='unknown')
+      open(17,file='cif2CRY.lis',status='unknown')
 
 C<ric02>
 C Read data from the commandline:
@@ -689,16 +689,17 @@ c.......=========================
         write(NOUTF, '(a, 2x, 2(a, i6,2x), a,f6.2)') 'CONT',
      *          'TEMPERATURE = ', int(temperature), 'STAND = ',
      *          int(stand), 'DECAY = ', decay
-        write(NOUTF, '(a,2x, 6(a,i3,1x),/a,2x,2(a,f6.2,2x))') 
+        write(NOUTF, '(a,2x, 6(a,i3,1x),/a,2x,2(a,f8.2,2x))') 
      *          'INDEXRANGE','HMIN=', int(hmin), 'HMAX=', int(hmax),
      *          'KMIN=',  int(kmin),'KMAX=', int(kmax), 'LMIN=', 
-     *          int(lmin),'LMAX=', int(lmax), 'CONT', 'THETAMIN = ',
+     *          int(lmin),'LMAX=', int(lmax), 
+     *          'CONT', 'THETAMIN = ',
      *          thetamin, 'THETAMAX = ', thetamax 
         write (NOUTF, '(a,2x, 4(a, f8.2))') 'GENERAL', 'DOBS = ',
      *          dobs, ' DCALC = ', dcalc, ' MOLWT = ', molwt, ' Z = ', 
      *          unitZ 
         write(NOUTF, '(2a/,2a)') 'COLOUR ', colour, 'SHAPE ', shape
-        write(NOUTF, '(a,2x, 2(a,f6.4,2x),a,i6,2x,a,f6.4)') 
+        write(NOUTF, '(a,2x, 2(a,f6.2,2x),a,i6,2x,a,f6.4)') 
      *          'REFINEMENT', 'R = ',100.*r, 
      *          'RW = ', 100.*rw, 'NPARAM = ', 
      *          int(nparam), 'GoF = ', s
