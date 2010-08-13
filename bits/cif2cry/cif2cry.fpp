@@ -221,8 +221,8 @@ C All blocks into one file. Only open once:
           OPEN (NOUTF,FILE=outfil, STATUS='UNKNOWN')
         end if
         output_hkl = outfil(1:len_trim(outfil))//'00000'//'.hkl'
-        write(output_hkl(len_trim(outfil)+1:len_trim(outfil)+5),'(i5)')
-     *  ndata
+        write(output_hkl(len_trim(outfil)+1:len_trim(outfil)+5),
+     *  '(i5.5)') ndata
       else
 C Any other case, just open it:           
         OPEN (NOUTF,FILE=outfil, STATUS='UNKNOWN')
