@@ -39,8 +39,8 @@
 ^^WI     ENDDEFINEMENU
 ^^WI  @ 6,2 GRID EXBT NROWS=1 NCOLS=3
 ^^WI  {
-^^WI   @ 1,1 BUTTON EXT_BOK 'Add extinction parameter' DEFAULT
-^^WI   @ 1,3 BUTTON EXT_BXX 'Do not' LENGTH = 'Add extinction parameter'
+^^WI   @ 1,1 BUTTON EXT_BOK 'Add extinction parameter' 
+^^WI @ 1,3 BUTTON EXT_BXX 'Do not' LENGTH = 'Add extinction parameter'  DEFAULT
 ^^WI  }
 ^^WI }
 ^^WI @ 3,1 PROGRESS _EXTNPR 'Please wait' }
