@@ -28,6 +28,8 @@
 %% Get some initial information:
 %%
 % EVALUATE CURMAT = 1
+% EVALUATE VOLF = 1.0
+% EVALUATE EL1 = 1.0
 % EVALUATE MATCHG = TRUE
 % EVALUATE CANCEL25 = FALSE
 % EVALUATE IS25 =  ( ( EXISTS 25 ) .GE. 1 )
@@ -475,15 +477,15 @@
 %         COPY 'TOP'
 %         LOOP N25 TIMES
 %           CASE LOOPCOUNTER
-%             COPY 'TRANSFER TO OFFSET = 0 FRO EL1'  
-%             COPY 'TRANSFER TO OFFSET = 1 FRO EL2'
-%             COPY 'TRANSFER TO OFFSET = 2 FRO EL3'
-%             COPY 'TRANSFER TO OFFSET = 3 FRO EL4'
-%             COPY 'TRANSFER TO OFFSET = 4 FRO EL5'
-%             COPY 'TRANSFER TO OFFSET = 5 FRO EL6'
-%             COPY 'TRANSFER TO OFFSET = 6 FRO EL7'
-%             COPY 'TRANSFER TO OFFSET = 7 FRO EL8'
-%             COPY 'TRANSFER TO OFFSET = 8 FRO EL9'
+%             COPY 'TRANSFER TO OFFSET = 0 FROM EL1'  
+%             COPY 'TRANSFER TO OFFSET = 1 FROM EL2'
+%             COPY 'TRANSFER TO OFFSET = 2 FROM EL3'
+%             COPY 'TRANSFER TO OFFSET = 3 FROM EL4'
+%             COPY 'TRANSFER TO OFFSET = 4 FROM EL5'
+%             COPY 'TRANSFER TO OFFSET = 5 FROM EL6'
+%             COPY 'TRANSFER TO OFFSET = 6 FROM EL7'
+%             COPY 'TRANSFER TO OFFSET = 7 FROM EL8'
+%             COPY 'TRANSFER TO OFFSET = 8 FROM EL9'
 %           END CASE
 %         END LOOP
 %         COPY 'WRITE'
