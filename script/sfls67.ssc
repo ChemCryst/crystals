@@ -69,10 +69,16 @@
 %         COPY 'END'                                                            
 {I Computing Merged Fc.                                                         
 %         IF ( DOCALC .EQ. 1 ) THEN                                             
+%%           MAKE SURE THE list 7 IS WEIGHTED
+%            COPY '#WEIGHT 7'
+%            COPY 'END'
 %            COPY '#SFLS 7'                                                     
 %            COPY 'CALC'                                                        
 %            COPY 'END'                                                         
 %         ELSE IF ( DOSCALE .EQ. 1 ) THEN                                       
+%%           MAKE SURE THE list 7 IS WEIGHTED
+%            COPY '#WEIGHT 7'
+%            COPY 'END'
 %            COPY '#SFLS 7'                                                     
 %            COPY 'SCALE'                                                       
 %            COPY 'END'                                                         
