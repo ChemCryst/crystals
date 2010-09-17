@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.54  2009/05/01 08:42:34  djw
+C Add comments explaining Splitting
+C
 C Revision 1.53  2008/11/07 08:41:17  djw
 C Dont try to update L41 if there is only one atom
 C
@@ -3516,7 +3519,7 @@ C -- MEDIUM/HIGH LEVEL PRINT FOR LAYER/BATCH/ELEMENT SCALE FACTORS
 cfeb08      WRITE (NCAWU,950) (A(I),I=1,NA)
       WRITE (CMON,950) (A(I),I=1,NA)
       CALL XPRVDU (NCVDU,1,0)
-950   FORMAT (1X,4(2A4,F4.0,F6.3,1X))
+950   FORMAT (1X,4(2A4,F4.0,1x,F8.3,1X))
       GO TO 1000
 C
 1000  CONTINUE
