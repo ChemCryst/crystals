@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.44  2010/03/04 15:12:06  djw
+C Correct initialisatio of ABSF
+C
 C Revision 1.43  2009/06/22 06:54:48  djw
 C Provide name (not just number) for overall parameters whose shift is reduced
 C
@@ -2096,6 +2099,7 @@ C
       INCLUDE 'STORE.INC'
       INCLUDE 'XLISTI.INC'
       INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XCONST.INC'
       INCLUDE 'XPDS.INC'
@@ -2643,8 +2647,14 @@ C--END OF THE UPDATING  -  PREPARE TO OUTPUT A NEW LIST 5
 C--OUTPUT THE NEW LIST 5
       CALL XWLSTD(5,ICOM05,IDIM05,0,-1)
 C----- SAVE THE MEAN C-C ESD
-      IF (ISSPRT .EQ.0) WRITE(NCWU,'(A,F8.4)')
+      WRITE ( CMON,'(a,f8.4)' ) 
      1  'Mean C-C su = ',AESDC/MAX(1.0, FLOAT(NESDC))
+      call outcol(7)
+      CALL XPRVDU(NCVDU, 1,0)
+      call outcol(1)
+      IF (ISSPRT .EQ.0) WRITE(NCWU,'(A)')cmon(1)
+c
+c
       STORE(L30CF+14) = AESDC/MAX(1.0, FLOAT(NESDC))
        CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
 C
