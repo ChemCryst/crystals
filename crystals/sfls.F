@@ -1,4 +1,56 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.66  2010/09/20 15:05:41  djw
+C Enable use of dual wavelength data
+C
+C Dual Wavelength Refinement.		Sept 1010
+C
+C Dual wavelength machine are becoming increasingly common.  This provides
+C the possibility of simultaneously carrying out a high resolution refinement
+C (with the Mo data) with good leverage on the hydrogen atoms and the absolute
+C configuration (Cu data).
+C
+C Data Storage:
+C
+C Reflections for both Mo and Cu data.
+C Extinction correction for each radiation
+C Batch scale factor for each radiation
+C Weighting scheme for each radiation
+C f' and f" for each radiation
+C
+C Programming issues:
+C
+C Merge:  Ability to merge reflections keeping the different wavelengths separate.
+C Agreement Analysis on each wavelength separately
+C Fourier.  All data for one or other wavelength.
+C Fourier.  Possibly 'correct' Fo for extinction and then merge scaled data
+C 	for both radiations.
+C Ton Speks Bivjoet code.  Handle wavelengths separately or sequentially.
+C
+C
+C
+C Problems with CRYSTALS implementation:
+C
+C 1. No proper place to store f' f" for secondary radiation.
+C 2. No mechanism for storing value of secondary wavelength
+C 3. No mechanism for indicating wavelength used for each reflection
+C 4. Only one extinction correction stored
+C
+C 1. f' f" currently tagged on to the end of a LIST 3 record.
+C 2. Assume Mo is principal and Cu secondary wavelngth
+C 3. Use the 'BATCH'' identifier as the wavelength selector (1=Mo, 2=Cu)
+C and the batch scalefactors as the wavelength scalefaactors
+C 4. There are unused OVERALL parameters for anisotropic extinction (for
+C neutron work).  This was never completed because there was (at that time)
+C no general agreement about the best expression for extinction.
+C
+C
+C Redesign Features
+C
+C For each reflection h,k,l store lambda and  the intensity and sigma
+C for the reflection itself and its Friedel pair for each wavelength.
+C This would lead to significant economy at execution time because most
+C of the expression is wavelength independent.
+C
 C Revision 1.65  2010/08/06 07:10:10  djw
 C Further attempts to fix twinniNg for Centred cells and those with reflections from component 2
 C
