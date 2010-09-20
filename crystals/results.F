@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.165  2010/07/30 09:19:40  djw
+C Edit caption in  Ton code
+C
 C Revision 1.164  2010/07/16 11:35:31  djw
 C Enable XPCHLX to output lists 12 and 16 to the cif file.  This means carrying the I/O chanel (as NODEV)
 C in XPCHLX,XPCHLH,PPCHND and XPCHUS.
@@ -4324,7 +4327,7 @@ C
       PARAMETER (IDATA=15,IREF=23)
       CHARACTER*35 CPAGE(NROW,NCOL)
       CHARACTER*76 CREFMK
-      PARAMETER (IDIFMX=10)
+      PARAMETER (IDIFMX=11)
       DIMENSION IREFCD(3,IDIFMX)
 CAVDL more solution packages in cif-goodies
       PARAMETER (ISOLMX=10)
@@ -4392,9 +4395,14 @@ C
       V(CA,CB,CC,AL,BE,GA)=CA*CB*CC * SQRT(1-COS(AL)**2-COS(BE)**2-
      1   COS(GA)**2 + 2 * COS(AL) * COS(BE) * COS(GA))
 C
-C------ REFERENCE CODES FOR THE DIFFRACTOMETERS
+c
+C UNKNOWN CAD4 MACH3 KAPPACCD DIP SMART IPDS XCALIBUR APEX2 GEMINI
+C    1     2       3     4    5     6    7   8        9      10
+c SUPERNOVA
+C   11C------ REFERENCE CODES FOR THE DIFFRACTOMETERS
       DATA IREFCD /4,5,6, 13,24,13, 13,24,13, 25,17,17, 15,17,17,
-     1 26,27,27, 20,19,20,  37,36,36, 45,45,45, 47,36,36  /
+     1 26,27,27, 20,19,20,  37,36,36, 45,45,45, 47,36,36,
+     2 48,36,36  /
 C------ REFERENCE CODES FOR DIRECT METHODS
 CAVDLdec06 updating references in reftab.sda with numbers 42, 43, and 44
       DATA ISOLCD /1,18,30,11,22,28,29,42,43,44/
@@ -5542,6 +5550,8 @@ cdjw0705
 
 C UNKNOWN CAD4 MACH3 KAPPACCD DIP SMART IPDS XCALIBUR APEX2 GEMINI
 C    1     2       3     4    5     6    7   8        9      10
+c SUPERNOVA
+C   11
         IDIFNO = IVAL+1
         CALL XCREMS (CVALUE,CVALUE,NCHAR)
         CALL XCTRIM (CVALUE,NCHAR)
@@ -5582,6 +5592,10 @@ C- Apex2
            ELSE IF (IDIFNO .EQ. 10) THEN
 C- GEMINI
              CTEMP='Oxford Diffraction Gemini'
+
+           ELSE IF (IDIFNO .EQ. 11) THEN
+C- SUPERNOVA
+             CTEMP='Oxford Diffraction SuperNova'
 C- Unknown
            ELSE IF (IDIFNO .GT. IDIFMX) THEN
              WRITE(CMON,'(A)') 'Unknown Diffractometer type'
@@ -7879,7 +7893,7 @@ CODE FOR XTONCENT
 C     KTONCENT = -1 IF NON-CENTRIC
 C              =  0 IF CENTRIC
 C
-      DIMENSION H(2), HG(3)
+      DIMENSION H(3), HG(3)
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'XLST02.INC'
