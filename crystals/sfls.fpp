@@ -1,6 +1,14 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.65  2010/08/06 07:10:10  djw
+C Further attempts to fix twinniNg for Centred cells and those with reflections from component 2
+C
 C Revision 1.64  2010/07/21 16:11:10  djw
-C Watch out for twinned centred cells. Originally Fc was obtained by doubling the contributio from the unique operators. This works for the 'presences', but gives non-zero results for the absences.  These must be kept incase a twin element contribution overlaps it.   Treat the left-most element as the parent. However, his leads to problems if the key is, for example, 21. because 2,1 are used to identify the twin scale factor (correclty) but the twin matix (incorreclty).
+C Watch out for twinned centred cells. Originally Fc was obtained by doubling the contributio from the 
+C unique operators. This works for the 'presences', but gives non-zero results for the absences.  
+C These must be kept incase a twin element contribution overlaps it.   
+C Treat the left-most element as the parent. However, his leads to problems if the key is, 
+C for example, 21. because 2,1 are used to identify the twin scale factor (correclty) but 
+C the twin matix (incorreclty).
 C
 C TO BE SORTED OUT.
 C
@@ -852,7 +860,9 @@ C----- CHECK IF REFLECTIONS SHOULD BE USED
       ELSE
 C--SET UP THE REFLECTION HOLDING STACK
         NR=4
-        NY=20
+cdjwsep2010        NY=20 
+        NY=21  ! leave one more slot for the BATCH number for use 
+c       when there is auxilliary radiation
         JREF_STACK_START=NFL
 C--SET THE LIST AND RECORD TYPE
         LN=25
@@ -1589,7 +1599,8 @@ C--SET UP THE EXTINCTION VARIABLE
         IF(NU.LT.0) THEN   ! CHECK IF WE ARE USING NEUTRONS OR XRAYS
 C--WE ARE USING XRAYS
           DEL=DEL*WAVE*0.0794
-          THETA2=THETA2/D ! SET UP THE POLARISATION CONSTANTS
+c  SET UP THE POLARISATION CONSTANTS
+          THETA2=THETA2/D !  D converts from degrees to radians
           A=COS(THETA2)
           C=SIN(THETA2)
           S=COS(THETA1/D)
@@ -2960,6 +2971,7 @@ C--
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST06.INC'
       INCLUDE 'XLST12.INC'
+      INCLUDE 'XUNITS.INC'
       INCLUDE 'QSTORE.INC'
 
       REAL FLAG
@@ -3013,13 +3025,17 @@ C--CHECK THE GIVEN INDICES
           BF = ABS(STORE(M6)+STORE(LJW)    )  ! 0 if Friedel opposite
      1        +ABS(STORE(M6+1)+STORE(LJW+1))
      2        +ABS(STORE(M6+2)+STORE(LJW+2))
-
+csjwsep2010 Check the BATCH numbers for refinement of dual Wave data
+          bdf = abs(store(m6+13)-store(ljw+20))
+c
           IF ( BF .LT. 0.5 ) THEN 
              PSHIFT=-PSHIFT   ! USE FRIEDEL'S LAW
              FRIED=-1.0
           END IF
 
-          IF ((BD.LT.0.5) .OR. (BF.LT.0.5)) THEN ! REFLECTION FOUND IN THE STACK
+c        LOOK FOR REFLECTION IN THE STACK
+cdjwsep2010 IF ((BD.LT.0.5) .OR. (BF.LT.0.5)) THEN ! REFLECTION FOUND IN THE STACK
+          IF (((BD.LT.0.5) .OR. (BF.LT.0.5)).and.(bdf .lt. 0.5))THEN 
             LJY=NI
             IF(LJX.GT.0) THEN  ! CHECK IF WE HAVE USED IT BEFORE
 C--WE NEED THIS REFLECTION TWICE
@@ -3084,6 +3100,8 @@ C--THIS IS THE END OF THE STACK  -  WE MUST DO A CALCULATION HERE
       STORE(NI+3)=STORE(M6)   ! SET UP THE CURRENT SET OF INDICES
       STORE(NI+4)=STORE(M6+1)
       STORE(NI+5)=STORE(M6+2)
+cdhwsep2010 Put the BATCH number into the stack
+      store(ni+20)=store(m6+13)
       ISTORE(NI+8)=NL
       STORE(NI+11)=PSHIFT
       STORE(NI+12)=FRIED
@@ -3174,8 +3192,8 @@ c
       M3TR=L3TR  
       M3TI=L3TI
       DO LJZ=1,N3
-        STORE(M3TR)=STORE(M3TR)*G2
-        STORE(M3TI)=STORE(M3TI)*G2
+        STORE(M3TR)=STORE(M3TR+nint(store(m6+13))-1)*G2
+        STORE(M3TI)=STORE(M3TI+nint(store(m6+13))-1)*G2
         IF(STORE(M3TR).LE.ZERO)THEN  ! REAL PART IS ZERO  
           STORE(M3TI)=0. ! SO IS THE IMAGINARY NOW
         ELSE   ! REAL PART IS OKAY
@@ -3184,7 +3202,6 @@ c
         M3TR=M3TR+MD3TR  ! UPDATE THE POINTERS
         M3TI=M3TI+MD3TI
       END DO
-
       IF(SFLS_TYPE .EQ. SFLS_REFINE) THEN    ! CHECK IF WE ARE DOING REFINEMENT
 
         DO LJZ=JO,JP
@@ -3222,9 +3239,11 @@ C
           IF ( L12A .GE.0 ) ATOM_REFINE = .TRUE.  ! Set if any params of this atom are being refined
           M12=ISTORE(M12)
         END IF
-
-        M3TR=L3TR+ISTORE(M5A)  ! PICK UP THE FORM FACTORS FOR THIS ATOM
-        M3TI=L3TI+ISTORE(M5A)
+cdjwsep2010 use dual wavelength anomalous scattering as appropriate
+c        M3TR=L3TR+ISTORE(M5A)  ! PICK UP THE FORM FACTORS FOR THIS ATOM
+c        M3TI=L3TI+ISTORE(M5A)
+        M3TR=L3TR+ISTORE(M5A)*md3tr  ! PICK UP THE FORM FACTORS FOR THIS ATOM
+        M3TI=L3TI+ISTORE(M5A)*md3ti
 c
 c focc   formfactor * site occ * chemical occ * difabs corection
 c modify focc for other fc corrections 
