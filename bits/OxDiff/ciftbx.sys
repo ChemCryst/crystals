@@ -1,0 +1,133 @@
+C           
+C
+C >>>>>> Common declararations 'ciftbx.sys'
+C               
+C        For inclusion in 'ciftbx.f'
+C
+C
+C                                 Flag if test_ last called (yes/no )
+         character testfl*3
+C                                 Name of current data item
+         character nametb*32
+C                                 Tab character for this machine
+         character tab*1
+C                                 Character buffer for reading lines
+         character buffer*80
+C                                 Dictionary validation check
+         character vcheck*3
+C                                 Dictionary data type check
+         character tcheck*3
+C                                 Dictionary being processed flag
+         character dictfl*3
+C                                 Dictionary data names
+         character dicnam(1000)*32
+C                                 Dictionary data types
+         character dictyp(1000)*4
+C                                 Data names in data block
+         character dname(500)*32
+C                                 Data type of data item 
+         character dtype(500)*4
+C                                 Flag signalling output CIF open
+         character pfilef*3
+C                                 Flag signalling loop_ being loaded
+         character ploopf*3
+C                                 Flag signalling text being loaded
+         character ptextf*3
+C                                 Record number containing data item
+         integer   drecd(500)
+C                                 Character position of item in record
+         integer   dchar(500)
+C                                 Loop block number (0 for non-loop)
+         integer   nloop(500)
+C                                 Item count in loop packet
+         integer   iloop(500)
+C                                 Loop line counter; initially zero
+         integer   lloop(500)
+C                                 Number of items per packet in each loop
+         integer   loopni(50)
+C                                 Number of packets per loop    
+         integer   loopnp(50)
+C                                 Number of of items in current loop packet
+         integer   ploopc
+C                                 Number of of items in output loop packet
+         integer   ploopn
+C                                 Number of current loop block
+         integer   loopnl
+C                                 Count of packets in current loop
+         integer   loopct
+C                                 Number of data names in hash table 
+         integer   nhash 
+C                                 Number of data names in data block
+         integer   nname
+C                                 Current number of data name in block
+         integer   iname
+C                                 Number of dictionary names
+         integer   ndict 
+C                                 Number of records in CIF
+         integer   nrecd
+C                                 Record number of requested line
+         integer   irecd
+C                                 Record number of current line
+         integer   jrecd
+C                                 Last record number of current block
+         integer   lrecd
+C                                 Character pointer of current input line
+         integer   jchar
+C                                 Character pointer of output CIF line
+         integer   pchar
+C                                 Number of data block names stored
+         integer   nbloc
+C                                 Device number of input CIF 
+         integer   cifdev
+C                                 Device number of direct access file
+         integer   dirdev
+C                                 Device number of error message file
+         integer   errdev
+C                                 Device number of output CIF
+         integer   outdev
+C                                 Returned number
+         real      numbtb
+C                                 Returned standard deviation
+         real      sdevtb
+C
+         common/tbxc/ buffer,dname,dtype,tab,dicnam,dictyp,dictfl,
+     *                nametb,testfl,vcheck,tcheck,
+     *                pfilef,ploopf,ptextf
+C
+         common/tbxi/ nrecd,drecd,irecd,lrecd,dchar,ndict,outdev,
+     *                nloop,iloop,lloop,loopct,loopni,loopnp,loopnl,
+     *                nname,nhash,cifdev,dirdev,errdev,jchar,pchar,
+     *                iname,ploopn,ploopc,nbloc,jrecd
+C
+         common/tbxr/ numbtb,sdevtb
+C
+C
+C
+C                                 Align loop active flag (true/false)
+         logical   align_
+C                                 Text active flag (true/false)
+         logical   text_
+C                                 Loop active flag (true/false)
+         logical   loop_
+C                                 Length of current data item in strg_
+         integer   long_
+C                                 Loop block number of current item
+         integer   list_
+C                                 Length of current filename in file_
+         integer   longf_
+C                                 Name of current data block
+         character bloc_*32
+C                                 Character image of current data item
+         character strg_*80
+C                                 File name of current CIF
+         character file_*80
+C                                 Data item type
+         character type_*4
+C
+         common/tbuc/ strg_,bloc_,file_,type_
+C
+         common/tbui/ list_,long_,longf_
+C
+         common/tbul/ loop_,text_,align_
+C
+C
