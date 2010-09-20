@@ -24,6 +24,7 @@ DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\rc93\rc93.fpp  /automatic /op
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\reindex\reindex.fpp /optimize:4 /MD
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\shelxs\shelxs.fpp /optimize:4 /MD 
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\shelxs\sxtocry.fpp /optimize:4 /MD
+DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\OxDiff\OxDiffin.fpp /optimize:4 /MD
 @set PATH=%OPATH%
 @set LIB=%OLIB%
 ENDLOCAL
