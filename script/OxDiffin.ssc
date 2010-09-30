@@ -25,8 +25,8 @@
 ^^WI    @ 3,2 STATIC T2 'Click Run OXDIFFIN now to continue.'                     
 % ELSE                                                                          
 ^^WI    @ 2,2 STATIC T1 'No OxDiff OD-import.cif file detected.'                 
-^^WI    @ 3,2 STATIC T2 'Click Cancel, place the file in this'                  
-^^WI    @ 4,2 STATIC T3 'folder, then try again.'                               
+^^WI    @ 3,2 STATIC T2 'Click Run OXFIFIN and give full'                  
+^^WI    @ 4,2 STATIC T3 'cif filename at the command prompt.'                               
 % END IF                                                                        
 ^^WI   }                                                                        
 ^^WI   @ 2,1 GRID RIGHT NROWS=3 NCOLS=7                                         
