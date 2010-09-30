@@ -5,6 +5,13 @@
 % VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                         
 % VARIABLE LOGICAL ANSWER                                                       
 %                                                                               
+%% SET Solution type (only if atoms were passed in!)                            
+%%                                                                              
+%          COPY '#GENERALEDIT 30'                                               
+%          COPY 'LOCATE RECORDTYPE=106'                                         
+%          COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=7'                       
+%          COPY 'WRITE'                                                         
+%          COPY 'END'                                                           
 %      COPY '#SCRIPT XFLIPINSTRUC'                                              
 %      COPY '#SCRIPT XCOLLECT'                                                  
 %      COPY '#EDIT'                                                             
