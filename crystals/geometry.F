@@ -511,8 +511,8 @@ C---- COMPUTE AXIS RATIOS
             WRITE (NCWU,490) PAXIS(3)/PAXIS(1),1.-(PAXIS(2)+PAXIS(3))/
      1       (2.*PAXIS(1)),1.-(2.*PAXIS(3))/(PAXIS(1)+PAXIS(2))
          END IF
-         WRITE (NCAWU,490) PAXIS(3)/PAXIS(1),1.-(PAXIS(2)+PAXIS(3))/(2.*
-     1    PAXIS(1)),1.-(2.*PAXIS(3))/(PAXIS(1)+PAXIS(2))
+c         WRITE (NCAWU,490) PAXIS(3)/PAXIS(1),1.-(PAXIS(2)+PAXIS(3))/(2.*
+c     1    PAXIS(1)),1.-(2.*PAXIS(3))/(PAXIS(1)+PAXIS(2))
          WRITE (CMON,490) PAXIS(3)/PAXIS(1),1.-(PAXIS(2)+PAXIS(3))/(2.*
      1    PAXIS(1)),1.-(2.*PAXIS(3))/(PAXIS(1)+PAXIS(2))
          CALL XPRVDU (NCVDU,2,0)
