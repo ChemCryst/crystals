@@ -10932,6 +10932,13 @@ the surface.
  Three geometry indices are also
  computed. The geometry is best described by the index closest to unity.
  (Mingos,D.P.M & Rohl,A.L., J.Chwm.Soc. Dalton Trans (1991) pp 3419 - 3425)
+#PIf the three principal axes are "big, medium, small", then
+#N   4#
+#
+      Spherical   = small/big
+      Cylindrical = 1-((medium+small)/(2.big))
+      discoidal   = 1-2.small/(big+medium)
+#
 #PTLS. This routine calculates the overall rigid-body
  motion tensors T, L, S (Shoemaker and Trueblood, Acta Cryst. B24,
  63, 1968) by a least-squares fit to the individual anisotropic
