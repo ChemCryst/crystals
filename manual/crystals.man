@@ -2436,7 +2436,7 @@ these to the same values as in REFINEMENT above.
 
 #XLIST 18#
 #XStructural Formula as a SMILES string#
-#YInput of Structural Formula as a SMILES string - LIST 30#
+#YInput of Structural Formula as a SMILES string - LIST 18#
 #ALIST18#
 #HSSMILESs#
 #PThis list holds the structural formula as a SMILES string
@@ -7789,10 +7789,15 @@ are only going to be calculated.
  I.E:
 #J
  SAME 0.01, 0.1 FOR RESI(1) AND RESI(2)
-   maps all atoms in resi(1) onto all the atoms in resi(2) - note that
-   although this shorthand is appealing, the order of resi(1) and resi(2)
-   must be identical in List 5, although the residues may interpenetrate.
-
+ SAME  PART(1001) PART(1002)
+#
+   maps all atoms in the first argument onto all the atoms in 
+   the second argument.
+#PTAKE CARE
+   Although this shorthand is appealing, the order of the atoms in LIST 
+   5 must be identical in both arguments, although the atoms do not have 
+   to be adjacent.
+#J
  SAME 0.01 , 0.1 
  CONT C(17)  C(18)  H(183) H(182) H(181) AND
  CONT C(17)  C(18)  H(182) H(181) H(183)
@@ -10931,7 +10936,7 @@ the surface.
  number 'n'. The dihedral angles between these axes can be computed.
  Three geometry indices are also
  computed. The geometry is best described by the index closest to unity.
- (Mingos,D.P.M & Rohl,A.L., J.Chwm.Soc. Dalton Trans (1991) pp 3419 - 3425)
+ (Mingos,D.P.M & Rohl,A.L., J.Chem.Soc. Dalton Trans (1991) pp 3419 - 3425)
 #PIf the three principal axes are "big, medium, small", then
 #N   4#
 #
