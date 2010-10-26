@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2010/07/16 11:35:31  djw
+C Enable XPCHLX to output lists 12 and 16 to the cif file.  This means carrying the I/O chanel (as NODEV)
+C in XPCHLX,XPCHLH,PPCHND and XPCHUS.
+C Fixed oversight in distangle for esds of H-bonds
+C
 C Revision 1.24  2010/03/15 12:17:31  djw
 C Output whole line in print 12 and 16
 C
@@ -999,6 +1004,7 @@ C--NOT THE FIRST CARD
       CALL XCTRIM (CLINE, NCHARS)
 cdjwMar2010 - allow full line length
       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(1X,A)')  CLINE(1:NCHARS)
+         WRITE(NCAWU,'(1X,A)')  CLINE(1:NCHARS)
          WRITE ( CMON, '(1X,A)') CLINE(1:NCHARS)
          CALL XPRVDU(NCVDU, 1,0)
 c      KK = MIN0 ( 78, NCHARS)

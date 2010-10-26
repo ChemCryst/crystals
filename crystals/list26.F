@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  2009/06/17 13:41:49  djw
+C Fix #CHECK HI crash.  Actual error was in wrong values for idjw1 & idjw2 for DELU
+C  restraint in LIST 16.  Several messages cleaned up, more diagnostics for error conditions.
+C
 C Revision 1.13  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -597,8 +601,8 @@ C----- GET THE EQUIVALENT SIGMA FOR A 'ENERGY' CARD
       ENDIF
 2900  FORMAT(2H  ,A1,2X,2(6X,A4,I5,I6,4I3),F11.3,F10.3)
       IF ( (IMON .GT. 0 ) .OR. (ABS(A1(2)) .GE. ESIGMA) ) THEN
-         WRITE(NCAWU,2901)KF,STORE(JA+2),ISTORE(JA+3),STORE(JB+2),
-     2   ISTORE(JB+3),A1(1),A1(2), ESIGMA
+c         WRITE(NCAWU,2901)KF,STORE(JA+2),ISTORE(JA+3),STORE(JB+2),
+c     2   ISTORE(JB+3),A1(1),A1(2), ESIGMA
          IF ((IMON .GE. 1) .AND. (ABS(A1(2)) .GE. ESIGMA) ) THEN
          WRITE(CMON ,2901)KF,STORE(JA+2),ISTORE(JA+3),STORE(JB+2),
      2   ISTORE(JB+3),A1(1),A1(2)
@@ -630,8 +634,8 @@ C--ANGLES RESTRAINT PRINT
       ENDIF
 3100  FORMAT(2H  ,A1,2X,3(6X,A4,I5,I6,4I3),F10.2,F7.2)
       IF ( (IMON .GT. 0 ) .OR. (ABS(A1(2)) .GE. C) ) THEN
-         WRITE(NCAWU,3101)KF,STORE(JA+2),ISTORE(JA+3),STORE(JB+2),
-     2   ISTORE(JB+3),STORE(JC+2),ISTORE(JC+3),A1(1),A1(2)
+c         WRITE(NCAWU,3101)KF,STORE(JA+2),ISTORE(JA+3),STORE(JB+2),
+c     2   ISTORE(JB+3),STORE(JC+2),ISTORE(JC+3),A1(1),A1(2)
          IF ((IMON .GE. 1) .AND. (ABS(A1(2)) .GE. C) ) THEN
          WRITE(CMON,3101)KF,STORE(JA+2),ISTORE(JA+3),STORE(JB+2),
      2   ISTORE(JB+3),STORE(JC+2),ISTORE(JC+3),A1(1),A1(2)
@@ -660,8 +664,8 @@ C--VIBRATION RESTRAINTS PRINT
       ENDIF
 3250  FORMAT(2H  ,A1,2(8X,A4,I5,I6,4I3,F12.5,1X),F9.5,5X,5A4)
       IF ( (IMON .GT. 0 ) .OR. (ABS(A1(3)) .GE. C )) THEN
-         WRITE(NCAWU,3251)KF,STORE(JA+2),ISTORE(JA+3),A1(1),
-     2   STORE(JB+2),ISTORE(JB+3),A1(2),A1(3)
+c         WRITE(NCAWU,3251)KF,STORE(JA+2),ISTORE(JA+3),A1(1),
+c     2   STORE(JB+2),ISTORE(JB+3),A1(2),A1(3)
          IF ((IMON .GE. 1) .AND. (ABS(A1(3)) .GE. C )) THEN
          WRITE(CMON, 3251)KF,STORE(JA+2),ISTORE(JA+3),A1(1),
      2   STORE(JB+2),ISTORE(JB+3),A1(2),A1(3)
@@ -696,9 +700,9 @@ cdjwjun09 - print out names of iso atoms
      3 ,(ICOORD(JK,JJ),JK=1,NWKA)
        ENDIF
        IF ( (IMON .GT. 0 ) .OR. (ABS(A1(3)) .GE. C ))  THEN
-         WRITE(NCAWU,3251) KF, STORE(JA+2), ISTORE(JA+3), A1(1),
-     2   STORE(JB+2),ISTORE(JB+3),A1(2),A1(3),
-     3   (ICOORD(JK,JJ),JK=1,NWKA)
+c         WRITE(NCAWU,3251) KF, STORE(JA+2), ISTORE(JA+3), A1(1),
+c     2   STORE(JB+2),ISTORE(JB+3),A1(2),A1(3),
+c     3   (ICOORD(JK,JJ),JK=1,NWKA)
          IF ((IMON .GE. 1) .AND. (ABS(A1(3)) .GE. C ))THEN
          WRITE(CMON,3251) KF, STORE(JA+2), ISTORE(JA+3), A1(1),
      2   STORE(JB+2),ISTORE(JB+3),A1(2),A1(3),
@@ -798,7 +802,7 @@ C--PRINT THE INFORMATION FROM A PLANAR RESTRAINT
       ENDIF
 4200  FORMAT(2H  ,A1,8X,A4,I5,I6,4I3,F10.3)
       IF ( (IMON .GT. 0 ) .OR. (ABS(A1(2)) .GE. C ) ) THEN
-        WRITE(NCAWU,4201)KF,STORE(JA+2),ISTORE(JA+3),A1(2)
+c        WRITE(NCAWU,4201)KF,STORE(JA+2),ISTORE(JA+3),A1(2)
          IF ((IMON .GE. 1) .AND. (ABS(A1(2)) .GE. C ) ) THEN
          WRITE(CMON ,4201)KF,STORE(JA+2),ISTORE(JA+3),A1(2)
          CALL XPRVDU(NCVDU, 1,0)
@@ -819,7 +823,7 @@ C--'SUM' RESTRAINT
       CALL XPRVDU(NCVDU, 1,0)
 4310  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE(NCWU,4350)A,AB,C
-      WRITE(NCAWU,4350)A,AB,C
+c      WRITE(NCAWU,4350)A,AB,C
 4350  FORMAT(1X ,F4.0,' The sum is restrained to be ',
      2 G12.5,'  with an E.S.D. of ',G12.5)
       GOTO 1050
@@ -839,7 +843,7 @@ C----- 'LIMIT' RESTRAINT
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,4380) A,C
       ENDIF
-      WRITE(NCAWU,4380) A,C
+c      WRITE(NCAWU,4380) A,C
 4380  FORMAT ( // , 1X , F4.0 , ' Limit the shifts of the given' ,
      2 ' parameters to 0.0, with an E.S.D. of ',E20.10)
       WRITE(CMON,2460)NINT(A+1), '               Limit', 0.0, C
@@ -859,7 +863,7 @@ C--PRINT OUT THE HEADER
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,4500)A,AB,C
       ENDIF
-      WRITE(NCAWU,4501)A,AB,C
+c      WRITE(NCAWU,4501)A,AB,C
 4501  FORMAT(//1H ,F4.0,' Restrain these to their common',
      2 ' mean of ',F10.5,'  with an E.S.D. of', F10.5)
 4500  FORMAT(//1H ,F4.0,39H   Restrain the following parameters to,
@@ -892,8 +896,8 @@ C--THIS IS AN ATOMIC PARAMETER
      2 (ICOORD(M,JC),M=1,2), (A1(M),M=1,MM)
       ENDIF
 4650  FORMAT(2H  ,A1,8X,A4,I5,I6,4I3,6X,2A4,4X,2F10.5)
-      WRITE(NCAWU,4651)KF,STORE(JA+2),ISTORE(JA+3),
-     2 (ICOORD(M,JC),M=1,2), (A1(M),M=1,MM)
+c      WRITE(NCAWU,4651)KF,STORE(JA+2),ISTORE(JA+3),
+c     2 (ICOORD(M,JC),M=1,2), (A1(M),M=1,MM)
       IF ((IMON .GE. 1) .AND. (ABS(A1(2)) .GE. C) ) THEN
        WRITE(CMON,4651)KF,STORE(JA+2),ISTORE(JA+3),
      2 (ICOORD(M,JC),M=1,2), (A1(M),M=1,MM)
@@ -907,7 +911,7 @@ C--THIS IS A SIMPLE OVERALL PARAMETER
       WRITE(NCWU,4750)KF,(KVP(M,JC),M=1,2), (A1(M),M=1,MM)
       ENDIF
 4750  FORMAT(2H  ,A1,41X,2A4,4X,2F10.5)
-      WRITE(NCAWU,4751)KF,(KVP(M,JC),M=1,2), (A1(M),M=1,MM)
+c      WRITE(NCAWU,4751)KF,(KVP(M,JC),M=1,2), (A1(M),M=1,MM)
       IF ((IMON .GE. 1) .AND. (ABS(A1(2)) .GE. C) ) THEN
        WRITE(CMON,4751)KF,(KVP(M,JC),M=1,2), (A1(M),M=1,MM)
        CALL XPRVDU(NCVDU, 1,0)
@@ -921,7 +925,7 @@ C--THIS IS AN ELEMENT OR LAYER SCALE FACTOR
       WRITE(NCWU,4850) KF,(KSCAL(M,JB),M=1,2), (A1(M),M=1,MM)
       ENDIF
 4850  FORMAT(2H  ,A1,38X,2A4,4X,3X,2F10.5)
-      WRITE(NCAWU,4851) KF,(KSCAL(M,JB),M=1,2), (A1(M),M=1,MM)
+c      WRITE(NCAWU,4851) KF,(KSCAL(M,JB),M=1,2), (A1(M),M=1,MM)
       IF ((IMON .GE. 1) .AND. (ABS(A1(2)) .GE. C) ) THEN
        WRITE(CMON,4851) KF,(KSCAL(M,JB),M=1,2), (A1(M),M=1,MM)
        CALL XPRVDU(NCVDU, 1,0)
@@ -1083,7 +1087,7 @@ C--ERRORS
 1850  CONTINUE
       J=16
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1900)IULN
-      WRITE(NCAWU,1900)IULN
+c      WRITE(NCAWU,1900)IULN
 1900  FORMAT(
      1' List ',I5,' contains errors.',
      2  ' Check the Restraints lists 16 and 17')
@@ -1924,7 +1928,7 @@ C--NOT ENOUGH CORE AVAILABLE
 1000  CONTINUE
       CALL XERHDR(0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1050)
-      WRITE(NCAWU,1050)
+c      WRITE(NCAWU,1050)
       WRITE ( CMON ,1050)
       CALL XPRVDU(NCVDU, 1,0)
 1050  FORMAT(' Insufficient memory for ''PLANAR'' restraint' )
@@ -1958,7 +1962,7 @@ C--NOT ENOUGH ATOMS IN THE GROUP
 1400  CONTINUE
       CALL XERHDR(0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1450)
-      WRITE(NCAWU,1450)
+c      WRITE(NCAWU,1450)
       WRITE ( CMON ,1450)
       CALL XPRVDU(NCVDU, 1,0)
 1450  FORMAT(' Insufficient atoms to define a plane')
@@ -2056,7 +2060,7 @@ C--NOT ENOUGH CORE AVAILABLE
 1000  CONTINUE
       CALL XERHDR(0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1050)
-      WRITE(NCAWU,1050)
+c      WRITE(NCAWU,1050)
       WRITE ( CMON ,1050)
       CALL XPRVDU(NCVDU, 1,0)
 1050  FORMAT(' Insufficient core for ''AVERAGE'' restraint ')
@@ -2733,7 +2737,7 @@ C--NO P.D.'S FOUND
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,2000)
       ENDIF
-      WRITE(NCAWU,2000)
+c      WRITE(NCAWU,2000)
 2000  FORMAT(21H No derivatives found)
       GOTO 2200
 C--DERIVATIVES FOUND  -  CHECK IF THEY ARE TO BE PRINTED

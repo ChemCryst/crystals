@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2009/10/28 16:27:56  djw
+C Add error print to .LIS as well as screen. Correct base address for parameters in DELU (was mistakenly changed in last update) list16.fpp
+C
 C Revision 1.12  2009/06/17 13:41:49  djw
 C Fix #CHECK HI crash.  Actual error was in wrong values for idjw1 & idjw2 for DELU
 C  restraint in LIST 16.  Several messages cleaned up, more diagnostics for error conditions.
@@ -383,6 +386,8 @@ C
 C
 C--SET THE TIMING FUNCTION
       CALL XTIME1(2)
+C----- SET PRINTING OFF
+      ISTAT2 = 0
       INCLUDE 'IDIM26.INC'
 C--READ THE REMAINDER OF THE INPUT DATA
       IF (  KRDDPV ( ICOM26 , IDIM26 )  .LT.  0 ) GO TO 9910
@@ -754,19 +759,22 @@ C Find the pivot atom (M5A) in the first group.
 
           L=ISTORE(J)  ! Get the address in L5 of this atom.
 CDJW DEBUGGING
-c          IF ( L .GE. M5A ) THEN
-c            CALL CATSTR(STORE(M5A),STORE(M5A+1),1,1,0,0,0,
-c     1      CATOM1,LATOM1)
-c            CALL CATSTR (STORE(L), STORE(L+1),
-c     1      ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
-c     2      ISTORE(J+6), CATOM2, LATOM2)
-c            LATOM1 = MIN(10, LATOM1)
-c            WRITE ( CMON ,2804) CATOM1(1:LATOM1),STORE(J+10),
-c     1      CATOM2(1:25)
-c            CALL XPRVDU(NCVDU, 1,0)
-c2804        FORMAT ( A,' ',F6.3,'A from ',A)
-c            WRITE(NCWU,'(A)') CMON(1)(:)
-c          END IF
+          if (istat2 .eq. 1) then
+           IF ( L .GE. M5A ) THEN
+             CALL CATSTR(STORE(M5A),STORE(M5A+1),1,1,0,0,0,
+     1       CATOM1,LATOM1)
+             CALL CATSTR (STORE(L), STORE(L+1),
+     1       ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
+     2       ISTORE(J+6), CATOM2, LATOM2)
+             LATOM1 = MIN(10, LATOM1)
+             WRITE ( CMON ,2804) CATOM1(1:LATOM1),STORE(J+10),
+     1       CATOM2(1:25)
+             CALL XPRVDU(NCVDU, 1,0)
+2804         FORMAT ( 6x, A,' ',F6.3,'A from ',A)
+             IF (ISSPRT.EQ.0) WRITE(NCWU,'(A)') CMON(1)(:)
+             WRITE(NCAWU,'(A)') CMON(1)(:)
+           END IF
+          endif
 CDJW DEBUGGING
 
 C Find the second atom in the first group.
@@ -848,19 +856,23 @@ C The first group's atom2:
               M5P = L5 + MD5 * ISTORE(JATD+IND1+K*NATOMS)
               M5Q = L5 + MD5 * ISTORE(JATD+IND2+K*NATOMS)
 CDJW - DEBUGGING
-c              write(cmon,'(a,i5)') ' Processing group ',K+1
-c              CALL XPRVDU(NCVDU,1,0)
-c              WRITE(NCWU,'(A)') CMON(1)(:)
-c              CALL CATSTR(STORE(M5P),STORE(M5P+1),1,1,0,0,0,
-c     1        CATOM1,LATOM1)
-c              CALL CATSTR (STORE(M5Q), STORE(M5Q+1),
-c     1        ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
-c     2        ISTORE(J+6), CATOM2, LATOM2)
-c              LATOM1 = MIN(10, LATOM1)
-c              WRITE(CMON,2804)CATOM1(1:LATOM1),STORE(J+10),
-c     2        CATOM2(1:25)
-c              CALL XPRVDU(NCVDU,1,0)
-c              WRITE(NCWU,'(A)') CMON(1)(:)
+              if(istat2 .eq.1) then
+               write(cmon,'(a,i5)') ' Processing group ',K+1
+               CALL XPRVDU(NCVDU,1,0)
+               if (issprt.eq.0) WRITE(NCWU,'(A)') CMON(1)(:)
+               WRITE(NCAWU,'(A)') CMON(1)(:)
+               CALL CATSTR(STORE(M5P),STORE(M5P+1),1,1,0,0,0,
+     1         CATOM1,LATOM1)
+               CALL CATSTR (STORE(M5Q), STORE(M5Q+1),
+     1         ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
+     2         ISTORE(J+6), CATOM2, LATOM2)
+               LATOM1 = MIN(10, LATOM1)
+               WRITE(CMON,2804)CATOM1(1:LATOM1),STORE(J+10),
+     2         CATOM2(1:25)
+               CALL XPRVDU(NCVDU,1,0)
+               if (issprt .eq.0) WRITE(NCWU,'(A)') CMON(1)(:)
+               WRITE(NCAWU,'(A)') CMON(1)(:)
+              endif
 CDJW - DEBUGGING
               MQ=MCG ! Next free word (we'll store atom1 header here)
               CALL XFILL(NOWT,ISTORE(MQ),17)
@@ -910,20 +922,24 @@ C Given this bond, loop through rest of atoms to make angles:
 
             LAN=ISTORE(JAN)
 cdjwdebugging
-c            CALL CATSTR(STORE(M5A),STORE(M5A+1),1,1,0,0,0,
-c     1      CATOM1,LATOM1)
-c            CALL CATSTR (STORE(L), STORE(L+1),
-c     1      ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
-c     2      ISTORE(J+6), CATOM2, LATOM2)
-c            LATOM1 = MIN(10, LATOM1)
-c            LATOM2 = MIN(10, LATOM2)
-c            CALL CATSTR (STORE(LAN), STORE(LAN+1),
-c     1      ISTORE(JAN+2), ISTORE(JAN+3), ISTORE(JAN+4),
-c     2      ISTORE(JAN+5), ISTORE(JAN+6), CATOM3, LATOM3)
-c            WRITE(CMON,2805)CATOM2(1:LATOM2),CATOM1(1:LATOM1),
-c     1      CATOM3(1:25)
-c            CALL XPRVDU(NCVDU, 1,0)
-c2805        FORMAT ( A, ' to ', A, ' to ', A)
+            if (istat2 .eq. 1) then             
+             CALL CATSTR(STORE(M5A),STORE(M5A+1),1,1,0,0,0,
+     1       CATOM1,LATOM1)
+             CALL CATSTR (STORE(L), STORE(L+1),
+     1       ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
+     2       ISTORE(J+6), CATOM2, LATOM2)
+             LATOM1 = MIN(10, LATOM1)
+             LATOM2 = MIN(10, LATOM2)
+             CALL CATSTR (STORE(LAN), STORE(LAN+1),
+     1       ISTORE(JAN+2), ISTORE(JAN+3), ISTORE(JAN+4),
+     2       ISTORE(JAN+5), ISTORE(JAN+6), CATOM3, LATOM3)
+             WRITE(CMON,2805)CATOM2(1:LATOM2),CATOM1(1:LATOM1),
+     1       CATOM3(1:25)
+             CALL XPRVDU(NCVDU, 1,0)
+2805         FORMAT ( 6x, A, ' to ', A, ' to ', A)
+             if(issprt.eq.0) WRITE(NCWU,'(A)') CMON(1)(:)
+             WRITE(NCAWU,'(A)') CMON(1)(:)
+            endif
 cdjwdebugging
 C Find third atom of angle in the first group of SAME.
             IND3 = ( LAN - L5 ) / MD5
@@ -1000,19 +1016,22 @@ C The first group's atom3:
               M5Q = L5 + MD5 * ISTORE(JATD+IND2+K*NATOMS)
               M5R = L5 + MD5 * ISTORE(JATD+IND3+K*NATOMS)
 cdjwdebugging
-c              CALL CATSTR(STORE(M5P),STORE(M5P+1),1,1,0,0,0,
-c     1        CATOM1,LATOM1)
-c              LATOM1 = MIN(10, LATOM1)
-c              CALL CATSTR (STORE(M5Q), STORE(M5Q+1),
-c     1        ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
-c     2        ISTORE(J+6), CATOM2, LATOM2)
-c              LATOM2 = MIN(25, LATOM2)
-c              CALL CATSTR (STORE(M5R), STORE(M5R+1),
-c     1        ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
-c     2        ISTORE(J+6), CATOM3, LATOM3)
-c              WRITE(CMON,2805)CATOM2(1:LATOM2),CATOM1(1:LATOM1),
-c     1        CATOM3(1:25)
-c              CALL XPRVDU(NCVDU,1,0)
+              if (istat2 .eq.1) then
+               CALL CATSTR(STORE(M5P),STORE(M5P+1),1,1,0,0,0,
+     1         CATOM1,LATOM1)
+               LATOM1 = MIN(10, LATOM1)
+               CALL CATSTR (STORE(M5Q), STORE(M5Q+1),
+     1         ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
+     2         ISTORE(J+6), CATOM2, LATOM2)
+               LATOM2 = MIN(25, LATOM2)
+               CALL CATSTR (STORE(M5R), STORE(M5R+1),
+     1         ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
+     2         ISTORE(J+6), CATOM3, LATOM3)
+               WRITE(CMON,2805)CATOM2(1:LATOM2),CATOM1(1:LATOM1),
+     1         CATOM3(1:25)
+               CALL XPRVDU(NCVDU,1,0)
+               WRITE(NCAWU,'(A)') CMON(1)(:)
+              endif
 cdjwdebugging
 
               MQ=MCG ! Next free word (we'll store atom2 header here)
