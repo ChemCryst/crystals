@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.166  2010/09/20 14:57:23  djw
+C Add info about SUpernova
+C
 C Revision 1.165  2010/07/30 09:19:40  djw
 C Edit caption in  Ton code
 C
@@ -4354,6 +4357,7 @@ C
       CHARACTER*17 CWT
       CHARACTER*22 CFM, CFMC ! 'F<sub>obs</sub>&sup2;'
       CHARACTER*35 CMOD
+      CHARACTER*6 CSOLVE
 cdjwapr09
       INTEGER  IFARG      ! F OR F^2^ FOR WEIGHTING SCHEME
 C
@@ -5799,6 +5803,7 @@ C----- PARAMETER 13 ON DIRECTIVE 6 IS A CHARACTER STRING
            IVAL=ISTORE(L30GE+IPARAM-1)
            IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
      1                  IVAL,JVAL,VAL,JTYPE)
+           ISOLVE = IVAL
            IVAL = ISOLCD(IVAL+1)
            CTEMP = CREFMK(ISTORE(LREFS), NREFS, MDREFS, IVAL)
            CALL XCTRIM (CTEMP,NCHAR)
@@ -6082,9 +6087,19 @@ C----- RELECTION LIMITS IN DATA COLLECTION
 cdjwnov05-end of list 6 goodies
 
         IF ( IPUNCH .EQ. 0 ) THEN
+           CSOLVE ='Direct'
+           IF(ISOLVE.EQ. 0) THEN
+                  CSOLVE='Other'
+            ELSE IF (ISOLVE .EQ. 4) THEN
+                  CSOLVE='Heavy'
+            ELSE IF (ISOLVE .EQ. 6) THEN
+                  CSOLVE='Other'
+            ELSE IF (ISOLVE .EQ. 7) THEN
+                  CSOLVE='Other'
+            ENDIF
            CALL XPCIF (' ')
-        WRITE (NCFPU1,'(''_atom_sites_solution_primary '',T35,
-     1   ''direct #heavy,direct,difmap,geom'')')
+        WRITE (NCFPU1,'(''_atom_sites_solution_primary '',T35,A,
+     1   '' #heavy,direct,difmap,geom'')')CSOLVE
         WRITE (NCFPU1,'(''# _atom_sites_solution_secondary '',T35,
      1   ''difmap'')')
         WRITE (NCFPU1,'(''_atom_sites_solution_hydrogens '',T35,
@@ -6285,8 +6300,8 @@ C----- PACK UP THE FLACK PARAMETER AND ITS ESD
      1         CTEMP(1:N)
             END IF
  
-            WRITE (CTEMP,'(I12)') MAX(0,NINT(STORE(L30DR+4)-STORE(L30DR+
-     1       2)))
+            WRITE (CTEMP,'(I12)') MAX(0,NINT(STORE(L30DR+2)-
+     1       STORE(L30DR+4)))
             CALL XCRAS (CTEMP,N)
             IF ( IPUNCH .EQ. 0 ) THEN
               WRITE (CLINE,'(A, ''abs_structure_details  '', 4X,          
@@ -7007,8 +7022,8 @@ C       Fo vs Fc scatter
       IF (LEVEL.EQ.4) THEN
          WRITE (CMON,'(A,/,A,/,A)') 
      1 '^^PL PLOTDATA _FOFC SCATTER ATTACH _VFOFC',
-     2 '^^PL XAXIS TITLE Delta-Fc NSERIES=1 LENGTH=2000',
-     3 '^^PL YAXIS TITLE Delta-Fo SERIES 1 TYPE SCATTER'
+     2 '^^PL XAXIS TITLE Delta(Fc)/s NSERIES=1 LENGTH=2000',
+     3 '^^PL YAXIS TITLE Delta(Fo)/s SERIES 1 TYPE SCATTER'
          CALL XPRVDU (NCVDU,3,0)
       END IF
 C       Normal probability plot
@@ -7046,6 +7061,8 @@ C      plus and minus sums
       NNFO=0
       FOMAX=0.
       FCMAX=0.
+      STNFOM=0.
+      STNFCM=0.
       FCMIN=1000000.
       SPFO=0.
       SPFOSQ=0.
@@ -7171,6 +7188,14 @@ COMPARE PACKED INDICES
          VAM = SIG1*SIG1+SIG2*SIG2
          SIGM=SQRT(VAM)
          SIGD=1.41*SIGM
+C ZH = SIGNAL:NOISE
+         ZH=(FCKD-FOKD)/SIGM
+         QH=(-FCKD-FOKD)/SIGM
+C SIGNAL:NOISE FOR DELTA FO AND FC
+         STNFO=FOKD/SIGM
+         STNFC=FCKD/SIGM
+         STNFOM=MAX(STNFOM, STNFO)
+         STNFCM=MAX(STNFCM, STNFC)
 C 
 C  Accumulate info to RA
          HFLACK(1) = HFLACK(1) + ABS(FOKS-FCKS)
@@ -7234,13 +7259,6 @@ c     1            (FOKD .LE. 1.5* FCKD)) THEN
             END IF
          END IF
 C 
-C ZH = SIGNAL:NOISE
-         ZH=(FCKD-FOKD)/SIGM
-         QH=(-FCKD-FOKD)/SIGM
-C SIGNAL:NOISE FOR DELTA FO AND FC
-         STNFO=FOKD/SIGM
-         STNFC=FCKD/SIGM
-C 
 C 
          NFO=NINT(STNFO)+NPLT+1
          NFO=MAX(NFO,1)
@@ -7258,8 +7276,11 @@ C----- Fo/Fc plot
                WRITE (HKLLAB,'(2(I4,A),I4)') NINT(STORE(M6)),',',
      1          NINT(STORE(M6+1)),',',NINT(STORE(M6+2))
                CALL XCRAS (HKLLAB,IHKLLEN)
+cdjwoct01 - scale by sigma
+c               WRITE (CMON,'(3A,2F10.2)') 
+c     1 '^^PL LABEL ''', HKLLAB(1:IHKLLEN),''' DATA ',FCKD,FOKD
                WRITE (CMON,'(3A,2F10.2)') 
-     1 '^^PL LABEL ''', HKLLAB(1:IHKLLEN),''' DATA ',FCKD,FOKD
+     1 '^^PL LABEL ''', HKLLAB(1:IHKLLEN),''' DATA ',stnfo,stnfc
                CALL XPRVDU (NCVDU,1,0)
             END IF
 C STORE SIGNA:NOISE FOR NORMAL PROBABILITY PLOT
@@ -7371,9 +7392,13 @@ C
 c      LFRIED=LFRIED-NCENTRIC
       IF (LEVEL.EQ.4) THEN
 C Also add A SERIES FOR STRAIGHT LINE (y=x) .
+CDJWOCT10 - USE DIGNA:NOISE
+C         WRITE (CMON,'(A/ (2(A,2F10.2)) )') 
+C     1 '^^PL ADDSERIES ''Fo=Fc'' TYPE LINE',
+C     2 '^^PL DATA ', -FCMAX,-FCMAX,' DATA ',FCMAX,FCMAX
          WRITE (CMON,'(A/ (2(A,2F10.2)) )') 
      1 '^^PL ADDSERIES ''Fo=Fc'' TYPE LINE',
-     2 '^^PL DATA ', -FCMAX,-FCMAX,' DATA ',FCMAX,FCMAX
+     2 '^^PL DATA ', -STNFCM,-STNFCM,' DATA ',STNFCM,STNFCM
          CALL XPRVDU (NCVDU,2,0)
 C -- FINISH THE GRAPH DEFINITION
             WRITE (CMON,'(A,/,A)') 
