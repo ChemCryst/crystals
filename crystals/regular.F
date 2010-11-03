@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.60  2010/04/26 15:53:34  djw
+c Set Uiso to 0.0501 for tracking purposes
+c
 c Revision 1.59  2010/04/26 15:05:02  djw
 c Update group occupancy, Uiso and FLAG for dummy atoms.  Lots of bits cleared out of XRGRDS, XRGPLA XRGPLG and a small bit added to XRGCLC.
 c
@@ -2997,7 +3000,8 @@ C Really check if the bond MNBND - MNPIV is in the bond list.
 
        IF (NOLD .GE. 1) THEN
         IF (ISSPRT .EQ. 0) 
-     1  WRITE(NCWU,'(/,A)')'Torsion angle deviations'
+     1  WRITE(NCWU,'(/,A,60x,a)')'Torsion angle deviations',
+     2  'Angles & Difference'
       ENDIF
 
 C RMS deviation of torsions.
@@ -3176,26 +3180,48 @@ C Transform BD vector to this new system
               T2 = ATAN2( TEMPO(2), TEMPO(1) ) * RTD  ! Ta-da.
 
 C If angles differ by more than 180, take 360 - diff.
+CDJW OCT2010 Sometimes gives large unreasonable values.
+C              TP = T1 - T2
+C              IF ( TP .GT. 180.0 ) TP = 360. - TP
+C              IF ( TP .LT. -180.0 ) TP = -360. - TP
+C              TDEVP = TDEVP + TP**2
+C              TOR1MAX = MAX(TOR1MAX,ABS(TP))
+C              TOR1MIN = MIN(TOR1MIN,ABS(TP))
 
-              TP = T1 - T2
-              IF ( TP .GT. 180.0 ) TP = 360. - TP
-              IF ( TP .LT. -180.0 ) TP = -360. - TP
-              TDEVP = TDEVP + TP**2
-              TOR1MAX = MAX(TOR1MAX,ABS(TP))
-              TOR1MIN = MIN(TOR1MIN,ABS(TP))
 
+C              TN = T1 + T2
+C              IF ( TN .GT. 180 ) TN = 360. - TN
+C              IF ( TN .LT. -180 ) TN = -360. - TN
+C              TDEVN = TDEVN + TN**2
+C              TOR2MAX = MAX(TOR2MAX,ABS(TN))
+C              TOR2MIN = MIN(TOR2MIN,ABS(TN))
 
-              TN = T1 + T2
-              IF ( TN .GT. 180 ) TN = 360. - TN
-              IF ( TN .LT. -180 ) TN = -360. - TN
-              TDEVN = TDEVN + TN**2
-              TOR2MAX = MAX(TOR2MAX,ABS(TN))
-              TOR2MIN = MIN(TOR2MIN,ABS(TN))
+               if (t1 .lt. 0.0) then 
+                  t1 = t1 + 360.
+               else if (t1 .gt. 360.) then
+                  t1 = t1 - 360.
+               endif
+               if (t2 .lt. 0.0) then 
+                  t2 = t2 + 360.
+               else if (t2 .gt. 360.) then
+                  t2 = t2 - 360.
+               endif
 
+               tp = t1 - t2
+               if (tp .gt. 180.) then
+                  tp = tp - 360.
+               else if (tp .lt. -180.) then
+                  tp = tp + 360.
+               endif
+
+               tdevp = tdevp + tp*tp
+               tormax = max(tormax, tp)
+               tormin = min(tormin, tp)
+CDJW OCT2010
               NUMT = NUMT + 1
 
               IF (ISSPRT .EQ. 0) THEN
-              WRITE(NCWU,'(8(1X,A,I4),F8.3)')
+              WRITE(NCWU,'(2(4(1X,A,I4),4X),3F8.3)')
      4                            ISTORE(MOC),NINT(STORE(MOC+1)),
      2                            ISTORE(MOA),NINT(STORE(MOA+1)),
      4                            ISTORE(MOB),NINT(STORE(MOB+1)),
@@ -3203,7 +3229,8 @@ C If angles differ by more than 180, take 360 - diff.
      1                            ISTORE(MNC),NINT(STORE(MNC+1)),
      3                            ISTORE(MNA),NINT(STORE(MNA+1)),
      1                            ISTORE(MNB),NINT(STORE(MNB+1)),
-     3                            ISTORE(MND),NINT(STORE(MND+1)),TN
+     3                            ISTORE(MND),NINT(STORE(MND+1)),
+     4                            t1,t2,tp
               ENDIF
             END DO ATOMBLOOP
           END DO ATOMALOOP
@@ -3219,18 +3246,20 @@ C If angles differ by more than 180, take 360 - diff.
        SBDEV = 0.
       ENDIF
       IF (NUMT .GT.0) THEN
-       STDEV = SQRT(MIN(TDEVP,TDEVN) / NUMT)
+c       STDEV = SQRT(MIN(TDEVP,TDEVN) / NUMT)
+       STDEV = SQRT(TDEVP / NUMT)
       ELSE
        STDEV = 0.
       ENDIF
 
-      IF ( TDEVP .GT. TDEVN ) THEN
-        TORMAX = TOR2MAX
-        TORMIN = TOR2MIN
-      ELSE
-        TORMAX = TOR1MAX
-        TORMIN = TOR1MIN
-      END IF
+cdjw oct2010      doe in loop above
+c      IF ( TDEVP .GT. TDEVN ) THEN
+c        TORMAX = TOR2MAX
+c        TORMIN = TOR2MIN
+c      ELSE
+c        TORMAX = TOR1MAX
+c        TORMIN = TOR1MIN
+c      END IF
 
       WRITE(CMON,'(17X,A/A,3F12.4)')'rms pos    rms bond     rms tors',
      1 ' Deviations  ',RMSDEV(4), SBDEV, STDEV
@@ -3972,7 +4001,15 @@ C overlapping molecules separately.
      2                CAMATM,LCAMA)
          WRITE(NCFPU1,'(A)')CAMATM(1:LCAMA)
       END DO
-      WRITE(NCFPU2,'(''COLO GROUP REG1 BLUE COLO GROUP REG2 RED'')')
+      WRITE(NCFPU2,
+     1 '(''COLO GROUP REG1 GREEN VIEW'')')
+      WRITE(NCFPU2,
+     1 '(''COLO GROUP REG2 PURPLE VIEW'')')
+
+      WRITE(NCFPU2,'(''COLO O RED VIEW'')')
+      WRITE(NCFPU2,'(''COLO N BLUE VIEW'')')
+      WRITE(NCFPU2,'(''COLO S YELLOW VIEW'')')
+
       WRITE(NCFPU2,'(''VIEW''//)')
       CALL XRDOPN ( 7 , JFRN(1,2) , 'REGULAR.OBY', 11)
       CALL XRDOPN ( 7 , JFRN(1,1) , 'regular.dat', 11)
