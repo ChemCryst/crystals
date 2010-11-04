@@ -43,6 +43,9 @@ c
 c Alison
 c
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2008/05/19 15:09:49  djw
+C Fix stupid error with filename passing
+C
 C Revision 1.7  2008/05/09 11:10:48  djw
 C FLIM to find fourier limits from LIST 2 input. User must know the Gabe Lauegroup code number
 C
@@ -681,6 +684,8 @@ C-----------------------------------------------------------------------
         M = 0
         IF (K .GT. 3) GO TO 150
   140   CONTINUE
+cdjwoct2010
+c        write(ncawu,'(4i5)') L
 C-----------------------------------------------------------------------
 C  IF ONLY 1 FIELD WAS FOUND.  THERE IS AN ERROR. GO TO 710
 C-----------------------------------------------------------------------
@@ -1040,12 +1045,17 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C  6-AXIS
 C-----------------------------------------------------------------------
+cdjwoct2010
+c      write(ncawu,'(A,6i6)') '6-axis, m,n= ',m,n
+c      write(ncawu,'(4i5)') L
         IF ( M .NE. 2 ) IER = 13
         IF ( IER .GT. 0 ) GO TO 710
         IF ( L(2,2) .EQ. 3 ) GO TO 550
         CALL SGRMAT(RT(1,1,N),1,-1,0,1,0,0,0,0,1)
-        IF ( L(2,2) .GT. 11 .AND. L(2,2) .LT. 18 ) RT(3,4,N) = (L(2,2)-
-     $   11)/6.0
+cdjwoct2010
+c      write(ncawu,'(4(5f6.2,3x),3x)') rt
+        IF ( L(2,2) .GT. 11 .AND. L(2,2) .LT. 18 ) 
+     1  RT(3,4,N) = (L(2,2)- 11)/6.0
         GO TO 560
   550   CONTINUE
         CALL SGRMAT(RT(1,1,N),-1,1,0,-1,0,0,0,0,-1)
