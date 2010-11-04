@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.85  2010/07/16 11:37:37  djw
+C Enable XPCHLX to output lists 12 and 16 to the cif file.  This means carrying the I/O chanel (as NODEV)
+C  in XPCHLX,XPCHLH,PPCHND and XPCHUS.
+C Fixed oversight in distangle for esds of H-bonds
+C
 C Revision 1.84  2010/07/07 16:11:45  djw
 C Output corresct list tpe for 6/7
 C
@@ -1158,7 +1163,7 @@ C----- SET ILOOP TO A DUMMY, SAVE AUTOUPDTE FLAG
 C
 C
 C
-
+c
 CODE FOR XTHETA
       FUNCTION XTHETA(I)
       INCLUDE 'XLST13.INC'
@@ -1170,6 +1175,23 @@ CODE FOR XTHETA
         XTHETA = 90.0
       ELSE
         XTHETA = ASIN ( ST  ) * RTD
+      END IF
+      RETURN
+      END
+C
+CODE FOR XSTHL3
+      FUNCTION XSTHL3(I)
+C return SIN(theta)/lambda all cubed
+c      I a dummy
+      INCLUDE 'XLST13.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XLST06.INC'
+      ST = SQRT ( ABS ( SNTHL2(I) ) ) 
+      IF ( ST .GT. 1.0 ) THEN
+        XSTHL3 = 1.
+      ELSE
+        XSTHL3 = ST*ST*ST
       END IF
       RETURN
       END
@@ -1555,13 +1577,14 @@ C will not be optimised.
 
       RETURN
       END
-
+c
 CODE FOR XCOMPL
       SUBROUTINE XCOMPL ( ITRSZ, JNH,JNK,JNL, JXH,JXK,JXL,
      1              THMAX,THMCMP, THBEST,THBCMP, IPLOT, IULN, IGLST )
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST13.INC'
       INCLUDE 'XLST25.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
@@ -1578,6 +1601,10 @@ c      DIMENSION IHKLTR ( 3, ITRSZ + 1 )
 
       THBEST = 0.0
       THBCMP = 0.0
+c   convert thmax to (sin(th)/lam)^3
+      stl3max = sin(dtr*thmax)/store(l13dc)
+      stl3max = stl3max*stl3max*stl3max
+c
       if (itrsz+1 .gt. itrmax) then
         WRITE ( CMON , '(a,2i8)' ) 
      1 'Too many reflections to compute completeness ',itrsz,itrmax
@@ -1633,7 +1660,10 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
      1              .AND.( NINT(STORE(M6+1)) .EQ. IK )
      2              .AND.( NINT(STORE(M6+2)) .EQ. IL ) ) THEN
                   NALLWD = NALLWD + 1
-                  JID = ( ( XTHETA(NALLWD) / THMAX ) * 100.0 )
+c--- find bin in (sin(theta)/lambda)^3 (equal volume) intervals
+cdjwoct2010                  JID = ( ( XTHETA(NALLWD) / THMAX ) * 100.0 )
+                  AJID = xsthl3(NALLWD) 
+                  JID = ( ( ajid / stl3max ) * 100.0 )
                   JID = MAX ( 1,  JID )
                   JID = MIN ( 100,JID )
                   ALLBIN(JID) = ALLBIN(JID) + 1.0
@@ -1728,7 +1758,9 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
           COMP = FNDBIN(I) / ALLBIN(I)
           CMPMIN = MIN (CMPMIN,COMP)
         END IF
-
+cdjwoct2010
+          cmpmin = 0.
+c
 C Compute lowest reasonable value of THBEST - this is 25 degrees unless
 C THMAX < 25 degrees, in which case it is 0.75*THMAX.
 
@@ -1760,12 +1792,13 @@ C THMAX < 25 degrees, in which case it is 0.75*THMAX.
         CMPMIN = 100.0 * MIN(0.99,CMPMIN)
         WRITE(CMON,'(A/A/A,F7.2,A/A/A/A)')
      1  '^^PL PLOTDATA _COMPL SCATTER ATTACH _VCOMPL KEY',
-     1  '^^PL XAXIS TITLE Theta NSERIES=2 LENGTH=100',
+     1  '^^PL XAXIS TITLE (SIN(Theta)/lambda)^3 NSERIES=3 LENGTH=100',
      1  '^^PL YAXIS ZOOM ', CMPMIN,
      1  ' 100.0 TITLE ''Cumulative Completeness''',
      1  '^^PL YAXISRIGHT ZOOM 0 100 TITLE ''Shell Completeness''',
      1 '^^PL SERIES 1 SERIESNAME ''Cumulative Completeness'' TYPE LINE',
      1  '^^PL SERIES 2 SERIESNAME ''Shell Completeness''',
+     1  '^^PL SERIES 3 SERIESNAME ''Theta value'' TYPE LINE',
      1  '^^PL USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 7,0)
 
@@ -1775,22 +1808,30 @@ C THMAX < 25 degrees, in which case it is 0.75*THMAX.
           ELSE
             COMP = FNDBIN(I) / ALLBIN(I)
           END IF
-
-          WRITE(CMON,'(A,F10.3,A,4F10.5)')
-     1    '^^PL LABEL ', THMAX*(I/100.0),
-     1    ' DATA ', THMAX*(I/100.0),100.0*COMP,
-     1              THMAX*(I/100.0),100.0*ACTBIN(I)
+c
+c          WRITE(CMON,'(A,F10.3,A,4F10.5)')
+c     1    '^^PL LABEL ', THMAX*(I/100.0),
+c     1    ' DATA ', THMAX*(I/100.0),100.0*COMP,
+c     1              THMAX*(I/100.0),100.0*ACTBIN(I)
+cdjwoct2010
+          point=stl3max*(I/100.0)
+          point=rtd*asin(store(l13dc)*point**0.333)
+          WRITE(CMON,'(A,F10.3,A,6F10.5)')
+     1    '^^PL LABEL ', point,
+     1    ' DATA ', stl3max*(I/100.0),100.0*COMP,
+     1              stl3max*(I/100.0),100.0*ACTBIN(I)
+     1            , stl3max*(I/100.0),point
           CALL XPRVDU(NCVDU, 1,0)
         END DO
-
+c
         WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
         CALL XPRVDU(NCVDU, 2,0)
 
       END IF
-
+c
       RETURN
       END
-
+c
 CODE FOR XSUM06
       SUBROUTINE XSUM06 (iuln,  LEVEL )
 C
