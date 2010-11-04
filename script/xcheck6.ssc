@@ -34,14 +34,18 @@
 ^^WI    {                                                                       
 ^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
 ^^WI     {                                                                      
-^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                       
+^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=2                                       
 ^^WI      {                                                                     
-^^WI       @ 1,1 STATIC XFW1                                                    
+^^WI       @ 1,1 STATIC XFW11                                                    
 ^^WI 'Completeness of the data set out to theta max.'                           
-^^WI       @ 2,1 STATIC XFW2                                                    
+^^WI       @ 2,1 STATIC XFW21                                                    
 ^^WI 'You may manually select "theta full" (the value at which you consider'    
-^^WI       @ 3,1 STATIC XFW3                                                    
-^^WI 'the data complete) by right-clicking the graph.'                          
+^^WI       @ 2,2 STATIC XFW22                                                    
+^^WI ' the data complete) by right-clicking the graph.'  
+^^WI       @ 3,1 STATIC XFW31                                                    
+^^WI ' The intervals in (sin(theta)/lambda)^3 have equal voliumes.'  
+^^WI       @ 3,2 STATIC XFW32
+^^WI ' Click the blue curve to see the actual theta value'  
 ^^WI      }                                                                     
 ^^WI      @ 1,1 ICON IM INFO                                                    
 ^^WI     }                                                                      
