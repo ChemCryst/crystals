@@ -30,7 +30,7 @@
 ^^WI        @ 1,1 GRID CLICK NROWS=2 NCOLS=3 OUTLINE='Click action'
 ^^WI        {
 ^^WI           @ 1,1 STATIC _ELT 'change to:'
-^^WI           @ 2,1 LISTBOX _ELS VISLINES=6 ADDTOLIST 'Q' 'NULL'
+^^WI           @ 2,1 LISTBOX _ELS VISLINES=12 ADDTOLIST 'Q' 'NULL'
 ^^WI        }
 ^^WI        @ 3,1 GRID CLICK NROWS=8 NCOLS=1
 ^^WI        {
