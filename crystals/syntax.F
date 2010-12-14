@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2005/01/23 08:29:12  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:05  rich
 C New CRYSTALS repository
 C
@@ -542,6 +546,7 @@ C
 C  IA  BASE ADDRESS OF THE CODE INFORMATION (LCG)
 C  IB  BASE ADDRESS OF WORK STACK (LC)
 C
+      CHARACTER*10  COPERATE(24)
 C--
       INCLUDE 'ICNTRL.INC'
       INCLUDE 'ISTORE.INC'
@@ -558,6 +563,17 @@ C
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QCNTRL.INC'
+C
+
+C
+C----- ISTORE (LCG + 1) OPERATIONS
+      data coperate
+     1 /'Define',  'Restrain', 'Distance',  'Mean D',
+     1 'Delta D',  'Angle',  'Mean A',   'Delta A',
+     1 'Vibration',  'executioN',  'Nolist',  'Uij',
+     1 'Equate',  'Planar',  'sum',  'Form',
+     1 'Average', 'Limit',  'Energy',  'Origin',
+     1 'Rem', 'Same', 'Delu', 'Simu'/
 C
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1000)IA,IB,NFL,LFL,LC,ICNTRL
@@ -613,6 +629,7 @@ C--THIS IS AN ATOM HEADER
       WRITE(NCWU,1550)MCA,(ISTORE(I),I=MCA,J),STORE(MCA+3),(ISTORE(I),
      2 I=K,MDCA)
       ENDIF
+      WRITE(NCAWU,1550)MCA,(ISTORE(I),I=MCA,J),STORE(MCA+3)
 1550  FORMAT(' Atom header at',I8,'  :',2I10,5X,A4,F6.0,5X,2I10,5X,
      2 5I5/26X,5I10)
 C--PRINT THE PARAMETER STACK INFORMATION
@@ -661,9 +678,10 @@ C--PRINT THE INSTRUCTION STACK
 2100  CONTINUE
       MCG=LCG+IA
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,2150)MCG,ISTORE(MCG+1)
+      WRITE(NCWU,2150)MCG,ISTORE(MCG+1),coperate(istore(mcg+1))
       ENDIF
-2150  FORMAT(' Function at',I8,'  :',I5)
+      WRITE(NCAWU,2150)MCG,ISTORE(MCG+1),coperate(istore(mcg+1))
+2150  FORMAT(' Function at',I8,'  :',I5, 3x,a)
       MCG=ISTORE(MCG)+IA
 2200  CONTINUE
       IF(MCG)2350,2350,2250
