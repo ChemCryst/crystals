@@ -144,7 +144,10 @@ C....... Extract space group notation (expected char string)
          GO TO 100
       END IF
 100   CONTINUE
-      FF=CHAR_('_chemical_oxdiff_formula',CFORM)
+      FF=CHAR_('_chemical_formula',CFORM)
+      IF (.NOT.(FF)) THEN
+      FF=CHAR_('_chemical_formula_sum',CFORM)
+      ENDIF
       LFORM=LONG_
       write(6,'(a)') cform
       IF (.NOT.(FF)) THEN
