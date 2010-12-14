@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.67  2010/09/20 15:07:55  djw
+C Edit cvs comments
+C
 C Revision 1.66  2010/09/20 15:05:41  djw
 C Enable use of dual wavelength data
 C
@@ -1660,9 +1663,10 @@ c  SET UP THE POLARISATION CONSTANTS
           C=C*C
           S=S*S
           POL1=A+C*S
+cdjwoct2010 POL2 had found itself outside of the IF clause
+          POL2=C+A*S
         END IF
       END IF
-      POL2=C+A*S
 
 C--CHECK IF A PRINT IS REQUIRED
       IF(REFPRINT) THEN 
