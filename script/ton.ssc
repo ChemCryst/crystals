@@ -197,7 +197,7 @@ PUNCH = ' //   CPUNCH TO CRYSTALS
 %         COPY '#RELEASE PUNCH bfile.pch'                                          
 %       END IF
 % ELSE IF IPLOT .EQ. 1 THEN                                                     
-^^WI WINDOW xnormpp 'Fo vs Fc plot' KEEP SIZE MODAL                             
+^^WI WINDOW xnormpp 'Do/s vs Dc/s plot' KEEP SIZE MODAL                             
 ^^WI COMMIT='NPP_BOK' CANCEL='NPP_BOK'                                          
 ^^WI GRID MAIN NROWS=2 NCOLS=1                                                  
 ^^WI {                                                                          
@@ -205,14 +205,16 @@ PUNCH = ' //   CPUNCH TO CRYSTALS
 ^^WI  {                                                                         
 ^^WI   @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                               
 ^^WI   {                                                                        
-^^WI    @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                         
+^^WI    @ 1,3 GRID EXP2 NROWS=4 NCOLS=1                                         
 ^^WI    {                                                                       
 ^^WI     @ 1,1 STATIC XFW1                                                      
-^^WI "The observed anomalous differences plotted against "                      
+^^WI "The (observed anomalous differences)/sigma(Do) plotted against "
 ^^WI     @ 2,1 STATIC XFW2                                                      
-^^WI 'the calculated anomalous differences.  The plot should be'                
+^^WI 'the (calculated anomalous differences)/sigma(Do). '
 ^^WI     @ 3,1 STATIC XFW3                                                      
-^^WI 'linear and pass through the origin if the weights are good.'              
+^^WI ' The plot should belinear and pass through the origin'
+^^WI     @ 4,1 STATIC XFW4
+^^WI ' if the weights are good.'              
 ^^WI    }                                                                       
 ^^WI    @ 1,1 ICON IM INFO                                                      
 ^^WI   }                                                                        
