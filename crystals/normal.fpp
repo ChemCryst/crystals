@@ -669,7 +669,7 @@ cdjwfeb08
 C TOP FRAME
       WRITE(NCWU,40) FH,RH(1)                                        
    40 FORMAT(1H ,25X,63HPLOT OF WILSON AND DEBYE CURVES AND LEAST SQUARE
-     1S STRAIGHT LINE/1H ,15X,20X/1H ,40X,20HLN(F(OBS)**2/SIGFSQ)/1H , 
+     1S STRAIGHT LINE/1H ,15X,20X/1H ,40X,20HLN(F(obs)**2/SIGfSQ)/1H , 
      2 F18.3,5F20.3/1H ,F12.3,2X,1H-,5(1HI,19(1H-)),2HI-)               
       J=1                                                               
       IR=2
