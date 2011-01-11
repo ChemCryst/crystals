@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:08  rich
 C New CRYSTALS repository
 C
@@ -774,7 +778,7 @@ C--LINKAGE ERROR
       ENDIF
       WRITE(NCAWU,1200) LN,LASTAD,IADDR,(IBUFF(I),I=1,MD0)
       WRITE ( CMON, 1200) LN,LASTAD,IADDR, (IBUFF(I),I=1,MD0)
-      CALL XPRVDU(NCEROR, 1,0)
+      CALL XPRVDU(NCEROR, 3,0)
 1200  FORMAT(' Chain break on disc for list type ',I5,/,1X,2I10,
      1 / 1X, 12I10 )
       CALL XERHND ( IERPRG )
