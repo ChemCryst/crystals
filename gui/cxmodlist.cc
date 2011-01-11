@@ -866,13 +866,13 @@ bool CxModList::SortItems( int colType, int nCol, bool bAscending)
 
 int CxModList::WhichType(const string & text)
 {
-    string::size_type i, tbegin, tend;
+    string::size_type tbegin, tend;
 
 //Test one: Any characters other than space, number or point.
     if ( text.find_first_not_of(" 1234567890-.") != string::npos ) {
-		ostringstream o;
-		o << "Text contains non sp,num,point: " << text.find_first_not_of(" 1234567890-.") << " " << text;
-		LOGERR(o.str());
+//		ostringstream o;
+//		o << "Text contains non sp,num,point: " << text.find_first_not_of(" 1234567890-.") << " " << text;
+//		LOGERR(o.str());
         return COL_TEXT;
 	}
 
@@ -883,17 +883,17 @@ int CxModList::WhichType(const string & text)
        tend = text.find_first_of(" ",tbegin);
        if ( ( tend != string::npos ) && 
             ( text.find_first_not_of(" ",tend) != string::npos ) ) {
-				ostringstream o;
-				o << "Text contains 2 tokens: " << text;
-				LOGERR(o.str());
+//				ostringstream o;
+//				o << "Text contains 2 tokens: " << text;
+//				LOGERR(o.str());
 				return COL_TEXT;
 			}
 //Test two(b): Minus sign in correct place if present.
        if (text.find_last_of("-") != string::npos ) {
 			if (text.find_last_of("-") != tbegin ) {
-   				ostringstream o;
-				o << "Text contains - tokens not a beginning: " << text;
-				LOGERR(o.str());
+//   				ostringstream o;
+//				o << "Text contains - tokens not a beginning: " << text;
+//				LOGERR(o.str());
 				return COL_TEXT;
 			}
 		}
@@ -905,9 +905,9 @@ int CxModList::WhichType(const string & text)
     tend = text.find_last_of(".");
 
     if ( tbegin != tend ) {
-		ostringstream o;
-		o << "Text contains 2 dps: " << text;
-		LOGERR(o.str());
+//		ostringstream o;
+//		o << "Text contains 2 dps: " << text;
+//		LOGERR(o.str());
 		return COL_TEXT;  // Two decimal points.
 	}
     if ( tbegin != string::npos ) return COL_REAL; // One decimal point
