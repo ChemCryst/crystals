@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.68  2010/12/14 13:06:54  djw
+C remove dual wavelength stuff
+C
 C Revision 1.67  2010/09/20 15:07:55  djw
 C Edit cvs comments
 C
@@ -366,6 +369,8 @@ C      LINEARISED.
 C
       CALL XTIME1(1)
       ILEV = 0
+      IRESULTS=1
+      NRESULTS=1
       IF (MODE .LE. 0) THEN
 C----- WE WONT READ ANY DATA, BUT WILL SET TYPE TO 'CALC'
             NUM = 3

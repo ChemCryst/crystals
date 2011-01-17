@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2008/02/14 10:27:25  djw
+C Remove writes to ncawu
+C
 C Revision 1.7  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -130,6 +133,7 @@ C
 C
       INCLUDE 'QDISCB.INC'
 C
+
 C--TRANSFER THE ARGUMENTS TO THE COMMON BLOCK
       NFWD=NFW
       NWD=NW

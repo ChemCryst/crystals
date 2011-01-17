@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.26  2010/10/26 09:51:24  djw
+C Sort out more writes to NCAWU, provide more output from EXEC directive
+C
 C Revision 1.25  2010/07/16 11:35:31  djw
 C Enable XPCHLX to output lists 12 and 16 to the cif file.  This means carrying the I/O chanel (as NODEV)
 C in XPCHLX,XPCHLH,PPCHND and XPCHUS.
@@ -685,8 +688,11 @@ C
 C--
       INCLUDE 'ICOMLX.INC'
       INCLUDE 'ISTORE.INC'
+      INCLUDE 'XFILEC.INC'
       INCLUDE 'HEADES.INC'
 C
+      INCLUDE 'XIOBUF.INC'
+
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
@@ -721,7 +727,8 @@ C
 C
 C
       IDWZAP = 0
-      IFIRST = KNEXTF ( IDWZAP )
+c      IFIRST = KNEXTF ( IDWZAP ) 
+      IFIRST = KNEXTF ( IDWZAP ) + LNLST*2 ! leave space for new disk index block (sometimes happens)
       LSTLEN = 0
 C
       IADDL = 0
