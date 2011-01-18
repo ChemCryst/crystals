@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2010/06/03 16:56:22  djw
+C Copy the #axes screen output to the monitor file
+C
 C Revision 1.26  2008/10/01 11:11:54  djw
 C Support for treatment of Deuterium as hydrogen
 C
@@ -416,8 +419,8 @@ c
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
 c
-         write(cmon,'(a)') 'for Uprime',
-     1   ' see Acta Cryst (2000). B56, 747-749'
+         write(cmon,'(a)')
+     1   'for Uprime see Acta Cryst (2000). B56, 747-749'
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
        endif
