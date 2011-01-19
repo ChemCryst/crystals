@@ -204,6 +204,10 @@
 %      COPY '#PUNCH 16 C'
 %      COPY 'END'
 %%
+%%  Write manually omitted reflections to end of cif
+%      COPY '#SUM LIST 28 HI'
+%      COPY 'END'
+%%
   Parameters saved in {&publish.cif{&
 %%
 %%
