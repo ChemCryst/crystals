@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.86  2010/11/04 15:18:43  djw
+C Do completeness in terms of (sin(theta)lambda)^3 i.e. equal volumes
+C
 C Revision 1.85  2010/07/16 11:37:37  djw
 C Enable XPCHLX to output lists 12 and 16 to the cif file.  This means carrying the I/O chanel (as NODEV)
 C  in XPCHLX,XPCHLH,PPCHND and XPCHUS.
@@ -624,7 +627,8 @@ C
       ELSE IF ( LSTYPE .EQ. 27 ) THEN
         CALL XSUM27
       ELSE IF ( LSTYPE .EQ. 28 ) THEN
-        CALL XSUM28
+CDJWJAN11
+        CALL XSUM28(LEVEL)
       ELSE IF ( LSTYPE .EQ. 29 ) THEN
         CALL XSUM29
       ELSE IF ( LSTYPE .EQ. 30 ) THEN
@@ -2583,24 +2587,44 @@ C
 C
 C
 CODE FOR XSUM28
-      SUBROUTINE XSUM28
+      SUBROUTINE XSUM28(LEVEL)
 C
 C -- ROUTINE TO DISPLAY SUMMARY OF LIST 28
+CDJWJAN11
+C    LEVEL HIGH (3) CAUSES OUTPUT TO NCPU
 C
       LOGICAL LHEADR
+      character *22 comit
+      DIMENSION KDEV(4)
 C
       INCLUDE 'ISTORE.INC'
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XLST28.INC'
       INCLUDE 'XUNITS.INC'
+      INCLUDE 'UFILE.INC'
       INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XSSCHR.INC'
+      INCLUDE 'TSSCHR.INC'
       INCLUDE 'XCONST.INC'
       INCLUDE 'XIOBUF.INC'
 C
       INCLUDE 'QSTORE.INC'
 C
+      data comit/'_oxford_omitted_index_'/
 C
+cdjwjan11  - output to PUNCH in CIF format
+      if (level .eq. 3) then
+C -       PREAPRE TO APPEND CIF OUTPUT ON FRN1
+          CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
+          CALL XRDOPN(8, KDEV , CSSCIF, LSSCIF)
+            write(ncfpu1,'(/a)')'# Manually omitted reflections'
+            write(ncfpu1,'(/a)')'loop_'
+            write(ncfpu1,'(a,a)')comit,'h'
+            write(ncfpu1,'(a,a)')comit,'k'
+            write(ncfpu1,'(a,a)')comit,'l'
+            write(ncfpu1,'(a,a)')comit(1:16),'reason'
+      endif
 C
 C -- BEGIN OUTPUT
       IF (MD28SK .GT. 1 ) THEN
@@ -2693,6 +2717,10 @@ C
        J = 1
        INC = 14
        DO 2000 I = L28OM , M28OM , MD28OM
+cdjwjan11
+          if (level .eq. 3) write(ncfpu1,'(3i4,a)') 
+     1       (NINT(STORE(K)),K=I,I+MD28OM-1), ' .'
+cdjwjan11
           IF (ISSPRT .EQ. 0) THEN
             WRITE ( NCWU , 1705 ) ( NINT(STORE(K)), K = I, I+MD28OM-1 )
           ENDIF
@@ -2715,6 +2743,10 @@ C
 2005    FORMAT ( 1X , 'Reflections are not subject to restrictions' )
       ENDIF
 C
+      if (level .eq. 3) then
+c-          close cif chanel
+           CALL XRDOPN(7, KDEV , CSSCIF, LSSCIF)
+      endif
 C
       RETURN
       END
