@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.87  2011/01/19 14:36:54  djw
+C Tag OMITTED reflections onto end of cif
+C
 C Revision 1.86  2010/11/04 15:18:43  djw
 C Do completeness in terms of (sin(theta)lambda)^3 i.e. equal volumes
 C
@@ -2613,19 +2616,6 @@ C
 C
       data comit/'_oxford_omitted_index_'/
 C
-cdjwjan11  - output to PUNCH in CIF format
-      if (level .eq. 3) then
-C -       PREAPRE TO APPEND CIF OUTPUT ON FRN1
-          CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
-          CALL XRDOPN(8, KDEV , CSSCIF, LSSCIF)
-            write(ncfpu1,'(/a)')'# Manually omitted reflections'
-            write(ncfpu1,'(/a)')'loop_'
-            write(ncfpu1,'(a,a)')comit,'h'
-            write(ncfpu1,'(a,a)')comit,'k'
-            write(ncfpu1,'(a,a)')comit,'l'
-            write(ncfpu1,'(a,a)')comit(1:16),'reason'
-      endif
-C
 C -- BEGIN OUTPUT
       IF (MD28SK .GT. 1 ) THEN
         I = MD28SK-1
@@ -2711,6 +2701,18 @@ C
         ENDIF
 C
       IF ( N28OM .GT. 0 ) THEN
+cdjwjan11  - output to PUNCH in CIF format
+       if (level .eq. 3) then
+C -       PREAPRE TO APPEND CIF OUTPUT ON FRN1
+          CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
+          CALL XRDOPN(8, KDEV , CSSCIF, LSSCIF)
+            write(ncfpu1,'(/a)')'# Manually omitted reflections'
+            write(ncfpu1,'(/a)')'loop_'
+            write(ncfpu1,'(a,a)')comit,'h'
+            write(ncfpu1,'(a,a)')comit,'k'
+            write(ncfpu1,'(a,a)')comit,'l'
+            write(ncfpu1,'(a,a)')comit(1:16),'reason'
+       endif
        WRITE(CMON,'(''Omitted Reflections'')')
        CALL XPRVDU(NCVDU, 1,0)
        M28OM = L28OM + (N28OM-1)*MD28OM
