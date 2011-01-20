@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.88  2011/01/19 14:43:47  djw
+C Move header for OMIT so that nothing appears if there are no omissions
+C
 C Revision 1.87  2011/01/19 14:36:54  djw
 C Tag OMITTED reflections onto end of cif
 C
@@ -2597,7 +2600,7 @@ CDJWJAN11
 C    LEVEL HIGH (3) CAUSES OUTPUT TO NCPU
 C
       LOGICAL LHEADR
-      character *22 comit
+      character *28 comit
       DIMENSION KDEV(4)
 C
       INCLUDE 'ISTORE.INC'
@@ -2614,7 +2617,7 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
-      data comit/'_oxford_omitted_index_'/
+      data comit/'_oxford_refln_omitted_index_'/
 C
 C -- BEGIN OUTPUT
       IF (MD28SK .GT. 1 ) THEN
@@ -2711,7 +2714,7 @@ C -       PREAPRE TO APPEND CIF OUTPUT ON FRN1
             write(ncfpu1,'(a,a)')comit,'h'
             write(ncfpu1,'(a,a)')comit,'k'
             write(ncfpu1,'(a,a)')comit,'l'
-            write(ncfpu1,'(a,a)')comit(1:16),'reason'
+            write(ncfpu1,'(a,a)')comit(1:22),'details'
        endif
        WRITE(CMON,'(''Omitted Reflections'')')
        CALL XPRVDU(NCVDU, 1,0)
