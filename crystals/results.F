@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.167  2010/11/03 15:23:28  djw
+C Include superflip as solve method in cif, plot Do/sigma in Absolute configuration Fo/Fc plot
+C
 C Revision 1.166  2010/09/20 14:57:23  djw
 C Add info about SUpernova
 C
@@ -3610,11 +3613,13 @@ chi * 10^4
       chi=20000. * sqrt(sumy)/(sumx+sumz)
       A(11) = CHI
       A(12) = SUMY
+      write(cmon,'(/)')
+      CALL XPRVDU(NCVDU, 1,0)
       WRITE ( CMON, '(2x,A,F8.1,3x,A,F10.4)') 
      1 'Friedif = ',chi,'Estimated Friedel difference = ',sqrt(sumy)
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0)  then
-       WRITE(NCWU,'(A)') CMON(1)(:)
+       WRITE(NCWU,'(//A)') CMON(1)(:)
        WRITE(NCWU,'(A)') 
      1 '  f computed from scattering factors, including f-prime'
       ENDIF
