@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.69  2011/01/17 15:40:14  rich
+C Fix o/w of disk lexical data in dsc file when disk index block is extended.
+C
+C Committed on the Free edition of March Hare Software CVSNT Client.
+C Upgrade to CVS Suite for more features and support:
+C http://march-hare.com/cvsnt/
+C
 C Revision 1.68  2010/12/14 13:06:54  djw
 C remove dual wavelength stuff
 C
@@ -920,8 +927,8 @@ C----- CHECK IF REFLECTIONS SHOULD BE USED
       ELSE
 C--SET UP THE REFLECTION HOLDING STACK
         NR=4
-cdjwsep2010        NY=20 
-        NY=21  ! leave one more slot for the BATCH number for use 
+        NY=20  ! restore jan2010
+c        NY=21  ! leave one more slot for the BATCH number for use sep2010
 c       when there is auxilliary radiation
         JREF_STACK_START=NFL
 C--SET THE LIST AND RECORD TYPE
@@ -931,7 +938,7 @@ C--SET THE LIST AND RECORD TYPE
 C N25 is the number of twin elements
 C N12 is the number of parameters being refined
 C JQ is the number of words needed to hold each derivative
-C NY is 20
+C NY is 20 (21 if batch saved)
 C NR is 4 = H,K,L,PSHIFT for each reflections
 C N2I is the number of symmetry operators
 
@@ -3087,7 +3094,7 @@ C--CHECK THE GIVEN INDICES
      1        +ABS(STORE(M6+1)+STORE(LJW+1))
      2        +ABS(STORE(M6+2)+STORE(LJW+2))
 csjwsep2010 Check the BATCH numbers for refinement of dual Wave data
-          bdf = abs(store(m6+13)-store(ljw+20))
+c          bdf = abs(store(m6+13)-store(ni+20))
 c
           IF ( BF .LT. 0.5 ) THEN 
              PSHIFT=-PSHIFT   ! USE FRIEDEL'S LAW
@@ -3096,7 +3103,8 @@ c
 
 c        LOOK FOR REFLECTION IN THE STACK
 cdjwsep2010 IF ((BD.LT.0.5) .OR. (BF.LT.0.5)) THEN ! REFLECTION FOUND IN THE STACK
-          IF (((BD.LT.0.5) .OR. (BF.LT.0.5)).and.(bdf .lt. 0.5))THEN 
+      IF ((BD.LT.0.5) .OR. (BF.LT.0.5)) THEN ! REFLECTION FOUND IN THE STACK
+cdjwjan2011          IF (((BD.LT.0.5) .OR. (BF.LT.0.5)).and.(bdf .lt. 0.5))THEN 
             LJY=NI
             IF(LJX.GT.0) THEN  ! CHECK IF WE HAVE USED IT BEFORE
 C--WE NEED THIS REFLECTION TWICE
@@ -3161,8 +3169,8 @@ C--THIS IS THE END OF THE STACK  -  WE MUST DO A CALCULATION HERE
       STORE(NI+3)=STORE(M6)   ! SET UP THE CURRENT SET OF INDICES
       STORE(NI+4)=STORE(M6+1)
       STORE(NI+5)=STORE(M6+2)
-cdhwsep2010 Put the BATCH number into the stack
-      store(ni+20)=store(m6+13)
+cdjwsep2010 Put the BATCH number into the stack
+c      store(ni+20)=store(m6+13)
       ISTORE(NI+8)=NL
       STORE(NI+11)=PSHIFT
       STORE(NI+12)=FRIED
@@ -3253,8 +3261,10 @@ c
       M3TR=L3TR  
       M3TI=L3TI
       DO LJZ=1,N3
-        STORE(M3TR)=STORE(M3TR+nint(store(m6+13))-1)*G2
-        STORE(M3TI)=STORE(M3TI+nint(store(m6+13))-1)*G2
+c        STORE(M3TR)=STORE(M3TR+nint(store(m6+13))-1)*G2
+c        STORE(M3TI)=STORE(M3TI+nint(store(m6+13))-1)*G2
+        STORE(M3TR)=STORE(M3TR)*G2
+        STORE(M3TI)=STORE(M3TI)*G2
         IF(STORE(M3TR).LE.ZERO)THEN  ! REAL PART IS ZERO  
           STORE(M3TI)=0. ! SO IS THE IMAGINARY NOW
         ELSE   ! REAL PART IS OKAY
@@ -3300,11 +3310,9 @@ C
           IF ( L12A .GE.0 ) ATOM_REFINE = .TRUE.  ! Set if any params of this atom are being refined
           M12=ISTORE(M12)
         END IF
-cdjwsep2010 use dual wavelength anomalous scattering as appropriate
-c        M3TR=L3TR+ISTORE(M5A)  ! PICK UP THE FORM FACTORS FOR THIS ATOM
-c        M3TI=L3TI+ISTORE(M5A)
-        M3TR=L3TR+ISTORE(M5A)*md3tr  ! PICK UP THE FORM FACTORS FOR THIS ATOM
-        M3TI=L3TI+ISTORE(M5A)*md3ti
+cdjwsep2010 extend to use dual wavelength anomalous scattering as appropriate 
+        M3TR=L3TR+ISTORE(M5A)*MD3TR  ! PICK UP THE FORM FACTORS FOR THIS ATOM
+        M3TI=L3TI+ISTORE(M5A)*MD3TI
 c
 c focc   formfactor * site occ * chemical occ * difabs corection
 c modify focc for other fc corrections 
