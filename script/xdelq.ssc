@@ -1,6 +1,6 @@
 %SCRIPT XDELQ                                                                   
                                                                                 
-{E Removing all Q and Q-type atoms                                              
+ Removing all Q and Q-type atoms                                              
                                                                                 
 % COPY '#EDIT'                                                                  
 % COPY 'MONITOR OFF'                                                            
