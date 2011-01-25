@@ -387,7 +387,7 @@
 %    COPY 'LOCATE RECORDTYPE = 102'                                             
 %    COPY 'TRANSFER FROM OFFSET = 6 TO WORK1'                                   
 %    IF WORK1 .LT. 25.0 THEN                                                    
-^^CO    SET T2 TEXT 'Alert' SET T3 TEXT 'Temperaure < 25K. Please check.'       
+^^CO    SET T2 TEXT 'Alert' SET T3 TEXT 'Temperature < 25K. Please check.'       
 %    ELSE                                                                       
 ^^CO    SET T2 TEXT 'OK' SET T3 TEXT ' '                                        
 %    END IF                                                                     
