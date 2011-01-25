@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.89  2011/01/20 15:40:17  djw
+C Use Brian McMahons data names
+C
 C Revision 1.88  2011/01/19 14:43:47  djw
 C Move header for OMIT so that nothing appears if there are no omissions
 C
@@ -2714,6 +2717,7 @@ C -       PREAPRE TO APPEND CIF OUTPUT ON FRN1
             write(ncfpu1,'(a,a)')comit,'h'
             write(ncfpu1,'(a,a)')comit,'k'
             write(ncfpu1,'(a,a)')comit,'l'
+            write(ncfpu1,'(a,a)')comit(1:22),'flag'
             write(ncfpu1,'(a,a)')comit(1:22),'details'
        endif
        WRITE(CMON,'(''Omitted Reflections'')')
@@ -2724,7 +2728,7 @@ C -       PREAPRE TO APPEND CIF OUTPUT ON FRN1
        DO 2000 I = L28OM , M28OM , MD28OM
 cdjwjan11
           if (level .eq. 3) write(ncfpu1,'(3i4,a)') 
-     1       (NINT(STORE(K)),K=I,I+MD28OM-1), ' .'
+     1       (NINT(STORE(K)),K=I,I+MD28OM-1), '  x   .'
 cdjwjan11
           IF (ISSPRT .EQ. 0) THEN
             WRITE ( NCWU , 1705 ) ( NINT(STORE(K)), K = I, I+MD28OM-1 )
@@ -2739,6 +2743,12 @@ cdjwjan11
          J = J + INC
 2000   CONTINUE
        IF (J .NE. 1) CALL XPRVDU(NCVDU, 1,0)
+C
+       if (level .eq. 3) then
+c-          close cif chanel
+           CALL XRDOPN(7, KDEV , CSSCIF, LSSCIF)
+       endif
+c
       ENDIF
 C
       ELSE
@@ -2747,11 +2757,6 @@ C
         CALL XPRVDU(NCVDU, 1,0)
 2005    FORMAT ( 1X , 'Reflections are not subject to restrictions' )
       ENDIF
-C
-      if (level .eq. 3) then
-c-          close cif chanel
-           CALL XRDOPN(7, KDEV , CSSCIF, LSSCIF)
-      endif
 C
       RETURN
       END
