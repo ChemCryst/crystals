@@ -31,32 +31,28 @@ C
 #if defined(_GIL_) || defined (_MAC_) || defined (_LIN_) || defined (_WXS_)
       call no_stdout_buffer()
 #endif
-C set default output filename
-	filename='od-out.hkl' 
 C----- GET DATE
-
       I=IGDAT(CDATE)
 C 
 C....... Open our files for writing
       OPEN (NOUTF,FILE='od-out.ins',STATUS='UNKNOWN')
-      OPEN (NHKL,FILE=filename, STATUS='UNKNOWN')
+      OPEN (NHKL,FILE='od-out.hkl', STATUS='UNKNOWN')
       OPEN (NCIF,FILE='od-out.cif',STATUS='UNKNOWN')
 C 
 C....... Call the CIFTBX code to INITialise read/WRITE units
       F1=INIT_(1,2,3,6)
 
-      write(6,'(/a/)')' V1 12.50 Friday'
-
+      write(6,'(/a/)')' V1 15.49 Friday'
 C 
 C....... Open the cif file for input
-      NAME='import.cif'
+      NAME='od-import.cif'
 105   continue
       WRITE (6,'(/2a/)') ' Read DATA from Cif  ',NAME
       IF (.NOT.(OPEN_(NAME))) THEN
          WRITE (6,'(A///)') ' >>>>> CIF cannot be opened'
-         write(6,'(a)') 'CIF filename from Kccd?'
+         write(6,'(a)') 'CIF filename from Nova?'
          read(5,'(a)') name
-         if (name .eq. ' ') NAME='import.cif'
+         if (name .eq. ' ') NAME='od-import.cif'
          GO TO 105
       END IF
 C 
@@ -146,7 +142,10 @@ C....... Extract space group notation (expected char string)
 100   CONTINUE
       FF=CHAR_('_chemical_formula',CFORM)
       IF (.NOT.(FF)) THEN
-      FF=CHAR_('_chemical_formula_sum',CFORM)
+        FF=CHAR_('_chemical_formula_sum',CFORM)
+      ENDIF
+      IF (.NOT.(FF)) THEN
+      FF=CHAR_('_chemical_oxdiff_formula', CFORM)
       ENDIF
       LFORM=LONG_
       write(6,'(a)') cform
@@ -376,7 +375,9 @@ C
 C WAVELENGTH
       IF (FW) THEN
          WRITE (NOUTF,'(a)') '#LIST 13'
-         WRITE (NOUTF,'(a,f8.5)') 'CONDITIONS WAVELENGTH = ',WAV
+         WRITE (NOUTF,'(a)') '# theta 1 and 2 set to zero for mirrors'
+         WRITE (NOUTF,'(a,f8.5,a)') 
+     1'CONDITIONS WAVELENGTH = ',WAV,' theta(1)=0.0 theta(2)=0.0'
          WRITE (NOUTF,'(a)') 'END'
       END IF
 C 
@@ -588,7 +589,7 @@ C
 C- LIST 6
       GOTO 1050
       IF (FL6) THEN
-         WRITE (NOUTF,'(a)') '#OPEN HKLI kccd.hkl'
+         WRITE (NOUTF,'(a)') '#OPEN HKLI od-out.hkl'
          WRITE (NOUTF,'(a)') '#LIST 6'
          WRITE (NOUTF,'(a)') 'READ F''S=FSQ UNIT=HKLI'
          WRITE (NOUTF,'(a)') 'END'
