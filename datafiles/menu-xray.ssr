@@ -2,10 +2,12 @@
 ^^WI  MENU _START   '&X-ray Data'
 ^^WI   ITEM _REF '&Guided import' '#SCRIPT XGUIDEI'  DISABLEIF='IN'
 ^^WI   MENU _PRE 'Pre-process'
+^^WI     ITEM KCCD 'Run &Agilentin - Agilent data' '#SCRIPT XODIN'
 ^^WI     ITEM KCCD 'Run &Kccdin - Kccd data' '#SCRIPT XKCCDIN'
 ^^WI     ITEM RC93 'Run &RC93 - Cad 4 data' '#SCRIPT RC93'
 ^^WI     ITEM DIPIN 'Run &Dipin - DIP2000 data' '#SCRIPT DIP'
 ^^WI   ENDMENU
+^^WI   ITEM INKC  'Use &Agilentin output' '#SCRIPT XODIN'
 ^^WI   ITEM INKC  'Use &KCCDIN output' '#SCRIPT XKCCDIN'
 ^^WI   ITEM INCA  'Use &RC93 output' '#SCRIPT XINRC93'
 ^^WI   ITEM INDIP 'Use &DIPIN output' '#SCRIPT XDIPIN'
