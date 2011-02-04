@@ -21,6 +21,8 @@
 %%  12 Input CIF file
 %%  13 Edit CIF type data
 %%  14 Read in CRYSTALS instructions.
+%% added 2011
+%%  15 Read in Agilent (Oxford Diffraction) data
 %%%
 %%
 %% Check for windows already open
@@ -69,6 +71,7 @@
 ^^WI     'Input CIF data'
 ^^WI     'Edit extra (CIF) info'
 ^^WI     'Read from file (crystals)'
+^^WI     'Run Agilentin'
 ^^WI     NULL
 ^^WI   @ 3,1 GRID BTNS NROWS=1 NCOLS=4
 ^^WI   {
@@ -114,6 +117,9 @@
 %END SCRIPT
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.12  2009/12/07 10:59:45  djw
+%%  Attempt to make cif2cry calable from the GUIDE.  The call to SCRIPT CIFPROC from inside cif2cry.fpp throws up errors which I cannot track down. Menu item just generates a message for the moment
+%%
 %%  Revision 1.11  2005/01/23 10:00:25  rich
 %%  Reinstate CVS history for scripts. History from Dec23 - Jan23 is lost, but
 %%  changes are not!
