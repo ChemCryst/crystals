@@ -599,8 +599,102 @@ THE CONSTANTS THAT DEFINE A MATRIX FOR TRANSFORMING INDICES
     .TWINTOLER          0    0    1    0    0 0.0001
 LIST 8             0    0
    8   40960 CRYSTALSINPUT
-LIST 9             0    0
-   9   40960 CRYSTALSINPUT
+LIST  9           10    0
+   5   40960 CRYSTALSINPUT
+   1.OVERALL            6    1    0    0    6    1  102   13   09
+         1    1    1    1    1    1    0    0    0    0
+OVERALL PARAMETERS
+(6X,108A1)
+(1X,9F12.5)
+         2    2    2    2    2    2
+    .SCALE              0    0    1    0    0 1.0
+    .DU[ISO]            0    0    1    0    0 0.05
+    .OU[ISO]            0    0    1    0    0 0.05
+    .POLARITY           0    0    1    0    0 1.0
+    .ENANTIO            0    0    1    0    0 0.0
+    .EXTPARAM           0    0    1    0    0 0.0
+   2.READ               7    1    0    0
+         1    1    1    1    1    1    1
+    .NATOM              4    0    1    0    0         0
+    .NLAYER            19    0    1    0    0         0
+    .NELEMENT          23    0    1    0    0         0
+    .NBATCH            27    0    1    0    0         0
+    .NCELL             31    0    1    0    0         0
+    .NPROFILE          35    0    1    0    0         0
+    .NEXTINCT          39    0    1    0    0         0
+   3.ATOM              13   -4    0    0   13   -4  101    1   09
+         1    1    1    1    1    1    0    0    0    0
+THE ESDS (SUS) FROM THE LAST CYCLE
+(1X,120A1/85X,36A1,12A1)
+(1X,A4,F13.0,1X,8F12.5/79X,3F12.5,F8.1/4F12.0)
+         3    2    2    2    2    2    2    2    2    2    2    2    2   
+    .TYPE               0    0    1    0    0 Q
+    .SERIAL             0   -1    1    0    0
+    .OCC                0    0    1    0    0 1.0
+    .U[ISO]             0    0    1    0    0 0.05
+    .X                  0   -1    1    0    0
+    .Y                  0   -1    1    0    0
+    .Z                  0   -1    1    0    0
+    .U[11]              0    0    1    0    0 0.0
+    .U[22]              0    0    1    0    0 0.0
+    .U[33]              0    0    1    0    0 0.0
+    .U[23]              0    0    1    0    0 0.0
+    .U[13]              0    0    1    0    0 0.0
+    .U[12]              0    0    1    0    0 0.0
+   4.INDEX              5    1    0    0    5    1  103    9   09
+         1    1    1    1    1    1    0    0    0    0
+THE CONSTANTS THAT DEFINE AN INDEX FOR LAYER SCALING
+(10X,60A1)
+(1X,4F12.2,F14.0)
+         2    2    2    2    3
+    .P                  0    0    1    0    0 0.0
+    .Q                  0    0    1    0    0 0.0
+    .R                  0    0    1    0    0 0.0
+    .S                  0    0    1    0    0 1.0
+    .ABSOLUTE           0    0    1    2   -1 YES
+     NO             YES
+   5.LAYERS             1    1    0    0  -19    1  104   17   09
+         1    1    1    1    1    1    0    0    0    0
+THE LAYER SCALE FACTORS, STARTING WITH THE SCALE FOR AN INDEX OF 1
+(7X,12A1)
+(1X,10F12.5)
+         2
+    .SCALE              0    0    1    0    0 1.0
+   6.ELEMENTS           1    1    0    0  -23    1  105   21   09
+         1    1    1    1    1    1    0    0    0    0
+THE ELEMENT SCALE FACTORS, STARTING WITH THE SCALE FOR THE FIRST ELEMENT
+(7X,12A1)
+(1X,10F12.5)
+         2
+    .SCALE              0    0    1    0    0 1.0
+   7.BATCH              1    1    0    0  -27    1  106   25   09
+         1    1    1    1    1    1    0    0    0    0
+THE BATCH SCALE FACTORS, STARTING WITH THE SCALE FOR THE FIRST BATCH
+(7X,12A1)
+(1X,10F12.5)
+         2
+    .SCALE              0    0    1    0    0 1.0
+   8.CELL               1    1    0    0  -31    1  108   29   09
+         1    1    1    1    1    1    0    0    0    0
+REAL CELL  PARAMETERS
+(6X,108A1)
+(1X,9F12.5)
+         2
+    .PARAMETER          0    0    1    0    0 0.0
+   9.PROFILE            1    1    0    0  -35    1  109   33   09
+         1    1    1    1    1    1    0    0    0    0
+PROFILE PARAMETERS
+(6X,108A1)
+(1X,9F12.5)
+         2
+    .PARAMETER          0    0    1    0    0 0.0
+  10.EXTINCTION         1    1    0    0  -39    1  110   37   09
+         1    1    1    1    1    1    0    0    0    0
+EXTINCTION  PARAMETERS
+(6X,108A1)
+(1X,9F12.5)
+         2
+    .PARAMETER          0    0    1    0    0 0.0
 LIST 10           10    0
    5   40960 CRYSTALSINPUT
    1.OVERALL            6    1    0    0    6    1  102   13   10
