@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.56  2009/11/03 11:16:00  djw
+C set Version to 14
+C
 C Revision 1.55  2009/10/28 16:27:56  djw
 C Add error print to .LIS as well as screen. Correct base address for parameters in DELU (was mistakenly changed in last update) list16.fpp
 C
@@ -1911,7 +1914,7 @@ C            6           LIST OF THIS TYPE CANNOT BE INPUT.
 C            7           PROGRAMMING ERROR. INPUT OF THIS LIST TYPE
 C                        SHOULD NOT BE HANDLED BY 'XLNIOA'
 C
-      DATA ILSTHN / 1 , 2 , 3 , 3 , 4 , 7 , 6 , 6 , 6 , 4 ,
+      DATA ILSTHN / 1 , 2 , 3 , 3 , 4 , 7 , 6 , 6 , 4 , 4 ,
      2              3 , 5 , 3 , 3 , 6 , 5 , 5 , 5 , 6 , 3 ,
      3              6 , 6 , 3 , 3 , 3 , 7 , 3 , 3 , 3 , 4 ,
      4              3 , 6 , 7 , 6 , 6 , 6 , 6 , 3 , 3 , 3 ,
