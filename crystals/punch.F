@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.55  2010/07/21 15:57:54  djw
+C Change order of list 6 header lines
+C
 C Revision 1.54  2010/07/16 11:35:31  djw
 C Enable XPCHLX to output lists 12 and 16 to the cif file.  This means carrying the I/O chanel (as NODEV)
 C in XPCHLX,XPCHLH,PPCHND and XPCHUS.
@@ -507,6 +510,8 @@ C
       ENDIF
       CALL XFAL01
       CALL XFAL05
+      write(cmon,'(a)') 'Writing PDB data to .PDB file'
+      CALL XPRVDU(NCVDU, 1,0)
 C---- OPEN THE .XYZ FILE
       CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
       CALL XRDOPN(6, KDEV , 'PUBLISH.PDB', 11)
@@ -549,6 +554,193 @@ C Close the .PDB FILE
         CALL XRDOPN(7, KDEV , CSSMAP, LSSMAP)
       RETURN
       END
+C
+CODE FOR XPCH5E
+      SUBROUTINE XPCH5E(ITYPE)
+C--PRINT LIST 5 WITH ESDS/CREATE LIST 9
+c
+c      ITYPE 1 FOR PRINTED LIST
+C      ITYPE 2 FOR CREATION OF LIST 9
+C
+c      This is really horrid code (DJW, Feb2011)
+c      A LIST 5 and LIST 12 is loaded
+c      The short records are over written with esds from LIST 12
+c      The atom records are created elsewhere in memory and the 
+c      L5 addresses set to point to them. 
+c      The fiddled-with list is then written to disk as a LIST 9
+C
+C--
+      INCLUDE 'TSSCHR.INC'
+      INCLUDE 'ISTORE.INC'
+C
+C
+C
+      INCLUDE 'STORE.INC'
+C
+      INCLUDE 'XPTCL.INC'
+      INCLUDE 'XWORKA.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST11.INC'
+      INCLUDE 'XLST12.INC'
+      INCLUDE 'XLST23.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XAPK.INC'
+C
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'QSTORE.INC'
+C
+C
+C--INITIALISE THE TIMING
+      CALL XTIME1(2)
+c-- set the output type
+      lnout = 9
+      CALL XRSL
+      CALL XCSAE
+C--LOAD A FEW LISTS
+      CALL XFAL01
+      CALL XFAL05
+      CALL XFAL23
+      write(cmon,'(a)') 'Writing simple esd file'
+      call xprvdu(ncvdu, 1,0)
+      iupdat = istore(l23sp+1)
+      toler = store(l23sp+5)
+      call xprc17 (0, 0, TOLER, -1)
+C       FORM THE ABSOLUTE LIST 12
+      JQ=0
+      JS=1
+      CALL XFAL12(JS,JQ,JR,JN)
+      IF ( IERFLG .LT. 0 ) GO TO 2450
+C--LINK LISTS 5 AND 12
+      I=KSET52(0,-1)
+      IF ( IERFLG .LT. 0 ) GO TO 2450
+C--BRING DOWN THE MATRIX
+      CALL XFAL11(1,1)
+      IF (IERFLG .LT. 0) GOTO 2450
+      AMULT=STORE(L11P+17)/STORE(L11P+16)
+      IBASE=NFL
+      JBASE = IBASE
+      K = KCHNFL ( 4 * N5)
+C----- WORK SPACE FOR SAPPLY - THAT CHECKS WE DONT RUN INTO LFL
+      JS = NFL
+c
+C
+c
+C--SET THE POINTERS TO LOOP OVER ALL THE ATOMS
+         M5=L5
+         M12=L12
+C----- SET AUXILLIARY LIST 5 ADDRESSES
+         L5A=L5
+         M5A=L5
+         N5A=N5
+         MD5A=MD5
+C--SET THE NEW ATOMS UP AT THE TOP OF CORE IN A LIST 9
+         LN=lnout
+         IREC=1002
+         N9A=N5
+         MD9A=13
+         L9A=KCHLFL(MD9A*N9A)
+         M9A=L9A
+
+C--LOOP OVER THE ATOMS
+      DO K=1,N5
+C--CALCULATE THE E.S.D.'S AND STORE THEM IN BPD
+        MD5A=M5+NKA-1
+        N5A=NKA-2
+        CALL SAPPLY (J)
+        IF (ITYPE .EQ. 1) THEN
+            write(ncpu,20) istore(m5), nint(store(m5+1)), 
+     1      (store(idjw),idjw=m5+2, m5+13)
+            write(ncpu,20) istore(m5), nint(store(m5+1)), 
+     1      (bpd(idjw),idjw=1, 11)
+20          format(a4,i4,12f11.6)
+            write(ncpu,'(/)')
+        ELSE
+c--         move the type and serial
+            call xmove(store(m5),store(m9a),2)
+c--         move the esds
+            call xmove(bpd(1),store(m9a+2),11)
+        ENDIF
+C
+1585    CONTINUE
+C -- UPDATE THE ATOM INFORMATION FOR THE NEXT ATOM
+        M12=ISTORE(M12)
+        M5=M5+MD5
+        M5A=M5A+MD5
+        M9A=M9A+MD9A
+      END DO
+c
+c  reset the LIST 5 pointers into LIST 9
+      l5=l9a
+      m5=l9a
+      md5=md9a
+c
+c      twin element scales - this overwrites LIST 5
+c
+      l5a = l5es
+      m5a = m5es
+      md5a= md5es
+      n5a = n5es
+      m12 = l12es
+      l9es = l5es
+      m9es = m5es
+      mdes= md5es
+      n9es = n5es
+      if(md5a .gt. 0) then
+c--calculate the e.s.d.'s and store them in bpd
+       jp = 1
+       call xpesd ( 2, jp)
+       call xmove(bpd(1),store(l9es),md5a)
+      endif
+C
+c      overall param  - this overwrites LIST 5
+c
+      l5a = l5o
+      m5a = m5o
+      md5a= md5o
+      n5a = n5o
+      m12 = l12o
+      l9o = l5o
+      m9o = m5o
+      mdo= md5o
+      n9o = n5o
+      if(md5a .gt. 0) then
+c--calculate the e.s.d.'s and store them in bpd
+       jp = 1
+       call xpesd ( 2, jp)
+       call xmove(bpd(1),store(l9o),md5a)
+      endif
+C
+1250  CONTINUE
+      IF (ITYPE .EQ. 1) GOTO 2300
+C--CREATE THE OUTPUT LIST TYPE
+      NEW=1
+      CALL XCPYL5(5,LNOUT,N9A,NEW)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1300)LNOUT,N5
+      WRITE ( CMON ,1300)LNOUT,N5
+      CALL XPRVDU(NCVDU, 1,0)
+1300  FORMAT(' The new list ',I3,' contains ',I5,' atoms')
+      MD5=MD5A
+      CALL XSTR05(LNOUT,0,NEW)
+C
+2300  CONTINUE
+      CALL XOPMSG ( IOPPPR , IOPLSE , 5 )
+      CALL XTIME2 ( 2 )
+      RETURN
+C
+2450  CONTINUE
+      CALL XOPMSG ( IOPPPR , IOPLSP , 5 )
+      GO TO 2300
+9910  CONTINUE
+      CALL XOPMSG ( IOPPPR , IOPCMI , 0 )
+      GO TO 2450
+      END
+C
+
 CODE FOR XPCH38
       SUBROUTINE XPCH38
 C--PUNCH LIST 38 IN CRYSTALS FORMAT

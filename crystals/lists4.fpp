@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2010/09/20 14:59:51  djw
+C Enable storage of an auxilliary radiation at the end of each scattering factor record in LIST 3
+C
 C Revision 1.24  2009/07/31 12:43:03  djw
 C Re name the internal command RESTRAIN  to DORESTRAIN so that REESTRAIN can by used as name for LIST 16
 C
@@ -1070,10 +1073,41 @@ CODE FOR XFAL05
       SUBROUTINE XFAL05
 C--ROUTINE TO LOAD LIST 5 FROM THE DISC
 C
-C--
       CALL XLDR05(5)
       RETURN
       END
+C
+CODE FOR XFAL09
+      SUBROUTINE XFAL09
+C--ROUTINE TO LOAD LIST 9 FROM THE DISC
+c  list 9 looks like a list 5 so we can use the
+c  existing subroutines and then move the pointers.
+c  take care if LIST 5 is already loaded
+C
+      INCLUDE 'ICOM05.INC'
+      INCLUDE 'ICOM09.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST09.INC'
+      dimension dwork(40)
+      INCLUDE 'QLST05.INC'
+      INCLUDE 'QLST09.INC'
+      INCLUDE 'IDIM05.INC'
+      INCLUDE 'IDIM09.INC'
+
+c check if there is a LIST 5 already loaded - if so we must save the
+c pointers
+      isave = 0
+      IF (KHUNTR (5,0,IADDL,IADDR,IADDD,-1) .GE. 0) then
+c      save LIST 5 pointers
+       call xmovei(icom05(1), dwork(1), idimo5)
+       isave = 1
+      endif
+      CALL XLDR05(9)
+      call xmovei(icom05(1), icom09(1), idimo5)
+      if(isave .eq. 1)  call xmovei( dwork(1),icom05(1), idimo5)
+      RETURN
+      END
+C
 C
 CODE FOR XLDR05
       SUBROUTINE XLDR05(IULN)
@@ -1265,7 +1299,8 @@ C  IULN    THE NUMBER OF THE LIST 5, IN THE RANGE 1 TO N. THE FOLLOWING
 C          TYPES ARE KNOWN AT PRESENT :
 C
 C          1  TYPE IS 5.
-C          2  TYPE IS 10.
+C          2  TYPE IS 10, peaks
+C          3  TYPE IS 9, esd
 C
 C--NO OTHER TYPES ARE SUPPORTED AND AN ERROR IS REPORTED FOR ANY OTHERS.
 C
@@ -1275,7 +1310,7 @@ C  >0  THE LIST TYPE TO BE USED.
 C
 C--
 C
-      DIMENSION ITYPE(2)
+      DIMENSION ITYPE(3)
 C
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
@@ -1283,7 +1318,7 @@ C
       INCLUDE 'XIOBUF.INC'
 C
 C
-      DATA ITYPE(1)/5/,ITYPE(2)/10/
+      DATA ITYPE(1)/5/,ITYPE(2)/10/,ITYPE(3)/9/
 C
 C--CHECK THE INPUT VALUE
       IF(IULN)1000,1000,1100
@@ -1300,7 +1335,7 @@ CDJWJAN2001
       RETURN
 C--CHECK THE MAXIMUM
 1100  CONTINUE
-      IF(IULN-3)1150,1000,1000
+      IF(IULN-4)1150,1000,1000
 C--FIND THE TYPE
 1150  CONTINUE
       KTYP05=ITYPE(IULN)
