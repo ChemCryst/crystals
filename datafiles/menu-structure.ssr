@@ -21,6 +21,8 @@
 ^^WI        DISABLEIF='IN' ENABLEIF='L2 L1 L5'                                  
 ^^WI   ITEM CENT '&Centre Molecules'                                            
 ^^WI       '#SCRIPT XCENTRE' DISABLEIF='IN' ENABLEIF='L2 L1 L5'                 
+^^WI   ITEM CENT '&New Centre Molecules'                                            
+^^WI       '#SCRIPT XSHIFT' DISABLEIF='IN' ENABLEIF='L2 L1 L5'                 
 ^^WI   ITEM RETY '&Change atom types'                                           
 ^^WI       '#SCRIPT XRETYPE' DISABLEIF='IN' ENABLEIF='L2 L1 L5'                 
 ^^WI   ITEM RENA '&Renumber atoms'                                              
