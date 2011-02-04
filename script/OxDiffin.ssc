@@ -19,7 +19,7 @@
 ^^WI   {                                                                        
 % IF LFILE THEN                                                                 
 ^^WI    @ 2,2 STATIC T1 'Click OK to read in data'                              
-^^WI    @ 3,2 STATIC T2 'from the file kccd.ins.'                               
+^^WI    @ 3,2 STATIC T2 'from the file od-out.ins.'                               
 % ELSE IF IFILE THEN                                                            
 ^^WI    @ 2,2 STATIC T1 'No OxDiff output files detected.'                      
 ^^WI    @ 3,2 STATIC T2 'Click Run OXDIFFIN now to continue.'                     
@@ -43,7 +43,7 @@
 ^^WI '&Run OxDiffin now'                                                          
 % END IF                                                                        
 % IF .NOT. IFILE THEN                                                           
-^^WI     DISABLED=YES                                                           
+^^WI     DISABLED=NO                                                          
 % END IF                                                                        
 ^^WI  }                                                                         
 ^^WI }                                                                          
