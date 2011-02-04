@@ -1,11 +1,11 @@
       PROGRAM READOD
 #include "ciftbx.cmn"
       LOGICAL F1,F2,F3,F4,F5
-      LOGICAL FC,FV,FN,FF,FT,FW,FSG,FL6
+      LOGICAL FC,FV,FN,FF,FT,FW,FSG,FL6,FMON
       logical lnum
       CHARACTER*4 CATOM
       CHARACTER*8 CDATE, CARG
-      CHARACTER*14 CSPACE,CTEMP
+      CHARACTER*14 CSPACE,CTEMP,CMONO
       CHARACTER*32 C32,NAME,ENAME
       CHARACTER*50 C50
       CHARACTER*80 C80,LINE,SLINE,CFORM
@@ -101,9 +101,9 @@ C----- WRITE TEXT TO TEXT FILE
       F1=CHAR_('_diffrn_detector_area_resol_mean',C50)
       IF (F1) WRITE (NCIF,'(a,a)') '_diffrn_detector_area_resol_mean ',
      1C50
-      F1=CHAR_('_diffrn_radiation_monochromator',C50)
-      IF (F1) WRITE (NCIF,'(a,a)') '_diffrn_radiation_monochromator ',
-     1C50
+      FMON=CHAR_('_diffrn_radiation_monochromator',CMONO)
+      IF (FMON) WRITE (NCIF,'(a,a)') '_diffrn_radiation_monochromator ',
+     1CMONO
       F1=CHAR_('_computing_data_collection',C50)
       IF (F1) WRITE (NCIF,'(a,a)') '_computing_data_collection ',C50
       F1=CHAR_('_diffrn_measurement_method',C50)
@@ -191,6 +191,13 @@ C
       F2=NUMB_('_refln_F_squared_meas',RMEAS,DUM).AND.(F2)
       F2=NUMB_('_refln_F_squared_sigma',RSIGMA,DUM).AND.(F2)
       IF (.NOT.(F2)) THEN
+      F2=NUMB_('_hkl_oxdiff_h',RHR,DUM)
+      F2=NUMB_('_hkl_oxdiff_k',RKR,DUM).AND.(F2)
+      F2=NUMB_('_hkl_oxdiff_l',RLR,DUM).AND.(F2)
+      F2=NUMB_('_hkl_oxdiff_f2',RMEAS,DUM).AND.(F2)
+      F2=NUMB_('_hkl_oxdiff_sig',RSIGMA,DUM).AND.(F2)
+      ENDIF
+      IF (.NOT.(F2)) THEN
          WRITE (6,'(/a/)') ' >>>>> reflections missing or wrong format'
          GO TO 300
       END IF
@@ -225,6 +232,14 @@ C           WRITE ( nhkl,'(a)') '-512'
       CLOSE (NHKL)
 C 
 300   CONTINUE
+      F2=NUMB_('_exptl_absorpt_correction_T_min',atn,DUM)
+      F2=NUMB_('_exptl_absorpt_correction_T_max',atx,DUM).AND.(F2)
+      if (.not. (f2)) then
+       atn=0.
+       atx=0.
+      endif
+C
+320   continue
       if (.not. fsg) then
 C----- reflections all read - check space group with Nonius code
       write(6,'(a)') 'Space Group Code provided by Enraf-Nonius'
@@ -374,10 +389,27 @@ C
 C 
 C WAVELENGTH
       IF (FW) THEN
+       if(wav .ge.1.) then
+c       copper
+        th1=13.0
+        th2=0.
+       else
+c      moly
+        th1=6.
+        th2=0.
+       endif
+       IF (FMON)THEN
+        I = INDEX(CMONO,'mirror')
+        if (i .ne. 0) then
+          th1=0.
+          th2=0.
+        endif
+       ENDIF
          WRITE (NOUTF,'(a)') '#LIST 13'
          WRITE (NOUTF,'(a)') '# theta 1 and 2 set to zero for mirrors'
-         WRITE (NOUTF,'(a,f8.5,a)') 
-     1'CONDITIONS WAVELENGTH = ',WAV,' theta(1)=0.0 theta(2)=0.0'
+         WRITE (NOUTF,'(a,f8.5,a,f8.5,a,f8.5)') 
+     1'CONDITIONS WAVELENGTH = ',WAV,' theta(1)=', th1, ' theta(2)=',
+     2 th2
          WRITE (NOUTF,'(a)') 'END'
       END IF
 C 
@@ -536,8 +568,10 @@ C
          READ (5,*) Z
          WRITE (NOUTF,'(a)') '#LIST 30'
          WRITE (NOUTF,'(a)') 'DATRED REDUCTION=CrysAlis'
-         WRITE (NOUTF,'(a)') 'ABSORPTION ABSTYPE=MULTI-SCAN'
-         WRITE (NOUTF,'(a)') 'condition'
+         WRITE (NOUTF,'(a)') 'ABSORPTION ABSTYPE=multi-scan'
+         WRITE (NOUTF,'(a,f7.2)') 'cont empmin=',atn
+         WRITE (NOUTF,'(a,f7.2)') 'cont empmax=',atx
+         WRITE (NOUTF,'(a)') 'CONDITION'
          WRITE (NOUTF,'(a,f7.2)') 'cont minsiz=',ZS
          WRITE (NOUTF,'(a,f7.2)') 'cont medsiz=',ZD
          WRITE (NOUTF,'(a,f7.2)') 'cont maxsiz=',ZL
@@ -547,11 +581,11 @@ C
          WRITE (NOUTF,'(a,i7)') 'cont norient=',NINT(CMRU)
          WRITE (NOUTF,'(a)') 'cont scanmode=omega'
          WRITE (NOUTF,'(a)') 'cont instrument=SuperNova'
-         WRITE (NOUTF,'(a)') 'general'
+         WRITE (NOUTF,'(a)') 'GENERAL'
          WRITE (NOUTF,'(a,f7.1)') 'cont z=',ZM
          WRITE (6,'(A)') 'Colour? '
          READ (5,'(a)') CSPACE
-         WRITE (NOUTF,'(a,a)') 'colour ',CSPACE
+         WRITE (NOUTF,'(a,a)') 'COLOUR ',CSPACE
 C 
          IF (ZL/ZS.LT.1.5) THEN
             WRITE (CSPACE,'(a)') 'block'
@@ -578,7 +612,7 @@ C
 c
          WRITE (NOUTF,'(a,a)') 'shape ',CSPACE
 C 
-         WRITE (NOUTF,'(a)') 'indexran'
+         WRITE (NOUTF,'(a)') 'INDEXRAN'
          WRITE (NOUTF,'(a,i7)') 'cont hmin=',MINH
          WRITE (NOUTF,'(a,i7)') 'cont hmax=',MAXH
          WRITE (NOUTF,'(a,i7)') 'cont kmin=',MINK
