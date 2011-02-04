@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.72  2005/02/25 17:25:20  stefan
+C 1. Added some preprocessor if defined lines for the mac version.
+C
 C Revision 1.71  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -1056,7 +1059,7 @@ C                  STORE(I5+3) = 0.0
 
                IF ( NINT(STORE(I5+3)) .LE. 1 ) THEN
 
-                     CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP)
+                     CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP,1)
 
 #if !defined(_DVF_) && !defined(_LIN_) 
                 CALL FSTATM(CATTYP,NINT(STORE(I5+1)),LLAB,CLAB,

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.29  2009/11/03 12:10:57  djw
+C Remove debugging print
+C
 C Revision 1.28  2009/11/03 11:18:20  djw
 C Add comments and set up processing for LIST 18, the SMILES string.  Improve handling of REM cards inside CONTINUE blocks
 C
@@ -1402,7 +1405,7 @@ C--CHECK THE REPLY
         GOTO 1000
       ELSE IF ( J .EQ. 3 ) THEN ! 'PART' - CHECK THE ADDRESSING
 C IPTVAL = requested part. NPTTOT = # matching atoms. NPTCUR = Current atom.
-        CALL PRTGRP ( IPTVAL, IPT, IGR )
+        CALL PRTGRP ( IPTVAL, IPT, IGR, 1 )
 c        WRITE(CMON,'(2(A,I4))') 'Group: ',IGR,' part: ',IPT
 c        CALL XPRVDU(NCVDU,1,0)
         IF ( NPTCUR .LE. 1 ) THEN   !First time.
@@ -1411,7 +1414,7 @@ c        CALL XPRVDU(NCVDU,1,0)
 C Count the parts
            DO I = M5F,M5F+(MD5F*(N5F-1)),MD5F
              JPTVAL = ISTORE(I+14)
-             CALL PRTGRP ( JPTVAL, JPT, JGR )
+             CALL PRTGRP ( JPTVAL, JPT, JGR, 1 )
              IF ( ((JPT .EQ. IPT) .OR. (IPT .EQ. 999 )) 
      1      .AND. ((JGR .EQ. IGR) .OR. (IGR. EQ. 999 ))) NPTTOT=NPTTOT+1
            END DO
@@ -1421,7 +1424,7 @@ c           CALL XPRVDU(NCVDU,1,0)
         II = 0
         DO I = M5F,M5F+(MD5F*(N5F-1)),MD5F
            JPTVAL = ISTORE(I+14)
-           CALL PRTGRP ( JPTVAL, JPT, JGR )
+           CALL PRTGRP ( JPTVAL, JPT, JGR, 1 )
            IF ( ((JPT .EQ. IPT) .OR. (IPT .EQ. 999 )) 
      1    .AND. ((JGR .EQ. IGR) .OR. (IGR. EQ. 999 ))) II=II+1
            IF ( II .GE. NPTCUR ) THEN

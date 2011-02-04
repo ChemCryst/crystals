@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.100  2010/07/16 11:35:31  djw
+C Enable XPCHLX to output lists 12 and 16 to the cif file.  This means carrying the I/O chanel (as NODEV)
+C in XPCHLX,XPCHLH,PPCHND and XPCHUS.
+C Fixed oversight in distangle for esds of H-bonds
+C
 C Revision 1.99  2010/07/13 14:12:04  djw
 C Remove debugging print
 C
@@ -2570,11 +2575,22 @@ cdjwnov06
 cdjwmar07
               else if ((ipunch .eq. 11) .and. (term .ge. 120.) .and.
      1          ((dd1.lt.1.2).or.(dd3.lt.1.2))   ) then
-c                write(ncpu, '(6f12.3)') term,esd,dd1,ed1,dd3,ed3
+c   HYDROGEN BONDS
+c
+c
+      if (lhfixd(3)) then
+        if (dd1 .le. dd3) then
+            ed1 = 0
+        else
+            ed3 = 0
+        endif
+      endif
+c
                 WRITE(MTE) 'H',TERM,ESD,
+c--- ATOM 2
      1          STORE(IXX), STORE(IXX+1), ISTORE(NA+2),
      1          ISTORE(NA+3), ISTORE(NA+4), ISTORE(NA+5), ISTORE(NA+6),
-C--- PIVOT
+C--- PIVOT HYDROGEN
      2          STORE(M5A), STORE(M5A+1), 1,1,0,0,0,
 C--- ATOM 3
      3          STORE(IZZ), STORE(IZZ+1), ISTORE(NZ+2),
@@ -3580,7 +3596,9 @@ C----- DONT REUSE PREVIOUS FOUND OR UNFOUND ATOMS AS PIVOT.
         IF (ISTORE(MATVCA) .NE. ICURR) GOTO 3350
         NFL=JE
 C -- COMPUTE DISTANCE STACK
-        NDIST = KDIST1( N5, JRIC, JT, 1, TOLER, ITRANS,1,4,0)
+cdjwjan11
+c set module type to residue (2)
+        NDIST = KDIST1( N5, JRIC, JT, 1, TOLER, ITRANS,1,4,2)
         IF(NDIST .LE. -1 ) GOTO 9920 !Error
 
         IF (NDIST .EQ. 0) THEN
@@ -3903,6 +3921,7 @@ C  JATVC  +1  IF VCTOR CONTAINING 3 ATOM FLAGS SUPPLIED
 C  IPTR - OFFSET of co-ordinates (usually 4, may be 2 from Fourier).
 C  IPART - 0: normal operation
 C          1: no bonds between different parts (except 0) (L5 offset 14)
+C          2: No bonds between different RESIDUES
 C
 C--THE RETURN VALUES OF 'KDIST1' ARE :
 C
@@ -4031,9 +4050,12 @@ C--SET UP THE OTHER FLAGS
 
 
 C----- LOOP BACK HERE FOR NEXT ATOM
-
-      IF ( IPART .GE. 1 ) CALL PRTGRP(ISTORE(M5A+14), MPIVPR, MPIVGR)
-
+cdjwjan11
+      IF ( IPART .eq. 1 ) then
+             CALL PRTGRP(ISTORE(M5A+14), MPIVPR, MPIVGR,ipart)
+      else  ! IPART eq 2 - look at RESIDUE slot in list 5
+             CALL PRTGRP(ISTORE(M5A+16), MPIVPR, MPIVGR,ipart)
+      endif
       DO ND = 1, IN
 
 C----- CHECK IF THIS ATOM IS EXCLUDED from being a BONDED type 
@@ -4044,8 +4066,16 @@ C----- CHECK IF THIS ATOM IS EXCLUDED from being a BONDED type
 
 C--IF NOT BONDING PARTS, then CHECK PART NUMBERS
         NPTSYM = 0
-        IF ( IPART .GE. 1 ) THEN
-             CALL PRTGRP(ISTORE(M5+14), MBONPR, MBONGR)
+
+
+cdjwjan11
+      IF ( IPART .eq. 1 ) then
+             CALL PRTGRP(ISTORE(M5A+14),MBONPR, MBONGR,ipart)
+      else  ! IPART eq 2 - look at RESIDUE slot in list 5
+             CALL PRTGRP(ISTORE(M5A+16),MBONPR, MBONGR, ipart)
+      endif
+
+      IF ( IPART .ge. 1 ) then
 C 1) Allow bond if one atom is group 0, part 0.
            IF (( MPIVPR .EQ. 0 .AND. MPIVGR .EQ. 0 ) .OR.
      1         ( MBONPR .EQ. 0 .AND. MBONGR .EQ. 0 ) ) GOTO 1110
@@ -4516,9 +4546,9 @@ C Calculate the number of groups, and the number of parts in each:
 
         DO IVC = IUVP,LUVP
           IF ( ISTORE(IVC) .EQ. ICURN) CYCLE
-          CALL PRTGRP( ISTORE(IVC), NWPT, NWGR )
+          CALL PRTGRP( ISTORE(IVC), NWPT, NWGR, 1 )
 C Check for group change:
-          CALL PRTGRP( ICURN, MOPT, MOGR )
+          CALL PRTGRP( ICURN, MOPT, MOGR, 1 )
           IF ( NWGR .NE. MOGR )THEN !Next group
             MGP = MGP + 1
             ISTORE (MGP) = 1
@@ -4553,9 +4583,9 @@ C Make a vector of allowed/not allowed to match unique group/part vector...
         DO IVC = IUVP,LUVP
           MAVC = MAVC + 1
 
-          CALL PRTGRP( ISTORE(IVC), NWPT, NWGR )
+          CALL PRTGRP( ISTORE(IVC), NWPT, NWGR, 1 )
 C Check for group change:
-          CALL PRTGRP( ICURN, MOPT, MOGR )
+          CALL PRTGRP( ICURN, MOPT, MOGR, 1 )
           IF ( NWGR .NE. MOGR )THEN !Next group
             MGP = MGP + 1
             NGR = ISTORE(MGP)
@@ -7417,7 +7447,7 @@ C--SET UP THE MAXIMUM AND MINIMUM VALUES FOR EACH DIRECTION FOR A DISTAN
         END IF
       END DO
 
-      CALL PRTGRP(ISTORE(MPIV+14), MPIVPR, MPIVGR)
+      CALL PRTGRP(ISTORE(MPIV+14), MPIVPR, MPIVGR, 1)
 
 C--LOOP OVER ALL THE ATOMS.
       DO I5= L5,L5+(MD5*(N5-1)),MD5
@@ -7444,7 +7474,7 @@ C--Check for this atom pair on a L40 PAIR record.
 
 C-- CHECK PART NUMBERS
         NPTSYM = 0
-        CALL PRTGRP(ISTORE(I5+14), MBONPR, MBONGR)
+        CALL PRTGRP(ISTORE(I5+14), MBONPR, MBONGR, 1)
 C 1) Allow bond if one atom is group 0, part 0.
         IF (( MPIVPR .EQ. 0 .AND. MPIVGR .EQ. 0 ) .OR.
      1         ( MBONPR .EQ. 0 .AND. MBONGR .EQ. 0 ) ) GOTO 1110
@@ -8003,15 +8033,26 @@ c
 c
 
 CODE FOR PRTGTP
-      SUBROUTINE PRTGRP( IPACKD, IPART, IGROUP)
+      SUBROUTINE PRTGRP( IPACKD, IPART, IGROUP, ITYPE)
 C
+C CAUTION. To the user, PART = 1000*ASSEMBLY + GROUP
+C
+C
+C ITYPE
+C      0 or 1 use PARTS value
+C      2      use the RESIDUE value, 
 C Set IPART to the last 3 digits of IPACKD, signed.
 C Set IGROUP to the rest, positive.
 C
 C E.g. -123456 -> IPART = -456, IGROUP = 123
-
-      IPART = MOD(IPACKD,1000)
-      IGROUP = ABS(IPACKD - IPART) / 1000
+c
+      if (itype .le. 1) then
+       IPART = MOD(IPACKD,1000)
+       IGROUP = ABS(IPACKD - IPART) / 1000
+      else ! looking at RESIDUES 
+       ipart=ipackd
+       igroup=ipackd
+      endif
       RETURN
       END
 CODE FOR XRESTV
