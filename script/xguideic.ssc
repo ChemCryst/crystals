@@ -16,6 +16,7 @@
 %%  12 Input CIF file
 %%  13 Edit CIF type data
 %%  14 Read in CRYSTALS instructions.
+%%  15 Run Agilentin
 %%
 %  VERIFY GI_BOK GI_BXX GI_BHELP
 %  GET SILENT NOSTORE ABBREVIATED 'Continue?' 'GI_BXX'
@@ -85,6 +86,10 @@
 %        BLOCK % 14
 %          COPY '#SCRIPT XUSE'
 %        END BLOCK
+%%
+%        BLOCK % 15                                                             
+%          COPY '#SCRIPT OXDIFFIN'                                                  
+%        END BLOCK                                                              
 %%
 %      END CASE
 %    END BLOCK
