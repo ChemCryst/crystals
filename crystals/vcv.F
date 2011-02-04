@@ -1,3 +1,8 @@
+c outstanding:
+c only accepts atom names.
+c returns inverse matrix for named atom positions only
+c needs to ne scaled by degrees-of-freedom/minimisation-function
+c
 CODE FOR VCV
       SUBROUTINE VCV
 C 
@@ -67,7 +72,7 @@ C   1.ATOMS  2.execute 3.This Program
       GO TO 1800
 C 
 200   CONTINUE
-C----- This Program
+c
 C--LOAD THE RELEVANT LISTS
       CALL XFAL01
       CALL XFAL02
@@ -88,9 +93,27 @@ C--LOAD LIST 11
       IF (IERFLG.LT.0) THEN
          GO TO 1700
       END IF
-      write(ncwu,*) 'L5 ', l5,m5,md5,n5
-      write(ncwu,*) 'L12', l12,m12,md12,n12
-      write(ncwu,*) 'JS', js,jq,ju,jv
+
+c      write(ncwu,'(a/,(4i10))') 'List 5',
+c     1 L5,M5,MD5,N5, L5A,M5A,MD5A,N5A, 
+c     2 L5LSC,M5LSC,MD5LSC,N5LSC, L5O,M5O,MD5O,N5O, 
+c     3 L5LS,M5LS,MD5LS,N5LS, L5ES,M5ES,MD5ES,N5ES, 
+c     4 L5BS,M5BS,MD5BS,N5BS, L5CL,M5CL,MD5CL,N5CL,
+c     5 L5PR,M5PR,MD5PR,N5PR, L5EX,M5EX,MD5EX,N5EX
+
+
+c      write(ncwu,'(a/,(4i10))') 'List 12',
+c     1 L12,M12,MD12,N12, L12A,M12A,MD12A,N12A, 
+c     2 L12B,M12B,MD12B,N12B, L12O,M12O,MD12O,N12O, 
+c     3 L12LS,M12LS,MD12LS,N12LS, L12ES,M12ES,MD12ES,N12ES, 
+c     4 L12BS,M12BS,MD12BS,N12BS, L12CL,M12CL,MD12CL,N12CL,
+c     5 L12PR,M12PR,MD12PR,N12PR, L12EX,M12EX,MD12EX,N12EX
+
+c      write(ncwu,'(a/,(4i10))') 'List 11',
+c     1 L11,M11,MD11,N11,L11R,M11R,MD11R,N11R, 
+c     2 L11P,M11P,MD11P,N11P,L11IR,M11IR,MD11IR,N11IR 
+
+
       IF (ISTORE(L11P+15).GE.0) THEN
          IF (ISSPRT.EQ.0) WRITE (NCWU,950)
          WRITE (CMON,950)
@@ -149,21 +172,28 @@ c
 C--MOVE ATOMS TO STACK WITH CORRECT L5 and L12 addresses
 600   CONTINUE
       mstart = mq
-      write(ncwu,*) ' '
-      write(ncwu,*) 'm5a=',m5a,' l12a=',l12a, ' m12a=',m12a
+c      write(ncwu,*) ' '
+c      write(ncwu,*) 'm5a=',m5a, ' md5a ', md5a, ' n5a', n5a
+c      write(ncwu,*) 'm11a=',m11a, ' md11a ', md11a, ' n11a', n11a
+c      write(ncwu,*) 'm12a=',m12a, ' md12a ', md12a, ' n12a', n12a
+      m5tmp = m5a
+      l12tmp = l12a
 620   continue
-      write(ncwu,*) '  mstart=',mstart
-      write(ncwu,*) (istore(mstart+itemp),itemp=0,16)
+c      write(ncwu,*) ' '
+c      write(ncwu,*) 'Atom stack at mstart=',mstart
+c      write(ncwu,*) (istore(mstart+itemp),itemp=0,16)
             istack = istack - lstack
             lfl = lfl - lstack
-            istore(istack) = m5a
-            istore(istack+12) = l12a
+            istore(istack) = m5tmp
+            istore(istack+12) = l12tmp
             call xmovei(istore(mstart+7), istore(istack+2),5)
-      write(ncwu,*)' '
-      write(ncwu,*) (istore(istack+itemp),itemp=0,13)
+c      write(ncwu,*)'Dist stack '
+c      write(ncwu,*) (istore(istack+itemp),itemp=0,13)
 
             natom = natom + 1
             mstart = istore(mstart)
+            m5tmp = m5tmp + md5a
+            l12tmp = l12tmp + md12a
       if (mstart .gt. 0) then
             goto 620
       endif
@@ -228,34 +258,50 @@ C
 C--ZERO THE AREA INITIALLY
       CALL XZEROF (STORE(JA),JS)
 C----- now loop over the stored atoms
-      ISTACK = JSTACK
+      ISTACK = JSTACK + (natom-1)*lstack
       IPART = JPART
       JB = JA
+
+
       DO 1450 I=1,NATOM
+      write(ncwu,'(//a,i4)')'Atom No', I
+c      write(ncwu,'(7i10,3f12.4,3i10)') istore(istack),
+c     1   istore(istack+1),(istore(istack+itmp),itmp=2,6),
+c     2   (store(istack+itmp), itmp=7,9),
+c     3   istore(istack+10),istore(istack+11),istore(istack+12)
 
 
-      write(ncwu,'(//7i6,3f12.4,2i6)') (istore(istack+itmp),itmp=0,6),
-     1   (store(istack+itmp), itmp=7,9), istore(istack+10),
-     2   istore(istack+12)
-
-
-         M12A = ISTORE(ISTACK+12)
+         M12TMP = ISTORE(ISTACK+12)
          jtemp = jb
-         CALL XFPCES (M12A,JB,NWS,ISTORE(IPART))
-          write(ncwu,12345) I,'th dist stack  M12A=', M12A, 
-     1    ' JB=',JB, NWS, istore(IPART)
-12345  format(i3,a,i12,a,4i12)
-      write(ncwu,*) 
-     1 istore(jtemp),istore(jtemp+1),istore(jtemp+2),store(jtemp+3) 
+
+
+         CALL XFPCES (M12TMP,JB,NWS,ISTORE(IPART))
+
+12345  format(i3,a,i12,2(a,i12),4x,4i12)
+
+c      write(ncwu,'(a/,(3i10,f5.2))') 'FPCES stack', 
+c     1 istore(jtemp),istore(jtemp+1),istore(jtemp+2),store(jtemp+3), 
+c     2 istore(jtemp+4),istore(jtemp+5),istore(jtemp+6),store(jtemp+7), 
+c     3istore(jtemp+8),istore(jtemp+9),istore(jtemp+10),store(jtemp+11)
+
 1350     CONTINUE
          IPART = IPART + 1
-         ISTACK = ISTACK + LSTACK
+         ISTACK = ISTACK - LSTACK
 1450  CONTINUE
+
+
+
 C--CALCULATE THE V/CV MATRIX FOR THE POSITIONAL ERRORS
-         JA = JSTACK
-      write(ncwu,*) 'still going'
-         CALL XCOVAR (JA,NATOM,NWS,JD,JE,ISTORE(JPART),NATOM)
-      write(ncwu,'(12f12.9)') (100.*store(idjw),idj=je,je+nwp*nwp)
+
+         CALL XCOVAR (JA, NWP, NWS, JD,JE,ISTORE(JPART),NATOM)
+
+      jdjw = jd
+      do kdjw = 1, nwp
+      write(ncwu,'(/)')
+      write(ncwu,'(6G12.4)') 
+     1 (store(idjw),idjw=jdjw,jdjw+nwp-1)
+      jdjw = jdjw+nwp
+      enddo
 C 
 C 
 1500  CONTINUE
