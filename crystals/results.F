@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.168  2011/01/20 15:39:43  djw
+C Tidy up output
+C
 C Revision 1.167  2010/11/03 15:23:28  djw
 C Include superflip as solve method in cif, plot Do/sigma in Absolute configuration Fo/Fc plot
 C
@@ -1847,7 +1850,7 @@ C Work out the _atom_site_refinement_flags_occupancy for this atom.
             IF ( AND (KBREFB(7),ISTORE(M5+15)) .GT. 0 ) THEN
               WRITE(CP(1:1),'(A)') 'P' 
             END IF
-            CALL PRTGRP(ISTORE(M5+14),IPRT,IGRP)
+            CALL PRTGRP(ISTORE(M5+14),IPRT,IGRP,1)
             WRITE(CASDA(1:1),'(A)') '.' !Atom site disorder assembly
             NASDA = 1
             IF ( IGRP .NE. 0 .AND. ABS (IGRP) .LE. 999
@@ -4197,6 +4200,7 @@ c       swap order of atoms
          itmp = Ipub
          ktmp = Kpub
          jtmp = 7
+c        +25,26 are spare slots
          call xmove(store(ipub+21), store(ipub+25),2) 
          call xmove(store(ipub+23), store(ipub+21),2) 
          call xmove(store(ipub+25), store(ipub+23),2) 
@@ -4249,14 +4253,24 @@ C----- IDENTITY
         ENDIF
 2000  CONTINUE
 C
+c
 C----- VALUE AND ESD
-c      write(ncawu,*) (store(idjw),idjw=ipub,ipub+27)
       CALL XFILL (IB, IVEC, 20)
 cdjw021204
 cdjwjul2010
 c     Key=15 for H-bonds. 4th atom slots used for DD1,ED1,D2,ED2,0,0,0
-c                              store(ipubl+22) == ED1
-      if ((key .eq. 15) .and. (store(ipub+22) .le. zero)) esd = 0.
+c                              store(ipub+22) == ED1
+c Type    0 7  14 DD1 DH 21
+c Serial  1 8  15 ED1 DH 22  
+c R       2 9  16 DD3 HA 23
+c L       3 10 17 ED3 HA 24
+C Tx      4 11 18        25
+c Ty      5 12 16        26
+c Tz      6 12 20        27
+c
+c
+cdjwjan11 should be set in DISTANGL bases on RIDE flag
+c      if ((key .eq. 15) .and. (store(ipub+22) .le. zero)) esd = 0.
       if ((noh .gt. 0 ).and.( esd .le. 0.).AND.(NATOUT .GE. 3)) then
 cdjwoct05. More fiddles to keep Bill happy
         if (key .eq. 15) then
@@ -4288,13 +4302,12 @@ C----- H-bonds AND ESDs
        dadist = sqrt(
      1  store(ipub+21)*store(Ipub+21) + store(ipub+23)*store(Ipub+23)
      2  -2.*store(ipub+21)*store(Ipub+23)*cos(term*dtr))
-       
 c       Use mean c-c esd
-        ddesd = 1.414*store(l30cf+14)
-
+        daesd = 1.414*store(l30cf+14)
+c        
        call xfill (ib, ivec, 20)
 cdjwoct05. More fiddles to keep Bill happy. 
-       call snum ( dadist, ddesd,  -3, 0, 10, ivec )
+       call snum ( dadist, daesd,  -3, 0, 10, ivec )
        write( cbuf, '(20a1)') (ivec(i), i=1, 20)
        call xcras ( cbuf, n)
        cline(j:j+n-1) = cbuf(1:n)
