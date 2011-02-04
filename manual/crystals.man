@@ -1983,7 +1983,8 @@ if twinned reflection data is input.
  using these constants is correct only for experiments where  THETA(2)
  is a constant.
  This is true for equatorial geometry experiments, but is not true
- for equipment that uses Weissenberg or precession geometry.
+ for equipment that uses Weissenberg or precession geometry.  It is not 
+ true for area detector instruments.
 #KCONSTANT(1)= CONSTANT(2)= CONSTANT(3)= CONSTANT(4)=#
  These four parameters are used to input fundamental constants
  for the diffractometer used to collect the data.
@@ -7833,21 +7834,17 @@ are only going to be calculated.
  does not exist an error will occur. (By default L41 is kept up to date
  with the current model.)
 #
+
+
 #DDELU ADP-ESD  FOR GROUP-1 (AND GROUP-2 AND ...)#
  The adps of all pairs of bonded atoms in each group are restrained
  to be equal in the direction of the bond.  Unlike SAME, a single
- group can be given.
+ group can be given.  The RESIDUES are NOT restrained to be similar.
 #
  The first argument is the e.s.d for adp-restraint,  
  I.E:
 #J
  DELU 0.01  FOR RESI(1) AND RESI(2)
-#
-   Restrains the adps of all pairs on bonded atoms in RESIDUE(1) and 
- (2). Note that
-   although this shorthand is appealing, the order of resi(1) and resi(2)
-   must be identical in List 5, although the residues may interpenetrate.
-
 #
 #P Errors are generated if
    1) the size of any of the groups on the DELU card is not the
@@ -7866,21 +7863,17 @@ are only going to be calculated.
  does not exist an error will occur. (By default L41 is kept up to date
  with the current model.)
 #
+
+
 #DSIMU ADP-ESD  FOR GROUP-1 (AND GROUP-2 AND ...)#
- The adps of all pairs of bonded atoms in each group are restrained
- to be similar.  Unlike SAME, a single
- group can be given.
+   Restrains equivalent elements of the  adps of all pairs on bonded atoms 
+   in each residue. The RESIDUES are NOT restrained to be similar. Unlike
+   SAME, a single group can be given
 #
  The first argument is the e.s.d for adp-restraint.
  I.E:
 #J
  SIMU 0.04  FOR RESI(1) AND RESI(2)
-#
-   Restrains the adps of all pairs on bonded atoms in RESIDUE(1) and 
- (2). Note that
-   although this shorthand is appealing, the order of resi(1) and resi(2)
-   must be identical in List 5, although the residues may interpenetrate.
-
 #
 #P Errors are generated if
    1) the size of any of the groups on the DELU card is not the
@@ -7899,9 +7892,6 @@ are only going to be calculated.
  does not exist an error will occur. (By default L41 is kept up to date
  with the current model.)
 #
-
-
-
 
 #YGeneral restraints#
 #HSgeneral#
