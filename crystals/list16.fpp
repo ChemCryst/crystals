@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  2010/10/26 09:51:24  djw
+C Sort out more writes to NCAWU, provide more output from EXEC directive
+C
 C Revision 1.13  2009/10/28 16:27:56  djw
 C Add error print to .LIS as well as screen. Correct base address for parameters in DELU (was mistakenly changed in last update) list16.fpp
 C
@@ -745,7 +748,8 @@ C Find the pivot atom (M5A) in the first group.
              EXIT
           END IF
         END DO
-        IF (( IND1 .GE. 0 ) .and. (mg .ge. 21)) THEN
+cdjwfeb11 delu and simu can have more than one argument string
+        IF (( IND1 .GE. 0 ) .and. (mg .eq. 21))  THEN
           WRITE (CMON,'(A,i5,a)')'Programming error [1]',
      1    mg,' in XPRC16.'
           if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
@@ -786,7 +790,8 @@ C Find the second atom in the first group.
                EXIT
             END IF
           END DO
-        IF (( IND2 .GE. 0 ) .and. (mg .ge. 21)) THEN
+cdjwfeb11 delu and simu can have more than one argument string
+        IF (( IND2 .GE. 0 ) .and. (mg .eq. 21))  THEN
           WRITE (CMON,'(A,i5,a)')'Programming error [2]',
      1    mg,' in XPRC16.'
             if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
