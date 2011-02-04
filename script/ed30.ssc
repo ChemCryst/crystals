@@ -125,8 +125,9 @@
 ^^WI     @ 1,3 EDITBOX NREFS '0' CHARS=11 INTEGER INFORM=YES                    
 ^^WI     @ 1,5  STATIC ED30T 'Instrument'                                       
 ^^WI     @ 1,7 DROPDOWN INST INFORM=YES ADDTOLIST                               
-^^WI     'Unknown' 'CAD4' 'Mach3' 'KappaCCD' 'Dip' 'Smart'                      
-^^WI     'IPDS' 'Xcalibur'  'APEX2' 'Gemini' 'NULL'                             
+^^WI     'Unknown' 'CAD4' 'Mach3' 'KappaCCD' 'Dip'                      
+^^WI     'Smart' 'IPDS' 'Xcalibur'  'APEX2' 'Gemini' 
+^^WI     'SuperNova' 'NULL'                             
 ^^WI     @ 1,9  STATIC ED30T 'Scan'                                             
 ^^WI     @ 1,11  DROPDOWN SCAN INFORM=YES ADDTOLIST                             
 ^^WI     '2theta/omega' 'Omega' 'Phi' 'Phi and omega' 'unknown' 'NULL'          
@@ -193,7 +194,8 @@
 ^^WI   {                                                                        
 ^^WI    @ 1,1 STATIC ED30T 'Data reduction'                                     
 ^^WI    @ 1,3 DROPDOWN REDUC INFORM=YES ADDTOLIST                               
-^^WI    'Unknown' 'RC93' 'Denzo' 'Shelx' 'CrysAlis' 'APEX2' 'NULL'              
+^^WI    'Unknown' 'RC93' 'Denzo' 'Shelx' 'CrysAlis'  
+^^WI    'CrysAlis' 'Saint' 'NULL'              
 ^^WI    @ 1,5 STATIC ED30T 'Structure solution'                                 
 ^^WI    @ 1,8 DROPDOWN SOLUTN INFORM=YES ADDTOLIST                              
 ^^WI    'Unknown' 'Shelxs' 'Sir88' 'Sir92' 'Patterson'                          
