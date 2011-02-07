@@ -1,4 +1,8 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.61  2010/11/03 15:19:05  djw
+c In MATCH, change computation of torsion angle deviations.
+c IN REGULAR.OBY. make colours green and purple (were red and blue), then reset o to reb, n to blue, s to yellow
+c
 c Revision 1.60  2010/04/26 15:53:34  djw
 c Set Uiso to 0.0501 for tracking purposes
 c
@@ -1182,6 +1186,8 @@ C    ATOMS(1,J) is FLAG, ATOMS(2,j) is u11 etc.
 C    ATOMS ARE OVERWRITTEN
       CALL XMXUIJ (STORE(LUIJ),WSPAC3,MDUIJ,NNEW,STORE(L1P2))
 C 
+C find the determinant
+         DETMAT=XDETR3(WSPAC3)
 Cdjwapr2001
       IF (IMATRIX.LE.-1) THEN
 C -- PRINT COORDINATES AFTER FITTING AND THE DEVIATIONS BETWEEN THEM
@@ -1226,7 +1232,7 @@ C
 CDJWMAR2000
 C FIND PSEUDO OPERATOR - GIACOVAZZO, Section 1.d
 C      GET THE DETERMINANT AND TRACE
-         DET=XDETR3(WSPAC3)
+         DET = DETMAT
          TRACE=WSPAC3(1,1)+WSPAC3(2,2)+WSPAC3(3,3)
 C Output determinant and trace
          IF (IPCHRE.GE.0)THEN
@@ -3014,6 +3020,9 @@ C     6. Find equiv bond (a2'-a4')
 
 C Torsion will be MNC - MNA - MNB - MND
 C Old one will be MOC - MOA - MOB - MOD
+c
+c If the determinant is -ve, invert the torsion angles for the second 
+c molecule
 
       JT = 12 ! Number of words per returned distance
       TDEVP = 0.0
@@ -3181,29 +3190,31 @@ C Transform BD vector to this new system
 
 C If angles differ by more than 180, take 360 - diff.
 CDJW OCT2010 Sometimes gives large unreasonable values.
+c probably trying to account for a change of hand.
 C              TP = T1 - T2
 C              IF ( TP .GT. 180.0 ) TP = 360. - TP
 C              IF ( TP .LT. -180.0 ) TP = -360. - TP
 C              TDEVP = TDEVP + TP**2
 C              TOR1MAX = MAX(TOR1MAX,ABS(TP))
 C              TOR1MIN = MIN(TOR1MIN,ABS(TP))
-
-
+c
 C              TN = T1 + T2
 C              IF ( TN .GT. 180 ) TN = 360. - TN
 C              IF ( TN .LT. -180 ) TN = -360. - TN
 C              TDEVN = TDEVN + TN**2
 C              TOR2MAX = MAX(TOR2MAX,ABS(TN))
 C              TOR2MIN = MIN(TOR2MIN,ABS(TN))
-
-               if (t1 .lt. 0.0) then 
+c
+cdjwfeb11 Watch out for inversion
+               if (detmat .le. 0) t2 = -t2
+               if (t1 .lt. -180.0) then 
                   t1 = t1 + 360.
-               else if (t1 .gt. 360.) then
+               else if (t1 .gt. 180.) then
                   t1 = t1 - 360.
                endif
-               if (t2 .lt. 0.0) then 
+               if (t2 .lt. -180.0) then 
                   t2 = t2 + 360.
-               else if (t2 .gt. 360.) then
+               else if (t2 .gt. 180.) then
                   t2 = t2 - 360.
                endif
 
@@ -3260,7 +3271,15 @@ c      ELSE
 c        TORMAX = TOR1MAX
 c        TORMIN = TOR1MIN
 c      END IF
-
+c
+      if (detmat .le. 0) then
+       write(cmon,'(1x,/,a)')
+     1 '{I Hand of the second molecule has been inverted'
+       call xprvdu(ncvdu,2,0)
+       if (issprt .eq. 0) write (ncwu,'(a)') CMON(1)(:),CMON(2)(3:)
+      endif
+c
+c
       WRITE(CMON,'(17X,A/A,3F12.4)')'rms pos    rms bond     rms tors',
      1 ' Deviations  ',RMSDEV(4), SBDEV, STDEV
       CALL XPRVDU(NCVDU,2,0)
