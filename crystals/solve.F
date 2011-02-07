@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.45  2010/09/17 07:13:57  djw
+C Output mean C-C distance to terminal and listing
+C
 C Revision 1.44  2010/03/04 15:12:06  djw
 C Correct initialisatio of ABSF
 C
@@ -2643,7 +2646,7 @@ C--UPDATE FOR THE NEXT ATOM
 2900  CONTINUE
 C--END OF THE UPDATING  -  PREPARE TO OUTPUT A NEW LIST 5
 2950  CONTINUE
-      INCLUDE 'IDIM05.INC'
+C NOW A PARAMETER      INCLUDE 'IDIM05.INC'
 C--OUTPUT THE NEW LIST 5
       CALL XWLSTD(5,ICOM05,IDIM05,0,-1)
 C----- SAVE THE MEAN C-C ESD

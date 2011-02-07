@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.90  2011/01/25 08:42:36  djw
+C Add Mcmahon flag and fix file closing when there are no list 28 omissions
+C
 C Revision 1.89  2011/01/20 15:40:17  djw
 C Use Brian McMahons data names
 C
@@ -1087,7 +1090,7 @@ C
 C
       INCLUDE 'ICOM05.INC'
       INCLUDE 'QLST05.INC'
-      INCLUDE 'IDIM05.INC'
+CNOW A PARAMETER      INCLUDE 'IDIM05.INC'
 C
 C
       DATA ICNTSZ / 5 /

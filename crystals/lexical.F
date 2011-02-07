@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.30  2011/02/04 17:34:03  djw
+C Extend parameter list on PRTGRP to enable selection by RESIDUE
+C
 C Revision 1.29  2009/11/03 12:10:57  djw
 C Remove debugging print
 C
@@ -2213,7 +2216,7 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST05.INC'
       INCLUDE 'QLST12.INC'
-      INCLUDE 'IDIM05.INC'
+C NOW A PARAMETER      INCLUDE 'IDIM05.INC'
 C
 C--ASSIGN THE INITIAL RETURN VALUE AND FIND THE TYPE OF PARAMETER
       KOVPMF=0

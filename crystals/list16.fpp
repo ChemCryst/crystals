@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  2011/02/04 17:31:10  djw
+C Fix problem when no AND on DELU/SIMU
+C
 C Revision 1.14  2010/10/26 09:51:24  djw
 C Sort out more writes to NCAWU, provide more output from EXEC directive
 C
@@ -404,7 +407,7 @@ C--SET UP THE OUTPUT LIST
 C--SET UP THE REQUIRED LISTS FOR THE PARSING ROUTINES
       CALL XLSV
       IF ( IERFLG .LT. 0 ) GO TO 9900
-      INCLUDE 'IDIM05.INC'
+C NOW A PARAMETER      INCLUDE 'IDIM05.INC'
 cC--INDICATE THAT LIST 5 IS NOT IN CORE
 c      DO 1050 I=1,IDIM05
 c      ICOM05(I)=NOWT
