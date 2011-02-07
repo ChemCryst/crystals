@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.31  2010/07/29 15:29:24  djw
+C remove diagnostic print
+C
 C Revision 1.30  2010/07/16 11:35:31  djw
 C Enable XPCHLX to output lists 12 and 16 to the cif file.  This means carrying the I/O chanel (as NODEV)
 C in XPCHLX,XPCHLH,PPCHND and XPCHUS.
@@ -2854,7 +2857,7 @@ C--SORT OUT LIST 14 TO CALCULATE THE MAP COORDINATES
       CALL XUSWOP(IAXIS,STORE(L14+3),3*MD14,MD14,1,BPD(10),3,1,1,1)
 C--SET UP THE INITIAL GUESS OF A LIST AS 10
       LNOUT=10
-      INCLUDE 'IDIM05.INC'
+C-NOW A PARAMETER      INCLUDE 'IDIM05.INC'
 C--CHECK IF WE HAVE FOUND ANY PEAKS
       IF(N10)2550,2550,1050
 C--BRANCH ON THE FOURIER TYPE
