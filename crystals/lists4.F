@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.26  2011/02/04 17:40:01  djw
+C XPCH5E either prints table of esds or creates a LIST 9. Operations need to be separated in the near future
+C
 C Revision 1.25  2010/09/20 14:59:51  djw
 C Enable storage of an auxilliary radiation at the end of each scattering factor record in LIST 3
 C
@@ -1087,13 +1090,12 @@ C
       INCLUDE 'ICOM05.INC'
       INCLUDE 'ICOM09.INC'
       INCLUDE 'XLST05.INC'
+      dimension dwork(idim05)
       INCLUDE 'XLST09.INC'
-      dimension dwork(40)
       INCLUDE 'QLST05.INC'
       INCLUDE 'QLST09.INC'
-      INCLUDE 'IDIM05.INC'
-      INCLUDE 'IDIM09.INC'
-
+C NOW A PARAMETER      INCLUDE 'IDIM05.INC'
+C
 c check if there is a LIST 5 already loaded - if so we must save the
 c pointers
       isave = 0
@@ -1127,7 +1129,7 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST05.INC'
 C
-      INCLUDE 'IDIM05.INC'
+C NOW A PARAMETER      INCLUDE 'IDIM05.INC'
 C--SET THE LIST TYPE
       LN5=IULN
 C--LOAD THE LIST
@@ -1155,7 +1157,7 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST05.INC'
 C
-      INCLUDE 'IDIM05.INC'
+C NOW A PARAMETER      INCLUDE 'IDIM05.INC'
 C--SET THE LIST TYPE
       LN5=IULN
 C--LOAD THE LIST
@@ -1191,7 +1193,7 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST05.INC'
 C
-      INCLUDE 'IDIM05.INC'
+C NOW A PARAMETER      INCLUDE 'IDIM05.INC'
 C--CHECK IF A CHANGE OF LIT TYPE IS INDICATED
       IF(LNIN-LNOUT)1000,1550,1000
 C--PRESERVE THE LIST 5 COMMON BLOCK
@@ -1285,7 +1287,7 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST05.INC'
 C
-      INCLUDE 'IDIM05.INC'
+C NOW A PARAMETER      INCLUDE 'IDIM05.INC'
 C--STORE THE LIST ON DISC
       CALL XWLSTD(IULN,ICOM05,IDIM05,IOWF,INEW)
       RETURN
