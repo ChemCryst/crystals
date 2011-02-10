@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2011/02/03 10:59:15  djw
+C Correct a comment
+C
 C Revision 1.10  2008/04/29 15:33:07  djw
 C Reduce tolerance for 'snapping' coodrinates from ZERO to ZEROSQ
 C
@@ -462,6 +465,9 @@ CODE FOR XFLORG
       SUBROUTINE XFLORG (N2, IACTN, NRESTR)
 C
 C----- CHECK FOR FLOATING ORIGIN
+c for each row, sum the column entry for all symmetry operator matrices
+c If the total is equal to the number of operators, the origin
+c is floating in that direction.
 C
       CHARACTER *2 AXIS(3)
       CHARACTER *80 CLINE
