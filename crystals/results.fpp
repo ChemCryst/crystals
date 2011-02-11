@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.169  2011/02/04 17:37:23  djw
+C Remember to swap round esd flag ih H atoms in hydrogen bond are swapped
+C
 C Revision 1.168  2011/01/20 15:39:43  djw
 C Tidy up output
 C
@@ -4292,7 +4295,9 @@ C----- H-bonds AND ESDs
         if (esd .le. 0.) then
           CALL SNUM ( store(itmp), 0.0,  -2, 0, 10, IVEC )
         else
-          CALL SNUM ( store(itmp),store(itmp+1),  -3, 0, 10, IVEC )
+C set esd to 0.0 to keep Ton happy
+c          CALL SNUM ( store(itmp),store(itmp+1),  -3, 0, 10, IVEC )
+          CALL SNUM ( store(itmp),0.0,  -3, 0, 10, IVEC )
         endif
         WRITE( CBUF, '(20A1)') (IVEC(I), I=1, 20)
         CALL XCRAS ( CBUF, N)
