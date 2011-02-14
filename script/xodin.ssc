@@ -11,7 +11,7 @@
 %  EVALUATE IFILE = FILEEXISTS ( 'od-in.cif' )                                 
 %%                                                                              
 %%%% Definition %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%          
-^^WI WINDOW XKCCDIN 'Input KCCD data' MODAL                                     
+^^WI WINDOW XODIN 'Input Agilent data' MODAL                                     
 ^^WI COMMIT='BTNOK' CANCEL='BTNXX'                                              
 ^^WI GRID MAIN NROWS=2 NCOLS=1                                                  
 ^^WI {                                                                          
@@ -21,12 +21,11 @@
 ^^WI    @ 2,2 STATIC T1 'Click OK to read in data'                              
 ^^WI    @ 3,2 STATIC T2 'from the file od-out.ins.'                               
 % ELSE IF IFILE THEN                                                            
-^^WI    @ 2,2 STATIC T1 'No ODIN output files detected.'                      
-^^WI    @ 3,2 STATIC T2 'Click Run ODIN now to continue.'                     
+^^WI    @ 2,2 STATIC T1 'No OD-output files detected.'                      
+^^WI    @ 3,2 STATIC T2 'Click Run Agilentin now to continue.'                     
 % ELSE                                                                          
 ^^WI    @ 2,2 STATIC T1 'No Agilent od-in.cif file detected.'                 
-^^WI    @ 3,2 STATIC T2 'Click Cancel, place the file in this'                  
-^^WI    @ 4,2 STATIC T3 'folder, then try again.'                               
+^^WI    @ 3,2 STATIC T2 'Click Run Agilentin now to continue.'                               
 % END IF                                                                        
 ^^WI   }                                                                        
 ^^WI   @ 2,1 GRID RIGHT NROWS=3 NCOLS=7                                         
@@ -38,9 +37,9 @@
 ^^WI    @ 2,4 BUTTON BTNXX '&Cancel' CANCEL                                     
 ^^WI    @ 2,6 BUTTON BTNRR                                                      
 % IF LFILE THEN                                                                 
-^^WI '&Run ODin again'                                                        
+^^WI '&Run Agilentin again'                                                        
 % ELSE                                                                          
-^^WI '&Run ODin now'                                                          
+^^WI '&Run Agilentin now'                                                          
 % END IF                                                                        
 % IF .NOT. IFILE THEN                                                           
 ^^WI     DISABLED=no                                                           
@@ -58,14 +57,14 @@
 %  CASE VALUE                                                                   
 %    BLOCK              %OK%                                                    
 %         EVALUATE LOOPEND = LOOPCOUNTER                                        
-^^CO      DISPOSE XKCCDIN                                                       
+^^CO      DISPOSE XODIN                                                       
 %    END BLOCK                                                                  
 %    BLOCK             %CANCEL%                                                 
-^^CO      DISPOSE XKCCDIN                                                       
+^^CO      DISPOSE XODIN                                                       
 %         FINISH                                                                
 %    END BLOCK                                                                  
 %    BLOCK             %RUN ODIN%                                             
-^^CO      DISPOSE XKCCDIN                                                       
+^^CO      DISPOSE XODIN                                                       
 {S * Running KCCDIN.                                                            
 %      COPY '#SPAWN % "CRYSDIR:oxdiffin.exe"'                                     
 {R   Done.                                                                      
