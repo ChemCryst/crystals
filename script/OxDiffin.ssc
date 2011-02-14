@@ -11,7 +11,7 @@
 %  EVALUATE IFILE = FILEEXISTS ( 'od-import.cif' )                                 
 %%                                                                              
 %%%% Definition %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%          
-^^WI WINDOW XOXDIFFIN 'Input OxDiff data' MODAL                                     
+^^WI WINDOW XOXDIFFIN 'Input Agilent data' MODAL                                     
 ^^WI COMMIT='BTNOK' CANCEL='BTNXX'                                              
 ^^WI GRID MAIN NROWS=2 NCOLS=1                                                  
 ^^WI {                                                                          
@@ -21,11 +21,11 @@
 ^^WI    @ 2,2 STATIC T1 'Click OK to read in data'                              
 ^^WI    @ 3,2 STATIC T2 'from the file od-out.ins.'                               
 % ELSE IF IFILE THEN                                                            
-^^WI    @ 2,2 STATIC T1 'No OxDiff output files detected.'                      
-^^WI    @ 3,2 STATIC T2 'Click Run OXDIFFIN now to continue.'                     
+^^WI    @ 2,2 STATIC T1 'No Agilent output files detected.'                      
+^^WI    @ 3,2 STATIC T2 'Click Run Agilentin now to continue.'                     
 % ELSE                                                                          
-^^WI    @ 2,2 STATIC T1 'No OxDiff OD-import.cif file detected.'                 
-^^WI    @ 3,2 STATIC T2 'Click Run OXFIFIN and give full'                  
+^^WI    @ 2,2 STATIC T1 'No Agilent OD-import.cif file detected.'                 
+^^WI    @ 3,2 STATIC T2 'Click Run Agilentin and give full'                  
 ^^WI    @ 4,2 STATIC T3 'cif filename at the command prompt.'                               
 % END IF                                                                        
 ^^WI   }                                                                        
@@ -38,9 +38,9 @@
 ^^WI    @ 2,4 BUTTON BTNXX '&Cancel' CANCEL                                     
 ^^WI    @ 2,6 BUTTON BTNRR                                                      
 % IF LFILE THEN                                                                 
-^^WI '&Run OxDiffin again'                                                        
+^^WI '&Run Agilentin again'                                                        
 % ELSE                                                                          
-^^WI '&Run OxDiffin now'                                                          
+^^WI '&Run Agilentin now'                                                          
 % END IF                                                                        
 % IF .NOT. IFILE THEN                                                           
 ^^WI     DISABLED=NO                                                          
