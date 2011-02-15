@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.170  2011/02/11 12:00:31  djw
+C remove esd from both D-H and H-A to keep Ton happy
+C
 C Revision 1.169  2011/02/04 17:37:23  djw
 C Remember to swap round esd flag ih H atoms in hydrogen bond are swapped
 C
@@ -4358,7 +4361,7 @@ C
 CAVDL more solution packages in cif-goodies
       PARAMETER (ISOLMX=10)
       DIMENSION ISOLCD(ISOLMX)
-      PARAMETER (IABSMX=15)
+      PARAMETER (IABSMX=16)
       DIMENSION IABSCD(IABSMX)
 
 C
@@ -4426,7 +4429,8 @@ c
 C UNKNOWN CAD4 MACH3 KAPPACCD DIP SMART IPDS XCALIBUR APEX2 GEMINI
 C    1     2       3     4    5     6    7   8        9      10
 c SUPERNOVA
-C   11C------ REFERENCE CODES FOR THE DIFFRACTOMETERS
+C   11
+C------ REFERENCE CODES FOR THE DIFFRACTOMETERS
       DATA IREFCD /4,5,6, 13,24,13, 13,24,13, 25,17,17, 15,17,17,
      1 26,27,27, 20,19,20,  37,36,36, 45,45,45, 47,36,36,
      2 48,36,36  /
@@ -4434,7 +4438,7 @@ C------ REFERENCE CODES FOR DIRECT METHODS
 CAVDLdec06 updating references in reftab.sda with numbers 42, 43, and 44
       DATA ISOLCD /1,18,30,11,22,28,29,42,43,44/
 C------ REFERENCE CODES FOR ABSORPTION METHOD
-      DATA IABSCD /7,21,16,17,31,32,33,39,40,40,39,7,7,16,45/
+      DATA IABSCD /7,21,16,17,31,32,33,39,40,40,39,7,7,16,45,36/
 
 C
       DATA UPPER/'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
@@ -5220,6 +5224,22 @@ C----- LIST 30
 1750  CONTINUE
  
       IF (JLOAD(9).GE.1) THEN
+c--   Machine type
+c
+C     UNKNOWN CAD4 MACH3 KAPPACCD DIP SMART IPDS XCALIBUR APEX2 GEMINI
+C        1     2       3     4    5     6    7      8      9      10
+c     SUPERNOVA
+C       11
+C----- PARAMETER 13 ON DIRECTIVE 2 IS A CHATACTER STRING: DIFFRACTOMETER MAKE
+        IPARAM=13
+        IDIR=2
+        IVAL=ISTORE(L30CD+IPARAM-1)
+        IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
+     1    IVAL,JVAL,VAL,JTYPE)
+        IDIFNO = IVAL+1
+c
+c
+c
         IF ( IPUNCH .EQ. 0 ) THEN
           WRITE (NCFPU1,'(''_chemical_formula_weight '',T35,F8.2)')
      1    STORE(L30GE+4) / ZPRIME
@@ -5380,7 +5400,13 @@ C----- PARAMETER 9 ON DIRECTIVE 5 IS A CHARACTER STRING: ABSORPTION TYPE
         IVAL=ISTORE(L30AB+IPARAM-1)
         IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
      1    IVAL,JVAL,VAL,JTYPE)
-C----- NOTE - WE CANNOT USE THE CRYSTALS CHARACTER STRING
+        IABVAL = MIN (IABSMX, IVAL + 1)
+C
+C NONE DIFABS EMPIRICAL MULTI-SCAN SADABS SORTAV SHELXA GAUSS ANALYT
+C   1     2       3         4         5      6      7     8      9
+C NUMER INTEGERATION SPHERICAL CYLINDRICAL PSI-SCAN 
+c   10       11         12         13        14
+C
         CMON(1) = ' '
         IF (TMIN.GT.3.0) THEN
             WRITE (CMON,'(A)') 'Analytical absorption correction mandato
@@ -5394,28 +5420,14 @@ C----- NOTE - WE CANNOT USE THE CRYSTALS CHARACTER STRING
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
             IF ( IPUNCH .EQ. 0 ) CALL XPCIF('# '//CMON(1)(:))
         ENDIF
-        IVAL = MIN (IABSMX, IVAL + 1)
-C NONE          1
-C DIFABS        2
-C EMPIRICAL     3
-C MULTI-SCAN    4
-C SADABS        5
-C SORTAV        6
-C SHELXA        7
-C GAUSS         8
-C ANALYT        9
-C NUMER        10
-C INTEGERATION 11
-C SPHERICAL    12
-C CYLINDRICAL  13
-C PSI-SCAN     14
-        IF (IVAL.EQ.1) THEN
+C----- NOTE - WE CANNOT USE THE CRYSTALS CHARACTER STRING
+        IF (IABVAL.EQ.1) THEN
             CVALUE='none'
             J=-1
-        ELSE IF ((IVAL.EQ.2).OR.(IVAL.EQ.7)) THEN
+        ELSE IF ((IABVAL.EQ.2).OR.(IABVAL.EQ.7)) THEN
             CVALUE='refdelf'
             J=6
-        ELSE IF (IVAL.EQ.3) THEN
+        ELSE IF (IABVAL.EQ.3) THEN
             IF (L13DT.EQ.9) THEN
 C           AREA DETECTOR
                CVALUE='multi-scan'
@@ -5424,32 +5436,32 @@ C           AREA DETECTOR
                CVALUE='psi-scan'
                J=4
             END IF
-        ELSE IF ((IVAL.GE.4).AND.(IVAL.LE.6)) THEN
+        ELSE IF ((IABVAL.GE.4).AND.(IABVAL.LE.6)) THEN
 C           AREA DETECTOR
             CVALUE='multi-scan'
             J=4
-        ELSE IF (IVAL.EQ.8) THEN
+        ELSE IF (IABVAL.EQ.8) THEN
             CVALUE='gaussian'
             J=0
-        ELSE IF (IVAL.EQ.9) THEN
+        ELSE IF (IABVAL.EQ.9) THEN
             CVALUE='analytical'
             J=0
-        ELSE IF (IVAL.EQ.10) THEN
+        ELSE IF (IABVAL.EQ.10) THEN
             CVALUE='numerical'
             J=0
-        ELSE IF (IVAL.EQ.11) THEN
+        ELSE IF (IABVAL.EQ.11) THEN
             CVALUE='integration'
             J=0
-        ELSE IF (IVAL.EQ.12) THEN
+        ELSE IF (IABVAL.EQ.12) THEN
             CVALUE='sphere'
             J=2
-        ELSE IF (IVAL.EQ.13) THEN
+        ELSE IF (IABVAL.EQ.13) THEN
             CVALUE='cylinder'
             J=2
-        ELSE IF (IVAL.EQ.14) THEN
+        ELSE IF (IABVAL.EQ.14) THEN
             CVALUE='psi-scan'
             J=4
-        ELSE IF (IVAL.EQ.15) THEN
+        ELSE IF (IABVAL.EQ.15) THEN
             CVALUE='Multi-scan'
             J=4
         ELSE
@@ -5491,7 +5503,19 @@ C
           IF ( IPUNCH .ge. 0 ) THEN
             CLINE=' '
             WRITE (CLINE,'( A, ''process_details '')') CBUF(1:15)
-            IVAL = IABSCD(IVAL)
+            IVAL = IABSCD(IABVAL)
+            if(j .eq. 4) then
+              if((idifno.eq.6).or.(idifno.eq.9)) then 
+c               SADABS
+                ival = iabscd(5) 
+              else if((idifno.eq.8).or.(idifno.eq.10).or.
+     1          (idifno.eq.11)) then
+c               Agilent
+                ival = iabscd(16)
+              else if(idifno.eq.4) then
+                ival = iabscd(4)
+              endif
+            endif
             CTEMP = CREFMK(ISTORE(LREFS), NREFS, MDREFS, IVAL)
             CALL XCTRIM (CTEMP,NCHAR)
             IF ( IPUNCH .EQ. 0 ) THEN
@@ -5557,16 +5581,9 @@ C
            WRITE (NCPU,'(''<H2>Data Collection</H2>'')')
            WRITE (NCPU,'(''<FONT SIZE="-1"><TABLE>'')')
         END IF
-
-C----- PARAMETER 13 ON DIRECTIVE 2 IS A CHATACTER STRING: DIFFRACTOMETER MAKE
-        IPARAM=13
-        IDIR=2
-        IVAL=ISTORE(L30CD+IPARAM-1)
-        IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
-     1    IVAL,JVAL,VAL,JTYPE)
-
+c
 cdjw0705
-        IF ((IVAL.EQ. 3) .AND. (IPUNCH .EQ. 0)) THEN
+        IF ((IDIFNO.EQ. 4) .AND. (IPUNCH .EQ. 0)) THEN
             WRITE(Cline,'(A)')
      1 '# For a Kappa CCD, set Tmin to 1.0 and'
              CALL XPCIF (CLINE)
@@ -5574,12 +5591,6 @@ cdjw0705
      1 '# Tmax to the ratio of max:min frame scales in scale_all.log'
              CALL XPCIF (CLINE)
         ENDIF
-
-C UNKNOWN CAD4 MACH3 KAPPACCD DIP SMART IPDS XCALIBUR APEX2 GEMINI
-C    1     2       3     4    5     6    7   8        9      10
-c SUPERNOVA
-C   11
-        IDIFNO = IVAL+1
         CALL XCREMS (CVALUE,CVALUE,NCHAR)
         CALL XCTRIM (CVALUE,NCHAR)
         IF ( IPUNCH .EQ. 1 ) THEN
@@ -5652,7 +5663,9 @@ C
            CALL XPCIF (CLINE)
         END IF
       END IF
-
+C--- END OF LIST 30
+C
+C    LIST 13
       IF (JLOAD(6).GE.1) THEN
          CBUF(1:5)=''' ? '''
          IF (NINT(10.*STORE(L13DC)).EQ.7) THEN
@@ -5767,6 +5780,7 @@ cdjw0705
           WRITE(Cline,'(A)')
      1 '# and date from subsequent references.'
           CALL XPCIF (CLINE)
+c
 c
            IVAL = IREFCD(1,IDIFNO)
            CTEMP = CREFMK(ISTORE(LREFS), NREFS, MDREFS, IVAL)
