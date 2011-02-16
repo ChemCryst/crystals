@@ -4,7 +4,8 @@
       LOGICAL FC,FV,FN,FF,FT,FW,FSG,FL6
       logical lnum
       CHARACTER*4 CATOM
-      CHARACTER*8 CDATE, CARG
+      CHARACTER*8 CARG
+      CHARACTER*24 CDATE
       CHARACTER*14 CSPACE,CTEMP
       CHARACTER*32 C32,NAME,ENAME
       CHARACTER*50 C50
@@ -50,8 +51,8 @@ C....... Open the cif file for input
 105   continue
       WRITE (6,'(/2a/)') ' Read DATA from Cif  ',NAME
       IF (.NOT.(OPEN_(NAME))) THEN
-         WRITE (6,'(A///)') ' >>>>> CIF cannot be opened'
-         write(6,'(a)') 'CIF filename from Kccd?'
+         WRITE (6,'(A,A///)') Name, ' does not exist'
+         write(6,'(a)') 'Filename for Kccd cif file?'
          read(5,'(a)') name
          if (name .eq. ' ') NAME='import.cif'
          GO TO 105
@@ -372,6 +373,28 @@ C
 C(FF)
       IF (FF) THEN
          CALL XCREMS (CFORM,LINE,LENFIL)
+
+
+cdjw Insert space if character immediately follows a number
+c    beware if the element type is a charged species like Om2
+            cform = ' '
+            lnum = .false.
+            iout = 1
+            do j = 1,lenfil
+             k = index(numer,line(j:j))
+             if (k .gt. 0) then
+c             found a number
+              lnum = .true.
+             else if (lnum) then
+c             not a number - and last character was a number
+              iout = iout + 1
+             endif
+             cform(iout:iout) = line(j:j)
+             iout = iout + 1
+            enddo
+c
+            line = cform
+
          i = 80
          cform = ' '
          lnum = .false.
@@ -524,10 +547,10 @@ C
          WRITE (NOUTF,'(a)') 'DATRED REDUCTION=DENZO'
          WRITE (NOUTF,'(a)') 'ABSORPTION ABSTYPE=MULTI-SCAN'
          WRITE (NOUTF,'(a)') 'condition'
-         WRITE (NOUTF,'(a,f7.2)') 'cont minsiz=',ZS
-         WRITE (NOUTF,'(a,f7.2)') 'cont medsiz=',ZD
-         WRITE (NOUTF,'(a,f7.2)') 'cont maxsiz=',ZL
-         WRITE (NOUTF,'(a,f7.2)') 'cont temperature=',Z
+         WRITE (NOUTF,'(a,f8.3)') 'cont minsiz=',ZS
+         WRITE (NOUTF,'(a,f8.3)') 'cont medsiz=',ZD
+         WRITE (NOUTF,'(a,f8.3)') 'cont maxsiz=',ZL
+         WRITE (NOUTF,'(a,f8.3)') 'cont temperature=',Z
          WRITE (NOUTF,'(a,f7.2)') 'cont thorientmin=',CMTM
          WRITE (NOUTF,'(a,f7.2)') 'cont thorientmax=',CMTX
          WRITE (NOUTF,'(a,i7)') 'cont norient=',NINT(CMRU)
@@ -596,7 +619,9 @@ C      GET AN 8 BYTE CHARACTER REPRESENTATION OF DATE/TIME
       CHARACTER (LEN=12)CLOCK(3)
       CALL DATE_AND_TIME (CLOCK(1),CLOCK(2),CLOCK(3),IIDATE)
       I=IIDATE(6)+100*IIDATE(5)+10000*IIDATE(3)+1000000*IIDATE(2)
-      WRITE (CFILE,'(I8)') I
+C      WRITE (CFILE,'(I8)') I
+      write(cfile,100) iidate(5),iidate(6),iidate(3),iidate(2)
+100   format('At ',i2,':',i2,' on ',i2,'/',i2)
       IGDAT=I
       RETURN
       END
