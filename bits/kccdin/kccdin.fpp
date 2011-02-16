@@ -392,8 +392,8 @@ c             not a number - and last character was a number
              cform(iout:iout) = line(j:j)
              iout = iout + 1
             enddo
-c
-            line = cform
+            call xcrems (cform,line,lenfil)
+cdjw
 
          i = 80
          cform = ' '
