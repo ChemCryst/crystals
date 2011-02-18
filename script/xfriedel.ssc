@@ -1,33 +1,10 @@
 %SCRIPT XFRIEDEL                                                               
 % VARIABLE LOGICAL XQMERGE                                                      
 % VARIABLE INTEGER FRIEDELF                                                     
-% VARIABLE REAL ZMAX WORK1 FCENTRO WAVE                                         
-% IF ( EXISTS ( 13 ) .NE. 1 ) THEN                                              
-%   COPY '#LIST 13'                                                             
-%   COPY 'END'                                                                  
-% END IF                                                                        
-% COPY '#GENERALEDIT 13'                                                        
-% COPY 'LOCATE RECORDTYPE=103'                                                  
-% COPY 'TRANSFER FROM OFFSET=0 TO WAVE'                                         
-% COPY 'END'                                                                    
-% IF ( EXISTS 29 .NE. 1 ) THEN                                                  
-{I **** No atomic properties present (list 29)                                  
-{R             I could have done with that information to                       
-{R             recommend what to do with the Friedel pairs.                     
-% ELSE                                                                          
-%   COPY '#GENERALEDIT 29'                                                      
-%   COPY 'LOCATE RECORDTYPE=101'                                                
-%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                     
-%   LOOP                                                                        
-%     ON EDITERROR TERMINATE                                                    
-%     COPY 'TRANSFER FROM OFFSET=6 TO WORK1'                                    
-%     IF ( WORK1 .GT. ZMAX ) THEN                                               
-%        EVALUATE ZMAX = WORK1                                                  
-%     END IF                                                                    
-%     COPY 'NEXT'                                                               
-%   END LOOP                                                                    
-%   COPY 'END'                                                                  
-% END IF                                                                        
+% VARIABLE REAL FCENTRO  
+%% get wavelength and Zmaz
+% VARIABLE REAL WORK1 WAVE ZMAX 
+%   COPY '#SCRIPT XGETWZ'
 % IF ( EXISTS 2 .NE. 1 ) THEN                                                   
 {I **** No symmetry (list 2) present.                                           
 {R             I could have done with that information to                       

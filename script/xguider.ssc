@@ -23,6 +23,15 @@
 %% 11 Validate                                                                  
 %% 12 Publish                                                                   
 %%                                                                              
+%  VARIABLE REAL WAVE ZMAX
+%  COPY '#SCRIPT XGETWZ'
+%%                                                                              
+%% Find out if  H is in list 29.                                                
+%  COPY '#SCRIPT CHECK29'                                                       
+%  IF ( HINCELL .EQ. FALSE ) THEN                                               
+%% Set this to true, so that the logic thinks we've already found H's.          
+%    EVALUATE HDONE = TRUE                                                      
+%  END IF                                                                       
 %%                                                                              
 %%                                                                              
 %  VARIABLE INTEGER ISTAGE                                                      
@@ -54,13 +63,7 @@
 %% Determine how much refinement has been done (ADP)                            
 %  COPY '#SCRIPT ASSESS5'                                                       
 %%                                                                              
-%% Find out if  H is in list 29.                                                
-%  COPY '#SCRIPT CHECK29'                                                       
-%  IF ( HINCELL .EQ. FALSE ) THEN                                               
-%% Set this to true, so that the logic thinks we've already found H's.          
-%    EVALUATE HDONE = TRUE                                                      
-%  END IF                                                                       
-%%                                                                              
+                                                                             
 %% Try to guess what stage we are at                                            
 %  EVALUATE ISTAGE = ADP                                                        
 %%                                                                              
@@ -308,6 +311,9 @@
 %%                                                                              
 %%                                                                              
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.18  2009/11/11 10:53:31  djw
+%%  replace manual setting of weights and scalefactor woth a call to XSCALE
+%%
 %%  Revision 1.17  2009/09/29 08:26:25  djw
 %%  More LIST 4 problems. In 2008 default SHELX type weights gave problems with "peach", so weights were
 %%  retuned to simple 1. or 1/F type.  This causes problems with Oxford Diffraction data, which seems to be on a massive scale
