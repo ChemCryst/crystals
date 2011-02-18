@@ -1,12 +1,12 @@
       PROGRAM NEWK
 #include "ciftbx.cmn"
       LOGICAL F1,F2,F3,F4,F5
-      LOGICAL FC,FV,FN,FF,FT,FW,FSG,FL6
+      LOGICAL FC,FV,FN,FF,FT,FW,FSG,FL6,FMON
       logical lnum
       CHARACTER*4 CATOM
       CHARACTER*8 CARG
       CHARACTER*24 CDATE
-      CHARACTER*14 CSPACE,CTEMP
+      CHARACTER*14 CSPACE,CTEMP,CMONO
       CHARACTER*32 C32,NAME,ENAME
       CHARACTER*50 C50
       CHARACTER*80 C80,LINE,SLINE,CFORM
@@ -32,19 +32,21 @@ C
 #if defined(_GIL_) || defined (_MAC_) || defined (_LIN_) || defined (_WXS_)
       call no_stdout_buffer()
 #endif
-C set default output filename
-	filename='kccd.hkl' 
+C set default output filename - also used as instrument ID
+	filename='kccd'
+        lfn = 4 
 C----- GET DATE
 
       I=IGDAT(CDATE)
 C 
 C....... Open our files for writing
       OPEN (NOUTF,FILE='kccd.ins',STATUS='UNKNOWN')
-      OPEN (NHKL,FILE=filename, STATUS='UNKNOWN')
+      OPEN (NHKL,FILE=filename(1:lfn)//'.hkl', STATUS='UNKNOWN')
       OPEN (NCIF,FILE='kccd.cif',STATUS='UNKNOWN')
 C 
 C....... Call the CIFTBX code to INITialise read/WRITE units
       F1=INIT_(1,2,3,6)
+      write(6,'(/a/)')' Version Feb 2011'
 C 
 C....... Open the cif file for input
       NAME='import.cif'
@@ -86,6 +88,11 @@ C
 C 
 C----- get experiment name
       FN=CHAR_('_chemical_name_common',ENAME)
+c
+      if (.not. fn) then
+            ename=name
+            fn = .true.
+      endif
 C 
 C----- WRITE TEXT TO TEXT FILE
       IF (FN) WRITE (NCIF,'(a,a)') '# Text info for ',ENAME
@@ -98,9 +105,9 @@ C----- WRITE TEXT TO TEXT FILE
       F1=CHAR_('_diffrn_detector_area_resol_mean',C50)
       IF (F1) WRITE (NCIF,'(a,a)') '_diffrn_detector_area_resol_mean ',
      1C50
-      F1=CHAR_('_diffrn_radiation_monochromator',C50)
-      IF (F1) WRITE (NCIF,'(a,a)') '_diffrn_radiation_monochromator ',
-     1C50
+      FMON=CHAR_('_diffrn_radiation_monochromator',CMONO)
+      IF (FMON) WRITE (NCIF,'(a,a)') '_diffrn_radiation_monochromator ',
+     1CMONO
       F1=CHAR_('_computing_data_collection',C50)
       IF (F1) WRITE (NCIF,'(a,a)') '_computing_data_collection ',C50
       F1=CHAR_('_diffrn_measurement_method',C50)
@@ -137,7 +144,13 @@ C....... Extract space group notation (expected char string)
          GO TO 100
       END IF
 100   CONTINUE
+      FF=CHAR_('_chemical_formula',CFORM)
+      IF (.NOT.(FF)) THEN
       FF=CHAR_('_chemical_formula_sum',CFORM)
+      ENDIF
+      IF (.NOT.(FF)) THEN
+      FF=CHAR_('_chemical_oxdiff_formula', CFORM)
+      ENDIF
       LFORM=LONG_
       write(6,'(a)') cform
       IF (.NOT.(FF)) THEN
@@ -182,6 +195,13 @@ C
       F2=NUMB_('_refln_F_squared_meas',RMEAS,DUM).AND.(F2)
       F2=NUMB_('_refln_F_squared_sigma',RSIGMA,DUM).AND.(F2)
       IF (.NOT.(F2)) THEN
+      F2=NUMB_('_hkl_oxdiff_h',RHR,DUM)
+      F2=NUMB_('_hkl_oxdiff_k',RKR,DUM).AND.(F2)
+      F2=NUMB_('_hkl_oxdiff_l',RLR,DUM).AND.(F2)
+      F2=NUMB_('_hkl_oxdiff_f2',RMEAS,DUM).AND.(F2)
+      F2=NUMB_('_hkl_oxdiff_sig',RSIGMA,DUM).AND.(F2)
+      ENDIF
+      IF (.NOT.(F2)) THEN
          WRITE (6,'(/a/)') ' >>>>> reflections missing or wrong format'
          GO TO 300
       END IF
@@ -216,6 +236,17 @@ C           WRITE ( nhkl,'(a)') '-512'
       CLOSE (NHKL)
 C 
 300   CONTINUE
+      F2=NUMB_('_exptl_absorpt_correction_T_min',atn,DUM)
+      F2=NUMB_('_exptl_absorpt_correction_T_max',atx,DUM).AND.(F2)
+      if (.not. (f2)) then
+       atn=0.
+       atx=0.
+      endif
+C
+320   continue
+c Kccd SG is only Point Group
+      if(filename(1:4).eq.'kccd') fsg = .false.
+      if (.not. fsg) then
 C----- reflections all read - check space group with Nonius code
       write(6,'(a)') 'Space Group Code provided by Enraf-Nonius'
 c----------------------------------------------------------------
@@ -234,7 +265,7 @@ c----------------------------------------------------------------
 		if(isa .eq. 0) isa=1
             i_value=isa
 	endif
-	write(6,*)filename, I_value
+	write(6,*)filename(1:lfn)//'.hkl', I_value
       if (i_value .eq. 0)       WRITE(6,555)
 555   FORMAT (' Possible space group types :',/,' Number:   Group:      
      1       ',/,
@@ -259,15 +290,16 @@ C
       endif
 557   format(/,' give space group type number :',/)
 556   FORMAT (I5)
-	write(6,*)filename, I_value
+	write(6,*)filename(1:lfn)//'.hkl', I_value
 c----------------------------------------------------------------
 
-      CALL SGROUP(filename, i_value)
+      CALL SGROUP(filename(1:lfn)//'.hkl', i_value)
       WRITE (6,'(A,a,a)') 'Input space group symbol',
      1' with spaces between the components',
      2 ' e.g. P n a 21'
       write(6,'(a)') 'For monoclinic systems, input the full symbol'
       READ (5,'(a)') CSPACE
+      endif
 C 
 C 
 C....... Read and store the atom site DATA from other DATA block
@@ -329,7 +361,7 @@ C-----------------------------------------------------------------------
 C-----  WRITE THE CRYSTALS FILES
 C      FC, FV, FN, FF, FT, FW, FSG
 C 
-      IF (FN) WRITE (NOUTF,'(a,A8,4X,A)') '#TITLE ',CDATE,ENAME
+      IF (FN) WRITE (NOUTF,'(a,2X,A,2x,a)') '#TITLE ',ENAME,CDATE
       IF (FC) THEN
 C -CELL
          WRITE (NOUTF,'(a)') '#LIST 1'
@@ -363,8 +395,27 @@ C
 C 
 C WAVELENGTH
       IF (FW) THEN
+       if(wav .ge.1.) then
+c       copper
+        th1=13.0
+        th2=0.
+       else
+c      moly
+        th1=6.
+        th2=0.
+       endif
+       IF (FMON)THEN
+        I = INDEX(CMONO,'mirror')
+        if (i .ne. 0) then
+          th1=0.
+          th2=0.
+        endif
+       ENDIF
          WRITE (NOUTF,'(a)') '#LIST 13'
-         WRITE (NOUTF,'(a,f8.5)') 'CONDITIONS WAVELENGTH = ',WAV
+         WRITE (NOUTF,'(a)') '# theta 1 and 2 set to zero for mirrors'
+         WRITE (NOUTF,'(a,f8.5,a,f8.5,a,f8.5)') 
+     1'CONDITIONS WAVELENGTH = ',WAV,' theta(1)=', th1, ' theta(2)=',
+     2 th2
          WRITE (NOUTF,'(a)') 'END'
       END IF
 C 
@@ -489,7 +540,7 @@ c----- dump if no atom name stored
      1       atsum=atsum+res
            endif
 C 
-         write(6,'(a)') clong(1:llong-1)
+         write(6,'(a,a)') 'Formula ',clong(1:llong-1)
          if (celvol .gt. .01) then
           zn=(CELVOL*zm )/(ATSUM*19.)
          else
@@ -546,7 +597,7 @@ C
          WRITE (NOUTF,'(a)') '#LIST 30'
          WRITE (NOUTF,'(a)') 'DATRED REDUCTION=DENZO'
          WRITE (NOUTF,'(a)') 'ABSORPTION ABSTYPE=MULTI-SCAN'
-         WRITE (NOUTF,'(a)') 'condition'
+         WRITE (NOUTF,'(a)') 'CONDITION'
          WRITE (NOUTF,'(a,f8.3)') 'cont minsiz=',ZS
          WRITE (NOUTF,'(a,f8.3)') 'cont medsiz=',ZD
          WRITE (NOUTF,'(a,f8.3)') 'cont maxsiz=',ZL
@@ -555,12 +606,12 @@ C
          WRITE (NOUTF,'(a,f7.2)') 'cont thorientmax=',CMTX
          WRITE (NOUTF,'(a,i7)') 'cont norient=',NINT(CMRU)
          WRITE (NOUTF,'(a)') 'cont scanmode=omega'
-         WRITE (NOUTF,'(a)') 'cont instrument=Kappaccd'
-         WRITE (NOUTF,'(a)') 'general'
+         WRITE (NOUTF,'(a)') 'cont instrument=SuperNova'
+         WRITE (NOUTF,'(a)') 'GENERAL'
          WRITE (NOUTF,'(a,f7.1)') 'cont z=',ZM
          WRITE (6,'(A)') 'Colour? '
          READ (5,'(a)') CSPACE
-         WRITE (NOUTF,'(a,a)') 'colour ',CSPACE
+         WRITE (NOUTF,'(a,a)') 'COLOUR ',CSPACE
 C 
          IF (ZL/ZS.LT.1.5) THEN
             WRITE (CSPACE,'(a)') 'block'
@@ -587,7 +638,7 @@ C
 c
          WRITE (NOUTF,'(a,a)') 'shape ',CSPACE
 C 
-         WRITE (NOUTF,'(a)') 'indexran'
+         WRITE (NOUTF,'(a)') 'INDEXRAN'
          WRITE (NOUTF,'(a,i7)') 'cont hmin=',MINH
          WRITE (NOUTF,'(a,i7)') 'cont hmax=',MAXH
          WRITE (NOUTF,'(a,i7)') 'cont kmin=',MINK
@@ -619,7 +670,7 @@ C      GET AN 8 BYTE CHARACTER REPRESENTATION OF DATE/TIME
       CHARACTER (LEN=12)CLOCK(3)
       CALL DATE_AND_TIME (CLOCK(1),CLOCK(2),CLOCK(3),IIDATE)
       I=IIDATE(6)+100*IIDATE(5)+10000*IIDATE(3)+1000000*IIDATE(2)
-C      WRITE (CFILE,'(I8)') I
+c      WRITE (CFILE,'(I8)') I
       write(cfile,100) iidate(5),iidate(6),iidate(3),iidate(2)
 100   format('At ',i2,':',i2,' on ',i2,'/',i2)
       IGDAT=I
