@@ -58,7 +58,7 @@
 ^^WI     @ 5,1 STATIC SBFC 'FCalc'                                              
 ^^WI     @ 6,1 STATIC SBELEM 'Twin Elements'                                    
 ^^WI     @ 7,1 STATIC SBSG 'Sigma(Fo)'                                          
-^^WI     @ 8,1 STATIC SBPH 'Phase'                                              
+^^WI     @ 8,1 STATIC SBFF 'Fo/Fc'                                              
 ^^WI     @ 9,1 STATIC SBRA 'I/Sigma(I)'                                         
 ^^WI     @ 10,1 STATIC SBSQ 'Sqrt(W)'                                           
 ^^WI     @ 11,1 STATIC SBTH '[Sin theta/lambda]**2'                             
@@ -69,7 +69,7 @@
 ^^WI     @ 5,3 CHECKBOX LBFC   'is at least' STATE=OFF INFORM=YES               
 ^^WI     @ 6,3 CHECKBOX LBELEM 'is at least' STATE=OFF INFORM=YES               
 ^^WI     @ 7,3 CHECKBOX LBSGMA 'is at least' STATE=OFF INFORM=YES               
-^^WI     @ 8,3 CHECKBOX LBPHAS 'is at least' STATE=OFF INFORM=YES               
+^^WI     @ 8,3 CHECKBOX LBFF 'is at least' STATE=OFF INFORM=YES               
 ^^WI     @ 9,3 CHECKBOX LBRATI 'is at least' STATE=OFF INFORM=YES               
 ^^WI     @ 10,3 CHECKBOX LBSQRW 'is at least' STATE=OFF INFORM=YES              
 ^^WI     @ 11,3 CHECKBOX LBTHET 'is at least' STATE=OFF INFORM=YES              
@@ -80,7 +80,7 @@
 ^^WI     @ 5,5 EDITBOX BFC   '' DISABLED = YES                                  
 ^^WI     @ 6,5 EDITBOX BELEM '' DISABLED = YES                                  
 ^^WI     @ 7,5 EDITBOX BSGMA '' DISABLED = YES                                  
-^^WI     @ 8,5 EDITBOX BPHAS '' DISABLED = YES                                  
+^^WI     @ 8,5 EDITBOX BFF '' DISABLED = YES                                  
 ^^WI     @ 9,5 EDITBOX BRATI '' DISABLED = YES                                  
 ^^WI     @ 10,5 EDITBOX BSQRW '' DISABLED = YES                                 
 ^^WI     @ 11,5 EDITBOX BTHET '' DISABLED = YES                                 
@@ -91,7 +91,7 @@
 ^^WI     @ 5,7 CHECKBOX LTFC   'and is at most' STATE = OFF INFORM=YES          
 ^^WI     @ 6,7 CHECKBOX LTELEM 'and is at most' STATE = OFF INFORM=YES          
 ^^WI     @ 7,7 CHECKBOX LTSGMA 'and is at most' STATE = OFF INFORM=YES          
-^^WI     @ 8,7 CHECKBOX LTPHAS 'and is at most' STATE = OFF INFORM=YES          
+^^WI     @ 8,7 CHECKBOX LTFF 'and is at most' STATE = OFF INFORM=YES          
 ^^WI     @ 9,7 CHECKBOX LTRATI 'and is at most' STATE = OFF INFORM=YES          
 ^^WI     @ 10,7 CHECKBOX LTSQRW 'and is at most' STATE = OFF INFORM=YES         
 ^^WI     @ 11,7 CHECKBOX LTTHET 'and is at most' STATE = OFF INFORM=YES         
@@ -102,7 +102,7 @@
 ^^WI     @ 5,9 EDITBOX TFC   '' DISABLED = YES                                  
 ^^WI     @ 6,9 EDITBOX TELEM '' DISABLED = YES                                  
 ^^WI     @ 7,9 EDITBOX TSGMA '' DISABLED = YES                                  
-^^WI     @ 8,9 EDITBOX TPHAS '' DISABLED = YES                                  
+^^WI     @ 8,9 EDITBOX TFF '' DISABLED = YES                                  
 ^^WI     @ 9,9 EDITBOX TRATI '' DISABLED = YES                                  
 ^^WI     @ 10,9 EDITBOX TSQRW '' DISABLED = YES                                 
 ^^WI     @ 11,9 EDITBOX TTHET '' DISABLED = YES                                 
@@ -311,9 +311,9 @@
 %       INSERT '^^CO SET LBSGMA STATE=ON SET BSGMA DISABLED=NO TEXT '           
 %       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW                                
 %       OUTPUT                                                                  
-%     ELSE IF ( CW STARTSWITH 'PHAS' ) THEN                                     
+%     ELSE IF ( CW STARTSWITH 'FO/F' ) THEN                                     
 %       CLEAR                                                                   
-%       INSERT '^^CO SET LBPHAS STATE=ON SET BPHAS DISABLED=NO TEXT '           
+%       INSERT '^^CO SET LBFF STATE=ON SET BFF DISABLED=NO TEXT '           
 %       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW                                
 %       OUTPUT                                                                  
 %     ELSE IF ( CW STARTSWITH 'RATI' ) THEN                                     
@@ -382,9 +382,9 @@
 %       INSERT '^^CO SET LTSGMA STATE=ON SET TSGMA DISABLED=NO TEXT '           
 %       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW                                
 %       OUTPUT                                                                  
-%     ELSE IF ( CW STARTSWITH 'PHAS' ) THEN                                     
+%     ELSE IF ( CW STARTSWITH 'FO/F' ) THEN                                     
 %       CLEAR                                                                   
-%       INSERT '^^CO SET LTPHAS STATE=ON SET TPHAS DISABLED=NO TEXT '           
+%       INSERT '^^CO SET LTFF STATE=ON SET TFF DISABLED=NO TEXT '           
 %       STORE FORMAT '(F10.4)' LENGTH 10 REAL RW                                
 %       OUTPUT                                                                  
 %     ELSE IF ( CW STARTSWITH 'RATI' ) THEN                                     
@@ -637,13 +637,13 @@ or uncheck all the boxes in the dialog.
 %      SEND                                                                     
 %    END IF                                                                     
 %%                                                                              
-^^?? LBPHAS STATE                                                               
+^^?? LBFF STATE                                                               
 %    VERIFY ON OFF                                                              
 %    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
 %    IF VALUE .EQ. 1 THEN                                                       
 %      CLEAR                                                                    
-%      INSERT 'CONT PHASE = '                                                   
-^^??   BPHAS TEXT                                                               
+%      INSERT 'CONT FO/FC = '                                                   
+^^??   BFF TEXT                                                               
 %      GET SILENT REAL ' ' '0.0'                                                
 %      SEND                                                                     
 %    END IF                                                                     
@@ -761,13 +761,13 @@ or uncheck all the boxes in the dialog.
 %      SEND                                                                     
 %    END IF                                                                     
 %%                                                                              
-^^?? LTPHAS STATE                                                               
+^^?? LTFF STATE                                                               
 %    VERIFY ON OFF                                                              
 %    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'OFF'                             
 %    IF VALUE .EQ. 1 THEN                                                       
 %      CLEAR                                                                    
-%      INSERT 'CONT PHASE = '                                                   
-^^??   TPHAS TEXT                                                               
+%      INSERT 'CONT FO/FC = '                                                   
+^^??   TFF TEXT                                                               
 %      GET SILENT REAL ' ' '0.0'                                                
 %      SEND                                                                     
 %    END IF                                                                     
@@ -873,8 +873,8 @@ or uncheck all the boxes in the dialog.
 %    FINISH                                                                     
 %   END BLOCK                                                                   
 %   BLOCK % UPDATE - disable / undisable edit boxes as checkboxes change.       
-%    VERIFY LTH LTK LTL LTFO LTFC LTELEM LTSGMA LTPHAS LTRATI LTSQRW LTTHET -   
-            LBH LBK LBL LBFO LBFC LBELEM LBSGMA LBPHAS LBRATI LBSQRW LBTHET     
+%    VERIFY LTH LTK LTL LTFO LTFC LTELEM LTSGMA LTFF LTRATI LTSQRW LTTHET -   
+            LBH LBK LBL LBFO LBFC LBELEM LBSGMA LBFF LBRATI LBSQRW LBTHET     
 %    GET SILENT NOSTORE FINAL ABBREVIATED 'CB?' 'LBSQRW'                        
 %    CLEAR                                                                      
 %    CASE VALUE                                                                 
@@ -885,7 +885,7 @@ or uncheck all the boxes in the dialog.
 %      INSERT '^^CO SET TFC DISABLED='                                          
 %      INSERT '^^CO SET TELEM DISABLED='                                        
 %      INSERT '^^CO SET TSGMA DISABLED='                                        
-%      INSERT '^^CO SET TPHAS DISABLED='                                        
+%      INSERT '^^CO SET TFF DISABLED='                                        
 %      INSERT '^^CO SET TRATI DISABLED='                                        
 %      INSERT '^^CO SET TSQRW DISABLED='                                        
 %      INSERT '^^CO SET TTHET DISABLED='                                        
@@ -896,7 +896,7 @@ or uncheck all the boxes in the dialog.
 %      INSERT '^^CO SET BFC DISABLED='                                          
 %      INSERT '^^CO SET BELEM DISABLED='                                        
 %      INSERT '^^CO SET BSGMA DISABLED='                                        
-%      INSERT '^^CO SET BPHAS DISABLED='                                        
+%      INSERT '^^CO SET BFF DISABLED='                                        
 %      INSERT '^^CO SET BRATI DISABLED='                                        
 %      INSERT '^^CO SET BSQRW DISABLED='                                        
 %      INSERT '^^CO SET BTHET DISABLED='                                        
