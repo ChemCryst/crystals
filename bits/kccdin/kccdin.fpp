@@ -299,6 +299,7 @@ c----------------------------------------------------------------
      2 ' e.g. P n a 21'
       write(6,'(a)') 'For monoclinic systems, input the full symbol'
       READ (5,'(a)') CSPACE
+      fsg = .true.
       endif
 C 
 C 
