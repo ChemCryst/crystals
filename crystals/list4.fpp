@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.65  2009/11/13 09:16:10  djw
+C Watch out for small Fo and Fc in computing SHELX weights
+C
 C Revision 1.64  2009/10/21 10:37:28  djw
 C Correct axis label for the residual vs resolution plot
 C
@@ -2325,33 +2328,25 @@ C
 C--PRINT THE RESULTS OF A FULL AGREEMENT ANALYSIS
 3250  CONTINUE
       CALL XPRTCN
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,3300)
-      ENDIF
-3300  FORMAT(' Full agreement analysis',
-     2 '  -  with plots of mean w*Delta**2 divided by',
-     3 ' its overall average value')
 C--CHECK IF THIS IS ON THE SCALE OF /FO/ OR /FC/
       IF(MM5)3350,3350,3450
 3350  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,3400)
-      ENDIF
-3400  FORMAT(/,' on scale of /FO/')
+      WRITE(CMON,3400)
+3400  FORMAT(/,' Agreement analysis on scale of /FO/')
       ACI=SCALC
       GOTO 3550
 3450  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,3500)
-      ENDIF
-3500  FORMAT(/,' on scale of /FC/')
+      WRITE(CMON,3500)
+3500  FORMAT(/,' Agreement analysis on scale of /FC/')
       ACI=1./SCALF
-C--PRINT THE CURRENT SCALE FACTOR
 3550  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,3600)ACI
-      ENDIF
-3600  FORMAT(/,' Scale factor  =',F10.5)
+      call xprvdu(ncvdu,2,0)
+      if (issprt .eq. 0) write(ncwu,'(a)') CMON(1),CMON(2)
+      WRITE(CMON,3600)ACI
+C--PRINT THE CURRENT SCALE FACTOR
+3600  FORMAT(' Scale factor  =',F10.5)
+      call xprvdu(ncvdu,1,0)
+      if (issprt .eq. 0) write(ncwu,'(a)') CMON(1)
 C--WRITE OUT LIST 4
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,3650)ITYPE4
@@ -2684,7 +2679,7 @@ C--PRINT THE FINAL CAPTION FOR THIS GROUP
       WRITE(NCWU,1050)
       ENDIF
 C
-C--AGREEMENT ANALYSIS ON /FO/
+C--AGREEMENT ANALYSIS ON /Fc/
 4870  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
          WRITE(NCWU,4900)
@@ -2738,9 +2733,10 @@ cdjwjul09
       ENDIF
 
 4910  FORMAT ( 1X , '  Range  Number  <FO>     <FC>    ' ,
-     2 ' <delsq>  <wdelsq>  R    RW Log<wdelsq>' )
-4920  FORMAT(1H ,F7.0,I6,2F9.0,2E10.2,2F5.0,13A1)
-4921  FORMAT(' Totals ' ,I6,2F9.0,2E10.2,2F5.0)
+c     2 ' <delsq>  <wdelsq>  R    RW Log<wdelsq>' )
+     2  ' <delsq>  <wdelsq>  R        <Fo-Fc>' )
+4920  FORMAT(1H ,F7.0,   I6,2F9.0,2E10.2,2F5.0,13A1)
+4921  FORMAT(' Totals ' ,I6,2F9.0,2E10.2,2F5.0,F11.3)
       L=IGEN
       AC=0.
       NZ=0
@@ -2800,14 +2796,18 @@ C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
       ENDIF
 C--- OUTPUT TO SCREEN
       IF (MONIT .NE. 2) THEN
-      WRITE(CMON,4920)ACI,ISTORE(L+1), STORE(L+2), STORE(L+3),
-     2 (STORE(K+2),K=L+2,M) , IOUT
+c      WRITE(CMON,4920)ACI,ISTORE(L+1), STORE(L+2), STORE(L+3),
+c     2 (STORE(K+2),K=L+2,M) , IOUT
+cdjwfeb11
+      WRITE(CMON,4922)ACI,ISTORE(L+1), STORE(L+2), STORE(L+3),
+     2 (STORE(K+2),K=L+2,M) , store(l+2)-store(l+3)
       CALL XPRVDU(NCVDU, 1,0)
       ENDIF
-cdjwjul09
-      if (store(l+2) .ge. 10.*store(l+3)) then
-            fovsfc = 1000.
-      else
+4922   format(1h ,f7.0,i6,2f9.0,2e10.2,2f5.0,F11.3)
+CDJWJUL09
+      IF (STORE(L+2) .GE. 10.*STORE(L+3)) THEN
+            FOVSFC = 1000.
+      ELSE
             fovsfc = 100. * (store(l+2)/store(l+3))
       endif
       IF ( PLFOR .EQ. 1 ) THEN
@@ -2864,7 +2864,7 @@ C--PRINT THE LAST CAPTION FOR THIS GROUP
       ENDIF
 C--- OUTPUT TO SCREEN
       IF (MONIT .NE. 2) THEN
-        WRITE(CMON,4921)N,(APD(N2),N2=1,6)
+        WRITE(CMON,4921)N,(APD(N2),N2=1,6), (apd(1)-apd(2))/float(n)
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
       IF ( PWDSQ .EQ. 1 ) THEN
