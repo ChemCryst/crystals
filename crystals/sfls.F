@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.70  2011/01/20 15:49:03  djw
+C Another attempt to remove all the dual wavelength stuff
+C
 C Revision 1.69  2011/01/17 15:40:14  rich
 C Fix o/w of disk lexical data in dsc file when disk index block is extended.
 C
@@ -1193,7 +1196,14 @@ cdjwsep09
           call outcol(9)
         endif
         call xprvdu(NCVDU,1,0)
+        if(issprt.eq.0) write(ncwu, '(a)') cmon(1)(:)
         call outcol(1)
+        delfofc = (foav-fcav*scale)
+        write(cmon,'(a,f8.3,4x,a,f8.3)')'<Fo>-<Fc> = ', 
+     1  delfofc/scale, 
+     2  '100*(<Fo>-<Fc>)/<Fo> = ',100.*delfofc/foav
+        call xprvdu(NCVDU,1,0)
+        if(issprt.eq.0) write(ncwu, '(a)') cmon(1)(:)
 cdjwjan05
 c
 C--PRINT THE TERMINATION MESSAGES
