@@ -32,12 +32,16 @@ C
 #if defined(_GIL_) || defined (_MAC_) || defined (_LIN_) || defined (_WXS_)
       call no_stdout_buffer()
 #endif
+C set default output filename - also used as instrument ID
+	filename='od-out'
+        lfn=6 
 C----- GET DATE
+
       I=IGDAT(CDATE)
 C 
 C....... Open our files for writing
       OPEN (NOUTF,FILE='od-out.ins',STATUS='UNKNOWN')
-      OPEN (NHKL,FILE='od-out.hkl', STATUS='UNKNOWN')
+      OPEN (NHKL,FILE=filename(1:lfn)//'.hkl', STATUS='UNKNOWN')
       OPEN (NCIF,FILE='od-out.cif',STATUS='UNKNOWN')
 C 
 C....... Call the CIFTBX code to INITialise read/WRITE units
@@ -241,6 +245,8 @@ C
       endif
 C
 320   continue
+c Kccd SG is only Point Group
+      if(filename(1:4).eq.'kccd') fsg = .false.
       if (.not. fsg) then
 C----- reflections all read - check space group with Nonius code
       write(6,'(a)') 'Space Group Code provided by Enraf-Nonius'
@@ -260,7 +266,7 @@ c----------------------------------------------------------------
 		if(isa .eq. 0) isa=1
             i_value=isa
 	endif
-	write(6,*)filename, I_value
+	write(6,*)filename(1:lfn)//'.hkl', I_value
       if (i_value .eq. 0)       WRITE(6,555)
 555   FORMAT (' Possible space group types :',/,' Number:   Group:      
      1       ',/,
@@ -285,10 +291,10 @@ C
       endif
 557   format(/,' give space group type number :',/)
 556   FORMAT (I5)
-	write(6,*)filename, I_value
+	write(6,*)filename(1:lfn)//'.hkl', I_value
 c----------------------------------------------------------------
 
-      CALL SGROUP(filename, i_value)
+      CALL SGROUP(filename(1:lfn)//'.hkl', i_value)
       WRITE (6,'(A,a,a)') 'Input space group symbol',
      1' with spaces between the components',
      2 ' e.g. P n a 21'
@@ -419,6 +425,7 @@ C
 C(FF)
       IF (FF) THEN
          CALL XCREMS (CFORM,LINE,LENFIL)
+
 
 cdjw Insert space if character immediately follows a number
 c    beware if the element type is a charged species like Om2
@@ -597,7 +604,7 @@ C
          WRITE (NOUTF,'(a,f8.3)') 'cont minsiz=',ZS
          WRITE (NOUTF,'(a,f8.3)') 'cont medsiz=',ZD
          WRITE (NOUTF,'(a,f8.3)') 'cont maxsiz=',ZL
-         WRITE (NOUTF,'(a,f7.2)') 'cont temperature=',Z
+         WRITE (NOUTF,'(a,f8.3)') 'cont temperature=',Z
          WRITE (NOUTF,'(a,f7.2)') 'cont thorientmin=',CMTM
          WRITE (NOUTF,'(a,f7.2)') 'cont thorientmax=',CMTX
          WRITE (NOUTF,'(a,i7)') 'cont norient=',NINT(CMRU)
