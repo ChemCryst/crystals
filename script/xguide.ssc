@@ -3,6 +3,22 @@
 %%
 %% Determine current state of analysis.
 %% Call appropriate Sub-Guide.
+%%                           XGUIDE
+%%    |-------------------------|------------------------|
+%% XGUIDEI                   XGUIDES                  XGUIDER
+%%    |                         |                        |
+%% XGUIDEIC                  XGUIDESC                 [tests]
+%%    |                         |                        |
+%% [inputs]                  [solution]               XGUIDERC
+%%    |                         |                        |
+%% XGUIDE                    XGUIDE                   [activities]
+%%                                                       |
+%%                                                    XGUIDEK
+%%                                                       |
+%%                                                    [get/put info]
+%%                                                       |
+%%                                                    XGUIDE
+%%
 %
 %% May be set by calling scripts to recommend refinement:
 %  VARIABLE LOGICAL REFREQD
