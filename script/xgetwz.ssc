@@ -1,0 +1,33 @@
+%SCRIPT XGETWZ
+%% GET WAVELENGTH AND HEAVIEST ELEMENT
+% VARIABLE REAL WORK1 WAVE ZMAX 
+% EVALUATE WAVE = 0.0
+% EVALUATE ZMAX = 0.0
+%%
+% IF ( EXISTS ( 13 ) .NE. 1 ) THEN                                              
+%   COPY '#LIST 13'                                                             
+%   COPY 'END'                                                                  
+% END IF                                                                        
+% COPY '#GENERALEDIT 13'                                                        
+% COPY 'LOCATE RECORDTYPE=103'                                                  
+% COPY 'TRANSFER FROM OFFSET=0 TO WAVE'                                         
+% COPY 'END'                                                                    
+% IF ( EXISTS 29 .NE. 1 ) THEN                                                  
+{I **** No atomic properties present (list 29)                                  
+{R             I could have done with that information to                       
+{R             recommend what to do with the Friedel pairs.                     
+% ELSE                                                                          
+%   COPY '#GENERALEDIT 29'                                                      
+%   COPY 'LOCATE RECORDTYPE=101'                                                
+%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                     
+%   LOOP                                                                        
+%     ON EDITERROR TERMINATE                                                    
+%     COPY 'TRANSFER FROM OFFSET=6 TO WORK1'                                    
+%     IF ( WORK1 .GT. ZMAX ) THEN                                               
+%        EVALUATE ZMAX = WORK1                                                  
+%     END IF                                                                    
+%     COPY 'NEXT'                                                               
+%   END LOOP                                                                    
+%   COPY 'END'                                                                  
+% END IF                                                                        
+% END SCRIPT
