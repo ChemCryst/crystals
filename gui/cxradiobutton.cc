@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.1.1.1  2004/12/13 11:16:18  rich
 //   New CRYSTALS repository
 //
@@ -110,15 +114,21 @@ CXGETGEOMETRIES(CxRadioButton)
 int   CxRadioButton::GetIdealWidth()
 {
 #ifdef __CR_WIN__
-    CString text;
+	CString text;
     SIZE size;
-    CDC* cdc = GetDC();
+    CClientDC dc(this);
+    CFont* oldFont = dc.SelectObject(CcController::mp_font);
+    GetWindowText(text);
+    size = dc.GetOutputTextExtent(text);
+    dc.SelectObject(oldFont);
+    return ( size.cx + 20); //Allow space for checkbox
+
+/*    CDC* cdc = GetDC();
     HDC hdc= (HDC) (cdc->m_hAttribDC);
     GetWindowText(text);
     GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
     ReleaseDC(cdc);
-      return (size.cx+20); // optimum width for Windows buttons (only joking)
-#endif
+    return (size.cx+5); // optimum width for Windows buttons (only joking)*/#endif
 #ifdef __BOTHWX__
       int cx,cy;
       GetTextExtent( GetLabel(), &cx, &cy );
