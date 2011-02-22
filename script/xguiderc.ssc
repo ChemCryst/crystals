@@ -13,8 +13,6 @@
 %    BLOCK  %BOK%                                                               
 ^^?? _XG_LIST SELECTED                                                          
 %      GET SILENT NOSTORE INTEGER 'Choice number'
-%% evaluate idjwtemp = value
-%% show idjwtemp                
 %      CASE VALUE                                                               
 %%                                                                              
 %        BLOCK % KSVIEW 1                                                       
