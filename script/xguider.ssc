@@ -190,10 +190,28 @@
    Recommended:   Refine positions and Uaniso                                   
    Other options: View the structure                                            
 %      EVALUATE KTDEFA = 5                                                      
+%%                                                                              
+%% ******************************************************************                                                                             
+%%    DO Something Special for Cu and all-light atoms.
+% ELSE IF ( R .GE. R3 ) .AND. ( WAVE .GT. 1.0 ) .AND. -
+ ( ZMAX .LE. 18.0 ) .AND. ( HINCELL ) .AND.  -
+ ( HDONE .EQ. FALSE ) THEN
+%    IF ( REFREQD ) THEN
+    Model recently changed
+    Recommended:   A few cycles of refinement.                                  
+%       EVALUATE KTDEFA = 5
+%       EVALUATE REFREQD = FALSE
+%    ELSE
+ High R factor, Cu data, no heavy atoms, hydrogens to find                           
+   Recommended:   Find and refine hydrogen                      
+   Other options: View the structure
+                  Try extinction                                            
+%        EVALUATE KTDEFA = 6  
+%    END IF
+%% ******************************************************************                                                                             
 %%___________________________________________________________________           
-%%                                                                              
+%%
 %  ELSE IF ( R .GT. R3 ) .AND. ( EDONE .EQ. TRUE ) THEN                         
-%%                                                                              
  R factor is large after aniso refinement.                                      
    Possible problems: Missing solvent.                                          
                       Disorder.                                                 
@@ -311,6 +329,9 @@
 %%                                                                              
 %%                                                                              
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.19  2011/02/18 17:09:01  djw
+%%  Get hold of the wavelength and heaviest atom, four use with guided Cu data
+%%
 %%  Revision 1.18  2009/11/11 10:53:31  djw
 %%  replace manual setting of weights and scalefactor woth a call to XSCALE
 %%
