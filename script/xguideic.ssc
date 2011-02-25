@@ -88,7 +88,7 @@
 %        END BLOCK
 %%
 %        BLOCK % 15                                                             
-%          COPY '#SCRIPT OXDIFFIN'                                                  
+%          COPY '#SCRIPT XODIN'                                                  
 %        END BLOCK                                                              
 %%
 %      END CASE
@@ -111,6 +111,13 @@
 %%
 %%
 %%
+%  VARIABLE REAL WAVE ZMAX
+%  COPY '#SCRIPT XGETWZ'
+%  IF ( ( ABS ( WAVE - 1.54 ) .GT. .01 ) .AND. -
+        ( ABS ( WAVE - 0.71 ) .GT. .01 ) ) THEN
+{I Unusual wavelength - Please update anomalous scattering factors
+%  COPY '#SCRIPT EDLIST3'
+%  END IF
 %%
 %%
 %%

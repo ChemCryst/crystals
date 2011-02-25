@@ -1,4 +1,4 @@
-%SCRIPT XGUIDER                                                                 
+% SCRIPT XGUIDER                                                                 
 %%                                                                              
 %% Determine current state of analysis.                                         
 %% Decide on a course of action.                                                
@@ -19,9 +19,34 @@
 %%  6 Locate H                                                                  
 %%  7 Check extinction.                                                         
 %%  8 Check weighting scheme.                                                   
-%%                                                                              
+%%  9                                                                            
+%% 10                                                                            
 %% 11 Validate                                                                  
-%% 12 Publish                                                                   
+%% 12 Publish 
+%%                                                                  
+%% ----------The R-factor thresholds for various cases
+%  VARIABLE REAL R1 R2 R3 R4 RMIN                                               
+%%       Fourier might be better                                                      
+%  EVALUATE R1 = 40.0                                                           
+%%       Isotropic refinement                                                         
+%  EVALUATE R2 = 20.0                                                           
+%%       Aniso                                                                        
+%  EVALUATE R3 = 10.0                                                           
+%%       Tidy up                                                                      
+%  EVALUATE R4 = 6.0                                                            
+%%
+%% ISTAGE - stage in the analysis
+%%  0      No LIST 5
+%%  1      No refinement yet
+%%  2      Iso refinement done
+%%  3      Aniso refinement done
+%%
+%% HINCELL T/F  true if hydrogen atoms in structure
+%% EDONE   T/F  true if extinction tested 
+%% REFREQD T/F  true if more refinement needed
+%% HDONE   T/F  true if all hydrogen found
+%% WDONE   T/F  true if weighting scheme optimised
+%% 
 %%                                                                              
 %  VARIABLE REAL WAVE ZMAX
 %  COPY '#SCRIPT XGETWZ'
@@ -35,7 +60,6 @@
 %%                                                                              
 %%                                                                              
 %  VARIABLE INTEGER ISTAGE                                                      
-%  VARIABLE REAL R1 R2 R3 R4 RMIN                                               
 %% R, OSCALE, RATIO are set in SCRIPT RFACTOR                                   
 %  VARIABLE REAL R OSCALE RATIO                                                 
 %%                                                                              
@@ -47,15 +71,6 @@
 %%                                                                              
 %  EVALUATE ISTAGE = 0                                                          
 %%                                                                              
-%% --- R-FACTOR THRESHOLDS FOR VARIOUS CASES ---                                
-%% Fourier might be better                                                      
-%  EVALUATE R1 = 40.0                                                           
-%% Isotropic refinement                                                         
-%  EVALUATE R2 = 20.0                                                           
-%% Aniso                                                                        
-%  EVALUATE R3 = 10.0                                                           
-%% Tidy up                                                                      
-%  EVALUATE R4 = 6.0                                                            
 %%                                                                              
 %% Find EDONE, HDONE and WDONE. These are stored in L39.                        
 %  COPY '#SCRIPT XGETINFO'                                                      
@@ -329,6 +344,9 @@
 %%                                                                              
 %%                                                                              
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.20  2011/02/22 08:57:12  djw
+%%  Look for hydrogen before extinction if using Cu data and no atoms heavier that Ar (18)
+%%
 %%  Revision 1.19  2011/02/18 17:09:01  djw
 %%  Get hold of the wavelength and heaviest atom, four use with guided Cu data
 %%
