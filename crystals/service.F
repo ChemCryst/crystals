@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.43  2010/07/16 11:35:31  djw
+C Enable XPCHLX to output lists 12 and 16 to the cif file.  This means carrying the I/O chanel (as NODEV)
+C in XPCHLX,XPCHLH,PPCHND and XPCHUS.
+C Fixed oversight in distangle for esds of H-bonds
+C
 C Revision 1.42  2010/06/17 15:33:52  djw
 C Remove old Interactive mode header from NCAWU
 C
@@ -598,6 +603,9 @@ C
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XERCNT.INC'
       INCLUDE 'XIOBUF.INC'
+cdjwfeb2011
+      INCLUDE 'XSCCHK.INC'
+      INCLUDE 'XMENUC.INC'
 C
 C -- GIVE INITIAL VALUES TO A FEW VARIABLES
       DATA I / 0 /
@@ -719,8 +727,16 @@ C
 C If in a SCRIPT, print line number to help debug.
 C
         IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
-         WRITE(CMON,'(A,I6)')'Script abandoned at line ',IRDREC(IFLIND)
-         CALL XPRVDU(NCVDU,1,0)
+cdjwfeb2011
+C-----  RECOVER SCRIPT NAME
+        ISTAT = KSCIDN (2, 3, 'SCRIPTNAME', 1, IS, IDSCP, ISCPNM, 1)
+        ISTAT = KSCSDC ( ISCPNM, CSCPNM, LENNM)
+        IF (CSCPNM .NE. CLSTNM) CPRVNM = CLSTNM
+        CLSTNM = CSCPNM(1:LENNM)
+        WRITE(CMON,'(A,A,A,I6)')'Script ', cscpnm(1:lennm),
+     1  ' abandoned at line ',IRDREC(IFLIND)
+        CALL XPRVDU(NCVDU,1,0)
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)
         END IF
 
         CALL XFLUNW ( 3 , 2 )
