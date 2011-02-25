@@ -1,6 +1,6 @@
 %SCRIPT XODIN  %Script for quick input of Agilent data%                          
 %  VARIABLE INTEGER INBASICS SOLVEMETHOD                                        
-%  VARIABLE LOGICAL LFILE IFILE                                                 
+%  VARIABLE LOGICAL LFILE IFILE HFILE
 %%                                                                              
 %  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                        
 %  VARIABLE LOGICAL ANSWER LCANCEL XQMERGE                                      
@@ -21,7 +21,7 @@
 ^^WI    @ 2,2 STATIC T1 'Click OK to read in data'                              
 ^^WI    @ 3,2 STATIC T2 'from the file od-out.ins.'                               
 % ELSE IF IFILE THEN                                                            
-^^WI    @ 2,2 STATIC T1 'No OD-output files detected.'                      
+^^WI    @ 2,2 STATIC T1 'No Agilent output files detected.'                      
 ^^WI    @ 3,2 STATIC T2 'Click Run Agilentin now to continue.'                     
 % ELSE                                                                          
 ^^WI    @ 2,2 STATIC T1 'No Agilent od-in.cif file detected.'                 
@@ -37,9 +37,9 @@
 ^^WI    @ 2,4 BUTTON BTNXX '&Cancel' CANCEL                                     
 ^^WI    @ 2,6 BUTTON BTNRR                                                      
 % IF LFILE THEN                                                                 
-^^WI '&Run Agilentin again'                                                        
+^^WI '&Run Agilentin now'                                                        
 % ELSE                                                                          
-^^WI '&Run Agilentin now'                                                          
+^^WI '&Run Agilentin'                                                          
 % END IF                                                                        
 % IF .NOT. IFILE THEN                                                           
 ^^WI     DISABLED=no                                                           
@@ -65,7 +65,7 @@
 %    END BLOCK                                                                  
 %    BLOCK             %RUN ODIN%                                             
 ^^CO      DISPOSE XODIN                                                       
-{S * Running KCCDIN.                                                            
+{S * Running Agilentin.                                                            
 %      COPY '#SPAWN % "CRYSDIR:oxdiffin.exe"'                                     
 {R   Done.                                                                      
 %    END BLOCK                                                                  
@@ -123,17 +123,23 @@ Files INITIAL.* will be created in your directory. They may be important.
 %%          COPY '#LIST 4'       %%removed djw nov09
 %%          COPY 'END'                                                           
 %%                                                                              
-%          TRANSFER '#OPEN HKLI od-out.hkl' TO CRYSTALS                           
+                        
 %      END BLOCK                                                                
 %  END BLOCK                                                                    
 %%                                                                              
-%%   INDICATE THAT NO FUTURE PROCESSING EXPECTED                                
-%% Ask user if they want to merge data.                                         
-%% Logical variable XQMERGE is set by this script.                              
-%  COPY '#SCRIPT XQMERGE'                                                       
+%  EVALUATE HFILE = FILEEXISTS ( 'od-out.hkl' )                                   
+%  IF ( .not. HFILE ) THEN 
+{I CRYSTALS could find no reflections in the cif file. If you have a 
+{I SHELX hklf file, input that from the X-ray data menu.
+%    FINISH
+%  ELSE
+%   BLOCK      
+%    TRANSFER '#OPEN HKLI od-out.hkl' TO CRYSTALS   
+%%   Ask user if they want to merge data.                                         
+%%   Logical variable XQMERGE is set by this script.                              
 %%                                                                              
+%    COPY '#SCRIPT XQMERGE'                                                       
 %%                                                                              
-%  BLOCK                                                                        
 %    QUEUE REWIND                                                               
 %    ON ERROR RESTART                                                           
 %    CLEAR                                                                      
@@ -155,40 +161,36 @@ Files INITIAL.* will be created in your directory. They may be important.
 %    INSERT 'OUTPUT INDICES /FO/ SIGMA(/FO/) RATIO/JCODE CORRECTIONS SERIAL '   
 %    QUEUE SEND                                                                 
 %    CLEAR                                                                      
-%  END BLOCK                                                                    
-%  COPY '#HKLI'                                                                 
-%  QUEUE PROCESS                                                                
-%  COPY 'END'                                                                   
-%  COPY '#CLOSE HKLI'                                                           
+%   END BLOCK
+%   COPY '#HKLI'                                                                 
+%   QUEUE PROCESS                                                                
+%   COPY 'END'                                                                   
+%   COPY '#CLOSE HKLI'                                                           
 %%                                                                              
-%  MESSAGE USER1 ' Error during reflection processing'                          
-%  ON ERROR TERMINATE USER1                                                     
+%   MESSAGE USER1 ' Error during reflection processing'                          
+%   ON ERROR TERMINATE USER1                                                     
 %%                                                                              
-%% Call space group determining code                                            
-%%                                                                              
-%%  COPY '#SCRIPT SG'                                                           
-%%                                                                              
-%  COPY '#SCRIPT XFRIEDEL'                                                      
+%   COPY '#SCRIPT XFRIEDEL'                                                      
 %%                                                                              
 {S * Removing systematically absent reflections                                 
-%  COPY '#SYSTEMATIC'                                                           
-%  COPY 'END'                                                                   
-%  CLEAR                                                                        
+%   COPY '#SYSTEMATIC'                                                           
+%   COPY 'END'                                                                   
+%   CLEAR                                                                        
 {S * Sorting reflections                                                        
-%  COPY '#SORT'                                                                 
-%  COPY 'END'                                                                   
-%  CLEAR                                                                        
-%  IF ( XQMERGE ) THEN                                                          
+%   COPY '#SORT'                                                                 
+%   COPY 'END'                                                                   
+%   CLEAR                                                                        
+%   IF ( XQMERGE ) THEN                                                          
 {S * Merging equivalent reflections                                             
 %      CLEAR                                                                    
 %      COPY '#MERGE'                                                            
 %      COPY 'END'                                                               
-%  END IF                                                                       
+%   END IF                                                                       
 %                                                                               
 {S * Final copy to DSC file                                                     
-%  COPY '#LIST 6'                                                               
-%  COPY 'READ TYPE = COPY'                                                      
-%  COPY 'END'                  
+%   COPY '#LIST 6'                                                               
+%   COPY 'READ TYPE = COPY'                                                      
+%   COPY 'END'                  
 %%                                                 
 %%  COPY '#LIST 4'             %%removed djwNov09
 %%  COPY 'END'                                                                   
@@ -209,8 +211,9 @@ Files INITIAL.* will be created in your directory. They may be important.
 {R for Fsq refinement:                                       
 {R   Fo/sigma(Fo)                less than -3.0   eliminates spurious data
                                                                                 
-% COPY '#SCRIPT XLIST28'                                                        
+%   COPY '#SCRIPT XLIST28'                                                        
 %%                                                                              
 %%                                                                              
-{R * Done. Kccd data input complete.                                            
+{R * Done. Agilent data input complete.                                            
+%  END IF
 %END SCRIPT                                                                     
