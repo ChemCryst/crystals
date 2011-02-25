@@ -2,7 +2,7 @@
 # Remember that lines with a space in column 2 are comment lines
 #
 #SET AUTOUPDT OFF
-#STORE SYST VERS 1418
+#STORE SYST VERS 1420
 #STORE CSYS OPER 'Win 32' MACH 'i386'
 #STORE CSYS DATE 'February, 2011'
 #
