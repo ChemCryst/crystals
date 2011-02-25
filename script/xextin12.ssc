@@ -27,9 +27,9 @@
 ^^WI     @ 1,1 STATIC XFW1
 ^^WI 'You are looking at a scatter plot of Fo versus Fc.'
 ^^WI     @ 2,1 STATIC XFW2
-^^WI ' '
-^^WI     @ 3,1 STATIC XFW3
 ^^WI 'Flattening out at high values could be a sign of extinction.'
+^^WI     @ 3,1 STATIC XFW3
+^^WI 'Right-click to omit outliers. '
 ^^WI    }
 ^^WI    @ 1,1 ICON IM INFO
 ^^WI   }
