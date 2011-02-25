@@ -3,7 +3,7 @@
 ;
 ;Adjust the program names and version here as appropriate:
 ;
-AppVerName=CRYSTALS 14.18 (Feb 2011)
+AppVerName=CRYSTALS 14.20 (Feb 2011)
 AppVersion=14.18
 OutputBaseFilename=crystals-b1418-Feb11-setup
 
