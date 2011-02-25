@@ -1,0 +1,7 @@
+      LOGICAL F1,FL6
+      CHARACTER*24 CDATE,creduct,cinst
+      character*132 filename, chkl
+      CHARACTER*32 NAME
+      integer lfn, noutf, nhkl, ncif
+      common /cifin/ lfn, noutf, nhkl, ncif, F1, FL6
+      common /cifch/ CDATE, NAME, filename, creduct, cinst, chkl
