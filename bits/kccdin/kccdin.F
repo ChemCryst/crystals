@@ -1,4 +1,5 @@
-	program kccdin
+      PROGRAM NEWK
+c try to restore v 1.8, May 2010
 #include "ciftbx.cmn"
 #include "cifin.cmn"
 
