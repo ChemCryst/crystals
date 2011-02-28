@@ -1,4 +1,5 @@
-	program oxdifin
+      PROGRAM READOD
+c restored v 14 from cvs
 #include "ciftbx.cmn"
 #include "cifin.cmn"
 
