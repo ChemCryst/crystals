@@ -59,7 +59,7 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    12     serial number        1     Address    26225     Length     420     Created on      
+ Print list type    12     serial number        1     Address    27061     Length     420     Created on      
      0 FULL 
      1 COMB C(1,X'S) AND C(2,X'S) 
      2 PLUS C(3,Z) 
@@ -68,6 +68,7 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
 
 
 
+  Disc file on unit   1 extended by     5 records 
 #PRINT 22                                                                                                                                                                                                                                                       
 #SFLS                                                                                                                                                                                                                                                           
 
@@ -75,7 +76,7 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        1     Address    26721     Length     232     Created on      
+ Print list type    22     serial number        1     Address    27557     Length     232     Created on      
 
              13 parameter(s) in    1 block(s) - as follows:
 
@@ -820,6 +821,8 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
  New scale factor (G) is   21.61477,     631 reflections used in refinement
 
  Structure factor least squares calculation    1  ends  2
+SumFo/SumFc=    21.435      LS-scale=    21.615      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =   -0.028    100*(<Fo>-<Fc>)/<Fo> =   -0.837                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -992,11 +995,11 @@ All cycle   4       0.00          0.100E+16      0.202E+06
                      0.00000           0.00609  0.00038 -0.00028 -0.00093
                      0.00000           0.00097  0.00103  0.00046  0.00151
                                        0.00592  0.00566  0.00546
-  Disc file on unit   1 extended by     5 records 
-Mean C-C su =   0.0048
+Mean C-C su =   0.0048                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #DIST                                                                                                                                                                                                                                                           
 #LIST 31                                                                                                                                                                                                                                                        
+  Disc file on unit   1 extended by     5 records 
 #DIST                                                                                                                                                                                                                                                           
 
 
@@ -1203,7 +1206,7 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        2     Address    28224     Length     202     Created on      
+ Print list type    22     serial number        2     Address    30724     Length     202     Created on      
 
              13 parameter(s) in    1 block(s) - as follows:
 
@@ -1940,6 +1943,8 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
  New scale factor (G) is   21.61477,     631 reflections used in refinement
 
  Structure factor least squares calculation    2  ends  2
+SumFo/SumFc=    21.435      LS-scale=    21.615      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =   -0.028    100*(<Fo>-<Fc>)/<Fo> =   -0.837                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -2104,7 +2109,7 @@ All cycle   4       0.00          0.100E+16      0.202E+06
                      0.00000           0.00609  0.00038 -0.00028 -0.00093
                      0.00000           0.00097  0.00103  0.00046  0.00151
                                        0.00592  0.00566  0.00546
-Mean C-C su =   0.0048
+Mean C-C su =   0.0048                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #DIST                                                                                                                                                                                                                                                           
 
@@ -2300,11 +2305,11 @@ Mean C-C su =   0.0048
 
   KEY                                                 1             2
 #FINI                                                                                                                                                                                                                                                           
- Physical reads        508 Physical writes        909 Cache hits      23098
- Cache hit distribution    18913    1217     474     278     324     122
- Cache hit distribution      109     124     103     232     110     115
- Cache hit distribution      102      82      84     105      85     112
- Cache hit distribution      152      95      85      41      20      14
+ Physical reads        528 Physical writes        914 Cache hits      23106
+ Cache hit distribution    18843    1363     427     288     253     127
+ Cache hit distribution      114     111     131     207     145      85
+ Cache hit distribution      108      73     101      80     105      89
+ Cache hit distribution      105     132      87      53      54      25
 
 
           : Job ends ok       with     0 warnings and     0 errors
