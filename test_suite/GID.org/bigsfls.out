@@ -3,9 +3,7 @@
 # IT TAKES SEVERAL SECONDS ON A PENTIUM III                                                                                                                                                                                                                     
 #                                                                                                                                                                                                                                                               
 #TITLE LARGE TEST JOB FOR CYBER                                                                                                                                                                                                                                 
-# SET SPEED SLOW                                                                                                                                                                                                                                                
-# SET WATCH 0                                                                                                                                                                                                                                                   
-# SET LIST BOTH                                                                                                                                                                                                                                                 
+#SET TIME SLOW                                                                                                                                                                                                                                                  
 #DISK                                                                                                                                                                                                                                                           
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 20                                                                                                                                                                                                                                                        
@@ -132,10 +130,10 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
 #PURGE                                                                                                                                                                                                                                                          
 
 
- LARGE TEST JOB FOR CYBER                                                             Date  01/03/11    Time  13:29:02
+ LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
- Print list type    22     serial number        1     Address   439956     Length    7131     Created on  Tue 
+ Print list type    22     serial number        1     Address   439956     Length    7131     Created on      
 
             206 parameter(s) in    1 block(s) - as follows:
 
@@ -1490,7 +1488,7 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
   Disc file on unit   1 extended by     1 records 
 
 
- LARGE TEST JOB FOR CYBER                                                             Date  01/03/11    Time  13:29:02
+ LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
  Structure factor least squares      calculation number     1
@@ -1555,7 +1553,7 @@ SumFo/SumFc=     0.914      LS-scale=     0.909      Wilson Scale=     0.000
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
- LARGE TEST JOB FOR CYBER                                                             Date  01/03/11    Time  13:29:03
+ LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
  Matrix inversion and calculation of the shifts for S.F.L.S. cycle number     1
@@ -1931,7 +1929,7 @@ All cycle   3      0.300E-01      0.100E+05      0.590
 All cycle   4       0.00          0.100E+16      0.136E+06
 
 
- LARGE TEST JOB FOR CYBER                                                             Date  01/03/11    Time  13:29:03
+ LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
 
@@ -1978,7 +1976,7 @@ All cycle   4       0.00          0.100E+16      0.136E+06
  Initialising Special positions
 
 
- LARGE TEST JOB FOR CYBER                                                             Date  01/03/11    Time  13:29:03
+ LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
  Generation and output of the new parameter list
@@ -2792,7 +2790,7 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
  Initialising Special positions
 
 
- LARGE TEST JOB FOR CYBER                                                             Date  01/03/11    Time  13:29:04
+ LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
  Structure factor least squares      calculation number     2
@@ -2852,7 +2850,7 @@ SumFo/SumFc=     0.914      LS-scale=     0.909      Wilson Scale=     0.000
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
- LARGE TEST JOB FOR CYBER                                                             Date  01/03/11    Time  13:29:05
+ LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
  Matrix inversion and calculation of the shifts for S.F.L.S. cycle number     2
@@ -2874,7 +2872,7 @@ All cycle   3      0.300E-01      0.100E+05      0.242
 All cycle   4       0.00          0.100E+16      0.136E+06
 
 
- LARGE TEST JOB FOR CYBER                                                             Date  01/03/11    Time  13:29:05
+ LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
 
@@ -2921,7 +2919,7 @@ All cycle   4       0.00          0.100E+16      0.136E+06
  Initialising Special positions
 
 
- LARGE TEST JOB FOR CYBER                                                             Date  01/03/11    Time  13:29:05
+ LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
  Generation and output of the new parameter list
@@ -3422,7 +3420,7 @@ Refining   261 parameters in    1 block :    34729 elements in the LS matrix.
  Initialising Special positions
 
 
- LARGE TEST JOB FOR CYBER                                                             Date  01/03/11    Time  13:29:05
+ LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
  Structure factor least squares      calculation number     3
@@ -3484,7 +3482,7 @@ SumFo/SumFc=     0.914      LS-scale=     0.909      Wilson Scale=     0.000
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
- LARGE TEST JOB FOR CYBER                                                             Date  01/03/11    Time  13:29:06
+ LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
  Matrix inversion and calculation of the shifts for S.F.L.S. cycle number     3
@@ -3546,7 +3544,7 @@ All cycle   3      0.300E-01      0.100E+05       2.24
 All cycle   4       0.00          0.100E+16      0.136E+06
 
 
- LARGE TEST JOB FOR CYBER                                                             Date  01/03/11    Time  13:29:06
+ LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
 
@@ -3593,7 +3591,7 @@ All cycle   4       0.00          0.100E+16      0.136E+06
  Initialising Special positions
 
 
- LARGE TEST JOB FOR CYBER                                                             Date  01/03/11    Time  13:29:06
+ LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
  Generation and output of the new parameter list
@@ -4066,7 +4064,7 @@ Mean C-C su =   0.0129
  Initialising Special positions
 
 
- LARGE TEST JOB FOR CYBER                                                             Date  01/03/11    Time  13:29:06
+ LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
  Structure factor least squares      calculation number     4
@@ -4124,7 +4122,7 @@ SumFo/SumFc=     0.914      LS-scale=     0.909      Wilson Scale=     0.000
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
- LARGE TEST JOB FOR CYBER                                                             Date  01/03/11    Time  13:29:07
+ LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
  Matrix inversion and calculation of the shifts for S.F.L.S. cycle number     4
@@ -4161,7 +4159,7 @@ All cycle   3      0.300E-01      0.100E+05      0.451
 All cycle   4       0.00          0.100E+16      0.159E+06
 
 
- LARGE TEST JOB FOR CYBER                                                             Date  01/03/11    Time  13:29:07
+ LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
 
@@ -4208,7 +4206,7 @@ All cycle   4       0.00          0.100E+16      0.159E+06
  Initialising Special positions
 
 
- LARGE TEST JOB FOR CYBER                                                             Date  01/03/11    Time  13:29:07
+ LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
  Generation and output of the new parameter list
@@ -4694,7 +4692,7 @@ Mean C-C su =   0.0121
  Initialising Special positions
 
 
- LARGE TEST JOB FOR CYBER                                                             Date  01/03/11    Time  13:29:07
+ LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
  Structure factor least squares      calculation number     5
@@ -4783,4 +4781,4 @@ SumFo/SumFc=     0.914      LS-scale=     0.909      Wilson Scale=     0.000
  Cache hit distribution       49      45      55      45      82      77
 
 
- 13:29:08 : Job ends ok       with     0 warnings and     0 errors
+          : Job ends ok       with     0 warnings and     0 errors
