@@ -2789,11 +2789,11 @@
 
 
 #FINI                                                                                                                                                                                                                                                           
- Physical reads        315 Physical writes        233 Cache hits      15964
- Cache hit distribution    10064    5208     167      60      52      19
- Cache hit distribution       28      29      12     102      18      16
- Cache hit distribution       20      37      33      34      29       3
- Cache hit distribution       10       7      13       2       0       1
+ Physical reads        314 Physical writes        233 Cache hits      15973
+ Cache hit distribution    10064    5206     167      68      52      18
+ Cache hit distribution       28      23      19      96      27      15
+ Cache hit distribution       30      21      38      36      31       7
+ Cache hit distribution        3       7      13       2       1       1
 
 
           : Job ends ok       with     0 warnings and     0 errors

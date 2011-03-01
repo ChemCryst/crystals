@@ -289,16 +289,18 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
   Disc file on unit   1 extended by     1 records 
 Bonds: Update required - There is no list 41
 #LIST     12                                                                                                                                                                                                                                                    
+  Disc file on unit   1 extended by     2 records 
 #                                         NOFSQ, NOANOM                                                                                                                                                                                                         
 #LIST 23                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #USE SHAPERING.REF                                                                                                                                                                                                                                              
 #SFLS                                                                                                                                                                                                                                                           
 #LIST 4                                                                                                                                                                                                                                                         
 #CLEAR 16                                                                                                                                                                                                                                                       
 #LIST  16                                                                                                                                                                                                                                                       
+  Disc file on unit   1 extended by     2 records 
 #CLEAR 17                                                                                                                                                                                                                                                       
 #LIST  17                                                                                                                                                                                                                                                       
+  Disc file on unit   1 extended by     2 records 
 #LIST 26                                                                                                                                                                                                                                                        
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
@@ -326,7 +328,7 @@ Bonds: Update required - There is no list 41
 Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  Space required on DISK is    1 records,     2  Blocks,     1 Kbytes. 
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     2 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
@@ -385,6 +387,8 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  New scale factor (G) is    0.48030,     275 reflections used in refinement
 
  Structure factor least squares calculation    1  ends  2
+SumFo/SumFc=     0.482      LS-scale=     0.480      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.100    100*(<Fo>-<Fc>)/<Fo> =    0.322                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -507,7 +511,7 @@ All cycle   4       0.00          0.100E+16       214.
                      0.00000           0.00000  0.00000  0.00000 -0.00018  0.00004
                      0.00000           0.00000  0.00000  0.00000  0.01455  0.02485
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -569,6 +573,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47931,     275 reflections used in refinement
 
  Structure factor least squares calculation    2  ends  2
+SumFo/SumFc=     0.483      LS-scale=     0.479      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.231    100*(<Fo>-<Fc>)/<Fo> =    0.742                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -687,8 +693,7 @@ All cycle   3      0.300E-01      0.100E+05      0.396E-02
                      0.00000           0.00000  0.00000  0.00000  0.00003  0.00003
                      0.00000           0.00000  0.00000  0.00000  0.01448  0.02477
                                        0.00000  0.00000  0.00000
-  Disc file on unit   1 extended by     1 records 
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #PERTURB                                                                                                                                                                                                                                                        
 #SFLS                                                                                                                                                                                                                                                           
@@ -752,6 +757,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.43404,     275 reflections used in refinement
 
  Structure factor least squares calculation    3  ends  2
+SumFo/SumFc=     0.475      LS-scale=     0.434      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    2.960    100*(<Fo>-<Fc>)/<Fo> =    8.600                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -898,7 +905,7 @@ All cycle   4       0.00          0.100E+16      0.197E+04
                      0.00000           0.00000  0.00000  0.00000  0.15286 -0.42847
                      0.00000           0.00000  0.00000  0.00000  0.06184  0.11848
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -940,6 +947,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47886,     275 reflections used in refinement
 
  Structure factor least squares calculation    4  ends  2
+SumFo/SumFc=     0.483      LS-scale=     0.479      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.243    100*(<Fo>-<Fc>)/<Fo> =    0.780                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -1076,8 +1085,7 @@ Inter cycle   4       0.00          0.100E+16      0.139E+04
                      0.00000           0.00000  0.00000  0.00000 -0.27697  0.02222
                      0.00000           0.00000  0.00000  0.00000  0.08802  0.07591
                                        0.00000  0.00000  0.00000
-  Disc file on unit   1 extended by     1 records 
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -1126,6 +1134,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47964,     275 reflections used in refinement
 
  Structure factor least squares calculation    5  ends  2
+SumFo/SumFc=     0.484      LS-scale=     0.480      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.308    100*(<Fo>-<Fc>)/<Fo> =    0.990                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -1260,7 +1270,8 @@ Inter cycle   4       0.00          0.100E+16       302.
                      0.00000           0.00000  0.00000  0.00000  0.02806 -0.00428
                      0.00000           0.00000  0.00000  0.00000  0.00551  0.01577
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+  Disc file on unit   1 extended by     1 records 
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -1318,6 +1329,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47917,     275 reflections used in refinement
 
  Structure factor least squares calculation    6  ends  2
+SumFo/SumFc=     0.483      LS-scale=     0.479      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.233    100*(<Fo>-<Fc>)/<Fo> =    0.748                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -1446,7 +1459,7 @@ Inter cycle   4       0.00          0.100E+16       56.5
                      0.00000           0.00000  0.00000  0.00000  0.01865 -0.01809
                      0.00000           0.00000  0.00000  0.00000  0.01015  0.02154
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -1509,6 +1522,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47927,     275 reflections used in refinement
 
  Structure factor least squares calculation    7  ends  2
+SumFo/SumFc=     0.483      LS-scale=     0.479      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.232    100*(<Fo>-<Fc>)/<Fo> =    0.746                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -1627,7 +1642,7 @@ All cycle   4       0.00          0.100E+16       212.
                      0.00000           0.00000  0.00000  0.00000  0.00162 -0.00661
                      0.00000           0.00000  0.00000  0.00000  0.01421  0.02466
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -1689,6 +1704,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47929,     275 reflections used in refinement
 
  Structure factor least squares calculation    8  ends  2
+SumFo/SumFc=     0.483      LS-scale=     0.479      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.231    100*(<Fo>-<Fc>)/<Fo> =    0.741                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -1808,7 +1825,7 @@ All cycle   3      0.300E-01      0.100E+05      0.314E-02
                      0.00000           0.00000  0.00000  0.00000  0.01452  0.02480
                                        0.00000  0.00000  0.00000
   Disc file on unit   1 extended by     1 records 
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #PRINT 22                                                                                                                                                                                                                                                       
 
@@ -1816,7 +1833,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        1     Address    67932     Length     160     Created on      
+ Print list type    22     serial number        1     Address    70438     Length     160     Created on      
 
              16 parameter(s) in    1 block(s) - as follows:
 
@@ -1875,7 +1892,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number        9     Address    68310     Length      52     Created on      
+ Print list type    24     serial number        9     Address    70816     Length      52     Created on      
 
 
  Record  101    LGRP    2  NGRP     16   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -1947,17 +1964,16 @@ Space group symbol is   P    -4   3    N
 #OPEN HKLI SPHERE.HKL                                                                                                                                                                                                                                           
 #LIST 6                                                                                                                                                                                                                                                         
   Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
 
 
 
      525 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
+  Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by    34 records 
 #CLOSE HKLI                                                                                                                                                                                                                                                     
 #SYSTEMATIC                                                                                                                                                                                                                                                     
 #SORT                                                                                                                                                                                                                                                           
-  Disc file on unit   1 extended by     1 records 
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -2025,6 +2041,7 @@ Space group symbol is   P    -4   3    N
  Systematic absence           13.    2.    2.         1.4        0.9         0.        0.
  Systematic absence           13.    3.    3.        -0.7        3.2         0.        0.
  Systematic absence           13.    4.    4.         1.9        1.0         0.        0.
+  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
   Disc file on unit   1 extended by    30 records 
   Disc file on unit   1 extended by     1 records 
@@ -2180,7 +2197,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 #LIST 30                                                                                                                                                                                                                                                        
 #LIST      5                                                                                                                                                                                                                                                    
 #LIST     12                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     2 records 
 #LIST 23                                                                                                                                                                                                                                                        
 #USE SHAPERING.REF                                                                                                                                                                                                                                              
 #SFLS                                                                                                                                                                                                                                                           
@@ -2268,6 +2285,8 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  New scale factor (G) is    0.48030,     275 reflections used in refinement
 
  Structure factor least squares calculation    1  ends  2
+SumFo/SumFc=     0.479      LS-scale=     0.480      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =   -0.341                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -2395,7 +2414,7 @@ All cycle   4       0.00          0.100E+16       273.
                      0.00000           0.00000  0.00000  0.00000  0.00164 -0.00643
                      0.00000           0.00000  0.00000  0.00000  0.01651  0.02821
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -2457,6 +2476,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47680,     275 reflections used in refinement
 
  Structure factor least squares calculation    2  ends  2
+SumFo/SumFc=     0.480      LS-scale=     0.477      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.232    100*(<Fo>-<Fc>)/<Fo> =    0.740                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -2580,7 +2601,7 @@ All cycle   3      0.300E-01      0.100E+05      0.199E-01
                      0.00000           0.00000  0.00000  0.00000 -0.00008 -0.00027
                      0.00000           0.00000  0.00000  0.00000  0.01653  0.02781
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #PERTURB                                                                                                                                                                                                                                                        
 #SFLS                                                                                                                                                                                                                                                           
@@ -2644,6 +2665,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.50174,     275 reflections used in refinement
 
  Structure factor least squares calculation    3  ends  2
+SumFo/SumFc=     0.473      LS-scale=     0.502      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =   -1.819    100*(<Fo>-<Fc>)/<Fo> =   -6.108                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -2790,8 +2813,7 @@ All cycle   4       0.00          0.100E+16      0.196E+04
                      0.00000           0.00000  0.00000  0.00000  0.02807 -0.19603
                      0.00000           0.00000  0.00000  0.00000  0.04428  0.08345
                                        0.00000  0.00000  0.00000
-  Disc file on unit   1 extended by     1 records 
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -2833,6 +2855,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47682,     275 reflections used in refinement
 
  Structure factor least squares calculation    4  ends  2
+SumFo/SumFc=     0.481      LS-scale=     0.477      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.251    100*(<Fo>-<Fc>)/<Fo> =    0.802                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -2970,7 +2994,7 @@ Inter cycle   4       0.00          0.100E+16      0.159E+04
                      0.00000           0.00000  0.00000  0.00000 -0.03233 -0.01397
                      0.00000           0.00000  0.00000  0.00000  0.02698  0.03812
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -3025,6 +3049,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47661,     275 reflections used in refinement
 
  Structure factor least squares calculation    5  ends  2
+SumFo/SumFc=     0.480      LS-scale=     0.477      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.193    100*(<Fo>-<Fc>)/<Fo> =    0.617                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -3154,7 +3180,7 @@ Inter cycle   4       0.00          0.100E+16       97.4
                      0.00000           0.00000  0.00000  0.00000  0.01156  0.00196
                      0.00000           0.00000  0.00000  0.00000  0.01410  0.02641
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -3216,6 +3242,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47678,     275 reflections used in refinement
 
  Structure factor least squares calculation    6  ends  2
+SumFo/SumFc=     0.480      LS-scale=     0.477      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.229    100*(<Fo>-<Fc>)/<Fo> =    0.730                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -3338,8 +3366,7 @@ Inter cycle   4       0.00          0.100E+16       14.1
                      0.00000           0.00000  0.00000  0.00000 -0.00130 -0.00035
                      0.00000           0.00000  0.00000  0.00000  0.01680  0.02800
                                        0.00000  0.00000  0.00000
-  Disc file on unit   1 extended by     1 records 
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -3402,6 +3429,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47678,     275 reflections used in refinement
 
  Structure factor least squares calculation    7  ends  2
+SumFo/SumFc=     0.480      LS-scale=     0.477      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.232    100*(<Fo>-<Fc>)/<Fo> =    0.741                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -3520,7 +3549,8 @@ All cycle   3      0.300E-01      0.100E+05      0.608E-02
                      0.00000           0.00000  0.00000  0.00000  0.00030  0.00000
                      0.00000           0.00000  0.00000  0.00000  0.01645  0.02775
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+  Disc file on unit   1 extended by     1 records 
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #PRINT 22                                                                                                                                                                                                                                                       
 
@@ -3528,7 +3558,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        2     Address    67932     Length     160     Created on      
+ Print list type    22     serial number        2     Address    70438     Length     160     Created on      
 
              16 parameter(s) in    1 block(s) - as follows:
 
@@ -3587,7 +3617,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       17     Address   132029     Length      52     Created on      
+ Print list type    24     serial number       17     Address   134535     Length      52     Created on      
 
 
  Record  101    LGRP    2  NGRP     16   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -3738,8 +3768,7 @@ Space group symbol is   P    -4   3    N
  Systematic absence           13.    3.    3.        -0.7        3.2         0.        0.
  Systematic absence           13.    4.    4.         1.9        1.0         0.        0.
  The updated reflections are now on UNIT 52
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by    30 records 
+  Disc file on unit   1 extended by    31 records 
 
 
 
@@ -3755,8 +3784,8 @@ Number               12       9      12       9       8       5       3
                                                                                                                                                                                                                                                                 
     467 reflections accepted              58 reflections rejected                                                                                                                                                                                               
 #MERGE                                                                                                                                                                                                                                                          
-  Disc file on unit   1 extended by     1 records 
  After   1 pass     467 reflection(s) have been sorted
+  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
   Disc file on unit   1 extended by    30 records 
   Disc file on unit   1 extended by     1 records 
@@ -3770,7 +3799,8 @@ Number               12       9      12       9       8       5       3
 
   Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
-  Disc file on unit   1 extended by    20 records 
+  Disc file on unit   1 extended by    19 records 
+  Disc file on unit   1 extended by     1 records 
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -3890,8 +3920,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
                0.012           0.085          0.612                                                                                                                                                                                                             
 #LIST 30                                                                                                                                                                                                                                                        
 #LIST      5                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     1 records 
 #LIST     12                                                                                                                                                                                                                                                    
+  Disc file on unit   1 extended by     2 records 
 #LIST 23                                                                                                                                                                                                                                                        
 #USE SHAPERING.REF                                                                                                                                                                                                                                              
 #SFLS                                                                                                                                                                                                                                                           
@@ -3979,6 +4009,8 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  New scale factor (G) is    0.48030,     275 reflections used in refinement
 
  Structure factor least squares calculation    1  ends  2
+SumFo/SumFc=     0.482      LS-scale=     0.480      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.100    100*(<Fo>-<Fc>)/<Fo> =    0.322                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -4101,7 +4133,7 @@ All cycle   4       0.00          0.100E+16       225.
                      0.00000           0.00000  0.00000  0.00000  0.00060 -0.00402
                      0.00000           0.00000  0.00000  0.00000  0.01505  0.02547
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -4163,6 +4195,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47831,     275 reflections used in refinement
 
  Structure factor least squares calculation    2  ends  2
+SumFo/SumFc=     0.483      LS-scale=     0.478      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.333    100*(<Fo>-<Fc>)/<Fo> =    1.067                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -4281,10 +4315,9 @@ All cycle   3      0.300E-01      0.100E+05      0.149E-01
                      0.00000           0.00000  0.00000  0.00000  0.00001 -0.00002
                      0.00000           0.00000  0.00000  0.00000  0.01511  0.02540
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #PERTURB                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -4346,6 +4379,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.43834,     275 reflections used in refinement
 
  Structure factor least squares calculation    3  ends  2
+SumFo/SumFc=     0.488      LS-scale=     0.438      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    3.499    100*(<Fo>-<Fc>)/<Fo> =   10.266                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -4492,7 +4527,7 @@ All cycle   4       0.00          0.100E+16      0.170E+04
                      0.00000           0.00000  0.00000  0.00000  0.07067 -0.33325
                      0.00000           0.00000  0.00000  0.00000  0.06200  0.10910
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -4536,6 +4571,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47797,     275 reflections used in refinement
 
  Structure factor least squares calculation    4  ends  2
+SumFo/SumFc=     0.482      LS-scale=     0.478      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.284    100*(<Fo>-<Fc>)/<Fo> =    0.910                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -4686,7 +4723,7 @@ Over-all rescaling factor 0.41
                      0.00000           0.00000  0.00000  0.00000 -0.04622  0.04508
                      0.00000           0.00000  0.00000  0.00000  0.04790  0.05025
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -4744,6 +4781,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47824,     275 reflections used in refinement
 
  Structure factor least squares calculation    5  ends  2
+SumFo/SumFc=     0.482      LS-scale=     0.478      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.274    100*(<Fo>-<Fc>)/<Fo> =    0.877                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -4887,7 +4926,7 @@ Inter cycle   4       0.00          0.100E+16       197.
                      0.00000           0.00000  0.00000  0.00000 -0.03792  0.03712
                      0.00000           0.00000  0.00000  0.00000  0.02456  0.03282
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -4949,6 +4988,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47816,     275 reflections used in refinement
 
  Structure factor least squares calculation    6  ends  2
+SumFo/SumFc=     0.482      LS-scale=     0.478      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.265    100*(<Fo>-<Fc>)/<Fo> =    0.847                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -5078,7 +5119,7 @@ Inter cycle   4       0.00          0.100E+16       59.6
                      0.00000           0.00000  0.00000  0.00000  0.01288  0.02404
                                        0.00000  0.00000  0.00000
   Disc file on unit   1 extended by     1 records 
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -5141,6 +5182,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47828,     275 reflections used in refinement
 
  Structure factor least squares calculation    7  ends  2
+SumFo/SumFc=     0.483      LS-scale=     0.478      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.332    100*(<Fo>-<Fc>)/<Fo> =    1.063                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -5259,7 +5302,7 @@ All cycle   4       0.00          0.100E+16       219.
                      0.00000           0.00000  0.00000  0.00000 -0.00070 -0.00143
                      0.00000           0.00000  0.00000  0.00000  0.01527  0.02553
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -5321,6 +5364,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47824,     275 reflections used in refinement
 
  Structure factor least squares calculation    8  ends  2
+SumFo/SumFc=     0.483      LS-scale=     0.478      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.333    100*(<Fo>-<Fc>)/<Fo> =    1.065                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -5439,7 +5484,7 @@ All cycle   3      0.300E-01      0.100E+05      0.503E-02
                      0.00000           0.00000  0.00000  0.00000  0.00020  0.00000
                      0.00000           0.00000  0.00000  0.00000  0.01508  0.02538
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #PRINT 22                                                                                                                                                                                                                                                       
 
@@ -5447,7 +5492,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        3     Address    67932     Length     160     Created on      
+ Print list type    22     serial number        3     Address    70438     Length     160     Created on      
 
              16 parameter(s) in    1 block(s) - as follows:
 
@@ -5506,7 +5551,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       26     Address   195593     Length      52     Created on      
+ Print list type    24     serial number       26     Address   198099     Length      52     Created on      
 
 
  Record  101    LGRP    2  NGRP     16   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -5585,10 +5630,10 @@ Space group symbol is   P    -4   3    N
 
      525 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
   Disc file on unit   1 extended by    34 records 
-  Disc file on unit   1 extended by     1 records 
 #CLOSE HKLI                                                                                                                                                                                                                                                     
 #SYSTEMATIC                                                                                                                                                                                                                                                     
 #SORT                                                                                                                                                                                                                                                           
+  Disc file on unit   1 extended by     1 records 
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -5676,8 +5721,8 @@ Number               12       9      12       9       8       5       3
 #MERGE                                                                                                                                                                                                                                                          
   Disc file on unit   1 extended by     1 records 
  After   1 pass     467 reflection(s) have been sorted
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
+  Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by    30 records 
 #LIST 28                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
@@ -5812,6 +5857,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
   Disc file on unit   1 extended by     1 records 
 #LIST      5                                                                                                                                                                                                                                                    
 #LIST     12                                                                                                                                                                                                                                                    
+  Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     1 records 
 #LIST 23                                                                                                                                                                                                                                                        
 #USE SHAPERING.REF                                                                                                                                                                                                                                              
 #SFLS                                                                                                                                                                                                                                                           
@@ -5899,6 +5946,8 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  New scale factor (G) is    0.48030,     275 reflections used in refinement
 
  Structure factor least squares calculation    1  ends  2
+SumFo/SumFc=     0.479      LS-scale=     0.480      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =   -0.341                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -6032,7 +6081,7 @@ All cycle   4       0.00          0.100E+16       298.
                      0.00000           0.00000  0.00000  0.00000  0.00191 -0.01194
                      0.00000           0.00000  0.00000  0.00000  0.01734  0.02936
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -6094,6 +6143,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47560,     275 reflections used in refinement
 
  Structure factor least squares calculation    2  ends  2
+SumFo/SumFc=     0.481      LS-scale=     0.476      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.363    100*(<Fo>-<Fc>)/<Fo> =    1.155                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -6216,8 +6267,7 @@ Inter cycle   4       0.00          0.100E+16       27.7
                      0.00000           0.00000  0.00000  0.00000  0.00019 -0.00036
                      0.00000           0.00000  0.00000  0.00000  0.01726  0.02864
                                        0.00000  0.00000  0.00000
-  Disc file on unit   1 extended by     1 records 
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -6279,6 +6329,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47550,     275 reflections used in refinement
 
  Structure factor least squares calculation    3  ends  2
+SumFo/SumFc=     0.481      LS-scale=     0.476      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.365    100*(<Fo>-<Fc>)/<Fo> =    1.161                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -6397,7 +6449,7 @@ All cycle   3      0.300E-01      0.100E+05      0.618E-02
                      0.00000           0.00000  0.00000  0.00000 -0.00003 -0.00002
                      0.00000           0.00000  0.00000  0.00000  0.01731  0.02868
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #PERTURB                                                                                                                                                                                                                                                        
 #SFLS                                                                                                                                                                                                                                                           
@@ -6461,6 +6513,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.56154,     275 reflections used in refinement
 
  Structure factor least squares calculation    4  ends  2
+SumFo/SumFc=     0.472      LS-scale=     0.562      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =   -5.056    100*(<Fo>-<Fc>)/<Fo> =  -19.003                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -6607,8 +6661,7 @@ All cycle   4       0.00          0.100E+16      0.106E+05
                      0.00000           0.00000  0.00000  0.00000  0.09771  0.09099
                      0.00000           0.00000  0.00000  0.00000  0.04303  0.08747
                                        0.00000  0.00000  0.00000
-  Disc file on unit   1 extended by     1 records 
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -6645,6 +6698,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47450,     275 reflections used in refinement
 
  Structure factor least squares calculation    5  ends  2
+SumFo/SumFc=     0.476      LS-scale=     0.475      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.124    100*(<Fo>-<Fc>)/<Fo> =    0.392                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -6786,7 +6841,7 @@ Inter cycle   4       0.00          0.100E+16      0.967E+04
                      0.00000           0.00000  0.00000  0.00000  0.28217  0.07875
                      0.00000           0.00000  0.00000  0.00000  0.08882  0.15303
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -6832,6 +6887,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47836,     275 reflections used in refinement
 
  Structure factor least squares calculation    6  ends  2
+SumFo/SumFc=     0.484      LS-scale=     0.478      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.370    100*(<Fo>-<Fc>)/<Fo> =    1.185                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -6964,7 +7021,7 @@ Inter cycle   4       0.00          0.100E+16       578.
                      0.00000           0.00000  0.00000  0.00000 -1.76149  3.48590
                      0.00000           0.00000  0.00000  0.00000  0.38443  0.66295
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -7027,6 +7084,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47540,     275 reflections used in refinement
 
  Structure factor least squares calculation    7  ends  2
+SumFo/SumFc=     0.481      LS-scale=     0.475      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.357    100*(<Fo>-<Fc>)/<Fo> =    1.137                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -7157,7 +7216,7 @@ Inter cycle   4       0.00          0.100E+16      -4.50
                      0.00000           0.00000  0.00000  0.00000  0.05805 -0.14663
                      0.00000           0.00000  0.00000  0.00000  0.01966  0.06911
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -7215,6 +7274,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47453,     275 reflections used in refinement
 
  Structure factor least squares calculation    8  ends  2
+SumFo/SumFc=     0.481      LS-scale=     0.475      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.404    100*(<Fo>-<Fc>)/<Fo> =    1.283                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -7351,7 +7412,7 @@ All cycle   4       0.00          0.100E+16       354.
                      0.00000           0.00000  0.00000  0.00000  0.06833  0.14703
                                        0.00000  0.00000  0.00000
   Disc file on unit   1 extended by     1 records 
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -7407,6 +7468,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47728,     275 reflections used in refinement
 
  Structure factor least squares calculation    9  ends  2
+SumFo/SumFc=     0.483      LS-scale=     0.477      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.394    100*(<Fo>-<Fc>)/<Fo> =    1.260                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -7536,7 +7599,7 @@ Inter cycle   4       0.00          0.100E+16       5.19
                      0.00000           0.00000  0.00000  0.00000 -0.06322  0.19063
                      0.00000           0.00000  0.00000  0.00000  0.08073  0.12467
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -7594,6 +7657,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47649,     275 reflections used in refinement
 
  Structure factor least squares calculation   10  ends  2
+SumFo/SumFc=     0.483      LS-scale=     0.476      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.400    100*(<Fo>-<Fc>)/<Fo> =    1.277                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -7716,7 +7781,7 @@ Inter cycle   4       0.00          0.100E+16       4.60
                      0.00000           0.00000  0.00000  0.00000  0.00003 -0.00427
                      0.00000           0.00000  0.00000  0.00000  0.02546  0.07095
                                        0.00000  0.00000  0.00000
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -7775,6 +7840,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.47622,     275 reflections used in refinement
 
  Structure factor least squares calculation   11  ends  2
+SumFo/SumFc=     0.482      LS-scale=     0.476      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.404    100*(<Fo>-<Fc>)/<Fo> =    1.287                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -7899,7 +7966,7 @@ All cycle   3      0.300E-01      0.100E+05      0.780E-02
                      0.00000           0.00000  0.00000  0.00000  0.02555  0.07075
                                        0.00000  0.00000  0.00000
   Disc file on unit   1 extended by     1 records 
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #PRINT 22                                                                                                                                                                                                                                                       
 
@@ -7907,7 +7974,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        4     Address    67932     Length     160     Created on      
+ Print list type    22     serial number        4     Address    70438     Length     160     Created on      
 
              16 parameter(s) in    1 block(s) - as follows:
 
@@ -7966,7 +8033,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       38     Address   259312     Length      52     Created on      
+ Print list type    24     serial number       38     Address   261818     Length      52     Created on      
 
 
  Record  101    LGRP    2  NGRP     16   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -7998,11 +8065,11 @@ Mean C-C su =   0.0000
 
 
 #FINI                                                                                                                                                                                                                                                           
- Physical reads       4920 Physical writes       9232 Cache hits     203406
- Cache hit distribution   161618   14575    6091    2417    3546    1584
- Cache hit distribution     1298     886     801     965    1068    1486
- Cache hit distribution      786     484     447     395     681     648
- Cache hit distribution      465     458     618     638     796     655
+ Physical reads       5348 Physical writes       9378 Cache hits     201233
+ Cache hit distribution   162622   12108    6342    2649    2771    1601
+ Cache hit distribution     1560    1015     831    1170     926    1023
+ Cache hit distribution      775     429     372     431     445     478
+ Cache hit distribution      485     447     562     703     823     665
 
 
           : Job ends ok       with     0 warnings and     0 errors

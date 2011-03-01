@@ -51,13 +51,13 @@
   Disc file on unit   1 extended by     1 records 
 #SYST                                                                                                                                                                                                                                                           
 #SORT                                                                                                                                                                                                                                                           
+  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
 
 
 
      29 reflections accepted               0 reflections rejected                                                                                                                                                                                               
 #MERGE                                                                                                                                                                                                                                                          
-  Disc file on unit   1 extended by     1 records 
  After   1 pass      29 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #LIST 2                                                                                                                                                                                                                                                         
@@ -312,11 +312,11 @@ Upating List 13 for twinned data
  The updated reflections are now on UNIT 53
   Disc file on unit   1 extended by     1 records 
 #FINI                                                                                                                                                                                                                                                           
- Physical reads        170 Physical writes        425 Cache hits      10568
- Cache hit distribution     8668     555     242     157     122      50
- Cache hit distribution       46      39      43      83      41      93
- Cache hit distribution       51      53      56      43      71      38
- Cache hit distribution       47      16      10      10      19      15
+ Physical reads        171 Physical writes        425 Cache hits      10569
+ Cache hit distribution     8675     544     245     161     120      48
+ Cache hit distribution       48      31      52      84      41      93
+ Cache hit distribution       61      37      61      51      59      45
+ Cache hit distribution       50       9      10      10      19      15
 
 
           : Job ends ok       with     0 warnings and     0 errors

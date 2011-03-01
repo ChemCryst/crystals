@@ -368,11 +368,11 @@
  Minimum correction to I is    1.03                                                                                                                                                                                                                             
  The setting angles stored in list 6 are now for a  'Rollett' machine.                                                                                                                                                                                          
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads        170 Physical writes        360 Cache hits       6883
- Cache hit distribution     5430     342     156     134      86       9
- Cache hit distribution      104      18       9      51       9     148
- Cache hit distribution       17      82      14      22      99      48
- Cache hit distribution       38       4      13      14      15      21
+ Physical reads        167 Physical writes        360 Cache hits       6898
+ Cache hit distribution     5430     346     162     142      86       7
+ Cache hit distribution      103       7      20      53      19     146
+ Cache hit distribution       78       6      35      19      99      67
+ Cache hit distribution        7       3      14      13      16      20
 
 
           : Job ends ok       with     0 warnings and     0 errors

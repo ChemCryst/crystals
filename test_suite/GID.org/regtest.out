@@ -135,6 +135,7 @@ Bonds: Update required - List5 length change
 Bonds: Update required - List5 length change
   Disc file on unit   1 extended by     1 records 
 #REGULAR KEEP                                                                                                                                                                                                                                                   
+  Disc file on unit   1 extended by     2 records 
   Disc file on unit   1 extended by     1 records 
 Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
 
@@ -204,11 +205,11 @@ Bond length deviations
  C      3 O      4 C    103 O    104   0.000
  O      4 C      5 O    104 C    105   0.000
 
-Torsion angle deviations
- C      1 C      2 C      3 O      4 C    101 C    102 C    103 O    104   0.000
- C      2 C      3 O      4 C      5 C    102 C    103 O    104 C    105   0.000
+Torsion angle deviations                                                            Angles & Difference
+ C      1 C      2 C      3 O      4     C    101 C    102 C    103 O    104       0.000   0.000   0.000
+ C      2 C      3 O      4 C      5     C    102 C    103 O    104 C    105       0.000   0.000   0.000
                  rms pos    rms bond     rms tors
- Deviations        0.0000      0.0000      0.0001
+ Deviations        0.0000      0.0000      0.0003
 
 
 
@@ -239,8 +240,6 @@ Torsion angle deviations
  List 5 now contains   26 atoms                                                                                                                                                                                                                                 
  list modification complete                                                                                                                                                                                                                                     
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #DISP HI                                                                                                                                                                                                                                                        
  Summary of contents of list  5 - Parameters
  There are no layer, element, or batch scales                                                                                                                                                                                                                   
@@ -345,7 +344,7 @@ Matching by Rotation/inversion (Method 1)
                                                       Maximum distance   C      2     0.000
                                                       Maximum angle      C      2     0.000
                  rms pos    rms bond     rms tors
- Deviations        0.0000      0.0000      0.0001
+ Deviations        0.0000      0.0000      0.0003
 
 
 
@@ -481,11 +480,11 @@ Bond length deviations
  C      3 O      4 C    103 O    104   0.000
  O      4 C      5 O    104 C    105   0.000
 
-Torsion angle deviations
- C      1 C      2 C      3 O      4 C    101 C    102 C    103 O    104   0.000
- C      2 C      3 O      4 C      5 C    102 C    103 O    104 C    105   0.000
+Torsion angle deviations                                                            Angles & Difference
+ C      1 C      2 C      3 O      4     C    101 C    102 C    103 O    104       0.000   0.000   0.000
+ C      2 C      3 O      4 C      5     C    102 C    103 O    104 C    105       0.000   0.000   0.000
                  rms pos    rms bond     rms tors
- Deviations        0.0000      0.0000      0.0001
+ Deviations        0.0000      0.0000      0.0003
 
 
 
@@ -621,7 +620,7 @@ Matching by Rotation/inversion (Method 1)
                                                       Maximum distance   O      4     0.000
                                                       Maximum angle      C      1     0.000
                  rms pos    rms bond     rms tors
- Deviations        0.0000      0.0000      0.0001
+ Deviations        0.0000      0.0000      0.0003
 
 
 
@@ -752,11 +751,11 @@ Bond length deviations
  C      3 O      4 C    103 O    104   0.000
  O      4 C      5 O    104 C    105   0.000
 
-Torsion angle deviations
- C      1 C      2 C      3 O      4 C    101 C    102 C    103 O    104   0.000
- C      2 C      3 O      4 C      5 C    102 C    103 O    104 C    105   0.000
+Torsion angle deviations                                                            Angles & Difference
+ C      1 C      2 C      3 O      4     C    101 C    102 C    103 O    104       0.000   0.000   0.000
+ C      2 C      3 O      4 C      5     C    102 C    103 O    104 C    105       0.000   0.000   0.000
                  rms pos    rms bond     rms tors
- Deviations        0.0000      0.0000      0.0001
+ Deviations        0.0000      0.0000      0.0003
 
 
 
@@ -880,7 +879,7 @@ Matching by Rotation/inversion (Method 1)
                                                       Maximum distance   C      2     0.000
                                                       Maximum angle      C      2     0.000
                  rms pos    rms bond     rms tors
- Deviations        0.0000      0.0000      0.0001
+ Deviations        0.0000      0.0000      0.0003
 
 
 
@@ -1011,11 +1010,11 @@ Bond length deviations
  C      3 O      4 C    103 O    104   0.000
  O      4 C      5 O    104 C    105   0.000
 
-Torsion angle deviations
- C      1 C      2 C      3 O      4 C    101 C    102 C    103 O    104   0.000
- C      2 C      3 O      4 C      5 C    102 C    103 O    104 C    105   0.000
+Torsion angle deviations                                                            Angles & Difference
+ C      1 C      2 C      3 O      4     C    101 C    102 C    103 O    104       0.000   0.000   0.000
+ C      2 C      3 O      4 C      5     C    102 C    103 O    104 C    105       0.000   0.000   0.000
                  rms pos    rms bond     rms tors
- Deviations        0.0000      0.0000      0.0001
+ Deviations        0.0000      0.0000      0.0003
 
 
 
@@ -1140,7 +1139,7 @@ Matching by Rotation/inversion (Method 1)
                                                       Maximum distance   O      4     0.000
                                                       Maximum angle      C      1     0.000
                  rms pos    rms bond     rms tors
- Deviations        0.0000      0.0000      0.0001
+ Deviations        0.0000      0.0000      0.0003
 
 
 
@@ -1271,9 +1270,9 @@ Bond length deviations
  C      3 O      4 C    103 O    104   0.000
  O      4 C      5 O    104 C    105   0.000
 
-Torsion angle deviations
- C      1 C      2 C      3 O      4 C    101 C    102 C    103 O    104   0.000
- C      2 C      3 O      4 C      5 C    102 C    103 O    104 C    105   0.000
+Torsion angle deviations                                                            Angles & Difference
+ C      1 C      2 C      3 O      4     C    101 C    102 C    103 O    104       0.000   0.000   0.000
+ C      2 C      3 O      4 C      5     C    102 C    103 O    104 C    105       0.000   0.000   0.000
                  rms pos    rms bond     rms tors
  Deviations        0.0000      0.0000      0.0002
 
@@ -1530,9 +1529,9 @@ Bond length deviations
  C      3 O      4 C    103 O    104   0.000
  O      4 C      5 O    104 C    105   0.000
 
-Torsion angle deviations
- C      1 C      2 C      3 O      4 C    101 C    102 C    103 O    104   0.000
- C      2 C      3 O      4 C      5 C    102 C    103 O    104 C    105   0.000
+Torsion angle deviations                                                            Angles & Difference
+ C      1 C      2 C      3 O      4     C    101 C    102 C    103 O    104       0.000   0.000   0.000
+ C      2 C      3 O      4 C      5     C    102 C    103 O    104 C    105       0.000   0.000   0.000
                  rms pos    rms bond     rms tors
  Deviations        0.0000      0.0000      0.0002
 
@@ -1665,11 +1664,11 @@ Bond length deviations
  C      3 O      4 C    103 O    104   0.000
  O      4 C      5 O    104 C    105   0.000
 
-Torsion angle deviations
- C      1 C      2 C      3 O      4 C    101 C    102 C    103 O    104   0.000
- C      2 C      3 O      4 C      5 C    102 C    103 O    104 C    105   0.000
+Torsion angle deviations                                                            Angles & Difference
+ C      1 C      2 C      3 O      4     C    101 C    102 C    103 O    104       0.000   0.000   0.000
+ C      2 C      3 O      4 C      5     C    102 C    103 O    104 C    105       0.000   0.000   0.000
                  rms pos    rms bond     rms tors
- Deviations        0.0000      0.0000      0.0001
+ Deviations        0.0000      0.0000      0.0003
 
 
 
@@ -1803,7 +1802,7 @@ Bond length deviations
  C    105 N   1051 C      5 O     51   0.000
  C    105 O   1052 C      5 N     52   0.000
 
-Torsion angle deviations
+Torsion angle deviations                                                            Angles & Difference
                  rms pos    rms bond     rms tors
  Deviations        0.0000      0.0000      0.0000
 
@@ -1950,17 +1949,17 @@ Bond length deviations
  C    101 C    102 C      1 C      2   0.000
  C    101 Q    106 C      1 Q      6   0.000
 
-Torsion angle deviations
- C    101 C    102 C    103 O    104 C      1 C      2 C      3 O      4  -0.001
- O    104 C    105 Q    106 C    101 O      4 C      5 Q      6 C      1   0.001
- N   1051 C    105 Q    106 C    101 O     51 C      5 Q      6 C      1 117.032
- O   1052 C    105 Q    106 C    101 N     52 C      5 Q      6 C      1-117.031
- C    103 O    104 C    105 Q    106 C      3 O      4 C      5 Q      6   0.000
- C    103 O    104 C    105 N   1051 C      3 O      4 C      5 O     51-117.033
- C    103 O    104 C    105 O   1052 C      3 O      4 C      5 N     52 117.029
- C    102 C    103 O    104 C    105 C      2 C      3 O      4 C      5   0.000
- Q    106 C    101 C    102 C    103 Q      6 C      1 C      2 C      3   0.001
- C    102 C    101 Q    106 C    105 C      2 C      1 Q      6 C      5  -0.002
+Torsion angle deviations                                                            Angles & Difference
+ C    101 C    102 C    103 O    104     C      1 C      2 C      3 O      4       0.000   0.000   0.000
+ O    104 C    105 Q    106 C    101     O      4 C      5 Q      6 C      1       0.001   0.001   0.000
+ N   1051 C    105 Q    106 C    101     O     51 C      5 Q      6 C      1     121.485 121.483   0.002
+ O   1052 C    105 Q    106 C    101     N     52 C      5 Q      6 C      1    -121.484-121.485   0.002
+ C    103 O    104 C    105 Q    106     C      3 O      4 C      5 Q      6       0.000   0.000   0.000
+ C    103 O    104 C    105 N   1051     C      3 O      4 C      5 O     51    -121.485-121.482  -0.003
+ C    103 O    104 C    105 O   1052     C      3 O      4 C      5 N     52     121.484 121.486  -0.002
+ C    102 C    103 O    104 C    105     C      2 C      3 O      4 C      5       0.000   0.000   0.000
+ Q    106 C    101 C    102 C    103     Q      6 C      1 C      2 C      3       0.001   0.001   0.000
+ C    102 C    101 Q    106 C    105     C      2 C      1 Q      6 C      5      -0.001  -0.001   0.000
                  rms pos    rms bond     rms tors
  Deviations        0.0000      0.0000      0.0014
 
@@ -2096,7 +2095,7 @@ Bond length deviations
  C    105 N   1051 C      5 N     52   0.000
  C    105 O   1052 C      5 O     51   0.000
 
-Torsion angle deviations
+Torsion angle deviations                                                            Angles & Difference
                  rms pos    rms bond     rms tors
  Deviations        0.0000      0.0000      0.0000
 
@@ -2243,17 +2242,17 @@ Bond length deviations
  C    101 C    102 C      3 C      2   0.000
  C    101 Q    106 C      3 O      4   0.000
 
-Torsion angle deviations
- C    101 C    102 C    103 O    104 C      3 C      2 C      1 Q      6   0.000
- O    104 C    105 Q    106 C    101 Q      6 C      5 O      4 C      3   0.000
- N   1051 C    105 Q    106 C    101 N     52 C      5 O      4 C      3 117.029
- O   1052 C    105 Q    106 C    101 O     51 C      5 O      4 C      3-117.034
- C    103 O    104 C    105 Q    106 C      1 Q      6 C      5 O      4   0.000
- C    103 O    104 C    105 N   1051 C      1 Q      6 C      5 N     52-117.030
- C    103 O    104 C    105 O   1052 C      1 Q      6 C      5 O     51 117.033
- C    102 C    103 O    104 C    105 C      2 C      1 Q      6 C      5  -0.001
- Q    106 C    101 C    102 C    103 O      4 C      3 C      2 C      1   0.000
- C    102 C    101 Q    106 C    105 C      2 C      3 O      4 C      5  -0.001
+Torsion angle deviations                                                            Angles & Difference
+ C    101 C    102 C    103 O    104     C      3 C      2 C      1 Q      6       0.000   0.001  -0.001
+ O    104 C    105 Q    106 C    101     Q      6 C      5 O      4 C      3       0.001   0.000   0.001
+ N   1051 C    105 Q    106 C    101     N     52 C      5 O      4 C      3     121.485 121.486  -0.002
+ O   1052 C    105 Q    106 C    101     O     51 C      5 O      4 C      3    -121.484-121.482  -0.002
+ C    103 O    104 C    105 Q    106     C      1 Q      6 C      5 O      4       0.000   0.001  -0.001
+ C    103 O    104 C    105 N   1051     C      1 Q      6 C      5 N     52    -121.485-121.485   0.001
+ C    103 O    104 C    105 O   1052     C      1 Q      6 C      5 O     51     121.484 121.483   0.001
+ C    102 C    103 O    104 C    105     C      2 C      1 Q      6 C      5       0.000  -0.001   0.001
+ Q    106 C    101 C    102 C    103     O      4 C      3 C      2 C      1       0.001   0.000   0.001
+ C    102 C    101 Q    106 C    105     C      2 C      3 O      4 C      5      -0.001   0.000  -0.001
                  rms pos    rms bond     rms tors
  Deviations        0.0000      0.0000      0.0010
 
@@ -2326,11 +2325,11 @@ Matching by Rotation/inversion (Method 1)
  Comparison   of group number   1 completed
 
 #END                                                                                                                                                                                                                                                            
- Physical reads        709 Physical writes       2556 Cache hits      47973
- Cache hit distribution    37349    2749    1737     473     708     371
- Cache hit distribution      488     374     394     330     425     240
- Cache hit distribution      261     561     221     225     238     165
- Cache hit distribution      155     127     117     104      66      95
+ Physical reads        761 Physical writes       2563 Cache hits      47939
+ Cache hit distribution    37326    2733    1749     516     733     399
+ Cache hit distribution      354     337     444     486     338     265
+ Cache hit distribution      219     458     293     249     278     125
+ Cache hit distribution      193     117     100     103      68      56
 
 
           : Job ends ok       with     0 warnings and     0 errors

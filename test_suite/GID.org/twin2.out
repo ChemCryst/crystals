@@ -52,14 +52,16 @@ Upating List 13 for twinned data
   Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
   Disc file on unit   1 extended by     4 records 
-  Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     2 records 
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
 #SFLS                                                                                                                                                                                                                                                           
 #CLEAR 16                                                                                                                                                                                                                                                       
 #LIST  16                                                                                                                                                                                                                                                       
+  Disc file on unit   1 extended by     2 records 
 #CLEAR 17                                                                                                                                                                                                                                                       
 #LIST  17                                                                                                                                                                                                                                                       
+  Disc file on unit   1 extended by     2 records 
 #LIST 23                                                                                                                                                                                                                                                        
 #LIST 26                                                                                                                                                                                                                                                        
 #WEIGHT                                                                                                                                                                                                                                                         
@@ -125,6 +127,8 @@ Upating List 13 for twinned data
  New scale factor (G) is   10.00780,     270 reflections used in refinement
 
  Structure factor least squares calculation    1  ends  5
+SumFo/SumFc=    10.072      LS-scale=    10.008      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.092    100*(<Fo>-<Fc>)/<Fo> =    0.634                                                                                                                                                                                                         
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
@@ -152,7 +156,7 @@ Refining    44 parameters in    1 block :     1094 elements in the LS matrix.
  Space required on DISK is    3 records,     9  Blocks,     5 Kbytes. 
     10 Symmetry restraints written to LIST 17
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     2 records 
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
@@ -187,12 +191,15 @@ Refining    44 parameters in    1 block :     1094 elements in the LS matrix.
  New scale factor (G) is   10.00780,     270 reflections used in refinement
 
  Structure factor least squares calculation    2  ends  6
+SumFo/SumFc=    10.072      LS-scale=    10.008      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.092    100*(<Fo>-<Fc>)/<Fo> =    0.634                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
 #DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
+  Disc file on unit   1 extended by     1 records 
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -396,7 +403,7 @@ All cycle   4       0.00          0.100E+16      0.137E+05
                      0.00000          -0.00183 -0.00024  0.00344  0.00597 -0.00119 -0.00253 -0.00262 -0.00844  0.00472
                      0.00000           0.00087  0.00088  0.00115  0.00296  0.00323  0.00179  0.00298  0.00315  0.00278
                                        0.00772  0.00779  0.00580
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC  NO  NO                                                                                                                                                                                                                                                   
 #CALCULAT   1                                                                                                                                                                                                                                                   
@@ -472,9 +479,10 @@ Mean C-C su =   0.0000
       270 reflections   R  2.74% Rw  2.88% with I/u(I) from List 28                                                                                                                                                                                             
       270 reflections   R  2.74% Rw  2.88% with I/u(I) > -10.0                                                                                                                                                                                                  
         0 reflections   R  0.00% Rw  0.00% with I/u(I) >   2.0                                                                                                                                                                                                  
+SumFo/SumFc=     9.887      LS-scale=     9.913      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =   -0.040    100*(<Fo>-<Fc>)/<Fo> =   -0.269                                                                                                                                                                                                         
 #DISTANCES                                                                                                                                                                                                                                                      
 #LIST 31                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #DISTANCES                                                                                                                                                                                                                                                      
 
 
@@ -785,11 +793,9 @@ Slope=       -0.002 Intercept =       1.409 C-Coef=      -0.089
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
 
 
- Full agreement analysis  -  with plots of mean w*Delta**2 divided by its overall average value
-
- on scale of /FO/
-
- Scale factor  =   9.91333
+                                                                                                                                                                                                                                                                
+ Agreement analysis on scale of /FO/                                                                                                                                                                                                                            
+ Scale factor  =   9.91333                                                                                                                                                                                                                                      
 
 
  Weighting scheme type   11
@@ -974,11 +980,9 @@ Slope=       -0.001 Intercept =       1.235 C-Coef=      -0.062
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
 
 
- Full agreement analysis  -  with plots of mean w*Delta**2 divided by its overall average value
-
- on scale of /FO/
-
- Scale factor  =   9.91333
+                                                                                                                                                                                                                                                                
+ Agreement analysis on scale of /FO/                                                                                                                                                                                                                            
+ Scale factor  =   9.91333                                                                                                                                                                                                                                      
 
 
  Weighting scheme type   11
@@ -1063,6 +1067,7 @@ Slope=       -0.001 Intercept =       1.235 C-Coef=      -0.062
                                                                                                               .
      TOTALS           270     39403.77     39509.9      0.2906E+02      0.1074E+01     2.74    3.79     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
+  Disc file on unit   1 extended by     1 records 
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
@@ -1123,6 +1128,8 @@ Slope=       -0.001 Intercept =       1.235 C-Coef=      -0.062
  New scale factor (G) is    9.91333,     270 reflections used in refinement
 
  Structure factor least squares calculation    4  ends  6
+SumFo/SumFc=     9.887      LS-scale=     9.913      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =   -0.040    100*(<Fo>-<Fc>)/<Fo> =   -0.269                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -1289,8 +1296,7 @@ All cycle   4       0.00          0.100E+16       290.
                      0.00000          -0.00102 -0.00070  0.00015  0.00021 -0.00044 -0.00087  0.00027  0.00043 -0.00057
                      0.00000           0.00063  0.00056  0.00090  0.00205  0.00222  0.00123  0.00195  0.00218  0.00198
                                        0.00561  0.00492  0.00454
-  Disc file on unit   1 extended by     1 records 
-Mean C-C su =   0.0000
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -1349,6 +1355,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    9.84439,     270 reflections used in refinement
 
  Structure factor least squares calculation    5  ends  6
+SumFo/SumFc=     9.855      LS-scale=     9.844      Wilson Scale=     0.000                                                                                                                                                                                    
+<Fo>-<Fc> =    0.016    100*(<Fo>-<Fc>)/<Fo> =    0.111                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -1502,14 +1510,15 @@ Inter cycle   4       0.00          0.100E+16       24.9
                      0.00000           0.00007  0.00005 -0.00004 -0.00021  0.00004 -0.00002  0.00026 -0.00021 -0.00009
                      0.00000           0.00061  0.00053  0.00085  0.00195  0.00217  0.00117  0.00188  0.00211  0.00192
                                        0.00539  0.00473  0.00429
-Mean C-C su =   0.0000
+  Disc file on unit   1 extended by     1 records 
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #FINI                                                                                                                                                                                                                                                           
- Physical reads        707 Physical writes       1288 Cache hits      50678
- Cache hit distribution    44410    2165     696     415     471     186
- Cache hit distribution      161     168     148     255     174     186
- Cache hit distribution       91     121     141     106     142     120
- Cache hit distribution       79     116      81     103      76      67
+ Physical reads        689 Physical writes       1298 Cache hits      50701
+ Cache hit distribution    44261    2324     705     410     465     180
+ Cache hit distribution      221     166     158     234     134     150
+ Cache hit distribution      206     122     141     124      92     109
+ Cache hit distribution       87      92      99      86      64      71
 
 
           : Job ends ok       with     0 warnings and     0 errors
