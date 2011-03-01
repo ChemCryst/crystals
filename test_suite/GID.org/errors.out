@@ -665,7 +665,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     3     serial number        1     Address     4291     Length      66     Created on      
+ Print list type     3     serial number        1     Address     4291     Length      72     Created on      
 
 
  Record  101    LGRP   12  NGRP      3   THE ATOMIC SCATTERING FACTORS IN EXPONENTIAL FORMAT                             
@@ -674,19 +674,26 @@ REAL
  TYPE        F'          F''         A(1)        B(1)        A(2)        B(2)        A(3)        B(3)        A(4)        
                                      B(4)        C           
 
- C          0.000       0.000       1.00000     2.00000     3.00000     4.00000     5.00000     6.00000     7.00000
+
+
+ C        0.00000     0.00000       1.00000     2.00000     3.00000     4.00000     5.00000     6.00000     7.00000
                                     8.00000     9.00000
- P          0.120       0.460      10.00000    11.00000    12.00000    13.00000    14.00000    15.00000    16.00000
+
+
+ P        0.12000     0.46000      10.00000    11.00000    12.00000    13.00000    14.00000    15.00000    16.00000
                                    17.00000    18.00000
- MO         3.600      -4.000     110.00000   111.00000   112.00000   113.00000   114.00000   115.00000   116.00000
+
+
+ MO       3.60000    -4.00000     110.00000   111.00000   112.00000   113.00000   114.00000   115.00000   116.00000
                                   117.00000   118.00000
 
 
- Record  102    LGRP    1  NGRP      3
+
+ Record  102    LGRP    2  NGRP      3
 
 
 
- Record  103    LGRP    1  NGRP      3
+ Record  103    LGRP    2  NGRP      3
 
 
 
@@ -718,7 +725,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     5     serial number        1     Address     4357     Length      83     Created on      
+ Print list type     5     serial number        1     Address     4363     Length      83     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -821,7 +828,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    13     serial number        1     Address     4779     Length     155     Created on      
+ Print list type    13     serial number        1     Address     4785     Length     155     Created on      
 
 
  Record  101    LGRP    3  NGRP      1   DATA PERTAINING TO THE CRYSTALS ITSELF (-1 FOR NO, 0 FOR YES)                   
@@ -911,7 +918,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    14     serial number        1     Address     4934     Length      72     Created on      
+ Print list type    14     serial number        1     Address     4940     Length      72     Created on      
 
 
  Record  102    LGRP    3  NGRP      1   ORIENTATION PARAMETERS FOR THE MAP CALCULATION AND PRINTING                     
@@ -954,7 +961,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    23     serial number        1     Address     5006     Length      76     Created on      
+ Print list type    23     serial number        1     Address     5012     Length      76     Created on      
 
 
  Record  101    LGRP    7  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
@@ -1008,7 +1015,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    25     serial number        1     Address     5082     Length      52     Created on      
+ Print list type    25     serial number        1     Address     5088     Length      52     Created on      
 
 
  Record  101    LGRP    9  NGRP      2   THE MATRICES THAT TRANSFORM THE STANDARD INDICES INTO EACH ELEMENT              
@@ -1059,11 +1066,11 @@ REAL
 
 
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads         92 Physical writes        210 Cache hits       8273
- Cache hit distribution     5763     390     269     142     157      57
- Cache hit distribution      179      81      74     213     146     134
- Cache hit distribution      213     111     117      90      55      34
- Cache hit distribution       26       9      10       1       0       2
+ Physical reads         95 Physical writes        210 Cache hits       8295
+ Cache hit distribution     5761     398     275     150     137      79
+ Cache hit distribution      181      70      88     224     131     123
+ Cache hit distribution      248      84     131      79      46      57
+ Cache hit distribution       10      10      11       1       0       1
 
 
           : Job ends ok       with     0 warnings and     9 errors
