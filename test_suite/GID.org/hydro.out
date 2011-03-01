@@ -41,7 +41,7 @@ Space group symbol is   P    -1
 # DJW JUN09                                                                                                                                                                                                                                                     
 #SET MONITOR ON                                                                                                                                                                                                                                                 
 #HYDROGEN                                                                                                                                                                                                                                                       
-  Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     2 records 
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
 
@@ -121,7 +121,6 @@ Space group symbol is   P    -1
            H         21.0    1.00000        1.   0.60233   0.67019   0.06765   0.06000
  List now contains    39 atoms
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
 #DISP HI                                                                                                                                                                                                                                                        
  Summary of contents of list  5 - Parameters
  There are no layer, element, or batch scales                                                                                                                                                                                                                   
@@ -194,6 +193,7 @@ H12 C(12) C(11) C(13)
 H12 C(13) C(12) C(8) 
 H33 C(14) C(11) C(10) 
 #HYDROGENS  5  5                                                                                                                                                                                                                                                
+  Disc file on unit   1 extended by     2 records 
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
@@ -280,11 +280,11 @@ H33 C(14) C(11) C(10)
  List now contains    32 atoms
 Bonds: Update required - List5 length change
 #FINI                                                                                                                                                                                                                                                           
- Physical reads        116 Physical writes        222 Cache hits       5756
- Cache hit distribution     4423     318     205      59      69      37
- Cache hit distribution       69      46      70      94      33      27
- Cache hit distribution       38      42      45      40      42      21
- Cache hit distribution       20      21      27       6       3       1
+ Physical reads        123 Physical writes        221 Cache hits       5773
+ Cache hit distribution     4426     316     185      94      70      38
+ Cache hit distribution       56      33      63     113      42      24
+ Cache hit distribution       54      31      52      33      42      16
+ Cache hit distribution       22      25      19       6       5       8
 
 
           : Job ends ok       with     0 warnings and     0 errors
