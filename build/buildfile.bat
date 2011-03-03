@@ -1,4 +1,3 @@
-@call make_w32_include.bat
 @echo on
 @
 @if "%COMPCODE%" == "" goto edcodeerror
@@ -7,6 +6,7 @@
 @set FILEFOUND=
 @
 @if "%1" == "debug" set CRDEBUG=TRUE&&shift
+@call make_w32_include.bat
 @
 @if "%1" == "" goto clerror
 @
@@ -91,16 +91,18 @@
 @if exist %1.obj del %1.obj
 @set COPTIONS=%CDEF% %COPTS%
 @if "%CRDEBUG%" == "TRUE" set COPTIONS=%CDEF% %CDEBUG%
-%CC% ..\gui\%1.cc %COUT%%1.obj %COPTIONS% 2> obj\output || ( make_err.bat CPP_RELEASE_COMPILE %1.cpp obj\output & exit /b 1 )
+%CC% ..\gui\%1.cc %COUT%%1.obj %COPTIONS% 2> obj\output || ( make_err.bat CPP_RELEASE_COMPILE %1.cpp obj\output )
 @goto %JUMPBACK%
 
 :fcomp
 @echo building %1.obj
 @if exist %1.obj del %1.obj
-@set FOPTIONS=%FDEF% %FWIN% %FOPTS%
+@if  not "%1" == "lapack" set FSRC= %SRCDIR%\%1.fpp
+@if      "%1" == "lapack" set FSRC= %SRCDIR%\%1.f
+@if  not "%1" == "lapack" set FOPTIONS=%FDEF% %FWIN% %FOPTS%
+@if      "%1" == "lapack" set FOPTIONS=%FDEF% %FWIN% %FNOOPT%
 @if "%CRDEBUG%" == "TRUE" set FOPTIONS=%FDEF% %FWIN% %FDEBUG%
-@if not "%1" == "lapack" %F77% %SRCDIR%\%1.fpp %FOUT%%1.obj %FOPTIONS% 2> obj\output || ( make_err.bat FPP_RELEASE_COMPILE %1.fpp obj\output  & exit /b 1 )
-@if "%1" == "lapack" %F77% %SRCDIR%\%1.f %FOUT%%1.obj %FWIN% %FDEF% %FNOOPT% 2> obj\output || ( make_err.bat FPP_RELEASE_COMPILE %1.fpp obj\output  & exit /b 1 )
+@ %F77% %FSRC% %FOUT%%1.obj %FOPTIONS%  2> obj\output || ( make_err.bat FPP_RELEASE_COMPILE %1.fpp obj\output  & exit /B 1 )
 @goto %JUMPBACK%
 
 :scomp
