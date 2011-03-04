@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.59  2009/01/21 17:01:59  djw
+C Use - rather than # for higher generations of dsc files because of clash with (incomplete) treatment of # in html links
+C
 C Revision 1.58  2008/05/09 11:09:12  djw
 C Enable generation Nos for dsc files
 C
@@ -142,7 +145,7 @@ CODE FOR XERIOM
 C -- THIS SUBROUTINE SHOULD OUTPUT A MESSAGE ABOUT THE I/O ERROR THAT JU
 C    OCCURED, ON UNIT 'IUNIT'
 C
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DIGITALF77_) 
       USE DFPORT
 #endif
       CHARACTER*80 REASON
@@ -178,7 +181,7 @@ C -- DETERMINE REASON WITH ENVIRONMENT ROUTINE
       CALL FORTRAN_ERROR_MESSAGE@ (-IOS, REASON)
       CALL XCTRIM( REASON, MSGEND )
 #endif
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DVF_) || defined(_GID_) || defined(_WXS_) 
       WRITE(REASON, '(A,I4)') 'File I/O Error: ', IOS
       CALL XCTRIM( REASON, MSGEND )
 #endif
@@ -186,11 +189,6 @@ C -- DETERMINE REASON WITH ENVIRONMENT ROUTINE
       CALL PERROR (' perror message ')
 #endif
 #if defined(_GIL_)  || defined(_MAC_)
-      WRITE(REASON, '(A,I4)') 'File I/O Error: ', IOS
-      CALL XCTRIM( REASON, MSGEND )
-      CALL PERROR (' perror message ')
-#endif
-#if defined(_WXS_) 
       WRITE(REASON, '(A,I4)') 'File I/O Error: ', IOS
       CALL XCTRIM( REASON, MSGEND )
       CALL PERROR (' perror message ')
@@ -447,7 +445,7 @@ C****
 #if defined(_PPC_) 
      1         READONLY ,
 #endif
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DVF_) || defined(_DIGITALF77_) 
      1         READONLY ,
 #endif
 #if !defined(_DOS_) 
@@ -478,7 +476,7 @@ CE***
      1         SHARED ,
      1         READONLY ,
 #endif
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DVF_) || defined(_DIGITALF77_) 
      1         READONLY ,
 #endif
 #if defined(_PPC_) 
@@ -774,7 +772,7 @@ C -- SPECIAL 'READONLY' , 'SHARED' OPEN FOR VAX/VMS
 #if defined(_VAX_) 
      1         SHARED ,
 #endif
-#if defined(_DVF_) || defined(_GID_) || defined(_VAX_) 
+#if defined(_DVF_) || defined(_DIGITALF77_) || defined(_VAX_) 
      1         READONLY ,
 #endif
 #if !defined(_DOS_) 
@@ -795,7 +793,7 @@ C -- SPECIAL 'READONLY' , 'SHARED' OPEN FOR VAX/VMS
 #if defined(_VAX_) 
      1         SHARED ,
 #endif
-#if defined(_DVF_) || defined(_GID_) || defined(_VAX_) 
+#if defined(_DVF_) || defined(_DIGITALF77_) || defined(_VAX_) 
      1         READONLY ,
 #endif
 #if !defined(_DOS_) 
@@ -1938,8 +1936,9 @@ C
 CODE FOR XDATER
       SUBROUTINE XDATER ( CDATE )
 C
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DIGITALF77_) 
       USE DFPORT
+#endif
 C -- THIS ROUTINE SHOULD RETURN THE CURRENT DATE IN THE CHARACTER*8
 C    VARIABLE 'CDATE'.
 C
@@ -1960,7 +1959,6 @@ C      DATE$A            DAY, MMM DD YYYY ( MMM = 'JAN' ETC. ,
 C                                           DAY = 'MON', 'TUE', ETC. )
 C      DATE              INTEGER ARRAY :- YEAR, MONTH, DAY
 C
-#endif
       INCLUDE 'XSSVAL.INC'
 C
 #if defined(_H_P_) 
@@ -1977,7 +1975,7 @@ C
 #endif
       CHARACTER*8 CDATE
 C
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DIGITALF77_) 
       CHARACTER*8 CDATE2
 #endif
 #if defined(_ICL_) 
@@ -2005,7 +2003,7 @@ C
 #if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       DIMENSION IDAT(3)
 #endif
-#if defined(_WXS_) 
+#if defined(_GNUF77_) 
       DIMENSION IDAT(3)
 
 
@@ -2060,7 +2058,7 @@ C
       IF ( CDATE(1:1) .EQ. ' ' ) CDATE(1:1) = '0'
       IF ( CDATE(4:4) .EQ. ' ' ) CDATE(4:4) = '0'
 #endif
-#if defined(_WXS_) 
+#if defined(_GNUF77_) 
       CALL IDATE ( IDAT )
       WRITE ( CDATE , '(I2,''/'',I2,''/'',I2)' ) IDAT(1) ,
      2      IDAT(2) , MOD ( IDAT(3) , 100 )
@@ -2078,7 +2076,7 @@ C
 #if defined(_DOS_) 
       CDATE = EDATE@()
 #endif
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DIGITALF77_) 
       CDATE2 = DATE()
       WRITE(CDATE,'(A,2(''/'',A))')
      1    CDATE2(4:5),CDATE2(1:2),CDATE2(7:8)
@@ -2102,13 +2100,13 @@ C
 #if defined(_PPC_) 
       KOR = JIOR ( I , J )
 #endif
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DIGITALF77_) 
       KOR = IOR ( I , J )
 #endif
 #if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       KOR = IOR ( I , J )
 #endif
-#if defined(_WXS_) 
+#if defined(_GNUF77_) 
       KOR = IOR ( I , J )
 #endif
 #if defined(_VAX_) 
@@ -2146,13 +2144,13 @@ C
 #if defined(_PPC_) 
       KAND = JIAND ( I , J )
 #endif
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DIGITALF77_) 
       KAND = IAND ( I , J )
 #endif
 #if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       KAND = IAND ( I , J )
 #endif
-#if defined(_WXS_) 
+#if defined(_GNUF77_) 
       KAND = IAND ( I , J )
 #endif
 #if defined(_VAX_) 
@@ -2198,7 +2196,7 @@ C    DATA WILL BE MOVED
       J = %LOC ( IRESLT(1) )
 C
 #endif
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DIGITALF77_) 
       I = LOC ( ISRCE(1))
       J = LOC ( IRESLT(1))
 #endif
@@ -2206,7 +2204,7 @@ C
       I = LOC ( ISRCE(1))
       J = LOC ( IRESLT(1))
 #endif
-#if defined(_WXS_) 
+#if defined(_GNUF77_) 
       I = LOC ( ISRCE(1))
       J = LOC ( IRESLT(1))
 C
@@ -2315,7 +2313,7 @@ C
       J = LOC ( IRESLT(1))
 C
 #endif
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DIGITALF77_) 
       I = LOC ( ISRCE(1))
       J = LOC ( IRESLT(1))
 #endif
@@ -2323,20 +2321,7 @@ C
       I = LOC ( ISRCE(1))
       J = LOC ( IRESLT(1))
 #endif
-#if defined(_WXS_) 
-      I = LOC ( ISRCE(1))
-      J = LOC ( IRESLT(1))
-C
-#endif
-#if defined(_DVF_) || defined(_GID_) 
-      I = LOC ( ISRCE(1))
-      J = LOC ( IRESLT(1))
-#endif
-#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
-      I = LOC ( ISRCE(1))
-      J = LOC ( IRESLT(1))
-#endif
-#if defined(_WXS_) 
+#if defined(_GNUF77_) 
       I = LOC ( ISRCE(1))
       J = LOC ( IRESLT(1))
 C
@@ -3389,13 +3374,13 @@ C on all platforms.
         ISLP = KCCEQL(NAME(LEVEL),1,'/')
         IF ( ISLP .GT. 0 ) THEN
 #endif
-#if defined(_DOS_) || defined(_DVF_) || defined(_GID_) 
+#if defined(_DOS_) || defined(_DIGITALF77_) 
           NAME(LEVEL)(ISLP:ISLP) = '\'
 #endif
-#if defined(_WXS_) 
+#if defined(_GNUF77_) 
                   NAME(LEVEL)(ISLP:ISLP) = '\\'
 #endif
-#if defined(_DOS_) || defined(_DVF_) || defined(_GID_) || defined(_WXS_) 
+#if defined(_DOS_) || defined(_DIGITALF77_) || defined(_GNUF77_) 
         ELSE
           EXIT
         END IF
@@ -3440,13 +3425,13 @@ C LOOK FOR AN ENVIRONMENT STRING IF NONE WAS ASSIGNED UP TO NOW
 #if defined(_DOS_) 
           CALL DOSPARAM@(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 #endif
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DIGITALF77_) 
       CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 #endif
 #if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 #endif
-#if defined(_WXS_) 
+#if defined(_GNUF77_) 
           CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 
 CNOV98 IF THERE IS NO ENVIRONMENT VARIABLE, CHECK THE PRESETS
@@ -3460,13 +3445,13 @@ CNOV98 IF THERE IS NO ENVIRONMENT VARIABLE, CHECK THE PRESETS
 #if defined(_DOS_) || defined(_DVF_) 
          LIST(LEVEL) = '.\'
 #endif
-#if defined(_GID_) || defined(_VAX_) 
+#if defined(_DIGITALF77_) 
          LIST(LEVEL) = '.\'
 #endif
 #if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
          LIST(LEVEL) = './'
 #endif
-#if defined(_WXS_) 
+#if defined(_GNUF77_) 
              LIST(LEVEL) = './'
 #endif
           ENDIF
@@ -3731,7 +3716,7 @@ CODE FOR FRAND
       FUNCTION FRAND()
 C------ RETURNS A VALUE BETWEEN 0 and 1 from the compiler library's
 C       random number generator.
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DIGITALF77_) 
       USE DFPORT
       FRAND = RAND()
 #endif
@@ -3741,7 +3726,7 @@ C       random number generator.
 #if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       FRAND = RAND()
 #endif
-#if defined(_WXS_) 
+#if defined(_GNUF77_) 
       FRAND = RAND()
 #endif
 #if defined(_VAX_) 
@@ -3778,13 +3763,13 @@ C----- REPEAT RANDOM SEQUENCE
 #if defined(_DOS_) 
           CALL SET_SEED@(SEED)
 #endif
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DIGITALF77_) 
           CALL SRAND(0)
 #endif
 #if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
           CALL SRAND(0)
 #endif
-#if defined(_WXS_) 
+#if defined(_GNUF77_) 
           CALL SRAND(0)
 #endif
         ELSE
@@ -3798,10 +3783,10 @@ C----- CREATE NEW SEQUENCE
 #if defined(_DOS_) 
           CALL DATE_TIME_SEED@
 #endif
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DIGITALF77_) 
           CALL SRAND(RND$TIMESEED )
 #endif
-#if defined(_GIL_) || defined(_LIN_) || defined(_WXS_)  || defined(_MAC_)
+#if defined(_GIL_) || defined(_LIN_) || defined(_GNUF77_)  || defined(_MAC_)
           KSEED = MOD (TIME(),2**30)
           CALL SRAND(KSEED)
 #endif
@@ -3856,7 +3841,7 @@ c      ENDIF
       END
 CODE FOR GETCOM
       SUBROUTINE GETCOM(CLINE)
-#if defined(_GID_) 
+#if defined(_GID_) || defined (_WXS_) 
       INTERFACE
                     SUBROUTINE CINEXTCOMMAND (istat, caline)
                     !DEC$ ATTRIBUTES C :: cinextcommand
@@ -3867,19 +3852,13 @@ CODE FOR GETCOM
             END INTERFACE
       INTEGER ISTAT
 #endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
-      CHARACTER*256 CALINE
-#endif
-#if defined(_WXS_) 
+#if defined(_GID_)|| defined(_GIL_)|| defined(_MAC_)|| defined(_WXS_)
       CHARACTER*256 CALINE
 #endif
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'UFILE.INC'
       INCLUDE 'CAMPAR.INC'
       INCLUDE 'CAMBLK.INC'
-#if defined(_NEV_) 
-ER \CAMGRP
-#endif
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XUNITS.INC'
       CHARACTER *(*) CLINE
@@ -3902,7 +3881,6 @@ ER \CAMGRP
       ISTAT = 0
       CALL CINEXTCOMMAND(ISTAT,CALINE)
       READ(CALINE,'(A)') CLINE
-C&GID      DATA CALINE(1:40) /'                                        '/
 #endif
 #if defined(_GID_) 
       CALINE=' '
@@ -3910,18 +3888,7 @@ C&GID      DATA CALINE(1:40) /'                                        '/
       CALL CINEXTCOMMAND(ISTAT,CALINE)
       READ(CALINE,'(A)') CLINE
 #endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
-      IF ( LCLOSE ) THEN
-          WRITE(CMON,'(A)') '^^WI SET PROGOUTPUT TEXT = '
-          CALL XPRVDU (NCVDU,1,0)
-          WRITE(CMON,'(A)') '^^WI ''Working. Please Wait.'''
-          CALL XPRVDU (NCVDU,1,0)
-          WRITE(CMON,'(A)')  '^^CR '
-          CALL XPRVDU (NCVDU,1,0)
-      ENDIF
-
-#endif
-#if defined(_WXS_) 
+#if defined(_GID_) || defined(_GIL_)|| defined(_MAC_)|| defined(_WXS_)
       IF ( LCLOSE ) THEN
           WRITE(CMON,'(A)') '^^WI SET PROGOUTPUT TEXT = '
           CALL XPRVDU (NCVDU,1,0)
@@ -3941,23 +3908,12 @@ C&GID      DATA CALINE(1:40) /'                                        '/
 1     FORMAT ( A )
       RETURN
       END
-C
 
-cCODE FOR GUWAIT
-c      SUBROUTINE GUWAIT()
-c&GID      INTERFACE
-c&GID          SUBROUTINE COMPLETE ()
-c&GID          !DEC$ ATTRIBUTES C :: complete
-c&GID          END SUBROUTINE COMPLETE
-c&GID      END INTERFACE
-c&&GIDGIL      CALL COMPLETE()
-c&WXS      CALL COMPLETE()
-c      END
 
 
 CODE FOR GUEXIT
       SUBROUTINE GUEXIT(IVAR)
-#if defined(_GID_) 
+#if defined(_DIGITALF77_) 
       INTERFACE
           SUBROUTINE CIENDTHREAD (IVAR)
           !DEC$ ATTRIBUTES C :: ciendthread
@@ -4027,10 +3983,7 @@ C----- CLOSE ALL THE FILES
 #if defined(_GID_) 
       RETURN
 #endif
-#if defined(_GIL_)  || defined(_MAC_)
-      RETURN
-#endif
-#if defined(_WXS_) 
+#if defined(_GIL_)  || defined(_MAC_) || defined(_WXS_) 
       RETURN
 #endif
       END
@@ -4280,7 +4233,7 @@ C
 CODE FOR XPRTDV
       SUBROUTINE XPRTDV(NCDEV, CBUF, LINBUF, NLINES)
 C---- MACHINE SPECIFIC WRITE TO THE SCREEN
-#if defined(_GID_) 
+#if defined(_DIGITALF77_) 
 C{
       INTERFACE
                 SUBROUTINE CALLCCODE (CALINE)
@@ -4327,21 +4280,7 @@ C- PRINT A WARNING SOMEWHERE
        CBUF(J)(N+1:N+1) = CHAR(0)  ! Make into a c string.
 
 #endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
-       IF (CBUF(J)(2:2).NE.'^') THEN
-C&&GILGID          LENBUF = MIN(LENBUF,79)   !LINE LIMITED TO 79 (for output)
-          IF ((IOFORE.EQ.-1).OR.(IOBACK.EQ.-1)) THEN
-             WRITE( CEXTRA,'(A)') CBUF(J)
-          ELSE 
-             WRITE( CEXTRA,'(2(A,I2.2),A)')
-     1       '{', IOFORE, ',', IOBACK, CBUF(J)
-          ENDIF 
-       ELSE 
-          WRITE( CEXTRA,'(A)') CBUF(J) !Line not limited (^^ command)
-       END IF
-
-#endif
-#if defined(_WXS_) 
+#if defined(_GID_) ||defined(_GIL_) ||defined(_MAC_) ||defined(_WXS_)
        IF (CBUF(J)(2:2).NE.'^') THEN
           IF ((IOFORE.EQ.-1).OR.(IOBACK.EQ.-1)) THEN
              WRITE( CEXTRA,'(A)') CBUF(J)
@@ -4354,7 +4293,7 @@ C&&GILGID          LENBUF = MIN(LENBUF,79)   !LINE LIMITED TO 79 (for output)
        END IF
 
 #endif
-               IF (CLAST .EQ. CHAR(13)) THEN !--- NO CR OR LF
+       IF (CLAST .EQ. CHAR(13)) THEN !--- NO CR OR LF
 #if defined(_DOS_) 
                JNL77 = 0                 !--- SWITCH OFF LINE FEEDS
 #endif
@@ -4406,10 +4345,7 @@ Cdjw:      enable thermometer etc in non-vga mode
                 IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
                 WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF),CHAR(13)
 #endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
-            CALL CALLCCODE ( CEXTRA(1:LENBUF))
-#endif
-#if defined(_WXS_) 
+#if defined(_GID_) ||defined(_GIL_) ||defined(_MAC_) ||defined(_WXS_)
             CALL CALLCCODE ( CEXTRA(1:LENBUF))
 #endif
 #if defined(_VAX_) 
@@ -4427,10 +4363,7 @@ Cdjw:      enable thermometer etc in non-vga mode
 #if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
             WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
 #endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
-            CALL CALLCCODE ( CEXTRA(1:LENBUF))
-#endif
-#if defined(_WXS_) 
+#if defined(_GID_) || defined(_GIL_)|| defined(_MAC_)|| defined(_WXS_)
             CALL CALLCCODE ( CEXTRA(1:LENBUF))
 #endif
                ELSE
@@ -4441,10 +4374,7 @@ Cdjw:      enable thermometer etc in non-vga mode
 #if defined(_DOS_) 
                 IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
 #endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
-            CALL CALLCCODE ( CEXTRA(1:LENBUF))
-#endif
-#if defined(_WXS_) 
+#if defined(_GID_) || defined(_GIL_) ||defined(_MAC_)||defined(_WXS_)
             CALL CALLCCODE ( CEXTRA(1:LENBUF))
 #endif
                ENDIF
@@ -4457,11 +4387,11 @@ C
       END
 
 
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) || defined(_MAC_)
 CODE FOR GDETCH
       SUBROUTINE GDETCH(CLINE)
 #endif
-#if defined(_GID_) 
+#if defined(_DIGITALF77_) 
       INTERFACE
                 SUBROUTINE GUEXEC (CALINE)
                     !DEC$ ATTRIBUTES C :: GUEXEC
@@ -4524,7 +4454,7 @@ C--SET THE # SECS SINCE 1970 IN ISECS
 
 CODE FOR XCDATE
       SUBROUTINE XCDATE(ISECS,CT)
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DIGITALF77_) 
       USE DFPORT
 C--CONVERT SECS SINCE 1970 INTO 24CHAR STRING
 C e.g. "Fri Sep 07 04:37:23 2001"
