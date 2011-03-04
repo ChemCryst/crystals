@@ -21,6 +21,20 @@
 
 int CxModList::mModListCount = kModListBase;
 
+
+#ifdef __BOTHWX__
+int wxCALLBACK MySorter(long item1, long item2, long sortData)
+{
+    // inverse the order
+    if (item1 < item2)
+        return -1 * sortData;
+    if (item1 > item2)
+        return 1 * sortData;
+    return 0;
+}
+#endif
+
+
 CxModList *    CxModList::CreateCxModList( CrModList * container, CxGrid * guiParent )
 {
     CxModList  *theModList = new CxModList( container );
@@ -153,7 +167,7 @@ BEGIN_MESSAGE_MAP(CxModList, CListCtrl)
 //    ON_WM_ERASEBKGND()
     ON_COMMAND_RANGE(kMenuBase, kMenuBase+1000, OnMenuSelected)
     ON_NOTIFY(HDN_ITEMCLICKA, 0, OnHeaderClicked)
-      ON_NOTIFY(HDN_ITEMCLICKW, 0, OnHeaderClicked)
+    ON_NOTIFY(HDN_ITEMCLICKW, 0, OnHeaderClicked)
     ON_NOTIFY_REFLECT( LVN_ITEMCHANGED, ItemChanged )
     ON_NOTIFY_REFLECT( NM_RCLICK,  RightClick )
 END_MESSAGE_MAP()
@@ -164,6 +178,7 @@ BEGIN_EVENT_TABLE(CxModList, wxListCtrl)
      EVT_LIST_ITEM_SELECTED(-1, CxModList::ItemSelected )
      EVT_LIST_ITEM_DESELECTED(-1, CxModList::ItemDeselected )
      EVT_LIST_ITEM_RIGHT_CLICK(-1, CxModList::RightClick )
+     EVT_LIST_COL_CLICK(-1, CxModList::HeaderClicked )
 END_EVENT_TABLE()
 #endif
 
@@ -203,12 +218,14 @@ void CxModList::AddRow(int id, vector<string> & rowOfStrings, bool selected,
 #ifdef __BOTHWX__
             wxListItem info;
             info.m_mask = wxLIST_MASK_STATE || wxLIST_MASK_TEXT;
+            info.m_stateMask = wxLIST_STATE_SELECTED;
             info.m_itemId = i;
-            if ( selected )
+			if ( selected ) {
                info.m_state = wxLIST_STATE_SELECTED;
-            else
+			}
+			else {
                info.m_state = 0;
-
+			}
             for( int j=0; j<m_numcols; j++) {
               info.m_text = rowOfStrings[j].c_str();
               info.m_col = j;
@@ -260,7 +277,8 @@ void CxModList::AddRow(int id, vector<string> & rowOfStrings, bool selected,
 #endif
 #ifdef __BOTHWX__
        m_ProgSelecting = 2;
-       SetItemState(nItem, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+
+	   SetItemState(nItem, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
        m_ProgSelecting = 0;
 #endif
     } else {
@@ -575,7 +593,7 @@ void CxModList::ItemSelected ( wxListEvent& event )
       ((CrModList*)ptr_to_crObject)->SendValue( strm.str() ); //Send the index only.
 
       int id = IDlist[item]-1;
-      TEXTOUT ( "Select. item=" + string(item) + ", id=" + string(id) );
+//      TEXTOUT ( "Select. item=" + string(item) + ", id=" + string(id) );
       ((CrModList*)ptr_to_crObject)->SelectAtomByPosn(id,true);
     }
 }
@@ -593,9 +611,188 @@ void CxModList::ItemDeselected ( wxListEvent& event )
       strm << "UNSELECTED_N" << item + 1;
       ((CrModList*)ptr_to_crObject)->SendValue( strm.str() ); //Send the index
       int id = IDlist[item]-1;
-      TEXTOUT ( "Unselect. item=" + string(item) + ", id=" + string(id) );
+//      TEXTOUT ( "Unselect. item=" + string(item) + ", id=" + string(id) );
       ((CrModList*)ptr_to_crObject)->SelectAtomByPosn(id,false);
     }
+}
+#endif
+
+
+#ifdef __BOTHWX__
+void CxModList::HeaderClicked( wxListEvent& wxLE )
+{
+
+	if( wxLE.GetColumn() == nSortedCol )
+		bSortAscending = !bSortAscending;
+    else
+        bSortAscending = true;
+
+	nSortedCol = wxLE.GetColumn();
+    CxSortItems( m_colTypes[nSortedCol], nSortedCol, bSortAscending );
+ 
+}
+bool CxModList::CxSortItems( int colType, int nCol, bool bAscending)
+{
+
+
+    int size = GetItemCount();
+	int nColCount = GetColumnCount();
+
+	vector<int> intsToSort;
+    vector<float> floatsToSort;
+    vector<string> stringsToSort;
+	vector<int> index;
+
+
+    for ( int i = 0; i < size; i++ )
+    {
+		index.push_back(i);
+
+		wxListItem info;
+        info.SetMask(wxLIST_MASK_TEXT);
+        info.SetId( i );
+		info.SetColumn ( nCol );
+		GetItem(info);
+		string ss = string(info.GetText().mb_str());
+
+		switch ( colType )
+        {
+        case COL_INT:
+            intsToSort.push_back( atoi(ss.c_str()) );
+            break;
+        case COL_REAL:
+            floatsToSort.push_back( (float)atof(ss.c_str()) );
+            break;
+        case COL_TEXT:
+            stringsToSort.push_back(ss);
+            break;
+        }
+    }
+
+	int tempi;
+	float tempf;
+	string temps;
+
+
+// Sort the items along with the index. This is a stable insertion sort
+// so that previous sorts remain in effect for a given value of this sort.
+    for ( int element = 1; element < size; element++)
+    {
+
+
+// Extract details of this element
+        switch ( colType )
+        {
+        case COL_INT:
+			tempi = intsToSort[element];
+            break;
+        case COL_REAL:
+            tempf = floatsToSort[element];
+            break;
+        case COL_TEXT:
+            temps = stringsToSort[element];
+            break;
+        }
+        int IDhold = IDlist[element];
+		int indexHold = index[element];
+
+
+// Take out 2nd element, and move it backwards down the list until it is in right 'place'.
+// Take out 3rd element, and move it backwards down the list until it is in right 'place'.
+// usw.
+
+		bool repeat = true;
+        int place;
+
+		//Compare element with position back one place.
+		
+		for ( place = element-1; repeat; place-- )
+        {
+            if (place >= 0)
+            {
+                switch ( colType )
+                {
+                case COL_INT:
+                    if(    (  bAscending && (intsToSort[place] <= tempi))
+                        || ( !bAscending && (intsToSort[place] >= tempi)) )
+                    {
+// insert element here
+						repeat              = false;
+						index[place+1]		= indexHold;
+                        IDlist[place+1]     = IDhold;
+                        intsToSort[place+1] = tempi;
+                    }
+                    else
+                    {
+// shuffle other elements up to make space.
+						index[place+1]		= index[place];
+                        IDlist[place+1]     = IDlist[place];
+                        intsToSort[place+1] = intsToSort[place];
+                    }
+                    break;
+                case COL_REAL:
+                    if(    (  bAscending && (floatsToSort[place] <= tempf))
+                        || ( !bAscending && (floatsToSort[place] >= tempf)) )
+                    {
+                        repeat                = false;
+						index[place+1]		= indexHold;
+                        IDlist[place+1]       = IDhold;
+                        floatsToSort[place+1] = tempf;
+                    }
+                    else
+                    {
+						index[place+1]		= index[place];
+                        IDlist[place+1]      = IDlist[place];
+                        floatsToSort[place+1] = floatsToSort[place];
+                    }
+                    break;
+                case COL_TEXT:
+                    if(    (  bAscending && (stringsToSort[place] <= temps))
+                        || ( !bAscending && (stringsToSort[place] >= temps)) )
+                    {
+                        repeat                 = false;
+						index[place+1]		= indexHold;
+                        IDlist[place+1]       = IDhold;
+                        stringsToSort[place+1] = temps;
+                    }
+                    else
+                    {
+						index[place+1]		= index[place];
+                        IDlist[place+1]      = IDlist[place];
+                        stringsToSort[place+1] = stringsToSort[place];
+                    }
+                    break;
+                }
+            }
+            else
+            {
+                switch ( colType )
+                {
+                case COL_INT:
+                    intsToSort[0] = tempi;
+                    break;
+                case COL_REAL:
+                    floatsToSort[0] = tempf;
+                    break;
+                case COL_TEXT:
+                    stringsToSort[0] = temps;
+                    break;
+                }
+                IDlist[0]      = IDhold;
+				index[0]	   = indexHold;
+                repeat = false;
+            }
+        }
+    }
+
+
+	for ( int rc = 0; rc < size; rc++ ) {
+		SetItemData(index[rc], rc);
+	}
+
+	SortItems(MySorter, 1);
+    return true;
+
 }
 #endif
 
@@ -626,7 +823,7 @@ void CxModList::OnHeaderClicked(NMHDR* pNMHDR, LRESULT* pResult)
                         bSortAscending = true;
 
                 nSortedCol = phdn->iItem;
-                SortItems( m_colTypes[nSortedCol], nSortedCol, bSortAscending );
+                CxSortItems( m_colTypes[nSortedCol], nSortedCol, bSortAscending );
 
         }
         *pResult = 0;
@@ -639,7 +836,7 @@ void CxModList::OnHeaderClicked(NMHDR* pNMHDR, LRESULT* pResult)
 // nCol                 - column that contains the text to be sorted
 // bAscending           - indicate sort order
 #ifdef __CR_WIN__
-bool CxModList::SortItems( int colType, int nCol, bool bAscending)
+bool CxModList::CxSortItems( int colType, int nCol, bool bAscending)
 {
     int nColCount = ((CHeaderCtrl*)GetDlgItem(0))->GetItemCount();
     if( nCol >= nColCount)

@@ -84,6 +84,7 @@ class CxModList : public BASEMODLIST
     void ItemDeselected ( wxListEvent & event );
     void RightClick ( wxListEvent & event );
     void OnChar(wxKeyEvent & event );
+    void HeaderClicked( wxListEvent & wxle );
     DECLARE_EVENT_TABLE()
 #endif
 
@@ -110,7 +111,7 @@ protected:
 
     int nSortedCol;
     bool bSortAscending;
-    bool SortItems( int colType, int nCol, bool bAscending);
+    bool CxSortItems( int colType, int nCol, bool bAscending);
 
 };
 #endif
