@@ -7,6 +7,9 @@
 //   Filename:  CxResizeBar.cc
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.14  2009/07/23 14:15:42  rich
+//   Removed all uses of OpenGL feedback buffer - was dreadful slow on some new graphics cards.
+//
 //   Revision 1.13  2008/09/22 12:31:37  rich
 //   Upgrade GUI code to work with latest wxWindows 2.8.8
 //   Fix startup crash in OpenGL (cxmodel)
@@ -256,7 +259,7 @@ void CxResizeBar::OnMouseMove( wxMouseEvent & evt )
     SetCursor( AfxGetApp()->LoadStandardCursor( (m_type==kTHorizontal)?IDC_SIZENS:IDC_SIZEWE));
 #endif
 #ifdef __BOTHWX__
-    SetCursor( wxCursor ( (m_type==kTHorizontal)?wxCURSOR_SIZENS:wxCURSOR_SIZEWE) );
+    this->SetCursor( wxCursor ( (m_type==kTHorizontal)?wxCURSOR_SIZENS:wxCURSOR_SIZEWE) );
 #endif
    }
    else
@@ -265,7 +268,7 @@ void CxResizeBar::OnMouseMove( wxMouseEvent & evt )
     SetCursor( AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 #endif
 #ifdef __BOTHWX__
-    SetCursor( wxCursor ( wxCURSOR_ARROW ) );
+    this->SetCursor( wxCursor ( wxCURSOR_ARROW ) );
 #endif
    }
  }
@@ -307,7 +310,7 @@ void CxResizeBar::OnLButtonDown( wxMouseEvent & event )
         int x = event.m_x;
         int y = event.m_y;
         int nFlags = event.m_controlDown ? MK_CONTROL : 0 ;
-        nFlags = event.m_shiftDown ? MK_SHIFT : 0 ;
+        nFlags |= event.m_shiftDown ? MK_SHIFT : 0 ;
 #endif
 
  if ( nFlags & MK_CONTROL )
