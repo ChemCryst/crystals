@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.44  2009/07/23 14:15:42  rich
+// Removed all uses of OpenGL feedback buffer - was dreadful slow on some new graphics cards.
+//
 // Revision 1.43  2008/09/22 12:31:37  rich
 // Upgrade GUI code to work with latest wxWindows 2.8.8
 // Fix startup crash in OpenGL (cxmodel)
@@ -900,46 +903,46 @@ extern "C" {
 
 //declarations:
 
-#ifdef __CR_WIN__
+#ifdef _DIGITALF77_
 void fastbond  (int x1,int y1,int z1, int x2, int y2, int z2,
                 int r, int g, int b,  int rad,int btype,
                 int np, int * ptrs, char label[80], char slabel[80] );
 #endif
-#ifdef __BOTHWX__
+#ifdef _GNUF77_
 void fastbond_ (int x1,int y1,int z1, int x2, int y2, int z2,
                 int r, int g, int b,  int rad,int btype,
                 int np, int * ptrs, char label[80], char slabel[80] );
 #endif
-#ifdef __CR_WIN__
+#ifdef _DIGITALF77_
 void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
                 float u6,float u7,float u8,float u9, float fx, float fy, float fz,
                 int refflag, int assembly, int group, float ueq, float fspare);
 #endif
-#ifdef __BOTHWX__
+#ifdef _GNUF77_
 void fastatom_  (char* elem,int serial,char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
                 float u6,float u7,float u8,float u9, float fx, float fy, float fz,
                 int refflag, int assembly, int group, float ueq, float fspare);
 #endif
-#ifdef __CR_WIN__
+#ifdef _DIGITALF77_
 void fastsphere  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad);
 #endif
-#ifdef __BOTHWX__
+#ifdef _GNUF77_
 void fastsphere_  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad);
 #endif
-#ifdef __CR_WIN__
+#ifdef _DIGITALF77_
 void fastdonut  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad, int idec, int iaz);
 #endif
-#ifdef __BOTHWX__
+#ifdef _GNUF77_
 void fastdonut_  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad, int idec, int iaz);
@@ -947,13 +950,13 @@ void fastdonut_  (char* label,int x1,int y1,int z1,
 
 //implementations:
 
-#ifdef __CR_WIN__
+#ifdef _DIGITALF77_
 void fastbond  (int x1,int y1,int z1, int x2, int y2, int z2,
                 int r, int g, int b,  int rad,int btype,
                 int np, int * ptrs,
                 char label[80], char slabel[80] )
 #endif
-#ifdef __BOTHWX__
+#ifdef _GNUF77_
 void fastbond_ (int x1,int y1,int z1, int x2, int y2, int z2,
                 int r, int g, int b,  int rad,int btype,
                 int np, int * ptrs,
@@ -967,14 +970,14 @@ void fastbond_ (int x1,int y1,int z1, int x2, int y2, int z2,
                                          np,ptrs,clabel,slabel);
 }
 
-#ifdef __CR_WIN__
+#ifdef _DIGITALF77_
 void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
                 float u6,float u7,float u8,float u9, float fx, float fy, float fz,
                 int refflag, int assembly, int group, float ueq, float fspare)
 #endif
-#ifdef __BOTHWX__
+#ifdef _GNUF77_
 void fastatom_  (char* elem,int serial,char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
@@ -993,12 +996,12 @@ void fastatom_  (char* elem,int serial,char* label,int x1,int y1,int z1,
 
 }
 
-#ifdef __CR_WIN__
+#ifdef _DIGITALF77_
 void fastsphere  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad)
 #endif
-#ifdef __BOTHWX__
+#ifdef _GNUF77_
 void fastsphere_  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad)
@@ -1012,12 +1015,12 @@ void fastsphere_  (char* label,int x1,int y1,int z1,
 
 }
 
-#ifdef __CR_WIN__
+#ifdef _DIGITALF77_
 void fastdonut  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad, int idec, int iaz)
 #endif
-#ifdef __BOTHWX__
+#ifdef _GNUF77_
 void fastdonut_  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad, int idec, int iaz)
