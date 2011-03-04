@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.22  2009/09/04 09:25:46  rich
+//   Added support for Show/Hide H from model toolbar
+//   Fixed atom picking after model update in extra model windows.
+//
 //   Revision 1.21  2008/09/22 12:31:37  rich
 //   Upgrade GUI code to work with latest wxWindows 2.8.8
 //   Fix startup crash in OpenGL (cxmodel)
@@ -195,6 +199,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 {
 // Check if this is a separator.
 
+  LOGERR("Adding something");
   if ( newTool->toolType == CT_SEP )
   {
 #ifdef __CR_WIN__
@@ -235,6 +240,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 #endif
 #ifdef __BOTHWX__
     wxIcon mycon( file.c_str(), wxBITMAP_TYPE_ICO_RESOURCE, -1, -1 );
+	LOGERR("Adding App icon");
     if ( mycon.Ok() )
     {
       m_ToolBar->AddTool(newTool->CxID, mycon, newTool->tText.c_str());
@@ -278,15 +284,45 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 #endif
 
 #ifdef __BOTHWX__
-      struct stat buf;
+  	LOGERR("Adding script dir icon");
+    struct stat buf;
       if ( stat(file.c_str(),&buf)==0 )
       {
-        wxBitmap mymap ( file.c_str(), wxBITMAP_TYPE_BMP );
+        wxImage myimage ( file.c_str(), wxBITMAP_TYPE_BMP );
+		unsigned char tr = myimage.GetRed(0,0);
+		unsigned char tg = myimage.GetGreen(0,0);
+		unsigned char tb = myimage.GetBlue(0,0);
+		wxColour ncol = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
+		for (unsigned int x = 0; x < myimage.GetWidth(); ++x ) {
+			for (unsigned int y = 0; y < myimage.GetHeight(); ++y ) {
+				if ( myimage.GetRed(x,y) == tr ) {
+					if ( myimage.GetGreen(x,y) == tg ) {
+						if ( myimage.GetBlue(x,y) == tb ) {
+							myimage.SetRGB(x,y,ncol.Red(),ncol.Green(),ncol.Blue());
+						}
+					}
+				}
+			}
+		}
+
+
+        wxBitmap mymap ( myimage, wxBITMAP_TYPE_BMP );
         if( mymap.Ok() )
         {
           noLuck = false;
-          m_ToolBar->AddTool(newTool->CxID, mymap, newTool->tText.c_str(), "" );
-          m_ToolBar->Realize();
+// Deprecated:m_ToolBar->AddTool(newTool->CxID, mymap, newTool->tText.c_str(), "" );
+          m_ToolBar->AddTool(newTool->CxID, newTool->tText.c_str(), 
+			                 mymap, wxEmptyString, 
+							 (newTool->toggleable ? wxITEM_CHECK : wxITEM_NORMAL) );
+
+//		  if ( newTool->toggleable ) { 
+			ostringstream strstrm;
+			strstrm << newTool->CxID;
+			LOGERR("Made toggleable tool bar item: " + strstrm.str() );
+//		  }
+
+
+		  m_ToolBar->Realize();
           m_ImageIndex++;
           m_totWidth += 23;
         }
@@ -521,6 +557,9 @@ void CxToolBar::CheckTool(bool check, int id)
 #endif
 #ifdef __BOTHWX__
  m_ToolBar->ToggleTool(id, check);
+ ostringstream strstrm;
+ strstrm << id;
+ LOGERR((check? "Checked " : "Unchecked " ) + strstrm.str() );
 #endif
 }
 
