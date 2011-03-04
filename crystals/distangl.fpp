@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.101  2011/02/04 17:34:03  djw
+C Extend parameter list on PRTGRP to enable selection by RESIDUE
+C
 C Revision 1.100  2010/07/16 11:35:31  djw
 C Enable XPCHLX to output lists 12 and 16 to the cif file.  This means carrying the I/O chanel (as NODEV)
 C in XPCHLX,XPCHLH,PPCHND and XPCHUS.
@@ -6901,10 +6904,10 @@ C -- Add this extra element in L29 style at NEWL29.
             STORE(NEWM29+2) = STORE(L40T+2)
 
 C -- Have to get proper covalent radii from file if possible.
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) && !defined(_MAC_)
-            CFILEN = 'CRYSDIR:\script\propwin.dat'
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_MAC_)
+            CFILEN = 'CRYSDIR:script\propwin.dat'
 #else
-            CFILEN = 'CRYSDIR:/script/propwin.dat'
+            CFILEN = 'CRYSDIR:script/propwin.dat'
 #endif
             CALL MTRNLG(CFILEN,'OLD',ILENG)
             INQUIRE(FILE=CFILEN(1:ILENG),EXIST=WEXIST)
@@ -6928,7 +6931,7 @@ C Read the properties file and extract cov, vdw and colour.
                  END IF
               END DO
 89            CONTINUE !End of file
-              CLOSE(NCARU)
+              CALL XRDOPN (7, JDEV, CFILEN(1:ILENG), ILENG)
             END IF
             NOTFND = NOTFND + 1
             WRITE(CATTYP,'(A4)')ISTORE(M5)
