@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.5  2005/01/07 11:57:05  rich
+C Add some blank lines between some #if and #endifs.
+C
 C Revision 1.4  2004/12/20 11:41:05  rich
 C Added WXS support.
 C
@@ -138,7 +141,7 @@ C----- OPEN THE FILE READONLY/SHARED IF POSSIBLE
       DOSMAC = ' '
 #endif
 C----- DOS OPENS
-#if defined(_GID_) || defined(_LIN_) || defined (_GIL_) || defined (_MAC_) || defined (_WXS_)
+#if defined(_GID_)||defined(_LIN_)||defined(_GIL_)||defined(_MAC_)||defined(_WXS_)
       CALL GETARG(1,DOSSRC)
       CALL GETARG(2,DOSFOR)
       IGTRG = 3
@@ -186,14 +189,14 @@ C----- DOS OPENS
      1   'code=<XXX> '//
      1   '[macro=macrofil.mac] [incl=&] [excl=#] '//
 
-#if defined(_DOS_) || defined(_GID_)
+#if defined(_DOS_) || defined(_DIGITALF77_)
 
      2   '[comm=CC] [subs=\] [strip]'
 
 #endif
 
 
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) || defined (_WXS_)
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_)
 
      2   '[comm=CC] [subs=\\] [strip]'
 
@@ -209,10 +212,10 @@ C----- DOS OPENS
 C---- THE SOURCE FILE
       WRITE(*,'(2A)') 'Source = ', DOSSRC(1:LEN_TRIM(DOSSRC))
 
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) || defined (_WXS_)
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
       OPEN(UNIT=NCRU, FILE=DOSSRC, STATUS = 'OLD')
 #endif
-#if defined(_DOS_) || defined(_GID_) 
+#if defined(_DOS_) || defined(_DIGITALF77_) 
       CALL CONVER(DOSSRC,NCRU)
 #endif
 C---- THE MACRO FILE
@@ -220,11 +223,11 @@ C---- THE MACRO FILE
       WRITE(*,'(2A)') 'macros = ', DOSMAC(1:LEN_TRIM(DOSMAC))
 #endif
 
-#if defined(_LIN_) || defined (_MAC_) || defined (_GIL_)  || defined (_WXS_) 
+#if defined(_LIN_) || defined (_MAC_) || defined (_GIL_) 
       OPEN(UNIT=NUMAC, FILE=DOSMAC, STATUS = 'OLD', ERR=101)
 101   CONTINUE
 #endif
-#if defined(_DOS_) || defined(_GID_) 
+#if defined(_DOS_) || defined(_DIGITALF77_) 
       CALL CONVER(DOSMAC,NUMAC)
 #endif
 
@@ -301,7 +304,7 @@ C--SET THE POINTER TO THIS MACRO
 C--STORE THE MACRO NAME
       DO 1150 K=1,6
 C Check for Non-ASCII characters (EOL etc.)
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_MAC_) && !defined(_WXS_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_MAC_) 
       IF ( KISCHR(ICARD(K+1)) .LE. 0 ) ICARD(K+1)=32
 #endif
       NAMES(K+1,NMAC)=ICARD(K+1)
@@ -627,7 +630,7 @@ C--MACROS STORED  -  SEARCH FOR THIS MACRO
 
 
       DO L=2,7
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_MAC_) && !defined(_WXS_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_MAC_)
         IF(KISCHR(LCARD(L)) .LE. 0) LCARD(L) = 32
 #endif
       ENDDO
@@ -1005,7 +1008,7 @@ C      ICARD(75)=ISEG(3)
       KRDSOU=0
 C Check for Non-ASCII characters (EOL etc.)
       DO K=1,NCHAR
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_MAC_) && !defined(_WXS_) 
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_MAC_)
       IF ( KISCHR(ICARD(K)) .LE. 0 ) ICARD(K)=32
 #endif
       END DO
@@ -1095,11 +1098,11 @@ C
       DATA ICODE(9)/' '/
       DATA NCRU/5/,NEFU/1/,NCWU/6/,NCPU/7/,NUMAC/3/
       DATA IA/'*'/,IM/'-'/,IB/' '/,IC/','/
-#if defined(_DOS_) || defined(_GID_) 
+#if defined(_DOS_) || defined(_DIGITALF77_) 
       DATA ILP/'<'/,IRP/'>'/,IH/'\'/,IDQ/'"'/
 
 #endif
-#if defined(_LIN_)  || defined (_MAC_) || defined (_GIL_) || defined (_WXS_)
+#if defined(_LIN_)  || defined (_MAC_) || defined (_GIL_)
       DATA ILP/'<'/,IRP/'>'/,IH/'\\'/,IDQ/'"'/
 #endif
       DATA ISEG(1) /' '/ , ISEG(2) /' '/ , ISEG(3) /' '/
@@ -1138,7 +1141,7 @@ C
       END
 C
 C
-#if defined(_DOS_) || defined(_GID_) 
+#if defined(_DOS_) || defined(_DIGITALF77_) 
       SUBROUTINE CONVER ( CFILE , NUNIT )
 
 
@@ -1191,7 +1194,7 @@ C
       RETURN
       END
 
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_MAC_) && !defined(_WXS_) 
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_MAC_) 
 CODE FOR KISCHR
       FUNCTION KISCHR ( ICHAR )
 C Return 0 if CCHAR is not a character.
@@ -1199,7 +1202,7 @@ C Return 0 if CCHAR is not a character.
       CHARACTER*1  CCHAR
 C23456789012345678901234567890123456789012345678901234567890123456789012
       DATA CALPHA / 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXY
-#if defined(_DOS_) || defined(_GID_) 
+#if defined(_DOS_) || defined(_DIGITALF77_) 
      1Z1234567890!"œ$%^&*()_+-={}[]@~''#<>?,./|\:;`' /
 #endif
 C Note ' is escaped with '
