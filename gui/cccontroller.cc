@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.112  2009/09/04 09:25:46  rich
+// Added support for Show/Hide H from model toolbar
+// Fixed atom picking after model update in extra model windows.
+//
 // Revision 1.111  2008/09/22 12:31:37  rich
 // Upgrade GUI code to work with latest wxWindows 2.8.8
 // Fix startup crash in OpenGL (cxmodel)
@@ -621,13 +625,14 @@ using namespace std;
   #include <wx/utils.h>
   #include <sys/wait.h>
   #include <fcntl.h>
+#include <unistd.h>
   CcThread * CcController::mCrystalsThread = nil;
 #endif
 
 #ifdef __WXMSW__
   #include <stdio.h>
 //  #include <direct.h>
-  #define F77_STUB_REQUIRED
+//  #define F77_STUB_REQUIRED
 //  #include <math.h>
   #include <wx/fontdlg.h>
   #include <wx/cmndata.h>
@@ -637,6 +642,9 @@ using namespace std;
   #include <wx/mimetype.h>
   #include <wx/utils.h>
   CcThread * CcController::mCrystalsThread = nil;
+  #include <shlobj.h> // For the SHBrowse stuff.
+  #include <direct.h> // For the _chdir function.
+  #include <process.h>
 #endif
 
 #include "fortran.h"
@@ -645,7 +653,6 @@ using namespace std;
 #include <wx/settings.h>
 wxFont* CcController::mp_inputfont = nil;
 #include <wx/msgdlg.h>
-#include <unistd.h>
 #endif
 
 
@@ -1687,7 +1694,6 @@ void  CcController::AddInterfaceCommand( const string &line, bool internal )
   {
     if ( line[1] == '^' )
     {
-
       if ( clen >= 5 ) chop = 5;
 
       if ( line[0] == '^' )
@@ -1708,9 +1714,9 @@ void  CcController::AddInterfaceCommand( const string &line, bool internal )
     }
   }
    
-   if(mThisThreadisDead) endthread(0);
-   mInterfaceCommandDeq.push_back(line);
-   LOGSTAT("-----------CRYSTALS has put: " + line );
+  if(mThisThreadisDead) endthread(0);
+  mInterfaceCommandDeq.push_back(line);
+  LOGSTAT("-----------CRYSTALS has put: " + line );
 
 	
 #ifdef __CR_WIN__
@@ -1746,12 +1752,12 @@ bool CcController::GetInterfaceCommand( string &line )
         ChangeDir( m_newdir );
         StartCrystalsThread();
         m_restart = false;
-        return (false);
-      }
-      mThisThreadisDead = true;
-      LOGSTAT("Shutting down the main window of this (GUI) thread.");
-      line = "^^CO DISPOSE _MAIN ";
-      return (true);
+	  } else {
+        mThisThreadisDead = true;
+        LOGSTAT("Shutting down the main window of this (GUI) thread.");
+        line = "^^CO DISPOSE _MAIN ";
+        return (true);
+	  }
     }
   }
   else
@@ -2232,12 +2238,12 @@ void CcController::ReLayout()
 
 
 
-#ifdef __CR_WIN__
+#ifdef _DIGITALF77_
   UINT CrystalsThreadProc( LPVOID arg );
   SUBROUTINE CRYSTL();
   UINT CrystalsThreadProc( LPVOID arg )
 #endif
-#ifdef __BOTHWX__
+#ifdef _GNUF77_
   int CrystalsThreadProc( void* arg );
   SUBROUTINE_F77 crystl_();
   int CrystalsThreadProc( void * arg )
@@ -2251,10 +2257,10 @@ void CcController::ReLayout()
     LOGSTAT("FORTRAN: Running CRYSTALS");
     try
     {
-#ifdef __CR_WIN__
+#ifdef _DIGITALF77_
         CRYSTL();
 #endif
-#ifdef __BOTHWX__
+#ifdef _GNUF77_
        crystl_();
 #endif
        LOGSTAT ("Exited CRYSTL() without exception. Surely some mistake?");
@@ -2268,6 +2274,7 @@ void CcController::ReLayout()
         LOGERR ("Unhandled exception caught. Thread ends. Releasing mutex. Goodbye. " );
     }
     m_Crystals_Thread_Alive.Leave(); //Will be owned whole time crystals thread is running.
+	(CcController::theController)->AddInterfaceCommand("^^CR"); // Kick GUI thread to notice we've gone.
     LOGSTAT ("Final word from the CRYSTALS thread: Bye." );
     return 0;
 }
@@ -2369,7 +2376,7 @@ string CcController::OpenFileDialog(const string &extensionFilter,
 
     wxFileDialog fileDialog ( wxGetApp().GetTopWindow(),
                               "Choose a file",
-                              "",
+                              cwd,
                               "",
                               extension,
                               wxOPEN  );
@@ -2446,7 +2453,7 @@ string CcController::SaveFileDialog(const string &defaultName,
 
     wxFileDialog fileDialog ( wxGetApp().GetTopWindow(),
                               "Save file as",
-                              "",
+                              cwd,
                               initName,
                               extension,
                               wxSAVE|wxOVERWRITE_PROMPT );
@@ -2681,12 +2688,10 @@ void CcController::CcChooseFont()
      *pFont = newdata.GetChosenFont();
      if( mp_inputfont ) delete( mp_inputfont );
      mp_inputfont = pFont;
+
      ostringstream strstrm;
-     strstrm << mp_inputfont->GetPointSize();
-     StoreKey( "MainFontHeight", strstrm.str() );
-     strstrm.str("");
-     strstrm << mp_inputfont->GetFaceName();
-     StoreKey( "MainFontFace", strstrm.str() );
+     strstrm << pFont->GetNativeFontInfoDesc().c_str();
+     (CcController::theController)->StoreKey( "MainFontInfo", strstrm.str() );
      ReLayout();
    }
 #endif
