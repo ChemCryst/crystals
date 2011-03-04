@@ -203,10 +203,10 @@ void CxTextOut::Init()
 #endif  // !_WINNT
 
     string temp;
-    temp = (CcController::theController)->GetKey( "FontHeight" );
-    if ( temp.length() ) pFont->SetPointSize( CRMAX( 2, atoi( temp.c_str() ) ) );
-    temp = (CcController::theController)->GetKey( "FontFace" );
-    if ( temp.length() ) pFont->SetFaceName( temp.c_str() );
+//    temp = (CcController::theController)->GetKey( "FontHeight" );
+//    if ( temp.length() ) pFont->SetPointSize( CRMAX( 2, atoi( temp.c_str() ) ) );
+    temp = (CcController::theController)->GetKey( "FontInfo" );
+    if ( temp.length() ) pFont->SetNativeFontInfo( temp.c_str() );
     CxSetFont( pFont );
 #endif
 
@@ -1426,12 +1426,13 @@ void CxTextOut::ChooseFont()
         *pFont = newdata.GetChosenFont();
         CxSetFont( pFont );
         ostringstream strstrm;
-        strstrm << m_pFont->GetPointSize();
-        (CcController::theController)->StoreKey( "FontHeight", strstrm.str() );
-        strstrm.str("");
-        strstrm << m_pFont->GetFaceName();
-        (CcController::theController)->StoreKey( "FontFace", strstrm.str() );
-     }
+//        strstrm << m_pFont->GetPointSize();
+//        (CcController::theController)->StoreKey( "FontHeight", strstrm.str() );
+//        strstrm.str("");
+        strstrm << m_pFont->GetNativeFontInfoDesc().c_str();
+        (CcController::theController)->StoreKey( "FontInfo", strstrm.str() );
+//        LOGERR( strstrm.str() );
+	 }
 
 #endif
 
