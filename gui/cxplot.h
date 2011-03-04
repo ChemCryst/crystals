@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 23:09
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.19  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.1.1.1  2004/12/13 11:16:18  rich
 //   New CRYSTALS repository
 //
@@ -112,7 +116,7 @@
 class mywxStaticText : public wxStaticText
 {
   public:
-    mywxStaticText(wxWindow* s,int i,wxString s,wxPoint p,wxSize ss,int f);
+    mywxStaticText(wxWindow* wins,int i,wxString s,wxPoint p,wxSize ss,int f);
     wxWindow * m_parent;
     void OnLButtonUp(wxMouseEvent & event);
     void OnLButtonDown(wxMouseEvent & event);
