@@ -9,6 +9,11 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.41  2008/09/22 12:31:37  rich
+//   Upgrade GUI code to work with latest wxWindows 2.8.8
+//   Fix startup crash in OpenGL (cxmodel)
+//   Fix atom selection infinite recursion in cxmodlist
+//
 //   Revision 1.40  2005/01/23 10:20:24  rich
 //   Reinstate CVS log history for C++ files and header files. Recent changes
 //   are lost from the log, but not from the files!
@@ -153,8 +158,9 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
         theWindow->mParentWnd, -1, "Window",
         wxPoint(0, 0), wxSize(-1,-1),
         wxSYSTEM_MENU |         
-        ((attributes & kSize) ? wxDEFAULT_FRAME_STYLE   : wxDEFAULT_DIALOG_STYLE) |
-        ( parentWindow        ? wxFRAME_FLOAT_ON_PARENT : wxFRAME_FLOAT_ON_PARENT) 
+        ((attributes & kSize) ? wxDEFAULT_FRAME_STYLE   : wxDEFAULT_DIALOG_STYLE|wxFRAME_NO_TASKBAR) |
+        ( parentWindow        ? wxFRAME_FLOAT_ON_PARENT : wxFRAME_FLOAT_ON_PARENT) |
+		(( attributes & kModal )? 0 : wxFRAME_TOOL_WINDOW )
       );
       theWindow->SetIcon( wxICON (IDI_ICON1) );
   #endif
@@ -382,6 +388,7 @@ END_MESSAGE_MAP()
 BEGIN_EVENT_TABLE(CxWindow, wxFrame)
       EVT_CLOSE( CxWindow::OnCloseWindow )
       EVT_SIZE( CxWindow::OnSize )
+	  EVT_ICONIZE( CxWindow::OnIconize )
       EVT_CHAR( CxWindow::OnChar )
       EVT_COMMAND_RANGE(kMenuBase, kMenuBase+1000,
                         wxEVT_COMMAND_MENU_SELECTED,
@@ -467,6 +474,7 @@ void CxWindow::OnSize(UINT nType, int cx, int cy)
     CFrameWnd::OnSize(nType, cx, cy);
     mProgramResizing = false;
     if ( nType == SIZE_MINIMIZED ) return;
+    ((CrWindow*)ptr_to_crObject)->ResizeWindow( cx, cy );
 #endif
 
 #ifdef __BOTHWX__
@@ -475,14 +483,24 @@ void CxWindow::OnSize(wxSizeEvent & event)
       ostringstream strm;
       strm << "OnSize called " << event.GetSize().x <<  " " << event.GetSize().y;
       LOGSTAT( strm.str() );
-      int cx,cy;
       mProgramResizing = false;
-      GetClientSize(&cx,&cy); //Onsize is whole window - we only want this bit.
+      wxSize si = GetClientSize(); //Onsize is whole window - we only want this bit.
+      ((CrWindow*)ptr_to_crObject)->ResizeWindow( si.GetWidth(), si.GetHeight() );
 #endif
 
-    ((CrWindow*)ptr_to_crObject)->ResizeWindow( cx ,cy );
     mProgramResizing = true;
 }
+
+#ifdef __BOTHWX__
+void CxWindow::OnIconize(wxIconizeEvent & event) 
+{
+	if ( ! event.IsIconized() ) {
+		if ( mParentWnd ) {
+			((wxFrame*)mParentWnd)->Iconize(false);
+		}
+	}
+}
+#endif
 
 #ifdef __CR_WIN__
 void CxWindow::OnGetMinMaxInfo(MINMAXINFO FAR* lpMMI)
@@ -643,6 +661,8 @@ void CxWindow::AdjustSize(CcRect * size)
     int bT = GetSystemMetrics(SM_CXSIZEFRAME); //I think this is the maximum from SM_CXBORDER, SM_CXEDGE, SM_CXDLGFRAME...
     int mN = ( GetMenu() != NULL ) ? GetSystemMetrics(SM_CYMENU) : 0; //Height of the menu, if there is one. Otherwise zero.
 //              This the test      ?       value if test is true : value if false
+    size->mRight  = size->Right()  + (2*bT);
+    size->mBottom = size->Bottom() + ((2*bT)+cH+mN);
 #endif
 #ifdef __BOTHWX__
 // The system metrics aren't implemented yet!
@@ -650,19 +670,23 @@ void CxWindow::AdjustSize(CcRect * size)
 //       int cH = 15;
 //       int bT = 4;
 // They are now:
-      int mN = wxSystemSettings::GetMetric(wxSYS_MENU_Y);
-      int cH = wxSystemSettings::GetMetric(wxSYS_CAPTION_Y);
-      int bT = wxSystemSettings::GetMetric(wxSYS_FRAMESIZE_X);
 
-      cH = cH ? cH : 15;  // If cH not found, use 15 instead.
-      bT = bT ? bT : 4;   // If bT not found, use 4.
-      mN = mN ? mN : 20;  // If mN not foumd, use 20.
+//      int mN = wxSystemSettings::GetMetric(wxSYS_MENU_Y,this);
+//      int cH = wxSystemSettings::GetMetric(wxSYS_CAPTION_Y,this);
+//      int bT = wxSystemSettings::GetMetric(wxSYS_FRAMESIZE_X,this);
 
-      mN = GetMenuBar() ? mN : 0; // If no menubar, set to zero.
+//      cH = cH ? cH : 15;  // If cH not found, use 15 instead.
+//      bT = bT ? bT : 4;   // If bT not found, use 4.
+//      mN = mN ? mN : 20;  // If mN not foumd, use 20.
+
+//      mN = GetMenuBar() ? mN : 0; // If no menubar, set to zero.
+
+    wxSize adj = GetSize() - GetClientSize();
+    size->mRight  = size->Right()  + adj.GetWidth();
+    size->mBottom = size->Bottom() + adj.GetHeight();
+
 #endif
  
-    size->mRight  = size->Right()  + (2*bT);
-    size->mBottom = size->Bottom() + ((2*bT)+cH+mN);
 
     return;
 }
