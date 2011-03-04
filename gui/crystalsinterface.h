@@ -3,6 +3,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.36  2009/07/23 14:15:42  rich
+// Removed all uses of OpenGL feedback buffer - was dreadful slow on some new graphics cards.
+//
 // Revision 1.35  2005/01/23 10:20:24  rich
 // Reinstate CVS log history for C++ files and header files. Recent changes
 // are lost from the log, but not from the files!
@@ -245,6 +248,7 @@ typedef unsigned int UINT;
 #else
  #define LOGERRORS    //        Log errors         (LOGERR macro)
  #define LOGWARNINGS  //        Log warnings       (LOGWARN macro)
+// #define LOGSTATUS    //Log lots of things (LOGSTAT macro)
 #endif
 
 
@@ -328,8 +332,8 @@ else {ptr_to_crObject->FocusToInput((char)nChar);}}
 #define CXGETGEOMETRIES(a)    \
 int a ::GetTop()  { return ( GetRect().y );}\
 int a ::GetLeft() { return ( GetRect().x );}\
-int a ::GetWidth() { return ( GetClientSize().x);}\
-int a ::GetHeight(){ return ( GetClientSize().y);}
+int a ::GetWidth() { return ( GetSize().GetWidth());}\
+int a ::GetHeight(){ return ( GetSize().GetHeight());}
 
 #define CXSETGEOMETRY(a)   \
 void a ::SetGeometry(int t,int l,int b,int r){SetSize(l,t,r-l,b-t);}
@@ -343,10 +347,10 @@ else {ptr_to_crObject->FocusToInput((char)event.GetKeyCode());}}
 
 
 
-#ifdef __BOTHWX__
+#ifdef _GNUF77_
 #define FORCALL(a) a##_
 #endif
-#ifdef __CR_WIN__
+#ifdef _DIGITALF77_
 #define FORCALL(a) a
 #endif
 
