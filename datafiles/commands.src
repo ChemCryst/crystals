@@ -4109,9 +4109,9 @@ BONDING            6    0
          3
     .ACTION            12    0    1    2    0 REPLACE
      REPLACE        EXTEND
-BONDCALC           1    4
+BONDCALC           1    5
   11    4096 CRYSTALSDISTANCES
-    1    2    5   40
+    1    2    5   29   40
    1.BONDCALC           1    1    0    0
          3
     .UPDATE             1    0    1    2    0 IFREQUIRED
