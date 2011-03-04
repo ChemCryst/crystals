@@ -7,6 +7,10 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.42  2009/09/04 09:25:46  rich
+//  Added support for Show/Hide H from model toolbar
+//  Fixed atom picking after model update in extra model windows.
+//
 //  Revision 1.41  2009/07/23 14:15:42  rich
 //  Removed all uses of OpenGL feedback buffer - was dreadful slow on some new graphics cards.
 //
@@ -184,7 +188,7 @@ class CcModelObject;
 class mywxStaticText : public wxStaticText
 {
   public:
-    mywxStaticText(wxWindow* s,int i,wxString s,wxPoint p,wxSize ss,int f);
+    mywxStaticText(wxWindow* wins,int i,wxString s,wxPoint p,wxSize ss,int f);
     wxWindow * m_parent;
     void OnLButtonUp(wxMouseEvent & event);
     void OnLButtonDown(wxMouseEvent & event);

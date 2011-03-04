@@ -17,7 +17,7 @@
 #include    "cccontroller.h"
 #include    "resource.h"
 #include    <GL/glu.h>
-#if defined(__WXGTK__) || defined(__WXMAC__)
+#if defined(__WXGTK__) || defined(__WXMAC__) || defined(__BOTHWX__)
 #include "idb_splash.xpm"
 #endif
 
@@ -494,7 +494,7 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
 {
   CcPoint point ( event.m_x, event.m_y );
   int nFlags = event.m_controlDown ? MK_CONTROL : 0 ;
-  nFlags = event.m_shiftDown ? MK_SHIFT : 0 ;
+  nFlags |= event.m_shiftDown ? MK_SHIFT : 0 ;
 
 #endif
 
@@ -863,7 +863,7 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
       int winx = GetWidth();
       int winy = GetHeight();
       float hDrag = (m_ptMMove.y - point.y)/(float)winy;
-      m_xScale += hDrag;
+      m_xScale += 4.0 * hDrag;
       m_xScale = CRMAX(0.01f,m_xScale);
       m_xScale = CRMIN(100.0f,m_xScale);
 //      m_xTrans = 8000.0f * ( (float)m_ptLDown.x / (float)winx ) - 4000.0f; // NB y axis is upside down for OpenGL.
@@ -1867,7 +1867,7 @@ void CxModel::PolyCheck()
         }
         if ( crossings % 2 != 0 ) {
   		    CcModelObject* atomp = ((CrModel*)ptr_to_crObject)->FindObjectByGLName((*atom).id);
-            if ( atomp ) atomp->Select(true);
+			if ( atomp ) atomp->SendAtom( ((CrModel*)ptr_to_crObject)->GetSelectionAction() );
         }
 	}
 }
@@ -1916,7 +1916,8 @@ void CxModel::SelectBoxedAtoms(CcRect rectangle, bool select)
 
 		if ( rectangle.Contains( c.x, c.y ) ) {
      		CcModelAtom* atomp = (CcModelAtom*)((CrModel*)ptr_to_crObject)->FindObjectByGLName((*atom).id);
-			if ( atomp ) atomp->Select();
+//			if ( atomp ) atomp->Select();
+			if ( atomp ) atomp->SendAtom( ((CrModel*)ptr_to_crObject)->GetSelectionAction() );
 		}
 		
 	}
