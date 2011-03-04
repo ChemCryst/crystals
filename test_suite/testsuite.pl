@@ -27,7 +27,7 @@ $CRYSHOME = $CRYSDIR;
 $CRYSHOME =~ s/.*,//g;                 # Remove owt before comma, repeatedly.
 $CRYSEXE = $CRYSHOME . "crystals";    # Append exe name
 $CRYSDEXE = $CRYSHOME . "crystalsd";  # Append debug exe name
-
+$exitcode=0;
 
 print (" using $CRYSEXE \n");
 
@@ -46,6 +46,8 @@ print (" using $CRYSEXE \n");
     print "\nTime taken: " . ( time() - $starttime ) . " seconds.\n";
   }
 
+
+  exit $exitcode;
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
  # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -82,7 +84,6 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
         $name =~ s\.tst\\g;           # Remove the .tst extension.
 	
         $CROUTPUT="$name.out";        # Set environment variable
-        print("Deleting files... ");
         unlink "$CROUTPUT";
         unlink "crfilev2.dsc";
         print("Running Crystals (release version) on $name.tst\n");
@@ -92,10 +93,12 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
             print("Removing bfiles (use '-l' to leave in place)\n");
 	    cleanUp(@cleanup);
 	}
-	print("Doing diff!\n");
-        print ("diff $CROUTPUT $COMPCODE.org/$CROUTPUT diffs/$name.diff");
-        print `fc $CROUTPUT $COMPCODE.org/$CROUTPUT > diffs/$name.diff`;
-	
+        print `fc $CROUTPUT $COMPCODE.org/$CROUTPUT`;
+        
+        print "$?";
+        if ( "$?" != "0" ) {
+           $exitcode = 1;
+        }	
 	
 #        $CROUTPUT="$name.d.out";      # Set environment variable
 #        print("Deleting files... ");
