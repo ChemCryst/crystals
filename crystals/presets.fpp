@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.57  2011/02/04 17:34:41  djw
+C Enable LIST 9 operations
+C
 C Revision 1.56  2009/11/03 11:16:00  djw
 C set Version to 14
 C
@@ -1446,13 +1449,13 @@ C                  ISSDAR = 4 * ISSRLI
 #if defined(_VAX_) 
       DATA ISSDAR / 512 /
 #endif
-#if defined(_DVF_) 
+#if defined(_DIGITALF77_) 
       DATA ISSDAR / 512 /
 #endif
 #if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       DATA ISSDAR / 2048 /
 #endif
-#if defined(_WXS_) 
+#if defined(_GNUF77_) 
       DATA ISSDAR / 2048 /
 #endif
 #if defined(_GID_) 
