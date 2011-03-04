@@ -1,5 +1,5 @@
       PROGRAM CSD2CRY
-#if defined(GID) || defined(DVF)
+#if defined(_DIGITALF77_)
        use dflib
 #endif
 C       program csdtocry    Version 1.82    01 March 2002
@@ -287,7 +287,7 @@ C      Non-standard settings common in the CSD
      4            ,'P b c 21  ','P b 21 a  ','P 21 a b  '
      5            ,'P n 21 a  ','P 21 c n  ','P b n 21  '/
  
-#if defined(_GIL_) || defined (_MAC_) || defined (_LIN_)  || defined (_WXS_)
+#if defined(_GNUF77_)
         call no_stdout_buffer()
 #endif
 c
@@ -614,7 +614,7 @@ C      ELEMI, ELEMJ and ELEMK are counter variables
 9005  format('# This is the real spacegroup here:',/,
      1   '#SPACEGROUP',/,'SYMBOL ',A12,/,'END')
 C      NOTE: This kind of real-time-dimensioned format statement is DVF specific and is nonstandard
-#if defined(DVF) || defined (GID)
+#if defined(_DIGITALF77_)
 9007  format('CONTINUE ',<elemj>(A2,' ',I3,' '))
 9008  format('#COMPOSITION',/,'CONTENT  ',<elemj>(A2,' ',I3,' '))
 #else

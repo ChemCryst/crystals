@@ -70,7 +70,7 @@ c
 CODE FOR IO
       function  io(ninf,noutf,infil, outfil)
 C<ric02>
-#if defined(_DVF_) || defined(_GID_)
+#if defined(_DIGITALF77_)
       use dflib
 #endif
       parameter (oddchr = 29)    !Number of chars to look out for.
@@ -83,7 +83,7 @@ C      data noutf    /11/
 C      data infil /' '/
 C      data outfil /' '/
       io = -1
-#if defined(_GIL_) || defined(_LIN_) || defined(_MAC_) || defined(_WXS_)
+#if defined(_GNUF77_)
       call no_stdout_buffer()
 #endif      
 cdjw open a file for errors since DOS window closes too fast
@@ -93,7 +93,7 @@ c    lots of writes to 17 later
 C<ric02>
 C Read data from the commandline:
       optlen=132
-#if defined(_GIL_) || defined(_LIN_) || defined (_WXS_)
+#if defined(_GNUF77_)
       CALL GetArg(0,prognm)
 #else
       CALL GetArg(0,prognm,optlen)
@@ -105,14 +105,14 @@ C Read data from the commandline:
       loutfl = .FALSE.
 
       N = 1
-#if defined(_GIL_) || defined(_LIN_) || defined (_WXS_)
+#if defined(_GNUF77_)
       NARG = IARGC()
 #else
       NARG = NARGS()
 #endif
 
       DO WHILE ( N .LT. NARG )
-#if defined(_GIL_) || defined(_LIN_) || defined (_WXS_)
+#if defined(_GNUF77_)
         CALL GetArg(N,option) 
 #else
         CALL GetArg(N,option,optlen) 
@@ -128,7 +128,7 @@ C Read data from the commandline:
           N = N + 1
           IF ( N .GE. NARG ) GOTO 8000
           namebl=.TRUE.
-#if defined(_GIL_) || defined(_LIN_) || defined (_WXS_)
+#if defined(_GNUF77_)
           CALL GetArg(N,outfil)
 #else
           CALL GetArg(N,outfil,optlen)
@@ -139,7 +139,7 @@ C Read data from the commandline:
           N = N + 1
           IF ( N .GE. NARG ) GOTO 8000
           loutfl=.TRUE.
-#if defined(_GIL_) || defined(_LIN_) || defined (_WXS_)
+#if defined(_GNUF77_)
           CALL GetArg(N,outfil)
 #else
           CALL GetArg(N,outfil,optlen)
@@ -151,7 +151,7 @@ C Read data from the commandline:
           IF (linfl) GOTO 8000
           IF ( N .GE. NARG ) GOTO 8000
           linfl=.TRUE.
-#if defined(_GIL_) || defined(_LIN_) || defined (_WXS_)
+#if defined(_GNUF77_)
           CALL GetArg(N,infil)
 #else
           CALL GetArg(N,infil,optlen)

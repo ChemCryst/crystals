@@ -9,7 +9,7 @@
       character*(9) crystals_element
       character*20 ctrim,cnew
    
-#if defined(_GIL_) || defined (_MAC_) || defined (_LIN_)  || defined (_WXS_)
+#if defined(_GNUF77_)
       call no_stdout_buffer()
 #endif
       write(6,*) 

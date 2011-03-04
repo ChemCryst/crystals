@@ -5,7 +5,7 @@ c restored v 14 from cvs
 
       DATA NOUTF/10/,NHKL/11/,NCIF/12/
 
-#if defined(_GIL_) || defined (_MAC_) || defined (_LIN_) || defined (_WXS_)
+#if defined(_GNUF77_)
       call no_stdout_buffer()
 #endif
 C set default output filename - also used as instrument ID

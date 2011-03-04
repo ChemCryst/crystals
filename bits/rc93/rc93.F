@@ -6,7 +6,7 @@ C                   Written By Paul Lilley 1993/94                     *
 C                                                                      *
 C*********************************************************************
       PROGRAM RC93
-#if defined(_GID_) || defined(_DVF_)
+#if defined(_DIGITALF77_)
       USE DFLIB
 #endif
 C OCT99 - ierfil UNIT to handle catastrophic errors
@@ -20,13 +20,13 @@ C
       CHARACTER *8 CTIME, CDATGB, CDATUS
 #endif
       EXTERNAL BLKDAT
-#if defined(_GIL_) || defined (_MAC_) || defined (_LIN_)  || defined (_WXS_)
+#if defined(_GNUF77_)
       call no_stdout_buffer()
 #endif
 
 C Is CRYSDIR set on command line?
       CDLEN = 0
-#if defined(_GID_) || defined(_DVF_)
+#if defined(_DIGITALF77_)
       if ( NARGS() .gt. 0 ) then
          CALL GetArg(1,CRYSDIR,CDLEN)
       END IF
@@ -2034,7 +2034,7 @@ C     it is part of the path.
             CH = CINPFL(J:J)
 C *** Annoyingly the backslash may have to be 'escaped' for unix
 C     machines, ie the line for unix machines is
-#if defined (_LIN_) || defined(_GIL_) || defined (_MAC_) || defined (_WXS_)
+#if defined (_GNUF77_)
       IF (((CH .EQ.'/').OR.(CH .EQ.'\\')) .OR.(CH .EQ. ']')) THEN
 #else
       IF (((CH .EQ.'/').OR.(CH .EQ.'\')) .OR.(CH .EQ. ']')) THEN
@@ -2090,7 +2090,7 @@ C
 C LENNAM USEFUL LENGTH OF FILENAME
 C
 C      IMPLICIT NONE
-#if defined(_DVF_) || defined (_GID_)
+#if defined(_DIGITALF77_)
       USE DFPORT
 #endif
 #include "RC93CM.INC"
@@ -2198,7 +2198,7 @@ C&DOSC      SET CPARAM=CVALUE
         CALL DOSPARAM@(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 #else
       CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
-#if defined(_GID_) || defined(_DVF_)
+#if defined(_DIGITALF77_)
       IF ( ( CDLEN .gt. 0 ) .AND.
      1     ( NAME(LEVEL)(1:COLPOS(LEVEL)-1) .EQ. 'CRYSDIR' ) ) THEN
          LIST(LEVEL) = CRYSDIR(1:CDLEN)

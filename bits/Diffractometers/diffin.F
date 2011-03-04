@@ -6,7 +6,7 @@ c General program for reading diffractometer cif files
 
       DATA NOUTF/10/,NHKL/11/,NCIF/12/
 
-#if defined(_GIL_) || defined (_MAC_) || defined (_LIN_) || defined (_WXS_)
+#if defined(_GNUF77_)
       call no_stdout_buffer()
 #endif
 c

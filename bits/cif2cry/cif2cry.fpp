@@ -1,6 +1,6 @@
 #include       "ciftbx.for"
 C<ric02>
-#if defined(_DVF_) || defined(_GID_)
+#if defined(_DIGITALF77_)
       use dflib
 #endif
       parameter (maxat = 1000)   !Max of 1000 atoms
@@ -44,7 +44,7 @@ C<ric02/>
       data noutf    /10/
       data noutr    /11/
 
-#if defined(_GIL_) || defined(_LIN_) || defined(_MAC_) || defined(_WXS_)
+#if defined(_GNUF77_)
       call no_stdout_buffer()
 #endif      
 cdjw open a file for errors since DOS window closes too fast
@@ -54,7 +54,7 @@ c    lots of writes to 17 later
 C<ric02>
 C Read data from the commandline:
       optlen=132
-#if defined(_GIL_) || defined(_LIN_) || defined (_WXS_)
+#if defined(_GNUF77_)
       CALL GetArg(0,prognm)
 #else
       CALL GetArg(0,prognm,optlen)
@@ -66,14 +66,14 @@ C Read data from the commandline:
       loutfl = .FALSE.
 
       N = 1
-#if defined(_GIL_) || defined(_LIN_) || defined (_WXS_)
+#if defined(_GNUF77_)
       NARG = IARGC()
 #else
       NARG = NARGS()
 #endif
 
       DO WHILE ( N .LT. NARG )
-#if defined(_GIL_) || defined(_LIN_) || defined (_WXS_)
+#if defined(_GNUF77_)
         CALL GetArg(N,option) 
 #else
         CALL GetArg(N,option,optlen) 
@@ -89,7 +89,7 @@ C Read data from the commandline:
           N = N + 1
           IF ( N .GE. NARG ) GOTO 8000
           namebl=.TRUE.
-#if defined(_GIL_) || defined(_LIN_) || defined (_WXS_)
+#if defined(_GNUF77_)
           CALL GetArg(N,outfil)
 #else
           CALL GetArg(N,outfil,optlen)
@@ -100,7 +100,7 @@ C Read data from the commandline:
           N = N + 1
           IF ( N .GE. NARG ) GOTO 8000
           loutfl=.TRUE.
-#if defined(_GIL_) || defined(_LIN_) || defined (_WXS_)
+#if defined(_GNUF77_)
           CALL GetArg(N,outfil)
 #else
           CALL GetArg(N,outfil,optlen)
@@ -112,7 +112,7 @@ C Read data from the commandline:
           IF (linfl) GOTO 8000
           IF ( N .GE. NARG ) GOTO 8000
           linfl=.TRUE.
-#if defined(_GIL_) || defined(_LIN_) || defined (_WXS_)
+#if defined(_GNUF77_)
           CALL GetArg(N,infil)
 #else
           CALL GetArg(N,infil,optlen)
@@ -197,7 +197,7 @@ C<ric02>
 C Name formed from blockname and outfil is used as extension:
         option = bloc_
         DO N = 1,LEN_TRIM(option)    !Remove illegal chars
-#if defined(_GIL_) || defined(_LIN_) || defined (_WXS_)
+#if defined(_GNUF77_)
           IF ( option(N:N) .EQ. '\\') option(N:N) = '_'
 #else
           IF ( option(N:N) .EQ. '\') option(N:N) = '_'
@@ -232,7 +232,7 @@ C Any other case, just open it:
 
       option = bloc_
       DO N = 1,LEN_TRIM(option)    !Remove illegal chars
-#if defined(_GIL_) || defined(_LIN_) || defined (_WXS_)
+#if defined(_GNUF77_)
         IF ( option(N:N) .EQ. '\\') option(N:N) = '_'
 #else
         IF ( option(N:N) .EQ. '\') option(N:N) = '_'
