@@ -5,6 +5,11 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.26  2008/09/22 12:31:37  rich
+//   Upgrade GUI code to work with latest wxWindows 2.8.8
+//   Fix startup crash in OpenGL (cxmodel)
+//   Fix atom selection infinite recursion in cxmodlist
+//
 //   Revision 1.25  2005/01/23 10:20:24  rich
 //   Reinstate CVS log history for C++ files and header files. Recent changes
 //   are lost from the log, but not from the files!
@@ -356,10 +361,13 @@ void CxMultiEdit::Init()
 #endif  // !_WINNT
 
     string temp;
-    temp = (CcController::theController)->GetKey( "FontHeight" );
+    temp = (CcController::theController)->GetKey( "FontInfo" );
+    if ( temp.length() ) pFont->SetNativeFontInfo( temp.c_str() );
+
+	/*temp = (CcController::theController)->GetKey( "FontHeight" );
     if ( temp.length() )  pFont->SetPointSize( CRMAX( 2, atoi( temp.c_str() ) ) );
     temp = (CcController::theController)->GetKey( "FontFace" );
-    if ( temp.length() )  pFont->SetFaceName( temp.c_str() );
+    if ( temp.length() )  pFont->SetFaceName( temp.c_str() );*/
     SetFont ( *pFont );
 #endif
 
