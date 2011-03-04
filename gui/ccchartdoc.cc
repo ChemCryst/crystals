@@ -17,6 +17,11 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.22  2008/09/22 12:31:37  rich
+// Upgrade GUI code to work with latest wxWindows 2.8.8
+// Fix startup crash in OpenGL (cxmodel)
+// Fix atom selection infinite recursion in cxmodlist
+//
 // Revision 1.21  2005/01/23 10:20:24  rich
 // Reinstate CVS log history for C++ files and header files. Recent changes
 // are lost from the log, but not from the files!
@@ -557,7 +562,7 @@ void CcChartDoc::Clear()
 
 extern "C" {
 
-#ifdef __CR_WIN__
+#ifdef _DIGITALF77_
 void fastline  ( int x1, int y1, int x2, int y2 );
 void fastfelli ( int x,  int y,  int w,  int h  );
 void fasteelli ( int x,  int y,  int w,  int h  );
@@ -568,7 +573,7 @@ void fastcolour( int r,  int g, int b );
 void fastclear     ( );
 void fastshow      ( );
 #endif
-#ifdef __BOTHWX__
+#ifdef _GNUF77_
 void fastline_  ( int x1, int y1, int x2, int y2 );
 void fastfelli_ ( int x,  int y,  int w,  int h  );
 void fasteelli_ ( int x,  int y,  int w,  int h  );
@@ -578,12 +583,14 @@ void fasttext_  ( int x,  int y,  char theText[80], int fs );
 void fastcolour_( int r,  int g, int b );
 void fastclear_     ( );
 void fastshow_      ( );
+void fastline_  ( int x1, int y1, int x2, int y2 )
 #endif
 
-#ifdef __CR_WIN__
+
+#ifdef _DIGITALF77_
 void fastline  ( int x1, int y1, int x2, int y2 )
 #endif
-#ifdef __BOTHWX__
+#ifdef _GNUF77_
 void fastline_  ( int x1, int y1, int x2, int y2 )
 #endif
 {
@@ -594,10 +601,10 @@ void fastline_  ( int x1, int y1, int x2, int y2 )
       m_thread_critical_section.Leave();
 }
 
-#ifdef __CR_WIN__
+#ifdef _DIGITALF77_
 void fastfelli  ( int x, int y, int w, int h )
 #endif
-#ifdef __BOTHWX__
+#ifdef _GNUF77_
 void fastfelli_  ( int x, int y, int w, int h )
 #endif
 {
@@ -607,10 +614,10 @@ void fastfelli_  ( int x, int y, int w, int h )
             doc->FastFElli( x, y, w, h );
       m_thread_critical_section.Leave();
 }
-#ifdef __CR_WIN__
+#ifdef _DIGITALF77_
 void fasteelli  ( int x, int y, int w, int h )
 #endif
-#ifdef __BOTHWX__
+#ifdef _GNUF77_
 void fasteelli_  ( int x, int y, int w, int h )
 #endif
 {
@@ -621,10 +628,10 @@ void fasteelli_  ( int x, int y, int w, int h )
       m_thread_critical_section.Leave();
 }
 
-#ifdef __CR_WIN__
+#ifdef _DIGITALF77_
 void fastfpoly ( int nv, int * points )
 #endif
-#ifdef __BOTHWX__
+#ifdef _GNUF77_
 void fastfpoly_ ( int nv, int * points )
 #endif
 {
@@ -634,10 +641,10 @@ void fastfpoly_ ( int nv, int * points )
             doc->FastFPoly( nv, points );
       m_thread_critical_section.Leave();
 }
-#ifdef __CR_WIN__
+#ifdef _DIGITALF77_
 void fastepoly ( int nv, int * points )
 #endif
-#ifdef __BOTHWX__
+#ifdef _GNUF77_
 void fastepoly_ ( int nv, int * points )
 #endif
 {
@@ -648,10 +655,10 @@ void fastepoly_ ( int nv, int * points )
       m_thread_critical_section.Leave();
 }
 
-#ifdef __CR_WIN__
+#ifdef _DIGITALF77_
 void fasttext  ( int x,  int y,  char theText[80], int fs )
 #endif
-#ifdef __BOTHWX__
+#ifdef _GNUF77_
 void fasttext_  ( int x,  int y,  char theText[80], int fs )
 #endif
 {
@@ -671,10 +678,10 @@ void fasttext_  ( int x,  int y,  char theText[80], int fs )
       m_thread_critical_section.Leave();
 }
 
-#ifdef __CR_WIN__
+#ifdef _DIGITALF77_
 void fastcolour( int r, int g, int b )
 #endif
-#ifdef __BOTHWX__
+#ifdef _GNUF77_
 void fastcolour_( int r, int g, int b )
 #endif
 {
@@ -685,10 +692,10 @@ void fastcolour_( int r, int g, int b )
       m_thread_critical_section.Leave();
 }
 
-#ifdef __CR_WIN__
+#ifdef _DIGITALF77_
 void fastclear ( )
 #endif
-#ifdef __BOTHWX__
+#ifdef _GNUF77_
 void fastclear_ ( )
 #endif
 {
@@ -699,10 +706,11 @@ void fastclear_ ( )
       m_thread_critical_section.Leave();
 }
 
-#ifdef __CR_WIN__
+
+#ifdef _DIGITALF77_
 void fastshow ( )
 #endif
-#ifdef __BOTHWX__
+#ifdef _GNUF77_
 void fastshow_ ( )
 #endif
 {
