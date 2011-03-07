@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.36  2009/06/08 14:25:26  djw
+C Remove debugging lines
+C
 C Revision 1.35  2009/05/19 14:35:52  djw
 C More lower case filename changes
 C
@@ -218,8 +221,9 @@ C--SET THE POINTER TO THE TOP OF THE ORTHOGONAL COORDS. STACK
       JD=NFL
       JE=JD
 cdjwsep08
-c  set nfl beyond 4 sets of atoms (4*3)
-      nfl = nfl + 12
+c  set nfl beyond 6 sets of atoms (6*3)
+cdjwmar2011 increase from 4 (1 sp3) to 6 (phenyl)
+      nfl = nfl + 18
       ASSIGN 4250 TO NRET
       GOTO(1250,1600,1750,2050,2050,2050,2050,2050,2050,2050,2050,
      2 3700,1200),MG
