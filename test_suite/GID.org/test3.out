@@ -4280,9 +4280,9 @@ Bonds: Update required - List5 length change
 
            H          1.0    1.00000        1.   0.55009   0.02007   0.15930   0.07021
            H          2.0    1.00000        1.   0.76047   0.12403   0.01386   0.08303
-           H          3.0    1.00000        1.   1.04275  -0.11843  -0.13649   0.08181
-           H          4.0    1.00000        1.   0.08962  -0.13832  -0.01734   0.08345
-           H          5.0    1.00000        1.   0.01631   0.21146  -0.13016   0.07254
+           H          3.0    1.00000        1.   1.00779  -0.03372  -0.15576   0.08181
+           H          4.0    1.00000        1.   1.05218  -0.30458  -0.16643   0.08345
+           H          5.0    1.00000        1.   0.85426  -0.40145   0.06914   0.07254
 
 
  Hydrogen atom(s) calculated for the C(sp2)H2 group :
@@ -4298,9 +4298,9 @@ Bonds: Update required - List5 length change
 
            H          7.0    1.00000        1.   0.26486   0.65074   0.49754   0.06913
            H          8.0    1.00000        1.  -0.01962   0.82960   0.57602   0.07725
-           H          9.0    1.00000        1.  -0.18922   0.88140   0.43561   0.07373
-           H         10.0    1.00000        1.   0.16707  -0.16293  -0.05266   0.07500
-           H         11.0    1.00000        1.   0.01631   0.21146  -0.13016   0.06618
+           H          9.0    1.00000        1.  -0.20428   0.85115   0.46650   0.07373
+           H         10.0    1.00000        1.  -0.09822   0.70271   0.26984   0.07500
+           H         11.0    1.00000        1.   0.23683   0.59923   0.26626   0.06618
 
 
  Hydrogen atom(s) calculated for the C(sp2)H2 group :
@@ -4466,11 +4466,11 @@ Bonds: Update required - List5 length change
                                                                                     0.00000     0.00000     0.00000     0.0          0.          0.          0.    
  H              2.      1.00000     1.00000     0.76047     0.12403     0.01386     0.08303     0.00000     0.00000
                                                                                     0.00000     0.00000     0.00000     0.0          0.          0.          0.    
- H              3.      1.00000     1.00000     1.04275    -0.11843    -0.13649     0.08181     0.00000     0.00000
+ H              3.      1.00000     1.00000     1.00779    -0.03372    -0.15576     0.08181     0.00000     0.00000
                                                                                     0.00000     0.00000     0.00000     0.0          0.          0.          0.    
- H              4.      1.00000     1.00000     0.08962    -0.13832    -0.01734     0.08345     0.00000     0.00000
+ H              4.      1.00000     1.00000     1.05218    -0.30458    -0.16643     0.08345     0.00000     0.00000
                                                                                     0.00000     0.00000     0.00000     0.0          0.          0.          0.    
- H              5.      1.00000     1.00000     0.01631     0.21146    -0.13016     0.07254     0.00000     0.00000
+ H              5.      1.00000     1.00000     0.85426    -0.40145     0.06914     0.07254     0.00000     0.00000
                                                                                     0.00000     0.00000     0.00000     0.0          0.          0.          0.    
  C              8.      1.00000     0.00000     0.25147     0.57754     0.33139     0.04793     0.04738     0.04963
                                                                                    -0.00507    -0.01737    -0.02466     0.0          0.          0.          0.    
@@ -4488,11 +4488,11 @@ Bonds: Update required - List5 length change
                                                                                     0.00000     0.00000     0.00000     0.0          0.          0.          0.    
  H              8.      1.00000     1.00000    -0.01962     0.82960     0.57602     0.07725     0.00000     0.00000
                                                                                     0.00000     0.00000     0.00000     0.0          0.          0.          0.    
- H              9.      1.00000     1.00000    -0.18922     0.88140     0.43561     0.07373     0.00000     0.00000
+ H              9.      1.00000     1.00000    -0.20428     0.85115     0.46650     0.07373     0.00000     0.00000
                                                                                     0.00000     0.00000     0.00000     0.0          0.          0.          0.    
- H             10.      1.00000     1.00000     0.16707    -0.16293    -0.05266     0.07500     0.00000     0.00000
+ H             10.      1.00000     1.00000    -0.09822     0.70271     0.26984     0.07500     0.00000     0.00000
                                                                                     0.00000     0.00000     0.00000     0.0          0.          0.          0.    
- H             11.      1.00000     1.00000     0.01631     0.21146    -0.13016     0.06618     0.00000     0.00000
+ H             11.      1.00000     1.00000     0.23683     0.59923     0.26626     0.06618     0.00000     0.00000
                                                                                     0.00000     0.00000     0.00000     0.0          0.          0.          0.    
  C             14.      1.00000     0.00000    -0.27187     0.89631     0.48482     0.05007     0.09032     0.09550
                                                                                    -0.01713    -0.01007    -0.01325     0.0          0.          0.          0.    
@@ -4522,7 +4522,7 @@ Bonds: Update required - List5 length change
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
 
 
- Print list type     5     serial number        5     Address    58279     Length     677     Created on      
+ Print list type     5     serial number        5     Address    58335     Length     677     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -5084,12 +5084,12 @@ for Uprime see Acta Cryst (2000). B56, 747-749
 # INPUT THE CELL PARAMETERS                                                                                                                                                                                                                                     
 #                                                                                                                                                                                                                                                               
 #LIST 1                                                                                                                                                                                                                                                         
+  Disc file on unit   1 extended by     1 records 
 #                                                                                                                                                                                                                                                               
 # INPUT THE UNIT CELL SYMMETRY  -  P21/A WITH C UNIQUE                                                                                                                                                                                                          
 #                                                                                                                                                                                                                                                               
 #LIST 2                                                                                                                                                                                                                                                         
 #LIST      5                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
 #PRINT 5                                                                                                                                                                                                                                                        
 #MOLAX                                                                                                                                                                                                                                                          
@@ -5098,7 +5098,7 @@ for Uprime see Acta Cryst (2000). B56, 747-749
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
 
 
- Print list type     5     serial number        6     Address    59850     Length     677     Created on      
+ Print list type     5     serial number        6     Address    59906     Length     677     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -5758,11 +5758,12 @@ Upating List 13 for twinned data
   Disc file on unit   1 extended by     1 records 
  After   1 pass     270 reflection(s) have been sorted
  The updated reflections are now on UNIT 52
-  Disc file on unit   1 extended by     4 records 
+  Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     3 records 
+  Disc file on unit   1 extended by     1 records 
 #LIST 12                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
-  Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     3 records 
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
@@ -5782,8 +5783,8 @@ Upating List 13 for twinned data
 #CLEAR 17                                                                                                                                                                                                                                                       
 #LIST  17                                                                                                                                                                                                                                                       
   Disc file on unit   1 extended by     1 records 
-#LIST 26                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
+#LIST 26                                                                                                                                                                                                                                                        
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC  NO  NO                                                                                                                                                                                                                                                   
 #SCALE      1                                                                                                                                                                                                                                                   
@@ -6107,6 +6108,7 @@ All cycle   4       0.00          0.100E+16      0.138E+07
                      0.00000           0.00119  0.00233  0.01704 -0.01345 -0.02094  0.01198 -0.01636 -0.01807 -0.02701
                      0.00000           0.00628  0.00663  0.00830  0.02293  0.02204  0.01491  0.02469  0.02555  0.02070
                                        0.05564  0.05873  0.04182
+  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  SI      1.   -0.2394   -0.1764   -0.1764   -0.1974   -0.1953   -0.1299    Physically unreasonable                                                                                                                                                              
@@ -6115,7 +6117,6 @@ Mean C-C su =   0.0000
  NA      2.   -0.0722   -0.0618    0.0375   -0.0322    0.0551   -0.0321    Physically unreasonable                                                                                                                                                              
  F       2.   -0.0172    0.0248    0.0451    0.0175   -0.0268   -0.0649    Physically unreasonable                                                                                                                                                              
  F       3.   -0.0112    0.0412    0.0537    0.0279   -0.0292   -0.1971    Physically unreasonable                                                                                                                                                              
-  Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC  NO  NO                                                                                                                                                                                                                                                   
@@ -6631,8 +6632,8 @@ Slope=        0.008 Intercept =      -0.033 C-Coef=       0.194
 #LIST 4                                                                                                                                                                                                                                                         
 #LIST 5                                                                                                                                                                                                                                                         
 #LIST 13                                                                                                                                                                                                                                                        
-Bonds: Update required - List5 length change
   Disc file on unit   1 extended by     1 records 
+Bonds: Update required - List5 length change
 #LIST 6                                                                                                                                                                                                                                                         
   Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
@@ -6648,13 +6649,14 @@ Bonds: Update required - List5 length change
   Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
   Disc file on unit   1 extended by    14 records 
+  Disc file on unit   1 extended by     1 records 
 #REORDER                                                                                                                                                                                                                                                        
 
 
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number       96     Address    89697     Length    7559     Created on      
+ Print list type     6     serial number       96     Address    89753     Length    7559     Created on      
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H               -0.300000E+01   0.300000E+01  -0.531818E+00   0.201246E+01
@@ -6780,7 +6782,6 @@ Bonds: Update required - List5 length change
 
 #PRINT 6                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
   Disc file on unit   1 extended by    14 records 
 #LIST 12                                                                                                                                                                                                                                                        
@@ -6789,7 +6790,7 @@ Bonds: Update required - List5 length change
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number      100     Address    97854     Length    7559     Created on      
+ Print list type     6     serial number      100     Address    97910     Length    7559     Created on      
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H               -0.300000E+01   0.300000E+01  -0.531818E+00   0.201246E+01
@@ -6922,7 +6923,7 @@ Bonds: Update required - List5 length change
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     5     serial number       14     Address   105413     Length     137     Created on      
+ Print list type     5     serial number       14     Address   105469     Length     137     Created on      
 
 
  Record  101    LGRP   18  NGRP      3   ATOMIC PARAMETERS                                                               
@@ -7615,7 +7616,7 @@ Mean C-C su =   0.0182
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number      106     Address    97854     Length    7559     Created on      
+ Print list type     6     serial number      106     Address    97910     Length    7559     Created on      
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H               -0.300000E+01   0.300000E+01  -0.531818E+00   0.201246E+01
@@ -7743,6 +7744,7 @@ Mean C-C su =   0.0182
 #LIST 2                                                                                                                                                                                                                                                         
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 4                                                                                                                                                                                                                                                         
+  Disc file on unit   1 extended by     1 records 
 #LIST 6                                                                                                                                                                                                                                                         
   Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
@@ -8212,7 +8214,7 @@ Mean C-C su =   0.0000
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   133219     Length     806     Created on      
+ Print list type    11     serial number       20     Address   133731     Length     806     Created on      
  Inverse matrix
 
 
@@ -8262,7 +8264,7 @@ Mean C-C su =   0.0000
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   133219     Length     806     Created on      
+ Print list type    11     serial number       20     Address   133731     Length     806     Created on      
 
  Print List 11 as correlation matrix
  Inverse matrix
@@ -8353,7 +8355,7 @@ Mean C-C su =   0.0000
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   133219     Length     806     Created on      
+ Print list type    11     serial number       20     Address   133731     Length     806     Created on      
  Inverse matrix
 
  Block    1
@@ -8548,7 +8550,7 @@ Bonds: Update required - List5 length change
  P6122 TEST DECK FROM LARSON  -  MUCH MODIFIED FOR CRYSTALS                           Date              Time          
 
 
- Print list type     5     serial number       30     Address   137639     Length     150     Created on      
+ Print list type     5     serial number       30     Address   138151     Length     150     Created on      
 
 
  Record  103    LGRP    5  NGRP      1   THE CONSTANTS THAT DEFINE AN INDEX FOR LAYER SCALING                            
@@ -8725,7 +8727,7 @@ SumFo/SumFc=     1.884      LS-scale=     1.000      Wilson Scale=     0.000
  P6122 TEST DECK FROM LARSON  -  MUCH MODIFIED FOR CRYSTALS                           Date              Time          
 
 
- Print list type     6     serial number      128     Address   136939     Length     700     Created on      
+ Print list type     6     serial number      128     Address   137451     Length     700     Created on      
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H                0.000000E+00   0.200000E+01   0.673913E+00   0.989071E+00
@@ -9056,11 +9058,11 @@ SumFo/SumFc=     1.884      LS-scale=     1.000      Wilson Scale=     0.000
 
    12 *  221 170 200 130 176 212 198 157 187 109 171 190 178 140 173  94 164 172 164 136 161 100 162 171 161 141
 #END                                                                                                                                                                                                                                                            
- Physical reads       4280 Physical writes       4572 Cache hits     141475
- Cache hit distribution   116880    6285    3024    1931    1930    1391
- Cache hit distribution     1173     936     692    1203     572     588
- Cache hit distribution      677     634     401     595     268     346
- Cache hit distribution      318     348     358     275     326     324
+ Physical reads       4307 Physical writes       4560 Cache hits     141444
+ Cache hit distribution   117362    5958    2850    1903    1944    1388
+ Cache hit distribution     1151     968     639    1219     550     612
+ Cache hit distribution      644     683     384     604     251     340
+ Cache hit distribution      346     347     305     345     293     358
 
 
           : Job ends ok       with     7 warnings and     0 errors
