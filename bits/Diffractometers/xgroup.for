@@ -1132,6 +1132,8 @@ c      write(lp,11) isp, j, f(j), ires_ip(f(j)), ichoice(f(j))
 
 
       if(isp .eq. 8) then
+cdjwmar-11  - only output if order is a b c
+        if(perm(ires_ip(f(j))) .eq. ' a b c' ) then
            DO 1401 J=1,J1
              IF(ICEN(F(J)) .EQ. 1) THEN
               WRITE(lo,3100)isg(F(J)),perm(IRES_IP(F(J))),'C'
@@ -1142,7 +1144,7 @@ c      write(lp,11) isp, j, f(j), ires_ip(f(j)), ichoice(f(j))
      &,kaxis(F(J)),
      *                           ichoice(F(J)),sgfull(F(J)),FLOAT(J230
      &(F(J)))*.01,igs(IRES_IS(F(J)))
-               ELSE
+             ELSE
               WRITE(lo,3100)isg(F(J)),perm(IRES_IP(F(J))),'N'
      &,kaxis(F(J)),
      *                           ichoice(F(J)),sgfull(F(J)),FLOAT(J230
@@ -1151,12 +1153,13 @@ c      write(lp,11) isp, j, f(j), ires_ip(f(j)), ichoice(f(j))
      &,kaxis(F(J)),
      *                           ichoice(F(J)),sgfull(F(J)),FLOAT(J230
      &(F(J)))*.01,igs(IRES_IS(F(J)))
-               ENDIF
+             ENDIF
                IF(KKKK .EQ. 0) THEN
                   KKKK=1
                ENDIF
 1401         CONTINUE
            GOTO 3250
+        endif
       ENDIF
 
 C      if(isp .eq. 8) goto 1201
@@ -1473,6 +1476,9 @@ C ---  SORT ON INCREASING CHOICE
 3050        CONTINUE
 C^
             DO 3150 J=1,J1
+cdjwmar-11  - only output if order is a b c
+             if(perm(ires_ip(f(j))) .eq. ' a b c' ) then
+c
                IF (ICEN(F(J)).EQ.1) THEN
                   WRITE(LP,3100) ISG(F(J)),PERM(IRES_IP(F(J))),
      1             'C',KAXIS(F(J)),ICHOICE(F(J)),SGFULL(F(J)),
@@ -1488,6 +1494,7 @@ C^
      1             'N',KAXIS(F(J)),ICHOICE(F(J)),SGFULL(F(J)),
      2             FLOAT(J230(F(J)))*.01,IGS(IRES_IS(F(J)))
                END IF
+             endif
 cdjw3100           FORMAT (' ',A8,1X,I4,3X,A6,2X,A1,4X,A1,3X,I2,5X,A16,1X,
 cdjw     1          F8.3,2X,I3)
 3100           FORMAT (' ',8x,1X,I4,3X,A6,2X,A1,4X,A1,3X,I2,5X,A16,1X,

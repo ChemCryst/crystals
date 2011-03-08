@@ -1,12 +1,12 @@
-      SUBROUTINE datain
+      subroutine datain
 #include "ciftbx.cmn"
 #include "cifin.cmn"
       LOGICAL F2,F3,F4,F5
-      LOGICAL FC,FV,FN,FF,FT,FW,FSG,FMON,FABS,FSIZ,FTEMP,FCOL
+      LOGICAL FC,FV,FN,FF,FT,FW,FZ,FSG,FMON,FABS,FSIZ,FTEMP,FCOL
       logical lnum, lchar
-      CHARACTER*4 CATOM
-      CHARACTER*8 CARG
+
       CHARACTER*14 CSPACE,CTEMP,CMONO,CCOL
+      CHARACTER*26 ALPHA
       CHARACTER*32 C32, ENAME
       CHARACTER*50 C50
       CHARACTER*80 C80,LINE,SLINE,CFORM
@@ -18,10 +18,10 @@ C         CHARACTER*26  alpha
       REAL CELALP,CELBET,CELGAM,SIGALP,SIGBET,SIGGAM
       REAL X,Y,Z,U,SX,SY,SZ,SU
       REAL NUMB,SDEV,DUM
-      REAL UISOEQ(1000)
+      REAL OCC(1000)
       REAL XF(1000),YF(1000),ZF(1000),UIJ(1000,6)
       INTEGER I,J,NSITE
-C         DATA alpha    /'abcdefghijklmnopqrstuvwxyz'/
+      DATA alpha    /'abcdefghijklmnopqrstuvwxyz'/
       DATA NUMER/'1234567890.'/
       DATA NOUTF/10/,NHKL/11/,NCIF/12/
 C 
@@ -32,12 +32,16 @@ C
 C....... Assign the DATA block to be accessed
 C 
 50    IF (.NOT.(DATA_(' '))) THEN
-         WRITE (6,'(/a/)') ' >>>>> No DATA_ statement found'
+         WRITE (6,'(/a/)') 'No DATA_ statement found'
          GO TO 1050
       END IF
 C 
       WRITE (6,'(/a,a/)') ' Accessing items in DATA block  ',BLOC_
 C 
+C....... Read in Z
+c
+      FZ = NUMB_('_cell_formula_units_Z',zp,DUM)
+      IF (.NOT. (FZ)) ZP=0.
 C 
 C....... Read in cell DATA and esds
 C 
@@ -49,9 +53,11 @@ C
       FC=(NUMB_('_cell_angle_gamma',CELGAM,SIGGAM)).AND.(FC)
 C 
       IF (.NOT.(FC)) THEN
-         WRITE (6,'(a)') '>>>>> No cell DATA in this block.'
-         WRITE (6,'(a)') '>>>>> Trying next block.'
+         WRITE (6,'(a)') 'No cell DATA in this block.'
+         WRITE (6,'(a)') 'Trying next block.'
          GO TO 50
+      ELSE
+         WRITE (6,'(A)') 'Cell Data Found'
       END IF
 c
 C----- GET VOLUME
@@ -66,6 +72,8 @@ c       get a rough volume
         celvol = cela*celb*celc*sqrt(celvol)
         sigvol = 0.0
         FV = .TRUE.
+      ELSE
+         WRITE (6,'(A)') 'Cell Volume Found'
       endif
 C 
 C----- get experiment name
@@ -114,7 +122,7 @@ cdjw - evade spurious significance possibly introduced by MAKECIF
 C....... Extract space group notation (expected char string)
       FSG=CHAR_('_symmetry_space_group_name_H-M',NAME)
       IF (.NOT.(FSG)) THEN
-         WRITE (6,'(/a/)') ' >>>>> No spacegroup found'
+         WRITE (6,'(/a/)') 'No spacegroup found'
          GO TO 1050
       END IF
       WRITE (6,'(a,a,a/)')'Space group  from cif= ',NAME(1:LONG_),'.'
@@ -131,7 +139,9 @@ c
 c wavelength
       FW=NUMB_('_diffrn_radiation_wavelength',WAV,DUM)
       IF (.NOT.(FW)) THEN
-         WRITE (6,'(/a/)') ' >>>>> No wavelength '
+         WRITE (6,'(/a/)') 'No wavelength '
+      ELSE
+         WRITE (6,'(A,F10.3)') 'Wavelength Found',wav
          GO TO 100
       END IF
 100   CONTINUE
@@ -143,9 +153,8 @@ c wavelength
       FF=CHAR_('_chemical_oxdiff_formula', CFORM)
       ENDIF
       LFORM=LONG_
-      write(6,'(a)') cform
       IF (.NOT.(FF)) THEN
-         WRITE (6,'(/a/)') ' >>>>> No chemical formula given'
+         WRITE (6,'(/a/)') 'No chemical formula given'
          GO TO 150
       END IF
 c
@@ -162,7 +171,7 @@ c
       F2=NUMB_('_diffrn_orient_matrix_UB_32',RMAT32,DUM).AND.(F2)
       F2=NUMB_('_diffrn_orient_matrix_UB_33',RMAT33,DUM).AND.(F2)
       IF (.NOT.(F2)) THEN
-         WRITE (6,'(/A/)') ' >>>>> No orient matrix or format error'
+         WRITE (6,'(/A/)') 'No orient matrix or format error'
          GO TO 200
       END IF
                                                                         
@@ -172,15 +181,19 @@ c
       FT=NUMB_('_cell_measurement_theta_max',CMTX,DUM).AND.(FT)
       IF (.NOT.(FT)) THEN
          WRITE (6,'(A)') ' No cell measurement info'
+      ELSE
+         WRITE (6,'(A)') 'Cell Measurement Data Found'
       END IF
 
       FSIZ=NUMB_('_exptl_crystal_size_min', ZS,DUM)
       FSIZ=NUMB_('_exptl_crystal_size_mid', ZD,DUM).AND.(FSIZ)
       FSIZ=NUMB_('_exptl_crystal_size_max', ZL,DUM).AND.(FSIZ)
       IF (.NOT.(FSIZ)) THEN
-         WRITE (6,'(A)') ' No crystal size info in cif. Please give'
+         WRITE (6,'(A)') 'No crystal size info in cif. Please give'
          WRITE (6,'(A)') 'Smallest, medium and longest dimensions? '
          READ (5,*) ZS, ZD, ZL
+      ELSE
+         WRITE (6,'(A,3f8.3)') 'Crystal Size Found',zs,zd,zl
       END IF
 
 
@@ -191,6 +204,8 @@ c
       IF (.NOT. FTEMP) THEN
          WRITE (6,'(A)') 'Temperature (K)? '
          READ (5,*) ZT
+      ELSE
+         WRITE (6,'(A,f8.2)') 'Temperature Found',zt
       ENDIF
 
 
@@ -201,6 +216,8 @@ c
       IF (.NOT. FCOL) THEN
          WRITE (6,'(A)') 'Colour? '
          READ (5,'(a)') CCOL
+      ELSE
+         WRITE (6,'(A,3x,a)') 'Crystal Colour Found', ccol
       ENDIF
 
 
@@ -214,26 +231,28 @@ C
       MAXK=-10000
       MAXL=-10000
       NREFS=0
+
 250   NREFS=NREFS+1
-      F2=NUMB_('_refln_index_h',RHR,DUM)
-      F2=NUMB_('_refln_index_k',RKR,DUM).AND.(F2)
-      F2=NUMB_('_refln_index_l',RLR,DUM).AND.(F2)
-      F2=NUMB_('_refln_F_squared_meas',RMEAS,DUM).AND.(F2)
-      F2=NUMB_('_refln_F_squared_sigma',RSIGMA,DUM).AND.(F2)
-      IF (.NOT.(F2)) THEN
-      F2=NUMB_('_hkl_oxdiff_h',RHR,DUM)
-      F2=NUMB_('_hkl_oxdiff_k',RKR,DUM).AND.(F2)
-      F2=NUMB_('_hkl_oxdiff_l',RLR,DUM).AND.(F2)
-      F2=NUMB_('_hkl_oxdiff_f2',RMEAS,DUM).AND.(F2)
-      F2=NUMB_('_hkl_oxdiff_sig',RSIGMA,DUM).AND.(F2)
+      FL6=NUMB_('_refln_index_h',RHR,DUM)
+      FL6=NUMB_('_refln_index_k',RKR,DUM).AND.(FL6)
+      FL6=NUMB_('_refln_index_l',RLR,DUM).AND.(FL6)
+      FL6=NUMB_('_refln_F_squared_meas',RMEAS,DUM).AND.(FL6)
+      FL6=NUMB_('_refln_F_squared_sigma',RSIGMA,DUM).AND.(FL6)
+      IF (.NOT.(FL6)) THEN
+      FL6=NUMB_('_hkl_oxdiff_h',RHR,DUM)
+      FL6=NUMB_('_hkl_oxdiff_k',RKR,DUM).AND.(FL6)
+      FL6=NUMB_('_hkl_oxdiff_l',RLR,DUM).AND.(FL6)
+      FL6=NUMB_('_hkl_oxdiff_FL6',RMEAS,DUM).AND.(FL6)
+      FL6=NUMB_('_hkl_oxdiff_sig',RSIGMA,DUM).AND.(FL6)
       ENDIF
-      IF (.NOT.(F2)) THEN
-         WRITE (6,'(/a/)') ' >>>>> reflections missing or wrong format'
+      IF (.NOT.(FL6)) THEN
+         WRITE (6,'(/a/)') 'Reflections missing or wrong format'
          GO TO 300
       else if ( nrefs .eq. 1) then
         OPEN (NHKL,FILE=chkl, STATUS='UNKNOWN')
         fl6 = .true.
       END IF
+
       IH=NINT(RHR)
       IK=NINT(RKR)
       IL=NINT(RLR)
@@ -269,11 +288,20 @@ C
       if (.not. (fABS)) then
        atn=0.
        atx=0.
+      ELSE
+         WRITE (6,'(A)') 'Absorption Correction Found'
       endif
 C
 320   continue
+C 
+c      IDIFF = 0 = UNKNOWN
+c      IDIFF = 1 = AGILENT
+C      IDIFF = 2 = KCCD
+C      IDIFF = 3 = RIGAKU
+C      IDIFF = 4 = WINGX
+C
 c Kccd SG is only Point Group
-      if(filename(1:4).eq.'kccd') fsg = .false.
+      if((idiff .eq. 2).OR.(idiff .eq. 3)) fsg = .false.
       if ((.not. fsg) .and. (nrefs .gt. 1)) then
 C----- reflections all read - check space group with Nonius code
        write(6,'(a)') 'Space Group Code provided by Enraf-Nonius'
@@ -331,60 +359,73 @@ c----------------------------------------------------------------
       endif
 C 
 C 
-C....... Read and store the atom site DATA from other DATA block
-C 
-      NSITE=0
-350   NSITE=NSITE+1
-      F1=CHAR_('_atom_site_LABEL',LABEL(NSITE,1))
-      IF (.NOT.(F1)) THEN
-         GO TO 700
-      END IF
-C....... pull apart the site LABEL into element and NUMBer
-      IELLEN=2
-      DO 400 I=1,10
-         IF (NUMER(I:I).EQ.LABEL(NSITE,1)(2:2)) IELLEN=1
-400   CONTINUE
-      LABEL(NSITE,2)=LABEL(NSITE,1)(1:IELLEN)
-      DO 500 J=3,6
-         F5=.FALSE.
-         DO 450 I=1,10
-            IF (NUMER(I:I).EQ.LABEL(NSITE,1)(J:J)) F5=.TRUE.
-450      CONTINUE
-         IF (.NOT.(F5)) GO TO 550
-500   CONTINUE
-550   LABEL(NSITE,3)=LABEL(NSITE,1)(IELLEN+1:J-1)
-      F2=NUMB_('_atom_site_fract_x',XF(NSITE),SX)
-      F2=NUMB_('_atom_site_fract_y',YF(NSITE),SY).AND.(F2)
-      F2=NUMB_('_atom_site_fract_z',ZF(NSITE),SZ).AND.(F2)
-      IF (.NOT.(F2)) THEN
-         WRITE (6,'(/a/)') ' >>>>> atom_site_fract_ missing'
-         GO TO 1050
-      END IF
-      DO 600 I=1,6
-600      UIJ(NSITE,I)=0.0
-      IF (LOOP_) GO TO 350
-C 
-C 
-      WRITE (NOUTF,'(a)') '#LIST 5'
-      WRITE (NOUTF,'(a,i4,a)') 'READ NATOM = ',NSITE,', NLAYER = 0, NELE
-     1MENT = 0, NBATCH = 0'
-      WRITE (NOUTF,'(a)') '# Random values for scale...'
-      WRITE (NOUTF,'(a)') 'OVERALL 1 0.5 0.5 1 0 1'
-      DO 650 I=1,NSITE
-C Occ for now
-         ROCC=1.0
-         WRITE (NOUTF,'(3(a,1x),5F11.6)') 'ATOM',LABEL(I,2),LABEL(I,3),
-     1    ROCC,UISOEQ(I),XF(I),YF(I),ZF(I)
-         WRITE (NOUTF,'(a,6F11.6)') 'CON U[11]= ',(UIJ(I,J),J=1,6)
-         IF (UIJ(I,1).GT.0.0001) THEN
-            WRITE (6,'(1x,a,9f8.4)') LABEL(I,1),XF(I),YF(I),ZF(I),
-     1       (UIJ(I,J),J=1,6)
-         ELSE
-            WRITE (6,'(1x,a,3f8.4)') LABEL(I,1),XF(I),YF(I),ZF(I)
-         END IF
-650   CONTINUE
-      WRITE (NOUTF,'(a)') 'END'
+c
+c
+c
+C....... Read and store the atom site data
+C....... =================================
+
+      nsite = 0
+240   nsite = nsite+1
+      f1 = char_('_atom_site_label', label(nsite,1))
+      if(.not.(f1)) then
+        write(6,'(/a/)')   'No atom_site_label found'
+        write(17,'(/a/)')   'No atom_site_label found'
+        nsite=nsite-1
+        goto 241
+      endif
+          
+C....... pull apart the site label into element and number
+      call xcras(label(nsite,1),llabel)
+c     find first number
+      ii = 0
+      do i = 1,llabel
+        j = index(numer,label(nsite,1)(i:i))
+        if (j .ne. 0) exit
+        ii = i
+      enddo
+      if (ii .eq. 0) then
+c       no proper label
+        label(nsite,2) = 'temp'
+      else
+        label(nsite,2) = label(nsite,1)(1:ii)
+      endif
+
+c     find end of numbers
+      kk = ii + 1      
+      do i = ii+1, llabel
+        k = index(numer,label(nsite,1)(i:i))
+        if (k .eq. 0) exit
+        kk = i
+      enddo
+      if (label(nsite,1)(kk:).eq.' ') then
+c        no proper number
+         label(nsite,3) = ' 1'
+      else
+         label(nsite,3) = label(nsite,1)(ii+1:kk)
+      endif
+
+      f2 = numb_('_atom_site_fract_x',  xf(nsite), sx)
+      f2 = numb_('_atom_site_fract_y',  yf(nsite), sy).AND.(f2)
+      f2 = numb_('_atom_site_fract_z',  zf(nsite), sz).AND.(f2)
+      if(.not.(f2)) then
+         write(6,'(/a/)')'atom_site_fract_ missing'
+         write(17,'(/a/)')'atom_site_fract_ missing'
+      endif
+         
+      f2 = numb_('_atom_site_occupancy', occ(nsite), su)
+      if (.not. (f2)) occ(nsite) = 1
+                 
+C         
+C........Check if there are more atoms in the loop to get.
+
+      if(loop_) goto 240
+241   continue
+
+
 700   CONTINUE
+      write(6,*) nsite, ' Atoms found'
+c
 C 
 C-----------------------------------------------------------------------
 C-----  WRITE THE CRYSTALS FILES
@@ -456,172 +497,22 @@ C(FF)
       IF (FF) THEN
 cdjw Insert space if character immediately follows a number
 c    beware if the element type is a charged species like Om2
-        call xcras (cform,lenfil)
-        line(1:lenfil) = cform(1:lenfil)
-        cform = ' '
-        lnum = .false.
-        lchar = .false.
-        k = 1
-        do j = 1,lenfil
-          i = index(numer,line(j:j))
-          if (i .gt. 0) then
-c             found a number
-              if (lnum .eq. .false.) then
-                cform(k:k) =' '
-                k = k+1
-                lnum = .true.
-                lchar = .false.
-              endif
-          else
-c             must be a character
-              if (lchar .eq. .false.) then
-                cform(k:k) =' '
-                k = k+1
-                lchar = .true.
-                lnum = .false.
-              endif
-          endif
-          cform(k:k) = line(j:j)
-          k = k + 1
-        enddo
-        call xcrems (cform,line,lenfil)
-
-         i = 80
-         cform = ' '
-         lnum = .false.
-         do 1234 j = lenfil,1,-1
-            k = index(numer,line(j:j))
-            if (k .gt. 0) then
-             cform(i:i) = line(j:j)
-             i = i-1
-             lnum = .true.
-            else
-             if (.not. lnum) then
-               cform(i:i) = line(j:j)
-               i = i-1
-             else          
-               i = i-1
-               cform(i:i) =line(j:j)
-               i = i-1
-             endif
-             lnum = .false.
-            endif
-1234  continue
-         CALL XCREMS (CFORM,c80,LENFIL)
-         k = index(c80(2:lenfil), ' ')
-         i = index(c80(k+2:lenfil), ' ')
-         do 749 j = 2,i+k+1
-         c80(j-1:j-1) = c80(j:j)
-749      continue
-         CALL XCREMS (C80,LINE,LENFIL)
-         zm = 1.
-         zp = 0.
-750      continue
-         LLONG=1
-         ATSUM=0.
-         IST=1
-         catom = ' '
-         res = 0.0
-800      continue
-         if (ist.ge.lenfil) go to 1000
-         iend=index(line(ist:lenfil),' ')
-         if (iend.le.0) then
-            iend=lenfil
-         else
-            iend=iend+ist-1
-         end if
-         carg = line(ist:iend)
-         ist = iend + 1
-c----- check there is an argument value
-         if (carg .eq. ' ') then
-           goto 1000
-         endif
-c----- remove all spaces
-         call xcras (carg, larg)
-c---- check if starts with a number
-         k=index(numer,carg(1:1))
-         if (k .le. 0) then
-C-----  no numbers found -  must be name
-           if (catom .ne. ' ') then
-810          format(1x,a4,1x,f10.2)
-             write(c32 ,810) catom, res      
-             call xcrems (c32, ctemp, ltemp)
-             clong(llong:) = ctemp(1:ltemp)
-             llong = llong + ltemp
-             if ((catom .ne.'h   ').and.(catom.ne.'H   ')) 
-     1       atsum=atsum+res
-           endif
-           catom = carg(1:4)
-           res = 1.*zm
-         else
-c----- start with a number
-          itemp = kccnum(carg, ires, itype)
-          if (itype .eq. 1) res = float(ires)
-          res = res * zm
-c----- dump if no atom name stored
-          if (catom .eq. ' ') goto 800
-             write(c32 ,810) catom, res      
-             call xcrems (c32, ctemp, ltemp)
-             clong(llong:) = ctemp(1:ltemp)
-             llong = llong + ltemp
-          if ((catom .ne.'h   ').and.(catom.ne.'H   ')) 
-     1    atsum=atsum+res
-          catom = ' '
-          res = 0.0
-         endif
-         go to 800
-1000     CONTINUE
-           if (catom .ne. ' ') then
-             write(c32 ,810) catom, res      
-             call xcrems (c32, ctemp, ltemp)
-             clong(llong:) = ctemp(1:ltemp)
-             llong = llong + ltemp
-             if ((catom .ne.'h   ').and.(catom.ne.'H   ')) 
-     1       atsum=atsum+res
-           endif
-C 
-         write(6,'(a,a)') 'Formula ',clong(1:llong-1)
-         write(6,'(a,f10.3)') 'No of non-H atoms =', atsum
-         if (celvol .gt. .01) then
-          zn=(CELVOL*zm )/(ATSUM*19.)
-         else
-          zn = 1.0
-         endif
-         WRITE (6,'(a,i4,a,f8.2,a)') 
-     1 '  Z estimated from cell volume and composition is' 
-     2  ,nint(zn),' (actually ',zn,')'
-         if(zp .lt. .01) then
-          WRITE (6,'(a,i4,a)') ' Please give Z [',
-     1    nint(zn),']'
-          read (5,'(A)') catom
-          if (len_trim(catom).ne.0) THEN
-               read (catom,*,err=750) zp
-               write(6,'(a,f6.2)') 'Using Z = ', zp
-          else
-               zp = float(nint(zn))
-               write(6,'(a,f6.2)') 'Using Z = ', zp
-          endif
-          if (abs(zm-zp) .gt. 0.1) then
-            zm=zp
-            goto 750
-          endif
-         endif
 c
-c----- remove trailing '.00 '
-         do j=1,llong-3
-          if (clong(j:j+3) .eq.'.00 ') clong(j:j+3) = '    '
-         enddo
-         call xcrems(clong,c160,llong)
-         clong = ' '
-         clong(1:llong) = c160(1:llong)
+        call fixform(line,cform,lenfil,atsum,celvol,zm,zp)
+c
+c
+c
+         call xctrim(cform,lenfil)
+         write(6,'(a,a)') 'Formula ',cform(1:lenfil)
 c
          WRITE (NOUTF,'(a)') '#COMPOSITION'
-         WRITE (NOUTF,'(a,a)') 'content ',CLONG(1:LLONG-1)
+         WRITE (NOUTF,'(a,a)') 'content ',cform(1:lenfil)
          WRITE (NOUTF,'(a)') 'SCATTERING CRYSDIR:script/scatt.dat'
          WRITE (NOUTF,'(a)') 'PROPERTIES CRYSDIR:script/propwin.dat'
          WRITE (NOUTF,'(a)') 'END'
       END IF
-cC 
+c
+C 
 C- CELL PARAMTER MEASUREMENTS
 C FT
       IF (.NOT.(FT)) THEN
@@ -693,18 +584,33 @@ C
          WRITE (NOUTF,'(a,i7)') 'cont lmin=',MINL
          WRITE (NOUTF,'(a,i7)') 'cont lmax=',MAXL
          WRITE (NOUTF,'(a,i7)') 'END'
-C- LIST 6
-      GOTO 1050
-      IF (FL6) THEN
-         WRITE (NOUTF,'(a)') '#OPEN HKLI od-out.hkl'
-         WRITE (NOUTF,'(a)') '#LIST 6'
-         WRITE (NOUTF,'(a)') 'READ F''S=FSQ UNIT=HKLI'
-         WRITE (NOUTF,'(a)') 'END'
-      END IF
-         WRITE (NOUTF,'(a)') '#syst'
-         WRITE (NOUTF,'(a)') 'END'
-         WRITE (NOUTF,'(a)') '#sort'
-         WRITE (NOUTF,'(a)') 'END'
+c
+c
+c  write out atoms
+C 
+c--------------------------------------------------------------
+c      output list 5
+c
+      if ( nsite .gt. 0 ) then
+        write(NOUTF,'(a)') '#LIST 5'
+        write(NOUTF,'(a)') 'OVERALL 1 0.05 0.05 0 0 0'
+        write(NOUTF,'(a,i4,x,a)') 'READ NATOM = ',nsite,
+     *      'NLAYER = 0 NELEMENT = 0 NBATCH = 0 '
+
+        do i=1,nsite
+          write(NOUTF,'(3(a,1x),f11.6,i4,3f11.6,12X,2a4)')
+     *    'ATOM',label(i,2)(1:6),
+     *    label(i,3)(1:6),occ(i),1,xf(i),yf(i),zf(i),label(i,1)
+        end do
+        write(NOUTF,'(a)') 'END'
+        write(NOUTF,'(a)') '#EDIT'           !This will fix clashing
+        write(NOUTF,'(a)') 'LIST LEVEL=OFF ' !serial numbers.
+        write(NOUTF,'(a)') 'MONITOR LEVEL=OFF ' !serial numbers.
+        write(NOUTF,'(a)') 'CLASH FIXLATTER' !serial numbers.
+        write(NOUTF,'(a)') 'END'
+      end if
+
+c
 c
 1050  CONTINUE
       STOP
@@ -723,6 +629,294 @@ c      WRITE (CFILE,'(I8)') I
       IGDAT=I
       RETURN
       END
+c
+c
+c
+      SUBROUTINE FIXFORM (LINE,CFORM,LENFIL, sum, celvol, zm,zp)
+      CHARACTER*(*) LINE,CFORM
+c     Separate the components of the formula in LINE into CFORM
+      LOGICAL LNUMER, LCHAR, LSPACE, FF, lhatom
+      CHARACTER*4 CATOM
+      CHARACTER*12 CARG
+      CHARACTER*11 NUMER
+      CHARACTER*12 CBUFF1
+      CHARACTER*20 CBUFF2
+      CHARACTER*14 CTEMP
+      CHARACTER*26 alpha, ualpha
+      CHARACTER*32 C32
+      CHARACTER*50 C50
+      CHARACTER*80 C80
+      CHARACTER*160 c160, CLONG
+      DATA alpha    /'abcdefghijklmnopqrstuvwxyz'/
+      DATA ualpha   /'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
+      DATA numer/'1234567890.'/
+      DATA LATOM/4/
+      DATA LARG/12/
+
+c
+c      Rules:
+c      Elements and the number of atoms should be separated from each 
+c      other by at least one space.
+c      Elements named with a single letter can be upper or lower case
+c      Element followd immediately by a number will be separated by a
+c      space
+c      Number followed immediately by an element will be separated by 
+c      a space
+c      Two adjacent letters in the same case (upper or lower) will be
+c      sepatated by space 1 space.
+c      Two adjacent letters where the first is upper and the second 
+c      lower case will be treated as a single element type
+c      Two numbers separated by a space will not be interpreted.
+c
+c       line    c 1 h 2 n 3 o 4                                                                 
+c      cform    c 1 h 2 n 3 o 4                                                                 
+c
+c       line    c1 h2 n3 o4                                                                     
+c      cform    c 1 h 2 n 3 o 4                                                                 
+c
+c       line    c1h 2n 3 o4                                                                     
+c      cform    c 1 h 2 n 3 o 4                                                                 
+c
+c       line    c1h 2n 3 o4 Sn 5                                                                
+c      cform    c 1 h 2 n 3 o 4 Sn 5                                                            
+c
+c       line    c1h 2n 3 o4 SN 5                                                                
+c      cform    c 1 h 2 n 3 o 4 S 1 N 5                                                         
+c
+      ff = .true.
+      IF (FF) THEN
+c     beware if the element type is a charged species like Om2
+      lspace = .false.
+      lchar = .false.
+      lnumer = .false.
+      call xcrems (cform,line,lenfil)
+      cform = ' '
+      k = 1
+      do j = 1,lenfil
+        i = index(numer,line(j:j))
+c
+        if (i .gt. 0) then
+C       FOUND A NUMBER 
+c
+          if (lchar) then
+c           number following character - insert space
+            cform(k:k) = ' '
+            cform(k+1:k+1) = line(j:j)
+            k = k + 2
+            lspace = .false.
+            lchar = .false.
+            lnumer = .true.
+          else if (lspace) then
+c           number following space - just output it
+            cform(k:k) = line(j:j)
+            k = k + 1
+            lspace = .false.
+            lchar = .false.
+            lnumer = .true.
+          else
+c           number following space - just output it
+            cform(k:k) = line(j:j)
+            k = k + 1
+          endif
+c
+        else if (line(j:j) .eq. ' ') then
+C         JUST A SPACE - OUTPUT IT
+c
+          cform(k:k) = ' '
+          k = k + 1
+          lspace = .true.
+c
+        else
+C          NOT A NUMBER OR A SPACE - MUST BE CHARACTER
+c
+c
+           if ( k .eq. 1) then
+c            first character on line - just output
+             cform(k:k) = line(j:j)
+             k = k + 1
+             lspace = .false.
+             lchar = .true.
+             lnumer = .false.
+           else if (lspace) then
+c            character following space 
+c            if last item was also a character, output a 1 first
+             if (lchar) then
+                  cform(k:k+1) = '1 '
+                  k = k + 2
+                  lchar = .false.
+                  lnum = .true.
+             endif
+c            character following space - just output it
+             cform(k:k) = line(j:j)
+             k = k + 1
+             lspace = .false.
+             lchar = .true.
+             lnumer = .false.
+           else if (lnumer) then
+c            character following number - insert space
+             cform(k:k) = ' '
+             cform(k+1:k+1) = line(j:j)
+             k = k + 2
+             lspace = .false.
+             lchar = .true.
+             lnumer = .false.
+           else
+c            must be following another character           
+             if (k .gt. 1) then
+c              check last and current characters are capitals
+               l = index(ualpha,cform(k-1:k-1))
+               m = index(ualpha,line(j:j))
+               if ((l .gt. 0) .and. (m .le. 0)) then
+c                 lowercase following capital - just output it
+                  cform(k:k) = line(j:j)
+                  k = k + 1
+                  lspace = .false.
+                  lchar = .true.
+                  lnumer = .false.
+               else 
+c                 both same case - insert a sp 1 sp between them
+                  cform(k:k+2) = ' 1 '
+                  cform(k+3:k+3) = line(j:j)
+                  k = k + 4
+                  lspace = .false.
+                  lchar = .true.
+                  lnumer = .false.
+               endif
+             endif        
+           endif      
+        endif              
+      enddo
+      endif
+      write(6,'(a,4x,a)') 'Input:  ', cform
+c
+c start adding up atoms.
+c assume the formula consists of labels and numbers separated by spaces
+c------------------------------------------------------------
+c
+      call xcrems (cform,line,lenfil)
+      k=1
+      res = 0.
+      atsum = 0.
+      sum = 0.
+      do while (k.le. lenfil)
+        i = index(line(k:lenfil),' ')
+        i = k + i-2
+        i = min(i,k+latom-1)
+        catom = line(k:i)
+        if ((line(k:i) .eq. 'H') .or. (line(k:i) .eq. 'h')) then
+              lhatom = .true.
+        else
+              lhatom = .false.
+        endif
+        if ((line(k:i) .eq. 'D') .or. (line(k:i) .eq. 'd')) 
+     1        lhatom = .true.
+        k = i+2
+        i = index(line(k:lenfil),' ')
+        i = k + i-2
+        i = min(i,k+larg-1)
+        carg = line(k:i)
+        k = i + 2
+c     convert 'number' to real
+        l = index(carg,'.')
+        if (l.le.0) then
+c----- try as integer
+          itype = 1
+          cbuff1 = carg
+          read ( cbuff1 , '(bn,i12)' , err = 1200 ) ivalue
+          xvalue = float(ivalue)
+        else
+c----- try as real
+          itype = 2
+          cbuff2 = carg
+          read ( cbuff2 , '(bn,f20.0)', err = 1200  ) xvalue
+        endif   
+        res = xvalue
+        if (.not. lhatom)  atsum = atsum + res
+        sum = sum + res
+1200    continue
+      enddo
+      write(6,'(a,f10.3)') 'No of non-H atoms =', atsum
+c------------------------------------------------------------      
+c
+c  now find the multiplicity
+c
+         if (celvol .gt. .01) then
+          zn=(CELVOL)/(ATSUM*19.)
+         else
+          zn = 1.0
+         endif
+         WRITE (6,'(a,i4,a,f8.2,a)') 
+     1 'Z estimated from cell volume and composition is' 
+     2  ,nint(zn),' (actually ',zn,')'
+         WRITE(6,'(a,f8.2)') 'Z from cif is ', zp
+c
+          WRITE (6,'(a,i4,a)') 'Please give Z [',
+     1    nint(zn),']'
+          read (5,'(A)') ctemp
+          if (len_trim(ctemp).ne.0) THEN
+               read (ctemp,*,err=750) zp
+               write(6,'(a,f6.2)') 'Using Z = ', zp
+          else
+               zp = float(nint(zn))
+               write(6,'(a,f6.2)') 'Using Z = ', zp
+          endif
+750    continue
+       zm=zp
+c
+c----     scale the contents
+c
+      call xcrems (cform,line,lenfil)
+       k=1
+       kl = 1
+       clong = ' '
+       do while (k.le. lenfil)
+        i = index(line(k:lenfil),' ')
+        i = k + i-2
+        i = min(i,k+latom-1)
+        catom = line(k:i)
+        k = i + 2
+        i = index(line(k:lenfil),' ')
+        i = k + i-2
+        i = min(i,k+larg-1)
+        carg = line(k:i)
+        k = i + 2
+c     convert 'number' to real
+        l = index(carg,'.')
+        if (l.le.0) then
+c----- try as integer
+          itype = 1
+          cbuff1 = carg
+          read ( cbuff1 , '(bn,i12)' , err = 1300 ) ivalue
+          xvalue = float(ivalue)
+        else
+c----- try as real
+          itype = 2
+          cbuff2 = carg
+          read ( cbuff2 , '(bn,f20.0)', err = 1300  ) xvalue
+        endif   
+        res = xvalue
+        clong(kl:kl+latom-1) = catom
+        kl = kl + latom
+        clong(kl:kl)=' '
+        kl = kl + 1
+        write(clong(kl:kl+larg-1), '(f12.2)') xvalue*zm
+        kl = kl + larg 
+        clong(kl:kl)=' '
+        kl = kl + 1
+1300    continue
+       enddo
+       call xcrems (clong,line,lenfil)
+c
+c----- remove trailing '.00 '
+       do j=1,lenfil
+          if (line(j:j+3) .eq.'.00 ') line(j:j+3) = '    '
+       enddo
+       call xcrems(line,cform,lenfil)
+       write(6,'(a,4x,a)') 'Formula:', cform
+c
+2000   continue
+      return
+      end
 C=======================================================================
 #include "xgroup.for"
 #include "charact.for"

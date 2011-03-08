@@ -20,19 +20,20 @@ c
       write(6,'(/a/)')' Unified Version Feb 2011'
 c
 1      CONTINUE
-       write(6,*) 'Choose from Agilent, Nonius, Rigaku, WinGX'
+       write(6,*) 'Choose from A(gilent), N(onius), R(igaku), W(inGX)'
        READ(5,'(A)') CTEMP
        CALL XCCUPC(CTEMP,CDIFF)
-       IF(CDIFF(1:4) .EQ. 'AGIL') THEN
+       idiff = 0
+       IF(CDIFF(1:1) .EQ. 'A') THEN
           CDIFF='agilent'
           idiff = 1
-       ELSE IF(CDIFF(1:4) .EQ. 'NONI') THEN
+       ELSE IF(CDIFF(1:1) .EQ. 'N') THEN
           CDIFF='kccd'
           idiff = 2
-       ELSE IF(CDIFF(1:4) .EQ. 'RIGA') THEN
+       ELSE IF(CDIFF(1:1) .EQ. 'R') THEN
           CDIFF='rigaku'
           idiff = 3
-       ELSE IF(CDIFF(1:4) .EQ. 'WING') THEN
+       ELSE IF(CDIFF(1:1) .EQ. 'W') THEN
           CDIFF='wingx'
           idiff = 4
        ELSE
