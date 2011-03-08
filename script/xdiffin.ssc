@@ -133,8 +133,8 @@ Files INITIAL.* will be created in your directory. They may be important.
 %%                                                                              
 %  EVALUATE HFILE = FILEEXISTS ( 'from-cif.hkl' )                                   
 %  IF ( .not. HFILE ) THEN 
-{I CRYSTALS could find no reflections in the cif file. If you have a 
-{I SHELX hklf file, input that from the X-ray data menu.
+{I CRYSTALS could find no reflections in the cif file.  
+{I If you have a SHELX hklf file, input that from the X-ray data menu.
 %    FINISH
 %  ELSE
 %   BLOCK      
