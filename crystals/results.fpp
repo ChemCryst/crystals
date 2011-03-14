@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.171  2011/02/15 16:24:43  djw
+C Increase figure filed for Tmin/max, get correct program refernce for multi-scan data with Bruker and Agilent software
+C
 C Revision 1.170  2011/02/11 12:00:31  djw
 C remove esd from both D-H and H-A to keep Ton happy
 C
@@ -6435,7 +6438,7 @@ c 6 UNDEF    7 CONSTR  8 NONE
            CALL XCCLWC (CVALUE(1:), CVALUE(1:))
            WRITE (NCFPU1,'(''_refine_ls_hydrogen_treatment '',T35,
      1              A,T50,''# none, undef, noref, refall,'',/,T50,
-     2                    ''# refxyz, refU, constr or mixed'')') CVALUE
+     2                    ''# refxyz, refU, constr or mixed'')') 'mixed'
 
         ELSE IF ( IPUNCH .EQ. 1 ) THEN
            WRITE (CPAGE(IREF,1)(:),'(A,A)') 'Refinement on ',CTYPE
