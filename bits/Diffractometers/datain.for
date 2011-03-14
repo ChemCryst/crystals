@@ -1,13 +1,13 @@
-      subroutine datain
+      SUBROUTINE DATAIN
 #include "ciftbx.cmn"
 #include "cifin.cmn"
       LOGICAL F2,F3,F4,F5
       LOGICAL FC,FV,FN,FF,FT,FW,FZ,FSG,FMON,FABS,FSIZ,FTEMP,FCOL
       logical lnum, lchar
 
-      CHARACTER*14 CSPACE,CTEMP,CMONO,CCOL
+      CHARACTER*16 CSPACE,CTEMP,CMONO
       CHARACTER*26 ALPHA
-      CHARACTER*32 C32, ENAME
+      CHARACTER*32 C32, ENAME,CCOL 
       CHARACTER*50 C50
       CHARACTER*80 C80,LINE,SLINE,CFORM
       CHARACTER*160 CLONG, c160
@@ -190,11 +190,22 @@ c
       FSIZ=NUMB_('_exptl_crystal_size_max', ZL,DUM).AND.(FSIZ)
       IF (.NOT.(FSIZ)) THEN
          WRITE (6,'(A)') 'No crystal size info in cif. Please give'
-         WRITE (6,'(A)') 'Smallest, medium and longest dimensions? '
-         READ (5,*) ZS, ZD, ZL
-      ELSE
-         WRITE (6,'(A,3f8.3)') 'Crystal Size Found',zs,zd,zl
+         WRITE (6,'(A)') 
+     1   'Smallest, medium and longest dimensions? [0.2]'
+         read(5,'(a16)') ctemp
+         if (len_trim(ctemp).eq.0) THEN
+           zs = 0.2
+           zd = 0.2
+           zl = 0.2
+         else
+           READ (ctemp,*,err=201,end=201) ZS, ZD, ZL
+         endif
       END IF
+      goto 202
+201   continue
+      read(5,*) zd,zl
+202   continue
+      WRITE (6,'(A,3f8.3)') 'Crystal Size Found',zs,zd,zl
 
 
       FTEMP=NUMB_('_diffrn_ambient_temperature', ZT ,DUM)
@@ -202,27 +213,36 @@ c
        FTEMP=NUMB_('_cell_measurement_temperature', ZT ,DUM)
       ENDIF
       IF (.NOT. FTEMP) THEN
-         WRITE (6,'(A)') 'Temperature (K)? '
-         READ (5,*) ZT
-      ELSE
-         WRITE (6,'(A,f8.2)') 'Temperature Found',zt
+         WRITE (6,'(A)') 'Temperature (K)? [0]'
+         READ (5,'(a16)') ctemp
+         if (len_trim(ctemp).eq.0) THEN
+            zt = 0.0
+         else
+            read(ctemp,*) zt
+         endif
       ENDIF
-
-
-      FCOL=CHAR_('_exptl_crystal_colour', CCOL)
+      WRITE (6,'(A,f8.2)') 'Temperature Found',zt
+c
+c
+      FCOL=CHAR_('_exptl_crystal_colour', ccol)
       IF (.NOT. FCOL) THEN
        FCOL=CHAR_('_exptl_crystal_colour_primary', CCOL)
       ENDIF
       IF (.NOT. FCOL) THEN
-         WRITE (6,'(A)') 'Colour? '
-         READ (5,'(a)') CCOL
-      ELSE
-         WRITE (6,'(A,3x,a)') 'Crystal Colour Found', ccol
+         WRITE (6,'(A)') 'Colour? [Colourless]'
+         read(5,'(a16)') ctemp
+         if (len_trim(ctemp).eq.0) THEN
+           ccol = 'Colourless'
+         else      
+           READ (ctemp,'(a)') CCOL
+         endif
       ENDIF
-
-
-
-C....... Read and process the refletions
+      call xctrim(ccol,lcol)
+      WRITE (6,'(A,3x,a)') 'Crystal Colour Found', ccol(1:lcol)
+c
+c
+c
+C....... Read and process the reflections
 C 
       MINH=10000
       MINK=10000
@@ -301,28 +321,43 @@ C      IDIFF = 3 = RIGAKU
 C      IDIFF = 4 = WINGX
 C
 c Kccd SG is only Point Group
-      if((idiff .eq. 2).OR.(idiff .eq. 3)) fsg = .false.
-      if ((.not. fsg) .and. (nrefs .gt. 1)) then
+      if (idiff .eq. 2) fsg = .false.
+      if (fsg) then
+         call xctrim(cspace,lspace)
+         write(6,'(A)') 
+     1 'CAUTION - some cifs only contain the Point Group'
+         write(6,'(a,a)') 'SG from cif is ', cspace(1:lspace)
+         write(6,'(a)') 'Is this correct [yes]'
+         read (5,'(A)') ctemp
+         if ((ctemp(1:1).eq.'n') .or. (ctemp(1:1).eq.'N')) then
+           fsg =.false.
+         else
+           write(6,'(a,a)') 'Using input space group'
+           fsg = .true.
+         endif
+      endif
+c----------------------------------------------------------------
+      if (nrefs .gt. 1) then
 C----- reflections all read - check space group with Nonius code
        write(6,'(a)') 'Space Group Code provided by Enraf-Nonius'
-c----------------------------------------------------------------
-       i_value=0
-	isa = 0
-       isb = 0
-	if (abs(90.-celalp) .le. .001) isa=isa+1
-	if (abs(90.-celbet) .le. .001) isa=isa+1
-	if (abs(90.-celgam) .le. .001) isa=isa+1
+       if (.not. fsg) then
+         i_value=0
+	 isa = 0
+         isb = 0
+	 if (abs(90.-celalp) .le. .001) isa=isa+1
+	 if (abs(90.-celbet) .le. .001) isa=isa+1
+	 if (abs(90.-celgam) .le. .001) isa=isa+1
 
-	if (abs(cela-celb) .le. (siga+sigb)) isb=isb+1
-	if (abs(cela-celc) .le. (siga+sigc)) isb=isb+1
-	if (abs(celc-celb) .le. (sigc+sigb)) isb=isb+1
-	write(6,*) isa, isb
-	if (isb .le. 0) then
+	 if (abs(cela-celb) .le. (siga+sigb)) isb=isb+1
+	 if (abs(cela-celc) .le. (siga+sigc)) isb=isb+1
+	 if (abs(celc-celb) .le. (sigc+sigb)) isb=isb+1
+	 write(6,*) isa, isb
+	 if (isb .le. 0) then
 		if(isa .eq. 0) isa=1
-            i_value=isa
+             i_value=isa
 	endif
-	write(6,*)filename(1:lfn)//'.hkl', I_value
-        if (i_value .eq. 0)       WRITE(6,555)
+	 write(6,*)filename(1:lfn)//'.hkl', I_value
+         if (i_value .eq. 0)       WRITE(6,555)
 555   FORMAT (' Possible space group types :',/,' Number:   Group:      
      1       ',/,
 
@@ -340,22 +375,29 @@ c----------------------------------------------------------------
      * ' 12        m3(bar)m cubic',/)
 
 C
-       if (i_value .eq. 0) then
+        if (i_value .eq. 0) then
             write(6,556)
             READ (5,556) I_VALUE
-       endif
-557    format(/,' give space group type number :',/)
-556    FORMAT (I5)
+        endif
+557     format(/,' give space group type number :',/)
+556     FORMAT (I5)
 	write(6,*)filename(1:lfn)//'.hkl', I_value
 c----------------------------------------------------------------
-
-       CALL SGROUP(filename(1:lfn)//'.hkl', i_value)
-       WRITE (6,'(A,a,a)') 'Input space group symbol',
+        ctemp = ' '
+        call sgroup(filename(1:lfn)//'.hkl', i_value,cspace)
+        call xctrim(cspace,lspace)
+        WRITE (6,'(A,a,a)') 'Input space group symbol',
      1 ' with spaces between the components',
      2 ' e.g. P n a 21'
-       write(6,'(a)') 'For monoclinic systems, input the full symbol'
-       READ (5,'(a)') CSPACE
-       fsg = .true.
+        write(6,'(a)') 'For monoclinic systems, input the full symbol'
+        write(6,'(a,a,a)')' Suggested SG is [',cspace(1:lspace),']'
+        read (5,'(a)') ctemp
+        if (ctemp(1:3) .ne. '   ') then
+         callxctrim(ctemp,ltemp)
+         cspace = ctemp(1:ltemp)
+        endif
+        fsg = .true.
+       endif
       endif
 C 
 C 
@@ -370,7 +412,6 @@ C....... =================================
       f1 = char_('_atom_site_label', label(nsite,1))
       if(.not.(f1)) then
         write(6,'(/a/)')   'No atom_site_label found'
-        write(17,'(/a/)')   'No atom_site_label found'
         nsite=nsite-1
         goto 241
       endif
@@ -410,7 +451,6 @@ c        no proper number
       f2 = numb_('_atom_site_fract_z',  zf(nsite), sz).AND.(f2)
       if(.not.(f2)) then
          write(6,'(/a/)')'atom_site_fract_ missing'
-         write(17,'(/a/)')'atom_site_fract_ missing'
       endif
          
       f2 = numb_('_atom_site_occupancy', occ(nsite), su)

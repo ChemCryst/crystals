@@ -1,4 +1,4 @@
-      SUBROUTINE SGROUP(file_name, i_value)
+      SUBROUTINE SGROUP(file_name, i_value, cspace)
 C 
 C 
       LOGICAL NOT6
@@ -43,6 +43,7 @@ C
       LOGICAL ALPHA,BETA,GAMMA
 C      INTEGER            STR$TRIM
       CHARACTER*(*) FILE_NAME
+      CHARACTER *(*) CSPACE
       CHARACTER*64 FILE_NAME1
       CHARACTER*78 TEXT2(10),TEXT1
       INTEGER SPACE_NUMBER
@@ -1109,19 +1110,18 @@ C
       write(lp,1451)
       write(lp,1452)
 
-      WRITE(Lo,1450) CSYS(ISP)
+      WRITE(LO,1450) CSYS(ISP)
       write(lo,1451)
       write(lo,1452)
-1450  format     ('For the ',a11,' system, standard space groups are ',
+1450  format     ('For the ',a11,' system, possible space groups are ',
      1 'as follows')
-1451  format(' If the setting is NOT a b c, you should re-index',
-     1 ' the data')
+1451  format(' If the SG is not a standard setting, you should',
+     1 ' re-index the data')
 1452  format(/, 52x, '    frequency of')
 c
 c
       WRITE(LP,*) ' spacegr number setting cen axis choice  full symbol'
      1,'    occurrence sigma'
-      WRITE(LO,1450) CSYS(ISP)
       WRITE(LO,*) ' spacegr number setting cen axis choice  full symbol'
      1,'    occurrence sigma'
 c      IF (ISP.EQ.8) GO TO 3050
@@ -1131,10 +1131,12 @@ c      write(lp,11) isp, j, f(j), ires_ip(f(j)), ichoice(f(j))
 11    format('djw ',4i4,  a1)
 
 
-      if(isp .eq. 8) then
+      IF(ISP .EQ. 8) THEN
 cdjwmar-11  - only output if order is a b c
-        if(perm(ires_ip(f(j))) .eq. ' a b c' ) then
-           DO 1401 J=1,J1
+        idjws = 0
+        cspace = ' '
+          DO 1401 J=1,J1
+            if(perm(ires_ip(f(j))) .eq. ' a b c' ) then
              IF(ICEN(F(J)) .EQ. 1) THEN
               WRITE(lo,3100)isg(F(J)),perm(IRES_IP(F(J))),'C'
      &,kaxis(F(J)),
@@ -1157,9 +1159,13 @@ cdjwmar-11  - only output if order is a b c
                IF(KKKK .EQ. 0) THEN
                   KKKK=1
                ENDIF
-1401         CONTINUE
-           GOTO 3250
-        endif
+               if (idjws .eq. 0)then
+                 cspace = sgfull(f(j))
+                 idjws = 1
+               endif
+            endif
+1401      CONTINUE
+          GOTO 3250
       ENDIF
 
 C      if(isp .eq. 8) goto 1201
@@ -1475,6 +1481,8 @@ C ---  SORT ON INCREASING CHOICE
 3000        CONTINUE
 3050        CONTINUE
 C^
+            idjws = 0
+            cspace = ' '
             DO 3150 J=1,J1
 cdjwmar-11  - only output if order is a b c
              if(perm(ires_ip(f(j))) .eq. ' a b c' ) then
@@ -1494,6 +1502,10 @@ c
      1             'N',KAXIS(F(J)),ICHOICE(F(J)),SGFULL(F(J)),
      2             FLOAT(J230(F(J)))*.01,IGS(IRES_IS(F(J)))
                END IF
+               if (idjws .eq. 0)then
+                 cspace = sgfull(f(j))
+                 idjws = 1
+               endif
              endif
 cdjw3100           FORMAT (' ',A8,1X,I4,3X,A6,2X,A1,4X,A1,3X,I2,5X,A16,1X,
 cdjw     1          F8.3,2X,I3)
@@ -1507,6 +1519,7 @@ CJDS            write (lo,742) perm(ip), igs(is),isg(i),inc(i),icen(i),
 CJDS     1          sg(i),kaxis(i),ichoice(i),sgfull(i),o230,jcentr(i),
 CJDS     2          kext(i)
 3150        CONTINUE
+c
             IF (ISP.EQ.8) GO TO 3250
          END IF
          IF (IS_NOW.LT.7) THEN
