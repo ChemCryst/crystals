@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.55  2010/09/17 07:12:51  djw
+C Increase format width for overall parameters
+C
 C Revision 1.54  2009/05/01 08:42:34  djw
 C Add comments explaining Splitting
 C
@@ -583,6 +586,7 @@ C of creating huge invalid L41s.
 
 C----- LOAD LIST 20 IF NOT ALREADY IN CORE
       IF (KHUNTR(20,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL20
+c-----LOAD LIST5/10
       CALL XLDRO5 (LA)
       IF (IERFLG.LT.0) GO TO 8200
 
