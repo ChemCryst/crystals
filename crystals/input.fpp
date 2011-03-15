@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2011/02/04 17:40:01  djw
+C XPCH5E either prints table of esds or creates a LIST 9. Operations need to be separated in the near future
+C
 C Revision 1.18  2010/07/21 15:55:16  djw
 C Comment out diagnostics
 C
@@ -341,7 +344,7 @@ C-- 5D 'CHIME' XYZ FORMAT
 7340  CONTINUE
       CALL XPCH5D
       RETURN
-C-- 5E SIMPLE FORMAT
+C-- 5E ESDS IN SIMPLE FORMAT
 7350  CONTINUE
       CALL XPCH5E(2)
       RETURN

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.91  2011/02/07 16:59:07  djw
+C Put IDIM09 as a parameter in ICOM09 so that we can use it to declare work space
+C
 C Revision 1.90  2011/01/25 08:42:36  djw
 C Add Mcmahon flag and fix file closing when there are no list 28 omissions
 C
@@ -477,6 +480,7 @@ C
       INCLUDE 'XLST04.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST09.INC'
       INCLUDE 'XLST13.INC'
       INCLUDE 'XLST14.INC'
       INCLUDE 'XLST23.INC'
@@ -497,7 +501,7 @@ C
 C      1 - 9 , 10 - 19 , 20 - 29 , 30 - 39 , 40 - 49 , 50
 C
 C----- SEE ALSO XSMMRY - FOR THE SAME DATA - SHOULD IT BE IN BLOCK DATA?
-      DATA ISMTYP /  1 ,  2 ,  3 ,  4 ,  5 ,     6 ,  7 ,  0 ,  0 , 10 ,
+      DATA ISMTYP /  1 ,  2 ,  3 ,  4 ,  5 ,     6 ,  7 ,  0 ,  9 , 10 ,
      2               0 , 12 , 13 , 14 ,  0 ,    16 , 17 , 18 ,  0 ,  0 ,
      3               0 ,  0 , 23 ,  0 , 25 ,     0 , 27 , 28 , 29 , 30 ,
      4               0 ,  0 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 , 40 ,
@@ -507,7 +511,7 @@ C
       DATA CLTYPE / 'Cell parameters', 'Symmetry',
      2 'Scattering factors', 'Weighting scheme', 'Parameters',
      3 'Reflection data', 
-     * 'List 7', 2*'*', 'Peaks', '*', 'Refinement directives',
+     * 'List 7', '*','Esd', 'Peaks', '*', 'Refinement directives',
      4 'Diffraction conditions', 'Asymmetric section', '*',
      5 'Restraints', 'Special restraints', 'Smiles', 4*'*',
      6 'S.F. modifications', '*', 'Twin Laws', '*',
@@ -518,7 +522,7 @@ C
 C
       DATA LLTYPE /
      2 15,  8, 18, 16, 10,
-     3 15,  6,  1,  1,  5, 
+     3 15,  6,  1,  3,  5, 
      4 1,  21, 22, 18,  1,
      5 10, 18,  6,  1,  1,
      6  1,  1, 18,  1,  9,
@@ -562,6 +566,9 @@ C
       IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
           CALL XFAL06 (7, 0 )
+        ELSE IF ( LSTYPE .EQ. 9 ) THEN
+      IF (KHUNTR ( 9,0, IADDL,IADDR,IADDD, -1) .LT. 0) 
+     1  CALL XLDR05 ( LSTYPE )
         ELSE IF ( LSTYPE .EQ. 10 ) THEN
       IF (KHUNTR (10,0, IADDL,IADDR,IADDD, -1) .LT. 0)
      1  CALL XLDR05 ( LSTYPE )
@@ -601,6 +608,9 @@ C
 1005  FORMAT (' Summary of contents of list' , I3 ,
      2 ' - ' , A )
 C
+         WRITE(CMON,'(A,i6,a)') 
+     1   'List', lstype,' summary '
+         CALL XPRVDU(NCVDU, 1,0)
 C
       IF ( LSTYPE .EQ. 1 ) THEN
         CALL XSUM01
@@ -616,6 +626,8 @@ C
         CALL XSUM06 ( 6, LEVEL )
       ELSE IF ( LSTYPE .EQ. 7 ) THEN
         CALL XSUM06 ( 7, LEVEL )
+      ELSE IF ( LSTYPE .EQ. 9 ) THEN
+        CALL XSUM05 ( LSTYPE , LEVEL )
       ELSE IF ( LSTYPE .EQ. 10 ) THEN
         CALL XSUM05 ( LSTYPE , LEVEL )
       ELSE IF ( LSTYPE .EQ. 12 ) THEN

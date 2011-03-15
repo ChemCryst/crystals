@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2011/02/07 17:01:15  djw
+C Use #PUNCH 5 E as a stop-gap mechanism for creating a LIST 9 with paramter esds. The matrix of constraint is applied
+C
 C Revision 1.26  2011/02/04 17:40:01  djw
 C XPCH5E either prints table of esds or creates a LIST 9. Operations need to be separated in the near future
 C
@@ -1092,6 +1095,7 @@ C
       INCLUDE 'XLST05.INC'
       dimension dwork(idim05)
       INCLUDE 'XLST09.INC'
+      INCLUDE 'XUNITS.INC'
       INCLUDE 'QLST05.INC'
       INCLUDE 'QLST09.INC'
 C NOW A PARAMETER      INCLUDE 'IDIM05.INC'
@@ -1100,13 +1104,12 @@ c check if there is a LIST 5 already loaded - if so we must save the
 c pointers
       isave = 0
       IF (KHUNTR (5,0,IADDL,IADDR,IADDD,-1) .GE. 0) then
-c      save LIST 5 pointers
-       call xmovei(icom05(1), dwork(1), idimo5)
+       call xmovei(icom05(1), dwork(1), idim05)
        isave = 1
       endif
       CALL XLDR05(9)
-      call xmovei(icom05(1), icom09(1), idimo5)
-      if(isave .eq. 1)  call xmovei( dwork(1),icom05(1), idimo5)
+      call xmovei(icom05(1), icom09(1), idim05)
+      if(isave .eq. 1)  call xmovei( dwork(1),icom05(1), idim05)
       RETURN
       END
 C
@@ -1116,7 +1119,10 @@ CODE FOR XLDR05
 C--LOAD A LIST OF TYPE INTO CORE FROM DISC.
 C
 C  IULN    THE LIST TYPE TO LOAD. THIS LIST WILL USE THE LIST 5
-C          COMMON BLOCK.
+C          COMMON BLOCK WHATEVER THE LIST TYPE LOADED.
+C
+C     THE CALLING ROUTINE MUST SAVE THE REAL LIST 5 ADDRESSES
+C     IF THEY ARE ALREADY IN USE.
 C
 C--
       INCLUDE 'ISTORE.INC'

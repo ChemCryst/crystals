@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.56  2011/02/04 17:40:01  djw
+C XPCH5E either prints table of esds or creates a LIST 9. Operations need to be separated in the near future
+C
 C Revision 1.55  2010/07/21 15:57:54  djw
 C Change order of list 6 header lines
 C
@@ -569,6 +572,8 @@ c      The atom records are created elsewhere in memory and the
 c      L5 addresses set to point to them. 
 c      The fiddled-with list is then written to disk as a LIST 9
 C
+c TYPE SELECTOR ERROR (109) when called from within GEOMETRY even
+c in just print mode
 C--
       INCLUDE 'TSSCHR.INC'
       INCLUDE 'ISTORE.INC'
@@ -583,6 +588,7 @@ C
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XLST01.INC'
       INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST09.INC'
       INCLUDE 'XLST11.INC'
       INCLUDE 'XLST12.INC'
       INCLUDE 'XLST23.INC'
@@ -673,6 +679,7 @@ C -- UPDATE THE ATOM INFORMATION FOR THE NEXT ATOM
         M5A=M5A+MD5
         M9A=M9A+MD9A
       END DO
+      if (itype.eq.1) return
 c
 c  reset the LIST 5 pointers into LIST 9
       l5=l9a
