@@ -7,6 +7,9 @@
 //   Filename:  CxResizeBar.cc
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.15  2011/03/04 05:57:27  rich
+//   Fix SHIFT and CTRL down flags.
+//
 //   Revision 1.14  2009/07/23 14:15:42  rich
 //   Removed all uses of OpenGL feedback buffer - was dreadful slow on some new graphics cards.
 //
@@ -166,10 +169,18 @@ BEGIN_EVENT_TABLE(CxResizeBar, wxWindow)
       EVT_MOTION(CxResizeBar::OnMouseMove)
       EVT_PAINT( CxResizeBar::OnPaint )
       EVT_CHAR( CxResizeBar::OnChar )
+	  EVT_LEAVE_WINDOW( CxResizeBar::OnMouseLeave )
 END_EVENT_TABLE()
 #endif
 
 CXONCHAR(CxResizeBar)
+
+
+#ifdef __BOTHWX__
+void CxResizeBar::OnMouseLeave(wxMouseEvent & event) {
+	SetCursor(NULL);
+}
+#endif
 
 #ifdef __CR_WIN__
 void CxResizeBar::OnMouseMove( UINT nFlags, CPoint wpoint )
@@ -209,7 +220,7 @@ void CxResizeBar::OnMouseMove( wxMouseEvent & evt )
    myDC -> InvertRgn( &rgn );
 #endif
 #ifdef __BOTHWX__
-   wxClientDC myDC(this);
+   wxWindowDC myDC(this);
    myDC.SetBrush( wxBrush( wxColour(0,0,0), wxSOLID ) );
    myDC.SetLogicalFunction ( wxINVERT );
    myDC.DrawRectangle(m_oldrec.Left(), m_oldrec.Top(), m_oldrec.Width(), m_oldrec.Height());
@@ -259,7 +270,7 @@ void CxResizeBar::OnMouseMove( wxMouseEvent & evt )
     SetCursor( AfxGetApp()->LoadStandardCursor( (m_type==kTHorizontal)?IDC_SIZENS:IDC_SIZEWE));
 #endif
 #ifdef __BOTHWX__
-    this->SetCursor( wxCursor ( (m_type==kTHorizontal)?wxCURSOR_SIZENS:wxCURSOR_SIZEWE) );
+    this->SetCursor( (m_type==kTHorizontal)?wxCURSOR_SIZENS:wxCURSOR_SIZEWE );
 #endif
    }
    else
@@ -268,7 +279,7 @@ void CxResizeBar::OnMouseMove( wxMouseEvent & evt )
     SetCursor( AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 #endif
 #ifdef __BOTHWX__
-    this->SetCursor( wxCursor ( wxCURSOR_ARROW ) );
+    this->SetCursor( NULL );
 #endif
    }
  }
@@ -666,13 +677,13 @@ void CxResizeBar::OnPaint(wxPaintEvent & event)
     if (arrow == 0)
     {
       dc.SetPen ( penHigh );
-      dc.DrawLine ( rect1.Left(),  rect1.Top(),    rect1.Left(),  rect1.Bottom() );
-      dc.DrawLine ( rect1.Left(),  rect1.Top(),    rect1.Right(), rect1.Top() );
+      dc.DrawLine ( rect1.Left(),  rect1.Top(),    rect1.Left(),  rect1.Bottom()-1 );
+      dc.DrawLine ( rect1.Left(),  rect1.Top(),    rect1.Right()-1, rect1.Top() );
 //      dc.DrawLine ( rect2.Left(),  rect2.Top(),    rect2.Left(),  rect2.Bottom() );
 //      dc.DrawLine ( rect2.Left(),  rect2.Top(),    rect2.Right(), rect2.Top() );
       dc.SetPen ( penLow );
-      dc.DrawLine ( rect1.Right(), rect1.Bottom(), rect1.Right(), rect1.Top() );
-      dc.DrawLine ( rect1.Right(), rect1.Bottom(), rect1.Left(),  rect1.Bottom() );
+      dc.DrawLine ( rect1.Right()-1, rect1.Bottom()-1, rect1.Right()-1, rect1.Top() );
+      dc.DrawLine ( rect1.Right()-1, rect1.Bottom()-1, rect1.Left(),  rect1.Bottom()-1 );
 //      dc.DrawLine ( rect2.Right(), rect2.Bottom(), rect2.Right(), rect2.Top() );
 //      dc.DrawLine ( rect2.Right(), rect2.Bottom(), rect2.Left(),  rect2.Bottom() );
       dc.SetPen ( wxNullPen );
@@ -680,19 +691,19 @@ void CxResizeBar::OnPaint(wxPaintEvent & event)
     else
     {
       dc.SetPen ( penHigh );
-      dc.DrawLine ( rect1.Left(),  rect1.Top(),    rect1.Left(),  rect1.Bottom() );
-      dc.DrawLine ( rect1.Left(),  rect1.Top(),    rect1.Right(), rect1.Top() );
-      dc.DrawLine ( rect2.Left(),  rect2.Top(),    rect2.Left(),  rect2.Bottom() );
-      dc.DrawLine ( rect2.Left(),  rect2.Top(),    rect2.Right(), rect2.Top() );
+      dc.DrawLine ( rect1.Left(),  rect1.Top(),    rect1.Left(),  rect1.Bottom()-1 );
+      dc.DrawLine ( rect1.Left(),  rect1.Top(),    rect1.Right()-1, rect1.Top() );
+      dc.DrawLine ( rect2.Left(),  rect2.Top(),    rect2.Left(),  rect2.Bottom()-1 );
+      dc.DrawLine ( rect2.Left(),  rect2.Top(),    rect2.Right()-1, rect2.Top() );
 //      dc.DrawLine ( rect3.Left(),  rect3.Top(),    rect3.Left(),  rect3.Bottom() );
 //      dc.DrawLine ( rect3.Left(),  rect3.Top(),    rect3.Right(), rect3.Top() );
 //      dc.DrawLine ( rect4.Left(),  rect4.Top(),    rect4.Left(),  rect4.Bottom() );
 //      dc.DrawLine ( rect4.Left(),  rect4.Top(),    rect4.Right(), rect4.Top() );
       dc.SetPen ( penLow );
-      dc.DrawLine ( rect1.Right(), rect1.Bottom(), rect1.Right(), rect1.Top() );
-      dc.DrawLine ( rect1.Right(), rect1.Bottom(), rect1.Left(),  rect1.Bottom() );
-      dc.DrawLine ( rect2.Right(), rect2.Bottom(), rect2.Right(), rect2.Top() );
-      dc.DrawLine ( rect2.Right(), rect2.Bottom(), rect2.Left(),  rect2.Bottom() );
+      dc.DrawLine ( rect1.Right()-1, rect1.Bottom()-1, rect1.Right()-1, rect1.Top() );
+      dc.DrawLine ( rect1.Right()-1, rect1.Bottom()-1, rect1.Left(),  rect1.Bottom()-1 );
+      dc.DrawLine ( rect2.Right()-1, rect2.Bottom()-1, rect2.Right()-1, rect2.Top() );
+      dc.DrawLine ( rect2.Right()-1, rect2.Bottom()-1, rect2.Left(),  rect2.Bottom()-1 );
 //      dc.DrawLine ( rect3.Right(), rect3.Bottom(), rect3.Right(), rect3.Top() );
 //      dc.DrawLine ( rect3.Right(), rect3.Bottom(), rect3.Left(),  rect3.Bottom() );
 //      dc.DrawLine ( rect4.Right(), rect4.Bottom(), rect4.Right(), rect4.Top() );
