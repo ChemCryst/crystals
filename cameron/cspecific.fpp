@@ -387,10 +387,10 @@ CODE FOR ZVGAEL
 
 #endif
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
-      CHARACTER*80 CHARTC
+C      CHARACTER*80 CHARTC
 #endif
 #if defined(_WXS_) 
-      CHARACTER*80 CHARTC
+C      CHARACTER*80 CHARTC
 C &&GILGID      WRITE(CHARTC,2)'^^CH RGB',
 C &&GILGID     1 NINT(4.05*IVGACL(1,ICOL+1)),
 C &&GILGID     2 NINT(4.05*IVGACL(2,ICOL+1)),
@@ -417,9 +417,8 @@ C &&GILGID      CALL ZMORE(CHARTC,0)
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
               CALL FSTEEL ( IXC, IYC, IMAJ, IMIN )
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)
               CALL FSTEEL ( IXC, IYC, IMAJ, IMIN )
-
 #endif
 
       RETURN
@@ -1005,22 +1004,15 @@ C DO WE NEED TO CHANGE THE CURSOR ?
 #if defined(_WXS_) 
       INTEGER IX, IY, IW, IH
 #endif
-#if defined(__DIGITALF77__) 
+#if defined(_DIGITALF77_) 
       CALL FASTEELLI(IX, IY, IW, IH)
-#endif
-#if defined(_GIL_)  || defined(_MAC_)
-      CALL FASTEELLI(%VAL(IX), %VAL(IY), %VAL(IW), %VAL(IH))
-#endif
-#if defined(_DIGITALF77_) || defined(_GIL_)  || defined(_MAC_)
-      RETURN
-      END
 #endif
 #if defined(_GNUF77_) 
       CALL FASTEELLI(%VAL(IX), %VAL(IY), %VAL(IW), %VAL(IH))
+#endif
       RETURN
       END
 
-#endif
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       SUBROUTINE FSTFPO(NV, IPTS)
 #endif
