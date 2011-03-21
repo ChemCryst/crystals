@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2009/07/08 14:18:16  djw
+C Improve creation of format statement to handle FP numbers over a wide range of values
+C
 C Revision 1.8  2009/07/02 09:18:11  djw
 C New subroutine DFORM which tries to create a suitable format statement to cover large
 C  range of values taking intomaccount the limited precission of 32bit floats
@@ -1063,8 +1066,8 @@ c      horrid kludge to make least significant parts zero
        mdp = n-ndp
        if (mdp .gt. 0) then
         avalue = abs(dvalue)
-        asign = sign(1., dvalue)
-        nvalue = nint ( dvalue * 10. ** -mdp)
+        asign = sign(1.0D0, dvalue)
+        nvalue = nint ( dvalue * (10. ** (-mdp)))
         if ( dvalue .ge. 10. ** mdp) then
              dvalue = asign*float(nvalue)*10.**mdp
 c             write(*,*) avalue, asign*float(nvalue)*10.**mdp

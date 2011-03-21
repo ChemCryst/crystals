@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.44  2011/02/25 08:35:17  djw
+C Show name of SCRIPT if it is abandoned
+C
 C Revision 1.43  2010/07/16 11:35:31  djw
 C Enable XPCHLX to output lists 12 and 16 to the cif file.  This means carrying the I/O chanel (as NODEV)
 C in XPCHLX,XPCHLH,PPCHND and XPCHUS.
@@ -1821,6 +1824,21 @@ C
       INCLUDE 'QSTORE.INC'
 C
 C
+#if defined (_HOL_)
+      DATA MODE(1)/1HI/ , MODE(2)/1HB/ , MODE(3)/1HO/
+C     START UP
+      DATA IHASH(1)/1HS/,IHASH(2)/1HT/,IHASH(3)/1HA/
+      DATA IHASH(4)/1HR/,IHASH(5)/1HT/,IHASH(6)/1H /
+      DATA IHASH(7)/1HU/,IHASH(8)/1HP/,IHASH(9)/1H /
+      DATA IHASH(10)/1H /,IHASH(11)/1H /,IHASH(12)/1H /
+CDJWFEB10
+C     INCREASE I AND JHASH BUFFER TO 12 CHARACTERS
+C     ERROR
+      DATA MERROR(1)/1HE/,MERROR(2)/1HR/,MERROR(3)/1HR/
+      DATA MERROR(4)/1HO/,MERROR(5)/1HR/,MERROR(6)/1H /
+      DATA MERROR(7)/1H /,MERROR(8)/1H /,MERROR(9)/1H /
+      DATA MERROR(10)/1H /,MERROR(11)/1H /,MERROR(12)/1H /
+#else
       DATA MODE(1)/'I'/ , MODE(2)/'B'/ , MODE(3)/'O'/
 C     START UP
       DATA IHASH(1)/'S'/,IHASH(2)/'T'/,IHASH(3)/'A'/
@@ -1834,6 +1852,7 @@ C     ERROR
       DATA MERROR(4)/'O'/,MERROR(5)/'R'/,MERROR(6)/' '/
       DATA MERROR(7)/' '/,MERROR(8)/' '/,MERROR(9)/' '/
       DATA MERROR(10)/' '/,MERROR(11)/' '/,MERROR(12)/' '/
+#endif
 C
 C----- INDICATE WE HAVENT STARTED YET
       DATA ISPYST /0/

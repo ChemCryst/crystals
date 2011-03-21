@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.56  2011/03/15 08:45:40  djw
+C Add a COMMENT about loading L5/L10
+C
 C Revision 1.55  2010/09/17 07:12:51  djw
 C Increase format width for overall parameters
 C
@@ -401,19 +404,30 @@ C
       INTEGER QSPHERE,QLINE,QRING
 C
       DATA NWCOND/1/,NCOND/6/,LCOND/1/
+#if defined (_HOL_)
+      DATA ICOND(1)/4HEQ  /,ICOND(2)/4HNE  /,ICOND(3)/4HLT  /
+      DATA ICOND(4)/4HLE  /,ICOND(5)/4HGT  /,ICOND(6)/4HGE  /
+C
+      DATA KHYD /4HH   /
+      DATA KDET /4HD   /
+      DATA PEAK/4HQ   /,QCENT/4HQC  /
+C-C-C-DEFINITION OF ATOM TYPE ABBREV. FOR SPECIALS
+      DATA QSPHERE/4HQS  /,QLINE/4HQL  /,QRING/4HQR  /
+#else
       DATA ICOND(1)/'EQ  '/,ICOND(2)/'NE  '/,ICOND(3)/'LT  '/
       DATA ICOND(4)/'LE  '/,ICOND(5)/'GT  '/,ICOND(6)/'GE  '/
 C
       DATA KHYD /'H   '/
       DATA KDET /'D   '/
+      DATA PEAK/'Q   '/,QCENT/'QC  '/
+C-C-C-DEFINITION OF ATOM TYPE ABBREV. FOR SPECIALS
+      DATA QSPHERE/'QS  '/,QLINE/'QL  '/,QRING/'QR  '/
+#endif
 
       DATA IMONSZ/5/
 C
 C----- LOOP COUNTER
       DATA ILOOP/0/
-      DATA PEAK/'Q   '/,QCENT/'QC  '/
-C-C-C-DEFINITION OF ATOM TYPE ABBREV. FOR SPECIALS
-      DATA QSPHERE/'QS  '/,QLINE/'QL  '/,QRING/'QR  '/
 C-C-C
 C----- VERSION 510 INCLUDES ALL LUDGER SCHROEDERS CHANGES
       DATA IVERSN/512/

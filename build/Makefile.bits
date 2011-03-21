@@ -24,7 +24,7 @@ OBJS := $(OBJS) obj/crysload.o
 EXECS := $(patsubst %, %.exe, $(EXECS) crysload)
 endif
 
-LD77 = g77
+LD77 = gfortran
 
 all : obj $(EXECS) rc93.srt form.dat
 

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2009/09/18 16:24:34  djw
+C Silly scaling error if 2Fo-Fc map
+C
 C Revision 1.22  2009/07/31 12:42:05  djw
 C Remove de-bugging out put from the monitor
 C
@@ -1399,7 +1402,11 @@ C--
       EQUIVALENCE (IOUFIL, PROCS(28))
 
       DATA NCOL/28/
+#if defined (_HOL_)
+      DATA IPEAK /4HQ   /
+#else
       DATA IPEAK /'Q   '/
+#endif
       
 C----- MAXIMUM DISTANCE FOR A 1-3 CONTACT, AND ITS SQUARE
       DATA D13 / 4.0 /, D13S / 9.0 /
@@ -1667,9 +1674,9 @@ CX
         STORE(LBOX+4) =  STORE(L8RI)
         STORE(LBOX+5) =  STORE(L8RI+3)
         STORE(LBOX+6) =  STORE(L8RI+6)
-        STORE(LBOX+7) =  STORE(L8RI)**2    * -(STORE(L8T+3)-EDGES)
-     4                  + STORE(L8RI+3)**2 * -(STORE(L8T+3)-EDGES)
-     7                  + STORE(L8RI+6)**2 * -(STORE(L8T+3)-EDGES)
+        STORE(LBOX+7) =  STORE(L8RI)**2    * (-(STORE(L8T+3)-EDGES))
+     4                  + STORE(L8RI+3)**2 * (-(STORE(L8T+3)-EDGES))
+     7                  + STORE(L8RI+6)**2 * (-(STORE(L8T+3)-EDGES))
 C-X
         STORE(LBOX+8)  = -STORE(LBOX+4)
         STORE(LBOX+9)  = -STORE(LBOX+5)
@@ -1681,9 +1688,9 @@ CY
         STORE(LBOX+12) =  STORE(L8RI+1)
         STORE(LBOX+13) =  STORE(L8RI+4)
         STORE(LBOX+14) =  STORE(L8RI+7)
-        STORE(LBOX+15) =   STORE(L8RI+1)**2 * -(STORE(L8T+6)-EDGES)
-     4                  +  STORE(L8RI+4)**2 * -(STORE(L8T+6)-EDGES)
-     7                  +  STORE(L8RI+7)**2 * -(STORE(L8T+6)-EDGES)
+        STORE(LBOX+15) =   STORE(L8RI+1)**2 * (-(STORE(L8T+6)-EDGES))
+     4                  +  STORE(L8RI+4)**2 * (-(STORE(L8T+6)-EDGES))
+     7                  +  STORE(L8RI+7)**2 * (-(STORE(L8T+6)-EDGES))
 C-Y
         STORE(LBOX+16) = -STORE(LBOX+12)
         STORE(LBOX+17) = -STORE(LBOX+13)
@@ -1693,9 +1700,9 @@ CZ
         STORE(LBOX+20) =  STORE(L8RI+2)
         STORE(LBOX+21) =  STORE(L8RI+5)
         STORE(LBOX+22) =  STORE(L8RI+8)
-        STORE(LBOX+23) =   STORE(L8RI+2)**2 * -(STORE(L8T+9)-EDGES)
-     4                   + STORE(L8RI+5)**2 * -(STORE(L8T+9)-EDGES)
-     7                   + STORE(L8RI+8)**2 * -(STORE(L8T+9)-EDGES)
+        STORE(LBOX+23) =   STORE(L8RI+2)**2 * (-(STORE(L8T+9)-EDGES))
+     4                   + STORE(L8RI+5)**2 * (-(STORE(L8T+9)-EDGES))
+     7                   + STORE(L8RI+8)**2 * (-(STORE(L8T+9)-EDGES))
 C-Z     
         STORE(LBOX+24) = -STORE(LBOX+20)
         STORE(LBOX+25) = -STORE(LBOX+21)

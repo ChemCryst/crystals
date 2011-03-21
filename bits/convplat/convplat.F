@@ -2,10 +2,10 @@
       character *80 cline
       in1 = 10
       in2 = 11
-      out1 = 12
+      iout1 = 12
       open(in1,file='PLATON6',status='old')
       open(in2,file='platon.hkp',status='old')
-      open(out1,file='LIST6.ABC',status='unknown')
+      open(iout1,file='LIST6.ABC',status='unknown')
       do 1 i=1,10
       read(in1,'(a)') cline
 1     continue 
@@ -22,7 +22,7 @@ c
      * ,'CONTINUE RATIO/JCODE  SIGMA(/FO/)   CORRECTIONS  '
      * ,'A-PART B-PART'
      5 / 'END')
-      write(out1,1001)
+      write(iout1,1001)
 
       n6 = 0
       np = 0
@@ -40,19 +40,19 @@ c
              write(6,'(3I4,A)')jh,jk,jl,' not found in HKP file'
              goto 110
           end if
-          write(out1,'(a)') cline
-          write(out1,'(2f8.2)')a,b
+          write(iout1,'(a)') cline
+          write(iout1,'(2f8.2)')a,b
       goto 100
 200   continue
-      write(out1,'(I4/)')-512
+      write(iout1,'(I4/)')-512
       write(6,'(A,I6,A,I6,A)')
      1 'Finished. Of ',N6,' reflections passed to Platon, ',NP,
      1 ' were passed back. Press return to finish.'
       read(5,'(a)') cline
       stop
 220   continue
-      rewind(out1)
-      write(out1,'(A)') 'Index mismatch - processing aborted'
+      rewind(iout1)
+      write(iout1,'(A)') 'Index mismatch - processing aborted'
       write(6,'(A)')
      1 'Index mismatch - processing aborted. Press return to finish.'
       read(5,'(a)') cline

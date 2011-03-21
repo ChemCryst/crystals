@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.32  2011/02/07 16:59:30  djw
+C Put IDOM09 into ICOM09
+C
 C Revision 1.31  2010/07/29 15:29:24  djw
 C remove diagnostic print
 C
@@ -2843,7 +2846,11 @@ C
 C
       DATA CFOUND / '  Not in the map' /
       DATA LFOUND / 16 /
+#if defined (_HOL_)
+      DATA IQNEG/4HQN  /
+#else
       DATA IQNEG/'QN  '/
+#endif
 C
 C----- GET THE MAP SIGN
       SMAP = FLOAT(NGMAP)
@@ -3852,7 +3859,7 @@ C--
 #if !defined(_HOL_) 
       DATA IPEAK/'Q   '/
 #else
-      DATA PEAK(1)/4HQ   /, IPEAK/'Q   '/
+      DATA IPEAK/4HQ   /
 
 
 #endif

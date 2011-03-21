@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.102  2011/03/04 05:49:49  rich
+C Ensure proper closing of properties file in bond calculation routine.
+C
 C Revision 1.101  2011/02/04 17:34:03  djw
 C Extend parameter list on PRTGRP to enable selection by RESIDUE
 C
@@ -720,9 +723,13 @@ C
 C----- MAXIMUM PARTS PER PARAMETER
       DATA MXPPP /50/
 
+#if defined (_HOL_)
+      DATA KHYD /4HH   /, KCARB /4HC   /, KAZOT/4HN   /, KOXY/4HO   /
+      DATA KDET /4HD   /
+#else
       DATA KHYD /'H   '/, KCARB /'C   '/, KAZOT/'N   '/, KOXY/'O   '/
       DATA KDET /'D   '/
-
+#endif
       PIVINI = .FALSE.
       BONINI = .FALSE.
       LDISTI = .FALSE.
@@ -3460,7 +3467,7 @@ C
 #if !defined(_HOL_) 
       DATA IPEAK/'Q   '/
 #else
-      DATA PEAK(1)/4HQ   /, IPEAK/'Q   '/
+      DATA IPEAK/4HQ   /
 C
 C--CALLL THE TIMING FUNCTION
 #endif
@@ -6583,8 +6590,11 @@ C      IADDR       PLACE IN STORE TO PUT THE RESULTS
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XERVAL.INC'
       INCLUDE 'QSTORE.INC'
+#if defined (_HOL_)
+      DATA ICTO/4HTO  /
+#else
       DATA ICTO/'TO  '/
-
+#endif
 C -- SEARCH INPUT FOR TYPE/ATOM SPECIFIERS
 
       IGTONE = 0
@@ -6724,7 +6734,11 @@ C--
       INCLUDE 'XLIMIT.INC'
 
       EQUIVALENCE (PROCS(1), IPROCS(1))
+#if defined (_HOL_)
+      DATA    IUNKN /4HUNKN/
+#else
       DATA    IUNKN /'UNKN'/
+#endif
       INCLUDE 'IDIM40.INC'
       INCLUDE 'IDIM41.INC'
 

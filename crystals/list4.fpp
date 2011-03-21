@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.66  2011/02/18 17:10:35  djw
+C Include average sums of differences in place of the "*" in analyse /FO/
+C
 C Revision 1.65  2009/11/13 09:16:10  djw
 C Watch out for small Fo and Fc in computing SHELX weights
 C
@@ -1930,16 +1933,7 @@ C
 C--HEADING FOR THE NORMAL PLOT TYPE ENTRIES
       DATA KM(1)/'LOG('/,KM(2)/'<W*D'/,KM(3)/'ELTA'/,KM(4)/'**2>'/
       DATA KM(5)/')   '/
-#else
-      DATA KN(1)/4H  SC/,KN(2)/4HALE /,KN(3)/4H    /,KN(4)/4H    /
-#endif
-#if defined(_HOL_) 
-      DATA KN(5)/4H    /
-C--HEADING FOR THE NORMAL PLOT TYPE ENTRIES
-      DATA KM(1)/4HLOG(/,KM(2)/4H<W*D/,KM(3)/4HELTA/,KM(4)/4H**2>/
-      DATA KM(5)/4H)   /
 C--DATA FOR THE VAIOUS CLASSES OF REFLECTION GROUPS
-#endif
       DATA NOPE(1,1)/'    '/,NOPE(2,1)/' /FO'/,NOPE(3,1)/'/ RA'/
       DATA NOPE(4,1)/'NGE '/
       DATA NOPE(1,2)/'  SI'/,NOPE(2,2)/'NTH/'/,NOPE(3,2)/'L RA'/
@@ -2000,6 +1994,74 @@ C--DATA FOR THE VAIOUS CLASSES OF REFLECTION GROUPS
       DATA NOPE(4,29)/'    '/
       DATA NOPE(1,30)/'    '/,NOPE(2,30)/'  CL'/,NOPE(3,30)/'ASS '/
       DATA NOPE(4,30)/'    '/
+#else
+      DATA KN(1)/4H  SC/,KN(2)/4HALE /,KN(3)/4H    /,KN(4)/4H    /
+      DATA KN(5)/4H    /
+C--HEADING FOR THE NORMAL PLOT TYPE ENTRIES
+      DATA KM(1)/4HLOG(/,KM(2)/4H<W*D/,KM(3)/4HELTA/,KM(4)/4H**2>/
+      DATA KM(5)/4H)   /
+C--DATA FOR THE VAIOUS CLASSES OF REFLECTION GROUPS
+      DATA NOPE(1,1)/4H    /,NOPE(2,1)/4H /FO/,NOPE(3,1)/4H/ RA/
+      DATA NOPE(4,1)/4HNGE /
+      DATA NOPE(1,2)/4H  SI/,NOPE(2,2)/4HNTH//,NOPE(3,2)/4HL RA/
+      DATA NOPE(4,2)/4HNGE /
+      DATA NOPE(1,3)/4H    /,NOPE(2,3)/4H   L/,NOPE(3,3)/4HAYER/
+      DATA NOPE(4,3)/4H    /
+      DATA NOPE(1,4)/4H  PA/,NOPE(2,4)/4HRITY/,NOPE(3,4)/4H GRO/
+      DATA NOPE(4,4)/4HUP  /
+      DATA NOPE(1,5)/4H    /,NOPE(2,5)/4H TOT/,NOPE(3,5)/4HALS /
+      DATA NOPE(4,5)/4H    /
+      DATA NOPE(1,6)/4H    /,NOPE(2,6)/4HH   /,NOPE(3,6)/4H= 2N/
+      DATA NOPE(4,6)/4H    /
+      DATA NOPE(1,7)/4H    /,NOPE(2,7)/4HH   /,NOPE(3,7)/4H= 2N/
+      DATA NOPE(4,7)/4H+1  /
+      DATA NOPE(1,8)/4H    /,NOPE(2,8)/4HK   /,NOPE(3,8)/4H= 2N/
+      DATA NOPE(4,8)/4H    /
+      DATA NOPE(1,9)/4H    /,NOPE(2,9)/4HK   /,NOPE(3,9)/4H= 2N/
+      DATA NOPE(4,9)/4H+1  /
+      DATA NOPE(1,10)/4H    /,NOPE(2,10)/4HL   /,NOPE(3,10)/4H= 2N/
+      DATA NOPE(4,10)/4H    /
+      DATA NOPE(1,11)/4H    /,NOPE(2,11)/4HL   /,NOPE(3,11)/4H= 2N/
+      DATA NOPE(4,11)/4H+1  /
+      DATA NOPE(1,12)/4H   K/,NOPE(2,12)/4H+L  /,NOPE(3,12)/4H= 2N/
+      DATA NOPE(4,12)/4H    /
+      DATA NOPE(1,13)/4H   K/,NOPE(2,13)/4H+L  /,NOPE(3,13)/4H= 2N/
+      DATA NOPE(4,13)/4H+1  /
+      DATA NOPE(1,14)/4H   H/,NOPE(2,14)/4H+L  /,NOPE(3,14)/4H= 2N/
+      DATA NOPE(4,14)/4H    /
+      DATA NOPE(1,15)/4H   H/,NOPE(2,15)/4H+L  /,NOPE(3,15)/4H= 2N/
+      DATA NOPE(4,15)/4H+1  /
+      DATA NOPE(1,16)/4H   H/,NOPE(2,16)/4H+K  /,NOPE(3,16)/4H= 2N/
+      DATA NOPE(4,16)/4H    /
+      DATA NOPE(1,17)/4H   H/,NOPE(2,17)/4H+K  /,NOPE(3,17)/4H= 2N/
+      DATA NOPE(4,17)/4H+1  /
+      DATA NOPE(1,18)/4H  H+/,NOPE(2,18)/4HK+L /,NOPE(3,18)/4H= 2N/
+      DATA NOPE(4,18)/4H    /
+      DATA NOPE(1,19)/4H  H+/,NOPE(2,19)/4HK+L /,NOPE(3,19)/4H= 2N/
+      DATA NOPE(4,19)/4H+1  /
+      DATA NOPE(1,20)/4H -H+/,NOPE(2,20)/4HK+L /,NOPE(3,20)/4H= 3N/
+      DATA NOPE(4,20)/4H    /
+      DATA NOPE(1,21)/4H -H+/,NOPE(2,21)/4HK+L /,NOPE(3,21)/4H# 3N/
+      DATA NOPE(4,21)/4H    /
+      DATA NOPE(1,22)/4H    /,NOPE(2,22)/4H   G/,NOPE(3,22)/4HGG  /
+      DATA NOPE(4,22)/4H    /
+      DATA NOPE(1,23)/4H    /,NOPE(2,23)/4H   U/,NOPE(3,23)/4HGG  /
+      DATA NOPE(4,23)/4H    /
+      DATA NOPE(1,24)/4H    /,NOPE(2,24)/4H   G/,NOPE(3,24)/4HUG  /
+      DATA NOPE(4,24)/4H    /
+      DATA NOPE(1,25)/4H    /,NOPE(2,25)/4H   U/,NOPE(3,25)/4HUG  /
+      DATA NOPE(4,25)/4H    /
+      DATA NOPE(1,26)/4H    /,NOPE(2,26)/4H   G/,NOPE(3,26)/4HGU  /
+      DATA NOPE(4,26)/4H    /
+      DATA NOPE(1,27)/4H    /,NOPE(2,27)/4H   U/,NOPE(3,27)/4HGU  /
+      DATA NOPE(4,27)/4H    /
+      DATA NOPE(1,28)/4H    /,NOPE(2,28)/4H   G/,NOPE(3,28)/4HUU  /
+      DATA NOPE(4,28)/4H    /
+      DATA NOPE(1,29)/4H    /,NOPE(2,29)/4H   U/,NOPE(3,29)/4HUU  /
+      DATA NOPE(4,29)/4H    /
+      DATA NOPE(1,30)/4H    /,NOPE(2,30)/4H  CL/,NOPE(3,30)/4HASS /
+      DATA NOPE(4,30)/4H    /
+#endif
 C
 C----- THE AXIS NAMES
       DATA CH /'h','k','l'/
@@ -2964,7 +3026,7 @@ C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,CFY)AC,ICE,IB,ISTORE(L+1),(STORE(K+2),K=L,M),IOUT
       ENDIF
-djwjul09
+cdjwjul09
       if (store(l+2) .ge. 10.*store(l+3)) then
             fovsfc = 1000.
       else

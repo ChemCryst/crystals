@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.46  2011/02/07 16:59:07  djw
+C Put IDIM09 as a parameter in ICOM09 so that we can use it to declare work space
+C
 C Revision 1.45  2010/09/17 07:13:57  djw
 C Output mean C-C distance to terminal and listing
 C
@@ -1759,7 +1762,11 @@ C
       INCLUDE 'QSTR11.INC'
       INCLUDE 'QLST12.INC'
       INCLUDE 'XIOBUF.INC'
+#if defined (_HOL_)
+      DATA IQUEST /4H????/
+#else
       DATA IQUEST /'????'/
+#endif
       DATA JQUEST /'??????'/, IBLANK /'      '/
       DATA SRATIO /'SRATIO'/, IOESD  /'S/ESD '/
       DATA TOOBIG /'LARGE '/
@@ -2135,7 +2142,11 @@ C
       DATA IVERSN / 301/
 C
 C---- CARBON
+#if defined (_HOL_)
+      data JCARB/4HC   /
+#else
       data JCARB/'C   '/
+#endif
 C
 C      INITIALISE C ESD
       AESDC = 0.0

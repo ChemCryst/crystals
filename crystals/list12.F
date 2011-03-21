@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2009/06/24 07:35:40  djw
+C Remove debugging print. Ensute POLARITY is unity if it is not being refined
+C
 C Revision 1.19  2009/06/17 13:41:49  djw
 C Fix #CHECK HI crash.  Actual error was in wrong values for idjw1 & idjw2 for DELU
 C  restraint in LIST 16.  Several messages cleaned up, more diagnostics for error conditions.
@@ -1630,9 +1633,15 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'XFLAGS.INC'
 C
+#if defined (_HOL_)
+      DATA KHYD /4HH   /
+      DATA KDET /4HD   /
+      DATA IDELIM(1)/4HAND /
+#else
       DATA KHYD /'H   '/
       DATA KDET /'D   '/
       DATA IDELIM(1)/'AND '/
+#endif
       DATA DFUISO /.05/
 C
       DATA NERROR/5/

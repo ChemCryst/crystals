@@ -1,5 +1,8 @@
 C234567890C234567890C234567890C234567890C234567890C234567890C234567890123
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2008/10/01 11:11:54  djw
+C Support for treatment of Deuterium as hydrogen
+C
 C Revision 1.21  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -1339,9 +1342,13 @@ C\TLST18
       INTEGER IOFF
       DATA IOFF /4/    !Offset of positional parameters in LIST 5.
 C                      !Needed when using a compressed L5 during FOURIER.
+#if defined (_HOL_)
+      DATA KHYD /4HH   /
+      DATA KDET /4HD   /
+#else
       DATA KHYD /'H   '/
       DATA KDET /'D   '/
-
+#endif
       DATA EL/'C ','H ','AC','AG','AL','AM','AR','AS','AT','AU','B ',
      +     'BA','BE','BI','BK','BR','CA','CD','CE','CF','CL','CM','CO',
      +     'CR','CS','CU','D ','DY','ER','ES','EU','F ','FE','FM','FR',

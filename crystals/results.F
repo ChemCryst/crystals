@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.172  2011/03/14 15:35:54  djw
+C Report H treatment in cif as "mixed"
+C
 C Revision 1.171  2011/02/15 16:24:43  djw
 C Increase figure filed for Tmin/max, get correct program refernce for multi-scan data with Bruker and Agilent software
 C
@@ -915,7 +918,11 @@ C
       INCLUDE 'QSTORE.INC'
 C
 C
+#if defined (_HOL_)
+      DATA IFO/2HFO/,IFC/2HFC/
+#else
       DATA IFO/'FO'/,IFC/'FC'/
+#endif
 C
       IDWZAP = IN
       JHFFS=0
@@ -1077,6 +1084,15 @@ C
       INCLUDE 'XPTCS.INC'
 C
 C
+#if defined (_HOL_)
+      DATA IH(1)/1HH/
+      DATA IH(2)/1HF/
+      DATA IH(3)/1HO/
+      DATA IH(4)/1HC/
+      DATA IH(5)/1HP/
+      DATA IH(6)/1H//
+      DATA IH(7)/1HI/
+#else
       DATA IH(1)/'H'/
       DATA IH(2)/'F'/
       DATA IH(3)/'O'/
@@ -1084,6 +1100,7 @@ C
       DATA IH(5)/'P'/
       DATA IH(6)/'/'/
       DATA IH(7)/'I'/
+#endif
 C
       LIN(4)=IH(1)
       LIN(6)=IH(6)
@@ -1117,9 +1134,15 @@ C
       INCLUDE 'QSTORE.INC'
 C
 C
+#if defined (_HOL_)
+      DATA IHKL(1)/1HK/
+      DATA IHKL(2)/1HL/
+      DATA IHKL(3)/1H=/
+#else
       DATA IHKL(1)/'K'/
       DATA IHKL(2)/'L'/
       DATA IHKL(3)/'='/
+#endif
 C
       LIN(1)=IA
       LIN(2)=IA
@@ -2814,6 +2837,16 @@ C
       INCLUDE 'XCHARS.INC'
 C
 C
+#if defined (_HOL_)
+      DATA IK(1)/1HA/
+      DATA IK(2)/1Ht/
+      DATA IK(3)/1Ho/
+      DATA IK(4)/1Hm/
+      DATA IK(5)/1H /
+      DATA IK(6)/1H /
+      DATA IK(7)/1H /
+      DATA IK(8)/1H /
+#else
       DATA IK(1)/'A'/
       DATA IK(2)/'t'/
       DATA IK(3)/'o'/
@@ -2822,6 +2855,7 @@ C
       DATA IK(6)/' '/
       DATA IK(7)/' '/
       DATA IK(8)/' '/
+#endif
 C
       CALL XMVSPD(IB,IVET(1),118)
       J=IFIR
@@ -2849,9 +2883,15 @@ C
       INCLUDE 'XCHARS.INC'
 C
 C
+#if defined (_HOL_)
+      DATA IK(1)/1HU/
+      DATA IK(2)/1H(/
+      DATA IK(3)/1H)/
+#else
       DATA IK(1)/'U'/
       DATA IK(2)/'('/
       DATA IK(3)/')'/
+#endif
 C
       J=NSTA-IABS(NUD)+1+IFIR
       DO 1000 I=1,6
@@ -2890,6 +2930,24 @@ C
       INCLUDE 'XPTCL.INC'
 C
 C
+#if defined (_HOL_)
+      DATA IK(1)/1Hx/
+      DATA IK(2)/1H//
+      DATA IK(3)/1Ha/
+      DATA IK(4)/1Hy/
+      DATA IK(5)/1Hb/
+      DATA IK(6)/1Hz/
+      DATA IK(7)/1Hc/
+      DATA IK(8)/1HU/
+      DATA IK(9)/1H(/
+      DATA IK(10)/1Hi/
+      DATA IK(11)/1Hs/
+      DATA IK(12)/1Ho/
+      DATA IK(13)/1H)/
+      DATA IK(14) /1HO/
+      DATA IK(15) /1Hc/
+      DATA IK(16) /1Hc/
+#else
       DATA IK(1)/'x'/
       DATA IK(2)/'/'/
       DATA IK(3)/'a'/
@@ -2906,6 +2964,7 @@ C
       DATA IK(14) /'O'/
       DATA IK(15) /'c'/
       DATA IK(16) /'c'/
+#endif
 C
       J=NSTA+NXF-IABS(NXD)+1+IFIR
       IVET(J)=IK(1)
@@ -3697,9 +3756,15 @@ C
       INCLUDE 'QSTORE.INC'
 C
 C
+#if defined (_HOL_)
+      DATA KHYD /4HH   /
+      DATA KDET /4HD   /
+      DATA DIST/1HD/, ANGLE/1HA/
+#else
       DATA KHYD /'H   '/
       DATA KDET /'D   '/
       DATA DIST/'D'/, ANGLE/'A'/
+#endif
       DATA ITEM(1)/2/, ITEM(2)/3/, ITEM(3)/4/
 C----- MAXIMUM NO OF ATOMS
       DATA MITEM/4/
@@ -4452,9 +4517,15 @@ C                  1 2 3 4 5 6  7  8  9  10 11 12
       DATA CANG/'alpha','beta','gamma'/
       DATA CSIZE/'min','mid','max'/
       DATA CINDEX/'h_','k_','l_'/
+#if defined (_HOL_)
+      DATA ICARB/4HC   /
+      DATA KHYD/4HH   /
+      DATA KDET/4HD   /
+#else
       DATA ICARB/'C   '/
       DATA KHYD/'H   '/
       DATA KDET/'D   '/
+#endif
 CDJWMAR99      DATA JDEV /'H','K','L','I'/
       DATA CSSUBS /' 21',' 31',' 32',' 41',' 42',' 43',' 61',
      1            ' 62',' 63',' 64',' 65'/

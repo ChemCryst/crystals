@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.55  2009/06/08 14:26:24  djw
+C Enable echoing of all input #COMMANDS
+C
 C Revision 1.54  2008/09/16 16:04:16  djw
 C Enable SCRIPT command copying to .log file as comments
 C
@@ -661,6 +664,9 @@ C
       INCLUDE 'XGUIOV.INC'
       INCLUDE 'UFILE.INC'
       INCLUDE 'XIOBUF.INC'
+CTest
+      INCLUDE 'XLEXIC.INC'
+CTest
 C
 C
       DATA  CTRAN2 / '#?' /, CDOLAR /'$'/
@@ -672,6 +678,10 @@ C
 C----- INITIALISE BUFFER
       CLINE = ' '
       KRDLIN = 1
+
+c      WRITE(NCWU,'(A,I5)') 'NWCARD is now:', NWCARD
+
+
 C
 #if defined(_PPC_) 
 CS*** For any event driven system we have to hook in to respond to
@@ -926,10 +936,19 @@ C
 C
 C        CONT        LAST
 C
+#if defined (_HOL_)
+      DATA KEYUSE(1)/1HC/,KEYUSE(2)/1HO/,KEYUSE(3)/1HN/,KEYUSE(4)/1HT/
+      DATA KEYUSE(5)/1HL/,KEYUSE(6)/1HA/,KEYUSE(7)/1HS/,KEYUSE(8)/1HT/
+#else
       DATA KEYUSE(1)/'C'/,KEYUSE(2)/'O'/,KEYUSE(3)/'N'/,KEYUSE(4)/'T'/
       DATA KEYUSE(5)/'L'/,KEYUSE(6)/'A'/,KEYUSE(7)/'S'/,KEYUSE(8)/'T'/
+#endif
 C----- A DUMMY FILE
-      DATA  IDEV /4*' '/
+#if defined (_HOL_)
+      DATA  IDEV /1H ,1H ,1H ,1H /
+#else
+      DATA  IDEV /' ',' ',' ',' ' /
+#endif
       DATA LFILE / 1 /
       DATA CFILE /' '/
 C
@@ -1433,7 +1452,11 @@ C
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XIOBUF.INC'
 
+#if defined (_HOL_)
+      DATA KQUOT /1H"/
+#else
       DATA KQUOT /'"'/
+#endif
 C
 C
 C
@@ -1621,6 +1644,149 @@ C      SPEE(D)     TIME        SRQ         TERM(INAL)   FILE(CASE)
 C      MESS(AGE)   PRIN(TER)   GENE(RATE)  OPEN(MESSAGE)
 C      PAUS(E)     EXPO(RT)      UEQU(IV)  AUTO(UPDATE) BOND(TYPE)
 C
+C
+      DATA LVAL / 4 / , NVAL / 21 /
+C
+C      LIST        NONE        CORE        OFF         ON
+C      SLOW        FAST        NONE        READ        WRIT
+C      BOTH        UNKN(OWN)   VT52        VT10(0)     VGA
+C      WIN(OW)     LOWE(R)     UPPE(R)     MIXE(D)     ARIT(H)
+C      GEOM
+C
+#if defined (_HOL_)
+      DATA KEYFNC(1,1) / 1HM / , KEYFNC(2,1) / 1HA /
+      DATA KEYFNC(3,1) / 1HP / , KEYFNC(4,1) / 1HS /
+      DATA KEYFNC(5,1) / 1H  / , KEYFNC(6,1) / 1H  /
+      DATA KEYFNC(7,1) / 1H  / , KEYFNC(8,1) / 1H  /
+      DATA KEYFNC(1,2) / 1HM / , KEYFNC(2,2) / 1HO /
+      DATA KEYFNC(3,2) / 1HN / , KEYFNC(4,2) / 1HI /
+      DATA KEYFNC(5,2) / 1HT / , KEYFNC(6,2) / 1HO /
+      DATA KEYFNC(7,2) / 1HR / , KEYFNC(8,2) / 1H  /
+      DATA KEYFNC(1,3) / 1HL / , KEYFNC(2,3) / 1HO /
+      DATA KEYFNC(3,3) / 1HG / , KEYFNC(4,3) / 1H  /
+      DATA KEYFNC(5,3) / 1H  / , KEYFNC(6,3) / 1H  /
+      DATA KEYFNC(7,3) / 1H  / , KEYFNC(8,3) / 1H  /
+      DATA KEYFNC(1,4) / 1HP / , KEYFNC(2,4) / 1HA /
+      DATA KEYFNC(3,4) / 1HG / , KEYFNC(4,4) / 1HE /
+      DATA KEYFNC(5,4) / 1H  / , KEYFNC(6,4) / 1H  /
+      DATA KEYFNC(7,4) / 1H  / , KEYFNC(8,4) / 1H  /
+      DATA KEYFNC(1,5) / 1HL / , KEYFNC(2,5) / 1HI /
+      DATA KEYFNC(3,5) / 1HS / , KEYFNC(4,5) / 1HT /
+      DATA KEYFNC(5,5) / 1HS / , KEYFNC(6,5) / 1H  /
+      DATA KEYFNC(7,5) / 1H  / , KEYFNC(8,5) / 1H  /
+C
+      DATA KEYFNC(1,6) / 1HC / , KEYFNC(2,6) / 1HO /
+      DATA KEYFNC(3,6) / 1HM / , KEYFNC(4,6) / 1HM /
+      DATA KEYFNC(5,6) / 1HU / , KEYFNC(6,6) / 1HN /
+      DATA KEYFNC(7,6) / 1HI / , KEYFNC(8,6) / 1HC /
+C
+      DATA KEYFNC(1,7) / 1HT / , KEYFNC(2,7) / 1HI /
+      DATA KEYFNC(3,7) / 1HM / , KEYFNC(4,7) / 1HE /
+      DATA KEYFNC(5,7) / 1H  / , KEYFNC(6,7) / 1H  /
+      DATA KEYFNC(7,7) / 1H  / , KEYFNC(8,7) / 1H  /
+      DATA KEYFNC(1,8) / 1HW / , KEYFNC(2,8) / 1HA /
+      DATA KEYFNC(3,8) / 1HT / , KEYFNC(4,8) / 1HC /
+      DATA KEYFNC(5,8) / 1HH / , KEYFNC(6,8) / 1H  /
+      DATA KEYFNC(7,8) / 1H  / , KEYFNC(8,8) / 1H  /
+      DATA KEYFNC(1,9) / 1HS / , KEYFNC(2,9) / 1HR /
+      DATA KEYFNC(3,9) / 1HQ / , KEYFNC(4,9) / 1H  /
+      DATA KEYFNC(5,9) / 1H  / , KEYFNC(6,9) / 1H  /
+      DATA KEYFNC(7,9) / 1H  / , KEYFNC(8,9) / 1H  /
+      DATA KEYFNC(1,10) / 1HT / , KEYFNC(2,10) / 1HE /
+      DATA KEYFNC(3,10) / 1HR / , KEYFNC(4,10) / 1HM /
+      DATA KEYFNC(5,10) / 1HI / , KEYFNC(6,10) / 1HN /
+      DATA KEYFNC(7,10) / 1HA / , KEYFNC(8,10) / 1HL /
+      DATA KEYFNC(1,11) / 1HF / , KEYFNC(2,11) / 1HI /
+      DATA KEYFNC(3,11) / 1HL / , KEYFNC(4,11) / 1HE /
+      DATA KEYFNC(5,11) / 1HC / , KEYFNC(6,11) / 1HA /
+      DATA KEYFNC(7,11) / 1HS / , KEYFNC(8,11) / 1HE /
+      DATA KEYFNC(1,12) / 1HM / , KEYFNC(2,12) / 1HE /
+      DATA KEYFNC(3,12) / 1HS / , KEYFNC(4,12) / 1HS /
+      DATA KEYFNC(5,12) / 1HA / , KEYFNC(6,12) / 1HG /
+      DATA KEYFNC(7,12) / 1HE / , KEYFNC(8,12) / 1H  /
+C
+      DATA KEYFNC(1,13) / 1HP / , KEYFNC(2,13) / 1HR /
+      DATA KEYFNC(3,13) / 1HI / , KEYFNC(4,13) / 1HN /
+      DATA KEYFNC(5,13) / 1HT / , KEYFNC(6,13) / 1HE /
+      DATA KEYFNC(7,13) / 1HR / , KEYFNC(8,13) / 1H  /
+C
+      DATA KEYFNC(1,14) / 1HG / , KEYFNC(2,14) / 1HE /
+      DATA KEYFNC(3,14) / 1HN / , KEYFNC(4,14) / 1HE /
+      DATA KEYFNC(5,14) / 1HR / , KEYFNC(6,14) / 1HA /
+      DATA KEYFNC(7,14) / 1HT / , KEYFNC(8,14) / 1HE /
+C
+      DATA KEYFNC(1,15) / 1HO / , KEYFNC(2,15) / 1HP /
+      DATA KEYFNC(3,15) / 1HE / , KEYFNC(4,15) / 1HN /
+      DATA KEYFNC(5,15) / 1HM / , KEYFNC(6,15) / 1HE /
+      DATA KEYFNC(7,15) / 1HS / , KEYFNC(8,15) / 1HS /
+C
+      DATA KEYFNC(1,16) / 1HP / , KEYFNC(2,16) / 1HA /
+      DATA KEYFNC(3,16) / 1HU / , KEYFNC(4,16) / 1HS /
+      DATA KEYFNC(5,16) / 1HE / , KEYFNC(6,16) / 1H  /
+      DATA KEYFNC(7,16) / 1H  / , KEYFNC(8,16) / 1H  /
+C
+      DATA KEYFNC(1,17) / 1HE / , KEYFNC(2,17) / 1HX /
+      DATA KEYFNC(3,17) / 1HP / , KEYFNC(4,17) / 1HO /
+      DATA KEYFNC(5,17) / 1HR / , KEYFNC(6,17) / 1HT /
+      DATA KEYFNC(7,17) / 1H  / , KEYFNC(8,17) / 1H  /
+C
+      DATA KEYFNC(1,18) / 1HU / , KEYFNC(2,18) / 1HE /
+      DATA KEYFNC(3,18) / 1HQ / , KEYFNC(4,18) / 1HU /
+      DATA KEYFNC(5,18) / 1HI / , KEYFNC(6,18) / 1HV /
+      DATA KEYFNC(7,18) / 1H  / , KEYFNC(8,18) / 1H  /
+C
+      DATA KEYFNC(1,19) / 1HA / , KEYFNC(2,19) / 1HU /
+      DATA KEYFNC(3,19) / 1HT / , KEYFNC(4,19) / 1HO /
+      DATA KEYFNC(5,19) / 1HU / , KEYFNC(6,19) / 1HP /
+      DATA KEYFNC(7,19) / 1HD / , KEYFNC(8,19) / 1HT /
+C
+      DATA KEYFNC(1,20) / 1HB / , KEYFNC(2,20) / 1HO /
+      DATA KEYFNC(3,20) / 1HN / , KEYFNC(4,20) / 1HD /
+      DATA KEYFNC(5,20) / 1HT / , KEYFNC(6,20) / 1HY /
+      DATA KEYFNC(7,20) / 1HP / , KEYFNC(8,20) / 1HE /
+      DATA KEYVAL(1,1) / 1HL / , KEYVAL(2,1) / 1HI /
+      DATA KEYVAL(3,1) / 1HS / , KEYVAL(4,1) / 1HT /
+      DATA KEYVAL(1,2) / 1HN / , KEYVAL(2,2) / 1HO /
+      DATA KEYVAL(3,2) / 1HN / , KEYVAL(4,2) / 1HE /
+      DATA KEYVAL(1,3) / 1HC / , KEYVAL(2,3) / 1HO /
+      DATA KEYVAL(3,3) / 1HR / , KEYVAL(4,3) / 1HE /
+      DATA KEYVAL(1,4) / 1HO / , KEYVAL(2,4) / 1HF /
+      DATA KEYVAL(3,4) / 1HF / , KEYVAL(4,4) / 1H  /
+      DATA KEYVAL(1,5) / 1HO / , KEYVAL(2,5) / 1HN /
+      DATA KEYVAL(3,5) / 1H  / , KEYVAL(4,5) / 1H  /
+      DATA KEYVAL(1,6) / 1HS / , KEYVAL(2,6) / 1HL /
+      DATA KEYVAL(3,6) / 1HO / , KEYVAL(4,6) / 1HW /
+      DATA KEYVAL(1,7) / 1HF / , KEYVAL(2,7) / 1HA /
+      DATA KEYVAL(3,7) / 1HS / , KEYVAL(4,7) / 1HT /
+      DATA KEYVAL(1,8) / 1HN / , KEYVAL(2,8) / 1HO /
+      DATA KEYVAL(3,8) / 1HN / , KEYVAL(4,8) / 1HE /
+      DATA KEYVAL(1,9) / 1HR / , KEYVAL(2,9) / 1HE /
+      DATA KEYVAL(3,9) / 1HA / , KEYVAL(4,9) / 1HD /
+      DATA KEYVAL(1,10)/ 1HW / , KEYVAL(2,10)/ 1HR /
+      DATA KEYVAL(3,10)/ 1HI / , KEYVAL(4,10)/ 1HT /
+      DATA KEYVAL(1,11)/ 1HB / , KEYVAL(2,11)/ 1HO /
+      DATA KEYVAL(3,11)/ 1HT / , KEYVAL(4,11)/ 1HH /
+      DATA KEYVAL(1,12)/ 1HU / , KEYVAL(2,12)/ 1HN /
+      DATA KEYVAL(3,12)/ 1HK / , KEYVAL(4,12)/ 1HN /
+      DATA KEYVAL(1,13)/ 1HV / , KEYVAL(2,13)/ 1HT /
+      DATA KEYVAL(3,13)/ 1H5 / , KEYVAL(4,13)/ 1H2 /
+      DATA KEYVAL(1,14)/ 1HV / , KEYVAL(2,14)/ 1HT /
+      DATA KEYVAL(3,14)/ 1H1 / , KEYVAL(4,14)/ 1H0 /
+      DATA KEYVAL(1,15)/ 1HV / , KEYVAL(2,15)/ 1HG /
+      DATA KEYVAL(3,15)/ 1HA / , KEYVAL(4,15)/ 1H  /
+      DATA KEYVAL(1,16)/ 1HW / , KEYVAL(2,16)/ 1HI /
+      DATA KEYVAL(3,16)/ 1HN / , KEYVAL(4,16)/ 1HD /
+      DATA KEYVAL(1,17)/ 1HL / , KEYVAL(2,17)/ 1HO /
+      DATA KEYVAL(3,17)/ 1HW / , KEYVAL(4,17)/ 1HE /
+      DATA KEYVAL(1,18)/ 1HU / , KEYVAL(2,18)/ 1HP /
+      DATA KEYVAL(3,18)/ 1HP / , KEYVAL(4,18)/ 1HE / 
+      DATA KEYVAL(1,19)/ 1HM / , KEYVAL(2,19)/ 1HI /
+      DATA KEYVAL(3,19)/ 1HX / , KEYVAL(4,19)/ 1HE /
+      DATA KEYVAL(1,20)/ 1HA / , KEYVAL(2,20)/ 1HR /
+      DATA KEYVAL(3,20)/ 1HI / , KEYVAL(4,20)/ 1HT /
+      DATA KEYVAL(1,21)/ 1HG / , KEYVAL(2,21)/ 1HE /
+      DATA KEYVAL(3,21)/ 1HO / , KEYVAL(4,21)/ 1HM /
+#else
       DATA KEYFNC(1,1) / 'M' / , KEYFNC(2,1) / 'A' /
       DATA KEYFNC(3,1) / 'P' / , KEYFNC(4,1) / 'S' /
       DATA KEYFNC(5,1) / ' ' / , KEYFNC(6,1) / ' ' /
@@ -1711,15 +1877,7 @@ C
       DATA KEYFNC(3,20) / 'N' / , KEYFNC(4,20) / 'D' /
       DATA KEYFNC(5,20) / 'T' / , KEYFNC(6,20) / 'Y' /
       DATA KEYFNC(7,20) / 'P' / , KEYFNC(8,20) / 'E' /
-C
-      DATA LVAL / 4 / , NVAL / 21 /
-C
-C      LIST        NONE        CORE        OFF         ON
-C      SLOW        FAST        NONE        READ        WRIT
-C      BOTH        UNKN(OWN)   VT52        VT10(0)     VGA
-C      WIN(OW)     LOWE(R)     UPPE(R)     MIXE(D)     ARIT(H)
-C      GEOM
-C
+
       DATA KEYVAL(1,1) / 'L' / , KEYVAL(2,1) / 'I' /
       DATA KEYVAL(3,1) / 'S' / , KEYVAL(4,1) / 'T' /
       DATA KEYVAL(1,2) / 'N' / , KEYVAL(2,2) / 'O' /
@@ -1762,6 +1920,7 @@ C
       DATA KEYVAL(3,20)/ 'I' / , KEYVAL(4,20)/ 'T' /
       DATA KEYVAL(1,21)/ 'G' / , KEYVAL(2,21)/ 'E' /
       DATA KEYVAL(3,21)/ 'O' / , KEYVAL(4,21)/ 'M' /
+#endif
 C
 C----- TYPE OF ARGUMENT: 1=KEYWORD, 2=INTEGER
 C
@@ -2041,15 +2200,35 @@ C
 C
 C                  SEQU        DIRE
 C
+
+#if defined (_HOL_)
+      DATA KEYACC(1,1) / 1HS / , KEYACC(2,1) / 1HE /
+      DATA KEYACC(3,1) / 1HQ / , KEYACC(4,1) / 1HU /
+      DATA KEYACC(1,2) / 1HD / , KEYACC(2,2) / 1HI /
+      DATA KEYACC(3,2) / 1HR / , KEYACC(4,2) / 1HE /
+#else
       DATA KEYACC(1,1) / 'S' / , KEYACC(2,1) / 'E' /
       DATA KEYACC(3,1) / 'Q' / , KEYACC(4,1) / 'U' /
       DATA KEYACC(1,2) / 'D' / , KEYACC(2,2) / 'I' /
       DATA KEYACC(3,2) / 'R' / , KEYACC(4,2) / 'E' /
+#endif
 C
       DATA LSTA / 4 / , NSTA / 5 /
 C
 C     OLD   NEW   CIF   SCRA    UNKN
 C
+#if defined (_HOL_)
+      DATA KEYSTA(1,1) / 1HO / , KEYSTA(2,1) / 1HL /
+      DATA KEYSTA(3,1) / 1HD / , KEYSTA(4,1) / 1H  /
+      DATA KEYSTA(1,2) / 1HN / , KEYSTA(2,2) / 1HE /
+      DATA KEYSTA(3,2) / 1HW / , KEYSTA(4,2) / 1H  /
+      DATA KEYSTA(1,3) / 1HC / , KEYSTA(2,3) / 1HI /
+      DATA KEYSTA(3,3) / 1HF / , KEYSTA(4,3) / 1H  /
+      DATA KEYSTA(1,4) / 1HS / , KEYSTA(2,4) / 1HC /
+      DATA KEYSTA(3,4) / 1HR / , KEYSTA(4,4) / 1HA /
+      DATA KEYSTA(1,5) / 1HU / , KEYSTA(2,5) / 1HN /
+      DATA KEYSTA(3,5) / 1HK / , KEYSTA(4,5) / 1HN /
+#else
       DATA KEYSTA(1,1) / 'O' / , KEYSTA(2,1) / 'L' /
       DATA KEYSTA(3,1) / 'D' / , KEYSTA(4,1) / ' ' /
       DATA KEYSTA(1,2) / 'N' / , KEYSTA(2,2) / 'E' /
@@ -2060,33 +2239,55 @@ C
       DATA KEYSTA(3,4) / 'R' / , KEYSTA(4,4) / 'A' /
       DATA KEYSTA(1,5) / 'U' / , KEYSTA(2,5) / 'N' /
       DATA KEYSTA(3,5) / 'K' / , KEYSTA(4,5) / 'N' /
+#endif
 C
       DATA LFRM / 4 / , NFRM / 2 /
 C
 C                  FORM        UNFO
 C
+#if defined (_HOL_)
+      DATA KEYFRM(1,1) / 1HF / , KEYFRM(2,1) / 1HO /
+      DATA KEYFRM(3,1) / 1HR / , KEYFRM(4,1) / 1HM /
+      DATA KEYFRM(1,2) / 1HU / , KEYFRM(2,2) / 1HN /
+      DATA KEYFRM(3,2) / 1HF / , KEYFRM(4,2) / 1HO /
+#else
       DATA KEYFRM(1,1) / 'F' / , KEYFRM(2,1) / 'O' /
       DATA KEYFRM(3,1) / 'R' / , KEYFRM(4,1) / 'M' /
       DATA KEYFRM(1,2) / 'U' / , KEYFRM(2,2) / 'N' /
       DATA KEYFRM(3,2) / 'F' / , KEYFRM(4,2) / 'O' /
+#endif
 C
       DATA LWRI / 4 / , NWRI / 2 /
 C
 C                  READ        WRIT
 C
+#if defined (_HOL_)
+      DATA KEYWRI(1,1) / 1HR / , KEYWRI(2,1) / 1HE /
+      DATA KEYWRI(3,1) / 1HA / , KEYWRI(4,1) / 1HD /
+      DATA KEYWRI(1,2) / 1HW / , KEYWRI(2,2) / 1HR /
+      DATA KEYWRI(3,2) / 1HI / , KEYWRI(4,2) / 1HT /
+#else
       DATA KEYWRI(1,1) / 'R' / , KEYWRI(2,1) / 'E' /
       DATA KEYWRI(3,1) / 'A' / , KEYWRI(4,1) / 'D' /
       DATA KEYWRI(1,2) / 'W' / , KEYWRI(2,2) / 'R' /
       DATA KEYWRI(3,2) / 'I' / , KEYWRI(4,2) / 'T' /
+#endif
 C
       DATA LLCK / 4 / , NLCK / 2 /
 C
 C                  FREE        LOCK
 C
+#if defined (_HOL_)
+      DATA KEYLCK(1,1) / 1HF / , KEYLCK(2,1) / 1HR /
+      DATA KEYLCK(3,1) / 1HE / , KEYLCK(4,1) / 1HE /
+      DATA KEYLCK(1,2) / 1HL / , KEYLCK(2,2) / 1HO /
+      DATA KEYLCK(3,2) / 1HC / , KEYLCK(4,2) / 1HK /
+#else
       DATA KEYLCK(1,1) / 'F' / , KEYLCK(2,1) / 'R' /
       DATA KEYLCK(3,1) / 'E' / , KEYLCK(4,1) / 'E' /
       DATA KEYLCK(1,2) / 'L' / , KEYLCK(2,2) / 'O' /
       DATA KEYLCK(3,2) / 'C' / , KEYLCK(4,2) / 'K' /
+#endif
 C
 C
 C
@@ -2636,9 +2837,10 @@ CDJWMAR99[
       CALL XCTRIM( NEWFIL, NCHARS )
       WRITE ( CMON,9985)
      1 NEWFIL(1:NCHARS), ( KEYFIL(J,IFIND) , J = 1 , LNAM )
-      CALL XPRVDU(NCEROR, 1,0)
+      CALL XPRVDU(NCEROR, 2,0)
       IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9985 ) ( KEYFIL(J,IFIND) , J = 1 , LNAM )
+      WRITE ( NCWU , 9985 ) 
+     1 NEWFIL(1:NCHARS), ( KEYFIL(J,IFIND) , J = 1 , LNAM )
       ENDIF
 9985  FORMAT ( 1X , 'Error opening ' , A ,/ ' on ', 8A1 )
       CALL XERIOM ( IDEV , ISTAT )
@@ -2675,8 +2877,13 @@ C
 C      ENVI(RONMENT) ERRO(R)   MESS(AGE)   DISC        SPY
 C      INDE(X)
 C
+#if defined (_HOL_)
+      DATA KEYFNC / 4HENVI , 4HERRO , 4HMESS , 4HDISC , 4HSPY  ,
+     2 4HINDE /
+#else
       DATA KEYFNC / 'ENVI' , 'ERRO' , 'MESS' , 'DISC' , 'SPY ' ,
      2 'INDE' /
+#endif
 C
 C
 C

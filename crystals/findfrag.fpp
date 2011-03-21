@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:10  rich
 C New CRYSTALS repository
 C
@@ -584,7 +588,11 @@ C
       DATA TOLER /0.6/, ITRANS / 0 /
       DATA CATFLA, CSERFL, CSPEFL /'*AT', '*SE', '*SP'/
       DATA CNOCC, CMAXS/'*NOCC', '*MAXS'/
+#if defined (_HOL_)
+      DATA ISPECQ /4HQ   /
+#else
       DATA ISPECQ /'Q   '/
+#endif
       DATA CPLUS, CMINUS, CTIMES, CDIV /'+','-','*','/'/
       DATA CDIGIT /'0123456789'/
       DATA N2POWS /1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,

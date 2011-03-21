@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2011/02/07 16:59:07  djw
+C Put IDIM09 as a parameter in ICOM09 so that we can use it to declare work space
+C
 C Revision 1.15  2011/02/04 17:31:10  djw
 C Fix problem when no AND on DELU/SIMU
 C
@@ -385,10 +388,17 @@ C
 C
       DATA IVERSN /421/
 C
+#if defined (_HOL_)
+      DATA IEQU(1)/4HDIST /,IEQU(2)/4HANGL /,IEQU(3)/4HFROM /
+      DATA IEQU(4)/4HTO   /,IEQU(5)/4HFOR  /,IEQU(6)/4HAND  /
+      DATA INMD(1)/4Hst   /,INMD(2)/4Hnd   /,INMD(3)/4Hrd   /,
+     1     INMD(4)/4Hth   /
+#else
       DATA IEQU(1)/'DIST'/,IEQU(2)/'ANGL'/,IEQU(3)/'FROM'/
       DATA IEQU(4)/'TO  '/,IEQU(5)/'FOR '/,IEQU(6)/'AND '/
       DATA INMD(1)/'st  '/,INMD(2)/'nd  '/,INMD(3)/'rd  '/,
      1     INMD(4)/'th  '/
+#endif
 C
 C--SET THE TIMING FUNCTION
       CALL XTIME1(2)
@@ -1563,7 +1573,11 @@ C
       EQUIVALENCE (Z,MZ)
 C
 C
+#if defined (_HOL_)
+      DATA NWCV/1/, NCV/2/, LCV/1/, ICV(1)/ 4HDIFF/, ICV(2)/ 4HMEAN/
+#else
       DATA NWCV/1/, NCV/2/, LCV/1/, ICV(1)/ 'DIFF'/, ICV(2)/ 'MEAN'/
+#endif
       IDWZAP = IN
 C--CHECK THAT THE CARD CONTAINS SOME INFORMATION
       IF(ME)1000,1000,1050
@@ -1678,7 +1692,11 @@ C
       EQUIVALENCE (MZ,Z)
 C
 C
+#if defined (_HOL_)
+      DATA NWAS/1/, IAS(1)/ 4HTO  /, IAS(2)/ 4HWITH/
+#else
       DATA NWAS/1/, IAS(1)/ 'TO  '/, IAS(2)/ 'WITH'/
+#endif
 C
 C--COMPUTE THE LENGTH OF EACH RESTRAINT
       NW=(3*IM+17)*(MAX0(1,IN)+1)

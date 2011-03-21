@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.61  2009/12/07 10:55:11  djw
+C Output script and calling-script names in script error messages.
+C
 C Revision 1.60  2009/07/02 09:20:27  djw
 C Add character variable CFAMT for use with DFORM for outputting floating point variables
 C
@@ -4835,7 +4838,11 @@ C
       INCLUDE 'XSSVAL.INC'
 C
 C
+#if defined (_HOL_)
+      DATA JDEV / 1HS, 1HC, 1HP, 1HQ /
+#else
       DATA JDEV / 'S', 'C', 'P', 'Q' /
+#endif
       DATA COPER / 'SEND' , 'REWIND' , 'PROCESS' , 'COPY' /
 C
 C

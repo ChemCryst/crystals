@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.74  2011/03/04 05:48:11  rich
+C Ensure right C interfaces are used by right compilers (digital or gnu -type).
+C
 C Revision 1.73  2011/02/04 17:34:03  djw
 C Extend parameter list on PRTGRP to enable selection by RESIDUE
 C
@@ -614,7 +617,11 @@ c         loaded by the calling routine.
       DATA NCLINF /0/
 
       DATA    CINST /'Unknown','CAD4','Mach3','KappaCCD','Dip','Smart'/
+#if defined (_HOL_)
+      DATA    IUNKN /4HUNKN/
+#else
       DATA    IUNKN /'UNKN'/
+#endif
       DATA CRADTN / 'X-rays' , 'neutrons' /
       DATA CBONDS / 'unassigned', 'single',    'double',      'triple',
      c'quadruple',  'aromatic',   'polymeric', 'delocalised', 'strange',

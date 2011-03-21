@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.62  2011/02/07 16:03:04  djw
+c Dave the determinat in the common block, invert the torsion angles in the secong molecule if DET is negative
+c
 c Revision 1.61  2010/11/03 15:19:05  djw
 c In MATCH, change computation of torsion angle deviations.
 c IN REGULAR.OBY. make colours green and purple (were red and blue), then reset o to reb, n to blue, s to yellow
@@ -3964,7 +3967,11 @@ C
       DIMENSION RCPD(9), RTEMP(9), STEMP(9)
 C 
       INCLUDE 'QSTORE.INC'
+#if defined (_HOL_)
+      DATA JFRN /1HF, 1HR, 1HN, 1H1, 1HF, 1HR, 1HN, 1H2 /
+#else
       DATA JFRN /'F', 'R', 'N', '1', 'F', 'R', 'N', '2'/
+#endif
 
       CALL XZEROF(RCPD,9)   
       RCPD(1) = STORE(L1P2)
@@ -4173,7 +4180,11 @@ C
 c      EQUIVALENCE (ILISTL,PROCS(1))
 C
       DATA IDIMN /3/
+#if defined (_HOL_)
+      DATA IPEAK/4HQ   /
+#else
       DATA IPEAK/'Q   '/
+#endif
 C
       DATA IVERSN /101/
 c

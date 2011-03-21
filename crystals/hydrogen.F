@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.37  2011/03/07 13:41:53  djw
+C Fix bug affecting phenyl hydrogen - buffer was too small
+C
 C Revision 1.36  2009/06/08 14:25:26  djw
 C Remove debugging lines
 C
@@ -159,7 +162,11 @@ C
       EQUIVALENCE (SY,JY),(SX,JX),(SW,JW),(SV,JV),(KPR,JM)
 C
 C
+#if defined (_HOL_)
+      DATA INEXT(1) / 4HNEXT /
+#else
       DATA INEXT(1) / 'NEXT' /
+#endif
 C
 C--SET THE INITIAL TIMING
       CALL XTIME1(2)
@@ -622,15 +629,25 @@ C
       INCLUDE 'QLST12.INC'
 C
 C
+CC
+C----- SET THE SYMBOL FOR CARBON AND NITROGEN
+#if defined (_HOL_)
+      DATA JFRN /4HF   , 4HR   , 4HN   , 4H1   /
+      DATA KFRN /4HF   , 4HR   , 4HN   , 4H2   /
+CAPR06 USE THE OLD COMMON BLOCK FILE AS A WORK FILE
+      DATA LFRN /4HE   , 4HX   , 4HC   , 4HO   /
+      DATA ICARB /4HC      /, INTRO/4HN    /
+      DATA INEXT(1) / 4HNEXT /
+      DATA IACT / 4HNORM, 4HBOTH, 4HPUNC /
+#else
       DATA JFRN /'F', 'R', 'N', '1'/
       DATA KFRN /'F', 'R', 'N', '2'/
 CAPR06 USE THE OLD COMMON BLOCK FILE AS A WORK FILE
       DATA LFRN /'E', 'X', 'C', 'O'/
-CC
-C----- SET THE SYMBOL FOR CARBON AND NITROGEN
       DATA ICARB /'C   '/, INTRO/'N   '/
       DATA INEXT(1) / 'NEXT' /
       DATA IACT / 'NORM', 'BOTH', 'PUNC' /
+#endif
 C----- MAXIMUM DISTANCE FOR A 1-3 CONTACT, AND ITS SQUARE
       DATA D13/3.5/,D13S/12.25/
       DATA TOLER/0.6/,ITRANS/0/
@@ -1376,8 +1393,13 @@ C
 C
         EQUIVALENCE (TOLER, DISTS(4))
 C
+#if defined (_HOL_)
+        DATA KHYD / 4HH   /
+        DATA KDET / 4HD   /
+#else
         DATA KHYD / 'H  ' /
         DATA KDET / 'D  ' /
+#endif
 C---USE THE SPECIFIED CONTACT FROM THE FIRST DISTANCE STACK
 C---AS A PIVOT FOR A NEW STACK AND FIND ALL CONTACTS
 C
@@ -1436,7 +1458,11 @@ C
       INCLUDE 'QSTORE.INC'
 C
 C        EQUIVALENCE (TOLER, DISTS(4))
+#if defined (_HOL_)
+        DATA ICARB / 4HC   /
+#else
         DATA ICARB / 'C  ' /
+#endif
 C       USE THE SHORTEST CONTACT FROM THE FIRST DISTANCE STACK
 C       AS A PIVOT FOR A NEW STACK. SEARCH THIS NEW STACK FOR
 C       AN ATOM IN COMMON WITH THE FIRST. CHOOSE A NON-H ATOM
@@ -1749,8 +1775,13 @@ C
 C      EQUIVALENCE (TOLER,DISTS(4))
       DATA TOLER /0.6/, ITRANS / 0 /
 C
+#if defined (_HOL_)
+      DATA KHYD / 4HH    /
+      DATA KDET / 4HD    /
+#else
       DATA KHYD / 'H   ' /
       DATA KDET / 'D   ' /
+#endif
 C----- USE THE SHORTEST CONTACT FROM THE FIRST DISTANCE STACK
 C      AS A PIVOT FOR A NEW STACK. SEARCH THIS NEW STACK FOR
 C      AN ATOM IN COMMON WITH THE FIRST. CHOOSE A NON-H ATOM
@@ -2912,7 +2943,11 @@ C
       EQUIVALENCE (SY,JY),(SX,JX),(SW,JW),(SV,JV),(KPR,JM)
 C
 C
+#if defined (_HOL_)
+      DATA IHH(1)/4HH   /
+#else
       DATA IHH(1)/'H   '/
+#endif
 C
       CALL XMOVE(IHH(1),STORE(JT),1)
       STORE(JT+1)=SW
@@ -3119,8 +3154,13 @@ C
       INCLUDE 'QSTORE.INC'
 C
       DIMENSION ID(2)
+#if defined (_HOL_)
+      DATA KHYD/4HH   /
+      DATA KDET/4HD   /
+#else
       DATA KHYD/'H   '/
       DATA KDET/'D   '/
+#endif
 c
 C--SET THE TIMING
       CALL XTIME1 (2)

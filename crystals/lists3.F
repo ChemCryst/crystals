@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2011/01/17 15:40:14  rich
+C Fix o/w of disk lexical data in dsc file when disk index block is extended.
+C
+C Committed on the Free edition of March Hare Software CVSNT Client.
+C Upgrade to CVS Suite for more features and support:
+C http://march-hare.com/cvsnt/
+C
 C Revision 1.26  2010/10/26 09:51:24  djw
 C Sort out more writes to NCAWU, provide more output from EXEC directive
 C
@@ -787,6 +794,8 @@ C
      2 IDIMLX , IOWF , IBUFF )
 C
       LENGTH = NWCARD * NCARD
+c      write(ncwu,'(a,4i5,20a4)')' z:', LENGTH, NWCARD, NCARD, IADCRD,
+c     1 (ISTORE(IADCRD+ITEM),ITEM=0,LENGTH-1)
       CALL XUPF ( LCRD ,ISTORE(IADCRD) , LENGTH )
 C
 C

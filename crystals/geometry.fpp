@@ -100,7 +100,11 @@ C for aniso
       DATA CCALC/' None',' Line','Plane',' TLS','Axis'/
       DATA EIGMIN/0.000001/,EIGRAT/0.01/
 C
+#if defined (_HOL_)
+      DATA BTARG(1)/4HAND /,CTARG(1)/4HALL /
+#else
       DATA BTARG(1)/'AND '/,CTARG(1)/'ALL '/
+#endif
       DATA CTYPE(2)/'plane'/,CTYPE(1)/'line '/
       DATA CTYPE(3)/'TLS  '/,CTYPE(4)/'Axes '/
       DATA CQUAL(2)/'best '/,CQUAL(1)/'worst'/

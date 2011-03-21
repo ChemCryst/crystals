@@ -4,7 +4,7 @@ C<ric02>
       use dflib
 #endif
       parameter (maxat = 1000)   !Max of 1000 atoms
-      parameter (oddchr = 29)    !Number of chars to look out for.
+      parameter (nodchr = 29)    !Number of chars to look out for.
       character*256 prognm,infil,outfil,option
       logical lfirst,namebl,allbl,linfl,loutfl
       integer optlen
@@ -18,7 +18,7 @@ C<ric02/>
       character*15   label(maxat,3),cpzlabel(100,3)
       character*1   c
        
-      character*(oddchr)  charcCase, charc, numer
+      character*(nodchr)  charcCase, charc, numer
       real          cela,celb,celc,siga,sigb,sigc
       real          celalp,celbet,celgam,sigalp,sigbet,siggam
       real          x,y,z,u,sx,sy,sz,su
@@ -45,7 +45,7 @@ C<ric02/>
       data noutr    /11/
 
 #if defined(_GNUF77_)
-      call no_stdout_buffer()
+      call no_stdout_buffer_()
 #endif      
 cdjw open a file for errors since DOS window closes too fast
 c    lots of writes to 17 later
@@ -470,7 +470,7 @@ C . If uppercase, make lowercase.
       do j=iellen+1,iellen+6
         buffer(j:j)=label(nsite,1)(j:j)
 
-        do i=1,oddchr
+        do i=1,nodchr
           if (((label(nsite,1)(j:j)) .eq. charcCase(i:i)) .or.
      *        ((label(nsite,1)(j:j)) .eq. charc(i:i))) then
             buffer(j:j)=numer(i:i)
@@ -540,7 +540,7 @@ C........Store serial number:
       else
         if ( name(1:1) .eq. ' ' ) name(1:1) = '1' 
         do i = 1,LEN_TRIM(name)    !ABCD -> 1234 etc.
-          do j = 1,oddchr
+          do j = 1,nodchr
             if ( ( name(i:i) .eq. charcCase(j:j) ) .or.
      *           ( name(i:i) .eq. charc(j:j)     ) ) then
               k = min(j,9)
@@ -556,7 +556,7 @@ C........Store serial number:
       else
         if ( name(1:1) .eq. ' ' ) name(1:1) = '1' 
         do i = 1,LEN_TRIM(name)    !ABCD -> 1234 etc.
-          do j = 1,oddchr
+          do j = 1,nodchr
             if ( ( name(i:i) .eq. charcCase(j:j) ) .or.
      *           ( name(i:i) .eq. charc(j:j)     ) ) then
               k = min(j,9)

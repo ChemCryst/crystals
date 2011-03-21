@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2011/01/11 16:32:21  djw
+C Correct message output
+C
 C Revision 1.9  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -674,6 +677,8 @@ C--DATA TO BE OUTPUT  -  FIND ITS ADDRESS AND OUTPUT IT TO DISC
 1400  CONTINUE
       M=ISTORE(J+3)
       CALL XUPF(IADDD,ISTORE(M),K)
+c      write(*,'(a,80a1)')'Hi',(istore(itemp),itemp=m,m+k)
+c
 C--AND NOW RETURN
 1450  CONTINUE
       RETURN

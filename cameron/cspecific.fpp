@@ -902,9 +902,12 @@ C DO WE NEED TO CHANGE THE CURSOR ?
 
       END
 
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)
+C
+C Only graphical versions need the next few functions
+C
+#if defined(_GID_)||defined(_GIL_)||defined(_WXS_)||defined(_MAC_)
+
       SUBROUTINE FSTLIN(IX1, IY1, IX2, IY2)
-#endif
 #if defined(_DIGITALF77_) 
       INTERFACE
           SUBROUTINE FASTLINE (JX1, JY1, JX2, JY2)
@@ -917,33 +920,18 @@ C DO WE NEED TO CHANGE THE CURSOR ?
           END SUBROUTINE FASTLINE
       END INTERFACE
 #endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       INTEGER IX1, IX2, IY1, IY2
-#endif
-#if defined(_WXS_) 
-      INTEGER IX1, IX2, IY1, IY2
-#endif
 #if defined(_GNUF77_) 
       CALL FASTLINE(%VAL(IX1), %VAL(IY1), %VAL(IX2), %VAL(IY2))
 #endif
 #if defined(_DIGITALF77_) 
       CALL FASTLINE(IX1, IY1, IX2, IY2)
 #endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
-      RETURN
-      END
-#endif
-#if defined(_WXS_) 
       RETURN
       END
 
-#endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       SUBROUTINE FSTFEL(IX, IY, IW, IH)
-#endif
-#if defined(_WXS_) 
-      SUBROUTINE FSTFEL(IX, IY, IW, IH)
-#endif
+
 #if defined(_DIGITALF77_) 
       INTERFACE
           SUBROUTINE FASTFELLI (JX, JY, JW, JH)
@@ -956,36 +944,19 @@ C DO WE NEED TO CHANGE THE CURSOR ?
           END SUBROUTINE FASTFELLI
       END INTERFACE
 #endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
+
       INTEGER IX, IY, IW, IH
-#endif
-#if defined(_WXS_) 
-      INTEGER IX, IY, IW, IH
-#endif
-#if defined(_GIL_)  || defined(_MAC_)
-      CALL FASTFELLI(%VAL(IX), %VAL(IY), %VAL(IW), %VAL(IH))
-#endif
+
 #if defined(_GNUF77_) 
       CALL FASTFELLI(%VAL(IX), %VAL(IY), %VAL(IW), %VAL(IH))
-#endif
-#if defined(_DIGITALF77_) 
+#else
       CALL FASTFELLI(IX, IY, IW, IH)
 #endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
-      RETURN
-      END
-#endif
-#if defined(_WXS_) 
       RETURN
       END
 
-#endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       SUBROUTINE FSTEEL(IX, IY, IW, IH)
-#endif
-#if defined(_WXS_) 
-      SUBROUTINE FSTEEL(IX, IY, IW, IH)
-#endif
+
 #if defined(_DIGITALF77_) 
       INTERFACE
           SUBROUTINE FASTEELLI (JX, JY, JW, JH)
@@ -998,27 +969,18 @@ C DO WE NEED TO CHANGE THE CURSOR ?
           END SUBROUTINE FASTEELLI
       END INTERFACE
 #endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       INTEGER IX, IY, IW, IH
-#endif
-#if defined(_WXS_) 
-      INTEGER IX, IY, IW, IH
-#endif
-#if defined(_DIGITALF77_) 
-      CALL FASTEELLI(IX, IY, IW, IH)
-#endif
+
 #if defined(_GNUF77_) 
       CALL FASTEELLI(%VAL(IX), %VAL(IY), %VAL(IW), %VAL(IH))
+#else
+      CALL FASTEELLI(IX, IY, IW, IH)
 #endif
       RETURN
       END
 
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       SUBROUTINE FSTFPO(NV, IPTS)
-#endif
-#if defined(_WXS_) 
-      SUBROUTINE FSTFPO(NV, IPTS)
-#endif
+
 #if defined(_DIGITALF77_) 
       INTERFACE
           SUBROUTINE FASTFPOLY (NV, IPTS)
@@ -1029,34 +991,18 @@ C DO WE NEED TO CHANGE THE CURSOR ?
           END SUBROUTINE FASTFPOLY
       END INTERFACE
 #endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       INTEGER NV, IPTS(2000)
-#endif
-#if defined(_WXS_) 
-      INTEGER NV, IPTS(2000)
-#endif
-#if defined(_DIGITALF77_) 
-      CALL FASTFPOLY(NV, IPTS)
-#endif
-#if defined(_GIL_)  || defined(_MAC_)
-      CALL FASTFPOLY(%VAL(NV), IPTS)
-#endif
-#if defined(_DIGITALF77_) || defined(_GIL_)  || defined(_MAC_)
-      RETURN
-      END
-#endif
+
 #if defined(_GNUF77_) 
       CALL FASTFPOLY(%VAL(NV), IPTS)
+#else
+      CALL FASTFPOLY(NV, IPTS)
+#endif
       RETURN
       END
-#endif
 
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       SUBROUTINE FSTEPO(NV, IPTS)
-#endif
-#if defined(_WXS_) 
-      SUBROUTINE FSTEPO(NV, IPTS)
-#endif
+
 #if defined(_DIGITALF77_) 
       INTERFACE
           SUBROUTINE FASTEPOLY (NV, IPTS)
@@ -1067,36 +1013,19 @@ C DO WE NEED TO CHANGE THE CURSOR ?
           END SUBROUTINE FASTEPOLY
       END INTERFACE
 #endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
+
       INTEGER NV, IPTS(2000)
-#endif
-#if defined(_WXS_) 
-      INTEGER NV, IPTS(2000)
-#endif
-#if defined(_GIL_)  || defined(_MAC_)
-      CALL FASTEPOLY(%VAL(NV), IPTS)
-#endif
+
 #if defined(_GNUF77_) 
       CALL FASTEPOLY(%VAL(NV), IPTS)
-#endif
-#if defined(_DIGITALF77_) 
+#else
       CALL FASTEPOLY(NV, IPTS)
 #endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
-      RETURN
-      END
-#endif
-#if defined(_WXS_) 
       RETURN
       END
 
-#endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       SUBROUTINE FSTEXT(IX, IY, CTEXT, IFSIZE)
-#endif
-#if defined(_WXS_) 
-      SUBROUTINE FSTEXT(IX, IY, CTEXT, IFSIZE)
-#endif
+
 #if defined(_DIGITALF77_) 
       INTERFACE
           SUBROUTINE FASTTEXT (JX, JY, CALINE, JFS)
@@ -1110,40 +1039,21 @@ C DO WE NEED TO CHANGE THE CURSOR ?
           END SUBROUTINE FASTTEXT
       END INTERFACE
 #endif
-#if defined(_DIGITALF77_) || defined(_GIL_)  || defined(_MAC_)
+
       INTEGER IX, IY, IFSIZE
       CHARACTER*(*) CTEXT
       CHARACTER*80  NTEXT
       NTEXT = CTEXT
-#endif
-#if defined(_GIL_)  || defined(_MAC_)
-      CALL FASTTEXT(%VAL(IX), %VAL(IY), NTEXT, %VAL(IFSIZE))    
-#endif
 #if defined(_GNUF77_) 
-      INTEGER IX, IY, IFSIZE
-      CHARACTER*(*) CTEXT
-      CHARACTER*80  NTEXT
-      NTEXT = CTEXT
       CALL FASTTEXT(%VAL(IX), %VAL(IY), NTEXT, %VAL(IFSIZE))    
-#endif
-#if defined(_DIGITALF77_) 
+#else
       CALL FASTTEXT(IX, IY, NTEXT, IFSIZE )
 #endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
-      RETURN
-      END
-#endif
-#if defined(_WXS_) 
       RETURN
       END
 
-#endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       SUBROUTINE FSTCOL(IR, IG, IB)
-#endif
-#if defined(_WXS_) 
-      SUBROUTINE FSTCOL(IR, IG, IB)
-#endif
+
 #if defined(_DIGITALF77_) 
       INTERFACE
           SUBROUTINE FASTCOLOUR ( JR, JG, JB )
@@ -1155,36 +1065,18 @@ C DO WE NEED TO CHANGE THE CURSOR ?
           END SUBROUTINE FASTCOLOUR
       END INTERFACE
 #endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       INTEGER IR, IG, IB
-#endif
-#if defined(_WXS_) 
-      INTEGER IR, IG, IB
-#endif
-#if defined(_GIL_)  || defined(_MAC_)
-      CALL FASTCOLOUR(%VAL(IR), %VAL(IG), %VAL(IB))
-#endif
+
 #if defined(_GNUF77_) 
       CALL FASTCOLOUR(%VAL(IR), %VAL(IG), %VAL(IB))
-#endif
-#if defined(_DIGITALF77_) 
+#else
       CALL FASTCOLOUR(IR, IG, IB)
 #endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
-      RETURN
-      END
-#endif
-#if defined(_WXS_) 
       RETURN
       END
 
-#endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       SUBROUTINE FSTCLR()
-#endif
-#if defined(_WXS_) 
-      SUBROUTINE FSTCLR()
-#endif
+
 #if defined(_DIGITALF77_) 
       INTERFACE
           SUBROUTINE FASTCLEAR ()
@@ -1192,12 +1084,6 @@ C DO WE NEED TO CHANGE THE CURSOR ?
           END SUBROUTINE FASTCLEAR
       END INTERFACE
 #endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
-      CALL FASTCLEAR()
-      RETURN
-      END
-#endif
-#if defined(_WXS_) 
       CALL FASTCLEAR()
       RETURN
       END
@@ -1217,8 +1103,9 @@ c&WXS      CALL FASTSHOW()
 c&WXS      RETURN
 c&WXS      END
 
-
 #endif
+
+
       SUBROUTINE ZMORE1(text,iarg)
 C ---- updates text message in status bar - iarg is not used but kept
 C      for compatibility with CAMERON function ZMORE
@@ -1236,7 +1123,7 @@ c      WRITE(99,'(2A)')'zmore1n: ',ntext
 C DOS VERSION NO LONGER HAS STATUS LINE. (SPACE SAVER)
 C&DOS      Status$Text=text
 C&DOS      call window_update@(Status$Text)
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)
+#if defined(_GID_)||defined(_GIL_)||defined(_WXS_)||defined(_MAC_)
       CALL XCTRIM(NTEXT,ITL)
       IF ( ITL .LE. 2 ) RETURN
       ITL = MIN ( ITL, 70 )

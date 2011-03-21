@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  2010/10/26 09:51:24  djw
+C Sort out more writes to NCAWU, provide more output from EXEC directive
+C
 C Revision 1.14  2009/06/17 13:41:49  djw
 C Fix #CHECK HI crash.  Actual error was in wrong values for idjw1 & idjw2 for DELU
 C  restraint in LIST 16.  Several messages cleaned up, more diagnostics for error conditions.
@@ -279,7 +282,7 @@ C
 #if defined(_HOL_) 
       DATA DIST(1)/4Hdist/,DIST(2)/4Hance/,DIST(3)/4Hs   /
       DATA ANGLE(1)/4H ang/,ANGLE(2)/4Hles /,ANGLE(3)/4H    /
-      DATA MSD(1)/' M.S'/,MSD(2)/'.D.'''/,MSD(3)/'s   '/
+      DATA MSD(1)/4H M.S/,MSD(2)/4H.D.'/,MSD(3)/4Hs   /
       DATA STROM(1)/4HAngs/,STROM(2)/4Htrom/
       DATA DEG(1)/4Hdegr/,DEG(2)/4Hees /
       DATA UIJ(1)/4H  U(/,UIJ(2)/4HIJ)'/,UIJ(3)/4Hs   /
@@ -287,17 +290,15 @@ C
 C
 #else
       DATA DIST(1)/'dist'/,DIST(2)/'ance'/,DIST(3)/'s   '/
-#endif
-#if !defined(_HOL_) 
       DATA ANGLE(1)/' ang'/,ANGLE(2)/'les '/,ANGLE(3)/'    '/
       DATA MSD(1)/' M.S'/,MSD(2)/'.D.'''/,MSD(3)/'s   '/
       DATA STROM(1)/'Angs'/,STROM(2)/'trom'/
       DATA DEG(1)/'degr'/,DEG(2)/'ees '/
       DATA UIJ(1)/'  U('/,UIJ(2)/'IJ)'''/,UIJ(3)/'s   '/
       DATA CONT(1)/'cont'/,CONT(2)/'acts'/,CONT(3)/'    '/
+#endif
 C
 C--INITIATE THE TIMING
-#endif
       CALL XTIME1(2)
 C--READ THE REMAINING CONTROL CARDS
       I=KRDDPV(ISTORE(NFL),1)

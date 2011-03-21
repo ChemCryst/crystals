@@ -352,7 +352,11 @@ C- POINTER TO LIST
      2            1, 2, 3,30, 6, 13, 29, 31,
      7            1, 2, 3, 0, 6, 13, 29,  0/
 C
+#if defined (_HOL_)
+      DATA KHYD,KDET,CBLANK /4HH   ,4HD   ,' '/
+#else
       DATA KHYD,KDET,CBLANK /'H   ','D   ',' '/
+#endif
 
       DATA CBONDS / '1','2','3','4','ar','un','de','un','pi'/
 c      DATA IDIMBF / 2 /
@@ -1854,8 +1858,13 @@ C
       DATA LFILE / 10,  9,  10,  11, 11, 11, 9, 8, 9, 10, 10, 12, 13 ,
      1             12,  9  /
 C
+#if defined (_HOL_)
+      DATA JFRN /1HF , 1HR , 1HN , 1H1 ,
+     1           1HF , 1HR , 1HN , 1H2 /
+#else
       DATA JFRN /'F', 'R', 'N', '1',
      1           'F', 'R', 'N', '2'/
+#endif
 C
 100   CONTINUE
       JLOOP = 1
@@ -2209,8 +2218,14 @@ C
       DATA LISTS(1) / 1 /, LISTS(2) / 2 /, LISTS(3) / 3 /,
      1     LISTS(4) / 6 /, LISTS(5) / 13/, LISTS(6) / 29/
       DATA LATTYP /'P','I','R','F','A','B','C'/
+#if defined (_HOL_)
+      DATA JFRN1 /1HF , 1HR , 1HN , 1H1 /
+      DATA JFRN2 /1HF , 1HR , 1HN , 1H2 /
+#else
       DATA JFRN1 /'F', 'R', 'N', '1'/
       DATA JFRN2 /'F', 'R', 'N', '2'/
+#endif
+
 C
 C      IULN6 = ITYP06
       IERROR = 1

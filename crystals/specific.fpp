@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.60  2011/03/04 05:46:45  rich
+C Now building WXS version with digital compiler on windows, therefore introduce
+C _DIGITALF77_ and _GNUF77_ to distinguish compiler differences, while keeping _WXS_ and _GID_ etc to distinguish library differences.
+C
 C Revision 1.59  2009/01/21 17:01:59  djw
 C Use - rather than # for higher generations of dsc files because of clash with (incomplete) treatment of # in html links
 C
@@ -194,7 +198,7 @@ C -- DETERMINE REASON WITH ENVIRONMENT ROUTINE
       CALL PERROR (' perror message ')
 #endif
 #if defined(_LIN_) 
-      WRITE(REASON, '(A,I4)') 'File I/O Error: ', IOS
+      WRITE(REASON, '(A,I6)') 'File I/O Error: ', IOS
       CALL XCTRIM( REASON, MSGEND )
       CALL PERROR (' perror message ')
 #endif
@@ -297,6 +301,7 @@ CDJWMAR99
 CRICJUL00
       IF ( ISEQDA .GT. ISSDAF ) GO TO 9910
       IF ( IFFORM .GT. 2 ) GO TO 9910
+
       CLCNAM = ' '
       FILNAM = CFNAME
       IF (FILNAM .EQ. ' ') THEN
@@ -332,42 +337,24 @@ C -- IF REQUEST IS 'CIF' SET STATUS TO 'OLD'
 C
       IF ( ACSTAT .EQ. 'CIF' ) ACSTAT = 'OLD'
 C
-#if defined(_PPC_) 
-CS***
-      CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN,IUNIT)
-CE***
-C
-#endif
 2000  CONTINUE
 C
+
       IF ( IFMODE .EQ. ISSREA ) GO TO 2500
-C----- FOR THE VAX, SET THE CARRIAGE CONTROL ATTRIBUTES
-#if defined(_PPC_) 
-C**** Carriage Control set permanently to LIST for Mac Version
-C**** Ludwig Macko, 1.2.1995
-C****
-#endif
+
 #if !defined(_VAX_) 
       CCONT = 'LIST'
 #else
+C----- FOR THE VAX, SET THE CARRIAGE CONTROL ATTRIBUTES
       IF ((IUNIT .EQ. NCAWU) .OR. (IUNIT .EQ. NCWU)) THEN
-#endif
-#if defined(_VAX_) 
         CCONT = 'FORTRAN'
       ELSE
         CCONT = 'LIST'
       ENDIF
 C
 #endif
-#if defined(_PPC_) 
-C**** We better check on the variable CLCNAM, because MTRNLG might
-C**** set a name unknown before
-C**** 12.11.1995 Ludwig Macko
-C****
-      IF ( CLCNAM .EQ. ' ' ) THEN
-#else
+
       IF ( FILNAM .EQ. ' ' ) THEN
-#endif
         OPEN ( UNIT   = IUNIT ,
      1         STATUS = ACSTAT ,
      1         FORM   = CFORM ,
@@ -378,19 +365,7 @@ C****
      1         IOSTAT = IOS ,
      1         ERR    = 3000 )
       ELSE
-#if defined(_PPC_) 
-CS***
-        IF ( ACSTAT .EQ. 'NEW' ) THEN
-           CALL SFINFO( CLCNAM(1:NAMLEN), 1 )
-           TESTAT = 'OLD'
-        ELSE
-           TESTAT = ACSTAT
-        ENDIF
-CE***
-
-#else
-      CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
-#endif
+        CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
         OPEN ( UNIT   = IUNIT ,
      1         FILE   = CLCNAM(1:NAMLEN),
 #if defined(_PPC_) 
@@ -428,28 +403,18 @@ C
 C -- SPECIAL 'READONLY' , 'SHARED' OPEN FOR VAX/VMS
 C
 #endif
-#if defined(_PPC_) 
-C**** We better check on the variable CLCNAM, because MTRNLG might
-C**** set a name unknown before
-C**** 12.11.1995 Ludwig Macko
-C****
-      IF ( CLCNAM .EQ. ' ' ) THEN
-#else
       IF ( FILNAM .EQ. ' ' ) THEN
-#endif
         OPEN ( UNIT   = IUNIT ,
 #if defined(_VAX_) 
      1         SHARED ,
      1         READONLY ,
 #endif
-#if defined(_PPC_) 
-     1         READONLY ,
-#endif
-#if defined(_DVF_) || defined(_DIGITALF77_) 
+#if defined(_DIGITALF77_) 
      1         READONLY ,
 #endif
 #if !defined(_DOS_) 
      1         STATUS = ACSTAT ,
+     1         ACTION ='READ',
 #else
      1         STATUS ='READONLY' ,
 #endif
@@ -458,36 +423,22 @@ C****
      1         IOSTAT = IOS ,
      1         ERR    = 3000 )
       ELSE
-#if defined(_PPC_) 
-CS***
-        IF ( ACSTAT .EQ. 'NEW' ) THEN
-           CALL SFINFO( CLCNAM(1:NAMLEN), 1 )
-           TESTAT = 'OLD'
-        ELSE
-           TESTAT = ACSTAT
-        ENDIF
-CE***
-#else
-      CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
-#endif
+        CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
         OPEN ( UNIT   = IUNIT ,
      1         FILE   = CLCNAM(1:NAMLEN),
 #if defined(_VAX_) 
      1         SHARED ,
      1         READONLY ,
 #endif
-#if defined(_DVF_) || defined(_DIGITALF77_) 
+#if defined(_DIGITALF77_) 
      1         READONLY ,
-#endif
-#if defined(_PPC_) 
-     1         READONLY ,
-     1         STATUS = TESTAT ,
 #endif
 #if defined(_VAX_) 
      1         STATUS = ACSTAT ,
 #endif
 #if !defined(_DOS_) 
      1         STATUS = ACSTAT ,
+     1         ACTION ='READ',
 #else
      1         STATUS = 'READONLY' ,
 #endif
@@ -1053,7 +1004,7 @@ C      J SOME MEASURE OF PROGRESS
       DATA CLOCK / '|', '/', '-', '\' /
 #endif
 #if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
-      DATA CLOCK / '|', '/', '-', '\\' /
+      DATA CLOCK / '|', '/', '-', '\' /
 #endif
 #if defined(_WXS_) 
       DATA CLOCK / '|', '/', '-', '\\' /
@@ -2000,13 +1951,8 @@ C
 #if defined(_DOS_) 
       CHARACTER*8 EDATE@
 #endif
-#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
-      DIMENSION IDAT(3)
-#endif
 #if defined(_GNUF77_) 
       DIMENSION IDAT(3)
-
-
 #endif
       IF ( ISSTIM .EQ. 2 ) THEN
          CDATE = ' '
@@ -3373,25 +3319,20 @@ C on all platforms.
       DO WHILE(.TRUE.)
         ISLP = KCCEQL(NAME(LEVEL),1,'/')
         IF ( ISLP .GT. 0 ) THEN
-#endif
 #if defined(_DOS_) || defined(_DIGITALF77_) 
           NAME(LEVEL)(ISLP:ISLP) = '\'
+#else
+          NAME(LEVEL)(ISLP:ISLP) = '\\'
 #endif
-#if defined(_GNUF77_) 
-                  NAME(LEVEL)(ISLP:ISLP) = '\\'
-#endif
-#if defined(_DOS_) || defined(_DIGITALF77_) || defined(_GNUF77_) 
         ELSE
           EXIT
         END IF
       END DO
-
+#endif
 
 c      WRITE(6,*) 'Looking for :', NAME(LEVEL)(1:NAMLEN(LEVEL))
-
 C TEST IF SOMETHING CAN BE DONE
 
-#endif
       IF(COLPOS(LEVEL).LT.3) THEN   
 
 c        WRITE(6,*)'Inquiring: ',NAME(LEVEL)(1:NAMLEN(LEVEL))
@@ -3442,17 +3383,10 @@ CNOV98 IF THERE IS NO ENVIRONMENT VARIABLE, CHECK THE PRESETS
           ELSE IF (NAME(LEVEL)(1:COLPOS(LEVEL)-1) .EQ. 'CRSCP') THEN
             LIST(LEVEL) = CSCPDV(1:LSCPDV)
           ELSE IF (NAME(LEVEL)(1:COLPOS(LEVEL)-1) .EQ. 'CRDIR') THEN
-#if defined(_DOS_) || defined(_DVF_) 
-         LIST(LEVEL) = '.\'
-#endif
-#if defined(_DIGITALF77_) 
-         LIST(LEVEL) = '.\'
-#endif
-#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
-         LIST(LEVEL) = './'
-#endif
 #if defined(_GNUF77_) 
              LIST(LEVEL) = './'
+#else
+             LIST(LEVEL) = '.\'
 #endif
           ENDIF
         ENDIF

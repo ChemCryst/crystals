@@ -11,8 +11,8 @@ ifeq ($(COMPCODE),MAC)
     CXX = g++
     CC = gcc
     LD = g++
-    F77 = g77
-    F77FLAGS = -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D _$(COMPCODE)_
+    F77 = gfortran
+    F77FLAGS = -std=legacy -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D _$(COMPCODE)_
     OPT = -O2
 
     INSTALL=/usr/bin/install
@@ -31,8 +31,8 @@ else
     CXX = g++
     CC = gcc
     LD = g++
-    F77 = g77
-    F77FLAGS = -fexceptions -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D _$(COMPCODE)_
+    F77 = gfortran
+    F77FLAGS = -std=legacy -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D _$(COMPCODE)_
     OPT = -ggdb
 
     INSTALL=/usr/bin/install
@@ -63,9 +63,9 @@ else
   else
    ifeq ($(COMPCODE),LIN)
     GUIFLAGS = -fno-inline -fexceptions
-    GUILIBRARIES = -lg2c
+    GUILIBRARIES =
     CLFLAGS =
-    CLLIBRARIES = -lg2c
+    CLLIBRARIES = 
     NATIVEXLIBS = -lX11 -L/usr/X11R6/lib 
 
     CPPFLAGS = -s -fexceptions
@@ -73,9 +73,9 @@ else
 
     CXX = g++
     CC = gcc
-    LD = g77
-    F77 = g77
-    F77FLAGS = -fexceptions -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D _$(COMPCODE)_
+    LD = gfortran
+    F77 = gfortran
+    F77FLAGS = -std=legacy -fno-automatic -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_
     OPT = -O2
 
     INSTALL=/bin/install

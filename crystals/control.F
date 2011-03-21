@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:11  rich
 C New CRYSTALS repository
 C
@@ -283,8 +287,13 @@ C
 C
       INCLUDE 'QSIZST.INC'
 C
+#if defined (_HOL_)
+      DATA MESS(1)/4HCRYS /,MESS(2)/4HTALS/,MESS(3)/4HLOAD/
+      DATA MESS(4)/4HNAME/,MESS(5)/4H:= "/,MESS(11)/4H"   /
+#else
       DATA MESS(1)/'CRYS'/,MESS(2)/'TALS'/,MESS(3)/'LOAD'/
       DATA MESS(4)/'NAME'/,MESS(5)/':= "'/,MESS(11)/'"   '/
+#endif
 C
 C--CHECK THE CORE SIZE FOR THE NEW PROGRAM
       J=KORE(ITEMP)

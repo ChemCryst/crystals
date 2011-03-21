@@ -288,7 +288,7 @@ C      Non-standard settings common in the CSD
      5            ,'P n 21 a  ','P 21 c n  ','P b n 21  '/
  
 #if defined(_GNUF77_)
-        call no_stdout_buffer()
+        call no_stdout_buffer_()
 #endif
 c
 c       let's read in the file name and clear some arrays

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2011/01/18 12:21:52  djw
+C Complete referenc efor U-prime
+C
 C Revision 1.27  2010/06/03 16:56:22  djw
 C Copy the #axes screen output to the monitor file
 C
@@ -119,8 +122,13 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
+#if defined(_HOL_) 
+      DATA KHYD /4HH   /
+      DATA KDET /4HD   /
+#else
       DATA KHYD /'H   '/
       DATA KDET /'D   '/
+#endif
 C
 C--SET UP THE TIMING
 C----- SET SWITCH FOR NON-POSITIVE DEFINATE ATOM CAPTION
@@ -521,9 +529,10 @@ C
 C
 C
       DATA CCALC/' TLS','AXIS'/
-      DATA ITARG(1)/'ALL '/
 #if defined(_HOL_) 
       DATA ITARG(1) / 4HALL /
+#else
+      DATA ITARG(1)/'ALL '/
 #endif
       DATA EIGMIN/0.000001/,EIGRAT/0.01/
       DATA IVERSN/201/
@@ -1062,7 +1071,11 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
+#if defined(_HOL_)
+      DATA JFRN /4HF   , 4HR   , 4HN   , 4H1   /
+#else
       DATA JFRN /'F', 'R', 'N', '1'/
+#endif
 C
 C----- NO ERRORS YET
       KTLSPT=+1

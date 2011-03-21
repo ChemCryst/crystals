@@ -1,4 +1,12 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2011/03/15 09:00:09  djw
+C More work on LIST 9
+C Routine which use LISTs 5,9,10 all use the same common block, ICOM05, for loading from the disk and for
+C creating output.
+C If one needs two of these lists in memeory at the same time, the calling routine must sort out the common
+C block (l5,l9,l10) addresses itself.
+C XFAL09 loads a LIST 9, and saves the LIST 5 addresses if L5 is already in core.
+C
 C Revision 1.27  2011/02/07 17:01:15  djw
 C Use #PUNCH 5 E as a stop-gap mechanism for creating a LIST 9 with paramter esds. The matrix of constraint is applied
 C
@@ -1627,13 +1635,39 @@ C--SYSTEM REQUEST QUEUE ARGUMENTS
 C
       DATA IVERSN /103/
 C
-      DATA JRQ(1,1)/'SPEC'/, JRQ(2,1)/'  NO'/, JRQ(3,1)/'  NO'/
-      DATA JRQ(1,2)/'SPEC'/, JRQ(2,2)/' LIS'/, JRQ(3,2)/'  NO'/
 C
-      DATA JTYP33(1)/'   1'/, JTYP33(2)/'   2'/
 C
       DATA NRQ/8/, NWRQ/3/
 C
+#if defined (_HOL_)
+      DATA JTYP33(1)/4H   1/, JTYP33(2)/4H   2/
+
+      DATA JRQ(1,1)/4HSPEC/, JRQ(2,1)/4H  NO/, JRQ(3,1)/4H  NO/
+      DATA JRQ(1,2)/4HSPEC/, JRQ(2,2)/4H LIS/, JRQ(3,2)/4H  NO/
+
+      DATA IRQ(1,1)/4H    /,IRQ(2,1)/4H    /,IRQ(3,1)/4H    /
+      DATA IRQ(1,2)/4H    /,IRQ(2,2)/4H    /,IRQ(3,2)/4H    /
+      DATA IRQ(1,3)/4H    /,IRQ(2,3)/4H    /,IRQ(3,3)/4H    /
+      DATA IRQ(1,4)/4HDORE/,IRQ(2,4)/4HSTRA/,IRQ(3,4)/4HIN  /
+      DATA IRQ(1,5)/4HINVE/,IRQ(2,5)/4HRT  /,IRQ(3,5)/4H    /
+      DATA IRQ(1,6)/4HSOLV/,IRQ(2,6)/4HE   /,IRQ(3,6)/4H    /
+      DATA IRQ(1,7)/4HPUNC/,IRQ(2,7)/4HH  5/,IRQ(3,7)/4H    /
+      DATA IRQ(1,8)/4HCYCL/,IRQ(2,8)/4HENDS/,IRQ(3,8)/4H    /
+C
+      DATA IRCALC(1,1)/4HREFI/,IRCALC(2,1)/4HNE  /,IRCALC(3,1)/4H    /
+      DATA IRCALC(1,2)/4HSCAL/,IRCALC(2,2)/4HE   /,IRCALC(3,2)/4H    /
+      DATA IRCALC(1,3)/4HCALC/,IRCALC(2,3)/4HULAT/,IRCALC(3,3)/4HE   /
+C
+      DATA INO(1)/4HNO  /
+
+      DATA IEND(1)/4HE   /,IEND(2)/4HND  /
+      DATA INVERT(1) /4HCHOL/, INVERT(2) /4HEIGE/
+#else
+      DATA JTYP33(1)/'   1'/, JTYP33(2)/'   2'/
+
+      DATA JRQ(1,1)/'SPEC'/, JRQ(2,1)/'  NO'/, JRQ(3,1)/'  NO'/
+      DATA JRQ(1,2)/'SPEC'/, JRQ(2,2)/' LIS'/, JRQ(3,2)/'  NO'/
+
       DATA IRQ(1,1)/'    '/,IRQ(2,1)/'    '/,IRQ(3,1)/'    '/
       DATA IRQ(1,2)/'    '/,IRQ(2,2)/'    '/,IRQ(3,2)/'    '/
       DATA IRQ(1,3)/'    '/,IRQ(2,3)/'    '/,IRQ(3,3)/'    '/
@@ -1648,12 +1682,14 @@ C
       DATA IRCALC(1,3)/'CALC'/,IRCALC(2,3)/'ULAT'/,IRCALC(3,3)/'E   '/
 C
       DATA INO(1)/'NO  '/
+
+      DATA IEND(1)/'E   '/,IEND(2)/'ND  '/
+      DATA INVERT(1) /'CHOL'/, INVERT(2) /'EIGE'/
+#endif
 C
 C
 C--'END' DIRECTIVE
       DATA NWEND/2/
-      DATA IEND(1)/'E   '/,IEND(2)/'ND  '/
-      DATA INVERT(1) /'CHOL'/, INVERT(2) /'EIGE'/
 C
 C--POINTERS TO THE INPUT DIRECTIVES
       DATA NREFNE/1/,NVECTR/5/,NSHIFT/6/,NFORCE/8/,NSHFTP/9/
@@ -2647,7 +2683,11 @@ C
       DATA CEND /'END'/
 C
 C----- IDEV  = SCPDATA, (NCEXTR)
+#if defined (_HOL_)
+      DATA IDEV / 1HS, 1HC, 1HP, 1HD /
+#else
       DATA IDEV / 'S', 'C', 'P', 'D' /
+#endif
       DATA IDIMBF / 3 /, NADDF / 2 /, NADDS /40/
 C     NUMBER OF WAVWLENGTHS PRESENT IN PROPERTIES FILE
       DATA NPROPW /2/
@@ -3069,6 +3109,8 @@ C----- SKIP REMAINING LINES
 C----- GO BACK FOR NEXT ELEMENT
 6500  CONTINUE
 C
+C RIC: Close the file!
+      CALL XRDOPN (7, IDEV, CLINE(1:ISIZE), ISIZE)
 C----- ALL FINISHED - RESET JADDS TO START OF LAST ITEM
       JADDS = JADDS - NADDS
       JADDF = IADDF

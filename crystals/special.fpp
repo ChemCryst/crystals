@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2011/02/10 09:44:46  djw
+C Add an explantion to FLORIG while I remember how it works
+C
 C Revision 1.11  2011/02/03 10:59:15  djw
 C Correct a comment
 C
@@ -814,7 +817,7 @@ C          DO 545, K =1,9
 C-C-C-FLEXIBILISATION OF SPECIAL-CHECK CORRESPONDING TO ATOM-TYPE
           DO 545, K =1,KK
             IF (ABS(XO(K) - STORE(M5+3+K)) .GE. ZEROSQ ) THEN
-djw-apr-08
+cdjw-apr-08
 c              CALL XMOVE(XO(1), STORE(M5+4), 9)
               CALL XMOVE(XO(1), STORE(M5+4), kk)
               MUPDAT = MUPDAT + 1

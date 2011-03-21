@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.42  2010/07/21 16:11:10  djw
+C Watch out for twinned centred cells. Originally Fc was obtained by doubling the contributio from the unique operators. This works for the 'presences', but gives non-zero results for the absences.  These must be kept incase a twin element contribution overlaps it.   Treat the left-most element as the parent. However, his leads to problems if the key is, for example, 21. because 2,1 are used to identify the twin scale factor (correclty) but the twin matix (incorreclty).
+C
+C TO BE SORTED OUT.
+C
 C Revision 1.41  2010/04/09 16:32:17  djw
 C Dont update list 30 Rint if current list is LIST 7 and Rint is already set
 C
@@ -416,7 +421,11 @@ C
       CHARACTER *12 CFILE
       DIMENSION JFRN(4)
       DATA CFILE / 'absences.dat' /
+#if defined (_HOL_)
+      DATA JFRN /1HF, 1HR, 1HN, 1H1/
+#else
       DATA JFRN /'F', 'R', 'N', '1'/
+#endif
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST30.INC'
 C
@@ -969,7 +978,11 @@ C
 C
       DATA IVERSN / 500 /
       DATA CFILE / 'mergingr.dat' /
+#if defined (_HOL_)
+      DATA JFRN /1HF, 1HR, 1HN, 1H1/
+#else
       DATA JFRN /'F', 'R', 'N', '1'/
+#endif
 C
 C
 C

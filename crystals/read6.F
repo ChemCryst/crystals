@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.33  2010/06/17 15:30:21  djw
+C remove writes to NCAWU
+C
 C Revision 1.32  2009/07/20 10:42:41  djw
 C Restore originl extraction of Ratio from packed value
 C
@@ -146,7 +149,6 @@ C -- INPUT ERROR
       CALL XOPMSG ( IOPREF , IOPCMI , 0 )
       GO TO 9900
       END
-      end
 C
       
 
@@ -385,6 +387,17 @@ C
 C
       DATA NFORM/41/
 C
+#if defined (_HOL_)
+      DATA ISLX(1)/4H(3F4/,ISLX(2)/4H.0,2/,ISLX(3)/4HF8.2/
+      DATA ISLX(4)/4H)   /
+      DATA LSLX/4/
+C
+C
+      DATA ICAD4(1)/4H(5X,/,ICAD4(2)/4H3F4./,ICAD4(3)/4H0,F9/
+      DATA ICAD4(4)/4H.0,F/,ICAD4(5)/4H7.0,/,ICAD4(6)/4HF4.0/
+      DATA ICAD4(7)/4H,F9./,ICAD4(8)/4H0,F4/,ICAD4(9)/4H.0,4/
+      DATA ICAD4(10)/4HF7.2/,ICAD4(11)/4H)   /
+#else
       DATA ISLX(1)/'(3F4'/,ISLX(2)/'.0,2'/,ISLX(3)/'F8.2'/
       DATA ISLX(4)/')   '/
       DATA LSLX/4/
@@ -394,6 +407,7 @@ C
       DATA ICAD4(4)/'.0,F'/,ICAD4(5)/'7.0,'/,ICAD4(6)/'F4.0'/
       DATA ICAD4(7)/',F9.'/,ICAD4(8)/'0,F4'/,ICAD4(9)/'.0,4'/
       DATA ICAD4(10)/'F7.2'/,ICAD4(11)/')   '/
+#endif
 C
       DATA LCAD4/11/
 C

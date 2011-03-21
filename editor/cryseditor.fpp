@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2011/03/04 06:04:24  rich
+C Using new defines for compilers.
+C
 C Revision 1.5  2005/01/07 11:57:05  rich
 C Add some blank lines between some #if and #endifs.
 C
@@ -830,7 +833,11 @@ C
 C --
       LOGICAL LSTRIP
       COMMON /XSUBST/ IAND, INOT, ICOM, ICOM2, LSTRIP
+#if defined (_HOL_)
+      DATA HOL(1)/1HH/, HOL(2)/1HO/, HOL(3)/1HL/
+#else
       DATA HOL(1)/'H'/, HOL(2)/'O'/, HOL(3)/'L'/
+#endif
 C
       DATA MMAC /3/, MNMAC /4/
 C----- CHECK IF UPDATING OR CONSOLIDATING ONLY
@@ -1043,8 +1050,13 @@ C--
       COMMON/XCHARS/NUM(10),ICODE(9),IA,IB,IC,IM,ILP,IRP,IH,IDQ
       COMMON/XUNITS/NCRU,NEFU,NCWU,NCPU,NUMAC
 C
+#if defined (_HOL_)
+      DATA IAT/1H@/
+      DATA ICHR / 1H' /
+#else
       DATA IAT/'@'/
       DATA ICHR / '''' /
+#endif
 C
 C
 C
@@ -1091,26 +1103,53 @@ CODE FOR EDTBLK
       COMMON /XSUBST/ IAND, INOT, ICOM, ICOM2, LSTRIP
 C
       DATA MAXADD/95920/,NHEAD/3/
+#if defined (_HOL_)
+      DATA NUM(1)/1H0/,NUM(2)/1H1/,NUM(3)/1H2/,NUM(4)/1H3/,NUM(5)/1H4/
+      DATA NUM(6)/1H5/,NUM(7)/1H6/,NUM(8)/1H7/,NUM(9)/1H8/,NUM(10)/1H9/
+      DATA ICODE(1)/1HC/,ICODE(2)/1HO/,ICODE(3)/1HD/,ICODE(4)/1HE/
+      DATA ICODE(5)/1H /,ICODE(6)/1HF/,ICODE(7)/1HO/,ICODE(8)/1HR/
+      DATA ICODE(9)/1H /
+#else
       DATA NUM(1)/'0'/,NUM(2)/'1'/,NUM(3)/'2'/,NUM(4)/'3'/,NUM(5)/'4'/
       DATA NUM(6)/'5'/,NUM(7)/'6'/,NUM(8)/'7'/,NUM(9)/'8'/,NUM(10)/'9'/
       DATA ICODE(1)/'C'/,ICODE(2)/'O'/,ICODE(3)/'D'/,ICODE(4)/'E'/
       DATA ICODE(5)/' '/,ICODE(6)/'F'/,ICODE(7)/'O'/,ICODE(8)/'R'/
       DATA ICODE(9)/' '/
+#endif
       DATA NCRU/5/,NEFU/1/,NCWU/6/,NCPU/7/,NUMAC/3/
+
+#if defined (_HOL_)
+      DATA IA/1H*/,IM/1H-/,IB/1H /,IC/1H,/
+#else
       DATA IA/'*'/,IM/'-'/,IB/' '/,IC/','/
+#endif
+
 #if defined(_DOS_) || defined(_DIGITALF77_) 
       DATA ILP/'<'/,IRP/'>'/,IH/'\'/,IDQ/'"'/
 
 #endif
 #if defined(_LIN_)  || defined (_MAC_) || defined (_GIL_)
+#if defined (_HOL_)
+      DATA ILP/1H</,IRP/1H>/,IH/1H\/,IDQ/1H"/
+#else
       DATA ILP/'<'/,IRP/'>'/,IH/'\\'/,IDQ/'"'/
 #endif
-      DATA ISEG(1) /' '/ , ISEG(2) /' '/ , ISEG(3) /' '/
-C
+#endif
+
+#if defined (_HOL_)
+      DATA ISEG(1) /1H / , ISEG(2) /1H / , ISEG(3) /1H /
+      DATA IUPD(1)/1HU/,IUPD(2)/1HP/,IUPD(3)/1HD/
+      DATA IALL(1)/1HA/,IALL(2)/1HL/,IALL(3)/1HL/
+
+      DATA IAND/1H&/,INOT/1H#/,ICOM/1HC/,ICOM2/1H /
+#else
       DATA IUPD(1)/'U'/,IUPD(2)/'P'/,IUPD(3)/'D'/
       DATA IALL(1)/'A'/,IALL(2)/'L'/,IALL(3)/'L'/
 
       DATA IAND/'&'/,INOT/'#'/,ICOM/'C'/,ICOM2/' '/
+      DATA ISEG(1) /' '/ , ISEG(2) /' '/ , ISEG(3) /' '/
+#endif
+C
       DATA LSTRIP /.FALSE./
 C
       END

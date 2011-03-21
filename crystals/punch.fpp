@@ -1,4 +1,12 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.57  2011/03/15 09:00:09  djw
+C More work on LIST 9
+C Routine which use LISTs 5,9,10 all use the same common block, ICOM05, for loading from the disk and for
+C creating output.
+C If one needs two of these lists in memeory at the same time, the calling routine must sort out the common
+C block (l5,l9,l10) addresses itself.
+C XFAL09 loads a LIST 9, and saves the LIST 5 addresses if L5 is already in core.
+C
 C Revision 1.56  2011/02/04 17:40:01  djw
 C XPCH5E either prints table of esds or creates a LIST 9. Operations need to be separated in the near future
 C
@@ -365,8 +373,13 @@ C
       INCLUDE 'XCOMPD.INC'
 C
       INCLUDE 'QSTORE.INC'
+#if defined (_HOL_)
+      DATA KHYD /4HH   /
+      DATA KDET /4HD   /
+#else
       DATA KHYD /'H   '/
       DATA KDET /'D   '/
+#endif
 C
 C--LOAD LIST 3, TO FIND THE FORM FACTORS TO BE USED
       IF (KHUNTR (3,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL03

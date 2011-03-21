@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.31  2011/02/07 16:59:07  djw
+C Put IDIM09 as a parameter in ICOM09 so that we can use it to declare work space
+C
 C Revision 1.30  2011/02/04 17:34:03  djw
 C Extend parameter list on PRTGRP to enable selection by RESIDUE
 C
@@ -386,11 +389,19 @@ C      EQUIVALENCE ( BLANK , IB )
 C
 C
       DATA NXA/9/,LXA/1/
+#if defined (_HOL_)
+      DATA KMOUSE/1HM ,1HO ,1HU ,1HS ,1HE /
+      DATA KCONT/1HC ,1HO ,1HN ,1HT /
+      DATA KALL/1HA ,1HL ,1HL /
+      DATA KREM/1HR ,1HE ,1HM /
+      DATA KSMILE/1HS ,1HM ,1HI /
+#else
       DATA KMOUSE/'M','O','U','S','E'/
       DATA KCONT/'C','O','N','T'/
       DATA KALL/'A','L','L'/
       DATA KREM/'R','E','M'/
       DATA KSMILE/'S','M','I'/
+#endif
 C
 C----- SET NO MOUSE INPUT YET
       IMOUSE = 0
@@ -449,9 +460,12 @@ C -- IF CARDS HAVE BEEN READ IN PREVIOUSLY THESE MUST BE MOVED NOW
 C -- MOVE PREVIOUS CARDS READ
       I = IADCRD
       IADCRD = KSTALH ( NWCARD )
+      
       CALL XMOVE ( STORE(I) , STORE(IADCRD) , NCHRRD )
 C
 1610  CONTINUE
+c      WRITE(NCWU,'(a,80a1)')'LX ',(IMAGE(JTEM),JTEM=NC,NC+80)
+
 C----- LOOK FOR 'ALL'
 C This will turn "ALL" into "FIRST UNTIL LAST" and
 C "ALL(X's)" into "FIRST(X's)" UNTIL LAST
@@ -492,6 +506,10 @@ C -- STORE CURRENT CARD IMAGE
 C -- UPDATE COUNTERS
       NCARD = NCARD + 1
       NCHRRD = NCHRRD + NWCARD
+c       write(ncwu,'(a,256a1)') 'o: ',(image(itemp),itemp=1,lastch)
+c       write(ncwu,'(a,64a4)') 'p: ',(STORE(itemp),
+c     1 itemp=nxtcdi,nxtcdi+lastch/4)
+
 C
 C--- LOOK FOR 'REM' OR 'SMILES'
       IF ((KCOMP (3, IMAGE(1), KREM(1), 1, 3) .GT. 0) .or.

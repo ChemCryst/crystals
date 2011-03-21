@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.58  2011/03/04 05:47:15  rich
+C DVF to DIGITALF77 defines.
+C
 C Revision 1.57  2011/02/04 17:34:41  djw
 C Enable LIST 9 operations
 C
@@ -380,10 +383,11 @@ C      INITIALISE THE TAPE USE STACK
 C      INITIALISE THE DISK INDEX
       DATA INDEXF/424*0/, LIST/424*0/
 C      INITIALISE THE LEXICAL COMMON BLOCK
-      DATA LK,LK1,LK2,NWCARD,LARG,MARG,MDARG,NARG,
+      DATA LK/2/,LK1/3/,LK2/4/,NWCARD/20/
+      DATA LARG,MARG,MDARG,NARG,
      2 LCRD,MCRD,MDCRD,NCRD,MA,MB,MC,MD,ME,MF,MG,MH,
      3 MI,MJ,MK,ML,MM,MN,MO,MP,MQ,MR,MS,MT,MU,MV,MW,MX,MY,Z
-     4 /38*0/
+     4 /34*0/
 C      INITIALISE THE PRINT LEVEL TO BE LOWEST
       DATA ISTAT2 /0/
 C
@@ -636,6 +640,205 @@ C---- THE GUI UNITS
       DATA IFLUNI(48) / 43 / , IFLUNI(49) / 44 /
 C
 C
+#if defined (_HOL_)
+      DATA KEYFIL(1,1)  / 1HD / , KEYFIL(2,1)  / 1HI /
+      DATA KEYFIL(3,1)  / 1HS / , KEYFIL(4,1)  / 1HC /
+      DATA KEYFIL(5,1)  / 1HF / , KEYFIL(6,1)  / 1HI /
+      DATA KEYFIL(7,1)  / 1HL / , KEYFIL(8,1)  / 1HE /
+      DATA KEYFIL(1,2)  / 1HH / , KEYFIL(2,2)  / 1HK /
+      DATA KEYFIL(3,2)  / 1HL / , KEYFIL(4,2)  / 1HI /
+      DATA KEYFIL(5,2)  / 1H  / , KEYFIL(6,2)  / 1H  /
+      DATA KEYFIL(7,2)  / 1H  / , KEYFIL(8,2)  / 1H  /
+      DATA KEYFIL(1,3)  / 1HC / , KEYFIL(2,3)  / 1HO /
+      DATA KEYFIL(3,3)  / 1HN / , KEYFIL(4,3)  / 1HT /
+      DATA KEYFIL(5,3)  / 1HR / , KEYFIL(6,3)  / 1HO /
+      DATA KEYFIL(7,3)  / 1HL / , KEYFIL(8,3)  / 1H  /
+      DATA KEYFIL(1,4)  / 1HP / , KEYFIL(2,4)  / 1HR /
+      DATA KEYFIL(3,4)  / 1HI / , KEYFIL(4,4)  / 1HN /
+      DATA KEYFIL(5,4)  / 1HT / , KEYFIL(6,4)  / 1HE /
+      DATA KEYFIL(7,4)  / 1HR / , KEYFIL(8,4)  / 1H  /
+      DATA KEYFIL(1,5)  / 1HP / , KEYFIL(2,5)  / 1HU /
+      DATA KEYFIL(3,5)  / 1HN / , KEYFIL(4,5)  / 1HC /
+      DATA KEYFIL(5,5)  / 1HH / , KEYFIL(6,5)  / 1H  /
+      DATA KEYFIL(7,5)  / 1H  / , KEYFIL(8,5)  / 1H  /
+      DATA KEYFIL(1,6)  / 1HL / , KEYFIL(2,6)  / 1HO /
+      DATA KEYFIL(3,6)  / 1HG / , KEYFIL(4,6)  / 1H  /
+      DATA KEYFIL(5,6)  / 1H  / , KEYFIL(6,6)  / 1H  /
+      DATA KEYFIL(7,6)  / 1H  / , KEYFIL(8,6)  / 1H  /
+      DATA KEYFIL(1,7)  / 1HM / , KEYFIL(2,7)  / 1HO /
+      DATA KEYFIL(3,7)  / 1HN / , KEYFIL(4,7)  / 1HI /
+      DATA KEYFIL(5,7)  / 1HT / , KEYFIL(6,7)  / 1HO /
+      DATA KEYFIL(7,7)  / 1HR / , KEYFIL(8,7)  / 1H  /
+      DATA KEYFIL(1,8)  / 1HS / , KEYFIL(2,8)  / 1HP /
+      DATA KEYFIL(3,8)  / 1HY / , KEYFIL(4,8)  / 1H  /
+      DATA KEYFIL(5,8)  / 1H  / , KEYFIL(6,8)  / 1H  /
+      DATA KEYFIL(7,8)  / 1H  / , KEYFIL(8,8)  / 1H  /
+      DATA KEYFIL(1,9)  / 1HN / , KEYFIL(2,9)  / 1HE /
+      DATA KEYFIL(3,9)  / 1HW / , KEYFIL(4,9)  / 1HD /
+      DATA KEYFIL(5,9)  / 1HI / , KEYFIL(6,9)  / 1HS /
+      DATA KEYFIL(7,9)  / 1HC / , KEYFIL(8,9)  / 1H  /
+      DATA KEYFIL(1,10) / 1HE / , KEYFIL(2,10) / 1HX /
+      DATA KEYFIL(3,10) / 1HC / , KEYFIL(4,10) / 1HO /
+      DATA KEYFIL(5,10) / 1HM / , KEYFIL(6,10) / 1HM /
+      DATA KEYFIL(7,10) / 1HO / , KEYFIL(8,10) / 1HN /
+      DATA KEYFIL(1,11) / 1HC / , KEYFIL(2,11) / 1HO /
+      DATA KEYFIL(3,11) / 1HM / , KEYFIL(4,11) / 1HM /
+      DATA KEYFIL(5,11) / 1HA / , KEYFIL(6,11) / 1HN /
+      DATA KEYFIL(7,11) / 1HD / , KEYFIL(8,11) / 1HS /
+      DATA KEYFIL(1,12) / 1HU / , KEYFIL(2,12) / 1HS /
+      DATA KEYFIL(3,12) / 1HE / , KEYFIL(4,12) / 1H1 /
+      DATA KEYFIL(5,12) / 1H  / , KEYFIL(6,12) / 1H  /
+      DATA KEYFIL(7,12) / 1H  / , KEYFIL(8,12) / 1H  /
+      DATA KEYFIL(1,13) / 1HU / , KEYFIL(2,13) / 1HS /
+      DATA KEYFIL(3,13) / 1HE / , KEYFIL(4,13) / 1H2 /
+      DATA KEYFIL(5,13) / 1H  / , KEYFIL(6,13) / 1H  /
+      DATA KEYFIL(7,13) / 1H  / , KEYFIL(8,13) / 1H  /
+      DATA KEYFIL(1,14) / 1HU / , KEYFIL(2,14) / 1HS /
+      DATA KEYFIL(3,14) / 1HE / , KEYFIL(4,14) / 1H3 /
+      DATA KEYFIL(5,14) / 1H  / , KEYFIL(6,14) / 1H  /
+      DATA KEYFIL(7,14) / 1H  / , KEYFIL(8,14) / 1H  /
+      DATA KEYFIL(1,15) / 1HU / , KEYFIL(2,15) / 1HS /
+      DATA KEYFIL(3,15) / 1HE / , KEYFIL(4,15) / 1H4 /
+      DATA KEYFIL(5,15) / 1H  / , KEYFIL(6,15) / 1H  /
+      DATA KEYFIL(7,15) / 1H  / , KEYFIL(8,15) / 1H  /
+      DATA KEYFIL(1,16) / 1HM / , KEYFIL(2,16) / 1H3 /
+      DATA KEYFIL(3,16) / 1H2 / , KEYFIL(4,16) / 1H  /
+      DATA KEYFIL(5,16) / 1H  / , KEYFIL(6,16) / 1H  /
+      DATA KEYFIL(7,16) / 1H  / , KEYFIL(8,16) / 1H  /
+      DATA KEYFIL(1,17) / 1HM / , KEYFIL(2,17) / 1H3 /
+      DATA KEYFIL(3,17) / 1H3 / , KEYFIL(4,17) / 1H  /
+      DATA KEYFIL(5,17) / 1H  / , KEYFIL(6,17) / 1H  /
+      DATA KEYFIL(7,17) / 1H  / , KEYFIL(8,17) / 1H  /
+      DATA KEYFIL(1,18) / 1HM / , KEYFIL(2,18) / 1HT /
+      DATA KEYFIL(3,18) / 1H1 / , KEYFIL(4,18) / 1H  /
+      DATA KEYFIL(5,18) / 1H  / , KEYFIL(6,18) / 1H  /
+      DATA KEYFIL(7,18) / 1H  / , KEYFIL(8,18) / 1H  /
+      DATA KEYFIL(1,19) / 1HM / , KEYFIL(2,19) / 1HT /
+      DATA KEYFIL(3,19) / 1H2 / , KEYFIL(4,19) / 1H  /
+      DATA KEYFIL(5,19) / 1H  / , KEYFIL(6,19) / 1H  /
+      DATA KEYFIL(7,19) / 1H  / , KEYFIL(8,19) / 1H  /
+      DATA KEYFIL(1,20) / 1HM / , KEYFIL(2,20) / 1HT /
+      DATA KEYFIL(3,20) / 1H3 / , KEYFIL(4,20) / 1H  /
+      DATA KEYFIL(5,20) / 1H  / , KEYFIL(6,20) / 1H  /
+      DATA KEYFIL(7,20) / 1H  / , KEYFIL(8,20) / 1H  /
+      DATA KEYFIL(1,21) / 1HM / , KEYFIL(2,21) / 1HT /
+      DATA KEYFIL(3,21) / 1HE / , KEYFIL(4,21) / 1H  /
+      DATA KEYFIL(5,21) / 1H  / , KEYFIL(6,21) / 1H  /
+      DATA KEYFIL(7,21) / 1H  / , KEYFIL(8,21) / 1H  /
+      DATA KEYFIL(1,22) / 1HS / , KEYFIL(2,22) / 1HR /
+      DATA KEYFIL(3,22) / 1HQ / , KEYFIL(4,22) / 1H  /
+      DATA KEYFIL(5,22) / 1H  / , KEYFIL(6,22) / 1H  /
+      DATA KEYFIL(7,22) / 1H  / , KEYFIL(8,22) / 1H  /
+      DATA KEYFIL(1,23) / 1HF / , KEYFIL(2,23) / 1HR /
+      DATA KEYFIL(3,23) / 1HN / , KEYFIL(4,23) / 1H1 /
+      DATA KEYFIL(5,23) / 1HD / , KEYFIL(6,23) / 1HA /
+      DATA KEYFIL(7,23) / 1HT / , KEYFIL(8,23) / 1HA /
+      DATA KEYFIL(1,24) / 1HF / , KEYFIL(2,24) / 1HR /
+      DATA KEYFIL(3,24) / 1HN / , KEYFIL(4,24) / 1H2 /
+      DATA KEYFIL(5,24) / 1HD / , KEYFIL(6,24) / 1HA /
+      DATA KEYFIL(7,24) / 1HT / , KEYFIL(8,24) / 1HA /
+      DATA KEYFIL(1,25) / 1HS / , KEYFIL(2,25) / 1HC /
+      DATA KEYFIL(3,25) / 1HP / , KEYFIL(4,25) / 1HD /
+      DATA KEYFIL(5,25) / 1HA / , KEYFIL(6,25) / 1HT /
+      DATA KEYFIL(7,25) / 1HA / , KEYFIL(8,25) / 1H  /
+      DATA KEYFIL(1,26) / 1HS / , KEYFIL(2,26) / 1HC /
+      DATA KEYFIL(3,26) / 1HP / , KEYFIL(4,26) / 1HQ /
+      DATA KEYFIL(5,26) / 1HU / , KEYFIL(6,26) / 1HE /
+      DATA KEYFIL(7,26) / 1HU / , KEYFIL(8,26) / 1HE /
+      DATA KEYFIL(1,27) / 1HC / , KEYFIL(2,27) / 1HO /
+      DATA KEYFIL(3,27) / 1HM / , KEYFIL(4,27) / 1HS /
+      DATA KEYFIL(5,27) / 1HR / , KEYFIL(6,27) / 1HC /
+      DATA KEYFIL(7,27) / 1H  / , KEYFIL(8,27) / 1H  /
+      DATA KEYFIL(1,28) / 1HU / , KEYFIL(2,28) / 1HS /
+      DATA KEYFIL(3,28) / 1HE / , KEYFIL(4,28) / 1H5 /
+      DATA KEYFIL(5,28) / 1H  / , KEYFIL(6,28) / 1H  /
+      DATA KEYFIL(7,28) / 1H  / , KEYFIL(8,28) / 1H  /
+      DATA KEYFIL(1,29) / 1HU / , KEYFIL(2,29) / 1HS /
+      DATA KEYFIL(3,29) / 1HE / , KEYFIL(4,29) / 1H6 /
+      DATA KEYFIL(5,29) / 1H  / , KEYFIL(6,29) / 1H  /
+      DATA KEYFIL(7,29) / 1H  / , KEYFIL(8,29) / 1H  /
+      DATA KEYFIL(1,30) / 1HU / , KEYFIL(2,30) / 1HS /
+      DATA KEYFIL(3,30) / 1HE / , KEYFIL(4,30) / 1H7 /
+      DATA KEYFIL(5,30) / 1H  / , KEYFIL(6,30) / 1H  /
+      DATA KEYFIL(7,30) / 1H  / , KEYFIL(8,30) / 1H  /
+      DATA KEYFIL(1,31) / 1HU / , KEYFIL(2,31) / 1HS /
+      DATA KEYFIL(3,31) / 1HE / , KEYFIL(4,31) / 1H8 /
+      DATA KEYFIL(5,31) / 1H  / , KEYFIL(6,31) / 1H  /
+      DATA KEYFIL(7,31) / 1H  / , KEYFIL(8,31) / 1H  /
+      DATA KEYFIL(1,32) / 1HU / , KEYFIL(2,32) / 1HS /
+      DATA KEYFIL(3,32) / 1HE / , KEYFIL(4,32) / 1H9 /
+      DATA KEYFIL(5,32) / 1H  / , KEYFIL(6,32) / 1H  /
+      DATA KEYFIL(7,32) / 1H  / , KEYFIL(8,32) / 1H  /
+      DATA KEYFIL(1,33) / 1HV / , KEYFIL(2,33) / 1HD /
+      DATA KEYFIL(3,33) / 1HU / , KEYFIL(4,33) / 1H  /
+      DATA KEYFIL(5,33) / 1H  / , KEYFIL(6,33) / 1H  /
+      DATA KEYFIL(7,33) / 1H  / , KEYFIL(8,33) / 1H  /
+      DATA KEYFIL(1,34) / 1HE / , KEYFIL(2,34) / 1HR /
+      DATA KEYFIL(3,34) / 1HR / , KEYFIL(4,34) / 1HO /
+      DATA KEYFIL(5,34) / 1HR / , KEYFIL(6,34) / 1H  /
+      DATA KEYFIL(7,34) / 1H  / , KEYFIL(8,34) / 1H  /
+      DATA KEYFIL(1,35) / 1HU / , KEYFIL(2,35) / 1HS /
+      DATA KEYFIL(3,35) / 1HE / , KEYFIL(4,35) / 1H1 /
+      DATA KEYFIL(5,35) / 1H0 / , KEYFIL(6,35) / 1H  /
+      DATA KEYFIL(7,35) / 1H  / , KEYFIL(8,35) / 1H  /
+      DATA KEYFIL(1,36) / 1HU / , KEYFIL(2,36) / 1HS /
+      DATA KEYFIL(3,36) / 1HE / , KEYFIL(4,36) / 1H1 /
+      DATA KEYFIL(5,36) / 1H1 / , KEYFIL(6,36) / 1H  /
+      DATA KEYFIL(7,36) / 1H  / , KEYFIL(8,36) / 1H  /
+      DATA KEYFIL(1,37) / 1HU / , KEYFIL(2,37) / 1HS /
+      DATA KEYFIL(3,37) / 1HE / , KEYFIL(4,37) / 1H1 /
+      DATA KEYFIL(5,37) / 1H2 / , KEYFIL(6,37) / 1H  /
+      DATA KEYFIL(7,37) / 1H  / , KEYFIL(8,37) / 1H  /
+      DATA KEYFIL(1,38) / 1HU / , KEYFIL(2,38) / 1HS /
+      DATA KEYFIL(3,38) / 1HE / , KEYFIL(4,38) / 1H1 /
+      DATA KEYFIL(5,38) / 1H3 / , KEYFIL(6,38) / 1H  /
+      DATA KEYFIL(7,38) / 1H  / , KEYFIL(8,38) / 1H  /
+      DATA KEYFIL(1,39) / 1HU / , KEYFIL(2,39) / 1HS /
+      DATA KEYFIL(3,39) / 1HE / , KEYFIL(4,39) / 1H1 /
+      DATA KEYFIL(5,39) / 1H4 / , KEYFIL(6,39) / 1H  /
+      DATA KEYFIL(7,39) / 1H  / , KEYFIL(8,39) / 1H  /
+      DATA KEYFIL(1,40) / 1HU / , KEYFIL(2,40) / 1HS /
+      DATA KEYFIL(3,40) / 1HE / , KEYFIL(4,40) / 1H1 /
+      DATA KEYFIL(5,40) / 1H5 / , KEYFIL(6,40) / 1H  /
+      DATA KEYFIL(7,40) / 1H  / , KEYFIL(8,40) / 1H  /
+      DATA KEYFIL(1,41) / 1HU / , KEYFIL(2,41) / 1HS /
+      DATA KEYFIL(3,41) / 1HE / , KEYFIL(4,41) / 1H1 /
+      DATA KEYFIL(5,41) / 1H6 / , KEYFIL(6,41) / 1H  /
+      DATA KEYFIL(7,41) / 1H  / , KEYFIL(8,41) / 1H  /
+      DATA KEYFIL(1,42) / 1HU / , KEYFIL(2,42) / 1HS /
+      DATA KEYFIL(3,42) / 1HE / , KEYFIL(4,42) / 1H1 /
+      DATA KEYFIL(5,42) / 1H7 / , KEYFIL(6,42) / 1H  /
+      DATA KEYFIL(7,42) / 1H  / , KEYFIL(8,42) / 1H  /
+      DATA KEYFIL(1,43) / 1HU / , KEYFIL(2,43) / 1HS /
+      DATA KEYFIL(3,43) / 1HE / , KEYFIL(4,43) / 1H1 /
+      DATA KEYFIL(5,43) / 1H8 / , KEYFIL(6,43) / 1H  /
+      DATA KEYFIL(7,43) / 1H  / , KEYFIL(8,43) / 1H  /
+      DATA KEYFIL(1,44) / 1HU / , KEYFIL(2,44) / 1HS /
+      DATA KEYFIL(3,44) / 1HE / , KEYFIL(4,44) / 1H1 /
+      DATA KEYFIL(5,44) / 1H9 / , KEYFIL(6,44) / 1H  /
+      DATA KEYFIL(7,44) / 1H  / , KEYFIL(8,44) / 1H  /
+C
+      DATA KEYFIL(1,45) / 1HA / , KEYFIL(2,45) / 1HT /
+      DATA KEYFIL(3,45) / 1HO / , KEYFIL(4,45) / 1HM /
+      DATA KEYFIL(5,45) / 1HS / , KEYFIL(6,45) / 1H  /
+      DATA KEYFIL(7,45) / 1H  / , KEYFIL(8,45) / 1H  /
+      DATA KEYFIL(1,46) / 1HM / , KEYFIL(2,46) / 1HE /
+      DATA KEYFIL(3,46) / 1HN / , KEYFIL(4,46) / 1HU /
+      DATA KEYFIL(5,46) / 1HE / , KEYFIL(6,46) / 1H  /
+      DATA KEYFIL(7,46) / 1H  / , KEYFIL(8,46) / 1H  /
+      DATA KEYFIL(1,47) / 1HC / , KEYFIL(2,47) / 1HH /
+      DATA KEYFIL(3,47) / 1HA / , KEYFIL(4,47) / 1HR /
+      DATA KEYFIL(5,47) / 1HT / , KEYFIL(6,47) / 1H  /
+      DATA KEYFIL(7,47) / 1H  / , KEYFIL(8,47) / 1H  /
+      DATA KEYFIL(1,48) / 1HP / , KEYFIL(2,48) / 1HR /
+      DATA KEYFIL(3,48) / 1HO / , KEYFIL(4,48) / 1HG /
+      DATA KEYFIL(5,48) / 1HR / , KEYFIL(6,48) / 1HE /
+      DATA KEYFIL(7,48) / 1HS / , KEYFIL(8,48) / 1HS /
+      DATA KEYFIL(1,49) / 1HD / , KEYFIL(2,49) / 1HI /
+      DATA KEYFIL(3,49) / 1HA / , KEYFIL(4,49) / 1HL /
+      DATA KEYFIL(5,49) / 1HO / , KEYFIL(6,49) / 1HG /
+      DATA KEYFIL(7,49) / 1HU / , KEYFIL(8,49) / 1HE /
+#else
       DATA KEYFIL(1,1)  / 'D' / , KEYFIL(2,1)  / 'I' /
       DATA KEYFIL(3,1)  / 'S' / , KEYFIL(4,1)  / 'C' /
       DATA KEYFIL(5,1)  / 'F' / , KEYFIL(6,1)  / 'I' /
@@ -833,6 +1036,7 @@ C
       DATA KEYFIL(3,49) / 'A' / , KEYFIL(4,49) / 'L' /
       DATA KEYFIL(5,49) / 'O' / , KEYFIL(6,49) / 'G' /
       DATA KEYFIL(7,49) / 'U' / , KEYFIL(8,49) / 'E' /
+#endif
 C
       DATA IFLACC(1)  / 2 / , IFLACC(2)  / 1 / , IFLACC(3)  / 1 /
       DATA IFLACC(4)  / 1 / , IFLACC(5)  / 1 / , IFLACC(6)  / 1 /
@@ -969,10 +1173,34 @@ C
       DATA KTITL(16)/4HUSER/,KTITL(17)/4H TIT/,KTITL(18)/4HLE I/
       DATA KTITL(19)/4HS GI/,KTITL(20)/4HVEN./
 C
+      DATA NUMB( 1)/1H0/,NUMB( 2)/1H1/,NUMB( 3)/1H2/,NUMB( 4)/1H3/
+      DATA NUMB( 5)/1H4/,NUMB( 6)/1H5/,NUMB( 7)/1H6/,NUMB( 8)/1H7/
+      DATA NUMB( 9)/1H8/,NUMB(10)/1H9/
+      DATA IPLUS/1H+/,MINUS/1H-/,IA/1H*/,ISLASH/1H//,IEXP/2H**/
+      DATA ILB/1H(/,IRB/1H)/,ICOMMA/1H,/,IEQUAL/1H=/,IPOINT/1H./
+      DATA ISEMIC/1H;/,IQ/1H?/,IX(1)/1HX/,IX(2)/1HY/,IX(3)/1HZ/
+      DATA IB / 1H  /
+      DATA IH / 1H# /
+C
+C      'PAUS'      'HELP'      'SET '      'ATTA'      'OPEN'
+C      'RELE'      'USE '      'MANU'      'TYPE'      'REMO'
+C      'STOR'      'STAR'      'SCRI'      'COMM'      'CLOS'
+C      'SPAW'      '$   '      'APPE'      'BENC'      'DEFI'
+C
+C
+      DATA IHF / 1HP, 1HA, 1HU, 1HS, 1HH, 1HE, 1HL, 1HP,
+     2           1HS, 1HE, 1HT, 1H , 1HA, 1HT, 1HT, 1HA,
+     3           1HO, 1HP, 1HE, 1HN, 1HR, 1HE, 1HL, 1HE,
+     4           1HU, 1HS, 1HE, 1H , 1HM, 1HA, 1HN, 1HU,
+     5           1HT, 1HY, 1HP, 1HE, 1HR, 1HE, 1HM, 1HO,
+     6           1HS, 1HT, 1HO, 1HR, 1HS, 1HT, 1HA, 1HR,
+     7           1HS, 1HC, 1HR, 1HI, 1HC, 1HO, 1HM, 1HM,
+     8           1HC, 1HL, 1HO, 1HS, 1HS, 1HP, 1HA, 1HW,
+     9           1H$, 1H , 1H , 1H , 1HA, 1HP, 1HP, 1HE,
+     1           1HB, 1HE, 1HN, 1HC, 1HD, 1HE, 1HF, 1HI  /
+
 #else
       DATA KTITL( 1)/'THIS'/,KTITL( 2)/' IS '/,KTITL( 3)/'THE '/
-#endif
-#if !defined(_HOL_) 
       DATA KTITL( 4)/'DEFA'/,KTITL( 5)/'ULT '/,KTITL( 6)/'SETT'/
       DATA KTITL( 7)/'ING '/,KTITL( 8)/'FOR '/,KTITL( 9)/'THE '/
       DATA KTITL(10)/'TITL'/,KTITL(11)/'E, P'/,KTITL(12)/'ROVI'/
@@ -980,16 +1208,33 @@ C
       DATA KTITL(16)/'USER'/,KTITL(17)/' TIT'/,KTITL(18)/'LE I'/
       DATA KTITL(19)/'S GI'/,KTITL(20)/'VEN.'/
 C
-C
-#endif
-      DATA IB / ' ' /
-      DATA IH / '#' /
       DATA NUMB( 1)/'0'/,NUMB( 2)/'1'/,NUMB( 3)/'2'/,NUMB( 4)/'3'/
       DATA NUMB( 5)/'4'/,NUMB( 6)/'5'/,NUMB( 7)/'6'/,NUMB( 8)/'7'/
       DATA NUMB( 9)/'8'/,NUMB(10)/'9'/
       DATA IPLUS/'+'/,MINUS/'-'/,IA/'*'/,ISLASH/'/'/,IEXP/'**'/
       DATA ILB/'('/,IRB/')'/,ICOMMA/','/,IEQUAL/'='/,IPOINT/'.'/
       DATA ISEMIC/';'/,IQ/'?'/,IX(1)/'X'/,IX(2)/'Y'/,IX(3)/'Z'/
+C
+      DATA IB / ' ' /
+      DATA IH / '#' /
+C
+C      'PAUS'      'HELP'      'SET '      'ATTA'      'OPEN'
+C      'RELE'      'USE '      'MANU'      'TYPE'      'REMO'
+C      'STOR'      'STAR'      'SCRI'      'COMM'      'CLOS'
+C      'SPAW'      '$   '      'APPE'      'BENC'      'DEFI'
+C
+C
+      DATA IHF / 'P', 'A', 'U', 'S', 'H', 'E', 'L', 'P',
+     2           'S', 'E', 'T', ' ', 'A', 'T', 'T', 'A',
+     3           'O', 'P', 'E', 'N', 'R', 'E', 'L', 'E',
+     4           'U', 'S', 'E', ' ', 'M', 'A', 'N', 'U',
+     5           'T', 'Y', 'P', 'E', 'R', 'E', 'M', 'O',
+     6           'S', 'T', 'O', 'R', 'S', 'T', 'A', 'R',
+     7           'S', 'C', 'R', 'I', 'C', 'O', 'M', 'M',
+     8           'C', 'L', 'O', 'S', 'S', 'P', 'A', 'W',
+     9           '$', ' ', ' ', ' ', 'A', 'P', 'P', 'E',
+     1           'B', 'E', 'N', 'C', 'D', 'E', 'F', 'I'  /
+#endif
 C
       DATA NOWT/-1000000/
       DATA UISO/0.0000005/,ZERO/0.00005/,VALUE/0.0001/
@@ -1009,43 +1254,32 @@ C -- DEFINE SYSTEM INSTRUCTIONS
 cdjwmar99
       DATA NWHF / 4 / , NHF / 20 / , LHF / 4 /
 C
-C      'PAUS'      'HELP'      'SET '      'ATTA'      'OPEN'
-C      'RELE'      'USE '      'MANU'      'TYPE'      'REMO'
-C      'STOR'      'STAR'      'SCRI'      'COMM'      'CLOS'
-C      'SPAW'      '$   '      'APPE'      'BENC'      'DEFI'
-C
-C
-      DATA IHF / 'P', 'A', 'U', 'S', 'H', 'E', 'L', 'P',
-     2           'S', 'E', 'T', ' ', 'A', 'T', 'T', 'A',
-     3           'O', 'P', 'E', 'N', 'R', 'E', 'L', 'E',
-     4           'U', 'S', 'E', ' ', 'M', 'A', 'N', 'U',
-     5           'T', 'Y', 'P', 'E', 'R', 'E', 'M', 'O',
-     6           'S', 'T', 'O', 'R', 'S', 'T', 'A', 'R',
-     7           'S', 'C', 'R', 'I', 'C', 'O', 'M', 'M',
-     8           'C', 'L', 'O', 'S', 'S', 'P', 'A', 'W',
-     9           '$', ' ', ' ', ' ', 'A', 'P', 'P', 'E',
-     1           'B', 'E', 'N', 'C', 'D', 'E', 'F', 'I'  /
-C
 C
 C
       DATA NWSPD/12/,NSPD/2/,LSPD/13/
       DATA ISPD(1,1)/8/
+      DATA ISPD(1,2)/3/
+#if defined (_HOL_)
+      DATA ISPD( 2,1)/1HC/,ISPD( 3,1)/1HO/,ISPD( 4,1)/1HN/
+      DATA ISPD( 5,1)/1HT/,ISPD( 6,1)/1HI/,ISPD( 7,1)/1HN/
+      DATA ISPD( 8,1)/1HU/,ISPD( 9,1)/1HE/,ISPD(10,1)/1H /
+      DATA ISPD(11,1)/1H /,ISPD(12,1)/1H /,ISPD(13,1)/1H /
+      DATA ISPD( 2,2)/1HE/,ISPD( 3,2)/1HN/,ISPD( 4,2)/1HD/
+      DATA ISPD( 5,2)/1H /,ISPD( 6,2)/1H /,ISPD( 7,2)/1H /
+      DATA ISPD( 8,2)/1H /,ISPD( 9,2)/1H /,ISPD(10,2)/1H /
+      DATA ISPD(11,2)/1H /,ISPD(12,2)/1H /,ISPD(13,2)/1H /
+#else
       DATA ISPD( 2,1)/'C'/,ISPD( 3,1)/'O'/,ISPD( 4,1)/'N'/
       DATA ISPD( 5,1)/'T'/,ISPD( 6,1)/'I'/,ISPD( 7,1)/'N'/
       DATA ISPD( 8,1)/'U'/,ISPD( 9,1)/'E'/,ISPD(10,1)/' '/
       DATA ISPD(11,1)/' '/,ISPD(12,1)/' '/,ISPD(13,1)/' '/
-      DATA ISPD(1,2)/3/
       DATA ISPD( 2,2)/'E'/,ISPD( 3,2)/'N'/,ISPD( 4,2)/'D'/
       DATA ISPD( 5,2)/' '/,ISPD( 6,2)/' '/,ISPD( 7,2)/' '/
       DATA ISPD( 8,2)/' '/,ISPD( 9,2)/' '/,ISPD(10,2)/' '/
       DATA ISPD(11,2)/' '/,ISPD(12,2)/' '/,ISPD(13,2)/' '/
+#endif
 C
-      DATA IDTYPE(1,1)/'INST'/,IDTYPE(2,1)/'RUCT'/,IDTYPE(3,1)/'ION '/
-      DATA IDTYPE(1,2)/' DIR'/,IDTYPE(2,2)/'ECTI'/,IDTYPE(3,2)/'VE  '/
-      DATA IDTYPE(1,3)/' PAR'/,IDTYPE(2,3)/'AMET'/,IDTYPE(3,3)/'ER  '/
-      DATA IDTYPE(1,4)/'INPU'/,IDTYPE(2,4)/'T VA'/,IDTYPE(3,4)/'LUE '/
 C
-      DATA LK/2/,LK1/3/,LK2/4/,NWCARD/20/
 C
 C
       DATA LCOM/13/,MCOM/29/,MDCOM/4/,NCOM/5/
@@ -1059,16 +1293,22 @@ C
       DATA KPRGNM(13)/4H    /,KPRGNM(14)/4H    /,KPRGNM(15)/4H    /
       DATA KPRGNM(16)/4H    /,KPRGNM(17)/4H    /
 C
+      DATA IDTYPE(1,1)/4HINST/,IDTYPE(2,1)/4HRUCT/,IDTYPE(3,1)/4HION /
+      DATA IDTYPE(1,2)/4H DIR/,IDTYPE(2,2)/4HECTI/,IDTYPE(3,2)/4HVE  /
+      DATA IDTYPE(1,3)/4H PAR/,IDTYPE(2,3)/4HAMET/,IDTYPE(3,3)/4HER  /
+      DATA IDTYPE(1,4)/4HINPU/,IDTYPE(2,4)/4HT VA/,IDTYPE(3,4)/4HLUE /
 #else
       DATA KPRGNM( 1)/'    '/,KPRGNM( 2)/'    '/,KPRGNM( 3)/'    '/
-#endif
-#if !defined(_HOL_) 
       DATA KPRGNM( 4)/'    '/,KPRGNM( 5)/'    '/,KPRGNM( 6)/'    '/
       DATA KPRGNM( 7)/'    '/,KPRGNM( 8)/'    '/,KPRGNM( 9)/'    '/
       DATA KPRGNM(10)/'    '/,KPRGNM(11)/'    '/,KPRGNM(12)/'    '/
       DATA KPRGNM(13)/'    '/,KPRGNM(14)/'    '/,KPRGNM(15)/'    '/
       DATA KPRGNM(16)/'    '/,KPRGNM(17)/'    '/
 C
+      DATA IDTYPE(1,1)/'INST'/,IDTYPE(2,1)/'RUCT'/,IDTYPE(3,1)/'ION '/
+      DATA IDTYPE(1,2)/' DIR'/,IDTYPE(2,2)/'ECTI'/,IDTYPE(3,2)/'VE  '/
+      DATA IDTYPE(1,3)/' PAR'/,IDTYPE(2,3)/'AMET'/,IDTYPE(3,3)/'ER  '/
+      DATA IDTYPE(1,4)/'INPU'/,IDTYPE(2,4)/'T VA'/,IDTYPE(3,4)/'LUE '/
 C
 #endif
       DATA KS/13/,KE/10/,KN/11/,KV/12/
@@ -1190,10 +1430,16 @@ C
       DATA KSCAL(1,7)/4HPROF/,KSCAL(2,7)/4HILE /
       DATA KSCAL(1,8)/4HEXTI/,KSCAL(2,8)/4HNCTI/
 C
+      DATA MXS(1,1)/4HU'S  /,MXS(2,1)/4H    /
+      DATA MXS(1,2)/4HUII'/,MXS(2,2)/4HS   /
+      DATA MXS(1,3)/4HUIJ'/,MXS(2,3)/4HS   /
+      DATA MXS(1,4)/4HX'S /,MXS(2,4)/4H    /
+      DATA MXS(1,5)/4HORIE/,MXS(2,5)/4HNTAT/
+C
+      DATA IFIRST(1)/4HFIRS/,IFIRST(2)/4HLAST/,IFIRST(3)/4HPART/
+     1     IFIRST(4)/4HRESI/,IFIRST(5)/4HTYPE/
 #else
       DATA KSCAL(1,1)/'SCAL'/,KSCAL(2,1)/'ES  '/
-#endif
-#if !defined(_HOL_) 
       DATA KSCAL(1,2)/'PARA'/,KSCAL(2,2)/'METE'/
       DATA KSCAL(1,3)/'LAYE'/,KSCAL(2,3)/'R   '/
       DATA KSCAL(1,4)/'ELEM'/,KSCAL(2,4)/'ENT '/
@@ -1202,14 +1448,16 @@ C
       DATA KSCAL(1,7)/'PROF'/,KSCAL(2,7)/'ILE '/
       DATA KSCAL(1,8)/'EXTI'/,KSCAL(2,8)/'NCTI'/
 C
-C
-#endif
-      DATA NWXS/2/,NXS/5/,LXS/2/
       DATA MXS(1,1)/'U''S '/,MXS(2,1)/'    '/
       DATA MXS(1,2)/'UII'''/,MXS(2,2)/'S   '/
       DATA MXS(1,3)/'UIJ'''/,MXS(2,3)/'S   '/
       DATA MXS(1,4)/'X''S '/,MXS(2,4)/'    '/
       DATA MXS(1,5)/'ORIE'/,MXS(2,5)/'NTAT'/
+C
+      DATA IFIRST(1)/'FIRS'/,IFIRST(2)/'LAST'/,IFIRST(3)/'PART'/
+     1     IFIRST(4)/'RESI'/,IFIRST(5)/'TYPE'/
+#endif
+      DATA NWXS/2/,NXS/5/,LXS/2/
 C -- INITIALISE DATA FOR EFFICIENCY STATISTICS
       DATA IPREAD / 0 / , IPWRIT / 0 / , ICACHE / 0 /
       DATA NCACHE(1) / 0 / ,  NCACHE(2) / 0 / , NCACHE(3) / 0 /
@@ -1222,8 +1470,6 @@ C -- INITIALISE DATA FOR EFFICIENCY STATISTICS
       DATA NCACHE(22) / 0 / ,  NCACHE(23) / 0 / , NCACHE(24) / 0 /
       DATA NCALL / 0 /
 C
-      DATA IFIRST(1)/'FIRS'/,IFIRST(2)/'LAST'/,IFIRST(3)/'PART'/
-     1     IFIRST(4)/'RESI'/,IFIRST(5)/'TYPE'/
 C
 C----- KEYS FOR COEFFICIENTS IN LIST 6
       DATA I14(1) / 14 / , I15(1) / 15 / , I31(1) / 31 /
@@ -1372,10 +1618,17 @@ C  THE CHARACTER DEFINITIONS 'CSS***)
       DATA ISSDAT(3) / '  20' / , ISSDAT(4) / '00  ' /
 #endif
 #if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
+#if defined (_HOL_)
+      DATA ISSMAC(1) / 4HPent / , ISSMAC(2) / 4Hium  /
+      DATA ISSOPS(1) / 4HLinu / , ISSOPS(2) / 4Hx    /
+      DATA ISSDAT(1) / 4H     / , ISSDAT(2) / 4H Jun /
+      DATA ISSDAT(3) / 4H  20 / , ISSDAT(4) / 4H00   /
+#else
       DATA ISSMAC(1) / 'Pent' / , ISSMAC(2) / 'ium ' /
       DATA ISSOPS(1) / 'Linu' / , ISSOPS(2) / 'x   ' /
       DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Jun' /
       DATA ISSDAT(3) / '  20' / , ISSDAT(4) / '00  ' /
+#endif
 #endif
 #if defined(_WXS_) 
       DATA ISSMAC(1) / 'Pent' / , ISSMAC(2) / 'ium ' /
@@ -1466,7 +1719,11 @@ C                  ISSDAR = 4 * ISSRLI
 C
 C
 #endif
+#if defined (_HOL_)
+      DATA ISSPRG(1) / 4HCRYS / , ISSPRG(2) / 4HTALS /
+#else
       DATA ISSPRG(1) / 'CRYS' / , ISSPRG(2) / 'TALS' /
+#endif
 C
       DATA ISSLSM / 3 / , ISSSPD / 2 / , ISSTIM / 1 /
 C
@@ -1591,7 +1848,7 @@ C
 #if defined(_WXS_) 
       DATA CSSDST / 'CRYSDIR:crysdef.srt' /
 #endif
-      DATA LSSDST / ' 19 ' /
+      DATA LSSDST / 19 /
 C
 #if defined(_PPC_) 
       DATA CSSSCT / 'CRSCP:scatt.dat' /
@@ -1960,6 +2217,28 @@ C
 C--CONTROL VALUES FOR THE SYSTEM VARIABLES
       DATA NWSV/1/,NSV/20/,LSV/3/
 C--THE SYSTEM VARIABLES
+#if defined (_HOL_)
+      DATA KSV(2, 1)/4/,KSV(3, 1)/4HA   /
+      DATA KSV(2, 2)/1/,KSV(3, 2)/4HCV  /
+      DATA KSV(2, 3)/4/,KSV(3, 3)/4HAR  /
+      DATA KSV(2, 4)/1/,KSV(3, 4)/4HRCV /
+      DATA KSV(2, 5)/6/,KSV(3, 5)/4HG   /
+      DATA KSV(2, 6)/6/,KSV(3, 6)/4HGR  /
+      DATA KSV(2, 7)/6/,KSV(3, 7)/4HL   /
+      DATA KSV(2, 8)/6/,KSV(3, 8)/4HLR  /
+      DATA KSV(2, 9)/2/,KSV(3, 9)/4HCONV/
+      DATA KSV(2,10)/4/,KSV(3,10)/4HRIJ /
+      DATA KSV(2,11)/4/,KSV(3,11)/4HANIS/
+      DATA KSV(2,12)/12/,KSV(3,12)/4HSM  /
+      DATA KSV(2,13)/12/,KSV(3,13)/4HSMI /
+      DATA KSV(2,14)/9/,KSV(3,14)/4HNPLT/
+      DATA KSV(2,15)/1/,KSV(3,15)/4HPI  /
+      DATA KSV(2,16)/1/,KSV(3,16)/4HTPI /
+      DATA KSV(2,17)/1/,KSV(3,17)/4HTPIS/
+      DATA KSV(2,18)/1/,KSV(3,18)/4HDTR /
+      DATA KSV(2,19)/1/,KSV(3,19)/4HRTD /
+      DATA KSV(2,20)/1/,KSV(3,20)/4HZERO/
+#else
       DATA KSV(2, 1)/4/,KSV(3, 1)/'A   '/
       DATA KSV(2, 2)/1/,KSV(3, 2)/'CV  '/
       DATA KSV(2, 3)/4/,KSV(3, 3)/'AR  '/
@@ -1980,6 +2259,7 @@ C--THE SYSTEM VARIABLES
       DATA KSV(2,18)/1/,KSV(3,18)/'DTR '/
       DATA KSV(2,19)/1/,KSV(3,19)/'RTD '/
       DATA KSV(2,20)/1/,KSV(3,20)/'ZERO'/
+#endif
 C
 C--THE SYSTEM VARAIBLE DIMENSIONS
 C
@@ -2008,6 +2288,17 @@ C
 C--DETAILS OF THE SYSTEM FUNCTIONS
       DATA NWSF/1/,NSF/8/,LSF/1/
 C--NAMES OF THE SYSTEM FUNCTIONS
+
+#if defined (_HOL_)
+      DATA KSYSF( 1)/4HSQRT/
+      DATA KSYSF( 2)/4HEXP /
+      DATA KSYSF( 3)/4HSIN /
+      DATA KSYSF( 4)/4HCOS /
+      DATA KSYSF( 5)/4HTAN /
+      DATA KSYSF( 6)/4HASIN/
+      DATA KSYSF( 7)/4HACOS/
+      DATA KSYSF( 8)/4HATAN/
+#else
       DATA KSYSF( 1)/'SQRT'/
       DATA KSYSF( 2)/'EXP '/
       DATA KSYSF( 3)/'SIN '/
@@ -2016,6 +2307,7 @@ C--NAMES OF THE SYSTEM FUNCTIONS
       DATA KSYSF( 6)/'ASIN'/
       DATA KSYSF( 7)/'ACOS'/
       DATA KSYSF( 8)/'ATAN'/
+#endif
 C
 C--OPERATOR PRECEDENCE TABLE FOR THE PARSING ROUTINES
 C
@@ -2177,7 +2469,7 @@ C
       INCLUDE 'XDAVAL.INC'
       INCLUDE 'XCBVAL.INC'
       INCLUDE 'XUNTNM.INC'
-c\XLEXIC
+      INCLUDE 'XLEXIC.INC'
       INCLUDE 'XLISTI.INC'
       INCLUDE 'XFILE.INC'
       INCLUDE 'XLISTS.INC'
@@ -2475,10 +2767,9 @@ C --- XLISTI ---
 
 C --- XLEXIC ---
 
-      LK=0
-      LK1 = 0
-      LK2 = 0
-      NWCARD = 0
+      LK1 = 3
+      LK2 = 4
+      NWCARD = 20
       LARG = 0
       MARG = 0
       MDARG = 0
