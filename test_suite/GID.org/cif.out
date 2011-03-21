@@ -312,9 +312,9 @@ _exptl_absorpt_correction_T_max   1.0000
 _diffrn_measurement_device_type   'Unknown' 
 _diffrn_measurement_device        'Serial' 
 _diffrn_radiation_monochromator   'graphite' 
-_diffrn_radiation_type            'Mo K\\a
+_diffrn_radiation_type            'Mo K\a
 _diffrn_radiation_wavelength           0.71073
-_diffrn_measurement_method        \\w/2\\q 
+_diffrn_measurement_method        \\w/2\q 
  
 # If a reference occurs more than once, delete the author 
 # and date from subsequent references. 
