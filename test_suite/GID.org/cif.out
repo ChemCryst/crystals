@@ -385,8 +385,8 @@ _refine_ls_number_parameters      55
 _oxford_refine_ls_R_factor_ref    0.0886 
 _refine_ls_wR_factor_ref          0.2179 
 _refine_ls_goodness_of_fit_ref    1.6749 
-_refine_ls_shift/su_max           0.00002 
-_refine_ls_shift/su_mean          0.00000 
+_refine_ls_shift/su_max           0.00002
+_refine_ls_shift/su_mean          0.00000
  
  
 # The values computed from all data 
