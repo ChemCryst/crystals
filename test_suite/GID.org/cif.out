@@ -384,9 +384,9 @@ _refine_ls_number_restraints      0
 _refine_ls_number_parameters      55 
 _oxford_refine_ls_R_factor_ref    0.0886 
 _refine_ls_wR_factor_ref          0.2179 
-_refine_ls_goodness_of_fit_ref    1.6751 
-_refine_ls_shift/su_max           0.2051256 
-_refine_ls_shift/su_mean          0.0484714 
+_refine_ls_goodness_of_fit_ref    1.6749 
+_refine_ls_shift/su_max           0.0013026 
+_refine_ls_shift/su_mean          0.0001596 
  
  
 # The values computed from all data 
@@ -438,7 +438,7 @@ Crystallography Laboratory, Oxford, UK.
 
 # Uequiv = arithmetic mean of Ui i.e. Ueqiv = (U1+U2+U3)/3
 
-# Replace last . with number of unfound hydrogen atomsattached to an atom.
+# Replace last . with number of unfound hydrogen atoms attached to an atom.
 
 # ..._refinement_flags_... 
 # . no refinement constraints           S special position constraint on site
@@ -465,7 +465,7 @@ _atom_site_attached_hydrogens
 C1 C 0.8970(13) 0.0468(5) 0.1908(4) 0.0306(13) 1.0000 Uiso . . . . . . 
 C2 C 0.7657(14) 0.1321(5) 0.1278(4) 0.0328(12) 1.0000 Uiso . . . . . . 
 O3 O 0.7714(11) 0.2468(3) 0.1552(3) 0.0407 1.0000 Uani . . . . . . 
-C4 C 0.6426(17) 0.3314(6) 0.0971(5) 0.0499(18) 1.0000 Uiso . . . . . . 
+C4 C 0.6426(17) 0.3315(6) 0.0971(5) 0.0500(18) 1.0000 Uiso . . . . . . 
 O5 O 0.6658(12) 0.1005(4) 0.0597(3) 0.0480 1.0000 Uani . . . . . . 
 N6 N 0.9614(11) 0.0915(4) 0.2765(3) 0.0300(11) 1.0000 Uiso . . . . . . 
 C7 C 0.7646(13) 0.1167(5) 0.3350(4) 0.0298 1.0000 Uani . . . . . . 
@@ -593,7 +593,7 @@ loop_
  _geom_hbond_distance_HA
  _geom_hbond_distance_DA
  _geom_hbond_publ_flag
-C4 . H41 . O8 3_655 155.9(5) 0.955 2.528 3.423(9)    yes
+C4 . H41 . O8 3_655 155.9(5) 0.955 2.528 3.422(9)    yes
 N6 3_755 H1 . O8 3_655 164.8(3) 0.934 1.930 2.842(9)    yes
 
 
