@@ -75,6 +75,34 @@ sub contains     # Is this $element in the array of tokens?
 }
 
 
+
+sub obscureMachinePrecision() {
+
+	use File::Copy;
+	$new_file = "$CROUTPUT.temp";
+	copy($CROUTPUT, $new_file);
+
+	open(my $fhi, '<', "$CROUTPUT.temp") or die $!;
+        open(my $fho, '>', "$CROUTPUT") or die $!;
+        while (<$fhi>) { 
+	   my $line = $_;
+           chomp($line);
+# su_max shift often has too much precision to be stable across platforms
+	   if($line =~ m/^(_refine_ls_shift\/su_max *\d*.\d\d\d\d\d)\d\d *$/ ) {
+              print $fho "$1\n";
+# su_max shift often has too much precision to be stable across platforms
+	   } elsif($line =~ m/^(_refine_ls_shift\/su_mean *\d*.\d\d\d\d\d)\d\d *$/ ) {
+              print $fho "$1\n";
+           } else {
+              print $fho "$line\n";
+	   }
+ 	}
+        close ($fhi);
+        close ($fho); 
+        unlink ($fhi);
+}
+
+
 sub runTest      # Run each .tst file through both versions of CRYSTALS.
 {
     foreach $currentFileName (@files)
@@ -89,6 +117,10 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
         print("Running Crystals (release version) on $name.tst\n");
         `$CRYSEXE`;                   # Run it
 	
+	
+        obscureMachinePrecision();
+
+
         if (TRUE ne contains("-l", @ARGV)) {
             print("Removing bfiles (use '-l' to leave in place)\n");
 	    cleanUp(@cleanup);
