@@ -16,7 +16,7 @@
 %  EVALUATE ISER = FIRSTINT ( CATM ) 
 %%
 ^^WI WINDOW XPARA 
-% TRANSFER "^^WI 'Atom " // CATM // "'" TO DISPLAY
+%%% TRANSFER "^^WI 'Atom " // CATM // "'" TO DISPLAY
 ^^WI MODAL
 ^^WI GRID M NROWS=3 NCOLS=5 {
 ^^WI   @ 2,2 GRID B NROWS=11 NCOLS=11 COMMAND='EDIT' {
@@ -53,10 +53,10 @@
 ^^WI     @ 10,7  STATIC XEPEG '(0-999)'
 ^^WI     @ 10,11  STATIC XEPEG '(0-999)'
 ^^WI   }
-^^WI   @ 2,4 GRID C NROWS=7 NCOLS=1 {
-^^WI     @ 1,1 BUTTON BOK 'Close' DEFAULT COMMIT CANCEL
-^^WI     @ 3,1 BUTTON BXD 'Delete'
-^^WI     @ 7,1 BUTTON BAP 'Apply changes' DISABLED=YES
+^^WI   @ 2,4 GRID C NROWS=9 NCOLS=1 {
+^^WI     @ 3,1 BUTTON BOK 'Cancel' DEFAULT COMMIT CANCEL
+^^WI     @ 9,1 BUTTON BXD 'Delete'
+^^WI     @ 1,1 BUTTON BAP 'Apply changes' DISABLED=YES
 ^^WI   }
 ^^WI }
 ^^WI SHOW
@@ -258,7 +258,7 @@
 %      IF CVALUE .EQ. 'XX' THEN
 ^^CO     SET BAP DISABLED=YES
 %      ELSE
-^^CO     SET BAP DISABLED=NO
+^^CO     SET BAP DISABLED=NO DEFAULT
 %      END IF
 %    END BLOCK
 %    BLOCK         %BAP - apply changes
