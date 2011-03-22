@@ -163,8 +163,8 @@
 ^^WI     @ 1,2 BUTTON GR_BRESET '&Facts' DISABLEIF='IN'                         
 ^^WI     @ 1,4 BUTTON GR_BHELP '&Help' DISABLEIF='IN'                           
 ^^WI   }                                                                        
-^^WI   @ 1,3 BUTTON GR_BOK '&Ok' DISABLEIF='IN'                                 
-^^WI   @ 3,3 BUTTON GR_BXX '&Hide' DISABLEIF='IN'                               
+^^WI   @ 1,3 BUTTON GR_BOK '&Ok' DISABLEIF='IN' COMMIT DEFAULT
+^^WI   @ 3,3 BUTTON GR_BXX '&Hide' DISABLEIF='IN' CANCEL
 ^^WI  }                                                                         
 ^^WI }                                                                          
 ^^WI SHOW                                                                       
@@ -335,7 +335,8 @@
 %  CLEAR                                                                        
 %  INSERT '^^CO SET _XG_LIST SELECTION='                                        
 %  STORE FORMAT /(I2)/ LENGTH 2 INTEGER KTDEFA                                  
-%  OUTPUT                                                                       
+%  OUTPUT
+^^CO FOCUS GR_BOK
 % END SCRIPT                                                                    
 %%                                                                              
 %%                                                                              
@@ -344,6 +345,9 @@
 %%                                                                              
 %%                                                                              
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.21  2011/02/25 08:42:47  djw
+%%  If wavelength far from Mo or Cu, invite user to set f' anf f"
+%%
 %%  Revision 1.20  2011/02/22 08:57:12  djw
 %%  Look for hydrogen before extinction if using Cu data and no atoms heavier that Ar (18)
 %%
