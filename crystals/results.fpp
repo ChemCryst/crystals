@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.173  2011/03/21 13:57:22  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.172  2011/03/14 15:35:54  djw
 C Report H treatment in cif as "mixed"
 C
@@ -1578,8 +1581,8 @@ C----- CAPTIONS FOR CIF FILE
         ENDIF
 
         WRITE(NCFPU1,903)
-903     FORMAT(/'# Replace last . with number of unfound hydrogen atoms
-     1attached to an atom.')
+903    FORMAT(/'# Replace last . with number of unfound hydrogen',
+     1 ' atoms attached to an atom.')
 
         WRITE(NCFPU1,904)
 904     FORMAT(/'# ..._refinement_flags_... ',/
@@ -4763,7 +4766,7 @@ C
           J=LREFS
 200       CONTINUE
           READ (NCARU,'(a)',ERR=200,END=250) CTEMP
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) && !defined(_MAC_)
+#if !defined(_MAC_)
           IF (CTEMP(1:1).EQ.'\') CTEMP(1:1)='#'
 #else
           IF (CTEMP(1:1).EQ.'\\') CTEMP(1:1)='#'
@@ -5743,13 +5746,13 @@ C    LIST 13
       IF (JLOAD(6).GE.1) THEN
          CBUF(1:5)=''' ? '''
          IF (NINT(10.*STORE(L13DC)).EQ.7) THEN
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_MAC_)
             CBUF(1:8) = '''Mo K\a'''
 #else
             CBUF(1:8) = '''Mo K\\a'''
 #endif
          ELSE IF (NINT(10.*STORE(L13DC)).EQ.15) THEN
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_MAC_)
             CBUF(1:8) = '''Cu K\a'''
 #else
             CBUF(1:8) = '''Cu K\\a'''
@@ -5781,47 +5784,26 @@ C SCAN MODE DETAILS
 C RIC2001 New scan types. Use IVAL, not char string.
         ELSE IF ( IPUNCH .EQ. 0 ) THEN
            IF ( IVAL .EQ. 1 ) THEN
-#if defined(_DOS_) || defined(_DVF_) 
-            CVALUE = '\w/2\q'
-#endif
-#if defined(_GID_) || defined(_VAX_) 
-            CVALUE = '\w/2\q'
-#endif
-#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
+#if defined(_MAC_)
             CVALUE = '\\w/2\\q'
-#endif
-#if defined(_WXS_) 
-            CVALUE = '\\w/2\\q'
+#else
+            CVALUE = '\w/2\q'
 #endif
              CALL XCRAS (CVALUE,J)
            ELSE IF ( IVAL .EQ. 2 ) THEN
-#if defined(_DOS_) || defined(_VAX_) 
-            CVALUE = '\w'
-#endif
-#if defined(_DVF_) || defined(_GID_) 
-            CVALUE = '\w'
-#endif
-#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
+#if defined(_MAC_)
             CVALUE = '\\w'
-#endif
-#if defined(_WXS_) 
-            CVALUE = '\\w'
+#else
+            CVALUE = '\w'
 #endif
              CALL XCRAS (CVALUE,J)
            ELSE IF ( IVAL .EQ. 3 ) THEN
              CVALUE = '''\f scans'''
            ELSE IF ( IVAL .EQ. 4 ) THEN
-#if defined(_DOS_) || defined(_VAX_) 
-             CVALUE = '''\f & \w scans'''
-#endif
-#if defined(_DVF_) || defined(_GID_) 
-             CVALUE = '''\f & \w scans'''
-#endif
-#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
+#if defined(_MAC_)
              CVALUE = '''\\f & \\w scans'''
-#endif
-#if defined(_WXS_) 
-             CVALUE = '''\\f & \\w scans'''
+#else
+             CVALUE = '''\f & \w scans'''
 #endif
            ELSE
              CVALUE = '?'
@@ -6254,7 +6236,7 @@ C
 
            CALL XPCIF 
      1     ('# The values actually used during refinement')
-#if !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_MAC_)
            WRITE(CBUF,'(''I>'',F6.1,''\s(I)'')') STORE(L30RF+3)
 #else
            WRITE(CBUF,'(''I>'',F6.1,''\\s(I)'')') STORE(L30RF+3)
@@ -6322,7 +6304,7 @@ c           END IF
            CALL XPCIF 
      1     ('# The values computed with a 2 sigma cutoff - a la SHELX')
 
-#if !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_MAC_)
            WRITE(CBUF,'(''I>'',F6.1,''\s(I)'')') STORE(L30CF+0)
 #else
            WRITE(CBUF,'(''I>'',F6.1,''\\s(I)'')') STORE(L30CF+0)
@@ -6798,7 +6780,7 @@ cdjw090804
 
                  IF (IFARG .EQ. 1 ) THEN
                   write(ctext(2),'(a,f5.2,a,f5.2,a)')
-#if !defined(_GIL_) && !defined(_LIN_)  && !defined(_WXS_) && !defined(_MAC_)
+#if !defined(_MAC_)
      1            ' w=1/[\s^2^(F) + (', store(l4),'P)^2^ +',
 #else
      1            ' w=1/[\\s^2^(F) + (', store(l4),'P)^2^ +',
@@ -6806,7 +6788,7 @@ cdjw090804
      2              store(l4+1),'P]'
                   ELSE
                   write(ctext(2),'(a,f5.2,a,f5.2,a)')
-#if !defined(_GIL_) && !defined(_LIN_)  && !defined(_WXS_) && !defined(_MAC_)
+#if  !defined(_MAC_)
      1            ' w=1/[\s^2^(F^2^) + (', store(l4),'P)^2^ +',
 #else
      1            ' w=1/[\\s^2^(F^2^) + (', store(l4),'P)^2^ +',

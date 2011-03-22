@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.61  2011/03/21 13:57:22  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.60  2011/03/04 05:46:45  rich
 C Now building WXS version with digital compiler on windows, therefore introduce
 C _DIGITALF77_ and _GNUF77_ to distinguish compiler differences, while keeping _WXS_ and _GID_ etc to distinguish library differences.
@@ -997,18 +1000,11 @@ C      J SOME MEASURE OF PROGRESS
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XDRIVE.INC'
       INCLUDE 'XIOBUF.INC'
-#if defined(_DOS_) || defined(_DVF_) 
-      DATA CLOCK / '|', '/', '-', '\' /
-#endif
-#if defined(_GID_) || defined(_VAX_) 
-      DATA CLOCK / '|', '/', '-', '\' /
-#endif
-#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
-      DATA CLOCK / '|', '/', '-', '\' /
-#endif
-#if defined(_WXS_) 
+#if defined(_MAC_) 
       DATA CLOCK / '|', '/', '-', '\\' /
-C
+#else
+      DATA CLOCK / '|', '/', '-', '\' /
+
 #endif
        ICLOCK = 1 + MOD (J,4)
 C
@@ -3319,7 +3315,7 @@ C on all platforms.
       DO WHILE(.TRUE.)
         ISLP = KCCEQL(NAME(LEVEL),1,'/')
         IF ( ISLP .GT. 0 ) THEN
-#if defined(_DOS_) || defined(_DIGITALF77_) 
+#if ! defined(_MAC_) 
           NAME(LEVEL)(ISLP:ISLP) = '\'
 #else
           NAME(LEVEL)(ISLP:ISLP) = '\\'
