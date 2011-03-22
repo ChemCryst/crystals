@@ -566,6 +566,8 @@ US 10  0  0  8
        EXTERNAL    Execute operating system commands
  
        EXTRACT     Manipulate SCPDATA - allows simple file editing
+
+       EXTRACT2    Manipulate SCP2 - allows simple file editing
  
 #
  
@@ -862,6 +864,70 @@ US 10  0  0  8
  
 #The EXTRACT REWIND command is used to rewind the SCPDATA file. 
  The EXTRACT CLOSE command is used to close the SCPDATA file.
+ 
+#YEXTRACT2
+ 
+#PThe EXTRACT2 command is used to perform simple editing tasks on 
+ a data file, referred to by the CRYSTALS device name SCPDATA. The 
+ command has the 
+ following subcommands:-
+ 
+#J
+ 
+       EXTRACT2 NEXT            Read next record from file
+       EXTRACT2 FIND            Find specified record
+       EXTRACT2 TRANSFER        Transfer data from read buffer
+ 
+       EXTRACT2 REWIND          Rewind SCPDATA file
+       EXTRACT2 CLOSE           Close SCPDATA file
+ 
+#
+ 
+#PThe EXTRACT2 NEXT and EXTRACT2 FIND command cause records from 
+ the external file to be read into an input buffer. The contents 
+ of this buffer can be moved to other parts of the script system 
+ by using EXTRACT2 TRANSFER.
+ 
+#PThe EXTRACT2 NEXT command causes the next record of the data 
+ file to be read into the internal command buffer. If there is no 
+ next record, because the end of file has been found, the CRYSTALS 
+ error flag is set but no message is produced. This condition can 
+ therefore be handled by an ERROR contingency.
+ 
+#The EXTRACT2 FIND command allows records to be located on the 
+ basis of the initial characters. The search string can be reAd in 
+ two ways:-
+ 
+#J
+ 
+       EXTRACT2 FIND STRING      Search string is read from command line
+       EXTRACT2 FIND BUFFER      Search string is found in command buffer
+ 
+#
+ 
+ If the EXTRACT2 FIND STRING form is used, the search string must 
+ be specified on the command line, as a text string delimitted by 
+ any character. If the EXTRACT2 FIND BUFFER form is used, the 
+ contents of the internal command buffer is used as the search 
+ string. In both cases, the data file is rewound and each line of 
+ the file is compared with the search string. If a line from the 
+ file starts with the search string, the line is transferred to 
+ the input buffer. If the end of file is reached, it is handled in 
+ the same way as for EXTRACT2 NEXT.
+ 
+#PThe EXTRACT2 TRANSFER subcommand is used to transfer data from 
+ the EXTRACT2 input buffer, where it is placed by the EXTRACT2 NEXT 
+ and EXTRACT2 FIND commands, to a selected destination. The 
+ destination is indicated by a keyword on the command, which can 
+ have the values COMMAND or INPUT. If the value COMMAND is used, 
+ th contents of the EXTRACT2 input buffer is copied to the end of 
+ the internal command buffer. If the value is INPUT, the contents 
+ of the EXTRACT2 input buffer is copied to the user input buffer 
+ used by the GET command, completely replacing any existing 
+ contents.
+ 
+#The EXTRACT2 REWIND command is used to rewind the SCPDATA file. 
+ The EXTRACT2 CLOSE command is used to close the SCPDATA file.
  
 #ZUser interface#
  

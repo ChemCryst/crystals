@@ -331,7 +331,9 @@ may issue other CRYSTALS commands using this file.
 # FORN1, FORN2 - output of data for 'foreign' (ie. external) 
 programs.
 # SCPDATA - scripts can read directly from any file opened on
-this device.
+this devic (using EXTRACT script command)
+# SCP2 - scripts can read directly from any file opened on
+this device (using EXTRACT2 script command)s
 # SCPQUEUE - stores commands that scripts are building up.
 #
 Not all may be opened/closed by the user from a command prompt. Some are

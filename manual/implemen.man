@@ -332,6 +332,7 @@ IFLUNI FORNU  FORLOGNAM     KEYFIL   IFLACC IFLSTA  IFLFRM IFLREA IFLOPN ILFLCK
  30    26   ncufu(8)       USE7        1      1      1      1      0      1
  31    27   ncufu(9)       USE8        1      1      1      1      0      1
  32    28   ncufu(10)      USE9        1      1      1      1      0      1
+ 50    87   NCeXTr2        SCP2        1      1      1      1      0      1
 
         Keywords used in ATTATCH instructions to change the above values
 
