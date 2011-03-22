@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.59  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.58  2011/03/04 05:47:15  rich
 C DVF to DIGITALF77 defines.
 C
@@ -457,6 +460,7 @@ C 46    41   NCMU           MENUE       1      2      1      2      0
 C 47    42   NCCHw          CHART       1      2      1      2      0
 C 48    43   NCPDu          PROGRESS    1      2      1      2      0
 C 49    44   NCDBu          DIALOGUE    1      2      1      2      0
+C 50    87   NCeXTr2        SCP2        1      1      1      1      0
 C
 C
 C
@@ -532,7 +536,7 @@ C      SYSTEM REQUEST QUEUE AND SEGMENTED SYSTEM COMMON BLOCK FILE
 C      INTERMEDIATE RESULT AND WORK FILES
       DATA MT1/48/, MT2/49/, MT3/50/, MTE/51/, MTA/52/, MTB/53/
 C      THE SCRIPT QUEUE AND EXTRACT FILES
-      DATA NCQUE /89/, NCEXTR /88/
+      DATA NCQUE /89/, NCEXTR /88/, NCEXTR2 /87/
 C      THE FOREIGN PROGRAM LINKS
       DATA NCFPU1 /71/, NCFPU2 /72/
 C
@@ -586,11 +590,11 @@ C      SCPQUEUE,  COMMSRC ,  USE5    ,  USE6    ,  USE7
 C      USE8    ,  USE9    ,  VDU     , ERROR
 C      USE10, USE11, USE12, USE13, USE14,
 C      USE15, USE16, USE17, USE18, USE19
-C      NCADU, NCMU, NCCHW, NCPDU, NCDBU
+C      NCADU, NCMU, NCCHW, NCPDU, NCDBU, SCP2
 C
  
 C
-      DATA NFLUSD / 49 /
+      DATA NFLUSD / 50 /
 C
       DATA IFLUNI(1)  /  1 / , IFLUNI(2)  /  2 / , IFLUNI(3)  /  5 /
 #if defined(_PPC_) 
@@ -637,7 +641,7 @@ C----- CHANGE IFLUNI(7) TO 3 LATER
       DATA IFLUNI(44) / 38 /
 C---- THE GUI UNITS
       DATA IFLUNI(45) / 40 / , IFLUNI(46) / 41 / , IFLUNI(47) / 42 /
-      DATA IFLUNI(48) / 43 / , IFLUNI(49) / 44 /
+      DATA IFLUNI(48) / 43 / , IFLUNI(49) / 44 / , IFLUNI(50) / 87 /
 C
 C
 #if defined (_HOL_)
@@ -838,6 +842,10 @@ C
       DATA KEYFIL(3,49) / 1HA / , KEYFIL(4,49) / 1HL /
       DATA KEYFIL(5,49) / 1HO / , KEYFIL(6,49) / 1HG /
       DATA KEYFIL(7,49) / 1HU / , KEYFIL(8,49) / 1HE /
+      DATA KEYFIL(1,50) / 1HS / , KEYFIL(2,50) / 1HC /
+      DATA KEYFIL(3,50) / 1HP / , KEYFIL(4,50) / 1H2 /
+      DATA KEYFIL(5,50) / 1H  / , KEYFIL(6,50) / 1H  /
+      DATA KEYFIL(7,50) / 1H  / , KEYFIL(8,50) / 1H  /
 #else
       DATA KEYFIL(1,1)  / 'D' / , KEYFIL(2,1)  / 'I' /
       DATA KEYFIL(3,1)  / 'S' / , KEYFIL(4,1)  / 'C' /
@@ -1036,6 +1044,10 @@ C
       DATA KEYFIL(3,49) / 'A' / , KEYFIL(4,49) / 'L' /
       DATA KEYFIL(5,49) / 'O' / , KEYFIL(6,49) / 'G' /
       DATA KEYFIL(7,49) / 'U' / , KEYFIL(8,49) / 'E' /
+      DATA KEYFIL(1,50) / 'S' / , KEYFIL(2,50) / 'C' /
+      DATA KEYFIL(3,50) / 'P' / , KEYFIL(4,50) / '2' /
+      DATA KEYFIL(5,50) / ' ' / , KEYFIL(6,50) / ' ' /
+      DATA KEYFIL(7,50) / ' ' / , KEYFIL(8,50) / ' ' /
 #endif
 C
       DATA IFLACC(1)  / 2 / , IFLACC(2)  / 1 / , IFLACC(3)  / 1 /
@@ -1055,7 +1067,7 @@ C
       DATA IFLACC(41) / 1 / , IFLACC(42) / 1 / , IFLACC(43) / 1 /
       DATA IFLACC(44) / 1 /
       DATA IFLACC(45) / 1 / , IFLACC(46) / 1 / , IFLACC(47) / 1 /
-      DATA IFLACC(48) / 1 / , IFLACC(49) / 1 /
+      DATA IFLACC(48) / 1 / , IFLACC(49) / 1 / , IFLACC(50) / 1 /
 C
       DATA IFLSTA(1)  / 3 / , IFLSTA(2)  / 1 / , IFLSTA(3)  / 1 /
       DATA IFLSTA(4)  / 2 / , IFLSTA(5)  / 2 / , IFLSTA(6)  / 2 /
@@ -1074,7 +1086,7 @@ C
       DATA IFLSTA(41) / 1 / , IFLSTA(42) / 1 / , IFLSTA(43) / 1 /
       DATA IFLSTA(44) / 1 /
       DATA IFLSTA(45) / 1 / , IFLSTA(46) / 1 / , IFLSTA(47) / 1 /
-      DATA IFLSTA(48) / 1 / , IFLSTA(49) / 1 /
+      DATA IFLSTA(48) / 1 / , IFLSTA(49) / 1 / , IFLSTA(50) / 1 /
 C
       DATA IFLFRM(1)  / 2 / , IFLFRM(2)  / 1 / , IFLFRM(3)  / 1 /
       DATA IFLFRM(4)  / 1 / , IFLFRM(5)  / 1 / , IFLFRM(6)  / 1 /
@@ -1093,7 +1105,7 @@ C
       DATA IFLFRM(41) / 1 / , IFLFRM(42) / 1 / , IFLFRM(43) / 1 /
       DATA IFLFRM(44) / 1 /
       DATA IFLFRM(45) / 1 / , IFLFRM(46) / 1 / , IFLFRM(47) / 1 /
-      DATA IFLFRM(48) / 1 / , IFLFRM(49) / 1 /
+      DATA IFLFRM(48) / 1 / , IFLFRM(49) / 1 / , IFLFRM(50) / 1 /
 C
       DATA IFLREA(1)  / 2 / , IFLREA(2)  / 1 / , IFLREA(3)  / 1 /
       DATA IFLREA(4)  / 2 / , IFLREA(5)  / 2 / , IFLREA(6)  / 2 /
@@ -1112,7 +1124,7 @@ C
       DATA IFLREA(41) / 1 / , IFLREA(42) / 1 / , IFLREA(43) / 1 /
       DATA IFLREA(44) / 1 /
       DATA IFLREA(45) / 1 / , IFLREA(46) / 1 / , IFLREA(47) / 1 /
-      DATA IFLREA(48) / 1 / , IFLREA(49) / 1 /
+      DATA IFLREA(48) / 1 / , IFLREA(49) / 1 / , IFLREA(50) / 1 /
 C
       DATA IFLOPN(1)  / 0 / , IFLOPN(2)  / 0 / , IFLOPN(3)  / 0 /
       DATA IFLOPN(4)  / 0 / , IFLOPN(5)  / 0 / , IFLOPN(6)  / 0 /
@@ -1131,7 +1143,7 @@ C
       DATA IFLOPN(41) / 0 / , IFLOPN(42) / 0 / , IFLOPN(43) / 0 /
       DATA IFLOPN(44) / 0 /
       DATA IFLOPN(45) / 0 / , IFLOPN(46) / 0 / , IFLOPN(47) / 0 /
-      DATA IFLOPN(48) / 0 / , IFLOPN(49) / 0 /
+      DATA IFLOPN(48) / 0 / , IFLOPN(49) / 0 / , IFLOPN(50) / 0 /
 C
       DATA IFLLCK(1)  / 2 / , IFLLCK(2)  / 1 / , IFLLCK(3)  / 2 /
       DATA IFLLCK(4)  / 1 / , IFLLCK(5)  / 1 / , IFLLCK(6)  / 1 /
@@ -1150,7 +1162,7 @@ C
       DATA IFLLCK(41) / 1 / , IFLLCK(42) / 1 / , IFLLCK(43) / 1 /
       DATA IFLLCK(44) / 1 /
       DATA IFLLCK(45) / 1 / , IFLLCK(46) / 1 / , IFLLCK(47) / 1 /
-      DATA IFLLCK(48) / 1 / , IFLLCK(49) / 1 /
+      DATA IFLLCK(48) / 1 / , IFLLCK(49) / 1 / , IFLLCK(50) / 1 /
 C
 C
       DATA IPAGE(1)/10/,IPAGE(2)/8/,IPAGE(3)/120/,IPAGE(4)/88/
@@ -2376,86 +2388,7 @@ C
 C
 C
 CODE FOR MACBLK
-#if defined(_PPC_) 
-      BLOCK DATA MACBLK
-C
-\CFLDAT
-C
-C      DISCFILE,  HKLI    ,  CONTROL ,  PRINTER ,  PUNCH
-C
-      DATA LFNAME(1)  /  1 /, FLNAME(1)  /' '/
-      DATA LFNAME(2)  /  1 /, FLNAME(2)  /' '/
-      DATA LFNAME(3)  /  1 /, FLNAME(3)  /' '/
-      DATA LFNAME(4)  /  1 /, FLNAME(4)  /' '/
-      DATA LFNAME(5)  /  1 /, FLNAME(5)  /' '/
-C
-C      LOG     ,  MONITOR ,  SPY     ,  NEWDISC ,  EXCOMMON
-C
-      DATA LFNAME(6)  /  1 /, FLNAME(6)  /' '/
-      DATA LFNAME(7)  /  1 /, FLNAME(7)  /' '/
-      DATA LFNAME(8)  /  3 /, FLNAME(8)  /'Spy'/
-      DATA LFNAME(9)  /  1 /, FLNAME(9)  /' '/
-      DATA LFNAME(10) /  8 /, FLNAME(10) /'Excommon'/
-C
-C      COMMANDS,  USE1    ,  USE2    ,  USE3    ,  USE4
-C
-      DATA LFNAME(11) /  8 /, FLNAME(11) /'Commands'/
-      DATA LFNAME(12) /  1 /, FLNAME(12) /' '/
-      DATA LFNAME(13) /  1 /, FLNAME(13) /' '/
-      DATA LFNAME(14) /  1 /, FLNAME(14) /' '/
-      DATA LFNAME(15) /  1 /, FLNAME(15) /' '/
-C
-C      M32     ,  M33     ,  MT1     ,  MT2     ,  MT3
-C
-      DATA LFNAME(16) /  9 /, FLNAME(16) /'Scratch#1'/
-      DATA LFNAME(17) /  9 /, FLNAME(17) /'Scratch#2'/
-      DATA LFNAME(18) /  6 /, FLNAME(18) /'Tape#1'/
-      DATA LFNAME(19) /  6 /, FLNAME(19) /'Tape#2'/
-      DATA LFNAME(20) /  6 /, FLNAME(20) /'Tape#3'/
-C
-C      MTE     ,  SRQ     ,  FRN1DATA,  FRN2DATA,  SCPDATA
-C
-      DATA LFNAME(21) /  6 /, FLNAME(21) /'Tape#E'/
-      DATA LFNAME(22) /  3 /, FLNAME(22) /'Srq'/
-      DATA LFNAME(23) /  1 /, FLNAME(23) /' '/
-      DATA LFNAME(24) /  1 /, FLNAME(24) /' '/
-      DATA LFNAME(25) /  7 /, FLNAME(25) /'ScpData'/
-C
-C      SCPQUEUE,  COMMSRC ,  USE5    ,  USE6    ,  USE7
-C
-      DATA LFNAME(26) /  8 /, FLNAME(26) /'ScpQueue'/
-      DATA LFNAME(27) /  7 /, FLNAME(27) /'CommSrc'/
-      DATA LFNAME(28) /  1 /, FLNAME(28) /' '/
-      DATA LFNAME(29) /  1 /, FLNAME(29) /' '/
-      DATA LFNAME(30) /  1 /, FLNAME(30) /' '/
-C
-C      USE8    ,  USE9    ,
-C
-      DATA LFNAME(31) /  1 /, FLNAME(31) /' '/
-      DATA LFNAME(32) /  1 /, FLNAME(32) /' '/
-C
-      DATA FLTYPE(1)  /'    '/,  FLTYPE(2)  /'.HKL'/
-      DATA FLTYPE(3)  /'    '/,  FLTYPE(4)  /'.LIS'/
-      DATA FLTYPE(5)  /'.PCH'/,  FLTYPE(6)  /'.LOG'/
-      DATA FLTYPE(7)  /'.MON'/,  FLTYPE(8)  /'    '/
-      DATA FLTYPE(9)  /'    '/,  FLTYPE(10) /'    '/
-      DATA FLTYPE(11) /'    '/,  FLTYPE(12) /'    '/
-      DATA FLTYPE(13) /'    '/,  FLTYPE(14) /'    '/
-      DATA FLTYPE(15) /'    '/,  FLTYPE(16) /'    '/
-      DATA FLTYPE(17) /'    '/,  FLTYPE(18) /'    '/
-      DATA FLTYPE(19) /'    '/,  FLTYPE(20) /'    '/
-      DATA FLTYPE(21) /'    '/,  FLTYPE(22) /'    '/
-      DATA FLTYPE(23) /'.FN1'/,  FLTYPE(24) /'.FN2'/
-      DATA FLTYPE(25) /'    '/,  FLTYPE(26) /'    '/
-      DATA FLTYPE(27) /'    '/,  FLTYPE(28) /'    '/
-      DATA FLTYPE(29) /'    '/,  FLTYPE(30) /'    '/
-      DATA FLTYPE(31) /'    '/,  FLTYPE(32) /'    '/
-C
-      END
-C
-C
 
-#endif
       SUBROUTINE CRESET
 
       INCLUDE 'XSSVAL.INC'
@@ -2549,7 +2482,7 @@ C --- UFILE ---
       IRDLIN = 0
       NCLU = 8
 
-      NFLUSD = 49
+      NFLUSD = 50
 
 
 
@@ -2613,8 +2546,9 @@ C --- UFILE ---
       IFLUNI(47)= 42
       IFLUNI(48)= 43
       IFLUNI(49)= 44
+      IFLUNI(50)= 87
 
-      DO I=1,49
+      DO I=1,50
             IFLOPN(I)=0
             IFLACC(I)=1
             IFLFRM(I)=1
@@ -2677,6 +2611,7 @@ C --- XUNITS ---
       IUSFLG = 0 
       NCSU = 11
       NCEXTR = 88
+      NCEXTR = 87
       NCQUE = 89
       NCCBU = 14
       NCFPU1 = 71

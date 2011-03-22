@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  2005/02/08 14:46:14  stefan
+C 1. Added some precompiler if's for the mac version
+C
 C Revision 1.14  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -86,11 +89,6 @@ C
       INCLUDE 'XSSCHR.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XCHARS.INC'
-#if defined(_PPC_) 
-\XGSTOP
-\CFLDAT
-C
-#endif
       INCLUDE 'QSTORE.INC'
 
       INTEGER PROGLS
@@ -98,16 +96,10 @@ C
 C
 C -- DECLARE EXTERNAL REFERENCES TO BLOCK DATA SEGMENTS
 C
-#if defined(_PPC_) 
-C**** Commented out for Mac OS, COMMON must be in the same module
-C**** 13.11.1995 Ludwig Macko
-C****
-#else
       EXTERNAL CRYBLK, SYNBLK, UTIBLK
 C
 C -- DECLARE LIST 11 REFERENCES TO RESERVE EXTENSIBLE COMMON
 C
-#endif
       EXTERNAL XFAL11,KADD11,XIN11
 #if defined(_DOS_) 
       EXTERNAL MYDRIV
