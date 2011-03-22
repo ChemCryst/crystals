@@ -3,7 +3,7 @@
 @if "%1" == "tidy" goto tidy
 
 @SETLOCAL
-@if not exist ..\editor\cryseditor cd ..\editor&&call make_w32.bat&&cd ..
+@if not exist ..\editor\cryseditor.exe cd ..\editor&&call make_w32.bat&&cd ..
 @ENDLOCAL
 
 @echo Copying datafiles
@@ -17,7 +17,7 @@ del cvs.txt
 
 @echo Creating COMMANDS.DSC file.
 SETLOCAL
-if not exist ..\editor\cryseditor cd ..\editor&&call make_w32.bat&&cd ..
+if not exist ..\editor\cryseditor.exe cd ..\editor&&call make_w32.bat&&cd ..
 ENDLOCAL
 rmdir /q /s dscbuild
 mkdir dscbuild

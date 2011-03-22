@@ -24,7 +24,16 @@
 @
 :tryCPP
 @rem GUI CC FILES
-@if not exist ..\gui\%1.cc goto tryCamFPP
+@if not exist ..\gui\%1.cc goto tryWEB
+@set CCSRC=..\gui\%1.cc
+@set JUMPBACK=tryWEB
+@set FILEFOUND=OK
+@goto ccomp
+@
+:tryWEB
+@rem webconnect CPP FILES
+@if not exist ..\webconnect\%1.cpp goto tryCamFPP
+@set CCSRC=..\webconnect\%1.cpp
 @set JUMPBACK=tryCamFPP
 @set FILEFOUND=OK
 @goto ccomp
@@ -87,11 +96,11 @@
 
 
 :ccomp
-@echo building %1.obj for %COMPCODE% platform.
+@rem @echo building %1.obj for %COMPCODE% platform.
 @if exist %1.obj del %1.obj
 @set COPTIONS=%CDEF% %COPTS%
 @if "%CRDEBUG%" == "TRUE" set COPTIONS=%CDEF% %CDEBUG%
-%CC% ..\gui\%1.cc %COUT%%1.obj %COPTIONS% 2> obj\output || ( make_err.bat CPP_RELEASE_COMPILE %1.cpp obj\output )
+%CC% %CCSRC% %COUT%%1.obj %COPTIONS% 2> obj\output || ( make_err.bat CPP_RELEASE_COMPILE %1.cpp obj\output )
 @goto %JUMPBACK%
 
 :fcomp
@@ -106,11 +115,11 @@
 @goto %JUMPBACK%
 
 :scomp
-@if not exist ..\script\%1.ssc goto dcomp
+@if not exist ..\script\%1.ssc @goto dcomp
 @echo building %1.scp
 @..\editor\cryseditor ..\script\%1.ssc script\%1.scp code=%EDCODE% incl=+ excl=- comm=%%%%
 :dcomp
-@if not exist ..\script\%1.sda goto %JUMPBACK%
+@if not exist ..\script\%1.sda @goto %JUMPBACK%
 @echo building %1.dat
 @..\editor\cryseditor ..\script\%1.sda script\%1.dat code=%EDCODE% incl=+ excl=- comm=#
 @goto %JUMPBACK%
@@ -118,6 +127,5 @@
 
 
 :exit
-@time /t
-@
+@rem @time /t
 
