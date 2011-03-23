@@ -10,13 +10,61 @@
 @
 @if "%1" == "" goto clerror
 @
-@
+@set FILESTEM=%~nx1
 @
 @rem  Find the file:
 :restart
 @
+@rem CRYSTALS FORTRAN FILES with extension
+@if not exist ..\crystals\%FILESTEM% goto tryCPPwithExt
+@set FILESTEM=%~n1
+@set SRCDIR=..\crystals
+@set JUMPBACK=endofloop
+@set FILEFOUND=OK
+@goto fcomp
+@
+:tryCPPwithExt
+@rem GUI CC FILES
+@if not exist ..\gui\%FILESTEM% goto tryWEBwithExt
+@set CCSRC=..\gui\%FILESTEM%
+@set FILESTEM=%~n1
+@set JUMPBACK=endofloop
+@set FILEFOUND=OK
+@goto ccomp
+@
+:tryWEBwithExt
+@rem webconnect CPP FILES
+@if not exist ..\webconnect\%FILESTEM% goto tryCamFPPwithExt
+@set CCSRC=..\webconnect\%FILESTEM%
+@set FILESTEM=%~n1
+@set JUMPBACK=endofloop
+@set FILEFOUND=OK
+@goto ccomp
+@
+:tryCamFPPwithExt
+@rem CAMSRC FORTRAN FILES
+@if not exist ..\cameron\%FILESTEM% goto tryScriptswithExt
+@echo Cam source with extension
+@set FILESTEM=%~n1
+@set SRCDIR=..\cameron
+@set JUMPBACK=endofloop
+@set FILEFOUND=OK
+@goto fcomp
+@
+@
+:tryScriptswithExt
 @rem CRYSTALS FORTRAN FILES
-@if not exist ..\crystals\%1.fpp goto tryCPP
+@if not exist ..\script\%FILESTEM% goto tryWithoutExtensions
+@set FILESTEM=%~n1
+@echo Script source with extension
+@set JUMPBACK=endofloop
+@set FILEFOUND=OK
+@goto scomp
+@
+:tryWithoutExtensions
+@
+@rem CRYSTALS FORTRAN FILES
+@if not exist ..\crystals\%FILESTEM%.fpp goto tryCPP
 @set SRCDIR=..\crystals
 @set JUMPBACK=tryCPP
 @set FILEFOUND=OK
@@ -24,23 +72,23 @@
 @
 :tryCPP
 @rem GUI CC FILES
-@if not exist ..\gui\%1.cc goto tryWEB
-@set CCSRC=..\gui\%1.cc
+@if not exist ..\gui\%FILESTEM%.cc goto tryWEB
+@set CCSRC=..\gui\%FILESTEM%.cc
 @set JUMPBACK=tryWEB
 @set FILEFOUND=OK
 @goto ccomp
 @
 :tryWEB
 @rem webconnect CPP FILES
-@if not exist ..\webconnect\%1.cpp goto tryCamFPP
-@set CCSRC=..\webconnect\%1.cpp
+@if not exist ..\webconnect\%FILESTEM%.cpp goto tryCamFPP
+@set CCSRC=..\webconnect\%FILESTEM%.cpp
 @set JUMPBACK=tryCamFPP
 @set FILEFOUND=OK
 @goto ccomp
 @
 :tryCamFPP
 @rem CAMSRC FORTRAN FILES
-@if not exist ..\cameron\%1.fpp goto tryCryF
+@if not exist ..\cameron\%FILESTEM%.fpp goto tryCryF
 @set SRCDIR=..\cameron
 @set JUMPBACK=tryCryF
 @set FILEFOUND=OK
@@ -49,7 +97,7 @@
 @
 :tryCryF
 @rem CRYSTALS FORTRAN FILES
-@if not exist ..\crystals\%1.f goto tryScripts
+@if not exist ..\crystals\%FILESTEM%.f goto tryScripts
 @set SRCDIR=..\crystals
 @set JUMPBACK=tryScripts
 @set FILEFOUND=OK
@@ -58,7 +106,7 @@
 @
 :tryScripts
 @rem CRYSTALS FORTRAN FILES
-@if not exist ..\script\%1.* goto endofloop
+@if not exist ..\script\%FILESTEM%.* goto endofloop
 @set JUMPBACK=endofloop
 @set FILEFOUND=OK
 @goto scomp
@@ -78,9 +126,9 @@
 @
 :fileerror
 @echo -----------------------------------------------------
-@echo File %1 not found in any source directories...
+@echo File %FILESTEM% not found in any source directories...
 @echo -----------------------------------------------------
-@echo File %1 not found in any directories >> missing.log
+@echo File %FILESTEM% not found in any directories >> missing.log
 @goto exit
 @
 :edcodeerror
@@ -96,32 +144,32 @@
 
 
 :ccomp
-@rem @echo building %1.obj for %COMPCODE% platform.
-@if exist %1.obj del %1.obj
+@rem @echo building %FILESTEM%.obj for %COMPCODE% platform.
+@if exist %FILESTEM%.obj del %FILESTEM%.obj
 @set COPTIONS=%CDEF% %COPTS%
 @if "%CRDEBUG%" == "TRUE" set COPTIONS=%CDEF% %CDEBUG%
-%CC% %CCSRC% %COUT%%1.obj %COPTIONS% 2> obj\output || ( make_err.bat CPP_RELEASE_COMPILE %1.cpp obj\output )
+%CC% %CCSRC% %COUT%%FILESTEM%.obj %COPTIONS% 2> obj\output || ( make_err.bat CPP_RELEASE_COMPILE %CCSRC% obj\output )
 @goto %JUMPBACK%
 
 :fcomp
-@echo building %1.obj
-@if exist %1.obj del %1.obj
-@if  not "%1" == "lapack" set FSRC= %SRCDIR%\%1.fpp
-@if      "%1" == "lapack" set FSRC= %SRCDIR%\%1.f
-@if  not "%1" == "lapack" set FOPTIONS=%FDEF% %FWIN% %FOPTS%
-@if      "%1" == "lapack" set FOPTIONS=%FDEF% %FWIN% %FNOOPT%
+@echo building %FILESTEM%.obj
+@if exist %FILESTEM%.obj del %FILESTEM%.obj
+@if  not "%FILESTEM%" == "lapack" set FSRC= %SRCDIR%\%FILESTEM%.fpp
+@if      "%FILESTEM%" == "lapack" set FSRC= %SRCDIR%\%FILESTEM%.f
+@if  not "%FILESTEM%" == "lapack" set FOPTIONS=%FDEF% %FWIN% %FOPTS%
+@if      "%FILESTEM%" == "lapack" set FOPTIONS=%FDEF% %FWIN% %FNOOPT%
 @if "%CRDEBUG%" == "TRUE" set FOPTIONS=%FDEF% %FWIN% %FDEBUG%
-@ %F77% %FSRC% %FOUT%%1.obj %FOPTIONS%  2> obj\output || ( make_err.bat FPP_RELEASE_COMPILE %1.fpp obj\output  & exit /B 1 )
+@ %F77% %FSRC% %FOUT%%FILESTEM%.obj %FOPTIONS%  2> obj\output || ( make_err.bat FPP_RELEASE_COMPILE %FSRC% obj\output  & exit /B 1 )
 @goto %JUMPBACK%
 
 :scomp
-@if not exist ..\script\%1.ssc @goto dcomp
-@echo building %1.scp
-@..\editor\cryseditor ..\script\%1.ssc script\%1.scp code=%EDCODE% incl=+ excl=- comm=%%%%
+@if not exist ..\script\%FILESTEM%.ssc @goto dcomp
+@echo building %FILESTEM%.scp
+@..\editor\cryseditor ..\script\%FILESTEM%.ssc script\%FILESTEM%.scp code=%EDCODE% incl=+ excl=- comm=%%%%
 :dcomp
-@if not exist ..\script\%1.sda @goto %JUMPBACK%
-@echo building %1.dat
-@..\editor\cryseditor ..\script\%1.sda script\%1.dat code=%EDCODE% incl=+ excl=- comm=#
+@if not exist ..\script\%FILESTEM%.sda @goto %JUMPBACK%
+@echo building %FILESTEM%.dat
+@..\editor\cryseditor ..\script\%FILESTEM%.sda script\%FILESTEM%.dat code=%EDCODE% incl=+ excl=- comm=#
 @goto %JUMPBACK%
 
 
