@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.56  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.55  2009/06/08 14:26:24  djw
 C Enable echoing of all input #COMMANDS
 C
@@ -2362,6 +2365,8 @@ C
         IDEV = NFLUSD
       ENDIF
 C
+      IF (IDEV .GT. NFLMAX ) GOTO 9930
+
       CALL XFILL ( IB , KEYFIL(1,IDEV) , LNAM )
       N = MIN0 ( LENNAM , LNAM )
       CALL XMOVE ( IMAGE(NCNAM) , KEYFIL(1,IDEV) , N )
@@ -2379,16 +2384,17 @@ C
 9000  CONTINUE
       RETURN
 C
-C
 9900  CONTINUE
       GO TO 9000
+
 9910  CONTINUE
       CALL XMONTR ( 0 )
-      WRITE ( CMON,9935)
+      WRITE ( CMON,9915)
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9935 )
-9935  FORMAT(1X,'Illegal parameter for this instruction' )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
+9915  FORMAT(1X,'Illegal parameter for this instruction' )
       GO TO 9900
+
 9920  CONTINUE
       CALL XMONTR ( 0 )
       WRITE ( CMON,9925)
@@ -2396,7 +2402,14 @@ C
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9925 )
 9925  FORMAT ( 1X , 'Repeated name in ATTACH command' )
       GO TO 9900
-C
+
+9930  CONTINUE
+      CALL XMONTR ( 0 )
+      WRITE ( CMON,9935)
+      CALL XPRVDU(NCEROR, 1,0)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9935 )
+9935  FORMAT ( 1X , 'No spare file UNITS for ATTACH command' )
+      GO TO 9900
 C
       END
 C

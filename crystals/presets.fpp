@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.60  2011/03/22 14:40:38  rich
+C Added extra file unit 'SCP2' which may be read by new script command EXTRACT2
+C
 C Revision 1.59  2011/03/21 13:57:21  rich
 C Update files to work with gfortran compiler.
 C
@@ -2489,17 +2492,10 @@ C --- UFILE ---
       IFLUNI(1)  =  1  
       IFLUNI(2)  =  2
       IFLUNI(3)  =  5  
-#if defined(_DOS_) || defined(_DVF_) || defined(_GID_) 
-      IFLUNI(4)  =  6
-#endif
-#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
-      IFLUNI(4)  =  6
-#endif
-#if defined(_WXS_) 
-      IFLUNI(4)  =  6
-#endif
 #if defined(_VAX_) 
       IFLUNI(4)  =  9
+#else
+      IFLUNI(4)  =  6
 #endif
       IFLUNI(5) = 7
       IFLUNI(6) = 8
