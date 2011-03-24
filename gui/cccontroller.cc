@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.113  2011/03/04 06:02:52  rich
+// Fix RESTART of CRYSTALS thread on WX version. Some changes to defines to get correct function signature.
+//
 // Revision 1.112  2009/09/04 09:25:46  rich
 // Added support for Show/Hide H from model toolbar
 // Fixed atom picking after model update in extra model windows.
@@ -1766,8 +1769,10 @@ bool CcController::GetInterfaceCommand( string &line )
       mThisThreadisDead = true;
       LOGSTAT("Shutting down this (GUI) thread.");
 #ifdef __BOTHWX__
-      ::wxExit();
-      LOGSTAT("App did not exit...");
+      line = "^^CO DISPOSE _MAIN ";
+      return (true);
+//      ::wxExit();
+//      LOGSTAT("App did not exit...");
 #endif
 #ifdef __CR_WIN__
       line = "^^CO DISPOSE _MAIN ";
