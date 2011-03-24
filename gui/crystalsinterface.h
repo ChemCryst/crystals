@@ -3,6 +3,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.38  2011/03/24 15:27:48  rich
+// Test.
+//
 // Revision 1.37  2011/03/04 05:54:45  rich
 // New DIGITALF77 and GNUF77 defines determine which FORTRAN calling convention to use.
 // Changed wx width and height accessor function for latest wxWidgets.
@@ -253,7 +256,7 @@ typedef unsigned int UINT;
 #else
  #define LOGERRORS    //        Log errors         (LOGERR macro)
  #define LOGWARNINGS  //        Log warnings       (LOGWARN macro)
- #define LOGSTATUS    //Log lots of things (LOGSTAT macro)
+// #define LOGSTATUS    //Log lots of things (LOGSTAT macro)
 #endif
 
 
