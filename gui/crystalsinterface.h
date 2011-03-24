@@ -3,6 +3,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.37  2011/03/04 05:54:45  rich
+// New DIGITALF77 and GNUF77 defines determine which FORTRAN calling convention to use.
+// Changed wx width and height accessor function for latest wxWidgets.
+//
 // Revision 1.36  2009/07/23 14:15:42  rich
 // Removed all uses of OpenGL feedback buffer - was dreadful slow on some new graphics cards.
 //
@@ -165,7 +169,8 @@ enum {
     kResizeBarBase      =   59000,
     kStretchBase        =   60000,
     kPlotBase           =   61000,
-    kModListBase        =   62000
+    kModListBase        =   62000,
+    kWebBase           =   63000
 };
 #define kNoAlignment        0
 #define kIsolate            1
@@ -248,7 +253,7 @@ typedef unsigned int UINT;
 #else
  #define LOGERRORS    //        Log errors         (LOGERR macro)
  #define LOGWARNINGS  //        Log warnings       (LOGWARN macro)
-// #define LOGSTATUS    //Log lots of things (LOGSTAT macro)
+ #define LOGSTATUS    //Log lots of things (LOGSTAT macro)
 #endif
 
 
