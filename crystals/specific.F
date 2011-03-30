@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.63  2011/03/30 15:55:36  rich
+C Fix time on WXS platform.
+C
 C Revision 1.62  2011/03/22 11:29:56  rich
 C Double slashes dealt with properly. Fixed squashed CIF format.
 C
@@ -4164,7 +4167,7 @@ C      GET AN 8 BYTE CHARACTER REPRESENTATION OF DATE/TIME
 CRIC2001:
 CODE FOR XNDATE
       SUBROUTINE XNDATE(ISECS)
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DIGITALF77_) 
       USE DFPORT
 C--SET THE # SECS SINCE 1970 IN ISECS
 #endif
