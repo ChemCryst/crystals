@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.62  2011/03/22 11:29:56  rich
+C Double slashes dealt with properly. Fixed squashed CIF format.
+C
 C Revision 1.61  2011/03/21 13:57:22  rich
 C Update files to work with gfortran compiler.
 C
@@ -1579,111 +1582,15 @@ C    TO ALWAYS RETURN THE VALUE 0.0 FROM THIS ROUTINE
 C    THE VARIABLE 'ISSTIM' IN THE 
 C    COMMON BLOCK 'XSSVAL' CAN BE USED TO DISABLE THESE MESSAGES.
 C
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DIGITALF77_) 
       USE DFPORT
 #endif
       REAL RTIME
-#if defined(_VAX_) 
-      IMPLICIT INTEGER  (A-Z)
-C&&DVFGID      RTIME = RTC()
-#endif
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DIGITALF77_) 
       CALL CPU_TIME(RTIME)
-#endif
-#if defined(_WXS_) 
-      CALL CPU_TIME(RTIME)
-#endif
-#if defined(_VAX_) 
-C
-C -- ON THE VAX THE FUNCTION IS IMPLEMENTED BY USING THE SYSTEM
-C    SERVICE ROUTINE '$GETJPI'.
-C    A REQUEST BLOCK IS SET UP IN THE ARRAY 'I2BLK', INCLUDING THE
-C    ADDRESS OF A LOCAL VARIABLE TO RECIEVE THE TIME VALUE, AS AN
-C    INTEGRAL NUMBER OF 10 MILLISECOND UNITS. THIS IS CONVERTED TO
-C    A REAL VALUE IN SECONDS BEFORE RETURN.
-C
-C
-C -- DEFINE PARAMETERS REPRESENTING CONSTANTS REQUIRED FOR $GETJPI
-      PARAMETER JPI$C_LISTEND = '00000000'X
-      PARAMETER JPI$_CPUTIM = '00000407'X
-C
-      INTEGER*4 I4BLK(4)
-      INTEGER*2 I2BLK(8)
-      EQUIVALENCE ( I4BLK(1) , I2BLK(1) )
-C
-C -- $GETJPI REQUEST BLOCK
-C    SEE VAX/VMS SYSTEM SERVICES REFERENCE MANUAL FOR FORMAT
-C
-      DATA I2BLK / 4, JPI$_CPUTIM, 0, 0, 0, 0, JPI$C_LISTEND, 0  /
-C
-C -- INSERT ADDRESS OF VARIABLE TO RECEIVE CPUTIME IN REQUEST BLOCK
-C
-      I4BLK(2) = %LOC ( CPU )
-C
-C -- CALL SYSTEM SERVICE AND CHECK RESULT
-C
-      ISTAT = SYS$GETJPI ( , , ,  I2BLK , , ,  )
-      IF ( .NOT. ISTAT ) CALL LIB$STOP ( %VAL ( ISTAT ) )
-C
-C -- CONVERT CPU TIME RETURNED TO SECONDS
-C
-      RTIME = FLOAT ( CPU ) / 100.
-C
-C
-C
-#endif
-#if defined(_PRI_) 
-C
-      PARAMETER ( NDATA = 28 )
-      INTEGER*2 ISDATA(NDATA)
-C
-      CALL TIMDAT ( ISDATA , INTS(NDATA) )
-      RTIME = REAL ( ISDATA(7) )
-C
-C
-#endif
-#if defined(_DGV_) 
-C
-      IMPLICIT INTEGER ( A - Z )
-C
-      PARAMETER ( GRLTH = 4 )
-      PARAMETER ( ISYS_RUNTM = 30K )
-C
-      DIMENSION IPACKT(GRLTH)
-C
-      IAC0 = -1
-      IAC1 = 0
-      IAC2 = WORDADDR ( IPACKT )
-C
-      IER = ISYS ( ISYS_RUNTM , IAC0 , IAC1 , IAC2 )
-      IF ( IER .NE. 0 ) THEN
-        RTIME = 0.0
-      ELSE
-        RTIME = REAL ( IPACKT(2) ) / 1000.0
-      ENDIF
-C
-C
-#endif
-#if defined(_H_P_) 
-      INTEGER TIMES
-      DIMENSION IBUF(8)
-      ILAPS1 = TIMES(IBUF)
-      RTIME = FLOAT(IBUF(1)) / 60.0
-C
 #endif
 #if defined(_DOS_) 
       CALL CLOCK@ (RTIME)
-C
-C
-#endif
-#if defined(_PPC_) 
-C -- FOR MAC OS, WE WILL RETURN 0
-      RTIME = 0.0
-#endif
-#if defined(_XXX_) 
-C -- FOR UNIDENTIFIED APPLICATIONS, ALWAYS RETURN THE VALUE '0.0'
-      RTIME = 0.0
-C
 #endif
       RETURN
       END
@@ -1693,81 +1600,25 @@ C RICMAY99 ITIME is an intrinsic on some systems. Renamed JTIME.
       SUBROUTINE JTIME ( I )
 C
 C -- RETURN , AS INTEGER VALUE , THE NUMBER OF SECONDS SINCE MIDNIGHT
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DIGITALF77_) 
       USE DFPORT
-C
-C&&DVFGID      A = RTC()
-C&&DVFGID      I = NINT (A)
-CDJW&&DVFGID      I = TIME()
       I = NINT ( SECNDS ( 0.0 ) )
 #endif
 #if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       CALL CPU_TIME(A)
       I = NINT ( A )
-#endif
-#if defined(_WXS_) 
-      CALL CPU_TIME(A)
-      I = NINT ( A )
-C
-#endif
-#if defined(_VAX_) 
-      I = NINT ( SECNDS ( 0.0 ) )
-C
-#endif
-#if defined(_PRI_) 
-      PARAMETER ( NDATA = 28 )
-      INTEGER*2 ISDATA(NDATA)
-C
-      CALL TIMDAT ( ISDATA , INTS(NDATA) )
-      I = ( 60 * ISDATA(4) ) + ISDATA(5)
-C
-C
-#endif
-#if defined(_DGV_) 
-      DIMENSION ITIME(3)
-C
-      CALL TIME ( ITIME )
-      I = 3600 * ITIME(1) + 60 * ITIME(2) + ITIME(3)
-C
-#endif
-#if defined(_H_P_) 
-      INTEGER TIMES
-      DIMENSION IBUF(8)
-      I = TIMES(IBUF)
-      I = NINT(FLOAT(I)/60.)
-C
 #endif
 #if defined(_DOS_) 
       CALL CLOCK@ (A)
       I = NINT (A)
 C
 #endif
-#if defined(_PPC_) 
-      I = getlssecnds()
-C
-#endif
-#if defined(_XXX_) 
-      I = 0
-C
-#endif
       RETURN
       END
 C
 CODE FOR XTIMER
-#if defined(_DVF_) || defined(_GID_) 
       SUBROUTINE XTIMER ( CTIME2 )
-#endif
-#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
-      SUBROUTINE XTIMER ( CTIME2 )
-#endif
-#if defined(_WXS_) 
-      SUBROUTINE XTIMER ( CTIME2 )
-#endif
-#if defined(_DOS_) || defined(_VAX_) 
-      SUBROUTINE XTIMER ( CTIME )
-C
-#endif
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DIGITALF77_) 
       USE DFPORT
 C -- GET SYSTEM TIME IN CHARACTER FORM
 C
@@ -1789,93 +1640,32 @@ C
 #endif
       INCLUDE 'XSSVAL.INC'
 C
-#if defined(_DOS_) || defined(_VAX_) 
-      CHARACTER*8 CTIME
-C
-#endif
-#if defined(_ICL_) 
-      CHARACTER*10 CTIME2
-#endif
-#if defined(_DOS_) 
+#if defined(_DOS_)
+      CHARACTER*8 CTIME2
       CHARACTER*8 TIME@
 #endif
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DIGITALF77_) 
       CHARACTER*8 CTIME2
 #endif
 #if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       CHARACTER*8 CTIME2
-#endif
-#if defined(_WXS_) 
-      CHARACTER*8 CTIME2
-#endif
-#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       DIMENSION ITIM(3)
 #endif
-#if defined(_WXS_) 
-      DIMENSION ITIM(3)
 
-#endif
       IF ( ISSTIM .EQ. 2 ) THEN
-#if defined(_DOS_) || defined(_VAX_) 
-        CTIME=' '
-#else
         CTIME2=' '
-#endif
         RETURN
       END IF
-
-
-#if defined(_ICL_) 
-      CALL ICL9LGGTIME ( CTIME2 )
-      CTIME = CTIME2(1:2)//'.'//CTIME2(3:4)//'.'//CTIME2(5:6)
-C
-#endif
-#if defined(_CPU68K_) 
-      CALL TIME ( CTIME )
-#endif
-#if defined(_PPC_) 
-      CALL getlstime( %loc(CTIME) )
-C
-#endif
-#if defined(_VAX_) 
-      CALL TIME ( CTIME )
-C
-#endif
-#if defined(_PRI_) 
-      CALL TIME$A ( CTIME )
-C
-#endif
-#if defined(_DGV_) 
-      DIMENSION ITIME(3)
-C
-      CALL TIME ( ITIME )
-      WRITE ( CTIME , '(I2,'':'',I2,'':'',I2)' ) ITIME
-C
-      IF ( CTIME(1:1) .EQ. ' ' ) CTIME(1:1) = '0'
-      IF ( CTIME(4:4) .EQ. ' ' ) CTIME(4:4) = '0'
-      IF ( CTIME(7:7) .EQ. ' ' ) CTIME(7:7) = '0'
-C
-#endif
+                      
 #if defined(_DOS_) 
-      CTIME = TIME@()
-C
+      CTIME2 = TIME@()
 #endif
-#if defined(_DVF_) || defined(_GID_) 
+#if defined(_DIGITALF77_) 
       CTIME2 = CLOCK()
-
 #endif
 #if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       CALL ITIME(ITIM)
       WRITE ( CTIME2, '(I2,'':'',I2,'':'',I2)' ) ITIM
-#endif
-#if defined(_WXS_) 
-      CALL ITIME(ITIM)
-      WRITE ( CTIME2, '(I2,'':'',I2,'':'',I2)' ) ITIM
-C
-#endif
-#if defined(_XXX_) 
-      CTIME = ' '
-C
 #endif
       RETURN
       END
