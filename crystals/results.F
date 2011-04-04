@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.174  2011/03/22 11:29:56  rich
+C Double slashes dealt with properly. Fixed squashed CIF format.
+C
 C Revision 1.173  2011/03/21 13:57:22  rich
 C Update files to work with gfortran compiler.
 C
@@ -6196,7 +6199,7 @@ cdjwnov05-end of list 6 goodies
         WRITE (NCFPU1,'(''# _atom_sites_solution_secondary '',T35,
      1   ''difmap'')')
         WRITE (NCFPU1,'(''_atom_sites_solution_hydrogens '',T35,
-     1   ''geom'')')
+     1   ''difmap'')')
            CALL XPCIF (' ')
            CBUF(1:21)='_refine_diff_density_'
            J=1
@@ -6461,7 +6464,8 @@ c 6 UNDEF    7 CONSTR  8 NONE
            IF ( IVAL .EQ. 0 ) THEN  ! Work it out from L5 flags.
               IHC = 0
               DO I5 = L5, L5+ (N5-1)*MD5, MD5
-                IF ( (ISTORE(I5).EQ.IHYD).OR.(ISTORE(I5).EQ.IHYD))THEN
+
+                IF ( (ISTORE(I5).EQ.KHYD).OR.(ISTORE(I5).EQ.KDET))THEN
                    IHC = IHC + 1
                    INEW = 5                                      !NoRef
                    IF ( AND(ISTORE(I5+15),KBREFB(3)) .GT. 0) THEN
@@ -6489,9 +6493,10 @@ c 6 UNDEF    7 CONSTR  8 NONE
            IZZZ= KGVAL(CINSTR, CDIR, CPARAM, CVALUE, CDEF,
      1                     33, IDIR, IPARAM, IVAL,   JVAL, VAL, JTYPE)
            CALL XCCLWC (CVALUE(1:), CVALUE(1:))
+           CALL XCTRIM(CVALUE,LVALUE)
            WRITE (NCFPU1,'(''_refine_ls_hydrogen_treatment '',T35,
-     1              A,T50,''# none, undef, noref, refall,'',/,T50,
-     2                    ''# refxyz, refU, constr or mixed'')') 'mixed'
+     1         A,T50,''# none, undef, noref, refall,'',/,T50,
+     2         ''# refxyz, refU, constr or mixed'')') CVALUE(1:LVALUE)
 
         ELSE IF ( IPUNCH .EQ. 1 ) THEN
            WRITE (CPAGE(IREF,1)(:),'(A,A)') 'Refinement on ',CTYPE
