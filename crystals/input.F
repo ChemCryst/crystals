@@ -1,4 +1,12 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2011/03/15 09:00:09  djw
+C More work on LIST 9
+C Routine which use LISTs 5,9,10 all use the same common block, ICOM05, for loading from the disk and for
+C creating output.
+C If one needs two of these lists in memeory at the same time, the calling routine must sort out the common
+C block (l5,l9,l10) addresses itself.
+C XFAL09 loads a LIST 9, and saves the LIST 5 addresses if L5 is already in core.
+C
 C Revision 1.19  2011/02/04 17:40:01  djw
 C XPCH5E either prints table of esds or creates a LIST 9. Operations need to be separated in the near future
 C
@@ -309,9 +317,16 @@ C--LIST PUNCH ROUTINE
       NR61=ITEMP2
       CALL XRSL
       CALL XCSAE
+cdjwmar2011
+c----- check for LIST 1 for Ndave
+      if(lstno.eq.1) then
+            call xpch1
+            return
+      endif
+c
 C--CHECK THAT THIS IS LIST 5
       IF (LSTNO - 5) 7100, 7300, 7400
-
+c
 C----- NOT PERMITTED
 7100  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 7200 ) IH
@@ -322,7 +337,7 @@ C----- NOT PERMITTED
       CALL XERHND ( IERERR )
       RETURN
 
-C--CHECK THE TYPE OF PUNCH
+C--CHECK THE TYPE OF LIST 5 PUNCH
 7300  CONTINUE
       WRITE ( CMON, '(A,I4)') 'Punch Class ', ICLASS+2
       CALL XPRVDU(NCVDU, 1,0)
@@ -348,6 +363,7 @@ C-- 5E ESDS IN SIMPLE FORMAT
 7350  CONTINUE
       CALL XPCH5E(2)
       RETURN
+
 7400  CONTINUE
 c
 C----- CHECK IF LIST 12, 16 OR 17 or 18
