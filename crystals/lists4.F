@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.29  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.28  2011/03/15 09:00:09  djw
 C More work on LIST 9
 C Routine which use LISTs 5,9,10 all use the same common block, ICOM05, for loading from the disk and for
@@ -2930,9 +2933,11 @@ C-----  SPOT THE WAVELENGTH
         WRITE ( CMON, 9701) WAVUSE, WAVE
         CALL XPRVDU(NCVDU, 2,0)
 9701    FORMAT
-     1 (' System files contain no entries for required wavelength'/
-     2 F8.4, ' used in lieu of ',F8.4)
-        IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A,A)') CMON(1),CMON(2)
+     1 (' System files contain no anomalous entries for required', 
+     2 ' wavelength'/F8.4, ' used in lieu of ',F8.4,
+     3 ' for anomalous scattering')
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A,A)') CMON(1),CMON(2),
+     1  CMON(3)
       ENDIF
 C----- BEGIN PROCESSING FORMULA LIST
       DO 5500 J = IADDF, JADDF, NADDF
