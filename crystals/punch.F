@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.58  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.57  2011/03/15 09:00:09  djw
 C More work on LIST 9
 C Routine which use LISTs 5,9,10 all use the same common block, ICOM05, for loading from the disk and for
@@ -591,8 +594,6 @@ C--
       INCLUDE 'TSSCHR.INC'
       INCLUDE 'ISTORE.INC'
 C
-C
-C
       INCLUDE 'STORE.INC'
 C
       INCLUDE 'XPTCL.INC'
@@ -600,7 +601,10 @@ C
       INCLUDE 'XCONST.INC'
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XLST01.INC'
+      INCLUDE 'ICOM05.INC'
+      INCLUDE 'ICOM09.INC'
       INCLUDE 'XLST05.INC'
+      dimension dwork(idim05)
       INCLUDE 'XLST09.INC'
       INCLUDE 'XLST11.INC'
       INCLUDE 'XLST12.INC'
@@ -621,7 +625,13 @@ c-- set the output type
       CALL XRSL
       CALL XCSAE
 C--LOAD A FEW LISTS
-      CALL XFAL01
+      CALL XFAL01 
+c     if a LIST 5 is already loaded, save the pointers
+      isave = 0
+      IF (KHUNTR (5,0,IADDL,IADDR,IADDD,-1) .GE. 0) then
+       call xmovei(icom05(1), dwork(1), idim05)
+       isave = 1
+      endif
       CALL XFAL05
       CALL XFAL23
       write(cmon,'(a)') 'Writing simple esd file'
@@ -748,6 +758,8 @@ C--CREATE THE OUTPUT LIST TYPE
       CALL XSTR05(LNOUT,0,NEW)
 C
 2300  CONTINUE
+c     restore any previous LIST 5
+      if(isave .eq. 1)  call xmovei( dwork(1),icom05(1), idim05)
       CALL XOPMSG ( IOPPPR , IOPLSE , 5 )
       CALL XTIME2 ( 2 )
       RETURN
@@ -1030,8 +1042,10 @@ C--PUNCH THE 'READ', 'INPUT' AND 'FORMAT' CARDS
 1000  FORMAT(53HREAD NCOEFFICIENT = 12, TYPE = FIXED, UNIT = DATAFILE ,
      1  10H, CHECK=NO/
      2 41HINPUT H K L /FO/ SIGMA(/FO/) JCODE RATIO ,
-     3 38H BATCH TBAR CORRECTIONS /FOT/ ELEMENTS/14HFORMAT (3F4.0,,
-     4 44HF10.2,F8.2,F3.0,F7.1,F3.0,2E12.5,F10.2,F3.0)/3HEND)
+     3 38H BATCH TBAR CORRECTIONS /FOT/ ELEMENTS/
+     4 14HFORMAT (3F4.0,,
+     5 44HF10.2,F8.2,F3.0,F7.1,F3.0,2E12.5,F10.2,F3.0)/
+     6 3HEND)
 C--FETCH THE NEXT REFLECTION
 1050  CONTINUE
 CDJWMAR99       PUNCH LESS THANS
@@ -2018,6 +2032,34 @@ C
 9900  CONTINUE
 C -- ERRORS
       CALL XOPMSG ( IOPPCH , IOPLSP , 38 )
+      RETURN
+      END
+
+CODE FOR xPCH1
+      SUBROUTINE XPCH1
+
+      INCLUDE 'ISTORE.INC'
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'QSTORE.INC'
+C      
+      
+      IF (KHUNTR (1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
+      IF ( IERFLG .LT. 0 ) THEN
+       WRITE(CMON,'(A)')'LIST 1 not available for punching'
+       CALL XPRVDU(NCVDU,1,0)
+       RETURN
+      ENDIF
+      WRITE(NCPU,'(A)') '#LIST 1'
+      WRITE(NCPU,100) STORE(L1P1),STORE(L1P1+1),STORE(L1P1+2),
+     1 RTD*STORE(L1P1+3),RTD*STORE(L1P1+4),RTD*STORE(L1P1+5)
+100   FORMAT('REAL ', 6F9.4)
+      WRITE(NCPU,'(A)') 'END'
       RETURN
       END
 
