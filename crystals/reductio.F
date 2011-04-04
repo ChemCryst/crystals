@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.43  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.42  2010/07/21 16:11:10  djw
 C Watch out for twinned centred cells. Originally Fc was obtained by doubling the contributio from the unique operators. This works for the 'presences', but gives non-zero results for the absences.  These must be kept incase a twin element contribution overlaps it.   Treat the left-most element as the parent. However, his leads to problems if the key is, for example, 21. because 2,1 are used to identify the twin scale factor (correclty) but the twin matix (incorreclty).
 C
@@ -32,7 +35,7 @@ C Revision 1.34  2008/12/18 16:36:01  djw
 C Don't fiddle with MERGED totals, jus note removed systematic absences
 C
 C Revision 1.33  2008/03/31 14:54:08  djw
-C Move the Firedel flag in SYST into the JCODE slot. Previously (in corrections of phase) it zapped Fourier maps
+C Move the Friedel flag in SYST into the JCODE slot. Previously (in corrections or phase) it zapped Fourier maps
 C
 C Revision 1.32  2008/03/07 16:09:48  djw
 C changes to help with the correct computation of Fourier maps from twinned crystals.  THe old COPY67 subroutine did not pack the data properly unless the keys were the default keys.  The job is now done
@@ -414,6 +417,7 @@ C
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST06.INC'
       INCLUDE 'XLST13.INC'
+      INCLUDE 'XLST25.INC'
       INCLUDE 'XLST30.INC'
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XOPVAL.INC'
@@ -477,6 +481,12 @@ C--SET UP LIST 6 FOR PROCESSING
       CALL XFLT06(IULN,0)
       CALL XFAL01
       CALL XFAL28
+cdjwapr2011
+      if (kexist(25) .le. 0) then
+        n25 = 0
+      else
+        call xfal25
+      endif 
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--CHECK THE TYPE OF OUTPUT MEDIUM
       IF(MEDIUM)1350,1300,1350
@@ -518,7 +528,7 @@ C--CHECK IF THIS REFLECTION IS SYSTEMATICALLY ABSENT
       IF(KSYSAB(IN))1550,1600,1600
 c
 1550  CONTINUE
-C--index is systematic absence.   
+C--index if systematic absence.   
 c  reject it if there is only one component
 c^      if (store(l6+11) .le. 9) then
 c  CHECK IF IT IS THE FIRST
@@ -859,6 +869,28 @@ C--INVERT THE INDICES FOR THE NEXT POSSIBLE PASS
 1900  CONTINUE
 1950  CONTINUE
       afried=fried
+cdjwmar2011
+c---- transform phase, A and B parts
+c     seems to be OK for orthorhombic. Needs checking
+c     for hexagonal etc.
+c       determ = xdetr3(store(isav))
+c       parity = hmax(1)+hmax(2)+hmax(3)
+c       parity = sign(1.,parity)
+c      write(ncawu,'(3f5.0,3x,3f5.0, 2f6.3,3f8.3 )') 
+c     1 hmax(1),hmax(2),hmax(3), store(m6),store(m6+1),store(m6+2),
+c     2 determ,parity, store(m6+6), store(m6+7),store(m6+8)
+c       if (determ .lt. 0) then
+c         store(m6+6) = -1.*store(m6+6)
+c         if(parity .gt. 0) then
+c             store(m6+7) = -store(m6+7)
+c         else
+c             store(m6+8) = -store(m6+8)
+c         endif
+c       endif
+c      write(ncawu,'(3f5.0,3x,3f5.0, 2f6.3,3f8.3 )') 
+c     1 hmax(1),hmax(2),hmax(3), store(m6),store(m6+1),store(m6+2),
+c     2 determ,parity, store(m6+6), store(m6+7),store(m6+8)
+cdjwmar2011
 C--WRITE THE NEW INDICES BACK IN LIST 6
       K=M6
       DO 2000 I=1,3
