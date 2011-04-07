@@ -331,7 +331,7 @@ may issue other CRYSTALS commands using this file.
 # FORN1, FORN2 - output of data for 'foreign' (ie. external) 
 programs.
 # SCPDATA - scripts can read directly from any file opened on
-this devic (using EXTRACT script command)
+this device (using EXTRACT script command)
 # SCP2 - scripts can read directly from any file opened on
 this device (using EXTRACT2 script command)s
 # SCPQUEUE - stores commands that scripts are building up.
@@ -1384,7 +1384,10 @@ For example
  derived from them which is stored in LIST 1.
  The inter-axial angles are stored in radians in LIST 1, and printed as
  such.
-#PThere is no command to punch LIST 1.
+#Q
+#I\PUNCH 1#
+#PPunches the real cell parameters from  LIST 1.
+#Q
 #
 #Q
 #XCell errors#
@@ -3963,6 +3966,7 @@ For example
  Specifications of atoms and other parameters
  Input of atoms and other parameters              - \LIST 5
  Modification of lists 5 and 10 on the disc       - \EDIT
+ Applying permitted origin shifts                 - \ORIGIN
  Conversion of temperature factors                - \CONVERT
  Hydrogen placing                                 - \HYDROGENS
  Per-hydrogenation                                - \PERHYDRO
@@ -5353,6 +5357,53 @@ bond, c(1) to c(20).
  calculation of contacts, and can take the values YES or NO
 #
 #
+#XORIGIN#
+#XShifting the molecule to a permitted alternative origin#
+#YShifting the molecule to a permitted alternative origin - \ORIGIN#
+#HSorigin#
+#N   6#
+#J
+ \ORIGIN INPUTLIST= OUTPUTLIST= MODE=
+ END
+
+ \CONVERT
+ END
+#
+#PAttempt to move the structure to the centre of the unit cell
+ using the permitted origin shifts.
+#I\ORIGIN INPUTLIST= OUTPUTLIST= MODE=#
+#
+#
+#KINPUTLIST=#
+
+#J
+      5   -  Default value, the atomic coordinates
+      10                    the Fourier peaks search
+#
+#KOUTPUTLIST=#
+#J
+      5   -  Default value, the atomic coordinates
+      10                    the Fourier peaks search
+#
+#KMODE=#
+#J
+      CENTROID   -  Default value.
+      FIRST
+#
+#PCENTROID tries to move the centroid of LIST 5 as close to .5 .5 .5
+ as is permitted by the permitted origin shifts.  Other connected atoms follow 
+ the centroid.
+#PFIRST  As above excpet that the first atom in LIST 5 is the 
+ target atom.  This may be a user-computed partial centroid.
+#J
+      \edit
+      cent 100 residue 3
+      move qc(100)
+      end
+      \origin mode=first
+#
+
+
 #XCONVERT#
 #XConverting B[ij's] to U[ij's]#
 #YConversion of temperature factors - \CONVERT#
