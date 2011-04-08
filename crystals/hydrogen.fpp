@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.38  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.37  2011/03/07 13:41:53  djw
 C Fix bug affecting phenyl hydrogen - buffer was too small
 C
@@ -3139,6 +3142,8 @@ C
 
 CODE FOR XSYSTH
       SUBROUTINE XSYSTH
+c----- HNAME INSTRUCTION. NUMBERS H ATOM AFTER THE PARENT
+C      HETRO ATOM
 
       INCLUDE 'ISTORE.INC'
 c
