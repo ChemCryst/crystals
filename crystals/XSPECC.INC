@@ -1,3 +1,3 @@
       COMMON /XSPEC/ ISELM(24,3,3),TOLER(3),TRELM(24,3),NGS,NGMULT,
-     2 K1(9), K2(9), K3(9), K4(9), NBR1, NBR2
+     2 K1(9), K2(9), K3(9), K4(9), NBR1, NBR2, IFLOR(3)
 

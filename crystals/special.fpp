@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2011/03/21 13:57:22  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.12  2011/02/10 09:44:46  djw
 C Add an explantion to FLORIG while I remember how it works
 C
@@ -474,7 +477,8 @@ c is floating in that direction.
 C
       CHARACTER *2 AXIS(3)
       CHARACTER *80 CLINE
-      DIMENSION IHM(3)
+cdjwapr11      DIMENSION IHM(3)
+c----- replace with IFLOR in XSPECC 
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XSPECC.INC'
@@ -485,24 +489,24 @@ C
         IF (NGS .EQ. 0) THEN
 C        CENTRIC, SO NO FLOATING ORIGIN
             DO 5, I = 1,3
-                IHM(I) = 0
+                IFLOR(I) = 0
 5           CONTINUE
             GOTO 20
         ENDIF
 C
         DO 10 K = 1,3
-            IHM(K) = 0
+            IFLOR(K) = 0
             DO 9 I = 1, N2
                 DO 8 J = 1,3
-                    IHM(K) = IHM(K) + ISELM(I,J,K)
+                    IFLOR(K) = IFLOR(K) + ISELM(I,J,K)
 8               CONTINUE
 9           CONTINUE
-            IF (IHM(K) .NE. N2) THEN
+            IF (IFLOR(K) .NE. N2) THEN
 C               NON - FLOATING DIRECTION
-                IHM(K) = 0
+                IFLOR(K) = 0
             ELSE
 C               FLOATING DIRECTION
-                IHM(K) = 1
+                IFLOR(K) = 1
 C
                 WRITE(CMON,13) AXIS(K)
                 CALL XPRVDU(NCVDU, 1,0)
