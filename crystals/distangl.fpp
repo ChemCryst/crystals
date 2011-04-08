@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.103  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.102  2011/03/04 05:49:49  rich
 C Ensure proper closing of properties file in bond calculation routine.
 C
@@ -3410,7 +3413,7 @@ C  ILIST   THE LIST CONTROL FLAG :
 C          -1  DO NOT LIST THE MOVED OR DELETED ATOMS.
 C           0  LIST THE MOVED OR DELETED ATOMS.
 C  TOLER   THE TOLLERANCE ADDED TO SUM OF RADII FOR BOND LIMIT
-C  ITYPE    ALL(-1) OR PEAKS ONLY(0)
+C  ITYPE    ALL(-1) OR PEAKS ONLY(0) ONLY ATOMS (1)
 C
 C--THE COMMON BLOCK /XWORKA/ IS USED :
 C
@@ -3465,9 +3468,11 @@ C
       DATA CMOVED / ' Moved  ' /
 C
 #if !defined(_HOL_) 
-      DATA IPEAK/'Q   '/
+      DATA IQPEAK/'Q   '/
+      DATA ICPEAK/'QC  '/
 #else
-      DATA IPEAK/4HQ   /
+      DATA IQPEAK/4HQ   /
+      DATA ICPEAK/4HQC  /
 C
 C--CALLL THE TIMING FUNCTION
 #endif
@@ -3575,7 +3580,21 @@ C----- ONLY MOVE PEAKS - MARK ALL NON-PEAKS AS FOUND
           I5 = L5 + (N5-1)*MD5
           MATVC = LATVC
           DO M5 = L5, I5, MD5
-              IF(ISTORE(M5) .NE. IPEAK) THEN
+              IF((ISTORE(M5) .NE. IQPEAK) .AND. 
+     1           (ISTORE(M5) .NE. ICPEAK)) THEN
+                DO I = 0,MDATVC-1
+                  ISTORE(MATVC+I) = ICURR
+                END DO
+              END IF
+              MATVC = MATVC + MDATVC
+          END DO
+      ELSE IF (ITYPE .EQ. 1) THEN
+C    ONLY MOVE NON-PEAKS 
+          I5 = L5 + (N5-1)*MD5
+          MATVC = LATVC
+          DO M5 = L5, I5, MD5
+              IF((ISTORE(M5) .EQ. IQPEAK) .OR. 
+     1           (ISTORE(M5) .EQ. ICPEAK)) THEN
                 DO I = 0,MDATVC-1
                   ISTORE(MATVC+I) = ICURR
                 END DO
