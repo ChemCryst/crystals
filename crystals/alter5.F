@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2007/10/09 06:48:32  djw
+C Add hyrdogen renumbering
+C
 C Revision 1.6  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -58,7 +61,7 @@ C--CHECK IF WE SHOULD RETURN
 
 C--BRANCH ON THE TYPE OF OPERATION
       GO TO ( 200,300,400,800, 810, 820, 500, 600, 700, 830, 840, 
-     1 9910 ),NUM
+     1 850, 9910 ),NUM
       GO TO 9910
 
 C--ROUTINES TO MODIFY LIST 5
@@ -115,6 +118,11 @@ C -- 'HNAME' INSTRUCTION
 840   CONTINUE
       CALL XSYSTH
       RETURN
+C
+C --  'ORIGIN' INSTRUCTION
+850   CALL XORIGIN
+      RETURN
+C
 C
 9910  CONTINUE
       CALL XERHND ( IERPRG )
