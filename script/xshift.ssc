@@ -1,83 +1,90 @@
-%SCRIPT XSHIFT
-%% Use the SG operators to try to centre each moiety separately                                                                 
-%  VARIABLE INTEGER RESIDUE OLDRESIDUE
-%  VARIABLE CHARACTER CTYPE CISER CLAST
-%       EVALUATE CLAST = " LAST"
-%       EVALUATE OLDRESIDUE = 0
-%%
-%  IF EXISTS 5 .LE. 0 THEN
-WARNING - You have no atoms
-%    FINISH
-%  END IF
-%
-% copy '#script xdelq'
-% copy '#edit'
-% copy 'monitor off'
-% copy 'reset residue 0 all'
-% copy 'insert residue'
-% copy 'end'
-%%
-% TRANSFER "#GENERALEDIT 5" TO CRYSTALS
-% TRANSFER "LOCATE RECORDTYPE=101" TO CRYSTALS
-% TRANSFER "ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR" -
-  TO CRYSTALS
-% TRANSFER "TOP" TO CRYSTALS
-%% get residue
-% EVALUATE RESIDUE = 0
-% LOOP
-%   ON EDITERROR TERMINATE
-%   TRANSFER "NEXT" TO CRYSTALS
-%%  get residue number
-%   TRANSFER "TRANSFER FROM OFFSET=16 TO RESIDUE" TO CRYSTALS
-%   IF ( RESIDUE  .GT. OLDRESIDUE ) THEN
-%    EVALUATE OLDRESIDUE = RESIDUE
-%   END IF
-% END LOOP
-% TRANSFER "END" TO CRYSTALS
-%%
-% queue rewind
-% queue copy #edit 
-% queue copy mon  off                                                             
-% loop oldresidue times
-%  evaluate residue = oldresidue + 1 - loopcounter 
+%SCRIPT XSHIFT                                                                  
+%% Use the SG operators to try to centre each moiety separately                 
+%  VARIABLE INTEGER RESIDUE OLDRESIDUE                                          
+%  VARIABLE CHARACTER CTYPE CISER CLAST                                         
+%       EVALUATE CLAST = " LAST"                                                
+%       EVALUATE OLDRESIDUE = 0                                                 
+%%                                                                              
+%  IF EXISTS 5 .LE. 0 THEN                                                      
+WARNING - You have no atoms                                                     
+%    FINISH                                                                     
+%  END IF                                                                       
+%                                                                               
+%% MOVE TO MAKE FIRST ATOM CLOSE TO .5 .5 .5                                    
+% COPY '#ORIGIN MODE=FIRST'                                                     
+% COPY 'END'                                                                    
+% copy '#script xdelq'                                                          
+% copy '#edit'                                                                  
+% copy 'monitor off'                                                            
+% copy 'reset residue 0 all'                                                    
+% copy 'insert residue'                                                         
+% copy 'end'                                                                    
+%%                                                                              
+% TRANSFER "#GENERALEDIT 5" TO CRYSTALS                                         
+% TRANSFER "LOCATE RECORDTYPE=101" TO CRYSTALS                                  
+% TRANSFER "ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR" -       
+  TO CRYSTALS                                                                   
+% TRANSFER "TOP" TO CRYSTALS                                                    
+%% get residue                                                                  
+% EVALUATE RESIDUE = 0                                                          
+% LOOP                                                                          
+%   ON EDITERROR TERMINATE                                                      
+%   TRANSFER "NEXT" TO CRYSTALS                                                 
+%%  get residue number                                                          
+%   TRANSFER "TRANSFER FROM OFFSET=16 TO RESIDUE" TO CRYSTALS                   
+%   IF ( RESIDUE  .GT. OLDRESIDUE ) THEN                                        
+%    EVALUATE OLDRESIDUE = RESIDUE                                              
+%   END IF                                                                      
+% END LOOP                                                                      
+% TRANSFER "END" TO CRYSTALS                                                    
+%%                                                                              
+% queue rewind                                                                  
+% queue copy #edit                                                              
+% queue copy monitor  off                                                       
+% loop oldresidue times                                                         
+%  evaluate residue = oldresidue + 1 - loopcounter                              
 %   CLEAR                                                                       
-%   INSERT 'cent'                                                              
-%   STORE FORMAT "(i6)" integer residue                                     
-%   INSERT ' residue( '                                             
-%   STORE FORMAT "(i6)" integer residue                                       
-%   INSERT ' ) '                                             
-%   queue SEND                                                                        
-% end loop
-% queue copy atom q 1 x=.5 .5 .5
-% queue copy END 
-% queue process
-
-% queue rewind
-% queue copy #edit 
-% queue copy mon  off                                                             
-% queue copy move q(1)
-% loop oldresidue times
+%   INSERT 'cent'                                                               
+%   STORE FORMAT "(i6)" integer residue                                         
+%   INSERT ' residue( '                                                         
+%   STORE FORMAT "(i6)" integer residue                                         
+%   INSERT ' ) '                                                                
+%   queue SEND                                                                  
+% end loop                                                                      
+% queue copy atom q 1 x=.5 .5 .5                                                
+% queue copy END                                                                
+% queue process                                                                 
+% queue rewind                                                                  
+% queue copy #edit                                                              
+% queue copy monitor  off                                                       
+% queue copy move q(1)                                                          
+% loop oldresidue times                                                         
 %   CLEAR                                                                       
-%   insert 'move qc('
+%   insert 'move qc('                                                           
 %   STORE FORMAT "(i6)" integer loopcounter                                     
-%   insert ')'
-%   queue send
-% end loop
-% queue copy END 
-% queue process
-% copy '#collect'
-% copy 'sel type = all tol=20'
-% copy 'end'
-% copy '#edit'
-% copy 'mon off'
-% copy 'del q(1)'
-% copy 'end'
-% copy '#collect'
-% copy 'sel type = all tol = 2.'
-% copy 'end'
-% copy '#collect'
-% copy 'sel type = all' 
-% copy 'end'
-% copy '#script xdelq'
+%   insert ')'                                                                  
+%   queue send                                                                  
+% end loop                                                                      
+% queue copy END                                                                
+% queue process                                                                 
+% copy '#collect'                                                               
+% copy 'sel type = all tol=20 monitor = off'                                    
+% copy 'end'                                                                    
+% copy '#edit'                                                                  
+% copy 'monitor off'                                                            
+% copy 'del q(1)'                                                               
+% copy 'end'                                                                    
+%% REMOVED APR 2011 TO REDUCE RISK OF NON-BONDED CONTACTS                       
+%% BEING USED                                                                   
+%% copy '#collect'                                                              
+%% copy 'sel type = all tol = 2. monitor = off'                                 
+%% copy 'end'                                                                   
+% copy '#collect'                                                               
+% copy 'sel type = all monitor = off'                                           
+% copy 'end'                                                                    
+% COPY '#SCRIPT INSIDE'
+% copy '#script xdelq'                                                          
+% COPY '#PURGE LIST=41'                                                         
+% COPY 'END'                                                                    
 %%                                                                              
 %END SCRIPT                                                                     

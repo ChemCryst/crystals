@@ -1,6 +1,12 @@
 %SCRIPT XCENTRE                                                                 
 %%                                                                              
 %%  CENTRE STRUCTURE IN CELL                                                    
+%%
+%  IF EXISTS 5 .LE. 0 THEN
+WARNING - You have no atoms
+%    FINISH
+%  END IF
+%%
 %      COPY '#EDIT'                                                             
 %      COPY 'MON  OFF'
 %      copy 'CENT 100 ALL'
@@ -29,11 +35,6 @@
 %       EVALUATE YS = 0.
 %       EVALUATE ZS = 0.
 %%
-%  IF EXISTS 5 .LE. 0 THEN
-WARNING - You have no atoms
-%    FINISH
-%  END IF
-%%
 %% FIND QC
 % TRANSFER "#GENERALEDIT 5" TO CRYSTALS
 % TRANSFER "LOCATE RECORDTYPE=101" TO CRYSTALS
@@ -58,7 +59,7 @@ WARNING - You have no atoms
 % END LOOP
 % TRANSFER "END" TO CRYSTALS
 % IF SERIAL .GT. 0.0 THEN
-%% START SHIFTING ATOMS - WE REALLY NEED A MOD INSTRUCTION IN SCRIPTS
+%% START SHIFTING ATOMS - WE REALLY NEED A /MOD/ INSTRUCTION IN SCRIPTS
 %   IF X .LT. 0.0 THEN
 %      EVALUATE XS = 1.
 %   ELSE IF X .GT. 1. THEN
@@ -76,16 +77,19 @@ WARNING - You have no atoms
 %   ELSE IF Z .GT. 1. THEN
 %      EVALUATE ZS = - 1.
 %   END IF
-%   COPY '#EDIT'
-%   COPY 'MON  OFF'
-%   CLEAR
-%   INSERT 'SHIFT'
-%   STORE FORMAT "(F12.4)" REAL XS YS ZS 
-%   INSERT ' ALL'
-%   SEND
+%%
+%   IF XS .NE. 0 .OR. YS .NE. 0 .OR. ZS .NE. 0  THEN
+%    COPY '#EDIT'
+%    COPY 'MON  OFF'
+%    CLEAR
+%    INSERT 'SHIFT'
+%    STORE FORMAT "(F12.4)" REAL XS YS ZS 
+%    INSERT ' ALL'
+%    SEND
+%   END IF
 % END IF
 %      COPY '#SCRIPT XDELQ'
-%      COPY 'PURGE LIST=41'                                                               
+%      COPY '#PURGE LIST=41'                                                               
 %      COPY 'END'                                                               
 %%                                                                              
 %END SCRIPT                                                                     
