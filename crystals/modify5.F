@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.57  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.56  2011/03/15 08:45:40  djw
 C Add a COMMENT about loading L5/L10
 C
@@ -4386,3 +4389,232 @@ C -- COMMAND INPUT ERRORS
       GO TO 500
       END
 
+CODE FOR XORIGIN
+      SUBROUTINE XORIGIN
+C-- sHIFT ORIGIN TOWARDS CENTRE OF CELL
+C -- DIRECT METHODS IN CRYSTALLOGRAPHY,
+C    GIACOVAZZO, 1980, ACADEMIN PRESS
+C
+C      FOR THE MOMENT ONLY WORKS UP TO PRIMITIVE ORTHORHOMBIC
+C      USING LOOK-UP TABLES. 
+C
+C      IORI No of floating origins
+C      IFLOR(3) Floating origins (1 if yes) - in XSPECC.INC
+C      ICENTR -1 FOR NON CENTRO
+C      LATTYP Lattice type - 1 is P etc
+C      CCLASS Crystal class
+
+C
+C--
+      CHARACTER*32 OPERAT
+      CHARACTER*16 LATTIC(7)
+      CHARACTER *5 CNOT
+      CHARACTER *2 CNO
+      CHARACTER *4 CCLASS, CMIX
+      CHARACTER *80 CLINE, CLOW
+      DIMENSION COFG(3), CSHIFT(3)
+      INCLUDE 'ISTORE.INC'
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST02.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XSPECC.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XOPVAL.INC'
+C
+      INCLUDE 'QSTORE.INC'
+C
+      DATA LATTIC / 'primitive' , 'body centered' , 'rhombohedral' ,
+     2 'face centered' , 'A centered' , 'B centered' , 'C centered' /
+      DATA CNOT / ' non-' /, CNO / 'no' /
+C
+C
+C--SET THE TIMING
+      CALL XTIME1 (2)
+C--READ THE REMAINING DATA
+      IF (KRDDPV(ISTORE(NFL),3).LT.0) GO TO 550
+      IULN=KTYP05(ISTORE(NFL))
+      LNOUT=KTYP05(ISTORE(NFL+1))
+      MODE =ISTORE(NFL+2)
+C--CLEAR THE STORE
+      CALL XCSAE
+      CALL XRSL
+C--LOAD THE LISTS
+      CALL XFAL01
+      CALL XFAL02
+      CALL XLDR05 (IULN)
+      IF (IERFLG.LT.0) GO TO 500
+C
+C----- FIND FLOATING ORIGINS
+      IORI = -1
+      IF ((KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .GE. 0) .AND.
+     1    (KHUNTR ( 2,0, IADDL,IADDR,IADDD, -1) .GE. 0) .AND.
+     2    (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .GE. 0)) THEN
+            IORI = KSPINI( -1, .06)
+            IF (IORI .GE. 0) CALL XFLORG( N2, 0, IORI)
+C -- GET CENTRO AND LATTICE TYPE FLAGS
+C
+            ICENTR = NINT ( STORE(L2C) )
+            LATTYP = NINT ( STORE(L2C+1) )
+            WRITE(CMIX,'(A4)') ISTORE(L2CC)
+      ELSE
+            WRITE(CMON,'(A)') ' List 1,2 or 5 missing'
+            CALL XPRVDU(NCVDU, 1,0)
+            IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+            GOTO 450
+      ENDIF
+C
+C---- CHECK CLASS
+      CALL XCCUPC(CMIX, CCLASS)
+      ICLASS = 0
+      IF (CCLASS .EQ. 'TRIC') THEN
+            ICLASS = 1
+      ELSE IF (CCLASS .EQ. 'MONO') THEN
+            ICLASS = 2
+      ELSE IF (CCLASS .EQ. 'ORTH') THEN
+            ICLASS = 3
+      ELSE
+            WRITE(CMON,'(A)') ' This SG not yet handled'
+            CALL XPRVDU(NCVDU, 1,0)
+            IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+C----- DISPLAY CRYSTAL CLASS
+            CLOW = ' '
+            WRITE(CLOW,2200) (ISTORE(I), I = L2CC, L2CC+MD2CC-1)
+2200        FORMAT('Crystal class is ', 1X, 4(A4))
+            CALL XCTRIM (CLOW, ILAST)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,2201) CLOW(1:ILAST)
+            WRITE ( CMON, 2201) CLOW(1:ILAST)
+            CALL XPRVDU(NCVDU, 1,0)
+2201        FORMAT(1X,A)
+            GOTO 450
+      ENDIF
+C
+      WRITE ( CLINE , 1025 ) LATTIC(LATTYP)
+1025  FORMAT ('The lattice type is : ' , A )
+      WRITE ( CLINE(40:) , 1035 ) N2
+1035  FORMAT ('with ' , I3 , ' unique symmetry operators' )
+      CALL XCTRIM (CLINE, ILAST)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,2201) CLINE(1:ILAST)
+      WRITE ( CMON, 2201) CLINE(1:ILAST)
+      CALL XPRVDU(NCVDU, 1,0)
+      LENCEN = 1
+      IF ( ICENTR .LE. 0 ) LENCEN = 5
+      WRITE ( CLINE , 1015 ) CNOT(1:LENCEN)
+1015  FORMAT ('The space group is' , A , 'centrosymmetric' )
+      CALL XCREMS(CLINE, CLOW, ILAST)
+      IF (IORI .GE. 0)
+     1 WRITE(CLOW(40:),'(A,I2,A)') 'with',IORI, ' floating origins'
+      CALL XCTRIM (CLOW, ILAST)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,2201) CLOW(1:ILAST)
+      WRITE ( CMON, 2201) CLOW(1:ILAST)
+      CALL XPRVDU(NCVDU, 1,0)
+C
+C---- CHECK IF PRIMITIVE 
+      IF (LATTYP .NE. 1) THEN
+       WRITE(CMON,'(A)') 'Only available for primitive Space Groups'
+       CALL XPRVDU(NCVDU, 1,0)
+       GOTO 450
+      ENDIF
+C
+      CALL XZEROF(COFG,3)
+      CALL XZEROF(CSHIFT,3)
+      IF (MODE .EQ. 0) THEN
+C----- USE CENTRE OF GRAVITY
+            M5=L5+(N5-1)*MD5
+            MEAN: DO  I=L5,M5,MD5
+             COFG(1) = COFG(1) + STORE(I+4)
+             COFG(2) = COFG(2) + STORE(I+5)
+             COFG(3) = COFG(3) + STORE(I+6)
+            ENDDO MEAN
+            COFG(1) = COFG(1)/FLOAT(N5)
+            COFG(2) = COFG(2)/FLOAT(N5)
+            COFG(3) = COFG(3)/FLOAT(N5)
+      ELSE
+C----- USE FIRST ATOM
+            COFG(1) = STORE(L5+4)
+            COFG(2) = STORE(L5+5)
+            COFG(3) = STORE(L5+6)
+      ENDIF
+C
+      IF (ICENTR .GT. 0) THEN
+C      CENTRIC - ALL 8 ORIGINS PERMITTED
+       SHIFTA: DO I=1,3
+        IF (COFG(I) .LT. 0.25) THEN
+         CSHIFT(I) = .5
+        ELSE IF (COFG(I) .GT. 0.75) THEN
+         CSHIFT(I) = -0.5
+        ENDIF
+       ENDDO SHIFTA
+      ELSE
+C     NON-CENTRIC
+       IF (ICLASS .EQ. 1) THEN
+C            TRICLINIC - ALL ORIGINS FLOAT
+      WRITE(CMON,'(A)')'Triclinic'
+      call xprvdu(ncvdu,1,0)
+             CSHIFT(1) = 0.5 - COFG(1)
+             CSHIFT(2) = 0.5 - COFG(2)
+             CSHIFT(3) = 0.5 - COFG(3)
+       ELSE IF ((ICLASS .EQ. 2) .OR.
+     1          (ICLASS .EQ. 3)) THEN
+C            MONOCLINIC OR ORTHORHOMBIC
+      WRITE(CMON,'(A)')'Monoclinic/Orthorhombic'
+      call xprvdu(ncvdu,1,0)
+             SHIFTB: DO I=1,3
+              IF (IFLOR(I) .EQ. 1) THEN
+               CSHIFT(I) = 0.5 - COFG(I)
+              ELSE
+               IF (COFG(I) .LT. 0.25) THEN
+                CSHIFT(I) = .5
+               ELSE IF (COFG(I) .GT. 0.75) THEN
+                CSHIFT(I) = -0.5
+               ENDIF
+              ENDIF
+             ENDDO SHIFTB
+       ENDIF
+      ENDIF
+C
+      WRITE(CMON,'(a,6F8.3)')'Old centre ', 
+     1 (COFG(I),I=1,3)
+      CALL XPRVDU(NCVDU, 1,0)
+      WRITE(CMON,'(a,6F8.3)')' Shift     ',
+     1 (CSHIFT(I),I=1,3)
+      CALL XPRVDU(NCVDU, 1,0)
+      WRITE(CMON,'(a,6F8.3)')'New centre ', 
+     1 (COFG(I)+CSHIFT(I),I=1,3)
+      CALL XPRVDU(NCVDU, 1,0)
+
+      M5=L5
+      SHIFTC: DO  I=1,N5
+            STORE(M5+4) = STORE(M5+4) + CSHIFT(1)
+            STORE(M5+5) = STORE(M5+5) + CSHIFT(2)
+            STORE(M5+6) = STORE(M5+6) + CSHIFT(3)
+            M5 = M5+MD5
+      ENDDO SHIFTC
+
+
+
+      NEW=-1
+      IF (IULN-LNOUT) 350,400,350
+350   CONTINUE
+      NEW=1
+400   CONTINUE
+      CALL XSTR05 (LNOUT,0,NEW)
+C--FINAL TERMINATION MESSAGES
+450   CONTINUE
+      CALL XOPMSG (IOPTFC,IOPEND,410)
+      CALL XTIME2 (2)
+      RETURN
+C
+500   CONTINUE
+      CALL XOPMSG (IOPTFC,IOPABN,0)
+      GO TO 450
+550   CONTINUE
+C -- COMMAND INPUT ERRORS
+      CALL XOPMSG (IOPTFC,IOPCMI,0)
+      GO TO 500
+      END
