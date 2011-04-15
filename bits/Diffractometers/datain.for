@@ -638,7 +638,7 @@ c
      *      'NLAYER = 0 NELEMENT = 0 NBATCH = 0 '
 
         do i=1,nsite
-          write(NOUTF,'(3(a,1x),f11.6,i4,3f11.6,12X,2a4)')
+          write(NOUTF,'(3(a,1x),f11.6,i4,3f11.6,14X,2a4)')
      *    'ATOM',label(i,2)(1:6),
      *    label(i,3)(1:6),occ(i),1,xf(i),yf(i),zf(i),label(i,1)
         end do
