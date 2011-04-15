@@ -5402,7 +5402,10 @@ bond, c(1) to c(20).
       end
       \origin mode=first
 #
-
+#P Currently (April 2011) the code only processes primitive triclinic, 
+monoclinic and orthorhombic cells, using the tables in Direct Methods in 
+Crystallography, Giacovazzo, Academic press, 1980, pp 74 and 76.
+#
 
 #XCONVERT#
 #XConverting B[ij's] to U[ij's]#
