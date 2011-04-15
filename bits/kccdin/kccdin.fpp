@@ -629,7 +629,7 @@ C
          WRITE (NOUTF,'(a,f7.2)') 'cont thorientmax=',CMTX
          WRITE (NOUTF,'(a,i7)') 'cont norient=',NINT(CMRU)
          WRITE (NOUTF,'(a)') 'cont scanmode=omega'
-         WRITE (NOUTF,'(a)') 'cont instrument=SuperNova'
+         WRITE (NOUTF,'(a)') 'cont instrument=Kappaccd'
          WRITE (NOUTF,'(a)') 'GENERAL'
          WRITE (NOUTF,'(a,f7.1)') 'cont z=',ZM
          WRITE (6,'(A)') 'Colour? '
