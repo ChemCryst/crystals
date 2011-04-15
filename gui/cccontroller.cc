@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.114  2011/03/24 16:32:56  rich
+// Exit more cleanly?
+//
 // Revision 1.113  2011/03/04 06:02:52  rich
 // Fix RESTART of CRYSTALS thread on WX version. Some changes to defines to get correct function signature.
 //
@@ -603,6 +606,7 @@ using namespace std;
 #include    "crprogress.h"
 #include    "ccmenuitem.h"
 #include    "crtoolbar.h"
+#include    "cxweb.h"
 
 
 #ifdef __CR_WIN__
@@ -716,6 +720,10 @@ CcController::CcController( const string & directory, const string & dscfile )
     CrGUIElement::mControllerPtr = this;
     CcController::theController = this;
     CcController::debugIndent = 0;
+
+#ifdef __BOTHWX__
+	CxWeb::InitXULRunner();
+#endif
 
 #ifdef __CR_WIN__
       mGUIThread = AfxGetThread();
@@ -3116,6 +3124,7 @@ int CcController::GetDescriptor( string &token, int descriptorClass )
                else DESCRIPTOR(Batch)
                else DESCRIPTOR(FontSet)
                else DESCRIPTOR(CreateTab)
+               else DESCRIPTOR(CreateWeb)
                else DESCRIPTOR(CreateTabCtrl)
                else DESCRIPTOR(CreateToolBar)
                else DESCRIPTOR(CreateResize)
