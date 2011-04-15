@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.26  2011/03/04 06:01:10  rich
+//   Fix font retreival on wx
+//
 //   Revision 1.25  2008/09/22 12:31:37  rich
 //   Upgrade GUI code to work with latest wxWindows 2.8.8
 //   Fix startup crash in OpenGL (cxmodel)
@@ -175,6 +178,7 @@ void  CxEditBox::SetText( const string & text )
 #ifdef __CR_WIN__
       SetWindowText( temp.c_str() );
 #endif
+	  mPreviousText = temp;
 }
 
 
@@ -196,7 +200,8 @@ void  CxEditBox::AddText( const string & text )
 #ifdef __BOTHWX__
       AppendText(text.c_str());
       SetFocus();
-#endif
+#endif	
+	mPreviousText = GetText(); 
 }
 
 CXSETGEOMETRY(CxEditBox)
@@ -251,7 +256,6 @@ string CxEditBox::GetText()
         double number = atof(theText);
         sprintf(theText,"%-f",number);
     }
-
     return string( theText );
 }
 
@@ -286,6 +290,7 @@ END_MESSAGE_MAP()
 BEGIN_EVENT_TABLE(CxEditBox, BASEEDITBOX)
       EVT_CHAR( CxEditBox::OnChar )
       EVT_KEY_DOWN( CxEditBox::OnKeyDown )
+      EVT_KEY_UP( CxEditBox::OnKeyUp )
 END_EVENT_TABLE()
 #endif
 
@@ -368,10 +373,10 @@ void CxEditBox::OnChar( wxKeyEvent & event )
     {
 //Block unwanted keypresses...
         char c = (char) nChar;
-        if(iscntrl( nChar )) //It it a control char (delete, arrow keys), let it through
+        
+		if(iscntrl( nChar ) || ( nChar > 127 )) //It it a control char (delete, arrow keys), let it through
         {
-                  event.Skip();
-            EditChanged();
+			event.Skip();
             return;
         }
         if( allowedInput != CXE_TEXT_STRING ) //It's not text (it's a number).
@@ -384,10 +389,25 @@ void CxEditBox::OnChar( wxKeyEvent & event )
             if ( c == '.' ) {wxBell(); return;} //If it's a dot, ignore.
         }
 
-            event.Skip();
-        EditChanged();
+        event.Skip();
         return;
     }
+}
+void CxEditBox::OnKeyUp( wxKeyEvent & event )
+{
+    int nChar = event.GetKeyCode();
+
+	if ( allowedInput != CXE_READ_ONLY )
+    {
+		if ( mPreviousText != GetText() ) {
+			mPreviousText = GetText();
+            EditChanged();
+		}
+    }
+
+	event.Skip();
+
+    return;
 }
 #endif
 
