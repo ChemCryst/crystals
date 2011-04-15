@@ -204,6 +204,11 @@ void CxModList::AddRow(int id, vector<string> & rowOfStrings, bool selected,
       {
         if ( IDlist[i] == id )
         {
+
+//			ostringstream oo;
+//			oo << "Adding row id " << id << " " << rowOfStrings[0] << " " <<  rowOfStrings[1] << " " << rowOfStrings[2];
+//			LOGERR(oo.str());
+
 #ifdef __CR_WIN__
             for( int j=0; j<m_numcols; j++) {
                 SetItemText( i, j, rowOfStrings[j].c_str());
@@ -217,18 +222,20 @@ void CxModList::AddRow(int id, vector<string> & rowOfStrings, bool selected,
 
 #ifdef __BOTHWX__
             wxListItem info;
-            info.m_mask = wxLIST_MASK_STATE || wxLIST_MASK_TEXT;
-            info.m_stateMask = wxLIST_STATE_SELECTED;
+	        info.SetMask(wxLIST_MASK_TEXT | wxLIST_MASK_STATE);
+			info.SetId( i );
+
+            info.SetStateMask(wxLIST_STATE_SELECTED);
             info.m_itemId = i;
 			if ( selected ) {
-               info.m_state = wxLIST_STATE_SELECTED;
+               info.SetState( wxLIST_STATE_SELECTED);
 			}
 			else {
-               info.m_state = 0;
+               info.SetState(0);
 			}
             for( int j=0; j<m_numcols; j++) {
-              info.m_text = rowOfStrings[j].c_str();
-              info.m_col = j;
+			  info.SetColumn ( j );
+              info.SetText(rowOfStrings[j].c_str());
               m_ProgSelecting = 2;
               SetItem( info );
               m_ProgSelecting = 0;
@@ -1271,11 +1278,12 @@ void CxModList::GetSelectedIndices(  int * values )
 
 void CxModList::Update(int newsize) 
 {
-//  TEXTOUT ( "Model " + string((int)this) + "changed" );
+//  LOGERR ( "Model changed" );
 // Fetch new atom info from ModelDoc.
 
        if (newsize != IDlist.size())
        {
+//		   LOGERR("New size");
           DeleteAllItems();
           IDlist.clear();
        }
@@ -1294,7 +1302,7 @@ void CxModList::Update(int newsize)
 //       SendMessage((HWND)GetHWND(),WM_SETREDRAW,FALSE,0);
        ((CrModList*)ptr_to_crObject)->DocToList();
 //       SendMessage((HWND)GetHWND(),WM_SETREDRAW,TRUE,0);
-//       Refresh();
+       Refresh();
 #endif
 
 }
