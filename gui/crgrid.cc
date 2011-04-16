@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.29  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.1.1.1  2004/12/13 11:16:17  rich
 //   New CRYSTALS repository
 //
@@ -104,6 +108,7 @@
 #include        "crstretch.h"
 #include        "crresizebar.h"
 #include        "crhidden.h"
+#include        "crweb.h"
 
 #include <string>
 #include <sstream>
@@ -340,6 +345,13 @@ CcParse CrGrid::ParseInput( deque<string> & tokenList )
             CrButton * buttPtr = new CrButton( this );
             if ( buttPtr != nil )
               retVal = InitElement( buttPtr, tokenList, xpos, ypos );
+            break;
+          }
+          case kTCreateWeb:                            // Create a web control
+          {
+            CrWeb * webPtr = new CrWeb( this );
+            if ( webPtr != nil )
+              retVal = InitElement( webPtr, tokenList, xpos, ypos );
             break;
           }
           case kTCreateListBox:                           // Create a ListBox
