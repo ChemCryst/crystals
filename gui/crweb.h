@@ -8,10 +8,15 @@
 //   Authors:   Richard Cooper
 //   Created:   04.3.2011 14:41 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1  2011/04/16 07:33:06  rich
+//   HTML control
+//
 
 #ifndef     __CrWeb_H__
 #define     __CrWeb_H__
 #include    "crguielement.h"
+
+#ifdef __BOTHWX__
 
 
 class   CrWeb : public CrGUIElement
@@ -44,4 +49,5 @@ enum
  //kTSlim
 };
 
+#endif
 #endif

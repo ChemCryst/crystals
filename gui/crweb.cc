@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper
 //   Created:   04.3.2011 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.1  2011/04/16 07:33:06  rich
+// HTML control
+//
 
 
 #include    "crystalsinterface.h"
@@ -18,6 +21,8 @@
 #include    "cxweb.h"
 #include    "ccrect.h"
 #include    "cccontroller.h"    // for sending commands
+
+#ifdef __BOTHWX__
 
 
 CrWeb::CrWeb( CrGUIElement * mParentPtr )
@@ -122,3 +127,4 @@ void CrWeb::GetValue( deque<string> &  tokenList)
         tokenList.pop_front();
     }
 }
+#endif

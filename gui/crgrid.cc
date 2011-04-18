@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.30  2011/04/16 07:09:51  rich
+//   Web control
+//
 //   Revision 1.29  2005/01/23 10:20:24  rich
 //   Reinstate CVS log history for C++ files and header files. Recent changes
 //   are lost from the log, but not from the files!
@@ -349,9 +352,11 @@ CcParse CrGrid::ParseInput( deque<string> & tokenList )
           }
           case kTCreateWeb:                            // Create a web control
           {
+#ifdef __BOTHWX__
             CrWeb * webPtr = new CrWeb( this );
             if ( webPtr != nil )
               retVal = InitElement( webPtr, tokenList, xpos, ypos );
+#endif
             break;
           }
           case kTCreateListBox:                           // Create a ListBox
