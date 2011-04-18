@@ -18,7 +18,9 @@
 @FOR %%I IN ( ..\crystals\*.fpp ) DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & exit /b 1 ))
 @FOR %%I IN ( ..\cameron\*.fpp ) DO @call buildfile.bat %%I
 @FOR %%I IN ( ..\gui\*.cc )      DO @call buildfile.bat %%I
+@if not "%COMPCODE%" == "WXS" goto skipweb
 @FOR %%I IN ( ..\webconnect\*.cpp )   DO @call buildfile.bat %%I
+:skipweb
 @call buildfile.bat lapack
 
 @if "%COMPCODE%" == "GID" rc /d__CR_WIN__ /fo script1.res ..\gui\script1.rc
