@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.39  2011/04/08 12:54:35  djw
+C Just add a few comments
+C
 C Revision 1.38  2011/03/21 13:57:21  rich
 C Update files to work with gfortran compiler.
 C
@@ -986,8 +989,8 @@ C----CALCULATE THE NUMBER OF BONDED ATOMS AND THEIR ADDRESSES IN
 C----THE FIRST STACK.
 cdjwmar09
 c----- get the pivot atom id
-c      write (ctemp,'(a4,''('',i4,'')'')') store(m5a),nint(store(m5a+1))
-c      call xcras (ctemp,ltemp)
+      write (ctemp,'(a4,''('',i4,'')'')') store(m5a),nint(store(m5a+1))
+      call xcras (ctemp,ltemp)
 c      if (issprt .eq. 0) then
 c       write(ncwu,'(a,a)') 'Atoms bonded to ', ctemp(1:ltemp)
 c      endif
