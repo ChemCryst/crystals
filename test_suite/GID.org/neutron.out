@@ -5087,7 +5087,8 @@ Space group symbol is   P    1    21/N 1
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
 #COMPOSITION                                                                                                                                                                                                                                                    
- System files contain no entries for required wavelength                                                                                                                                                                                                          0.7107 used in lieu of   0.8308                                                                                                                                                                                                                               
+ System files contain no anomalous entries for required wavelength                                                                                                                                                                                                0.7107 used in lieu of   0.8308 for anomalous scattering                                                                                                                                                                                                      
+  Multiplicity of a General Site is   4  Laue-no is   2                                                                                                                                                                                                         
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
 # OH, HANG ON, IT'S A NEUTRON STRUCTURE. TRY THESE SCATTERING                                                                                                                                                                                                   
@@ -10162,7 +10163,8 @@ Space group symbol is   P    1    21/N 1
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
 #COMPOSITION                                                                                                                                                                                                                                                    
- System files contain no entries for required wavelength                                                                                                                                                                                                          0.7107 used in lieu of   0.8308                                                                                                                                                                                                                               
+ System files contain no anomalous entries for required wavelength                                                                                                                                                                                                0.7107 used in lieu of   0.8308 for anomalous scattering                                                                                                                                                                                                      
+  Multiplicity of a General Site is   4  Laue-no is   2                                                                                                                                                                                                         
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
 # OH, HANG ON, IT'S A NEUTRON STRUCTURE. TRY THESE SCATTERING                                                                                                                                                                                                   
@@ -14575,7 +14577,8 @@ Space group symbol is   P    1    21/N 1
                               Z axis from  0.000 to  0.500
   Disc file on unit   1 extended by     1 records 
 #COMPOSITION                                                                                                                                                                                                                                                    
- System files contain no entries for required wavelength                                                                                                                                                                                                          0.7107 used in lieu of   0.8308                                                                                                                                                                                                                               
+ System files contain no anomalous entries for required wavelength                                                                                                                                                                                                0.7107 used in lieu of   0.8308 for anomalous scattering                                                                                                                                                                                                      
+  Multiplicity of a General Site is   4  Laue-no is   2                                                                                                                                                                                                         
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
 # OH, HANG ON, IT'S A NEUTRON STRUCTURE. TRY THESE SCATTERING                                                                                                                                                                                                   
@@ -18977,11 +18980,11 @@ Mean C-C su =   0.0016
 #CYCLENDS                                                                                                                                                                                                                                                       
 #                                         AND CLOSE THE PROGRAM.                                                                                                                                                                                                
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads      29838 Physical writes      27586 Cache hits     681063
- Cache hit distribution   573526   61007    7973    4118    6049    4075
- Cache hit distribution     3244    3565    3036    1451    1463    1254
- Cache hit distribution     1759    1233     592     568     586     618
- Cache hit distribution      884     725    1014    1000     650     673
+ Physical reads      30637 Physical writes      27586 Cache hits     681447
+ Cache hit distribution   573664   61095    7977    4127    4807    5324
+ Cache hit distribution     3173    2770    3086    1748    1499    1463
+ Cache hit distribution     1580    1377    1063     624     590     438
+ Cache hit distribution      760     692    1094    1088     687     721
 
 
           : Job ends ok       with     0 warnings and     0 errors

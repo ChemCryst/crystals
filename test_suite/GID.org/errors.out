@@ -1066,11 +1066,11 @@ REAL
 
 
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads         95 Physical writes        210 Cache hits       8295
- Cache hit distribution     5761     398     275     150     137      79
- Cache hit distribution      181      70      88     224     131     123
- Cache hit distribution      248      84     131      79      46      57
- Cache hit distribution       10      10      11       1       0       1
+ Physical reads         97 Physical writes        210 Cache hits       8400
+ Cache hit distribution     5763     414     275     150      30     189
+ Cache hit distribution      182      60      27     130     217     132
+ Cache hit distribution      150     246     113     111      92      61
+ Cache hit distribution       26      15      15       1       1       0
 
 
           : Job ends ok       with     0 warnings and     9 errors

@@ -2531,9 +2531,9 @@ Mean C-C su =   0.0000
 #CYCLENDS                                                                                                                                                                                                                                                       
 #PERH                                                                                                                                                                                                                                                           
            Per-hydrogenation of Carbon atoms
-  sp3 delta   0.03 sp3 delta  0.09 planarity  999.00 angle delta  999.00
- hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                               
- Unassignable carbon - 
+C(1)  sp3 delta   0.03 sp3 delta  0.09 planarity  999.00 angle delta  999.00
+C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                           
+ Unassignable carbon - C(1)
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
 H23 C(10) C(11) C(1) 
@@ -5564,11 +5564,11 @@ Mean C-C su =   0.0061
 
 #                                         AND CLOSE THE PROGRAM.                                                                                                                                                                                                
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads       4201 Physical writes       5861 Cache hits     138204
- Cache hit distribution   113643   11142    2658    1042    1709     997
- Cache hit distribution      418     547     619     562     550     434
- Cache hit distribution      530     386     380     330     306     231
- Cache hit distribution      336     260     281     275     281     287
+ Physical reads       4502 Physical writes       5861 Cache hits     138324
+ Cache hit distribution   113693   11182    2673    1034    1273    1443
+ Cache hit distribution      399     271     648     600     614     482
+ Cache hit distribution      530     432     325     404     297     347
+ Cache hit distribution      314     277     254     289     274     269
 
 
           : Job ends ok       with     0 warnings and     0 errors

@@ -14941,11 +14941,11 @@ Mean C-C su =   0.0481
 
 
 #FINI                                                                                                                                                                                                                                                           
- Physical reads      21440 Physical writes      21866 Cache hits     561510
- Cache hit distribution   496325   35286    6739    2924    3481    2311
- Cache hit distribution     1194    1325    1382     701    1134    1270
- Cache hit distribution     1261     779    1182     357     239     304
- Cache hit distribution      461     749     713     418     493     482
+ Physical reads      22058 Physical writes      21866 Cache hits     561796
+ Cache hit distribution   496430   35358    6771    2880    2563    3251
+ Cache hit distribution     1144     666    1496    1157     849    1199
+ Cache hit distribution     1420    1113     768     926     282     264
+ Cache hit distribution      311     456     972     585     456     479
 
 
           : Job ends ok       with     0 warnings and     0 errors

@@ -2325,11 +2325,11 @@ Matching by Rotation/inversion (Method 1)
  Comparison   of group number   1 completed
 
 #END                                                                                                                                                                                                                                                            
- Physical reads        761 Physical writes       2563 Cache hits      47939
- Cache hit distribution    37326    2733    1749     516     733     399
- Cache hit distribution      354     337     444     486     338     265
- Cache hit distribution      219     458     293     249     278     125
- Cache hit distribution      193     117     100     103      68      56
+ Physical reads        806 Physical writes       2563 Cache hits      48095
+ Cache hit distribution    37328    2841    1697     427     418     683
+ Cache hit distribution      437     291     294     576     323     229
+ Cache hit distribution      246     349     400     292     252     252
+ Cache hit distribution      181     143     160      88     115      73
 
 
           : Job ends ok       with     0 warnings and     0 errors

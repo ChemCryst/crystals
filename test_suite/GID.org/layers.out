@@ -2795,9 +2795,9 @@ Mean C-C su =   0.0000
       Mean value =   1.0000  Mean delta =   0.0000  r.m.s. delta =   0.1251
 #PERH                                                                                                                                                                                                                                                           
            Per-hydrogenation of Carbon atoms
-  sp3 delta   0.03 sp3 delta  0.08 planarity  999.00 angle delta  999.00
- hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                               
- Unassignable carbon - 
+C(1)  sp3 delta   0.03 sp3 delta  0.08 planarity  999.00 angle delta  999.00
+C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                           
+ Unassignable carbon - C(1)
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
 H23 C(10) C(11) C(1) 
@@ -6413,9 +6413,9 @@ Mean C-C su =   0.0000
       Mean value =   1.0000  Mean delta =   0.0000  r.m.s. delta =   0.1251
 #PERH                                                                                                                                                                                                                                                           
            Per-hydrogenation of Carbon atoms
-  sp3 delta   0.03 sp3 delta  0.08 planarity  999.00 angle delta  999.00
- hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                               
- Unassignable carbon - 
+C(1)  sp3 delta   0.03 sp3 delta  0.08 planarity  999.00 angle delta  999.00
+C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                           
+ Unassignable carbon - C(1)
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
 H23 C(10) C(11) C(1) 
@@ -9827,9 +9827,9 @@ Mean C-C su =   0.0000
       Mean value =   1.0000  Mean delta =   0.0000  r.m.s. delta =   0.1517
 #PERH                                                                                                                                                                                                                                                           
            Per-hydrogenation of Carbon atoms
-  sp3 delta   0.04 sp3 delta  0.08 planarity  999.00 angle delta  999.00
- hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                               
- Unassignable carbon - 
+C(1)  sp3 delta   0.04 sp3 delta  0.08 planarity  999.00 angle delta  999.00
+C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                           
+ Unassignable carbon - C(1)
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
 H23 C(10) C(11) C(1) 
@@ -13255,9 +13255,9 @@ Mean C-C su =   0.0000
       Mean value =   1.0000  Mean delta =   0.0000  r.m.s. delta =   0.1515
 #PERH                                                                                                                                                                                                                                                           
            Per-hydrogenation of Carbon atoms
-  sp3 delta   0.04 sp3 delta  0.08 planarity  999.00 angle delta  999.00
- hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                               
- Unassignable carbon - 
+C(1)  sp3 delta   0.04 sp3 delta  0.08 planarity  999.00 angle delta  999.00
+C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                           
+ Unassignable carbon - C(1)
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
 H23 C(10) C(11) C(1) 
@@ -14111,11 +14111,11 @@ Mean C-C su =   0.0000
 #CYCLENDS                                                                                                                                                                                                                                                       
 #                                         AND CLOSE THE PROGRAM.                                                                                                                                                                                                
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads      14408 Physical writes      16623 Cache hits     397293
- Cache hit distribution   322563   34173    6658    4122    5090    3205
- Cache hit distribution     2795    3055    2181    1551    1364    1270
- Cache hit distribution     1020    1358     926     647     713     764
- Cache hit distribution      623     815     524     524     632     720
+ Physical reads      15149 Physical writes      16623 Cache hits     397681
+ Cache hit distribution   322691   34291    6755    4018    3928    4425
+ Cache hit distribution     2734    2269    2256    1708    1596    1276
+ Cache hit distribution     1194    1365     856     934     630     694
+ Cache hit distribution      787     830     651     532     587     674
 
 
           : Job ends ok       with     0 warnings and     0 errors

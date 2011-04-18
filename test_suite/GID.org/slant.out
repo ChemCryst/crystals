@@ -1242,11 +1242,11 @@ AZIMUTH  =    44.97     AZIMUTH /100 =   0.4497
 
     4 *   52   1   1   1   1  10  40  54  52
 #FINI                                                                                                                                                                                                                                                           
- Physical reads       1232 Physical writes        797 Cache hits      32590
- Cache hit distribution    28267    1119     495     289     248     258
- Cache hit distribution      120     114     124     206     208     155
- Cache hit distribution      130     103     109      99      78      73
- Cache hit distribution       91      91      53      56      44      60
+ Physical reads       1239 Physical writes        797 Cache hits      32661
+ Cache hit distribution    28278    1135     493     291     203     309
+ Cache hit distribution       99      67     103     175     272     140
+ Cache hit distribution      162      74     130      98     122      77
+ Cache hit distribution       65      89     108      23      61      87
 
 
           : Job ends ok       with     0 warnings and     0 errors

@@ -34047,11 +34047,11 @@ Mean C-C su =   0.0054
 #CYCLENDS                                                                                                                                                                                                                                                       
 #                                         AND CLOSE THE PROGRAM.                                                                                                                                                                                                
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads      35303 Physical writes      42397 Cache hits    1005982
- Cache hit distribution   818245   66981   14122    7124   10890    8502
- Cache hit distribution    10508   14282   10353    7222    6656    5395
- Cache hit distribution     3494    4117    2195    2161    2269    1756
- Cache hit distribution     1756    2163    1370    1339    1437    1645
+ Physical reads      37279 Physical writes      42397 Cache hits    1006821
+ Cache hit distribution   818585   67225   14151    7089    8111   11377
+ Cache hit distribution    10323   12272   10657    7573    7340    5540
+ Cache hit distribution     3032    4616    2741    1800    2358    2216
+ Cache hit distribution     1843    2386    1431    1331    1356    1468
 
 
           : Job ends ok       with     0 warnings and     0 errors

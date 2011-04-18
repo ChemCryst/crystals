@@ -2527,9 +2527,9 @@ Mean C-C su =   0.0000
 #CYCLENDS                                                                                                                                                                                                                                                       
 #PERH                                                                                                                                                                                                                                                           
            Per-hydrogenation of Carbon atoms
-  sp3 delta   0.03 sp3 delta  0.08 planarity  999.00 angle delta  999.00
- hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                               
- Unassignable carbon - 
+C(1)  sp3 delta   0.03 sp3 delta  0.08 planarity  999.00 angle delta  999.00
+C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                           
+ Unassignable carbon - C(1)
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
 H23 C(10) C(11) C(1) 
@@ -6122,9 +6122,9 @@ Mean C-C su =   0.0000
 #CYCLENDS                                                                                                                                                                                                                                                       
 #PERH                                                                                                                                                                                                                                                           
            Per-hydrogenation of Carbon atoms
-  sp3 delta   0.03 sp3 delta  0.08 planarity  999.00 angle delta  999.00
- hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                               
- Unassignable carbon - 
+C(1)  sp3 delta   0.03 sp3 delta  0.08 planarity  999.00 angle delta  999.00
+C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                           
+ Unassignable carbon - C(1)
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
 H23 C(10) C(11) C(1) 
@@ -9709,9 +9709,9 @@ Mean C-C su =   0.0000
 #CYCLENDS                                                                                                                                                                                                                                                       
 #PERH                                                                                                                                                                                                                                                           
            Per-hydrogenation of Carbon atoms
-  sp3 delta   0.03 sp3 delta  0.09 planarity  999.00 angle delta  999.00
- hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                               
- Unassignable carbon - 
+C(1)  sp3 delta   0.03 sp3 delta  0.09 planarity  999.00 angle delta  999.00
+C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                           
+ Unassignable carbon - C(1)
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
 H23 C(10) C(11) C(1) 
@@ -13318,9 +13318,9 @@ Mean C-C su =   0.0000
 #CYCLENDS                                                                                                                                                                                                                                                       
 #PERH                                                                                                                                                                                                                                                           
            Per-hydrogenation of Carbon atoms
-  sp3 delta   0.03 sp3 delta  0.09 planarity  999.00 angle delta  999.00
- hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                               
- Unassignable carbon - 
+C(1)  sp3 delta   0.03 sp3 delta  0.09 planarity  999.00 angle delta  999.00
+C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                           
+ Unassignable carbon - C(1)
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
 H23 C(10) C(11) C(1) 
@@ -14459,11 +14459,11 @@ Mean C-C su =   0.0066
 #CYCLENDS                                                                                                                                                                                                                                                       
 #                                         AND CLOSE THE PROGRAM.                                                                                                                                                                                                
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads      15916 Physical writes      18121 Cache hits     441250
- Cache hit distribution   358600   36450    7404    3997    5961    4415
- Cache hit distribution     3105    3309    3162    1637    1451    1394
- Cache hit distribution     1700    1016    1128     891     880     870
- Cache hit distribution      819     534     490     506     666     865
+ Physical reads      16847 Physical writes      18121 Cache hits     441542
+ Cache hit distribution   358726   36544    7449    3995    4664    5726
+ Cache hit distribution     3014    2475    3251    1903    1556    1367
+ Cache hit distribution     1886    1168     934    1134     794     871
+ Cache hit distribution     1118     594     552     538     556     727
 
 
           : Job ends ok       with     0 warnings and     0 errors

@@ -7423,9 +7423,9 @@ Mean C-C su =   0.0040
 #PERHYDRO 5 5                                                                                                                                                                                                                                                   
   Disc file on unit   1 extended by     2 records 
            Per-hydrogenation of Carbon atoms
-  sp3 delta   0.09 sp3 delta  0.10 planarity  999.00 angle delta  999.00
- hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                               
- Unassignable carbon - 
+C(1)  sp3 delta   0.09 sp3 delta  0.10 planarity  999.00 angle delta  999.00
+C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                           
+ Unassignable carbon - C(1)
 H12 C(3) N(2) N(4) 
 H12 C(5) C(6) N(4) 
 H12 C(6) C(5) N(2) 
@@ -15294,9 +15294,9 @@ Mean C-C su =   0.0043
 #              PUT IN SOME GEOMETRIC H                                                                                                                                                                                                                          
 #PERHYDRO 5 5                                                                                                                                                                                                                                                   
            Per-hydrogenation of Carbon atoms
-  sp3 delta   0.09 sp3 delta  0.10 planarity  999.00 angle delta  999.00
- hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                               
- Unassignable carbon - 
+C(1)  sp3 delta   0.09 sp3 delta  0.10 planarity  999.00 angle delta  999.00
+C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                           
+ Unassignable carbon - C(1)
 H12 C(3) N(2) N(4) 
 H12 C(5) C(6) N(4) 
 H12 C(6) C(5) N(2) 
@@ -23424,9 +23424,9 @@ Mean C-C su =   0.0040
 #              PUT IN SOME GEOMETRIC H                                                                                                                                                                                                                          
 #PERHYDRO 5 5                                                                                                                                                                                                                                                   
            Per-hydrogenation of Carbon atoms
-  sp3 delta   0.09 sp3 delta  0.10 planarity  999.00 angle delta  999.00
- hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                               
- Unassignable carbon - 
+C(1)  sp3 delta   0.09 sp3 delta  0.10 planarity  999.00 angle delta  999.00
+C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                           
+ Unassignable carbon - C(1)
 H12 C(3) N(2) N(4) 
 H12 C(5) C(6) N(4) 
 H12 C(6) C(5) N(2) 
@@ -31304,9 +31304,9 @@ Mean C-C su =   0.0043
 #              PUT IN SOME GEOMETRIC H                                                                                                                                                                                                                          
 #PERHYDRO 5 5                                                                                                                                                                                                                                                   
            Per-hydrogenation of Carbon atoms
-  sp3 delta   0.09 sp3 delta  0.10 planarity  999.00 angle delta  999.00
- hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                               
- Unassignable carbon - 
+C(1)  sp3 delta   0.09 sp3 delta  0.10 planarity  999.00 angle delta  999.00
+C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                           
+ Unassignable carbon - C(1)
 H12 C(3) N(2) N(4) 
 H12 C(5) C(6) N(4) 
 H12 C(6) C(5) N(2) 
@@ -35692,11 +35692,11 @@ SumFo/SumFc=     4.627      LS-scale=     4.641      Wilson Scale=     4.723
   KEY                                                 1             2             3
 #                                                                                                                                                                                                                                                               
 #END                                                                                                                                                                                                                                                            
- Physical reads      49672 Physical writes      52624 Cache hits    1423835
- Cache hit distribution  1236030   98803   16582    8251   11450    6700
- Cache hit distribution     4508    4293    2950    3798    2703    4632
- Cache hit distribution     3131    3047    1354    1618    2005    2281
- Cache hit distribution     2154    1744    1718    1281    1374    1428
+ Physical reads      51273 Physical writes      52624 Cache hits    1424851
+ Cache hit distribution  1236354   98897   16626    8212    8915    9300
+ Cache hit distribution     4305    2571    3563    3223    3433    4146
+ Cache hit distribution     3776    3324    2335    1380    1701    2635
+ Cache hit distribution     2040    1918    1847    1510    1332    1508
 
 
           : Job ends ok       with     0 warnings and     0 errors
