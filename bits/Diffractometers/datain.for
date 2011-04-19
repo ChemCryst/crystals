@@ -386,6 +386,13 @@ c----------------------------------------------------------------
         ctemp = ' '
         call sgroup(filename(1:lfn)//'.hkl', i_value,cspace)
         call xctrim(cspace,lspace)
+        if (cspace(2:2) .ne. ' ') then
+            do i=lspace,2,-1
+              cspace(i+1:i+1) = cspace(i:i)
+            enddo
+            cspace(2:2) = ' '
+            lspace = lspace + 1
+        endif
         WRITE (6,'(A,a,a)') 'Input space group symbol',
      1 ' with spaces between the components',
      2 ' e.g. P n a 21'

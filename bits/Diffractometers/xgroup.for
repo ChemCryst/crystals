@@ -1105,25 +1105,6 @@ C
 CJDS740      format(4x,3i4,a8,a1,i2,a16,i2,o12,i6,i8)
 C 
 1400  CONTINUE
-      WRITE(LP,*) ' '
-      WRITE(LP,1450) CSYS(ISP)
-      write(lp,1451)
-      write(lp,1452)
-
-      WRITE(LO,1450) CSYS(ISP)
-      write(lo,1451)
-      write(lo,1452)
-1450  format     ('For the ',a11,' system, possible space groups are ',
-     1 'as follows')
-1451  format(' If the SG is not a standard setting, you should',
-     1 ' re-index the data')
-1452  format(/, 52x, '    frequency of')
-c
-c
-      WRITE(LP,*) ' spacegr number setting cen axis choice  full symbol'
-     1,'    occurrence sigma'
-      WRITE(LO,*) ' spacegr number setting cen axis choice  full symbol'
-     1,'    occurrence sigma'
 c      IF (ISP.EQ.8) GO TO 3050
 cdjw08
 c      write(lo,11) isp, j, f(j), ires_ip(f(j)), ichoice(f(j))
@@ -1137,6 +1118,27 @@ cdjwmar-11  - only output if order is a b c
         cspace = ' '
           DO 1401 J=1,J1
             if(perm(ires_ip(f(j))) .eq. ' a b c' ) then
+CDJWAPR11 only write out text if there are any SG found
+            WRITE(LP,*) ' '
+            WRITE(LP,1450) CSYS(ISP)
+            write(lp,1451)
+            write(lp,1452)
+            WRITE(LO,1450) CSYS(ISP)
+            write(lo,1451)
+            write(lo,1452)
+1450  format     ('For the ',a11,' system, possible space groups are ',
+     1       'as follows')
+1451  format(' If the SG is not a standard setting, you should',
+     1       ' re-index the data')
+1452        format(/, 52x, '    frequency of')
+c
+c
+      WRITE(LP,*) ' spacegr number setting cen axis choice  full symbol'
+     1,'    occurrence sigma'
+      WRITE(LO,*) ' spacegr number setting cen axis choice  full symbol'
+     1,'    occurrence sigma'
+CDJWAPR11 only write out text if there are any SG found
+c
              IF(ICEN(F(J)) .EQ. 1) THEN
               WRITE(lo,3100)isg(F(J)),perm(IRES_IP(F(J))),'C'
      &,kaxis(F(J)),
