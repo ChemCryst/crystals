@@ -944,8 +944,9 @@ c        CALL XPRVDU(NCVDU, 1,0)
 cavdlsep07 new Superflip version (sep2007) gives the possibility for
 c---- voxel calculation inside Superflip. If this works correctly than
 c---- the foregoing voxel calculation can be skipped
-      WRITE(NCFPU1, '(''voxel '', 3i6)')(ivoxel(i),i=1,3)
-c      WRITE(NCFPU1, '(''voxel AUTO'')')
+c---- use AUTO suggested by AvdL April 2011
+c      WRITE(NCFPU1, '(''voxel '', 3i6)')(ivoxel(i),i=1,3)
+      WRITE(NCFPU1, '(''voxel AUTO'')')
       WRITE(NCFPU1, '(''cell '', 3F7.3, 3F8.3)')
 c     1 , (STORE(I),I=L1P1,L1P1+5)
      1  (ACELL(I),I=1,6)
