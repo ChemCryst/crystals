@@ -1,4 +1,4 @@
-%SCRIPT XFLIPIN
+%SCRIPT XFLIPIN                                                                 
 %% READ IN SUPERFLIP RESULTS                                                    
 %%AvdL it is here that the output file should be read                           
 %%AvdL Do a collect atoms by symmetry, necessary!                               
@@ -9,28 +9,8 @@
 %%    DID SUPERFLIP WORK?                                                       
 %  IF  ( FILEEXISTS ( 'sflip.ins' ) ) THEN                                      
 %%                                                                              
-%   BLOCK                                                                       
-%      EVALUATE QTITLE = 'Superflip Results'                                    
-%      EVALUATE QLINE1 = 'Do you want to use the structure'                     
-%      EVALUATE QLINE2 = 'from Superflip ?'                                     
-%      EVALUATE BUTTOK = '&Yes'                                                 
-%      EVALUATE BUTTXX = '&Not yet'                                             
-%      COPY '#SCRIPT XQUESTIO'                                                  
-%      IF ANSWER .EQ. FALSE THEN                                                
-%          COPY '#SCRIPT XHELP1'                                                
-   If the structure will not solve:                         
-   1) Run Superflip once more using default options.
-   1) Try the "Superflip parameters for difficult structures" option.
-   2) Try DirDif or Sir92.
-   3) Read the Superflip manual for help.
-   4) Ask an expert.                                  
-%          COPY '#SCRIPT XHELP2'                                                
-%          FINISH                                                               
-%      ELSE                                                                     
-%          COPY '#SCRIPT FRESH'                                                 
+%          COPY '#SCRIPT XFRESH'                                                 
 %          COPY '#SCRIPT XFLIPIN2'                                              
-%      END IF                                                                   
-%   END BLOCK                                                                   
 %  ELSE                                                                         
 {E No superflip output - job may have failed                                    
                                                                                 

@@ -1,0 +1,27 @@
+%SCRIPT XAUTONUM
+%% sORTING BY ELECTRON COUNT ENSURES THAT NUMBERING STARTS WITH                 
+%% THE HEAVIEST ATOM                                                            
+%% SORTING BY RELAX ENSURES THAT THE MOST UNIQUE ATOM IS FIRST                  
+%% SOMETIMES THESE ARE THE SAME                                                 
+%%
+%       COPY '#EDIT'                                                            
+%       COPY 'MONITOR OFF'                                                      
+%       COPY 'RESET RESIDUE 0.0 ALL '                                           
+%       COPY 'INSERT RESIDUE'                                                   
+%       copy 'INSERT ELECTRON'                                                  
+%       COPY 'DSORT SPARE'                                                      
+%       COPY 'KEEP 1 ALL'                                                       
+%       copy 'end'                                                              
+%%       COPY '#edit'                                                           
+%%       COPY 'INSERT RELAX'                                                    
+%%       COPY 'DSORT SPARE'                                                     
+%% Relax leaves stupidly hugely numbers in SPARE, which will                    
+%% break punching of L5 sometimes - (e.g. Cameron link) - so:                   
+%%       COPY 'RESET RESIDUE 0.0 ALL'                                           
+%%       COPY 'INSERT RESIDUE'                                                  
+%%       COPY 'END'                                                             
+%       COPY '#REGROUP'                                                         
+%       COPY 'SELECT TYPE=ALL SEQUENCE=nohyd MOVE=-0.2'                         
+%       COPY 'END'                                                              
+%       COPY '#SCRIPT HNAM'                                                     
+% END SCRIPT

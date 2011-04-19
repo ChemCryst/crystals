@@ -1,10 +1,10 @@
-%SCRIPT XFLIPINSTRUC
+%SCRIPT XFLIPINSTRUC                                                            
 %%                                                                              
-%% Read in a structure from a superflip shelx-type file.                        
+ Read in a structure from a superflip shelx-type file.                        
 %%                                                                              
 {R Script version by R. Cooper. Based on the fortran program SXTOCA by          
 {R R.O. Gould, The University of Edinburgh, March 1994.                         
-{R Slightly modified for use with Superflip                                     
+{R Slightly modified by A van der Lee for use with Superflip                                     
 %%                                                                              
 %%                                                                              
 % VARIABLE CHARACTER CFILE CENTRO CLATYP CUNIT CSFAC CTEM CLAT                  
@@ -17,7 +17,7 @@
 % VARIABLE REAL SXOCC CRYOCC SPECOCC                                            
 % VARIABLE INTEGER ATOMCOUNT                                                    
 %%                                                                              
-% EVALUATE SXGETALL = TRUE                                                     
+% EVALUATE SXGETALL = TRUE                                                      
 %%                                                                              
 %% variables used by the question box below                                     
 % VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2 QLINE3                  
@@ -32,23 +32,23 @@
 % TRANSFER '#OPEN SCPD "' // CFILE // '"' TO CRYSTALS                           
 %%                                                                              
 %%                                                                              
-%%
-%%
-%% Find the atoms and peaks.
-%% Assume all lines not beginning with a recognised SHELX keyword
-%% are atom records. This causes failure for files with reflections
-%% in, though I'm sure someone could fix this by making it stop
-%% at an HKLF instruction.
-%%
-%        COPY '#SCRIPT ZSHELXIN'
-{R Shelx file processed.
-%        COPY '#CLOSE SCPDATA'
-%        IF ( ATOMCOUNT .EQ. 0 ) THEN
-{I No atoms found
-%          FINISH
-%        ELSE
-%          BLOCK
-%            IF LQS .EQ. TRUE THEN
+%%                                                                              
+%%                                                                              
+%% Find the atoms and peaks.                                                    
+%% Assume all lines not beginning with a recognised SHELX keyword               
+%% are atom records. This causes failure for files with reflections             
+%% in, though I'm sure someone could fix this by making it stop                 
+%% at an HKLF instruction.                                                      
+%%                                                                              
+%        COPY '#SCRIPT ZSHELXIN'                                                
+{R Superflip file processed.                                                        
+%        COPY '#CLOSE SCPDATA'                                                  
+%        IF ( ATOMCOUNT .EQ. 0 ) THEN                                           
+{I No atoms found                                                               
+%          FINISH                                                               
+%        ELSE                                                                   
+%          BLOCK                                                                
+%            IF LQS .EQ. TRUE THEN                                              
 %              EVALUATE QTITLE = 'Change Q atoms?'                              
 %              EVALUATE QLINE1 = 'Do you want to change all Q'                  
 %              EVALUATE QLINE2 = 'atoms to Carbon?'                             
@@ -61,7 +61,7 @@
 %               COPY 'END'                                                      
 %              END IF                                                           
 %            END IF                                                             
-%%
+%%                                                                              
 %          END BLOCK                                                            
 %%                                                                              
 %%                                                                              
@@ -96,4 +96,4 @@ Writing Wilson Scale to LIST 5
 %%                                                                              
 %        END IF                                                                 
 %        FINISH                                                                 
-%END SCRIPT
+%END SCRIPT                                                                     

@@ -1,0 +1,80 @@
+%SCRIPT XFRESH                                                                   
+%%       
+%% This script was called FRECH, and does all the real work
+%% FRESH now just asks the questions
+%%                                                                       
+%% Call this script when a new model has been read-in.                          
+%%                                                                              
+%% It will clear out 12 and 16, make sure F or F2 is stored                     
+%% correctly in L30 and reset all the flags used by "The Guide".                
+%%                                                                              
+% VARIABLE LOGICAL L12SMASK                                                     
+% VARIABLE INTEGER L12SER                                                       
+%%                                                                              
+{S * Clearing old restraints, constraints and refinement directives. 
+{S * Removing bonding information.           
+% BLOCK                                                                         
+%  COPY '#CLEAR 16'                                                             
+%  COPY 'END'                                                                   
+%  COPY '#DISK'
+%  COPY 'DELETE 40'
+%  COPY 'DELETE 41'
+%  COPY 'END'
+%  COPY '#CLEAR 12'                                                             
+%  COPY 'END'                                                                   
+%%                                                                              
+%% Keep List 39 sweet.                                                          
+%  COPY '#GENERALEDIT 12'                                                       
+%  COPY 'GETSERIAL L12SER'                                                      
+%  COPY 'END'                                                                   
+%  EVALUATE L12SMASK = TRUE                                                     
+%  COPY '#SCRIPT XPUTINFO'                                                      
+% END BLOCK                                                                     
+%%                                                                              
+%%                                                                              
+%%{S * Synchronising refinement coefficient in L30 with that in L23.            
+%  VARIABLE INTEGER FOLD  FTYPE                                                 
+% BLOCK                                                                         
+%  EVALUATE FOLD = 1                                                            
+%  IF EXISTS 23 .GE. 1 THEN                                                     
+%   COPY '#GENERALEDIT 23'                                                      
+%   COPY 'LOCATE RECORDTYPE = 103'                                              
+%   COPY 'TRANSFER FROM OFFSET =  1 TO FOLD'                                    
+%   COPY 'END'                                                                  
+%%       FOLD = -1 for F, or 0 for F**2                                         
+%%  FTYPE NEEDED FOR SCRIPT STATWT                                              
+%   EVALUATE FTYPE = FOLD + 1                                                   
+%   EVALUATE FOLD = FOLD + 2                                                    
+%%  Now, FOLD =  1 for F, or 2 for F**2.                                        
+%  END IF                                                                       
+%  COPY '#GENERALEDIT 30'                                                       
+%  COPY 'LOCATE RECORDTYPE=103'                                                 
+%  COPY 'TRANSFER TO OFFSET=12 FROM FOLD'                                       
+%  COPY 'WRITE OVERWRITE=OVERWRITE'                                             
+%  COPY 'END'                                                                   
+% END BLOCK                                                                     
+%%                                                                              
+%%  Get a Wilson scale factor                                                   
+%    COPY '#WILSON'                                                             
+%    COPY 'OUTPUT PLOT=no NZ=no STATS=no'                                       
+%    COPY 'FILTER LIST28 = NO'                                                  
+%    COPY 'END'                                                                 
+%%                                                                              
+{SNOV 09  Check weighting scheme in XWTINI                                      
+%    COPY '#SCRIPT XWTINI'                                                      
+%%                                                                              
+%%{S * Reset known facts for "The Guide"                                        
+% BLOCK                                                                         
+%  VARIABLE LOGICAL HMASK EMASK WMASK PMASK                                     
+%  VARIABLE LOGICAL HDONE EDONE WDONE PDONE                                     
+%  EVALUATE WMASK = TRUE                                                        
+%  EVALUATE WDONE = FALSE                                                       
+%  EVALUATE EMASK = TRUE                                                        
+%  EVALUATE EDONE = FALSE                                                       
+%  EVALUATE HMASK = TRUE                                                        
+%  EVALUATE HDONE = FALSE                                                       
+%  EVALUATE PMASK = TRUE                                                        
+%  EVALUATE PDONE = FALSE                                                       
+%  COPY '#SCRIPT XPUTINFO'                                                      
+% END BLOCK                                                                     
+%END SCRIPT                                                                     
