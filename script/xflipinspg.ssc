@@ -90,14 +90,23 @@
 %    TRANSFER 'Space group read from TITL card: ' // SPACEREAD TO DISPLAY       
                                                                                 
 %    IF ( SPACEREAD .EQ. SPACEREADOLD ) THEN                                    
-{R Superflip confirms the original space group
-{R The symmetry operators will be updated.
-%       EVALUATE ANSWER = TRUE                                                  
-%    ELSE                                                                     
-%       TRANSFER 'Initial space group: ' // SPACEREADOLD  TO DISPLAY
-%       TRANSFER 'Superflip proposes: ' // SPACEREAD      TO DISPLAY
-%       TRANSFER 'See the log-file'                       TO DISPLAY
-%       EVALUATE SGCHANGE = TRUE                                                
+%       EVALUATE QTITLE = SPACEREAD
+%       EVALUATE QLINE1 = 'Superflip confirms the original space group'
+%       EVALUATE QLINE2 = 'The symmetry operators are updated.'
+%       EVALUATE BUTTOK = 'OK'
+%       COPY '#SCRIPT XMESSAGE'
+%       COPY 'END'
+%       EVALUATE ANSWER = TRUE
+%      ELSE
+%       EVALUATE QTITLE = 'Initial space group: ' // SPACEREADOLD
+%       EVALUATE QLINE1 = 'Superflip proposes: ' // SPACEREAD
+%       EVALUATE QLINE2 = 'Do you accept this (see also the log-file)?'
+%       EVALUATE BUTTOK = 'Yes'
+%       EVALUATE BUTTXX = 'No'
+%       EVALUATE SGCHANGE = TRUE
+%%       COPY '#SCRIPT XQUESTIO'
+%%       COPY 'END'
+
 %    END IF                                                                     
 %%AvdL now put spaces in spgr symbol for export to CRSYTALS; this is approximate
 %    EVALUATE SPACEREAD = SPGTOCRY ( SPACEREAD )                                
