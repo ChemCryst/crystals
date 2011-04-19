@@ -1,5 +1,5 @@
 %SCRIPT XRETYPE
-% VARIABLE INTEGER N29 HSPOT
+% VARIABLE INTEGER N29 HSPOT CLEAN
 % VARIABLE CHARACTER CLTYPE
 % VARIABLE LOGICAL BROKENEDIT RESET29
 % EVALUATE BROKENEDIT = FALSE
@@ -42,13 +42,14 @@
 ^^WI          @ 6,1 STATIC T1 'Elements" button.'
 ^^WI          @ 8,1 BUTTON BED 'Edit Elements'
 ^^WI        }
-^^WI        @ 5,1 GRID CLICK NROWS=6 NCOLS=1
+^^WI        @ 5,1 GRID CLICK NROWS=8 NCOLS=1
 ^^WI        {
 ^^WI          @ 1,1 STATIC T1 'If you want to assemble'
 ^^WI          @ 2,1 STATIC T1 'the atoms into bonded'
 ^^WI          @ 3,1 STATIC T1 'residues, click the'
 ^^WI          @ 4,1 STATIC T1 '"Collect Atoms" button.'
 ^^WI          @ 6,1 BUTTON BCOLL 'Collect Atoms'
+^^WI          @ 8,1 CHECKBOX CHBX 'Convert Q to C on exit' STATE=OFF
 ^^WI        }
 ^^WI      }
 ^^WI      @ 1,3 MODELWINDOW MODELRE 'N' NROWS=5 NCOLS=65
@@ -67,6 +68,13 @@
 ^^WI SHOW
 ^^CR
 %%
+^^??  CHBX STATE
+%     VERIFY ON OFF
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%     CASE VALUE
+%       EVALUATE CLEAN = 1
+%       EVALUATE CLEAN = 0
+%     END CASE
 %  VARIABLE INTEGER OLDSER
 %  COPY '#GENERALEDIT 5'
 %  COPY 'GETSERIAL OLDSER'
@@ -112,6 +120,18 @@
  * Applying new types.
 %      COPY 'END'
 ^^CO   DISPOSE XRENAM
+%      IF CLEAN .EQ. 1 THEN
+%         copy '#peak 5 5'
+%         copy 'select type=peak'
+%         copy 'end'
+%         COPY '#EDIT'                                                          
+%         COPY 'monitor off'                                                    
+%         COPY 'TYPECHANGE TYPE EQ Q C'                                         
+%         COPY 'TYPECHANGE TYPE EQ QH C'                                        
+%         COPY 'SELECT TYPE NE QN '
+%         COPY 'CLASH FIXLATTER'                                        
+%         COPY 'END'                                                            
+%      END IF
 %      FINISH
 %    END BLOCK
 %    BLOCK      %BXX
