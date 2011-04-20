@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.58  2011/04/08 12:55:23  djw
+C New module XORIGIN to apply permitted origin shifts
+C
 C Revision 1.57  2011/03/21 13:57:21  rich
 C Update files to work with gfortran compiler.
 C
@@ -4412,7 +4415,7 @@ C--
       CHARACTER *2 CNO
       CHARACTER *4 CCLASS, CMIX
       CHARACTER *80 CLINE, CLOW
-      DIMENSION COFG(3), CSHIFT(3)
+      DIMENSION COFG(3), CSHIFT(3), COFGB(3)
       INCLUDE 'ISTORE.INC'
 C
       INCLUDE 'STORE.INC'
@@ -4541,13 +4544,30 @@ C----- USE FIRST ATOM
             COFG(3) = STORE(L5+6)
       ENDIF
 C
+      CALL XMOVE(COFG,COFGB,3)
+C
+c-- look for case where molecule is miles outside of cell
+c
+      WRITE(CMON,'(a,6F8.3)')'Old centre ', 
+     1 (COFG(I),I=1,3)
+      CALL XPRVDU(NCVDU, 1,0)
+c
+      DO I = 1,3
+        K = INT(COFG(I))
+        l = k
+        if (COFG(I) .lt. 0) l = k - 1
+        CSHIFT(I) = CSHIFT(I) - FLOAT(l)
+        COFG(I) = COFG(I) + CSHIFT(I)
+      ENDDO
+C
+C
       IF (ICENTR .GT. 0) THEN
 C      CENTRIC - ALL 8 ORIGINS PERMITTED
        SHIFTA: DO I=1,3
         IF (COFG(I) .LT. 0.25) THEN
-         CSHIFT(I) = .5
+         CSHIFT(I) = .5 + CSHIFT(I)
         ELSE IF (COFG(I) .GT. 0.75) THEN
-         CSHIFT(I) = -0.5
+         CSHIFT(I) = -0.5  + CSHIFT(I)
         ENDIF
        ENDDO SHIFTA
       ELSE
@@ -4556,9 +4576,9 @@ C     NON-CENTRIC
 C            TRICLINIC - ALL ORIGINS FLOAT
       WRITE(CMON,'(A)')'Triclinic'
       call xprvdu(ncvdu,1,0)
-             CSHIFT(1) = 0.5 - COFG(1)
-             CSHIFT(2) = 0.5 - COFG(2)
-             CSHIFT(3) = 0.5 - COFG(3)
+             CSHIFT(1) = 0.5 - COFG(1) + CSHIFT(I)
+             CSHIFT(2) = 0.5 - COFG(2) + CSHIFT(I)
+             CSHIFT(3) = 0.5 - COFG(3) + CSHIFT(I)
        ELSE IF ((ICLASS .EQ. 2) .OR.
      1          (ICLASS .EQ. 3)) THEN
 C            MONOCLINIC OR ORTHORHOMBIC
@@ -4566,26 +4586,23 @@ C            MONOCLINIC OR ORTHORHOMBIC
       call xprvdu(ncvdu,1,0)
              SHIFTB: DO I=1,3
               IF (IFLOR(I) .EQ. 1) THEN
-               CSHIFT(I) = 0.5 - COFG(I)
+               CSHIFT(I) = 0.5 - COFG(I) + CSHIFT(I)
               ELSE
                IF (COFG(I) .LT. 0.25) THEN
-                CSHIFT(I) = .5
+                CSHIFT(I) = .5 + CSHIFT(I)
                ELSE IF (COFG(I) .GT. 0.75) THEN
-                CSHIFT(I) = -0.5
+                CSHIFT(I) = -0.5 + CSHIFT(I)
                ENDIF
               ENDIF
              ENDDO SHIFTB
        ENDIF
       ENDIF
 C
-      WRITE(CMON,'(a,6F8.3)')'Old centre ', 
-     1 (COFG(I),I=1,3)
-      CALL XPRVDU(NCVDU, 1,0)
       WRITE(CMON,'(a,6F8.3)')' Shift     ',
      1 (CSHIFT(I),I=1,3)
       CALL XPRVDU(NCVDU, 1,0)
       WRITE(CMON,'(a,6F8.3)')'New centre ', 
-     1 (COFG(I)+CSHIFT(I),I=1,3)
+     1 (COFGB(I)+CSHIFT(I),I=1,3)
       CALL XPRVDU(NCVDU, 1,0)
 
       M5=L5
