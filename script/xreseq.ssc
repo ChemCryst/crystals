@@ -1,7 +1,7 @@
 %SCRIPT XRESEQU                                                                 
 %%   Resequence atoms without first sorting by atomic weight                    
 %  copy '#REGROUP'                                                              
-%  copy 'SELECT TYPE=ALL SEQUENCE=nohyd MOVE=-0.2'                                
+%  copy 'SELECT TYPE=ALL SEQUENCE= EXHYD MOVE=-0.2'                                
 %  copy 'end'
 %  copy '#script hnam'                                                                   
 %END SCRIPT                                                                     

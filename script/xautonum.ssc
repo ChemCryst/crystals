@@ -21,7 +21,7 @@
 %%       COPY 'INSERT RESIDUE'                                                  
 %%       COPY 'END'                                                             
 %       COPY '#REGROUP'                                                         
-%       COPY 'SELECT TYPE=ALL SEQUENCE=nohyd MOVE=-0.2'                         
+%       COPY 'SELECT TYPE=ALL SEQUENCE = EXHYD MOVE=-0.2'                         
 %       COPY 'END'                                                              
 %       COPY '#SCRIPT HNAM'                                                     
 % END SCRIPT
