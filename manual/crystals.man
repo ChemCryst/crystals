@@ -1018,6 +1018,7 @@ Lists marked * cannot be directly input by the User
 #    14    Fourier directives (section #RLIST14#)
 #    16    General Restraints (section #RLIST16#)
 #    17    Special Restraints (section #RLIST17#)
+#    18    SMILEs string representation (section #RLIST18#)
 #    20*   Transformation matrices saved by \GEOMETRY (section #RLIST20#)
 #    22*   Refinement directives in internal format (section #RLIST22#)
 #    23    Structure factor control list (section #RLIST23#)
@@ -1204,10 +1205,10 @@ This parameter has three values which indicate the level of detail
  Alternative input of the symmetry information    LIST 2
  Input of molecular contents                      COMPOSITION
  Input of the atomic scattering factors           LIST 3
+ Input the structural formula as a SMILES string  LIST 18
  Input of the contents of the unit cell           LIST 29
  Input of the crystal and data collection details LIST 13
  Input of general crystallographic data           LIST 30
- Input of structural formula as a SMILES string   LIST 18
 #
 #Q
 #XQUICKSTART#
@@ -2107,7 +2108,52 @@ if twinned reflection data is input.
 #I\PRINT 13#
 #PThis prints list 13. There is no command for punching LIST 13.
 #
+#
 #Q
+#XLIST 18#
+#XStructural Formula as a SMILES string#
+#YInput of Structural Formula as a SMILES string - LIST 18#
+#ALIST18#
+#HSSMILESs#
+#PThis list holds the structural formula as a SMILES string
+#N   4#
+#J
+ \LIST 18
+ SMILES    string.
+ END
+#
+For example
+#N   6#
+#J
+#list 18
+smile CC(C1=CC=CC=[N]1[Ga]2345[N](N=C(S5)Nc6ccccc6)=C(C)
+cont C7=CC=CC=[N]73)=[N]2N=C(S4)Nc8ccccc8
+smile n(o)(o)(o)
+end
+#
+#Q
+#I\LIST 18#
+#Q
+#DSMILE smiles text. Remeber there is an 80 character line length. Break
+ the SMILES at a suitable point and use a CONTINUATION card.
+#P If there is more than one discrete moiety in the cell, enter each on 
+its own SMILES card
+#
+#Q
+#YPrinting the SMILES string, LIST 18#
+#HSprintsmiles#
+#Q
+#I\PRINT 18#
+#PThis prints list 18. 
+#Q
+#YPunching the SMILES string, LIST 18#
+#HSpunchsmiles#
+#Q
+#I\PUNCH 18#
+#PThis punches list 18. 
+#Q
+
+#
 #XLIST 29#
 #XElement properties#
 #YInput of the contents of the asymmetric unit  -  LIST 29#
@@ -2438,49 +2484,6 @@ these to the same values as in REFINEMENT above.
 #Q
 #I\PRINT 30#
 #PThis prints list 30. There is no command for punching LIST 30.
-#Q
-
-#XLIST 18#
-#XStructural Formula as a SMILES string#
-#YInput of Structural Formula as a SMILES string - LIST 18#
-#ALIST18#
-#HSSMILESs#
-#PThis list holds the structural formula as a SMILES string
-#N   4#
-#J
- \LIST 18
- SMILES    string.
- END
-#
-For example
-#N   6#
-#J
-#list 18
-smile CC(C1=CC=CC=[N]1[Ga]2345[N](N=C(S5)Nc6ccccc6)=C(C)
-cont C7=CC=CC=[N]73)=[N]2N=C(S4)Nc8ccccc8
-smile n(o)(o)(o)
-end
-#
-#Q
-#I\LIST 18#
-#Q
-#DSMILE smiles text. Remeber there is an 80 character line length. Break
- the SMILES at a suitable point and use a CONTINUATION card.
-#P If there is more than one discrete moiety in the cell, enter each on 
-its own SMILES card
-#
-#Q
-#YPrinting the SMILES string, LIST 18#
-#HSprintsmiles#
-#Q
-#I\PRINT 18#
-#PThis prints list 18. 
-#Q
-#YPunching the SMILES string, LIST 18#
-#HSpunchsmiles#
-#Q
-#I\PUNCH 18#
-#PThis punches list 18. 
 #Q
 
 #
@@ -3965,6 +3968,9 @@ For example
 #J
  Specifications of atoms and other parameters
  Input of atoms and other parameters              - \LIST 5
+ Re-order the atom list                           - \REGROUP
+ Collect atoms together by symmetry               - \COLLECT
+ Move the structure into the cell                 - \ORIGIN
  Modification of lists 5 and 10 on the disc       - \EDIT
  Applying permitted origin shifts                 - \ORIGIN
  Conversion of temperature factors                - \CONVERT
@@ -5259,14 +5265,19 @@ bond, c(1) to c(20).
  deleted atoms. If MONITOR is LOW,
  the moved atoms are not listed.
 #KSEQUENCE#
-#N   2#
+#N   3#
 #J
       NO   -  Default value
       YES
+      EXHYD
 #
  If  SEQUENCE  is  YES, the outputlist is resquenced as described above.
+#
  If  SEQUENCE  is  NO, the serial numbers of the atoms are not
  changed from the  original list.
+#
+ If SEQUECE is EXHYD the hydrogen atoms are excluded from the 
+renumbering.
 #KSYMMETRY=#
  This parameter controls the use of symmetry information in the calculation of
  contacts, and can take three values.
@@ -5335,11 +5346,16 @@ bond, c(1) to c(20).
 #J
       ALL
       PEAKS
+      ATOMS
 #
- If TYPE equals ALL, then the coodinates of all atoms are liable to be
+ If TYPE equals ALL, then the coodinates of all atoms and Q-peaks 
+ are liable to be
  modified by the symmetry operators in order to assemble a single fragment.
+#
  If TYPE equals PEAKS, then only the peaks are moved to bring them as close
  as possible to existing atoms.
+#
+ If TYPE equald ATOMS, only non-Q atoms are modified
 #
 #KSYMMETRY=#
  This parameter controls the use of symmetry information in the calculation of
@@ -5366,8 +5382,6 @@ bond, c(1) to c(20).
  \ORIGIN INPUTLIST= OUTPUTLIST= MODE=
  END
 
- \CONVERT
- END
 #
 #PAttempt to move the structure to the centre of the unit cell
  using the permitted origin shifts.
@@ -10181,10 +10195,14 @@ or computed using  SCALE  =  YES  above.
 #J
       NO  -  Default value
       YES
+      EXHYD
 #
  If  SEQUENCE  is  YES, then the program will
  give sequential serial numbers to the atoms and
  peaks in the final output  list .
+#
+ If SEQUECE is EXHYD the hydrogen atoms are excluded from the 
+renumbering.
 #KTYPE=#
 #N   3#
 #J
@@ -11168,7 +11186,8 @@ the surface.
 #Q
 #Q
 #DZEROS
-#P#PThis directive enables the user to set the S tensor to zero before
+#P
+#PThis directive enables the user to set the S tensor to zero before
  EVALUATING or REPLACING the Uij. It decouples T from L.
 #DDISTANCES  DL=   AL=#
 #PThis directive calculates all interatomic distances less than
@@ -11181,6 +11200,7 @@ the surface.
 #PThis directive calculates angles between all bonds less than
  AL angstroms. If this directive is omitted, no angles are calculated;
  if AL is absent, a default value of 1.8 is inserted.
+#P
 #P
  _I{*********************** WARNING *************************
 #
@@ -11199,33 +11219,47 @@ the surface.
 #Q
 
 #J
- \
- \ these instructions compute a plane
- \ involving n(1),n(2),n(3) and c(1), and
- \ prints the co-ordinates of all the atoms with
- \ respect to this plane.  The positions of the
- \ nitrogen atoms have double weight
- \
+   Examples:
+ 
+  These instructions compute a plane
+  involving n(1),n(2),n(3) and c(1), and
+  prints the co-ordinates of all the atoms with
+  respect to this plane.  The positions of the
+  nitrogen atoms have double weight
+ 
  \GEOMETRY
  ATOMS 2 N(1) UNTIL N(3)  1 C(1) C(2)
  PLANE
  EVALUATE ALL
- \
- \ these instructions calculate another plane,
- \ printing only the co-ordinates of c(5) with respect to
- \ the second plane.  The angle between the two planes
- \ is then calculated
- \
+ 
+  These instructions calculate another plane,
+  printing only the co-ordinates of c(5) with respect to
+  the second plane.  The angle between the two planes
+  is then calculated
+ 
  ATOMS C(1) S(1) N(1)
  PLANE
  EVALUATE C(5)
  DIHEDRAL 1 AND 2
  END
+ 
+ 
+  These instructions compute a TLS tensor for the specified atoms
+  and then set up restraints to encourage the Uij to conform to a
+  rigid body.  You might want to tighten the esd in TLSREST.dat to 0.005.
+ 
+ \GEOM                                                                           
+ ATOM ALL
+ TLS
+ PUNCH
+ EVAL ALL
+ EX
+ END
+ \LIST 16                                                                        
+ \USE TLSREST.DAT                                                                
+ END
 #
 #
-
-
-
 
 #Q
 #XTORSION#
