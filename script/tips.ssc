@@ -32,7 +32,7 @@ have adjacent serial numbers, type:
 #REGROUP                                                                        
 SELECT TYPE=ALL SEQUENCE=YES                                                    
 END                                                                             
-Using SEQUENCE=NOHYD leaves H atoms unchanged
+Using SEQUENCE=EXHYD leaves H atoms unchanged
 %   END BLOCK                                                                   
 %   BLOCK     %TIP2%                                                            
  You don't need to click on the input line                                      
