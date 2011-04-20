@@ -49,7 +49,7 @@
 ^^WI          @ 3,1 STATIC T1 'residues, click the'
 ^^WI          @ 4,1 STATIC T1 '"Collect Atoms" button.'
 ^^WI          @ 6,1 BUTTON BCOLL 'Collect Atoms'
-^^WI          @ 8,1 CHECKBOX CHBX 'Convert Q to C on exit' STATE=OFF
+^^WI          @ 8,1 CHECKBOX CHBX 'Convert Q to C on exit' STATE=ON
 ^^WI        }
 ^^WI      }
 ^^WI      @ 1,3 MODELWINDOW MODELRE 'N' NROWS=5 NCOLS=65
@@ -68,13 +68,6 @@
 ^^WI SHOW
 ^^CR
 %%
-^^??  CHBX STATE
-%     VERIFY ON OFF
-%     GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%     CASE VALUE
-%       EVALUATE CLEAN = 1
-%       EVALUATE CLEAN = 0
-%     END CASE
 %  VARIABLE INTEGER OLDSER
 %  COPY '#GENERALEDIT 5'
 %  COPY 'GETSERIAL OLDSER'
@@ -119,11 +112,19 @@
 %    BLOCK      %BOK
  * Applying new types.
 %      COPY 'END'
-^^CO   DISPOSE XRENAM
+%% make sure there are no remaining clashes
+%      copy '#peak 5 5'
+%      copy 'select type=peak'
+%      copy 'end'
+^^??  CHBX STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%      CASE VALUE
+%       EVALUATE CLEAN = 1
+%       EVALUATE CLEAN = 0
+%      END CASE
+^^CO    DISPOSE XRENAM
 %      IF CLEAN .EQ. 1 THEN
-%         copy '#peak 5 5'
-%         copy 'select type=peak'
-%         copy 'end'
 %         COPY '#EDIT'                                                          
 %         COPY 'monitor off'                                                    
 %         COPY 'TYPECHANGE TYPE EQ Q C'                                         
