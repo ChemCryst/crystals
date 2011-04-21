@@ -43478,11 +43478,11 @@ Mean C-C su =   0.0000
 
 
 
- Physical reads       8373 Physical writes       3848 Cache hits     181077
- Cache hit distribution   160374    8865    2468     639     780    1860
- Cache hit distribution      365     209     391     389     366     616
- Cache hit distribution      901     263     273     232     208     213
- Cache hit distribution      250     269     282     288     299     277
+ Physical reads       8377 Physical writes       3848 Cache hits     181073
+ Cache hit distribution   160369    8865    2468     639     780    1860
+ Cache hit distribution      365     209     391     389     364     612
+ Cache hit distribution      906     256     273     238     205     211
+ Cache hit distribution      250     268     290     284     304     277
 
 
           : Job ends ok       with     0 warnings and     1 error 

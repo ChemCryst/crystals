@@ -2326,10 +2326,10 @@ Matching by Rotation/inversion (Method 1)
 
 #END                                                                                                                                                                                                                                                            
  Physical reads        806 Physical writes       2563 Cache hits      48095
- Cache hit distribution    37328    2841    1697     427     418     683
- Cache hit distribution      437     291     294     576     323     229
- Cache hit distribution      246     349     400     292     252     252
- Cache hit distribution      181     143     160      88     115      73
+ Cache hit distribution    37326    2841    1697     427     418     683
+ Cache hit distribution      437     291     294     576     323     227
+ Cache hit distribution      248     345     396     301     250     247
+ Cache hit distribution      189     143     157      91     115      73
 
 
           : Job ends ok       with     0 warnings and     0 errors

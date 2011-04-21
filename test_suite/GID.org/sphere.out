@@ -8065,11 +8065,11 @@ Mean C-C su =   0.0000
 
 
 #FINI                                                                                                                                                                                                                                                           
- Physical reads       5941 Physical writes       9378 Cache hits     201336
- Cache hit distribution   162698   12194    6374    2641    1973    2381
- Cache hit distribution     1523     544     807    1284     964    1051
- Cache hit distribution      834     857     300     303     514     495
- Cache hit distribution      426     530     462     516     868     797
+ Physical reads       5946 Physical writes       9378 Cache hits     201331
+ Cache hit distribution   162692   12194    6374    2641    1973    2381
+ Cache hit distribution     1523     544     807    1284     964    1047
+ Cache hit distribution      832     854     299     314     512     495
+ Cache hit distribution      424     517     469     524     860     807
 
 
           : Job ends ok       with     0 warnings and     0 errors

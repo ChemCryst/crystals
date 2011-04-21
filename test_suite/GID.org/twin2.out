@@ -1514,11 +1514,11 @@ Inter cycle   4       0.00          0.100E+16       24.9
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #FINI                                                                                                                                                                                                                                                           
- Physical reads        760 Physical writes       1298 Cache hits      50790
- Cache hit distribution    44275    2344     701     416     317     333
- Cache hit distribution      190     114     143     233     204     136
- Cache hit distribution      162     163     167     130     121     100
- Cache hit distribution      124      74     102     101      80      60
+ Physical reads        759 Physical writes       1298 Cache hits      50787
+ Cache hit distribution    44270    2344     705     410     317     334
+ Cache hit distribution      190     113     146     236     195     132
+ Cache hit distribution      166     165     161     133     120     104
+ Cache hit distribution      112      81     110      97      85      61
 
 
           : Job ends ok       with     0 warnings and     0 errors
