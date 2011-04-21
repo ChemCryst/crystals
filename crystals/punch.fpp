@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.59  2011/04/04 09:16:19  djw
+C Punch list 1 for N Dave.
+C Save LIST 5 pointers when creating a LIST 9 if LIST 5 is already loaded.
+C
 C Revision 1.58  2011/03/21 13:57:21  rich
 C Update files to work with gfortran compiler.
 C
@@ -634,7 +638,11 @@ c     if a LIST 5 is already loaded, save the pointers
       endif
       CALL XFAL05
       CALL XFAL23
-      write(cmon,'(a)') 'Writing simple esd file'
+      if ( itype .eq. 1) then
+        write(cmon,'(a)') 'Writing simple esd file'
+      else
+        write(cmon,'(a)') 'Creating LIST 9'
+      endif
       call xprvdu(ncvdu, 1,0)
       iupdat = istore(l23sp+1)
       toler = store(l23sp+5)

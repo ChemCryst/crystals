@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2011/04/04 09:21:39  djw
+C PUNCH 1 added
+C
 C Revision 1.20  2011/03/15 09:00:09  djw
 C More work on LIST 9
 C Routine which use LISTs 5,9,10 all use the same common block, ICOM05, for loading from the disk and for
@@ -123,7 +126,7 @@ C--CHECK IF THIS IS A LIST OPERATION
 C--NOT A LIST OPERATION  -  BRANCH ON ITS TYPE
 1210  CONTINUE
       GOTO (1220, 1230, 1240, 1245, 4000, 4400, 4500,
-     1 4600, 4700, 1215), NUM
+     1 4600, 4700, 4800, 1215), NUM
 
 1215  CONTINUE
       GOTO 9920
@@ -260,6 +263,20 @@ C----- MATRIX ARITHMETIC
       CALL SMATRX
       RETURN
 
+4800  CONTINUE
+C----- CREATE ESD LIST
+      ITEMP1=NR60
+      ITEMP2=NR61
+      NR60=0
+      NR61=0
+      I=KRDDPV(ISTORE(NFL),4)
+      NR60=ITEMP1
+      NR61=ITEMP2
+      CALL XRSL
+      CALL XCSAE
+      CALL XPCH5E(2)
+      RETURN
+
 C--LIST PRINT ROUTINE
 6000  CONTINUE
       ITEMP1=NR60
@@ -361,7 +378,7 @@ C-- 5D 'CHIME' XYZ FORMAT
       RETURN
 C-- 5E ESDS IN SIMPLE FORMAT
 7350  CONTINUE
-      CALL XPCH5E(2)
+      CALL XPCH5E(1)
       RETURN
 
 7400  CONTINUE
