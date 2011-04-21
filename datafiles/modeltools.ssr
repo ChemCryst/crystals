@@ -1,15 +1,15 @@
-%%SSR MODELTOOLS                                                                               
+%%SSR MODELTOOLS                                                                
 %  The model window toolbar                                                     
 %                                                                               
 ^^WI               @ 1,1 TOOLBAR _MODBAR                                        
 ^^WI               {                                                            
 ^^WI                 TOOL _MROT tool_rot.bmp 'Rotate'                           
-^^WI                 '#SCRIPT XMODVIEW_NROT' DISABLEIF='IN'                     
+^^WI                 '#SCRIPT XMODVIEW_NROT' TOGGLE DISABLEIF='IN'                     
 ^^WI                 ITEM _MROT STATE=ON                                        
 ^^WI                 TOOL _MRECT tool_rect.bmp 'Select'                         
-^^WI                 '#SCRIPT XMODVIEW_NSEL' DISABLEIF='IN'                     
+^^WI                 '#SCRIPT XMODVIEW_NSEL' TOGGLE DISABLEIF='IN'                     
 ^^WI                 TOOL _MPOLY tool_poly.bmp 'Polygon'                        
-^^WI                 '#SCRIPT XMODVIEW_NPOLY' DISABLEIF='IN'                    
+^^WI                 '#SCRIPT XMODVIEW_NPOLY' TOGGLE DISABLEIF='IN'                    
 ^^WI                 TOOL _UNSEL tool_unsl.bmp 'UnSelect'                       
 ^^WI                 '^^CO SET MODEL01 SELECT ALL=NO'                           
 ^^WI                 ENABLEIF='L1 L2 L5' DISABLEIF='SEL0'                       
@@ -21,14 +21,17 @@
 ^^WI                 ENABLEIF='ZOOMED'                                          
 ^^WI                 SPLIT                                                      
 ^^WI                 TOOL _MBALL tool_ball.bmp 'Ball'                           
-^^WI                 '#SCRIPT XMODVIEW_NCOV' DISABLEIF='IN' ENABLEIF='L5'       
+^^WI                 '#SCRIPT XMODVIEW_NCOV' TOGGLE
+^^WI                   DISABLEIF='IN' ENABLEIF='L5'
 ^^WI                 ITEM _MBALL STATE=ON                                       
 ^^WI                 TOOL _MADP tool_adp.bmp 'Ellipse'                          
-^^WI                 '#SCRIPT XMODVIEW_NTHERM' DISABLEIF='IN' ENABLEIF='L5'     
+^^WI                 '#SCRIPT XMODVIEW_NTHERM' TOGGLE
+^^WI                   DISABLEIF='IN' ENABLEIF='L5'
 ^^WI                 SPLIT                                                      
-^^WI                 TOOL _MSHOWH tool_showh.bmp 'Show/Hide Hydrogen'                           
-^^WI                 '#SCRIPT XMODVIEW_NTOGGLEH' DISABLEIF='IN' ENABLEIF='L5'       
-^^WI                 ITEM _MSHOWH STATE=ON                                       
+^^WI                 TOOL _MSHOWH tool_showh.bmp 'Show H'           
+^^WI                 '#SCRIPT XMODVIEW_NTOGGLEH' TOGGLE
+^^WI                   DISABLEIF='IN' ENABLEIF='L5'
+^^WI                 ITEM _MSHOWH STATE=ON                                      
 ^^WI               }                                                            
-%%END SSR
-
+%%END SSR                                                                       
+                                                                                
