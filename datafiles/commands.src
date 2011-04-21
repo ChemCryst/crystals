@@ -4158,6 +4158,10 @@ MATRIX            15
   14.SCR2B              0 9999    0    0    0    0  111    5  115
          0    0    0    0    0    0    0    0    0    0
   15.MATRIX             0    1    0    0
+ESD                1    2
+  10    4096 CRYSTALSINPUT
+    5   22
+   1.ESD                0    1    0    0
 COPY               1    5
    5    4096 CRYSTALSINPUT6
     1    6    7   23   28
