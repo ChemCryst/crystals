@@ -1,12 +1,34 @@
 %SCRIPT SQUEEZE
-%  VARIABLE CHARACTER CDIR CFILE
-%  VARIABLE LOGICAL T
 %% variables used by the question box below                                     
 %  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                        
 %  VARIABLE LOGICAL ANSWER                                                      
+% VARIABLE INTEGER IFLACK                                         
+% COPY '#GENERALEDIT 23'                                                        
+% COPY 'LOCATE RECORDTYPE = 101'                                                
+% COPY 'TRANSFER FROM OFFSET = 6 TO IFLACK'                                     
+%  IF ( IFLACK .EQ. 0 ) THEN                                         
+{1,8 
+{1,8 The Flack paramter is being used.
+{1,8 Ton Spek only recommends the use of SQUEEZE for data
+{1,8 with Friedel and other equivalent reflections merged.
+{1,8 CRYSTALS recommends that you abaNdon SQUEEZING until
+{1,8 you have ensured that the data is fully merged.
+{1,8 
+%      EVALUATE QTITLE = ' '                              
+%      EVALUATE QLINE1 = 'Do you want to go ahead with'                           
+%      EVALUATE QLINE2 = 'SQUEEZEing?'                         
+%      EVALUATE BUTTOK = '&Yes'                                                 
+%      EVALUATE BUTTXX = '&No'                                                  
+%      COPY '#SCRIPT XQUESTIO'                                                  
+%      IF ANSWER .EQ. FALSE THEN                                                 
+%        FINISH                                                             
+%      END IF                                                                   
+%  END IF                                                            
+%  VARIABLE CHARACTER CDIR CFILE
+%  VARIABLE LOGICAL T
 {1,9  Running PLATON/SQUEEZE in CRYSTALS modifies the Fcalc part
 {1,9  of reflections by storing the real and imaginary parts of
-{1,9  the strcuture factor.
+{1,9  the structure factor.
 {1,9  This change is recorded by setting a flag in LIST 23 and
 {1,9  increasing the storage for LIST 6.
 {1,9  CRYSTALS recommends that you save you dsc file before
@@ -65,7 +87,7 @@
 %%
 %  IF ( .not. FILEEXISTS ( 'platon.hkp' ) ) THEN                                    
 {1,9  PLATON/SQUEEZE has not created a suitable output file.
-{1,9  There nay not be any voids in your structure
+{1,9  There may not be any voids in your structure
 %    FINISH
 %  END IF                                                                       
 %   BLOCK
