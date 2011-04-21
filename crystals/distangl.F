@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.104  2011/04/08 12:56:30  djw
+C Add new alternative 'Mode = ATOM'
+C
 C Revision 1.103  2011/03/21 13:57:21  rich
 C Update files to work with gfortran compiler.
 C
@@ -4082,6 +4085,7 @@ C----- LOOP BACK HERE FOR NEXT ATOM
 cdjwjan11
       IF ( IPART .eq. 1 ) then
              CALL PRTGRP(ISTORE(M5A+14), MPIVPR, MPIVGR,ipart)
+
       else  ! IPART eq 2 - look at RESIDUE slot in list 5
              CALL PRTGRP(ISTORE(M5A+16), MPIVPR, MPIVGR,ipart)
       endif
@@ -4099,9 +4103,9 @@ C--IF NOT BONDING PARTS, then CHECK PART NUMBERS
 
 cdjwjan11
       IF ( IPART .eq. 1 ) then
-             CALL PRTGRP(ISTORE(M5A+14),MBONPR, MBONGR,ipart)
+             CALL PRTGRP(ISTORE(M5+14),MBONPR, MBONGR,ipart)
       else  ! IPART eq 2 - look at RESIDUE slot in list 5
-             CALL PRTGRP(ISTORE(M5A+16),MBONPR, MBONGR, ipart)
+             CALL PRTGRP(ISTORE(M5+16),MBONPR, MBONGR, ipart)
       endif
 
       IF ( IPART .ge. 1 ) then
