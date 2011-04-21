@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.57  2011/03/23 10:14:25  rich
+C Fix and catch case where CRYSTALS runs out of pre-defined file units.
+C
 C Revision 1.56  2011/03/21 13:57:21  rich
 C Update files to work with gfortran compiler.
 C
@@ -654,7 +657,7 @@ C      +2      SHELL COMMAND
 C
       CHARACTER*(*) CLINE
       CHARACTER *1 CDOLAR
-      CHARACTER *2 CTRAN1 , CTRAN2
+      CHARACTER *2 CTRAN1 , CTRAN2, CTRAN3
 #if defined(_PPC_) 
 CS***
       CHARACTER*80 theLine
@@ -672,6 +675,8 @@ CTest
 CTest
 C
 C
+CDJWAPR2011 ADD & FOR FRENCH USERS
+      DATA  CTRAN3 / '&?' /      
       DATA  CTRAN2 / '#?' /, CDOLAR /'$'/
 C------ THE FOLLOWING LINE WOULD BE BACKSLASH* IN THE DATA STATEMENT
 C       ABOVE, EXCEPT THAT SOME WEIRD UNIX DICTATE WHAT YOU CAN DO
@@ -821,6 +826,7 @@ c      ENDIF
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 C -- CONVERT FIRST CHARACTER IF NECESSARY
       IPOS = INDEX ( CTRAN1 , CLINE(1:1) )
+      IF (IPOS .LE. 0) IPOS = INDEX ( CTRAN3 , CLINE(1:1) )
       IF ( IPOS .GT. 0 ) CLINE(1:1) = CTRAN2(IPOS:IPOS)
 C
 C
