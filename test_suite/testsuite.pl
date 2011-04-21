@@ -93,6 +93,9 @@ sub obscureMachinePrecision() {
 # su_max shift often has too much precision to be stable across platforms
 	   } elsif($line =~ m/^(_refine_ls_shift\/su_mean *\d*.\d\d\d\d\d)\d\d *$/ ) {
               print $fho "$1\n";
+# Version number in CIF changes
+	   } elsif($line =~ m/^_audit_creation_method CRYSTALS.*$/ ) {
+              print $fho "_audit_creation_method CRYSTALS\n";
            } else {
               print $fho "$line\n";
 	   }
