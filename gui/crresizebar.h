@@ -7,6 +7,10 @@
 //   Filename:  CrResizeBar.h
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.1.1.1  2004/12/13 11:16:18  rich
 //   New CRYSTALS repository
 //
@@ -54,7 +58,7 @@ class  CrResizeBar : public CrGUIElement
     void Collapse ( bool collapse );
     void SwapPanes();
     void SwapOrient();
-
+	
   private:
     int m_offset, m_type, m_InitOffset;
     bool m_firstNonSize, m_secondNonSize, m_NonSizePresent, m_BothNonSize, m_Reverse, m_Rotate;

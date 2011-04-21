@@ -92,7 +92,7 @@ CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 #endif
 #ifdef __BOTHWX__
 
-  CxModel *theModel = new CxModel((wxWindow*)guiParent,-1, wxPoint(0,0), wxSize(10,10), wxSUNKEN_BORDER);
+  CxModel *theModel = new CxModel((wxWindow*)guiParent,-1, wxPoint(0,0), wxSize(10,10), NULL /*wxSUNKEN_BORDER*/);
   theModel->ptr_to_crObject = container;
   theModel->Setup();
 
@@ -213,6 +213,7 @@ BEGIN_EVENT_TABLE(CxModel, wxGLCanvas)
      EVT_MOTION( CxModel::OnMouseMove )
      EVT_COMMAND_RANGE(kMenuBase, kMenuBase+1000, wxEVT_COMMAND_MENU_SELECTED, CxModel::OnMenuSelected )
      EVT_ERASE_BACKGROUND ( CxModel::OnEraseBackground )
+	 EVT_LEAVE_WINDOW( CxModel::OnMouseLeave )
 END_EVENT_TABLE()
 
 #endif
@@ -613,6 +614,15 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
 }
 
 
+#ifdef __BOTHWX__ 
+void CxModel::OnMouseLeave(wxMouseEvent & event)
+{
+    DeletePopup();
+    m_bMouseLeaveInitialised = false;
+    return;
+}
+#endif
+
 #ifdef __CR_WIN__
 LRESULT CxModel::OnMouseLeave(WPARAM wParam, LPARAM lParam)
 {
@@ -866,11 +876,12 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
       m_xScale += 4.0 * hDrag;
       m_xScale = CRMAX(0.01f,m_xScale);
       m_xScale = CRMIN(100.0f,m_xScale);
-//      m_xTrans = 8000.0f * ( (float)m_ptLDown.x / (float)winx ) - 4000.0f; // NB y axis is upside down for OpenGL.
-//      m_yTrans = 8000.0f * ( (float)m_ptLDown.y / (float)winy ) - 4000.0f;
+
+	  m_xTrans = 8000.0f * ( (float)m_ptLDown.x / (float)winx ) - 4000.0f; // NB y axis is upside down for OpenGL.
+      m_yTrans = 8000.0f * ( (float)m_ptLDown.y / (float)winy ) - 4000.0f;
 
 //      m_xTrans -= m_xTrans / m_xScale ;  //Head back towards the centre
-//      m_yTrans -= m_yTrans / m_xScale ;
+      //m_yTrans -= m_yTrans / m_xScale ;
 
       NewSize(winx,winy);
 //      m_Autosize = false;

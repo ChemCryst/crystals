@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.23  2011/03/04 05:56:39  rich
+//   Fix see through background on wx toolbar images.
+//
 //   Revision 1.22  2009/09/04 09:25:46  rich
 //   Added support for Show/Hide H from model toolbar
 //   Fixed atom picking after model update in extra model windows.
@@ -150,10 +153,11 @@ CxToolBar * CxToolBar::CreateCxToolBar( CrToolBar * container, CxGrid * guiParen
 #endif
 #ifdef __BOTHWX__
     theCxToolBar->Create(guiParent,-1);
-    theCxToolBar->m_ToolBar->Create(theCxToolBar, ++mToolBarCount);
+    theCxToolBar->m_ToolBar->Create(theCxToolBar, ++mToolBarCount,wxDefaultPosition,wxDefaultSize,wxTB_FLAT|wxTB_TEXT|wxTB_NODIVIDER|wxTB_TOP);
+    theCxToolBar->SetCursor(NULL);
+    theCxToolBar->m_ToolBar->SetCursor(NULL);
 #endif
     return theCxToolBar;
-
 }
 
 CxToolBar::CxToolBar( CrToolBar * container )
@@ -199,7 +203,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 {
 // Check if this is a separator.
 
-  LOGERR("Adding something");
+//  LOGERR("Adding something");
   if ( newTool->toolType == CT_SEP )
   {
 #ifdef __CR_WIN__
@@ -240,10 +244,11 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 #endif
 #ifdef __BOTHWX__
     wxIcon mycon( file.c_str(), wxBITMAP_TYPE_ICO_RESOURCE, -1, -1 );
-	LOGERR("Adding App icon");
+//   LOGERR("Adding App icon");
     if ( mycon.Ok() )
     {
       m_ToolBar->AddTool(newTool->CxID, mycon, newTool->tText.c_str());
+//      m_ToolBar->AddTool(newTool->CxID, mycon, "Text");
       m_ToolBar->Realize();
       m_ImageIndex++;
       m_totWidth += 28;
@@ -284,7 +289,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 #endif
 
 #ifdef __BOTHWX__
-  	LOGERR("Adding script dir icon");
+//  	LOGERR("Adding script dir icon");
     struct stat buf;
       if ( stat(file.c_str(),&buf)==0 )
       {
@@ -293,8 +298,8 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 		unsigned char tg = myimage.GetGreen(0,0);
 		unsigned char tb = myimage.GetBlue(0,0);
 		wxColour ncol = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
-		for (unsigned int x = 0; x < myimage.GetWidth(); ++x ) {
-			for (unsigned int y = 0; y < myimage.GetHeight(); ++y ) {
+		for (int x = 0; x < myimage.GetWidth(); ++x ) {
+			for (int y = 0; y < myimage.GetHeight(); ++y ) {
 				if ( myimage.GetRed(x,y) == tr ) {
 					if ( myimage.GetGreen(x,y) == tg ) {
 						if ( myimage.GetBlue(x,y) == tb ) {
@@ -311,14 +316,17 @@ bool    CxToolBar::AddTool( CcTool* newTool )
         {
           noLuck = false;
 // Deprecated:m_ToolBar->AddTool(newTool->CxID, mymap, newTool->tText.c_str(), "" );
+//          m_ToolBar->AddTool(newTool->CxID, "text", 
+			                 //mymap, wxEmptyString, 
+							 //(newTool->toggleable ? wxITEM_CHECK : wxITEM_NORMAL) );
           m_ToolBar->AddTool(newTool->CxID, newTool->tText.c_str(), 
 			                 mymap, wxEmptyString, 
 							 (newTool->toggleable ? wxITEM_CHECK : wxITEM_NORMAL) );
 
 //		  if ( newTool->toggleable ) { 
-			ostringstream strstrm;
-			strstrm << newTool->CxID;
-			LOGERR("Made toggleable tool bar item: " + strstrm.str() );
+//			ostringstream strstrm;
+//			strstrm << "Made " << (newTool->toggleable ? " toggle " : " non-toggle ") << "item: " << newTool->CxID;
+//			LOGERR(strstrm.str() );
 //		  }
 
 
@@ -415,8 +423,12 @@ int CxToolBar::GetIdealWidth()
 //   LOGSTAT ( "Toolsep = " + string ( m_ToolBar->GetToolSeparation() ) );
 //   LOGSTAT ( "m_ImageIndex = " + string ( m_ImageIndex ) );
 //   return (( 18 + 5 ) * m_ImageIndex ) ;
-//   LOGSTAT ("CxToolbar: Returning ideal width: " + string(m_totWidth) );
-   return ( m_totWidth ) + 50;
+//   ostringstream os;
+   //os << "CxToolbar: Returning ideal width: " << m_ToolBar->GetSize().x;
+//   LOGERR ( os.str() );
+//   return ( m_totWidth ) + 50;
+	m_ToolBar->SetSize(0, 0, wxDefaultCoord, wxDefaultCoord);
+	return m_ToolBar->GetSize().x;
 #endif
 }
 
@@ -428,7 +440,8 @@ int CxToolBar::GetIdealHeight()
    return CRMIN(200,tbs.cy+2);
 #endif
 #ifdef __BOTHWX__
-   return 15 + 10;
+     return m_ToolBar->GetSize().y;
+//   return 15 + 10;
 #endif
 }
 
@@ -557,9 +570,9 @@ void CxToolBar::CheckTool(bool check, int id)
 #endif
 #ifdef __BOTHWX__
  m_ToolBar->ToggleTool(id, check);
- ostringstream strstrm;
- strstrm << id;
- LOGERR((check? "Checked " : "Unchecked " ) + strstrm.str() );
+// ostringstream strstrm;
+ //strstrm << id;
+// LOGERR((check? "Checked " : "Unchecked " ) + strstrm.str() );
 #endif
 }
 
@@ -569,7 +582,7 @@ bool CxToolBar::GetToolState(int id) {
 	cstate = (m_ToolBar->GetState(id) & TBSTATE_CHECKED);
 #endif
 #ifdef __BOTHWX__
-	cstate = m_ToolBar->GetToolState(id);
+	cstate = ! m_ToolBar->GetToolState(id);
 #endif
 	return cstate;
 }

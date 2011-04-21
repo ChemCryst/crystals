@@ -7,6 +7,9 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.43  2011/03/04 06:00:57  rich
+//  Don't use 's' in function signature.
+//
 //  Revision 1.42  2009/09/04 09:25:46  rich
 //  Added support for Show/Hide H from model toolbar
 //  Fixed atom picking after model update in extra model windows.
@@ -351,6 +354,7 @@ protected:
     void OnChar(wxKeyEvent & event );
     void OnPaint(wxPaintEvent & event );
     void OnMenuSelected(wxCommandEvent &event );
+	void OnMouseLeave(wxMouseEvent & event);
     DECLARE_EVENT_TABLE()
 #endif
 

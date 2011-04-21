@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper
 //   Created:   26.1.2001 17:10 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2009/09/04 09:25:46  rich
+//   Added support for Show/Hide H from model toolbar
+//   Fixed atom picking after model update in extra model windows.
+//
 //   Revision 1.8  2005/01/23 10:20:24  rich
 //   Reinstate CVS log history for C++ files and header files. Recent changes
 //   are lost from the log, but not from the files!
@@ -116,7 +120,7 @@ CcParse CrToolBar::ParseInput( deque<string> & tokenList )
         tokenList.pop_front(); // Remove that token!
         CcTool * newTool = new CcTool();
         m_ToolList.push_back(newTool);
-        AddTool(newTool);
+        AddTool(newTool); //Add to list.
         newTool->tName = string(tokenList.front()); tokenList.pop_front();
         newTool->tImage = string(tokenList.front()); tokenList.pop_front();
         newTool->tText = string(tokenList.front()); tokenList.pop_front();

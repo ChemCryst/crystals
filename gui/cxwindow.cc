@@ -9,6 +9,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.42  2011/03/04 05:55:20  rich
+//   Make windows and dialogs on WX version more like the GID version.
+//
 //   Revision 1.41  2008/09/22 12:31:37  rich
 //   Upgrade GUI code to work with latest wxWindows 2.8.8
 //   Fix startup crash in OpenGL (cxmodel)
@@ -119,6 +122,7 @@
 #include    "crtoolbar.h"
 #include    "cccontroller.h"
 #include    "crtextout.h"
+#include    "crweb.h"
 #include    <string>
 #include    <sstream>
 
@@ -398,7 +402,8 @@ BEGIN_EVENT_TABLE(CxWindow, wxFrame)
       EVT_COMMAND_RANGE(kToolButtonBase, kToolButtonBase+5000,
                         wxEVT_COMMAND_MENU_SELECTED,
                         CxWindow::OnToolSelected)
-      EVT_KEY_DOWN( CxWindow::OnKeyDown )
+	  EVT_MENU_HIGHLIGHT_ALL(CxWindow::OnHighlightMenuItem)
+	  EVT_KEY_DOWN( CxWindow::OnKeyDown )
 END_EVENT_TABLE()
 #endif
 
@@ -436,6 +441,59 @@ void CxWindow::OnUpdateMenuItem(wxUpdateUIEvent & pCmdUI)
     else
             pCmdUI.Enable(false);
 }
+void CxWindow::OnHighlightMenuItem(wxMenuEvent & event)
+{
+	if ( event.GetMenuId() == -1 ) return;
+    CcMenuItem* theItem = CrMenu::FindMenuItem(event.GetMenuId());
+	if(theItem == nil) {
+		ostringstream os;
+		os << "No menu item found " << event.GetMenuId();
+		LOGERR(os.str());	
+		return;
+	} else {
+		CrWeb* webHelpWindow = (CrWeb*)(CcController::theController)->FindObject( "HT" );
+		if ( webHelpWindow  != nil ) {
+			//Find an html file matching the menu label in the script folder.
+			string crysdir ( getenv("CRYSDIR") );
+			if ( crysdir.length() == 0 )
+			{
+#if defined(__WXGTK__) || defined(__WXMAC__)
+				std::cerr << "You must set CRYSDIR before running crystals.\n";
+#endif
+				return;
+		    }
+		    int nEnv = (CcController::theController)->EnvVarCount( crysdir );
+			int i = 0;
+		    bool noLuck = true;
+			while ( noLuck )
+			{
+				string dir = (CcController::theController)->EnvVarExtract( crysdir, i );
+				i++;
+#if defined(__WXGTK__) || defined(__WXMAC__)
+				string file = dir + "script/" + theItem->name + ".html";
+#endif
+#ifdef __BOTHWIN__
+				string file = dir + "script\\" + theItem->name + ".html";
+#endif
+				struct stat buf;
+				if ( stat(file.c_str(),&buf)==0 )
+				{
+					webHelpWindow->SetText(file.c_str());
+					break;
+				}
+				if ( i >= nEnv )
+		        {
+					noLuck = false;
+					break;
+				}
+		    }
+			LOGERR("Menu item " + theItem->name + " hovered over");	
+		}
+	}
+
+
+}
+
 #endif
 
 

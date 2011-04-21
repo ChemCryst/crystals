@@ -7,6 +7,10 @@
 //   Filename:  CrResizeBar.cc
 //   Author:    Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.1.1.1  2004/12/13 11:16:18  rich
 //   New CRYSTALS repository
 //
@@ -69,6 +73,7 @@ using namespace std;
 #include    "ccrect.h"
 #include    "crresizebar.h"
 #include    "crgrid.h"
+#include    "cxgrid.h"
 #include    "crwindow.h"
 #include    "cccontroller.h"
 #include    "cxresizebar.h"
@@ -371,7 +376,6 @@ CcRect CrResizeBar::CalcLayout(bool recalc)
   return CcRect( 0,0, totHeight, totWidth );
 
 }
-
 
 void CrResizeBar::SetText ( const string &cText )
 {

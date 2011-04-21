@@ -6,6 +6,10 @@
 //   Filename:  CxBitmap.cpp
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.2  2005/01/12 13:15:56  rich
 //   Fix storage and retrieval of font name and size on WXS platform.
 //   Get rid of warning messages about missing bitmaps and toolbar buttons on WXS version.
@@ -135,11 +139,31 @@ void    CxBitmap::LoadFile( string bitmap, bool transp )
 #endif
 #ifdef __BOTHWX__
     struct stat buf;
-    if (   ( stat(file.c_str(),&buf)==0 )
-        && ( mbitmap.LoadFile(file.c_str(), wxBITMAP_TYPE_BMP)) )
-    {
-      noLuck = false;
-    }
+	if ( stat(file.c_str(),&buf)==0 ) {
+		wxImage myimage ( file.c_str(), wxBITMAP_TYPE_BMP );
+		if ( myimage.Ok() && transp ) {
+			unsigned char tr = myimage.GetRed(0,0);
+			unsigned char tg = myimage.GetGreen(0,0);
+			unsigned char tb = myimage.GetBlue(0,0);
+			wxColour ncol = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
+			for (int x = 0; x < myimage.GetWidth(); ++x ) {
+				for (int y = 0; y < myimage.GetHeight(); ++y ) {
+					if ( myimage.GetRed(x,y) == tr ) {
+						if ( myimage.GetGreen(x,y) == tg ) {
+							if ( myimage.GetBlue(x,y) == tb ) {
+								myimage.SetRGB(x,y,ncol.Red(),ncol.Green(),ncol.Blue());
+							}
+						}
+					}
+				}
+			}
+		}
+        wxBitmap mymap ( myimage, wxBITMAP_TYPE_BMP );
+		if ( mymap.Ok() ) {
+			mbitmap=mymap;
+			noLuck = false;
+		}
+	}
     else if ( i >= nEnv )
     {
       LOGERR ( "Bitmap not found " + bitmap );
