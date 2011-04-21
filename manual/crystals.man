@@ -4600,6 +4600,7 @@ done automatically.
       A -  Punches the model parameters in CRYSTALS format.
       B -  Punches the atomic parameters in XRAY format.
       C -  Punches the atomic parameters in SHELX format.
+      E -  Punches atomic parameters and esds in a plain format
 #Q
 #ISummary display of LIST 5 - \DISPLAY#
 #N   5#
@@ -6554,11 +6555,13 @@ to be created.
 # LIST 28 - Reflection restriction list (#RLIST28#)
 # CHECK - Checking the refinement and restraint directives
 # SFLS - Structure factor least squares calculations (#RSFLS#)
+# ESD - Creates an esd list, LIST 9 (#RLIST9#)
 # ANALYSE - Systematic comparisons of Fo and Fc
 # DIFABS - Least squares absorption correction
 #
 # Internal workings
 #
+# LIST  9 - Parameter esds (#RLIST9#)
 # LIST 22 - Refinement parameter map (#RLIST22#)
 # LIST 17 - Input of the special restraints (#RLIST17#)
 # LIST 11 - The least squares matrix (#RLIST11#)
@@ -9133,6 +9136,20 @@ default value is 4.0
       SHIFT GENERAL = 0.0
       END
 #
+#XESD#
+#XCreate esd list, LIST 9#
+#YCreate esd list - \ESD#
+#HSesd#
+#J
+
+ \ESD
+ END
+ 
+#
+#PThe current LIST 5 must belong to the current VcV matrix (See
+ the warning above).
+#Q
+#
 #XANALYSE#
 #XResidual analysis#
 #YAnalysis of residuals -  \ANALYSE#
@@ -9517,6 +9534,23 @@ has three values:
 #HSinternal#
 #PSOme understanding of the internal data management in CRYSTALS may
  help the user to sort out unexplained failures.
+#
+#IParameter esds - LIST 9#
+#ALIST9#
+#PThis list contains the refineable parameter esds.
+#PIt is created from LIST 5 and LIST 11 with the instruction
+#J
+
+  \ESD
+  END
+
+#PThe list can be printed with
+#J
+  \PRINT 9
+  END
+#
+#PThe instruction \PUNCH 5 E creates a plain format punch file with
+the atomic parameters and esds.
 #
 #IRefinement parameter map  -  LIST 22#
 #ALIST22#
