@@ -1,5 +1,5 @@
 %SCRIPT XRETYPE
-% VARIABLE INTEGER N29 HSPOT CLEAN
+% VARIABLE INTEGER N29 HSPOT CLEAN BTOC
 % VARIABLE CHARACTER CLTYPE
 % VARIABLE LOGICAL BROKENEDIT RESET29
 % EVALUATE BROKENEDIT = FALSE
@@ -42,7 +42,7 @@
 ^^WI          @ 6,1 STATIC T1 'Elements" button.'
 ^^WI          @ 8,1 BUTTON BED 'Edit Elements'
 ^^WI        }
-^^WI        @ 5,1 GRID CLICK NROWS=8 NCOLS=1
+^^WI        @ 5,1 GRID CLICK NROWS=10 NCOLS=1
 ^^WI        {
 ^^WI          @ 1,1 STATIC T1 'If you want to assemble'
 ^^WI          @ 2,1 STATIC T1 'the atoms into bonded'
@@ -50,6 +50,7 @@
 ^^WI          @ 4,1 STATIC T1 '"Collect Atoms" button.'
 ^^WI          @ 6,1 BUTTON BCOLL 'Collect Atoms'
 ^^WI          @ 8,1 CHECKBOX CHBX 'Convert Q to C on exit' STATE=ON
+^^WI          @ 10,1 CHECKBOX CHBB 'Convert B to C on exit' STATE=ON
 ^^WI        }
 ^^WI      }
 ^^WI      @ 1,3 MODELWINDOW MODELRE 'N' NROWS=5 NCOLS=65
@@ -123,16 +124,27 @@
 %       EVALUATE CLEAN = 1
 %       EVALUATE CLEAN = 0
 %      END CASE
+^^??  CHBB STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%      CASE VALUE
+%       EVALUATE BTOC = 1
+%       EVALUATE BTOC = 0
+%      END CASE
 ^^CO    DISPOSE XRENAM
+%%
+%      COPY '#EDIT'                                                          
+%      COPY 'monitor off'                                                    
 %      IF CLEAN .EQ. 1 THEN
-%         COPY '#EDIT'                                                          
-%         COPY 'monitor off'                                                    
 %         COPY 'TYPECHANGE TYPE EQ Q C'                                         
 %         COPY 'TYPECHANGE TYPE EQ QH C'                                        
 %         COPY 'SELECT TYPE NE QN '
-%         COPY 'CLASH FIXLATTER'                                        
-%         COPY 'END'                                                            
 %      END IF
+5      IF BTOC .EQ. 1 THEN
+%         COPY 'TYPECHANGE TYPE EQ B C'                                         
+%      END IF
+%      COPY 'CLASH FIXLATTER'                                        
+%      COPY 'END'                                                            
 %      FINISH
 %    END BLOCK
 %    BLOCK      %BXX
