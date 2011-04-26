@@ -355,7 +355,7 @@ C----- reflections all read - check space group with Nonius code
 	 if (isb .le. 0) then
 		if(isa .eq. 0) isa=1
              i_value=isa
-	endif
+         endif
 	 write(6,*)filename(1:lfn)//'.hkl', I_value
          if (i_value .eq. 0)       WRITE(6,555)
 555   FORMAT (' Possible space group types :',/,' Number:   Group:      
@@ -376,7 +376,7 @@ C----- reflections all read - check space group with Nonius code
 
 C
         if (i_value .eq. 0) then
-            write(6,556)
+            write(6,557)
             READ (5,556) I_VALUE
         endif
 557     format(/,' give space group type number :',/)
