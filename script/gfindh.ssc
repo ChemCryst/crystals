@@ -118,7 +118,14 @@
 %   IF ANSWER .EQ. FALSE THEN                                                   
 %      COPY '#EDIT'                                                             
 %      COPY 'SELECT TYPE NE H'                                                  
-%      COPY 'END'                                                               
+%      COPY 'END'                  
+%      COPY '#RELEASE PUNCH gfindh12.pch'                                              
+%      COPY '#PUNCH 12'                                                             
+%      COPY 'END'                                                                   
+%      COPY '#RELEASE PUNCH bfile.pch'                                                   
+%      COPY '#LIST 12'                                                             
+%      COPY 'FULL'                                                             
+%      COPY 'END'                                                             
 %   END IF                                                                      
 % END IF                                                                        
 %%                                                                              
