@@ -16,7 +16,7 @@
 %%  12 Input CIF file
 %%  13 Edit CIF type data
 %%  14 Read in CRYSTALS instructions.
-%%  15 Run Agilentin
+%%  15 Read generalised diffractometer cif
 %%
 %  VERIFY GI_BOK GI_BXX GI_BHELP
 %  GET SILENT NOSTORE ABBREVIATED 'Continue?' 'GI_BXX'
@@ -88,7 +88,7 @@
 %        END BLOCK
 %%
 %        BLOCK % 15                                                             
-%          COPY '#SCRIPT XODIN'                                                  
+%          COPY '#SCRIPT XDIFFIN'                                                  
 %        END BLOCK                                                              
 %%
 %      END CASE

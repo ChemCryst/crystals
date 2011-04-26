@@ -22,7 +22,7 @@
 %%  13 Edit CIF type data
 %%  14 Read in CRYSTALS instructions.
 %% added 2011
-%%  15 Read in Agilent (Oxford Diffraction) data
+%%  15 Read in generalised diffractometer cifs
 %%%
 %%
 %% Check for windows already open
@@ -71,7 +71,7 @@
 ^^WI     'Input CIF data'
 ^^WI     'Edit extra (CIF) info'
 ^^WI     'Read from file (crystals)'
-^^WI     'Run Agilentin'
+^^WI     'Read Diffractometer cif'
 ^^WI     NULL
 ^^WI   @ 3,1 GRID BTNS NROWS=1 NCOLS=4
 ^^WI   {
@@ -118,6 +118,9 @@
 %END SCRIPT
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.14  2011/03/22 14:41:54  rich
+%%  Added default and focus.
+%%
 %%  Revision 1.13  2011/02/04 17:21:05  djw
 %%  Add Agilent to know instruments
 %%
