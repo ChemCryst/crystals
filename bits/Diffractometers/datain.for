@@ -262,7 +262,7 @@ C
       FL6=NUMB_('_hkl_oxdiff_h',RHR,DUM)
       FL6=NUMB_('_hkl_oxdiff_k',RKR,DUM).AND.(FL6)
       FL6=NUMB_('_hkl_oxdiff_l',RLR,DUM).AND.(FL6)
-      FL6=NUMB_('_hkl_oxdiff_FL6',RMEAS,DUM).AND.(FL6)
+      FL6=NUMB_('_hkl_oxdiff_f2',RMEAS,DUM).AND.(FL6)
       FL6=NUMB_('_hkl_oxdiff_sig',RSIGMA,DUM).AND.(FL6)
       ENDIF
       IF (.NOT.(FL6)) THEN
