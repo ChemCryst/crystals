@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:09  rich
 C New CRYSTALS repository
 C
@@ -198,7 +202,7 @@ C
 C
       ISTAT = KHUNTR ( ILTYPE , IRTYPE , IADDL , IADDR , IADDD , -1 )
       IF ( ISTAT .NE. 0 ) THEN
-        IRTYPE = 0
+cdjwapr2011        IRTYPE = 0
         GO TO 8910
       ENDIF
 C
@@ -588,6 +592,9 @@ C
 8915    FORMAT ( 1X , 'Error searching for record type ' , I5 , ' in ',
      2 'list type ' , I5 )
       ENDIF
+cdjw moved here from above so that record type can be output before 
+c      being zeroed
+        IRTYPE = 0
       GO TO 8900
 C
 8920  CONTINUE
