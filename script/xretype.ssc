@@ -140,7 +140,7 @@
 %         COPY 'TYPECHANGE TYPE EQ QH C'                                        
 %         COPY 'SELECT TYPE NE QN '
 %      END IF
-5      IF BTOC .EQ. 1 THEN
+%      IF BTOC .EQ. 1 THEN
 %         COPY 'TYPECHANGE TYPE EQ B C'                                         
 %      END IF
 %      COPY 'CLASH FIXLATTER'                                        
