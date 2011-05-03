@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.44  2011/04/04 09:20:16  djw
+C In SYST, load LIST 25 if it exists, else set n25 locally to zero
+C
 C Revision 1.43  2011/03/21 13:57:21  rich
 C Update files to work with gfortran compiler.
 C
@@ -1172,9 +1175,14 @@ C--/FO/ STORED  -  CONVERT TO /FO/ **2
 2000  CONTINUE
 cdjwmay99 - we should use the proper routine for this! ^
       JFO=KREF+IFO
-      TEMP = ABS(STORE(JFO))
-      STORE(KREF+12)=2.*TEMP*STORE(KREF+12)
-      STORE(JFO)=STORE(JFO)*TEMP
+      TEMPFO = STORE(JFO)
+c      TEMP = ABS(STORE(JFO))
+c      STORE(KREF+12)=2.*TEMP*STORE(KREF+12)
+c      STORE(JFO)=STORE(JFO)*TEMP
+CRICmay11 - let's use the proper routine now!
+      TEMPFOS = STORE(KREF+12)
+      CALL XSQRF(STORE(JFO), TEMPFO, FABS, STORE(KREF+12), TEMPFOS)
+
 C--FIX THE SERIAL AND JCODE
 2050  CONTINUE
       ISTORE(JREF-4)=NINT(STORE(IBUF+18))
