@@ -1948,14 +1948,15 @@ C
 #if !defined(_GIL_) && !defined(_WXS_) && !defined(_MAC_)
 
      1 CPATH(1:LPATH)// CFILE(IFILE)(1:LFILE(IFILE)),
+     2 LPATH+LFILE(IFILE))
 
 #else
 
      1 CFILE(IFILE)(1:LFILE(IFILE)),
+     2 LFILE(IFILE))
 
 #endif
 
-     2 LPATH+LFILE(IFILE))
 C------ EXIT ON ERROR
       IF (IERFLG .LE. 0) GOTO 9900
       IF (JLOOP .LT. KLOOP) THEN
