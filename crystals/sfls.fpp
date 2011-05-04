@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.71  2011/02/18 17:11:42  djw
+C output means of averages.  Delta should be zero.
+C
 C Revision 1.70  2011/01/20 15:49:03  djw
 C Another attempt to remove all the dual wavelength stuff
 C
@@ -762,6 +765,8 @@ c
          endif
          IF ( IERFLG .LT. 0 ) GO TO 9900
 
+
+         CALL XIRTAC(4)   ! CRIC11-Update FO totals in all cases, in case L28 changed
          CALL XIRTAC(6)   ! INITIALISE THE COLLECTION OF THE DETAILS FOR /FC/ AND PHASE
          CALL XIRTAC(7)
          CALL XIRTAC(16)
@@ -791,7 +796,7 @@ cdjw0302 - allow twin with extparam:  NA=-1
            PARTIALS = .FALSE. ! SUPPRESS PARTIAL CONTRIBUTIONS
            ND=-1
            ENANTIO = .FALSE.  ! SUPPRESS ENANTIOPOLE REFINEMENT
-           CALL XIRTAC(4)     ! INITIALISE THE DETAILS FOR /FO/
+cric11           CALL XIRTAC(4)     ! INITIALISE THE DETAILS FOR /FO/
 
            IF(.NOT. REFPRINT) NF = -1          ! SUPPRESS ELEMENT PRINTING
 
@@ -1042,11 +1047,16 @@ C--STORE THE WEIGHTED R-VALUE
 C--STORE THE MINIMISATION FUNCTION
         STORE(L6P+3)=AMINF
 C--COMPUTE THE REFLECTION TOTALS FOR /FC/ AND PHASE
+        N6TEMP = N6W
+	N6W  = NT
         CALL XCRD(6)
+CRIC11-Update FO totals in all cases, in case L28 changed
+c        IF(TWINNED) CALL XCRD(4)  ! CHECK FOR A TWINNED REFINEMENT
+        CALL XCRD(4)  ! CHECK FOR A TWINNED REFINEMENT
+        N6W  = N6TEMP
         CALL XCRD(7)
         CALL XCRD(16)
 C--
-        IF(TWINNED) CALL XCRD(4)  ! CHECK FOR A TWINNED REFINEMENT
       
         IF(ND.GE.0) THEN   ! CHECK IF WE HAVE UPDATED THE A AND B PARTS
           CALL XCRD(8)
@@ -1780,6 +1790,7 @@ C       CHECK IF THIS IS TWINNED CALCULATION
           CALL XSFLSX
           JREF_STACK_PTR=ISTORE(JREF_STACK_START)
           CALL XAB2FC  ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
+          CALL XACRT(4)  ! ACCUMULATE THE /FO/ TOTALS
         ELSE ! THIS IS A TWINNED CALCULATION  
           PH=STORE(M6)  ! PRESERVE THE NOMINAL INDICES
           PK=STORE(M6+1)
@@ -2155,6 +2166,8 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
           END IF
 
           IF (ISTORE(M33CD+5).EQ.1) THEN   ! Check if we should output matrix in MATLAB format.
+            WRITE(NCFPU1,'(A,3(1X,F5.0))')'%',
+     1       STORE(M6),STORE(M6+1),STORE(M6+2)
             DO I = JO,JP-MOD(JP-JO,5)-1,5
               WRITE(NCFPU1,'(5G16.8,'' ...'')') (STORE(I+J),J=0,4)
             END DO
