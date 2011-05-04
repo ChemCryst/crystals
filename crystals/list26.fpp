@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.15  2010/10/26 09:51:24  djw
 C Sort out more writes to NCAWU, provide more output from EXEC directive
 C
@@ -2687,7 +2690,7 @@ C--FIND THE ADDRESS OF THE PARTIAL DERIVATIVE AND CHECK IF THE 'WEIGHT'
 C  IS EQUAL TO 1.0
 1400  CONTINUE
       I=ISTORE(M12A)
-      IF(ISTORE(L12A+1)-1)1500,1500,1450
+      IF(ISTORE(L12A+1)-1)1500,1500,1450  !TODO - check this logic (weight could be > 1.0).
 C--NON-UNIT 'WEIGHT'
 1450  CONTINUE
       STORE(I)=STORE(I)+STORE(M+2)*STORE(M12A+1)
