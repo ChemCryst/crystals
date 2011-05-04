@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.27  2011/04/15 15:05:43  rich
+//   Fix event mechanism.
+//
 //   Revision 1.26  2011/03/04 06:01:10  rich
 //   Fix font retreival on wx
 //
@@ -374,7 +377,7 @@ void CxEditBox::OnChar( wxKeyEvent & event )
 //Block unwanted keypresses...
         char c = (char) nChar;
         
-		if(iscntrl( nChar ) || ( nChar > 127 )) //It it a control char (delete, arrow keys), let it through
+		if(( nChar > 127 ) || iscntrl( nChar )) //It it a control char (delete, arrow keys), let it through
         {
 			event.Skip();
             return;
