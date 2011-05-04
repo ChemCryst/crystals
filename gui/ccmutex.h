@@ -7,6 +7,9 @@
  */
  
  // $Log: not supported by cvs2svn $
+ // Revision 1.2  2005/02/22 22:49:24  stefan
+ // 1. Added new line at the end of the file as some compiles aren't to happy not having an empty line
+ //
  // Revision 1.1  2005/02/02 15:27:23  stefan
  // 1. Initial addition to crystals. A group of classes for threading.
  //
@@ -32,9 +35,9 @@ class CcMutex
 	public:
 		CcMutex();
 		~CcMutex();
-		void Lock()throw(mutex_error);
-		bool TryLock()throw(mutex_error);
-		void Unlock()throw(mutex_error);
+		void Lock(); //throw(mutex_error);
+		bool TryLock(); //throw(mutex_error);
+		void Unlock(); //throw(mutex_error);
 };
 
 
@@ -47,7 +50,7 @@ class CcLifeTimeLock
 	private:
 		CcMutex* iLock;
 	public:
-		CcLifeTimeLock(CcMutex& pLock) throw(logic_error);
+		CcLifeTimeLock(CcMutex& pLock); //throw(logic_error);
 		~CcLifeTimeLock();
 };
 #endif

@@ -7,6 +7,9 @@
  */
  
  // $Log: not supported by cvs2svn $
+ // Revision 1.2  2005/02/07 14:27:57  stefan
+ // 1. Removed #warning as VC doesn't like it
+ //
  // Revision 1.1  2005/02/02 15:27:23  stefan
  // 1. Initial addition to crystals. A group of classes for threading.
  //
@@ -24,7 +27,7 @@ CcSemaphore::CcSemaphore(const int pInitValue, const int pMaxCount):iSemaphore(p
 {
 }
 
-void CcSemaphore::wait(const unsigned int pTime) throw(semaphore_timeout, semaphore_error)
+void CcSemaphore::wait(const unsigned int pTime) //throw(semaphore_timeout, semaphore_error)
 {
 	error_type tResult;
 	#if defined(__CR_WIN__)
@@ -58,7 +61,7 @@ void CcSemaphore::wait(const unsigned int pTime) throw(semaphore_timeout, semaph
 	throw semaphore_error(tResult);
 }
 
-void CcSemaphore::signal() throw(semaphore_error)
+void CcSemaphore::signal() //throw(semaphore_error)
 {
 	#if defined(__CR_WIN__)
 		if (ReleaseSemaphore( iSemaphore, 1, NULL ) == 0)

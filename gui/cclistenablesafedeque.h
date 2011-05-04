@@ -7,6 +7,10 @@
  */
  
  //   $Log: not supported by cvs2svn $
+ //   Revision 1.1  2005/02/04 17:21:40  stefan
+ //   1. A set of classes to extent CcSafeDeque to allow easy change notification.
+ //   2. A set of classese to more generalise CcSafeDeques uses.
+ //
  
 #if !defined(cclistenablesafedeque_H__)
 #define cclistenablesafedeque_H__
@@ -18,7 +22,7 @@ template <typename T>
 class CcListenableSafeDeque: public CcListenableSequence<T, CcSafeDeque >
 {
 	public:
-		CcListenableSafeDeque()throw(mutex_error):CcListenableSequence<T, CcSafeDeque >(){}
+		CcListenableSafeDeque()/*throw(mutex_error)*/:CcListenableSequence<T, CcSafeDeque >(){}
 		
 		virtual void push_front(const T& pItem) throw()
 		{
