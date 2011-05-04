@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.75  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.74  2011/03/04 05:48:11  rich
 C Ensure right C interfaces are used by right compilers (digital or gnu -type).
 C
@@ -1354,6 +1357,8 @@ c               CALL XPRVDU(NCVDU, 1,0)
 
              WRITE (CMON,'(A/A)')'^^GR SHOW','^^CW'
              CALL XPRVDU(NCVDU, 2,0)
+c             WRITE ( CMON, '(A)')'GUI-UP: Done L5'
+c             CALL XPRVDU(NCVDU, 1,0)
 
 
             ELSE
@@ -2103,7 +2108,7 @@ C
       CHARACTER*80 BSLABL
 #endif
 
-#if defined(_GID_) ||defined(_GIL_) ||defined(_MAC_) ||defined(_WXS_)
+#if defined(_GID_)||defined(_GIL_)||defined(_MAC_)||defined(_WXS_)
       BLABL = CLABL(1:ILLEN)  // CHAR(0)
       BSLABL= CSLABL(1:ISLEN) // CHAR(0)
 #endif
@@ -2117,13 +2122,13 @@ C
      1 %VAL(IBT),%VAL(INP),LPTS,BLABL,BSLABL)
 #endif
 
-#if defined(_GID_) ||defined(_GIL_) ||defined(_MAC_) ||defined(_WXS_)
+#if defined(_GID_)||defined(_GIL_)||defined(_MAC_)||defined(_WXS_)
       RETURN
       END
 #endif
 
 
-#if defined(_GID_) ||defined(_GIL_) ||defined(_MAC_) ||defined(_WXS_)
+#if defined(_GID_)||defined(_GIL_)||defined(_MAC_)||defined(_WXS_)
 
       SUBROUTINE FSTATM(CE,IS,LL,CL,IX,IY,IZ,IR,IG,IB,IOC,RCO,
      1 IVD,ISP,IFL,RU1,RU2,RU3,RU4,RU5,RU6,RU7,RU8,RU9,
@@ -2333,7 +2338,7 @@ C
       CHARACTER*80 BL
 #endif
 
-#if defined(_GID_) ||defined(_GIL_) ||defined(_MAC_) ||defined(_WXS_)
+#if defined(_GID_)||defined(_GIL_)||defined(_MAC_)||defined(_WXS_)
       BL = CL(1:LL)  // CHAR(0)
 #endif
 
