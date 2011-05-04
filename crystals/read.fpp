@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.58  2011/04/21 13:11:45  djw
+C Add & for the French
+C
 C Revision 1.57  2011/03/23 10:14:25  rich
 C Fix and catch case where CRYSTALS runs out of pre-defined file units.
 C
@@ -2653,7 +2656,7 @@ C
           CALL XFLPCK ( LCMAGE(NC) , LENGTH, ' ', ' ', NEWFIL, LENNAM)
         ELSE
           LENNAM = LFILE
-          NEWFIL(1:LENNAM) = CFILE(1:LENNAM)
+          NEWFIL = CFILE(1:LENNAM)
         ENDIF
 C -- IF A NAME HAS BEEN GIVEN EXPLICITLY, AND THE FILE IS CURRENTLY A
 C    SCRATCH FILE, CHANGE STATUS TO 'UNKNOWN'
