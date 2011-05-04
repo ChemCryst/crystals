@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.63  2011/03/22 14:40:38  rich
+C Added extra file unit 'SCP2' which may be read by new script command EXTRACT2
+C
 C Revision 1.62  2011/03/21 13:57:22  rich
 C Update files to work with gfortran compiler.
 C
@@ -3789,17 +3792,20 @@ C (6a) Adjacent numbers always have #1>#2.
 C (6b) Always a space after a number, unless another number or /
       IED=1
       DO IES = 1,LEN(CWORK1) - 1
+        IF ( IED .GT. LEN(CWORK2) ) EXIT
         CWORK2(IED:IED) = CWORK1(IES:IES)
         IN1 = INDEX ( CSPNMS, CWORK1(IES:IES) )
         IN2 = INDEX ( CSPNMS, CWORK1(IES+1:IES+1) )
         IF ( ( IN1 .GT. 0 ) .AND. ( IN2 .GT. 0 ) ) THEN
           IF ( IN1 .LE. IN2 ) THEN
             IED = IED + 1
+            IF ( IED .GT. LEN(CWORK2) ) EXIT
             CWORK2(IED:IED) = ' '
           END IF
         ELSE IF ( ( IN1 .GT. 0 ) .AND. (IN2 .LE. 0 ) ) THEN
           IF ( CWORK1(IES+1:IES+1) .NE. '/' ) THEN
             IED = IED + 1
+            IF ( IED .GT. LEN(CWORK2) ) EXIT
             CWORK2(IED:IED) = ' '
           END IF
         END IF
@@ -3809,10 +3815,12 @@ C (7) There is always a space before -, and one digit after.
       IED=1
       IMEM = 0
       DO IES = 1,LEN(CWORK2)
+        IF ( IED .GT. LEN(CWORK1) ) EXIT
         CWORK1(IED:IED) = CWORK2(IES:IES)
         IF ( CWORK2(IES:IES) .EQ. '-' ) THEN
           CWORK1(IED:IED) = ' '
           IED = IED + 1
+          IF ( IED .GT. LEN(CWORK1) ) EXIT
           CWORK1(IED:IED) = '-'
           IMEM = 1
         ELSE IF ( IMEM .EQ. 1 ) THEN  ! Next char should not be a space
@@ -3825,6 +3833,7 @@ C (7) There is always a space before -, and one digit after.
           IF ( CWORK2(IES:IES) .NE. ' ' ) THEN
             CWORK1(IED:IED) = ' '
             IED = IED + 1
+           IF ( IED .GT. LEN(CWORK1) ) EXIT
             CWORK1(IED:IED) = CWORK2(IES:IES)
           END IF
           IMEM = 0
