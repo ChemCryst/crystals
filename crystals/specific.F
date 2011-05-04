@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.64  2011/03/30 16:07:41  rich
+C More time issues on WXS.
+C
 C Revision 1.63  2011/03/30 15:55:36  rich
 C Fix time on WXS platform.
 C
@@ -1225,6 +1228,7 @@ C
       END
 C
 CODE FOR KPATH
+C TODO: This is probably where the blank spaces before file names are coming from
       FUNCTION KPATH( CPATH)
 C----- THIS ROUTINE RETURNS THE PATH TO THE USERS FILES BY UNPICKING THE
 C      DISC FILE NAME.
