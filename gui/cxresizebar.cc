@@ -7,6 +7,9 @@
 //   Filename:  CxResizeBar.cc
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.16  2011/03/16 17:37:30  rich
+//   Fix drawing of resizebar and cursor setting on mouse exit.
+//
 //   Revision 1.15  2011/03/04 05:57:27  rich
 //   Fix SHIFT and CTRL down flags.
 //
@@ -178,7 +181,7 @@ CXONCHAR(CxResizeBar)
 
 #ifdef __BOTHWX__
 void CxResizeBar::OnMouseLeave(wxMouseEvent & event) {
-	SetCursor(NULL);
+	SetCursor(wxNullCursor);
 }
 #endif
 

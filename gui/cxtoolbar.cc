@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.24  2011/04/21 11:21:28  rich
+//   Various WXS improvements.
+//
 //   Revision 1.23  2011/03/04 05:56:39  rich
 //   Fix see through background on wx toolbar images.
 //
@@ -154,8 +157,8 @@ CxToolBar * CxToolBar::CreateCxToolBar( CrToolBar * container, CxGrid * guiParen
 #ifdef __BOTHWX__
     theCxToolBar->Create(guiParent,-1);
     theCxToolBar->m_ToolBar->Create(theCxToolBar, ++mToolBarCount,wxDefaultPosition,wxDefaultSize,wxTB_FLAT|wxTB_TEXT|wxTB_NODIVIDER|wxTB_TOP);
-    theCxToolBar->SetCursor(NULL);
-    theCxToolBar->m_ToolBar->SetCursor(NULL);
+    theCxToolBar->SetCursor(wxNullCursor);
+    theCxToolBar->m_ToolBar->SetCursor(wxNullCursor);
 #endif
     return theCxToolBar;
 }
