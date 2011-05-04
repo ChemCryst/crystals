@@ -174,10 +174,10 @@ Number               12       9      12       9       8       5       3
 
 Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.                                                                                                                                                                                   
    0.0 -  0.5     5  2     5   295 -----
-   0.5 -  1.0     4  1     9   291 ----
-   1.0 -  1.5     6  2    15   285 -----
-   1.5 -  2.0     5  2    20   280 -----
-   2.0 -  2.5     3  1    23   277 ---
+   0.5 -  1.0     3  1     8   292 ---
+   1.0 -  1.5     7  2    15   285 ------
+   1.5 -  2.0     4  1    19   281 ----
+   2.0 -  2.5     4  1    23   277 ----
    2.5 -  3.0     2  1    25   275 --
    3.0 -  3.5     1  0    26   274 -
    3.5 -  4.0     2  1    28   272 --
@@ -283,7 +283,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.015                                                                                                                                                                                                   
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.013                                                                                                                                                                                               
  Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma                                                                                                                                                                                                             
-               0.012           0.085          0.612                                                                                                                                                                                                             
+               0.012           0.085          0.637                                                                                                                                                                                                             
 #LIST 30                                                                                                                                                                                                                                                        
 #LIST      5                                                                                                                                                                                                                                                    
   Disc file on unit   1 extended by     1 records 
@@ -2084,10 +2084,10 @@ Number               12       9      12       9       8       5       3
 
 Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.                                                                                                                                                                                   
    0.0 -  0.5     5  2     5   295 -----
-   0.5 -  1.0     4  1     9   291 ----
-   1.0 -  1.5     6  2    15   285 -----
-   1.5 -  2.0     5  2    20   280 -----
-   2.0 -  2.5     3  1    23   277 ---
+   0.5 -  1.0     3  1     8   292 ---
+   1.0 -  1.5     7  2    15   285 ------
+   1.5 -  2.0     4  1    19   281 ----
+   2.0 -  2.5     4  1    23   277 ----
    2.5 -  3.0     2  1    25   275 --
    3.0 -  3.5     1  0    26   274 -
    3.5 -  4.0     2  1    28   272 --
@@ -2193,7 +2193,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.015                                                                                                                                                                                                   
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.013                                                                                                                                                                                               
  Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma                                                                                                                                                                                                             
-               0.012           0.085          0.612                                                                                                                                                                                                             
+               0.012           0.085          0.637                                                                                                                                                                                                             
 #LIST 30                                                                                                                                                                                                                                                        
 #LIST      5                                                                                                                                                                                                                                                    
 #LIST     12                                                                                                                                                                                                                                                    
@@ -3808,10 +3808,10 @@ Number               12       9      12       9       8       5       3
 
 Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.                                                                                                                                                                                   
    0.0 -  0.5     5  2     5   295 -----
-   0.5 -  1.0     4  1     9   291 ----
-   1.0 -  1.5     6  2    15   285 -----
-   1.5 -  2.0     5  2    20   280 -----
-   2.0 -  2.5     3  1    23   277 ---
+   0.5 -  1.0     3  1     8   292 ---
+   1.0 -  1.5     7  2    15   285 ------
+   1.5 -  2.0     4  1    19   281 ----
+   2.0 -  2.5     4  1    23   277 ----
    2.5 -  3.0     2  1    25   275 --
    3.0 -  3.5     1  0    26   274 -
    3.5 -  4.0     2  1    28   272 --
@@ -3917,7 +3917,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.015                                                                                                                                                                                                   
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.013                                                                                                                                                                                               
  Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma                                                                                                                                                                                                             
-               0.012           0.085          0.612                                                                                                                                                                                                             
+               0.012           0.085          0.637                                                                                                                                                                                                             
 #LIST 30                                                                                                                                                                                                                                                        
 #LIST      5                                                                                                                                                                                                                                                    
 #LIST     12                                                                                                                                                                                                                                                    
@@ -5743,10 +5743,10 @@ Number               12       9      12       9       8       5       3
 
 Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.                                                                                                                                                                                   
    0.0 -  0.5     5  2     5   295 -----
-   0.5 -  1.0     4  1     9   291 ----
-   1.0 -  1.5     6  2    15   285 -----
-   1.5 -  2.0     5  2    20   280 -----
-   2.0 -  2.5     3  1    23   277 ---
+   0.5 -  1.0     3  1     8   292 ---
+   1.0 -  1.5     7  2    15   285 ------
+   1.5 -  2.0     4  1    19   281 ----
+   2.0 -  2.5     4  1    23   277 ----
    2.5 -  3.0     2  1    25   275 --
    3.0 -  3.5     1  0    26   274 -
    3.5 -  4.0     2  1    28   272 --
@@ -5852,7 +5852,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.015                                                                                                                                                                                                   
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.013                                                                                                                                                                                               
  Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma                                                                                                                                                                                                             
-               0.012           0.085          0.612                                                                                                                                                                                                             
+               0.012           0.085          0.637                                                                                                                                                                                                             
 #LIST 30                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
 #LIST      5                                                                                                                                                                                                                                                    

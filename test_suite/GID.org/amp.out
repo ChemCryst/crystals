@@ -134,11 +134,11 @@ Number                4       1       2       5       4       1       0
 
 
 Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.                                                                                                                                                                                   
-   0.0 -  0.5    50  4    50  1083 ------------------------
-   0.5 -  1.0    21  2    71  1062 ----------
-   1.0 -  1.5    30  3   101  1032 ---------------
-   1.5 -  2.0    19  2   120  1013 ---------
-   2.0 -  2.5    23  2   143   990 -----------
+   0.0 -  0.5    46  4    46  1087 ----------------------
+   0.5 -  1.0    20  2    66  1067 ----------
+   1.0 -  1.5    31  3    97  1036 ---------------
+   1.5 -  2.0    20  2   117  1016 ----------
+   2.0 -  2.5    26  2   143   990 -------------
    2.5 -  3.0    25  2   168   965 ------------
    3.0 -  3.5    16  1   184   949 --------
    3.5 -  4.0    21  2   205   928 ----------
@@ -244,7 +244,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.018                                                                                                                                                                                                   
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.015                                                                                                                                                                                               
  Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma                                                                                                                                                                                                             
-               0.014           0.106          0.529                                                                                                                                                                                                             
+               0.014           0.106          0.535                                                                                                                                                                                                             
 #                           STORE REFLECTIONS ON DISC FOR FUTURE USE                                                                                                                                                                                            
  Disc file extended by    74 record(s) for new list    6
 
@@ -2658,7 +2658,7 @@ Bonds: Update required - List5 length change
 
      1133 reflections   R  8.42% Rw 12.75% with I/u(I) from List 28                                                                                                                                                                                             
      1133 reflections   R  8.42% Rw 12.75% with I/u(I) > -10.0                                                                                                                                                                                                  
-     1016 reflections   R  7.46% Rw 10.39% with I/u(I) >   2.0                                                                                                                                                                                                  
+     1018 reflections   R  7.47% Rw 10.39% with I/u(I) >   2.0                                                                                                                                                                                                  
 SumFo/SumFc=     1.698      LS-scale=     1.733      Wilson Scale=     0.000                                                                                                                                                                                    
 <Fo>-<Fc> =   -0.128    100*(<Fo>-<Fc>)/<Fo> =   -2.094                                                                                                                                                                                                         
 #FOUR                                                                                                                                                                                                                                                           
