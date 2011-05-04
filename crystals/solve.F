@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.47  2011/03/21 13:57:22  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.46  2011/02/07 16:59:07  djw
 C Put IDIM09 as a parameter in ICOM09 so that we can use it to declare work space
 C
@@ -468,6 +471,7 @@ C----- SET THE RUNNING ADDRESS FOR STEPPING THROUGH THE MATRIX
 C
       if (ISTORE(M33CD+5) .eq. 1) then
             call open_normalfile(73)
+            write(73, '(A,I12)') '% ', ISTORE(M12B+1)
             write(73, '(''N={};'')')
             if (ISTORE(M33CD+15) .eq. 1 ) then
                   write(73, '(''NNorm={};'')')
