@@ -2,6 +2,7 @@
 %% The variables needed by XQUESTIO
 %    VARIABLE CHARACTER CFILE
 %    VARIABLE LOGICAL JUSTRUNIT TWINNED HINCELL VALID11
+%    VARIABLE INTEGER FTYPE
 %    VARIABLE REAL SOESD
 %%
 %    EVALUATE TWINNED = FALSE
@@ -23,10 +24,20 @@
 %    COPY '#SCRIPT CHECK29'
 %%
 %% Check shift/esd
-%    COPY '#GENERALEDIT 30'
-%    COPY 'LOCATE RECORDTYPE=103'
-%    COPY 'TRANSFER FROM OFFSET =  7 TO SOESD'
-%    COPY 'END'
+%      IF ( EXISTS 13 .GT. 0 ) THEN
+%          COPY '#GENERALEDIT 30'
+%          COPY 'LOCATE RECORDTYPE=103'
+%          COPY 'TRANSFER FROM OFFSET =  7 TO SOESD'
+%          COPY 'END'
+%      END IF
+%%
+%% Find refinement type
+%      IF ( EXISTS 23 .GT. 0 ) THEN
+%          COPY '#GENERALEDIT 23'
+%          COPY 'LOCATE RECORDTYPE=103'
+%          COPY 'TRANSFER FROM OFFSET =  1 TO FTYPE'
+%          COPY 'END'
+%      END IF
 %%
 %% Check list 11 is up to date
 %    COPY '#SCRIPT VALID11'
@@ -70,11 +81,12 @@
 ^^WI    @ 2,3 RADIOBUTTON CFCHKC 'Platon checkcif' 
 ^^WI    @ 3,3 RADIOBUTTON CFCCDM 'Mercury' 
 ^^WI  }
-^^WI  @ 7,2 GRID GRIDAC NROWS=3 NCOLS=1 OUTLINE='Additional FCF file'
+^^WI  @ 7,2 GRID GRIDAC NROWS=4 NCOLS=1 OUTLINE='Additional FCF file'
 ^^WI  {
-^^WI    @ 1,1 RADIOBUTTON FCFS 'Reflections with F-squared values' STATE=ON
-^^WI    @ 2,1 RADIOBUTTON FCFF 'Reflections with F values'
-^^WI    @ 3,1 RADIOBUTTON FCFN 'No output'
+^^WI    @ 1,1 RADIOBUTTON FCFD 'Reflections as in refinement' STATE=ON
+^^WI    @ 2,1 RADIOBUTTON FCFN 'No output'
+^^WI    @ 3,1 RADIOBUTTON FCFS 'Reflections with F-squared values'
+^^WI    @ 4,1 RADIOBUTTON FCFF 'Reflections with F values'
 ^^WI  }
 ^^WI  @ 9,2 GRID GRIDB NROWS=1 NCOLS=5
 ^^WI  {
@@ -216,15 +228,27 @@
 %    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %    IF ( VALUE .EQ. 2 ) THEN
 %      COPY '#OPEN FRN1 publish.fcf'
-^^??   FCFS STATE
+^^?? FCFD STATE
 %      VERIFY ON OFF
 %      GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%      IF ( VALUE .EQ. 1 ) THEN
-%        COPY '#PUNCH 6 H'
+%      IF ( VALUE .EQ. 2 ) THEN
+^^??   FCFS STATE
+%        VERIFY ON OFF
+%        GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%        IF ( VALUE .EQ. 1 ) THEN
+%         COPY '#PUNCH 6 H'
+%        ELSE
+%         COPY '#PUNCH 6 B'
+%        END IF
+%        COPY 'END'
 %      ELSE
-%        COPY '#PUNCH 6 B'
+%        IF FTYPE .EQ. 0 THEN
+%         COPY '#PUNCH 6 H'
+%        ELSE
+%         COPY '#PUNCH 6 B'
+%        END IF
+%        COPY 'END'
 %      END IF
-%      COPY 'END'
 %      COPY '#RELEASE FRN1 BFILE.FRN'
   Reflections saved in {&publish.fcf{&
 %    END IF
