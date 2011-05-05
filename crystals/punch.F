@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.60  2011/04/21 11:25:26  djw
+C Support for PRINT 5 E and ESD/END
+C
 C Revision 1.59  2011/04/04 09:16:19  djw
 C Punch list 1 for N Dave.
 C Save LIST 5 pointers when creating a LIST 9 if LIST 5 is already loaded.
@@ -1289,6 +1292,7 @@ CDJWMAY99 - OUTPUT TO FOREIGN PUNCH UNIT
       INCLUDE 'XLST01.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST23.INC'
       INCLUDE 'XLST28.INC'
       INCLUDE 'XLST31.INC'
       INCLUDE 'XLST13.INC'
@@ -1297,11 +1301,12 @@ CDJWMAY99 - OUTPUT TO FOREIGN PUNCH UNIT
       INCLUDE 'ICOM31.INC'
       INCLUDE 'QLST31.INC'
       CHARACTER*12 CTEMP
-      CHARACTER*1 CALW(3)
+      CHARACTER*1 CALW(5)
       CHARACTER CCELL(3)*1,CANG(3)*5
       DATA CCELL/'a','b','c'/
       DATA CANG/'alpha','beta','gamma'/
-      DATA CALW /'o','<','x'/
+cdjwmay2011 Add high and low
+      DATA CALW /'o','<','x','h','l'/
       INCLUDE 'IDIM31.INC'
       CALL XRSL
       CALL XCSAE
@@ -1320,7 +1325,26 @@ CDJW02      CALL XRDOPN(6, KDEV , CSSFCF, LSSFCF)
       ELSE
         L31 = -1
       END IF
-
+C FIND TYPE OF REFINEMENT. 
+C      KF     0 - F's
+C             1 - F^2's
+C             2 - F^2'S ON SCALE OF FC
+C      KFR =  0 = F
+C             1 = F^2
+C             3 = NO REFINEMENT
+C
+      IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) THEN
+            CALL XFAL23
+            KFR = 1 + ISTORE(L23MN+1)
+      ELSE
+            KFR = 3
+      ENDIF
+C     NOW LOOK FOR THE CASE OF F^2 REFINEMENT, AND OUTPUT ON SCALE OF FC
+      IF((KF .EQ. 2) .AND. (KFR.EQ.1)) THEN
+            KFR = 2
+            SCALWT = SCALE6*SCALE6*SCALE6*SCALE6
+      ENDIF
+C
       SCALE6 = STORE(L5O)
       WRITE(NCFPU1, '(''data_1 '')')
       WRITE(NCFPU1, '(''#  '',10A4)') (KTITL(I),I=1,10)
@@ -1367,7 +1391,10 @@ C---- SCALE DOWN THE ELEMENTS OF THE V/CV MATRIX
 650       FORMAT ('_cell_angle_',A,T35,A)
           M1P1=M1P1+1
       END DO
-
+      IF(KF .NE. KFR) WRITE(NCFPU1,'(/A,A/A)')
+     1 '# Requested output type does not correspond to refinement',
+     2 ' type','# Weights cannot be converted'
+c
       IF (KF .EQ. 2) THEN
        WRITE(NCFPU1,'(/''# NOTE FO on scale of Fc, '', F12.5)')
      1               1./SCALE6
@@ -1391,8 +1418,11 @@ C---- SCALE DOWN THE ELEMENTS OF THE V/CV MATRIX
      1 '_refln_index_l'/,'_refln_F_squared_meas'/,
      2 '_refln_F_squared_calc'/,
      3 '_refln_F_squared_sigma'/,'_refln_observed_status')
-
-
+C
+      IF (KF .EQ. KFR) then 
+        WRITE(NCFPU1,1002)
+1002    FORMAT('_refln_refinement_weight')
+      ENDIF
 
 C---- GET SIGMA THRESHOLD FROM L28
       S6SIG = -200.0
@@ -1414,11 +1444,15 @@ C---- GET SIGMA THRESHOLD FROM L28
       I = NINT(STORE(M6))
       J = NINT(STORE(M6+1))
       K = NINT(STORE(M6+2))
-      IF (KF .EQ. 2) THEN
+c     (sqrt(w) is stored in LIST 6)
+      WT = STORE(M6+4)*STORE(M6+4)
+
+      IF (KF .EQ. 2) THEN            !scale of Fcalc
        FO = STORE(M6+3)/ SCALE6
        FC = STORE(M6+5)
        S =  MAX(0.0,STORE(M6+12))/ SCALE6
-      ELSE
+       IF(KFR .EQ. 2) WT = WT * SCALWT
+      ELSE                           !scale of Fobs
        FO = STORE(M6+3)
        FC = STORE(M6+5) * SCALE6
        S =  MAX(0.0,STORE(M6+12))
@@ -1428,21 +1462,39 @@ C
       IF ( KF.NE. 0 ) THEN
          CALL XSQRF(FOS, FO, FABS, SIGMA, S)
          FCS = FC*FC
-      END IF
-
+      END IF      
+C
+      IDJW = KALLOW(IALLOW)
+C
       IF ( STORE(M6+20) .LT. S6SIG) THEN
         IALW = 2                    !Rejected by sigma cutoff.
-      ELSE IF (KALLOW(IN).LT.0) THEN
+      ELSE IF (idjw.eq.-16) THEN
+c       Fails sin-theta/lambda test
+        IF (iallow.LT.0) THEN
+         IALW = 5                    !Rejected by low resolution
+        else if (iallow.gt. 0) then
+         ialw = 4                    ! rejected by high resolution
+        endif
+      ELSE IF (idjw.LT.0) THEN
         IALW = 3                    !Rejected by something else.
       ELSE
         IALW = 1                    !Used.
       END IF
-
+            write(123,*)kf,kfr
       IF ( KF.NE. 0 ) THEN
-        WRITE(NCFPU1,'(3I4,3F12.2,1X,A1)')I,J,K,FOS,FCS,SIGMA,CALW(IALW)
+        IF (KFR.EQ. KF) THEN
+         WRITE(NCFPU1,1003)I,J,K,FOS,FCS,SIGMA,CALW(IALW), WT
+        ELSE
+         WRITE(NCFPU1,1003)I,J,K,FOS,FCS,SIGMA,CALW(IALW)
+        ENDIF
       ELSE
-         WRITE(NCFPU1,'(3I4,3F12.2,1X,A1)')I, J, K, FO, FC, S,CALW(IALW)
+        IF (KFR.EQ.KF) THEN
+         WRITE(NCFPU1,1003)I, J, K, FO, FC, S,CALW(IALW), WT
+        ELSE
+         WRITE(NCFPU1,1003)I, J, K, FO, FC, S,CALW(IALW)
+        ENDIF
       END IF
+1003  FORMAT (3I4,3F12.2,1X,A1,F10.4)
       GOTO 1840
 1850  CONTINUE
       GOTO 9999
