@@ -3,9 +3,6 @@
 % EVALUATE CIFDONE = FALSE                                                      
 % VARIABLE INTEGER PFLAG                                                        
 % EVALUATE PFLAG = 0                                                            
-%%                                                                              
- * The publication tables will be in a file 'PUBLISH.LIS'                       
-                                                                                
 %  LOOP                                                                         
 %    ON ERROR TERMINATE ABANDONED                                               
 ^^?? XPUB EXISTS                                                                
@@ -56,7 +53,7 @@
  MODIFY the atom coordinate list (LIST 5) IN ANY WAY at all, otherwise          
  CRYSTALS will detect a mis match with the matrix and abort the                 
  calculation.                                                                   
- The ASCII data is in the PUBLISH.LIS                                           
+ The ASCII data is in the publish.lis                                           
  A full analysis of residuals may reveal remaining deficiencies in the          
  refinement.                                                                    
                                                                                 
@@ -79,10 +76,6 @@
 %      BLOCK        %BOK%                                                       
 ^^??     PUB_LIST SELECTED                                                      
 %        GET SILENT NOSTORE FINAL INTEGER ' ' '1'                               
-%        IF PFLAG .LE. 0 THEN                                                   
-%          COPY '#RELEASE PUNCH PUBLISH.LIS'                                    
-%          EVALUATE PFLAG = 1                                                   
-%        END IF                                                                 
 %        CASE VALUE                                                             
 %          BLOCK                                         %CIF%                  
                                                                                 
@@ -94,16 +87,28 @@
 %%                                                                              
 %          BLOCK                                         %XYZ%                  
 ^^CO         DISPOSE XPUB                                                       
+%            IF PFLAG .LE. 0 THEN                                                   
+%              COPY '#RELEASE PUNCH publish.lis'                                    
+%              EVALUATE PFLAG = 1                                                   
+%            END IF                                                                 
 %            COPY '#SCRIPT PUBXYZ'                                              
 %          END BLOCK                                                            
 %%                                                                              
 %          BLOCK                                         %ANISO%                
 ^^CO         DISPOSE XPUB                                                       
+%            IF PFLAG .LE. 0 THEN                                                   
+%              COPY '#RELEASE PUNCH publish.lis'                                    
+%              EVALUATE PFLAG = 1                                                   
+%            END IF                                                                 
 %            COPY '#SCRIPT PUBANISO'                                            
 %          END BLOCK                                                            
 %%                                                                              
 %          BLOCK                                         %DISTANCES%            
 ^^CO         DISPOSE XPUB                                                       
+%            IF PFLAG .LE. 0 THEN                                                   
+%              COPY '#RELEASE PUNCH publish.lis'                                    
+%              EVALUATE PFLAG = 1                                                   
+%            END IF                                                                 
 %            COPY '#SCRIPT PUBDIST'                                             
 %          END BLOCK                                                            
 %%                                                                              
