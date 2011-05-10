@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.45  2011/03/04 06:02:01  rich
+// Use new defines to get correct function signature for update routines.
+//
 // Revision 1.44  2009/07/23 14:15:42  rich
 // Removed all uses of OpenGL feedback buffer - was dreadful slow on some new graphics cards.
 //
@@ -506,6 +509,8 @@ void CcModelDoc::DocToList( CrModList* ml )
     vector<string> row;
     row.reserve(13);
 
+    ml->StartUpdate();
+
     for ( list<CcModelAtom>::iterator atom=mAtomList.begin();
                                       atom != mAtomList.end();
                                       atom++)
@@ -541,6 +546,8 @@ void CcModelDoc::DocToList( CrModList* ml )
                    (*atom).IsSelected(),
                    (*atom).m_disabled || (*atom).m_excluded);
     }
+    ml->EndUpdate();
+
   }
   m_thread_critical_section.Leave();
   

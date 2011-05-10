@@ -192,6 +192,15 @@ CXONCHAR(CxModList)
 
 
 
+void CxModList::StartUpdate() {
+      SetRedraw(FALSE);
+}
+
+void CxModList::EndUpdate() {
+      SetRedraw(TRUE);
+      Invalidate();
+      UpdateWindow();
+}
 
 
 void CxModList::AddRow(int id, vector<string> & rowOfStrings, bool selected,
@@ -210,13 +219,18 @@ void CxModList::AddRow(int id, vector<string> & rowOfStrings, bool selected,
 //			LOGERR(oo.str());
 
 #ifdef __CR_WIN__
+            m_ProgSelecting=m_numcols+1;
+
             for( int j=0; j<m_numcols; j++) {
                 SetItemText( i, j, rowOfStrings[j].c_str());
             }
+
             if ( selected )
                SetItemState(i, LVIS_SELECTED, LVIS_SELECTED);
             else
                SetItemState(i, 0, LVIS_SELECTED);
+            m_ProgSelecting=0;
+
 #endif
 
 

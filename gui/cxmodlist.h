@@ -59,6 +59,8 @@ class CxModList : public BASEMODLIST
         int GetValue();
         void Update(int newsize) ;
         void CxEnsureVisible(CcModelAtom* va);
+        void StartUpdate();
+        void EndUpdate();
 
 #ifdef __CR_WIN__
         void RepaintSelectedItems();

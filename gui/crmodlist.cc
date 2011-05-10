@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper
 //   Created:   13.08.2002 22:51
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.1.1.1  2004/12/13 11:16:18  rich
 //   New CRYSTALS repository
 //
@@ -325,6 +329,14 @@ void CrModList::DocRemoved()
 {
   m_ModelDoc = nil;
 }
+
+void CrModList::StartUpdate(){   
+  ((CxModList*)ptr_to_cxObject)->StartUpdate();
+}
+void CrModList::EndUpdate(){
+  ((CxModList*)ptr_to_cxObject)->EndUpdate();
+}
+
 
 void CrModList::AddRow( int id, vector<string> & rowOfStrings, bool s, bool d )
 {

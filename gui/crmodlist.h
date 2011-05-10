@@ -44,6 +44,8 @@ class   CrModList : public CrGUIElement
         void SelectAtomByPosn (int id, bool select);
         void ContextMenu(int x, int y, int iitem, int mtype);
         void EnsureVisible(CcModelAtom* va);
+        void StartUpdate();
+        void EndUpdate();
     private:
         CcModelDoc* m_ModelDoc;
         CrMenu *m_popupMenu1, *m_popupMenu2, *m_popupMenu3;
