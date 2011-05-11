@@ -193,13 +193,17 @@ CXONCHAR(CxModList)
 
 
 void CxModList::StartUpdate() {
+#ifdef __CR_WIN__
       SetRedraw(FALSE);
+#endif
 }
 
 void CxModList::EndUpdate() {
+#ifdef __CR_WIN__
       SetRedraw(TRUE);
       Invalidate();
       UpdateWindow();
+#endif
 }
 
 
