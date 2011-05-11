@@ -9,4 +9,4 @@
 # Run GUI test script
 #SCRIPT DELSEL
 #                                         And close the program.
-\ FINISH
+\FINISH
