@@ -219,6 +219,9 @@ PUNCH = ' //   CPUNCH TO CRYSTALS
 ^^WI    @ 1,1 ICON IM INFO                                                      
 ^^WI   }                                                                        
 ^^WI   @ 4,2 PLOTWINDOW _VFOFC NROWS=20 NCOLS=64                                
+^^WI     DEFINEPOPUPMENU POPUP 'Selection'
+^^WI       ITEM _SDELA '&Omit _L' 'OMIT_N_L'
+^^WI     ENDDEFINEMENU
 ^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=1                                          
 ^^WI   {                                                                        
 ^^WI    @ 1,1 BUTTON NPP_BOK 'Close' DEFAULT                                    
@@ -242,7 +245,47 @@ PUNCH = ' //   CPUNCH TO CRYSTALS
 %       END IF
 %       FINISH                                                                  
 %    ELSE IF VALUE .EQ. 2 THEN                                                  
-"test"                                                                          
+%      ON EDITERROR TERMINATE
+%      COPY '#GENERALEDIT 28'
+%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%      COPY 'LOCATE RECORDTYPE = 104'
+%      COPY 'INSERT'
+%      CLEAR
+%      INSERT 'CHANGE 0 REAL REAL ='
+%      GET INTEGER ' ' ' '
+%      SEND
+%      OUTPUT
+%      CLEAR
+%      INSERT 'CHANGE 1 REAL REAL ='
+%      GET INTEGER ' ' ' '
+%      SEND
+%      OUTPUT
+%      CLEAR
+%      INSERT 'CHANGE 2 REAL REAL ='
+%      GET INTEGER ' ' ' '
+%      SEND
+%      OUTPUT
+%      GET SILENT NOSTORE KEYWORD 'vs' 'vs'                         
+%      CLEAR
+%      COPY 'INSERT'
+%      CLEAR
+%      INSERT 'CHANGE 0 REAL REAL ='
+%      GET INTEGER ' ' ' '
+%      SEND
+%      OUTPUT
+%      CLEAR
+%      INSERT 'CHANGE 1 REAL REAL ='
+%      GET INTEGER ' ' ' '
+%      SEND
+%      OUTPUT
+%      CLEAR
+%      INSERT 'CHANGE 2 REAL REAL ='
+%      GET INTEGER ' ' ' '
+%      SEND
+%      OUTPUT
+%      CLEAR
+%      COPY 'WRITE'
+%      COPY 'END'
 %    END IF                                                                     
 %  END LOOP                                                                     
 %%                                                                              
@@ -267,6 +310,9 @@ PUNCH = ' //   CPUNCH TO CRYSTALS
 ^^WI    @ 1,1 ICON IM INFO                                                      
 ^^WI   }                                                                        
 ^^WI   @ 4,2 PLOTWINDOW _VNORMPP NROWS=20 NCOLS=64                              
+^^WI     DEFINEPOPUPMENU POPUP 'Selection'
+^^WI       ITEM _SDELA '&Omit _L' 'OMIT_N_L'
+^^WI     ENDDEFINEMENU
 ^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=1                                          
 ^^WI   {                                                                        
 ^^WI    @ 1,1 BUTTON NPP_BOK 'Close' DEFAULT                                    
@@ -290,7 +336,48 @@ PUNCH = ' //   CPUNCH TO CRYSTALS
 %       END IF
 %       FINISH                                                                  
 %    ELSE IF VALUE .EQ. 2 THEN                                                  
-"test"                                                                          
+%      ON EDITERROR TERMINATE
+%      COPY '#GENERALEDIT 28'
+%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%      COPY 'LOCATE RECORDTYPE = 104'
+%      COPY 'INSERT'
+%      CLEAR
+%      INSERT 'CHANGE 0 REAL REAL ='
+%      GET INTEGER ' ' ' '
+%      SEND
+%      OUTPUT
+%      CLEAR
+%      INSERT 'CHANGE 1 REAL REAL ='
+%      GET INTEGER ' ' ' '
+%      SEND
+%      OUTPUT
+%      CLEAR
+%      INSERT 'CHANGE 2 REAL REAL ='
+%      GET INTEGER ' ' ' '
+%      SEND
+%      OUTPUT
+%      GET SILENT NOSTORE KEYWORD 'vs' 'vs'                         
+%      CLEAR
+%      COPY 'INSERT'
+%      CLEAR
+%      INSERT 'CHANGE 0 REAL REAL ='
+%      GET INTEGER ' ' ' '
+%      SEND
+%      OUTPUT
+%      CLEAR
+%      INSERT 'CHANGE 1 REAL REAL ='
+%      GET INTEGER ' ' ' '
+%      SEND
+%      OUTPUT
+%      CLEAR
+%      INSERT 'CHANGE 2 REAL REAL ='
+%      GET INTEGER ' ' ' '
+%      SEND
+%      OUTPUT
+%      CLEAR
+%      COPY 'WRITE'
+%      COPY 'END'
+%    END IF
 %    END IF                                                                     
 %  END LOOP                                                                     
 %%                                                                              
