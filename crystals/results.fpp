@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.175  2011/04/04 09:19:05  djw
+C Set the corrct type oh hydrogen treatment in the body of the cif based on the LIST 5 entries if set
+C
 C Revision 1.174  2011/03/22 11:29:56  rich
 C Double slashes dealt with properly. Fixed squashed CIF format.
 C
@@ -7020,7 +7023,7 @@ C
       CHARACTER*1 CSIGN
       CHARACTER*80 LINE
       CHARACTER*40 FORM
-      CHARACTER*15 HKLLAB
+      CHARACTER*36 HKLLAB
 C 
       INCLUDE 'ISTORE.INC'
 C 
@@ -7371,14 +7374,35 @@ C COLLECT PROBABILITY DISTRIBUTION DATA FOR FLEQ (SFLEQ)
          IF (ABS(FOKD).LT.CRITER*ABS(FCKD)) THEN
 C----- Fo/Fc plot
             IF (LEVEL.EQ.4) THEN
-               WRITE (HKLLAB,'(2(I4,A),I4)') NINT(STORE(M6)),',',
-     1          NINT(STORE(M6+1)),',',NINT(STORE(M6+2))
-               CALL XCRAS (HKLLAB,IHKLLEN)
+C Store current HKL:
+			   IH2 = STORE(M6)
+			   IK2 = STORE(M6+1)
+			   IL2 = STORE(M6+2)
+C Generate Friedel opposite for current HKL:
+			   STORE(M6)   = -STORE(M6)
+			   STORE(M6+1) = -STORE(M6+1)
+			   STORE(M6+2) = -STORE(M6+2)
+C Work out canonicalized HKL for the Friedel Opposite
+			   CALL KSYSAB(1)
+C Store HKL for the opposite:
+			   IH3 = STORE(M6)
+			   IK3 = STORE(M6+1)
+			   IL3 = STORE(M6+2)
+C Restore original indices:
+			   STORE(M6)   = IH2 
+			   STORE(M6+1) = IK2 
+			   STORE(M6+2) = IL2
+C Done.	
+		
+               WRITE (HKLLAB,'(5(I4,A),I4)') NINT(STORE(M6)),',',
+     1            NINT(STORE(M6+1)),',',NINT(STORE(M6+2)),' vs ',
+     2            IH3,',',IK3,',',IL3
+               CALL XCREMS (HKLLAB, HKLLAB,IHKLLEN)
 cdjwoct01 - scale by sigma
 c               WRITE (CMON,'(3A,2F10.2)') 
 c     1 '^^PL LABEL ''', HKLLAB(1:IHKLLEN),''' DATA ',FCKD,FOKD
                WRITE (CMON,'(3A,2F10.2)') 
-     1 '^^PL LABEL ''', HKLLAB(1:IHKLLEN),''' DATA ',stnfo,stnfc
+     1 '^^PL LABEL ''', HKLLAB(1:IHKLLEN),''' DATA ',stnfc,stnfo
                CALL XPRVDU (NCVDU,1,0)
             END IF
 C STORE SIGNA:NOISE FOR NORMAL PROBABILITY PLOT
@@ -7607,8 +7631,17 @@ C
             SXY=SXY+STR11(I*2-1)*Z
 C 
             IF (LEVEL.EQ.5) THEN
-               WRITE (HKLLAB,'(2(I4,A),I4)') MH,',',MK,',',ML
-               CALL XCRAS (HKLLAB,IHKLLEN)
+C Generate Friedel opposite for current HKL:
+			   STORE(M6)   = -MH
+			   STORE(M6+1) = -MK
+			   STORE(M6+2) = -ML
+C Work out canonicalized HKL for the Friedel Opposite
+			   CALL KSYSAB(1)
+C Done.	
+			   WRITE (HKLLAB,'(5(I4,A),I4)') MH,',',MK,',',ML,' vs ',
+     1		      NINT(STORE(M6)),',',
+     1            NINT(STORE(M6+1)),',',NINT(STORE(M6+2))
+               CALL XCREMS (HKLLAB, HKLLAB,IHKLLEN)
                WRITE (CMON,'(3A,2F11.3)') 
      1 '^^PL LABEL ''', HKLLAB(1:IHKLLEN),''' DATA ',Z,STR11(I*2-1)
                CALL XPRVDU (NCVDU,1,0)
