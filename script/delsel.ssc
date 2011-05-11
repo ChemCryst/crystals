@@ -1,0 +1,41 @@
+%SCRIPT DELSEL
+%       COPY '#use cyclo.in'
+%       COPY '#RELE PUNCH gui.out'
+%% Sanity check
+%       TRANSFER 'Start' TO PUNCH
+%       COPY '#PUNCH 5'
+%       COPY 'END'
+%       TRANSFER 'Select and delete all' TO PUNCH
+^^CO SET MODEL01 SELECT ALL=YES
+%       COPY '#EDIT'
+^^CO GETVALUE MODEL01
+%       LOOP
+%        ON END TERMINATE
+%        CLEAR
+%        INSERT 'DELETE '
+%        GET TEXT 'Atom?' ' '
+%        SEND
+%       END LOOP
+%       COPY 'END'
+%       COPY '#PUNCH 5'
+%       COPY 'END'
+%       TRANSFER 'Make fragments, select one and delete' TO PUNCH
+%       COPY '#use cyclo.in'
+%       COPY '#EDIT'
+%       COPY 'DELETE N(6)'
+%       COPY 'END'
+^^CO SET MODEL01 SELFRAG C(1) YES
+%       COPY '#EDIT'
+^^CO GETVALUE MODEL01
+%       LOOP
+%        ON END TERMINATE
+%        CLEAR
+%        INSERT 'DELETE '
+%        GET TEXT 'Atom?' ' '
+%        SEND
+%       END LOOP
+%       COPY 'END'
+%       COPY '#PUNCH 5'
+%       COPY 'END'
+%       TRANSFER 'Select and delete all' TO PUNCH
+%END SCRIPT
