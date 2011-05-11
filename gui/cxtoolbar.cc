@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.25  2011/05/04 12:22:34  rich
+//   Use NullCursor, not NULL.
+//
 //   Revision 1.24  2011/04/21 11:21:28  rich
 //   Various WXS improvements.
 //
@@ -582,7 +585,7 @@ void CxToolBar::CheckTool(bool check, int id)
 bool CxToolBar::GetToolState(int id) {
 	bool cstate = false;
 #ifdef __CR_WIN__
-	cstate = (m_ToolBar->GetState(id) & TBSTATE_CHECKED);
+        cstate = ! (m_ToolBar->GetState(id) & TBSTATE_CHECKED);
 #endif
 #ifdef __BOTHWX__
 	cstate = ! m_ToolBar->GetToolState(id);
