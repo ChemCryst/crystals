@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.62  2011/05/13 10:37:41  djw
+C Put the SCALE6 in the right place, include text about l and d flags, outout weight in exponential format
+C
 C Revision 1.61  2011/05/05 14:25:12  djw
 C Include weight and h/l flag in fcf listing
 C
@@ -1473,7 +1476,7 @@ C
 C
       IF ( STORE(M6+20) .LT. S6SIG) THEN
         IALW = 2                    !Rejected by sigma cutoff.
-      ELSE IF (idjw.eq.-16) THEN
+      ELSE IF (idjw.eq.-17) THEN
 c       Fails sin-theta/lambda test
         IF (iallow.LT.0) THEN
          IALW = 5                    !Rejected by low resolution

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2011/05/13 11:16:51  djw
+C Calls to Kallow now return a key to the test which failed and a value to indicate if it was Max or Min. The argument of KALLOW must be a variable
+C
 C Revision 1.19  2010/07/21 15:57:32  djw
 C Include list type in PUNCH 6 C
 C
@@ -1001,7 +1004,7 @@ C--RUN THROUGH THE MINIMA CONDITIONS
       J=ISTORE(I)
       IF(STORE(J) .LT. STORE(I+1)) THEN
             IALLOW = -1
-            IK = m6-j
+            IK = m6-j-1
             GOTO 1650
       ENDIF
       K = K - 1
@@ -1015,7 +1018,7 @@ C--RUN THROUGH THE MAXIMA CONDITIONS
       J=ISTORE(I)
       IF(STORE(J).GT.STORE(I+1)) THEN
             IALLOW = 1
-            IK = m6-j
+            IK = m6-j-1
             GOTO 1650
       ENDIF
       K = K - 1
