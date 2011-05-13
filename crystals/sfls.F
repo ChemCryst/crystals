@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.72  2011/05/04 13:25:54  rich
+C Correct reflection count for FO/FC statistics during SFLS.
+C Add
+C
 C Revision 1.71  2011/02/18 17:11:42  djw
 C output means of averages.  Delta should be zero.
 C
@@ -2033,7 +2037,7 @@ c remove abs Mar2009
         END IF
         AMINF=AMINF+WDF*WDF  ! COMPUTE THE MINIMISATION FUNCTION
 
-        IF ((SFLS_TYPE.NE.SFLS_CALC) .OR.(KALLOW(IN).GE.0)) THEN
+        IF ((SFLS_TYPE.NE.SFLS_CALC) .OR.(KALLOW(IALLOW).GE.0)) THEN
 C If #CALC, then L28 was adjusted earlier. Call KALLOW again to get normal R
           NT=NT+1     ! UPDATE THE REFLECTION COUNTER FLAG
           FOT=FOT+FO   ! COMPUTE THE TERMS FOR THE NORMAL R-VALUE

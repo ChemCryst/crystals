@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.45  2011/05/03 15:37:24  rich
+C Changed calculation of Fo**2 and s(Fo**2) from Fo and s(Fo) to use usual method. Avoid bug where Fo=0.0
+C
 C Revision 1.44  2011/04/04 09:20:16  djw
 C In SYST, load LIST 25 if it exists, else set n25 locally to zero
 C
@@ -526,7 +529,7 @@ C--MAIN REFLECTION READING LOOP
       IF(KLDRNR(I))1700,1500,1500
 1500  CONTINUE
 C IF IL28 is zero process normally, otherwise filter using L28 conditions.
-      IF ( ( IL28 .NE. 0 ) .AND. ( KALLOW(I) .LT. 0 ) ) GOTO 1450
+      IF ( ( IL28 .NE. 0 ) .AND. ( KALLOW(IALLOW) .LT. 0 ) ) GOTO 1450
 C--CHECK IF THIS REFLECTION IS SYSTEMATICALLY ABSENT
       IF(KSYSAB(IN))1550,1600,1600
 c

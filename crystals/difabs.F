@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2008/04/29 15:31:30  djw
+C Correct some captions
+C
 C Revision 1.10  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -284,7 +287,7 @@ C
       NREF=NREF+1
       IUSE=0
 C----- CHECK IF THIS REFLECTION IS ALLOWED
-      IF (KALLOW(0) .LE. -1) GOTO 250
+      IF (KALLOW(IALLOW) .LE. -1) GOTO 250
 C   IF UNOBSERVED, WRITE DUMMY RECORD
       IF(FOBS.LE.0.0) GO TO 250
       NTOT=NTOT+1

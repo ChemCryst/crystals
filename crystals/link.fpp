@@ -1682,10 +1682,10 @@ C----- LOOP OVER DATA
       endif
       IF (ILINK .EQ. 5) THEN
          JCODE = 0
-         IF (KALLOW(IN) .LT. 0) JCODE = 1
+         IF (KALLOW(IALLOW) .LT. 0) JCODE = 1
          WRITE(NCFPU1,'( 3I4, F10.3, I2)') I, J, K, FS, JCODE
       ELSE IF ((ILINK .EQ. 6) .AND. (IMETHD .EQ. 1)) THEN
-         IF (KALLOW(IN) .GE. 0) THEN
+         IF (KALLOW(IALLOW) .GE. 0) THEN
            WRITE(NCFPU1,'(3I4, F10.3, F7.2)') I, J, K, FS, S
          END IF
       ELSE
@@ -2347,7 +2347,7 @@ C----- LOOP OVER DATA
 1800  CONTINUE
       ISTAT = KLDRNR (IN)
       IF (ISTAT .LT. 0) GOTO 2000
-      IF (KALLOW(IN) .LT. 0) THEN
+      IF (KALLOW(IALLOW) .LT. 0) THEN
             JCODE = 1
       ELSE
             JCODE = 0

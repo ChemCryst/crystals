@@ -1,4 +1,12 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.92  2011/03/15 09:00:09  djw
+C More work on LIST 9
+C Routine which use LISTs 5,9,10 all use the same common block, ICOM05, for loading from the disk and for
+C creating output.
+C If one needs two of these lists in memeory at the same time, the calling routine must sort out the common
+C block (l5,l9,l10) addresses itself.
+C XFAL09 loads a LIST 9, and saves the LIST 5 addresses if L5 is already in core.
+C
 C Revision 1.91  2011/02/07 16:59:07  djw
 C Put IDIM09 as a parameter in ICOM09 so that we can use it to declare work space
 C
@@ -2050,7 +2058,7 @@ C If you have more than 8.8 million reflections you might be in trouble.
 
         CALL XFAL06 (IULN, 0 )
         DO WHILE ( KLDRNR ( 0 ) .GE. 0 )
-          IF (KALLOW(IN).LT.0) THEN
+          IF (KALLOW(IALLOW).LT.0) THEN
 cjun2010            FO = STORE(M6+itwin)
             FO = STORE(M6+3)
             FC = SCALE * STORE(M6+5)
@@ -2090,7 +2098,7 @@ C----- COMPUTE AND STORE R-VALUES
       ENDIF
       STORE(L6P+1) = RFACT
       STORE(L6P+2) = WRFAC
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1215 ) N6D , N6ACC
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1215 ) IULN, N6D , N6ACC
       WRITE ( CMON , 1215 ) IULN, N6D, N6ACC
       CALL XPRVDU(NCVDU, 1,0)
 1215  FORMAT ( 1X , 'List 'I3,' contains ' , I6 , ' reflections' ,
@@ -3495,16 +3503,14 @@ C -- SCAN LIST 6 FOR REFLECTIONS
 
 
       DO WHILE ( KLDRNR(0) .GE. 0 )
-
-        IF ( KALLOW(IN).EQ. 0 ) THEN
+        IF ( KALLOW(IALLOW).EQ. 0 ) THEN
           NALLOW = NALLOW + 1
           IF ( ISCNTRC ( STORE(M6) ) .EQ. 0 ) THEN
            JSIGS = MIN( 120, MAX( 1, NINT(60 + RTDIV * STORE(M6+6)) ) )
            MSIGS(JSIGS) = MSIGS(JSIGS) + 1
           END IF
         END IF
-
-        IF ((KALLOW(IN) .EQ. 0 ).or.(iskp28 .eq.0)) THEN
+        IF ((KALLOW(IALLOW) .EQ. 0 ).or.(iskp28 .eq.0)) THEN
          NTOT = NTOT + 1
          CALL XSQRF(FOS, STORE(M6+3), FABS, SIGMA, STORE(M6+12))
          JSIGS = 10 + NINT( (2.*FOS)/SIGMA )

@@ -1,3 +1,6 @@
+C $Log: not supported by cvs2svn $
+C LOGGING STARTED APRIL 2011
+C
       SUBROUTINE MLTNRM
 C VERSION    JAN    1980          UNIVERSITY OF YORK
 C HACKED TO BITS 22 YEARS LATER  by  RICHARD COOPER
@@ -350,7 +353,7 @@ C
       INCLUDE 'STORE.INC'
       CALL XFAL06(6, 0)
       DO WHILE ( KLDRNR(0) .GE. 0 )
-       IF ( ( KALLOW(0) .GE. 0 ) .OR. ( IL28FL .EQ. 0 ) ) THEN
+       IF ( ( KALLOW(IALLOW) .GE. 0 ) .OR. ( IL28FL .EQ. 0 ) ) THEN
         IH = STORE(M6)               ! H
         IK = STORE(M6+1)             ! K
         IL = STORE(M6+2)             ! L
@@ -524,7 +527,7 @@ C     SET INITIAL VALUES
       IF(E5)SCALE = STORE(L5O)
       CALL XFAL06(6, 0)
       DO WHILE ( KLDRNR(0) .GE. 0 )
-       IF ( ( KALLOW(0) .GE. 0 ) .OR. ( IL28FL .EQ. 0 ) ) THEN
+       IF ( ( KALLOW(ALLOW) .GE. 0 ) .OR. ( IL28FL .EQ. 0 ) ) THEN
         FOB  = STORE(M6+3)            ! FO
         IF(E5)THEN
           FCA  = SCALE * STORE(M6+5)    ! FC
@@ -855,7 +858,7 @@ C
 
       CALL XFAL06(6, 0)
       DO WHILE ( KLDRNR(0) .GE. 0 )
-       IF ( ( KALLOW(0) .GE. 0 ) .OR. ( IL28FL .EQ. 0 ) ) THEN
+       IF ( ( KALLOW(IALLOW) .GE. 0 ) .OR. ( IL28FL .EQ. 0 ) ) THEN
         FOB  = STORE(M6+3)            ! FO
         MHKL(1) = STORE(M6)           ! H
         MHKL(2) = STORE(M6+1)         ! K
@@ -1010,7 +1013,7 @@ CDJW0904
         CALL XFAL06(6, 0)
       ENDIF
       DO WHILE ( KLDRNR(0) .GE. 0 )
-       IF ( ( KALLOW(0) .GE. 0 ) .OR. ( IL28FL .EQ. 0 ) ) THEN
+       IF ( ( KALLOW(IALLOW) .GE. 0 ) .OR. ( IL28FL .EQ. 0 ) ) THEN
         FOB  = STORE(M6+3)            ! FO
         SIGS = STORE(M6+12)           ! SIGF
         MHKL(1) = STORE(M6)           ! H

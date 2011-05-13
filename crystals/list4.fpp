@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.67  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.66  2011/02/18 17:10:35  djw
 C Include average sums of differences in place of the "*" in analyse /FO/
 C
@@ -1027,7 +1030,8 @@ C--Start again as 11 or 15, this time apply the weights:
             AW=AW+G*STORE(L4+1)
           END IF
           IF ( NW .GE. 1 ) THEN   !CHECK IF WE SHOULD ACCUMULATE THE VARIANCE
-            IF( KALLOW(I) .GE. 0 ) THEN ! REFLECTION TOOK PART IN FORMING COEFFICIENTS
+            IF( KALLOW(IALLOW) .GE. 0 ) THEN 
+C             REFLECTION TOOK PART IN FORMING COEFFICIENTS
               NX=NX+1         
               F=AW-F
 cdjw99              H=H+F*F*EW/(1.+FO**CS)
