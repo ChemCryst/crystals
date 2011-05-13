@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.61  2011/05/05 14:25:12  djw
+C Include weight and h/l flag in fcf listing
+C
 C Revision 1.60  2011/04/21 11:25:26  djw
 C Support for PRINT 5 E and ESD/END
 C
@@ -1339,13 +1342,13 @@ C
       ELSE
             KFR = 3
       ENDIF
+      SCALE6 = STORE(L5O)
 C     NOW LOOK FOR THE CASE OF F^2 REFINEMENT, AND OUTPUT ON SCALE OF FC
       IF((KF .EQ. 2) .AND. (KFR.EQ.1)) THEN
             KFR = 2
             SCALWT = SCALE6*SCALE6*SCALE6*SCALE6
       ENDIF
 C
-      SCALE6 = STORE(L5O)
       WRITE(NCFPU1, '(''data_1 '')')
       WRITE(NCFPU1, '(''#  '',10A4)') (KTITL(I),I=1,10)
       CALL XDATER ( CBUF(1:8))
@@ -1404,6 +1407,8 @@ c
       WRITE(NCFPU1,'(''# Status flags: '')')
       WRITE(NCFPU1,'(''#    o - used in refinement '')')
       WRITE(NCFPU1,'(''#    < - excluded by I/sigmaI cutoff '')')
+      WRITE(NCFPU1,'(''#    l - excluded at low resolution  '')')
+      WRITE(NCFPU1,'(''#    h - excluded at high resolution  '')')
       WRITE(NCFPU1,'(''#    x - excluded for another reason  '')')
 
       IF ( KF.EQ. 0 )  THEN
@@ -1480,7 +1485,6 @@ c       Fails sin-theta/lambda test
       ELSE
         IALW = 1                    !Used.
       END IF
-            write(123,*)kf,kfr
       IF ( KF.NE. 0 ) THEN
         IF (KFR.EQ. KF) THEN
          WRITE(NCFPU1,1003)I,J,K,FOS,FCS,SIGMA,CALW(IALW), WT
@@ -1494,7 +1498,7 @@ c       Fails sin-theta/lambda test
          WRITE(NCFPU1,1003)I, J, K, FO, FC, S,CALW(IALW)
         ENDIF
       END IF
-1003  FORMAT (3I4,3F12.2,1X,A1,F10.4)
+1003  FORMAT (3I4,3F12.2,1X,A1,E12.4E1)
       GOTO 1840
 1850  CONTINUE
       GOTO 9999
