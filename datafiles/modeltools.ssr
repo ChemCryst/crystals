@@ -27,6 +27,8 @@
 ^^WI                 TOOL _MADP tool_adp.bmp 'Ellipse'                          
 ^^WI                 '#SCRIPT XMODVIEW_NTHERM' TOGGLE
 ^^WI                   DISABLEIF='IN' ENABLEIF='L5'
+^^WI                 TOOL _MOPT tool_opt.bmp 'Options'                           
+^^WI                 '#SCRIPT XVIEWOPT' TOGGLE DISABLEIF='IN'
 ^^WI                 SPLIT                                                      
 ^^WI                 TOOL _MSHOWH tool_showh.bmp 'Show H'           
 ^^WI                 '#SCRIPT XMODVIEW_NTOGGLEH' TOGGLE
