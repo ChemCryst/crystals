@@ -13,6 +13,8 @@
 % VARIABLE LOGICAL   ANSWER                                                     
 %% Variable returned by assess5                                                 
 % VARIABLE REAL HFIRST                                                          
+%% Variable set by XGUIDERC if caller.
+% VARIABLE LOGICAL XGRETURN
 %%                                                                              
 % VARIABLE INTEGER OLDSER                                                       
 % COPY '#GENERALEDIT 5'                                                         
@@ -314,6 +316,17 @@
 %          COPY 'END'
 %          COPY '#PURGE LIST = 36'
 %          COPY 'END'
+%        END IF
+%      END IF
+%%
+%% If the guide is open but we were called manually. Update the guide.
+%%
+%      IF ( XGRETURN .EQ. FALSE ) THEN
+^^??     XGUIDER EXISTS                                                             
+%        VERIFY TRUE FALSE                                                            
+%        GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%        IF VALUE .EQ. 1  THEN
+%          COPY '#SCRIPT XGUIDE'
 %        END IF
 %      END IF
 %%

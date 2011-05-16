@@ -49,7 +49,8 @@
 %          EVALUATE XGRETURN = TRUE                                             
 %          COPY '#SCRIPT GFINDH'                                                
 %% GFINDH drops back to control (direct) so don't                               
-%% put anything else useful within this block!                                  
+%% put anything else useful within this block!
+%% RIC: I don't think the above is true.
 %        END BLOCK                                                              
 %%                                                                              
 %        BLOCK % KSEXTN 7                                                       
