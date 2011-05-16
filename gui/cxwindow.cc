@@ -9,6 +9,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.43  2011/04/21 11:21:28  rich
+//   Various WXS improvements.
+//
 //   Revision 1.42  2011/03/04 05:55:20  rich
 //   Make windows and dialogs on WX version more like the GID version.
 //
@@ -163,10 +166,12 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
         wxPoint(0, 0), wxSize(-1,-1),
         wxSYSTEM_MENU |         
         ((attributes & kSize) ? wxDEFAULT_FRAME_STYLE   : wxDEFAULT_DIALOG_STYLE|wxFRAME_NO_TASKBAR) |
-        ( parentWindow        ? wxFRAME_FLOAT_ON_PARENT : wxFRAME_FLOAT_ON_PARENT) |
+        ( parentWindow        ? wxFRAME_FLOAT_ON_PARENT : 0) |
 		(( attributes & kModal )? 0 : wxFRAME_TOOL_WINDOW )
       );
       theWindow->SetIcon( wxICON (IDI_ICON1) );
+	  
+	  if ( attributes & kFrame ) theWindow->SetIsFrame();
   #endif
 
   //if the window is modal, disable the parent:
@@ -238,12 +243,36 @@ void CxWindow::CxPreDestroy()
 
 CxWindow::~CxWindow()
 {
+#ifdef __BOTHWX__
+    m_mgr.UnInit();
+#endif
     mWindowCount--;
     if ( !m_PreDestroyed ) {
       CxPreDestroy(); // Should really be called earlier.
       ((CrWindow*)ptr_to_crObject)->NotifyControl();
     }
 }
+
+
+#ifdef __BOTHWX__
+void CxWindow::SetIsFrame() {
+	m_mgr.SetManagedWindow(this);
+}
+void CxWindow::AddPane(wxWindow* pane, unsigned int position, wxString text) {
+	m_mgr.AddPane(pane, position, text);
+	m_mgr.Update();
+//	m_mgr.GetPane(pane).Float();
+//	m_mgr.Update();
+}
+
+void CxWindow::SetPaneMin(wxWindow* pane, int w, int h) {
+	wxAuiPaneInfo &pi = m_mgr.GetPane(pane);
+	if (pi.IsOk()) {
+		pi.MinSize(w,h);
+	}
+	m_mgr.Update();
+}
+#endif
 
 void CxWindow::CxDestroyWindow()
 {

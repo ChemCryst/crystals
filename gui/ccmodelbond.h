@@ -22,6 +22,7 @@ class CcModelBond : public CcModelObject
     ~CcModelBond();
     void ParseInput(deque<string> & tokenList);
     void Render(CcModelStyle *style, bool feedback=false);
+	void DrawBond(GLfloat* Surface1, GLfloat* Surface2, bool feedback, int detail, int bondrad);
     void SelfExclude();
     bool m_excluded;
     vector<CcModelAtom*> m_patms;

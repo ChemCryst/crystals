@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.21  2011/04/21 11:21:28  rich
+//   Various WXS improvements.
+//
 //   Revision 1.20  2011/03/04 05:56:04  rich
 //   Event to catch unminimize (restore) event. Ensure all parent windows are unminimized.
 //
@@ -81,6 +84,7 @@
 #include <wx/settings.h>
 #include <wx/menu.h>
 #include <wx/menuitem.h>
+#include <wx/aui/aui.h>
 #define BASEWINDOW wxFrame
 #endif
 
@@ -177,10 +181,18 @@ class CxWindow : public BASEWINDOW
 	  void OnIconize(wxIconizeEvent & event);
 
       DECLARE_EVENT_TABLE()
+		
+	  void SetIsFrame();
 
 
-  protected:
+ protected:
     wxWindow* mParentWnd;
+     wxAuiManager m_mgr;
+	 
+	 public:
+	 	  void AddPane(wxWindow* pane, unsigned int position, wxString text);
+		  void SetPaneMin(wxWindow* pane, int w, int h);
+
 #endif
 
 };

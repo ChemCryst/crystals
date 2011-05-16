@@ -8,6 +8,11 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.39  2008/09/22 12:31:37  rich
+//   Upgrade GUI code to work with latest wxWindows 2.8.8
+//   Fix startup crash in OpenGL (cxmodel)
+//   Fix atom selection infinite recursion in cxmodlist
+//
 //   Revision 1.38  2005/01/23 10:20:24  rich
 //   Reinstate CVS log history for C++ files and header files. Recent changes
 //   are lost from the log, but not from the files!
@@ -112,6 +117,7 @@ CrWindow::CrWindow( )
     mMenuPtr = nil;
     mTabStop = false;
     mIsModal = false;
+    mIsFrame = false;
     mStayOpen = false;
     mIsSizeable = false;
     mCancelSet  = false;
@@ -180,6 +186,21 @@ CrWindow::~CrWindow()
 
 }
 
+
+void CrWindow::SetPane(void* ptr, unsigned int position, string text) {
+#ifdef __BOTHWX__
+	((CxWindow*)ptr_to_cxObject)->AddPane((wxWindow*)ptr, position, text);
+#endif
+}
+void CrWindow::SetPaneMin(void* ptr,int w,int h){
+#ifdef __BOTHWX__
+	((CxWindow*)ptr_to_cxObject)->SetPaneMin((wxWindow*)ptr, w, h);
+#endif
+}
+
+
+
+
 CcParse CrWindow::ParseInput( deque<string> &  tokenList )
 {
     CcParse retVal(false, mXCanResize, mYCanResize);
@@ -235,6 +256,14 @@ CcParse CrWindow::ParseInput( deque<string> &  tokenList )
                     LOGSTAT( "Setting Window sizeable" );
                     break;
                 }
+                case kTFrame:
+                {
+                    tokenList.pop_front(); // Remove that token!
+                    attributes += kFrame;
+                    mIsFrame = true;
+                    LOGSTAT( "Setting Window is a frame" );
+                    break;
+                }
                 case kTSetCommitText:
                 {
                     tokenList.pop_front(); // Remove that token!
@@ -263,6 +292,7 @@ CcParse CrWindow::ParseInput( deque<string> &  tokenList )
                     tokenList.pop_front();
                     if(!(m_relativeWinPtr = (CcController::theController)->FindObject(tokenList.front())))
                         LOGWARN("CrWindow:ParseInput:POSITION Couldn't find window to position near: "+tokenList.front());
+					//LOGERR("Position near " + tokenList.front());
                     tokenList.pop_front();
                     break;
                     
@@ -494,7 +524,7 @@ CcParse CrWindow::ParseInput( deque<string> &  tokenList )
 
             if(m_relativeWinPtr && keep_no_info)
             {
-                LOGSTAT("Positioning window relative to another.");
+                //LOGERR("Positioning window relative to another.");
                 CcRect winRect(m_relativeWinPtr->GetGeometry());
                 CcRect workRect(GetScreenArea());
                 CcRect thisRect(GetGeometry());
@@ -534,6 +564,9 @@ CcParse CrWindow::ParseInput( deque<string> &  tokenList )
                     }
                     case kTCascade:
                     {
+						//ostringstream os;
+						//os << "Cascade " << winRect.Left() << " " << winRect.Top();
+						//LOGERR(os.str());
                         newPosn.mLeft   = winRect.Left() + EMPTY_CELL;
                         newPosn.mTop    = winRect.Top()  + EMPTY_CELL;
                         newPosn.mRight  = newPosn.Left() + thisRect.Width() ;

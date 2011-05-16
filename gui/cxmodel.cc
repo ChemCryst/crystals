@@ -260,6 +260,7 @@ void CxModel::OnPaint(wxPaintEvent &event)
         glNewList( MODELLIST, GL_COMPILE);
         glEnable(GL_LIGHTING);
 	    glEnable (GL_BLEND); 
+		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	    glEnable (GL_DITHER);  
         glEnable (GL_COLOR_MATERIAL ) ;
         glEnable(GL_LIGHT0);

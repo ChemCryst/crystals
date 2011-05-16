@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.26  2011/05/11 15:23:09  rich
+//   Invert toolbar toggle query on Windows.
+//
 //   Revision 1.25  2011/05/04 12:22:34  rich
 //   Use NullCursor, not NULL.
 //
@@ -364,18 +367,18 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 
     BITMAP bm;
     abitmap->GetBitmap(&bm);
-    if ( bm.bmWidth == 16 && bm.bmHeight == 15)
-    {
+//    if ( bm.bmWidth == 16 && bm.bmHeight == 15)
+    //{
       ReplaceBackgroundColor ( *abitmap );
 //      m_bitmapList.push_back( abitmap );
       m_ImageList->Add( abitmap,  ::GetSysColor (COLOR_3DFACE));
       bitmapIndex = m_ImageIndex++;
-    }
-    else
-    {
-       LOGERR ("Bitmap, "+newTool->tImage+" is wrong height or width, must be 16 wide and 15 high.");
-       return false;
-    }
+    //}
+    //else
+    //{
+       //LOGERR ("Bitmap, "+newTool->tImage+" is wrong height or width, must be 16 wide and 15 high.");
+       //return false;
+    //}
     delete abitmap;
 #endif
   }

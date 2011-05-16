@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   10.6.1998 13:06 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.22  2009/09/04 09:25:46  rich
+//   Added support for Show/Hide H from model toolbar
+//   Fixed atom picking after model update in extra model windows.
+//
 //   Revision 1.21  2009/07/23 14:15:42  rich
 //   Removed all uses of OpenGL feedback buffer - was dreadful slow on some new graphics cards.
 //
@@ -83,6 +87,10 @@ class Cc2DAtom;
 
 class CxModel;
 
+#define BONDSTYLE_BLACK 0
+#define BONDSTYLE_HALFPARENTELEMENT 1
+#define BONDSTYLE_HALFPARENTPART 2
+
 class   CcModelStyle
 {
 public:
@@ -90,6 +98,7 @@ public:
    float radius_scale;
    int normal_res;
    bool showh;
+   int bond_style;
    CxModel* m_modview;
 };
 
@@ -100,7 +109,8 @@ class   CrModel : public CrGUIElement
             CrModel( CrGUIElement * mParentPtr );
             ~CrModel();
     void    GetValue();
-    int     GetIdealWidth();
+	void    GetValue(deque<string> &  tokenList);
+	int     GetIdealWidth();
     int     GetIdealHeight();
     void    CrFocus();
     CcParse ParseInput( deque<string> & tokenList );
@@ -155,10 +165,15 @@ class   CrModel : public CrGUIElement
 #define kSModelClear        "CLEAR"
 #define kSRadiusType        "RADTYPE"
 #define kSRadiusScale       "RADSCALE"
+#define kSBondStyle         "BONDSTYLE"
+#define kSNormal            "NORMAL"
+#define kSElement           "ELEMENT"
+#define kSPart              "PART"
 #define kSVDW               "VDW"
 #define kSThermal           "THERMAL"
 #define kSSpare             "SPARE"
 #define kSCovalent          "COV"
+#define kSTiny              "TINY"
 #define kSSelectAction      "MOUSEACTION"
 #define kSSelect            "SELECTATOM"
 #define kSAppendTo          "APPENDATOM"
@@ -195,10 +210,15 @@ enum
  kTModelClear,
  kTRadiusType,
  kTRadiusScale,
+ kTBondStyle,
  kTVDW,
  kTThermal,
  kTSpare,
  kTCovalent,
+ kTTiny,
+ kTNormal,
+ kTElement,
+ kTPart,
  kTSelectAction,
  kTSelect,
  kTAppendTo,

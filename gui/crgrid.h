@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.17  2011/04/16 07:09:51  rich
+//   Web control
+//
 //   Revision 1.16  2005/01/23 10:20:24  rich
 //   Reinstate CVS log history for C++ files and header files. Recent changes
 //   are lost from the log, but not from the files!
@@ -73,6 +76,7 @@ class   CrGrid : public CrGUIElement
     CcRect  GetGeometry();
     CcRect CalcLayout(bool recalculate=false);
 
+	
     void    SetText( const string &item );
     bool    GridComplete() {  return m_GridComplete; } ;
     CcParse InitElement( CrGUIElement * element, deque<string> & tokenList, int xpos, int ypos );
@@ -84,6 +88,8 @@ class   CrGrid : public CrGUIElement
     void    SetCommandText(const string & theText);
     void    CrShowGrid(bool state);
     CrGUIElement *  GetPointer( int xpos, int ypos );
+    void    ResizeGrid( int w, int h );
+	void 	GridSetGeometry( const CcRect * rect );
 
     int     m_Columns;
     int     m_Rows;
@@ -111,6 +117,7 @@ class   CrGrid : public CrGUIElement
     int m_ContentHeight;
     float m_resizeableWidth;
     float m_resizeableHeight;
+	bool m_IsPane;
 };
 
 #define kSCreateButton      "BUTTON"
@@ -141,6 +148,12 @@ class   CrGrid : public CrGUIElement
 #define kSCreateStretch          "STRETCH"
 #define kSCreateHidden          "HIDDENSTRING"
 #define kSCreateWeb         "WEB"
+#define kSRight         "RIGHT"
+#define kSBottom        "BOTTOM"
+#define kSTop           "TOP"
+#define kSLeft          "LEFT"
+#define kSCentre        "CENTRE"
+#define kSPane        "PANE"
 
 enum
 {
@@ -171,8 +184,13 @@ enum
  kTCreateStretch,
  kTCreatePlot,
  kTCreateHidden,
- kTCreateWeb
-
+ kTCreateWeb,
+ kTRight,
+ kTBottom,
+ kTTop,
+ kTLeft,
+ kTCentre,
+ kTPane
 };
 
 

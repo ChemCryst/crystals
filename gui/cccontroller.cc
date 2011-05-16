@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.115  2011/04/15 15:07:04  rich
+// Different exit.
+//
 // Revision 1.114  2011/03/24 16:32:56  rich
 // Exit more cleanly?
 //
@@ -2925,6 +2928,8 @@ int CcController::GetDescriptor( string &token, int descriptorClass )
                else DESCRIPTOR(AlignBottom)
                else DESCRIPTOR(Modal)
                else DESCRIPTOR(Zoom)
+               else DESCRIPTOR(Pane)
+               else DESCRIPTOR(Frame)
                else DESCRIPTOR(Close)
                else DESCRIPTOR(Size)
                else DESCRIPTOR(Chars)
@@ -2954,8 +2959,13 @@ int CcController::GetDescriptor( string &token, int descriptorClass )
                else DESCRIPTOR(AttachModel)
                else DESCRIPTOR(RadiusType)
                else DESCRIPTOR(RadiusScale)
+               else DESCRIPTOR(BondStyle)
                else DESCRIPTOR(VDW)
+               else DESCRIPTOR(Normal)
+               else DESCRIPTOR(Part)
+               else DESCRIPTOR(Element)
                else DESCRIPTOR(Covalent)
+               else DESCRIPTOR(Tiny)
                else DESCRIPTOR(Thermal)
                else DESCRIPTOR(Spare)
                else DESCRIPTOR(SelectAction)
@@ -3157,6 +3167,13 @@ int CcController::GetDescriptor( string &token, int descriptorClass )
                else DESCRIPTOR(Centred)
              break;
             
+      case kPanePositionClass:
+               DESCRIPTOR(Right)
+               else DESCRIPTOR(Left)
+               else DESCRIPTOR(Top)
+               else DESCRIPTOR(Bottom)
+               else DESCRIPTOR(Centre)
+             break;
 
       case kQueryClass:
                DESCRIPTOR(QExists)
@@ -3168,6 +3185,8 @@ int CcController::GetDescriptor( string &token, int descriptorClass )
                else DESCRIPTOR(QSelected)
                else DESCRIPTOR(QState)
                else DESCRIPTOR(QNLines)
+               else DESCRIPTOR(QAtomStyle)
+               else DESCRIPTOR(QBondStyle)
 
       default:
                DESCRIPTOR(Null)

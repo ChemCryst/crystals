@@ -7,6 +7,9 @@
 //   Filename:  CrResizeBar.cc
 //   Author:    Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.13  2011/04/21 11:21:28  rich
+//   Various WXS improvements.
+//
 //   Revision 1.12  2005/01/23 10:20:24  rich
 //   Reinstate CVS log history for C++ files and header files. Recent changes
 //   are lost from the log, but not from the files!
@@ -409,7 +412,8 @@ void CrResizeBar::MoveResizeBar(int offset)
    CcRect parent   = mParentElementPtr->GetGeometry();
 #endif
 #ifdef __BOTHWX__
-   CcRect parent   = CcRect(0,0,0,0);
+   CcRect parent   = mParentElementPtr->GetGeometry();
+//   CcRect parent   = CcRect(0,0,0,0);
 #endif
    CcRect relative;
 

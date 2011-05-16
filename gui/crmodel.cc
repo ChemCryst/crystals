@@ -6,6 +6,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.37  2009/09/04 09:25:46  rich
+//   Added support for Show/Hide H from model toolbar
+//   Fixed atom picking after model update in extra model windows.
+//
 //   Revision 1.36  2009/07/23 14:15:42  rich
 //   Removed all uses of OpenGL feedback buffer - was dreadful slow on some new graphics cards.
 //
@@ -130,6 +134,7 @@ CrModel::CrModel( CrGUIElement * mParentPtr )
   m_style.radius_scale = 0.25;
   m_style.m_modview = (CxModel*)ptr_to_cxObject;
   m_style.showh = true;
+  m_style.bond_style = BONDSTYLE_HALFPARENTPART;
 }
 
 CrModel::~CrModel()
@@ -242,9 +247,39 @@ CcParse CrModel::ParseInput( deque<string> &  tokenList )
             m_style.radius_type = THERMAL;
             break;
           }
+          case kTTiny:
+          {
+            m_style.radius_type = TINY;
+            break;
+          }
           case kTSpare:
           {
             m_style.radius_type = SPARE;
+            break;
+          }
+        }
+        Update(true);
+        tokenList.pop_front(); // Remove that token!
+        break;
+      }
+      case kTBondStyle:
+      {
+        tokenList.pop_front(); // Remove that token!
+        switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
+        {
+          case kTNormal:
+          {
+            m_style.bond_style = BONDSTYLE_BLACK;
+            break;
+          }
+          case kTPart:
+          {
+            m_style.bond_style = BONDSTYLE_HALFPARENTPART;
+            break;
+          }
+          case kTElement:
+          {
+            m_style.bond_style = BONDSTYLE_HALFPARENTELEMENT;
             break;
           }
         }
@@ -681,6 +716,66 @@ void CrModel::GetValue()
   if(m_ModelDoc) m_ModelDoc->SendAtoms(m_AtomSelectAction,true);
   SendCommand ( "END" );
 }
+
+void CrModel::GetValue(deque<string> &  tokenList)
+{
+    int desc = CcController::GetDescriptor( tokenList.front(), kQueryClass );
+
+    if( desc == kTQBondStyle )
+    {
+        tokenList.pop_front();
+		switch ( m_style.bond_style ) {
+			case BONDSTYLE_BLACK:
+				SendCommand( "NORMAL", true );
+				break;
+            case BONDSTYLE_HALFPARENTPART:
+				SendCommand( "PART", true );
+				break;
+            case BONDSTYLE_HALFPARENTELEMENT:
+				SendCommand( "ELEMENT", true );
+				break;
+  		    default:
+			    SendCommand( "BONDSTYLEUNKNOWN",true );
+				LOGWARN( "CrModel:GetValue Error unrecognised bond style ");
+				break;
+		}
+        tokenList.pop_front();
+    }
+    else if (desc == kTQAtomStyle )
+    {
+        tokenList.pop_front();
+		switch ( m_style.radius_type ) {
+            case COVALENT:
+				SendCommand( "COVALENT" , true );
+				break;
+            case VDW:
+				SendCommand( "VDW" , true );
+				break;
+            case THERMAL:
+				SendCommand( "THERMAL" , true );
+				break;
+			case SPARE:
+				SendCommand( "SPARE" , true );
+				break;
+			case TINY:
+				SendCommand( "TINY" , true );
+				break;
+			default:
+				SendCommand( "ATOMSTYLEUNKNOWN" , true );
+				LOGWARN( "CrModel:GetValue Error unrecognised atom style ");
+				break;
+		}
+    }
+    else
+    {
+        SendCommand( "ERROR",true );
+        LOGWARN( "CrModel:GetValue Error unrecognised token." + tokenList.front());
+        tokenList.pop_front();
+    }
+
+
+}
+
 
 int CrModel::GetSelectionAction()
 {

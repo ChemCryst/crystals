@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.46  2011/05/10 12:43:00  rich
+// Fix "select all" bug
+//
 // Revision 1.45  2011/03/04 06:02:01  rich
 // Use new defines to get correct function signature for update routines.
 //
@@ -562,9 +565,9 @@ bool CcModelDoc::RenderModel( CcModelStyle * style )
    nRes = CRMAX ( 4,  nRes );
    style->normal_res = nRes;
 
-   retval |= RenderAtoms(style,false);
    retval |= RenderBonds(style,false);
    retval |= RenderExcluded(style);
+   retval |= RenderAtoms(style,false);
 
    return retval;
 }
@@ -605,14 +608,26 @@ bool CcModelDoc::RenderAtoms( CcModelStyle * style, bool feedback)
    m_thread_critical_section.Enter();
    if ( !( mAtomList.empty() && mSphereList.empty() && mDonutList.empty() ) ) {
 
-     for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     ++atom) {
-       (*atom).Render(style, feedback);
-     }
+// Render atoms last if 'TINY' style (transparent).
+// Render q peaks last  - might be transparent.
+
      for ( list<CcModelSphere>::iterator sphere=mSphereList.begin(); sphere != mSphereList.end(); ++sphere) {
        (*sphere).Render(style, feedback);
      }
      for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   ++donut) {
        (*donut).Render(style, feedback);
+     }
+// Non Q atoms
+	 for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     ++atom) {
+	    if ((*atom).Label().length() == 0 || (*atom).Label()[0] != 'Q' ) {
+		   (*atom).Render(style, feedback);
+	    }
+     }
+// Q atoms
+	 for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     ++atom) {
+	    if ((*atom).Label().length() > 0 && (*atom).Label()[0] == 'Q' ) {
+			(*atom).Render(style, feedback);
+		}
      }
 	 ret = true;
    }

@@ -5,6 +5,10 @@
 //   Created:   22.7.1998 10:41 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.22  2005/01/23 10:20:24  rich
+// Reinstate CVS log history for C++ files and header files. Recent changes
+// are lost from the log, but not from the files!
+//
 // Revision 1.1.1.1  2004/12/13 11:16:17  rich
 // New CRYSTALS repository
 //
@@ -133,6 +137,8 @@
 #define kSQSelected "SELECTED"
 #define kSQState    "STATE"
 #define kSQNLines   "NLINES"
+#define kSQAtomStyle   "ATOMSTYLE"
+#define kSQBondStyle   "BONDSTYLE"
 
 #define kSHorizontal  "HORIZONTAL"
 #define kSVertical    "VERTICAL"
@@ -180,6 +186,8 @@ enum
  kTQNselected,
  kTQSelected,
  kTQState,
+ kTQAtomStyle,
+ kTQBondStyle,
  kTCreateGrid,
  kTEmpty,
  kTMenuDisableCondition,
@@ -211,7 +219,8 @@ enum {
     kStatusClass,
     kPositionalClass,
     kQueryClass,
-    kPlotClass
+    kPlotClass,
+    kPanePositionClass
 };
 
 

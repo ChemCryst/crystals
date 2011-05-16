@@ -14,6 +14,15 @@ using namespace std;
 #include "creditbox.h"
 #include "cccontroller.h"
 
+
+static const float partColours[7][3]= { { 255.0f, 0.0f, 0.0f },
+										{ 0.0f, 255.0f, 0.0f },
+										{ 0.0f, 0.0f, 255.0f },
+										{ 255.0f, 255.0f, 0.0f },
+										{ 255.0f, 0.0f, 255.0f },
+										{ 0.0f, 255.0f, 255.0f },
+										{ 128.0f, 0.0f, 255.0f } };
+
 CcModelBond::CcModelBond(CcModelDoc * pointer)
 {
     m_x1 = m_y1 = m_z1 = 0;
@@ -43,8 +52,11 @@ CcModelBond::CcModelBond(int x1,int y1,int z1, int x2, int y2, int z2,
   m_bondtype = abs(btype);
   m_bsym = ( btype < 0 );
   m_np = np;
-  for (int i = 0; i < np; i++ ) 
-      m_patms.push_back( mp_parent->FindAtomByPosn( ptrs[i] ) );
+  for (int i = 0; i < np; i++ ) {
+      CcModelAtom* atom = mp_parent->FindAtomByPosn( ptrs[i] );
+	  atom->m_nbonds++;
+      m_patms.push_back( atom );
+  }
   m_label = label;
   m_slabel = cslabl;
   m_xrot = 0;
@@ -112,6 +124,47 @@ void CcModelBond::ParseInput(deque<string> &  tokenList)
 
 }
 
+void CcModelBond::DrawBond(GLfloat* Surface1, GLfloat* Surface2, bool feedback, int detail, int bondrad)  {
+
+
+		if (feedback) {
+			glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
+		} else {
+			glColor4fv( Surface2 );
+		}
+
+		GLUquadricObj* cylinder = gluNewQuadric();
+        gluQuadricDrawStyle(cylinder,GLU_FILL);
+        gluCylinder(cylinder,(float)bondrad,(float)bondrad,m_length/2, detail, detail);
+        gluDeleteQuadric(cylinder);
+
+        glTranslated(0, 0, m_length/2);           //shift the end cap
+
+		GLUquadricObj* sphere = gluNewQuadric();
+		gluQuadricDrawStyle(sphere,GLU_FILL);
+		gluSphere(sphere, (float)bondrad,detail,detail);
+		gluDeleteQuadric(sphere);
+
+
+		if (feedback) {
+			glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
+		} else {
+			glColor4fv( Surface1 );
+		}
+
+        glTranslated(0, 0, -m_length);           //shift the cylinder 
+
+        cylinder = gluNewQuadric();
+        gluQuadricDrawStyle(cylinder,GLU_FILL);
+        gluCylinder(cylinder,(float)bondrad,(float)bondrad,m_length/2, detail, detail);
+        gluDeleteQuadric(cylinder);
+
+		sphere = gluNewQuadric();
+		gluSphere(sphere, (float)bondrad,detail,detail);
+		gluDeleteQuadric(sphere);
+
+}
+
 void CcModelBond::Render(CcModelStyle *style, bool feedback)
 {
 
@@ -147,25 +200,47 @@ void CcModelBond::Render(CcModelStyle *style, bool feedback)
 
    GLUquadricObj* cylinder;
 
-   if (feedback) {
+   GLfloat Surface1[] = { (float)m_r/255.0f,(float)m_g/255.0f,(float)m_b/255.0f, 1.0f };
+   GLfloat Surface2[] = { (float)m_r/255.0f,(float)m_g/255.0f,(float)m_b/255.0f, 1.0f };
+   GLfloat White[] = { 255.0f,255.0f,255.0f, 1.0f };
 
-	  glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
+   if ( style->bond_style == BONDSTYLE_HALFPARENTELEMENT && m_patms.size() == 2 ) {
+   
+		Surface1[0] = (float)m_patms[0]->r / 255.0f;
+		Surface1[1] = (float)m_patms[0]->g / 255.0f;
+		Surface1[2] = (float)m_patms[0]->b / 255.0f;
 
+		Surface2[0] = (float)m_patms[1]->r / 255.0f;
+		Surface2[1] = (float)m_patms[1]->g / 255.0f;
+		Surface2[2] = (float)m_patms[1]->b / 255.0f;
+   
+   } else if ( style->bond_style == BONDSTYLE_HALFPARENTPART  && m_patms.size() == 2 ) {
+
+		int g1 = m_patms[0]->m_group;
+		int g2 = m_patms[1]->m_group;
+		
+		if ( g1 != 0 ) {
+			Surface1[0] = partColours[g1%7][0] / 255.0f;
+			Surface1[1] = partColours[g1%7][1] / 255.0f;
+			Surface1[2] = partColours[g1%7][2] / 255.0f;
+		}
+		if ( g2 != 0 ) {
+			Surface2[0] = partColours[g2%7][0] / 255.0f;
+			Surface2[1] = partColours[g2%7][1] / 255.0f;
+			Surface2[2] = partColours[g2%7][2] / 255.0f;
+		}
    }
-   else if ( m_excluded )
+   
+   if ( m_excluded )
    {
-        GLfloat Surface[] = { 128.0f+(float)m_r/127.0f,128.0f+(float)m_g/127.0f,128.0f+(float)m_b/127.0f, 1.0f };
-//        GLfloat Diffuse[] = { 128.0f+(float)m_r/127.0f,128.0f+(float)m_g/127.0f,128.0f+(float)m_b/127.0f, 1.0f };
-//        glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
-//        glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
-        glColor4fv( Surface );
+		Surface1[0] = 128.0f+Surface1[0]/2.0f;
+		Surface1[1] = 128.0f+Surface1[1]/127.0f;
+		Surface1[2] = 128.0f+Surface1[2]/127.0f;
+		Surface2[0] = 128.0f+Surface2[0]/2.0f;
+		Surface2[1] = 128.0f+Surface2[1]/127.0f;
+		Surface2[2] = 128.0f+Surface2[2]/127.0f;
    }
-   else
-   {
-        GLfloat Surface[] = { (float)m_r/255.0f,(float)m_g/255.0f,(float)m_b/255.0f, 1.0f };
-//        glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
-        glColor4fv( Surface );
-   }
+
 
    int bondrad = (int)((float)m_rad * style->radius_scale);
 
@@ -177,21 +252,33 @@ void CcModelBond::Render(CcModelStyle *style, bool feedback)
         glTranslated(offd*vecX+(m_x1+m_x2)/2.0f, offd*vecY+(m_y1+m_y2)/2.0f, offd*vecZ+(m_z1+m_z2)/2.0f);   //Translate view origin to the center of the bond
         glRotatef(m_yrot,0,1,0);
         glRotatef(m_xrot,1,0,0);
-        glTranslated(0, 0, -m_length / 2);           //shift the cylinder so it is centered at 0,0,0;
-        cylinder = gluNewQuadric();
-        gluQuadricDrawStyle(cylinder,GLU_FILL);
-        gluCylinder(cylinder,(float)bondrad,(float)bondrad,m_length, detail, detail);
-        gluDeleteQuadric(cylinder);
+ 		DrawBond(Surface1, Surface2, feedback, detail, bondrad);
+//        glTranslated(0, 0, -m_length / 2);           //shift the cylinder so it is centered at 0,0,0;
+//		if (feedback) {
+//			glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
+//		} else {
+//			glColor4fv( Surface1 );
+//		}
+//        cylinder = gluNewQuadric();
+//        gluQuadricDrawStyle(cylinder,GLU_FILL);
+//        gluCylinder(cylinder,(float)bondrad,(float)bondrad,m_length, detail, detail);
+//        gluDeleteQuadric(cylinder);
      glPopMatrix();
      glPushMatrix();
         glTranslated(-offd*vecX+((m_x1+m_x2)/2.0f), -offd*vecY+((m_y1+m_y2)/2.0f), -offd*vecZ+((m_z1+m_z2)/2.0f));   //Translate view origin to the center of the bond
         glRotatef(m_yrot,0,1,0);
         glRotatef(m_xrot,1,0,0);
-        glTranslated(0, 0, -m_length / 2);           //shift the cylinder so it is centered at 0,0,0;
-        cylinder = gluNewQuadric();
-        gluQuadricDrawStyle(cylinder,GLU_FILL);
-        gluCylinder(cylinder,(float)bondrad,(float)bondrad,m_length, detail, detail);
-        gluDeleteQuadric(cylinder);
+ 		DrawBond(Surface1, Surface2, feedback, detail, bondrad);
+//        glTranslated(0, 0, -m_length / 2);           //shift the cylinder so it is centered at 0,0,0;
+//		if (feedback) {
+//			glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
+//		} else {
+//			glColor4fv( Surface1 );
+//		}
+//        cylinder = gluNewQuadric();
+//        gluQuadricDrawStyle(cylinder,GLU_FILL);
+//        gluCylinder(cylinder,(float)bondrad,(float)bondrad,m_length, detail, detail);
+//        gluDeleteQuadric(cylinder);
      glPopMatrix();
    }
    else if ( m_bondtype == 3 )
@@ -202,34 +289,52 @@ void CcModelBond::Render(CcModelStyle *style, bool feedback)
         glTranslated((m_x1+m_x2)/2.0f, (m_y1+m_y2)/2.0f, (m_z1+m_z2)/2.0f);   //Translate view origin to the center of the bond
         glRotatef(m_yrot,0,1,0);
         glRotatef(m_xrot,1,0,0);
-        glTranslated(0, 0, -m_length / 2);           //shift the cylinder so it is centered at 0,0,0;
-        cylinder = gluNewQuadric();
-        gluQuadricDrawStyle(cylinder,GLU_FILL);
-        gluCylinder(cylinder,(float)bondrad,(float)bondrad,m_length, detail, detail);
-        gluDeleteQuadric(cylinder);
+ 		DrawBond(Surface1, Surface2, feedback, detail, bondrad);
+//        glTranslated(0, 0, -m_length / 2);           //shift the cylinder so it is centered at 0,0,0;
+//		if (feedback) {
+//			glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
+//		} else {
+//			glColor4fv( Surface1 );
+//		}
+//        cylinder = gluNewQuadric();
+//        gluQuadricDrawStyle(cylinder,GLU_FILL);
+//        gluCylinder(cylinder,(float)bondrad,(float)bondrad,m_length, detail, detail);
+//        gluDeleteQuadric(cylinder);
      glPopMatrix();
      glPushMatrix();
         glTranslated(offd*vecX+(m_x1+m_x2)/2.0f, offd*vecY+(m_y1+m_y2)/2.0f, offd*vecZ+(m_z1+m_z2)/2.0f);   //Translate view origin to the center of the bond
         glRotatef(m_yrot,0,1,0);
         glRotatef(m_xrot,1,0,0);
-        glTranslated(0, 0, -m_length / 2);           //shift the cylinder so it is centered at 0,0,0;
-        cylinder = gluNewQuadric();
-        gluQuadricDrawStyle(cylinder,GLU_FILL);
-        gluCylinder(cylinder,(float)bondrad,(float)bondrad,m_length, detail, detail);
-        gluDeleteQuadric(cylinder);
+ 		DrawBond(Surface1, Surface2, feedback, detail, bondrad);
+//        glTranslated(0, 0, -m_length / 2);           //shift the cylinder so it is centered at 0,0,0;
+//		if (feedback) {
+//			glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
+//		} else {
+//			glColor4fv( Surface1 );
+//		}
+//        cylinder = gluNewQuadric();
+//        gluQuadricDrawStyle(cylinder,GLU_FILL);
+//        gluCylinder(cylinder,(float)bondrad,(float)bondrad,m_length, detail, detail);
+//        gluDeleteQuadric(cylinder);
      glPopMatrix();
      glPushMatrix();
         glTranslated(-offd*vecX+(m_x1+m_x2)/2.0f, -offd*vecY+(m_y1+m_y2)/2.0f, -offd*vecZ+(m_z1+m_z2)/2.0f);   //Translate view origin to the center of the bond
         glRotatef(m_yrot,0,1,0);
         glRotatef(m_xrot,1,0,0);
-        glTranslated(0, 0, -m_length / 2);           //shift the cylinder so it is centered at 0,0,0;
-        cylinder = gluNewQuadric();
-        gluQuadricDrawStyle(cylinder,GLU_FILL);
-        gluCylinder(cylinder,(float)bondrad,(float)bondrad,m_length, detail, detail);
-        gluDeleteQuadric(cylinder);
+ 		DrawBond(Surface1, Surface2, feedback, detail, bondrad);
+//        glTranslated(0, 0, -m_length / 2);           //shift the cylinder so it is centered at 0,0,0;
+//		if (feedback) {
+//			glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
+//		} else {
+//			glColor4fv( Surface1 );
+//		}
+//        cylinder = gluNewQuadric();
+//        gluQuadricDrawStyle(cylinder,GLU_FILL);
+//        gluCylinder(cylinder,(float)bondrad,(float)bondrad,m_length, detail, detail);
+//        gluDeleteQuadric(cylinder);
      glPopMatrix();
    }
-   else if ( m_bondtype == 101 ) //TORUS!
+   else if ( m_bondtype == 101 ) //TORUS for aromatic rings
    {
      glPushMatrix();
         glTranslated((float)m_x1, (float)m_y1, (float)m_z1);   //Translate view origin to the center of the bond
@@ -248,6 +353,11 @@ void CcModelBond::Render(CcModelStyle *style, bool feedback)
         float pi, twopi;
         pi = 3.14159265358979323846f;
         twopi = 2.0f * pi;
+		if (feedback) {
+			glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
+		} else {
+			glColor4fv( Surface1 );
+		}
         for (int i = 0; i < numc; i++) {
            glBegin(GL_QUAD_STRIP);
            for (int j = 0; j <= numt; j++) {
@@ -274,23 +384,19 @@ void CcModelBond::Render(CcModelStyle *style, bool feedback)
    else
    {
       glPushMatrix();
-
 // Remember that these commands appear backwards if you think of them
 // operating on the bond, instead try thinking of them operating on the whole
 // view, while the bond stands still.
-
         glTranslated((m_x1+m_x2)/2.0f, (m_y1+m_y2)/2.0f, (m_z1+m_z2)/2.0f);   //Translate view origin to the center of the bond
         glRotatef(m_yrot,0,1,0);
         glRotatef(m_xrot,1,0,0);
-        glTranslated(0, 0, -m_length / 2);           //shift the cylinder so it is centered at 0,0,0;
-        cylinder = gluNewQuadric();
-        gluQuadricDrawStyle(cylinder,GLU_FILL);
-        gluCylinder(cylinder,(float)bondrad,(float)bondrad,m_length, detail, detail);
-        gluDeleteQuadric(cylinder);
-      glPopMatrix();
+		DrawBond(Surface1, Surface2, feedback, detail, bondrad);
+	  glPopMatrix();
    }
 
 }
+
+
 
 void CcModelBond::SelfExclude()
 {

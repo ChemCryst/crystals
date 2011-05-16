@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.21  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.1.1.1  2004/12/13 11:16:18  rich
 //   New CRYSTALS repository
 //
@@ -100,6 +104,9 @@ class   CrWindow : public CrGUIElement
     void  Enable ( bool enable );
     void  SetTimer();
 
+	void  SetPane(void* ptr, unsigned int position, string text);
+    void  SetPaneMin(void* ptr,int totWidth,int totHeight);
+
 
 //Callbacks (i.e. called from CxWindow)
     void CloseWindow();
@@ -123,6 +130,7 @@ class   CrWindow : public CrGUIElement
     bool m_Shown;
     bool mIsSizeable;
     bool mIsModal;
+    bool mIsFrame;
     bool mStayOpen;
     CrMenuBar* mMenuPtr;
     list<CrGUIElement*> mWindowsWantingSysKeys;
@@ -153,6 +161,7 @@ private:
 #define kSModal         "MODAL"
 #define kSZoom          "ZOOM"
 #define kSSize          "SIZE"
+#define kSFrame  		"FRAME"
 #define kSClose         "CLOSE"
 #define kSPosition  "POSITION"
 #define kSRightOf   "RIGHTOF"
@@ -186,7 +195,8 @@ enum
  kTKeep,
  kTLarge,
  kTStayOpen,
- kTCreatePlotData
+ kTCreatePlotData,
+ kTFrame
 };
 
 

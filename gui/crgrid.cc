@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.31  2011/04/18 08:17:57  rich
+//   MFC patches.
+//
 //   Revision 1.30  2011/04/16 07:09:51  rich
 //   Web control
 //
@@ -139,6 +142,7 @@ CrGrid::CrGrid( CrGUIElement * mParentPtr )
   m_ContentHeight = 0;
   m_InitContentWidth = 0;
   m_InitContentHeight = 0;
+  m_IsPane = false;
 }
 
 CrGrid::~CrGrid()
@@ -207,6 +211,51 @@ CcParse CrGrid::ParseInput( deque<string> & tokenList )
           tokenList.pop_front(); // Remove SetCommandText token!
           SetCommandText( tokenList.front() );
           tokenList.pop_front(); // Remove text token
+          break;
+        }
+        case kTPane:
+        {
+          tokenList.pop_front(); // Remove SetCommandText token!
+#ifdef __BOTHWX__
+		  unsigned int position;
+		  switch ( CcController::GetDescriptor( tokenList.front(), kPanePositionClass ) )
+          {
+			case kTRight:
+				position = wxRIGHT;
+				break;
+ 			case kTLeft:
+				position = wxLEFT;
+				break;
+			case kTTop:
+				position = wxTOP;
+				break;
+			case kTBottom:
+				position = wxBOTTOM;
+				break;
+			case kTCentre:
+				position = wxCENTRE;
+				break;
+			default:
+				LOGWARN("CrGrid:ParseInput:default No pane location after PANE in grid:" + tokenList.front() );
+				position = wxLEFT;
+				break;
+		  }
+          tokenList.pop_front(); // Remove the position keyword
+		  string framename = tokenList.front();
+		  CrWindow* wframe = NULL;
+		  if ( framename == GetRootWidget()->mName ) {
+		     wframe = (CrWindow*)GetRootWidget();
+		  } else {
+             wframe = (CrWindow*) (CcController::theController)->FindObject(framename);
+		  }
+          tokenList.pop_front();
+		  if ( wframe ) { 
+			wframe->SetPane(ptr_to_cxObject, position, mText);
+			m_IsPane = true;
+		  } else {
+		     LOGWARN("No window named: " + framename );
+		  }
+#endif
           break;
         }
         case kTOutline:
@@ -536,9 +585,31 @@ CcParse CrGrid::ParseInput( deque<string> & tokenList )
 }
 
 
+void  CrGrid::ResizeGrid( int w, int h ) {
+  if ( m_IsPane ) {
+ 	if ( ((CrWindow*)GetRootWidget())->m_Shown ) {
+        CcRect rect = GetGeometry();
+ 		rect.mBottom = rect.mTop+h;
+		rect.mRight = rect.mLeft+w;
+		GridSetGeometry(&rect);
+	}
+  }
+}
+
+
 
 void CrGrid::SetGeometry( const CcRect * rect )
 {
+  if ( !m_IsPane ) {
+    GridSetGeometry(rect);
+  }
+}
+
+
+void CrGrid::GridSetGeometry( const CcRect * rect ) {
+	
+	
+
   ((CxGrid*)ptr_to_cxObject)->SetGeometry( rect->mTop,    rect->mLeft,
                                            rect->mBottom, rect->mRight );
   if ( m_OutlineWidget != nil )
@@ -661,6 +732,10 @@ CcRect CrGrid::CalcLayout(bool recalc)
 
   delete [] ColWidths;
   delete [] RowHeights;
+
+  if ( m_IsPane ) {
+	  ((CrWindow*)GetRootWidget())->SetPaneMin(ptr_to_cxObject,totWidth,totHeight);
+  }
 
   return CcRect( 0,0, totHeight, totWidth);
 }

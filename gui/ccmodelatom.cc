@@ -49,7 +49,8 @@ CcModelAtom::CcModelAtom(const string & llabel,int lx1,int ly1,int lz1,
   m_group = group;
   m_elem = elem;
   m_spare = fspare;
-
+  m_nbonds = 0;
+  
   localmatrix[0]=x11;
   localmatrix[1]=x12;
   localmatrix[2]=x13;
@@ -94,6 +95,7 @@ void CcModelAtom::Init()
   frac_y = 0.0;
   frac_z = 0.0;
   m_spare = 0.0;
+  m_nbonds = 0;
 
 }
 
@@ -186,9 +188,25 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
 
   if (feedback) {
 
-	  glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
-	  
-	  
+	glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
+
+  } else if ( style->radius_type == TINY ) {  //make invisible (unless selected or no bonds)
+
+    if ( m_nbonds == 0 ) {
+		GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 1.0f };
+		glColor4fv( Surface );
+	} else if ( !m_selected ) { 
+		GLfloat Surface[] = { 1.0f, 1.0f, 1.0f, 0.0f };
+		glColor4fv( Surface );
+	} else if ( m_excluded ) {
+        GLfloat Surface[] = { 128.0f+(float)r/127.0f,128.0f+(float)g/127.0f,128.0f+(float)b/127.0f, 0.3f };
+        glColor4fv( Surface );
+        extra = 20.0f;
+	} else {
+		GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 0.3f };
+		glColor4fv( Surface );
+	}
+
   } else if ( m_excluded ) {
     GLfloat Surface[] = { 128.0f+(float)r/127.0f,128.0f+(float)g/127.0f,128.0f+(float)b/127.0f, 1.0f };
     glColor4fv( Surface );
@@ -225,6 +243,8 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
   if ( (!style->showh) && ( m_label.length() > 1 ) && ( m_label[0] == 'H' ) && ( m_label[1] == '(' ) ) {
 		// draw nothing
   } else if (style->radius_type == COVALENT) {
+		gluSphere(sphere, (covrad + extra ) * style->radius_scale,detail,detail);
+  } else if (style->radius_type == TINY) {
 		gluSphere(sphere, (covrad + extra ) * style->radius_scale,detail,detail);
   } else if(style->radius_type == VDW) {
     gluSphere(sphere, ((float)vdwrad + extra ) * style->radius_scale,detail,detail);

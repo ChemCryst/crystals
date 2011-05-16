@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.18  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.2  2005/01/12 13:15:56  rich
 //   Fix storage and retrieval of font name and size on WXS platform.
 //   Get rid of warning messages about missing bitmaps and toolbar buttons on WXS version.
@@ -144,6 +148,7 @@ END_MESSAGE_MAP()
 //wx Message Table
 BEGIN_EVENT_TABLE(CxGrid, wxWindow)
       EVT_CHAR( CxGrid::OnChar )
+      EVT_SIZE( CxGrid::OnSize )
 END_EVENT_TABLE()
 #endif
 
@@ -152,6 +157,20 @@ CXONCHAR(CxGrid)
 CXSETGEOMETRY(CxGrid)
 
 CXGETGEOMETRIES(CxGrid)
+
+
+#ifdef __BOTHWX__
+void CxGrid::OnSize(wxSizeEvent & event)
+{
+      ostringstream strm;
+      strm << "OnSize called " << event.GetSize().x <<  " " << event.GetSize().y;
+      LOGSTAT( strm.str() );
+      wxSize si = GetClientSize(); //Onsize is whole window - we only want this bit.
+      ((CrGrid*)ptr_to_crObject)->ResizeGrid( si.GetWidth(), si.GetHeight() );
+}
+#endif
+
+
 
 int CxGrid::GetIdealWidth()
 {

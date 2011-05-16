@@ -3,6 +3,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.39  2011/03/24 16:46:09  rich
+// Untest.
+//
 // Revision 1.38  2011/03/24 15:27:48  rich
 // Test.
 //
@@ -183,6 +186,7 @@ enum {
 #define kZoom               2
 #define kClose              4
 #define kSize               8
+#define kFrame              16
 #define EMPTY_CELL          10
 
 
@@ -246,6 +250,7 @@ typedef unsigned int UINT;
 #define VDW       2
 #define THERMAL   3
 #define SPARE     4
+#define TINY      5
 
 
 
@@ -338,8 +343,8 @@ else {ptr_to_crObject->FocusToInput((char)nChar);}}
 #ifdef __BOTHWX__
 
 #define CXGETGEOMETRIES(a)    \
-int a ::GetTop()  { return ( GetRect().y );}\
-int a ::GetLeft() { return ( GetRect().x );}\
+int a ::GetTop()  { return ( GetScreenRect().y );}\
+int a ::GetLeft() { return ( GetScreenRect().x );}\
 int a ::GetWidth() { return ( GetSize().GetWidth());}\
 int a ::GetHeight(){ return ( GetSize().GetHeight());}
 
