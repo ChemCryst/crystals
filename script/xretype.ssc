@@ -49,8 +49,8 @@
 ^^WI          @ 3,1 STATIC T1 'residues, click the'
 ^^WI          @ 4,1 STATIC T1 '"Collect Atoms" button.'
 ^^WI          @ 6,1 BUTTON BCOLL 'Collect Atoms'
-^^WI          @ 8,1 CHECKBOX CHBX 'Convert Q to C on exit' STATE=ON
-^^WI          @ 10,1 CHECKBOX CHBB 'Convert B to C on exit' STATE=ON
+^^WI          @ 8,1 CHECKBOX CHBX 'Convert Q to C on exit' STATE=OFF
+^^WI          @ 10,1 CHECKBOX CHBB 'Convert B to C on exit' STATE=OFF
 ^^WI        }
 ^^WI      }
 ^^WI      @ 1,3 MODELWINDOW MODELRE 'N' NROWS=5 NCOLS=65
