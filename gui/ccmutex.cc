@@ -7,6 +7,9 @@
  */
  
  // $Log: not supported by cvs2svn $
+ // Revision 1.1  2005/02/02 15:27:23  stefan
+ // 1. Initial addition to crystals. A group of classes for threading.
+ //
 
 #include "crystalsinterface.h"
 #include "ccmutex.h"
@@ -28,7 +31,7 @@ CcMutex::~CcMutex()
 	#endif
 }
 
-void CcMutex::Lock()throw(mutex_error)
+void CcMutex::Lock() //throw(mutex_error)
 {
 	error_type tError;
 	#if defined(__CR_WIN__)
@@ -39,7 +42,7 @@ void CcMutex::Lock()throw(mutex_error)
 			throw mutex_error(tError);
 }
 
-bool CcMutex::TryLock()throw(mutex_error)
+bool CcMutex::TryLock() // throw(mutex_error)
 {
 	error_type tError;
 	#if defined(__CR_WIN__)
@@ -57,7 +60,7 @@ bool CcMutex::TryLock()throw(mutex_error)
 	return true;
 }
 
-void CcMutex::Unlock()throw(mutex_error)
+void CcMutex::Unlock() //throw(mutex_error)
 {
 	unsigned int tError;
 	#if defined(__CR_WIN__)
@@ -71,7 +74,7 @@ void CcMutex::Unlock()throw(mutex_error)
 /*
  * CcLifeTimeLock locking class. Locks the passed lock when it is entered and then unlocked when it's destroyed.
  */
-CcLifeTimeLock::CcLifeTimeLock(CcMutex& pLock) throw(logic_error):iLock(NULL)
+CcLifeTimeLock::CcLifeTimeLock(CcMutex& pLock) /*throw(logic_error)*/:iLock(NULL)
 {
 	pLock.Lock();
 	iLock = &pLock;
