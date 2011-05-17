@@ -7,6 +7,9 @@
 //   Filename:  CxResizeBar.cc
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.17  2011/05/04 12:22:04  rich
+//   Use NullCursor, not NULL.
+//
 //   Revision 1.16  2011/03/16 17:37:30  rich
 //   Fix drawing of resizebar and cursor setting on mouse exit.
 //
@@ -94,9 +97,11 @@ using namespace std;
 #include <wx/settings.h>
 #include <wx/cmndata.h>
 #include <wx/fontdlg.h>
-//#define MK_CONTROL 1
-//#define MK_SHIFT 2
+#endif
 
+#ifndef __BOTHWIN__
+#define MK_CONTROL 1
+#define MK_SHIFT 2
 #endif
 
 int CxResizeBar::mResizeBarCount = kResizeBarBase;
