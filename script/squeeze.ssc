@@ -8,10 +8,10 @@
 % COPY 'TRANSFER FROM OFFSET = 6 TO IFLACK'                                     
 %  IF ( IFLACK .EQ. 0 ) THEN                                         
 {1,8 
-{1,8 The Flack paramter is being used.
+{1,8 The Flack parameter is being used.
 {1,8 Ton Spek only recommends the use of SQUEEZE for data
 {1,8 with Friedel and other equivalent reflections merged.
-{1,8 CRYSTALS recommends that you abaNdon SQUEEZING until
+{1,8 CRYSTALS recommends that you abandon SQUEEZING until
 {1,8 you have ensured that the data is fully merged.
 {1,8 
 %      EVALUATE QTITLE = ' '                              
