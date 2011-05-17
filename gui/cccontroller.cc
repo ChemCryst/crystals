@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.116  2011/05/16 10:56:32  rich
+// Added pane support to WX version. Added coloured bonds to model.
+//
 // Revision 1.115  2011/04/15 15:07:04  rich
 // Different exit.
 //
@@ -866,7 +869,7 @@ CcController::CcController( const string & directory, const string & dscfile )
 #endif
 #ifdef __BOTHWX__
       char * env = new char[dsctemp.size()+1];
-      std::strcpy(env, dsctemp.c_str());
+      strcpy(env, dsctemp.c_str());
       stringlist.push_back(env);
       putenv( env );
 #endif
@@ -1395,7 +1398,7 @@ bool CcController::ParseInput( deque<string> & tokenList )
 #endif
 #ifdef __BOTHWX__
                              char * env = new char[newdsc.size()+1];
-                             std::strcpy(env, newdsc.c_str());
+                             strcpy(env, newdsc.c_str());
                              stringlist.push_back(env);
                              putenv( env );
 #endif
@@ -1729,6 +1732,11 @@ void  CcController::AddInterfaceCommand( const string &line, bool internal )
   }
    
   if(mThisThreadisDead) endthread(0);
+
+//  ostringstream os;
+//  os << "-----(" << mInterfaceCommandDeq.size() <<  ")---CRYSTALS puting: " << line ;
+//  LOGSTAT(os.str());
+
   mInterfaceCommandDeq.push_back(line);
   LOGSTAT("-----------CRYSTALS has put: " + line );
 
@@ -1794,6 +1802,9 @@ bool CcController::GetInterfaceCommand( string &line )
   try
   {
 	line = mInterfaceCommandDeq.pop_front(0);
+//    ostringstream os;
+//    os << "GUI gets (rem: " << mInterfaceCommandDeq.size() << ": " << line;
+//    LOGSTAT(os.str());
     LOGSTAT("GUI gets: "+line);
     return (true);
   }

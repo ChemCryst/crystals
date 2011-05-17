@@ -321,7 +321,7 @@ using namespace std;
       delete config;
       location = location.insert( 0, "CRYSDIR=" );
       char * env = new char[location.size()+1];
-      std::strcpy(env, location.c_str());
+      strcpy(env, location.c_str());
       stringlist.push_back(env);
       putenv( env );
     }
@@ -342,7 +342,7 @@ using namespace std;
           envvar += "=";
           envvar += argv[i+2];
           char * env = new char[envvar.size()+1];
-          std::strcpy(env, envvar.c_str());
+          strcpy(env, envvar.c_str());
           stringlist.push_back(env);
           putenv( env );
           i = i + 2;
