@@ -1495,6 +1495,7 @@ c
 c
       if (ind.eq.-1) then
                      ind=-1
+c--    0  : close the window
       else if (ind.eq.0) then
 #if defined(_DOS_) 
          call text_mode@
@@ -1502,6 +1503,7 @@ c
 #if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
          call closedisplay
 #endif
+c--    1  : open Xwindow(0: *x, 0: *y )
       else if (ind.eq.1) then
 c         call screen_type@(type)
 c         if (type.eq.3) then
@@ -1580,7 +1582,8 @@ c         call set_mouse_position@(kscrx/2+40,kscry/2+10)
          iy1 = 20
          iwid = kscrx-ix
          ihei = iy1
-         icol = 3
+cdjw         icol = 3 !teal
+         icol = 7 ! white
          ColTast = icol
 #if defined(_DOS_) 
          call fill_rectangle@(ix,iy,ix1,iy1,icol)
@@ -1609,7 +1612,9 @@ c         call set_mouse_position@(kscrx/2+40,kscry/2+10)
 #endif
          iwid = 80
          call Tasto (ix,iy,iwid,ihei,kact,1)
-         icol = 4
+cdjw         icol = 4 !dark red
+cdjw         icol = 12 !light red
+         icol = 0 !black
          ix = 4
          iy = 4
          kkprog = mod ( kprog , 10 )
@@ -1647,6 +1652,7 @@ c         call set_mouse_position@(kscrx/2+40,kscry/2+10)
 #endif
          khead = 1
          kact = 1
+c--    2  : draw to *x, *y
       else if (ind.eq.2) then
          ix1=ixv(2)
          iy1=iyv(2)
@@ -1663,7 +1669,7 @@ c         call set_mouse_position@(kscrx/2+40,kscry/2+10)
          CALL MOVETO(ix,iy,xy)
          RES= LINETO(ix1,iy1)
 #endif
-
+c--    3  : reset menu and top window                      ++++++++++++
       else if (ind.eq.3) then
          ix = 81
          iy = 0
@@ -1671,7 +1677,7 @@ c         call set_mouse_position@(kscrx/2+40,kscry/2+10)
          iy1 = 20
          iwid = kscrx-ix
          ihei = iy1
-         icol = 3
+         icol = 3 !teal
          ColTast = icol
 #if defined(_DOS_) 
          call fill_rectangle@(ix,iy,ix1,iy1,icol)
@@ -1685,7 +1691,7 @@ c         call set_mouse_position@(kscrx/2+40,kscry/2+10)
 #endif
          kact = 1
          call Tasto (ix,iy,iwid,ihei,kact,1)
-         icol = 4
+         icol = 4 !dark red
          ix = 84
          iy = 4
 #if defined(_DOS_) 
@@ -1699,6 +1705,7 @@ c         call set_mouse_position@(kscrx/2+40,kscry/2+10)
          CALL MOVETO(ix,iy,xy)
          CALL OUTGTEXT(Titolo)
 #endif
+c--    5  : eventloop (mouse)
       else if (ind.eq.5) then
          if (khead.eq.1 .and. ihcopy.ne.1 .and. ipres.eq.0) then
             call DrawMenu(Iz)
@@ -1758,7 +1765,8 @@ c
                call ClearMessage
                messaggio = 'Running. Please wait...'
                Iz = 23
-               icol = 14
+cdjw               icol = 14 !yellow
+               icol = 0 !black
                ix = 85
                iy = kscry - 20
 #if defined(_DOS_) 
@@ -1807,7 +1815,8 @@ c
 2423        call DrawMenu(iz)
             call display_mouse_cursor
 c
-            color = 7
+            color = 7 !white
+cdjw            color = 0 !black
  2424       call Sorcio(ix,iy,button_status)
 c
             j = kebox(ix,iy)
@@ -1830,7 +1839,7 @@ c
                khead = 0
                nbox0  = 1
                nboxn  = nbox
-               ColTast = 3
+               ColTast = 3 !teal
 c               iz = 0
 c               call DrawMenu(iz)
                call display_mouse_cursor
@@ -1838,7 +1847,7 @@ c               call DrawMenu(iz)
             end if
             nbox0  = 1
             nboxn  = nbox
-            ColTast = 3
+            ColTast = 3 !teal
 c            iz = 0
 c            call DrawMenu(iz)
          end if
@@ -1849,7 +1858,8 @@ c            call DrawMenu(iz)
             messaggio = 'Click on atom to Relabel'
 #endif
             Iz = 24
-            icol = 14
+cdjw            icol = 14 !yellow
+            icol = 0 !black
             ix = 85
             iy = kscry - 20
 #if defined(_DOS_) 
@@ -1867,7 +1877,7 @@ c            call DrawMenu(iz)
             call DrawMenu(iz)
             call display_mouse_cursor
             
-            color = 7
+            color = 7 !white
             call Sorcio(ix,iy,button_status)
 c
             i = kebox(ix,iy)
@@ -1876,7 +1886,7 @@ c
                call ClearMessage
                nbox0  = 1
                nboxn  = nbox
-               ColTast = 3
+               ColTast = 3 !teal
 c              iz = 0
 c              call DrawMenu(iz)
                goto 200
@@ -1887,7 +1897,8 @@ c
             call ClearMessage
             messaggio = 'Select new atomic Specie'
             Iz = 24
-            icol = 14
+cdjw            icol = 14 !yellow
+            icol = 0 !black
             ix = 85
             iy = kscry - 20
 #if defined(_DOS_) 
@@ -1930,7 +1941,8 @@ c
                RES= RECTANGLE ($GFILLINTERIOR,ix,iy,ix1,iy1)
 #endif
                call Tasto (ix,iy,widb,heib,kact,3)
-               icol=1
+cdjw               icol=1 !dark blue
+               icol=15 ! white
 #if defined(_DOS_) 
                call rectangle@(ix,iy,ix1,iy1,icol)
 #endif
@@ -1941,10 +1953,11 @@ c
                RES= SETCOLOR ( icol )
                RES= RECTANGLE ($GBORDER,ix,iy,ix1,iy1)
 #endif
-               if(ColTast.ne.4 .and. ColTast.ne.1) then
-                  icol=4
+cdjw               if(ColTast.ne.4 .and. ColTast.ne.1) then
+               if(ColTast.ne.4 .and. ColTast.ne.7) then
+                  icol=4 !dark red
                else
-                  icol=7
+                  icol=7 !white
                end if
                ix2=ix+4
                iy2=iy+2
@@ -1984,7 +1997,7 @@ c
             call Tasto (ix,iy,widb,heib,kact,2)
             nbox0  = 1
             nboxn  = nbox
-            ColTast = 3
+            ColTast = 3 !teal
 c            iz = 0
 c            call DrawMenu(iz)
             goto 555
@@ -1993,7 +2006,8 @@ c            call DrawMenu(iz)
             call ClearMessage
             messaggio = 'Running. Please wait...'
             Iz = 23
-            icol = 14
+cdjw            icol = 14 !yellow
+            icol = 0 !black
             ix = 85
             iy = kscry - 20
 #if defined(_DOS_) 
@@ -2016,7 +2030,7 @@ c            call DrawMenu(iz)
             call DrawMenu(iz)
             call display_mouse_cursor
 c
-            color = 7
+            color = 7 !white
  2524       call Sorcio(ix,iy,button_status)
 c
             j = kebox(ix,iy)
@@ -2095,7 +2109,7 @@ c                  return
  2623       call DrawMenu(iz)
             call display_mouse_cursor
 c
-            color = 7
+            color = 7 !white
  2624       call Sorcio(ix,iy,button_status)
 c
             j = kebox(ix,iy)
@@ -2169,13 +2183,14 @@ c--   Info
          end if
 555      call hide_mouse_cursor
          return
+c--    6  : clear screen
       else if (ind.eq.6) then
          if (ihcopy.eq.0) then
             ix=81
             iy=21
             ix1=kscrx
             iy1=kscry
-            icol=0
+            icol=7  !Light grey
 #if defined(_DOS_) 
             call clear_screen_area@(ix,iy,ix1,iy1,icol)
 #endif
@@ -2187,13 +2202,14 @@ c--   Info
             RES= RECTANGLE ($GFILLINTERIOR,ix,iy,ix1,iy1)
 #endif
          end if
+c--    7  : xflush
       else if (ind.eq.7) then
 c        call clear_screen@
          ix=0
          iy=21
          ix1=kscrx
          iy1=kscry
-         icol=0
+         icol=7 ! Light Grey
 #if defined(_DOS_) 
          call clear_screen_area@(ix,iy,ix1,iy1,icol)
 #endif
@@ -2204,6 +2220,8 @@ c        call clear_screen@
          RES= SETCOLOR ( icol )
          RES= RECTANGLE ($GFILLINTERIOR,ix,iy,ix1,iy1)
 #endif
+c--    8  : set switches to default value                  ++++++++++++
+c--    9  : draw string (iiz chars) in position iix,iiy
       else if (ind.eq.8) then
       else if (ind.eq.9) then
          iarrow = 0
@@ -2214,7 +2232,7 @@ c        call clear_screen@
             iy1 = 21
             ix2 = 80
             iy2 = kscry
-            icol = 0
+            icol = 7 !white
 #if defined(_DOS_) 
             call clear_screen_area@(ix1,iy1,ix2,iy2,icol)
 #endif
@@ -2232,7 +2250,7 @@ c        iy=iy+40
          ix1=kscrx
 c        iy1=iy-ivd+15
          iy1=iy+ivd-5
-         icol=0
+         icol=7 !Light Grey
 #if defined(_DOS_) 
          call fill_rectangle@(ix,iy,ix1,iy1,icol)
 #endif
@@ -2313,6 +2331,7 @@ c        iy1=iy-ivd+15
             res = POLYGON($GFILLINTERIOR, poly, iz)
 #endif
          end if
+c--   10  : draw circle (iiz radius) center in iix,iiy
       else if (ind.eq.10)then
          if (ix.le.80.or.iy.le.20) khead = 1
          iz=iz/2
@@ -2336,6 +2355,7 @@ c        iy1=iy-ivd+15
          END IF
          res = ELLIPSE($GBORDER,ix-iz1,iy-iz,ix+iz1,iy+iz)
 #endif
+c--   11  : fill circle (iiz radius) center in iix,iiy
       else if (ind.eq.11)then
          if (ix.le.80.or.iy.le.20) khead = 1
          iz=iz/2
@@ -2359,9 +2379,11 @@ c        iy1=iy-ivd+15
          END IF
          res = ELLIPSE($GFILLINTERIOR,ix-iz1,iy-iz,ix+iz1,iy+iz)
 #endif
+c--   12  : set foreground color to iicol
       else if (ind.eq.12)then
          icol = iicol
          color=icol
+c--   13  : draw iiz-points polygon using color iicol
       else if (ind.eq.13)then
          do i=1,iz
 #if defined(_DOS_) || defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
@@ -2388,6 +2410,7 @@ c        iy1=iy-ivd+15
          END IF
          res = POLYGON($GBORDER, poly, iz)
 #endif
+c--   14  : fill iiz-points polygon using color iicol
       else if (ind.eq.14)then
          do i=1,iz
 #if defined(_DOS_) || defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
@@ -2418,13 +2441,15 @@ c        iy1=iy-ivd+15
          END IF
          res = POLYGON($GFILLINTERIOR, poly, iz)
 #endif
+c--   15  : print a message at the bottom of the window
       else if (ind.eq.15)then
          ix=81
          iy=kscry-13
          ix1=kscrx
 c        iy1=iy-ivd+15
          iy1=kscry
-         icol=0
+cdjw         icol=0 !black
+         icol = 7 !white
 #if defined(_DOS_) 
          call fill_rectangle@(ix,iy,ix1,iy1,icol)
 #endif
@@ -2446,12 +2471,14 @@ c        iy1=iy-ivd+15
          CALL MOVETO(ix,iy,xy)
          CALL OUTGTEXT(string(1:iz))
 #endif
+c--   16  : store atomic species in static array
       else if (ind.eq.16)then
          NumSpec = iiz
          do 1000 i = 1 , NumSpec
             j = ( i - 1 ) * 3 + 1
             Species(i) = string(j:j+1)
  1000    continue
+c--   17  : close window.
       else if (ind.eq.17)then
             GraphicsHandle=0
 #if defined(_DOS_) 
@@ -2605,7 +2632,8 @@ c
          iy1 = 20
          iwid = kscrx-ix
          ihei = iy1
-         icol = 3
+cdjw         icol = 3 !teal
+         icol = 7 !white
 #if defined(_DOS_) 
          call fill_rectangle@(ix,iy,ix1,iy1,icol)
 #endif
@@ -2619,7 +2647,8 @@ c
 
          kact = 1
          call Tasto (ix,iy,iwid,ihei,kact,1)
-         icol = 4
+cdjw         icol = 4 !dark red
+         icol = 0 ! black
          ix = 84
          iy = 4
          kkprog = mod ( kprog , 10 )
@@ -2643,6 +2672,9 @@ c
          CALL MOVETO(ix,iy,xy)
          CALL OUTGTEXT(messaggio(1:iiz))
 #endif
+c restore dark red
+         icol = 4 !dark red
+         res= setcolor ( icol )
       elseif (iz.eq.2 .or. iz.eq.4 .or. iz.eq.9) then
          call ClearMessage
       end if
@@ -2679,7 +2711,8 @@ c
          if ( i.gt.9 ) then
             call Tasto (ix,iy,widb,heib,kact,2)
          endif
-         icol=1
+cdjw*         icol=1 !dark blue
+         icol=15 !bright white
          ix=ix-1
          iy=iy-1
          ix1=ix1+1
@@ -2886,7 +2919,8 @@ c-----------------------------------------------------------------------
       common /screen/ kscreen,jy,ivd,kscrx,kscry,jscreen,kprog,ifMouse
       integer*2 ix,iy,ix1,iy1,icol
 c
-      icol = 0
+cdjw      icol = 0 !black
+      icol = 7 !white
       ix = 81
       iy = kscry - 20
       ix1 = kscrx
@@ -3008,7 +3042,8 @@ c
 c
 c--   Create message to display.
 c
-      icol = 14
+cdjw      icol = 14 !yellow
+      icol = 0 ! black
       ix = 85
       iy = 40
 c
@@ -3044,7 +3079,7 @@ c
       call DrawMenu(iz)
       call display_mouse_cursor
 c
-      color = 7
+      color = 7 !white
   300 call Sorcio(ix,iy,button_status)
 c
       i = kebox(ix,iy)
@@ -3114,7 +3149,8 @@ c
 #endif
       call display_mouse_cursor
       call Tasto (ix,iy,widb,heib,kact,2)
-      icol=1
+cdjw      icol = 1 !dark blue
+      icol = 15 !bright white
       ix=ix-1
       iy=iy-1
       ix1=ix1+1
@@ -3136,7 +3172,9 @@ c
             ix=ix+5
          end if
          iy2 = iy1 - 17
-         icol=1
+cdjw      icol = 1 !dark blue
+cdjw      icol=12 ! light red
+      icol=15 ! bright white
 #if defined(_DOS_) 
          call draw_text@(strbox(i)(1:iiz),ix,iy2,icol)
 #endif
@@ -3199,7 +3237,8 @@ c
       call ClearMessage
       messaggio = 'Draw a polygon around atoms ...'
       Iz = 31
-      icol = 14
+cdjw      icol = 14 !yellow
+      icol = 0 ! black
       ix = 85
       iy = kscry - 20
       call hide_mouse_cursor
@@ -3221,7 +3260,8 @@ c
       call display_mouse_cursor
 c
       nel = 0
-      color = 7
+cdjw17      color = 7 !white
+      color = 0 !black
   300 call Sorcio(ix,iy,button_status)
 c
       i = kebox(ix,iy)
@@ -3313,7 +3353,8 @@ c
             messaggio = 'Click on couples of atoms'
          end if
          Iz = 24
-         icol = 14
+cdjw         icol = 14 !yellow
+         icol = 0 ! black
          ix = 85
          iy = kscry - 20
 #if defined(_DOS_) 
@@ -23839,7 +23880,7 @@ c     if (iPlotType .EQ. 6) goto 500
          L = Lung(Lab(IJ))
          IF (L .GT. 0) THEN
             iiX = X11 - fx * 6.0 * L / 2.0
-            IColor = 7
+            IColor = 7 !white
             CALL LabelM(Lab(IJ), iiX, iiY, fx , fy , IColor)
          END IF
       END IF
@@ -24001,7 +24042,7 @@ Ccc   IF (BondLu .GT. 5 * DDX) THEN
   200    continue
          iz=4
          ind = 14
-         icolor = 0
+         icolor = 0 !black
          call graphs(ixv,iyv,iz,ind,string,icolor)
          ixv(5)=ixv(1)
          iyv(5)=iyv(1)
@@ -24351,9 +24392,12 @@ C -----------------------------------------------------------------
       SUBROUTINE SticksOrd
 c
       IMPLICIT REAL*4 (M)
+      integer  nz, ind, djwc
+      integer ixv(100),iyv(100)
       INTEGER O1,O2
       INTEGER *4 CC, CC1, XX1, YY1, XX2, YY2, DDX, DDY, DDDX, DDDY
       INTEGER *4  XX3, YY3, XD1, XD2
+      CHARACTER *1 CTMP
       CHARACTER *1 Lett
       CHARACTER *5 Lab
       CHARACTER *80 Titolo
@@ -24418,19 +24462,74 @@ c    * ipix(1,n2),ipix(2,n2),ipix(3,n2)
             ELSE
                DDDY = -DDY
             END IF
-            XD1= XX1 + DDDX
-            XD2= XX2 - DDDX
-            Ize = 0
-            CALL Linea (XD1, YY1-DDDY, XD2, YY2 - DDDY, Ize)
-            CALL Linea (XD1, YY1+DDDY, XD2, YY2 + DDDY, Ize)
-            CALL Linea (XD1, YY1-2 * DDDY, XD2, YY2 - 2 * DDDY,Ize)
-            CALL Linea (XD1, YY1+2 * DDDY, XD2, YY2 + 2 * DDDY,Ize)
-            XX3 = (XX1 + XX2) / 2
-            YY3 = (YY1 + YY2) / 2
-            CC1 = iCol(N1) + 8
-            CC  = iCol(N2) + 8
-            CALL Linea (XX1, YY1, XX3, YY3, CC1)
-            CALL Linea (XX3, YY3, XX2, YY2, CC)
+c            XD1= XX1 + DDDX
+c            XD2= XX2 - DDDX
+cdjwMay-2011 draw bond border
+            x1p=xx1+dddx
+            x1m=xx1-dddx
+            y1p=yy1+dddy
+            y1m=yy1-dddy
+            x2p=xx2+dddx
+            x2m=xx2-dddx
+            y2p=yy2+dddy
+            y2m=yy2-dddy
+c mid-points 
+            xbp=(x1p+x2p)/2
+            ybp=(y1p+y2p)/2
+            xbm=(x1m+x2m)/2
+            ybm=(y1m+y2m)/2
+c
+            ixv(1)=x1p
+            iyv(1)=y1p
+c
+            ixv(2)=x1m
+            iyv(2)=y1m
+c
+            ixv(3)=xbm
+            iyv(3)=ybm
+c
+            ixv(4)=xbp
+            iyv(4)=ybp
+c
+            ind = 14
+            ctmp = ' '
+            nz = 4
+            cc1 = iCol(N1) + 8
+            cc  = iCol(N2) + 8
+c      
+      call graphs(ixv, iyv, nz, ind, ctmp, cc1)
+c
+            ixv(1)=xbp
+            iyv(1)=ybp
+c
+            ixv(2)=xbm
+            iyv(2)=ybm
+c
+            ixv(3)=x2m
+            iyv(3)=y2m
+c
+            ixv(4)=x2p
+            iyv(4)=y2p
+c
+      call graphs(ixv, iyv, nz, ind, ctmp, cc)
+c black line down the middle - just in case there is a grey bond
+            djwc = 0 !black
+            if ((cc .ne. 15).and.(cc1.ne.15)) then
+                  call Linea (xx1,yy1,xx2,yy2,djwc)  
+            endif
+c
+c
+cdjw May 2011 LINEA calls replace by polygon above
+c            CALL Linea (XD1, YY1-DDDY, XD2, YY2 - DDDY, Ize)
+c            CALL Linea (XD1, YY1+DDDY, XD2, YY2 + DDDY, Ize)
+c            CALL Linea (XD1, YY1-2 * DDDY, XD2, YY2 - 2 * DDDY,Ize)
+c            CALL Linea (XD1, YY1+2 * DDDY, XD2, YY2 + 2 * DDDY,Ize)
+c            XX3 = (XX1 + XX2) / 2
+c            YY3 = (YY1 + YY2) / 2
+c            CC1 = iCol(N1) + 8
+c            CC  = iCol(N2) + 8
+c            CALL Linea (XX1, YY1, XX3, YY3, CC1)
+c            CALL Linea (XX3, YY3, XX2, YY2, CC)
             IF (iPlotType .EQ. 2 .AND. N1 .LE. NAT) THEN
                iCC = 8
                IfF = -1
@@ -26097,7 +26196,8 @@ C -----------------------------------------------------------------
       character *80 Message
       common /buffer/ ixv(100),iyv(100),dummr(315)
 c
-      icolor=14
+cdjw      icolor=14 !yellow
+      icolor = 0 !black
       call SetColr(icolor)
       ind = 15
       iz = min0(lMess+1,80)
@@ -33494,7 +33594,7 @@ c
           ind=1
           ixv(1)=kscrx
           iyv(1)=kscry
-          icolor=1
+          icolor = 1 !Blue
           write(str,'(20a4)') itle
           iz=79
           call graphs( ixv,iyv,iz,ind,str,icolor)
@@ -33529,9 +33629,11 @@ c
         else
           messh=str(1:icod)//' SIRPOW.92 runs on: '//fname(1)(1:k-1)
         endif
-       endif
+      endif
 c
-      icolor=10
+cdjw      icolor=10 !light green
+      icolor=2 !dark green
+      icolor=12 !puce
       call SetColr(icolor)
 c
       iys=60
@@ -33576,7 +33678,8 @@ c
 c-- draw the Header
 c
       iys=60
-      icolor=10
+cdjw      icolor=10
+      icolor=2 !dark Green
       call SetColr(icolor)
       ixv(1)=100
       iyv(1)=iys
@@ -33601,7 +33704,8 @@ c
                          ixv(1)=10
                        endif
       if (i.le.icomat) then
-                         icolor=10
+cdjw                         icolor=10
+                         icolor=2 !dark green
                          call SetColr(icolor)
                          if (str(1:3).eq.'pha') then
                                         if (izv(2).gt.0) then
@@ -33650,7 +33754,8 @@ c-----------------------------------------------------------------------
 c
       if (kscreen.eq.0) return
 c
-      icolor=10
+cdjw      icolor=10
+      icolor=2 ! dark green
       call SetColr(icolor)
 c
       j=icomq(icomat,1)
@@ -33782,9 +33887,6 @@ c
       if (kscreen.eq.0) return
       call NewPage
 c
-      icolor=12
-      call SetColr(icolor)
-      ind=9
 c
 c-- draw the Header
 c
@@ -33793,7 +33895,13 @@ c
       iyv(1)=iys
       iz=izv(1)
       ind=9
+cdjw       icolor=12 ! light red
+      icolor=0 ! black
+      call SetColr(icolor)
       call graphs(ixv,iyv,iz,ind,messh,icolor)
+c reset text colour
+      icolor=4 !dark red
+      call SetColr(icolor)
 c
       ixv(1)=10
       ipup=0
@@ -33833,7 +33941,8 @@ CHAR  str(iz+1:iz+1)=char(0)
       call graphs(ixv,iyv,iz,ind,str,icolor)
   100 continue
 c
-      icolor=12
+cdjw      icolor=12 !light red
+      icolor = 4 !dark red
       call SetColr(icolor)
 CHAR  str(lline+1:lline+1)=char(0)
       ixv(1)=100
@@ -33856,7 +33965,8 @@ CHAR  Message(80:80)=char(0)
       iyv(1)=10
       iz=79
       ind=15
-      icolor=14
+cdjw      icolor=14 !yellow
+      icolor = 0 !black
       call SetColr(icolor)
       call graphs(ixv,iyv,iz,ind,Message,icolor)
       key=-1
