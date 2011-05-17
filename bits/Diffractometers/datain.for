@@ -1,4 +1,6 @@
+C $Log: not supported by cvs2svn $
       SUBROUTINE DATAIN
+c #include "ciftbx.sys"
 #include "ciftbx.cmn"
 #include "cifin.cmn"
       LOGICAL F2,F3,F4,F5
@@ -8,9 +10,14 @@
       CHARACTER*16 CSPACE,CTEMP,CMONO
       CHARACTER*26 ALPHA
       CHARACTER*32 C32, ENAME,CCOL 
-      CHARACTER*50 C50
-      CHARACTER*80 C80,LINE,SLINE,CFORM
-      CHARACTER*160 CLONG, c160
+      CHARACTER*80 C80
+cdjwmar2011 line length must also be set in ciftbx.sys
+      parameter (linlen=512)
+
+      CHARACTER LINE*linlen
+      CHARACTER SLINE*linlen
+      CHARACTER CFORM*linlen
+
       CHARACTER*6 LABEL(1000,3)
 C         CHARACTER*26  alpha
       CHARACTER*11 NUMER
@@ -85,29 +92,55 @@ c
       endif
 C 
 C----- WRITE TEXT TO TEXT FILE
-      IF (FN) WRITE (NCIF,'(a,a)') '# Text info for ',ENAME
-      WRITE (NCIF,'(A,A)') '# On ',CDATE
-      F1=CHAR_('_diffrn_measurement_device_type',C50)
-      IF (F1) WRITE (NCIF,'(a,a)') '_diffrn_measurement_device_type ',
-     1C50
-      F1=CHAR_('_diffrn_measurement_device',C50)
-      IF (F1) WRITE (NCIF,'(a,a)') '_diffrn_measurement_device ',C50
-      F1=CHAR_('_diffrn_detector_area_resol_mean',C50)
-      IF (F1) WRITE (NCIF,'(a,a)') '_diffrn_detector_area_resol_mean ',
-     1C50
+1234  FORMAT(A,'''',A,'''')
+      call xctrim(ename,l80)
+      IF (FN) WRITE (NCIF,1234) '# Text info for ',ENAME(1:l80)
+      call xctrim(cdate,l80)
+      WRITE (NCIF,1234) '# On ',CDATE(1:l80)
+
+      F1=CHAR_('_diffrn_measurement_device_type',C80)
+      call xctrim(c80,l80)
+      IF (F1) WRITE (NCIF,1234) '_diffrn_measurement_device_type ',
+     1 C80(1:l80)
+
+      F1=CHAR_('_diffrn_measurement_device',C80)
+      call xctrim(c80,l80)
+      IF (F1) WRITE (NCIF,1234) '_diffrn_measurement_device ',C80
+
+      F1=CHAR_('_diffrn_detector_area_resol_mean',C80)
+      call xctrim(c80,l80)
+      IF (F1) WRITE (NCIF,1234) '_diffrn_detector_area_resol_mean ',
+     1 C80
+
       FMON=CHAR_('_diffrn_radiation_monochromator',CMONO)
-      IF (FMON) WRITE (NCIF,'(a,a)') '_diffrn_radiation_monochromator ',
-     1CMONO
-      F1=CHAR_('_computing_data_collection',C50)
-      IF (F1) WRITE (NCIF,'(a,a)') '_computing_data_collection ',C50
-      F1=CHAR_('_diffrn_measurement_method',C50)
-      IF (F1) WRITE (NCIF,'(a,a)') '_diffrn_measurement_method ',C50
-      F1=CHAR_('_diffrn_orient_matrix_type',C50)
-      IF (F1) WRITE (NCIF,'(a,a)') '_diffrn_orient_matrix_type ',C50
-      F1=CHAR_('_computing_cell_refinement',C50)
-      IF (F1) WRITE (NCIF,'(a,a)') '_computing_cell_refinement ',C50
-      F1=CHAR_('_computing_data_reduction',C50)
-      IF (F1) WRITE (NCIF,'(a,a)') '_computing_data_reduction ',C50
+      call xctrim(cmono,l80)
+      IF (FMON) WRITE (NCIF,1234) '_diffrn_radiation_monochromator ',
+     1 CMONO(1:L80)
+
+      F1=CHAR_('_computing_data_collection',C80)
+      call xctrim(c80,l80)
+      IF (F1) WRITE (NCIF,1234) '_computing_data_collection ',
+     1 C80(1:l80)
+
+      F1=CHAR_('_diffrn_measurement_method',C80)
+      call xctrim(c80,l80)
+      IF (F1) WRITE (NCIF,1234) '_diffrn_measurement_method ',
+     1 C80(1:l80)
+
+      F1=CHAR_('_diffrn_orient_matrix_type',C80)
+      call xctrim(c80,l80)
+      IF (F1) WRITE (NCIF,1234) '_diffrn_orient_matrix_type ',
+     1 C80(1:l80)
+
+      F1=CHAR_('_computing_cell_refinement',C80)
+      call xctrim(c80,l80)
+      IF (F1) WRITE (NCIF,1234) '_computing_cell_refinement ',
+     1 C80(1:l80)
+
+      F1=CHAR_('_computing_data_reduction',C80)
+      call xctrim(c80,l80)
+      IF (F1) WRITE (NCIF,1234) '_computing_data_reduction ',
+     1 C80(1:l80)
 C 
 cdjw - evade spurious significance possibly introduced by MAKECIF
       siga = .0001*max(1,nint(10000*siga))
@@ -188,24 +221,25 @@ c
       FSIZ=NUMB_('_exptl_crystal_size_min', ZS,DUM)
       FSIZ=NUMB_('_exptl_crystal_size_mid', ZD,DUM).AND.(FSIZ)
       FSIZ=NUMB_('_exptl_crystal_size_max', ZL,DUM).AND.(FSIZ)
+c
       IF (.NOT.(FSIZ)) THEN
-         WRITE (6,'(A)') 'No crystal size info in cif. Please give'
-         WRITE (6,'(A)') 
-     1   'Smallest, medium and longest dimensions? [0.2]'
-         read(5,'(a16)') ctemp
-         if (len_trim(ctemp).eq.0) THEN
-           zs = 0.2
-           zd = 0.2
-           zl = 0.2
-         else
-           READ (ctemp,*,err=201,end=201) ZS, ZD, ZL
-         endif
+         WRITE (6,'(A)') 'No crystal size info in cif.'
+c         WRITE (6,'(A)') 
+c     1   'Smallest, medium and longest dimensions? [0.2]'
+c         read(5,'(a16)') ctemp
+c         if (len_trim(ctemp).eq.0) THEN
+           zs = 0.0
+           zd = 0.0
+           zl = 0.0
+c         else
+c           READ (ctemp,*,err=201,end=201) ZS, ZD, ZL
+c         endif
       END IF
       goto 202
 201   continue
-      read(5,*) zd,zl
+c      read(5,*) zd,zl
 202   continue
-      WRITE (6,'(A,3f8.3)') 'Crystal Size Found',zs,zd,zl
+      WRITE (6,'(A,3f8.3)') 'Crystal Size Used',zs,zd,zl
 
 
       FTEMP=NUMB_('_diffrn_ambient_temperature', ZT ,DUM)
@@ -213,15 +247,15 @@ c
        FTEMP=NUMB_('_cell_measurement_temperature', ZT ,DUM)
       ENDIF
       IF (.NOT. FTEMP) THEN
-         WRITE (6,'(A)') 'Temperature (K)? [0]'
-         READ (5,'(a16)') ctemp
-         if (len_trim(ctemp).eq.0) THEN
+c         WRITE (6,'(A)') 'Temperature (K)? [0]'
+c         READ (5,'(a16)') ctemp
+c         if (len_trim(ctemp).eq.0) THEN
             zt = 0.0
-         else
-            read(ctemp,*) zt
-         endif
+c         else
+c            read(ctemp,*) zt
+c         endif
       ENDIF
-      WRITE (6,'(A,f8.2)') 'Temperature Found',zt
+      WRITE (6,'(A,f8.2)') 'Temperature Used',zt
 c
 c
       FCOL=CHAR_('_exptl_crystal_colour', ccol)
@@ -229,13 +263,13 @@ c
        FCOL=CHAR_('_exptl_crystal_colour_primary', CCOL)
       ENDIF
       IF (.NOT. FCOL) THEN
-         WRITE (6,'(A)') 'Colour? [Colourless]'
-         read(5,'(a16)') ctemp
-         if (len_trim(ctemp).eq.0) THEN
-           ccol = 'Colourless'
-         else      
-           READ (ctemp,'(a)') CCOL
-         endif
+c         WRITE (6,'(A)') 'Colour? [Colourless]'
+c         read(5,'(a16)') ctemp
+c         if (len_trim(ctemp).eq.0) THEN
+           ccol = 'None'
+c         else      
+c           READ (ctemp,'(a)') CCOL
+c         endif
       ENDIF
       call xctrim(ccol,lcol)
       WRITE (6,'(A,3x,a)') 'Crystal Colour Found', ccol(1:lcol)
@@ -301,6 +335,7 @@ C
       IF (LOOP_) GO TO 250
 C           WRITE ( nhkl,'(a)') '-512'
       CLOSE (NHKL)
+      write(6,'(i8,a/)') nrefs, ' reflections found'
 C 
 300   CONTINUE
       FABS=NUMB_('_exptl_absorpt_correction_T_min',atn,DUM)
@@ -691,9 +726,7 @@ c     Separate the components of the formula in LINE into CFORM
       CHARACTER*14 CTEMP
       CHARACTER*26 alpha, ualpha
       CHARACTER*32 C32
-      CHARACTER*50 C50
-      CHARACTER*80 C80
-      CHARACTER*160 c160, CLONG
+      CHARACTER*160 CLONG
       DATA alpha    /'abcdefghijklmnopqrstuvwxyz'/
       DATA ualpha   /'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
       DATA numer/'1234567890.'/

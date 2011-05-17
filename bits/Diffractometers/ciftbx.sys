@@ -1,3 +1,4 @@
+C $Log: absorb.fpp,v $
 C           
 C
 C >>>>>> Common declararations 'ciftbx.sys'
@@ -12,7 +13,10 @@ C                                 Name of current data item
 C                                 Tab character for this machine
          character tab*1
 C                                 Character buffer for reading lines
-         character buffer*80
+c made adjustable by djw, May 2011
+         integer linlen
+         parameter (linlen=512)
+         character buffer*linlen
 C                                 Dictionary validation check
          character vcheck*3
 C                                 Dictionary data type check
@@ -118,7 +122,8 @@ C                                 Length of current filename in file_
 C                                 Name of current data block
          character bloc_*32
 C                                 Character image of current data item
-         character strg_*80
+c made adjustable by djw, May 2011
+         character strg_*linlen
 C                                 File name of current CIF
          character file_*80
 C                                 Data item type

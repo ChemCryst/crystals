@@ -1,3 +1,4 @@
+C $Log: not supported by cvs2svn $
 	program diffin
 c General program for reading diffractometer cif files
 #include "ciftbx.cmn"
@@ -18,6 +19,7 @@ C....... Call the CIFTBX code to INITialise read/WRITE units
 c
 c
       write(6,'(/a/)')' Unified Version Feb 2011'
+      write(6,'(/a/)')' Long input line version, May 2011'
 c
 1      CONTINUE
        write(6,*) 'Choose from A(gilent), N(onius), R(igaku), W(inGX)'

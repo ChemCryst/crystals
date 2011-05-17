@@ -1,3 +1,4 @@
+C $Log: not supported by cvs2svn $
 C           
 C
 C    \ | /            /##|    @@@@  @   @@@@@    |      | 
@@ -28,6 +29,8 @@ C Fx: +61 9 380 1118  ||      --> *_,-._/     University of Western Australia
 C Ph: +61 9 380 2725  ||               v      Nedlands 6009, AUSTRALIA
 C                     ||
 C_____________________||_____________________________________________________
+C
+CDJW  LINE LENGTH INCREASED BY DJW, MAY 2011
 C                     
 C
 C    GENERAL TOOLS
@@ -264,9 +267,11 @@ C
 C
 #include "ciftbx.sys"
          logical   dict_,data_,open_,char_
-         character locase*80
+cdjw may2011
+         character locase*linlen
          character fname*(*),checks*(*)
-         character temp*24,codes(4)*5,name*80
+cdjw may2011
+         character temp*24,codes(4)*5,name*linlen
          integer   idict,i,j
          data codes /'valid','dtype','     ','     '/
 C
@@ -332,7 +337,8 @@ C
          character fname*(*)
          integer   case,i
 C
-         jchar=80
+cdjw may2011
+         jchar=linlen
          nrecd=0
          lrecd=0
          case=ichar('a')-ichar('A')
@@ -342,6 +348,7 @@ C
 C
 C....... Make sure the CIF is available to open
 C
+cdjw may2011 filenames left at 80 characters for the moment
 100      file_=fname
          do 120 i=1,80
          if(file_(i:i).eq.' ') goto 140
@@ -356,7 +363,7 @@ C
          open(unit=cifdev,file=fname,status='OLD',access='SEQUENTIAL',
      *                    form='FORMATTED')
          open(unit=dirdev,status='SCRATCH',access='DIRECT',
-     *                    form='FORMATTED',recl=80)
+     *                    form='FORMATTED',recl=linlen)
 C
 C....... Copy the CIF to the direct access file
 C
@@ -382,10 +389,11 @@ C
 #include "ciftbx.sys"
          logical   data_
          character name*(*),flag*4,temp*32,ltype*4
-         character locase*80
+cdjw may2011
+         character locase*linlen
          integer   ndata,idata,nitem,npakt,i,j
 C
-         jchar=80
+         jchar=linlen
          jrecd=0
          nname=0
          ndata=0
@@ -485,7 +493,8 @@ C....... Skip text lines if present
 C
 230      if(type_.ne.'text')           goto 200
          dchar(ndata)=0
-         if(nloop(ndata).eq.0) iloop(ndata)=80
+cdjw may2011
+         if(nloop(ndata).eq.0) iloop(ndata)=linlen
 250      call getlin(flag)
          if(buffer(1:1).eq.';')       goto 200
          if(flag.eq.'fini') call err(' Unexpected end of data')
@@ -554,7 +563,8 @@ C
 #include "ciftbx.sys"
          logical    test_
          character  temp*(*),name*32
-         character  locase*80
+cdjw may2011
+         character  locase*linlen
 C
          testfl='yes'
          name=locase(temp)
@@ -601,7 +611,8 @@ C
 #include "ciftbx.sys"
          logical    numb_
          character  temp*(*),name*32
-         character  locase*80
+cdjw may2011
+         character  locase*linlen
          real       numb,sdev
 C
          name=locase(temp)
@@ -633,7 +644,8 @@ C
          logical    char_
          character  temp*(*),name*32
          character  strg*(*),flag*4
-         character  locase*80
+cdjw may2011
+         character  locase*linlen
 C
          name=locase(temp)
          if(testfl.eq.'yes')    goto 100
@@ -667,14 +679,16 @@ C
          function locase(name)
 C
 #include "ciftbx.sys"
-         character    locase*80
-         character    temp*80,name*(*)
+cdjw may2011
+         character    locase*linlen
+         character    temp*linlen,name*(*)
          character    low*26,cap*26,c*1
          data  cap /'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
          data  low /'abcdefghijklmnopqrstuvwxyz'/
 C
          temp=name
-         do 100 i=1,80
+cdjw may2011
+         do 100 i=1,linlen
          c=temp(i:i)
          if(c.eq.' ') goto 200
          j=index(cap,c)
@@ -827,7 +841,8 @@ C
          data num/'0123456789+-.'/
 C
 100      jchar=jchar+1
-         if(jchar.le.80)     goto 150
+cdjw may2011
+         if(jchar.le.linlen)     goto 150
 C
 C....... Read a new line
 C
@@ -839,8 +854,10 @@ C....... Test if the new line is the start of a text sequence
 C
          if(buffer(1:1).ne.';') goto 150
          type_='text'
-         jchar=81
-         long_=80
+cdjw may2011
+         jchar=linlen+1
+cdjw may2011
+         long_=linlen
          goto 500
 C
 C....... Process this character in the line
@@ -859,18 +876,21 @@ C....... Test if the start of a number or a character string
 C
 200      type_='numb'
          if(index(num,c).eq.0) type_='char'
-210      do 250 i=jchar,80
+cdjw may2011
+210      do 250 i=jchar,linlen
          if(buffer(i:i).eq.' ')       goto 400
          if(buffer(i:i).eq.tab)       goto 400
 250      continue
-         i=81
+cdjw may2011
+         i=linlen+1
          goto 400
 C
 C....... Span quoted character string
 C
 300      type_='char'
          jchar=jchar+1
-         do 320 i=jchar,80
+cdjw may2011
+         do 320 i=jchar,linlen
          if(buffer(i:i).eq.c)         goto 400
 320      continue
          call err('Quoted string not closed')
@@ -1037,6 +1057,7 @@ C
          if(pfilef.eq.'yes') call close_
          pfilef='no '
          file_=fname
+cdjw may2011 not yet changed
          do 120 i=1,80
          if(file_(i:i).eq.' ') goto 140
 120      continue
@@ -1083,10 +1104,12 @@ C....... Save block name and put data_ statement
 C
          nbloc=nbloc+1
          if(nbloc.le.100) dbloc(nbloc)=temp
-         pchar=81
+cdjw may2011
+         pchar=linlen+1
          temp='data_'//name
          call putstr(temp)         
-         pchar=81
+cdjw may2011
+         pchar=linlen+1
          call putstr(' ')          
          pdata_=.true.
 C
@@ -1117,7 +1140,8 @@ C
          call dcheck(temp,'numb',flag)
          pnumb_=flag
 100      if(ploopn.gt.0)        call eoloop
-         pchar=81
+cdjw may2011
+         pchar=linlen+1
          call putstr(temp)
          pchar=35
 C
@@ -1142,7 +1166,8 @@ C
 #include "ciftbx.sys"
          logical    pchar_,flag
          character  name*(*),temp*32,string*(*)
-         character  line*80,strg*80
+cdjw may2011
+         character  line*linlen,strg*linlen
          integer    i,j
 C
          pchar_=.true.
@@ -1155,13 +1180,15 @@ C
          call dcheck(temp,'numb',flag)
          pchar_=flag
 100      if(ploopn.gt.0)        call eoloop
-         pchar=81
+cdjw may2011
+         pchar=linlen+1
          call putstr(temp)
          pchar=35
 C
 110      ploopf='no '
          line=string
-         do 120 i=80,2,-1
+cdjw may2011
+         do 120 i=linlen,2,-1
          if(line(i:i).ne.' ') goto 130
 120      continue
 130      do 140 j=i,1,-1
@@ -1213,12 +1240,15 @@ C
          if(vcheck.eq.'no ')    goto 120
          call dcheck(name,'char',flag)
          ptext_=flag
-120      pchar=81
+120      continue
+cdjw may2011
+         pchar=linlen+1
          call putstr(temp)
          if(flag)               goto 130
          pchar=60
          call putstr('#< not in dictionary')
-130      pchar=81
+cdjw may2011
+130      pchar=linlen+1
          call putstr(' ')
          ptextf='yes'
          store=temp
@@ -1252,16 +1282,20 @@ C
          ploop_=flag
 100      if(ploopn.gt.0)        goto 120
          ploopf='yes'
-         pchar=81
+cdjw may2011
+         pchar=linlen+1
          call putstr(' ')
-         pchar=81
+cdjw may2011
+         pchar=linlen+1
          call putstr('loop_')
-         pchar=81
+cdjw may2011
+         pchar=linlen+1
 120      call putstr(temp)
          if(flag)               goto 130
          pchar=60
          call putstr('#< not in dictionary')
-130      pchar=81
+cdjw may2011
+130      pchar=linlen+1
          ploopn=ploopn+1
 C
 150      return
@@ -1280,7 +1314,8 @@ C
 C
          if(ptextf.eq.'yes') call eotext
          if(ploopn.gt.0)     call eoloop
-         pchar=81
+cdjw may2011
+         pchar=linlen+1
          call putstr(' ')
          close(outdev)
          return
@@ -1296,12 +1331,14 @@ C
 C
 #include "ciftbx.sys"
          SAVE
-         character  string*(*),temp*80,obuf*80
+cdjw may2011
+         character  string*(*),temp*linlen,obuf*linlen
          integer    ichar,i
          data       ichar /0/
 C
          temp=string
-         do 100 i=80,1,-1
+cdjw may2011
+         do 100 i=linlen,1,-1
          if(temp(i:i).ne.' ')   goto 110
 100      continue
 C
@@ -1314,12 +1351,14 @@ C
          if(ploopc.le.ploopn)   goto 130
          ploopc=1
          if(.not.align_)        goto 130
-         pchar=81
+cdjw may2011
+         pchar=linlen+1
 C
 C....... Is the buffer full and needs flushing?
 C
 130      if(pchar.lt.ichar)     goto 140
-         if(pchar+i.le.80)      goto 150
+cdjw may2011
+         if(pchar+i.le.linlen)      goto 150
          pchar=1
 140      if(ichar.gt.0) write(outdev,'(a)') obuf(1:ichar)
          obuf=' '
@@ -1417,7 +1456,8 @@ C
 C
          ptextf='no '
          call putstr(';')
-         pchar=80
+cdjw may2011
+         pchar=linlen
          return
          end
 C
