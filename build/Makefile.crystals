@@ -3,18 +3,22 @@ include makefile.in
 CAMDIR = ../cameron
 GUIDIR = ../gui
 CRYSDIR = ../crystals
+WEBCTRLDIR = ../webconnect
 
-VPATH = $(CAMDIR) $(CRYSDIR) $(GUIDIR)
+VPATH = $(CAMDIR) $(CRYSDIR) $(GUIDIR) $(WEBCTRLDIR)
 
 CAMFILES = $(notdir $(wildcard $(CAMDIR)/*.fpp))
 CRYFILES = $(notdir $(wildcard $(CRYSDIR)/*.fpp))
 GUIFILES = $(notdir $(wildcard $(GUIDIR)/*.cc))
+WEBFILES = $(notdir $(wildcard $(WEBCTRLDIR)/*.cpp))
 
 FOBJ     = $(patsubst %.o, obj/%.o, $(notdir $(CAMFILES:.fpp=.o) $(CRYFILES:.fpp=.o)) lapack.o)
 ifneq ($(COMPCODE),LIN)
  ifneq ($(COMPCODE),DVF)
   COBJ     = $(patsubst %.o, obj/%.o, $(notdir $(GUIFILES:.cc=.o)))
+  COBJ    := $(COBJ) $(patsubst %.o, obj/%.o, $(notdir $(WEBFILES:.cpp=.o)))
   DEP      = $(patsubst %.d, obj/%.d, $(GUIFILES:.cc=.d))
+  DEP     := $(DEP) $(patsubst %.d, obj/%.d, $(WEBFILES:.cpp=.d))
  endif
 endif
 

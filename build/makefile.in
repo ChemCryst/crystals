@@ -20,19 +20,19 @@ ifeq ($(COMPCODE),MAC)
 else
  ifeq ($(COMPCODE),GIL)
     GUIFLAGS = -fno-inline -fexceptions
-    GUILIBRARIES = -lg2c `wx-config --libs --gl-libs` 
+    GUILIBRARIES = `wx-config --libs --gl-libs` 
     CLFLAGS = 
-    CLLIBRARIES = -lg2c
+    CLLIBRARIES = 
     NATIVEXLIBS = -lX11 -L/usr/X11R6/lib 
 
-    CPPFLAGS = -s -fexceptions -I/usr/local/include `wx-config --cppflags`
+    CPPFLAGS = -s -fexceptions -I/usr/local/include `wx-config --cppflags` -D_GNUF77_
     CFLAGS = -s
 
     CXX = g++
     CC = gcc
-    LD = g++
+    LD = gfortran
     F77 = gfortran
-    F77FLAGS = -std=legacy -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D _$(COMPCODE)_
+    F77FLAGS = -std=legacy -fno-automatic -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_
     OPT = -ggdb
 
     INSTALL=/usr/bin/install
@@ -48,14 +48,14 @@ else
     CLLIBRARIES = -lg2c
     NATIVEXLIBS = -lgdi32
 
-    CPPFLAGS = -s -fexceptions -I /usr/local/include `wx-config --cppflags`
+    CPPFLAGS = -s -fexceptions -I /usr/local/include `wx-config --cppflags` 
     CFLAGS = -s -I /usr/local/include 
 
     CXX = g++
     CC = gcc
     LD = g++
     F77 = g77
-    F77FLAGS = -fexceptions -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D _$(COMPCODE)_
+    F77FLAGS = -fexceptions -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D _$(COMPCODE)_ -D_HOL_ -D_GNUF77_
     OPT = -O2
 
     INSTALL=/bin/install
@@ -93,6 +93,9 @@ endif
 obj/%.o : %.fpp
 	$(F77) -c $(F77FLAGS) $(OPT) -o $@ $<
 
+obj/%.o: %.cpp
+	$(CXX) -c $(CPPFLAGS) $(OPT) -o $@ $<
+
 obj/%.o: %.cc
 	$(CXX) -c $(CPPFLAGS) $(OPT) -o $@ $<
 
@@ -100,6 +103,11 @@ obj/%.o : %.c
 	$(CC) -c $(CFLAGS) -D_$(COMPCODE)_ $(OPT) -o $@ $<
 
 obj/%.d: %.cc
+	-mkdir obj
+	$(SHELL) -ec '$(CXX) -M $(CPPFLAGS) $(OPT) $< \
+	| sed "s/$*\.o/& obj\/$*.d/g" ' > $@
+
+obj/%.d: %.cpp
 	-mkdir obj
 	$(SHELL) -ec '$(CXX) -M $(CPPFLAGS) $(OPT) $< \
 	| sed "s/$*\.o/& obj\/$*.d/g" ' > $@
