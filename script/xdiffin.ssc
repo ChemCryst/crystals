@@ -7,9 +7,9 @@
 %  VARIABLE LOGICAL ANSWER LCANCEL XQMERGE                                      
 %  VARIABLE CHARACTER CNULL CDLINE                                              
 %%                                                                              
-% LOOP                                                                          
-%  EVALUATE LFILE = FILEEXISTS ( 'from-cif.ins' )                                   
-%  EVALUATE IFILE = FILEEXISTS ( 'od-in.cif' )                                 
+%  EVALUATE LFILE = FILEEXISTS ( 'from-cif.ins' )
+%  IF LFILE .EQ. TRUE THEN
+%    LOOP                                                                          
 %%                                                                              
 %%%% Definition %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%          
 ^^WI WINDOW XDIFFIN 'Input Diffractometer data' MODAL                                     
@@ -18,13 +18,8 @@
 ^^WI {                                                                          
 ^^WI   @ 1,1 GRID LEFT NROWS=4 NCOLS=3                                          
 ^^WI   {                                                                        
-% IF LFILE THEN                                                                 
 ^^WI    @ 2,2 STATIC T1 'Click OK to read in data'                              
 ^^WI    @ 3,2 STATIC T2 'from the file from-cif.ins.'                               
-% ELSE                                                                          
-^^WI    @ 2,2 STATIC T1 'No processed data files detected.'                 
-^^WI    @ 3,2 STATIC T2 'Click Run now to continue.'                               
-% END IF                                                                        
 ^^WI   }                                                                        
 ^^WI   @ 2,1 GRID RIGHT NROWS=3 NCOLS=7                                         
 ^^WI   {                                                                        
@@ -38,10 +33,7 @@
 ^^WI '&Re-process data now'                                                        
 % ELSE                                                                          
 ^^WI '&Pre-process data now'                                                          
-% END IF                                                                        
-% IF .NOT. IFILE THEN                                                           
-^^WI     DISABLED=no                                                           
-% END IF                                                                        
+% END IF
 ^^WI  }                                                                         
 ^^WI }                                                                          
 ^^WI SHOW                                                                       
@@ -50,25 +42,30 @@
 %%                                                                              
 %%%% Processing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%         
 %%                                                                              
-%  VERIFY BTNOK BTNXX BTNRR                                                     
-%  GET SILENT NOSTORE FINAL ABBREVIATED 'Option:' ' '                           
-%  CASE VALUE                                                                   
-%    BLOCK              %OK%                                                    
+%    VERIFY BTNOK BTNXX BTNRR                                                     
+%    GET SILENT NOSTORE FINAL ABBREVIATED 'Option:' ' '                           
+%    CASE VALUE                                                                   
+%      BLOCK              %OK%                                                    
 %         EVALUATE LOOPEND = LOOPCOUNTER                                        
 ^^CO      DISPOSE XDIFFIN                                                       
-%    END BLOCK                                                                  
-%    BLOCK             %CANCEL%                                                 
+%      END BLOCK                                                                  
+%      BLOCK             %CANCEL%                                                 
 ^^CO      DISPOSE XDIFFIN                                                       
 %         FINISH                                                                
-%    END BLOCK                                                                  
-%    BLOCK             %RUN DIFFIN%                                             
+%      END BLOCK                                                                  
+%      BLOCK             %RUN DIFFIN%                                             
 ^^CO      DISPOSE XDIFFIN                                                       
 {S * Running Pre-processor.                                                            
-%      COPY '#SPAWN % "CRYSDIR:diffin.exe"'                                     
+%         COPY '#SPAWN % "CRYSDIR:diffin.exe"'                                     
 {R   Done.                                                                      
-%    END BLOCK                                                                  
-%  END CASE                                                                     
-% END LOOP                                                                      
+%      END BLOCK                                                                  
+%    END CASE                                                                     
+%   END LOOP
+% ELSE
+{S * Running Pre-processor.                                                            
+%         COPY '#SPAWN % "CRYSDIR:diffin.exe"'                                     
+{R   Done.                                                                      
+% END IF
 %%                                                                              
 %%                                                                              
 %%%% Execution %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%         

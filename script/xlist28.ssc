@@ -820,7 +820,7 @@ or uncheck all the boxes in the dialog.
 %        CLEAR                                                                  
 %        INSERT "OMIT "                                                         
 % TRANSFER '^^?? L28OMIT LISTTEXT ' // CHARACTER ( LOOPCOUNTER ) TO DISPLAY     
-%        GET TEXT ' ' '0 0 0'                                                   
+%        GET SILENT TEXT ' ' '0 0 0'                                                   
 %        SEND                                                                   
 %      END LOOP                                                                 
 %    END IF                                                                     
