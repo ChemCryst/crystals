@@ -7,6 +7,9 @@
  */
  
  //   $Log: not supported by cvs2svn $
+ //   Revision 1.3  2011/05/04 12:21:17  rich
+ //   Remove throw statements - they are ignored by C++ compiler.
+ //
  //   Revision 1.2  2005/02/07 14:25:23  stefan
  //   1. Added the threading include so that it has a reference to ccmutex and ccsemaphore.
  //   2. Added another template variable as visual c++ moans as it doesn't take into account the default values of a deque or list.
@@ -40,6 +43,10 @@ class CcSafeSequence
 		
 		CcSafeSequence(const C<T, T2>& pSequence):iSequence(pSequence)
 		{}
+
+		size_t size() {
+			return iSequence.size();
+		}
 		
 		virtual void push_front(const T& pItem) //throw(mutex_error, semaphore_error)	//Put the passed item on the front of the list.
 		{
