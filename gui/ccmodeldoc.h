@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.25  2009/07/23 14:15:42  rich
+//   Removed all uses of OpenGL feedback buffer - was dreadful slow on some new graphics cards.
+//
 //   Revision 1.24  2005/01/23 10:20:24  rich
 //   Reinstate CVS log history for C++ files and header files. Recent changes
 //   are lost from the log, but not from the files!
@@ -145,7 +148,7 @@ class CcModelDoc
         bool RenderBonds( CcModelStyle * style, bool feedback );
         bool RenderExcluded( CcModelStyle * style );
      	CcRect FindModel2DExtent(float * mat, CcModelStyle * style);
-		std::list<Cc2DAtom> CcModelDoc::AtomCoords2D(float * mat);
+	std::list<Cc2DAtom> AtomCoords2D(float * mat);
         void DocToList( CrModList* ml );                                // Called by CrModList
         void InvertSelection();                                         // Called by CrModel
         void SelectAllAtoms(bool select);                               // Called by CrModel
