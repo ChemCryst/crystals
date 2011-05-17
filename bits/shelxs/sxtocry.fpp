@@ -29,7 +29,7 @@ C get compound code from instruction line - UNIX specific!
 C      CALL SXNM(CPCODE,LN)
 C general input - change this as needed.....
 #if defined(_GNUF77_)
-      call no_stdout_buffer()
+      call no_stdout_buffer_()
 #endif
       WRITE(6,'('' Compound code (filename without .INS) : A6'')') 
       READ(5,'(A6)') CPCODE

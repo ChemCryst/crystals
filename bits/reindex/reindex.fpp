@@ -32,7 +32,7 @@ C               This reproduces transforms from the CAD4
 C                                                           JAH
 C 
 #if defined(_GNUF77_)
-      call no_stdout_buffer()
+      call no_stdout_buffer_()
 #endif
       do 1 i=1,3
       NREJ(i) = 0

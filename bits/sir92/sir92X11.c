@@ -83,7 +83,7 @@ void closedisplay_()
     }
 }
 
-void draw_text__(const char* string, const short *x_pos, const short *y_pos, const short *colour, const long int string_length)
+void draw_text_(const char* string, const short *x_pos, const short *y_pos, const short *colour, const long int string_length)
 {
   int direction, ascent, descent;
   XCharStruct font_size;
@@ -101,7 +101,7 @@ void rectangle_(const short *x_pos, const short *y_pos, const short *width, cons
   // XFlush(gDisplay);
 }
 
-void fill_rectangle__(const short *x_pos, const short *y_pos, const short *width, const short *height, const short *colour)
+void fill_rectangle_(const short *x_pos, const short *y_pos, const short *width, const short *height, const short *colour)
 {
   XSetForeground(gDisplay, gGraphicsContext, mapIndexToRGB(*colour));
   XFillRectangle(gDisplay, gSelectedWindow, gGraphicsContext, *x_pos, *y_pos, *width-(*x_pos), *height-(*y_pos));
@@ -115,14 +115,14 @@ void ellipse_(const short *x_pos, const short *y_pos, const short *width, const 
   //XFlush(gDisplay);
 }
 
-void fill_ellipse__(const short *x_pos, const short *y_pos, const short *width, const short *height, const short *colour)
+void fill_ellipse_(const short *x_pos, const short *y_pos, const short *width, const short *height, const short *colour)
 {
   XSetForeground(gDisplay, gGraphicsContext, mapIndexToRGB(*colour));
   XDrawArc(gDisplay, gSelectedWindow, gGraphicsContext, *x_pos, *y_pos, *width, *height, 0, 360*64);
   //XFlush(gDisplay);
 }
 
-void clear_screen_area__(const short *x_pos, const short *y_pos, const short *width, const short *height)
+void clear_screen_area_(const short *x_pos, const short *y_pos, const short *width, const short *height)
 {
   XClearArea(gDisplay, gSelectedWindow, *x_pos, *y_pos, *width, *height, false);
   //XFlush(gDisplay);
@@ -142,7 +142,7 @@ void polyline_(const short x_poss[], const short y_poss[], const short *num_poin
   free(tPoints);
 }
 
-void fill_polygon__(const short x_poss[], const short y_poss[], const short *num_points, const short *colour)
+void fill_polygon_(const short x_poss[], const short y_poss[], const short *num_points, const short *colour)
 {
   int i;
   XPoint* tPoints = malloc(sizeof(XPoint)*(*num_points));
@@ -158,7 +158,7 @@ void fill_polygon__(const short x_poss[], const short y_poss[], const short *num
   //XFlush(gDisplay);
 }
 
-void draw_line__(const short *x_pos, const short *y_pos, const short *x_pos2, const short *y_pos2, const short *colour)
+void draw_line_(const short *x_pos, const short *y_pos, const short *x_pos2, const short *y_pos2, const short *colour)
 {
   XSetForeground(gDisplay, gGraphicsContext, mapIndexToRGB(*colour));
   XDrawLine(gDisplay, gSelectedWindow, gGraphicsContext, *x_pos, *y_pos, *x_pos2, *y_pos2);
@@ -171,7 +171,7 @@ void update_()
     XFlush(gDisplay);
 }
 
-void waitonmousepress___(short *x_pos, short *y_pos, short *button)
+void waitonmousepress_(short *x_pos, short *y_pos, short *button)
 {
   XEvent tEvent;
   XNextEvent(gDisplay, &tEvent);

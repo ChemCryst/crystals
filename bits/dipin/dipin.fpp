@@ -16,7 +16,7 @@ c in an attempt to determine the 'absorption' correction inplied if the
 c thecrystal is not really decomposing.
 
 #if defined(_GNUF77_)
-      call no_stdout_buffer()
+      call no_stdout_buffer_()
 #endif
 
       DO 1, I = 1,NSCALE

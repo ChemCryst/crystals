@@ -2531,7 +2531,7 @@ c-----------------------------------------------------------------------
      *     'Refine  ', 'Complete ', '   Help  ',' HCopy','Geometry',
      *     'To delete', 'To hide  ','To display','Show all','Cancel',
      *     'Close Polygon','Cancel',
-     *     'Least Sqare P.','Norm. to L.& M.','Most Sqare P.' ,
+     *     'Least Sqare P.','Norm to L.& M.','Most Sqare P.' ,
      *     'More...','Cancel',
      *     '  Normal to A','  Normal to B',' Normal to C',
      *     'More...','Cancel','Printer','.PCX file','Cancel',
@@ -2963,7 +2963,7 @@ c flush the mouse button buffer (if there is such a thing).
 
       button_status=0
 #if defined(_LIN_) || defined (_GIL_) || defined(_MAC_)
-  300 call waitonmousepress_(IX, IY, button_status)
+  300 call waitonmousepress(IX, IY, button_status)
 #endif
 
 #if defined(_DVF_) || defined (_DIGITALF77_)
@@ -7946,9 +7946,15 @@ c  iarg  integer number
 c  ivet  vector for printing
 c
       dimension ivet(78),numb(10)
+#if defined(_HOL_)
+      data numb/1H0, 1H1, 1H2, 1H3, 1H4, 1H5, 1H6, 1H7, 
+     1     1H8, 1H9/
+      data inus/1h-/
+#else
       data numb/'0', '1', '2', '3', '4', '5', '6', '7', 
      1     '8', '9'/
-      data inus/1h-/
+      data inus/'-'/
+#endif
 c
       iar=iabs(iarg)
  1000 continue

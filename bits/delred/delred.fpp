@@ -3,9 +3,13 @@ C
       INTEGER IO(3,3), ONAM(4), IY(6), BUF(2000)
       COMMON CEL(6),A,B,C,DELTA,DELT1,IO,IF,LT,LP,LZ
       CHARACTER *80 FILENM
+#if defined(_HOL_)
+          DATA IY/1HY,1HN,1HO,1Hy,1Hn,1Ho/
+#else
       DATA IY/'Y','N','O','y','n','o'/
+#endif
 #if defined(_GNUF77_)
-      call no_stdout_buffer()
+      call no_stdout_buffer_()
 #endif
 
       LT = 6
@@ -63,9 +67,16 @@ C       CALLED BY DELRED.
       DIMENSION CP(6),X(108),Y(108),Z(108),ISUB(3),DD(3,3),
      * DIST(108),PROD(3)
       COMMON CEL(6),A,B,C,DELTA,DELT1,IO,IF,LT,LP,LZ
+#if defined(_HOL_)
+      DATA TYPE/1HP,1HR,1HA,1HB,1HC,1HI,1HF,
+     1 1Hp,1Hr,1Ha,1Hb,1Hc,1Hi,1Hf/
+      DATA FACT/4H(*0., 4H5)  , 4H    , 4H    /
+#else
       DATA TYPE/'P','R','A','B','C','I','F',
      1 'p','r','a','b','c','i','f'/
       DATA FACT/'(*0.', '5)', '    ', '  '/
+#endif
+
 C       STATEMENT FUNCTIONS
       ANGLE(A,B,C)=(B+C-A)/(2.*SQRT(B*C))
       ANORM(X1,Y1,Z1)=SQRT(X1*X1+Y1*Y1+Z1*Z1)
@@ -317,8 +328,13 @@ C       DELAUNAY REDUCTION ROUTINE, CALLED FROM DELRED.
      *1,0,3,1,0,6,0,2,0,4,5,6,0,0,0,4,5,6,1,0,0,
      *4,5,5,1,2,0,1,2,0,1,2,3,1,2,3,1,0,3,3,5,1,1,2,1,1,5,1,0,0,0,4,4,6,
      *1,0,1,1,5,1,1,1,3,1,1,3,0,0,0,4,4,4,1,1,0,1,1,0,1,1,1,1,1,1/
-      DATA FACT/'(*0.','5)  ', '    ','   '/
+#if defined(_HOL_)
+      DATA FACT/4H(*0., 4H5)  , 4H    , 4H    /
+      DATA IY/1HY,1HN,1HO,1Hy,1Hn,1Ho/
+#else
+      DATA FACT/'(*0.', '5)', '    ', '  '/
       DATA IY/'Y','N','O','y','n','o'/
+#endif
 C       CALCULATE SELLING PARAMETERS
       P(1) = CEL(2)*CEL(3)*CEL(4)
       P(2) = CEL(1)*CEL(3)*CEL(5)
@@ -787,7 +803,11 @@ C       PRESERVED.  CALLED BY REDUC IN DELRED.
       INTEGER IK(12), IO(3,3), INN(12,3,3)
       INTEGER FACT(4)
       DIMENSION P(6),Z(6),Y(7,12)
-      DATA FACT/'(*0.','5)', '    ', '  '/
+#if defined(_HOL_)
+      DATA FACT/4H(*0., 4H5)  , 4H    , 4H    /
+#else
+      DATA FACT/'(*0.', '5)', '    ', '  '/
+#endif
       DO 10 I=1,6
 10    Z(I)=P(I)
       CALL PERM3(Z,Y,1)
@@ -855,10 +875,17 @@ C       IN DELRED.
       INTEGER TYPE(6), TITLE(21)
       DIMENSION  OI(3,3), CELL(6)
       COMMON CEL(6),A,B,C,DELTA,DELT1,IO(3,3),IF,LT,LP,LZ
+#if defined(_HOL_)
+      DATA TYPE/1HP,1HR,1HB,1HC,1HI,1HF/
+      DATA TITLE/4HTRIC,4HLINI,1HC,4HRHOM,4HBOHE,4HDRAL,4HHEXA,4HGONA,
+     * 1HL,4HMONO,4HCLIN,2HIC,4HORTH,4HORHO,4HMBIC,4HTETR,4HAGON,2HAL,
+     * 4HCUBI,1HC,1H /
+#else
       DATA TYPE/'P','R','B','C','I','F'/
       DATA TITLE/'TRIC','LINI','C','RHOM','BOHE','DRAL','HEXA','GONA',
      * 'L','MONO','CLIN','IC','ORTH','ORHO','MBIC','TETR','AGON','AL',
      * 'CUBI','C',' '/
+#endif
       PIF=180./3.1415927
       CEL(4)=D
       CEL(5)=E
@@ -925,8 +952,13 @@ C       MONOCLINIC CENTRED CELLS.  CALLED BY REDUC, IN DELRED.
       REAL X(5), Y(5), D(5), CBET(10)
       INTEGER ION(3,3), INC(3), FACT(4)
       COMMON CEL(6),A,B,C,DELTA,DELT1,IO(3,3),IF,LT,LP,LZ
+#if defined(_HOL_)
+      DATA INC/1HC, 1HI, 1HF/
+      DATA FACT/4H(*0., 4H5)  , 4H    , 4H    /
+#else
       DATA INC/'C', 'I', 'F'/
-      DATA FACT/'(*0.','5)', '    ', '  '/
+      DATA FACT/'(*0.', '5)', '    ', '  '/
+#endif
       WRITE (LP,900)
       WRITE (LT,904)
       A = CEL(1)
@@ -1115,7 +1147,11 @@ C       BY REDUC IN DELRED.
       REAL CEL(6), CEX(3)
       INTEGER IO(3,3), ION(3,3), FACT(4)
       COMMON CEL,A,B,C,DELTA,DELT1,IO,IF,LT,LP,LZ
+#if defined(_HOL_)
+      DATA FACT/4H(*0., 4H5)  , 4H    , 4H    /
+#else
       DATA FACT/'(*0.', '5)', '    ', '  '/
+#endif
       PIF = 180./3.1415927
       IF (IF - 10)10,370,170
 C       TRICLINIC SYSTEMS, FROM ARBITRARY PRIMITIVE CELL
@@ -1270,7 +1306,11 @@ C       CALLED BY REDUC IN DELRED.
       INTEGER ION(3,3), IO(3,3)
       INTEGER FACT(4)
       COMMON CEL(6),A,B,C,DELTA,DELT1,IO,IF,LT,LP,LZ
+#if defined(_HOL_)
+      DATA FACT/4H(*0., 4H5)  , 4H    , 4H    /
+#else
       DATA FACT/'(*0.', '5)', '    ', '  '/
+#endif
       ALP = SIN(CEL(4)*3.1415927/360.)
       SAL = SQRT(1. - ALP*ALP*1.33333)
       CEL(1) = ALP*CEL(1)*2.0
@@ -1405,8 +1445,13 @@ C
       REAL AND(49,49), XMX(3), AMX(3), XMP(3), AMP(3)
       COMMON A, AN, AB(5), LO, IF, LT, LP,LZ
       DATA DR/57.2958/
+#if defined(_HOL_)
+      DATA IP/2HPr, 2HI-, 2HC-, 2HB-, 2HF-, 2H  , 2HA-/
+      DATA AP/4Himit, 4Hive , 4Hcent, 4Hred /
+#else
       DATA IP/'Pr', 'I-', 'C-', 'B-', 'F-', '  ', 'A-'/
       DATA AP/'imit', 'ive ', 'cent', 'red '/
+#endif
       WRITE (LP,906)
       IM = 1
    8  SAPP = 0.

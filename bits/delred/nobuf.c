@@ -1,4 +1,4 @@
 
 #include <stdio.h>
 
-no_stdout_buffer__() { setvbuf(stdout,0,_IONBF,0); }
+void no_stdout_buffer() { setvbuf(stdout,0,_IONBF,0); }

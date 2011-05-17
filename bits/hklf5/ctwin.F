@@ -10,7 +10,7 @@
       character*20 ctrim,cnew
    
 #if defined(_GNUF77_)
-      call no_stdout_buffer()
+      call no_stdout_buffer_()
 #endif
       write(6,*) 
      1 '  CTWIN - read HKLF5 and write List 6. Simon Parsons 2003. '

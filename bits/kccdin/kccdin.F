@@ -32,7 +32,7 @@ C
 
       DATA NOUTF/10/,NHKL/11/,NCIF/12/
 #if defined(_GNUF77_)
-      call no_stdout_buffer()
+      call no_stdout_buffer_()
 #endif
 C set default output filename - also used as instrument ID
 	filename='kccd'
@@ -447,7 +447,7 @@ c    beware if the element type is a charged species like Om2
           i = index(numer,line(j:j))
           if (i .gt. 0) then
 c             found a number
-              if (lnum .eq. .false.) then
+              if (lnum .eqv. .false.) then
                 cform(k:k) =' '
                 k = k+1
               lnum = .true.
@@ -455,7 +455,7 @@ c             found a number
              endif
           else
 c             must be a character
-              if (lchar .eq. .false.) then
+              if (lchar .eqv. .false.) then
                 cform(k:k) =' '
                 k = k+1
                 lchar = .true.
@@ -699,9 +699,11 @@ c      WRITE (CFILE,'(I8)') I
       IGDAT=I
       RETURN
       END
+
 C=======================================================================
 #include "xgroup.for"
 #include "charact.for"
 #include "ciftbx.for"
 C=======================================================================
+
 

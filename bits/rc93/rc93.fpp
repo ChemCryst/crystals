@@ -21,7 +21,7 @@ C
 #endif
       EXTERNAL BLKDAT
 #if defined(_GNUF77_)
-      call no_stdout_buffer()
+      call no_stdout_buffer_()
 #endif
 
 C Is CRYSDIR set on command line?
