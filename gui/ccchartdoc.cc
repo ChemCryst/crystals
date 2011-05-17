@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.23  2011/03/04 06:03:25  rich
+// Changes to defines to get correct functions on WXS with digital fortran.
+//
 // Revision 1.22  2008/09/22 12:31:37  rich
 // Upgrade GUI code to work with latest wxWindows 2.8.8
 // Fix startup crash in OpenGL (cxmodel)
@@ -583,7 +586,7 @@ void fasttext_  ( int x,  int y,  char theText[80], int fs );
 void fastcolour_( int r,  int g, int b );
 void fastclear_     ( );
 void fastshow_      ( );
-void fastline_  ( int x1, int y1, int x2, int y2 )
+void fastline_  ( int x1, int y1, int x2, int y2 );
 #endif
 
 
