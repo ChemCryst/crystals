@@ -7316,6 +7316,8 @@ are only going to be calculated.
  FULL  PARAMETERS
  DIAGONAL  PARAMETERS
  PLUS  PARAMETERS
+ SUMFIX PARAMETERS
+ REM text
  END
 #
 #N   3#
@@ -7417,6 +7419,29 @@ are only going to be calculated.
  the full matrix, based on one block for each atom.
  Both the SCALE FACTOR and the DUMMY OVERALL ISOTROPIC
  TEMPERATURE FACTOR are automatically included.
+#
+#DSUMFIX PARAMETERS [ AND PARAMETERS ] [ AND PARAMETERS ]...#
+ Constrains the sum of the specified parameters (or groups of parameters) to
+ be constant.
+ If no AND is given, then sum of the parameters specified is constrained, by
+ making the total of the shifts add to zero. If AND is given then the total of
+ the shifts for each group add to zero, and each group is equivalenced to a
+ single least squares parameter.
+ E.g. constrain sum of three occupancies to be constant.
+#N   4#
+#J
+      \LIST 12
+      BLOCK SCALE X'S
+      SUMFIX Fe(1,OCC) Al(1,OCC) Si(1,OCC)
+      END
+#
+ E.g. constrain sum of three disordered parts to be constant.
+#N   4#
+#J
+      \LIST 12
+      BLOCK SCALE X'S
+      SUMFIX PART(1001,OCC) AND PART(1002,OCC) AND PART(1003,OCC)
+      END
 #
 #YDefining the least squares matrix#
 #HSdefine#
