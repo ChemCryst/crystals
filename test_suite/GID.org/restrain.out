@@ -53,8 +53,7 @@ Refining    21 parameters in    4 block :      148 elements in the LS matrix.
      6 Symmetry restraints written to LIST 17
       3 Atoms modified;   New  LIST 5 written to DISK
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     2 records 
   Disc file on unit   1 extended by     1 records 
 #LIST 26                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
@@ -1897,11 +1896,11 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  Work stack header at     569  :  -1000000         6      -244         0   -999436         0
  Function at     564  :   11   Nolist    
 #FINI                                                                                                                                                                                                                                                           
- Physical reads        368 Physical writes        396 Cache hits      11463
- Cache hit distribution     8774     886     375     179      49     166
- Cache hit distribution       50      35      41      93     146      38
- Cache hit distribution       75      40      38      55      52      44
- Cache hit distribution       56      49      93      68      40      21
+ Physical reads        309 Physical writes        394 Cache hits      11525
+ Cache hit distribution     8892     862     349     185     123      88
+ Cache hit distribution       52      54      50      95     125      55
+ Cache hit distribution       67      39      34      63      50      38
+ Cache hit distribution       39      79      75      54      33      24
 
 
           : Job ends ok       with     0 warnings and     0 errors

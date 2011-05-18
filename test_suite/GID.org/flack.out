@@ -3521,8 +3521,7 @@ Mean C-C su =   0.0000
  List   5 now contains     22 atom(s)
   Disc file on unit   1 extended by     1 records 
 #LIST 12                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     2 records 
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -4214,11 +4213,11 @@ Inter cycle   4       0.00          0.100E+16      0.334
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #FINI                                                                                                                                                                                                                                                           
- Physical reads       3357 Physical writes       5574 Cache hits     129557
- Cache hit distribution   104171    7379    2936    1823    1706    1167
- Cache hit distribution      487     525     942     559     808     896
- Cache hit distribution      551    1049     763     372     233     447
- Cache hit distribution      508     462     424     336     411     602
+ Physical reads       2565 Physical writes       5573 Cache hits     130565
+ Cache hit distribution   104329    7736    3092    1671    2605     438
+ Cache hit distribution      691     490     922     606    1022     617
+ Cache hit distribution     1062     362     797     232     324     554
+ Cache hit distribution      423     307     572     470     605     638
 
 
           : Job ends ok       with     0 warnings and     0 errors

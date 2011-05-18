@@ -45,9 +45,9 @@ Space group symbol is   P    21   21   21
 #COMPOSIT                                                                                                                                                                                                                                                       
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
+  Disc file on unit   1 extended by     1 records 
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST 5                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #                                                                                                                                                                                                                                                               
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.                                                                                                                                                                                           
 #                                                                                                                                                                                                                                                               
@@ -92,9 +92,9 @@ Bonds: Update required - There is no list 41
 #CLEAR 17                                                                                                                                                                                                                                                       
 #LIST  17                                                                                                                                                                                                                                                       
 #LIST 26                                                                                                                                                                                                                                                        
+  Disc file on unit   1 extended by     1 records 
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
-  Disc file on unit   1 extended by     1 records 
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC  NO  NO                                                                                                                                                                                                                                                   
 #SCALE      1                                                                                                                                                                                                                                                   
@@ -161,8 +161,7 @@ SumFo/SumFc=     1.465      LS-scale=     1.499      Wilson Scale=     0.000
 # REFINE MODEL A BIT.                                                                                                                                                                                                                                           
 #                                                                                                                                                                                                                                                               
 #LIST 12                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     2 records 
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -173,8 +172,7 @@ SumFo/SumFc=     1.465      LS-scale=     1.499      Wilson Scale=     0.000
 Refining    34 parameters in    1 block :      679 elements in the LS matrix.
  Space required on DISK is    2 records,     6  Blocks,     3 Kbytes. 
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     2 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
@@ -651,6 +649,7 @@ Inter cycle   4       0.00          0.100E+16       357.
                      0.00000           0.00029  0.00019  0.00029  0.00000
                      0.00000           0.00250  0.00119  0.00082  0.00000
                                        0.01231  0.01315  0.01258
+  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0117                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -883,7 +882,6 @@ Inter cycle   4       0.00          0.100E+16       20.4
                      0.00000           0.00009 -0.00009  0.00005  0.00000
                      0.00000           0.00248  0.00119  0.00082  0.00000
                                        0.01222  0.01309  0.01256
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0117                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SFLS                                                                                                                                                                                                                                                           
@@ -1877,6 +1875,7 @@ Inter cycle   4       0.00          0.100E+16       30.9
 Mean C-C su =   0.0099                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SFLS                                                                                                                                                                                                                                                           
+  Disc file on unit   1 extended by     1 records 
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
@@ -2109,7 +2108,6 @@ All cycle   3      0.300E-01      0.100E+05      0.908E-02
                      0.00000          -0.00001  0.00000  0.00000  0.00001
                      0.00000           0.00207  0.00098  0.00068  0.00246
                                        0.01020  0.01082  0.01035
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0099                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #LIST 12                                                                                                                                                                                                                                                        
@@ -3147,7 +3145,7 @@ Mean C-C su =   0.0078
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        3     Address    53964     Length     292     Created on      
+ Print list type    22     serial number        3     Address    53988     Length     292     Created on      
 
             100 parameter(s) in    1 block(s) - as follows:
 
@@ -3873,7 +3871,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        4     Address    63883     Length     141     Created on      
+ Print list type    22     serial number        4     Address    63907     Length     141     Created on      
 
               1 parameter(s) in    1 block(s) - as follows:
 
@@ -4175,6 +4173,7 @@ Mean C-C su =   0.0000
 SumFo/SumFc=     1.802      LS-scale=     1.202      Wilson Scale=     0.000                                                                                                                                                                                    
 <Fo>-<Fc> =    1.606    100*(<Fo>-<Fc>)/<Fo> =   33.319                                                                                                                                                                                                         
 #SFLS                                                                                                                                                                                                                                                           
+  Disc file on unit   1 extended by     1 records 
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
@@ -4357,7 +4356,6 @@ Over-all rescaling factor 0.92
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
                                                                    U[ISO]   SIZE     DECL/100 AZIM/100
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -5358,7 +5356,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        5     Address    67482     Length     147     Created on      
+ Print list type    22     serial number        5     Address    67506     Length     147     Created on      
 
               2 parameter(s) in    1 block(s) - as follows:
 
@@ -6145,7 +6143,7 @@ Mean C-C su =   0.0048
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        6     Address    69489     Length     235     Created on      
+ Print list type    22     serial number        6     Address    69513     Length     235     Created on      
 
              35 parameter(s) in    1 block(s) - as follows:
 
@@ -6451,8 +6449,7 @@ All cycle   4       0.00          0.100E+16       883.
 Mean C-C su =   0.0048                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #LIST 12                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     2 records 
 #SFLS                                                                                                                                                                                                                                                           
   Disc file on unit   1 extended by     1 records 
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -7224,7 +7221,7 @@ Mean C-C su =   0.0067
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        7     Address    73229     Length     246     Created on      
+ Print list type    22     serial number        7     Address    73253     Length     246     Created on      
 
              46 parameter(s) in    1 block(s) - as follows:
 
@@ -7531,6 +7528,7 @@ Mean C-C su =   0.0067
 #CYCLENDS                                                                                                                                                                                                                                                       
 #LIST 12                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     1 records 
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -7540,7 +7538,6 @@ Mean C-C su =   0.0067
 Refining   101 parameters in    1 block :     5369 elements in the LS matrix.
  Space required on DISK is   11 records,    42  Blocks,    22 Kbytes. 
      11 Atoms modified;   New  LIST 5 written to DISK
-  Disc file on unit   1 extended by     1 records 
 #LIST 17                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
@@ -8351,7 +8348,7 @@ Mean C-C su =   0.0052
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        8     Address    76827     Length     301     Created on      
+ Print list type    22     serial number        8     Address    76851     Length     301     Created on      
 
             101 parameter(s) in    1 block(s) - as follows:
 
@@ -8729,6 +8726,7 @@ Space group symbol is   P    21   21   21
 
  A scale of   1.00000  has been assumed
 
+  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
 
 
@@ -8750,7 +8748,7 @@ Space group symbol is   P    21   21   21
 # GET SCALE FACTOR                                                                                                                                                                                                                                              
 #                                                                                                                                                                                                                                                               
 #LIST 12                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
+  Disc file on unit   1 extended by     1 records 
 #SFLS                                                                                                                                                                                                                                                           
 #LIST 26                                                                                                                                                                                                                                                        
 #WEIGHT                                                                                                                                                                                                                                                         
@@ -8830,8 +8828,7 @@ SumFo/SumFc=     1.465      LS-scale=     1.499      Wilson Scale=     0.000
 Refining    34 parameters in    1 block :      679 elements in the LS matrix.
  Space required on DISK is    2 records,     6  Blocks,     3 Kbytes. 
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     2 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
@@ -9308,6 +9305,7 @@ Inter cycle   4       0.00          0.100E+16       357.
                      0.00000           0.00028  0.00019  0.00030  0.00000
                      0.00000           0.00250  0.00119  0.00082  0.00000
                                        0.01231  0.01315  0.01260
+  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0117                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -9545,7 +9543,6 @@ Inter cycle   4       0.00          0.100E+16       20.4
                      0.00000           0.00010 -0.00010  0.00004  0.00000
                      0.00000           0.00248  0.00119  0.00082  0.00000
                                        0.01222  0.01310  0.01257
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0117                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SFLS                                                                                                                                                                                                                                                           
@@ -9801,6 +9798,7 @@ Refining    45 parameters in    1 block :     1141 elements in the LS matrix.
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
+  Disc file on unit   1 extended by     1 records 
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -9859,7 +9857,6 @@ Refining    45 parameters in    1 block :     1141 elements in the LS matrix.
 SumFo/SumFc=     1.463      LS-scale=     1.496      Wilson Scale=     0.000                                                                                                                                                                                    
 <Fo>-<Fc> =   -0.160    100*(<Fo>-<Fc>)/<Fo> =   -2.243                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
@@ -10783,6 +10780,7 @@ Refining   100 parameters in    1 block :     5266 elements in the LS matrix.
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
   Disc file on unit   1 extended by     8 records 
+  Disc file on unit   1 extended by     1 records 
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -10841,7 +10839,6 @@ Refining   100 parameters in    1 block :     5266 elements in the LS matrix.
 SumFo/SumFc=     1.627      LS-scale=     1.622      Wilson Scale=     0.000                                                                                                                                                                                    
 <Fo>-<Fc> =    0.019    100*(<Fo>-<Fc>)/<Fo> =    0.287                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
@@ -11054,6 +11051,7 @@ All cycle   4       0.00          0.100E+16      0.175E+04
                      0.00000           0.00115  0.00034  0.00006 -0.00952  0.00229  0.01048 -0.00770  0.00689  0.00835
                      0.00000           0.00227  0.00108  0.00075  0.00601  0.00666  0.00544  0.00527  0.00532  0.00573
                                        0.01118  0.01190  0.01143
+  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0110                                                                                                                                                                                                                                          
   Disc file on unit   1 extended by     1 records 
 #CYCLENDS                                                                                                                                                                                                                                                       
@@ -11801,7 +11799,7 @@ Mean C-C su =   0.0078
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       11     Address   129873     Length     292     Created on      
+ Print list type    22     serial number       11     Address   129921     Length     292     Created on      
 
             100 parameter(s) in    1 block(s) - as follows:
 
@@ -12525,7 +12523,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       12     Address   138313     Length     141     Created on      
+ Print list type    22     serial number       12     Address   138825     Length     141     Created on      
 
               1 parameter(s) in    1 block(s) - as follows:
 
@@ -14011,7 +14009,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       13     Address   141912     Length     147     Created on      
+ Print list type    22     serial number       13     Address   142424     Length     147     Created on      
 
               2 parameter(s) in    1 block(s) - as follows:
 
@@ -14803,7 +14801,7 @@ Mean C-C su =   0.0048
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       14     Address   143003     Length     235     Created on      
+ Print list type    22     serial number       14     Address   143515     Length     235     Created on      
 
              35 parameter(s) in    1 block(s) - as follows:
 
@@ -15878,7 +15876,7 @@ Mean C-C su =   0.0067
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       15     Address   145823     Length     246     Created on      
+ Print list type    22     serial number       15     Address   146335     Length     246     Created on      
 
              46 parameter(s) in    1 block(s) - as follows:
 
@@ -16999,7 +16997,7 @@ Mean C-C su =   0.0052
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       16     Address   149421     Length     301     Created on      
+ Print list type    22     serial number       16     Address   149933     Length     301     Created on      
 
             101 parameter(s) in    1 block(s) - as follows:
 
@@ -18698,6 +18696,7 @@ All cycle   4       0.00          0.100E+16      0.273E+04
                      0.00000          -0.00279 -0.00068 -0.00023  0.00477
                      0.00000           0.00262  0.00129  0.00089  0.00312
                                        0.01293  0.01419  0.01365
+  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0125                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -18762,7 +18761,6 @@ Mean C-C su =   0.0125
  Structure factor least squares calculation    7  ends  2
 SumFo/SumFc=     1.603      LS-scale=     1.570      Wilson Scale=     0.000                                                                                                                                                                                    
 <Fo>-<Fc> =    0.140    100*(<Fo>-<Fc>)/<Fo> =    2.058                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -20452,7 +20450,7 @@ Mean C-C su =   0.0081
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       19     Address   203208     Length     292     Created on      
+ Print list type    22     serial number       19     Address   203744     Length     292     Created on      
 
             100 parameter(s) in    1 block(s) - as follows:
 
@@ -21154,7 +21152,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       20     Address   211207     Length     141     Created on      
+ Print list type    22     serial number       20     Address   211743     Length     141     Created on      
 
               1 parameter(s) in    1 block(s) - as follows:
 
@@ -22608,7 +22606,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       21     Address   215262     Length     147     Created on      
+ Print list type    22     serial number       21     Address   215774     Length     147     Created on      
 
               2 parameter(s) in    1 block(s) - as follows:
 
@@ -23151,7 +23149,7 @@ Mean C-C su =   0.0049
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       22     Address   216353     Length     235     Created on      
+ Print list type    22     serial number       22     Address   216865     Length     235     Created on      
 
              35 parameter(s) in    1 block(s) - as follows:
 
@@ -24230,7 +24228,7 @@ Mean C-C su =   0.0070
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       23     Address   218890     Length     246     Created on      
+ Print list type    22     serial number       23     Address   219402     Length     246     Created on      
 
              46 parameter(s) in    1 block(s) - as follows:
 
@@ -25368,7 +25366,7 @@ Mean C-C su =   0.0054
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       24     Address   222488     Length     301     Created on      
+ Print list type    22     serial number       24     Address   223000     Length     301     Created on      
 
             101 parameter(s) in    1 block(s) - as follows:
 
@@ -28813,7 +28811,7 @@ Mean C-C su =   0.0081
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       27     Address   276282     Length     292     Created on      
+ Print list type    22     serial number       27     Address   276794     Length     292     Created on      
 
             100 parameter(s) in    1 block(s) - as follows:
 
@@ -29516,7 +29514,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       28     Address   284281     Length     141     Created on      
+ Print list type    22     serial number       28     Address   284793     Length     141     Created on      
 
               1 parameter(s) in    1 block(s) - as follows:
 
@@ -30971,7 +30969,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       29     Address   288533     Length     147     Created on      
+ Print list type    22     serial number       29     Address   289045     Length     147     Created on      
 
               2 parameter(s) in    1 block(s) - as follows:
 
@@ -31514,7 +31512,7 @@ Mean C-C su =   0.0049
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       30     Address   289624     Length     235     Created on      
+ Print list type    22     serial number       30     Address   290136     Length     235     Created on      
 
              35 parameter(s) in    1 block(s) - as follows:
 
@@ -32592,7 +32590,7 @@ Mean C-C su =   0.0070
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       31     Address   292161     Length     246     Created on      
+ Print list type    22     serial number       31     Address   292673     Length     246     Created on      
 
              46 parameter(s) in    1 block(s) - as follows:
 
@@ -33730,7 +33728,7 @@ Mean C-C su =   0.0054
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       32     Address   295759     Length     301     Created on      
+ Print list type    22     serial number       32     Address   296271     Length     301     Created on      
 
             101 parameter(s) in    1 block(s) - as follows:
 
@@ -34047,11 +34045,11 @@ Mean C-C su =   0.0054
 #CYCLENDS                                                                                                                                                                                                                                                       
 #                                         AND CLOSE THE PROGRAM.                                                                                                                                                                                                
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads      37289 Physical writes      42397 Cache hits    1006811
- Cache hit distribution   818579   67225   14151    7089    8111   11377
- Cache hit distribution    10323   12272   10657    7573    7340    5536
- Cache hit distribution     3031    4618    2733    1808    2354    2216
- Cache hit distribution     1839    2397    1424    1339    1354    1465
+ Physical reads      35239 Physical writes      42389 Cache hits    1010049
+ Cache hit distribution   824154   65201   13481    8228   10870    8772
+ Cache hit distribution    10042   12958   10695    7577    7405    5732
+ Cache hit distribution     3007    1761    3703    1886    2268    2434
+ Cache hit distribution     1741    1602    2106    1357    1455    1614
 
 
           : Job ends ok       with     0 warnings and     0 errors

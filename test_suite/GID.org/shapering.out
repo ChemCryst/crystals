@@ -3532,7 +3532,7 @@ Mean C-C su =   0.0493
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        1     Address   104230     Length     450     Created on      
+ Print list type    22     serial number        1     Address   104242     Length     450     Created on      
 
              35 parameter(s) in    1 block(s) - as follows:
 
@@ -3717,7 +3717,7 @@ Mean C-C su =   0.0493
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       13     Address   106739     Length      90     Created on      
+ Print list type    24     serial number       13     Address   106751     Length      90     Created on      
 
 
  Record  101    LGRP    2  NGRP     35   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -4851,6 +4851,7 @@ Mean C-C su =   0.0465
 #PERTURB                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     1 records 
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -4914,7 +4915,6 @@ Mean C-C su =   0.0465
  Structure factor least squares calculation    6  ends  2
 SumFo/SumFc=     6.512      LS-scale=     6.870      Wilson Scale=     0.000                                                                                                                                                                                    
 <Fo>-<Fc> =   -0.604    100*(<Fo>-<Fc>)/<Fo> =   -5.495                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -6859,7 +6859,7 @@ Mean C-C su =   0.0481
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        2     Address   104230     Length     450     Created on      
+ Print list type    22     serial number        2     Address   104242     Length     450     Created on      
 
              35 parameter(s) in    1 block(s) - as follows:
 
@@ -7044,7 +7044,7 @@ Mean C-C su =   0.0481
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       25     Address   221148     Length      90     Created on      
+ Print list type    24     serial number       25     Address   221160     Length      90     Created on      
 
 
  Record  101    LGRP    2  NGRP     35   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -10835,7 +10835,7 @@ Mean C-C su =   0.0477
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        3     Address   104230     Length     450     Created on      
+ Print list type    22     serial number        3     Address   104242     Length     450     Created on      
 
              35 parameter(s) in    1 block(s) - as follows:
 
@@ -11020,7 +11020,7 @@ Mean C-C su =   0.0477
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       38     Address   331496     Length      90     Created on      
+ Print list type    24     serial number       38     Address   331508     Length      90     Created on      
 
 
  Record  101    LGRP    2  NGRP     35   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -11073,6 +11073,7 @@ Mean C-C su =   0.0477
 #                                         FSQ, ANOM                                                                                                                                                                                                             
 #USE SHAPERING.IN                                                                                                                                                                                                                                               
 #LIST 1                                                                                                                                                                                                                                                         
+  Disc file on unit   1 extended by     1 records 
 #LIST 31                                                                                                                                                                                                                                                        
 #SPACE                                                                                                                                                                                                                                                          
   Space Group P 1       
@@ -11094,7 +11095,6 @@ Space group symbol is   P    1
                               X axis from  0.000 to  1.000
                               Y axis from  0.000 to  1.000
                               Z axis from  0.000 to  0.500
-  Disc file on unit   1 extended by     1 records 
 #COMPOSITION                                                                                                                                                                                                                                                    
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
@@ -14690,6 +14690,7 @@ Inter cycle   4       0.00          0.100E+16       46.5
                                        0.01143  0.00978  0.00902
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0481                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -14705,7 +14706,7 @@ Mean C-C su =   0.0481
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        4     Address   104230     Length     450     Created on      
+ Print list type    22     serial number        4     Address   104242     Length     450     Created on      
 
              35 parameter(s) in    1 block(s) - as follows:
 
@@ -14890,7 +14891,7 @@ Mean C-C su =   0.0481
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       51     Address   443061     Length      90     Created on      
+ Print list type    24     serial number       51     Address   443073     Length      90     Created on      
 
 
  Record  101    LGRP    2  NGRP     35   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -14941,11 +14942,11 @@ Mean C-C su =   0.0481
 
 
 #FINI                                                                                                                                                                                                                                                           
- Physical reads      22070 Physical writes      21866 Cache hits     561784
- Cache hit distribution   496420   35358    6771    2880    2563    3251
- Cache hit distribution     1144     666    1496    1157     848    1195
- Cache hit distribution     1411    1112     777     933     281     263
- Cache hit distribution      310     457     973     579     449     490
+ Physical reads      21492 Physical writes      21865 Cache hits     563047
+ Cache hit distribution   497763   35130    6746    3339    3549    2320
+ Cache hit distribution     1011    1220    1117    1011    1190    1480
+ Cache hit distribution     1083    1121     513     590     282     220
+ Cache hit distribution      374     516     764     769     490     449
 
 
           : Job ends ok       with     0 warnings and     0 errors

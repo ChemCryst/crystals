@@ -51,9 +51,9 @@ Space group symbol is   P    21   21   21
   Disc file on unit   1 extended by     1 records 
 Bonds: Update required - There is no list 41
 #LIST 4                                                                                                                                                                                                                                                         
+  Disc file on unit   1 extended by     1 records 
 #                                         WEISSENBERG DIFFRACTOMETER.                                                                                                                                                                                           
 #LIST 13                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 28                                                                                                                                                                                                                                                        
 # HOOK UP THE REFLECTION FILE                                                                                                                                                                                                                                   
 #OPEN HKLI  "CYCLO.HKL"                                                                                                                                                                                                                                         
@@ -125,8 +125,8 @@ Number                4       1       2       5       4       1       0
 
     H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
 
- The updated reflections are now on UNIT 52
   Disc file on unit   1 extended by     1 records 
+ The updated reflections are now on UNIT 52
   Disc file on unit   1 extended by    13 records 
 
 
@@ -2758,8 +2758,8 @@ Bonds: Update required - List5 length change
     H  91      H  92      H  93      H 101      H 102      H 111      H 112
     H   1
  List   5 now contains     22 atom(s)
-Bonds: Update required - List5 length change
   Disc file on unit   1 extended by     1 records 
+Bonds: Update required - List5 length change
 #LIST 12                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     2 records 
   Disc file on unit   1 extended by     1 records 
@@ -3497,6 +3497,7 @@ Mean C-C su =   0.0072
  Structure factor least squares calculation   14  ends  2
 SumFo/SumFc=     1.617      LS-scale=     1.621      Wilson Scale=     0.000                                                                                                                                                                                    
 <Fo>-<Fc> =   -0.017    100*(<Fo>-<Fc>)/<Fo> =   -0.256                                                                                                                                                                                                         
+  Disc file on unit   1 extended by     1 records 
 #INVERT  EIGE                                                                                                                                                                                                                                                   
 
 
@@ -3658,7 +3659,6 @@ All cycle   4       0.00          0.100E+16      0.387E+04
                      0.00000          -0.00036  0.00010 -0.00012  0.00000  0.00000  0.00000  0.00014  0.00000  0.00000
                      0.00000           0.00167  0.00076  0.00056  0.00000  0.00000  0.00000  0.00366  0.00000  0.00000
                                        0.00824  0.00838  0.00858
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0072                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SFLS                                                                                                                                                                                                                                                           
@@ -8198,6 +8198,7 @@ Bonds: Update required - List5 length change
 
  A scale of   1.00000  has been assumed
 
+  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
 
 
@@ -8205,7 +8206,6 @@ Bonds: Update required - List5 length change
     1866 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
 #SYST                                                                                                                                                                                                                                                           
 #SORT                                                                                                                                                                                                                                                           
-  Disc file on unit   1 extended by     1 records 
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -16259,11 +16259,11 @@ Mean C-C su =   0.0006
 #CYCLENDS                                                                                                                                                                                                                                                       
 #                                         AND CLOSE THE PROGRAM.                                                                                                                                                                                                
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads      18900 Physical writes      20399 Cache hits     494547
- Cache hit distribution   402567   39192    8064    4560    5247    6599
- Cache hit distribution     3231    3655    3720    2098    1729    1543
- Cache hit distribution     2164    1424    1106    1195     986    1033
- Cache hit distribution     1402     689     595     500     557     691
+ Physical reads      17826 Physical writes      20401 Cache hits     496480
+ Cache hit distribution   406165   37408    7963    5129    6797    5139
+ Cache hit distribution     3094    4293    3399    2162    1814    1632
+ Cache hit distribution     1089    1862    1232     804    1016    1038
+ Cache hit distribution     1033     888     505     558     647     813
 
 
           : Job ends ok       with     0 warnings and     0 errors

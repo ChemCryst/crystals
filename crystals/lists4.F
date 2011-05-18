@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.30  2011/04/04 09:21:07  djw
+C Clarify output text about anomalous scatterers.
+C
 C Revision 1.29  2011/03/21 13:57:21  rich
 C Update files to work with gfortran compiler.
 C
@@ -1564,8 +1567,8 @@ C
       INCLUDE 'XLST29.INC'
 C
       INCLUDE 'QLST29.INC'
-C
-      INCLUDE 'IDIM29.INC'
+C- dimension now set as a parameter in ICOM29.INC
+c      INCLUDE 'IDIM29.INC'
 C--LOAD THE LIST
       CALL XLDLST(29,ICOM29,IDIM29,-1)
       RETURN

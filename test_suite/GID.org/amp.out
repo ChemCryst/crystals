@@ -51,9 +51,9 @@ Space group symbol is   P    21   21   21
   Disc file on unit   1 extended by     1 records 
 Bonds: Update required - There is no list 41
 #LIST 4                                                                                                                                                                                                                                                         
+  Disc file on unit   1 extended by     1 records 
 #                                         WEISSENBERG DIFFRACTOMETER.                                                                                                                                                                                           
 #LIST 13                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 28                                                                                                                                                                                                                                                        
 # HOOK UP THE REFLECTION FILE                                                                                                                                                                                                                                   
 #OPEN HKLI  "CYCLO.HKL"                                                                                                                                                                                                                                         
@@ -125,8 +125,8 @@ Number                4       1       2       5       4       1       0
 
     H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
 
- The updated reflections are now on UNIT 52
   Disc file on unit   1 extended by     1 records 
+ The updated reflections are now on UNIT 52
   Disc file on unit   1 extended by    13 records 
 
 
@@ -2749,8 +2749,8 @@ Bonds: Update required - List5 length change
     H  91      H  92      H  93      H 101      H 102      H 111      H 112
     H   1
  List   5 now contains     22 atom(s)
-Bonds: Update required - List5 length change
   Disc file on unit   1 extended by     1 records 
+Bonds: Update required - List5 length change
 #LIST 12                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     2 records 
   Disc file on unit   1 extended by     1 records 
@@ -3658,11 +3658,11 @@ Mean C-C su =   0.0072
 #CYCLENDS                                                                                                                                                                                                                                                       
 #                                         AND CLOSE THE PROGRAM.                                                                                                                                                                                                
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads       3351 Physical writes       4543 Cache hits     109430
- Cache hit distribution    89647    9442    2093     801     924    1179
- Cache hit distribution      320     173     529     489     411     380
- Cache hit distribution      445     280     224     303     239     223
- Cache hit distribution      246     213     215     245     215     194
+ Physical reads       3031 Physical writes       4545 Cache hits     109912
+ Cache hit distribution    90489    8982    2079     935    1306     798
+ Cache hit distribution      265     412     435     496     439     413
+ Cache hit distribution      176     387     251     193     225     230
+ Cache hit distribution      209     258     221     247     221     245
 
 
           : Job ends ok       with     0 warnings and     0 errors

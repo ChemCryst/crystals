@@ -712,7 +712,7 @@ AZIMUTH  =    44.97     AZIMUTH /100 =   0.4497
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
 
 
- Print list type    20     serial number        6     Address    35580     Length     234     Created on      
+ Print list type    20     serial number        6     Address    35592     Length     234     Created on      
 
 
  Record  101    LGRP    9  NGRP     10   MATRICES FOR FOREWARD TRANSFORMATION                                            
@@ -1242,11 +1242,11 @@ AZIMUTH  =    44.97     AZIMUTH /100 =   0.4497
 
     4 *   52   1   1   1   1  10  40  54  52
 #FINI                                                                                                                                                                                                                                                           
- Physical reads       1243 Physical writes        797 Cache hits      32657
- Cache hit distribution    28274    1135     493     291     203     309
- Cache hit distribution       99      67     103     175     271     136
- Cache hit distribution      164      75     124     104     120      76
- Cache hit distribution       64      91     111      25      61      86
+ Physical reads       1260 Physical writes        798 Cache hits      32753
+ Cache hit distribution    28263    1253     484     268     280     235
+ Cache hit distribution      135     118     118     208     236     138
+ Cache hit distribution      110     113     120      89      71      80
+ Cache hit distribution       83      91      84      63      41      72
 
 
           : Job ends ok       with     0 warnings and     0 errors

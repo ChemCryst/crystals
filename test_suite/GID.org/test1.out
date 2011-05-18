@@ -51,9 +51,9 @@ Space group symbol is   P    21   21   21
   Disc file on unit   1 extended by     1 records 
 Bonds: Update required - There is no list 41
 #LIST 4                                                                                                                                                                                                                                                         
+  Disc file on unit   1 extended by     1 records 
 #                                         WEISSENBERG DIFFRACTOMETER.                                                                                                                                                                                           
 #LIST 13                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 28                                                                                                                                                                                                                                                        
 # HOOK UP THE REFLECTION FILE                                                                                                                                                                                                                                   
 #OPEN HKLI  "CYCLO.HKL"                                                                                                                                                                                                                                         
@@ -125,8 +125,8 @@ Number                4       1       2       5       4       1       0
 
     H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
 
- The updated reflections are now on UNIT 52
   Disc file on unit   1 extended by     1 records 
+ The updated reflections are now on UNIT 52
   Disc file on unit   1 extended by    13 records 
 
 
@@ -2749,8 +2749,8 @@ Bonds: Update required - List5 length change
     H  91      H  92      H  93      H 101      H 102      H 111      H 112
     H   1
  List   5 now contains     22 atom(s)
-Bonds: Update required - List5 length change
   Disc file on unit   1 extended by     1 records 
+Bonds: Update required - List5 length change
 #LIST 12                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     2 records 
   Disc file on unit   1 extended by     1 records 
@@ -3773,7 +3773,8 @@ Number                4       1       2       5       4       1       0
     H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
 
  The updated reflections are now on UNIT 52
-  Disc file on unit   1 extended by    14 records 
+  Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by    13 records 
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -4740,10 +4741,10 @@ Refining    45 parameters in    1 block :     1141 elements in the LS matrix.
 SumFo/SumFc=     1.451      LS-scale=     1.457      Wilson Scale=     0.000                                                                                                                                                                                    
 <Fo>-<Fc> =   -0.027    100*(<Fo>-<Fc>)/<Fo> =   -0.373                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
+  Disc file on unit   1 extended by     1 records 
 #DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
-  Disc file on unit   1 extended by     1 records 
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -14471,11 +14472,11 @@ Mean C-C su =   0.0066
 #CYCLENDS                                                                                                                                                                                                                                                       
 #                                         AND CLOSE THE PROGRAM.                                                                                                                                                                                                
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads      16872 Physical writes      18121 Cache hits     441533
- Cache hit distribution   358716   36544    7449    3963    4704    5726
- Cache hit distribution     3014    2471    3255    1899    1523    1400
- Cache hit distribution     1883    1166     915    1148     807     866
- Cache hit distribution     1110     601     557     530     556     730
+ Physical reads      15862 Physical writes      18129 Cache hits     442949
+ Cache hit distribution   361539   34854    7493    4482    6047    4411
+ Cache hit distribution     2821    3266    2924    1932    1587    1559
+ Cache hit distribution      959    1542    1047     669     790     895
+ Cache hit distribution      861     719     497     601     628     826
 
 
           : Job ends ok       with     0 warnings and     0 errors

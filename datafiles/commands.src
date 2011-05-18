@@ -1467,12 +1467,12 @@ THE PARAMETER DEFINING SKIP STEP LENGTH
 (1H ,F6.2,6F15.2)
          2
     .STEP               0    0    1    0    0 1.0
-LIST 29            2    0
+LIST 29            3    0
   29   40960 CRYSTALSINPUT
    1.READ               1    1    0    0
          1
     .NELEMENT           4    0    1    0    0         1
-   2.ELEMENT            8    0    0    0    8   -4  101    1   29
+   2.ELEMENT            8   -4    0    0    8   -4  101    1   29
          1    1    1    1    1    1    0    0    0    0
 The elements in the asymmetric unit
 (1H ,8(3X,12A1))
@@ -1486,6 +1486,16 @@ The elements in the asymmetric unit
     .MUA                0    0    1    0    0 0
     .WEIGHT             0    0    1    0    0 0
     .COLOUR             0    0    1    0    0 UNKNOWN
+   3.INFO               4    1    0    0    4    1  102    5   29
+         1    1    1    1    1    1    0    0    0    0
+Information about the version number
+(1H ,8(3X,12A1))
+(1H ,I7,4I15)
+         1    1    1    1
+    .VERSION            0    0    1    0    0        -1
+    .ISSUE              0    0    1    0    0        -1
+    .1-TEMP             0    0    1    0    0        -1
+    .2-TEMP             0    0    1    0    0        -1
 GOODIES   30       9    0
    8   40960 CRYSTALSINPUT
    1.DATRED            13    1    0    0   13    1  101    1   30

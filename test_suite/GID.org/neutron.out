@@ -2340,6 +2340,7 @@ Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
   Disc file on unit   1 extended by    19 records 
+  Disc file on unit   1 extended by     1 records 
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -2398,7 +2399,6 @@ Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
 SumFo/SumFc=     0.300      LS-scale=     0.292      Wilson Scale=     0.000                                                                                                                                                                                    
 <Fo>-<Fc> =    0.688    100*(<Fo>-<Fc>)/<Fo> =    2.580                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
@@ -8768,9 +8768,9 @@ SumFo/SumFc=     0.312      LS-scale=     0.312      Wilson Scale=     0.000
 Bonds: Update required - List5 length change
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     1 records 
 #COLLECT                                                                                                                                                                                                                                                        
  Start of a new residue 
-  Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
@@ -9311,8 +9311,8 @@ Bonds: Update required - List5 length change
     C   6      C   7      C   8      C   9      H  51      H  81      H  82
     H  83      H  91      H  92      H  93      H  70
  List   5 now contains     19 atom(s)
-Bonds: Update required - List5 length change
   Disc file on unit   1 extended by     1 records 
+Bonds: Update required - List5 length change
 #SFLS                                                                                                                                                                                                                                                           
   Disc file on unit   1 extended by     1 records 
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -18971,11 +18971,11 @@ Mean C-C su =   0.0016
 #CYCLENDS                                                                                                                                                                                                                                                       
 #                                         AND CLOSE THE PROGRAM.                                                                                                                                                                                                
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads      30665 Physical writes      27581 Cache hits     681105
- Cache hit distribution   573199   61544    7686    4033    4868    5323
- Cache hit distribution     3272    2790    2985    1703    1411    1507
- Cache hit distribution     1570    1405    1054     647     618     433
- Cache hit distribution      762     721    1086    1052     690     746
+ Physical reads      29864 Physical writes      27656 Cache hits     683329
+ Cache hit distribution   574966   61229    7978    4590    6061    4120
+ Cache hit distribution     3312    3185    3003    1761    1566    1583
+ Cache hit distribution     1286    1086     788     497     582     420
+ Cache hit distribution      656    1008    1164    1075     674     739
 
 
           : Job ends ok       with     0 warnings and     0 errors

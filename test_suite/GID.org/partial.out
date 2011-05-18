@@ -1807,7 +1807,7 @@ Mean C-C su =   0.0284
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    23     serial number        3     Address    35112     Length      76     Created on      
+ Print list type    23     serial number        3     Address    35124     Length      76     Created on      
 
 
  Record  101    LGRP    7  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
@@ -1859,7 +1859,7 @@ Mean C-C su =   0.0284
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        1     Address    38679     Length     729     Created on      
+ Print list type    22     serial number        1     Address    38691     Length     729     Created on      
 
             298 parameter(s) in    1 block(s) - as follows:
 
@@ -2047,7 +2047,7 @@ Mean C-C su =   0.0284
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number        5     Address    85651     Length     616     Created on      
+ Print list type    24     serial number        5     Address    85663     Length     616     Created on      
 
 
  Record  101    LGRP    2  NGRP    298   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -4033,7 +4033,7 @@ Mean C-C su =   0.0273
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    23     serial number        4     Address    35112     Length      76     Created on      
+ Print list type    23     serial number        4     Address    35124     Length      76     Created on      
 
 
  Record  101    LGRP    7  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
@@ -4085,7 +4085,7 @@ Mean C-C su =   0.0273
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        1     Address    38679     Length     729     Created on      
+ Print list type    22     serial number        1     Address    38691     Length     729     Created on      
 
             298 parameter(s) in    1 block(s) - as follows:
 
@@ -4273,7 +4273,7 @@ Mean C-C su =   0.0273
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number        9     Address    85651     Length     616     Created on      
+ Print list type    24     serial number        9     Address    85663     Length     616     Created on      
 
 
  Record  101    LGRP    2  NGRP    298   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -4587,11 +4587,11 @@ Mean C-C su =   0.0273
 
 
 #END                                                                                                                                                                                                                                                            
- Physical reads       7851 Physical writes       5777 Cache hits     127841
- Cache hit distribution   117230    4006    1398     596     478     660
- Cache hit distribution      127     233     279     363     212     244
- Cache hit distribution      282     255     264     119     121     105
- Cache hit distribution      153     184      84     140     153     155
+ Physical reads       7743 Physical writes       5777 Cache hits     128007
+ Cache hit distribution   117421    3914    1406     687     730     397
+ Cache hit distribution      199     236     265     335     279     182
+ Cache hit distribution      391     165     198      97     104     116
+ Cache hit distribution      134     182     114     144     147     164
 
 
           : Job ends ok       with     0 warnings and     0 errors

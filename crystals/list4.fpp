@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.68  2011/05/13 11:16:51  djw
+C Calls to Kallow now return a key to the test which failed and a value to indicate if it was Max or Min. The argument of KALLOW must be a variable
+C
 C Revision 1.67  2011/03/21 13:57:21  rich
 C Update files to work with gfortran compiler.
 C
@@ -461,8 +464,10 @@ C--CHECK IF LIST 6 EXISTS
           IFSQ = ISTORE(L23MN+1)
           RPARS = 1
           IF ( KEXIST(30).GE.1) THEN
+           CALL XFAL30
            RPARS = STORE(L30RF+2)
           END IF
+          write(123,*)'RPARS: ',rpars,' IFSQ: ',IFSQ
           N6ACC = 0
           FCMAX = 0.1
           DO WHILE ( KFNR ( 0 ) .GE. 0 )
@@ -478,12 +483,15 @@ c              SHFO(N6ACC) = STORE(M6+3) / MAX(.0001,A)
 c              SIG(N6ACC) = STORE(M6+12) / MAX(.0001,A)
             ENDIF
             FCMAX = MAX ( FCMAX, SHFC )
+          write(123,*)'SHFC: ',SHFC
           END DO
+          write(123,*)'FCmax: ',FCMAX
 C Make up some starting values of A and B:
           SXA = 0.1
           SXB = 0.1
           SXAG = .2 * SXA
           SXBG = .4 * SXB
+          write(123,*)'sxa,b,ag,bg: ',SXA,SXB,SXAG,SXBG
           DO WHILE ( .TRUE. ) ! Ensure grid doesn't extend below 0:
              SXA = MAX(SXA,4.*SXAG)
              SXB = MAX(SXB,4.*SXBG)
@@ -502,6 +510,7 @@ C For each grid point (9x9) calculate 10 wD^2 values corresponding to Fc range.
                    END DO
                 END DO
              END DO
+          write(123,*)'iuln06: ',IULN06
              CALL XFAL06(IULN06, 0)   ! Load READ ONLY
              IF ( IERFLG .LT. 0 ) GO TO 9900
              DO WHILE ( KFNR ( 0 ) .GE. 0 )
@@ -515,6 +524,7 @@ C For each grid point (9x9) calculate 10 wD^2 values corresponding to Fc range.
                  SHFC = STORE(M6+5)
                  SIG = STORE(M6+12) / MAX(.0001,A)
                 END IF
+          write(123,*)'shfo,shfc,sig: ',shfo,shfc,sig
 cdjwfeb09 - catch case when there are no Fc computed yet
                 IF (SHFC .GT. 0.) THEN
 C
@@ -556,6 +566,8 @@ C
                    END DO
 
                    SGF(J,K) = SUMGF
+
+          write(123,*)'j,k,sumgf: ',j,k,sumgf
           
                    IF ( SUMGF .LT. GOOFIT ) THEN
                       GOOFIT = SUMGF

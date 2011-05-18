@@ -51,9 +51,9 @@ Space group symbol is   P    21   21   21
   Disc file on unit   1 extended by     1 records 
 Bonds: Update required - There is no list 41
 #LIST 4                                                                                                                                                                                                                                                         
+  Disc file on unit   1 extended by     1 records 
 #                                         WEISSENBERG DIFFRACTOMETER.                                                                                                                                                                                           
 #LIST 13                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 28                                                                                                                                                                                                                                                        
 # HOOK UP THE REFLECTION FILE                                                                                                                                                                                                                                   
 #OPEN HKLI  "CYCLO.HKL"                                                                                                                                                                                                                                         
@@ -125,8 +125,8 @@ Number                4       1       2       5       4       1       0
 
     H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
 
- The updated reflections are now on UNIT 52
   Disc file on unit   1 extended by     1 records 
+ The updated reflections are now on UNIT 52
   Disc file on unit   1 extended by    13 records 
 
 
@@ -4739,7 +4739,7 @@ Mean C-C su =   0.0061
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        3     Address    83374     Length     234     Created on      
+ Print list type    20     serial number        3     Address    83386     Length     234     Created on      
 
 
  Record  101    LGRP    9  NGRP     10   MATRICES FOR FOREWARD TRANSFORMATION                                            
@@ -4970,7 +4970,7 @@ Mean C-C su =   0.0061
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        4     Address    83608     Length     234     Created on      
+ Print list type    20     serial number        4     Address    83620     Length     234     Created on      
 
 
  Record  101    LGRP    9  NGRP     10   MATRICES FOR FOREWARD TRANSFORMATION                                            
@@ -5205,7 +5205,7 @@ Mean C-C su =   0.0061
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        5     Address    83842     Length     234     Created on      
+ Print list type    20     serial number        5     Address    83854     Length     234     Created on      
 
 
  Record  101    LGRP    9  NGRP     10   MATRICES FOR FOREWARD TRANSFORMATION                                            
@@ -5451,7 +5451,7 @@ Mean C-C su =   0.0061
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        6     Address    84076     Length     234     Created on      
+ Print list type    20     serial number        6     Address    84088     Length     234     Created on      
 
 
  Record  101    LGRP    9  NGRP     10   MATRICES FOR FOREWARD TRANSFORMATION                                            
@@ -5572,11 +5572,11 @@ Mean C-C su =   0.0061
 
 #                                         AND CLOSE THE PROGRAM.                                                                                                                                                                                                
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads       4506 Physical writes       5861 Cache hits     138324
- Cache hit distribution   113689   11182    2673    1026    1283    1443
- Cache hit distribution      399     270     649     599     605     487
- Cache hit distribution      534     429     317     414     296     344
- Cache hit distribution      310     285     258     289     274     269
+ Physical reads       4183 Physical writes       5862 Cache hits     138936
+ Cache hit distribution   114712   10674    2657    1180    1748     999
+ Cache hit distribution      351     525     520     633     619     483
+ Cache hit distribution      287     563     357     258     274     317
+ Cache hit distribution      292     332     256     289     282     328
 
 
           : Job ends ok       with     0 warnings and     0 errors

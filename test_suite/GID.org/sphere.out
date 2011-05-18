@@ -1833,7 +1833,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        1     Address    70438     Length     160     Created on      
+ Print list type    22     serial number        1     Address    70450     Length     160     Created on      
 
              16 parameter(s) in    1 block(s) - as follows:
 
@@ -1892,7 +1892,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number        9     Address    70816     Length      52     Created on      
+ Print list type    24     serial number        9     Address    70828     Length      52     Created on      
 
 
  Record  101    LGRP    2  NGRP     16   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -3366,6 +3366,7 @@ Inter cycle   4       0.00          0.100E+16       14.1
                      0.00000           0.00000  0.00000  0.00000 -0.00130 -0.00035
                      0.00000           0.00000  0.00000  0.00000  0.01680  0.02800
                                        0.00000  0.00000  0.00000
+  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SFLS                                                                                                                                                                                                                                                           
@@ -3549,7 +3550,6 @@ All cycle   3      0.300E-01      0.100E+05      0.608E-02
                      0.00000           0.00000  0.00000  0.00000  0.00030  0.00000
                      0.00000           0.00000  0.00000  0.00000  0.01645  0.02775
                                        0.00000  0.00000  0.00000
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #PRINT 22                                                                                                                                                                                                                                                       
@@ -3558,7 +3558,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        2     Address    70438     Length     160     Created on      
+ Print list type    22     serial number        2     Address    70450     Length     160     Created on      
 
              16 parameter(s) in    1 block(s) - as follows:
 
@@ -3617,7 +3617,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       17     Address   134535     Length      52     Created on      
+ Print list type    24     serial number       17     Address   134547     Length      52     Created on      
 
 
  Record  101    LGRP    2  NGRP     16   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -5492,7 +5492,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        3     Address    70438     Length     160     Created on      
+ Print list type    22     serial number        3     Address    70450     Length     160     Created on      
 
              16 parameter(s) in    1 block(s) - as follows:
 
@@ -5551,7 +5551,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       26     Address   198099     Length      52     Created on      
+ Print list type    24     serial number       26     Address   198111     Length      52     Created on      
 
 
  Record  101    LGRP    2  NGRP     16   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -5857,8 +5857,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
   Disc file on unit   1 extended by     1 records 
 #LIST      5                                                                                                                                                                                                                                                    
 #LIST     12                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     2 records 
 #LIST 23                                                                                                                                                                                                                                                        
 #USE SHAPERING.REF                                                                                                                                                                                                                                              
 #SFLS                                                                                                                                                                                                                                                           
@@ -7974,7 +7973,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        4     Address    70438     Length     160     Created on      
+ Print list type    22     serial number        4     Address    70450     Length     160     Created on      
 
              16 parameter(s) in    1 block(s) - as follows:
 
@@ -8033,7 +8032,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       38     Address   261818     Length      52     Created on      
+ Print list type    24     serial number       38     Address   261830     Length      52     Created on      
 
 
  Record  101    LGRP    2  NGRP     16   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -8065,11 +8064,11 @@ Mean C-C su =   0.0000
 
 
 #FINI                                                                                                                                                                                                                                                           
- Physical reads       5946 Physical writes       9378 Cache hits     201331
- Cache hit distribution   162692   12194    6374    2641    1973    2381
- Cache hit distribution     1523     544     807    1284     964    1047
- Cache hit distribution      832     854     299     314     512     495
- Cache hit distribution      424     517     469     524     860     807
+ Physical reads       5282 Physical writes       9376 Cache hits     202506
+ Cache hit distribution   163640   12022    6428    2934    2929    1609
+ Cache hit distribution     1111    1000     839    1341    1190     886
+ Cache hit distribution      560     391     413     309     571     555
+ Cache hit distribution      574     444     516     656     806     782
 
 
           : Job ends ok       with     0 warnings and     0 errors
