@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.93  2011/05/13 11:16:51  djw
+C Calls to Kallow now return a key to the test which failed and a value to indicate if it was Max or Min. The argument of KALLOW must be a variable
+C
 C Revision 1.92  2011/03/15 09:00:09  djw
 C More work on LIST 9
 C Routine which use LISTs 5,9,10 all use the same common block, ICOM05, for loading from the disk and for
@@ -954,7 +957,7 @@ C
      4 'P(1)/FO, FO > P(1)' ,
      5 '1/(1 + [(FO - P(2))/P(1)]^2^)' ,
      6 '1/[P(1) + FO + P(2)*FO^2^ + . . + P(NP)*FO^NP^]' ,
-     7 '(Data with the key WEIGHT in list 6)' ,
+     7 '(Data with the key SQRTW in list 6)' ,
      8 '1/(Data with the key SIGMA(/FO/) in list 6)' ,
      9 '1.0 or 1./2F' ,
      + '1.0/[A[0]*T[0]''(X)+A[1]*T[1]''(X) ... +A[NP-1]*T[NP-1]''(X)]',

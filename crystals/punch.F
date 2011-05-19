@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.63  2011/05/13 16:03:34  djw
+C Fix the calls to kallow and their effect on the fcf listing
+C
 C Revision 1.62  2011/05/13 10:37:41  djw
 C Put the SCALE6 in the right place, include text about l and d flags, outout weight in exponential format
 C
@@ -1476,15 +1479,19 @@ C
 C
       IF ( STORE(M6+20) .LT. S6SIG) THEN
         IALW = 2                    !Rejected by sigma cutoff.
+		WT = 0.0
       ELSE IF (idjw.eq.-17) THEN
 c       Fails sin-theta/lambda test
         IF (iallow.LT.0) THEN
          IALW = 5                    !Rejected by low resolution
+  		 WT = 0.0
         else if (iallow.gt. 0) then
          ialw = 4                    ! rejected by high resolution
+		 WT = 0.0
         endif
       ELSE IF (idjw.LT.0) THEN
         IALW = 3                    !Rejected by something else.
+		WT = 0.0
       ELSE
         IALW = 1                    !Used.
       END IF
@@ -1501,7 +1508,7 @@ c       Fails sin-theta/lambda test
          WRITE(NCFPU1,1003)I, J, K, FO, FC, S,CALW(IALW)
         ENDIF
       END IF
-1003  FORMAT (3I4,3F12.2,1X,A1,E12.4E1)
+1003  FORMAT (3I4,3F12.2,1X,A1,E13.4E2)
       GOTO 1840
 1850  CONTINUE
       GOTO 9999
