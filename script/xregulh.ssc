@@ -1,13 +1,13 @@
-%SCRIPT XREGULH
-%% SET UP A REFINEMENT OF H ONLY WITH RESTRAINTS
- Regularising the H atoms
-% VARIABLE CHARACTER CTYPE
-% VARIABLE REAL SERIAL
-% VARIABLE INTEGER HFOUND
-%%
+%SCRIPT XREGULH                                                                 
+%% SET UP A REFINEMENT OF H ONLY WITH RESTRAINTS                                
+ Regularising the H atoms                                                       
+% VARIABLE CHARACTER CTYPE                                                      
+% VARIABLE REAL SERIAL RMSSHIFT
+% VARIABLE INTEGER HFOUND                                                       
+%%                                                                              
 %     COPY '#RELEASE SCPQ someh.12'                                             
 %     QUEUE REWIND                                                              
-%     EVALUATE HFOUND = 0
+%     EVALUATE HFOUND = 0                                                       
 %     COPY '#GENERALEDIT 5'                                                     
 %     COPY 'LOCATE RECORDTYPE=101'                                              
 %     COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                   
@@ -15,51 +15,65 @@
 %       ON EDITERROR TERMINATE                                                  
 %       COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'                                  
 %       COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'                                 
-%       IF ( CTYPE .EQ. 'H' )  THEN                      
-%         EVALUATE HFOUND = HFOUND + 1
+%       IF ( CTYPE .EQ. 'H' )  THEN                                             
+%         EVALUATE HFOUND = HFOUND + 1                                          
 %         CLEAR                                                                 
 %         INSERT 'CONT H('                                                      
 %         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL                   
-%         INSERT ',X,Y,Z,U[ISO])'                                                            
+%         INSERT ',X,Y,Z,U[ISO])'                                               
 %%         OUTPUT                                                               
 %         QUEUE SEND                                                            
-%       ELSE IF ( CTYPE .EQ. 'D' )  THEN                      
-%         EVALUATE HFOUND = HFOUND + 1
+%       ELSE IF ( CTYPE .EQ. 'D' )  THEN                                        
+%         EVALUATE HFOUND = HFOUND + 1                                          
 %         CLEAR                                                                 
 %         INSERT 'CONT D('                                                      
 %         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL                   
-%         INSERT ',X,Y,Z,U[ISO])'                                                            
+%         INSERT ',X,Y,Z,U[ISO])'                                               
 %%         OUTPUT                                                               
 %         QUEUE SEND                                                            
 %       END IF                                                                  
 %       COPY 'NEXT'                                                             
-%     END LOOP
+%     END LOOP                                                                  
 %     COPY 'END'                                                                
 %     COPY '#RELEASE SCPQ bfile.spq'                                            
-%     IF ( HFOUND .GT. 0 ) THEN                                                                  
-%      COPY '#LIST 12'
-%      COPY 'BLOCK'
-%      COPY '#USE someh.12'
-%      COPY 'END'
-%      COPY '#SUM L 12'
-%      COPY 'END'
-%%
-%      COPY '#RELEASE PUNCH h-restraints.pch'                                        
-%      COPY '#CLOSE SCPQ'                                                        
-%      COPY '#CLOSE SCPDATA'                                                     
-%      COPY '#OPEN SCPQ restdat.12'                                              
-%      COPY '#DISTANCES'                                                         
-%      COPY 'OUTPUT MON=OFF PUNCH=H-REST'                                        
-%      COPY 'SELECT SYMMETRY=NONE RANGE=L41'
-%      COPY 'PIVOT C N O'
-%      COPY 'END'                                                                
-%      COPY '#RELEASE PUNCH bfile.pch'                                           
-  Restraints saved in {&h-restraints.pch{&
-%      COPY '#LIST 16'
-%      COPY '#USE h-restraints.pch'
-%      COPY 'END'
-%      COPY '#SUM L 16'
-%      COPY 'END'
+%     IF ( HFOUND .GT. 0 ) THEN                                                 
+%      COPY '#LIST 12'                                                          
+%      COPY 'BLOCK'                                                             
+%      COPY '#USE someh.12'                                                     
+%      COPY 'END'                                                               
+%      COPY '#SUM L 12'                                                         
+%      COPY 'END'                                                               
+%%                                                                              
+%      COPY '#RELEASE PUNCH h-restraints.pch'                                   
+%      COPY '#CLOSE SCPQ'                                                       
+%      COPY '#CLOSE SCPDATA'                                                    
+%      COPY '#OPEN SCPQ restdat.12'                                             
+%      COPY '#DISTANCES'                                                        
+%      COPY 'OUTPUT MON=OFF PUNCH=H-REST'                                       
+%      COPY 'SELECT SYMMETRY=NONE RANGE=L41'                                    
+%      COPY 'PIVOT C N O'                                                       
+%      COPY 'END'                                                               
+%      COPY '#RELEASE PUNCH bfile.pch'                                          
+  Restraints saved in {&h-restraints.pch{&                                      
+%      COPY '#LIST 16'                                                          
+%      COPY '#USE h-restraints.pch'                                             
+%      COPY 'END'                                                               
+%      COPY '#SUM L 16'                                                         
+%      COPY 'END'                                                               
 %      COPY '#SCRIPT SIXCYCLE'
-%     END IF
-% END SCRIPT
+%      COPY '#GENERALEDIT 30'                                                     
+%      COPY 'LOCATE RECORDTYPE = 103'                                             
+%      COPY 'TRANSFER FROM OFFSET = 7 TO RMSSHIFT'                                   
+%      COPY 'END'                                                                 
+%      IF RMSSHIFT .GT. 0.20 THEN
+%        COPY '#SCRIPT SIXCYCLE'
+%        COPY '#GENERALEDIT 30'                                                     
+%        COPY 'LOCATE RECORDTYPE = 103'                                             
+%        COPY 'TRANSFER FROM OFFSET = 7 TO RMSSHIFT'                                   
+%        COPY 'END'
+%        IF RMSSHIFT .GT. 0.20 THEN
+%          COPY '#SCRIPT SIXCYCLE'
+%        END IF
+%      END IF
+%     END IF                                                                    
+% END SCRIPT                                                                    
