@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.176  2011/05/11 13:28:53  rich
+C During #TON output HKL and -H-K-L indices (after SysAb collection) in order to
+C allow omission of both observations from L28.
+C
 C Revision 1.175  2011/04/04 09:19:05  djw
 C Set the corrct type oh hydrogen treatment in the body of the cif based on the LIST 5 entries if set
 C
@@ -7249,7 +7253,9 @@ C----- RETURN THE SIGNED STRUCTURE AMPLITUDE AND THE CORRESPONDING SIGMA
 C      FROM A SIGNED STRUCTURE FACTOR
       CALL XSQRF (FSQ,FSIGN,FABS,SIGSQ,SIG)
       FOK1=FSQ*SCALE
-      SIG1=SIGSQ*SCALE
+c      SIG1=SIGSQ*SCALE
+      SIG1 = STORE(M6+4)
+	  IF ( SIG1 .GT. 0.0001 ) SIG1 = 1./SIG1
       FCK1=STORE(M6+5)*STORE(M6+5)
       FRIED1=STORE(M6+18)
 C 
@@ -7272,7 +7278,9 @@ C----- RETURN THE SIGNED STRUCTURE AMPLITUDE AND THE CORRESPONDING SIGMA
 C      FROM A SIGNED STRUCTURE FACTOR
       CALL XSQRF (FSQ,FSIGN,FABS,SIGSQ,SIG)
       FOK2=FSQ*SCALE
-      SIG2=SIGSQ*SCALE
+C      SIG2=SIGSQ*SCALE
+      SIG2 = STORE(M6+4)
+	  IF ( SIG2 .GT. 0.0001 ) SIG2 = 1./SIG2
       FCK2=STORE(M6+5)*STORE(M6+5)
       FRIED2=STORE(M6+18)
 C 
@@ -7616,6 +7624,7 @@ C Sort the sqrt(W)*(Fo2-Fc2) into ascending order.
             B=0.27061*A+2.30753
             C=A*(A*.04481+.99229)+1
             Z=A-B/C
+			
 C Unpack HKL
             D=FLOAT(NINT(STR11(I*2)/256.))
             MH=STR11(I*2)-D*256.
@@ -7623,6 +7632,16 @@ C Unpack HKL
             MK=D-ML*256.
             IF (I.LE.N6ACC/2) Z=-Z
 C 
+			IF ( I .EQ. CEILING(N6ACC*0.1) ) THEN
+              WRITE (CMON,'(A,F10.3)') 'Z at 10th centile: ', Z
+              CALL XPRVDU (NCVDU,1,0)
+			END IF
+			IF ( I .EQ. CEILING(N6ACC*0.9) ) THEN
+              WRITE (CMON,'(A,F10.3)') 'Z at 90th centile: ', Z
+              CALL XPRVDU (NCVDU,1,0)
+			END IF
+			   
+			
             SS=SS+1.
             SX=SX+Z
             SY=SY+STR11(I*2-1)

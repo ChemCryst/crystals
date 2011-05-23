@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.94  2011/05/19 11:04:43  rich
+C Correct description of L4 scheme 5 and 6 in XSUM04
+C Allow larger (2-digit) exponents on output weights in FCF.
+C Output zero for weight on omitted reflections.
+C
 C Revision 1.93  2011/05/13 11:16:51  djw
 C Calls to Kallow now return a key to the test which failed and a value to indicate if it was Max or Min. The argument of KALLOW must be a variable
 C
@@ -1947,10 +1952,10 @@ C--SETUP A GRAPH HERE
         WRITE(CMON,'(A,/,A,/,A)')
      1  '^^PL PLOTDATA _NORMPP SCATTER ATTACH _VNORMPP',
      1  '^^PL XAXIS TITLE ''Expected (Z-score)'' NSERIES=1 LENGTH=2000',
-     1  '^^PL YAXIS TITLE ''w^.5(Fo-Fc)'' SERIES 1 TYPE SCATTER'
+     1  '^^PL YAXIS TITLE ''w(Fo-Fc)'' SERIES 1 TYPE SCATTER'
         IF (IFSQ .GE. 0) THEN   ! FSQ REFINENENT
-          WRITE(CMON(2),'(A)')
-     1      '^^PL YAXIS TITLE ''w^.5(Fo^2-Fc^2)'' NSERIES=1 LENGTH=2000'
+          WRITE(CMON(3),'(A)')
+     1      '^^PL YAXIS TITLE ''w^.5(Fo^2-Fc^2)'' SERIES 1 TYPE SCATTER'
         END IF
         CALL XPRVDU(NCVDU, 3,0)
       END IF
@@ -2026,7 +2031,7 @@ cjun2010  FO = STORE(M6+itwin)
         ENDIF
 
 
-        WT = STORE(M6+4)
+        WT = STORE(M6+4) 
         TOP = TOP + ABS (ABS(FO) - FC)
         BOTTOM = BOTTOM + ABS(FO)
         SIGTOP = SIGTOP + STORE(M6+12)
