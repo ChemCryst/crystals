@@ -446,160 +446,16 @@ C(FF)
       IF (FF) THEN
 cdjw Insert space if character immediately follows a number
 c    beware if the element type is a charged species like Om2
-        call xcras (cform,lenfil)
-        line(1:lenfil) = cform(1:lenfil)
-        cform = ' '
-        lnum = .false.
-        lchar = .false.
-        k = 1
-        do j = 1,lenfil
-          i = index(numer,line(j:j))
-          if (i .gt. 0) then
-c             found a number
-              if (lnum .eq. .false.) then
-                cform(k:k) =' '
-                k = k+1
-                lnum = .true.
-                lchar = .false.
-              endif
-          else
-c             must be a character
-              if (lchar .eq. .false.) then
-                cform(k:k) =' '
-                k = k+1
-                lchar = .true.
-                lnum = .false.
-              endif
-          endif
-          cform(k:k) = line(j:j)
-          k = k + 1
-        enddo
-        call xcrems (cform,line,lenfil)
-      write(6,*) 'Formula', line(1:lenfil),'.'
-cdjw
-
-         i = 80
-         cform = ' '
-         lnum = .false.
-         do 1234 j = lenfil,1,-1
-            k = index(numer,line(j:j))
-            if (k .gt. 0) then
-             cform(i:i) = line(j:j)
-             i = i-1
-             lnum = .true.
-            else
-             if (.not. lnum) then
-               cform(i:i) = line(j:j)
-               i = i-1
-             else          
-               i = i-1
-               cform(i:i) =line(j:j)
-               i = i-1
-             endif
-             lnum = .false.
-            endif
-1234  continue
-         CALL XCREMS (CFORM,c80,LENFIL)
-         k = index(c80(2:lenfil), ' ')
-         i = index(c80(k+2:lenfil), ' ')
-         do 749 j = 2,i+k+1
-         c80(j-1:j-1) = c80(j:j)
-749      continue
-         CALL XCREMS (C80,LINE,LENFIL)
-         zm = 1.
-         zp = 0.
-750      continue
-         LLONG=1
-         ATSUM=0.
-         IST=1
-         catom = ' '
-         res = 0.0
-800      continue
-         if (ist.ge.lenfil) go to 1000
-         iend=index(line(ist:lenfil),' ')
-         if (iend.le.0) then
-            iend=lenfil
-         else
-            iend=iend+ist-1
-         end if
-         carg = line(ist:iend)
-         ist = iend + 1
-c----- check there is an argument value
-         if (carg .eq. ' ') then
-           goto 1000
-         endif
-c----- remove all spaces
-         call xcras (carg, larg)
-c---- check if starts with a number
-         k=index(numer,carg(1:1))
-         if (k .le. 0) then
-C-----  no numbers found -  must be name
-           if (catom .ne. ' ') then
-810          format(1x,a4,1x,f10.2)
-             write(c32 ,810) catom, res      
-             call xcrems (c32, ctemp, ltemp)
-             clong(llong:) = ctemp(1:ltemp)
-             llong = llong + ltemp
-             if ((catom .ne.'h   ').and.(catom.ne.'H   ')) 
-     1       atsum=atsum+res
-           endif
-           catom = carg(1:4)
-           res = 1.*zm
-         else
-c----- start with a number
-          itemp = kccnum(carg, ires, itype)
-          if (itype .eq. 1) res = float(ires)
-          res = res * zm
-c----- dump if no atom name stored
-          if (catom .eq. ' ') goto 800
-             write(c32 ,810) catom, res      
-             call xcrems (c32, ctemp, ltemp)
-             clong(llong:) = ctemp(1:ltemp)
-             llong = llong + ltemp
-          if ((catom .ne.'h   ').and.(catom.ne.'H   ')) 
-     1    atsum=atsum+res
-          catom = ' '
-          res = 0.0
-         endif
-         go to 800
-1000     CONTINUE
-           if (catom .ne. ' ') then
-             write(c32 ,810) catom, res      
-             call xcrems (c32, ctemp, ltemp)
-             clong(llong:) = ctemp(1:ltemp)
-             llong = llong + ltemp
-             if ((catom .ne.'h   ').and.(catom.ne.'H   ')) 
-     1       atsum=atsum+res
-           endif
-C 
-         write(6,'(a,a)') 'Formula ',clong(1:llong-1)
-         if (celvol .gt. .01) then
-          zn=(CELVOL*zm )/(ATSUM*19.)
-         else
-          zn = 1.0
-         endif
-         WRITE (6,'(a,i4,a,f8.2,a)') 
-     1 '  Z estimated from cell volume and composition is' 
-     2  ,nint(zn),' (actually ',zn,')'
-         if(zp .lt. .01) then
-          WRITE (6,'(a,i4,a)') ' Please give Z [',
-     1    nint(zn),']'
-          read (5,'(A)') catom
-          if (len_trim(catom).ne.0) THEN
-               read (catom,*,err=750) zp
-               write(6,'(a,f6.2)') 'Using Z = ', zp
-          else
-               zp = float(nint(zn))
-               write(6,'(a,f6.2)') 'Using Z = ', zp
-          endif
-          if (abs(zm-zp) .gt. 0.1) then
-            zm=zp
-            goto 750
-          endif
-         endif
+c
+        call fixform(line,cform,lenfil,atsum,celvol,zm,zp)
+c
+c
+c
+         call xctrim(cform,lenfil)
+         write(6,'(a,a)') 'Formula ',cform(1:lenfil)
 c
          WRITE (NOUTF,'(a)') '#COMPOSITION'
-         WRITE (NOUTF,'(a,a)') 'content ',CLONG(1:LLONG-1)
+         WRITE (NOUTF,'(a,a)') 'content ',cform(1:lenfil)
          WRITE (NOUTF,'(a)') 'SCATTERING CRYSDIR:script/scatt.dat'
          WRITE (NOUTF,'(a)') 'PROPERTIES CRYSDIR:script/propwin.dat'
          WRITE (NOUTF,'(a)') 'END'
@@ -706,6 +562,291 @@ c      WRITE (CFILE,'(I8)') I
       IGDAT=I
       RETURN
       END
+c
+c
+      SUBROUTINE FIXFORM (LINE,CFORM,LENFIL, sum, celvol, zm,zp)
+      CHARACTER*(*) LINE,CFORM
+c     Separate the components of the formula in LINE into CFORM
+      LOGICAL LNUMER, LCHAR, LSPACE, FF, lhatom
+      CHARACTER*4 CATOM
+      CHARACTER*12 CARG
+      CHARACTER*11 NUMER
+      CHARACTER*12 CBUFF1
+      CHARACTER*20 CBUFF2
+      CHARACTER*14 CTEMP
+      CHARACTER*26 alpha, ualpha
+      CHARACTER*32 C32
+      CHARACTER*160 CLONG
+      DATA alpha    /'abcdefghijklmnopqrstuvwxyz'/
+      DATA ualpha   /'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
+      DATA numer/'1234567890.'/
+      DATA LATOM/4/
+      DATA LARG/12/
+
+c
+c      Rules:
+c      Elements and the number of atoms should be separated from each 
+c      other by at least one space.
+c      Elements named with a single letter can be upper or lower case
+c      Element followd immediately by a number will be separated by a
+c      space
+c      Number followed immediately by an element will be separated by 
+c      a space
+c      Two adjacent letters in the same case (upper or lower) will be
+c      sepatated by space 1 space.
+c      Two adjacent letters where the first is upper and the second 
+c      lower case will be treated as a single element type
+c      Two numbers separated by a space will not be interpreted.
+c
+c       line    c 1 h 2 n 3 o 4                                                                 
+c      cform    c 1 h 2 n 3 o 4                                                                 
+c
+c       line    c1 h2 n3 o4                                                                     
+c      cform    c 1 h 2 n 3 o 4                                                                 
+c
+c       line    c1h 2n 3 o4                                                                     
+c      cform    c 1 h 2 n 3 o 4                                                                 
+c
+c       line    c1h 2n 3 o4 Sn 5                                                                
+c      cform    c 1 h 2 n 3 o 4 Sn 5                                                            
+c
+c       line    c1h 2n 3 o4 SN 5                                                                
+c      cform    c 1 h 2 n 3 o 4 S 1 N 5                                                         
+c
+      ff = .true.
+      IF (FF) THEN
+c     beware if the element type is a charged species like Om2
+      lspace = .false.
+      lchar = .false.
+      lnumer = .false.
+      call xcrems (cform,line,lenfil)
+      cform = ' '
+      k = 1
+      do j = 1,lenfil
+        i = index(numer,line(j:j))
+c
+        if (i .gt. 0) then
+C       FOUND A NUMBER 
+c
+          if (lchar) then
+c           number following character - insert space
+            cform(k:k) = ' '
+            cform(k+1:k+1) = line(j:j)
+            k = k + 2
+            lspace = .false.
+            lchar = .false.
+            lnumer = .true.
+          else if (lspace) then
+c           number following space - just output it
+            cform(k:k) = line(j:j)
+            k = k + 1
+            lspace = .false.
+            lchar = .false.
+            lnumer = .true.
+          else
+c           number following space - just output it
+            cform(k:k) = line(j:j)
+            k = k + 1
+          endif
+c
+        else if (line(j:j) .eq. ' ') then
+C         JUST A SPACE - OUTPUT IT
+c
+          cform(k:k) = ' '
+          k = k + 1
+          lspace = .true.
+c
+        else
+C          NOT A NUMBER OR A SPACE - MUST BE CHARACTER
+c
+c
+           if ( k .eq. 1) then
+c            first character on line - just output
+             cform(k:k) = line(j:j)
+             k = k + 1
+             lspace = .false.
+             lchar = .true.
+             lnumer = .false.
+           else if (lspace) then
+c            character following space 
+c            if last item was also a character, output a 1 first
+             if (lchar) then
+                  cform(k:k+1) = '1 '
+                  k = k + 2
+                  lchar = .false.
+                  lnum = .true.
+             endif
+c            character following space - just output it
+             cform(k:k) = line(j:j)
+             k = k + 1
+             lspace = .false.
+             lchar = .true.
+             lnumer = .false.
+           else if (lnumer) then
+c            character following number - insert space
+             cform(k:k) = ' '
+             cform(k+1:k+1) = line(j:j)
+             k = k + 2
+             lspace = .false.
+             lchar = .true.
+             lnumer = .false.
+           else
+c            must be following another character           
+             if (k .gt. 1) then
+c              check last and current characters are capitals
+               l = index(ualpha,cform(k-1:k-1))
+               m = index(ualpha,line(j:j))
+               if ((l .gt. 0) .and. (m .le. 0)) then
+c                 lowercase following capital - just output it
+                  cform(k:k) = line(j:j)
+                  k = k + 1
+                  lspace = .false.
+                  lchar = .true.
+                  lnumer = .false.
+               else 
+c                 both same case - insert a sp 1 sp between them
+                  cform(k:k+2) = ' 1 '
+                  cform(k+3:k+3) = line(j:j)
+                  k = k + 4
+                  lspace = .false.
+                  lchar = .true.
+                  lnumer = .false.
+               endif
+             endif        
+           endif      
+        endif              
+      enddo
+      endif
+      write(6,'(a,4x,a)') 'Input:  ', cform
+c
+c start adding up atoms.
+c assume the formula consists of labels and numbers separated by spaces
+c------------------------------------------------------------
+c
+      call xcrems (cform,line,lenfil)
+      k=1
+      res = 0.
+      atsum = 0.
+      sum = 0.
+      do while (k.le. lenfil)
+        i = index(line(k:lenfil),' ')
+        i = k + i-2
+        i = min(i,k+latom-1)
+        catom = line(k:i)
+        if ((line(k:i) .eq. 'H') .or. (line(k:i) .eq. 'h')) then
+              lhatom = .true.
+        else
+              lhatom = .false.
+        endif
+        if ((line(k:i) .eq. 'D') .or. (line(k:i) .eq. 'd')) 
+     1        lhatom = .true.
+        k = i+2
+        i = index(line(k:lenfil),' ')
+        i = k + i-2
+        i = min(i,k+larg-1)
+        carg = line(k:i)
+        k = i + 2
+c     convert 'number' to real
+        l = index(carg,'.')
+        if (l.le.0) then
+c----- try as integer
+          itype = 1
+          cbuff1 = carg
+          read ( cbuff1 , '(bn,i12)' , err = 1200 ) ivalue
+          xvalue = float(ivalue)
+        else
+c----- try as real
+          itype = 2
+          cbuff2 = carg
+          read ( cbuff2 , '(bn,f20.0)', err = 1200  ) xvalue
+        endif   
+        res = xvalue
+        if (.not. lhatom)  atsum = atsum + res
+        sum = sum + res
+1200    continue
+      enddo
+      write(6,'(a,f10.3)') 'No of non-H atoms =', atsum
+c------------------------------------------------------------      
+c
+c  now find the multiplicity
+c
+         if (celvol .gt. .01) then
+          zn=(CELVOL)/(ATSUM*19.)
+         else
+          zn = 1.0
+         endif
+         WRITE (6,'(a,i4,a,f8.2,a)') 
+     1 'Z estimated from cell volume and composition is' 
+     2  ,nint(zn),' (actually ',zn,')'
+         WRITE(6,'(a,f8.2)') 'Z from cif is ', zp
+c
+          WRITE (6,'(a,i4,a)') 'Please give Z [',
+     1    nint(zn),']'
+          read (5,'(A)') ctemp
+          if (len_trim(ctemp).ne.0) THEN
+               read (ctemp,*,err=750) zp
+               write(6,'(a,f6.2)') 'Using Z = ', zp
+          else
+               zp = float(nint(zn))
+               write(6,'(a,f6.2)') 'Using Z = ', zp
+          endif
+750    continue
+       zm=zp
+c
+c----     scale the contents
+c
+      call xcrems (cform,line,lenfil)
+       k=1
+       kl = 1
+       clong = ' '
+       do while (k.le. lenfil)
+        i = index(line(k:lenfil),' ')
+        i = k + i-2
+        i = min(i,k+latom-1)
+        catom = line(k:i)
+        k = i + 2
+        i = index(line(k:lenfil),' ')
+        i = k + i-2
+        i = min(i,k+larg-1)
+        carg = line(k:i)
+        k = i + 2
+c     convert 'number' to real
+        l = index(carg,'.')
+        if (l.le.0) then
+c----- try as integer
+          itype = 1
+          cbuff1 = carg
+          read ( cbuff1 , '(bn,i12)' , err = 1300 ) ivalue
+          xvalue = float(ivalue)
+        else
+c----- try as real
+          itype = 2
+          cbuff2 = carg
+          read ( cbuff2 , '(bn,f20.0)', err = 1300  ) xvalue
+        endif   
+        res = xvalue
+        clong(kl:kl+latom-1) = catom
+        kl = kl + latom
+        clong(kl:kl)=' '
+        kl = kl + 1
+        write(clong(kl:kl+larg-1), '(f12.2)') xvalue*zm
+        kl = kl + larg 
+        clong(kl:kl)=' '
+        kl = kl + 1
+1300    continue
+       enddo
+       call xcrems (clong,line,lenfil)
+c
+c----- remove trailing '.00 '
+       do j=1,lenfil
+          if (line(j:j+3) .eq.'.00 ') line(j:j+3) = '    '
+       enddo
+       call xcrems(line,cform,lenfil)
+       write(6,'(a,4x,a)') 'Formula:', cform
+c
+2000   continue
+      return
+      end
 C=======================================================================
 #include "xgroup.for"
 #include "charact.for"
