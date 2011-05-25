@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.76  2011/05/04 11:27:25  rich
+C Comment out debugging.
+C
 C Revision 1.75  2011/03/21 13:57:21  rich
 C Update files to work with gfortran compiler.
 C
@@ -1478,7 +1481,7 @@ c             CALL XPRVDU(NCVDU, 1,0)
               WRITE( CMON(2),'(A)')'^^WI'''
               WRITE( CMON(3),'(A)')'^^WI ]'
               WRITE( CMON(4),'(A)')'^^CR'
-231           FORMAT (A4,F7.3,'-')
+231           FORMAT (A4,F9.3,'-')
               K = 6
               DO M29=L29,L29+(N29-1)*MD29,MD29
                 WRITE (CMON(2)(K:),231) STORE(M29), STORE(M29+4)
@@ -1486,6 +1489,9 @@ c             CALL XPRVDU(NCVDU, 1,0)
                 DO L = K-1,K-6,-1              !Remove trailing zeroes.
                   IF (CMON(2)(L:L).EQ.'0') THEN
                     CMON(2)(L:L)=' '
+                  ELSE IF (CMON(2)(L:L).EQ.'.') THEN
+                    CMON(2)(L:L)=' '
+                    EXIT
                   ELSE
                      EXIT
                   END IF
