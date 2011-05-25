@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2011/05/17 16:00:16  djw
+C Enable long lines, up to 512 characters
+C
       SUBROUTINE DATAIN
 c #include "ciftbx.sys"
 #include "ciftbx.cmn"
@@ -432,7 +435,7 @@ c----------------------------------------------------------------
      1 ' with spaces between the components',
      2 ' e.g. P n a 21'
         write(6,'(a)') 'For monoclinic systems, input the full symbol'
-        write(6,'(a,a,a)')' Suggested SG is [',cspace(1:lspace),']'
+        write(6,'(a,a,a)')' Input file contains [',cspace(1:lspace),']'
         read (5,'(a)') ctemp
         if (ctemp(1:3) .ne. '   ') then
          callxctrim(ctemp,ltemp)
