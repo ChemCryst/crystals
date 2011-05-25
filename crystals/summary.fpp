@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.95  2011/05/23 16:07:58  rich
+C For abs config normal probability plot, use weight instead of sigma.
+C Fix axis on normal normal probability plot.
+C
 C Revision 1.94  2011/05/19 11:04:43  rich
 C Correct description of L4 scheme 5 and 6 in XSUM04
 C Allow larger (2-digit) exponents on output weights in FCF.
@@ -2813,7 +2817,7 @@ C
         WRITE ( CMON , 1015 )
         CALL XPRVDU(NCVDU, 2,0)
 1015    FORMAT ( ' Type              Radius              ' ,
-     2 '  Number     Mu    Atomic Colour' /
+     2 '   Number     Mu    Atomic Colour' /
      3         1X , '   Covalent  Van der Waals     Ionic  ' ,
      4 '                   weight' )
 C
@@ -2824,7 +2828,7 @@ C
           WRITE ( CMON , 1105 ) ( STORE(J) , J = I , I + MD29 - 1 )
           CALL XPRVDU(NCVDU, 1,0)
 1105      FORMAT ( 1X , A4 ,  F7.4 , 2X , F13.4 , 2X , F8.4 , 2X ,
-     2 F8.3 , F8.2 ,  F9.3,2X,A4 )
+     2 F9.3 , F8.2 ,  F9.3,2X,A4 )
 2000    CONTINUE
       ELSE
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2005 )
