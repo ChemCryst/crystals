@@ -7,14 +7,16 @@
 ^^WI  {
 ^^WI   @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
 ^^WI   {
-^^WI    @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
+^^WI    @ 1,3 GRID EXP2 NROWS=4 NCOLS=1
 ^^WI    {
 ^^WI     @ 1,1 STATIC XFW1
-^^WI "sqrt(w)*(Fo**2-Fc**2) is plotted against the 'normal score' - the "
+^^WI "The weighted residual (delta/sigma) is plotted against the 'normal"
 ^^WI     @ 2,1 STATIC XFW2
-^^WI 'expected distribution of errors based on the normal pdf. It should be'
+^^WI "score' the expected distribution based on the normal pdf. It should"
 ^^WI     @ 3,1 STATIC XFW3
-^^WI 'linear and pass through the origin if the weights are good.'
+^^WI 'be linear and pass through the origin if the weights are good.'
+^^WI     @ 4,1 STATIC XFW4
+^^WI 'Note that sigma is estimated using the observation weight^(-0.5).'
 ^^WI    }
 ^^WI    @ 1,1 ICON IM INFO
 ^^WI   }
@@ -24,7 +26,7 @@
 ^^WI     ENDDEFINEMENU
 ^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=1
 ^^WI   {
-^^WI    @ 1,1 BUTTON NPP_BOK 'Close' DEFAULT
+^^WI    @ 1,1 BUTTON NPP_BOK 'Close' DEFAULT COMMIT CANCEL
 ^^WI   }
 ^^WI  }
 ^^WI  @ 2,1 PROGRESS _FOFCPR 'Please wait'
