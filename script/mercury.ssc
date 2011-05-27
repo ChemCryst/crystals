@@ -2,14 +2,17 @@
 %% JustRunIt is set TRUE if publish.cif already exists.                         
 % VARIABLE LOGICAL JUSTRUNIT                                                    
 %%                                                                              
-% VARIABLE CHARACTER FMERC                                                      
+% VARIABLE CHARACTER FMERC
 %                                                                               
 %%                                                                              
 %% Check registry for location of Mercury 1.2.1, 1.2, then manual set           
 %%                                                                              
-^^CO GETREG "Software\CCDC\Mercury\1.2.1\" "InstallDir"                         
-% GET SILENT NOSTORE TEXT 'Latest mogul?' ' '                                   
-% EVALUATE FMERC = CVALUE // 'mercury.exe'                                      
+^^CO GETREG "Software\CCDC\" "MercuryLatestVersion"
+% GET SILENT NOSTORE TEXT 'Latest mercury?' '1.2.1'
+% TRANSFER '^^CO GETREG "Software\CCDC\Mercury\' // CVALUE // -
+ '\" "InstallDir"' TO DISPLAY
+% GET SILENT NOSTORE TEXT 'Latest mercury location?' ' '                                   
+% EVALUATE FMERC = CVALUE // '\mercury.exe'                                      
 % TRANSFER FMERC TO DISPLAY                                                     
 %%                                                                              
 % IF ( .NOT. FILEEXISTS FMERC ) THEN                                            
@@ -130,7 +133,7 @@
 %    COPY 'END'                                                                 
 %   END IF                                                                      
 %%                                                                              
-%   COPY '#SCRIPT CHECK3'
+%   COPY '#SCRIPT CHECK3'                                                       
 %%                                                                              
 %% CIF listing of all data                                                      
 %%                                                                              
