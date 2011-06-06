@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.34  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.33  2010/06/17 15:30:21  djw
 C remove writes to NCAWU
 C
@@ -1069,6 +1072,18 @@ C--MOVE THE DATA FROM THE INPUT BUFFER TO THE CORE BUFFER
             L=L+1
 4150     CONTINUE
 C----- CHECK INDICES
+       if 
+     1  ((abs(store(m6)).gt.255.).or.
+     2  (abs(store(m6+1)).gt.255.).or.
+     3  (abs(store(m6+2)).gt.255.))
+     4  then
+            write(cmon,'(A,4i10)') 'Bad index near reflection ',n6w,
+     1      nint(store(m6)),nint(store(m6+1)),nint(store(m6+2))
+            call xprvdu (ncvdu,1,0)
+            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            n6dead = n6dead + 1
+            goto 4850
+        endif
          IF ((ABS(STORE(M6))+ABS(STORE(M6+1))+ABS(STORE(M6+2))).LE.ZERO)
      1     GO TO 4850
 Cnov2000 now apply a matrix
