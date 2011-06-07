@@ -686,6 +686,8 @@ Space group symbol is   P    1
 
 
   Disc file on unit   1 extended by     1 records 
+
+Bad index near reflection        278       512         0         0                                                                                                                                                                                              
  Error during reading reflections
  Some reflectionsmay be lost
  They should be terminated with an h value of -512
@@ -693,9 +695,10 @@ Space group symbol is   P    1
 
 
 
-     279 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
+     278 reflections accepted           1 reflections rejected                                                                                                                                                                                                  
   Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by    18 records 
+  Disc file on unit   1 extended by    17 records 
+  Disc file on unit   1 extended by     1 records 
 #PRINT 6                                                                                                                                                                                                                                                        
 #LIST 28                                                                                                                                                                                                                                                        
 
@@ -703,15 +706,15 @@ Space group symbol is   P    1
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       22     Address    12169     Length    9506     Created on      
+ Print list type     6     serial number       22     Address    12169     Length    9473     Created on      
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
-  H               -0.127000E+03   0.512000E+03   0.455914E+01   0.376109E+02
-  K               -0.127000E+03   0.127000E+03   0.272401E+01   0.217944E+02
-  L               -0.127000E+03   0.127000E+03   0.193548E+01   0.216502E+02
-  /FO/             0.000000E+00   0.763760E+03   0.144229E+03   0.184681E+03
+  H               -0.127000E+03   0.127000E+03   0.273381E+01   0.218336E+02
+  K               -0.127000E+03   0.127000E+03   0.273381E+01   0.218336E+02
+  L               -0.127000E+03   0.127000E+03   0.194245E+01   0.216891E+02
+  /FO/             0.000000E+00   0.763760E+03   0.144747E+03   0.185013E+03
   SQRTW           No details available
-  /FC/             0.000000E+00   0.775900E+02   0.143261E+02   0.185789E+02
+  /FC/             0.000000E+00   0.775900E+02   0.143776E+02   0.186123E+02
   PHASE           No details available
   A-PART          No details available
   B-PART          No details available
@@ -720,9 +723,9 @@ Space group symbol is   P    1
   ELEMENTS        No details available
   SIGMA(/FO/)     No details available
   BATCH            0.100000E+01   0.100000E+01   0.100000E+01   0.100000E+01
-  INDICES         -0.835571E+07   0.835571E+07   0.127546E+06   0.141894E+07
+  INDICES         -0.835571E+07   0.835571E+07   0.128003E+06   0.142149E+07
   BATCH/PHASE      0.300000E+02   0.300000E+02   0.300000E+02   0.300000E+02
-  SINTH/L**2       0.250000E+00   0.655360E+05   0.589577E+03   0.442607E+04
+  SINTH/L**2       0.250000E+00   0.120968E+05   0.355957E+03   0.205209E+04
   FO/FC           No details available
   JCODE           No details available
   SERIAL          No details available
@@ -868,7 +871,6 @@ Space group symbol is   P    1
     -127 127-127   106.0     0.0     0.0
     -127-127 127   107.0     0.0     0.0
     -127-127-127   108.0     0.0     0.0
-       0   2   0     0.0     0.0     0.0
 
 
 
@@ -879,7 +881,7 @@ Space group symbol is   P    1
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    28     serial number        2     Address    21675     Length      95     Created on      
+ Print list type    28     serial number        2     Address    21642     Length      95     Created on      
 
 
  Record  105    LGRP    6  NGRP      2   THE PARAMETERS DEFINING ACCEPTABLE INDEX CONDITIONS                             
@@ -941,15 +943,15 @@ Space group symbol is   P    1
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       22     Address    12169     Length    9506     Created on      
+ Print list type     6     serial number       22     Address    12169     Length    9473     Created on      
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
-  H               -0.127000E+03   0.512000E+03   0.455914E+01   0.376109E+02
-  K               -0.127000E+03   0.127000E+03   0.272401E+01   0.217944E+02
-  L               -0.127000E+03   0.127000E+03   0.193548E+01   0.216502E+02
-  /FO/             0.000000E+00   0.763760E+03   0.144229E+03   0.184681E+03
+  H               -0.127000E+03   0.127000E+03   0.273381E+01   0.218336E+02
+  K               -0.127000E+03   0.127000E+03   0.273381E+01   0.218336E+02
+  L               -0.127000E+03   0.127000E+03   0.194245E+01   0.216891E+02
+  /FO/             0.000000E+00   0.763760E+03   0.144747E+03   0.185013E+03
   SQRTW           No details available
-  /FC/             0.000000E+00   0.775900E+02   0.143261E+02   0.185789E+02
+  /FC/             0.000000E+00   0.775900E+02   0.143776E+02   0.186123E+02
   PHASE           No details available
   A-PART          No details available
   B-PART          No details available
@@ -958,9 +960,9 @@ Space group symbol is   P    1
   ELEMENTS        No details available
   SIGMA(/FO/)     No details available
   BATCH            0.100000E+01   0.100000E+01   0.100000E+01   0.100000E+01
-  INDICES         -0.835571E+07   0.835571E+07   0.127546E+06   0.141894E+07
+  INDICES         -0.835571E+07   0.835571E+07   0.128003E+06   0.142149E+07
   BATCH/PHASE      0.300000E+02   0.300000E+02   0.300000E+02   0.300000E+02
-  SINTH/L**2       0.250000E+00   0.655360E+05   0.589577E+03   0.442607E+04
+  SINTH/L**2       0.250000E+00   0.120968E+05   0.355957E+03   0.205209E+04
   FO/FC           No details available
   JCODE           No details available
   SERIAL          No details available
@@ -1073,7 +1075,6 @@ Space group symbol is   P    1
 
      270 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
   Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #PRINT 6                                                                                                                                                                                                                                                        
 #LIST 6                                                                                                                                                                                                                                                         
 
@@ -1081,7 +1082,7 @@ Space group symbol is   P    1
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       26     Address    22297     Length     771     Created on      
+ Print list type     6     serial number       26     Address    22264     Length     771     Created on      
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H                0.000000E+00   0.900000E+01   0.281481E+01   0.359629E+01
@@ -1241,6 +1242,7 @@ Space group symbol is   P    1
 
 
 
+  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
 
 
@@ -1255,7 +1257,7 @@ Space group symbol is   P    1
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       30     Address    23542     Length    1317     Created on      
+ Print list type     6     serial number       30     Address    23509     Length    1317     Created on      
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H                0.000000E+00   0.900000E+01   0.281481E+01   0.359629E+01
@@ -1432,7 +1434,7 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       34     Address    25507     Length    9234     Created on      
+ Print list type     6     serial number       34     Address    25474     Length    9234     Created on      
 
 
  Record  105    LGRP   33  NGRP      1   POINTERS RELATING DATA IN THE DISK BUFFER TO THAT IN THE CORE BUFFER            
@@ -2859,7 +2861,6 @@ Upating List 13 for twinned data
 
 
 
-  Disc file on unit   1 extended by     1 records 
 #PRINT 28                                                                                                                                                                                                                                                       
 #LIST 28                                                                                                                                                                                                                                                        
 
@@ -2867,7 +2868,7 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    28     serial number        4     Address    34741     Length      89     Created on      
+ Print list type    28     serial number        4     Address    34708     Length      89     Created on      
 
 
  Record  105    LGRP    6  NGRP      2   THE PARAMETERS DEFINING ACCEPTABLE INDEX CONDITIONS                             
@@ -2922,6 +2923,7 @@ Upating List 13 for twinned data
 
 
 
+  Disc file on unit   1 extended by     1 records 
 #PRINT 6                                                                                                                                                                                                                                                        
 #LIST 6                                                                                                                                                                                                                                                         
 
@@ -2929,7 +2931,7 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       34     Address    25507     Length    9234     Created on      
+ Print list type     6     serial number       34     Address    25474     Length    9234     Created on      
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H                0.000000E+00   0.900000E+01   0.281481E+01   0.359629E+01
@@ -3099,8 +3101,8 @@ Upating List 13 for twinned data
   Disc file on unit   1 extended by     1 records 
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 2                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #LIST 27                                                                                                                                                                                                                                                        
+  Disc file on unit   1 extended by     1 records 
 #PRINT 27                                                                                                                                                                                                                                                       
 #LIST 28                                                                                                                                                                                                                                                        
 
@@ -3108,7 +3110,7 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    27     serial number        1     Address    36646     Length      72     Created on      
+ Print list type    27     serial number        1     Address    36613     Length      72     Created on      
 
 
  Record  101    LGRP    4  NGRP     16   THE SCALE FACTORS DEDUCED FROM THE HILGER WATTS 4-CIRCLE PROGRAM                
@@ -3152,7 +3154,7 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    13     serial number        5     Address    36718     Length      80     Created on      
+ Print list type    13     serial number        5     Address    36685     Length      80     Created on      
 
 
  Record  102    LGRP    3  NGRP      1   DATA PERTAINING TO THE METHOD OF DATA COLLECTION FOR THE PRESENT LIST 6         
@@ -3216,7 +3218,7 @@ No reflections found
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       40     Address    37049     Length     251     Created on      
+ Print list type     6     serial number       40     Address    37016     Length     251     Created on      
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H               No details available
@@ -3297,7 +3299,7 @@ No reflections found
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       48     Address    38806     Length     251     Created on      
+ Print list type     6     serial number       48     Address    38773     Length     251     Created on      
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H               No details available
@@ -3356,7 +3358,7 @@ No reflections found
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    13     serial number        6     Address    40485     Length      48     Created on      
+ Print list type    13     serial number        6     Address    40452     Length      48     Created on      
 
 
  Record  102    LGRP    3  NGRP      1   DATA PERTAINING TO THE METHOD OF DATA COLLECTION FOR THE PRESENT LIST 6         
@@ -3402,7 +3404,7 @@ No reflections found
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       56     Address    41131     Length     596     Created on      
+ Print list type     6     serial number       56     Address    41098     Length     596     Created on      
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H                0.000000E+00   0.300000E+01   0.188889E+01   0.218581E+01
@@ -3488,7 +3490,7 @@ No reflections found
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       64     Address    46572     Length    3335     Created on      
+ Print list type     6     serial number       64     Address    46539     Length    3335     Created on      
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H                0.000000E+00   0.100000E+01   0.239130E+00   0.489010E+00
@@ -3615,8 +3617,8 @@ No reflections found
   Disc file on unit   1 extended by     2 records 
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 2                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #LIST      5                                                                                                                                                                                                                                                    
+  Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
 Bonds: Update required - There is no list 41
   Disc file on unit   1 extended by     1 records 
@@ -3627,7 +3629,7 @@ Bonds: Update required - There is no list 41
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     5     serial number        1     Address    51228     Length     677     Created on      
+ Print list type     5     serial number        1     Address    51195     Length     677     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -3924,7 +3926,7 @@ Bonds: Update required - List5 length change
  TEST THE LIST MODIFICATION ROUTINES                                                  Date              Time          
 
 
- Print list type     5     serial number        2     Address    52589     Length     749     Created on      
+ Print list type     5     serial number        2     Address    52556     Length     749     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -4105,7 +4107,7 @@ Bonds: Update required - List5 length change
  TEST THE LIST MODIFICATION ROUTINES                                                  Date              Time          
 
 
- Print list type    10     serial number        1     Address    54619     Length     587     Created on      
+ Print list type    10     serial number        1     Address    54586     Length     587     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -4267,8 +4269,7 @@ Bonds: Update required - List5 length change
 #HYDROGEN                                                                                                                                                                                                                                                       
   Disc file on unit   1 extended by     1 records 
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     2 records 
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
@@ -4359,7 +4360,7 @@ Bonds: Update required - List5 length change
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
 
 
- Print list type     5     serial number        4     Address    56336     Length     785     Created on      
+ Print list type     5     serial number        4     Address    56303     Length     785     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -4522,7 +4523,7 @@ Bonds: Update required - List5 length change
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
 
 
- Print list type     5     serial number        5     Address    58347     Length     677     Created on      
+ Print list type     5     serial number        5     Address    58314     Length     677     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -5084,12 +5085,12 @@ for Uprime see Acta Cryst (2000). B56, 747-749
 # INPUT THE CELL PARAMETERS                                                                                                                                                                                                                                     
 #                                                                                                                                                                                                                                                               
 #LIST 1                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #                                                                                                                                                                                                                                                               
 # INPUT THE UNIT CELL SYMMETRY  -  P21/A WITH C UNIQUE                                                                                                                                                                                                          
 #                                                                                                                                                                                                                                                               
 #LIST 2                                                                                                                                                                                                                                                         
 #LIST      5                                                                                                                                                                                                                                                    
+  Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
 #PRINT 5                                                                                                                                                                                                                                                        
 #MOLAX                                                                                                                                                                                                                                                          
@@ -5098,7 +5099,7 @@ for Uprime see Acta Cryst (2000). B56, 747-749
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
 
 
- Print list type     5     serial number        6     Address    59918     Length     677     Created on      
+ Print list type     5     serial number        6     Address    59885     Length     677     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -5782,10 +5783,10 @@ Upating List 13 for twinned data
   Disc file on unit   1 extended by     2 records 
 #CLEAR 17                                                                                                                                                                                                                                                       
 #LIST  17                                                                                                                                                                                                                                                       
-  Disc file on unit   1 extended by     2 records 
+  Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     1 records 
 #LIST 26                                                                                                                                                                                                                                                        
 #SFLS                                                                                                                                                                                                                                                           
-  Disc file on unit   1 extended by     1 records 
 #SPEC  NO  NO                                                                                                                                                                                                                                                   
 #SCALE      1                                                                                                                                                                                                                                                   
 #CYCLENDS                                                                                                                                                                                                                                                       
@@ -5870,6 +5871,7 @@ SumFo/SumFc=    14.336      LS-scale=    12.394      Wilson Scale=     0.000
  Parameters NA     2    x     and  restraint  related by                                                                                                                                                                                                        
  Parameters NA     2    U[11] and  restraint  related by                                                                                                                                                                                                        
  Parameters NA     2    U[23] and  restraint  related by                                                                                                                                                                                                        
+  Disc file on unit   1 extended by     1 records 
 Refining    44 parameters in    1 block :     1094 elements in the LS matrix.
  Space required on DISK is    3 records,     9  Blocks,     5 Kbytes. 
     10 Symmetry restraints written to LIST 17
@@ -6440,7 +6442,6 @@ Slope=    -3375.942 Intercept = 2538915.250 C-Coef=      -0.026
      TOTALS           270     39403.77     34947.3      0.3580E+04      0.2102E+07    27.04   72.81     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
 #ANALYSE                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
 
@@ -6627,6 +6628,7 @@ Slope=        0.008 Intercept =      -0.033 C-Coef=       0.194
                                                                                                        -2 -1  0  1  2
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 2                                                                                                                                                                                                                                                         
+  Disc file on unit   1 extended by     1 records 
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 4                                                                                                                                                                                                                                                         
 #LIST 5                                                                                                                                                                                                                                                         
@@ -6655,7 +6657,7 @@ Bonds: Update required - List5 length change
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number       96     Address    89765     Length    7559     Created on      
+ Print list type     6     serial number       96     Address    89732     Length    7559     Created on      
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H               -0.300000E+01   0.300000E+01  -0.531818E+00   0.201246E+01
@@ -6783,14 +6785,13 @@ Bonds: Update required - List5 length change
   Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
   Disc file on unit   1 extended by    14 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 12                                                                                                                                                                                                                                                        
 
 
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number      100     Address    97922     Length    7559     Created on      
+ Print list type     6     serial number      100     Address    97889     Length    7559     Created on      
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H               -0.300000E+01   0.300000E+01  -0.531818E+00   0.201246E+01
@@ -6914,7 +6915,7 @@ Bonds: Update required - List5 length change
 
 
 
-  Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     2 records 
 #CONVERT                                                                                                                                                                                                                                                        
 #PRINT 5                                                                                                                                                                                                                                                        
 #LIST 23                                                                                                                                                                                                                                                        
@@ -6923,7 +6924,7 @@ Bonds: Update required - List5 length change
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     5     serial number       14     Address   105481     Length     137     Created on      
+ Print list type     5     serial number       14     Address   105448     Length     137     Created on      
 
 
  Record  101    LGRP   18  NGRP      3   ATOMIC PARAMETERS                                                               
@@ -7616,7 +7617,7 @@ Mean C-C su =   0.0182
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number      106     Address    97922     Length    7559     Created on      
+ Print list type     6     serial number      106     Address    97889     Length    7559     Created on      
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H               -0.300000E+01   0.300000E+01  -0.531818E+00   0.201246E+01
@@ -9058,11 +9059,11 @@ SumFo/SumFc=     1.884      LS-scale=     1.000      Wilson Scale=     0.000
 
    12 *  221 170 200 130 176 212 198 157 187 109 171 190 178 140 173  94 164 172 164 136 161 100 162 171 161 141
 #END                                                                                                                                                                                                                                                            
- Physical reads       4319 Physical writes       4572 Cache hits     142292
- Cache hit distribution   118020    5980    2883    1985    1939    1396
- Cache hit distribution     1012    1132     594    1199     659     606
- Cache hit distribution      538     716     462     567     252     292
- Cache hit distribution      354     357     363     343     314     329
+ Physical reads       4370 Physical writes       4559 Cache hits     142279
+ Cache hit distribution   117907    6113    2808    2019    1906    1442
+ Cache hit distribution      979    1108     589     951     908     620
+ Cache hit distribution      553     674     470     430     390     301
+ Cache hit distribution      378     329     375     346     316     367
 
 
           : Job ends ok       with     7 warnings and     0 errors
