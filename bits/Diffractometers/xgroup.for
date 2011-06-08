@@ -653,10 +653,6 @@ cdjw09400   FORMAT (I3,2I4,F10.1,F10.1)
 700   FORMAT (I3,2I4,I10,I10)
 C 
 750   K=K+1
-      IF (K.EQ.K/100*100) THEN
-         WRITE(LP,800) K
-800      FORMAT (' Read',I8,' reflections')
-      END IF
       JCODE=0
       IF (REFINT.LT.0.0) REFINT=0.0
       IF (SIGINT.EQ.0.0) SIGINT=0.1
@@ -1001,6 +997,8 @@ C end of CAD4 file, start averaging and processing
 C 
 C 
 1250  CONTINUE
+         WRITE(LP,800) K
+800      FORMAT (I10,' reflections read')
 C 
 C first print the cell parameters
 C 
