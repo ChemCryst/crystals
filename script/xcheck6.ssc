@@ -41,11 +41,9 @@
 ^^WI       @ 2,1 STATIC XFW21                                                    
 ^^WI 'You may manually select "theta full" (the value at which you consider'    
 ^^WI       @ 2,2 STATIC XFW22                                                    
-^^WI ' the data complete) by right-clicking the graph.'  
+^^WI ' the data complete) by right-clicking on the red line.'  
 ^^WI       @ 3,1 STATIC XFW31                                                    
-^^WI ' The intervals in (sin(theta)/lambda)^3 have equal voliumes.'  
-^^WI       @ 3,2 STATIC XFW32
-^^WI ' Click the blue curve to see the actual theta value'  
+^^WI ' The intervals in (sin(theta)/lambda)^3 have equal volumes.'  
 ^^WI      }                                                                     
 ^^WI      @ 1,1 ICON IM INFO                                                    
 ^^WI     }                                                                      
@@ -54,7 +52,7 @@
 ^^WI      {                                                                     
 ^^WI       @ 1,1 PLOTWINDOW _VCOMPL NROWS=20 NCOLS=64                           
 ^^WI        DEFINEPOPUPMENU POPUP 'Selection'                                   
-^^WI        ITEM _SDELA '&Manually set theta full = _X' 'SIGFULL_N_X'           
+^^WI        ITEM _SDELA '&Manually set theta full = _L' 'SIGFULL_N_L_N_Y'           
 ^^WI        ENDDEFINEMENU                                                       
 ^^WI      }                                                                     
 ^^WI      ITEM GRID CR2 NROWS=3 NCOLS=1                                         
@@ -600,10 +598,15 @@
 %        GET NOSTORE SILENT FINAL REAL ' ' ' '                                  
 %        EVALUATE THFULL = - VALUE                                              
 %        COPY 'TRANSFER TO OFFSET = 10 FROM THFULL'                             
-%        COPY 'WRITE'                                                           
-%        COPY 'END'                                                             
 %        TRANSFER '{I Theta full manually set to ' // -                         
             CHARACTER ( - THFULL ) TO DISPLAY                                   
+
+%        GET NOSTORE SILENT FINAL REAL ' ' ' '                                  
+%        EVALUATE THFULL =  VALUE                                              
+%        COPY 'TRANSFER TO OFFSET = 11 FROM THFULL'                             
+
+%        COPY 'WRITE'                                                           
+%        COPY 'END'                                                             
 %      END BLOCK                                                                
 %      BLOCK    %WILFILT1                                                       
 %        VERIFY ON OFF                                                          
