@@ -56,14 +56,14 @@
 %      BLOCK             %RUN DIFFIN%                                             
 ^^CO      DISPOSE XDIFFIN                                                       
 {S * Running Pre-processor.                                                            
-%         COPY '#SPAWN % "CRYSDIR:diffin.exe"'                                     
+%         COPY '#SCRIPT xdiffopn'                                     
 {R   Done.                                                                      
 %      END BLOCK                                                                  
 %    END CASE                                                                     
 %   END LOOP
 % ELSE
 {S * Running Pre-processor.                                                            
-%         COPY '#SPAWN % "CRYSDIR:diffin.exe"'                                     
+%         COPY '#SCRIPT xdiffopn'                                     
 {R   Done.                                                                      
 % END IF
 %%                                                                              
@@ -90,6 +90,7 @@ Files INITIAL.* will be created in your directory. They may be important.
 %      ON ERROR TERMINATE                                                       
 %      CLEAR                                                                    
 %      TRANSFER '#USE from-cif.ins' TO CRYSTALS                                     
+%      COPY '#SCRIPT X30BITS'
 %      BLOCK                                                                    
 %            ON ERROR REPEAT                                                    
 %%           WE NEED BASIC LISTS FOR DATA REDUCTION                             
@@ -138,8 +139,8 @@ Files INITIAL.* will be created in your directory. They may be important.
 %    TRANSFER '#OPEN HKLI from-cif.hkl' TO CRYSTALS   
 %%   Ask user if they want to merge data.                                         
 %%   Logical variable XQMERGE is set by this script.                              
-%%                                                                              
-%    COPY '#SCRIPT XQMERGE'                                                       
+%%    now done in XFRIEDEL                             
+%%    COPY '#SCRIPT XQMERGE'                       
 %%                                                                              
 %    QUEUE REWIND                                                               
 %    ON ERROR RESTART                                                           
