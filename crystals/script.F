@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.64  2011/05/04 11:31:29  rich
+C Avoid buffer overflows in script string manipulation functions.
+C
 C Revision 1.63  2011/03/22 14:40:38  rich
 C Added extra file unit 'SCP2' which may be read by new script command EXTRACT2
 C
@@ -7886,7 +7889,10 @@ C
       IF ( ITYPE .LE. 0 ) THEN
 C
         INEW = MAX0 ( ILEVEL(IFLIND) + 1 , 1 )
-        ILEVEL(IFLIND+1) = - INEW
+C        INEW = 1
+        DO ILX = IFLIND+1, NFILVL
+          ILEVEL(ILX) = - INEW
+        END DO
         ISCINI = 0
         RETURN
       ENDIF
