@@ -389,7 +389,7 @@ _refine_ls_shift/su_max           0.00004
 _refine_ls_shift/su_mean          0.00000
  
  
-# The values computed from all data 
+# The values computed with all filters except I/sigma 
 _oxford_reflns_number_all         1133 
 _refine_ls_R_factor_all           0.0886 
 _refine_ls_wR_factor_all          0.2182 
