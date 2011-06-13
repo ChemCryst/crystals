@@ -6,14 +6,13 @@
 % VARIABLE LOGICAL LNEW30                                                       
 % VARIABLE INTEGER SWITCH                                                       
 %%                                                                              
-                                                      
 % VARIABLE REAL MIN MED MAX TEMP                                                     
 % VARIABLE INTEGER SCAN INST
-% VARIABLE REAL DOBS DCALC MU MOLWT CELLZ PRESS 
+% VARIABLE REAL  CELLZ PRESS 
 % VARIABLE INTEGER COL1 COL2 COL3 COL4 COL5 COL6 COL7 COL8                      
 % VARIABLE INTEGER SHA1 SHA2 SHA3 SHA4 SHA5 SHA6 SHA7 SHA8                      
 % VARIABLE LOGICAL FMIN FMED FMAX FTEMP  FCELLZ  FPRESS                      
-% VARIABLE LOGICAL FCOLOUR FSHAPE FDOBS FDCALC FMOLWT  
+% VARIABLE LOGICAL FCOLOUR FSHAPE   
 %%                                                                              
 % IF  EXISTS ( 30 ) .NE. 1 THEN                                                 
 %   COPY '#LIST 30'                                                             
@@ -26,10 +25,6 @@
 % COPY 'TRANSFER FROM OFFSET = 2 TO MAX'                                        
 % COPY 'TRANSFER FROM OFFSET = 6 TO TEMP'                                       
 % COPY 'LOCATE RECORDTYPE = 106'                                                
-% COPY 'TRANSFER FROM OFFSET = 0 TO DOBS'                                       
-% COPY 'TRANSFER FROM OFFSET = 1 TO DCALC'                                      
-% COPY 'TRANSFER FROM OFFSET = 3 TO MU'                                         
-% COPY 'TRANSFER FROM OFFSET = 4 TO MOLWT'                                      
 % COPY 'TRANSFER FROM OFFSET = 5 TO CELLZ'                                      
 % COPY 'LOCATE RECORDTYPE = 107'                                                
 % COPY 'TRANSFER FROM OFFSET = 0 TO COL1'                                       
@@ -61,14 +56,12 @@
 ^^WI    @ 4,2 BUTTON BXX '&Cancel'                                              
 ^^WI    @ 6,2 BUTTON BHELP '&Help'                                              
 ^^WI  }                                                                         
-^^WI  @ 1,1 GRID GRIDA NROWS=9 NCOLS=3                                          
+^^WI  @ 1,1 GRID GRIDA NROWS=3 NCOLS=3                                          
 ^^WI  {                                                                         
-
-                                                                        
-^^WI   @ 6,2 GRID GRIDAC NROWS=3 NCOLS=1 OUTLINE='Experiment'                      
+^^WI   @ 2,2 GRID GRIDAC NROWS=3 NCOLS=1 OUTLINE='Experiment'                      
 ^^WI              COMMAND='CRYSTAL'                                             
 ^^WI   {                                                                        
-^^WI    @ 1,1 GRID GRIDACA NROWS=1 NCOLS=15                                     
+^^WI    @ 1,1 GRID GRIDACA NROWS=1 NCOLS=11                                     
 ^^WI    {                                                                       
 ^^WI      @ 1,1  STATIC ED30T 'Dimensions (mm): Min'                            
 ^^WI      @ 1,3  EDITBOX MIN '0' CHARS=7 REAL INFORM=YES                        
@@ -76,40 +69,28 @@
 ^^WI      @ 1,7  EDITBOX MED '0' CHARS=7 REAL INFORM=YES                        
 ^^WI      @ 1,9  STATIC ED30T 'Max'                                             
 ^^WI      @ 1,11 EDITBOX MAX '0' CHARS=7 REAL INFORM=YES                        
-^^WI      @ 1,13 STATIC ED30T 'Temperature (K)'                                 
-^^WI      @ 1,15 EDITBOX TEMP '0' CHARS=9 REAL INFORM=YES                       
 ^^WI    }                                                                       
-^^WI    @ 2,1 GRID GRIDACB NROWS=1 NCOLS=11                                     
+^^WI    @ 2,1 GRID GRIDACB NROWS=1 NCOLS=7
 ^^WI    {                                                                       
 ^^WI      @ 1,1  STATIC ED30T 'Crystal shape'                                   
 ^^WI      @ 1,3  EDITBOX SHAPE '0' CHARS=20 INFORM=YES                          
 ^^WI      @ 1,5  STATIC ED30T 'Colour'                                          
 ^^WI      @ 1,7  EDITBOX COLOUR '0' CHARS=20 INFORM=YES                         
-^^WI      @ 1,9  STATIC ED30T 'Pressure (kPa)'                                  
-^^WI      @ 1,11  EDITBOX PRESS '0' CHARS=9 INFORM=YES                          
 ^^WI    }                                                                       
-^^WI    @ 3,1 GRID GRIDACC NROWS=2 NCOLS=11                                     
+^^WI    @ 3,1 GRID GRIDACC NROWS=1 NCOLS=11
 ^^WI    {                                                                       
-^^WI      @ 1,1  STATIC ED30T 'Density: Observed'                               
-^^WI      @ 1,3  EDITBOX DOBS '0' CHARS=7 REAL INFORM=YES                       
-^^WI      @ 1,5  STATIC ED30T 'Calculated'                                      
-^^WI      @ 1,7  EDITBOX DCALC '0' CHARS=7 REAL INFORM=YES                      
-^^WI      @ 1,9  STATIC ED30T 'Mol. weight'                                     
-^^WI      @ 1,11  EDITBOX MOLWT '0' CHARS=10 REAL INFORM=YES                    
-^^WI      @ 2,1  STATIC ED30T 'Z'                                               
-^^WI      @ 2,3  EDITBOX CELLZ '1' CHARS=6 REAL INFORM=YES                      
+^^WI      @ 1,1  STATIC ED30T 'Z'                                               
+^^WI      @ 1,3  EDITBOX CELLZ '1' CHARS=6 REAL INFORM=YES                      
+^^WI      @ 1,5  STATIC ED30T 'Pressure (kPa)'                                  
+^^WI      @ 1,7  EDITBOX PRESS '0' CHARS=9 INFORM=YES                          
+^^WI      @ 1,9 STATIC ED30T 'Temperature (K)'                                 
+^^WI      @ 1,11 EDITBOX TEMP '0' CHARS=9 REAL INFORM=YES                       
 ^^WI    }                                                                       
 ^^WI   }                                                                        
-
-
-                                                                        
 ^^WI  }                                                                         
 ^^WI }                                                                          
 ^^WI SHOW                                                                       
 ^^CR                                                                            
-                                                                        
-
-
 %  CLEAR                                                                        
 %  INSERT '^^CO SET MIN TEXT '                                                  
 %  STORE FORMAT /(F9.6)/ LENGTH 9 REAL MIN                                      
@@ -153,16 +134,6 @@
 %%
 %%
 %  CLEAR                                                                        
-%  INSERT '^^CO SET DOBS TEXT '                                                 
-%  STORE FORMAT /(F9.5)/ LENGTH 9 REAL DOBS                                     
-%  INSERT ' SET DCALC TEXT '                                                    
-%  STORE FORMAT /(F9.5)/ LENGTH 9 REAL DCALC                                    
-%  OUTPUT                                                                       
-%  CLEAR                                                                        
-%  INSERT '^^CO SET MOLWT TEXT '                                                
-%  STORE FORMAT /(F11.5)/ LENGTH 11 REAL MOLWT                                  
-%  OUTPUT                                                                       
-%  CLEAR                                                                        
 %  INSERT '^^CO SET CELLZ TEXT '                                                
 %  STORE FORMAT /(F9.5)/ LENGTH 9 REAL CELLZ                                    
 %  OUTPUT                                                                       
@@ -171,8 +142,6 @@
 %  STORE FORMAT /(F10.1)/ LENGTH 10 REAL PRESS                                  
 %  OUTPUT                                                                       
 %  CLEAR                                                                        
-
-                                                                       
 %  LOOP                                                                         
 %    VERIFY CRYSTAL BXX BHELP BOK           
 %    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                             
@@ -180,8 +149,8 @@
 %    CASE SWITCH                                                                
 %%
 %      BLOCK %CRYSTAL%                                                          
-%        VERIFY MIN MED MAX TEMP COLOUR SHAPE DOBS DCALC -                      
-                MOLWT CELLZ PRESS                                   
+%        VERIFY MIN MED MAX TEMP COLOUR SHAPE -                      
+                CELLZ PRESS                                   
 %        GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                           
 %        CASE VALUE                                                             
 %          EVALUATE FMIN    = TRUE                                              
@@ -190,9 +159,6 @@
 %          EVALUATE FTEMP   = TRUE                                              
 %          EVALUATE FCOLOUR = TRUE                                              
 %          EVALUATE FSHAPE  = TRUE                                              
-%          EVALUATE FDOBS   = TRUE                                              
-%          EVALUATE FDCALC  = TRUE                                              
-%          EVALUATE FMOLWT  = TRUE                                              
 %          EVALUATE FCELLZ  = TRUE                                              
 %          EVALUATE FPRESS  = TRUE                                              
 %        END CASE                                                               
@@ -216,12 +182,6 @@
     The crystal colour.                                                         
  Shape                                                                          
     The crystal shape.                                                          
-                               
-                                                                                
- Density observed and calculated:                                               
-    Observed density and that calculated by CRYSTALS.                           
- Mol. weight                                                                    
-    Molecular weight, calculated bt CRYSTALS.                                   
  Z                                                                              
     Number of molecular entities in the unit cell.                              
 %            COPY '#SCRIPT XHELP2'                                              
@@ -265,27 +225,6 @@
 %            END IF                                                             
 %            COPY 'LOCATE RECORDTYPE = 106'                                     
 %%                                                                              
-%            IF FDOBS .OR. LNEW30 THEN                                          
- * Updating observed (measured) crystal density.                                
-^^?? DOBS TEXT                                                                  
-%              GET NOSTORE SILENT FINAL REAL ' ' ' '                            
-%              EVALUATE DOBS = VALUE                                            
-%              COPY 'TRANSFER TO OFFSET = 0 FROM DOBS'                          
-%            END IF                                                             
-%            IF FDCALC .OR. LNEW30 THEN                                         
- * Updating calculated crystal density.                                         
-^^?? DCALC TEXT                                                                 
-%              GET NOSTORE SILENT FINAL REAL ' ' ' '                            
-%              EVALUATE DCALC = VALUE                                           
-%              COPY 'TRANSFER TO OFFSET = 1 FROM DCALC'                         
-%            END IF                                                             
-%            IF FMOLWT .OR. LNEW30 THEN                                         
- * Updating molecular weight.                                                   
-^^?? MOLWT TEXT                                                                 
-%              GET NOSTORE SILENT FINAL REAL ' ' ' '                            
-%              EVALUATE MOLWT = VALUE                                           
-%              COPY 'TRANSFER TO OFFSET = 4 FROM MOLWT'                         
-%            END IF                                                             
 %            IF FCELLZ .OR. LNEW30 THEN                                         
  * Updating Z.                                                                  
 ^^?? CELLZ TEXT                                                                 
@@ -325,7 +264,6 @@
 %              EVALUATE PRESS = VALUE                                           
 %              COPY 'TRANSFER TO OFFSET = 12 FROM PRESS'                        
 %            END IF                                                             
-                                    
 %%                                                                              
 %%                                                                              
 %            COPY 'WRITE OVERWRITE=OVERWRITE'                                   
