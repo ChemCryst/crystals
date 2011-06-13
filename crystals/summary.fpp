@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.96  2011/05/25 12:45:35  djw
+C Increase field for atom count
+C
 C Revision 1.95  2011/05/23 16:07:58  rich
 C For abs config normal probability plot, use weight instead of sigma.
 C Fix axis on normal normal probability plot.
@@ -1840,13 +1843,13 @@ C THMAX < 25 degrees, in which case it is 0.75*THMAX.
         CMPMIN = 100.0 * MIN(0.99,CMPMIN)
         WRITE(CMON,'(A/A/A,F7.2,A/A/A/A)')
      1  '^^PL PLOTDATA _COMPL SCATTER ATTACH _VCOMPL KEY',
-     1  '^^PL XAXIS TITLE (SIN(Theta)/lambda)^3 NSERIES=3 LENGTH=100',
+     1  '^^PL XAXIS TITLE (SIN(Theta)/lambda)^3 NSERIES=2 LENGTH=100',
      1  '^^PL YAXIS ZOOM ', CMPMIN,
      1  ' 100.0 TITLE ''Cumulative Completeness''',
      1  '^^PL YAXISRIGHT ZOOM 0 100 TITLE ''Shell Completeness''',
      1 '^^PL SERIES 1 SERIESNAME ''Cumulative Completeness'' TYPE LINE',
      1  '^^PL SERIES 2 SERIESNAME ''Shell Completeness''',
-     1  '^^PL SERIES 3 SERIESNAME ''Theta value'' TYPE LINE',
+c     1  '^^PL SERIES 3 SERIESNAME ''Theta value'' TYPE LINE',
      1  '^^PL USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 7,0)
 
@@ -1864,11 +1867,11 @@ c     1              THMAX*(I/100.0),100.0*ACTBIN(I)
 cdjwoct2010
           point=stl3max*(I/100.0)
           point=rtd*asin(store(l13dc)*point**0.333)
-          WRITE(CMON,'(A,F10.3,A,6F10.5)')
+          WRITE(CMON,'(A,F10.3,A,4F10.5)')
      1    '^^PL LABEL ', point,
      1    ' DATA ', stl3max*(I/100.0),100.0*COMP,
      1              stl3max*(I/100.0),100.0*ACTBIN(I)
-     1            , stl3max*(I/100.0),point
+c     1            , stl3max*(I/100.0),point
           CALL XPRVDU(NCVDU, 1,0)
         END DO
 c
