@@ -1,9 +1,9 @@
 %SCRIPT XGUIDESC                                                                
 %%                                                                              
 %%  1 Run SIR92                                                                 
-%%  2 Run SHELXS                                                                
-%%  3 Run SIR97                                                                 
-%%  4 Run SUPERFLIP                                                             
+%%  2 Run SUPERFLIP                                                             
+%%  3 Run SHELXS                                                                
+%%  4 Run SIR97                                                                 
 %%  5 Import Sir92 data.                                                        
 %%  6 Import Sir97 data.                                                        
 %%  7 Import Superflip data.                                                    
@@ -24,15 +24,15 @@
 %        END BLOCK                                                              
 %%                                                                              
 %        BLOCK % 2                                                              
-%          COPY '#SCRIPT XSHELXS'                                               
+%          COPY '#SCRIPT XFLIP'                                                 
 %        END BLOCK                                                              
 %%                                                                              
 %        BLOCK % 3                                                              
-%          COPY '#SCRIPT XSIR97'                                                
+%          COPY '#SCRIPT XSHELXS'                                               
 %        END BLOCK                                                              
 %%                                                                              
 %        BLOCK % 4                                                              
-%          COPY '#SCRIPT XFLIP'                                                 
+%          COPY '#SCRIPT XSIR97'                                                
 %        END BLOCK                                                              
 %%                                                                              
 %        BLOCK % 5                                                              

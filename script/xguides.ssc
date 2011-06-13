@@ -8,9 +8,9 @@
 %  VARIABLE LOGICAL I6DONE                                                      
 %% KTDEFA  =                                                                    
 %%  1 Run SIR92                                                                 
-%%  2 Run SHELXS                                                                
-%%  3 Run SIR97                                                                 
-%%  4 Run SUPERFLIP
+%%  2 Run SUPERFLIP
+%%  3 Run SHELXS                                                                
+%%  4 Run SIR97                                                                 
 %%  5 Import Sir92 data.                                                        
 %%  6 Import Sir97 data.                                                        
 %%  7 Import Superflip data.                                                        
@@ -52,9 +52,9 @@
 ^^WI  {                                                                         
 ^^WI   @ 1,1 DROPDOWN _XG_LIST ADDTOLIST                                        
 ^^WI     'Run Sir92'                                                            
+^^WI     'Run Superflip'                                                            
 ^^WI     'Run ShelxS'                                                           
 ^^WI     'Run Sir97'                                                            
-^^WI     'Run Superflip'                                                            
 ^^WI     'Use Sir92 output'                                                     
 ^^WI     'Use Sir97 output'                                                     
 ^^WI     'Use Superflip output'                                                     
@@ -93,7 +93,10 @@
 %  OUTPUT                                                                       
 %END SCRIPT                                                                     
 %%                                                                              
-%%  $Log: not supported by cvs2svn $                                                       
+%%  $Log: not supported by cvs2svn $
+%%  Revision 1.9  2007/10/09 08:38:32  djw
+%%  support for superflip
+%%                                                       
 %%  Revision 1.8  2005/01/23 10:00:25  rich                                     
 %%  Reinstate CVS history for scripts. History from Dec23 - Jan23 is lost, but  
 %%  changes are not!                                                            
