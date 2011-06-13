@@ -14,7 +14,8 @@
 %  COPY 'END'
 %  CLEAR
 %% Ask user if they want to merge reflections:
-%  COPY '#SCRIPT XQMERGE'
+%% now done in xfriedel (above)
+%%  COPY '#SCRIPT XQMERGE'
 %  IF ( XQMERGE ) THEN
 {S * Merging equivalent reflections
 %    CLEAR
@@ -53,6 +54,10 @@
 %END SCRIPT
 %%
 %% $Log: not supported by cvs2svn $
+%% Revision 1.2  2005/01/23 10:00:25  rich
+%% Reinstate CVS history for scripts. History from Dec23 - Jan23 is lost, but
+%% changes are not!
+%%
 %% Revision 1.1.1.1  2004/12/13 11:16:24  rich
 %% New CRYSTALS repository
 %%
