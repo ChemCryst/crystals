@@ -283,12 +283,12 @@
 % IF CLASS .EQ. 'DIFF' THEN
 %   IF CARG = 'PP' THEN
 %       IF FILEEXISTS ( 'from-cif.cry' ) THEN
-%          COPY '#SCRIPT difexec'
+%          COPY '#SCRIPT diffexec'
 %       ELSE
  {E The diffractometer files have not been processed          
 %       END IF
  {I Read in pre-processed diffractometer files
-%        COPY '#SCRIPT difexec'
+%        COPY '#SCRIPT diffexec'
 %   ELSE
  {I Diffractometer input cifs - Launch DIFFIN                                                               
 %%                                                                              
@@ -302,7 +302,7 @@
  '"' -
  TO CRYSTALS
 %       IF FILEEXISTS ( 'from-cif.cry' ) THEN
-%          COPY '#SCRIPT difexec'
+%          COPY '#SCRIPT diffexec'
 %       ELSE
  {E The diffractometer files have not been processed          
 %       END IF
