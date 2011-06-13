@@ -7,13 +7,13 @@
 ^^WI   ITEM SUMM 'Output &Summary file' '#SCRIPT SUM' DISABLEIF='IN QS'         
 ^^WI                                ENABLEIF='L1 L2 L3 L5 L6'                   
 ^^WI   ITEM SUMM 'Output &other tables' '#SCRIPT XPUBLISH'                      
-^^WI   MENU RESM 'Sp&ecial'                                                     
 ^^WI   ITEM PUSU '&CIF file no esds' '#SCRIPT XCIFNOSU'  DISABLEIF='IN'         
 ^^WI                                ENABLEIF='L1 L2 L3 L5'                      
-^^WI   ENDMENU                                                                  
+
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM ED30 'Edit CIF &goodies' '#SCRIPT ED30' DISABLEIF='IN'              
-^^WI               ENABLEIF='L1 L2 L5' DISABLEIF='IN'                           
+^^WI               ENABLEIF='L1 L2' DISABLEIF='IN'                           
+
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM ACTA  '&Local Acta checks' '#SCRIPT ACTA'                                 
 ^^WI               ENABLEIF='L1 L2 L5' DISABLEIF='IN'                           
