@@ -2,21 +2,21 @@
 % VARIABLE CHARACTER INSTITLE
 %%
 %% KTDEFA  = 
-%%  1 Run KCCDIN
-%%  2 Run RC93
-%%  3 Run DIPIN
-%%  4 Import KCCDIN output.
-%%  5 Import RC93 output
-%%  6 Import DIPIN output.
-%%  7 Import SHELX data.
-%%  8 Input reflection data.
-%%  9 Input cell
-%%  10 Input cell contents
-%%  11 Input space group.
-%%  12 Input CIF file
-%%  13 Edit CIF type data
-%%  14 Read in CRYSTALS instructions.
-%%  15 Read generalised diffractometer cif
+%%  1  General file input
+%%  2  Import SHELX INS/RES file.
+%%  3  Import SHELX HKL file.
+%%  4  Input cell
+%%  5  Input cell contents
+%%  6  Input space group.
+%%  7  Input CIF file (obsolete)
+%%  8  Run KCCDIN (obsolete)
+%%  9  Run RC93 (obsolete)
+%%  10 Run DIPIN (obsolete)
+%%  11 Import KCCDIN output. (obsolete)
+%%  12 Import RC93 output (obsolete)
+%%  13 Import DIPIN output (obsolete)
+%%  14 Edit CIF type data 
+%%  15 Read in CRYSTALS instructions. (obsolete)
 %%
 %  VERIFY GI_BOK GI_BXX GI_BHELP
 %  GET SILENT NOSTORE ABBREVIATED 'Continue?' 'GI_BXX'
@@ -27,69 +27,69 @@
 %      CASE VALUE
 %%
 %        BLOCK % 1
-%          COPY '#SCRIPT KCCD'
-%        END BLOCK
+%          COPY '#SCRIPT FILEOPEN'                                                  
+%        END BLOCK                                                              
 %%
 %        BLOCK % 2
-%          COPY '#SCRIPT RC93'
-%        END BLOCK
-%%
-%        BLOCK % 3
-%          COPY '#SCRIPT DIP'
-%        END BLOCK
-%%
-%        BLOCK % 4
-%          COPY '#SCRIPT XKCCDIN'
-%        END BLOCK
-%%
-%        BLOCK % 5
-%          COPY '#SCRIPT XINRC93'
-%        END BLOCK
-%%
-%        BLOCK % 6
-%          COPY '#SCRIPT XDIPIN'
-%        END BLOCK
-%%
-%        BLOCK % 7
 %          COPY '#SCRIPT XSHELXIN'
 %        END BLOCK
 %%
-%        BLOCK % 8
+%        BLOCK % 3
 ^^??       INSTTL TEXT
 %          GET SILENT NOSTORE TEXT 'institle?' ' '
 %          EVALUATE INSTITLE = CVALUE
 %          COPY '#SCRIPT XINLIST6'
 %        END BLOCK
 %%
-%        BLOCK % 9
+%        BLOCK % 4
 %          COPY '#SCRIPT XCELLIN'
 %        END BLOCK
 %%
-%        BLOCK % 10
+%        BLOCK % 5
 %          COPY '#SCRIPT XINLIST3'
 %        END BLOCK
 %%
-%        BLOCK % 11
+%        BLOCK % 6
 %          COPY '#SCRIPT XSPACE'
 %        END BLOCK
 %%
-%        BLOCK % 12
+%        BLOCK % 7
 %%          COPY '#SCRIPT CIF2CRY'
 %%          Generates errors in CIFPRC called from CIF2CRY.EXE
            'Not yet available' 
 %        END BLOCK
 %%
+%        BLOCK % 8
+%          COPY '#SCRIPT KCCD'
+%        END BLOCK
+%%
+%        BLOCK % 9
+%          COPY '#SCRIPT RC93'
+%        END BLOCK
+%%
+%        BLOCK % 10
+%          COPY '#SCRIPT DIP'
+%        END BLOCK
+%%
+%        BLOCK % 11
+%          COPY '#SCRIPT XKCCDIN'
+%        END BLOCK
+%%
+%        BLOCK % 12
+%          COPY '#SCRIPT XINRC93'
+%        END BLOCK
+%%
 %        BLOCK % 13
-%          COPY '#SCRIPT ED30'
+%          COPY '#SCRIPT XDIPIN'
 %        END BLOCK
 %%
 %        BLOCK % 14
-%          COPY '#SCRIPT XUSE'
+%          COPY '#SCRIPT ED30'
 %        END BLOCK
 %%
-%        BLOCK % 15                                                             
-%          COPY '#SCRIPT XDIFFIN'                                                  
-%        END BLOCK                                                              
+%        BLOCK % 15
+%          COPY '#SCRIPT XUSE'
+%        END BLOCK
 %%
 %      END CASE
 %    END BLOCK

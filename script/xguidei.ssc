@@ -7,22 +7,21 @@
 %  VARIABLE CHARACTER INSTITLE
 %  VARIABLE INTEGER KTDEFA
 %% KTDEFA  = 
-%%  1 Run KCCDIN
-%%  2 Run RC93
-%%  3 Run DIPIN
-%%  4 Import KCCDIN output.
-%%  5 Import RC93 output
-%%  6 Import DIPIN output.
-%%  7 Import SHELX data.
-%%  8 Input reflection data.
-%%  9 Input cell
-%%  10 Input cell contents
-%%  11 Input space group.
-%%  12 Input CIF file
-%%  13 Edit CIF type data
-%%  14 Read in CRYSTALS instructions.
-%% added 2011
-%%  15 Read in generalised diffractometer cifs
+%%  1  General file input
+%%  2  Import SHELX INS/RES file.
+%%  3  Import SHELX HKL file.
+%%  4  Input cell
+%%  5  Input cell contents
+%%  6  Input space group.
+%%  7  Input CIF file (obsolete)
+%%  8  Run KCCDIN (obsolete)
+%%  9  Run RC93 (obsolete)
+%%  10 Run DIPIN (obsolete)
+%%  11 Import KCCDIN output. (obsolete)
+%%  12 Import RC93 output (obsolete)
+%%  13 Import DIPIN output (obsolete)
+%%  14 Edit CIF type data 
+%%  15 Read in CRYSTALS instructions. (obsolete)
 %%%
 %%
 %% Check for windows already open
@@ -57,21 +56,21 @@
 ^^WI  @ 2,4 GRID MID NROWS=3 NCOLS=3
 ^^WI  {
 ^^WI   @ 1,1 DROPDOWN _XG_LIST ADDTOLIST
-^^WI     'Run KCCDIN'
-^^WI     'Run RC93'
-^^WI     'Run DIPIN'
-^^WI     'Use KCCDIN output'
-^^WI     'Use RC93 output'
-^^WI     'Use DIPIN output'
+^^WI     'General file input'
 ^^WI     'Import SHELX data (ins,res)'
 ^^WI     'Import reflections (hkl)'
 ^^WI     'Input cell parameters'
 ^^WI     'Input molecular formula'
 ^^WI     'Input spacegroup'
 ^^WI     'Input CIF data'
-^^WI     'Edit extra (CIF) info'
-^^WI     'Read from file (crystals)'
-^^WI     'Read Diffractometer cif'
+^^WI     'Run KCCDIN (obsolete)'
+^^WI     'Run RC93 (obsolete)'
+^^WI     'Run DIPIN (obsolete)'
+^^WI     'Use KCCDIN output(obsolete)'
+^^WI     'Use RC93 output (obsolete)'
+^^WI     'Use DIPIN output (obsolete)'
+^^WI     'Edit CIF info (LIST 30)'
+^^WI     'Read from CRYSTALS format file'
 ^^WI     NULL
 ^^WI   @ 3,1 GRID BTNS NROWS=1 NCOLS=4
 ^^WI   {
@@ -86,26 +85,21 @@
 ^^WI SHOW
 ^^CR
 %  END IF
+
 %  TRANSFER "^^CO SET INSTTL TEXT '" // INSTITLE // "'" TO DISPLAY
 %  EVALUATE KTDEFA = 1
 %% List missing data reqd before leaving IMPORT phase of GUIDE.
-% IF FILEEXISTS ( 'kccd.ins' ) THEN
-{I   KCCDIN output file detected.
-%    EVALUATE KTDEFA = 4
-% ELSE IF FILEEXISTS ( 'import.cif' ) THEN
-{I   KCCDIN input file detected.
-%    EVALUATE KTDEFA = 1
-% ELSE IF EXISTS ( 1 ) .LT. 1 THEN
+% IF EXISTS ( 1 ) .LT. 1 THEN
 {I   Cell dimension data is still required.
-%    EVALUATE KTDEFA = 7
+%    EVALUATE KTDEFA = 1
 % ELSE IF EXISTS ( 6 ) .LT. 1 THEN
 {I   Reflection data is still required.
-%    EVALUATE KTDEFA = 8
+%    EVALUATE KTDEFA = 1
 % ELSE IF EXISTS ( 2 ) .LT. 1 THEN
-%    EVALUATE KTDEFA = 11
+%    EVALUATE KTDEFA = 6
 {I   Spacegroup data is still required.
 % ELSE IF EXISTS ( 3 ) .LT. 1 THEN
-%    EVALUATE KTDEFA = 10
+%    EVALUATE KTDEFA = 5
 {I   Cell contents (molecular formula) data is still required.
 % END IF
 %%
@@ -118,6 +112,9 @@
 %END SCRIPT
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.15  2011/04/26 09:09:56  djw
+%%  Replace Agilent-in with generalised diffractometer input
+%%
 %%  Revision 1.14  2011/03/22 14:41:54  rich
 %%  Added default and focus.
 %%
