@@ -3859,7 +3859,8 @@ cibm  data fname(4)/        'plot  '            /
 c-- default extension for work files
       data ext(1)/        '.bin'            /
       data ext(2)/        '.hkl'            /
-      data ext(3)/        '.ins'            /
+cdjw      data ext(3)/        '.ins'            /
+      data ext(3)/        '.cry'            /
       data ext(4)/        '.plt'            /
       data ext(5)/        '    '            /
       data ext(6)/        '    '            /
