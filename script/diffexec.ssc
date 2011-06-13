@@ -1,0 +1,147 @@
+%SCRIPT DIFFEXEC
+%% execute files created by xdiffin/open
+%%
+%  VARIABLE INTEGER INBASICS 
+%  VARIABLE LOGICAL LFILE IFILE HFILE
+%  VARIABLE LOGICAL ANSWER LCANCEL XQMERGE                                      
+%%  check if files have been created
+%  EVALUATE LFILE = FILEEXISTS ( 'from-cif.cry' )                                   
+%  IF ( .NOT. LFILE ) THEN
+{W      Pre-processed file "from-cif.cry" does not exist
+%    FINISH
+%  END IF
+%%                                                                              
+%  BLOCK                                                                        
+%    COPY '#DISK'                                                               
+%    COPY 'EXTEND SIZE = 10 TRIES  = 1000'                                      
+%    COPY 'END'                                                                 
+Files INITIAL.* will be created in your directory. They may be important.       
+%    COPY '#RELEASE PRINT initial.lis'                                          
+%    COPY '#RELEASE LOG initial.dat'                                            
+%  END BLOCK                                                                    
+%%                                                                              
+%  BLOCK                                                                        
+%      ON END TERMINATE                                                         
+%      ON ERROR TERMINATE                                                       
+%      CLEAR                                                                    
+%      TRANSFER '#USE from-cif.cry' TO CRYSTALS                                     
+%      COPY '#SCRIPT X30BITS'
+%      BLOCK                                                                    
+%            ON ERROR REPEAT                                                    
+%%           WE NEED BASIC LISTS FOR DATA REDUCTION                             
+%            CLEAR                                                              
+%            COPY '#SCRIPT XINBASIC'                                            
+%            IF INBASICS .NE. 1 THEN                                            
+{E  Basic Cell, Space Group or composition information is missing.              
+{E  This SCRIPT will be abandoned without reading the reflections.              
+%                  FINISH                                                       
+%            END IF                                                             
+%            IF LCANCEL .EQ. TRUE THEN                                          
+{E  Basic Cell, Space Group or composition information is missing.              
+{E  This SCRIPT will be abandoned without reading the reflections.              
+%                  FINISH                                                       
+%            END IF                                                             
+%      END BLOCK                                                                
+%%                                                                              
+%      BLOCK                                                                    
+%            ON ERROR REPEAT                                                    
+%            IF ( EXISTS 14 .NE. 1 ) THEN                                       
+%              VERIFY YES NO                                                    
+%            GET FINAL ABBREVIATED  -                                           
+  'Do you know the asymmetric part of the unit cell?' 'YES'                     
+%              IF ( VALUE .EQ. 1 ) THEN                                         
+%                COPY '#SCRIPT XLIST14'                                         
+%              ELSE                                                             
+{R  You will need this information later when you do Fourier maps. Look in      
+{R  International Tables before then.                                           
+%              END IF                                                           
+%            END IF                                                             
+%%                                                                              
+%      END BLOCK                                                                
+%  END BLOCK                                                                    
+%%                                                                              
+%  EVALUATE HFILE = FILEEXISTS ( 'from-cif.hkl' )                                   
+%  IF ( .not. HFILE ) THEN 
+{I CRYSTALS could find no reflections in the cif file.  
+{I If you have a SHELX hklf file, input that from the X-ray data menu.
+%    FINISH
+%  ELSE
+%   BLOCK      
+%    TRANSFER '#OPEN HKLI from-cif.hkl' TO CRYSTALS   
+%%   Ask user if they want to merge data.                                         
+%%   Logical variable XQMERGE is set by this script.                              
+%%    now done in XFRIEDEL                             
+%%    COPY '#SCRIPT XQMERGE'                       
+%%                                                                              
+%    QUEUE REWIND                                                               
+%    ON ERROR RESTART                                                           
+%    CLEAR                                                                      
+%    INSERT "READ  F'S=FSQ NCOEF = 5 TYPE = FIXED CHECK = NO"                   
+%    QUEUE SEND                                                                 
+%%                                                                              
+%    CLEAR                                                                      
+%    INSERT 'INPUT H K L /FO/ SIGMA(/FO/) '                                     
+%    QUEUE SEND                                                                 
+%%                                                                              
+%    CLEAR                                                                      
+%    INSERT 'FORMAT (3F4.0, 2F8.0) '                                            
+%    QUEUE SEND                                                                 
+%%                                                                              
+%    CLEAR                                                                      
+%    INSERT 'STORE NCOEF=6'                                                     
+%    QUEUE SEND                                                                 
+%    CLEAR                                                                      
+%    INSERT 'OUTPUT INDICES /FO/ SIGMA(/FO/) RATIO/JCODE CORRECTIONS SERIAL '   
+%    QUEUE SEND                                                                 
+%    CLEAR                                                                      
+%   END BLOCK
+%   COPY '#HKLI'                                                                 
+%   QUEUE PROCESS                                                                
+%   COPY 'END'                                                                   
+%   COPY '#CLOSE HKLI'                                                           
+%%                                                                              
+%   MESSAGE USER1 ' Error during reflection processing'                          
+%   ON ERROR TERMINATE USER1                                                     
+%%                                                                              
+%   COPY '#SCRIPT XFRIEDEL'                                                      
+%%                                                                              
+{S * Removing systematically absent reflections                                 
+%   COPY '#SYSTEMATIC'                                                           
+%   COPY 'END'                                                                   
+%   CLEAR                                                                        
+{S * Sorting reflections                                                        
+%   COPY '#SORT'                                                                 
+%   COPY 'END'                                                                   
+%   CLEAR                                                                        
+%   IF ( XQMERGE ) THEN                                                          
+{S * Merging equivalent reflections                                             
+%      CLEAR                                                                    
+%      COPY '#MERGE'                                                            
+%      COPY 'END'                                                               
+%   END IF                                                                       
+%                                                                               
+{S * Final copy to DSC file                                                     
+%   COPY '#LIST 6'                                                               
+%   COPY 'READ TYPE = COPY'                                                      
+%   COPY 'END'                  
+%%                                                                              
+%  IF ( EXISTS 23 .NE. 1 ) THEN                                                 
+%    COPY '#SCRIPT XQCK23'                                                            
+%  END IF                                                                       
+                                                                                
+{I Give the minimum I/sigma(i) and [sin(theta)/lambda]sq to be                  
+{I used in refinement. They can be changed at any time later                    
+{I using the menu item "X-ray Data" -> "Filter Reflections".                    
+                                                                                
+{R Recommended settings:                                       
+{R   [Sin theta / lambda] ** 2 is at least 0.01   eliminates beam stop          
+{R for F refinement:                                       
+{R   Fo/sigma(Fo)                   2.0 to  3.0   eliminates noise              
+{R for Fsq refinement:                                       
+{R   Fo/sigma(Fo)                less than -3.0   eliminates spurious data
+                                                                                
+%   COPY '#SCRIPT XLIST28'                                                        
+%%                                                                              
+%%                                                                              
+{R * Done. Diffractometer data input complete.                                            
+%  END IF
