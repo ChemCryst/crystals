@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.177  2011/05/23 16:07:58  rich
+C For abs config normal probability plot, use weight instead of sigma.
+C Fix axis on normal normal probability plot.
+C
 C Revision 1.176  2011/05/11 13:28:53  rich
 C During #TON output HKL and -H-K-L indices (after SysAb collection) in order to
 C allow omission of both observations from L28.
@@ -5754,7 +5758,7 @@ C--- END OF LIST 30
 C
 C    LIST 13
       IF (JLOAD(6).GE.1) THEN
-         CBUF(1:5)=''' ? '''
+         CBUF(1:8)='''  ?   '''
          IF (NINT(10.*STORE(L13DC)).EQ.7) THEN
 #if !defined(_MAC_)
             CBUF(1:8) = '''Mo K\a'''
@@ -6286,7 +6290,7 @@ c-try to catch old DSC files where +11 held minimisation function
 C
            CALL XPCIF (' ')
            CALL XPCIF 
-     1     ('# The values computed from all data')
+     1     ('# The values computed with all filters except I/sigma')
 
            WRITE (CLINE,'(''_oxford_reflns_number_all '', I10)')
      1                  NINT(STORE(L30CF+5))
