@@ -603,16 +603,7 @@ C
 C 
       OPEN (UNIT=LI,NAME=FILE_NAME,TYPE='OLD',ERR=3350)
 C 
-c      WRITE(LP,*) ' -  WAIT  -'
       WRITE(LP,*) ' File: '//FILE_NAME
-c      WRITE(LP,*) ' '
-C 
-C      WRITE (LO,98)
-C 
-C      3 DUMMY READS
-c      READ (UNIT=LI,FMT=250,ERR=3300) BUF
-c      READ (UNIT=LI,FMT=250,ERR=3300) BUF
-c      READ (UNIT=LI,FMT=250,ERR=3300) BUF
 250   FORMAT (A)
       IF (ISP.EQ.8) THEN
          J1=2
@@ -1000,11 +991,6 @@ C
          WRITE(LP,800) K
 800      FORMAT (I10,' reflections read')
 C 
-C first print the cell parameters
-C 
-C      write (lo,441) (cell(i),i=1,3),calpha,cbeta,cgamma
-C441      format (' cellparameters:',6f10.3)
-C 
       IAVI=0
       DO 1350 J=1,5,4
          DO 1300 I=1,42
@@ -1081,36 +1067,33 @@ C
 cdjw08
 c      write(lo,'(a)') 'Sumint '
 c      write(lo,'(i3, 15f8.2)')  (i, (sumint(i,j), j=1,15),i=1,42)
-      write(lo,'(a)') ' Systematic absences are:'
+      write(lo,'(/a)') ' Systematic absences are:'
       do 123 i=24,1,-1
        if(sumint(i,15) .gt. 0.0) call operators(i,lp,lo)
 123   continue
 
 C 
 CJDS      open (itbl,file='dka0:[jd.space]space.tbl;1',status='unknown')
-C 
 CJDS      do 444 i = 1,306
 CJDS      read (itbl,740,end=445) isg(i),inc(i),icen(i),sg(i),
 CJDS     >  kaxis(i),ichoice(i),sgfull(i),jcentr(i),kext(i),i230(i),j230
-C 
 CJDS444      continue
 CJDS445      continue
 CJDSD      do 446 i = 1,306
 CJDSD      write (lo,740) isg(i),inc(i),icen(i),sg(i),
 CJDSD    >  kaxis(i),ichoice(i),sgfull(i),jcentr(i),kext(i),i230(i),j230
 CJDSD446      continue
-C 
 CJDS740      format(4x,3i4,a8,a1,i2,a16,i2,o12,i6,i8)
 C 
 1400  CONTINUE
-c      IF (ISP.EQ.8) GO TO 3050
+cold      IF (ISP.EQ.8) GO TO 3050
 cdjw08
 c      write(lo,11) isp, j, f(j), ires_ip(f(j)), ichoice(f(j))
 c      write(lp,11) isp, j, f(j), ires_ip(f(j)), ichoice(f(j))
 11    format('djw ',4i4,  a1)
-
-
-      IF(ISP .EQ. 8) THEN
+c
+c
+      IF(ISP .EQ. 8) THEN                         !triclinic
 cdjwmar-11  - only output if order is a b c
         idjws = 0
         cspace = ' '
@@ -1118,24 +1101,20 @@ cdjwmar-11  - only output if order is a b c
             if(perm(ires_ip(f(j))) .eq. ' a b c' ) then
 CDJWAPR11 only write out text if there are any SG found
             WRITE(LP,*) ' '
-            WRITE(LP,1450) CSYS(ISP)
-            write(lp,1451)
+            write(lp,1450) csys(isp)
             write(lp,1452)
-            WRITE(LO,1450) CSYS(ISP)
-            write(lo,1451)
+            write(lp,1453)
+            write(lo,1450) csys(isp)
             write(lo,1452)
+            write(lo,1453)
+CDJWAPR11 only write out text if there are any SG found
 1450  format     ('For the ',a11,' system, possible space groups are ',
      1       'as follows')
 1451  format(' If the SG is not a standard setting, you should',
      1       ' re-index the data')
 1452        format(/, 52x, '    frequency of')
-c
-c
-      WRITE(LP,*) ' spacegr number setting cen axis choice  full symbol'
-     1,'    occurrence sigma'
-      WRITE(LO,*) ' spacegr number setting cen axis choice  full symbol'
-     1,'    occurrence sigma'
-CDJWAPR11 only write out text if there are any SG found
+1453  format(' spacegr number setting cen axis choice  full symbol'
+     1,'    occurrence sigma')
 c
              IF(ICEN(F(J)) .EQ. 1) THEN
               WRITE(lo,3100)isg(F(J)),perm(IRES_IP(F(J))),'C'
@@ -1165,10 +1144,8 @@ c
                endif
             endif
 1401      CONTINUE
-          GOTO 3250
+          GOTO 3250                   !triclinic done with
       ENDIF
-
-C      if(isp .eq. 8) goto 1201
 C 
 C      extinction is true if average int is lt x times the average
 C      of the sigma of the intensity
@@ -1422,6 +1399,7 @@ C
 2450     CONTINUE
 C 
 2500  CONTINUE
+c
 C If there are extinctions skip all entries with no extinctions
       DO 2600 I=1,306
          IF (IRES_IS(I).NE.0) THEN
@@ -1437,6 +1415,19 @@ C If there are extinctions skip all entries with no extinctions
 C FIND HIGHEST FOM. IF MORE THAN ONE IDENTICAL FOM TAKE THE LOWEST NUMBE
 2650  IS_NOW=8
       KKKK=0
+c set SG to nothing
+      idjws = 0
+      cspace = ' '
+      WRITE(LP,*) ' '
+      write(lp,1450) csys(isp)
+      write(lp,1451)
+      write(lp,1452)
+      write(lp,1453)
+      write(lo,1450) csys(isp)
+      write(lo,1451)
+      write(lo,1452)
+      write(lo,1453)
+c
 2700  FOM_KEEP=-1.
       J1=IS_NOW-1
       DO 2750 J=1,J1
@@ -1480,9 +1471,7 @@ C ---  SORT ON INCREASING CHOICE
 2950           CONTINUE
 3000        CONTINUE
 3050        CONTINUE
-C^
-            idjws = 0
-            cspace = ' '
+C
             DO 3150 J=1,J1
 cdjwmar-11  - only output if order is a b c
              if(perm(ires_ip(f(j))) .eq. ' a b c' ) then

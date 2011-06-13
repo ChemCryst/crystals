@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.5  2011/06/08 11:19:40  djw
+C Reorganise code to remove excessive output, remove most interactive questions (some remain), set up input filename and instrument type in popup browse window.
+C
 C Revision 1.4  2011/05/17 16:00:16  djw
 C Enable long lines, up to 512 characters
 C
@@ -77,7 +80,7 @@ c
 
 C 
 C....... Open our files for writing
-      OPEN (NOUTF,FILE=filename(1:lfn)//'.ins',STATUS='UNKNOWN')
+      OPEN (NOUTF,FILE=filename(1:lfn)//'.cry',STATUS='UNKNOWN')
       OPEN (NCIF,FILE=filename(1:lfn)//'.cif',STATUS='UNKNOWN')
 c
 c     get the name of the input file
