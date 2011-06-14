@@ -139,9 +139,9 @@ A SCRIPT to help you input a new trial model
 %    IF VALUE .EQ. 1 THEN
 %      EVALUATE SOLVEFLAG = 2
 %      COPY '#USE SIR.CRY'
-%      COPY '#LIST 28'
-%      COPY 'MINIMA RATIO=3'
-%      COPY 'END'
+%      IF ( EXISTS 28 .NE. 1 ) THEN
+%       COPY '#SCRIPT XLIST28'
+%      END IF
 %    ELSE
 %      EVALUATE SOLVEFLAG = 3
 %      COPY '#USE SIR9X.INS'

@@ -19,9 +19,7 @@
 %  END BLOCK                                                                    
 %  BLOCK                                                                        
 %    IF ( EXISTS 28 .NE. 1 ) THEN                                               
-{E **** WARNING: Default LIST 28 created                                        
-%    copy "#list 28"                                                            
-%    copy "end"                                                                 
+%      copy "#SCRIPT XLIST28"                                                            
 %    END IF                                                                     
 %  END BLOCK                                                                    
 %  BLOCK                                                                        

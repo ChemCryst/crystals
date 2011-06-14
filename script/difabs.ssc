@@ -160,9 +160,11 @@
 %           COPY '#SYSTEMATIC'                                                   
 %%          dont fiddle with the indices                                              
 %           COPY 'STORE NEWIND=NO'                                               
-%           COPY 'END'                                                           
-%           COPY '#LIST 28'                                                      
-%           COPY 'END'                                                           
+%           COPY 'END'
+%           IF ( EXISTS 28  .NE. 1 ) THEN                                                           
+%            COPY '#SCRIPT XLIST28'                                                      
+%            COPY 'END'                                                           
+%           END IF
 %           COPY '#LIST 6'                                                       
 %           COPY 'READ TYPE=COPY'                                                
 %%  build a list 6 with slots for all data on the work file                     

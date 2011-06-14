@@ -161,9 +161,9 @@ Files INITIAL.* will be created in your directory. They may be important.
 %    COPY 'JCODE 4 VALUE = 0.0'
 %    COPY 'JCODE 8 VALUE = 0.0'
 %    COPY 'END'
-%    COPY '#LIST 28'
-%    COPY 'MINIMA RATIO = 3'
-%    COPY 'END'
+%    IF ( EXISTS 28 .NE. 1 ) THEN
+%     COPY '#SCRIPT XLIST28'
+%    END IF
 %    COPY '#LIST 6'
 %    COPY 'READ TYPE = COPY'
 %    COPY 'END'

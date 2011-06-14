@@ -306,35 +306,36 @@
 List 23 already in place.                                                       
 %         END IF                                                                
 %                                                                               
+%%                                                                              
+%         COPY '#GENERALEDIT 23'                                                
+%         COPY 'LOCATE RECORDTYPE=103'                                          
+%         COPY 'TRANSFER FROM OFFSET=1 TO FTYPE'                                
+%         COPY 'END'                                                            
+%%               
+%         IF ( EXISTS 28 .NE. 1 ) THEN                                                               
+%          COPY '#LIST 28'                                                       
+%          CLEAR                                                                 
+%          INSERT 'MINIMA '                                                      
+%          IF FTYPE .NE. 0 THEN                                                  
+{I For F refinement, a default I/u(I) minimum of 3.0 is recommended.
+%            INSERT 'RATIO=3.0 '                                                 
+%          ELSE
+{I For F^2 refinement, a default I/u(I) minimum of -3.0 is recommended.
+%            INSERT 'RATIO=-3.0 '                                                 
+%          END IF                                                                
+{I A default sin(theta)/lambda minimum of 0.01 is recommended.                  
+%          INSERT 'SINT=0.01'                                                    
+%          SEND                                                                  
+%          COPY 'END'                                                            
+%         END IF
+%         COPY '#SCRIPT XLIST28'                                                
+%%
 %                                                                               
 {S * Applying unit/quasi-unit weights                                           
 %         COPY '#LIST 4'                                                        
 %         COPY 'END'                                                            
 %         COPY '#WEIGHT'                                                        
 %         COPY 'END'                                                            
-%%                                                                              
-%         COPY '#GENERALEDIT 23'                                                
-%         COPY 'LOCATE RECORDTYPE=103'                                          
-%         COPY 'TRANSFER FROM OFFSET=1 TO FTYPE'                                
-%         COPY 'END'                                                            
-%%                                                                              
-%         COPY '#LIST 28'                                                       
-%         CLEAR                                                                 
-%         INSERT 'MINIMA '                                                      
-%         IF FTYPE .NE. 0 THEN                                                  
-{I For F refinement, a default I/u(I) minimum of 3.0 is recommended.
-%           INSERT 'RATIO=3.0 '                                                 
-%         END IF                                                                
-{I A default sin(theta)/lambda minimum of 0.01 is recommended.                  
-%         INSERT 'SINT=0.01'                                                    
-%         SEND                                                                  
-%         COPY 'END'                                                            
-%         COPY '#SCRIPT XLIST28'                                                
-%%                                                                              
-%         IF ( EXISTS 23 .NE. 1 ) THEN                                          
-%           COPY '#LIST 23'                                                     
-%           COPY 'END'                                                          
-%         END IF                                                                
 %%                                                                              
 %%                                                                              
 {R * Done. Reflection data input complete.                                      
@@ -390,7 +391,10 @@ e.g. a file processed by RC93 will contain intensities.
 % END LOOP                                                                      
 %END SCRIPT                                                                     
 %%                                                                              
-%% $Log: not supported by cvs2svn $                                                       
+%% $Log: not supported by cvs2svn $
+%% Revision 1.2  2008/06/27 14:38:56  djw
+%% Arie's superflip changes
+%%                                                       
 %% Revision 1.28  2005/01/23 10:00:25  rich                                     
 %% Reinstate CVS history for scripts. History from Dec23 - Jan23 is lost, but   
 %% changes are not!                                                             
