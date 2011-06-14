@@ -24,7 +24,7 @@
 ^^WI     @ 1,1 RADIOBUTTON NO 'Nonius Kccd' INFORM STATE=ON 
 ^^WI     @ 2,1 RADIOBUTTON AG 'Agilent' INFORM
 ^^WI     @ 3,1 RADIOBUTTON RI 'Rigaku' INFORM        
-^^WI     @ 4,1 RADIOBUTTON GD 'Generalised' INFORM        
+^^WI     @ 4,1 RADIOBUTTON GD 'Generalised (WinGX)' INFORM        
 ^^WI     @ 4,2 RADIOBUTTON PP 'Pre-processed'
 ^^WI   } 
 
@@ -125,6 +125,7 @@
 %         VERIFY ON OFF                                                         
 %         GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
 %         IF ( VALUE .EQ. 1 ) THEN                                              
+%%          WinGX
 %           EVALUATE CARG = 'W'                                           
 %           EVALUATE CLASS = 'DIFF'
 %         END IF                                                                
