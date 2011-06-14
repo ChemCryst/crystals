@@ -20,10 +20,17 @@
 %%                                                                              
 % EVALUATE FRIEDELF = - 1                                                       
 %%                                                                              
+%%                                                                              
+%     IF ( EXISTS ( 13 ) .NE. 1 ) THEN                                          
+%       COPY '#LIST 13'                                                         
+%       COPY 'END'                                                              
+%     END IF                                                                    
+%%
 % IF ( FCENTRO .GT. 0.9 ) THEN                                                  
                                                                                 
 {I Centro-symmetric space-group.                                                
 {R * Friedel Pairs will be merged.                                              
+
 %   EVALUATE FRIEDELF = 0                                                       
 %   COPY '#GENERALEDIT 13'                                                      
 %   COPY 'LOCATE RECORDTYPE=101'                                                
@@ -122,11 +129,6 @@
 %     EVALUATE FRIEDELF = VALUE - 2                                             
 ^^CO  DISPOSE XFRIEDEL                                                          
 %%                                                                              
-%%                                                                              
-%     IF ( EXISTS ( 13 ) .NE. 1 ) THEN                                          
-%       COPY '#LIST 13'                                                         
-%       COPY 'END'                                                              
-%     END IF                                                                    
 %     COPY '#GENERALEDIT 13'                                                    
 %     COPY 'LOCATE RECORDTYPE=101'                                              
 %     COPY 'TRANSFER TO OFFSET=0 FROM FRIEDELF'                                 
