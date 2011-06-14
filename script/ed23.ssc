@@ -358,7 +358,7 @@
 %     EVALUATE QLINE2 = 'Recommended: Set min I/sigma(I) cutoff to -3.0.'                
 %   ELSE IF FNEW .EQ. - 1 THEN                                                  
 %     EVALUATE QTITLE = 'Min. function changed to F'                            
-%     EVALUATE QLINE2 = 'Recommended: Set min I/sigma(I) cutoff to 2.0'         
+%     EVALUATE QLINE2 = 'Recommended: Set min I/sigma(I) cutoff to 3.0'         
 %   END IF                                                                      
 %   EVALUATE QLINE1 = 'Do you want to change the reflection filtering?'         
 %   EVALUATE BUTTOK = ' &Yes '                                                  
