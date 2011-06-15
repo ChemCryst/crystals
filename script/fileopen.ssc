@@ -4,6 +4,7 @@
 %% get diffractometer filename and instrument
 %%
 % VARIABLE LOGICAL T                                                                              
+% VARIABLE CHARACTER INSTITLE
 % VARIABLE CHARACTER C_FILE CEXTN CROOT CARG CLASS
 %% CLASS IS TYPE OF INPUT FILE
 %%                                                                              
@@ -349,6 +350,9 @@ DO SHELX STUFF
 %      IF      CARG .EQ. 'SI' THEN
 %        COPY '#SCRIPT XSHELXIN' DISABLEIF='IN'
 %      ELSE IF CARG .EQ. 'S4' THEN
+%        IF C_FILE .NE. ' ' THEN
+%         EVALUATE INSTITLE = GETTITLE ( C_FILE )
+%        END IF
 %        COPY '#SCRIPT XINLIST6' DISABLEIF='IN'
 %      ELSE IF CARG .EQ. 'S5' THEN
 %        COPY '#SCRIPT HKLF52CRY' DISABLEIF='IN'
