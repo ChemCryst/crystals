@@ -613,6 +613,25 @@ Show warning/message colours inroduced with a '{a'
 {E TEST E
 {Z TEST Z
 
+ Get ROOT and EXTENSIOn out of filename
+%  VARIABLE CHARACTER FILE FTITLE CPATH CEXTN 
+%      EVALUATE FILE = 'MYPATH\Myfile.MYEXT'
+%      EVALUATE FTITLE = GETTITLE ( FILE )
+%      EVALUATE CPATH = GETPATH ( FILE )
+%      EVALUATE CEXTN = GETEXTN ( FILE )
+
+
+% SHOW FILE
+% SHOW CPATH
+% SHOW FTITLE
+% SHOW CEXTN
+c
+Convert to all-uppercase - NOTE there is no LOWERCASE operator
+
+% EVALUATE FILE = UPPERCASE ( FILE )
+% SHOW FILE
+
+
   Final test : FINISH
 %  FINISH
 %%
