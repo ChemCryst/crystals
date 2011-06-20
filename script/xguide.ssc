@@ -23,7 +23,7 @@
 %% May be set by calling scripts to recommend refinement:
 %  VARIABLE LOGICAL REFREQD
 %
-% IF EXISTS ( 5 ) .GE. 1 THEN
+% IF EXISTS ( 5 ) .GE. 1 .AND.  EXISTS ( 6 ) .GE. 1 THEN
 %   COPY '#SCRIPT XGUIDER'
 % ELSE IF EXISTS ( 6 ) .GE. 1 THEN
 %   COPY '#SCRIPT XGUIDES'
