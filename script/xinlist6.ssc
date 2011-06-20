@@ -51,7 +51,8 @@
 ^^WI   {                                                                        
 ^^WI    @ 2,2 GRID GF NROWS=1 NCOLS=3 OUTLINE='File'                            
 ^^WI    {                                                                       
-^^WI     @ 1,1 EDITBOX L6FILE ' ' CHARS=48 INFORM=YES                           
+% TRANSFER "^^WI @ 1,1 EDITBOX L6FILE '" // INSTITLE // -                                         
+  "' CHARS=48 INFORM=NO INPUT " TO DISPLAY                                                        
 ^^WI     @ 1,3 BUTTON BROWSE 'Browse...'                                        
 ^^WI    }                                                                       
 ^^WI    @ 4,2 GRID GD NROWS=4 NCOLS=1 OUTLINE='Data type'                       
@@ -350,7 +351,7 @@ List 23 already in place.
 %          SEND                                                                  
 %          COPY 'END'                                                            
 %         END IF
-%         COPY '#SCRIPT XLIST28'                                                
+%%         COPY '#SCRIPT XLIST28'                                                
 %%                                                                              
 %% REM DJW SEPT 08  LET WEIGHTS BE SET IN XQCK23                                
 {S * Applying unit/quasi-unit weights                                           
@@ -414,6 +415,10 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT                                                                     
 %%                                                                              
 %% $Log: not supported by cvs2svn $
+%% Revision 1.31  2011/06/14 10:05:53  djw
+%% List 28 is an auto-create list. Try to ensure it is created before any weigting is done. If LIST 23 exists, try to set defaults at -3 for F^2 and +3 for F. If LIST 23 does not exist, call script XLIST28 to enable user to set values.
+%% Scripts changed are: difabs, inemap,newstart,xcifnosu, xflipinlist6, xinlist6 xinrc93
+%%
 %% Revision 1.30  2009/10/14 15:02:29  djw
 %% Fix ordering of transformation matrix for reflections in Advanced mode
 %%                                                       
