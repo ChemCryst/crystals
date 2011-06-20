@@ -38,6 +38,8 @@
 %   COPY 'WRITE'                                                                
 %   COPY 'END'                                                                  
 % END IF                                                                        
+%%
+%   COPY '#SCRIPT XLIST28'
 %%                                                                              
 ^^WI WINDOW XFRIEDEL 'Merge' MODAL COMMIT='MF_BOK' CANCEL='MF_BXX'              
 ^^WI GRID MAIN NROWS=6 NCOLS=3                                                  
