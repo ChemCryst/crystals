@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2011/06/08 11:19:40  djw
+C Reorganise code to remove excessive output, remove most interactive questions (some remain), set up input filename and instrument type in popup browse window.
+C
 C Revision 1.9  2011/05/25 15:44:14  djw
 C Change text in output message for case where the input contains a SG symbol.
 C
@@ -897,6 +900,9 @@ c                 both same case - insert a sp 1 sp between them
         endif              
       enddo
       endif
+      call xctrim(cform, lform)
+      i = index(numer,cform(lform:lform))
+      if (i .le. 0) cform(lform+1:) = ' 1'
       write(6,'(a,4x,a)') 'Input:  ', cform
 c
 c start adding up atoms.
