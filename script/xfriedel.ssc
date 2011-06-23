@@ -39,7 +39,28 @@
 %   COPY 'END'                                                                  
 % END IF                                                                        
 %%
-%   COPY '#SCRIPT XLIST28'
+%   IF ( EXISTS ( 28 ) .NE. 1 ) THEN                                          
+%       COPY '#LIST 28'                                                         
+%       COPY 'END'                                                              
+%   END IF 
+%   VARIABLE INTEGER NITEMS MITEMS
+%   EVALUATE NITEMS = 0                                                                   
+%   COPY '#GENERALEDIT 28'
+%   COPY 'TRANSHEAD FROM OFFSET = 3 TO MITEMS'
+%   EVALUATE NITEMS = NITEMS + MITEMS
+%   COPY 'TRANSHEAD FROM OFFSET =11 TO MITEMS'
+%   EVALUATE NITEMS = NITEMS + MITEMS
+%   COPY 'TRANSHEAD FROM OFFSET = 19 TO MITEMS'
+%   EVALUATE NITEMS = NITEMS + MITEMS
+%   COPY 'TRANSHEAD FROM OFFSET = 31 TO MITEMS'
+%   EVALUATE NITEMS = NITEMS + MITEMS
+%   COPY 'TRANSHEAD FROM OFFSET = 35 TO MITEMS'
+%   EVALUATE NITEMS = NITEMS + MITEMS
+%   IF NITEMS .LE. 0 THEN
+%     COPY '#SCRIPT XLIST28'
+%   ELSE
+{I Leaving LIST 28 (filters) unchanged
+%   END IF
 %%                                                                              
 ^^WI WINDOW XFRIEDEL 'Merge' MODAL COMMIT='MF_BOK' CANCEL='MF_BXX'              
 ^^WI GRID MAIN NROWS=6 NCOLS=3                                                  
