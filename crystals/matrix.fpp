@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2009/06/03 09:04:04  djw
+C Highlight singularities in RED on monitor
+C
 C Revision 1.19  2008/03/07 16:09:48  djw
 C changes to help with the correct computation of Fourier maps from twinned crystals.  THe old COPY67 subroutine did not pack the data properly unless the keys were the default keys.  The job is now done
 C
@@ -826,16 +829,16 @@ C--ZERO LENGTH VECTOR
 C
 CODE FOR VMULT
       SUBROUTINE VMULT(A,B,C)
-C----- FORM THE UN-NORMALISED VECTOR PRODUCT
+C----- FORM THE UN-NORMALISED VECTOR (cross) PRODUCT
       DIMENSION A(3),B(3),C(3)
       C(1)=A(2)*B(3)-A(3)*B(2)
       C(2)=A(3)*B(1)-A(1)*B(3)
       C(3)=A(1)*B(2)-A(2)*B(1)
       RETURN
       END
-CODE FOR VPROD
-      SUBROUTINE VPROD(A,B,C)
-C----- FORM THE SCALAR PRODUCT.
+CODE FOR DPROD
+      SUBROUTINE DPROD(A,B,C)
+C----- FORM THE SCALAR (DOT) PRODUCT.
       DIMENSION A(3),B(3)
       C=A(1)*B(1)+A(2)*B(2)+A(3)*B(3)
       RETURN

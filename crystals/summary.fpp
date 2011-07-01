@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.97  2011/06/13 14:25:35  djw
+C remove the blue line and enable info to be obtained from the red one
+C
 C Revision 1.96  2011/05/25 12:45:35  djw
 C Increase field for atom count
 C
@@ -3718,7 +3721,7 @@ C Calculate max distance in A^-2.
       bad(2)=0.5
       bad(3)=0.5
       CALL XMLTMM(STORE(L1M2),BAD,TEMP,3,3,1)
-      CALL VPROD(BAD,TEMP,DMX)
+      CALL DPROD(BAD,TEMP,DMX)
       DMX = MAX(DMX,ZEROSQ)
       DMX = SQRT(DMX)
 
@@ -3772,7 +3775,7 @@ C SCAN LIST 6 FOR REFLECTIONS
            END DO
  
            CALL XMLTMM(STORE(L1M2),BAD,TEMP,3,3,1)
-           CALL VPROD(BAD,TEMP,D)
+           CALL DPROD(BAD,TEMP,D)
            IF ( D .GT. ZEROSQ ) D = SQRT(D)
            IF ( D .LT. DMIN ) DMIN = D
 
@@ -3907,7 +3910,7 @@ C SCAN LIST 6 FOR REFLECTIONS
         CALL XMLTMM(STORE(ICOMBF),STORE(M6),GM,3,3,1)
 C If indices are unchanged under op, then this ref is in the group.
         CALL XSUBTR(STORE(M6),GM,GM,3)
-        CALL VPROD(GM,GM,D)
+        CALL DPROD(GM,GM,D)
         IF ( D .LT. ZERO ) THEN
 C Work out which bin.
           RFO = STORE(M6+3) / STORE(M6+12)
@@ -3915,7 +3918,7 @@ C Work out which bin.
           JSIGS = MAX(JSIGS,1)
           JSIGS = MIN(JSIGS,50)
 C Work out whether inc or exc.
-          CALL VPROD(STORE(ICOMBF+11),STORE(M6),D)
+          CALL DPROD(STORE(ICOMBF+11),STORE(M6),D)
 
 c          WRITE(CMON,'(4F4.0)')STORE(M6),
 c     1 STORE(M6+1),STORE(M6+2),D

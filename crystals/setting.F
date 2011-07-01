@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.4  2005/01/23 08:29:12  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:07  rich
 C New CRYSTALS repository
 C
@@ -124,8 +128,8 @@ C-----   B TO C
       M=M-1
       IF(M.GE.2)GOTO 1700
       CALL XMLTMM (CD, FHKL, PD(1,K), 3 , 3, 1)
-1900  CALL VPROD(PD(1,K),PD(1,K),SI)
-      CALL VPROD(FCV,FCV,CO)
+1900  CALL DPROD(PD(1,K),PD(1,K),SI)
+      CALL DPROD(FCV,FCV,CO)
       SI=SQRT(SI)
       CO=SQRT(CO)
       M=1
@@ -332,7 +336,7 @@ C
       CALL MTRANS(CD)
       N=1
 1100  K=N
-1200  CALL VPROD(CD(1,N),CD(1,K),SD(N,K))
+1200  CALL DPROD(CD(1,N),CD(1,K),SD(N,K))
       K=K+1
       IF(K.LE.3)GOTO 1200
       N=N+1
@@ -437,11 +441,11 @@ C
 C
       DIMENSION A(3),B(3)
       MIXUP=1
-      CALL VPROD(A,A,TEMP1)
-1000  CALL VPROD(B,B,TEMP2)
+      CALL DPROD(A,A,TEMP1)
+1000  CALL DPROD(B,B,TEMP2)
       IF(TEMP1.GT.TEMP2)GOTO 1200
       IF(TEMP2.GT.(TEMP1*625.0))GOTO 1400
-      CALL VPROD(A,B,TEMP2)
+      CALL DPROD(A,B,TEMP2)
       TEMP2=-TEMP2/TEMP1
       TEMP2=FLOAT(INT(TEMP2+SIGN(0.5,TEMP2)))
       IF(TEMP2.EQ.0.0)RETURN

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.33  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.32  2011/02/07 16:59:30  djw
 C Put IDOM09 into ICOM09
 C
@@ -4421,8 +4424,8 @@ C GET ADDRESS of THIS POINT in L42M array.
                  XJ(3) = STORE(L42L+6) + STEPS(3) * IZSECT
                  DO ISYM = L42I, L42I+MD42I*(N42I-1), MD42I
                    CALL XMLTMM(STORE(ISYM),HKL42,THKL,3,3,1)
-                   CALL VPROD(STORE(ISYM+9),HKL42,PSHIF)
-                   CALL VPROD(XJ,THKL,FI)
+                   CALL DPROD(STORE(ISYM+9),HKL42,PSHIF)
+                   CALL DPROD(XJ,THKL,FI)
                    FA=FA + (cos( TWOPI*(FI+PSHIF) )/FLOAT(ISTORE(M42M)))
                    IF(IC.EQ.0)
      1               FB=FB+(sin( TWOPI*(FI+PSHIF) )/FLOAT(ISTORE(M42M)))
