@@ -4196,6 +4196,30 @@ Rule 3 may be ignored unless you're trying to set up something very
 special. Rule 4 is useful if you have a group disordered across a
 symmetry element.
 #
+Finally, you can select all atoms in a given part of group by using the number 999 as a wild-card.
+#N   4#
+#J
+      examples
+                  PART(3999,X's)
+      selects all atoms in assembly 3.
+#
+#
+#DHPART#
+#PThis specifies all hydrogen (or deuterium) atoms or parameters with the given part number.
+#N   4#
+#J
+      examples
+                  HPART(3001)
+                  HPART(3001,X's)
+#
+#DNHPART#
+#PThis specifies all non-hydrogen (and deuterium) atoms or parameters with the given part number.
+#N   4#
+#J
+      examples
+                  NHPART(3001)
+                  NHPART(3001,X's)
+#
 #DTYPE#
 #PThis enable all atoms or parameters on atoms of the given type to be 
 processed together.
