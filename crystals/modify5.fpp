@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.59  2011/04/20 09:55:03  djw
+C Small fix to XCENTRE
+C
 C Revision 1.58  2011/04/08 12:55:23  djw
 C New module XORIGIN to apply permitted origin shifts
 C
@@ -3446,7 +3449,7 @@ cfeb08            WRITE (NCAWU,'(A)') CMON(1),CMON(2)
          END IF
 100      FORMAT (2(9X,'Occ',4X,'x',5X,'y',5X,'z',7X,'U',3X))
 150      FORMAT (9X,'Occ',4X,'x',5X,'y',5X,'z',6X,'U11',3X,'U22',3X,'U33
-     1',2X,'U23',2X,'U13',2X,'U12',4X,'Spare',2X,'Part'/
+     1',2X,'U23',2X,'U13',2X,'U12',4X,'Spare',5X,'Part'/
      2 35X,'Uiso',2X,'Size',1X,'D/100',1X,'A/100')
       ELSE
 C
@@ -3512,7 +3515,7 @@ C -- FULL PRINT
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
 cfeb08      WRITE (NCAWU,'(A)') CMON(1)(:)
-550   FORMAT (A4,I4,F5.2,3F6.3,I2,3F6.3,3F5.2,F10.3,I4)
+550   FORMAT (A4,I4,F5.2,3F6.3,I2,3F6.3,3F5.2,F10.3,I7)
       GO TO 1000
 600   CONTINUE
 C -- LOW LEVEL PRINT FOR OVERALL PARAMETERS
