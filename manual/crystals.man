@@ -4195,6 +4195,21 @@ bonding rules are applied in the following order of priority:
 Rule 3 may be ignored unless you're trying to set up something very
 special. Rule 4 is useful if you have a group disordered across a
 symmetry element.
+#
+#DTYPE#
+#PThis enable all atoms or parameters on atoms of the given type to be 
+processed together.
+#J
+      example
+      /EDIT
+      RESET 9900 PART TYPE(H)
+      END
+#
+#PThis puts all the hydrogen atoms into PART(9900). Since all other 
+atoms are in PART(0) or a specified PART, the hydrogen will now be 
+treated independently.
+#
+
 #Q
 #IATOMIC PARAMETER SPECIFICATION#
 #PAtomic parameters have a NAME. Some directives permit the use of the
