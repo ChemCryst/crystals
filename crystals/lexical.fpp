@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.32  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.31  2011/02/07 16:59:07  djw
 C Put IDIM09 as a parameter in ICOM09 so that we can use it to declare work space
 C
@@ -1145,10 +1148,10 @@ C
 C--START TO FORM THE ATOM HEADER BLOCK  -
 C-- CHECK FOR 'FIRST', 'LAST', 'PART', 'RESIDUE', 'TYPE'
 1100  CONTINUE
-      II=KCOMP(1,ISTORE(MF+2),IFIRST(1),5,1)
+      II=KCOMP(1,ISTORE(MF+2),IFIRST(1),7,1)
       IF ( ( II. EQ. 1 ) .OR. ( II .EQ. 2 ) ) THEN !This is First or Last
         KA = -1
-      ELSE IF ( ( II .GE. 3 ) .AND. ( II .LE. 5 ) ) THEN  !Part,REsi or Type
+      ELSE IF ( ( II .GE. 3 ) .AND. ( II .LE. 7 ) ) THEN  !Part,REsi or Type
         KB = 1
         IF ( II .EQ. 5 ) KBB = 1 ! We are looking for a char.
         OME=ME
@@ -1367,6 +1370,8 @@ C
       INCLUDE 'XIOBUF.INC'
 C
       INCLUDE 'QSTORE.INC'
+      DATA KHYD /'H   '/
+      DATA KDET /'D   '/
 C
       IATOMF=-1
 C--CHECK IF ANY ATOMS HAVE BEEN GIVEN
@@ -1413,7 +1418,7 @@ C--CHECK THE ATOM TYPES
 C
 C--ATOMS PROVIDED  -  CHECK FOR 'FIRST', 'LAST', 'PART', 'RESIDUE', 'TYPE'
 1450  CONTINUE
-      J=KCOMP(1,ARG(1),IFIRST(1),5,1)
+      J=KCOMP(1,ARG(1),IFIRST(1),7,1)
 C--CHECK THE REPLY
       IF(J.LE.0) GOTO 1250 !Process as an element type
       IF ( J .EQ. 1 ) THEN ! 'FIRST' - CHECK WE CAN ACCESS THE FIRST ATOM
@@ -1424,7 +1429,7 @@ C--CHECK THE REPLY
         IATOMF=1    !RESET THE REPLY
         N5F=N5F-1
         GOTO 1000
-      ELSE IF ( J .EQ. 3 ) THEN ! 'PART' - CHECK THE ADDRESSING
+      ELSE IF ((J.EQ.3).OR.(J.EQ.6).OR.(J.EQ.7)) THEN ! 'PART,HPART,NHPART' - CHECK THE ADDRESSING
 C IPTVAL = requested part. NPTTOT = # matching atoms. NPTCUR = Current atom.
         CALL PRTGRP ( IPTVAL, IPT, IGR, 1 )
 c        WRITE(CMON,'(2(A,I4))') 'Group: ',IGR,' part: ',IPT
@@ -1435,9 +1440,14 @@ c        CALL XPRVDU(NCVDU,1,0)
 C Count the parts
            DO I = M5F,M5F+(MD5F*(N5F-1)),MD5F
              JPTVAL = ISTORE(I+14)
-             CALL PRTGRP ( JPTVAL, JPT, JGR, 1 )
-             IF ( ((JPT .EQ. IPT) .OR. (IPT .EQ. 999 )) 
-     1      .AND. ((JGR .EQ. IGR) .OR. (IGR. EQ. 999 ))) NPTTOT=NPTTOT+1
+             IF ( ( ((ISTORE(I).EQ.KHYD) .OR. (ISTORE(I).EQ.KDET)).AND.
+     1            ((J.EQ.3).OR.(J.EQ.6)) ) .OR.
+     2          ( ((ISTORE(I).NE.KHYD).AND.(ISTORE(I).NE.KDET)).AND.
+     1            ((J.EQ.3).OR.(J.EQ.7)) ) ) THEN
+               CALL PRTGRP ( JPTVAL, JPT, JGR, 1 )
+               IF ( ((JPT .EQ. IPT) .OR. (IPT .EQ. 999 )) .AND. 
+     1          ((JGR .EQ. IGR) .OR. (IGR. EQ. 999 )))NPTTOT=NPTTOT+1
+             END IF
            END DO
 c           WRITE(CMON,'(A,I4)') 'Npttot: ',NPTTOT
 c           CALL XPRVDU(NCVDU,1,0)
@@ -1445,23 +1455,27 @@ c           CALL XPRVDU(NCVDU,1,0)
         II = 0
         DO I = M5F,M5F+(MD5F*(N5F-1)),MD5F
            JPTVAL = ISTORE(I+14)
-           CALL PRTGRP ( JPTVAL, JPT, JGR, 1 )
-           IF ( ((JPT .EQ. IPT) .OR. (IPT .EQ. 999 )) 
-     1    .AND. ((JGR .EQ. IGR) .OR. (IGR. EQ. 999 ))) II=II+1
-           IF ( II .GE. NPTCUR ) THEN
-              M5F = I
-              IF ( NPTCUR .GE. NPTTOT ) THEN
-c                WRITE(CMON,'(A,I4)') 'Final Nptcur: ',NPTCUR
-c                CALL XPRVDU(NCVDU,1,0)
-                NPTCUR = -1
-              ELSE
-                ME=OME    !Backspace to trick calling routine
-                MF=OMF
-c                WRITE(CMON,'(A,I4)') 'Nptcur: ',NPTCUR
-c                CALL XPRVDU(NCVDU,1,0)
+	   IF ( ( ((ISTORE(I).EQ.KHYD).OR. (ISTORE(I).EQ.KDET)).AND.
+     1            ((J.EQ.3).OR.(J.EQ.6)) ) .OR.
+     2          ( ((ISTORE(I).NE.KHYD).AND.(ISTORE(I).NE.KDET)).AND.
+     1            ((J.EQ.3).OR.(J.EQ.7)) ) ) THEN
+              CALL PRTGRP ( JPTVAL, JPT, JGR, 1 )
+              IF ( ((JPT .EQ. IPT) .OR. (IPT .EQ. 999 )) 
+     1       .AND. ((JGR .EQ. IGR) .OR. (IGR. EQ. 999 ))) II=II+1
+              IF ( II .GE. NPTCUR ) THEN
+                 M5F = I
+                 IF ( NPTCUR .GE. NPTTOT ) THEN
+c                   WRITE(CMON,'(A,I4)') 'Final Nptcur: ',NPTCUR
+c                   CALL XPRVDU(NCVDU,1,0)
+                   NPTCUR = -1
+                 ELSE
+                   ME=OME    !Backspace to trick calling routine
+                   MF=OMF
+c                   WRITE(CMON,'(A,I4)') 'Nptcur: ',NPTCUR
+c                   CALL XPRVDU(NCVDU,1,0)
+                 END IF
+                 GOTO 1050
               END IF
-
-              GOTO 1050
            END IF
            IF ( M12F .GT. 0 ) M12F = ISTORE( M12F )
         END DO

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.61  2011/03/23 10:14:25  rich
+C Fix and catch case where CRYSTALS runs out of pre-defined file units.
+C
 C Revision 1.60  2011/03/22 14:40:38  rich
 C Added extra file unit 'SCP2' which may be read by new script command EXTRACT2
 C
@@ -1452,7 +1455,8 @@ C
       DATA MXS(1,5)/4HORIE/,MXS(2,5)/4HNTAT/
 C
       DATA IFIRST(1)/4HFIRS/,IFIRST(2)/4HLAST/,IFIRST(3)/4HPART/
-     1     IFIRST(4)/4HRESI/,IFIRST(5)/4HTYPE/
+     1     IFIRST(4)/4HRESI/,IFIRST(5)/4HTYPE/,
+     2     IFIRST(6)/4HPAR/,IFIRST(7)/4HNHPA/
 #else
       DATA KSCAL(1,1)/'SCAL'/,KSCAL(2,1)/'ES  '/
       DATA KSCAL(1,2)/'PARA'/,KSCAL(2,2)/'METE'/
@@ -1470,7 +1474,8 @@ C
       DATA MXS(1,5)/'ORIE'/,MXS(2,5)/'NTAT'/
 C
       DATA IFIRST(1)/'FIRS'/,IFIRST(2)/'LAST'/,IFIRST(3)/'PART'/
-     1     IFIRST(4)/'RESI'/,IFIRST(5)/'TYPE'/
+     1     IFIRST(4)/'RESI'/,IFIRST(5)/'TYPE'/,IFIRST(6)/'HPAR'/,
+     2     IFIRST(7)/'NHPA'/
 #endif
       DATA NWXS/2/,NXS/5/,LXS/2/
 C -- INITIALISE DATA FOR EFFICIENCY STATISTICS
