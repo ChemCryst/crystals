@@ -2811,9 +2811,9 @@ Mean C-C su =   0.0000
  The following overall parameter(s) will be changed                                                                                                                                                                                                             
  ENANTIO     1.000
  The following atom(s) will be arithmetically modified                                                                                                                                                                                                          
-         Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare  Part                                                                                                                                                                                
+         Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part                                                                                                                                                                             
                                    Uiso  Size D/100 A/100                                                                                                                                                                                                       
-  CL   1 1.00-0.195-0.200-0.143 0 0.050 0.087 0.048 0.00-0.01 0.01     1.000   0                                                                                                                                                                                
+  CL   1 1.00-0.195-0.200-0.143 0 0.050 0.087 0.048 0.00-0.01 0.01     1.000      0                                                                                                                                                                             
  List   5 now contains     22 atom(s)
   Disc file on unit   1 extended by     1 records 
 #LIST 12                                                                                                                                                                                                                                                        
@@ -3515,9 +3515,9 @@ Mean C-C su =   0.0000
  The following overall parameter(s) will be changed                                                                                                                                                                                                             
  ENANTIO     1.000
  The following atom(s) will be arithmetically modified                                                                                                                                                                                                          
-         Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare  Part                                                                                                                                                                                
+         Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part                                                                                                                                                                             
                                    Uiso  Size D/100 A/100                                                                                                                                                                                                       
-  CL   1 1.00-0.195-0.200-0.143 0 0.050 0.087 0.048 0.00-0.01 0.01     1.000   0                                                                                                                                                                                
+  CL   1 1.00-0.195-0.200-0.143 0 0.050 0.087 0.048 0.00-0.01 0.01     1.000      0                                                                                                                                                                             
  List   5 now contains     22 atom(s)
   Disc file on unit   1 extended by     1 records 
 #LIST 12                                                                                                                                                                                                                                                        

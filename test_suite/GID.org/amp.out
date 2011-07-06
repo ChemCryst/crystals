@@ -2735,9 +2735,9 @@ Bonds: Update required - List5 length change
   Disc file on unit   1 extended by     1 records 
 #EDIT                                                                                                                                                                                                                                                           
  The following atom(s) will be changed                                                                                                                                                                                                                          
-         Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare  Part                                                                                                                                                                                
+         Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part                                                                                                                                                                             
                                    Uiso  Size D/100 A/100                                                                                                                                                                                                       
-   H   1 1.00 0.861 0.610 0.207 1 0.050 0.000 0.000 0.00 0.00 0.00     4.406   0                                                                                                                                                                                
+   H   1 1.00 0.861 0.610 0.207 1 0.050 0.000 0.000 0.00 0.00 0.00     4.406      0                                                                                                                                                                             
  The following atom(s) will be selected                                                                                                                                                                                                                         
     C   1      C   2      O   3      C   4      O   5      N   6      C   7
     O   8      C   9      C  10      C  11      H  41      H  42      H  43
