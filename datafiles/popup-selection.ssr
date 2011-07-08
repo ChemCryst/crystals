@@ -53,7 +53,7 @@
 ^^WI                                 '#SCRIPT XRESTR_NSIM_N_GEND'
 ^^WI                                  DISABLEIF='IN' ENABLEIF='SEL2'
 ^^WI                     ITEM _GRESA '&Angle at _A'
-^^WI                                 '#SCRIPT XRESTR _NANGLE _N_A _N_GEND'
+^^WI                                 '#SCRIPT XRESTR_NANGLE_N_A_N_GEND'
 ^^WI                                  DISABLEIF='IN' ENABLEIF='SEL3'
 ^^WI                     ITEM _GRESP '&Plane' '#SCRIPT XRESTR_NPLANE_N_GEND'
 ^^WI                                  DISABLEIF='IN SEL1 SEL2'
