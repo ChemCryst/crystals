@@ -378,7 +378,6 @@ PUNCH = ' //   CPUNCH TO CRYSTALS
 %      COPY 'WRITE'
 %      COPY 'END'
 %    END IF
-%    END IF                                                                     
 %  END LOOP                                                                     
 %%                                                                              
 % END IF    
