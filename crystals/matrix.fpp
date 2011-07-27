@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2011/07/01 13:42:45  djw
+C Change the dot product module name from VPROD to DPROD
+C
 C Revision 1.20  2009/06/03 09:04:04  djw
 C Highlight singularities in RED on monitor
 C
@@ -836,6 +839,19 @@ C----- FORM THE UN-NORMALISED VECTOR (cross) PRODUCT
       C(3)=A(1)*B(2)-A(2)*B(1)
       RETURN
       END
+C
+CODE FOR FDPROD
+      FUNCTION FDPROD(A,B) 
+C----- THE SUBROUTINE DPROD PACKAGED AS A FUNCION
+C      FOR USE IN EXPRESSIONS
+C----- RETURN VALUE IS THE PRODUCT.
+C 
+      DIMENSION A(3), B(3)
+      CALL DPROD(A,B,C)
+      FDPROD = C
+      RETURN
+      END
+C
 CODE FOR DPROD
       SUBROUTINE DPROD(A,B,C)
 C----- FORM THE SCALAR (DOT) PRODUCT.
