@@ -20,12 +20,12 @@
 %%
 ^^WI  @ 4,2 GRID ZZZ NROWS=14 NCOLS=7 OUTLINE='Data Files'  
 ^^WI  {                       
-^^WI     @ 2,2 STATIC T1 'Instrument cifs:'                                          
-^^WI     @ 4,2 RADIOBUTTON NO 'Nonius Kccd' INFORM STATE=ON 
+^^WI     @ 2,2 STATIC T1 'Basic data cifs:'                                          
+^^WI     @ 4,2 RADIOBUTTON NO 'Nonius Kccd' INFORM 
 ^^WI     @ 5,2 RADIOBUTTON AG 'Agilent' INFORM
 ^^WI     @ 6,2 RADIOBUTTON RI 'Rigaku' INFORM        
-^^WI     @ 7,2 RADIOBUTTON GD 'Generalised (WinGX)' INFORM        
-^^WI     @ 7,4 RADIOBUTTON PP 'Pre-processed'
+^^WI     @ 7,2 RADIOBUTTON GD 'Generalised (WinGX)' INFORM STATE=ON        
+^^WI     @ 7,4 RADIOBUTTON PP 'Pre-processed' INFORM
 %%
 ^^WI     @ 2,6 STATIC T2 'SHELX files:'                                          
 ^^WI     @ 4,6 RADIOBUTTON SI 'SHELX ins or res files' INFORM
@@ -66,8 +66,8 @@
 %     BLOCK                         %BROWSE%                                    
 %%
 ^^WI    SYSOPENFILE 
-^^WI '*.cif;*.cmf;*.fcf;*.cif_od;|ALL FILES|*.*;'
-^^WI 'SHELX|*.ins;*.res;*.hkl;|CRYSTAL|*.dat;*.cry|CIF'
+^^WI '*.ins;*.res;*.hkl;|ALL FILES|*.*;'
+^^WI 'CIF|*.cif;*.cmf;*.fcf;*.cif_od;|CRYSTAL|*.dat;*.cry|SHELX'
 ^^CR                                                                            
 %       GET SILENT NOSTORE TEXT 'New filename:' 'CANCEL'                                                                              
 %       IF CVALUE .NE. 'CANCEL' THEN                                            
@@ -85,6 +85,20 @@
 %         EVALUATE CEXTN = UPPERCASE ( CEXTN )
 %         EVALUATE CROOT = GETTITLE ( C_FILE )
 %         EVALUATE CROOT = UPPERCASE ( CROOT )
+%% CLEAR ALL THE RADIOBUTTONS
+^^CO SET NO STATE=OFF
+^^CO SET AG STATE=OFF
+^^CO SET RI STATE=OFF
+^^CO SET GD STATE=OFF
+^^CO SET PP STATE=OFF
+^^CO SET SI STATE=OFF
+^^CO SET S4 STATE=OFF
+^^CO SET S5 STATE=OFF
+^^CO SET CD STATE=OFF
+^^CO SET CC STATE=OFF
+^^CO SET FA STATE=OFF
+^^CO SET FR STATE=OFF
+^^CO SET FM STATE=OFF
 %         IF ( CROOT .EQ. 'FROM-CIF' )  THEN 
 ^^CO        SET PP STATE=ON  
 %         ELSE IF ( CEXTN .EQ. 'CRY' ) .OR.  ( CEXTN .EQ. 'DAT' ) THEN 
@@ -97,8 +111,10 @@
 ^^CO        SET SI STATE=ON  
 %         ELSE IF ( CEXTN .EQ. 'HKL' )  THEN 
 ^^CO        SET S4 STATE=ON  
+%         ELSE IF ( CEXTN .EQ. 'CIF_OD' )  THEN 
+^^CO        SET AG STATE=ON  
 %         ELSE
-^^CO        SET NO STATE=ON  
+^^CO        SET GD STATE=ON  
 %         END IF
 %%
 %       END IF                                                                  
