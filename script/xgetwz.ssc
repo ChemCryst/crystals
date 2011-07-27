@@ -4,6 +4,12 @@
 % EVALUATE WAVE = 0.0
 % EVALUATE ZMAX = 0.0
 %%
+% IF ( EXISTS ( 1 ) .NE. 1 ) THEN
+{I **** No cell paramters present (list 1)
+{R             I could have done with that information to                       
+{R             recommend what to do with the Friedel pairs.                     
+%  FINISH
+% END IF
 % IF ( EXISTS ( 13 ) .NE. 1 ) THEN                                              
 %   COPY '#LIST 13'                                                             
 %   COPY 'END'                                                                  
