@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.105  2011/04/21 11:18:49  rich
+C Fix perhydro of disordered parts
+C
 C Revision 1.104  2011/04/08 12:56:30  djw
 C Add new alternative 'Mode = ATOM'
 C
@@ -1190,7 +1193,7 @@ C      DISTANCE
 C      ANGLE
         NWA=9
 C      ?
-        NWS=4
+        NWS=4   !stack used by xfpces - must be 4
         NW=13
 C----- SAVE SOME SPACE FOR THE TARGET RADIUS IN RESTRAINTS
         IF (IPUNCH .EQ. 0) NW=14
