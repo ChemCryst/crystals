@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.178  2011/06/13 14:24:37  djw
+C Increase word length for unidentifed radiation
+C
 C Revision 1.177  2011/05/23 16:07:58  rich
 C For abs config normal probability plot, use weight instead of sigma.
 C Fix axis on normal normal probability plot.
@@ -3069,11 +3072,11 @@ C--CHECK IF ANY COORDINATES HAVE BEEN REFINED
 
 1150  CONTINUE
       MD12A=ISTORE(L12A+1)
-      NPAR = JV - JU
       JU=ISTORE(L12A+2)
       JV=ISTORE(L12A+3)
       JT=ISTORE(L12A+4)
       JP=JT-1
+      NPAR = JV - JU
 
 C--SEARCH FOR THE CONTRIBUTIONS TO EACH PARAMETER IN TURN
       DO JW=JU,JV,MD12A
