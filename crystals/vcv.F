@@ -1,20 +1,72 @@
-c outstanding:
-c only accepts atom names.
-c returns inverse matrix for named atom positions only
-c needs to ne scaled by degrees-of-freedom/minimisation-function
+C $Log: not supported by cvs2svn $
+C outstanding:
 c
+c The module vcv (used during development) needs updating to use KATOMS 
+c (see TORSION) and probably no longer works. (july 2011)
+c
+C remember variance is esd ^ 2
+C only accepts atom names.
+C returns inverse matrix for named atom positions only
+C 
+C FORMAT OF THE KATOMU OUTPUT STACK:
+C
+C   0  LINK LOCATION OR 'NOWT'
+C   1  LENGTH OF THE ENTRY  (NOT SET HERE)
+C   2  TYPE
+C   3  SERIAL
+C   4  NOT USED ('NOWT')
+C   5  NUMBER OF PARAMETERS
+C   6  ADDRESS OF THE FIRST PARAMETER REL. TO MQ OR 'NOWT'
+C   7  S
+C   8  L
+C   9  T(X)
+C  10  T(Y)
+C  11  T(Z)
+C  12  ADDRESS OF THE ATOM IN LIST 5 ('NOWT')
+C  13  ADDRESS OF THE ATOM IN LIST 12 ('NOWT')
+C  14  NOT USED ('NOWT')
+C  15  ADDRESS OF THE GENERATED PARAMETERS ('NOWT')
+C  16  ADDRESS OF THE PARAMETERS TO BE USED ('NOWT')
+C
+C LIST 5 PARAMETER FORMAT:
+C
+C   0  TYPE
+C   1  SERIAL
+C   2  OCC
+C   3  FLAG
+C   4  X
+C   5  Y
+C   6  Z
+C   7-12 UIJ
+C
+C
+C DISTANCE-TYPE STACK (SOME ITEMS NOT USED IN THIS CONTEXT):
+C
+C   0 I  ADDRESS OF ATOM IN L5 (USE THIS TO FIND THE ATOM TYPE & SERIAL)
+C   1    ACCEPTANCE FLAG (NOT USED) 
+C   2 I  S, THE SYMMETRY MATRIX TO BE USED (NEGATIVE FOR CofS)
+C   3 I  NON-PRIMITIVE LATTICE INDICATOR
+C   4 I  T(X)
+C   5 I  T(Y)
+C   6 I  T(Z)
+C   7 R  TRANSFORMED X
+C   8 R  TRANSFORMED Y
+C   9 R  TRANSFORMED Z
+C  10    DISTANCE (NOT USED)
+C  11    DISTANCE SQUARED (NOT USED)
+C  12 I  ADDRESS IN LIST 12.
+C  13    TARGET CONTACT DISTANCE FOR RESTRAINTS (NOT USED)
+C
 CODE FOR VCV
       SUBROUTINE VCV
 C 
 C     CREATE THE vCv MATRIX FOR THE SPECIFIED ATOMS
 C--
       INCLUDE 'ICOM12.INC'
-C 
       INCLUDE 'ISTORE.INC'
       INCLUDE 'TYPE11.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'XSTR11.INC'
-C 
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XCNTRL.INC'
       INCLUDE 'XCONST.INC'
@@ -24,7 +76,6 @@ C
       INCLUDE 'XLEXIC.INC'
       INCLUDE 'XLISTI.INC'
       INCLUDE 'XLST01.INC'
-      INCLUDE 'XLST02.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST11.INC'
       INCLUDE 'XLST12.INC'
@@ -37,6 +88,7 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QSTR11.INC'
 C 
+      CHARACTER*4 CTYPE
 C 
       DATA IVERSN/001/
 C 
@@ -46,304 +98,295 @@ C--PRINT THE PAGE HEADING
       CALL XPRTCN
 C--CLEAR THE CORE
       CALL XCSAE
+      CTYPE = 'Test'
 C----- SPACE FOR ATOM HEADERS
-      MQ=KSTALL(100)
+      MQ = KSTALL(100)
 C----- COMMAND BUFFER
-      IDIMBF=50
-      ICOMBF=KSTALL(IDIMBF)
+      IDIMBF = 50
+      ICOMBF = KSTALL(IDIMBF)
 C----- ZERO THE BUFFER
       CALL XZEROF (ISTORE(ICOMBF),IDIMBF)
 C----- COMMON BLOCK OFFSET(-1) FOR INPUT LIST
-      IMDINP=35
+      IMDINP = 35
 C----- INITIALSE LEXICAL PROCESSING
-      ICHNG=1
+      ICHNG = 1
       CALL XLXINI (INEXTD,ICHNG)
       INCLUDE 'IDIM12.INC'
 C 
 C--MAIN INSTRUCTION CYCLING LOOP
-100   CONTINUE
-      IDIRNM=KLXSNG(ISTORE(ICOMBF),IDIMBF,INEXTD)
-      IF (IDIRNM.LT.0) GO TO 100
-      IF (IDIRNM.EQ.0) GO TO 1550
+50    CONTINUE
+      IDIRNM = KLXSNG(ISTORE(ICOMBF),IDIMBF,INEXTD)
+      IF (IDIRNM.LT.0) GO TO 50
+      IF (IDIRNM.EQ.0) GO TO 1950
 C--NEXT RECORD HAS BEEN LOADED  -  BRANCH ON THE TYPE
-C   1.ATOMS  2.execute 3.This Program
-      GO TO (250,900,200,150),IDIRNM
-150   CONTINUE
+C   1.ATOMS  2.ACTION  3. EVALUATE 4. EXECUTE 5.QUIT 6.DIRECTIVE
+      GO TO (300,1500,850,50,1850,150,100),IDIRNM
+100   CONTINUE
       GO TO 1800
 C 
-200   CONTINUE
-c
-C--LOAD THE RELEVANT LISTS
+C  ---- vcv DIRECTIVE ITSELF
+150   CONTINUE
+C -- LOAD THE RELEVANT LISTS 
+C    DONE HERE BECAUSE WE NEED TO KNOW INPUT TYPE (MAY BE 5 OR 10)
       CALL XFAL01
       CALL XFAL02
-      IF (IERFLG.LT.0) GO TO 1750
-      IULN5=KTYP05(ISTORE(ICOMBF+IMDINP))
+      IF (IERFLG.LT.0) GO TO 1850
+      IULN5 = KTYP05(ISTORE(ICOMBF+IMDINP))
       CALL XLDR05 (IULN5)
-      IF (IERFLG.LT.0) GO TO 1750
-C--LIST READ IN OKAY  -  SET UP THE INITIAL CONTROL FLAGS
-C--SET THE FLAG TO INDICATE NO ATOMS STORED AT PRESENT
-      NATOM=0
+      IF (IERFLG.LT.0) GO TO 1850
 C----- LOAD LIST 12
-      JQ=0
-      JS=1
+      JQ = 0
+      JS = 1
 C--LOAD LIST 12
       CALL XFAL12 (JS,JQ,JU,JV)
 C--LOAD LIST 11
-      CALL XFAL11 (1,1)
+      CALL XFAL11 (1,0)
       IF (IERFLG.LT.0) THEN
-         GO TO 1700
+         GO TO 1850
       END IF
-
-c      write(ncwu,'(a/,(4i10))') 'List 5',
-c     1 L5,M5,MD5,N5, L5A,M5A,MD5A,N5A, 
-c     2 L5LSC,M5LSC,MD5LSC,N5LSC, L5O,M5O,MD5O,N5O, 
-c     3 L5LS,M5LS,MD5LS,N5LS, L5ES,M5ES,MD5ES,N5ES, 
-c     4 L5BS,M5BS,MD5BS,N5BS, L5CL,M5CL,MD5CL,N5CL,
-c     5 L5PR,M5PR,MD5PR,N5PR, L5EX,M5EX,MD5EX,N5EX
-
-
-c      write(ncwu,'(a/,(4i10))') 'List 12',
-c     1 L12,M12,MD12,N12, L12A,M12A,MD12A,N12A, 
-c     2 L12B,M12B,MD12B,N12B, L12O,M12O,MD12O,N12O, 
-c     3 L12LS,M12LS,MD12LS,N12LS, L12ES,M12ES,MD12ES,N12ES, 
-c     4 L12BS,M12BS,MD12BS,N12BS, L12CL,M12CL,MD12CL,N12CL,
-c     5 L12PR,M12PR,MD12PR,N12PR, L12EX,M12EX,MD12EX,N12EX
-
-c      write(ncwu,'(a/,(4i10))') 'List 11',
-c     1 L11,M11,MD11,N11,L11R,M11R,MD11R,N11R, 
-c     2 L11P,M11P,MD11P,N11P,L11IR,M11IR,MD11IR,N11IR 
-
-
       IF (ISTORE(L11P+15).GE.0) THEN
-         IF (ISSPRT.EQ.0) WRITE (NCWU,950)
-         WRITE (CMON,950)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,200)
+         WRITE (CMON,200)
          CALL XPRVDU (NCVDU,3,0)
-950      FORMAT (' Matrix is wrong type for e.s.d.''s')
+200      FORMAT (' Matrix is wrong type for e.s.d.''s')
          CALL XERHND (IERWRN)
-         IESD=-1
-         GO TO 1750
+         IESD = -1
+         GO TO 1850
       END IF
 C--APPLY THE CORRECT MULTIPLICATION FACTOR TO THE MATRIX
-      C=STORE(L11P+17)/STORE(L11P+16)
-      M11=L11+N11-1
-      DO 1000 I=L11,M11
-         STR11(I)=STR11(I)*C
-1000  CONTINUE
-      GO TO 100
+C      NOTE THAT PUNCH 11 C LISTS JUST THE UNSCALED INVERSE MATRIX
+      C = STORE(L11P+17)/STORE(L11P+16)
+      M11 = L11+N11-1
+      DO 250 I = L11,M11
+         STR11(I) = STR11(I)*C
+250   CONTINUE
+C      SAVE THE STORE ADDRESSES
+      NFLSAV = NFL
+      LFLSAV = LFL
+      GO TO 50
 C 
 C 
 C--'ATOM' INSTRUCTION
-250   CONTINUE
-      LEF1=-1
-      LEF=0
-      Z=1.
-      NATOM=0
-      IERR=+1
-cdjwdec09 Create an atom stack similar to the D/A stack
+300   CONTINUE
+      NATOM = 0
+C     RECOVER MEMORY
+      LFL = LFLSAV
+      NFL = NFLSAV
+      LEF1 = -1
+      LEF = 0
+C  Z NOT USED AT THE MOMENT.
+      Z = 1.
+      IERR = +1
+C  Create an atom stack similar to the D/A stack
       JSTACK = LFL
       ISTACK = JSTACK
-      LSTACK = 14   !SHOULD THIS BE THE SAME AS NW LATER?
+      LSTACK = 14      !SHOULD THIS BE THE SAME AS NW LATER?
 C--CHECK FOR SOME ARGUMENTS
-      IF (KFDARG(I)) 300,400,400
+      IF (KFDARG(I)) 350,450,450
 C--ERROR(S)  -  INCREMENT THE ATOM ERROR COUNT
-300   CONTINUE
-      LEF2=LEF2+1
-      IERR=-1
-      GO TO 100
-C--CHECK IF THERE ARE MORE ARGUMENTS ON THIS CARD
 350   CONTINUE
-      IF (KOP(8)) 800,400,400
-C--CHECK IF NEXT ARGUMENT IS A NUMBER
+      LEF2 = LEF2+1
+      IERR = -1
+      GO TO 50
+C--CHECK IF THERE ARE MORE ARGUMENTS ON THIS CARD
 400   CONTINUE
-      IF (KSYNUM(Z)) 500,450,500
+      IF (KOP(8)) 750,450,450
+C--CHECK IF NEXT ARGUMENT IS A NUMBER
 450   CONTINUE
-      ME=ME-1
-      MF=MF+LK2
-C--READ THE NEXT GROUP OF ATOMS
+      IF (KSYNUM(Z)) 550,500,550
 500   CONTINUE
-C--PROCESS THE OUTPUT FROM THE LEXICAL SCANNER TO FIND
-       IF (KATOMU(LN)) 550,550,600
-C--ERRORS  -  INCREMENT THE ATOM ERROR COUNT
+      ME = ME-1
+      MF = MF+LK2
+C--READ THE NEXT GROUP OF ATOMS
 550   CONTINUE
-      LEF2=LEF2+1
-      IERR=-1
-      GO TO 1500
-c
-C--MOVE ATOMS TO STACK WITH CORRECT L5 and L12 addresses
+C--PROCESS THE OUTPUT FROM THE LEXICAL SCANNER TO FIND ATOMS
+      IF (KATOMU(LN)) 600,600,650
+C--ERRORS  -  INCREMENT THE ATOM ERROR COUNT
 600   CONTINUE
-      mstart = mq
-c      write(ncwu,*) ' '
-c      write(ncwu,*) 'm5a=',m5a, ' md5a ', md5a, ' n5a', n5a
-c      write(ncwu,*) 'm11a=',m11a, ' md11a ', md11a, ' n11a', n11a
-c      write(ncwu,*) 'm12a=',m12a, ' md12a ', md12a, ' n12a', n12a
-      m5tmp = m5a
-      l12tmp = l12a
-620   continue
-c      write(ncwu,*) ' '
-c      write(ncwu,*) 'Atom stack at mstart=',mstart
-c      write(ncwu,*) (istore(mstart+itemp),itemp=0,16)
-            istack = istack - lstack
-            lfl = lfl - lstack
-            istore(istack) = m5tmp
-            istore(istack+12) = l12tmp
-            call xmovei(istore(mstart+7), istore(istack+2),5)
-c      write(ncwu,*)'Dist stack '
-c      write(ncwu,*) (istore(istack+itemp),itemp=0,13)
+      LEF2 = LEF2+1
+      IERR = -1
+      GO TO 1750
+C 
+C--MOVE ATOMS TO STACK WITH CORRECT L5 and L12 addresses
+650   CONTINUE
+C
+C
+      write(ncwu,'(a)') ' Distance Stack'
 
-            natom = natom + 1
-            mstart = istore(mstart)
-            m5tmp = m5tmp + md5a
-            l12tmp = l12tmp + md12a
-      if (mstart .gt. 0) then
-            goto 620
-      endif
-      GO TO 350
-c
-800   CONTINUE
-      LEF2=LEF2+LEF
+      MSTART = MQ
+      M5TMP = M5A
+      L12TMP = L12A
+C 
+700   CONTINUE   !loop back here until katomu stack exhausted
+C     create a distance-type stack
+C 
+      ISTACK = ISTACK-LSTACK
+      LFL = LFL-LSTACK
+      ISTORE(ISTACK) = M5TMP
+      ISTORE(ISTACK+12) = L12TMP
+C           S,L,T,T,T
+      CALL XMOVEI (ISTORE(MSTART+7),ISTORE(ISTACK+2),5)
+C           x', y', z'
+      CALL XMOVE (STORE(M5TMP+4),STORE(ISTACK+7),3)
+      NATOM = NATOM+1
+
+      write(ncwu,6543) natom, istore(istack),
+     1 (istore(istack+kkdjw),kkdjw=2,6),
+     2 (store(istack+kkdjw),kkdjw=7,9),istore(istack+12)
+6543  format('*',i4,2x,i12,5i4,3f10.3,i12)
+
+
+
+
+      MSTART = ISTORE(MSTART)
+      M5TMP = M5TMP+MD5A
+      L12TMP = L12TMP+MD12A
+      IF (MSTART.GT.0) THEN
+         GO TO 700
+      END IF
+      GO TO 400
+C 
+750   CONTINUE
+C     END OF CARD
+      LEF2 = LEF2+LEF
 C--CHECK THAT THERE IS AT LEAST ONE ATOM ON THIS CARD
-      write(ncwu,*) 'natom=', natom
-c----- save the start of the stack
-      jstack = istack
-      lfl = lfl - 1
-      IF (NATOM.GE.1) GO TO 100
+C----- save the start of the stack
+      JSTACK = ISTACK
+      LFL = LFL-1
+      IF (NATOM.GE.1) GO TO 50
 C--NO ATOMS ON THIS CARD
       CALL XPCLNN (LN)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,850)
-      WRITE (NCAWU,850)
-      WRITE (CMON,850)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,800)
+      WRITE (CMON,800)
       CALL XPRVDU (NCVDU,1,0)
-850   FORMAT (' No atoms found')
-      GO TO 300
-c
-c
-c
-900   CONTINUE
-C      'EXECUTE'
-      write(ncwu,*) 'Execute.  Natom=', natom
-      IF (NATOM.LE.0) GO TO 100
-C----- SET NPARAM PER ATOM (3 for x,y,z)
-      NPARAM=3
-C--SET UP THE SYSTEM FOR E.S.D.'S
-      NWPT= NATOM*NPARAM
-      NWP = NATOM*NPARAM
-      nws = 4
-      NW=13
-      JU=1
-      JV=3
-C--SET A FEW AREAS OF CORE FOR E.S.D. CALCLATION
-      JA=NFL
-      MXPPP=50! MAXIMUM NUMBER OF PARTS PER PARAMETER.
-C        JD = JA + NWA * NWS * MXPPP
-      JD=JA+NWP*NWS*MXPPP
-      NZ=NWPT*NWPT  !NWPT 
-      JE=JD+NZ
-      JF=JE+NZ
-      JG=JF+NZ
-      JH=JG
-      JJ=JG+NWP*NWP
-      JK=JJ
-      JM=JJ+NWP*NWP
-      JN=JM
-      JP=JM+NWPT*NWPT
-      JQ=JP
-      JPART= JP+NWPT*NWPT
-C--COMPUTE THE LENGTH OF THE DATA AREA
-      JS=JPART+MXPPP - NFL
-C--ALLOCATE THE SPACE
-      LN=9
-      IREC=1001
-      I=KCHNFL(JS)
-C 
-C--ZERO THE AREA INITIALLY
-      CALL XZEROF (STORE(JA),JS)
-C----- now loop over the stored atoms
-      ISTACK = JSTACK + (natom-1)*lstack
-      IPART = JPART
-      JB = JA
-
-
-      DO 1450 I=1,NATOM
-      write(ncwu,'(//a,i4)')'Atom No', I
-c      write(ncwu,'(7i10,3f12.4,3i10)') istore(istack),
-c     1   istore(istack+1),(istore(istack+itmp),itmp=2,6),
-c     2   (store(istack+itmp), itmp=7,9),
-c     3   istore(istack+10),istore(istack+11),istore(istack+12)
-
-
-         M12TMP = ISTORE(ISTACK+12)
-         jtemp = jb
-
-
-         CALL XFPCES (M12TMP,JB,NWS,ISTORE(IPART))
-
-12345  format(i3,a,i12,2(a,i12),4x,4i12)
-
-c      write(ncwu,'(a/,(3i10,f5.2))') 'FPCES stack', 
-c     1 istore(jtemp),istore(jtemp+1),istore(jtemp+2),store(jtemp+3), 
-c     2 istore(jtemp+4),istore(jtemp+5),istore(jtemp+6),store(jtemp+7), 
-c     3istore(jtemp+8),istore(jtemp+9),istore(jtemp+10),store(jtemp+11)
-
-1350     CONTINUE
-         IPART = IPART + 1
-         ISTACK = ISTACK - LSTACK
-1450  CONTINUE
-
-
-
-C--CALCULATE THE V/CV MATRIX FOR THE POSITIONAL ERRORS
-
-         CALL XCOVAR (JA, NWP, NWS, JD,JE,ISTORE(JPART),NATOM)
-
-      jdjw = jd
-      do kdjw = 1, nwp
-      write(ncwu,'(/)')
-      write(ncwu,'(6G12.4)') 
-     1 (store(idjw),idjw=jdjw,jdjw+nwp-1)
-      jdjw = jdjw+nwp
-      enddo
+800   FORMAT (' No atoms found')
+      GO TO 350
 C 
 C 
 1500  CONTINUE
-      LEF=LEF+1
+C      'ACTION'
+      IF (NATOM.LE.0) GO TO 50
+      LEVEL = 1
+      I = IGETVCV(NATOM, JSTACK, LSTACK, IOUT,LEVEL)
+c
+      IF ( I .LE. 0 ) THEN
+            LEF1 = LEF1 + 1
+      ELSE
+            LEF1 = 0
+      ENDIF
+C
+c     GET NEXT INPUT
+      GO TO 50
+C
+C
+C--'EVALUATE' INSTRUCTION  -  CURRENTLY NOT USED
+C   cOULD BE USED TO COMPUTE FUNCTIONS OF ATOMS AND THE ESDS
+850   CONTINUE
+      IF (LEF1) 900,1000,900
+C--ERROR BECAUSE NO GROUP HAS BEEN PROCESSED
+900   CONTINUE
+      CALL XPCLNN (LN)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,950) CTYPE
+      WRITE (NCWU,950) CTYPE
+      WRITE (CMON,950) CTYPE
+      CALL XPRVDU (NCVDU,1,0)
+      WRITE (123,'(a)') CMON(1)(:)
+950   FORMAT (' Instruction ignored','  -  no ',A,' has been calculated
+     1',' or errors have been detected')
+      GO TO 50
+C--START TO PROCESS THE CARD
+1000  CONTINUE
+C      IF (KFDARG(I)) 50,1050,1050
+C--PRINT A CAPTION
+1050  CONTINUE
+C--CHECK THE CORE AREA
+C      LFL = LFL-MD5A
+C      IF (NFL+27-LFL) 1100,1100,1900
+1100  CONTINUE
+C      CALL XMLTMM (ROF,XCA,XCR,3,3,1)
+C--CHECK THE TYPE OF THE NEXT ARGUMENT
+C      IF (ISTORE(MF)) 1150,1250,1250
+C--CHARACTERS  -  CHECK FOR 'ALL'
+1150  CONTINUE
+C      IF (KCOMP(1,ISTORE(MF+2),CTARG,1,1)) 1250,1250,1450
+C--CHECK IF THERE ARE MORE ARGUMENTS TO BE PROCESSED
+1200  CONTINUE
+C      IF (KOP(8)) 50,1250,1250
+C--FIND THE NEXT GROUP OF ATOMS
+1250  CONTINUE
+C      IF (KATOMU(LN)) 1850,1850,1300
+C--LOOP OVER EACH OF THE ATOMS WE HAVE FOUND
+1300  CONTINUE
+C      IF (JPUNCH.NE.0) WRITE (NCPU,'(a)') '# EVALUATED ATOMS'
+C      DO 1400 J = 1,N5A
+C--GENERATE THE TRANSFORMED COORDS.
+C         IF (KATOMS(MQ,M5A,LFL)) 1750,1750,1350
+C--COMPUTE THE BEST PLANE COORDS.
+1350     CONTINUE
+C         CALL XMLTMM (RCA,STORE(LFL+4),STORE(LFL+7),3,3,1)
+C         M5A = M5A+MD5A
+1400  CONTINUE
+C      GO TO 1200
+C 
+C--PRINT ALL THE ATOMS IN LIST 5
+1450  CONTINUE
+C      J = L5
+C
+C PRINT VCV MATRIX AS TEST 
+C
+      WRITE (NCWU,'(//a)') 
+     1 ' Variance-covariance matrix of selected atoms'
+C
+      NWP = NATOM*3
+      JDJW = IOUT
+      DO 1700 KDJW = 1,NWP
+         WRITE (NCWU,'(/)')
+         WRITE (NCWU,'(9G12.4)') (STORE(IDJW),IDJW = JDJW,JDJW+NWP-1)
+         JDJW = JDJW+NWP
+1700  CONTINUE
+c
+c
+      nparam = 3*natom
+      IDJW = NFL
+      JDJW = NFL+nparam
+      KDJW = NFL+2*nparam
+      CALL XFILL(1.0, STORE(IDJW), nparam)
+      CALL XMLTMM (STORE(IOUT),STORE(IDJW),STORE(JDJW),nparam,nparam,1)
+      CALL XMLTTM (STORE(IDJW),STORE(JDJW),STORE(KDJW),1,nparam,1)
+      WRITE(NCWU,'(//A,2G15.4)') 
+     1' DPROD', STORE(KDJW), sqrt(STORE(KDJW))
+
+      GO TO 50
+C
+C 
+1750  CONTINUE
+C   PROCESSING OF CARD ABANDONED
+      LEF = LEF+1
       CALL XPCA (I)
-      GO TO 100
+      GO TO 50
 C 
 C--MAIN TERMINATION ROUTINES
 C 
-1550  CONTINUE
-      GO TO 1950
-C 
-1600  CONTINUE
-      GO TO 1950
+1830  continue
+      write(ncwu,'(a)') '1830'
 C -- ERRORS
-1650  CONTINUE
-1700  CONTINUE
-      CALL XOPMSG (IOPTLS,IOPABN,0)
-      GO TO 1600
-C -- INPUT ERRORS
-      CALL XOPMSG (IOPTLS,IOPCMI,0)
-      GO TO 1650
-C 
-1750  CONTINUE
+1850  CONTINUE
 C -- ERRORS
       CALL XOPMSG (IOPAXS,IOPABN,0)
-      GO TO 1600
-1800  CONTINUE
+      GO TO 1950
 C -- INPUT ERRORS
+1800  CONTINUE
       CALL XOPMSG (IOPAXS,IOPCMI,0)
-      GO TO 1750
+      GO TO 1850
 C 
-1850  CONTINUE
-C -- INSUFFICIENT SPACE
-      CALL XOPMSG (IOPREF,IOPSPC,0)
-      GO TO 1700
 C--NOT ENOUGH CORE
 1900  CONTINUE
-      I=0
-      J=0
+C -- INSUFFICIENT SPACE
+      CALL XOPMSG (IOPREF,IOPSPC,0)
+      I = 0
+      J = 0
       CALL XSTICA (I,J)
-      GO TO 1600
+      GO TO 1950
 C 
 1950  CONTINUE
       CALL XOPMSG (IOPTLS,IOPEND,IVERSN)
@@ -351,4 +394,241 @@ C
       CALL XCSAE
       CALL XRSL
       RETURN
+      END
+C
+
+
+CODE FOR IGETVCV
+      FUNCTION IGETVCV(NATOM, JSTACK, LSTACK, IOUT, LEVEL)
+C
+C      RETURN VALUES
+C      -1 FAIL
+C       1 OK
+C
+C IMPORTANT. NOTE STACK IS STORED AT THE TOP OF STORE
+C
+C      NATOM - NUMBER OF ATOMS IN STACK
+C      JSTACK - START OF STACK
+C      LSTACK - LENGTH OF EACH ENTRY IN STACK - PROBABLY 14
+C      START OF VCV MATRIX - SET HERE
+C      LEVEL 0 NO OUTPUT / 1 STACK OUTPUT
+C
+C      CRETATE A VCV MATRIX FOR ATOMS STORED IN A STACK
+C DISTANCE-TYPE STACK (SOME ITEMS NOT USED IN THIS CONTEXT):
+C
+C   0 I  ADDRESS OF ATOM IN L5 (USE THIS TO FIND THE ATOM TYPE & SERIAL)
+C   1    ACCEPTANCE FLAG (NOT USED) 
+C   2 I  S, THE SYMMETRY MATRIX TO BE USED (NEGATIVE FOR CofS)
+C   3 I  NON-PRIMITIVE LATTICE INDICATOR
+C   4 I  T(X)
+C   5 I  T(Y)
+C   6 I  T(Z)
+C   7 R  TRANSFORMED X
+C   8 R  TRANSFORMED Y
+C   9 R  TRANSFORMED Z
+C  10    DISTANCE (NOT USED)
+C  11    DISTANCE SQUARED (NOT USED)
+C  12 I  ADDRESS IN LIST 12.
+C  13    TARGET CONTACT DISTANCE FOR RESTRAINTS (NOT USED)
+C
+      DIMENSION SMAT(3,3)
+      INCLUDE 'ICOM12.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'TYPE11.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XSTR11.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST11.INC'
+      INCLUDE 'XLST12.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XUNITS.INC'
+c---- removed by djw July 2011 - not needed here and clashes with
+c     calling routines
+c      INCLUDE 'XCONST.INC'
+c      INCLUDE 'XFLAGS.INC'
+c      INCLUDE 'XCHARS.INC'
+c      INCLUDE 'XLEXIC.INC'
+c      INCLUDE 'XLISTI.INC'
+C      INCLUDE 'XWORKA.INC'
+C 
+      INCLUDE 'QLST12.INC'
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'QSTR11.INC'
+C
+C----- SET NPARAM PER ATOM (3 for x,y,z)
+      NPARAM = 3
+C--SET UP THE WORKSPACE FOR E.S.D.'S
+      NWP = NATOM*NPARAM
+      NWS = 4
+      NW = 13
+      JU = 1
+      JV = 3
+C--SET A FEW AREAS OF CORE FOR E.S.D. CALCLATION
+      JA = NFL
+      MXPPP = 50       ! MAXIMUM NUMBER OF PARTS PER PARAMETER.
+      JD = JA+NWP*NWS*MXPPP
+      NZ = NWP*NWP      !NWP
+      JE = JD+NZ
+      JF = JE+NZ
+      JG = JF+NZ
+      JPART = JG+NWP*NWP
+      NPARAM = 3
+      NWP = NATOM*NPARAM
+C 
+C--COMPUTE THE LENGTH OF THE DATA AREA
+      JS = JPART+MXPPP-NFL
+C--ALLOCATE THE SPACE
+      LN = 9
+      IREC = 1001
+      I = KCHNFL(JS)
+C--ZERO THE AREA INITIALLY
+      CALL XZEROF (STORE(JA),JS)
+C      save space for the initial vcv matrix, the overall
+C      symmetry matrices, work area and the final vcv matrix
+      IAREA = NWP*NWP
+      IIN = NFL
+      IOUT = NFL+IAREA
+      ISYMM = IOUT+IAREA
+      IWORK = ISYMM+IAREA
+      I = KCHNFL(4*IAREA)
+      CALL XZEROF (STORE(IIN),4*IAREA)
+C 
+C----- now loop over the stored atoms
+      ISTACK = JSTACK+(NATOM-1)*LSTACK
+      IPART = JPART
+      JB = JA
+C 
+      DO 1650 I = 1,NATOM
+         IRES = KATOMZ(ISTACK+2,SMAT)
+         IF (IRES.LE.0) GO TO 1850
+         IF ((ISSPRT.EQ.0).AND.(LEVEL.EQ.1))
+     1    WRITE (NCWU,'(A4,I5, 5I4,3F8.4)') STORE(ISTORE(ISTACK)),
+     2    NINT(STORE(ISTORE(ISTACK)+1)),(STORE(IDJW),IDJW = ISTACK+2,
+     3    ISTACK+9)
+C 
+C  FORM THE TOTAL SYMMETRY MATRIX
+C 
+C      column and row addresses
+         IADD = (I-1)*NPARAM*NWP
+         IROW = (I-1)*NPARAM
+         DO 1600 K = 1,NPARAM
+            KADD = (K-1)*NWP
+            DO 1550 J = 1,NPARAM
+               ICELL = IADD+IROW+KADD+J-1
+               STORE(ISYMM+ICELL) = SMAT(J,K)
+1550        CONTINUE
+1600     CONTINUE
+C 
+         M12TMP = ISTORE(ISTACK+12)
+C 
+C      FORM POSITIONAL COORDINATE ERROR STACK
+C
+         CALL XFPCES (M12TMP,JB,NWS,ISTORE(IPART))
+C 
+         IPART = IPART+1
+         ISTACK = ISTACK-LSTACK
+1650  CONTINUE
+C--CALCULATE THE V/CV MATRIX FOR THE POSITIONAL ERRORS
+C 
+      CALL XCOVAR (JA,NWP,NWS,JD,JE,ISTORE(JPART),NATOM)
+      CALL XMOVE (STORE(JD),STORE(IIN),IAREA)
+C pre and post multiply VCV by symmetry matrix
+      CALL XMLTMM (STORE(ISYMM),STORE(IIN),STORE(IWORK),NWP,NWP,NWP)
+C 
+      CALL XMLTMT (STORE(IWORK),STORE(ISYMM),STORE(IOUT),NWP,NWP,NWP)
+C
+C      SCALE BY CELL EDGES - 
+C      sHOULD THIS BE PRE/POST MULT BY ORTHOGONALISATION MATRIX?
+      CALL XZEROF(STORE(IIN), IAREA)
+      J = IWORK
+      DO I=1, NATOM
+        STORE(J) = STORE(L1P1)
+        STORE(J+NWP+1) = STORE(L1P1+1)
+        STORE(J+NWP+NWP+2) = STORE(L1P1+2)
+        J = J + 3*NWP+NPARAM
+      ENDDO
+      CALL XMLTMM (STORE(IWORK),STORE(IOUT),STORE(IIN),NWP,NWP,NWP)
+      CALL XMLTMM (STORE(IIN),STORE(IWORK),STORE(IOUT),NWP,NWP,NWP)
+C 
+      IGETVCV = 1
+      GOTO 1900
+1850  CONTINUE
+C      FAIL
+      IGETVCV = -1
+1900  CONTINUE
+      RETURN
+      END
+C
+C
+C
+CODE FOR KATOMZ
+      FUNCTION KATOMZ (LOCD,SMAT)
+C--GET SYMMETRY INFORMATION STORED
+C  IN AN ATOM HEADER.
+C  SMAT IS THE ROTATIONAL PART OF THE SYMMETRY
+C 
+C  LOCD  LOCATION OF THE SYMMETRY DATA s, l, tx, ty,tz
+C  SMAT  3X3 SYMMETRY MATRIX
+C 
+C--RETURN VALUES ARE :
+C 
+C  -1  ERROR IN FORMING THE ATOM
+C  >0  ok
+C 
+      DIMENSION SMAT(9)
+C 
+C--
+      INCLUDE 'ISTORE.INC'
+C 
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XLST02.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'QSTORE.INC'
+C 
+C 
+C--CHECK THAT THE SYMMETRY OPERATORS ARE VALID
+      M = IABS(ISTORE(LOCD))-1
+      IF (M) 450,50,50
+50    CONTINUE
+      IF (M-N2) 100,450,450
+100   CONTINUE
+      IF (ISTORE(LOCD+1)) 450,450,150
+150   CONTINUE
+      IF (ISTORE(LOCD+1)-N2P) 200,200,450
+200   CONTINUE
+      A = FLOAT(ISTORE(LOCD))
+      A = SIGN(1.,A)
+C--APPLY THE SYMMETRY MATRIX
+      M = M*MD2+L2
+C      SAVE THE SYMMETRY MATRIX
+      CALL XMOVE (STORE(M),SMAT,9)
+      DO 300 III = 1,9
+         SMAT(III) = A*SMAT(III)
+300   CONTINUE
+      KATOMZ = 1
+400   CONTINUE
+      RETURN
+C 
+C--ERRORS FOUND
+450   CONTINUE
+      I = LOCD
+      J = LOCD+4
+      CALL XERHDR (0)
+      IF (ISSPRT.EQ.0) THEN
+         WRITE (NCWU,500) (ISTORE(K),K = I,J)
+      END IF
+      WRITE (CMON,500) (ISTORE(K),K = I,J)
+      CALL XPRVDU (NCVDU,1,0)
+500   FORMAT (' Illegal symmetry operators specified',3X,'S(I)  = ',I4,
+     13X,'L  = ',I4,3X,'With translations : ',3I4)
+      I = 100
+      KATOMZ = -1
+      GO TO 400
       END
