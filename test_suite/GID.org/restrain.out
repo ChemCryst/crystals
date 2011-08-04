@@ -1896,11 +1896,11 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  Work stack header at     569  :  -1000000         6      -244         0   -999436         0
  Function at     564  :   11   Nolist    
 #FINI                                                                                                                                                                                                                                                           
- Physical reads        309 Physical writes        394 Cache hits      11525
- Cache hit distribution     8892     862     349     185     123      88
- Cache hit distribution       52      54      50      95     125      55
- Cache hit distribution       67      39      34      63      50      38
- Cache hit distribution       39      79      75      54      33      24
+ Physical reads        319 Physical writes        394 Cache hits      11578
+ Cache hit distribution     8894     896     353     187      46     162
+ Cache hit distribution       57      33      56      75     142      44
+ Cache hit distribution       69      63      30      45      78      23
+ Cache hit distribution       48      61      90      58      52      16
 
 
           : Job ends ok       with     0 warnings and     0 errors

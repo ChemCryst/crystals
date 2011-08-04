@@ -2305,11 +2305,11 @@ Mean C-C su =   0.0048
 
   KEY                                                 1             2
 #FINI                                                                                                                                                                                                                                                           
- Physical reads        535 Physical writes        914 Cache hits      23358
- Cache hit distribution    19087    1353     418     292     279     124
- Cache hit distribution       96     132     124     150     228      54
- Cache hit distribution       80     118      97      55     109      95
- Cache hit distribution       96     154      89      74      45       9
+ Physical reads        552 Physical writes        914 Cache hits      23455
+ Cache hit distribution    19100    1384     418     316     138     242
+ Cache hit distribution      111      78      91     130     257     115
+ Cache hit distribution       63     104     116      59      98      94
+ Cache hit distribution      119     140     117      73      50      42
 
 
           : Job ends ok       with     0 warnings and     0 errors

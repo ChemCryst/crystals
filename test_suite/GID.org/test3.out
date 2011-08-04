@@ -9059,11 +9059,11 @@ SumFo/SumFc=     1.884      LS-scale=     1.000      Wilson Scale=     0.000
 
    12 *  221 170 200 130 176 212 198 157 187 109 171 190 178 140 173  94 164 172 164 136 161 100 162 171 161 141
 #END                                                                                                                                                                                                                                                            
- Physical reads       4370 Physical writes       4559 Cache hits     142279
- Cache hit distribution   117907    6113    2808    2019    1906    1442
- Cache hit distribution      979    1108     589     951     908     620
- Cache hit distribution      553     674     470     430     390     301
- Cache hit distribution      378     329     375     346     316     367
+ Physical reads       4744 Physical writes       4559 Cache hits     142446
+ Cache hit distribution   117949    6187    2831    2020    1353    1999
+ Cache hit distribution     1110     765     535     904     979     511
+ Cache hit distribution      688     643     735     209     472     425
+ Cache hit distribution      315     377     397     379     374     289
 
 
           : Job ends ok       with     7 warnings and     0 errors
