@@ -5702,22 +5702,22 @@ AZIMUTH  =    59.34     AZIMUTH /100 =   0.5934
 #TORSION                                                                                                                                                                                                                                                        
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
+ IPBFLG, LEVEL, JESD           1           0           0           1
 
 
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
 
 
- A positive rotation is clockwise from atom 1 to atom 4,                                                                                                                                                                                                        
- when viewed from atom 2 to atom 3                                                                                                                                                                                                                              
-
-                                                      Torsion angle in degrees                                                                                                                                                                                  
-      P(1) to       C(1) to       C(2) to       C(3)  -176.7     0.0                                                                                                                                                                                            
-      P(1) to       C(1) to       C(2) to       C(4)  -177.7     0.0                                                                                                                                                                                            
-      P(1) to       C(1) to       C(2) to       C(5)  -178.0     0.0                                                                                                                                                                                            
-      P(1) to       C(1) to       C(2) to       C(6)  -178.3     0.0                                                                                                                                                                                            
-      P(1) to       C(1) to       C(2) to       O(7)  -178.2     0.0                                                                                                                                                                                            
-      P(1) to       C(1) to       C(2) to       C(8)   142.3     0.0                                                                                                                                                                                            
-      P(1) to       C(1) to       C(2) to C(9,-2,1,-1)  -127.4     0.0                                                                                                                                                                                          
+ A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3                                                                                                                                                                                
+ The su is computed from the mean atomic variances                                                                                                                                                                                                              
+                                                      Torsion angle & su
+      P(1) to       C(1) to       C(2) to       C(3)        -176.7    0.0
+      P(1) to       C(1) to       C(2) to       C(4)        -177.7    0.0
+      P(1) to       C(1) to       C(2) to       C(5)        -178.0    0.0
+      P(1) to       C(1) to       C(2) to       C(6)        -178.3    0.0
+      P(1) to       C(1) to       C(2) to       O(7)        -178.2    0.0
+      P(1) to       C(1) to       C(2) to       C(8)         142.3    0.0
+      P(1) to       C(1) to       C(2) to C(9,-2,1,-1)      -127.4    0.0
 
 
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
@@ -5728,12 +5728,12 @@ AZIMUTH  =    59.34     AZIMUTH /100 =   0.5934
      1 ATOMS P(1) UNTIL C(2) 
  Not enough atoms provided                                                                                                                                                                                                                                      
  Processing of the card above has been abandoned
-                                                      Torsion angle in degrees
+                                                      Torsion angle & su
      2 ATOMS P(1) UNTIL C(2) C(2) 
- An atom has appeared more than once for an angle                                                                                                                                                                                                               
+ An atom has appeared more than once in the list                                                                                                                                                                                                                
  Processing of the card above has been abandoned
-                                                      Torsion angle in degrees
-      P(1) to       C(1) to       C(2) to       P(1)     0.0     0.0                                                                                                                                                                                            
+                                                      Torsion angle & su
+      P(1) to       C(1) to       C(2) to       P(1)           0.0    0.0
 #TITLE SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                                                                                                                                                                                      
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 2                                                                                                                                                                                                                                                         
@@ -9059,11 +9059,11 @@ SumFo/SumFc=     1.884      LS-scale=     1.000      Wilson Scale=     0.000
 
    12 *  221 170 200 130 176 212 198 157 187 109 171 190 178 140 173  94 164 172 164 136 161 100 162 171 161 141
 #END                                                                                                                                                                                                                                                            
- Physical reads       4744 Physical writes       4559 Cache hits     142446
- Cache hit distribution   117949    6187    2831    2020    1353    1999
- Cache hit distribution     1110     765     535     904     979     511
- Cache hit distribution      688     643     735     209     472     425
- Cache hit distribution      315     377     397     379     374     289
+ Physical reads       4749 Physical writes       4559 Cache hits     142442
+ Cache hit distribution   117949    6187    2831    2018    1360    1994
+ Cache hit distribution     1108     767     536     901     977     498
+ Cache hit distribution      705     643     736     205     474     413
+ Cache hit distribution      319     386     398     370     383     284
 
 
           : Job ends ok       with     7 warnings and     0 errors
