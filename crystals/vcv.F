@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.4  2011/08/04 16:07:10  djw
+C More or less works. The outer process xvcv does not use KATOMS to apply symmetry.  See TORSION for a better example.
+C xgetvcv seems to work ok if a distance-type stack is set up. In TORSION the atomic coordinates are also available and were used
+C to verify that the torsion esd routine could calculate the same torsion value as the otiginal code.
+C
 C outstanding:
 c
 c The module vcv (used during development) needs updating to use KATOMS 
@@ -554,6 +559,19 @@ C      sHOULD THIS BE PRE/POST MULT BY ORTHOGONALISATION MATRIX?
       CALL XMLTMM (STORE(IWORK),STORE(IOUT),STORE(IIN),NWP,NWP,NWP)
       CALL XMLTMM (STORE(IIN),STORE(IWORK),STORE(IOUT),NWP,NWP,NWP)
 C 
+        NWP = NATOM*3
+        IF((ISSPRT.EQ.0).AND.(LEVEL.EQ.1)) THEN
+         WRITE (NCWU,'(/a/)')
+     1  'Variance-covariance matrix of selected atoms (x10^6)'
+         JDJW = IOUT
+         DO 7700 KDJW = 1,NWP
+          WRITE (NCWU,'(12F8.3)') 
+     1    (1000000*STORE(IDJW),IDJW = JDJW,JDJW+NWP-1)
+          JDJW = JDJW+NWP
+7700     CONTINUE
+         WRITE (NCWU,'(//)')
+        ENDIF
+c
       IGETVCV = 1
       GOTO 1900
 1850  CONTINUE

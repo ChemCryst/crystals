@@ -480,17 +480,6 @@ c
 CDJWJUL2011  USE FULL VCV IF AVAILABLE
       IF (IESD .EQ. 1) THEN
         I = IGETVCV(4, JSTACK, LSTACK, IOUT, LEVEL)
-c      NWP = NATOM*3
-        NWP = 4*3
-        IF((ISSPRT.EQ.0).AND.(LEVEL.EQ.1)) THEN
-         WRITE (NCWU,'(/a/)')
-     1  'Variance-covariance matrix of selected atoms'
-         JDJW = IOUT
-         DO 7700 KDJW = 1,NWP
-          WRITE (NCWU,'(9G12.4)') (STORE(IDJW),IDJW = JDJW,JDJW+NWP-1)
-          JDJW = JDJW+NWP
-7700     CONTINUE
-        ENDIF
 c       TRANSPOSE THE MATRIX OF ORTHOGONAL COORDINATES TO GET ATOMS BY
 C       COLUMNS
         CALL XTRANS(R, RI, 4, 3)
@@ -527,6 +516,7 @@ c
         ENDIF
       ENDIF
 2806  FORMAT (2A, ' to ', 2A, ' to ', 2A, ' to ', 2A, T60,4F7.1)
+c
 C--CHECK IF THERE ARE MORE ATOMS
       IF(NATOM)1200,1200,2500
 C
