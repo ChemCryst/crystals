@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2011/08/08 10:44:34  djw
+C Move print of vcv matrix from torsion into igetvcv in vcv
+C
 C Revision 1.7  2007/10/09 07:07:13  djw
 C Use Mario Nardeli's torsion esd code
 C
@@ -633,7 +636,7 @@ C
       CALL XMLTMM(VECTOR, SCRATCH, ZZZ, 1, 12, 1)
 C----- CHECK FOR -VE VARIANCE DUE TO ROUNDING ERRORS
 C      ALLOW TO FAIL (ZZZ SET TO NaN) IF VERY -VE.
-      IF (ABS(ZZZ(1)).LE. ZERO)  ZZZ(1) = ZEROSQ
+      IF (ABS(ZZZ(1)).LE. ZEROSQ)  ZZZ(1) = ZEROSQ
 C
       ESD = SQRT(ZZZ(1)) * RTD
 C
