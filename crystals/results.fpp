@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.179  2011/07/27 12:04:08  djw
+C JU and JV were used before they were initialised. The results was never used.
+C
 C Revision 1.178  2011/06/13 14:24:37  djw
 C Increase word length for unidentifed radiation
 C
@@ -7026,7 +7029,6 @@ C      ipunch  no/yes/rest  0/1/2
 C 
       PARAMETER (NPLT=7)
       DIMENSION IFOPLT(2*NPLT+1), IFCPLT(2*NPLT+1)
-      DIMENSION LISTS(6)
       DIMENSION DATC(401)
       DIMENSION TEMP(2)
       DIMENSION APROP(12)
@@ -7035,6 +7037,7 @@ C
       CHARACTER*80 LINE
       CHARACTER*40 FORM
       CHARACTER*36 HKLLAB
+      CHARACTER*3 CTYPE(2)
 C 
       INCLUDE 'ISTORE.INC'
 C 
@@ -7047,6 +7050,7 @@ C
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST23.INC'
       INCLUDE 'XLST28.INC'
       INCLUDE 'XLST30.INC'
       INCLUDE 'XERVAL.INC'
@@ -7059,9 +7063,11 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QSTR11.INC'
 C 
-      DATA NLISTS/6/
+      PARAMETER (NLISTS=7)
+      DIMENSION LISTS(NLISTS)
       DATA LISTS(1)/5/,LISTS(2)/6/,LISTS(3)/28/,LISTS(4)/30/,LISTS(5)/1/
-      DATA LISTS(6)/2/
+      DATA LISTS(6)/2/,LISTS(7)/23/
+      DATA CTYPE(1)/'Fo '/,CTYPE(2)/'Fsq'/
 C 
 C      set packing constants
       PARAMETER (NPAK=256)
@@ -7104,6 +7110,8 @@ C--FIND OUT IF LISTS EXIST
             IF (KHUNTR(2,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL02
          ELSE IF (LSTNUM.EQ.5) THEN
             IF (KHUNTR(5,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL05
+         ELSE IF (LSTNUM.EQ.23) THEN
+            IF (KHUNTR(23,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL23
          ELSE IF (LSTNUM.EQ.28) THEN
             IF (KHUNTR(28,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL28
          ELSE IF (LSTNUM.EQ.30) THEN
@@ -7126,6 +7134,11 @@ C----- MULTIPLIER TO CORRECT Fc FOR FLACK PARAMETER VALUE
 C- COMPUTE Friedif and <D^2>
       I=KCPROP(APROP)
       FRIEDIF=APROP(11)
+      IFTYPE = ISTORE(L23MN+1)+2
+c      WRITE(123, *)'Refinement type =',CTYPE(IFTYPE)
+c      write(123,1)
+1     format(6x,'Fsq',10x,'SigFsq',6x,'Est Sig',8x,'Fo',11x,
+     1       'SigFo',7x,'1/sqrtW')
 C 
 C 
 C------ SET UP PLOT OUTPUT
@@ -7258,11 +7271,22 @@ C       pack into h1
       SIG=STORE(M6+12)
 C----- RETURN THE SIGNED STRUCTURE AMPLITUDE AND THE CORRESPONDING SIGMA
 C      FROM A SIGNED STRUCTURE FACTOR
-      CALL XSQRF (FSQ,FSIGN,FABS,SIGSQ,SIG)
+      CALL XSQRF (FSQ,FSIGN,FABS,SIGFSQ,SIG)
       FOK1=FSQ*SCALE
-c      SIG1=SIGSQ*SCALE
-      SIG1 = STORE(M6+4)
-	  IF ( SIG1 .GT. 0.0001 ) SIG1 = 1./SIG1
+      SIG1=SIGFSQ*SCALE
+CDJWAUG2011 - 
+C-FOR SIMON. CREATE A PSUEDO-SIGMA FROM THE WEIGHT
+      if (iftype .eq.1) then
+c            refinement on F 
+             sigest = 2. * fsign / store(m6+4)
+      else
+             sigest = 1./ store(m6+4)
+      endif
+c      write(123,123) fsq, sigfsq,sigest,fsign,sig,1./store(m6+4)
+c      write(123,*)ctype(iftype),sig1,scale*sqrt(sigest)
+Comment out the next line to use the observed sigma Fsq
+      SIG1 = SCALE*SQRT(SIGEST) 
+123   format(3f12.2,3x,3f12.2)
       FCK1=STORE(M6+5)*STORE(M6+5)
       FRIED1=STORE(M6+18)
 C 
@@ -7283,11 +7307,21 @@ C       pack into h2
       SIG=STORE(M6+12)
 C----- RETURN THE SIGNED STRUCTURE AMPLITUDE AND THE CORRESPONDING SIGMA
 C      FROM A SIGNED STRUCTURE FACTOR
-      CALL XSQRF (FSQ,FSIGN,FABS,SIGSQ,SIG)
+      CALL XSQRF (FSQ,FSIGN,FABS,SIGFSQ,SIG)
       FOK2=FSQ*SCALE
-C      SIG2=SIGSQ*SCALE
-      SIG2 = STORE(M6+4)
-	  IF ( SIG2 .GT. 0.0001 ) SIG2 = 1./SIG2
+      SIG2=SIGFSQ*SCALE
+CDJWAUG2011 
+C-FOR SIMON. CREATE A PSUEDO-SIGMA FROM THE WEIGHT
+      if (iftype .eq.1) then
+c            refinement on F 
+             sigest = 2. * fsign / store(m6+4)
+      else
+             sigest = 1./ store(m6+4)
+      endif
+c      write(123,123) fsq, sigfsq,sigest,fsign,sig,1./store(m6+4)
+c      write(123,*)ctype(iftype),sig2,scale*sqrt(sigest)
+Comment out the next line to use the observed sigma Fsq
+      SIG2 = SCALE*SQRT(SIGEST)
       FCK2=STORE(M6+5)*STORE(M6+5)
       FRIED2=STORE(M6+18)
 C 
