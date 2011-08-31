@@ -1,5 +1,8 @@
 C234567890C234567890C234567890C234567890C234567890C234567890C234567890123
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.22  2008/10/01 11:11:54  djw
 C Support for treatment of Deuterium as hydrogen
 C
@@ -4381,6 +4384,7 @@ C--                       Note that this is not selective enough, as the
 C--                       order of bonds to S is arbitrary.
 C--
       IF(ISTORE(AELEM-1+I).EQ.81 .AND. ISTORE(NCAC+I-1).EQ.4) THEN
+         KOXY = 0
          IAT=I
          CALL SAMCON(IAT,BOND,BTYPE,NBOCRY,NCON,ICON,ICOB,IPIB)
          DO 200 J=1,NCON
