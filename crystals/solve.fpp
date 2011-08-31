@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.48  2011/05/04 11:48:19  rich
+C Output L12 size as comment at top of MATLAB output.
+C
 C Revision 1.47  2011/03/21 13:57:22  rich
 C Update files to work with gfortran compiler.
 C
@@ -1433,7 +1436,9 @@ c
         call outcol(1)
         if (issprt .eq. 0) write(ncwu,'(//a//)') cmon(1)
       endif
-      djwscl =  min(shift, scalsv)
+c      djwscl =  min(shift, scalsv)
+c ric11 - shift is not initialised.
+      djwscl =   scalsv
 C
 cdjwdec06
 c----- rewrite list 33 to disk in case scalefactors have been changed
@@ -2421,7 +2426,8 @@ C--CALCULATE THE NECESSARY CORRECTION TERM
 cdjwjul07
 c----- DU[ISO] in SFLSG needs to be scaled if there are
 c      partial shifts by factor from SFLSE
-      B=STORE(JX+1)-B * DJWSCL
+      B=(STORE(JX+1)-B) * DJWSCL
+cric11 - added brackets around difference above.
 c
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1650)B
@@ -2714,6 +2720,7 @@ C
       INCLUDE 'STORE.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
       INCLUDE 'QSTORE.INC'
       data ctype/'Occ', 'U[iso]', 'x','y','z','U[11]','U[22]','U[33]', 
      1 'U[23]', 'U[13]', 'U[12]'/ 
