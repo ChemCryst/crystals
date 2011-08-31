@@ -1,4 +1,13 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.180  2011/08/12 14:09:18  djw
+C Create a psuedo-esd from the least-squares weight for Simon P.  Fraught with dangers. Uncomment some of the writes to 123 to see
+C how the estimated sigma compares with the actual sigma.
+C The npp looks good with natural sigmas, but has a non-unit slope with pseudo-sigmas.
+C Conversion of weight to pseudo-sigma depends upon the kind of refinement (F or Fsq)
+C
+C It's been tested on a handfull of structures, and luckily, except for the slope of the npp plot. there is not much difference in the Hoof
+C parameters.
+C
 C Revision 1.179  2011/07/27 12:04:08  djw
 C JU and JV were used before they were initialised. The results was never used.
 C
@@ -771,7 +780,7 @@ C--END OF THE REFLECTIONS  -  EXIT
       IF (ISSPRT .EQ. 0) THEN
       IF ( ILSTRF .GT. 0 ) WRITE ( NCWU,'(A)' ) CHAR(12)
       ENDIF
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
       IF ( IPCHRF .GT. 0 ) WRITE ( NCPU ,'(A)' ) CHAR(12)
 #endif
 1720  CONTINUE
@@ -1043,7 +1052,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       IF( ILSTRF .GT. 0) WRITE(NCWU, '(A)') CHAR(12)
       ENDIF
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
       IF( IPCHRF .GT. 0) WRITE(NCPU, '(A)') CHAR(12)
 C--CLEAR THE PRINT LINE TO BLANKS
 #endif
@@ -1350,7 +1359,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
         IF(ILSTCO .GT. 0) WRITE(NCWU,'(A)')CHAR(12)
       ENDIF
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
       IF(IPCHCO .EQ. 1) WRITE(NCPU,'(A)')CHAR(12)
 C
 C----- OUTPUT THE OVERALL PARAMETERS
@@ -1728,7 +1737,7 @@ C
           J=J+NXF
           CALL SNUM(STORE(MP),BPD(MPD),NXD,NOP,J,LINEA)
           IF (IPCHCO .EQ. 3) THEN  
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
             WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
 #else
             WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
@@ -1790,7 +1799,7 @@ C----- INDICATE THAT THERE ARE SOME U[ANISO] TO PRINT
 C----- PRINT THE ISO OR EQUIV TEMPERATURE FACTOR
         CALL SNUM(BUFF(2),BPD(2),NUD,NOP,J,LINEA)
         IF (IPCHCO .EQ. 3) THEN
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
           WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
 #else
           WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
@@ -1813,7 +1822,7 @@ c            w = store(m5+2)*store(m5+13)
         endif
         CALL SNUM ( W, BPD(1), NUD, NOP, J, LINEC)
         IF (IPCHCO .EQ. 3) THEN  
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
           WRITE(CHTML,'(80A1)') LINEC(LOJ:J+4)
 #else
           WRITE(CHTML,'(80A1)') (LINEC(JR),JR=LOJ,J+4)
@@ -1847,7 +1856,7 @@ C--END OF THE PAGE  -  START A NEW PAGE
         IF (ISSPRT .EQ. 0) THEN
           IF ( ILSTCO .GT. 0 ) WRITE( NCWU , '(A)') CHAR(12)
         ENDIF
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
       IF ( IPCHCO .EQ. 1 ) WRITE(NCPU, '(A)') CHAR(12)
 #endif
         CALL STATX(LINEB)
@@ -2139,7 +2148,7 @@ C--LOOP OVER THE PARAMETERS
       J=J+NUF
       CALL SNUM(STORE(MP),BPD(MPD),NUD,NOP,J,LINEA)
       IF (IPCHCO .EQ. 3) THEN  
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
           WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
 #else
           WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
@@ -2184,7 +2193,7 @@ C--NEW PAGE
       IF (ISSPRT .EQ. 0) THEN
       IF ( ILSTAN .GT. 0 ) WRITE( NCWU , '(A)') CHAR(12)
       ENDIF
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
       IF ( IPCHAN .EQ. 1 ) WRITE(NCPU, '(A)') CHAR(12)
 #endif
       CALL STATX(LINEB)
@@ -2368,7 +2377,7 @@ C
       DATA CCIF /
      3      '_refine_ls_extinction_coef','_oxford_refine_ls_scale' /
 C
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
       IFUNC = IFUNC
 CDJWMAY99 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
 #endif
@@ -2521,7 +2530,7 @@ C
 C
 C
 C
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
       IFUNC = IFUNC
 
 #endif
@@ -4672,7 +4681,7 @@ C###################################################################
         CALL XPCIF (' ')
 C-----  COPY HEADER INFORMATION FROM .CIF FILE
         CALL XMOVEI (KEYFIL(1,2),JDEV,4)
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
         CALL XRDOPN(6,JDEV,'CRYSDIR:script\refcif.dat',25)
 #else
         CALL XRDOPN(6,JDEV,'CRYSDIR:script/refcif.dat',25)
@@ -4686,7 +4695,7 @@ C-----  COPY HEADER INFORMATION FROM .CIF FILE
           GO TO 100
 150       CONTINUE
 C----- CLOSE THE FILE
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
           CALL XRDOPN(7,JDEV,'CRYSDIR:script\refcif.dat',25)
 #else
           CALL XRDOPN(7,JDEV,'CRYSDIR:script/refcif.dat',25)
@@ -4766,10 +4775,10 @@ c we dont need LIST 25, but it it exists, we chould use it
 c
 C################################################################
 
-      IF ( IPUNCH .EQ. 0 ) THEN
+      IF ( IPUNCH .GE. 0 ) THEN
 C-----  LOAD THE AVAILABLE REFERENCE TABLE
         CALL XMOVEI (KEYFIL(1,2),JDEV,4)
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
       CALL XRDOPN(6,JDEV,'CRYSDIR:script\reftab.dat',25)
 #else
       CALL XRDOPN(6,JDEV,'CRYSDIR:script/reftab.dat',25)
@@ -4807,7 +4816,7 @@ C
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
           END IF
 C      CLOSE THE REFERENCES FILE
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
        CALL XRDOPN(7,JDEV,'CRYSDIR:script\reftab.dat', 25)
 #else
        CALL XRDOPN(7,JDEV,'CRYSDIR:script/reftab.dat', 25)
@@ -4831,6 +4840,8 @@ c     call xrefpr (istore(lrefs),nrefs,mdrefs)
           CALL XPRVDU (NCVDU,1,0)
         END IF
       END IF
+
+
 C
 C################################################################
 C
@@ -6847,7 +6858,7 @@ C
 
       IF ( IPUNCH .EQ. 0 ) THEN
 C - NOW LIST THE REFERENCES
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
       CALL XRDOPN(6,JDEV,'CRYSDIR:script\reftab.dat',25)
 #else
       CALL XRDOPN(6,JDEV,'CRYSDIR:script/reftab.dat',25)
@@ -6867,7 +6878,7 @@ C - NOW LIST THE REFERENCES
 2550  CONTINUE
 
       IF ( IPUNCH .EQ. 1 ) THEN
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
       WRITE (NCPU,'(A)') CHAR(12)
 #endif
         WRITE (NCPU,'(5X,2A35)') ((CPAGE(I,J),J=1,NCOL),I=1,NROW)
@@ -6897,7 +6908,7 @@ C----- CLOSE THE 'CIF' OUTPUT FILE
       IF ( IPUNCH .EQ. 0 ) THEN
         CALL XRDOPN (7,KDEV,CSSCIF,LSSCIF)
 C      CLOSE THE REFERENCES FILE
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
        CALL XRDOPN(7,JDEV,'CRYSDIR:script\reftab.dat', 25)
 #else
        CALL XRDOPN(7,JDEV,'CRYSDIR:script/reftab.dat', 25)
@@ -7007,7 +7018,7 @@ C----- PRINT OUT THE USED-REFERENCES
 100   CONTINUE
       RETURN
 900   CONTINUE
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_) || defined(_INW_)
       CALL ZMORE ('Premature end',0)
 #endif
       RETURN
@@ -7500,16 +7511,18 @@ C  same sign
 C  opposite sign
                NMIN=NMIN+1
             END IF
-            IF (ABS(FOKD).LT.3.*ABS(FCKD)) THEN
-               XMAX=MAX(XMAX,ABS(FCKD))
-               YMAX=MAX(YMAX,ABS(FOKD))
-            END IF
+C -- RC 310811 -- Comment out next four lines - variables not used (or inited).
+c            IF (ABS(FOKD).LT.3.*ABS(FCKD)) THEN
+c               XMAX=MAX(XMAX,ABS(FCKD))
+c               YMAX=MAX(YMAX,ABS(FOKD))
+c            END IF
             IF (FCKD.NE.0.0) THEN
                RATIO=FOKD/FCKD
-               RATIO1=ABS(FCKD)/(FCK1+FCK2)
-               DCDOS=(FCKD-FOKD)/SIGM
-               DDP=MAX(DDP,DCDOS)
-               DDM=MIN(DDM,DCDOS)
+C -- RC 310811 -- Comment out next four lines - variables not used (or inited).
+c               RATIO1=ABS(FCKD)/(FCK1+FCK2)
+c               DCDOS=(FCKD-FOKD)/SIGM
+c               DDP=MAX(DDP,DCDOS)
+c               DDM=MIN(DDM,DCDOS)
                IF (SIGM.GT.0.0) THEN
                   WGHT=ABS(FCKD)/SIGM
                   SUM=SUM+WGHT*RATIO
@@ -8293,6 +8306,7 @@ c
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XLST30.INC'
+      INCLUDE 'XSSVAL.INC'
 c
       IF ( MODE .EQ. 0) THEN
 C INITIALISE
