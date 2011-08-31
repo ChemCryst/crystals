@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2011/05/13 16:03:34  djw
+C Fix the calls to kallow and their effect on the fcf listing
+C
 C Revision 1.20  2011/05/13 11:16:51  djw
 C Calls to Kallow now return a key to the test which failed and a value to indicate if it was Max or Min. The argument of KALLOW must be a variable
 C
@@ -1007,7 +1010,7 @@ C--RUN THROUGH THE MINIMA CONDITIONS
             IK = m6-j-1
             GOTO 1650
       ENDIF
-      K = K - 1
+c      K = K - 1  ! RC 310811 - removed this line - variable K does not exist
 1200  CONTINUE
 C--CHECK IF THERE ARE ANY MAXIMA CONDITIONS
 1250  CONTINUE
@@ -1021,7 +1024,7 @@ C--RUN THROUGH THE MAXIMA CONDITIONS
             IK = m6-j-1
             GOTO 1650
       ENDIF
-      K = K - 1
+c      K = K - 1 ! RC 310811 - removed this line - variable K does not exist
 1350  CONTINUE
 C--CHECK IF THERE ARE ANY SLICE CONDITIONS
 1400  CONTINUE
@@ -1367,7 +1370,7 @@ C -- PRODUCE DISPLAY IF REQUIRED
 C
       IF ( DISPL6 ) THEN
         IF ( N6R .GE. (N6D-1) ) THEN
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)&& !defined(_INW_)
           WRITE ( CMON,1505)
           CALL XPRVDU(NCVDU, 1, 0)
           WRITE(NCVDU,1505)
@@ -1375,7 +1378,7 @@ C
 1505      FORMAT ( 15X ,  12X, 'Processing reflections ')
 C          CALL VGACOL ( 'BOL', 'YEL', 'BLA' )
            CALL OUTCOL(6)
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)&& !defined(_INW_)
           WRITE(NCVDU,'(15X,''^'',$)')
 #endif
           NSTAR = 1
