@@ -13463,11 +13463,11 @@ WARNING - poor initial fit
 
     1 Poorly mapping groups                                                                                                                                                                                                                                     
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads       4439 Physical writes       2544 Cache hits      68970
+ Physical reads       4441 Physical writes       2544 Cache hits      68969
  Cache hit distribution    53075    2962    2304    1010     710    1210
- Cache hit distribution      557     441     576    1258     470     510
- Cache hit distribution      685     329     523     225     494     187
- Cache hit distribution      202     272     226     257     223     264
+ Cache hit distribution      557     441     576    1258     470     509
+ Cache hit distribution      685     329     524     224     494     187
+ Cache hit distribution      203     271     222     262     223     263
 
 
           : Job ends ok       with     0 warnings and     0 errors

@@ -35690,11 +35690,11 @@ SumFo/SumFc=     4.627      LS-scale=     4.642      Wilson Scale=     4.723
   KEY                                                 1             2             3
 #                                                                                                                                                                                                                                                               
 #END                                                                                                                                                                                                                                                            
- Physical reads      50423 Physical writes      52623 Cache hits    1420974
- Cache hit distribution  1231661   97970   17857    7855    9931    9094
- Cache hit distribution     4395    1699    2935    3741    3272    4514
- Cache hit distribution     4816    3137    1514    1309    1531    2033
- Cache hit distribution     3010    2057    1932    1636    1545    1530
+ Physical reads      50421 Physical writes      52623 Cache hits    1420992
+ Cache hit distribution  1231661   97954   17881    7859    9927    9088
+ Cache hit distribution     4400    1695    2913    3777    3271    4485
+ Cache hit distribution     4835    3139    1516    1302    1526    2024
+ Cache hit distribution     3009    2083    1930    1636    1549    1532
 
 
           : Job ends ok       with     0 warnings and     0 errors
