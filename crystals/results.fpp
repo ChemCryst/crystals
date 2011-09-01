@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.181  2011/08/31 15:42:56  rich
+C Removed uninitialised variables from #TON
+C
 C Revision 1.180  2011/08/12 14:09:18  djw
 C Create a psuedo-esd from the least-squares weight for Simon P.  Fraught with dangers. Uncomment some of the writes to 123 to see
 C how the estimated sigma compares with the actual sigma.
@@ -5047,21 +5050,7 @@ C Subscript second number in screws: 21,31,32,41 etc.
  
          IF ( IPUNCH .EQ. 0 ) THEN
 C DISPLAY EACH SYMMETRY OPERATOR
-           WRITE (NCFPU1,1000)
-1000       FORMAT ('loop_',/,' _symmetry_equiv_pos_as_xyz')
-           DO I=L2,M2,MD2
-             DO J=L2P,M2P,MD2P
-               CALL XMOVE (STORE(I),STORE(NFL),12)
-               DO K=1,ICENTR
-C NEGATE IF REQUIRED
-                  IF (K.EQ.2) CALL XNEGTR (STORE(I),STORE(NFL),9)
-                  CALL XSUMOP (STORE(NFL),STORE(J),CTEMP,LENGTH,1)
-                  CALL XCCLWC (CTEMP(1:LENGTH),CBUF(1:LENGTH))
-                  WRITE (NCFPU1,1050) CBUF(1:LENGTH)
-1050              FORMAT (1X,'''',A,'''')
-               END DO
-             END DO
-           END DO
+            CALL XCIF2(NCFPU1)
          END IF
 C
          IF ( IPUNCH .EQ. 0 ) THEN

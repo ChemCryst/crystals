@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.64  2011/05/19 11:04:43  rich
+C Correct description of L4 scheme 5 and 6 in XSUM04
+C Allow larger (2-digit) exponents on output weights in FCF.
+C Output zero for weight on omitted reflections.
+C
 C Revision 1.63  2011/05/13 16:03:34  djw
 C Fix the calls to kallow and their effect on the fcf listing
 C
@@ -1400,6 +1405,12 @@ C---- SCALE DOWN THE ELEMENTS OF THE V/CV MATRIX
 650       FORMAT ('_cell_angle_',A,T35,A)
           M1P1=M1P1+1
       END DO
+C
+C
+C      WRITE SYMMETRY_INFO
+C
+      CALL XCIF2(NCFPU1)
+C
       IF(KF .NE. KFR) WRITE(NCFPU1,'(/A,A/A)')
      1 '# Requested output type does not correspond to refinement',
      2 ' type','# Weights cannot be converted'
@@ -2109,10 +2120,11 @@ C -- ERRORS
       RETURN
       END
 
-CODE FOR xPCH1
+CODE FOR XPCH1
       SUBROUTINE XPCH1
 
       INCLUDE 'ISTORE.INC'
+C PUNCH LIST 1 IN CRYSTALS FORMAT
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XLST01.INC'
@@ -2137,3 +2149,48 @@ C
       RETURN
       END
 
+CODE FOR XCIF2
+      SUBROUTINE XCIF2(NDEVICE)
+C PUNCH  LIST 2 IN CIF FORMAT
+C
+C      NDEVICE -  DEVICE FOR OUT PUT
+c
+      CHARACTER CBUF*80,CTEMP*80
+c
+      INCLUDE 'ISTORE.INC'
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST02.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'QSTORE.INC'
+C
+      IF (KHUNTR (2,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL02
+      IF ( IERFLG .LT. 0 ) THEN
+       WRITE(CMON,'(A)')'LIST 2 not available'
+       CALL XPRVDU(NCVDU,1,0)
+       RETURN
+      ENDIF
+C
+           ICENTR=NINT(STORE(L2C))+1
+C
+C DISPLAY EACH SYMMETRY OPERATOR
+           WRITE (NDEVICE,1000)
+1000       FORMAT ('loop_',/,' _symmetry_equiv_pos_as_xyz')
+           DO I=L2,M2,MD2
+             DO J=L2P,M2P,MD2P
+               CALL XMOVE (STORE(I),STORE(NFL),12)
+               DO K=1,ICENTR
+C NEGATE IF REQUIRED
+                  IF (K.EQ.2) CALL XNEGTR (STORE(I),STORE(NFL),9)
+                  CALL XSUMOP (STORE(NFL),STORE(J),CTEMP,LENGTH,1)
+                  CALL XCCLWC (CTEMP(1:LENGTH),CBUF(1:LENGTH))
+                  WRITE (NDEVICE,1050) CBUF(1:LENGTH)
+1050              FORMAT (1X,'''',A,'''')
+               END DO
+             END DO
+           END DO
+      RETURN
+      END
