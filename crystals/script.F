@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.65  2011/06/10 16:00:15  rich
+C Avoid uninitialised script stack frames
+C
 C Revision 1.64  2011/05/04 11:31:29  rich
 C Avoid buffer overflows in script string manipulation functions.
 C
@@ -5107,7 +5110,7 @@ C
         IFLIND = IFLIND + 1
         IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
          WRITE(NCWU,1006) IFLIND, JDEV , ' ScriptQ'
-1006     FORMAT(' Opening File index=',I4, ' Unit =',I5,A)
+1006     FORMAT('SCRIPT    Opening File index=',I3, ' Unit =',I3,1X,A)
         ENDIF
 C
         IRDCPY(IFLIND) = 0
@@ -5329,10 +5332,19 @@ C
 C
       INCLUDE 'XSCDSC.INC'
 C
+      INCLUDE 'XSCGBL.INC'      
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
 C
       ISTAT = KSCSAD ( LEN ( CTEXT ) , IDESC )
       IF ( ISTAT .LT. 0 ) GO TO 9900
 C
+      if (iscver .gt. 0) then
+       write(cmon,1000) idesc, ctext(1:len(ctext))
+       call xprvdu(ncvdu,1,0)
+       if (issprt .eq. 0) write(ncwu,'(a)') cmon(1)
+1000   format(' Descriptor',i4,' = ',A)
+      endif
       CDESC(IDESCR(1,IDESC)) = CTEXT
 C
       KSCSCD = 1
@@ -7881,6 +7893,7 @@ C
       IF ( ISCSVE .GT. 0 ) THEN
         WRITE ( CMON, 1005 ) ITYPE
         CALL XPRVDU(NCVDU, 1,0)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
 1005    FORMAT ( 1X , 'Create stack frame of type : ' , I6 )
       ENDIF
 C
@@ -7920,6 +7933,7 @@ C
       IF ( ISCSVE .GT. 0 ) THEN
         WRITE ( CMON, 1015 ) ICURLV , INEWLV
         CALL XPRVDU(NCVDU, 1,0)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
 1015    FORMAT ( 1X , 'Current level :  ' , I5 , ' New level : ' , I5 )
       ENDIF
 C
@@ -7958,8 +7972,10 @@ C
       IF ( ISCSVE .GT. 0 ) THEN
         WRITE ( CMON, 2005 ) ( ISTACK(J,INEWLV) , J = 1 , LSTACK)
         CALL XPRVDU(NCVDU, 3,0)
+        IF (ISSPRT .EQ. 0) 
+     1  WRITE (NCWU,2005)(ISTACK(J,INEWLV),J=1,LSTACK)
 2005    FORMAT ( 1X , 'Contents of new stack level' , / ,
-     2 2 ( 1X , 10I8 , / ) )
+     2 2 ( 1X , 12I7 , / ) )
       ENDIF
 C
 C -- UPDATE CURRENT STACK LEVEL
@@ -8154,7 +8170,7 @@ C----- RECOVER SCRIPT NAME
 c
 cdjwjun07
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a,a)' ) 
-     1 'Testing ',cscpnm(1:lennm)
+     1 'Processing ',cscpnm(1:lennm)
       IF ( CPRVNM(1:3) .NE. CSPACE(1:3) ) THEN
       WRITE(CMON(1),'(5A)')
      1'Script: ',CSCPNM(1:LENNM),
@@ -8169,17 +8185,17 @@ cdjwjun07
 cdjwdec09
 C
       IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1005 ) IRDREC(IFLIND),CCOMP(ISCCOM),
-     2                      CERROR(IERROR)(1:LNERR(IERROR)) ,
-     3                      CTYPE(ITYPE)(1:LNTYPE(ITYPE))
+      WRITE ( NCWU , 1005 ) IFLIND,IRDREC(IFLIND),IDSCP,
+     2             CCOMP(ISCCOM),CERROR(IERROR)(1:LNERR(IERROR)) ,
+     3             CTYPE(ITYPE)(1:LNTYPE(ITYPE))
       ENDIF
-      WRITE ( CMON, 1005 )  IRDREC(IFLIND),CCOMP(ISCCOM),
-     2                      CERROR(IERROR)(1:LNERR(IERROR)) ,
-     3                      CTYPE(ITYPE)(1:LNTYPE(ITYPE))
-      CALL XPRVDU(NCVDU, 3,0)
-1005  FORMAT ( / 1X , 'CRYSTALS SCRIPT error, line ',I4,
-     1 ' - Failing component is ' ,
-     2 A , / ,
+      WRITE ( CMON, 1005 )  IFLIND,IRDREC(IFLIND),IDSCP,
+     2             CCOMP(ISCCOM),CERROR(IERROR)(1:LNERR(IERROR)) ,
+     3             CTYPE(ITYPE)(1:LNTYPE(ITYPE))
+      CALL XPRVDU(NCVDU, 4,0)
+1005  FORMAT ( / 1X , 'CRYSTALS SCRIPT error, file-index: ',I5,
+     1 '; line ',I4,'; descriptor:',i4/,
+     1 ' Failing component is ', A , / ,
      3 1X , A , 2X , A )
 C
 C -- OUTPUT A STRING VALUE, IF ONE WAS SUPPLIED
@@ -8261,6 +8277,7 @@ C
         LEVEL = ILEVEL(IFLIND)
         WRITE ( CMON, 1005 ) LEVEL , ISTACK(JBTYPE,LEVEL)
         CALL XPRVDU(NCVDU, 1,0)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
 1005    FORMAT ( 1X , 'Delete current stack level ' , I5 ,
      2 ' of type : ' , I5 )
       ENDIF
