@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.65  2011/05/04 11:47:43  rich
+C Added TODO comment.
+C
 C Revision 1.64  2011/03/30 16:07:41  rich
 C More time issues on WXS.
 C
@@ -934,7 +937,7 @@ C
       ISTAT = KFLCLS ( IUNIT )
       IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
        WRITE(NCWU,1006) IFLIND, IUNIT, NAME(1:NCHARS)
-1006   FORMAT(' Closing File index=',I3, ' Unit =',I4,A)
+1006   FORMAT('SPECIFIC  Closing File index=',I3, ' Unit =',I3,1X,A)
       ENDIF
       IFLIND = IFLIND - 1
       GO TO 1000

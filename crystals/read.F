@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.59  2011/05/04 11:31:02  rich
+C Fix string assignment.
+C
 C Revision 1.58  2011/04/21 13:11:45  djw
 C Add & for the French
 C
@@ -1169,7 +1172,7 @@ C with existing script calls in scripts which are usually uppercase.
 C
       IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
        WRITE(NCWU,1006) IFLIND, NCUFU(IFLIND) , CRFILE
-1006   FORMAT(' Opening File index=',I10, ' Unit =',I10,1X,A)
+1006   FORMAT('READ      Opening File index=',I3, ' Unit =',I3,1X,A)
       ENDIF
       I = KFLOPN ( NCUFU(IFLIND), CRFILE, ISSOLD, ISSREA, 1, ISSSEQ )
         IF ( I .GT. 0 ) THEN
@@ -4212,7 +4215,7 @@ C
         IFLIND = IFLIND + 1
       IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
        WRITE(NCWU,1006) IFLIND, NUSRQ , ' Srq'
-1006   FORMAT(' Opening File index=',I10, ' Unit =',I10,1X,A)
+1006   FORMAT('READ      Opening File index=',I3, ' Unit =',I3,1X,A)
       ENDIF
 C
 C------ THIS IS ONE OF THE FEW FILES NOT HANDLED BY XRDOPN
