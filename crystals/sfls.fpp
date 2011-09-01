@@ -1205,10 +1205,8 @@ cdjwjan05
 cdjwsep09
         istat = ksctrn (1,'sfls:rscale', rscle, 1)
         istat = ksctrn (1,'sfls:scale',  scale, 1)
-        write(cmon,'(5(a,f6.2,x))') 
+        write(cmon,'(3(a,f10.3,6x))') 
      1  'SumFo/SumFc=', rscle, 
-     1  'SumFoFc/SumFc^2=', sfofc/sfcfc,
-     1  'SumwFoFc/SumwFc^2=', wsfofc/wsfcfc,
      2  'LS-scale=', scale,
      3  'Wilson Scale=', wscle
         if (min(scale, rscle)/max(scale,rscle) .lt. 0.8) then
@@ -1670,10 +1668,6 @@ C----- GET THE OLD R FACTOR AND SET PRINT RATIO
       AMINF=0.
       SFO=0.0
       SFC=0.0
-      sfofc=0.0
-      sfcfc=0.0
-      wsfofc=0.0
-      wsfcfc=0.0
       NT=0
       ACE=0.
       ACF = 0.
@@ -2055,13 +2049,9 @@ C If #CALC, then L28 was adjusted earlier. Call KALLOW again to get normal R
           DFT=DFT+ABS(ABS(FO) - FCEXS)
           WDFT=WDFT+WDF*WDF  ! COMPUTE THE TERMS FOR THE WEIGHTED R-VALUE
           RW=RW+A*A
-          sfofc = sfofc + fo * fcext
-          sfcfc = sfcfc + fcext * fcext
-          wsfofc = wsfofc + w * fo * fcext
-          wsfcfc = wsfcfc + w * fcext * fcext
         ENDIF
-c
-c
+
+
           UJ=FO*SCALEK
           RDJW = ABS(WDF)
           IF (RDJW .GT. ABS(XVALUR)) THEN
