@@ -11368,22 +11368,32 @@ the surface.
 #J
  \TORSION INPUTLIST=
  ATOMS  SPECIFICATIONS
- PUBLICATION  PRINT=
+ PUBLICATION  PRINT= LEVEL=
  END
 
  \TORSION
  ATOM C(1) C(2) C(3) C(4)
  END
 #
-#PThe routines described in this section calculate torsion angles which
- are defined as follows. The torsion angle about the bond j-k
- is the angle the bond k-l is rotated from the ijk plane.
- It is positive when, on looking from ij to kl, the rotation is
- clockwise.
+#PCalculation of the torsion angles for atoms i,j,k,l. 
+ The torsion angle about the bond j-k
+ is the angle the bond i-j is rotated about j-k to bring it into 
+ coincidence with k-l.
+ It is positive when  the rotation is
+ clockwise on looking from j to k.
 #PThe program uses atomic positions taken from
  LIST 5.  These can be
  modified by the space group symmetry operators stored in LIST 2 (space
  group information, see section #RLIST02#)
+#P EDSs (SUs) are computed by the method of Nardelli (using code given 
+ to us from his program PARST) if only average atomic esds are 
+ avaialble.  If the full VcV matrix is avaiable, they are computed by 
+the method of Schaik et al (R. van Schaik, H Berendsen, A Torda & W 
+Gunsteren, J. Mol. Biol. (1993) 234, 751-762. The paper by U. Shmueli, 
+Acta Cryst (1974) A30, 848-849 explains the need for the full vcv matrix 
+and the effect of symmetry. The singularity in his equations (6) when tau is 
+0 or 180 is circumvented in Schaiks formulation (which is singular if 
+atoms j and k are coincident)
 #Q
 #I\TORSION INPUTLIST=#
 #KINPUTLIST#
@@ -11409,6 +11419,10 @@ the file open on the CRYSTALS PUNCH unit.
       YES    There is a publication listing sent to the PUNCH file
       CIF    The listing is in CIF format
 #
+#D LEVEL=#
+#QIf LEVEL is HIGH, the VcV marix of the atoms in each torsion angle
+ is printed.
+#
 #N   8#
 #J
  Example.
@@ -11417,7 +11431,7 @@ the file open on the CRYSTALS PUNCH unit.
  \
  \TORSION
  ATOMS N(2) C(3) C(4) C(5)
- ATOMS C(3) C(4) C(5) C(6) O(1)
+ ATOMS C(3) C(4) C(5) C(6) O(1,2,2)
  END
 #
 
