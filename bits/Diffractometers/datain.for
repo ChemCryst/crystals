@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2011/06/23 09:44:10  djw
+C Ensure final formula item is a digit or point.  If no, add "space 1"
+C
 C Revision 1.10  2011/06/08 11:19:40  djw
 C Reorganise code to remove excessive output, remove most interactive questions (some remain), set up input filename and instrument type in popup browse window.
 C
@@ -310,7 +313,13 @@ C
       IF ((ABS(IL).GT.255).OR.(ABS(IK).GT.255).OR.(ABS(IH).GT.255))
      1 THEN
        WRITE(6,'(A,3I10,2F10.2,i10)') 'Index too big for CRYSTALS',
-     1 ih,ik,il, rmeas, rsigma, nrefs
+     1 IH,IK,IL, RMEAS, RSIGMA, NREFS
+       GOTO 250
+      ENDIF
+      IF (RMEAS .LT. -9999.0) THEN
+       WRITE(6,'(A,3I5,2F15.2,i10)') 'Reflection too negative',
+     1 IH,IK,IL, RMEAS, RSIGMA, NREFS
+       GOTO 250
       ENDIF
       IF (IH.LT.MINH) THEN
          MINH=IH
@@ -379,7 +388,7 @@ c Kccd SG is only Point Group
       if (idiff .eq. 2) fsg = .false.
       if (fsg) then
          call xctrim(cspace,lspace)
-         write(6,'(A)') 
+         write(6,'(/A)') 
      1 'CAUTION - some cifs only contain the Point Group'
          write(6,'(a,a)')'Space Group from cif is ',cspace(1:lspace)
          write(6,'(a)') 'Is this correct [yes]'
@@ -447,14 +456,13 @@ C
             cnonsp(2:2) = ' '
             lspace = lspace + 1
         endif
-        write(6,'(a)') 'For monoclinic systems, input the full symbol'
-        write(6,'(a,a,a/)') 'Input space group symbol',
-     1 ' with spaces between the components',
-     2 ' e.g. P n a 21'
-         write(6,'(A)') 
+        write(6,'(/a)') 'For monoclinic systems, input the full symbol'
+         write(6,'(/A)') 
      1 'CAUTION - some cifs only contain the Point Group'
         write(6,'(a,a)')' Space Group from cif is ',cspace(1:lspace)
-        write(6,'(a,a,a)')' Absences suggest [',cnonsp(1:lspace),']'
+        write(6,'(/a,a,a)')' Absences suggest [',cnonsp(1:lspace),']'
+        write(6,'(a,a,a/)') 'Click RETURN or input space group ',
+     1 'symbol with spaces between the components'
         read (5,'(a)') ctemp
         if (ctemp(1:3) .ne. '   ') then
          callxctrim(ctemp,ltemp)
@@ -901,8 +909,11 @@ c                 both same case - insert a sp 1 sp between them
       enddo
       endif
       call xctrim(cform, lform)
-      i = index(numer,cform(lform:lform))
-      if (i .le. 0) cform(lform+1:) = ' 1'
+      i = index(numer,cform(lform-1:lform-1))
+      if (i .le. 0) then
+            cform(lform:) = ' 1'
+            call xctrim(cform, lform)
+      endif
       write(6,'(a,4x,a)') 'Input:  ', cform
 c
 c start adding up atoms.
