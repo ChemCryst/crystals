@@ -4,7 +4,12 @@ C
       LOGICAL NOT6
       COMMON /TELLER/ SUMINT(42,15),REFINT,SIGINT,JCODE,DISPLAY_ID
       INTEGER DISPLAY_ID
-      COMMON /REF/ INDEX(3)
+      COMMON /REF/ JNDEX(3)
+cdjwjul2011
+      character *20 cutup, cutout
+      character*4 bits(4)
+      character *20 ccond(42), coper(42)
+      common /coperator/ ccond, coper 
       DIMENSION IDUM(3), DUM(3), ITYPE(6), ISPACE(42,2)
       DIMENSION IPERM(42,6), IDUMMY(42), IGS(7)
       DIMENSION IGROUP(20), IEXT(30), ICENT(6)
@@ -552,7 +557,6 @@ Cdjw      type 899
 Cdjw      accept 898,FILE_NAME
 cdjw09      FILE_NAME='kccd.hkl'
 Cdjw      type 897
-
       if (I_value .le. 0) then
       WRITE(LP,555)
       WRITE(LO,555)
@@ -577,19 +581,35 @@ Cdjw      type 897
 100   FORMAT (I5)
       endif
 
+c  ASTRING(10)
+C      1 'TRICLINIC',
+C      2 'MONOCLINIC',
+C      3 'ORTHORHOMBIC',
+C      4 'TETRAGONAL',
+C      5 'TRIGONAL',
+C      6 'R/R',
+C      7 'R/H',
+C      8 'HEXAGONAL',
+C      9 'CUBIC',
+C     10 'UNKNOWN'
 
+C                      1 2 3 4 5 6 7 8 9 10
+c IPS =     BTRANS(12)/1,2,3,4,4,5,5,5,8,8,9,9/
+c ISP =     ATRANS(10)/8,2,3,4,5,5,5,6,7,1/
+C
       IF (I_VALUE.LT.1) I_VALUE=1
       IF (I_VALUE.GT.12) I_VALUE=1
       IPS=BTRANS(I_VALUE)
       LI=0
       ISP=ATRANS(IPS)
+c      WRITE(LO, '(A,3I5)')'I_VALUE, IPS, ISP',I_VALUE, IPS, ISP
+c      WRITE(LP, '(A,3I5)')'I_VALUE, IPS, ISP',I_VALUE, IPS, ISP
       FULL=.FALSE.
       DOUBLE=.FALSE.
       NOTM=.FALSE.
-C      type 1899
-C1899      FORMAT(' Accepted ratio int/sigma:',/)
-C      accept 1898,X
-C1898      format(f10.2)
+C      WRITE(LO,1899), X
+C      WRITE(LP,1899), X
+1899  FORMAT(' Accepted ratio int/sigma:', F10.2)
 C 
       DO 200 I=1,15
          DO 150 J=1,42
@@ -617,28 +637,28 @@ C
          GO TO 1400
       END IF
 C 
-C GOTO 20 IS THE BEGINNING OF THE READ CAD4.DAT LOOP
+C 1250 IS THE END OF THE READ CAD4.DAT LOOP
 C 
       K=1
 300   READ (LI,350,END=1250,ERR=3300) BUF
 350   FORMAT (1X,A)
 C 
-      READ (UNIT=BUF,FMT=400,ERR=450) INDEX(1),INDEX(2),INDEX(3),REFINT,
+      READ (UNIT=BUF,FMT=400,ERR=450) JNDEX(1),JNDEX(2),JNDEX(3),REFINT,
      1SIGINT
 cdjw09400   FORMAT (I3,2I4,F10.1,F10.1)
 400   FORMAT (3I4,2F8.2)
       GO TO 750
-450   READ (UNIT=BUF,FMT=500,ERR=550) INDEX(1),INDEX(2),INDEX(3),I,
+450   READ (UNIT=BUF,FMT=500,ERR=550) JNDEX(1),JNDEX(2),JNDEX(3),I,
      1SIGINT
       REFINT=I
 500   FORMAT (I3,2I4,I10,F10.1)
       GO TO 750
-550   READ (UNIT=BUF,FMT=600,ERR=650) INDEX(1),INDEX(2),INDEX(3),REFINT,
+550   READ (UNIT=BUF,FMT=600,ERR=650) JNDEX(1),JNDEX(2),JNDEX(3),REFINT,
      1I
       SIGINT=I
 600   FORMAT (I3,2I4,F10.1,I10)
       GO TO 750
-650   READ (UNIT=BUF,FMT=700,ERR=300) INDEX(1),INDEX(2),INDEX(3),I,I1
+650   READ (UNIT=BUF,FMT=700,ERR=300) JNDEX(1),JNDEX(2),JNDEX(3),I,I1
       REFINT=I
       SIGINT=I
 700   FORMAT (I3,2I4,I10,I10)
@@ -650,7 +670,7 @@ C
       IF (REFINT.LT.(3.*SIGINT)) JCODE=2
 C 
       DO 850 I=1,3
-         DUM(I)=FLOAT(IABS(INDEX(I)))
+         DUM(I)=FLOAT(IABS(JNDEX(I)))
          IDUM(I)=INT((DUM(I)/99.)+0.99)
 850   CONTINUE
 C 
@@ -908,7 +928,7 @@ C
       CALL SUMMER (16,J)
       IF (.NOT.FULL) GO TO 300
 C 
-      IF (INDEX(1).EQ.INDEX(2)) THEN
+      IF (JNDEX(1).EQ.JNDEX(2)) THEN
          NOT2=CHECK(0,0,1,2)
          J=5
          IF (NOT2) J=1
@@ -919,7 +939,7 @@ C
          CALL SUMMER (32,J)
       END IF
 C 
-      IF (INDEX(1).EQ.-1*INDEX(2)) THEN
+      IF (JNDEX(1).EQ.-1*JNDEX(2)) THEN
          NOT2=CHECK(0,0,1,2)
          J=5
          IF (NOT2) J=1
@@ -930,7 +950,7 @@ C
          CALL SUMMER (34,J)
       END IF
 C 
-      IF (INDEX(1).EQ.INDEX(3)) THEN
+      IF (JNDEX(1).EQ.JNDEX(3)) THEN
          NOT2=CHECK(0,1,0,2)
          J=5
          IF (NOT2) J=1
@@ -941,7 +961,7 @@ C
          CALL SUMMER (36,J)
       END IF
 C 
-      IF (INDEX(1).EQ.-1.*INDEX(2)) THEN
+      IF (JNDEX(1).EQ.-1.*JNDEX(2)) THEN
          NOT2=CHECK(0,1,0,2)
          J=5
          IF (NOT2) J=1
@@ -952,7 +972,7 @@ C
          CALL SUMMER (38,J)
       END IF
 C 
-      IF (INDEX(2).EQ.INDEX(3)) THEN
+      IF (JNDEX(2).EQ.JNDEX(3)) THEN
          NOT2=CHECK(1,0,0,2)
          J=5
          IF (NOT2) J=1
@@ -963,7 +983,7 @@ C
          CALL SUMMER (40,J)
       END IF
 C 
-      IF (INDEX(1).EQ.-1.*INDEX(2)) THEN
+      IF (JNDEX(1).EQ.-1.*JNDEX(2)) THEN
          NOT2=CHECK(1,0,0,2)
          J=5
          IF (NOT2) J=1
@@ -1064,14 +1084,20 @@ C
         IF (FULL) CALL PRIRES (13,1,1,41,0)
         IF (FULL) CALL PRIRES (13,12,5,42,1)
 C 
-cdjw08
-c      write(lo,'(a)') 'Sumint '
-c      write(lo,'(i3, 15f8.2)')  (i, (sumint(i,j), j=1,15),i=1,42)
-      write(lo,'(/a)') ' Systematic absences are:'
-      do 123 i=24,1,-1
-       if(sumint(i,15) .gt. 0.0) call operators(i,lp,lo)
-123   continue
-
+        write(lo,'(a)') 'Sumint '
+        write(lo, 9876)
+     1'nfalse    <I>     S(I)  nfweak   ntrue    <I>     s(I)  ntweak'
+9876  format(5x,a)
+        write(lo,'(i3, 8f8.2,3x,a)')  (i, (sumint(i,j), j=1,8), 
+     1  ccond(i), i=1,42)
+c
+        write(lo,'(/a)') ' Systematic absences are:'
+        write(lp,'(/a)') ' Systematic absences are:'
+        do 123 i=24,1,-1
+         if((sumint(i,1) .gt. 0) .and. 
+     1      (sumint(i,2) .le. 0.1*sumint(i,6)) )
+     1      call operators(i,lo,lp)
+123     continue
 C 
 CJDS      open (itbl,file='dka0:[jd.space]space.tbl;1',status='unknown')
 CJDS      do 444 i = 1,306
@@ -1087,11 +1113,6 @@ CJDS740      format(4x,3i4,a8,a1,i2,a16,i2,o12,i6,i8)
 C 
 1400  CONTINUE
 cold      IF (ISP.EQ.8) GO TO 3050
-cdjw08
-c      write(lo,11) isp, j, f(j), ires_ip(f(j)), ichoice(f(j))
-c      write(lp,11) isp, j, f(j), ires_ip(f(j)), ichoice(f(j))
-11    format('djw ',4i4,  a1)
-c
 c
       IF(ISP .EQ. 8) THEN                         !triclinic
 cdjwmar-11  - only output if order is a b c
@@ -1108,13 +1129,14 @@ CDJWAPR11 only write out text if there are any SG found
             write(lo,1452)
             write(lo,1453)
 CDJWAPR11 only write out text if there are any SG found
-1450  format     ('For the ',a11,' system, possible space groups are ',
-     1       'as follows')
+1450  format     (/' For the ',a11,' system, possible space groups ',
+     1       'are as follows')
 1451  format(' If the SG is not a standard setting, you should',
      1       ' re-index the data')
-1452        format(/, 52x, '    frequency of')
-1453  format(' spacegr number setting cen axis choice  full symbol'
-     1,'    occurrence sigma')
+1452  format(/,' spacegr', 26x,'standard',4x ,'frequency of',7x,
+     1       'possible')
+1453  format(' number setting cen axis choice   symbol',4x,
+     1'  occurrence sigma',3x,'symbol')
 c
              IF(ICEN(F(J)) .EQ. 1) THEN
               WRITE(lo,3100)isg(F(J)),perm(IRES_IP(F(J))),'C'
@@ -1186,6 +1208,8 @@ C ---  add to FOM
       I_FOUND_ONE=.FALSE.
 C 
 C 
+CDJW LOOP 7 SYSTEMS OVER SYSTEMS
+C
       ITYPE_WAR=0
       DO 2500 IS=1,7
 C 
@@ -1210,17 +1234,21 @@ C
                DO 1700 K=1,6
                   IF (J.NE.IDOUBLE(K)) GO TO 1700
                   IF (SUMINT(J,5).EQ.0) GO TO 1700
-                  IF (SUMINT(J,1).LE.SUMINT(J,ISL)) ISPACE(J,2)=1
+                  IF (SUMINT(J,1).LE.SUMINT(J,ISL)) then
+                        ISPACE(J,2)=1
+                  ENDIF
 1700           CONTINUE
             END IF
             IF (FULL) THEN
                DO 1750 K=1,20
                   IF (J.NE.IFULL(K)) GO TO 1750
                   IF (SUMINT(J,5).EQ.0) GO TO 1750
-                  IF (SUMINT(J,1).LE.SUMINT(J,ISL)) ISPACE(J,2)=1
+                  IF (SUMINT(J,1).LE.SUMINT(J,ISL)) then
+                        ISPACE(J,2)=1
+                  ENDIF
+
 1750           CONTINUE
             END IF
-C 
 C 
 1800     CONTINUE
 C 
@@ -1231,7 +1259,9 @@ C
                IF (SUMINT(J,1).EQ.0) NOTM=.TRUE.
                ISPACE(J,2)=0
 CjdsD            write (lo,*) sumint(j,1),sumint(j,isl)
-               IF (SUMINT(J,1).LE.SUMINT(J,ISL)) ISPACE(J,2)=1
+               IF (SUMINT(J,1).LE.SUMINT(J,ISL)) then
+                        ISPACE(J,2)=1
+                  ENDIF
 C 
             ELSE
                ISPACE(J,2)=0
@@ -1242,24 +1272,29 @@ C
 C 
                IF (SUMINT(J,1).EQ.0) NOTM=.TRUE.
                ISPACE(J,2)=0
-               IF (SUMINT(J,1).LE.SUMINT(J,ISL)) ISPACE(J,2)=1
+               IF (SUMINT(J,1).LE.SUMINT(J,ISL)) then
+                        ISPACE(J,2)=1
+                  ENDIF
             ELSE
                ISPACE(J,2)=0
             END IF
 C 
          END IF
 C 
-C 
+C      WE ARE INSIDE OF LOOP OVER IS = 1,7 SYSTEMS
 C      LOOP OVER 6 POSSIBLE PERMUTATIONS
-C      abc, bac, cab, cba, bca, acb (table 4.3.1, Int. Tables)
+C      abc, ba-c, cab, -cba, bca, a-cb (table 4.3.1, Int. Tables)
 C 
 C  ip =  1    2    3    4    5    6
 C 
          IP=0
          JDSEXT=1
+CDJW LOOP OVER PERMUTATION CLASSES
 1850     CONTINUE
          IP=IP+1
          IF (IP.GT.6) GO TO 2450
+CDJW - TRIED  AVOIDING PERMUTATING AXES BY RESTRICTING IP TO 1.
+c         IF (IP.GT.1) GO TO 2450
          IF (JDSEXT.EQ.0) GO TO 2450
 C      if (isp .eq. 1 .or. isp .eq. 3 .or. isp .eq. 7) goto 512
 C 
@@ -1273,7 +1308,7 @@ C
 1950     CONTINUE
 c
 cdjw08 
-c      write(lo,'(/a,i5)') 'ip=', ip
+c      write(lo,'(/a,6i5)') 'ip, is =', ip, is
 c      write (lo,'(3i6)') (j,ispace(j,1),ispace(j,2),iperm(j,ip),j=1,42)
 cdjw08
 c
@@ -1398,6 +1433,7 @@ C      CLOSE (UNIT=ITBL,DISPOSE='KEEP')
 C 
 2450     CONTINUE
 C 
+CDJW LOOP BACK TO ABOUT LABEL 1600
 2500  CONTINUE
 c
 C If there are extinctions skip all entries with no extinctions
@@ -1418,9 +1454,8 @@ C FIND HIGHEST FOM. IF MORE THAN ONE IDENTICAL FOM TAKE THE LOWEST NUMBE
 c set SG to nothing
       idjws = 0
       cspace = ' '
-      WRITE(LP,*) ' '
       write(lp,1450) csys(isp)
-      write(lp,1451)
+c      write(lp,1451)
       write(lp,1452)
       write(lp,1453)
       write(lo,1450) csys(isp)
@@ -1449,8 +1484,6 @@ C ---  PICK UP ALL SPACE GROUPS WITH THIS SIGMA
          IF (J1.NE.0) THEN
 2900        CONTINUE
             DO 3000 J4=1,J1
-cdjw08
-c            write(lo,'(a,i4)')'F(j)=', f(j4)
 C ---  F77
                DO 2950 J5=J4+1,J1
 C ---  SORT ON DECREASING PROBABILITY
@@ -1472,34 +1505,68 @@ C ---  SORT ON INCREASING CHOICE
 3000        CONTINUE
 3050        CONTINUE
 C
-            DO 3150 J=1,J1
-cdjwmar-11  - only output if order is a b c
-             if(perm(ires_ip(f(j))) .eq. ' a b c' ) then
+        DO 3150 J=1,J1
+cdjwjul2011 - try to un-permutate symbol
+c this is truely horrid. 
+C split symbol then re-assemble it usig ires_ip as key
+            cutout = ' '
+            if ((isp .eq. 2) .or. (isp .eq.3)) then
+            icase = ires_ip(f(j))
+            cutup = sgfull(f(j))
+            kkdjw = 1
+            do iidjw = 1,4
+                  jjdjw = index (cutup(kkdjw:),' ')
+                  if (jjdjw .eq. 0) exit
+                  bits(iidjw)=' '
+                  bits(iidjw)(:) = cutup(kkdjw:kkdjw+jjdjw-1)
+                  call xcrems(bits(iidjw), bits(iidjw), lcut)
+                  kkdjw = kkdjw+ jjdjw 
+            enddo 
+             if (icase .eq.1 ) then
+               write(cutout,'(4a5)') bits(1),bits(2),bits(3),bits(4)
+             else if (icase .eq. 2) then
+               write(cutout,'(4a5)') bits(1),bits(3),bits(2),bits(4)
+             else if (icase .eq. 3) then
+               write(cutout,'(4a5)') bits(1),bits(3),bits(4),bits(2)
+             else if (icase .eq. 4) then
+               write(cutout,'(4a5)') bits(1),bits(4),bits(3),bits(2)
+             else if (icase .eq. 5) then
+               write(cutout,'(4a5)') bits(1),bits(4),bits(2),bits(3)
+             else if (icase .eq. 6) then
+               write(cutout,'(4a5)') bits(1),bits(2),bits(4),bits(3)
+             endif
+             call xcrems(cutout,cutout,lcut)
+             write(cutup,'(a)')cutout(1:lcut)
+            endif
+               if (idjws .eq. 0)then
+                 cspace = cutup(1:lcut)
+                 idjws = 1
+               endif
 c
                IF (ICEN(F(J)).EQ.1) THEN
                   WRITE(LP,3100) ISG(F(J)),PERM(IRES_IP(F(J))),
      1             'C',KAXIS(F(J)),ICHOICE(F(J)),SGFULL(F(J)),
      2             FLOAT(J230(F(J)))*.01,IGS(IRES_IS(F(J)))
+     3             , CUTUP(1:LCUT)
+
                   WRITE(LO,3100) ISG(F(J)),PERM(IRES_IP(F(J))),
      1             'C',KAXIS(F(J)),ICHOICE(F(J)),SGFULL(F(J)),
      2             FLOAT(J230(F(J)))*.01,IGS(IRES_IS(F(J)))
+     3             , CUTUP(1:LCUT)
                ELSE
                   WRITE(LP,3100) ISG(F(J)),PERM(IRES_IP(F(J))),
      1             'N',KAXIS(F(J)),ICHOICE(F(J)),SGFULL(F(J)),
      2             FLOAT(J230(F(J)))*.01,IGS(IRES_IS(F(J)))
+     3             , CUTUP(1:LCUT)
+
                   WRITE(LO,3100) ISG(F(J)),PERM(IRES_IP(F(J))),
      1             'N',KAXIS(F(J)),ICHOICE(F(J)),SGFULL(F(J)),
      2             FLOAT(J230(F(J)))*.01,IGS(IRES_IS(F(J)))
+     3             , CUTUP(1:LCUT)
                END IF
-               if (idjws .eq. 0)then
-                 cspace = sgfull(f(j))
-                 idjws = 1
-               endif
-             endif
-cdjw3100           FORMAT (' ',A8,1X,I4,3X,A6,2X,A1,4X,A1,3X,I2,5X,A16,1X,
-cdjw     1          F8.3,2X,I3)
-3100           FORMAT (' ',8x,1X,I4,3X,A6,2X,A1,4X,A1,3X,I2,5X,A16,1X,
-     1          F8.3,2X,I3)
+3100           FORMAT (2X,I4,3X,A6,2X,A1,4X,A1,3X,I2,5X,A16,1X,
+     1          F5.2,1X,I3,1X,A16)
+C
                IF (KKKK.EQ.0) THEN
                   KKKK=1
                END IF
@@ -1507,7 +1574,7 @@ C
 CJDS            write (lo,742) perm(ip), igs(is),isg(i),inc(i),icen(i),
 CJDS     1          sg(i),kaxis(i),ichoice(i),sgfull(i),o230,jcentr(i),
 CJDS     2          kext(i)
-3150        CONTINUE
+3150    CONTINUE
 c
             IF (ISP.EQ.8) GO TO 3250
          END IF
@@ -1588,9 +1655,9 @@ C***********************************************************************
 C***********************************************************************
       LOGICAL FUNCTION CHECK(I1,I2,I3,ICHECK)
       INTEGER CHECKS
-      COMMON /REF/ INDEX(3)
+      COMMON /REF/ JNDEX(3)
       CHECK=.FALSE.
-      CHECKS=I1*INDEX(1)+I2*INDEX(2)+I3*INDEX(3)
+      CHECKS=I1*JNDEX(1)+I2*JNDEX(2)+I3*JNDEX(3)
       IF (MOD(CHECKS,ICHECK).NE.0) CHECK=.TRUE.
       RETURN
       END
@@ -1684,6 +1751,7 @@ C
 
       subroutine operators(i,lp,lo)
       character *20 ccond(42), coper(42)
+      common /coperator/ ccond, coper 
       data ccond/
      *  'h00 h=2n',
      *  '0k0 k=2n',
