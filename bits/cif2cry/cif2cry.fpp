@@ -156,10 +156,18 @@ C....... Assign the data block to be accessed
 
 10    if(.not.(data_(' '))) then
         write(6,'(/a/)')   ' >>>>> No data_ statement found'
+        write(6,'(/a/)')   ' >>>>> No data_ statement found'
         write(17,'(/a/)')   ' >>>>> No data_ statement found'
         goto 9999
       else
         if (bloc_ =="global") then
+        write(6,'(/a,a/)')   ' >>>>> data_global statement found -',
+     1  ' now looking for block_'
+        write(17,'(/a,a/)')   ' >>>>> data_global statement found -',
+     1  ' now looking for block_'
+        open(18,file='cif_global.lis',status='unknown')
+        write(18,'(/a,a/)')   ' >>>>> data_global statement found -',
+     1  ' now looking for block_'
           goto 10
         else
           write(6,'(/a,3x,a)') 'The first crystal data is',bloc_
