@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.35  2011/06/06 13:10:37  djw
+C Catch reflection indices out of range in Agilent datafiles
+C
 C Revision 1.34  2011/03/21 13:57:21  rich
 C Update files to work with gfortran compiler.
 C
@@ -960,12 +963,16 @@ C----- ERROR DURING READ -
         end if
 CDJW2003         LEF=-1
       ELSE
-         WRITE (CMON,3150)
-         CALL XPRVDU (NCVDU,3,0)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,3150)
+         WRITE (CMON,3150) N6W
+         CALL OUTCOL(9)
+         CALL XPRVDU (NCVDU,4,0)
+         CALL OUTCOL(1)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,3150) N6W
          WRITE (NCAWU,3150)
-3150     FORMAT (' Error during reading reflections'/' Some reflections
-     1may be lost'/' They should be terminated with an h value of -512')
+3150     FORMAT (' Error during reading reflections'/
+     1   ' At about reflection',i10/
+     1   ' Some reflections may be lost'/
+     2   ' The file should be terminated with an h value of -512')
          CALL XPAUSE (500)
          BACKSPACE (UNIT=IUNIT,ERR=3200)
       END IF
