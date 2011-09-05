@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.66  2011/09/01 12:12:49  djw
+C When the existing SCRIPT variable STACK is  to TRUE, provide more info about stack frame creation and seletion.
+C
 C Revision 1.65  2011/06/10 16:00:15  rich
 C Avoid uninitialised script stack frames
 C
@@ -3503,28 +3506,10 @@ C
 C Extract the directory from a full pathname.
 C e.g. GETPATH 'c:\structures\nket\crfile.dsc' will return
 C 'c:\structures\nket\'  e.g. everything up to the last slash.
-#if defined(_DOS_) 
-      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-#endif
-#if defined(_VAX_) 
-      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-#endif
-#if defined(_DVF_) 
-      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-#endif
-#if defined(_GID_) 
-      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-#endif
-#if defined(_LIN_) 
-      IECF = KCLEQL(CWORK1(1:LEN1),'/')
-#endif
-#if defined(_GIL_)  || defined(_MAC_)
-      IECF = KCLEQL(CWORK1(1:LEN1),'/')
-#endif
-#if defined(_WXS_) 
-      IECF = KCLEQL(CWORK1(1:LEN1),'/')
-C      WRITE (99,*) 'GETPATH:',IECF,CWORK1(1:LEN1)
-#endif
+
+      JLBS = KCLEQL(CWORK1(1:LEN1),'\')
+      JLFS = KCLEQL(CWORK1(1:LEN1),'/')
+      IECF = MAX(JLBS,JLFS)
       IF ( IECF .LE. 0 ) THEN
             CWORK1 = ' '
             IECF = 1
@@ -3542,28 +3527,10 @@ C
 C Extract the filename from a full pathname.
 C e.g. GETFILE 'c:\structures\nket\crfile.dsc' will return
 C 'crfile.dsc'  e.g. everything after the last slash if there is one.
-#if defined(_DOS_) 
-      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-#endif
-#if defined(_VAX_) 
-      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-#endif
-#if defined(_DVF_) 
-      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-#endif
-#if defined(_GID_) 
-      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-#endif
-#if defined(_LIN_) 
-      IECF = KCLEQL(CWORK1(1:LEN1),'/')
-#endif
-#if defined(_GIL_)  || defined(_MAC_)
-      IECF = KCLEQL(CWORK1(1:LEN1),'/')
-#endif
-#if defined(_WXS_) 
-      IECF = KCLEQL(CWORK1(1:LEN1),'/')
-C      WRITE (99,*) 'GETFILE:',IECF,CWORK1(1:LEN1)
-#endif
+
+      JLBS = KCLEQL(CWORK1(1:LEN1),'\')
+      JLFS = KCLEQL(CWORK1(1:LEN1),'/')
+      IECF = MAX(JLBS,JLFS)
       IF ( IECF .LE. 0 ) THEN
             IECF = 0
       END IF
@@ -3582,27 +3549,10 @@ C Extract the filetitle from a full pathname.
 C e.g. GETTITLE 'c:\structures\nket\crfile.dsc' will return
 C 'crfile'  e.g. everything after the last slash if there is one,
 C up to the last dot.
-#if defined(_DOS_) 
-      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-#endif
-#if defined(_VAX_) 
-      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-#endif
-#if defined(_DVF_) 
-      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-#endif
-#if defined(_GID_) 
-      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-#endif
-#if defined(_LIN_) 
-      IECF = KCLEQL(CWORK1(1:LEN1),'/')
-#endif
-#if defined(_GIL_)  || defined(_MAC_)
-      IECF = KCLEQL(CWORK1(1:LEN1),'/')
-#endif
-#if defined(_WXS_) 
-      IECF = KCLEQL(CWORK1(1:LEN1),'/')
-#endif
+
+      JLBS = KCLEQL(CWORK1(1:LEN1),'\')
+      JLFS = KCLEQL(CWORK1(1:LEN1),'/')
+      IECF = MAX(JLBS,JLFS)
       IF ( IECF .LE. 0 ) THEN
             IECF = 0
       END IF
