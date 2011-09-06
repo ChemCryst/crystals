@@ -1,0 +1,69 @@
+%SCRIPT XWTVSIG                                                                 
+^^WI WINDOW xfovsfc 'Weight versus Sigma' KEEP SIZE MODAL                              
+^^WI COMMIT='EXT_BOK' CANCEL='EXT_BOK'                                          
+^^WI GRID MAIN NROWS=2 NCOLS=1                                                  
+^^WI {                                                                          
+^^WI  @ 1,1 GRID PRIME NROWS=7 NCOLS=3                                          
+^^WI  {                                                                         
+^^WI   @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                               
+^^WI   {                                                                        
+^^WI    @ 1,3 GRID EXP2 NROWS=3 NCOLS=2                                         
+^^WI    {                                                                       
+^^WI     @ 1,1 STATIC XFW1                                                      
+^^WI 'You are looking at a scatter plot of 1/Sigma versus weight.'       
+^^WI     @ 2,1 STATIC XFW4                                                      
+^^WI 'Right-click on any outliers to add them to the Omited list (LIST28)'      
+^^WI    }                                                                       
+^^WI    @ 1,1 ICON IM INFO                                                      
+^^WI   }                                                                        
+^^WI   @ 4,2 PLOTWINDOW _VWTVSIG NROWS=20 NCOLS=64                                
+^^WI     DEFINEPOPUPMENU POPUP 'Selection'                                      
+^^WI       ITEM _SDELA '&Omit _L' 'OMIT_N_L'                                    
+^^WI     ENDDEFINEMENU                                                          
+^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=1                                          
+^^WI   {                                                                        
+^^WI    @ 1,1 BUTTON EXT_BOK 'Close' DEFAULT                                    
+^^WI   }                                                                        
+^^WI  }                                                                         
+^^WI  @ 2,1 PROGRESS _FOFCPR 'Please wait'                                      
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+^^CO SENDPROGRESSTO _FOFCPR                                                     
+%  LOOP                                                                         
+%    COPY '#sum list 6 level=sigma'                                              
+%    COPY 'END'                                                                 
+%    VERIFY EXT_BOK OMIT                                                        
+%    GET SILENT NOSTORE FINAL ABBREVIATED '?' 'EXT_BOK'                         
+%    IF VALUE .EQ. 1 THEN                                                       
+^^CO    DISPOSE xwtvsig                                                
+%       FINISH                                                                  
+%    END IF                                                                     
+%    BLOCK                                                                      
+%      ON EDITERROR TERMINATE                                                   
+%      COPY '#GENERALEDIT 28'                                                   
+%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                  
+%      COPY 'LOCATE RECORDTYPE = 104'                                           
+%      COPY 'INSERT'                                                            
+%      CLEAR                                                                    
+%      INSERT 'CHANGE 0 REAL REAL ='                                            
+%      GET INTEGER ' ' ' '                                                      
+%      SEND                                                                     
+%      OUTPUT                                                                   
+%      CLEAR                                                                    
+%      INSERT 'CHANGE 1 REAL REAL ='                                            
+%      GET INTEGER ' ' ' '                                                      
+%      SEND                                                                     
+%      OUTPUT                                                                   
+%      CLEAR                                                                    
+%      INSERT 'CHANGE 2 REAL REAL ='                                            
+%      GET INTEGER ' ' ' '                                                      
+%      SEND                                                                     
+%      OUTPUT                                                                   
+%      CLEAR                                                                    
+%      COPY 'WRITE'                                                             
+%      COPY 'END'                                                               
+%    END BLOCK                                                                  
+%  END LOOP                                                                     
+%END SCRIPT                                                                     
+                                                                                
