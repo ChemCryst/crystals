@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.98  2011/07/01 13:42:46  djw
+C Change the dot product module name from VPROD to DPROD
+C
 C Revision 1.97  2011/06/13 14:25:35  djw
 C remove the blue line and enable info to be obtained from the red one
 C
@@ -1969,7 +1972,14 @@ C--SETUP A GRAPH HERE
         END IF
         CALL XPRVDU(NCVDU, 3,0)
       END IF
-
+      IF ( LEVEL .EQ. 6 ) THEN                 ! Weight vs Sigma
+        WRITE(CMON,'(A,/,A,/,A)')
+     1  '^^PL PLOTDATA _WTVSIG SCATTER ATTACH _VWTVSIG',
+     1  '^^PL XAXIS TITLE ''SQRT(weight)'' NSERIES=1 LENGTH=2000',
+     1  '^^PL YAXIS TITLE ''1/Sigma'' SERIES 1 TYPE SCATTER'
+        CALL XPRVDU(NCVDU, 3,0)
+      END IF
+C
 C----- PRINT SOME OVER-ALL DETAILS
 C--PRINT THE DETAILS RECORD
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1550)
@@ -2004,7 +2014,9 @@ C--UPDATE FOR THE NEXT PARAMETER
 C
 C -- SCAN LIST 6 FOR ACCEPTED REFLECTIONS
 C
+      IFTYPE = ISTORE(L23MN+1)+2
       SCALE = STORE(L5O)
+      FSCALE = 1./(SCALE*SCALE)
       TOP = 0.0
       BOTTOM = 0.0
       WTOP = 0.0
@@ -2063,6 +2075,35 @@ C If you have more than 8.8 million reflections you might be in trouble.
           STR11(N6ACC*2) = STORE(M6)+STORE(M6+1)*256.+STORE(M6+2)*65536.
          END IF
         END IF
+
+        IF ( LEVEL .EQ. 6 ) THEN
+C-PLOT WEIGHT VS 1/SIGMA
+          FSIGN = STORE(M6+3)
+          SIG = STORE(M6+12)
+          WT = STORE(M6+4)
+C----- RETURN THE SIGNED STRUCTURE AMPLITUDE AND THE CORRESPONDING SIGMA
+C      FROM A SIGNED STRUCTURE FACTOR
+          CALL XSQRF (FSQ,FSIGN,FABS,SIGFSQ,SIG)
+          if (iftype .eq.1) then
+c         refinement on F
+                   sigest = sig
+          else
+                   sigest = sigfsq
+          endif
+          if (sigest .le. zero) then
+            sig1 = zero
+          else
+            sig1 = 1/sigest
+          endif 
+          WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
+     1    NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
+          CALL XCRAS(HKLLAB, IHKLLEN)
+          WRITE(CMON,'(3A,2F10.2)')
+     1   '^^PL LABEL ''', HKLLAB(1:IHKLLEN), ''' DATA ', 
+     2    wt, sig1
+          CALL XPRVDU(NCVDU, 1,0)
+        END IF
+
 
 
       GO TO 1100
@@ -2184,7 +2225,8 @@ c
       END IF
 
 C -- FINISH THE GRAPH DEFINITION
-      IF ( ( LEVEL .EQ. 4 ).OR.( LEVEL .EQ. 5 )) THEN
+      IF ( ( LEVEL .EQ. 4 ).OR.( LEVEL .EQ. 5 )
+     1 .OR.( LEVEL .EQ. 6 )) THEN
         WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
         CALL XPRVDU(NCVDU, 2,0)
       ENDIF
