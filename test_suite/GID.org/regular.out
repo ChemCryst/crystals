@@ -1,10 +1,8 @@
 #TITLE CSD_CIF_MIF_AFEBAO                                                                                                                                                                                                                                       
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 20                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #LIST 1                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 # THE SPACEGROUP SYMBOL MUST HAVE A SPACE BETWEEN EACH OF THE OPERATORS.                                                                                                                                                                                        
 #SPACEGROUP                                                                                                                                                                                                                                                     
 #LIST 14                                                                                                                                                                                                                                                        
@@ -29,17 +27,11 @@ Space group symbol is   P    -1
                               Z axis from  0.000 to  0.500
 #COMPOSITION                                                                                                                                                                                                                                                    
 #LIST 13                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #COMPOSITION                                                                                                                                                                                                                                                    
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST 5                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - There is no list 41
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #USE REGU.DAT                                                                                                                                                                                                                                                   
 #EDIT                                                                                                                                                                                                                                                           
@@ -66,9 +58,6 @@ Bonds: Update required - There is no list 41
     H  23      C  29      C  30      H  24      C  31      H  25      C  32
     H  26      C  33      H  27      C  34      H  28
  List   5 now contains     68 atom(s)
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #MATCH                                                                                                                                                                                                                                                          
 Structure matching: measures of similarity and pseudosymmetry                                                                                                                                                                                                   
 A.  Collins, R. I.  Cooper and D. J.  Watkin                                                                                                                                                                                                                    
@@ -652,18 +641,11 @@ Space group symbol is   P    1    21/N 1
                               X axis from  0.000 to  1.000
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
-  Disc file on unit   1 extended by     1 records 
 #COMPOSITION                                                                                                                                                                                                                                                    
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST 5                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #USE REGU.DAT                                                                                                                                                                                                                                                   
 #EDIT                                                                                                                                                                                                                                                           
@@ -694,9 +676,6 @@ Bonds: Update required - List5 length change
     C  36      C  37      H  26      H  27      H  28      C  38      C  39
     H  29      H  30      H  31      C  40      H  32      H  33      H  34
  List   5 now contains     84 atom(s)
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #MATCH                                                                                                                                                                                                                                                          
 Structure matching: measures of similarity and pseudosymmetry                                                                                                                                                                                                   
 A.  Collins, R. I.  Cooper and D. J.  Watkin                                                                                                                                                                                                                    
@@ -1395,7 +1374,6 @@ WARNING - poor initial fit
     2 Poorly mapping groups                                                                                                                                                                                                                                     
 #TITLE CSD_CIF_MIF_AFUVEC                                                                                                                                                                                                                                       
 #LIST 1                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 # THE SPACEGROUP SYMBOL MUST HAVE A SPACE BETWEEN EACH OF THE OPERATORS.                                                                                                                                                                                        
 #SPACEGROUP                                                                                                                                                                                                                                                     
  The unique axis has been set to "b" - consistent with the unit cell   
@@ -1423,13 +1401,7 @@ Space group symbol is   P    1    21   1
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST 5                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #USE REGU.DAT                                                                                                                                                                                                                                                   
 #EDIT                                                                                                                                                                                                                                                           
@@ -1460,9 +1432,6 @@ Bonds: Update required - List5 length change
     H  35      H  36      H  37      H  38      H  39      H  40      H  41
     H  42      H  43      H  44
  List   5 now contains     80 atom(s)
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #MATCH                                                                                                                                                                                                                                                          
 Structure matching: measures of similarity and pseudosymmetry                                                                                                                                                                                                   
 A.  Collins, R. I.  Cooper and D. J.  Watkin                                                                                                                                                                                                                    
@@ -2142,7 +2111,6 @@ WARNING - poor initial fit
     2 Poorly mapping groups                                                                                                                                                                                                                                     
 #TITLE CSD_CIF_MIF_AFUYAB                                                                                                                                                                                                                                       
 #LIST 1                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 # THE SPACEGROUP SYMBOL MUST HAVE A SPACE BETWEEN EACH OF THE OPERATORS.                                                                                                                                                                                        
 #SPACEGROUP                                                                                                                                                                                                                                                     
  The unique axis has been set to "b" - consistent with the unit cell   
@@ -2169,12 +2137,7 @@ Space group symbol is   P    1    21/C 1
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST 5                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #USE REGU.DAT                                                                                                                                                                                                                                                   
 #EDIT                                                                                                                                                                                                                                                           
@@ -2199,8 +2162,6 @@ Bonds: Update required - List5 length change
     H  12      H  13      H  14      H  15      H  16      H  17      H  18
     H  19      H  20      H  21      H  22      H  23      H  24
  List   5 now contains     62 atom(s)
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #MATCH                                                                                                                                                                                                                                                          
 Structure matching: measures of similarity and pseudosymmetry                                                                                                                                                                                                   
 A.  Collins, R. I.  Cooper and D. J.  Watkin                                                                                                                                                                                                                    
@@ -2746,7 +2707,6 @@ WARNING - poor initial fit
     2 Poorly mapping groups                                                                                                                                                                                                                                     
 #TITLE CSD_CIF_MIF_BERBUV                                                                                                                                                                                                                                       
 #LIST 1                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 # THE SPACEGROUP SYMBOL MUST HAVE A SPACE BETWEEN EACH OF THE OPERATORS.                                                                                                                                                                                        
 #SPACEGROUP                                                                                                                                                                                                                                                     
   Space Group P21 21 21 
@@ -2772,16 +2732,7 @@ Space group symbol is   P    21   21   21
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST 5                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #USE REGU.DAT                                                                                                                                                                                                                                                   
 #EDIT                                                                                                                                                                                                                                                           
@@ -2822,10 +2773,6 @@ Bonds: Update required - List5 length change
     H  54      H  55      H  56      H  57      H  58      H  59      H  60
     H  61      H  62
  List   5 now contains    114 atom(s)
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #MATCH                                                                                                                                                                                                                                                          
 Structure matching: measures of similarity and pseudosymmetry                                                                                                                                                                                                   
 A.  Collins, R. I.  Cooper and D. J.  Watkin                                                                                                                                                                                                                    
@@ -3695,7 +3642,6 @@ Matching by Rotation/inversion (Method 1)
 
 #TITLE CSD_CIF_MIF_BETJAL                                                                                                                                                                                                                                       
 #LIST 1                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 # THE SPACEGROUP SYMBOL MUST HAVE A SPACE BETWEEN EACH OF THE OPERATORS.                                                                                                                                                                                        
 #SPACEGROUP                                                                                                                                                                                                                                                     
   Space Group P -1      
@@ -3720,15 +3666,7 @@ Space group symbol is   P    -1
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST 5                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #USE REGU.DAT                                                                                                                                                                                                                                                   
 #EDIT                                                                                                                                                                                                                                                           
@@ -3765,10 +3703,6 @@ Bonds: Update required - List5 length change
     H  44      H  45      H  46      H  47      H  48      H  49      H  50
     H  51      H  52      H  53      H  54
  List   5 now contains    102 atom(s)
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #MATCH                                                                                                                                                                                                                                                          
 Structure matching: measures of similarity and pseudosymmetry                                                                                                                                                                                                   
 A.  Collins, R. I.  Cooper and D. J.  Watkin                                                                                                                                                                                                                    
@@ -4556,13 +4490,9 @@ Space group symbol is   P    1    21/C 1
                               Z axis from  0.000 to  0.500
 #COMPOSITION                                                                                                                                                                                                                                                    
 #LIST 3                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST 5                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #USE REGU.DAT                                                                                                                                                                                                                                                   
 #EDIT                                                                                                                                                                                                                                                           
@@ -4581,8 +4511,6 @@ Bonds: Update required - List5 length change
     C  13      H  11      C  14      H  12      C  15      H  13      C  16
     H  14      C  17      C  18      H  15      H  16
  List   5 now contains     40 atom(s)
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #MATCH                                                                                                                                                                                                                                                          
 Structure matching: measures of similarity and pseudosymmetry                                                                                                                                                                                                   
 A.  Collins, R. I.  Cooper and D. J.  Watkin                                                                                                                                                                                                                    
@@ -5103,14 +5031,9 @@ Space group symbol is   P    1    21/N 1
 #COMPOSITION                                                                                                                                                                                                                                                    
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 5                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #USE REGU.DAT                                                                                                                                                                                                                                                   
 #EDIT                                                                                                                                                                                                                                                           
  The list currently contains    50 atoms                                                                                                                                                                                                                        
@@ -5132,7 +5055,6 @@ Bonds: Update required - List5 length change
     H  28      C  16      H  29      H  30      P   1      P   2      S   1
     S   2
  List   5 now contains     50 atom(s)
-  Disc file on unit   1 extended by     1 records 
 #MATCH                                                                                                                                                                                                                                                          
 Structure matching: measures of similarity and pseudosymmetry                                                                                                                                                                                                   
 A.  Collins, R. I.  Cooper and D. J.  Watkin                                                                                                                                                                                                                    
@@ -5679,7 +5601,6 @@ Matching by Rotation/inversion (Method 1)
 
 #TITLE CSD_CIF_MIF_BOPJEV                                                                                                                                                                                                                                       
 #LIST 1                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 # THE SPACEGROUP SYMBOL MUST HAVE A SPACE BETWEEN EACH OF THE OPERATORS.                                                                                                                                                                                        
 #SPACEGROUP                                                                                                                                                                                                                                                     
  The unique axis has been set to "b" - consistent with the unit cell   
@@ -5707,19 +5628,7 @@ Space group symbol is   P    1    21   1
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST 5                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #USE REGU.DAT                                                                                                                                                                                                                                                   
 #EDIT                                                                                                                                                                                                                                                           
@@ -5772,12 +5681,6 @@ Bonds: Update required - List5 length change
     H  88      H  89      H  90      H  91      H  92      H  93      H  94
     H  95      H  96      H  97      H  98      H  99      H 100
  List   5 now contains    160 atom(s)
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #MATCH                                                                                                                                                                                                                                                          
 Structure matching: measures of similarity and pseudosymmetry                                                                                                                                                                                                   
 A.  Collins, R. I.  Cooper and D. J.  Watkin                                                                                                                                                                                                                    
@@ -6974,18 +6877,12 @@ Space group symbol is   P    -1
                               X axis from  0.000 to  1.000
                               Y axis from  0.000 to  1.000
                               Z axis from  0.000 to  0.500
-  Disc file on unit   1 extended by     1 records 
 #COMPOSITION                                                                                                                                                                                                                                                    
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST 5                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #USE REGU.DAT                                                                                                                                                                                                                                                   
 #EDIT                                                                                                                                                                                                                                                           
  The list currently contains    58 atoms                                                                                                                                                                                                                        
@@ -7009,8 +6906,6 @@ Bonds: Update required - List5 length change
     H  20      H  21      H  22      H  23      H  24      H  25      H  26
     H  27      H  28
  List   5 now contains     58 atom(s)
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #MATCH                                                                                                                                                                                                                                                          
 Structure matching: measures of similarity and pseudosymmetry                                                                                                                                                                                                   
 A.  Collins, R. I.  Cooper and D. J.  Watkin                                                                                                                                                                                                                    
@@ -7557,18 +7452,11 @@ Space group symbol is   P    21   21   21
                               X axis from  0.000 to  0.500
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
-  Disc file on unit   1 extended by     1 records 
 #COMPOSITION                                                                                                                                                                                                                                                    
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST 5                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #USE REGU.DAT                                                                                                                                                                                                                                                   
 #EDIT                                                                                                                                                                                                                                                           
@@ -7597,9 +7485,6 @@ Bonds: Update required - List5 length change
     H  29      H  30      C  28      H  31      H  32      H  33      O   9
     C  29      O  10      C  30      H  34      H  35      H  36
  List   5 now contains     76 atom(s)
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #MATCH                                                                                                                                                                                                                                                          
 Structure matching: measures of similarity and pseudosymmetry                                                                                                                                                                                                   
 A.  Collins, R. I.  Cooper and D. J.  Watkin                                                                                                                                                                                                                    
@@ -8351,15 +8236,9 @@ Space group symbol is   P    B    C    A
 #COMPOSITION                                                                                                                                                                                                                                                    
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 5                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #USE REGU.DAT                                                                                                                                                                                                                                                   
 #EDIT                                                                                                                                                                                                                                                           
  The list currently contains    62 atoms                                                                                                                                                                                                                        
@@ -8383,8 +8262,6 @@ Bonds: Update required - List5 length change
     C  21      H  22      C  22      H  23      C  23      C  24      H  24
     C  25      H  25      C  26      H  26      H  27      H  28
  List   5 now contains     62 atom(s)
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #MATCH                                                                                                                                                                                                                                                          
 Structure matching: measures of similarity and pseudosymmetry                                                                                                                                                                                                   
 A.  Collins, R. I.  Cooper and D. J.  Watkin                                                                                                                                                                                                                    
@@ -8967,19 +8844,12 @@ Space group symbol is   P    -1
                               X axis from  0.000 to  1.000
                               Y axis from  0.000 to  1.000
                               Z axis from  0.000 to  0.500
-  Disc file on unit   1 extended by     1 records 
 #COMPOSITION                                                                                                                                                                                                                                                    
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST 5                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #USE REGU.DAT                                                                                                                                                                                                                                                   
 #EDIT                                                                                                                                                                                                                                                           
  The list currently contains    76 atoms                                                                                                                                                                                                                        
@@ -9007,9 +8877,6 @@ Bonds: Update required - List5 length change
     H  26      H  27      C  31      C  32      H  28      C  33      H  29
     C  34      H  30      C  35      H  31      C  36      H  32
  List   5 now contains     76 atom(s)
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #MATCH                                                                                                                                                                                                                                                          
 Structure matching: measures of similarity and pseudosymmetry                                                                                                                                                                                                   
 A.  Collins, R. I.  Cooper and D. J.  Watkin                                                                                                                                                                                                                    
@@ -9601,14 +9468,9 @@ Space group symbol is   P    1    21/C 1
                               Z axis from  0.000 to  0.500
 #COMPOSITION                                                                                                                                                                                                                                                    
 #LIST 3                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST 5                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #USE REGU.DAT                                                                                                                                                                                                                                                   
 #EDIT                                                                                                                                                                                                                                                           
@@ -9633,9 +9495,6 @@ Bonds: Update required - List5 length change
     H  16      H  17      H  18      H  19      H  20      H  21      H  22
     H  23      H  24      H  25      H  26
  List   5 now contains     60 atom(s)
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #MATCH                                                                                                                                                                                                                                                          
 Structure matching: measures of similarity and pseudosymmetry                                                                                                                                                                                                   
 A.  Collins, R. I.  Cooper and D. J.  Watkin                                                                                                                                                                                                                    
@@ -9670,28 +9529,11 @@ Space group symbol is   P    -1
                               X axis from  0.000 to  1.000
                               Y axis from  0.000 to  1.000
                               Z axis from  0.000 to  0.500
-  Disc file on unit   1 extended by     1 records 
 #COMPOSITION                                                                                                                                                                                                                                                    
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST 5                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #USE REGU.DAT                                                                                                                                                                                                                                                   
 #EDIT                                                                                                                                                                                                                                                           
@@ -9756,13 +9598,6 @@ Bonds: Update required - List5 length change
     H  70      H  71      H  72      H  73      H  74      H  75      H  76
     H  77      H  78
  List   5 now contains    198 atom(s)
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #MATCH                                                                                                                                                                                                                                                          
 Structure matching: measures of similarity and pseudosymmetry                                                                                                                                                                                                   
 A.  Collins, R. I.  Cooper and D. J.  Watkin                                                                                                                                                                                                                    
@@ -9777,7 +9612,6 @@ Journal of Applied Crystallography 2006;39(6):842-849
  Distances and angles abandoned
 #TITLE CSD_CIF_MIF_BOQXOU                                                                                                                                                                                                                                       
 #LIST 1                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 # THE SPACEGROUP SYMBOL MUST HAVE A SPACE BETWEEN EACH OF THE OPERATORS.                                                                                                                                                                                        
 #SPACEGROUP                                                                                                                                                                                                                                                     
   Space Group P -1      
@@ -9802,16 +9636,7 @@ Space group symbol is   P    -1
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST 5                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #USE REGU.DAT                                                                                                                                                                                                                                                   
 #EDIT                                                                                                                                                                                                                                                           
@@ -9854,11 +9679,6 @@ Bonds: Update required - List5 length change
     C  56      H  50      C  57      H  51      C  58      H  52      C  59
     H  53      C  60      H  54      H  55      H  56
  List   5 now contains    124 atom(s)
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #MATCH                                                                                                                                                                                                                                                          
 Structure matching: measures of similarity and pseudosymmetry                                                                                                                                                                                                   
 A.  Collins, R. I.  Cooper and D. J.  Watkin                                                                                                                                                                                                                    
@@ -10810,17 +10630,12 @@ Space group symbol is   P    1    21/C 1
                               X axis from  0.000 to  1.000
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
-  Disc file on unit   1 extended by     1 records 
 #COMPOSITION                                                                                                                                                                                                                                                    
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST 5                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #USE REGU.DAT                                                                                                                                                                                                                                                   
 #EDIT                                                                                                                                                                                                                                                           
  The list currently contains    43 atoms                                                                                                                                                                                                                        
@@ -10840,7 +10655,6 @@ Bonds: Update required - List5 length change
     H  19      H 200      H 210      H 220      C  16      H  23      H  24
     H  25
  List   5 now contains     43 atom(s)
-  Disc file on unit   1 extended by     1 records 
 #MATCH                                                                                                                                                                                                                                                          
 Structure matching: measures of similarity and pseudosymmetry                                                                                                                                                                                                   
 A.  Collins, R. I.  Cooper and D. J.  Watkin                                                                                                                                                                                                                    
@@ -10855,7 +10669,6 @@ Journal of Applied Crystallography 2006;39(6):842-849
  Distances and angles abandoned
 #TITLE CSD_CIF_MIF_CABXUZ                                                                                                                                                                                                                                       
 #LIST 1                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 # THE SPACEGROUP SYMBOL MUST HAVE A SPACE BETWEEN EACH OF THE OPERATORS.                                                                                                                                                                                        
 #SPACEGROUP                                                                                                                                                                                                                                                     
   Space Group P -1      
@@ -10878,14 +10691,9 @@ Space group symbol is   P    -1
                               Z axis from  0.000 to  0.500
 #COMPOSITION                                                                                                                                                                                                                                                    
 #LIST 3                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST 5                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #USE REGU.DAT                                                                                                                                                                                                                                                   
 #EDIT                                                                                                                                                                                                                                                           
@@ -10908,8 +10716,6 @@ Bonds: Update required - List5 length change
     H  17      H  18      H  19      H  20      H  21      H  22      H  23
     H  24
  List   5 now contains     50 atom(s)
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #MATCH                                                                                                                                                                                                                                                          
 Structure matching: measures of similarity and pseudosymmetry                                                                                                                                                                                                   
 A.  Collins, R. I.  Cooper and D. J.  Watkin                                                                                                                                                                                                                    
@@ -11383,7 +11189,6 @@ Matching by Rotation/inversion (Method 1)
 
 #TITLE CSD_CIF_MIF_CABYUA                                                                                                                                                                                                                                       
 #LIST 1                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 # THE SPACEGROUP SYMBOL MUST HAVE A SPACE BETWEEN EACH OF THE OPERATORS.                                                                                                                                                                                        
 #SPACEGROUP                                                                                                                                                                                                                                                     
  The unique axis has been set to "b" - consistent with the unit cell   
@@ -11410,14 +11215,7 @@ Space group symbol is   P    1    21/C 1
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST 5                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #USE REGU.DAT                                                                                                                                                                                                                                                   
 #EDIT                                                                                                                                                                                                                                                           
@@ -11448,9 +11246,6 @@ Bonds: Update required - List5 length change
     H  32      C  22      H  33      H  34      C  23      O  13      N   7
     O  14      N   8      O  15      O  16      C  24      H  35      H  36
  List   5 now contains     84 atom(s)
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #MATCH                                                                                                                                                                                                                                                          
 Structure matching: measures of similarity and pseudosymmetry                                                                                                                                                                                                   
 A.  Collins, R. I.  Cooper and D. J.  Watkin                                                                                                                                                                                                                    
@@ -12766,18 +12561,11 @@ Space group symbol is   P    N    A    21
                               X axis from  0.000 to  0.500
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
-  Disc file on unit   1 extended by     1 records 
 #COMPOSITION                                                                                                                                                                                                                                                    
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST 5                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #USE REGU.DAT                                                                                                                                                                                                                                                   
 #EDIT                                                                                                                                                                                                                                                           
@@ -12808,9 +12596,6 @@ Bonds: Update required - List5 length change
     H  35      C  27      H  36      C  28      C  29      H  37      C  30
     H  38
  List   5 now contains     78 atom(s)
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #MATCH                                                                                                                                                                                                                                                          
 Structure matching: measures of similarity and pseudosymmetry                                                                                                                                                                                                   
 A.  Collins, R. I.  Cooper and D. J.  Watkin                                                                                                                                                                                                                    
@@ -13463,11 +13248,6 @@ WARNING - poor initial fit
 
     1 Poorly mapping groups                                                                                                                                                                                                                                     
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads       4441 Physical writes       2544 Cache hits      68969
- Cache hit distribution    53075    2962    2304    1010     710    1210
- Cache hit distribution      557     441     576    1258     470     509
- Cache hit distribution      685     329     524     224     494     187
- Cache hit distribution      203     271     222     262     223     263
 
 
           : Job ends ok       with     0 warnings and     0 errors

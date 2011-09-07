@@ -1,11 +1,9 @@
 #TITLE ABSTEST                                                                                                                                                                                                                                                  
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 20                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 2                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #                                                                                                                                                                                                                                                               
 #                                                                                                                                                                                                                                                               
 #                                                                                                                                                                                                                                                               
@@ -25,7 +23,6 @@
                         0.0247    0.1329   -0.0339
 #HKLI                                                                                                                                                                                                                                                           
 # READ SETTINGS FROM INPUT STRAEM - IMPORTANT FOR LAST REFLECTIONS                                                                                                                                                                                              
-  Disc file on unit   1 extended by     1 records 
 
 
 
@@ -93,7 +90,6 @@
                         0.0053    0.1133    0.0832
 #HKLI                                                                                                                                                                                                                                                           
 # CALCULATESETTINGS FROM MATRIX - INVALID FOR LAST REFLECTIONS                                                                                                                                                                                                  
-  Disc file on unit   1 extended by     1 records 
 
 
 
@@ -156,7 +152,6 @@
                         0.0247    0.1329   -0.0339
 #HKLI                                                                                                                                                                                                                                                           
 # CALCULATESETTINGS FROM MATRIX - INVALID FOR LAST REFLECTIONS                                                                                                                                                                                                  
-  Disc file on unit   1 extended by     1 records 
 
 
 
@@ -220,7 +215,6 @@
                         0.0247    0.1329   -0.0339
 #HKLI                                                                                                                                                                                                                                                           
 # READ SETTINGS FROM INPUT STRAEM - IMPORTANT FOR LAST REFLECTIONS                                                                                                                                                                                              
-  Disc file on unit   1 extended by     1 records 
 
 
 
@@ -272,7 +266,6 @@
                         0.0247    0.1329   -0.0339
 #HKLI                                                                                                                                                                                                                                                           
 # READ SETTINGS FROM INPUT STRAEM - IMPORTANT FOR LAST REFLECTIONS                                                                                                                                                                                              
-  Disc file on unit   1 extended by     1 records 
 
 
 
@@ -323,7 +316,6 @@
                         0.0247    0.1329   -0.0339
 #HKLI                                                                                                                                                                                                                                                           
 # READ SETTINGS FROM INPUT STRAEM - IMPORTANT FOR LAST REFLECTIONS                                                                                                                                                                                              
-  Disc file on unit   1 extended by     1 records 
 
 
 
@@ -368,11 +360,6 @@
  Minimum correction to I is    1.03                                                                                                                                                                                                                             
  The setting angles stored in list 6 are now for a  'Rollett' machine.                                                                                                                                                                                          
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads        213 Physical writes        360 Cache hits       6907
- Cache hit distribution     5430     358     150     142      47      48
- Cache hit distribution      103       6      16      35      36      11
- Cache hit distribution      160      83      17      24      34      12
- Cache hit distribution      115      45      15       1      11       8
 
 
           : Job ends ok       with     0 warnings and     0 errors

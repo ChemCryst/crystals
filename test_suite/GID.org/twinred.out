@@ -1,10 +1,8 @@
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 20                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 2                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 # P222 THIS IS A DUMMY TO PRESERVE 'ABSENCES' SINCE SOME ARE                                                                                                                                                                                                    
 # 'PRESENT' DUE TO THE TWINNING.                                                                                                                                                                                                                                
 #LIST 3                                                                                                                                                                                                                                                         
@@ -22,7 +20,6 @@
                         0.0000    0.0000    0.0000
 
                         0.0000    0.0000    0.0000
-  Disc file on unit   1 extended by     1 records 
 #LIST 25                                                                                                                                                                                                                                                        
 #LIST 5                                                                                                                                                                                                                                                         
 #                                                                                                                                                                                                                                                               
@@ -35,7 +32,6 @@
 #                                                                                                                                                                                                                                                               
 # THE LP CORRECTION WAS DONE ELSEWHERE                                                                                                                                                                                                                          
 #HKLI                                                                                                                                                                                                                                                           
-  Disc file on unit   1 extended by     1 records 
 
  No scales found
 
@@ -48,10 +44,8 @@
       29 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
 #SYST                                                                                                                                                                                                                                                           
 #LIST 28                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #SYST                                                                                                                                                                                                                                                           
 #SORT                                                                                                                                                                                                                                                           
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
 
 
@@ -61,7 +55,6 @@
  After   1 pass      29 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #LIST 2                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -70,7 +63,6 @@
     H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
 
  The updated reflections are now on UNIT 52
-  Disc file on unit   1 extended by     1 records 
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -291,32 +283,21 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 #    RE-MERGED. USE THE INSTRUCTIONS SORT AND REORDER TO REORDER THE DATA.                                                                                                                                                                                      
 #                                                                                                                                                                                                                                                               
 #LIST 6                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
 
 
 
       46 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
 Upating List 13 for twinned data                                                                                                                                                                                                                                
-  Disc file on unit   1 extended by     1 records 
 #SORT                                                                                                                                                                                                                                                           
 #REORDER                                                                                                                                                                                                                                                        
  After   1 pass      46 reflection(s) have been sorted
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
-  Disc file on unit   1 extended by     1 records 
 # COMPARE THE NEW LIST 6 WITH THE EARLIER ONE. NOTE THAT THE DATA HAS BEEN                                                                                                                                                                                      
 # MOVED ABOUT.                                                                                                                                                                                                                                                  
 #PUNCH 6 C                                                                                                                                                                                                                                                      
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
-  Disc file on unit   1 extended by     1 records 
 #FINI                                                                                                                                                                                                                                                           
- Physical reads        187 Physical writes        425 Cache hits      10602
- Cache hit distribution     8680     556     239     161      73     105
- Cache hit distribution       39      27      26      66      86      83
- Cache hit distribution       41      55      59      48      64      33
- Cache hit distribution       55      51      22       4      17      12
 
 
           : Job ends ok       with     0 warnings and     0 errors

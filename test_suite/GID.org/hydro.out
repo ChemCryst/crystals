@@ -1,19 +1,15 @@
 #TITLE BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                                                                                                                                                                                                
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 20                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 2                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST 5                                                                                                                                                                                                                                                         
 #SET MONITOR OFF                                                                                                                                                                                                                                                
 # DJW JUN09                                                                                                                                                                                                                                                     
 #LIST 13                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - There is no list 41
-  Disc file on unit   1 extended by     1 records 
 #COMPOSITION                                                                                                                                                                                                                                                    
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
@@ -38,13 +34,9 @@ Space group symbol is   P    -1
                               X axis from  0.000 to  1.000
                               Y axis from  0.000 to  1.000
                               Z axis from  0.000 to  0.500
-  Disc file on unit   1 extended by     1 records 
 # DJW JUN09                                                                                                                                                                                                                                                     
 #SET MONITOR ON                                                                                                                                                                                                                                                 
 #HYDROGEN                                                                                                                                                                                                                                                       
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 
 
  Hydrogen atom(s) calculated for the phenyl   group :
@@ -177,7 +169,6 @@ Bonds: Update required - List5 length change
     C   4      C   5      C   6      C   7      C   8      C   9      C  10
     C  11      C  12      C  13      C  14
  List   5 now contains     18 atom(s)
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - List5 length change
 # NOTE THAT THE PHENYL GROUP IS REALLY BONDED TO C1                                                                                                                                                                                                             
 #PERHYDRO                                                                                                                                                                                                                                                       
@@ -194,10 +185,6 @@ H12 C(12) C(11) C(13)
 H12 C(13) C(12) C(8) 
 H33 C(14) C(11) C(10) 
 #HYDROGENS  5  5                                                                                                                                                                                                                                                
-  Disc file on unit   1 extended by     2 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 
 
  Hydrogen atom(s) calculated for the C(sp3)H3 group :
@@ -281,11 +268,6 @@ H33 C(14) C(11) C(10)
  List now contains    32 atoms
 Bonds: Update required - List5 length change
 #FINI                                                                                                                                                                                                                                                           
- Physical reads        120 Physical writes        221 Cache hits       5855
- Cache hit distribution     4515     306     190      66      23      87
- Cache hit distribution       53      26      56     103      69      19
- Cache hit distribution       48      34      44      34      61      27
- Cache hit distribution       14      26      32       3       9      10
 
 
           : Job ends ok       with     0 warnings and     0 errors

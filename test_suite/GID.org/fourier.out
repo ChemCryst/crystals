@@ -3,16 +3,13 @@
 #SET WATCH 5                                                                                                                                                                                                                                                    
 #CLEAR 12                                                                                                                                                                                                                                                       
 #LIST  12                                                                                                                                                                                                                                                       
-  Disc file on unit   1 extended by     2 records 
 #CLEAR 16                                                                                                                                                                                                                                                       
 #LIST  16                                                                                                                                                                                                                                                       
-  Disc file on unit   1 extended by     2 records 
 #                                                                                                                                                                                                                                                               
 #TITLE CYCLO IN P 21 21 21                                                                                                                                                                                                                                      
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 20                                                                                                                                                                                                                                                        
 #LIST 30                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 1                                                                                                                                                                                                                                                         
 #SPACE                                                                                                                                                                                                                                                          
 #LIST 14                                                                                                                                                                                                                                                        
@@ -36,7 +33,6 @@ Space group symbol is   P    21   21   21
                               X axis from  0.000 to  0.500
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
-  Disc file on unit   1 extended by     1 records 
 # WORK GET SCATTERING FACTORS AND PUT THEM INTO LIST 3                                                                                                                                                                                                          
 #COMPOSIT                                                                                                                                                                                                                                                       
 #LIST 13                                                                                                                                                                                                                                                        
@@ -48,10 +44,8 @@ Space group symbol is   P    21   21   21
 #                                                                                                                                                                                                                                                               
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.                                                                                                                                                                                           
 #                                                                                                                                                                                                                                                               
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - There is no list 41
 #LIST 4                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #                                         WEISSENBERG DIFFRACTOMETER.                                                                                                                                                                                           
 #LIST 13                                                                                                                                                                                                                                                        
 #LIST 28                                                                                                                                                                                                                                                        
@@ -63,7 +57,6 @@ Bonds: Update required - There is no list 41
 
  A scale of   1.00000  has been assumed
 
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
 
 
@@ -97,7 +90,6 @@ Bonds: Update required - There is no list 41
  Systematic absence            1.    0.    0.         1.6        0.3         0.        0.
  Systematic absence            3.    0.    0.         1.8        0.4         0.        0.
  Systematic absence            5.    0.    0.         1.2        0.8         0.        0.
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
 
 
@@ -115,7 +107,6 @@ Number                4       1       2       5       4       1       0
    1849 reflections accepted              17 reflections rejected                                                                                                                                                                                               
 #MERGE                                                                                                                                                                                                                                                          
  After   1 pass    1849 reflection(s) have been sorted
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
 #LIST 6                                                                                                                                                                                                                                                         
 
@@ -125,9 +116,7 @@ Number                4       1       2       5       4       1       0
 
     H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
 
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
-  Disc file on unit   1 extended by    13 records 
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -310,7 +299,6 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 #SFLS                                                                                                                                                                                                                                                           
 #CLEAR 17                                                                                                                                                                                                                                                       
 #LIST  17                                                                                                                                                                                                                                                       
-  Disc file on unit   1 extended by     2 records 
 #LIST 26                                                                                                                                                                                                                                                        
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
@@ -2000,7 +1988,6 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  C        11.    0.10250   0.95700   0.15070       -2.4   
  QN        1.    0.68750   0.11111   0.06250      -15.3  Hole        
  The new list  10 contains    12 atoms
-  Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -1.53      1.22    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.688   0.111   0.063                                                                                                                                                                                               
  Mean electron density at original atomic sites is    -0.11
@@ -3752,7 +3739,6 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Q        10.    0.10250   0.96028   0.15000       86.0  Good Shape  
  Q        11.    0.64062   0.33250   0.09563       84.3  Good Shape  
  The new list  10 contains    22 atoms
-  Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -1.48      12.0    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.641   0.333   0.096                                                                                                                                                                                               
 #PRINT 10                                                                                                                                                                                                                                                       
@@ -5532,7 +5518,6 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Q        10.    0.13500   0.65167   0.07563       75.9  Poor Shape  
  Q        11.    0.10562   0.95750   0.14896       69.6  Poor Shape  
  The new list  10 contains    22 atoms
-  Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -1.28      13.3    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.106   0.958   0.149                                                                                                                                                                                               
 #PRINT 10                                                                                                                                                                                                                                                       
@@ -7312,7 +7297,6 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Q        10.    0.10187   0.96167   0.14958       85.7  Good Shape  
  Q        11.    0.64375   0.33306   0.09563       81.9  Good Shape  
  The new list  10 contains    22 atoms
-  Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -1.97      11.9    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.644   0.333   0.096                                                                                                                                                                                               
 #PRINT 10                                                                                                                                                                                                                                                       
@@ -9122,7 +9106,6 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Q        30.    0.84938   0.53722   0.04625       17.7  Poor Shape  
  Q        31.    0.20312   0.09250   0.10292       16.1  Poor Shape  
  The new list  10 contains    36 atoms
-  Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -6.11      15.7    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.203   0.093   0.103                                                                                                                                                                                               
 #PRINT 10                                                                                                                                                                                                                                                       
@@ -10359,7 +10342,6 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Q        13.    0.50000   0.29111   0.37563       53.3  Poor Shape  
  Q        14.    0.50000   0.15250   0.50000       52.8  Poor Shape  
  The new list  10 contains    14 atoms
-  Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -66.0      847.    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.500   0.153   0.500                                                                                                                                                                                               
 #PRINT 10                                                                                                                                                                                                                                                       
@@ -12706,7 +12688,6 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Q        13.    0.50000   0.26472   0.38313      134.6  Good Shape  
  Q        14.    0.50000   0.22917   0.36437      124.3  Good Shape  
  The new list  10 contains    14 atoms
-  Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -8.07      26.9    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.500   0.229   0.364                                                                                                                                                                                               
 #PRINT 10                                                                                                                                                                                                                                                       
@@ -13886,7 +13867,6 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Q        20.    0.17562   0.20250   0.25979      475.8  Good Shape  
  Q        21.    0.36125   0.15778   0.26458      463.5  Good Shape  
  The new list  10 contains    14 atoms
-  Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -32.7      39.3    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.361   0.158   0.265                                                                                                                                                                                               
 #PRINT 10                                                                                                                                                                                                                                                       
@@ -17429,8 +17409,6 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Q        35.    0.21187   0.10056   0.10063       16.2  Poor Shape  
  Q        36.    0.23125   0.19806   0.18667       15.7  Poor Shape  
  The new list  10 contains    36 atoms
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -5.66      15.6    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.231   0.198   0.187                                                                                                                                                                                               
 #PRINT 10                                                                                                                                                                                                                                                       
@@ -17539,7 +17517,7 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Q             16.      1.00000     1.00000     0.29375     0.24694     0.03937     0.05000     0.00000     0.00000
                                                                                     0.00000     0.00000     0.00000    28.8
           0.          0.          0.          0.
- Q             17.      1.00000     1.00000     0.92188     0.89500     0.01563     0.05000     0.00000     0.00000
+ Q             17.      1.00000     1.00000     0.92188     0.89500     0.01562     0.05000     0.00000     0.00000
                                                                                     0.00000     0.00000     0.00000    26.3
           0.          0.          0.          0.
  Q             18.      1.00000     1.00000     0.76625     0.59583     0.18812     0.05000     0.00000     0.00000
@@ -19285,7 +19263,6 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Q        33.    0.84312   0.53556   0.04521       17.4  Poor Shape  
  Q        34.    0.22625   0.39306   0.19521       15.4  Poor Shape  
  The new list  10 contains    36 atoms
-  Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -5.54      15.6    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.226   0.393   0.195                                                                                                                                                                                               
 #PRINT 10                                                                                                                                                                                                                                                       
@@ -21138,8 +21115,6 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Q        31.    0.84437   0.53500   0.04604       17.3  Poor Shape  
  Q        32.    0.37312   0.79833   0.21438       16.9  Poor Shape  
  The new list  10 contains    36 atoms
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -5.85      15.5    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.373   0.798   0.214                                                                                                                                                                                               
 #PRINT 10                                                                                                                                                                                                                                                       
@@ -22991,7 +22966,6 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Q        30.    0.84938   0.53722   0.04625       17.7  Poor Shape  
  Q        31.    0.20312   0.09250   0.10292       16.1  Poor Shape  
  The new list  10 contains    36 atoms
-  Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -6.11      15.7    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.203   0.093   0.103                                                                                                                                                                                               
 #PRINT 10                                                                                                                                                                                                                                                       
@@ -24228,7 +24202,6 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Q        13.    0.50000   0.29111   0.37563       53.3  Poor Shape  
  Q        14.    0.50000   0.15250   0.50000       52.8  Poor Shape  
  The new list  10 contains    14 atoms
-  Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -66.0      847.    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.500   0.153   0.500                                                                                                                                                                                               
 #PRINT 10                                                                                                                                                                                                                                                       
@@ -26575,7 +26548,6 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Q        13.    0.50000   0.26472   0.38313      134.6  Good Shape  
  Q        14.    0.50000   0.22917   0.36437      124.3  Good Shape  
  The new list  10 contains    14 atoms
-  Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -8.07      26.9    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.500   0.229   0.364                                                                                                                                                                                               
 #PRINT 10                                                                                                                                                                                                                                                       
@@ -27755,7 +27727,6 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Q        20.    0.17562   0.20250   0.25979      475.8  Good Shape  
  Q        21.    0.36125   0.15778   0.26458      463.5  Good Shape  
  The new list  10 contains    14 atoms
-  Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -32.7      39.3    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.361   0.158   0.265                                                                                                                                                                                               
 #PRINT 10                                                                                                                                                                                                                                                       
@@ -27881,19 +27852,15 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
 #LIST 12                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #SFLS                                                                                                                                                                                                                                                           
-  Disc file on unit   1 extended by     1 records 
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
 #LIST 22                                                                                                                                                                                                                                                        
  Initialising Special positions
-  Disc file on unit   1 extended by     1 records 
 Refining    34 parameters in    1 block :      679 elements in the LS matrix.
  Space required on DISK is    2 records,     6  Blocks,     3 Kbytes. 
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
@@ -28120,7 +28087,6 @@ All cycle   4       0.00          0.100E+16      0.982E+04
                      0.00000          -0.00057 -0.00110  0.00038  0.00000
                      0.00000           0.00258  0.00110  0.00076  0.00000
                                        0.01269  0.01208  0.01170
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0111                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -28564,15 +28530,11 @@ All cycle   3      0.300E-01      0.100E+05      0.212E-01
                      0.00000           0.00000 -0.00004  0.00003  0.00000
                      0.00000           0.00255  0.00109  0.00076  0.00000
                                        0.01257  0.01199  0.01160
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0110                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #LIST 12                                                                                                                                                                                                                                                        
 #SFLS                                                                                                                                                                                                                                                           
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 12                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
@@ -28581,7 +28543,6 @@ Mean C-C su =   0.0110
 Refining    45 parameters in    1 block :     1141 elements in the LS matrix.
  Space required on DISK is    3 records,     9  Blocks,     5 Kbytes. 
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
@@ -28643,7 +28604,6 @@ Refining    45 parameters in    1 block :     1141 elements in the LS matrix.
 SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.46 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =   -0.028    100*(<Fo>-<Fc>)/<Fo> =   -0.380                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
@@ -29042,7 +29002,6 @@ Inter cycle   4       0.00          0.100E+16      0.108E+04
                      0.00000          -0.00012 -0.00019  0.00015  0.00014
                      0.00000           0.00247  0.00105  0.00072  0.00257
                                        0.01216  0.01160  0.01110
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0104                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -29499,13 +29458,10 @@ Inter cycle   4       0.00          0.100E+16       1.07
                      0.00000           0.00001 -0.00001  0.00005 -0.00010
                      0.00000           0.00246  0.00105  0.00072  0.00257
                                        0.01212  0.01154  0.01108
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0104                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #LIST 12                                                                                                                                                                                                                                                        
 #SFLS                                                                                                                                                                                                                                                           
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
@@ -29517,11 +29473,9 @@ Refining    68 parameters in    1 block :     2498 elements in the LS matrix.
  New LIST 23 written to disk
      11 Atoms modified;   New  LIST 5 written to DISK
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
-  Disc file on unit   1 extended by     3 records 
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -29580,7 +29534,6 @@ Refining    68 parameters in    1 block :     2498 elements in the LS matrix.
 SumFo/SumFc=  1.49 SumFoFc/SumFc^2=  1.49 SumwFoFc/SumwFc^2=  1.49 LS-scale=  1.49 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =    0.001    100*(<Fo>-<Fc>)/<Fo> =    0.015                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
@@ -30021,7 +29974,6 @@ Inter cycle   4       0.00          0.100E+16      0.314E+04
                      0.00000           0.00000  0.00000  0.00000  0.00447  0.00298  0.00444 -0.00468 -0.00042 -0.00157
                      0.00000           0.00000  0.00000  0.00000  0.00445  0.00454  0.00504  0.00427  0.00427  0.00411
                                        0.00000  0.00000  0.00000
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #LIST 4                                                                                                                                                                                                                                                         
@@ -33433,7 +33385,6 @@ Mean C-C su =   0.0000
  Q        10.    0.13437   0.65056   0.07729       60.1  Poor Shape  
  Q        11.    0.10312   0.96056   0.14875       51.4  Poor Shape  
  The new list  10 contains    22 atoms
-  Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -2.06      9.22    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.103   0.961   0.149                                                                                                                                                                                               
 #PRINT 10                                                                                                                                                                                                                                                       
@@ -35218,7 +35169,6 @@ Mean C-C su =   0.0000
  Q        10.    0.63813   0.33306   0.09833       56.6  Poor Shape  
  Q        11.    0.09937   0.95611   0.15104       55.4  Poor Shape  
  The new list  10 contains    22 atoms
-  Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -2.05      9.68    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.099   0.956   0.151                                                                                                                                                                                               
 #PRINT 10                                                                                                                                                                                                                                                       
@@ -37003,7 +36953,6 @@ Mean C-C su =   0.0000
  Q        10.    0.13437   0.65000   0.07792       57.9  Poor Shape  
  Q        11.    0.10125   0.96472   0.14813       51.4  Poor Shape  
  The new list  10 contains    22 atoms
-  Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -2.07      8.77    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.101   0.965   0.148                                                                                                                                                                                               
 #PRINT 10                                                                                                                                                                                                                                                       
@@ -38809,8 +38758,6 @@ Mean C-C su =   0.0000
  Q        26.    0.41750   0.04667   0.15604       17.4  Poor Shape  
  Q        27.    0.39062   0.23750   0.20854       16.3  Poor Shape  
  The new list  10 contains    36 atoms
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -4.91      12.6    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.391   0.238   0.209                                                                                                                                                                                               
 #PRINT 10                                                                                                                                                                                                                                                       
@@ -42308,7 +42255,6 @@ Mean C-C su =   0.0000
  Q        20.    0.50000   0.50000   0.33792      205.5  Good Shape  
  Q        21.    0.17937   0.50000   0.24208      200.4  Good Shape  
  The new list  10 contains    14 atoms
-  Disc file on unit   1 extended by     1 records 
  The minimum and maximum map densities are  -1.07      5.65    electrons /A^3                                                                                                                                                                                   
                   The deepest hole is at    0.179   0.500   0.242                                                                                                                                                                                               
 #PRINT 10                                                                                                                                                                                                                                                       
@@ -43471,11 +43417,6 @@ Mean C-C su =   0.0000
 
 
 
- Physical reads       8025 Physical writes       3851 Cache hits     176980
- Cache hit distribution   156769    8556    2347     703    1046    1604
- Cache hit distribution      317     160     371     343     547     602
- Cache hit distribution      758     311     268     158     217     193
- Cache hit distribution      242     308     281     269     311     299
 
 
           : Job ends ok       with     0 warnings and     1 error 

@@ -1,21 +1,16 @@
 #TITLE SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                                                                                                                                                                                      
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 20                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 2                                                                                                                                                                                                                                                         
 # THE SPACE GROUP IS P321.                                                                                                                                                                                                                                      
 #LIST 3                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #LIST 4                                                                                                                                                                                                                                                         
 #LIST 5                                                                                                                                                                                                                                                         
 #EDIT                                                                                                                                                                                                                                                           
 Bonds: Update required - There is no list 41
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 13                                                                                                                                                                                                                                                        
  The following atom(s) will be changed                                                                                                                                                                                                                          
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part                                                                                                                                                                             
@@ -30,44 +25,30 @@ Bonds: Update required - There is no list 41
  List   5 now contains      7 atom(s)
 #LIST 6                                                                                                                                                                                                                                                         
 #LIST 28                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 6                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
 
 
 
      270 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
 Upating List 13 for twinned data                                                                                                                                                                                                                                
-  Disc file on unit   1 extended by     3 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 25                                                                                                                                                                                                                                                        
 #SORT                                                                                                                                                                                                                                                           
 #REORDER                                                                                                                                                                                                                                                        
  After   1 pass     270 reflection(s) have been sorted
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
-  Disc file on unit   1 extended by     4 records 
 #LIST 12                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
-  Disc file on unit   1 extended by     4 records 
-  Disc file on unit   1 extended by     2 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #SFLS                                                                                                                                                                                                                                                           
 #CLEAR 16                                                                                                                                                                                                                                                       
 #LIST  16                                                                                                                                                                                                                                                       
-  Disc file on unit   1 extended by     2 records 
 #CLEAR 17                                                                                                                                                                                                                                                       
 #LIST  17                                                                                                                                                                                                                                                       
-  Disc file on unit   1 extended by     2 records 
 #LIST 23                                                                                                                                                                                                                                                        
 #LIST 26                                                                                                                                                                                                                                                        
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
 #SFLS                                                                                                                                                                                                                                                           
-  Disc file on unit   1 extended by     1 records 
 #SPEC  NO  NO                                                                                                                                                                                                                                                   
 #SCALE      1                                                                                                                                                                                                                                                   
 #CYCLENDS                                                                                                                                                                                                                                                       
@@ -156,13 +137,9 @@ Refining    44 parameters in    1 block :     1094 elements in the LS matrix.
  Space required on DISK is    3 records,     9  Blocks,     5 Kbytes. 
     10 Symmetry restraints written to LIST 17
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
-  Disc file on unit   1 extended by     2 records 
 
 
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
@@ -194,12 +171,9 @@ Refining    44 parameters in    1 block :     1094 elements in the LS matrix.
 SumFo/SumFc= 10.07 SumFoFc/SumFc^2= 10.01 SumwFoFc/SumwFc^2= 10.01 LS-scale= 10.01 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =    0.092    100*(<Fo>-<Fc>)/<Fo> =    0.634                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
-  Disc file on unit   1 extended by     1 records 
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -1067,7 +1041,6 @@ Slope=       -0.001 Intercept =       1.235 C-Coef=      -0.062
                                                                                                               .
      TOTALS           270     39403.77     39509.9      0.2906E+02      0.1074E+01     2.74    3.79     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
-  Disc file on unit   1 extended by     1 records 
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
@@ -1510,15 +1483,9 @@ Inter cycle   4       0.00          0.100E+16       24.9
                      0.00000           0.00007  0.00005 -0.00004 -0.00021  0.00004 -0.00002  0.00026 -0.00021 -0.00009
                      0.00000           0.00061  0.00053  0.00085  0.00195  0.00217  0.00117  0.00188  0.00211  0.00192
                                        0.00539  0.00473  0.00429
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #FINI                                                                                                                                                                                                                                                           
- Physical reads        738 Physical writes       1298 Cache hits      51028
- Cache hit distribution    44467    2344     694     454     317     356
- Cache hit distribution      175      87     116     251     234     104
- Cache hit distribution      238      98     172      91     149      88
- Cache hit distribution      136      84     103     106      93      71
 
 
           : Job ends ok       with     0 warnings and     0 errors

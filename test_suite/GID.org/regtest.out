@@ -133,10 +133,7 @@ Bonds: Update required - List5 length change
     Q   6
  List   5 now contains     20 atom(s)
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
 #REGULAR KEEP                                                                                                                                                                                                                                                   
-  Disc file on unit   1 extended by     2 records 
-  Disc file on unit   1 extended by     1 records 
 Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
 
 
@@ -2325,11 +2322,6 @@ Matching by Rotation/inversion (Method 1)
  Comparison   of group number   1 completed
 
 #END                                                                                                                                                                                                                                                            
- Physical reads        805 Physical writes       2569 Cache hits      48747
- Cache hit distribution    37966    2859    1634     488     419     675
- Cache hit distribution      443     298     322     483     413     202
- Cache hit distribution      231     361     412     264     249     276
- Cache hit distribution      154     158     153      95     110      82
 
 
           : Job ends ok       with     0 warnings and     0 errors

@@ -6,10 +6,8 @@
 #USE SHAPERING.IN                                                                                                                                                                                                                                               
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 20                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #LIST 1                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #LIST 31                                                                                                                                                                                                                                                        
 #SPACE                                                                                                                                                                                                                                                          
 #LIST 14                                                                                                                                                                                                                                                        
@@ -33,47 +31,32 @@ Space group symbol is   P    1
                               X axis from  0.000 to  1.000
                               Y axis from  0.000 to  1.000
                               Z axis from  0.000 to  0.500
-  Disc file on unit   1 extended by     1 records 
 #COMPOSITION                                                                                                                                                                                                                                                    
 #LIST 13                                                                                                                                                                                                                                                        
 #COMPOSITION                                                                                                                                                                                                                                                    
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST      5                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - There is no list 41
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #                                                                                                                                                                                                                                                               
 #LIST      6                                                                                                                                                                                                                                                    
 #LIST 28                                                                                                                                                                                                                                                        
 #LIST      6                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
 
 
 
     2803 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-  Disc file on unit   1 extended by   181 records 
 #                                                                                                                                                                                                                                                               
 #LIST     12                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #SFLS                                                                                                                                                                                                                                                           
 #LIST 4                                                                                                                                                                                                                                                         
 #CLEAR 16                                                                                                                                                                                                                                                       
 #LIST  16                                                                                                                                                                                                                                                       
-  Disc file on unit   1 extended by     2 records 
 #CLEAR 17                                                                                                                                                                                                                                                       
 #LIST  17                                                                                                                                                                                                                                                       
-  Disc file on unit   1 extended by     1 records 
 #LIST 23                                                                                                                                                                                                                                                        
 #LIST 26                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
 #SFLS                                                                                                                                                                                                                                                           
@@ -146,7 +129,6 @@ SumFo/SumFc=  6.51 SumFoFc/SumFc^2=  6.29 SumwFoFc/SumwFc^2=  6.29 LS-scale=  6.
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
 #SFLS                                                                                                                                                                                                                                                           
-  Disc file on unit   1 extended by     1 records 
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
@@ -155,16 +137,13 @@ SumFo/SumFc=  6.51 SumFoFc/SumFc^2=  6.29 SumwFoFc/SumwFc^2=  6.29 LS-scale=  6.
  Floating origin in  x direction
  Floating origin in  y direction
  Floating origin in  z direction
-  Disc file on unit   1 extended by     1 records 
 Refining    35 parameters in    1 block :      716 elements in the LS matrix.
  Space required on DISK is    2 records,     6  Blocks,     3 Kbytes. 
      3 Symmetry restraints written to LIST 17
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
-  Disc file on unit   1 extended by     1 records 
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -223,7 +202,6 @@ Refining    35 parameters in    1 block :      716 elements in the LS matrix.
 SumFo/SumFc=  6.53 SumFoFc/SumFc^2=  6.36 SumwFoFc/SumwFc^2=  6.36 LS-scale=  6.29 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =    0.438    100*(<Fo>-<Fc>)/<Fo> =    3.644                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
@@ -396,9 +374,6 @@ All cycle   4       0.00          0.100E+16      0.253E+06
                      0.08677           0.00013  0.00013  0.00013  0.00013  0.00013  0.00013  0.00013
                      0.12964           0.00106  0.00106  0.00106  0.00106  0.00106  0.00106  0.00106
                                        0.01170  0.01000  0.00923
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0463                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -637,8 +612,6 @@ Inter cycle   4       0.00          0.100E+16      0.370E+04
                     -0.00157          -0.00026 -0.00026 -0.00026 -0.00026 -0.00026 -0.00026 -0.00026
                      0.12686           0.00106  0.00106  0.00106  0.00106  0.00106  0.00106  0.00106
                                        0.01171  0.01002  0.00924
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0464                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -878,8 +851,6 @@ Inter cycle   4       0.00          0.100E+16       63.7
                      0.00026           0.00006  0.00006  0.00006  0.00006  0.00006  0.00006  0.00006
                      0.12660           0.00107  0.00107  0.00107  0.00107  0.00107  0.00107  0.00107
                                        0.01185  0.01013  0.00935
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0464                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -1136,9 +1107,6 @@ All cycle   3      0.300E-01      0.100E+05      0.269E-01
                      0.00020          -0.00003 -0.00003 -0.00003 -0.00003 -0.00003 -0.00003 -0.00003
                      0.12663           0.00107  0.00107  0.00107  0.00107  0.00107  0.00107  0.00107
                                        0.01186  0.01014  0.00936
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0464                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -1149,8 +1117,6 @@ Mean C-C su =   0.0464
  F       6.    0.0745    0.2817    0.7547    0.3703    0.2511    2.8541    Might be split                                                                                                                                                                       
 #CYCLENDS                                                                                                                                                                                                                                                       
 #PERTURB                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -1544,8 +1510,6 @@ Over-all rescaling factor 0.46
                     -1.12855          -0.01469 -0.01469 -0.01469 -0.01469 -0.01469 -0.01469 -0.01469
                      0.23444           0.00208  0.00208  0.00208  0.00208  0.00208  0.00208  0.00208
                                        0.02300  0.01967  0.01815
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.1097                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -1554,9 +1518,6 @@ Mean C-C su =   0.1097
  F       4.    0.0839    0.1011    0.5657    0.2503    0.1687    0.6819    Might be split                                                                                                                                                                       
  F       5.    0.0732    0.2735    0.5095    0.2854    0.2168    1.9046    Might be split                                                                                                                                                                       
  F       6.    0.0745    0.2817    0.7547    0.3703    0.2511    2.8541    Might be split                                                                                                                                                                       
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -1940,9 +1901,6 @@ Over-all rescaling factor 0.69
                      0.68530          -0.01174 -0.01174 -0.01174 -0.01174 -0.01174 -0.01174 -0.01174
                      0.18234           0.00297  0.00297  0.00297  0.00297  0.00297  0.00297  0.00297
                                        0.03282  0.02807  0.02590
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0564                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -1951,8 +1909,6 @@ Mean C-C su =   0.0564
  F       4.    0.0839    0.1011    0.5657    0.2503    0.1687    0.6819    Might be split                                                                                                                                                                       
  F       5.    0.0732    0.2735    0.5095    0.2854    0.2168    1.9046    Might be split                                                                                                                                                                       
  F       6.    0.0745    0.2817    0.7547    0.3703    0.2511    2.8541    Might be split                                                                                                                                                                       
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -2016,7 +1972,6 @@ Mean C-C su =   0.0564
  Structure factor least squares calculation    8  ends  2
 SumFo/SumFc=  6.53 SumFoFc/SumFc^2=  6.36 SumwFoFc/SumwFc^2=  6.36 LS-scale=  6.26 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =    0.485    100*(<Fo>-<Fc>)/<Fo> =    4.020                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -2291,8 +2246,6 @@ Inter cycle   4       0.00          0.100E+16      0.941E+05
                      0.12460          -0.00933 -0.00933 -0.00933 -0.00933 -0.00933 -0.00933 -0.00933
                      0.13864           0.00174  0.00174  0.00174  0.00174  0.00174  0.00174  0.00174
                                        0.01923  0.01645  0.01518
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0478                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -2540,8 +2493,6 @@ Inter cycle   4       0.00          0.100E+16      0.172E+05
                      0.07276          -0.00027 -0.00027 -0.00027 -0.00027 -0.00027 -0.00027 -0.00027
                      0.12020           0.00116  0.00116  0.00116  0.00116  0.00116  0.00116  0.00116
                                        0.01279  0.01094  0.01009
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0488                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -2777,8 +2728,6 @@ All cycle   4       0.00          0.100E+16      0.254E+06
                     -0.04672           0.00014  0.00014  0.00014  0.00014  0.00014  0.00014  0.00014
                      0.12123           0.00108  0.00108  0.00108  0.00108  0.00108  0.00108  0.00108
                                        0.01192  0.01020  0.00941
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0504                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -2850,7 +2799,6 @@ Mean C-C su =   0.0504
  Structure factor least squares calculation   11  ends  2
 SumFo/SumFc=  6.53 SumFoFc/SumFc^2=  6.36 SumwFoFc/SumwFc^2=  6.36 LS-scale=  6.36 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =    0.311    100*(<Fo>-<Fc>)/<Fo> =    2.616                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -3020,8 +2968,6 @@ Inter cycle   4       0.00          0.100E+16       203.
                     -0.00995          -0.00018 -0.00018 -0.00018 -0.00018 -0.00018 -0.00018 -0.00018
                      0.12167           0.00107  0.00107  0.00107  0.00107  0.00107  0.00107  0.00107
                                        0.01180  0.01009  0.00931
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0496                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -3279,8 +3225,6 @@ Inter cycle   4       0.00          0.100E+16       86.8
                     -0.00770           0.00003  0.00003  0.00003  0.00003  0.00003  0.00003  0.00003
                      0.12154           0.00106  0.00106  0.00106  0.00106  0.00106  0.00106  0.00106
                                        0.01174  0.01004  0.00926
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0494                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -3514,9 +3458,6 @@ Inter cycle   4       0.00          0.100E+16       68.5
                     -0.00310          -0.00003 -0.00003 -0.00003 -0.00003 -0.00003 -0.00003 -0.00003
                      0.12165           0.00106  0.00106  0.00106  0.00106  0.00106  0.00106  0.00106
                                        0.01172  0.01003  0.00925
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0493                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -3795,22 +3736,15 @@ Space group symbol is   P    1
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST      5                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #                                                                                                                                                                                                                                                               
 #LIST      6                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
 
 
 
     2803 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-  Disc file on unit   1 extended by   181 records 
 #                                                                                                                                                                                                                                                               
 #LIST     12                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     2 records 
-  Disc file on unit   1 extended by     1 records 
 #SFLS                                                                                                                                                                                                                                                           
 #LIST 26                                                                                                                                                                                                                                                        
 #WEIGHT                                                                                                                                                                                                                                                         
@@ -4125,7 +4059,6 @@ All cycle   4       0.00          0.100E+16      0.251E+06
                      0.08886           0.00030  0.00030  0.00030  0.00030  0.00030  0.00030  0.00030
                      0.12788           0.00104  0.00104  0.00104  0.00104  0.00104  0.00104  0.00104
                                        0.01150  0.00983  0.00907
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0456                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -4359,8 +4292,6 @@ Inter cycle   4       0.00          0.100E+16       930.
                      0.00127          -0.00025 -0.00025 -0.00025 -0.00025 -0.00025 -0.00025 -0.00025
                      0.12746           0.00106  0.00106  0.00106  0.00106  0.00106  0.00106  0.00106
                                        0.01168  0.00999  0.00922
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0465                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -4432,7 +4363,6 @@ Mean C-C su =   0.0465
  Structure factor least squares calculation    4  ends  2
 SumFo/SumFc=  6.53 SumFoFc/SumFc^2=  6.36 SumwFoFc/SumwFc^2=  6.36 LS-scale=  6.36 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =    0.310    100*(<Fo>-<Fc>)/<Fo> =    2.611                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -4601,8 +4531,6 @@ Inter cycle   4       0.00          0.100E+16       53.6
                     -0.00036           0.00005  0.00005  0.00005  0.00005  0.00005  0.00005  0.00005
                      0.12722           0.00107  0.00107  0.00107  0.00107  0.00107  0.00107  0.00107
                                        0.01181  0.01010  0.00932
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0465                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -4837,8 +4765,6 @@ All cycle   3      0.300E-01      0.100E+05      0.243E-01
                      0.00031          -0.00003 -0.00003 -0.00003 -0.00003 -0.00003 -0.00003 -0.00003
                      0.12724           0.00107  0.00107  0.00107  0.00107  0.00107  0.00107  0.00107
                                        0.01181  0.01010  0.00932
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0465                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -4849,9 +4775,6 @@ Mean C-C su =   0.0465
  F       6.    0.0745    0.2817    0.7547    0.3703    0.2511    2.8541    Might be split                                                                                                                                                                       
 #CYCLENDS                                                                                                                                                                                                                                                       
 #PERTURB                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -5244,8 +5167,6 @@ Over-all rescaling factor 0.50
                     -0.34801           0.01024  0.01024  0.01024  0.01024  0.01024  0.01024  0.01024
                      0.13813           0.00110  0.00110  0.00110  0.00110  0.00110  0.00110  0.00110
                                        0.01214  0.01038  0.00958
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0545                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -5608,8 +5529,6 @@ Over-all rescaling factor 0.79
                      0.06381           0.00971  0.00971  0.00971  0.00971  0.00971  0.00971  0.00971
                      0.12739           0.00123  0.00123  0.00123  0.00123  0.00123  0.00123  0.00123
                                        0.01361  0.01164  0.01074
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0455                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -5888,9 +5807,6 @@ Inter cycle   4       0.00          0.100E+16      0.472E+05
                      0.04440           0.00015  0.00015  0.00015  0.00015  0.00015  0.00015  0.00015
                      0.12853           0.00114  0.00114  0.00114  0.00114  0.00114  0.00114  0.00114
                                        0.01259  0.01076  0.00993
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0470                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -6129,8 +6045,6 @@ Inter cycle   4       0.00          0.100E+16      0.213E+04
                     -0.00753          -0.00020 -0.00020 -0.00020 -0.00020 -0.00020 -0.00020 -0.00020
                      0.12911           0.00102  0.00102  0.00102  0.00102  0.00102  0.00102  0.00102
                                        0.01127  0.00964  0.00889
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0484                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -6367,8 +6281,6 @@ All cycle   4       0.00          0.100E+16      0.251E+06
                     -0.00424           0.00007  0.00007  0.00007  0.00007  0.00007  0.00007  0.00007
                      0.12897           0.00101  0.00101  0.00101  0.00101  0.00101  0.00101  0.00101
                                        0.01120  0.00958  0.00884
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0482                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -6440,7 +6352,6 @@ Mean C-C su =   0.0482
  Structure factor least squares calculation   11  ends  2
 SumFo/SumFc=  6.53 SumFoFc/SumFc^2=  6.36 SumwFoFc/SumwFc^2=  6.36 LS-scale=  6.36 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =    0.309    100*(<Fo>-<Fc>)/<Fo> =    2.598                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -6603,8 +6514,6 @@ Inter cycle   4       0.00          0.100E+16       21.4
                     -0.00118          -0.00003 -0.00003 -0.00003 -0.00003 -0.00003 -0.00003 -0.00003
                      0.12906           0.00101  0.00101  0.00101  0.00101  0.00101  0.00101  0.00101
                                        0.01115  0.00953  0.00880
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0481                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -6842,8 +6751,6 @@ All cycle   3      0.300E-01      0.100E+05      0.162E-01
                     -0.00080           0.00001  0.00001  0.00001  0.00001  0.00001  0.00001  0.00001
                      0.12905           0.00101  0.00101  0.00101  0.00101  0.00101  0.00101  0.00101
                                        0.01115  0.00954  0.00880
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0481                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -7097,7 +7004,6 @@ Mean C-C su =   0.0481
 #                                         FSQ, NOANOM                                                                                                                                                                                                           
 #USE SHAPERING.IN                                                                                                                                                                                                                                               
 #LIST 1                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #LIST 31                                                                                                                                                                                                                                                        
 #SPACE                                                                                                                                                                                                                                                          
   Space Group P 1       
@@ -7123,24 +7029,15 @@ Space group symbol is   P    1
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST      5                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #                                                                                                                                                                                                                                                               
 #LIST      6                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
 
 
 
     2803 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by   180 records 
-  Disc file on unit   1 extended by     1 records 
 #                                                                                                                                                                                                                                                               
 #LIST     12                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #SFLS                                                                                                                                                                                                                                                           
 #LIST 26                                                                                                                                                                                                                                                        
 #WEIGHT                                                                                                                                                                                                                                                         
@@ -7458,7 +7355,6 @@ All cycle   4       0.00          0.100E+16      0.213E+06
                      0.09509           0.00019  0.00019  0.00019  0.00019  0.00019  0.00019  0.00019
                      0.12300           0.00102  0.00102  0.00102  0.00102  0.00102  0.00102  0.00102
                                        0.01129  0.00966  0.00891
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0445                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -7734,8 +7630,6 @@ Inter cycle   4       0.00          0.100E+16      0.134E+04
                      0.00178          -0.00034 -0.00034 -0.00034 -0.00034 -0.00034 -0.00034 -0.00034
                      0.12284           0.00103  0.00103  0.00103  0.00103  0.00103  0.00103  0.00103
                                        0.01138  0.00973  0.00898
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0455                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -7977,8 +7871,6 @@ Inter cycle   4       0.00          0.100E+16       58.5
                      0.00045           0.00004  0.00004  0.00004  0.00004  0.00004  0.00004  0.00004
                      0.12250           0.00104  0.00104  0.00104  0.00104  0.00104  0.00104  0.00104
                                        0.01153  0.00986  0.00910
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0455                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -8233,9 +8125,6 @@ All cycle   3      0.300E-01      0.100E+05      0.233E-01
                      0.00023          -0.00003 -0.00003 -0.00003 -0.00003 -0.00003 -0.00003 -0.00003
                      0.12251           0.00104  0.00104  0.00104  0.00104  0.00104  0.00104  0.00104
                                        0.01155  0.00987  0.00911
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0455                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -8246,8 +8135,6 @@ Mean C-C su =   0.0455
  F       6.    0.0745    0.2817    0.7547    0.3703    0.2511    2.8541    Might be split                                                                                                                                                                       
 #CYCLENDS                                                                                                                                                                                                                                                       
 #PERTURB                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -8638,8 +8525,6 @@ All cycle   4       0.00          0.100E+16      0.333E+06
                     -0.07666           0.00874  0.00874  0.00874  0.00874  0.00874  0.00874  0.00874
                      0.09181           0.00098  0.00098  0.00098  0.00098  0.00098  0.00098  0.00098
                                        0.01089  0.00931  0.00859
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0372                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -8711,7 +8596,6 @@ Mean C-C su =   0.0372
  Structure factor least squares calculation    7  ends  2
 SumFo/SumFc=  6.52 SumFoFc/SumFc^2=  6.36 SumwFoFc/SumwFc^2=  6.47 LS-scale=  6.33 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =    0.359    100*(<Fo>-<Fc>)/<Fo> =    3.003                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -9027,8 +8911,6 @@ Inter cycle   4       0.00          0.100E+16      0.809E+05
                      0.21390           0.01347  0.01347  0.01347  0.01347  0.01347  0.01347  0.01347
                      0.09575           0.00148  0.00148  0.00148  0.00148  0.00148  0.00148  0.00148
                                        0.01633  0.01396  0.01289
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0339                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -9406,8 +9288,6 @@ Inter cycle   4       0.00          0.100E+16      0.163E+05
                      0.34382           0.01061  0.01061  0.01061  0.01061  0.01061  0.01061  0.01061
                      0.11548           0.00172  0.00172  0.00172  0.00172  0.00172  0.00172  0.00172
                                        0.01906  0.01630  0.01504
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0348                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -9791,9 +9671,6 @@ Inter cycle   4       0.00          0.100E+16      0.178E+05
                      0.21885           0.00492  0.00492  0.00492  0.00492  0.00492  0.00492  0.00492
                      0.12327           0.00133  0.00133  0.00133  0.00133  0.00133  0.00133  0.00133
                                        0.01477  0.01263  0.01165
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0424                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -10103,8 +9980,6 @@ All cycle   4       0.00          0.100E+16      0.214E+06
                      0.00660          -0.00113 -0.00113 -0.00113 -0.00113 -0.00113 -0.00113 -0.00113
                      0.12472           0.00106  0.00106  0.00106  0.00106  0.00106  0.00106  0.00106
                                        0.01173  0.01004  0.00926
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0483                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -10345,8 +10220,6 @@ Inter cycle   4       0.00          0.100E+16       512.
                     -0.01538          -0.00005 -0.00005 -0.00005 -0.00005 -0.00005 -0.00005 -0.00005
                      0.12385           0.00099  0.00099  0.00099  0.00099  0.00099  0.00099  0.00099
                                        0.01101  0.00942  0.00869
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0479                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -10586,9 +10459,6 @@ Inter cycle   4       0.00          0.100E+16       55.9
                     -0.00408           0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
                      0.12386           0.00098  0.00098  0.00098  0.00098  0.00098  0.00098  0.00098
                                        0.01087  0.00930  0.00858
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0477                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -10818,8 +10688,6 @@ All cycle   3      0.300E-01      0.100E+05      0.172E-01
                     -0.00230           0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
                      0.12389           0.00098  0.00098  0.00098  0.00098  0.00098  0.00098  0.00098
                                        0.01083  0.00926  0.00855
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0477                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -11073,7 +10941,6 @@ Mean C-C su =   0.0477
 #                                         FSQ, ANOM                                                                                                                                                                                                             
 #USE SHAPERING.IN                                                                                                                                                                                                                                               
 #LIST 1                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #LIST 31                                                                                                                                                                                                                                                        
 #SPACE                                                                                                                                                                                                                                                          
   Space Group P 1       
@@ -11099,21 +10966,15 @@ Space group symbol is   P    1
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST      5                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #                                                                                                                                                                                                                                                               
 #LIST      6                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
 
 
 
     2803 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-  Disc file on unit   1 extended by   181 records 
 #                                                                                                                                                                                                                                                               
 #LIST     12                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     2 records 
-  Disc file on unit   1 extended by     1 records 
 #SFLS                                                                                                                                                                                                                                                           
 #LIST 26                                                                                                                                                                                                                                                        
 #WEIGHT                                                                                                                                                                                                                                                         
@@ -11199,7 +11060,6 @@ Refining    35 parameters in    1 block :      716 elements in the LS matrix.
  Space required on DISK is    2 records,     6  Blocks,     3 Kbytes. 
      3 Symmetry restraints written to LIST 17
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
@@ -11503,7 +11363,6 @@ Mean C-C su =   0.0453
  Structure factor least squares calculation    3  ends  2
 SumFo/SumFc=  6.53 SumFoFc/SumFc^2=  6.36 SumwFoFc/SumwFc^2=  6.49 LS-scale=  6.33 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =    0.361    100*(<Fo>-<Fc>)/<Fo> =    3.022                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -11711,8 +11570,6 @@ Inter cycle   4       0.00          0.100E+16      0.142E+04
                      0.00224          -0.00033 -0.00033 -0.00033 -0.00033 -0.00033 -0.00033 -0.00033
                      0.12347           0.00103  0.00103  0.00103  0.00103  0.00103  0.00103  0.00103
                                        0.01137  0.00973  0.00897
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0457                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -11952,8 +11809,6 @@ Inter cycle   4       0.00          0.100E+16       53.0
                     -0.00029           0.00004  0.00004  0.00004  0.00004  0.00004  0.00004  0.00004
                      0.12318           0.00104  0.00104  0.00104  0.00104  0.00104  0.00104  0.00104
                                        0.01153  0.00986  0.00910
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0457                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -12210,9 +12065,6 @@ All cycle   3      0.300E-01      0.100E+05      0.220E-01
                      0.00024          -0.00004 -0.00004 -0.00004 -0.00004 -0.00004 -0.00004 -0.00004
                      0.12320           0.00104  0.00104  0.00104  0.00104  0.00104  0.00104  0.00104
                                        0.01153  0.00986  0.00910
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0457                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -12223,8 +12075,6 @@ Mean C-C su =   0.0457
  F       6.    0.0745    0.2817    0.7547    0.3703    0.2511    2.8541    Might be split                                                                                                                                                                       
 #CYCLENDS                                                                                                                                                                                                                                                       
 #PERTURB                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -12618,8 +12468,6 @@ Over-all rescaling factor 0.47
                     -0.23041          -0.01656 -0.01656 -0.01656 -0.01656 -0.01656 -0.01656 -0.01656
                      0.23929           0.00227  0.00227  0.00227  0.00227  0.00227  0.00227  0.00227
                                        0.02509  0.02146  0.01980
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0854                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -12628,9 +12476,6 @@ Mean C-C su =   0.0854
  F       4.    0.0839    0.1011    0.5657    0.2503    0.1687    0.6819    Might be split                                                                                                                                                                       
  F       5.    0.0732    0.2735    0.5095    0.2854    0.2168    1.9046    Might be split                                                                                                                                                                       
  F       6.    0.0745    0.2817    0.7547    0.3703    0.2511    2.8541    Might be split                                                                                                                                                                       
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -13016,8 +12861,6 @@ Over-all rescaling factor 0.73
                      0.59813          -0.01014 -0.01014 -0.01014 -0.01014 -0.01014 -0.01014 -0.01014
                      0.18560           0.00307  0.00307  0.00307  0.00307  0.00307  0.00307  0.00307
                                        0.03399  0.02907  0.02683
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0566                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -13026,9 +12869,6 @@ Mean C-C su =   0.0566
  F       4.    0.0839    0.1011    0.5657    0.2503    0.1687    0.6819    Might be split                                                                                                                                                                       
  F       5.    0.0732    0.2735    0.5095    0.2854    0.2168    1.9046    Might be split                                                                                                                                                                       
  F       6.    0.0745    0.2817    0.7547    0.3703    0.2511    2.8541    Might be split                                                                                                                                                                       
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -13386,9 +13226,6 @@ Inter cycle   4       0.00          0.100E+16      0.698E+05
                      0.28271          -0.01378 -0.01378 -0.01378 -0.01378 -0.01378 -0.01378 -0.01378
                      0.13981           0.00188  0.00188  0.00188  0.00188  0.00188  0.00188  0.00188
                                        0.02076  0.01775  0.01638
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0451                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -13654,8 +13491,6 @@ Inter cycle   4       0.00          0.100E+16      0.153E+05
                      0.09171           0.00034  0.00034  0.00034  0.00034  0.00034  0.00034  0.00034
                      0.11424           0.00121  0.00121  0.00121  0.00121  0.00121  0.00121  0.00121
                                        0.01340  0.01146  0.01058
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0458                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -13891,8 +13726,6 @@ All cycle   4       0.00          0.100E+16      0.218E+06
                     -0.05152           0.00002  0.00002  0.00002  0.00002  0.00002  0.00002  0.00002
                      0.11594           0.00106  0.00106  0.00106  0.00106  0.00106  0.00106  0.00106
                                        0.01178  0.01007  0.00930
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0492                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -13964,7 +13797,6 @@ Mean C-C su =   0.0492
  Structure factor least squares calculation   11  ends  2
 SumFo/SumFc=  6.53 SumFoFc/SumFc^2=  6.36 SumwFoFc/SumwFc^2=  6.49 LS-scale=  6.33 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =    0.360    100*(<Fo>-<Fc>)/<Fo> =    3.018                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -14206,8 +14038,6 @@ Inter cycle   4       0.00          0.100E+16       221.
                     -0.01924          -0.00011 -0.00011 -0.00011 -0.00011 -0.00011 -0.00011 -0.00011
                      0.11649           0.00104  0.00104  0.00104  0.00104  0.00104  0.00104  0.00104
                                        0.01156  0.00988  0.00912
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0485                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -14448,8 +14278,6 @@ Inter cycle   4       0.00          0.100E+16       72.7
                     -0.00932          -0.00001 -0.00001 -0.00001 -0.00001 -0.00001 -0.00001 -0.00001
                      0.11659           0.00104  0.00104  0.00104  0.00104  0.00104  0.00104  0.00104
                                        0.01147  0.00981  0.00905
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0482                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -14688,9 +14516,6 @@ Inter cycle   4       0.00          0.100E+16       46.5
                     -0.00439          -0.00002 -0.00002 -0.00002 -0.00002 -0.00002 -0.00002 -0.00002
                      0.11668           0.00103  0.00103  0.00103  0.00103  0.00103  0.00103  0.00103
                                        0.01143  0.00978  0.00902
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0481                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       1.    0.0725    0.1121    0.4484    0.2110    0.1539    0.6936    Might be split                                                                                                                                                                       
@@ -14942,11 +14767,6 @@ Mean C-C su =   0.0481
 
 
 #FINI                                                                                                                                                                                                                                                           
- Physical reads      22088 Physical writes      21865 Cache hits     563348
- Cache hit distribution   497868   35216    6778    3303    2621    3256
- Cache hit distribution     1036     716     945    1185    1279    1201
- Cache hit distribution     1529     925    1126     524     343     237
- Cache hit distribution      246     414     518    1010     587     485
 
 
           : Job ends ok       with     0 warnings and     0 errors

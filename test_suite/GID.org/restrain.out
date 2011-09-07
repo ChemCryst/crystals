@@ -1,12 +1,9 @@
 #TITLE P6122 - LARSON'S TEST CASE ADAPTED TO TEST THE RESTRAINTS CHECKING                                                                                                                                                                                       
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 20                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #LIST 1                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #LIST 2                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #LIST 5                                                                                                                                                                                                                                                         
 #                                                                                                                                                                                                                                                               
 # THIS VERSION OF THE DECK HAS THE COORDINATES                                                                                                                                                                                                                  
@@ -14,27 +11,12 @@
 #                                                                                                                                                                                                                                                               
 #LIST 29                                                                                                                                                                                                                                                        
 Bonds: Update required - There is no list 41
-  Disc file on unit   1 extended by     1 records 
 #LIST 12                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 23                                                                                                                                                                                                                                                        
 #LIST 16                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #CHECK                                                                                                                                                                                                                                                          
 #CLEAR 17                                                                                                                                                                                                                                                       
 #LIST  17                                                                                                                                                                                                                                                       
-  Disc file on unit   1 extended by     1 records 
 #LIST 22                                                                                                                                                                                                                                                        
  Initialising Special positions
   Atom S      1,  Multiplicity =  6,  Number of positions = 12 Occ = 0.5000
@@ -47,22 +29,12 @@ Bonds: Update required - There is no list 41
  Parameters C      1    x     and  restraint  related by                                                                                                                                                                                                        
  Parameters C      1    U[11] and  restraint  related by                                                                                                                                                                                                        
  Parameters C      1    U[23] and  restraint  related by                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 Refining    21 parameters in    4 block :      148 elements in the LS matrix.
  Space required on DISK is    1 records,     2  Blocks,     1 Kbytes. 
      6 Symmetry restraints written to LIST 17
       3 Atoms modified;   New  LIST 5 written to DISK
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 26                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #CHECK                                                                                                                                                                                                                                                          
 #LIST 16                                                                                                                                                                                                                                                        
 
@@ -1238,9 +1210,6 @@ Refining    21 parameters in    4 block :      148 elements in the LS matrix.
   20.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
 
   ?    Calculated value            0.6246696493E-08  giving a delta of   -0.6246696493E-08
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #CHECK                                                                                                                                                                                                                                                          
 #LIST 26                                                                                                                                                                                                                                                        
 
@@ -1600,7 +1569,6 @@ Space group symbol is   P    1    21/C 1
 Bonds: Update required - List5 length change
 #LIST 12                                                                                                                                                                                                                                                        
 #LIST 16                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #CHECK                                                                                                                                                                                                                                                          
 #LIST 22                                                                                                                                                                                                                                                        
  Initialising Special positions
@@ -1896,11 +1864,6 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  Work stack header at     569  :  -1000000         6      -244         0   -999436         0
  Function at     564  :   11   Nolist    
 #FINI                                                                                                                                                                                                                                                           
- Physical reads        321 Physical writes        394 Cache hits      11577
- Cache hit distribution     8894     896     353     187      46     162
- Cache hit distribution       57      33      56      75     142      43
- Cache hit distribution       69      61      32      45      74      28
- Cache hit distribution       48      61      88      60      52      15
 
 
           : Job ends ok       with     0 warnings and     0 errors

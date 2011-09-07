@@ -3,11 +3,9 @@
 #SIMULATE                                                                                                                                                                                                                                                       
 #LIST TYPE= 1                                                                                                                                                                                                                                                   
 #LIST 20                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #LIST TYPE= 1                                                                                                                                                                                                                                                   
 #PRINT 1                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 1                                                                                                                                                                                                                                                         
 
 
@@ -284,7 +282,6 @@ REAL
  Parameter     1  has appeared too many times
  Parameter keyword : A           
 #LIST 2                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #PRINT 2                                                                                                                                                                                                                                                        
 #LIST 2                                                                                                                                                                                                                                                         
 
@@ -396,7 +393,6 @@ REAL
 
 #LIST 2                                                                                                                                                                                                                                                         
 #PRINT 2                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 4                                                                                                                                                                                                                                                         
 
 
@@ -796,7 +792,6 @@ REAL
 
 
 #LIST 2                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #LIST 13                                                                                                                                                                                                                                                        
  Absorption correction -- Internal consistency check failed
 
@@ -1007,7 +1002,6 @@ REAL
 
 
 
-  Disc file on unit   1 extended by     1 records 
 #PRINT 25                                                                                                                                                                                                                                                       
 #LIST 28                                                                                                                                                                                                                                                        
 
@@ -1066,11 +1060,6 @@ REAL
 
 
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads         96 Physical writes        210 Cache hits       8397
- Cache hit distribution     5763     422     263     150      20     203
- Cache hit distribution      181      61      38     121     210     118
- Cache hit distribution      167     245     113     111      92      61
- Cache hit distribution       26      15      14       2       1       0
 
 
           : Job ends ok       with     0 warnings and     9 errors

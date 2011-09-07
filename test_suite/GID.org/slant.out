@@ -2,46 +2,34 @@
 #SET MONITOR OFF                                                                                                                                                                                                                                                
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 20                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #LIST 1                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #LIST 2                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 13                                                                                                                                                                                                                                                        
 #LIST 29                                                                                                                                                                                                                                                        
 #LIST 5                                                                                                                                                                                                                                                         
 Bonds: Update required - There is no list 41
-  Disc file on unit   1 extended by     1 records 
 #LIST 12                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 23                                                                                                                                                                                                                                                        
 #SET MONITOR ON                                                                                                                                                                                                                                                 
 #USE TDLIST6.HKL                                                                                                                                                                                                                                                
 #LIST 1                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 # THIS LIST 6 IS USED BY MANY TEST DECKS                                                                                                                                                                                                                        
 #LIST 6                                                                                                                                                                                                                                                         
 #LIST 28                                                                                                                                                                                                                                                        
 #LIST 6                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
 
 
 
       92 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-  Disc file on unit   1 extended by     6 records 
 #SFLS                                                                                                                                                                                                                                                           
 #LIST 4                                                                                                                                                                                                                                                         
 #CLEAR 16                                                                                                                                                                                                                                                       
 #LIST  16                                                                                                                                                                                                                                                       
-  Disc file on unit   1 extended by     2 records 
 #CLEAR 17                                                                                                                                                                                                                                                       
 #LIST  17                                                                                                                                                                                                                                                       
-  Disc file on unit   1 extended by     2 records 
 #LIST 26                                                                                                                                                                                                                                                        
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
@@ -346,7 +334,6 @@ SumFo/SumFc=  1.88 SumFoFc/SumFc^2=  1.66 SumwFoFc/SumwFc^2=  1.66 LS-scale=  1.
 # PLANAR GROUP, AND 'SPLITTING' OF ATOM                                                                                                                                                                                                                         
 #DISK                                                                                                                                                                                                                                                           
 #LIST 1                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #SPACE                                                                                                                                                                                                                                                          
 #LIST 14                                                                                                                                                                                                                                                        
 #SPACE                                                                                                                                                                                                                                                          
@@ -370,7 +357,6 @@ Space group symbol is   P    4
                               X axis from  0.000 to  0.500
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
-  Disc file on unit   1 extended by     1 records 
 #LIST 3                                                                                                                                                                                                                                                         
 #                                                                                                                                                                                                                                                               
 # PUNCHED ON 26-JAN93 AT 11:35:34                                                                                                                                                                                                                               
@@ -381,21 +367,16 @@ Bonds: Update required - List5 length change
 # PUNCHED ON 26-JAN93 AT 11:35:36                                                                                                                                                                                                                               
 #                                                                                                                                                                                                                                                               
 #LIST      6                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
 
 
 
      631 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by    40 records 
-  Disc file on unit   1 extended by     1 records 
 #EDIT                                                                                                                                                                                                                                                           
  The following atom(s) will be kept                                                                                                                                                                                                                             
     C   0      C   1      C   2      C   3      C   4      C   5      C  25
  List   5 now contains      7 atom(s)
 #LIST 12                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
 #SFLS                                                                                                                                                                                                                                                           
 #LIST 26                                                                                                                                                                                                                                                        
 #WEIGHT                                                                                                                                                                                                                                                         
@@ -1242,11 +1223,6 @@ AZIMUTH  =    44.97     AZIMUTH /100 =   0.4497
 
     4 *   52   1   1   1   1  10  40  54  52
 #FINI                                                                                                                                                                                                                                                           
- Physical reads       1329 Physical writes        798 Cache hits      32807
- Cache hit distribution    28274    1275     488     284     119     373
- Cache hit distribution      149      74      81     200     209     161
- Cache hit distribution      141     141     119      94     110      71
- Cache hit distribution       74     123      92      41      72      42
 
 
           : Job ends ok       with     0 warnings and     0 errors

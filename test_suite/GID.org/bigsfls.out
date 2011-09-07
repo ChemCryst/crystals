@@ -1,4 +1,5 @@
 #                                                                                                                                                                                                                                                               
+#SET CACH ON                                                                                                                                                                                                                                                    
 # THIS TAKES SEVERAL HOURS ON A VAX 11/750                                                                                                                                                                                                                      
 # IT TAKES SEVERAL SECONDS ON A PENTIUM III                                                                                                                                                                                                                     
 #                                                                                                                                                                                                                                                               
@@ -7,10 +8,8 @@
 #DISK                                                                                                                                                                                                                                                           
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 20                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #LIST 1                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #SPACE GROUP                                                                                                                                                                                                                                                    
 #LIST 14                                                                                                                                                                                                                                                        
 #SPACE GROUP                                                                                                                                                                                                                                                    
@@ -33,31 +32,9 @@ Space group symbol is   P    -1
                               Y axis from  0.000 to  1.000
                               Z axis from  0.000 to  0.500
 #LIST 3                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #LIST 4                                                                                                                                                                                                                                                         
 #LIST 16                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 23                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 29                                                                                                                                                                                                                                                        
 #                                                                                                                                                                                                                                                               
 # PUNCHED ON 16-JAN87 AT 15:59:05                                                                                                                                                                                                                               
@@ -65,18 +42,7 @@ Space group symbol is   P    -1
 # PUNCHED ON 28/01/11 AT 14:14:55                                                                                                                                                                                                                               
 #                                                                                                                                                                                                                                                               
 #LIST      5                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - There is no list 41
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #DISK                                                                                                                                                                                                                                                           
 #                                                                                                                                                                                                                                                               
 # PUNCHED ON 16-JAN87 AT 15:59:13                                                                                                                                                                                                                               
@@ -85,47 +51,18 @@ Bonds: Update required - There is no list 41
 #LIST 13                                                                                                                                                                                                                                                        
 #LIST 28                                                                                                                                                                                                                                                        
 #LIST      6                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
 
 
 
    12575 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-  Disc file on unit   1 extended by   811 records 
 #DISK                                                                                                                                                                                                                                                           
 #LIST 12                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 22                                                                                                                                                                                                                                                        
  Initialising Special positions
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
  Space required on DISK is   43 records,   170  Blocks,    87 Kbytes. 
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
 #PRINT 22                                                                                                                                                                                                                                                       
 #PURGE                                                                                                                                                                                                                                                          
 
@@ -1460,32 +1397,14 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
 
  Listing of file index of    Data    file 
 #LIST 26                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
 #SFLS                                                                                                                                                                                                                                                           
-  Disc file on unit   1 extended by     1 records 
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
-  Disc file on unit   1 extended by    41 records 
-  Disc file on unit   1 extended by     1 records 
 
 
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
@@ -1543,11 +1462,6 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
  Structure factor least squares calculation    1  ends  2
 SumFo/SumFc=  0.91 SumFoFc/SumFc^2=  0.91 SumwFoFc/SumwFc^2=  0.91 LS-scale=  0.91 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =    0.335    100*(<Fo>-<Fc>)/<Fo> =    0.549                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -2742,7 +2656,6 @@ All cycle   4       0.00          0.100E+16      0.136E+06
                      0.00000          -0.00002  0.00026 -0.00003  0.00027
                      0.00000           0.00088  0.00053  0.00070  0.00151
                                        0.01275  0.00827  0.01319
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0076                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
  F       6.    0.0661    0.2246    0.3844    0.2250    0.1787    1.3062    Might be split                                                                                                                                                                       
@@ -2753,25 +2666,11 @@ Mean C-C su =   0.0076
  List type  22 with serial number     1 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #LIST 12                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
 #LIST 22                                                                                                                                                                                                                                                        
  Initialising Special positions
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 Refining     6 parameters in    1 block :       49 elements in the LS matrix.
  Space required on DISK is    1 records,     1  Blocks,     1 Kbytes. 
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
 #PURGE                                                                                                                                                                                                                                                          
 #SFLS                                                                                                                                                                                                                                                           
  List type   11  serial number    4 from   458848 to   480440 will not be copied ( deleted )         
@@ -4775,10 +4674,10 @@ SumFo/SumFc=  0.91 SumFoFc/SumFc^2=  0.91 SumwFoFc/SumwFc^2=  0.91 LS-scale=  0.
 <Fo>-<Fc> =    0.335    100*(<Fo>-<Fc>)/<Fo> =    0.549                                                                                                                                                                                                         
 #FINISH                                                                                                                                                                                                                                                         
  Physical reads      12038 Physical writes      10114 Cache hits     208296
- Cache hit distribution   189150   13256    2052     539     280     542
+ Cache hit distribution   189149   13256    2052     539     280     542
  Cache hit distribution      183     118     176     218     309     125
- Cache hit distribution      179     188     173     121     116     191
- Cache hit distribution       83      58      64      32      78      65
+ Cache hit distribution      178     189     171     118     122     191
+ Cache hit distribution       83      58      64      31      77      67
 
 
           : Job ends ok       with     0 warnings and     0 errors

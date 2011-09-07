@@ -3,16 +3,13 @@
 #                                                                                                                                                                                                                                                               
 #CLEAR 12                                                                                                                                                                                                                                                       
 #LIST  12                                                                                                                                                                                                                                                       
-  Disc file on unit   1 extended by     2 records 
 #CLEAR 16                                                                                                                                                                                                                                                       
 #LIST  16                                                                                                                                                                                                                                                       
-  Disc file on unit   1 extended by     2 records 
 #                                                                                                                                                                                                                                                               
 #TITLE CYCLO IN P 21 21 21                                                                                                                                                                                                                                      
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 20                                                                                                                                                                                                                                                        
 #LIST 30                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 1                                                                                                                                                                                                                                                         
 #SPACE                                                                                                                                                                                                                                                          
 #LIST 14                                                                                                                                                                                                                                                        
@@ -36,7 +33,6 @@ Space group symbol is   P    21   21   21
                               X axis from  0.000 to  0.500
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
-  Disc file on unit   1 extended by     1 records 
 # WORK GET SCATTERING FACTORS AND PUT THEM INTO LIST 3                                                                                                                                                                                                          
 #COMPOSIT                                                                                                                                                                                                                                                       
 #LIST 13                                                                                                                                                                                                                                                        
@@ -48,9 +44,7 @@ Space group symbol is   P    21   21   21
 #                                                                                                                                                                                                                                                               
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.                                                                                                                                                                                           
 #                                                                                                                                                                                                                                                               
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - There is no list 41
-  Disc file on unit   1 extended by     1 records 
 #LIST 4                                                                                                                                                                                                                                                         
 #                                         WEISSENBERG DIFFRACTOMETER.                                                                                                                                                                                           
 #LIST 13                                                                                                                                                                                                                                                        
@@ -63,7 +57,6 @@ Bonds: Update required - There is no list 41
 
  A scale of   1.00000  has been assumed
 
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
 
 
@@ -97,7 +90,6 @@ Bonds: Update required - There is no list 41
  Systematic absence            1.    0.    0.         1.6        0.3         0.        0.
  Systematic absence            3.    0.    0.         1.8        0.4         0.        0.
  Systematic absence            5.    0.    0.         1.2        0.8         0.        0.
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
 
 
@@ -115,12 +107,9 @@ Number                4       1       2       5       4       1       0
    1849 reflections accepted              17 reflections rejected                                                                                                                                                                                               
 #MERGE                                                                                                                                                                                                                                                          
  After   1 pass    1849 reflection(s) have been sorted
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
 #LIST 6                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
-  Disc file on unit   1 extended by    13 records 
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -254,7 +243,6 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 #SFLS                                                                                                                                                                                                                                                           
 #CLEAR 17                                                                                                                                                                                                                                                       
 #LIST  17                                                                                                                                                                                                                                                       
-  Disc file on unit   1 extended by     2 records 
 #LIST 26                                                                                                                                                                                                                                                        
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
@@ -324,25 +312,20 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
 #LIST 16                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
 #LIST 12                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
 #SFLS                                                                                                                                                                                                                                                           
 #LIST 26                                                                                                                                                                                                                                                        
 #SFLS                                                                                                                                                                                                                                                           
-  Disc file on unit   1 extended by     1 records 
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
 #LIST 22                                                                                                                                                                                                                                                        
  Initialising Special positions
-  Disc file on unit   1 extended by     1 records 
 Refining    40 parameters in    1 block :      916 elements in the LS matrix.
  Space required on DISK is    2 records,     8  Blocks,     4 Kbytes. 
  LIST 23 has been modified to match LIST 12
  New LIST 23 written to disk
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
@@ -404,7 +387,6 @@ Refining    40 parameters in    1 block :      916 elements in the LS matrix.
 SumFo/SumFc=  1.51 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.46 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =    0.241    100*(<Fo>-<Fc>)/<Fo> =    3.306                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
@@ -829,7 +811,6 @@ Inter cycle   4       0.00          0.100E+16      0.354E+05
                      0.00000           0.00041 -0.00173  0.00070  0.00000
                      0.00000           0.00259  0.00109  0.00076  0.00000
                                        0.01278  0.01200  0.01163
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0111                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -1072,25 +1053,19 @@ Inter cycle   4       0.00          0.100E+16       175.
 Mean C-C su =   0.0109                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #LIST 12                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
 #SFLS                                                                                                                                                                                                                                                           
 #LIST 12                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
 #LIST 22                                                                                                                                                                                                                                                        
  Initialising Special positions
-  Disc file on unit   1 extended by     1 records 
 Refining    51 parameters in    1 block :     1444 elements in the LS matrix.
  Space required on DISK is    3 records,    12  Blocks,     6 Kbytes. 
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -1572,7 +1547,6 @@ Inter cycle   4       0.00          0.100E+16       966.
                      0.00000          -0.00034 -0.00024  0.00013 -0.00009
                      0.00000           0.00251  0.00104  0.00072  0.00261
                                        0.01236  0.01146  0.01101
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0103                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -1874,7 +1848,6 @@ Mean C-C su =   0.0103
  Structure factor least squares calculation    8  ends  2
 SumFo/SumFc=  1.40 SumFoFc/SumFc^2=  1.47 SumwFoFc/SumwFc^2=  1.47 LS-scale=  1.40 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =    0.001    100*(<Fo>-<Fc>)/<Fo> =    0.014                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -2047,7 +2020,6 @@ All cycle   3      0.300E-01      0.100E+05      0.908E-02
 Mean C-C su =   0.0103                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #LIST 12                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -2060,13 +2032,9 @@ Refining    74 parameters in    1 block :     2939 elements in the LS matrix.
  New LIST 23 written to disk
      11 Atoms modified;   New  LIST 5 written to DISK
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
-  Disc file on unit   1 extended by     3 records 
-  Disc file on unit   1 extended by     1 records 
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -2394,7 +2362,6 @@ Mean C-C su =   0.0000
  Structure factor least squares calculation   10  ends  2
 SumFo/SumFc=  1.63 SumFoFc/SumFc^2=  1.64 SumwFoFc/SumwFc^2=  1.64 LS-scale=  1.64 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =   -0.045    100*(<Fo>-<Fc>)/<Fo> =   -0.697                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -2805,8 +2772,6 @@ H33 C(9) C(7) N(6)
 H23 C(10) C(11) C(1) 
 H23 C(11) C(10) C(1) 
 #HYDROGENS  5  5                                                                                                                                                                                                                                                
-  Disc file on unit   1 extended by     2 records 
-  Disc file on unit   1 extended by     1 records 
 
 
  Hydrogen atom(s) calculated for the C(sp3)H1 group :
@@ -3116,13 +3081,11 @@ SumFo/SumFc=  1.93 SumFoFc/SumFc^2=  1.72 SumwFoFc/SumwFc^2=  1.72 LS-scale=  1.
 #REFINE     1                                                                                                                                                                                                                                                   
 #LIST 22                                                                                                                                                                                                                                                        
  Initialising Special positions
-  Disc file on unit   1 extended by     1 records 
 Refining    74 parameters in    1 block :     2939 elements in the LS matrix.
  Space required on DISK is    6 records,    23  Blocks,    12 Kbytes. 
  LIST 23 has been modified to match LIST 12
  New LIST 23 written to disk
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
@@ -3637,7 +3600,6 @@ Inter cycle   1      -5.00           100.          -9.52
                      0.00000           0.00000  0.00000  0.00000  0.00846 -0.00002  0.00013  0.00119  0.00027  0.00121
                      0.00000           0.00000  0.00000  0.00000  0.02176  0.00826  0.00813  0.00733  0.00689  0.00701
                                        0.00000  0.00000  0.00000
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #                                         NOFSQ, ANOM                                                                                                                                                                                                           
@@ -3646,7 +3608,6 @@ Mean C-C su =   0.0000
 #                                                                                                                                                                                                                                                               
 #CLEAR 12                                                                                                                                                                                                                                                       
 #LIST  12                                                                                                                                                                                                                                                       
-  Disc file on unit   1 extended by     1 records 
 #CLEAR 16                                                                                                                                                                                                                                                       
 #LIST  16                                                                                                                                                                                                                                                       
 #                                                                                                                                                                                                                                                               
@@ -3682,7 +3643,6 @@ Space group symbol is   P    21   21   21
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.                                                                                                                                                                                           
 #                                                                                                                                                                                                                                                               
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
 #LIST 4                                                                                                                                                                                                                                                         
 #                                         WEISSENBERG DIFFRACTOMETER.                                                                                                                                                                                           
 #LIST 13                                                                                                                                                                                                                                                        
@@ -3702,7 +3662,6 @@ Bonds: Update required - List5 length change
     1866 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
 #SYST                                                                                                                                                                                                                                                           
 #SORT                                                                                                                                                                                                                                                           
-  Disc file on unit   1 extended by     1 records 
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -3745,14 +3704,10 @@ Number                4       1       2       5       4       1       0
                                                                                                                                                                                                                                                                 
    1849 reflections accepted              17 reflections rejected                                                                                                                                                                                               
 #MERGE                                                                                                                                                                                                                                                          
-  Disc file on unit   1 extended by     1 records 
  After   1 pass    1849 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #LIST 6                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by    13 records 
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -3952,7 +3907,6 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
 #LIST 16                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
 #LIST 12                                                                                                                                                                                                                                                        
 #SFLS                                                                                                                                                                                                                                                           
 #LIST 26                                                                                                                                                                                                                                                        
@@ -3967,7 +3921,6 @@ Refining    40 parameters in    1 block :      916 elements in the LS matrix.
  LIST 23 has been modified to match LIST 12
  New LIST 23 written to disk
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
@@ -4211,7 +4164,6 @@ All cycle   4       0.00          0.100E+16      0.448E+05
                      0.00000          -0.00071  0.00074 -0.00020  0.00000
                      0.00000           0.00485  0.00261  0.00182  0.00000
                                        0.02388  0.02879  0.02794
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0242                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -4454,7 +4406,6 @@ Inter cycle   4       0.00          0.100E+16      0.354E+05
                      0.00000           0.00041 -0.00173  0.00070  0.00000
                      0.00000           0.00259  0.00109  0.00076  0.00000
                                        0.01278  0.01200  0.01163
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0111                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -4697,7 +4648,6 @@ Inter cycle   4       0.00          0.100E+16       175.
 Mean C-C su =   0.0109                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #LIST 12                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
 #SFLS                                                                                                                                                                                                                                                           
 #LIST 12                                                                                                                                                                                                                                                        
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -4708,12 +4658,9 @@ Mean C-C su =   0.0109
 Refining    51 parameters in    1 block :     1444 elements in the LS matrix.
  Space required on DISK is    3 records,    12  Blocks,     6 Kbytes. 
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
-  Disc file on unit   1 extended by     1 records 
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -5009,7 +4956,6 @@ Mean C-C su =   0.0110
  Structure factor least squares calculation    6  ends  2
 SumFo/SumFc=  1.37 SumFoFc/SumFc^2=  1.45 SumwFoFc/SumwFc^2=  1.45 LS-scale=  1.38 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =   -0.062    100*(<Fo>-<Fc>)/<Fo> =   -0.809                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -5434,7 +5380,6 @@ Inter cycle   4       0.00          0.100E+16       74.1
                      0.00000          -0.00001 -0.00010  0.00001 -0.00003
                      0.00000           0.00247  0.00102  0.00071  0.00257
                                        0.01215  0.01131  0.01088
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0103                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -5666,7 +5611,6 @@ All cycle   3      0.300E-01      0.100E+05      0.891E-02
 Mean C-C su =   0.0103                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #LIST 12                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -5679,12 +5623,9 @@ Refining    74 parameters in    1 block :     2939 elements in the LS matrix.
  New LIST 23 written to disk
      11 Atoms modified;   New  LIST 5 written to DISK
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
-  Disc file on unit   1 extended by     3 records 
-  Disc file on unit   1 extended by     1 records 
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -5948,7 +5889,6 @@ All cycle   4       0.00          0.100E+16      0.821E+04
                      0.00000           0.00000  0.00000  0.00000 -0.00544  0.00784  0.01756 -0.01199  0.00740  0.00891
                      0.00000           0.00000  0.00000  0.00000  0.02141  0.00541  0.00543  0.00484  0.00530  0.00544
                                        0.00000  0.00000  0.00000
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -6423,8 +6363,6 @@ H33 C(9) C(7) N(6)
 H23 C(10) C(11) C(1) 
 H23 C(11) C(10) C(1) 
 #HYDROGENS  5  5                                                                                                                                                                                                                                                
-  Disc file on unit   1 extended by     2 records 
-  Disc file on unit   1 extended by     1 records 
 
 
  Hydrogen atom(s) calculated for the C(sp3)H1 group :
@@ -6732,13 +6670,11 @@ SumFo/SumFc=  1.93 SumFoFc/SumFc^2=  1.72 SumwFoFc/SumwFc^2=  1.72 LS-scale=  1.
 #REFINE     1                                                                                                                                                                                                                                                   
 #LIST 22                                                                                                                                                                                                                                                        
  Initialising Special positions
-  Disc file on unit   1 extended by     1 records 
 Refining    74 parameters in    1 block :     2939 elements in the LS matrix.
  Space required on DISK is    6 records,    23  Blocks,    12 Kbytes. 
  LIST 23 has been modified to match LIST 12
  New LIST 23 written to disk
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
@@ -7253,7 +7189,6 @@ Inter cycle   1      -5.00           100.          -9.51
                      0.00000           0.00000  0.00000  0.00000  0.00849 -0.00002  0.00013  0.00119  0.00027  0.00121
                      0.00000           0.00000  0.00000  0.00000  0.02176  0.00826  0.00812  0.00733  0.00689  0.00701
                                        0.00000  0.00000  0.00000
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #                                         FSQ, NOANOM                                                                                                                                                                                                           
@@ -7262,7 +7197,6 @@ Mean C-C su =   0.0000
 #                                                                                                                                                                                                                                                               
 #CLEAR 12                                                                                                                                                                                                                                                       
 #LIST  12                                                                                                                                                                                                                                                       
-  Disc file on unit   1 extended by     1 records 
 #CLEAR 16                                                                                                                                                                                                                                                       
 #LIST  16                                                                                                                                                                                                                                                       
 #                                                                                                                                                                                                                                                               
@@ -7298,7 +7232,6 @@ Space group symbol is   P    21   21   21
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.                                                                                                                                                                                           
 #                                                                                                                                                                                                                                                               
 Bonds: Update required - List5 length change
-  Disc file on unit   1 extended by     1 records 
 #LIST 4                                                                                                                                                                                                                                                         
 #                                         WEISSENBERG DIFFRACTOMETER.                                                                                                                                                                                           
 #LIST 13                                                                                                                                                                                                                                                        
@@ -7318,7 +7251,6 @@ Bonds: Update required - List5 length change
     1866 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
 #SYST                                                                                                                                                                                                                                                           
 #SORT                                                                                                                                                                                                                                                           
-  Disc file on unit   1 extended by     1 records 
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -7361,14 +7293,10 @@ Number                4       1       2       5       4       1       0
                                                                                                                                                                                                                                                                 
    1849 reflections accepted              17 reflections rejected                                                                                                                                                                                               
 #MERGE                                                                                                                                                                                                                                                          
-  Disc file on unit   1 extended by     1 records 
  After   1 pass    1849 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #LIST 6                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by    13 records 
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -7568,7 +7496,6 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.32 LS-scale=  1.
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is 1/FO
 #LIST 16                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
 #LIST 12                                                                                                                                                                                                                                                        
 #SFLS                                                                                                                                                                                                                                                           
 #LIST 26                                                                                                                                                                                                                                                        
@@ -7583,7 +7510,6 @@ Refining    40 parameters in    1 block :      916 elements in the LS matrix.
  LIST 23 has been modified to match LIST 12
  New LIST 23 written to disk
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
@@ -7829,7 +7755,6 @@ All cycle   4       0.00          0.100E+16      0.283E+05
                      0.00000          -0.00146  0.00348 -0.00019  0.00000
                      0.00000           0.00597  0.00355  0.00257  0.00000
                                        0.02941  0.03916  0.03933
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0321                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -8074,11 +7999,9 @@ All cycle   2       0.00           100.           137.
                      0.00000           0.00142 -0.00364  0.00097  0.00000
                      0.00000           0.00707  0.00202  0.00139  0.00000
                                        0.03481  0.02226  0.02125
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0234                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #LIST 12                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #SFLS                                                                                                                                                                                                                                                           
 #LIST 12                                                                                                                                                                                                                                                        
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -8089,11 +8012,9 @@ Mean C-C su =   0.0234
 Refining    51 parameters in    1 block :     1444 elements in the LS matrix.
  Space required on DISK is    3 records,    12  Blocks,     6 Kbytes. 
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
-  Disc file on unit   1 extended by     1 records 
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -8342,7 +8263,6 @@ All cycle   4       0.00          0.100E+16      0.113E+05
                      0.00000           0.00013 -0.00159  0.00063 -0.00068
                      0.00000           0.00264  0.00108  0.00076  0.00262
                                        0.01302  0.01192  0.01159
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0110                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -8659,7 +8579,6 @@ Mean C-C su =   0.0102
  Structure factor least squares calculation    6  ends  2
 SumFo/SumFc=  1.38 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.41 LS-scale=  1.34 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =    0.236    100*(<Fo>-<Fc>)/<Fo> =    2.986                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -9064,11 +8983,9 @@ All cycle   3      0.300E-01      0.100E+05      0.219E-01
                      0.00000          -0.00003  0.00006 -0.00001  0.00009
                      0.00000           0.00245  0.00104  0.00073  0.00253
                                        0.01206  0.01152  0.01112
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0102                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #LIST 12                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -9081,11 +8998,9 @@ Refining    74 parameters in    1 block :     2939 elements in the LS matrix.
  New LIST 23 written to disk
      11 Atoms modified;   New  LIST 5 written to DISK
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
-  Disc file on unit   1 extended by     5 records 
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -9352,7 +9267,6 @@ All cycle   4       0.00          0.100E+16      0.702E+04
                      0.00000           0.00000  0.00000  0.00000 -0.00673  0.00568  0.01614 -0.01545  0.00661  0.00896
                      0.00000           0.00000  0.00000  0.00000  0.02169  0.00540  0.00547  0.00482  0.00512  0.00534
                                        0.00000  0.00000  0.00000
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -9810,7 +9724,6 @@ Mean C-C su =   0.0000
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-  Disc file on unit   1 extended by     1 records 
 
 
    0.   Restrain the following parameters to their common mean of   1.00000  with an E.S.D. of   0.50000
@@ -9835,8 +9748,6 @@ H33 C(9) C(7) N(6)
 H23 C(10) C(11) C(1) 
 H23 C(11) C(10) C(1) 
 #HYDROGENS  5  5                                                                                                                                                                                                                                                
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 
 
  Hydrogen atom(s) calculated for the C(sp3)H1 group :
@@ -10144,13 +10055,11 @@ SumFo/SumFc=  1.96 SumFoFc/SumFc^2=  1.71 SumwFoFc/SumwFc^2=  1.74 LS-scale=  1.
 #REFINE     1                                                                                                                                                                                                                                                   
 #LIST 22                                                                                                                                                                                                                                                        
  Initialising Special positions
-  Disc file on unit   1 extended by     1 records 
 Refining    74 parameters in    1 block :     2939 elements in the LS matrix.
  Space required on DISK is    6 records,    23  Blocks,    12 Kbytes. 
  LIST 23 has been modified to match LIST 12
  New LIST 23 written to disk
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
@@ -10686,7 +10595,6 @@ Mean C-C su =   0.0000
 #                                                                                                                                                                                                                                                               
 #CLEAR 12                                                                                                                                                                                                                                                       
 #LIST  12                                                                                                                                                                                                                                                       
-  Disc file on unit   1 extended by     2 records 
 #CLEAR 16                                                                                                                                                                                                                                                       
 #LIST  16                                                                                                                                                                                                                                                       
 #                                                                                                                                                                                                                                                               
@@ -10734,7 +10642,6 @@ Bonds: Update required - List5 length change
 
  A scale of   1.00000  has been assumed
 
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
 
 
@@ -10768,7 +10675,6 @@ Bonds: Update required - List5 length change
  Systematic absence            1.    0.    0.         1.6        0.3         0.        0.
  Systematic absence            3.    0.    0.         1.8        0.4         0.        0.
  Systematic absence            5.    0.    0.         1.2        0.8         0.        0.
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
 
 
@@ -10786,12 +10692,9 @@ Number                4       1       2       5       4       1       0
    1849 reflections accepted              17 reflections rejected                                                                                                                                                                                               
 #MERGE                                                                                                                                                                                                                                                          
  After   1 pass    1849 reflection(s) have been sorted
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
 #LIST 6                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
-  Disc file on unit   1 extended by    13 records 
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -10991,7 +10894,6 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.32 LS-scale=  1.
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is 1/FO
 #LIST 16                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
 #LIST 12                                                                                                                                                                                                                                                        
 #SFLS                                                                                                                                                                                                                                                           
 #LIST 26                                                                                                                                                                                                                                                        
@@ -11006,11 +10908,9 @@ Refining    40 parameters in    1 block :      916 elements in the LS matrix.
  LIST 23 has been modified to match LIST 12
  New LIST 23 written to disk
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
-  Disc file on unit   1 extended by     1 records 
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -11497,11 +11397,9 @@ All cycle   2       0.00           100.           137.
                      0.00000           0.00143 -0.00364  0.00097  0.00000
                      0.00000           0.00707  0.00202  0.00139  0.00000
                                        0.03480  0.02227  0.02125
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0234                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #LIST 12                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
 #SFLS                                                                                                                                                                                                                                                           
 #LIST 12                                                                                                                                                                                                                                                        
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -11512,11 +11410,9 @@ Mean C-C su =   0.0234
 Refining    51 parameters in    1 block :     1444 elements in the LS matrix.
  Space required on DISK is    3 records,    12  Blocks,     6 Kbytes. 
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
-  Disc file on unit   1 extended by     1 records 
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -11575,7 +11471,6 @@ Refining    51 parameters in    1 block :     1444 elements in the LS matrix.
 SumFo/SumFc=  1.41 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.39 LS-scale=  1.47 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =   -0.335    100*(<Fo>-<Fc>)/<Fo> =   -4.645                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
@@ -12018,7 +11913,6 @@ Inter cycle   4       0.00          0.100E+16      0.420E+04
                      0.00000          -0.00062  0.00034 -0.00009  0.00258
                      0.00000           0.00246  0.00101  0.00071  0.00245
                                        0.01211  0.01119  0.01089
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0102                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -12487,11 +12381,9 @@ All cycle   3      0.300E-01      0.100E+05      0.219E-01
                      0.00000          -0.00003  0.00006 -0.00001  0.00009
                      0.00000           0.00245  0.00104  0.00073  0.00253
                                        0.01206  0.01152  0.01112
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0102                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #LIST 12                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -12504,11 +12396,9 @@ Refining    74 parameters in    1 block :     2939 elements in the LS matrix.
  New LIST 23 written to disk
      11 Atoms modified;   New  LIST 5 written to DISK
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
-  Disc file on unit   1 extended by     4 records 
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -12567,7 +12457,6 @@ Refining    74 parameters in    1 block :     2939 elements in the LS matrix.
 SumFo/SumFc=  1.38 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.41 LS-scale=  1.34 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =    0.229    100*(<Fo>-<Fc>)/<Fo> =    2.899                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
@@ -13037,9 +12926,7 @@ Inter cycle   4       0.00          0.100E+16      0.265E+04
                      0.00000           0.00000  0.00000  0.00000  0.01890  0.00297  0.00662 -0.00187 -0.00012 -0.00201
                      0.00000           0.00000  0.00000  0.00000  0.01886  0.00425  0.00489  0.00414  0.00401  0.00381
                                        0.00000  0.00000  0.00000
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
-  Disc file on unit   1 extended by     1 records 
 #CYCLENDS                                                                                                                                                                                                                                                       
 #PRINT 22                                                                                                                                                                                                                                                       
 #PRINT 24                                                                                                                                                                                                                                                       
@@ -13259,8 +13146,6 @@ H33 C(9) C(7) N(6)
 H23 C(10) C(11) C(1) 
 H23 C(11) C(10) C(1) 
 #HYDROGENS  5  5                                                                                                                                                                                                                                                
-  Disc file on unit   1 extended by     2 records 
-  Disc file on unit   1 extended by     1 records 
 
 
  Hydrogen atom(s) calculated for the C(sp3)H1 group :
@@ -13568,14 +13453,11 @@ SumFo/SumFc=  1.96 SumFoFc/SumFc^2=  1.71 SumwFoFc/SumwFc^2=  1.74 LS-scale=  1.
 #REFINE     1                                                                                                                                                                                                                                                   
 #LIST 22                                                                                                                                                                                                                                                        
  Initialising Special positions
-  Disc file on unit   1 extended by     1 records 
 Refining    74 parameters in    1 block :     2939 elements in the LS matrix.
  Space required on DISK is    6 records,    23  Blocks,    12 Kbytes. 
  LIST 23 has been modified to match LIST 12
  New LIST 23 written to disk
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
@@ -14107,11 +13989,6 @@ Mean C-C su =   0.0000
 #CYCLENDS                                                                                                                                                                                                                                                       
 #                                         AND CLOSE THE PROGRAM.                                                                                                                                                                                                
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads      15565 Physical writes      16635 Cache hits     398436
- Cache hit distribution   324023   33589    7008    4486    3587    4355
- Cache hit distribution     2935    2115    1797    1762    1893    1395
- Cache hit distribution     1505    1508     831     509     464     487
- Cache hit distribution      670     865     850     651     632     519
 
 
           : Job ends ok       with     0 warnings and     0 errors

@@ -6,10 +6,8 @@
 #USE SPHERE.IN                                                                                                                                                                                                                                                  
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 20                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 30                                                                                                                                                                                                                                                        
 #LIST 1                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #LIST 31                                                                                                                                                                                                                                                        
 #SPACEGROUP                                                                                                                                                                                                                                                     
 #LIST 14                                                                                                                                                                                                                                                        
@@ -39,8 +37,6 @@ Space group symbol is   P    -4   3    N
                               X axis from  0.000 to  0.500
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
 #COMPOSITION                                                                                                                                                                                                                                                    
 #LIST 13                                                                                                                                                                                                                                                        
 #COMPOSITION                                                                                                                                                                                                                                                    
@@ -54,19 +50,15 @@ Space group symbol is   P    -4   3    N
 #OPEN HKLI SPHERE.HKL                                                                                                                                                                                                                                           
 #LIST 6                                                                                                                                                                                                                                                         
 #LIST 28                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST 6                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
 
 
 
      525 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-  Disc file on unit   1 extended by    34 records 
 #CLOSE HKLI                                                                                                                                                                                                                                                     
 #SYSTEMATIC                                                                                                                                                                                                                                                     
 #SORT                                                                                                                                                                                                                                                           
-  Disc file on unit   1 extended by     1 records 
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -135,8 +127,6 @@ Space group symbol is   P    -4   3    N
  Systematic absence           13.    3.    3.        -0.7        3.2         0.        0.
  Systematic absence           13.    4.    4.         1.9        1.0         0.        0.
  The updated reflections are now on UNIT 52
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by    30 records 
 
 
 
@@ -152,10 +142,8 @@ Number               12       9      12       9       8       5       3
                                                                                                                                                                                                                                                                 
     467 reflections accepted              58 reflections rejected                                                                                                                                                                                               
 #MERGE                                                                                                                                                                                                                                                          
-  Disc file on unit   1 extended by     1 records 
  After   1 pass     467 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
-  Disc file on unit   1 extended by    31 records 
 #LIST 28                                                                                                                                                                                                                                                        
 
 
@@ -164,9 +152,7 @@ Number               12       9      12       9       8       5       3
 
     H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
 
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
-  Disc file on unit   1 extended by    20 records 
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -286,10 +272,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
                0.012           0.085          0.637                                                                                                                                                                                                             
 #LIST 30                                                                                                                                                                                                                                                        
 #LIST      5                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     1 records 
 Bonds: Update required - There is no list 41
 #LIST     12                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     2 records 
 #                                         NOFSQ, NOANOM                                                                                                                                                                                                         
 #LIST 23                                                                                                                                                                                                                                                        
 #USE SHAPERING.REF                                                                                                                                                                                                                                              
@@ -297,15 +281,12 @@ Bonds: Update required - There is no list 41
 #LIST 4                                                                                                                                                                                                                                                         
 #CLEAR 16                                                                                                                                                                                                                                                       
 #LIST  16                                                                                                                                                                                                                                                       
-  Disc file on unit   1 extended by     2 records 
 #CLEAR 17                                                                                                                                                                                                                                                       
 #LIST  17                                                                                                                                                                                                                                                       
-  Disc file on unit   1 extended by     2 records 
 #LIST 26                                                                                                                                                                                                                                                        
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
 #SFLS                                                                                                                                                                                                                                                           
-  Disc file on unit   1 extended by     1 records 
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
 #REFINE     1                                                                                                                                                                                                                                                   
@@ -328,7 +309,6 @@ Bonds: Update required - There is no list 41
 Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  Space required on DISK is    1 records,     2  Blocks,     1 Kbytes. 
 #LIST 17                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     2 records 
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Initialising Special positions
@@ -1270,7 +1250,6 @@ Inter cycle   4       0.00          0.100E+16       302.
                      0.00000           0.00000  0.00000  0.00000  0.02806 -0.00428
                      0.00000           0.00000  0.00000  0.00000  0.00551  0.01577
                                        0.00000  0.00000  0.00000
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -1824,7 +1803,6 @@ All cycle   3      0.300E-01      0.100E+05      0.314E-02
                      0.00000           0.00000  0.00000  0.00000 -0.00016 -0.00013
                      0.00000           0.00000  0.00000  0.00000  0.01452  0.02480
                                        0.00000  0.00000  0.00000
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #PRINT 22                                                                                                                                                                                                                                                       
@@ -1963,14 +1941,11 @@ Space group symbol is   P    -4   3    N
 #LIST 13                                                                                                                                                                                                                                                        
 #OPEN HKLI SPHERE.HKL                                                                                                                                                                                                                                           
 #LIST 6                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
 
 
 
      525 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by    34 records 
 #CLOSE HKLI                                                                                                                                                                                                                                                     
 #SYSTEMATIC                                                                                                                                                                                                                                                     
 #SORT                                                                                                                                                                                                                                                           
@@ -2041,10 +2016,7 @@ Space group symbol is   P    -4   3    N
  Systematic absence           13.    2.    2.         1.4        0.9         0.        0.
  Systematic absence           13.    3.    3.        -0.7        3.2         0.        0.
  Systematic absence           13.    4.    4.         1.9        1.0         0.        0.
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
-  Disc file on unit   1 extended by    30 records 
-  Disc file on unit   1 extended by     1 records 
 
 
 
@@ -2061,10 +2033,7 @@ Number               12       9      12       9       8       5       3
     467 reflections accepted              58 reflections rejected                                                                                                                                                                                               
 #MERGE                                                                                                                                                                                                                                                          
  After   1 pass     467 reflection(s) have been sorted
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
-  Disc file on unit   1 extended by    30 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 28                                                                                                                                                                                                                                                        
 
 
@@ -2073,10 +2042,7 @@ Number               12       9      12       9       8       5       3
 
     H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
 
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
-  Disc file on unit   1 extended by    19 records 
-  Disc file on unit   1 extended by     1 records 
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -2197,7 +2163,6 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 #LIST 30                                                                                                                                                                                                                                                        
 #LIST      5                                                                                                                                                                                                                                                    
 #LIST     12                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     2 records 
 #LIST 23                                                                                                                                                                                                                                                        
 #USE SHAPERING.REF                                                                                                                                                                                                                                              
 #SFLS                                                                                                                                                                                                                                                           
@@ -3366,7 +3331,6 @@ Inter cycle   4       0.00          0.100E+16       14.1
                      0.00000           0.00000  0.00000  0.00000 -0.00130 -0.00035
                      0.00000           0.00000  0.00000  0.00000  0.01680  0.02800
                                        0.00000  0.00000  0.00000
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SFLS                                                                                                                                                                                                                                                           
@@ -3688,18 +3652,14 @@ Space group symbol is   P    -4   3    N
 #LIST 13                                                                                                                                                                                                                                                        
 #OPEN HKLI SPHERE.HKL                                                                                                                                                                                                                                           
 #LIST 6                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
 
 
 
      525 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-  Disc file on unit   1 extended by    34 records 
 #CLOSE HKLI                                                                                                                                                                                                                                                     
 #SYSTEMATIC                                                                                                                                                                                                                                                     
 #SORT                                                                                                                                                                                                                                                           
-  Disc file on unit   1 extended by     1 records 
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -3768,7 +3728,6 @@ Space group symbol is   P    -4   3    N
  Systematic absence           13.    3.    3.        -0.7        3.2         0.        0.
  Systematic absence           13.    4.    4.         1.9        1.0         0.        0.
  The updated reflections are now on UNIT 52
-  Disc file on unit   1 extended by    31 records 
 
 
 
@@ -3785,10 +3744,7 @@ Number               12       9      12       9       8       5       3
     467 reflections accepted              58 reflections rejected                                                                                                                                                                                               
 #MERGE                                                                                                                                                                                                                                                          
  After   1 pass     467 reflection(s) have been sorted
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
-  Disc file on unit   1 extended by    30 records 
-  Disc file on unit   1 extended by     1 records 
 #LIST 28                                                                                                                                                                                                                                                        
 
 
@@ -3797,10 +3753,7 @@ Number               12       9      12       9       8       5       3
 
     H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
 
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
-  Disc file on unit   1 extended by    19 records 
-  Disc file on unit   1 extended by     1 records 
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -3921,7 +3874,6 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 #LIST 30                                                                                                                                                                                                                                                        
 #LIST      5                                                                                                                                                                                                                                                    
 #LIST     12                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     2 records 
 #LIST 23                                                                                                                                                                                                                                                        
 #USE SHAPERING.REF                                                                                                                                                                                                                                              
 #SFLS                                                                                                                                                                                                                                                           
@@ -5118,7 +5070,6 @@ Inter cycle   4       0.00          0.100E+16       59.6
                      0.00000           0.00000  0.00000  0.00000  0.01046 -0.00424
                      0.00000           0.00000  0.00000  0.00000  0.01288  0.02404
                                        0.00000  0.00000  0.00000
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SFLS                                                                                                                                                                                                                                                           
@@ -5585,7 +5536,6 @@ Mean C-C su =   0.0000
 #                                         FSQ, ANOM                                                                                                                                                                                                             
 #USE SPHERE.IN                                                                                                                                                                                                                                                  
 #LIST 1                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
 #LIST 31                                                                                                                                                                                                                                                        
 #SPACEGROUP                                                                                                                                                                                                                                                     
   Space Group P-4 3 N   
@@ -5623,17 +5573,14 @@ Space group symbol is   P    -4   3    N
 #LIST 13                                                                                                                                                                                                                                                        
 #OPEN HKLI SPHERE.HKL                                                                                                                                                                                                                                           
 #LIST 6                                                                                                                                                                                                                                                         
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 53
 
 
 
      525 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-  Disc file on unit   1 extended by    34 records 
 #CLOSE HKLI                                                                                                                                                                                                                                                     
 #SYSTEMATIC                                                                                                                                                                                                                                                     
 #SORT                                                                                                                                                                                                                                                           
-  Disc file on unit   1 extended by     1 records 
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -5701,9 +5648,7 @@ Space group symbol is   P    -4   3    N
  Systematic absence           13.    2.    2.         1.4        0.9         0.        0.
  Systematic absence           13.    3.    3.        -0.7        3.2         0.        0.
  Systematic absence           13.    4.    4.         1.9        1.0         0.        0.
-  Disc file on unit   1 extended by     1 records 
  The updated reflections are now on UNIT 52
-  Disc file on unit   1 extended by    30 records 
 
 
 
@@ -5719,13 +5664,9 @@ Number               12       9      12       9       8       5       3
                                                                                                                                                                                                                                                                 
     467 reflections accepted              58 reflections rejected                                                                                                                                                                                               
 #MERGE                                                                                                                                                                                                                                                          
-  Disc file on unit   1 extended by     1 records 
  After   1 pass     467 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by    30 records 
 #LIST 28                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -5734,8 +5675,6 @@ Number               12       9      12       9       8       5       3
     H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
 
  The updated reflections are now on UNIT 52
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by    19 records 
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -5854,10 +5793,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma                                                                                                                                                                                                             
                0.012           0.085          0.637                                                                                                                                                                                                             
 #LIST 30                                                                                                                                                                                                                                                        
-  Disc file on unit   1 extended by     1 records 
 #LIST      5                                                                                                                                                                                                                                                    
 #LIST     12                                                                                                                                                                                                                                                    
-  Disc file on unit   1 extended by     2 records 
 #LIST 23                                                                                                                                                                                                                                                        
 #USE SHAPERING.REF                                                                                                                                                                                                                                              
 #SFLS                                                                                                                                                                                                                                                           
@@ -7410,7 +7347,6 @@ All cycle   4       0.00          0.100E+16       354.
                      0.00000           0.00000  0.00000  0.00000  0.01608 -0.41192
                      0.00000           0.00000  0.00000  0.00000  0.06833  0.14703
                                        0.00000  0.00000  0.00000
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -7964,7 +7900,6 @@ All cycle   3      0.300E-01      0.100E+05      0.780E-02
                      0.00000           0.00000  0.00000  0.00000  0.00074  0.00001
                      0.00000           0.00000  0.00000  0.00000  0.02555  0.07075
                                        0.00000  0.00000  0.00000
-  Disc file on unit   1 extended by     1 records 
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #PRINT 22                                                                                                                                                                                                                                                       
@@ -8064,11 +7999,6 @@ Mean C-C su =   0.0000
 
 
 #FINI                                                                                                                                                                                                                                                           
- Physical reads       5945 Physical writes       9376 Cache hits     202532
- Cache hit distribution   163716   12106    6484    2934    2121    2381
- Cache hit distribution     1188     533     681    1233    1278    1063
- Cache hit distribution     1129     330     407     234     437     488
- Cache hit distribution      681     525     482     514     730     857
 
 
           : Job ends ok       with     0 warnings and     0 errors
