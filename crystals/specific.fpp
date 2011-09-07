@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.66  2011/09/01 12:08:54  djw
+C unify file open/close messages
+C
 C Revision 1.65  2011/05/04 11:47:43  rich
 C Added TODO comment.
 C
@@ -325,6 +328,10 @@ C-----  MAKE SURE AN UNNAMED FILE IS REWOUND
       ELSE
 C------ MAKE SURE THE UNIT IS CLOSED IF A FILE NAME IS GIVEN
         CLOSE(UNIT = IUNIT, IOSTAT = IOS, ERR = 1000)
+       IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
+        WRITE(NCWU,1006) IUNIT, filnam
+1006    FORMAT('SPECIFIC  Closing File       ',8x, ': Unit =',I8,1X,A)
+       ENDIF
       ENDIF
 1000    CONTINUE
 C
@@ -379,6 +386,10 @@ C
 #endif
      1         IOSTAT = IOS ,
      1         ERR    = 3000 )
+       IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
+        WRITE(NCWU,1007) IUNIT, filnam
+1007    FORMAT('SPECIFIC  Openinging File    ',8x, ': Unit =',I8,1X,A)
+       ENDIF
       ELSE
         CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
         OPEN ( UNIT   = IUNIT ,
@@ -395,6 +406,9 @@ C
 #endif
      1         IOSTAT = IOS ,
      1         ERR    = 3000 )
+       IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
+        WRITE(NCWU,1007) IUNIT, clcnam(1:namlen)
+       ENDIF
       ENDIF
 C
       IF (IOS .NE. ISSOKF) GOTO 3000
@@ -860,6 +874,11 @@ C
 CE***
 #endif
       CLOSE ( UNIT = IUNIT , ERR = 2000 )
+      IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
+        WRITE(NCWU,1006) IUNIT, fname
+1006    FORMAT('SPECIFIC  Closing File       ',8x, ': Unit =',I8,1X,A)
+      ENDIF
+
 2000  CONTINUE
 C
       KFLCLS = 1
@@ -937,7 +956,7 @@ C
       ISTAT = KFLCLS ( IUNIT )
       IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
        WRITE(NCWU,1006) IFLIND, IUNIT, NAME(1:NCHARS)
-1006   FORMAT('SPECIFIC  Closing File index=',I3, ' Unit =',I3,1X,A)
+1006   FORMAT('SPECIFIC  Closing File index=',I8, ': Unit =',I8,1X,A)
       ENDIF
       IFLIND = IFLIND - 1
       GO TO 1000

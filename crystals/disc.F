@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2011/01/17 15:40:14  rich
+C Fix o/w of disk lexical data in dsc file when disk index block is extended.
+C
+C Committed on the Free edition of March Hare Software CVSNT Client.
+C Upgrade to CVS Suite for more features and support:
+C http://march-hare.com/cvsnt/
+C
 C Revision 1.8  2008/02/14 10:27:25  djw
 C Remove writes to ncawu
 C
@@ -590,9 +597,8 @@ C
       IDATOT = INEXT + IREQ - 1
 C
       IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 2110) NU , IREQ
+cdjw2011      WRITE ( NCWU , 2110) NU , IREQ
       ENDIF
-cjan08      WRITE ( NCAWU , 2110 ) NU , IREQ
 2110  FORMAT ( 1X , ' Disc file on unit ' , I3 , ' extended by ' ,
      1 I5 , ' records ' )
 C

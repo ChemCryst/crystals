@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.45  2011/03/21 13:57:22  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.44  2011/02/25 08:35:17  djw
 C Show name of SCRIPT if it is abandoned
 C
@@ -893,12 +896,13 @@ C
 C
 C -- DISPLAY DISC EFFICIENCY STATISTICS
 C
-      IF (ISSPRT .EQ. 0) THEN
+
+      write(123,*) 'isscsh=',isscsh
+
+      IF ((ISSPRT .EQ. 0) .and. (ISSCSH .EQ.1)) THEN
       WRITE ( NCWU , 1105 ) IPREAD , IPWRIT , ICACHE
-      ENDIF
 1105  FORMAT ( 1X , 'Physical reads ' , I10 , ' Physical writes ', I10,
      1 ' Cache hits ' , I10 )
-      IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 1115 ) NCACHE
       ENDIF
 1115  FORMAT ( 1X , 'Cache hit distribution ' , 6I8 )

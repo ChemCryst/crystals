@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.67  2011/09/05 12:34:21  rich
+C Fix backslash forward slash detection in path names.
+C
 C Revision 1.66  2011/09/01 12:12:49  djw
 C When the existing SCRIPT variable STACK is  to TRUE, provide more info about stack frame creation and seletion.
 C
@@ -5059,8 +5062,8 @@ C
 C
         IFLIND = IFLIND + 1
         IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
-         WRITE(NCWU,1006) IFLIND, JDEV , ' ScriptQ'
-1006     FORMAT('SCRIPT    Opening File index=',I3, ' Unit =',I3,1X,A)
+         WRITE(NCWU,1006) IFLIND, NCQUE , 'ScriptQ'
+1006     FORMAT('SCRIPT    Opening File index=',I8, ': Unit =',I8,1X,A)
         ENDIF
 C
         IRDCPY(IFLIND) = 0

@@ -1541,7 +1541,7 @@ cdjwaug99
         GOTO 9900
       ENDIF
 C
-      IF (ILINK .EQ. 5) THEN
+      IF (ILINK .EQ. 5) THEN                                  !SIR88
 C----- WRITE THIS LINE FOR GRAPHICAL RUN
         WRITE(NCFPU1, '(''%WINDOW 960 700 '')')
 C----- SET UP THE FILE SPECIFICATIONS
@@ -1558,11 +1558,11 @@ C----- OUTPUT A TITLE, FIRST 20 WORDS ONLY
        IF (IEFORT .EQ. 2) WRITE(NCFPU1, '(''PSEUDO'')')
        IF (IEFORT .EQ. 2) WRITE(NCFPU1, '(''%INVARIANT'',/''PTEN'')' )
        WRITE(NCFPU1, '(''%CONTINUE'')' )
+C
+C
       ELSE IF 
      1 ((ILINK .EQ. 6) .OR. (ILINK .EQ. 7) .OR. (ILINK .EQ. 12)) THEN
-C
-C
-C SIR92, SIR97, SIR02
+C       SIR92, SIR97, SIR02
 C
 C----- SET UP THE FILE SPECIFICATIONS
         WRITE(NCFPU1, '(''%Window '')')

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.60  2011/09/01 12:08:54  djw
+C unify file open/close messages
+C
 C Revision 1.59  2011/05/04 11:31:02  rich
 C Fix string assignment.
 C
@@ -1172,7 +1175,7 @@ C with existing script calls in scripts which are usually uppercase.
 C
       IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
        WRITE(NCWU,1006) IFLIND, NCUFU(IFLIND) , CRFILE
-1006   FORMAT('READ      Opening File index=',I3, ' Unit =',I3,1X,A)
+1006   FORMAT('READ      Opening File index=',I8, ': Unit =',I8,1X,A)
       ENDIF
       I = KFLOPN ( NCUFU(IFLIND), CRFILE, ISSOLD, ISSREA, 1, ISSSEQ )
         IF ( I .GT. 0 ) THEN
@@ -1609,6 +1612,7 @@ C     17           EXPO(RT)          'ISSEXP'
 C     18           UEQU(IV)          'ISSUEQ'
 C     19           AUTO(UPDATE)      'ISSUPD'
 C     20           BOND(TYPE)        'ISSBND'
+C     20           CACHEMESSAGE      'ISSCSH'
 C
 C    THE NAMES OF THE ALLOWED FUNCTIONS ARE STORED IN THE ARRAY
 C    'KEYFNC'. EACH STORED NAME IS 8 'A1' WORDS LONG. ONLY THE FIRST 4
@@ -1630,13 +1634,13 @@ C      IFIRVL      NUMERIC VALUE ASSOCIATED WITH FIRST ALLOWED STRING
 C                  VALUE. SUBSEQUENT STRING VALUES ARE GIVEN INCREASING
 C                  NUMERIC VALUES
 C
-      DIMENSION KEYFNC(8,20)
+      DIMENSION KEYFNC(8,21)
       DIMENSION KEYVAL(4,21)
 C
-      DIMENSION ITPVAL(20)
-      DIMENSION ISTVAL(20)
-      DIMENSION NUMVAL(20)
-      DIMENSION IFIRVL(20)
+      DIMENSION ITPVAL(21)
+      DIMENSION ISTVAL(21)
+      DIMENSION NUMVAL(21)
+      DIMENSION IFIRVL(21)
 C
       DIMENSION VALUE(1)
 C
@@ -1652,13 +1656,13 @@ C
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XGUIOV.INC'
 C
-      DATA LFNC /8/, NFNC /20/, LUFNC /4/
+      DATA LFNC /8/, NFNC /21/, LUFNC /4/
 C
 C      MAPS        MONI(TOR)   LOG         PAGE        LIST(S)
 C      SPEE(D)     TIME        SRQ         TERM(INAL)   FILE(CASE)
 C      MESS(AGE)   PRIN(TER)   GENE(RATE)  OPEN(MESSAGE)
-C      PAUS(E)     EXPO(RT)      UEQU(IV)  AUTO(UPDATE) BOND(TYPE)
-C
+C      PAUS(E)     EXPO(RT)    UEQU(IV)    AUTO(UPDATE) BOND(TYPE)
+C      CACH(EMESSAGE)
 C
       DATA LVAL / 4 / , NVAL / 21 /
 C
@@ -1759,6 +1763,12 @@ C
       DATA KEYFNC(3,20) / 1HN / , KEYFNC(4,20) / 1HD /
       DATA KEYFNC(5,20) / 1HT / , KEYFNC(6,20) / 1HY /
       DATA KEYFNC(7,20) / 1HP / , KEYFNC(8,20) / 1HE /
+C
+      DATA KEYFNC(1,21) / 1HC / , KEYFNC(2,21) / 1HA /
+      DATA KEYFNC(3,21) / 1HC / , KEYFNC(4,21) / 1HH /
+      DATA KEYFNC(5,21) / 1HE / , KEYFNC(6,21) / 1HM /
+      DATA KEYFNC(7,21) / 1HE / , KEYFNC(8,21) / 1HS /
+C
       DATA KEYVAL(1,1) / 1HL / , KEYVAL(2,1) / 1HI /
       DATA KEYVAL(3,1) / 1HS / , KEYVAL(4,1) / 1HT /
       DATA KEYVAL(1,2) / 1HN / , KEYVAL(2,2) / 1HO /
@@ -1892,7 +1902,12 @@ C
       DATA KEYFNC(3,20) / 'N' / , KEYFNC(4,20) / 'D' /
       DATA KEYFNC(5,20) / 'T' / , KEYFNC(6,20) / 'Y' /
       DATA KEYFNC(7,20) / 'P' / , KEYFNC(8,20) / 'E' /
-
+C
+      DATA KEYFNC(1,21) / 'C' / , KEYFNC(2,21) / 'A' /
+      DATA KEYFNC(3,21) / 'C' / , KEYFNC(4,21) / 'H' /
+      DATA KEYFNC(5,21) / 'E' / , KEYFNC(6,21) / 'M' /
+      DATA KEYFNC(7,21) / 'E' / , KEYFNC(8,21) / 'S' /
+C
       DATA KEYVAL(1,1) / 'L' / , KEYVAL(2,1) / 'I' /
       DATA KEYVAL(3,1) / 'S' / , KEYVAL(4,1) / 'T' /
       DATA KEYVAL(1,2) / 'N' / , KEYVAL(2,2) / 'O' /
@@ -1946,6 +1961,7 @@ C
       DATA ITPVAL(12) / 1 / , ITPVAL(13) / 1 / , ITPVAL(14) / 1 /
       DATA ITPVAL(15) / 1 / , ITPVAL(16) / 2 / , ITPVAL(17) / 1 /
       DATA ITPVAL(18) / 1 / , ITPVAL(19) / 1 / , ITPVAL(20) / 1 /
+      DATA ITPVAL(21) / 1 /
 C
 C----- STARTING POSITION IN LIST OF KEYWORDS
 C
@@ -1956,6 +1972,7 @@ C
       DATA ISTVAL(12) /   4 /, ISTVAL(13) /  4 / , ISTVAL(14) /  4 /
       DATA ISTVAL(15) /   4 /, ISTVAL(16) /  0 / , ISTVAL(17) / 4 /
       DATA ISTVAL(18) /  20 /, ISTVAL(19) /  4 / , ISTVAL(20) /  4 /
+      DATA ISTVAL(21) /   4 /
 C
 C----- NUMBER OF KEYWORDS PERMITTED
 C
@@ -1966,6 +1983,7 @@ C
       DATA NUMVAL(12) /  2/, NUMVAL(13) / 2/ , NUMVAL(14)  /  2 /
       DATA NUMVAL(15) /  2/, NUMVAL(16) / 0/ , NUMVAL(17)  /  2 /
       DATA NUMVAL(18) /  2/, NUMVAL(19) /  2/, NUMVAL(20) /  2/
+      DATA NUMVAL(21) /  2/
 C
 C----- NUMERIC VALUE CORRESPONDING TO FIRST KEYWORD
 C
@@ -1976,6 +1994,7 @@ C
       DATA IFIRVL(12)  /  0 /, IFIRVL(13) / -1 / , IFIRVL(14)  /  0 /
       DATA IFIRVL(15)  /  0 /, IFIRVL(16) /0/ , IFIRVL(17) / 0 /
       DATA IFIRVL(18)  /  1 /, IFIRVL(19)  /  0 /, IFIRVL(20)  /  0 /
+      DATA IFIRVL(21)  /  0 /
 C
 C
 C
@@ -2097,6 +2116,8 @@ c              ENDIF
         ISSUPD = IRQVAL
       ELSE IF ( IRQFNC .EQ. 20 ) THEN
         ISSBND = IRQVAL
+      ELSE IF ( IRQFNC .EQ. 21 ) THEN
+        ISSCSH = IRQVAL
       ELSE
         GO TO 9920
       ENDIF
@@ -2598,19 +2619,24 @@ C
           IF (LENNAM .GT. 0) THEN
             IF (( ISSFLM .GT. 0 ) .AND. ( JFUNC .LE. MAXFNC)) THEN
              WRITE ( CMON,2340)
-CDJWMAR99
      1       CSSPRG(1:LSSPRG), CACTN(kFUNC), OLDFIL(1:LENNAM)
              CALL XPRVDU(NCVDU, 1,0)
-              IF (ISSPRT .EQ. 0) THEN
-CDJWMAR99
-                WRITE ( NCWU, 2340 ) CSSPRG(1:LSSPRG), CACTN(kFUNC),
-     2                         OLDFIL(1:LENNAM)
-              ENDIF
-CDJWMAR99
 2340          FORMAT ( 1X , A , ' ' , A , ' ' , A )
+
+cdjwsep2011
+             IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
+              IDJW = MIN(8,LSSPRG)
+              WRITE(NCWU,1007)  CSSPRG(1:IDJW), CACTN(kFUNC),
+     2                         IDEV, OLDFIL(1:LENNAM)
+1007    FORMAT('READ      ', A,A,           T38, ': Unit =',I8,1X,A)
+             ENDIF
             ENDIF
           ENDIF
         ENDIF
+C
+C
+C
+C
 #if defined(_PPC_) 
 CS***
         IF ( IDEV .EQ. NCDFU ) THEN
@@ -2714,12 +2740,14 @@ C----- WRITE A SINGLE SPACE FOR NULL FILE NAMES
       IF (( ISSFLM .GT. 0 ) .AND. ( JFUNC .LE. MAXFNC)) THEN
         WRITE ( CMON,2345) (KEYFIL(I,IFIND),I=1,LNAM),
      2                          COPER(KFUNC), NEWFIL(1:LENNAM)
-        CALL XPRVDU(NCVDU, 1,0)
-        IF (ISSPRT .EQ. 0) THEN
-          WRITE ( NCWU , 2345 ) (KEYFIL(I,IFIND),I=1,LNAM),
-     2    COPER(KFUNC), NEWFIL(:LENNAM)
-        ENDIF
 2345    FORMAT ( 1X , 8A1 , 1X , A , 1X , A )
+        CALL XPRVDU(NCVDU, 1,0)
+cdjwsep2011
+       IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
+        WRITE(NCWU,1006)  (KEYFIL(I,IFIND),I=1,LNAM),
+     2    COPER(KFUNC),  idev,NEWFIL(:LENNAM)
+1006    FORMAT('READ      ', 8A1,A,           T38, ': Unit =',I8,1X,A)
+       ENDIF
       ENDIF
 CRICFEB01[
 2346    FORMAT ( '^^CO SAFESET [ ', A , ' TEXT ''', A , ''' ]' )
@@ -4215,7 +4243,7 @@ C
         IFLIND = IFLIND + 1
       IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
        WRITE(NCWU,1006) IFLIND, NUSRQ , ' Srq'
-1006   FORMAT('READ      Opening File index=',I3, ' Unit =',I3,1X,A)
+1006   FORMAT('READ      Opening File index=',I8, ': Unit =',I8,1X,A)
       ENDIF
 C
 C------ THIS IS ONE OF THE FEW FILES NOT HANDLED BY XRDOPN

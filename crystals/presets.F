@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.62  2011/07/06 10:40:00  rich
+C Added HPART and NHPART atom selection keywords to the lexical scanner. They select hydrogen atoms in a specific PART, or non-hydrogen atoms (respectively).
+C
 C Revision 1.61  2011/03/23 10:14:25  rich
 C Fix and catch case where CRYSTALS runs out of pre-defined file units.
 C
@@ -1609,6 +1612,7 @@ C      ISSEXP      EXPORT
 C      ISSUEQ      UEQUIV
 C      ISSUPD      UPDATE OF MODEL WINDOW
 C      ISSBND      BOND TYPING FOR MODEL WINDOW
+C      ISSCSH      cASHING MESSAGES (OFF/ON)
 C
 C (THE FOLLOWING 4 DEFINITIONS ARE REDUNDANT, AND ARE REPLACED BY
 C  THE CHARACTER DEFINITIONS 'CSS***)
@@ -1756,6 +1760,7 @@ C
 #endif
       DATA ISSSFI / 1 /, ISSTML /0/, ISSFLC /2/, ISSMSG /1/
       DATA ISSPRT / -1/, ISSEXP /1/,   ISSUEQ /1/, ISSUPD /0/, ISSBND/1/
+      DATA ISSCSH /0/
 C
 C
 C -- THE FOLLOWING VARIABLES ARE USED TO STORE IN CHARACTER FORM CERTAIN
