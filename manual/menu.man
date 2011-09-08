@@ -260,10 +260,9 @@ Could be useful if you trashed the model in Cameron and then accidentally
 brought it back into CRYSTALS. (Although, see also:
 Structure -> Undo, section #Rundo#).
 
-#IView CHIME file#
-#PIf you have saved a CHIME file whilst in CAMERON, this opens it. If you
-don't have a .pdb viewer installed, you will get a 'Choose Program' dialog
-instead.#
+#IMapviewer#
+#PEnables you to re-display maps created by a previous Slant or Voids 
+calculation.#
 
 #YGraphics -> Special#
 #Aspecial#
