@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.65  2011/09/01 13:09:56  djw
+C Create subroutine XCIF2 in PUNCH.FPP to output LIST 2 in cif format for use in fcf (and in cif) files
+C
 C Revision 1.64  2011/05/19 11:04:43  rich
 C Correct description of L4 scheme 5 and 6 in XSUM04
 C Allow larger (2-digit) exponents on output weights in FCF.
@@ -264,13 +267,16 @@ CDJWNOV2000 REINTRODUCE PUNCHING OF ALL DATA
 C      MD5TMP = MIN (13, MD5)
       MD5TMP = MIN(18, MD5) 
       J = M5 + 13
+C Offset18 used to contain a 4 character string '    ' by default.
+C Catch that value here and change it to zero.
+      IF ( ISTORE(M5+17) .EQ. 538976288 ) ISTORE(M5+17) = 0
 C ISTORE bits will only print if J=18, not if J=14.
       WRITE(NCPU,1150) (STORE(I), I = M5, J),
      1                (ISTORE(I), I= J+1, M5+MD5TMP -1 )
 1150  FORMAT
      1 ('ATOM ',A4,1X,6F11.6/
      2 'CON U[11]=',6F11.6/
-     3 'CON SPARE=',F11.2,3I11,7X,A4)
+     3 'CON SPARE=',F11.2,4I11)
       M5 = M5 + MD5
 1170  CONTINUE
 C--CHECK IF THERE ARE ANY LAYER SCALES TO OUTPUT
