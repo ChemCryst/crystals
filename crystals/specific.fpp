@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.67  2011/09/07 09:44:41  djw
+C Change format of #SET OPENMESSAGE text so that columns line up across actions
+C Add #SET CACHEMESSAGE (off/on) to inhibit caching information at termination
+C Remove disc extension messages
+C
 C Revision 1.66  2011/09/01 12:08:54  djw
 C unify file open/close messages
 C
@@ -700,12 +705,12 @@ cdjwjan09 - replace # with -
         inquire(file=clcnam(1:namlen), exist=lexist)
         if (lexist ) goto 2010
        endif
-      endif
-        write(cmon,'(a,a,a)')
+       write(cmon,'(a,a,a)')
      1  ' A new D/A file ( ', clcnam(1:namlen) ,
      2  ' )will be created'
         CALL XPRVDU(NCEROR, 1, 0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU, '(a)' ) cmon(1)
+      endif
 c
 c
       IF ( IFMODE .EQ. ISSREA ) GO TO 2500
