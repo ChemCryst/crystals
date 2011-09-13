@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.68  2011/09/07 09:44:41  djw
+C Change format of #SET OPENMESSAGE text so that columns line up across actions
+C Add #SET CACHEMESSAGE (off/on) to inhibit caching information at termination
+C Remove disc extension messages
+C
 C Revision 1.67  2011/09/05 12:34:21  rich
 C Fix backslash forward slash detection in path names.
 C
@@ -3153,13 +3158,14 @@ C Only the leftmost 9 digits of each number are used.
             IDEC  = ABS(ICODE(JVALUE,IARG(2)))
             IRES  = 0
             DO IDM = 0,8
+              ISHIFT = MOD(IDEC,10) * 10**IDM
               IF ( MOD ( IMASK, 10 ) .NE. 0 ) THEN
-                IRES = IRES + ( MOD(IDEC,10) * 10**IDM )
+                IRES = IRES + ISHIFT
               END IF
               IMASK = IMASK - MOD ( IMASK, 10 )
               IMASK = NINT ( IMASK / 10.0 )
-              IDEC  = IDEC  - MOD ( IMASK, 10 )
-              IDEC  = NINT ( IDEC  / 10.0 )
+              IDEC  = IDEC  - MOD(IDEC,10)
+              IDEC  = FLOOR ( IDEC  / 10.0 )
             END DO
             ICODE(JVALUE,IARG(2)) = IRES
           ELSE IF ( ITYPE(1) .EQ. 2 ) THEN
