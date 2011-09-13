@@ -120,12 +120,13 @@
 ^^WI   ENDMENU                                                                  
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM CK '&Check for updates'                                             
-^^WI   '#SPAWN http://www.xtl.ox.ac.uk/download.html?d=may02' DISABLEIF='IN'    
-^^WI   ITEM HWEB '&Oxford Web Page' '#SPAWN http://www.xtl.ox.ac.uk/'           
+^^WI   '#SPAWN start http://www.xtl.ox.ac.uk/download.html?d=may02'
+^^WI DISABLEIF='IN'
+^^WI   ITEM HWEB '&Oxford Web Page' '#SPAWN start http://www.xtl.ox.ac.uk/'           
 ^^WI   ITEM HWEB '&Bug report form'                                             
-^^WI   '#SPAWN http://www.xtl.ox.ac.uk/bug.html' DISABLEIF='IN'                 
+^^WI   '#SPAWN start http://www.xtl.ox.ac.uk/bug.html' DISABLEIF='IN'                 
 ^^WI   ITEM HWEB '&News'                                                        
-^^WI   '#SPAWN http://www.xtl.ox.ac.uk/news.html' DISABLEIF='IN'                
+^^WI   '#SPAWN start http://www.xtl.ox.ac.uk/news.html' DISABLEIF='IN'                
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM ABOUT '&About Crystals' '#SCRIPT XREFER' DISABLEIF='IN'             
 ^^WI   ITEM COPYR 'Copyright' '#SPAWN CRYSDIR:manual/copyright.pdf'
