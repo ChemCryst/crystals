@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2011/04/21 11:25:26  djw
+C Support for PRINT 5 E and ESD/END
+C
 C Revision 1.21  2011/04/04 09:21:39  djw
 C PUNCH 1 added
 C
@@ -356,8 +359,8 @@ C----- NOT PERMITTED
 
 C--CHECK THE TYPE OF LIST 5 PUNCH
 7300  CONTINUE
-      WRITE ( CMON, '(A,I4)') 'Punch Class ', ICLASS+2
-      CALL XPRVDU(NCVDU, 1,0)
+c      WRITE ( CMON, '(A,I4)') 'Punch Class ', ICLASS+2
+c      CALL XPRVDU(NCVDU, 1,0)
       GOTO (7310,7320,7330,7340,7350) ICLASS+2
 C-- 5A NORMAL PUNCH FORMAT
 7310  CONTINUE
