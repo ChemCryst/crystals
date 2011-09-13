@@ -12,8 +12,8 @@
 %%
 %%   Local variables:
 %  VARIABLE INTEGER REFLAG INBLOCK IEXTIN N5 ICHK I5 PART RESI
-%  VARIABLE INTEGER REFLAG HMODE ISER CURMODE 
-%  VARIABLE LOGICAL DOWRITE OVERRIDE STUCK TWINNED
+%  VARIABLE INTEGER HMODE ISER CURMODE 
+%  VARIABLE LOGICAL DOWRITE OVERRIDE STUCK TWINNED STICKY
 %  VARIABLE LOGICAL DOREFINE HRIDE HREST DOFOUR
 %  VARIABLE CHARACTER CTYPE CTYPE2 KEYBREAK
 %  VARIABLE REAL SERIAL HFIRST CENTRO WORK1 SERIAL2 RN5
@@ -444,6 +444,14 @@
 %      COPY 'TRANSFER FROM OFFSET=14 TO PART'
 %      COPY 'TRANSFER FROM OFFSET=15 TO REFLAG'
 %      COPY 'TRANSFER FROM OFFSET=16 TO RESI'
+%      EVALUATE STICKY = FALSE
+%      IF ( REFLAG .LT. 0 ) THEN
+%        EVALUATE STICKY = TRUE
+%        EVALUATE REFLAG = - REFLAG
+%      END IF
+%% Only keep low 8 bits of REFLAG
+%      EVALUATE REFLAG = ( REFLAG IAND 255 )
+% SHOW REFLAG
 %      IF ( PART .GT. 999999 ) THEN
 %        EVALUATE PART = 0
 {I Detected old L5 entry with invalid PART numbers. Correcting.
@@ -456,7 +464,7 @@
 %      END IF
 %      IF ( ( CTYPE .EQ. 'H' ) .or. ( CTYPE .EQ. 'D' ) ) THEN
 %        IF ( REFLAG .NE. HMODE ) THEN
-%          IF ( REFLAG .GE.  0 )  THEN
+%          IF ( .NOT. STICKY )  THEN
 %% Non-sticky atom, just change the value.
 %            EVALUATE DOWRITE = TRUE
 %            COPY 'TRANSFER TO OFFSET=15 FROM HMODE'
@@ -472,18 +480,18 @@
 %            STORE FORMAT /(F5.0)/ LENGTH 5 REAL SERIAL
 %            INSERT ')'
 %            OUTPUT
-%          ELSE IF ( REFLAG .NE. - HMODE ) THEN
+%          ELSE IF ( REFLAG .NE. HMODE ) THEN
 %% Remember that there are some sticky atoms of different
 %% refinement mode to the default.
 %            EVALUATE STUCK = TRUE
-%            IF ( REFLAG .EQ. - 10 ) THEN
+%            IF ( REFLAG .EQ. 10 ) THEN
 %               EVALUATE HRIDE = TRUE
 %            END IF
 %          END IF
 %        END IF
 %      ELSE
 %        IF ( REFLAG .NE. SETADP ) THEN
-%          IF ( REFLAG .GE.  0 )  THEN
+%          IF ( .NOT. STICKY )  THEN
 %% Non-sticky atom, just change the value.
 %            EVALUATE DOWRITE = TRUE
 %            COPY 'TRANSFER TO OFFSET=15 FROM SETADP'
@@ -499,7 +507,7 @@
 %            STORE FORMAT /(F5.0)/ LENGTH 5 REAL SERIAL
 %            INSERT ')'
 %            OUTPUT
-%          ELSE IF ( REFLAG .NE. - SETADP ) THEN
+%          ELSE IF ( REFLAG .NE. SETADP ) THEN
 %% Remember that there are some sticky atoms of different
 %% refinement mode to the default.
 %            EVALUATE STUCK = TRUE
@@ -537,14 +545,21 @@
 %       COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
 %       COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
 %       COPY 'TRANSFER FROM OFFSET=15 TO REFLAG'
-%       IF ( CTYPE .EQ. 'H' ) .AND. ( REFLAG .LT. 0 ) THEN
+%       EVALUATE STICKY = FALSE
+%       IF ( REFLAG .LT. 0 ) THEN
+%         EVALUATE STICKY = TRUE
+%         EVALUATE REFLAG = - REFLAG
+%       END IF
+%       EVALUATE REFLAG = ( REFLAG IAND 255 )
+% SHOW REFLAG
+%       IF ( CTYPE .EQ. 'H' ) .AND. ( STICKY ) THEN
 %         CLEAR
 %         INSERT 'CONT H('
 %         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
 %         INSERT ')'
 %%         OUTPUT
 %         QUEUE SEND
-%       ELSE IF ( CTYPE .EQ. 'D' ) .AND. ( REFLAG .LT. 0 ) THEN
+%       ELSE IF ( CTYPE .EQ. 'D' ) .AND. ( STICKY ) THEN
 %         CLEAR
 %         INSERT 'CONT D('
 %         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
@@ -642,6 +657,8 @@
 %       IF REFLAG .LT. 0 THEN
 %         EVALUATE REFLAG = - REFLAG
 %       END IF
+%       EVALUATE REFLAG = ( REFLAG IAND 255 )
+% SHOW REFLAG
 %       IF ( CTYPE .EQ. 'H' ) .AND. ( REFLAG .EQ. 10 ) THEN
 %         EVALUATE HRIDE = TRUE
 %         CLEAR
@@ -701,6 +718,8 @@
 %       IF ( REFLAG .LT. 0 ) THEN
 %         EVALUATE REFLAG = - REFLAG
 %       END IF
+%       EVALUATE REFLAG = ( REFLAG IAND 255 )
+% SHOW REFLAG
 %       IF CURMODE .NE. REFLAG THEN
 %% Finish off current block.
 %         IF ( INBLOCK .GE. 1 ) .AND. ( CURMODE .NE. 0 ) THEN
@@ -716,20 +735,25 @@
 %         END IF
 %         EVALUATE INBLOCK = 0
 %         EVALUATE CURMODE = REFLAG
-%         CLEAR
-%         INSERT 'CONT '
-%         STORE CHARACTER CTYPE
-%         INSERT '('
-%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
-%         IF ( REFLAG .LE. 3 .AND. REFLAG .GE. 1 ) THEN
-%          CASE REFLAG
-%           INSERT ",X's)"
-%           INSERT ",X's,U[iso])"
-%           INSERT ",X's,U's)"
-%          END CASE
+%         IF ( REFLAG .NE. 5 ) THEN
+%           CLEAR
+%           INSERT 'CONT '
+%           STORE CHARACTER CTYPE
+%           INSERT '('
+%           STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
+%           IF ( REFLAG .LE. 3 .AND. REFLAG .GE. 1 ) THEN
+%             CASE REFLAG
+%               INSERT ",X's)"
+%               INSERT ",X's,U[iso])"
+%               INSERT ",X's,U's)"
+%             END CASE
+%           ELSE
+%             CLEAR
+%             EVALUATE CURMODE = 0
+%           END IF
 %         ELSE
-%          CLEAR
-%          EVALUATE CURMODE = 0
+%% Fix atom
+%           EVALUATE CURMODE = 0
 %         END IF
 %       END IF
 %       EVALUATE CTYPE2 = CTYPE

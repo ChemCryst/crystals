@@ -15,6 +15,9 @@
 %    IF ( IREF .EQ. - 4 ) THEN
 %      EVALUATE IREF = - 10
 %    END IF
+%    IF ( IREF .EQ. 0 ) THEN
+%      EVALUATE IREF = - 5
+%    END IF
 %  END IF
 %  EVALUATE CELE = FIRSTSTR ( CATM )
 %  EVALUATE ISER = FIRSTINT ( CATM )
