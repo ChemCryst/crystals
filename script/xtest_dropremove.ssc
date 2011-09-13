@@ -1,0 +1,44 @@
+%SCRIPT XFOUR                                                                   
+^^WI WINDOW TESTREMOVE 'Choose an item'
+^^WI COMMIT='BUTTONOK' CANCEL='BUTTONOK'
+^^WI GRID GRIDM NROWS=1 NCOLS=2                                             
+^^WI {                                                                          
+^^WI  @ 1,2 GRID GRIDB NROWS=3 NCOLS=3                                          
+^^WI  {                                                                         
+^^WI    @ 2,2 BUTTON BUTTONOK '&Ok' DEFAULT CANCEL                                    
+^^WI  }                                                                         
+^^WI  @ 1,1 GRID GRIDA NROWS=12 NCOLS=3                                         
+^^WI  {                                                                         
+^^WI     @ 2,2 LISTBOX XFL VISLINES=6 INFORM=YES                                       
+^^WI           ADDTOLIST 'F-Obs' 'Difference' '2Fo-Fc'                          
+^^WI                     'F-Calc' 'Optimal' 'Fo-Patterson'                      
+^^WI                     'Fc-Patterson' 'Delta-Patt' 'NULL'                                  
+^^WI  }                                                                         
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR
+% VARIABLE INTEGER I
+% VARIABLE CHARACTER CTEXT
+% LOOP
+%  VERIFY XFL BUTTONOK
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                  
+%  CASE VALUE                                                                    
+%    BLOCK           %XFL%
+%      GET SILENT NOSTORE INTEGER ' '
+%      EVALUATE I = VALUE
+%      SHOW I
+%      TRANSFER "^^?? XFL LISTTEXT " // CHARACTER ( I )  -                   
+         TO DISPLAY
+%      GET NOSTORE TEXT ' ' ' '
+%      EVALUATE CTEXT = CVALUE
+%      SHOW CTEXT
+%      TRANSFER "^^CO SET XFL REMOVE " // CHARACTER ( I )  -                   
+         TO DISPLAY
+%    END BLOCK
+%    BLOCK           %OK%
+^^CO   DISPOSE TESTREMOVE
+%      FINISH
+%    END BLOCK
+%  END CASE
+% END LOOP
+%END SCRIPT                                                                     

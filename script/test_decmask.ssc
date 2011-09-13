@@ -1,0 +1,68 @@
+%SCRIPT TESTDECMASK
+%%
+%% The IDECMASK function uses a pseudo 01 bit string to mask out bits of a
+%% decimal string. E.g.
+%% <result> = <value> IDECMASK <mask>
+%%
+%% 101000 = ( 1010101 IDECMASK 111000 )
+%%
+%%
+% VARIABLE INTEGER T1 T2 T3 T4
+%% 
+% EVALUATE T1 = 101 IDECMASK 111
+T1 should be  101
+% SHOW T1
+% EVALUATE T1 = 101 IDECMASK 110
+T1 should be  100
+% SHOW T1
+% EVALUATE T1 = 101 IDECMASK 011
+T1 should be    1
+% SHOW T1
+% EVALUATE T1 = 101 IDECMASK 101
+T1 should be  101
+% SHOW T1
+% EVALUATE T1 = 001 IDECMASK 100
+T1 should be    0
+% SHOW T1
+%%
+% EVALUATE T1 = 987 IDECMASK 111
+T1 should be  987
+% SHOW T1
+% EVALUATE T1 = 987 IDECMASK 110
+T1 should be  980
+% SHOW T1
+% EVALUATE T1 = 987 IDECMASK 011
+T1 should be   87
+% SHOW T1
+% EVALUATE T1 = 987 IDECMASK 101
+T1 should be  907
+% SHOW T1
+% EVALUATE T1 = 987 IDECMASK 100
+T1 should be  900
+% SHOW T1
+% EVALUATE T1 = 987 IDECMASK 0
+T1 should be    0
+% SHOW T1
+%%
+% EVALUATE T2 = 15 IAND 15
+T2 should be   15
+% SHOW T2
+% EVALUATE T2 = 1 IAND 15
+T2 should be    1
+% SHOW T2
+% EVALUATE T2 = 15 IAND 1
+T2 should be    1
+% SHOW T2
+% EVALUATE T2 = 15 IAND 10
+T2 should be   10
+% SHOW T2
+% EVALUATE T2 = 10 IAND 11
+T2 should be   10
+% SHOW T2
+% EVALUATE T2 = ( - 2 ) IAND 255
+T2 should be   ??
+% SHOW T2
+% EVALUATE T2 = 255 IAND ( - 2 ) 
+T2 should be   ??
+% SHOW T2
+%END SCRIPT
