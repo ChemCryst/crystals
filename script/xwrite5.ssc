@@ -451,7 +451,6 @@
 %      END IF
 %% Only keep low 8 bits of REFLAG
 %      EVALUATE REFLAG = ( REFLAG IAND 255 )
-% SHOW REFLAG
 %      IF ( PART .GT. 999999 ) THEN
 %        EVALUATE PART = 0
 {I Detected old L5 entry with invalid PART numbers. Correcting.
@@ -551,7 +550,6 @@
 %         EVALUATE REFLAG = - REFLAG
 %       END IF
 %       EVALUATE REFLAG = ( REFLAG IAND 255 )
-% SHOW REFLAG
 %       IF ( CTYPE .EQ. 'H' ) .AND. ( STICKY ) THEN
 %         CLEAR
 %         INSERT 'CONT H('
@@ -658,7 +656,6 @@
 %         EVALUATE REFLAG = - REFLAG
 %       END IF
 %       EVALUATE REFLAG = ( REFLAG IAND 255 )
-% SHOW REFLAG
 %       IF ( CTYPE .EQ. 'H' ) .AND. ( REFLAG .EQ. 10 ) THEN
 %         EVALUATE HRIDE = TRUE
 %         CLEAR
@@ -719,7 +716,6 @@
 %         EVALUATE REFLAG = - REFLAG
 %       END IF
 %       EVALUATE REFLAG = ( REFLAG IAND 255 )
-% SHOW REFLAG
 %       IF CURMODE .NE. REFLAG THEN
 %% Finish off current block.
 %         IF ( INBLOCK .GE. 1 ) .AND. ( CURMODE .NE. 0 ) THEN
