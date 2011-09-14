@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.69  2011/09/13 13:03:39  rich
+C Fix IDECMASK calculation
+C
 C Revision 1.68  2011/09/07 09:44:41  djw
 C Change format of #SET OPENMESSAGE text so that columns line up across actions
 C Add #SET CACHEMESSAGE (off/on) to inhibit caching information at termination
@@ -7734,6 +7737,12 @@ C -- CHARACTER - ALLOCATE AN EMPTY DESCRIPTOR
 C
         IADDR = KSCIDN ( 1, 3, CVARIB, 1, ITYPE, IDENT, IVALUE, -1 )
       ELSE
+        IF (ISCVER .GT. 0)  THEN
+         WRITE ( CMON, 9998 ) CVARIB
+         CALL XPRVDU(NCVDU, 1,0)
+         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(5:)
+9998     FORMAT ('{9,1 ', A,' Already exists' )
+        ENDIF
         IF ( IVTYPE .NE. ITYPE ) GO TO 9920
       ENDIF
 C
