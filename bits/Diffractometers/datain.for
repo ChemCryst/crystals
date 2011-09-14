@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2011/09/05 07:42:15  djw
+C Trap massively negative reflections
+C
 C Revision 1.11  2011/06/23 09:44:10  djw
 C Ensure final formula item is a digit or point.  If no, add "space 1"
 C
@@ -19,10 +22,10 @@ c #include "ciftbx.sys"
       LOGICAL FC,FV,FN,FF,FT,FW,FZ,FSG,FMON,FABS,FSIZ,FTEMP,FCOL
       logical lnum, lchar
 
-      CHARACTER*16 CSPACE,CNONSP,CTEMP,CMONO,CSHAPE
+      CHARACTER*16 CSPACE,CNONSP,CTEMP,CSHAPE
       CHARACTER*26 ALPHA
       CHARACTER*32 C32, ENAME,CCOL 
-      CHARACTER*80 C80
+      CHARACTER*80 C80, CMONO
 cdjwmar2011 line length must also be set in ciftbx.sys
       parameter (linlen=512)
 
