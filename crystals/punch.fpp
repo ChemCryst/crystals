@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.68  2011/09/15 12:51:23  rich
+C Punching of list 3.
+C
 C Revision 1.67  2011/09/15 12:37:26  rich
 C Punch list 2
 C
@@ -2221,51 +2224,6 @@ c END
       RETURN
       END
 
-CODE FOR XPCH3
-      SUBROUTINE XPCH3
-
-      INCLUDE 'ISTORE.INC'
-C PUNCH LIST 3 IN CRYSTALS FORMAT
-C
-      INCLUDE 'STORE.INC'
-      INCLUDE 'XLST03.INC'
-      INCLUDE 'XUNITS.INC'
-      INCLUDE 'XCONST.INC'
-      INCLUDE 'XCHARS.INC'
-      INCLUDE 'XIOBUF.INC'
-      INCLUDE 'QSTORE.INC'
-C      
-      
-      IF (KHUNTR (3,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL03
-      IF ( IERFLG .LT. 0 ) THEN
-       WRITE(CMON,'(A)')'LIST 3 not available for punching'
-       CALL XPRVDU(NCVDU,1,0)
-       RETURN
-      ENDIF
-
-c \LIST 3
-c READ  NSCATTERERS=
-c SCATTERING TYPE= F'= F''= A(1)= B(1)= A(2)= . . . B(4)= C=
-c END
-
-      WRITE(NCPU,'(A)') '#LIST 3'
-
-      WRITE(NCPU,100) N3
-	  
-      DO I=L3,M3,MD3
-         WRITE (NCPU,101)(STORE(J),J=I,I+MD3-1)
-      END DO
-
-100   FORMAT('READ NSCATTERERS=',I5)
-101   FORMAT('SCAT TYPE ',A4, 1X, 4(1X,F12.6),/,
-     1       'CONT',11X,4(1X,F12.6),/,
-     1       'CONT',24X,3(1X,F12.6))
-
-      WRITE(NCPU,'(A)') 'END'
-
-      RETURN
-      END
-	  
 CODE FOR XCIF2
       SUBROUTINE XCIF2(NDEVICE)
 C PUNCH  LIST 2 IN CIF FORMAT
@@ -2311,3 +2269,154 @@ C NEGATE IF REQUIRED
            END DO
       RETURN
       END
+
+CODE FOR XPCH3
+      SUBROUTINE XPCH3
+
+      INCLUDE 'ISTORE.INC'
+C PUNCH LIST 3 IN CRYSTALS FORMAT
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST03.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'QSTORE.INC'
+C      
+      
+      IF (KHUNTR (3,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL03
+      IF ( IERFLG .LT. 0 ) THEN
+       WRITE(CMON,'(A)')'LIST 3 not available for punching'
+       CALL XPRVDU(NCVDU,1,0)
+       RETURN
+      ENDIF
+
+c \LIST 3
+c READ  NSCATTERERS=
+c SCATTERING TYPE= F'= F''= A(1)= B(1)= A(2)= . . . B(4)= C=
+c END
+
+      WRITE(NCPU,'(A)') '#LIST 3'
+
+      WRITE(NCPU,100) N3
+	  
+      DO I=L3,M3,MD3
+         WRITE (NCPU,101)(STORE(J),J=I,I+MD3-1)
+      END DO
+
+100   FORMAT('READ NSCATTERERS=',I5)
+101   FORMAT('SCAT TYPE ',A4, 1X, 4(1X,F12.6),/,
+     1       'CONT',11X,4(1X,F12.6),/,
+     1       'CONT',24X,3(1X,F12.6))
+
+      WRITE(NCPU,'(A)') 'END'
+
+      RETURN
+      END
+	  
+CODE FOR XPCH13
+      SUBROUTINE XPCH13
+
+      INCLUDE 'ISTORE.INC'
+C PUNCH LIST 13 IN CRYSTALS FORMAT
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST13.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'QSTORE.INC'
+C      
+      CHARACTER*15 CINSTR,CDIR,CPARAM,CVALUE,CDEF,CVAL2
+      CHARACTER*1 CNY(2)
+	DATA CNY /'N','Y'/
+      
+      IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
+      IF ( IERFLG .LT. 0 ) THEN
+       WRITE(CMON,'(A)')'LIST 13 not available for punching'
+       CALL XPRVDU(NCVDU,1,0)
+       RETURN
+      ENDIF
+
+100   FORMAT('CRYST FRIEDELPAIRS=',A1,' TWINNED=',A1,' SPREAD=',A7)
+
+      WRITE(NCPU,'(A)') '#LIST 13'
+
+      IF ( N13CD .GT. 0 ) THEN
+C Get spread option
+         IPARAM = 3
+         IDIR   = 1
+         IVAL   = ISTORE(L13CD+IPARAM-1)
+C The 13+3 ids the instruction number 13 from the command file.
+         IZZZ   = KGVAL(CINSTR, CDIR, CPARAM, CVALUE, CDEF,
+     1                     13+3, IDIR, IPARAM, IVAL, JVAL, VAL, JTYPE)
+         CALL XCTRIM(CVALUE,LVALUE)
+         WRITE(NCPU,100) CNY(ISTORE(L13CD)+2),
+     1                   CNY(ISTORE(L13CD+1)+2),CVALUE
+	END IF
+
+101   FORMAT('DIFFRACTION GEOMETRY=',A,' RADIATION=',A)
+
+
+      IF ( N13DT .GT. 0 ) THEN
+C Get geom option
+         IPARAM = 1
+         IDIR   = 2
+         IVAL   = ISTORE(L13DT+IPARAM-1)
+         IZZZ   = KGVAL(CINSTR, CDIR, CPARAM, CVALUE, CDEF,
+     1                     13+3, IDIR, IPARAM, IVAL, JVAL, VAL, JTYPE)
+         CALL XCTRIM(CVALUE,LVALUE)
+C Get radiation option
+         IPARAM = 2
+         IDIR   = 2
+         IVAL   = ISTORE(L13DT+IPARAM-1)
+         IZZZ   = KGVAL(CINSTR, CDIR, CPARAM, CVAL2, CDEF,
+     1                     13+3, IDIR, IPARAM, IVAL, JVAL, VAL, JTYPE)
+         CALL XCTRIM(CVAL2,LVAL2)
+         WRITE(NCPU,101) CVALUE(1:LVALUE),CVAL2(1:LVAL2)
+      END IF
+
+102   FORMAT('CONDI WAVEL=',F8.5,2(1X,F6.3),3(1X,F10.7),1X,F6.3)
+103   FORMAT('MATR ',3(F14.9,1X),2(/,'CONT ',3(F14.9,1X)))
+104   FORMAT('TWO   H=',4(F14.9,1X),/,'CONT ',5(F14.9,1X))
+105   FORMAT('THREE H=',4(F14.9,1X),/,'CONT ',5(F14.9,1X))
+106   FORMAT('REAL COMPONENTS(1)=',4(F14.9,1X),
+     1       2(/,'CONT',15X,4(F14.9,1X)))
+107   FORMAT('RECI COMPONENTS(1)=',4(F14.9,1X),
+     1       2(/,'CONT',15X,4(F14.9,1X)))
+108   FORMAT('AXIS H=',F8.2,' K=',F8.2,' L=',F8.2)
+
+      IF ( N13DC .GT. 0 ) THEN
+         WRITE(NCPU,102) (STORE(I),I=L13DC,L13DC+7-1)
+	END IF
+      IF ( N132R .GT. 0 ) THEN
+        DO J=L132R,L132R+(N132R*MD132R),MD132R
+          WRITE(NCPU,104) (STORE(I),I=J,J+9-1)
+        END DO
+	END IF
+      IF ( N133R .GT. 0 ) THEN
+        DO J=L133R,L133R+(N133R*MD133R),MD133R
+          WRITE(NCPU,105) (STORE(I),I=J,J+9-1)
+        END DO
+	END IF
+      IF ( N13RL .GT. 0 ) THEN
+         WRITE(NCPU,106) (STORE(I),I=L13RL,L13RL+12-1)
+	END IF
+      IF ( N13RC .GT. 0 ) THEN
+         WRITE(NCPU,107) (STORE(I),I=L13RC,L13RC+12-1)
+	END IF
+      IF ( N13OM .GT. 0 ) THEN
+         WRITE(NCPU,103) (STORE(I),I=L13OM,L13OM+9-1)
+	END IF
+      IF ( N13AX .GT. 0 ) THEN
+         WRITE(NCPU,108) (STORE(I),I=L13AX,L13AX+3-1)
+	END IF
+
+      WRITE(NCPU,'(A)') 'END'
+
+      RETURN
+      END
+	  
+	  
