@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2011/09/13 14:34:51  rich
+C Remove PUNCH CLASS message.
+C
 C Revision 1.22  2011/04/21 11:25:26  djw
 C Support for PRINT 5 E and ESD/END
 C
@@ -341,6 +344,9 @@ cdjwmar2011
 c----- check for LIST 1 for Ndave
       if(lstno.eq.1) then
             call xpch1
+            return
+      else if(lstno.eq.2) then   !check for LIST 2 
+            call XPCH2
             return
       endif
 c

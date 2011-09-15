@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.66  2011/09/13 14:50:00  rich
+C Changed type of variable in L5 offset 17 (NEW). Updated tests. Punch catches old L5s with '    ' in this slot and outputs 0. DSCCHECK auto reformats the L5.
+C
 C Revision 1.65  2011/09/01 13:09:56  djw
 C Create subroutine XCIF2 in PUNCH.FPP to output LIST 2 in cif format for use in fcf (and in cif) files
 C
@@ -2155,6 +2158,67 @@ C
       RETURN
       END
 
+CODE FOR XPCH2
+      SUBROUTINE XPCH2
+
+      INCLUDE 'ISTORE.INC'
+C PUNCH LIST 2 IN CRYSTALS FORMAT
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST02.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'QSTORE.INC'
+      CHARACTER CBUF*30,CTEMP*30
+	  CHARACTER*7 CLAT
+	  CHARACTER*2 CNY
+	  DATA CLAT /'PIRFABC'/
+	  DATA CNY /'NY'/
+C      
+      
+      IF (KHUNTR (2,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL02
+      IF ( IERFLG .LT. 0 ) THEN
+       WRITE(CMON,'(A)')'LIST 2 not available for punching'
+       CALL XPRVDU(NCVDU,1,0)
+       RETURN
+      ENDIF
+
+c \LIST 2
+c CELL NSYM= 2, LATTICE = B
+c SYM X, Y, Z
+c SYM X, Y + 1/2,  - Z
+c SPACEGROUP B 1 1 2/B
+c CLASS MONOCLINIC
+c END
+
+      WRITE(NCPU,'(A)') '#LIST 2'
+
+      WRITE(NCPU,100)N2,CLAT(NINT(STORE(L2C+1)):NINT(STORE(L2C+1))),
+     1                  CNY(NINT(STORE(L2C))+1:NINT(STORE(L2C))+1)
+	  
+      DO I=L2,M2,MD2
+         CALL XSUMOP (STORE(I),STORE(L2P),CTEMP,LENGTH,1)
+         CALL XCCLWC (CTEMP(1:LENGTH),CBUF(1:LENGTH))
+         WRITE (NCPU,101) CBUF(1:LENGTH)
+      END DO
+
+      WRITE(NCPU,102) (ISTORE(I),I=L2SG,L2SG+MD2SG-1)
+
+      WRITE(NCPU,103) (ISTORE(I),I=L2CC,L2CC+MD2CC-1)
+	  
+100   FORMAT('CELL NSYM=',I3,' LATT=',A1,' CENTRIC=',A1)
+101   FORMAT('SYMM ',A)
+102   FORMAT('SPACEGROUP ',4A4)
+103   FORMAT('CLASS ',4A4)
+
+      WRITE(NCPU,'(A)') 'END'
+
+      RETURN
+      END
+
+	  
 CODE FOR XCIF2
       SUBROUTINE XCIF2(NDEVICE)
 C PUNCH  LIST 2 IN CIF FORMAT
