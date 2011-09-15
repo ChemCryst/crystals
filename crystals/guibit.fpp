@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.77  2011/05/25 12:41:13  djw
+C Increase field for atom count, remove training "."
+C
 C Revision 1.76  2011/05/04 11:27:25  rich
 C Comment out debugging.
 C
@@ -296,9 +299,9 @@ CODE FOR GUIBLK
       DATA ISERIA/0/, NATINF/0/
       DATA LGUIL1/.FALSE./
       DATA LGUIL2/.FALSE./
-     1 LUPDAT/.FALSE./, QSINL5/.FALSE./
+     1 LUPDAT/.FALSE./, QSINL5/.FALSE./, PTINL5/.FALSE./
       DATA KSTAT1 /0/, KSTAT2 /0/, KSTAT3/0/, KSTAT5/0/, KSTAT6/0/,
-     1 KSTATQ/0/, KSTATI/0/
+     1 KSTATQ/0/, KSTATI/0/, KSTATP/0/
       END
 
 
@@ -390,6 +393,20 @@ CODE FOR MENUUP (Updates the flags for the menus)
         IF ( KSTATQ.GE.0 ) THEN
           KSTATQ = -1
           WRITE(CMON(LCR),'(A)')'^^ST STATUNSET QS'
+          LCR = LCR + 1
+        END IF
+      ENDIF
+
+      IF(PTINL5)THEN
+        IF(KSTATP.LE.0) THEN
+          KSTATP = 1
+          WRITE(CMON(LCR),'(A)')'^^ST STATSET   PT'
+          LCR = LCR + 1
+        END IF
+      ELSE
+        IF ( KSTATP.GE.0 ) THEN
+          KSTATP = -1
+          WRITE(CMON(LCR),'(A)')'^^ST STATUNSET PT'
           LCR = LCR + 1
         END IF
       ENDIF
@@ -770,7 +787,7 @@ C Set old list number to current list number.
             ISERnn(41) = L41SR
 
             QSINL5 = .FALSE.
-
+            PTINL5 = .FALSE.
 
 C Calculate and store orthogonal coords....
 C Calculate sum of x, y and z as we go.
@@ -847,6 +864,7 @@ C Get atom type.
                  QSINL5 = .TRUE.
                  IF ( STORE (I5+13).GT.0.0001 ) LSPARE = .TRUE.
                END IF
+               IF ( ISTORE(I5+14).NE.0 ) PTINL5 = .TRUE.
 
                KFNDPR = 0
 
