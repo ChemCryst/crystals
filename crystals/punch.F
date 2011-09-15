@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.67  2011/09/15 12:37:26  rich
+C Punch list 2
+C
 C Revision 1.66  2011/09/13 14:50:00  rich
 C Changed type of variable in L5 offset 17 (NEW). Updated tests. Punch catches old L5s with '    ' in this slot and outputs 0. DSCCHECK auto reformats the L5.
 C
@@ -2218,6 +2221,50 @@ c END
       RETURN
       END
 
+CODE FOR XPCH3
+      SUBROUTINE XPCH3
+
+      INCLUDE 'ISTORE.INC'
+C PUNCH LIST 3 IN CRYSTALS FORMAT
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST03.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'QSTORE.INC'
+C      
+      
+      IF (KHUNTR (3,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL03
+      IF ( IERFLG .LT. 0 ) THEN
+       WRITE(CMON,'(A)')'LIST 3 not available for punching'
+       CALL XPRVDU(NCVDU,1,0)
+       RETURN
+      ENDIF
+
+c \LIST 3
+c READ  NSCATTERERS=
+c SCATTERING TYPE= F'= F''= A(1)= B(1)= A(2)= . . . B(4)= C=
+c END
+
+      WRITE(NCPU,'(A)') '#LIST 3'
+
+      WRITE(NCPU,100) N3
+	  
+      DO I=L3,M3,MD3
+         WRITE (NCPU,101)(STORE(J),J=I,I+MD3-1)
+      END DO
+
+100   FORMAT('READ NSCATTERERS=',I5)
+101   FORMAT('SCAT TYPE ',A4, 1X, 4(1X,F12.6),/,
+     1       'CONT',11X,4(1X,F12.6),/,
+     1       'CONT',24X,3(1X,F12.6))
+
+      WRITE(NCPU,'(A)') 'END'
+
+      RETURN
+      END
 	  
 CODE FOR XCIF2
       SUBROUTINE XCIF2(NDEVICE)

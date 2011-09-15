@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2011/09/15 12:37:26  rich
+C Punch list 2
+C
 C Revision 1.23  2011/09/13 14:34:51  rich
 C Remove PUNCH CLASS message.
 C
@@ -347,6 +350,9 @@ c----- check for LIST 1 for Ndave
             return
       else if(lstno.eq.2) then   !check for LIST 2 
             call XPCH2
+            return
+      else if(lstno.eq.3) then   !check for LIST 3
+            call XPCH3
             return
       endif
 c
