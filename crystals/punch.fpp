@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.71  2011/09/16 12:24:03  rich
+C Punching of List 23.
+C
 C Revision 1.70  2011/09/16 10:57:38  rich
 C Punching of list 4.
 C
@@ -2551,4 +2554,40 @@ C Get special option
       RETURN
       END
 	  
+CODE FOR XPCH25
+      SUBROUTINE XPCH25
+
+      INCLUDE 'ISTORE.INC'
+C PUNCH LIST 25 IN CRYSTALS FORMAT
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST25.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'QSTORE.INC'
+ 
       
+      IF (KHUNTR (25,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL25
+      IF ( IERFLG .LT. 0 ) THEN
+       WRITE(CMON,'(A)')'LIST 25 not available for punching'
+       CALL XPRVDU(NCVDU,1,0)
+       RETURN
+      ENDIF
+
+      WRITE(NCPU,'(A)') '#LIST 25'
+
+      WRITE(NCPU,100)N25
+	  
+      DO I=L25,L25+(N25-1)*MD25,MD25  
+        WRITE(NCPU,101) (STORE(J),J=I,I+8)
+      END DO
+	  
+100   FORMAT('READ NELEM=',I3)
+101   FORMAT('MATRIX ',3(F14.9,1X),2(/,'CONT   ',3(F14.9,1X)))
+
+      WRITE(NCPU,'(A)') 'END'
+
+      RETURN
+      END
