@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.69  2011/09/15 16:06:18  rich
+C Punch for list 13.
+C
 C Revision 1.68  2011/09/15 12:51:23  rich
 C Punching of list 3.
 C
@@ -2420,3 +2423,53 @@ C Get radiation option
       END
 	  
 	  
+CODE FOR XPCH4
+      SUBROUTINE XPCH4
+
+      INCLUDE 'ISTORE.INC'
+C PUNCH LIST 4 IN CRYSTALS FORMAT
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST04.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'QSTORE.INC'
+      CHARACTER*15 CINSTR,CDIR,CPARAM,CVALUE,CDEF,CVAL2
+      CHARACTER*1 CNY(2)
+	DATA CNY /'N','Y'/
+C      
+      
+      IF (KHUNTR (4,0, IADDL,IADDR,IADDD, -1) .LT. 4) CALL XFAL04
+      IF ( IERFLG .LT. 0 ) THEN
+       WRITE(CMON,'(A)')'LIST 4 not available for punching'
+       CALL XPRVDU(NCVDU,1,0)
+       RETURN
+      ENDIF
+      WRITE(NCPU,'(A)') '#LIST 4'
+
+100   FORMAT('SCHEME ', I2, ' NPARAM=',I2,' TYPE=',A,/,
+     1       'CONT WEIGHT=',F12.7,' MAX=',F12.4,' ROBUST=',A1,/,
+     2       'CONT DUNITZ=',A1,' TOLER=',F12.4,' DS1=',F12.4,/,
+     3       'CONT DS2=',F12.4,' QUASI=',F12.4 )
+      IPARAM = 3
+      IDIR   = 1
+      IVAL   = ISTORE(L4C+1) !NB Param offset is different from param number here!
+      IZZZ   = KGVAL(CINSTR, CDIR, CPARAM, CVALUE, CDEF,
+     1                     4+3, IDIR, IPARAM, IVAL, JVAL, VAL, JTYPE)
+      CALL XCTRIM(CVALUE,LVALUE)
+    
+      WRITE(NCPU,100) ISTORE(L4C), MD4,  CVALUE(1:LVALUE),
+     1    STORE(L4F),STORE(L4F+1), CNY(ISTORE(L4C+2)+1),
+     2    CNY(ISTORE(L4C+3)+1), STORE(L4F+2), STORE(L4F+3),
+     3    STORE(L4F+4),STORE(L4F+5)
+      
+101   FORMAT('PARAM ',9F12.6)
+      IF ( MD4 .GT. 0 ) THEN
+         WRITE(NCPU,101) (STORE(I),I=L4,L4+MD4-1)
+      END IF
+      WRITE(NCPU,'(A)') 'END'
+      RETURN
+      END
+        
