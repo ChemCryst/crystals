@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.72  2011/09/16 12:41:42  rich
+C Punching of List 25.
+C
 C Revision 1.71  2011/09/16 12:24:03  rich
 C Punching of List 23.
 C
@@ -2589,5 +2592,85 @@ C
 
       WRITE(NCPU,'(A)') 'END'
 
+      RETURN
+      END
+
+      
+CODE FOR XPCH28
+      SUBROUTINE XPCH28
+      INCLUDE 'ISTORE.INC'
+C PUNCH LIST 28 IN CRYSTALS FORMAT
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST28.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'QSTORE.INC'
+      CHARACTER*6 REJACC(2)
+      DATA REJACC/'REJECT','ACCEPT'/
+      
+      IF (KHUNTR (28,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL28
+      IF ( IERFLG .LT. 0 ) THEN
+       WRITE(CMON,'(A)')'LIST 28 not available for punching'
+       CALL XPRVDU(NCVDU,1,0)
+       RETURN
+      ENDIF
+
+      WRITE(NCPU,'(A)') '#LIST 28'
+  
+100   FORMAT('READ NSLICE=',I6,' NOMIS=',I6,' NCOND=',I6)
+      WRITE(NCPU,100) N28RC, N28OM, N28CD
+
+      IF (MD28SK .GT. 1 ) THEN
+101     FORMAT('SKIP ',I6)
+        WRITE(NCPU,101) MD28SK
+      END IF
+
+102   FORMAT ('CONT    ',3A4,'=', F10.5)
+
+      IF ( N28MN .GT. 0 ) THEN
+        WRITE(NCPU,'(A)') 'MINIMA '
+        INDNAM = L28CN
+        DO I = L28MN , M28MN , MD28MN
+           WRITE(NCPU,102) (ISTORE(J),J=INDNAM,INDNAM+2) , STORE(I+1)
+           INDNAM = INDNAM + MD28CN
+        END DO
+      ENDIF
+      
+      IF ( N28MX .GT. 0 ) THEN
+        WRITE(NCPU,'(A)') 'MAXIMA '
+        INDNAM = L28CX
+        DO I = L28MX , M28MX , MD28MX
+           WRITE(NCPU,102) (ISTORE(J),J=INDNAM,INDNAM+2) , STORE(I+1)
+           INDNAM = INDNAM + MD28CN
+        END DO
+      ENDIF
+
+103   FORMAT('SLICE P=',5(F10.3,1X),A)
+      IF ( N28RC .GT. 0 ) THEN
+        DO I = L28RC , M28RC , MD28RC
+           WRITE(NCPU,103) (STORE(J),J=I,I+4) , REJACC(ISTORE(I+5)+1)
+        END DO
+      ENDIF
+
+104   FORMAT('COND  P=',5(F10.3,1X),A)
+      IF ( N28CD .GT. 0 ) THEN
+        DO I = L28CD , M28CD , MD28CD
+           WRITE(NCPU,104) (STORE(J),J=I,I+4) , REJACC(ISTORE(I+5)+1)
+        END DO
+      ENDIF
+      
+105   FORMAT('OMIT ',3(F7.2,1X))
+      IF ( N28OM .GT. 0 ) THEN
+        DO I = L28OM , M28OM , MD28OM
+           WRITE(NCPU,105) (STORE(J),J=I,I+2)
+        END DO
+      ENDIF
+
+     
+      WRITE(NCPU,'(A)') 'END'
+      
       RETURN
       END
