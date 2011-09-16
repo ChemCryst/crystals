@@ -12,7 +12,6 @@
 %  EVALUATE SGOK = FALSE                                                        
 %  EVALUATE SPGTRIC = FALSE                                                     
 %%                                                                              
-%   BLOCK                                                                       
 %      COPY '#SPAWN + "CRYSDIR:superflip.EXE" sflip.inflip'                     
 %%djwapr11      COPY '#TYPE sflip.sflog'                                                 
 %% check the Superflip log-file for convergence indications                     
@@ -182,7 +181,7 @@
 %%AvdL read in the spacegroup proposed by SUPERFLIP and create new SFLIP file to
 %%     be processed by EDMA                                                     
 %      COPY '#SCRIPT XFLIPINSPG'                                                
-%  IF ( ( SFLIPSYM .EQ. FALSE ) .AND. ( SPGTRIC .NE. TRUE ) ) THEN              
+%   IF ( ( SFLIPSYM .EQ. FALSE ) .AND. ( SPGTRIC .NE. TRUE ) ) THEN              
 {E Structure solved but no acceptable symmetry found. Twinning? Wrong lattice?  
 {E The superflip SCRIPTS will close down to enable you to reconsider            
 {E the basic data                                                               
@@ -196,12 +195,12 @@
 %  END IF                                                                       
 %  IF ( FILEEXISTS ( 'sflip.inflip' ) ) THEN                                    
 %      COPY '#CLOSE SCPD'                                                       
-%      EVALUATE T = FILEDELETE ( 'sflip.inflip' )                               
-%  END IF                                                                       
-%      TRANSFER '#FOREIGN SUPERFLIP IN= ' // C67 // ' ' TO CRYSTALS             
-%      COPY 'END'                                                               
 %      COPY '#SPAWN + "CRYSDIR:edma.EXE" sflip.inflip'                          
-%   END BLOCK                                                                   
+%  ELSE
+{E File sflip.inflip does not exist.
+ Start SUPERFLIP again
+%    FINISH
+%  END IF                                                                       
 %%  clear out merged reflection list                                            
 %%                                                                              
 %    if ( exists 7 .gt. 0 ) then                                                
