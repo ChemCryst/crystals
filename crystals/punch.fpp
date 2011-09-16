@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.70  2011/09/16 10:57:38  rich
+C Punching of list 4.
+C
 C Revision 1.69  2011/09/15 16:06:18  rich
 C Punch for list 13.
 C
@@ -2472,4 +2475,80 @@ C
       WRITE(NCPU,'(A)') 'END'
       RETURN
       END
-        
+
+CODE FOR XPCH23
+      SUBROUTINE XPCH23
+
+      INCLUDE 'ISTORE.INC'
+C PUNCH LIST 23 IN CRYSTALS FORMAT
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST23.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'QSTORE.INC'
+C      
+      CHARACTER*15 CINSTR,CDIR,CPARAM,CVALUE,CDEF,CVAL2
+      CHARACTER*1 CNY(2)
+	DATA CNY /'N','Y'/
+      
+      IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL23
+      IF ( IERFLG .LT. 0 ) THEN
+       WRITE(CMON,'(A)')'LIST 23 not available for punching'
+       CALL XPRVDU(NCVDU,1,0)
+       RETURN
+      ENDIF
+
+      WRITE(NCPU,'(A)') '#LIST 23'
+
+
+100   FORMAT('MODIFY ANOM=',A1,' EXTI=',A1,' LAYER=',A1,' BATCH=',A1,/,
+     1       'CONT  PARTI=',A1,' UPDA=',A1,' ENANT=',A1)
+
+      WRITE(NCPU,100) (CNY(ISTORE(L23M+I)+2),I=0,6)
+      
+101   FORMAT('MINIMI NSING=',I5,' F-SQ=',A1,' RESTR=',A1,' REFLEC=',A1)
+
+      WRITE(NCPU,101) ISTORE(L23MN),(CNY(ISTORE(L23MN+I)+2),I=1,3)
+
+102   FORMAT('ALLCYCLES U[MIN]=',F18.8,/,
+     1       'CONT       MIN-R=',F10.6,'       MAX-R=',F10.3,/
+     1       'CONT      MIN-WR=',F10.6,'      MAX-WR=',F10.3,/
+     1       'CONT   MIN-SUMSQ=',F10.6,'   MAX-SUMSQ=',F10.3,/
+     1       'CONT MIN-MINFUNC=',F10.6,' MAX-MINFUNC=',F20.3)
+      
+      WRITE(NCPU,102) STORE(L23AC+8),(STORE(L23AC+I),I=0,7)
+
+103   FORMAT('INTERCYCLE  MIN-DR=',F10.6,'       MAX-DR=',F10.3,/
+     1       'CONT       MIN-DWR=',F10.6,'      MAX-DWR=',F10.3,/
+     1       'CONT    MIN-DSUMSQ=',F10.6,'   MAX-DSUMSQ=',F10.3,/
+     1       'CONT  MIN-DMINFUNC=',F10.6,' MAX-DMINFUNC=',F20.3)
+      
+      WRITE(NCPU,103) (STORE(L23IC+I),I=0,7)
+
+104   FORMAT('REFINE  SPEC=',A,' UPDATE=',A,' TOL=',F10.5)
+      
+C Get special option
+      IPARAM = 1
+      IDIR   = 5
+      IVAL   = ISTORE(L23SP+IPARAM-1)
+      IZZZ   = KGVAL(CINSTR, CDIR, CPARAM, CVALUE, CDEF,
+     1                     23+3, IDIR, IPARAM, IVAL, JVAL, VAL, JTYPE)
+      CALL XCTRIM(CVALUE,LVALUE)
+      IPARAM = 2
+      IDIR   = 5
+      IVAL   = ISTORE(L23SP+IPARAM-1)
+      IZZZ   = KGVAL(CINSTR, CDIR, CPARAM, CVAL2, CDEF,
+     1                     23+3, IDIR, IPARAM, IVAL, JVAL, VAL, JTYPE)
+      CALL XCTRIM(CVAL2,LVAL2)
+
+      WRITE(NCPU,104) CVALUE(1:LVALUE), CVAL2(1:LVAL2), STORE(L23SP+5)
+
+      WRITE(NCPU,'(A)') 'END'
+
+      RETURN
+      END
+	  
+      
