@@ -1,0 +1,39 @@
+%SCRIPT XSIR11IN                                                                
+%    VARIABLE CHARACTER CTEXT                                                   
+%    COPY '#OPEN SCPDATA sir11.cry'                                             
+%    copy '#SCRIPT ZSHELXIN'  
+%    COPY '#CLOSE SCPDATA'                                                                        
+%% Empty input buffer                                                           
+%  GET NOPROMPT NOSTORE TEXT ' ' ' '                                            
+%%                                                                              
+%% SIR02 produces an old format LIST 5                                          
+Reformatting atom list                                                          
+%  COPY '#EDIT'                                                                 
+%  COPY 'REFORMAT ALL'                                                          
+%  COPY 'CHANGE FIRST(flag) UNTIL LAST 1.0'                                     
+%  COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0'                                      
+%  COPY 'INSERT RESIDUE'                                                        
+%  COPY 'END'                                                                   
+%  copy '#clear 12'                                                             
+%  copy 'end'                                                                   
+%%                                                                              
+%      BLOCK                                                                    
+%%  CENTRE STRUCTURE IN CELL                                                    
+%       COPY '#SCRIPT XCENTRE'                                                  
+%       COPY '#SCRIPT XRETYPE'                                                  
+%       COPY '#SCRIPT XRENUMB'                                                  
+%      END BLOCK                                                                
+%%                                                                              
+%%                                                                              
+%% SET Solution type                                                            
+%%                                                                              
+%      COPY '#GENERALEDIT 30'                                                   
+%      COPY 'LOCATE RECORDTYPE=106'                                             
+%      COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=8'                           
+%      COPY 'WRITE OVERWRITE=OVERWRITE'                                         
+%      COPY 'END'                                                               
+%%                                                                              
+%% refresh lists                                                                
+%      COPY '#SCRIPT FRESH'                                                     
+%      COPY '#SCRIPT XSCALE'                                                    
+%END SCRIPT                                                                     
