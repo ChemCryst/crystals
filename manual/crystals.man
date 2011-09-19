@@ -12385,6 +12385,26 @@ WEIGHT -1 ELEMENT(2)
 END
 #
 
+#PFor a twin with more that 2 components (for example, twinning by some rotation/reflection
+plus enantiomeric (Flack) twinning), an alternative LIST 12 construct should be used.
+#J
+#LIST     12                                                                    
+BLOCK SCALE X'S, U'S 
+SUMFIX ELEMENT SCALES 
+END
+#
+#PThe Flack parameter is just a short-cut to twinning by inversion. If you have additional twinning, then you have to do it the hard way by including all the twin laws in LIST 25, setting the appropriate ELEMENT flags in LIST 6, and appropriate instructions in LIST 12
+#P
+If for example the macroscopic twin law is a reflection in P41, eg (0 1 0,  1 0 0, 0 0 1), then LIST 25 would be
+#J
+1 0 0  0 1 0  0 0 1  (the unit operator)
+1 0 0  0 1 0  0 0 -1 (inversion)
+0 1 0  1 0 0  0 0 1  (reflection)
+0 1 0  1 0 0  0 0 -1 (inversion and reflection)
+#
+#P
+and every reflection would, have the ELEMENT key 1234.
+
 #ITwin List 16#
 
 The sum of the element scale factors can be restrained to unity in LIST
