@@ -213,7 +213,7 @@ c      IULN6 = KTYP06(ITYP06)
 C
 C-     LINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
 C-                5:SIR88, 6:SIR92, 7:SIR97, 8:PLATON 9:CSD 10:MOL2
-C                 11:SUPERFLIP         12:SIR02
+C                 11:SUPERFLIP         12:SIR02    13:SIR11
       CALL XLNK (ISTORE(ICOMBF), ITYPE, IMETH, ityp06)
 C
 C
@@ -240,7 +240,7 @@ C      PREPARE DATA FOR FOREIGN PROGRAMS
 C      ILINK  SELECTS THE SORT OF OUTPUT TO PRODUCE
 C-     ILINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
 C-                 5:SIR88,  6:SIR92,   7:SIR97,    8:PLATON,  9:CSD 10:MOL2 
-C                 11:SUPERFLIP         12:SIR02
+C                 11:SUPERFLIP         12:SIR02    13:SIR11
 C      IEFORT SELECTS POWER SETTING OF FOREIGN CALL
 C           FOR SHELXS86     IEFORT = 1, NORMAL
 C                                     2, DIFFICULT
@@ -262,9 +262,9 @@ C           FOR CSD          IEFORT = 1, normal - 2d structure
 C                                     2, special - just cell search
 c      ITYP06                6 OR 7
 C
-Cavdldec06 - now eleven links (NLINK=11)
-CDJWJAN08     ADD SIR02
-      PARAMETER (NLINK=12, NLIST=8)
+Cavdldec06 - now THIRTEEN links (NLINK=13)
+C     ADD SIR02, SIR11
+      PARAMETER (NLINK=13, NLIST=8)
       PARAMETER ( NWORK = 1000 )
 C      IMETHD SELECTS SOME SORT OF ALTERNATIVE METHOD FOR THE
 C      FOREIGN CALL.
@@ -293,8 +293,8 @@ cavdl dec06
       character *32 CLINE
       CHARACTER LOCASE*(200)
       REAL*8 XCEN,YCEN,ZCEN, ACELL(6)
-      DIMENSION   temp(10), itemp(10),cbuff1(10)
-      equivalence (temp(1), itemp(1))
+      DIMENSION   TEMP(10), ITEMP(10),CBUFF1(10)
+      EQUIVALENCE (TEMP(1), ITEMP(1))
 C
       REAL MAT(3)
 C----- FOR CSD & MOL2
@@ -337,7 +337,7 @@ C
 C
 C- ILINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
 C-                 5:SIR88,  6:SIR92,   7:SIR97,    8:PLATON,  9:CSD 10:MOL2
-C                 11:SUPERFLIP         12:SIR02
+C                 11:SUPERFLIP         12:SIR02    13:SIR11
 C- POINTER TO LIST
       DATA LISTS /1, 2, 5, 0, 0,  0,  0,  0,
      2            1, 2, 5, 0, 0,  0,  0,  0,
@@ -350,7 +350,8 @@ C- POINTER TO LIST
      9            1, 3, 5,29,41,  0,  0,  0,
      1            1, 2, 3, 5, 0, 29, 40, 41,
      2            1, 2, 3,30, 6, 13, 29, 31,
-     7            1, 2, 3, 0, 6, 13, 29,  0/
+     7            1, 2, 3, 0, 6, 13, 29,  0,
+     8            1, 2, 3, 0, 6, 13, 29,  0/
 C
 #if defined (_HOL_)
       DATA KHYD,KDET,CBLANK /4HH   ,4HD   ,' '/
@@ -456,12 +457,13 @@ C
 C
 C            SNOOPI, CAMERON, SHELXS86,
 C            MULTAN, SIR88,   SIR92, SIR97
-C            PLATON,  CSD,   MOL2 , SUPERFLIP, SIR02
+C            PLATON,  CSD,   MOL2 , SUPERFLIP, SIR02, SIR11
 CAVDLdec06 added superflip
 #endif
       GOTO ( 1600,   1700,    1800,
      1       2000,   1900,    1900,   1900,   
-     2       1860,   1870,    1880,   1890, 1900), ILINK
+     2       1860,   1870,    1880,   1890, 
+     3       1900,   1900,    9900), ILINK
 C
 1600  CONTINUE
 C
@@ -1561,18 +1563,21 @@ C----- OUTPUT A TITLE, FIRST 20 WORDS ONLY
 C
 C
       ELSE IF 
-     1 ((ILINK .EQ. 6) .OR. (ILINK .EQ. 7) .OR. (ILINK .EQ. 12)) THEN
+     1 ((ILINK .EQ. 6) .OR. (ILINK .EQ. 7) .OR. (ILINK .EQ. 12)
+     2  .OR. (ILINK .EQ. 13)) THEN
 C       SIR92, SIR97, SIR02
 C
 C----- SET UP THE FILE SPECIFICATIONS
         WRITE(NCFPU1, '(''%Window '')')
         if (ilink .eq. 12) then
-          WRITE(NCFPU1, '(''%structure  sir02 '')')
+          WRITE(NCFPU1, '(''%structure  sir02 ''/''%init'', / )')
+        else if (ilink .eq. 13) then
+          WRITE(NCFPU1, '(''%structure  sir11 '')')
         else
-          WRITE(NCFPU1, '(''%structure  sir9X '')')
+          WRITE(NCFPU1, '(''%structure  sir9X ''''%init'', / )')
         endif
 C----- OUTPUT A TITLE, FIRST 20 WORDS ONLY
-        WRITE(NCFPU1, '(''%init'', /, ''%job '',20A4)')
+        WRITE(NCFPU1, '(''%job '',20A4)')
      1 (KTITL(I),I=1,20)
 cdjw1999
         WRITE(NCFPU1, '(''%data '',/,8X,''cell '', 3F7.3, 3F8.3)')
@@ -1580,10 +1585,47 @@ cdjw1999
        WRITE(NCFPU1, '(8X,''space '', A )') CSPACE(1:ISP)
        WRITE ( NCFPU1 , '(8X,''content '', A)' ) CL29(1:I29)
 CDJWJAN08
-      IF (ILINK .EQ. 12) WRITE(NCFPU1,'(8X,''fobs'')')
-      WRITE(NCFPU1,1945)
-1945  FORMAT( 8X,'reflection follow',/,
-     1 8X, 'format (3i4, f10.3, f7.2)')
+      IF ((ILINK .EQ. 12).or.(ILINK .EQ. 13))
+     1    WRITE(NCFPU1,'(8X,''fobs'')')
+      if (ilink .NE. 13) WRITE(NCFPU1,1945)
+1945  FORMAT( 8X,'reflection follow')
+      write(ncfpu1,19400)
+19400 format( 8X, 'format (3i4, f10.3, f7.2)')
+C
+C
+       CARROW = '>'
+       IF (ILINK .EQ. 6) THEN
+         IF (IEFORT .EQ. 1) THEN
+           WRITE(NCFPU1,1941) CARROW,CARROW,CARROW,CARROW,
+     1     CARROW,CARROW,CARROW
+         ELSE IF (IEFORT .EQ. 2) then
+           WRITE(NCFPU1, 1941) ' ', ' ',' ',
+     1     ' ',' ',' ',' '
+         ELSE IF (IEFORT .EQ. 3) THEN
+           WRITE(NCFPU1, 1944)
+         ELSE IF (IEFORT .EQ. 5) THEN
+           WRITE(NCFPU1, 1942) ' '
+         ELSE IF (IEFORT .EQ. 6) THEN
+           WRITE(NCFPU1, 1943) ' '
+         ENDIF
+       ELSE IF (ILINK .EQ. 7) THEN
+         WRITE(NCFPU1, 1941) ' ', CARROW,' ',
+     1   ' ',' ',carrow,' '
+         write(ncfpu1,'(''%menu''/''  crystals sir97.cry'')')
+       ELSE IF (ILINK .EQ. 12) THEN
+         WRITE(NCFPU1, 1941) ' ', CARROW,CARROW,
+     1   ' ',' ',carrow,' '
+         write(ncfpu1,'(''%menu''/''  crystals sir02.cry'')')
+
+       ELSE IF (ILINK .EQ. 13) THEN
+         WRITE(NCFPU1, 19411)
+19411 format('    reflections sir11.hkl'/'>   rhomax 0.33'/
+     1 '>   bfac 4.'/ '> % phase'/'>   vld')
+         write(ncfpu1,'(''>  crystals sir11.cry'')')
+       ENDIF
+      WRITE(NCFPU1, '(''%continue'')' )
+C
+C
 1941  FORMAT('>  rhomax 0.33'/
      1 A,'%normal'/
      2 A,'  pseudo'/
@@ -1622,33 +1664,6 @@ CDJWJAN08
      8 '%fourier'/
      9 'fragment frag.dat')
 C
-C
-       CARROW = '>'
-       IF (ILINK .EQ. 6) THEN
-         IF (IEFORT .EQ. 1) THEN
-           WRITE(NCFPU1,1941) CARROW,CARROW,CARROW,CARROW,
-     1     CARROW,CARROW,CARROW
-         ELSE IF (IEFORT .EQ. 2) then
-           WRITE(NCFPU1, 1941) ' ', ' ',' ',
-     1     ' ',' ',' ',' '
-         ELSE IF (IEFORT .EQ. 3) THEN
-           WRITE(NCFPU1, 1944)
-         ELSE IF (IEFORT .EQ. 5) THEN
-           WRITE(NCFPU1, 1942) ' '
-         ELSE IF (IEFORT .EQ. 6) THEN
-           WRITE(NCFPU1, 1943) ' '
-         ENDIF
-       ELSE IF (ILINK .EQ. 7) THEN
-         WRITE(NCFPU1, 1941) ' ', CARROW,' ',
-     1   ' ',' ',carrow,' '
-         write(ncfpu1,'(''%menu''/''  crystals sir97.cry'')')
-       ELSE IF (ILINK .EQ. 12) THEN
-         WRITE(NCFPU1, 1941) ' ', CARROW,CARROW,
-     1   ' ',' ',carrow,' '
-         write(ncfpu1,'(''%menu''/''  crystals sir02.cry'')')
-       ENDIF
-      WRITE(NCFPU1, '(''%continue'')' )
-C
       IF ((ILINK .EQ. 6) .AND. (IEFORT .EQ. 3 )) THEN
 C----- OUTPUT ATOMS FOR SUPERFLIP RECYCLING
       IF (KHUNTR (5,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL05
@@ -1660,6 +1675,8 @@ C----- OUTPUT ATOMS FOR SUPERFLIP RECYCLING
 1949  CONTINUE
       ENDIF
 C
+      NHKLI = NCFPU1
+      IF (ILINK.EQ.13) NHKLI = NCFPU2
 c
       SCALE = 1.0
 C----- LOOP OVER DATA
@@ -1689,11 +1706,11 @@ C----- LOOP OVER DATA
            WRITE(NCFPU1,'(3I4, F10.3, F7.2)') I, J, K, FS, S
          END IF
       ELSE
-         WRITE(NCFPU1,'(3I4, F10.3, F7.2)') I, J, K, FS, S
+         WRITE(NHKLI,'(3I4, F10.3, F7.2)') I, J, K, FS, S
       ENDIF
       GOTO 1950
 1960  CONTINUE
-        WRITE(NCFPU1,1961)
+        IF (ILINK .NE. 13)   WRITE(NCFPU1,1961)
 1961    FORMAT('   0   0   0   -.00001  0.0')
       IF (ILINK .EQ. 6) THEN
       write(ncfpu1,'(''%export''/8X,''crystals sir92.cry''/''%end'')')
@@ -1714,7 +1731,7 @@ C----- TIDY UP
 C
 C     SNOOPI, CAMERON, SHELXS86, MULTAN, SIRxx
       GOTO (8010,8020,8030,9000,8030,8030,8030,8040,8030,8030,8030,
-     1 8030),ILINK
+     1 8030,8030),ILINK
       GOTO 9100
 C
 8010  CONTINUE
@@ -1825,10 +1842,10 @@ CODE FOR KLNKIO
       FUNCTION KLNKIO (ILINK)
 C
 C----- RETURNS NEGATIVE IF FAILURE
-C      ILINK - THPE OF FOREIGN PROGRAM
+C      ILINK - TYPE OF FOREIGN PROGRAM
       CHARACTER *256 CPATH
 CDJWJAN08
-      PARAMETER (NFILE = 15)
+      PARAMETER (NFILE = 17)
       CHARACTER *16 CFILE(NFILE)
 C
       DIMENSION JFRN(4,2),  LFILE(NFILE)
@@ -1854,10 +1871,12 @@ C
      2  'crystals.con',
      3  'crystals.mol2' ,
      4  'sflip.inflip',
-     5  'sir02.sir'/
+     5  'sir02.sir',
+     6  'sir11.sir' ,
+     7  'sir11.hkl' /
 C
       DATA LFILE / 10,  9,  10,  11, 11, 11, 9, 8, 9, 10, 10, 12, 13 ,
-     1             12,  9  /
+     1             12,  9,  9,   9  /
 C
 #if defined (_HOL_)
       DATA JFRN /1HF , 1HR , 1HN , 1H1 ,
@@ -1873,13 +1892,13 @@ C
       KLNKIO = -1
       LPATH  = KPATH( CPATH)
 C     SNOOPI, CAMERON, SHELXS86, MULTAN, SIR88, SIR92, SIR97, PLATON, 
-c     CSD, MOL2, superflip, SIR02
+c     CSD, MOL2, superflip, SIR02, SIR11
 C
 C----- OPEN THE FIRST FILE
       JFILE = 1
 
       GOTO ( 110, 120, 130, 140, 150, 160, 170, 180, 190, 195 , 196,
-     & 200, 9900), ILINK
+     & 200, 210, 9900), ILINK
 
 C
 110   CONTINUE
@@ -1938,6 +1957,12 @@ c       superflip
 200   CONTINUE
 C sir02 djwJAN08
       IFILE=15
+      GOTO 1000
+210   CONTINUE
+C sir11 djwsep11
+      IFILE=16
+c      and 17
+      KLOOP = 2
       GOTO 1000
 C
 C
