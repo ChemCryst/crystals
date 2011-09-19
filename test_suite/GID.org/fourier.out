@@ -1999,7 +1999,7 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        1     Address    54139     Length     299     Created on      
+ Print list type    10     serial number        1     Address    54127     Length     299     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -3748,7 +3748,7 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        2     Address    54438     Length     479     Created on      
+ Print list type    10     serial number        2     Address    54426     Length     479     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -5527,7 +5527,7 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        3     Address    54917     Length     479     Created on      
+ Print list type    10     serial number        3     Address    54905     Length     479     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -7306,7 +7306,7 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        4     Address    55396     Length     479     Created on      
+ Print list type    10     serial number        4     Address    55384     Length     479     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -9115,7 +9115,7 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        5     Address    55875     Length     731     Created on      
+ Print list type    10     serial number        5     Address    55863     Length     731     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -10351,7 +10351,7 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        6     Address    56606     Length     335     Created on      
+ Print list type    10     serial number        6     Address    56594     Length     335     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -11526,7 +11526,7 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        7     Address    56941     Length     335     Created on      
+ Print list type    10     serial number        7     Address    56929     Length     335     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -12697,7 +12697,7 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        8     Address    57276     Length     335     Created on      
+ Print list type    10     serial number        8     Address    57264     Length     335     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -13876,7 +13876,7 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        9     Address    57611     Length     335     Created on      
+ Print list type    10     serial number        9     Address    57599     Length     335     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -15633,7 +15633,7 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       10     Address    57946     Length     299     Created on      
+ Print list type    10     serial number       10     Address    57934     Length     299     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -17418,7 +17418,7 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       11     Address    58245     Length     731     Created on      
+ Print list type    10     serial number       11     Address    58233     Length     731     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -19272,7 +19272,7 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       12     Address    58976     Length     731     Created on      
+ Print list type    10     serial number       12     Address    58964     Length     731     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -21124,7 +21124,7 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       13     Address    59707     Length     731     Created on      
+ Print list type    10     serial number       13     Address    59695     Length     731     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -22975,7 +22975,7 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       14     Address    60438     Length     731     Created on      
+ Print list type    10     serial number       14     Address    60426     Length     731     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -24211,7 +24211,7 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       15     Address    61169     Length     335     Created on      
+ Print list type    10     serial number       15     Address    61157     Length     335     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -25386,7 +25386,7 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       16     Address    61504     Length     335     Created on      
+ Print list type    10     serial number       16     Address    61492     Length     335     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -26557,7 +26557,7 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       17     Address    61839     Length     335     Created on      
+ Print list type    10     serial number       17     Address    61827     Length     335     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -27736,7 +27736,7 @@ SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       18     Address    62174     Length     335     Created on      
+ Print list type    10     serial number       18     Address    62162     Length     335     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -31640,7 +31640,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       19     Address    73900     Length     299     Created on      
+ Print list type    10     serial number       19     Address    73888     Length     299     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -33394,7 +33394,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       20     Address    74199     Length     479     Created on      
+ Print list type    10     serial number       20     Address    74187     Length     479     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -35178,7 +35178,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       21     Address    74678     Length     479     Created on      
+ Print list type    10     serial number       21     Address    74666     Length     479     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -36962,7 +36962,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       22     Address    75157     Length     479     Created on      
+ Print list type    10     serial number       22     Address    75145     Length     479     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -38767,7 +38767,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       23     Address    75636     Length     731     Created on      
+ Print list type    10     serial number       23     Address    75624     Length     731     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -39995,7 +39995,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       24     Address    76367     Length     101     Created on      
+ Print list type    10     serial number       24     Address    76355     Length     101     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -41118,7 +41118,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       25     Address    76468     Length     101     Created on      
+ Print list type    10     serial number       25     Address    76456     Length     101     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -42264,7 +42264,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       26     Address    76569     Length     335     Created on      
+ Print list type    10     serial number       26     Address    76557     Length     335     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              

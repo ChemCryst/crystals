@@ -3473,7 +3473,7 @@ Mean C-C su =   0.0493
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        1     Address   104242     Length     450     Created on      
+ Print list type    22     serial number        1     Address   104230     Length     450     Created on      
 
              35 parameter(s) in    1 block(s) - as follows:
 
@@ -3658,7 +3658,7 @@ Mean C-C su =   0.0493
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       13     Address   106751     Length      90     Created on      
+ Print list type    24     serial number       13     Address   106739     Length      90     Created on      
 
 
  Record  101    LGRP    2  NGRP     35   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -6766,7 +6766,7 @@ Mean C-C su =   0.0481
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        2     Address   104242     Length     450     Created on      
+ Print list type    22     serial number        2     Address   104230     Length     450     Created on      
 
              35 parameter(s) in    1 block(s) - as follows:
 
@@ -6951,7 +6951,7 @@ Mean C-C su =   0.0481
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       25     Address   221160     Length      90     Created on      
+ Print list type    24     serial number       25     Address   221148     Length      90     Created on      
 
 
  Record  101    LGRP    2  NGRP     35   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -10703,7 +10703,7 @@ Mean C-C su =   0.0477
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        3     Address   104242     Length     450     Created on      
+ Print list type    22     serial number        3     Address   104230     Length     450     Created on      
 
              35 parameter(s) in    1 block(s) - as follows:
 
@@ -10888,7 +10888,7 @@ Mean C-C su =   0.0477
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       38     Address   331508     Length      90     Created on      
+ Print list type    24     serial number       38     Address   331496     Length      90     Created on      
 
 
  Record  101    LGRP    2  NGRP     35   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -14531,7 +14531,7 @@ Mean C-C su =   0.0481
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        4     Address   104242     Length     450     Created on      
+ Print list type    22     serial number        4     Address   104230     Length     450     Created on      
 
              35 parameter(s) in    1 block(s) - as follows:
 
@@ -14716,7 +14716,7 @@ Mean C-C su =   0.0481
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       51     Address   443073     Length      90     Created on      
+ Print list type    24     serial number       51     Address   443061     Length      90     Created on      
 
 
  Record  101    LGRP    2  NGRP     35   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
