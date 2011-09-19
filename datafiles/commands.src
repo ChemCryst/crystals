@@ -1602,9 +1602,10 @@ Various bits and pieces
     .ANALYSE-NREF       0    0    1    0    1 0.
     .ANALYSE-R          0    0    1    0    1 0.
     .ANALYSE-RW         0    0    1    0    1 0.
-    .SOLUTION           0    0    1   10    0 UNKNOWN
+    .SOLUTION           0    0    1   11    0 UNKNOWN
      UNKNOWN        SHELXS         SIR88          SIR92          PATTERSON
      SIR97          DIRDIF         SUPERFLIP      SIR02          SIR04
+     SIR11
    7.COLOUR             8    1    0    0    8    1  107   25   30
          1    1    0    0    1    1    0    0    0    0
 Crystal colour
