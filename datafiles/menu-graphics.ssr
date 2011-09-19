@@ -13,7 +13,7 @@
 ^^WI             '#USE CAMERON.L5' DISABLEIF='IN'
 ^^WI   ITEM CIN5 'Import last Cameron input'
 ^^WI             '#USE CAMERON.L5I' DISABLEIF='IN'
-^^WI   ITEM CHIME 'View CHIME file'  '#SPAWN chime.pdb'
+^^WI    ITEM HUS  'Mapviewer' '#SCRIPT HUSAK' DISABLEIF='IN'
 ^^WI   SPLIT
 ^^WI   ITEM XH      'Graphics menu &help'
 ^^WI        '$ "crysdir:manual/tools-menus.html"'
