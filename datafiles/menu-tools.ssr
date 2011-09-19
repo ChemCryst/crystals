@@ -38,6 +38,12 @@
 --GILLIN^^WI   ITEM SXTO 's&x2cry' '$% "CRYSDIR:sxtocry.exe"' 
 ++GILLIN^^WI   ITEM SXTO 's&x2cry' '$% CRYSDIR:sxtocry' 
 ^^WI            DISABLEIF='IN'
+^^WI    MENU _SIR02 'Sir 0&2'                                                   
+^^WI     ITEM _SIR '&Create files' '#SCRIPT XSIR02' ENABLEIF='L1 L2 L6'         
+^^WI                                        DISABLEIF='IN'                      
+^^WI     ITEM _SIR '&Run SIR02  ' '#SCRIPT runsir02' DISABLEIF='IN'             
+^^WI     ITEM _SIR '&Input results' '#SCRIPT XSIR02IN' DISABLEIF='IN'           
+^^WI    ENDMENU                                                                 
 ^^WI   SPLIT                                                                    
 ^^WI    MENU PR '&Primer'                                                       
 ^^WI     ITEM P1 '&Getting Started'                                             

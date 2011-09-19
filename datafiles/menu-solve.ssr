@@ -20,11 +20,12 @@
 ^^WI     ITEM _SIR '&Run SIR97  ' '#SCRIPT runsir97' DISABLEIF='IN'             
 ^^WI     ITEM _SIR '&Input results' '#SCRIPT XSIR97IN' DISABLEIF='IN'           
 ^^WI    ENDMENU                                                                 
-^^WI    MENU _SIR02 'Sir 0&2'                                                   
-^^WI     ITEM _SIR '&Create files' '#SCRIPT XSIR02' ENABLEIF='L1 L2 L6'         
+
+^^WI    MENU _SIR02 'Sir 1&1'                                                   
+^^WI     ITEM _SIR '&Create files' '#SCRIPT XSIR11' ENABLEIF='L1 L2 L6'         
 ^^WI                                        DISABLEIF='IN'                      
-^^WI     ITEM _SIR '&Run SIR02  ' '#SCRIPT runsir02' DISABLEIF='IN'             
-^^WI     ITEM _SIR '&Input results' '#SCRIPT XSIR02IN' DISABLEIF='IN'           
+^^WI     ITEM _SIR '&Run SIR11  ' '#SCRIPT RUNSIR11' DISABLEIF='IN'             
+^^WI     ITEM _SIR '&Input results' '#SCRIPT XSIR11IN' DISABLEIF='IN'           
 ^^WI    ENDMENU                                                                 
 
 ^^WI    SPLIT                                                                   
