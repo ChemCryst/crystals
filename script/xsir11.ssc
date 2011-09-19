@@ -1,0 +1,64 @@
+%SCRIPT XSIR02                                                                  
+% VARIABLE CHARACTER QLINE1 QLINE2 QTITLE BUTTOK                                
+%   IF EXISTS 6 .LT. 1 THEN                                                     
+            You do not have any reflections stored.                             
+            It is impossible to proceed without data.                           
+%       FINISH                                                                  
+%   END IF                                                                      
+%%                                                                              
+%% write a SIR11 data file                                                      
+%%                                                                              
+%   BLOCK                                                                       
+^^WI WINDOW SIR11 'Sir11 Preparation'                                           
+^^WI   MODAL COMMIT='BOK' CANCEL='BXX'                                          
+^^WI GRID GRIDLR NROWS=1 NCOLS=2                                                
+^^WI {                                                                          
+^^WI   @ 1,1 GRID GRIDL NROWS=4 NCOLS=3                                         
+^^WI   {                                                                        
+^^WI     @ 1,2 RADIOBUTTON RS '&Default Sir11 parameters'                       
+^^WI           STATE=ON                                                         
+^^WI     @ 2,2 CHECKBOX CED '&Edit Sir11 file'                                  
+^^WI           STATE=OFF                                                        
+^^WI     @ 4,2 STATIC T1
+^^WI     "Don't forget to EXPORT the results from the FILE menu"
+^^WI   }                                                                        
+^^WI   @ 1,2 GRID GRIDR NROWS=5 NCOLS=2                                         
+^^WI   {                                                                        
+^^WI     @ 2,1 BUTTON BOK '&Ok'                                                 
+^^WI     @ 4,1 BUTTON BXX '&Cancel'                                             
+^^WI   }                                                                        
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+%      VERIFY BOK BXX                                                           
+%      GET SILENT NOSTORE ABBREVIATED 'BOK=Process'                             
+%      IF VALUE .EQ. 2 THEN                                                     
+^^WI      DISPOSE SIR11                                                         
+^^CR                                                                            
+%         FINISH                                                                
+%      END IF                                                                   
+^^??   RS STATE                                                                 
+%      VERIFY ON OFF                                                            
+%      GET SILENT NOSTORE ABBREVIATED 'On=Simple job'                           
+%      IF ( VALUE .EQ. 1 ) THEN                                                 
+%          COPY '#FOREIGN SIR11 '                                               
+%          COPY 'END'                                                           
+%      END IF                                                                   
+^^??   CED STATE                                                                
+%      VERIFY ON OFF                                                            
+%      GET SILENT NOSTORE ABBREVIATED 'On=Edit first'                           
+^^WI   DISPOSE SIR02                                                            
+^^CR                                                                            
+%      IF ( VALUE .EQ. 1 ) THEN                                                 
+%           COPY '#SPAWN +notepad.exe sir11.sir'                                
+%      END IF                                                                   
+%      EVALUATE QLINE1 = 'A Sir11 job file has been created in the current'     
+%      EVALUATE QLINE2 = 'directory. Run Sir11 then input the results.'         
+%      EVALUATE QTITLE = 'Solve Si112'                                          
+%      EVALUATE BUTTOK = '&Ok'                                                  
+%      COPY '#SCRIPT XMESSAGE'                                                  
+%   END BLOCK                                                                   
+%END SCRIPT                                                                     
+                                                                                
+                                                                                
+                                                                                
