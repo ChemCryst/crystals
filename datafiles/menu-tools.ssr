@@ -31,7 +31,6 @@
 ^^WI   SPLIT                                                                    
 ^^WI   MENU OBSOLETE '&Obsolete'                                                
 ^^WI    ITEM CONY 'Co&ntour' '$"CRYSDIR:contour.exe"' DISABLEIF='IN'             
-^^WI    ITEM HUS  'Husak' '#SCRIPT HUSAK' DISABLEIF='IN'
 ^^WI    ITEM CSD2 'csd2cry' '$% "CRYSDIR:csd2cry.exe"' DISABLEIF='IN'              
 --GILLIN^^WI   ITEM REIN '&Re-index' '$% "CRYSDIR:reindex.exe"'
 ++GILLIN^^WI   ITEM REIN '&Re-index' '$% CRYSDIR:reindex' 
