@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.75  2011/09/19 09:27:46  rich
+C Punch of List 31.
+C
 C Revision 1.74  2011/09/19 09:02:31  rich
 C Punch of L29.
 C
@@ -2765,3 +2768,54 @@ C--LOAD LIST 31 FROM DISC (XFAL routine is specialised for DistAngl)
       RETURN
       END
 
+
+CODE FOR XPCH39
+      SUBROUTINE XPCH39
+
+      INCLUDE 'ISTORE.INC'
+C PUNCH LIST 39 IN CRYSTALS FORMAT
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'ICOM39.INC'
+      INCLUDE 'XLST39.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'QLST39.INC'
+      INCLUDE 'IDIM39.INC'
+      
+      IF (KHUNTR (39,0, IADDL,IADDR,IADDD, -1) .LT. 0) THEN
+            CALL XLDLST(39,ICOM39,IDIM39,-1)
+      END IF
+      IF ( IERFLG .LT. 0 ) THEN
+       WRITE(CMON,'(A)')'LIST 39 not available for punching'
+       CALL XPRVDU(NCVDU,1,0)
+       RETURN
+      ENDIF
+
+
+      WRITE(NCPU,'(A)') '#LIST 39'
+      WRITE(NCPU,100) (STORE(I),I=L39O,L39O+MD39O-1)
+      WRITE (NCPU,101)N39I, N39F
+
+100   FORMAT('OVERALL ',4(1X,F17.8),2(/,'CONT    ',4(1X,F17.8)))
+101   FORMAT('READ NINT=',I6,' NREAL=',I6)
+
+      DO I = L39I,L39I+(N39I-1)*MD39I,MD39I
+         WRITE(NCPU,102) (STORE(I+J),J=0,MD39I-1)
+      END DO
+      DO I = L39F,L39F+(N39F-1)*MD39F,MD39F
+         WRITE(NCPU,103) (STORE(I+J),J=0,MD39F-1)
+      END DO
+102   FORMAT('INT ',A4,1X,I7,5I12,/,'CONT ',11X,5I12)
+103   FORMAT('INT ',A4,1X,I7,5(F11.6,1X),/,'CONT ',11X,5(F11.6,1X))
+
+
+      WRITE(NCPU,'(A)') 'END'
+
+      RETURN
+      END
+      
+      

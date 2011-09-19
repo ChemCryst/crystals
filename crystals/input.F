@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.32  2011/09/19 09:27:46  rich
+C Punch of List 31.
+C
 C Revision 1.31  2011/09/19 09:02:31  rich
 C Punch of L29.
 C
@@ -395,6 +398,9 @@ c----- check for LIST 1 for Ndave
             return
       else if(lstno.eq.31) then   !check for LIST 31
             call XPCH31
+            return
+      else if(lstno.eq.39) then   !check for LIST 39
+            call XPCH39
             return
       endif
 c
