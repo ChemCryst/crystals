@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.73  2011/09/16 14:43:58  rich
+C Punching of list 28.
+C
 C Revision 1.72  2011/09/16 12:41:42  rich
 C Punching of List 25.
 C
@@ -2674,3 +2677,43 @@ C
       
       RETURN
       END
+
+      
+CODE FOR XPCH29
+      SUBROUTINE XPCH29
+
+      INCLUDE 'ISTORE.INC'
+C PUNCH LIST 29 IN CRYSTALS FORMAT
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST29.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'QSTORE.INC'
+ 
+      
+      IF (KHUNTR (29,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL29
+      IF ( IERFLG .LT. 0 ) THEN
+       WRITE(CMON,'(A)')'LIST 29 not available for punching'
+       CALL XPRVDU(NCVDU,1,0)
+       RETURN
+      ENDIF
+
+      WRITE(NCPU,'(A)') '#LIST 29'
+      WRITE(NCPU,100)N29
+      WRITE(NCPU,'(A)')'# covalent,vdw,ionic,number,muA,weight,colour'
+
+      DO I=L29,L29+(N29-1)*MD29,MD29  
+        WRITE(NCPU,101) (STORE(J),J=I,I+MD29-1)
+      END DO
+	  
+100   FORMAT('READ NELEM=',I3)
+101   FORMAT('ELEMENT ',A4,1X,F7.4,1X,F13.4,1X,F8.4,1X,3F9.3,1X,A4)
+
+      WRITE(NCPU,'(A)') 'END'
+
+      RETURN
+      END
+
