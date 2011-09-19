@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.99  2011/09/06 12:23:41  djw
+C Enable plots of weight ve 1/sigma
+C
 C Revision 1.98  2011/07/01 13:42:46  djw
 C Change the dot product module name from VPROD to DPROD
 C
@@ -1975,8 +1978,8 @@ C--SETUP A GRAPH HERE
       IF ( LEVEL .EQ. 6 ) THEN                 ! Weight vs Sigma
         WRITE(CMON,'(A,/,A,/,A)')
      1  '^^PL PLOTDATA _WTVSIG SCATTER ATTACH _VWTVSIG',
-     1  '^^PL XAXIS TITLE ''SQRT(weight)'' NSERIES=1 LENGTH=2000',
-     1  '^^PL YAXIS TITLE ''1/Sigma'' SERIES 1 TYPE SCATTER'
+     1  '^^PL YAXIS TITLE ''SQRT(weight)'' NSERIES=1 LENGTH=2000',
+     1  '^^PL XAXIS TITLE ''1/Sigma'' SERIES 1 TYPE SCATTER'
         CALL XPRVDU(NCVDU, 3,0)
       END IF
 C
@@ -2023,7 +2026,7 @@ C
       WBOT = 0.0
       SIGTOP = 0.0
       N6ACC = 0
-      FCMAX = 0
+      PLOTMAX = 0
 c----- totals for slope and intercept
         ss = 0.
         sx = 0.
@@ -2040,13 +2043,12 @@ c----- totals for slope and intercept
 cjun2010  FO = STORE(M6+itwin)
         FO = STORE(M6+3)
         FC = SCALE * STORE(M6+5)
-        FCMAX = MAX( FCMAX, FC )
 
         IF ( LEVEL .EQ. 4 ) THEN
+          PLOTMAX = MAX( PLOTMAX, FC )
           WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
      1    NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
           CALL XCRAS(HKLLAB, IHKLLEN)
-
           WRITE(CMON,'(3A,2F10.2)')
      1   '^^PL LABEL ''', HKLLAB(1:IHKLLEN), ''' DATA ', FC ,FO
           CALL XPRVDU(NCVDU, 1,0)
@@ -2095,12 +2097,13 @@ c         refinement on F
           else
             sig1 = 1/sigest
           endif 
+          PLOTMAX = MAX(PLOTMAX,WT)
           WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
      1    NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
           CALL XCRAS(HKLLAB, IHKLLEN)
           WRITE(CMON,'(3A,2F10.2)')
      1   '^^PL LABEL ''', HKLLAB(1:IHKLLEN), ''' DATA ', 
-     2    wt, sig1
+     2    sig1, wt
           CALL XPRVDU(NCVDU, 1,0)
         END IF
 
@@ -2121,7 +2124,6 @@ c         refinement on F
 cjun2010            FO = STORE(M6+itwin)
             FO = STORE(M6+3)
             FC = SCALE * STORE(M6+5)
-            FCMAX = MAX( FCMAX, FC )
             WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
      1      NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
             CALL XCRAS(HKLLAB, IHKLLEN)
@@ -2132,15 +2134,7 @@ c     1     '^^PL DATA ', FC ,FO
             CALL XPRVDU(NCVDU, 1,0)
           ENDIF
         END DO
-
-c Also add A SERIES FOR STRAIGHT LINE (y=x) for extinction spotting.
-        WRITE(CMON,'(A/A,2F10.2)') '^^PL ADDSERIES ''Fo=Fc'' TYPE LINE',
-     1  '^^PL DATA 0 0 DATA ', FCMAX, FCMAX
-        CALL XPRVDU(NCVDU,2,0)
-
       END IF
-
-
 C
 C
 C -- BEGIN OUTPUT
@@ -2215,6 +2209,7 @@ c
            syy = syy + str11(i*2-1)*str11(i*2-1)
            sxy = sxy + str11(i*2-1)*z
 c
+           PLOTMAX = MAX( PLOTMAX, Z )
            WRITE(HKLLAB, '(2(I4,A),I4)') MH, ',', MK, ',', ML
            CALL XCRAS(HKLLAB, IHKLLEN)
            WRITE(CMON,'(3A,2F11.3)')
@@ -2224,12 +2219,26 @@ c
 
       END IF
 
+      IF (( LEVEL .EQ. 4) .OR. (LEVEL .EQ. 6)) THEN
+c  add A SERIES FOR STRAIGHT LINE (y=x) for extinction spotting.
+        WRITE(CMON,'(A/A,2F10.2)')
+     1  '^^PL ADDSERIES ''Fo=Fc'' TYPE LINE',
+     2  '^^PL DATA 0 0 DATA ', PLOTMAX, PLOTMAX
+        CALL XPRVDU(NCVDU,2,0)
+      ELSE
+        WRITE(CMON,'(A/2(A,2F10.2))')
+     1  '^^PL ADDSERIES ''Fo=Fc'' TYPE LINE',
+     2  '^^PL DATA ', -PLOTMAX, -PLOTMAX,' DATA ', PLOTMAX, PLOTMAX
+        CALL XPRVDU(NCVDU,2,0)
+      ENDIF
+c
 C -- FINISH THE GRAPH DEFINITION
       IF ( ( LEVEL .EQ. 4 ).OR.( LEVEL .EQ. 5 )
      1 .OR.( LEVEL .EQ. 6 )) THEN
         WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
         CALL XPRVDU(NCVDU, 2,0)
       ENDIF
+C
       if (level .eq. 5) then
 c      find slope and intercept
 c      determinant
