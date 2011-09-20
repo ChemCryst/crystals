@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.27  2011/05/16 10:56:32  rich
+//   Added pane support to WX version. Added coloured bonds to model.
+//
 //   Revision 1.26  2011/05/11 15:23:09  rich
 //   Invert toolbar toggle query on Windows.
 //
@@ -298,7 +301,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 #endif
 
 #ifdef __BOTHWX__
-//  	LOGERR("Adding script dir icon");
+  	LOGERR("Adding script dir icon");
     struct stat buf;
       if ( stat(file.c_str(),&buf)==0 )
       {
@@ -320,7 +323,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 		}
 
 
-        wxBitmap mymap ( myimage, wxBITMAP_TYPE_BMP );
+        wxBitmap mymap ( myimage, -1 );
         if( mymap.Ok() )
         {
           noLuck = false;
