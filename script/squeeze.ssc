@@ -85,7 +85,8 @@
 %%
 %  TRANSFER '#SPAWN + "' // CFILE // '" -q  platon.res' TO CRYSTALS
 %%
-%  IF ( .not. FILEEXISTS ( 'platon.hkp' ) ) THEN                                    
+%  IF .not. ( FILEEXISTS ( 'platon.hkp' ) .OR. - 
+              FILEEXISTS ( 'platon-sr.hkl' ) ) THEN                                    
 {1,9  PLATON/SQUEEZE has not created a suitable output file.
 {1,9  There may not be any voids in your structure
 %    FINISH
@@ -108,6 +109,10 @@ Trying to delete old Squeeze files
 Deleted old Squeeze files
 %  END IF
 %  COPY '#SPAWN + "CRYSDIR:CONVPLAT.EXE"'
+%  IF .not. FILEEXISTS ( 'LIST6.ABC' ) THEN
+The CONVPLAT.exe process failed to write an output file.
+%    FINISH
+%  END IF
 %  COPY '#USE LIST6.ABC'
 %%
 Update LIST 23 to show the A & B parts are stored, and inhibit
