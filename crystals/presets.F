@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.63  2011/09/07 09:44:41  djw
+C Change format of #SET OPENMESSAGE text so that columns line up across actions
+C Add #SET CACHEMESSAGE (off/on) to inhibit caching information at termination
+C Remove disc extension messages
+C
 C Revision 1.62  2011/07/06 10:40:00  rich
 C Added HPART and NHPART atom selection keywords to the lexical scanner. They select hydrogen atoms in a specific PART, or non-hydrogen atoms (respectively).
 C
@@ -1459,7 +1464,7 @@ C
 C
       DATA IFIRST(1)/4HFIRS/,IFIRST(2)/4HLAST/,IFIRST(3)/4HPART/
      1     IFIRST(4)/4HRESI/,IFIRST(5)/4HTYPE/,
-     2     IFIRST(6)/4HPAR/,IFIRST(7)/4HNHPA/
+     2     IFIRST(6)/4HHPAR/,IFIRST(7)/4HNHPA/
 #else
       DATA KSCAL(1,1)/'SCAL'/,KSCAL(2,1)/'ES  '/
       DATA KSCAL(1,2)/'PARA'/,KSCAL(2,2)/'METE'/

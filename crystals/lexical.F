@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.33  2011/07/06 10:40:00  rich
+C Added HPART and NHPART atom selection keywords to the lexical scanner. They select hydrogen atoms in a specific PART, or non-hydrogen atoms (respectively).
+C
 C Revision 1.32  2011/03/21 13:57:21  rich
 C Update files to work with gfortran compiler.
 C
@@ -1370,8 +1373,13 @@ C
       INCLUDE 'XIOBUF.INC'
 C
       INCLUDE 'QSTORE.INC'
+#if defined (_HOL_)
+      DATA KHYD /4HH   /
+      DATA KDET /4HD   /
+#else
       DATA KHYD /'H   '/
       DATA KDET /'D   '/
+#endif
 C
       IATOMF=-1
 C--CHECK IF ANY ATOMS HAVE BEEN GIVEN
