@@ -4,7 +4,11 @@
       in2 = 11
       iout1 = 12
       open(in1,file='PLATON6',status='old')
-      open(in2,file='platon.hkp',status='old')
+      open(in2,file='platon.hkp',status='old',err=50)
+      GOTO 60
+50    CONTINUE
+      open(in2,file='platon-sr.hkl',status='old',err=250)
+60    CONTINUE
       open(iout1,file='LIST6.ABC',status='unknown')
       do 1 i=1,10
       read(in1,'(a)') cline
@@ -56,5 +60,14 @@ c
       write(6,'(A)')
      1 'Index mismatch - processing aborted. Press return to finish.'
       read(5,'(a)') cline
+      stop
+250   continue
+      rewind(iout1)
+      write(iout1,'(A)') 'Could not open platon.hkp or platon-sr.hkl'
+      write(6,'(A)')
+     1 'Could not open platon.hkp or platon-sr.hkl. Press return.'
+      read(5,'(a)') cline
+
       end
+
 
