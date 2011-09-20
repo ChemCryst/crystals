@@ -2671,10 +2671,10 @@ cdjw         icol = 4 !dark red
          RES= SETCOLOR ( icol )
          CALL MOVETO(ix,iy,xy)
          CALL OUTGTEXT(messaggio(1:iiz))
-#endif
 c restore dark red
          icol = 4 !dark red
          res= setcolor ( icol )
+#endif
       elseif (iz.eq.2 .or. iz.eq.4 .or. iz.eq.9) then
          call ClearMessage
       end if
