@@ -92,8 +92,10 @@ CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 #endif
 #ifdef __BOTHWX__
 
-  CxModel *theModel = new CxModel((wxWindow*)guiParent,-1, wxPoint(0,0), wxSize(10,10), NULL /*wxSUNKEN_BORDER*/);
+  int args[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16, 0};
+  CxModel *theModel = new CxModel((wxWindow*)guiParent, args);
   theModel->ptr_to_crObject = container;
+  theModel->Show();
   theModel->Setup();
 
 #endif
@@ -103,8 +105,8 @@ CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 
 #ifdef __BOTHWX__
 
-CxModel::CxModel(wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size,
-                 long style, const wxString& name): wxGLCanvas(parent, id, pos, size, style, name)
+//CxModel::CxModel(wxWindow *parent, wxWindowID id, int* args, long style, const wxString& name): wxGLCanvas(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, style|wxFULL_REPAINT_ON_RESIZE)
+CxModel::CxModel(wxWindow *parent, int * args): wxGLCanvas(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, wxT("GLCanvas"), args)
 {
 
     m_DoNotPaint = false;
@@ -231,8 +233,8 @@ CXONCHAR(CxModel)
 void CxModel::OnPaint()
 {
     CPaintDC dc(this); // device context for painting
-
     setCurrentGL();
+
 #endif
 
 #ifdef __BOTHWX__
@@ -240,8 +242,12 @@ void CxModel::OnPaint()
 void CxModel::OnPaint(wxPaintEvent &event)
 {
 
-	wxPaintDC(this);
+    if ( ! IsShown() ) return;
+    SetCurrent();
+    wxPaintDC(this);
+
     if ( m_NotSetupYet ) Setup();
+
     if ( m_NotSetupYet ) return;
 
     SetCurrent();
@@ -251,7 +257,6 @@ void CxModel::OnPaint(wxPaintEvent &event)
       return;
     }
 #endif
-
 
 	bool ok_to_draw = true;
 	
@@ -981,14 +986,14 @@ void CxModel::OnRButtonUp( wxMouseEvent & event )
 void CxModel::Setup()
 {
 
-   setCurrentGL();
 
 #ifdef __BOTHWX__
 
-   if( !GetContext() ) return;
+//   if( !GetContext() ) return;
    m_NotSetupYet = false;
 
 #endif
+   setCurrentGL();
    glEnable(GL_NORMALIZE);
 
    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);

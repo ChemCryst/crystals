@@ -7,6 +7,9 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.44  2011/04/21 11:21:28  rich
+//  Various WXS improvements.
+//
 //  Revision 1.43  2011/03/04 06:00:57  rich
 //  Don't use 's' in function signature.
 //
@@ -226,8 +229,8 @@ class CxModel : public BASEMODEL
     CxModel(CrModel* container);
 #endif
 #ifdef __BOTHWX__
-    CxModel(wxWindow* parent, wxWindowID id = -1, const wxPoint& pos = wxDefaultPosition,
-                    const wxSize& size = wxDefaultSize, long style = 0, const wxString& name = "GLWindow");
+//    CxModel(wxWindow* parent, wxWindowID id = -1, int* args = NULL, long style = 0, const wxString& name = "GLWindow");
+    CxModel(wxWindow* parent, int* args);
 #endif
     ~CxModel();
     void SetGeometry( int top, int left, int bottom, int right );
