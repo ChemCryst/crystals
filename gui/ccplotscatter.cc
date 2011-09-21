@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotScatter is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.26  2008/03/12 14:10:00  djw
+// Richards clever fix to stop the Fo-Fc plot falling over
+//
 // Revision 1.25  2005/01/23 10:20:24  rich
 // Reinstate CVS log history for C++ files and header files. Recent changes
 // are lost from the log, but not from the files!
@@ -341,8 +344,9 @@ void CcPlotScatter::DrawView(bool print)
                     {
                         x1 = (int)(xorigin + (axiswidth  * ( *itx / (m_Axes.m_AxisData[Axis_X].m_AxisMax - m_Axes.m_AxisData[Axis_X].m_AxisMin))));
                         y1 = (int)(yorigin - (axisheight * ( *ity - yoriginvalue) / (m_Axes.m_AxisData[axis].m_AxisMax- m_Axes.m_AxisData[axis].m_AxisMin)));
-                        attachedPlot->DrawLine(2, x1-10, y1-10, x1+10, y1+10);
-                        attachedPlot->DrawLine(2, x1-10, y1+10, x1+10, y1-10);
+//                        attachedPlot->DrawLine(2, x1-10, y1-10, x1+10, y1+10);
+//                        attachedPlot->DrawLine(2, x1-10, y1+10, x1+10, y1-10);
+                        attachedPlot->DrawEllipse(x1, y1, 6, 6,false);
                         ity++;
                     }
                     break;

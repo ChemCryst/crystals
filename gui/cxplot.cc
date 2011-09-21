@@ -9,6 +9,11 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.33  2008/09/22 12:31:37  rich
+//   Upgrade GUI code to work with latest wxWindows 2.8.8
+//   Fix startup crash in OpenGL (cxmodel)
+//   Fix atom selection infinite recursion in cxmodlist
+//
 //   Revision 1.32  2005/01/23 10:20:24  rich
 //   Reinstate CVS log history for C++ files and header files. Recent changes
 //   are lost from the log, but not from the files!
@@ -448,18 +453,27 @@ void CxPlot::DrawEllipse(int x, int y, int w, int h, bool fill)
     CcPoint bottomright = DeviceToLogical(x2,y2);
 
 #ifdef __CR_WIN__
-    CRgn        rgn;
+//    CRgn        rgn;
+//    rgn.CreateEllipticRgn(topleft.x,topleft.y,bottomright.x,bottomright.y);
+
+    CPen pen(PS_SOLID,1,mfgcolour), *oldpen;
     CBrush      brush, *oldbrush;
-    m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
-    rgn.CreateEllipticRgn(topleft.x,topleft.y,bottomright.x,bottomright.y);
     brush.CreateSolidBrush(mfgcolour);
-    oldbrush = (CBrush*)m_memDC->SelectObject(brush);
-    if(fill)
-        m_memDC->FillRgn(&rgn,&brush);
-    else
-        m_memDC->FrameRgn(&rgn,&brush,1,1);
+
+    m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
+    if ( fill) oldbrush = (CBrush*)m_memDC->SelectObject(brush);
+    oldpen =   m_memDC->SelectObject(&pen);
+
+//    if(fill)
+//        m_memDC->FillRgn(&rgn,&brush);
+//    else
+//        m_memDC->FrameRgn(&rgn,&brush,1,1);
+    
+    m_memDC->Ellipse(topleft.x,topleft.y,bottomright.x,bottomright.y);
+
     m_memDC->SelectObject(m_oldMemDCBitmap);
-    m_memDC->SelectObject(oldbrush);
+    m_memDC->SelectObject(oldpen);
+    if ( fill)  m_memDC->SelectObject(oldbrush);
     brush.DeleteObject();           
 #endif
 #ifdef __BOTHWX__
