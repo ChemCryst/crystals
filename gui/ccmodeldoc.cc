@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.47  2011/05/16 10:56:32  rich
+// Added pane support to WX version. Added coloured bonds to model.
+//
 // Revision 1.46  2011/05/10 12:43:00  rich
 // Fix "select all" bug
 //
@@ -560,7 +563,7 @@ bool CcModelDoc::RenderModel( CcModelStyle * style )
 {
    bool retval = false;
 
-   int nRes = (int) ( 1250.0 / mAtomList.size() );
+   int nRes = (int) ( 5000.0 / mAtomList.size() );
    nRes = CRMIN ( 15, nRes );
    nRes = CRMAX ( 4,  nRes );
    style->normal_res = nRes;
