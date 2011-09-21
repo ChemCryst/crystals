@@ -1,4 +1,4 @@
-  48 items  - #nnn "CIF-text"    References, aphabetical order
+  49 items  - #nnn "CIF-text"    References, aphabetical order
 
 #001 USER DEFINED STRUCTURE SOLUTION                                            
 User-defined structure solution reference                                       
@@ -30,18 +30,49 @@ spare 9
 #010 USER DEFINED  10                                                           
 spare 10                                                                        
             
-#026 SMART (Siemens, 1993)                                                      
-Siemens Industrial Automation, Inc (1993).                                      
-SMART: Area-Detector Software Package; Madison, WI.                             
-                                                                                
-#027 SAINT (Siemens ,1995)                                                      
-Siemens Industrial Automation, Inc (1995).                                      
-SAINT: Area-Detector Integration Software.; Madison, WI.                        
-                                                                                
-#031 SADABS (Siemens, 1996)                                                     
-Siemens Industrial Automation, Inc (1996).                                      
-SADABS: Area-Detector Absorption Correction;: Madison, WI.                      
+#011 SIR92 (Altomare et al., 1994)                                              
+Altomare, A., Cascarano, G., Giacovazzo, C., Guagliardi, A., Burla, M.C.,       
+Polidori, G.  & Camalli, M. (1994). J. Appl. Cryst. 27, 435.                    
 
+#028 SIR97 (Altomare et al., 1999)                                              
+Altomare, A., Burla, M.C., Camalli, M., Cascarano, G.L., Giacovazzo, C.,        
+Guagliardi, A., Grazia, A., Moliterni, G., Polidori, G. & Spagna, R.            
+(1999). J. App. Cryst. 32, 115-119.                                             
+
+#033 SHELXA (Anonymous, 1997)                                                   
+Anonymous, (1997)                                                               
+                                                                                
+#022 CRYSTALS (Betteridge et al., 2003)                                         
+Betteridge, P.W.,  Carruthers, J.R.,  Cooper, R.I.,                             
+Prout, K. & Watkin, D.J. (2003). J. Appl. Cryst. 36, 1487.                      
+                                                                                
+#029 DIRDIF-96 (Beurskens et al., 1996)                                         
+Beurskens, P.T., Beurskens, G., Bosman, W.P., de Gelder, R.,                    
+Garcia Granda, S., Gould, R.O.,  Israel, R.  &  Smits J.M.M. (1996).            
+University of Nijmegen, Toernooiveld 1,  6525 ED  Nijmegen,                     
+The Netherlands.                                                                
+
+#032 SORTAV (Blessing)
+Blessing, SORTAV ( )                                                            
+                                                                           
+#043 Sir2002 (Burla et al., 2002)
+Burla, M. C., Camalli, M. B., Carrozzini,  G. L., Cascarano, R.,
+Giacovazzo,   C., Polidori,  G. & Spagna,  R., J. Appl. Crystallogr.,
+2003, 36, 1103.                                                                 
+
+#044 Sir2004 (Burla et al., 2005)                                               
+Burla, M. C. , Caliandro, R., Camalli,  M., Carrozzini,  B., Cascarano, G. L., D
+Caro,  L. , Giacovazzo, C., Polidori,  G.,  & Spagna  R. J. Appl. Cryst. (2005).
+381-388.                                                                        
+                                                                                
+#030 SIR88 (Burla et al., )                                                     
+Burla,M.C., Camalli, M., Cascarano, G., Giacovazzo, C.,                         
+Polidori, G., Spagna, R.  & Viterbo, D. (1989).                                 
+J. Appl. Cryst., 000-000.                                                       
+
+#039 Gaussian Integration (Busing and Levy, 1957)                               
+Busing, W.R. & Levy, H.A., (1975). Acta Cryst 10, 180.                          
+                                                                                
 #045 Apex2 (Bruker AXS, 2006)                                                   
 Bruker Analytical X-ray Systems, Inc., 2006.  <i>Apex2</i>,                     
 Version 2 User Manual, M86-E01078, Madison, WI.                                 
@@ -50,26 +81,33 @@ Version 2 User Manual, M86-E01078, Madison, WI.
 Bruker Analytical X-ray Systems, Inc., 2006.  <i>Apex2</i>,                     
 Version 2 User Manual, M86-E01078, Madison, WI.                                 
 
-#033 SHELXA (Anonymous, 1997)                                                   
-Anonymous, (1997)                                                               
+#012 Chebychev polynomial, (Carruthers & Watkin, 1979)                          
+Carruthers, J.R. & Watkin, D.J. (1979).                                         
+Acta Cryst, A35, 698-699.
                                                                                 
-#018 SHELXS 86 (Sheldrick, 1986)                                                
-Sheldrick, G. M. (2008). Acta Cryst A64, 112-122.                               
+#049 Hydrogen Refinement (Cooper, Thompson & Watkin, 2010)
+Cooper, R. I., Thompson, A. L. & Watkin, D. J. (2010). J. Appl. Cryst.
+43, 1100-1107.
+
+#040 Analytical Absorption (De Meulenaer & Tompa, 1965)
+De Meulenaer, J. & Tompa, H. (1965). Acta Cryst. 19, 1014.                      
                                                                                 
-#034 SHELXL 97 (Sheldrick, 1997)                                                
-Sheldrick, G. M. (2008). Acta Cryst A64, 112-122.                               
+#041 Flack Parameter (Flack, 1983)                                              
+Flack, H. D. (1983). Acta Cryst. A39, 876-881.                                  
                                                                                 
-#029 DIRDIF-96 (Beurskens et al., 1996)                                         
-Beurskens, P.T., Beurskens, G., Bosman, W.P., de Gelder, R.,                    
-Garcia Granda, S., Gould, R.O.,  Israel, R.  &  Smits J.M.M. (1996).            
-University of Nijmegen, Toernooiveld 1,  6525 ED  Nijmegen,                     
-The Netherlands.                                                                
-                                                                                
+#014 Extinction correction (Larson, 1970)                                       
+Larson, A.C. (1970) Crystallographic Computing, Ed  Ahmed, F.R.,                
+Munksgaard, Copenhagen, 291-294.                                                
+
 #015 Xpress Data collection (MAC Science, 1989)                                 
 MAC Science, (1989). Xpress.                                                    
                                                                                 
 #025 COLLECT (Nonius, 2001).                                               
 Nonius (2001). COLLECT. Nonius BV, Delft, The Netherlands.                 
+                                                                                
+#016 (North et al., 1968)                                                       
+North, A.C.T., Phillips, D.C. & Mathews, F.S., (1968).                          
+Acta Cryst, A24, 351-359.                                                       
                                                                                 
 #017 DENZO/SCALEPACK (Otwinowski & Minor, 1997)                                 
 Otwinowski, Z. & Minor, W. (1997). Methods in Enzymology, Vol. 276,             
@@ -88,6 +126,33 @@ Oxford Diffraction, (2006). Gemini User Manual.
 #048 SuperNova, (Oxford Diffraction, 2010)
 Oxford Diffraction, (2010). Supernova User Manual.
                                                                                 
+#042 Superflip (Palatinus & Chapuis, 2007)
+Palatinus, L. & Chapuis, G. (2007). J. Appl. Cryst. 40, 786-790.
+
+#038 Robust Weighting (Prince, 1982)                                            
+Prince, E.                                                                      
+Mathematical Techniques in Crystallography                                      
+and Materials Science                                                           
+Springer-Verlag, New York, 1982.                                                
+                                                                                
+#018 SHELXS 86 (Sheldrick, 1986)                                                
+Sheldrick, G. M. (2008). Acta Cryst A64, 112-122.                               
+                                                                                
+#034 SHELXL 97 (Sheldrick, 1997)                                                
+Sheldrick, G. M. (2008). Acta Cryst A64, 112-122.                               
+                                                                                
+#026 SMART (Siemens, 1993)                                                      
+Siemens Industrial Automation, Inc (1993).                                      
+SMART: Area-Detector Software Package; Madison, WI.                             
+                                                                                
+#027 SAINT (Siemens ,1995)                                                      
+Siemens Industrial Automation, Inc (1995).                                      
+SAINT: Area-Detector Integration Software.; Madison, WI.                        
+                                                                                
+#031 SADABS (Siemens, 1996)                                                     
+Siemens Industrial Automation, Inc (1996).                                      
+SADABS: Area-Detector Absorption Correction;: Madison, WI.                      
+
 #019 XRED (Stoe & Cie 1996)                                                     
 Stoe & Cie (1996). IPDS Software.                                               
                                                                                 
@@ -97,9 +162,12 @@ Stoe & Cie (1996). XRED V1.08.
 #013 CAD4 EXPRESS, (Straver, 1992)                                              
 Straver, L. H. (1992). CAD4-EXPRESS, Nonius, Delft, The Netherlands.            
                                                                                 
-#022 CRYSTALS (Betteridge et al., 2003)                                         
-Betteridge, P.W.,  Carruthers, J.R.,  Cooper, R.I.,                             
-Prout, K. & Watkin, D.J. (2003). J. Appl. Cryst. 36, 1487.                      
+#021 DIFABS (Walker & Stuart, 1983)                                             
+Walker, N., & Stuart, (1983). D. Acta Cryst, A39, 158-166.                      
+
+#035 Chebychev polynomial, (Watkin, 1994, Prince, 1982)
+Watkin D.J. (1994).                                                             
+Acta Cryst, A50, 411-437.                                                       
                                                                                 
 #023 CAMERON (Watkin et al., 1996)                                              
 Watkin, D.J., Prout, C.K. & Pearce, L.J. (1996). CAMERON, Chemical              
@@ -109,71 +177,4 @@ Crystallography Laboratory, Oxford, UK.
 Watkin, D.J., Prout, C.K. & Lilley, P.M.deQ. (1994). RC93, Chemical             
 Crystallography Laboratory, Oxford, UK.                                         
                                                                                 
-#030 SIR88 (Burla et al., )                                                     
-Burla,M.C., Camalli, M., Cascarano, G., Giacovazzo, C.,                         
-Polidori, G., Spagna, R.  & Viterbo, D. (1989).                                 
-J. Appl. Cryst., 000-000.                                                       
-
-#011 SIR92 (Altomare et al., 1994)                                              
-Altomare, A., Cascarano, G., Giacovazzo, C., Guagliardi, A., Burla, M.C.,       
-Polidori, G.  & Camalli, M. (1994). J. Appl. Cryst. 27, 435.                    
-
-#028 SIR97 (Altomare et al., 1999)                                              
-Altomare, A., Burla, M.C., Camalli, M., Cascarano, G.L., Giacovazzo, C.,        
-Guagliardi, A., Grazia, A., Moliterni, G., Polidori, G. & Spagna, R.            
-(1999). J. App. Cryst. 32, 115-119.                                             
-
-#043 Sir2002 (Burla et al., 2002)
-Burla, M. C., Camalli, M. B., Carrozzini,  G. L., Cascarano, R.,
-Giacovazzo,   C., Polidori,  G. & Spagna,  R., J. Appl. Crystallogr.,
-2003, 36, 1103.                                                                 
-
-#044 Sir2004 (Burla et al., 2005)                                               
-Burla, M. C. , Caliandro, R., Camalli,  M., Carrozzini,  B., Cascarano, G. L., D
-Caro,  L. , Giacovazzo, C., Polidori,  G.,  & Spagna  R. J. Appl. Cryst. (2005).
-381-388.                                                                        
                                                                                 
-#042 Superflip (Palatinus & Chapuis, 2007)
-Palatinus, L. & Chapuis, G. (2007). J. Appl. Cryst. 40, 786-790.
-
-#035 Chebychev polynomial, (Watkin, 1994, Prince, 1982)                         
-Watkin D.J. (1994).                                                             
-Acta Cryst, A50, 411-437.                                                       
-                                                                                
-#012 Chebychev polynomial, (Carruthers & Watkin, 1979)                          
-Carruthers, J.R. & Watkin, D.J. (1979).                                         
-Acta Cryst, A35, 698-699.
-
-#038 Robust Weighting (Prince, 1982)                                            
-Prince, E.                                                                      
-Mathematical Techniques in Crystallography                                      
-and Materials Science                                                           
-Springer-Verlag, New York, 1982.                                                
-                                                                                
-#032 SORTAV (Blessing)                                                          
-Blessing, SORTAV ( )                                                            
-                                                                           
-#039 Gaussian Integration (Busing and Levy, 1957)                               
-Busing, W.R. & Levy, H.A., (1975). Acta Cryst 10, 180.                          
-                                                                                
-#040 Analytical Absorption (De Meulenaer & Tompa, 1965)                         
-De Meulenaer, J. & Tompa, H. (1965). Acta Cryst. 19, 1014.                      
-                                                                                
-#041 Flack Parameter (Flack, 1983)                                              
-Flack, H. D. (1983). Acta Cryst. A39, 876-881.                                  
-                                                                                
-#014 Extinction correction (Larson, 1970)                                       
-Larson, A.C. (1970) Crystallographic Computing, Ed  Ahmed, F.R.,                
-Munksgaard, Copenhagen, 291-294.                                                
-
-#016 (North et al., 1968)                                                       
-North, A.C.T., Phillips, D.C. & Mathews, F.S., (1968).                          
-Acta Cryst, A24, 351-359.                                                       
-                                                                                
-#021 DIFABS (Walker & Stuart, 1983)                                             
-Walker, N., & Stuart, (1983). D. Acta Cryst, A39, 158-166.                      
-                                                                                
-#048 Hydrogen Refinement (Cooper, Thompson & Watkin, 2010)
-Cooper, R. I., Thompson, A. L. & Watkin, D. J. (2010). J. Appl. Cryst.
-43, 1100-1107.
-
