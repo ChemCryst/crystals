@@ -54,7 +54,7 @@
 %      END IF                                                                   
 %      EVALUATE QLINE1 = 'A Sir11 job file has been created in the current'     
 %      EVALUATE QLINE2 = 'directory. Run Sir11 then input the results.'         
-%      EVALUATE QTITLE = 'Solve Si112'                                          
+%      EVALUATE QTITLE = 'Solve Sir11'                                          
 %      EVALUATE BUTTOK = '&Ok'                                                  
 %      COPY '#SCRIPT XMESSAGE'                                                  
 %   END BLOCK                                                                   
