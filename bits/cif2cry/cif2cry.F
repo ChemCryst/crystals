@@ -10,6 +10,7 @@ C<ric02>
       integer optlen
 C<ric02/>
 #include       "ciftbx.cmn"
+      logical       probably_neutrons
       logical       f0,f1,f2,f3,f4,f5,f6
       character*32  name, response,buffer
       character*24  cspace, output_name
@@ -44,6 +45,8 @@ C<ric02/>
       data noutf    /10/
       data noutr    /11/
 
+	  data probably_neutrons /.false./
+	  
 #if defined(_GNUF77_)
       call no_stdout_buffer_()
 #endif      
@@ -298,6 +301,33 @@ C....... Write out a crystals instruction:
        write(NOUTF,'(a)') 'END'
       endif
 
+C     probably_neutrons only true if a1 coeff are present and all zero.
+180   continue
+      f2 = numb_('_atom_type_scat_Cromer_Mann_a1',  x, sx)
+	  if (.not.(f2)) goto 182
+	  if ( abs ( x ) .lt. 0.000001 ) then
+	    probably_neutrons = .true.
+      else
+	    probably_neutrons = .false.
+		goto 182 !stop looping
+	  end if
+      if(loop_) goto 180
+182   continue
+
+C     probably_neutrons set true if diffrn_radiation_type starts with 'neutron'.
+      f1 = char_('_diffrn_radiation_type', name)
+	  if ( f1 ) then
+	    do i = 1,len(name)
+          j = index( charcCase, name(i:i) )
+		  if ( j .gt. 0 ) name(i:i) = charc(j:j)
+		end do
+		if ( index( name, 'neutron' ) .gt. 0 ) then
+		   probably_neutrons = .true.
+		end if
+      end if
+190   continue		  
+
+
 c djwnov09
 c      read in wavelength
       f1 = numb_('_diffrn_radiation_wavelength', wave, wavesu)
@@ -307,6 +337,9 @@ c      read in wavelength
       else
 C....... Write out a crystals instruction:
        write(NOUTF,'(a)') '#LIST 13'
+	   if ( probably_neutrons ) then
+         write(NOUTF,'(a)') 'diffraction radiation = neutrons'
+	   end if
        write(NOUTF,'(a,f12.10)') 'condition ', wave
        write(NOUTF,'(a)') 'end'
       endif
@@ -363,8 +396,8 @@ C If 2nd char is not a space this is definitely wrong.
         endif
         
       endif
-
-
+ 	  
+	  
 C....... Extract cell formula units Z
 
       f1 = numb_('_cell_formula_units_Z', unitZ, dum)
@@ -428,8 +461,13 @@ C                                        Store the number of atoms
         write(NOUTF, '(a,15(a2,I4,2x))') 'content   ',
      *               (cpzlabel(i,2), Int(natoms(i)),i=1,nelement-1)
         
-        write(NOUTF,'(a/a)')'SCATTERING CRYSDIR:script/scatt.dat',
+		if ( probably_neutrons ) then
+          write(NOUTF,'(a/a)')'SCATTERING CRYSDIR:script/nscatt.dat',
      *              'PROPERTIES CRYSDIR:script/propwin.dat'
+		else
+	      write(NOUTF,'(a/a)')'SCATTERING CRYSDIR:script/scatt.dat',
+     *              'PROPERTIES CRYSDIR:script/propwin.dat'
+	    end if
         write(NOUTF, '(a)') 'end'
       endif
 
