@@ -1,12 +1,12 @@
-%SCRIPT XINLIST3                                                                
+%SCRIPT XINLIST3
 % VARIABLE REAL MULT NUMBER WAVE 
 % VARIABLE CHARACTER CWAVE                                               
 % VARIABLE CHARACTER CNUMB CELEM CTEM CTEST                                     
-% VARIABLE INTEGER ECOUNT RADIATION ORIENTTYPE SWITCH ITMP                           
+% VARIABLE INTEGER ECOUNT RADIATION ORIENTTYPE SWITCH ITMP XORN
 % VARIABLE LOGICAL LCANCEL LNEW29 EDLIST3 LXIN3CANCEL                           
 % VARIABLE CHARACTER SPACEHOOK                                                  
 % VARIABLE CHARACTER CTYPE                                                      
-% VARIABLE LOGICAL FRIEDEL
+% VARIABLE LOGICAL FRIEDEL NEUTRONS
 %% The variables needed by XQUESTIO                                             
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
 % VARIABLE LOGICAL   ANSWER                                                     
@@ -20,14 +20,24 @@
 %   COPY 'TRANSFER FROM OFFSET=0 TO WAVE'                                       
 %   COPY 'LOCATE RECORDTYPE=101'                                           
 %   COPY 'TRANSFER FROM OFFSET=0 TO ITMP'                                  
+%   COPY 'LOCATE RECORDTYPE=102'                                           
+%   COPY 'TRANSFER FROM OFFSET=1 TO XORN'                                  
 %   IF ( ITMP .GE. 0 ) THEN                                                
 %         EVALUATE FRIEDEL = TRUE                                               
 %   ELSE                                                                   
 %         EVALUATE FRIEDEL = FALSE                                              
-%   END IF                                                                 
+%   END IF
+%%   TRANSFER CHARACTER ( XORN ) TO DISPLAY
+%   IF ( XORN .EQ. 0 ) THEN
+%         EVALUATE NEUTRONS = TRUE
+%   ELSE
+%         EVALUATE NEUTRONS = FALSE
+%   END IF
 %   COPY 'END'                                                                  
-
-%   IF ( WAVE .GT. 1.5417 ) .AND. ( WAVE .LT. 1.5419 ) THEN                     
+%%
+%   IF ( NEUTRONS .EQ. TRUE ) THEN                 
+%     EVALUATE CWAVE = 'NE'
+%   ELSE IF ( WAVE .GT. 1.5417 ) .AND. ( WAVE .LT. 1.5419 ) THEN                     
 %     EVALUATE CWAVE = 'CU'                                       
 %   ELSE IF ( WAVE .GT. 0.7107 ) .AND. ( WAVE .LT. 0.7108 ) THEN                 
 %     EVALUATE CWAVE = 'MO'                                       
@@ -35,10 +45,9 @@
 %     EVALUATE CWAVE = 'XX'
 %   END IF
 %%  See also below
-
-
-
-
+%%  
+%%
+%%
 % EVALUATE LCANCEL = FALSE                                                      
 % EVALUATE LXIN3CANCEL = FALSE                                                  
 % CLEAR                                                                         
@@ -46,7 +55,7 @@
 ^^WI COMMIT=BOKI3 CANCEL=BXXI3                                                  
 ^^WI GRID             G1 NROWS=9 NCOLS=5                                        
 ^^WI {                                                                          
-^^WI  @ 2,2 GRID G2 NROWS=3 NCOLS=2 OUTLINE='Diffraction Experiment'            
+^^WI  @ 2,2 GRID G2 NROWS=4 NCOLS=2 OUTLINE='Diffraction Experiment'            
 ^^WI  {                                                                         
 ^^WI   @ 1,1 RADIOBUTTON COP 'Copper' 
 %      IF CWAVE .EQ. 'CU' THEN
@@ -60,21 +69,27 @@
 %      ELSE
 ^^WI     STATE=OFF INFORM
 %      END IF
-^^WI   @ 3,1 RADIOBUTTON OTH 'Other:'                           
+^^WI   @ 3,1 RADIOBUTTON NEU 'Neutrons' 
+%      IF CWAVE .EQ. 'NE' THEN
+^^WI     STATE=ON INFORM
+%      ELSE
+^^WI     STATE=OFF INFORM
+%      END IF
+^^WI   @ 4,1 RADIOBUTTON OTH 'Other:'                           
 %      IF CWAVE .EQ. 'XX' THEN
 ^^WI     STATE=ON INFORM
 %      ELSE
 ^^WI     STATE=OFF INFORM
 %      END IF
-
-
+%%
+%%
 ^^WI   @ 1,2 CHECKBOX FRIE 'Apply Friedels Law during merge' 
 %    IF ( FRIEDEL )  THEN                         
 ^^WI      STATE=ON                                                              
 %    ELSE                                                                       
 ^^WI      STATE=OFF                                                             
 %    END IF                                                                     
-^^WI   @ 3,2 EDITBOX WAVEL '0.71073' NCOLS=10 LIMIT=20 REAL 
+^^WI   @ 4,2 EDITBOX WAVEL '0.71073' NCOLS=10 LIMIT=20 REAL 
 %      IF CWAVE .EQ. 'XX' THEN
 ^^WI         DISABLED=NO        
 %      ELSE
@@ -95,10 +110,14 @@
 ^^WI SHOW                                                                       
 ^^CR                                                                            
 %   TRANSFER "^^CO SET WAVEL TEXT " // CHARACTER WAVE TO DISPLAY                
-%   IF ( WAVE .GT. 1.5417 ) .AND. ( WAVE .LT. 1.5419 ) THEN                     
-^^CO   SET COP STATE=ON SET MOL STATE=OFF                                       
-%   ELSE IF ( WAVE .LT. 0.7107 ) .OR. ( WAVE .GT. 0.7108 ) THEN                 
-^^CO   SET OTH STATE=ON SET MOL STATE=OFF SET WAVEL DISABLED=NO                 
+%   IF ( NEUTRONS .EQ. TRUE ) THEN
+^^CO   SET NEU STATE=ON SET WAVEL DISABLED=NO                 
+%   ELSE IF ( WAVE .GT. 1.5417 ) .AND. ( WAVE .LT. 1.5419 ) THEN                     
+^^CO   SET COP STATE=ON                                        
+%   ELSE IF ( WAVE .GT. 0.7107 ) .AND. ( WAVE .LT. 0.7108 ) THEN                 
+^^CO   SET MOL STATE=ON  
+%   ELSE
+^^CO   SET OTH STATE=ON SET WAVEL DISABLED=NO                 
 %% OTHER greyed out inexplicably, sometimes
 %      IF ( .NOT. EDLIST3 ) THEN                                                
 %       EVALUATE QTITLE = 'Warning - non-standard wavelength'                   
@@ -167,7 +186,7 @@
 %  IF ( LNEW29 ) THEN                                                           
 %   EVALUATE SWITCH = 2                                                         
 %  ELSE                                                                         
-%   VERIFY BXXI3 BOKI3 MOL COP OTH                                              
+%   VERIFY BXXI3 BOKI3 MOL COP OTH NEU
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                
 %   EVALUATE SWITCH = VALUE                                                     
 %  END IF                                                                       
@@ -212,14 +231,18 @@
 %        END IF                                                                 
 %      END LOOP                                                                 
 %%                                                                              
-%      QUEUE COPY SCATT CRYSDIR:script/scatt.dat                                
+%      IF ( NEUTRONS ) THEN
+%        QUEUE COPY SCATT CRYSDIR:script/nscatt.dat
+%      ELSE
+%        QUEUE COPY SCATT CRYSDIR:script/scatt.dat
+%      END IF
 %      QUEUE COPY PROPERTIES CRYSDIR:script/propwin.dat                         
                                                                                 
 {I * Updating List 13 info                                                      
                                                                                 
-% VARIABLE INTEGER IDJW                                                         
-%      COPY '#GENERALEDIT 13'                                                   
-%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                  
+% VARIABLE INTEGER IDJW
+%      COPY '#GENERALEDIT 13'
+%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
 ^^??   COP STATE                                                                
 %      VERIFY ON OFF                                                            
 %      GET SILENT NOSTORE VERIFIED 'ON or Off' ' '                              
@@ -232,7 +255,14 @@
 %        IF VALUE .EQ. 1 THEN                                                   
 %          EVALUATE RADIATION = 2                                               
 %        ELSE                                                                   
-%          EVALUATE RADIATION = 3                                               
+^^??       OTH STATE                                                              
+%          VERIFY ON OFF                                                          
+%          GET SILENT NOSTORE VERIFIED 'ON or Off' ' '                            
+%          IF VALUE .EQ. 1 THEN                                                   
+%            EVALUATE RADIATION = 3
+%          ELSE                                                                   
+%            EVALUATE RADIATION = 4                                             
+%          END IF                                                                 
 %        END IF                                                                 
 %      END IF                                                                   
 ^^??   FRIE STATE                                                               
@@ -257,9 +287,22 @@
 %         EVALUATE CTEST = CHARACTER ( VALUE )                                  
 %         EVALUATE ADJW = VALUE                                                 
 %       END BLOCK                                                               
+%       BLOCK                   %NEU%                                         
+^^??      WAVEL TEXT                                                            
+%         GET SILENT REAL 'Wave' '0.0123'                                       
+%         EVALUATE CTEST = CHARACTER ( VALUE )                                  
+%         EVALUATE ADJW = VALUE                                                 
+%       END BLOCK                                                               
 %      END CASE                                                                 
 %      COPY 'LOCATE RECORD=103'                                                 
 %      COPY 'TRANSFER TO OFFSET=0 FROM ADJW'                                    
+%      COPY 'WRITE'
+%      EVALUATE XORN = - 1
+%      IF RADIATION .EQ. 4 THEN
+%        EVALUATE XORN = 0
+%      END IF
+%      COPY 'LOCATE RECORD=102'
+%      COPY 'TRANSFER TO OFFSET=1 FROM XORN'                                    
 %      COPY 'WRITE'                                                             
 %      COPY 'END'                                                               
 %%                                                                              
@@ -298,6 +341,9 @@
 %    END BLOCK                                                                  
 %    BLOCK    %OTH                                                              
 ^^CO SET WAVEL DISABLED=NO                                                      
+%    END BLOCK                                                                  
+%    BLOCK    %NEU                                                              
+^^CO SET WAVEL DISABLED=NO
 %    END BLOCK                                                                  
 %  END CASE                                                                     
 % END LOOP                                                                      
