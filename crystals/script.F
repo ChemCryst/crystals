@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.70  2011/09/14 12:12:44  djw
+C With VERIFY TRUE, re-declaration of an existing variable is signaled to the screen and listing file
+C
 C Revision 1.69  2011/09/13 13:03:39  rich
 C Fix IDECMASK calculation
 C
@@ -7859,10 +7862,10 @@ C
 C -- VERIFY OPERATION
 C
       IF ( ISCSVE .GT. 0 ) THEN
-        WRITE ( CMON, 1005 ) ITYPE
+        WRITE ( CMON, 1005 ) ITYPE,IFLIND, ILEVEL(IFLIND)
         CALL XPRVDU(NCVDU, 1,0)
         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
-1005    FORMAT ( 1X , 'Create stack frame of type : ' , I6 )
+1005    FORMAT ( 1X , 'Create stack frame of type : ', I6,' file# ',2I6)
       ENDIF
 C
 C -- INITIALISE STACK POINTERS FOR NEW FILE LEVEL IF REQUIRED
@@ -7872,8 +7875,9 @@ C
         INEW = MAX0 ( ILEVEL(IFLIND) + 1 , 1 )
 C        INEW = 1
         DO ILX = IFLIND+1, NFILVL
-          ILEVEL(ILX) = - INEW
+          ILEVEL(ILX) =  INEW
         END DO
+        ILEVEL(IFLIND+1) = - INEW
         ISCINI = 0
         RETURN
       ENDIF
@@ -7882,6 +7886,13 @@ C -- CHECK CURRENT STACK LEVEL
 C -- ENSURE THAT 'SCRIPT' IS THE FIRST BLOCK TYPE IN EACH FILE.
 C
       ICURLV = ILEVEL(IFLIND)
+
+      IF ( ISCSVE .GT. 0 ) THEN
+        WRITE ( CMON, 1006 ) ICURLV, ITYPE, IFLIND
+        CALL XPRVDU(NCVDU, 1,0)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+1006    FORMAT ( 1X , 'Old level : ', I6,' type ',I6,' ifl ',i6)
+      ENDIF
 C
       IF ( ITYPE .EQ. 1 ) THEN
         IF ( ICURLV .GT. 0 ) GO TO 9910
@@ -7948,6 +7959,9 @@ C
 C
 C -- UPDATE CURRENT STACK LEVEL
       ILEVEL(IFLIND) = INEWLV
+      DO ILX = IFLIND+1, NFILVL
+        ILEVEL(ILX) = INEWLV
+      END DO
 C
       ISCINI = 1
 C
