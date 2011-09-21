@@ -1,8 +1,11 @@
 %SCRIPT XGETWZ
 %% GET WAVELENGTH AND HEAVIEST ELEMENT
-% VARIABLE REAL WORK1 WAVE ZMAX 
+% VARIABLE REAL WORK1 WAVE ZMAX
+% VARIABLE LOGICAL NEUTRONS
+% VARIABLE INTEGER XORN
 % EVALUATE WAVE = 0.0
 % EVALUATE ZMAX = 0.0
+% EVALUATE NEUTRONS = FALSE
 %%
 % IF ( EXISTS ( 1 ) .NE. 1 ) THEN
 {I **** No cell paramters present (list 1)
@@ -17,7 +20,12 @@
 % COPY '#GENERALEDIT 13'                                                        
 % COPY 'LOCATE RECORDTYPE=103'                                                  
 % COPY 'TRANSFER FROM OFFSET=0 TO WAVE'                                         
+% COPY 'LOCATE RECORDTYPE=102'                                           
+% COPY 'TRANSFER FROM OFFSET=1 TO XORN'                                  
 % COPY 'END'                                                                    
+% IF ( XORN .EQ. 0 ) THEN
+%       EVALUATE NEUTRONS = TRUE
+% END IF
 % IF ( EXISTS 29 .NE. 1 ) THEN                                                  
 {I **** No atomic properties present (list 29)                                  
 {R             I could have done with that information to                       

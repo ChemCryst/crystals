@@ -29,10 +29,11 @@
 %   COPY 'END'                                                                  
 % END IF
 %%                                                                              
-% VARIABLE LOGICAL TWINNED  MERGED                                              
+% VARIABLE LOGICAL TWINNED  MERGED NEUTRONS
 % EVALUATE TWINNED = FALSE                                                      
 % EVALUATE MERGED = FALSE                                                       
-%%                                                                              
+% COPY '#SCRIPT XGETWZ'
+%%
 ^^WI WINDOW FINDH 'Add Hydrogen' MODAL KEEP SIZE LARGE COMMIT='FHBOK'           
 ^^WI CANCEL='FHBXX'                                                             
 ^^WI GRID MAIN NROWS=9 NCOLS=3                                                  
@@ -137,9 +138,14 @@
 % COPY '#SCRIPT VALID12'                                                        
 %%                                                                              
 ^^CO SET GFT1 TEXT 'Difference Fourier map.'                                    
-% COPY '#SCRIPT PREFOUR'                                                        
-% COPY 'MAP TYPE=DIFF'                                                          
+% COPY '#SCRIPT PREFOUR'
+% IF ( NEUTRONS ) THEN
+% COPY 'MAP TYPE=DIFF NMAP=YES'
+% COPY 'PEAK HEIGHT=3'                                                          
+% ELSE
+% COPY 'MAP TYPE=DIFF'
 % COPY 'PEAK HEIGHT=1'                                                          
+% END IF
 % COPY 'END'                                                                    
 % COPY '#SCRIPT POSTFOUR'                                                       
 ^^CO SET GFT1 TEXT 'Rejecting coincident peaks.'                                
