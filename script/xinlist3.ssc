@@ -75,7 +75,7 @@
 %      ELSE
 ^^WI     STATE=OFF INFORM
 %      END IF
-^^WI   @ 4,1 RADIOBUTTON OTH 'Other:'                           
+^^WI   @ 4,1 RADIOBUTTON OTH 'Other X-ray:'                           
 %      IF CWAVE .EQ. 'XX' THEN
 ^^WI     STATE=ON INFORM
 %      ELSE
@@ -231,12 +231,6 @@
 %        END IF                                                                 
 %      END LOOP                                                                 
 %%                                                                              
-%      IF ( NEUTRONS ) THEN
-%        QUEUE COPY SCATT CRYSDIR:script/nscatt.dat
-%      ELSE
-%        QUEUE COPY SCATT CRYSDIR:script/scatt.dat
-%      END IF
-%      QUEUE COPY PROPERTIES CRYSDIR:script/propwin.dat                         
                                                                                 
 {I * Updating List 13 info                                                      
                                                                                 
@@ -306,6 +300,12 @@
 %      COPY 'WRITE'                                                             
 %      COPY 'END'                                                               
 %%                                                                              
+%      IF ( RADIATION .EQ. 4 ) THEN
+%        QUEUE COPY SCATT CRYSDIR:script/nscatt.dat
+%      ELSE
+%        QUEUE COPY SCATT CRYSDIR:script/scatt.dat
+%      END IF
+%      QUEUE COPY PROPERTIES CRYSDIR:script/propwin.dat                         
 %%                                                                              
 {I * Updating composition info                                                  
 %      COPY '#COMPOSITION'                                                      
