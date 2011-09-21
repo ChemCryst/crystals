@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.100  2011/09/19 13:03:45  djw
+C In wt vs Sigma, interchange axes.  All unit line to NPP and wt vs Sigma plots
+C
 C Revision 1.99  2011/09/06 12:23:41  djw
 C Enable plots of weight ve 1/sigma
 C
@@ -2948,8 +2951,8 @@ C
      * /
       DATA (CKEY(I,3),I=1,MAXKEY)/
      1 'R', 'Rw', 'No. param last cycle', 'Sigma Cutoff', 'S',
-     2 'Del rho min','Del rho max','max RMS shift','Reflections used',
-     3 'Fo min function', 'Restraint min func', 'Total min func',
+     2 'Del rho min','Del rho max','max shift','Reflections used',
+     3 'Fo min function', 'Restraint min func', 'RMS shift',
      4  7*'*'
      * /
       DATA (CKEY(I,4),I=1,MAXKEY)/
