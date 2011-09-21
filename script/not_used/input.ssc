@@ -1,0 +1,128 @@
+%SCRIPT INPUT
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ 
+   This SCRIPT assists in loading numeric data into the CRYSTALS database
+  *.dsc. The data is grouped by function, and each group is called a LIST
+  The SCRIPTS DATA and DISK explain which LISTS contain which data.
+  In general, input of a new data list over writes a previous list. If
+  you make an error inputting a LIST, terminate that input and start over
+  again. The SCRIPT MODIFY permits some lists to be edited in situ.
+        If you prefer to use a system editor to prepare files containing
+  your data, you will need to refer to the printed manual for details.
+  Files containing data can be read into CRYSTALS using the SCRIPT 'USE',
+  which is on the menu from this script.
+ 
+%   COPY '#PAUSE 5'
+% ELSE
+ CRYSTALS LIST input controlling script
+% END IF
+%
+%  LOOP
+%
+%    ON ERROR TERMINATE ABANDONED
+%    CLEAR
+%  VERIFY -
+   BACK HELP LOOK USE CELL ESD SPACE SYMMETRY COMP SCATTER ELEMENTS -
+   DIFFRACTION GENERAL ATOMS PEAKS SFCONTROL VARIABLES RESTRAINT SECTION
+%%
+%    GET NOSTORE FINAL ABBREVIATED 'Input which list?' 'HELP'
+%    CASE VALUE
+%      FINISH                                        %BACK%
+%      BLOCK                                         %HELP%
+        This script helps you look at existing data, modify it
+        or input new data LISTS
+      BACK        End this script
+      HELP        Display this help text
+      LOOK        Examine existing lists
+      USE         Single - step though a data file
+      CELL        Input cell parameters             (LIST 1)
+      ESD         Input cell e.s.d.s                (LIST 31)
+      SPACE       Input space group details         (LIST 2 & LIST 14)
+      SYMMETRY    Input symmetry operators          (LIST 2)
+      COMP        Input cell composition            (LIST 3 & LIST 29)
+      SCATTER     Input scattering factors          (LIST 3)
+      ELEMENTS    Input elemental properties        (LIST 29)
+      DIFFRACTION Input experimental conditions     (LIST 13)
+      GENERAL     Input general details             (LIST 30)
+      ATOMS       Input atomic coordinates          (LIST 5)
+      PEAKS       Input Emap or Patterson peaks     (LIST 5)
+      SFCONTROL   Input structure factor controls   (LIST 23)
+      VARIABLES   Input of variables to be refined  (LIST 12)
+      RESTRAIN    Input geometric restraints        (LIST 16)
+      SECTION     Input asymmetric volume of cell   (LIST 14)
+%      END BLOCK
+%%
+%      BLOCK                                         %LOOK%
+%        COPY '#SCRIPT LOOK'
+%      END BLOCK
+%%
+%      BLOCK                                         %USE%
+%        COPY '#SCRIPT USE'
+%      END BLOCK
+%%
+%      BLOCK                                         %CELL%
+%        COPY '#SCRIPT INLIST1'
+%      END BLOCK
+%%
+%      BLOCK                                         %ESD%
+%        COPY '#SCRIPT INLIST31'
+%      END BLOCK
+%%
+%      BLOCK                                         %SPACEGROUP%
+%        COPY '#SCRIPT INSPACE'
+%      END BLOCK
+%%
+%      BLOCK                                         %SYMMETRY%
+%        COPY '#SCRIPT INLIST2'
+%      END BLOCK
+%%
+%      BLOCK                                         %COMPOSITION%
+%        COPY '#SCRIPT INCOMP'
+%      END BLOCK
+%%
+%      BLOCK                                         %SCATTER%
+%        COPY '#SCRIPT INLIST3'
+%      END BLOCK
+%%
+%      BLOCK                                         %ELEMENTS%
+%        COPY '#SCRIPT INLIST29'
+%      END BLOCK
+%%
+%      BLOCK                                         %DIFFRACTION%
+%        COPY '#SCRIPT INLIST13'
+%      END BLOCK
+%%
+%      BLOCK                                         %GENERAL%
+%        COPY '#SCRIPT INLIST30'
+%      END BLOCK
+%%
+%      BLOCK                                         %ATOMS%
+%        COPY '#SCRIPT INATOMS'
+%      END BLOCK
+%%
+%      BLOCK                                         %PEAKS%
+%        COPY '#SCRIPT INEMAP'
+%      END BLOCK
+%%
+%      BLOCK                                         %SFCONTROL%
+%        COPY '#SCRIPT INLIST23'
+%      END BLOCK
+%%
+%      BLOCK                                         %VARIABLES%
+%        COPY '#SCRIPT INLIST12'
+%      END BLOCK
+%%
+%      BLOCK                                         %RESTRAINTS%
+%        COPY '#SCRIPT INLIST16'
+%      END BLOCK
+%%
+%      BLOCK                                         %SECTION%
+%        COPY '#SCRIPT INLIST14'
+%      END BLOCK
+%%
+%    END CASE
+%%
+%  END LOOP
+%%
+%END SCRIPT

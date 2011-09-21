@@ -1,0 +1,102 @@
+%SCRIPT WEIGHTS
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ 
+ 
+% ELSE
+A SCRIPT to assist with the weighting of least squares refinement
+% END IF
+%  IF EXISTS 6 .LT. 1 THEN
+  You have no reflection data stored. You cannot use this script!
+%    FINISH
+%  END IF
+%% FIND OUT IF F OR FSQ REFINEMENT
+%  VARIABLE INTEGER FTYPE
+%  COPY '#GENERALEDIT 23'
+%  COPY 'LOCATE RECORDTYPE=103'
+%  COPY 'TRANSFER FROM OFFSET=1 TO FTYPE'
+%  COPY 'END'
+%  LOOP
+%    VERIFY BACK HELP DESCRIPTION ANALYSE UNIT STATISTICAL CHEBYCHEV -
+     OPTIMAL
+%    GET FINAL FILL ABBREVIATED -
+   'Script required' 'BACK'
+%    CLEAR
+%    CASE VALUE
+%      FINISH                                      %BACK%
+%      BLOCK                                       %HELP%
+      BACK        Finish with this facility
+      HELP        Display this help text
+      DESCRIPTION A brief discussion of weighting strategies
+      ANALYSE     An analysis of residuals
+      UNIT        Unit (equal) weights
+      STATISTICAL Weights related to the reflection sigmas
+      CHEBYCHEV   Empirical weighting
+      OPTIMAL     Semi-automatic weighting
+%      END BLOCK
+%%
+%      BLOCK                                          %DESCRIPTION%
+          Analysis of residuals w(Fo - Fc)**2 versus /Fo/
+In the following table, examine the weighted residual (headed w(delta)**2,
+column 3 from the right). Towards the end of a refinement, this should be
+approximately constant as a function of Fo (or any other systematic ranking).
+If there is a systematic trend, then there is a systematic trend in the
+data which has not been modeled in the structure. You should verify that
+the structure is essentially correct, i.e. not in a false minimum. In
+particular, check columns 2 and 3, sum Fo and sum Fc. If, towards the
+bottom (i.e. strong reflections), sum Fo is less than sum Fc, you may
+need to include an isotropic EXTINCTION parameter in the least squares.
+Restore unit weights before starting the extinction parameter refinement.
+   If the parameters you are refining have 'reasonable' values, you should
+attempt to correct the data for this trend, or introduce suitable additional
+parameters to the model. See, for example, DIFABS.
+   If you can do neither of these, then you should modify the refinement
+weights to minimise the problem.
+ In the absence of specific technical advice, try automatic weighting
+CRYSTALS  uses different methods for F snd Fsq refinement. Choose the scheme
+which gives a sufficiently constant distribution with the minimum number of
+parameters.
+Occasional ranges having a large residual can be ignored in routine work.
+%  COPY '#PAUSE 5'
+%      END BLOCK
+%%
+%      BLOCK                                          %ANALYSE%
+%  COPY '#ANALYSE'
+%  COPY 'END'
+%  COPY '#PAUSE 5'
+%      END BLOCK
+%%
+%      BLOCK                                          %UNIT%
+    Unit weighting
+%        COPY '#LIST 4'
+%        COPY 'END'
+%        COPY '#ANALYSE'
+%        COPY 'END'
+%        COPY '#PAUSE 5'
+%      END BLOCK
+%%
+%      BLOCK                                          %STATISTICAL%
+%        COPY '#SCRIPT STATWT'
+%      END BLOCK
+%%
+%      BLOCK                                          %CHEBYCHEV%
+%        IF FTYPE .NE. 0 THEN
+%% Fo refinement
+%          COPY '#SCRIPT FOPTWT'
+%        ELSE
+%          COPY '#SCRIPT FSQWT'
+%        END IF
+%      END BLOCK
+%%
+%      BLOCK                                          %OPTIMAL%
+%        IF FTYPE .NE. 0 THEN
+%% Fo refinement
+%          COPY '#SCRIPT FOPTWT'
+%        ELSE
+%          COPY '#SCRIPT FSQWT'
+%        END IF
+%      END BLOCK
+%    END CASE
+%  END LOOP
+%%
+%END SCRIPT

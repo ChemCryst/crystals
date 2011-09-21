@@ -1,0 +1,125 @@
+%SCRIPT LEASTSQ
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ  A SCRIPT to help with refinement.                                         บ
+ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+%   COPY '#PAUSE 10'
+% ELSE
+      A SCRIPT to help with refinement.
+% END IF
+%% DECLARE SOME VARIABLES TO BE USED IN AUTO12 - THEY WILL BE PRESERVED
+%% IF THE USER TRIES SOME OTHER SUB-SCRIPT
+%        VARIABLE LOGICAL EXTINCT OPTIM
+%        EVALUATE EXTINCT = FALSE
+%        EVALUATE OPTIM = FALSE
+%%       R-FACTOR THRESHOLDS FOR VARIOUS CASES
+%        VARIABLE REAL R1 R2 R3 R4
+%%       Fourier might be better
+%        EVALUATE R1 = 40.0
+%%       Isotropic refinement
+%        EVALUATE R2 = 20.0
+%%       Aniso 
+%        EVALUATE R3 = 10.0
+%%       Tidy up
+%        EVALUATE R4 = 6.0
+%%       R, OSCALE, RATIO are set in SCRIPT RFACTOR
+%        VARIABLE REAL R OSCALE RATIO
+%
+%%
+%  LOOP
+%    ON ERROR TERMINATE ABANDONED
+%    CLEAR
+%    VERIFY BACK HELP AUTO VARIABLES SFCONTROL SCALE CYCLE SIXCYCLE RESTRAINTS -
+     ANALYSE CHECK WEIGHTS DIFABS DISK RFACTOR PLOT EXCHANGE
+%    GET NOSTORE FINAL ABBREVIATED 'Next step' 'BACK'
+%    CASE VALUE
+%      FINISH                                        %BACK%
+%      BLOCK                                         %HELP%
+      The SCRIPT to help set up refinement jobs.
+      BACK        End this script
+      HELP        Display this help text
+      AUTO        Automatic choice of variables
+      VARIABLES   Define the variables to be refined
+      SFCONTROL   Modifications applied to structure factor calculation
+      SCALE       Compute structure factors/ scale factor
+      CYCLE       Perform refinement cycles
+      SIXCYCLE    Perform six unconditional refinement cycles
+      RESTRAINTS  Define restraints
+      ANALYSE     Produce analysis of residuals
+      CHECK       Check that the matrix is properly defined
+      WEIGHTS     Optimise the reflection weighting.
+      DIFABS      Run the empirical absorption correction
+      DISK        Examine the disk file
+      RFACTOR     Show the current R factor
+      PLOT        Show the current structure on the screen
+      EXCHANGE    Exchange results with anothe computer
+      DIRECT      Go to CRYSTALS direct command input.
+%%
+%      END BLOCK
+%%
+%      BLOCK
+%        COPY '#SCRIPT AUTO12'                       %AUTO%
+%      END BLOCK
+%%
+%      BLOCK                                         %VARIABLES%
+%        COPY '#SCRIPT LIST12'
+%      END BLOCK
+%%
+%      BLOCK                                         %SFCONTROL%
+%        COPY '#SCRIPT LIST23'
+%      END BLOCK
+%%
+%      BLOCK                                         %SCALE%
+%        COPY '#SCRIPT SCALE'
+%      END BLOCK
+%%
+%      BLOCK                                         %CYCLE%
+%        COPY '#SCRIPT REFINE'
+%      END BLOCK
+%%
+%      BLOCK                                         %SIXCYCLE%
+%        COPY '#SCRIPT SIXCYCLE'
+%      END BLOCK
+%%
+%      BLOCK                                         %RESTRAINTS%
+%        COPY '#SCRIPT OLDLIST16'
+%      END BLOCK
+%%
+%      BLOCK                                         %ANALYSE%
+%        COPY '#SCRIPT ANALYSE'
+%      END BLOCK
+%%
+%      BLOCK                                         %CHECK%
+%        COPY '#SCRIPT CHECK'
+%      END BLOCK
+%%
+%      BLOCK                                         %WEIGHTS%
+%        COPY '#SCRIPT WEIGHTS'
+%      END BLOCK
+%%
+%      BLOCK                                         %DIFABS%
+%        COPY '#SCRIPT DIFABS'
+%      END BLOCK
+%%
+%      BLOCK                                         %DISK%
+%        COPY '#SCRIPT DISK'
+%      END BLOCK
+%%
+%      BLOCK                                         %RFACTOR%
+%        COPY '#SCRIPT RFACTOR'
+%      END BLOCK
+%%
+%      BLOCK                                         %PLOT%
+%        COPY '#SCRIPT PLOT'
+%      END BLOCK
+%%
+%      BLOCK                                         %EXCHANGE%
+%        COPY '#SCRIPT EXCHANGE'
+%      END BLOCK
+%%
+%    END CASE
+%%
+%  END LOOP
+%%
+%END SCRIPT

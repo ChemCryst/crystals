@@ -1,0 +1,159 @@
+%SCRIPT CHRIS
+%%
+%% This script loads in a structure,
+%%   applies various distortions,
+%%     set some weighting schemes
+%%       does some refinement and prints results
+%%
+%  VARIABLE REAL      DIST_START DIST_STEP MOD_START MOD_STEP
+%  VARIABLE REAL      WMOD PERT FOAV
+%  VARIABLE INTEGER   DIST_LOOPS MOD_LOOPS CYCNO DLOOP
+%  VARIABLE CHARACTER CFILE PCHFILE
+%  VARIABLE LOGICAL   T
+%%
+%%
+%% Variables controlling the distortion range:
+%%
+%  EVALUATE DIST_START = 0.2
+%  EVALUATE DIST_STEP  = 0.05
+%  EVALUATE DIST_LOOPS = 3
+%%
+%% Variables controlling the weight modifier:
+%%
+%  EVALUATE MOD_START = 0.0
+%  EVALUATE MOD_STEP  = 0.05
+%  EVALUATE MOD_LOOPS = 40
+%%
+%% 
+%%
+%% Get the name of the file to read in the structure:
+%%
+%  GET NOSTORE TEXT 'File containing structure' 'str1.dat'
+%  EVALUATE CFILE = CVALUE
+%%
+%%  Check that the file exists.
+%  IF ( .NOT. FILEEXISTS ( CFILE ) ) THEN
+{E File no exist:
+%    TRANSFER '{E ' // CFILE TO DISPLAY
+%    FINISH
+%  END IF
+%%
+%% Log results to file of the same stem, with suffix .pch
+%%
+%  EVALUATE PCHFILE = GETTITLE ( CFILE ) // '.pch'
+%  TRANSFER '#RELEASE PUNCH ' // PCHFILE TO CRYSTALS
+%  TRANSFER 'Format: Pert,Dloop,wMod,CycNo,R,Rw,GoOF,s/esd,FOav' TO PUNCH
+%%
+%% Let's go. The main outer loop:
+%%
+%  LOOP DIST_LOOPS TIMES
+%%
+%% Repeat 10 times for each distortion level
+%%
+%    LOOP 10 TIMES
+%
+%      EVALUATE DLOOP = LOOPCOUNTER
+%%
+%% Freshen up. Release and delete files, purge database.
+%      COPY '#PURGE'
+%      COPY 'END'
+%      COPY '#RELEASE PRINT afile.lis'
+%      EVALUATE T = FILEDELETE ( 'bfile.lis' )
+%      COPY '#RELEASE PRINT bfile.lis'
+%      EVALUATE T = FILEDELETE ( 'afile.lis' )
+%      COPY '#RELEASE LOG afile.log'
+%      EVALUATE T = FILEDELETE ( 'bfile.log' )
+%      COPY '#RELEASE LOG bfile.log'
+%      EVALUATE T = FILEDELETE ( 'afile.log' )
+%%
+%% Read in the structure afresh.
+%%
+%      TRANSFER '#USE ' // CFILE TO CRYSTALS
+%%
+%% Compute initial R value, etc.
+%      COPY '#SFLS'
+%      COPY 'SCALE'
+%      COPY 'END'
+%      COPY '#SFLS'
+%      COPY 'SCALE'
+%      COPY 'END'
+%      COPY '#SFLS'
+%      COPY 'CALC'
+%      COPY 'END'
+%%
+%% Dig FOav out of list 6.
+%      COPY '#GENERALEDIT 6'
+%      COPY 'LOCATE RECORDTYPE=107'
+%      COPY 'NEXT'
+%      COPY 'NEXT'
+%      COPY 'NEXT'
+%      COPY 'TRANSFER FROM OFFSET=2 TO FOAV'
+%       COPY 'END'
+%% Log the initial R-value, etc.
+%      EVALUATE WMOD = 0.0
+%      EVALUATE PERT = 0.0
+%      EVALUATE CYCNO = 0
+%      COPY '#SCRIPT CHRIS-LOGDATA'
+%%
+%% Distort the structure.
+%      COPY '#EDIT'
+%      TRANSFER 'PERT ' // CHARACTER ( DIST_START ) // ' X' TO CRYSTALS
+%      TRANSFER 'PERT ' // CHARACTER ( DIST_START ) // ' Y' TO CRYSTALS
+%      TRANSFER 'PERT ' // CHARACTER ( DIST_START ) // ' Z' TO CRYSTALS
+%      COPY 'END'
+%% Compute distorted R value, etc.
+%      COPY '#SFLS'
+%      COPY 'SCALE'
+%      COPY 'END'
+%      COPY '#SFLS'
+%      COPY 'SCALE'
+%      COPY 'END'
+%      COPY '#SFLS'
+%      COPY 'CALC'
+%      COPY 'END'
+%% Log the distorted R-value, etc.
+%      EVALUATE PERT = SQRT ( 3.0 * ( DIST_START ** 2.0 ) )
+%      COPY '#SCRIPT CHRIS-LOGDATA'
+%%
+%% Save the distorted structure.
+%      COPY '#RELEASE PUNCH saved-str.pch'
+%      COPY '#PUNCH 5'
+%      COPY 'END'
+%%
+%% Re-open our log file.
+%      TRANSFER '#APPEND PUNCH ' // PCHFILE TO CRYSTALS
+%%
+%% Setup a default refinement of all X's.
+%%
+%      COPY '#LIST 12'
+%      COPY "FULL X'S"
+%      COPY 'END'
+%%
+%% Now loop over the weight mods.
+%%
+%      EVALUATE WMOD = MOD_START
+%      LOOP MOD_LOOPS TIMES
+%% Read in the distorted structure.
+%        COPY '#PURGE'
+%        COPY 'END'
+%        COPY '#USE saved-str.pch'
+%% Setup the weighting scheme.
+%        COPY '#LIST 4'
+%        TRANSFER 'SCHEME 9 DS2=' // CHARACTER ( WMOD ) TO CRYSTALS
+%        COPY 'END'
+%%
+%% Now do the refinement, logging after each cycle.
+%%
+%        LOOP 8 TIMES
+%          EVALUATE CYCNO = LOOPCOUNTER
+%          COPY '#SFLS'
+%          COPY 'REFINE'
+%          COPY 'END'
+%          COPY '#SCRIPT CHRIS-LOGDATA'
+%        END LOOP
+%        EVALUATE WMOD = WMOD + MOD_STEP
+%      END LOOP
+%    END LOOP
+%    EVALUATE DIST_START = DIST_START + DIST_STEP
+%  END LOOP
+%END SCRIPT

@@ -1,0 +1,43 @@
+%SCRIPT xwilson
+^^WI WINDOW xwilson 'Wilson Plot' MODAL KEEP SIZE
+^^WI COMMIT='WIL_BOK' CANCEL='^^CO DISPOSE xwilson'
+^^WI GRID MAIN NROWS=2 NCOLS=1
+^^WI {
+^^WI  @ 1,1 GRID PRIME NROWS=7 NCOLS=3
+^^WI  {
+^^WI   @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
+^^WI   {
+^^WI    @ 1,3 GRID EXP2 NROWS=4 NCOLS=1
+^^WI    {
+^^WI       @ 1,1 STATIC XFW1
+^^WI 'You are looking at a Wilson Plot; Diffraction angle (or rho) runs down'
+^^WI       @ 2,1 STATIC XFW2
+^^WI 'the vertical axis. Log of actual scattering over expected scattering'
+^^WI       @ 3,1 STATIC XFW2
+^^WI 'is plotted at each angle. Slope is due to fall off of actual scattering'
+^^WI       @ 4,1 STATIC XFW2
+^^WI 'with angle, intercept is due to arbitrary scaling of intensity data.'
+^^WI    }
+^^WI    @ 1,1 ICON IM INFO
+^^WI   }
+^^WI   @ 4,2 PLOTWINDOW _VWILSON NROWS=20 NCOLS=64
+^^WI   @ 6,2 GRID GSTAT NROWS=1 NCOLS=11
+^^WI   {
+^^WI     @ 1,1 STATIC WBFS 'B factor:'
+^^WI     @ 1,3 STATIC _MW_BFACTR '0000.0000'
+^^WI     @ 1,5 STATIC WBFS 'Scale:'
+^^WI     @ 1,7 STATIC _MW_BSCALE '0000.0000'
+^^WI     @ 1,9 STATIC WBFS 'MOD(E**2-1)'
+^^WI     @ 1,11 STATIC _MW_E2MIN1 '000000.000'
+^^WI   }
+^^WI  }
+^^WI  @ 2,1 PROGRESS _WILSONPR 'Please wait'
+^^WI }
+^^WI SHOW
+^^CR
+^^CO SENDPROGRESSTO _WILSONPR
+% COPY '#WILSON'
+% COPY 'OUTPUT PLOT=YES STATS=YES'
+% COPY 'END'
+%END SCRIPT
+

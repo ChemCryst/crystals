@@ -1,0 +1,110 @@
+%SCRIPT INRC93  %Script for quick input of CAD4 data%
+%  VARIABLE CHARACTER FILENAME SCFNAME HKLNAME ABSNAME
+%  VARIABLE INTEGER INBASICS SOLVEMETHOD
+ AUTOMATIC INPUT OF CAD4 DATA
+ -------   ----- -- ---- ----
+%  BLOCK
+%    ON ERROR REPEAT
+%    VERIFY YES NO
+%      GET FINAL ABBREVIATED  -
+    'Do you have the necessary information' 'YES'
+%    IF ( VALUE .NE. 1 ) THEN
+%      FINISH
+%    END IF
+%  END BLOCK
+%  BLOCK
+%    COPY '#DISK'
+%    COPY 'EXTEND SIZE = 10 TRIES  = 1000'
+%    COPY 'END'
+Files INITIAL.* will be created in your directory. They may be important.
+%    COPY '#RELEASE PRINT INITIAL.LIS'
+%    COPY '#RELEASE LOG INITIAL.DAT'
+%  END BLOCK
+%%
+%  BLOCK
+%    ON END TERMINATE
+%    ON ERROR REPEAT
+%    CLEAR
+  You must know the name of your files, e.g.
+      XTL11ZAP.SCF, XTL11ZAP.HKL,
+               Give ONLY the specific part, e.g. XTL11ZAP or [CAD4]XTL11ZAP
+%    GET FINAL KEYWORD 'Enter  filename'
+%    EVALUATE FILENAME = CVALUE
+%    EVALUATE SCFNAME = FILENAME // '.SCF'
+%    EVALUATE HKLNAME = FILENAME // '.HKL'
+%    EVALUATE ABSNAME = FILENAME // '.ABS'
+%    TRANSFER '#USE ' //  SCFNAME // ' ' TO CRYSTALS
+SCF file finished
+%    TRANSFER '#OPEN HKLI ' //  HKLNAME // ' ' TO CRYSTALS
+HKL file attached to UNIT HKLI
+%    TRANSFER '#USE ' //  ABSNAME // ' ' TO CRYSTALS
+ABS file used...
+%    BLOCK
+%      ON ERROR REPEAT
+%%     CHECK THAT THE BASIC DATA IS READ IN OK
+ ------------------------------------------------------------------------
+       NB RC93 creates both LIST30 and LIST31 automatically.
+        DO NOT MODIFY THEM or this information will be lost
+ ------------------------------------------------------------------------
+%      COPY '#SCRIPT INBASICS'
+%      IF INBASICS .NE. 1 THEN
+%        FINISH
+%      END IF
+%    END BLOCK
+%%
+%    BLOCK
+%      ON ERROR REPEAT
+%      IF ( EXISTS 14 .NE. 1 ) THEN
+%        VERIFY YES NO
+%      GET FINAL ABBREVIATED  -
+  'Do you know the asymmetric part of the unit cell?' 'YES'
+%        IF ( VALUE .EQ. 1 ) THEN
+%          COPY '#SCRIPT INLIST14'
+%        ELSE
+  You will need this information later when you do Fourier maps. Look in
+  International Tables before then.
+%        END IF
+%      END IF
+%    END BLOCK
+%%
+%    COPY '#LIST 4'
+%    COPY 'END'
+%
+%%
+%  END BLOCK
+%%
+            * Applying Lp corection
+%COPY '#LP'
+%COPY 'END'
+            * Checking systematic absences
+%COPY '#SYSTEMATIC'
+%COPY 'END'
+            * Sorting data
+%COPY '#SORT'
+%COPY 'END'
+            * Merging equivalent reflections
+%    COPY '#MERGE'
+%    COPY 'WEIGHT SCHEME=2 NPARAM=6'
+%    COPY 'PARAM 0.5 3.0 1.0 2.0 0.01 0.00001'
+%    COPY 'REFLECTIONS NJCODE = 3'
+%    COPY 'JCODE 3 VALUE = 0.0'
+%    COPY 'JCODE 4 VALUE = 0.0'
+%    COPY 'JCODE 8 VALUE = 0.0'
+%    COPY 'END'
+%    COPY '#LIST 28'
+%    COPY 'MINIMA RATIO = 3'
+%    COPY 'END'
+%    COPY '#LIST 6'
+%    COPY 'READ TYPE = COPY'
+%    COPY 'END'
+%    COPY '#PUNCH 6'
+%    COPY 'END'
+%    COPY '#LIST 4'
+%    COPY 'END'
+%    COPY '#WEIGHT'
+%    COPY 'END'
+%    COPY '#RELEASE PRINT'
+%%
+%%
+%  ON ERROR REPEAT
+%END SCRIPT

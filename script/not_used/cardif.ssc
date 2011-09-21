@@ -1,0 +1,399 @@
+%SCRIPT DIFABS
+%  VARIABLE INTEGER MODE DIFFRACT SOURCE
+%  VARIABLE LOGICAL RECOMPUTE
+%  EVALUATE RECOMPUTE = FALSE
+ ----------------------------------------------------------------------
+ This script is MODIFIED from the original one to take into account the 
+ local raw data input card format for Nottingham OR THE CARDIFF /Fo/**2
+(3F4.0, 2F8.0) FORMAT (S92.HKL files).  Note that it does not
+ offer the usual option for inputting Psi-curves data.  
+ 
+ You MUST ALREADY HAVE an orientation matrix stored in list 13 (Diffraction
+ conditions).  IF NOT, you MUST abandon this script at the prompt
+ below, run #script inlist13 and answer 'yes' to the question concerning
+ application of an absorption correction.  A 'guestimated' orientation
+ matrix may be obtained as the top matrix from record 106 in list 1 
+ (#print 1).  The true one may be obtained from the diffractometer output 
+ directly or computed by CRYSTALS by the user inputting the setting angles 
+ of two or three approximately orthogonal reflections. 
+							       
+ ---------------------------------------------------------------------
+
+%%
+%    BLOCK
+%      ON ERROR REPEAT
+%      VERIFY YES NO
+%      GET NOSTORE YESNO 'Do you want to continue with DIFABS' 'YES'
+%      IF ( VALUE .NE. 1 ) THEN
+%        FINISH
+%      END IF
+%    END BLOCK
+%%
+
+ ----------------------------------------------------------------------
+ In principle, DIFABS should be applied to data which has not had the
+ reflection indices modified in any way, including applying symmetry
+ or Friedels Law. Exactly equivalent reflections (multiple observations)
+ may have been merged.
+     The refinement should have been completed with as many atoms as can
+ be located or geometrically placed, with ISOTROPIC temperature factors.
+ HOWEVER -
+     If the original data were bye and large from one asymmetric part of
+ the lattice only, i.e. only a small percentage equivalent reflections
+ (perhaps the -1 zones in Oxford), then DIFABS may give an acceptable
+ result on merged data. If anisotropic refinement has been performed,
+ the script can restore equivalent isotropic atoms.
+ -----------------------------------------------------------------------
+
+%    CLEAR
+%    INSERT '#PAUSE 4'
+%    SEND
+%    CLEAR
+%%
+ The SCRIPT provides four possibilities.
+
+    1) Compute the DIFABS correction surface, but don't apply it.A useful
+       preliminary.
+    2) Apply DIFABS to the current LIST 6, over writing the stored values
+       for Fo. This leads to no net increase in the size of the Disk file.
+       NOTE WELL.  DIFABS PERMANENTLY MODIFIES THE STORED VALUES OF Fo.
+    3) Apply DIFABS to the current LIST 6, writing a new LIST 6 to your
+       Disk file. This leads to a net increase in the size of the Disk file.
+    4) Reinput the reflection data, apply DIFABS, and then merge the data.
+       You will need to have your original reflection data files available
+       and online, and know their FULL filename specification.
+
+%%
+%    BLOCK
+%      ON ERROR REPEAT
+%      VERIFY YES NO
+%      GET NOSTORE YESNO 'Do you want to continue with DIFABS' 'YES'
+%      IF ( VALUE .NE. 1 ) THEN
+%        FINISH
+%      END IF
+%    END BLOCK
+%%
+%    VERIFY YES NO
+%    GET NOSTORE YESNO 'Do you want to convert to isotropic atoms?' 'YES'
+%    IF ( VALUE .EQ. 1 ) THEN
+%      EVALUATE RECOMPUTE = TRUE
+      We will save your original LIST 5, (atoms) in case you need it later
+%      COPY '#DISK'
+%      COPY 'RETAIN 5'
+%      COPY 'END'
+%      COPY '#EDIT'
+%      COPY 'UEQUIV FIRST UNTIL LAST'
+%      COPY 'END'
+%    END IF
+%%
+%    BLOCK
+ 
+    You must state whether the CAD4 or Y290 was used to collect the data
+
+    If the data is from Cardiff then you should answer 'CAD4'
+
+%        ON ERROR REPEAT
+%        VERIFY Y290 CAD4
+%        GET FINAL ABBREVIATED 'Diffractometer used ?' 
+%        EVALUATE DIFFRACT = VALUE
+%    END BLOCK
+%%
+%    BLOCK
+%      COPY '#RELEASE PRINT DIFABS.LIS'
+%      ON ERROR TERMINATE
+  
+  You now have choice of using the existing LIST 6, or re-inputting the data.
+%    VERIFY YES NO
+%    GET NOSTORE FINAL YESNO 'Do you want use the existing LIST 6' 'NO'
+%      IF ( VALUE .EQ. 1 ) THEN
+%    COPY '#LIST 28'  
+%    COPY 'END'
+
+  You must decide if you only want to test the correction, to overwrite
+  the existing LIST 6, or generate a new LIST 6.
+
+%        VERIFY TEST OVERWRITE NEW
+%        GET FINAL ABBREVIATED 'Mode required' 'OVERWRITE'
+%        EVALUATE MODE = VALUE
+%%
+%%  Do a CALC here in case a new list 6, e.g. from
+%%  '#use list6.dat', has been input and no /Fc/s are stored
+
+   Checking that the required LIST 6 data (/Fc/ etc) are up to date
+%          COPY '#LIST 4'
+%          COPY 'END'
+%          COPY '#SFLS'
+%          COPY 'SCALE'
+%%          COPY '#SFLS'
+%          COPY 'CALCULATE'
+%          COPY 'END'
+%%
+%        IF ( MODE .EQ. 2 ) THEN
+%          COPY '#DIFABS UPDATE'
+%        ELSE IF ( MODE .EQ. 3 ) THEN
+%          COPY '#DIFABS NEW'
+%        ELSE
+%          COPY '#DIFABS TEST'
+%        END IF
+%        VERIFY YES NO
+%        GET NOSTORE YESNO 'Do you want a theta correction?' 'NO'
+%        IF ( VALUE .EQ. 1 ) THEN
+%          COPY 'CORRECTION THETA = YES'
+%        END IF
+%        IF ( DIFFRACT .EQ. 1 ) THEN
+%          COPY 'DIFFRACTION GEOMETRY=PICKER'                  
+%        END IF
+%        COPY 'END'
+   
+  We shall now save the new DIFABS modified LIST 6 as DIFABS.L6
+  You may read this in again at any later date with '#USE DIFABS.L6'
+
+%      COPY '#RELE PUNCH DIFABS.L6'
+%      COPY '#PUNCH 6'
+%      COPY 'END'
+%      COPY '#RELE PUNCH CRFILE.PCH' 
+%%
+%      COPY '#SCRIPT INLIST28'
+%%
+%      ELSE
+%        VERIFY YES NO
+%        GET NOSTORE YESNO 'Do you want to re-input LIST 6' 'YES'
+%        IF ( VALUE .EQ. 1 ) THEN
+%%
+%%     Decide if using Nottingham or Cardiff data
+%            BLOCK
+%           ON ERROR REPEAT
+      You can either input local 'Nottingham' data or Cardiff /Fo/**2 
+      (3F4.0, 2F8.0) data. Other data formats are NOT currently accepted 
+      and you must answer 'NEITHER' to the following question
+
+%     VERIFY CARDIFF NOTT NEITHER
+%  GET FINAL ABBREVIATED -
+   'Is the data from CARDIFF, NOTTingham or NEITHER '
+%           EVALUATE SOURCE = VALUE
+%          END BLOCK
+%%
+%        IF  ( SOURCE .EQ. 3 ) THEN
+	
+	We cannot proceed with inputting a new List 6
+	The only alternative left is to abandon DIFABS
+
+%          COPY '#RELEASE PRINT CRFILE.LIS'
+%            IF RECOMPUTE .EQ. TRUE THEN
+%              COPY '#DISK'
+%              COPY 'RESET 5 0 -1'
+%              COPY 'END'
+%            END IF
+%          FINISH
+%        END IF
+%%
+
+    We will delete the old LIST 6 to make room for the new
+%          COPY '#DISK'
+%          COPY 'DELETE 6'
+%          COPY 'END'
+%          COPY '#PURGE'
+%          COPY 'END'
+%%
+%      IF ( SOURCE .EQ. 2 ) THEN
+%          BLOCK
+%            ON ERROR RESTART
+%            CLEAR
+%            INSERT '#OPEN HKLI'
+%            GET FINAL FILENAME -
+      'Name of file containing reflections (HKLI file) '
+%            SEND
+%          END BLOCK
+%%
+%          CLEAR
+%          COPY '#HKLI'
+%          COPY 'READ 11 UNIT=HKLI'
+% COPY 'INPUT H K L /FO/ SIGMA(/FO/) JCO SER BATCH FACTOR1 FACTOR2 FACTOR3'
+%          COPY 'FORMAT (F5.0,2F4.0,2F9.0,F4.0,2F6.0,3F8.4)'
+%          COPY 'CORRECTIONS NSCALE=0 NFACTOR=0'
+%%          COPY 'FACTORS FACTOR1'
+%          COPY 'END'
+%          COPY '#CLOSE HKLI'
+%          COPY  'END'
+%          COPY '#SYSTEMATIC'
+%%    dont fiddle with the indices
+%          COPY 'STORE NEWIND=NO'
+%          COPY 'END'
+%          COPY '#LIST 28'
+%          COPY 'END'
+%          COPY '#LIST 6'
+%          COPY 'READ TYPE=COPY'
+%%  build a list 6 with slots for all data on the work file
+%          COPY 'STORE NCOEF=7 MEDIUM = INPUT'
+%  COPY 'OUTPUT INDICES /FO/ WEIGHT /FC/ SIGMA(/FO/) BATCH/PHASE RATIO/JCODE'
+%          COPY 'END'
+%     END IF
+%%
+%  IF ( SOURCE .EQ. 1 ) THEN
+%% Get the hkl data filename
+%      BLOCK
+%        ON ERROR REPEAT
+%        CLEAR
+%        INSERT '#OPEN HKLI'
+%        GET FINAL FILENAME -
+      
+      'Filename of file containing /Fo/**2 reflections' 'S92.HKL'
+%       SEND
+%    END BLOCK
+%%
+%  BLOCK
+%     QUEUE REWIND
+%     CLEAR
+%     INSERT "READ  F'S=NO NCOEF = 5 TYPE = FIXED CHECK = NO"
+%     QUEUE SEND
+%     CLEAR
+%     INSERT 'INPUT H K L /FO/ SIGMA(/FO/) '
+%     QUEUE SEND
+%     CLEAR
+%     INSERT 'FORMAT (3F4.0, 2F8.0)'
+%     QUEUE SEND
+%   END BLOCK
+%%
+%     COPY '#HKLI'
+%     QUEUE PROCESS
+%     COPY 'END'
+%     COPY '#CLOSE HKLI'
+%%
+%     COPY '#SYSTEMATIC'
+%%    dont fiddle with the indices
+%         COPY 'STORE NEWIND=NO'
+%         COPY 'END'
+%         COPY '#LIST 28'
+%         COPY 'END'
+%         COPY '#LIST 6'
+%         COPY 'READ TYPE=COPY'
+%%  build a list 6 with slots for all data on the work file
+%          COPY 'STORE NCOEF=7 MEDIUM = INPUT'
+%  COPY 'OUTPUT INDICES /FO/ WEIGHT /FC/ SIGMA(/FO/) BATCH/PHASE RATIO/JCODE'
+%          COPY 'END'
+%       END IF
+%%      
+%%      The processed data should now be ready to use
+%%
+%          COPY '#LIST 4'
+%          COPY 'END'
+%          COPY '#WEIGHT'
+%          COPY 'END'
+%%
+
+     Updating LIST 6 ....
+
+%          COPY '#SFLS'
+%          COPY 'SCALE'
+%          COPY 'CALCULATE'
+%          COPY 'END'
+%%
+
+     Starting the DIFABS routine ...
+
+%          COPY '#DIFABS UPDATE'
+%          VERIFY YES NO
+%          GET NOSTORE YESNO 'Do you want a theta correction?' 'NO'
+%          IF ( VALUE .EQ. 1 ) THEN
+%            COPY 'CORRECTION THETA = YES'
+%          END IF
+%          IF ( DIFFRACT .EQ. 1 ) THEN
+%            COPY 'DIFFRACTION GEOMETRY=PICKER'                  
+%          END IF
+%          COPY 'END'
+
+     Removing systematic absences and sorting the data ...
+
+%          COPY '#SYSTEMATIC'
+%          COPY 'END'
+%          COPY '#SORT'
+%          COPY 'END'
+
+ ------------------------------------------------------------------
+		 MERGING OF EQUIVALENT REFLECTIONS 
+ 
+ It is possible to merge reflections such that rogue /Fo/ values
+ are down-weighted. So if one /Fo/ value differs considerably from
+ the mean value it's significance is scaled down.  This approach  
+ ought to lead to a lower merging R value.  To try out this option
+ answer 'YES' to the next question concerning merging with weights.
+ Otherwise answer 'NO' to this question to merge with unit weights 
+ -----------------------------------------------------------------pm
+
+%    VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+    'Do you wish to merge reflections with weights applied ?' 
+%  IF VALUE .EQ. 1 THEN
+%
+	  
+      Weighted merging of equivalent reflections ...
+%      CLEAR
+%      COPY '#MERGE'
+%% with weighted merging scheme 
+%      COPY 'WEIGHT SCHEME = 2 NPARAM = 6'
+%      COPY 'PARAM 0.5 3.0 1.0 2.0 0.01 0.00001'
+%      COPY 'END'
+%  ELSE
+
+      Merging equivalent reflections without weights ...
+
+%      COPY '#MERGE'
+%      COPY 'END'
+%    END IF
+%      COPY '#LIST 6'
+%      COPY 'READ TYPE=COPY'
+%      COPY 'END'
+   
+  We shall now save the new DIFABS modified LIST 6 as DIFABS.L6
+  You may read this in again at any later date with '#USE DIFABS.L6'
+
+%      COPY '#RELE PUNCH DIFABS.L6'
+%      COPY '#PUNCH 6'
+%      COPY 'END'
+%      COPY '#RELE PUNCH CRFILE.PCH' 
+%      COPY '#SCRIPT INLIST28'
+%%
+%      ELSE
+      
+    You have chosen not to use your existing LIST 6, nor to input
+    a new one. The only alternative left is to abandon DIFABS
+
+%          COPY '#RELEASE PRINT CRFILE.LIS'
+%          IF RECOMPUTE .EQ. TRUE THEN
+%            COPY '#DISK'
+%            COPY 'RESET 5 0 -1'
+%            COPY 'END'
+%%  No need to worry about F's because we haven't recomputed LIST6
+%          END IF
+%          FINISH
+%        END IF
+%      END IF
+%%
+%      IF RECOMPUTE .EQ. TRUE THEN
+    
+     Restoring the orginal model ...
+
+%         COPY '#DISK'
+%         COPY 'RESET 5 0 -2'
+%         COPY 'END'
+     Updating LIST 6...
+
+%         COPY '#SFLS'
+%         COPY 'SCALE'
+%         COPY 'CALCULATE'
+%         COPY 'END'
+%%   avoid doing #sfls calc end twice by making sure MODE .eq. 1
+%        EVALUATE MODE = 1
+%      END IF
+%    IF ( MODE .NE. 1 ) THEN
+
+    Updating LIST 6...
+
+%         COPY '#SFLS'
+%         COPY 'SCALE'
+%         COPY 'CALCULATE'
+%         COPY 'END'
+%    END IF
+%    COPY '#RELEASE PRINT CRFILE.LIS'
+%    END BLOCK
+%  END SCRIPT

@@ -1,0 +1,216 @@
+%SCRIPT DIFABS
+%  VARIABLE INTEGER ABSORPTION MODE OLDSER
+%  VARIABLE LOGICAL RECOMPUTE
+%  EVALUATE RECOMPUTE = FALSE
+%  VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ 
+  In principle, DIFABS should be applied to data which has not had the
+  reflection indices modified in any way, including applying symmetry
+  or Friedels Law. Exactly equivalent reflections (multiple observations)
+  may have been merged.
+      The refinement should have been completed with as many atoms as can
+  be located or geometrically placed, with ISOTROPIC temperature factors.
+  HOWEVER _
+      If the original data were by and large from one asymmetric part of
+  the lattice only, i.e. only a small percentage equivalent reflections
+  (perhaps the -1 zones in Oxford), then DIFABS may give an acceptable
+  result on merged data. If anisotropic refinement has been performed,
+  the script can restore equivalent isotropic atoms.
+ 
+%   COPY '#PAUSE 10'
+% ELSE
+    Script to help running DIFABS in CRYSTALS
+% END IF
+%  COPY '#PAUSE 5'
+  The SCRIPT provides four possibilities.
+    1) Compute the DIFABS correction surface, but dont apply it.A usefull
+       preliminary.
+    2) Apply DIFABS to the current LIST 6, over writing the stored values
+       for Fo. This leads to no net increase in the size of the Disk file.
+       NOTE WELL.  DIFABS PERMENANTLY MODIFIES THE STORED VALUES OF Fo.
+    3) Apply DIFABS to the current LIST 6, writing a new LIST 6 to your
+       Disk file. This leads to a net increase in the size of the Disk file.
+    4) Reinput the reflection data, apply DIFABS, and then merge the data.
+       You will need to have your original .HKL and .ABS files available
+       and online, and know their FULL filename specification.
+%%
+%    BLOCK
+%      ON ERROR REPEAT
+%      VERIFY YES NO
+%      GET NOSTORE YESNO 'Do you want to continue with DIFABS' 'YES'
+%      IF ( VALUE .NE. 1 ) THEN
+%        FINISH
+%      END IF
+%    END BLOCK
+%%
+%    VERIFY YES NO
+%    GET NOSTORE YESNO 'Do you want to convert to isotropic atoms?' 'YES'
+%    IF ( VALUE .EQ. 1 ) THEN
+%      EVALUATE RECOMPUTE = TRUE
+      We will save your original LIST 5, (atoms) in case you need it later
+%      COPY '#GENERALEDIT 5'
+%      COPY 'GETSERIAL OLDSER'
+%      COPY 'END'
+%      COPY '#EDIT'
+%      COPY 'UEQUIV FIRST UNTIL LAST'
+%      COPY 'END'
+%    END IF
+%%
+%    BLOCK
+%      COPY '#RELEASE PRINT DIFABS.LIS'
+%      ON ERROR TERMINATE
+  You now have choice of using the existing LIST 6, or re-inputting the data.
+%      VERIFY YES NO
+%      GET NOSTORE FINAL YESNO 'Do you want use the existing LIST 6' 'YES'
+%      IF ( VALUE .EQ. 1 ) THEN
+    You must decide if you only want to test the correction, to overwrite
+    the existsing LIST 6, or generate a new LIST 6.
+%        VERIFY TEST OVERWRITE NEW
+%        GET FINAL ABBREVIATED 'Mode required' 'OVERWRITE'
+%        EVALUATE MODE = VALUE
+%%
+%        IF RECOMPUTE .EQ. TRUE THEN
+%          COPY '#SFLS'
+%          COPY 'SCALE'
+%          COPY 'CALCULATE'
+%          COPY 'END'
+%        END IF
+%%
+%        IF ( MODE .EQ. 2 ) THEN
+%          COPY '#DIFABS UPDATE'
+%        ELSE IF ( MODE .EQ. 3 ) THEN
+%          COPY '#DIFABS NEW'
+%        ELSE
+%          COPY '#DIFABS TEST'
+%        END IF
+%        VERIFY YES NO
+%        GET NOSTORE YESNO 'Do you want a theta correction?' 'NO'
+%        IF ( VALUE .EQ. 1 ) THEN
+%          COPY 'CORRECTION THETA = YES'
+%        END IF
+%        COPY 'END'
+%%
+%      ELSE
+%        VERIFY YES NO
+%        GET NOSTORE YESNO 'Do you want to re-input LIST 6' 'YES'
+%        IF ( VALUE .EQ. 1 ) THEN
+    We will delete the old LIST 6 to make room for the new.
+%          COPY '#DISK'
+%          COPY 'DELETE 6'
+%          COPY 'END'
+%          COPY '#PURGE'
+%          COPY 'END'
+%          VERIFY YES NO
+%        GET FINAL YESNO -
+' Do you want to reinput the file of basic data?' 'YES'
+%          IF VALUE .EQ. 1 THEN
+%          BLOCK
+%            ON ERROR RESTART
+%            CLEAR
+%            INSERT '#USE '
+%            GET FINAL FILENAME -
+      'Name of file containing BASIC DATA (.SCF file) '
+%            SEND
+%          END BLOCK
+%          END IF
+%          BLOCK
+%            ON ERROR RESTART
+%            CLEAR
+%            INSERT '#OPEN HKLI'
+%            GET FINAL FILENAME -
+      'Name of file containing reflections (HKLI file) '
+%            SEND
+%          END BLOCK
+%%
+%          CLEAR
+%          VERIFY YES NO
+%        GET FINAL YESNO 'Do you want to also use the absoption curve?' 'NO'
+%          EVALUATE ABSORPTION = VALUE
+%          IF ABSORPTION .EQ. 1 THEN
+%            BLOCK
+%              ON ERROR RESTART
+%              CLEAR
+%              INSERT '#USE'
+%              GET FINAL FILE -
+   'Instruction file for absorption correction ([CAD4]XTLn.ABS)'
+%              SEND
+%            END BLOCK
+%          ELSE
+%            COPY '#HKLI'
+%            COPY 'END'
+%            COPY '#CLOSE HKLI'
+%          END IF
+%
+%          COPY '#LP'
+%          COPY 'END'
+%          COPY '#SYSTEMATIC'
+%%    dont fiddle with the indices
+%          COPY 'STORE NEWIND=NO'
+%          COPY 'END'
+%          COPY '#LIST 28'
+%          COPY 'END'
+%          COPY '#LIST 6'
+%          COPY 'READ TYPE=COPY'
+%%  build a list 6 with slots for all data on the work file
+%% probably now set as defaults Dec-96
+%%          COPY 'STORE NCOEF=7 MEDIUM = INPUT'
+%%  COPY 'OUTPUT INDICES /FO/ WEIGHT /FC/ SIGMA(/FO/) BATCH/PHASE RATIO/JCODE'
+%          COPY 'END'
+%          COPY '#LIST 4'
+%          COPY 'END'
+%          COPY '#WEIGHT'
+%          COPY 'END'
+%%
+%            COPY '#SFLS'
+%            COPY 'SCALE'
+%            COPY 'CALCULATE'
+%            COPY 'END'
+%%
+%          COPY '#DIFABS UPDATE'
+%          VERIFY YES NO
+%          GET NOSTORE YESNO 'Do you want a theta correction?' 'NO'
+%          IF ( VALUE .EQ. 1 ) THEN
+%            COPY 'CORRECTION THETA = YES'
+%          END IF
+%          COPY 'END'
+%          COPY '#SYSTEMATIC'
+%          COPY 'END'
+%          COPY '#SORT'
+%          COPY 'END'
+%          COPY '#MERGE'
+%          COPY 'WEIGHT SCHEME=2 NPARAM=6'
+%          COPY 'PARAM 0.5 3.0 1.0 2.0 0.01 0.00001'
+%          COPY 'END'
+%          COPY '#LIST 6'
+%          COPY 'READ TYPE=COPY'
+%          COPY 'END'
+%          COPY '#LIST 28'
+%          CLEAR
+%          INSERT 'MINIMA RATIO = '
+%          GET FINAL REAL 'Enter RATIO (I/sigma(I)) for LIST 28'  '3.0'
+%          SEND
+%          COPY 'END'
+%
+%        ELSE
+      You have chosen not to use your existing LIST 6, nor input a new one.
+              The  only alternative left is to abandon DIFABS
+%          COPY '#RELEASE PRINT '
+%          FINISH
+%        END IF
+%      END IF
+%        IF RECOMPUTE .EQ. TRUE THEN
+%          IF OLDSER .LT. 0 THEN
+%            EVALUATE OLDSER = - OLDSER
+%          END IF
+%          COPY '#DISK'
+%          TRANSFER 'RESET 5 ' // CHARACTER OLDSER TO CRYSTALS
+%          COPY 'END'
+%          COPY '#SFLS'
+%          COPY 'SCALE'
+%          COPY 'CALCULATE'
+%          COPY 'END'
+%        END IF
+%    COPY '#RELEASE PRINT '
+%    END BLOCK
+%  END SCRIPT
