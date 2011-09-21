@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.31  2011/05/18 11:49:01  rich
+C DJW: extension to L29 to include version info.
+C RIC: found bug in Weighting SCHEME 17 - read L30 value for Nparams without loading L30 first.
+C
 C Revision 1.30  2011/04/04 09:21:07  djw
 C Clarify output text about anomalous scatterers.
 C
@@ -2668,7 +2672,7 @@ C
 C
 C----- TO HOLD REAL FORMAT EXPRESSION
       CHARACTER *8 CFMTXP
-      CHARACTER *4 CTMP, CARG, CARGU
+      CHARACTER *4 CTMP, CARG, CARGU, CUPA
 C
 C
       INCLUDE 'ISTORE.INC'
@@ -2961,8 +2965,9 @@ C     READ WHOLE FILE FOR EACH ELEMENT
       IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 5401
 5401  CONTINUE
 C----- CHECK FIRST FOUR CHARACERS ONLY - REMEMBER CINPBF IS MIXED CASE
+      CALL XCCUPC(CINPBF(1:LENSER),CUPA)
       IF ( (CINPBF(1:LENSER) .NE. CARG(1:LENSER)) .AND.
-     1 (CINPBF(1:LENSER) .NE. CARGU(1:LENSER)) ) THEN
+     1 (CUPA(1:4) .NE. CARGU(1:LENSER)) ) THEN
 C----- NO MATCH SKIP REQUIRED NUMBER OF LINES
         DO 5420 I = 2,NLINES
         IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 5402
