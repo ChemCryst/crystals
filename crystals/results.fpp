@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.182  2011/09/01 13:09:56  djw
+C Create subroutine XCIF2 in PUNCH.FPP to output LIST 2 in cif format for use in fcf (and in cif) files
+C
 C Revision 1.181  2011/08/31 15:42:56  rich
 C Removed uninitialised variables from #TON
 C
@@ -4460,7 +4463,9 @@ C
       CHARACTER*35 CPAGE(NROW,NCOL)
       CHARACTER*76 CREFMK
       PARAMETER (IDIFMX=11)
+      PARAMETER (IREDMX=7)
       DIMENSION IREFCD(3,IDIFMX)
+      DIMENSION IREDCD(IREDMX)
 CAVDL more solution packages in cif-goodies
       PARAMETER (ISOLMX=10)
       DIMENSION ISOLCD(ISOLMX)
@@ -4537,6 +4542,10 @@ C------ REFERENCE CODES FOR THE DIFFRACTOMETERS
       DATA IREFCD /4,5,6, 13,24,13, 13,24,13, 25,17,17, 15,17,17,
      1 26,27,27, 20,19,20,  37,36,36, 45,45,45, 47,36,36,
      2 48,36,36  /
+C UNKNOWN RC93 DENZO SHELX XRED CRYSALIS SAINT
+C   1       2    3     4     5      6      7
+C------ REFERENCE CODES FOR DATA REDUCTION
+      DATA IREDCD /5,24,17,27,19,36,45/
 C------ REFERENCE CODES FOR DIRECT METHODS
 CAVDLdec06 updating references in reftab.sda with numbers 42, 43, and 44
       DATA ISOLCD /1,18,30,11,22,28,29,42,43,44/
@@ -5334,6 +5343,14 @@ C----- PARAMETER 13 ON DIRECTIVE 2 IS A CHATACTER STRING: DIFFRACTOMETER MAKE
         IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
      1    IVAL,JVAL,VAL,JTYPE)
         IDIFNO = IVAL+1
+
+C----- PARAMETER 13 ON DIRECTIVE 1 IS A CHATACTER STRING: REDUCTION NAME
+        IPARAM=13
+        IDIR=1
+        IVAL=ISTORE(L30DR+IPARAM-1)
+        IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
+     1    IVAL,JVAL,VAL,JTYPE)
+        IREDNO = IVAL+1
 c
 c
 c
@@ -5893,7 +5910,7 @@ C
 C
 C
         IF ( IPUNCH .EQ. 0 ) THEN
-           IVAL = IREFCD(2,IDIFNO)
+           IVAL = IREDCD(IREDNO)
            CTEMP = CREFMK(ISTORE(LREFS), NREFS, MDREFS, IVAL)
            CALL XCTRIM (CTEMP,NCHAR)
            WRITE (CLINE,'(''_computing_data_reduction'' )') 
