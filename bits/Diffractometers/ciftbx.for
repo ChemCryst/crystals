@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.2  2011/05/17 16:00:16  djw
+C Enable long lines, up to 512 characters
+C
 C           
 C
 C    \ | /            /##|    @@@@  @   @@@@@    |      | 
@@ -268,10 +271,10 @@ C
 #include "ciftbx.sys"
          logical   dict_,data_,open_,char_
 cdjw may2011
-         character locase*linlen
+         character locase*(linlen)
          character fname*(*),checks*(*)
 cdjw may2011
-         character temp*24,codes(4)*5,name*linlen
+         character temp*24,codes(4)*5,name*(linlen)
          integer   idict,i,j
          data codes /'valid','dtype','     ','     '/
 C
@@ -338,7 +341,7 @@ C
          integer   case,i
 C
 cdjw may2011
-         jchar=linlen
+         jchar=(linlen)
          nrecd=0
          lrecd=0
          case=ichar('a')-ichar('A')
@@ -363,7 +366,7 @@ C
          open(unit=cifdev,file=fname,status='OLD',access='SEQUENTIAL',
      *                    form='FORMATTED')
          open(unit=dirdev,status='SCRATCH',access='DIRECT',
-     *                    form='FORMATTED',recl=linlen)
+     *                    form='FORMATTED',recl=(linlen))
 C
 C....... Copy the CIF to the direct access file
 C
@@ -390,10 +393,10 @@ C
          logical   data_
          character name*(*),flag*4,temp*32,ltype*4
 cdjw may2011
-         character locase*linlen
+         character locase*(linlen)
          integer   ndata,idata,nitem,npakt,i,j
 C
-         jchar=linlen
+         jchar=(linlen)
          jrecd=0
          nname=0
          ndata=0
@@ -494,7 +497,7 @@ C
 230      if(type_.ne.'text')           goto 200
          dchar(ndata)=0
 cdjw may2011
-         if(nloop(ndata).eq.0) iloop(ndata)=linlen
+         if(nloop(ndata).eq.0) iloop(ndata)=(linlen)
 250      call getlin(flag)
          if(buffer(1:1).eq.';')       goto 200
          if(flag.eq.'fini') call err(' Unexpected end of data')
@@ -564,7 +567,7 @@ C
          logical    test_
          character  temp*(*),name*32
 cdjw may2011
-         character  locase*linlen
+         character  locase*(linlen)
 C
          testfl='yes'
          name=locase(temp)
@@ -612,7 +615,7 @@ C
          logical    numb_
          character  temp*(*),name*32
 cdjw may2011
-         character  locase*linlen
+         character  locase*(linlen)
          real       numb,sdev
 C
          name=locase(temp)
@@ -645,7 +648,7 @@ C
          character  temp*(*),name*32
          character  strg*(*),flag*4
 cdjw may2011
-         character  locase*linlen
+         character  locase*(linlen)
 C
          name=locase(temp)
          if(testfl.eq.'yes')    goto 100
@@ -680,15 +683,15 @@ C
 C
 #include "ciftbx.sys"
 cdjw may2011
-         character    locase*linlen
-         character    temp*linlen,name*(*)
+         character    locase*(linlen)
+         character    temp*(linlen),name*(*)
          character    low*26,cap*26,c*1
          data  cap /'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
          data  low /'abcdefghijklmnopqrstuvwxyz'/
 C
          temp=name
 cdjw may2011
-         do 100 i=1,linlen
+         do 100 i=1,(linlen)
          c=temp(i:i)
          if(c.eq.' ') goto 200
          j=index(cap,c)
@@ -842,7 +845,7 @@ C
 C
 100      jchar=jchar+1
 cdjw may2011
-         if(jchar.le.linlen)     goto 150
+         if(jchar.le.(linlen))     goto 150
 C
 C....... Read a new line
 C
@@ -855,9 +858,9 @@ C
          if(buffer(1:1).ne.';') goto 150
          type_='text'
 cdjw may2011
-         jchar=linlen+1
+         jchar=(linlen)+1
 cdjw may2011
-         long_=linlen
+         long_=(linlen)
          goto 500
 C
 C....... Process this character in the line
@@ -877,12 +880,12 @@ C
 200      type_='numb'
          if(index(num,c).eq.0) type_='char'
 cdjw may2011
-210      do 250 i=jchar,linlen
+210      do 250 i=jchar,(linlen)
          if(buffer(i:i).eq.' ')       goto 400
          if(buffer(i:i).eq.tab)       goto 400
 250      continue
 cdjw may2011
-         i=linlen+1
+         i=(linlen)+1
          goto 400
 C
 C....... Span quoted character string
@@ -890,7 +893,7 @@ C
 300      type_='char'
          jchar=jchar+1
 cdjw may2011
-         do 320 i=jchar,linlen
+         do 320 i=jchar,(linlen)
          if(buffer(i:i).eq.c)         goto 400
 320      continue
          call err('Quoted string not closed')
@@ -1105,11 +1108,11 @@ C
          nbloc=nbloc+1
          if(nbloc.le.100) dbloc(nbloc)=temp
 cdjw may2011
-         pchar=linlen+1
+         pchar=(linlen)+1
          temp='data_'//name
          call putstr(temp)         
 cdjw may2011
-         pchar=linlen+1
+         pchar=(linlen)+1
          call putstr(' ')          
          pdata_=.true.
 C
@@ -1141,7 +1144,7 @@ C
          pnumb_=flag
 100      if(ploopn.gt.0)        call eoloop
 cdjw may2011
-         pchar=linlen+1
+         pchar=(linlen)+1
          call putstr(temp)
          pchar=35
 C
@@ -1167,7 +1170,7 @@ C
          logical    pchar_,flag
          character  name*(*),temp*32,string*(*)
 cdjw may2011
-         character  line*linlen,strg*linlen
+         character  line*(linlen),strg*(linlen)
          integer    i,j
 C
          pchar_=.true.
@@ -1181,14 +1184,14 @@ C
          pchar_=flag
 100      if(ploopn.gt.0)        call eoloop
 cdjw may2011
-         pchar=linlen+1
+         pchar=(linlen)+1
          call putstr(temp)
          pchar=35
 C
 110      ploopf='no '
          line=string
 cdjw may2011
-         do 120 i=linlen,2,-1
+         do 120 i=(linlen),2,-1
          if(line(i:i).ne.' ') goto 130
 120      continue
 130      do 140 j=i,1,-1
@@ -1242,13 +1245,13 @@ C
          ptext_=flag
 120      continue
 cdjw may2011
-         pchar=linlen+1
+         pchar=(linlen)+1
          call putstr(temp)
          if(flag)               goto 130
          pchar=60
          call putstr('#< not in dictionary')
 cdjw may2011
-130      pchar=linlen+1
+130      pchar=(linlen)+1
          call putstr(' ')
          ptextf='yes'
          store=temp
@@ -1283,19 +1286,19 @@ C
 100      if(ploopn.gt.0)        goto 120
          ploopf='yes'
 cdjw may2011
-         pchar=linlen+1
+         pchar=(linlen)+1
          call putstr(' ')
 cdjw may2011
-         pchar=linlen+1
+         pchar=(linlen)+1
          call putstr('loop_')
 cdjw may2011
-         pchar=linlen+1
+         pchar=(linlen)+1
 120      call putstr(temp)
          if(flag)               goto 130
          pchar=60
          call putstr('#< not in dictionary')
 cdjw may2011
-130      pchar=linlen+1
+130      pchar=(linlen)+1
          ploopn=ploopn+1
 C
 150      return
@@ -1315,7 +1318,7 @@ C
          if(ptextf.eq.'yes') call eotext
          if(ploopn.gt.0)     call eoloop
 cdjw may2011
-         pchar=linlen+1
+         pchar=(linlen)+1
          call putstr(' ')
          close(outdev)
          return
@@ -1332,13 +1335,13 @@ C
 #include "ciftbx.sys"
          SAVE
 cdjw may2011
-         character  string*(*),temp*linlen,obuf*linlen
+         character  string*(*),temp*(linlen),obuf*(linlen)
          integer    ichar,i
          data       ichar /0/
 C
          temp=string
 cdjw may2011
-         do 100 i=linlen,1,-1
+         do 100 i=(linlen),1,-1
          if(temp(i:i).ne.' ')   goto 110
 100      continue
 C
@@ -1352,13 +1355,13 @@ C
          ploopc=1
          if(.not.align_)        goto 130
 cdjw may2011
-         pchar=linlen+1
+         pchar=(linlen)+1
 C
 C....... Is the buffer full and needs flushing?
 C
 130      if(pchar.lt.ichar)     goto 140
 cdjw may2011
-         if(pchar+i.le.linlen)      goto 150
+         if(pchar+i.le.(linlen))      goto 150
          pchar=1
 140      if(ichar.gt.0) write(outdev,'(a)') obuf(1:ichar)
          obuf=' '
@@ -1457,7 +1460,7 @@ C
          ptextf='no '
          call putstr(';')
 cdjw may2011
-         pchar=linlen
+         pchar=(linlen)
          return
          end
 C

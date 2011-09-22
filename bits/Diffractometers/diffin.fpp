@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2011/06/13 13:32:59  djw
+C remove old comments, set output file extension t .cry, add captions to table, ensure most probable SG is found,
+C
 C Revision 1.5  2011/06/08 11:19:40  djw
 C Reorganise code to remove excessive output, remove most interactive questions (some remain), set up input filename and instrument type in popup browse window.
 C
@@ -14,7 +17,7 @@ c General program for reading diffractometer cif files
       DATA NOUTF/10/,NHKL/11/,NCIF/12/
 
 #if defined(_GNUF77_)
-      call no_stdout_buffer()
+      call no_stdout_buffer_()
 #endif
 c
 C----- GET DATE

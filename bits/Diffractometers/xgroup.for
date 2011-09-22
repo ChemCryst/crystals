@@ -621,7 +621,7 @@ C
       IF (ISP.GT.3.OR.ISP.EQ.1) FULL=.TRUE.
       IF (ISP.GT.2.OR.ISP.EQ.1) DOUBLE=.TRUE.
 C 
-      OPEN (UNIT=LI,NAME=FILE_NAME,TYPE='OLD',ERR=3350)
+      OPEN (UNIT=LI,FILE=FILE_NAME,STATUS='OLD',ERR=3350)
 C 
       WRITE(LP,*) ' File: '//FILE_NAME
 250   FORMAT (A)
@@ -1428,7 +1428,7 @@ C
 C 
 C 
 C 
-C      CLOSE (UNIT=ITBL,DISPOSE='KEEP')
+C      CLOSE (UNIT=ITBL)
        GO TO 1850
 C 
 2450     CONTINUE
@@ -1620,13 +1620,13 @@ C
 C 
 C sort the array found, and print
 3250  CONTINUE
-      CLOSE (UNIT=LI,status='KEEP')
-      CLOSE (UNIT=LO,status='KEEP')
+      CLOSE (UNIT=LI)
+      CLOSE (UNIT=LO)
 C 
       RETURN
       STOP
 C ---  READ ERROR
-3300  CLOSE (UNIT=LI,DISPOSE='KEEP')
+3300  CLOSE (UNIT=LI)
       RETURN
       STOP
 C 

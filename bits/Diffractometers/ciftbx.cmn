@@ -48,7 +48,9 @@ C                                 Length of current filename in file_
 C                                 Name of current data block
          character bloc_*32
 C                                 Character image of current data item
-         character strg_*80
+         integer linlen
+         parameter (linlen=512)
+         character strg_*(linlen)
 C                                 File name of current CIF
          character file_*80
 C                                 Data item type

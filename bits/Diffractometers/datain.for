@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2011/09/14 11:09:09  rich
+C Extend length of monochromator character string.
+C
 C Revision 1.12  2011/09/05 07:42:15  djw
 C Trap massively negative reflections
 C
@@ -26,12 +29,10 @@ c #include "ciftbx.sys"
       CHARACTER*26 ALPHA
       CHARACTER*32 C32, ENAME,CCOL 
       CHARACTER*80 C80, CMONO
-cdjwmar2011 line length must also be set in ciftbx.sys
-      parameter (linlen=512)
 
-      CHARACTER LINE*linlen
-      CHARACTER SLINE*linlen
-      CHARACTER CFORM*linlen
+      CHARACTER*(linlen) LINE
+      CHARACTER*(linlen) SLINE
+      CHARACTER*(linlen) CFORM
 
       CHARACTER*6 LABEL(1000,3)
 C         CHARACTER*26  alpha
