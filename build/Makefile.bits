@@ -4,15 +4,16 @@ include makefile.in
 VPATH = ../bits/cif2cry ../bits/convplat ../bits/csd2cry ../bits/delred \
         ../bits/dipin   ../bits/hklf5    ../bits/kccdin  ../bits/rc93 \
         ../bits/reindex ../bits/shelxs   ../bits/sxtocry ../bits/sir92 \
-        ../bits/loader
+        ../bits/loader ../bits/Diffractometers
 
 EXECS := cif2cry    convplat    csd2cry    delred \
          dipin      ctwin       kccdin     rc93   \
-         reindex    shelxs      sxtocry
+         reindex    shelxs      sxtocry    diffin
 
 OBJS :=  obj/cif2cry.o  obj/convplat.o  obj/csd2cry.o  obj/delred.o \
          obj/dipin.o    obj/ctwin.o     obj/kccdin.o   obj/rc93.o  \
-         obj/reindex.o  obj/shelxs.o    obj/sxtocry.o  obj/nobuf.o
+         obj/reindex.o  obj/shelxs.o    obj/sxtocry.o  obj/nobuf.o \
+         obj/diffin.o
 
 ifneq ($(COMPCODE),WXS)
 OBJS := $(OBJS) obj/sir92.o obj/norm92.o obj/sir92X11.o
@@ -69,6 +70,10 @@ shelxs$(SUFFIX) : obj/shelxs.o obj/nobuf.o
 	strip $@
 
 sxtocry$(SUFFIX) : obj/sxtocry.o obj/nobuf.o
+	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	strip $@
+
+diffin$(SUFFIX) : obj/diffin.o obj/nobuf.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 	strip $@
 
