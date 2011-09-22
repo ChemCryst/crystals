@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.28  2011/09/20 13:19:05  rich
+//   Fix icons on wxGTK
+//
 //   Revision 1.27  2011/05/16 10:56:32  rich
 //   Added pane support to WX version. Added coloured bonds to model.
 //
@@ -165,7 +168,8 @@ CxToolBar * CxToolBar::CreateCxToolBar( CrToolBar * container, CxGrid * guiParen
 #endif
 #ifdef __BOTHWX__
     theCxToolBar->Create(guiParent,-1);
-    theCxToolBar->m_ToolBar->Create(theCxToolBar, ++mToolBarCount,wxDefaultPosition,wxDefaultSize,wxTB_FLAT|wxTB_TEXT|wxTB_NODIVIDER|wxTB_TOP);
+//    theCxToolBar->m_ToolBar->Create(theCxToolBar, ++mToolBarCount,wxDefaultPosition,wxDefaultSize,wxTB_FLAT|wxTB_TEXT|wxTB_NODIVIDER|wxTB_TOP);
+    theCxToolBar->m_ToolBar->Create(theCxToolBar, ++mToolBarCount,wxDefaultPosition,wxDefaultSize,wxTB_FLAT|wxTB_NODIVIDER|wxTB_TOP);
     theCxToolBar->SetCursor(wxNullCursor);
     theCxToolBar->m_ToolBar->SetCursor(wxNullCursor);
 #endif
@@ -301,7 +305,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 #endif
 
 #ifdef __BOTHWX__
-  	LOGERR("Adding script dir icon");
+//  	LOGERR("Adding script dir icon");
     struct stat buf;
       if ( stat(file.c_str(),&buf)==0 )
       {
