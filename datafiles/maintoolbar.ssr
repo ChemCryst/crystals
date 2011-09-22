@@ -35,8 +35,8 @@
 ^^WI          DISABLEIF='IN'                                                    
 %% -MAC^^WI         TOOL _MCM 'pifmgr.dll' 'Command' '$"CRYSDIR:oshell.bat" P'  
 %% -MAC^^WI          APPICON DISABLEIF='IN'                                     
-^^WI         TOOL _MCM 'pifmgr.dll' 'Command' '$"CRYSDIR:oshell.bat" P'         
-^^WI          APPICON DISABLEIF='IN'                                            
+-GIL^^WI         TOOL _MCM 'pifmgr.dll' 'Command' '$"CRYSDIR:oshell.bat" P'         
+-GIL^^WI          APPICON DISABLEIF='IN'                                            
 ^^WI         TOOL _MEX 'explorer.bmp' 'Explore' '$explorer ./'                  
 ^^WI          DISABLEIF='IN'                                                    
 ^^WI         SPLIT                                                              
