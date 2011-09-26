@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.117  2011/05/17 14:46:38  rich
+// strcpy is not part of std namespace
+//
 // Revision 1.116  2011/05/16 10:56:32  rich
 // Added pane support to WX version. Added coloured bonds to model.
 //
@@ -3233,6 +3236,8 @@ extern "C" {
     *(tempstr+262) = '\0';
     string line = string(tempstr);
 
+//    LOGERR(line);
+
     string::size_type strim = line.find_last_not_of(" "); //Remove trailing spaces
     if ( strim != string::npos )
         line = line.substr(0,strim+1);
@@ -3279,6 +3284,8 @@ extern "C" {
     string firstTok = line.substr(sFirst,eFirst-sFirst);
     string restLine = "";
 
+//        LOGERR(firstTok);
+
 // Find next non space and last non space 
     sRest = line.find_first_not_of(" ",eFirst+1);
     eRest = line.find_last_not_of(" ");
@@ -3291,6 +3298,11 @@ extern "C" {
       eRest = CRMAX ( 1, eRest );  // ensure positive length
       restLine = line.substr(sRest, eRest);
     }
+
+//        LOGERR(restLine);
+
+	string totalcl = firstTok + " " + restLine;
+//        LOGERR(totalcl);
 
 #ifdef __BOTHWIN__
 
@@ -3446,7 +3458,8 @@ extern "C" {
       si.hStdOutput = outPipe.input;
       si.hStdError = outPipe.input;     //set the new handles for the child process
       si.hStdInput = inPipe.output;
-      CcProcessInfo pi(firstTok,si);
+//      #(totalcl);
+      CcProcessInfo pi(firstTok,si,totalcl);
       if (!pi.CreateOK)
       {
         CcController::theController->AddInterfaceCommand( "Error creating process.");

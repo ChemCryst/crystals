@@ -213,8 +213,10 @@ extern "C" {
 class CcProcessInfo
 {
    public:
-      CcProcessInfo(const string & app, STARTUPINFO & si){
-        CreateOK = CreateProcess(app.c_str(),NULL,NULL,NULL,
+      CcProcessInfo(const string & app, STARTUPINFO & si, string & commandline){
+//        CreateOK = CreateProcess(app.c_str(), const_cast<char*>(commandline.c_str()), NULL,NULL,
+//                                 TRUE,CREATE_NEW_CONSOLE,NULL,NULL,&si,&proc);
+        CreateOK = CreateProcess(NULL, const_cast<char*>(commandline.c_str()), NULL,NULL,
                                  TRUE,CREATE_NEW_CONSOLE,NULL,NULL,&si,&proc);
       };
       ~CcProcessInfo() {
@@ -311,6 +313,11 @@ enum
 
 
 //   $Log: not supported by cvs2svn $
+//   Revision 1.49  2008/09/22 12:31:37  rich
+//   Upgrade GUI code to work with latest wxWindows 2.8.8
+//   Fix startup crash in OpenGL (cxmodel)
+//   Fix atom selection infinite recursion in cxmodlist
+//
 //   Revision 1.48  2005/02/07 14:19:52  stefan
 //   1. Changed the type of the interface command queue to be a listenable queue.
 //   2. Added the event for the wx version to the file.
