@@ -31,7 +31,6 @@
 %    ELSE                                                                       
 {I For FSQ refinement, a default I/u(I) minimum of -3.0 is recommended.         
 %      INSERT 'RATIO=-3.0 '                                                     
-                                                                                
 %    END IF                                                                     
 {I A default sin(theta)/lambda minimum of 0.01 is recommended.                  
 %    INSERT 'SINT=0.01 '                                                        
