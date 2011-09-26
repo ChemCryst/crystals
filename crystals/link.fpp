@@ -248,7 +248,7 @@ C                                     3, SPECIAL - PUNCH ATOMS
 C                                     4, PATTERSON
 C
 C           FOR SIR92,97,02  IEFORT = 1, NORMAL
-C                                     2, DIFFICULT
+C                        11           2, DIFFICULT
 C                                     3, SPECIAL - PUNCH ATOMS
 C                                     4, PATTERSON
 C                                     5, HARD
@@ -1618,12 +1618,39 @@ C
          write(ncfpu1,'(''%menu''/''  crystals sir02.cry'')')
 
        ELSE IF (ILINK .EQ. 13) THEN
+        if(iefort .eq.1) then
          WRITE(NCFPU1, 19411)
-19411 format('    reflections sir11.hkl'/'>   rhomax 0.33'/
-     1 '>   bfac 4.'/ '> % phase'/'>   vld')
-         write(ncfpu1,'(''>  crystals sir11.cry'')')
+19411 format('    reflections sir11.hkl'/
+     1'>   rhomax 0.33'/
+     2'>   bfac 4.'/ 
+     3'> % phase'/
+     4'>   vld'/
+     5'>   tangent')
+        else if (iefort.eq.2) then
+         WRITE(NCFPU1, 19412)
+19412 format('    reflections sir11.hkl'/
+     1'>   rhomax 0.33'/
+     2'>   bfac 4.'/ 
+     3'> % phase'/
+     4'    vld')
+        else if (iefort.eq.5) then
+         WRITE(NCFPU1, 19413)
+19413 format('    reflections sir11.hkl'/
+     1'>   rhomax 0.33'/
+     2'>   bfac 4.'/ 
+     2'    size m '/
+     2'    resm 0.9'/
+     3'> % phase'/
+     4'    tangent')
+
+        endif
+        write(ncfpu1,'(''  crystals sir11.cry'')')
        ENDIF
-      WRITE(NCFPU1, '(''%continue'')' )
+      if (ilink .eq. 13) then
+       WRITE(NCFPU1, '(''%end'')' )
+      else
+       WRITE(NCFPU1, '(''%continue'')' )
+      endif
 C
 C
 1941  FORMAT('>  rhomax 0.33'/
