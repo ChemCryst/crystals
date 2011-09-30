@@ -451,7 +451,6 @@ All cycle   4       0.00          0.100E+16      0.187E+04
 Mean C-C su =   0.0024                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #TORS                                                                                                                                                                                                                                                           
- IPBFLG, LEVEL, JESD           0           1           1           1
 
 
  GROUP TORSION                                                                        Date              Time          
@@ -710,7 +709,6 @@ Mean C-C su =   0.0044
 #CYCLENDS                                                                                                                                                                                                                                                       
 #USE TORSION.DAT                                                                                                                                                                                                                                                
 #TORS                                                                                                                                                                                                                                                           
- IPBFLG, LEVEL, JESD           0          -1    16776383           1
 
 
  NORMAL TORSION                                                                       Date              Time          
@@ -728,7 +726,6 @@ Mean C-C su =   0.0044
      O(10) to      CU(1) to CU(1,1,1,0,1) to O(10,1,1,0,1)     0.0    0.2    0.0
       C(5) to       C(3) to      CU(1) to C(3,-1,1,1,0,1)   -176.4    0.6    1.7
 #TORS                                                                                                                                                                                                                                                           
- IPBFLG, LEVEL, JESD           0           1           1           1
 
 
  NORMAL TORSION                                                                       Date              Time          
@@ -761,7 +758,6 @@ Variance-covariance matrix of selected atoms (x10^6)
 
      O(10) to      CU(1) to CU(1,1,1,0,1) to O(10,1,1,0,1)     0.0    0.2    0.0
 #TORS                                                                                                                                                                                                                                                           
- IPBFLG, LEVEL, JESD           2           0           1           1
 
 
  NORMAL TORSION                                                                       Date              Time          
@@ -783,7 +779,6 @@ Variance-covariance matrix of selected atoms (x10^6)
 #TITLE BAD LIST 5/12                                                                                                                                                                                                                                            
 #TORS                                                                                                                                                                                                                                                           
 #END                                                                                                                                                                                                                                                            
- IPBFLG, LEVEL, JESD           2           0           1           1
 
               List type    22 (Refinement directives in internal format        )                                                                                                                                                                                
  depends upon list type     5 (Atomic parameters                               )                                                                                                                                                                                

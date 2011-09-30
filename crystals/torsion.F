@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2011/08/11 09:32:09  djw
+C Check esd is less than zerosq (not zero)
+C
 C Revision 1.9  2011/08/08 10:44:34  djw
 C Move print of vcv matrix from torsion into igetvcv in vcv
 C
@@ -87,7 +90,6 @@ C----- GET THE PUBLICATION ETC FLAG FROM THE LEXICAL COMMON BLOCK
       IPBFLG = MY
       LEVEL = MW
       JESD = MV
-      write(ncwu,*)'IPBFLG, LEVEL, JESD', my,mw,mv,mx
 C--CLEAR THE CORE
       CALL XRSL
       CALL XCSAE
