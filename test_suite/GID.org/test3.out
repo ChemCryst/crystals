@@ -5637,7 +5637,6 @@ AZIMUTH  =    59.34     AZIMUTH /100 =   0.5934
         C.3...........  .                                                                                              
                       C.2                                                                                              
 #TORSION                                                                                                                                                                                                                                                        
- IPBFLG, LEVEL, JESD           1           0           0           1
 
 
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
