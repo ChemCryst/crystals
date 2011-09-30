@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.17  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.16  2011/02/07 16:59:07  djw
 C Put IDIM09 as a parameter in ICOM09 so that we can use it to declare work space
 C
@@ -287,7 +290,8 @@ C
 C--FOR EACH PARAMETER :
 C
 C  0   LINK TO NEXT PARAMETER REL. TO 'LCG' OR 'NOWT'.
-C  1   REL. ADDR. IN LIST 5 (U[ISO]=4, FOR EXAMPLE).
+C  1   REL. ADDR. IN LIST 5 (U[ISO]=4, FOR EXAMPLE). 
+c                           Bad example: 4 is now a flag
 C  2   PARTIAL DERIVATIVE WHEN CALCULATED.
 C  .
 C
@@ -334,23 +338,25 @@ C  1  ADDRESS OF THIS CONSTANT IN THE WORK STACK RELATIVE TO 'LC'.
 C  2  THE VALUE TO BE PLACED IN THE WORK STACK.
 C
 C--
-C----- COMMAND FILE SWITCHES
+C----- COMMAND FILE SWITCHES (MG)
 C
 C   1.DEFINE         2.RESTRAIN       3.DISTANCES      4.ANGLES
 C   5.VIBRATIONS     6.COMPILER       7.EXECUTION      8.NO
 C   9.FUNCTION      10.U(IJ)'S       11.TERM          12.EQUATE
 C  13.PLANAR        14.SUM           15.FORM          16.AVERAGE
 C  17.LIMIT         18.ENERGY        19.ORIGIN        20.REM
-C  21.SAME          22.DELU          23.SIMU
+C  21.SAME          22.DELU          23.SIMU          24.A-VIB
+C  25.A-U(IJ)'S
 C
-C----- ISTORE (LCG+1) OPERATIONS
+C----- ISTORE (LCG+1) OPERATIONS 
+c      Note that some correspond to several MG values.
 C      1  DEFINE    2  RESTRAIN  3  DISTANCE 4  mean D
 C      5  diff D    6  ANGLE     7  mean A   8  diff D
 C      9  VIBRATION 10 EXECUTION 11 NOLIST   12 UIJ
 C      13 EQUATE    14 PLANAR    15 SUM      16 FORM
 C      17 AVERAGE   18 LIMIT     19 ENERGY   20 ORIGIN
-C      21 REM       22 SAME      23 DELU     24 SIMU
-C 
+ 
+C
       INCLUDE 'ICOM05.INC'
       INCLUDE 'ICOM12.INC'
       INCLUDE 'ICOM26.INC'
@@ -468,7 +474,7 @@ C--RECORD THE NUMBER OF ERRORS SO FAR
 C--JUMP ON THE FUNCTION OF THE CARD
       GOTO(1300,1350,1500,1800,1850,2050,2100,2150,2200,2250,
      2     2300,2450,4050,4550,5400,5650,5660,7000,7200,1150,
-     3     1810,1810, 1810,1250), MG
+     3     1810,1810, 1810, 1851,2251,  1250)MG
 1250  CONTINUE
       CALL XOPMSG (IOPL16, IOPINT, 0)
       GOTO 9900
@@ -818,6 +824,7 @@ C
 C             SAME
               idjw1=3      !3 parameters starting at 5 (x)
               idjw2=5
+cdjwSep2011 - should this be =4 for mean?
               ISTORE(LCG+1)=5                             ! Mean
               STORE(LCG+3)=1./(DISTW*DISTW)  ! Weight (1/variance)
             ELSE if (MG .eq. 22) THEN
@@ -1112,9 +1119,14 @@ cdjwdebugging
 C     END OF 'SAME' OR 'DELU' INSTRUCTION
       GOTO 1150
 C
-C--'VIBRATION' CARD
 1850  CONTINUE
+C--'VIBRATION' CARD
       ISTORE(LCG+1)=9
+      GOTO 1852
+1851  CONTINUE
+C--'A-VIBRATION CARD
+      ISTORE(LCG+1)=-9
+1852  CONTINUE
       K=1
       L=9
       M=5
@@ -1148,7 +1160,13 @@ C--'FUNCTION' CARD
 C
 C--'U(IJ)' RESTRAINT
 2250  CONTINUE
+C--'U(IJ)' RESTRAINT
       ISTORE(LCG+1)=12
+      GOTO 2252
+2251  CONTINUE
+C--'A-U(IJ)' RESTRAINT
+      ISTORE(LCG+1)=-12
+2252  CONTINUE
       K=1
       L=6
       M=8

@@ -1033,7 +1033,7 @@ PATTERSON DIVISIONS FOR EACH OF THE AXES
 (1H ,6F10.2)
 LIST 15            0    0
   15   40960 CRYSTALSINPUT
-LIST 16           23    0
+LIST 16           25    0
   16   40960 CRYSTALSINPUT
    1.DEFINE             0 9999    0    0    0    0  101    5   16
          0    0    0    0    0    0    0    0    0    0
@@ -1080,6 +1080,10 @@ LIST 16           23    0
   22.DELU               0 9999    0    0    0    0  122    5   16
          0    0    0    0    0    0    0    0    0    0
   23.SIMU               0 9999    0    0    0    0  123    5   16
+         0    0    0    0    0    0    0    0    0    0
+  24.A-VIBRATIONS       0 9999    0    0    0    0  124    5   16
+         0    0    0    0    0    0    0    0    0    0
+  25.A-U(IJ)'S          0 9999    0    0    0    0  125    5   16
          0    0    0    0    0    0    0    0    0    0
 LIST 17           19    0
   17   40960 CRYSTALSINPUT

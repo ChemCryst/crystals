@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.17  2011/05/04 11:28:51  rich
+C TODO note.
+C
 C Revision 1.16  2011/03/21 13:57:21  rich
 C Update files to work with gfortran compiler.
 C
@@ -70,6 +73,11 @@ C
 C          -1  PRINT THE CARD IMAGES AS THEY ARE PROCESSED.
 C           0  NO PRINTING.
 C          +1  PRINT THE CARD IMAGES AND THE GENERATED CODE.
+C
+C
+C      IASYM ASYMMETRIC RESTRAINT
+C           1 ASYMMETRYIC
+C           0 NORMAL
 C
 C--THE REMAINING 12 WORDS OF THIS COMMON BLOCK ARE OUTPUT TO THE
 C  DISC AND DEFINE THE LOCATIONS AND LENGTH OF THE REMAINING BLOCKS
@@ -347,6 +355,13 @@ C--LOAD THE NEXT CARD FOR PROCESSING
 C--JUMP ON THE FUNCTION
 1100  CONTINUE
       I=ISTORE(LCG+1)
+cdjwsep2011
+      if(i .lt. 1) then
+       iasym = 1
+       i = abs(i)
+      else
+       iasym = 0
+      endif
       M22PD=KNEXTF(L22PD)
 C--FETCH THE OBSERVED VALUE AND CALCULATE THE E.S.D.
       B=STORE(LCG+4)
@@ -501,7 +516,7 @@ C--'MEAN ANGLE' RESTRAINT
 C
 C--'VIBRATION' RESTRAINT
 2200  CONTINUE
-      CALL XCVC
+      CALL XCVC(IASYM)
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,2250)A,(MSD(M),M=1,3),B,C
       ENDIF
@@ -532,7 +547,7 @@ C--'NO LISTING'
 C
 C--'U(IJ)' RESTRAINT
 2450  CONTINUE
-      CALL XDUIJ
+      CALL XDUIJ(iasym)
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,2251)A,(UIJ(M),M=1,3),B,C
 2251  FORMAT(/4X ,F4.0,'SIMU - Restrain the difference',
@@ -1011,6 +1026,13 @@ C--BRING DOWN THE NEXT BLOCK OF CODE AND RELOCATE IT
 C--JUMP ON THE FUNCTION
 1050  CONTINUE
       I=ISTORE(LCG+1)
+cdjwsep2011
+      if(i .lt. 1) then
+       iasym = 1
+       i = abs(i)
+      else
+       iasym = 0
+      endif
       GOTO(1150,1200,1250,1300,1350,1400,1450,1500,1550,1600,1650,1700,
      2 1950,2000,2050,2100,2150,2200,2250,2055,1100) ,I
 1100  CONTINUE
@@ -1059,7 +1081,7 @@ C--'MEAN ANGLE' RESTRAINT
 C
 C--'VIBRATION' RESTRAINT
 1550  CONTINUE
-      CALL XCVC
+      CALL XCVC(iasym)
       GOTO 1000
 C
 C--'EXECUTION LISTING'
@@ -1074,7 +1096,7 @@ C--'NO LISTING'
 C
 C-'U(IJ)' RESTRAINT
 1700  CONTINUE
-      CALL XDUIJ
+      CALL XDUIJ(iasym)
       GOTO 1000
 C
 C--TERMINATION AND APPLICATION OF THE STORED DERIVATIVES
@@ -1255,9 +1277,12 @@ C--CALCULATE THE PARTIAL DERIVATIVE
       END
 C
 CODE FOR XDUIJ
-      SUBROUTINE XDUIJ
+      SUBROUTINE XDUIJ(iasym)
 C--CALCULATE RESTRAINTS ON THE INDIVIDUAL U(IJ)'S
 C
+c
+C      IASYM = 1 FOR ASYMMETRIC OTHERWISE 0
+c
 CDJWAPR99
 C      The Uij entries for both atoms seem to get swapped, though
 c      the sign also seems to get inverted. 'Effect' is in the 1984
@@ -1291,6 +1316,7 @@ C--SET UP THE ADDRESSES OF THE ATOMS
       JD=ISTORE(JC+16)
 C--CHECK IF THE ATOM IS ANISO
 CDJWAPR99 REMEMBER JD+6 IS JUST A FLAG NOW
+c     0=aniso, 1 = iso, 2-4 = shape
       IF(ABS(STORE(JD+6))-UISO)1050,1400,1400
 C--PASS ONTO THE SECOND OF THE PAIR
 1050  CONTINUE
@@ -1310,7 +1336,12 @@ C--CALCULATE THE DERIVATIVES FOR THE U(IJ)
       A=1.
 C--STORE THE DERIVATIVES
 1150  CONTINUE
-      A1(JY)=A
+      if ((i .eq. 1).AND.(iasym .eq.1)) then
+c           dont restrain first atom
+            a1(jy) = 0.
+      else
+            a1(jy)=a
+      endif
       CALL XADUIJ
       A1(JY)=0.
 C--CHECK IF THIS THE FIRST OR SECOND ATOM
@@ -1349,8 +1380,11 @@ C--PASS ONTO THE NEXT PAIR OF ATOMS
       END
 C
 CODE FOR XCVC
-      SUBROUTINE XCVC
+      SUBROUTINE XCVC(iasym)
 C--CALCULATE VIBRATION RESTRAINTS
+C
+C
+C      IASYM = 1 FOR ASYMMETRIC OTHERWISE 0
 C
 C--THE VARIABLES IN 'XWORK' ARE USED AS FOLLOWS :
 C
@@ -1380,7 +1414,6 @@ C
 C
       EQUIVALENCE (O,A1(1))
 C
-cdjwapr99{
 C--SET UP A FEW CONSTANTS                                               CVC00320
       DUMP=STORE(LCG+4)                                                 CVC00330
       JA=LCA                                                            CVC00340
@@ -1463,6 +1496,12 @@ C--'ISO' ATOM                                                           CVC01010
       IF(I)1600,1600,1500                                               CVC01050
 C--'ANISO' ATOM                                                         CVC01060
 1450  CONTINUE                                                          CVC01070
+      if ((i .eq. 1).AND. (iasym .eq. 1)) then
+c           dont restrain first atom
+            do jy = 1,6
+              a1(jy) = 0
+            enddo
+      endif
       CALL XADUIJ                                                       CVC01080
 C--CHECK IF THIS THE FIRST OR SECOND ATOM                               CVC01090
       IF(I)1600,1600,1500                                               CVC01100
@@ -1470,7 +1509,8 @@ C--CHECK IF THIS THE FIRST OR SECOND ATOM                               CVC01090
       JO=JB                                                             CVC01120
       JX=JV                                                             CVC01130
       DO 1550 J=1,6                                                     CVC01140
-      A1(J)=-A1(J)                                                      CVC01150
+c      A1(J)=-A1(J)                                                      CVC01150
+      a1(j)=a1(j+6)*e *-1.                                                   CVC00920
 1550  CONTINUE                                                          CVC01160
       I=I-1                                                             CVC01170
       GOTO 1350                                                         CVC01180
