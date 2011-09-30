@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:10  rich
 C New CRYSTALS repository
 C
@@ -125,6 +129,7 @@ C--FOR EACH PARAMETER :
 C
 C  0   LINK TO NEXT PARAMETER REL. TO 'LCG' OR 'NOWT'.
 C  1   REL. ADDR. IN LIST 5 (U[ISO]=4, FOR EXAMPLE).
+c                           Bad example: 4 is now a flag
 C  2   PARTIAL DERIVATIVE WHEN CALCULATED.
 C  .
 C
