@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2010/12/14 13:08:20  djw
+C Output more info in execute/compile mode
+C
 C Revision 1.6  2005/01/23 08:29:12  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -678,9 +681,12 @@ C--PRINT THE INSTRUCTION STACK
 2100  CONTINUE
       MCG=LCG+IA
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,2150)MCG,ISTORE(MCG+1),coperate(istore(mcg+1))
+C     DJWsep2011. The asymmetric restraints have -ve keys
+c      WRITE(NCWU,2150)MCG,ISTORE(MCG+1),coperate(istore(mcg+1))
+      WRITE(NCWU,2150)MCG,ISTORE(MCG+1),coperate(abs(istore(mcg+1)))
       ENDIF
-      WRITE(NCAWU,2150)MCG,ISTORE(MCG+1),coperate(istore(mcg+1))
+c      WRITE(NCAWU,2150)MCG,ISTORE(MCG+1),coperate(istore(mcg+1))
+      WRITE(NCAWU,2150)MCG,ISTORE(MCG+1),coperate(abs(istore(mcg+1)))
 2150  FORMAT(' Function at',I8,'  :',I5, 3x,a)
       MCG=ISTORE(MCG)+IA
 2200  CONTINUE
