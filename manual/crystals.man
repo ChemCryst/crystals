@@ -7607,6 +7607,8 @@ are only going to be calculated.
  ANGLES     VALUE, E.S.D= DIFFERENCE ANGLE1, ANGLE2
  VIBRATIONS VALUE, E.S.D= BOND1, BOND2
  U(IJ)'S    VALUE, E.S.D= BOND1, BOND2
+ A-VIBRATIONS VALUE, E.S.D= BOND1, BOND2
+ A-U(IJ)'S    VALUE, E.S.D= BOND1, BOND2
  PLANAR            E.S.D  FOR 'ATOM SPECIFICATIONS'
  LIMIT             E.S.D  FOR 'PARAMETER SPECIFICATIONS'
  ORIGIN            E.S.D  FOR 'PARAMETER SPECIFICATIONS'
@@ -7824,6 +7826,9 @@ are only going to be calculated.
 #P  Note that the atoms defining a 'bond' need not actually be bonded, but
  merely serve to define a direction. For really bonded atoms, try an esd
  of  .002; for 1-3 atoms or diagonals of phenyl groups, try .005.
+#DA-VIBRATIONS VALUE, E.S.D. = BOND1, BOND2, . . . .#
+ Asymmetric vibration restraint. The second atom in the bond is 
+ restrained to be similar to the first, which is unrestrained.
 #DU(IJ)'S VALUE, E.S.D. =, BOND1, BOND2, . . . .#
  This is a similarity restraint, and may be used to ensure that the
   vibration parameters of adjacent atoms are similar, as must be the case
@@ -7839,6 +7844,10 @@ are only going to be calculated.
  an atom with an isotropic temperature factor
  is included in this restraint, the specified bond
  and all six restraints are ignored.
+#DA-U(IJ)'S VALUE, E.S.D. =, BOND1, BOND2, . . . .#
+
+ Asymmetric Uij restraint. The second atom in the bond is 
+ restrained to be similar to the first, which is unrestrained.
 #DPLANAR E.S.D. FOR 'ATOM SPECIFICATIONS'#
  This directive instructs the system to compute the mean plane
  through the atoms given in the atom specifications,
