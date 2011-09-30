@@ -1,4 +1,5 @@
       program combine
+c----- convert the PLATON squeezed outout to CRYSTALS format
       character *80 cline
       in1 = 10
       in2 = 11
@@ -10,11 +11,21 @@
       open(in2,file='platon-sr.hkl',status='old',err=250)
 60    CONTINUE
       open(iout1,file='LIST6.ABC',status='unknown')
-      do 1 i=1,10
+      do  i=1,3
+        read(in1,'(a)') cline
+      enddo 
       read(in1,'(a)') cline
-1     continue 
+      ln = 6
+      i = index(cline,'6')
+      if (i.eq.0) then
+            i = index(cline,'7')
+            if (i .ne. 0) ln = 7
+      endif
+      do  i=5,10
+        read(in1,'(a)') cline
+      enddo 
 c
-1001  FORMAT('#LIST      6'/
+1001  FORMAT('#LIST  ', i4/
      * 'READ NCOEFFICIENT = 11, TYPE = FIXED, UNIT = DATAFILE' ,
      1 ', CHECK=NO' /
      2 'INPUT H K L /FO/ SIGMA(/FO/) /FC/ PHASE'
@@ -26,7 +37,7 @@ c
      * ,'CONTINUE RATIO/JCODE  SIGMA(/FO/)   CORRECTIONS  '
      * ,'A-PART B-PART'
      5 / 'END')
-      write(iout1,1001)
+      write(out1,1001) ln
 
       n6 = 0
       np = 0
