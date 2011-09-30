@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.46  2011/09/07 09:44:41  djw
+C Change format of #SET OPENMESSAGE text so that columns line up across actions
+C Add #SET CACHEMESSAGE (off/on) to inhibit caching information at termination
+C Remove disc extension messages
+C
 C Revision 1.45  2011/03/21 13:57:22  rich
 C Update files to work with gfortran compiler.
 C
@@ -896,9 +901,6 @@ C
 C
 C -- DISPLAY DISC EFFICIENCY STATISTICS
 C
-
-      write(123,*) 'isscsh=',isscsh
-
       IF ((ISSPRT .EQ. 0) .and. (ISSCSH .EQ.1)) THEN
       WRITE ( NCWU , 1105 ) IPREAD , IPWRIT , ICACHE
 1105  FORMAT ( 1X , 'Physical reads ' , I10 , ' Physical writes ', I10,
