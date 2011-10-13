@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  2011/09/30 11:18:37  djw
+C Add asymmetric vib and Uij restraints
+C
 C Revision 1.17  2011/03/21 13:57:21  rich
 C Update files to work with gfortran compiler.
 C
@@ -346,7 +349,7 @@ C   9.FUNCTION      10.U(IJ)'S       11.TERM          12.EQUATE
 C  13.PLANAR        14.SUM           15.FORM          16.AVERAGE
 C  17.LIMIT         18.ENERGY        19.ORIGIN        20.REM
 C  21.SAME          22.DELU          23.SIMU          24.A-VIB
-C  25.A-U(IJ)'S
+C  25.A-U(IJ)'S     26. A-DIST
 C
 C----- ISTORE (LCG+1) OPERATIONS 
 c      Note that some correspond to several MG values.
@@ -355,7 +358,7 @@ C      5  diff D    6  ANGLE     7  mean A   8  diff D
 C      9  VIBRATION 10 EXECUTION 11 NOLIST   12 UIJ
 C      13 EQUATE    14 PLANAR    15 SUM      16 FORM
 C      17 AVERAGE   18 LIMIT     19 ENERGY   20 ORIGIN
- 
+C      21 REM       22 SAME      23 DELU     24 SIMU 
 C
       INCLUDE 'ICOM05.INC'
       INCLUDE 'ICOM12.INC'
@@ -474,7 +477,7 @@ C--RECORD THE NUMBER OF ERRORS SO FAR
 C--JUMP ON THE FUNCTION OF THE CARD
       GOTO(1300,1350,1500,1800,1850,2050,2100,2150,2200,2250,
      2     2300,2450,4050,4550,5400,5650,5660,7000,7200,1150,
-     3     1810,1810, 1810, 1851,2251,  1250)MG
+     3     1810,1810, 1810, 1851, 2251,1510, 1250)MG
 1250  CONTINUE
       CALL XOPMSG (IOPL16, IOPINT, 0)
       GOTO 9900
@@ -498,6 +501,10 @@ C
 C--'DISTANCE' CARD
 1500  CONTINUE
       ISTORE(LCG+1)=3
+      goto 1520
+1510  continue
+      istore(lcg+1) = -3
+1520  continue
       K=1
 1550  CONTINUE
       L=3
