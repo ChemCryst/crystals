@@ -7599,6 +7599,7 @@ are only going to be calculated.
 #J
  \LIST 16
  DISTANCES  VALUE, E.S.D= BOND1, BOND2
+ A-DISTANCES  VALUE, E.S.D= BOND1, BOND2
  DISTANCES  VALUE, E.S.D= MEAN BOND1, BOND2
  DISTANCES  VALUE, E.S.D= DIFFERENCE BOND1, BOND2
  NONBONDED  VALUE, POWERFACTOR=  BOND1, BOND2
@@ -7729,6 +7730,9 @@ are only going to be calculated.
  The bonds specified after the '=' sign are
  restrained to have a length of 'VALUE', with
  an e.s.d. of 'E.S.D.'.
+#DA-DISTANCES  VALUE, E.S.D. = BOND1, BOND2, . . . . .#
+ Asymmetric distance restraint. The second atom in the bond is 
+ restrained to be the given distance from the first, which is unrestrained.
 #DDISTANCES VALUE, E.S.D. = MEAN BOND1, BOND2, . . . .#
  Initially the restraints routines calculate the
  'MEAN' value of all the bonds specified by
