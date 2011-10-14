@@ -4673,11 +4673,11 @@ Mean C-C su =   0.0121
 SumFo/SumFc=  0.91 SumFoFc/SumFc^2=  0.91 SumwFoFc/SumwFc^2=  0.91 LS-scale=  0.91 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =    0.335    100*(<Fo>-<Fc>)/<Fo> =    0.549                                                                                                                                                                                                         
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads      12068 Physical writes      10102 Cache hits     208061
- Cache hit distribution   188941   13279    2057     492     277     553
- Cache hit distribution      185     119     221     199     258     182
- Cache hit distribution      161     146     199     112     217     156
- Cache hit distribution       51      48      53      38      46      71
+ Physical reads      12072 Physical writes      10102 Cache hits     208091
+ Cache hit distribution   188963   13279    2055     484     297     545
+ Cache hit distribution      185     120     216     205     236     216
+ Cache hit distribution      154     147     197     113     207     127
+ Cache hit distribution       91      52      40      40      52      70
 
 
           : Job ends ok       with     0 warnings and     0 errors
