@@ -55,7 +55,7 @@ block o(6,u's) c(7,u's)
 end
 #use td_rest.l5
 #list 16
-compil
+comp
 exec
 u(ij) 0.0,.001 = o(6) to c(7)
 end
@@ -71,8 +71,6 @@ end
 
 #use td_rest.l5
 #list 16
-compil
-exec
 u(ij) 0.0,.001 = c(7) to o(6)
 end
 #list 26
@@ -88,8 +86,6 @@ end
 # -------------------------------------
 #use td_rest.l5
 #list 16
-compil
-exec
 vib 0.0,.001 = o(6) to c(7)
 end
 #list 26
@@ -104,8 +100,6 @@ end
 
 #use td_rest.l5
 #list 16
-compil
-exec
 vib 0.0,.001 = c(7) to o(6)
 end
 #list 26
@@ -122,8 +116,6 @@ end
 end
 #use td_rest.l5
 #list 16
-compil
-exec
 a-u(ij) 0.0,.001 = o(6) to c(7)
 end
 #list 26
@@ -138,8 +130,6 @@ end
 
 #use td_rest.l5
 #list 16
-compil
-exec
 a-u(ij) 0.0,.001 = c(7) to o(6)
 end
 #list 26
@@ -155,8 +145,6 @@ end
 # -------------------------------------
 #use td_rest.l5
 #list 16
-compil
-exec
 a-vib 0.0,.001 = o(6) to c(7)
 end
 #list 26
@@ -171,8 +159,6 @@ end
 
 #use td_rest.l5
 #list 16
-compil
-exec
 a-vib 0.0,.001 = c(7) to o(6)
 end
 #list 26
@@ -184,6 +170,52 @@ ref
 end
 #check hi
 end
+
+
+#list 12
+block c(2,x's) c(11,x's)
+end
+#list 22
+end
+#use td_rest.l5
+#purge
+end
+
+
+#check hi
+end
+
+#LIST     16                                                                    
+DIST 1.55,.0001 =  C(2) TO C(11)
+END
+#list 26                                                                        
+end
+#sfls                                                                           
+ref
+end
+#check hi
+end
+
+
+#use td_rest.l5
+#purge
+end
+
+
+#LIST     16                                                                    
+a-DIST 1.55,.0001 =  C(2) TO C(11)
+END
+#list 26                                                                        
+end
+#sfls                                                                           
+ref
+end
+#sfls                                                                           
+ref
+end
+#check hi
+end
+
 
 #end
 
