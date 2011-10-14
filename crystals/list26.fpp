@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2011/10/13 14:41:31  djw
+C Add asymmetric distacne restraint
+C
 C Revision 1.18  2011/09/30 11:20:39  djw
 C Add asymmetric vib and Uij restraints
 C
@@ -1559,7 +1562,7 @@ cdjwapr99}
       END
 C
 CODE FOR XCMDC
-      SUBROUTINE XCMDC(IASYM)
+      SUBROUTINE XCMDC
 C--CALCULATE MEAN DISTANCE RESTRAINTS
 C
 C--
@@ -1610,7 +1613,7 @@ C--END OF THE FIRST PASS  -  PASS THROUGH NOW AND ACCUMULATE
       END
 C
 CODE FOR XCDDC
-      SUBROUTINE XCDDC(IASYM)
+      SUBROUTINE XCDDC
 C--CALCULATE DISTANCE DIFFERENCE RESTRAINTS
 C
 C--

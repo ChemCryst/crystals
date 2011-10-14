@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2011/10/13 14:41:31  djw
+C Add asymmetric distacne restraint
+C
 C Revision 1.18  2011/09/30 11:18:37  djw
 C Add asymmetric vib and Uij restraints
 C
@@ -474,10 +477,12 @@ C--INITIALISE THE CONTROL VARIABLES
 C--RECORD THE NUMBER OF ERRORS SO FAR
       LSTLEF=LEF
       MZ=0
+c----- indicate a normal directive
+      iasym = 0
 C--JUMP ON THE FUNCTION OF THE CARD
       GOTO(1300,1350,1500,1800,1850,2050,2100,2150,2200,2250,
      2     2300,2450,4050,4550,5400,5650,5660,7000,7200,1150,
-     3     1810,1810, 1810, 1851, 2251,1510, 1250)MG
+     3     1810,1810,1810,1851,2251,1510, 1250)MG
 1250  CONTINUE
       CALL XOPMSG (IOPL16, IOPINT, 0)
       GOTO 9900
@@ -503,7 +508,9 @@ C--'DISTANCE' CARD
       ISTORE(LCG+1)=3
       goto 1520
 1510  continue
+c     asymmetric distance. Dont allow MEAN or DIFFERENCE
       istore(lcg+1) = -3
+      iasym = 1
 1520  continue
       K=1
 1550  CONTINUE
@@ -512,8 +519,13 @@ C--'DISTANCE' CARD
       I=KRCI(LN)  ! Check for normal, mean, or difference format.
       IF(I)5850,1700,1650
 1650  CONTINUE    ! A Diff or Mean distance.
-      ISTORE(LCG+1)=ISTORE(LCG+1)+I
-      I=1
+c     check if asymmetric restraint - cannot use with mean or diff
+      if (iasym .eq. 0) then
+       ISTORE(LCG+1)=ISTORE(LCG+1)+I
+       I=1
+      else
+       goto 5850
+      endif
 1700  CONTINUE
       J=KGCAS(K,L,M,1)
       IF(J)5850,5850,1750
