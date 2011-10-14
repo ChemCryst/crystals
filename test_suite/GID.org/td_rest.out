@@ -252,7 +252,7 @@ Bonds: Update required - There is no list 41
 
 
  Print symbolic list    16
-     0 COMPIL 
+     0 COMP 
      1 EXEC 
 
  Listing of the code chain.     Chain base =    1609     Data base =16777216     Control block :    16091677687616777216
@@ -297,7 +297,7 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 
 
  Print symbolic list    16
-     0 COMPIL 
+     0 COMP 
      1 EXEC 
 
  Listing of the code chain.     Chain base =    1609     Data base =16777216     Control block :    16091677687616777216
@@ -730,41 +730,6 @@ Mean C-C su =   0.0000
 #LIST      5                                                                                                                                                                                                                                                    
 #LIST 16                                                                                                                                                                                                                                                        
 #LIST 26                                                                                                                                                                                                                                                        
-
-
- Cyclo in P 21 21 21                                                                  Date              Time          
-
-
- Print symbolic list    16
-     0 COMPIL 
-     1 EXEC 
-
- Listing of the code chain.     Chain base =    1609     Data base =16777216     Control block :    16091677687616777216
-          0      1609      1609        11  -1001609  -1000000  -1000000         0         5      1618      -339         0
- Work stack header at    1614  :  -1000000         6      -340         0  -1000000         0
- Function at    1609  :   10   executioN 
-     2 U(IJ) 0.0,.001 = C(7) TO O(6) 
-
- Listing of the code chain.     Chain base =    1661     Data base =16777216     Control block :    16611677687616777216
-          0      1661      1707        81        11   -998339  -1000000         2         5      1670      -427         0
- Work stack header at    1666  :  -1000000         6      -340        88  -1000000         0
- Atom header at    1672  :        46         0     C       7.              6        28         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -361      -383
-      1689  :        31         8     U[11]   
-      1692  :        34         9     U[22]   
-      1695  :        37        10     U[33]   
-      1698  :        40        11     U[23]   
-      1701  :        43        12     U[13]   
-      1704  :  -1000000        13     U[12]   
- Atom header at    1707  :  -1000000         0     O       6.              6        63         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -405      -427
-      1724  :        66         8     U[11]   
-      1727  :        69         9     U[22]   
-      1730  :        72        10     U[33]   
-      1733  :        75        11     U[23]   
-      1736  :        78        12     U[13]   
-      1739  :  -1000000        13     U[12]   
- Function at    1661  :   12   Uij       
 #CHECK HI                                                                                                                                                                                                                                                       
 #LIST 22                                                                                                                                                                                                                                                        
  Initialising Special positions
@@ -773,41 +738,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 #LIST 17                                                                                                                                                                                                                                                        
 #CHECK HI                                                                                                                                                                                                                                                       
 #LIST 26                                                                                                                                                                                                                                                        
-
-
- Cyclo in P 21 21 21                                                                  Date              Time          
-
-
- Print symbolic list    16
-     0 COMPIL 
-     1 EXEC 
-
- Listing of the code chain.     Chain base =    1609     Data base =16777216     Control block :    16091677687616777216
-          0      1609      1609        11  -1001609  -1000000  -1000000         0         5      1618      -339         0
- Work stack header at    1614  :  -1000000         6      -340         0  -1000000         0
- Function at    1609  :   10   executioN 
-     2 U(IJ) 0.0,.001 = C(7) TO O(6) 
-
- Listing of the code chain.     Chain base =    1661     Data base =16777216     Control block :    16611677687616777216
-          0      1661      1707        81        11   -998339  -1000000         2         5      1670      -427         0
- Work stack header at    1666  :  -1000000         6      -340        88  -1000000         0
- Atom header at    1672  :        46         0     C       7.              6        28         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -361      -383
-      1689  :        31         8     U[11]   
-      1692  :        34         9     U[22]   
-      1695  :        37        10     U[33]   
-      1698  :        40        11     U[23]   
-      1701  :        43        12     U[13]   
-      1704  :  -1000000        13     U[12]   
- Atom header at    1707  :  -1000000         0     O       6.              6        63         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -405      -427
-      1724  :        66         8     U[11]   
-      1727  :        69         9     U[22]   
-      1730  :        72        10     U[33]   
-      1733  :        75        11     U[23]   
-      1736  :        78        12     U[13]   
-      1739  :  -1000000        13     U[12]   
- Function at    1661  :   12   Uij       
 #CHECK HI                                                                                                                                                                                                                                                       
 
 
@@ -817,54 +747,7 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
-
- Full loader listing, including the coordinates of generated atoms :
-
-     C          7.   1.00000  0.00000  0.35676  0.16752  0.40328  0.08836  0.03606  0.04423  0.00133 -0.00674  0.01229
-     O          6.   1.00000  0.00000  0.22862  0.25393  0.34515  0.06268  0.02850  0.03698 -0.00257 -0.00748  0.00098
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    12661677687616777216
-       1185   -998815      1707        81      1196   -998339  -1000000         2      1190      1670  16776788         0
- Work stack header at    1190  :  -1000000         6      -340        88   -998815         0
- Atom header at    1196  :      1231         0     C       7.              6      1213         1    1    0    0    0
-                                 236      10291065353216  16776855  16776833
-      1213  :      1216         8     U[11]   
-      1216  :      1219         9     U[22]   
-      1219  :      1222        10     U[33]   
-      1222  :      1225        11     U[23]   
-      1225  :      1228        12     U[13]   
-      1228  :   -998815        13     U[12]   
- Atom header at    1231  :   -998815         0     O       6.              6      1248         1    1    0    0    0
-                                 218      10151065353216  16776811  16776789
-      1248  :      1251         8     U[11]   
-      1251  :      1254         9     U[22]   
-      1254  :      1257        10     U[33]   
-      1257  :      1260        11     U[23]   
-      1260  :      1263        12     U[13]   
-      1263  :   -998815        13     U[12]   
- Function at    1185  :   12   Uij       
- C           7.0000   1.0000   0.0000   0.3568   0.1675   0.4033   0.0884   0.0361   0.0442   0.0013  -0.0067   0.0123
- O           6.0000   1.0000   0.0000   0.2286   0.2539   0.3451   0.0627   0.0285   0.0370  -0.0026  -0.0075   0.0010
- Derivative(s) :
-         8    0.9999998750E+06             -0.2567800134E-01              0.5702816881E-02
-         1   -0.1000000000E+01         7    0.1000000000E+01
- Derivative(s) :
-         8    0.9999998750E+06             -0.7566001266E-02              0.1041933778E-02
-         2   -0.1000000000E+01         8    0.1000000000E+01
- Derivative(s) :
-         8    0.9999998750E+06             -0.7247000933E-02              0.1648644218E-02
-         3   -0.1000000000E+01         9    0.1000000000E+01
- Derivative(s) :
-         8    0.9999998750E+06             -0.3899000352E-02              0.3837803320E-06
-         4   -0.1000000000E+01        10    0.1000000000E+01
- Derivative(s) :
-         8    0.9999998750E+06             -0.7409998216E-03              0.5050235268E-04
-         5   -0.1000000000E+01        11    0.1000000000E+01
- Derivative(s) :
-         8    0.9999998750E+06             -0.1131900027E-01              0.4401658953E-04
-         6   -0.1000000000E+01        12    0.1000000000E+01
-
-      1.SIMU - Restrain the difference in the components of  U(IJ)'s to be
+      0.SIMU - Restrain the difference in the components of  U(IJ)'s to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ     U(IJ)'s          Atom  2    S(I) L TX TY TZ     U(IJ)'s    Delta     Coord.'S
@@ -876,15 +759,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
            C       7     1  1  0  0  0     0.00748         O       6     1  1  0  0  0     0.00674  -0.00074     U[13]   
            C       7     1  1  0  0  0     0.01229         O       6     1  1  0  0  0     0.00097  -0.01132     U[12]   
       Mean value =   0.0271  Mean delta =  -0.0094  r.m.s. delta =   0.0123
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    11961677687616777216
-       1185   -998815      1861        11  -1000676  -1000000  -1000000         0      1190      1870  16776876         0
- Work stack header at    1190  :  -1000000         6      -340         0   -998815         0
- Function at    1185  :   11   Nolist    
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -948,62 +822,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
  Structure factor least squares calculation    2  ends  2
 SumFo/SumFc=  1.59 SumFoFc/SumFc^2=  1.56 SumwFoFc/SumwFc^2=  1.56 LS-scale=  1.61 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =   -1.616                                                                                                                                                                                                         
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-     C          7.   1.00000  0.00000  0.35676  0.16752  0.40328  0.08836  0.03606  0.04423  0.00133 -0.00674  0.01229
-     O          6.   1.00000  0.00000  0.22862  0.25393  0.34515  0.06268  0.02850  0.03698 -0.00257 -0.00748  0.00098
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    13501677687616777216
-       1269   -998731      1707        81      1280   -998339  -1000000         2      1274      1670  16776788         0
- Work stack header at    1274  :  -1000000         6      -340        88   -998731         0
- Atom header at    1280  :      1315         0     C       7.              6      1297         1    1    0    0    0
-                                 320      11131065353216  16776855  16776833
-      1297  :      1300         8     U[11]   
-      1300  :      1303         9     U[22]   
-      1303  :      1306        10     U[33]   
-      1306  :      1309        11     U[23]   
-      1309  :      1312        12     U[13]   
-      1312  :   -998731        13     U[12]   
- Atom header at    1315  :   -998731         0     O       6.              6      1332         1    1    0    0    0
-                                 302      10991065353216  16776811  16776789
-      1332  :      1335         8     U[11]   
-      1335  :      1338         9     U[22]   
-      1338  :      1341        10     U[33]   
-      1341  :      1344        11     U[23]   
-      1344  :      1347        12     U[13]   
-      1347  :   -998731        13     U[12]   
- Function at    1269  :   12   Uij       
- C           7.0000   1.0000   0.0000   0.3568   0.1675   0.4033   0.0884   0.0361   0.0442   0.0013  -0.0067   0.0123
- O           6.0000   1.0000   0.0000   0.2286   0.2539   0.3451   0.0627   0.0285   0.0370  -0.0026  -0.0075   0.0010
- Derivative(s) :
-         8    0.9999998750E+06             -0.2567800134E-01              0.5702816881E-02
-         1   -0.1000000000E+01         7    0.1000000000E+01
- Derivative(s) :
-         8    0.9999998750E+06             -0.7566001266E-02              0.1041933778E-02
-         2   -0.1000000000E+01         8    0.1000000000E+01
- Derivative(s) :
-         8    0.9999998750E+06             -0.7247000933E-02              0.1648644218E-02
-         3   -0.1000000000E+01         9    0.1000000000E+01
- Derivative(s) :
-         8    0.9999998750E+06             -0.3899000352E-02              0.3837803320E-06
-         4   -0.1000000000E+01        10    0.1000000000E+01
- Derivative(s) :
-         8    0.9999998750E+06             -0.7409998216E-03              0.5050235268E-04
-         5   -0.1000000000E+01        11    0.1000000000E+01
- Derivative(s) :
-         8    0.9999998750E+06             -0.1131900027E-01              0.4401658953E-04
-         6   -0.1000000000E+01        12    0.1000000000E+01
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    12801677687616777216
-       1269   -998731      1861        11  -1000592  -1000000  -1000000         0      1274      1870  16776876         0
- Work stack header at    1274  :  -1000000         6      -340         0   -998731         0
- Function at    1269  :   11   Nolist    
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -1134,54 +952,7 @@ Mean C-C su =   0.0000
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
-
- Full loader listing, including the coordinates of generated atoms :
-
-     C          7.   1.00000  0.00000  0.35676  0.16752  0.40328  0.06876  0.02870  0.03958 -0.00041 -0.00860  0.00344
-     O          6.   1.00000  0.00000  0.22862  0.25393  0.34515  0.06830  0.02812  0.03900 -0.00071 -0.00875  0.00322
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    12661677687616777216
-       1185   -998815      1707        81      1196   -998339  -1000000         2      1190      1670  16776788         0
- Work stack header at    1190  :  -1000000         6      -340        88   -998815         0
- Atom header at    1196  :      1231         0     C       7.              6      1213         1    1    0    0    0
-                                 236      10291065353216  16776855  16776833
-      1213  :      1216         8     U[11]   
-      1216  :      1219         9     U[22]   
-      1219  :      1222        10     U[33]   
-      1222  :      1225        11     U[23]   
-      1225  :      1228        12     U[13]   
-      1228  :   -998815        13     U[12]   
- Atom header at    1231  :   -998815         0     O       6.              6      1248         1    1    0    0    0
-                                 218      10151065353216  16776811  16776789
-      1248  :      1251         8     U[11]   
-      1251  :      1254         9     U[22]   
-      1254  :      1257        10     U[33]   
-      1257  :      1260        11     U[23]   
-      1260  :      1263        12     U[13]   
-      1263  :   -998815        13     U[12]   
- Function at    1185  :   12   Uij       
- C           7.0000   1.0000   0.0000   0.3568   0.1675   0.4033   0.0688   0.0287   0.0396  -0.0004  -0.0086   0.0034
- O           6.0000   1.0000   0.0000   0.2286   0.2539   0.3451   0.0683   0.0281   0.0390  -0.0007  -0.0087   0.0032
- Derivative(s) :
-         8    0.9999998750E+06             -0.4672929645E-03              0.4696486518E-02
-         1   -0.1000000000E+01         7    0.1000000000E+01
- Derivative(s) :
-         8    0.9999998750E+06             -0.5767755210E-03              0.8072037017E-03
-         2   -0.1000000000E+01         8    0.1000000000E+01
- Derivative(s) :
-         8    0.9999998750E+06             -0.5776025355E-03              0.1543419901E-02
-         3   -0.1000000000E+01         9    0.1000000000E+01
- Derivative(s) :
-         8    0.9999998750E+06             -0.2995760879E-03              0.3096370449E-06
-         4   -0.1000000000E+01        10    0.1000000000E+01
- Derivative(s) :
-         8    0.9999998750E+06             -0.1488402486E-03              0.7521322550E-04
-         5   -0.1000000000E+01        11    0.1000000000E+01
- Derivative(s) :
-         8    0.9999998750E+06             -0.2146747429E-03              0.1107800017E-04
-         6   -0.1000000000E+01        12    0.1000000000E+01
-
-      1.SIMU - Restrain the difference in the components of  U(IJ)'s to be
+      0.SIMU - Restrain the difference in the components of  U(IJ)'s to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ     U(IJ)'s          Atom  2    S(I) L TX TY TZ     U(IJ)'s    Delta     Coord.'S
@@ -1193,15 +964,6 @@ Mean C-C su =   0.0000
            C       7     1  1  0  0  0     0.00875         O       6     1  1  0  0  0     0.00860  -0.00015     U[13]   
            C       7     1  1  0  0  0     0.00344         O       6     1  1  0  0  0     0.00322  -0.00021     U[12]   
       Mean value =   0.0248  Mean delta =  -0.0004  r.m.s. delta =   0.0004
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    11961677687616777216
-       1185   -998815      1861        11  -1000676  -1000000  -1000000         0      1190      1870  16776876         0
- Work stack header at    1190  :  -1000000         6      -340         0   -998815         0
- Function at    1185  :   11   Nolist    
 # -------------------------------------                                                                                                                                                                                                                         
 #USE TD_REST.L5                                                                                                                                                                                                                                                 
 #                                                                                                                                                                                                                                                               
@@ -1210,47 +972,6 @@ Mean C-C su =   0.0000
 #LIST      5                                                                                                                                                                                                                                                    
 #LIST 16                                                                                                                                                                                                                                                        
 #LIST 26                                                                                                                                                                                                                                                        
-
-
- Cyclo in P 21 21 21                                                                  Date              Time          
-
-
- Print symbolic list    16
-     0 COMPIL 
-     1 EXEC 
-
- Listing of the code chain.     Chain base =    1609     Data base =16777216     Control block :    16091677687616777216
-          0      1609      1609        11  -1001609  -1000000  -1000000         0         5      1618      -339         0
- Work stack header at    1614  :  -1000000         6      -340         0  -1000000         0
- Function at    1609  :   10   executioN 
-     2 VIB 0.0,.001 = O(6) TO C(7) 
-
- Listing of the code chain.     Chain base =    1661     Data base =16777216     Control block :    16611677687616777216
-          0      1661      1716        99        11   -998339  -1000000         2         5      1670      -427         0
- Work stack header at    1666  :  -1000000         6      -340        88  -1000000         0
- Atom header at    1672  :        55         0     O       6.              9        28         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -361      -383
-      1689  :        31         5     X       
-      1692  :        34         6     Y       
-      1695  :        37         7     Z       
-      1698  :        40         8     U[11]   
-      1701  :        43         9     U[22]   
-      1704  :        46        10     U[33]   
-      1707  :        49        11     U[23]   
-      1710  :        52        12     U[13]   
-      1713  :  -1000000        13     U[12]   
- Atom header at    1716  :  -1000000         0     C       7.              9        72         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -405      -427
-      1733  :        75         5     X       
-      1736  :        78         6     Y       
-      1739  :        81         7     Z       
-      1742  :        84         8     U[11]   
-      1745  :        87         9     U[22]   
-      1748  :        90        10     U[33]   
-      1751  :        93        11     U[23]   
-      1754  :        96        12     U[13]   
-      1757  :  -1000000        13     U[12]   
- Function at    1661  :    9   Vibration 
 #CHECK HI                                                                                                                                                                                                                                                       
 #LIST 22                                                                                                                                                                                                                                                        
  Initialising Special positions
@@ -1259,47 +980,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 #LIST 17                                                                                                                                                                                                                                                        
 #CHECK HI                                                                                                                                                                                                                                                       
 #LIST 26                                                                                                                                                                                                                                                        
-
-
- Cyclo in P 21 21 21                                                                  Date              Time          
-
-
- Print symbolic list    16
-     0 COMPIL 
-     1 EXEC 
-
- Listing of the code chain.     Chain base =    1609     Data base =16777216     Control block :    16091677687616777216
-          0      1609      1609        11  -1001609  -1000000  -1000000         0         5      1618      -339         0
- Work stack header at    1614  :  -1000000         6      -340         0  -1000000         0
- Function at    1609  :   10   executioN 
-     2 VIB 0.0,.001 = O(6) TO C(7) 
-
- Listing of the code chain.     Chain base =    1661     Data base =16777216     Control block :    16611677687616777216
-          0      1661      1716        99        11   -998339  -1000000         2         5      1670      -427         0
- Work stack header at    1666  :  -1000000         6      -340        88  -1000000         0
- Atom header at    1672  :        55         0     O       6.              9        28         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -361      -383
-      1689  :        31         5     X       
-      1692  :        34         6     Y       
-      1695  :        37         7     Z       
-      1698  :        40         8     U[11]   
-      1701  :        43         9     U[22]   
-      1704  :        46        10     U[33]   
-      1707  :        49        11     U[23]   
-      1710  :        52        12     U[13]   
-      1713  :  -1000000        13     U[12]   
- Atom header at    1716  :  -1000000         0     C       7.              9        72         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -405      -427
-      1733  :        75         5     X       
-      1736  :        78         6     Y       
-      1739  :        81         7     Z       
-      1742  :        84         8     U[11]   
-      1745  :        87         9     U[22]   
-      1748  :        90        10     U[33]   
-      1751  :        93        11     U[23]   
-      1754  :        96        12     U[13]   
-      1757  :  -1000000        13     U[12]   
- Function at    1661  :    9   Vibration 
 #CHECK HI                                                                                                                                                                                                                                                       
 
 
@@ -1309,62 +989,13 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
-
- Full loader listing, including the coordinates of generated atoms :
-
-     O          6.   1.00000  0.00000  0.22862  0.25393  0.34515  0.06268  0.02850  0.03698 -0.00257 -0.00748  0.00098
-     C          7.   1.00000  0.00000  0.35676  0.16752  0.40328  0.08836  0.03606  0.04423  0.00133 -0.00674  0.01229
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    12841677687616777216
-       1185   -998815      1716        99      1196   -998339  -1000000         2      1190      1670  16776788         0
- Work stack header at    1190  :  -1000000         6      -340        88   -998815         0
- Atom header at    1196  :      1240         0     O       6.              9      1213         1    1    0    0    0
-                                 218      10151065353216  16776855  16776833
-      1213  :      1216         5     X       
-      1216  :      1219         6     Y       
-      1219  :      1222         7     Z       
-      1222  :      1225         8     U[11]   
-      1225  :      1228         9     U[22]   
-      1228  :      1231        10     U[33]   
-      1231  :      1234        11     U[23]   
-      1234  :      1237        12     U[13]   
-      1237  :   -998815        13     U[12]   
- Atom header at    1240  :   -998815         0     C       7.              9      1257         1    1    0    0    0
-                                 236      10291065353216  16776811  16776789
-      1257  :      1260         5     X       
-      1260  :      1263         6     Y       
-      1263  :      1266         7     Z       
-      1266  :      1269         8     U[11]   
-      1269  :      1272         9     U[22]   
-      1272  :      1275        10     U[33]   
-      1275  :      1278        11     U[23]   
-      1278  :      1281        12     U[13]   
-      1281  :   -998815        13     U[12]   
- Function at    1185  :    9   Vibration 
- O           6.0000   1.0000   0.0000   0.2286   0.2539   0.3451   0.0627   0.0285   0.0370  -0.0026  -0.0075   0.0010
- C           7.0000   1.0000   0.0000   0.3568   0.1675   0.4033   0.0884   0.0361   0.0442   0.0013  -0.0067   0.0123
- Derivative(s) :
-        28    0.9999998750E+06              0.1639060560E-02              0.1333501423E-02
-         1    0.1895800382E+00         2    0.4327530861E+00         3    0.3776670694E+00         4   -0.8085458279E+00
-         5    0.5351565480E+00         6   -0.5728572011E+00         7   -0.1895800382E+00         8   -0.4327530861E+00
-         9   -0.3776670694E+00        10    0.8085457683E+00        11   -0.5351565480E+00        12    0.5728572011E+00
-
-   1.DELU - Restrain the difference in the M.S.D.'s along a bond to be
+   0.DELU - Restrain the difference in the M.S.D.'s along a bond to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
   
            O       6     1  1  0  0  0     0.03570         C       7     1  1  0  0  0     0.03734   0.00164
       Mean value =   0.0365  Mean delta =   0.0016  r.m.s. delta =   0.0016
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    11961677687616777216
-       1185   -998815      1861        11  -1000676  -1000000  -1000000         0      1190      1870  16776876         0
- Work stack header at    1190  :  -1000000         6      -340         0   -998815         0
- Function at    1185  :   11   Nolist    
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -1428,55 +1059,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
  Structure factor least squares calculation    3  ends  2
 SumFo/SumFc=  1.59 SumFoFc/SumFc^2=  1.56 SumwFoFc/SumwFc^2=  1.56 LS-scale=  1.61 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =   -1.616                                                                                                                                                                                                         
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-     O          6.   1.00000  0.00000  0.22862  0.25393  0.34515  0.06268  0.02850  0.03698 -0.00257 -0.00748  0.00098
-     C          7.   1.00000  0.00000  0.35676  0.16752  0.40328  0.08836  0.03606  0.04423  0.00133 -0.00674  0.01229
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    13681677687616777216
-       1269   -998731      1716        99      1280   -998339  -1000000         2      1274      1670  16776788         0
- Work stack header at    1274  :  -1000000         6      -340        88   -998731         0
- Atom header at    1280  :      1324         0     O       6.              9      1297         1    1    0    0    0
-                                 302      10991065353216  16776855  16776833
-      1297  :      1300         5     X       
-      1300  :      1303         6     Y       
-      1303  :      1306         7     Z       
-      1306  :      1309         8     U[11]   
-      1309  :      1312         9     U[22]   
-      1312  :      1315        10     U[33]   
-      1315  :      1318        11     U[23]   
-      1318  :      1321        12     U[13]   
-      1321  :   -998731        13     U[12]   
- Atom header at    1324  :   -998731         0     C       7.              9      1341         1    1    0    0    0
-                                 320      11131065353216  16776811  16776789
-      1341  :      1344         5     X       
-      1344  :      1347         6     Y       
-      1347  :      1350         7     Z       
-      1350  :      1353         8     U[11]   
-      1353  :      1356         9     U[22]   
-      1356  :      1359        10     U[33]   
-      1359  :      1362        11     U[23]   
-      1362  :      1365        12     U[13]   
-      1365  :   -998731        13     U[12]   
- Function at    1269  :    9   Vibration 
- O           6.0000   1.0000   0.0000   0.2286   0.2539   0.3451   0.0627   0.0285   0.0370  -0.0026  -0.0075   0.0010
- C           7.0000   1.0000   0.0000   0.3568   0.1675   0.4033   0.0884   0.0361   0.0442   0.0013  -0.0067   0.0123
- Derivative(s) :
-        28    0.9999998750E+06              0.1639060560E-02              0.1333501423E-02
-         1    0.1895800382E+00         2    0.4327530861E+00         3    0.3776670694E+00         4   -0.8085458279E+00
-         5    0.5351565480E+00         6   -0.5728572011E+00         7   -0.1895800382E+00         8   -0.4327530861E+00
-         9   -0.3776670694E+00        10    0.8085457683E+00        11   -0.5351565480E+00        12    0.5728572011E+00
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    12801677687616777216
-       1269   -998731      1861        11  -1000592  -1000000  -1000000         0      1274      1870  16776876         0
- Work stack header at    1274  :  -1000000         6      -340         0   -998731         0
- Function at    1269  :   11   Nolist    
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -1598,62 +1180,13 @@ Mean C-C su =   0.0000
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
-
- Full loader listing, including the coordinates of generated atoms :
-
-     O          6.   1.00000  0.00000  0.22862  0.25393  0.34515  0.06397  0.02672  0.03698 -0.00206 -0.00898  0.00131
-     C          7.   1.00000  0.00000  0.35676  0.16752  0.40328  0.09032  0.03370  0.04462  0.00389 -0.00699  0.01372
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    12841677687616777216
-       1185   -998815      1716        99      1196   -998339  -1000000         2      1190      1670  16776788         0
- Work stack header at    1190  :  -1000000         6      -340        88   -998815         0
- Atom header at    1196  :      1240         0     O       6.              9      1213         1    1    0    0    0
-                                 218      10151065353216  16776855  16776833
-      1213  :      1216         5     X       
-      1216  :      1219         6     Y       
-      1219  :      1222         7     Z       
-      1222  :      1225         8     U[11]   
-      1225  :      1228         9     U[22]   
-      1228  :      1231        10     U[33]   
-      1231  :      1234        11     U[23]   
-      1234  :      1237        12     U[13]   
-      1237  :   -998815        13     U[12]   
- Atom header at    1240  :   -998815         0     C       7.              9      1257         1    1    0    0    0
-                                 236      10291065353216  16776811  16776789
-      1257  :      1260         5     X       
-      1260  :      1263         6     Y       
-      1263  :      1266         7     Z       
-      1266  :      1269         8     U[11]   
-      1269  :      1272         9     U[22]   
-      1272  :      1275        10     U[33]   
-      1275  :      1278        11     U[23]   
-      1278  :      1281        12     U[13]   
-      1281  :   -998815        13     U[12]   
- Function at    1185  :    9   Vibration 
- O           6.0000   1.0000   0.0000   0.2286   0.2539   0.3451   0.0640   0.0267   0.0370  -0.0021  -0.0090   0.0013
- C           7.0000   1.0000   0.0000   0.3568   0.1675   0.4033   0.0903   0.0337   0.0446   0.0039  -0.0070   0.0137
- Derivative(s) :
-        28    0.9999998750E+06              0.4050953794E-04              0.1141502755E-02
-         1    0.1895800382E+00         2    0.4327530861E+00         3    0.3776670694E+00         4   -0.8085458279E+00
-         5    0.5351565480E+00         6   -0.5728572011E+00         7   -0.1895800382E+00         8   -0.4327530861E+00
-         9   -0.3776670694E+00        10    0.8085457683E+00        11   -0.5351565480E+00        12    0.5728572011E+00
-
-   1.DELU - Restrain the difference in the M.S.D.'s along a bond to be
+   0.DELU - Restrain the difference in the M.S.D.'s along a bond to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
   
            O       6     1  1  0  0  0     0.03377         C       7     1  1  0  0  0     0.03381   0.00004
       Mean value =   0.0338  Mean delta =   0.0000  r.m.s. delta =   0.0000
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    11961677687616777216
-       1185   -998815      1861        11  -1000676  -1000000  -1000000         0      1190      1870  16776876         0
- Work stack header at    1190  :  -1000000         6      -340         0   -998815         0
- Function at    1185  :   11   Nolist    
 #USE TD_REST.L5                                                                                                                                                                                                                                                 
 #                                                                                                                                                                                                                                                               
 # PUNCHED ON 30/09/11 AT 12:38:09                                                                                                                                                                                                                               
@@ -1661,47 +1194,6 @@ Mean C-C su =   0.0000
 #LIST      5                                                                                                                                                                                                                                                    
 #LIST 16                                                                                                                                                                                                                                                        
 #LIST 26                                                                                                                                                                                                                                                        
-
-
- Cyclo in P 21 21 21                                                                  Date              Time          
-
-
- Print symbolic list    16
-     0 COMPIL 
-     1 EXEC 
-
- Listing of the code chain.     Chain base =    1609     Data base =16777216     Control block :    16091677687616777216
-          0      1609      1609        11  -1001609  -1000000  -1000000         0         5      1618      -339         0
- Work stack header at    1614  :  -1000000         6      -340         0  -1000000         0
- Function at    1609  :   10   executioN 
-     2 VIB 0.0,.001 = C(7) TO O(6) 
-
- Listing of the code chain.     Chain base =    1661     Data base =16777216     Control block :    16611677687616777216
-          0      1661      1716        99        11   -998339  -1000000         2         5      1670      -427         0
- Work stack header at    1666  :  -1000000         6      -340        88  -1000000         0
- Atom header at    1672  :        55         0     C       7.              9        28         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -361      -383
-      1689  :        31         5     X       
-      1692  :        34         6     Y       
-      1695  :        37         7     Z       
-      1698  :        40         8     U[11]   
-      1701  :        43         9     U[22]   
-      1704  :        46        10     U[33]   
-      1707  :        49        11     U[23]   
-      1710  :        52        12     U[13]   
-      1713  :  -1000000        13     U[12]   
- Atom header at    1716  :  -1000000         0     O       6.              9        72         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -405      -427
-      1733  :        75         5     X       
-      1736  :        78         6     Y       
-      1739  :        81         7     Z       
-      1742  :        84         8     U[11]   
-      1745  :        87         9     U[22]   
-      1748  :        90        10     U[33]   
-      1751  :        93        11     U[23]   
-      1754  :        96        12     U[13]   
-      1757  :  -1000000        13     U[12]   
- Function at    1661  :    9   Vibration 
 #CHECK HI                                                                                                                                                                                                                                                       
 #LIST 22                                                                                                                                                                                                                                                        
  Initialising Special positions
@@ -1710,47 +1202,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 #LIST 17                                                                                                                                                                                                                                                        
 #CHECK HI                                                                                                                                                                                                                                                       
 #LIST 26                                                                                                                                                                                                                                                        
-
-
- Cyclo in P 21 21 21                                                                  Date              Time          
-
-
- Print symbolic list    16
-     0 COMPIL 
-     1 EXEC 
-
- Listing of the code chain.     Chain base =    1609     Data base =16777216     Control block :    16091677687616777216
-          0      1609      1609        11  -1001609  -1000000  -1000000         0         5      1618      -339         0
- Work stack header at    1614  :  -1000000         6      -340         0  -1000000         0
- Function at    1609  :   10   executioN 
-     2 VIB 0.0,.001 = C(7) TO O(6) 
-
- Listing of the code chain.     Chain base =    1661     Data base =16777216     Control block :    16611677687616777216
-          0      1661      1716        99        11   -998339  -1000000         2         5      1670      -427         0
- Work stack header at    1666  :  -1000000         6      -340        88  -1000000         0
- Atom header at    1672  :        55         0     C       7.              9        28         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -361      -383
-      1689  :        31         5     X       
-      1692  :        34         6     Y       
-      1695  :        37         7     Z       
-      1698  :        40         8     U[11]   
-      1701  :        43         9     U[22]   
-      1704  :        46        10     U[33]   
-      1707  :        49        11     U[23]   
-      1710  :        52        12     U[13]   
-      1713  :  -1000000        13     U[12]   
- Atom header at    1716  :  -1000000         0     O       6.              9        72         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -405      -427
-      1733  :        75         5     X       
-      1736  :        78         6     Y       
-      1739  :        81         7     Z       
-      1742  :        84         8     U[11]   
-      1745  :        87         9     U[22]   
-      1748  :        90        10     U[33]   
-      1751  :        93        11     U[23]   
-      1754  :        96        12     U[13]   
-      1757  :  -1000000        13     U[12]   
- Function at    1661  :    9   Vibration 
 #CHECK HI                                                                                                                                                                                                                                                       
 
 
@@ -1760,62 +1211,13 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
-
- Full loader listing, including the coordinates of generated atoms :
-
-     C          7.   1.00000  0.00000  0.35676  0.16752  0.40328  0.08836  0.03606  0.04423  0.00133 -0.00674  0.01229
-     O          6.   1.00000  0.00000  0.22862  0.25393  0.34515  0.06268  0.02850  0.03698 -0.00257 -0.00748  0.00098
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    12841677687616777216
-       1185   -998815      1716        99      1196   -998339  -1000000         2      1190      1670  16776788         0
- Work stack header at    1190  :  -1000000         6      -340        88   -998815         0
- Atom header at    1196  :      1240         0     C       7.              9      1213         1    1    0    0    0
-                                 236      10291065353216  16776855  16776833
-      1213  :      1216         5     X       
-      1216  :      1219         6     Y       
-      1219  :      1222         7     Z       
-      1222  :      1225         8     U[11]   
-      1225  :      1228         9     U[22]   
-      1228  :      1231        10     U[33]   
-      1231  :      1234        11     U[23]   
-      1234  :      1237        12     U[13]   
-      1237  :   -998815        13     U[12]   
- Atom header at    1240  :   -998815         0     O       6.              9      1257         1    1    0    0    0
-                                 218      10151065353216  16776811  16776789
-      1257  :      1260         5     X       
-      1260  :      1263         6     Y       
-      1263  :      1266         7     Z       
-      1266  :      1269         8     U[11]   
-      1269  :      1272         9     U[22]   
-      1272  :      1275        10     U[33]   
-      1275  :      1278        11     U[23]   
-      1278  :      1281        12     U[13]   
-      1281  :   -998815        13     U[12]   
- Function at    1185  :    9   Vibration 
- C           7.0000   1.0000   0.0000   0.3568   0.1675   0.4033   0.0884   0.0361   0.0442   0.0013  -0.0067   0.0123
- O           6.0000   1.0000   0.0000   0.2286   0.2539   0.3451   0.0627   0.0285   0.0370  -0.0026  -0.0075   0.0010
- Derivative(s) :
-        28    0.9999998750E+06             -0.1639060560E-02              0.1333501423E-02
-         1   -0.1895800382E+00         2   -0.4327530861E+00         3   -0.3776670694E+00         4    0.8085457683E+00
-         5   -0.5351565480E+00         6    0.5728572011E+00         7    0.1895800382E+00         8    0.4327530861E+00
-         9    0.3776670694E+00        10   -0.8085458279E+00        11    0.5351565480E+00        12   -0.5728572011E+00
-
-   1.DELU - Restrain the difference in the M.S.D.'s along a bond to be
+   0.DELU - Restrain the difference in the M.S.D.'s along a bond to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
   
            C       7     1  1  0  0  0     0.03734         O       6     1  1  0  0  0     0.03570  -0.00164
       Mean value =   0.0365  Mean delta =  -0.0016  r.m.s. delta =   0.0016
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    11961677687616777216
-       1185   -998815      1861        11  -1000676  -1000000  -1000000         0      1190      1870  16776876         0
- Work stack header at    1190  :  -1000000         6      -340         0   -998815         0
- Function at    1185  :   11   Nolist    
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -1879,55 +1281,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
  Structure factor least squares calculation    4  ends  2
 SumFo/SumFc=  1.59 SumFoFc/SumFc^2=  1.56 SumwFoFc/SumwFc^2=  1.56 LS-scale=  1.61 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =   -1.616                                                                                                                                                                                                         
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-     C          7.   1.00000  0.00000  0.35676  0.16752  0.40328  0.08836  0.03606  0.04423  0.00133 -0.00674  0.01229
-     O          6.   1.00000  0.00000  0.22862  0.25393  0.34515  0.06268  0.02850  0.03698 -0.00257 -0.00748  0.00098
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    13681677687616777216
-       1269   -998731      1716        99      1280   -998339  -1000000         2      1274      1670  16776788         0
- Work stack header at    1274  :  -1000000         6      -340        88   -998731         0
- Atom header at    1280  :      1324         0     C       7.              9      1297         1    1    0    0    0
-                                 320      11131065353216  16776855  16776833
-      1297  :      1300         5     X       
-      1300  :      1303         6     Y       
-      1303  :      1306         7     Z       
-      1306  :      1309         8     U[11]   
-      1309  :      1312         9     U[22]   
-      1312  :      1315        10     U[33]   
-      1315  :      1318        11     U[23]   
-      1318  :      1321        12     U[13]   
-      1321  :   -998731        13     U[12]   
- Atom header at    1324  :   -998731         0     O       6.              9      1341         1    1    0    0    0
-                                 302      10991065353216  16776811  16776789
-      1341  :      1344         5     X       
-      1344  :      1347         6     Y       
-      1347  :      1350         7     Z       
-      1350  :      1353         8     U[11]   
-      1353  :      1356         9     U[22]   
-      1356  :      1359        10     U[33]   
-      1359  :      1362        11     U[23]   
-      1362  :      1365        12     U[13]   
-      1365  :   -998731        13     U[12]   
- Function at    1269  :    9   Vibration 
- C           7.0000   1.0000   0.0000   0.3568   0.1675   0.4033   0.0884   0.0361   0.0442   0.0013  -0.0067   0.0123
- O           6.0000   1.0000   0.0000   0.2286   0.2539   0.3451   0.0627   0.0285   0.0370  -0.0026  -0.0075   0.0010
- Derivative(s) :
-        28    0.9999998750E+06             -0.1639060560E-02              0.1333501423E-02
-         1   -0.1895800382E+00         2   -0.4327530861E+00         3   -0.3776670694E+00         4    0.8085457683E+00
-         5   -0.5351565480E+00         6    0.5728572011E+00         7    0.1895800382E+00         8    0.4327530861E+00
-         9    0.3776670694E+00        10   -0.8085458279E+00        11    0.5351565480E+00        12   -0.5728572011E+00
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    12801677687616777216
-       1269   -998731      1861        11  -1000592  -1000000  -1000000         0      1274      1870  16776876         0
- Work stack header at    1274  :  -1000000         6      -340         0   -998731         0
- Function at    1269  :   11   Nolist    
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -2049,62 +1402,13 @@ Mean C-C su =   0.0000
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
-
- Full loader listing, including the coordinates of generated atoms :
-
-     C          7.   1.00000  0.00000  0.35676  0.16752  0.40328  0.09032  0.03370  0.04462  0.00389 -0.00699  0.01372
-     O          6.   1.00000  0.00000  0.22862  0.25393  0.34515  0.06397  0.02672  0.03698 -0.00206 -0.00898  0.00131
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    12841677687616777216
-       1185   -998815      1716        99      1196   -998339  -1000000         2      1190      1670  16776788         0
- Work stack header at    1190  :  -1000000         6      -340        88   -998815         0
- Atom header at    1196  :      1240         0     C       7.              9      1213         1    1    0    0    0
-                                 236      10291065353216  16776855  16776833
-      1213  :      1216         5     X       
-      1216  :      1219         6     Y       
-      1219  :      1222         7     Z       
-      1222  :      1225         8     U[11]   
-      1225  :      1228         9     U[22]   
-      1228  :      1231        10     U[33]   
-      1231  :      1234        11     U[23]   
-      1234  :      1237        12     U[13]   
-      1237  :   -998815        13     U[12]   
- Atom header at    1240  :   -998815         0     O       6.              9      1257         1    1    0    0    0
-                                 218      10151065353216  16776811  16776789
-      1257  :      1260         5     X       
-      1260  :      1263         6     Y       
-      1263  :      1266         7     Z       
-      1266  :      1269         8     U[11]   
-      1269  :      1272         9     U[22]   
-      1272  :      1275        10     U[33]   
-      1275  :      1278        11     U[23]   
-      1278  :      1281        12     U[13]   
-      1281  :   -998815        13     U[12]   
- Function at    1185  :    9   Vibration 
- C           7.0000   1.0000   0.0000   0.3568   0.1675   0.4033   0.0903   0.0337   0.0446   0.0039  -0.0070   0.0137
- O           6.0000   1.0000   0.0000   0.2286   0.2539   0.3451   0.0640   0.0267   0.0370  -0.0021  -0.0090   0.0013
- Derivative(s) :
-        28    0.9999998750E+06             -0.4050946882E-04              0.1141502755E-02
-         1   -0.1895800382E+00         2   -0.4327530861E+00         3   -0.3776670694E+00         4    0.8085457683E+00
-         5   -0.5351565480E+00         6    0.5728572011E+00         7    0.1895800382E+00         8    0.4327530861E+00
-         9    0.3776670694E+00        10   -0.8085458279E+00        11    0.5351565480E+00        12   -0.5728572011E+00
-
-   1.DELU - Restrain the difference in the M.S.D.'s along a bond to be
+   0.DELU - Restrain the difference in the M.S.D.'s along a bond to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
   
            C       7     1  1  0  0  0     0.03381         O       6     1  1  0  0  0     0.03377  -0.00004
       Mean value =   0.0338  Mean delta =   0.0000  r.m.s. delta =   0.0000
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    11961677687616777216
-       1185   -998815      1861        11  -1000676  -1000000  -1000000         0      1190      1870  16776876         0
- Work stack header at    1190  :  -1000000         6      -340         0   -998815         0
- Function at    1185  :   11   Nolist    
 #PURG                                                                                                                                                                                                                                                           
  The    Data    file is being rebuilt -
  DO NOT abort the program
@@ -2119,41 +1423,6 @@ Mean C-C su =   0.0000
 #LIST      5                                                                                                                                                                                                                                                    
 #LIST 16                                                                                                                                                                                                                                                        
 #LIST 26                                                                                                                                                                                                                                                        
-
-
- Cyclo in P 21 21 21                                                                  Date              Time          
-
-
- Print symbolic list    16
-     0 COMPIL 
-     1 EXEC 
-
- Listing of the code chain.     Chain base =    1609     Data base =16777216     Control block :    16091677687616777216
-          0      1609      1609        11  -1001609  -1000000  -1000000         0         5      1618      -339         0
- Work stack header at    1614  :  -1000000         6      -340         0  -1000000         0
- Function at    1609  :   10   executioN 
-     2 A-U(IJ) 0.0,.001 = O(6) TO C(7) 
-
- Listing of the code chain.     Chain base =    1661     Data base =16777216     Control block :    16611677687616777216
-          0      1661      1707        81        11   -998339  -1000000         2         5      1670      -427         0
- Work stack header at    1666  :  -1000000         6      -340        88  -1000000         0
- Atom header at    1672  :        46         0     O       6.              6        28         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -361      -383
-      1689  :        31         8     U[11]   
-      1692  :        34         9     U[22]   
-      1695  :        37        10     U[33]   
-      1698  :        40        11     U[23]   
-      1701  :        43        12     U[13]   
-      1704  :  -1000000        13     U[12]   
- Atom header at    1707  :  -1000000         0     C       7.              6        63         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -405      -427
-      1724  :        66         8     U[11]   
-      1727  :        69         9     U[22]   
-      1730  :        72        10     U[33]   
-      1733  :        75        11     U[23]   
-      1736  :        78        12     U[13]   
-      1739  :  -1000000        13     U[12]   
- Function at    1661  :  -12   Uij       
 #CHECK HI                                                                                                                                                                                                                                                       
 #LIST 22                                                                                                                                                                                                                                                        
  Initialising Special positions
@@ -2162,41 +1431,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 #LIST 17                                                                                                                                                                                                                                                        
 #CHECK HI                                                                                                                                                                                                                                                       
 #LIST 26                                                                                                                                                                                                                                                        
-
-
- Cyclo in P 21 21 21                                                                  Date              Time          
-
-
- Print symbolic list    16
-     0 COMPIL 
-     1 EXEC 
-
- Listing of the code chain.     Chain base =    1609     Data base =16777216     Control block :    16091677687616777216
-          0      1609      1609        11  -1001609  -1000000  -1000000         0         5      1618      -339         0
- Work stack header at    1614  :  -1000000         6      -340         0  -1000000         0
- Function at    1609  :   10   executioN 
-     2 A-U(IJ) 0.0,.001 = O(6) TO C(7) 
-
- Listing of the code chain.     Chain base =    1661     Data base =16777216     Control block :    16611677687616777216
-          0      1661      1707        81        11   -998339  -1000000         2         5      1670      -427         0
- Work stack header at    1666  :  -1000000         6      -340        88  -1000000         0
- Atom header at    1672  :        46         0     O       6.              6        28         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -361      -383
-      1689  :        31         8     U[11]   
-      1692  :        34         9     U[22]   
-      1695  :        37        10     U[33]   
-      1698  :        40        11     U[23]   
-      1701  :        43        12     U[13]   
-      1704  :  -1000000        13     U[12]   
- Atom header at    1707  :  -1000000         0     C       7.              6        63         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -405      -427
-      1724  :        66         8     U[11]   
-      1727  :        69         9     U[22]   
-      1730  :        72        10     U[33]   
-      1733  :        75        11     U[23]   
-      1736  :        78        12     U[13]   
-      1739  :  -1000000        13     U[12]   
- Function at    1661  :  -12   Uij       
 #CHECK HI                                                                                                                                                                                                                                                       
 
 
@@ -2206,54 +1440,7 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
-
- Full loader listing, including the coordinates of generated atoms :
-
-     O          6.   1.00000  0.00000  0.22862  0.25393  0.34515  0.06268  0.02850  0.03698 -0.00257 -0.00748  0.00098
-     C          7.   1.00000  0.00000  0.35676  0.16752  0.40328  0.08836  0.03606  0.04423  0.00133 -0.00674  0.01229
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    12661677687616777216
-       1185   -998815      1707        81      1196   -998339  -1000000         2      1190      1670  16776788         0
- Work stack header at    1190  :  -1000000         6      -340        88   -998815         0
- Atom header at    1196  :      1231         0     O       6.              6      1213         1    1    0    0    0
-                                 218      10151065353216  16776855  16776833
-      1213  :      1216         8     U[11]   
-      1216  :      1219         9     U[22]   
-      1219  :      1222        10     U[33]   
-      1222  :      1225        11     U[23]   
-      1225  :      1228        12     U[13]   
-      1228  :   -998815        13     U[12]   
- Atom header at    1231  :   -998815         0     C       7.              6      1248         1    1    0    0    0
-                                 236      10291065353216  16776811  16776789
-      1248  :      1251         8     U[11]   
-      1251  :      1254         9     U[22]   
-      1254  :      1257        10     U[33]   
-      1257  :      1260        11     U[23]   
-      1260  :      1263        12     U[13]   
-      1263  :   -998815        13     U[12]   
- Function at    1185  :  -12   Uij       
- O           6.0000   1.0000   0.0000   0.2286   0.2539   0.3451   0.0627   0.0285   0.0370  -0.0026  -0.0075   0.0010
- C           7.0000   1.0000   0.0000   0.3568   0.1675   0.4033   0.0884   0.0361   0.0442   0.0013  -0.0067   0.0123
- Derivative(s) :
-         6    0.9999998750E+06              0.2567800134E-01              0.5702816881E-02
-         7   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06              0.7566001266E-02              0.1041933778E-02
-         8   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06              0.7247000933E-02              0.1648644218E-02
-         9   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06              0.3899000352E-02              0.3837803320E-06
-        10   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06              0.7409998216E-03              0.5050235268E-04
-        11   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06              0.1131900027E-01              0.4401658953E-04
-        12   -0.1000000000E+01
-
-      1.SIMU - Restrain the difference in the components of  U(IJ)'s to be
+      0.SIMU - Restrain the difference in the components of  U(IJ)'s to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ     U(IJ)'s          Atom  2    S(I) L TX TY TZ     U(IJ)'s    Delta     Coord.'S
@@ -2265,15 +1452,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
            O       6     1  1  0  0  0     0.00674         C       7     1  1  0  0  0     0.00748   0.00074     U[13]   
            O       6     1  1  0  0  0     0.00097         C       7     1  1  0  0  0     0.01229   0.01132     U[12]   
       Mean value =   0.0271  Mean delta =   0.0094  r.m.s. delta =   0.0123
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    11961677687616777216
-       1185   -998815      1861        11  -1000676  -1000000  -1000000         0      1190      1870  16776876         0
- Work stack header at    1190  :  -1000000         6      -340         0   -998815         0
- Function at    1185  :   11   Nolist    
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -2337,62 +1515,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
  Structure factor least squares calculation    5  ends  2
 SumFo/SumFc=  1.59 SumFoFc/SumFc^2=  1.56 SumwFoFc/SumwFc^2=  1.56 LS-scale=  1.61 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =   -1.616                                                                                                                                                                                                         
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-     O          6.   1.00000  0.00000  0.22862  0.25393  0.34515  0.06268  0.02850  0.03698 -0.00257 -0.00748  0.00098
-     C          7.   1.00000  0.00000  0.35676  0.16752  0.40328  0.08836  0.03606  0.04423  0.00133 -0.00674  0.01229
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    13501677687616777216
-       1269   -998731      1707        81      1280   -998339  -1000000         2      1274      1670  16776788         0
- Work stack header at    1274  :  -1000000         6      -340        88   -998731         0
- Atom header at    1280  :      1315         0     O       6.              6      1297         1    1    0    0    0
-                                 302      10991065353216  16776855  16776833
-      1297  :      1300         8     U[11]   
-      1300  :      1303         9     U[22]   
-      1303  :      1306        10     U[33]   
-      1306  :      1309        11     U[23]   
-      1309  :      1312        12     U[13]   
-      1312  :   -998731        13     U[12]   
- Atom header at    1315  :   -998731         0     C       7.              6      1332         1    1    0    0    0
-                                 320      11131065353216  16776811  16776789
-      1332  :      1335         8     U[11]   
-      1335  :      1338         9     U[22]   
-      1338  :      1341        10     U[33]   
-      1341  :      1344        11     U[23]   
-      1344  :      1347        12     U[13]   
-      1347  :   -998731        13     U[12]   
- Function at    1269  :  -12   Uij       
- O           6.0000   1.0000   0.0000   0.2286   0.2539   0.3451   0.0627   0.0285   0.0370  -0.0026  -0.0075   0.0010
- C           7.0000   1.0000   0.0000   0.3568   0.1675   0.4033   0.0884   0.0361   0.0442   0.0013  -0.0067   0.0123
- Derivative(s) :
-         6    0.9999998750E+06              0.2567800134E-01              0.5702816881E-02
-         7   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06              0.7566001266E-02              0.1041933778E-02
-         8   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06              0.7247000933E-02              0.1648644218E-02
-         9   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06              0.3899000352E-02              0.3837803320E-06
-        10   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06              0.7409998216E-03              0.5050235268E-04
-        11   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06              0.1131900027E-01              0.4401658953E-04
-        12   -0.1000000000E+01
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    12801677687616777216
-       1269   -998731      1861        11  -1000592  -1000000  -1000000         0      1274      1870  16776876         0
- Work stack header at    1274  :  -1000000         6      -340         0   -998731         0
- Function at    1269  :   11   Nolist    
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -2523,54 +1645,7 @@ Mean C-C su =   0.0000
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
-
- Full loader listing, including the coordinates of generated atoms :
-
-     O          6.   1.00000  0.00000  0.22862  0.25393  0.34515  0.06388  0.02665  0.03704 -0.00183 -0.00931  0.00118
-     C          7.   1.00000  0.00000  0.35676  0.16752  0.40328  0.06325  0.02911  0.03770 -0.00213 -0.00736  0.00124
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    12661677687616777216
-       1185   -998815      1707        81      1196   -998339  -1000000         2      1190      1670  16776788         0
- Work stack header at    1190  :  -1000000         6      -340        88   -998815         0
- Atom header at    1196  :      1231         0     O       6.              6      1213         1    1    0    0    0
-                                 218      10151065353216  16776855  16776833
-      1213  :      1216         8     U[11]   
-      1216  :      1219         9     U[22]   
-      1219  :      1222        10     U[33]   
-      1222  :      1225        11     U[23]   
-      1225  :      1228        12     U[13]   
-      1228  :   -998815        13     U[12]   
- Atom header at    1231  :   -998815         0     C       7.              6      1248         1    1    0    0    0
-                                 236      10291065353216  16776811  16776789
-      1248  :      1251         8     U[11]   
-      1251  :      1254         9     U[22]   
-      1254  :      1257        10     U[33]   
-      1257  :      1260        11     U[23]   
-      1260  :      1263        12     U[13]   
-      1263  :   -998815        13     U[12]   
- Function at    1185  :  -12   Uij       
- O           6.0000   1.0000   0.0000   0.2286   0.2539   0.3451   0.0639   0.0266   0.0370  -0.0018  -0.0093   0.0012
- C           7.0000   1.0000   0.0000   0.3568   0.1675   0.4033   0.0633   0.0291   0.0377  -0.0021  -0.0074   0.0012
- Derivative(s) :
-         6    0.9999998750E+06             -0.6299242377E-03              0.4040791653E-02
-         7   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06              0.2462163568E-02              0.7771715173E-03
-         8   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06              0.6608888507E-03              0.1396803651E-02
-         9   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06             -0.2977962140E-03              0.3928834303E-05
-        10   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06              0.1954000443E-02              0.6951583782E-04
-        11   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06              0.5799927749E-04              0.1458950692E-05
-        12   -0.1000000000E+01
-
-      1.SIMU - Restrain the difference in the components of  U(IJ)'s to be
+      0.SIMU - Restrain the difference in the components of  U(IJ)'s to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ     U(IJ)'s          Atom  2    S(I) L TX TY TZ     U(IJ)'s    Delta     Coord.'S
@@ -2582,15 +1657,6 @@ Mean C-C su =   0.0000
            O       6     1  1  0  0  0     0.00736         C       7     1  1  0  0  0     0.00931   0.00195     U[13]   
            O       6     1  1  0  0  0     0.00118         C       7     1  1  0  0  0     0.00124   0.00006     U[12]   
       Mean value =   0.0234  Mean delta =   0.0007  r.m.s. delta =   0.0013
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    11961677687616777216
-       1185   -998815      1861        11  -1000676  -1000000  -1000000         0      1190      1870  16776876         0
- Work stack header at    1190  :  -1000000         6      -340         0   -998815         0
- Function at    1185  :   11   Nolist    
 #USE TD_REST.L5                                                                                                                                                                                                                                                 
 #                                                                                                                                                                                                                                                               
 # PUNCHED ON 30/09/11 AT 12:38:09                                                                                                                                                                                                                               
@@ -2598,41 +1664,6 @@ Mean C-C su =   0.0000
 #LIST      5                                                                                                                                                                                                                                                    
 #LIST 16                                                                                                                                                                                                                                                        
 #LIST 26                                                                                                                                                                                                                                                        
-
-
- Cyclo in P 21 21 21                                                                  Date              Time          
-
-
- Print symbolic list    16
-     0 COMPIL 
-     1 EXEC 
-
- Listing of the code chain.     Chain base =    1609     Data base =16777216     Control block :    16091677687616777216
-          0      1609      1609        11  -1001609  -1000000  -1000000         0         5      1618      -339         0
- Work stack header at    1614  :  -1000000         6      -340         0  -1000000         0
- Function at    1609  :   10   executioN 
-     2 A-U(IJ) 0.0,.001 = C(7) TO O(6) 
-
- Listing of the code chain.     Chain base =    1661     Data base =16777216     Control block :    16611677687616777216
-          0      1661      1707        81        11   -998339  -1000000         2         5      1670      -427         0
- Work stack header at    1666  :  -1000000         6      -340        88  -1000000         0
- Atom header at    1672  :        46         0     C       7.              6        28         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -361      -383
-      1689  :        31         8     U[11]   
-      1692  :        34         9     U[22]   
-      1695  :        37        10     U[33]   
-      1698  :        40        11     U[23]   
-      1701  :        43        12     U[13]   
-      1704  :  -1000000        13     U[12]   
- Atom header at    1707  :  -1000000         0     O       6.              6        63         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -405      -427
-      1724  :        66         8     U[11]   
-      1727  :        69         9     U[22]   
-      1730  :        72        10     U[33]   
-      1733  :        75        11     U[23]   
-      1736  :        78        12     U[13]   
-      1739  :  -1000000        13     U[12]   
- Function at    1661  :  -12   Uij       
 #CHECK HI                                                                                                                                                                                                                                                       
 #LIST 22                                                                                                                                                                                                                                                        
  Initialising Special positions
@@ -2641,41 +1672,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 #LIST 17                                                                                                                                                                                                                                                        
 #CHECK HI                                                                                                                                                                                                                                                       
 #LIST 26                                                                                                                                                                                                                                                        
-
-
- Cyclo in P 21 21 21                                                                  Date              Time          
-
-
- Print symbolic list    16
-     0 COMPIL 
-     1 EXEC 
-
- Listing of the code chain.     Chain base =    1609     Data base =16777216     Control block :    16091677687616777216
-          0      1609      1609        11  -1001609  -1000000  -1000000         0         5      1618      -339         0
- Work stack header at    1614  :  -1000000         6      -340         0  -1000000         0
- Function at    1609  :   10   executioN 
-     2 A-U(IJ) 0.0,.001 = C(7) TO O(6) 
-
- Listing of the code chain.     Chain base =    1661     Data base =16777216     Control block :    16611677687616777216
-          0      1661      1707        81        11   -998339  -1000000         2         5      1670      -427         0
- Work stack header at    1666  :  -1000000         6      -340        88  -1000000         0
- Atom header at    1672  :        46         0     C       7.              6        28         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -361      -383
-      1689  :        31         8     U[11]   
-      1692  :        34         9     U[22]   
-      1695  :        37        10     U[33]   
-      1698  :        40        11     U[23]   
-      1701  :        43        12     U[13]   
-      1704  :  -1000000        13     U[12]   
- Atom header at    1707  :  -1000000         0     O       6.              6        63         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -405      -427
-      1724  :        66         8     U[11]   
-      1727  :        69         9     U[22]   
-      1730  :        72        10     U[33]   
-      1733  :        75        11     U[23]   
-      1736  :        78        12     U[13]   
-      1739  :  -1000000        13     U[12]   
- Function at    1661  :  -12   Uij       
 #CHECK HI                                                                                                                                                                                                                                                       
 
 
@@ -2685,54 +1681,7 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
-
- Full loader listing, including the coordinates of generated atoms :
-
-     C          7.   1.00000  0.00000  0.35676  0.16752  0.40328  0.08836  0.03606  0.04423  0.00133 -0.00674  0.01229
-     O          6.   1.00000  0.00000  0.22862  0.25393  0.34515  0.06268  0.02850  0.03698 -0.00257 -0.00748  0.00098
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    12661677687616777216
-       1185   -998815      1707        81      1196   -998339  -1000000         2      1190      1670  16776788         0
- Work stack header at    1190  :  -1000000         6      -340        88   -998815         0
- Atom header at    1196  :      1231         0     C       7.              6      1213         1    1    0    0    0
-                                 236      10291065353216  16776855  16776833
-      1213  :      1216         8     U[11]   
-      1216  :      1219         9     U[22]   
-      1219  :      1222        10     U[33]   
-      1222  :      1225        11     U[23]   
-      1225  :      1228        12     U[13]   
-      1228  :   -998815        13     U[12]   
- Atom header at    1231  :   -998815         0     O       6.              6      1248         1    1    0    0    0
-                                 218      10151065353216  16776811  16776789
-      1248  :      1251         8     U[11]   
-      1251  :      1254         9     U[22]   
-      1254  :      1257        10     U[33]   
-      1257  :      1260        11     U[23]   
-      1260  :      1263        12     U[13]   
-      1263  :   -998815        13     U[12]   
- Function at    1185  :  -12   Uij       
- C           7.0000   1.0000   0.0000   0.3568   0.1675   0.4033   0.0884   0.0361   0.0442   0.0013  -0.0067   0.0123
- O           6.0000   1.0000   0.0000   0.2286   0.2539   0.3451   0.0627   0.0285   0.0370  -0.0026  -0.0075   0.0010
- Derivative(s) :
-         6    0.9999998750E+06             -0.2567800134E-01              0.5702816881E-02
-         1   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06             -0.7566001266E-02              0.1041933778E-02
-         2   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06             -0.7247000933E-02              0.1648644218E-02
-         3   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06             -0.3899000352E-02              0.3837803320E-06
-         4   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06             -0.7409998216E-03              0.5050235268E-04
-         5   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06             -0.1131900027E-01              0.4401658953E-04
-         6   -0.1000000000E+01
-
-      1.SIMU - Restrain the difference in the components of  U(IJ)'s to be
+      0.SIMU - Restrain the difference in the components of  U(IJ)'s to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ     U(IJ)'s          Atom  2    S(I) L TX TY TZ     U(IJ)'s    Delta     Coord.'S
@@ -2744,15 +1693,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
            C       7     1  1  0  0  0     0.00748         O       6     1  1  0  0  0     0.00674  -0.00074     U[13]   
            C       7     1  1  0  0  0     0.01229         O       6     1  1  0  0  0     0.00097  -0.01132     U[12]   
       Mean value =   0.0271  Mean delta =  -0.0094  r.m.s. delta =   0.0123
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    11961677687616777216
-       1185   -998815      1861        11  -1000676  -1000000  -1000000         0      1190      1870  16776876         0
- Work stack header at    1190  :  -1000000         6      -340         0   -998815         0
- Function at    1185  :   11   Nolist    
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -2816,62 +1756,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
  Structure factor least squares calculation    6  ends  2
 SumFo/SumFc=  1.59 SumFoFc/SumFc^2=  1.56 SumwFoFc/SumwFc^2=  1.56 LS-scale=  1.61 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =   -1.616                                                                                                                                                                                                         
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-     C          7.   1.00000  0.00000  0.35676  0.16752  0.40328  0.08836  0.03606  0.04423  0.00133 -0.00674  0.01229
-     O          6.   1.00000  0.00000  0.22862  0.25393  0.34515  0.06268  0.02850  0.03698 -0.00257 -0.00748  0.00098
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    13501677687616777216
-       1269   -998731      1707        81      1280   -998339  -1000000         2      1274      1670  16776788         0
- Work stack header at    1274  :  -1000000         6      -340        88   -998731         0
- Atom header at    1280  :      1315         0     C       7.              6      1297         1    1    0    0    0
-                                 320      11131065353216  16776855  16776833
-      1297  :      1300         8     U[11]   
-      1300  :      1303         9     U[22]   
-      1303  :      1306        10     U[33]   
-      1306  :      1309        11     U[23]   
-      1309  :      1312        12     U[13]   
-      1312  :   -998731        13     U[12]   
- Atom header at    1315  :   -998731         0     O       6.              6      1332         1    1    0    0    0
-                                 302      10991065353216  16776811  16776789
-      1332  :      1335         8     U[11]   
-      1335  :      1338         9     U[22]   
-      1338  :      1341        10     U[33]   
-      1341  :      1344        11     U[23]   
-      1344  :      1347        12     U[13]   
-      1347  :   -998731        13     U[12]   
- Function at    1269  :  -12   Uij       
- C           7.0000   1.0000   0.0000   0.3568   0.1675   0.4033   0.0884   0.0361   0.0442   0.0013  -0.0067   0.0123
- O           6.0000   1.0000   0.0000   0.2286   0.2539   0.3451   0.0627   0.0285   0.0370  -0.0026  -0.0075   0.0010
- Derivative(s) :
-         6    0.9999998750E+06             -0.2567800134E-01              0.5702816881E-02
-         1   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06             -0.7566001266E-02              0.1041933778E-02
-         2   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06             -0.7247000933E-02              0.1648644218E-02
-         3   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06             -0.3899000352E-02              0.3837803320E-06
-         4   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06             -0.7409998216E-03              0.5050235268E-04
-         5   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06             -0.1131900027E-01              0.4401658953E-04
-         6   -0.1000000000E+01
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    12801677687616777216
-       1269   -998731      1861        11  -1000592  -1000000  -1000000         0      1274      1870  16776876         0
- Work stack header at    1274  :  -1000000         6      -340         0   -998731         0
- Function at    1269  :   11   Nolist    
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -3002,54 +1886,7 @@ Mean C-C su =   0.0000
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
-
- Full loader listing, including the coordinates of generated atoms :
-
-     C          7.   1.00000  0.00000  0.35676  0.16752  0.40328  0.09020  0.03378  0.04449  0.00374 -0.00542  0.01461
-     O          6.   1.00000  0.00000  0.22862  0.25393  0.34515  0.08618  0.03356  0.04221  0.00057 -0.00732  0.01127
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    12661677687616777216
-       1185   -998815      1707        81      1196   -998339  -1000000         2      1190      1670  16776788         0
- Work stack header at    1190  :  -1000000         6      -340        88   -998815         0
- Atom header at    1196  :      1231         0     C       7.              6      1213         1    1    0    0    0
-                                 236      10291065353216  16776855  16776833
-      1213  :      1216         8     U[11]   
-      1216  :      1219         9     U[22]   
-      1219  :      1222        10     U[33]   
-      1222  :      1225        11     U[23]   
-      1225  :      1228        12     U[13]   
-      1228  :   -998815        13     U[12]   
- Atom header at    1231  :   -998815         0     O       6.              6      1248         1    1    0    0    0
-                                 218      10151065353216  16776811  16776789
-      1248  :      1251         8     U[11]   
-      1251  :      1254         9     U[22]   
-      1254  :      1257        10     U[33]   
-      1257  :      1260        11     U[23]   
-      1260  :      1263        12     U[13]   
-      1263  :   -998815        13     U[12]   
- Function at    1185  :  -12   Uij       
- C           7.0000   1.0000   0.0000   0.3568   0.1675   0.4033   0.0902   0.0338   0.0445   0.0037  -0.0054   0.0146
- O           6.0000   1.0000   0.0000   0.2286   0.2539   0.3451   0.0862   0.0336   0.0422   0.0006  -0.0073   0.0113
- Derivative(s) :
-         6    0.9999998750E+06             -0.4025682807E-02              0.7777364925E-02
-         1   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06             -0.2250000834E-03              0.1133702113E-02
-         2   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06             -0.2283208072E-02              0.1879468909E-02
-         3   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06             -0.3169225529E-02              0.4653285487E-05
-         4   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06             -0.1905419398E-02              0.4055638419E-04
-         5   -0.1000000000E+01
- Derivative(s) :
-         6    0.9999998750E+06             -0.3339744173E-02              0.1673363295E-03
-         6   -0.1000000000E+01
-
-      1.SIMU - Restrain the difference in the components of  U(IJ)'s to be
+      0.SIMU - Restrain the difference in the components of  U(IJ)'s to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ     U(IJ)'s          Atom  2    S(I) L TX TY TZ     U(IJ)'s    Delta     Coord.'S
@@ -3061,15 +1898,6 @@ Mean C-C su =   0.0000
            C       7     1  1  0  0  0     0.00732         O       6     1  1  0  0  0     0.00542  -0.00191     U[13]   
            C       7     1  1  0  0  0     0.01461         O       6     1  1  0  0  0     0.01127  -0.00334     U[12]   
       Mean value =   0.0311  Mean delta =  -0.0025  r.m.s. delta =   0.0028
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    11961677687616777216
-       1185   -998815      1861        11  -1000676  -1000000  -1000000         0      1190      1870  16776876         0
- Work stack header at    1190  :  -1000000         6      -340         0   -998815         0
- Function at    1185  :   11   Nolist    
 # -------------------------------------                                                                                                                                                                                                                         
 #USE TD_REST.L5                                                                                                                                                                                                                                                 
 #                                                                                                                                                                                                                                                               
@@ -3078,47 +1906,6 @@ Mean C-C su =   0.0000
 #LIST      5                                                                                                                                                                                                                                                    
 #LIST 16                                                                                                                                                                                                                                                        
 #LIST 26                                                                                                                                                                                                                                                        
-
-
- Cyclo in P 21 21 21                                                                  Date              Time          
-
-
- Print symbolic list    16
-     0 COMPIL 
-     1 EXEC 
-
- Listing of the code chain.     Chain base =    1609     Data base =16777216     Control block :    16091677687616777216
-          0      1609      1609        11  -1001609  -1000000  -1000000         0         5      1618      -339         0
- Work stack header at    1614  :  -1000000         6      -340         0  -1000000         0
- Function at    1609  :   10   executioN 
-     2 A-VIB 0.0,.001 = O(6) TO C(7) 
-
- Listing of the code chain.     Chain base =    1661     Data base =16777216     Control block :    16611677687616777216
-          0      1661      1716        99        11   -998339  -1000000         2         5      1670      -427         0
- Work stack header at    1666  :  -1000000         6      -340        88  -1000000         0
- Atom header at    1672  :        55         0     O       6.              9        28         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -361      -383
-      1689  :        31         5     X       
-      1692  :        34         6     Y       
-      1695  :        37         7     Z       
-      1698  :        40         8     U[11]   
-      1701  :        43         9     U[22]   
-      1704  :        46        10     U[33]   
-      1707  :        49        11     U[23]   
-      1710  :        52        12     U[13]   
-      1713  :  -1000000        13     U[12]   
- Atom header at    1716  :  -1000000         0     C       7.              9        72         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -405      -427
-      1733  :        75         5     X       
-      1736  :        78         6     Y       
-      1739  :        81         7     Z       
-      1742  :        84         8     U[11]   
-      1745  :        87         9     U[22]   
-      1748  :        90        10     U[33]   
-      1751  :        93        11     U[23]   
-      1754  :        96        12     U[13]   
-      1757  :  -1000000        13     U[12]   
- Function at    1661  :   -9   Vibration 
 #CHECK HI                                                                                                                                                                                                                                                       
 #LIST 22                                                                                                                                                                                                                                                        
  Initialising Special positions
@@ -3127,47 +1914,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 #LIST 17                                                                                                                                                                                                                                                        
 #CHECK HI                                                                                                                                                                                                                                                       
 #LIST 26                                                                                                                                                                                                                                                        
-
-
- Cyclo in P 21 21 21                                                                  Date              Time          
-
-
- Print symbolic list    16
-     0 COMPIL 
-     1 EXEC 
-
- Listing of the code chain.     Chain base =    1609     Data base =16777216     Control block :    16091677687616777216
-          0      1609      1609        11  -1001609  -1000000  -1000000         0         5      1618      -339         0
- Work stack header at    1614  :  -1000000         6      -340         0  -1000000         0
- Function at    1609  :   10   executioN 
-     2 A-VIB 0.0,.001 = O(6) TO C(7) 
-
- Listing of the code chain.     Chain base =    1661     Data base =16777216     Control block :    16611677687616777216
-          0      1661      1716        99        11   -998339  -1000000         2         5      1670      -427         0
- Work stack header at    1666  :  -1000000         6      -340        88  -1000000         0
- Atom header at    1672  :        55         0     O       6.              9        28         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -361      -383
-      1689  :        31         5     X       
-      1692  :        34         6     Y       
-      1695  :        37         7     Z       
-      1698  :        40         8     U[11]   
-      1701  :        43         9     U[22]   
-      1704  :        46        10     U[33]   
-      1707  :        49        11     U[23]   
-      1710  :        52        12     U[13]   
-      1713  :  -1000000        13     U[12]   
- Atom header at    1716  :  -1000000         0     C       7.              9        72         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -405      -427
-      1733  :        75         5     X       
-      1736  :        78         6     Y       
-      1739  :        81         7     Z       
-      1742  :        84         8     U[11]   
-      1745  :        87         9     U[22]   
-      1748  :        90        10     U[33]   
-      1751  :        93        11     U[23]   
-      1754  :        96        12     U[13]   
-      1757  :  -1000000        13     U[12]   
- Function at    1661  :   -9   Vibration 
 #CHECK HI                                                                                                                                                                                                                                                       
 
 
@@ -3177,61 +1923,13 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
-
- Full loader listing, including the coordinates of generated atoms :
-
-     O          6.   1.00000  0.00000  0.22862  0.25393  0.34515  0.06268  0.02850  0.03698 -0.00257 -0.00748  0.00098
-     C          7.   1.00000  0.00000  0.35676  0.16752  0.40328  0.08836  0.03606  0.04423  0.00133 -0.00674  0.01229
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    12841677687616777216
-       1185   -998815      1716        99      1196   -998339  -1000000         2      1190      1670  16776788         0
- Work stack header at    1190  :  -1000000         6      -340        88   -998815         0
- Atom header at    1196  :      1240         0     O       6.              9      1213         1    1    0    0    0
-                                 218      10151065353216  16776855  16776833
-      1213  :      1216         5     X       
-      1216  :      1219         6     Y       
-      1219  :      1222         7     Z       
-      1222  :      1225         8     U[11]   
-      1225  :      1228         9     U[22]   
-      1228  :      1231        10     U[33]   
-      1231  :      1234        11     U[23]   
-      1234  :      1237        12     U[13]   
-      1237  :   -998815        13     U[12]   
- Atom header at    1240  :   -998815         0     C       7.              9      1257         1    1    0    0    0
-                                 236      10291065353216  16776811  16776789
-      1257  :      1260         5     X       
-      1260  :      1263         6     Y       
-      1263  :      1266         7     Z       
-      1266  :      1269         8     U[11]   
-      1269  :      1272         9     U[22]   
-      1272  :      1275        10     U[33]   
-      1275  :      1278        11     U[23]   
-      1278  :      1281        12     U[13]   
-      1281  :   -998815        13     U[12]   
- Function at    1185  :   -9   Vibration 
- O           6.0000   1.0000   0.0000   0.2286   0.2539   0.3451   0.0627   0.0285   0.0370  -0.0026  -0.0075   0.0010
- C           7.0000   1.0000   0.0000   0.3568   0.1675   0.4033   0.0884   0.0361   0.0442   0.0013  -0.0067   0.0123
- Derivative(s) :
-        16    0.9999998750E+06              0.1639060560E-02              0.1333501423E-02
-         7   -0.1895800382E+00         8   -0.4327530861E+00         9   -0.3776670694E+00        10    0.8085457683E+00
-        11   -0.5351565480E+00        12    0.5728572011E+00
-
-   1.DELU - Restrain the difference in the M.S.D.'s along a bond to be
+   0.DELU - Restrain the difference in the M.S.D.'s along a bond to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
   
            O       6     1  1  0  0  0     0.03570         C       7     1  1  0  0  0     0.03734   0.00164
       Mean value =   0.0365  Mean delta =   0.0016  r.m.s. delta =   0.0016
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    11961677687616777216
-       1185   -998815      1861        11  -1000676  -1000000  -1000000         0      1190      1870  16776876         0
- Work stack header at    1190  :  -1000000         6      -340         0   -998815         0
- Function at    1185  :   11   Nolist    
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -3295,54 +1993,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
  Structure factor least squares calculation    7  ends  2
 SumFo/SumFc=  1.59 SumFoFc/SumFc^2=  1.56 SumwFoFc/SumwFc^2=  1.56 LS-scale=  1.61 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =   -1.616                                                                                                                                                                                                         
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-     O          6.   1.00000  0.00000  0.22862  0.25393  0.34515  0.06268  0.02850  0.03698 -0.00257 -0.00748  0.00098
-     C          7.   1.00000  0.00000  0.35676  0.16752  0.40328  0.08836  0.03606  0.04423  0.00133 -0.00674  0.01229
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    13681677687616777216
-       1269   -998731      1716        99      1280   -998339  -1000000         2      1274      1670  16776788         0
- Work stack header at    1274  :  -1000000         6      -340        88   -998731         0
- Atom header at    1280  :      1324         0     O       6.              9      1297         1    1    0    0    0
-                                 302      10991065353216  16776855  16776833
-      1297  :      1300         5     X       
-      1300  :      1303         6     Y       
-      1303  :      1306         7     Z       
-      1306  :      1309         8     U[11]   
-      1309  :      1312         9     U[22]   
-      1312  :      1315        10     U[33]   
-      1315  :      1318        11     U[23]   
-      1318  :      1321        12     U[13]   
-      1321  :   -998731        13     U[12]   
- Atom header at    1324  :   -998731         0     C       7.              9      1341         1    1    0    0    0
-                                 320      11131065353216  16776811  16776789
-      1341  :      1344         5     X       
-      1344  :      1347         6     Y       
-      1347  :      1350         7     Z       
-      1350  :      1353         8     U[11]   
-      1353  :      1356         9     U[22]   
-      1356  :      1359        10     U[33]   
-      1359  :      1362        11     U[23]   
-      1362  :      1365        12     U[13]   
-      1365  :   -998731        13     U[12]   
- Function at    1269  :   -9   Vibration 
- O           6.0000   1.0000   0.0000   0.2286   0.2539   0.3451   0.0627   0.0285   0.0370  -0.0026  -0.0075   0.0010
- C           7.0000   1.0000   0.0000   0.3568   0.1675   0.4033   0.0884   0.0361   0.0442   0.0013  -0.0067   0.0123
- Derivative(s) :
-        16    0.9999998750E+06              0.1639060560E-02              0.1333501423E-02
-         7   -0.1895800382E+00         8   -0.4327530861E+00         9   -0.3776670694E+00        10    0.8085457683E+00
-        11   -0.5351565480E+00        12    0.5728572011E+00
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    12801677687616777216
-       1269   -998731      1861        11  -1000592  -1000000  -1000000         0      1274      1870  16776876         0
- Work stack header at    1274  :  -1000000         6      -340         0   -998731         0
- Function at    1269  :   11   Nolist    
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -3464,61 +2114,13 @@ Mean C-C su =   0.0000
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
-
- Full loader listing, including the coordinates of generated atoms :
-
-     O          6.   1.00000  0.00000  0.22862  0.25393  0.34515  0.06396  0.02664  0.03694 -0.00193 -0.00914  0.00147
-     C          7.   1.00000  0.00000  0.35676  0.16752  0.40328  0.09039  0.03391  0.04486  0.00325 -0.00596  0.01271
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    12841677687616777216
-       1185   -998815      1716        99      1196   -998339  -1000000         2      1190      1670  16776788         0
- Work stack header at    1190  :  -1000000         6      -340        88   -998815         0
- Atom header at    1196  :      1240         0     O       6.              9      1213         1    1    0    0    0
-                                 218      10151065353216  16776855  16776833
-      1213  :      1216         5     X       
-      1216  :      1219         6     Y       
-      1219  :      1222         7     Z       
-      1222  :      1225         8     U[11]   
-      1225  :      1228         9     U[22]   
-      1228  :      1231        10     U[33]   
-      1231  :      1234        11     U[23]   
-      1234  :      1237        12     U[13]   
-      1237  :   -998815        13     U[12]   
- Atom header at    1240  :   -998815         0     C       7.              9      1257         1    1    0    0    0
-                                 236      10291065353216  16776811  16776789
-      1257  :      1260         5     X       
-      1260  :      1263         6     Y       
-      1263  :      1266         7     Z       
-      1266  :      1269         8     U[11]   
-      1269  :      1272         9     U[22]   
-      1272  :      1275        10     U[33]   
-      1275  :      1278        11     U[23]   
-      1278  :      1281        12     U[13]   
-      1281  :   -998815        13     U[12]   
- Function at    1185  :   -9   Vibration 
- O           6.0000   1.0000   0.0000   0.2286   0.2539   0.3451   0.0640   0.0266   0.0369  -0.0019  -0.0091   0.0015
- C           7.0000   1.0000   0.0000   0.3568   0.1675   0.4033   0.0904   0.0339   0.0449   0.0032  -0.0060   0.0127
- Derivative(s) :
-        16    0.9999998750E+06              0.2235975815E-02              0.1193360426E-02
-         7   -0.1895800382E+00         8   -0.4327530861E+00         9   -0.3776670694E+00        10    0.8085457683E+00
-        11   -0.5351565480E+00        12    0.5728572011E+00
-
-   1.DELU - Restrain the difference in the M.S.D.'s along a bond to be
+   0.DELU - Restrain the difference in the M.S.D.'s along a bond to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
   
            O       6     1  1  0  0  0     0.03343         C       7     1  1  0  0  0     0.03566   0.00224
       Mean value =   0.0345  Mean delta =   0.0022  r.m.s. delta =   0.0022
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    11961677687616777216
-       1185   -998815      1861        11  -1000676  -1000000  -1000000         0      1190      1870  16776876         0
- Work stack header at    1190  :  -1000000         6      -340         0   -998815         0
- Function at    1185  :   11   Nolist    
 #USE TD_REST.L5                                                                                                                                                                                                                                                 
 #                                                                                                                                                                                                                                                               
 # PUNCHED ON 30/09/11 AT 12:38:09                                                                                                                                                                                                                               
@@ -3526,47 +2128,6 @@ Mean C-C su =   0.0000
 #LIST      5                                                                                                                                                                                                                                                    
 #LIST 16                                                                                                                                                                                                                                                        
 #LIST 26                                                                                                                                                                                                                                                        
-
-
- Cyclo in P 21 21 21                                                                  Date              Time          
-
-
- Print symbolic list    16
-     0 COMPIL 
-     1 EXEC 
-
- Listing of the code chain.     Chain base =    1609     Data base =16777216     Control block :    16091677687616777216
-          0      1609      1609        11  -1001609  -1000000  -1000000         0         5      1618      -339         0
- Work stack header at    1614  :  -1000000         6      -340         0  -1000000         0
- Function at    1609  :   10   executioN 
-     2 A-VIB 0.0,.001 = C(7) TO O(6) 
-
- Listing of the code chain.     Chain base =    1661     Data base =16777216     Control block :    16611677687616777216
-          0      1661      1716        99        11   -998339  -1000000         2         5      1670      -427         0
- Work stack header at    1666  :  -1000000         6      -340        88  -1000000         0
- Atom header at    1672  :        55         0     C       7.              9        28         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -361      -383
-      1689  :        31         5     X       
-      1692  :        34         6     Y       
-      1695  :        37         7     Z       
-      1698  :        40         8     U[11]   
-      1701  :        43         9     U[22]   
-      1704  :        46        10     U[33]   
-      1707  :        49        11     U[23]   
-      1710  :        52        12     U[13]   
-      1713  :  -1000000        13     U[12]   
- Atom header at    1716  :  -1000000         0     O       6.              9        72         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -405      -427
-      1733  :        75         5     X       
-      1736  :        78         6     Y       
-      1739  :        81         7     Z       
-      1742  :        84         8     U[11]   
-      1745  :        87         9     U[22]   
-      1748  :        90        10     U[33]   
-      1751  :        93        11     U[23]   
-      1754  :        96        12     U[13]   
-      1757  :  -1000000        13     U[12]   
- Function at    1661  :   -9   Vibration 
 #CHECK HI                                                                                                                                                                                                                                                       
 #LIST 22                                                                                                                                                                                                                                                        
  Initialising Special positions
@@ -3575,47 +2136,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 #LIST 17                                                                                                                                                                                                                                                        
 #CHECK HI                                                                                                                                                                                                                                                       
 #LIST 26                                                                                                                                                                                                                                                        
-
-
- Cyclo in P 21 21 21                                                                  Date              Time          
-
-
- Print symbolic list    16
-     0 COMPIL 
-     1 EXEC 
-
- Listing of the code chain.     Chain base =    1609     Data base =16777216     Control block :    16091677687616777216
-          0      1609      1609        11  -1001609  -1000000  -1000000         0         5      1618      -339         0
- Work stack header at    1614  :  -1000000         6      -340         0  -1000000         0
- Function at    1609  :   10   executioN 
-     2 A-VIB 0.0,.001 = C(7) TO O(6) 
-
- Listing of the code chain.     Chain base =    1661     Data base =16777216     Control block :    16611677687616777216
-          0      1661      1716        99        11   -998339  -1000000         2         5      1670      -427         0
- Work stack header at    1666  :  -1000000         6      -340        88  -1000000         0
- Atom header at    1672  :        55         0     C       7.              9        28         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -361      -383
-      1689  :        31         5     X       
-      1692  :        34         6     Y       
-      1695  :        37         7     Z       
-      1698  :        40         8     U[11]   
-      1701  :        43         9     U[22]   
-      1704  :        46        10     U[33]   
-      1707  :        49        11     U[23]   
-      1710  :        52        12     U[13]   
-      1713  :  -1000000        13     U[12]   
- Atom header at    1716  :  -1000000         0     O       6.              9        72         1    1    0    0    0
-                            -1000000  -1000000  -1000000      -405      -427
-      1733  :        75         5     X       
-      1736  :        78         6     Y       
-      1739  :        81         7     Z       
-      1742  :        84         8     U[11]   
-      1745  :        87         9     U[22]   
-      1748  :        90        10     U[33]   
-      1751  :        93        11     U[23]   
-      1754  :        96        12     U[13]   
-      1757  :  -1000000        13     U[12]   
- Function at    1661  :   -9   Vibration 
 #CHECK HI                                                                                                                                                                                                                                                       
 
 
@@ -3625,61 +2145,13 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
-
- Full loader listing, including the coordinates of generated atoms :
-
-     C          7.   1.00000  0.00000  0.35676  0.16752  0.40328  0.08836  0.03606  0.04423  0.00133 -0.00674  0.01229
-     O          6.   1.00000  0.00000  0.22862  0.25393  0.34515  0.06268  0.02850  0.03698 -0.00257 -0.00748  0.00098
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    12841677687616777216
-       1185   -998815      1716        99      1196   -998339  -1000000         2      1190      1670  16776788         0
- Work stack header at    1190  :  -1000000         6      -340        88   -998815         0
- Atom header at    1196  :      1240         0     C       7.              9      1213         1    1    0    0    0
-                                 236      10291065353216  16776855  16776833
-      1213  :      1216         5     X       
-      1216  :      1219         6     Y       
-      1219  :      1222         7     Z       
-      1222  :      1225         8     U[11]   
-      1225  :      1228         9     U[22]   
-      1228  :      1231        10     U[33]   
-      1231  :      1234        11     U[23]   
-      1234  :      1237        12     U[13]   
-      1237  :   -998815        13     U[12]   
- Atom header at    1240  :   -998815         0     O       6.              9      1257         1    1    0    0    0
-                                 218      10151065353216  16776811  16776789
-      1257  :      1260         5     X       
-      1260  :      1263         6     Y       
-      1263  :      1266         7     Z       
-      1266  :      1269         8     U[11]   
-      1269  :      1272         9     U[22]   
-      1272  :      1275        10     U[33]   
-      1275  :      1278        11     U[23]   
-      1278  :      1281        12     U[13]   
-      1281  :   -998815        13     U[12]   
- Function at    1185  :   -9   Vibration 
- C           7.0000   1.0000   0.0000   0.3568   0.1675   0.4033   0.0884   0.0361   0.0442   0.0013  -0.0067   0.0123
- O           6.0000   1.0000   0.0000   0.2286   0.2539   0.3451   0.0627   0.0285   0.0370  -0.0026  -0.0075   0.0010
- Derivative(s) :
-        16    0.9999998750E+06             -0.1639060560E-02              0.1333501423E-02
-         1   -0.1895800382E+00         2   -0.4327530861E+00         3   -0.3776670694E+00         4    0.8085457683E+00
-         5   -0.5351565480E+00         6    0.5728572011E+00
-
-   1.DELU - Restrain the difference in the M.S.D.'s along a bond to be
+   0.DELU - Restrain the difference in the M.S.D.'s along a bond to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
   
            C       7     1  1  0  0  0     0.03734         O       6     1  1  0  0  0     0.03570  -0.00164
       Mean value =   0.0365  Mean delta =  -0.0016  r.m.s. delta =   0.0016
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    11961677687616777216
-       1185   -998815      1861        11  -1000676  -1000000  -1000000         0      1190      1870  16776876         0
- Work stack header at    1190  :  -1000000         6      -340         0   -998815         0
- Function at    1185  :   11   Nolist    
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -3743,54 +2215,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
  Structure factor least squares calculation    8  ends  2
 SumFo/SumFc=  1.59 SumFoFc/SumFc^2=  1.56 SumwFoFc/SumwFc^2=  1.56 LS-scale=  1.61 Wilson Scale=  0.00                                                                                                                                                          
 <Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =   -1.616                                                                                                                                                                                                         
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-     C          7.   1.00000  0.00000  0.35676  0.16752  0.40328  0.08836  0.03606  0.04423  0.00133 -0.00674  0.01229
-     O          6.   1.00000  0.00000  0.22862  0.25393  0.34515  0.06268  0.02850  0.03698 -0.00257 -0.00748  0.00098
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    13681677687616777216
-       1269   -998731      1716        99      1280   -998339  -1000000         2      1274      1670  16776788         0
- Work stack header at    1274  :  -1000000         6      -340        88   -998731         0
- Atom header at    1280  :      1324         0     C       7.              9      1297         1    1    0    0    0
-                                 320      11131065353216  16776855  16776833
-      1297  :      1300         5     X       
-      1300  :      1303         6     Y       
-      1303  :      1306         7     Z       
-      1306  :      1309         8     U[11]   
-      1309  :      1312         9     U[22]   
-      1312  :      1315        10     U[33]   
-      1315  :      1318        11     U[23]   
-      1318  :      1321        12     U[13]   
-      1321  :   -998731        13     U[12]   
- Atom header at    1324  :   -998731         0     O       6.              9      1341         1    1    0    0    0
-                                 302      10991065353216  16776811  16776789
-      1341  :      1344         5     X       
-      1344  :      1347         6     Y       
-      1347  :      1350         7     Z       
-      1350  :      1353         8     U[11]   
-      1353  :      1356         9     U[22]   
-      1356  :      1359        10     U[33]   
-      1359  :      1362        11     U[23]   
-      1362  :      1365        12     U[13]   
-      1365  :   -998731        13     U[12]   
- Function at    1269  :   -9   Vibration 
- C           7.0000   1.0000   0.0000   0.3568   0.1675   0.4033   0.0884   0.0361   0.0442   0.0013  -0.0067   0.0123
- O           6.0000   1.0000   0.0000   0.2286   0.2539   0.3451   0.0627   0.0285   0.0370  -0.0026  -0.0075   0.0010
- Derivative(s) :
-        16    0.9999998750E+06             -0.1639060560E-02              0.1333501423E-02
-         1   -0.1895800382E+00         2   -0.4327530861E+00         3   -0.3776670694E+00         4    0.8085457683E+00
-         5   -0.5351565480E+00         6    0.5728572011E+00
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    12801677687616777216
-       1269   -998731      1861        11  -1000592  -1000000  -1000000         0      1274      1870  16776876         0
- Work stack header at    1274  :  -1000000         6      -340         0   -998731         0
- Function at    1269  :   11   Nolist    
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -3912,61 +2336,633 @@ Mean C-C su =   0.0000
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
-
- Full loader listing, including the coordinates of generated atoms :
-
-     C          7.   1.00000  0.00000  0.35676  0.16752  0.40328  0.09052  0.03375  0.04480  0.00344 -0.00648  0.01297
-     O          6.   1.00000  0.00000  0.22862  0.25393  0.34515  0.06411  0.02727  0.03743 -0.00330 -0.00745 -0.00034
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    12841677687616777216
-       1185   -998815      1716        99      1196   -998339  -1000000         2      1190      1670  16776788         0
- Work stack header at    1190  :  -1000000         6      -340        88   -998815         0
- Atom header at    1196  :      1240         0     C       7.              9      1213         1    1    0    0    0
-                                 236      10291065353216  16776855  16776833
-      1213  :      1216         5     X       
-      1216  :      1219         6     Y       
-      1219  :      1222         7     Z       
-      1222  :      1225         8     U[11]   
-      1225  :      1228         9     U[22]   
-      1228  :      1231        10     U[33]   
-      1231  :      1234        11     U[23]   
-      1234  :      1237        12     U[13]   
-      1237  :   -998815        13     U[12]   
- Atom header at    1240  :   -998815         0     O       6.              9      1257         1    1    0    0    0
-                                 218      10151065353216  16776811  16776789
-      1257  :      1260         5     X       
-      1260  :      1263         6     Y       
-      1263  :      1266         7     Z       
-      1266  :      1269         8     U[11]   
-      1269  :      1272         9     U[22]   
-      1272  :      1275        10     U[33]   
-      1275  :      1278        11     U[23]   
-      1278  :      1281        12     U[13]   
-      1281  :   -998815        13     U[12]   
- Function at    1185  :   -9   Vibration 
- C           7.0000   1.0000   0.0000   0.3568   0.1675   0.4033   0.0905   0.0338   0.0448   0.0034  -0.0065   0.0130
- O           6.0000   1.0000   0.0000   0.2286   0.2539   0.3451   0.0641   0.0273   0.0374  -0.0033  -0.0075  -0.0003
- Derivative(s) :
-        16    0.9999998750E+06              0.1948027872E-02              0.1294948161E-02
-         1   -0.1895800382E+00         2   -0.4327530861E+00         3   -0.3776670694E+00         4    0.8085457683E+00
-         5   -0.5351565480E+00         6    0.5728572011E+00
-
-   1.DELU - Restrain the difference in the M.S.D.'s along a bond to be
+   0.DELU - Restrain the difference in the M.S.D.'s along a bond to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
   
            C       7     1  1  0  0  0     0.03501         O       6     1  1  0  0  0     0.03696   0.00195
       Mean value =   0.0360  Mean delta =   0.0019  r.m.s. delta =   0.0019
+#LIST 12                                                                                                                                                                                                                                                        
+#LIST 22                                                                                                                                                                                                                                                        
+ Initialising Special positions
+Refining     6 parameters in    1 block :       49 elements in the LS matrix.
+ Space required on DISK is    1 records,     1  Blocks,     1 Kbytes. 
+#LIST 17                                                                                                                                                                                                                                                        
+#USE TD_REST.L5                                                                                                                                                                                                                                                 
+#                                                                                                                                                                                                                                                               
+# PUNCHED ON 30/09/11 AT 12:38:09                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#LIST      5                                                                                                                                                                                                                                                    
+#PURGE                                                                                                                                                                                                                                                          
+ The    Data    file is being rebuilt -
+ DO NOT abort the program
+ The new disc index has been re-written 
+ Disc index completely restored
+
+ Listing of file index of    Data    file 
+#CHECK HI                                                                                                                                                                                                                                                       
+#LIST 22                                                                                                                                                                                                                                                        
+ Initialising Special positions
+Refining     6 parameters in    1 block :       49 elements in the LS matrix.
+ Space required on DISK is    1 records,     1  Blocks,     1 Kbytes. 
+#LIST 17                                                                                                                                                                                                                                                        
+#LIST 26                                                                                                                                                                                                                                                        
+#CHECK HI                                                                                                                                                                                                                                                       
 
 
- Full loader listing, including the coordinates of generated atoms :
+ Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    11961677687616777216
-       1185   -998815      1861        11  -1000676  -1000000  -1000000         0      1190      1870  16776876         0
- Work stack header at    1190  :  -1000000         6      -340         0   -998815         0
- Function at    1185  :   11   Nolist    
+  Restraints checking  -  
+  restraints that produce no contributions are marked with a '?'
+
+   0.DELU - Restrain the difference in the M.S.D.'s along a bond to be
+        0.00000  angstrom squared, with an E.S.D. of  0.00100
+
+            Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
+  
+  ?        C       7     1  1  0  0  0     0.03734         O       6     1  1  0  0  0     0.03570  -0.00164
+      Mean value =   0.0365  Mean delta =  -0.0016  r.m.s. delta =   0.0016
+#LIST     16                                                                                                                                                                                                                                                    
+#LIST 26                                                                                                                                                                                                                                                        
+#SFLS                                                                                                                                                                                                                                                           
+#SPEC LIS  NO                                                                                                                                                                                                                                                   
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
+#REFINE     1                                                                                                                                                                                                                                                   
+#DORESTRAIN                                                                                                                                                                                                                                                     
+ Initialising Special positions
+
+
+ Cyclo in P 21 21 21                                                                  Date              Time          
+
+
+ Structure factor least squares      calculation number     9
+           Bad agreements 
+
+    h    k    l      Fo        Fc 
+
+    3.   1.   0.    -0.59     0.26
+    4.   1.   0.     0.76     0.93
+    6.   1.   0.     1.75     1.08
+    0.   2.   0.     5.39    25.35
+    1.   2.   0.     4.24     6.58
+    6.   2.   0.    -1.58     0.92
+    6.   3.   0.     1.34     0.67
+    2.   4.   0.     1.49     1.77
+    5.   6.   0.    -0.78     0.34
+    1.   7.   0.     1.57     1.91
+    0.  10.   0.     0.55     1.20
+    2.  11.   0.     0.59     0.95
+    4.  11.   0.     2.03     1.38
+    1.  13.   0.     0.62     1.03
+    1.   0.   1.    27.84    34.97
+    6.   1.   1.     1.59     2.10
+    0.   2.   1.    36.61    68.29
+    6.   3.   1.     0.88     0.35
+    0.   5.   1.     3.60     3.06
+    0.   9.   1.     1.47     2.07
+    1.  11.   1.     0.91     1.46
+    2.  11.   1.     1.44     1.67
+    0.  12.   1.     1.74     2.01
+    1.  12.   1.     0.93     0.76
+
+ And so on ------------
+
+
+                              ***
+                             ***
+ R-value    Weighted R      ************              ************
+                           *************  HERE IT IS  ************
+   4.86       14.47         ************              ************
+                             ***
+                              ***
+
+ Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
+
+     7455.8         7576.3           364.0                                   On scale of /FC/
+
+    12019.4        12213.7           586.8           0.53709126E+04          On scale of /FO/
+
+ New scale factor (G) is    1.61210,    1133 reflections used in refinement
+
+ Structure factor least squares calculation    9  ends  2
+SumFo/SumFc=  1.59 SumFoFc/SumFc^2=  1.56 SumwFoFc/SumwFc^2=  1.56 LS-scale=  1.61 Wilson Scale=  0.00                                                                                                                                                          
+<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =   -1.616                                                                                                                                                                                                         
+#INVERT  CHOL                                                                                                                                                                                                                                                   
+#NEWSHIFTS                                                                                                                                                                                                                                                      
+#INVERT  CHOL                                                                                                                                                                                                                                                   
+
+
+ Cyclo in P 21 21 21                                                                  Date              Time          
+
+
+ Matrix inversion and calculation of the shifts for S.F.L.S. cycle number     9
+
+ The SHIFT RATIO is the shift calculated for this cycle
+ divided by the corresponding shift for the last cycle.
+ Parameters for which the shift ratio exceeds  3.00 (SRATIO)
+            and/or the shift-over-esd exceeds  1.00 (S/ESD)
+            and/or there is a relatively large shift.
+ Parameters marked COMPOSITE contain derivatives from other physical parameters
+
+ Sum of the squares of the ratio (Shift/e.s.d.) =          0.1890
+                               The rms (shift/su)  =       0.1774603
+                            The mean abs(shift/su) =       0.1454086
+ The largest (shift/esd) =  0.332181, for Parameter    6, C11Z
+All cycle   1       0.00           100.           4.86    
+All cycle   2       0.00           100.           14.5    
+All cycle   3      0.300E-01      0.100E+05      0.177    
+All cycle   4       0.00          0.100E+16      0.537E+04
+
+
+ Cyclo in P 21 21 21                                                                  Date              Time          
+
+
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+ Statistics for     6 least squares parameters, with  1128 degrees of freedom
+ Number of observations              1133                 1              1134
+ Minimisation function          0.5370913E+04     0.1129527E+07     0.1134898E+07
+ Hamilton weighted R-value          14.467             3.141             3.148
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+
+ Calculated shifts
+
+             Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
+
+
+ Mean        0.00000  0.00000  0.00000  0.00063 -0.00081 -0.00045  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                                        0.00311 -0.00894 -0.00687
+
+ R.M.S.      0.00000  0.00000  0.00000  0.00230  0.00119  0.00139  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                                        0.01134  0.01311  0.02130
+
+ RMS sh/esd  0.00000  0.00000  0.00000  0.10401  0.12064  0.26288  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+
+
+ Maximum     0.00000  0.00000  0.00000  0.00285  0.00168  0.00176  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                                        0.01401  0.01853  0.02703
+
+ Reversals     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00
+
+
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is   0.00 for all parameters.
+
+
+ Shift
+ factors     1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+             1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+#SOLVE                                                                                                                                                                                                                                                          
+ Initialising Special positions
+
+
+ Cyclo in P 21 21 21                                                                  Date              Time          
+
+
+ Generation and output of the new parameter list
+
+ Format :      New coordinate  
+               Applied shift
+               Calculated E.S.D.
+               E.S.D. in angstrom
+
+
+
+  6  Overall parameter(s)
+
+    SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
+
+    1.61210  0.05000  0.05000  1.00000  0.00000    0.00000E+00
+    0.00000  0.00000  0.00000  0.00000  0.00000    0.00000E+00
+    0.00000  0.00000  0.00000  0.00000  0.00000    0.00000E+00
+
+
+
+    22  atom(s)
+
+    TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
+
+     C          2.   1.00000  0.00000  0.23725  0.38381  0.16648  0.02976  0.02526  0.03421  0.00279 -0.00067 -0.00129
+                     0.00000           0.00285  0.00006  0.00087  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                     0.00000           0.02140  0.00829  0.00519  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                                       0.10540  0.09149  0.07958
+
+     C         11.   1.00000  0.00000  0.13695  0.34607  0.07453  0.04668  0.03883  0.03083  0.00155  0.00012 -0.00380
+                     0.00000          -0.00158 -0.00168 -0.00176  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                     0.00000           0.02517  0.00985  0.00531  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                                       0.12398  0.10868  0.08137
+Mean C-C su =   0.0984                                                                                                                                                                                                                                          
+#CYCLENDS                                                                                                                                                                                                                                                       
+#CHECK HI                                                                                                                                                                                                                                                       
+
+
+ Cyclo in P 21 21 21                                                                  Date              Time          
+
+
+  Restraints checking  -  
+  restraints that produce no contributions are marked with a '?'
+
+   0. Restrain these distances to be    1.550 Angstrom,
+                with an E.S.D. of   0.000
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
+  
+           C       2     1  1  0  0  0      C      11     1  1  0  0  0      1.550     0.000
+      Mean value =   1.5500  Mean delta =   0.0000  r.m.s. delta =   0.0000
+#USE TD_REST.L5                                                                                                                                                                                                                                                 
+#                                                                                                                                                                                                                                                               
+# PUNCHED ON 30/09/11 AT 12:38:09                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#LIST      5                                                                                                                                                                                                                                                    
+#PURGE                                                                                                                                                                                                                                                          
+ The    Data    file is being rebuilt -
+ DO NOT abort the program
+ The new disc index has been re-written 
+ Disc index completely restored
+
+ Listing of file index of    Data    file 
+#LIST     16                                                                                                                                                                                                                                                    
+#LIST 26                                                                                                                                                                                                                                                        
+#SFLS                                                                                                                                                                                                                                                           
+#SPEC LIS  NO                                                                                                                                                                                                                                                   
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
+#REFINE     1                                                                                                                                                                                                                                                   
+#LIST 22                                                                                                                                                                                                                                                        
+ Initialising Special positions
+Refining     6 parameters in    1 block :       49 elements in the LS matrix.
+ Space required on DISK is    1 records,     1  Blocks,     1 Kbytes. 
+#LIST 17                                                                                                                                                                                                                                                        
+#REFINE     1                                                                                                                                                                                                                                                   
+#DORESTRAIN                                                                                                                                                                                                                                                     
+ Initialising Special positions
+
+
+ Cyclo in P 21 21 21                                                                  Date              Time          
+
+
+ Structure factor least squares      calculation number    10
+           Bad agreements 
+
+    h    k    l      Fo        Fc 
+
+    3.   1.   0.    -0.59     0.26
+    4.   1.   0.     0.76     0.93
+    6.   1.   0.     1.75     1.08
+    0.   2.   0.     5.39    25.35
+    1.   2.   0.     4.24     6.58
+    6.   2.   0.    -1.58     0.92
+    6.   3.   0.     1.34     0.67
+    2.   4.   0.     1.49     1.77
+    5.   6.   0.    -0.78     0.34
+    1.   7.   0.     1.57     1.91
+    0.  10.   0.     0.55     1.20
+    2.  11.   0.     0.59     0.95
+    4.  11.   0.     2.03     1.38
+    1.  13.   0.     0.62     1.03
+    1.   0.   1.    27.84    34.97
+    6.   1.   1.     1.59     2.10
+    0.   2.   1.    36.61    68.29
+    6.   3.   1.     0.88     0.35
+    0.   5.   1.     3.60     3.06
+    0.   9.   1.     1.47     2.07
+    1.  11.   1.     0.91     1.46
+    2.  11.   1.     1.44     1.67
+    0.  12.   1.     1.74     2.01
+    1.  12.   1.     0.93     0.76
+
+ And so on ------------
+
+
+                              ***
+                             ***
+ R-value    Weighted R      ************              ************
+                           *************  HERE IT IS  ************
+   4.86       14.47         ************              ************
+                             ***
+                              ***
+
+ Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
+
+     7455.8         7576.3           364.0                                   On scale of /FC/
+
+    12019.4        12213.7           586.8           0.53709126E+04          On scale of /FO/
+
+ New scale factor (G) is    1.61210,    1133 reflections used in refinement
+
+ Structure factor least squares calculation   10  ends  2
+SumFo/SumFc=  1.59 SumFoFc/SumFc^2=  1.56 SumwFoFc/SumwFc^2=  1.56 LS-scale=  1.61 Wilson Scale=  0.00                                                                                                                                                          
+<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =   -1.616                                                                                                                                                                                                         
+#LIST 26                                                                                                                                                                                                                                                        
+#DORESTRAIN                                                                                                                                                                                                                                                     
+#INVERT  CHOL                                                                                                                                                                                                                                                   
+#NEWSHIFTS                                                                                                                                                                                                                                                      
+#INVERT  CHOL                                                                                                                                                                                                                                                   
+
+
+ Cyclo in P 21 21 21                                                                  Date              Time          
+
+
+ Matrix inversion and calculation of the shifts for S.F.L.S. cycle number    10
+
+ The SHIFT RATIO is the shift calculated for this cycle
+ divided by the corresponding shift for the last cycle.
+ Parameters for which the shift ratio exceeds  3.00 (SRATIO)
+            and/or the shift-over-esd exceeds  1.00 (S/ESD)
+            and/or there is a relatively large shift.
+ Parameters marked COMPOSITE contain derivatives from other physical parameters
+
+ Sum of the squares of the ratio (Shift/e.s.d.) =          0.8353
+                               The rms (shift/su)  =       0.3731130
+                            The mean abs(shift/su) =       0.2384837
+ The largest (shift/esd) =  0.868071, for Parameter    6, C11Z
+All cycle   1       0.00           100.           4.86    
+All cycle   2       0.00           100.           14.5    
+All cycle   3      0.300E-01      0.100E+05      0.373    
+All cycle   4       0.00          0.100E+16      0.537E+04
+
+
+ Cyclo in P 21 21 21                                                                  Date              Time          
+
+
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+ Statistics for     6 least squares parameters, with  1128 degrees of freedom
+ Number of observations              1133                 1              1134
+ Minimisation function          0.5370913E+04     0.1129527E+07     0.1134898E+07
+ Hamilton weighted R-value          14.467             3.141             3.148
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+
+ Calculated shifts
+
+             Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
+
+
+ Mean        0.00000  0.00000  0.00000 -0.00111 -0.00133 -0.00171  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                                       -0.00547 -0.01472 -0.02620
+
+ R.M.S.      0.00000  0.00000  0.00000  0.00225  0.00153  0.00198  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                                        0.01109  0.01693  0.03033
+
+ RMS sh/esd  0.00000  0.00000  0.00000  0.09367  0.16054  0.61894  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+
+
+ Maximum     0.00000  0.00000  0.00000  0.00307  0.00209  0.00271  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                                        0.01512  0.02309  0.04148
+
+ Reversals     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00
+
+
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is   0.00 for all parameters.
+
+
+ Shift
+ factors     1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+             1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+#SOLVE                                                                                                                                                                                                                                                          
+ Initialising Special positions
+
+
+ Cyclo in P 21 21 21                                                                  Date              Time          
+
+
+ Generation and output of the new parameter list
+
+ Format :      New coordinate  
+               Applied shift
+               Calculated E.S.D.
+               E.S.D. in angstrom
+
+
+
+  6  Overall parameter(s)
+
+    SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
+
+    1.61210  0.05000  0.05000  1.00000  0.00000    0.00000E+00
+    0.00000  0.00000  0.00000  0.00000  0.00000    0.00000E+00
+    0.00000  0.00000  0.00000  0.00000  0.00000    0.00000E+00
+
+
+
+    22  atom(s)
+
+    TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
+
+     C          2.   1.00000  0.00000  0.23526  0.38318  0.16490  0.02976  0.02526  0.03421  0.00279 -0.00067 -0.00129
+                     0.00000           0.00085 -0.00058 -0.00071  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                     0.00000           0.02195  0.00839  0.00635  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                                       0.10811  0.09257  0.09722
+
+     C         11.   1.00000  0.00000  0.13546  0.34565  0.07359  0.04668  0.03883  0.03083  0.00155  0.00012 -0.00380
+                     0.00000          -0.00307 -0.00209 -0.00271  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                     0.00000           0.02423  0.00967  0.00312  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                                       0.11934  0.10667  0.04778
+Mean C-C su =   0.0953                                                                                                                                                                                                                                          
+#CYCLENDS                                                                                                                                                                                                                                                       
+#SFLS                                                                                                                                                                                                                                                           
+#SPEC LIS  NO                                                                                                                                                                                                                                                   
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
+#REFINE     1                                                                                                                                                                                                                                                   
+#DORESTRAIN                                                                                                                                                                                                                                                     
+ Initialising Special positions
+
+
+ Cyclo in P 21 21 21                                                                  Date              Time          
+
+
+ Structure factor least squares      calculation number    11
+           Bad agreements 
+
+    h    k    l      Fo        Fc 
+
+    2.   1.   0.     0.94     0.31
+    3.   1.   0.    -0.59     0.41
+    4.   1.   0.     0.76     1.24
+    6.   1.   0.     1.75     0.96
+    0.   2.   0.     5.39    24.70
+    1.   2.   0.     4.24     6.63
+    6.   2.   0.    -1.58     0.87
+    6.   3.   0.     1.34     0.70
+    2.   4.   0.     1.49     2.02
+    5.   6.   0.    -0.78     0.43
+    1.   7.   0.     1.57     2.02
+    5.   8.   0.     1.23     1.00
+    0.  10.   0.     0.55     1.24
+    2.  11.   0.     0.59     1.15
+    4.  11.   0.     2.03     1.43
+    2.  12.   0.     0.78     0.59
+    1.  13.   0.     0.62     1.05
+    1.  14.   0.     0.59     0.72
+    1.   0.   1.    27.84    34.82
+    6.   1.   1.     1.59     1.97
+    0.   2.   1.    36.61    67.89
+    6.   3.   1.     0.88     0.26
+    2.   5.   1.     4.82     3.93
+    0.   7.   1.     6.10     7.13
+
+ And so on ------------
+
+
+                              ***
+                             ***
+ R-value    Weighted R      ************              ************
+                           *************  HERE IT IS  ************
+   6.08       14.66         ************              ************
+                             ***
+                              ***
+
+ Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
+
+     7455.8         7583.7           455.7                                   On scale of /FC/
+
+    12019.4        12225.7           734.7           0.55133647E+04          On scale of /FO/
+
+ New scale factor (G) is    1.61210,    1133 reflections used in refinement
+
+ Structure factor least squares calculation   11  ends  2
+SumFo/SumFc=  1.58 SumFoFc/SumFc^2=  1.56 SumwFoFc/SumwFc^2=  1.56 LS-scale=  1.61 Wilson Scale=  0.00                                                                                                                                                          
+<Fo>-<Fc> =   -0.113    100*(<Fo>-<Fc>)/<Fo> =   -1.716                                                                                                                                                                                                         
+#INVERT  CHOL                                                                                                                                                                                                                                                   
+
+
+ Cyclo in P 21 21 21                                                                  Date              Time          
+
+
+ Matrix inversion and calculation of the shifts for S.F.L.S. cycle number    11
+
+ The SHIFT RATIO is the shift calculated for this cycle
+ divided by the corresponding shift for the last cycle.
+ Parameters for which the shift ratio exceeds  3.00 (SRATIO)
+            and/or the shift-over-esd exceeds  1.00 (S/ESD)
+            and/or there is a relatively large shift.
+ Parameters marked COMPOSITE contain derivatives from other physical parameters
+
+ Sum of the squares of the ratio (Shift/e.s.d.) =          0.6766
+                               The rms (shift/su)  =       0.3358055
+                            The mean abs(shift/su) =       0.1947172
+ The largest (shift/esd) =  0.782568, for Parameter    6, C11Z
+All cycle   1       0.00           100.           6.08    
+All cycle   2       0.00           100.           14.7    
+All cycle   3      0.300E-01      0.100E+05      0.336    
+All cycle   4       0.00          0.100E+16      0.551E+04
+
+
+ Cyclo in P 21 21 21                                                                  Date              Time          
+
+
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+ Statistics for     6 least squares parameters, with  1128 degrees of freedom
+ Number of observations              1133                 1              1134
+ Minimisation function          0.5513365E+04     0.5186075E+05     0.5737412E+05
+ Hamilton weighted R-value          14.658             0.664             0.699
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+
+ Calculated shifts
+
+             Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
+
+
+ Mean        0.00000  0.00000  0.00000 -0.00061 -0.00015 -0.00028  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                                       -0.00299 -0.00164 -0.00430
+
+ R.M.S.      0.00000  0.00000  0.00000  0.00089  0.00015  0.00039  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                                        0.00436  0.00169  0.00604
+
+ RMS sh/esd  0.00000  0.00000  0.00000  0.16331  0.07359  0.55336  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+
+
+ Maximum     0.00000  0.00000  0.00000  0.00125  0.00019  0.00056  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                                        0.00617  0.00207  0.00854
+
+ Reversals     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00
+
+
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is   0.00 for all parameters.
+
+
+ Shift
+ factors     1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+             1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+#SOLVE                                                                                                                                                                                                                                                          
+ Initialising Special positions
+
+
+ Cyclo in P 21 21 21                                                                  Date              Time          
+
+
+ Generation and output of the new parameter list
+
+ Format :      New coordinate  
+               Applied shift
+               Calculated E.S.D.
+               E.S.D. in angstrom
+
+
+
+  6  Overall parameter(s)
+
+    SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
+
+    1.61210  0.05000  0.05000  1.00000  0.00000    0.00000E+00
+    0.00000  0.00000  0.00000  0.00000  0.00000    0.00000E+00
+    0.00000  0.00000  0.00000  0.00000  0.00000    0.00000E+00
+
+
+
+    22  atom(s)
+
+    TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
+
+     C          2.   1.00000  0.00000  0.23529  0.38307  0.16490  0.02976  0.02526  0.03421  0.00279 -0.00067 -0.00129
+                     0.00000           0.00004 -0.00011  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                     0.00000           0.00496  0.00188  0.00143  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                                       0.02441  0.02074  0.02185
+
+     C         11.   1.00000  0.00000  0.13421  0.34547  0.07303  0.04668  0.03883  0.03083  0.00155  0.00012 -0.00380
+                     0.00000          -0.00125 -0.00019 -0.00056  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                     0.00000           0.00543  0.00217  0.00071  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                                       0.02672  0.02398  0.01091
+Mean C-C su =   0.0214                                                                                                                                                                                                                                          
+#CYCLENDS                                                                                                                                                                                                                                                       
+#CHECK HI                                                                                                                                                                                                                                                       
+
+
+ Cyclo in P 21 21 21                                                                  Date              Time          
+
+
+  Restraints checking  -  
+  restraints that produce no contributions are marked with a '?'
+
+   0. Restrain these distances to be    1.550 Angstrom,
+                with an E.S.D. of   0.000
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
+  
+           C       2     1  1  0  0  0      C      11     1  1  0  0  0      1.550     0.000
+      Mean value =   1.5497  Mean delta =   0.0003  r.m.s. delta =   0.0003
 #END                                                                                                                                                                                                                                                            
 
 
