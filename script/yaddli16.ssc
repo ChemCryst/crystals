@@ -83,4 +83,5 @@
 %  COPY '#USE scplst16a.dat'
 %%  COPY '#SUM L 16'
 %%  COPY 'END'
+%   GET SILENT NOSTORE NOPROMPT TEXT ' ' ' '
 %END SCRIPT
