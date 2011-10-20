@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.183  2011/09/21 14:34:14  rich
+C Fix CIF output to use data reduction option from L30 (not instrument type).
+C
 C Revision 1.182  2011/09/01 13:09:56  djw
 C Create subroutine XCIF2 in PUNCH.FPP to output LIST 2 in cif format for use in fcf (and in cif) files
 C
@@ -5590,7 +5593,7 @@ C           AREA DETECTOR
         END IF
 C
 C-----    A TMAX/TMIN FIX IN THE ABSENCE OF REAL INFO
-         IF (J .NE. -1) THEN
+        IF (J .NE. -1) THEN
           IF (STORE(L30AB+1+J) .LE. ZERO) THEN
             STORE(L30AB+J)  = TMIN
             STORE(L30AB+1+J) = TMAX
@@ -5600,7 +5603,7 @@ C-----    A TMAX/TMIN FIX IN THE ABSENCE OF REAL INFO
               CALL XPCIF(CLINE)
             ENDIF
           ENDIF
-         ENDIF
+        ENDIF
 C
         CLINE=' '
         WRITE (CLINE,'( A, ''correction_type '',A)') CBUF(1:15),CVALUE
@@ -5669,12 +5672,14 @@ c               Agilent
           END IF
         ELSE
            IF ( IPUNCH .EQ. 0 ) THEN
-             WRITE (CLINE,'(A,''correction_T_'', A, F8.4)') CBUF(1:15),
-     1        CSIZE(1),TMIN
-             CALL XPCIF (CLINE)
-             WRITE (CLINE,'(A,''correction_T_'', A, F8.4)') CBUF(1:15),
-     1        CSIZE(3),TMAX
-             CALL XPCIF (CLINE)
+c dont output anything if abs correction is 'none', J=-1
+c             WRITE (CLINE,'(A,''correction_T_'', A, F8.4)') CBUF(1:15),
+c     1        CSIZE(1),TMIN
+c             CALL XPCIF (CLINE)
+c             WRITE (CLINE,'(A,''correction_T_'', A, F8.4)') CBUF(1:15),
+c     1        CSIZE(3),TMAX
+c             CALL XPCIF (CLINE)
+              CONTINUE
            ELSE IF ( IPUNCH .EQ. 1 ) THEN
              WRITE (CPAGE(IDATA+1,2)(:),'(A,2X,2F5.2)')
      1        'Transmission range',TMIN,TMAX
