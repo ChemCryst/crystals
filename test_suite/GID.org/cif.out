@@ -307,8 +307,6 @@ _exptl_absorpt_coefficient_mu     0.368
  
 # Sheldrick geometric approximatio 1.00 1.00 
 _exptl_absorpt_correction_type    none 
-_exptl_absorpt_correction_T_min   1.0000 
-_exptl_absorpt_correction_T_max   1.0000 
 _diffrn_measurement_device_type   'Unknown' 
 _diffrn_measurement_device        'Serial' 
 _diffrn_radiation_monochromator   'graphite' 
