@@ -1,0 +1,57 @@
+data_sk_277_0m
+_symmetry_cell_setting           'Triclinic'
+_symmetry_space_group_name_H-M   'P-1   '
+_cell_measurement_temperature     120(2)
+_cell_measurement_reflns_used    8213
+_cell_measurement_theta_min        2.31
+_cell_measurement_theta_max       27.93
+_exptl_crystal_description       'prism'
+_exptl_crystal_colour            'orange'
+_exptl_crystal_size_min          0.12
+_exptl_crystal_size_mid          0.197
+_exptl_crystal_size_max          0.426
+_exptl_crystal_density_meas      0
+_exptl_crystal_density_method    '?'
+_exptl_absorpt_correction_type   'none'
+_exptl_absorpt_correction_T_min  ?
+_exptl_absorpt_correction_T_max  ?
+_diffrn_ambient_temperature       120(2)
+_diffrn_radiation_type           'MoK\a'
+_diffrn_radiation_source         'sealed tube'
+_diffrn_radiation_monochromator  'graphite'
+_diffrn_measurement_device_type  'Bruker APEX-II CCD'
+_diffrn_measurement_method       '\f and \w scans'
+_diffrn_detector_area_resol_mean ?
+_diffrn_standards_number         0
+_diffrn_standards_interval_count ?
+_diffrn_standards_decay_%        ?
+_computing_data_collection      'Bruker APEX2'
+_computing_cell_refinement      'Bruker SAINT'
+_computing_data_reduction       'Bruker SAINT'  A
+_computing_structure_solution   'SHELXS-97 (Sheldrick, 2008)'
+_computing_structure_refinement 'SHELXL-97 (Sheldrick, 2008)'
+_computing_molecular_graphics   'Bruker SHELXTL'
+_computing_publication_material 'Bruker SHELXTL'
+
+loop_
+ _exptl_crystal_face_index_h
+ _exptl_crystal_face_index_k
+ _exptl_crystal_face_index_l
+ _exptl_crystal_face_perp_dist
+    0.00    0.00   -1.00    0.1560
+    0.00    0.00    1.00    0.2110
+    1.00    0.00   -2.00    0.1440
+   -1.00    0.00    2.00    0.1860
+   -1.00    0.00    0.00    0.0600
+    1.00    0.00    0.00    0.0400
+    0.00   -1.00    0.00    0.0680
+    0.00    1.00    0.00    0.0820
+    0.00    1.00   -3.00    0.1510
+    0.00   -1.00    3.00    0.2050
+   -2.00    3.00    3.00    0.1620
+   -1.00    1.00    0.00    0.1020
+    1.00   -1.00    0.00    0.0680
+    2.00    0.00    1.00    0.0770
+    1.00   -2.00    1.00    0.1110
+   -1.00    2.00    1.00    0.1250
+   -3.00    0.00    2.00    0.1140

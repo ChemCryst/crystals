@@ -1,0 +1,63 @@
+C           
+C
+C >>>>>> Common declararations 'ciftbx.cmn'
+C
+C        For inclusion in user applications
+C
+C
+C                                 Logical function init_
+         logical   init_
+C                                 Logical function dict_
+         logical   dict_
+C                                 Logical function open_
+         logical   open_
+C                                 Logical function data_
+         logical   data_
+C                                 Logical function test_
+         logical   test_
+C                                 Logical function name_
+         logical   name_
+C                                 Logical function numb_
+         logical   numb_
+C                                 Logical function char_
+         logical   char_
+C                                 Logical function pfile_
+         logical   pfile_
+C                                 Logical function pdata_
+         logical   pdata_
+C                                 Logical function pchar_
+         logical   pchar_
+C                                 Logical function pnumb_
+         logical   pnumb_
+C                                 Logical function ptext_
+         logical   ptext_
+C                                 Logical function ploop_
+         logical   ploop_
+C                                 Align loop active flag (true/false)
+         logical   align_
+C                                 Text active flag (true/false)
+         logical   text_
+C                                 Loop active flag (true/false)
+         logical   loop_
+C                                 Length of current data item in strg_
+         integer   long_
+C                                 Loop block number of current item    
+         integer   list_
+C                                 Length of current filename in file_
+         integer   longf_
+C                                 Name of current data block
+         character bloc_*32
+C                                 Character image of current data item
+         character strg_*80
+C                                 File name of current CIF
+         character file_*80
+C                                 Data item type
+         character type_*4
+C
+         common/tbuc/ strg_,bloc_,file_,type_
+C
+         common/tbui/ list_,long_,longf_
+C
+         common/tbul/ loop_,text_,align_
+C
+C
