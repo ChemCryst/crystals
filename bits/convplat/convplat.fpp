@@ -37,7 +37,7 @@ c
      * ,'CONTINUE RATIO/JCODE  SIGMA(/FO/)   CORRECTIONS  '
      * ,'A-PART B-PART'
      5 / 'END')
-      write(out1,1001) ln
+      write(iout1,1001) ln
 
       n6 = 0
       np = 0
