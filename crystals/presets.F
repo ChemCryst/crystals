@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.64  2011/09/20 13:15:46  rich
+C Some new hollerith problems crept in.
+C
 C Revision 1.63  2011/09/07 09:44:41  djw
 C Change format of #SET OPENMESSAGE text so that columns line up across actions
 C Add #SET CACHEMESSAGE (off/on) to inhibit caching information at termination
@@ -317,7 +320,13 @@ C
       INCLUDE 'OUTCOL.INC'
       INCLUDE 'XMTLAB.INC'
       INCLUDE 'XFLAGS.INC'
+      DIMENSION VCVVEC(8192)
+      REAL VCVVSZ
+	  COMMON /VCVTMP/ VCVVSZ, VCVVEC
 
+	  DATA VCVVSZ/0/
+	  DATA VCVVEC/8192*0.0/
+	  
 C LOAD THE LIST NAMES
 C      
        DATA CLISTS(1)     /'Cell parameters'/
