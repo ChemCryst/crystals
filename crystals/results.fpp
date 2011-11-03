@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.184  2011/10/20 10:22:54  djw
+C Bug reported by Ibby.  Values for Tmax Tmin should not be given if absorption method was "none"
+C
 C Revision 1.183  2011/09/21 14:34:14  rich
 C Fix CIF output to use data reduction option from L30 (not instrument type).
 C
@@ -7472,7 +7475,7 @@ C Done.
 cdjwoct01 - scale by sigma
 c               WRITE (CMON,'(3A,2F10.2)') 
 c     1 '^^PL LABEL ''', HKLLAB(1:IHKLLEN),''' DATA ',FCKD,FOKD
-               WRITE (CMON,'(3A,2F10.2)') 
+               WRITE (CMON,'(3A,2(1X,F12.2))') 
      1 '^^PL LABEL ''', HKLLAB(1:IHKLLEN),''' DATA ',stnfc,stnfo
                CALL XPRVDU (NCVDU,1,0)
             END IF
@@ -7591,7 +7594,7 @@ CDJWOCT10 - USE DIGNA:NOISE
 C         WRITE (CMON,'(A/ (2(A,2F10.2)) )') 
 C     1 '^^PL ADDSERIES ''Fo=Fc'' TYPE LINE',
 C     2 '^^PL DATA ', -FCMAX,-FCMAX,' DATA ',FCMAX,FCMAX
-         WRITE (CMON,'(A/ (2(A,2F10.2)) )') 
+         WRITE (CMON,'(A/ (2(A,2(1X,F12.2))) )') 
      1 '^^PL ADDSERIES ''Fo=Fc'' TYPE LINE',
      2 '^^PL DATA ', -STNFCM,-STNFCM,' DATA ',STNFCM,STNFCM
          CALL XPRVDU (NCVDU,2,0)
