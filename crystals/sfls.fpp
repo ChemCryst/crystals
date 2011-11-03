@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.76  2011/09/05 08:40:28  djw
+C *** empty log message ***
+C
 C Revision 1.74  2011/09/01 12:16:26  djw
 C Compute the weighted and unweighted overall scale factor by the method of Luc.  The 5 different methods now available have different responses to errors in the model or data
 C
@@ -2228,6 +2231,11 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
      2        RED*1000000000.0
               CALL XPRVDU(NCVDU, 1,0)
 
+              CALL XCRAS(HKLLAB, IHKLLEN)
+              WRITE(124,'(2A,2F11.4,1X,2(1x,G15.9))')
+     1        HKLLAB(1:IHKLLEN),' FO,PII,tix,Red ',FO,Pii,tix,RED
+
+
 
               IF (( ILEVPR .LT. 30 ) .OR. ( PII .LT. XVALUL ) ) THEN
 C----    H,K,L,SNTHL,LEV,
@@ -2993,6 +3001,11 @@ C-C-C-CALCULATE THE DERIVATIVE W.R.T. SPHERE-FACTOR FOR RADIUS
 
 CODE FOR PDOLEV
       FUNCTION PDOLEV( L12, N12, MD12B, V, N11, DF, NDF, JPNX, TIX, RED)
+
+      DIMENSION VCVVEC(8192)
+      INTEGER IVCVVSZ
+      COMMON /VCVTMP/ IVCVVSZ, VCVVEC
+
       DIMENSION L12(N12), V(N11), DF(NDF)
 C Work out leverage and some other things. See Prince, Mathematical
 c Techniques in Crystallography and Materials Science, 2nd Edition,
@@ -3028,11 +3041,21 @@ c      TIX    - the value of ziVn for the selected parameter (JPNX)
 c      RED    - the amount by which repeated measurement of this
 c               reflection will reduce the JPNXth parameter's variance.
 
+C if JPNX is zero then we use the VCVVEC to pre and post multiply each
+C (Zit)(Zi) matrix, and get the stuff.
+
+
+       WRITE(125,'(1000G15.9)')(DF(I),I=1,NDF)
+       WRITE(126,'(4I12)')N12,N11,NDF,IVCVVSZ
+
+
        M11 = 1
        PII = 0.0
        TIx = 0.0
+       TITMP=0.0
        JPN = JPNX - 1
 
+ 
        DO I = 1,N12,MD12B        ! Loop over each block
          IBS = L12(I+1)             ! IBS:= Number of rows in block
          DO J = 0, IBS-1            ! Loop over each row
@@ -3041,14 +3064,24 @@ c               reflection will reduce the JPNXth parameter's variance.
              IF ( K.EQ.0 ) DOUB = 1.0   ! Add on-diagonals once.
              PII = PII + DOUB * DF(1+J) * DF(1+J+K) * V(M11)
              IF ( J .EQ. JPN ) THEN   ! This is the row of interest for Tij
+               TIx = TIx + DF(1+J+K) * V(M11)
+             ELSE IF ( J+K .EQ. JPN ) THEN   ! This is also the row of interest for Tij
                TIx = TIx + DF(1+J) * V(M11)
-             ELSE IF ( K .EQ. JPN ) THEN   ! This is also the row of interest for Tij
-               TIx = TIx + DF(1+K) * V(M11)
+             ELSE IF ( JPNX .LT. 0 ) THEN !Accumulate whole of ti
+               TITMP= TITMP + VCVVEC(1+J) *DF(1+J+K) *V(M11)
+               IF (K.NE.0) THEN
+                TITMP=TITMP+VCVVEC(1+J+K)*DF(1+J)*V(M11)
+               END IF
              END IF
              M11 = M11 + 1
            END DO
          END DO
        END DO
+
+       IF ( JPNX .LT. 0 ) THEN
+         TIx = TITMP
+       ENDIF
+
 
        RED = (TIX**2)/(1.0+PII)
        PDOLEV = PII
