@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.101  2011/09/21 14:27:25  rich
+C Switch labels for RMS and ABS in SUML30 (now correct).
+C
 C Revision 1.100  2011/09/19 13:03:45  djw
 C In wt vs Sigma, interchange axes.  All unit line to NPP and wt vs Sigma plots
 C
@@ -2052,7 +2055,7 @@ cjun2010  FO = STORE(M6+itwin)
           WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
      1    NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
           CALL XCRAS(HKLLAB, IHKLLEN)
-          WRITE(CMON,'(3A,2F10.2)')
+          WRITE(CMON,'(3A,2(1X,F12.2))')
      1   '^^PL LABEL ''', HKLLAB(1:IHKLLEN), ''' DATA ', FC ,FO
           CALL XPRVDU(NCVDU, 1,0)
         ENDIF
@@ -2130,9 +2133,9 @@ cjun2010            FO = STORE(M6+itwin)
             WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
      1      NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
             CALL XCRAS(HKLLAB, IHKLLEN)
-            WRITE(CMON,'(3A,2F10.2)')
+            WRITE(CMON,'(3A,2(1X,F12.2))')
      1     '^^PL LABEL ''', HKLLAB(1:IHKLLEN), ''' DATA ', FC ,FO
-c            WRITE(CMON,'(A,2F10.2)')
+c            WRITE(CMON,'(A,2(1X,F12.2))')
 c     1     '^^PL DATA ', FC ,FO
             CALL XPRVDU(NCVDU, 1,0)
           ENDIF
