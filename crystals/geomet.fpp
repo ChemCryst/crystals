@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2009/12/23 08:24:17  djw
+C Add link to vcv matrix - not yet finished
+C
 C Revision 1.6  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -49,7 +52,7 @@ C--CHECK IF WE SHOULD RETURN
 C
 C--BRANCH ON THE TYPE OF OPERATION
 1200  CONTINUE
-      GOTO (2000,3000,3500,4000,9000,9500,1300),NUM
+      GOTO (2000,3000,3500,4000,5000,9000,9500,1300),NUM
 1300  CALL GUEXIT(342)
 C
 C--MOLECULAR AXES CALCULATION
@@ -70,6 +73,11 @@ C
 C--VCV MATRIX
 4000  CONTINUE
       CALL VCV
+      RETURN
+C
+C--SUS MATRIX
+5000  CONTINUE
+      CALL SUSCAL
       RETURN
 C
 C--'#END' INSTRUCTION
