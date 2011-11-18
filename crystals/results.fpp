@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.185  2011/11/03 09:20:59  rich
+C Extend output format statements.
+C
 C Revision 1.184  2011/10/20 10:22:54  djw
 C Bug reported by Ibby.  Values for Tmax Tmin should not be given if absorption method was "none"
 C
@@ -5011,8 +5014,9 @@ C----- CRYSTAL CLASS - FROM LIST 2
          WRITE (CTEMP,800) (ISTORE(I),I=L2CC,J)
 800      FORMAT (4(A4))
          CBUF=' '
-         CALL XCCLWC (CTEMP(2:),CBUF(2:))
-         CBUF(1:1)=CTEMP(1:1)
+cdjwnov2011 - make all text lowercase - requested by ALT
+         CALL XCCLWC (CTEMP(1:),CBUF(1:))
+c         CBUF(1:1)=CTEMP(1:1)
          CALL XCTRIM (CBUF,J)
          J = J - 1
          IF ( IPUNCH .EQ. 1 ) THEN
@@ -6225,7 +6229,8 @@ C----- RELECTION LIMITS IN DATA COLLECTION
 cdjwnov05-end of list 6 goodies
 
         IF ( IPUNCH .EQ. 0 ) THEN
-           CSOLVE ='Direct'
+cdjwnov2011 - make all text lowercase - requested by ALT
+           CSOLVE ='direct'
            IF(ISOLVE.EQ. 0) THEN
                   CSOLVE='Other'
             ELSE IF (ISOLVE .EQ. 4) THEN
@@ -6536,8 +6541,9 @@ c 6 UNDEF    7 CONSTR  8 NONE
      1                     33, IDIR, IPARAM, IVAL,   JVAL, VAL, JTYPE)
            CALL XCCLWC (CVALUE(1:), CVALUE(1:))
            CALL XCTRIM(CVALUE,LVALUE)
+cdjwnov2011 - change none to undef 
            WRITE (NCFPU1,'(''_refine_ls_hydrogen_treatment '',T35,
-     1         A,T50,''# none, undef, noref, refall,'',/,T50,
+     1         A,T50,''#undef, noref, refall,'',/,T50,
      2         ''# refxyz, refU, constr or mixed'')') CVALUE(1:LVALUE)
 
         ELSE IF ( IPUNCH .EQ. 1 ) THEN
