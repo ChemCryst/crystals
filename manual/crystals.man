@@ -7733,6 +7733,8 @@ are only going to be calculated.
 #DA-DISTANCES  VALUE, E.S.D. = BOND1, BOND2, . . . . .#
  Asymmetric distance restraint. The second atom in the bond is 
  restrained to be the given distance from the first, which is unrestrained.
+#P Note that the qualifiers MEAN and DIFFERENCE cannot be used in this 
+ context.
 #DDISTANCES VALUE, E.S.D. = MEAN BOND1, BOND2, . . . .#
  Initially the restraints routines calculate the
  'MEAN' value of all the bonds specified by
