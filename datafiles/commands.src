@@ -1664,8 +1664,8 @@ New CIF extensions
     .YMIN               0    0    1    0    1 0.
     .ZMIN               0    0    1    0    1 0.
     .H-TREATMENT        0    0    1    9    0 UNKNOWN
-     UNKNOWN        MIXED          REFALL         REFXYZ         REFU
-     NOREF          UNDEF          CONSTR         NONE           
+     UNDEF          MIXED          REFALL         REFXYZ         REFU
+     NOREF          UNDEF          CONSTR         NOREF           
 LIST 31            3    0
   31   40960 CRYSTALSINPUT
    1.AMULT              1    1    0    0    1    1  101    1   31
