@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.61  2011/09/07 09:44:41  djw
+C Change format of #SET OPENMESSAGE text so that columns line up across actions
+C Add #SET CACHEMESSAGE (off/on) to inhibit caching information at termination
+C Remove disc extension messages
+C
 C Revision 1.60  2011/09/01 12:08:54  djw
 C unify file open/close messages
 C
@@ -1152,8 +1157,8 @@ C
         ELSE IF ( ISYSIN .EQ. ISCRIP ) THEN
           CALL XFLPCK ( LCMAGE(NC) , LENGTH ,
      2            CSCPDV(1:LSCPDV) , CSCPEX(1:LSCPEX) , CRFILE , N )
-#if defined(_GIL_)  || defined(_MAC_)
-C FORCE all #SCRIPT arguments to lowercase - all other files can
+C DJW Dec11 #if defined(_GIL_)  || defined(_MAC_)
+C FORCE all #SCRIPT arguments to lowercase - all other files can be
 C mixed case, but all script must be lower. This is for compatibility
 C with existing script calls in scripts which are usually uppercase.
           CUFILE = CRFILE
@@ -1167,17 +1172,18 @@ C with existing script calls in scripts which are usually uppercase.
             CALL XCCLWC ( CUFILE, CRFILE )
             CALL MTRNLG(CRFILE,'OLD',ILENG)
           END IF
-#endif
+C DJW Dec11 #endif
         ELSE
           CALL XFLPCK ( LCMAGE(NC) , LENGTH ,
      2            ' ' ,              ' ' ,              CRFILE , N )
         ENDIF
 C
-      IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
-       WRITE(NCWU,1006) IFLIND, NCUFU(IFLIND) , CRFILE
-1006   FORMAT('READ      Opening File index=',I8, ': Unit =',I8,1X,A)
-      ENDIF
-      I = KFLOPN ( NCUFU(IFLIND), CRFILE, ISSOLD, ISSREA, 1, ISSSEQ )
+        IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
+         WRITE(NCWU,1006) IFLIND, NCUFU(IFLIND) , CRFILE
+1006    FORMAT('READ      Opening File index=',I8, ': Unit =',I8,1X,A)
+        ENDIF
+C
+        I = KFLOPN (NCUFU(IFLIND),CRFILE,ISSOLD,ISSREA,1,ISSSEQ)
         IF ( I .GT. 0 ) THEN
 C -- DISPLAY THE CURRENT CARD BEFORE WE LOSE THE CHANCE
           CALL XMONTR ( -1 )
@@ -1194,23 +1200,36 @@ C -- DISPLAY THE CURRENT CARD BEFORE WE LOSE THE CHANCE
           IRDHGH(IFLIND) = 0
           CALL XFLUNW ( 4 , 1 )
         ELSE
-C -- FILE OPEN FAILED ( ERROR FOR USE,
-C    WARN FOR TYPE ETC. , IGNORE FOR STARTUP )
+C --      FILE OPEN FAILED ( ERROR FOR USE, SCRIPT
+C         WARN FOR TYPE ETC. , 
+C         IGNORE FOR STARTUP )
           IF ( ISSSTA .LE. 0 ) THEN
             CALL XCTRIM( CRFILE, NCHAR)
             WRITE ( CMON,3105) CRFILE(1:NCHAR)
             CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) THEN
-            WRITE ( NCWU , 3105 ) CRFILE
-      ENDIF
+cdjwdec11            IF (ISSPRT .EQ. 0) THEN
+              WRITE ( NCWU , 3105 ) CRFILE
+cdjwdec11            ENDIF
 3105        FORMAT ( 1X , 'Error opening specified file - ' , A )
             CALL XERIOM ( NCUFU(IFLIND) , I )
-C
             IERROR = IERWRN
             IF ( ISYSIN .EQ. IUSE ) IERROR = IERERR
+            IF ( ISYSIN .EQ. ISCRIP ) IERROR = IERERR
             CALL XERHND ( IERROR )
           ENDIF
-          CALL XFLUNW ( 2 , 1 )
+cdjwdec11
+            IF ( ISYSIN .EQ. ISCRIP ) THEN
+C            close back to top level if a SCRIPT does not exist
+             WRITE(CMON,'(A/A/A)')
+     1      '{ECRYSTALS has encountered a serious internal error',
+     2      '{Eand is closing down the SCRIPT processor.',
+     3      '{EPlease send the .log and .lis files to Oxford'
+             CALL XPRVDU(NCVDU, 3, 0)
+             write(ncwu,'(a)') cmon(1), cmon(2), cmon(3)
+             CALL XFLUNW ( 1 , 3 )
+            ELSE
+             CALL XFLUNW ( 2 , 1 )
+            ENDIF
         ENDIF
       ELSE IF ( ( IOPER .EQ. 1 ) .OR. ( IOPER .EQ. 2 ) ) THEN
 C -- 'USE LAST' OR 'USE CONTROL'
