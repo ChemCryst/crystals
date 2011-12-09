@@ -1663,7 +1663,7 @@ New CIF extensions
     .XMIN               0    0    1    0    1 0.
     .YMIN               0    0    1    0    1 0.
     .ZMIN               0    0    1    0    1 0.
-    .H-TREATMENT        0    0    1    9    0 UNKNOWN
+    .H-TREATMENT        0    0    1    9    0 UNDEF
      UNDEF          MIXED          REFALL         REFXYZ         REFU
      NOREF          UNDEF          CONSTR         NOREF           
 LIST 31            3    0
