@@ -1,0 +1,38 @@
+%SCRIPT XIN6PT2
+% VARIABLE INTEGER FTYPE
+%%
+%         IF ( EXISTS 23 .NE. 1 ) THEN                                          
+{I Structure Factor control list (LIST 23)  is missing                          
+%            COPY '#SCRIPT XQCK23'                                              
+%         ELSE                                                                  
+List 23 already in place.                                                       
+%         END IF                                                                
+%                                                                               
+%%                                                                              
+%         COPY '#GENERALEDIT 23'                                                
+%         COPY 'LOCATE RECORDTYPE=103'                                          
+%         COPY 'TRANSFER FROM OFFSET=1 TO FTYPE'                                
+%         COPY 'END'                                                            
+%%                                                                              
+%         IF ( EXISTS 28 .NE. 1 ) THEN
+%          COPY '#LIST 28'                                                       
+%          CLEAR                                                                 
+%          INSERT 'MINIMA '                                                      
+%          IF FTYPE .NE. 0 THEN                                                  
+{I For F refinement, a default I/u(I) minimum of 3.0 is recommended.            
+%            INSERT 'RATIO=3.0 '                                                 
+%          ELSE
+{I For F^2 refinement, a default I/u(I) minimum of -3.0 is recommended.            
+%            INSERT 'RATIO=-3.0 '                                                 
+%          END IF                                                                
+{I A default sin(theta)/lambda minimum of 0.01 is recommended.                  
+%          INSERT 'SINT=0.01'                                                    
+%          SEND                                                                  
+%          COPY 'END'                                                            
+%         END IF
+%%                                                                              
+%% Set suitable starting weights
+%%         
+%         COPY '#SCRIPT XWTINI'
+%%                                                                              
+% END SCRIPT
