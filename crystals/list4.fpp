@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.70  2011/05/19 11:03:16  rich
+C Remove deubgging from SCHEME 17
+C
 C Revision 1.69  2011/05/18 11:49:01  rich
 C DJW: extension to L29 to include version info.
 C RIC: found bug in Weighting SCHEME 17 - read L30 value for Nparams without loading L30 first.
@@ -472,18 +475,20 @@ C--CHECK IF LIST 6 EXISTS
             RPARS = STORE(L30RF+2)
           END IF
           N6ACC = 0
-          FCMAX = 0.1
+Cdjwdec12. Set Fcmax to zero in the hope we can find case where Fcs are 
+C          not set
+          FCMAX = 0.0
           DO WHILE ( KFNR ( 0 ) .GE. 0 )
             N6ACC = N6ACC + 1
             IF (IFSQ .GE. 0) THEN
-c              CALL XSQRF(FOS, STORE(M6+3), FABS, SIGMAS, STORE(M6+12))
-c              SHFO(N6ACC) = FOS/MAX(.0001,A**2)
+C              call xsqrf(fos, store(m6+3), fabs, sigmas, store(m6+12))
+C              shfo(n6acc) = fos/max(.0001,a**2)
               SHFC = STORE(M6+5)**2
-c              SIG(N6ACC) =SIGMAS / MAX(.0001,A**2)
+C              sig(n6acc) =sigmas / max(.0001,a**2)
             ELSE
-c              SHFO(N6ACC) = STORE(M6+3) / MAX(.0001,A)
+C              shfo(n6acc) = store(m6+3) / max(.0001,a)
               SHFC = STORE(M6+5)
-c              SIG(N6ACC) = STORE(M6+12) / MAX(.0001,A)
+C              sig(n6acc) = store(m6+12) / max(.0001,a)
             ENDIF
             FCMAX = MAX ( FCMAX, SHFC )
           END DO
@@ -492,7 +497,11 @@ C Make up some starting values of A and B:
           SXB = 0.1
           SXAG = .2 * SXA
           SXBG = .4 * SXB
-          DO WHILE ( .TRUE. ) ! Ensure grid doesn't extend below 0:
+c^^^
+CDJWdec12
+          if (fcmax .gt. zero) then
+c          Some non zero Fc - a chance this might all work
+           DO WHILE ( .TRUE. ) ! Ensure grid doesn't extend below 0:
              SXA = MAX(SXA,4.*SXAG)
              SXB = MAX(SXB,4.*SXBG)
              IF ( SXA .GT. 0.3 ) THEN
@@ -631,8 +640,17 @@ C Converged!
                IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1)(3:)
              endif
              EXIT
-
-          END DO
+           END DO
+c^^^
+cDJWdec12
+          else
+           sxa = 0.1
+           sxb = 0.0
+           write(cmon,'(a)') 
+     1     'No Fcalcs yet - use default SHELX parameters'
+            call xprvdu(ncvdu,1,0)
+            if (issprt .eq. 0) write(ncwu,'(a)') CMON(1)
+          endif
           WRITE ( CMON,'(A,2F10.4,A)') '     Weights applied: ',SXA,SXB,
      1                             ' .0 .0 .0 .333'
           CALL XPRVDU(NCVDU,1,0)
@@ -1080,14 +1098,20 @@ cdjw99              H=H+F*F*EW/(1.+FO**CS)
         CASE (16)              ! SHELXL WEIGHTS
 
 C -- Convert everything to scale of FC: (for SHELX compatibility).
+cdjwdec12 Watch out for unset Fcs
+          if (fc .le. zero) then
+                  FCprime = fo
+          else
+                  FCprime = fc
+          endif
           IF ( JTYPE .EQ. 2 ) THEN   ! Fo**2 refinement
             SFCSIG = AW / A**2
             SFCFO  = FO / A**2
-            SFCFC  = FC / A**2
+            SFCFC  = FCprime / A**2
           ELSE                       ! Fo refinement
             SFCSIG = AW / A
             SFCFO  = FO / A
-            SFCFC  = FC / A
+            SFCFC  = FCprime / A
           END IF
           STHOLS = SNTHL2(L)
           STH = SQRT(STHOLS)*STORE(L13DC)
