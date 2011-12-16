@@ -57,8 +57,6 @@
 %      END IF
 %    END BLOCK
 %%
-%    COPY '#LIST 4'
-%    COPY 'END'
 %
 %%                       DO DATA REDUCTION
 %  ON ERROR TERMINATE ABANDONED
