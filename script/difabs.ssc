@@ -171,11 +171,9 @@
 %% probably now set as defaults Dec-96                                          
 %%          COPY 'STORE NCOEF=7 MEDIUM = INPUT'                                 
 %%  COPY 'OUTPUT INDICES /FO/ WEIGHT /FC/ SIGMA(/FO/) BATCH/PHASE RATIO/JCODE'  
-%           COPY 'END'                                                           
-%           COPY '#LIST 4'                                                       
-%           COPY 'END'                                                           
-%           COPY '#WEIGHT'                                                       
-%           COPY 'END'                                                           
+%           COPY 'END'          
+%% djw dec 2011                                                 
+%           COPY '#SCRIPT XFRESH6'
 %% 
 %          ELSE
 %           COPY '#SCRIPT XINLIST6'

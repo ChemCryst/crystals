@@ -221,8 +221,8 @@ A SCRIPT to help you input a new trial model
 %    COPY '#LIST 12'
 %    COPY 'FULL'
 %    COPY 'END'
-%    COPY '#LIST 4'
-%    COPY 'END'
+%% djw dec 2011
+%    COPY '#SCRIPT XFRESH'
 %    COPY '#CLEAR 16'
 %    COPY 'END'
 %  END BLOCK
