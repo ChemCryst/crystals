@@ -192,22 +192,9 @@ Files INITIAL.* will be created in your directory. They may be important.
 %  COPY 'END'
 %%
 
-{I Give the minimum I/sigma(i) and [sin(theta)/lambda]sq to be 
-{I used in refinement. They can be changed at any time later
-{I using the menu item "X-ray Data" -> "Filter Reflections".
+{I Set LISTS 4, 23, 28
+%  COPY '#SCRIPT XFRESH6'
 
-{R Recommended settings for F refinement:
-{R   Fo/sigma(Fo)              is at least 3.0    eliminates noise
-{R   [Sin theta / lambda] ** 2 is at least 0.01   eliminates beam stop
-
-% COPY '#SCRIPT XLIST28'
-%%
-%  IF ( EXISTS 23 .NE. 1 ) THEN
-%    COPY '#LIST 23'
-%    COPY 'END'
-%  END IF
-%%
-%          COPY '#SCRIPT XWTINI'
 %%
  * Done. Dip data input complete.
 %END SCRIPT

@@ -120,9 +120,6 @@ Files INITIAL.* will be created in your directory. They may be important.
 %              END IF                                                           
 %            END IF                                                             
 %%                                                                              
-%%          COPY '#LIST 4'       %%removed djw nov09
-%%          COPY 'END'                                                           
-%%                                                                              
                         
 %      END BLOCK                                                                
 %  END BLOCK                                                                    
@@ -191,27 +188,10 @@ Files INITIAL.* will be created in your directory. They may be important.
 %   COPY '#LIST 6'                                                               
 %   COPY 'READ TYPE = COPY'                                                      
 %   COPY 'END'                  
+%%                                                                              
 %%                                                 
-%%  COPY '#LIST 4'             %%removed djwNov09
-%%  COPY 'END'                                                                   
+%   COPY '#SCRIPT XFRESH6'
 %%                                                                              
-%%                                                                              
-%  IF ( EXISTS 23 .NE. 1 ) THEN                                                 
-%    COPY '#SCRIPT XQCK23'                                                            
-%  END IF                                                                       
-                                                                                
-{I Give the minimum I/sigma(i) and [sin(theta)/lambda]sq to be                  
-{I used in refinement. They can be changed at any time later                    
-{I using the menu item "X-ray Data" -> "Filter Reflections".                    
-                                                                                
-{R Recommended settings:                                       
-{R   [Sin theta / lambda] ** 2 is at least 0.01   eliminates beam stop          
-{R for F refinement:                                       
-{R   Fo/sigma(Fo)                   2.0 to  3.0   eliminates noise              
-{R for Fsq refinement:                                       
-{R   Fo/sigma(Fo)                less than -3.0   eliminates spurious data
-                                                                                
-%   COPY '#SCRIPT XLIST28'                                                        
 %%                                                                              
 %%                                                                              
 {R * Done. Agilent data input complete.                                            

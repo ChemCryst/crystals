@@ -299,43 +299,8 @@
 %         COPY 'READ TYPE = COPY'                                               
 %         COPY 'END'                                                            
 %%                                                                              
-%         IF ( EXISTS 23 .NE. 1 ) THEN                                          
-{I Structure Factor control list (LIST 23)  is missing                          
-%            COPY '#SCRIPT XQCK23'                                              
-%         ELSE                                                                  
-List 23 already in place.                                                       
-%         END IF                                                                
-%                                                                               
 %%                                                                              
-%         COPY '#GENERALEDIT 23'                                                
-%         COPY 'LOCATE RECORDTYPE=103'                                          
-%         COPY 'TRANSFER FROM OFFSET=1 TO FTYPE'                                
-%         COPY 'END'                                                            
-%%               
-%         IF ( EXISTS 28 .NE. 1 ) THEN                                                               
-%          COPY '#LIST 28'                                                       
-%          CLEAR                                                                 
-%          INSERT 'MINIMA '                                                      
-%          IF FTYPE .NE. 0 THEN                                                  
-{I For F refinement, a default I/u(I) minimum of 3.0 is recommended.
-%            INSERT 'RATIO=3.0 '                                                 
-%          ELSE
-{I For F^2 refinement, a default I/u(I) minimum of -3.0 is recommended.
-%            INSERT 'RATIO=-3.0 '                                                 
-%          END IF                                                                
-{I A default sin(theta)/lambda minimum of 0.01 is recommended.                  
-%          INSERT 'SINT=0.01'                                                    
-%          SEND                                                                  
-%          COPY 'END'                                                            
-%         END IF
-%         COPY '#SCRIPT XLIST28'                                                
-%%
-%                                                                               
-{S * Applying unit/quasi-unit weights                                           
-%         COPY '#LIST 4'                                                        
-%         COPY 'END'                                                            
-%         COPY '#WEIGHT'                                                        
-%         COPY 'END'                                                            
+%         COPY '#SCRIPT XFRESH6'
 %%                                                                              
 %%                                                                              
 {R * Done. Reflection data input complete.                                      
@@ -392,6 +357,10 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT                                                                     
 %%                                                                              
 %% $Log: not supported by cvs2svn $
+%% Revision 1.3  2011/06/14 10:05:53  djw
+%% List 28 is an auto-create list. Try to ensure it is created before any weigting is done. If LIST 23 exists, try to set defaults at -3 for F^2 and +3 for F. If LIST 23 does not exist, call script XLIST28 to enable user to set values.
+%% Scripts changed are: difabs, inemap,newstart,xcifnosu, xflipinlist6, xinlist6 xinrc93
+%%
 %% Revision 1.2  2008/06/27 14:38:56  djw
 %% Arie's superflip changes
 %%                                                       

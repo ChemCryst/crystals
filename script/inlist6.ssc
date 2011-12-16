@@ -136,7 +136,7 @@
 %      COPY '#LIST 6'
 %      COPY 'READ TYPE = COPY'
 %      COPY 'END'
-%  COPY '#LIST 4'
-%  COPY 'END'
+%% DJW DEC 2011
+%  COPY '#SCRIPT XFRESH6'
 %%
 %END SCRIPT

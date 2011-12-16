@@ -27,25 +27,9 @@
 %   COPY '#LIST 6'
 %   COPY 'READ TYPE = COPY'
 %   COPY 'END'
-%   COPY '#LIST 4'
-%   COPY 'END'
-%   COPY '#WEIGHT'
-%   COPY 'END'
-
-{I Give the minimum I/sigma(i) and [sin(theta)/lambda]^2 to be 
-{I used in refinement. They can be changed at any time later
-{I using the menu item "X-ray Data" -> "Filter Reflections".
-
-{R Recommended settings for F refinement:
-{R   Fo/sigma(Fo)              is at least 3.0    eliminates noise
-{R   [Sin theta / lambda] ** 2 is at least 0.01   eliminates beam stop
-
-%   COPY '#SCRIPT XLIST28'
 %%
-%   IF ( EXISTS 23 .NE. 1 ) THEN
-%     COPY '#LIST 23'
-%     COPY 'END'
-%   END IF
+{I  Set lists 4, 23, 28
+%   COPY '#SCRIPT XFRESH6'
 %%
 %%
 {R * Done. Reflection data input complete.
@@ -54,6 +38,9 @@
 %END SCRIPT
 %%
 %% $Log: not supported by cvs2svn $
+%% Revision 1.3  2011/06/13 06:55:29  djw
+%% Remove call to xqmerge - been done in xfriedel for a while now
+%%
 %% Revision 1.2  2005/01/23 10:00:25  rich
 %% Reinstate CVS history for scripts. History from Dec23 - Jan23 is lost, but
 %% changes are not!
