@@ -6,7 +6,7 @@
 %  BLOCK                                                                        
 %    IF ( EXISTS 4 .NE. 1 ) THEN                                                
 {E **** WARNING: Default LIST 4 created                                         
-%    copy "#list 4"                                                             
+%    copy "#script XFRESH6"                                                             
 %    copy "end"                                                                 
 %    END IF                                                                     
 %  END BLOCK                                                                    
