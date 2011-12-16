@@ -1,6 +1,6 @@
 %SCRIPT XSCALE
 %%  compute and set overall scale
-%  IF EXISTS 6 .GE. 1 THEN                                                     
+%  IF EXISTS 6 .GE. 1 .AND. EXISTS 5 .GE. 1 THEN                                                     
 %    COPY '#SFLS'
 %    COPY 'CALC'
 %    COPY 'END'
@@ -12,8 +12,12 @@
 %       COPY '#GENERALEDIT 30'                                                       
 %       COPY 'LOCATE RECORDTYPE = 101'                                              
 %       COPY 'TRANSFER FROM OFFSET =  7 TO SCALEW'                                    
-%       COPY 'END'                               
-%       EVALUATE SCALEW = 1. / SCALEW
+%       COPY 'END' 
+%       IF SCALEW .NE. 0.0 THEN                              
+%        EVALUATE SCALEW = 1. / SCALEW
+%       ELSE
+%        EVALUATE SCALEW = 1.0
+%       END IF
 %      END IF
 %    COPY '#SCRIPT RFACTOR'
 %    IF RATIO .GE. 1.25 THEN
