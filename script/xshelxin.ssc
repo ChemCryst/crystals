@@ -526,10 +526,11 @@
 %        EVALUATE HKLTITLE = INSTITLE // '.hkl'                                 
 %        IF ( FILEEXISTS ( HKLTITLE ) ) THEN                                    
 %          VARIABLE LOGICAL INITSETUP                                           
-%          EVALUATE INITSETUP = TRUE                                            
+%          EVALUATE INITSETUP = TRUE  
+%%         weights initialised in XFRESH6                                          
 %          COPY '#SCRIPT XINLIST6'                                              
 %        END IF                                                                 
-%% initialise the weights                                                       
-%          copy '#SCRIPT XWTINI'                                                
+%% rem DJW Dec 2011 remove initialise the weights                                                       
+%%          copy '#SCRIPT XWTINI'                                                
 %        FINISH                                                                 
 %END SCRIPT                                                                     
