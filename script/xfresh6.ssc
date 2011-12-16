@@ -1,4 +1,4 @@
-%SCRIPT XIN6PT2
+%SCRIPT XFRESH6
 % VARIABLE INTEGER FTYPE
 %%
 %         IF ( EXISTS 23 .NE. 1 ) THEN                                          
@@ -7,7 +7,7 @@
 %         ELSE                                                                  
 List 23 already in place.                                                       
 %         END IF                                                                
-%                                                                               
+%%                                                                               
 %%                                                                              
 %         COPY '#GENERALEDIT 23'                                                
 %         COPY 'LOCATE RECORDTYPE=103'                                          
@@ -31,7 +31,7 @@ List 23 already in place.
 %          COPY 'END'                                                            
 %         END IF
 %%                                                                              
-%% Set suitable starting weights
+{I Set suitable starting weights
 %%         
 %         COPY '#SCRIPT XWTINI'
 %%                                                                              
