@@ -61,9 +61,13 @@
 %               COPY 'END'                                                      
 %              END IF                                                           
 %            END IF                                                             
-%%                                                                              
 %          END BLOCK                                                            
 %%                                                                              
+%% a bodge 2011 to remove duplicate atoms.
+%% Dont know where they come from - not present in May release
+%          COPY '#PEAK 5 5'
+%          COPY 'SELECT TYPE=AVERAGE'
+%          COPY 'END'
 %%                                                                              
 %          BLOCK                                                                
 %% Set scale factor                                                             
