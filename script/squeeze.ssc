@@ -2,28 +2,6 @@
 %% variables used by the question box below                                     
 %  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                        
 %  VARIABLE LOGICAL ANSWER                                                      
-% VARIABLE INTEGER IFLACK                                         
-% COPY '#GENERALEDIT 23'                                                        
-% COPY 'LOCATE RECORDTYPE = 101'                                                
-% COPY 'TRANSFER FROM OFFSET = 6 TO IFLACK'                                     
-%  IF ( IFLACK .EQ. 0 ) THEN                                         
-{1,8 
-{1,8 The Flack parameter is being used.
-{1,8 Ton Spek only recommends the use of SQUEEZE for data
-{1,8 with Friedel and other equivalent reflections merged.
-{1,8 CRYSTALS recommends that you abandon SQUEEZING until
-{1,8 you have ensured that the data is fully merged.
-{1,8 
-%      EVALUATE QTITLE = ' '                              
-%      EVALUATE QLINE1 = 'Do you want to go ahead with'                           
-%      EVALUATE QLINE2 = 'SQUEEZEing?'                         
-%      EVALUATE BUTTOK = '&Yes'                                                 
-%      EVALUATE BUTTXX = '&No'                                                  
-%      COPY '#SCRIPT XQUESTIO'                                                  
-%      IF ANSWER .EQ. FALSE THEN                                                 
-%        FINISH                                                             
-%      END IF                                                                   
-%  END IF                                                            
 %  VARIABLE CHARACTER CDIR CFILE
 %  VARIABLE LOGICAL T
 {1,9  Running PLATON/SQUEEZE in CRYSTALS modifies the Fcalc part
@@ -35,6 +13,30 @@
 {1,9  running SQUEEZE in case you wish to revert to a normal
 {1,9  refinement
 %%                                                                              
+% VARIABLE INTEGER IFLACK                                         
+% COPY '#GENERALEDIT 23'                                                        
+% COPY 'LOCATE RECORDTYPE = 101'                                                
+% COPY 'TRANSFER FROM OFFSET = 6 TO IFLACK'                                     
+%  IF ( IFLACK .EQ. 0 ) THEN                                         
+{1,8 
+{1,8 The Flack parameter is being used.
+{1,8 Ton Spek reminds you that SQUEEZE only modifies the
+{1,8 real part of the computed structure factor (A-Part).
+{1,8 If you have Friedel pairs, the contribution from the
+{1,8 difference electron density will be the same for
+{1,8 both reflections.  
+{1,8 
+%      EVALUATE QTITLE = ' '                              
+%      EVALUATE QLINE1 = 'Do you want to go ahead with'                           
+%      EVALUATE QLINE2 = 'SQUEEZEing?'                         
+%      EVALUATE BUTTOK = '&Yes'                                                 
+%      EVALUATE BUTTXX = '&No'                                                  
+%      COPY '#SCRIPT XQUESTIO'                                                  
+%      IF ANSWER .EQ. FALSE THEN                                                 
+%        FINISH                                                             
+%      END IF                                                                   
+%  END IF                                                            
+%%
 %      EVALUATE QTITLE = 'Backup before SQUEEZE'                              
 %      EVALUATE QLINE1 = 'Do you want to backup your'                           
 %      EVALUATE QLINE2 = 'dsc before running SQUEEZE?'                         
