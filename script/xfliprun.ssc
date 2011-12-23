@@ -13,7 +13,7 @@
 %  EVALUATE SPGTRIC = FALSE                                                     
 %%                                                                              
 %      COPY '#SPAWN + "CRYSDIR:superflip.EXE" sflip.inflip'                     
-%%djwapr11      COPY '#TYPE sflip.sflog'                                                 
+%%djwapr11      COPY '#TYPE sflip.sflog'                                        
 %% check the Superflip log-file for convergence indications                     
 %  EVALUATE CFILE = 'SFLIP.SFLOG'                                               
 %  TRANSFER '#OPEN SCPD "' // CFILE // '"' TO CRYSTALS                          
@@ -134,39 +134,39 @@
 %                                                                               
 %                                                                               
 %  IF ( ( SFLIPSOL .EQ. FALSE ) .AND. ( SFLIPSYM .EQ. FALSE ) ) THEN            
-{E Superflip thinks that the structure is not solved 
-{E Superflip did not solve the structure
-
+{E Superflip thinks that the structure is not solved                            
+{E Superflip did not solve the structure                                        
+                                                                                
    If the structure will not solve:                                             
    1) Run Superflip once more using default options.                            
    1) Try the "Superflip parameters for difficult structures" option.           
    2) Try DirDif or Sir92.                                                      
    3) Read the Superflip manual for help.                                       
-
-{E Use advanced options, or ask an expert
+                                                                                
+{E Use advanced options, or ask an expert                                       
 %        FINISH                                                                 
 %  END IF                                                                       
 %                                                                               
 %                                                                               
 %  IF ( ( SFLIPSOL .EQ. TRUE ) .AND. ( SFLIPSYM .EQ. TRUE ) ) THEN              
-{E Superflip solved the structure
-{E There is convergence and also good symmetry agreement.
-{E Continue analysing the symmetry
+{E Superflip solved the structure                                               
+{E There is convergence and also good symmetry agreement.                       
+{E Continue analysing the symmetry                                              
 %  END IF                                                                       
-%
+%                                                                               
 %                                                                               
 %  IF ( ( SFLIPSOL .EQ. FALSE ) .AND. ( SFLIPSYM .EQ. TRUE ) ) THEN             
-{E Superflip did not find convergence
-{E There is good symmetry agreement
-{E The structure is likely to be solved
-{E Continue analysing the symmetry
+{E Superflip did not find convergence                                           
+{E There is good symmetry agreement                                             
+{E The structure is likely to be solved                                         
+{E Continue analysing the symmetry                                              
 %  END IF                                                                       
 %                                                                               
 %  IF ( ( SFLIPSOL .EQ. TRUE ) .AND. ( SFLIPSYM .EQ. FALSE ) ) THEN             
-{E Superflip solved the structure
-{E There is convergence but no good symmetry agreement
-{E A finer analysis is needed.
-{E Continue analysing the symmetry
+{E Superflip solved the structure                                               
+{E There is convergence but no good symmetry agreement                          
+{E A finer analysis is needed.                                                  
+{E Continue analysing the symmetry                                              
 %  END IF                                                                       
 %                                                                               
 %%                                                                              
@@ -181,7 +181,7 @@
 %%AvdL read in the spacegroup proposed by SUPERFLIP and create new SFLIP file to
 %%     be processed by EDMA                                                     
 %      COPY '#SCRIPT XFLIPINSPG'                                                
-%   IF ( ( SFLIPSYM .EQ. FALSE ) .AND. ( SPGTRIC .NE. TRUE ) ) THEN              
+%   IF ( ( SFLIPSYM .EQ. FALSE ) .AND. ( SPGTRIC .NE. TRUE ) ) THEN             
 {E Structure solved but no acceptable symmetry found. Twinning? Wrong lattice?  
 {E The superflip SCRIPTS will close down to enable you to reconsider            
 {E the basic data                                                               
@@ -195,12 +195,11 @@
 %  END IF                                                                       
 %  IF ( FILEEXISTS ( 'sflip.inflip' ) ) THEN                                    
 %      COPY '#CLOSE SCPD'                                                       
-%      COPY '#SPAWN + "CRYSDIR:edma.EXE" sflip.inflip'                          
-%  ELSE
-{E File sflip.inflip does not exist.
- Start SUPERFLIP again
-%    FINISH
+%      EVALUATE T = FILEDELETE ( 'sflip.inflip' )                               
 %  END IF                                                                       
+%      TRANSFER '#FOREIGN SUPERFLIP IN= ' // C67 // ' ' TO CRYSTALS             
+%      COPY 'END'                                                               
+%      COPY '#SPAWN + "CRYSDIR:edma.EXE" sflip.inflip'                          
 %%  clear out merged reflection list                                            
 %%                                                                              
 %    if ( exists 7 .gt. 0 ) then                                                
