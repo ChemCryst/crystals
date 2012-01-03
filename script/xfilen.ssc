@@ -28,7 +28,7 @@
 %     IF FILEEXISTS ( 'from-cif.hkl' ) THEN
 %       EVALUATE T =  FILEDELETE ( 'from-cif.hkl' )
 %     END IF
-%     TRANSFER '#SPAWN % "CRYSDIR:diffin"  "' // C_FILE //  -
+%     TRANSFER '#SPAWN % "CRYSDIR:diffin.exe"  "' // C_FILE //  -
  '" N' TO CRYSTALS
 %     IF FILEEXISTS ( 'from-cif.cry' ) THEN
 %       COPY '#SCRIPT DIFFEXEC'

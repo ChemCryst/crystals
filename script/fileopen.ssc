@@ -350,7 +350,7 @@
 %%
 DO SHELX STUFF
 %      IF C_FILE .NE. ' ' THEN
-%        EVALUATE INSTITLE = GETPATH ( C_FILE ) // GETTITLE ( C_FILE )
+%        EVALUATE INSTITLE = C_FILE
 %      END IF
 %      IF      CARG .EQ. 'SI' THEN
 %        COPY '#SCRIPT XSHELXIN' 

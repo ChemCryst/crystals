@@ -20,7 +20,8 @@
 %%
 %  VARIABLE LOGICAL T
 %  VARIABLE INTEGER FTYPE
-%  VARIABLE CHARACTER INSTITLE C_FILE C_UPP CEXTN CROOT CARG CLASS CLOC
+%  VARIABLE CHARACTER HKLTITLE INSTITLE
+%  VARIABLE CHARACTER C_FILE C_UPP CEXTN CROOT CARG CLASS CLOC
 %  EVALUATE FTYPE = 0
 %%
 %  IF ( .NOT. ( FILEEXISTS C_FILE ) ) THEN
@@ -332,9 +333,10 @@
 %     IF FILEEXISTS ( 'from-cif.hkl' ) THEN
 %       EVALUATE T =  FILEDELETE ( 'from-cif.hkl' )
 %     END IF
+%
 %%
-%     TRANSFER '#SPAWN % "CRYSDIR:diffin"  "'  -
-               // C_FILE //  '" "' // CARG // '"' TO CRYSTALS
+%     TRANSFER '#SPAWN % "CRYSDIR:diffin.exe"  "'  -
+               // C_FILE //  '" ' // CARG TO CRYSTALS
 %%
 %     IF FILEEXISTS ( 'from-cif.cry' ) THEN
 %        COPY '#SCRIPT DIFFEXEC'
@@ -346,13 +348,15 @@
 % ELSE IF CLASS .EQ. 'SHEL' THEN
 %%
  Import SHELX data
-%      IF C_FILE .NE. ' ' THEN
-%         EVALUATE INSTITLE = GETPATH ( C_FILE ) // GETTITLE ( C_FILE )
-%%         EVALUATE INSTITLE =  C_FILE 
-%      END IF
 %      IF      CARG .EQ. 'SI' THEN
+%        IF C_FILE .NE. ' ' THEN
+%         EVALUATE INSTITLE =  C_FILE 
+%        END IF
 %        COPY '#SCRIPT XSHELXIN' 
 %      ELSE IF CARG .EQ. 'S4' THEN
+%        IF C_FILE .NE. ' ' THEN
+%         EVALUATE HKLTITLE =  C_FILE 
+%        END IF
 %        COPY '#SCRIPT XINLIST6' 
 %      ELSE IF CARG .EQ. 'S5' THEN
 %        COPY '#SCRIPT HKLF52CRY'

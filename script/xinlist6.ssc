@@ -1,6 +1,6 @@
 %SCRIPT XINLIST6                                                                
 %% CRYSTALS reflection input script                                             
-%  VARIABLE CHARACTER INSTITLE HKLTITLE                                         
+%  VARIABLE CHARACTER HKLTITLE                                         
 %  VARIABLE INTEGER INBASICS FTYPE FS NCOEF FMT                                 
 %  VARIABLE LOGICAL LCANCEL INITSETUP XQMERGE LOKOK                             
 %  EVALUATE LCANCEL = FALSE                                                     
@@ -51,7 +51,7 @@
 ^^WI   {                                                                        
 ^^WI    @ 2,2 GRID GF NROWS=1 NCOLS=3 OUTLINE='File'                            
 ^^WI    {                                                                       
-% TRANSFER "^^WI @ 1,1 EDITBOX L6FILE '" // INSTITLE // -                                         
+% TRANSFER "^^WI @ 1,1 EDITBOX L6FILE '" // HKLTITLE // -                                         
   "' CHARS=48 INFORM=NO INPUT " TO DISPLAY                                                        
 ^^WI     @ 1,3 BUTTON BROWSE 'Browse...'                                        
 ^^WI    }                                                                       
@@ -117,7 +117,6 @@
 ^^WI }                                                                          
 ^^WI SHOW                                                                       
 ^^CR                                                                            
-% EVALUATE HKLTITLE = INSTITLE // '.hkl'                                        
 % IF ( FILEEXISTS ( HKLTITLE ) ) THEN                                           
 %   TRANSFER "^^CO SET L6FILE TEXT '" // HKLTITLE // "'" TO DISPLAY             
 ^^CO SET L6FILE INFORM=NO SET BOK DISABLED=NO                                   
@@ -382,6 +381,9 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT                                                                     
 %%                                                                              
 %% $Log: not supported by cvs2svn $
+%% Revision 1.33  2011/12/16 15:13:14  djw
+%% Replace individual setting of LISTS 4, 23 and 28 by a call to XFRESH6
+%%
 %% Revision 1.32  2011/06/20 14:22:00  djw
 %% Pass in filename from calling script
 %%

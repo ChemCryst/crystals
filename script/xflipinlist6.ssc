@@ -94,7 +94,7 @@
 ^^WI }                                                                          
 ^^WI SHOW                                                                       
 ^^CR                                                                            
-% EVALUATE HKLTITLE = INSTITLE // '.hkl'                                        
+% EVALUATE HKLTITLE = INSTITLE
 % IF ( FILEEXISTS ( HKLTITLE ) ) THEN                                           
 %   TRANSFER "^^CO SET L6FILE TEXT '" // HKLTITLE // "'" TO DISPLAY             
 ^^CO SET L6FILE INFORM=NO SET BOK DISABLED=NO                                   
@@ -357,6 +357,9 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT                                                                     
 %%                                                                              
 %% $Log: not supported by cvs2svn $
+%% Revision 1.4  2011/12/16 15:13:14  djw
+%% Replace individual setting of LISTS 4, 23 and 28 by a call to XFRESH6
+%%
 %% Revision 1.3  2011/06/14 10:05:53  djw
 %% List 28 is an auto-create list. Try to ensure it is created before any weigting is done. If LIST 23 exists, try to set defaults at -3 for F^2 and +3 for F. If LIST 23 does not exist, call script XLIST28 to enable user to set values.
 %% Scripts changed are: difabs, inemap,newstart,xcifnosu, xflipinlist6, xinlist6 xinrc93

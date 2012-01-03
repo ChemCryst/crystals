@@ -26,7 +26,9 @@
 %%                                                                              
 {R Setting refinement type                                                      
 %      COPY '#SCRIPT XQCK23'                                                    
-%%                                                                              
+%%
+% IF ( INSTITLE .EQ. ' ' ) .OR. ( .NOT. ( FILEEXISTS INSTITLE ) ) THEN
+%%
 ^^WI WINDOW XINSHELX 'Input RES or INS data' MODAL                              
 ^^WI        COMMIT='BOK' CANCEL='BXX'                                           
 ^^WI GRID GRIDM NROWS=5 NCOLS=3                                                 
@@ -55,7 +57,7 @@
 ^^WI }                                                                          
 ^^WI SHOW                                                                       
 ^^CR                                                                            
-% LOOP                                                                          
+%  LOOP                                                                          
 %   VERIFY BROWSE BXX BOK                                                       
 %   GET SILENT NOSTORE FINAL ABBREVIATED 'BXX?' 'BXX'                           
 %   CASE VALUE                                                                  
@@ -72,7 +74,7 @@
 %         IF ( .NOT. ( FILEEXISTS CFILE ) ) THEN                                
 {E Error: Filename given does not exist.                                        
 %         ELSE                                                                  
-%           EVALUATE INSTITLE = GETPATH ( CFILE) // GETTITLE ( CFILE )                              
+%           EVALUATE INSTITLE = CFILE
 ^^CO        DISPOSE XINSHELX                                                    
 %           EVALUATE LOOPEND = LOOPCOUNTER                                      
 %         END IF                                                                
@@ -89,14 +91,18 @@
 %       IF ( .NOT. ( FILEEXISTS CFILE ) ) THEN                                  
 {E Error: Filename given does not exist.                                        
 %       ELSE                                                                    
-%         EVALUATE INSTITLE = GETTITLE ( CFILE )                                
+%         EVALUATE INSTITLE = CFILE
 ^^CO      DISPOSE XINSHELX                                                      
 %         EVALUATE LOOPEND = LOOPCOUNTER                                        
 %       END IF                                                                  
 %     END BLOCK                                                                 
 %   END CASE                                                                    
-% END LOOP                                                                      
-%%                                                                              
+%  END LOOP
+% ELSE
+%   EVALUATE CFILE = INSTITLE   
+%%   EVALUATE INSTITLE = GETTITLE ( CFILE )
+% END IF
+%%
 %%                                                                              
 %%                                                                              
 %%                                                                              
@@ -523,7 +529,8 @@
 %%                                                                              
 %% See if an hkl is available and offer to open it.                             
 %%                                                                              
-%        EVALUATE HKLTITLE = INSTITLE // '.hkl'                                 
+%        EVALUATE HKLTITLE = GETPATH ( INSTITLE ) // -
+                             GETTITLE ( INSTITLE ) // '.hkl'
 %        IF ( FILEEXISTS ( HKLTITLE ) ) THEN                                    
 %          VARIABLE LOGICAL INITSETUP                                           
 %          EVALUATE INITSETUP = TRUE  

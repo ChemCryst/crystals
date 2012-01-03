@@ -29,7 +29,7 @@
 %       EVALUATE T =  FILEDELETE ( 'from-cif.hkl' )
 %     END IF
 %%
-%     TRANSFER '#SPAWN % "CRYSDIR:diffin"  "' // C_FILE //  -
+%     TRANSFER '#SPAWN % "CRYSDIR:diffin.exe"  "' // C_FILE //  -
  '" R' TO CRYSTALS
 %     IF FILEEXISTS ( 'from-cif.cry' ) THEN
 %       COPY '#SCRIPT DIFFEXEC'
@@ -43,7 +43,7 @@
 %     EVALUATE CPATH = GETPATH ( C_FILE )
 %     EVALUATE COUT = CTITLE // '.cry'
 %     EVALUATE CARG = ' -f -o '
-% TRANSFER '#SPAWN % "CRYSDIR:cif2cry" ' // CARG // '"' // COUT -           
+% TRANSFER '#SPAWN % "CRYSDIR:cif2cry.exe" ' // CARG // '"' // COUT -           
   // '" "' // C_FILE // '"' TO CRYSTALS                                            
 %     TRANSFER '#USE ' // COUT  TO CRYSTALS    
 %     FINISH
