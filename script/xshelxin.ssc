@@ -72,7 +72,7 @@
 %         IF ( .NOT. ( FILEEXISTS CFILE ) ) THEN                                
 {E Error: Filename given does not exist.                                        
 %         ELSE                                                                  
-%           EVALUATE INSTITLE = GETTITLE ( CFILE )                              
+%           EVALUATE INSTITLE = GETPATH ( CFILE) // GETTITLE ( CFILE )                              
 ^^CO        DISPOSE XINSHELX                                                    
 %           EVALUATE LOOPEND = LOOPCOUNTER                                      
 %         END IF                                                                

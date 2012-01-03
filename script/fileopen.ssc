@@ -330,6 +330,9 @@
 %       IF FILEEXISTS ( 'from-cif.cry' ) THEN
 %       EVALUATE T =  FILEDELETE ( 'from-cif.cry' )
 %       END IF
+%       IF FILEEXISTS ( 'from-cif.hkl' ) THEN
+%       EVALUATE T =  FILEDELETE ( 'from-cif.hkl' )
+%       END IF
 % TRANSFER '#SPAWN + "CRYSDIR:diffin.exe"  "'  -
  // C_FILE //  -
  '" "' -
@@ -347,15 +350,14 @@
 %%
 DO SHELX STUFF
 %      IF C_FILE .NE. ' ' THEN
-%%         EVALUATE INSTITLE = GETTITLE ( C_FILE )
-%         EVALUATE INSTITLE =  C_FILE 
+%        EVALUATE INSTITLE = GETPATH ( C_FILE ) // GETTITLE ( C_FILE )
 %      END IF
 %      IF      CARG .EQ. 'SI' THEN
-%        COPY '#SCRIPT XSHELXIN' DISABLEIF='IN'
+%        COPY '#SCRIPT XSHELXIN' 
 %      ELSE IF CARG .EQ. 'S4' THEN
-%        COPY '#SCRIPT XINLIST6' DISABLEIF='IN'
+%        COPY '#SCRIPT XINLIST6' 
 %      ELSE IF CARG .EQ. 'S5' THEN
-%        COPY '#SCRIPT HKLF52CRY' DISABLEIF='IN'
+%        COPY '#SCRIPT HKLF52CRY'
 %      END IF
 %%
 % ELSE IF CLASS .EQ. 'CRYS' THEN

@@ -5,11 +5,6 @@
 %  VARIABLE LOGICAL LFILE IFILE HFILE
 %  VARIABLE LOGICAL ANSWER LCANCEL XQMERGE                                      
 %%  check if files have been created
-%  EVALUATE LFILE = FILEEXISTS ( 'from-cif.cry' )                                   
-%  IF ( .NOT. LFILE ) THEN
-{W      Pre-processed file "from-cif.cry" does not exist
-%    FINISH
-%  END IF
 %%                                                                              
 %  BLOCK                                                                        
 %    COPY '#DISK'                                                               
@@ -20,7 +15,7 @@ Files INITIAL.* will be created in your directory. They may be important.
 %    COPY '#RELEASE LOG initial.dat'                                            
 %  END BLOCK                                                                    
 %%                                                                              
-%  BLOCK                                                                        
+%  IF FILEEXISTS ( 'from-cif.cry' ) THEN                                                                        
 %      ON END TERMINATE                                                         
 %      ON ERROR TERMINATE                                                       
 %      CLEAR                                                                    
@@ -58,10 +53,9 @@ Files INITIAL.* will be created in your directory. They may be important.
 %            END IF                                                             
 %%                                                                              
 %      END BLOCK                                                                
-%  END BLOCK                                                                    
+%  END IF                                                                    
 %%                                                                              
-%  EVALUATE HFILE = FILEEXISTS ( 'from-cif.hkl' )                                   
-%  IF ( .not. HFILE ) THEN 
+%  IF ( .not. FILEEXISTS ( 'from-cif.hkl' ) ) THEN 
 {I CRYSTALS could find no reflections in the cif file.  
 {I If you have a SHELX hklf file, input that from the X-ray data menu.
 %    FINISH

@@ -1,0 +1,54 @@
+%SCRIPT XFILER
+%% 
+%%                               
+^^WI SYSOPENFILE 'All files (*.*)|*.*;'
+^^WI             'CIF (*.cif,*.fcf)|*.cif;*.fcf;'
+^^CR
+%%
+%   GET SILENT NOSTORE TEXT 'New filename:' 'CANCEL'                                                                              
+%   IF CVALUE .EQ. 'CANCEL' THEN
+%     FINISH
+%   END IF
+%   VARIABLE CHARACTER C_FILE CEXTN CARG
+%   VARIABLE LOGICAL T
+%%
+%   EVALUATE C_FILE = CVALUE
+%%
+%   IF ( .NOT. ( FILEEXISTS C_FILE ) ) THEN
+{E Error: Filename given does not exist.
+%     FINISH
+%   END IF 
+%%   
+%   EVALUATE CEXTN = GETEXTN ( C_FILE )
+%   EVALUATE CEXTN = UPPERCASE ( CEXTN )
+%   IF ( CEXTN .EQ. 'CIF' ) THEN
+%     IF FILEEXISTS ( 'from-cif.cry' ) THEN
+%       EVALUATE T =  FILEDELETE ( 'from-cif.cry' )
+%     END IF
+%     IF FILEEXISTS ( 'from-cif.hkl' ) THEN
+%       EVALUATE T =  FILEDELETE ( 'from-cif.hkl' )
+%     END IF
+%%
+%     TRANSFER '#SPAWN % "CRYSDIR:diffin"  "' // C_FILE //  -
+ '" R' TO CRYSTALS
+%     IF FILEEXISTS ( 'from-cif.cry' ) THEN
+%       COPY '#SCRIPT DIFFEXEC'
+%     ELSE
+ {E The diffractometer files have not been processed          
+%     END IF
+%     FINISH
+%   ELSE IF ( CEXTN .EQ. 'FCF' ) THEN
+%     VARIABLE CHARACTER CTITLE CPATH COUT
+%     EVALUATE CTITLE = GETTITLE ( C_FILE )
+%     EVALUATE CPATH = GETPATH ( C_FILE )
+%     EVALUATE COUT = CTITLE // '.cry'
+%     EVALUATE CARG = ' -f -o '
+% TRANSFER '#SPAWN % "CRYSDIR:cif2cry" ' // CARG // '"' // COUT -           
+  // '" "' // C_FILE // '"' TO CRYSTALS                                            
+%     TRANSFER '#USE ' // COUT  TO CRYSTALS    
+%     FINISH
+%   END IF
+%%
+%   COPY '#SCRIPT XFILE_ANY'
+%
+%END SCRIPT

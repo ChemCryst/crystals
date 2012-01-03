@@ -1,0 +1,43 @@
+%SCRIPT XFILEA
+%% 
+%%                               
+^^CO SYSOPENFILE '*.*;' 'CIF (*.cif_od)|*.cif_od;|All files (*.*)'
+%%
+%%
+%%
+%   GET SILENT NOSTORE TEXT 'New filename:' 'CANCEL'                                                                              
+%   IF CVALUE .EQ. 'CANCEL' THEN
+%     FINISH
+%   END IF
+%   VARIABLE CHARACTER C_FILE CEXTN 
+%   VARIABLE LOGICAL T
+%%
+%   EVALUATE C_FILE = CVALUE
+%%
+%   IF ( .NOT. ( FILEEXISTS C_FILE ) ) THEN
+{E Error: Filename given does not exist.
+%     FINISH
+%   END IF 
+%%   
+%   EVALUATE CEXTN = GETEXTN ( C_FILE )
+%   EVALUATE CEXTN = UPPERCASE ( CEXTN )
+%   IF ( CEXTN .EQ. 'CIF_OD' ) THEN
+%     IF FILEEXISTS ( 'from-cif.cry' ) THEN
+%       EVALUATE T =  FILEDELETE ( 'from-cif.cry' )
+%     END IF
+%     IF FILEEXISTS ( 'from-cif.hkl' ) THEN
+%       EVALUATE T =  FILEDELETE ( 'from-cif.hkl' )
+%     END IF
+%     TRANSFER '#SPAWN % "CRYSDIR:diffin"  "' // C_FILE //  -
+ '" A' TO CRYSTALS
+%     IF FILEEXISTS ( 'from-cif.cry' ) THEN
+%       COPY '#SCRIPT DIFFEXEC'
+%     ELSE
+ {E The diffractometer files have not been processed          
+%     END IF
+%     FINISH
+%   END IF
+%%
+%   COPY '#SCRIPT XFILE_ANY'
+%
+%END SCRIPT
