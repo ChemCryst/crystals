@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.77  2012/01/03 14:37:18  rich
+C PUNCH 6 I (partial implementation) to punch all set keys from L6.
+C
 C Revision 1.76  2011/09/19 09:51:59  rich
 C Punch list 39.
 C
@@ -307,7 +310,7 @@ C ISTORE bits will only print if J=18, not if J=14.
       WRITE(NCPU,1150) (STORE(I), I = M5, J),
      1                (ISTORE(I), I= J+1, M5+MD5TMP -1 )
 1150  FORMAT
-     1 ('ATOM ',A4,1X,6F11.6/
+     1 ('ATOM ',A4,1X,F11.0,F11.6,F11.0,3F11.6/
      2 'CON U[11]=',6F11.6/
      3 'CON SPARE=',F11.2,4I11)
       M5 = M5 + MD5
