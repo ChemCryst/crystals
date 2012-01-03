@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  2011/09/22 19:49:34  rich
+C Some fixes to make this compile with gfortran and align a common block.
+C
 C Revision 1.13  2011/09/14 11:09:09  rich
 C Extend length of monochromator character string.
 C
@@ -72,55 +75,45 @@ c
 C 
 C----- WRITE OPTIONAL GOODIES TO TEXT FILE
 1234  FORMAT(A,'''',A,'''')
-      call xctrim(ename,l80)
-      IF (FN) WRITE (NCIF,1234) '# Text info for ',ENAME(1:l80)
-      call xctrim(cdate,l80)
-      WRITE (NCIF,1234) '# On ',CDATE(1:l80)
+      IF (FN) WRITE (NCIF,1234) '# Text info for ',
+     1                          ENAME(1:NCTRIM(ENAME))
+      WRITE (NCIF,1234) '# On ',CDATE(1:NCTRIM(CDATE))
 
       F1=CHAR_('_diffrn_measurement_device_type',C80)
-      call xctrim(c80,l80)
       IF (F1) WRITE (NCIF,1234) '_diffrn_measurement_device_type ',
-     1 C80(1:l80)
+     1 C80(1:NCTRIM(C80))
 
       F1=CHAR_('_diffrn_measurement_device',C80)
-      call xctrim(c80,l80)
       IF (F1) WRITE (NCIF,1234) '_diffrn_measurement_device ',
-     1   C80(1:l80)
+     1   C80(1:NCTRIM(C80))
 
       F1=CHAR_('_diffrn_detector_area_resol_mean',C80)
-      call xctrim(c80,l80)
       IF (F1) WRITE (NCIF,1234) '_diffrn_detector_area_resol_mean ',
-     1 C80(1:l80)
+     1 C80(1:NCTRIM(C80))
 
       FMON=CHAR_('_diffrn_radiation_monochromator',CMONO)
-      call xctrim(cmono,l80)
       IF (FMON) WRITE (NCIF,1234) '_diffrn_radiation_monochromator ',
-     1 CMONO(1:L80)
+     1 CMONO(1:NCTRIM(C80))
 
       F1=CHAR_('_computing_data_collection',C80)
-      call xctrim(c80,l80)
       IF (F1) WRITE (NCIF,1234) '_computing_data_collection ',
-     1 C80(1:l80)
+     1 C80(1:NCTRIM(C80))
 
       F1=CHAR_('_diffrn_measurement_method',C80)
-      call xctrim(c80,l80)
       IF (F1) WRITE (NCIF,1234) '_diffrn_measurement_method ',
-     1 C80(1:l80)
+     1 C80(1:NCTRIM(C80))
 
       F1=CHAR_('_diffrn_orient_matrix_type',C80)
-      call xctrim(c80,l80)
       IF (F1) WRITE (NCIF,1234) '_diffrn_orient_matrix_type ',
-     1 C80(1:l80)
+     1 C80(1:NCTRIM(C80))
 
       F1=CHAR_('_computing_cell_refinement',C80)
-      call xctrim(c80,l80)
       IF (F1) WRITE (NCIF,1234) '_computing_cell_refinement ',
-     1 C80(1:l80)
+     1 C80(1:NCTRIM(C80))
 
       F1=CHAR_('_computing_data_reduction',C80)
-      call xctrim(c80,l80)
       IF (F1) WRITE (NCIF,1234) '_computing_data_reduction ',
-     1 C80(1:l80)
+     1 C80(1:NCTRIM(C80))
 C 
 C....... Read in Z
 c
@@ -275,8 +268,7 @@ c         else
 c           READ (ctemp,'(a)') CCOL
 c         endif
       ENDIF
-      call xctrim(ccol,lcol)
-      write(6,'(A,3x,a)') 'Crystal Colour Found', ccol(1:lcol)
+      write(6,'(A,3x,a)') 'Crystal Colour Found', ccol(1:nctrim(ccol))
 c
 c
 c
@@ -391,10 +383,10 @@ C
 c Kccd SG is only Point Group
       if (idiff .eq. 2) fsg = .false.
       if (fsg) then
-         call xctrim(cspace,lspace)
          write(6,'(/A)') 
      1 'CAUTION - some cifs only contain the Point Group'
-         write(6,'(a,a)')'Space Group from cif is ',cspace(1:lspace)
+         write(6,'(a,a)')'Space Group from cif is ',
+     1    cspace(1:nctrim(cspace))
          write(6,'(a)') 'Is this correct [yes]'
          read (5,'(A)') ctemp
          if ((ctemp(1:1).eq.'n') .or. (ctemp(1:1).eq.'N')) then
@@ -452,7 +444,7 @@ c----------------------------------------------------------------
 C
         ctemp = ' '
         call sgroup(filename(1:lfn)//'.hkl', i_value,cnonsp)
-        call xctrim(cnonsp,lspace)
+        lspace = nctrim(cnonsp)
         if (cnonsp(2:2) .ne. ' ') then
             do i=lspace,2,-1
               cnonsp(i+1:i+1) = cnonsp(i:i)
@@ -469,8 +461,7 @@ C
      1 'symbol with spaces between the components'
         read (5,'(a)') ctemp
         if (ctemp(1:3) .ne. '   ') then
-         callxctrim(ctemp,ltemp)
-         cspace = ctemp(1:ltemp)
+         cspace = ctemp(1:nctrim(ctemp))
         else
          cspace = cnonsp(1:lspace)
         endif
@@ -620,8 +611,7 @@ c
 c
 c
 c
-         call xctrim(cform,lenfil)
-         write(6,'(a,a)') 'Formula ',cform(1:lenfil)
+         write(6,'(a,a)') 'Formula ',cform(1:NCTRIM(cform))
 c
          WRITE (NOUTF,'(a)') '#COMPOSITION'
          WRITE (NOUTF,'(a,a)') 'content ',cform(1:lenfil)
@@ -912,11 +902,11 @@ c                 both same case - insert a sp 1 sp between them
         endif              
       enddo
       endif
-      call xctrim(cform, lform)
-      i = index(numer,cform(lform-1:lform-1))
+      lform = nctrim(cform)
+      i = index(numer,cform(lform:lform))
       if (i .le. 0) then
-            cform(lform:) = ' 1'
-            call xctrim(cform, lform)
+            cform(lform+1:) = ' 1'
+            lform = nctrim(cform)
       endif
       write(6,'(a,4x,a)') 'Input:  ', cform
 c
@@ -1072,8 +1062,8 @@ C--
       call GetArg(1, carg1)
       call GetArg(2, carg2)      
 #endif
-      write(6,'(a)') carg1
-      write(6,'(a)') carg2
+c      write(6,'(a)') carg1
+c      write(6,'(a)') carg2
       RETURN
       END
 

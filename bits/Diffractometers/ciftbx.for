@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.3  2011/09/22 19:49:34  rich
+C Some fixes to make this compile with gfortran and align a common block.
+C
 C Revision 1.2  2011/05/17 16:00:16  djw
 C Enable long lines, up to 512 characters
 C
@@ -352,11 +355,19 @@ C
 C....... Make sure the CIF is available to open
 C
 cdjw may2011 filenames left at 80 characters for the moment
+cric oct2011 filenames set to 256 chars
 100      file_=fname
-         do 120 i=1,80
-         if(file_(i:i).eq.' ') goto 140
+         do 120 i=len(file_),1,-1
+           if(file_(i:i).ne.' ') goto 140
 120      continue
-140      longf_=i-1
+         i = 0
+140      longf_=i
+
+         write(*,*) "File: "
+         write(*,*) file_(1:longf_)
+         write(*,*) file_
+         write(*,*) fname
+
          inquire(file=file_(1:longf_),exist=test)
          open_=test
          if(.not.open_)         goto 200

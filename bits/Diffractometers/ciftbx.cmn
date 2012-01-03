@@ -52,7 +52,7 @@ C                                 Character image of current data item
          parameter (linlen=512)
          character strg_*(linlen)
 C                                 File name of current CIF
-         character file_*80
+         character file_*256
 C                                 Data item type
          character type_*4
 C

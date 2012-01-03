@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2011/09/22 19:49:34  rich
+C Some fixes to make this compile with gfortran and align a common block.
+C
 C Revision 1.6  2011/06/13 13:32:59  djw
 C remove old comments, set output file extension t .cry, add captions to table, ensure most probable SG is found,
 C
@@ -34,7 +37,13 @@ c
       call inarg(carg1, carg2)
       write(6,'(a)') carg1
       write(6,'(a)') carg2
-c
+
+      if ( nctrim(carg1) .eq. 0 ) then
+         write(6,'(a/)')' Usage: diffin <file> <instrument code letter>'
+         write(6,'(a/)')' A(gilent), N(onius), R(igaku), W(inGX)'
+        stop
+      end if
+
 1      CONTINUE
 c       write(6,*) 'Choose from A(gilent), N(onius), R(igaku), W(inGX)'
 c       READ(5,'(A)') CTEMP
@@ -56,9 +65,8 @@ c       READ(5,'(A)') CTEMP
        ELSE
           GOTO 1
        ENDIF
-       CALL XCTRIM(CDIFF,LDIFF)
+       LDIFF = NCTRIM(CDIFF)
 C--    REMOVE FINAL SPACE
-       LDIFF = LDIFF-1
 C set default output filename - generalised to ease input
 	filename= 'from-cif'
         lfn=8
@@ -108,7 +116,6 @@ c
 c
 C 
 	call datain
-	stop
 	end
 
 C=======================================================================
