@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  2010/07/21 15:57:32  djw
+C Include list type in PUNCH 6 C
+C
 C Revision 1.14  2010/06/03 16:57:28  djw
 C Add comments to explain the different PUNCH 6 x types
 C
@@ -208,8 +211,8 @@ C--NOT LIST 6  -  AN ERROR
       RETURN
 C--CHECK THE TYPE OF PUNCH
 7300  CONTINUE
-C           A    B    C    D    E    F    G    H
-      GOTO (7310,7340,7320,7330,7350,7360,7370,7380 ) ICLASS+2
+C           A    B    C    D    E    F    G    H    I
+      GOTO (7310,7340,7320,7330,7350,7360,7370,7380,7390 ) ICLASS+2
 71    CONTINUE
       CALL XERHDR(0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,72)ICLASS
@@ -249,6 +252,10 @@ C----- SHELX HKL OUTPUT of FC with made up sigmas. - G
 C----- CIF OUTPUT F^2's  on scale of Fc- H
 7380  CONTINUE
       CALL XPCH6C(LSTNO,2)
+      RETURN
+C----- All set keys
+7390  CONTINUE
+      CALL XPCH6Z(LSTNO)
       RETURN
       RETURN
       END
