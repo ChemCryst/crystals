@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.62  2011/12/09 12:14:01  djw
+C Make SCRIPT filenames lower case for all implementations
+C If a SCRIPT does not exist, unwind the file stack and return to the COMMAND line
+C
 C Revision 1.61  2011/09/07 09:44:41  djw
 C Change format of #SET OPENMESSAGE text so that columns line up across actions
 C Add #SET CACHEMESSAGE (off/on) to inhibit caching information at termination
@@ -1015,7 +1019,8 @@ CRIC0101 DO NOT LOG USE,$,or SPAWN INSTRUCTIONS EITHER.
      1   .AND.(ISYSIN .NE. IDOLLA) .AND. ( ISYSIN .NE. ISPAWN) ) THEN
           WRITE ( NCLU , 500 ) CRDLWC(1:80)
          ELSE
-          WRITE ( NCLU , 501 ) CRDLWC(1:80)
+c          WRITE ( NCLU , 501 ) CRDLWC(1:80)
+          WRITE ( NCLU , 501 ) CRDLWC
          ENDIF
       END IF
 C
