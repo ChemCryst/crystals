@@ -94,7 +94,6 @@
 ^^WI }                                                                          
 ^^WI SHOW                                                                       
 ^^CR                                                                            
-% EVALUATE HKLTITLE = INSTITLE
 % IF ( FILEEXISTS ( HKLTITLE ) ) THEN                                           
 %   TRANSFER "^^CO SET L6FILE TEXT '" // HKLTITLE // "'" TO DISPLAY             
 ^^CO SET L6FILE INFORM=NO SET BOK DISABLED=NO                                   
@@ -357,6 +356,9 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT                                                                     
 %%                                                                              
 %% $Log: not supported by cvs2svn $
+%% Revision 1.5  2012/01/03 16:47:23  rich
+%% Fix INSTITLE rubbish.
+%%
 %% Revision 1.4  2011/12/16 15:13:14  djw
 %% Replace individual setting of LISTS 4, 23 and 28 by a call to XFRESH6
 %%
