@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.34  2011/09/21 09:31:13  rich
+//   Draw circles instead of ellipses.
+//
 //   Revision 1.33  2008/09/22 12:31:37  rich
 //   Upgrade GUI code to work with latest wxWindows 2.8.8
 //   Fix startup crash in OpenGL (cxmodel)
@@ -444,13 +447,17 @@ void CxPlot::DrawEllipse(int x, int y, int w, int h, bool fill)
         y = 2400-y;
     }
 
-    int x1 = x - w;
-    int y1 = y - h;
-    int x2 = x + w;
-    int y2 = y + h;
+//    int x1 = x - w;
+//    int y1 = y - h;
+//    int x2 = x + w;
+//    int y2 = y + h;
 
-    CcPoint topleft = DeviceToLogical(x1,y1);
-    CcPoint bottomright = DeviceToLogical(x2,y2);
+    //CcPoint topleft = DeviceToLogical(x1,y1);
+//    CcPoint bottomright = DeviceToLogical(x2,y2);
+    CcPoint centre = DeviceToLogical(x,y);
+
+    CcPoint topleft     = CcPoint( centre.x - w, centre.y - h );
+    CcPoint bottomright = CcPoint( centre.x + w, centre.y + h );
 
 #ifdef __CR_WIN__
 //    CRgn        rgn;
