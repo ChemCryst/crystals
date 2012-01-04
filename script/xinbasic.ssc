@@ -2,7 +2,9 @@
 %% Input of basic data needed for data reduction  
 %  VARIABLE LOGICAL SCRIPTEXT LCANCEL INITSETUP  
 %  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2  
+%  VARIABLE CHARACTER BUTT1 BUTT2 BUTT3
 %  VARIABLE LOGICAL ANSWER  
+%  VARIABLE INTEGER XCHOICE
 %  IF SCRIPTEXT .EQ. TRUE THEN  
   
  Before you start data reduction, you should have loaded the basic  

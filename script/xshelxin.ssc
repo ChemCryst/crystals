@@ -23,9 +23,12 @@
 % VARIABLE LOGICAL ANSWER                                                       
 %%                                                                              
 % EVALUATE LCRY = FALSE                                                         
-%%                                                                              
+%%
+%% If no 23 or no 1, set refinement type
+%  IF ( ( EXISTS 23 ) .EQ. - 1 ) THEN
 {R Setting refinement type                                                      
-%      COPY '#SCRIPT XQCK23'                                                    
+%      COPY '#SCRIPT XQCK23'
+%  END IF
 %%
 % IF ( INSTITLE .EQ. ' ' ) .OR. ( .NOT. ( FILEEXISTS INSTITLE ) ) THEN
 %%

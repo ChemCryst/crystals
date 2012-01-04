@@ -1,15 +1,52 @@
 %SCRIPT XINLIST6                                                                
 %% CRYSTALS reflection input script                                             
-%  VARIABLE CHARACTER HKLTITLE                                         
+%  VARIABLE CHARACTER HKLTITLE THEINS
 %  VARIABLE INTEGER INBASICS FTYPE FS NCOEF FMT                                 
-%  VARIABLE LOGICAL LCANCEL INITSETUP XQMERGE LOKOK                             
+%  VARIABLE LOGICAL LCANCEL INITSETUP XQMERGE LOKOK FOUNDINS
 %  EVALUATE LCANCEL = FALSE                                                     
 %  EVALUATE LOKOK = FALSE                                                       
 %% variables used by the question box                                           
-%  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                        
-%  VARIABLE LOGICAL ANSWER                                                      
+%  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2  
+%  VARIABLE CHARACTER BUTT1 BUTT2 BUTT3
+%  VARIABLE LOGICAL ANSWER  
+%  VARIABLE INTEGER XCHOICE
 %%                                                                              
-%% Initial checks. Is there any point proceeding.                               
+%% Initial checks. Is there any point proceeding.
+%%
+%% If data missing, is there a .ins or .res file worth loading?
+%%
+%  IF ( EXISTS 1 + EXISTS 2 + EXISTS 3 + EXISTS 13 -
+ + EXISTS 29 + EXISTS 30 .NE. 6 ) THEN
+%%
+%    EVALUATE FOUNDINS = FALSE
+%    EVALUATE THEINS = GETPATH ( HKLTITLE ) // GETTITLE ( HKLTITLE )
+%    IF ( FILEEXISTS ( THEINS // '.ins' ) ) THEN
+%      EVALUATE FOUNDINS = TRUE
+%      EVALUATE THEINS = THEINS // '.ins'
+%    ELSE IF ( FILEEXISTS ( THEINS // '.res' ) ) THEN
+%      EVALUATE FOUNDINS = TRUE
+%      EVALUATE THEINS = THEINS // '.res'
+%    END IF
+%    IF FOUNDINS THEN
+%      EVALUATE QTITLE = 'Missing Data'                                
+% EVALUATE QLINE1 =  -
+ 'It is best to import cell and other data before hkl data'
+% EVALUATE QLINE2 = 'Do you want to import ' // THEINS // ' first?'        
+%      EVALUATE BUTT1 = 'Yes'                             
+%      EVALUATE BUTT2 = 'No, input data manually'                    
+%      EVALUATE BUTT3 = 'Cancel'                    
+%      COPY '#SCRIPT XCHOICE'                                           
+%      IF XCHOICE .EQ. 3 THEN
+%        FINISH
+%      ELSE IF XCHOICE .EQ. 1 THEN
+%        EVALUATE INSTITLE = THEINS
+%        COPY '#SCRIPT XSHELXIN'
+%% Shelxin will call this script again. So stop here.
+%        FINISH
+%      END IF
+%    END IF                                                            
+%  END IF
+%%
 %  COPY '#SCRIPT XINBASIC'                                                      
 %  IF INBASICS .NE. 1 THEN                                                      
                                                                                 
@@ -120,8 +157,20 @@
 % IF ( FILEEXISTS ( HKLTITLE ) ) THEN                                           
 %   TRANSFER "^^CO SET L6FILE TEXT '" // HKLTITLE // "'" TO DISPLAY             
 ^^CO SET L6FILE INFORM=NO SET BOK DISABLED=NO                                   
-%       EVALUATE LOKOK = TRUE                                                   
-% END IF                                                                        
+%       EVALUATE LOKOK = TRUE
+% ELSE
+^^WI    SYSOPENFILE '*.hkl;*.hkp' 'HKL file (*.hkl,*.hkp)'                      
+^^CR                                                                            
+%       GET SILENT TEXT 'New filename:'                                         
+%       IF CVALUE .NE. 'CANCEL' THEN                                            
+%        CLEAR                                                                  
+^^WI     SET L6FILE TEXT                                                        
+%        TRANSFER "^^WI '" // CVALUE // "'" TO DISPLAY                          
+^^CR                                                                            
+^^CO      SET L6FILE INFORM=NO SET BOK DISABLED=NO                              
+%         EVALUATE LOKOK = TRUE                                                 
+%       END IF                                                                  
+% END IF
 %%                                                                              
 %% Now the window is displayed, we wait for any of the following                
 %% things to happen:                                                            
@@ -381,6 +430,9 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT                                                                     
 %%                                                                              
 %% $Log: not supported by cvs2svn $
+%% Revision 1.34  2012/01/03 16:47:23  rich
+%% Fix INSTITLE rubbish.
+%%
 %% Revision 1.33  2011/12/16 15:13:14  djw
 %% Replace individual setting of LISTS 4, 23 and 28 by a call to XFRESH6
 %%

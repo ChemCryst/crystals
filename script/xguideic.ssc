@@ -113,12 +113,14 @@
 %%
 %  VARIABLE REAL WAVE ZMAX
 %  VARIABLE LOGICAL NEUTRONS
-%  COPY '#SCRIPT XGETWZ'
-%  IF ( ( .NOT. NEUTRONS ) .AND.  -
+%  IF EXISTS 1 .EQ. 1 THEN
+%   COPY '#SCRIPT XGETWZ'
+%   IF ( ( .NOT. NEUTRONS ) .AND.  -
         ( ABS ( WAVE - 1.54 ) .GT. .01 ) .AND. -
         ( ABS ( WAVE - 0.71 ) .GT. .01 ) ) THEN
 {I Unusual wavelength - Please update anomalous scattering factors
-%  COPY '#SCRIPT EDLIST3'
+%   COPY '#SCRIPT EDLIST3'
+%   END IF
 %  END IF
 %%
 %%
