@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.35  2012/01/04 14:32:06  rich
+//   Bigger, rounder, circles in plots.
+//
 //   Revision 1.34  2011/09/21 09:31:13  rich
 //   Draw circles instead of ellipses.
 //
@@ -468,7 +471,10 @@ void CxPlot::DrawEllipse(int x, int y, int w, int h, bool fill)
     brush.CreateSolidBrush(mfgcolour);
 
     m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
-    if ( fill) oldbrush = (CBrush*)m_memDC->SelectObject(brush);
+    if ( fill)
+       oldbrush = (CBrush*)m_memDC->SelectObject(brush);
+    else
+       oldbrush = (CBrush*)m_memDC->SelectStockObject(NULL_BRUSH);
     oldpen =   m_memDC->SelectObject(&pen);
 
 //    if(fill)
