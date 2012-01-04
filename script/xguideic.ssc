@@ -27,7 +27,7 @@
 %      CASE VALUE
 %%
 %        BLOCK % 1
-%          COPY '#SCRIPT FILEOPEN'                                                  
+%          COPY '#SCRIPT XFILE_ANY'                                                  
 %        END BLOCK                                                              
 %%
 %        BLOCK % 2
