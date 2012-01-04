@@ -20,7 +20,7 @@
 %        IF FOLD .LE. 1 THEN                                                          
 {S * Reset weighting scheme to unit weights.                                    
 %         COPY '#LIST 4'                                                              
-%         copy 'SCHEME 9 0 normal
+%         copy 'SCHEME 9 0 normal'
 %         COPY 'END'                                                                  
 %        ELSE                                                                         
 {S * Reset weighting scheme to statistical weights.                             
