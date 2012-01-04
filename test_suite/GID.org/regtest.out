@@ -341,7 +341,7 @@ Matching by Rotation/inversion (Method 1)
                                                       Maximum distance   C      2     0.000
                                                       Maximum angle      C      2     0.000
                  rms pos    rms bond     rms tors
- Deviations        0.0000      0.0000      0.0003
+ Deviations        0.0000      0.0000      0.0000
 
 
 
@@ -617,7 +617,7 @@ Matching by Rotation/inversion (Method 1)
                                                       Maximum distance   O      4     0.000
                                                       Maximum angle      C      1     0.000
                  rms pos    rms bond     rms tors
- Deviations        0.0000      0.0000      0.0003
+ Deviations        0.0000      0.0000      0.0000
 
 
 
@@ -876,7 +876,7 @@ Matching by Rotation/inversion (Method 1)
                                                       Maximum distance   C      2     0.000
                                                       Maximum angle      C      2     0.000
                  rms pos    rms bond     rms tors
- Deviations        0.0000      0.0000      0.0003
+ Deviations        0.0000      0.0000      0.0000
 
 
 
@@ -1136,7 +1136,7 @@ Matching by Rotation/inversion (Method 1)
                                                       Maximum distance   O      4     0.000
                                                       Maximum angle      C      1     0.000
                  rms pos    rms bond     rms tors
- Deviations        0.0000      0.0000      0.0003
+ Deviations        0.0000      0.0000      0.0000
 
 
 
@@ -1395,7 +1395,7 @@ Matching by Rotation/inversion (Method 1)
                                                       Maximum distance   C      2     0.000
                                                       Maximum angle      C      2     0.000
                  rms pos    rms bond     rms tors
- Deviations        0.0000      0.0000      0.0002
+ Deviations        0.0000      0.0000      0.0000
 
 
 
