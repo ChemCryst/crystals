@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.60  2011/07/05 10:48:02  djw
+C Increase the field width for PART in XMDMON fro I4 to I7
+C
 C Revision 1.59  2011/04/20 09:55:03  djw
 C Small fix to XCENTRE
 C
@@ -1114,6 +1117,7 @@ C  Fix clash. Find highest serial and add one.
           END IF
         END DO
       END DO
+      IERROR=IERNOP   ! This function should not cause a warning if no changes to L5.
       GO TO 100
 C
 C-C-C
