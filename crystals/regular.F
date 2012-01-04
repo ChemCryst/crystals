@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.63  2011/03/21 13:57:21  rich
+c Update files to work with gfortran compiler.
+c
 c Revision 1.62  2011/02/07 16:03:04  djw
 c Dave the determinat in the common block, invert the torsion angles in the secong molecule if DET is negative
 c
@@ -2363,7 +2366,7 @@ C -- CALCULATE WHERE THIS ATOM IS GOING TO GO
       INDATM=LATMD+(NNEW-1)*MDATMD
       INDNEW=LNEW+(NNEW-1)*MDNEW
       INDUIJ=LUIJ+(NNEW-1)*MDUIJ
-      INDOCC=LOCC+(NNW-1)*MDOCC
+      INDOCC=LOCC+(NNEW-1)*MDOCC
 C    FIRST, SET UP NEW COORDINATES
 C -- APPLY REQUIRED MATRIX TO COORDINATES
       CALL XMLTMM (XMATR(1),PLATOM(5),TEMP(1),3,3,1)
@@ -2779,6 +2782,7 @@ C
       RADIUS = 0.0
 
       MISMAT = 0
+      NUMT = 0
 
 C -- PRINT HEADER
       WRITE ( CMON , 1305 )
@@ -3030,11 +3034,12 @@ c molecule
       JT = 12 ! Number of words per returned distance
       TDEVP = 0.0
       TDEVN = 0.0
+      TORMAX = 0.0
+      TORMIN = 1000.0
       TOR1MAX = 0.0
       TOR1MIN = 1000.0
       TOR2MAX = 0.0
       TOR2MIN = 1000.0
-      NUMT = 0
 
       outer2: DO I=1,NOLD
         INDOLD=LOLD+MDOLD*(I-1)
@@ -4950,6 +4955,7 @@ C  multiple fragments, but not as efficiently.
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST41.INC'
       INCLUDE 'QSTORE.INC'
+      INCLUDE 'XSSVAL.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XIOBUF.INC'
 

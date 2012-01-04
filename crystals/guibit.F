@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.78  2011/09/15 11:39:01  rich
+C Send PT flag if atom list contains parts.
+C
 C Revision 1.77  2011/05/25 12:41:13  djw
 C Increase field for atom count, remove training "."
 C
@@ -869,6 +872,7 @@ C Get atom type.
                KFNDPR = 0
 
 C Look for properties in L29:
+               ICOL=IUNKN
                DO M29 = L29, L29+(N29-1)*MD29, MD29
                  IF ( ISTORE(M29) .EQ. ISTORE(I5) ) THEN
                     COV = STORE(M29+1)

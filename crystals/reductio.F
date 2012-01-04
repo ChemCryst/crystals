@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.46  2011/05/13 11:16:51  djw
+C Calls to Kallow now return a key to the test which failed and a value to indicate if it was Max or Min. The argument of KALLOW must be a variable
+C
 C Revision 1.45  2011/05/03 15:37:24  rich
 C Changed calculation of Fo**2 and s(Fo**2) from Fo and s(Fo) to use usual method. Avoid bug where Fo=0.0
 C
@@ -933,20 +936,20 @@ C
       INCLUDE 'XLST06.INC'
       INCLUDE 'QSTORE.INC'
 C
+      KCENTR=0
 C--CHECK IF THERE ARE ANY NON-PRIMITIVE TRANSLATIONS TO LOOK FOR
       IF(N2P-1)1150,1150,1000
 C--CHECK NON-PRIMITIVE CONDITIONS
 1000  CONTINUE
       M2P=L2P
       DO 1100 I=1,N2P
-      A=ABS(STORE(M2P)*STORE(M6)+STORE(M2P+1)*STORE(M6+1)+STORE(M2P+2)
-     2 *STORE(M6+2))
-      K=INT(A+0.01)
-      IF(A-FLOAT(K)-0.01)1050,2100,2100
-1050  CONTINUE
-      M2P=M2P+3
+        A=ABS(STORE(M2P)*STORE(M6)+STORE(M2P+1)*STORE(M6+1)+
+     2                             STORE(M2P+2)*STORE(M6+2))
+        K=INT(A+0.01)
+        IF(A-FLOAT(K)-0.01)1050,2100,2100
+1050    CONTINUE
+        M2P=M2P+3
 1100  CONTINUE
-      KCENTR=0
 1150  CONTINUE
       RETURN
 C

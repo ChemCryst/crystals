@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.20  2009/06/24 07:35:40  djw
 C Remove debugging print. Ensute POLARITY is unity if it is not being refined
 C
@@ -394,6 +397,10 @@ C - Clear all the bits that L22 could possibly set.
       IMASK = OR(KBREFX,IMASK)
       IMASK = OR(KBREFU,IMASK)
       IMASK = NOT ( IMASK )
+
+C Ric Error if empty L5.
+      IF ( N5 .EQ. 0 ) GOTO 9901
+
       DO I = 0, N5-1
           ISTORE(L5+MD5*I+15) = AND ( ISTORE(L5+MD5*I+15), IMASK )
       END DO
@@ -1309,6 +1316,12 @@ C
       CALL XPRVDU(NCVDU, 1,0)
 9801  FORMAT (' Error initialising special positions')
       GOTO 9900
+9901  CONTINUE
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, 9902)
+      WRITE ( CMON , 9902)
+      CALL XPRVDU(NCVDU, 1,0)
+9902  FORMAT (' Error - no atoms in list 5')
+      GOTO 5850
 9900  CONTINUE
 C -- ERRORS
       CALL XALTES ( KE , -1 )
@@ -1654,6 +1667,7 @@ C----- SET THE INITIAL NO OF PARAMETERS TO ZERO
       MRI=0
 C----- INITIAILISE LINK AND RIDE EQUIVALENCE BASE
       IMP = 0
+      LIMP = 0
 C----- SET INCREMENT FOR SIMPLE EQUIVALENCE
       IMR = 1
 C----- SET NO OF ATOMS PROCESSED FROM THIS CARD

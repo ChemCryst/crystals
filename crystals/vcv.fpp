@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2011/11/03 09:16:09  rich
+C Added SUSCAL routine
+C
 C Revision 1.5  2011/08/08 10:44:34  djw
 C Move print of vcv matrix from torsion into igetvcv in vcv
 C
@@ -515,8 +518,9 @@ C
          IF (IRES.LE.0) GO TO 1850
          IF ((ISSPRT.EQ.0).AND.(LEVEL.EQ.1))
      1    WRITE (NCWU,'(A4,I5, 5I4,3F8.4)') STORE(ISTORE(ISTACK)),
-     2    NINT(STORE(ISTORE(ISTACK)+1)),(STORE(IDJW),IDJW = ISTACK+2,
-     3    ISTACK+9)
+     2    NINT(STORE(ISTORE(ISTACK)+1)),
+     2   (ISTORE(IDJW),IDJW = ISTACK+2,ISTACK+6),
+     2   (STORE(IDJW),IDJW = ISTACK+7,ISTACK+9)
 C 
 C  FORM THE TOTAL SYMMETRY MATRIX
 C 

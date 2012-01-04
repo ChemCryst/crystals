@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.77  2011/11/03 09:20:16  rich
+C Output of leverage stats.
+C
 C Revision 1.76  2011/09/05 08:40:28  djw
 C *** empty log message ***
 C
@@ -409,7 +412,7 @@ C--BRANCH ON THE TYPE OF OPERATION
             I=KRDDPV(ISTORE(NFL),1)
 C--READ THE NEXT DIRECTIVE CARD
 100         CONTINUE
-            LAST=IDIR
+c RIC11            LAST=IDIR
             IDIR=KRDNDC(ISTORE(NFL),1)
 C--CHECK THE REPLY
             IF(IDIR .GE. 0) THEN

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.63  2012/01/03 14:36:35  rich
+C Allow longer lines to be read by KRDLIN if required.
+C
 C Revision 1.62  2011/12/09 12:14:01  djw
 C Make SCRIPT filenames lower case for all implementations
 C If a SCRIPT does not exist, unwind the file stack and return to the COMMAND line
@@ -510,6 +513,7 @@ C -- IF COPYING, WRITE LINE TO MONITOR CHANNEL
           IRDLIN = IRDLIN + 1
           IF ( IRDLIN .GT. IRDPAG ) THEN
             IRDLIN = 1
+            INFIN = 0
             IF (ISSTML .NE. 4 ) THEN
                   CALL XPRMPT ( NCAWU , 'Press return to continue : ' )
                   ISTAT = KRDLIN ( NCUFU(1) , CRDUPC , INFIN )

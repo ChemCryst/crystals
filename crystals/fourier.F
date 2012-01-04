@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.34  2011/07/01 13:42:45  djw
+C Change the dot product module name from VPROD to DPROD
+C
 C Revision 1.33  2011/03/21 13:57:21  rich
 C Update files to work with gfortran compiler.
 C
@@ -1468,6 +1471,7 @@ C--INDICATE A BOX SEARCH
 C--SET THE POINTERS TO LIST 5
       L5=L10A
       M5=L5-2
+      M5A=M5
       MD5=MD10A
       N5=N10A
 C--LOOP OVER EACH ATOM IN TURN, PLACING IT IN THE REQUIRED VOLUME

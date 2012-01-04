@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.10  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -1240,6 +1243,8 @@ C--CHECK IF THIS DIRECTIVE CAN BE INPUT HERE
       IF(ISTORE(MR61+8))2250,2350,2350
 C--NOT ALLOWED ANY MORE
 2250  CONTINUE
+      J=LR60+(IABS(ISTORE(MR61+6))-1)*MDR60
+      K=J+MDR60-2
       CALL XMONTR(0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2300)
       WRITE ( CMON, 2150) (STORE(I+1),I=J,MIN(J+40,K))
@@ -2160,6 +2165,7 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
+      KCHKPV=0 !Default return.
       JTYPE=ITYPE
 C--RECORD THE NUMBER OF ERRORS SO FAR
       MYLEF=LEF

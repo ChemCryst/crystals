@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.34  2011/09/20 13:15:46  rich
+C Some new hollerith problems crept in.
+C
 C Revision 1.33  2011/07/06 10:40:00  rich
 C Added HPART and NHPART atom selection keywords to the lexical scanner. They select hydrogen atoms in a specific PART, or non-hydrogen atoms (respectively).
 C
@@ -414,6 +417,7 @@ C----- SET NO MOUSE INPUT YET
 C
       NPTTOT = -1
       NPTCUR = -1
+      IDIRNM = 0
 
       IADARG = MD
       NCHRRD = 0

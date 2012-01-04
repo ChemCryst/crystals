@@ -201,6 +201,11 @@ C
 C
 C----- ALLOCATE ROOM FOR INPUT VALUES
 CMAR98
+
+CRIC11 - Store limits were not set.
+      CALL XRSL
+      CALL XCSAE
+
       ICOMBF = KSTALL( ICOMSZ)
       CALL XZEROF (STORE(ICOMBF), ICOMSZ)
 C
@@ -362,7 +367,7 @@ C
       DATA CBONDS / '1','2','3','4','ar','un','de','un','pi'/
 c      DATA IDIMBF / 2 /
       INCLUDE 'IDIM02.INC'
-      ICOMBF = KSTALL ( IDIMBF )
+c      ICOMBF = KSTALL ( IDIMBF )
 c      CALL XZEROF (STORE(ICOMBF), IDIMBF)
 c      INCLUDE 'IDIM02.INC'
 c      INCLUDE 'IDIM14.INC'

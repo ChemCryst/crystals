@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.71  2011/09/21 09:46:42  rich
+C Fix crash on script->use->script scenarios.
+C
 C Revision 1.70  2011/09/14 12:12:44  djw
 C With VERIFY TRUE, re-declaration of an existing variable is signaled to the screen and listing file
 C
@@ -3521,7 +3524,6 @@ C
 C Extract the directory from a full pathname.
 C e.g. GETPATH 'c:\structures\nket\crfile.dsc' will return
 C 'c:\structures\nket\'  e.g. everything up to the last slash.
-
       JLBS = KCLEQL(CWORK1(1:LEN1),'\')
       JLFS = KCLEQL(CWORK1(1:LEN1),'/')
       IECF = MAX(JLBS,JLFS)

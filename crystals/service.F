@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.47  2011/09/30 09:37:26  djw
+C Remove diagnostic print
+C
 C Revision 1.46  2011/09/07 09:44:41  djw
 C Change format of #SET OPENMESSAGE text so that columns line up across actions
 C Add #SET CACHEMESSAGE (off/on) to inhibit caching information at termination
@@ -1289,10 +1292,16 @@ C----- RETURN IF THE FILE IS 'SCRATCH, 'READ' OR 'OLD'
 
 C
 C----- IF OUT PUT TO PRINTER OR SCREEN, SET DEVICE AND RETURN
-      IF (NEWFIL .NE. ' ') CALL XCTRIM( NEWFIL, LENNAM)
-      LENNAM=LENNAM-1
-      I = MIN (3,LENNAM)
-        CALL XCCUPC (NEWFIL(1:I), CDEV(1:I))
+      LENNAM = 1
+      CDEV = '   '
+
+      IF (NEWFIL .NE. ' ') THEN
+         CALL XCTRIM( NEWFIL, LENNAM)
+         LENNAM=LENNAM-1
+         I = MIN (3,LENNAM)
+         CALL XCCUPC (NEWFIL(1:I), CDEV(1:I))
+      END IF
+
       IF (( CDEV(1:2) .EQ. 'TT') .OR. ( CDEV(1:3) .EQ. 'TT:')) THEN
             NEWFIL=' '
             NEWFIL(1:LSSVDU) = CSSVDU(1:LSSVDU)
