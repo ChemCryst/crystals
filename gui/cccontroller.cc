@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.118  2011/09/26 13:42:37  rich
+// Fix spawn of external programs using % modifier (run in CRYSTALS I/O window).
+//
 // Revision 1.117  2011/05/17 14:46:38  rich
 // strcpy is not part of std namespace
 //
@@ -3477,7 +3480,8 @@ extern "C" {
 
       char buf[1024];           //i/o buffer
       BZERO(buf);
-      for(;;)      //main program loop
+	  string keep = "";
+      for(;;)      //main program reading/writing loop
       {
         PeekNamedPipe(outPipe.output,buf,1023,&bread,&avail,NULL);
         while ( bread != 0 )
@@ -3490,15 +3494,16 @@ extern "C" {
             s.erase(i,1);    //Remove \r
           }
 
+		  keep = keep + s;
           for(;;) {
-            string::size_type strim = s.find_first_of("\n");
+            string::size_type strim = keep.find_first_of("\n");
             if ( strim == string::npos )
             {
-              CcController::theController->AddInterfaceCommand("{0,1 " + s);
+//              CcController::theController->AddInterfaceCommand("{0,1 " + s);
               break;
             }
-            CcController::theController->AddInterfaceCommand("{0,1 " + s.substr(0,strim));
-            s.erase(0,strim+1);
+            CcController::theController->AddInterfaceCommand("{0,1 " + keep.substr(0,strim));
+            keep.erase(0,strim+1);
           }
           BZERO(buf);
           PeekNamedPipe(outPipe.output,buf,1023,&bread,&avail,NULL);
@@ -3527,6 +3532,10 @@ extern "C" {
            WriteFile(inPipe.input,"\n",1,&bread,NULL); //send an extra newline char
         }
       }
+
+// Dregs of output
+      CcController::theController->AddInterfaceCommand("{0,2 " + keep);
+
 // Reenable all menus
       CcController::theController->AddInterfaceCommand( "^^ST STATUNSET IN");
       CcController::theController->AddInterfaceCommand( "^^CR");
