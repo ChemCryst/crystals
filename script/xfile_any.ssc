@@ -82,7 +82,13 @@
 %    EVALUATE FTYPE = 8
 %  END IF
 %
-%%                                                                              
+%%
+%%
+%  IF ( FTYPE .EQ. 3 ) THEN
+%%  No ambiguity, just go for it.
+%    EVALUATE CARG = 'SI'                                           
+%    EVALUATE CLASS = 'SHEL'
+%  ELSE
 ^^WI WINDOW GETARG 'Import Data' 
 ^^WI MODAL COMMIT='CFBOK' CANCEL='CFBXX'               
 ^^WI GRID GRIDM NROWS=7 NCOLS=3
@@ -90,8 +96,8 @@
 ^^WI  @ 2,2 GRID CFG NROWS=3 NCOLS=1 OUTLINE='Get file:'                  
 ^^WI  {                                                                         
 ^^WI    @ 1,1 STATIC CIFILE
-% TRANSFER '^^WI ' // C_FILE TO DISPLAY
-%     CASE FTYPE + 1
+%   TRANSFER '^^WI ' // C_FILE TO DISPLAY
+%   CASE FTYPE + 1
 %BLOCK
 ^^WI    @ 3,1 STATIC M 'Please select type of file below, then click OK.'
 %END BLOCK
@@ -128,7 +134,7 @@
 %BLOCK
 ^^WI    @ 3,1 STATIC M 'Output from CRYSTALS preprocessing detected.'
 %END BLOCK
-%     END CASE
+%  END CASE
 ^^WI  }
 %%
 ^^WI  @ 4,2 GRID ZZZ NROWS=14 NCOLS=7 OUTLINE='Data Files'  
@@ -318,9 +324,10 @@
 ^^CO      DISPOSE GETARG                                                       
 %      END BLOCK                                                                 
 %   END CASE                                                                    
-%%             
 %%
-% IF CLASS .EQ. 'DIFF' THEN
+%  END IF
+%%
+%  IF CLASS .EQ. 'DIFF' THEN
 %   IF CARG = 'PP' THEN
 %     COPY '#SCRIPT DIFFEXEC'
 %     FINISH
@@ -345,7 +352,7 @@
 %     END IF
 %   END IF
 %%
-% ELSE IF CLASS .EQ. 'SHEL' THEN
+%  ELSE IF CLASS .EQ. 'SHEL' THEN
 %%
  Import SHELX data
 %      IF      CARG .EQ. 'SI' THEN
@@ -362,7 +369,7 @@
 %        COPY '#SCRIPT HKLF52CRY'
 %      END IF
 %%
-% ELSE IF CLASS .EQ. 'CRYS' THEN
+%  ELSE IF CLASS .EQ. 'CRYS' THEN
 %%
 {I Reading CRYSTALS instruction file
 %      TRANSFER '#USE ' // C_FILE // ' '  TO CRYSTALS
@@ -389,8 +396,8 @@ DO CIF STUFF
 %      END IF 
 %%
 %%
-% ELSE
+%  ELSE
 %%
 Something wrong
-% END IF
+%  END IF
 %END SCRIPT                                                                     
