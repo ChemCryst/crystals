@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2012/01/03 14:24:18  rich
+C Allow longer filenames and filenames with spaces in.
+C
 C Revision 1.7  2011/09/22 19:49:34  rich
 C Some fixes to make this compile with gfortran and align a common block.
 C
@@ -17,7 +20,7 @@ c General program for reading diffractometer cif files
 #include "cifin.cmn"
       CHARACTER*12 CDIFF, CTEMP
       character *132 carg1, carg2
-      DATA NOUTF/10/,NHKL/11/,NCIF/12/
+      DATA NOUTF/10/,NHKL/11/,NCIF/12/, NTEXT/13/
 
 #if defined(_GNUF77_)
       call no_stdout_buffer_()
@@ -31,12 +34,17 @@ C....... Call the CIFTBX code to INITialise read/WRITE units
 c
 c
       write(6,'(/a)')' Unified Version Feb 2011'
+      write(NTEXT,'(/a)')' Unified Version Feb 2011'
       write(6,'(a)')' Long input line version, May 2011'
+      write(NTEXT,'(a)')' Long input line version, May 2011'
 c
       write(6,'(a/)')' Get file and instrument from command line'
+      write(NTEXT,'(a/)')' Get file and instrument from command line'
       call inarg(carg1, carg2)
       write(6,'(a)') carg1
+      write(NTEXT,'(a)') carg1
       write(6,'(a)') carg2
+      write(NTEXT,'(a)') carg2
 
       if ( nctrim(carg1) .eq. 0 ) then
          write(6,'(a/)')' Usage: diffin <file> <instrument code letter>'
@@ -66,7 +74,7 @@ c       READ(5,'(A)') CTEMP
           GOTO 1
        ENDIF
        LDIFF = NCTRIM(CDIFF)
-C--    REMOVE FINAL SPACE
+
 C set default output filename - generalised to ease input
 	filename= 'from-cif'
         lfn=8
@@ -93,21 +101,26 @@ C
 C....... Open our files for writing
       OPEN (NOUTF,FILE=filename(1:lfn)//'.cry',STATUS='UNKNOWN')
       OPEN (NCIF,FILE=filename(1:lfn)//'.cif',STATUS='UNKNOWN')
+      OPEN (NTEXT,FILE=filename(1:lfn)//'.txt',STATUS='UNKNOWN')
 c
 c     get the name of the input file
       name = carg1
 c
 105   continue
-      WRITE (6,'(/2a/)') ' Read DATA from input Cif  ',NAME
+      WRITE(6,'(/2a/)') ' Read DATA from input Cif  ',NAME
+      WRITE(NTEXT,'(/2a/)') ' Read DATA from input Cif  ',NAME
       write(6,'(a/a)') ' Loading the ciftbx database.',
      1 ' This may take a while if there are a lot of reflections'
       write(6,'(//)')
       IF (.NOT.(OPEN_(NAME))) THEN
          WRITE (6,'(A,A,A///)') 'File ', Name, ' does not exist'
+         WRITE (NTEXT,'(A,A,A///)') 'File ', Name, ' does not exist'
          write(6,'(a)') 'Name of input cif file?'
+         write(NTEXT,'(a)') 'Name of input cif file?'
          read(5,'(a)') name
          if (name(1:4) .eq. 'quit') then
             write(6,*)'Quitting now'
+            write(NTEXT,*)'Quitting now'
             stop
          endif
          if (name .eq. ' ') NAME='XX.cif'

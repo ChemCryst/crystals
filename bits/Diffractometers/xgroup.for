@@ -6,6 +6,7 @@ C
       INTEGER DISPLAY_ID
       COMMON /REF/ JNDEX(3)
 cdjwjul2011
+      character *1 ctype                  !c/n for centrin/non-centric
       character *20 cutup, cutout
       character*4 bits(4)
       character *20 ccond(42), coper(42)
@@ -1098,6 +1099,7 @@ c
      1      (sumint(i,2) .le. 0.1*sumint(i,6)) )
      1      call operators(i,lo,lp)
 123     continue
+        write(lp,'(//a//)') 'See the file SPACE.OUT for more info'
 C 
 CJDS      open (itbl,file='dka0:[jd.space]space.tbl;1',status='unknown')
 CJDS      do 444 i = 1,306
@@ -1120,43 +1122,46 @@ cdjwmar-11  - only output if order is a b c
         cspace = ' '
           DO 1401 J=1,J1
             if(perm(ires_ip(f(j))) .eq. ' a b c' ) then
-CDJWAPR11 only write out text if there are any SG found
+CDJWAPR11 only write out text if there are any SG found. 
             WRITE(LP,*) ' '
-            write(lp,1450) csys(isp)
+cnot for triclinic            write(lp,1450) csys(isp)
             write(lp,1452)
             write(lp,1453)
-            write(lo,1450) csys(isp)
+c            write(lo,1450) csys(isp)
             write(lo,1452)
             write(lo,1453)
 CDJWAPR11 only write out text if there are any SG found
 1450  format     (/' For the ',a11,' system, possible space groups ',
-     1       'are as follows')
+     1       'are as follows:'/)
+
 1451  format(' If the SG is not a standard setting, you should',
      1       ' re-index the data')
+
 1452  format(/,' spacegr', 26x,'standard',4x ,'frequency of',7x,
      1       'possible')
+
 1453  format(' number setting cen axis choice   symbol',4x,
      1'  occurrence sigma',3x,'symbol')
+
 c
-             IF(ICEN(F(J)) .EQ. 1) THEN
-              WRITE(lo,3100)isg(F(J)),perm(IRES_IP(F(J))),'C'
+             if(icen(f(j)) .eq. 1) then
+                  ctype = 'C'
+             else
+                  ctype = 'N'
+             endif
+
+              WRITE(lo,3100)isg(F(J)),perm(IRES_IP(F(J))),ctype
      &,kaxis(F(J)),
      *                           ichoice(F(J)),sgfull(F(J)),FLOAT(J230
      &(F(J)))*.01,igs(IRES_IS(F(J)))
-              WRITE(lP,3100)isg(F(J)),perm(IRES_IP(F(J))),'C'
+              WRITE(lP,3100)isg(F(J)),perm(IRES_IP(F(J))),ctype
      &,kaxis(F(J)),
      *                           ichoice(F(J)),sgfull(F(J)),FLOAT(J230
      &(F(J)))*.01,igs(IRES_IS(F(J)))
-             ELSE
-              WRITE(lo,3100)isg(F(J)),perm(IRES_IP(F(J))),'N'
-     &,kaxis(F(J)),
-     *                           ichoice(F(J)),sgfull(F(J)),FLOAT(J230
-     &(F(J)))*.01,igs(IRES_IS(F(J)))
-               WRITE(lP,3100)isg(F(J)),perm(IRES_IP(F(J))),'N'
-     &,kaxis(F(J)),
-     *                           ichoice(F(J)),sgfull(F(J)),FLOAT(J230
-     &(F(J)))*.01,igs(IRES_IS(F(J)))
-             ENDIF
+c
+3100           FORMAT (2X,I4,3X,A6,2X,A1,4X,A1,3X,I2,5X,A16,1X,
+     1          F5.2,1X,I3,1X,A16)
+c
                IF(KKKK .EQ. 0) THEN
                   KKKK=1
                ENDIF
@@ -1458,6 +1463,7 @@ c set SG to nothing
 c      write(lp,1451)
       write(lp,1452)
       write(lp,1453)
+
       write(lo,1450) csys(isp)
       write(lo,1451)
       write(lo,1452)
@@ -1538,34 +1544,30 @@ C split symbol then re-assemble it usig ires_ip as key
              call xcrems(cutout,cutout,lcut)
              write(cutup,'(a)')cutout(1:lcut)
             endif
+c
+               if(icen(f(j)) .eq. 1) then
+                  ctype = 'C'
+               else
+                  ctype = 'N'
+               endif
+
+cdjwjan2012 - try to output only abc settings ^.
+                if(perm(ires_ip(f(j))) .eq. perm(1)) then
+                  WRITE(LP,3100) ISG(F(J)),PERM(IRES_IP(F(J))),
+     1             ctype,KAXIS(F(J)),ICHOICE(F(J)),SGFULL(F(J)),
+     2             FLOAT(J230(F(J)))*.01,IGS(IRES_IS(F(J)))
+     3             , CUTUP(1:LCUT)
+cdjwjan2012 Save first SG found
                if (idjws .eq. 0)then
-                 cspace = cutup(1:lcut)
+                 cspace = sgfull(f(j))
                  idjws = 1
                endif
-c
-               IF (ICEN(F(J)).EQ.1) THEN
-                  WRITE(LP,3100) ISG(F(J)),PERM(IRES_IP(F(J))),
-     1             'C',KAXIS(F(J)),ICHOICE(F(J)),SGFULL(F(J)),
-     2             FLOAT(J230(F(J)))*.01,IGS(IRES_IS(F(J)))
-     3             , CUTUP(1:LCUT)
+                endif
 
                   WRITE(LO,3100) ISG(F(J)),PERM(IRES_IP(F(J))),
-     1             'C',KAXIS(F(J)),ICHOICE(F(J)),SGFULL(F(J)),
+     1             ctype,KAXIS(F(J)),ICHOICE(F(J)),SGFULL(F(J)),
      2             FLOAT(J230(F(J)))*.01,IGS(IRES_IS(F(J)))
      3             , CUTUP(1:LCUT)
-               ELSE
-                  WRITE(LP,3100) ISG(F(J)),PERM(IRES_IP(F(J))),
-     1             'N',KAXIS(F(J)),ICHOICE(F(J)),SGFULL(F(J)),
-     2             FLOAT(J230(F(J)))*.01,IGS(IRES_IS(F(J)))
-     3             , CUTUP(1:LCUT)
-
-                  WRITE(LO,3100) ISG(F(J)),PERM(IRES_IP(F(J))),
-     1             'N',KAXIS(F(J)),ICHOICE(F(J)),SGFULL(F(J)),
-     2             FLOAT(J230(F(J)))*.01,IGS(IRES_IS(F(J)))
-     3             , CUTUP(1:LCUT)
-               END IF
-3100           FORMAT (2X,I4,3X,A6,2X,A1,4X,A1,3X,I2,5X,A16,1X,
-     1          F5.2,1X,I3,1X,A16)
 C
                IF (KKKK.EQ.0) THEN
                   KKKK=1
