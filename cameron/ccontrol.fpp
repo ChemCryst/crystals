@@ -1,6 +1,9 @@
 CRYSTALS CODE FOR CCONTROL.FOR
 
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2009/07/02 09:22:16  djw
+C Show error message on screen for unrecognised words
+C
 C Revision 1.22  2005/02/08 15:59:47  stefan
 C 1. Added precompiler if's for the mac source
 C
@@ -284,7 +287,7 @@ C NOW LOOP TO FIND THE FIRST AND LAST COMMANDS IN THE GROUP
 C SEARCH THROUGH THE FILE FOR THE REQUIRED INFO
       IS = (ISTART - ICOM + 1)/ISRCOM
       IF = (IFIN - ICOM + 1)/ISRCOM
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
       IF (.NOT.LFILES(-1,'SCRIPT\COMMAND.CMN',IINPT))THEN
 #else
       IF (.NOT.LFILES(-1,'script/command.cmn',IINPT))THEN
@@ -524,7 +527,7 @@ C      ENDIF
 200   CONTINUE
 C HELP
 C Load in the appropriate error message
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)&& !defined(_INW_)
       IF(.NOT.LFILES(-1,'SCRIPT\COMMAND.CMN',IINPT))THEN
 #else
       IF(.NOT.LFILES(-1,'script/command.cmn',IINPT))THEN
@@ -1392,7 +1395,7 @@ C by two 80 character lines of help and error message.
       LOGICAL LFILES
 C MAIN LOOP TO INPUT THE INDEX
 C      OPEN (UNIT = 1,FILE = 'ORDER.DAT',STATUS = 'OLD')
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)&& !defined(_INW_)
       IF(.NOT.LFILES(-1,'SCRIPT\ORDER.CMN',IINPT))THEN
 #else
       IF(.NOT.LFILES(-1,'script/order.cmn',IINPT))THEN
@@ -1413,7 +1416,7 @@ C cljf
       IF (.NOT.LFILES (0,' ',IINPT)) THEN
         CALL ZMORE('Error on closing ORDER.CMN.',0)
       ENDIF
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)&& !defined(_INW_)
       IF(.NOT.LFILES(-1,'SCRIPT\COMMAND.CMN',IINPT))THEN
 #else
       IF(.NOT.LFILES(-1,'script/command.cmn',IINPT))THEN
@@ -1882,7 +1885,7 @@ CODE FOR ZGNHLP [ READ GENERAL HELP FILE ]
       INTEGER IFLAG
       LOGICAL LFILES
       IFLAG = 1
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)&& !defined(_INW_)
       IF(.NOT.LFILES(-1,'SCRIPT\GENHELP.CMN',12))THEN
 #else
       IF(.NOT.LFILES(-1,'script/genhelp.cmn',12))THEN
@@ -2179,7 +2182,7 @@ CODE FOR ZCOLOT [ COLOUR TABLE INPUT ]
       INTEGER IPOS
       LOGICAL LSTOP,LFILES
 C CHECK FOR THE FILES EXISTENCE
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)&& !defined(_INW_)
       IF(.NOT.LFILES(-1,'SCRIPT\COLOUR.CMN',IINPT))THEN
 #else
       IF(.NOT.LFILES(-1,'script/colour.cmn',IINPT))THEN
@@ -2255,7 +2258,7 @@ C The file contains info about NELM elements.
       REAL COV,ION,VAN
       LOGICAL LFILES
 c      IF (.NOT.LFILES (-1,'script\PROP.CMN',IINPT)) THEN
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)&& !defined(_INW_)
       IF(.NOT.LFILES(-1,'SCRIPT\PROPWIN.DAT',IINPT))THEN
 #else
       IF(.NOT.LFILES(-1,'script/propwin.dat',IINPT))THEN
@@ -2399,7 +2402,7 @@ C FIRST TIME AROUND LOOK FOR HEADER
       ENDIF
 C LOAD IN THE HELP MESSAGE
 5     CONTINUE
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)&& !defined(_INW_)
       IF(.NOT.LFILES(-1,'SCRIPT\COMMAND.CMN',IINPT))THEN
 #else
       IF(.NOT.LFILES(-1,'script/command.cmn',IINPT))THEN
@@ -2596,12 +2599,14 @@ C READ IN THE COORDS ETC.
         CALL ZMORE(CLINE,0)
 11    FORMAT (I5, ' atoms loaded .')
       ENDIF
-      READ (IINPT,30,ERR=9999) ATOMNM,(COORDS(J),J=1,5)
+      READ (IINPT,30,ERR=9999) ATOMNM,RSEI,(COORDS(J),J=1,5)
+	  WRITE(ATOMNM(5:),'(I5)')NINT(RSEI)
+	  WRITE(144,'(A)') ATOMNM
       READ (IINPT,31,ERR=9999) (COORDS(J),J=6,11)
 cnov2000
       read (iinpt,32,err=9999) djwtmp(1),(idjwtmp(j),j=2,5)
 c      read (iinpt,32,err=9999) ( djwtmp(j),j=1,5 )
-30    FORMAT (5X,A9,7X,5F11.6)
+30    FORMAT (5X,A5,F11.0,5F11.6)
 31    FORMAT (10X,6F11.6)
 32    FORMAT (10X,F11.6,3I11,7X,A4)
 c ATOM C       1.000000   1.000000   0.000000  -0.227446   0.085452   0.065982
@@ -3265,7 +3270,7 @@ C     OUTPUT TWO ATOM LINES
 CNOV2000 OUTPUT 3 LINES
       WRITE (IFSTAR-1,110) CELM , RATNO , RSTORE(I+13) , FLAG ,
      1 RSTORE(I+1), RSTORE(I+2), RSTORE(I+3)
-110   FORMAT ( 'ATOM ',A2,3X,6F11.6)
+110   FORMAT ( 'ATOM ',A2,3X,F11.0,5F11.6)
       WRITE (IFSTAR-1,90) T1(1,1), T1(2,2) , T1(3,3) , T1 (2,3)
      1 , T1(1,3), T1(1,2)
 90    FORMAT ('CON U[11]=',6F11.6)
@@ -3740,7 +3745,7 @@ cnov98
         IFOBEY = IFOBEY + 1
       ENDIF
 CNOV98      IF (.NOT.LFILES (IFPATH,'CAMERON.OBY',IFOBEY)) THEN
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)&& !defined(_INW_)
       IF(.NOT.LFILES(IFPATH,'CAMERON.SRT',IFOBEY))THEN
 #else
       IF(.NOT.LFILES(IFPATH,'cameron.srt',IFOBEY))THEN
