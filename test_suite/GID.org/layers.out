@@ -306,7 +306,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  New scale factor (G) is    1.45602,    1133 reflections used in refinement
 
  Structure factor least squares calculation    1  ends  1
-SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.46 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.451   SumFoFc/SumFc^2=  1.456   SumwFoFc/SumwFc^2=  1.456                                                                                                                                                                                       
+LS-scale=  1.456   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.023    100*(<Fo>-<Fc>)/<Fo> =   -0.321                                                                                                                                                                                                         
 #LIST 4                                                                                                                                                                                                                                                         
 #WEIGHT                                                                                                                                                                                                                                                         
@@ -384,7 +385,8 @@ Refining    40 parameters in    1 block :      916 elements in the LS matrix.
  New scale factor (G) is    1.45602,    1133 reflections used in refinement
 
  Structure factor least squares calculation    2  ends  2
-SumFo/SumFc=  1.51 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.46 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.506   SumFoFc/SumFc^2=  1.456   SumwFoFc/SumwFc^2=  1.456                                                                                                                                                                                       
+LS-scale=  1.456   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.241    100*(<Fo>-<Fc>)/<Fo> =    3.306                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
@@ -631,7 +633,8 @@ Mean C-C su =   0.0242
  New scale factor (G) is    1.37464,    1133 reflections used in refinement
 
  Structure factor least squares calculation    3  ends  2
-SumFo/SumFc=  1.39 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.37 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.387   SumFoFc/SumFc^2=  1.455   SumwFoFc/SumwFc^2=  1.455                                                                                                                                                                                       
+LS-scale=  1.375   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.067    100*(<Fo>-<Fc>)/<Fo> =    0.872                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -873,7 +876,8 @@ Mean C-C su =   0.0111
  New scale factor (G) is    1.36894,    1133 reflections used in refinement
 
  Structure factor least squares calculation    4  ends  2
-SumFo/SumFc=  1.37 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.37 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.375   SumFoFc/SumFc^2=  1.456   SumwFoFc/SumwFc^2=  1.456                                                                                                                                                                                       
+LS-scale=  1.369   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.031    100*(<Fo>-<Fc>)/<Fo> =    0.406                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -1121,7 +1125,8 @@ Refining    51 parameters in    1 block :     1444 elements in the LS matrix.
  New scale factor (G) is    1.36938,    1133 reflections used in refinement
 
  Structure factor least squares calculation    5  ends  2
-SumFo/SumFc=  1.37 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.37 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.375   SumFoFc/SumFc^2=  1.456   SumwFoFc/SumwFc^2=  1.456                                                                                                                                                                                       
+LS-scale=  1.369   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.031    100*(<Fo>-<Fc>)/<Fo> =    0.402                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
@@ -1359,7 +1364,8 @@ Mean C-C su =   0.0110
  New scale factor (G) is    1.38024,    1133 reflections used in refinement
 
  Structure factor least squares calculation    6  ends  2
-SumFo/SumFc=  1.37 SumFoFc/SumFc^2=  1.45 SumwFoFc/SumwFc^2=  1.45 LS-scale=  1.38 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.369   SumFoFc/SumFc^2=  1.453   SumwFoFc/SumwFc^2=  1.453                                                                                                                                                                                       
+LS-scale=  1.380   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.062    100*(<Fo>-<Fc>)/<Fo> =   -0.809                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -1609,7 +1615,8 @@ Mean C-C su =   0.0103
  New scale factor (G) is    1.39810,    1133 reflections used in refinement
 
  Structure factor least squares calculation    7  ends  2
-SumFo/SumFc=  1.40 SumFoFc/SumFc^2=  1.47 SumwFoFc/SumwFc^2=  1.47 LS-scale=  1.40 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.399   SumFoFc/SumFc^2=  1.470   SumwFoFc/SumwFc^2=  1.470                                                                                                                                                                                       
+LS-scale=  1.398   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.003    100*(<Fo>-<Fc>)/<Fo> =    0.045                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -1846,7 +1853,8 @@ Mean C-C su =   0.0103
  New scale factor (G) is    1.39705,    1133 reflections used in refinement
 
  Structure factor least squares calculation    8  ends  2
-SumFo/SumFc=  1.40 SumFoFc/SumFc^2=  1.47 SumwFoFc/SumwFc^2=  1.47 LS-scale=  1.40 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.397   SumFoFc/SumFc^2=  1.470   SumwFoFc/SumwFc^2=  1.470                                                                                                                                                                                       
+LS-scale=  1.397   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.001    100*(<Fo>-<Fc>)/<Fo> =    0.014                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -2090,7 +2098,8 @@ Refining    74 parameters in    1 block :     2939 elements in the LS matrix.
  New scale factor (G) is    1.39745,    1133 reflections used in refinement
 
  Structure factor least squares calculation    9  ends  2
-SumFo/SumFc=  1.40 SumFoFc/SumFc^2=  1.47 SumwFoFc/SumwFc^2=  1.47 LS-scale=  1.40 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.398   SumFoFc/SumFc^2=  1.470   SumwFoFc/SumwFc^2=  1.470                                                                                                                                                                                       
+LS-scale=  1.397   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.001    100*(<Fo>-<Fc>)/<Fo> =    0.016                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
@@ -2360,7 +2369,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    1.64075,    1133 reflections used in refinement
 
  Structure factor least squares calculation   10  ends  2
-SumFo/SumFc=  1.63 SumFoFc/SumFc^2=  1.64 SumwFoFc/SumwFc^2=  1.64 LS-scale=  1.64 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.629   SumFoFc/SumFc^2=  1.636   SumwFoFc/SumwFc^2=  1.636                                                                                                                                                                                       
+LS-scale=  1.641   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.045    100*(<Fo>-<Fc>)/<Fo> =   -0.697                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -2894,7 +2904,8 @@ Bonds: Update required - List5 length change
      1133 reflections   R  8.28% Rw 12.30% with I/u(I) from List 28                                                                                                                                                                                             
      1133 reflections   R  8.28% Rw 12.30% with I/u(I) > -10.0                                                                                                                                                                                                  
      1018 reflections   R  7.34% Rw  9.98% with I/u(I) >   2.0                                                                                                                                                                                                  
-SumFo/SumFc=  1.93 SumFoFc/SumFc^2=  1.72 SumwFoFc/SumwFc^2=  1.72 LS-scale=  1.93 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.928   SumFoFc/SumFc^2=  1.723   SumwFoFc/SumwFc^2=  1.723                                                                                                                                                                                       
+LS-scale=  1.933   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.012    100*(<Fo>-<Fc>)/<Fo> =   -0.224                                                                                                                                                                                                         
 #DISTANCE                                                                                                                                                                                                                                                       
 #LIST 31                                                                                                                                                                                                                                                        
@@ -3144,7 +3155,8 @@ Refining    74 parameters in    1 block :     2939 elements in the LS matrix.
  New scale factor (G) is    1.93278,    1133 reflections used in refinement
 
  Structure factor least squares calculation   12  ends  2
-SumFo/SumFc=  1.93 SumFoFc/SumFc^2=  1.72 SumwFoFc/SumwFc^2=  1.72 LS-scale=  1.93 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.928   SumFoFc/SumFc^2=  1.723   SumwFoFc/SumwFc^2=  1.723                                                                                                                                                                                       
+LS-scale=  1.933   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.012    100*(<Fo>-<Fc>)/<Fo> =   -0.224                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
@@ -3418,7 +3430,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    1.09613,    1133 reflections used in refinement
 
  Structure factor least squares calculation   13  ends  2
-SumFo/SumFc=  1.30 SumFoFc/SumFc^2=  1.52 SumwFoFc/SumwFc^2=  1.52 LS-scale=  1.10 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.297   SumFoFc/SumFc^2=  1.519   SumwFoFc/SumwFc^2=  1.519                                                                                                                                                                                       
+LS-scale=  1.096   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    1.501    100*(<Fo>-<Fc>)/<Fo> =   15.505                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -3901,7 +3914,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  New scale factor (G) is    1.45601,    1133 reflections used in refinement
 
  Structure factor least squares calculation    1  ends  1
-SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.46 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.451   SumFoFc/SumFc^2=  1.456   SumwFoFc/SumwFc^2=  1.456                                                                                                                                                                                       
+LS-scale=  1.456   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.023    100*(<Fo>-<Fc>)/<Fo> =   -0.322                                                                                                                                                                                                         
 #LIST 4                                                                                                                                                                                                                                                         
 #WEIGHT                                                                                                                                                                                                                                                         
@@ -3979,7 +3993,8 @@ Refining    40 parameters in    1 block :      916 elements in the LS matrix.
  New scale factor (G) is    1.45601,    1133 reflections used in refinement
 
  Structure factor least squares calculation    2  ends  2
-SumFo/SumFc=  1.51 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.46 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.506   SumFoFc/SumFc^2=  1.456   SumwFoFc/SumwFc^2=  1.456                                                                                                                                                                                       
+LS-scale=  1.456   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.241    100*(<Fo>-<Fc>)/<Fo> =    3.305                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
@@ -4226,7 +4241,8 @@ Mean C-C su =   0.0242
  New scale factor (G) is    1.37462,    1133 reflections used in refinement
 
  Structure factor least squares calculation    3  ends  2
-SumFo/SumFc=  1.39 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.37 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.387   SumFoFc/SumFc^2=  1.455   SumwFoFc/SumwFc^2=  1.455                                                                                                                                                                                       
+LS-scale=  1.375   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.067    100*(<Fo>-<Fc>)/<Fo> =    0.872                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -4468,7 +4484,8 @@ Mean C-C su =   0.0111
  New scale factor (G) is    1.36892,    1133 reflections used in refinement
 
  Structure factor least squares calculation    4  ends  2
-SumFo/SumFc=  1.37 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.37 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.374   SumFoFc/SumFc^2=  1.456   SumwFoFc/SumwFc^2=  1.456                                                                                                                                                                                       
+LS-scale=  1.369   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.031    100*(<Fo>-<Fc>)/<Fo> =    0.405                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -4716,7 +4733,8 @@ Refining    51 parameters in    1 block :     1444 elements in the LS matrix.
  New scale factor (G) is    1.36936,    1133 reflections used in refinement
 
  Structure factor least squares calculation    5  ends  2
-SumFo/SumFc=  1.37 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.46 LS-scale=  1.37 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.375   SumFoFc/SumFc^2=  1.456   SumwFoFc/SumwFc^2=  1.456                                                                                                                                                                                       
+LS-scale=  1.369   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.031    100*(<Fo>-<Fc>)/<Fo> =    0.401                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
@@ -4954,7 +4972,8 @@ Mean C-C su =   0.0110
  New scale factor (G) is    1.38023,    1133 reflections used in refinement
 
  Structure factor least squares calculation    6  ends  2
-SumFo/SumFc=  1.37 SumFoFc/SumFc^2=  1.45 SumwFoFc/SumwFc^2=  1.45 LS-scale=  1.38 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.369   SumFoFc/SumFc^2=  1.453   SumwFoFc/SumwFc^2=  1.453                                                                                                                                                                                       
+LS-scale=  1.380   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.062    100*(<Fo>-<Fc>)/<Fo> =   -0.809                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -5204,7 +5223,8 @@ Mean C-C su =   0.0103
  New scale factor (G) is    1.39809,    1133 reflections used in refinement
 
  Structure factor least squares calculation    7  ends  2
-SumFo/SumFc=  1.40 SumFoFc/SumFc^2=  1.47 SumwFoFc/SumwFc^2=  1.47 LS-scale=  1.40 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.399   SumFoFc/SumFc^2=  1.470   SumwFoFc/SumwFc^2=  1.470                                                                                                                                                                                       
+LS-scale=  1.398   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.003    100*(<Fo>-<Fc>)/<Fo> =    0.044                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -5442,7 +5462,8 @@ Mean C-C su =   0.0103
  New scale factor (G) is    1.39705,    1133 reflections used in refinement
 
  Structure factor least squares calculation    8  ends  2
-SumFo/SumFc=  1.40 SumFoFc/SumFc^2=  1.47 SumwFoFc/SumwFc^2=  1.47 LS-scale=  1.40 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.397   SumFoFc/SumFc^2=  1.470   SumwFoFc/SumwFc^2=  1.470                                                                                                                                                                                       
+LS-scale=  1.397   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.001    100*(<Fo>-<Fc>)/<Fo> =    0.013                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -5681,7 +5702,8 @@ Refining    74 parameters in    1 block :     2939 elements in the LS matrix.
  New scale factor (G) is    1.39744,    1133 reflections used in refinement
 
  Structure factor least squares calculation    9  ends  2
-SumFo/SumFc=  1.40 SumFoFc/SumFc^2=  1.47 SumwFoFc/SumwFc^2=  1.47 LS-scale=  1.40 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.398   SumFoFc/SumFc^2=  1.470   SumwFoFc/SumwFc^2=  1.470                                                                                                                                                                                       
+LS-scale=  1.397   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.001    100*(<Fo>-<Fc>)/<Fo> =    0.015                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
@@ -5951,7 +5973,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    1.64091,    1133 reflections used in refinement
 
  Structure factor least squares calculation   10  ends  2
-SumFo/SumFc=  1.63 SumFoFc/SumFc^2=  1.64 SumwFoFc/SumwFc^2=  1.64 LS-scale=  1.64 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.630   SumFoFc/SumFc^2=  1.636   SumwFoFc/SumwFc^2=  1.636                                                                                                                                                                                       
+LS-scale=  1.641   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.045    100*(<Fo>-<Fc>)/<Fo> =   -0.695                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -6485,7 +6508,8 @@ Bonds: Update required - List5 length change
      1133 reflections   R  8.28% Rw 12.31% with I/u(I) from List 28                                                                                                                                                                                             
      1133 reflections   R  8.28% Rw 12.31% with I/u(I) > -10.0                                                                                                                                                                                                  
      1018 reflections   R  7.34% Rw  9.98% with I/u(I) >   2.0                                                                                                                                                                                                  
-SumFo/SumFc=  1.93 SumFoFc/SumFc^2=  1.72 SumwFoFc/SumwFc^2=  1.72 LS-scale=  1.93 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.929   SumFoFc/SumFc^2=  1.723   SumwFoFc/SumwFc^2=  1.723                                                                                                                                                                                       
+LS-scale=  1.933   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.012    100*(<Fo>-<Fc>)/<Fo> =   -0.226                                                                                                                                                                                                         
 #DISTANCE                                                                                                                                                                                                                                                       
 
@@ -6733,7 +6757,8 @@ Refining    74 parameters in    1 block :     2939 elements in the LS matrix.
  New scale factor (G) is    1.93289,    1133 reflections used in refinement
 
  Structure factor least squares calculation   12  ends  2
-SumFo/SumFc=  1.93 SumFoFc/SumFc^2=  1.72 SumwFoFc/SumwFc^2=  1.72 LS-scale=  1.93 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.929   SumFoFc/SumFc^2=  1.723   SumwFoFc/SumwFc^2=  1.723                                                                                                                                                                                       
+LS-scale=  1.933   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.012    100*(<Fo>-<Fc>)/<Fo> =   -0.226                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
@@ -7007,7 +7032,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    1.09648,    1133 reflections used in refinement
 
  Structure factor least squares calculation   13  ends  2
-SumFo/SumFc=  1.30 SumFoFc/SumFc^2=  1.52 SumwFoFc/SumwFc^2=  1.52 LS-scale=  1.10 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.297   SumFoFc/SumFc^2=  1.519   SumwFoFc/SumwFc^2=  1.519                                                                                                                                                                                       
+LS-scale=  1.096   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    1.499    100*(<Fo>-<Fc>)/<Fo> =   15.493                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -7490,7 +7516,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  New scale factor (G) is    1.01023,    1133 reflections used in refinement
 
  Structure factor least squares calculation    1  ends  1
-SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.32 LS-scale=  1.01 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.451   SumFoFc/SumFc^2=  1.456   SumwFoFc/SumwFc^2=  1.323                                                                                                                                                                                       
+LS-scale=  1.010   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    3.192    100*(<Fo>-<Fc>)/<Fo> =   30.394                                                                                                                                                                                                         
 #LIST 4                                                                                                                                                                                                                                                         
 #WEIGHT                                                                                                                                                                                                                                                         
@@ -7568,7 +7595,8 @@ Refining    40 parameters in    1 block :      916 elements in the LS matrix.
  New scale factor (G) is    1.01023,    1133 reflections used in refinement
 
  Structure factor least squares calculation    2  ends  2
-SumFo/SumFc=  1.51 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.39 LS-scale=  1.01 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.506   SumFoFc/SumFc^2=  1.456   SumwFoFc/SumwFc^2=  1.392                                                                                                                                                                                       
+LS-scale=  1.010   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    3.456    100*(<Fo>-<Fc>)/<Fo> =   32.911                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
@@ -7817,7 +7845,8 @@ Mean C-C su =   0.0321
  New scale factor (G) is    1.44302,    1133 reflections used in refinement
 
  Structure factor least squares calculation    3  ends  2
-SumFo/SumFc=  1.28 SumFoFc/SumFc^2=  1.45 SumwFoFc/SumwFc^2=  1.39 LS-scale=  1.44 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.283   SumFoFc/SumFc^2=  1.453   SumwFoFc/SumwFc^2=  1.392                                                                                                                                                                                       
+LS-scale=  1.443   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.917    100*(<Fo>-<Fc>)/<Fo> =  -12.468                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -8070,7 +8099,8 @@ Refining    51 parameters in    1 block :     1444 elements in the LS matrix.
  New scale factor (G) is    1.47276,    1133 reflections used in refinement
 
  Structure factor least squares calculation    4  ends  2
-SumFo/SumFc=  1.41 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.39 LS-scale=  1.47 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.407   SumFoFc/SumFc^2=  1.455   SumwFoFc/SumwFc^2=  1.393                                                                                                                                                                                       
+LS-scale=  1.473   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.335    100*(<Fo>-<Fc>)/<Fo> =   -4.644                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
@@ -8325,7 +8355,8 @@ Mean C-C su =   0.0110
  New scale factor (G) is    1.30878,    1133 reflections used in refinement
 
  Structure factor least squares calculation    5  ends  2
-SumFo/SumFc=  1.34 SumFoFc/SumFc^2=  1.44 SumwFoFc/SumwFc^2=  1.37 LS-scale=  1.31 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.343   SumFoFc/SumFc^2=  1.436   SumwFoFc/SumwFc^2=  1.367                                                                                                                                                                                       
+LS-scale=  1.309   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.206    100*(<Fo>-<Fc>)/<Fo> =    2.538                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -8577,7 +8608,8 @@ Mean C-C su =   0.0102
  New scale factor (G) is    1.34034,    1133 reflections used in refinement
 
  Structure factor least squares calculation    6  ends  2
-SumFo/SumFc=  1.38 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.41 LS-scale=  1.34 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.382   SumFoFc/SumFc^2=  1.462   SumwFoFc/SumwFc^2=  1.407                                                                                                                                                                                       
+LS-scale=  1.340   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.236    100*(<Fo>-<Fc>)/<Fo> =    2.986                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -8809,7 +8841,8 @@ Mean C-C su =   0.0102
  New scale factor (G) is    1.34069,    1133 reflections used in refinement
 
  Structure factor least squares calculation    7  ends  2
-SumFo/SumFc=  1.38 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.41 LS-scale=  1.34 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.381   SumFoFc/SumFc^2=  1.461   SumwFoFc/SumwFc^2=  1.406                                                                                                                                                                                       
+LS-scale=  1.341   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.228    100*(<Fo>-<Fc>)/<Fo> =    2.886                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -9056,7 +9089,8 @@ Refining    74 parameters in    1 block :     2939 elements in the LS matrix.
  New scale factor (G) is    1.34217,    1133 reflections used in refinement
 
  Structure factor least squares calculation    8  ends  2
-SumFo/SumFc=  1.38 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.41 LS-scale=  1.34 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.382   SumFoFc/SumFc^2=  1.462   SumwFoFc/SumwFc^2=  1.407                                                                                                                                                                                       
+LS-scale=  1.342   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.229    100*(<Fo>-<Fc>)/<Fo> =    2.899                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
@@ -9329,7 +9363,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    1.57812,    1133 reflections used in refinement
 
  Structure factor least squares calculation    9  ends  2
-SumFo/SumFc=  1.60 SumFoFc/SumFc^2=  1.61 SumwFoFc/SumwFc^2=  1.58 LS-scale=  1.58 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.600   SumFoFc/SumFc^2=  1.613   SumwFoFc/SumwFc^2=  1.576                                                                                                                                                                                       
+LS-scale=  1.578   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.094    100*(<Fo>-<Fc>)/<Fo> =    1.393                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -9870,7 +9905,8 @@ Bonds: Update required - List5 length change
      1133 reflections   R  9.56% Rw 21.94% with I/u(I) from List 28                                                                                                                                                                                             
      1133 reflections   R  9.56% Rw 21.94% with I/u(I) > -10.0                                                                                                                                                                                                  
      1018 reflections   R  8.68% Rw 19.80% with I/u(I) >   2.0                                                                                                                                                                                                  
-SumFo/SumFc=  1.96 SumFoFc/SumFc^2=  1.71 SumwFoFc/SumwFc^2=  1.74 LS-scale=  1.89 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.965   SumFoFc/SumFc^2=  1.714   SumwFoFc/SumwFc^2=  1.737                                                                                                                                                                                       
+LS-scale=  1.895   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.199    100*(<Fo>-<Fc>)/<Fo> =    3.555                                                                                                                                                                                                         
 #DISTANCE                                                                                                                                                                                                                                                       
 
@@ -10118,7 +10154,8 @@ Refining    74 parameters in    1 block :     2939 elements in the LS matrix.
  New scale factor (G) is    1.89485,    1133 reflections used in refinement
 
  Structure factor least squares calculation   11  ends  2
-SumFo/SumFc=  1.96 SumFoFc/SumFc^2=  1.71 SumwFoFc/SumwFc^2=  1.74 LS-scale=  1.89 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.965   SumFoFc/SumFc^2=  1.714   SumwFoFc/SumwFc^2=  1.737                                                                                                                                                                                       
+LS-scale=  1.895   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.199    100*(<Fo>-<Fc>)/<Fo> =    3.555                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
@@ -10393,7 +10430,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.70654,    1133 reflections used in refinement
 
  Structure factor least squares calculation   12  ends  2
-SumFo/SumFc=  1.29 SumFoFc/SumFc^2=  1.51 SumwFoFc/SumwFc^2=  1.41 LS-scale=  0.71 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.291   SumFoFc/SumFc^2=  1.508   SumwFoFc/SumwFc^2=  1.409                                                                                                                                                                                       
+LS-scale=  0.707   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    6.796    100*(<Fo>-<Fc>)/<Fo> =   45.264                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -10888,7 +10926,8 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  New scale factor (G) is    1.01023,    1133 reflections used in refinement
 
  Structure factor least squares calculation    1  ends  1
-SumFo/SumFc=  1.45 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.32 LS-scale=  1.01 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.451   SumFoFc/SumFc^2=  1.456   SumwFoFc/SumwFc^2=  1.323                                                                                                                                                                                       
+LS-scale=  1.010   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    3.192    100*(<Fo>-<Fc>)/<Fo> =   30.394                                                                                                                                                                                                         
 #LIST 4                                                                                                                                                                                                                                                         
 #WEIGHT                                                                                                                                                                                                                                                         
@@ -10966,7 +11005,8 @@ Refining    40 parameters in    1 block :      916 elements in the LS matrix.
  New scale factor (G) is    1.01023,    1133 reflections used in refinement
 
  Structure factor least squares calculation    2  ends  2
-SumFo/SumFc=  1.51 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.39 LS-scale=  1.01 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.506   SumFoFc/SumFc^2=  1.456   SumwFoFc/SumwFc^2=  1.392                                                                                                                                                                                       
+LS-scale=  1.010   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    3.456    100*(<Fo>-<Fc>)/<Fo> =   32.910                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
@@ -11215,7 +11255,8 @@ Mean C-C su =   0.0321
  New scale factor (G) is    1.44301,    1133 reflections used in refinement
 
  Structure factor least squares calculation    3  ends  2
-SumFo/SumFc=  1.28 SumFoFc/SumFc^2=  1.45 SumwFoFc/SumwFc^2=  1.39 LS-scale=  1.44 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.283   SumFoFc/SumFc^2=  1.453   SumwFoFc/SumwFc^2=  1.392                                                                                                                                                                                       
+LS-scale=  1.443   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.917    100*(<Fo>-<Fc>)/<Fo> =  -12.467                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -11468,7 +11509,8 @@ Refining    51 parameters in    1 block :     1444 elements in the LS matrix.
  New scale factor (G) is    1.47275,    1133 reflections used in refinement
 
  Structure factor least squares calculation    4  ends  2
-SumFo/SumFc=  1.41 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.39 LS-scale=  1.47 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.407   SumFoFc/SumFc^2=  1.455   SumwFoFc/SumwFc^2=  1.393                                                                                                                                                                                       
+LS-scale=  1.473   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.335    100*(<Fo>-<Fc>)/<Fo> =   -4.645                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
@@ -11723,7 +11765,8 @@ Mean C-C su =   0.0110
  New scale factor (G) is    1.30876,    1133 reflections used in refinement
 
  Structure factor least squares calculation    5  ends  2
-SumFo/SumFc=  1.34 SumFoFc/SumFc^2=  1.44 SumwFoFc/SumwFc^2=  1.37 LS-scale=  1.31 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.343   SumFoFc/SumFc^2=  1.436   SumwFoFc/SumwFc^2=  1.367                                                                                                                                                                                       
+LS-scale=  1.309   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.206    100*(<Fo>-<Fc>)/<Fo> =    2.538                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -11975,7 +12018,8 @@ Mean C-C su =   0.0102
  New scale factor (G) is    1.34033,    1133 reflections used in refinement
 
  Structure factor least squares calculation    6  ends  2
-SumFo/SumFc=  1.38 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.41 LS-scale=  1.34 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.382   SumFoFc/SumFc^2=  1.462   SumwFoFc/SumwFc^2=  1.407                                                                                                                                                                                       
+LS-scale=  1.340   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.236    100*(<Fo>-<Fc>)/<Fo> =    2.986                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -12207,7 +12251,8 @@ Mean C-C su =   0.0103
  New scale factor (G) is    1.34068,    1133 reflections used in refinement
 
  Structure factor least squares calculation    7  ends  2
-SumFo/SumFc=  1.38 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.41 LS-scale=  1.34 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.381   SumFoFc/SumFc^2=  1.461   SumwFoFc/SumwFc^2=  1.406                                                                                                                                                                                       
+LS-scale=  1.341   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.228    100*(<Fo>-<Fc>)/<Fo> =    2.886                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -12454,7 +12499,8 @@ Refining    74 parameters in    1 block :     2939 elements in the LS matrix.
  New scale factor (G) is    1.34216,    1133 reflections used in refinement
 
  Structure factor least squares calculation    8  ends  2
-SumFo/SumFc=  1.38 SumFoFc/SumFc^2=  1.46 SumwFoFc/SumwFc^2=  1.41 LS-scale=  1.34 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.382   SumFoFc/SumFc^2=  1.462   SumwFoFc/SumwFc^2=  1.407                                                                                                                                                                                       
+LS-scale=  1.342   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.229    100*(<Fo>-<Fc>)/<Fo> =    2.899                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
@@ -12727,7 +12773,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    1.57833,    1133 reflections used in refinement
 
  Structure factor least squares calculation    9  ends  2
-SumFo/SumFc=  1.60 SumFoFc/SumFc^2=  1.61 SumwFoFc/SumwFc^2=  1.58 LS-scale=  1.58 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.601   SumFoFc/SumFc^2=  1.613   SumwFoFc/SumwFc^2=  1.576                                                                                                                                                                                       
+LS-scale=  1.578   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.094    100*(<Fo>-<Fc>)/<Fo> =    1.398                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
@@ -13268,7 +13315,8 @@ Bonds: Update required - List5 length change
      1133 reflections   R  9.56% Rw 21.94% with I/u(I) from List 28                                                                                                                                                                                             
      1133 reflections   R  9.56% Rw 21.94% with I/u(I) > -10.0                                                                                                                                                                                                  
      1018 reflections   R  8.68% Rw 19.80% with I/u(I) >   2.0                                                                                                                                                                                                  
-SumFo/SumFc=  1.96 SumFoFc/SumFc^2=  1.71 SumwFoFc/SumwFc^2=  1.74 LS-scale=  1.90 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.965   SumFoFc/SumFc^2=  1.714   SumwFoFc/SumwFc^2=  1.737                                                                                                                                                                                       
+LS-scale=  1.895   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.199    100*(<Fo>-<Fc>)/<Fo> =    3.555                                                                                                                                                                                                         
 #DISTANCE                                                                                                                                                                                                                                                       
 
@@ -13516,7 +13564,8 @@ Refining    74 parameters in    1 block :     2939 elements in the LS matrix.
  New scale factor (G) is    1.89513,    1133 reflections used in refinement
 
  Structure factor least squares calculation   11  ends  2
-SumFo/SumFc=  1.96 SumFoFc/SumFc^2=  1.71 SumwFoFc/SumwFc^2=  1.74 LS-scale=  1.90 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.965   SumFoFc/SumFc^2=  1.714   SumwFoFc/SumwFc^2=  1.737                                                                                                                                                                                       
+LS-scale=  1.895   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.199    100*(<Fo>-<Fc>)/<Fo> =    3.555                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
@@ -13791,7 +13840,8 @@ Mean C-C su =   0.0000
  New scale factor (G) is    0.70827,    1133 reflections used in refinement
 
  Structure factor least squares calculation   12  ends  2
-SumFo/SumFc=  1.29 SumFoFc/SumFc^2=  1.51 SumwFoFc/SumwFc^2=  1.41 LS-scale=  0.71 Wilson Scale=  0.00                                                                                                                                                          
+SumFo/SumFc=  1.291   SumFoFc/SumFc^2=  1.509   SumwFoFc/SumwFc^2=  1.409                                                                                                                                                                                       
+LS-scale=  0.708   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    6.763    100*(<Fo>-<Fc>)/<Fo> =   45.152                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
