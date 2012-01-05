@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.186  2011/11/18 10:37:47  djw
+C make crystal class and solution method all-lower case, correct keywords for hydrogen tratment
+C
 C Revision 1.185  2011/11/03 09:20:59  rich
 C Extend output format statements.
 C
@@ -1732,7 +1735,8 @@ C--OUTPUT THE TYPE AND SERIAL NUMBER
 C-C-C-OUTPUT THE FLAG OF ATOM
 cnov98      CALL SNUM(STORE(M5+3),0.0,1,0,10,LINEA)
 C--UPDATE THE CURRENT POSITION FLAG
-        J=IFIR+NSTA
+        J=MAX(J+1,IFIR+NSTA) ! Don't overwrite big numbers.
+c        J=IFIR+NSTA
 C--RIC01 Add in atom_site_type_symbol
         IF (IPCHCO .EQ. 2) CALL SA41(J,ISTORE(M5),LINEA)
 C--SET UP THE FLAGS FOR THE PASS OVER THE COORDS.
@@ -1750,6 +1754,7 @@ C Check if riding H ESD to be omitted
 C
           LOJ = J+6
           J=J+NXF
+          WRITE(133,*)NXF
           CALL SNUM(STORE(MP),BPD(MPD),NXD,NOP,J,LINEA)
           IF (IPCHCO .EQ. 3) THEN  
 #if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
@@ -2135,7 +2140,8 @@ C
       CALL SA41(J,ISTORE(M5),LINEA)
       IND=NINT(STORE(M5+1))
       CALL SUBZED(J,IND,LINEA, IPCHAN)
-      J=IFIR+NSTA
+c      J=IFIR+NSTA
+      J=MAX(J+1,IFIR+NSTA) ! Don't overwrite big numbers.
 
       IF (IPCHCO .EQ. 3) THEN  
           WRITE(CHTML,'(A4,I6)') ISTORE(M5),NINT(STORE(M5+1))
@@ -4343,7 +4349,7 @@ C----- REMOVE TRAILING SPACE
         CLINE(J:J+N-1) = CBUF(1:N)
         J = J + N
 C----- ATOM NUMBER
-        WRITE(CBUF, '(I4)') NINT(STORE(JPUB+1))
+        WRITE(CBUF, '(I7)') NINT(STORE(JPUB+1))
         CALL XCRAS( CBUF, N)
         CLINE(J:J+N-1) = CBUF(1:N)
         J = J+N+1
