@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  2012/01/03 14:24:18  rich
+C Allow longer filenames and filenames with spaces in.
+C
 C Revision 1.14  2011/09/22 19:49:34  rich
 C Some fixes to make this compile with gfortran and align a common block.
 C
@@ -26,12 +29,14 @@ c #include "ciftbx.sys"
 #include "cifin.cmn"
       LOGICAL F2,F3,F4,F5
       LOGICAL FC,FV,FN,FF,FT,FW,FZ,FSG,FMON,FABS,FSIZ,FTEMP,FCOL
+      LOGICAL FINFO, FDMDT, FDMD, FDMM
       logical lnum, lchar
 
       CHARACTER*16 CSPACE,CNONSP,CTEMP,CSHAPE
       CHARACTER*26 ALPHA
       CHARACTER*32 C32, ENAME,CCOL 
-      CHARACTER*80 C80, CMONO
+      CHARACTER*80 C80
+      CHARACTER*80 CMONO,CDMDT,CDMD,CDMM
 
       CHARACTER*(linlen) LINE
       CHARACTER*(linlen) SLINE
@@ -55,18 +60,49 @@ C
       EQUIVALENCE (RES,IRES)
 
 C 
+C---- INDICATE NO INFO YET FOUD
+      FINFO=.false.
+      FC=.false.
+      FV=.false.
+      FN=.false.
+      FF=.false.
+      FT=.false.
+      FW=.false.
+      FZ=.false.
+      FSG=.false.
+      FMON=.false.
+      FABS=.false.
+      FSIZ=.false.
+      FTEMP=.false.
+      FCOL=.false.
+      FDMDT=.false.
+      FDMD=.false.
+      FDMM=.false.
+
+
 C....... Assign the DATA block to be accessed
 C 
 50    IF (.NOT.(DATA_(' '))) THEN
          write(6,'(/a/)') 'No DATA_ statement found'
-         GO TO 1050
+         write(NTEXT,'(/a/)') 'No DATA_ statement found'
+         IF (FINFO .EQ. .FALSE.) THEN
+            GOTO 1050
+         ELSE
+            GOTO 5678
+         ENDIF
       END IF
 C 
       write(6,'(/a,a/)') ' Accessing items in DATA block  ',BLOC_
+      write(NTEXT,'(/a,a/)') ' Accessing items in DATA block  ',BLOC_
 C 
+
+      FINFO = .TRUE.
 C
 C----- get experiment name
-      FN=CHAR_('_chemical_name_common',ENAME)
+      f1=CHAR_('_chemical_name_common',c80)
+      if(f1) then
+       FN=CHAR_('_chemical_name_common',ENAME)
+      endif
 c
       if (.not. fn) then
             ename=name
@@ -79,29 +115,42 @@ C----- WRITE OPTIONAL GOODIES TO TEXT FILE
      1                          ENAME(1:NCTRIM(ENAME))
       WRITE (NCIF,1234) '# On ',CDATE(1:NCTRIM(CDATE))
 
-      F1=CHAR_('_diffrn_measurement_device_type',C80)
-      IF (F1) WRITE (NCIF,1234) '_diffrn_measurement_device_type ',
-     1 C80(1:NCTRIM(C80))
+      f1=CHAR_('_diffrn_measurement_device_type',c80)
+      if (f1) then
+       FDMDT=CHAR_('_diffrn_measurement_device_type',CDMDT)
+       IF (FDMDT) WRITE (NCIF,1234) '_diffrn_measurement_device_type ',
+     1 CDMDT(1:nctrim(cdmdt))
+      endif
 
-      F1=CHAR_('_diffrn_measurement_device',C80)
-      IF (F1) WRITE (NCIF,1234) '_diffrn_measurement_device ',
-     1   C80(1:NCTRIM(C80))
+
+      F1=CHAR_('_diffrn_measurement_device',c80)
+      if (f1) then
+       FDMD=CHAR_('_diffrn_measurement_device',CDMD)
+       IF (FDMD) WRITE (NCIF,1234) '_diffrn_measurement_device ',
+     1   CDMD(1:NCTRIM(CDMD))
+      endif
 
       F1=CHAR_('_diffrn_detector_area_resol_mean',C80)
       IF (F1) WRITE (NCIF,1234) '_diffrn_detector_area_resol_mean ',
      1 C80(1:NCTRIM(C80))
 
-      FMON=CHAR_('_diffrn_radiation_monochromator',CMONO)
-      IF (FMON) WRITE (NCIF,1234) '_diffrn_radiation_monochromator ',
-     1 CMONO(1:NCTRIM(C80))
+      F1=CHAR_('_diffrn_radiation_monochromator',C80)
+      if(f1) then
+       FMON=CHAR_('_diffrn_radiation_monochromator',CMONO)
+       IF (FMON) WRITE (NCIF,1234) '_diffrn_radiation_monochromator ',
+     1 CMONO(1:NCTRIM(CMONO))
+      endif
 
       F1=CHAR_('_computing_data_collection',C80)
       IF (F1) WRITE (NCIF,1234) '_computing_data_collection ',
      1 C80(1:NCTRIM(C80))
 
       F1=CHAR_('_diffrn_measurement_method',C80)
-      IF (F1) WRITE (NCIF,1234) '_diffrn_measurement_method ',
-     1 C80(1:NCTRIM(C80))
+      if (f1) then
+       FDMM=CHAR_('_diffrn_measurement_method',CDMM)
+       IF (FDMM) WRITE (NCIF,1234) '_diffrn_measurement_method ',
+     1 CDMM(1:NCTRIM(DCMM))
+      endif
 
       F1=CHAR_('_diffrn_orient_matrix_type',C80)
       IF (F1) WRITE (NCIF,1234) '_diffrn_orient_matrix_type ',
@@ -117,74 +166,100 @@ C----- WRITE OPTIONAL GOODIES TO TEXT FILE
 C 
 C....... Read in Z
 c
-      FZ = NUMB_('_cell_formula_units_Z',zp,DUM)
+      F1 = NUMB_('_cell_formula_units_Z',adum,DUM)
+      if (f1) then
+       FZ = NUMB_('_cell_formula_units_Z',zp,DUM)
+      endif
       IF (.NOT. (FZ)) ZP=0.
 C 
 C....... Read in cell DATA and esds
 C 
-      FC=NUMB_('_cell_length_a',CELA,SIGA)
-      FC=(NUMB_('_cell_length_b',CELB,SIGB)).AND.(FC)
-      FC=(NUMB_('_cell_length_c',CELC,SIGC)).AND.(FC)
-      FC=(NUMB_('_cell_angle_alpha',CELALP,SIGALP)).AND.(FC)
-      FC=(NUMB_('_cell_angle_beta',CELBET,SIGBET)).AND.(FC)
-      FC=(NUMB_('_cell_angle_gamma',CELGAM,SIGGAM)).AND.(FC)
+
+      F1=NUMB_('_cell_length_a',adum,dum)
+      if (f1) then
+       FC=NUMB_('_cell_length_a',CELA,SIGA)
+       FC=(NUMB_('_cell_length_b',CELB,SIGB)).AND.(FC)
+       FC=(NUMB_('_cell_length_c',CELC,SIGC)).AND.(FC)
+       FC=(NUMB_('_cell_angle_alpha',CELALP,SIGALP)).AND.(FC)
+       FC=(NUMB_('_cell_angle_beta',CELBET,SIGBET)).AND.(FC)
+       FC=(NUMB_('_cell_angle_gamma',CELGAM,SIGGAM)).AND.(FC)
+       if (fc) then
+cdjw - evade spurious significance possibly introduced by MAKECIF
+        siga = .0001*max(1,nint(10000*siga))
+        sigb = .0001*max(1,nint(10000*sigb))
+        sigc = .0001*max(1,nint(10000*sigc))
+        write(6,'(/a,6F10.4)') ' Cell ',CELA,CELB,CELC,CELALP,CELBET,
+     1  CELGAM
+        write(6,'(a,6F10.4/)') '      ',SIGA,SIGB,SIGC,SIGALP,SIGBET,
+     1  SIGGAM
+       endif
+      endif
 C 
       IF (.NOT.(FC)) THEN
          write(6,'(a)') 'No cell DATA in this block.'
-         write(6,'(a)') 'Trying next block.'
-         GO TO 50
+         write(NTEXT,'(a)') 'No cell DATA in this block.'
       ELSE
          write(6,'(A)') 'Cell Data Found'
+         write(NTEXT,'(A)') 'Cell Data Found'
       END IF
 c
 C----- GET VOLUME
-      CELVOL = 0.0
-      FV=NUMB_('_cell_volume',CELVOL,SIGVOL)
-      if (celvol .le. 1.) then
+      F1=NUMB_('_cell_volume',adum,dum)
+      if(f1) then
+       FV=NUMB_('_cell_volume',CELVOL,SIGVOL)
+      endif
+       if ((celvol .le. 1.) .and. (fc)) then
 c       get a rough volume
-        cosa = cos(celalp*3.1419/180.)
-        cosb = cos(celbet*3.1419/180.)
-        cosc = cos(celgam*3.1419/180.)
-        celvol = 1-cosa*cosa-cosb*cosb-cosc*cosc+2.*cosa*cosb*cosc
-        celvol = cela*celb*celc*sqrt(celvol)
-        sigvol = 0.0
-        FV = .TRUE.
-      ELSE
-         write(6,'(A)') 'Cell Volume Found'
-      endif
+         cosa = cos(celalp*3.1419/180.)
+         cosb = cos(celbet*3.1419/180.)
+         cosc = cos(celgam*3.1419/180.)
+         celvol = 1-cosa*cosa-cosb*cosb-cosc*cosc+2.*cosa*cosb*cosc
+         celvol = cela*celb*celc*sqrt(celvol)
+         sigvol = 0.0
+         FV = .TRUE.
+       ELSE
+          write(6,'(A)') 'Cell Volume Found'
+          write(NTEXT,'(A)') 'Cell Volume Found'
+       endif
 c
-      if (fc) then
-cdjw - evade spurious significance possibly introduced by MAKECIF
-       siga = .0001*max(1,nint(10000*siga))
-       sigb = .0001*max(1,nint(10000*sigb))
-       sigc = .0001*max(1,nint(10000*sigc))
-       write(6,'(/a,6F10.4)') ' Cell ',CELA,CELB,CELC,CELALP,CELBET,
-     1CELGAM
-       write(6,'(a,6F10.4/)') '      ',SIGA,SIGB,SIGC,SIGALP,SIGBET,
-     1SIGGAM
-      endif
 C 
-
 c
 c.....  wavelength
-      FW=NUMB_('_diffrn_radiation_wavelength',WAV,DUM)
+      F1=NUMB_('_diffrn_radiation_wavelength',num,DUM)
+      if(f1) then
+       FW=NUMB_('_diffrn_radiation_wavelength',WAV,DUM)
+      endif
       IF (.NOT.(FW)) THEN
          write(6,'(/a/)') 'No wavelength '
+         write(NTEXT,'(/a/)') 'No wavelength '
       ELSE
          write(6,'(A,F10.5)') 'Wavelength Found',wav
+         write(NTEXT,'(A,F10.5)') 'Wavelength Found',wav
          GO TO 100
       END IF
+c
+c
 100   CONTINUE
-      FF=CHAR_('_chemical_formula',CFORM)
+      F1=CHAR_('_chemical_formula',C80)
+      if(f1) then
+       FF=CHAR_('_chemical_formula',CFORM)
+      endif
       IF (.NOT.(FF)) THEN
-        FF=CHAR_('_chemical_formula_sum',CFORM)
+        F1=CHAR_('_chemical_formula_sum',C80)
+        if(f1) then
+         FF=CHAR_('_chemical_formula_sum',CFORM)
+        endif
       ENDIF
       IF (.NOT.(FF)) THEN
-      FF=CHAR_('_chemical_oxdiff_formula', CFORM)
+       F1=CHAR_('_chemical_oxdiff_formula', C80)
+       if (f1) then
+        FF=CHAR_('_chemical_oxdiff_formula', CFORM)
+       endif
       ENDIF
       LFORM=LONG_
       IF (.NOT.(FF)) THEN
          write(6,'(/a/)') 'No chemical formula given'
+         write(NTEXT,'(/a/)') 'No chemical formula given'
          GO TO 150
       END IF
 c
@@ -202,22 +277,31 @@ c
       F2=NUMB_('_diffrn_orient_matrix_UB_33',RMAT33,DUM).AND.(F2)
       IF (.NOT.(F2)) THEN
          write(6,'(/A/)') 'No orient matrix or format error'
+         write(NTEXT,'(/A/)') 'No orient matrix or format error'
          GO TO 200
       END IF
                                                                         
 200   CONTINUE
-      FT=NUMB_('_cell_measurement_reflns_used',CMRU,DUM)
-      FT=NUMB_('_cell_measurement_theta_min',CMTM,DUM).AND.(FT)
-      FT=NUMB_('_cell_measurement_theta_max',CMTX,DUM).AND.(FT)
+      F1=NUMB_('_cell_measurement_reflns_used',adum,DUM)
+      if (f1) then
+       FT=NUMB_('_cell_measurement_reflns_used',CMRU,DUM)
+       FT=NUMB_('_cell_measurement_theta_min',CMTM,DUM).AND.(FT)
+       FT=NUMB_('_cell_measurement_theta_max',CMTX,DUM).AND.(FT)
+      endif
       IF (.NOT.(FT)) THEN
          write(6,'(A)') ' No cell measurement info'
       ELSE
          write(6,'(A)') 'Cell Measurement Data Found'
       END IF
 
-      FSIZ=NUMB_('_exptl_crystal_size_min', ZS,DUM)
-      FSIZ=NUMB_('_exptl_crystal_size_mid', ZD,DUM).AND.(FSIZ)
-      FSIZ=NUMB_('_exptl_crystal_size_max', ZL,DUM).AND.(FSIZ)
+      F1=NUMB_('_exptl_crystal_size_min', adum,DUM)
+      if(f1) then
+       FSIZ=NUMB_('_exptl_crystal_size_min', ZS,DUM)
+       FSIZ=NUMB_('_exptl_crystal_size_mid', ZD,DUM).AND.(FSIZ)
+       FSIZ=NUMB_('_exptl_crystal_size_max', ZL,DUM).AND.(FSIZ)
+      else
+       FSIZ = .FALSE.
+      endif
 c
       IF (.NOT.(FSIZ)) THEN
          write(6,'(A)') 'No crystal size info in cif.'
@@ -239,9 +323,15 @@ c      read(5,*) zd,zl
       write(6,'(A,3f8.3)') 'Crystal Size Used',zs,zd,zl
 
 
-      FTEMP=NUMB_('_diffrn_ambient_temperature', ZT ,DUM)
+      F1=NUMB_('_diffrn_ambient_temperature', adum ,DUM)
+      if(f1) then
+       FTEMP=NUMB_('_diffrn_ambient_temperature', ZT ,DUM)
+      endif
       IF (.NOT. FTEMP) THEN
-       FTEMP=NUMB_('_cell_measurement_temperature', ZT ,DUM)
+       F1=NUMB_('_cell_measurement_temperature', adum ,DUM)
+       if(f1) then
+        FTEMP=NUMB_('_cell_measurement_temperature', ZT ,DUM)
+       endif
       ENDIF
       IF (.NOT. FTEMP) THEN
 c         write(6,'(A)') 'Temperature (K)? [0]'
@@ -255,9 +345,15 @@ c         endif
       write(6,'(A,f8.2)') 'Temperature Used',zt
 c
 c
-      FCOL=CHAR_('_exptl_crystal_colour', ccol)
+      F1=CHAR_('_exptl_crystal_colour', c80)
+      if(f1) then
+       FCOL=CHAR_('_exptl_crystal_colour', ccol)
+      endif
       IF (.NOT. FCOL) THEN
-       FCOL=CHAR_('_exptl_crystal_colour_primary', CCOL)
+       F1=CHAR_('_exptl_crystal_colour_primary', C80)
+       if(f1)then
+        FCOL=CHAR_('_exptl_crystal_colour_primary', CCOL)
+       endif
       ENDIF
       IF (.NOT. FCOL) THEN
 c         write(6,'(A)') 'Colour? [Colourless]'
@@ -274,79 +370,86 @@ c
 c
 C....... Read and process the reflections
 C 
-      MINH=10000
-      MINK=10000
-      MINL=10000
-      MAXH=-10000
-      MAXK=-10000
-      MAXL=-10000
-      NREFS=0
-
-250   NREFS=NREFS+1
-      FL6=NUMB_('_refln_index_h',RHR,DUM)
-      FL6=NUMB_('_refln_index_k',RKR,DUM).AND.(FL6)
-      FL6=NUMB_('_refln_index_l',RLR,DUM).AND.(FL6)
-      FL6=NUMB_('_refln_F_squared_meas',RMEAS,DUM).AND.(FL6)
-      FL6=NUMB_('_refln_F_squared_sigma',RSIGMA,DUM).AND.(FL6)
-      IF (.NOT.(FL6)) THEN
-      FL6=NUMB_('_hkl_oxdiff_h',RHR,DUM)
-      FL6=NUMB_('_hkl_oxdiff_k',RKR,DUM).AND.(FL6)
-      FL6=NUMB_('_hkl_oxdiff_l',RLR,DUM).AND.(FL6)
-      FL6=NUMB_('_hkl_oxdiff_f2',RMEAS,DUM).AND.(FL6)
-      FL6=NUMB_('_hkl_oxdiff_sig',RSIGMA,DUM).AND.(FL6)
-      ENDIF
-      IF (.NOT.(FL6)) THEN
+      F1=NUMB_('_refln_index_h',adum,DUM)
+      if(f1) then
+       MINH=10000
+       MINK=10000
+       MINL=10000
+       MAXH=-10000
+       MAXK=-10000
+       MAXL=-10000
+       NREFS=0
+c
+250    NREFS=NREFS+1
+       FL6=NUMB_('_refln_index_h',RHR,DUM)
+       FL6=NUMB_('_refln_index_k',RKR,DUM).AND.(FL6)
+       FL6=NUMB_('_refln_index_l',RLR,DUM).AND.(FL6)
+       FL6=NUMB_('_refln_F_squared_meas',RMEAS,DUM).AND.(FL6)
+       FL6=NUMB_('_refln_F_squared_sigma',RSIGMA,DUM).AND.(FL6)
+       IF (.NOT.(FL6)) THEN
+        FL6=NUMB_('_hkl_oxdiff_h',RHR,DUM)
+        FL6=NUMB_('_hkl_oxdiff_k',RKR,DUM).AND.(FL6)
+        FL6=NUMB_('_hkl_oxdiff_l',RLR,DUM).AND.(FL6)
+        FL6=NUMB_('_hkl_oxdiff_f2',RMEAS,DUM).AND.(FL6)
+        FL6=NUMB_('_hkl_oxdiff_sig',RSIGMA,DUM).AND.(FL6)
+       ENDIF
+       IF (.NOT.(FL6)) THEN
          write(6,'(/a/)') 'Reflections missing or wrong format'
          GO TO 300
-      else if ( nrefs .eq. 1) then
+       else if ( nrefs .eq. 1) then
         OPEN (NHKL,FILE=chkl, STATUS='UNKNOWN')
         fl6 = .true.
-      END IF
+       END IF
 
-      IH=NINT(RHR)
-      IK=NINT(RKR)
-      IL=NINT(RLR)
-      IF ((ABS(IL).GT.255).OR.(ABS(IK).GT.255).OR.(ABS(IH).GT.255))
-     1 THEN
-       WRITE(6,'(A,3I10,2F10.2,i10)') 'Index too big for CRYSTALS',
-     1 IH,IK,IL, RMEAS, RSIGMA, NREFS
-       GOTO 250
-      ENDIF
-      IF (RMEAS .LT. -9999.0) THEN
-       WRITE(6,'(A,3I5,2F15.2,i10)') 'Reflection too negative',
-     1 IH,IK,IL, RMEAS, RSIGMA, NREFS
-       GOTO 250
-      ENDIF
-      IF (IH.LT.MINH) THEN
+       IH=NINT(RHR)
+       IK=NINT(RKR)
+       IL=NINT(RLR)
+       IF ((ABS(IL).GT.255).OR.(ABS(IK).GT.255).OR.(ABS(IH).GT.255))
+     1  THEN
+        WRITE(6,'(A,3I10,2F10.2,i10)') 'Index too big for CRYSTALS',
+     1  IH,IK,IL, RMEAS, RSIGMA, NREFS
+        GOTO 250
+       ENDIF
+       IF (RMEAS .LT. -9999.0) THEN
+        WRITE(6,'(A,3I5,2F15.2,i10)') 'Reflection too negative',
+     1  IH,IK,IL, RMEAS, RSIGMA, NREFS
+        GOTO 250
+       ENDIF
+       IF (IH.LT.MINH) THEN
          MINH=IH
-      ELSE IF (IH.GT.MAXH) THEN
+       ELSE IF (IH.GT.MAXH) THEN
          MAXH=IH
-      END IF
+       END IF
       IF (IK.LT.MINK) THEN
-         MINK=IK
+          MINK=IK
       ELSE IF (IK.GT.MAXK) THEN
-         MAXK=IK
-      END IF
-      IF (IL.LT.MINL) THEN
-         MINL=IL
-      ELSE IF (IL.GT.MAXL) THEN
-         MAXL=IL
-      END IF
-      IF (RMEAS.LE.99999.) THEN
+          MAXK=IK
+       END IF
+       IF (IL.LT.MINL) THEN
+          MINL=IL
+       ELSE IF (IL.GT.MAXL) THEN
+          MAXL=IL
+       END IF
+       IF (RMEAS.LE.99999.) THEN
          WRITE (NHKL,'(3i4,2f8.2)') IH,IK,IL,RMEAS,RSIGMA
-      ELSE IF (RMEAS.LE.999999.) THEN
+       ELSE IF (RMEAS.LE.999999.) THEN
          WRITE (NHKL,'(3i4,2f8.1)') IH,IK,IL,RMEAS,RSIGMA
-      ELSE
+       ELSE
          WRITE (NHKL,'(3i4,2f8.0)') IH,IK,IL,RMEAS,RSIGMA
-      END IF
-      IF (LOOP_) GO TO 250
+       END IF
+       IF (LOOP_) GO TO 250
 C           WRITE ( nhkl,'(a)') '-512'
-      CLOSE (NHKL)
+       CLOSE (NHKL)
+      endif
+c
       write(6,'(i8,a/)') nrefs, ' reflections found'
 C 
 300   CONTINUE
-      FABS=NUMB_('_exptl_absorpt_correction_T_min',atn,DUM)
-      FABS=NUMB_('_exptl_absorpt_correction_T_max',atx,DUM).AND.(FABS)
+      F1=NUMB_('_exptl_absorpt_correction_T_min',adum,DUM)
+      if(f1)then
+       FABS=NUMB_('_exptl_absorpt_correction_T_min',atn,DUM)
+       FABS=NUMB_('_exptl_absorpt_correction_T_max',atx,DUM).AND.(FABS)
+      endif
       if (.not. (fABS)) then
        atn=0.
        atx=0.
@@ -357,22 +460,24 @@ C
 320   continue
 C
 C....... Extract space group notation (expected char string)
-      FSG=CHAR_('_symmetry_space_group_name_H-M',NAME)
-      IF (.NOT.(FSG)) THEN
+      F1=CHAR_('_symmetry_space_group_name_H-M',c80)
+      if(f1)then
+       FSG=CHAR_('_symmetry_space_group_name_H-M',NAME)
+       IF (.NOT.(FSG)) THEN
          write(6,'(/a/)') 'No spacegroup found'
          CSPACE = '?'
          GO TO 1050
-      END IF
-      CSPACE=NAME(1:LONG_)
-      write(6,'(a,a,a/)')'Space group  from cif= ',NAME(1:LONG_),'.'
-      call xcrems(name, cspace,lspace)
-      i = index(cspace(1:lspace),' ')
-      if ((i .le. 0) .or. (cspace(2:2) .ne. ' ' ))then
-        write(6,'(a)') 'CRYSTALS needs spaces in symbol'
-        fsg = .false.
-      endif
-      if (cspace(1:lspace) .eq. 'unknown') fsg = .false.
-      if (cspace(1:lspace) .eq. '?') fsg = .false.
+       END IF
+       CSPACE=NAME(1:LONG_)
+       write(6,'(a,a,a/)')'Space group  from cif= ',NAME(1:LONG_),'.'
+       call xcrems(name, cspace,lspace)
+       i = index(cspace(1:lspace),' ')
+       if ((i .le. 0) .or. (cspace(2:2) .ne. ' ' ))then
+          write(6,'(a)') 'CRYSTALS needs spaces in symbol'
+          fsg = .false.
+       endif
+       if (cspace(1:lspace) .eq. 'unknown') fsg = .false.
+       if (cspace(1:lspace) .eq. '?') fsg = .false.
 C 
 c      IDIFF = 0 = UNKNOWN
 c      IDIFF = 1 = AGILENT
@@ -381,6 +486,7 @@ C      IDIFF = 3 = RIGAKU
 C      IDIFF = 4 = WINGX
 C
 c Kccd SG is only Point Group
+
       if (idiff .eq. 2) fsg = .false.
       if (fsg) then
          write(6,'(/A)') 
@@ -395,8 +501,10 @@ c Kccd SG is only Point Group
            write(6,'(a,a)') 'Using input space group'
            fsg = .true.
          endif
+       endif
       endif
 C
+
 c----------------------------------------------------------------
       if (nrefs .gt. 1) then
 C----- reflections all read - check space group with Nonius code
@@ -475,7 +583,9 @@ c
 c
 C....... Read and store the atom site data
 C....... =================================
-
+c
+      f1 = char_('_atom_site_label', c80)
+      if(.not.f1) goto 241
       nsite = 0
 240   nsite = nsite+1
       f1 = char_('_atom_site_label', label(nsite,1))
@@ -530,15 +640,26 @@ C........Check if there are more atoms in the loop to get.
 
       if(loop_) goto 240
 241   continue
-
-
 700   CONTINUE
       write(6,*) nsite, ' Atoms found'
 c
+      IF (.NOT.(FC)) THEN
+         write(6,'(a)') 'No cell DATA in this block.'
+         write(NTEXT,'(a)') 'No cell DATA in this block.'
+         write(6,'(a)') 'Trying next block.'
+         write(NTEXT,'(a)') 'Trying next block.'
+         GO TO 50
+      END IF
+
 C 
 C-----------------------------------------------------------------------
-C-----  WRITE THE CRYSTALS FILES
-C      FC, FV, FN, FF, FT, FW, FSG
+C       BEGIN WRITING THE OUTPUT CRYSTALS FILES
+5678  CONTINUE
+C
+      IF (FINFO .EQ. .FALSE.) THEN
+            WRITE(NTEXT,'(A)') 'No data found in cif'
+            goto 1050
+      ENDIF
 C 
       IF (FN) WRITE (NOUTF,'(a,2X,A,2x,a)') '#TITLE ',ENAME,CDATE
       IF (FC) THEN
