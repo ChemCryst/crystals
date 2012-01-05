@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.78  2012/01/04 14:31:25  rich
+C Fix some uninitialized variables, and output format mistakes.
+C
 C Revision 1.77  2011/11/03 09:20:16  rich
 C Output of leverage stats.
 C
@@ -1214,7 +1217,7 @@ cdjwjan05
 cdjwsep09
         istat = ksctrn (1,'sfls:rscale', rscle, 1)
         istat = ksctrn (1,'sfls:scale',  scale, 1)
-        write(cmon,'(5(a,f6.2,x))') 
+        write(cmon,'(3(a,f7.3,3x))') 
      1  'SumFo/SumFc=', rscle, 
      1  'SumFoFc/SumFc^2=', sfofc/sfcfc,
      1  'SumwFoFc/SumwFc^2=', wsfofc/wsfcfc,
@@ -1223,8 +1226,8 @@ cdjwsep09
         if (min(scale, rscle)/max(scale,rscle) .lt. 0.8) then
           call outcol(9)
         endif
-        call xprvdu(NCVDU,1,0)
-        if(issprt.eq.0) write(ncwu, '(a)') cmon(1)(:)
+        call xprvdu(NCVDU,2,0)
+        if(issprt.eq.0) write(ncwu, '(a)') cmon(1)(:),cmon(2)(:)
         call outcol(1)
         delfofc = (foav-fcav*scale)
         write(cmon,'(a,f8.3,4x,a,f8.3)')'<Fo>-<Fc> = ', 
