@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2012/01/05 14:27:32  djw
+C Set up logicals for every data item so that we can check for their presence at the end
+C
 C Revision 1.15  2012/01/03 14:24:18  rich
 C Allow longer filenames and filenames with spaces in.
 C
@@ -149,7 +152,7 @@ C----- WRITE OPTIONAL GOODIES TO TEXT FILE
       if (f1) then
        FDMM=CHAR_('_diffrn_measurement_method',CDMM)
        IF (FDMM) WRITE (NCIF,1234) '_diffrn_measurement_method ',
-     1 CDMM(1:NCTRIM(DCMM))
+     1 CDMM(1:NCTRIM(CDMM))
       endif
 
       F1=CHAR_('_diffrn_orient_matrix_type',C80)
