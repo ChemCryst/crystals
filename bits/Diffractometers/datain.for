@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.17  2012/01/05 15:03:03  djw
+C Fix typo DCMM > CDMM
+C
 C Revision 1.16  2012/01/05 14:27:32  djw
 C Set up logicals for every data item so that we can check for their presence at the end
 C
@@ -886,11 +889,14 @@ c     Separate the components of the formula in LINE into CFORM
       CHARACTER*26 alpha, ualpha
       CHARACTER*32 C32
       CHARACTER*160 CLONG
+      CHARACTER*30 SELEM
       DATA alpha    /'abcdefghijklmnopqrstuvwxyz'/
       DATA ualpha   /'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
       DATA numer/'1234567890.'/
       DATA LATOM/4/
       DATA LARG/12/
+c valid single letter elements (including D)
+      DATA SELEM /'HDBCNOFPSKVYIWUhdbcnofpskvyiwu'/
 
 c
 c      Rules:
@@ -902,7 +908,7 @@ c      space
 c      Number followed immediately by an element will be separated by 
 c      a space
 c      Two adjacent letters in the same case (upper or lower) will be
-c      sepatated by space 1 space.
+c      sepatated by space 1 space. - if results are valid elements.
 c      Two adjacent letters where the first is upper and the second 
 c      lower case will be treated as a single element type
 c      Two numbers separated by a space will not be interpreted.
@@ -922,6 +928,8 @@ c
 c       line    c1h 2n 3 o4 SN 5                                                                
 c      cform    c 1 h 2 n 3 o 4 S 1 N 5                                                         
 c
+	
+
       ff = .true.
       IF (FF) THEN
 c     beware if the element type is a charged species like Om2
@@ -1012,14 +1020,32 @@ c                 lowercase following capital - just output it
                   lspace = .false.
                   lchar = .true.
                   lnumer = .false.
-               else 
-c                 both same case - insert a sp 1 sp between them
+               else if ((l .gt. 0) .and. (m .le. 0)) then
+c  			lowercase before capital, insert space.			   
                   cform(k:k+2) = ' 1 '
                   cform(k+3:k+3) = line(j:j)
                   k = k + 4
                   lspace = .false.
                   lchar = .true.
                   lnumer = .false.
+               else 
+			      if ( ( index(selem,cform(k-1:k-1)).gt.0).and.
+     1 	  	      (index(selem,line(j:j)).gt.0)) then
+c                 both same case and valid elements - insert a sp 1 sp between them
+                    cform(k:k+2) = ' 1 '
+                    cform(k+3:k+3) = line(j:j)
+                    k = k + 4
+                    lspace = .false.
+                    lchar = .true.
+                    lnumer = .false.
+				  else
+c same case but not valid element if split up, so output as is				  
+                    cform(k:k) = line(j:j)
+                    k = k + 1
+                    lspace = .false.
+                    lchar = .true.
+                    lnumer = .false.
+				  end if
                endif
              endif        
            endif      
