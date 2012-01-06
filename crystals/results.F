@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.187  2012/01/05 16:15:00  rich
+C Allow atom serial numbers up to 9999999 in the CIF.
+C
 C Revision 1.186  2011/11/18 10:37:47  djw
 C make crystal class and solution method all-lower case, correct keywords for hydrogen tratment
 C
@@ -4082,7 +4085,7 @@ cdjw0206          WRITE(NCPU,'(''<TR>'')')
             CALL XCTRIM (CBUF, N)
             CALL XCCLWC (CBUF(2:N), CBUF(2:N))
 
-            WRITE (CLINE, '(A4,I4)') CBUF(1:N), NINT(STORE(JPUB+1))
+            WRITE (CLINE, '(A4,I7)') CBUF(1:N), NINT(STORE(JPUB+1))
             CALL XCRAS( CLINE, J)
 
 C----- CHECK SYMMETRY INFORMATION
