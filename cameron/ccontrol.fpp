@@ -1,6 +1,9 @@
 CRYSTALS CODE FOR CCONTROL.FOR
 
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2012/01/05 17:18:11  rich
+C Fix in and out of new L5 format.
+C
 C Revision 1.23  2009/07/02 09:22:16  djw
 C Show error message on screen for unrecognised words
 C
@@ -2600,8 +2603,7 @@ C READ IN THE COORDS ETC.
 11    FORMAT (I5, ' atoms loaded .')
       ENDIF
       READ (IINPT,30,ERR=9999) ATOMNM,RSEI,(COORDS(J),J=1,5)
-	  WRITE(ATOMNM(5:),'(I5)')NINT(RSEI)
-	  WRITE(144,'(A)') ATOMNM
+      WRITE(ATOMNM(5:),'(I5)')NINT(RSEI)
       READ (IINPT,31,ERR=9999) (COORDS(J),J=6,11)
 cnov2000
       read (iinpt,32,err=9999) djwtmp(1),(idjwtmp(j),j=2,5)
