@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  2012/01/06 10:32:34  rich
+C Don't split apart element names (e.g. AG) if the result doesn't make sense (e.g. A 1 G 1).
+C But do for SN, -> S 1 N 1.
+C
 C Revision 1.17  2012/01/05 15:03:03  djw
 C Fix typo DCMM > CDMM
 C
@@ -377,6 +381,10 @@ c
 C....... Read and process the reflections
 C 
       F1=NUMB_('_refln_index_h',adum,DUM)
+      if ( .not. f1 ) then
+        F1=NUMB_('_hkl_oxdiff_h',adum,DUM)
+      end if
+
       if(f1) then
        MINH=10000
        MINK=10000
