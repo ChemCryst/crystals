@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.78  2012/01/03 14:58:44  rich
+C Change L5 punch to remove decimal places on serial and flag.
+C
 C Revision 1.77  2012/01/03 14:37:18  rich
 C PUNCH 6 I (partial implementation) to punch all set keys from L6.
 C
@@ -312,7 +315,7 @@ C ISTORE bits will only print if J=18, not if J=14.
 1150  FORMAT
      1 ('ATOM ',A4,1X,F11.0,F11.6,F11.0,3F11.6/
      2 'CON U[11]=',6F11.6/
-     3 'CON SPARE=',F11.2,4I11)
+     3 'CON SPARE=',F11.2,3I11,10X,I12)
       M5 = M5 + MD5
 1170  CONTINUE
 C--CHECK IF THERE ARE ANY LAYER SCALES TO OUTPUT
