@@ -35,7 +35,8 @@
 % COPY '#GENERALEDIT 5'                                                         
 % COPY 'LOCATE RECORDTYPE=101'                                                  
 % COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                       
-% EVALUATE OCC = 1.0                                                            
+% EVALUATE OCC = 1.0
+% EVALUATE PART0 = 0
 % LOOP                                                                          
 %     ON EDITERROR TERMINATE                                                    
 %     COPY 'TRANSFER FROM OFFSET=0 TO C'                                        
@@ -146,7 +147,7 @@
 %          STORE FORMAT /(F9.4)/ LENGTH 9 REAL OCC1                             
 %          OUTPUT                                                               
 %          CLEAR                                                                
-%          INSERT "^^WI @ 3,7 STATIC P1 "                                       
+%          INSERT "^^WI @ 3,7 STATIC PR1 "                                       
 %          STORE FORMAT /(I9)/ LENGTH 9 INTEGER PART1                             
 %          OUTPUT                                                               
 ^^WI       @ 5,1 STATIC A2 'R1'                                                 
