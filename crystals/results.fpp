@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.188  2012/01/06 10:21:22  rich
+C Format change to HTML summary output of serial numbers.
+C
 C Revision 1.187  2012/01/05 16:15:00  rich
 C Allow atom serial numbers up to 9999999 in the CIF.
 C
@@ -1757,7 +1760,7 @@ C Check if riding H ESD to be omitted
 C
           LOJ = J+6
           J=J+NXF
-          WRITE(133,*)NXF
+c          WRITE(133,*)NXF
           CALL SNUM(STORE(MP),BPD(MPD),NXD,NOP,J,LINEA)
           IF (IPCHCO .EQ. 3) THEN  
 #if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
