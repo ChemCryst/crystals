@@ -7,7 +7,6 @@
 % VARIABLE INTEGER NEXTFREE STARTFROM                                           
 % VARIABLE REAL S                                                               
 % VARIABLE REAL OCC1 OCC2 OCC3 OCC4 OCC5 OCC6 OCC                               
-% VARIABLE INTEGER PART1 PART2 PART3 PART4 PART5 PART6 PART0                               
 % EVALUATE CAT1 = UPPERCASE FIRSTSTR ( CATOM1 )                                 
 % EVALUATE CAT2 = UPPERCASE FIRSTSTR ( CATOM2 )                                 
 % EVALUATE CAT3 = UPPERCASE FIRSTSTR ( CATOM3 )                                 
@@ -35,68 +34,43 @@
 % COPY '#GENERALEDIT 5'                                                         
 % COPY 'LOCATE RECORDTYPE=101'                                                  
 % COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                       
-% EVALUATE OCC = 1.0
-% EVALUATE PART0 = 0
+% EVALUATE OCC = 1.0                                                            
 % LOOP                                                                          
 %     ON EDITERROR TERMINATE                                                    
 %     COPY 'TRANSFER FROM OFFSET=0 TO C'                                        
 %     COPY 'TRANSFER FROM OFFSET=1 TO S'                                        
 %     IF ( CAT1 .EQ. C ) .AND. ( IAT1 .EQ. INTEGER ( S ) ) THEN                 
 %        COPY 'TRANSFER FROM OFFSET=2 TO OCC1'                                  
-%        COPY 'TRANSFER FROM OFFSET=14 TO PART1'                                  
-%        IF PART1 .NE. 0 THEN
-%           EVALUATE PART0 = PART1                                        
-%        END IF
-%        IF OCC1 .LT. OCC THEN
+%        IF OCC1 .LT. OCC THEN                                                  
 %           EVALUATE OCC = OCC1                                                 
-%        END IF
+%        END IF                                                                 
 %     END IF                                                                    
 %     IF ( CAT2 .EQ. C ) .AND. ( IAT2 .EQ. INTEGER ( S ) ) THEN                 
 %        COPY 'TRANSFER FROM OFFSET=2 TO OCC2'                                  
-%        COPY 'TRANSFER FROM OFFSET=14 TO PART2'                                  
-%        IF PART2 .NE. 0 THEN
-%           EVALUATE PART0 = PART2                                        
-%        END IF
 %        IF OCC2 .LT. OCC THEN                                                  
 %           EVALUATE OCC = OCC2                                                 
 %        END IF                                                                 
 %     END IF                                                                    
 %     IF ( CAT3 .EQ. C ) .AND. ( IAT3 .EQ. INTEGER ( S ) ) THEN                 
 %        COPY 'TRANSFER FROM OFFSET=2 TO OCC3'                                  
-%        COPY 'TRANSFER FROM OFFSET=14 TO PART3'                                  
-%        IF PART3 .NE. 0 THEN
-%           EVALUATE PART0 = PART3
-%        END IF
 %        IF OCC3 .LT. OCC THEN                                                  
 %           EVALUATE OCC = OCC3                                                 
 %        END IF                                                                 
 %     END IF                                                                    
 %     IF ( CAT4 .EQ. C ) .AND. ( IAT4 .EQ. INTEGER ( S ) ) THEN                 
 %        COPY 'TRANSFER FROM OFFSET=2 TO OCC4'                                  
-%        COPY 'TRANSFER FROM OFFSET=14 TO PART4'
-%        IF PART4 .NE. 0 THEN
-%           EVALUATE PART0 = PART4                                        
-%        END IF
 %        IF OCC4 .LT. OCC THEN                                                  
 %           EVALUATE OCC = OCC4                                                 
 %        END IF                                                                 
 %     END IF                                                                    
 %     IF ( CAT5 .EQ. C ) .AND. ( IAT5 .EQ. INTEGER ( S ) ) THEN                 
 %        COPY 'TRANSFER FROM OFFSET=2 TO OCC5'                                  
-%        COPY 'TRANSFER FROM OFFSET=14 TO PART5'  
-%        IF PART5 .NE. 0 THEN
-%           EVALUATE PART0 = PART5                                        
-%        END IF
 %        IF OCC5 .LT. OCC THEN                                                  
 %           EVALUATE OCC = OCC5                                                 
 %        END IF                                                                 
 %     END IF                                                                    
 %     IF ( CAT6 .EQ. C ) .AND. ( IAT6 .EQ. INTEGER ( S ) ) THEN                 
 %        COPY 'TRANSFER FROM OFFSET=2 TO OCC6'                                  
-%        COPY 'TRANSFER FROM OFFSET=14 TO PART6'
-%        IF PART6 .NE. 0 THEN
-%           EVALUATE PART0 = PART6                                        
-%        END IF
 %        IF OCC6 .LT. OCC THEN                                                  
 %           EVALUATE OCC = OCC6                                                 
 %        END IF                                                                 
@@ -135,8 +109,11 @@
 %         BLOCK                                                                 
 ^^WI       'hphen.bmp'                                                          
 %         END BLOCK                                                             
+%         BLOCK                                                                 
+^^WI       'hbond.bmp'                                                          
+%         END BLOCK                                                             
 %        END CASE                                                               
-^^WI  }  @ 1,3 GRID F NROWS=13 NCOLS=7 {                                        
+^^WI  }  @ 1,3 GRID F NROWS=13 NCOLS=5 {                                        
 ^^WI       @ 1,1 STATIC A0 'Position'                                           
 ^^WI       @ 1,3 STATIC A0 'Atom'                                               
 ^^WI       @ 1,5 STATIC A0 'Occupancy'                                          
@@ -144,32 +121,20 @@
 % TRANSFER "^^WI @ 3,3 STATIC E1 '" // CATOM1 // "'" TO DISPLAY                 
 %          CLEAR                                                                
 %          INSERT "^^WI @ 3,5 STATIC O1 "                                       
-%          STORE FORMAT /(F9.4)/ LENGTH 9 REAL OCC1                             
-%          OUTPUT                                                               
-%          CLEAR                                                                
-%          INSERT "^^WI @ 3,7 STATIC PR1 "                                       
-%          STORE FORMAT /(I9)/ LENGTH 9 INTEGER PART1                             
+%          STORE FORMAT /(F9.6)/ LENGTH 9 REAL OCC1                             
 %          OUTPUT                                                               
 ^^WI       @ 5,1 STATIC A2 'R1'                                                 
 % TRANSFER "^^WI @ 5,3 STATIC E2 '" // CATOM2 // "'" TO DISPLAY                 
 %          CLEAR                                                                
 %          INSERT "^^WI @ 5,5 STATIC O2 "                                       
-%          STORE FORMAT /(F9.4)/ LENGTH 9 REAL OCC2                             
-%          OUTPUT                                                               
-%          CLEAR                                                                
-%          INSERT "^^WI @ 5,7 STATIC P2 "                                       
-%          STORE FORMAT /(I9)/ LENGTH 9 INTEGER PART2                             
+%          STORE FORMAT /(F9.6)/ LENGTH 9 REAL OCC2                             
 %          OUTPUT                                                               
 %          IF NARGS .GE. 3 THEN                                                 
 ^^WI       @ 7,1 STATIC A3 'R2'                                                 
 % TRANSFER "^^WI @ 7,3 STATIC E3 '" // CATOM3 // "'" TO DISPLAY                 
 %          CLEAR                                                                
 %          INSERT "^^WI @ 7,5 STATIC O3 "                                       
-%          STORE FORMAT /(F9.4)/ LENGTH 9 REAL OCC3                             
-%          OUTPUT                                                               
-%          CLEAR                                                                
-%          INSERT "^^WI @ 7,7 STATIC P3 "  
-%          STORE FORMAT /(I9)/ LENGTH 9 INTEGER PART3                             
+%          STORE FORMAT /(F9.6)/ LENGTH 9 REAL OCC3                             
 %          OUTPUT                                                               
 %          END IF                                                               
 %          IF NARGS .GE. 4 THEN                                                 
@@ -177,11 +142,7 @@
 % TRANSFER "^^WI @ 9,3 STATIC E4 '" // CATOM4 // "'" TO DISPLAY                 
 %          CLEAR                                                                
 %          INSERT "^^WI @ 9,5 STATIC O4 "                                       
-%          STORE FORMAT /(F9.4)/ LENGTH 9 REAL OCC4                             
-%          OUTPUT                                                               
-%          CLEAR                                                                
-%          INSERT "^^WI @ 9,7 STATIC P4 "                                       
-%          STORE FORMAT /(I9)/ LENGTH 9 INTEGER PART4
+%          STORE FORMAT /(F9.6)/ LENGTH 9 REAL OCC4                             
 %          OUTPUT                                                               
 %          END IF                                                               
 %          IF NARGS .EQ. 6 THEN                                                 
@@ -189,39 +150,27 @@
 % TRANSFER "^^WI @ 11,3 STATIC E5 '" // CATOM5 // "'" TO DISPLAY                
 %          CLEAR                                                                
 %          INSERT "^^WI @ 11,5 STATIC O5 "                                      
-%          STORE FORMAT /(F9.4)/ LENGTH 9 REAL OCC5                             
-%          OUTPUT                                                               
-%          INSERT "^^WI @ 11,7 STATIC P5 "                                       
-%          STORE FORMAT /(I9)/ LENGTH 9 INTEGER PART5
+%          STORE FORMAT /(F9.6)/ LENGTH 9 REAL OCC5                             
 %          OUTPUT                                                               
 ^^WI       @ 13,1 STATIC A4 'R5'                                                
 % TRANSFER "^^WI @ 13,3 STATIC E6 '" // CATOM6 // "'" TO DISPLAY                
 %          CLEAR                                                                
 %          INSERT "^^WI @ 13,5 STATIC O6 "                                      
-%          STORE FORMAT /(F9.4)/ LENGTH 9 REAL OCC6                             
-%          OUTPUT                                                               
-%          INSERT "^^WI @ 13,7 STATIC P4 "                                       
-%          STORE FORMAT /(I9)/ LENGTH 9 INTEGER PART5
+%          STORE FORMAT /(F9.6)/ LENGTH 9 REAL OCC6                             
 %          OUTPUT                                                               
 %          END IF                                                               
 ^^WI     }                                                                      
 ^^WI   }                                                                        
-^^WI   @ 6,2 GRID B NROWS=5 NCOLS=5 {                                           
+^^WI   @ 6,2 GRID B NROWS=3 NCOLS=5 {                                           
 ^^WI     @ 1,1 STATIC M1 'Occupancy'                                            
 %        CLEAR                                                                  
 %        INSERT "^^WI @ 1,3 EDITBOX P1 '"                                       
 %        STORE FORMAT /(F9.6)/ LENGTH 9 REAL OCC                                
 %        INSERT "' REAL CHARS=8"                                                
 %        OUTPUT                                                                 
-^^WI     @ 3,1 STATIC M1 'Part number'                                            
-%        CLEAR                                                                  
-%        INSERT "^^WI @ 3,3 EDITBOX Q1 '"                                       
-%        STORE FORMAT /(I9)/ LENGTH 9 INTEGER PART0                                
-%        INSERT "' INTEGER CHARS=8"                                                
-%        OUTPUT                                                                 
-^^WI     @ 5,1 STATIC M2 'Bond length'                                          
-^^WI     @ 5,3 EDITBOX R2 '0.95' REAL CHARS=8                                   
-^^WI     @ 5,5 STATIC M3 'Angstroms'                                            
+^^WI     @ 3,1 STATIC M2 'Bond length'                                          
+^^WI     @ 3,3 EDITBOX P2 '0.95' REAL CHARS=8                                   
+^^WI     @ 3,5 STATIC M3 'Angstroms'                                            
 ^^WI   }                                                                        
 ^^WI   @ 8,2 GRID B NROWS=1 NCOLS=5 {                                           
 ^^WI     @ 1,1 BUTTON BBB '< &Back'                                             
@@ -239,14 +188,11 @@
 ^^??      P1 TEXT                                                               
 %         GET SILENT NOSTORE REAL ' ' ' '                                       
 %         EVALUATE OCC = VALUE                                                  
-^^??      Q1 TEXT                                                               
-%         GET SILENT NOSTORE INTEGER ' ' ' '                                       
-%         EVALUATE PART0 = VALUE                                                  
 %%                                                                              
 %         COPY '#HYDROGENS'                                                     
 %         CLEAR                                                                 
 %         INSERT 'DISTANCE '                                                    
-^^??      R2 TEXT                                                               
+^^??      P2 TEXT                                                               
 %         GET SILENT REAL ' ' ' '                                               
 %         SEND                                                                  
 %         CLEAR                                                                 
@@ -262,6 +208,7 @@
 %          INSERT 'H12 '                                                        
 %          INSERT 'H11 '                                                        
 %          INSERT 'PHENYL '                                                     
+%          INSERT 'HBOND ' 
 %         END CASE                                                              
 %         TRANSFER CATOM1 // " " // CATOM2 // " " TO BUFFER                     
 %         IF NARGS .GE. 3 THEN                                                  
@@ -282,17 +229,6 @@
 %           STORE FORMAT /(I5)/ LENGTH 5 INTEGER NSER                           
 %           INSERT ',OCC) UNTIL LAST '                                          
 %           STORE FORMAT /(F8.4)/ LENGTH 8 REAL OCC                             
-%           OUTPUT                                                              
-%           SEND                                                                
-%           COPY 'END'                                                          
-%         END IF                                                                
-%         IF PART0 .NE. 0 THEN                                                  
-%           COPY '#EDIT'                                                        
-%           CLEAR                                                               
-%           INSERT 'CHANGE H('                                                  
-%           STORE FORMAT /(I5)/ LENGTH 5 INTEGER NSER                           
-%           INSERT ',PART) UNTIL LAST '                                          
-%           STORE FORMAT /(I9)/ LENGTH 9 INTEGER PART0                             
 %           OUTPUT                                                              
 %           SEND                                                                
 %           COPY 'END'                                                          

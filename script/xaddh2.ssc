@@ -14,6 +14,9 @@
 %    IF HTYPE .EQ. 7 THEN
 %      EVALUATE NARGS = 6
 %    END IF
+%    IF HTYPE .EQ. 8 THEN
+%      EVALUATE NARGS = 2
+%    END IF
 ^^WI WINDOW ADDH 'Add hydrogen'
 ^^WI POSITION=CENTRED '_MAINTEXTOUTPUT'
 ^^WI GRID M NROWS=7 NCOLS=3 {
@@ -24,58 +27,61 @@
 ^^WI   @ 4,2 GRID C NROWS=1 NCOLS=3 {
 ^^WI     @ 1,1 GRID HHH NROWS=1 NCOLS=1 { @ 1,1 BITMAP H33 FILE
 %    CASE HTYPE
-%         BLOCK
+%         BLOCK %1
 ^^WI       'h33.bmp'
 %         END BLOCK
-%         BLOCK
+%         BLOCK %2
 ^^WI       'h23.bmp'
 %         END BLOCK
-%         BLOCK
+%         BLOCK %3
 ^^WI       'h13.bmp'
 %         END BLOCK
-%         BLOCK
+%         BLOCK %4
 ^^WI       'h22.bmp'
 %         END BLOCK
-%         BLOCK
+%         BLOCK %5
 ^^WI       'h12.bmp'
 %         END BLOCK
-%         BLOCK
+%         BLOCK %6
 ^^WI       'h11.bmp'
 %         END BLOCK
-%         BLOCK
+%         BLOCK %7
 ^^WI       'hphen.bmp'
+%         END BLOCK
+%         BLOCK %8
+^^WI       'hbond.bmp'
 %         END BLOCK
 %    END CASE
 ^^WI  }  @ 1,3 GRID F NROWS=11 NCOLS=5 {
 ^^WI       @ 1,1 STATIC A1 'X'
 ^^WI       @ 3,1 STATIC A2 'R1'
 %    CASE HTYPE
-%           BLOCK
+%           BLOCK %1
 ^^WI         @ 5,1 STATIC A3 'R2'
 ^^WI         @ 5,3 EDITBOX E3 '' CHARS=6
 %           END BLOCK
-%           BLOCK
+%           BLOCK %2
 ^^WI         @ 5,1 STATIC A3 'R2'
 ^^WI         @ 5,3 EDITBOX E3 '' CHARS=6
 %           END BLOCK
-%           BLOCK
+%           BLOCK %3
 ^^WI         @ 5,1 STATIC A3 'R2' 
 ^^WI         @ 5,3 EDITBOX E3 '' CHARS=6
 ^^WI         @ 7,1 STATIC A4 'R3'
 ^^WI         @ 7,3 EDITBOX E4 '' CHARS=6
 %           END BLOCK
-%           BLOCK
+%           BLOCK %4
 ^^WI         @ 5,1 STATIC A3 'R2'
 ^^WI         @ 5,3 EDITBOX E3 '' CHARS=6
 %           END BLOCK
-%           BLOCK
+%           BLOCK %5
 ^^WI         @ 5,1 STATIC A3 'R2'
 ^^WI         @ 5,3 EDITBOX E3 '' CHARS=6
 %           END BLOCK
-%           BLOCK
+%           BLOCK %6
 ^^WI
 %           END BLOCK
-%           BLOCK
+%           BLOCK %7
 ^^WI         @ 5,1 STATIC A3 'R2' 
 ^^WI         @ 5,3 EDITBOX E3 '' CHARS=6
 ^^WI         @ 7,1 STATIC A4 'R3'
@@ -85,6 +91,12 @@
 ^^WI         @ 11,1 STATIC A6 'R5'
 ^^WI         @ 11,3 EDITBOX E6 '' CHARS=6
 %           END BLOCK
+
+%           BLOCK %8
+^^WI
+%           END BLOCK
+
+
 %    END CASE
 %    IF CALLED THEN
 ^^WI       @ 1,5 STATIC T1 '< Click atom to go here'
