@@ -6,29 +6,40 @@ CRYSTALS' lists and their contents:
 
 LISTS marked * cannot be input by the User
 
-1     Cell parameters
-2     Unit cell symmetry
-3     Atomic scattering factors
-4     Weighting parameters
-5     Atomic parameters
-6     Reflection data
-10*   Peak coordinates from Fourier
-11    Least squares matrix
-12    Refinement directives
-13    Crystal and collection data
-14    Fourier directives
-16    General Restraint instructions
-17    Special Restraint instructions
-22    Refinement directives in internal format
-23    Structure factor calculation control list
-24*   Least squares shift list
-25    Twin component operators
-26*   CONSTRAINTS in internal format
-27    Diffractometer scales
-28    Reflection condition list
-29    Contents of asymmetric unit and elemental properties
-31    Cell parameter E.S.D.'s
-33*   Internal - Refinement control
+     1    Cell parameters 
+     2    Unit cell symmetry 
+     3    Atomic scattering factors 
+     4    Weighting parameters 
+     5    The model parameters 
+     6    Reflection data 
+     7    Reflection data not used for refinement 
+     9*   ESDs of model parameters
+    10    Peak coordinates from Fourier 
+    11    Least squares matrix 
+    12    Refinement directives 
+    13    Crystal and collection data 
+    14    Fourier directives 
+    16    General Restraints 
+    17    Special Restraints 
+    18    SMILEs string representation 
+    20*   Transformation matrices saved by \GEOMETRY 
+    22*   Refinement directives in internal format 
+    23    Structure factor control list 
+    24*   Least squares shift list 
+    25    Twin component operators 
+    26*   Constraints in internal format 
+    27    Diffractometer scales 
+    28    Reflection condition/filter list 
+    29    Contents of asymmetric unit and elemental properties 
+    30    General information 
+    31    Cell parameter E.S.D.'s 
+    33*   Internal - Refinement control 
+    36*   Tracking interdependencies of parameters, normal matrix, weights etc.
+    40    Bond forming/breaking directives 
+    41*   Bonds between atoms 
+
 % COPY '#SCRIPT XHELP2'
 %END SCRIPT
+
+
 
