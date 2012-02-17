@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: not supported by cvs2svn $123
+C Revision 1.47  2012/01/04 14:31:25  rich
+C Fix some uninitialized variables, and output format mistakes.
+C
 C Revision 1.46  2011/05/13 11:16:51  djw
 C Calls to Kallow now return a key to the test which failed and a value to indicate if it was Max or Min. The argument of KALLOW must be a variable
 C
@@ -1323,6 +1326,9 @@ C--ASSIGN THE NEW VALUES OF /FO/ **2 AND SIGMA
       JFO=M6+IFO
       STORE(JFO)=WORK(5)
       STORE(M6+12)=WORK(NCHOP+8)
+cdjw2012
+      STORE(M6+5) = WORK(7)
+      STORE(M6+6) = WORK(8)
 
       JRINTF = 100
       IF ( ABS ( STORE(M6+12) ) .GE. 0.0005 ) 
@@ -1612,10 +1618,19 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
+C      write(123,'(a)') ' '
+C      write(123,'(i6, 3f3.0, 4f12.2)') iref,
+C     1 store(iref),store(iref+1),store(iref+2), 
+C     2 store(iref+3),store(iref+12),store(iref+5),
+C     3 rtd*store(iref+6)
+c
+cdjwfeb12 save initial Fc and phase
+      fc = store(iref+5)
+      phase = store(iref+6)
+c      
       IDWZAP = IN
 C--CHECK FOR ONLY ONE REFLECTION
       IF(NREF-1)1000,1000,1050
-
 C--ONLY ONE CONTRIBUTOR
 1000  CONTINUE
       JFO=IFO+IREF
@@ -1624,6 +1639,8 @@ C--WORK(9) = SIGMA
       WORK(5)=STORE(JFO)
       WORK(9)=AMAX1(0.01,STORE(IREF+12))
       WORK(10)=WORK(9)
+      work(7) = fc
+      work(8) = phase
 C----- SET THE PRINT LEVEL FOR SINGLE REFLECTIONS
       JPRINT = IPRINT
       GOTO 2500
@@ -1662,8 +1679,18 @@ C--WORK4 = SIGMA W
       WORK(4)=0.
 C--WORK8 = WEIGHTED VARIANCE
       WORK(8)=0.
+cdjw2012 Prepare to average Fc
+      sumfc = 0.
       JREF=IREF
+c
+c
       DO 1600 J=1,NREF
+c
+C      write(123,'(i6, 3f3.0, 4f12.2)') jref,
+C     1 store(jref),store(jref+1),store(jref+2), 
+C     2 store(jref+3),store(jref+12),store(jref+5),
+C     3 rtd*store(jref+6)
+c
       KREF=JREF+NTERM
       JFO=JREF+IFO
 C--CHECK IF ANY JCODES ARE TO BE SPECIALLY WEIGHTED
@@ -1679,6 +1706,7 @@ C--APPLY THE SPECIAL WEIGHT FOR THIS JCODE
 C--SIGMA[X(I)*W(I)]
 1550  CONTINUE
       WORK(3)=WORK(3)+STORE(JFO)*STORE(KREF-1)
+      sumfc = sumfc+store(jref+5)*STORE(KREF-1)
 C--SIGMA [W(I)]
       WORK(4)=WORK(4)+STORE(KREF-1)
       WORK(8)=WORK(8)+STORE(JREF+12)*STORE(JREF+12)*STORE(KREF-1)
@@ -1687,10 +1715,12 @@ C--SIGMA [W(I)]
 C--WEIGHTED AVERAGE
       IF (WORK(4) .GT. ZERO) THEN
       WORK(5)=WORK(3)/WORK(4)
+      avfc=sumfc/work(4)
       WORK(10)=SQRT(WORK(8)/WORK(4))
       ELSE
             WORK(5) = WORK(3) / FLOAT(NREF)
             WORK(10) = WORK(8) / FLOAT(NREF)
+            avfc = sumfc / float(nref)
       ENDIF
 C--CHECK IF THIS IS THE LAST CYCLE  -  EXIT IF IT IS
       IF(L-NCYC)1650,1900,1900
@@ -1885,6 +1915,10 @@ C--COMPUTE THE POINT
       ISTAT(J)=ISTAT(J)+1
 C--AND NOW RETURN
 3000  CONTINUE
+cdjw2012 save <fc> and phase
+      work(7) = avfc
+      work(8) = phase
+c
       RETURN
       END
 C
