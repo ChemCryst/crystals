@@ -4,6 +4,19 @@
 %%                                                                              
 %  VARIABLE LOGICAL TWINNED MERGED                                              
 %  VARIABLE INTEGER F67 DOSCALE DOCALC                                          
+%
+%% Before Feb 2012 this was done later on LIST 7.
+%% That caused problems if SQUEEZE had set A and B parts.
+%% #MERGE now merges Fc with same method as Fo
+%         IF ( DOCALC .EQ. 1 ) THEN                                             
+%            COPY '#SFLS '                                                     
+%            COPY 'CALC'                                                        
+%            COPY 'END'                                                         
+%         ELSE IF ( DOSCALE .EQ. 1 ) THEN                                       
+%            COPY '#SFLS '                                                     
+%            COPY 'SCALE'                                                       
+%            COPY 'END'                                                         
+%         END IF                                                                
 %                                                                               
 %  BLOCK                                                                        
 %    VARIABLE INTEGER ITMP                                                      
@@ -67,22 +80,9 @@
 {I Merging temporary reflection list.                                           
 %         COPY '#MERGE 7 NO'                                                    
 %         COPY 'END'                                                            
-{I Computing Merged Fc.                                                         
-%         IF ( DOCALC .EQ. 1 ) THEN                                             
-%%           MAKE SURE THE list 7 IS WEIGHTED
-%            COPY '#WEIGHT 7'
-%            COPY 'END'
-%            COPY '#SFLS 7'                                                     
-%            COPY 'CALC'                                                        
-%            COPY 'END'                                                         
-%         ELSE IF ( DOSCALE .EQ. 1 ) THEN                                       
-%%           MAKE SURE THE list 7 IS WEIGHTED
-%            COPY '#WEIGHT 7'
-%            COPY 'END'
-%            COPY '#SFLS 7'                                                     
-%            COPY 'SCALE'                                                       
-%            COPY 'END'                                                         
-%         END IF                                                                
+%%% Fc is now merged in the same wasy as Fo. Phase is
+%%% not merged - dont yet know how to DJW Feb2012
+%%{I Computing Merged Fc.                                                         
 %         EVALUATE F67 = 7                                                      
 %%                                                                              
 %        ELSE                                                                   
