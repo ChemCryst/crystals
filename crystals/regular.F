@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.64  2012/01/04 14:31:25  rich
+c Fix some uninitialized variables, and output format mistakes.
+c
 c Revision 1.63  2011/03/21 13:57:21  rich
 c Update files to work with gfortran compiler.
 c
@@ -4908,14 +4911,20 @@ CODE FOR KNONLN
 CODE FOR KELECN
       FUNCTION KELECN()
 C Put the electron count for an element into SPARE.
+c C Changed 20/2/12 - use 2^M3+1 to make an ID that might remain unique under addition operations.
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'XLST03.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'QSTORE.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
       KELECN=-1
+
       IF (KHUNTR(3,0,I,K,J,-1).LT.0) RETURN   ! L3 LOADED ?
       IF (MD5.LE.14)                 RETURN   ! MODERN LIST 5 ?
+
       KELECN=1
       M5=L5
       DO I=1,N5
@@ -4925,11 +4934,16 @@ C Put the electron count for an element into SPARE.
                   STORE(M5+13)=STORE(M3+1)+STORE(M3+3)+
      1                         STORE(M3+5)+STORE(M3+7)+STORE(M3+9)+
      1                         STORE(M3+11)
+c - use this for (2^N)+1 -                 STORE(M5+13)=(2**J)+1
                GO TO 100
             END IF
             M3=M3+MD3
          END DO
+C No match
          STORE(M5+13)=0.0
+         write(cmon,'(a,a)') 
+     1  '{E Scattering factors not known for element ', ISTORE(M5)
+         call xprvdu(ncvdu,1,0)
 100      CONTINUE
          M5=M5+MD5
       END DO
