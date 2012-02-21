@@ -170,7 +170,7 @@
 ^^WI      @ 1,3 GRID EXP2 NROWS=5 NCOLS=1                                       
 ^^WI      {                                                                     
 ^^WI       @ 1,1 STATIC XFW1                                                    
-^^WI 'You are looking at a Wilson Plot; (Sin(theta)/lambda)^2 (or rho) runs down'   
+^^WI 'You are looking at a Wilson Plot; (Sin(theta)/lambda)^2 (rho) runs down'   
 ^^WI       @ 2,1 STATIC XFW2                                                    
 ^^WI 'the vertical axis. Log of actual scattering over expected scattering'     
 ^^WI       @ 3,1 STATIC XFW2                                                    
@@ -595,7 +595,7 @@
 %        END IF                                                                 
 %        COPY '#GENERALEDIT 30'                                                 
 %        COPY 'LOCATE RECORDTYPE = 109'                                         
-%        GET NOSTORE SILENT FINAL REAL ' ' ' '                                  
+%        GET NOSTORE SILENT  REAL ' ' ' '                                  
 %        EVALUATE THFULL = - VALUE                                              
 %        COPY 'TRANSFER TO OFFSET = 10 FROM THFULL'                             
 %        TRANSFER '{I Theta full manually set to ' // -                         
