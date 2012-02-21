@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2012/02/21 14:47:35  djw
+C In Wilson plot, add comment tat Rho is Sin(theta)/lambda)^2
+C
 C Revision 1.22  2011/05/13 11:16:51  djw
 C Calls to Kallow now return a key to the test which failed and a value to indicate if it was Max or Min. The argument of KALLOW must be a variable
 C
@@ -493,6 +496,7 @@ C
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'QLST30.INC'
 
+      LOGICAL E5B      
       DIMENSION SW(30),SR(30),SI(30),NSUM(30), MHKL(3),
      1          SWC(30),SIC(30)
 
@@ -519,7 +523,9 @@ C     SET INITIAL VALUES
         SIC(I)=0.0                                                         
         NSUM(I)=0                                                         
    50 CONTINUE                                                          
+      SCALE = 1.0
       E5 = .TRUE.
+      E5B = .FALSE.
       IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0)  THEN
        IF (KEXIST(5) .GT. 0) THEN
           CALL XFAL05
@@ -560,10 +566,12 @@ C  INTENSITY
         IF (E5) THEN
           CALL FCAL2 (MHKL,FCA,IDS,EWS,RHOS)
           IF ( EWS.LE.0 ) THEN
-            E5 = .FALSE. !Can't do calculated line.
+cdjwfeb2012            E5 = .FALSE. !Can't do calculated line.
+            E5B = .FALSE.           !Need temporary value
           ELSE
 C WEIGHTED SUMS                                                     
-C  WILSON                                                            
+C  WILSON  
+            E5B = .TRUE.                                                          
             SWC(N)=SWC(N)+EWS*TMUL                                            
 C  INTENSITY                                                         
             SIC(N)=SIC(N)+TMUL*FCA*FCA/(EPS*PTS)
@@ -592,7 +600,8 @@ C CALCULATE WEIGHTED AVERAGES AND LOGS
         AVR(I)=SR(I)*DIV                                                  
 
         FLGW(I)          =ALOG(MAX(SW(I) *DIV,0.00000000001))
-        IF ( E5) FLGWC(I)=ALOG(MAX(SWC(I)*DIV,0.00000000001))
+CDJWFEB2012        IF ( E5) FLGWC(I)=ALOG(MAX(SWC(I)*DIV,0.00000000001))
+        IF ( E5B) FLGWC(I)=ALOG(MAX(SWC(I)*DIV,0.00000000001))
 
 c        WRITE(95,'(2F15.8)')FLGW(I), FLGWC(I)
 
