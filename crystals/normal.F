@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2011/05/13 11:16:51  djw
+C Calls to Kallow now return a key to the test which failed and a value to indicate if it was Max or Min. The argument of KALLOW must be a variable
+C
 C LOGGING STARTED APRIL 2011
 C
       SUBROUTINE MLTNRM
@@ -678,10 +681,11 @@ C TOP FRAME
       IR=2
 
       IF ( IPLOTW .EQ. 1 ) THEN
-        WRITE(CMON,'(A,5(/A))')
+        WRITE(CMON,'(A,6(/A))')
      1  '^^PL PLOTDATA _WILSON SCATTER ATTACH _VWILSON KEY',
      1  '^^PL XAXIS TITLE "ln(<F(obs)**2>rho/<SUM(f**2)>rho)"',
-     1  '^^PL NSERIES=3 LENGTH=50 YAXIS TITLE Rho',
+     1  '^^PL NSERIES=3 LENGTH=50 YAXIS TITLE ', 
+     1  '^^PL "Rho=(Sin(theta)/lambda)**2"',
      1  '^^PL SERIES 1 SERIESNAME ''Straight Line'' TYPE LINE',
      1  '^^PL SERIES 2 SERIESNAME ''Wilson''',
      1  '^^PL SERIES 3 SERIESNAME ''Wilson (Fcalc)'' TYPE LINE'

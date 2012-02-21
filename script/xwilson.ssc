@@ -37,7 +37,7 @@
 ^^WI      @ 1,3 GRID EXP2 NROWS=5 NCOLS=1                                       
 ^^WI      {                                                                     
 ^^WI       @ 1,1 STATIC XFW1                                                    
-^^WI 'You are looking at a Wilson Plot; Diffraction angle (or rho) runs down'   
+^^WI 'You are looking at a Wilson Plot; (Sin(theta)/lambda)^2 (or rho) runs down'
 ^^WI       @ 2,1 STATIC XFW2                                                    
 ^^WI 'the vertical axis. Log of actual scattering over expected scattering'     
 ^^WI       @ 3,1 STATIC XFW2                                                    
