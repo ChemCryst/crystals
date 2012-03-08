@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.65  2012/02/20 13:48:36  rich
+c Warn if fragment contains elements with unknown scattering factors. The match might not work as you expect it.
+c
 c Revision 1.64  2012/01/04 14:31:25  rich
 c Fix some uninitialized variables, and output format mistakes.
 c
@@ -387,6 +390,7 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XLISTI.INC'
       INCLUDE 'XCARDS.INC'
+      INCLUDE 'XCOMPD.INC'
       INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST05.INC'
@@ -445,6 +449,7 @@ C -- SET THE OUTPUT LIST TYPE TO LIST 5
 C -- CLEAR THE STORE
       CALL XRSL
       CALL XCSAE
+      WRITE (CPCH,'(15A4,a)') (KTITL(I),I=1,15),CHAR(9)
 C -- LOAD LISTS 1 AND 2
       CALL XFAL01
       CALL XFAL02
@@ -1054,7 +1059,7 @@ c
 cdjwfeb08
          IF (INTSYM.EQ.0) THEN
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
-     1    CHAR(9)//'Asymmetric'
+     1    'Asymmetric'
          END IF
 c
          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,6(A,F9.4))')
@@ -1484,8 +1489,12 @@ CDJWNOV07            CALL XPRVDU(NCVDU,4,0)
             IF ( I .GT. 0 ) THEN
               WRITE(CMON,'(/''Singular operator matrix found'')')
               CALL XPRVDU(NCVDU,2,0)
-              WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(2A)')
-     1    CHAR(9),'ERROR_SINGULAR_OPERATOR_CANNOT_BE_INVERTED'
+              IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(2)(:)
+
+              IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A,A)') 
+     1    CHAR(9),'Singular_operator_cannot_be_inverted'
+              WRITE(CPCH(LENFIL+1:),'(2A)')
+     1    CHAR(9),'Singular_operator_cannot_be_inverted'
               CALL XCREMS(CPCH,CPCH,LENFIL)
               EXIT
             END IF
@@ -1591,8 +1600,8 @@ c
 c
          ELSE
             IF (IPCHRE.GE.0)THEN
-             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(2A)')
-     1       CHAR(9),'none'
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(4A)')
+     1       CHAR(9),':Pseudo',CHAR(9), 'none'
              CALL XCREMS(CPCH,CPCH,LENFIL)
             END IF
          END IF
@@ -1973,6 +1982,9 @@ C----- CHECK THAT THIS MATRIX IS PROPERLY DEFINED
 C
       DET3 = XDETR3(ROTDIL)
 c
+
+c      goto 11111
+
 cdjw-nov05
       toler=0.1
       if (abs(det3) .le. toler) then
@@ -2004,9 +2016,8 @@ c
         if (issprt .eq. 0) write (ncwu,'(a)') (cmon(i)(:),i=1,4)
       endif
       det3 = xdetr3(rotdil)
-
 c djwdec05 These are not always fixing the problem. Skip round them
-cjan08      goto 12345
+c jan08      goto 12345
 c      The December 05 fix had the repercussion of distorting the
 c      rotation matrix, leading to distorsions in the model. The
 c      orignal 1988 code has been restored for the moment.  The
@@ -2016,6 +2027,8 @@ c
 c      The old fix assumes that the main dilations will be roughly
 c      along the inertial axes. This is not always true.
 c
+11111  continue
+
       IF (ABS(ROTDIL(1,1)) .LE. 0.0001*NNEW) then 
        write(cmon,'(a,f12.6)') 'Fixing Rotdil(1,1) - old value =',
      1 rotdil(1,1) 
@@ -3328,9 +3341,9 @@ c
              WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(14(A,F9.4))')
      1       CHAR(9),TORMIN,CHAR(9),TORMAX
              CALL XCREMS(CPCH,CPCH,LENFIL)
-             IF ( MISMAT .EQ. 0 )
-     1        WRITE(99,'(15A4,3(A,F12.5))')(KTITL(I),I=1,15),
-     1       CHAR(9),RMSDEV(4),CHAR(9),SBDEV,CHAR(9),STDEV
+c             IF ( MISMAT .EQ. 0 )
+c     1        WRITE(123,'(15A4,3(A,F12.5))')(KTITL(I),I=1,15),
+c     1       CHAR(9),RMSDEV(4),CHAR(9),SBDEV,CHAR(9),STDEV
       END IF
 9000  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9010 )
@@ -4225,7 +4238,9 @@ c
       IEQATM = 0
 C -- SET MATCHING METHOD TO ROTATION/INVERSION
       CALL XRGSMD(4)
-      WRITE (CPCH,'(15A4)') (KTITL(I),I=1,15)
+      WRITE (CPCH,'(15A4,a)') (KTITL(I),I=1,15),CHAR(9)
+      WRITE(CMON,'(1X/A,15A4)') '{I', (KTITL(I),I=1,15)
+      CALL XPRVDU(NCVDU,2,0)
 c----- enable printing of Torsions etc
       nogeom = 1      
 C--PRINT THE INITIAL CAPTIONS
@@ -4473,7 +4488,7 @@ c        CALL XPRVDU(NCVDU,1,0)
           ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 0, 1 )
         ELSE IF (IPCHRE.GE.0)THEN
            WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
-     1     CHAR(9)//'Linear_matching_fragments'
+     1     'Linear_matching_fragments'
         END IF
       END IF
 
@@ -4484,7 +4499,7 @@ c        CALL XPRVDU(NCVDU,1,0)
          INTSYM = INTSYM + 1
          IF (IPCHRE.GE.0)THEN
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
-     1    CHAR(9)//'Internal_symmetry_2'
+     1    'Internal_symmetry_2'
          END IF
 
 C Sort each set of atoms into index order.
@@ -4851,10 +4866,13 @@ C--TERMINATION MESSAGES
 C
 9900  CONTINUE
 C -- ERRORS
-      CALL XOPMSG ( IOPDIS , IOPABN , 0 )
+      CALL XOPMSG ( IOPREG , IOPABN , 0 )
       IF ( IPCHRE .GE. 0 ) WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1 CHAR(9)//'errors'
-      IF ( IPCHRE .GE. 0 ) WRITE(99,'(A)')CPCH(1:LEN_TRIM(CPCH))
+      IF ( IPCHRE .GE. 0 ) WRITE(CMON,'(1X/A,A)')
+     1 '{I', CPCH(1:LEN_TRIM(CPCH))
+      CALL XPRVDU(NCVDU,2,0)
+      
       GO TO 6050
 9910  CONTINUE
 C -- INPUT ERRORS
