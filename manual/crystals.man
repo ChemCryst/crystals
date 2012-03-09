@@ -6222,9 +6222,10 @@ end
  END
 #
 #Q
-#N   5#
+#N   6#
 #J
  \MATCH
+ METHOD 3
  MAP RESIDUE(1)
  ONTO RESIDUE(2)
  RENAME 100
@@ -6235,7 +6236,7 @@ two residues.  Unlike REGULARISE itself, the user does not have
 to list the atoms in any special order - the routine attempts to make
 pairwise assigments. Initially this is done via a topographical search,
 and refined by minimising cartesian residuals whenever degeneracy is 
-found.  By default, the final coordinate matching is done using method 1.
+found.
 
 #DMAP#
 #PThe following list of atoms is the ideal fragment with ideal atom 
@@ -6253,7 +6254,7 @@ ignored - they can even be Q atoms
 #
 #DMETHOD#
 #POne of the METHODS available in REGULARISE#
-The default is method 1.
+The default is method 4.
 #
 #DRENAME  n#
 #PIf the mapping is succerssful, atoms in the ONTO list are given the 
@@ -6261,11 +6262,34 @@ same type as the corresponding atom in the MAP list, and the same SERIAL
 plus "n".
 #
 #DOUTPUT LIST= PUNCH=#
-#POutput takes the values OFF, LOW, MEDIUM, HIGH.
+#PlIST takes the values OFF, LOW, MEDIUM, HIGH.
 #Punch takes the values OFF, RESULTS#
 #PResults creates an ASCII file that could be processed by EXCEL or 
 other spreadsheet.
-
+The fields are tab-deliminated, and have the following attributes.
+#J
+CSD_CIF_BAZHAM01  (title)
+Asymmetric  (potential internal symmetry)
+:Centroids   (x,y,z)A and (x,y,z)B  
+:Axes of Inertia   (long, medium, short)A and (long, medium, short)B 
+:Sum dev sq  After matching, Sum(delta_x^2), y and z.  Sum Separation^2 
+:RMS dev  As above, but root mean square deviation rather than sums  
+:RMS bond and tors dev  RMS differences of equivalent bond lengths and torsion angles  
+:Min and Max bond dev  Minimum and maximum bond length differences.  
+:Min and Max tors dev   Minimum and maximum torsion angle differences. 
+:Mean & delta Centroids  Mean(xA,xB), (yA,yB), (zA,zB) and (xA-xB), (yA-yB), (zA-zB)
+:Transformation   (3x3) transformation matrix
+:Det and trace   Determinant and trace of matrix
+:Closeness to ideal rotation  RMS of the deviations of matrix elements from integers  
+:Closeness to group operator  RMS of the deviations of translations from integers  
+:Combined measure of closeness    
+:Rworst & Raverage  Worst and Average for to an operator, operator identifier  
+:Symmetry  Local point group relating molecules.
+:Pseudo  Pseudo point group  relating molecules.
+:Operator  Pseudo symmetry operator.
+:No_Atoms  Number of atoms in each molecule.
+:S.G.  Original space group.
+:Cell  Original unit cell parameters.
 #
 #DComparing lots of Z'=2 structures#
 #PIf one has a single cif file containing many Z'=2 structures, the whole 
