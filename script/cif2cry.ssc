@@ -9,7 +9,7 @@
 % EVALUATE MATCH = FALSE                                                       
 %%                                                                              
 ^^WI WINDOW CIF2CRY 'cif2cry' MODAL COMMIT='CFBOK' CANCEL='CFBXX'               
-^^WI GRID GRIDM NROWS=10 NCOLS=3                                                
+^^WI GRID GRIDM NROWS=10 NCOLS=4                                                
 ^^WI {                                                                          
 ^^WI  @ 2,2 GRID CFG NROWS=1 NCOLS=3 OUTLINE='CIF to convert:'                  
 ^^WI  {                                                                         
@@ -32,8 +32,11 @@
 ^^WI    @ 3,3 EDITBOX OENAM '.cry' DISABLED=YES                                 
 ^^WI  }                                                                         
 ^^WI  @ 7,2 CHECKBOX RF 'Read converted file into CRYSTALS now' STATE=ON       
-^^WI  @ 8,2 CHECKBOX XM 'MATCH Z-prime=2 structures?' STATE=OFF       
-^^WI  @ 9,2 GRID GB NROWS=1 NCOLS=3                                             
+^^WI  @ 8,2 CHECKBOX XM 'Post-process now?' STATE=OFF 
+^^WI  @ 8,3 BUTTON HELP '&Help'
+
+      
+^^WI  @ 9,2 GRID GB NROWS=1 NCOLS=3
 ^^WI  {                                                                         
 ^^WI    @ 1,1 BUTTON CFBOK '&Ok' DEFAULT                                        
 ^^WI    @ 1,3 BUTTON CFBXX '&Cancel'                                            
@@ -42,7 +45,7 @@
 ^^WI SHOW                                                                       
 ^^CR                                                                            
 % LOOP                                                                          
-%   VERIFY BROWSE CFBXX CFBOK FO AO AN                                          
+%   VERIFY BROWSE CFBXX CFBOK FO AO AN  HELP                                        
 %   GET SILENT NOSTORE FINAL ABBREVIATED 'BXX?' 'BXX'                           
 %   CASE VALUE                                                                  
 %     BLOCK                         %BROWSE%                                    
@@ -128,7 +131,19 @@
 ^^CO    SET OFNAM DISABLED=YES SET OENAM DISABLED=NO                            
 ^^CO    SET RF STATE=OFF DISABLED=YES                                           
 %     END BLOCK                                                                 
-%   END CASE                                                                    
+%     BLOCK                         %HELP%
+%        COPY '#SCRIPT XHELP1'
+Clicking Post-Process causes the file WINCRYS\SCRIPT\CIFPROC.DAT 
+to be executed.
+
+The default file causes the molecules in Z'=2 structures to be MATCHED
+
+If a file CIFPROC.DAT exists in the current folder, it will execute
+in preference. This file can contain any CRYSTALS #COMMANDS.
+
+%        COPY '#SCRIPT XHELP2'
+%     END BLOCK
+%   END CASE                                
 % END LOOP                                                                      
 %%                                                                              
 %% create list 23 if it doesnt exist
