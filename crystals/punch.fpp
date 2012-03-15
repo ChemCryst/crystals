@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.79  2012/01/13 15:19:10  rich
+C Bit of extra space on punching of item 17 of L5 (fields could run together in
+C exceptional circumstances).
+C
 C Revision 1.78  2012/01/03 14:58:44  rich
 C Change L5 punch to remove decimal places on serial and flag.
 C
@@ -2490,7 +2494,7 @@ c END
       END DO
 
 100   FORMAT('READ NSCATTERERS=',I5)
-101   FORMAT('SCAT TYPE ',A4, 1X, 4(1X,F12.6),/,
+101   FORMAT('SCAT TYPE= ',A4, 1X, 4(1X,F12.6),/,
      1       'CONT',11X,4(1X,F12.6),/,
      1       'CONT',24X,3(1X,F12.6))
 
