@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.50  2011/09/01 11:55:27  rich
+C Corrected DU[ISO] scaled shift calc - but it makes no difference.
+C
 C Revision 1.49  2011/08/31 15:41:58  rich
 C Added COMMON required for ISSPRT
 C
@@ -577,6 +580,29 @@ C----- CHOOSE INVERTOR
                CALL XCHOLS(JY, L11C, KO)
             ELSE
 C----- EXPAND  LOWER TRIANGLE OF FULL SQUARE
+
+c      WRITE (NCWU,103)
+c103   FORMAT(/ , ' The Lower triangle Normal Matrix' )
+c      JLC = JY
+c      JLD = INM
+c      DO JLI = 1, JY
+c        WRITE (NCWU,101) JLI, JLC
+c        WRITE (NCWU, 102) (STR11(JLD+I),I=0,JLC-1)
+c101     FORMAT (/, ' Column ', I5, I6)
+c102     FORMAT((1X,80G15.8/))
+c        JLD = JLD + JLC
+c        JLC = JLC - 1
+c      ENDDO
+c
+c1031   FORMAT(/ , ' A test matrix' )
+c      DO JLI = 0, 8
+c        WRITE (NCWU,1021) JLI, IMLIND(3,JLI)
+c1021     FORMAT((1X,2I5))
+c      ENDDO
+c
+c
+c
+
                CALL XMTCVT (INM, JY, 1, MD11)
                CALL XFILTR
      1      (STR11(INM), STR11(IVAL), STR11(IVEC), STR11(ISCL),
@@ -1541,6 +1567,15 @@ C PRE-SCALE NORMAL MATRIX.
 C GET INVERSE DIAGONAL SCALING MATRIX U FROM NORMAL MATRIX.
 C THE ELEMENTS ARE 1./SQRT(DIAGONAL ELEMENT OF NORMAL MATRIX)
 C
+c      WRITE (NCWU,103)
+c103   FORMAT(/ , ' The Normal Matrix' )
+c      DO J = 1, M
+c        WRITE (NCWU,101) J
+c        WRITE (NCWU, 102) (A(I,J),I=1,M)
+c101     FORMAT (/, ' Column ', I5)
+c102     FORMAT((1X,20G15.8/))
+c      ENDDO
+
       DO 10 I=1,M
         U(I)=1.0
         IF (ABS(A(I,I)) .GT. ZERO) U(I)=1.0 / SQRT(A(I,I))
@@ -1606,6 +1641,10 @@ C----- FIND LARGEST AND SMALLEST
          Z = B(I)
        ENDIF
 100   CONTINUE
+
+c      WRITE(NCWU,'(A,I4)')'Info: ',INFO
+c      WRITE(NCWU,'(A,2(I4,G15.8))')'Largest, smallest: ',II,Y,IK,Z
+
 C
 C----- FIND NEXT LARGEST
       DO 120 J = 1, M
@@ -1617,6 +1656,10 @@ C----- FIND NEXT LARGEST
              IJ = I
            ENDIF
 110      CONTINUE
+
+c      WRITE(NCWU,'(A,I4,G15.8)')'Next largest: ',IJ,X
+
+
 C-----   LOOK FOR A DISCONTINUITY
          IF ( Y .GT. (DISC * X)) THEN
 C-----   RESET ALL SMALLER TO ZERO AND EXIT LOOP
@@ -1695,9 +1738,22 @@ C
 C
 C
 C
+
+c      WRITE(442,*) 'Ilen: ', ILEN
+
+      IF ( ITYPE .EQ. 1 ) THEN
+	DO L = (N*N)-1, N, -1
+          IA = IMLIND(N,L)
+c          WRITE(442,*)'Moving: ', IA, ' to ', L
+          XSTR11(IADD+L) = XSTR11(IADD+IA)
+        END DO
+        RETURN
+      END IF  
+
       JADD = IADD - 1
       DO 10 L = 2, N
       IF (ITYPE .EQ. 1) THEN
+            STOP 'Reimplemented above'
             M = N - L + 2
       ELSE
             M = L
@@ -1724,6 +1780,42 @@ C----- MOVE THE COLUMN ALONG
 C
       END
 C
+C Given zero-based index into NxN square array, give corresponding index into lower triangle array, 
+C assuming symmetry.
+CODE FOR IMLIND
+      FUNCTION IMLIND(N,I)
+C N - dimension of matrix
+C I - 0-based index into 3x3 matrix, e.g. 8 = 3,3 for a 3x3 matrix
+C IMLIND - 0-based index of position (column order), e.g. 5 = 3,3 for a 3x3 lower triangle matrix
+      
+      IROW = MOD(I,N) ! zero-based row index
+      ICOL = (I - IROW) / N !  zero-based col index
+
+c      WRITE(442,*)'IMLIND:', N, ' ', I
+
+
+C Lower triangle only contains entries where row >= col, swap if reqd:
+      IF ( IROW < ICOL ) THEN
+         ITEMP = IROW
+         IROW = ICOL
+         ICOL = ITEMP
+      END IF
+
+
+C Compute index into lower triangle of IROW, ICOL
+
+      IMLIND = ( ICOL * ( 2 * N - ICOL - 1 ) / 2 ) + IROW
+
+c     $B22+(9-C$17)/2*C$17
+
+c      WRITE(442,*) 'IROW, ICOL, IMLIND: ', IROW, ICOL, IMLIND
+c      WRITE(442,*) 'IROW, ICOL: ', IROW, ICOL
+c      WRITE(442,*) 'IROW, ICOL, IMLIND: ', IROW, ICOL, IMLIND
+      RETURN
+      END
+
+         
+
 CODE FOR KFLSP
       FUNCTION KFLSP (JT, JS, JR, JO, JX, JC, JQ, JZ, ICAPT,
      1 E, C, A, S, RMAX, SOESD, ILEVEL, MW, CTEXT)
