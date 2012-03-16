@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.35  2012/01/04 14:31:25  rich
+C Fix some uninitialized variables, and output format mistakes.
+C
 C Revision 1.34  2011/07/01 13:42:45  djw
 C Change the dot product module name from VPROD to DPROD
 C
@@ -2429,7 +2432,8 @@ C----- OPTIMAL - WTD FO OR WTD 2 FO - FC
          GOTO 2750
 C--'FO' PATTERSON
 2600     CONTINUE
-         F=U*U
+         F=U*ABS(U)   !Ensure sign is retained
+         IF ( U .LT. 0.0 ) F = -F
          GOTO 2700
 C--'FC' PATTERSON
 2650     CONTINUE
@@ -2438,10 +2442,12 @@ C--'FC' PATTERSON
 2657     CONTINUE
 C---- (FO-FC)**2 PATTERSON
          F = (U-V)**2
+c         IF ( U .LT. V ) F = -F
          GOTO 2700
 2658     CONTINUE
 C----- FO**2 - FC**2 PATTERSON
          F = U*U - V*V
+c         WRITE (188, *) 'Fo2-Fc2: ', U*U, V*V, F, A
          GOTO 2700
 C--ACCUMULATE THE ORIGIN FOR SCALING
 2700     CONTINUE
@@ -2483,6 +2489,7 @@ C--LOOP OVER EACH SECTION TO BE COMPUTED IN THIS PASS
             M=N+JO
             FSTORE(K)=FSTORE(K)+P*STORE(N)+Q*STORE(M)
             FSTORE(K+1)=FSTORE(K+1)+S*(Q*STORE(N)-P*STORE(M))
+c            WRITE(191,*)' HK: ', FSTORE(K), FSTORE(K+1), W, F
             K=K+2
             KL=KL+KM
 2950     CONTINUE
