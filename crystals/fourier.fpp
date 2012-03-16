@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.36  2012/03/16 11:09:53  rich
+C Preserve sign of F in Fo-patterson coefficient.
+C
 C Revision 1.35  2012/01/04 14:31:25  rich
 C Fix some uninitialized variables, and output format mistakes.
 C
@@ -2433,7 +2436,7 @@ C----- OPTIMAL - WTD FO OR WTD 2 FO - FC
 C--'FO' PATTERSON
 2600     CONTINUE
          F=U*ABS(U)   !Ensure sign is retained
-         IF ( U .LT. 0.0 ) F = -F
+c         IF ( U .LT. 0.0 ) F = -F
          GOTO 2700
 C--'FC' PATTERSON
 2650     CONTINUE
