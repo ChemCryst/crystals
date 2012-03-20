@@ -1,4 +1,8 @@
-C $Log: not supported by cvs2svn $123
+C $Log: not supported by cvs2svn $
+C Revision 1.48  2012/02/17 15:20:24  djw
+C Merge Fc with the same weights as Fo and save in output merged list.
+C Phase is taken from the root reflection because I dont know how to merge phases
+C123
 C Revision 1.47  2012/01/04 14:31:25  rich
 C Fix some uninitialized variables, and output format mistakes.
 C
@@ -1640,6 +1644,7 @@ C--WORK(9) = SIGMA
       WORK(9)=AMAX1(0.01,STORE(IREF+12))
       WORK(10)=WORK(9)
       work(7) = fc
+      avfc = fc
       work(8) = phase
 C----- SET THE PRINT LEVEL FOR SINGLE REFLECTIONS
       JPRINT = IPRINT
