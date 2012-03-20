@@ -376,7 +376,7 @@ _refine_diff_density_max          0.42
  
  
 # The values actually used during refinement 
-_oxford_reflns_threshold_expression_ref     I>0.0\s(I)
+_oxford_reflns_threshold_expression_ref     I>-10.0\s(I)
 _refine_ls_number_reflns          1133 
 _refine_ls_number_restraints      0 
 _refine_ls_number_parameters      55 
