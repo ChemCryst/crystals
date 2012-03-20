@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.79  2012/01/05 13:59:18  djw
+C Provide more sig fig for different scalefactors
+C
 C Revision 1.78  2012/01/04 14:31:25  rich
 C Fix some uninitialized variables, and output format mistakes.
 C
@@ -1115,10 +1118,10 @@ cdjwmay07        STORE(L30GE+11 ) = RW
         STORE(L30RF+8 ) = STORE(L11P+24)  ! NUMBER OF REFLECTIONS USED
 cdjwmay07        STORE(L30GE+9 ) = STORE(L11P+24)
 
-        IF ( SFLS_TYPE .NE. SFLS_REFINE )  THEN
+c        IF ( SFLS_TYPE .NE. SFLS_REFINE )  THEN
             STORE(L30RF+3) = S6SIG  ! SIGMA THRESHOLD FOR REFINEMENT
 cdjwmay07            STORE(L30GE+8) = S6SIG
-        ENDIF
+c        ENDIF
 
         STORE(L30IX+6) = RTD*ASIN(WAVE*SMIN)  ! STORE THETA LIMITS
         STORE(L30IX+7) = RTD*ASIN(WAVE*SMAX)
@@ -1126,6 +1129,7 @@ cdjwmay07            STORE(L30GE+8) = S6SIG
         ISTORE(L30RF+12 ) = NV + 2   ! REFINEMENT TYPE
 
       ENDIF
+
 
       IF( SFLS_TYPE .EQ. SFLS_CALC ) THEN  ! 'CALC' ONLY
 
