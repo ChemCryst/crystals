@@ -1728,14 +1728,12 @@ Bonds: Update required - List5 length change
 Structure matching: measures of similarity and pseudosymmetry                                                                                                                                                                                                   
 A.  Collins, R. I.  Cooper and D. J.  Watkin                                                                                                                                                                                                                    
 Journal of Applied Crystallography 2006;39(6):842-849                                                                                                                                                                                                           
- Method number is not in allowed range                                                                                                                                                                                                                          
- Method set to default value                                                                                                                                                                                                                                    
 
 
  12241009    Compound X                                                               Date              Time          
 
 
-Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
+Matching Permitting Improper Rotation (Method 4, Kabsch)                                                                                                                                                                                                        
 
 
                                                    Comparison   of group number   1
@@ -1750,33 +1748,13 @@ Matching by Rotation/inversion (Method 1)
 
  Principal moments of inertia of old and new groups                                                                                                                                                                                                             
     8.954   3.000   0.000      8.954   3.000   0.000                                                                                                                                                                                                            
- Calculation of rotation-dilation matrix and decomposition into component parts
+ Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
 
- Excessive contraction. Determinant =    0.000000                                                                                                                                                                                                               
- Original matrix                                                                                                                                                                                                                                                
-               -1.000000    0.000011    0.000000                                                                                                                                                                                                                
-                0.000032    1.000000    0.000000                                                                                                                                                                                                                
-                0.000001    0.000003    0.000000                                                                                                                                                                                                                
- Modified matrix                                                                                                                                                                                                                                                
-               -1.000000    0.000011   -0.000001                                                                                                                                                                                                                
-                0.000032    1.000000    0.000003                                                                                                                                                                                                                
-                0.000001    0.000003   -1.000000                                                                                                                                                                                                                
 
-                  Rotation dilation matrix            Dilation component                  Rotation component                  
-
-                  -1.00000   0.00001   0.00000        1.00000  -0.00001   0.00000       -1.00000   0.00002   0.00000
-                   0.00003   1.00000   0.00000       -0.00001   1.00000   0.00000        0.00002   1.00000   0.00000
-                   0.00000   0.00000  -1.00000        0.00000   0.00000   1.00000        0.00000   0.00000  -1.00000
-
- Eigenvalues
-                                                      0.99999   1.00000   1.00001
- Eigenvectors
-                                                      0.69915   0.00000  -0.71498
-                                                      0.71498   0.00000   0.69915
-                                                      0.00000   1.00000   0.00000
- Determinants
-                             1.00000                            1.00000                            1.00000
-
+ Rotation Matrix
+   -1.00000   0.00002   0.00000
+    0.00002   1.00000   0.00000
+    0.00000   0.00000  -1.00000
 
  Deviations  in best plane system after fitting ( Angstrom )                                                                                                                                                                                                    
 "Angle" is the angular separation of the atoms as seen from
@@ -1784,15 +1762,15 @@ Matching by Rotation/inversion (Method 1)
 
  Position  Type  Serial    old(x)  old(y)  old(z)       new(x)  new(y)  new(z)        d(x)    d(y)    d(z)       Distance    Angle
 
-      1    C         2.     2.518   0.000   0.000        2.518   0.000   0.000        0.000   0.000   0.000        0.000   0.001
+      1    C         2.     2.518   0.000   0.000        2.518   0.000   0.000        0.000   0.000   0.000        0.000   0.000
       2    C         5.    -0.262   0.000   0.000       -0.262   0.000   0.000        0.000   0.000   0.000        0.000   0.001
-      3    O        51.    -1.128  -1.225   0.000       -1.128  -1.225   0.000        0.000   0.000   0.000        0.000   0.000
-      4    N        52.    -1.128   1.225   0.000       -1.128   1.225   0.000        0.000   0.000   0.000        0.000   0.000
+      3    O        51.    -1.128  -1.225   0.000       -1.128  -1.225   0.000        0.000   0.000   0.000        0.000   0.001
+      4    N        52.    -1.128   1.225   0.000       -1.128   1.225   0.000        0.000   0.000   0.000        0.000   0.001
 
 
                                                       Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
-                                                      Maximum distance   C      2     0.000
+                                                      Maximum distance   C      5     0.000
                                                       Maximum angle      C      5     0.001
 
 Bond length deviations
@@ -1812,9 +1790,9 @@ Torsion angle deviations                                                        
  Transformation matrix relating new and old coordinates
                 In best plane system                In orthogonal system                In crystal system 
 
-                 -1.000000  0.000021 -0.000001       0.119925  0.598007 -0.792468       0.339471  0.402132 -0.476853
-                  0.000022  1.000000  0.000003       0.598004 -0.680683 -0.423156       1.063618 -0.680683 -0.378654
-                  0.000001  0.000003 -1.000000      -0.792470 -0.423152 -0.439241      -0.958459 -0.287744 -0.658788
+                 -1.000000  0.000016  0.000000       0.119929  0.598009 -0.792466       0.339475  0.402133 -0.476849
+                  0.000016  1.000000  0.000000       0.598007 -0.680682 -0.423154       1.063623 -0.680682 -0.378649
+                  0.000000  0.000000 -1.000000      -0.792467 -0.423152 -0.439247      -0.958456 -0.287743 -0.658793
 
 Best match for ( OP# 0 ) x OPN is:   0.2443
 Best match for ( OP# 1 ) x OPN is:   0.3675
@@ -1842,7 +1820,7 @@ Average best in last row:    0.3077
  Element:  1  2  3  4  6 -1 -2 -3 -4 -6                                                                                                                                                                                                                         
  Tr_det:   4  0  1  2  3 -4  0 -1 -2 -3                                                                                                                                                                                                                         
 
- Pseudo-symmetry element  2 detected                                                                                                                                                                                                                            
+  Pseudo-symmetry element  2 detected                                                                                                                                                                                                                         
 
 
  Final new atom coordinates in crystal fractions 
@@ -1856,7 +1834,7 @@ Average best in last row:    0.3077
  Comparison   of group number   1 completed
 
 Input: mapping    8 atoms onto    8                                                                                                                                                                                                                             
-Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
+Matching Permitting Improper Rotation (Method 4, Kabsch)                                                                                                                                                                                                        
 
 
                                                    Replacement  of group number   1
@@ -1881,7 +1859,7 @@ Matched:        C    101 - C      1   0.000
 
  Replacement  of group number   1 completed
 
-Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
+Matching Permitting Improper Rotation (Method 4, Kabsch)                                                                                                                                                                                                        
 
 
                                                    Comparison   of group number   1
@@ -1896,24 +1874,13 @@ Matching by Rotation/inversion (Method 1)
 
  Principal moments of inertia of old and new groups                                                                                                                                                                                                             
    13.431   5.796   3.000     13.431   5.796   3.000                                                                                                                                                                                                            
- Calculation of rotation-dilation matrix and decomposition into component parts
+ Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
 
 
-                  Rotation dilation matrix            Dilation component                  Rotation component                  
-
-                  -1.00000   0.00000  -0.00001        1.00000   0.00000   0.00001       -1.00000   0.00000  -0.00002
-                   0.00000  -1.00000   0.00002        0.00000   1.00000  -0.00001        0.00000  -1.00000   0.00003
-                  -0.00003   0.00004   1.00000        0.00001  -0.00001   1.00000       -0.00002   0.00003   1.00000
-
- Eigenvalues
-                                                      0.99999   1.00000   1.00001
- Eigenvectors
-                                                     -0.53637   0.63996  -0.55023
-                                                      0.43788   0.76835   0.46680
-                                                      0.72150   0.00944  -0.69235
- Determinants
-                             1.00000                            1.00000                            1.00000
-
+ Rotation Matrix
+   -1.00000   0.00000  -0.00001
+    0.00000  -1.00000   0.00003
+   -0.00001   0.00003   1.00000
 
  Deviations  in best plane system after fitting ( Angstrom )                                                                                                                                                                                                    
 "Angle" is the angular separation of the atoms as seen from
@@ -1923,17 +1890,17 @@ Matching by Rotation/inversion (Method 1)
 
       1    C         2.    -1.954   0.000   0.000       -1.954   0.000   0.000        0.000   0.000   0.000        0.000   0.001
       2    C         5.     0.826   0.000   0.000        0.826   0.000   0.000        0.000   0.000   0.000        0.000   0.001
-      3    O        51.     1.692   0.000  -1.225        1.692   0.000  -1.225        0.000   0.000   0.000        0.000   0.000
-      4    N        52.     1.692   0.000   1.225        1.692   0.000   1.225        0.000   0.000   0.000        0.000   0.000
+      3    O        51.     1.692   0.000  -1.225        1.692   0.000  -1.225        0.000   0.000   0.000        0.000   0.001
+      4    N        52.     1.692   0.000   1.225        1.692   0.000   1.225        0.000   0.000   0.000        0.000   0.001
       5    O         4.     0.131  -1.204   0.000        0.131  -1.204   0.000        0.000   0.000   0.000        0.000   0.001
       6    C         3.    -1.259  -1.204   0.000       -1.259  -1.204   0.000        0.000   0.000   0.000        0.000   0.000
       7    Q         6.     0.131   1.204   0.000        0.131   1.204   0.000        0.000   0.000   0.000        0.000   0.000
-      8    C         1.    -1.259   1.204   0.000       -1.259   1.204   0.000        0.000   0.000   0.000        0.000   0.001
+      8    C         1.    -1.259   1.204   0.000       -1.259   1.204   0.000        0.000   0.000   0.000        0.000   0.000
 
 
                                                       Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
-                                                      Maximum distance   C      2     0.000
+                                                      Maximum distance   N     52     0.000
                                                       Maximum angle      C      5     0.001
 
 Bond length deviations
@@ -1969,9 +1936,9 @@ Torsion angle deviations                                                        
  Transformation matrix relating new and old coordinates
                 In best plane system                In orthogonal system                In crystal system 
 
-                 -1.000000 -0.000002 -0.000017       0.119937  0.598003 -0.792469       0.339483  0.402129 -0.476850
-                  0.000002 -1.000000  0.000028       0.598002 -0.680690 -0.423149       1.063615 -0.680690 -0.378643
-                 -0.000017  0.000028  1.000000      -0.792470 -0.423147 -0.439247      -0.958459 -0.287740 -0.658793
+                 -1.000000  0.000002 -0.000010       0.119941  0.598008 -0.792465       0.339487  0.402131 -0.476843
+                 -0.000002 -1.000000  0.000025       0.598003 -0.680688 -0.423150       1.063617 -0.680688 -0.378646
+                 -0.000010  0.000025  1.000000      -0.792468 -0.423143 -0.439253      -0.958457 -0.287738 -0.658799
 
 Best match for ( OP# 0 ) x OPN is:   0.2443
 Best match for ( OP# 1 ) x OPN is:   0.3675
@@ -1999,7 +1966,7 @@ Average best in last row:    0.3077
  Element:  1  2  3  4  6 -1 -2 -3 -4 -6                                                                                                                                                                                                                         
  Tr_det:   4  0  1  2  3 -4  0 -1 -2 -3                                                                                                                                                                                                                         
 
- Pseudo-symmetry element  2 detected                                                                                                                                                                                                                            
+  Pseudo-symmetry element  2 detected                                                                                                                                                                                                                         
 
 
  Final new atom coordinates in crystal fractions 
@@ -2017,7 +1984,7 @@ Average best in last row:    0.3077
  Comparison   of group number   1 completed
 
 Input: mapping    8 atoms onto    8                                                                                                                                                                                                                             
-Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
+Matching Permitting Improper Rotation (Method 4, Kabsch)                                                                                                                                                                                                        
 
 
                                                    Comparison   of group number   1
@@ -2028,7 +1995,7 @@ Matching by Rotation/inversion (Method 1)
 
  Comparison   of group number   1 completed
 
-Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
+Matching Permitting Improper Rotation (Method 4, Kabsch)                                                                                                                                                                                                        
 
 
                                                    Comparison   of group number   1
@@ -2043,33 +2010,13 @@ Matching by Rotation/inversion (Method 1)
 
  Principal moments of inertia of old and new groups                                                                                                                                                                                                             
     8.954   3.000   0.000      8.954   3.000   0.000                                                                                                                                                                                                            
- Calculation of rotation-dilation matrix and decomposition into component parts
+ Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
 
- Excessive contraction. Determinant =    0.000000                                                                                                                                                                                                               
- Original matrix                                                                                                                                                                                                                                                
-               -1.000000   -0.000007    0.000000                                                                                                                                                                                                                
-                0.000020   -1.000000    0.000000                                                                                                                                                                                                                
-                0.000001   -0.000003    0.000000                                                                                                                                                                                                                
- Modified matrix                                                                                                                                                                                                                                                
-               -1.000000   -0.000007    0.000001                                                                                                                                                                                                                
-                0.000020   -1.000000   -0.000003                                                                                                                                                                                                                
-                0.000001   -0.000003    1.000000                                                                                                                                                                                                                
 
-                  Rotation dilation matrix            Dilation component                  Rotation component                  
-
-                  -1.00000  -0.00001   0.00000        1.00000  -0.00001   0.00000       -1.00000  -0.00001   0.00000
-                   0.00002  -1.00000   0.00000       -0.00001   1.00000   0.00000        0.00001  -1.00000   0.00000
-                   0.00000   0.00000   1.00000        0.00000   0.00000   1.00000        0.00000   0.00000   1.00000
-
- Eigenvalues
-                                                      0.99999   1.00000   1.00001
- Eigenvectors
-                                                      0.69893   0.00000   0.71519
-                                                      0.71519   0.00000  -0.69893
-                                                      0.00000   1.00000   0.00000
- Determinants
-                             1.00000                            1.00000                            1.00000
-
+ Rotation Matrix
+   -1.00000   0.00001   0.00000
+   -0.00001  -1.00000   0.00000
+    0.00000   0.00000   1.00000
 
  Deviations  in best plane system after fitting ( Angstrom )                                                                                                                                                                                                    
 "Angle" is the angular separation of the atoms as seen from
@@ -2077,16 +2024,16 @@ Matching by Rotation/inversion (Method 1)
 
  Position  Type  Serial    old(x)  old(y)  old(z)       new(x)  new(y)  new(z)        d(x)    d(y)    d(z)       Distance    Angle
 
-      1    C         2.     2.518   0.000   0.000        2.518   0.000   0.000        0.000   0.000   0.000        0.000   0.000
+      1    C         2.     2.518   0.000   0.000        2.518   0.000   0.000        0.000   0.000   0.000        0.000   0.001
       2    C         5.    -0.262   0.000   0.000       -0.262   0.000   0.000        0.000   0.000   0.000        0.000   0.001
-      3    O        51.    -1.128   1.225   0.000       -1.128   1.225   0.000        0.000   0.000   0.000        0.000   0.000
-      4    N        52.    -1.128  -1.225   0.000       -1.128  -1.225   0.000        0.000   0.000   0.000        0.000   0.000
+      3    O        51.    -1.128   1.225   0.000       -1.128   1.225   0.000        0.000   0.000   0.000        0.000   0.001
+      4    N        52.    -1.128  -1.225   0.000       -1.128  -1.225   0.000        0.000   0.000   0.000        0.000   0.001
 
 
                                                       Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
-                                                      Maximum distance   C      5     0.000
-                                                      Maximum angle      C      5     0.001
+                                                      Maximum distance   N     52     0.000
+                                                      Maximum angle      O     51     0.001
 
 Bond length deviations
  C    105 N   1051 C      5 N     52   0.000
@@ -2105,9 +2052,9 @@ Torsion angle deviations                                                        
  Transformation matrix relating new and old coordinates
                 In best plane system                In orthogonal system                In crystal system 
 
-                 -1.000000 -0.000013  0.000001      -0.182181 -0.827222  0.531520      -0.329432 -0.381351  0.513944
-                  0.000013 -1.000000 -0.000003      -0.827227 -0.163262 -0.537626      -1.471317 -0.163262 -1.127649
-                  0.000001 -0.000003  1.000000       0.531513 -0.537634 -0.654557       0.642842 -0.365591 -0.507306
+                 -1.000000  0.000010  0.000000      -0.182185 -0.827212  0.531535      -0.329431 -0.381342  0.513956
+                 -0.000010 -1.000000  0.000000      -0.827236 -0.163259 -0.537612      -1.471333 -0.163259 -1.127633
+                  0.000000  0.000000  1.000000       0.531497 -0.537650 -0.654556       0.642823 -0.365602 -0.507310
 
 Best match for ( OP# 0 ) x OPN is:   0.2805
 Best match for ( OP# 1 ) x OPN is:   0.3542
@@ -2135,13 +2082,13 @@ Average best in last row:    0.3184
  Element:  1  2  3  4  6 -1 -2 -3 -4 -6                                                                                                                                                                                                                         
  Tr_det:   4  0  1  2  3 -4  0 -1 -2 -3                                                                                                                                                                                                                         
 
- Pseudo-symmetry element  2 detected                                                                                                                                                                                                                            
+  Pseudo-symmetry element  2 detected                                                                                                                                                                                                                         
 
 
  Final new atom coordinates in crystal fractions 
  C         2.       1.0407       0.1275       0.2636
  C         5.       0.9952       0.0332       0.0953
- O        51.       0.8959      -0.0217       0.0731
+ O        51.       0.8959      -0.0217       0.0732
  N        52.       1.0661       0.0294       0.0125
 
 
@@ -2149,7 +2096,7 @@ Average best in last row:    0.3184
  Comparison   of group number   1 completed
 
 Input: mapping    8 atoms onto    8                                                                                                                                                                                                                             
-Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
+Matching Permitting Improper Rotation (Method 4, Kabsch)                                                                                                                                                                                                        
 
 
                                                    Replacement  of group number   1
@@ -2174,7 +2121,7 @@ Matched:        C    101 - C      3   0.000
 
  Replacement  of group number   1 completed
 
-Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
+Matching Permitting Improper Rotation (Method 4, Kabsch)                                                                                                                                                                                                        
 
 
                                                    Comparison   of group number   1
@@ -2189,24 +2136,13 @@ Matching by Rotation/inversion (Method 1)
 
  Principal moments of inertia of old and new groups                                                                                                                                                                                                             
    13.431   5.796   3.000     13.431   5.796   3.000                                                                                                                                                                                                            
- Calculation of rotation-dilation matrix and decomposition into component parts
+ Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
 
 
-                  Rotation dilation matrix            Dilation component                  Rotation component                  
-
-                  -1.00000   0.00001   0.00000        1.00000   0.00000   0.00001       -1.00000   0.00001   0.00001
-                   0.00001   1.00000  -0.00002        0.00000   1.00000  -0.00001        0.00001   1.00000  -0.00003
-                  -0.00002  -0.00004  -1.00000        0.00001  -0.00001   1.00000       -0.00001  -0.00003  -1.00000
-
- Eigenvalues
-                                                      0.99999   1.00000   1.00001
- Eigenvectors
-                                                     -0.23883   0.84517  -0.47817
-                                                      0.61582   0.51256   0.59837
-                                                      0.75082  -0.15156  -0.64289
- Determinants
-                             1.00000                            1.00000                            1.00000
-
+ Rotation Matrix
+   -1.00000   0.00001  -0.00001
+    0.00001   1.00000  -0.00003
+    0.00001  -0.00003  -1.00000
 
  Deviations  in best plane system after fitting ( Angstrom )                                                                                                                                                                                                    
 "Angle" is the angular separation of the atoms as seen from
@@ -2214,20 +2150,20 @@ Matching by Rotation/inversion (Method 1)
 
  Position  Type  Serial    old(x)  old(y)  old(z)       new(x)  new(y)  new(z)        d(x)    d(y)    d(z)       Distance    Angle
 
-      1    C         2.    -1.954   0.000   0.000       -1.954   0.000   0.000        0.000   0.000   0.000        0.000   0.001
-      2    C         5.     0.826   0.000   0.000        0.826   0.000   0.000        0.000   0.000   0.000        0.000   0.001
-      3    O        51.     1.692   0.000   1.225        1.692   0.000   1.225        0.000   0.000   0.000        0.000   0.000
-      4    N        52.     1.692   0.000  -1.225        1.692   0.000  -1.225        0.000   0.000   0.000        0.000   0.000
+      1    C         2.    -1.954   0.000   0.000       -1.954   0.000   0.000        0.000   0.000   0.000        0.000   0.000
+      2    C         5.     0.826   0.000   0.000        0.826   0.000   0.000        0.000   0.000   0.000        0.000   0.000
+      3    O        51.     1.692   0.000   1.225        1.692   0.000   1.225        0.000   0.000   0.000        0.000   0.001
+      4    N        52.     1.692   0.000  -1.225        1.692   0.000  -1.225        0.000   0.000   0.000        0.000   0.001
       5    Q         6.     0.131  -1.204   0.000        0.131  -1.204   0.000        0.000   0.000   0.000        0.000   0.000
       6    C         1.    -1.259  -1.204   0.000       -1.259  -1.204   0.000        0.000   0.000   0.000        0.000   0.000
-      7    O         4.     0.131   1.204   0.000        0.131   1.204   0.000        0.000   0.000   0.000        0.000   0.001
-      8    C         3.    -1.259   1.204   0.000       -1.259   1.204   0.000        0.000   0.000   0.000        0.000   0.000
+      7    O         4.     0.131   1.204   0.000        0.131   1.204   0.000        0.000   0.000   0.000        0.000   0.000
+      8    C         3.    -1.259   1.204   0.000       -1.259   1.204   0.000        0.000   0.000   0.000        0.000   0.001
 
 
                                                       Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
-                                                      Maximum distance   C      2     0.000
-                                                      Maximum angle      C      2     0.001
+                                                      Maximum distance   O     51     0.000
+                                                      Maximum angle      O     51     0.001
 
 Bond length deviations
  C    102 C    103 C      2 C      1   0.000
@@ -2262,9 +2198,9 @@ Torsion angle deviations                                                        
  Transformation matrix relating new and old coordinates
                 In best plane system                In orthogonal system                In crystal system 
 
-                 -1.000000  0.000009  0.000009      -0.182195 -0.827221  0.531517      -0.329445 -0.381350  0.513938
-                  0.000009  1.000000 -0.000028      -0.827226 -0.163250 -0.537631      -1.471315 -0.163250 -1.127656
-                 -0.000009 -0.000028 -1.000000       0.531510 -0.537638 -0.654555       0.642838 -0.365594 -0.507306
+                 -1.000000  0.000007 -0.000006      -0.182197 -0.827214  0.531527      -0.329445 -0.381344  0.513946
+                  0.000007  1.000000 -0.000025      -0.827231 -0.163250 -0.537623      -1.471324 -0.163250 -1.127647
+                  0.000006 -0.000025 -1.000000       0.531501 -0.537649 -0.654553       0.642828 -0.365601 -0.507306
 
 Best match for ( OP# 0 ) x OPN is:   0.2805
 Best match for ( OP# 1 ) x OPN is:   0.3542
@@ -2292,7 +2228,7 @@ Average best in last row:    0.3184
  Element:  1  2  3  4  6 -1 -2 -3 -4 -6                                                                                                                                                                                                                         
  Tr_det:   4  0  1  2  3 -4  0 -1 -2 -3                                                                                                                                                                                                                         
 
- Pseudo-symmetry element  2 detected                                                                                                                                                                                                                            
+  Pseudo-symmetry element  2 detected                                                                                                                                                                                                                         
 
 
  Final new atom coordinates in crystal fractions 
@@ -2310,7 +2246,7 @@ Average best in last row:    0.3184
  Comparison   of group number   1 completed
 
 Input: mapping    8 atoms onto    8                                                                                                                                                                                                                             
-Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
+Matching Permitting Improper Rotation (Method 4, Kabsch)                                                                                                                                                                                                        
 
 
                                                    Comparison   of group number   1
