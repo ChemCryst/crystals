@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.66  2012/03/08 09:35:07  djw
+c Fiddle with tabs to get .pch output from MATCH to lign up better.  Use correct name in Abandon messages
+c
 c Revision 1.65  2012/02/20 13:48:36  rich
 c Warn if fragment contains elements with unknown scattering factors. The match might not work as you expect it.
 c
@@ -288,7 +291,7 @@ C                  VALUE ( FIXED ) : 4
 C
 C
 C            IMETHD                 CALCULATION METHOD.A NUMBER BETWEEN
-C                                   1 AND 3. DEFAULT VALUE SET IS 1.
+C                                   1 AND 4. DEFAULT VALUE SET IS 1.
 C                                   UPPER LIMIT IS CHECKED BY ROUTINE
 C                                   XRGSMD
 C                  VALUE ( ONE OF ) : 1/2/3/4 ( SEE XRGCLC FOR MEANINGS )
@@ -951,6 +954,7 @@ C
       CHARACTER*2 CTEMP(3)
 C 
 C 
+      INCLUDE 'XCOMPD.INC'
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
@@ -1088,7 +1092,7 @@ C-----
 300      FORMAT (1X,'Principal moments of inertia of old and new groups'
      1    ,/1X,2(3F8.3,3X))
          IF (IPCHRE.GE.0)THEN
-          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,6(A,F9.4))')
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,6(A,F9.2))')
      1    Char(9),':Axes of Inertia ',
      1    (CHAR(9),ROOTO(I),I=1,3),(CHAR(9),ROOTN(I),I=1,3)
           CALL XCREMS(CPCH,CPCH,LENFIL)
@@ -1231,13 +1235,13 @@ C
      1 '( in crystal fractions ) ',/,1X,2(3F8.4,3X))
          IF (IPCHRE.GE.0)THEN
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,6(A,F9.4))')
-     1    char(9),':Sum & delta Centroids', 
+     1    char(9),':Mean & Delta Centroids', 
      1    (CHAR(9),AVCNT(I),I=1,3),(CHAR(9),DELCNT(I),I=1,3)
           CALL XCREMS(CPCH,CPCH,LENFIL)
          END IF
 C 
          IF (IPCHRE.GE.0)THEN
-          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,9(A,F9.4))')
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,9(A,F9.3))')
      1    char(9),':Transformation ',
      1    ((CHAR(9),WSPAC3(I,J),I=1,3),J=1,3)
           CALL XCREMS(CPCH,CPCH,LENFIL)
@@ -1581,12 +1585,15 @@ cdjwmay09         IF (ABS(1.-ABS(DET)).LE..05) THEN
             ELSE
                IF (DET.LT.ZERO) CSYM(1:1)='-'
             END IF
-            WRITE (CMON,1050) CSYM(1:2)
+            WRITE(CMON,'(1X/A,15A4)') '{I', (KTITL(I),I=1,15)
+            CALL XPRVDU(NCVDU,2,0)
+            CMON(1) = ' '
+            WRITE (CMON(2),1050) CSYM(1:2)
+1050        FORMAT ('{I  Pseudo-symmetry element ',A2,' detected')
             IF ((IFLCMP .EQ. 2).OR.(IFLCMP .EQ. 5).OR.
      1      (IFLCMP .EQ. 6))  THEN
-              CALL XPRVDU (NCVDU,1,0)
-              IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A/)') CMON(1)(:)
-1050          FORMAT (' Pseudo-symmetry element ',A2,' detected')
+              CALL XPRVDU (NCVDU,2,0)
+              IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A/)') CMON(2)(3:)
             ENDIF
 c
             IF (IPCHRE.GE.0)THEN
@@ -1629,6 +1636,8 @@ C
 1200        CONTINUE
             WRITE (CMON,1250) (ATEMP(J),CTEMP(J),J=1,3)
             CALL XPRVDU (NCVDU,1,0)
+1250          FORMAT ('{I  Pseudo-symmetry operator of form :-  ',
+     1        3(F6.2,A2,2X))
             IF (IPCHRE.GE.0)THEN
 
              WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,A)')
@@ -1639,9 +1648,7 @@ C
      1       '(A,3(F6.2,A2,2X))') CHAR(9),(ATEMP(J),CTEMP(J),J=1,3)
              CALL XCREMS(CPCH,CPCH,LENFIL)
             END IF
-              IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A/)') CMON(1)(:)
-1250          FORMAT (' Pseudo-symmetry operator of form :-  ',
-     1        3(F6.2,A2,2X))
+              IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A/)') CMON(1)(3:)
           ELSE
             IF (IPCHRE.GE.0)THEN
              WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(4A)')
@@ -2195,6 +2202,13 @@ C --
 C
 CODE FOR XRGCKB
       SUBROUTINE XRGCKB(imethd, RESULT)
+c
+C   Find transformation by Kabsch Method, Acta Cryst 1976, A32, 922-923
+c                                         Acta Cryst 1978, A43, 828-829
+c
+c      imethd 3 = pure rotation
+c      imethd 4 = permit rotary inversion
+c
       DIMENSION RESULT(3,3)
       DIMENSION WSPAC1(3,3),WSPAC2(3,3),WSPAC3(3,3)
       DIMENSION VMAT(3,3),UVEC(3)
@@ -2229,62 +2243,51 @@ C --
 C -- R=TRANSPOSE OF THIS
       CALL XTRANS(WSPAC3(1,1),WSPAC1(1,1),3,3)
 C -- T=TRANSPOSE(R)*R
-      CALL XMLTTM (WSPAC1(1,1),WSPAC1(1,1),WSPAC2(1,1),3,3,3)
+      CALL XMLTMM (WSPAC3(1,1),WSPAC1(1,1),WSPAC2(1,1),3,3,3)
+c      write(123,'((3f12.3,3x))') wspac2
+
 C -- U,V = EIGENVALUES,VECTORS OF T
       CALL XMXEGV(WSPAC2(1,1),VMAT(1,1),UVEC(1))
-C -- CHANGE ORDER
 C -- INTERCHANGE COLUMNS 1 AND 3 SO THAT EIGENVALUES
 C    ARE IN DESCENDING ORDER
       CALL XINT2 (3,VMAT(1,1),9,UVEC(1),3,1,3,1)
+c -- ENSURE RIGHTHANDED SYSTEM
+      DET=XDETR3(VMAT)
+C      write(123,'(a,3(3f8.2,3x),f12.6)') 'Vmat', vmat, det
+C -- SET THIRD VECTOR TO CROSS PRODUCT OF OTHER TWO
+      I=NCROP3 (VMAT(1,1),VMAT(1,2),VMAT(1,3))
 c
 c
-cdjwjan08  see if the best match involves inversion
-         det=xdetr3(vmat)
-c      write(ncwu,'(a,3(3f8.2,3x))') 'Vmat', vmat
-c      write(ncwu,'(a,4f12.6)') 'Eigenvalues ', uvec, det
-      if (det .le. 0.0) then
-         write(cmon,'(a,f12.6)') 
-     1  '{E Non-positive Determinant =', det
-         call xprvdu(ncvdu,1,0)
-         if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
-      endif
 c
-c
-
-c      if ((imethd .eq. 4) .and. (det .lt. zero)) then
-c       write(ncwu,'(a)')'Inverting'
-c       call xnegmt(a,3,3)
-c       det=xdetr3(vmat)
-c      endif
-c
-c
-c      if ((imethd .eq. 3) .or. (abs(det) .le. zero)) then
-cdjwmay08      if (abs(det) .le. zero) then
-      if ((det) .le. zero) then
-         write(cmon,'(a)') 
-     1  ' Ensuring pure rotation'
-         call xprvdu(ncvdu,1,0)
-         if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
-c -- set third vector to cross product of other two
-         i=ncrop3 (vmat(1,1),vmat(1,2),vmat(1,3))
-      endif
-c
-c
-      det2=xdetr3(VMAT)
-      write(cmon,'(a,f12.6)') 
-     1' Using Matrix with Determinant =', det2
-      call xprvdu(ncvdu,1,0)
-      if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
-
-
 C -- B=RV
       CALL XMLTMM(WSPAC1(1,1),VMAT(1,1),WSPAC3(1,1),3,3,3)
 C -- NORMALISE B VECTORS AND FORM CROSS PRODUCT
       J=NORM3(WSPAC3(1,1))
       J=NORM3(WSPAC3(1,2))
+      VLEN=
+     1 WSPAC3(1,3)*WSPAC3(1,3)+WSPAC3(2,3)*WSPAC3(2,3)+
+     2 WSPAC3(3,3)*WSPAC3(3,3)
+c -- check not co-planar
+      if(vlen .le. zerosq) 
+     1 I=NCROP3 (WSPAC3(1,1),WSPAC3(1,2),WSPAC3(1,3))
+      J=NORM3(WSPAC3(1,3))
       DETB=XDETR3(WSPAC3(1,1))
-      IF (DETB.LT.0) SIG(3)=-1.
-      I=NCROP3 (WSPAC3(1,1),WSPAC3(1,2),WSPAC3(1,3))
+
+      if (detb .le. 0.0) then
+         write(cmon,'(a,f12.6)') 
+     1  '{I Best match involves inversion, determinant  =', detb
+         call xprvdu(ncvdu,1,0)
+         if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
+      endif
+      IF ((DETB.LT.0) .AND. (IMETHD .EQ.3)) THEN
+         SIG(3)=-1.
+         write(cmon,'(a)') 
+     1  ' Ensuring pure rotation'
+         call xprvdu(ncvdu,1,0)
+         if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
+         I=NCROP3 (WSPAC3(1,1),WSPAC3(1,2),WSPAC3(1,3))
+      ENDIF
+
 C -- U=B*TRANSPOSE(V)
       CALL XMLTMT (WSPAC3(1,1),VMAT(1,1),RESULT(1,1),3,3,3)
 C -- CALCULATE E
@@ -3304,8 +3307,9 @@ c
       endif
 c
 c
-      WRITE(CMON,'(17X,A/A,3F12.4)')'rms pos    rms bond     rms tors',
-     1 ' Deviations  ',RMSDEV(4), SBDEV, STDEV
+      WRITE(CMON,'(A,17X,A/A,A,3F12.4)')'{I',
+     1 'rms pos    rms bond     rms tors','{I',
+     2 ' Deviations  ',RMSDEV(4), SBDEV, STDEV
       CALL XPRVDU(NCVDU,2,0)
       IF (ISSPRT .EQ. 0) 
      1 WRITE(NCWU,'(17X,A/A,3F12.4)')'rms pos    rms bond     rms tors',
@@ -3445,20 +3449,20 @@ C --
       IMETHD=IVALUE
       IF ( IMETHD.LT.0 ) GO TO 9800
       IF ( IMETHD.EQ.0 ) GO TO 9900
-      IF ( IMETHD.GE.4 ) GO TO 9800
+      IF ( IMETHD.GT.4 ) GO TO 9800
       RETURN
 9800  CONTINUE
-        WRITE(CMON,9810)
+        WRITE(CMON,9810) IVALUE
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
-9810  FORMAT ( ' Method number is not in allowed range ')
+9810  FORMAT ( ' Method number',I3,' is not in allowed range ')
 9900  CONTINUE
 C -- SET DEFAULT METHOD NUMBER
       IMETHD = 1
         WRITE(CMON,9910)
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
-9910  FORMAT (' Method set to default value')
+9910  FORMAT (' Method set to default value, 1')
       RETURN
       END
 C
@@ -4162,6 +4166,8 @@ C Don't bother with element, layer scales etc. Punch End:
 
 CODE FOR XMATCH
       SUBROUTINE XMATCH
+C   IMPLEMENTS #MATCH
+C
 C-- CALCULATE A MATCH OR MATCHES BETWEEN TWO FRAGMENTS, AND RUN REGU COMPARE
 C-- TO FIND THE BEST ONE.
 c
@@ -4222,6 +4228,8 @@ c
       if (issprt.eq.0) 
      1 write(ncwu,'(a/a/a)') cmon(1),cmon(2),cmon(3)
 c
+      METH = 4    !SET DEFAULT TO KABSCH ROTARY/INVERSION
+      CALL XRGSMD(METH)
 
       MQ = KSTALL ( 100 )         ! ALLOCATE A BUFFER FOR COMMAND PROCESSING
 
@@ -4879,7 +4887,7 @@ C -- INPUT ERRORS
       CALL XOPMSG ( IOPDIS , IOPCMI , 0 )
       IF ( IPCHRE .GE. 0 ) WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1 CHAR(9)//'command_input_error'
-      IF ( IPCHRE .GE. 0 ) WRITE(99,'(A)')CPCH(1:LEN_TRIM(CPCH))
+c      IF ( IPCHRE .GE. 0 ) WRITE(123,'(A)')CPCH(1:LEN_TRIM(CPCH))
       ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 9, 1 )
       GO TO 9900
       END
@@ -5400,7 +5408,6 @@ C Use the better match to get a better matrix.
 
 c        IMETHD=1       ! DEFAULT METHOD 1 (ROTATION COMPONENT OF ROTATION-DILATION MATRIX ONLY)
 C        IMETHD=4       ! DEFAULT METHOD 4 (Kabsch rotation/inversion)
-      if (imethd .eq. 3) imethd = 3
 C  IMETHD NOW FOUND FROM METHOD CARD
         CALL XZEROF(ORIGIN(1),3)   ! ZERO ORIGIN
         CALL XUNTM3(RGMAT(1,1))    ! SET TO ZERO ROTATION
