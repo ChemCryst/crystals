@@ -10,7 +10,7 @@
 @
 @if "%CRDEBUG%" == "TRUE"  goto debug
 @
-@%LD% %OPT% %LDFLAGS% obj\*.obj %LIBS% %OUT%crystals.exe
+%LD% %OPT% %LDFLAGS% obj\*.obj %LIBS% %OUT%crystals.exe
 @goto fini
 :debug
 @%LD% %LDEBUG% %LDFLAGS% dobj\*.obj %LIBS% %OUT%crystalsd.exe
