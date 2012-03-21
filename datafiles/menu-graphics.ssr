@@ -3,11 +3,9 @@
 ^^WI   ITEM CAM '&Cameron Graphics'
 ^^WI            '#SCRIPT XCAMNORM'
 ^^WI             ENABLEIF='L1 L2 L5' DISABLEIF='IN'
-^^WI   MENU SCAM '&Special'
-^^WI    ITEM CAM '&Cameron (use existing input files)'
+^^WI   ITEM CAM '&Cameron (View existing input files)'
 ^^WI             '#SCRIPT XCAMSPEC'
 ^^WI              DISABLEIF='IN'
-^^WI   ENDMENU
 ^^WI   SPLIT
 ^^WI   ITEM CIN5 'Import last Cameron output'
 ^^WI             '#USE CAMERON.L5' DISABLEIF='IN'
