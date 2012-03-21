@@ -25,6 +25,7 @@
 
 @if "%COMPCODE%" == "GID" rc /d__CR_WIN__ /fo script1.res ..\gui\script1.rc
 @if "%COMPCODE%" == "WXS" rc /fo rc.o ..\gui\wx.rc
+@if "%COMPCODE%" == "INW" rc /fo rc.res %CDEF% ..\gui\wx.rc
 @rem  --include-dir c:\wxWidgets-2.8.11\include
 
 @if "%CRDEBUG%" == "TRUE"  goto debug
