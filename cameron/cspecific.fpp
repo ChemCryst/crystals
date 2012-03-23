@@ -10,7 +10,7 @@ CODE FOR ZCLRA
 #if defined(_DOS_) 
       INCLUDE 'CAMWIN.INC'
 #endif
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_INW_)  || defined(_MAC_)
       INCLUDE 'CAMPAR.INC'
       INCLUDE 'CAMCOL.INC'
 #endif
@@ -30,7 +30,7 @@ C&&GIDGIL      CHARACTER*80 CHARTC
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       INTEGER IPTS(8)
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
       INTEGER IPTS(8)
 
 C &&GIDGIL      WRITE(CHARTC,1)'^^CH CLEAR'
@@ -41,7 +41,7 @@ C &&GIDGIL      CALL ZMORE(CHARTC,0)
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
               CALL FSTCLR
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
               CALL FSTCLR
 
 C &&GIDGIL      WRITE(CHARTC,2)'^^CH RGB',
@@ -56,7 +56,7 @@ C &&GIDGIL      CALL ZMORE(CHARTC,0)
      1                      NINT(4.05*IVGACL(2,ICOL+1)),
      1                      NINT(4.05*IVGACL(3,ICOL+1)) )
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
               CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
      1                      NINT(4.05*IVGACL(2,ICOL+1)),
      1                      NINT(4.05*IVGACL(3,ICOL+1)) )
@@ -78,7 +78,7 @@ C &&GIDGIL      CALL ZMORE(CHARTC,0)
       IPTS(8) = IY1
       CALL FSTFPO(4,IPTS)
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
       IPTS(1) = IX1
       IPTS(2) = IY1
       IPTS(3) = IX1
@@ -98,7 +98,7 @@ CODE FOR ZDLINE
 #if defined(_DOS_) 
       INCLUDE 'CAMWIN.INC'
 #endif
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)|| defined(_INW_)
       INCLUDE 'CAMPAR.INC'
       INCLUDE 'CAMCOL.INC'
 #endif
@@ -116,7 +116,7 @@ CODE FOR ZDLINE
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       CHARACTER*80 CHARTC
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
       CHARACTER*80 CHARTC
 C &&GILGID      WRITE(CHARTC,2)'^^CH RGB',
 C &&GILGID     1 NINT(4.05*IVGACL(1,ICOL+1)),
@@ -131,7 +131,7 @@ c
      1                      NINT(4.05*IVGACL(2,ICOL+1)),
      1                      NINT(4.05*IVGACL(3,ICOL+1)) )
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
               CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
      1                      NINT(4.05*IVGACL(2,ICOL+1)),
      1                      NINT(4.05*IVGACL(3,ICOL+1)) )
@@ -143,7 +143,7 @@ C &&GILGID      CALL ZMORE(CHARTC,0)
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       CALL FSTLIN( IX1, IY1, IX2, IY2 )
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
       CALL FSTLIN( IX1, IY1, IX2, IY2 )
 #endif
       RETURN
@@ -159,7 +159,7 @@ CODE FOR ZDTEXT
       INCLUDE 'CAMCOL.INC'
       INCLUDE 'CAMGRP.INC'
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
       INCLUDE 'CAMPAR.INC'
       INCLUDE 'CAMCOL.INC'
       INCLUDE 'CAMGRP.INC'
@@ -193,7 +193,7 @@ C &&GILGID      CALL ZMORE(CHARTC,0)
      1                      NINT(4.05*IVGACL(2,ICOL+1)),
      1                      NINT(4.05*IVGACL(3,ICOL+1)) )
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
               CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
      1                      NINT(4.05*IVGACL(2,ICOL+1)),
      1                      NINT(4.05*IVGACL(3,ICOL+1)) )
@@ -207,7 +207,7 @@ C &&GILGID      CALL ZMORE(CHARTC,0)
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       CALL FSTEXT( IX, IY, TEXT(1:LEN(TEXT)), -IFONT )
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
       CALL FSTEXT( IX, IY, TEXT(1:LEN(TEXT)), -IFONT )
 
 #endif
@@ -219,7 +219,7 @@ CODE FOR ZFILEL
 #if defined(_DOS_) 
       INCLUDE 'CAMWIN.INC'
 #endif
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)|| defined(_INW_)
       INCLUDE 'CAMPAR.INC'
       INCLUDE 'CAMCOL.INC'
 #endif
@@ -237,7 +237,7 @@ CODE FOR ZFILEL
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       CHARACTER*80 CHARTC
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
       CHARACTER*80 CHARTC
 C &&GILGID      WRITE(CHARTC,2)'^^CH RGB',
 C &&GILGID     1 NINT(4.05*IVGACL(1,ICOL+1)),
@@ -252,7 +252,7 @@ C &&GILGID      CALL ZMORE(CHARTC,0)
      1                      NINT(4.05*IVGACL(2,ICOL+1)),
      1                      NINT(4.05*IVGACL(3,ICOL+1)) )
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
               CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
      1                      NINT(4.05*IVGACL(2,ICOL+1)),
      1                      NINT(4.05*IVGACL(3,ICOL+1)) )
@@ -265,7 +265,7 @@ C &&GILGID      CALL ZMORE(CHARTC,0)
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
               CALL FSTFEL ( IXC, IYC, IMAJ, IMIN )
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
               CALL FSTFEL ( IXC, IYC, IMAJ, IMIN )
             
 #endif
@@ -304,7 +304,7 @@ C &&GILGID      CHARACTER*80 CHARTC
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       INTEGER IPTS(2000)    
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
       INTEGER IPTS(2000)    
 
 #endif
@@ -322,7 +322,7 @@ C &&GILGID      CHARACTER*80 CHARTC
         IPTS(I*2 - 1) = IX(I)
         IPTS(I*2    ) = IY(I)
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
         IPTS(I*2 - 1) = IX(I)
         IPTS(I*2    ) = IY(I)
 
@@ -346,7 +346,7 @@ C &&GILGID      CALL ZMORE(CHARTC,0)
      1                      NINT(4.05*IVGACL(2,ICOL1+1)),
      1                      NINT(4.05*IVGACL(3,ICOL1+1)) )
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
               CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL1+1)),
      1                      NINT(4.05*IVGACL(2,ICOL1+1)),
      1                      NINT(4.05*IVGACL(3,ICOL1+1)) )
@@ -359,7 +359,7 @@ C &&GILGID      CALL ZMORE(CHARTC,0)
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
               CALL FSTEPO ( N, IPTS )
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
               CALL FSTEPO ( N, IPTS )
 
 #endif
@@ -373,7 +373,7 @@ CODE FOR ZVGAEL
       INTEGER*2 IMAJ1,IMIN1,ICOL1,ixc1,iyc1
       INCLUDE 'CAMWIN.INC'
 #endif
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)|| defined(_INW_)
       INCLUDE 'CAMPAR.INC'
       INCLUDE 'CAMCOL.INC'
 #endif
@@ -389,7 +389,7 @@ CODE FOR ZVGAEL
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
 C      CHARACTER*80 CHARTC
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
 C      CHARACTER*80 CHARTC
 C &&GILGID      WRITE(CHARTC,2)'^^CH RGB',
 C &&GILGID     1 NINT(4.05*IVGACL(1,ICOL+1)),
@@ -404,7 +404,7 @@ C &&GILGID      CALL ZMORE(CHARTC,0)
      1                      NINT(4.05*IVGACL(2,ICOL+1)),
      1                      NINT(4.05*IVGACL(3,ICOL+1)) )
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
               CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
      1                      NINT(4.05*IVGACL(2,ICOL+1)),
      1                      NINT(4.05*IVGACL(3,ICOL+1)) )
@@ -417,7 +417,7 @@ C &&GILGID      CALL ZMORE(CHARTC,0)
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
               CALL FSTEEL ( IXC, IYC, IMAJ, IMIN )
 #endif
-#if defined(_WXS_)
+#if defined(_WXS_)|| defined(_INW_)
               CALL FSTEEL ( IXC, IYC, IMAJ, IMIN )
 #endif
 
@@ -683,7 +683,7 @@ C &&GILGID      CHARACTER*80 CHARTC
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       INTEGER IPTS(2000)    
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
       INTEGER IPTS(2000)    
 
 #endif
@@ -705,7 +705,7 @@ C&GIL      WRITE(6,*) 'ZPOLGN2, N: ', N
         IPTS(I*2 - 1) = IX(I)
         IPTS(I*2    ) = IY(I)
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
         IPTS(I*2 - 1) = IX(I)
         IPTS(I*2    ) = IY(I)
 #endif
@@ -732,7 +732,7 @@ C &&GILGID      CALL ZMORE(CHARTC,0)
      1                      NINT(4.05*IVGACL(2,ICOL+1)),
      1                      NINT(4.05*IVGACL(3,ICOL+1)) )
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
               CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
      1                      NINT(4.05*IVGACL(2,ICOL+1)),
      1                      NINT(4.05*IVGACL(3,ICOL+1)) )
@@ -747,7 +747,7 @@ c&GIL      WRITE(6,*) 'ZPOLGN4, N: ', N
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
               CALL FSTFPO ( N, IPTS )
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
               CALL FSTFPO ( N, IPTS )
 
 #endif
@@ -870,7 +870,7 @@ C DO WE NEED TO CHANGE THE CURSOR ?
       GOTO 30
 
 #endif
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)|| defined(_INW_)
       INTEGER IX(N),IY(N)
       INTEGER IXPOS,IYPOS
       INTEGER IPPOS
@@ -905,10 +905,10 @@ C DO WE NEED TO CHANGE THE CURSOR ?
 C
 C Only graphical versions need the next few functions
 C
-#if defined(_GID_)||defined(_GIL_)||defined(_WXS_)||defined(_MAC_)
+#if defined(_GID_)||defined(_GIL_)||defined(_WXS_)||defined(_MAC_)|| defined(_INW_)
 
       SUBROUTINE FSTLIN(IX1, IY1, IX2, IY2)
-#if defined(_DIGITALF77_) 
+#if defined(_DIGITALF77_) || defined (_INW_)
       INTERFACE
           SUBROUTINE FASTLINE (JX1, JY1, JX2, JY2)
           !DEC$ ATTRIBUTES C :: fastline
@@ -924,7 +924,7 @@ C
 #if defined(_GNUF77_) 
       CALL FASTLINE(%VAL(IX1), %VAL(IY1), %VAL(IX2), %VAL(IY2))
 #endif
-#if defined(_DIGITALF77_) 
+#if defined(_DIGITALF77_) || defined (_INW_)
       CALL FASTLINE(IX1, IY1, IX2, IY2)
 #endif
       RETURN
@@ -932,7 +932,7 @@ C
 
       SUBROUTINE FSTFEL(IX, IY, IW, IH)
 
-#if defined(_DIGITALF77_) 
+#if defined(_DIGITALF77_) || defined (_INW_)
       INTERFACE
           SUBROUTINE FASTFELLI (JX, JY, JW, JH)
           !DEC$ ATTRIBUTES C :: fastfelli
@@ -957,7 +957,7 @@ C
 
       SUBROUTINE FSTEEL(IX, IY, IW, IH)
 
-#if defined(_DIGITALF77_) 
+#if defined(_DIGITALF77_) || defined (_INW_)
       INTERFACE
           SUBROUTINE FASTEELLI (JX, JY, JW, JH)
           !DEC$ ATTRIBUTES C :: fasteelli
@@ -981,7 +981,7 @@ C
 
       SUBROUTINE FSTFPO(NV, IPTS)
 
-#if defined(_DIGITALF77_) 
+#if defined(_DIGITALF77_) || defined (_INW_)
       INTERFACE
           SUBROUTINE FASTFPOLY (NV, IPTS)
           !DEC$ ATTRIBUTES C :: fastfpoly
@@ -1003,7 +1003,7 @@ C
 
       SUBROUTINE FSTEPO(NV, IPTS)
 
-#if defined(_DIGITALF77_) 
+#if defined(_DIGITALF77_) || defined (_INW_)
       INTERFACE
           SUBROUTINE FASTEPOLY (NV, IPTS)
           !DEC$ ATTRIBUTES C :: fastepoly
@@ -1026,7 +1026,7 @@ C
 
       SUBROUTINE FSTEXT(IX, IY, CTEXT, IFSIZE)
 
-#if defined(_DIGITALF77_) 
+#if defined(_DIGITALF77_) || defined (_INW_)
       INTERFACE
           SUBROUTINE FASTTEXT (JX, JY, CALINE, JFS)
           !DEC$ ATTRIBUTES C :: fasttext
@@ -1054,7 +1054,7 @@ C
 
       SUBROUTINE FSTCOL(IR, IG, IB)
 
-#if defined(_DIGITALF77_) 
+#if defined(_DIGITALF77_) || defined (_INW_)
       INTERFACE
           SUBROUTINE FASTCOLOUR ( JR, JG, JB )
           !DEC$ ATTRIBUTES C :: fastcolour
@@ -1077,7 +1077,7 @@ C
 
       SUBROUTINE FSTCLR()
 
-#if defined(_DIGITALF77_) 
+#if defined(_DIGITALF77_) || defined (_INW_)
       INTERFACE
           SUBROUTINE FASTCLEAR ()
           !DEC$ ATTRIBUTES C :: fastclear
@@ -1123,7 +1123,7 @@ c      WRITE(99,'(2A)')'zmore1n: ',ntext
 C DOS VERSION NO LONGER HAS STATUS LINE. (SPACE SAVER)
 C&DOS      Status$Text=text
 C&DOS      call window_update@(Status$Text)
-#if defined(_GID_)||defined(_GIL_)||defined(_WXS_)||defined(_MAC_)
+#if defined(_GID_)||defined(_GIL_)||defined(_WXS_)||defined(_MAC_)|| defined(_INW_)
       CALL XCTRIM(NTEXT,ITL)
       IF ( ITL .LE. 2 ) RETURN
       ITL = MIN ( ITL, 70 )

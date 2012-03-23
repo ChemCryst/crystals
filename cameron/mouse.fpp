@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  2006/11/10 08:26:35  djw
+C Improve fit between screen and Postscript labels
+C
 C Revision 1.14  2005/02/08 16:13:13  stefan
 C 1. Removed a conflict line which I had missed.
 C
@@ -105,7 +108,7 @@ C Get the mouse information
       IUNIT = 5
       IB = KRDLIN ( IUNIT, CLINE, LENUSE )
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
       IUNIT = 5
       IB = KRDLIN ( IUNIT, CLINE, LENUSE )
 
@@ -116,14 +119,14 @@ C Get the mouse information
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       IF ( CLINE(1:6) .EQ. 'LCLICK' ) THEN
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) ||defined(_INW_)
       IF ( CLINE(1:6) .EQ. 'LCLICK' ) THEN
 C Left mouse button has been pressed.
 #endif
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
         READ (CLINE(7:),*)JX,JY
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
         READ (CLINE(7:),*)JX,JY
 #endif
         CALL ZLBUT(JX,JY)
@@ -135,7 +138,7 @@ C Left mouse button has been pressed.
         GOTO 10
       ELSE
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
       ELSE IF ( CLINE(1:1) .EQ. 'V' ) THEN
         CALL ZDOVI
         GOTO 10
@@ -151,7 +154,7 @@ C Right mouse button has been pressed.
 C Non-left click action e.g. return,
 #endif
         RETURN
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_) || defined(_INW_)
       ENDIF
 #endif
 #if defined(_DOS_) 
@@ -263,7 +266,7 @@ C DRAW THE LABEL
             CALL ZMORE('^^CH SHOW',0)
             CALL ZMORE('^^CR',0)
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
             CALL ZMORE('^^CH SHOW',0)
             CALL ZMORE('^^CR',0)
 c &&GILGID            CALL FSTSHW()
@@ -301,7 +304,7 @@ C NOW DRAW THE ATOM LABEL IN THE BACKGROUND COLOUR
       CALL ZMORE('^^CH SHOW',0)
       CALL ZMORE('^^CR',0)
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
       CALL ZMORE('^^CH SHOW',0)
       CALL ZMORE('^^CR',0)
 c &&GILGID      CALL FSTSHW()
@@ -313,7 +316,7 @@ C DRAW THE CROSS AND THE BOX
       CALL ZMORE('^^CH SHOW',0)
       CALL ZMORE('^^CR',0)
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
       CALL ZMORE('^^CH SHOW',0)
       CALL ZMORE('^^CR',0)
 c &&GILGID      CALL FSTSHW()
@@ -327,7 +330,7 @@ C DVF GUI VERSION CODE
       IB = KRDLIN ( IUNIT, CLINE, LENUSE )
       IF ( CLINE(1:6) .NE. 'LCLICK' ) THEN
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
       IUNIT = 5
       IB = KRDLIN ( IUNIT, CLINE, LENUSE )
       IF ( CLINE(1:6) .NE. 'LCLICK' ) THEN
@@ -340,7 +343,7 @@ C THIS ATOM IS NOT TO BE LABELLED
       ENDIF
       READ (CLINE(7:),*)IMX,IMY
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
           CALL ZMBXCR(ILNO,IBACK,IBACK)
           RSTORE(ILNO+IATTYP+2) = 0.0
           RETURN
@@ -388,7 +391,7 @@ C NOW DRAW THE NEW LABEL
       CALL ZMORE('^^CH SHOW',0)
       CALL ZMORE('^^CR',0)
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
       CALL ZMORE('^^CH SHOW',0)
       CALL ZMORE('^^CR',0)
 c &&GILGID      CALL FSTSHW()

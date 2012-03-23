@@ -1294,7 +1294,7 @@ C CURSOR CONTROL
       CALL ZMORE('^^CH SHOW',0)
       CALL ZMORE('^^CR',0)
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
       CALL ZMORE('^^CH SHOW',0)
       CALL ZMORE('^^CR',0)
 C &&GILGID      CALL FSTSHW()
@@ -1366,7 +1366,7 @@ C ---- GET A TITLE
       CALL ZMORE('^^CH SHOW',0)
       CALL ZMORE('^^CR',0)
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)  || defined(_INW_)
       CALL ZMORE('^^CH SHOW',0)
       CALL ZMORE('^^CR',0)
 C &&GILGID      CALL FSTSHW()

@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.30  2009/07/02 09:24:50  djw
+C Simplify encapsulated postscript printing.  Diagrams are now in landscape mode (as
+C  normal PS) and do not need re-scalling. Bounding box is the full A4 sheet so does
+C  not need recalculating.
+C Add a few useful comments into PS header region.
+C Output each picture to a separate file
+C
 C Revision 1.29  2006/12/05 12:42:58  arie
 C Bug fix in archiving and retrieving with labels; closing archive files correctly
 C 
@@ -176,7 +183,7 @@ C        IFONT = 12 (changed from IFSIZE by DJW)
 #if defined(_GIL_)  || defined(_MAC_)
         ILSIZE = 60
 #endif
-#if defined(_WXS_)
+#if defined(_WXS_)  || defined(_INW_)
         ILSIZE = 60
 C MOVE OVER THE COLOUR NUMBERS
 #endif
@@ -373,7 +380,7 @@ C SCALE DOWN FURTHER TO PRODUCE A BORDER
         ELSE
           IF (ISCRN.EQ.6 .OR. ISCRN.EQ.5
      +   .OR. ISCRN.EQ.8 ) THEN
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)  && !defined(_INW_)
             SCALE = SCLFIX * 10.0
 #else
             SCALE = SCLFIX * 2.0
@@ -402,7 +409,7 @@ c
 #if defined(_GIL_)  || defined(_MAC_)
       ILSIZE = NINT (60 * RES)
 #endif
-#if defined(_WXS_)
+#if defined(_WXS_)  || defined(_INW_)
       ILSIZE = NINT (60 * RES)
 #endif
       SCLSAV = SCALE
@@ -787,7 +794,7 @@ C        IFSIZE = 12
 #if defined(_GIL_)  || defined(_MAC_)
         ILSIZE = 60
 #endif
-#if defined(_WXS_)
+#if defined(_WXS_) || defined(_INW_)
         ILSIZE = 60
 C MOVE OVER THE COLOUR NUMBERS
 #endif
@@ -824,13 +831,13 @@ C      CALL ZATMUL(0,0,0)
       CALL ZMORE('^^CO SET _CAMERONVIEW CURSORKEYS=YES',0)
       IUNIT = 5
 #endif
-#if defined(_GIL_)  || defined(_MAC_)
+#if defined(_GIL_)  || defined(_INW_)
       CALL ZMORE('^^CO SET _CAMERONVIEW CURSORKEYS=YES',0)
 #endif
 #if defined(_WXS_)
       CALL ZMORE('^^CO SET _CAMERONVIEW CURSORKEYS=YES',0)
 #endif
-#if defined(_GIL_)  || defined(_MAC_)
+#if defined(_GIL_)  || defined(_INW_)
       IUNIT = 5
 #endif
 #if defined(_WXS_)
@@ -843,7 +850,7 @@ C      CALL ZATMUL(0,0,0)
 #if defined(_GID_)
       K = KRDLIN ( IUNIT, CLINE, LENUSE )
 #endif
-#if defined(_GIL_)  || defined(_MAC_)
+#if defined(_GIL_)  || defined(_INW_)
       K = KRDLIN ( IUNIT, CLINE, LENUSE )
 #endif
 #if defined(_WXS_)
@@ -860,7 +867,7 @@ C      CALL ZATMUL(0,0,0)
 #if defined(_GID_)
         IF (CLINE(1:1).EQ.'L') THEN
 #endif
-#if defined(_GIL_)  || defined(_MAC_)
+#if defined(_GIL_)  || defined(_INW_)
         IF (CLINE(1:1).EQ.'L') THEN
 #endif
 #if defined(_WXS_)
@@ -875,7 +882,7 @@ C LEFT
 #if defined(_GID_)
       ELSE IF (CLINE(1:1).EQ.'R') THEN
 #endif
-#if defined(_GIL_)  || defined(_MAC_)
+#if defined(_GIL_)  || defined(_INW_)
       ELSE IF (CLINE(1:1).EQ.'R') THEN
 #endif
 #if defined(_WXS_)
@@ -891,10 +898,10 @@ C UP
 #if defined(_GID_)
       ELSE IF (CLINE(1:1).EQ.'U') THEN
 #endif
-#if defined(_GIL_)  || defined(_MAC_)
+#if defined(_GIL_)  || defined(_INW_)
       ELSE IF (CLINE(1:1).EQ.'U') THEN
 #endif
-#if defined(_WXS_)
+#if defined(_WXS_) 
       ELSE IF (CLINE(1:1).EQ.'U') THEN
 #endif
         ANG = ABS(ANG)
@@ -906,7 +913,7 @@ C DOWN
 #if defined(_GID_)
       ELSE IF (CLINE(1:1).EQ.'D') THEN
 #endif
-#if defined(_GIL_)  || defined(_MAC_)
+#if defined(_GIL_)  || defined(_INW_)
       ELSE IF (CLINE(1:1).EQ.'D') THEN
 #endif
 #if defined(_WXS_)
@@ -921,7 +928,7 @@ C ANTICLOCKWISE
 #if defined(_GID_)
       ELSE IF (CLINE(1:1).EQ.'A') THEN
 #endif
-#if defined(_GIL_)  || defined(_MAC_)
+#if defined(_GIL_)  || defined(_INW_)
       ELSE IF (CLINE(1:1).EQ.'A') THEN
 #endif
 #if defined(_WXS_)
@@ -936,7 +943,7 @@ C CLOCKWISE
 #if defined(_GID_)
       ELSE IF (CLINE(1:1).EQ.'C') THEN
 #endif
-#if defined(_GIL_)  || defined(_MAC_)
+#if defined(_GIL_)  || defined(_INW_)
       ELSE IF (CLINE(1:1).EQ.'C') THEN
 #endif
 #if defined(_WXS_)
@@ -950,11 +957,11 @@ C CLOCKWISE
 #if defined(_GID_)
       ELSE
 #endif
-#if defined(_WXS_)
-      ELSE
+#if defined(_GIL_)  || defined(_INW_)
+      ELSE 
 #endif
-#if defined(_GIL_)  || defined(_MAC_)
-      ELSE
+#if defined(_WXS_)
+      ELSE 
 #endif
         ICURS = 0
         CALL ZATMUL(0,0,0)
@@ -5778,7 +5785,7 @@ CODE FOR CAMPRESETS
      1              'TEKT',      'POST',         'ENCAP',
      1              'VGA',       'CPOST',        'CENCA' /
 
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
       DATA RCAMDV / 320.0, 240.0, 30.0,
 #else
       DATA RCAMDV /1200.0,1200.0, 30.0,

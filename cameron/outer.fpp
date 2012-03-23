@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2006/03/14 18:02:34  arie
+C SLight cosmetic change for archive and retrieve option
+C
 C Revision 1.22  2006/03/14 17:59:29  arie
 C SLight cosmetic change for Archive and Retrieve
 C
@@ -1170,7 +1173,7 @@ C CONVERT TO UPPERCASE FOR ANALYSIS
 
 #endif
 
-#if defined(_WXS_)
+#if defined(_WXS_) || defined(_INW_)
 
               CALL ZMORE('^^CO SET TEXTINPUT APPEND='' '//
      1 CC(1:IIILEN) // '''',0)
