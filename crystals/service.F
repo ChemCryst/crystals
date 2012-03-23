@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.48  2012/01/04 14:31:25  rich
+C Fix some uninitialized variables, and output format mistakes.
+C
 C Revision 1.47  2011/09/30 09:37:26  djw
 C Remove diagnostic print
 C
@@ -957,7 +960,7 @@ CS***
 CE***
       STOP
 #endif
-#if !defined(_GID_) && !defined(_PPC_) && !defined(_WXS_) 
+#if !defined(_GID_) && !defined(_PPC_) && !defined(_WXS_) && !defined(_INW_) 
       write(*,*) ' Ending in error'
 #endif
 #if defined(_VAX_) 
@@ -979,7 +982,7 @@ CS***
 CE***
       STOP
 #endif
-#if !defined(_GID_) && !defined(_PPC_) && !defined(_WXS_) 
+#if !defined(_GID_) && !defined(_PPC_) && !defined(_WXS_) && !defined(_INW_) 
       write(*,*) ' Ending in serious error'
 #endif
 #if defined(_VAX_) 
