@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.70  2012/03/23 14:29:04  rich
+C Fix
+C
 C Revision 1.69  2012/03/23 13:51:00  rich
 C Intel compiler support.
 C
@@ -2011,14 +2014,25 @@ C
       J = LOC ( IRESLT(1))
 C
 #endif
-      IF ( I .LT. J ) THEN
-        DO 1000 I = N , 1 , -1
-          IRESLT(I) = ISRCE(I)
-1000    CONTINUE
-      ELSE
-        DO 1010 I = 1 , N
-          IRESLT(I) = ISRCE(I)
-1010    CONTINUE
+      IF ( ABS(I - J) .GT. N ) THEN ! No overlap, use (possibly) vectorized loop.
+        
+        DO II = 1 , N
+          IRESLT(II) = ISRCE(II)
+        END DO
+      
+      ELSE IF ( I .LT. J ) THEN ! overlap, backwards, no vectorizing
+CDIR$ novector
+        DO II = N , 1 , -1
+          IRESLT(II) = ISRCE(II)
+        END DO
+      
+      ELSE  ! overlap, forwards, no vectorizing
+CDIR$ novector
+    
+        DO II = 1 , N
+          IRESLT(II) = ISRCE(II)
+        END DO
+      
       ENDIF
 C
 #if defined(_XXX_) 
@@ -2092,14 +2106,25 @@ C
       J = LOC ( IRESLT(1))
 C
 #endif
-      IF ( I .LT. J ) THEN
-        DO 1000 I = N , 1 , -1
-          IRESLT(I) = ISRCE(I)
-1000    CONTINUE
-      ELSE
-        DO 1010 I = 1 , N
-          IRESLT(I) = ISRCE(I)
-1010    CONTINUE
+      IF ( ABS(I - J) .GT. N ) THEN ! No overlap, use (possibly) vectorized loop.
+        
+        DO II = 1 , N
+          IRESLT(II) = ISRCE(II)
+        END DO
+      
+      ELSE IF ( I .LT. J ) THEN ! overlap, backwards, no vectorizing
+CDIR$ novector
+        DO II = N , 1 , -1
+          IRESLT(II) = ISRCE(II)
+        END DO
+      
+      ELSE  ! overlap, forwards, no vectorizing
+CDIR$ novector
+      
+        DO II = 1 , N
+          IRESLT(II) = ISRCE(II)
+        END DO
+      
       ENDIF
 C
 #if defined(_XXX_) 
