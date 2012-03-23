@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.24  2011/05/17 14:43:05  rich
+// Fix missing semi-colon.
+//
 // Revision 1.23  2011/03/04 06:03:25  rich
 // Changes to defines to get correct functions on WXS with digital fortran.
 //
@@ -565,37 +568,20 @@ void CcChartDoc::Clear()
 
 extern "C" {
 
-#ifdef _DIGITALF77_
-void fastline  ( int x1, int y1, int x2, int y2 );
-void fastfelli ( int x,  int y,  int w,  int h  );
-void fasteelli ( int x,  int y,  int w,  int h  );
-void fastfpoly ( int nv, int * points );
-void fastepoly ( int nv, int * points );
-void fasttext  ( int x,  int y,  char theText[80], int fs );
-void fastcolour( int r,  int g, int b );
-void fastclear     ( );
-void fastshow      ( );
-#endif
-#ifdef _GNUF77_
-void fastline_  ( int x1, int y1, int x2, int y2 );
-void fastfelli_ ( int x,  int y,  int w,  int h  );
-void fasteelli_ ( int x,  int y,  int w,  int h  );
-void fastfpoly_ ( int nv, int * points );
-void fastepoly_ ( int nv, int * points );
-void fasttext_  ( int x,  int y,  char theText[80], int fs );
-void fastcolour_( int r,  int g, int b );
-void fastclear_     ( );
-void fastshow_      ( );
-void fastline_  ( int x1, int y1, int x2, int y2 );
-#endif
+
+void FORCALL(fastline)  ( int x1, int y1, int x2, int y2 );
+void FORCALL(fastclear) ();
+
+void FORCALL(fastfelli) ( int x,  int y,  int w,  int h  );
+void FORCALL(fasteelli) ( int x,  int y,  int w,  int h  );
+void FORCALL(fastfpoly) ( int nv, int * points );
+void FORCALL(fastepoly) ( int nv, int * points );
+void FORCALL(fasttext)  ( int x,  int y,  char theText[80], int fs );
+void FORCALL(fastcolour)( int r,  int g, int b );
+void FORCALL(fastshow)  ( );
 
 
-#ifdef _DIGITALF77_
-void fastline  ( int x1, int y1, int x2, int y2 )
-#endif
-#ifdef _GNUF77_
-void fastline_  ( int x1, int y1, int x2, int y2 )
-#endif
+void FORCALL(fastline) ( int x1, int y1, int x2, int y2 )
 {
       m_thread_critical_section.Enter();
       CcChartDoc * doc = CcChartDoc::sm_CurrentChartDoc;
@@ -604,12 +590,7 @@ void fastline_  ( int x1, int y1, int x2, int y2 )
       m_thread_critical_section.Leave();
 }
 
-#ifdef _DIGITALF77_
-void fastfelli  ( int x, int y, int w, int h )
-#endif
-#ifdef _GNUF77_
-void fastfelli_  ( int x, int y, int w, int h )
-#endif
+void FORCALL(fastfelli)  ( int x, int y, int w, int h )
 {
       m_thread_critical_section.Enter();
       CcChartDoc * doc = CcChartDoc::sm_CurrentChartDoc;
@@ -617,12 +598,7 @@ void fastfelli_  ( int x, int y, int w, int h )
             doc->FastFElli( x, y, w, h );
       m_thread_critical_section.Leave();
 }
-#ifdef _DIGITALF77_
-void fasteelli  ( int x, int y, int w, int h )
-#endif
-#ifdef _GNUF77_
-void fasteelli_  ( int x, int y, int w, int h )
-#endif
+void FORCALL(fasteelli)  ( int x, int y, int w, int h )
 {
       m_thread_critical_section.Enter();
       CcChartDoc * doc = CcChartDoc::sm_CurrentChartDoc;
@@ -631,12 +607,7 @@ void fasteelli_  ( int x, int y, int w, int h )
       m_thread_critical_section.Leave();
 }
 
-#ifdef _DIGITALF77_
-void fastfpoly ( int nv, int * points )
-#endif
-#ifdef _GNUF77_
-void fastfpoly_ ( int nv, int * points )
-#endif
+void FORCALL(fastfpoly) ( int nv, int * points )
 {
       m_thread_critical_section.Enter();
       CcChartDoc * doc = CcChartDoc::sm_CurrentChartDoc;
@@ -644,12 +615,7 @@ void fastfpoly_ ( int nv, int * points )
             doc->FastFPoly( nv, points );
       m_thread_critical_section.Leave();
 }
-#ifdef _DIGITALF77_
-void fastepoly ( int nv, int * points )
-#endif
-#ifdef _GNUF77_
-void fastepoly_ ( int nv, int * points )
-#endif
+void FORCALL(fastepoly) ( int nv, int * points )
 {
       m_thread_critical_section.Enter();
       CcChartDoc * doc = CcChartDoc::sm_CurrentChartDoc;
@@ -658,12 +624,7 @@ void fastepoly_ ( int nv, int * points )
       m_thread_critical_section.Leave();
 }
 
-#ifdef _DIGITALF77_
-void fasttext  ( int x,  int y,  char theText[80], int fs )
-#endif
-#ifdef _GNUF77_
-void fasttext_  ( int x,  int y,  char theText[80], int fs )
-#endif
+void FORCALL(fasttext)  ( int x,  int y,  char theText[80], int fs )
 {
       m_thread_critical_section.Enter();
       theText[80] = '\0';
@@ -681,12 +642,7 @@ void fasttext_  ( int x,  int y,  char theText[80], int fs )
       m_thread_critical_section.Leave();
 }
 
-#ifdef _DIGITALF77_
-void fastcolour( int r, int g, int b )
-#endif
-#ifdef _GNUF77_
-void fastcolour_( int r, int g, int b )
-#endif
+void FORCALL(fastcolour) ( int r, int g, int b )
 {
       m_thread_critical_section.Enter();
       CcChartDoc * doc = CcChartDoc::sm_CurrentChartDoc;
@@ -695,12 +651,7 @@ void fastcolour_( int r, int g, int b )
       m_thread_critical_section.Leave();
 }
 
-#ifdef _DIGITALF77_
-void fastclear ( )
-#endif
-#ifdef _GNUF77_
-void fastclear_ ( )
-#endif
+void FORCALL (fastclear) ( )
 {
       m_thread_critical_section.Enter();
       CcChartDoc * doc = CcChartDoc::sm_CurrentChartDoc;
@@ -710,12 +661,7 @@ void fastclear_ ( )
 }
 
 
-#ifdef _DIGITALF77_
-void fastshow ( )
-#endif
-#ifdef _GNUF77_
-void fastshow_ ( )
-#endif
+void FORCALL(fastshow) ( )
 {
 #ifdef __BOTHWX__
       ::wxMutexGuiEnter();
