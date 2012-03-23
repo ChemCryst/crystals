@@ -619,7 +619,7 @@ c            d1 = sqrt(dot_product(bad,mvmul(GS,bad)))
             exit
           else
             bc=bc+1
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)&& !defined(_INW_)
             jp = maxloc(dcopy)
 #else
             jp(1) = maxpos(dcopy,30)
@@ -630,18 +630,18 @@ c            d1 = sqrt(dot_product(bad,mvmul(GS,bad)))
           endif
       enddo
       fom=1000.*fom
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)&& !defined(_INW_)
       q=1000*q
 #else
       do i=1,15
 #endif
-#if defined(_GIL_) || defined(_LIN_) || defined(_WXS_)  || defined(_MAC_)
+#if defined(_GIL_) || defined(_LIN_) || defined(_WXS_)  || defined(_MAC_) || defined(_INW_)
       q(i)=1000*q(i)
       end do
 #endif
       end
 
-#if defined(_GIL_) || defined(_LIN_) || defined(_WXS_)  || defined(_MAC_)
+#if defined(_GIL_) || defined(_LIN_) || defined(_WXS_)  || defined(_MAC_)|| defined(_INW_)
       FUNCTION maxpos(dcopy, n)
       DIMENSION dcopy(n)
       maxpos = 1
