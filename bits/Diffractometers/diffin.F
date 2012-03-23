@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2012/01/05 16:10:24  djw
+C Add a new I/O chanel with info about missing data
+C Try to select most probable SG which does not involve a permutation of axes.
+C The full details are still sent to SPACE.OUT
+C
 C Revision 1.8  2012/01/03 14:24:18  rich
 C Allow longer filenames and filenames with spaces in.
 C
@@ -53,8 +58,6 @@ c
       end if
 
 1      CONTINUE
-c       write(6,*) 'Choose from A(gilent), N(onius), R(igaku), W(inGX)'
-c       READ(5,'(A)') CTEMP
        ctemp = carg2(1:12)
        CALL XCCUPC(CTEMP,CDIFF)
        idiff = 0
@@ -71,7 +74,9 @@ c       READ(5,'(A)') CTEMP
           CDIFF='wingx'
           idiff = 4
        ELSE
-          GOTO 1
+        write(6,*) 'Choose from A(gilent), N(onius), R(igaku), W(inGX)'
+        READ(5,'(A)') CTEMP
+        GOTO 1
        ENDIF
        LDIFF = NCTRIM(CDIFF)
 
