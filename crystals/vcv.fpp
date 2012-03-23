@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2012/01/04 14:31:25  rich
+C Fix some uninitialized variables, and output format mistakes.
+C
 C Revision 1.6  2011/11/03 09:16:09  rich
 C Added SUSCAL routine
 C
@@ -1032,6 +1035,23 @@ CDJWAPR07
       r(2,2)=xyz(2)
       r(2,3)=xyz(3)
 
+      JF=ISTORE(IBASE1+3)
+C--FIX THE SERIAL NUMBER
+      JB=JA+4
+
+C----- COMPRESS ATOMS INTO CHARACTER FORM
+      CALL CATSTR (STORE(JF)    ,STORE(JF+1)  ,ISTORE(JB)
+     1 ,ISTORE(JB+1) ,ISTORE(JB+2) ,ISTORE(JB+3) ,ISTORE(JB+4),
+     2 CATOM(1), LATOM(1))
+
+      JF=ISTORE(IBASE2+3)
+C--FIX THE SERIAL NUMBER
+      JB=JA+4
+
+C----- COMPRESS ATOMS INTO CHARACTER FORM
+      CALL CATSTR (STORE(JF)    ,STORE(JF+1)  ,ISTORE(JB)
+     1 ,ISTORE(JB+1) ,ISTORE(JB+2) ,ISTORE(JB+3) ,ISTORE(JB+4),
+     2 CATOM(2), LATOM(2))
 
 C--CALCULATE DISTANCE
       DIST = SQRT((R(1,1)-R(2,1))**2 +
@@ -1093,10 +1113,6 @@ C Test Variance calc
         ESD = SQRT(ZZZ(1))
       ENDIF
 c
-C----- COMPRESS ATOMS INTO CHARACTER FORM
-      CALL CATSTR (STORE(JF)    ,STORE(JF+1)  ,ISTORE(JB)
-     1 ,ISTORE(JB+1) ,ISTORE(JB+2) ,ISTORE(JB+3) ,ISTORE(JB+4),
-     2 CATOM(4), LATOM(4))
 c
         WRITE ( CMON ,2806) (
      1 CBLANK(1: 10-LATOM(II)), CATOM(II)(1:LATOM(II)),II=1,2)
