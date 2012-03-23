@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.69  2012/03/23 13:51:00  rich
+C Intel compiler support.
+C
 C Revision 1.68  2011/09/13 14:35:26  rich
 C Move message about new D/A file on unit whatever inside the new file if block.
 C
@@ -3491,10 +3494,10 @@ C       WITH VARIANCE REQVAR
 C
 C    REQVAR - REQUESTED VARIANCE OF RESULT
 C    ISEED = 0 FOR REPEATED RANDOM NUMBERS
-      SAVE ISET, GSET
 #if defined(_DVF_) || defined(_GID_) 
       USE DFPORT
 #endif
+      SAVE ISET, GSET
 #if defined(_VAX_) 
       INTEGER*4 SEED
 #endif
