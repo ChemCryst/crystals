@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.48  2011/09/21 09:30:49  rich
+// Increase model resolution
+//
 // Revision 1.47  2011/05/16 10:56:32  rich
 // Added pane support to WX version. Added coloured bonds to model.
 //
@@ -433,14 +436,20 @@ CcModelObject* CcModelDoc::FindAtomByLabel(const string & atomname)
   return ratom;
 }
 
-CcModelAtom* CcModelDoc::FindAtomByPosn(int posn)
+CcModelAtom* CcModelDoc::FindAtomByPosn(int posn)  //posn is zero based, but id is 1 based.
 {
+  CcModelAtom* ret = nil;
   m_thread_critical_section.Enter();
   if ( posn >= (int) mAtomList.size() ) posn = (int) mAtomList.size();
   list<CcModelAtom>::iterator atom=mAtomList.begin();
-  for ( int i = 0; i < posn; i++ ) { atom++; };
+  for (;atom!=mAtomList.end();++atom) {
+	  if ( atom->id - 1 == posn ) {
+		  ret = &(*atom);
+		  break;
+	  }
+  }
   m_thread_critical_section.Leave();
-  return &(*atom);
+  return ret;
 }
 
 
@@ -889,7 +898,7 @@ void CcModelDoc::FastAtom(const string & label,int x1,int y1,int z1,
                           frac_y,frac_z,elem,serial,refflag,
                           assembly, group, ueq,fspare,this);
         m_nAtoms++;
-        item.id = m_nAtoms;
+        item.id = m_nAtoms + mDonutList.size() + mSphereList.size();
 		item.m_glID = m_glIDs++;
         mAtomList.push_back(item);
     m_thread_critical_section.Leave();
@@ -928,60 +937,56 @@ extern "C" {
 
 //declarations:
 
-#ifdef _DIGITALF77_
+#if defined (_DIGITALF77_) || defined (__WXINT__)
 void fastbond  (int x1,int y1,int z1, int x2, int y2, int z2,
                 int r, int g, int b,  int rad,int btype,
                 int np, int * ptrs, char label[80], char slabel[80] );
-#endif
-#ifdef _GNUF77_
+#else
 void fastbond_ (int x1,int y1,int z1, int x2, int y2, int z2,
                 int r, int g, int b,  int rad,int btype,
                 int np, int * ptrs, char label[80], char slabel[80] );
 #endif
-#ifdef _DIGITALF77_
+#if defined (_DIGITALF77_) || defined (__WXINT__)
 void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
                 float u6,float u7,float u8,float u9, float fx, float fy, float fz,
                 int refflag, int assembly, int group, float ueq, float fspare);
-#endif
-#ifdef _GNUF77_
+#else
 void fastatom_  (char* elem,int serial,char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
                 float u6,float u7,float u8,float u9, float fx, float fy, float fz,
                 int refflag, int assembly, int group, float ueq, float fspare);
 #endif
-#ifdef _DIGITALF77_
+#if defined (_DIGITALF77_) || defined (__WXINT__)
 void fastsphere  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad);
-#endif
-#ifdef _GNUF77_
+#else
 void fastsphere_  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad);
 #endif
-#ifdef _DIGITALF77_
+#if defined (_DIGITALF77_) || defined (__WXINT__)
 void fastdonut  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad, int idec, int iaz);
-#endif
-#ifdef _GNUF77_
+#else
 void fastdonut_  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad, int idec, int iaz);
 #endif
+}
 
 //implementations:
 
-#ifdef _DIGITALF77_
+#if defined (_DIGITALF77_) || defined (__WXINT__)
 void fastbond  (int x1,int y1,int z1, int x2, int y2, int z2,
                 int r, int g, int b,  int rad,int btype,
                 int np, int * ptrs,
                 char label[80], char slabel[80] )
-#endif
-#ifdef _GNUF77_
+#else
 void fastbond_ (int x1,int y1,int z1, int x2, int y2, int z2,
                 int r, int g, int b,  int rad,int btype,
                 int np, int * ptrs,
@@ -995,14 +1000,13 @@ void fastbond_ (int x1,int y1,int z1, int x2, int y2, int z2,
                                          np,ptrs,clabel,slabel);
 }
 
-#ifdef _DIGITALF77_
+#if defined (_DIGITALF77_) || defined (__WXINT__)
 void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
                 float u6,float u7,float u8,float u9, float fx, float fy, float fz,
                 int refflag, int assembly, int group, float ueq, float fspare)
-#endif
-#ifdef _GNUF77_
+#else
 void fastatom_  (char* elem,int serial,char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
@@ -1021,12 +1025,11 @@ void fastatom_  (char* elem,int serial,char* label,int x1,int y1,int z1,
 
 }
 
-#ifdef _DIGITALF77_
+#if defined (_DIGITALF77_) || defined (__WXINT__)
 void fastsphere  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad)
-#endif
-#ifdef _GNUF77_
+#else
 void fastsphere_  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad)
@@ -1040,12 +1043,11 @@ void fastsphere_  (char* label,int x1,int y1,int z1,
 
 }
 
-#ifdef _DIGITALF77_
-void fastdonut  (char* label,int x1,int y1,int z1, 
+#if defined (_DIGITALF77_) || defined (__WXINT__)
+	void fastdonut  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad, int idec, int iaz)
-#endif
-#ifdef _GNUF77_
+#else
 void fastdonut_  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad, int idec, int iaz)
@@ -1059,4 +1061,3 @@ void fastdonut_  (char* label,int x1,int y1,int z1,
 
 }
 
-}
