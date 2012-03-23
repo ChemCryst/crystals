@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.106  2011/07/27 12:02:46  djw
+C Add a comment about NWS
+C
 C Revision 1.105  2011/04/21 11:18:49  rich
 C Fix perhydro of disordered parts
 C
@@ -4089,7 +4092,7 @@ cdjwjan11
       IF ( IPART .eq. 1 ) then
              CALL PRTGRP(ISTORE(M5A+14), MPIVPR, MPIVGR,ipart)
 
-      else  ! IPART eq 2 - look at RESIDUE slot in list 5
+      else if ( IPART .EQ. 2 ) THEN ! IPART eq 2 - look at RESIDUE slot in list 5
              CALL PRTGRP(ISTORE(M5A+16), MPIVPR, MPIVGR,ipart)
       endif
       DO ND = 1, IN
@@ -4107,7 +4110,7 @@ C--IF NOT BONDING PARTS, then CHECK PART NUMBERS
 cdjwjan11
       IF ( IPART .eq. 1 ) then
              CALL PRTGRP(ISTORE(M5+14),MBONPR, MBONGR,ipart)
-      else  ! IPART eq 2 - look at RESIDUE slot in list 5
+      else if ( IPART .eq. 2 ) then ! IPART eq 2 - look at RESIDUE slot in list 5
              CALL PRTGRP(ISTORE(M5+16),MBONPR, MBONGR, ipart)
       endif
 
@@ -6860,11 +6863,13 @@ c            if (issprt .eq. 0) write(ncwu, '(a)') cmon( 1)(:)
 c            goto 3350
 c      endif
 c
-      IF ( ( IPROCS(1) .EQ. 0 ) .AND. ( K41DEP() .GE. 1 ) ) THEN
+      IF ( IPROCS(1) .EQ. 0 ) THEN
+        IF ( K41DEP() .GE. 1 ) THEN
          WRITE(CMON,'(A/A)')'No need to recalculate bonds. Use ',
      1                    '#BONDCALC FORCE to force a calculation.'
          CALL XPRVDU(NCVDU,2,0)
          GOTO 3350
+        ENDIF
       ENDIF
 
 
@@ -7023,6 +7028,8 @@ C -- tolerance. Secondly, the PAIR records (L40P) contain pairs of
 C -- elements which will override the TOLERANCE calculation.
 
       NWN41B = 0
+      NWL41B = 0
+
 
       DO I5 = 0,N5-1
          M5 = L5 + I5*MD5
