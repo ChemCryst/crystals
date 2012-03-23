@@ -14,7 +14,12 @@
 % VARIABLE REAL SXX SXY SXZ SXO SXU11 SXU22 WAVE CELLZ                          
 % VARIABLE REAL SXU33 SXU23 SXU13 SXU12                                         
 % VARIABLE REAL SXOCC CRYOCC SPECOCC                                            
-% VARIABLE INTEGER ATOMCOUNT                                                    
+% VARIABLE REAL HKLT11 HKLT12 HKLT13 HKLT21 HKLT22 HKLT23
+% VARIABLE REAL HKLT31 HKLT32 HKLT33
+% EVALUATE HKLT11 = 1.0
+% EVALUATE HKLT22 = 1.0
+% EVALUATE HKLT33 = 1.0
+% VARIABLE INTEGER ATOMCOUNT
 %%                                                                              
 % EVALUATE SXGETALL = TRUE                                                      
 %%                                                                              

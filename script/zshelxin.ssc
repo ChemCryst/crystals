@@ -11,7 +11,11 @@
 %%                                                                              
 %%                                                                              
 % VARIABLE LOGICAL   SFILERR LFIRST LPEAK LNOTAT LCRY SXGETALL LQS              
-% VARIABLE CHARACTER CLINE                                                      
+% VARIABLE CHARACTER CLINE
+% VARIABLE REAL HKLT11 HKLT12 HKLT13 HKLT21 HKLT22 HKLT23
+% VARIABLE REAL HKLT31 HKLT32 HKLT33
+% VARIABLE INTEGER HKLFN HKLFS
+%%
 {I * Looking for atoms and peaks in SHELX-style .INS or .RES file.                                 
 %%                                                                              
 % VARIABLE INTEGER ATOMCOUNT EXPECTED EXPECTALL                                 
@@ -132,9 +136,34 @@
 %   IF CLINE .EQ. 'HKLF' THEN                                                   
 %     EVALUATE LNOTAT = TRUE                                                    
 %     EVALUATE LOOPEND = LOOPCOUNTER                                            
-%     GET NOSTORE NOPROMPT TEXT NULLSTRING ' '                                  
+%     GET NOSTORE NOPROMPT INTEGER 'hkl type n' '-10'
+%     EVALUATE HKLFN = VALUE
+%     IF HKLFN .NE.  4  THEN
+{E Non-standard HKLF format type (expecting HKLF 4).
+%     END IF
+%     GET NOSTORE NOPROMPT INTEGER 'hkl s' '-10'
+%     EVALUATE HKLFS = VALUE
+%     GET NOSTORE NOPROMPT REAL 'HKLT11' '1'
+%     EVALUATE HKLT11 = VALUE
+%     GET NOSTORE NOPROMPT REAL 'HKLT12' '0'
+%     EVALUATE HKLT12 = VALUE
+%     GET NOSTORE NOPROMPT REAL 'HKLT13' '0'
+%     EVALUATE HKLT13 = VALUE
+%     GET NOSTORE NOPROMPT REAL 'HKLT21' '0'
+%     EVALUATE HKLT21 = VALUE
+%     GET NOSTORE NOPROMPT REAL 'HKLT22' '1'
+%     EVALUATE HKLT22 = VALUE
+%     GET NOSTORE NOPROMPT REAL 'HKLT23' '0'
+%     EVALUATE HKLT23 = VALUE
+%     GET NOSTORE NOPROMPT REAL 'HKLT31' '0'
+%     EVALUATE HKLT31 = VALUE
+%     GET NOSTORE NOPROMPT REAL 'HKLT32' '0'
+%     EVALUATE HKLT32 = VALUE
+%     GET NOSTORE NOPROMPT REAL 'HKLT33' '1'
+%     EVALUATE HKLT33 = VALUE
+%     GET NOSTORE NOPROMPT TEXT NULLSTRING ' '
  * Found HKLF instruction - assuming no more atoms to be found in file.         
-%   END IF                                                                      
+%   END IF
 %%                                                                              
 %   IF LNOTAT .EQ. FALSE THEN                                                   
 %% Note that SXATOMRD shares the variables ATOMCOUNT, EXPECTED and              

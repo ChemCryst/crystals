@@ -8,9 +8,50 @@
 %% variables used by the question box                                           
 %  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2  
 %  VARIABLE CHARACTER BUTT1 BUTT2 BUTT3
-%  VARIABLE LOGICAL ANSWER  
+%  VARIABLE LOGICAL ANSWER HTRANS
 %  VARIABLE INTEGER XCHOICE
-%%                                                                              
+%  VARIABLE REAL HKLT11 HKLT12 HKLT13 HKLT21 HKLT22 HKLT23
+%  VARIABLE REAL HKLT31 HKLT32 HKLT33
+%  EVALUATE HTRANS = FALSE
+%  IF ABS ( HKLT11 - 1.0 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%  END IF
+%  IF ABS ( HKLT22 - 1.0 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%  END IF
+%  IF ABS ( HKLT33 - 1.0 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%  END IF
+%  IF ABS ( HKLT12 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%  END IF
+%  IF ABS ( HKLT13 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%  END IF
+%  IF ABS ( HKLT21 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%  END IF
+%  IF ABS ( HKLT23 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%  END IF
+%  IF ABS ( HKLT31 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%  END IF
+%  IF ABS ( HKLT33 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%  END IF
+%  IF ( .NOT. HTRANS ) THEN
+%    EVALUATE HKLT11 = 1.0
+%    EVALUATE HKLT22 = 1.0
+%    EVALUATE HKLT33 = 1.0
+%    EVALUATE HKLT12 = 0.0
+%    EVALUATE HKLT13 = 0.0
+%    EVALUATE HKLT21 = 0.0
+%    EVALUATE HKLT23 = 0.0
+%    EVALUATE HKLT31 = 0.0
+%    EVALUATE HKLT32 = 0.0
+%  END IF
+%%
 %% Initial checks. Is there any point proceeding.
 %%
 %% If data missing, is there a .ins or .res file worth loading?
@@ -123,23 +164,37 @@
 ^^WI                                        DISABLED=YES                        
 ^^WI    }                                                                       
 ^^WI   }                                                                        
-^^WI   TAB IN6TAB0 'Advanced' GRID XIN6A NROWS=5 NCOLS=3                        
+^^WI   TAB IN6TAB0 'Transform' GRID XIN6A NROWS=5 NCOLS=3                        
 ^^WI   {                                                                        
 ^^WI    @ 2,2 GRID GAB NROWS=2 NCOLS=1 OUTLINE ='Transform'                     
 ^^WI    {                                                                       
 ^^WI     @ 1,1 CHECKBOX MAT                                                     
-^^WI 'Apply this transformation matrix to the hkl data.' STATE=OFF              
-^^WI     @ 2,1 GRID GBB NROWS=5 NCOLS=5                                         
+^^WI 'Apply this transformation matrix to the hkl data.'
+% IF HTRANS THEN
+^^WI   STATE=ON
+% ELSE
+^^WI   STATE=OFF
+% END IF
+^^WI     @ 2,1 GRID GBB NROWS=5 NCOLS=5
 ^^WI     {                                                                      
-^^WI      @ 1,1 EDITBOX M11 '1.000' CHARS=6 REAL                                
-^^WI      @ 1,3 EDITBOX M12 '0.000' CHARS=6 REAL                                
-^^WI      @ 1,5 EDITBOX M13 '0.000' CHARS=6 REAL                                
-^^WI      @ 3,1 EDITBOX M21 '0.000' CHARS=6 REAL                                
-^^WI      @ 3,3 EDITBOX M22 '1.000' CHARS=6 REAL                                
-^^WI      @ 3,5 EDITBOX M23 '0.000' CHARS=6 REAL                                
-^^WI      @ 5,1 EDITBOX M31 '0.000' CHARS=6 REAL                                
-^^WI      @ 5,3 EDITBOX M32 '0.000' CHARS=6 REAL                                
-^^WI      @ 5,5 EDITBOX M33 '1.000' CHARS=6 REAL                                
+% TRANSFER "^^WI @ 1,1 EDITBOX M11 " // CHARACTER HKLT11 TO DISPLAY
+^^WI CHARS=6 REAL
+% TRANSFER "^^WI @ 1,3 EDITBOX M12 " // CHARACTER HKLT12 TO DISPLAY
+^^WI CHARS=6 REAL
+% TRANSFER "^^WI @ 1,5 EDITBOX M13 " // CHARACTER HKLT13 TO DISPLAY
+^^WI CHARS=6 REAL
+% TRANSFER "^^WI @ 3,1 EDITBOX M21 " // CHARACTER HKLT21 TO DISPLAY
+^^WI CHARS=6 REAL
+% TRANSFER "^^WI @ 3,3 EDITBOX M22 " // CHARACTER HKLT22 TO DISPLAY
+^^WI CHARS=6 REAL
+% TRANSFER "^^WI @ 3,5 EDITBOX M23 " // CHARACTER HKLT23 TO DISPLAY
+^^WI CHARS=6 REAL
+% TRANSFER "^^WI @ 5,1 EDITBOX M31 " // CHARACTER HKLT31 TO DISPLAY
+^^WI CHARS=6 REAL
+% TRANSFER "^^WI @ 5,3 EDITBOX M32 " // CHARACTER HKLT32 TO DISPLAY
+^^WI CHARS=6 REAL
+% TRANSFER "^^WI @ 5,5 EDITBOX M33 " // CHARACTER HKLT33 TO DISPLAY
+^^WI CHARS=6 REAL
 ^^WI     }                                                                      
 ^^WI    }                                                                       
 ^^WI   }                                                                        
@@ -430,6 +485,9 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT                                                                     
 %%                                                                              
 %% $Log: not supported by cvs2svn $
+%% Revision 1.35  2012/01/04 14:30:46  rich
+%% More import script fiddling
+%%
 %% Revision 1.34  2012/01/03 16:47:23  rich
 %% Fix INSTITLE rubbish.
 %%
