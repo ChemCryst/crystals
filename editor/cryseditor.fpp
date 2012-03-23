@@ -1,4 +1,8 @@
+
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2011/03/21 13:57:28  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.6  2011/03/04 06:04:24  rich
 C Using new defines for compilers.
 C
@@ -144,7 +148,7 @@ C----- OPEN THE FILE READONLY/SHARED IF POSSIBLE
       DOSMAC = ' '
 #endif
 C----- DOS OPENS
-#if defined(_GID_)||defined(_LIN_)||defined(_GIL_)||defined(_MAC_)||defined(_WXS_)
+#if defined(_GID_)||defined(_LIN_)||defined(_GIL_)||defined(_MAC_)||defined(_WXS_)||defined(_INW_)
       CALL GETARG(1,DOSSRC)
       CALL GETARG(2,DOSFOR)
       IGTRG = 3
@@ -156,7 +160,7 @@ C----- DOS OPENS
 
 100   CONTINUE
 
-#if defined(_GID_) || defined(_LIN_) || defined (_GIL_) || defined (_MAC_) || defined (_WXS_)
+#if defined(_GID_) || defined(_LIN_) || defined (_GIL_) || defined (_MAC_) || defined (_WXS_)||defined(_INW_)
       CALL GETARG(IGTRG,DOSCOD)
       IGTRG = IGTRG + 1
 #endif
@@ -196,10 +200,7 @@ C----- DOS OPENS
 
      2   '[comm=CC] [subs=\] [strip]'
 
-#endif
-
-
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_)
+#else
 
      2   '[comm=CC] [subs=\\] [strip]'
 
@@ -217,8 +218,7 @@ C---- THE SOURCE FILE
 
 #if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
       OPEN(UNIT=NCRU, FILE=DOSSRC, STATUS = 'OLD')
-#endif
-#if defined(_DOS_) || defined(_DIGITALF77_) 
+#else
       CALL CONVER(DOSSRC,NCRU)
 #endif
 C---- THE MACRO FILE
@@ -229,8 +229,7 @@ C---- THE MACRO FILE
 #if defined(_LIN_) || defined (_MAC_) || defined (_GIL_) 
       OPEN(UNIT=NUMAC, FILE=DOSMAC, STATUS = 'OLD', ERR=101)
 101   CONTINUE
-#endif
-#if defined(_DOS_) || defined(_DIGITALF77_) 
+#else
       CALL CONVER(DOSMAC,NUMAC)
 #endif
 
@@ -1124,16 +1123,14 @@ C
       DATA IA/'*'/,IM/'-'/,IB/' '/,IC/','/
 #endif
 
-#if defined(_DOS_) || defined(_DIGITALF77_) 
-      DATA ILP/'<'/,IRP/'>'/,IH/'\'/,IDQ/'"'/
-
-#endif
 #if defined(_LIN_)  || defined (_MAC_) || defined (_GIL_)
 #if defined (_HOL_)
       DATA ILP/1H</,IRP/1H>/,IH/1H\/,IDQ/1H"/
 #else
       DATA ILP/'<'/,IRP/'>'/,IH/'\\'/,IDQ/'"'/
 #endif
+#else
+      DATA ILP/'<'/,IRP/'>'/,IH/'\'/,IDQ/'"'/
 #endif
 
 #if defined (_HOL_)
@@ -1180,7 +1177,7 @@ C
       END
 C
 C
-#if defined(_DOS_) || defined(_DIGITALF77_) 
+#if defined(_DOS_) || defined(_DIGITALF77_) ||defined (_INW_)
       SUBROUTINE CONVER ( CFILE , NUNIT )
 
 
@@ -1241,11 +1238,13 @@ C Return 0 if CCHAR is not a character.
       CHARACTER*1  CCHAR
 C23456789012345678901234567890123456789012345678901234567890123456789012
       DATA CALPHA / 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXY
-#if defined(_DOS_) || defined(_DIGITALF77_) 
+#if defined(_DOS_) || defined(_DIGITALF77_) || defined(_INTELF77_)
      1Z1234567890!"œ$%^&*()_+-={}[]@~''#<>?,./|\:;`' /
+#else
+     1Z1234567890!"œ$%^&*()_+-={}[]@~''#<>?,./|\\:;`' /
 #endif
 C Note ' is escaped with '
-C On UNIX \ is escaped with \.
+C On UNIX \ is escaped with \
 
       WRITE(CCHAR,'(A1)')ICHAR
       KISCHR = INDEX ( CALPHA , CCHAR )
