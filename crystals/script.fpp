@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.72  2012/01/04 14:31:25  rich
+C Fix some uninitialized variables, and output format mistakes.
+C
 C Revision 1.71  2011/09/21 09:46:42  rich
 C Fix crash on script->use->script scenarios.
 C
@@ -7309,7 +7312,7 @@ C
         CALL OUTCOL(1)
        ENDIF
 C----- RECOVER SCRIPT NAME
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)|| defined(_INW_)
       ISTAT= KSCIDN(2,3,'SCRIPTNAME',1,IS,IDSCP,ISCPNM,1)
       ISTAT= KSCSDC( ISCPNM, CSCPNM, LENNM)
       IF (CSCPNM .NE. CLSTNM) CPRVNM = CLSTNM

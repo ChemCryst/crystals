@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.64  2012/01/04 14:31:25  rich
+C Fix some uninitialized variables, and output format mistakes.
+C
 C Revision 1.63  2012/01/03 14:36:35  rich
 C Allow longer lines to be read by KRDLIN if required.
 C
@@ -405,12 +408,12 @@ C
       IF ( LPRMPT ) THEN
         IRDLIN = 0
         IF (ITYPFL .EQ. 1 .AND. NCRU .EQ. 5)  THEN
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
           CALL XPRMPT ( NCVDU , '!' )
 #else
           WRITE(CMON,'(A)')
 #endif
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_) || defined(_INW_)
      1     '^^CO SAFESET [ XPRMPT TEXT ''!'' ]'
           CALL XPRVDU(NCVDU,1,0)
           WRITE(CMON,'(A)')
@@ -421,12 +424,12 @@ C
           CALL XPRVDU (NCVDU,1,0)
 #endif
         ELSE
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
           CALL XPRMPT ( NCVDU , '>' )
 #else
           WRITE(CMON,'(A)')
 #endif
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_) || defined(_INW_)
      1     '^^CO SAFESET [ XPRMPT TEXT ''>'' ]'
           CALL XPRVDU(NCVDU,1,0)
           WRITE(CMON,'(A)')
@@ -447,7 +450,7 @@ C If in script mode, set flag.
         END IF
 C Update status information for GUI.
 
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_) || defined(_INW_)
         IF (ISSTML .EQ. 4) CALL MENUUP
 #endif
       ENDIF
@@ -458,7 +461,7 @@ C Update status information for GUI.
 C
       ISTAT = KRDLIN ( NCRU , CRDLWC , IFIN )
 
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)|| defined(_INW_)
       IF ( NCRU .EQ. 5 ) THEN
       WRITE(CMON,'(A)') '^^CO SAFESET [ XPRMPT TEXT "" ]'
       CALL XPRVDU(NCVDU,1,0)
@@ -737,7 +740,7 @@ C If in script mode, set flag.
         IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
           INSTRC = .TRUE.
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
         INSTRC = .FALSE.
         IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
           INSTRC = .TRUE.
@@ -748,7 +751,7 @@ c&&GILGID          CALL XPRVDU (NCVDU,1,0)
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
         END IF
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
         END IF
 
 #endif
@@ -756,7 +759,7 @@ c&&GILGID          CALL XPRVDU (NCVDU,1,0)
 C Update status information for UI.
             CALL MENUUP
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
             CALL MENUUP
 #endif
             CALL GETCOM(CLINE)
@@ -770,7 +773,7 @@ C If in script mode, set progress text.
         END IF
 
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
         IF ( INSTRC ) THEN
           WRITE (CMON,1515) '''Crystals Script Mode'''
           CALL XPRVDU (NCVDU,1,0)
@@ -2791,7 +2794,7 @@ CRICFEB01[
         CALL XPRVDU ( NCVDU, 1, 0 )
       ENDIF
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_) || defined(_INW_)
       IF ( IDEV .EQ. NCPU ) THEN
         WRITE ( CMON,2346) '_MT_PCH', NEWFIL(1:LENNAM)
         CALL XPRVDU ( NCVDU, 1, 0 )

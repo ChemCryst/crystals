@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2011/03/22 14:40:38  rich
+C Added extra file unit 'SCP2' which may be read by new script command EXTRACT2
+C
 C Revision 1.15  2005/02/08 14:46:14  stefan
 C 1. Added some precompiler if's for the mac version
 C
@@ -43,17 +46,13 @@ C
 C
 CODE FOR CRYSTL
 C      winapp 500000,1000000
-#if defined(_GID_) 
+#if defined(_GID_) || defined(_WXS_) 
       SUBROUTINE CRYSTL
-#endif
-#if defined(_GIL_)  || defined(_MAC_)
+#elif defined(_GIL_)  || defined(_MAC_) || defined (_INW_)
       SUBROUTINE CRYSTL
-#endif
-#if defined(_WXS_) 
-      SUBROUTINE CRYSTL
-#endif
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
+#else 
       PROGRAM CRYSTL
+#endif
 C
 C
 C     ******************************************************
@@ -67,7 +66,6 @@ C
 C             THE NAME OF THE STARTUP FILE MAY EITHER BE SET AS
 C             DATA IN PRESETS, OR IN AN ASSIGNMENT BELOW.
 C
-#endif
       INCLUDE 'ISTORE.INC'
       DIMENSION PROGLS(4,18)
 C--
