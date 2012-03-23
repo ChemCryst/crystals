@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.35  2012/01/04 14:31:25  rich
+C Fix some uninitialized variables, and output format mistakes.
+C
 C Revision 1.34  2011/09/20 13:15:46  rich
 C Some new hollerith problems crept in.
 C
@@ -503,7 +506,7 @@ C----- LOOK FOR BLANK AFTER 'ALL'
               CALL XFILL (IB, IMAGE(J), 80-J+1)
               CALL XMOVEI ( IMAGE, LCMAGE, 80)
               NMOUSE = 0
-#if !defined(_DVF_) && !defined(_GID_) && !defined(_LIN_) && !defined(_WXS_) 
+#if !defined(_DVF_) && !defined(_GID_) && !defined(_LIN_) && !defined(_WXS_) && !defined(_INW_)
              CALL XRDMSE (CMOUSE, NMOUSE)
 #endif
               IMOUSE = 1

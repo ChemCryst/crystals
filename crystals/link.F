@@ -567,7 +567,7 @@ C--WRITE THE PARAMETER FILE TYPE
 #if defined(_GIL_)  || defined(_MAC_)
       WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 #endif
-#if defined(_WXS_)
+#if defined(_WXS_) || defined(_INW_)
       WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 #endif
 #if defined(_GID_)
@@ -1784,7 +1784,7 @@ C----- CAMERON - 2 FILES TO CLOSE AND START PROGRAM
       I = KFLCLS(NCFPU1)
       I = KFLCLS(NCFPU2)
 C - Only GID, GIL and DOS support Cameron's graphics.
-#if !defined(_DOS_) && !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
+#if !defined(_DOS_) && !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
         GOTO 9000 !Skip this Cameron part.
 
 C -- START CAMERON - ONLY TWO ELEMENT OF STORE (CURRENTLY A DUMMY) USED
@@ -1794,7 +1794,7 @@ C      IF (ISSTML .EQ. 4) THEN
 C - Only GID needs funny text strings to initialise the graphics.
 C - Could move these to ZCAMER.
 
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_) || defined(_INW_)
         WRITE(CHARTC,'(A)') '^^CH CHART _CAMERONCHART'
         CALL ZMORE(CHARTC,0)
         WRITE(CHARTC,'(A)') '^^CH ATTACH _CAMERONVIEW'
@@ -1805,7 +1805,7 @@ C - Could move these to ZCAMER.
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
         CALL ZCAMER ( 1, 0 , 0 , 0)
 #endif
-#if defined(_DOS_) || defined(_WXS_)
+#if defined(_DOS_) || defined(_WXS_) || defined(_INW_)
         CALL ZCAMER ( 1, 0 , 0 , 0)
 
 #endif
@@ -1819,7 +1819,7 @@ C - Could move these to ZCAMER.
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
          CALL ZCONTR
 #endif
-#if defined(_DOS_) || defined(_WXS_)
+#if defined(_DOS_) || defined(_WXS_)|| defined(_INW_)
          CALL ZCONTR
 #endif
       GOTO 8025
@@ -2002,7 +2002,7 @@ C
 
       CALL XRDOPN ( 5 , JFRN(1,JFILE) ,
 
-#if !defined(_GIL_) && !defined(_WXS_) && !defined(_MAC_)
+#if !defined(_GIL_) && !defined(_WXS_) && !defined(_MAC_)&& !defined(_INW_)
 
      1 CPATH(1:LPATH)// CFILE(IFILE)(1:LFILE(IFILE)),
      2 LPATH+LFILE(IFILE))
