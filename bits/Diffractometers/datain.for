@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2012/01/12 22:15:40  rich
+C Fix reading of oxdiff hkls.
+C
 C Revision 1.18  2012/01/06 10:32:34  rich
 C Don't split apart element names (e.g. AG) if the result doesn't make sense (e.g. A 1 G 1).
 C But do for SN, -> S 1 N 1.
@@ -1207,16 +1210,14 @@ C
 C--
       carg1 = ' '
       carg2 = ' '
-#if defined(_DOS_) 
-     carg1=cmnam()
-     carg2=cmnam()
-#endif
 
 #if defined(_DVF_) || defined (_DIGITALF77_)   || defined (_GID_)
       CALL GetArg(1,carg1,optlen)
       CALL GetArg(2,carg2,optlen)
-#endif
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
+#elif defined(_DOS_) 
+     carg1=cmnam()
+     carg2=cmnam()
+#else
       call GetArg(1, carg1)
       call GetArg(2, carg2)      
 #endif
