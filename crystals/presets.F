@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.65  2011/11/03 09:20:35  rich
+C Initialise buffer for linearized error function.
+C
 C Revision 1.64  2011/09/20 13:15:46  rich
 C Some new hollerith problems crept in.
 C
@@ -396,7 +399,7 @@ C      SET INTERACTIVE UNDER WINDOWS
 C      SET INTERACTIVE UNDER LINUX
       DATA IQUN /2/, JQUN/2/
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)  || defined (_INW_)
       DATA IQUN /2/, JQUN/2/
 #endif
 #if defined(_VAX_) 
@@ -522,7 +525,7 @@ C      REASSIGN PRINTER IN STARTUP FILE
 #if defined(_GIL_)  || defined(_MAC_)
       DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)  || defined (_INW_)
       DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
 #endif
 #if defined(_LIN_) 
@@ -541,7 +544,7 @@ C      PRINTER ASSIGNED IN JOB CONTROL LANGUAGE
 #if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)  || defined (_INW_)
       DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
 #endif
 #if defined(_VAX_) 
@@ -641,7 +644,7 @@ C
 #if defined(_GIL_)  || defined(_MAC_)
       DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)  || defined (_INW_)
       DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
 #endif
 #if defined(_VAX_) 
@@ -1271,11 +1274,6 @@ C
      1           'B', 'E', 'N', 'C', 'D', 'E', 'F', 'I'  /
 #endif
 C
-      DATA NOWT/-1000000/
-      DATA UISO/0.0000005/,ZERO/0.00005/,VALUE/0.0001/
-      DATA BLANKS/   '                                                    
-     *                                      '/
-C     12345678901234567890123456789012345678
       DATA MD0/8/,N0/0/,LN/0/,LSN/0/,IREC/0/,LEF/0/,LSTLEF/0/,MAPS/0/
 C
       DATA IENDC/-1111111/
@@ -1668,7 +1666,7 @@ C  THE CHARACTER DEFINITIONS 'CSS***)
       DATA ISSDAT(3) / '  20' / , ISSDAT(4) / '00  ' /
 #endif
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)  || defined (_INW_)
       DATA ISSMAC(1) / 'Pent' / , ISSMAC(2) / 'ium ' /
       DATA ISSOPS(1) / 'Linu' / , ISSOPS(2) / 'x   ' /
       DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Jun' /
@@ -1710,7 +1708,7 @@ C
 #if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       DATA ISSFNF /  2 /
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)  || defined (_INW_)
       DATA ISSFNF /  29 /
 #endif
       DATA ISSOKF / 0 /
@@ -1727,35 +1725,18 @@ C
       DATA ISSRLF / 512 / , ISSBLF / 128 / , ISSWLF / 4 /
 #else
       DATA ISSRLI / 512 / , ISSBLI / 512 / , ISSWLI / 4 /
-#endif
-#if defined(_H_P_) 
       DATA ISSRLF / 512 / , ISSBLF / 512 / , ISSWLF / 4 /
+#endif
 C
 C----- THE DIRECT ACCESS FILE PHYSICAL RECORD LENGTH IS MACINE SPECIFIC
 C      ON THE VAX, THE RECORD LENGTH IS GIVEN IN LONGWORDS, SO THAT
 C                  ISSDAR = ISSRLI
 C      ON THE HEWLET PACKARD, IT IS IN BYTES, SO THAT
 C                  ISSDAR = 4 * ISSRLI
-#endif
-#if defined(_VAX_) 
+#if defined(_DIGITALF77_) || defined (_INW_) ||defined(_VAX_) ||defined(_GID_) 
       DATA ISSDAR / 512 /
-#endif
-#if defined(_DIGITALF77_) 
-      DATA ISSDAR / 512 /
-#endif
-#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
+#else
       DATA ISSDAR / 2048 /
-#endif
-#if defined(_GNUF77_) 
-      DATA ISSDAR / 2048 /
-#endif
-#if defined(_GID_) 
-      DATA ISSDAR / 512 /
-#endif
-#if defined(_DOS_) 
-      DATA ISSDAR /2048 /
-C
-C
 #endif
 #if defined (_HOL_)
       DATA ISSPRG(1) / 4HCRYS / , ISSPRG(2) / 4HTALS /
@@ -1838,7 +1819,7 @@ C
       DATA CSSDAT / 'May 1999' /
       DATA LSSDAT / 8 /
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)  || defined (_INW_)
       DATA CSSMAC / 'Intel Pentium' /
       DATA LSSMAC / 13 /
       DATA CSSOPS / 'Linux' /
@@ -1861,32 +1842,10 @@ C
       DATA CSSNDA / ' ' /
       DATA LSSNDA / 1 /
 C
-#if defined(_DOS_) || defined(_DVF_) 
       DATA CSSCST / 'CRYSDIR:crystals.srt' /
-#endif
-#if defined(_GID_) || defined(_VAX_) 
-      DATA CSSCST / 'CRYSDIR:crystals.srt' /
-#endif
-#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
-      DATA CSSCST / 'CRYSDIR:crystals.srt' /
-#endif
-#if defined(_WXS_) 
-      DATA CSSCST / 'CRYSDIR:crystals.srt' /
-#endif
       DATA LSSCST / 20 /
 C
-#if defined(_DOS_) || defined(_DVF_) 
       DATA CSSDST / 'CRYSDIR:crysdef.srt' /
-#endif
-#if defined(_GID_) || defined(_VAX_) 
-      DATA CSSDST / 'CRYSDIR:crysdef.srt' /
-#endif
-#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
-      DATA CSSDST / 'CRYSDIR:crysdef.srt' /
-#endif
-#if defined(_WXS_) 
-      DATA CSSDST / 'CRYSDIR:crysdef.srt' /
-#endif
       DATA LSSDST / 19 /
 C
 #if defined(_PPC_) 
@@ -1909,7 +1868,7 @@ C
       DATA CSSSCT / ' ' /
       DATA LSSSCT / 1 /
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)  || defined (_INW_)
       DATA CSSSCT / ' ' /
       DATA LSSSCT / 1 /
 #endif
@@ -1938,7 +1897,7 @@ C
       DATA CSSELE / ' ' /
       DATA LSSELE / 1 /
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)  || defined (_INW_)
       DATA CSSELE / ' ' /
       DATA LSSELE / 1 /
 #endif
@@ -1967,7 +1926,7 @@ C
       DATA CSSVDU  / 'CON' /
       DATA LSSVDU / 3 /
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)  || defined (_INW_)
       DATA CSSVDU  / 'CON' /
       DATA LSSVDU / 3 /
 #endif
@@ -1996,7 +1955,7 @@ C
       DATA CSSLPT  / 'PRN' /
       DATA LSSLPT / 3 /
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)  || defined (_INW_)
       DATA CSSLPT  / 'PRN' /
       DATA LSSLPT / 3 /
 #endif
@@ -2006,48 +1965,10 @@ C
 C
 cdjwmay99
 #endif
-#if defined(_PPC_) 
+
       DATA CSSCIF / 'publish.cif' /
       DATA LSSCIF / 11 /
-#endif
-#if defined(_H_P_) 
-      DATA CSSCIF / 'publish.cif' /
-      DATA LSSCIF / 11 /
-#endif
-#if defined(_DOS_) 
-      DATA CSSCIF / 'publish.cif' /
-      DATA LSSCIF / 11 /
-#endif
-#if defined(_DVF_) || defined(_GID_) 
-      DATA CSSCIF / 'publish.cif' /
-      DATA LSSCIF / 11 /
-#endif
-#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
-      DATA CSSCIF / 'publish.cif' /
-      DATA LSSCIF / 11 /
-#endif
-#if defined(_WXS_) 
-      DATA CSSCIF / 'publish.cif' /
-      DATA LSSCIF / 11 /
-#endif
-#if defined(_VAX_) 
-      DATA CSSCIF / 'publish.cif' /
-      DATA LSSCIF / 11 /
-cRICjul99
-#endif
-#if defined(_DOS_) || defined(_H_P_) || defined(_PPC_) 
-      DATA CSSMAP / 'fourier.map' /
-      DATA LSSMAP / 11 /
-#endif
-#if defined(_DVF_) || defined(_GID_) || defined(_VAX_) 
-      DATA CSSMAP / 'fourier.map' /
-      DATA LSSMAP / 11 /
-#endif
-#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
-      DATA CSSMAP / 'fourier.map' /
-      DATA LSSMAP / 11 /
-#endif
-#if defined(_WXS_) 
+
       DATA CSSMAP / 'fourier.map' /
       DATA LSSMAP / 11 /
 C          q
@@ -2058,7 +1979,6 @@ C    CHLPDV  CHLPEX      'HELP'
 C    CINDDV  CINDEX      'MANUAL'
 C    CSCPDV  CSCPEX      'SCRIPT
 C
-#endif
       DATA CHLPDV / ' ' / , CHLPEX / ' ' /
       DATA LHLPDV / 1 / ,        LHLPEX / 1 /
 C
@@ -2107,16 +2027,17 @@ C -- HIGHEST POSSIBLE ERROR CODE NUMBER
 C
 C -- SYMBOLIC CODES FOR LIST CHECKING.
 C    FUNCTION CODES FOR 'KLSCHK'
-      DATA ILSCLN / 1 / , ILSCLS / 2 / , ILSCLV / 3 /
-      DATA ILSEXI / 4 / , ILSAVI / 5 / , ILSRFI / 6 /
-C    REQUEST CODES FOR 'KLSCHK'
-      DATA ILSMSG / 1 / , ILSNMS / -1 /
-C    FUNCTION CODES FOR 'XLSALT'
-      DATA ILSERF / 1 / , ILSPUF / 2 / , ILSDLF / 3 /
-      DATA ILSOWF / 4 / , ILSCUR / 5 / , ILSRTF / 2 /
-C    FLAG CODES FOR 'XLSALT'
-      DATA ILSSET / -1 / , ILSCLR / 1 /
-      DATA ILSOVR / -1 / , ILSRDY / 0 / , ILSUPD / 1 /
+c - now in parameter statement
+c      DATA ILSCLN / 1 / , ILSCLS / 2 / , ILSCLV / 3 /
+c      DATA ILSEXI / 4 / , ILSAVI / 5 / , ILSRFI / 6 /
+cC    REQUEST CODES FOR 'KLSCHK'
+c      DATA ILSMSG / 1 / , ILSNMS / -1 /
+cC    FUNCTION CODES FOR 'XLSALT'
+c      DATA ILSERF / 1 / , ILSPUF / 2 / , ILSDLF / 3 /
+c      DATA ILSOWF / 4 / , ILSCUR / 5 / , ILSRTF / 2 /
+cC    FLAG CODES FOR 'XLSALT'
+c      DATA ILSSET / -1 / , ILSCLR / 1 /
+c      DATA ILSOVR / -1 / , ILSRDY / 0 / , ILSUPD / 1 /
 C
 C -- SYMBOLIC CODES FOR FACILITY NAMES - SYSTEM MESSAGES
       DATA IOPCRY / 1 / , IOPPUR / 2 / , IOPLPC / 3 /
@@ -2598,7 +2519,7 @@ C --- XUNITS ---
 #if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
       NCWU=6
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)  || defined (_INW_)
       NCWU=6
 #endif
 #if defined(_VAX_) 
@@ -2620,7 +2541,7 @@ C --- XUNITS ---
       IQUN=2
       JQUN=2
 #endif
-#if defined(_WXS_) 
+#if defined(_WXS_)  || defined (_INW_)
       IQUN=2
       JQUN=2
 #endif
@@ -2631,7 +2552,7 @@ C --- XUNITS ---
       IUSFLG = 0 
       NCSU = 11
       NCEXTR = 88
-      NCEXTR = 87
+      NCEXTR2 = 87
       NCQUE = 89
       NCCBU = 14
       NCFPU1 = 71

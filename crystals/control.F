@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C Log: control.fpp,v $
+C Revision 1.12  2012/01/04 14:31:25  rich
+C Fix some uninitialized variables, and output format mistakes.
+C
 C Revision 1.11  2011/03/21 13:57:21  rich
 C Update files to work with gfortran compiler.
 C
@@ -420,13 +423,14 @@ C -- READ THE ERROR CONTROL FLAGS
 1305  FORMAT ( 19I4 )
 C--COMPUTE THE REST OF THE CONSTANTS
 1350  CONTINUE
-      PI=ACOS(-1.0)
-      TWOPI=2.*PI
-      TWOPIS=TWOPI*PI
-      RTD=180./PI
-      DTR=PI/180.
-      ZEROSQ=ZERO*ZERO
-      VALUSQ=VALUE*VALUE
+C - now parameters
+c      PI=ACOS(-1.0)
+c      TWOPI=2.*PI
+c      TWOPIS=TWOPI*PI
+c      RTD=180./PI
+c      DTR=PI/180.
+c      ZEROSQ=ZERO*ZERO
+c      VALUSQ=VALUE*VALUE
 C--ASSIGN THE DATA FILE UNIT NUMBER
       NU=NCDFU
 C--ALLOCATE SOME CORE BUFFERS
