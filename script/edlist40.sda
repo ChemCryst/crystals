@@ -1,2 +1,2 @@
--GID$edit scplst40.dat
-+GID$+notepad scplst40.dat
+--INWGID$edit scplst40.dat
+++INWGID$+notepad scplst40.dat
