@@ -1418,7 +1418,7 @@ void CxTextOut::ChooseFont()
      data.EnableEffects(false);
      data.SetAllowSymbols(false);
 
-     wxFontDialog fd( this, &data );
+     wxFontDialog fd( this, data );
 
      if ( fd.ShowModal() == wxID_OK )
      {
