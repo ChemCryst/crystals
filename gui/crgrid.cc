@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.32  2011/05/16 10:56:32  rich
+//   Added pane support to WX version. Added coloured bonds to model.
+//
 //   Revision 1.31  2011/04/18 08:17:57  rich
 //   MFC patches.
 //
@@ -401,7 +404,7 @@ CcParse CrGrid::ParseInput( deque<string> & tokenList )
           }
           case kTCreateWeb:                            // Create a web control
           {
-#ifdef __BOTHWX__
+#ifdef DEPRECATED__BOTHWX__
             CrWeb * webPtr = new CrWeb( this );
             if ( webPtr != nil )
               retVal = InitElement( webPtr, tokenList, xpos, ypos );
