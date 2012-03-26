@@ -173,7 +173,9 @@ CxModel::~CxModel()
   mModelCount--;
   delete [] mat;
   DeletePopup();
+#ifdef __BOTHWX__
   delete m_context;
+#endif
 
 #ifdef __CR_WIN__
   wglMakeCurrent(NULL,NULL);
