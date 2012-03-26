@@ -11,22 +11,8 @@
 #ifndef     __CcController_H__
 #define     __CcController_H__
 
-#ifdef __BOTHWX__
-#include <wx/app.h>
-#include <wx/thread.h>
-#include <wx/event.h>
-#include "ccthread.h"
-#endif
-
-#include    "cclistenablesafedeque.h"
-#include    "ccsafedeque.h"
-#include    "ccstatus.h"
-#include    "ccrect.h"
-#include    "crystals.h"
-#include    <cstdio> //For FILE definition
-
 #ifdef __CR_WIN__
-#include <afxwin.h>
+ #include <afxwin.h>
 #endif
 
 #include <algorithm>
@@ -35,11 +21,40 @@
 #include <list>
 
 #ifdef __BOTHWIN__
-#include <windows.h>
+ #include <windows.h>
 #endif
 
+#include    <cstdio> //For FILE definition
+
+
 #ifdef __BOTHWX__
-DECLARE_EVENT_TYPE(ccEVT_COMMAND_ADDED, wxNewEventType())
+ #include <wx/app.h>
+ #include <wx/thread.h>
+ #include <wx/event.h>
+ #include "ccthread.h"
+#endif
+
+#include    "cclistenablesafedeque.h"
+#include    "ccsafedeque.h"
+#include    "ccstatus.h"
+#include    "ccrect.h"
+#include    "crystals.h"
+
+#include    <cstdio> //For FILE definition
+
+#ifdef __CR_WIN__
+ #include <afxwin.h>
+#endif
+
+
+#ifdef __BOTHWIN__
+ #include <windows.h>
+#endif
+
+ 
+#ifdef __BOTHWX__
+//DECLARE_EVENT_TYPE(ccEVT_COMMAND_ADDED, 1238) //Made up number 
+extern const wxEventType ccEVT_COMMAND_ADDED;
 #endif
 
 class CcModelDoc;
@@ -184,8 +199,8 @@ class   CcController
     list<CrWindow*> mDisableableWindowsList;
     list<CrButton*> mDisableableButtonsList;
 
-    CcSafeDeque<string> mCrystalsCommandDeq;
-    CcListenableSafeDeque<string> mInterfaceCommandDeq;
+    CcSafeDeque mCrystalsCommandDeq;
+    CcListenableSafeDeque mInterfaceCommandDeq;
 };
 
 
@@ -218,8 +233,6 @@ class CcProcessInfo
 
 //        CreateOK = CreateProcess(app.c_str(), const_cast<char*>(commandline.c_str()), NULL,NULL,
 //                                 TRUE,CREATE_NEW_CONSOLE,NULL,NULL,&si,&proc);
-
-
          commandline.resize( _MAX_PATH );
          CreateOK = CreateProcessW(NULL, &commandline[0], NULL,NULL,
                                  TRUE,CREATE_NEW_CONSOLE,NULL,NULL,&si,&proc);
@@ -323,6 +336,9 @@ enum
 
 
 //   $Log: not supported by cvs2svn $
+//   Revision 1.51  2012/03/26 11:15:31  rich
+//   Unicode support for GID version.
+//
 //   Revision 1.50  2011/09/26 13:42:37  rich
 //   Fix spawn of external programs using % modifier (run in CRYSTALS I/O window).
 //
