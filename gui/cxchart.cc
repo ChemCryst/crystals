@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.31  2005/05/05 12:25:32  rich
+//   Fixed polygon selection in Cameron for wxWidget platforms (Linux, Mac, Windows(WXS)).
+//
 //   Revision 1.30  2005/01/23 10:20:24  rich
 //   Reinstate CVS log history for C++ files and header files. Recent changes
 //   are lost from the log, but not from the files!
@@ -635,18 +638,19 @@ void CxChart::DrawPoly(int nVertices, int * vertices, bool fill)
 #endif
 #ifdef __BOTHWX__
       memDC->SetPen( *m_pen );
-      if ( fill )
-            memDC->SetBrush( *m_brush );
-      else
-            memDC->SetBrush( *wxTRANSPARENT_BRUSH );
+      memDC->SetBrush( *m_brush );
       CcPoint*           points = new CcPoint[nVertices];
       for ( int j = 0; j < nVertices*2 ; j+=2 )
       {
             points[j/2] = DeviceToLogical( *(vertices+j), *(vertices+j+1) );
       }
-      memDC->DrawPolygon(nVertices, (wxPoint*) points );
+      if ( fill )
+		memDC->DrawPolygon(nVertices, (wxPoint*) points );
+	  else
+		memDC->DrawLines(nVertices, (wxPoint*) points );
+	  
       delete [] points;
-//      memDC->SetPen( wxNullPen );
+      memDC->SetPen( wxNullPen );
       memDC->SetBrush( wxNullBrush );
 #endif
 
