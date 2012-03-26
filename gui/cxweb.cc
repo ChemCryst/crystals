@@ -8,11 +8,14 @@
 //   Authors:   Richard Cooper 
 //   Created:   04.3.2011 14:31 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1  2011/04/16 06:49:45  rich
+//   HTML control
+//
 
 #include    "crystalsinterface.h"
 
 
-#ifdef __BOTHWX__
+#ifdef DEPRECATED__BOTHWX__
 
 // The whole file. WX only.
 

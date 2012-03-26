@@ -8,12 +8,15 @@
 //   Authors:   Richard Cooper
 //   Created:   04.3.2011 14:41 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1  2011/04/16 06:49:45  rich
+//   HTML control
+//
 
 #ifndef     __CxButton_H__
 #define     __CxButton_H__
 
 
-#ifdef __BOTHWX__
+#ifdef DEPRECATED__BOTHWX__
 
 #include    "crguielement.h"
 

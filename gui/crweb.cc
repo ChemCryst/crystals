@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper
 //   Created:   04.3.2011 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.2  2011/04/18 08:17:57  rich
+// MFC patches.
+//
 // Revision 1.1  2011/04/16 07:33:06  rich
 // HTML control
 //
@@ -22,7 +25,7 @@
 #include    "ccrect.h"
 #include    "cccontroller.h"    // for sending commands
 
-#ifdef __BOTHWX__
+#ifdef DEPRECATED__BOTHWX__
 
 
 CrWeb::CrWeb( CrGUIElement * mParentPtr )
