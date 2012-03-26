@@ -7,6 +7,9 @@
  */
  
  //   $Log: not supported by cvs2svn $
+ //   Revision 1.4  2011/05/17 14:47:07  rich
+ //   Return size of container.
+ //
  //   Revision 1.3  2011/05/04 12:21:17  rich
  //   Remove throw statements - they are ignored by C++ compiler.
  //
@@ -30,32 +33,31 @@
 
 //using namespace ccthreading; for future use.
 
-template <typename T, template<typename T, typename T2> class C, typename T2 = std::allocator<T> >
 class CcSafeSequence
 {
 	protected:
 		CcMutex iLock;			     // The write lock. Garrentees mutual exclution between methods.
 		CcSemaphore iEmptySemaphore; // Indicates whether the queue us empty or not.
-		C<T, T2> iSequence;
+		deque<string, std::allocator<string> > iSequence;
 	public:
 		CcSafeSequence():iSequence()
 		{}
 		
-		CcSafeSequence(const C<T, T2>& pSequence):iSequence(pSequence)
+		CcSafeSequence(const deque<string, std::allocator<string> >& pSequence):iSequence(pSequence)
 		{}
 
 		size_t size() {
 			return iSequence.size();
 		}
 		
-		virtual void push_front(const T& pItem) //throw(mutex_error, semaphore_error)	//Put the passed item on the front of the list.
+		virtual void push_front(const string& pItem) //throw(mutex_error, semaphore_error)	//Put the passed item on the front of the list.
 		{
 			CcLifeTimeLock tLock(iLock);
 			iSequence.push_front(pItem);
 			iEmptySemaphore.signal();	//Indicate that there is something in the list.
 		}
 		
-		virtual void push_back(const T& pItem) //throw(mutex_error, semaphore_error)	//Put the passed item on the end of the list.
+		virtual void push_back(const string& pItem) //throw(mutex_error, semaphore_error)	//Put the passed item on the end of the list.
 		{
 			CcLifeTimeLock tLock(iLock);
 			iSequence.push_back(pItem);
@@ -66,12 +68,12 @@ class CcSafeSequence
 		 * If the list is empty then it blocks till something is added or
 		 * The timeout is reach when an semaphore_timeout exception is thrown.
 		 */
-		virtual T pop_back(const unsigned int pWaitTime = kSemaphoreWaitInfinatly) //throw(mutex_error, semaphore_error, semaphore_timeout)
+		virtual string pop_back(const unsigned int pWaitTime = kSemaphoreWaitInfinatly) //throw(mutex_error, semaphore_error, semaphore_timeout)
 		{
 			iEmptySemaphore.wait(pWaitTime);	// Wait till there is an element to return or time runs out.
 												// If the timer runs out and exception is thrown.
 			iLock.Lock();
-			T result =iSequence.back();
+			string result =iSequence.back();
 			iSequence.pop_back();
 			iLock.Unlock();
 			return result;
@@ -81,12 +83,12 @@ class CcSafeSequence
 		 * If the list is empty then it blocks till something is added or
 		 * The timeout is reach when an semaphore_timeout exception is thrown.
 		 */
-		virtual T pop_front(const unsigned int pWaitTime = kSemaphoreWaitInfinatly) //throw(mutex_error, semaphore_error, semaphore_timeout)	
+		virtual string pop_front(const unsigned int pWaitTime = kSemaphoreWaitInfinatly) //throw(mutex_error, semaphore_error, semaphore_timeout)	
 		{
 			iEmptySemaphore.wait(pWaitTime);	// Wait till there is an element to return or time runs out.
 												// If the timer runs out and exception is thrown.
 			iLock.Lock();
-			T result =iSequence.front();
+			string result =iSequence.front();
 			iSequence.pop_front();
 			iLock.Unlock();
 			return result;

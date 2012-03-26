@@ -7,22 +7,25 @@
  */ 
  
  //   $Log: not supported by cvs2svn $
+ //   Revision 1.1  2005/02/04 17:21:40  stefan
+ //   1. A set of classes to extent CcSafeDeque to allow easy change notification.
+ //   2. A set of classese to more generalise CcSafeDeques uses.
+ //
  
 #if !defined(cclistenablesequence_H__)
 #define cclistenablesequence_H__
 #include "cclistenerperformer.h"
 
-template <typename T, template<typename T> class C>
-class CcListenableSequence: public C<T>
+class CcListenableSequence: public CcSafeDeque
 {
 	protected:
 		CcListenerPerformer iAddListeners;
 		CcListenerPerformer iRemoveListeners;
 	public:
-		CcListenableSequence():C<T>(){}
+		CcListenableSequence():CcSafeDeque(){}
 		
-		CcListenableSequence(const C<T>& pDeque):C<T>(pDeque)
-		{}
+//		CcListenableSequence(const CcSafeDeque &pDeque):CcSafeDeque(pDeque)
+//		{}
 		
 		virtual void addAddListener(const AddListener& pListener) throw()
 		{
@@ -34,28 +37,28 @@ class CcListenableSequence: public C<T>
 			iRemoveListeners.addListener(pListener);
 		}
 		
-		virtual void push_front(const T& pItem) throw()
+		virtual void push_front(const string& pItem) throw()
 		{
-			C<T>::push_front(pItem);
+			CcSafeDeque::push_front(pItem);
 			iAddListeners.performListeners();
 		}
 		
-		virtual void push_back(const T& pItem) throw() 
+		virtual void push_back(const string& pItem) throw() 
 		{
-			C<T>::push_back(pItem);
+			CcSafeDeque::push_back(pItem);
 			iAddListeners.performListeners();
 		}
 		
-		virtual T pop_front(const unsigned int pWaitTime = kSemaphoreWaitInfinatly)	 throw()
+		virtual string pop_front(const unsigned int pWaitTime = kSemaphoreWaitInfinatly)	 throw()
 		{
-			T result = C<T>::pop_front(pWaitTime);
+			string result = CcSafeDeque::pop_front(pWaitTime);
 			iRemoveListeners.performListeners();
 			return result;
 		}
 		
-		virtual T pop_back(const unsigned int pWaitTime = kSemaphoreWaitInfinatly) throw()
+		virtual string pop_back(const unsigned int pWaitTime = kSemaphoreWaitInfinatly) throw()
 		{
-			T result = C<T>::pop_back(pWaitTime);
+			string result = CcSafeDeque::pop_back(pWaitTime);
 			iRemoveListeners.performListeners();
 			return result;
 		}

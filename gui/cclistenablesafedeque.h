@@ -7,6 +7,9 @@
  */
  
  //   $Log: not supported by cvs2svn $
+ //   Revision 1.2  2011/05/04 12:21:17  rich
+ //   Remove throw statements - they are ignored by C++ compiler.
+ //
  //   Revision 1.1  2005/02/04 17:21:40  stefan
  //   1. A set of classes to extent CcSafeDeque to allow easy change notification.
  //   2. A set of classese to more generalise CcSafeDeques uses.
@@ -18,31 +21,30 @@
 #include "ccsafedeque.h"
 #include "cclistenablesequence.h"
 
-template <typename T>
-class CcListenableSafeDeque: public CcListenableSequence<T, CcSafeDeque >
+class CcListenableSafeDeque: public CcListenableSequence
 {
 	public:
-		CcListenableSafeDeque()/*throw(mutex_error)*/:CcListenableSequence<T, CcSafeDeque >(){}
+		CcListenableSafeDeque():CcListenableSequence(){}
 		
-		virtual void push_front(const T& pItem) throw()
+		virtual void push_front(const string& pItem) throw()
 		{
-			CcListenableSequence<T, CcSafeDeque >::push_front(pItem);
+			CcListenableSequence::push_front(pItem);
 		}
 		
-		virtual void push_back(const T& pItem) throw()	
+		virtual void push_back(const string& pItem) throw()	
 		{
-			CcListenableSequence<T, CcSafeDeque >::push_back(pItem);
+			CcListenableSequence::push_back(pItem);
 		}
 		
-		virtual T pop_front(const unsigned int pWaitTime = kSemaphoreWaitInfinatly)  throw()	
+		virtual string pop_front(const unsigned int pWaitTime = kSemaphoreWaitInfinatly)  throw()	
 		{
-			T result = CcListenableSequence<T, CcSafeDeque >::pop_front(pWaitTime);
+			string result = CcListenableSequence::pop_front(pWaitTime);
 			return result;
 		}
 		
-		virtual T pop_back(const unsigned int pWaitTime = kSemaphoreWaitInfinatly) throw()
+		virtual string pop_back(const unsigned int pWaitTime = kSemaphoreWaitInfinatly) throw()
 		{
-			T result = CcListenableSequence<T, CcSafeDeque >::pop_back(pWaitTime);
+			string result = CcListenableSequence::pop_back(pWaitTime);
 			return result;
 		}
 };

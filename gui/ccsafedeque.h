@@ -10,6 +10,9 @@
  */
  
  // $Log: not supported by cvs2svn $
+ // Revision 1.2  2005/02/04 18:03:16  stefan
+ // 1. Altered CcSafeDeque to use the more generalised CcSafeSequence class.
+ //
  // Revision 1.1  2005/02/02 15:27:23  stefan
  // 1. Initial addition to crystals. A group of classes for threading.
  //
@@ -19,14 +22,13 @@
 #include <deque>
 #include "ccsafesequences.h"
 
-template <typename _Tp>
-class  CcSafeDeque:public CcSafeSequence<_Tp, deque >
+class  CcSafeDeque:public CcSafeSequence
 {
 	public:
-		CcSafeDeque() : CcSafeSequence<_Tp, deque >()
+		CcSafeDeque() : CcSafeSequence()
 		{}
 		
-		CcSafeDeque(const deque<_Tp>& a): CcSafeSequence<_Tp, deque >(a)
+		CcSafeDeque(const deque<string>& a): CcSafeSequence(a)
 		{}
 };
 #endif
