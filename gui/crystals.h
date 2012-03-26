@@ -1,6 +1,11 @@
 // crystals.h : main header file for the CRYSTALS application
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.14  2005/02/07 14:29:56  stefan
+// 1. Removed the kick timer and idle functions as I don't believe they are needed anylonger.
+// 2. Added my crystals command event/message handler
+// 3. Added the id for the event handler
+//
 // Revision 1.13  2005/01/23 10:20:24  rich
 // Reinstate CVS log history for C++ files and header files. Recent changes
 // are lost from the log, but not from the files!
@@ -112,7 +117,7 @@ public:
 
     virtual bool OnInit();
     virtual int OnExit();
-	virtual void OnCrystCommand(wxCommandEvent & event);
+	virtual void OnCrystCommand(wxEvent & event);
     DECLARE_EVENT_TABLE()
 
 #endif
