@@ -19,6 +19,10 @@
 #include    <string>
 #include    <sstream>
 
+#ifdef __BOTHWX__
+#include <wx/defs.h>
+#endif
+
 int CxModList::mModListCount = kModListBase;
 
 
