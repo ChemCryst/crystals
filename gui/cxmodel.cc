@@ -92,11 +92,11 @@ CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 #endif
 #ifdef __BOTHWX__
 
-  int args[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16, 0};
+  int args[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 32, 0};
   CxModel *theModel = new CxModel((wxWindow*)guiParent, args);
   theModel->ptr_to_crObject = container;
   theModel->Show();
-  theModel->Setup();
+//  theModel->Setup();
 
 #endif
 
@@ -106,13 +106,16 @@ CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 #ifdef __BOTHWX__
 
 //CxModel::CxModel(wxWindow *parent, wxWindowID id, int* args, long style, const wxString& name): wxGLCanvas(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, style|wxFULL_REPAINT_ON_RESIZE)
-CxModel::CxModel(wxWindow *parent, int * args): wxGLCanvas(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, wxT("GLCanvas"), args)
+CxModel::CxModel(wxWindow *parent, int * args): wxGLCanvas(parent, wxID_ANY, args, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE)
 {
-
+	m_context = new wxGLContext(this);
     m_DoNotPaint = false;
     m_NotSetupYet = true;
     m_MouseCaught = false;
-
+// This is for the PaintBannerInstead() function.
+    wxBitmap newbit(wxBITMAP(IDB_SPLASH));
+    m_bitmap = newbit;
+    m_bitmapok = m_bitmap.Ok();
 #endif
 #ifdef __CR_WIN__
 
@@ -170,6 +173,7 @@ CxModel::~CxModel()
   mModelCount--;
   delete [] mat;
   DeletePopup();
+  delete m_context;
 
 #ifdef __CR_WIN__
   wglMakeCurrent(NULL,NULL);
@@ -243,14 +247,13 @@ void CxModel::OnPaint(wxPaintEvent &event)
 {
 
     if ( ! IsShown() ) return;
-    SetCurrent();
+    SetCurrent(*m_context);
     wxPaintDC(this);
 
     if ( m_NotSetupYet ) Setup();
 
     if ( m_NotSetupYet ) return;
 
-    SetCurrent();
     if ( m_DoNotPaint )
     {
       m_DoNotPaint = false;
@@ -299,8 +302,7 @@ void CxModel::OnPaint(wxPaintEvent &event)
 #endif
 
       glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	  
-  
+
       glMatrixMode ( GL_PROJECTION );
 
       glLoadIdentity();
@@ -992,8 +994,12 @@ void CxModel::Setup()
 //   if( !GetContext() ) return;
    m_NotSetupYet = false;
 
-#endif
+#else
+
    setCurrentGL();
+   
+#endif
+
    glEnable(GL_NORMALIZE);
 
    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
@@ -1021,12 +1027,6 @@ void CxModel::Setup()
    glEnable(GL_LIGHTING);
 
 
-// This is for the PaintBannerInstead() function.
-#ifdef __BOTHWX__
-        wxBitmap newbit(wxBITMAP(IDB_SPLASH));
-        m_bitmap = newbit;
-        m_bitmapok = m_bitmap.Ok();
-#endif
 
 #ifdef __CR_WIN__
 
@@ -1139,7 +1139,8 @@ bool CxModel::setCurrentGL() {
       return wglMakeCurrent(m_hdc, m_hGLContext);
 #endif
 #ifdef __BOTHWX__
-      SetCurrent();
+	  if (!IsShownOnScreen()) return false;
+	  SetCurrent(*m_context);
       return true;
 #endif
 }

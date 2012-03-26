@@ -7,6 +7,9 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.45  2011/09/20 13:19:53  rich
+//  Fix OpenGL on Linux version
+//
 //  Revision 1.44  2011/04/21 11:21:28  rich
 //  Various WXS improvements.
 //
@@ -349,6 +352,7 @@ protected:
     bool m_MouseCaught;
     wxBitmap m_bitmap;
 
+	wxGLContext*	m_context;
     void OnEraseBackground(wxEraseEvent & evt);
     void OnLButtonUp(wxMouseEvent & event);
     void OnLButtonDown(wxMouseEvent & event);
