@@ -78,7 +78,7 @@ using namespace std;
 
   // The user can override the ini file settings by setting
   // CRYSDIR to the crystals directory.
-
+ 
     if ( getenv("CRYSDIR") == nil )
     {
 
@@ -200,10 +200,15 @@ using namespace std;
   // the string's memory must not be freed until later.
   list<char*> stringlist;
 
-	DEFINE_EVENT_TYPE(ccEVT_COMMAND_ADDED)
-#define wxID_ANY -1
+//	DEFINE_EVENT_TYPE(ccEVT_COMMAND_ADDED)
+	const wxEventType ccEVT_COMMAND_ADDED = wxNewEventType();
+	
+	
+//#define wxID_ANY -1
 
-#if wxCHECK_VERSION(2, 5, 3)
+
+
+/*#if wxCHECK_VERSION(2, 5, 3)
 #define EVT_CC_COMMAND_ADDED(id, fn) \
     DECLARE_EVENT_TABLE_ENTRY( \
         ccEVT_COMMAND_ADDED, id, wxID_ANY, \
@@ -219,11 +224,15 @@ using namespace std;
         (wxObject *) NULL \
     ),
 #endif
-	
+*/
+
   // CCrystalsApp initialization
 //  EVT_TIMER ( 5241, CCrystalsApp::OnKickTimer )
+//  BEGIN_EVENT_TABLE( CCrystalsApp, wxApp )
+	//  EVT_CC_COMMAND_ADDED (wxID_ANY, CCrystalsApp::OnCrystCommand )
+  //END_EVENT_TABLE()
   BEGIN_EVENT_TABLE( CCrystalsApp, wxApp )
-	  EVT_CC_COMMAND_ADDED (wxID_ANY, CCrystalsApp::OnCrystCommand )
+	  EVT_CUSTOM ( ccEVT_COMMAND_ADDED, wxID_ANY, CCrystalsApp::OnCrystCommand )
   END_EVENT_TABLE()
 
   #ifdef __WXGTK__
@@ -323,9 +332,11 @@ using namespace std;
       char * env = new char[location.size()+1];
       strcpy(env, location.c_str());
       stringlist.push_back(env);
-      putenv( env );
+      _putenv( env );
     }
 #endif
+
+//    MessageBox(NULL,_T("Press OK to start"),_T("Pause for debug"),MB_OK);
 
     for ( int i = 1; i < argc; i++ )
     {
@@ -344,7 +355,7 @@ using namespace std;
           char * env = new char[envvar.size()+1];
           strcpy(env, envvar.c_str());
           stringlist.push_back(env);
-          putenv( env );
+          _putenv( env );
           i = i + 2;
         }
       }
@@ -375,7 +386,7 @@ using namespace std;
     return true;
   }
 
-  void CCrystalsApp::OnCrystCommand(wxCommandEvent & event)
+  void CCrystalsApp::OnCrystCommand(wxEvent & event)
   {
 	theControl->DoCommandTransferStuff();
   }
