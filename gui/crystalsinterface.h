@@ -3,6 +3,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.40  2011/05/16 10:56:32  rich
+// Added pane support to WX version. Added coloured bonds to model.
+//
 // Revision 1.39  2011/03/24 16:46:09  rich
 // Untest.
 //
@@ -138,6 +141,11 @@
 #define __BOTHWIN__ 1
 #endif
 
+#ifdef __WXINT__
+#define __BOTHWX__ 1
+#define __BOTHWIN__ 1
+#endif
+
 #ifdef __CR_WIN__
 #define __BOTHWIN__ 1
 #endif
@@ -147,12 +155,12 @@
 
 // Instructions
 
-//NB Try to keep Windows ID's below 65535, I think
+//NB Try to keep Windows ID's below 32767, I think
 //   some bits of the API use short ints.
 enum {
-    kToolBarBase        =   25000,
-    kToolButtonBase     =   30000,
-    kMenuBase           =   35000,
+    kToolBarBase        =   15000,
+    kToolButtonBase     =   20000,
+    kMenuBase           =   25000,
 
     kButtonBase         =   40000,
     kListBoxBase        =   41000,
@@ -196,7 +204,6 @@ enum {
 #include <Types.h>
 typedef void AppContext;
 #endif
-
 
 
 #ifdef __BOTHWX__
@@ -287,6 +294,7 @@ typedef unsigned int UINT;
 
 
 
+
 // The following functions are common to many classes,
 // so I've made them into macros.
 
@@ -360,11 +368,10 @@ else {ptr_to_crObject->FocusToInput((char)event.GetKeyCode());}}
 
 
 
-#ifdef _GNUF77_
-#define FORCALL(a) a##_
-#endif
-#ifdef _DIGITALF77_
+#if defined (_DIGITALF77_) || defined (__WXINT__)
 #define FORCALL(a) a
+#else
+#define FORCALL(a) a##_
 #endif
 
 #endif
