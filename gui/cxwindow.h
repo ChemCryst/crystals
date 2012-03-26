@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.22  2011/05/16 10:56:32  rich
+//   Added pane support to WX version. Added coloured bonds to model.
+//
 //   Revision 1.21  2011/04/21 11:21:28  rich
 //   Various WXS improvements.
 //
@@ -173,7 +176,9 @@ class CxWindow : public BASEWINDOW
       void OnSize ( wxSizeEvent & event );
       void OnChar ( wxKeyEvent & event );
       void OnMenuSelected(wxCommandEvent &event );
+#ifdef DEPRECATED__BOTHWX__
 	  void OnHighlightMenuItem(wxMenuEvent & event);
+#endif
       void OnToolSelected(wxCommandEvent &event );
       void OnUpdateMenuItem(wxUpdateUIEvent &event );
       void OnKeyDown( wxKeyEvent & event );

@@ -9,6 +9,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.44  2011/05/16 10:56:32  rich
+//   Added pane support to WX version. Added coloured bonds to model.
+//
 //   Revision 1.43  2011/04/21 11:21:28  rich
 //   Various WXS improvements.
 //
@@ -431,7 +434,9 @@ BEGIN_EVENT_TABLE(CxWindow, wxFrame)
       EVT_COMMAND_RANGE(kToolButtonBase, kToolButtonBase+5000,
                         wxEVT_COMMAND_MENU_SELECTED,
                         CxWindow::OnToolSelected)
+#ifdef DEPRECATED__BOTHWX__
 	  EVT_MENU_HIGHLIGHT_ALL(CxWindow::OnHighlightMenuItem)
+#endif
 	  EVT_KEY_DOWN( CxWindow::OnKeyDown )
 END_EVENT_TABLE()
 #endif
@@ -470,6 +475,8 @@ void CxWindow::OnUpdateMenuItem(wxUpdateUIEvent & pCmdUI)
     else
             pCmdUI.Enable(false);
 }
+#endif
+#ifdef DEPRECATED__BOTHWX__
 void CxWindow::OnHighlightMenuItem(wxMenuEvent & event)
 {
 	if ( event.GetMenuId() == -1 ) return;
