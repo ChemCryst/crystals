@@ -29,6 +29,7 @@
 #include <afxwin.h>
 #endif
 
+#include <algorithm>
 #include <vector>
 #include <deque>
 #include <list>
@@ -213,11 +214,20 @@ extern "C" {
 class CcProcessInfo
 {
    public:
-      CcProcessInfo(const string & app, STARTUPINFO & si, string & commandline){
+      CcProcessInfo(const wstring & app, STARTUPINFOW & si, wstring & commandline ) {
+
 //        CreateOK = CreateProcess(app.c_str(), const_cast<char*>(commandline.c_str()), NULL,NULL,
 //                                 TRUE,CREATE_NEW_CONSOLE,NULL,NULL,&si,&proc);
-        CreateOK = CreateProcess(NULL, const_cast<char*>(commandline.c_str()), NULL,NULL,
+
+
+         commandline.resize( _MAX_PATH );
+         CreateOK = CreateProcessW(NULL, &commandline[0], NULL,NULL,
                                  TRUE,CREATE_NEW_CONSOLE,NULL,NULL,&si,&proc);
+
+         commandline.erase(
+            std::find(commandline.begin(), commandline.end(), L'\0'), commandline.end()
+         );
+
       };
       ~CcProcessInfo() {
          CloseHandle(proc.hThread);
@@ -313,6 +323,9 @@ enum
 
 
 //   $Log: not supported by cvs2svn $
+//   Revision 1.50  2011/09/26 13:42:37  rich
+//   Fix spawn of external programs using % modifier (run in CRYSTALS I/O window).
+//
 //   Revision 1.49  2008/09/22 12:31:37  rich
 //   Upgrade GUI code to work with latest wxWindows 2.8.8
 //   Fix startup crash in OpenGL (cxmodel)

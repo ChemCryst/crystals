@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.119  2012/01/05 13:00:04  rich
+// Fix breaking of lines when running diffin.exe in crystals window.
+//
 // Revision 1.118  2011/09/26 13:42:37  rich
 // Fix spawn of external programs using % modifier (run in CRYSTALS I/O window).
 //
@@ -574,6 +577,7 @@
 
 #include    <string>
 #include    <vector>
+#include    <set>
 #include    <iostream>
 #include    <iomanip>
 #include    <cstdlib>
@@ -681,6 +685,16 @@ CFont* CcController::mp_inputfont = nil;
 #include <process.h>
 #endif
 
+
+//#include <RDGeneral/Invariant.h>
+//#include <GraphMol/RDKitBase.h>
+//#include <GraphMol/SmilesParse/SmilesParse.h>
+//#include <GraphMol/SmilesParse/SmilesWrite.h>
+//#include <GraphMol/Substruct/SubstructMatch.h>
+//#include <GraphMol/Depictor/RDDepictor.h>
+//#include <GraphMol/FileParsers/FileParsers.h>
+
+                   
 #define BZERO(a) memset(a,0,sizeof(a)) //easier -- shortcut
 
 bool bRedir = false;
@@ -691,6 +705,7 @@ static CcLock m_Complete_Signal(false);
 static CcLock m_wait_for_thread_start(false);
 
 static list<char*> stringlist;
+static set<string> stringset;
 
 CcController* CcController::theController = nil;
 int CcController::debugIndent = 0;
@@ -733,7 +748,7 @@ CcController::CcController( const string & directory, const string & dscfile )
     CcController::theController = this;
     CcController::debugIndent = 0;
 
-#ifdef __BOTHWX__
+#ifdef DEPRECATED__BOTHWX__
 	CxWeb::InitXULRunner();
 #endif
 
@@ -863,7 +878,7 @@ CcController::CcController( const string & directory, const string & dscfile )
 
 // If specified on the command line, set the CRDSC environment variable,
 // regardless of whether it is already set...
-
+//                 wxMessageBox("Debug","ing",wxOK|wxICON_HAND|wxCENTRE);
     LOGSTAT ( "Setting CRDSC to " + dscfile + "\n") ;
     if ( dscfile.length() > 1 )
     {
@@ -877,11 +892,42 @@ CcController::CcController( const string & directory, const string & dscfile )
       char * env = new char[dsctemp.size()+1];
       strcpy(env, dsctemp.c_str());
       stringlist.push_back(env);
-      putenv( env );
+      _putenv( env );
 #endif
 //For info, put DSC name in the title bar.
       Tokenize("^^CO SET _MAIN TEXT 'Crystals - " + dscfile + "'");
     }
+
+
+/****
+
+    //RDKit test
+
+ RDKit::RWMol *mol=new RDKit::RWMol();
+
+ // add atoms and bonds:
+  mol->addAtom(new RDKit::Atom(6)); // atom 0
+  mol->addAtom(new RDKit::Atom(6)); // atom 1
+  mol->addAtom(new RDKit::Atom(6)); // atom 2
+  mol->addAtom(new RDKit::Atom(6)); // atom 3
+  mol->addBond(0,1,RDKit::Bond::SINGLE); // bond 0
+  mol->addBond(1,2,RDKit::Bond::DOUBLE); // bond 1
+  mol->addBond(2,3,RDKit::Bond::SINGLE); // bond 2
+ // setup the stereochem:
+  mol->getBondWithIdx(0)->setBondDir(RDKit::Bond::ENDUPRIGHT);
+  mol->getBondWithIdx(2)->setBondDir(RDKit::Bond::ENDDOWNRIGHT);
+
+ // do the chemistry perception:
+  RDKit::MolOps::sanitizeMol(*mol);
+
+ // Get the canonical SMILES, include stereochemistry:
+  std::string smiles;
+  smiles = MolToSmiles(*(static_cast<RDKit::ROMol *>(mol)),true);
+  
+//  wxMessageBox(smiles,"OK", wxOK|wxICON_HAND|wxCENTRE);
+
+****/
+
 
 
 // If the CRDSC variable is set, leave it's value the same.
@@ -901,7 +947,11 @@ CcController::CcController( const string & directory, const string & dscfile )
        _putenv( "CRDSC=crfilev2.dsc" );
 #endif
 #ifdef __BOTHWX__
-       putenv( "CRDSC=crfilev2.dsc" );
+//       _setenv("CRDSC", "crfilev2.dsc", 1);
+       string p = "CRDSC=crfilev2.dsc";
+       stringset.insert(p);
+       _putenv( p.c_str() );
+//       envv = getenv( "CRDSC" );
 #endif
        Tokenize("^^CO SET _MAIN TEXT 'Crystals - crfilev2.dsc'");
     }
@@ -1100,7 +1150,10 @@ bool CcController::ParseInput( deque<string> & tokenList )
                 LOGSTAT("CcController: Found window " + strstrm.str() );
                 mWindowList.remove(mWindowToClose);
                 delete mWindowToClose;
-                mCurrentWindow = mWindowList.back();
+				if ( mWindowList.size() )
+	                mCurrentWindow = mWindowList.back();
+				else
+					mCurrentWindow = nil;
                 break;
             }
             case kTGetValue:
@@ -1406,7 +1459,7 @@ bool CcController::ParseInput( deque<string> & tokenList )
                              char * env = new char[newdsc.size()+1];
                              strcpy(env, newdsc.c_str());
                              stringlist.push_back(env);
-                             putenv( env );
+                             _putenv( env );
 #endif
                         }
                         break;
@@ -1550,7 +1603,9 @@ void    CcController::SendCommand( string command , bool jumpQueue)
 void    CcController::Tokenize( const string & cText )
 {
 
-    int clen = cText.length();
+//    LOGWARN(cText);
+
+	int clen = cText.length();
     int chop = 0;
 
 // Look out for lines where the ^^ are misplaced.
@@ -2083,8 +2138,12 @@ void CcController::StoreKey( string key, string value )
 
 #else
 
- wxConfig * config = new wxConfig("Chem Cryst");
- config->Write( ("Crystals/"+key).c_str(), value.c_str() );
+ wxString ckey = wxT("Chem Cryst");
+ wxString pkey = wxT("Crystals/");
+ pkey += wxString(key.c_str(),wxConvUTF8);
+ wxString wval(value.c_str(),wxConvUTF8);
+ wxConfig * config = new wxConfig(ckey);
+ config->Write( pkey, wval );
  delete config;
 
 #endif
@@ -2126,9 +2185,13 @@ string CcController::GetKey( string key )
 #else
 
  wxString str;
- wxConfig * config = new wxConfig("Chem Cryst");
- if ( config->Read(("Crystals/"+key).c_str(), &str ) ) {
-   value = str.c_str();
+ wxString pkey = wxT("Crystals/");
+ pkey += wxString(key.c_str(),wxConvUTF8);
+ wxString wstr;
+
+ wxConfig * config = new wxConfig(_T("Chem Cryst"));
+ if ( config->Read(pkey, &wstr ) ) {
+   value = wstr.mb_str();
  }
  delete config;
 
@@ -2183,8 +2246,14 @@ string CcController::GetRegKey( string key, string name )
 
 #ifdef __BOTHWX__
  wxString str;
- wxConfig *config = new wxConfig("Chem Cryst");
- data = (config->Read(name.c_str(),_T(""))).c_str();
+ wxString pkey = wxT("Crystals/");
+ pkey += wxString(key.c_str(),wxConvUTF8);
+ wxString wstr;
+
+ wxConfig * config = new wxConfig(_T("Chem Cryst"));
+ if ( config->Read(pkey, &wstr ) ) {
+   data = str.mb_str();
+ }
  delete config;
 #endif
 
@@ -2269,14 +2338,15 @@ void CcController::ReLayout()
   return;
 }
 
-
-
-#ifdef _DIGITALF77_
+#if defined (__WXINT__) 
+  UINT CrystalsThreadProc( LPVOID arg );
+  extern "C" { void CRYSTL(); }
+  UINT CrystalsThreadProc( LPVOID arg )
+#elif  defined (_DIGITALF77_)
   UINT CrystalsThreadProc( LPVOID arg );
   SUBROUTINE CRYSTL();
   UINT CrystalsThreadProc( LPVOID arg )
-#endif
-#ifdef _GNUF77_
+#else
   int CrystalsThreadProc( void* arg );
   SUBROUTINE_F77 crystl_();
   int CrystalsThreadProc( void * arg )
@@ -2290,10 +2360,11 @@ void CcController::ReLayout()
     LOGSTAT("FORTRAN: Running CRYSTALS");
     try
     {
-#ifdef _DIGITALF77_
+#if defined (__WXINT__) 
+      CRYSTL();
+#elif  defined (_DIGITALF77_)
         CRYSTL();
-#endif
-#ifdef _GNUF77_
+#else
        crystl_();
 #endif
        LOGSTAT ("Exited CRYSTL() without exception. Surely some mistake?");
@@ -2412,7 +2483,7 @@ string CcController::OpenFileDialog(const string &extensionFilter,
                               cwd,
                               "",
                               extension,
-                              wxOPEN  );
+                              wxFD_OPEN  );
 
 
 
@@ -2489,7 +2560,7 @@ string CcController::SaveFileDialog(const string &defaultName,
                               cwd,
                               initName,
                               extension,
-                              wxSAVE|wxOVERWRITE_PROMPT );
+                              wxFD_OVERWRITE_PROMPT );
 
 
 
@@ -2647,7 +2718,7 @@ void CcController::ChangeDir (string newDir)
 
 #endif
 #ifdef __BOTHWX__
-      chdir ( newDir.c_str());
+      _chdir ( newDir.c_str());
       std::cerr << "\n\n\nChanged directory to: " << newDir << "\n\n\n";
 #endif
 }
@@ -2713,7 +2784,7 @@ void CcController::CcChooseFont()
 
    wxWindow* top = wxGetApp().GetTopWindow();
 
-   wxFontDialog fd( top, &data );
+   wxFontDialog fd( top, data );
 
    if ( fd.ShowModal() == wxID_OK )
    {
@@ -3223,7 +3294,6 @@ extern "C" {
   // new style API for FORTRAN
   // FORCALL() macro adds on _ to end of word for linux version.
 
-
   void FORCALL(callccode) ( char* theLine)
   {
       string temp =  theLine ;    // To be deleted later by the queue.
@@ -3232,42 +3302,70 @@ extern "C" {
       (CcController::theController)->AddInterfaceCommand( temp );
   }
 
+  void FORCALL(getcenv) ( char* key, char* value)
+  {
+	  char* v;
+	  v = getenv(key);
+	  if ( v ) strcpy(value,v);
+  }
+
   void FORCALL(guexec) ( char* theLine)
   {
-    char * tempstr = new char[263];
-    memcpy(tempstr,theLine,262);
-    *(tempstr+262) = '\0';
-    string line = string(tempstr);
+	// Convert to a wchar_t*
+#ifdef _DIGITALF77_
+//    char * tempstr = new char[263];
+//    memcpy(tempstr,theLine,262);
+//    *(tempstr+262) = '\0';
+//    wstring line(tempstr);
 
-//    LOGERR(line);
+    size_t origsize = strlen(theLine) + 1;
+    const size_t newsize = 263;
+    wchar_t tempstr[newsize];
+    mbstowcs(tempstr, theLine,  origsize);
 
-    string::size_type strim = line.find_last_not_of(" "); //Remove trailing spaces
+    wstring line = wstring(tempstr);
+
+
+#else
+    size_t origsize = strlen(theLine) + 1;
+    const size_t newsize = 263;
+    size_t convertedChars = 0;
+    wchar_t tempstr[newsize];
+    mbstowcs_s(&convertedChars, tempstr, origsize, theLine, _TRUNCATE);
+
+    wstring line = wstring(tempstr);
+#endif
+	
+
+    wstring::size_type strim = line.find_last_not_of(' '); //Remove trailing spaces
+
     if ( strim != string::npos )
         line = line.substr(0,strim+1);
-    delete [] tempstr;
-    tempstr = NULL;
+//   delete [] tempstr;
+//    tempstr = NULL;
+
 //  (CcController::theController)->AddInterfaceCommand( "Guexec: " + line );
 
     bRedir = false;
     bool bWait = false;
     bool bRest = false;
-    string::size_type sFirst,eFirst,sRest,eRest;
+    wstring::size_type sFirst,eFirst,sRest,eRest;
 
-    sFirst = line.find_first_not_of(" ");     // Find first non-space.
+    sFirst = line.find_first_not_of(' ');     // Find first non-space.
     if ( sFirst == string::npos ) sFirst = 0;
 
     if ( line[sFirst] == '+' )                // Check for + symbol (signifies 'wait')
     {
        bWait = true;
 // Find next non space ( in case + is seperated from first word ).
-       sFirst = line.find_first_not_of(" ",sFirst+1);
+       sFirst = line.find_first_not_of(' ',sFirst+1);
        if ( sFirst == string::npos ) sFirst = 0;
     }
     else if ( line[sFirst] == '%' )  // Check for % symbol (signifies 'redirect STDIN and OUT')
     {
        bRedir = true;
 // Find next non space ( in case + is seperated from first word ).
-       sFirst = line.find_first_not_of(" ",sFirst+1);
+       sFirst = line.find_first_not_of(' ',sFirst+1);
        if ( sFirst == string::npos ) sFirst = 0;
     }
 // sFirst now points to the beginning of the command.
@@ -3284,14 +3382,14 @@ extern "C" {
        if ( eFirst == string::npos ) eFirst = line.length();
     }
 
-    string firstTok = line.substr(sFirst,eFirst-sFirst);
-    string restLine = "";
+    wstring firstTok = line.substr(sFirst,eFirst-sFirst);
+    wstring restLine;
 
 //        LOGERR(firstTok);
 
 // Find next non space and last non space 
-    sRest = line.find_first_not_of(" ",eFirst+1);
-    eRest = line.find_last_not_of(" ");
+    sRest = line.find_first_not_of(' ',eFirst+1);
+    eRest = line.find_last_not_of(' ');
 
 
     if ( sRest != string::npos )
@@ -3304,7 +3402,9 @@ extern "C" {
 
 //        LOGERR(restLine);
 
-	string totalcl = firstTok + " " + restLine;
+        wstring totalcl = firstTok;
+        totalcl += L" ";
+        totalcl += restLine;
 //        LOGERR(totalcl);
 
 #ifdef __BOTHWIN__
@@ -3315,9 +3415,9 @@ extern "C" {
 //Special case html files with a # anchor reference after file name:
       string::size_type match = firstTok.find('#');
       if ( match != string::npos ) {
-         char buf[MAX_PATH];
-         string tempfile = firstTok.substr(0,match);
-         if ( (int)FindExecutable(tempfile.c_str(),NULL,buf) >= 32) {
+         wchar_t buf[MAX_PATH];
+         wstring tempfile = firstTok.substr(0,match);
+         if ( (int)FindExecutableW(tempfile.c_str(),NULL,buf) >= 32) {
             restLine = firstTok + restLine;
             bRest = true;
             firstTok = buf;
@@ -3325,26 +3425,26 @@ extern "C" {
       }
 
 
-      SHELLEXECUTEINFO si;
+      SHELLEXECUTEINFOW si;
 
       si.cbSize       = sizeof(si);
       si.fMask        = SEE_MASK_NOCLOSEPROCESS|SEE_MASK_FLAG_NO_UI ;
       si.hwnd         = GetDesktopWindow();
-      si.lpVerb       = "open";
+      si.lpVerb       = L"open";
       si.lpFile       = firstTok.c_str();
       si.lpParameters = ( (bRest)? restLine.c_str() : NULL );
       si.lpDirectory  = NULL;
       si.nShow        = SW_SHOWNORMAL;
 
-      int err = (int)ShellExecuteEx ( & si );
+      int err = (int)ShellExecuteExW ( & si );
 
       if ( (int)si.hInstApp == SE_ERR_NOASSOC )
       {
-        string newparam = string("shell32.dll,OpenAs_RunDLL ")+firstTok+( (bRest) ? string(" ")+restLine : string("") ) ;
-        si.lpFile       = "rundll32.exe";
+        wstring newparam = wstring(L"shell32.dll,OpenAs_RunDLL ")+firstTok+( (bRest) ? L" " + restLine : L"" ) ;
+        si.lpFile       = L"rundll32.exe";
         si.lpParameters = newparam.c_str();
         si.fMask        = SEE_MASK_NOCLOSEPROCESS; //Don't mask errors for this call.
-        ShellExecuteEx ( & si );
+        ShellExecuteExW ( & si );
 // It is not possible to wait for rundll32's spawned process, so
 // we just pop up a message box, to hold this app here.
  #ifdef __CR_WIN__
@@ -3353,7 +3453,7 @@ extern "C" {
  #endif
 
         CcController::theController->AddInterfaceCommand( " ");
-        CcController::theController->AddInterfaceCommand( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
+//        CcController::theController->AddInterfaceCommand( "     {0,2 Waiting for {2,0 " + firstTok.c_str() + " {0,2 to finish... ");
         CcController::theController->AddInterfaceCommand( " ");
         WaitForSingleObject( si.hProcess, INFINITE );
         CcController::theController->AddInterfaceCommand( "                                                               {0,2 ... Done");
@@ -3362,7 +3462,7 @@ extern "C" {
       else if ( (int)si.hInstApp <= 32 )
       {
 // Some other failure. Try another method of starting external programs.
-        CcController::theController->AddInterfaceCommand( "{I Failed to start " + firstTok + ", (security or not found?) trying another method.");
+  //      CcController::theController->AddInterfaceCommand( "{I Failed to start " + firstTok + ", (security or not found?) trying another method.");
         extern int errno;
         char * str = new char[257];
         memcpy(str,line.substr(sFirst,line.length()-sFirst).c_str(),256);
@@ -3391,7 +3491,7 @@ extern "C" {
         if ( result == -1 )  //Start failed
         {
           ostringstream strstrm;
-          strstrm << "{I Failed again to start " << firstTok << ", errno is:" << errno << " trying a command shell.";
+           strstrm << "{I Failed again to start " << firstTok.c_str() << ", errno is:" << errno << " trying a command shell.";
           CcController::theController->AddInterfaceCommand(strstrm.str());
           for (int ij = 7; ij>=0; ij--)
           {
@@ -3423,7 +3523,7 @@ extern "C" {
       else
       {
         CcController::theController->AddInterfaceCommand( " ");
-        CcController::theController->AddInterfaceCommand( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
+    //    CcController::theController->AddInterfaceCommand( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
         CcController::theController->AddInterfaceCommand( " ");
         WaitForSingleObject( si.hProcess, INFINITE );
         CcController::theController->AddInterfaceCommand( "                                                               {0,2 ... Done");
@@ -3432,7 +3532,7 @@ extern "C" {
     }
     else if ( bRedir )
     {
-      STARTUPINFO si;
+      STARTUPINFOW si;
       SECURITY_ATTRIBUTES sa;
       SECURITY_DESCRIPTOR sd;               //security information for pipes
       if (IsWinNT())        //initialize security descriptor (Windows NT)
@@ -3455,7 +3555,7 @@ extern "C" {
         return;
       }
 
-      GetStartupInfo(&si);      //set startupinfo for the spawned process
+      GetStartupInfoW(&si);      //set startupinfo for the spawned process
       si.dwFlags = STARTF_USESTDHANDLES|STARTF_USESHOWWINDOW;
       si.wShowWindow = SW_HIDE;
       si.hStdOutput = outPipe.input;
@@ -3548,27 +3648,27 @@ extern "C" {
 //Special case html files with a # anchor reference after file name:
       string::size_type match = firstTok.find('#');
       if ( match != string::npos ) {
-         char buf[MAX_PATH];
-         string tempfile = firstTok.substr(0,match);
-         if ( (int)FindExecutable(tempfile.c_str(),NULL,buf) >= 32) {
+         wchar_t buf[MAX_PATH];
+         wstring tempfile = firstTok.substr(0,match);
+         if ( (int)FindExecutableW(tempfile.c_str(),NULL,buf) >= 32) {
             restLine = firstTok + restLine;
             bRest = true;
             firstTok = buf;
          }
       }
 
-      HINSTANCE ex = ShellExecute( GetDesktopWindow(),
-                                   "open",
+      HINSTANCE ex = ShellExecuteW( GetDesktopWindow(),
+                                   L"open",
                                    firstTok.c_str(),
                                    ( (bRest)? restLine.c_str() : NULL ),
                                    NULL,
                                    SW_SHOWNORMAL);
       if ( (int)ex == SE_ERR_NOASSOC )
       {
-         ShellExecute( GetDesktopWindow(),
-                       "open",
-                       "rundll32.exe",
-                       string(string("shell32.dll,OpenAs_RunDLL ")+firstTok).c_str(),
+         ShellExecuteW( GetDesktopWindow(),
+                       L"open",
+                       L"rundll32.exe",
+                       wstring(L"shell32.dll,OpenAs_RunDLL "+firstTok).c_str(),
                        NULL,
                        SW_SHOWNORMAL);
       }
