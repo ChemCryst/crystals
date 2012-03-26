@@ -27,7 +27,7 @@ int CxModList::mModListCount = kModListBase;
 
 
 #ifdef __BOTHWX__
-int wxCALLBACK MySorter(long item1, long item2, wxIntPtr sortData)
+int wxCALLBACK MySorter(long item1, long item2, long sortData)
 {
     // inverse the order
     if (item1 < item2)
