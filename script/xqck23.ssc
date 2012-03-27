@@ -1,6 +1,24 @@
-%SCRIPT XQCK23                                                                 
+%SCRIPT XQCK23
+%%
+% VARIABLE INTEGER BPRESS
+%%
+%% Check for already stored user preference about FSq
+^^?? GETKEY FSQORF
+%    GET SILENT NOSTORE FINAL TEXT 'NONE' 'NONE'
+%    IF CVALUE .EQ. 'F' THEN
+%      COPY '#LIST 23'                                                          
+%      COPY 'MINIMISE F-SQ=NO'                                                  
+%      COPY 'END'                                                               
+%      FINISH
+%    ELSE IF CVALUE .EQ. 'FSQ' THEN
+%      COPY '#LIST 23'                                                          
+%      COPY 'MINIMISE F-SQ=YES'                                                  
+%      COPY 'END'
+%      FINISH
+%    END IF
+%%
 ^^WI WINDOW XQCK23 'Minimisation function' MODAL COMMIT='MF_F2' CANCEL='MF_FO'  
-^^WI GRID MAIN NROWS=5 NCOLS=1                                                  
+^^WI GRID MAIN NROWS=7 NCOLS=1                                                  
 ^^WI {                                                                          
 ^^WI   @ 2,1 GRID EXPLN NROWS=12 NCOLS=3                                        
 ^^WI   {                                                                        
@@ -29,32 +47,47 @@
 ^^WI     @ 1,4 BUTTON MF_FO '&F' LENGTH='F sqauared' CANCEL                     
 ^^WI     @ 1,5 STRETCH MF_ST HORIZONTAL                                         
 ^^WI     @ 1,6 BUTTON MF_HELP '&Help'                                           
-^^WI   }                                                                        
+^^WI   }
+^^WI   @ 5,1 CHECKBOX FFSQ '&Remember this decision'                            
+^^WI           INFORM=NO STATE=OFF
 ^^WI }                                                                          
 ^^WI SHOW                                                                       
 ^^CR                                                                            
 %%Nov 09      Remove LIST 4 work from here and set it later in FRESH.SSC
 %  LOOP                                                                         
 %   VERIFY MF_FO MF_F2 MF_HELP                                                  
-%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'MF_F2'                            
-%   CASE VALUE                                                                  
-%   BLOCK                                                                       
-%      COPY '#LIST 23'                                                          
-%      COPY 'MINIMISE F-SQ=NO'                                                  
-%      COPY 'END'                                                               
-^^CO   DISPOSE XQCK23                                                           
-%      FINISH                                                                   
-%   END BLOCK                                                                   
-%   BLOCK                                                                       
-%      COPY '#LIST 23'                                                          
-%      COPY 'MINIMISE F-SQ=YES'                                                 
-%      COPY 'END'                                                               
-^^CO   DISPOSE XQCK23                                                           
-%      FINISH                                                                   
-%   END BLOCK                                                                   
-%   BLOCK                                                                       
-%      COPY '#SPAWN CRYSDIR:manual/crystalsmanual-sfls.html'                    
-%   END BLOCK                                                                   
-%   END CASE                                                                    
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'MF_F2'
+%   EVALUATE BPRESS = VALUE
+%   IF BPRESS .EQ. 3 THEN
+%      COPY '#SPAWN CRYSDIR:manual/crystalsmanual-sfls.html'
+%   ELSE
+%      VERIFY ON OFF                                                             
+^^??   FFSQ STATE                                                                
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '                                  
+%      IF VALUE .EQ. 1 THEN
+%        IF BPRESS .EQ. 1 THEN
+^^CO       SETKEY FSQORF F
+%        ELSE
+^^CO       SETKEY FSQORF FSQ
+%        END IF                                                                    
+%      END IF                                                                    
+%      CASE BPRESS                                                     
+%       BLOCK                                                                        
+%        COPY '#LIST 23'                                                          
+%        COPY 'MINIMISE F-SQ=NO'                                                  
+%        COPY 'END'                                                               
+^^CO     DISPOSE XQCK23                                                           
+%        FINISH                                                                   
+%       END BLOCK                                                                   
+%       BLOCK                                                                       
+%        COPY '#LIST 23'                                                          
+%        COPY 'MINIMISE F-SQ=YES'                                                 
+%        COPY 'END'                                                               
+^^CO     DISPOSE XQCK23                                                           
+%        FINISH                                                                   
+%       END BLOCK                                                                   
+%      END CASE
+%   END IF
 %  END LOOP                                                                     
 %END SCRIPT                                                                    
+
