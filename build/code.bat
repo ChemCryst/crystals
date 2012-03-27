@@ -11,8 +11,10 @@
 @if "%CRDEBUG%" == "TRUE"  goto debug
 @
 %LD% %OPT% %LDFLAGS% obj\*.obj %LIBS% %OUT%crystals.exe
+mt.exe -manifest crystals.exe.manifest -outputresource:crystals.exe;1
 @goto fini
 :debug
 @%LD% %LDEBUG% %LDFLAGS% dobj\*.obj %LIBS% %OUT%crystalsd.exe
+mt.exe -manifest crystalsd.exe.manifest -outputresource:crystalsd.exe;1
 :fini
 @time /t
