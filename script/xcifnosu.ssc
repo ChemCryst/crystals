@@ -70,6 +70,10 @@
 %    END IF                                                                     
   Parameters saved in {&noesds.cif{&                                            
 %%                                                                              
+%%
+%    IF ( EXISTS 6 .NE. 1 ) THEN 
+%      FINISH
+%    END IF
 ^^WI WINDOW CIFREF 'Reflection CIF?'                                            
 ^^WI   MODAL COMMIT='CIFBOK' CANCEL='CIFBXX'                                    
 ^^WI GRID GRIDLR NROWS=1 NCOLS=2                                                
