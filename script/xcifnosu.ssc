@@ -29,7 +29,8 @@
 %    copy "end"                                                                 
 %    END IF                                                                     
 %  END BLOCK                                                                    
-%  COPY '#SCRIPT CHECK3'                                                        
+%%  No need to chack LIST 3 since esd are not being output
+%%  COPY '#SCRIPT CHECK3'                                                        
                                                                                 
  * CIF listing of all data                                                      
                                                                                 
