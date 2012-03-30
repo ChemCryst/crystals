@@ -132,8 +132,9 @@
 %    COPY '#LIST 31'                                                            
 %    COPY 'END'                                                                 
 %   END IF                                                                      
-%%                                                                              
-%   COPY '#SCRIPT CHECK3'                                                       
+%%
+%%   No Need to check LIST 3 since esd are not used                                                                              
+%%   COPY '#SCRIPT CHECK3'                                                       
 %%                                                                              
 %% CIF listing of all data                                                      
 %%                                                                              
