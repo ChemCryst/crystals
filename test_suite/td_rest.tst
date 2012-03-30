@@ -114,6 +114,9 @@ end
 
 #purg
 end
+
+#title Now test asymmetric restraints
+
 #use td_rest.l5
 #list 16
 a-u(ij) 0.0,.001 = o(6) to c(7)
