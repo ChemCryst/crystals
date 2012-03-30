@@ -1011,6 +1011,7 @@ Lists marked * cannot be directly input by the User
 #     5    The model parameters (section #RLIST05#)
 #     6    Reflection data (section #RLIST06#)
 #     7    Reflection data not used for refinement (section #RLIST07#)
+#     9*   ESDs of model parameters (section #RESD#)
 #    10    Peak coordinates from Fourier (section #RLIST10#)
 #    11    Least squares matrix (section #RLIST11#)
 #    12    Refinement directives (section #RLIST12#)
@@ -4195,6 +4196,45 @@ bonding rules are applied in the following order of priority:
 Rule 3 may be ignored unless you're trying to set up something very
 special. Rule 4 is useful if you have a group disordered across a
 symmetry element.
+#
+Finally, you can select all atoms in a given part of group by using the number 999 as a wild-card.
+#N   4#
+#J
+      examples
+                  PART(3999,X's)
+      selects all atoms in assembly 3.
+#
+#
+#DHPART#
+#PThis specifies all hydrogen (or deuterium) atoms or parameters with the given part number.
+#N   4#
+#J
+      examples
+                  HPART(3001)
+                  HPART(3001,X's)
+#
+#DNHPART#
+#PThis specifies all non-hydrogen (and deuterium) atoms or parameters with the given part number.
+#N   4#
+#J
+      examples
+                  NHPART(3001)
+                  NHPART(3001,X's)
+#
+#DTYPE#
+#PThis enable all atoms or parameters on atoms of the given type to be 
+processed together.
+#J
+      example
+      /EDIT
+      RESET 9900 PART TYPE(H)
+      END
+#
+#PThis puts all the hydrogen atoms into PART(9900). Since all other 
+atoms are in PART(0) or a specified PART, the hydrogen will now be 
+treated independently.
+#
+
 #Q
 #IATOMIC PARAMETER SPECIFICATION#
 #PAtomic parameters have a NAME. Some directives permit the use of the
@@ -6182,9 +6222,10 @@ end
  END
 #
 #Q
-#N   5#
+#N   6#
 #J
  \MATCH
+ METHOD 3
  MAP RESIDUE(1)
  ONTO RESIDUE(2)
  RENAME 100
@@ -6195,7 +6236,7 @@ two residues.  Unlike REGULARISE itself, the user does not have
 to list the atoms in any special order - the routine attempts to make
 pairwise assigments. Initially this is done via a topographical search,
 and refined by minimising cartesian residuals whenever degeneracy is 
-found.  By default, the final coordinate matching is done using method 1.
+found.
 
 #DMAP#
 #PThe following list of atoms is the ideal fragment with ideal atom 
@@ -6213,7 +6254,7 @@ ignored - they can even be Q atoms
 #
 #DMETHOD#
 #POne of the METHODS available in REGULARISE#
-The default is method 1.
+The default is method 4.
 #
 #DRENAME  n#
 #PIf the mapping is succerssful, atoms in the ONTO list are given the 
@@ -6221,11 +6262,34 @@ same type as the corresponding atom in the MAP list, and the same SERIAL
 plus "n".
 #
 #DOUTPUT LIST= PUNCH=#
-#POutput takes the values OFF, LOW, MEDIUM, HIGH.
+#PlIST takes the values OFF, LOW, MEDIUM, HIGH.
 #Punch takes the values OFF, RESULTS#
 #PResults creates an ASCII file that could be processed by EXCEL or 
 other spreadsheet.
-
+The fields are tab-deliminated, and have the following attributes.
+#J
+CSD_CIF_BAZHAM01  (title)
+Asymmetric  (potential internal symmetry)
+:Centroids   (x,y,z)A and (x,y,z)B  
+:Axes of Inertia   (long, medium, short)A and (long, medium, short)B 
+:Sum dev sq  After matching, Sum(delta_x^2), y and z.  Sum Separation^2 
+:RMS dev  As above, but root mean square deviation rather than sums  
+:RMS bond and tors dev  RMS differences of equivalent bond lengths and torsion angles  
+:Min and Max bond dev  Minimum and maximum bond length differences.  
+:Min and Max tors dev   Minimum and maximum torsion angle differences. 
+:Mean & delta Centroids  Mean(xA,xB), (yA,yB), (zA,zB) and (xA-xB), (yA-yB), (zA-zB)
+:Transformation   (3x3) transformation matrix
+:Det and trace   Determinant and trace of matrix
+:Closeness to ideal rotation  RMS of the deviations of matrix elements from integers  
+:Closeness to group operator  RMS of the deviations of translations from integers  
+:Combined measure of closeness    
+:Rworst & Raverage  Worst and Average for to an operator, operator identifier  
+:Symmetry  Local point group relating molecules.
+:Pseudo  Pseudo point group  relating molecules.
+:Operator  Pseudo symmetry operator.
+:No_Atoms  Number of atoms in each molecule.
+:S.G.  Original space group.
+:Cell  Original unit cell parameters.
 #
 #DComparing lots of Z'=2 structures#
 #PIf one has a single cif file containing many Z'=2 structures, the whole 
@@ -6555,7 +6619,7 @@ to be created.
 # LIST 28 - Reflection restriction list (#RLIST28#)
 # CHECK - Checking the refinement and restraint directives
 # SFLS - Structure factor least squares calculations (#RSFLS#)
-# ESD - Creates a esd list, LIST 9 (#RLIST9#)
+# ESD - Creates an esd list, LIST 9 (#RLIST9#)
 # ANALYSE - Systematic comparisons of Fo and Fc
 # DIFABS - Least squares absorption correction
 #
@@ -7316,6 +7380,8 @@ are only going to be calculated.
  FULL  PARAMETERS
  DIAGONAL  PARAMETERS
  PLUS  PARAMETERS
+ SUMFIX PARAMETERS
+ REM text
  END
 #
 #N   3#
@@ -7417,6 +7483,29 @@ are only going to be calculated.
  the full matrix, based on one block for each atom.
  Both the SCALE FACTOR and the DUMMY OVERALL ISOTROPIC
  TEMPERATURE FACTOR are automatically included.
+#
+#DSUMFIX PARAMETERS [ AND PARAMETERS ] [ AND PARAMETERS ]...#
+ Constrains the sum of the specified parameters (or groups of parameters) to
+ be constant.
+ If no AND is given, then sum of the parameters specified is constrained, by
+ making the total of the shifts add to zero. If AND is given then the total of
+ the shifts for each group add to zero, and each group is equivalenced to a
+ single least squares parameter.
+ E.g. constrain sum of three occupancies to be constant.
+#N   4#
+#J
+      \LIST 12
+      BLOCK SCALE X'S
+      SUMFIX Fe(1,OCC) Al(1,OCC) Si(1,OCC)
+      END
+#
+ E.g. constrain sum of three disordered parts to be constant.
+#N   4#
+#J
+      \LIST 12
+      BLOCK SCALE X'S
+      SUMFIX PART(1001,OCC) AND PART(1002,OCC) AND PART(1003,OCC)
+      END
 #
 #YDefining the least squares matrix#
 #HSdefine#
@@ -7535,6 +7624,7 @@ are only going to be calculated.
 #J
  \LIST 16
  DISTANCES  VALUE, E.S.D= BOND1, BOND2
+ A-DISTANCES  VALUE, E.S.D= BOND1, BOND2
  DISTANCES  VALUE, E.S.D= MEAN BOND1, BOND2
  DISTANCES  VALUE, E.S.D= DIFFERENCE BOND1, BOND2
  NONBONDED  VALUE, POWERFACTOR=  BOND1, BOND2
@@ -7543,6 +7633,8 @@ are only going to be calculated.
  ANGLES     VALUE, E.S.D= DIFFERENCE ANGLE1, ANGLE2
  VIBRATIONS VALUE, E.S.D= BOND1, BOND2
  U(IJ)'S    VALUE, E.S.D= BOND1, BOND2
+ A-VIBRATIONS VALUE, E.S.D= BOND1, BOND2
+ A-U(IJ)'S    VALUE, E.S.D= BOND1, BOND2
  PLANAR            E.S.D  FOR 'ATOM SPECIFICATIONS'
  LIMIT             E.S.D  FOR 'PARAMETER SPECIFICATIONS'
  ORIGIN            E.S.D  FOR 'PARAMETER SPECIFICATIONS'
@@ -7663,6 +7755,11 @@ are only going to be calculated.
  The bonds specified after the '=' sign are
  restrained to have a length of 'VALUE', with
  an e.s.d. of 'E.S.D.'.
+#DA-DISTANCES  VALUE, E.S.D. = BOND1, BOND2, . . . . .#
+ Asymmetric distance restraint. The second atom in the bond is 
+ restrained to be the given distance from the first, which is unrestrained.
+#P Note that the qualifiers MEAN and DIFFERENCE cannot be used in this 
+ context.
 #DDISTANCES VALUE, E.S.D. = MEAN BOND1, BOND2, . . . .#
  Initially the restraints routines calculate the
  'MEAN' value of all the bonds specified by
@@ -7760,6 +7857,9 @@ are only going to be calculated.
 #P  Note that the atoms defining a 'bond' need not actually be bonded, but
  merely serve to define a direction. For really bonded atoms, try an esd
  of  .002; for 1-3 atoms or diagonals of phenyl groups, try .005.
+#DA-VIBRATIONS VALUE, E.S.D. = BOND1, BOND2, . . . .#
+ Asymmetric vibration restraint. The second atom in the bond is 
+ restrained to be similar to the first, which is unrestrained.
 #DU(IJ)'S VALUE, E.S.D. =, BOND1, BOND2, . . . .#
  This is a similarity restraint, and may be used to ensure that the
   vibration parameters of adjacent atoms are similar, as must be the case
@@ -7775,6 +7875,10 @@ are only going to be calculated.
  an atom with an isotropic temperature factor
  is included in this restraint, the specified bond
  and all six restraints are ignored.
+#DA-U(IJ)'S VALUE, E.S.D. =, BOND1, BOND2, . . . .#
+
+ Asymmetric Uij restraint. The second atom in the bond is 
+ restrained to be similar to the first, which is unrestrained.
 #DPLANAR E.S.D. FOR 'ATOM SPECIFICATIONS'#
  This directive instructs the system to compute the mean plane
  through the atoms given in the atom specifications,
@@ -9537,7 +9641,7 @@ has three values:
 #
 #IParameter esds - LIST 9#
 #ALIST9#
-#PThis list contains the refineable parpamter esds.
+#PThis list contains the refineable parameter esds.
 #PIt is created from LIST 5 and LIST 11 with the instruction
 #J
 
@@ -11304,22 +11408,32 @@ the surface.
 #J
  \TORSION INPUTLIST=
  ATOMS  SPECIFICATIONS
- PUBLICATION  PRINT=
+ PUBLICATION  PRINT= LEVEL=
  END
 
  \TORSION
  ATOM C(1) C(2) C(3) C(4)
  END
 #
-#PThe routines described in this section calculate torsion angles which
- are defined as follows. The torsion angle about the bond j-k
- is the angle the bond k-l is rotated from the ijk plane.
- It is positive when, on looking from ij to kl, the rotation is
- clockwise.
+#PCalculation of the torsion angles for atoms i,j,k,l. 
+ The torsion angle about the bond j-k
+ is the angle the bond i-j is rotated about j-k to bring it into 
+ coincidence with k-l.
+ It is positive when  the rotation is
+ clockwise on looking from j to k.
 #PThe program uses atomic positions taken from
  LIST 5.  These can be
  modified by the space group symmetry operators stored in LIST 2 (space
  group information, see section #RLIST02#)
+#P EDSs (SUs) are computed by the method of Nardelli (using code given 
+ to us from his program PARST) if only average atomic esds are 
+ avaialble.  If the full VcV matrix is avaiable, they are computed by 
+the method of Schaik et al (R. van Schaik, H Berendsen, A Torda & W 
+Gunsteren, J. Mol. Biol. (1993) 234, 751-762. The paper by U. Shmueli, 
+Acta Cryst (1974) A30, 848-849 explains the need for the full vcv matrix 
+and the effect of symmetry. The singularity in his equations (6) when tau is 
+0 or 180 is circumvented in Schaiks formulation (which is singular if 
+atoms j and k are coincident)
 #Q
 #I\TORSION INPUTLIST=#
 #KINPUTLIST#
@@ -11345,6 +11459,10 @@ the file open on the CRYSTALS PUNCH unit.
       YES    There is a publication listing sent to the PUNCH file
       CIF    The listing is in CIF format
 #
+#D LEVEL=#
+#QIf LEVEL is HIGH, the VcV marix of the atoms in each torsion angle
+ is printed.
+#
 #N   8#
 #J
  Example.
@@ -11353,7 +11471,7 @@ the file open on the CRYSTALS PUNCH unit.
  \
  \TORSION
  ATOMS N(2) C(3) C(4) C(5)
- ATOMS C(3) C(4) C(5) C(6) O(1)
+ ATOMS C(3) C(4) C(5) C(6) O(1,2,2)
  END
 #
 
@@ -12306,6 +12424,26 @@ EQUIVALENCE ELEMENT(1) ELEMENT(2)
 WEIGHT -1 ELEMENT(2)
 END
 #
+
+#PFor a twin with more that 2 components (for example, twinning by some rotation/reflection
+plus enantiomeric (Flack) twinning), an alternative LIST 12 construct should be used.
+#J
+#LIST     12                                                                    
+BLOCK SCALE X'S, U'S 
+SUMFIX ELEMENT SCALES 
+END
+#
+#PThe Flack parameter is just a short-cut to twinning by inversion. If you have additional twinning, then you have to do it the hard way by including all the twin laws in LIST 25, setting the appropriate ELEMENT flags in LIST 6, and appropriate instructions in LIST 12
+#P
+If for example the macroscopic twin law is a reflection in P41, eg (0 1 0,  1 0 0, 0 0 1), then LIST 25 would be
+#J
+1 0 0  0 1 0  0 0 1  (the unit operator)
+1 0 0  0 1 0  0 0 -1 (inversion)
+0 1 0  1 0 0  0 0 1  (reflection)
+0 1 0  1 0 0  0 0 -1 (inversion and reflection)
+#
+#P
+and every reflection would, have the ELEMENT key 1234.
 
 #ITwin List 16#
 
