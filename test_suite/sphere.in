@@ -17,7 +17,7 @@ end
 #composition
 content c 10 h 20 ga 6 o 24 p 6 
 scattering crysdir:script/scatt.dat
-properties crysdir:script/properti.dat
+properties crysdir:script/propwin.dat
 end
 # ===================================
 # true cell contents are:

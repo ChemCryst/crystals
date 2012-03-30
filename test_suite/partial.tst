@@ -14,7 +14,7 @@ END
 #COMPOSITION
 CONTENT C 29 H 36 F 6 N 1 O 2 P 1 RU 1
 scattering crysdir:script/scatt.dat
-properties crysdir:script/properti.dat
+properties crysdir:script/propwin.dat
 end
 #LIST      5                                                                    
 READ NATOM =     54, NLAYER =    0, NELEMENT =    0, NBATCH =    0
