@@ -2672,7 +2672,6 @@ cdjw         icol = 4 !dark red
          CALL MOVETO(ix,iy,xy)
          CALL OUTGTEXT(messaggio(1:iiz))
 c restore dark red
-#if defined(_INTELF77_) || defined (_DIGITALF77_) 
          icol = 4 !dark red
          res= setcolor ( icol )
 #endif
