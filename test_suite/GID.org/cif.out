@@ -595,7 +595,7 @@ C4 . H41 . O8 3_655 155.9(5) 0.955 2.529 3.423(9)    yes
 N6 3_755 H1 . O8 3_655 164.5(3) 0.939 1.926 2.842(9)    yes
 
 
-_iucr_refine_instruction_details_constraints
+_iucr_refine_instructions_details_constraints
 ;
 #
 # Punched on          at         
@@ -617,7 +617,7 @@ END
 ;
 
 
-_iucr_refine_instruction_details_restraints
+_iucr_refine_instructions_details_restraints
 ;
 #
 # Punched on          at         
