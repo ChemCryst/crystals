@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.27  2011/01/17 15:40:14  rich
 C Fix o/w of disk lexical data in dsc file when disk index block is extended.
 C
@@ -899,9 +902,9 @@ C -       PREAPRE TO APPEND CIF OUTPUT ON FRN1
       IF ( ITYPE .EQ. 1) then
             if (nodev .ne.ncpu) then
                   if (iuln.eq.12) write(nodev,'(//a/a)')
-     1  '_iucr_refine_instruction_details_constraints',';'
+     1  '_iucr_refine_instructions_details_constraints',';'
                   if (iuln.eq.16) write(nodev,'(//a/a)')
-     1  '_iucr_refine_instruction_details_restraints',';'
+     1  '_iucr_refine_instructions_details_restraints',';'
             endif
             CALL XPCHLH ( IULN, nodev)
       endif
