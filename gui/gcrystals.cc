@@ -233,8 +233,22 @@ using namespace std;
   //END_EVENT_TABLE()
   BEGIN_EVENT_TABLE( CCrystalsApp, wxApp )
 	  EVT_CUSTOM ( ccEVT_COMMAND_ADDED, wxID_ANY, CCrystalsApp::OnCrystCommand )
+//          EVT_ACTIVATE_APP( CCrystalsApp::Activate )
   END_EVENT_TABLE()
 
+/*void CCrystalsApp::Activate(wxActivateEvent& event) {
+
+  stringstream s;
+  s << "App " << (int)this;
+  if ( event.GetActive() )
+     s << "activated ";
+  else
+    s << " deactivated ";
+  s << "id = " << event.GetId();
+  LOGERR(s.str());
+
+}
+*/
   #ifdef __WXGTK__
     #include <X11/Xlib.h>
   #endif

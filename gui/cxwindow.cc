@@ -9,6 +9,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.45  2012/03/26 11:38:37  rich
+//   Deprecated crweb control for now.
+//
 //   Revision 1.44  2011/05/16 10:56:32  rich
 //   Added pane support to WX version. Added coloured bonds to model.
 //
@@ -146,7 +149,7 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
   strm << "CxWindow created. Parent = " << (long)parentWindow;
   LOGSTAT ( strm.str() );
 
-  CxWindow *theWindow = new CxWindow( container, attributes & kSize );
+  CxWindow *theWindow = new CxWindow( container, attributes);
 
   #ifdef __CR_WIN__
     HCURSOR hCursor = AfxGetApp()->LoadCursor(IDC_ARROW);
@@ -189,8 +192,9 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
         theWindow->ModifyStyle(WS_MINIMIZEBOX,NULL,SWP_NOZORDER); //No Minimize box for modal windows with parents.
       #endif
       #ifdef __BOTHWX__
-        theWindow->mParentWnd->Enable(false);
-        theWindow->Enable(true);  //All child windows have been disabled, so re-enable this one.
+        theWindow->m_wxWinDisabler = new wxWindowDisabler(theWindow);
+//        theWindow->mParentWnd->Enable(false);
+//        theWindow->Enable(true);  //All child windows have been disabled, so re-enable this one.
       #endif
     }
   }
@@ -209,23 +213,34 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
 }
 
 
-CxWindow::CxWindow( CrWindow * container, int sizeable )
+CxWindow::CxWindow( CrWindow * container, int attributes )
 {
 
     ptr_to_crObject = container;
     mProgramResizing = true;
     mDefaultButton = nil;
-    mSizeable = (sizeable==0) ? false : true;
+    mSizeable = (attributes & kSize)!=0;
+    m_attributes = attributes;
     mWindowWantsKeys = false;
     m_PreDestroyed = false;
     m_TimerActive = 0;
+    m_wxWinDisabler = NULL;
 
 }
 
 void CxWindow::CxPreDestroy()
 {
-    if (mParentWnd)
+//    LOGERR("Predestroy - focusing parent");
+
+//    wxWindowList & children = myframe->GetChildren();
+//    for ( wxWindowList::Node *node = children.GetFirst(); node; node = node->GetNext() )
+//    {
+//       wxWindow *current = (wxWindow *)node->GetData();
+//    }
+
+
 #ifdef __CR_WIN__
+    if (mParentWnd)
     {
       mParentWnd->EnableWindow(true); //Re-enable the parent.
       mParentWnd->SetFocus(); //Focus the parent.
@@ -239,8 +254,13 @@ void CxWindow::CxPreDestroy()
     }
 #endif
 #ifdef __BOTHWX__
-    mParentWnd->Enable(true); //Re-enable the parent.
+      wxDELETE( m_wxWinDisabler );
+//    if (mParentWnd) {
+//      mParentWnd->Enable(true); //Re-enable the parent.
+//      mParentWnd->SetFocus(); //Focus the parent.
+//    }
 #endif
+
     m_PreDestroyed = true;
 }
 
@@ -306,6 +326,23 @@ void    CxWindow::CxShowWindow()
 #ifdef __BOTHWX__
       Show(true);
 #endif
+  if ( m_attributes & kModal )
+  {
+    if ( mParentWnd )
+    {
+      #ifdef __CR_WIN__
+        mParentWnd->EnableWindow(false);
+        EnableWindow(true);  //All child windows have been disabled by the last call, so re-enable this one.
+      #endif
+      #ifdef __BOTHWX__
+        if ( ! m_wxWinDisabler )
+        {
+           m_wxWinDisabler = new wxWindowDisabler(this);
+        }
+      #endif
+    }
+  }
+
 }
 
 void    CxWindow::SetGeometry( int top, int left, int bottom, int right )
@@ -389,9 +426,10 @@ void CxWindow::Hide()
             mParentWnd->EnableWindow(true); //Re-enable the parent.
 #endif
 #ifdef __BOTHWX__
-      Show(false);
-    if (mParentWnd)
-            mParentWnd->Enable(true); //Re-enable the parent.
+   wxDELETE( m_wxWinDisabler );
+   Show(false);
+//    if (mParentWnd)
+//            mParentWnd->Enable(true); //Re-enable the parent.
 #endif
 }
 
@@ -401,6 +439,7 @@ void CxWindow::Hide()
 
 /////////////////////////////////////////////////////////////////////////////
 // CxWindow
+
 
 #ifdef __CR_WIN__
 BEGIN_MESSAGE_MAP(CxWindow, CFrameWnd)
@@ -424,7 +463,7 @@ END_MESSAGE_MAP()
 BEGIN_EVENT_TABLE(CxWindow, wxFrame)
       EVT_CLOSE( CxWindow::OnCloseWindow )
       EVT_SIZE( CxWindow::OnSize )
-	  EVT_ICONIZE( CxWindow::OnIconize )
+      EVT_ICONIZE( CxWindow::OnIconize )
       EVT_CHAR( CxWindow::OnChar )
       EVT_COMMAND_RANGE(kMenuBase, kMenuBase+1000,
                         wxEVT_COMMAND_MENU_SELECTED,
@@ -440,6 +479,7 @@ BEGIN_EVENT_TABLE(CxWindow, wxFrame)
 	  EVT_KEY_DOWN( CxWindow::OnKeyDown )
 END_EVENT_TABLE()
 #endif
+
 
 
 #ifdef __CR_WIN__
@@ -550,7 +590,13 @@ void CxWindow::OnClose()
 #ifdef __BOTHWX__
 void CxWindow::OnCloseWindow(wxCloseEvent & event)
 {
+
     if ( m_PreDestroyed ) return;
+
+//  ostringstream strm;
+//  strm << "CxWindow OnCloseWindow - not predestroyed... Addr = " << (long)this;
+//  LOGERR ( strm.str() );
+
     ((CrWindow*)ptr_to_crObject)->CloseWindow();
     event.Veto(); // Indicate that we did not close the window 
                   // just yet.
@@ -618,7 +664,10 @@ CXONCHAR(CxWindow)
 
 void CxWindow::Focus()
 {
-    SetFocus();
+//  ostringstream strm;
+//  strm << "CxWindow Focussed. Addr = " << (long)this;
+//  LOGERR ( strm.str() );
+  SetFocus();
 }
 
 void CxWindow::SetMainMenu(CxMenuBar * menu)

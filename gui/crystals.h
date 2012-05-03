@@ -1,6 +1,9 @@
 // crystals.h : main header file for the CRYSTALS application
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.15  2012/03/26 11:35:46  rich
+// New command event for wx.
+//
 // Revision 1.14  2005/02/07 14:29:56  stefan
 // 1. Removed the kick timer and idle functions as I don't believe they are needed anylonger.
 // 2. Added my crystals command event/message handler
@@ -113,8 +116,9 @@ public:
 
 #endif
 #ifdef __BOTHWX__
-    wxTimer * kickTimer;
+//    wxTimer * kickTimer;
 
+//    virtual void Activate(wxActivateEvent& event);
     virtual bool OnInit();
     virtual int OnExit();
 	virtual void OnCrystCommand(wxEvent & event);

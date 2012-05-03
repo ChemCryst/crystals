@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.23  2012/03/26 11:38:37  rich
+//   Deprecated crweb control for now.
+//
 //   Revision 1.22  2011/05/16 10:56:32  rich
 //   Added pane support to WX version. Added coloured bonds to model.
 //
@@ -136,6 +139,7 @@ class CxWindow : public BASEWINDOW
      CxButton * mDefaultButton;
      bool mWindowWantsKeys;
   private:
+     int m_attributes;
      bool mSizeable;
      static int mWindowCount;
      bool m_PreDestroyed;
@@ -172,6 +176,7 @@ class CxWindow : public BASEWINDOW
 
 #ifdef __BOTHWX__
 
+      void Activate( wxActivateEvent & event );
       void OnCloseWindow( wxCloseEvent & event );
       void OnSize ( wxSizeEvent & event );
       void OnChar ( wxKeyEvent & event );
@@ -193,7 +198,7 @@ class CxWindow : public BASEWINDOW
  protected:
     wxWindow* mParentWnd;
      wxAuiManager m_mgr;
-	 
+     wxWindowDisabler *m_wxWinDisabler;
 	 public:
 	 	  void AddPane(wxWindow* pane, unsigned int position, wxString text);
 		  void SetPaneMin(wxWindow* pane, int w, int h);

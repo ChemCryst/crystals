@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.120  2012/03/26 11:15:31  rich
+// Unicode support for GID version.
+//
 // Revision 1.119  2012/01/05 13:00:04  rich
 // Fix breaking of lines when running diffin.exe in crystals window.
 //
@@ -1149,11 +1152,15 @@ bool CcController::ParseInput( deque<string> & tokenList )
                 strstrm << (long) mWindowToClose;
                 LOGSTAT("CcController: Found window " + strstrm.str() );
                 mWindowList.remove(mWindowToClose);
+
+//                if ( mWindowList.size() )
+//                        mWindowList.back()->CrFocus();
+
                 delete mWindowToClose;
-				if ( mWindowList.size() )
-	                mCurrentWindow = mWindowList.back();
-				else
-					mCurrentWindow = nil;
+                if ( mWindowList.size() )
+                    mCurrentWindow = mWindowList.back();
+                else
+                    mCurrentWindow = nil;
                 break;
             }
             case kTGetValue:
