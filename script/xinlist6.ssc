@@ -12,14 +12,15 @@
 %  VARIABLE INTEGER XCHOICE
 %  VARIABLE REAL HKLT11 HKLT12 HKLT13 HKLT21 HKLT22 HKLT23
 %  VARIABLE REAL HKLT31 HKLT32 HKLT33
+%% First check for all zero values
 %  EVALUATE HTRANS = FALSE
-%  IF ABS ( HKLT11 - 1.0 ) .GT. 0.01 THEN 
+%  IF ABS ( HKLT11 ) .GT. 0.01 THEN
 %    EVALUATE HTRANS = TRUE
 %  END IF
-%  IF ABS ( HKLT22 - 1.0 ) .GT. 0.01 THEN 
+%  IF ABS ( HKLT22 ) .GT. 0.01 THEN 
 %    EVALUATE HTRANS = TRUE
 %  END IF
-%  IF ABS ( HKLT33 - 1.0 ) .GT. 0.01 THEN 
+%  IF ABS ( HKLT33 ) .GT. 0.01 THEN 
 %    EVALUATE HTRANS = TRUE
 %  END IF
 %  IF ABS ( HKLT12 ) .GT. 0.01 THEN 
@@ -50,6 +51,36 @@
 %    EVALUATE HKLT23 = 0.0
 %    EVALUATE HKLT31 = 0.0
 %    EVALUATE HKLT32 = 0.0
+%  ELSE
+%% Some values are set. Do they differ from unit matrix?
+%   EVALUATE HTRANS = FALSE
+%   IF ABS ( HKLT11 - 1.0 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%   END IF
+%   IF ABS ( HKLT22 - 1.0 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%   END IF
+%   IF ABS ( HKLT33 - 1.0 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%   END IF
+%   IF ABS ( HKLT12 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%   END IF
+%   IF ABS ( HKLT13 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%   END IF
+%   IF ABS ( HKLT21 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%   END IF
+%   IF ABS ( HKLT23 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%   END IF
+%   IF ABS ( HKLT31 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%   END IF
+%   IF ABS ( HKLT33 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%   END IF
 %  END IF
 %%
 %% Initial checks. Is there any point proceeding.
@@ -164,7 +195,7 @@
 ^^WI                                        DISABLED=YES                        
 ^^WI    }                                                                       
 ^^WI   }                                                                        
-^^WI   TAB IN6TAB0 'Transform' GRID XIN6A NROWS=5 NCOLS=3                        
+^^WI   TAB IN6TAB1 'Transform' GRID XIN6A NROWS=5 NCOLS=3                        
 ^^WI   {                                                                        
 ^^WI    @ 2,2 GRID GAB NROWS=2 NCOLS=1 OUTLINE ='Transform'                     
 ^^WI    {                                                                       
@@ -485,6 +516,9 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT                                                                     
 %%                                                                              
 %% $Log: not supported by cvs2svn $
+%% Revision 1.36  2012/03/23 14:05:06  rich
+%% Detect transformation matrix on HKLF 4 line in .INS files and apply automatically when reading HKL.
+%%
 %% Revision 1.35  2012/01/04 14:30:46  rich
 %% More import script fiddling
 %%
