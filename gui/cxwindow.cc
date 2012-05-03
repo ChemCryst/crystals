@@ -9,6 +9,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.46  2012/05/03 15:41:08  rich
+//   Mostly commented out debugging for future reference. Trying to track down flicker on dialog closure. May now be fixed...
+//
 //   Revision 1.45  2012/03/26 11:38:37  rich
 //   Deprecated crweb control for now.
 //
@@ -224,7 +227,9 @@ CxWindow::CxWindow( CrWindow * container, int attributes )
     mWindowWantsKeys = false;
     m_PreDestroyed = false;
     m_TimerActive = 0;
+#ifdef __BOTHWX__
     m_wxWinDisabler = NULL;
+#endif
 
 }
 
