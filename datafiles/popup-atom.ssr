@@ -15,10 +15,10 @@
 ^^WI               ITEM _GDELA 'Centroid of &fragment containing _A'
 ^^WI                    '#SCRIPT XCENTRO_N_FEND' DISABLEIF='IN'
 ^^WI               MENU _SRETY 'Map fragment containing _A onto another'
-^^WI                 ITEM _GDELA 'Renumber second fragment'
-^^WI                    '#SCRIPT MATCHGRP_N_FEND'  DISABLEIF='IN'
 ^^WI                 ITEM _GDELA 'Compare geometries'
 ^^WI                    '#SCRIPT MATCHCMP_N_FEND'  DISABLEIF='IN'
+^^WI                 ITEM _GDELA 'Renumber second fragment'
+^^WI                    '#SCRIPT MATCHGRP_N_FEND'  DISABLEIF='IN'
 ^^WI                 ITEM _GDELA 'Same restraint'
 ^^WI                    '#SCRIPT MATCHSAME_N_FEND'  DISABLEIF='IN'
 ^^WI               ENDMENU
