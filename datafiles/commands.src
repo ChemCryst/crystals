@@ -4295,7 +4295,7 @@ MATCH              7    4
     1    2    5   41
    1.OUTPUT             2    1    0    0
          3    3
-    .LIST               9    0    1    5   -1 HIGH
+    .LIST               9    0    1    5   -1 LOW
      OFF            LOW            MEDIUM         HIGH           DEBUG
     .PUNCH             11    0    1    2   -1 OFF
      OFF            RESULTS
