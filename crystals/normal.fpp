@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2012/02/21 18:28:50  djw
+C Sometimes the Fc Wilson plot was just a vertical line.
+C Logical E5 used for two different purposes. Introduce new temporary logical E5B.
+C
 C Revision 1.23  2012/02/21 14:47:35  djw
 C In Wilson plot, add comment tat Rho is Sin(theta)/lambda)^2
 C
@@ -357,6 +361,7 @@ C
       INCLUDE 'XWMISC.INC'
       INCLUDE 'XLST06.INC'
       INCLUDE 'STORE.INC'
+      IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       CALL XFAL06(6, 0)
       DO WHILE ( KLDRNR(0) .GE. 0 )
        IF ( ( KALLOW(IALLOW) .GE. 0 ) .OR. ( IL28FL .EQ. 0 ) ) THEN
@@ -534,6 +539,7 @@ C     SET INITIAL VALUES
        ENDIF
       ENDIF
       IF(E5)SCALE = STORE(L5O)
+      IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       CALL XFAL06(6, 0)
       DO WHILE ( KLDRNR(0) .GE. 0 )
        IF ( ( KALLOW(ALLOW) .GE. 0 ) .OR. ( IL28FL .EQ. 0 ) ) THEN
@@ -869,6 +875,7 @@ C
         NG(I)=0
       END DO
 
+      IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       CALL XFAL06(6, 0)
       DO WHILE ( KLDRNR(0) .GE. 0 )
        IF ( ( KALLOW(IALLOW) .GE. 0 ) .OR. ( IL28FL .EQ. 0 ) ) THEN
@@ -1019,6 +1026,7 @@ C
 CDJW0904
       EMAX = 4
       RMAX = 0.4
+      IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       IF (IWEIGT .EQ. 1) THEN
         CALL XFAL06(6, 1)
         CALL XIRTAC(5) ! CLEAR THE ACCUMULATION AREA FOR THE WEIGHT
@@ -1200,6 +1208,9 @@ C     CAPTION ACCORDING TO CRYSTAL SYSTEM
       IF ( ISTATP .EQ. 1 ) THEN
         WRITE(CMON,'(A,F12.3)')
      1  '^^CO SET _MW_E2MIN1 TEXT ',VST(7,1)
+        CALL XPRVDU(NCVDU, 1,0)
+        WRITE(CMON,'(A,F12.3)')
+     1  '^^CO SET _MW_E2MIN2 TEXT ',VST(7,1)
         CALL XPRVDU(NCVDU, 1,0)
       END IF
 
