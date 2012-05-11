@@ -6,6 +6,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.39  2011/05/17 14:44:12  rich
+//   Don't remove string twice.
+//
 //   Revision 1.38  2011/05/16 10:56:32  rich
 //   Added pane support to WX version. Added coloured bonds to model.
 //
@@ -712,6 +715,10 @@ void CrModel::Update(bool rescale)
   else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
 }
 
+void CrModel::ApplyIndexColour( GLuint indx ) {
+     if ( ptr_to_cxObject )
+        ((CxModel*)ptr_to_cxObject)->ApplyIndexColour( indx );
+}
 
 void CrModel::GetValue()
 {

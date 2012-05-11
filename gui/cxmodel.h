@@ -7,6 +7,9 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.46  2012/03/26 11:40:11  rich
+//  New glcontext for wx version.
+//
 //  Revision 1.45  2011/09/20 13:19:53  rich
 //  Fix OpenGL on Linux version
 //
@@ -295,7 +298,73 @@ class CxModel : public BASEMODEL
 
     void LoadDIBitmap(string filename);
 
-	CcPoint AtomCoordsToScreenCoords(CcPoint atomCoords);
+    CcPoint AtomCoordsToScreenCoords(CcPoint atomCoords);
+
+
+     bool m_initcolourindex;
+     GLint m_redBits,     m_greenBits,  m_blueBits;
+     GLuint m_redMask,    m_greenMask,  m_blueMask;
+     int m_redShift, m_greenShift, m_blueShift;
+
+     inline GLuint makeMask(GLuint bits) {
+       return (0xFF >> (8 - bits));
+     }
+
+     inline void initColourIndex() {
+       glGetIntegerv (GL_RED_BITS, &m_redBits);
+       glGetIntegerv (GL_GREEN_BITS, &m_greenBits);
+       glGetIntegerv (GL_BLUE_BITS, &m_blueBits);
+       m_redMask = makeMask(m_redBits);
+       m_greenMask = makeMask(m_greenBits);
+       m_blueMask = makeMask(m_blueBits);
+       m_redShift =   m_greenBits + m_blueBits;
+       m_greenShift =  m_blueBits;
+       m_blueShift = 0;
+       m_initcolourindex = true;
+     };
+
+
+
+     void ApplyIndexColour( GLuint indx ) {
+
+       if ( ! m_initcolourindex ) {
+          initColourIndex();
+       }
+
+       int red_int   = indx & (m_redMask << m_redShift);
+       GLubyte red   = red_int >> (m_redShift     - (8 - m_redBits));
+
+       int green_int = indx & (m_greenMask << m_greenShift);
+       GLubyte green = green_int >> (m_greenShift - (8 - m_greenBits));
+
+       // Blue shift will typically be 0, so we need to avoid  negative bitshifting.
+       int blue_int  = indx & (m_blueMask << m_blueShift);
+       GLubyte blue  = blue_int << (8 - m_blueBits);
+
+       glColor3ub(red, green, blue); 
+
+     };
+
+     GLuint DecodeColour ( unsigned char *pixel ) {
+  
+        if ( ! m_initcolourindex ) {
+           initColourIndex();
+        }
+
+        GLubyte red = pixel[0] >> (8 - m_redBits);
+        GLubyte green = pixel[1] >> (8 - m_greenBits);
+        GLubyte blue = pixel[2] >> (8 - m_blueBits);
+  
+     // Reconstruct original index
+        unsigned int ic = red;
+        ic <<= m_greenBits;
+        ic += green;
+        ic <<= m_blueBits;
+        ic += blue;
+
+        return ic;
+     };
+
 
 	
 #ifdef __CR_WIN__
@@ -319,6 +388,10 @@ protected:
     bool m_bMouseLeaveInitialised;
 
     bool setCurrentGL();
+
+    
+
+
 
 #ifdef __CR_WIN__
     HPALETTE m_hPalette;

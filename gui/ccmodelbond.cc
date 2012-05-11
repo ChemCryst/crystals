@@ -128,7 +128,8 @@ void CcModelBond::DrawBond(GLfloat* Surface1, GLfloat* Surface2, bool feedback, 
 
 
 		if (feedback) {
-			glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
+                        mp_parent->ApplyIndexColour( m_glID );
+//                        glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
 		} else {
 			glColor4fv( Surface2 );
 		}
@@ -147,7 +148,8 @@ void CcModelBond::DrawBond(GLfloat* Surface1, GLfloat* Surface2, bool feedback, 
 
 
 		if (feedback) {
-			glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
+                        mp_parent->ApplyIndexColour( m_glID );
+//                        glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
 		} else {
 			glColor4fv( Surface1 );
 		}
@@ -354,7 +356,8 @@ void CcModelBond::Render(CcModelStyle *style, bool feedback)
         pi = 3.14159265358979323846f;
         twopi = 2.0f * pi;
 		if (feedback) {
-			glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
+                        mp_parent->ApplyIndexColour( m_glID );
+//                        glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
 		} else {
 			glColor4fv( Surface1 );
 		}

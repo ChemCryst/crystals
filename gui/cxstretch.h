@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper
 //   Created:   23.2.2001 11:35
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.1.1.1  2004/12/13 11:16:18  rich
 //   New CRYSTALS repository
 //
@@ -33,7 +37,7 @@
 
 #ifdef __BOTHWX__
 #include <wx/window.h>
-#define BASESTRETCH wxWindow
+#define BASESTRETCH wxPanel
 #endif
 
 #ifdef __CR_WIN__

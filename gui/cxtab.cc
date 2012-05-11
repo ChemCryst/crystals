@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   23.1.2001 23:38
 //   $Log: not supported by cvs2svn $
+//   Revision 1.13  2005/03/02 14:41:53  stefan
+//   1. Return value for mac version from the tabs GetTabHeigh method
+//
 //   Revision 1.12  2005/01/23 10:20:24  rich
 //   Reinstate CVS log history for C++ files and header files. Recent changes
 //   are lost from the log, but not from the files!
@@ -205,6 +208,7 @@ void CxTab::OnSelChange(NMHDR* pNMHDR, LRESULT* pResult)
 #ifdef __BOTHWX__
 void CxTab::LetGoOfTabs()
 {
+  Show(false);
   int pc = GetPageCount();
   for ( int i = pc-1; i>=0; i-- )
   {

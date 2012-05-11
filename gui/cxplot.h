@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:09
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.20  2011/03/04 05:59:28  rich
+//   Don't use 's' as a variable in function signature - it interferes with something in a library somewhere.
+//
 //   Revision 1.19  2005/01/23 10:20:24  rich
 //   Reinstate CVS log history for C++ files and header files. Recent changes
 //   are lost from the log, but not from the files!
@@ -101,6 +104,7 @@
 #include <wx/dcmemory.h>
 #include <wx/stattext.h>
 #define BASEPlot wxControl
+#define BASEPlotKey wxWindow
 
 // These macros are being defined somewhere. They shouldn't be.
 
@@ -128,11 +132,12 @@ class mywxStaticText : public wxStaticText
 #ifdef __CR_WIN__
 #include <afxwin.h>
 #define BASEPlot CWnd
+#define BASEPlotKey CWnd
 #endif
 
 class CxPlot;
 
-class CxPlotKey : public BASEPlot
+class CxPlotKey : public BASEPlotKey
 {
 public:
         CxPlotKey(CxPlot* parent, int numser, string* names, int** col);

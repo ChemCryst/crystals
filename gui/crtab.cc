@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper
 //   Created:   23.1.2001 20:46
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.1.1.1  2004/12/13 11:16:18  rich
 //   New CRYSTALS repository
 //
@@ -80,6 +84,7 @@ CrTab::~CrTab()
 //aswell, so before deleting anything, we simply remove all the
 //windows from the control of the wxNotebook, so that when it is
 //deleted, it has no child windows to delete.
+
        ((CxTab*)ptr_to_cxObject)->LetGoOfTabs();
 #endif
 

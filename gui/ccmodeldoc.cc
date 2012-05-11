@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.49  2012/03/23 15:57:43  rich
+// Intel support.
+//
 // Revision 1.48  2011/09/21 09:30:49  rich
 // Increase model resolution
 //
@@ -335,6 +338,12 @@ void CcModelDoc::AddModelView(CrModList * aView)
     attachedLists.push_back(aView);
     aView->Update(0);
 }
+
+void CcModelDoc::ApplyIndexColour( GLuint indx ) {
+     for ( list<CrModel*>::const_iterator aview=attachedViews.begin(); aview != attachedViews.end(); aview++)
+      (*aview)->ApplyIndexColour( indx );
+ };
+
 
 void CcModelDoc::DrawViews(bool rescaled)
 {

@@ -47,11 +47,13 @@ class CcModelObject
      bool m_disabled;
      bool m_excluded;
 
+
    protected:
      CcModelDoc * mp_parent;
      string m_label;
      int m_type;
      bool m_selected;
+
 };
 
 #include    "ccmodelatom.h"

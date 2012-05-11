@@ -188,7 +188,8 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
 
   if (feedback) {
 
-	glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
+        mp_parent->ApplyIndexColour( m_glID );
+//        glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
 
   } else if ( style->radius_type == TINY ) {  //make invisible (unless selected or no bonds)
 

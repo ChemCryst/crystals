@@ -23,7 +23,7 @@ CxGroupBox *    CxGroupBox::CreateCxGroupBox( CrGrid * container, CxGrid * guiPa
     theGrid->SetFont(CcController::mp_font);
 #endif
 #ifdef __BOTHWX__
-      theGrid->Create(guiParent,-1,"GroupBox",wxPoint(0,0),wxSize(0,0));
+      theGrid->Create(guiParent,-1,"GroupBox",wxPoint(0,0),wxSize(0,0), 0 ); //wxTRANSPARENT_WINDOW);
 #endif
       return theGrid;
 }

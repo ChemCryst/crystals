@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   10.6.1998 13:06 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.23  2011/05/16 10:56:32  rich
+//   Added pane support to WX version. Added coloured bonds to model.
+//
 //   Revision 1.22  2009/09/04 09:25:46  rich
 //   Added support for Show/Hide H from model toolbar
 //   Fixed atom picking after model update in extra model windows.
@@ -139,6 +142,7 @@ class   CrModel : public CrGUIElement
 
 // Called from CcModelDoc:
     void    DocRemoved();
+    void    ApplyIndexColour( GLuint indx );
 
 
 // Attributes:

@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.26  2011/05/17 14:43:31  rich
+//   Remove class name from declaration.
+//
 //   Revision 1.25  2009/07/23 14:15:42  rich
 //   Removed all uses of OpenGL feedback buffer - was dreadful slow on some new graphics cards.
 //
@@ -202,6 +205,7 @@ class CcModelDoc
 
         int NumSelected();                                          // Called by CrModList
         void EnsureVisible(CcModelAtom* va);                        // Called by CcModelAtom, Bond etc.
+
         void Select(bool selected);                                 // Called by CcModelAtom, Donut etc.
 
         list <CrModel*> attachedViews;          
@@ -210,6 +214,7 @@ class CcModelDoc
         static CcModelDoc* sm_CurrentModelDoc;
         string mName;
 
+        void    ApplyIndexColour( GLuint indx );
     protected:
 
     private:

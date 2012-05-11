@@ -164,6 +164,7 @@ CxModel::CxModel(CrModel* container)
   m_TextPopup = nil;
   m_selectRect.Set(0,0,0,0);
   m_mouseMode = CXROTATE;
+  m_initcolourindex = false;
 
 }
 
@@ -1305,7 +1306,7 @@ int CxModel::IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject *
 		glDisable(GL_LIGHT0);
 	  
 		 
-	    ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderAtoms(true);
+                ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderAtoms(true);
 		ok_to_draw |= ((CrModel*)ptr_to_crObject)->RenderBonds(true);
 
 		if ( tex2DIsEnabled ) glEnable(GL_TEXTURE_2D);
@@ -1345,31 +1346,34 @@ int CxModel::IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject *
 		int rgbHit;
 		glReadBuffer(GL_BACK);
 		glReadPixels(xPos, viewport[3] - yPos, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
-		rgbHit= ((pixel[0]&0xff)<<16) | ((pixel[1]&0xff)<<8) | (pixel[2]&0xff);
+
+                rgbHit = DecodeColour ( pixel );
+
+//                rgbHit= ((pixel[0]&0xff)<<16) | ((pixel[1]&0xff)<<8) | (pixel[2]&0xff);
 
 		if ( rgbHit == 0 ) {
 			for ( int range = 1; range < 4; range++ ) {
 				for ( int x1 = -range; x1 <= range; ++x1 ) {
 					glReadPixels(xPos + x1, viewport[3] - range - yPos, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
-					rgbHit= ((pixel[0]&0xff)<<16) | ((pixel[1]&0xff)<<8) | (pixel[2]&0xff);
+                                        rgbHit = DecodeColour ( pixel );
 					if ( rgbHit ) break;
 				}
 				if ( rgbHit ) break;
 				for ( int x1 = -range; x1 <= range; ++x1 ) {
 					glReadPixels(xPos + x1, viewport[3] + range - yPos, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
-					rgbHit= ((pixel[0]&0xff)<<16) | ((pixel[1]&0xff)<<8) | (pixel[2]&0xff);
+                                        rgbHit = DecodeColour ( pixel );
 					if ( rgbHit ) break;
 				}
 				if ( rgbHit ) break;
 				for ( int y1 = -range+1; y1 <= range-1; ++y1 ) {
 					glReadPixels(xPos - range, viewport[3] + y1 - yPos, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
-					rgbHit= ((pixel[0]&0xff)<<16) | ((pixel[1]&0xff)<<8) | (pixel[2]&0xff);
+                                        rgbHit = DecodeColour ( pixel );
 					if ( rgbHit ) break;
 				}
 				if ( rgbHit ) break;
 				for ( int y1 = -range; y1 <= range; ++y1 ) {
 					glReadPixels(xPos + range, viewport[3] + y1 - yPos, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
-					rgbHit= ((pixel[0]&0xff)<<16) | ((pixel[1]&0xff)<<8) | (pixel[2]&0xff);
+                                        rgbHit = DecodeColour ( pixel );
 					if ( rgbHit ) break;
 				}
 				if ( rgbHit ) break;

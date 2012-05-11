@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.36  2012/01/04 15:59:18  rich
+//   Hollow circles.
+//
 //   Revision 1.35  2012/01/04 14:32:06  rich
 //   Bigger, rounder, circles in plots.
 //
@@ -614,7 +617,7 @@ void CxPlot::DrawText(int x, int y, string text, int param, int fontsize)
 
       wxFont aFont = m_memDC->GetFont();
 
-      aFont.SetPointSize(fontsize);
+      aFont.SetPointSize(fontsize/2);
       m_memDC->SetFont(aFont);
 
 
@@ -633,14 +636,14 @@ void CxPlot::DrawText(int x, int y, string text, int param, int fontsize)
       else if(param & TEXT_VERTICALDOWN)
       {
          coord.y = coord.y - tx/2;     // nb swapping of cx and cy - GetTextEntent doesn't handle rotations
-         coord.x = coord.x + ty/2;
-         m_memDC->DrawRotatedText(wtext, coord.x, coord.y, 90.0 );
+//         coord.x = coord.x + ty/2;
+         m_memDC->DrawRotatedText(wtext, coord.x, coord.y, 270.0 );
          m_memDC->SetBrush( wxNullBrush );
       }
       else if(param & TEXT_VERTICAL)
       {
             coord.y = coord.y + tx/2;     // nb swapping of cx and cy - GetTextEntent doesn't handle rotations
-            coord.x = coord.x - ty/2;
+//            coord.x = coord.x - ty/2;
             m_memDC->DrawRotatedText(wtext, coord.x, coord.y, 90.0 );
             m_memDC->SetBrush( wxNullBrush );
       }
@@ -722,7 +725,7 @@ CcPoint CxPlot::GetTextArea(int fontsize, string text, int param)
     int cx,cy,cs;
 
     wxFont aFont = m_memDC->GetFont();
-    aFont.SetPointSize(fontsize);
+    aFont.SetPointSize(fontsize/2);
     m_memDC->SetFont(aFont);
     m_memDC->GetTextExtent( text.c_str(), &cx, &cy );
     
@@ -1288,7 +1291,7 @@ CxPlotKey::CxPlotKey(CxPlot* parent, int numser, string* names, int** col)
 
     CcPoint point = mDragPos;
 
-  CWnd *parw = (CWnd*)m_Parent->ptr_to_crObject->GetRootWidget()->ptr_to_cxObject;
+//  CWnd *parw = (CWnd*)m_Parent->ptr_to_crObject->GetRootWidget()->ptr_to_cxObject;
 
     const char* wClass = AfxRegisterWndClass(CS_HREDRAW|CS_VREDRAW,NULL,(HBRUSH)(COLOR_MENU+1),NULL);
     
@@ -1341,6 +1344,65 @@ CxPlotKey::CxPlotKey(CxPlot* parent, int numser, string* names, int** col)
   newDC.SelectObject(oldFont);
 
 #endif
+#ifdef __BOTHWX__
+    m_Parent = parent;
+    mDragPos.x = 0;
+    mDragPos.y = 0;
+    mDragging = false;
+
+    m_NumberOfSeries = numser;
+    m_Names = new string[numser];
+
+    m_Colours = new int*[3];
+
+    m_Colours[0] = new int[m_NumberOfSeries];
+    m_Colours[1] = new int[m_NumberOfSeries];
+    m_Colours[2] = new int[m_NumberOfSeries];
+
+    for(int i=0; i<m_NumberOfSeries; i++)
+    {
+        m_Names[i] = names[i];
+        m_Colours[0][i] = col[0][i];
+        m_Colours[1][i] = col[1][i];
+        m_Colours[2][i] = col[2][i];
+    }
+
+    CcPoint point = mDragPos;
+
+//    wxWindow *parw = (wxWindow*)m_Parent->ptr_to_crObject->GetWidget();
+
+    Create(m_Parent,-1,wxPoint(0,0),wxSize(10,10),
+    wxCAPTION |wxCLIP_CHILDREN |wxFRAME_TOOL_WINDOW |wxFRAME_NO_TASKBAR |wxFRAME_FLOAT_ON_PARENT, "Key");
+
+    int cx = 10; int cy=10;                 //Reasonable minimum size.
+
+
+    this->GetTextExtent( GetLabel(), &cx, &cy );
+
+    for(int i=0; i<m_NumberOfSeries; i++)
+    {
+        int x, y;
+        GetTextExtent(m_Names[i].c_str(), &x, &y);
+        cx = CRMAX(cx, x);
+        cy = CRMAX(cy, y);
+    }
+
+    // now calculate the required size (including title bar)
+    cy *= m_NumberOfSeries;
+    cx += 20;
+
+
+    SetSize( cx, cy );
+
+    Show(true);
+
+    m_WinPosAndSize.mLeft = 0;
+    m_WinPosAndSize.mRight = cx;
+    m_WinPosAndSize.mTop = 0;
+    m_WinPosAndSize.mBottom = cy;
+
+
+#endif
 }
 
 CxPlotKey::~CxPlotKey()
@@ -1356,6 +1418,28 @@ CxPlotKey::~CxPlotKey()
 #ifdef __BOTHWX__
 void CxPlotKey::OnPaint(wxPaintEvent & event)
 { 
+  int cx = m_WinPosAndSize.mRight;
+  int cy = m_WinPosAndSize.mBottom;
+
+  wxPaintDC dc(this); // device context for painting
+  wxRect rect = GetRect();
+
+  dc.SetBrush( *wxWHITE_BRUSH );
+  dc.Clear();
+
+  
+  for(int i=0; i<m_NumberOfSeries; i++)
+  {
+      wxColour acolour (m_Colours[0][i], m_Colours[1][i], m_Colours[2][i]);
+      wxPen apen(acolour,1,wxSOLID);
+      wxBrush abrush (acolour,wxSOLID);
+
+      dc.SetPen(apen);
+      dc.SetBrush(abrush);
+
+      dc.DrawRectangle( 3, i*cy/m_NumberOfSeries + 3, 12, 9);
+      dc.DrawText( m_Names[i].c_str(), 20, i*cy/m_NumberOfSeries);
+  }
 }
 #endif
 

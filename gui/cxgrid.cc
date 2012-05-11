@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.19  2011/05/16 10:56:32  rich
+//   Added pane support to WX version. Added coloured bonds to model.
+//
 //   Revision 1.18  2005/01/23 10:20:24  rich
 //   Reinstate CVS log history for C++ files and header files. Recent changes
 //   are lost from the log, but not from the files!
@@ -105,8 +108,8 @@ CxGrid *    CxGrid::CreateCxGrid( CrGrid * container, CxGrid * guiParent )
 #endif
 
 #ifdef __BOTHWX__
-  theGrid->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10));
-  theGrid->Show(true);
+  theGrid->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10),0); //wxTRANSPARENT_WINDOW);
+//  theGrid->Show(true);
   mGridCount++;
 #endif
   return theGrid;

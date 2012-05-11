@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2012/03/26 11:37:55  rich
+//   Better sizing.
+//
 //   Revision 1.11  2011/04/15 15:03:23  rich
 //   Fix text height
 //
@@ -49,7 +52,7 @@ CxText *    CxText::CreateCxText( CrText * container, CxGrid * guiParent )
     theText->SetFont(CcController::mp_font);
 #endif
 #ifdef __BOTHWX__
-    theText->Create(guiParent, -1, "text");
+    theText->Create(guiParent, -1, "text", wxPoint(0,0),wxSize(0,0), 0); // wxTRANSPARENT_WINDOW);
 #endif
     return theText;
 }
