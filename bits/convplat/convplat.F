@@ -45,7 +45,6 @@ c
 100   continue
         read(in2,'(3i4,68x,i8,2f8.2)',err=200,end=200)
      1    ih,ik,il,ic,a,b                             !read from hkp
-        np = np + 1
 110     continue
           read(in1,'(a)',end=200) cline               !read from our L6
           read(cline,'(3i4)') jh,jk,jl
@@ -55,6 +54,7 @@ c
              write(6,'(3I4,A)')jh,jk,jl,' not found in HKP file'
              goto 110
           end if
+          np = np + 1
           write(iout1,'(a)') cline
           write(iout1,'(2f8.2)')a,b
       goto 100
