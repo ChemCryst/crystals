@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:09
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.21  2012/05/11 10:13:31  rich
+//   Various patches to wxWidget version to catch up to MFc version.
+//
 //   Revision 1.20  2011/03/04 05:59:28  rich
 //   Don't use 's' as a variable in function signature - it interferes with something in a library somewhere.
 //
@@ -256,7 +259,7 @@ private:
         wxColour mfgcolour;
         wxBitmap *m_oldMemDCBitmap, *m_newMemDCBitmap;
         wxMemoryDC *m_memDC;
-        wxPen      * m_pen;
+//        wxPen      * m_pen;
         wxBrush    * m_brush;
 
         void OnChar(wxKeyEvent & event );

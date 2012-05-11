@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.37  2012/05/11 10:13:31  rich
+//   Various patches to wxWidget version to catch up to MFc version.
+//
 //   Revision 1.36  2012/01/04 15:59:18  rich
 //   Hollow circles.
 //
@@ -242,7 +245,6 @@ CxPlot::CxPlot(CrPlot* container)
 #endif
 #ifdef __BOTHWX__
     mfgcolour = wxColour(0,0,0);
-    m_pen = new wxPen(mfgcolour,1,wxSOLID);
     m_brush = new wxBrush(mfgcolour,wxSOLID);
     m_memDC = new wxMemoryDC();
 #endif
@@ -259,7 +261,6 @@ CxPlot::~CxPlot()
 #endif
 #ifdef __BOTHWX__
     delete m_memDC;
-    delete m_pen;
     delete m_brush;
 #endif
 }
@@ -407,7 +408,6 @@ void CxPlot::SetColour(int r, int g, int b)
 #endif
 #ifdef __BOTHWX__
     mfgcolour = wxColour(r,g,b);
-    m_pen->SetColour ( mfgcolour );
     m_brush->SetColour ( mfgcolour );
 #endif
 }
@@ -438,7 +438,8 @@ void CxPlot::DrawLine(int thickness, int x1, int y1, int x2, int y2)
     pen.DeleteObject();                                     // added by steve - clean up resources
 #endif
 #ifdef __BOTHWX__
-    m_memDC->SetPen( *m_pen );
+    wxPen apen(mfgcolour,thickness,wxSOLID);
+    m_memDC->SetPen(apen);
     m_memDC->DrawLine(cpoint1.x,cpoint1.y,cpoint2.x,cpoint2.y);
 #endif
 
@@ -493,7 +494,8 @@ void CxPlot::DrawEllipse(int x, int y, int w, int h, bool fill)
     brush.DeleteObject();           
 #endif
 #ifdef __BOTHWX__
-      m_memDC->SetPen( *m_pen );
+      wxPen apen(mfgcolour,1,wxSOLID);
+      m_memDC->SetPen(apen);
       if ( fill )
             m_memDC->SetBrush( *m_brush );
       else
@@ -611,7 +613,8 @@ void CxPlot::DrawText(int x, int y, string text, int param, int fontsize)
 #ifdef __BOTHWX__
       wxString wtext = wxString(text.c_str());
       m_memDC->SetBrush( *m_brush );
-      m_memDC->SetPen( *m_pen );
+      wxPen apen(mfgcolour,1,wxSOLID);
+      m_memDC->SetPen(apen);
       m_memDC->SetBackgroundMode( wxTRANSPARENT );
       int tx, ty, mx, my;
 
@@ -799,7 +802,9 @@ void CxPlot::DrawPoly(int nVertices, int * vertices, bool fill)
     m_memDC->SelectObject(m_oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
-    m_memDC->SetPen( *m_pen );
+    wxPen apen(mfgcolour,1,wxSOLID);
+    m_memDC->SetPen(apen);
+//    m_memDC->SetPen( *m_pen );
     if ( fill )
          m_memDC->SetBrush( *m_brush );
     else
@@ -1258,7 +1263,7 @@ END_MESSAGE_MAP()
 
 #ifdef __BOTHWX__
 //wx Message Table
-BEGIN_EVENT_TABLE(CxPlotKey, wxControl)
+BEGIN_EVENT_TABLE(CxPlotKey, wxWindow)
       EVT_PAINT( CxPlotKey::OnPaint )
 END_EVENT_TABLE()
 #endif
