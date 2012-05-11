@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.189  2012/02/03 09:47:17  djw
+C REmove debugging print to unit 133
+C
 C Revision 1.188  2012/01/06 10:21:22  rich
 C Format change to HTML summary output of serial numbers.
 C
@@ -4658,7 +4661,7 @@ C----- CLEAR OUT THE PAGE BUFFER
       IF ( IPUNCH .EQ. 0 ) THEN
         WRITE (NCFPU1,'(''data_global '')')
         WRITE (NCFPU1,'(''_audit_creation_date  '',6X, 
-     1  ''"'',3(A2,A))')
+     1  ''"20'',3(A2,A))')
      2  CBUF(7:8),'-',CBUF(4:5),'-',CBUF(1:2),'"'
         WRITE (NCFPU1,
      1   '(''_audit_creation_method CRYSTALS_ver_'',F5.2)')

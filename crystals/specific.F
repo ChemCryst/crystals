@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.71  2012/03/23 15:53:59  rich
+C Avoid vectorised loops in XMOVE.
+C
 C Revision 1.70  2012/03/23 14:29:04  rich
 C Fix
 C
@@ -1833,10 +1836,11 @@ C
       IF ( CDATE(4:4) .EQ. ' ' ) CDATE(4:4) = '0'
 C
 #endif
-#if defined(_INTELF77_) 
+#if defined(_INTELF77_)
+C Intel returns mon, day, year. c.f. gnu which is day, mon, year.
       CALL IDATE ( IDAT(1), IDAT(2), IDAT(3) )
-      WRITE ( CDATE , '(I2,''/'',I2,''/'',I2)' ) IDAT(1) ,
-     2      IDAT(2) , MOD ( IDAT(3) , 100 )
+      WRITE ( CDATE , '(I2,''/'',I2,''/'',I2)' ) IDAT(2) ,
+     2      IDAT(1) , MOD ( IDAT(3) , 100 )
       IF ( CDATE(1:1) .EQ. ' ' ) CDATE(1:1) = '0'
       IF ( CDATE(4:4) .EQ. ' ' ) CDATE(4:4) = '0'
 C
