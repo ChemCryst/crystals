@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.121  2012/05/03 15:41:08  rich
+// Mostly commented out debugging for future reference. Trying to track down flicker on dialog closure. May now be fixed...
+//
 // Revision 1.120  2012/03/26 11:15:31  rich
 // Unicode support for GID version.
 //
@@ -3366,7 +3369,7 @@ extern "C" {
        bWait = true;
 // Find next non space ( in case + is seperated from first word ).
        sFirst = line.find_first_not_of(' ',sFirst+1);
-       if ( sFirst == string::npos ) sFirst = 0;
+       if ( sFirst == string::npos ) sFirst = 0; // should not happen unless no content in string
     }
     else if ( line[sFirst] == '%' )  // Check for % symbol (signifies 'redirect STDIN and OUT')
     {
@@ -3447,6 +3450,7 @@ extern "C" {
 
       if ( (int)si.hInstApp == SE_ERR_NOASSOC )
       {
+        LOGERR("No assoc - try rundll32");
         wstring newparam = wstring(L"shell32.dll,OpenAs_RunDLL ")+firstTok+( (bRest) ? L" " + restLine : L"" ) ;
         si.lpFile       = L"rundll32.exe";
         si.lpParameters = newparam.c_str();
@@ -3460,7 +3464,9 @@ extern "C" {
  #endif
 
         CcController::theController->AddInterfaceCommand( " ");
-//        CcController::theController->AddInterfaceCommand( "     {0,2 Waiting for {2,0 " + firstTok.c_str() + " {0,2 to finish... ");
+        stringstream t;
+        t << "     {0,2 Waiting for {2,0 " << firstTok << " {0,2 to finish... ";
+        CcController::theController->AddInterfaceCommand( t.str() );
         CcController::theController->AddInterfaceCommand( " ");
         WaitForSingleObject( si.hProcess, INFINITE );
         CcController::theController->AddInterfaceCommand( "                                                               {0,2 ... Done");
@@ -3468,6 +3474,35 @@ extern "C" {
       }
       else if ( (int)si.hInstApp <= 32 )
       {
+        LOGSTAT("ShellExecute error - try command prompty");
+
+        wstring newparam = wstring(L"/c ")+firstTok+( (bRest) ? L" " + restLine : L"" ) ;
+        si.cbSize       = sizeof(si);
+        si.fMask        = SEE_MASK_NOCLOSEPROCESS|SEE_MASK_FLAG_NO_UI ;
+        si.hwnd         = GetDesktopWindow();
+        si.lpVerb       = L"open";
+        if ( IsWinNT() )
+          si.lpFile       = L"cmd.exe";
+        else
+          si.lpFile       = L"command.com";
+        si.lpParameters = newparam.c_str();
+        si.lpDirectory  = NULL;
+        si.nShow        = SW_SHOWNORMAL;
+ 
+        err = (int)ShellExecuteExW ( & si );
+
+        if ( (int)si.hInstApp > 32 ) {
+          CcController::theController->AddInterfaceCommand( " ");
+          stringstream t;
+          t << "     {0,2 Waiting for {2,0 " << firstTok << " {0,2 to finish... ";
+          CcController::theController->AddInterfaceCommand( t.str() );
+          CcController::theController->AddInterfaceCommand( " ");
+          WaitForSingleObject( si.hProcess, INFINITE );
+          CcController::theController->AddInterfaceCommand( "                                                               {0,2 ... Done");
+          CcController::theController->AddInterfaceCommand( " ");
+        }
+
+/*
 // Some other failure. Try another method of starting external programs.
   //      CcController::theController->AddInterfaceCommand( "{I Failed to start " + firstTok + ", (security or not found?) trying another method.");
         extern int errno;
@@ -3489,7 +3524,7 @@ extern "C" {
           args[i] = token;
         }
 
-        TEXTOUT(string(args[0]?args[0]:"")+" "+
+        LOGERR(string(args[0]?args[0]:"")+" "+
                   string(args[1]?args[1]:"") + " " +  string(args[2]?args[2]:"")+" "+
                   string(args[3]?args[3]:"") + " " +  string(args[4]?args[4]:"")+" ...etc...");
 
@@ -3498,7 +3533,7 @@ extern "C" {
         if ( result == -1 )  //Start failed
         {
           ostringstream strstrm;
-           strstrm << "{I Failed again to start " << firstTok.c_str() << ", errno is:" << errno << " trying a command shell.";
+          strstrm << "{I Failed again to start " << firstTok << ", errno is:" << errno << " trying a command shell.";
           CcController::theController->AddInterfaceCommand(strstrm.str());
           for (int ij = 7; ij>=0; ij--)
           {
@@ -3513,24 +3548,26 @@ extern "C" {
           args[1] = "/c";
 
           result = _spawnvp(_P_WAIT, args[0], args);
-          TEXTOUT("Args: "+string(args[0])+" "+
+          LOGERR("Args: "+string(args[0])+" "+
                   string(args[1]?args[1]:"") + " " +  string(args[2]?args[2]:"")+" "+
                   string(args[3]?args[3]:"") + " " +  string(args[4]?args[4]:"")+" ...etc...");
 
           strstrm.str("");
           strstrm << "{I Failed yet again. Errno is:" << errno << ". Giving up.";
 
-          if ( result != 0 ) TEXTOUT ( strstrm.str() );
-          else TEXTOUT("Might have worked.");
+          if ( result != 0 ) LOGERR ( strstrm.str() );
+          else LOGERR("Might have worked.");
         }
 
         delete [] str;
-
+*/
       }
       else
       {
         CcController::theController->AddInterfaceCommand( " ");
-    //    CcController::theController->AddInterfaceCommand( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
+        stringstream t;
+        t << "     {0,2 Waiting for {2,0 " << firstTok << " {0,2 to finish... ";
+        CcController::theController->AddInterfaceCommand( t.str() );
         CcController::theController->AddInterfaceCommand( " ");
         WaitForSingleObject( si.hProcess, INFINITE );
         CcController::theController->AddInterfaceCommand( "                                                               {0,2 ... Done");
@@ -3670,6 +3707,7 @@ extern "C" {
                                    ( (bRest)? restLine.c_str() : NULL ),
                                    NULL,
                                    SW_SHOWNORMAL);
+
       if ( (int)ex == SE_ERR_NOASSOC )
       {
          ShellExecuteW( GetDesktopWindow(),
@@ -3681,6 +3719,25 @@ extern "C" {
       }
       else if ( (int)ex <= 32 )
       {
+
+
+        wstring newparam = wstring(L"/c ")+firstTok+( (bRest) ? L" " + restLine : L"" ) ;
+        if ( IsWinNT() )
+           ShellExecuteW( GetDesktopWindow(),
+                       L"open",
+                       L"cmd.exe",
+                       newparam.c_str(),
+                       NULL,
+                       SW_SHOWNORMAL);
+        else
+           ShellExecuteW( GetDesktopWindow(),
+                       L"open",
+                       L"command.com",
+                       newparam.c_str(),
+                       NULL,
+                       SW_SHOWNORMAL);
+
+/*
 // Some other failure. Try another method of starting external programs.
         extern int errno;
         char * str = new char[257];
@@ -3720,8 +3777,8 @@ extern "C" {
           if ( result != 0 ) { TEXTOUT ( strstrm.str() ); }
         }
         delete [] str;
+*/ 
 	}
-	
 	    }
 #endif
 
