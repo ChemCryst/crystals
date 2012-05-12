@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.122  2012/05/12 04:58:14  rich
+// Simplified 'spawn' options. Now only using ShellExectute funciton on Win32.
+//
 // Revision 1.121  2012/05/03 15:41:08  rich
 // Mostly commented out debugging for future reference. Trying to track down flicker on dialog closure. May now be fixed...
 //
@@ -3465,7 +3468,7 @@ extern "C" {
 
         CcController::theController->AddInterfaceCommand( " ");
         stringstream t;
-        t << "     {0,2 Waiting for {2,0 " << firstTok << " {0,2 to finish... ";
+        t << "     {0,2 Waiting for {2,0 " << firstTok.c_str() << " {0,2 to finish... ";
         CcController::theController->AddInterfaceCommand( t.str() );
         CcController::theController->AddInterfaceCommand( " ");
         WaitForSingleObject( si.hProcess, INFINITE );
@@ -3494,7 +3497,7 @@ extern "C" {
         if ( (int)si.hInstApp > 32 ) {
           CcController::theController->AddInterfaceCommand( " ");
           stringstream t;
-          t << "     {0,2 Waiting for {2,0 " << firstTok << " {0,2 to finish... ";
+          t << "     {0,2 Waiting for {2,0 " << firstTok.c_str() << " {0,2 to finish... ";
           CcController::theController->AddInterfaceCommand( t.str() );
           CcController::theController->AddInterfaceCommand( " ");
           WaitForSingleObject( si.hProcess, INFINITE );
@@ -3566,7 +3569,7 @@ extern "C" {
       {
         CcController::theController->AddInterfaceCommand( " ");
         stringstream t;
-        t << "     {0,2 Waiting for {2,0 " << firstTok << " {0,2 to finish... ";
+        t << "     {0,2 Waiting for {2,0 " << firstTok.c_str() << " {0,2 to finish... ";
         CcController::theController->AddInterfaceCommand( t.str() );
         CcController::theController->AddInterfaceCommand( " ");
         WaitForSingleObject( si.hProcess, INFINITE );
