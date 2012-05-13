@@ -159,7 +159,7 @@
 @if  not "%FILESTEM%" == "lapack" set FOPTIONS=%FDEF% %FWIN% %FOPTS%
 @if      "%FILESTEM%" == "lapack" set FOPTIONS=%FDEF% %FWIN% %FNOOPT%
 @if "%CRDEBUG%" == "TRUE" set FOPTIONS=%FDEF% %FWIN% %FDEBUG%
-%F77% %FSRC% %FOUT%%FILESTEM%.obj %FOPTIONS%  2> obj\output || ( make_err.bat FPP_RELEASE_COMPILE %FSRC% obj\output  & exit /B 1 )
+%F77% %FSRC% %FOUT%%FILESTEM%.obj %FOPTIONS%  2> obj\output || ( make_err.bat FPP_RELEASE_COMPILE %FSRC% obj\output )
 @goto %JUMPBACK%
 
 :scomp
