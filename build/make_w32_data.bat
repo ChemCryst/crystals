@@ -13,6 +13,15 @@
 echo CVS > cvs.txt
 xcopy ..\precomp\all . /S  /F /Y /EXCLUDE:cvs.txt 
 xcopy ..\precomp\%COMPCODE% . /S  /F /Y /EXCLUDE:cvs.txt
+if "%COMPCODE%" == "GID" goto win32 
+if "%COMPCODE%" == "WXS" goto win32 
+if "%COMPCODE%" == "INW" goto win32 
+goto skipwin32
+
+:win32
+xcopy ..\precomp\WIN32 . /S  /F /Y /EXCLUDE:cvs.txt
+
+:skipwin32
 del cvs.txt
 
 @echo Creating COMMANDS.DSC file.
