@@ -21,7 +21,10 @@
 ^^WI                                                 DISABLEIF='SEL1 SEL2 IN'
 ^^WI                    ITEM _TLS 'TLS analysis' '#SCRIPT XTLS_N_GEND'
 ^^WI                                            DISABLEIF='SEL1 SEL2 SEL3 IN'
-^^WI                    MENU _GEOME '&Bonding'
+^^WI                     SPLIT
+^^WI                     ITEM _SELEC '&Break bond' 
+^^WI                '#SCRIPT XBRBOND_N_G' DISABLEIF='IN' ENABLEIF='SEL2'
+^^WI                    MENU _GEOME '&Add bond'
 ^^WI                     ITEM _SELEC 'Add &Single Bond'
 ^^WI                '#SCRIPT XCHBOND_N_G1' DISABLEIF='IN' ENABLEIF='SEL2'
 ^^WI                     ITEM _SELEC 'Add &Double Bond' 
@@ -36,9 +39,6 @@
 ^^WI                '#SCRIPT XCHBOND_N_G7' DISABLEIF='IN' ENABLEIF='SEL2'
 ^^WI                     ITEM _SELEC 'Add &Pi Bond'
 ^^WI                '#SCRIPT XCHBOND_N_G9' DISABLEIF='IN' ENABLEIF='SEL2'
-^^WI                     SPLIT
-^^WI                     ITEM _SELEC '&Break bond' 
-^^WI                '#SCRIPT XBRBOND_N_G' DISABLEIF='IN' ENABLEIF='SEL2'
 ^^WI                    ENDMENU
 ^^WI                    MENU _GEOME '&Geometry'
 ^^WI                     ITEM _DIST '&Distance' '#SCRIPT YCDIST_N_GEND'

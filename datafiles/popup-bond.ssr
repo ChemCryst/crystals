@@ -3,7 +3,7 @@
 ^^WI                    ITEM _SELEC '&Relocate symm atom'
 ^^WI                       '#EDIT_NTRANSFORM 1 0 0 0 1 0 0 0 1 _S_NEND'
 ^^WI                       DISABLEIF='IN' ENABLEIF='L1 L2 L5 BS'
-^^WI                    MENU _SRETY '&Change type of bond _A'
+^^WI                     SPLIT
 ^^WI                 ITEM _SELEC '&Single Bond' '#SCRIPT XCHBOND_N_A_N1'
 ^^WI                      ENABLEIF='L1 L2 L5' DISABLEIF='IN'
 ^^WI                 ITEM _SELEC '&Double Bond' '#SCRIPT XCHBOND_N_A_N2'
@@ -19,11 +19,11 @@
 ^^WI                 ITEM _SELEC '&Pi Bond' '#SCRIPT XCHBOND_N_A_N9'
 ^^WI                      ENABLEIF='L1 L2 L5' DISABLEIF='IN'
 ^^WI                      SPLIT
-^^WI                 ITEM _SELEC '&Autodetect' '#SCRIPT XCHBOND_N_A_N0'
+^^WI                 ITEM _SELEC '&Autodetect (default)'
+^^WI                 '#SCRIPT XCHBOND_N_A_N0'
 ^^WI                      ENABLEIF='L1 L2 L5' DISABLEIF='IN'
 ^^WI                     SPLIT
 ^^WI                 ITEM _SELEC '&Break bond' '#SCRIPT XBRBOND_N_A'
 ^^WI                      ENABLEIF='L1 L2 L5' DISABLEIF='IN'
-^^WI                    ENDMENU
 ^^WI                   ENDDEFINEMENU
 %%END SSR
