@@ -1,8 +1,12 @@
+
 ////////////////////////////////////////////////////////////////////////
 //   Filename:  CrystalsInterface.h
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.41  2012/03/26 11:37:07  rich
+// Move IDs in range.
+//
 // Revision 1.40  2011/05/16 10:56:32  rich
 // Added pane support to WX version. Added coloured bonds to model.
 //
@@ -131,6 +135,14 @@
 //
 #ifndef     __CrystalsInterface_H__
 #define     __CrystalsInterface_H__
+
+#include <string>
+
+#if defined(UNICODE) || defined(_UNICODE)
+typedef std::wstring tstring;
+#else
+typedef std::string tstring;
+#endif 
 
 #if defined(__WXGTK__) || defined(__WXMAC__)
 #define __BOTHWX__ 1

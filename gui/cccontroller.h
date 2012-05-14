@@ -229,12 +229,12 @@ extern "C" {
 class CcProcessInfo
 {
    public:
-      CcProcessInfo(const wstring & app, STARTUPINFOW & si, wstring & commandline ) {
+      CcProcessInfo(const tstring & app, STARTUPINFO & si, tstring & commandline ) {
 
 //        CreateOK = CreateProcess(app.c_str(), const_cast<char*>(commandline.c_str()), NULL,NULL,
 //                                 TRUE,CREATE_NEW_CONSOLE,NULL,NULL,&si,&proc);
          commandline.resize( _MAX_PATH );
-         CreateOK = CreateProcessW(NULL, &commandline[0], NULL,NULL,
+         CreateOK = CreateProcess(NULL, &commandline[0], NULL,NULL,
                                  TRUE,CREATE_NEW_CONSOLE,NULL,NULL,&si,&proc);
 
          commandline.erase(
@@ -336,6 +336,9 @@ enum
 
 
 //   $Log: not supported by cvs2svn $
+//   Revision 1.52  2012/03/26 11:32:47  rich
+//   Typo.
+//
 //   Revision 1.51  2012/03/26 11:15:31  rich
 //   Unicode support for GID version.
 //

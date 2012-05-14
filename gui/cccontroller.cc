@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.123  2012/05/12 05:13:09  rich
+// Fix MFC build.
+//
 // Revision 1.122  2012/05/12 04:58:14  rich
 // Simplified 'spawn' options. Now only using ShellExectute funciton on Win32.
 //
@@ -582,6 +585,7 @@
 
 #ifdef __BOTHWX__
   #include <wx/app.h>
+  #include <tchar.h>
 #endif
 
 #include    <string>
@@ -635,6 +639,7 @@ using namespace std;
 
 
 #ifdef __CR_WIN__
+  #include <tchar.h>
   #include <afxwin.h>
   #include <shlobj.h> // For the SHBrowse stuff.
   #include <direct.h> // For the _chdir function.
@@ -3333,36 +3338,39 @@ extern "C" {
 
     size_t origsize = strlen(theLine) + 1;
     const size_t newsize = 263;
-    wchar_t tempstr[newsize];
-    mbstowcs(tempstr, theLine,  origsize);
+    _TCHAR tempstr[newsize];
 
-    wstring line = wstring(tempstr);
+
+//    towcs(tempstr, theLine,  origsize);
+    tstring line = tstring(theLine);
+  (CcController::theController)->AddInterfaceCommand( "Line: " + line );
+  (CcController::theController)->AddInterfaceCommand( "theLine: " + tstring(theLine) );
 
 
 #else
     size_t origsize = strlen(theLine) + 1;
     const size_t newsize = 263;
     size_t convertedChars = 0;
-    wchar_t tempstr[newsize];
+    _TCHAR tempstr[newsize];
     mbstowcs_s(&convertedChars, tempstr, origsize, theLine, _TRUNCATE);
 
     wstring line = wstring(tempstr);
 #endif
 	
 
-    wstring::size_type strim = line.find_last_not_of(' '); //Remove trailing spaces
+    tstring::size_type strim = line.find_last_not_of(' '); //Remove trailing spaces
 
     if ( strim != string::npos )
         line = line.substr(0,strim+1);
 //   delete [] tempstr;
 //    tempstr = NULL;
 
-//  (CcController::theController)->AddInterfaceCommand( "Guexec: " + line );
+  (CcController::theController)->AddInterfaceCommand( "Guexec: " + line );
 
     bRedir = false;
     bool bWait = false;
     bool bRest = false;
-    wstring::size_type sFirst,eFirst,sRest,eRest;
+    tstring::size_type sFirst,eFirst,sRest,eRest;
 
     sFirst = line.find_first_not_of(' ');     // Find first non-space.
     if ( sFirst == string::npos ) sFirst = 0;
@@ -3395,10 +3403,10 @@ extern "C" {
        if ( eFirst == string::npos ) eFirst = line.length();
     }
 
-    wstring firstTok = line.substr(sFirst,eFirst-sFirst);
-    wstring restLine;
+    tstring firstTok = line.substr(sFirst,eFirst-sFirst);
+    tstring restLine;
 
-//        LOGERR(firstTok);
+        LOGERR(firstTok);
 
 // Find next non space and last non space 
     sRest = line.find_first_not_of(' ',eFirst+1);
@@ -3413,10 +3421,10 @@ extern "C" {
       restLine = line.substr(sRest, eRest);
     }
 
-//        LOGERR(restLine);
+        LOGERR(restLine);
 
-        wstring totalcl = firstTok;
-        totalcl += L" ";
+        tstring totalcl = firstTok;
+        totalcl += _T(" ");
         totalcl += restLine;
 //        LOGERR(totalcl);
 
@@ -3428,9 +3436,9 @@ extern "C" {
 //Special case html files with a # anchor reference after file name:
       string::size_type match = firstTok.find('#');
       if ( match != string::npos ) {
-         wchar_t buf[MAX_PATH];
-         wstring tempfile = firstTok.substr(0,match);
-         if ( (int)FindExecutableW(tempfile.c_str(),NULL,buf) >= 32) {
+         _TCHAR buf[MAX_PATH];
+         tstring tempfile = firstTok.substr(0,match);
+         if ( (int)FindExecutable(tempfile.c_str(),NULL,buf) >= 32) {
             restLine = firstTok + restLine;
             bRest = true;
             firstTok = buf;
@@ -3438,27 +3446,27 @@ extern "C" {
       }
 
 
-      SHELLEXECUTEINFOW si;
+      SHELLEXECUTEINFO si;
 
       si.cbSize       = sizeof(si);
       si.fMask        = SEE_MASK_NOCLOSEPROCESS|SEE_MASK_FLAG_NO_UI ;
       si.hwnd         = GetDesktopWindow();
-      si.lpVerb       = L"open";
+      si.lpVerb       = _T("open");
       si.lpFile       = firstTok.c_str();
       si.lpParameters = ( (bRest)? restLine.c_str() : NULL );
       si.lpDirectory  = NULL;
       si.nShow        = SW_SHOWNORMAL;
 
-      int err = (int)ShellExecuteExW ( & si );
+      int err = (int)ShellExecuteEx ( & si );
 
       if ( (int)si.hInstApp == SE_ERR_NOASSOC )
       {
         LOGERR("No assoc - try rundll32");
-        wstring newparam = wstring(L"shell32.dll,OpenAs_RunDLL ")+firstTok+( (bRest) ? L" " + restLine : L"" ) ;
-        si.lpFile       = L"rundll32.exe";
+        tstring newparam = tstring(_T("shell32.dll,OpenAs_RunDLL "))+firstTok+( (bRest) ? _T(" ") + restLine : _T("") ) ;
+        si.lpFile       = _T("rundll32.exe");
         si.lpParameters = newparam.c_str();
         si.fMask        = SEE_MASK_NOCLOSEPROCESS; //Don't mask errors for this call.
-        ShellExecuteExW ( & si );
+        ShellExecuteEx ( & si );
 // It is not possible to wait for rundll32's spawned process, so
 // we just pop up a message box, to hold this app here.
  #ifdef __CR_WIN__
@@ -3479,20 +3487,20 @@ extern "C" {
       {
         LOGSTAT("ShellExecute error - try command prompty");
 
-        wstring newparam = wstring(L"/c ")+firstTok+( (bRest) ? L" " + restLine : L"" ) ;
+        tstring newparam = tstring(_T("/c "))+firstTok+( (bRest) ? _T(" ") + restLine : _T("") ) ;
         si.cbSize       = sizeof(si);
         si.fMask        = SEE_MASK_NOCLOSEPROCESS|SEE_MASK_FLAG_NO_UI ;
         si.hwnd         = GetDesktopWindow();
-        si.lpVerb       = L"open";
+        si.lpVerb       = _T("open");
         if ( IsWinNT() )
-          si.lpFile       = L"cmd.exe";
+          si.lpFile       = _T("cmd.exe");
         else
-          si.lpFile       = L"command.com";
+          si.lpFile       = _T("command.com");
         si.lpParameters = newparam.c_str();
         si.lpDirectory  = NULL;
         si.nShow        = SW_SHOWNORMAL;
  
-        err = (int)ShellExecuteExW ( & si );
+        err = (int)ShellExecuteEx ( & si );
 
         if ( (int)si.hInstApp > 32 ) {
           CcController::theController->AddInterfaceCommand( " ");
@@ -3579,7 +3587,7 @@ extern "C" {
     }
     else if ( bRedir )
     {
-      STARTUPINFOW si;
+      STARTUPINFO si;
       SECURITY_ATTRIBUTES sa;
       SECURITY_DESCRIPTOR sd;               //security information for pipes
       if (IsWinNT())        //initialize security descriptor (Windows NT)
@@ -3602,7 +3610,7 @@ extern "C" {
         return;
       }
 
-      GetStartupInfoW(&si);      //set startupinfo for the spawned process
+      GetStartupInfo(&si);      //set startupinfo for the spawned process
       si.dwFlags = STARTF_USESTDHANDLES|STARTF_USESHOWWINDOW;
       si.wShowWindow = SW_HIDE;
       si.hStdOutput = outPipe.input;
@@ -3695,17 +3703,17 @@ extern "C" {
 //Special case html files with a # anchor reference after file name:
       string::size_type match = firstTok.find('#');
       if ( match != string::npos ) {
-         wchar_t buf[MAX_PATH];
-         wstring tempfile = firstTok.substr(0,match);
-         if ( (int)FindExecutableW(tempfile.c_str(),NULL,buf) >= 32) {
+         _TCHAR buf[MAX_PATH];
+         tstring tempfile = firstTok.substr(0,match);
+         if ( (int)FindExecutable(tempfile.c_str(),NULL,buf) >= 32) {
             restLine = firstTok + restLine;
             bRest = true;
             firstTok = buf;
          }
       }
 
-      HINSTANCE ex = ShellExecuteW( GetDesktopWindow(),
-                                   L"open",
+      HINSTANCE ex = ShellExecute( GetDesktopWindow(),
+                                   _T("open"),
                                    firstTok.c_str(),
                                    ( (bRest)? restLine.c_str() : NULL ),
                                    NULL,
@@ -3713,10 +3721,10 @@ extern "C" {
 
       if ( (int)ex == SE_ERR_NOASSOC )
       {
-         ShellExecuteW( GetDesktopWindow(),
-                       L"open",
-                       L"rundll32.exe",
-                       wstring(L"shell32.dll,OpenAs_RunDLL "+firstTok).c_str(),
+         ShellExecute( GetDesktopWindow(),
+                       _T("open"),
+                       _T("rundll32.exe"),
+                       tstring(_T("shell32.dll,OpenAs_RunDLL ")+firstTok).c_str(),
                        NULL,
                        SW_SHOWNORMAL);
       }
@@ -3724,18 +3732,18 @@ extern "C" {
       {
 
 
-        wstring newparam = wstring(L"/c ")+firstTok+( (bRest) ? L" " + restLine : L"" ) ;
+        tstring newparam = tstring(_T("/c "))+firstTok+( (bRest) ? _T(" ") + restLine : _T("") ) ;
         if ( IsWinNT() )
-           ShellExecuteW( GetDesktopWindow(),
-                       L"open",
-                       L"cmd.exe",
+           ShellExecute( GetDesktopWindow(),
+                       _T("open"),
+                       _T("cmd.exe"),
                        newparam.c_str(),
                        NULL,
                        SW_SHOWNORMAL);
         else
-           ShellExecuteW( GetDesktopWindow(),
-                       L"open",
-                       L"command.com",
+           ShellExecute( GetDesktopWindow(),
+                       _T("open"),
+                       _T("command.com"),
                        newparam.c_str(),
                        NULL,
                        SW_SHOWNORMAL);
