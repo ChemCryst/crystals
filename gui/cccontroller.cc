@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.124  2012/05/14 15:27:52  rich
+// Sort out use of unicode and non-unicode functions.
+//
 // Revision 1.123  2012/05/12 05:13:09  rich
 // Fix MFC build.
 //
@@ -3343,8 +3346,8 @@ extern "C" {
 
 //    towcs(tempstr, theLine,  origsize);
     tstring line = tstring(theLine);
-  (CcController::theController)->AddInterfaceCommand( "Line: " + line );
-  (CcController::theController)->AddInterfaceCommand( "theLine: " + tstring(theLine) );
+//  (CcController::theController)->AddInterfaceCommand( "Line: " + line );
+//  (CcController::theController)->AddInterfaceCommand( "theLine: " + tstring(theLine) );
 
 
 #else
@@ -3365,7 +3368,7 @@ extern "C" {
 //   delete [] tempstr;
 //    tempstr = NULL;
 
-  (CcController::theController)->AddInterfaceCommand( "Guexec: " + line );
+  (CcController::theController)->AddInterfaceCommand( "Launching: " + line );
 
     bRedir = false;
     bool bWait = false;
@@ -3406,7 +3409,7 @@ extern "C" {
     tstring firstTok = line.substr(sFirst,eFirst-sFirst);
     tstring restLine;
 
-        LOGERR(firstTok);
+//        LOGERR(firstTok);
 
 // Find next non space and last non space 
     sRest = line.find_first_not_of(' ',eFirst+1);
@@ -3421,7 +3424,7 @@ extern "C" {
       restLine = line.substr(sRest, eRest);
     }
 
-        LOGERR(restLine);
+//        LOGERR(restLine);
 
         tstring totalcl = firstTok;
         totalcl += _T(" ");
@@ -3445,6 +3448,22 @@ extern "C" {
          }
       }
 
+//Special case http urls:
+      tstring lFirstTok = firstTok; 
+#ifdef _UNICODE
+      std::transform( lFirstTok.begin(), lFirstTok.end(), lFirstTok.begin(), ::towlower );
+#else
+      std::transform( lFirstTok.begin(), lFirstTok.end(), lFirstTok.begin(), ::tolower );
+#endif
+      match = lFirstTok.find(_T("http://"));
+      if ( match == 0 )
+      {
+         restLine = _T("url.dll,FileProtocolHandler ") + firstTok + _T(" ")+ restLine;
+         bRest = true;
+         firstTok = _T("rundll32.exe");
+       }
+
+
 
       SHELLEXECUTEINFO si;
 
@@ -3461,7 +3480,7 @@ extern "C" {
 
       if ( (int)si.hInstApp == SE_ERR_NOASSOC )
       {
-        LOGERR("No assoc - try rundll32");
+        (CcController::theController)->AddInterfaceCommand( "File has no association. Retrying." );
         tstring newparam = tstring(_T("shell32.dll,OpenAs_RunDLL "))+firstTok+( (bRest) ? _T(" ") + restLine : _T("") ) ;
         si.lpFile       = _T("rundll32.exe");
         si.lpParameters = newparam.c_str();
@@ -3485,7 +3504,7 @@ extern "C" {
       }
       else if ( (int)si.hInstApp <= 32 )
       {
-        LOGSTAT("ShellExecute error - try command prompty");
+        (CcController::theController)->AddInterfaceCommand( "Could not launch as Win process. Trying command prompt.");
 
         tstring newparam = tstring(_T("/c "))+firstTok+( (bRest) ? _T(" ") + restLine : _T("") ) ;
         si.cbSize       = sizeof(si);
@@ -3711,6 +3730,21 @@ extern "C" {
             firstTok = buf;
          }
       }
+//Special case http urls:
+      tstring lFirstTok = firstTok; 
+#ifdef _UNICODE
+      std::transform( lFirstTok.begin(), lFirstTok.end(), lFirstTok.begin(), ::towlower );
+#else
+      std::transform( lFirstTok.begin(), lFirstTok.end(), lFirstTok.begin(), ::tolower );
+#endif
+      match = lFirstTok.find(_T("http://"));
+      if ( match == 0 )
+      {
+         restLine = _T("url.dll,FileProtocolHandler ") + firstTok + _T(" ")+ restLine;
+         bRest = true;
+         firstTok = _T("rundll32.exe");
+       }
+
 
       HINSTANCE ex = ShellExecute( GetDesktopWindow(),
                                    _T("open"),
@@ -3721,6 +3755,7 @@ extern "C" {
 
       if ( (int)ex == SE_ERR_NOASSOC )
       {
+        (CcController::theController)->AddInterfaceCommand( "File has no association. Retrying." );
          ShellExecute( GetDesktopWindow(),
                        _T("open"),
                        _T("rundll32.exe"),
@@ -3731,6 +3766,7 @@ extern "C" {
       else if ( (int)ex <= 32 )
       {
 
+        (CcController::theController)->AddInterfaceCommand( "Could not launch Win process. Trying command prompt." );
 
         tstring newparam = tstring(_T("/c "))+firstTok+( (bRest) ? _T(" ") + restLine : _T("") ) ;
         if ( IsWinNT() )
