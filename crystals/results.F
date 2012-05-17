@@ -1,4 +1,8 @@
+C
 C $Log: not supported by cvs2svn $
+C Revision 1.190  2012/05/11 12:52:14  rich
+C Fix date order on Intel platform. Expand year to four digits in CIF output on all platforms.
+C
 C Revision 1.189  2012/02/03 09:47:17  djw
 C REmove debugging print to unit 133
 C
@@ -7193,8 +7197,8 @@ C       Fo vs Fc scatter
       IF (LEVEL.EQ.4) THEN
          WRITE (CMON,'(A,/,A,/,A)') 
      1 '^^PL PLOTDATA _FOFC SCATTER ATTACH _VFOFC',
-     2 '^^PL XAXIS TITLE Delta(Fc)/s NSERIES=1 LENGTH=2000',
-     3 '^^PL YAXIS TITLE Delta(Fo)/s SERIES 1 TYPE SCATTER'
+     2 '^^PL XAXIS TITLE Delta(Fc^2)/s NSERIES=1 LENGTH=2000',
+     3 '^^PL YAXIS TITLE Delta(Fo^2)/s SERIES 1 TYPE SCATTER'
          CALL XPRVDU (NCVDU,3,0)
       END IF
 C       Normal probability plot
@@ -7611,7 +7615,7 @@ C
 c      LFRIED=LFRIED-NCENTRIC
       IF (LEVEL.EQ.4) THEN
 C Also add A SERIES FOR STRAIGHT LINE (y=x) .
-CDJWOCT10 - USE DIGNA:NOISE
+CDJWOCT10 - USE SIGNAL:NOISE
 C         WRITE (CMON,'(A/ (2(A,2F10.2)) )') 
 C     1 '^^PL ADDSERIES ''Fo=Fc'' TYPE LINE',
 C     2 '^^PL DATA ', -FCMAX,-FCMAX,' DATA ',FCMAX,FCMAX
@@ -7746,7 +7750,7 @@ C Generate Friedel opposite for current HKL:
 C Work out canonicalized HKL for the Friedel Opposite
 			   CALL KSYSAB(1)
 C Done.	
-			   WRITE (HKLLAB,'(5(I4,A),I4)') MH,',',MK,',',ML,' vs ',
+              WRITE (HKLLAB,'(5(I4,A),I4)') MH,',',MK,',',ML,' vs ',
      1		      NINT(STORE(M6)),',',
      1            NINT(STORE(M6+1)),',',NINT(STORE(M6+2))
                CALL XCREMS (HKLLAB, HKLLAB,IHKLLEN)
@@ -7804,7 +7808,7 @@ C      determinant
 C 
          IF ((SLOPE.GT.1.1).OR.(SLOPE.LT.0.9).OR.(CUTTER.LT.-.05).OR.
      1    (CUTTER.GT..05)) THEN
-            WRITE (CMON,'(a,a)') ' The slope shoud be unity and the',
+            WRITE (CMON,'(a,a)') ' The slope should be unity and the',
      1      ' intercept zero'
             CALL XPRVDU (NCVDU,1,0)
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') CMON(1)(:)
@@ -8431,5 +8435,330 @@ C
        M=1000*M+100*(5+J(3))+10*(5+J(4))
      1 +(5+J(5))
       WRITE(NCWU,'(8I10)') M,J,N2P,L2C
+      RETURN
+      END
+CODE FOR XCIFQC
+      SUBROUTINE XCIFQC
+CDJWMAR99[      CIF OUTPUT DIRECTED TO NCFPU1, PERMITTING TEXT OUTPUT TO
+C               BE SENT TO THE PUNCH UNIT AS A TABLE
+C
+      PARAMETER (NCOL=2,NROW=49)
+      PARAMETER (IDATA=15,IREF=23)
+      CHARACTER*35 CPAGE(NROW,NCOL)
+      CHARACTER*76 CREFMK
+      PARAMETER (IDIFMX=11)
+      PARAMETER (IREDMX=7)
+      DIMENSION IREFCD(3,IDIFMX)
+      DIMENSION IREDCD(IREDMX)
+CAVDL more solution packages in cif-goodies
+      PARAMETER (ISOLMX=10)
+      DIMENSION ISOLCD(ISOLMX)
+      PARAMETER (IABSMX=16)
+      DIMENSION IABSCD(IABSMX)
+
+C
+CDJWMAR99 MANY CHANGES TO BRING UP TO DATE WITH NEW CIFDIC
+      PARAMETER (NTERM=4)
+      PARAMETER (NNAMES=30)
+      DIMENSION A(12), JDEV(4), KDEV(4)
+      PARAMETER (NLST=4)
+      DIMENSION LSTNUM(NLST), JLOAD(NLST)
+      DIMENSION IVEC(16), ESD(6)
+      CHARACTER CCELL(3)*1,CANG(3)*5,CSIZE(3)*3,CINDEX(3)*2
+      CHARACTER CBUF*80,CTEMP*80,CLINE*80, CHLINE*380
+      character *80 ctext(4)
+C
+      CHARACTER*4 CTYPE
+      CHARACTER*15 CINSTR,CDIR,CPARAM,CVALUE,CDEF
+      CHARACTER*26 UPPER,LOWER
+      CHARACTER*3 CSSUBS(11)
+      CHARACTER*17 CWT
+      CHARACTER*22 CFM, CFMC ! 'F<sub>obs</sub>&sup2;'
+      CHARACTER*35 CMOD
+      CHARACTER*6 CSOLVE
+cdjwapr09
+      INTEGER  IFARG      ! F OR F^2^ FOR WEIGHTING SCHEME
+C
+      INCLUDE 'TSSCHR.INC'
+      INCLUDE 'ICOM30.INC'
+      INCLUDE 'ICOM31.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XCOMPD.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XTAPES.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XSSCHR.INC'
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST02.INC'
+      INCLUDE 'XLST03.INC'
+      INCLUDE 'XLST04.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST13.INC'
+      INCLUDE 'XLST23.INC'
+      INCLUDE 'XLST25.INC'
+      INCLUDE 'XLST28.INC'
+      INCLUDE 'XLST29.INC'
+      INCLUDE 'XLST30.INC'
+      INCLUDE 'XLST31.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XFLAGS.INC'
+C
+C
+      INCLUDE 'QLST30.INC'
+      INCLUDE 'QLST31.INC'
+      INCLUDE 'QSTORE.INC'
+
+      V(CA,CB,CC,AL,BE,GA)=CA*CB*CC * SQRT(1-COS(AL)**2-COS(BE)**2-
+     1   COS(GA)**2 + 2 * COS(AL) * COS(BE) * COS(GA))
+C
+C
+      DATA UPPER/'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
+      DATA LOWER/'abcdefghijklmnopqrstuvwxyz'/
+C                  1 2 3 4 
+      DATA LSTNUM/1,2,5,31/
+      DATA CCELL/'a','b','c'/
+      DATA CANG/'alpha','beta','gamma'/
+      DATA CSIZE/'min','mid','max'/
+      DATA CINDEX/'h_','k_','l_'/
+#if defined (_HOL_)
+      DATA ICARB/4HC   /
+      DATA KHYD/4HH   /
+      DATA KDET/4HD   /
+#else
+      DATA ICARB/'C   '/
+      DATA KHYD/'H   '/
+      DATA KDET/'D   '/
+#endif
+CDJWMAR99      DATA JDEV /'H','K','L','I'/
+      DATA CSSUBS /' 21',' 31',' 32',' 41',' 42',' 43',' 61',
+     1            ' 62',' 63',' 64',' 65'/
+ 
+CRICFEB03: Output one of 0=CIF, 1=PLAIN, 2=HTML
+      CALL XCSAE
+      I = KRDDPV ( IPUNCH , 1 )
+      IF (I.LT.0) THEN
+         IF (ISSPRT .EQ. 0) WRITE(NCWU, 51)
+         WRITE ( CMON ,51)
+         CALL XPRVDU(NCVDU, 1,0)
+51       FORMAT(' Error in #CIFOUT directives. ')
+         RETURN
+      END IF
+c
+c set some dummy esds just in case
+c
+      do i = 1,6
+      esd(i) = 0.001
+      enddo
+
+CDJWMAY99 - OPEN CIF OUTPUT ON FRN1
+      IF ( IPUNCH .EQ. 0 ) THEN
+         CALL XMOVEI (KEYFIL(1,23),KDEV,4)
+         CALL XRDOPN (6,KDEV,CSSCIF,LSSCIF)
+      END IF
+      CALL XRSL
+      CALL XCSAE
+c
+      CALL XDATER (CBUF(1:8))
+
+      IF ( IPUNCH .EQ. 0 ) THEN
+        WRITE (NCFPU1,'(''data_global '')')
+        WRITE (NCFPU1,'(''_audit_creation_date  '',6X, 
+     1  ''"'',3(A2,A))')
+     2  CBUF(7:8),'-',CBUF(4:5),'-',CBUF(1:2),'"'
+        WRITE (NCFPU1,
+     1   '(''_audit_creation_method CRYSTALS_ver_'',F5.2)')
+     1    0.01*FLOAT(ISSVER)
+
+C----- OUTPUT A TITLE, FIRST 44 CHARACTERS ONLY
+        WRITE (CLINE,'(20A4)') (KTITL(I),I=1,20)
+        K=KHKIBM(CLINE)
+        CALL XCREMS (CLINE,CLINE,NCHAR)
+        CALL XCTRIM (CLINE,NCHAR)
+        K=MIN(44,NCHAR-1)
+        WRITE (NCFPU1,'(/,''_oxford_structure_analysis_title  '''''',
+     1   A,'''''''')') CLINE(1:K)
+        WRITE (NCFPU1,'(''_chemical_name_systematic '',T35,''?'')')
+        WRITE (NCFPU1,'(''_chemical_melting_point '',T35,''?'',/)')
+      END IF
+ 
+C                      1 2 3  4 
+C FYI:    DATA LSTNUM /1,2,5,31 /
+c
+      DO MLST=1,NLST
+         JLOAD(MLST)=0                   !INDICATE LIST NOT LOADED
+         LSTYPE=LSTNUM(MLST)
+         IF (KEXIST(LSTYPE)) 400,300,500
+300      CONTINUE
+           WRITE (CMON,350) LSTYPE
+           CALL XPRVDU (NCVDU,1,0)
+350        FORMAT (1X,'List ',I2,' contains errors')
+           CYCLE
+400      CONTINUE
+           WRITE (CMON,450) LSTYPE
+450        FORMAT (1X,'List',I2,' does not exist')
+           CALL XPRVDU (NCVDU,1,0)
+           CYCLE
+500      CONTINUE
+ 
+         IF (LSTYPE.EQ.1) THEN
+            CALL XFAL01
+         ELSE IF (LSTYPE.EQ.2) THEN
+            CALL XFAL02
+         ELSE IF (LSTYPE.EQ.5) THEN
+            CALL XLDR05 (LSTYPE)
+         ELSE IF (LSTYPE.EQ.31) THEN
+      INCLUDE 'IDIM31.INC'
+            CALL XLDLST (31,ICOM31,IDIM31,0)
+         END IF
+ 
+         IF (IERFLG.GE.0) JLOAD(MLST)=1
+      END DO
+c
+C
+C 
+C----- LIST 1 AND 31
+C
+      IF (JLOAD(1).GE.1) THEN
+C --  CONVERT ANGLES TO DEGREES.
+
+         CIFA = STORE(L1P1)
+         CIFB = STORE(L1P1+1)
+         CIFC = STORE(L1P1+2)
+         CIFAL = STORE(L1P1+3)
+         CIFBE = STORE(L1P1+4)
+         CIFGA = STORE(L1P1+5)
+
+         STORE(L1P1+3)=RTD*STORE(L1P1+3)
+         STORE(L1P1+4)=RTD*STORE(L1P1+4)
+         STORE(L1P1+5)=RTD*STORE(L1P1+5)
+         CALL XZEROF (ESD,6)
+         IF (JLOAD(10).GE.1) THEN
+C----- SCALE DOWN THE ELEMENTS OF THE V/CV MATRIX
+            SCALE=STORE(L31K)
+            M31=L31
+            ESD(1)=SQRT(STORE(M31)*SCALE)
+            ESD(2)=SQRT(STORE(M31+6)*SCALE)
+            ESD(3)=SQRT(STORE(M31+11)*SCALE)
+            ESD(4)=SQRT(STORE(M31+15)*SCALE)*RTD
+            ESD(5)=SQRT(STORE(M31+18)*SCALE)*RTD
+            ESD(6)=SQRT(STORE(M31+20)*SCALE)*RTD
+         END IF
+
+         IF ( IPUNCH .EQ. 0 ) THEN
+          DO I=0,2
+C----- VALUE AND ESD
+            CALL XFILL (IB,IVEC,16)
+            CALL SNUM (STORE(L1P1+I),ESD(I+1),-2,0,12,IVEC)
+            WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
+            CALL XCRAS (CBUF,N)
+            WRITE (NCFPU1,600) CCELL(I+1)(1:1),CBUF(1:N)
+600         FORMAT ('_cell_length_',A,T35,A)
+          END DO
+          DO I=0,2
+            CALL XFILL (IB,IVEC,16)
+cdjwjul05
+            CALL SNUM (STORE(L1P1+3+I),ESD(I+4),-2,0,12,IVEC)
+            WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
+            CALL XCRAS (CBUF,N)
+            J=INDEX(CBUF(1:N),'.')
+            IF (J.EQ.0) J=MAX(1,N)
+            TEMP=STORE(L1P1+3+I)-INT(STORE(L1P1+3+I))
+            IF (TEMP.LE.ZERO) N=MAX(1,J-1)
+            WRITE (NCFPU1,650) CANG(I+1)(1:5),CBUF(1:N)
+650         FORMAT ('_cell_angle_',A,T35,A)
+          END DO
+         END IF
+
+         VOL = V(CIFA,CIFB,CIFC,CIFAL,CIFBE,CIFGA)
+
+         CU=SQRT((VOL-V(CIFA+ESD(1),CIFB,CIFC,CIFAL,CIFBE,CIFGA))**2
+     1        + (VOL-V(CIFA,CIFB+ESD(2),CIFC,CIFAL,CIFBE,CIFGA))**2
+     2        + (VOL-V(CIFA,CIFB,CIFC+ESD(3),CIFAL,CIFBE,CIFGA))**2
+     3        + (VOL-V(CIFA,CIFB,CIFC,CIFAL+ESD(4)*DTR,CIFBE,CIFGA))**2
+     4        + (VOL-V(CIFA,CIFB,CIFC,CIFAL,CIFBE+ESD(5)*DTR,CIFGA))**2
+     5        + (VOL-V(CIFA,CIFB,CIFC,CIFAL,CIFBE,CIFGA+ESD(6)*DTR))**2)
+
+         CALL XFILL (IB,IVEC,16)
+         CALL SNUM (VOL,CU,-2,0,12,IVEC)
+         WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
+         CALL XCRAS (CBUF,N)
+         IF ( IPUNCH .EQ. 0 ) THEN
+           WRITE (NCFPU1,750) CBUF(1:N)
+750        FORMAT ('_cell_volume ',T35,A)
+           CALL XPCIF (' ')
+         END IF
+      END IF
+C 
+C----- LIST 2
+C
+
+      Z2 = 1
+      IFLACK = 0
+      IF (JLOAD(2).GE.1) THEN
+         ICENTR=NINT(STORE(L2C))+1
+         Z2 = STORE(L2C+3)
+C----- CRYSTAL CLASS - FROM LIST 2
+         J=L2CC+MD2CC-1
+         WRITE (CTEMP,800) (ISTORE(I),I=L2CC,J)
+800      FORMAT (4(A4))
+         CBUF=' '
+cdjwnov2011 - make all text lowercase - requested by ALT
+         CALL XCCLWC (CTEMP(1:),CBUF(1:))
+c         CBUF(1:1)=CTEMP(1:1)
+         CALL XCTRIM (CBUF,J)
+         J = J - 1
+         IF ( IPUNCH .EQ. 0 ) THEN
+           WRITE (CLINE,850) CBUF(1:J)
+           CALL XPCIF (CLINE)
+850        FORMAT ('_symmetry_cell_setting',T35,'''',A,'''')
+         END IF
+C 
+C ----- DISPLAY SPACE GROUP SYMBOL
+         J=L2SG+MD2SG-1
+         WRITE (CTEMP,900) (ISTORE(I),I=L2SG,J)
+900      FORMAT (4(A4,1X))
+         CBUF=' '
+         CALL XCCLWC (CTEMP(2:),CBUF(2:))
+         CBUF(1:1)=CTEMP(1:1)
+         CALL XCTRIM (CBUF,J)
+         WRITE (CLINE,950) CBUF(1:J)
+950      FORMAT ('_symmetry_space_group_name_H-M',T35,'''',A,'''')
+951      FORMAT ('_symmetry_space_group_name_Hall',T35,'?')
+         IF  ( IPUNCH .EQ. 0 ) THEN
+           CALL XPCIF (CLINE)
+           WRITE (CLINE,951)
+           CALL XPCIF (CLINE)
+         END IF
+ 
+         IF ( IPUNCH .EQ. 0 ) THEN
+C DISPLAY EACH SYMMETRY OPERATOR
+            CALL XCIF2(NCFPU1)
+         END IF
+C
+         IF ( IPUNCH .EQ. 0 ) THEN
+           IF ( NINT ( STORE(L2C) ) .LE. 0 ) THEN
+             IFLACK = 0
+           ELSE
+             IFLACK = 1
+           END IF
+         END IF
+      END IF
+C 
+C
+      GO TO 2650
+C----- ERROR EXIT
+2600  CONTINUE
+C 
+2650  CONTINUE
+C----- CLOSE THE 'CIF' OUTPUT FILE
+      IF ( IPUNCH .EQ. 0 ) THEN
+        CALL XRDOPN (7,KDEV,CSSCIF,LSSCIF)
+      END IF
       RETURN
       END
