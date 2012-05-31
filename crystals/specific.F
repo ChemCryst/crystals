@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.72  2012/05/11 12:52:14  rich
+C Fix date order on Intel platform. Expand year to four digits in CIF output on all platforms.
+C
 C Revision 1.71  2012/03/23 15:53:59  rich
 C Avoid vectorised loops in XMOVE.
 C
@@ -2018,13 +2021,17 @@ C
       J = LOC ( IRESLT(1))
 C
 #endif
-      IF ( ABS(I - J) .GT. N ) THEN ! No overlap, use (possibly) vectorized loop.
-        
-        DO II = 1 , N
-          IRESLT(II) = ISRCE(II)
-        END DO
-      
-      ELSE IF ( I .LT. J ) THEN ! overlap, backwards, no vectorizing
+C This failed because LOC returns address in bytes - but n is in words.
+C Need a portable solution (maybe do an initial LOC lookups on consecutive
+C elements - but not every time.
+c      WRITE(333,*) I, J, N, ABS(I-J)
+c      IF ( ABS(I - J) .GT. N ) THEN ! No overlap, use (possibly) vectorized loop.
+c        DO II = 1 , N
+c          IRESLT(II) = ISRCE(II)
+c        END DO
+c      
+c      ELSE
+      IF ( I .LT. J ) THEN ! overlap, backwards, no vectorizing
 CDIR$ novector
         DO II = N , 1 , -1
           IRESLT(II) = ISRCE(II)
