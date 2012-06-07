@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.71  2011/12/16 15:46:11  djw
+C Try to fix SHELX weighting when the Fc are not set.  The new SCRIPT XWTINI should prevent this ever being needed in SCRIPT mode
+C
 C Revision 1.70  2011/05/19 11:03:16  rich
 C Remove deubgging from SCHEME 17
 C
@@ -655,26 +658,28 @@ cDJWdec12
      1                             ' .0 .0 .0 .333'
           CALL XPRVDU(NCVDU,1,0)
           IF (ISSPRT .EQ. 0) WRITE(NCWU,'(//A//)') cmon(1)
-c-Acta/PLATON tests
+C-Acta/PLATON tests
 C>> ALERT A for > 50
 C>> ALERT B for > 25
 C>> ALERT C for > 5
 
           IF (SXB .GT. 50. ) THEN
-            WRITE(CMON,'(A,F8.2)') '{E P(2) too large - Acta ALERT A',
-     1       SXB
-            call xprvdu(ncvdu,1,0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/)') cmon(1)(3:)            
+            WRITE(CMON,'(A,F8.2,A)') '{E P(2) too large -',
+     1       SXB, ' Acta ALERT A'
           ELSE IF (SXB .GT. 25. )THEN
-            WRITE(CMON,'(A,F6.2)') '{E P(2) too large - Acta ALERT B',
-     1       SXB
-            call xprvdu(ncvdu,1,0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/)') cmon(1)(3:)            
+            WRITE(CMON,'(A,F6.2,A)') '{E P(2) too large -',
+     1       SXB, ' Acta ALERT B'
           ELSE IF (SXB .GT. 5.) THEN
-            WRITE(CMON,'(A,F6.2)') '{E P(2) too large - Acta ALERT C', 
-     1       SXB
+            WRITE(CMON,'(A,F6.2,A)') '{E P(2) too large -', 
+     1       SXB,'  Acta ALERT C'
+          ENDIF
+          IF(SXB .GT. 5) THEN
             call xprvdu(ncvdu,1,0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/)') cmon(1)(3:)            
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/)') cmon(1)(3:)
+            WRITE(CMON,'(A)')
+     1      'One possible cause is twinning - try ROTAX Analysis'            
+            call xprvdu(ncvdu,1,0)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/)') cmon(1)
           ENDIF
 c
 c
