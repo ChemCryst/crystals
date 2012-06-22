@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.4  2012/01/03 14:24:18  rich
+C Allow longer filenames and filenames with spaces in.
+C
 C Revision 1.3  2011/09/22 19:49:34  rich
 C Some fixes to make this compile with gfortran and align a common block.
 C
@@ -442,21 +445,26 @@ C
 C....... Get the next token and identify
 C
 200      call getstr
-Cdbg     WRITE(6,*) ltype,type_,loop_,nitem,ndata,idata,irecd,lrecd
+cdebugging write
+c         WRITE(6,*) ltype,type_,loop_,nitem,ndata,idata,irecd,lrecd
 C
          if(ltype.ne.'name')               goto 201
          if(type_.eq.'numb')                goto 203
          if(type_.eq.'char')                goto 203
          if(type_.eq.'text')                goto 203
          if(type_.eq.'name'.and.loop_)      goto 204
-         call err(' Illegal tag/value construction')
+         write(errdev,'(a,i10)') 
+     1   ' Illegal tag/value construction at about line', irecd
+         call err(' Aborting ')
 201      if(ltype.ne.'valu')               goto 204
          if(type_.eq.'numb')                goto 202
          if(type_.eq.'char')                goto 202
          if(type_.eq.'text')                goto 202
          goto 204
 202      if(nitem.gt.0)                    goto 205
-         call err(' Illegal tag/value construction')
+         write(errdev,'(a,i10)') 
+     1   ' Illegal tag/value construction at about line', irecd
+         call err(' Aborting ')
 203      ltype='valu'
          goto 205
 204      ltype=type_
@@ -928,6 +936,98 @@ C
 C
 C
 C >>>>>> Convert a character string into a number and its esd
+C
+C           number string        -xxxx.xxxx+xxx(x)
+C           component count CCNT 11111222223333444
+C
+         Function ctonum1(name)
+C
+#include   "ciftbx.sys"
+         character test*15,c*1,name*15
+         integer*4 m,nchar
+         integer*4 ccnt,mant,expn,msin,esin,ndec
+         real      numb,sdev,ctonum1
+         data test /'0123456789+.-()'/
+C
+         numbtb=0.
+         sdevtb=-1.
+         numb=1.
+         sdev=0. 
+         ccnt=0
+         mant=0
+         expn=0.
+         msin=+1
+         esin=+1
+         ndec=0
+         type_='char'
+	   ctonum1=0
+C
+C....... Loop over the string and identify components
+C
+       do 400 nchar=1,long_
+C
+	   c=name(nchar:nchar)
+	   if(c.eq. ' ')    goto 410
+	   m=index(test,c)
+         if(m.eq.0)     goto 410
+         if(m.gt.10)    goto 300
+C
+C....... Process the digits
+C
+         if(ccnt.eq.0)  ccnt=1
+         if(ccnt.eq.2)  ndec=ndec+1
+         if(ccnt.gt.2)  goto 220
+         mant=mant*10+m-1
+         goto 400
+220      if(ccnt.gt.3)  goto 240
+         expn=expn*10+m-1
+         goto 400
+240      sdev=sdev*10.+float(m-1)
+         sdevtb=1.
+         goto 400
+C
+C....... Process the characters    . + - ( ) E D
+C
+300      if(c.ne.'.')  goto 320
+         if(ccnt.gt.1) goto 500
+         ccnt=2
+         goto 400
+C
+320      if(c.ne.'(')  goto 340
+         ccnt=4
+         goto 400
+C
+340      if(c.eq.'E') m=10
+         if(c.eq.'D') m=10
+         if(ccnt.eq.3) goto 500
+         if(ccnt.gt.0) goto 360
+         ccnt=1
+         msin=12-m
+         goto 400
+360      ccnt=3
+         esin=12-m
+C
+400    continue
+C
+C....... String parsed; construct the numbers
+C
+410      expn=expn*esin-ndec
+         if(abs(expn).gt.21) expn=sign(21,expn)
+         if(expn.lt.0) numb=1./10.**abs(expn)
+         if(expn.gt.0) numb=10.**expn
+         if(sdevtb.gt.0.0) sdevtb=numb*sdev
+450      numb=numb*float(mant*msin)
+	   ctonum1 = numb
+         type_='numb'
+C
+500      End function ctonum1
+         
+
+
+
+
+
+Convert a character string into a number and its esd
 C
 C           number string        -xxxx.xxxx+xxx(x)
 C           component count CCNT 11111222223333444
