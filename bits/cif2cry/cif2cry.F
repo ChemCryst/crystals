@@ -3,7 +3,7 @@ C<ric02>
 #if defined(_DIGITALF77_)
       use dflib
 #endif
-      parameter (maxat = 1000)   !Max of 1000 atoms
+      parameter (maxat = 10000)   !Max of 10000 atoms
       parameter (nodchr = 29)    !Number of chars to look out for.
       character*256 prognm,infil,outfil,option
       logical lfirst,namebl,allbl,linfl,loutfl
