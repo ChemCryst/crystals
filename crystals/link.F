@@ -1628,15 +1628,15 @@ C
 19411 format('    reflections sir11.hkl'/
      1'>   rhomax 0.33'/
      2'>   bfac 4.'/ 
-     3'> % phase'/
-     4'>   vld'/
+     3'%phase'/
+     4'   vld'/
      5'>   tangent')
         else if (iefort.eq.2) then
          WRITE(NCFPU1, 19412)
 19412 format('    reflections sir11.hkl'/
      1'>   rhomax 0.33'/
      2'>   bfac 4.'/ 
-     3'> % phase'/
+     3'%phase'/
      4'    vld')
         else if (iefort.eq.5) then
          WRITE(NCFPU1, 19413)
@@ -1645,13 +1645,14 @@ C
      2'>   bfac 4.'/ 
      2'    size m '/
      2'    resm 0.9'/
-     3'> % phase'/
+     3'%phase'/
      4'    tangent')
 
         endif
         write(ncfpu1,'(''  crystals sir11.cry'')')
        ENDIF
       if (ilink .eq. 13) then
+       WRITE(NCFPU1, '(''%continue'')' )
        WRITE(NCFPU1, '(''%end'')' )
       else
        WRITE(NCFPU1, '(''%continue'')' )
