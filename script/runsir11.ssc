@@ -1,20 +1,20 @@
-%SCRIPT SIR02                                                                   
+%SCRIPT SIR11                                                                   
 %  VARIABLE CHARACTER CDIR CFILE                                                
 %  VARIABLE LOGICAL  T                                                          
 %%                                                                              
-^^CO GETKEY SIR02DIR                                                            
+^^CO GETKEY SIR11DIR                                                            
 %%                                                                              
 %%                                                                              
 %  GET SILENT NOSTORE FINAL TEXT '1' '1'                                        
 %  EVALUATE CFILE = CVALUE                                                      
 %  IF CFILE .EQ. '1' .OR. FILEEXISTS ( CFILE ) .EQ. FALSE THEN                  
                                                                                 
-  Where is the SIR 2002 executable?                                             
+  Where is the SIR 2011 executable?                                             
                                                                                 
-^^CO SYSOPENFILE 'sir2002.exe' 'Sir executable'                                 
+^^CO SYSOPENFILE 'sir2011.exe' 'Sir executable'                                 
                                                                                 
 %    CLEAR                                                                      
-%    INSERT '^^CO SETKEY SIR02DIR "'                                            
+%    INSERT '^^CO SETKEY SIR11DIR "'                                            
 %    GET SILENT TEXT 'Sir2011 location:'                                        
 %    IF CVALUE .NE. 'CANCEL' THEN                                               
 %      EVALUATE CFILE = CVALUE                                                  
