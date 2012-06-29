@@ -1,7 +1,7 @@
 %SCRIPT XSIR11IN                                                                
 %    VARIABLE CHARACTER CTEXT                                                   
 %    COPY '#OPEN SCPDATA sir11.cry'                                             
-%    copy '#SCRIPT ZSHELXIN'  
+%    copy '#USE sir11.cry'  
 %    COPY '#CLOSE SCPDATA'                                                                        
 %% Empty input buffer                                                           
 %  GET NOPROMPT NOSTORE TEXT ' ' ' '                                            
