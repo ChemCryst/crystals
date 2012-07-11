@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.107  2012/03/23 13:48:47  rich
+C Avoid double UpdateL41 message. Set uninit variable.
+C
 C Revision 1.106  2011/07/27 12:02:46  djw
 C Add a comment about NWS
 C
@@ -1166,6 +1169,8 @@ C--E.S.D.'S ARE NOT TO BE CALCULATED
         NW=12
 C----- SAVE SOME SPACE FOR THE TARGET RADIUS IN RESTRAINTS
         IF (IPUNCH .EQ. 0) NW = 14
+cnancy just make nw 16 for all cases
+        nw = 16	
         NCOL=9
 C----- RESET COLUMNS FOR BRIEF O/P
         IF (LEVEL .LE. 0) NCOL = 11
@@ -1197,12 +1202,14 @@ C      ANGLE
         NWA=9
 C      ?
         NWS=4   !stack used by xfpces - must be 4
-        NW=13
+cnancy        NW=13
 C----- SAVE SOME SPACE FOR THE TARGET RADIUS IN RESTRAINTS
         IF (IPUNCH .EQ. 0) NW=14
 cdjw130804
 C----- SAVE SOME SPACE FOR THE ESDS FOR H-BONDS
         IF (IPUNCH .EQ. 11) NW=15
+cnancy  make nw 16 for all cases
+        nw=16
         JU=1
         JV=3
         NCOL=5
@@ -1229,7 +1236,8 @@ c          NWAT=9 or 15
 c          NWD=6
 c          NWA=9
 c          NWS=4
-c          NW=13, 14 or 15
+cnancy          NW=13, 14 or 15
+c          nw=16 for all cases
 c
 c      JA > 9X4X50 = 1800                  NWA.NWS.MXPPT
 C      JD > 9X9 OR 15X15 = 81 0R 225       NWAT.NWAT
@@ -1378,7 +1386,7 @@ C           JPART = 0
            K = KDIST4( JS, JT, JATVC, JPART)
          ENDIF
 
-C Distance stack has this structure:
+C Distance stack has this structure: NW = 16 items
 C   0  ADDRESS OF ATOM IN L5
 C   1  ACCEPTANCE FLAG
 C
@@ -1399,6 +1407,8 @@ C  10  DISTANCE
 C  11  DISTANCE SQUARED
 C  12  ADDRESS IN LIST 12  (IF USED).
 C  13  TARGET CONTACT DISTANCE FOR RESTRAINTS (OPTIONAL)
+C  14  HYDROGEN ESD
+C  15  RESIDUE NUMBER
 
 
 c        DO MMMI=NFLBAS,NFLBAS+JT*(K-1),JT
@@ -1760,8 +1770,8 @@ C^^^
 
 C--PRINT THE CALCULATED DISTANCES
          PRINTLOOP: DO J = NFLBAS, JS, NW
-          M=J+1
-
+cnancy
+         M=J+1
 C--CHECK IF WE WANT ALL DISTANCES
           IF(INTRA.EQ.0)THEN 
 C--INTRA-MOLECULAR DISTANCES ONLY
@@ -1769,6 +1779,8 @@ C--INTRA-MOLECULAR DISTANCES ONLY
               M=M+1
               IF(ISTORE(M).NE.INTRAD(L)) CYCLE PRINTLOOP
             END DO
+            if((istore(m5a+16) .ne. istore(istore(j)+16)) 
+     1      .and. (istore(m5a+16) .ne. o)) cycle printloop
           ELSE IF ( INTRA.GE.1 ) THEN
 C--ONLY INTER-MOLECULAR DISTANCES REQUIRED
             DO L=1,5
@@ -1776,6 +1788,8 @@ C--ONLY INTER-MOLECULAR DISTANCES REQUIRED
               IF(ISTORE(M).EQ.INTRAD(L))CYCLE
               GOTO 2400
             END DO
+            if((istore(m5a+16) .ne. istore(istore(j)+16)) 
+     1      .and. (istore(m5a+16) .ne. o)) goto 2400
             CYCLE
 2400        CONTINUE
           END IF
@@ -4029,6 +4043,8 @@ C  10  DISTANCE
 C  11  DISTANCE SQUARED
 C  12  ADDRESS IN LIST 12  (IF USED).
 C  13  TARGET CONTACT DISTANCE FOR RESTRAINTS (OPTIONAL)
+C  14  ESD FOR HYDROGEN BONDS
+C  15  RESIDUE NUMBER
 C
 C--THE STACK STARTS AT NFL, AND GOES UPWARDS SO THAT THE LAST ENTRY IS
 C  AT JS, AND THE STEP IS JT.
@@ -4277,7 +4293,9 @@ c          CALL XPRVDU(NCVDU,1,0)
               STORE(JS+10)=E
               STORE(JS+11)=F
               ISTORE(JS+12)=M12
-              IF (JT .EQ. 14) STORE(JS+13) = BOND
+CNANCY              IF (JT .EQ. 14) STORE(JS+13) = BOND
+              STORE(JS+13) = BOND
+              ISTORE(JS+15) = ISTORE(M5+16)  ! RESIDUE
               JS=JS+JT
 C When JFNVC .EQ. NOWT then only find one contact at a time. (Voids only?)
               IF ( JFNVC .EQ. NOWT ) GOTO 2800
