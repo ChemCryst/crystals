@@ -1,5 +1,9 @@
 C
 C $Log: not supported by cvs2svn $
+C Revision 1.191  2012/05/17 09:06:46  djw
+C Remove then restore dividing Friedel differences by sigma.  The scaled graphs look better. We might still want to add plot of Friedel averages.
+C Add new routine to create a minimal cif for use in Mercury
+C
 C Revision 1.190  2012/05/11 12:52:14  rich
 C Fix date order on Intel platform. Expand year to four digits in CIF output on all platforms.
 C
@@ -8022,7 +8026,7 @@ C P2(True)
 1750        FORMAT (X,F9.4,3X,'i.e. ',E12.6)
          ELSE IF (XPLL2.LT.0.0) THEN
             WRITE (FORM,1800)
-1800        FORMAT (6X,'n/a')
+1800        FORMAT (6X,'Does not compute')
          ELSE
             WRITE (FORM,1750) XPLL2,XPLL2
          END IF
