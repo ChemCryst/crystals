@@ -140,7 +140,7 @@
 {I Creating a CIF                                                               
 %   COPY "#STORE CSYS CIF 'mercury.cif'"                                        
 %   COPY '#APPEND PUNCH '                                                       
-%   COPY '#CIF '                                                                
+%   COPY '#QCKCIF '                                                                
 %   COPY 'END'                                                                  
 %   COPY '#PARAMETERS'                                                          
 %   COPY 'LAYOUT INSET = 1 NCHAR = 120 ESD=NO'                                  
