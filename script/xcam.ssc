@@ -59,11 +59,10 @@
 ^^WI           {                                                                
 ^^WI             @ 1,1 DROPDOWN LSTYLE INFORM=YES ADDTOLIST                     
 ^^WI             'Spheres' 'Lines' 'Ellipses' 'NULL'                            
-^^WI             @ 1,3 DROPDOWN LCOLOR INFORM=YES ADDTOLIST                     
-^^WI              'Default' 'B&W' 'B&W-2' 'NULL'                                
 ^^WI             @ 3,1 DROPDOWN LPACK INFORM=YES ADDTOLIST                      
 ^^WI             'Unpack' 'Complete' 'Centroid' 'Cut' 'Window' 'NULL'           
-^^WI             @ 3,3 BUTTON COLBUT 'Colours'                                  
+^^WI             @ 3,3 DROPDOWN LCOLOR INFORM=YES ADDTOLIST                     
+^^WI              'Coloured' 'B&W' 'B&W-2' 'Obey' 'NULL'                                
 ^^WI             @ 5,1 DROPDOWN LFONT INFORM=YES ADDTOLIST                      
 ^^WI             'Font 8' 'Font 9' 'Font 10' 'Font 12' 'Font 16'                
 ^^WI             'Font 20' 'Font 24' 'Font 28' 'Font 32'                        
