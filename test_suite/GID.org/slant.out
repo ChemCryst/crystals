@@ -538,6 +538,8 @@ AZIMUTH  =    44.97     AZIMUTH /100 =   0.4497
      C          4.         1.000      0.000    -2.000     0.002
 
  Spherical index =   0.00 cylindrical index =   0.59 Discoidal index =   1.00
+ Value closest to unity is best descriptor. See D. M. P. Mingos and A. L. Rohl
+  J. Chem. Soc. Dalton Trans. (1991), 3419-3425
 
  LIST 20 has been updated
 

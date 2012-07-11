@@ -5247,6 +5247,8 @@ AZIMUTH  =    66.51     AZIMUTH /100 =   0.6651
      H         13.         1.000     19.669    -0.864     3.629
 
  Spherical index =   0.00 cylindrical index =   1.00 Discoidal index =   1.00
+ Value closest to unity is best descriptor. See D. M. P. Mingos and A. L. Rohl
+  J. Chem. Soc. Dalton Trans. (1991), 3419-3425
 
 
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
@@ -5310,6 +5312,8 @@ AZIMUTH  =   -73.48     AZIMUTH /100 =  -0.7348
      H          9.         1.000      2.350     0.501    -0.009
 
  Spherical index =   0.00 cylindrical index =   0.68 Discoidal index =   1.00
+ Value closest to unity is best descriptor. See D. M. P. Mingos and A. L. Rohl
+  J. Chem. Soc. Dalton Trans. (1991), 3419-3425
  No atoms have been specified to define a plane
 
  CRYSTALS - WARNING
@@ -5377,6 +5381,8 @@ AZIMUTH  =    -3.24     AZIMUTH /100 =  -0.0324
      H         13.         1.000     -7.477    -0.124     1.572
 
  Spherical index =   0.04 cylindrical index =   0.95 Discoidal index =   0.92
+ Value closest to unity is best descriptor. See D. M. P. Mingos and A. L. Rohl
+  J. Chem. Soc. Dalton Trans. (1991), 3419-3425
  No atoms have been specified to define a plane
 
  CRYSTALS - WARNING
@@ -5448,6 +5454,8 @@ AZIMUTH  =   -83.08     AZIMUTH /100 =  -0.8308
      C          1.         1.000     -0.908     0.000     0.000
 
  Spherical index =   0.00 cylindrical index =   1.00 Discoidal index =   1.00
+ Value closest to unity is best descriptor. See D. M. P. Mingos and A. L. Rohl
+  J. Chem. Soc. Dalton Trans. (1991), 3419-3425
  No atoms have been specified to define a plane
 
  CRYSTALS - WARNING
@@ -5519,6 +5527,8 @@ AZIMUTH  =    44.42     AZIMUTH /100 =   0.4442
      C         13.         1.000     -3.105    -0.474     0.741
 
  Spherical index =   0.02 cylindrical index =   0.97 Discoidal index =   0.97
+ Value closest to unity is best descriptor. See D. M. P. Mingos and A. L. Rohl
+  J. Chem. Soc. Dalton Trans. (1991), 3419-3425
  No atoms have been specified to define a plane
 
  CRYSTALS - WARNING
@@ -5590,6 +5600,8 @@ AZIMUTH  =    59.34     AZIMUTH /100 =   0.5934
      C         13.         0.500     -6.583    -0.548     0.811
 
  Spherical index =   0.02 cylindrical index =   0.95 Discoidal index =   0.96
+ Value closest to unity is best descriptor. See D. M. P. Mingos and A. L. Rohl
+  J. Chem. Soc. Dalton Trans. (1991), 3419-3425
  No atoms have been specified to define a plane
 
  CRYSTALS - WARNING
