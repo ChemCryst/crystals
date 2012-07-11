@@ -1,5 +1,8 @@
 
 c $Log: not supported by cvs2svn $
+c Revision 1.68  2012/05/08 11:16:25  djw
+c Add code to transform and compare Uij values if present.  If either of corresponding atoms is isotropic, comparison is skipped
+c
 c Revision 1.67  2012/03/21 13:15:39  djw
 c Fix (?) kabsch method 4 so that it more or less agrees with Diamond method 2, clarify some captions, 
 c and comments about sources of methods
@@ -987,13 +990,11 @@ C
 C
 CDJWAPR2001
 C----- CHECK THE NUMBER OF NEW AND OLD ATOMS
-      IF (IMATRIX.GE.1) THEN
         WRITE(CMON,'(A,I4,A,I4)') 'Input: mapping ', NNEW ,
      1 ' atoms onto ', nold 
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
         IF (NOLD.EQ.NNEW) NATMD=NNEW
-      END IF
 C -- IF THERE ARE NO ATOM DEFINITIONS THEN THERE IS NO CALCULATION
       IF (NATMD.EQ.0) RETURN
 C 
@@ -1071,13 +1072,12 @@ Cdjwnov99      WRITE ( CMON , 2006 ) CENTO , CENTN
 200      FORMAT (1X,'Centroids of old and new groups ',
      1 '( in crystal fractions ) ',/,1X,2(3F8.4,3X))
          ENDIF
-         IF (IPCHRE.GE.0)THEN
 c
-cdjwfeb08
-         IF (INTSYM.EQ.0) THEN
+         IF (IPCHRE.GE.0)THEN
+          IF (INTSYM.EQ.0) THEN
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1    'Asymmetric'
-         END IF
+          END IF
 c
          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(a,a,6(A,F9.4))')
      1   char(9),':Centroids ',
@@ -1165,6 +1165,7 @@ C -- CALCULATE ROTATION MATRIX BY KABSCH METHOD
          GO TO 550
 C 
 550      CONTINUE
+
 C -- CHECK FOR ERRORS IN CALCULATION
          IF (IERFLG.LT.0) GO TO 1900
 C 
@@ -1297,7 +1298,6 @@ C
       IF (IMATRIX.LE.0) then
       CALL XRGPCS(IMATRIX)
 C 
-C^^
 C----- WRITE THE IMPORTANT MATRICES AND VECTORS
          IF (IMATRIX.LT.0) THEN
          IF (ISSPRT.EQ.0) THEN
@@ -1478,12 +1478,10 @@ C Debug: Print out the generators.
           DO K1 = 0, (MLTPLY/2) - 1
             K2 = LSGT + K1 * 16
             K3 = LSGT + ( K1+(MLTPLY/2) ) * 16 
-            WRITE(CMON,'(/2X,2(I4,'':'',42X))'),K1, K1 + (MLTPLY/2)
-            CALL XPRVDU(NCVDU,2,0)
-            WRITE(CMON,'(4(2(4F9.3,8X)/))')
+            WRITE(NCWU,'(/2X,2(I4,'':'',42X))'),K1, K1 + (MLTPLY/2)
+            WRITE(NCWU,'(4(2(4F9.3,8X)/))')
      1          ( (STORE(K2+J2+J3),J2=0,12,4),
      1            (STORE(K3+J2+J3),J2=0,12,4), J3=0,3)
-            CALL XPRVDU(NCVDU,4,0)
           END DO
           endif
 C 2) We now have N operators. We know that the first N/2, multiplied
@@ -2389,6 +2387,12 @@ C -- CALCULATE E
       IF (UVEC(I) .LT. 0.0001) GO TO 2050
       E=E-SIG(I)*UVEC(I)
 2050  CONTINUE
+c
+cdjw 2012 it looks as if Kabsch gives the reanspose of the matrix we 
+c         need
+
+      CALL MTRANS(RESULT)
+
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 2105 ) RESULT
       ENDIF
@@ -2488,7 +2492,7 @@ C -- APPLY OFFSET TO COORDINATES
       CALL XSUBTR (TEMP(1),ORIGIN(1),STORE(INDATM+4),3)
 C -- COPY COORDINATES TO APPROPRIATE PLACE
       CALL XMOVE (STORE(INDATM+4),STORE(INDNEW),3)
-c^^ what about Uij?
+c Uij?
       CALL XMOVE (STORE(INDATM+7),STORE(INDUIJ+1),6)
       CALL XMOVE (STORE(INDATM+3),STORE(INDUIJ),1)
 C -- SET WEIGHT FOR THIS ATOM TO 1
@@ -2879,9 +2883,11 @@ C Our torsion is C-A-B-D
       DIMENSION ACVEC(3), ABVEC(3), BDVEC(3)
       DIMENSION TEMPO(3), ROMAT(9)
       DIMENSION DELUIJ(6), UOUT(3,3), UAXIS(3), UOAXIS(3), DELAX(3)
+      DIMENSION UTYPE(2), USERIAL(2)
 
       CHARACTER *36 COLD, CNEW
       CHARACTER *32 CATOM1
+      CHARACTER *8 COLDU,CNEWU
 
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
@@ -2936,6 +2942,10 @@ cdjwnov07
       angmax=0.
       atype=anull
       aser =0.0
+      utype(1) = anull
+      utype(2) = anull
+      userial(1) = 0.0
+      userial(2) = 0.0
 c
 c Coordinate deviations.
 c
@@ -3023,12 +3033,21 @@ C -- CALCULATE TOTAL SQUARED DEVIATION AND RMS DEVIATIONS
         endif
 c
 c
+C INITIALISE STORAGE
+c  delta U and Uprime max
+       DUPMAX = 0.0
+       DUMAX = 0.0
+c  New and old Uprime max
+       UPMAX = 0.0
+       UOPMAX = 0.0
+c  New and old Ugeometric max
+       UOGMAX = 0.0
+       UGMAX = 0.0
+c  Number of aniso Uijs
+       NUIJ = 0
 c
 CDJWAPR2012  UIJ DEVIATIONS
 c
-C MAXIMUM DELATA UPRIME
-      DUPMAX = 0.0
-C
 c -- only do if not using pre-formed shapes
       if (ishape .eq. 0) then
 c       MOLD=LOLD
@@ -3063,16 +3082,21 @@ c       ENDDO
 c
        IF (IMATRIX .LT. 0) THEN
         IF (ISSPRT .EQ.0) THEN 
-         WRITE(NCWU,'(/A/)') 'Uij in Best Match Coordinate System'
+         WRITE(NCWU,'(/A/A,A/)') 'Uij in Best Match Coordinate System',
+     1   'Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000)',
+     2   ' B56 747-749'
          WRITE(NCWU,20153)
 20153    FORMAT( 1X , 'Position' , 2X , 'Type  Serial' ,4X,
-     1   17X,'Old U[ij]',23X,'Old Principal Axes', 2X, 'Uprime',/
+     1   17X,'Old U[ij]',23X,'Old Principal Axes',3X,
+     1   'Uprime',3x,'Ugeom'/
      2   44X,'New U[ij]',23X,'New Principal Axes',/
-     3   43X,'Delta U[ij]',20X,'Delta Principal Axes'/)
+     3   'deltas',39X,'U[ij]',26X,'Principal Axes', 
+     1   /)
         ENDIF
        ENDIF
 c
 c
+C
        muij  = luij+1
        mouij = louij+1
 c
@@ -3093,6 +3117,8 @@ c
            ENDIF
          ELSE
 c
+c            an aniso atom. Increment counter
+             nuij = nuij + 1
              call xdia(store(mouij), UOUT, UOAXIS)
              call xdia(store(muij), UOUT, UAXIS)
 c
@@ -3102,32 +3128,52 @@ c
              UPRIME =
      1       SIGN(1.,UAXIS(1))*ABS(UAXIS(2)*UAXIS(3))/
      2      ABS(UAXIS(1))
+c
+             DUP = UOPRIME-UPRIME
+             DUPMAX = MAX(DUPMAX, ABS(UOPRIME-UPRIME))
+             UOPMAX = MAX(UOPMAX, UOPRIME)
+             UPMAX = MAX(UPMAX, UPRIME)
+C
+C      
+             UGEOM = 1.
+             UOGEOM = 1.
+             DO J = 1,3
+                 UOGEOM=UOGEOM*UOAXIS(j)
+                 UGEOM=UGEOM*UAXIS(j)
+             ENDDO
+             UGEOM = UGEOM**(1./3.)
+             UOGEOM = UOGEOM**(1./3.)
+             UGMAX = MAX(UGMAX, UGEOM)
+             UOGMAX = MAX(UOGMAX, UOGEOM)
 C
              DO J = 1,3
                 DELAX(J) = UOAXIS(J)-UAXIS(J)
+                if (abs(delax(j)) .gt. dumax) then
+                 DUMAX = MAX(DUMAX,ABS(DELAX(J)))
+                 utype(1) = store(mopiv)
+                 utype(2) = store(mnpiv)
+                 userial(1) = store(mopiv+1)                 
+                 userial(2) = store(mnpiv+1)
+                endif
              ENDDO
 c
              DO J = 0,5
                 deluij(j+1)= store(mouij+j)-store(muij+j)
              END DO
 c
-             DUPRIME = UOPRIME-UPRIME
-             DUPMAX = MAX(DUPMAX, ABS(DUPRIME))
-c
              IF (IMATRIX .LT. 0) THEN
               IF (ISSPRT .EQ. 0) THEN
                 WRITE ( NCWU , 20155 ) I ,(STORE(J),J=MOPIV,MOPIV+1),
-     2         (STORE(J),J=MOUIJ,MOUIJ+5),UOAXIS,UOPRIME, 
+     2         (STORE(J),J=MOUIJ,MOUIJ+5),UOAXIS,UOPRIME,UOGEOM, 
      3         (STORE(J),J=MNPIV,MNPIV+1),
-     4         (STORE(J),J=MUIJ,MUIJ+5),UAXIS,UPRIME,
-     5         DELUIJ, DELAX, DUPRIME
+     4         (STORE(J),J=MUIJ,MUIJ+5),UAXIS,UPRIME,UGEOM,
+     5         DELUIJ, DELAX, DUP
              ENDIF
             ENDIF    
          ENDIF
-20155    FORMAT(1X,2X,I4, 4X,A4,2X, F5.0,2X, 6F8.3, 3X, 3F6.3,3X,F6.3/
-     1          1X,2X,4x, 4X,A4,2X, F5.0,2X, 6F8.3, 3X, 3F6.3,3X,F6.3/
-     2          1X,2X,4X, 4X,4X,2X, 5X,  2X, 6F8.3, 3X, 3F6.3,3X,F6.3
-     3            / )
+20155    FORMAT(1X,2X,I4,4X,A4,2X,F5.0,2X,6F8.3,3X,3F6.3,2(3X,F6.3)/
+     1          1X,2X,4X,4X,A4,2X,F5.0,2X,6F8.3,3X,3F6.3,2(3X,F6.3)/
+     2          1X,2X,4X,4X,4X,2X,5X  ,2X,6F8.3,3X,3F6.3,  3X,F6.3 / )
          MUIJ=MUIJ+MDUIJ
          MOUIJ=MOUIJ+MDOUIJ
        ENDDO UIJLOOP
@@ -3556,18 +3602,38 @@ c
       CALL XPRVDU(NCVDU,4,0)
       if(issprt.eq.0) Write(ncwu,'(//a/)') 'Summary of Deviations'
 C
-      WRITE(CMON,'(A,17X,A/A,A,3F12.4/A,A,4F12.4/)')'{I',
-     1 '      position    bond        torsion     Uprime','{I',
+      WRITE(CMON,'(A,17X,A/A,A,3F12.4/A,A,5F12.4/)')'{I',
+     1 '      position    bond        torsion',
+     1 '{I',
      2 ' rms deviations  ',RMSDEV(4), SBDEV, STDEV,'{I',
-     4 ' max deviations  ',dismax, bndmax, tormax, dupmax
+     4 ' max deviations  ',dismax, bndmax, tormax
       CALL XPRVDU(NCVDU,4,0)
 
       IF (ISSPRT .EQ. 0) 
-     1  WRITE(ncwu,'(17X,A/A,3F12.4/A,4F12.4/)')
-     1 '      position    bond        torsion     Uprime',
+     1  WRITE(ncwu,'(17X,A/A,3F12.4/A,5F12.4/)')
+     1 '      position    bond        torsion',
      2 ' rms deviations  ',RMSDEV(4), SBDEV, STDEV,
-     4 ' max deviations  ',dismax, bndmax, tormax, dupmax
-
+     4 ' max deviations  ',dismax, bndmax, tormax
+c
+c
+      if(nuij.gt.0) then
+c^^
+       write(coldu(1:),'(a4,i4)')UTYPE(1),nint(USERIAL(1))
+       write(cnewu(1:),'(a4,i4)')UTYPE(2),nint(USERIAL(2))
+       call xcras(coldu,los)
+       call xcras(cnewu,lns)
+       write(CMON,2020)uogmax, uopmax, ugmax, upmax, dupmax, dumax,
+     1 coldu(1:8),cnewu(1:8)
+2020  format(/9x,'Ugeom(max)'6x,'Uprime(max)',4x,'U[ij](old-new)',/
+     1 'Old',2(6x,f8.3),/ 'New',2(6x,f8.3),/ 
+     2 'Delta', 12x, 2(6x,f8.3),
+     3  3x,a,' - ',a)
+       CALL XPRVDU(NCVDU,4,0)
+       IF (ISSPRT.EQ.0)
+     1 write(NCWU,2020)uogmax, uopmax, ugmax, upmax, dupmax, dumax,
+     2 coldu(1:8),cnewu(1:8)
+      endif
+c
       IF (IPCHRE.GE.0)THEN
              WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,A)')
      1       CHAR(9),':Sum dev sq'
@@ -3601,10 +3667,10 @@ c
              CALL XCREMS(CPCH,CPCH,LENFIL)
 c
              WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,A)')
-     1       CHAR(9),':Max Uprime dev'
+     1       CHAR(9),':Max U & Uprime dev'
              CALL XCREMS(CPCH,CPCH,LENFIL)
              WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(14(A,F9.4))')
-     2       CHAR(9),DUPMAX
+     2       CHAR(9),DUMAX,CHAR(9),DUPMAX
              CALL XCREMS(CPCH,CPCH,LENFIL)
 c
 c             IF ( MISMAT .EQ. 0 )
@@ -3778,6 +3844,11 @@ C
       INCLUDE 'XIOBUF.INC'
 C 
       INCLUDE 'QSTORE.INC'
+
+      WRITE(CMON,'(A)') 'Renaming atoms'
+      CALL XPRVDU(NCVDU,1,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+c
       WRITE(CMON,'(A,f6.1)') 'Offset = ', zorig
       CALL XPRVDU(NCVDU,1,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
@@ -3882,6 +3953,11 @@ C
       INCLUDE 'XDSTNC.INC'
 C
       INCLUDE 'QSTORE.INC'
+c
+      WRITE(CMON,'(A)') 'Matching atoms'
+      CALL XPRVDU(NCVDU,1,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+c
       
       IF(SUMDEV .GE. 0.1)THEN
        NUMDEV =NUMDEV +1
@@ -3895,14 +3971,20 @@ C
       LMBUF = KSTALL ( MDATVC )
       LNBUF = KSTALL ( MDNEW )
       NMATCHED = 0
-
-c      IF (ISSPRT .EQ. 0) THEN
-c      WRITE(NCWU,'(A,7x,A,3X,A,5X,A)')
-c     1 'Improving:','Mapping ','onto','distance'
-c      ENDIF
- 
+c
+c 
       IF (NOLD.LE.0) GO TO 200
-
+c
+c
+      WRITE(CMON,'(A)') 'Improving match'
+      CALL XPRVDU(NCVDU,1,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+c
+c      IF (ISSPRT .EQ. 0) THEN
+      WRITE(NCWU,'(A,7x,A,3X,A,5X,A)')
+     1 'Improving:','Mapping ','onto','distance'
+c      ENDIF
+c
 C * Optionally only match atoms with matching SPARE values (though
 C   I think this info is lost by now.)
 
@@ -3917,21 +3999,23 @@ C   I think this info is lost by now.)
      1        ( ISTORE(IONTO+4) .EQ. 1 ) .OR.
      2        ( I .EQ. 0 ) ) THEN              !Just match it.
 cdjwnov07
-c           IF (ISSPRT .EQ. 0) THEN
-c           WRITE(NCWU,'(A,A4,7I9)')'Old atom: ',ISTORE(IOLD5),
-c     1     NINT(STORE(IOLD5+1)),NINT(STORE(IOLD5+13)), LSPARE,
-c     2     ISTORE(IONTO+1),ISTORE(IONTO+2),
-c     3     ISTORE(IONTO+3),ISTORE(IONTO+4)
-c           ENDIF
+        IF(ILSTRE.GE.3) THEN
+           IF (ISSPRT .EQ. 0) THEN
+           WRITE(NCWU,'(A,A4,7I9)')'Old atom: ',ISTORE(IOLD5),
+     1     NINT(STORE(IOLD5+1)),NINT(STORE(IOLD5+13)), LSPARE,
+     2     ISTORE(IONTO+1),ISTORE(IONTO+2),
+     3     ISTORE(IONTO+3),ISTORE(IONTO+4)
+           ENDIF
+        ENDIF
 cdjwnov07
            DO J=I,NNEW-1           !Loop over unmatched new atoms.
              INDNEW=LNEW+MDNEW*J         !Address of XYZnew
              INEW5 = L5 + (ISTORE(LMAP+J*MDATVC)) * MD5
 
-c             WRITE(CMON,'(A,A4,2I9)')'New atom: ',ISTORE(INEW5),
-c     1       NINT(STORE(INEW5+1)),NINT(STORE(INEW5+13))
-c             CALL XPRVDU(NCVDU,1,0)
-
+        IF(ILSTRE.GE.3) THEN
+             WRITE(NCWU,'(A,A4,2I9)')'New atom: ',ISTORE(INEW5),
+     1       NINT(STORE(INEW5+1)),NINT(STORE(INEW5+13))
+        ENDIF
              DISTSQ=0.
 C Only consider atom if spare matches when LSPARE is one.
              IF ( (LSPARE.EQ.0) .OR. ( (LSPARE.EQ.1) .AND.
@@ -3943,10 +4027,12 @@ C Only consider atom if spare matches when LSPARE is one.
                END DO
 
 cdjwnov07
-c               IF (ISSPRT .EQ. 0) THEN
-c               WRITE(NCWU,'(A,A4,2I9,F15.8)')'Match: ',ISTORE(INEW5),
-c     1         NINT(STORE(INEW5+1)), J, DISTSQ
-c               ENDIF
+             IF(ILSTRE.GE.3) THEN
+               IF (ISSPRT .EQ. 0) THEN
+               WRITE(NCWU,'(A,A4,2I9,F15.8)')'Match: ',ISTORE(INEW5),
+     1         NINT(STORE(INEW5+1)), J, DISTSQ
+               ENDIF
+             ENDIF
 cdjwnov07
 c             
                IF (DISTSQ.LT.DISMIN) THEN
@@ -3987,12 +4073,14 @@ C Swap atoms at LMAP(I) and LMAP(J)
 
           NMATCHED = NMATCHED + 1
 1234      format(A,A4,I4,' - ',A4,I4,F8.3)
-c          IF (ISSPRT .EQ. 0) THEN
-c          WRITE(NCWU,1234)
-c     1    'Matching:       ',
-c     2    STORE(IOLD5),NINT(STORE(IOLD5+1)),
-c     3    STORE(INEW5),NINT(STORE(INEW5+1)),DISMIN
-c          ENDIF
+          IF(ILSTRE.GE.3) THEN
+          IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,1234)
+     1    'Matching:       ',
+     2    STORE(IOLD5),NINT(STORE(IOLD5+1)),
+     3    STORE(INEW5),NINT(STORE(INEW5+1)),DISMIN
+          ENDIF
+          ENDIF
 
          ELSE
 
@@ -4096,13 +4184,15 @@ c                       CALL XPRVDU(NCVDU,1,0)
                           DELTSQ=DELTA**2
                           DISTSQ=DISTSQ+DELTSQ
                          END DO
-c
-c                         IF (ISSPRT .EQ. 0) THEN
-c                         WRITE(NCWU,1234)
-c     1                    'Possible match: ',
-c     1                   ISTORE(INEWB), NINT(STORE(INEWB+1)),
-c     1                   ISTORE(IOLDB), NINT(STORE(IOLDB+1)), DISTSQ
-c                         ENDIF
+
+                         IF (ILSTRE.GE.3) THEN
+                         IF (ISSPRT .EQ. 0) THEN
+                         WRITE(NCWU,1234)
+     1                    'Possible match: ',
+     1                   ISTORE(INEWB), NINT(STORE(INEWB+1)),
+     1                   ISTORE(IOLDB), NINT(STORE(IOLDB+1)), DISTSQ
+                         ENDIF
+                         ENDIF
              
                          IF (DISTSQ.LT.DISMIN) THEN
                            DISMIN=DISTSQ
@@ -4313,7 +4403,7 @@ C overlapping molecules separately.
       WRITE(NCFPU2,
      1 '(''COLO GROUP REG1 GREEN VIEW'')')
       WRITE(NCFPU2,
-     1 '(''COLO GROUP REG2 PURPLE VIEW'')')
+     1 '(''COLO GROUP REG2 LBLUE VIEW'')')
 
       WRITE(NCFPU2,'(''COLO O RED VIEW'')')
       WRITE(NCFPU2,'(''COLO N BLUE VIEW'')')
@@ -4458,7 +4548,7 @@ c
       write(cmon,'(a/a/a)')
      1 'Structure matching: measures of similarity and pseudosymmetry',
      2 'A.  Collins, R. I.  Cooper and D. J.  Watkin',
-     3 'Journal of Applied Crystallography 2006;39(6):842-849'
+     3 'Journal of Applied Crystallography 2006;39,842-849'
        CALL XPRVDU(NCVDU,3,0)
       if (issprt.eq.0) 
      1 write(ncwu,'(a/a/a)') cmon(1),cmon(2),cmon(3)
@@ -4767,14 +4857,14 @@ C Find first atom in residue 1 with uniqueness of 2.
          IRS1AT = 0
          DO I = 0, NMAP-1         ! Loop over all the residue 1 atoms
 
-           WRITE(CMON,'(A,5I6,A4,I6)')'1: ',
+          IF(ILSTRE.GE.3) THEN
+           WRITE(NCWU,'(A,5I6,A4,I6)')'1: ',
      2     ISTORE(LMAP+I*MDATVC),ISTORE(1+LMAP+I*MDATVC),
      2     ISTORE(2+LMAP+I*MDATVC),ISTORE(3+LMAP+I*MDATVC),
      3     ISTORE(4+LMAP+I*MDATVC),
      1     ISTORE(L5+MD5*ISTORE(LMAP+I*MDATVC)),
      1     NINT(STORE(1+L5+MD5*ISTORE(LMAP+I*MDATVC)))
-           CALL XPRVDU(NCVDU,1,0)
-
+          ENDIF
            IF (ISTORE(4+LMAP+I*MDATVC).EQ.2) THEN
              IRS1AT = L5 + ISTORE(LMAP+I*MDATVC) * MD5
              EXIT 
@@ -4791,9 +4881,10 @@ C Find first atom in residue 1 with uniqueness of 2.
 
          CRDAT=STORE(13+IRS1AT)
 
-         WRITE(CMON,'(2A,I5)')'Boost one:',STORE(IRS1AT),
+         IF(ILSTRE.GE.3) THEN
+          WRITE(NCWU,'(2A,I5)')'Boost one:',STORE(IRS1AT),
      1    NINT(STORE(IRS1AT+1))
-         CALL XPRVDU(NCVDU,1,0)
+         ENDIF
 
 C Find two atoms in residue 2 with uniqueness of 2 of same CARDINALITY
 C as IRS1AT
@@ -4801,14 +4892,14 @@ C as IRS1AT
          IRS2A2 = -1
          DO I = 0, NONTO-1         ! Loop over all the residue 2 atoms.
 
-           WRITE(CMON,'(A,5I6,A4,I6)')'2: ' ,
+          IF(ILSTRE.GE.3) THEN
+           WRITE(NCWU,'(A,5I6,A4,I6)')'2: ' ,
      2     ISTORE(LONTO+I*MDATVC),ISTORE(1+LONTO+I*MDATVC),
      2     ISTORE(2+LONTO+I*MDATVC),ISTORE(3+LONTO+I*MDATVC),
      3     ISTORE(4+LONTO+I*MDATVC),
      1     ISTORE(L5+MD5*ISTORE(LONTO+I*MDATVC)),
      1     NINT(STORE(1+L5+MD5*ISTORE(LONTO+I*MDATVC)))
-           CALL XPRVDU(NCVDU,1,0)
-
+          ENDIF
 
            IF ((ISTORE(4+LONTO+I*MDATVC).EQ.2) .AND.
      1         ( ABS( CRDAT -
