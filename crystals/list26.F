@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2011/10/14 13:48:09  djw
+C Fix interaction between A-DIST and MEAN and DiIFF restraints
+C
 C Revision 1.19  2011/10/13 14:41:31  djw
 C Add asymmetric distacne restraint
 C
@@ -1360,6 +1363,9 @@ C--CHECK IF THIS THE FIRST OR SECOND ATOM
       GOTO 1150
 C--CALCULATE THE MEAN VALUE AND THE DIFFERENCE
 1250  CONTINUE
+c      write(123,'(a,3f12.6)') 'U-values', dump, store(jc),store(jd)
+cdjwmar2012 - should DUMP be outside the brackets?
+c     for the asymmetric restraint, should we NOT compute the mean?
       STORE(LCG+4)=0.5*(DUMP+STORE(JC)+STORE(JD))
       STORE(L22PD+2)=DUMP-STORE(JC)+STORE(JD)
       MCA=JA
@@ -1526,7 +1532,9 @@ C--CALCULATE THE MEAN VALUE AND THE DIFFERENCE                          CVC01190
       JD=ISTORE(JB+16)                                                  CVC01220
       SUM=0.                                                            CVC01230
       D=0.                                                              CVC01240
-      DO 1650 I=1,6                                                     CVC01250
+      DO 1650 I=1,6 
+c      write(123,'(a,3f12.6)') 'Mean',  store(jc+14),store(jd+14)
+c      for the asymmetric restraint, should we NOT compute the mean?
       SUM=SUM+(STORE(JC+14)+STORE(JD+14))*A1(I+6)                       CVC01260
       A1(I)=STORE(JC+14)-STORE(JD+14)                                   CVC01270
       D=D+A1(I)*A1(I+6)                                                 CVC01280
