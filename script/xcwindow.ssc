@@ -12,12 +12,12 @@
 ^^WI     @ 3,4  STATIC   TH 'to:'
 ^^WI     @ 5,1  STATIC   TH 'from c:'
 ^^WI     @ 5,4  STATIC   TH 'to:'
-^^WI     @ 1,2  EDITBOX  AN '0.0' CHARS=6 REAL
-^^WI     @ 1,5  EDITBOX  AX '1.0' CHARS=6 REAL
-^^WI     @ 3,2  EDITBOX  BN '0.0' CHARS=6 REAL
-^^WI     @ 3,5  EDITBOX  BX '1.0' CHARS=6 REAL
-^^WI     @ 5,2  EDITBOX  CN '0.0' CHARS=6 REAL
-^^WI     @ 5,5  EDITBOX  CX '1.0' CHARS=6 REAL
+^^WI     @ 1,2  EDITBOX  AN '-.2' CHARS=6 REAL
+^^WI     @ 1,5  EDITBOX  AX '1.2' CHARS=6 REAL
+^^WI     @ 3,2  EDITBOX  BN '-.2' CHARS=6 REAL
+^^WI     @ 3,5  EDITBOX  BX '1.2' CHARS=6 REAL
+^^WI     @ 5,2  EDITBOX  CN '-.2' CHARS=6 REAL
+^^WI     @ 5,5  EDITBOX  CX '1.2' CHARS=6 REAL
 ^^WI  }
 ^^WI  @ 4,2 CHECKBOX PCIC 'Include cell' STATE=ON
 ^^WI  @ 2,4 GRID   GR NROWS=5 NCOLS=3
@@ -51,7 +51,7 @@
 %                 GET SILENT REAL ' '
 ^^??              CX TEXT
 %                 GET SILENT REAL ' '
-%                 INSERT 'CUT '
+%                 INSERT 'CENT '
 %                 SEND
 ^^??              PCIC STATE
 %                 VERIFY ON OFF
@@ -80,7 +80,7 @@
 %                 GET SILENT REAL ' '
 ^^??              CX TEXT
 %                 GET SILENT REAL ' '
-%                 INSERT 'CUT '
+%                 INSERT 'CENT '
 %                 SEND
 ^^??              PCIC STATE
 %                 VERIFY ON OFF
