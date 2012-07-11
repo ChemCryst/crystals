@@ -13,11 +13,17 @@
 %  END BLOCK
 %  BLOCK               %LCOLOR%
 %    GET SILENT NOSTORE INTEGER ' '
-%% Default, B&W, B&W 2
+%% Coloured, B&W, B&W 2, Obey
 %    CASE VALUE
 % COPY 'FILL COLO DEFA COLO BACK WHITE COLO BOND ALL LGREY VIEW'
 % COPY 'UNFI COLO BOND ALL WHITE COLO BACK GREY COLO ALL BLACK VIEW'
 % COPY 'UNFI COLO BOND ALL BLACK COLO BACK WHITE COLO ALL BLACK VIEW'
+% BLOCK               %REGOBY%                                               
+%       IF FILEEXISTS "REGULAR.OBY" THEN                                              
+%        COPY 'OBEY REGULAR.OBY'                                                   
+%       END IF
+%       COPY ' '                                                                
+% END BLOCK                                                                 
 %    END CASE
 %  END BLOCK
 %  BLOCK               %LPACK%
