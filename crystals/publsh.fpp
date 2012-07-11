@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  2009/01/21 17:03:24  djw
+C Add keyword to enable output of Friedel pairs
+C
 C Revision 1.14  2008/10/01 11:08:15  djw
 C Support ofr outlier exclusion in Tons code
 C
@@ -70,7 +73,7 @@ C
 C  REFLECTIONS  PARAMETERS  SUMMARY  GENERALEDIT  CIFOUT
 C
       GO TO ( 2100, 2200, 2300, 2400, 2600, 2700, 2800, 
-     1  2900, 1500 ) , NUM
+     1  2900, 3000, 1500 ) , NUM
 1500  CONTINUE
       CALL XERHND ( IERPRG )
 C
@@ -97,10 +100,16 @@ C -- 'GENERALEDIT'
 C
       CALL XGENED
       RETURN
+c
 2600  CONTINUE
 C----- CIFOUT CIF OUTPUT
       CALL XCIFX
       RETURN
+c
+3000  continue
+c----QCKCIF
+      CALL XCIFQC
+      return
 c
 2700  CONTINUE
 C----- THLIM - work out completeness, and stick in L30.
