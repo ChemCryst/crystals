@@ -87,9 +87,11 @@
 ^^??      XM STATE                                                              
 %         VERIFY ON OFF                                                         
 %         GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
-%         IF ( VALUE .EQ. 1 ) THEN                                              
+%         IF ( VALUE .EQ. 0 ) THEN                                              
 %           EVALUATE MATCH = TRUE                                              
-%         END IF                                                                
+%         ELSE
+%           EVALUATE MATCH = FALSE
+%         END IF 
 
 ^^??      AN STATE                                                              
 %         VERIFY ON OFF                                                         

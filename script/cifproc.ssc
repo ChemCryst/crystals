@@ -8,8 +8,8 @@
 %% This script checks for the existence of cifproc.dat                          
 %% and uses it if it is present.                                                
 %%                                                                              
-%%show match
-% IF MATCH THEN
+% show match
+% IF MATCH .EQ. TRUE THEN
 %   IF FILEEXISTS "cifproc.dat" THEN                                              
 %     COPY "#use cifproc.dat"                                                     
 %   ELSE IF FILEEXISTS "CRYSDIR:SCRIPT\CIFPROC.DAT" THEN
