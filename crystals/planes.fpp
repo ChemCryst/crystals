@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2008/12/15 11:38:11  djw
+C Do work on dihedral angles in double precision, normalise vectors on the fly
+C
 C Revision 1.5  2008/06/27 14:40:07  djw
 C compute mean deviations from planes
 C
@@ -505,9 +508,12 @@ C---- COMPUTE AXIS RATIOS
       WRITE ( CMON ,2505) PAXIS(3)/PAXIS(1),
      1 1. - (PAXIS(2)+ PAXIS(3))/ (2.*PAXIS(1)),
      2 1. - (2.*PAXIS(3)) / (PAXIS(1) + PAXIS(2))
-      CALL XPRVDU(NCVDU, 2,0)
+      CALL XPRVDU(NCVDU, 4,0)
 2505  FORMAT ( /' Spherical index = ', F6.2, ' cylindrical index = ',
-     1 F6.2, ' Discoidal index = ', F6.2)
+     1 F6.2, ' Discoidal index = ', F6.2/
+     2    ' Value closest to unity is best descriptor.',
+     3    ' See D. M. P. Mingos and A. L. Rohl'/
+     4    '  J. Chem. Soc. Dalton Trans. (1991), 3419-3425')
         WRITE(NCAWU,2510) ( XCF(I), I = 1,3),
      1           ( (RCA(I,J), J=1,3), I=1,3)
 2510    FORMAT (/,' Centroid, in crystal fractions ',

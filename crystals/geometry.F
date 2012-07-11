@@ -520,9 +520,12 @@ c         WRITE (NCAWU,490) PAXIS(3)/PAXIS(1),1.-(PAXIS(2)+PAXIS(3))/(2.*
 c     1    PAXIS(1)),1.-(2.*PAXIS(3))/(PAXIS(1)+PAXIS(2))
          WRITE (CMON,490) PAXIS(3)/PAXIS(1),1.-(PAXIS(2)+PAXIS(3))/(2.*
      1    PAXIS(1)),1.-(2.*PAXIS(3))/(PAXIS(1)+PAXIS(2))
-         CALL XPRVDU (NCVDU,2,0)
+         CALL XPRVDU (NCVDU,4,0)
 490      FORMAT (/' Spherical index = ',F6.2,' cylindrical index = ',F6.
-     1    2,' Discoidal index = ',F6.2)
+     1    2,' Discoidal index = ',F6.2/
+     2    ' Value closest to unity is best descriptor.',
+     3    ' See D. M. P. Mingos and A. L. Rohl'/
+     4    '  J. Chem. Soc. Dalton Trans. (1991), 3419-3425')
          WRITE (NCAWU,500) (XCF(I),I=1,3),((RCA(I,J),J=1,3),I=1,3)
 500      FORMAT (/,' Centroid, in crystal fractions ',' Transformation f
      1rom crystal fractions ',/33X,' to best plane, (orthogonal angstrom
