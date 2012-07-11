@@ -5,6 +5,7 @@ Bonds: Update required - There is no list 41
 Bonds: Update required - List5 length change
 #TITLE TEST 1                                                                                                                                                                                                                                                   
 #REGULAR KEEP                                                                                                                                                                                                                                                   
+Input: mapping    6 atoms onto    6                                                                                                                                                                                                                             
 Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
 
 
@@ -69,10 +70,9 @@ Matching by Rotation/inversion (Method 1)
 
 Summary of Deviations
 
-                       position    bond        torsion     Uprime
+                       position    bond        torsion
  rms deviations        0.0000      0.0000      0.0000
- max deviations        0.0000      0.0000      0.0000      0.0000
-
+ max deviations        0.0000      0.0000      0.0000
 
 
 
@@ -141,6 +141,7 @@ Bonds: Update required - List5 length change
 Bonds: Update required - List5 length change
 #TITLE TEST 2                                                                                                                                                                                                                                                   
 #REGULAR KEEP                                                                                                                                                                                                                                                   
+Input: mapping    6 atoms onto    6                                                                                                                                                                                                                             
 Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
 
 
@@ -203,16 +204,17 @@ Matching by Rotation/inversion (Method 1)
                                                       Maximum angle      O      4     0.001
 
 Uij in Best Match Coordinate System
+Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
- Position  Type  Serial                     Old U[ij]                       Old Principal Axes  Uprime
+ Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-                                           Delta U[ij]                    Delta Principal Axes
+deltas                                       U[ij]                          Principal Axes
 
       1    C        1.  Isotropic
       2    C        2.  Isotropic
       3    C        3.  Isotropic
-      4    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054
-           O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054
+      4    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
+           O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054    0.046
                            0.000   0.000   0.000   0.008  -0.008   0.000    0.000 0.000 0.000    0.000
 
       5    C        5.  Isotropic
@@ -231,10 +233,14 @@ C2-C3-O4-C5                           C102-C103-O104-C105                       
 
 Summary of Deviations
 
-                       position    bond        torsion     Uprime
+                       position    bond        torsion
  rms deviations        0.0000      0.0000      0.0000
- max deviations        0.0000      0.0000      0.0000      0.0000
+ max deviations        0.0000      0.0000      0.0000
 
+         Ugeom(max)      Uprime(max)    U[ij](old-new)
+Old         0.046         0.054
+New         0.046         0.054
+Delta                     0.000         0.000   O4       - O104    
 
 
 
@@ -308,6 +314,7 @@ Bonds: Update required - List5 length change
 Bonds: Update required - List5 length change
 #TITLE TEST 3                                                                                                                                                                                                                                                   
 #REGULAR KEEP                                                                                                                                                                                                                                                   
+Input: mapping    6 atoms onto    6                                                                                                                                                                                                                             
 Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
 
 
@@ -372,10 +379,9 @@ Matching by Rotation/inversion (Method 1)
 
 Summary of Deviations
 
-                       position    bond        torsion     Uprime
+                       position    bond        torsion
  rms deviations        0.0000      0.0000      0.0000
- max deviations        0.0000      0.0000      0.0000      0.0000
-
+ max deviations        0.0000      0.0000      0.0000
 
 
 
@@ -444,6 +450,7 @@ Bonds: Update required - List5 length change
 Bonds: Update required - List5 length change
 #TITLE TEST 4                                                                                                                                                                                                                                                   
 #REGULAR KEEP                                                                                                                                                                                                                                                   
+Input: mapping    6 atoms onto    6                                                                                                                                                                                                                             
 Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
 
 
@@ -506,17 +513,18 @@ Matching by Rotation/inversion (Method 1)
                                                       Maximum angle      O      4     0.001
 
 Uij in Best Match Coordinate System
+Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
- Position  Type  Serial                     Old U[ij]                       Old Principal Axes  Uprime
+ Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-                                           Delta U[ij]                    Delta Principal Axes
+deltas                                       U[ij]                          Principal Axes
 
       1    Q        6.  Isotropic
       2    C        1.  Isotropic
       3    C        2.  Isotropic
       4    C        3.  Isotropic
-      5    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054
-           O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054
+      5    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
+           O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054    0.046
                            0.000   0.000   0.000   0.008  -0.008   0.000    0.000 0.000 0.000    0.000
 
       6    C        5.  Isotropic
@@ -534,10 +542,14 @@ C2-C3-O4-C5                           C102-C103-O104-C105                       
 
 Summary of Deviations
 
-                       position    bond        torsion     Uprime
+                       position    bond        torsion
  rms deviations        0.0000      0.0000      0.0000
- max deviations        0.0000      0.0000      0.0000      0.0000
+ max deviations        0.0000      0.0000      0.0000
 
+         Ugeom(max)      Uprime(max)    U[ij](old-new)
+Old         0.046         0.054
+New         0.046         0.054
+Delta                     0.000         0.000   O4       - O104    
 
 
 
@@ -612,6 +624,7 @@ Bonds: Update required - List5 length change
 Bonds: Update required - List5 length change
 #TITLE TEST 5                                                                                                                                                                                                                                                   
 #REGULAR AUGMENT                                                                                                                                                                                                                                                
+Input: mapping    6 atoms onto    6                                                                                                                                                                                                                             
 Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
 
 
@@ -676,10 +689,9 @@ Matching by Rotation/inversion (Method 1)
 
 Summary of Deviations
 
-                       position    bond        torsion     Uprime
+                       position    bond        torsion
  rms deviations        0.0000      0.0000      0.0000
- max deviations        0.0000      0.0000      0.0000      0.0000
-
+ max deviations        0.0000      0.0000      0.0000
 
 
 
@@ -743,6 +755,7 @@ Bonds: Update required - List5 length change
 Bonds: Update required - List5 length change
 #TITLE TEST 6                                                                                                                                                                                                                                                   
 #REGULAR AUGMENT                                                                                                                                                                                                                                                
+Input: mapping    6 atoms onto    6                                                                                                                                                                                                                             
 Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
 
 
@@ -805,16 +818,17 @@ Matching by Rotation/inversion (Method 1)
                                                       Maximum angle      O      4     0.001
 
 Uij in Best Match Coordinate System
+Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
- Position  Type  Serial                     Old U[ij]                       Old Principal Axes  Uprime
+ Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-                                           Delta U[ij]                    Delta Principal Axes
+deltas                                       U[ij]                          Principal Axes
 
       1    C        1.  Isotropic
       2    C        2.  Isotropic
       3    C        3.  Isotropic
-      4    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054
-           O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054
+      4    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
+           O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054    0.046
                            0.000   0.000   0.000   0.008  -0.008   0.000    0.000 0.000 0.000    0.000
 
       5    C        5.  Isotropic
@@ -833,10 +847,14 @@ C2-C3-O4-C5                           C102-C103-O104-C105                       
 
 Summary of Deviations
 
-                       position    bond        torsion     Uprime
+                       position    bond        torsion
  rms deviations        0.0000      0.0000      0.0000
- max deviations        0.0000      0.0000      0.0000      0.0000
+ max deviations        0.0000      0.0000      0.0000
 
+         Ugeom(max)      Uprime(max)    U[ij](old-new)
+Old         0.046         0.054
+New         0.046         0.054
+Delta                     0.000         0.000   O4       - O104    
 
 
 
@@ -899,6 +917,7 @@ Space group symbol is   P    1
 Bonds: Update required - List5 length change
 #TITLE TEST 7                                                                                                                                                                                                                                                   
 #REGULAR AUGMENT                                                                                                                                                                                                                                                
+Input: mapping    6 atoms onto    6                                                                                                                                                                                                                             
 Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
 
 
@@ -963,10 +982,9 @@ Matching by Rotation/inversion (Method 1)
 
 Summary of Deviations
 
-                       position    bond        torsion     Uprime
+                       position    bond        torsion
  rms deviations        0.0000      0.0000      0.0000
- max deviations        0.0000      0.0000      0.0000      0.0000
-
+ max deviations        0.0000      0.0000      0.0000
 
 
 
@@ -1030,6 +1048,7 @@ Bonds: Update required - List5 length change
 Bonds: Update required - List5 length change
 #TITLE TEST 8                                                                                                                                                                                                                                                   
 #REGULAR REPLACE                                                                                                                                                                                                                                                
+Input: mapping    6 atoms onto    6                                                                                                                                                                                                                             
 Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
 
 
@@ -1092,17 +1111,18 @@ Matching by Rotation/inversion (Method 1)
                                                       Maximum angle      O      4     0.001
 
 Uij in Best Match Coordinate System
+Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
- Position  Type  Serial                     Old U[ij]                       Old Principal Axes  Uprime
+ Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-                                           Delta U[ij]                    Delta Principal Axes
+deltas                                       U[ij]                          Principal Axes
 
       1    Q        6.  Isotropic
       2    C        1.  Isotropic
       3    C        2.  Isotropic
       4    C        3.  Isotropic
-      5    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054
-           O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054
+      5    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
+           O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054    0.046
                            0.000   0.000   0.000   0.008  -0.008   0.000    0.000 0.000 0.000    0.000
 
       6    C        5.  Isotropic
@@ -1120,10 +1140,14 @@ C2-C3-O4-C5                           C102-C103-O104-C105                       
 
 Summary of Deviations
 
-                       position    bond        torsion     Uprime
+                       position    bond        torsion
  rms deviations        0.0000      0.0000      0.0000
- max deviations        0.0000      0.0000      0.0000      0.0000
+ max deviations        0.0000      0.0000      0.0000
 
+         Ugeom(max)      Uprime(max)    U[ij](old-new)
+Old         0.046         0.054
+New         0.046         0.054
+Delta                     0.000         0.000   O4       - O104    
 
 
 
@@ -1187,6 +1211,7 @@ Space group symbol is   P    1
 Bonds: Update required - List5 length change
 #TITLE TEST 9                                                                                                                                                                                                                                                   
 #REGULAR REPLACE                                                                                                                                                                                                                                                
+Input: mapping    6 atoms onto    6                                                                                                                                                                                                                             
 Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
 
 
@@ -1251,10 +1276,9 @@ Matching by Rotation/inversion (Method 1)
 
 Summary of Deviations
 
-                       position    bond        torsion     Uprime
+                       position    bond        torsion
  rms deviations        0.0000      0.0000      0.0000
- max deviations        0.0000      0.0000      0.0000      0.0000
-
+ max deviations        0.0000      0.0000      0.0000
 
 
 
@@ -1318,6 +1342,7 @@ Bonds: Update required - List5 length change
 Bonds: Update required - List5 length change
 #TITLE TEST 10                                                                                                                                                                                                                                                  
 #REGULAR REPLACE                                                                                                                                                                                                                                                
+Input: mapping    6 atoms onto    6                                                                                                                                                                                                                             
 Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
 
 
@@ -1380,16 +1405,17 @@ Matching by Rotation/inversion (Method 1)
                                                       Maximum angle      C      1     0.001
 
 Uij in Best Match Coordinate System
+Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
- Position  Type  Serial                     Old U[ij]                       Old Principal Axes  Uprime
+ Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-                                           Delta U[ij]                    Delta Principal Axes
+deltas                                       U[ij]                          Principal Axes
 
       1    C        1.  Isotropic
       2    C        2.  Isotropic
       3    C        3.  Isotropic
-      4    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054
-           O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054
+      4    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
+           O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054    0.046
                            0.000   0.000   0.000   0.008  -0.008   0.000    0.000 0.000 0.000    0.000
 
       5    C        5.  Isotropic
@@ -1408,10 +1434,14 @@ C2-C3-O4-C5                           C102-C103-O104-C105                       
 
 Summary of Deviations
 
-                       position    bond        torsion     Uprime
+                       position    bond        torsion
  rms deviations        0.0000      0.0000      0.0000
- max deviations        0.0000      0.0000      0.0000      0.0000
+ max deviations        0.0000      0.0000      0.0000
 
+         Ugeom(max)      Uprime(max)    U[ij](old-new)
+Old         0.046         0.054
+New         0.046         0.054
+Delta                     0.000         0.000   O4       - O104    
 
 
 
@@ -1474,6 +1504,7 @@ Space group symbol is   P    1
 Bonds: Update required - List5 length change
 #TITLE TEST 11                                                                                                                                                                                                                                                  
 #REGULAR REPLACE                                                                                                                                                                                                                                                
+Input: mapping    6 atoms onto    6                                                                                                                                                                                                                             
 Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
 
 
@@ -1538,10 +1569,9 @@ Matching by Rotation/inversion (Method 1)
 
 Summary of Deviations
 
-                       position    bond        torsion     Uprime
+                       position    bond        torsion
  rms deviations        0.0000      0.0000      0.0000
- max deviations        0.0000      0.0000      0.0000      0.0000
-
+ max deviations        0.0000      0.0000      0.0000
 
 
 
@@ -1605,6 +1635,7 @@ Bonds: Update required - List5 length change
 Bonds: Update required - List5 length change
 #TITLE TEST 12                                                                                                                                                                                                                                                  
 #REGULAR REPLACE                                                                                                                                                                                                                                                
+Input: mapping    6 atoms onto    6                                                                                                                                                                                                                             
 Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
 
 
@@ -1667,17 +1698,18 @@ Matching by Rotation/inversion (Method 1)
                                                       Maximum angle      C      2     0.001
 
 Uij in Best Match Coordinate System
+Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
- Position  Type  Serial                     Old U[ij]                       Old Principal Axes  Uprime
+ Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-                                           Delta U[ij]                    Delta Principal Axes
+deltas                                       U[ij]                          Principal Axes
 
       1    Q        6.  Isotropic
       2    C        1.  Isotropic
       3    C        2.  Isotropic
       4    C        3.  Isotropic
-      5    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054
-           O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054
+      5    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
+           O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054    0.046
                            0.000   0.000   0.000   0.008  -0.008   0.000    0.000 0.000 0.000    0.000
 
       6    C        5.  Isotropic
@@ -1695,10 +1727,14 @@ C2-C3-O4-C5                           C102-C103-O104-C105                       
 
 Summary of Deviations
 
-                       position    bond        torsion     Uprime
+                       position    bond        torsion
  rms deviations        0.0000      0.0000      0.0000
- max deviations        0.0000      0.0000      0.0000      0.0000
+ max deviations        0.0000      0.0000      0.0000
 
+         Ugeom(max)      Uprime(max)    U[ij](old-new)
+Old         0.046         0.054
+New         0.046         0.054
+Delta                     0.000         0.000   O4       - O104    
 
 
 
@@ -1762,6 +1798,7 @@ Bonds: Update required - List5 length change
 #TITLE TEST 13                                                                                                                                                                                                                                                  
 #REGULAR REPLACE                                                                                                                                                                                                                                                
 #EDIT                                                                                                                                                                                                                                                           
+Input: mapping    6 atoms onto    6                                                                                                                                                                                                                             
 Matching by Rotation/inversion (Method 1)                                                                                                                                                                                                                       
 
 
@@ -1824,16 +1861,17 @@ Matching by Rotation/inversion (Method 1)
                                                       Maximum angle      O      4     0.001
 
 Uij in Best Match Coordinate System
+Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
- Position  Type  Serial                     Old U[ij]                       Old Principal Axes  Uprime
+ Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-                                           Delta U[ij]                    Delta Principal Axes
+deltas                                       U[ij]                          Principal Axes
 
       1    C        1.  Isotropic
       2    C        2.  Isotropic
       3    C        3.  Isotropic
-      4    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054
-           O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054
+      4    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
+           O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054    0.046
                            0.000   0.000   0.000   0.008  -0.008   0.000    0.000 0.000 0.000    0.000
 
       5    C        5.  Isotropic
@@ -1852,10 +1890,14 @@ C2-C3-O4-C5                           C102-C103-O104-C105                       
 
 Summary of Deviations
 
-                       position    bond        torsion     Uprime
+                       position    bond        torsion
  rms deviations        0.0000      0.0000      0.0000
- max deviations        0.0000      0.0000      0.0000      0.0000
+ max deviations        0.0000      0.0000      0.0000
 
+         Ugeom(max)      Uprime(max)    U[ij](old-new)
+Old         0.046         0.054
+New         0.046         0.054
+Delta                     0.000         0.000   O4       - O104    
 
 
 
@@ -1918,12 +1960,13 @@ Bonds: Update required - List5 length change
 #MATCH                                                                                                                                                                                                                                                          
 Structure matching: measures of similarity and pseudosymmetry                                                                                                                                                                                                   
 A.  Collins, R. I.  Cooper and D. J.  Watkin                                                                                                                                                                                                                    
-Journal of Applied Crystallography 2006;39(6):842-849                                                                                                                                                                                                           
+Journal of Applied Crystallography 2006;39,842-849                                                                                                                                                                                                              
 
 
  test 14                                                                              Date              Time          
 
 
+Input: mapping    4 atoms onto    4                                                                                                                                                                                                                             
 Matching Permitting Improper Rotation (Method 4, Kabsch)                                                                                                                                                                                                        
 
 
@@ -1948,10 +1991,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 Summary of Deviations
 
-                       position    bond        torsion     Uprime
+                       position    bond        torsion
  rms deviations        0.0000      0.0000      0.0000
- max deviations        0.0000      0.0000      0.0000      0.0000
-
+ max deviations        0.0000      0.0000      0.0000
 
 
 
@@ -1967,6 +2009,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
                                                    Replacement  of group number   1. Cycle no  2  Call type  3
 
 
+Matching atoms                                                                                                                                                                                                                                                  
+Improving match                                                                                                                                                                                                                                                 
+Improving:       Mapping    onto     distance
 Matched:        O    104 - O      4   0.000
 Matched:        C    103 - C      3   0.000
 Matched:        Q    106 - Q      6   0.000
@@ -1976,6 +2021,7 @@ Matched:        C    101 - C      1   0.000
 
  Replacement  of group number   1 completed
 
+Input: mapping    8 atoms onto    8                                                                                                                                                                                                                             
 Matching Permitting Improper Rotation (Method 4, Kabsch)                                                                                                                                                                                                        
 
 
@@ -2016,21 +2062,22 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
                                                                                         x        y       z                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
-                                                      Maximum distance   N     52     0.000
+                                                      Maximum distance   O     51     0.000
                                                       Maximum angle      C      5     0.001
 
 Uij in Best Match Coordinate System
+Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
- Position  Type  Serial                     Old U[ij]                       Old Principal Axes  Uprime
+ Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-                                           Delta U[ij]                    Delta Principal Axes
+deltas                                       U[ij]                          Principal Axes
 
       1    C        2.  Isotropic
       2    C        5.  Isotropic
       3    O       51.  Isotropic
       4    N       52.  Isotropic
-      5    O      104.     0.050   0.050   0.050   0.000   0.000   0.000    0.050 0.050 0.050    0.050
-           O        4.     0.042   0.047   0.049   0.006  -0.001  -0.001    0.042 0.042 0.054    0.054
+      5    O      104.     0.050   0.050   0.050   0.000   0.000   0.000    0.050 0.050 0.050    0.050    0.050
+           O        4.     0.042   0.047   0.049   0.006  -0.001  -0.001    0.042 0.042 0.054    0.054    0.046
                            0.008   0.003   0.001  -0.006   0.001   0.001    0.008 0.008-0.004   -0.004
 
       6    C        3.  Isotropic
@@ -2062,10 +2109,14 @@ C102-C101-Q106-C105                   C2-C1-Q6-C5                               
 
 Summary of Deviations
 
-                       position    bond        torsion     Uprime
+                       position    bond        torsion
  rms deviations        0.0000      0.0000      0.0014
- max deviations        0.0000      0.0000      0.0026      0.0043
+ max deviations        0.0000      0.0000      0.0026
 
+         Ugeom(max)      Uprime(max)    U[ij](old-new)
+Old         0.050         0.050
+New         0.046         0.054
+Delta                     0.004         0.008   O104     - O4      
 
 
 
@@ -2076,9 +2127,9 @@ Summary of Deviations
  Transformation matrix relating new and old coordinates
                 In best plane system                In orthogonal system                In crystal system 
 
-                 -1.000000  0.000002 -0.000010       0.119941  0.598008 -0.792465       0.339487  0.402131 -0.476843
-                 -0.000002 -1.000000  0.000025       0.598003 -0.680688 -0.423150       1.063617 -0.680688 -0.378646
-                 -0.000010  0.000025  1.000000      -0.792468 -0.423143 -0.439253      -0.958457 -0.287738 -0.658799
+                 -1.000000 -0.000002 -0.000010       0.119941  0.598006 -0.792466       0.339487  0.402131 -0.476845
+                  0.000002 -1.000000  0.000025       0.598005 -0.680688 -0.423148       1.063621 -0.680688 -0.378641
+                 -0.000010  0.000025  1.000000      -0.792467 -0.423146 -0.439253      -0.958455 -0.287739 -0.658799
 
                                                                                                                                                                                                                                                                 
  Trace =-1.000 Determinant = 1.000 Tr+Det = 0.000                                                                                                                                                                                                               
@@ -2116,6 +2167,7 @@ Writing CAMERON files
 
  Comparison   of group number   1 completed
 
+Input: mapping    4 atoms onto    4                                                                                                                                                                                                                             
 Matching Permitting Improper Rotation (Method 4, Kabsch)                                                                                                                                                                                                        
 
 
@@ -2126,24 +2178,23 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-   -1.00000   0.00001   0.00000
-   -0.00001  -1.00000   0.00000
+   -1.00000  -0.00001   0.00000
+    0.00001  -1.00000   0.00000
     0.00000   0.00000   1.00000
 
 
 
                                                                                         x        y       z                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
-                                                      Maximum distance   N     52     0.000
-                                                      Maximum angle      O     51     0.001
+                                                      Maximum distance   C      5     0.000
+                                                      Maximum angle      C      5     0.001
 
 
 Summary of Deviations
 
-                       position    bond        torsion     Uprime
+                       position    bond        torsion
  rms deviations        0.0000      0.0000      0.0000
- max deviations        0.0000      0.0000      0.0000      0.0000
-
+ max deviations        0.0000      0.0000      0.0000
 
 
 
@@ -2159,6 +2210,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
                                                    Replacement  of group number   1. Cycle no  6  Call type  3
 
 
+Matching atoms                                                                                                                                                                                                                                                  
+Improving match                                                                                                                                                                                                                                                 
+Improving:       Mapping    onto     distance
 Matched:        O    104 - Q      6   0.000
 Matched:        C    103 - C      1   0.000
 Matched:        Q    106 - O      4   0.000
@@ -2168,6 +2222,7 @@ Matched:        C    101 - C      3   0.000
 
  Replacement  of group number   1 completed
 
+Input: mapping    8 atoms onto    8                                                                                                                                                                                                                             
 Matching Permitting Improper Rotation (Method 4, Kabsch)                                                                                                                                                                                                        
 
 
@@ -2186,9 +2241,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-   -1.00000   0.00001  -0.00001
+   -1.00000   0.00001   0.00001
     0.00001   1.00000  -0.00003
-    0.00001  -0.00003  -1.00000
+   -0.00001  -0.00003  -1.00000
 
  Deviations  in best plane system after fitting ( Angstrom )                                                                                                                                                                                                    
 "Angle" is the angular separation of the atoms as seen from
@@ -2196,26 +2251,27 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
  Position  Type  Serial    old(x)  old(y)  old(z)       new(x)  new(y)  new(z)        d(x)    d(y)    d(z)       Distance    Angle
 
-      1    C         2.    -1.954   0.000   0.000       -1.954   0.000   0.000        0.000   0.000   0.000        0.000   0.000
-      2    C         5.     0.826   0.000   0.000        0.826   0.000   0.000        0.000   0.000   0.000        0.000   0.000
-      3    O        51.     1.692   0.000   1.225        1.692   0.000   1.225        0.000   0.000   0.000        0.000   0.001
-      4    N        52.     1.692   0.000  -1.225        1.692   0.000  -1.225        0.000   0.000   0.000        0.000   0.001
+      1    C         2.    -1.954   0.000   0.000       -1.954   0.000   0.000        0.000   0.000   0.000        0.000   0.001
+      2    C         5.     0.826   0.000   0.000        0.826   0.000   0.000        0.000   0.000   0.000        0.000   0.001
+      3    O        51.     1.692   0.000   1.225        1.692   0.000   1.225        0.000   0.000   0.000        0.000   0.000
+      4    N        52.     1.692   0.000  -1.225        1.692   0.000  -1.225        0.000   0.000   0.000        0.000   0.000
       5    Q         6.     0.131  -1.204   0.000        0.131  -1.204   0.000        0.000   0.000   0.000        0.000   0.000
       6    C         1.    -1.259  -1.204   0.000       -1.259  -1.204   0.000        0.000   0.000   0.000        0.000   0.000
-      7    O         4.     0.131   1.204   0.000        0.131   1.204   0.000        0.000   0.000   0.000        0.000   0.000
-      8    C         3.    -1.259   1.204   0.000       -1.259   1.204   0.000        0.000   0.000   0.000        0.000   0.001
+      7    O         4.     0.131   1.204   0.000        0.131   1.204   0.000        0.000   0.000   0.000        0.000   0.001
+      8    C         3.    -1.259   1.204   0.000       -1.259   1.204   0.000        0.000   0.000   0.000        0.000   0.000
 
 
                                                                                         x        y       z                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
-                                                      Maximum distance   O     51     0.000
-                                                      Maximum angle      O     51     0.001
+                                                      Maximum distance   C      2     0.000
+                                                      Maximum angle      C      5     0.001
 
 Uij in Best Match Coordinate System
+Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
- Position  Type  Serial                     Old U[ij]                       Old Principal Axes  Uprime
+ Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-                                           Delta U[ij]                    Delta Principal Axes
+deltas                                       U[ij]                          Principal Axes
 
       1    C        2.  Isotropic
       2    C        5.  Isotropic
@@ -2251,10 +2307,9 @@ C102-C101-Q106-C105                   C2-C3-O4-C5                               
 
 Summary of Deviations
 
-                       position    bond        torsion     Uprime
+                       position    bond        torsion
  rms deviations        0.0000      0.0000      0.0008
- max deviations        0.0000      0.0000      0.0016      0.0000
-
+ max deviations        0.0000      0.0000      0.0016
 
 
 
@@ -2265,9 +2320,9 @@ Summary of Deviations
  Transformation matrix relating new and old coordinates
                 In best plane system                In orthogonal system                In crystal system 
 
-                 -1.000000  0.000007 -0.000006      -0.182197 -0.827214  0.531527      -0.329445 -0.381344  0.513946
-                  0.000007  1.000000 -0.000025      -0.827231 -0.163250 -0.537623      -1.471324 -0.163250 -1.127647
-                  0.000006 -0.000025 -1.000000       0.531501 -0.537649 -0.654553       0.642828 -0.365601 -0.507306
+                 -1.000000  0.000007  0.000006      -0.182197 -0.827219  0.531520      -0.329446 -0.381347  0.513940
+                  0.000007  1.000000 -0.000025      -0.827226 -0.163250 -0.537630      -1.471316 -0.163250 -1.127655
+                 -0.000006 -0.000025 -1.000000       0.531508 -0.537642 -0.654553       0.642836 -0.365597 -0.507304
 
                                                                                                                                                                                                                                                                 
  Trace =-1.000 Determinant = 1.000 Tr+Det = 0.000                                                                                                                                                                                                               
