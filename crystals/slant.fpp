@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2011/03/21 13:57:22  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.23  2009/09/18 16:24:34  djw
 C Silly scaling error if 2Fo-Fc map
 C
@@ -654,6 +657,7 @@ C         3  DF
 C         4  FO PATTERSON
 C         5  FC PATTERSON
 c         6  2Fo-Fc
+c         7  FoSq-FcSq-Patterson
 C  ITHRES PRINT 0 FOR ALL VALUES LESS THAN THIS
 C  SCALE  MAP SCALE FACTOR
 C  IWT    WEIGHTING
@@ -680,7 +684,7 @@ C
       DIMENSION APD(13)
       DIMENSION A1(26)
       DIMENSION AMIN(3),XYZ(3)
-      CHARACTER*16 CMAPTP(6)
+      CHARACTER*16 CMAPTP(7)
       CHARACTER*8  WTED
       CHARACTER*24 CSERI
       DIMENSION KDEV(4)
@@ -730,7 +734,8 @@ C
 C
       DATA CMAPTP / '    F-Obs map   ' , '   F-Calc map   ' ,
      2              ' Difference map ' , '  FO-Patterson  ' ,
-     3              '  FC-Patterson  ' , '    2Fo-Fc      '/
+     3              '  FC-Patterson  ' , '    2Fo-Fc      ' ,
+     3              ' FoSq-FcSq-Patt '/
 C
 C
       NW=7
@@ -1012,7 +1017,7 @@ C--THIS REFLECTION IS UNIQUE
 C
 C--MAIN LOOP FOR ADDING IN THE GENERATED REFLECTIONS
       DO 2550 I=JA,JB,NW
-      GOTO(2100,2150,2200,2250,2300,2310,2050),IN
+      GOTO(2100,2150,2200,2250,2300,2310,2320,2050),IN
 C2050  STOP 275
 2050  CALL GUEXIT(275)
 C--'FO' FOURIER
@@ -1040,6 +1045,10 @@ c--'2Fo-Fc' Fourier
       F=2. * STORE(I+3)-STORE(I+5)
 csep09      GOTO 2350
       GOTO 2400
+C--'FOsq-FCsq' PATTERSON
+2320  CONTINUE
+      F=(STORE(I+3)*STORE(I+3)) - STORE(I+5)*STORE(I+5)
+      GOTO 2350
 C--ACCUMULATE THE ORIGIN FOR SCALING
 2350  CONTINUE
       STORE(I+6)=0.
