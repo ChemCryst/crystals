@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.49  2012/03/23 13:50:32  rich
+C INW (Intel) compiler support.
+C
 C Revision 1.48  2012/01/04 14:31:25  rich
 C Fix some uninitialized variables, and output format mistakes.
 C
@@ -2052,6 +2055,7 @@ CODE FOR KCRCHK
       EQUIVALENCE (CIN,IIN)
 
       SAVE INICRC
+	  SAVE ICRCTB
       DATA INICRC /0/
 
       IF ( INICRC .EQ. 0 ) THEN
