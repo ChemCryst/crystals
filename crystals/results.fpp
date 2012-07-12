@@ -1,5 +1,7 @@
-C
 C $Log: not supported by cvs2svn $
+C Revision 1.193  2012/07/12 08:39:27  rich
+C Correct index of JLOAD (was out of range).
+C
 C Revision 1.192  2012/07/11 13:46:49  djw
 C Add output message when Hooft parameter does not compute
 C
