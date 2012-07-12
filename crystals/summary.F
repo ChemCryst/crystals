@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.103  2012/06/07 11:59:32  djw
+C Add note about possible causes of P(2) being large (Twinning)
+C
 C Revision 1.102  2011/11/03 09:19:10  rich
 C Fix output format.
 C
@@ -1664,9 +1667,10 @@ CODE FOR XCOMPL
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'QSTORE.INC'
 cdjw0106  problems with dynamic arrays if > about 90,000 refls
-c      DIMENSION IHKLTR ( 3, ITRSZ + 1 )
-      parameter (itrmax=100001)
-      DIMENSION IHKLTR ( 3, itrmax )
+cric0712  problems with static arrays if about 100001 refls...
+      DIMENSION IHKLTR ( 3, ITRSZ + 1 )
+c      parameter (itrmax=100001)
+c      DIMENSION IHKLTR ( 3, itrmax )
       DIMENSION ALLBIN ( 100 )
       DIMENSION FNDBIN ( 100 )
       DIMENSION ACTBIN ( 100 )
@@ -1677,15 +1681,15 @@ c   convert thmax to (sin(th)/lam)^3
       stl3max = sin(dtr*thmax)/store(l13dc)
       stl3max = stl3max*stl3max*stl3max
 c
-      if (itrsz+1 .gt. itrmax) then
-        WRITE ( CMON , '(a,2i8)' ) 
-     1 'Too many reflections to compute completeness ',itrsz,itrmax
-        CALL XPRVDU(NCVDU, 2,0)
-        if (issprt .eq. 0) then
-            write(ncwu,'(a)') cmon(1)(:)
-            return
-        endif
-      endif
+c      if (itrsz+1 .gt. itrmax) then
+c        WRITE ( CMON , '(a,2i8)' ) 
+c     1 'Too many reflections to compute completeness ',itrsz,itrmax
+c        CALL XPRVDU(NCVDU, 2,0)
+c        if (issprt .eq. 0) then
+c            write(ncwu,'(a)') cmon(1)(:)
+c            return
+c        endif
+c      endif
 c
       DO I = 1, 100
         ALLBIN(I) = 0.0
