@@ -1,5 +1,9 @@
 
 c $Log: not supported by cvs2svn $
+c Revision 1.69  2012/07/11 13:51:44  djw
+c Add comparison of Uij.
+c Remove losts of output from listing file.
+c
 c Revision 1.68  2012/05/08 11:16:25  djw
 c Add code to transform and compare Uij values if present.  If either of corresponding atoms is isotropic, comparison is skipped
 c
@@ -2915,6 +2919,14 @@ C
 c
       MISMAT = 0
       NUMT = 0
+      TDEVP = 0.0
+      TDEVN = 0.0
+      TORMAX = 0.0
+      TORMIN = 1000.0
+      TOR1MAX = 0.0
+      TOR1MIN = 1000.0
+      TOR2MAX = 0.0
+      TOR2MIN = 1000.0
 c
 CDJWAPR2012
 C    ONLY PRINT GOODIES IF IMATRIX IS -1
