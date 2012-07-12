@@ -1,5 +1,8 @@
 C
 C $Log: not supported by cvs2svn $
+C Revision 1.192  2012/07/11 13:46:49  djw
+C Add output message when Hooft parameter does not compute
+C
 C Revision 1.191  2012/05/17 09:06:46  djw
 C Remove then restore dividing Friedel differences by sigma.  The scaled graphs look better. We might still want to add plot of Friedel averages.
 C Add new routine to create a minimal cif for use in Mercury
@@ -8642,7 +8645,7 @@ C --  CONVERT ANGLES TO DEGREES.
          STORE(L1P1+4)=RTD*STORE(L1P1+4)
          STORE(L1P1+5)=RTD*STORE(L1P1+5)
          CALL XZEROF (ESD,6)
-         IF (JLOAD(10).GE.1) THEN
+         IF (JLOAD(4).GE.1) THEN
 C----- SCALE DOWN THE ELEMENTS OF THE V/CV MATRIX
             SCALE=STORE(L31K)
             M31=L31
