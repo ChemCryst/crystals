@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2012/03/23 15:50:26  rich
+C Avoid infinite loop if no option specified on command line.
+C
 C Revision 1.9  2012/01/05 16:10:24  djw
 C Add a new I/O chanel with info about missing data
 C Try to select most probable SG which does not involve a permutation of axes.
@@ -57,8 +60,8 @@ c
         stop
       end if
 
-1      CONTINUE
        ctemp = carg2(1:12)
+1      CONTINUE
        CALL XCCUPC(CTEMP,CDIFF)
        idiff = 0
        IF(CDIFF(1:1) .EQ. 'A') THEN
