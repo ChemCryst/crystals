@@ -1,5 +1,8 @@
 C234567890C234567890C234567890C234567890C234567890C234567890C234567890123
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2011/08/31 15:44:04  rich
+C Added initialisation of KOXY variable
+C
 C Revision 1.23  2011/03/21 13:57:21  rich
 C Update files to work with gfortran compiler.
 C
@@ -3066,34 +3069,35 @@ C-- Carbon
           NBT=0
           JAT=LLIG(1)
 
+          IF ( N1 .GT. 0 ) THEN !Not a disconnected carbon (methane)
 C-- Only apply to terminal C - C         (others have been done e.g. C - O)
-          IF (NCC.EQ.1 .AND. ISTORE(AELEM-1+JAT).NE.1) NCC=-1
+            IF (NCC.EQ.1 .AND. ISTORE(AELEM-1+JAT).NE.1) NCC=-1
 C-- terminal C - C  check bond length.
-          IF (NCC.EQ.1) THEN
-            JAT=LLIG(1)
-            CALL PLUDIJ(IAT,JAT,AXYZO,D1)
-          ENDIF
+            IF (NCC.EQ.1) THEN
+              JAT=LLIG(1)
+              CALL PLUDIJ(IAT,JAT,AXYZO,D1)
+            ENDIF
 C-- terminal C  and no hydrogen, Use the bond length
-          IF (NCC.EQ.1 .AND. NHY.EQ.0) THEN
-            NBT=1
-            IF (D1.LT.1.30) NBT=3
-            IF (D1.GE.1.30 .AND. D1.LT.1.44) NBT=2
-          ENDIF
-C-- terminal C and 1 hydrogen - probably triple bond
-          IF (NCC.EQ.1 .AND. NHY.EQ.1 .AND. D1.LT.1.30) NBT=3
-C-- terminal C and 2 hydrogens - probably double bond
-          IF (NCC.EQ.1 .AND. NHY.EQ.2 .AND.
-     +            ISTORE(HYBR+IAT-1).EQ.2) NBT=2
-          IF (NBT.GT.0) CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
-C-- carbon with 4 connections - set all to single bonds
-          IF (NVAL.EQ.4) THEN
-            DO 318 J=1,N1
-              JAT=LLIG(J)
+            IF (NCC.EQ.1 .AND. NHY.EQ.0) THEN
               NBT=1
-              CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
- 318        CONTINUE
+              IF (D1.LT.1.30) NBT=3
+              IF (D1.GE.1.30 .AND. D1.LT.1.44) NBT=2
+            ENDIF
+C-- terminal C and 1 hydrogen - probably triple bond
+            IF (NCC.EQ.1 .AND. NHY.EQ.1 .AND. D1.LT.1.30) NBT=3
+C-- terminal C and 2 hydrogens - probably double bond
+            IF (NCC.EQ.1 .AND. NHY.EQ.2 .AND.
+     +            ISTORE(HYBR+IAT-1).EQ.2) NBT=2
+            IF (NBT.GT.0) CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
+C-- carbon with 4 connections - set all to single bonds
+            IF (NVAL.EQ.4) THEN
+              DO 318 J=1,N1
+                JAT=LLIG(J)
+                NBT=1
+                CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
+ 318          CONTINUE
+            ENDIF
           ENDIF
-
         ENDIF
 
  300  CONTINUE
