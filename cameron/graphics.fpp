@@ -1215,7 +1215,7 @@ C NEED TO DO THE COLOURS
         WRITE (IFOUT,1) IXP/10.0,IYP/10.0,SP,IRP
         WRITE (IFOUT,2) IRAD/10.0,ITHET,ITEND
 1       FORMAT ('/x ',F7.2,' def /y ',F7.2,' def /s ',F8.4
-     c  ,' def /rot ',I4,' def')
+     c  ,' def /rot ',I5,' def')
 2       FORMAT ('/rad ',F7.2,' def /beg ',I5,' def /endarc ',I5,' def
      c  Ellipse')
 3       FORMAT ('/r ',F5.3,' def /g ',F5.3,' def /b ',F5.3,' def')

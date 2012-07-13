@@ -1,6 +1,9 @@
 CRYSTALS CODE FOR CCONTROL.FOR
 
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2012/01/06 12:51:20  rich
+C Remove debugging print from Cameron.
+C
 C Revision 1.24  2012/01/05 17:18:11  rich
 C Fix in and out of new L5 format.
 C
@@ -2605,6 +2608,14 @@ C READ IN THE COORDS ETC.
       READ (IINPT,30,ERR=9999) ATOMNM,RSEI,(COORDS(J),J=1,5)
       WRITE(ATOMNM(5:),'(I5)')NINT(RSEI)
       READ (IINPT,31,ERR=9999) (COORDS(J),J=6,11)
+cdjwjul2012
+      if(coords(6)+coords(7)+coords(8).le.0.0001) then
+       call zmore('Impossibly small adps',0)
+       call zzerof(coords(6),6)
+       coords(6)=0.0001
+       coords(7)=0.0001
+       coords(8)=0.0001
+      endif
 cnov2000
       read (iinpt,32,err=9999) djwtmp(1),(idjwtmp(j),j=2,5)
 c      read (iinpt,32,err=9999) ( djwtmp(j),j=1,5 )
