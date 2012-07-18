@@ -83,16 +83,14 @@
 %         IF ( VALUE .EQ. 1 ) THEN                                              
 %           EVALUATE RUNNOW = TRUE                                              
 %         END IF                                                                
-
 ^^??      XM STATE                                                              
 %         VERIFY ON OFF                                                         
 %         GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
-%         IF ( VALUE .EQ. 0 ) THEN                                              
+%         IF ( VALUE .EQ. 1 ) THEN                                              
 %           EVALUATE MATCH = TRUE                                              
 %         ELSE
 %           EVALUATE MATCH = FALSE
 %         END IF 
-
 ^^??      AN STATE                                                              
 %         VERIFY ON OFF                                                         
 %         GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
