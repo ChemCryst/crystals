@@ -1,6 +1,11 @@
 CRYSTALS CODE FOR CCONTROL.FOR
 
 C $Log: not supported by cvs2svn $
+C Revision 1.26  2012/07/13 15:51:21  djw
+C Horrid patch to fix input when atom is flagged as aniso, but all Uij are zero
+C (cif from joournal). U11,22,33 set to very small number.
+C It would be better to fix the eigen routines, but these were pinched from SNOOPI
+C
 C Revision 1.25  2012/01/06 12:51:20  rich
 C Remove debugging print from Cameron.
 C
@@ -2615,6 +2620,8 @@ cdjwjul2012
        coords(6)=0.0001
        coords(7)=0.0001
        coords(8)=0.0001
+c      set flag to ISO
+       coords(2) = 1.
       endif
 cnov2000
       read (iinpt,32,err=9999) djwtmp(1),(idjwtmp(j),j=2,5)
