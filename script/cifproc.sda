@@ -1,13 +1,21 @@
-# Ensure that this file "cifproc.dat",is in the same folder as the out file 
-# and that it says:
-#edit
-mon off
-list off
-insert resi
-sel type ne h
-end
-#purge list=5
-end
+# Ensure that this file "cifproc.dat",is in the same folder as the out file     
+# and that it says:                                                             
+#edit                                                                           
+mon off                                                                         
+list off                                                                        
+sel type ne h                                                                   
+end                                                                             
+#COLLECT                                                                        
+SELECT TYPE = ALL
+END
+#SCRIPT XSHIFT
+#edit                                                                           
+mon off                                                                         
+list off                                                                        
+insert resi                                                                     
+end                                                                             
+#purge list=5                                                                   
+end  
 #match
 output punch=results
 map resi(1)
