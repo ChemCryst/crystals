@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.49  2012/03/20 11:39:46  rich
+C Ensure avfc is set if only one contributor during merge.
+C
 C Revision 1.48  2012/02/17 15:20:24  djw
 C Merge Fc with the same weights as Fo and save in output merged list.
 C Phase is taken from the root reflection because I dont know how to merge phases
@@ -418,8 +421,12 @@ C--
 C
 C
       PARAMETER (NTOT1=7)
-      DIMENSION ATOT1(NTOT1), ATOT2(NTOT1), RANGE(NTOT1)
-      DIMENSION ITOT1(NTOT1), ITOT2(NTOT1)
+      DIMENSION ATOT1(NTOT1), ITOT1(NTOT1), RANGE(NTOT1)
+      DIMENSION ATOT2(NTOT1), ITOT2(NTOT1)
+CDJW EXTENDED RANGE FOR GRAPHICAL OUTPUT
+      PARAMETER (NTOT3=13)
+      DIMENSION ATOT3(NTOT3), ITOT3(NTOT3), RANGE3(NTOT3)
+      DIMENSION ATOT4(NTOT3), ITOT4(NTOT3)
 C
       PARAMETER (NPROCS=5)
       DIMENSION PROCS(NPROCS)
@@ -439,12 +446,16 @@ C
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XIOBUF.INC'
       CHARACTER *12 CFILE
-      DIMENSION JFRN(4)
+      CHARACTER *13 CFILE2
+      DIMENSION JFRN(4), JFRN2(4)
       DATA CFILE / 'absences.dat' /
+      DATA CFILE2/ 'histogram.dat' /
 #if defined (_HOL_)
-      DATA JFRN /1HF, 1HR, 1HN, 1H1/
+      DATA JFRN  /1HF, 1HR, 1HN, 1H1/
+      DATA JFRN2 /1HF, 1HR, 1HN, 1H2/
 #else
-      DATA JFRN /'F', 'R', 'N', '1'/
+      DATA JFRN  /'F', 'R', 'N', '1'/
+      DATA JFRN2 /'F', 'R', 'N', '2'/
 #endif
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST30.INC'
@@ -455,6 +466,7 @@ C
 C
 C     FIX MAXIMA FROM /FO/MAX
       DATA RANGE /0.,1.,2.,4.,8.,16.,32./
+      DATA RANGE3 /-32., -16.,-8.,-4.,-2.,-1.,0.,1.,2.,4.,8.,16.,32./
       DATA CCAPT / 'Systematic absence' /
 C
 C--SET THE TIMING
@@ -527,9 +539,16 @@ C----- ACCUMULATORS
       ITOT1(I) = 0
       ITOT2(I) = 0
 1410  CONTINUE
-
+      DO I=1,NTOT3
+      ATOT3(I) = 0.0
+      ITOT3(I) = 0
+      ATOT4(I) = 0.0
+      ITOT4(I) = 0
+      ENDDO
+C
       IF ( IULN .EQ. 6 ) THEN
         CALL XRDOPN ( 5 , JFRN(1) , CFILE, 12 )
+        CALL XRDOPN ( 5 , JFRN2(1) , CFILE2, 13 )
         IF (IERFLG .LE. 0) GOTO 9900               !EXIT ON ERROR
         WRITE(NCFPU1,'(A)')'   H   K   L   Fobs^2/Sigma      Fobs^2'
       END IF
@@ -552,42 +571,68 @@ c  CHECK IF IT IS THE FIRST
        FO = STORE(L6+3)
        SUMI = SUMI + FO
        DO 1560 I = 1,NTOT1-1
-       IF (FO .LT. RANGE(I)) THEN
+         IF (FO .LT. RANGE(I)) THEN
             ATOT1(I) = ATOT1(I) + FO
             ITOT1(I) = ITOT1(I) + 1
             GOTO 1561
-       ENDIF
+         ENDIF
 1560   CONTINUE
        ATOT1(NTOT1) = ATOT1(NTOT1) + FO
        ITOT1(NTOT1) = ITOT1(NTOT1) + 1
 1561   CONTINUE
+C
+      DO I=1,NTOT3-1
+         IF (FO .LT. RANGE3(I)) THEN
+            ATOT3(I) = ATOT3(I) + FO
+            ITOT3(I) = ITOT3(I) + 1
+            GOTO 1562
+         ENDIF
+      ENDDO
+       ATOT3(NTOT3) = ATOT3(NTOT3) + FO
+       ITOT3(NTOT3) = ITOT3(NTOT3) + 1
+1562   CONTINUE
 
+c
        CALL XSQRF(FOS, FO, FABS, SIGMAS, STORE(M6+12))
-
+C
        IF(SIGMAS.GT.2.*ZERO) THEN
          SIGRAT = FOS/SIGMAS
        ELSE 
-         SIGRAT = SIGMAS
+         SIGRAT = FOS/2.*ZERO
        END IF
-
        IF ( IULN .EQ. 6 ) THEN
         WRITE(NCFPU1,'(3I4,2(1X,F12.3))') (NINT(STORE(L6+I)),I=0,2),
      1                                  SIGRAT,FOS
        END IF
-
-       IF (STORE(L6+12) .LE. 2.*ZERO) GOTO 1563
-       RATIO = FO / STORE(L6+12)
+C
+       IF (STORE(L6+12) .GE. 2.*ZERO) THEN
+         RATIO = FO / STORE(L6+12)
+       ELSE
+         RATIO = FO / 2. * ZERO
+       ENDIF
        SUMSTN = SUMSTN + RATIO*RATIO
-       DO 1562 I = 1,NTOT1-1
+       DO  I = 1,NTOT1-1
        IF (RATIO .LT. RANGE(I)) THEN
             ATOT2(I) = ATOT2(I) + RATIO*RATIO
             ITOT2(I) = ITOT2(I) + 1
             GOTO 1563
        ENDIF
-1562   CONTINUE
+      ENDDO
        ATOT2(NTOT1) = ATOT2(NTOT1) + RATIO*RATIO
        ITOT2(NTOT1) = ITOT2(NTOT1) + 1
 1563   CONTINUE
+C
+       DO  I = 1,NTOT3-1
+       IF (RATIO .LT. RANGE3(I)) THEN
+            ATOT4(I) = ATOT4(I) + RATIO*RATIO
+            ITOT4(I) = ITOT4(I) + 1
+            GOTO 1564
+       ENDIF
+      ENDDO
+       ATOT4(NTOT3) = ATOT4(NTOT3) + RATIO*RATIO
+       ITOT4(NTOT3) = ITOT4(NTOT3) + 1
+1564   CONTINUE
+C
        CALL XL6RRP(N,1000,IFO,CCAPT)
        GOTO 1450
 c^      endif
@@ -609,10 +654,33 @@ C--LAST REFLECTION READ
       CALL XERT(IULN)
       CALL XSWP06(IULN,MEDIUM)
 C
+cdjwjul2012
+c      write the summary statistics to histogram.dat
+      WRITE(NCFPU2,'(A,A)')
+     1'     Range    number   Sum(fo)  mean(Fo)    ',
+     2'number Sum(ratio)  Mean(ratio)'
+
+      DO I=1,NTOT3
+        if(itot3(i) .gt. 0) then
+          avfo = ATOT3(I)/ITOT3(I)
+        else 
+          avfo = 0.
+        endif
+        if(itot4(i) .gt. 0) then
+          rms = sqrt(ATOT4(I)/ITOT4(I))
+        else 
+          rms = 0.
+        endif
+          WRITE(NCFPU2,1755)
+     1    RANGE3(I), float(itot3(i)), atot3(i), AVFO,
+     2         FLOAT(itot4(i)), atot4(i), rms
+      ENDDO
+1755  FORMAT(f5.0, 3(f6.0,f12.1,f10.2))
       IF ( IULN .EQ. 6 ) THEN
         I = KFLCLS(NCFPU1)
+        I = KFLCLS(NCFPU2)
       END IF
-
+C
       CALL XLINES
       IF (NABSNT .GT. 0) THEN
         IF (ISSPRT .EQ.0 )
@@ -635,6 +703,7 @@ CDJWJUL99]
             ATOT2(I) = 0.0
       ENDIF
 1770  CONTINUE
+C
 C
       WRITE(CMON,1760) (RANGE(I),I=2,NTOT1-1),
      1 ATOT1, ITOT1,   (RANGE(I),I=2,NTOT1-1), ATOT2, ITOT2
