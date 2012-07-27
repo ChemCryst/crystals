@@ -514,7 +514,6 @@
 %   EVALUATE NMBR = 0.1                                                         
 %  END IF                                                                       
 %  STORE REAL NMBR                                                              
-%  GET NOSTORE NOPROMPT REAL ' ' '-1.0'                                        
 %  GET NOPROMPT REAL ' ' '-1.0'                                                
 %  OUTPUT                                                                       
 % END LOOP                                                                      
@@ -551,7 +550,6 @@
 %% skip 3 items
 %  GET nostore NOPROMPT REAL ' ' '-1.0'                                         
 %  GET nostore NOPROMPT REAL ' ' '-1.0'                                         
-%  GET nostore NOPROMPT REAL ' ' '-1.0'                                         
 %  INSERT ! DATA !                                                              
 %  GET NOSTORE NOPROMPT REAL ' ' '-1.0'                                         
 %  EVALUATE NMBR = VALUE                                                        
@@ -560,7 +558,6 @@
 %   EVALUATE NMBR = 0.1                                                         
 %  END IF                                                                       
 %  STORE REAL NMBR                                                              
-%  GET NOSTORE NOPROMPT REAL ' ' '-1.0'                                        
 %  GET NOPROMPT REAL ' ' '-1.0'                                                
 %  OUTPUT                                                                       
 % END LOOP                                                                      

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.50  2012/07/26 14:08:15  djw
+C Create file "histogram.dat" containing details of the systematic absences
+C
 C Revision 1.49  2012/03/20 11:39:46  rich
 C Ensure avfc is set if only one contributor during merge.
 C
@@ -657,8 +660,8 @@ C
 cdjwjul2012
 c      write the summary statistics to histogram.dat
       WRITE(NCFPU2,'(A,A)')
-     1'     Range    number   Sum(fo)  mean(Fo)    ',
-     2'number Sum(ratio)  Mean(ratio)'
+     1' Range    number    mean(Fo)    ',
+     2'number   Mean(ratio)'
 
       DO I=1,NTOT3
         if(itot3(i) .gt. 0) then
@@ -672,10 +675,10 @@ c      write the summary statistics to histogram.dat
           rms = 0.
         endif
           WRITE(NCFPU2,1755)
-     1    RANGE3(I), float(itot3(i)), atot3(i), AVFO,
-     2         FLOAT(itot4(i)), atot4(i), rms
+     1    RANGE3(I), float(itot3(i)),  AVFO,
+     2         FLOAT(itot4(i)),  rms
       ENDDO
-1755  FORMAT(f5.0, 3(f6.0,f12.1,f10.2))
+1755  FORMAT(f5.0, 3(f6.0,f10.2))
       IF ( IULN .EQ. 6 ) THEN
         I = KFLCLS(NCFPU1)
         I = KFLCLS(NCFPU2)
