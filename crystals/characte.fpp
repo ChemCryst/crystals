@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.9  2009/07/08 14:18:16  djw
 C Improve creation of format statement to handle FP numbers over a wide range of values
 C
@@ -1102,3 +1105,30 @@ c  leave room for minus sign
       return
       end
 C
+CODE FOR NCTRIM
+      INTEGER FUNCTION NCTRIM( CSOURC )
+C-- LENGTH OF ARGUMENT EXCLUDING TRAINING SPACES.
+C CODE COPIED FROM \BITS\CHARACT.FOR
+C------ TRIM OFF TRAILING SPACES
+C      CSOURC - SOURCE STRING
+C      NCHAR   - LAST NON-SPACE CHARACTER
+      CHARACTER *(*) CSOURC
+      CHARACTER *1 CBLANK
+      DATA CBLANK /' '/
+C
+      LENGTH = LEN (CSOURC)
+      IF (CSOURC(LENGTH:LENGTH) .NE. CBLANK) THEN
+          NCTRIM = LENGTH
+          RETURN
+      ENDIF
+      DO 100 I = LENGTH, 1, -1
+        IF (CSOURC(I:I) .NE. CBLANK) GOTO 200
+100   CONTINUE
+
+      I = 0
+
+200   CONTINUE
+      NCTRIM = I
+      RETURN
+      END
+c
