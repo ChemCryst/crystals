@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.51  2012/07/27 15:57:29  djw
+C Don't output sums - totals could be very large for a centred cell
+C
 C Revision 1.50  2012/07/26 14:08:15  djw
 C Create file "histogram.dat" containing details of the systematic absences
 C
@@ -427,7 +430,7 @@ C
       DIMENSION ATOT1(NTOT1), ITOT1(NTOT1), RANGE(NTOT1)
       DIMENSION ATOT2(NTOT1), ITOT2(NTOT1)
 CDJW EXTENDED RANGE FOR GRAPHICAL OUTPUT
-      PARAMETER (NTOT3=13)
+      PARAMETER (NTOT3=17)
       DIMENSION ATOT3(NTOT3), ITOT3(NTOT3), RANGE3(NTOT3)
       DIMENSION ATOT4(NTOT3), ITOT4(NTOT3)
 C
@@ -469,7 +472,8 @@ C
 C
 C     FIX MAXIMA FROM /FO/MAX
       DATA RANGE /0.,1.,2.,4.,8.,16.,32./
-      DATA RANGE3 /-32., -16.,-8.,-4.,-2.,-1.,0.,1.,2.,4.,8.,16.,32./
+      DATA RANGE3 /-128.,-64.,-32., -16.,-8.,-4.,-2.,-1.,0.,
+     1  1.,2.,4.,8.,16.,32.,64.,128./
       DATA CCAPT / 'Systematic absence' /
 C
 C--SET THE TIMING
