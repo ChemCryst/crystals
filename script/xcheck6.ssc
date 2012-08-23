@@ -479,9 +479,9 @@
 %  END IF
 %%Histogram
 ^^CO SET PROGOUTPUT TEXT 'Reading histogram from histogram.dat'             
-%  IF ( HIST .AND. LMAONCE ) THEN  
 %    VARIABLE INTEGER NREF MREF
 %    VARIABLE REAL REF
+%  IF ( HIST .AND. LMAONCE ) THEN  
 %    EVALUATE MREF = 10                                           
 %    COPY '#OPEN SCPDATA histogram.dat' 
 %%    FIND NUMBER OF REFLECTIONS 
