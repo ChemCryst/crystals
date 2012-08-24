@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.80  2012/03/20 10:28:25  rich
+C Update L30 with L28 ratio value during SFLS.
+C
 C Revision 1.79  2012/01/05 13:59:18  djw
 C Provide more sig fig for different scalefactors
 C
@@ -559,7 +562,7 @@ C-C-C-SIMILAR CHECKS ALSO IN XSFLSG (NO CHANGE OF LIST 5 BY XSFLSB)
 C--CHECK THAT THERE IS AT LEAST ONE ATOM IN LIST 5
       IF(N5 .LE. 0) GOTO 9940
 C--LOOP OVER EACH ATOM
-      A=0.0
+      A=1000.
       N=0
       DO I=1,N5   ! Safety checks
 C-C-C-CHECK WHETHER ATOM IS ANISOTROPIC
