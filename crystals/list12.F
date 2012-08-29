@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2012/01/04 14:31:25  rich
+C Fix some uninitialized variables, and output format mistakes.
+C
 C Revision 1.21  2011/03/21 13:57:21  rich
 C Update files to work with gfortran compiler.
 C
@@ -1515,14 +1518,14 @@ C SET THE 'EQUIV' AND 'EXPLICIT'
 C INCREMENT THE RELATED PARAMETER COUNT
                         NRELP = NRELP + 1
                         WRITE(CMON,528)STORE(M5S),NINT(STORE(M5S+1))
-     1                  ,COORD(KS+1), CCST
+     1                  ,COORD(KS+1), COORD(JS+1), CCST
                         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
 528                     FORMAT(' Parameters ',A4, I4,4X, A, ' and ', A,
      1                  ' related by ', A)
                       ELSE
 C RELATED COORDS, BUT WE CANNOT SET UP CONSTRAINTS
                         WRITE(CMON,528)STORE(M5S),NINT(STORE(M5S+1))
-     1                    ,COORD(KS+1), CRST
+     1                    ,COORD(KS+1), COORD(JS+1), CRST
                         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
                         CALL XRESTL (KS, COEF(KS), XO(KS),
      1                   JS, COEF(JS), XO(JS), M5S)
