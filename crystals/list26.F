@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2012/07/11 14:07:01  djw
+C remove debugging prints
+C
 C Revision 1.20  2011/10/14 13:48:09  djw
 C Fix interaction between A-DIST and MEAN and DiIFF restraints
 C
@@ -266,6 +269,7 @@ C      17 AVERAGE   18 LIMIT     19 ENERGY   20 ORIGIN
 C
 C--
 C
+      CHARACTER *24 CTEXT
       DIMENSION A1(3)
       INTEGER DIST, ANGLE, STROM, DEG
       DIMENSION DIST(3),ANGLE(3),MSD(3),STROM(2),DEG(2)
@@ -717,24 +721,34 @@ C      IF(ABS(STORE(JS+6))+ABS(STORE(JT+6))-2.*UISO)3350,3500,3500
 cdjwjun09 - print out names of iso atoms
       IF(ABS(STORE(JS+6))+ABS(STORE(JT+6)).lt.UISO) then
 3350   CONTINUE
+c       write(123,'(10f8.5)') (store(idjw),idjw=js+14,js+24,2)
+c       write(123,'(10f8.5)') (store(idjw),idjw=jt+14,jt+24,2)
+       jdjw = 14
        DO 3450 JJ=8,13
+       adjw = store(js+jdjw)
+       bdjw = store(jt+jdjw)
        A1(3)=STORE(L22PD+2)
        A1(2)=2.*SQRT(STORE(L22PD+3))
        A1(1)=0.5*(A1(2)-A1(3))
        A1(2)=A1(2)-A1(1)-B
+c       write(123,'(i6,2f8.5,2x,2f8.5,5x,3f8.5))') 
+c     1 jdjw,adjw,bdjw,store(l22pd+2),store(l22pd+3),a1(1),a1(2),a1(3)
+c
+c Extracting Uij as a1(1) and a1(2) from Store(l22pd+ ) does not 
+c recover the original values because L22pd+3 is a squared value, so the
+c sign is lost.
+c It might be better to use original values at JS and JT.
+c
        IF (ISSPRT .EQ. 0) THEN
        WRITE(NCWU,3250)KF,STORE(JA+2),ISTORE(JA+3),(ISTORE(M),M=JD,JE),
-     2 A1(1),STORE(JB+2),ISTORE(JB+3),(ISTORE(M),M=JF,JG),(A1(M),M=2,3)
-     3 ,(ICOORD(JK,JJ),JK=1,NWKA)
+     2 adjw,STORE(JB+2),ISTORE(JB+3),(ISTORE(M),M=JF,JG),bdjw,A1(3)
+     3 ,(ICOORD(idjw,JJ),idjw=1,NWKA)
        ENDIF
        IF ( (IMON .GT. 0 ) .OR. (ABS(A1(3)) .GE. C ))  THEN
-c         WRITE(NCAWU,3251) KF, STORE(JA+2), ISTORE(JA+3), A1(1),
-c     2   STORE(JB+2),ISTORE(JB+3),A1(2),A1(3),
-c     3   (ICOORD(JK,JJ),JK=1,NWKA)
          IF ((IMON .GE. 1) .AND. (ABS(A1(3)) .GE. C ))THEN
-         WRITE(CMON,3251) KF, STORE(JA+2), ISTORE(JA+3), A1(1),
-     2   STORE(JB+2),ISTORE(JB+3),A1(2),A1(3),
-     3   (ICOORD(JK,JJ),JK=1,NWKA)
+         WRITE(CMON,3251) KF, STORE(JA+2), ISTORE(JA+3), adjw,
+     2   STORE(JB+2),ISTORE(JB+3),bdjw,A1(3),
+     3   (ICOORD(idjw,JJ),idjw=1,NWKA)
          CALL XPRVDU(NCVDU, 1,0)
          ENDIF
        ENDIF
@@ -748,6 +762,7 @@ C--CHECK IF THIS IS THE LAST U(IJ) FOR THIS ATOM
        CALL XDOWNF(M22PD,STORE(L22PD),4)
        M22PD=M22PD+KINCRF(ISTORE(L22PD))
        NCA=NCA+1
+       jdjw = jdjw + 2
 3450   CONTINUE
       else
        if(issprt.eq.0) WRITE(ncwu,'(2x,A1,2(8X,A4,I5,31x),A)')
@@ -921,14 +936,14 @@ C--THIS IS AN ATOMIC PARAMETER
 4600  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,4650)KF,STORE(JA+2),ISTORE(JA+3),(ISTORE(M),M=JD,JE),
-     2 (ICOORD(M,JC),M=1,2), (A1(M),M=1,MM)
+     2 (ICOORD(idjw,JC),idjw=1,2), (A1(M),M=1,MM)
       ENDIF
 4650  FORMAT(2H  ,A1,8X,A4,I5,I6,4I3,6X,2A4,4X,2F10.5)
 c      WRITE(NCAWU,4651)KF,STORE(JA+2),ISTORE(JA+3),
 c     2 (ICOORD(M,JC),M=1,2), (A1(M),M=1,MM)
       IF ((IMON .GE. 1) .AND. (ABS(A1(2)) .GE. C) ) THEN
        WRITE(CMON,4651)KF,STORE(JA+2),ISTORE(JA+3),
-     2 (ICOORD(M,JC),M=1,2), (A1(M),M=1,MM)
+     2 (ICOORD(idjw,JC),idjw=1,2), (A1(M),M=1,MM)
        CALL XPRVDU(NCVDU, 1,0)
       ENDIF
 4651  FORMAT(1X,A1,4X,A4,I4,2X,2A4,2X,2F10.5)
@@ -1326,6 +1341,8 @@ C--SET UP THE ADDRESSES OF THE ATOMS
 C--CHECK IF THE ATOM IS ANISO
 CDJWAPR99 REMEMBER JD+6 IS JUST A FLAG NOW
 c     0=aniso, 1 = iso, 2-4 = shape
+c      x to u[12] OK 2012
+c      write(123,'(10f8.5)') (store(idjw),idjw=jd+8,jd+24,2)
       IF(ABS(STORE(JD+6))-UISO)1050,1400,1400
 C--PASS ONTO THE SECOND OF THE PAIR
 1050  CONTINUE
@@ -1339,6 +1356,7 @@ C--ZERO THE DERIVATIVE AREA
       CALL XZEROF(A1(1),6)
 C--CALCULATE THE DERIVATIVES FOR THE U(IJ)
       DO 1350 JY=1,6
+c      write(123,'(2(i12,f8.5))') jc,store(jc),jd,store(jd)
       JX=JP
       I=1
       JO=JA
@@ -1380,6 +1398,7 @@ C--CLEAR THE P.D. SLOSTS FOR THE NEXT COORD.
       JQ=ISTORE(JQ)
       JW=ISTORE(JW)
 1300  CONTINUE
+c      write(123,'(2(i12,f8.5))') jc,store(jc),jd,store(jd)
       JC=JC+2
       JD=JD+2
 1350  CONTINUE
@@ -1545,7 +1564,7 @@ c      for the asymmetric restraint, should we NOT compute the mean?
       D=D*E                                                             CVC01330
       STORE(L22PD+2)=DUMP-D                                             CVC01340
 C--CALCULATE THE DERIVATIVES FOR THE POSITIONAL COORDS.                 CVC01350
-      E=4.*E                                                            CVC01360
+      ESAVE=4.*E                                                            CVC01360
       V=(F*O+G*T+H*S)*STORE(L1P2)                                       CVC01370
       W=(F*T+G*P+H*R)*STORE(L1P2+1)                                     CVC01380
       X=(F*S+G*R+H*Q)*STORE(L1P2+2)                                     CVC01390
@@ -1554,10 +1573,15 @@ C--CALCULATE THE DERIVATIVES FOR THE POSITIONAL COORDS.                 CVC01350
      2 *X-G*D/STORE(L1P2+1)                                             CVC01420
       H=STORE(L1M1+2)*V+STORE(L1M1+5)*W+STORE(L1M1+8)                   CVC01430
      2 *X-H*D/STORE(L1P2+2)                                             CVC01440
-      JO=JA                                                             CVC01450
+      JO=JA
+      IF (IASYM .EQ. 1) THEN
+         E = 0.                                                             CVC01450
+      ELSE
+         E = ESAVE
+      ENDIF
       CALL XADXYZ                                                       CVC01460
       JO=JB                                                             CVC01470
-      E=-E                                                              CVC01480
+      E=-ESAVE                                                              CVC01480
       CALL XADXYZ                                                       CVC01490
       MCA=JA                                                            CVC01500
       STORE(L22PD+1) = STORE(LCG+3)                                     CVC01510
@@ -2600,6 +2624,7 @@ C--LOOP OVER EACH U(IJ), COMPUTING THE DERIVATIVE, ALLOWING FOR SYMMETRY
       K=NFL+ISTORE(JX+1)+10
       STORE(K)=1.
 C--CALCULATE DU(IJ)'/DU(IJ), WHERE THE ' ALLOWS FOR SYMMETRY
+c      write(123,'(6f10.6)') (store(idjw),idjw=nfl+18,nfl+23)
       CALL XEXANI(NFL+18,NFL)
       CALL XMLTTM(STORE(NFL),STORE(L),STORE(NFL+9),3,3,3)
       CALL XMLTTM(STORE(L),STORE(NFL+9),STORE(NFL),3,3,3)
@@ -2816,8 +2841,8 @@ C--DERIVATIVES FOUND  -  CHECK IF THEY ARE TO BE PRINTED
       WRITE(NCWU,2150)ISTORE(L22PD),STORE(L22PD+1),STORE(L22PD+2),
      2 STORE(L22PD+3),(ISTORE(I),STORE(I+1),I=J,K,MD22PD)
       ENDIF
-2150  FORMAT(16H Derivative(s) :/I10,E20.10,2(10X,E20.10)/(4(I10,
-     2 E20.10)))
+2150  FORMAT(16H Derivative(s) :/I10,/,3(10X,E20.10)/
+     2 (4(I10,E20.10)))
 C--OUTPUT THE QUEUE TO THE DISC
 2200  CONTINUE
       CALL XUPF(M22PD, ISTORE(L22PD), N22PD)
