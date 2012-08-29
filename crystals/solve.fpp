@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.51  2012/03/16 11:04:52  rich
+C Fully expand normal matrix for eigenvalue decomposition (not just lower tri).
+C
 C Revision 1.50  2011/09/01 11:55:27  rich
 C Corrected DU[ISO] scaled shift calc - but it makes no difference.
 C
@@ -987,10 +990,10 @@ C--DETERMINE THE NUMBER OF OBSERVATIONS ETC.
       J=NINT(STORE(L11P+24))   !No X-ray observations
       K=NINT(STORE(L11P+27))   !No of restraints
       L=J+K
-      M=NINT(STORE(L11P+16))   !No of X-rays + restraints
+      M=NINT(STORE(L11P+16))   !No of X-rays + restraints - No of param
 C--PRINT THE HEADING AND THE VARIOUS DETAILS AMASSED
       CALL XPRTCN
-      IF (C .LE. ZERO) THEN
+      IF (L .LE. 0) THEN
         IF (ISSPRT .EQ. 0) THEN
           WRITE(NCWU,4448)
           WRITE(NCWU,4447)
