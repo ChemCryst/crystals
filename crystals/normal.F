@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2012/05/11 12:42:52  rich
+C Fix N(Z) graph when L28 sin(t)/l filter in place. Fix E2-1 value in tabbed analyses.
+C
 C Revision 1.24  2012/02/21 18:28:50  djw
 C Sometimes the Fc Wilson plot was just a vertical line.
 C Logical E5 used for two different purposes. Introduce new temporary logical E5B.
@@ -1206,11 +1209,11 @@ C     CAPTION ACCORDING TO CRYSTAL SYSTEM
      9 1H ,16H(MOD(E**2-1))**3,2X,5F12.3,2X,3F12.3)
 
       IF ( ISTATP .EQ. 1 ) THEN
-        WRITE(CMON,'(A,F12.3)')
-     1  '^^CO SET _MW_E2MIN1 TEXT ',VST(7,1)
+        WRITE(CMON,'(A,F12.3,A)')
+     1  '^^CO SAFESET [ _MW_E2MIN1 TEXT ',VST(7,1), ' ]'
         CALL XPRVDU(NCVDU, 1,0)
-        WRITE(CMON,'(A,F12.3)')
-     1  '^^CO SET _MW_E2MIN2 TEXT ',VST(7,1)
+        WRITE(CMON,'(A,F12.3,A)')
+     1  '^^CO SAFESET [ _MW_E2MIN2 TEXT ',VST(7,1), ' ]'
         CALL XPRVDU(NCVDU, 1,0)
       END IF
 
