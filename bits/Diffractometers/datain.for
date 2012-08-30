@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2012/03/23 15:49:31  rich
+C Intel support.
+C fCVS: ----------------------------------------------------------------------
+C
 C Revision 1.19  2012/01/12 22:15:40  rich
 C Fix reading of oxdiff hkls.
 C
@@ -243,8 +247,8 @@ c.....  wavelength
        FW=NUMB_('_diffrn_radiation_wavelength',WAV,DUM)
       endif
       IF (.NOT.(FW)) THEN
-         write(6,'(/a/)') 'No wavelength '
-         write(NTEXT,'(/a/)') 'No wavelength '
+         write(6,'(a)') 'No wavelength '
+         write(NTEXT,'(a)') 'No wavelength '
       ELSE
          write(6,'(A,F10.5)') 'Wavelength Found',wav
          write(NTEXT,'(A,F10.5)') 'Wavelength Found',wav
@@ -271,7 +275,7 @@ c
       ENDIF
       LFORM=LONG_
       IF (.NOT.(FF)) THEN
-         write(6,'(/a/)') 'No chemical formula given'
+         write(6,'(a)') 'No chemical formula given'
          write(NTEXT,'(/a/)') 'No chemical formula given'
          GO TO 150
       END IF
@@ -289,7 +293,7 @@ c
       F2=NUMB_('_diffrn_orient_matrix_UB_32',RMAT32,DUM).AND.(F2)
       F2=NUMB_('_diffrn_orient_matrix_UB_33',RMAT33,DUM).AND.(F2)
       IF (.NOT.(F2)) THEN
-         write(6,'(/A/)') 'No orient matrix or format error'
+         write(6,'(A)') 'No orient matrix or format error'
          write(NTEXT,'(/A/)') 'No orient matrix or format error'
          GO TO 200
       END IF
@@ -302,7 +306,7 @@ c
        FT=NUMB_('_cell_measurement_theta_max',CMTX,DUM).AND.(FT)
       endif
       IF (.NOT.(FT)) THEN
-         write(6,'(A)') ' No cell measurement info'
+         write(6,'(A)') 'No cell measurement info'
       ELSE
          write(6,'(A)') 'Cell Measurement Data Found'
       END IF
@@ -481,7 +485,7 @@ C....... Extract space group notation (expected char string)
       if(f1)then
        FSG=CHAR_('_symmetry_space_group_name_H-M',NAME)
        IF (.NOT.(FSG)) THEN
-         write(6,'(/a/)') 'No spacegroup found'
+         write(6,'(a)') 'No spacegroup found'
          CSPACE = '?'
          GO TO 1050
        END IF
@@ -607,7 +611,7 @@ c
 240   nsite = nsite+1
       f1 = char_('_atom_site_label', label(nsite,1))
       if(.not.(f1)) then
-        write(6,'(/a/)')   'No atom_site_label found'
+        write(6,'(a)')   'No atom_site_label found'
         nsite=nsite-1
         goto 241
       endif
@@ -661,9 +665,9 @@ C........Check if there are more atoms in the loop to get.
       write(6,*) nsite, ' Atoms found'
 c
       IF (.NOT.(FC)) THEN
-         write(6,'(a)') 'No cell DATA in this block.'
+         write(6,'(//a)') 'No cell DATA in this block.'
          write(NTEXT,'(a)') 'No cell DATA in this block.'
-         write(6,'(a)') 'Trying next block.'
+         write(6,'(//a)') 'Trying next block.'
          write(NTEXT,'(a)') 'Trying next block.'
          GO TO 50
       END IF
