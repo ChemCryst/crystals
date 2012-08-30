@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.5  2012/06/22 16:36:06  djw
+C Tell user at which line the cif file fails
+C Include the function ctonum1 from cif2cry.
+C even though it is not used for diffractometer data
+C
 C Revision 1.4  2012/01/03 14:24:18  rich
 C Allow longer filenames and filenames with spaces in.
 C
@@ -453,18 +458,18 @@ C
          if(type_.eq.'char')                goto 203
          if(type_.eq.'text')                goto 203
          if(type_.eq.'name'.and.loop_)      goto 204
-         write(errdev,'(a,i10)') 
+         write(errdev,'(///a,i10//)') 
      1   ' Illegal tag/value construction at about line', irecd
-         call err(' Aborting ')
+         call err('Aborting ')
 201      if(ltype.ne.'valu')               goto 204
          if(type_.eq.'numb')                goto 202
          if(type_.eq.'char')                goto 202
          if(type_.eq.'text')                goto 202
          goto 204
 202      if(nitem.gt.0)                    goto 205
-         write(errdev,'(a,i10)') 
+         write(errdev,'(///a,i10//)') 
      1   ' Illegal tag/value construction at about line', irecd
-         call err(' Aborting ')
+         call err('Aborting ')
 203      ltype='valu'
          goto 205
 204      ltype=type_
