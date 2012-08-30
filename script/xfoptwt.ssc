@@ -369,7 +369,7 @@ Lowest correlation coefficient for:
 {4,9 of Fo.  CRYSTALS suggest you try a different weighting scheme              
                                                                                 
 %      END IF                                                                   
-% TRANSFER ' Choosing scheme ' // CHARACTER ( slope ) // ' ' TO DISPLAY         
+% TRANSFER '{I Choosing scheme ' // CHARACTER ( slope ) // ' ' TO DISPLAY 
 %        COPY '#LIST 4'                                                         
 %        CLEAR                                                                  
 %        INSERT 'SCHEME NUMBER=14, NPARAM='                                     
