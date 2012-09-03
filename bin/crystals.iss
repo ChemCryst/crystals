@@ -3,9 +3,9 @@
 ;
 ;Adjust the program names and version here as appropriate:
 ;
-AppVerName=CRYSTALS 14.43 (May 2012)
-AppVersion=14.43
-OutputBaseFilename=crystals-a1443-May12-setup
+AppVerName=CRYSTALS 14.52 (Sept 2012)
+AppVersion=14.52
+OutputBaseFilename=crystals-a1452-Sep12-setup
 
 AppName=CRYSTALS
 OutputDir=..\installer
