@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.31  2009/07/24 06:41:59  djw
+// Change colours in charts
+//
 // Revision 1.30  2005/01/23 10:20:24  rich
 // Reinstate CVS log history for C++ files and header files. Recent changes
 // are lost from the log, but not from the files!
@@ -1025,9 +1028,11 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
         int axisheight = ydivoffset * (m_AxisData[Axis_YL].m_NumDiv);               
         int axiswidth = xdivoffset * (m_AxisData[Axis_X].m_NumDiv);
         
-        // take the axis height, work out where zero is...
-        int xorigin = (int)(2400 - xgapleft + ((axiswidth * m_AxisData[Axis_X].m_Min) / (m_AxisData[Axis_X].m_Max - m_AxisData[Axis_X].m_Min)));
-        int yorigin = (int)(2400 - ygapbottom + (axisheight * (m_AxisData[Axis_YL].m_AxisMin/ (m_AxisData[Axis_YL].m_AxisMax - m_AxisData[Axis_YL].m_AxisMin))));
+		
+		// take the axis height, work out where zero is...
+        int xorigin = (int)(xgapleft - ((axiswidth * m_AxisData[Axis_X].m_AxisMin) / (m_AxisData[Axis_X].m_AxisMax - m_AxisData[Axis_X].m_AxisMin)));
+
+		int yorigin = (int)(2400 - ygapbottom + (axisheight * (m_AxisData[Axis_YL].m_AxisMin/ (m_AxisData[Axis_YL].m_AxisMax - m_AxisData[Axis_YL].m_AxisMin))));
         int yorigright = (int)(2400 - ygapbottom + (axisheight * (m_AxisData[Axis_YR].m_AxisMin / (m_AxisData[Axis_YR].m_AxisMax - m_AxisData[Axis_YR].m_AxisMin))));
 
         //this is the value of y at the origin <left> (may be non-zero for span-graphs)
@@ -1046,12 +1051,20 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 
         // now draw the axes in black: overwrite bars
         attachedPlot->SetColour(0,0,0);
-        attachedPlot->DrawLine(3, xgapleft, 2400-ygapbottom-axisheight, xgapleft, 2400-ygapbottom);
-        attachedPlot->DrawLine(3, xgapleft, yorigin, 2400-xgapright, yorigin);
 
-        if(m_NumberOfYAxes == 2)
-            attachedPlot->DrawLine(3, 2400-xgapright, 2400-ygapbottom-axisheight, 2400-xgapright, 2400-ygapbottom);
+		if(m_GraphType == Plot_GraphScatter) {
 
+			attachedPlot->DrawLine(3, xorigin, 2400-ygapbottom-axisheight, xorigin, 2400-ygapbottom);
+		    attachedPlot->DrawLine(3, xgapleft, yorigin, 2400-xgapright, yorigin);
+
+		} else {
+		
+			attachedPlot->DrawLine(3, xgapleft, 2400-ygapbottom-axisheight, xgapleft, 2400-ygapbottom);
+		    attachedPlot->DrawLine(3, xgapleft, yorigin, 2400-xgapright, yorigin);
+
+			if(m_NumberOfYAxes == 2)
+				attachedPlot->DrawLine(3, 2400-xgapright, 2400-ygapbottom-axisheight, 2400-xgapright, 2400-ygapbottom);
+		}
         // the following tries to find an optimal font size
         int fontsize = 12;          // 14 is the max 
         int largest_label_index = -1;
