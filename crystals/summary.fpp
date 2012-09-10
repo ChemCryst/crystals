@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.104  2012/07/12 08:35:14  rich
+C Changed completeness test array back to dynamic - this will still cause problems with large data sets. Need to find a better algorithm soon.
+C
 C Revision 1.103  2012/06/07 11:59:32  djw
 C Add note about possible causes of P(2) being large (Twinning)
 C
@@ -2117,7 +2120,7 @@ c         refinement on F
           WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
      1    NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
           CALL XCRAS(HKLLAB, IHKLLEN)
-          WRITE(CMON,'(3A,2F10.2)')
+          WRITE(CMON,'(3A,2F12.5)')
      1   '^^PL LABEL ''', HKLLAB(1:IHKLLEN), ''' DATA ', 
      2    sig1, wt
           CALL XPRVDU(NCVDU, 1,0)
