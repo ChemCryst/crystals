@@ -20,7 +20,7 @@
 ^^WI SENDTEXTTO XTIPTEXT                                                        
 ^^CR                                                                            
 % LOOP                                                                          
-%  EVALUATE NTIPS = 33
+%  EVALUATE NTIPS = 34
 ^^CO  GETKEY TIP#                                                               
 %  GET SILENT NOSTORE FINAL INTEGER '1' '1'                                     
 %  EVALUATE CTIP = VALUE                                                        
@@ -346,7 +346,7 @@ CRYSTALS will always choose the first one in the list. To change the
 second sulphur to S(2), go to the atom list underneath the diagram.
 Click on S(1) and choose edit. 
 Change the atom type to z and apply the change
-Click on the remaining S(1) and change its serial numner to 2.  Apply.
+Click on the remaining S(1) and change its serial numBer to 2.  Apply.
 Click on the old S(1), now called Z(1), and change the type back to S.
 Apply
 %   END BLOCK                                                                   
@@ -363,7 +363,24 @@ to us by Carmelo Giacovazzo and his colleagues.
 You will need to visit the Sirware website to obtain later
 versions. The input data is not backwards compatible, so
 CRYSTALS includes interfaces to several versions.
-%   END BLOCK                                                                   
+%   END BLOCK  
+%   BLOCK  % TIP 34 
+Space Group No 205 - A TRAP FOR THE UNWARY
+A special case is the cubic space group P a-3 (Nr. 205, complete
+symbol P 21/a-3): In contrast to the cubic symmetry it is not allowed
+to change the axis arbitrarily in this centro-symmetrical space group.
+The reason is that the directions of the glide planes will be changed,
+respectively. If one like to use the symmetry codes of the
+International Tables (and the corresponding reflection conditions) for
+the setting P a-3, it is necessary to set the axis choice
+(orientation) in identical manner as in IT. Therefore, perpendiculary
+to a must be define a b-glide plane, perpendiculary to b must be given
+a c-glide plane and perpendiculary to c an a-glide plane. This can be
+checked using the reflection conditions. If one finds glide planes in
+all three directions, but with incorrect glide vectors, the axis must
+be transformed, respectively. Otherwise the symmetry operation for the
+non-conventional settings P b-3 or P c-3 must be used
+%   END BLOCK  
 %  END CASE                                                                     
 ^^CO SET XTIPTEXT VIEWTOP                                                       
 %  EVALUATE CTIP = CTIP + 1                                                     
