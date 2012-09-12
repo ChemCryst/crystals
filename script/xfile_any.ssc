@@ -27,8 +27,12 @@
 %  IF ( .NOT. ( FILEEXISTS C_FILE ) ) THEN
 %% If called incorrectly or without argument, then get a file.
 ^^WI SYSOPENFILE 
-^^WI '*.ins;*.res;*.hkl;*.hklf5;|CRYSTALS|*.dat;*.cry;*.12;*.use;*.l12;*.l16'
-^^WI 'All files|*.*;|CIF files|*.cif;*.cmf;*.fcf;*.cif_od;|SHELX files'
+^^WI [ '*.ins;*.res;*.hkl;*.hklf5;*.cif;*.cmf;*.fcf;*.cif_od;'
+^^WI   'Crystallographic files'
+^^WI   '*.*;' 'All files (*.*)'
+^^WI   '*.ins;*.res;*.hkl*;*.hkl;' 'SHELX files (*.ins,*.res,*.hkl*)'
+^^WI   '*.dat;*.cry;*.12;*.use;*.l12;*.l16' 'CRYSTALS files (*.dat, etc)'
+^^WI   '*.cif*;*.cmf;*.fcf;' 'CIF files (*.cif*,*.cmf,*.fcf)' ]
 ^^CR                                                                            
 %    GET SILENT NOSTORE TEXT 'New filename:' 'CANCEL'                                                                              
 %    IF CVALUE .NE. 'CANCEL' THEN                                            

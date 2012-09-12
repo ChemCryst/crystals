@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.125  2012/05/17 12:03:54  rich
+// Special case http: links to ShellExecute.
+//
 // Revision 1.124  2012/05/14 15:27:52  rich
 // Sort out use of unicode and non-unicode functions.
 //
@@ -1425,20 +1428,44 @@ bool CcController::ParseInput( deque<string> & tokenList )
             case kTSysOpenFile: //Display OpenFileDialog and send result back to the Script.
             {
                 tokenList.pop_front();    // remove that token
-                string result;
-                string extension = string(tokenList.front()); // Get the extension
-                tokenList.pop_front();
-                string description = string(tokenList.front());   // Get the extension description
-                tokenList.pop_front();
-                if ( !tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kAttributeClass ) == kTTitleOnly)
-                {
-                    result = OpenFileDialog(extension, description, true);
-                    tokenList.pop_front(); //Remove TitleOnly token
-                }
-                else
-                {
-                    result = OpenFileDialog(extension, description, false);
-                }
+		string result;  //the answer
+		list<pair<string,string> > extensionsAndDescriptions;
+
+//Updated syntax use SYSOPENFILE [ 'ext' 'desc' 'ext' 'desc' ]
+                if ( !tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kInstructionClass ) == kTOpenGroup) {
+	                tokenList.pop_front();
+                        while ( !tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kInstructionClass ) != kTCloseGroup) {
+	               		string extension = string(tokenList.front()); // Get the extension
+		                tokenList.pop_front();
+				if ( tokenList.empty() || CcController::GetDescriptor( tokenList.front(), kInstructionClass ) == kTCloseGroup ) {
+	                           LOGWARN( "CcController:ParseInput:SysOpenFile extension string without description");
+				   break;
+				}
+                		string description = string(tokenList.front());   // Get the extension description
+		                tokenList.pop_front();
+				extensionsAndDescriptions.push_back(make_pair(extension,description));
+
+			}
+	                tokenList.pop_front();
+		} else {
+// old syntax
+	                string result;
+        	        string extension = string(tokenList.front()); // Get the extension
+	                tokenList.pop_front();
+	                string description = string(tokenList.front());   // Get the extension description
+	                tokenList.pop_front();
+			extensionsAndDescriptions.push_back(make_pair(extension,description));
+		}
+
+	        if ( !tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kAttributeClass ) == kTTitleOnly)
+	        {
+	            result = OpenFileDialog(extensionsAndDescriptions, true);
+	            tokenList.pop_front(); //Remove TitleOnly token
+	        }
+	        else
+	        {
+	            result = OpenFileDialog(extensionsAndDescriptions, false);
+        	}
                 SendCommand(result);
                 break;
             }
@@ -2450,14 +2477,23 @@ void CcController::ProcessOutput( const string & line )
     if( element != nil ) element->SetText(line);
 }
 
-string CcController::OpenFileDialog(const string &extensionFilter, 
-                                  const string &extensionDescription, 
+string CcController::OpenFileDialog(list<pair<string,string> > &extensionsAndDescriptions, 
                                   bool titleOnly)
 {
+	list<pair<string,string> >::iterator i = extensionsAndDescriptions.begin();
+	list<pair<string,string> >::iterator e = extensionsAndDescriptions.end();
+
 #ifdef __CR_WIN__
     CString pathname, filename, filetitle;
 
-    CString extension = CString(extensionDescription.c_str()) + "|" + CString(extensionFilter.c_str()) + "||" ;
+    CString extension;
+    while ( i!=e ) {
+        extension += CString((i->second).c_str()) + "|" + CString((i->first).c_str()) + "|";
+        ++i;
+    }
+    extension += "|";
+    
+//    CString extension = CString(extensionDescription.c_str()) + "|" + CString(extensionFilter.c_str()) + "||" ;
 
     CFileDialog fileDialog (      true,                   //TRUE for open, FALSE for save
                                 NULL,               //The default extension for the filename
@@ -2495,7 +2531,18 @@ string CcController::OpenFileDialog(const string &extensionFilter,
 #ifdef __BOTHWX__
     wxString pathname, filename, filetitle;
 
-    wxString extension = wxString(extensionDescription.c_str()) + "|" + wxString(extensionFilter.c_str())  ;
+    wxString extension;//  = wxString(extensionDescription.c_str()) + "|" + wxString(extensionFilter.c_str())  ;
+
+    bool firstt = true;
+    while ( i!=e ) {
+        if ( ! firstt ) {
+	        extension += "|";
+	} else {
+                firstt = false;
+	}
+        extension += wxString((i->second.c_str()) + "|" + wxString((i->first).c_str());
+        ++i;
+    }
 
     wxString cwd = wxGetCwd(); //This filedialog changes the working dir. Save it.
 

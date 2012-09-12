@@ -125,7 +125,7 @@ class   CcController
     string GetKey( string key );
     string GetRegKey( string key, string name );
 
-    string OpenFileDialog(const string & extensionFilter, const string & extensionDescription, bool titleOnly);
+    string OpenFileDialog(list<pair<string,string> > &extensionsAndDescriptions, bool titleOnly);
     string SaveFileDialog(const string & defaultName, const string & extensionFilter, const string & extensionDescription);
     string OpenDirDialog();
     void CcChooseFont();
@@ -336,6 +336,9 @@ enum
 
 
 //   $Log: not supported by cvs2svn $
+//   Revision 1.53  2012/05/14 15:27:52  rich
+//   Sort out use of unicode and non-unicode functions.
+//
 //   Revision 1.52  2012/03/26 11:32:47  rich
 //   Typo.
 //
