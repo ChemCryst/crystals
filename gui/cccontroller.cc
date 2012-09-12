@@ -9,6 +9,11 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.126  2012/09/12 13:29:33  rich
+// Better SYSOPENFILE syntax:
+// SYSOPENFILE [ 'wildcard' 'description' 'wildcard2' 'description' ]
+// Add as many wildcard-description pairs to the list as required.
+//
 // Revision 1.125  2012/05/17 12:03:54  rich
 // Special case http: links to ShellExecute.
 //
@@ -2540,7 +2545,7 @@ string CcController::OpenFileDialog(list<pair<string,string> > &extensionsAndDes
 	} else {
                 firstt = false;
 	}
-        extension += wxString((i->second.c_str()) + "|" + wxString((i->first).c_str());
+        extension += wxString((i->second).c_str()) + "|" + wxString((i->first).c_str());
         ++i;
     }
 
