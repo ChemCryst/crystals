@@ -39,7 +39,7 @@ C<ric02/>
       real          dcalc, dobs, molwt
       character*20   colour, shape
 
-      data numer     /'12345678900000000000000000000'/
+      data numer     /'1234567890.000000000000000000'/
       data charcCase /'ABCDEFGHIJKLMNOPQRSTUVWXYZ*?'''/
       data charc     /'abcdefghijklmnopqrstuvwxyz*?'''/
       data noutf    /10/
@@ -441,7 +441,7 @@ C....... Pull apart the composition data into Atom1Number1, Atom2Number2(K4 C6..
          
         do i=1, nelement-1
           iellen=2
-          do j=1,10
+          do j=1,11
             name = cpzlabel(i,1)
             if (numer(j:j).eq.name(2:2)) then
               iellen=1
@@ -948,10 +948,10 @@ C<ric02>
       goto 9999
 8000  CONTINUE    !Usage error
       write(6,'(/3a/)')  'Usage: ',prognm(1:LEN_TRIM(prognm)),
-     1 ' [-f|a] [[-n blockname]Ý[-o outputfile]] [inputfile]'
+     1 ' [-f|a] [[-n blockname]|[-o outputfile]] [inputfile]'
 
       write(17,'(/3a/)')  'Usage: ',prognm(1:LEN_TRIM(prognm)),
-     1 ' [-f|a] [[-n blockname]Ý[-o outputfile]] [inputfile]'
+     1 ' [-f|a] [[-n blockname]|[-o outputfile]] [inputfile]'
 
 
 9999  CONTINUE 
