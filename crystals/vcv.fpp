@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2012/03/23 13:53:43  rich
+C Get atom details for second atom.
+C
 C Revision 1.7  2012/01/04 14:31:25  rich
 C Fix some uninitialized variables, and output format mistakes.
 C
@@ -1196,7 +1199,7 @@ C
             RDEL(I) = RI(I,1) - RI(I,2)
       ENDDO
 C
-      CALL DPROD(RDEL,RDEL,DISTS)
+      CALL DVPROD(RDEL,RDEL,DISTS)
       DIST = SQRT(DISTS)
 C
       DO I = 1,3
@@ -1251,7 +1254,7 @@ C
       DO I = 1,3
             RDEL(I) = RI(I,1) - RI(I,2)
       ENDDO
-      CALL DPROD(RDEL,RDEL,DISTS)
+      CALL DVPROD(RDEL,RDEL,DISTS)
       DIST = SQRT(DISTS)
       DO I = 1,3
          STORE(JFUNC+I-1) = RDEL(I)/DIST

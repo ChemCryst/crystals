@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.37  2012/03/16 15:51:42  rich
+C Bugfix.
+C
 C Revision 1.36  2012/03/16 11:09:53  rich
 C Preserve sign of F in Fo-patterson coefficient.
 C
@@ -4438,8 +4441,8 @@ C GET ADDRESS of THIS POINT in L42M array.
                  XJ(3) = STORE(L42L+6) + STEPS(3) * IZSECT
                  DO ISYM = L42I, L42I+MD42I*(N42I-1), MD42I
                    CALL XMLTMM(STORE(ISYM),HKL42,THKL,3,3,1)
-                   CALL DPROD(STORE(ISYM+9),HKL42,PSHIF)
-                   CALL DPROD(XJ,THKL,FI)
+                   CALL DVPROD(STORE(ISYM+9),HKL42,PSHIF)
+                   CALL DVPROD(XJ,THKL,FI)
                    FA=FA + (cos( TWOPI*(FI+PSHIF) )/FLOAT(ISTORE(M42M)))
                    IF(IC.EQ.0)
      1               FB=FB+(sin( TWOPI*(FI+PSHIF) )/FLOAT(ISTORE(M42M)))

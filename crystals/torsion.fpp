@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2011/09/30 07:07:31  djw
+C Remove diagnostic print
+C
 C Revision 1.10  2011/08/11 09:32:09  djw
 C Check esd is less than zerosq (not zero)
 C
@@ -601,14 +604,14 @@ C
       I = NCROP3(RIJ,RKJ,RMJ)
       I = NCROP3(RKJ,RKL,RNK)
 
-      CALL DPROD(RMJ,RMJ,DMJS)
+      CALL DVPROD(RMJ,RMJ,DMJS)
       DMJ = SQRT(DMJS)
-      CALL DPROD(RNK,RNK,DNKS)
+      CALL DVPROD(RNK,RNK,DNKS)
       DNK = SQRT(DNKS)
-      CALL DPROD(RKJ,RKJ,DKJS)
+      CALL DVPROD(RKJ,RKJ,DKJS)
       DKJ = SQRT(DKJS)
 C
-      CALL DPROD(RMJ,RNK, PROD)
+      CALL DVPROD(RMJ,RNK, PROD)
 C
       TAU = PROD/(DMJ*DNK)
       TAU = ACOS(TAU) * 180./3.14159

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.105  2012/09/10 16:06:17  djw
+C Increase format statement foe weight vs Sigma plot
+C
 C Revision 1.104  2012/07/12 08:35:14  rich
 C Changed completeness test array back to dynamic - this will still cause problems with large data sets. Need to find a better algorithm soon.
 C
@@ -3791,7 +3794,7 @@ C Calculate max distance in A^-2.
       bad(2)=0.5
       bad(3)=0.5
       CALL XMLTMM(STORE(L1M2),BAD,TEMP,3,3,1)
-      CALL DPROD(BAD,TEMP,DMX)
+      CALL DVPROD(BAD,TEMP,DMX)
       DMX = MAX(DMX,ZEROSQ)
       DMX = SQRT(DMX)
 
@@ -3845,7 +3848,7 @@ C SCAN LIST 6 FOR REFLECTIONS
            END DO
  
            CALL XMLTMM(STORE(L1M2),BAD,TEMP,3,3,1)
-           CALL DPROD(BAD,TEMP,D)
+           CALL DVPROD(BAD,TEMP,D)
            IF ( D .GT. ZEROSQ ) D = SQRT(D)
            IF ( D .LT. DMIN ) DMIN = D
 
@@ -3980,7 +3983,7 @@ C SCAN LIST 6 FOR REFLECTIONS
         CALL XMLTMM(STORE(ICOMBF),STORE(M6),GM,3,3,1)
 C If indices are unchanged under op, then this ref is in the group.
         CALL XSUBTR(STORE(M6),GM,GM,3)
-        CALL DPROD(GM,GM,D)
+        CALL DVPROD(GM,GM,D)
         IF ( D .LT. ZERO ) THEN
 C Work out which bin.
           RFO = STORE(M6+3) / STORE(M6+12)
@@ -3988,7 +3991,7 @@ C Work out which bin.
           JSIGS = MAX(JSIGS,1)
           JSIGS = MIN(JSIGS,50)
 C Work out whether inc or exc.
-          CALL DPROD(STORE(ICOMBF+11),STORE(M6),D)
+          CALL DVPROD(STORE(ICOMBF+11),STORE(M6),D)
 
 c          WRITE(CMON,'(4F4.0)')STORE(M6),
 c     1 STORE(M6+1),STORE(M6+2),D

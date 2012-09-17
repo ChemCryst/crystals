@@ -401,7 +401,7 @@ C Sands' book eqn 4-42.
 c        x=d
         CALL XMLTMM(G,D,TEMP,3,3,1)
 c        temp=mvmul(G,d)
-        CALL DPROD(D,TEMP,MAG)
+        CALL DVPROD(D,TEMP,MAG)
 c        mag = dot_product(d,temp)
         mag=sqrt(mag)
         DO I=1,3
@@ -417,7 +417,7 @@ C        r = mvmul(G,d)
 c        r=x
         CALL XMLTMM(GS,R,TEMP,3,3,1)
 c        temp=mvmul(GS,r)
-        CALL DPROD(R,TEMP,MAG)
+        CALL DVPROD(R,TEMP,MAG)
 c        mag = dot_product(r,temp)
         mag=sqrt(mag)
         DO I=1,3
@@ -570,7 +570,7 @@ c      bad(1)=  0.5
 c      bad(2)=  0.5
 c      bad(3)=  0.5
 c      CALL XMLTMM(GS,BAD,TEMP,3,3,1)
-c      CALL DPROD(BAD,TEMP,D1)
+c      CALL DVPROD(BAD,TEMP,D1)
 c      D1 = SQRT(D1)
 c      WRITE(CMON,'(A,G15.8)')'Rotax high dist = ',D1
 c      CALL XPRVDU(NCVDU,1,0)
@@ -584,7 +584,7 @@ c      CALL XPRVDU(NCVDU,1,0)
             bad(2)=  nint(mdisag(2,i))+real(i2) - mdisag(2,i) 
             bad(3)=  nint(mdisag(3,i))+real(i3) - mdisag(3,i) 
             CALL XMLTMM(GS,BAD,TEMP,3,3,1)
-            CALL DPROD(BAD,TEMP,D1)
+            CALL DVPROD(BAD,TEMP,D1)
             D1 = SQRT(D1)
 c            d1 = sqrt(dot_product(bad,mvmul(GS,bad)))
             if (d1<dmin) then
