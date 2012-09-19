@@ -1,0 +1,35 @@
+% SCRIPT XSET28
+% VARIABLE INTEGER FTYPE
+%%  SET TO Fsq BY DEFAULT (-1 = F in LIST 23)
+%   EVALUATE FTYPE = 0
+%   IF ( EXISTS ( 23 ) .EQ. 1 ) THEN
+%%   LIST 23 EXISTS - FIND REFINEMENT TYPE                                         
+%% FIND OUT IF F OR FSQ REFINEMENT                                              
+%    COPY '#GENERALEDIT 23'                                                     
+%    COPY 'LOCATE RECORDTYPE=103'                                               
+%    COPY 'TRANSFER FROM OFFSET=1 TO FTYPE'                                     
+%    COPY 'END'                                                                 
+%   END IF
+%   EVALUATE FTYPE = FTYPE + 1                                                 
+%% 
+%   IF ( EXISTS ( 28 ) .NE. 1 ) THEN
+%%   No list 28 - recommended defaults:                                         
+{R There are no conditions in the current list 28.                              
+%    COPY '#LIST 28'                                                            
+%    CLEAR                                                                      
+%    INSERT 'MINIMA '                                                           
+%    IF ( FTYPE .eq. 0 ) THEN                                                       
+{I For F refinement, a default I/u(I) minimum of 3.0 is recommended.            
+%      INSERT 'RATIO=3.0 '                                                      
+%    ELSE                                                                       
+{I For FSQ refinement, a default I/u(I) minimum of -3.0 is recommended.         
+%      INSERT 'RATIO=-3.0 '                                                     
+%    END IF                                                                     
+{I A default sin(theta)/lambda minimum of 0.01 is recommended.                  
+%    INSERT 'SINT=0.01 '                                                        
+%    SEND                                                                       
+%    COPY 'END'                                                                 
+%   ELSE
+{I Leaving LIST 28 (filters) unchanged
+%   END IF
+% END SCRIPT

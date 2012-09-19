@@ -1,6 +1,6 @@
 %SCRIPT XFRIEDEL                                                               
 % VARIABLE LOGICAL XQMERGE                                                      
-% VARIABLE INTEGER FRIEDELF FTYPE                                                   
+% VARIABLE INTEGER FRIEDELF 
 % VARIABLE REAL FCENTRO  
 %% get wavelength and Zmaz
 % VARIABLE REAL WORK1 WAVE ZMAX 
@@ -39,32 +39,7 @@
 %   COPY 'END'                                                                  
 % END IF                                                                        
 %%
-%   IF ( EXISTS ( 28 ) .NE. 1 ) THEN
-%%   No list 28 - recommended defaults:                                         
-{R There are no conditions in the current list 28.                              
-%% FIND OUT IF F OR FSQ REFINEMENT                                              
-%    COPY '#GENERALEDIT 23'                                                     
-%    COPY 'LOCATE RECORDTYPE=103'                                               
-%    COPY 'TRANSFER FROM OFFSET=1 TO FTYPE'                                     
-%    COPY 'END'                                                                 
-%    evaluate ftype = ftype + 1                                                 
-%    COPY '#LIST 28'                                                            
-%    CLEAR                                                                      
-%    INSERT 'MINIMA '                                                           
-%    IF ( FTYPE .eq. 0 ) THEN                                                       
-{I For F refinement, a default I/u(I) minimum of 3.0 is recommended.            
-%      INSERT 'RATIO=3.0 '                                                      
-%    ELSE                                                                       
-{I For FSQ refinement, a default I/u(I) minimum of -3.0 is recommended.         
-%      INSERT 'RATIO=-3.0 '                                                     
-%    END IF                                                                     
-{I A default sin(theta)/lambda minimum of 0.01 is recommended.                  
-%    INSERT 'SINT=0.01 '                                                        
-%    SEND                                                                       
-%    COPY 'END'                                                                 
-%   ELSE
-{I Leaving LIST 28 (filters) unchanged
-%   END IF
+%   COPY '#SCRIPT XSET28'
 %%                                                                              
 ^^WI WINDOW XFRIEDEL 'Merge' MODAL COMMIT='MF_BOK' CANCEL='MF_BXX'              
 ^^WI GRID MAIN NROWS=6 NCOLS=3                                                  
