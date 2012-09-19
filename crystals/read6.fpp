@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.36  2011/09/05 07:54:49  djw
+C Output message in RED with line number if errors in reflection file
+C
 C Revision 1.35  2011/06/06 13:10:37  djw
 C Catch reflection indices out of range in Agilent datafiles
 C
@@ -1267,6 +1270,9 @@ c      WRITE (NCAWU,'(A)') CMON(1)(:)
 C----- ONLY UPDATE LIST 30 FOR LIST 6 TYPE INPUT
       IF (IULN .EQ. 6) THEN
 C----- IF ITYPE6 .NE. 'COPY'  OR 'TWIN' WE WERE PROBABLY READING RAW DATA
+cdjw Sept 2012.  Twinned data is probably merged by instrument software, 
+c   but we dont know what was done with FRIEDEL pairs.
+c   Hence, we dont know whather to update DR+2 or DR+4
        IF ((ITYPE6.NE.1).AND.(ITYPE6.NE.5)) THEN
          IF (KHUNTR(30,0,IADDL,IADDR,IADDD,-1).LT.0) CALL XFAL30
 C         IF (STORE(L30DR).LE.ZERO) STORE(L30DR)=FLOAT(N6W)
