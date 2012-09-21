@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.194  2012/07/12 10:22:06  rich
+C Remove first comment line - latest checkin caused some problem with DF compiler.
+C
 C Revision 1.193  2012/07/12 08:39:27  rich
 C Correct index of JLOAD (was out of range).
 C
@@ -7935,12 +7938,14 @@ C
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
          IF (STORE(L30GE+7).GE..3) THEN
-            WRITE (CMON,'(a/a/)') 
-     1  ' The absolute configuration has not been reliably determined',
-     2  ' Flack & Bernardinelli., J. Appl. Cryst. (2000). 33,1143-1148'
+            WRITE (CMON,'(a,a/a,a/)') 
+     1  '{E The absolute configuration has not been reliably',
+     1  ' determined',
+     2  '{E Flack & Bernardinelli., J. Appl. Cryst. (2000).',
+     2  ' 33,1143-1148'
             CALL XPRVDU (NCVDU,3,0)
-            IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)') CMON(1)(:)
-            IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(4)(:)
+            IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)') CMON(1)(3:)
+            IF (ISSPRT.EQ.0) WRITE (NCWU,'(A/)') CMON(3)(3:)
          END IF
 C 
          XPLLL=DATC(NSPP_241)-DATCM
