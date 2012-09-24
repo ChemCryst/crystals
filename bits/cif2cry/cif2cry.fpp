@@ -44,6 +44,26 @@ C<ric02/>
       data charc     /'abcdefghijklmnopqrstuvwxyz*?'''/
       data noutf    /10/
       data noutr    /11/
+      data dobs    /0.0/
+      data temperature    /0.0/
+      data stand    /0.0/
+      data decay    /0.0/
+      data dcalc    /0.0/
+      data molwt    /0.0/
+      data norien   /0.0/
+      data thorientmin   /0.0/
+      data thorientmax   /0.0/
+      data hmax    /0.0/
+      data kmax    /0.0/
+      data lmax    /0.0/
+      data hmin    /0.0/
+      data kmin    /0.0/
+      data lmin    /0.0/
+      data r    /0.0/
+      data rw    /0.0/
+      data s    /0.0/
+      data nparam    /0.0/
+
 
 	  data probably_neutrons /.false./
 	  
@@ -266,6 +286,13 @@ C....... Read in cell data and esds
 C....... ==========================
 C....... f1 ends up false if any of these functions fail.
 
+      siga = 999.99
+      sigb = 999.99
+      sigc = 999.99
+      sigalp = 999.99
+      sigbet = 999.99
+      siggam = 999.99
+
       f1 = numb_('_cell_length_a', cela, siga)
       f1 = (numb_('_cell_length_b', celb, sigb)).AND.(f1)
       f1 = (numb_('_cell_length_c', celc, sigc)).AND.(f1)
@@ -284,21 +311,23 @@ C....... Write out a crystals instruction:
      *                              celalp,celbet,celgam
        write(NOUTF,'(a)') 'END'
        DTRSQ = .000305
-       write(NOUTF,'(a)') '#LIST 31'
-       write(NOUTF,'(a)') 'AMULT 1.0'
-       write(NOUTF,'(a,1x,F12.10,A)') 'MATRIX', SIGA*SIGA,
+       if ( siga+sigb+sigc+sigalp+sigbet+siggam .lt. 999.0) then
+        write(NOUTF,'(a)') '#LIST 31'
+        write(NOUTF,'(a)') 'AMULT 1.0'
+        write(NOUTF,'(a,1x,F12.10,A)') 'MATRIX', SIGA*SIGA,
      1 ' 0.0 0.0 0.0 0.0 0.0 '
-       write(NOUTF,'(a,1x,F12.10,A)') 'CONT', SIGB*SIGB,
+        write(NOUTF,'(a,1x,F12.10,A)') 'CONT', SIGB*SIGB,
      1 ' 0.0 0.0 0.0 0.0  '
-       write(NOUTF,'(a,1x,F12.10,A)') 'CONT', SIGC*SIGC,
+        write(NOUTF,'(a,1x,F12.10,A)') 'CONT', SIGC*SIGC,
      1 ' 0.0 0.0 0.0  '
-       write(NOUTF,'(a,1x,F12.10,A)') 'CONT', 
+        write(NOUTF,'(a,1x,F12.10,A)') 'CONT', 
      1 SIGALP*SIGALP*DTRSQ,' 0.0 0.0  '
-       write(NOUTF,'(a,1x,F12.10,A)') 'CONT', 
+        write(NOUTF,'(a,1x,F12.10,A)') 'CONT', 
      1 SIGBET*SIGBET*DTRSQ,' 0.0  '
-       write(NOUTF,'(a,1x,F12.10,A)') 'CONT', 
+        write(NOUTF,'(a,1x,F12.10,A)') 'CONT', 
      1 SIGGAM*SIGGAM*DTRSQ,'  '
-       write(NOUTF,'(a)') 'END'
+        write(NOUTF,'(a)') 'END'
+       end if
       endif
 
 C     probably_neutrons only true if a1 coeff are present and all zero.
@@ -820,13 +849,13 @@ cdjw oct07 - read reflections
           exit
         end if
 
-        if ( rf .lt. 100000 ) then
+        if (( rf .lt. 100000 ).and.( rc .lt. 100000 )) then
           write ( noutr, '(3I4,3F8.2)' )NINT(rh),NINT(rk),NINT(rl),rf,rs
      1                                  ,rc
-        else if ( rf .lt. 100000 ) then
+        else if (( rf .lt. 1000000 ).and.( rc .lt. 1000000 )) then
           write ( noutr, '(3I4,3F8.1)' )NINT(rh),NINT(rk),NINT(rl),rf,rs
      1                                  ,rc
-        else if ( rf .lt. 10000000 ) then
+        else if (( rf .lt. 10000000 ).and.( rc .lt. 10000000 )) then
           write ( noutr, '(3I4,3F8.0)' )NINT(rh),NINT(rk),NINT(rl),rf,rs
      1                                  ,rc
         else
