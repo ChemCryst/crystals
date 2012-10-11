@@ -1,0 +1,538 @@
+%SCRIPT XACTA
+%%
+%% A Script to check some constants against some of the ACTA
+%% submission requirements.
+%%
+%  VARIABLE INTEGER ERRFLAG ALERTFLAG WARNFLAG IANOMA LOCALFLAG
+%  VARIABLE CHARACTER CDLINE
+%  VARIABLE REAL WORK1 WORK2 WORK3 ZMAX CENTRO
+%  VARIABLE LOGICAL VALIDPASS VALIDFAIL
+%  EVALUATE VALIDFAIL = TRUE
+%  EVALUATE VALIDPASS = FALSE
+%  EVALUATE ALERTFLAG = 0
+%  EVALUATE WARNFLAG = 0
+%%
+%%   Re-calculate the electron density.
+{S * Recalculating min and max electron density.
+%  COPY '#SCRIPT PREFOUR'
+%  COPY 'MAP TYPE=DIFF'
+%  COPY 'END'
+%  COPY '#SCRIPT POSTFOUR'
+{S * Recalculating R.
+%  EVALUATE ERRFLAG = 1
+%  BLOCK
+%   ON ERROR TERMINATE
+%   COPY '#SFLS'
+%   COPY 'CALC'
+%   COPY 'END'
+%   EVALUATE ERRFLAG = 0
+%  END BLOCK
+%  IF ERRFLAG .NE. 0 THEN
+ 
+{E **** Fatal: Error in calculating phases.
+{R Do you have Fourier peaks ('Q,L,R or M') in your model?
+
+%     FINISH
+%  END IF
+
+{S * Checking data against some IUCr validation criteria...
+          {I A quick guide to possible warnings:                          {N
+          {I *    ALERT = Not too serious, may indicate problems          {N
+          {I **   WARN  = Problem - will need correcting or investigation.{N
+          {I ***  FAIL  = Serious problem or incomplete refinement.       {N
+          {I **** FATAL = Missing data prevents checking.                 {N
+
+%%
+%% Check List 30 exists.
+%%
+%  BLOCK
+%    IF ( EXISTS 30 .NE. 1 ) THEN
+{E **** FATAL: There in no LIST 30 with the general details available
+{R             Have you actually carried out an analysis?
+%      FINISH
+%    END IF
+%    IF ( EXISTS 29 .NE. 1 ) THEN
+{E **** FATAL: There in no LIST 29 (atomic properties).
+{R             Have you actually carried out an analysis?
+        FINISH
+%     END IF
+%     IF ( EXISTS 2 .NE. 1 ) THEN
+{E **** FATAL: No list 2 (symmetry) present
+{R             Have you carried out an analysis?
+        FINISH
+%     END IF
+%  END BLOCK
+^^WI WINDOW ACTA 'Publication checks' MODAL COMMIT='ACOK' CANCEL='ACOK'
+^^WI GRID GRIDM NROWS=5 NCOLS=3
+^^WI {
+^^WI   @ 4,2 GRID RESULTS NROWS=14 NCOLS=5
+^^WI   {
+%%
+%% Crystals Size
+%%
+^^WI     @ 1,1 STATIC C1 'Crystal size'
+%  BLOCK
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 102'
+%    COPY 'TRANSFER FROM OFFSET = 0 TO WORK1'
+%    COPY 'TRANSFER FROM OFFSET = 1 TO WORK2'
+%    COPY 'TRANSFER FROM OFFSET = 2 TO WORK3'
+%    COPY 'END'
+^^WI     @ 1,3 STATIC C2 'OK'
+%    CLEAR
+%    INSERT "^^WI '"
+%    EVALUATE LOCALFLAG = 0
+%    IF WORK1 .GT. 0.6 THEN
+%       INSERT 'Min > 0.6mm '
+^^WI    TEXT 'Warning'
+%       EVALUATE WARNFLAG = WARNFLAG + 1
+%       EVALUATE LOCALFLAG = LOCALFLAG + 1
+%    END IF
+%    IF WORK2 .GT. 0.8 THEN
+%       INSERT 'Med > 0.8mm '
+^^WI    TEXT 'Warning'
+%       EVALUATE WARNFLAG = WARNFLAG + 1
+%       EVALUATE LOCALFLAG = LOCALFLAG + 1
+%    END IF
+%    IF WORK3 .GT. 1.0 THEN
+%       INSERT 'Max > 1.0mm'
+^^WI    TEXT 'Warning'
+%       EVALUATE WARNFLAG = WARNFLAG + 1
+%       EVALUATE LOCALFLAG = LOCALFLAG + 1
+%    END IF
+%    IF LOCALFLAG .EQ. 0 THEN
+^^WI    TEXT 'OK'
+%    END IF
+%    INSERT "'"
+^^WI    @ 1,5 STATIC C3 
+%   OUTPUT
+%  END BLOCK
+%%
+%% Temperature
+%%
+^^WI     @ 2,1 STATIC T1 'Temperature'
+^^WI     @ 2,3 STATIC T2 'OK'
+%  BLOCK
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 102'
+%    COPY 'TRANSFER FROM OFFSET = 6 TO WORK1'
+%    COPY 'END'
+%    IF WORK1 .LT. 25.0 THEN
+^^WI    TEXT 'Alert'
+^^WI    @ 2,5 STATIC T3 'Temperaure < 25K. Are you sure?'
+%       EVALUATE ALERTFLAG = ALERTFLAG + 1
+%    END IF
+%  END BLOCK
+%%
+%% Anomalous scattering
+%%
+^^WI     @ 3,1 STATIC A1 'Anomalous scattering'
+^^WI     @ 3,3 STATIC A2 'Checking .....'
+%  BLOCK
+%    COPY '#GENERALEDIT 23'
+%    COPY 'LOCATE RECORDTYPE = 101'
+%    COPY 'TRANSFER FROM OFFSET = 0 TO IANOMA'
+%    COPY 'END'
+%    IF ( IANOMA .EQ. - 1 ) THEN
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+^^WI    TEXT 'Fail'
+^^WI    @ 3,5 STATIC A3 'Anom. disp. correction must be used.'
+%    ELSE
+^^WI    TEXT 'OK'
+%    END IF
+%  END BLOCK
+%%
+%% Sigma cutoff
+%%
+^^WI     @ 4,1 STATIC A1 'I/u(I) cutoff'
+^^WI     @ 4,3 STATIC A2 'OK'
+%  BLOCK
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 103'
+%    COPY 'TRANSFER FROM OFFSET = 3 TO WORK1'
+%    COPY 'END'
+%    IF WORK1 .GE. 12.0 THEN
+^^WI    TEXT 'Fail'
+^^WI    @ 4,5 STATIC A3 'I/u(I) >= 12'
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    ELSE
+%       IF WORK1 .GE. 10.0 THEN
+^^WI       TEXT 'Warn'
+^^WI       @ 4,5 STATIC A3 'I/u(I) >= 10'
+%          EVALUATE WARNFLAG = WARNFLAG + 1
+%       ELSE
+%          IF WORK1 .GE. 8.0 THEN
+^^WI          TEXT 'Alert'
+^^WI          @ 4,5 STATIC A3 'I/u(I) >= 8'
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%          END IF
+%       END IF
+%    END IF
+%  END BLOCK
+%%
+%% Rint
+%%
+^^WI     @ 5,1 STATIC A1 'Merging R'
+^^WI     @ 5,3 STATIC A2 'OK'
+%  BLOCK
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 101'
+%    COPY 'TRANSFER FROM OFFSET = 3 TO WORK1'
+%    COPY 'END'
+%    IF WORK1 .GT. 0.20 THEN
+^^WI    TEXT 'Fail'
+^^WI    @ 5,5 STATIC A3 'Rmerge > 20%. Poor data.'
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    ELSE
+%       IF WORK1 .GE. 0.15 THEN
+^^WI       TEXT 'Warn'
+^^WI       @ 5,5 STATIC A3 'Rmerge > 15%. Poor data.'
+%          EVALUATE WARNFLAG = WARNFLAG + 1
+%       ELSE
+%          IF WORK1 .GE. 0.10 THEN
+^^WI          TEXT 'Alert'
+^^WI          @ 5,5 STATIC A3 'Rmerge > 10%. Not brilliant.'
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%          END IF
+%       END IF
+%    END IF
+%  END BLOCK
+%%
+%% Rfactor, weighted R-factor, GOF
+%%
+^^WI     @ 6,1 STATIC A1 'R factor'
+^^WI     @ 6,3 STATIC A2 'OK'
+%  BLOCK
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 103'
+%    COPY 'TRANSFER FROM OFFSET = 0 TO WORK1'
+%    COPY 'TRANSFER FROM OFFSET = 1 TO WORK2'
+%    COPY 'TRANSFER FROM OFFSET = 4 TO WORK3'
+%    COPY 'END'
+%    IF WORK1 .GT. 20.0 THEN
+^^WI    TEXT 'Fail'
+^^WI    @ 6,5 STATIC A3 'R > 20%, should be < 10%'
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    ELSE
+%       IF WORK1 .GE. 15.0 THEN
+^^WI       TEXT 'Warn'
+^^WI       @ 6,5 STATIC A3 'R > 15%, should be < 10%'
+%          EVALUATE WARNFLAG = WARNFLAG + 1
+%       ELSE
+%          IF WORK1 .GE. 10.0 THEN
+^^WI          TEXT 'Alert'
+^^WI          @ 6,5 STATIC A3 'R > 10%, should be lower.'
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%          END IF
+%       END IF
+%    END IF
+^^WI     @ 7,1 STATIC A1 'R factor'
+^^WI     @ 7,3 STATIC A2 'OK'
+%    IF WORK2 .GT. 45.0 THEN
+^^WI    TEXT 'Fail'
+^^WI    @ 7,5 STATIC A3 'Rw > 45%, should be < 25%'
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    ELSE
+%       IF WORK2 .GE. 35.0 THEN
+^^WI       TEXT 'Warn'
+^^WI       @ 7,5 STATIC A3 'Rw > 35%, should be < 25%'
+%          EVALUATE WARNFLAG = WARNFLAG + 1
+%       ELSE
+%          IF WORK2 .GE. 25.0 THEN
+^^WI          TEXT 'Alert'
+^^WI          @ 7,5 STATIC A3 'Rw > 25%, should be lower.'
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%          END IF
+%       END IF
+%    END IF
+^^WI     @ 8,1 STATIC A1 'Goodness of fit'
+^^WI     @ 8,3 STATIC A2 'OK'
+%    IF WORK3 .GT. 6.0 THEN
+^^WI    TEXT 'Fail'
+^^WI    @ 8,5 STATIC A3 'GooF > 6.0'
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    ELSE
+%       IF WORK3 .GT. 4.0 THEN
+^^WI       TEXT 'Warn'
+^^WI       @ 8,5 STATIC A3 'GooF > 4.0'
+%          EVALUATE WARNFLAG = WARNFLAG + 1
+%       ELSE
+%          IF WORK3 .GT. 2.0 THEN
+^^WI          TEXT 'Alert'
+^^WI          @ 8,5 STATIC A3 'GooF > 2.0'
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%          END IF
+%       END IF
+%    END IF
+%    IF WORK3 .LT. 0.4 THEN
+^^WI    TEXT 'Fail'
+^^WI    @ 8,5 STATIC A3 'GooF < 0.4'
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    ELSE
+%       IF WORK3 .LT. 0.6 THEN
+^^WI       TEXT 'Warn'
+^^WI       @ 8,5 STATIC A3 'GooF < 0.6'
+%          EVALUATE WARNFLAG = WARNFLAG + 1
+%       ELSE
+%          IF WORK3 .LT. 0.8 THEN
+^^WI          TEXT 'Alert'
+^^WI          @ 8,5 STATIC A3 'GooF < 0.8'
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%          END IF
+%       END IF
+%    END IF
+%  END BLOCK
+%%
+%% Shift / esd
+%%
+^^WI     @ 9,1 STATIC A1 'Shift/su'
+^^WI     @ 9,3 STATIC A2 'OK'
+%  BLOCK
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 103'
+%    COPY 'TRANSFER FROM OFFSET = 7 TO WORK1'
+%    COPY 'END'
+%    IF WORK1 .GT. 0.20 THEN
+^^WI    TEXT 'Fail'
+^^WI    @ 9,5 STATIC A3 ' > 0.20. Refinement not converged.'
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    ELSE
+%       IF WORK1 .GE. 0.10 THEN
+^^WI       TEXT 'Warn'
+^^WI       @ 9,5 STATIC A3 ' > 0.10. Refinement not converged.'
+%          EVALUATE WARNFLAG = WARNFLAG + 1
+%       ELSE
+%          IF WORK1 .GE. 0.05 THEN
+{I *   ALERT: Shift / esd > 0.05
+^^WI          TEXT 'Alert'
+^^WI          @ 9,5 STATIC A3 ' > 0.05. Refinement not converged?'
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%          END IF
+%       END IF
+%    END IF
+%  END BLOCK
+%%
+%% Diff density:
+%%
+%% NB. We need ZMAX, but element number information isn't known
+%% to CRYSTALS. Instead (as this is a fairly arbitrary test anyway)
+%% we assume that Z is (Atomic weight / 2.484)
+%% NB. Store ZMAX/10.0 (ie. divide weight by 24.84)
+%%
+%   BLOCK
+%%
+%     COPY '#GENERALEDIT 29'
+%     COPY 'LOCATE RECORDTYPE=101'
+%     COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%     LOOP
+%       ON EDITERROR TERMINATE
+%       COPY 'TRANSFER FROM OFFSET=6 TO WORK1'
+%       IF ( WORK1 .GT. ZMAX ) THEN
+%          EVALUATE ZMAX = WORK1
+%       END IF
+%       COPY 'NEXT'
+%     END LOOP
+%     COPY 'END'
+%     EVALUATE ZMAX = ZMAX / 24.84
+%%
+%     COPY '#GENERALEDIT 2'
+%     COPY 'LOCATE RECORDTYPE=101'
+%     COPY 'TRANSFER FROM OFFSET=0 TO CENTRO'
+%     COPY 'END'
+%%
+%%
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 103'
+%    COPY 'TRANSFER FROM OFFSET = 5 TO WORK1'
+%    COPY 'TRANSFER FROM OFFSET = 6 TO WORK2'
+%    COPY 'END'
+%%
+%%   DelRhoMin
+^^WI     @ 10,1 STATIC A1 'Min electron density'
+^^WI     @ 10,3 STATIC A2 'OK'
+%%
+%    IF WORK1 .LT. ( - ZMAX * 2.0 ) THEN
+^^WI    TEXT 'Fail'
+^^WI    @ 10,5 STATIC A3 ' < -0.2 x Zmax. Poor model?'
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    ELSE
+%       IF WORK1 .LT. ( - ZMAX ) THEN
+^^WI       TEXT 'Warn'
+^^WI       @ 10,5 STATIC A3 ' < -0.1 x Zmax. Poor model?'
+%          EVALUATE WARNFLAG = WARNFLAG + 1
+%       ELSE
+%          IF WORK1 .LT. ( - ZMAX * 0.75 ) THEN
+^^WI          TEXT 'Alert'
+^^WI          @ 10,5 STATIC A3 ' < -0.075 x Zmax. Poor model?'
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%          END IF
+%       END IF
+%    END IF
+%%
+%%   DelRhoMax
+^^WI     @ 11,1 STATIC A1 'Max electron density'
+^^WI     @ 11,3 STATIC A2 'OK'
+%%          
+%    IF WORK2 .GT. ( ZMAX * 2.0 ) THEN
+^^WI    TEXT 'Fail'
+^^WI    @ 11,5 STATIC A3 ' > 0.2 x Zmax. Poor model?'
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    ELSE
+%       IF WORK2 .LT. ( - ZMAX ) THEN
+^^WI       TEXT 'Warn'
+^^WI       @ 11,5 STATIC A3 ' > 0.1 x Zmax. Poor model?'
+%          EVALUATE WARNFLAG = WARNFLAG + 1
+%       ELSE
+%          IF WORK2 .LT. ( - ZMAX * 0.75 ) THEN
+^^WI          TEXT 'Alert'
+^^WI          @ 11,5 STATIC A3 ' > 0.075 x Zmax. Poor model?'
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%          END IF
+%       END IF
+%    END IF
+%  END BLOCK
+%%
+%% Flack parameter.
+%%
+^^WI     @ 12,1 STATIC A1 'Flack value'
+^^WI     @ 12,3 STATIC A2 'OK'
+%  BLOCK
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 106'
+%    COPY 'TRANSFER FROM OFFSET = 6 TO WORK1'
+%    COPY 'TRANSFER FROM OFFSET = 7 TO WORK2'
+%    COPY 'END'
+%    IF WORK1 .GE. 0.7 THEN
+^^WI    TEXT 'Alert'
+^^WI    @ 12,5 STATIC A3 ' > 0.7  Invert model?'
+%       EVALUATE ALERTFLAG = ALERTFLAG + 1
+%    ELSE
+%       IF WORK1 .GE. 0.3 THEN
+^^WI       TEXT 'Warn'
+^^WI       @ 12,5 STATIC A3 ' > 0.3  Ambiguous value.'
+%          EVALUATE WARNFLAG = WARNFLAG + 1
+%       ELSE
+%          IF WORK1 .LT. - 0.1 THEN
+^^WI          TEXT 'Fail'
+^^WI          @ 12,5 STATIC A3 ' < -0.1  Too small.'
+%             EVALUATE ERRFLAG = ERRFLAG + 1
+%          END IF
+%       END IF
+%    END IF
+^^WI     @ 13,1 STATIC A1 'Flack su'
+^^WI     @ 13,3 STATIC A2 'OK'
+%    IF WORK2 .GE. 0.5 THEN
+^^WI    TEXT 'Warn'
+^^WI    @ 13,5 STATIC A3 ' > 0.5 Result is meaningless'
+%       EVALUATE WARNFLAG = WARNFLAG + 1
+%    END IF
+%  END BLOCK
+%%
+%% Ratio of NPARAM to NREF.
+%%
+^^WI     @ 14,1 STATIC A1 'Data/parameter ratio'
+^^WI     @ 14,3 STATIC A2 'OK'
+%  BLOCK
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 103'
+%    COPY 'TRANSFER FROM OFFSET =  2 TO WORK1'
+%    COPY 'TRANSFER FROM OFFSET =  8 TO WORK2 '
+%    COPY 'END'
+%    EVALUATE WORK3 = WORK2 / WORK1
+%    CLEAR
+%    INSERT !^^WI '= !
+%    STORE FORMAT /(F6.1)/ LENGTH 6 REAL WORK3
+%    IF ( CENTRO .GT. 0.99 ) .OR. ( ZMAX .GT. 1.65 ) THEN
+%      IF WORK3 .LE. 6.0 THEN
+^^WI      TEXT 'Fail'
+%         INSERT ', should be > 10.0'
+%         EVALUATE ERRFLAG = ERRFLAG + 1
+%      ELSE
+%         IF WORK3 .LE. 8.0 THEN
+^^WI        TEXT 'Warn'
+%           INSERT ', should be > 10.0'
+%           EVALUATE WARNFLAG = WARNFLAG + 1
+%         ELSE
+%           IF WORK3 .LE. 10.0 THEN
+^^WI          TEXT 'Alert'
+%             INSERT ', should be > 10.0'
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%           END IF
+%         END IF
+%      END IF
+%    ELSE
+%%%                                   (Non-centro and Z < 18).
+%      IF WORK3 .LE. 4.0 THEN
+^^WI      TEXT 'Fail'
+%         INSERT ', should be > 8.0'
+%         EVALUATE ERRFLAG = ERRFLAG + 1
+%      ELSE
+%         IF WORK3 .LE. 6.0 THEN
+^^WI        TEXT 'Warn'
+%           INSERT ', should be > 8.0'
+%           EVALUATE WARNFLAG = WARNFLAG + 1
+%         ELSE
+%           IF WORK3 .LE. 8.0 THEN
+^^WI          TEXT 'Alert'
+%             INSERT ', should be > 8.0'
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%           END IF
+%         END IF
+%      END IF
+%    END IF
+%    INSERT "'"
+^^WI @ 14,5 STATIC C3
+%    OUTPUT
+%  END BLOCK
+%%
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%%
+%% Check results
+%%
+%%
+%%
+%  IF ERRFLAG .GT. 0 THEN
+%    CLEAR
+%    STORE FORMAT /(I4)/ LENGTH 4 INTEGER ERRFLAG
+%    IF ERRFLAG .EQ. 1 THEN
+%      INSERT ! check failed. !
+%    ELSE
+%      INSERT ! checks failed. !
+%    END IF
+%    OUTPUT
+%  END IF
+%  IF WARNFLAG .GT. 0 THEN
+%    CLEAR
+%    STORE FORMAT /(I4)/ LENGTH 4 INTEGER WARNFLAG
+%    IF WARNFLAG .EQ. 1 THEN
+%      INSERT ! warning issued. !
+%    ELSE
+%      INSERT ! warnings issued. !
+%    END IF
+%    OUTPUT
+%  END IF
+%  IF ALERTFLAG .GT. 0 THEN
+%    CLEAR
+%    STORE FORMAT /(I4)/ LENGTH 4 INTEGER ALERTFLAG
+%    IF ALERTFLAG .EQ. 1 THEN
+%      INSERT ! alert issued. !
+%    ELSE
+%      INSERT ! alerts issued. !
+%    END IF
+%    OUTPUT
+%  END IF
+%%
+%  IF ( ALERTFLAG .EQ. 0 ) .AND. ( ERRFLAG .EQ. 0 ) .AND. -
+      (  WARNFLAG .EQ. 0 ) THEN
+%  EVALUATE VALIDPASS = TRUE
+%  EVALUATE VALIDFAIL = FALSE
+{R All checks passed successfully.
+ 
+{I Select "Checkcif on the web" from the Analyse menu, to access
+{I {&http://journals.iucr.org/services/cif/checking/checkform.html {&
+%  END IF
+%END SCRIPT
