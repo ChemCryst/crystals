@@ -89,6 +89,7 @@
 %    COPY 'END'
 %    IF WORK1 .LT. 25.0 THEN
 {I *   ALERT: Experiment Temperaure < 25K. Are you sure?
+{I          Use "Results/Edit cif Goodies" to edit value
 %       EVALUATE ALERTFLAG = ALERTFLAG + 1
 %    END IF
 %  END BLOCK
