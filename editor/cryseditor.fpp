@@ -1,5 +1,8 @@
 
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2012/03/23 15:55:05  rich
+C Support for intel compiler.
+C
 C Revision 1.7  2011/03/21 13:57:28  rich
 C Update files to work with gfortran compiler.
 C
@@ -215,7 +218,12 @@ C----- DOS OPENS
 
 C---- THE SOURCE FILE
       WRITE(*,'(2A)') 'Source = ', DOSSRC(1:LEN_TRIM(DOSSRC))
-
+      WRITE(*,'(A,3A1)') 'Comments = "', ICOM, ICOM2, '"'
+      IF ( LSTRIP ) THEN
+        WRITE(*,'(A)') 'Stripping comments'
+      ELSE
+        WRITE(*,'(A)') 'Leaving comments'
+      END IF
 #if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
       OPEN(UNIT=NCRU, FILE=DOSSRC, STATUS = 'OLD')
 #else
@@ -307,7 +315,7 @@ C--STORE THE MACRO NAME
       DO 1150 K=1,6
 C Check for Non-ASCII characters (EOL etc.)
 #if !defined(_GIL_) && !defined(_LIN_) && !defined(_MAC_) 
-      IF ( KISCHR(ICARD(K+1)) .LE. 0 ) ICARD(K+1)=32
+       IF ( KISCHR(ICARD(K+1)) .LE. 0 ) ICARD(K+1)=32
 #endif
       NAMES(K+1,NMAC)=ICARD(K+1)
 1150  CONTINUE
@@ -1234,14 +1242,14 @@ C
 CODE FOR KISCHR
       FUNCTION KISCHR ( ICHAR )
 C Return 0 if CCHAR is not a character.
-      CHARACTER*95 CALPHA
+      CHARACTER*96 CALPHA
       CHARACTER*1  CCHAR
 C23456789012345678901234567890123456789012345678901234567890123456789012
       DATA CALPHA / 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXY
 #if defined(_DOS_) || defined(_DIGITALF77_) || defined(_INTELF77_)
-     1Z1234567890!"œ$%^&*()_+-={}[]@~''#<>?,./|\:;`' /
+     1Z1234567890!"œ$%^&*()_+-={}[]@~''#<>?,./|\:;` ' /
 #else
-     1Z1234567890!"œ$%^&*()_+-={}[]@~''#<>?,./|\\:;`' /
+     1Z1234567890!"œ$%^&*()_+-={}[]@~''#<>?,./|\\:;` ' /
 #endif
 C Note ' is escaped with '
 C On UNIX \ is escaped with \
