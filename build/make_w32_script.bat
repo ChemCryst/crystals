@@ -7,7 +7,7 @@
 @ENDLOCAL
 mkdir script
 @FOR %%I IN ( ..\script\*.ssc ) DO ..\editor\cryseditor %%I script\%%~nI.scp code=%COMPCODE% incl=+ excl=- comm=%%%% 
-@FOR %%I IN ( ..\script\*.sda ) DO ..\editor\cryseditor %%I script\%%~nI.dat code=%COMPCODE% incl=+ excl=- comm=# strip
+@FOR %%I IN ( ..\script\*.sda ) DO ..\editor\cryseditor %%I script\%%~nI.dat code=%COMPCODE% incl=+ excl=- comm=# 
 @goto exit
 
 :clean
