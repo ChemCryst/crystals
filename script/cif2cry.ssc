@@ -95,7 +95,7 @@
 %         VERIFY ON OFF                                                         
 %         GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
 %         IF ( VALUE .EQ. 1 ) THEN                                              
-%           EVALUATE CARG = ' -a -n '                                           
+%           EVALUATE CARG = ' -a -d CSD -n '                                           
 ^^??        OENAM TEXT                                                          
 %           GET SILENT TEXT 'Output extension '                                 
 %           EVALUATE COUT = CVALUE                                              
@@ -107,9 +107,9 @@
 %           VERIFY ON OFF                                                       
 %           GET SILENT NOSTORE FINAL ABBREVIATED ' '                            
 %           IF ( VALUE .EQ. 1 ) THEN                                            
-%             EVALUATE CARG = ' -f -o '                                         
+%             EVALUATE CARG = ' -f -d CSD -o '                                         
 %           ELSE                                                                
-%             EVALUATE CARG = ' -a -o '                                         
+%             EVALUATE CARG = ' -a -d CSD -o '                                         
 %           END IF                                                              
 %         END IF                                                                
 ^^CO      DISPOSE CIF2CRY                                                       
@@ -154,7 +154,7 @@ in preference. This file can contain any CRYSTALS #COMMANDS.
 
 %% Launch CIF2CRY                                                               
 %%                                                                              
-% TRANSFER '#SPAWN + "CRYSDIR:cif2cry.exe" ' // CARG // '"' // COUT -           
+% TRANSFER '#SPAWN + "CRYSDIR:diffin.exe" ' // CARG // '"' // COUT -           
   // '" "' // CIF // '"' TO CRYSTALS                                            
 %%                                                                              
 %% show runnow

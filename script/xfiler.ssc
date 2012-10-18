@@ -1,18 +1,24 @@
 %SCRIPT XFILER
 %% 
+%%      Beware:  CrystalClear.cif contains 2 blocks. 
+%%      Only the second contains real info
+%%      CARG is set to 'a' , ie all blocks.
+%%
+%%
+%   VARIABLE LOGICAL T
+%   VARIABLE CHARACTER C_FILE CEXTN CARG
 %%                               
+%   if ( c_file .eq. ' ' ) then
 ^^WI SYSOPENFILE 'All files (*.*)|*.*;'
 ^^WI             'CIF (*.cif,*.fcf)|*.cif;*.fcf;'
 ^^CR
 %%
-%   GET SILENT NOSTORE TEXT 'New filename:' 'CANCEL'                                                                              
-%   IF CVALUE .EQ. 'CANCEL' THEN
-%     FINISH
-%   END IF
-%   VARIABLE CHARACTER C_FILE CEXTN CARG
-%   VARIABLE LOGICAL T
-%%
-%   EVALUATE C_FILE = CVALUE
+%    GET SILENT NOSTORE TEXT 'New filename:' 'CANCEL'                                                                              
+%    IF CVALUE .EQ. 'CANCEL' THEN
+%      FINISH
+%    END IF
+%    EVALUATE C_FILE = CVALUE
+%   end if
 %%
 %   IF ( .NOT. ( FILEEXISTS C_FILE ) ) THEN
 {E Error: Filename given does not exist.
@@ -25,12 +31,12 @@
 %     IF FILEEXISTS ( 'from-cif.cry' ) THEN
 %       EVALUATE T =  FILEDELETE ( 'from-cif.cry' )
 %     END IF
-%     IF FILEEXISTS ( 'from-cif.hkl' ) THEN
-%       EVALUATE T =  FILEDELETE ( 'from-cif.hkl' )
+%     IF FILEEXISTS ( 'cif-reflections.hkl' ) THEN
+%       EVALUATE T =  FILEDELETE ( 'cif-reflections.hkl' )
 %     END IF
+%     TRANSFER '#SPAWN % "CRYSDIR:diffin.exe" -a -d R -o from-cif.cry " ' - 
+      // C_FILE //   '" ' TO CRYSTALS
 %%
-%     TRANSFER '#SPAWN % "CRYSDIR:diffin.exe"  "' // C_FILE //  -
- '" R' TO CRYSTALS
 %     IF FILEEXISTS ( 'from-cif.cry' ) THEN
 %       COPY '#SCRIPT DIFFEXEC'
 %     ELSE
@@ -38,14 +44,20 @@
 %     END IF
 %     FINISH
 %   ELSE IF ( CEXTN .EQ. 'FCF' ) THEN
+%     IF FILEEXISTS ( 'cif-reflections.hkl' ) THEN
+%       EVALUATE T =  FILEDELETE ( 'cif-reflections.hkl' )
+%     END IF
+%     IF FILEEXISTS ( 'cif-reflections.cry' ) THEN
+%       EVALUATE T =  FILEDELETE ( 'cif-reflections.cry' )
+%     END IF
 %     VARIABLE CHARACTER CTITLE CPATH COUT
-%     EVALUATE CTITLE = GETTITLE ( C_FILE )
-%     EVALUATE CPATH = GETPATH ( C_FILE )
-%     EVALUATE COUT = CTITLE // '.cry'
-%     EVALUATE CARG = ' -f -o '
-% TRANSFER '#SPAWN % "CRYSDIR:cif2cry.exe" ' // CARG // '"' // COUT -           
+%%     EVALUATE CTITLE = GETTITLE ( C_FILE )
+%%     EVALUATE CPATH = GETPATH ( C_FILE )
+%     EVALUATE COUT = 'cif-reflections' // '.cry'
+%     EVALUATE CARG = ' -f -d R -o '
+% TRANSFER '#SPAWN % "CRYSDIR:diffin.exe" ' // CARG // '"' // COUT -           
   // '" "' // C_FILE // '"' TO CRYSTALS                                            
-%     TRANSFER '#USE ' // COUT  TO CRYSTALS    
+%     COPY '#SCRIPT diffexec'   
 %     FINISH
 %   END IF
 %%

@@ -4,6 +4,7 @@
 %  VARIABLE INTEGER INBASICS FTYPE
 %  VARIABLE LOGICAL LFILE IFILE HFILE
 %  VARIABLE LOGICAL ANSWER LCANCEL XQMERGE                                      
+%  VARIABLE CHARACTER CEXTN
 %%  check if files have been created
 %%                                                                              
 %  BLOCK                                                                        
@@ -14,8 +15,18 @@ Files INITIAL.* will be created in your directory. They may be important.
 %    COPY '#RELEASE PRINT initial.lis'                                          
 %    COPY '#RELEASE LOG initial.dat'                                            
 %  END BLOCK                                                                    
-%%                                                                              
-%  IF FILEEXISTS ( 'from-cif.cry' ) THEN                                                                        
+%% 
+%% Read bits and pieces from Bruker pcf file
+%  if ( cextn .eq. 'PCF' ) then                                                                            
+%   IF FILEEXISTS ( 'from-cif.cry' ) THEN                                                                        
+%      ON END TERMINATE                                                         
+%      ON ERROR TERMINATE                                                       
+%      COPY '#USE from-cif.cry' 
+%   END IF
+%  end if
+%% 
+%  if ( cextn .eq. 'CIF' ) .or. ( cextn .eq. 'CIF_OD' ) then                                                                            
+%   IF FILEEXISTS ( 'from-cif.cry' ) THEN                                                                        
 %      ON END TERMINATE                                                         
 %      ON ERROR TERMINATE                                                       
 %      CLEAR                                                                    
@@ -53,74 +64,55 @@ Files INITIAL.* will be created in your directory. They may be important.
 %            END IF                                                             
 %%                                                                              
 %      END BLOCK                                                                
-%  END IF                                                                    
-%%                                                                              
-%  IF ( .not. FILEEXISTS ( 'from-cif.hkl' ) ) THEN 
+%   END IF                                                                    
+%  end if
+%% 
+%%
+%%
+%  if ( exists 1 .ne. 1 ) then
+{I  CRYSTALS has not found any cell parameters.
+{I  If you have a SHELX ins/res file, input it from the Data menu.
+%   FINISH
+%  end if
+%%                                                                             
+%  if ( cextn .eq. 'FCF' ) then                                                                            
+%   if ( .not. FILEEXISTS ( 'cif-reflections.cry' ) ) THEN 
 {I CRYSTALS could find no reflections in the cif file.  
-{I If you have a SHELX hklf file, input that from the X-ray data menu.
+{I If you have a SHELX hklf file, input that from the Data menu.
+%     FINISH
+%   else
+%     TRANSFER '#USE cif-reflections.cry' TO CRYSTALS   
+%   end if
+%  else
+%   if ( .not. FILEEXISTS ( 'from-cif.hkl' ) ) THEN 
+{I CRYSTALS could find no reflections in the cif file.  
+{I If you have a SHELX hklf file, input that from the Data menu.
 %    FINISH
-%  ELSE
-%   BLOCK      
-%    TRANSFER '#OPEN HKLI from-cif.hkl' TO CRYSTALS   
-%%   Ask user if they want to merge data.                                         
-%%   Logical variable XQMERGE is set by this script.                              
-%%    now done in XFRIEDEL                             
-%%    COPY '#SCRIPT XQMERGE'                       
-%%                                                                              
-%    QUEUE REWIND                                                               
-%    ON ERROR RESTART                                                           
-%    CLEAR                                                                      
-%    INSERT "READ  F'S=FSQ NCOEF = 5 TYPE = FIXED CHECK = NO"                   
-%    QUEUE SEND                                                                 
-%%                                                                              
-%    CLEAR                                                                      
-%    INSERT 'INPUT H K L /FO/ SIGMA(/FO/) '                                     
-%    QUEUE SEND                                                                 
-%%                                                                              
-%    CLEAR                                                                      
-%    INSERT 'FORMAT (3F4.0, 2F8.0) '                                            
-%    QUEUE SEND                                                                 
-%%                                                                              
-%    CLEAR                                                                      
-%    INSERT 'STORE NCOEF=6'                                                     
-%    QUEUE SEND                                                                 
-%    CLEAR                                                                      
-%    INSERT 'OUTPUT INDICES /FO/ SIGMA(/FO/) RATIO/JCODE CORRECTIONS SERIAL '   
-%    QUEUE SEND                                                                 
-%    CLEAR                                                                      
-%   END BLOCK
-%   COPY '#HKLI'                                                                 
-%   QUEUE PROCESS                                                                
-%   COPY 'END'                                                                   
-%   COPY '#CLOSE HKLI'                                                           
-%%                                                                              
-%   MESSAGE USER1 ' Error during reflection processing'                          
-%   ON ERROR TERMINATE USER1                                                     
-%%                                                                              
-%   COPY '#SCRIPT XFRIEDEL'                                                      
+%   end if
+%  end if
+%%
+%    COPY '#SCRIPT XFRIEDEL'                                                      
 %%                                                                              
 {S * Removing systematically absent reflections                                 
-%   COPY '#SYSTEMATIC'                                                           
-%   COPY 'END'                                                                   
-%   CLEAR                                                                        
+%    COPY '#SYSTEMATIC'                                                           
+%    COPY 'END'                                                                   
 {S * Sorting reflections                                                        
-%   COPY '#SORT'                                                                 
-%   COPY 'END'                                                                   
-%   CLEAR                                                                        
-%   IF ( XQMERGE ) THEN                                                          
+%    COPY '#SORT'                                                                 
+%    COPY 'END'                                                                   
+%    IF ( XQMERGE ) THEN                                                          
 {S * Merging equivalent reflections                                             
 %      CLEAR                                                                    
 %      COPY '#MERGE'                                                            
 %      COPY 'END'                                                               
-%   END IF                                                                       
+%    END IF                                                                       
 %                                                                               
 {S * Final copy to DSC file                                                     
-%   COPY '#LIST 6'                                                               
-%   COPY 'READ TYPE = COPY'                                                      
-%   COPY 'END'                  
+%    COPY '#LIST 6'                                                               
+%    COPY 'READ TYPE = COPY'                                                      
+%    COPY 'END'                  
 %%                                                                              
-%%  Set list 4, 23, 28                                                                        
-%   COPY '#SCRIPT XFRESH6'
+%%   Set list 4, 23, 28                                                                        
+%    COPY '#SCRIPT XFRESH6'
 %%                                                                              
 {R * Done. Diffractometer data input complete.                                            
-%  END IF
+% END SCRIPT

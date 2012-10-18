@@ -1,18 +1,29 @@
 %SCRIPT XFILEW
 %% 
+%    VARIABLE LOGICAL T
+%    VARIABLE CHARACTER C_FILE CEXTN CARG
 %%                               
-^^WI SYSOPENFILE 'All files (*.*)|*.*;'
-^^WI             'CIF (*.cif,*.fcf)|*.cif;*.fcf;'
-^^CR
+%  IF ( .NOT. ( FILEEXISTS C_FILE ) ) THEN
+%% If called incorrectly or without argument, then get a file.
+^^WI SYSOPENFILE 
+^^WI [ '*.ins;*.res;*.hkl;*.hklf5;*.cif;*.cmf;*.fcf;*.cif_od;*.pcf;'
+^^WI   'Crystallographic files'
+^^WI   '*.cif*;*.cmf;*.fcf;*.pcf;' 'CIF files (*.cif*,*.cmf,*.fcf,*.pcf)' ]
+^^CR                                                                            
+%    GET SILENT NOSTORE TEXT 'New filename:' 'CANCEL'                                                                              
+%    IF CVALUE .NE. 'CANCEL' THEN                                            
+%      EVALUATE C_FILE = CVALUE                                                 
+%      IF ( .NOT. ( FILEEXISTS C_FILE ) ) THEN                                  
+{E Error: Filename given does not exist.
+%        FINISH
+%      END IF 
 %%
-%   GET SILENT NOSTORE TEXT 'New filename:' 'CANCEL'                                                                              
-%   IF CVALUE .EQ. 'CANCEL' THEN
-%     FINISH
-%   END IF
-%   VARIABLE LOGICAL T
-%   VARIABLE CHARACTER C_FILE CEXTN CROOT CARG CLASS
-%%
-%   EVALUATE C_FILE = CVALUE
+%      EVALUATE CEXTN = GETEXTN ( C_FILE )
+%      EVALUATE CEXTN = UPPERCASE ( CEXTN )
+%    ELSE
+%      FINISH
+%    END IF
+%  END IF
 %%
 %   IF ( .NOT. ( FILEEXISTS C_FILE ) ) THEN
 {E Error: Filename given does not exist.
@@ -21,25 +32,37 @@
 %%   
 %   EVALUATE CEXTN = GETEXTN ( C_FILE )
 %   EVALUATE CEXTN = UPPERCASE ( CEXTN )
-%   IF ( CEXTN .EQ. 'CIF' ) THEN
+%   IF ( CEXTN .EQ. 'CIF' ) .or. ( CEXTN .EQ. 'PCF' ) THEN
 %     IF FILEEXISTS ( 'from-cif.cry' ) THEN
 %       EVALUATE T =  FILEDELETE ( 'from-cif.cry' )
 %     END IF
-%     IF FILEEXISTS ( 'from-cif.hkl' ) THEN
-%       EVALUATE T =  FILEDELETE ( 'from-cif.hkl' )
+%     IF FILEEXISTS ( 'cif-reflections.hkl' ) THEN
+%       EVALUATE T =  FILEDELETE ( 'cif-reflections.hkl' )
 %     END IF
-%     TRANSFER '#SPAWN % "CRYSDIR:diffin"  "' // C_FILE //  -
- '" W' TO CRYSTALS
+%     TRANSFER '#SPAWN % "CRYSDIR:diffin.exe" -f -d W -o from-cif.cry " ' - 
+      // C_FILE //   '" ' TO CRYSTALS
+%%
+%     IF FILEEXISTS ( 'from-cif.cry' ) THEN
+%       COPY '#SCRIPT DIFFEXEC'
+%     ELSE
+ {E The diffractometer files have not been processed          
+%     END IF
 %     FINISH
 %   ELSE IF ( CEXTN .EQ. 'FCF' ) THEN
+%     IF FILEEXISTS ( 'cif-reflections.hkl' ) THEN
+%       EVALUATE T =  FILEDELETE ( 'cif-reflections.hkl' )
+%     END IF
+%     IF FILEEXISTS ( 'cif-reflections.cry' ) THEN
+%       EVALUATE T =  FILEDELETE ( 'cif-reflections.cry' )
+%     END IF
 %     VARIABLE CHARACTER CTITLE CPATH COUT
-%     EVALUATE CTITLE = GETTITLE ( C_FILE )
-%     EVALUATE CPATH = GETPATH ( C_FILE )
-%     EVALUATE COUT = CTITLE // '.cry'
-%     EVALUATE CARG = ' -f -o '
-% TRANSFER '#SPAWN + "CRYSDIR:cif2cry.exe" ' // CARG // '"' // COUT -           
+%%     EVALUATE CTITLE = GETTITLE ( C_FILE )
+%%     EVALUATE CPATH = GETPATH ( C_FILE )
+%     EVALUATE COUT = 'cif-reflections' // '.cry'
+%     EVALUATE CARG = ' -f -d W -o '
+% TRANSFER '#SPAWN % "CRYSDIR:diffin.exe" ' // CARG // '"' // COUT -           
   // '" "' // C_FILE // '"' TO CRYSTALS                                            
-%     TRANSFER '#USE ' // COUT  TO CRYSTALS    
+%     COPY '#SCRIPT diffexec'   
 %     FINISH
 %   END IF
 %%

@@ -3,6 +3,21 @@
 %% Called from XFILE A/R/N/S/W if the extension is unexpected. In these case
 %% C_FILE will hold the path and CEXTN the extension (uppercased)
 %
+%% CARG CLASS
+%% SI  SHEL  ins/res
+%% N   DIFF  Nonius (Kccd)
+%% A   DIFF  Agilent (AG cif)
+%% R   DIFF  Rigaku (RI cif)
+%% W   DIFF  WinGX (GD cif)
+%% PP  DIFF  Pre-processed
+%% SI  SHEL  ins/res
+%% S4  SHEL  hklf4
+%% S5  SHEL  hklf5
+%% CD  CRYS  CRYSTALS data
+%% FA  CIFS  Atoms etc cif
+%% FR  CIFS  Reflections cif
+%% FM  CIFS  Multi-cif
+%%
 %% Guess the type
 %% 0 - unknown
 %% 1 - hkl
@@ -10,7 +25,7 @@
 %% 3 - ins,res
 %% 4 - cif (agilent)
 %% 5 - cif (nonius)
-%% 6- cif (rigaku)
+%% 6-  cif (rigaku)
 %% 7 - cif (general instrument)
 %% 8 - cif (general structure or reflections)
 %% 9 - cif (general multiple structures)
@@ -27,12 +42,12 @@
 %  IF ( .NOT. ( FILEEXISTS C_FILE ) ) THEN
 %% If called incorrectly or without argument, then get a file.
 ^^WI SYSOPENFILE 
-^^WI [ '*.ins;*.res;*.hkl;*.hklf5;*.cif;*.cmf;*.fcf;*.cif_od;'
+^^WI [ '*.ins;*.res;*.hkl;*.hklf5;*.cif;*.cmf;*.fcf;*.cif_od;*.pcf;'
 ^^WI   'Crystallographic files'
 ^^WI   '*.*;' 'All files (*.*)'
 ^^WI   '*.ins;*.res;*.hkl*;*.hkl;' 'SHELX files (*.ins,*.res,*.hkl*)'
 ^^WI   '*.dat;*.cry;*.12;*.use;*.l12;*.l16' 'CRYSTALS files (*.dat, etc)'
-^^WI   '*.cif*;*.cmf;*.fcf;' 'CIF files (*.cif*,*.cmf,*.fcf)' ]
+^^WI   '*.cif*;*.cmf;*.fcf;*.pcf;' 'CIF files (*.cif*,*.cmf,*.fcf,*.pcf)' ]
 ^^CR                                                                            
 %    GET SILENT NOSTORE TEXT 'New filename:' 'CANCEL'                                                                              
 %    IF CVALUE .NE. 'CANCEL' THEN                                            
@@ -78,9 +93,13 @@
 %    EVALUATE FTYPE = 2
 %  ELSE IF  ( CEXTN .EQ. 'CIF_OD' ) THEN
 %    EVALUATE FTYPE = 4
+%  ELSE IF  ( CROOT .EQ. 'CRYSTALCLEAR' ) THEN
+%    EVALUATE FTYPE = 6
 %  ELSE IF  ( CEXTN .EQ. 'HKL' ) THEN
 %    EVALUATE FTYPE = 1
 %  ELSE IF  ( CEXTN .EQ. 'CIF' ) THEN
+%    EVALUATE FTYPE = 7
+%  ELSE IF  ( CEXTN .EQ. 'PCF' ) THEN
 %    EVALUATE FTYPE = 7
 %  ELSE IF  ( CEXTN .EQ. 'FCF' ) THEN
 %    EVALUATE FTYPE = 8
@@ -112,7 +131,7 @@
 ^^WI    @ 3,1 STATIC M 'HKLF5 file detected. Confirm and click OK.'
 %END BLOCK
 %BLOCK
-^^WI    @ 3,1 STATIC M 'Shelx file detected. Confirm and click OK.'
+^^WI    @ 3,1 STATIC M 'INs or RES file detected. Confirm and click OK.'
 %END BLOCK
 %BLOCK
 ^^WI    @ 3,1 STATIC M 'Agilent CIF detected. Confirm and click OK.'
@@ -153,12 +172,22 @@
 ^^WI       STATE=ON
 % END IF
 ^^WI     @ 6,2 RADIOBUTTON RI 'Rigaku'         
+% IF FTYPE .EQ. 6 THEN
+^^WI       STATE=ON
+% END IF
 ^^WI     @ 7,2 RADIOBUTTON GD 'Generalised (WinGX)'  
+% IF FTYPE .EQ. 7 THEN
+^^WI       STATE=ON
+% END IF
 ^^WI     @ 7,4 RADIOBUTTON PP 'Pre-processed' 
 % IF FTYPE .EQ. 11 THEN
 ^^WI       STATE=ON
 % ELSE
 ^^WI       DISABLED=YES
+% END IF
+^^WI     @ 8,2 RADIOBUTTON FR 'Reflection cif files' 
+% IF FTYPE .EQ. 8 THEN
+^^WI       STATE=ON
 % END IF
 %%
 ^^WI     @ 2,6 STATIC T2 'SHELX files:'                                          
@@ -175,15 +204,8 @@
 ^^WI       STATE=ON
 % END IF
 %%                                                                       
-^^WI     @ 9,2 STATIC T3 'Other cifs:'                                          
-^^WI     @ 11,2 RADIOBUTTON FA 'Atom etc cif files' 
-% IF FTYPE .EQ. 7 THEN
-^^WI       STATE=ON
-% END IF
-^^WI     @ 12,2 RADIOBUTTON FR 'Reflection cif files' 
-% IF FTYPE .EQ. 8 THEN
-^^WI       STATE=ON
-% END IF
+^^WI     @ 10,2 STATIC T3 'Other cifs:'                                          
+^^WI     @ 12,2 RADIOBUTTON FA 'Atom (CSD) etc cif files' 
 ^^WI     @ 13,2 RADIOBUTTON FM 'Multi-cif files' 
 % IF FTYPE .EQ. 9 THEN
 ^^WI       STATE=ON
@@ -222,7 +244,7 @@
 %         VERIFY ON OFF                                                         
 %         GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
 %         IF VALUE .EQ. 1  THEN
-%           EVALUATE CARG = 'N'
+%           EVALUATE CARG = 'N'      %NONIUS
 %           EVALUATE CLASS = 'DIFF'
 %         ELSE
 %%
@@ -230,7 +252,7 @@
 %          VERIFY ON OFF                                                         
 %          GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
 %          IF ( VALUE .EQ. 1 ) THEN                                              
-%            EVALUATE CARG = 'A'                                           
+%            EVALUATE CARG = 'A'     %AGILENT                                      
 %            EVALUATE CLASS = 'DIFF'
 %          ELSE
 %%
@@ -238,7 +260,7 @@
 %           VERIFY ON OFF                                                         
 %           GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
 %           IF ( VALUE .EQ. 1 ) THEN                                              
-%             EVALUATE CARG = 'R'                                           
+%             EVALUATE CARG = 'R'    %RIGAKU                               
 %             EVALUATE CLASS = 'DIFF'
 %           ELSE
 %%
@@ -247,7 +269,7 @@
 %            GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
 %            IF ( VALUE .EQ. 1 ) THEN                                              
 %%             WinGX
-%              EVALUATE CARG = 'W'                                           
+%              EVALUATE CARG = 'W'    %WINGX                                       
 %              EVALUATE CLASS = 'DIFF'
 %            ELSE
 %%
@@ -337,23 +359,15 @@
 %     FINISH
 %   ELSE
  {I Diffractometer input cifs - Launch DIFFIN                                                               
-%%                                                                              
-%     IF FILEEXISTS ( 'from-cif.cry' ) THEN
-%       EVALUATE T =  FILEDELETE ( 'from-cif.cry' )
-%     END IF
-%     IF FILEEXISTS ( 'from-cif.hkl' ) THEN
-%       EVALUATE T =  FILEDELETE ( 'from-cif.hkl' )
-%     END IF
-%
-%%
-%     TRANSFER '#SPAWN % "CRYSDIR:diffin.exe"  "'  -
-               // C_FILE //  '" ' // CARG TO CRYSTALS
-%%
-%     IF FILEEXISTS ( 'from-cif.cry' ) THEN
-%        COPY '#SCRIPT DIFFEXEC'
-%     ELSE
- {E No output from DIFFIN. The diffractometer files have not been processed.
-%     END IF
+%     if      ( carg .eq. 'A' ) then
+%      copy '#script xfilea'
+%     else if ( carg .eq. 'N' ) then 
+%      copy '#script xfilen'
+%     else if ( carg .eq. 'R' ) then 
+%      copy '#script xfiler'
+%     else if ( carg .eq. 'W' ) then 
+%      copy '#script xfilew'
+%     end if
 %   END IF
 %%
 %  ELSE IF CLASS .EQ. 'SHEL' THEN
@@ -379,20 +393,25 @@
 %      TRANSFER '#USE ' // C_FILE // ' '  TO CRYSTALS
 {I CRYSTALS instruction file closed
 %%
-% ELSE IF CLASS .EQ. 'CIFS' THEN
+%  ELSE IF CLASS .EQ. 'CIFS' THEN
 %%
 DO CIF STUFF
 %      IF CARG .EQ. 'FM' THEN
 %%        MULTIPLE CIFS IN ONE FILE
 %         EVALUATE FILE = C_FILE
 %         COPY '#SCRIPT CIF2CRY'
+%      else if carg .eq. 'FR' then
+%         copy '#script xfilew'    %Generalised reflections
 %      ELSE
 %        VARIABLE CHARACTER CTITLE CPATH COUT
 %        EVALUATE CTITLE = GETTITLE ( C_FILE )
 %        EVALUATE CPATH = GETPATH ( C_FILE )
 %        EVALUATE COUT = CTITLE // '.cry'
-%        EVALUATE CARG = ' -f -o '
-% TRANSFER '#SPAWN + "CRYSDIR:cif2cry.exe" ' // CARG // '"' // COUT -           
+%        EVALUATE CARG = ' -f -d CSD -o '
+%% 'SPAWN +' Starts in DOS box
+cif2cry
+% show carg
+% TRANSFER '#SPAWN + "CRYSDIR:diffin.exe" ' // CARG // '"' // COUT -           
   // '" "' // C_FILE // '"' TO CRYSTALS                                            
 %%                                                                              
 %        TRANSFER '#USE ' // COUT  TO CRYSTALS    
