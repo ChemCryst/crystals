@@ -1,40 +1,41 @@
 %%SSR MENU-XRAY
-^^WI  MENU _START   '&X-ray Data'
+^^WI  MENU _START   '&Data'
 ^^WI   ITEM _REF '&Guided import' '#SCRIPT XGUIDEI'  DISABLEIF='IN'
 ^^WI   SPLIT
-^^WI   MENU _OBS 'Diffractometer files (stand-alone)'
-^^WI     MENU _PRE 'Pre-process diffractometer files'
-^^WI       ITEM GEN  'Generalised cif input' '#SCRIPT XDIFFIN'
-^^WI       ITEM KCCD 'Run &Agilentin - Agilent data' '#SCRIPT XODIN'
-^^WI       ITEM KCCD 'Run &Kccdin - Kccd data' '#SCRIPT XKCCDIN'
-^^WI       ITEM RC93 'Run &RC93 - Cad 4 data' '#SCRIPT RC93'
-^^WI       ITEM DIPIN 'Run &Dipin - DIP2000 data' '#SCRIPT DIP'
-^^WI       ITEM XINB 'Import Apex2 files (PCF,INS,RES)'                            
-^^WI              '#SCRIPT PCF2CRY' DISABLEIF='IN'                             
-^^WI     ENDMENU
-^^WI     MENU _USE 'Use pre-processed'
-^^WI       ITEM INKC  'Use &Agilentin output' '#SCRIPT XODIN'
-^^WI       ITEM INKC  'Use &KCCDIN output' '#SCRIPT XKCCDIN'
-^^WI       ITEM INCA  'Use &RC93 output' '#SCRIPT XINRC93'
-^^WI       ITEM INDIP 'Use &DIPIN output' '#SCRIPT XDIPIN'
-^^WI     ENDMENU
+
+^^WI   MENU _FILES 'Data Files (Current)'
+
+^^WI       ITEM XIN5    'Import S&helx files (ins, res, hkl, hklf5)'
+^^WI                '#SCRIPT XFILES' DISABLEIF='IN'
+^^WI       ITEM XINA    'Import Agilent data (cif_od)'
+^^WI                '#SCRIPT XFILEA' DISABLEIF='IN'
+^^WI       ITEM XINK    'Import Nonius Kappa data'
+^^WI                '#SCRIPT XFILEN' DISABLEIF='IN'
+^^WI       ITEM XINR    'Import Rigaku data'
+^^WI                '#SCRIPT XFILER' DISABLEIF='IN'
+^^WI       ITEM XCIF    'Import other CIF data'
+^^WI                '#SCRIPT XFILEW' DISABLEIF='IN'
 ^^WI   ENDMENU
 ^^WI   SPLIT
+
 ^^WI     ITEM XIN5 'Import Shel&x file (INS or RES)'
 ^^WI              '#SCRIPT XSHELXIN' DISABLEIF='IN'
 ^^WI     ITEM IN6 'Import HKLF4 data' '#SCRIPT XINLIST6' DISABLEIF='IN'
 ^^WI     ITEM XTWN  'Import hklf5 file'
 ^^WI              '#SCRIPT HKLF52CRY' DISABLEIF='IN'
 ^^WI   SPLIT
-^^WI     ITEM XCIF  'Import Structural CIF file'
+
+^^WI     ITEM XCIF  'Import Structural (CSD) cif file'
 ^^WI              '#SCRIPT CIF2CRY' DISABLEIF='IN'
-^^WI   MENU _SX 'Cell, SG radiation or formula'
-^^WI     ITEM _XIN1 'Input/Edit Cell' '#SCRIPT XCELLIN'      DISABLEIF='IN'
-^^WI     ITEM _XIN2 'Input/Edit Space Group' '#SCRIPT XSPACE'  DISABLEIF='IN'
-^^WI     ITEM _XIN3 'Input/Edit Formula / Radiation' '#SCRIPT XINLIST3'
+^^WI     MENU _SX 'Cell, SG radiation or formula'
+
+^^WI      ITEM _XIN1 'Input/Edit Cell' '#SCRIPT XCELLIN'      DISABLEIF='IN'
+^^WI      ITEM _XIN2 'Input/Edit Space Group' '#SCRIPT XSPACE'  DISABLEIF='IN'
+^^WI      ITEM _XIN3 'Input/Edit Formula / Radiation' '#SCRIPT XINLIST3'
 ^^WI              DISABLEIF='IN'
-^^WI   ENDMENU
+^^WI     ENDMENU
 ^^WI   SPLIT
+
 ^^WI   MENU _EXPORT 'File export'
 ^^WI    ITEM EXPORT 'Enable auto-export' '#SET EXPORT ON' DISABLEIF='IN'
 ^^WI    ITEM ATOMS 'Export coordinates' '#SCRIPT XPCH5' 
@@ -54,7 +55,29 @@
 ^^WI   ITEM VU06 'View reflections' '#SCRIPT VULIST6' ENABLEIF='L6'
 ^^WI                                                  DISABLEIF='IN'
 ^^WI   SPLIT
+^^WI   MENU _OBS 'Diffractometer files (OBSOLESCENT)'
+
+^^WI     MENU _PRE 'Process diffractometer files'
+^^WI       ITEM GEN  'Generalised cif input' '#SCRIPT XDIFFIN'
+^^WI       ITEM KCCD 'Run &Agilentin - Agilent data' '#SCRIPT XODIN'
+^^WI       ITEM KCCD 'Run &Kccdin - Kccd data' '#SCRIPT XKCCDIN'
+^^WI       ITEM RC93 'Run &RC93 - Cad 4 data' '#SCRIPT RC93'
+^^WI       ITEM DIPIN 'Run &Dipin - DIP2000 data' '#SCRIPT DIP'
+^^WI       ITEM XINB 'Import Apex2 files (PCF,INS,RES)'                            
+^^WI              '#SCRIPT PCF2CRY' DISABLEIF='IN'                             
+^^WI     ENDMENU
+^^WI     MENU _USE 'Use pre-processed'
+^^WI       ITEM INKC  'Use &Agilentin output' '#SCRIPT XODIN'
+^^WI       ITEM INKC  'Use &KCCDIN output' '#SCRIPT XKCCDIN'
+^^WI       ITEM INCA  'Use &RC93 output' '#SCRIPT XINRC93'
+^^WI       ITEM INDIP 'Use &DIPIN output' '#SCRIPT XDIPIN'
+^^WI     ENDMENU
+^^WI   ENDMENU
+^^WI   SPLIT
+
 ^^WI   ITEM XH      'X-ray data menu &help'
 ^^WI        '$"crysdir:manual/tools-menus.html"'
+^^WI   ITEM XA       'About Data Input'
+^^WI         '#SPAWN CRYSDIR:manual/Xray-data/table.html' DISABLEIF='IN'
 ^^WI  ENDMENU
 %%SSR END
