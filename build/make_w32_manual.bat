@@ -6,6 +6,7 @@ echo on
 SETLOCAL
 mkdir manual
 mkdir manual\analyse
+mkdir manual\Xray-data
 cd manual
 set CRYSSRC=..\..
 perl -w ..\..\manual\mangen.pl faq.man primer.man guide.man crystals.man cameron.man menu.man readme.man workshop.man
@@ -22,6 +23,10 @@ copy ..\manual\analyse\*.gif  manual\analyse
 copy ..\manual\analyse\*.tif  manual\analyse
 copy ..\manual\analyse\*.css  manual\analyse
 copy ..\manual\analyse\*.pdf  manual\analyse
+
+copy ..\manual\Xray-data\*.html manual\Xray-data
+copy ..\manual\Xray-data\*.jpg  manual\Xray-data
+
 ENDLOCAL
 @goto exit
 
