@@ -554,10 +554,6 @@ C LI = CAD4.DAT , LO = SPACE.OUT , ITBL = SPACE.TBL
       LI=7
       ITBL=3
       OPEN( UNIT=LO,FILE='SPACE.OUT',STATUS='UNKNOWN')
-Cdjw      type 899
-Cdjw      accept 898,FILE_NAME
-cdjw09      FILE_NAME='kccd.hkl'
-Cdjw      type 897
       if (I_value .le. 0) then
       WRITE(LP,555)
       WRITE(LO,555)
@@ -1120,16 +1116,16 @@ c
 cdjwmar-11  - only output if order is a b c
         idjws = 0
         cspace = ' '
+cnot for triclinic            write(lp,1450) csys(isp)
+          write(lp,1452)
+          write(lp,1453)
+c            write(lo,1450) csys(isp)
+          write(lo,1452)
+          write(lo,1453)
           DO 1401 J=1,J1
             if(perm(ires_ip(f(j))) .eq. ' a b c' ) then
 CDJWAPR11 only write out text if there are any SG found. 
             WRITE(LP,*) ' '
-cnot for triclinic            write(lp,1450) csys(isp)
-            write(lp,1452)
-            write(lp,1453)
-c            write(lo,1450) csys(isp)
-            write(lo,1452)
-            write(lo,1453)
 CDJWAPR11 only write out text if there are any SG found
 1450  format     (/' For the ',a11,' system, possible space groups ',
      1       'are as follows:'/)
@@ -1442,9 +1438,11 @@ CDJW LOOP BACK TO ABOUT LABEL 1600
 2500  CONTINUE
 c
 C If there are extinctions skip all entries with no extinctions
+      ianyfound = 0
       DO 2600 I=1,306
          IF (IRES_IS(I).NE.0) THEN
             IF (KEXT(I).NE.0) THEN
+               ianyfound = 1
                DO 2550 J=1,306
                   IF (IRES_IS(J).NE.0.AND.KEXT(J).EQ.0) IRES_IS(J)=0
 2550           CONTINUE
@@ -1459,15 +1457,18 @@ C FIND HIGHEST FOM. IF MORE THAN ONE IDENTICAL FOM TAKE THE LOWEST NUMBE
 c set SG to nothing
       idjws = 0
       cspace = ' '
-      write(lp,1450) csys(isp)
-c      write(lp,1451)
-      write(lp,1452)
-      write(lp,1453)
+c
+      if (ianyfound .gt.0) then
+         write(lp,1450) csys(isp)
+c        write(lp,1451)
+         write(lp,1452)
+         write(lp,1453)
 
-      write(lo,1450) csys(isp)
-      write(lo,1451)
-      write(lo,1452)
-      write(lo,1453)
+         write(lo,1450) csys(isp)
+         write(lo,1451)
+         write(lo,1452)
+         write(lo,1453)
+      endif
 c
 2700  FOM_KEEP=-1.
       J1=IS_NOW-1
@@ -1479,6 +1480,7 @@ c
 2750  CONTINUE
       IS_NOW1=IS_NOW
       IF (FOM_KEEP.GE.0.) THEN
+C
 2800     J1=0
 C ---  PICK UP ALL SPACE GROUPS WITH THIS SIGMA
          DO 2850 I=1,306
@@ -1510,7 +1512,7 @@ C ---  SORT ON INCREASING CHOICE
 2950           CONTINUE
 3000        CONTINUE
 3050        CONTINUE
-C
+c
         DO 3150 J=1,J1
 cdjwjul2011 - try to un-permutate symbol
 c this is truely horrid. 

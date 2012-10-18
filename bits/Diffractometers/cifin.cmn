@@ -1,7 +1,11 @@
-      LOGICAL F1,FL6
-      CHARACTER*24 CDATE,creduct,cinst
-      character*132 filename, chkl
-      CHARACTER*132 NAME
-      integer lfn, noutf, nhkl, ncif, idiff, ntext
-      common /cifin/ lfn, noutf, nhkl, ncif, idiff, ntext, F1, FL6
-      common /cifch/ CDATE, NAME, filename, creduct, cinst, chkl
+      CHARACTER*24    CDATE,creduct,cinst
+      character*132   filename, chkl
+      character*256   infil
+      CHARACTER*132   NAME, block_name
+      common /cifch/  CDATE, creduct, cinst,  filename, 
+     1                chkl, infil, NAME, block_name
+c
+      integer         noutf, noutr, nhkl, ncif, ntext, idiff, lfn
+      LOGICAL         F0,F1,FL6,FCF
+      common /cifin/  noutf, noutr, nhkl, ncif, ntext, idiff, lfn, 
+     1                F0, F1, FL6, FCF

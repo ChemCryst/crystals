@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2012/08/30 10:24:37  djw
+C Clarify on-screen information about illegal constructuion in cif file.
+C
 C Revision 1.5  2012/06/22 16:36:06  djw
 C Tell user at which line the cif file fails
 C Include the function ctonum1 from cif2cry.
@@ -1155,7 +1158,9 @@ C
 C
          write(errdev,'(5a,i5)') ' ciftbx error in  ',
      *   file_(1:longf_),'  data_',bloc_,'  line',irecd
-         write(errdev,'(1X,a)') mess  
+         write(errdev,'(//1X,a)') mess
+         write(errdev,'(a)') 'READING CIF ABORTED'
+         write(errdev,'(a,i12//)') 'At about line ', irecd
          stop
          end
 C

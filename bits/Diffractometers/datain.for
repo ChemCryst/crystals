@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2012/08/30 10:12:17  djw
+C Tidy up screen output so that items missing from cif are more evident
+C
 C Revision 1.20  2012/03/23 15:49:31  rich
 C Intel support.
 C fCVS: ----------------------------------------------------------------------
@@ -46,12 +49,13 @@ c #include "ciftbx.sys"
 #include "cifin.cmn"
       LOGICAL F2,F3,F4,F5
       LOGICAL FC,FV,FN,FF,FT,FW,FZ,FSG,FMON,FABS,FSIZ,FTEMP,FCOL
+      LOGICAL F6L, FNX, PROBABLY_NEUTRONS 
       LOGICAL FINFO, FDMDT, FDMD, FDMM
-      logical lnum, lchar
+      LOGICAL LNUM, LCHAR
 
-      CHARACTER*16 CSPACE,CNONSP,CTEMP,CSHAPE
+      CHARACTER*16 CSPACE,CNONSP,CTEMP,CSHAPE,SHAPE
       CHARACTER*26 ALPHA
-      CHARACTER*32 C32, ENAME,CCOL 
+      CHARACTER*32 C32, ENAME, CCOL, BUFFER
       CHARACTER*80 C80
       CHARACTER*80 CMONO,CDMDT,CDMD,CDMM
 
@@ -59,21 +63,29 @@ c #include "ciftbx.sys"
       CHARACTER*(linlen) SLINE
       CHARACTER*(linlen) CFORM
 
-      CHARACTER*6 LABEL(1000,3)
-C         CHARACTER*26  alpha
-      CHARACTER*11 NUMER
+
+      parameter (nodchr = 29)    !Number of chars to look out for.
+      character*(nodchr)  charcCase, charc, numer
+      data numer     /'1234567890.000000000000000000'/
+      data charcCase /'ABCDEFGHIJKLMNOPQRSTUVWXYZ*?'''/
+      data charc     /'abcdefghijklmnopqrstuvwxyz*?'''/
+      character*1   c
+
+
+      parameter     (maxat = 10000)   !Max of 10000 atoms
+      real          uisoeq(maxat), occ(maxat)
+      real          xf(maxat), yf(maxat), zf(maxat), uij(maxat,6)
+      integer       igroup(maxat), nsite, iflag(maxat) 
+      character*15  label(maxat,3)
+
       REAL CELA,CELB,CELC,SIGA,SIGB,SIGC
       REAL CELALP,CELBET,CELGAM,SIGALP,SIGBET,SIGGAM
       REAL X,Y,Z,U,SX,SY,SZ,SU
-      REAL NUMB,SDEV,DUM
-      REAL OCC(1000)
-      REAL XF(1000),YF(1000),ZF(1000),UIJ(1000,6)
-      INTEGER I,J,NSITE
+      REAL HMIN,HMAX,KMIN,KMAX,LMIN,LMAX
+
       DATA alpha    /'abcdefghijklmnopqrstuvwxyz'/
-      DATA NUMER/'1234567890.'/
-      DATA NOUTF/10/,NHKL/11/,NCIF/12/
 C 
-      PARAMETER (DTR=3.14159/180.)
+      PARAMETER   (DTR=3.14159/180.)
       EQUIVALENCE (RES,IRES)
 
 C 
@@ -95,42 +107,29 @@ C---- INDICATE NO INFO YET FOUD
       FDMDT=.false.
       FDMD=.false.
       FDMM=.false.
-
-
+      F6L = .FALSE.
+      FL6 = .FALSE.
+      cspace = '?'
+c
 C....... Assign the DATA block to be accessed
 C 
-50    IF (.NOT.(DATA_(' '))) THEN
-         write(6,'(/a/)') 'No DATA_ statement found'
-         write(NTEXT,'(/a/)') 'No DATA_ statement found'
-         IF (FINFO .EQ. .FALSE.) THEN
-            GOTO 1050
-         ELSE
-            GOTO 5678
-         ENDIF
-      END IF
+      write(6,'(/a,a/)') 'Accessing items in DATA block  ',BLOC_
+      write(NTEXT,'(/a,a/)') 'Accessing items in DATA block  ',BLOC_
 C 
-      write(6,'(/a,a/)') ' Accessing items in DATA block  ',BLOC_
-      write(NTEXT,'(/a,a/)') ' Accessing items in DATA block  ',BLOC_
-C 
-
       FINFO = .TRUE.
 C
-C----- get experiment name
-      f1=CHAR_('_chemical_name_common',c80)
-      if(f1) then
-       FN=CHAR_('_chemical_name_common',ENAME)
-      endif
-c
-      if (.not. fn) then
-            ename=name
+            ename=block_name(1:NCTRIM(block_name))//' in '//
+     1      infil(1:NCTRIM(infil))
             fn = .true.
-      endif
 C 
 C----- WRITE OPTIONAL GOODIES TO TEXT FILE
 1234  FORMAT(A,'''',A,'''')
-      IF (FN) WRITE (NCIF,1234) '# Text info for ',
+      IF (FN) then 
+            write(ncif,'(//)')
+            WRITE (NCIF,1234) '# Text info for ',
      1                          ENAME(1:NCTRIM(ENAME))
-      WRITE (NCIF,1234) '# On ',CDATE(1:NCTRIM(CDATE))
+            WRITE (NCIF,1234) '#  ',CDATE(1:NCTRIM(CDATE))
+      endif
 
       f1=CHAR_('_diffrn_measurement_device_type',c80)
       if (f1) then
@@ -138,8 +137,8 @@ C----- WRITE OPTIONAL GOODIES TO TEXT FILE
        IF (FDMDT) WRITE (NCIF,1234) '_diffrn_measurement_device_type ',
      1 CDMDT(1:nctrim(cdmdt))
       endif
-
-
+c
+c
       F1=CHAR_('_diffrn_measurement_device',c80)
       if (f1) then
        FDMD=CHAR_('_diffrn_measurement_device',CDMD)
@@ -181,6 +180,7 @@ C----- WRITE OPTIONAL GOODIES TO TEXT FILE
       IF (F1) WRITE (NCIF,1234) '_computing_data_reduction ',
      1 C80(1:NCTRIM(C80))
 C 
+c
 C....... Read in Z
 c
       F1 = NUMB_('_cell_formula_units_Z',adum,DUM)
@@ -189,9 +189,9 @@ c
       endif
       IF (.NOT. (FZ)) ZP=0.
 C 
+c
 C....... Read in cell DATA and esds
 C 
-
       F1=NUMB_('_cell_length_a',adum,dum)
       if (f1) then
        FC=NUMB_('_cell_length_a',CELA,SIGA)
@@ -211,14 +211,14 @@ cdjw - evade spurious significance possibly introduced by MAKECIF
      1  SIGGAM
        endif
       endif
-C 
       IF (.NOT.(FC)) THEN
-         write(6,'(a)') 'No cell DATA in this block.'
-         write(NTEXT,'(a)') 'No cell DATA in this block.'
+         write(6,'(a)') 'No cell data in this block.'
+         write(NTEXT,'(a)') 'No cell data in this block.'
       ELSE
          write(6,'(A)') 'Cell Data Found'
          write(NTEXT,'(A)') 'Cell Data Found'
       END IF
+c
 c
 C----- GET VOLUME
       F1=NUMB_('_cell_volume',adum,dum)
@@ -239,7 +239,36 @@ c       get a rough volume
           write(NTEXT,'(A)') 'Cell Volume Found'
        endif
 c
-C 
+C
+C Look at scattering factors to see if they suggest neutrons
+C     probably_neutrons only true if a1 coeff are present and all zero.
+180   continue
+      f2 = numb_('_atom_type_scat_Cromer_Mann_a1',  x, sx)
+	  if (.not.(f2)) goto 182
+	  if ( abs ( x ) .lt. 0.000001 ) then
+	    probably_neutrons = .true.
+      else
+	    probably_neutrons = .false.
+		goto 182 !stop looping
+	  end if
+      if(loop_) goto 180
+182   continue
+c
+C     probably_neutrons set true if diffrn_radiation_type starts with 'neutron'.
+      f1 = char_('_diffrn_radiation_type', name)
+	  if ( f1 ) then
+	    do i = 1,len(name)
+          j = index( charcCase, name(i:i) )
+		  if ( j .gt. 0 ) name(i:i) = charc(j:j)
+		end do
+		if ( index( name, 'neutron' ) .gt. 0 ) then
+		   probably_neutrons = .true.
+		end if
+      end if
+190   continue		  
+c
+c
+c
 c
 c.....  wavelength
       F1=NUMB_('_diffrn_radiation_wavelength',num,DUM)
@@ -252,7 +281,6 @@ c.....  wavelength
       ELSE
          write(6,'(A,F10.5)') 'Wavelength Found',wav
          write(NTEXT,'(A,F10.5)') 'Wavelength Found',wav
-         GO TO 100
       END IF
 c
 c
@@ -277,7 +305,6 @@ c
       IF (.NOT.(FF)) THEN
          write(6,'(a)') 'No chemical formula given'
          write(NTEXT,'(/a/)') 'No chemical formula given'
-         GO TO 150
       END IF
 c
 c
@@ -295,10 +322,12 @@ c
       IF (.NOT.(F2)) THEN
          write(6,'(A)') 'No orient matrix or format error'
          write(NTEXT,'(/A/)') 'No orient matrix or format error'
-         GO TO 200
       END IF
                                                                         
 200   CONTINUE
+      cmru= 0.
+      cmtm = 0.
+      cmtx = 0.
       F1=NUMB_('_cell_measurement_reflns_used',adum,DUM)
       if (f1) then
        FT=NUMB_('_cell_measurement_reflns_used',CMRU,DUM)
@@ -312,6 +341,9 @@ c
       END IF
 
       F1=NUMB_('_exptl_crystal_size_min', adum,DUM)
+      xs = 0.
+      zd = 0.
+      zl = 0.
       if(f1) then
        FSIZ=NUMB_('_exptl_crystal_size_min', ZS,DUM)
        FSIZ=NUMB_('_exptl_crystal_size_mid', ZD,DUM).AND.(FSIZ)
@@ -340,6 +372,7 @@ c      read(5,*) zd,zl
       write(6,'(A,3f8.3)') 'Crystal Size Used',zs,zd,zl
 
 
+      zt = 0.
       F1=NUMB_('_diffrn_ambient_temperature', adum ,DUM)
       if(f1) then
        FTEMP=NUMB_('_diffrn_ambient_temperature', ZT ,DUM)
@@ -362,6 +395,7 @@ c         endif
       write(6,'(A,f8.2)') 'Temperature Used',zt
 c
 c
+      ccol = ' '
       F1=CHAR_('_exptl_crystal_colour', c80)
       if(f1) then
        FCOL=CHAR_('_exptl_crystal_colour', ccol)
@@ -384,14 +418,15 @@ c         endif
       write(6,'(A,3x,a)') 'Crystal Colour Found', ccol(1:nctrim(ccol))
 c
 c
-c
+c 
+c -TO DO - SEPTEMBER 2012 - TEST FOR OLD-STYLE F REFINEMENT
 C....... Read and process the reflections
 C 
       F1=NUMB_('_refln_index_h',adum,DUM)
       if ( .not. f1 ) then
         F1=NUMB_('_hkl_oxdiff_h',adum,DUM)
       end if
-
+c-------------------------------------------------
       if(f1) then
        MINH=10000
        MINK=10000
@@ -399,73 +434,152 @@ C
        MAXH=-10000
        MAXK=-10000
        MAXL=-10000
-       NREFS=0
+       nref=0
 c
-250    NREFS=NREFS+1
-       FL6=NUMB_('_refln_index_h',RHR,DUM)
-       FL6=NUMB_('_refln_index_k',RKR,DUM).AND.(FL6)
-       FL6=NUMB_('_refln_index_l',RLR,DUM).AND.(FL6)
-       FL6=NUMB_('_refln_F_squared_meas',RMEAS,DUM).AND.(FL6)
-       FL6=NUMB_('_refln_F_squared_sigma',RSIGMA,DUM).AND.(FL6)
-       IF (.NOT.(FL6)) THEN
-        FL6=NUMB_('_hkl_oxdiff_h',RHR,DUM)
-        FL6=NUMB_('_hkl_oxdiff_k',RKR,DUM).AND.(FL6)
-        FL6=NUMB_('_hkl_oxdiff_l',RLR,DUM).AND.(FL6)
-        FL6=NUMB_('_hkl_oxdiff_f2',RMEAS,DUM).AND.(FL6)
-        FL6=NUMB_('_hkl_oxdiff_sig',RSIGMA,DUM).AND.(FL6)
-       ENDIF
-       IF (.NOT.(FL6)) THEN
-         write(6,'(/a/)') 'Reflections missing or wrong format'
-         GO TO 300
-       else if ( nrefs .eq. 1) then
-        OPEN (NHKL,FILE=chkl, STATUS='UNKNOWN')
-        fl6 = .true.
-       END IF
+cdjw oct07 - read reflections
 
-       IH=NINT(RHR)
-       IK=NINT(RKR)
-       IL=NINT(RLR)
-       IF ((ABS(IL).GT.255).OR.(ABS(IK).GT.255).OR.(ABS(IH).GT.255))
-     1  THEN
-        WRITE(6,'(A,3I10,2F10.2,i10)') 'Index too big for CRYSTALS',
-     1  IH,IK,IL, RMEAS, RSIGMA, NREFS
-        GOTO 250
-       ENDIF
-       IF (RMEAS .LT. -9999.0) THEN
-        WRITE(6,'(A,3I5,2F15.2,i10)') 'Reflection too negative',
-     1  IH,IK,IL, RMEAS, RSIGMA, NREFS
-        GOTO 250
-       ENDIF
-       IF (IH.LT.MINH) THEN
-         MINH=IH
-       ELSE IF (IH.GT.MAXH) THEN
-         MAXH=IH
-       END IF
-      IF (IK.LT.MINK) THEN
-          MINK=IK
-      ELSE IF (IK.GT.MAXK) THEN
-          MAXK=IK
-       END IF
-       IF (IL.LT.MINL) THEN
-          MINL=IL
-       ELSE IF (IL.GT.MAXL) THEN
-          MAXL=IL
-       END IF
-       IF (RMEAS.LE.99999.) THEN
-         WRITE (NHKL,'(3i4,2f8.2)') IH,IK,IL,RMEAS,RSIGMA
-       ELSE IF (RMEAS.LE.999999.) THEN
-         WRITE (NHKL,'(3i4,2f8.1)') IH,IK,IL,RMEAS,RSIGMA
-       ELSE
-         WRITE (NHKL,'(3i4,2f8.0)') IH,IK,IL,RMEAS,RSIGMA
-       END IF
-       IF (LOOP_) GO TO 250
-C           WRITE ( nhkl,'(a)') '-512'
-       CLOSE (NHKL)
-      endif
+
+        nref = 0
+        lftype = 0
+        rc = 0.
+
+       do while (.true.)
+
+
+        fl6=numb_('_refln_index_h',RH,DUM)
+        fl6=numb_('_refln_index_k',RK,DUM).AND.(FL6)
+        fl6=numb_('_refln_index_l',RL,DUM).AND.(FL6)
+        if (.not.(fl6)) then
+         fl6=numb_('_hkl_oxdiff_h',RH,DUM)
+         fl6=numb_('_hkl_oxdiff_k',RK,DUM).AND.(FL6)
+         fl6=numb_('_hkl_oxdiff_l',RL,DUM).AND.(FL6)
+        endif
+
+         if ( .not. fl6 ) then
+          write(6,'(/a/)') 'Reflections missing or wrong format'
+          write(ntext,'(/a/)') 'Reflections missing or wrong format'
+          exit
+         endif
+
+         nref = nref + 1
+         rc = 0.
+         if ( nref .eq. 1 ) then
+           open ( noutr, FILE=chkl, STATUS='unknown' )
+         end if
+
+         f1 = numb_('_refln_F_squared_meas', rf, dum)
+         if(.not.f1) f1 = numb_('_hkl_oxdiff_f2', rf, dum)
+
+         if ( f1 .and. (lftype .ne. 1 ) ) then
+           lftype = 2
+           f1 = numb_('_refln_F_squared_sigma', rs, dum)
+           if(.not.f1) f1 = numb_('_hkl_oxdiff_sig', rs, dum)
+  
+           f0 = numb_('_refln_F_squared_calc', rc, dum)
+           if ( .not. f1 ) then
+             write(6,'(a,i7///)')
+     *      ' >>>>> No Fsq sigma found in CIF for reflection ',NREF
+             write(ntext,'(a,i7///)')
+     *      ' >>>>> No Fsq sigma found in CIF for reflection ',NREF
+             nref = 0
+             exit
+           end if
 c
-      write(6,'(i8,a/)') nrefs, ' reflections found'
+c
+         else if ( lftype .ne. 2 ) then
+           lftype = 1
+           f1 = numb_('_refln_F_meas', rf, dum)
+           f1 = numb_('_refln_F_sigma', rs, dum).and.(f1)
+           f0 = numb_('_refln_F_calc', rc, dum)
+           if ( .not. f1 ) then
+             write(6,'(a,i7///)')
+     *      ' >>>>> No F or sigmaF found in CIF for reflection ',NREF
+             write(ntext,'(a,i7///)')
+     *      ' >>>>> No F or sigmaF found in CIF for reflection ',NREF
+             nref = 0
+             exit
+           end if
+         else
+           write(6,'(a,i7///)')
+     *    ' >>>>> No data found in CIF for reflection ',NREF
+           write(ntext,'(a,i7///)')
+     *    ' >>>>> No data found in CIF for reflection ',NREF
+           nref = 0
+           exit
+         end if
+C
+         IH=NINT(RH)
+         IK=NINT(RK)
+         IL=NINT(RL)
+         IF ((ABS(IL).GT.255).OR.(ABS(IK).GT.255).OR.(ABS(IH).GT.255))
+     1    THEN
+          WRITE(6,'(A,3I10,2F10.2,i10)') 'Index too big for CRYSTALS',
+     1    IH,IK,IL, RF, RS, nref
+          WRITE(ntext,'(A,3I10,2F10.2,i10)') 
+     1    'Index too big for CRYSTALS',IH,IK,IL, RF, RS, nref
+          CYCLE
+         ENDIF
+         IF (RF .LT. -9999.0) THEN
+          WRITE(6,'(A,3I5,2F15.2,i10)') 
+     1    'Reflection too negative',IH,IK,IL, RF, RS, nref
+          WRITE(ntext,'(A,3I5,2F15.2,i10)') 
+     1    'Reflection too negative',IH,IK,IL, RF, RS, nref
+          CYCLE
+         ENDIF
+         MINH=MIN(MINH,IH)
+         MINK=MIN(MINK,IK)
+         MINL=MIN(MINL,IL)
+C
+         MAXH=MAX(MAXH,IH)
+         MAXK=MAX(MAXK,IK)
+         MAXL=MAX(MAXL,IL)
+C
+        if (( rf .lt. 100000 ).and.( rc .lt. 100000 )) then
+          write ( noutr, '(3I4,3F8.2)' )ih,ik,il,rf,rs
+     1                                  ,rc
+        else if (( rf .lt. 1000000 ).and.( rc .lt. 1000000 )) then
+          write ( noutr, '(3I4,3F8.1)' )ih,ik,il,rf,rs
+     1                                  ,rc
+        else if (( rf .lt. 10000000 ).and.( rc .lt. 10000000 )) then
+          write ( noutr, '(3I4,3F8.0)' )ih,ik,il,rf,rs
+     1                                  ,rc
+        else
+          write ( noutr, '(3I4,3I8)' )ih,ik,il,
+     *                                NINT(rf),NINT(rs),NINT(rc)
+        end if
+
+        if(.not.(loop_)) exit
+
+       end do
+       close(noutr)
+c
+      endif
+c-------------------------------------------------
+C
+      write(6,'(i8,a/)') nref, ' reflections found'
+      write(ntext,'(i8,a/)') nref, ' reflections found'
+c
+c
+      f1 = numb_('_diffrn_reflns_limit_h_min', hmin, dum)
+      f1 = numb_('_diffrn_reflns_limit_h_max', hmax, dum).or.(f1)
+      f1 = numb_('_diffrn_reflns_limit_k_min', kmin, dum).or.(f1)
+      f1 = numb_('_diffrn_reflns_limit_k_max', kmax, dum).or.(f1)
+      f1 = numb_('_diffrn_reflns_limit_l_min', lmin, dum).or.(f1)
+      f6l = numb_('_diffrn_reflns_limit_l_max', lmax, dum).or.(f1)
+c
+      if(f6l) then
+            minh = nint(hmin)
+            maxh = nint(hmax)
+            mink = nint(kmin)
+            maxk = nint(kmax)
+            minl = nint(lmin)
+            maxl = nint(lmax)
+      endif      
+c
 C 
-300   CONTINUE
+305   CONTINUE
+      atn = 0.
+      atx = 0.
       F1=NUMB_('_exptl_absorpt_correction_T_min',adum,DUM)
       if(f1)then
        FABS=NUMB_('_exptl_absorpt_correction_T_min',atn,DUM)
@@ -476,25 +590,37 @@ C
        atx=0.
       ELSE
          write(6,'(A)') 'Absorption Correction Found'
+         write(ntext,'(A)') 'Absorption Correction Found'
       endif
 C
 320   continue
 C
 C....... Extract space group notation (expected char string)
+      CSPACE = '?'
       F1=CHAR_('_symmetry_space_group_name_H-M',c80)
+      if(f1) FSG=CHAR_('_symmetry_space_group_name_H-M',NAME)
+      if(.not. f1) then
+       F1=CHAR_('_space_group_name_H-M_alt',c80)
+       if(f1) FSG=CHAR_('_space_group_name_H-M_alt',NAME)
+      endif
+c
       if(f1)then
-       FSG=CHAR_('_symmetry_space_group_name_H-M',NAME)
        IF (.NOT.(FSG)) THEN
-         write(6,'(a)') 'No spacegroup found'
+         write(6,'(/a/)') 'No spacegroup found'
+         write(ntext,'(/a/)') 'No spacegroup found'
          CSPACE = '?'
          GO TO 1050
        END IF
        CSPACE=NAME(1:LONG_)
-       write(6,'(a,a,a/)')'Space group  from cif= ',NAME(1:LONG_),'.'
+       write(6,'(//a,a/)')'Space group  from cif= ',NAME(1:LONG_)
+       write(ntext,'(//a,a/)')'Space group  from cif= ',NAME(1:LONG_)
        call xcrems(name, cspace,lspace)
        i = index(cspace(1:lspace),' ')
        if ((i .le. 0) .or. (cspace(2:2) .ne. ' ' ))then
-          write(6,'(a)') 'CRYSTALS needs spaces in symbol'
+          write(6,'(a)') 
+     1 'CRYSTALS needs spaces in symbol - Int Tab G pp 256'
+          write(ntext,'(a)') 
+     1 'CRYSTALS needs spaces in symbol - Int Tab G pp 256'
           fsg = .false.
        endif
        if (cspace(1:lspace) .eq. 'unknown') fsg = .false.
@@ -505,15 +631,16 @@ c      IDIFF = 1 = AGILENT
 C      IDIFF = 2 = KCCD
 C      IDIFF = 3 = RIGAKU
 C      IDIFF = 4 = WINGX
+C      IDIFF = 5 = CSD
 C
 c Kccd SG is only Point Group
-
       if (idiff .eq. 2) fsg = .false.
       if (fsg) then
          write(6,'(/A)') 
      1 'CAUTION - some cifs only contain the Point Group'
          write(6,'(a,a)')'Space Group from cif is ',
      1    cspace(1:nctrim(cspace))
+        if(idiff .ne. 5) then
          write(6,'(a)') 'Is this correct [yes]'
          read (5,'(A)') ctemp
          if ((ctemp(1:1).eq.'n') .or. (ctemp(1:1).eq.'N')) then
@@ -522,12 +649,14 @@ c Kccd SG is only Point Group
            write(6,'(a,a)') 'Using input space group'
            fsg = .true.
          endif
+        endif
        endif
       endif
 C
-
+c
 c----------------------------------------------------------------
-      if (nrefs .gt. 1) then
+
+      if ((nref .gt. 1).and.(idiff.ne.5).and. (.not.fsg) ) then
 C----- reflections all read - check space group with Nonius code
        write(6,'(a)') 'Space Group Code provided by Enraf-Nonius'
        if (.not. fsg) then
@@ -537,14 +666,13 @@ C----- reflections all read - check space group with Nonius code
 	 if (abs(90.-celalp) .le. .001) isa=isa+1
 	 if (abs(90.-celbet) .le. .001) isa=isa+1
 	 if (abs(90.-celgam) .le. .001) isa=isa+1
+         if(isa .eq. 0) isa=1
 
 	 if (abs(cela-celb) .le. (siga+sigb)) isb=isb+1
 	 if (abs(cela-celc) .le. (siga+sigc)) isb=isb+1
 	 if (abs(celc-celb) .le. (sigc+sigb)) isb=isb+1
-	 if (isb .le. 0) then
-		if(isa .eq. 0) isa=1
-             i_value=isa
-         endif
+	 if (isb .ge. 1) isa = 0
+         i_value=isa
          if (i_value .eq. 0)       write(6,555)
 555   FORMAT (' Possible space group types :',/,' Number:   Group:      
      1       ',/,
@@ -572,7 +700,7 @@ C
 c----------------------------------------------------------------
 C
         ctemp = ' '
-        call sgroup(filename(1:lfn)//'.hkl', i_value,cnonsp)
+        call sgroup(chkl, i_value,cnonsp)
         lspace = nctrim(cnonsp)
         if (cnonsp(2:2) .ne. ' ') then
             do i=lspace,2,-1
@@ -581,10 +709,17 @@ C
             cnonsp(2:2) = ' '
             lspace = lspace + 1
         endif
-        write(6,'(/a)') 'For monoclinic systems, input the full symbol'
-         write(6,'(/A)') 
-     1 'CAUTION - some cifs only contain the Point Group'
-        write(6,'(a,a)')' Space Group from cif is ',cspace(1:lspace)
+        if ( cnonsp .eq. ' ') then
+            cnonsp='?'
+            lspace = nctrim(cnonsp)
+        endif
+        if (i_value .eq. 2) then
+         write(6,'(/a)') 
+     1   ' For monoclinic systems, input the full symbol'
+        endif
+        write(6,'(/A)') 
+     1 ' CAUTION - some cifs only contain the Point Group'
+        write(6,'(a,a)')' Space Group from cif is : ',cspace(1:lspace)
         write(6,'(/a,a,a)')' Absences suggest [',cnonsp(1:lspace),']'
         write(6,'(a,a,a/)') 'Click RETURN or input space group ',
      1 'symbol with spaces between the components'
@@ -594,87 +729,210 @@ C
         else
          cspace = cnonsp(1:lspace)
         endif
-        fsg = .true.
+        if (cspace(1:1) .ne. '?') then
+          fsg = .true.
+        else
+          fsg = .false.
+        endif
        endif
       endif
 C 
 C 
-c
-c
-c
+C
 C....... Read and store the atom site data
 C....... =================================
-c
-      f1 = char_('_atom_site_label', c80)
-      if(.not.f1) goto 241
+
       nsite = 0
 240   nsite = nsite+1
       f1 = char_('_atom_site_label', label(nsite,1))
       if(.not.(f1)) then
-        write(6,'(a)')   'No atom_site_label found'
+        write(6,'(/a/)')   ' >>>>> No atom_site_label found'
+        write(ntext,'(/a/)')   ' >>>>> No atom_site_label found'
         nsite=nsite-1
         goto 241
       endif
           
 C....... pull apart the site label into element and number
-      call xcras(label(nsite,1),llabel)
-c     find first number
-      ii = 0
-      do i = 1,llabel
-        j = index(numer,label(nsite,1)(i:i))
-        if (j .ne. 0) exit
-        ii = i
-      enddo
-      if (ii .eq. 0) then
-c       no proper label
-        label(nsite,2) = 'temp'
-      else
-        label(nsite,2) = label(nsite,1)(1:ii)
+C....... find out if one of two character element by checking
+C....... if 2nd char is a number:
+C....... Original label is in label(n,1)
+      iellen=2
+      do i=1,10
+        if (numer(i:i).eq.label(nsite,1)(2:2)) iellen=1
+      end do
+C........Store element type in label(n,2):
+      if (iellen == 2) then
+        c=label(nsite,1) (2:2)
+        icton = ichar(c)
+C . If uppercase, make lowercase.
+        if ((icton < 91) .and. (icton > 64) ) then
+          icton = icton+32
+          c = char(icton)
+        end if
+        label(nsite,2)=label(nsite,1)(1:iellen)
+        label(nsite,2)(2:2) = c
+      else if (iellen == 1) then
+        label(nsite,2)=label(nsite,1)(1:iellen)
       endif
+        
+      iserialflag=0
+      buffer = ' '
 
-c     find end of numbers
-      kk = ii + 1      
-      do i = ii+1, llabel
-        k = index(numer,label(nsite,1)(i:i))
-        if (k .eq. 0) exit
-        kk = i
-      enddo
-      if (label(nsite,1)(kk:).eq.' ') then
-c        no proper number
-         label(nsite,3) = ' 1'
-      else
-         label(nsite,3) = label(nsite,1)(ii+1:kk)
+      do j=iellen+1,iellen+6
+        buffer(j:j)=label(nsite,1)(j:j)
+
+        do i=1,nodchr
+          if (((label(nsite,1)(j:j)) .eq. charcCase(i:i)) .or.
+     *        ((label(nsite,1)(j:j)) .eq. charc(i:i))) then
+            buffer(j:j)=numer(i:i)
+            iserialflag=1
+            exit
+          endif
+        enddo
+                     
+        if (label(nsite,1)(j:j) == ' '.or.
+     *      label(nsite,1)(j:j) == '_' ) then    !First time through there is no serial
+            buffer(j:j)='0'
+            iserialflag=1
+            exit
+        end if
+
+        if (label(nsite,1)(j+1:j+1) == ' '.or.
+     *      label(nsite,1)(j+1:j+1) == '_' ) exit
+      enddo       
+
+
+C RIC03 - Removed duplicate label detection code. Use #EDIT 
+C instead. (See later)
+
+C-------------------------------
+
+C........Store serial number:
+      If (iserialflag==0) then
+        label(nsite,3)=label(nsite,1)(iellen+1:j)
+      else 
+        label(nsite,3)=buffer(iellen+1:j)
+        write(6, '(a,2x,a,2x,a,2x,a3,a)') 'atom name',
+     *          label(nsite,1), 'changed to',
+     *            label(nsite,2), label(nsite,3) 
+
+        write(ntext, '(a,2x,a,2x,a,2x,a3,a)') 'atom name',
+     *          label(nsite,1), 'changed to',
+     *            label(nsite,2), label(nsite,3) 
+
       endif
 
       f2 = numb_('_atom_site_fract_x',  xf(nsite), sx)
       f2 = numb_('_atom_site_fract_y',  yf(nsite), sy).AND.(f2)
       f2 = numb_('_atom_site_fract_z',  zf(nsite), sz).AND.(f2)
       if(.not.(f2)) then
-         write(6,'(/a/)')'atom_site_fract_ missing'
+         write(6,'(/a/)')' >>>>> atom_site_fract_ missing'
+         write(ntext,'(/a/)')' >>>>> atom_site_fract_ missing'
       endif
          
+      f2 = numb_('_atom_site_U_iso_or_equiv',  uisoeq(nsite), su)
+      if(.not.(f2)) uisoeq(nsite) = 0.05
+
       f2 = numb_('_atom_site_occupancy', occ(nsite), su)
       if (.not. (f2)) occ(nsite) = 1
-                 
-C         
-C........Check if there are more atoms in the loop to get.
+       
+      f2 = char_('_atom_site_adp_type', name)
+      if (.not. (f2)) then
+        iflag(nsite) = 1
+      else if (name .eq.'Uani') then
+        iflag(nsite) = 0
+      else if (name .eq. 'Uiso') then
+        iflag(nsite) = 1
+      endif
 
+      f2 = numb_('_atom_site_disorder_assembly', assmbly, dum)
+      if (.not. f2) then
+       f2 = char_('_atom_site_disorder_assembly', name)
+       if ( .not. f2 ) then
+          iasmbly=0
+       else
+         if ( name(1:1) .eq. ' ' ) name(1:1) = '1' 
+         do i = 1,LEN_TRIM(name)    !ABCD -> 1234 etc.
+           do j = 1,nodchr
+             if ( ( name(i:i) .eq. charcCase(j:j) ) .or.
+     *           ( name(i:i) .eq. charc(j:j)     ) ) then
+               k = min(j,9)
+               name(i:i) = numer(k:k)
+             end if
+           end do
+         end do
+         read ( name(1:3),'(I3)') iasmbly
+       end if
+      else
+        iasmbly = nint(assmbly)
+      endif
+c
+      f2 = numb_('_atom_site_disorder_group', group, dum)
+      if(.not. f2) then
+       f2 = char_('_atom_site_disorder_group', name)
+       if ( .not. f2 ) then
+          igroup(nsite)=iasmbly * 1000
+       else
+         if ( name(1:1) .eq. ' ' ) name(1:1) = '1' 
+         do i = 1,LEN_TRIM(name)    !ABCD -> 1234 etc.
+           do j = 1,nodchr
+             if ( ( name(i:i) .eq. charcCase(j:j) ) .or.
+     *           ( name(i:i) .eq. charc(j:j)     ) ) then
+               k = min(j,9)
+               name(i:i) = numer(k:k)
+             end if
+           end do
+         end do
+         read ( name(1:4),'(I4)') igroup(nsite)
+         igroup(nsite)=sign(abs(igroup(nsite))
+     1  +iasmbly*1000,igroup(nsite))
+       end if
+      else
+         igroup(nsite)=nint(group)
+         igroup(nsite)=sign(abs(igroup(nsite))
+     1  +iasmbly*1000,igroup(nsite))
+      endif
+C........Check if there are more atoms in the loop to get.
       if(loop_) goto 240
 241   continue
+
+C....... Read the Uij loop and store in the site list
+      do i=1,nsite
+        if (iflag(i) == 0) then
+          f1 = char_('_atom_site_aniso_label', name) 
+          do j=1, nsite
+            if(label(j,1).eq.name) then
+              f1 = numb_('_atom_site_aniso_U_11', uij(i,1), dum)
+              f1 = numb_('_atom_site_aniso_U_22', uij(i,2), dum) 
+              f1 = numb_('_atom_site_aniso_U_33', uij(i,3), dum)
+              f1 = numb_('_atom_site_aniso_U_23', uij(i,4), dum)
+              f1 = numb_('_atom_site_aniso_U_13', uij(i,5), dum) 
+              f1 = numb_('_atom_site_aniso_U_12', uij(i,6), dum)
+              goto 300
+            end if  
+          end do
+        endif
+300     if(.not.(loop_)) exit
+      end do
+c
+c
 700   CONTINUE
       write(6,*) nsite, ' Atoms found'
+      write(NTEXT,*) nsite, ' Atoms found'
 c
+c
+C 
+C-----------------------------------------------------------------------
+C       BEGIN WRITING THE OUTPUT CRYSTALS FILES ONLY IF CELL DATA FOUND
+C
       IF (.NOT.(FC)) THEN
          write(6,'(//a)') 'No cell DATA in this block.'
          write(NTEXT,'(a)') 'No cell DATA in this block.'
-         write(6,'(//a)') 'Trying next block.'
-         write(NTEXT,'(a)') 'Trying next block.'
-         GO TO 50
+         write(6,'(//a)') 'Abandoning  block'
+         write(NTEXT,'(a)') 'Abandoning block'
+         GO TO 1050
       END IF
-
-C 
-C-----------------------------------------------------------------------
-C       BEGIN WRITING THE OUTPUT CRYSTALS FILES
+C
 5678  CONTINUE
 C
       IF (FINFO .EQ. .FALSE.) THEN
@@ -682,74 +940,102 @@ C
             goto 1050
       ENDIF
 C 
-      IF (FN) WRITE (NOUTF,'(a,2X,A,2x,a)') '#TITLE ',ENAME,CDATE
-      IF (FC) THEN
-C -CELL
+      IF (FN) WRITE (NOUTF,'(//a,2X,A,2x,a)') '#TITLE ',
+     1                    ENAME(1:NCTRIM(ENAME)),CDATE
+c
+c
+C Dont write lists if data comes from an .fcf file
+      if(.not. fcf) then
+C #LIST 1
+       IF (FC) THEN
          WRITE (NOUTF,'(a)') '#LIST 1'
          WRITE (NOUTF,'(a,6F11.4)') 'REAL',CELA,CELB,CELC,CELALP,CELBET,
      1    CELGAM
          WRITE (NOUTF,'(a)') 'END'
 C 
 C            scale the variances
-c         AMULT=.00001
-         AMULT=.0000001
-         SIGA=SIGA*SIGA/AMULT
-         SIGB=SIGB*SIGB/AMULT
-         SIGC=SIGC*SIGC/AMULT
-         SIGALP=SIGALP*SIGALP*DTR*DTR/AMULT
-         SIGBET=SIGBET*SIGBET*DTR*DTR/AMULT
-         SIGGAM=SIGGAM*SIGGAM*DTR*DTR/AMULT
+         big=0.0
+         SIGA=SIGA*SIGA
+         big=max(big,siga)
+         SIGB=SIGB*SIGB
+         big=max(big,sigb)
+         SIGC=SIGC*SIGC
+         big=max(big,sigc)
+         SIGALP=SIGALP*SIGALP*DTR*DTR
+         big=max(big,sigalp)
+         SIGBET=SIGBET*SIGBET*DTR*DTR
+         big=max(big,sigbet)
+         SIGGAM=SIGGAM*SIGGAM*DTR*DTR
+         big=max(big,siggam)
+         amult = 1./big
+
+         SIGA=SIGA*amult
+         SIGB=SIGB*AMULT
+         SIGC=SIGC*AMULT
+         SIGALP=SIGALP*AMULT
+         SIGBET=SIGBET*AMULT
+         SIGGAM=SIGGAM*AMULT
+c
+C #LIST 31
          WRITE (NOUTF,'(a)') '#LIST 31'
-         WRITE (NOUTF,'(a,F11.8)') 'AMULT ',AMULT
+         WRITE (NOUTF,'(a,F12.10)') 'AMULT ',BIG
          WRITE (NOUTF,'(2(3(a,F13.6,1x),/),a)') 'MATRIX   V(11)=',SIGA,'
      1V(22)=',SIGB,'V(33)=',SIGC,'CONTINUE V(44)=',SIGALP,'V(55)=',
      2    SIGBET,'V(66)=',SIGGAM,'END'
-      END IF
+       END IF
 C 
 C -SG
 C 
-      IF (FSG) THEN
+C #SPACE
+       IF (FSG) THEN
          WRITE (NOUTF,'(a)') '#SPACEGROUP'
          WRITE (NOUTF,'(2a)') 'SYMBOL ',CSPACE
          WRITE (NOUTF,'(a)') 'END'
-      ELSE
+       ELSE
          WRITE (NOUTF,'(A)') '#SCRIPT XSPACE'
-      END IF
+       END IF
 C 
-C WAVELENGTH
-      IF (FW) THEN
-       if(wav .ge.1.) then
-c       copper
-        th1=13.0
-        th2=0.
-       else
-c      moly
-        th1=6.
-        th2=0.
-       endif
-       IF (FMON)THEN
-        I = INDEX(CMONO,'mirror')
-        if (i .ne. 0) then
+       IF (FW) THEN
+C      WAVELENGTH
+         th1 = 0.
+         th2 = 0.
+        if(probably_neutrons .eqv. .false.) then
+         if(nint(100*wav) .eq. 154) then
+c         copper
+          th1=13.0
+          th2=0.
+         else if(nint(100*wav).eq..71) then
+c         moly
+          th1=6.
+          th2=0.
+         endif
+        endif
+        IF (FMON)THEN
+         I = INDEX(CMONO,'mirror')
+         if (i .ne. 0) then
           th1=0.
           th2=0.
-        endif
-       ENDIF
-         WRITE (NOUTF,'(a)') '#LIST 13'
-         WRITE (NOUTF,'(a)') '# set theta 1 and 2 to zero for mirrors'
-         WRITE (NOUTF,'(a,f8.5,a,f8.5,a,f8.5)') 
+         endif
+        ENDIF
+C
+C #LIST 13
+        WRITE (NOUTF,'(a)') '#LIST 13'
+        WRITE (NOUTF,'(a)') '# set theta 1 and 2 to zero for mirrors'
+        WRITE (NOUTF,'(a,f8.5,a,f8.5,a,f8.5)') 
      1'CONDITIONS WAVELENGTH = ',WAV,' theta(1)=', th1, ' theta(2)=',
      2 th2
-         WRITE (NOUTF,'(a)') 'END'
-      END IF
+        if(probably_neutrons.eqv..true.) 
+     1   write(noutf,'(a)') 'diffraction radiation = neutron'
+        WRITE (NOUTF,'(a)') 'END'
+       END IF
 C 
 C -FORMULA
-C 
 C(FF)
-      IF (FF) THEN
+       IF (FF) THEN
 cdjw Insert space if character immediately follows a number
 c    beware if the element type is a charged species like Om2
 c
-        call fixform(line,cform,lenfil,atsum,celvol,zm,zp)
+        call fixform(line,cform,lenfil,atsum,celvol,zm,zp,idiff)
 c
 c
 c
@@ -760,47 +1046,29 @@ c
          WRITE (NOUTF,'(a)') 'SCATTERING CRYSDIR:script/scatt.dat'
          WRITE (NOUTF,'(a)') 'PROPERTIES CRYSDIR:script/propwin.dat'
          WRITE (NOUTF,'(a)') 'END'
-      END IF
+       END IF
 c
 C 
 C- CELL PARAMTER MEASUREMENTS
 C FT
-      IF (.NOT.(FT)) THEN
-       if (cmru .le. 0.0) then
-         write(6,'(A)') 'How many cell measurement reflns used? '
-         READ (5,*) CMRU
+       if(idiff .ne. 5) then
+c       IF (.NOT.(FT)) THEN
+c        if (cmru .le. 0.0) then
+c         write(6,'(A)') 'How many cell measurement reflns used? '
+c         READ (5,*) CMRU
+c        endif
+c        if (cmtm .le. 0.0) then
+c         write(6,'(A)') 'Cell measurement theta min? '
+c         READ (5,*) CMTM
+c        endif
+c        if (cmtx .le. 0.0) then
+c         write(6,'(A)') 'Cell measurement theta max? '
+c         READ (5,*) CMTX
+c        endif
+c       END IF
        endif
-       if (cmtm .le. 0.0) then
-         write(6,'(A)') 'Cell measurement theta min? '
-         READ (5,*) CMTM
-       endif
-       if (cmtx .le. 0.0) then
-         write(6,'(A)') 'Cell measurement theta max? '
-         READ (5,*) CMTX
-       endif
-      END IF
-C
-
-C----- WRITING LIST 30
-         WRITE (NOUTF,'(a)') '#LIST 30'
-         WRITE (NOUTF,'(a,a)') 'DATRED REDUCTION= ', creduct
-         WRITE (NOUTF,'(a)') 'ABSORPTION ABSTYPE=multi-scan'
-         WRITE (NOUTF,'(a,f8.3)') 'cont empmin=',atn
-         WRITE (NOUTF,'(a,f8.3)') 'cont empmax=',atx
-         WRITE (NOUTF,'(a)') 'CONDITION'
-         WRITE (NOUTF,'(a,f8.3)') 'cont minsiz=',ZS
-         WRITE (NOUTF,'(a,f8.3)') 'cont medsiz=',ZD
-         WRITE (NOUTF,'(a,f8.3)') 'cont maxsiz=',ZL
-         WRITE (NOUTF,'(a,f8.3)') 'cont temperature=',ZT
-         WRITE (NOUTF,'(a,f7.2)') 'cont thorientmin=',CMTM
-         WRITE (NOUTF,'(a,f7.2)') 'cont thorientmax=',CMTX
-         WRITE (NOUTF,'(a,i7)') 'cont norient=',NINT(CMRU)
-         WRITE (NOUTF,'(a)') 'cont scanmode=omega'
-         WRITE (NOUTF,'(a,a)') 'cont instrument= ', cinst
-         WRITE (NOUTF,'(a)') 'GENERAL'
-         WRITE (NOUTF,'(a,f7.1)') 'cont z=',ZM
-         WRITE (NOUTF,'(a,a)') 'COLOUR ',CCOL
-C 
+c
+c
 C.....  SHAPE
          CSHAPE = '?'
          IF (ZS .GT. 0.0) THEN
@@ -827,33 +1095,77 @@ C.....  SHAPE
            ENDIF
           ENDIF
          ENDIF
-         WRITE (NOUTF,'(a,a)') 'shape ',CSHAPE(1:5)
-C 
-         WRITE (NOUTF,'(a)') 'INDEXRAN'
-         WRITE (NOUTF,'(a,i7)') 'cont hmin=',MINH
-         WRITE (NOUTF,'(a,i7)') 'cont hmax=',MAXH
-         WRITE (NOUTF,'(a,i7)') 'cont kmin=',MINK
-         WRITE (NOUTF,'(a,i7)') 'cont kmax=',MAXK
-         WRITE (NOUTF,'(a,i7)') 'cont lmin=',MINL
-         WRITE (NOUTF,'(a,i7)') 'cont lmax=',MAXL
-         WRITE (NOUTF,'(a,i7)') 'END'
+         WRITE (NOUTF,'(a,a)') '# shape ',CSHAPE
+C  
+         f1 = char_('_exptl_crystal_description', shape)
+         if(f1) cshape = shape
 c
+C
+C #LIST 30
+C----- WRITING LIST 30
+         WRITE (NOUTF,'(a)')      '#LIST 30'
+         WRITE (NOUTF,'(a,a)')    'DATRED REDUCTION= ', creduct
+         WRITE (NOUTF,'(a)')      'ABSORPTION ABSTYPE=multi-scan'
+         WRITE (NOUTF,'(a,f8.3)') 'cont empmin=',atn
+         WRITE (NOUTF,'(a,f8.3)') 'cont empmax=',atx
+         WRITE (NOUTF,'(a)')      'CONDITION'
+         WRITE (NOUTF,'(a,f8.3)') 'cont minsiz=',ZS
+         WRITE (NOUTF,'(a,f8.3)') 'cont medsiz=',ZD
+         WRITE (NOUTF,'(a,f8.3)') 'cont maxsiz=',ZL
+         WRITE (NOUTF,'(a,f8.2)') 'cont temperature=',ZT
+         WRITE (NOUTF,'(a,f7.2)') 'cont thorientmin=',CMTM
+         WRITE (NOUTF,'(a,f7.2)') 'cont thorientmax=',CMTX
+         WRITE (NOUTF,'(a,i7)')   'cont norient=',NINT(CMRU)
+         WRITE (NOUTF,'(a)')      'cont scanmode=omega'
+         WRITE (NOUTF,'(a,a)')    'cont instrument= ', cinst
+         WRITE (NOUTF,'(a)')      'GENERAL'
+         WRITE (NOUTF,'(a,f7.1)') 'cont Z=',zm
+         WRITE (NOUTF,'(a,a)')    'COLOUR ',ccoL
+         WRITE (NOUTF,'(a,a)')    'SHAPE ',cshape
+         WRITE (NOUTF,'(a)')      'INDEXRAN'
+         WRITE (NOUTF,'(a,i7)')   'cont hmin=',MINH
+         WRITE (NOUTF,'(a,i7)')   'cont hmax=',MAXH
+         WRITE (NOUTF,'(a,i7)')   'cont kmin=',MINK
+         WRITE (NOUTF,'(a,i7)')   'cont kmax=',MAXK
+         WRITE (NOUTF,'(a,i7)')   'cont lmin=',MINL
+         WRITE (NOUTF,'(a,i7)')   'cont lmax=',MAXL
+         WRITE (NOUTF,'(a,i7)')   'END'
 c
-c  write out atoms
-C 
 c--------------------------------------------------------------
-c      output list 5
-c
-      if ( nsite .gt. 0 ) then
+c      write out atoms
+C
+c #LIST 5
+       if ( nsite .gt. 0 ) then
+
+        if ( .not.(ff) ) then
+          write(NOUTF,'(a)') '#Composition'
+          write(NOUTF, '(a)') 'content C 1 H 1 '
+          write(NOUTF,'(a/a)')'SCATTERING CRYSDIR:script/scatt.dat',
+     *                    'PROPERTIES CRYSDIR:script/propwin.dat'
+          write(NOUTF, '(a)') 'END'
+        end if
+
         write(NOUTF,'(a)') '#LIST 5'
         write(NOUTF,'(a)') 'OVERALL 1 0.05 0.05 0 0 0'
         write(NOUTF,'(a,i4,x,a)') 'READ NATOM = ',nsite,
      *      'NLAYER = 0 NELEMENT = 0 NBATCH = 0 '
 
         do i=1,nsite
-          write(NOUTF,'(3(a,1x),f11.6,i4,3f11.6,14X,2a4)')
+          write(NOUTF,'(3(a,1x),f11.6,i4,3f11.6,1X,2a4)')
      *    'ATOM',label(i,2)(1:6),
-     *    label(i,3)(1:6),occ(i),1,xf(i),yf(i),zf(i),label(i,1)
+     *    label(i,3)(1:6),occ(i),iflag(i),xf(i),yf(i),zf(i)
+          if (iflag(i) .eq. 0 )then
+            write(NOUTF,'(a,6f11.6)')'CON U[11]= ',(uij(i,j),j=1,6)
+          else if (iflag(i) .eq. 1) then
+            do j=2,6
+              uij(i,j)=0
+            end do
+            write(NOUTF,'(a,6f11.6)') 'CON U[11]=', uisoeq(i),
+     *            (uij(i,j), j=2,6)  
+          endif
+          if ( igroup(i) .ne. 0 ) then
+            write(NOUTF,'(a,f11.6)') 'CON PART=', float(igroup(i))
+          end if
         end do
         write(NOUTF,'(a)') 'END'
         write(NOUTF,'(a)') '#EDIT'           !This will fix clashing
@@ -861,18 +1173,45 @@ c
         write(NOUTF,'(a)') 'MONITOR LEVEL=OFF ' !serial numbers.
         write(NOUTF,'(a)') 'CLASH FIXLATTER' !serial numbers.
         write(NOUTF,'(a)') 'END'
-      end if
-
+       end if
 c
-      IF (.NOT.(FSIZ)) 
+c
+       IF (.NOT.(FSIZ)) 
      1 write(6,'(A)') 'No crystal size info in cif.'
-      IF (.NOT. FTEMP) 
+       IF (.NOT. FTEMP) 
      1 write(6,'(A)') 'No temperature info in cif.'
-      IF (.NOT. FCOL) 
+       IF (.NOT. FCOL) 
      1 write(6,'(A)') 'No colour info in cif.'
 c
+      endif
+c     end of general data when readinf from a non-fcf file
+C
+Cc #LIST 6
+      if ( nref .gt. 0 ) then
+        write(NOUTF,'(a)')'# read in reflections'
+        write(NOUTF,'(a)')'#CLOSE HKLI'
+        write(NOUTF,'(3a)')'#OPEN HKLI  "'//
+     *                      chkl(1:len_trim(chkl))//'"'
+        write(NOUTF,'(a)')'#HKLI'
+        if ( lftype .eq. 2 ) then
+          write(NOUTF,'(a)')'READ F''S=FSQ NCOEF=6 TYPE=FIXED CHECK=NO'
+        else
+          write(NOUTF,'(a)')'READ F''S=FO NCOEF=6 TYPE=FIXED CHECK=NO'
+        end if
+        write(NOUTF,'(a)')'INPUT H K L /FO/ SIGMA(/FO/) /Fc/'
+        write(NOUTF,'(a)')'FORMAT (3F4.0, 3F8.0)'
+        write(NOUTF,'(a)')'STORE NCOEF=7'
+        write(NOUTF,'(a)')'OUTP INDI /FO/ SIG RATIO/J CORR SERI /Fc/'
+        write(NOUTF,'(a)')'END'
+        write(NOUTF,'(a)')'#CLOSE HKLI'
+        write(noutf,'(a)')'#LIST 6'
+        write(noutf,'(a)')'READ TYPE=COPY'
+        write(noutf,'(a)')'END'
+      endif
+C END LIST 6
+C
 1050  CONTINUE
-      STOP
+      RETURN
       END
 C=======================================================================
       INTEGER FUNCTION IGDAT(CFILE)
@@ -891,7 +1230,7 @@ c      WRITE (CFILE,'(I8)') I
 c
 c
 c
-      SUBROUTINE FIXFORM (LINE,CFORM,LENFIL, sum, celvol, zm,zp)
+      SUBROUTINE FIXFORM (LINE,CFORM,LENFIL,sum,celvol,zm,zp,idiff)
       CHARACTER*(*) LINE,CFORM
 c     Separate the components of the formula in LINE into CFORM
       LOGICAL LNUMER, LCHAR, LSPACE, FF, lhatom
@@ -1131,23 +1470,30 @@ c
          else
           zn = 1.0
          endif
+         write(6,'(a,f8.2)') 'Z from cif is ', zp
+         if (zn .lt. 1.) then
+            zz = 1./zn
+            zz = nint(zz)
+            zz = 1./zz
+         else
+            zz = float(nint(zn))
+         endif
          write(6,'(a,i4,a,f8.2,a)') 
      1 'Z estimated from cell volume and composition is' 
-     2  ,nint(zn),' (actually ',zn,')'
-         write(6,'(a,f8.2)') 'Z from cif is ', zp
+     2  ,nint(zz),' (actually ',zn,')'
+         if(zp.le.0.) zp = zz
 c
-          write(6,'(a,i4,a)') 'Please give Z [',
-     1    nint(zn),']'
+         if(idiff.ne.5) then
+          write(6,'(a,f6.1,a)') 'Please give Z [',
+     1    zp,']'
           read (5,'(A)') ctemp
           if (len_trim(ctemp).ne.0) THEN
                read (ctemp,*,err=750) zp
-               write(6,'(a,f6.2)') 'Using Z = ', zp
-          else
-               zp = float(nint(zn))
-               write(6,'(a,f6.2)') 'Using Z = ', zp
           endif
-750    continue
-       zm=zp
+         endif
+750      continue
+         zm=zp
+         write(6,'(a,f6.2)') 'Using Z = ', zp
 c
 c----     scale the contents
 c
@@ -1204,32 +1550,6 @@ c
       return
       end
 c
-C
-      SUBROUTINE INARG(CARG1, CARG2)
-#if defined(_DVF_) || defined (_DIGITALF77_)  || defined (_GID_)
-      USE DFPORT
-#endif
-      CHARACTER*80 CMNAM
-      character*(*)  CARG1, CARG2
-C--
-      carg1 = ' '
-      carg2 = ' '
-
-#if defined(_DVF_) || defined (_DIGITALF77_)   || defined (_GID_)
-      CALL GetArg(1,carg1,optlen)
-      CALL GetArg(2,carg2,optlen)
-#elif defined(_DOS_) 
-     carg1=cmnam()
-     carg2=cmnam()
-#else
-      call GetArg(1, carg1)
-      call GetArg(2, carg2)      
-#endif
-c      write(6,'(a)') carg1
-c      write(6,'(a)') carg2
-      RETURN
-      END
-
 C=======================================================================
 #include "xgroup.for"
 #include "charact.for"
