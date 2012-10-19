@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.65  2012/03/23 13:51:32  rich
+C Intel support.
+C
 C Revision 1.64  2012/01/04 14:31:25  rich
 C Fix some uninitialized variables, and output format mistakes.
 C
@@ -1232,12 +1235,13 @@ cdjwdec11            ENDIF
 cdjwdec11
             IF ( ISYSIN .EQ. ISCRIP ) THEN
 C            close back to top level if a SCRIPT does not exist
-             WRITE(CMON,'(A/A/A)')
-     1      '{ECRYSTALS has encountered a serious internal error',
-     2      '{Eand is closing down the SCRIPT processor.',
-     3      '{EPlease send the .log and .lis files to Oxford'
-             CALL XPRVDU(NCVDU, 3, 0)
-             write(ncwu,'(a)') cmon(1), cmon(2), cmon(3)
+             WRITE(CMON,'(A/A/A/A)')
+     1      '{EThe requested SCRIPT was not found. ',
+     2      '{ECRYSTALS is closing down the SCRIPT processor.',
+     3      '{EProbably a bug.',
+     4      '{EPlease send the .log and .lis files to Oxford'
+             CALL XPRVDU(NCVDU, 4, 0)
+             write(ncwu,'(a)') cmon(1), cmon(2), cmon(3), cmon(4)
              CALL XFLUNW ( 1 , 3 )
             ELSE
              CALL XFLUNW ( 2 , 1 )
