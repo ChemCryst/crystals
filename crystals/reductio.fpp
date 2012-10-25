@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.52  2012/08/09 11:04:09  djw
+C A few more bins for the Histogram plotting
+C
 C Revision 1.51  2012/07/27 15:57:29  djw
 C Don't output sums - totals could be very large for a centred cell
 C
@@ -662,31 +665,31 @@ C--LAST REFLECTION READ
       CALL XSWP06(IULN,MEDIUM)
 C
 cdjwjul2012
-c      write the summary statistics to histogram.dat
-      WRITE(NCFPU2,'(A,A)')
+       if (iuln .eq. 6) then
+c       write the summary statistics to histogram.dat
+        WRITE(NCFPU2,'(A,A)')
      1' Range    number    mean(Fo)    ',
      2'number   Mean(ratio)'
 
-      DO I=1,NTOT3
-        if(itot3(i) .gt. 0) then
-          avfo = ATOT3(I)/ITOT3(I)
-        else 
-          avfo = 0.
-        endif
-        if(itot4(i) .gt. 0) then
-          rms = sqrt(ATOT4(I)/ITOT4(I))
-        else 
-          rms = 0.
-        endif
-          WRITE(NCFPU2,1755)
-     1    RANGE3(I), float(itot3(i)),  AVFO,
-     2         FLOAT(itot4(i)),  rms
-      ENDDO
+        DO I=1,NTOT3
+         if(itot3(i) .gt. 0) then
+           avfo = ATOT3(I)/ITOT3(I)
+         else 
+           avfo = 0.
+         endif
+         if(itot4(i) .gt. 0) then
+           rms = sqrt(ATOT4(I)/ITOT4(I))
+         else 
+           rms = 0.
+         endif
+           WRITE(NCFPU2,1755)
+     1     RANGE3(I), float(itot3(i)),  AVFO,
+     2     FLOAT(itot4(i)),  rms
+        enddo
 1755  FORMAT(f5.0, 3(f6.0,f10.2))
-      IF ( IULN .EQ. 6 ) THEN
         I = KFLCLS(NCFPU1)
         I = KFLCLS(NCFPU2)
-      END IF
+       endif
 C
       CALL XLINES
       IF (NABSNT .GT. 0) THEN
