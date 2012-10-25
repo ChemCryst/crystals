@@ -195,8 +195,8 @@ LS-scale= 10.008   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD     1           1          -0.09446         0.00      0.04851         -1.95                          SCALE   
- S/ESD     2           2          -0.00209         0.00      0.00138         -1.52        SI     1 U[11]   
+ S/ESD     1           1          -0.09446         0.00      0.04851      -1.94736                          SCALE   
+ S/ESD     2           2          -0.00209         0.00      0.00138      -1.51769        SI     1 U[11]   
                                                                                                             Composite
 
                                                                       Composite
@@ -205,59 +205,63 @@ LS-scale= 10.008   Wilson Scale=  0.000
 
                                                                       Composite
 
- S/ESD     4           4           0.00105         0.00      0.00098          1.07        SI     2 Z       
- S/ESD     7           7           0.00117         0.00      0.00052          2.23        NA     1 X       
+ S/ESD     4           4           0.00105         0.00      0.00098       1.07221        SI     2 Z       
+ S/ESD     7           7           0.00117         0.00      0.00052       2.22670        NA     1 X       
                                                                                                             Composite
 
                                                                       Composite
 
- S/ESD     8           8          -0.00543         0.00      0.00172         -3.16        NA     1 U[11]   
+ S/ESD     8           8          -0.00543         0.00      0.00172      -3.15650        NA     1 U[11]   
                                                                                                             Composite
 
                                                                       Composite
 
- S/ESD    12          12           0.00084         0.00      0.00046          1.82        NA     2 X       
+ S/ESD    12          12           0.00084         0.00      0.00046       1.82181        NA     2 X       
                                                                                                             Composite
 
                                                                       Composite
 
- S/ESD    13          13           0.00306         0.00      0.00136          2.25        NA     2 U[11]   
+ S/ESD    13          13           0.00306         0.00      0.00136       2.25008        NA     2 U[11]   
                                                                                                             Composite
 
                                                                       Composite
 
- S/ESD    14          14          -0.00465         0.00      0.00257         -1.81        NA     2 U[33]   
- S/ESD    15          15          -0.00251         0.00      0.00204         -1.23        NA     2 U[23]   
+ S/ESD    14          14          -0.00465         0.00      0.00257      -1.80951        NA     2 U[33]   
+ S/ESD    15          15          -0.00251         0.00      0.00204      -1.22864        NA     2 U[23]   
                                                                                                             Composite
 
                                                                       Composite
 
- S/ESD    16          16           0.00511         0.00      0.00167          3.06        NA     2 U[12]   
- S/ESD    17          17          -0.00203         0.00      0.00103         -1.97        F      1 X       
- S/ESD    18          18          -0.00103         0.00      0.00100         -1.03        F      1 Y       
- S/ESD    19          19          -0.00147         0.00      0.00099         -1.48        F      1 Z       
- S/ESD    20          20          -0.00536         0.00      0.00322         -1.66        F      1 U[11]   
- S/ESD    21          21           0.00500         0.00      0.00309          1.62        F      1 U[22]   
- S/ESD    22          22           0.00229         0.00      0.00213          1.07        F      1 U[33]   
- S/ESD    31          31          -0.00330         0.00      0.00205         -1.61        F      2 U[33]   
- S/ESD    32          32          -0.00414         0.00      0.00252         -1.64        F      2 U[23]   
- S/ESD    33          33          -0.00247         0.00      0.00234         -1.05        F      2 U[13]   
- S/ESD    35          35          -0.00183         0.00      0.00087         -2.10        F      3 X       
- S/ESD    37          37           0.00344         0.00      0.00115          2.99        F      3 Z       
- S/ESD    38          38           0.00597         0.00      0.00296          2.02        F      3 U[11]   
- S/ESD    40          40          -0.00253         0.00      0.00179         -1.41        F      3 U[33]   
- S/ESD    42          42          -0.00844         0.00      0.00315         -2.68        F      3 U[13]   
- S/ESD    43          43           0.00472         0.00      0.00278          1.69        F      3 U[12]   
- S/ESD    44          44          -0.01753         0.00      0.00849         -2.06                          ELEMENT   1
- S/ESD    44          44          -0.01753         0.00      0.00849         -2.06                          ELEMENT   2
- Sum of the squares of the ratio (Shift/e.s.d.) =        103.6218
-                               The rms (shift/su)  =       1.5346146
-                            The mean abs(shift/su) =       1.2809567
+ S/ESD    16          16           0.00511         0.00      0.00167       3.06209        NA     2 U[12]   
+ S/ESD    17          17          -0.00203         0.00      0.00103      -1.96679        F      1 X       
+ S/ESD    18          18          -0.00103         0.00      0.00100      -1.03393        F      1 Y       
+ S/ESD    19          19          -0.00147         0.00      0.00099      -1.47727        F      1 Z       
+ S/ESD    20          20          -0.00536         0.00      0.00322      -1.66473        F      1 U[11]   
+ S/ESD    21          21           0.00500         0.00      0.00309       1.61665        F      1 U[22]   
+ S/ESD    22          22           0.00229         0.00      0.00213       1.07324        F      1 U[33]   
+ S/ESD    31          31          -0.00330         0.00      0.00205      -1.60739        F      2 U[33]   
+ S/ESD    32          32          -0.00414         0.00      0.00252      -1.64245        F      2 U[23]   
+ S/ESD    33          33          -0.00247         0.00      0.00234      -1.05472        F      2 U[13]   
+ S/ESD    35          35          -0.00183         0.00      0.00087      -2.09585        F      3 X       
+ S/ESD    37          37           0.00344         0.00      0.00115       2.98828        F      3 Z       
+ S/ESD    38          38           0.00597         0.00      0.00296       2.01769        F      3 U[11]   
+ S/ESD    40          40          -0.00253         0.00      0.00179      -1.40852        F      3 U[33]   
+ S/ESD    42          42          -0.00844         0.00      0.00315      -2.67755        F      3 U[13]   
+ S/ESD    43          43           0.00472         0.00      0.00278       1.69457        F      3 U[12]   
+ S/ESD    44          44          -0.01753         0.00      0.00849      -2.06409                          ELEMENT   1
+ S/ESD    44          44          -0.01753         0.00      0.00849      -2.06409                          ELEMENT   2
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =        103.6218
+                                                for          44 parameters
+                                 The rms (shift/su)  =       1.5346146
+                              The mean abs(shift/su) =       1.2809567
  The largest (shift/esd) =  3.156501, for Parameter    8, NA1U[11]
-All cycle   1       0.00           100.           3.91    
-All cycle   2       0.00           100.           3.82    
-All cycle   3      0.300E-01      0.100E+05       1.53    
-All cycle   4       0.00          0.100E+16      0.137E+05
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           3.91           100.    
+All cycle   Rw                   0.00           3.82           100.    
+All cycle   shift/esd           0.300E-01       1.53          0.100E+05
+All cycle   Min function         0.00          0.137E+05      0.100E+16
 
 
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
@@ -1126,32 +1130,36 @@ LS-scale=  9.913   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD     1           1          -0.06894         0.73      0.05170         -1.33                          SCALE   
- S/ESD     7           7           0.00054         0.46      0.00033          1.62        NA     1 X       
+ S/ESD     1           1          -0.06894         0.73      0.05170      -1.33352                          SCALE   
+ S/ESD     7           7           0.00054         0.46      0.00033       1.61522        NA     1 X       
                                                                                                             Composite
 
                                                                       Composite
 
- SRATIO    9           9          -0.00044         7.70      0.00136         -0.32        NA     1 U[33]   
- S/ESD    13          13          -0.00116        -0.38      0.00099         -1.17        NA     2 U[11]   
+ SRATIO    9           9          -0.00044         7.70      0.00136      -0.32243        NA     1 U[33]   
+ S/ESD    13          13          -0.00116        -0.38      0.00099      -1.16924        NA     2 U[11]   
                                                                                                             Composite
 
                                                                       Composite
 
- SRATIO   24          24           0.00190        -7.58      0.00285          0.67        F      1 U[13]   
- SRATIO   25          25          -0.00032         3.37      0.00151         -0.21        F      1 U[12]   
- S/ESD    29          29           0.00203        -1.22      0.00199          1.02        F      2 U[11]   
- SRATIO   34          34           0.00191         6.13      0.00202          0.95        F      2 U[12]   
- S/ESD    35          35          -0.00102         0.56      0.00063         -1.62        F      3 X       
- S/ESD    36          36          -0.00070         2.96      0.00056         -1.27        F      3 Y       
- Sum of the squares of the ratio (Shift/e.s.d.) =         20.5771
-                               The rms (shift/su)  =       0.6838580
-                            The mean abs(shift/su) =       0.5449081
+ SRATIO   24          24           0.00190        -7.58      0.00285       0.66864        F      1 U[13]   
+ SRATIO   25          25          -0.00032         3.37      0.00151      -0.20897        F      1 U[12]   
+ S/ESD    29          29           0.00203        -1.22      0.00199       1.01730        F      2 U[11]   
+ SRATIO   34          34           0.00191         6.13      0.00202       0.94821        F      2 U[12]   
+ S/ESD    35          35          -0.00102         0.56      0.00063      -1.61746        F      3 X       
+ S/ESD    36          36          -0.00070         2.96      0.00056      -1.26527        F      3 Y       
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         20.5771
+                                                for          44 parameters
+                                 The rms (shift/su)  =       0.6838580
+                              The mean abs(shift/su) =       0.5449081
  The largest (shift/esd) =  1.617455, for Parameter   35, F3X
-All cycle   1       0.00           100.           2.74    
-All cycle   2       0.00           100.           3.79    
-All cycle   3      0.300E-01      0.100E+05      0.684    
-All cycle   4       0.00          0.100E+16       290.    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           2.74           100.    
+All cycle   Rw                   0.00           3.79           100.    
+All cycle   shift/esd           0.300E-01      0.684          0.100E+05
+All cycle   Min function         0.00           290.          0.100E+16
 
 
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
@@ -1354,19 +1362,23 @@ LS-scale=  9.844   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO   21          21           0.00074        -8.22      0.00225          0.33        F      1 U[22]   
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.5676
-                               The rms (shift/su)  =       0.1135757
-                            The mean abs(shift/su) =       0.0850867
+ SRATIO   21          21           0.00074        -8.22      0.00225       0.32891        F      1 U[22]   
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.5676
+                                                for          44 parameters
+                                 The rms (shift/su)  =       0.1135757
+                              The mean abs(shift/su) =       0.0850867
  The largest (shift/esd) =  0.328908, for Parameter   21, F1U[22]
-All cycle   1       0.00           100.           2.76    
-All cycle   2       0.00           100.           3.62    
-All cycle   3      0.300E-01      0.100E+05      0.114    
-All cycle   4       0.00          0.100E+16       265.    
-Inter cycle   1      -5.00           100.         -0.175E-01
-Inter cycle   2      -5.00           100.          0.166    
-Inter cycle   3      -10.0          0.100E+05      0.570    
-Inter cycle   4       0.00          0.100E+16       24.9    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           2.76           100.    
+All cycle   Rw                   0.00           3.62           100.    
+All cycle   shift/esd           0.300E-01      0.114          0.100E+05
+All cycle   Min function         0.00           265.          0.100E+16
+Inter cycle R-factor            -5.00         -0.175E-01       100.    
+Inter cycle Rw                  -5.00          0.166           100.    
+Inter cycle shift/esd           -10.0          0.570          0.100E+05
+Inter cycle Min function         0.00           24.9          0.100E+16
 
 
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          

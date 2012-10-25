@@ -1484,14 +1484,14 @@ LS-scale=  0.909   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD     1           1           0.00345         0.00      0.00099          3.48                          SCALE   
- S/ESD     5           5           0.00029         0.00      0.00018          1.65        IR     1 U[11]   
- S/ESD     6           6           0.00029         0.00      0.00019          1.51        IR     1 U[22]   
- S/ESD     7           7           0.00026         0.00      0.00019          1.38        IR     1 U[33]   
- S/ESD    14          14          -0.00034         0.00      0.00021         -1.65        AU     1 U[11]   
- S/ESD    15          15          -0.00035         0.00      0.00024         -1.47        AU     1 U[22]   
- S/ESD    16          16          -0.00037         0.00      0.00025         -1.50        AU     1 U[33]   
- S/ESD    64          64          -0.00782         0.00      0.00589         -1.33        P      5 X       
+ S/ESD     1           1           0.00345         0.00      0.00099       3.47673                          SCALE   
+ S/ESD     5           5           0.00029         0.00      0.00018       1.65441        IR     1 U[11]   
+ S/ESD     6           6           0.00029         0.00      0.00019       1.50556        IR     1 U[22]   
+ S/ESD     7           7           0.00026         0.00      0.00019       1.38253        IR     1 U[33]   
+ S/ESD    14          14          -0.00034         0.00      0.00021      -1.64655        AU     1 U[11]   
+ S/ESD    15          15          -0.00035         0.00      0.00024      -1.47395        AU     1 U[22]   
+ S/ESD    16          16          -0.00037         0.00      0.00025      -1.49655        AU     1 U[33]   
+ S/ESD    64          64          -0.00782         0.00      0.00589      -1.32788        P      5 X       
                                                                                                             Composite
 
                                                                       Composite
@@ -1572,11 +1572,11 @@ LS-scale=  0.909   Wilson Scale=  0.000
 
                                                                       Composite
 
- S/ESD    85          85           0.01191         0.00      0.01022          1.17        F      3 U[12]   
- S/ESD    98          98           0.02098         0.00      0.01898          1.11        F      6 U[11]   
- S/ESD   100         100          -0.04317         0.00      0.02889         -1.49        F      6 U[33]   
- S/ESD   102         102          -0.01909         0.00      0.01871         -1.02        F      6 U[13]   
- S/ESD   140         140          -0.00421         0.00      0.00376         -1.12        C    211 X       
+ S/ESD    85          85           0.01191         0.00      0.01022       1.16550        F      3 U[12]   
+ S/ESD    98          98           0.02098         0.00      0.01898       1.10543        F      6 U[11]   
+ S/ESD   100         100          -0.04317         0.00      0.02889      -1.49409        F      6 U[33]   
+ S/ESD   102         102          -0.01909         0.00      0.01871      -1.02052        F      6 U[13]   
+ S/ESD   140         140          -0.00421         0.00      0.00376      -1.11956        C    211 X       
                                                                                                             Composite
 
                                                                       Composite
@@ -1705,7 +1705,7 @@ LS-scale=  0.909   Wilson Scale=  0.000
 
                                                                       Composite
 
- S/ESD   198         198           0.00421         0.00      0.00413          1.02        C    431 X       
+ S/ESD   198         198           0.00421         0.00      0.00413       1.01877        C    431 X       
                                                                                                             Composite
 
                                                                       Composite
@@ -1834,14 +1834,18 @@ LS-scale=  0.909   Wilson Scale=  0.000
 
                                                                       Composite
 
- Sum of the squares of the ratio (Shift/e.s.d.) =         71.6798
-                               The rms (shift/su)  =       0.5898814
-                            The mean abs(shift/su) =       0.4201331
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         71.6798
+                                                for         206 parameters
+                                 The rms (shift/su)  =       0.5898814
+                              The mean abs(shift/su) =       0.4201331
  The largest (shift/esd) =  3.476726, for Parameter    1, SCALE
-All cycle   1       0.00           100.           3.72    
-All cycle   2       0.00           100.           4.96    
-All cycle   3      0.300E-01      0.100E+05      0.590    
-All cycle   4       0.00          0.100E+16      0.136E+06
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           3.72           100.    
+All cycle   Rw                   0.00           4.96           100.    
+All cycle   shift/esd           0.300E-01      0.590          0.100E+05
+All cycle   Min function         0.00          0.136E+06      0.100E+16
 
 
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
@@ -2763,14 +2767,18 @@ LS-scale=  0.909   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.3516
-                               The rms (shift/su)  =       0.2420845
-                            The mean abs(shift/su) =       0.1648090
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.3516
+                                                for           6 parameters
+                                 The rms (shift/su)  =       0.2420845
+                              The mean abs(shift/su) =       0.1648090
  The largest (shift/esd) =  0.518561, for Parameter    3, IR1X
-All cycle   1       0.00           100.           3.72    
-All cycle   2       0.00           100.           4.96    
-All cycle   3      0.300E-01      0.100E+05      0.242    
-All cycle   4       0.00          0.100E+16      0.136E+06
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           3.72           100.    
+All cycle   Rw                   0.00           4.96           100.    
+All cycle   shift/esd           0.300E-01      0.242          0.100E+05
+All cycle   Min function         0.00          0.136E+06      0.100E+16
 
 
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
@@ -3400,50 +3408,54 @@ LS-scale=  0.909   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD    22          22           0.00183         0.00      0.00116          1.57        F      1 X       
- S/ESD    56          56           0.00085         0.00      0.00079          1.07        C    114 Y       
- S/ESD    62          62          -0.00108         0.00      0.00070         -1.53        C    116 Y       
- S/ESD    77          77          -0.00091         0.00      0.00087         -1.04        C    125 Y       
- S/ESD    96          96          -0.00074         0.00      0.00068         -1.09        C    135 Z       
- S/ESD   106         106           0.00079         0.00      0.00073          1.07        C    213 X       
- S/ESD   109         109          -0.00101         0.00      0.00078         -1.30        C    214 X       
- S/ESD   112         112          -0.00115         0.00      0.00079         -1.44        C    215 X       
- S/ESD   133         133           0.00108         0.00      0.00096          1.13        C    226 X       
- S/ESD   135         135          -0.00096         0.00      0.00076         -1.27        C    226 Z       
- S/ESD   140         140           0.00121         0.00      0.00066          1.84        C    232 Y       
- S/ESD   142         142           0.00113         0.00      0.00099          1.14        C    233 X       
- S/ESD   143         143          -0.00106         0.00      0.00075         -1.43        C    233 Y       
- S/ESD   149         149           0.00124         0.00      0.00079          1.57        C    235 Y       
- S/ESD   182         182           0.00122         0.00      0.00088          1.38        C    324 Y       
- S/ESD   208         208          -0.00367         0.00      0.00071         -5.14        C    411 X       
- S/ESD   209         209           0.00621         0.00      0.00071          8.74        C    411 Y       
- S/ESD   210         210           0.00101         0.00      0.00058          1.75        C    411 Z       
- S/ESD   211         211           0.00685         0.00      0.00091          7.56        C    412 X       
- S/ESD   212         212          -0.00991         0.00      0.00090        -11.02        C    412 Y       
- S/ESD   214         214           0.00685         0.00      0.00085          8.04        C    413 X       
- S/ESD   215         215          -0.00347         0.00      0.00093         -3.73        C    413 Y       
- S/ESD   216         216           0.00488         0.00      0.00069          7.12        C    413 Z       
- S/ESD   217         217          -0.01202         0.00      0.00080        -15.06        C    414 X       
- S/ESD   218         218           0.00353         0.00      0.00087          4.07        C    414 Y       
- S/ESD   219         219          -0.01069         0.00      0.00063        -16.91        C    414 Z       
- S/ESD   220         220           0.00875         0.00      0.00085         10.25        C    415 X       
- S/ESD   221         221          -0.00133         0.00      0.00092         -1.45        C    415 Y       
- S/ESD   222         222           0.00825         0.00      0.00068         12.10        C    415 Z       
- S/ESD   223         223           0.00226         0.00      0.00083          2.73        C    416 X       
- S/ESD   224         224          -0.00311         0.00      0.00085         -3.65        C    416 Y       
- S/ESD   233         233          -0.00103         0.00      0.00095         -1.07        C    423 Y       
- S/ESD   236         236          -0.00144         0.00      0.00100         -1.44        C    424 Y       
- S/ESD   239         239          -0.00123         0.00      0.00095         -1.28        C    425 Y       
- S/ESD   242         242          -0.00139         0.00      0.00081         -1.70        C    426 Y       
- S/ESD   261         261          -0.00127         0.00      0.00073         -1.73        C    436 Z       
- Sum of the squares of the ratio (Shift/e.s.d.) =       1308.4717
-                               The rms (shift/su)  =       2.2390404
-                            The mean abs(shift/su) =       0.9087909
+ S/ESD    22          22           0.00183         0.00      0.00116       1.56844        F      1 X       
+ S/ESD    56          56           0.00085         0.00      0.00079       1.07109        C    114 Y       
+ S/ESD    62          62          -0.00108         0.00      0.00070      -1.53238        C    116 Y       
+ S/ESD    77          77          -0.00091         0.00      0.00087      -1.04231        C    125 Y       
+ S/ESD    96          96          -0.00074         0.00      0.00068      -1.09218        C    135 Z       
+ S/ESD   106         106           0.00079         0.00      0.00073       1.07346        C    213 X       
+ S/ESD   109         109          -0.00101         0.00      0.00078      -1.30493        C    214 X       
+ S/ESD   112         112          -0.00115         0.00      0.00079      -1.44291        C    215 X       
+ S/ESD   133         133           0.00108         0.00      0.00096       1.12802        C    226 X       
+ S/ESD   135         135          -0.00096         0.00      0.00076      -1.26523        C    226 Z       
+ S/ESD   140         140           0.00121         0.00      0.00066       1.84317        C    232 Y       
+ S/ESD   142         142           0.00113         0.00      0.00099       1.13867        C    233 X       
+ S/ESD   143         143          -0.00106         0.00      0.00075      -1.42565        C    233 Y       
+ S/ESD   149         149           0.00124         0.00      0.00079       1.57019        C    235 Y       
+ S/ESD   182         182           0.00122         0.00      0.00088       1.38441        C    324 Y       
+ S/ESD   208         208          -0.00367         0.00      0.00071      -5.14137        C    411 X       
+ S/ESD   209         209           0.00621         0.00      0.00071       8.73784        C    411 Y       
+ S/ESD   210         210           0.00101         0.00      0.00058       1.75397        C    411 Z       
+ S/ESD   211         211           0.00685         0.00      0.00091       7.55991        C    412 X       
+ S/ESD   212         212          -0.00991         0.00      0.00090     -11.02292        C    412 Y       
+ S/ESD   214         214           0.00685         0.00      0.00085       8.03553        C    413 X       
+ S/ESD   215         215          -0.00347         0.00      0.00093      -3.73281        C    413 Y       
+ S/ESD   216         216           0.00488         0.00      0.00069       7.11542        C    413 Z       
+ S/ESD   217         217          -0.01202         0.00      0.00080     -15.06363        C    414 X       
+ S/ESD   218         218           0.00353         0.00      0.00087       4.06838        C    414 Y       
+ S/ESD   219         219          -0.01069         0.00      0.00063     -16.90597        C    414 Z       
+ S/ESD   220         220           0.00875         0.00      0.00085      10.25471        C    415 X       
+ S/ESD   221         221          -0.00133         0.00      0.00092      -1.44733        C    415 Y       
+ S/ESD   222         222           0.00825         0.00      0.00068      12.10206        C    415 Z       
+ S/ESD   223         223           0.00226         0.00      0.00083       2.73349        C    416 X       
+ S/ESD   224         224          -0.00311         0.00      0.00085      -3.65271        C    416 Y       
+ S/ESD   233         233          -0.00103         0.00      0.00095      -1.07471        C    423 Y       
+ S/ESD   236         236          -0.00144         0.00      0.00100      -1.43993        C    424 Y       
+ S/ESD   239         239          -0.00123         0.00      0.00095      -1.28455        C    425 Y       
+ S/ESD   242         242          -0.00139         0.00      0.00081      -1.70083        C    426 Y       
+ S/ESD   261         261          -0.00127         0.00      0.00073      -1.73311        C    436 Z       
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =       1308.4717
+                                                for         261 parameters
+                                 The rms (shift/su)  =       2.2390404
+                              The mean abs(shift/su) =       0.9087909
  The largest (shift/esd) = 16.905970, for Parameter  219, C414Z
-All cycle   1       0.00           100.           3.72    
-All cycle   2       0.00           100.           4.96    
-All cycle   3      0.300E-01      0.100E+05       2.24    
-All cycle   4       0.00          0.100E+16      0.136E+06
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           3.72           100.    
+All cycle   Rw                   0.00           4.96           100.    
+All cycle   shift/esd           0.300E-01       2.24          0.100E+05
+All cycle   Min function         0.00          0.136E+06      0.100E+16
 
 
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
@@ -4041,25 +4053,29 @@ LS-scale=  0.909   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO   10          10          -0.00006        -3.85      0.00017         -0.36        P      2 X       
- SRATIO  103         103           0.00007         8.12      0.00061          0.12        C    212 X       
- SRATIO  128         128          -0.00007        -6.82      0.00092         -0.08        C    224 Y       
- S/ESD   209         209           0.00096         0.16      0.00067          1.44        C    411 Y       
- S/ESD   213         213           0.00068         1.25      0.00067          1.00        C    412 Z       
- S/ESD   217         217          -0.00245         0.20      0.00075         -3.25        C    414 X       
- S/ESD   218         218           0.00110         0.31      0.00082          1.35        C    414 Y       
- S/ESD   219         219          -0.00312         0.29      0.00060         -5.24        C    414 Z       
- S/ESD   222         222           0.00081         0.10      0.00064          1.26        C    415 Z       
- SRATIO  225         225          -0.00019         6.89      0.00062         -0.30        C    416 Z       
- SRATIO  230         230          -0.00016       -15.07      0.00075         -0.21        C    422 Y       
- Sum of the squares of the ratio (Shift/e.s.d.) =         52.9872
-                               The rms (shift/su)  =       0.4505730
-                            The mean abs(shift/su) =       0.1649260
+ SRATIO   10          10          -0.00006        -3.85      0.00017      -0.36289        P      2 X       
+ SRATIO  103         103           0.00007         8.12      0.00061       0.11999        C    212 X       
+ SRATIO  128         128          -0.00007        -6.82      0.00092      -0.07577        C    224 Y       
+ S/ESD   209         209           0.00096         0.16      0.00067       1.43737        C    411 Y       
+ S/ESD   213         213           0.00068         1.25      0.00067       1.00250        C    412 Z       
+ S/ESD   217         217          -0.00245         0.20      0.00075      -3.24827        C    414 X       
+ S/ESD   218         218           0.00110         0.31      0.00082       1.35178        C    414 Y       
+ S/ESD   219         219          -0.00312         0.29      0.00060      -5.24013        C    414 Z       
+ S/ESD   222         222           0.00081         0.10      0.00064       1.26304        C    415 Z       
+ SRATIO  225         225          -0.00019         6.89      0.00062      -0.30453        C    416 Z       
+ SRATIO  230         230          -0.00016       -15.07      0.00075      -0.21292        C    422 Y       
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         52.9872
+                                                for         261 parameters
+                                 The rms (shift/su)  =       0.4505730
+                              The mean abs(shift/su) =       0.1649260
  The largest (shift/esd) =  5.240133, for Parameter  219, C414Z
-All cycle   1       0.00           100.           4.18    
-All cycle   2       0.00           100.           5.37    
-All cycle   3      0.300E-01      0.100E+05      0.451    
-All cycle   4       0.00          0.100E+16      0.159E+06
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           4.18           100.    
+All cycle   Rw                   0.00           5.37           100.    
+All cycle   shift/esd           0.300E-01      0.451          0.100E+05
+All cycle   Min function         0.00          0.159E+06      0.100E+16
 
 
  LARGE TEST JOB FOR CYBER                                                             Date              Time          

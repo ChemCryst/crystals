@@ -844,27 +844,13 @@ LS-scale= 21.615   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- LARGE     1           1          -2.38460         0.00      0.17772        -13.42                          SCALE   
- S/ESD     2           2           0.00153         0.00      0.00096          1.60        C      1 X       
+ LARGE     1           1          -2.38460         0.00      0.17772     -13.41808                          SCALE   
+ S/ESD     2           2           0.00153         0.00      0.00096       1.59786        C      1 X       
                                                                                                             Composite
 
                                                                       Composite
 
- S/ESD     5           5          -0.00964         0.00      0.00101         -9.50        C      1 U[ISO]  
-                                                                                                            Composite
-
-                                                                      Composite
-
-                                                                                                            Composite
-
-                                                                      Composite
-
- S/ESD     6           6           0.00448         0.00      0.00100          4.49        C      1 X       
-                                                                                                            Composite
-
-                                                                      Composite
-
- S/ESD    10          10           0.00609         0.00      0.00097          6.26        C      7 X       
+ S/ESD     5           5          -0.00964         0.00      0.00101      -9.49772        C      1 U[ISO]  
                                                                                                             Composite
 
                                                                       Composite
@@ -873,18 +859,36 @@ LS-scale= 21.615   Wilson Scale=  0.000
 
                                                                       Composite
 
+ S/ESD     6           6           0.00448         0.00      0.00100       4.48632        C      1 X       
                                                                                                             Composite
 
                                                                       Composite
 
- Sum of the squares of the ratio (Shift/e.s.d.) =        334.7697
-                               The rms (shift/su)  =       5.0745950
-                            The mean abs(shift/su) =       3.0351985
+ S/ESD    10          10           0.00609         0.00      0.00097       6.26202        C      7 X       
+                                                                                                            Composite
+
+                                                                      Composite
+
+                                                                                                            Composite
+
+                                                                      Composite
+
+                                                                                                            Composite
+
+                                                                      Composite
+
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =        334.7697
+                                                for          13 parameters
+                                 The rms (shift/su)  =       5.0745950
+                              The mean abs(shift/su) =       3.0351985
  The largest (shift/esd) = 13.418077, for Parameter    1, SCALE
-All cycle   1       0.00           100.           15.9    
-All cycle   2       0.00           100.           15.2    
-All cycle   3      0.300E-01      0.100E+05       5.07    
-All cycle   4       0.00          0.100E+16      0.202E+06
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           15.9           100.    
+All cycle   Rw                   0.00           15.2           100.    
+All cycle   shift/esd           0.300E-01       5.07          0.100E+05
+All cycle   Min function         0.00          0.202E+06      0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -1966,9 +1970,9 @@ LS-scale= 21.615   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- LARGE     1           1          -2.38460         0.00      0.17772        -13.42                          SCALE   
- S/ESD     2           2           0.00425         0.00      0.00099          4.31        C      1 X       
- S/ESD     5           5          -0.00964         0.00      0.00101         -9.50        C      1 U[ISO]  
+ LARGE     1           1          -2.38460         0.00      0.17772     -13.41808                          SCALE   
+ S/ESD     2           2           0.00425         0.00      0.00099       4.30703        C      1 X       
+ S/ESD     5           5          -0.00964         0.00      0.00101      -9.49772        C      1 U[ISO]  
                                                                                                             Composite
 
                                                                       Composite
@@ -1977,8 +1981,8 @@ LS-scale= 21.615   Wilson Scale=  0.000
 
                                                                       Composite
 
- S/ESD     6           6           0.00208         0.00      0.00097          2.15        C      2 X       
- S/ESD    10          10           0.00609         0.00      0.00097          6.26        C      7 X       
+ S/ESD     6           6           0.00208         0.00      0.00097       2.14528        C      2 X       
+ S/ESD    10          10           0.00609         0.00      0.00097       6.26202        C      7 X       
                                                                                                             Composite
 
                                                                       Composite
@@ -1991,14 +1995,18 @@ LS-scale= 21.615   Wilson Scale=  0.000
 
                                                                       Composite
 
- Sum of the squares of the ratio (Shift/e.s.d.) =        335.2959
-                               The rms (shift/su)  =       5.0785818
-                            The mean abs(shift/su) =       3.0676751
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =        335.2959
+                                                for          13 parameters
+                                 The rms (shift/su)  =       5.0785818
+                              The mean abs(shift/su) =       3.0676751
  The largest (shift/esd) = 13.418077, for Parameter    1, SCALE
-All cycle   1       0.00           100.           15.9    
-All cycle   2       0.00           100.           15.2    
-All cycle   3      0.300E-01      0.100E+05       5.08    
-All cycle   4       0.00          0.100E+16      0.202E+06
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           15.9           100.    
+All cycle   Rw                   0.00           15.2           100.    
+All cycle   shift/esd           0.300E-01       5.08          0.100E+05
+All cycle   Min function         0.00          0.202E+06      0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          

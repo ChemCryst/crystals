@@ -141,14 +141,18 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.0597
-                               The rms (shift/su)  =       0.2444061
-                            The mean abs(shift/su) =       0.2444061
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.0597
+                                                for           1 parameters
+                                 The rms (shift/su)  =       0.2444061
+                              The mean abs(shift/su) =       0.2444061
  The largest (shift/esd) =  0.244406, for Parameter    1,                      
-All cycle   1       0.00           100.          0.491E-01
-All cycle   2       0.00           100.          0.491E-01
-All cycle   3      0.300E-01      0.100E+05      0.244    
-All cycle   4       0.00          0.100E+16      0.392E-03
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00          0.491E-01       100.    
+All cycle   Rw                   0.00          0.491E-01       100.    
+All cycle   shift/esd           0.300E-01      0.244          0.100E+05
+All cycle   Min function         0.00          0.392E-03      0.100E+16
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -283,14 +287,18 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.0000
-                               The rms (shift/su)  =       0.0000660
-                            The mean abs(shift/su) =       0.0000660
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.0000
+                                                for           1 parameters
+                                 The rms (shift/su)  =       0.0000660
+                              The mean abs(shift/su) =       0.0000660
  The largest (shift/esd) =  0.000066, for Parameter    1,                      
-All cycle   1       0.00           100.          0.489E-01
-All cycle   2       0.00           100.          0.490E-01
-All cycle   3      0.300E-01      0.100E+05      0.660E-04
- Forced termination after this cycle:  Actual value condition on shift/esd                                                                                                                                                                                      
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00          0.489E-01       100.    
+All cycle   Rw                   0.00          0.490E-01       100.    
+All cycle   shift/esd           0.300E-01      0.660E-04      0.100E+05
+ Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -467,15 +475,19 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- LARGE     1           1           2.00282         0.00      0.33194          6.03                          POLARITY
- Sum of the squares of the ratio (Shift/e.s.d.) =         36.4052
-                               The rms (shift/su)  =       6.0336690
-                            The mean abs(shift/su) =       6.0336690
+ LARGE     1           1           2.00282         0.00      0.33194       6.03367                          POLARITY
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         36.4052
+                                                for           1 parameters
+                                 The rms (shift/su)  =       6.0336690
+                              The mean abs(shift/su) =       6.0336690
  The largest (shift/esd) =  6.033669, for Parameter    1, POLARITY
-All cycle   1       0.00           100.           4.30    
-All cycle   2       0.00           100.           4.02    
-All cycle   3      0.300E-01      0.100E+05       6.03    
-All cycle   4       0.00          0.100E+16       2.63    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           4.30           100.    
+All cycle   Rw                   0.00           4.02           100.    
+All cycle   shift/esd           0.300E-01       6.03          0.100E+05
+All cycle   Min function         0.00           2.63          0.100E+16
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -601,14 +613,18 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.2051
-                               The rms (shift/su)  =       0.4528415
-                            The mean abs(shift/su) =       0.4528415
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.2051
+                                                for           1 parameters
+                                 The rms (shift/su)  =       0.4528415
+                              The mean abs(shift/su) =       0.4528415
  The largest (shift/esd) =  0.452841, for Parameter    1, POLARITY
-All cycle   1       0.00           100.          0.487E-01
-All cycle   2       0.00           100.          0.490E-01
-All cycle   3      0.300E-01      0.100E+05      0.453    
-All cycle   4       0.00          0.100E+16      0.390E-03
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00          0.487E-01       100.    
+All cycle   Rw                   0.00          0.490E-01       100.    
+All cycle   shift/esd           0.300E-01      0.453          0.100E+05
+All cycle   Min function         0.00          0.390E-03      0.100E+16
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -783,14 +799,18 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.0597
-                               The rms (shift/su)  =       0.2444061
-                            The mean abs(shift/su) =       0.2444061
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.0597
+                                                for           1 parameters
+                                 The rms (shift/su)  =       0.2444061
+                              The mean abs(shift/su) =       0.2444061
  The largest (shift/esd) =  0.244406, for Parameter    1, POLARITY
-All cycle   1       0.00           100.          0.491E-01
-All cycle   2       0.00           100.          0.491E-01
-All cycle   3      0.300E-01      0.100E+05      0.244    
-All cycle   4       0.00          0.100E+16      0.392E-03
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00          0.491E-01       100.    
+All cycle   Rw                   0.00          0.491E-01       100.    
+All cycle   shift/esd           0.300E-01      0.244          0.100E+05
+All cycle   Min function         0.00          0.392E-03      0.100E+16
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -942,14 +962,18 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.0000
-                               The rms (shift/su)  =       0.0000660
-                            The mean abs(shift/su) =       0.0000660
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.0000
+                                                for           1 parameters
+                                 The rms (shift/su)  =       0.0000660
+                              The mean abs(shift/su) =       0.0000660
  The largest (shift/esd) =  0.000066, for Parameter    1, POLARITY
-All cycle   1       0.00           100.          0.489E-01
-All cycle   2       0.00           100.          0.490E-01
-All cycle   3      0.300E-01      0.100E+05      0.660E-04
- Forced termination after this cycle:  Actual value condition on shift/esd                                                                                                                                                                                      
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00          0.489E-01       100.    
+All cycle   Rw                   0.00          0.490E-01       100.    
+All cycle   shift/esd           0.300E-01      0.660E-04      0.100E+05
+ Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -1143,15 +1167,19 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- LARGE     1           1           2.00282         0.00      0.33194          6.03                          POLARITY
- Sum of the squares of the ratio (Shift/e.s.d.) =         36.4052
-                               The rms (shift/su)  =       6.0336690
-                            The mean abs(shift/su) =       6.0336690
+ LARGE     1           1           2.00282         0.00      0.33194       6.03367                          POLARITY
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         36.4052
+                                                for           1 parameters
+                                 The rms (shift/su)  =       6.0336690
+                              The mean abs(shift/su) =       6.0336690
  The largest (shift/esd) =  6.033669, for Parameter    1, POLARITY
-All cycle   1       0.00           100.           4.30    
-All cycle   2       0.00           100.           4.02    
-All cycle   3      0.300E-01      0.100E+05       6.03    
-All cycle   4       0.00          0.100E+16       2.63    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           4.30           100.    
+All cycle   Rw                   0.00           4.02           100.    
+All cycle   shift/esd           0.300E-01       6.03          0.100E+05
+All cycle   Min function         0.00           2.63          0.100E+16
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -1294,14 +1322,18 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.2051
-                               The rms (shift/su)  =       0.4528415
-                            The mean abs(shift/su) =       0.4528415
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.2051
+                                                for           1 parameters
+                                 The rms (shift/su)  =       0.4528415
+                              The mean abs(shift/su) =       0.4528415
  The largest (shift/esd) =  0.452841, for Parameter    1, POLARITY
-All cycle   1       0.00           100.          0.487E-01
-All cycle   2       0.00           100.          0.490E-01
-All cycle   3      0.300E-01      0.100E+05      0.453    
-All cycle   4       0.00          0.100E+16      0.390E-03
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00          0.487E-01       100.    
+All cycle   Rw                   0.00          0.490E-01       100.    
+All cycle   shift/esd           0.300E-01      0.453          0.100E+05
+All cycle   Min function         0.00          0.390E-03      0.100E+16
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -1481,15 +1513,19 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- LARGE     1           1          -0.00099         0.00      0.00405         -0.24                          POLARITY
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.0597
-                               The rms (shift/su)  =       0.2444061
-                            The mean abs(shift/su) =       0.2444061
+ LARGE     1           1          -0.00099         0.00      0.00405      -0.24441                          POLARITY
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.0597
+                                                for           1 parameters
+                                 The rms (shift/su)  =       0.2444061
+                              The mean abs(shift/su) =       0.2444061
  The largest (shift/esd) =  0.244406, for Parameter    1, POLARITY
-All cycle   1       0.00           100.          0.491E-01
-All cycle   2       0.00           100.          0.491E-01
-All cycle   3      0.300E-01      0.100E+05      0.244    
-All cycle   4       0.00          0.100E+16      0.392E-03
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00          0.491E-01       100.    
+All cycle   Rw                   0.00          0.491E-01       100.    
+All cycle   shift/esd           0.300E-01      0.244          0.100E+05
+All cycle   Min function         0.00          0.392E-03      0.100E+16
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -1641,14 +1677,18 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.0000
-                               The rms (shift/su)  =       0.0000660
-                            The mean abs(shift/su) =       0.0000660
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.0000
+                                                for           1 parameters
+                                 The rms (shift/su)  =       0.0000660
+                              The mean abs(shift/su) =       0.0000660
  The largest (shift/esd) =  0.000066, for Parameter    1, POLARITY
-All cycle   1       0.00           100.          0.489E-01
-All cycle   2       0.00           100.          0.490E-01
-All cycle   3      0.300E-01      0.100E+05      0.660E-04
- Forced termination after this cycle:  Actual value condition on shift/esd                                                                                                                                                                                      
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00          0.489E-01       100.    
+All cycle   Rw                   0.00          0.490E-01       100.    
+All cycle   shift/esd           0.300E-01      0.660E-04      0.100E+05
+ Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -1842,15 +1882,19 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- LARGE     1           1          -2.00282         0.00      0.33194         -6.03                          POLARITY
- Sum of the squares of the ratio (Shift/e.s.d.) =         36.4052
-                               The rms (shift/su)  =       6.0336695
-                            The mean abs(shift/su) =       6.0336695
+ LARGE     1           1          -2.00282         0.00      0.33194      -6.03367                          POLARITY
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         36.4052
+                                                for           1 parameters
+                                 The rms (shift/su)  =       6.0336695
+                              The mean abs(shift/su) =       6.0336695
  The largest (shift/esd) =  6.033669, for Parameter    1, POLARITY
-All cycle   1       0.00           100.           4.30    
-All cycle   2       0.00           100.           4.02    
-All cycle   3      0.300E-01      0.100E+05       6.03    
-All cycle   4       0.00          0.100E+16       2.63    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           4.30           100.    
+All cycle   Rw                   0.00           4.02           100.    
+All cycle   shift/esd           0.300E-01       6.03          0.100E+05
+All cycle   Min function         0.00           2.63          0.100E+16
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -1997,15 +2041,19 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- LARGE     1           1           0.00183         0.00      0.00403          0.45                          POLARITY
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.2052
-                               The rms (shift/su)  =       0.4529521
-                            The mean abs(shift/su) =       0.4529521
+ LARGE     1           1           0.00183         0.00      0.00403       0.45295                          POLARITY
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.2052
+                                                for           1 parameters
+                                 The rms (shift/su)  =       0.4529521
+                              The mean abs(shift/su) =       0.4529521
  The largest (shift/esd) =  0.452952, for Parameter    1, POLARITY
-All cycle   1       0.00           100.          0.487E-01
-All cycle   2       0.00           100.          0.490E-01
-All cycle   3      0.300E-01      0.100E+05      0.453    
-All cycle   4       0.00          0.100E+16      0.390E-03
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00          0.487E-01       100.    
+All cycle   Rw                   0.00          0.490E-01       100.    
+All cycle   shift/esd           0.300E-01      0.453          0.100E+05
+All cycle   Min function         0.00          0.390E-03      0.100E+16
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -2185,15 +2233,19 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- LARGE     1           1          -0.00093         0.00      0.00181         -0.51                          ENANTIO 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.2608
-                               The rms (shift/su)  =       0.5106685
-                            The mean abs(shift/su) =       0.5106685
+ LARGE     1           1          -0.00093         0.00      0.00181      -0.51067                          ENANTIO 
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.2608
+                                                for           1 parameters
+                                 The rms (shift/su)  =       0.5106685
+                              The mean abs(shift/su) =       0.5106685
  The largest (shift/esd) =  0.510669, for Parameter    1, ENANTIO
-All cycle   1       0.00           100.          0.491E-01
-All cycle   2       0.00           100.          0.491E-01
-All cycle   3      0.300E-01      0.100E+05      0.511    
-All cycle   4       0.00          0.100E+16      0.392E-03
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00          0.491E-01       100.    
+All cycle   Rw                   0.00          0.491E-01       100.    
+All cycle   shift/esd           0.300E-01      0.511          0.100E+05
+All cycle   Min function         0.00          0.392E-03      0.100E+16
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -2346,14 +2398,18 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.0000
-                               The rms (shift/su)  =       0.0001485
-                            The mean abs(shift/su) =       0.0001485
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.0000
+                                                for           1 parameters
+                                 The rms (shift/su)  =       0.0001485
+                              The mean abs(shift/su) =       0.0001485
  The largest (shift/esd) =  0.000148, for Parameter    1, ENANTIO
-All cycle   1       0.00           100.          0.488E-01
-All cycle   2       0.00           100.          0.490E-01
-All cycle   3      0.300E-01      0.100E+05      0.148E-03
- Forced termination after this cycle:  Actual value condition on shift/esd                                                                                                                                                                                      
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00          0.488E-01       100.    
+All cycle   Rw                   0.00          0.490E-01       100.    
+All cycle   shift/esd           0.300E-01      0.148E-03      0.100E+05
+ Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -2547,15 +2603,19 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- LARGE     1           1          -0.99453         0.00      0.14850         -6.70                          ENANTIO 
- Sum of the squares of the ratio (Shift/e.s.d.) =         44.8523
-                               The rms (shift/su)  =       6.6971893
-                            The mean abs(shift/su) =       6.6971893
+ LARGE     1           1          -0.99453         0.00      0.14850      -6.69719                          ENANTIO 
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         44.8523
+                                                for           1 parameters
+                                 The rms (shift/su)  =       6.6971893
+                              The mean abs(shift/su) =       6.6971893
  The largest (shift/esd) =  6.697189, for Parameter    1, ENANTIO
-All cycle   1       0.00           100.           4.30    
-All cycle   2       0.00           100.           4.02    
-All cycle   3      0.300E-01      0.100E+05       6.70    
-All cycle   4       0.00          0.100E+16       2.63    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           4.30           100.    
+All cycle   Rw                   0.00           4.02           100.    
+All cycle   shift/esd           0.300E-01       6.70          0.100E+05
+All cycle   Min function         0.00           2.63          0.100E+16
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -2702,15 +2762,19 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- LARGE     1           1          -0.00640         0.01      0.00204         -3.13                          ENANTIO 
- Sum of the squares of the ratio (Shift/e.s.d.) =          9.7958
-                               The rms (shift/su)  =       3.1298268
-                            The mean abs(shift/su) =       3.1298268
+ LARGE     1           1          -0.00640         0.01      0.00204      -3.12983                          ENANTIO 
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          9.7958
+                                                for           1 parameters
+                                 The rms (shift/su)  =       3.1298268
+                              The mean abs(shift/su) =       3.1298268
  The largest (shift/esd) =  3.129827, for Parameter    1, ENANTIO
-All cycle   1       0.00           100.          0.547E-01
-All cycle   2       0.00           100.          0.554E-01
-All cycle   3      0.300E-01      0.100E+05       3.13    
-All cycle   4       0.00          0.100E+16      0.498E-03
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00          0.547E-01       100.    
+All cycle   Rw                   0.00          0.554E-01       100.    
+All cycle   shift/esd           0.300E-01       3.13          0.100E+05
+All cycle   Min function         0.00          0.498E-03      0.100E+16
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -2912,15 +2976,19 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD     1           1           0.01089         0.00      0.00195          5.58        CL     1 Z       
- Sum of the squares of the ratio (Shift/e.s.d.) =         31.0921
-                               The rms (shift/su)  =       5.5760312
-                            The mean abs(shift/su) =       5.5760312
+ S/ESD     1           1           0.01089         0.00      0.00195       5.57603        CL     1 Z       
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         31.0921
+                                                for           1 parameters
+                                 The rms (shift/su)  =       5.5760312
+                              The mean abs(shift/su) =       5.5760312
  The largest (shift/esd) =  5.576031, for Parameter    1, CL1Z
-All cycle   1       0.00           100.           16.1    
-All cycle   2       0.00           100.           18.7    
-All cycle   3      0.300E-01      0.100E+05       5.58    
-All cycle   4       0.00          0.100E+16       56.5    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           16.1           100.    
+All cycle   Rw                   0.00           18.7           100.    
+All cycle   shift/esd           0.300E-01       5.58          0.100E+05
+All cycle   Min function         0.00           56.5          0.100E+16
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -3071,19 +3139,23 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD     1           1           0.00724         0.66      0.00116          6.24        CL     1 Z       
- Sum of the squares of the ratio (Shift/e.s.d.) =         38.9379
-                               The rms (shift/su)  =       6.2400250
-                            The mean abs(shift/su) =       6.2400250
+ S/ESD     1           1           0.00724         0.66      0.00116       6.24003        CL     1 Z       
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         38.9379
+                                                for           1 parameters
+                                 The rms (shift/su)  =       6.2400250
+                              The mean abs(shift/su) =       6.2400250
  The largest (shift/esd) =  6.240025, for Parameter    1, CL1Z
-All cycle   1       0.00           100.           6.43    
-All cycle   2       0.00           100.           7.52    
-All cycle   3      0.300E-01      0.100E+05       6.24    
-All cycle   4       0.00          0.100E+16       9.19    
-Inter cycle   1      -5.00           100.           9.67    
-Inter cycle   2      -5.00           100.           11.1    
-Inter cycle   3      -10.0          0.100E+05     -0.664    
-Inter cycle   4       0.00          0.100E+16       47.3    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           6.43           100.    
+All cycle   Rw                   0.00           7.52           100.    
+All cycle   shift/esd           0.300E-01       6.24          0.100E+05
+All cycle   Min function         0.00           9.19          0.100E+16
+Inter cycle R-factor            -5.00           9.67           100.    
+Inter cycle Rw                  -5.00           11.1           100.    
+Inter cycle shift/esd           -10.0         -0.664          0.100E+05
+Inter cycle Min function         0.00           47.3          0.100E+16
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -3235,15 +3307,19 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD     1           1           0.00182         0.25      0.00027          6.67        CL     1 Z       
- Sum of the squares of the ratio (Shift/e.s.d.) =         44.4948
-                               The rms (shift/su)  =       6.6704388
-                            The mean abs(shift/su) =       6.6704388
+ S/ESD     1           1           0.00182         0.25      0.00027       6.67044        CL     1 Z       
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         44.4948
+                                                for           1 parameters
+                                 The rms (shift/su)  =       6.6704388
+                              The mean abs(shift/su) =       6.6704388
  The largest (shift/esd) =  6.670439, for Parameter    1, CL1Z
-All cycle   1       0.00           100.           1.22    
-All cycle   2       0.00           100.           1.44    
-All cycle   3      0.300E-01      0.100E+05       6.67    
-All cycle   4       0.00          0.100E+16      0.335    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           1.22           100.    
+All cycle   Rw                   0.00           1.44           100.    
+All cycle   shift/esd           0.300E-01       6.67          0.100E+05
+All cycle   Min function         0.00          0.335          0.100E+16
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -3394,19 +3470,23 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD     1           1           0.00006         0.03      0.00001          4.61        CL     1 Z       
- Sum of the squares of the ratio (Shift/e.s.d.) =         21.2582
-                               The rms (shift/su)  =       4.6106634
-                            The mean abs(shift/su) =       4.6106634
+ S/ESD     1           1           0.00006         0.03      0.00001       4.61066        CL     1 Z       
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         21.2582
+                                                for           1 parameters
+                                 The rms (shift/su)  =       4.6106634
+                              The mean abs(shift/su) =       4.6106634
  The largest (shift/esd) =  4.610663, for Parameter    1, CL1Z
-All cycle   1       0.00           100.          0.651E-01
-All cycle   2       0.00           100.          0.663E-01
-All cycle   3      0.300E-01      0.100E+05       4.61    
-All cycle   4       0.00          0.100E+16      0.713E-03
-Inter cycle   1      -5.00           100.           1.16    
-Inter cycle   2      -5.00           100.           1.37    
-Inter cycle   3      -10.0          0.100E+05       2.06    
-Inter cycle   4       0.00          0.100E+16      0.334    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00          0.651E-01       100.    
+All cycle   Rw                   0.00          0.663E-01       100.    
+All cycle   shift/esd           0.300E-01       4.61          0.100E+05
+All cycle   Min function         0.00          0.713E-03      0.100E+16
+Inter cycle R-factor            -5.00           1.16           100.    
+Inter cycle Rw                  -5.00           1.37           100.    
+Inter cycle shift/esd           -10.0           2.06          0.100E+05
+Inter cycle Min function         0.00          0.334          0.100E+16
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -3614,15 +3694,19 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD     2           2           0.01089         0.00      0.00198          5.51        CL     1 Z       
- Sum of the squares of the ratio (Shift/e.s.d.) =         30.3841
-                               The rms (shift/su)  =       3.8976994
-                            The mean abs(shift/su) =       2.7590528
+ S/ESD     2           2           0.01089         0.00      0.00198       5.51218        CL     1 Z       
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         30.3841
+                                                for           2 parameters
+                                 The rms (shift/su)  =       3.8976994
+                              The mean abs(shift/su) =       2.7590528
  The largest (shift/esd) =  5.512176, for Parameter    2, CL1Z
-All cycle   1       0.00           100.           16.1    
-All cycle   2       0.00           100.           18.6    
-All cycle   3      0.300E-01      0.100E+05       3.90    
-All cycle   4       0.00          0.100E+16       56.4    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           16.1           100.    
+All cycle   Rw                   0.00           18.6           100.    
+All cycle   shift/esd           0.300E-01       3.90          0.100E+05
+All cycle   Min function         0.00           56.4          0.100E+16
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -3774,20 +3858,24 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO    1           1          -0.03601        -6.96      0.29905         -0.12                          ENANTIO 
- S/ESD     2           2           0.00724         0.66      0.00117          6.17        CL     1 Z       
- Sum of the squares of the ratio (Shift/e.s.d.) =         38.0930
-                               The rms (shift/su)  =       4.3642287
-                            The mean abs(shift/su) =       3.1456027
+ SRATIO    1           1          -0.03601        -6.96      0.29905      -0.12043                          ENANTIO 
+ S/ESD     2           2           0.00724         0.66      0.00117       6.17078        CL     1 Z       
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         38.0930
+                                                for           2 parameters
+                                 The rms (shift/su)  =       4.3642287
+                              The mean abs(shift/su) =       3.1456027
  The largest (shift/esd) =  6.170776, for Parameter    2, CL1Z
-All cycle   1       0.00           100.           6.42    
-All cycle   2       0.00           100.           7.52    
-All cycle   3      0.300E-01      0.100E+05       4.36    
-All cycle   4       0.00          0.100E+16       9.17    
-Inter cycle   1      -5.00           100.           9.67    
-Inter cycle   2      -5.00           100.           11.1    
-Inter cycle   3      -10.0          0.100E+05     -0.467    
-Inter cycle   4       0.00          0.100E+16       47.2    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           6.42           100.    
+All cycle   Rw                   0.00           7.52           100.    
+All cycle   shift/esd           0.300E-01       4.36          0.100E+05
+All cycle   Min function         0.00           9.17          0.100E+16
+Inter cycle R-factor            -5.00           9.67           100.    
+Inter cycle Rw                  -5.00           11.1           100.    
+Inter cycle shift/esd           -10.0         -0.467          0.100E+05
+Inter cycle Min function         0.00           47.2          0.100E+16
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -3939,15 +4027,19 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD     2           2           0.00181         0.25      0.00028          6.57        CL     1 Z       
- Sum of the squares of the ratio (Shift/e.s.d.) =         43.4749
-                               The rms (shift/su)  =       4.6623445
-                            The mean abs(shift/su) =       3.5638208
+ S/ESD     2           2           0.00181         0.25      0.00028       6.56992        CL     1 Z       
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         43.4749
+                                                for           2 parameters
+                                 The rms (shift/su)  =       4.6623445
+                              The mean abs(shift/su) =       3.5638208
  The largest (shift/esd) =  6.569921, for Parameter    2, CL1Z
-All cycle   1       0.00           100.           1.23    
-All cycle   2       0.00           100.           1.44    
-All cycle   3      0.300E-01      0.100E+05       4.66    
-All cycle   4       0.00          0.100E+16      0.335    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           1.23           100.    
+All cycle   Rw                   0.00           1.44           100.    
+All cycle   shift/esd           0.300E-01       4.66          0.100E+05
+All cycle   Min function         0.00          0.335          0.100E+16
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -4098,19 +4190,23 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD     2           2           0.00006         0.03      0.00001          4.52        CL     1 Z       
- Sum of the squares of the ratio (Shift/e.s.d.) =         20.9029
-                               The rms (shift/su)  =       3.2328680
-                            The mean abs(shift/su) =       2.6169260
+ S/ESD     2           2           0.00006         0.03      0.00001       4.51512        CL     1 Z       
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         20.9029
+                                                for           2 parameters
+                                 The rms (shift/su)  =       3.2328680
+                              The mean abs(shift/su) =       2.6169260
  The largest (shift/esd) =  4.515118, for Parameter    2, CL1Z
-All cycle   1       0.00           100.          0.651E-01
-All cycle   2       0.00           100.          0.662E-01
-All cycle   3      0.300E-01      0.100E+05       3.23    
-All cycle   4       0.00          0.100E+16      0.711E-03
-Inter cycle   1      -5.00           100.           1.16    
-Inter cycle   2      -5.00           100.           1.37    
-Inter cycle   3      -10.0          0.100E+05       1.43    
-Inter cycle   4       0.00          0.100E+16      0.334    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00          0.651E-01       100.    
+All cycle   Rw                   0.00          0.662E-01       100.    
+All cycle   shift/esd           0.300E-01       3.23          0.100E+05
+All cycle   Min function         0.00          0.711E-03      0.100E+16
+Inter cycle R-factor            -5.00           1.16           100.    
+Inter cycle Rw                  -5.00           1.37           100.    
+Inter cycle shift/esd           -10.0           1.43          0.100E+05
+Inter cycle Min function         0.00          0.334          0.100E+16
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          

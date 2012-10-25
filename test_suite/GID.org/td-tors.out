@@ -347,14 +347,18 @@ LS-scale=  1.023   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.0200
-                               The rms (shift/su)  =       0.0577487
-                            The mean abs(shift/su) =       0.0503993
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.0200
+                                                for           6 parameters
+                                 The rms (shift/su)  =       0.0577487
+                              The mean abs(shift/su) =       0.0503993
  The largest (shift/esd) =  0.093099, for Parameter    5, O6Y
-All cycle   1       0.00           100.           5.18    
-All cycle   2       0.00           100.           3.94    
-All cycle   3      0.300E-01      0.100E+05      0.577E-01
-All cycle   4       0.00          0.100E+16      0.187E+04
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           5.18           100.    
+All cycle   Rw                   0.00           3.94           100.    
+All cycle   shift/esd           0.300E-01      0.577E-01      0.100E+05
+All cycle   Min function         0.00          0.187E+04      0.100E+16
 
 
  GROUP TORSION                                                                        Date              Time          
@@ -575,14 +579,18 @@ LS-scale=  1.023   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          1.9928
-                               The rms (shift/su)  =       0.1957639
-                            The mean abs(shift/su) =       0.1548298
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          1.9928
+                                                for          52 parameters
+                                 The rms (shift/su)  =       0.1957639
+                              The mean abs(shift/su) =       0.1548298
  The largest (shift/esd) =  0.551739, for Parameter   38, C5U[13]
-All cycle   1       0.00           100.           5.18    
-All cycle   2       0.00           100.           3.94    
-All cycle   3      0.300E-01      0.100E+05      0.196    
-All cycle   4       0.00          0.100E+16      0.187E+04
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           5.18           100.    
+All cycle   Rw                   0.00           3.94           100.    
+All cycle   shift/esd           0.300E-01      0.196          0.100E+05
+All cycle   Min function         0.00          0.187E+04      0.100E+16
 
 
  NORMAL TORSION                                                                       Date              Time          

@@ -389,14 +389,18 @@ LS-scale=  0.480   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.4655
-                               The rms (shift/su)  =       0.1705753
-                            The mean abs(shift/su) =       0.0907181
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.4655
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.1705753
+                              The mean abs(shift/su) =       0.0907181
  The largest (shift/esd) =  0.474570, for Parameter    1,                      
-All cycle   1       0.00           100.           3.56    
-All cycle   2       0.00           100.           4.16    
-All cycle   3      0.300E-01      0.100E+05      0.171    
-All cycle   4       0.00          0.100E+16       214.    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           3.56           100.    
+All cycle   Rw                   0.00           4.16           100.    
+All cycle   shift/esd           0.300E-01      0.171          0.100E+05
+All cycle   Min function         0.00           214.          0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -572,14 +576,18 @@ LS-scale=  0.479   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.0003
-                               The rms (shift/su)  =       0.0039610
-                            The mean abs(shift/su) =       0.0030949
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.0003
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.0039610
+                              The mean abs(shift/su) =       0.0030949
  The largest (shift/esd) =  0.009136, for Parameter    3, GA1U[22]
-All cycle   1       0.00           100.           3.58    
-All cycle   2       0.00           100.           4.14    
-All cycle   3      0.300E-01      0.100E+05      0.396E-02
- Forced termination after this cycle:  Actual value condition on shift/esd                                                                                                                                                                                      
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           3.58           100.    
+All cycle   Rw                   0.00           4.14           100.    
+All cycle   shift/esd           0.300E-01      0.396E-02      0.100E+05
+ Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -761,38 +769,42 @@ LS-scale=  0.434   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- LARGE     1           1           0.04482     -2516.42      0.00625          7.17                          SCALE   
- SRATIO    2           2           0.00005       -49.49      0.00153          0.03        GA     1 U[11]   
- SRATIO    3           3           0.00049      -184.03      0.00097          0.50        GA     1 U[22]   
+ LARGE     1           1           0.04482     -2516.42      0.00625       7.16920                          SCALE   
+ SRATIO    2           2           0.00005       -49.49      0.00153       0.03360        GA     1 U[11]   
+ SRATIO    3           3           0.00049      -184.03      0.00097       0.50299        GA     1 U[22]   
                                                                                                             Composite
 
                                                                       Composite
 
- SRATIO    4           4           0.00026       325.65      0.00201          0.13        P      1 U[11]   
+ SRATIO    4           4           0.00026       325.65      0.00201       0.12836        P      1 U[11]   
                                                                                                             Composite
 
                                                                       Composite
 
- SRATIO    5           5          -0.00052       170.43      0.00317         -0.16        P      1 U[22]   
- S/ESD     6           6          -0.01019    -16276.15      0.00168         -6.07        O      1 X       
- S/ESD     7           7           0.01207     -7691.95      0.00157          7.67        O      1 Y       
- S/ESD     8           8           0.00643     -6817.20      0.00168          3.84        O      1 Z       
- S/ESD     9           9           0.01012     -1150.48      0.00605          1.67        O      1 U[11]   
- S/ESD    10          10           0.01330      6989.06      0.00563          2.36        O      1 U[22]   
- SRATIO   11          11           0.00122       273.78      0.00653          0.19        O      1 U[33]   
- S/ESD    12          12           0.00712      1971.65      0.00495          1.44        O      1 U[23]   
- SRATIO   13          13          -0.00427     14854.50      0.00506         -0.84        O      1 U[13]   
- S/ESD    14          14          -0.00972     -1326.55      0.00520         -1.87        O      1 U[12]   
- LARGE    15          15           0.15286      4875.21      0.06184          2.47        C      1 U[ISO]  
- LARGE    16          16          -0.42847    -15011.64      0.11848         -3.62        C      1 SIZE    
- Sum of the squares of the ratio (Shift/e.s.d.) =        195.9886
-                               The rms (shift/su)  =       3.4998980
-                            The mean abs(shift/su) =       2.5024343
+ SRATIO    5           5          -0.00052       170.43      0.00317      -0.16275        P      1 U[22]   
+ S/ESD     6           6          -0.01019    -16276.15      0.00168      -6.07110        O      1 X       
+ S/ESD     7           7           0.01207     -7691.95      0.00157       7.66880        O      1 Y       
+ S/ESD     8           8           0.00643     -6817.20      0.00168       3.83946        O      1 Z       
+ S/ESD     9           9           0.01012     -1150.48      0.00605       1.67248        O      1 U[11]   
+ S/ESD    10          10           0.01330      6989.06      0.00563       2.36356        O      1 U[22]   
+ SRATIO   11          11           0.00122       273.78      0.00653       0.18646        O      1 U[33]   
+ S/ESD    12          12           0.00712      1971.65      0.00495       1.43832        O      1 U[23]   
+ SRATIO   13          13          -0.00427     14854.50      0.00506      -0.84347        O      1 U[13]   
+ S/ESD    14          14          -0.00972     -1326.55      0.00520      -1.87037        O      1 U[12]   
+ LARGE    15          15           0.15286      4875.21      0.06184       2.47176        C      1 U[ISO]  
+ LARGE    16          16          -0.42847    -15011.64      0.11848      -3.61625        C      1 SIZE    
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =        195.9886
+                                                for          16 parameters
+                                 The rms (shift/su)  =       3.4998980
+                              The mean abs(shift/su) =       2.5024343
  The largest (shift/esd) =  7.668805, for Parameter    7, O1Y
-All cycle   1       0.00           100.           11.9    
-All cycle   2       0.00           100.           12.6    
-All cycle   3      0.300E-01      0.100E+05       3.50    
-All cycle   4       0.00          0.100E+16      0.197E+04
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           11.9           100.    
+All cycle   Rw                   0.00           12.6           100.    
+All cycle   shift/esd           0.300E-01       3.50          0.100E+05
+All cycle   Min function         0.00          0.197E+04      0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -952,28 +964,32 @@ LS-scale=  0.479   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO    2           2           0.00030         5.86      0.00075          0.40        GA     1 U[11]   
- S/ESD     6           6          -0.00763         0.75      0.00100         -7.66        O      1 X       
- S/ESD     7           7           0.00945         0.78      0.00096          9.82        O      1 Y       
- S/ESD     8           8           0.00497         0.77      0.00091          5.48        O      1 Z       
- S/ESD     9           9          -0.00577        -0.57      0.00391         -1.48        O      1 U[11]   
- S/ESD    10          10          -0.00739        -0.56      0.00388         -1.90        O      1 U[22]   
- S/ESD    12          12          -0.00500        -0.70      0.00303         -1.65        O      1 U[23]   
- S/ESD    13          13           0.00377        -0.88      0.00302          1.25        O      1 U[13]   
- S/ESD    14          14           0.00666        -0.69      0.00342          1.95        O      1 U[12]   
- LARGE    15          15          -0.27697        -1.81      0.08802         -3.15        C      1 U[ISO]  
- Sum of the squares of the ratio (Shift/e.s.d.) =        209.8792
-                               The rms (shift/su)  =       3.6218023
-                            The mean abs(shift/su) =       2.2776411
+ SRATIO    2           2           0.00030         5.86      0.00075       0.40328        GA     1 U[11]   
+ S/ESD     6           6          -0.00763         0.75      0.00100      -7.66338        O      1 X       
+ S/ESD     7           7           0.00945         0.78      0.00096       9.82112        O      1 Y       
+ S/ESD     8           8           0.00497         0.77      0.00091       5.47627        O      1 Z       
+ S/ESD     9           9          -0.00577        -0.57      0.00391      -1.47712        O      1 U[11]   
+ S/ESD    10          10          -0.00739        -0.56      0.00388      -1.90291        O      1 U[22]   
+ S/ESD    12          12          -0.00500        -0.70      0.00303      -1.65016        O      1 U[23]   
+ S/ESD    13          13           0.00377        -0.88      0.00302       1.24873        O      1 U[13]   
+ S/ESD    14          14           0.00666        -0.69      0.00342       1.94787        O      1 U[12]   
+ LARGE    15          15          -0.27697        -1.81      0.08802      -3.14671        C      1 U[ISO]  
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =        209.8792
+                                                for          16 parameters
+                                 The rms (shift/su)  =       3.6218023
+                              The mean abs(shift/su) =       2.2776411
  The largest (shift/esd) =  9.821123, for Parameter    7, O1Y
-All cycle   1       0.00           100.           6.55    
-All cycle   2       0.00           100.           6.81    
-All cycle   3      0.300E-01      0.100E+05       3.62    
-All cycle   4       0.00          0.100E+16       574.    
-Inter cycle   1      -5.00           100.           5.39    
-Inter cycle   2      -5.00           100.           5.80    
-Inter cycle   3      -10.0          0.100E+05     -0.122    
-Inter cycle   4       0.00          0.100E+16      0.139E+04
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           6.55           100.    
+All cycle   Rw                   0.00           6.81           100.    
+All cycle   shift/esd           0.300E-01       3.62          0.100E+05
+All cycle   Min function         0.00           574.          0.100E+16
+Inter cycle R-factor            -5.00           5.39           100.    
+Inter cycle Rw                  -5.00           5.80           100.    
+Inter cycle shift/esd           -10.0         -0.122          0.100E+05
+Inter cycle Min function         0.00          0.139E+04      0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -1140,26 +1156,30 @@ LS-scale=  0.480   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD     6           6           0.00155        -0.20      0.00061          2.52        O      1 X       
- S/ESD     7           7          -0.00176        -0.19      0.00058         -3.05        O      1 Y       
- S/ESD     8           8          -0.00103        -0.21      0.00055         -1.86        O      1 Z       
- S/ESD     9           9          -0.00341         0.59      0.00236         -1.44        O      1 U[11]   
- S/ESD    10          10          -0.00410         0.56      0.00222         -1.84        O      1 U[22]   
- S/ESD    12          12          -0.00270         0.54      0.00191         -1.41        O      1 U[23]   
- S/ESD    14          14           0.00361         0.54      0.00198          1.82        O      1 U[12]   
- S/ESD    15          15           0.02806        -0.10      0.00551          5.09        C      1 U[ISO]  
- Sum of the squares of the ratio (Shift/e.s.d.) =         56.1650
-                               The rms (shift/su)  =       1.8735826
-                            The mean abs(shift/su) =       1.2720205
+ S/ESD     6           6           0.00155        -0.20      0.00061       2.52433        O      1 X       
+ S/ESD     7           7          -0.00176        -0.19      0.00058      -3.04579        O      1 Y       
+ S/ESD     8           8          -0.00103        -0.21      0.00055      -1.85887        O      1 Z       
+ S/ESD     9           9          -0.00341         0.59      0.00236      -1.44120        O      1 U[11]   
+ S/ESD    10          10          -0.00410         0.56      0.00222      -1.84435        O      1 U[22]   
+ S/ESD    12          12          -0.00270         0.54      0.00191      -1.41344        O      1 U[23]   
+ S/ESD    14          14           0.00361         0.54      0.00198       1.82368        O      1 U[12]   
+ S/ESD    15          15           0.02806        -0.10      0.00551       5.08966        C      1 U[ISO]  
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         56.1650
+                                                for          16 parameters
+                                 The rms (shift/su)  =       1.8735826
+                              The mean abs(shift/su) =       1.2720205
  The largest (shift/esd) =  5.089657, for Parameter   15, C1U[11]
-All cycle   1       0.00           100.           4.33    
-All cycle   2       0.00           100.           4.69    
-All cycle   3      0.300E-01      0.100E+05       1.87    
-All cycle   4       0.00          0.100E+16       272.    
-Inter cycle   1      -5.00           100.           2.22    
-Inter cycle   2      -5.00           100.           2.12    
-Inter cycle   3      -10.0          0.100E+05       1.75    
-Inter cycle   4       0.00          0.100E+16       302.    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           4.33           100.    
+All cycle   Rw                   0.00           4.69           100.    
+All cycle   shift/esd           0.300E-01       1.87          0.100E+05
+All cycle   Min function         0.00           272.          0.100E+16
+Inter cycle R-factor            -5.00           2.22           100.    
+Inter cycle Rw                  -5.00           2.12           100.    
+Inter cycle shift/esd           -10.0           1.75          0.100E+05
+Inter cycle Min function         0.00           302.          0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -1335,20 +1355,24 @@ LS-scale=  0.479   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD    15          15           0.01865         0.66      0.01015          1.84        C      1 U[ISO]  
- SRATIO   16          16          -0.01809         4.22      0.02154         -0.84        C      1 SIZE    
- Sum of the squares of the ratio (Shift/e.s.d.) =          4.3291
-                               The rms (shift/su)  =       0.5201619
-                            The mean abs(shift/su) =       0.2484025
+ S/ESD    15          15           0.01865         0.66      0.01015       1.83682        C      1 U[ISO]  
+ SRATIO   16          16          -0.01809         4.22      0.02154      -0.83969        C      1 SIZE    
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          4.3291
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.5201619
+                              The mean abs(shift/su) =       0.2484025
  The largest (shift/esd) =  1.836822, for Parameter   15, C1U[11]
-All cycle   1       0.00           100.           3.66    
-All cycle   2       0.00           100.           4.17    
-All cycle   3      0.300E-01      0.100E+05      0.520    
-All cycle   4       0.00          0.100E+16       215.    
-Inter cycle   1      -5.00           100.          0.663    
-Inter cycle   2      -5.00           100.          0.515    
-Inter cycle   3      -10.0          0.100E+05       1.35    
-Inter cycle   4       0.00          0.100E+16       56.5    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           3.66           100.    
+All cycle   Rw                   0.00           4.17           100.    
+All cycle   shift/esd           0.300E-01      0.520          0.100E+05
+All cycle   Min function         0.00           215.          0.100E+16
+Inter cycle R-factor            -5.00          0.663           100.    
+Inter cycle Rw                  -5.00          0.515           100.    
+Inter cycle shift/esd           -10.0           1.35          0.100E+05
+Inter cycle Min function         0.00           56.5          0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -1525,14 +1549,18 @@ LS-scale=  0.479   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.0871
-                               The rms (shift/su)  =       0.0737797
-                            The mean abs(shift/su) =       0.0323054
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.0871
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.0737797
+                              The mean abs(shift/su) =       0.0323054
  The largest (shift/esd) =  0.267923, for Parameter   16, C1U[22]
-All cycle   1       0.00           100.           3.58    
-All cycle   2       0.00           100.           4.14    
-All cycle   3      0.300E-01      0.100E+05      0.738E-01
-All cycle   4       0.00          0.100E+16       212.    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           3.58           100.    
+All cycle   Rw                   0.00           4.14           100.    
+All cycle   shift/esd           0.300E-01      0.738E-01      0.100E+05
+All cycle   Min function         0.00           212.          0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -1708,14 +1736,18 @@ LS-scale=  0.479   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.0002
-                               The rms (shift/su)  =       0.0031413
-                            The mean abs(shift/su) =       0.0015294
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.0002
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.0031413
+                              The mean abs(shift/su) =       0.0015294
  The largest (shift/esd) =  0.010901, for Parameter   15, C1U[11]
-All cycle   1       0.00           100.           3.58    
-All cycle   2       0.00           100.           4.14    
-All cycle   3      0.300E-01      0.100E+05      0.314E-02
- Forced termination after this cycle:  Actual value condition on shift/esd                                                                                                                                                                                      
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           3.58           100.    
+All cycle   Rw                   0.00           4.14           100.    
+All cycle   shift/esd           0.300E-01      0.314E-02      0.100E+05
+ Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -2284,15 +2316,19 @@ LS-scale=  0.480   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD     1           1          -0.00350         0.00      0.00234         -1.49                          SCALE   
- Sum of the squares of the ratio (Shift/e.s.d.) =          4.8865
-                               The rms (shift/su)  =       0.5526338
-                            The mean abs(shift/su) =       0.3664415
+ S/ESD     1           1          -0.00350         0.00      0.00234      -1.49450                          SCALE   
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          4.8865
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.5526338
+                              The mean abs(shift/su) =       0.3664415
  The largest (shift/esd) =  1.494495, for Parameter    1, SCALE
-All cycle   1       0.00           100.           3.88    
-All cycle   2       0.00           100.           4.70    
-All cycle   3      0.300E-01      0.100E+05      0.553    
-All cycle   4       0.00          0.100E+16       273.    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           3.88           100.    
+All cycle   Rw                   0.00           4.70           100.    
+All cycle   shift/esd           0.300E-01      0.553          0.100E+05
+All cycle   Min function         0.00           273.          0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -2472,15 +2508,19 @@ LS-scale=  0.477   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO   14          14          -0.00005        15.89      0.00177         -0.03        O      1 U[12]   
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.0063
-                               The rms (shift/su)  =       0.0198963
-                            The mean abs(shift/su) =       0.0159357
+ SRATIO   14          14          -0.00005        15.89      0.00177      -0.03038        O      1 U[12]   
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.0063
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.0198963
+                              The mean abs(shift/su) =       0.0159357
  The largest (shift/esd) =  0.046631, for Parameter   11, O1U[33]
-All cycle   1       0.00           100.           3.88    
-All cycle   2       0.00           100.           4.57    
-All cycle   3      0.300E-01      0.100E+05      0.199E-01
- Forced termination after this cycle:  Actual value condition on shift/esd                                                                                                                                                                                      
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           3.88           100.    
+All cycle   Rw                   0.00           4.57           100.    
+All cycle   shift/esd           0.300E-01      0.199E-01      0.100E+05
+ Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -2662,38 +2702,42 @@ LS-scale=  0.502   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD     1           1          -0.02492      1288.97      0.00622         -4.01                          SCALE   
- SRATIO    2           2           0.00006       -20.91      0.00132          0.05        GA     1 U[11]   
- SRATIO    3           3           0.00068      -177.66      0.00083          0.82        GA     1 U[22]   
+ S/ESD     1           1          -0.02492      1288.97      0.00622      -4.00884                          SCALE   
+ SRATIO    2           2           0.00006       -20.91      0.00132       0.04908        GA     1 U[11]   
+ SRATIO    3           3           0.00068      -177.66      0.00083       0.81589        GA     1 U[22]   
                                                                                                             Composite
 
                                                                       Composite
 
- SRATIO    4           4           0.00079        74.80      0.00169          0.46        P      1 U[11]   
+ SRATIO    4           4           0.00079        74.80      0.00169       0.46463        P      1 U[11]   
                                                                                                             Composite
 
                                                                       Composite
 
- SRATIO    5           5          -0.00029       -43.69      0.00272         -0.11        P      1 U[22]   
- S/ESD     6           6          -0.00690      1935.93      0.00152         -4.52        O      1 X       
- S/ESD     7           7           0.00581       533.30      0.00140          4.14        O      1 Y       
- S/ESD     8           8           0.01355     16590.65      0.00147          9.24        O      1 Z       
- SRATIO    9           9           0.00180        77.69      0.00563          0.32        O      1 U[11]   
- SRATIO   10          10           0.00498       -91.58      0.00527          0.94        O      1 U[22]   
- S/ESD    11          11           0.01241       125.67      0.00545          2.28        O      1 U[33]   
- S/ESD    12          12           0.00848      -295.40      0.00421          2.01        O      1 U[23]   
- S/ESD    13          13          -0.00605       112.72      0.00448         -1.35        O      1 U[13]   
- SRATIO   14          14          -0.00228        42.25      0.00474         -0.48        O      1 U[12]   
- SRATIO   15          15           0.02807      -354.52      0.04428          0.63        C      1 U[ISO]  
- LARGE    16          16          -0.19603       716.62      0.08345         -2.35        C      1 SIZE    
- Sum of the squares of the ratio (Shift/e.s.d.) =        158.1370
-                               The rms (shift/su)  =       3.1438134
-                            The mean abs(shift/su) =       2.1073971
+ SRATIO    5           5          -0.00029       -43.69      0.00272      -0.10653        P      1 U[22]   
+ S/ESD     6           6          -0.00690      1935.93      0.00152      -4.52406        O      1 X       
+ S/ESD     7           7           0.00581       533.30      0.00140       4.14161        O      1 Y       
+ S/ESD     8           8           0.01355     16590.65      0.00147       9.23802        O      1 Z       
+ SRATIO    9           9           0.00180        77.69      0.00563       0.32029        O      1 U[11]   
+ SRATIO   10          10           0.00498       -91.58      0.00527       0.94471        O      1 U[22]   
+ S/ESD    11          11           0.01241       125.67      0.00545       2.27807        O      1 U[33]   
+ S/ESD    12          12           0.00848      -295.40      0.00421       2.01173        O      1 U[23]   
+ S/ESD    13          13          -0.00605       112.72      0.00448      -1.35174        O      1 U[13]   
+ SRATIO   14          14          -0.00228        42.25      0.00474      -0.47996        O      1 U[12]   
+ SRATIO   15          15           0.02807      -354.52      0.04428       0.63403        C      1 U[ISO]  
+ LARGE    16          16          -0.19603       716.62      0.08345      -2.34915        C      1 SIZE    
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =        158.1370
+                                                for          16 parameters
+                                 The rms (shift/su)  =       3.1438134
+                              The mean abs(shift/su) =       2.1073971
  The largest (shift/esd) =  9.238016, for Parameter    8, O1Z
-All cycle   1       0.00           100.           11.5    
-All cycle   2       0.00           100.           12.6    
-All cycle   3      0.300E-01      0.100E+05       3.14    
-All cycle   4       0.00          0.100E+16      0.196E+04
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           11.5           100.    
+All cycle   Rw                   0.00           12.6           100.    
+All cycle   shift/esd           0.300E-01       3.14          0.100E+05
+All cycle   Min function         0.00          0.196E+04      0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -2853,29 +2897,33 @@ LS-scale=  0.477   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO    2           2           0.00047         7.18      0.00060          0.78        GA     1 U[11]   
- S/ESD     6           6          -0.00135         0.20      0.00077         -1.75        O      1 X       
- S/ESD     7           7           0.00212         0.37      0.00073          2.90        O      1 Y       
- S/ESD     8           8           0.00279         0.21      0.00078          3.56        O      1 Z       
- S/ESD     9           9          -0.00406        -2.25      0.00291         -1.39        O      1 U[11]   
- S/ESD    10          10          -0.00463        -0.93      0.00278         -1.66        O      1 U[22]   
- S/ESD    11          11          -0.01826        -1.47      0.00340         -5.37        O      1 U[33]   
- S/ESD    12          12          -0.00954        -1.12      0.00256         -3.72        O      1 U[23]   
- S/ESD    13          13           0.00860        -1.42      0.00258          3.34        O      1 U[13]   
- S/ESD    14          14           0.00385        -1.69      0.00249          1.55        O      1 U[12]   
- S/ESD    15          15          -0.03233        -1.15      0.02698         -1.20        C      1 U[ISO]  
- Sum of the squares of the ratio (Shift/e.s.d.) =         87.3980
-                               The rms (shift/su)  =       2.3371723
-                            The mean abs(shift/su) =       1.7619983
+ SRATIO    2           2           0.00047         7.18      0.00060       0.77529        GA     1 U[11]   
+ S/ESD     6           6          -0.00135         0.20      0.00077      -1.75380        O      1 X       
+ S/ESD     7           7           0.00212         0.37      0.00073       2.90348        O      1 Y       
+ S/ESD     8           8           0.00279         0.21      0.00078       3.55614        O      1 Z       
+ S/ESD     9           9          -0.00406        -2.25      0.00291      -1.39423        O      1 U[11]   
+ S/ESD    10          10          -0.00463        -0.93      0.00278      -1.66412        O      1 U[22]   
+ S/ESD    11          11          -0.01826        -1.47      0.00340      -5.36925        O      1 U[33]   
+ S/ESD    12          12          -0.00954        -1.12      0.00256      -3.72299        O      1 U[23]   
+ S/ESD    13          13           0.00860        -1.42      0.00258       3.33674        O      1 U[13]   
+ S/ESD    14          14           0.00385        -1.69      0.00249       1.54984        O      1 U[12]   
+ S/ESD    15          15          -0.03233        -1.15      0.02698      -1.19817        C      1 U[ISO]  
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         87.3980
+                                                for          16 parameters
+                                 The rms (shift/su)  =       2.3371723
+                              The mean abs(shift/su) =       1.7619983
  The largest (shift/esd) =  5.369246, for Parameter   11, O1U[33]
-All cycle   1       0.00           100.           5.06    
-All cycle   2       0.00           100.           5.47    
-All cycle   3      0.300E-01      0.100E+05       2.34    
-All cycle   4       0.00          0.100E+16       370.    
-Inter cycle   1      -5.00           100.           6.48    
-Inter cycle   2      -5.00           100.           7.14    
-Inter cycle   3      -10.0          0.100E+05      0.807    
-Inter cycle   4       0.00          0.100E+16      0.159E+04
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           5.06           100.    
+All cycle   Rw                   0.00           5.47           100.    
+All cycle   shift/esd           0.300E-01       2.34          0.100E+05
+All cycle   Min function         0.00           370.          0.100E+16
+Inter cycle R-factor            -5.00           6.48           100.    
+Inter cycle Rw                  -5.00           7.14           100.    
+Inter cycle shift/esd           -10.0          0.807          0.100E+05
+Inter cycle Min function         0.00          0.159E+04      0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -3048,21 +3096,25 @@ LS-scale=  0.477   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD     8           8          -0.00082        -0.29      0.00051         -1.61        O      1 Z       
- S/ESD    11          11           0.00414        -0.23      0.00200          2.06        O      1 U[33]   
- S/ESD    13          13          -0.00220        -0.26      0.00168         -1.31        O      1 U[13]   
- Sum of the squares of the ratio (Shift/e.s.d.) =         11.8077
-                               The rms (shift/su)  =       0.8590598
-                            The mean abs(shift/su) =       0.6052283
+ S/ESD     8           8          -0.00082        -0.29      0.00051      -1.60698        O      1 Z       
+ S/ESD    11          11           0.00414        -0.23      0.00200       2.06397        O      1 U[33]   
+ S/ESD    13          13          -0.00220        -0.26      0.00168      -1.30792        O      1 U[13]   
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         11.8077
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.8590598
+                              The mean abs(shift/su) =       0.6052283
  The largest (shift/esd) =  2.063965, for Parameter   11, O1U[33]
-All cycle   1       0.00           100.           4.13    
-All cycle   2       0.00           100.           4.69    
-All cycle   3      0.300E-01      0.100E+05      0.859    
-All cycle   4       0.00          0.100E+16       272.    
-Inter cycle   1      -5.00           100.          0.934    
-Inter cycle   2      -5.00           100.          0.775    
-Inter cycle   3      -10.0          0.100E+05       1.48    
-Inter cycle   4       0.00          0.100E+16       97.4    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           4.13           100.    
+All cycle   Rw                   0.00           4.69           100.    
+All cycle   shift/esd           0.300E-01      0.859          0.100E+05
+All cycle   Min function         0.00           272.          0.100E+16
+Inter cycle R-factor            -5.00          0.934           100.    
+Inter cycle Rw                  -5.00          0.775           100.    
+Inter cycle shift/esd           -10.0           1.48          0.100E+05
+Inter cycle Min function         0.00           97.4          0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -3238,18 +3290,22 @@ LS-scale=  0.477   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.0220
-                               The rms (shift/su)  =       0.0370772
-                            The mean abs(shift/su) =       0.0257062
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.0220
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.0370772
+                              The mean abs(shift/su) =       0.0257062
  The largest (shift/esd) =  0.077630, for Parameter   15, C1U[11]
-All cycle   1       0.00           100.           3.89    
-All cycle   2       0.00           100.           4.57    
-All cycle   3      0.300E-01      0.100E+05      0.371E-01
-All cycle   4       0.00          0.100E+16       258.    
-Inter cycle   1      -5.00           100.          0.239    
-Inter cycle   2      -5.00           100.          0.123    
-Inter cycle   3      -10.0          0.100E+05      0.822    
-Inter cycle   4       0.00          0.100E+16       14.1    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           3.89           100.    
+All cycle   Rw                   0.00           4.57           100.    
+All cycle   shift/esd           0.300E-01      0.371E-01      0.100E+05
+All cycle   Min function         0.00           258.          0.100E+16
+Inter cycle R-factor            -5.00          0.239           100.    
+Inter cycle Rw                  -5.00          0.123           100.    
+Inter cycle shift/esd           -10.0          0.822          0.100E+05
+Inter cycle Min function         0.00           14.1          0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -3426,14 +3482,18 @@ LS-scale=  0.477   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.0006
-                               The rms (shift/su)  =       0.0060838
-                            The mean abs(shift/su) =       0.0039505
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.0006
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.0060838
+                              The mean abs(shift/su) =       0.0039505
  The largest (shift/esd) =  0.018025, for Parameter   15, C1U[11]
-All cycle   1       0.00           100.           3.89    
-All cycle   2       0.00           100.           4.57    
-All cycle   3      0.300E-01      0.100E+05      0.608E-02
- Forced termination after this cycle:  Actual value condition on shift/esd                                                                                                                                                                                      
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           3.89           100.    
+All cycle   Rw                   0.00           4.57           100.    
+All cycle   shift/esd           0.300E-01      0.608E-02      0.100E+05
+ Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -3998,14 +4058,18 @@ LS-scale=  0.480   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          1.8246
-                               The rms (shift/su)  =       0.3376931
-                            The mean abs(shift/su) =       0.2220373
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          1.8246
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.3376931
+                              The mean abs(shift/su) =       0.2220373
  The largest (shift/esd) =  0.947385, for Parameter    1, C1U[22]
-All cycle   1       0.00           100.           3.56    
-All cycle   2       0.00           100.           8.53    
-All cycle   3      0.300E-01      0.100E+05      0.338    
-All cycle   4       0.00          0.100E+16       225.    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           3.56           100.    
+All cycle   Rw                   0.00           8.53           100.    
+All cycle   shift/esd           0.300E-01      0.338          0.100E+05
+All cycle   Min function         0.00           225.          0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -4181,14 +4245,18 @@ LS-scale=  0.478   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.0036
-                               The rms (shift/su)  =       0.0149277
-                            The mean abs(shift/su) =       0.0115258
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.0036
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.0149277
+                              The mean abs(shift/su) =       0.0115258
  The largest (shift/esd) =  0.030688, for Parameter    1, C1U[22]
-All cycle   1       0.00           100.           3.63    
-All cycle   2       0.00           100.           8.41    
-All cycle   3      0.300E-01      0.100E+05      0.149E-01
- Forced termination after this cycle:  Actual value condition on shift/esd                                                                                                                                                                                      
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           3.63           100.    
+All cycle   Rw                   0.00           8.41           100.    
+All cycle   shift/esd           0.300E-01      0.149E-01      0.100E+05
+ Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -4370,38 +4438,42 @@ LS-scale=  0.438   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD     1           1           0.03631      -594.24      0.00546          6.65                          SCALE   
- SRATIO    2           2          -0.00052        40.56      0.00165         -0.31        GA     1 U[11]   
- SRATIO    3           3           0.00025      -103.46      0.00098          0.25        GA     1 U[22]   
+ S/ESD     1           1           0.03631      -594.24      0.00546       6.64614                          SCALE   
+ SRATIO    2           2          -0.00052        40.56      0.00165      -0.31219        GA     1 U[11]   
+ SRATIO    3           3           0.00025      -103.46      0.00098       0.25314        GA     1 U[22]   
                                                                                                             Composite
 
                                                                       Composite
 
- SRATIO    4           4           0.00032       213.91      0.00219          0.14        P      1 U[11]   
+ SRATIO    4           4           0.00032       213.91      0.00219       0.14464        P      1 U[11]   
                                                                                                             Composite
 
                                                                       Composite
 
- SRATIO    5           5          -0.00081        72.89      0.00340         -0.24        P      1 U[22]   
- S/ESD     6           6          -0.01306     -5560.43      0.00196         -6.65        O      1 X       
- S/ESD     7           7          -0.01178      2046.17      0.00181         -6.51        O      1 Y       
- S/ESD     8           8           0.00617     18683.66      0.00150          4.11        O      1 Z       
- S/ESD     9           9           0.01727      -699.33      0.00757          2.28        O      1 U[11]   
- S/ESD    10          10           0.01167      -513.54      0.00622          1.88        O      1 U[22]   
- SRATIO   11          11           0.00016        -8.00      0.00605          0.03        O      1 U[33]   
- S/ESD    12          12          -0.00718       742.33      0.00528         -1.36        O      1 U[23]   
- S/ESD    13          13          -0.00804       181.92      0.00580         -1.39        O      1 U[13]   
- S/ESD    14          14           0.01120      -461.68      0.00478          2.34        O      1 U[12]   
- LARGE    15          15           0.07067      8058.89      0.06200          1.14        C      1 U[ISO]  
- LARGE    16          16          -0.33325     17937.30      0.10910         -3.05        C      1 SIZE    
- Sum of the squares of the ratio (Shift/e.s.d.) =        176.5195
-                               The rms (shift/su)  =       3.3215158
-                            The mean abs(shift/su) =       2.3956218
+ SRATIO    5           5          -0.00081        72.89      0.00340      -0.23824        P      1 U[22]   
+ S/ESD     6           6          -0.01306     -5560.43      0.00196      -6.64773        O      1 X       
+ S/ESD     7           7          -0.01178      2046.17      0.00181      -6.51440        O      1 Y       
+ S/ESD     8           8           0.00617     18683.66      0.00150       4.10669        O      1 Z       
+ S/ESD     9           9           0.01727      -699.33      0.00757       2.28179        O      1 U[11]   
+ S/ESD    10          10           0.01167      -513.54      0.00622       1.87655        O      1 U[22]   
+ SRATIO   11          11           0.00016        -8.00      0.00605       0.02642        O      1 U[33]   
+ S/ESD    12          12          -0.00718       742.33      0.00528      -1.35942        O      1 U[23]   
+ S/ESD    13          13          -0.00804       181.92      0.00580      -1.38527        O      1 U[13]   
+ S/ESD    14          14           0.01120      -461.68      0.00478       2.34303        O      1 U[12]   
+ LARGE    15          15           0.07067      8058.89      0.06200       1.13985        C      1 U[ISO]  
+ LARGE    16          16          -0.33325     17937.30      0.10910      -3.05446        C      1 SIZE    
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =        176.5195
+                                                for          16 parameters
+                                 The rms (shift/su)  =       3.3215158
+                              The mean abs(shift/su) =       2.3956218
  The largest (shift/esd) =  6.647728, for Parameter    6, O1X
-All cycle   1       0.00           100.           13.2    
-All cycle   2       0.00           100.           23.5    
-All cycle   3      0.300E-01      0.100E+05       3.32    
-All cycle   4       0.00          0.100E+16      0.170E+04
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           13.2           100.    
+All cycle   Rw                   0.00           23.5           100.    
+All cycle   shift/esd           0.300E-01       3.32          0.100E+05
+All cycle   Min function         0.00          0.170E+04      0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -4563,37 +4635,41 @@ LS-scale=  0.478   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD     3           3           0.00070         2.82      0.00041          1.69        GA     1 U[22]   
+ S/ESD     3           3           0.00070         2.82      0.00041       1.69115        GA     1 U[22]   
                                                                                                             Composite
 
                                                                       Composite
 
- S/ESD     4           4          -0.00172        -5.45      0.00091         -1.90        P      1 U[11]   
+ S/ESD     4           4          -0.00172        -5.45      0.00091      -1.90391        P      1 U[11]   
                                                                                                             Composite
 
                                                                       Composite
 
- S/ESD     8           8          -0.00091        -0.15      0.00079         -1.16        O      1 Z       
- S/ESD     9           9          -0.02765        -1.60      0.00448         -6.18        O      1 U[11]   
- S/ESD    10          10          -0.01299        -1.11      0.00360         -3.61        O      1 U[22]   
- SRATIO   11          11          -0.00129        -8.04      0.00327         -0.39        O      1 U[33]   
- S/ESD    12          12           0.00958        -1.33      0.00294          3.26        O      1 U[23]   
- S/ESD    13          13           0.01208        -1.50      0.00311          3.88        O      1 U[13]   
- S/ESD    14          14          -0.01814        -1.62      0.00339         -5.35        O      1 U[12]   
- LARGE    15          15          -0.11274        -1.60      0.04790         -2.35        C      1 U[ISO]  
- LARGE    16          16           0.10994        -0.33      0.05025          2.19        C      1 SIZE    
- Sum of the squares of the ratio (Shift/e.s.d.) =        125.8716
-                               The rms (shift/su)  =       2.8048124
-                            The mean abs(shift/su) =       2.1653485
+ S/ESD     8           8          -0.00091        -0.15      0.00079      -1.15522        O      1 Z       
+ S/ESD     9           9          -0.02765        -1.60      0.00448      -6.17519        O      1 U[11]   
+ S/ESD    10          10          -0.01299        -1.11      0.00360      -3.60568        O      1 U[22]   
+ SRATIO   11          11          -0.00129        -8.04      0.00327      -0.39359        O      1 U[33]   
+ S/ESD    12          12           0.00958        -1.33      0.00294       3.25954        O      1 U[23]   
+ S/ESD    13          13           0.01208        -1.50      0.00311       3.88262        O      1 U[13]   
+ S/ESD    14          14          -0.01814        -1.62      0.00339      -5.35398        O      1 U[12]   
+ LARGE    15          15          -0.11274        -1.60      0.04790      -2.35352        C      1 U[ISO]  
+ LARGE    16          16           0.10994        -0.33      0.05025       2.18769        C      1 SIZE    
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =        125.8716
+                                                for          16 parameters
+                                 The rms (shift/su)  =       2.8048124
+                              The mean abs(shift/su) =       2.1653485
  The largest (shift/esd) =  6.175194, for Parameter    9, O1U[11]
-All cycle   1       0.00           100.           5.70    
-All cycle   2       0.00           100.           12.5    
-All cycle   3      0.300E-01      0.100E+05       2.80    
-All cycle   4       0.00          0.100E+16       481.    
-Inter cycle   1      -5.00           100.           7.49    
-Inter cycle   2      -5.00           100.           11.0    
-Inter cycle   3      -10.0          0.100E+05      0.517    
-Inter cycle   4       0.00          0.100E+16      0.122E+04
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           5.70           100.    
+All cycle   Rw                   0.00           12.5           100.    
+All cycle   shift/esd           0.300E-01       2.80          0.100E+05
+All cycle   Min function         0.00           481.          0.100E+16
+Inter cycle R-factor            -5.00           7.49           100.    
+Inter cycle Rw                  -5.00           11.0           100.    
+Inter cycle shift/esd           -10.0          0.517          0.100E+05
+Inter cycle Min function         0.00          0.122E+04      0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -4774,35 +4850,39 @@ LS-scale=  0.478   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD     3           3           0.00055         0.78      0.00032          1.70        GA     1 U[22]   
+ S/ESD     3           3           0.00055         0.78      0.00032       1.69755        GA     1 U[22]   
                                                                                                             Composite
 
                                                                       Composite
 
- S/ESD     4           4          -0.00110         0.64      0.00069         -1.59        P      1 U[11]   
+ S/ESD     4           4          -0.00110         0.64      0.00069      -1.59248        P      1 U[11]   
                                                                                                             Composite
 
                                                                       Composite
 
- S/ESD     9           9          -0.00952         0.34      0.00269         -3.54        O      1 U[11]   
- S/ESD    10          10          -0.00585         0.45      0.00239         -2.45        O      1 U[22]   
- S/ESD    12          12           0.00376         0.39      0.00203          1.85        O      1 U[23]   
- S/ESD    13          13           0.00394         0.33      0.00204          1.93        O      1 U[13]   
- S/ESD    14          14          -0.00566         0.31      0.00214         -2.64        O      1 U[12]   
- S/ESD    15          15          -0.03792         0.34      0.02456         -1.54        C      1 U[ISO]  
- S/ESD    16          16           0.03712         0.34      0.03282          1.13        C      1 SIZE    
- Sum of the squares of the ratio (Shift/e.s.d.) =         42.6746
-                               The rms (shift/su)  =       1.6331449
-                            The mean abs(shift/su) =       1.2744356
+ S/ESD     9           9          -0.00952         0.34      0.00269      -3.54016        O      1 U[11]   
+ S/ESD    10          10          -0.00585         0.45      0.00239      -2.44979        O      1 U[22]   
+ S/ESD    12          12           0.00376         0.39      0.00203       1.84943        O      1 U[23]   
+ S/ESD    13          13           0.00394         0.33      0.00204       1.93023        O      1 U[13]   
+ S/ESD    14          14          -0.00566         0.31      0.00214      -2.63780        O      1 U[12]   
+ S/ESD    15          15          -0.03792         0.34      0.02456      -1.54400        C      1 U[ISO]  
+ S/ESD    16          16           0.03712         0.34      0.03282       1.13077        C      1 SIZE    
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         42.6746
+                                                for          16 parameters
+                                 The rms (shift/su)  =       1.6331449
+                              The mean abs(shift/su) =       1.2744356
  The largest (shift/esd) =  3.540165, for Parameter    9, O1U[11]
-All cycle   1       0.00           100.           4.28    
-All cycle   2       0.00           100.           9.58    
-All cycle   3      0.300E-01      0.100E+05       1.63    
-All cycle   4       0.00          0.100E+16       284.    
-Inter cycle   1      -5.00           100.           1.41    
-Inter cycle   2      -5.00           100.           2.90    
-Inter cycle   3      -10.0          0.100E+05       1.17    
-Inter cycle   4       0.00          0.100E+16       197.    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           4.28           100.    
+All cycle   Rw                   0.00           9.58           100.    
+All cycle   shift/esd           0.300E-01       1.63          0.100E+05
+All cycle   Min function         0.00           284.          0.100E+16
+Inter cycle R-factor            -5.00           1.41           100.    
+Inter cycle Rw                  -5.00           2.90           100.    
+Inter cycle shift/esd           -10.0           1.17          0.100E+05
+Inter cycle Min function         0.00           197.          0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -4982,20 +5062,24 @@ LS-scale=  0.478   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD     9           9           0.00196        -0.21      0.00186          1.05        O      1 U[11]   
- S/ESD    14          14           0.00163        -0.29      0.00155          1.05        O      1 U[12]   
- Sum of the squares of the ratio (Shift/e.s.d.) =          4.0066
-                               The rms (shift/su)  =       0.5004117
-                            The mean abs(shift/su) =       0.3652614
+ S/ESD     9           9           0.00196        -0.21      0.00186       1.05308        O      1 U[11]   
+ S/ESD    14          14           0.00163        -0.29      0.00155       1.05004        O      1 U[12]   
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          4.0066
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.5004117
+                              The mean abs(shift/su) =       0.3652614
  The largest (shift/esd) =  1.053082, for Parameter    9, O1U[11]
-All cycle   1       0.00           100.           3.79    
-All cycle   2       0.00           100.           8.51    
-All cycle   3      0.300E-01      0.100E+05      0.500    
-All cycle   4       0.00          0.100E+16       224.    
-Inter cycle   1      -5.00           100.          0.495    
-Inter cycle   2      -5.00           100.           1.07    
-Inter cycle   3      -10.0          0.100E+05       1.13    
-Inter cycle   4       0.00          0.100E+16       59.6    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           3.79           100.    
+All cycle   Rw                   0.00           8.51           100.    
+All cycle   shift/esd           0.300E-01      0.500          0.100E+05
+All cycle   Min function         0.00           224.          0.100E+16
+Inter cycle R-factor            -5.00          0.495           100.    
+Inter cycle Rw                  -5.00           1.07           100.    
+Inter cycle shift/esd           -10.0           1.13          0.100E+05
+Inter cycle Min function         0.00           59.6          0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -5172,14 +5256,18 @@ LS-scale=  0.478   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.0230
-                               The rms (shift/su)  =       0.0378926
-                            The mean abs(shift/su) =       0.0314401
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.0230
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.0378926
+                              The mean abs(shift/su) =       0.0314401
  The largest (shift/esd) =  0.066517, for Parameter    9, O1U[11]
-All cycle   1       0.00           100.           3.63    
-All cycle   2       0.00           100.           8.42    
-All cycle   3      0.300E-01      0.100E+05      0.379E-01
-All cycle   4       0.00          0.100E+16       219.    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           3.63           100.    
+All cycle   Rw                   0.00           8.42           100.    
+All cycle   shift/esd           0.300E-01      0.379E-01      0.100E+05
+All cycle   Min function         0.00           219.          0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -5355,14 +5443,18 @@ LS-scale=  0.478   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.0004
-                               The rms (shift/su)  =       0.0050339
-                            The mean abs(shift/su) =       0.0034474
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.0004
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.0050339
+                              The mean abs(shift/su) =       0.0034474
  The largest (shift/esd) =  0.012983, for Parameter   15, C1U[11]
-All cycle   1       0.00           100.           3.64    
-All cycle   2       0.00           100.           8.41    
-All cycle   3      0.300E-01      0.100E+05      0.503E-02
- Forced termination after this cycle:  Actual value condition on shift/esd                                                                                                                                                                                      
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           3.64           100.    
+All cycle   Rw                   0.00           8.41           100.    
+All cycle   shift/esd           0.300E-01      0.503E-02      0.100E+05
+ Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -5931,21 +6023,25 @@ LS-scale=  0.480   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD     1           1          -0.00449         0.00      0.00229         -1.97                          SCALE   
- S/ESD     3           3           0.00036         0.00      0.00033          1.10        GA     1 U[22]   
+ S/ESD     1           1          -0.00449         0.00      0.00229      -1.96565                          SCALE   
+ S/ESD     3           3           0.00036         0.00      0.00033       1.09612        GA     1 U[22]   
                                                                                                             Composite
 
                                                                       Composite
 
- S/ESD     8           8           0.00060         0.00      0.00055          1.09        O      1 Z       
- Sum of the squares of the ratio (Shift/e.s.d.) =          8.2114
-                               The rms (shift/su)  =       0.7163867
-                            The mean abs(shift/su) =       0.5260549
+ S/ESD     8           8           0.00060         0.00      0.00055       1.09226        O      1 Z       
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          8.2114
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.7163867
+                              The mean abs(shift/su) =       0.5260549
  The largest (shift/esd) =  1.965649, for Parameter    1, SCALE
-All cycle   1       0.00           100.           3.88    
-All cycle   2       0.00           100.           9.82    
-All cycle   3      0.300E-01      0.100E+05      0.716    
-All cycle   4       0.00          0.100E+16       298.    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           3.88           100.    
+All cycle   Rw                   0.00           9.82           100.    
+All cycle   shift/esd           0.300E-01      0.716          0.100E+05
+All cycle   Min function         0.00           298.          0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -6121,18 +6217,22 @@ LS-scale=  0.476   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.0246
-                               The rms (shift/su)  =       0.0392369
-                            The mean abs(shift/su) =       0.0309319
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.0246
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.0392369
+                              The mean abs(shift/su) =       0.0309319
  The largest (shift/esd) =  0.094650, for Parameter   14, O1U[12]
-All cycle   1       0.00           100.           3.97    
-All cycle   2       0.00           100.           9.36    
-All cycle   3      0.300E-01      0.100E+05      0.392E-01
-All cycle   4       0.00          0.100E+16       271.    
-Inter cycle   1      -5.00           100.         -0.961E-01
-Inter cycle   2      -5.00           100.          0.467    
-Inter cycle   3      -10.0          0.100E+05      0.677    
-Inter cycle   4       0.00          0.100E+16       27.7    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           3.97           100.    
+All cycle   Rw                   0.00           9.36           100.    
+All cycle   shift/esd           0.300E-01      0.392E-01      0.100E+05
+All cycle   Min function         0.00           271.          0.100E+16
+Inter cycle R-factor            -5.00         -0.961E-01       100.    
+Inter cycle Rw                  -5.00          0.467           100.    
+Inter cycle shift/esd           -10.0          0.677          0.100E+05
+Inter cycle Min function         0.00           27.7          0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -6308,14 +6408,18 @@ LS-scale=  0.476   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.0006
-                               The rms (shift/su)  =       0.0061825
-                            The mean abs(shift/su) =       0.0045275
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.0006
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.0061825
+                              The mean abs(shift/su) =       0.0045275
  The largest (shift/esd) =  0.014003, for Parameter    8, O1Z
-All cycle   1       0.00           100.           3.98    
-All cycle   2       0.00           100.           9.36    
-All cycle   3      0.300E-01      0.100E+05      0.618E-02
- Forced termination after this cycle:  Actual value condition on shift/esd                                                                                                                                                                                      
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           3.98           100.    
+All cycle   Rw                   0.00           9.36           100.    
+All cycle   shift/esd           0.300E-01      0.618E-02      0.100E+05
+ Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -6497,38 +6601,42 @@ LS-scale=  0.562   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- LARGE     1           1          -0.09017    -25248.73      0.01332         -6.77                          SCALE   
- SRATIO    2           2          -0.00008      -122.27      0.00201         -0.04        GA     1 U[11]   
- SRATIO    3           3           0.00024     -1240.12      0.00133          0.18        GA     1 U[22]   
+ LARGE     1           1          -0.09017    -25248.73      0.01332      -6.76943                          SCALE   
+ SRATIO    2           2          -0.00008      -122.27      0.00201      -0.03858        GA     1 U[11]   
+ SRATIO    3           3           0.00024     -1240.12      0.00133       0.17809        GA     1 U[22]   
                                                                                                             Composite
 
                                                                       Composite
 
- SRATIO    4           4          -0.00097      -553.52      0.00279         -0.35        P      1 U[11]   
+ SRATIO    4           4          -0.00097      -553.52      0.00279      -0.34846        P      1 U[11]   
                                                                                                             Composite
 
                                                                       Composite
 
- SRATIO    5           5           0.00022      -171.77      0.00411          0.05        P      1 U[22]   
- S/ESD     6           6          -0.00495     -1448.13      0.00240         -2.07        O      1 X       
- S/ESD     7           7           0.00774      1165.75      0.00208          3.72        O      1 Y       
- S/ESD     8           8           0.00607       809.02      0.00251          2.42        O      1 Z       
- SRATIO    9           9           0.00124        66.46      0.00793          0.16        O      1 U[11]   
- S/ESD    10          10           0.00875       941.91      0.00747          1.17        O      1 U[22]   
- SRATIO   11          11           0.00758      -452.51      0.00889          0.85        O      1 U[33]   
- S/ESD    12          12           0.00858     -2293.16      0.00668          1.28        O      1 U[23]   
- SRATIO   13          13          -0.00304    -39368.61      0.00716         -0.42        O      1 U[13]   
- SRATIO   14          14          -0.00247      -188.67      0.00720         -0.34        O      1 U[12]   
- LARGE    15          15           0.09771     -2919.14      0.04303          2.27        C      1 U[ISO]  
- LARGE    16          16           0.09099     -5316.01      0.08747          1.04        C      1 SIZE    
- Sum of the squares of the ratio (Shift/e.s.d.) =         80.2188
-                               The rms (shift/su)  =       2.2391233
-                            The mean abs(shift/su) =       1.4458127
+ SRATIO    5           5           0.00022      -171.77      0.00411       0.05444        P      1 U[22]   
+ S/ESD     6           6          -0.00495     -1448.13      0.00240      -2.06852        O      1 X       
+ S/ESD     7           7           0.00774      1165.75      0.00208       3.71561        O      1 Y       
+ S/ESD     8           8           0.00607       809.02      0.00251       2.41749        O      1 Z       
+ SRATIO    9           9           0.00124        66.46      0.00793       0.15589        O      1 U[11]   
+ S/ESD    10          10           0.00875       941.91      0.00747       1.17110        O      1 U[22]   
+ SRATIO   11          11           0.00758      -452.51      0.00889       0.85203        O      1 U[33]   
+ S/ESD    12          12           0.00858     -2293.16      0.00668       1.28445        O      1 U[23]   
+ SRATIO   13          13          -0.00304    -39368.61      0.00716      -0.42448        O      1 U[13]   
+ SRATIO   14          14          -0.00247      -188.67      0.00720      -0.34372        O      1 U[12]   
+ LARGE    15          15           0.09771     -2919.14      0.04303       2.27057        C      1 U[ISO]  
+ LARGE    16          16           0.09099     -5316.01      0.08747       1.04014        C      1 SIZE    
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         80.2188
+                                                for          16 parameters
+                                 The rms (shift/su)  =       2.2391233
+                              The mean abs(shift/su) =       1.4458127
  The largest (shift/esd) =  6.769428, for Parameter    1, SCALE
-All cycle   1       0.00           100.           22.5    
-All cycle   2       0.00           100.           58.6    
-All cycle   3      0.300E-01      0.100E+05       2.24    
-All cycle   4       0.00          0.100E+16      0.106E+05
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           22.5           100.    
+All cycle   Rw                   0.00           58.6           100.    
+All cycle   shift/esd           0.300E-01       2.24          0.100E+05
+All cycle   Min function         0.00          0.106E+05      0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -6683,33 +6791,37 @@ LS-scale=  0.475   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO    2           2           0.00082       -10.55      0.00091          0.90        GA     1 U[11]   
- S/ESD     3           3           0.00064         2.68      0.00059          1.08        GA     1 U[22]   
+ SRATIO    2           2           0.00082       -10.55      0.00091       0.89942        GA     1 U[11]   
+ S/ESD     3           3           0.00064         2.68      0.00059       1.08179        GA     1 U[22]   
                                                                                                             Composite
 
                                                                       Composite
 
- S/ESD     6           6          -0.00301         0.61      0.00112         -2.67        O      1 X       
- S/ESD     7           7           0.00649         0.84      0.00112          5.81        O      1 Y       
- S/ESD     8           8           0.00632         1.04      0.00121          5.22        O      1 Z       
- S/ESD    11          11          -0.00759        -1.00      0.00476         -1.59        O      1 U[33]   
- S/ESD    12          12          -0.00522        -0.61      0.00380         -1.37        O      1 U[23]   
- S/ESD    13          13           0.00376        -1.24      0.00363          1.04        O      1 U[13]   
- S/ESD    14          14           0.00458        -1.85      0.00372          1.23        O      1 U[12]   
- LARGE    15          15           0.28217         2.89      0.08882          3.18        C      1 U[ISO]  
- LARGE    16          16           0.07875         0.87      0.15303          0.51        C      1 SIZE    
- Sum of the squares of the ratio (Shift/e.s.d.) =         89.0359
-                               The rms (shift/su)  =       2.3589709
-                            The mean abs(shift/su) =       1.6827623
+ S/ESD     6           6          -0.00301         0.61      0.00112      -2.67433        O      1 X       
+ S/ESD     7           7           0.00649         0.84      0.00112       5.80888        O      1 Y       
+ S/ESD     8           8           0.00632         1.04      0.00121       5.22033        O      1 Z       
+ S/ESD    11          11          -0.00759        -1.00      0.00476      -1.59411        O      1 U[33]   
+ S/ESD    12          12          -0.00522        -0.61      0.00380      -1.37281        O      1 U[23]   
+ S/ESD    13          13           0.00376        -1.24      0.00363       1.03695        O      1 U[13]   
+ S/ESD    14          14           0.00458        -1.85      0.00372       1.23185        O      1 U[12]   
+ LARGE    15          15           0.28217         2.89      0.08882       3.17684        C      1 U[ISO]  
+ LARGE    16          16           0.07875         0.87      0.15303       0.51460        C      1 SIZE    
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         89.0359
+                                                for          16 parameters
+                                 The rms (shift/su)  =       2.3589709
+                              The mean abs(shift/su) =       1.6827623
  The largest (shift/esd) =  5.808882, for Parameter    7, O1Y
-All cycle   1       0.00           100.           7.17    
-All cycle   2       0.00           100.           17.5    
-All cycle   3      0.300E-01      0.100E+05       2.36    
-All cycle   4       0.00          0.100E+16       947.    
-Inter cycle   1      -5.00           100.           15.3    
-Inter cycle   2      -5.00           100.           41.1    
-Inter cycle   3      -10.0          0.100E+05     -0.120    
-Inter cycle   4       0.00          0.100E+16      0.967E+04
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           7.17           100.    
+All cycle   Rw                   0.00           17.5           100.    
+All cycle   shift/esd           0.300E-01       2.36          0.100E+05
+All cycle   Min function         0.00           947.          0.100E+16
+Inter cycle R-factor            -5.00           15.3           100.    
+Inter cycle Rw                  -5.00           41.1           100.    
+Inter cycle shift/esd           -10.0         -0.120          0.100E+05
+Inter cycle Min function         0.00          0.967E+04      0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -6873,24 +6985,28 @@ LS-scale=  0.478   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD     1           1          -0.00283        -0.77      0.00255         -1.11                          SCALE   
- S/ESD     8           8          -0.00083        -0.13      0.00066         -1.26        O      1 Z       
- S/ESD    10          10          -0.00434         1.37      0.00262         -1.65        O      1 U[22]   
- S/ESD    12          12          -0.00338         0.65      0.00223         -1.51        O      1 U[23]   
- LARGE    15          15          -1.76149        -6.24      0.38443         -4.58        C      1 U[ISO]  
- LARGE    16          16           3.48590        44.27      0.66295          5.26        C      1 SIZE    
- Sum of the squares of the ratio (Shift/e.s.d.) =         59.0330
-                               The rms (shift/su)  =       1.9208238
-                            The mean abs(shift/su) =       1.2265316
+ S/ESD     1           1          -0.00283        -0.77      0.00255      -1.10693                          SCALE   
+ S/ESD     8           8          -0.00083        -0.13      0.00066      -1.26082        O      1 Z       
+ S/ESD    10          10          -0.00434         1.37      0.00262      -1.65255        O      1 U[22]   
+ S/ESD    12          12          -0.00338         0.65      0.00223      -1.51233        O      1 U[23]   
+ LARGE    15          15          -1.76149        -6.24      0.38443      -4.58207        C      1 U[ISO]  
+ LARGE    16          16           3.48590        44.27      0.66295       5.25818        C      1 SIZE    
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         59.0330
+                                                for          16 parameters
+                                 The rms (shift/su)  =       1.9208238
+                              The mean abs(shift/su) =       1.2265316
  The largest (shift/esd) =  5.258175, for Parameter   16, C1U[22]
-All cycle   1       0.00           100.           4.56    
-All cycle   2       0.00           100.           10.9    
-All cycle   3      0.300E-01      0.100E+05       1.92    
-All cycle   4       0.00          0.100E+16       369.    
-Inter cycle   1      -5.00           100.           2.61    
-Inter cycle   2      -5.00           100.           6.58    
-Inter cycle   3      -10.0          0.100E+05      0.438    
-Inter cycle   4       0.00          0.100E+16       578.    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           4.56           100.    
+All cycle   Rw                   0.00           10.9           100.    
+All cycle   shift/esd           0.300E-01       1.92          0.100E+05
+All cycle   Min function         0.00           369.          0.100E+16
+Inter cycle R-factor            -5.00           2.61           100.    
+Inter cycle Rw                  -5.00           6.58           100.    
+Inter cycle shift/esd           -10.0          0.438          0.100E+05
+Inter cycle Min function         0.00           578.          0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -7071,21 +7187,25 @@ LS-scale=  0.475   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO    9           9           0.00017        13.48      0.00258          0.07        O      1 U[11]   
- LARGE    15          15           0.05805        -0.03      0.01966          2.95        C      1 U[ISO]  
- LARGE    16          16          -0.14663        -0.04      0.06911         -2.12        C      1 SIZE    
- Sum of the squares of the ratio (Shift/e.s.d.) =         13.9195
-                               The rms (shift/su)  =       0.9327198
-                            The mean abs(shift/su) =       0.4761974
+ SRATIO    9           9           0.00017        13.48      0.00258       0.06524        O      1 U[11]   
+ LARGE    15          15           0.05805        -0.03      0.01966       2.95261        C      1 U[ISO]  
+ LARGE    16          16          -0.14663        -0.04      0.06911      -2.12175        C      1 SIZE    
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         13.9195
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.9327198
+                              The mean abs(shift/su) =       0.4761974
  The largest (shift/esd) =  2.952606, for Parameter   15, C1U[11]
-All cycle   1       0.00           100.           4.48    
-All cycle   2       0.00           100.           11.0    
-All cycle   3      0.300E-01      0.100E+05      0.933    
-All cycle   4       0.00          0.100E+16       373.    
-Inter cycle   1      -5.00           100.          0.796E-01
-Inter cycle   2      -5.00           100.         -0.665E-01
-Inter cycle   3      -10.0          0.100E+05      0.988    
-Inter cycle   4       0.00          0.100E+16      -4.50    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           4.48           100.    
+All cycle   Rw                   0.00           11.0           100.    
+All cycle   shift/esd           0.300E-01      0.933          0.100E+05
+All cycle   Min function         0.00           373.          0.100E+16
+Inter cycle R-factor            -5.00          0.796E-01       100.    
+Inter cycle Rw                  -5.00         -0.665E-01       100.    
+Inter cycle shift/esd           -10.0          0.988          0.100E+05
+Inter cycle Min function         0.00          -4.50          0.100E+16
  Forced termination after this cycle:  Relative change condition on Min function                                                                                                                                                                                
 
 
@@ -7262,27 +7382,31 @@ LS-scale=  0.475   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO    1           1           0.00262        -3.17      0.00263          1.00                          SCALE   
- SRATIO    3           3           0.00023        -4.79      0.00038          0.59        GA     1 U[22]   
+ SRATIO    1           1           0.00262        -3.17      0.00263       0.99581                          SCALE   
+ SRATIO    3           3           0.00023        -4.79      0.00038       0.59413        GA     1 U[22]   
                                                                                                             Composite
 
                                                                       Composite
 
- SRATIO    4           4           0.00023        88.48      0.00077          0.30        P      1 U[11]   
+ SRATIO    4           4           0.00023        88.48      0.00077       0.29620        P      1 U[11]   
                                                                                                             Composite
 
                                                                       Composite
 
- SRATIO   13          13          -0.00032       -53.85      0.00204         -0.15        O      1 U[13]   
- LARGE    16          16          -0.41192         2.81      0.14703         -2.80        C      1 SIZE    
- Sum of the squares of the ratio (Shift/e.s.d.) =          9.7690
-                               The rms (shift/su)  =       0.7813858
-                            The mean abs(shift/su) =       0.4253997
+ SRATIO   13          13          -0.00032       -53.85      0.00204      -0.15491        O      1 U[13]   
+ LARGE    16          16          -0.41192         2.81      0.14703      -2.80154        C      1 SIZE    
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          9.7690
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.7813858
+                              The mean abs(shift/su) =       0.4253997
  The largest (shift/esd) =  2.801545, for Parameter   16, C1U[22]
-All cycle   1       0.00           100.           4.39    
-All cycle   2       0.00           100.           10.7    
-All cycle   3      0.300E-01      0.100E+05      0.781    
-All cycle   4       0.00          0.100E+16       354.    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           4.39           100.    
+All cycle   Rw                   0.00           10.7           100.    
+All cycle   shift/esd           0.300E-01      0.781          0.100E+05
+All cycle   Min function         0.00           354.          0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -7456,21 +7580,25 @@ LS-scale=  0.477   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO   10          10          -0.00010       -21.61      0.00235         -0.04        O      1 U[22]   
- LARGE    15          15          -0.06322        -3.93      0.08073         -0.78        C      1 U[ISO]  
- LARGE    16          16           0.19063        -0.46      0.12467          1.53        C      1 SIZE    
- Sum of the squares of the ratio (Shift/e.s.d.) =          3.1822
-                               The rms (shift/su)  =       0.4459688
-                            The mean abs(shift/su) =       0.2346339
+ SRATIO   10          10          -0.00010       -21.61      0.00235      -0.04123        O      1 U[22]   
+ LARGE    15          15          -0.06322        -3.93      0.08073      -0.78308        C      1 U[ISO]  
+ LARGE    16          16           0.19063        -0.46      0.12467       1.52913        C      1 SIZE    
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          3.1822
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.4459688
+                              The mean abs(shift/su) =       0.2346339
  The largest (shift/esd) =  1.529133, for Parameter   16, C1U[22]
-All cycle   1       0.00           100.           4.33    
-All cycle   2       0.00           100.           10.6    
-All cycle   3      0.300E-01      0.100E+05      0.446    
-All cycle   4       0.00          0.100E+16       349.    
-Inter cycle   1      -5.00           100.          0.640E-01
-Inter cycle   2      -5.00           100.          0.786E-01
-Inter cycle   3      -10.0          0.100E+05      0.335    
-Inter cycle   4       0.00          0.100E+16       5.19    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           4.33           100.    
+All cycle   Rw                   0.00           10.6           100.    
+All cycle   shift/esd           0.300E-01      0.446          0.100E+05
+All cycle   Min function         0.00           349.          0.100E+16
+Inter cycle R-factor            -5.00          0.640E-01       100.    
+Inter cycle Rw                  -5.00          0.786E-01       100.    
+Inter cycle shift/esd           -10.0          0.335          0.100E+05
+Inter cycle Min function         0.00           5.19          0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -7642,18 +7770,22 @@ LS-scale=  0.476   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.0287
-                               The rms (shift/su)  =       0.0423380
-                            The mean abs(shift/su) =       0.0334268
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.0287
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.0423380
+                              The mean abs(shift/su) =       0.0334268
  The largest (shift/esd) =  0.102413, for Parameter    1, C1U[22]
-All cycle   1       0.00           100.           4.30    
-All cycle   2       0.00           100.           10.6    
-All cycle   3      0.300E-01      0.100E+05      0.423E-01
-All cycle   4       0.00          0.100E+16       345.    
-Inter cycle   1      -5.00           100.          0.321E-01
-Inter cycle   2      -5.00           100.          0.702E-01
-Inter cycle   3      -10.0          0.100E+05      0.404    
-Inter cycle   4       0.00          0.100E+16       4.60    
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           4.30           100.    
+All cycle   Rw                   0.00           10.6           100.    
+All cycle   shift/esd           0.300E-01      0.423E-01      0.100E+05
+All cycle   Min function         0.00           345.          0.100E+16
+Inter cycle R-factor            -5.00          0.321E-01       100.    
+Inter cycle Rw                  -5.00          0.702E-01       100.    
+Inter cycle shift/esd           -10.0          0.404          0.100E+05
+Inter cycle Min function         0.00           4.60          0.100E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -7830,15 +7962,19 @@ LS-scale=  0.476   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO   15          15           0.00074        22.21      0.02555          0.03        C      1 U[ISO]  
- Sum of the squares of the ratio (Shift/e.s.d.) =          0.0010
-                               The rms (shift/su)  =       0.0078029
-                            The mean abs(shift/su) =       0.0041665
+ SRATIO   15          15           0.00074        22.21      0.02555       0.02908        C      1 U[ISO]  
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.0010
+                                                for          16 parameters
+                                 The rms (shift/su)  =       0.0078029
+                              The mean abs(shift/su) =       0.0041665
  The largest (shift/esd) =  0.029077, for Parameter   15, C1U[11]
-All cycle   1       0.00           100.           4.30    
-All cycle   2       0.00           100.           10.6    
-All cycle   3      0.300E-01      0.100E+05      0.780E-02
- Forced termination after this cycle:  Actual value condition on shift/esd                                                                                                                                                                                      
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           4.30           100.    
+All cycle   Rw                   0.00           10.6           100.    
+All cycle   shift/esd           0.300E-01      0.780E-02      0.100E+05
+ Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
