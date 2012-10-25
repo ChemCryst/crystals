@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.52  2012/08/29 13:25:13  djw
+C Old test for number of observations actually used number of degrees of freedom. Fixed
+C
 C Revision 1.51  2012/03/16 11:04:52  rich
 C Fully expand normal matrix for eigenvalue decomposition (not just lower tri).
 C
@@ -256,7 +259,7 @@ C---- no of words in summary stack
       DATA MW/7/
 C
 C----- SET THE PRINT THRESHOLDS
-      DATA RMAX/3./, SOESD/1./, CCOEF/.8/
+      DATA RMAX/3./, SOESD/1.0/, CCOEF/.8/
 C      DATA RMSSM/ 0.3/
       DATA RMSSM/ 0.0/
       
@@ -818,10 +821,11 @@ C--PRINT THE OVERALL STATISTICS
       ICONVG = 0
 c save sum of squares
       sssr = f
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,3550) F
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,3550) F, nint(store(l11p+23))
 c
-3550  FORMAT( 
-     1 ' Sum of the squares of the ratio',' (Shift/e.s.d.) =',F16.4)
+3550  FORMAT(/ 
+     1 '   Sum of the squares of the ratio (Shift/e.s.d.) =',F16.4,
+     2  / 48x, 'for ',6x,  I5,' parameters')
 C
 C----- TIDY UP PARAMETER NAME
       CALL XCRAS ( CSAVE, LENNAM )
@@ -829,22 +833,23 @@ C----- COMPUTE AND STORE RMS SHIFT/ESD
       RMSS=SQRT(F/STORE(L11P+23))
 C MEAN ABSOLUTE SHIFT/ESD
       ABSFM = ABSF/STORE(L11P+23)
+c----- RMS (shift/esd)
       STORE(M33V+3)=RMSS
 C----- STORE MAXIMUM SHIFT/ESD
 CDJW0202      STORE(M33V+3) = ABS(SMAX)
 
       IF (ISSPRT .EQ. 0) WRITE( NCWU,3556) RMSS,absfm 
-3556  FORMAT(27X,'    The rms (shift/su)  =', F16.7/
-     1 27x,      ' The mean abs(shift/su) =', F16.7)
+3556  FORMAT(29X,'    The rms (shift/su)  =', F16.7/
+     1 29x,      ' The mean abs(shift/su) =', F16.7)
 
       IF (ISSPRT .EQ. 0) WRITE(NCWU,3557) SMAX, JSAVE, CSAVE(1:LENNAM)
 3557  FORMAT(' The largest (shift/esd) =',F10.6,
-     1 ', for Parameter ', I4,', ', A)
+     1 ', for Parameter ', I4,', ', A/)
 
 
       WRITE ( CMON, 
-     1 '('' Shift/su: sumsq='',G9.3,'' rms='',G9.3,
-     2 '' max='',G9.3,'' for '',A)'')'),
+     1 '('' Shift/su: sumsq='',f12.5,'' rms='',f12.5,
+     2 '' max='',f12.5,'' for '',A)'')'),
      3 F, RMSS, SMAX, CSAVE(1:LENNAM)
       CALL XPRVDU(NCVDU, 1,0)
 
@@ -901,6 +906,8 @@ C--CHECK IF SINGULARITIES ALREADY INDICATE TERMINATION
 3850  CONTINUE
 C--CHECK THE CONDITIONS THAT MUST BE MET BY ALL CYCLES
 3900  CONTINUE
+      IF ( ISSPRT.EQ. 0)  write(ncwu,3901)
+3901  format(32x,'Min',10x,'Actual',11x,'Max')
       M23AC=L23AC
       JE=M33V
       JG=2
@@ -910,8 +917,8 @@ C--CHECK THE CONDITIONS THAT MUST BE MET BY ALL CYCLES
       DO 4050 I=1,JF
 C--CHECK THE MINIMUM VALUE
       IF ( ISSPRT.EQ. 0)
-     1  write(ncwu,'(a,i4,3g15.3e2)') 'All cycle',i,store(m23ac),
-     1  store(m23ac+1),store(je+1)
+     1  write(ncwu,'(a,a,3g15.3e2)') 'All cycle   ',clst23(i),
+     1  store(m23ac),store(je+1),store(m23ac+1)
       if (store(je+1) .lt. store(m23ac)) goto 4300
 C--CHECK THE MAXIMUM VALUE
 3950  CONTINUE
@@ -933,8 +940,8 @@ C--LOOP OVER EACH
       DO 4250 J = 1, JF
       A=STORE(JH+1)-STORE(JE+1)
       IF ( ISSPRT .EQ. 0 ) 
-     1  write(ncwu,'(a,i4,3g15.3e2)') 'Inter cycle',j,store(m23ic),
-     1  store(m23ic+1),a
+     1  write(ncwu,'(a,a,3g15.3e2)') 'Inter cycle ',clst23(j),
+     1  store(m23ic),a,store(m23ic+1)
 C--CHECK THE MIMIMUM
       if (a .lt. store(m23ic)) goto 4300
 C--CHECK THE MAXIMUM
@@ -955,7 +962,7 @@ C--ONE OR MORE TERMINATION CONDITIONS HAVE BEEN SATISFIED
       IF (I .GT. 0) THEN
        WRITE(CMON,4350) CLST23(I)(:)
 4350  FORMAT(' Forced termination after this cycle: ',
-     3 ' Actual value condition on ',   A)
+     3 ' Actual value condition on: ',   A)
        CALL XPRVDU(NCVDU, 1,0)
        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
       ENDIF
@@ -2121,7 +2128,7 @@ C--PRINT FOR OVERALL PARAMETERS
       WRITE(CTEXT,'(2A4,I1)') (KVP(JRR,JS),JRR=1,2)
        WRITE(NCWU,2750)FLAG,JT,JX,STORE(JO),C,A,S,(KVP(JRR,JS),JRR=1,2)
       ENDIF
-2750  FORMAT(1X,A6,I5,I12,F18.5,F13.2,F13.5,F14.2,26X,2A4,I3)
+2750  FORMAT(1X,A6,I5,I12,F18.5,F13.2,F13.5,F14.5,26X,2A4,I3)
       GOTO 3300
 C
 C--CHECK IF THIS A SCALE OR GENERAL PARAMETER
@@ -2162,7 +2169,7 @@ C-C-C-DISTINCTION BETWEEN ANISO'S AND ISO/SPECIAL'S FOR PRINT
 C             WRITE(NCWU,3050)FLAG,JT,JX,STORE(JO),C,A,S,STORE(M5),
 C     2       STORE(M5+1),(ICOORD(JRR,JS),JRR=1,NWKA)
             ENDIF
-3050  FORMAT(1X,A6,I5,I12,F18.5,F13.2,F13.5,F14.2,8X,A4,I4,1X,3A4)
+3050  FORMAT(1X,A6,I5,I12,F18.5,F13.2,F13.5,F14.5,8X,A4,I4,1X,3A4)
       ELSE IF (IHIT .GE. 2) THEN
             IF ((ISSPRT .EQ. 0) .AND. (IPRINT .EQ. 1)) WRITE(NCWU,3051)
             IF (ITYPE .EQ. 1) WRITE(NCWU,3091)
