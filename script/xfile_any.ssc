@@ -119,7 +119,7 @@
 ^^WI  @ 2,2 GRID CFG NROWS=3 NCOLS=1 OUTLINE='Get file:'                  
 ^^WI  {                                                                         
 ^^WI    @ 1,1 STATIC CIFILE
-%   TRANSFER '^^WI ' // C_FILE TO DISPLAY
+%   TRANSFER "^^WI '" // C_FILE // "'" TO DISPLAY
 %   CASE FTYPE + 1
 %BLOCK
 ^^WI    @ 3,1 STATIC M 'Please select type of file below, then click OK.'
