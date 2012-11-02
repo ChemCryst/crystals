@@ -57,6 +57,8 @@
 ^^WI     '#SPAWN CRYSDIR:manual/analyse/difficult.html' DISABLEIF='IN'             
 ^^WI     ITEM HLPc 'Absolute'                                                         
 ^^WI     '#SPAWN CRYSDIR:manual/analyse/absolute.html' DISABLEIF='IN'             
+^^WI     ITEM HLPD 'Absences'
+^^WI     '#SCRIPT XABSDEMO' DISABLEIF='IN'
 ^^WI   ENDMENU
 ^^WI  ENDMENU                                                                   
 %%SSR END
