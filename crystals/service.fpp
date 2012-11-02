@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.50  2012/07/12 08:14:24  rich
+C Save CRC lookup table after it is initialised.
+C
 C Revision 1.49  2012/03/23 13:50:32  rich
 C INW (Intel) compiler support.
 C
@@ -1647,6 +1650,7 @@ C----- SET THE ATTRIBUTES AND COLOURS FOR TEXT OUTPUT
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'OUTCOL.INC'
+
 C     ICOL  Meaning           WinColour   VGAColour
 C     ----  -------           ---------   ---------
 C     1     NORMAL            Black       Bold White on Blue
@@ -1659,6 +1663,19 @@ C     7     SPARE             Green       Bold White on Blue
 C     8     COMMAND ECHO      Green       Black on LGrey
 C     9     ERROR             Red         White on Red
 C    10     SCRIPT OUTPUT     Blue        Blue on LGrey
+c gui colour description added by djw
+C     ICOL  Meaning           GuiColour          
+C     ----  -------           ---------          
+C     1     NORMAL            Black/white        
+C     2     DIAGRAM           Black/cyan        
+C     3     SCRIPT QUESTION   white/blue         
+C     4     SCRIPT MENU       yellow/cyan        
+C     5     TERM UNKNOWN      white/black        
+C     6     PROCESSING REFS   yellow/black       
+C     7     SPARE             Green/white        
+C     8     COMMAND ECHO      black/lgrey        
+C     9     ERROR             white/Red          
+C    10     SCRIPT OUTPUT     Blue/Dgrey         
 C
       CHARACTER*16 VGACOL(10)
       INTEGER IGUICL(2,10) /-1,-1, 1,10, 0,2, 8,10, 0,1,
