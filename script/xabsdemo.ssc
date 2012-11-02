@@ -8,7 +8,7 @@
 ^^WI  {
 ^^WI    @ 1,1 STATIC T1 
 ^^WI 'The C-centring systematic absences from an undisclosed area detector'
-^^WI    @ 2,1 STATIC T1 'Note that they are systematically overestimated '
+^^WI    @ 2,1 STATIC T1 'Note that they are systematically overestimated. '
 ^^WI    @ 3,1 STATIC T1 'Mo radiation '
 ^^WI    @ 4,3 BUTTON BOK 'Close' COMMIT CANCEL DEFAULT
 ^^WI  }
@@ -31,6 +31,26 @@
 ^^WI    @ 2,1 STATIC T1 'Note that they are systematiclly under estimated'
 ^^WI    @ 3,1 STATIC T1 'Measured with Cu radiation '
 ^^WI    @ 4,3 BUTTON BOK 'Close' COMMIT CANCEL DEFAULT
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+% GET NOSTORE SILENT TEXT ' ' ' '
+^^CO DISPOSE PICTURE
+%END BLOCK
+%BLOCK
+^^WI WINDOW PICTURE 'Systematic Absences'
+^^WI GRID  GRIDM NROWS=5 NCOLS=3
+^^WI {
+^^WI  @ 2,2 BITMAP WATKIN FILE 'sysabs3.bmp'
+^^WI  @ 5,2 GRID L NROWS=5 NCOLS=3
+^^WI  {
+^^WI    @ 1,1 STATIC T1 
+^^WI 'The  systematic absences from an undisclosed CCD diffractometer'
+^^WI    @ 2,1 STATIC T1 'Note that there is a similar distribution in'
+^^WI    @ 3,1 STATIC T1 'the +ve and -ve quadrants.  This is good.'
+^^WI    @ 4,1 STATIC T1 'Measured with Mo radiation '
+^^WI    @ 5,3 BUTTON BOK 'Close' COMMIT CANCEL DEFAULT
 ^^WI  }
 ^^WI }
 ^^WI SHOW
