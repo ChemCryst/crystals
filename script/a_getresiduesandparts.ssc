@@ -1,0 +1,302 @@
+%SCRIPT GETRESIDUESANDPARTS
+%%
+%  VARIABLE INTEGER IPRT IHYB
+%  VARIABLE INTEGER IPEG IPEP
+%%
+%% Variables to give back to calling script
+%%
+%  VARIABLE INTEGER NEXTFREER NEXTFREEA NEXTFREEP
+%%
+%% Variables for call of script a_SelectAtoms
+%%
+%  VARIABLE CHARACTER MODE ATOM
+%  VARIABLE INTEGER PARA
+%%
+%% Variables for call of script a_restorePoint
+%%
+%  VARIABLE INTEGER ISER5 ISER12 ISER16
+%%
+%  VARIABLE CHARACTER CRECORD1 CRECORD2
+%  VARIABLE LOGICAL LNEWRECFOUND LDEBUG T
+%  VARIABLE INTEGER IALL ICOUNT ILOOP1 IMIN ILASTMIN ILAST
+%  VARIABLE INTEGER ICOUNTR ICOUNTP
+%% VARIABLE INTEGER IROWSP IROWP
+%%
+%% Maybe we should put that call somewhere else
+%%
+%% COPY '#SCRIPT A_RESTOREPOINT'
+%%
+%  EVALUATE LDEBUG = FALSE
+%% EVALUATE LDEBUG = TRUE
+%%
+%% Get residues
+%  IF LDEBUG THEN
+%    TRANSFER "..." TO DISPLAY
+%    TRANSFER "Working on residues..." TO DISPLAY
+%  END IF
+%%
+%    EVALUATE ICOUNT = 0
+%%
+%  BLOCK
+%    ON EDITERROR TERMINATE
+%    COPY '#GENERALEDIT 5'
+%    COPY 'LOCATE RECORDTYPE=101'
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%    LOOP
+%      ON EDITERROR TERMINATE
+%%     COPY 'TRANSFER FROM OFFSET=14 TO IPRT'
+%      COPY 'TRANSFER FROM OFFSET=16 TO IHYB'
+%      EVALUATE CRECORD1 = CHARACTER ( IHYB )
+%      IF LOOPCOUNTER .EQ. 1 THEN
+%        IF LDEBUG THEN
+%          TRANSFER CRECORD1 // " is new" TO DISPLAY
+%        END IF
+%        COPY '#RELEASE PUNCH SortR.dat'
+%        TRANSFER CRECORD1 TO PUNCH
+%        COPY '#RELEASE PUNCH bfile.pch'
+%        EVALUATE ICOUNT = ICOUNT + 1
+%      ELSE
+%        EVALUATE LNEWRECFOUND = TRUE
+%        COPY '#OPEN SCPDATA SortR.dat'
+%        LOOP
+%          ON ERROR TERMINATE
+%          ON END TERMINATE
+%          EXTRACT NEXT
+%%         EXTRACT TRANSFER COMMAND
+%          EXTRACT TRANSFER INPUT
+%          CLEAR
+%          GET TEXT 'Residue'
+%          EVALUATE CRECORD2 = CVALUE
+%          IF CRECORD1 .EQ. CRECORD2 THEN
+%            EVALUATE LNEWRECFOUND = FALSE
+%            EVALUATE LOOPEND = LOOPCOUNTER
+%          END IF
+%        END LOOP
+%        COPY '#CLOSE SCPDATA'
+%        IF LNEWRECFOUND THEN
+%          IF LDEBUG THEN
+%            TRANSFER CRECORD1 // " is new" TO DISPLAY
+%          END IF
+%          COPY '#APPEND PUNCH SortR.dat'
+%          TRANSFER CRECORD1 TO PUNCH
+%          COPY '#RELEASE PUNCH bfile.pch'
+%          EVALUATE ICOUNT = ICOUNT + 1
+%        END IF
+%      END IF
+%      COPY 'NEXT'
+%    END LOOP
+%    COPY 'END'
+%  END BLOCK
+%%
+%  EVALUATE ICOUNTR = ICOUNT
+%%
+%% Sort residues
+%%
+%% Variables are IALL ICOUNT ILOOP1 IMIN ILASTMIN
+%%
+%  COPY '#RELEASE PUNCH Residues.dat'
+%  LOOP ICOUNTR TIMES
+%    EVALUATE ILOOP1 = LOOPCOUNTER
+%    IF LDEBUG THEN
+%      TRANSFER "..." TO DISPLAY
+%    END IF
+%    COPY '#OPEN SCPDATA SortR.dat'
+%    LOOP
+%      ON ERROR TERMINATE
+%      ON END TERMINATE
+%      EXTRACT NEXT
+%%     EXTRACT TRANSFER COMMAND
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET INTEGER 'Number'
+%      EVALUATE IALL = VALUE
+%      IF ILOOP1 .EQ. 1 THEN
+%        IF LOOPCOUNTER .EQ. 1 THEN
+%          EVALUATE IMIN = IALL
+%          IF LDEBUG THEN
+%            TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%          END IF
+%        ELSE
+%          IF IALL .LT. IMIN THEN
+%            EVALUATE IMIN = IALL
+%            IF LDEBUG THEN
+%              TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%            END IF
+%          END IF
+%        END IF
+%      ELSE
+%        IF LOOPCOUNTER .EQ. 1 THEN
+%          EVALUATE IMIN = IALL
+%          IF LDEBUG THEN
+%            TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%          END IF
+%        ELSE
+%          IF IALL .GT. ILASTMIN THEN
+%            IF IMIN .LE. ILASTMIN THEN
+%              EVALUATE IMIN = IALL
+%              IF LDEBUG THEN
+%                TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%              END IF
+%            END IF
+%            IF IALL .LT. IMIN THEN
+%              EVALUATE IMIN = IALL
+%              IF LDEBUG THEN
+%                TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%              END IF
+%            END IF
+%          END IF
+%        END IF
+%      END IF
+%    END LOOP
+%    COPY '#CLOSE SCPDATA'
+%    TRANSFER CHARACTER ( IMIN ) TO PUNCH
+%    EVALUATE ILASTMIN = IMIN
+%  END LOOP
+%  COPY '#RELEASE PUNCH bfile.pch'
+%  EVALUATE T = FILEDELETE ( 'SortR.dat' )
+%%
+%  EVALUATE NEXTFREER = IMIN + 1
+%%
+%% Get parts
+%%
+%  IF LDEBUG THEN
+%    TRANSFER "..." TO DISPLAY
+%    TRANSFER "Working on parts..." TO DISPLAY
+%  END IF
+%%
+%    EVALUATE ICOUNT = 0
+%%
+%  BLOCK
+%    ON EDITERROR TERMINATE
+%    COPY '#GENERALEDIT 5'
+%    COPY 'LOCATE RECORDTYPE=101'
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%    LOOP
+%      ON EDITERROR TERMINATE
+%      COPY 'TRANSFER FROM OFFSET=14 TO IPRT'
+%%     COPY 'TRANSFER FROM OFFSET=16 TO IHYB'
+%      EVALUATE CRECORD1 = CHARACTER ( IPRT )
+%      IF LOOPCOUNTER .EQ. 1 THEN
+%        IF LDEBUG THEN
+%          TRANSFER CRECORD1 // " is new" TO DISPLAY
+%        END IF
+%        COPY '#RELEASE PUNCH SortP.dat'
+%        TRANSFER CRECORD1 TO PUNCH
+%        COPY '#RELEASE PUNCH bfile.pch'
+%        EVALUATE ICOUNT = ICOUNT + 1
+%      ELSE
+%        EVALUATE LNEWRECFOUND = TRUE
+%        COPY '#OPEN SCPDATA SortP.dat'
+%        LOOP
+%          ON ERROR TERMINATE
+%          ON END TERMINATE
+%          EXTRACT NEXT
+%%         EXTRACT TRANSFER COMMAND
+%          EXTRACT TRANSFER INPUT
+%          CLEAR
+%          GET TEXT 'Entry'
+%          EVALUATE CRECORD2 = CVALUE
+%          IF CRECORD1 .EQ. CRECORD2 THEN
+%            EVALUATE LNEWRECFOUND = FALSE
+%            EVALUATE LOOPEND = LOOPCOUNTER
+%          END IF
+%        END LOOP
+%        COPY '#CLOSE SCPDATA'
+%        IF LNEWRECFOUND THEN
+%          IF LDEBUG THEN
+%            TRANSFER CRECORD1 // " is new" TO DISPLAY
+%          END IF
+%          COPY '#APPEND PUNCH SortP.dat'
+%          TRANSFER CRECORD1 TO PUNCH
+%          COPY '#RELEASE PUNCH bfile.pch'
+%          EVALUATE ICOUNT = ICOUNT + 1
+%        END IF
+%      END IF
+%      COPY 'NEXT'
+%    END LOOP
+%    COPY 'END'
+%  END BLOCK
+%%
+%  EVALUATE ICOUNTP = ICOUNT
+%%
+%% Sort parts
+%%
+%% Variables are IALL ICOUNT ILOOP1 IMIN ILASTMIN
+%%
+%  COPY '#RELEASE PUNCH Parts.dat'
+%  LOOP ICOUNTP TIMES
+%    EVALUATE ILOOP1 = LOOPCOUNTER
+%    IF LDEBUG THEN
+%      TRANSFER "..." TO DISPLAY
+%    END IF
+%    COPY '#OPEN SCPDATA SortP.dat'
+%    LOOP
+%      ON ERROR TERMINATE
+%      ON END TERMINATE
+%      EXTRACT NEXT
+%%     EXTRACT TRANSFER COMMAND
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET INTEGER 'Number'
+%      EVALUATE IALL = VALUE
+%      IF ILOOP1 .EQ. 1 THEN
+%        IF LOOPCOUNTER .EQ. 1 THEN
+%          EVALUATE IMIN = IALL
+%          IF LDEBUG THEN
+%            TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%          END IF
+%        ELSE
+%          IF IALL .LT. IMIN THEN
+%            EVALUATE IMIN = IALL
+%            IF LDEBUG THEN
+%              TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%            END IF
+%          END IF
+%        END IF
+%      ELSE
+%        IF LOOPCOUNTER .EQ. 1 THEN
+%          EVALUATE IMIN = IALL
+%          IF LDEBUG THEN
+%            TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%          END IF
+%        ELSE
+%          IF IALL .GT. ILASTMIN THEN
+%            IF IMIN .LE. ILASTMIN THEN
+%              EVALUATE IMIN = IALL
+%              IF LDEBUG THEN
+%                TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%              END IF
+%            END IF
+%            IF IALL .LT. IMIN THEN
+%              EVALUATE IMIN = IALL
+%              IF LDEBUG THEN
+%                TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%              END IF
+%            END IF
+%          END IF
+%        END IF
+%      END IF
+%    END LOOP
+%    COPY '#CLOSE SCPDATA'
+%    TRANSFER CHARACTER ( IMIN ) TO PUNCH
+%    EVALUATE ILASTMIN = IMIN
+%  END LOOP
+%  COPY '#RELEASE PUNCH bfile.pch'
+%  EVALUATE T = FILEDELETE ( 'SortP.dat' )
+%%
+%  EVALUATE NEXTFREEA = IMIN / 1000 + 1
+%% EVALUATE NEXTFREEP = IMIN + 1 * 1000
+%  EVALUATE NEXTFREEP = NEXTFREEA * 1000 + 1
+%%
+%  IF LDEBUG THEN
+%    TRANSFER "{I Residues: " // CHARACTER ( ICOUNTR ) TO DISPLAY
+%    TRANSFER "{I parts   : " //  CHARACTER ( ICOUNTP ) TO DISPLAY
+%  END IF
+%%
+%  IF LDEBUG THEN
+%    TRANSFER "{I Next free residue: " // CHARACTER ( NEXTFREER ) TO DISPLAY
+%    TRANSFER "{I assembly: " //  CHARACTER ( NEXTFREEA ) TO DISPLAY
+%    TRANSFER "{I part: " //  CHARACTER ( NEXTFREEP ) TO DISPLAY
+%  END IF
+%%
+%END SCRIPT

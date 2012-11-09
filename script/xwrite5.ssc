@@ -12,7 +12,7 @@
 %%
 %%   Local variables:
 %  VARIABLE INTEGER REFLAG INBLOCK IEXTIN N5 ICHK I5 PART RESI
-%  VARIABLE INTEGER HMODE ISER CURMODE 
+%  VARIABLE INTEGER HMODE ISER CURMODE
 %  VARIABLE LOGICAL DOWRITE OVERRIDE STUCK TWINNED STICKY
 %  VARIABLE LOGICAL DOREFINE HRIDE HREST DOFOUR
 %  VARIABLE CHARACTER CTYPE CTYPE2 KEYBREAK
@@ -41,6 +41,18 @@
 %  EVALUATE NCYCLE = 5
 %  EVALUATE NFORCE = 1
 %%
+%% Edit Markus 1
+%% Variables set by a_getResiduesAndParts.scp and used to delete scratch files
+%  VARIABLE INTEGER ICOUNTP
+%  VARIABLE LOGICAL T
+%% End edit
+%%
+%% Edit Markus 2
+%% Variables to keep track of whether sof's of assemblies should be refined.
+%  VARIABLE LOGICAL ASSEFOUND REFSOFASS
+%  EVALUATE ASSEFOUND = FALSE
+%  EVALUATE REFSOFASS = TRUE
+%% End edit
 %%
 %% XEXTIN12 sets DOEXTNC to indicate that extinction should be refined.
 %% Assess5 resets DOEXTNC so that it indicates if ext is being refined.
@@ -92,7 +104,7 @@
 %     EVALUATE BUTTXX = '&Cancel'
 %     COPY '#SCRIPT XQUESTIO'
 %     IF ANSWER .EQ. FALSE THEN
- 
+
 {I You have chosen to keep your existing list 12,
 {I run '#SCRIPT XREFINE' to carry out the refinement.
 
@@ -107,11 +119,20 @@
 %  COPY '#SCRIPT CHECK3'
 %%
 %%
+%  COPY '#SCRIPT A_GETRESIDUESANDPARTS'
+%% TRANSFER "Number of parts: " // CHARACTER ( ICOUNTP ) TO DISPLAY
+%  IF ICOUNTP .GT. 1 THEN
+%    EVALUATE ASSEFOUND = TRUE
+%  END IF
+%% If this valie is 1 it usually means that all part numbers are zero. 
+%% We have to see if this is enough.
+%%
+%%
 ^^WI WINDOW XRSETUP 'Least Squares Directives' MODAL
 ^^WI COMMIT='W5_BOK' CANCEL='W5_BXX'
 ^^WI GRID MAIN NROWS=3 NCOLS=5
 ^^WI {
-^^WI  @ 2,2 GRID L NROWS=5 NCOLS=1
+^^WI  @ 2,2 GRID L NROWS=6 NCOLS=1
 ^^WI  {
 %     IF SETADP .EQ. 0 THEN
 ^^WI   @ 1,1 CHECKBOX XR_GO '&Setup refinement only, do not refine.'
@@ -165,7 +186,19 @@
 ^^WI     STATE = OFF
 % END IF
 ^^WI   }
-^^WI   @ 5,1 GRID RN NROWS=2 NCOLS=1
+%% Edit Markus 3
+% IF ASSEFOUND THEN
+^^WI   @ 5,1 GRID AR NROWS=1 NCOLS=1 OUTLINE='Disorder assemblies'
+^^WI   {
+^^WI    @ 1,1 CHECKBOX ARSOF 
+^^WI    '&Refine site occupancy factors of assemblies keeping the sum at 1'
+% IF REFSOFASS THEN
+^^WI           STATE=ON
+% END IF
+^^WI   }
+% END IF
+%% End edit
+^^WI   @ 6,1 GRID RN NROWS=2 NCOLS=1
 ^^WI   {
 ^^WI    @ 1,1 CHECKBOX ALTER
 ^^WI      'Advanced: Edit directives or restraints before proceeding'
@@ -364,6 +397,20 @@
 %    END IF
 %  END IF
 %%
+%% Edit Markus 4
+% IF ( ASSEFOUND ) THEN
+^^?? ARSOF STATE
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  IF ( VALUE .EQ. 1 ) THEN
+%    EVALUATE REFSOFASS = TRUE
+%  ELSE
+%    EVALUATE REFSOFASS = FALSE
+%  END IF
+% ELSE
+%  EVALUATE REFSOFASS = FALSE
+% END IF
+%% End edit
+%%
 ^^?? ALTER STATE
 %  VERIFY ON OFF
 %  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
@@ -404,6 +451,14 @@
 %%
 %%
 ^^CO DISPOSE XRSETUP
+%%
+%% Edit Markus 5
+%% IF REFSOFASS THEN
+%%   TRANSFER "{I SOF's of assemblies will be refined" TO DISPLAY
+%% ELSE
+%%   TRANSFER "{I SOF's of assemblies will not be refined" TO DISPLAY
+%% END IF
+%% End edit
 %%
 %% SECTION 2
 %%
@@ -479,11 +534,11 @@
 %            STORE FORMAT /(F5.0)/ LENGTH 5 REAL SERIAL
 %            INSERT ')'
 %            OUTPUT
-%          ELSE IF ( REFLAG .NE. HMODE ) THEN
+%          ELSE IF ( REFLAG .NE.  HMODE ) THEN
 %% Remember that there are some sticky atoms of different
 %% refinement mode to the default.
 %            EVALUATE STUCK = TRUE
-%            IF ( REFLAG .EQ. 10 ) THEN
+%            IF ( REFLAG .EQ.  10 ) THEN
 %               EVALUATE HRIDE = TRUE
 %            END IF
 %          END IF
@@ -506,7 +561,7 @@
 %            STORE FORMAT /(F5.0)/ LENGTH 5 REAL SERIAL
 %            INSERT ')'
 %            OUTPUT
-%          ELSE IF ( REFLAG .NE. SETADP ) THEN
+%          ELSE IF ( REFLAG .NE.  SETADP ) THEN
 %% Remember that there are some sticky atoms of different
 %% refinement mode to the default.
 %            EVALUATE STUCK = TRUE
@@ -525,12 +580,25 @@
 %%
 %% SECTION 3
 %%
+%%
+%%
 %% Write a list 12 from the flags in list 5.
 %%
 %%
 %%
+%% First write the bits for the disorder assemblies if present
 %%
-%
+%% Edit Markus 6
+%  IF REFSOFASS THEN
+%    COPY '#SCRIPT A_L12PARTSSOF'
+%  END IF
+%  IF ( FILEEXISTS ( 'Residues.dat' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'Residues.dat' )
+%  END IF
+%  IF ( FILEEXISTS ( 'Parts.dat' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'Parts.dat' )
+%  END IF
+%% End edit
 %%
 %  IF ( HREST ) THEN
  Working out H restraints
@@ -608,7 +676,7 @@
 %       CLEAR
 %% Read the atom
 %       GET NOSTORE SILENT KEYWORD ' '
-%       EVALUATE ISER = FIRSTINT ( CVALUE ) 
+%       EVALUATE ISER = FIRSTINT ( CVALUE )
 %       EVALUATE CELE = FIRSTSTR ( CVALUE )
 %       LOOP N5 TIMES
 %         ON EDITERROR TERMINATE
@@ -732,21 +800,21 @@
 %         EVALUATE INBLOCK = 0
 %         EVALUATE CURMODE = REFLAG
 %         IF ( REFLAG .NE. 5 ) THEN
-%           CLEAR
-%           INSERT 'CONT '
-%           STORE CHARACTER CTYPE
-%           INSERT '('
-%           STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
-%           IF ( REFLAG .LE. 3 .AND. REFLAG .GE. 1 ) THEN
-%             CASE REFLAG
-%               INSERT ",X's)"
-%               INSERT ",X's,U[iso])"
-%               INSERT ",X's,U's)"
-%             END CASE
-%           ELSE
-%             CLEAR
-%             EVALUATE CURMODE = 0
-%           END IF
+%         CLEAR
+%         INSERT 'CONT '
+%         STORE CHARACTER CTYPE
+%         INSERT '('
+%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
+%         IF ( REFLAG .LE. 3 .AND. REFLAG .GE. 1 ) THEN
+%          CASE REFLAG
+%           INSERT ",X's)"
+%           INSERT ",X's,U[iso])"
+%           INSERT ",X's,U's)"
+%          END CASE
+%         ELSE
+%          CLEAR
+%          EVALUATE CURMODE = 0
+%         END IF
 %         ELSE
 %% Fix atom
 %           EVALUATE CURMODE = 0
@@ -779,6 +847,14 @@
 %    IF ( DOTWIN ) THEN
 %      QUEUE COPY SUMFIX ELEMENT SCALES
 %    END IF
+%%
+%% Edit Markus 7
+%    IF ( REFSOFASS ) THEN
+%%     TRANSFER "Insert the bits and pieces 1..." TO DISPLAY
+%      QUEUE COPY #USE refsofass.12
+%    END IF
+%% End edit
+%%
 %    IF ( HRIDE ) THEN
 %      QUEUE COPY #USE RIDEDAT.12
 %    END IF
@@ -805,6 +881,14 @@
 %    IF ( DOTWIN ) THEN
 %      COPY 'SUMFIX ELEMENT SCALES'
 %    END IF
+%%
+%% Edit Markus 8
+%    IF ( REFSOFASS ) THEN
+%%     TRANSFER "Insert the bits and pieces 2..." TO DISPLAY
+%      COPY '#USE refsofass.12'
+%    END IF
+%% End edit
+%%
 %    IF ( HMODE .EQ. 10 ) THEN
 %      COPY '#USE ridedat.12'
 %    ELSE IF ( HMODE .GE. 1 ) THEN
@@ -842,7 +926,7 @@
 %    COPY 'MAP TYPE=DIFF'
 %    CLEAR
 %    INSERT 'PEAK HEIGHT=0.1 NPEAK= '
-%    STORE CHARACTER CHARACTER INTEGER ( REAL ( N5 ) * 1.4 ) 
+%    STORE CHARACTER CHARACTER INTEGER ( REAL ( N5 ) * 1.4 )
 %    SEND
 %    COPY 'END'
 %    COPY '#SCRIPT POSTFOUR'

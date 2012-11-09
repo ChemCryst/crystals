@@ -1,0 +1,61 @@
+%SCRIPT XGETINT                                                                
+%%                                                                              
+%% 
+%  VARIABLE CHARACTER CMESSAGE                                                                             
+%  VARIABLE INTEGER NVALUE
+%  EVALUATE NVALUE = 0
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%%                                                                              
+^^WI WINDOW XGETVALUE 'Get an integer value' MODAL                            
+^^WI COMMIT='RF_BOK' CANCEL='RF_BXX'                                            
+^^WI GRID MAIN NROWS=3 NCOLS=7                                                  
+^^WI {                                                                          
+^^WI  @ 2,2 GRID L NROWS=5 NCOLS=1                                              
+^^WI  {                                                                         
+^^WI   @ 1,1 GRID NCYC NROWS=3 NCOLS=3                                          
+^^WI   {                                                                        
+^^WI    @ 1,1 STATIC T1 'Input an integer value' 
+%       CLEAR
+%       INSERT !^^WI @ 3,1 STATIC T2 '!
+%       STORE CHARACTER CMESSAGE
+%       INSERT !'!
+%       OUTPUT
+%       CLEAR
+^^WI    @ 1,3 EDITBOX NC                                                        
+%        TRANSFER "^^WI '  " // CHARACTER ( NVALUE )  // "'" TO DISPLAY         
+^^WI     CHARS=7 INTEGER                                                        
+^^WI   }                                                                        
+^^WI  }                                                                         
+^^WI  @ 2,6 GRID R NROWS=3 NCOLS=1                                              
+^^WI  {                                                                         
+^^WI   @ 1,1 BUTTON RF_BOK '&OK' DEFAULT                                        
+^^WI   @ 3,1 BUTTON RF_BXX '&Cancel'                                            
+^^WI  }                                                                         
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%    LOOP                                                                       
+%      ON ERROR TERMINATE                                                       
+%      VERIFY RF_BXX RF_BOK 
+%      GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '                             
+%      CASE VALUE                                                               
+%       BLOCK                                                                   
+^^CO      DISPOSE XGETVALUE                                                       
+%         FINISH                                                                
+%       END BLOCK                                                               
+%       BLOCK                                                                   
+%         EVALUATE LOOPEND = LOOPCOUNTER                                        
+%       END BLOCK                                                               
+%      END CASE
+%    END LOOP
+^^?? NC TEXT                                                                    
+%    GET NOSTORE SILENT FINAL INTEGER 'Value?' '0000'                     
+%    EVALUATE NVALUE = VALUE                                                    
+^^CO DISPOSE XGETVALUE                                                            
+%%          
+% END SCRIPT
