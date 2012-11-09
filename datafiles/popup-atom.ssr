@@ -55,6 +55,8 @@
 ^^WI                     ITEM _X 'Oth&er' '#SCRIPT XOTHER_N_A'
 ^^WI                                 DISABLEIF='IN'
 ^^WI                    ENDMENU
+^^WI                    ITEM _RP '&Change Part' '#SCRIPT XPARTG_N_A' 
+^^wi                    DISABLEIF= 'IN'
 ^^WI                   ENDDEFINEMENU
 %%SSR END
 
