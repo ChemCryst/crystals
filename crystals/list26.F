@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2012/08/29 09:53:57  djw
+C New format for listing Derivatives
+C Values of Uij taken directly from input rather than be computed from derived parameters
+C
 C Revision 1.21  2012/07/11 14:07:01  djw
 C remove debugging prints
 C
@@ -1805,6 +1809,7 @@ C
       INCLUDE 'XCNTRL.INC'
       INCLUDE 'XLST22.INC'
       INCLUDE 'XCONST.INC'
+c	  INCLUDE 'XUNITS.INC'
 C
       INCLUDE 'QSTORE.INC'
 C
@@ -1839,6 +1844,7 @@ C--END OF THE FIRST PASS  -  PASS THROUGH NOW AND ACCUMULATE
       MCA=JA
       STORE(L22PD+2)=STORE(LCG+4)-STORE(JI)
       STORE(L22PD+1) = STORE(LCG+3)
+c	  WRITE(NCWU,*)'Forming PDQ for mean angle restraint'
       CALL XFMPDQ
       JI=JI+1
       JA=ISTORE(JC)
@@ -1860,6 +1866,7 @@ C
       INCLUDE 'XCNTRL.INC'
       INCLUDE 'XLST22.INC'
       INCLUDE 'XCONST.INC'
+c	  INCLUDE 'XUNITS.INC'
 C
       INCLUDE 'QSTORE.INC'
 C
@@ -1911,6 +1918,7 @@ C--CHECK THAT THERE REMAIN AT LEAST ONE MORE DISTANCE FOR COMPARISON
       STORE(LCG+4)=0.5*(DUMP+STORE(JI)+STORE(JJ))
       JJ=JJ+1
       STORE(L22PD+1) = STORE(LCG+3)
+c 	  WRITE(NCWU,*)'Forming PDQ for multi angle restraint'
       CALL XFMPDQ
       JF=ISTORE(JE)
       JG=ISTORE(JF)
@@ -1938,6 +1946,7 @@ C
       INCLUDE 'XCNTRL.INC'
       INCLUDE 'XLST22.INC'
       INCLUDE 'XCONST.INC'
+c	  INCLUDE 'XUNITS.INC'
 C
       INCLUDE 'QSTORE.INC'
 C
@@ -1954,6 +1963,8 @@ C--LOOP FOR EACH INDIVIDUAL RESTRAINT
       STORE(L22PD+2)=STORE(LCG+4)-V
       MCA=JA
       STORE(L22PD+1) = STORE(LCG+3)
+c 	  WRITE(NCWU,*)'Forming PDQ for normal angle restraint', 
+c     2  STORE(L22PD+1), STORE(L22PD+2)
       CALL XFMPDQ
       JA=ISTORE(JC)
       IF(JA)1050,1050,1000
@@ -2400,6 +2411,7 @@ C
       INCLUDE 'XWORK.INC'
       INCLUDE 'XWORKA.INC'
       INCLUDE 'XCNTRL.INC'
+c      INCLUDE 'XUNITS.INC'
 C
       INCLUDE 'QSTORE.INC'
 C
@@ -2453,10 +2465,12 @@ C--CALCULATE THE DERIVATIVE BASED ON L31
       E=D*P/U
 C--ATOM 3
       JO=JC
+c      WRITE(NCWU,*) 'A3 ',E,' ',F,' ',G,' ',H
       CALL XADXYZ
       E=-E
 C--ATOM 1
       JO=JB
+c      WRITE(NCWU,*) 'A1 ',E,' ',F,' ',G,' ',H
       CALL XADXYZ
 C--CALCULATE THE DERIVATIVES BASED ON L23
       F=A
@@ -2465,10 +2479,12 @@ C--CALCULATE THE DERIVATIVES BASED ON L23
       E=D*Q/T
 C--ATOM 2
       JO=JA
+c      WRITE(NCWU,*) 'A2 ',E,' ',F,' ',G,' ',H
       CALL XADXYZ
       E=-E
 C--ATOM 3
       JO=JC
+c      WRITE(NCWU,*) 'A3a ',E,' ',F,' ',G,' ',H
       CALL XADXYZ
 C--CALCULATE THE DERIVATIVES BASED ON L12
       F=X
@@ -2477,10 +2493,12 @@ C--CALCULATE THE DERIVATIVES BASED ON L12
       E=D*O/S
 C--ATOM 1
       JO=JB
+c      WRITE(NCWU,*) 'A1a ',E,' ',F,' ',G,' ',H
       CALL XADXYZ
       E=-E
 C--ATOM 2
       JO=JA
+c      WRITE(NCWU,*) 'A2a ',E,' ',F,' ',G,' ',H
       CALL XADXYZ
       RETURN
       END
@@ -2565,6 +2583,7 @@ C
       INCLUDE 'STORE.INC'
       INCLUDE 'XWORK.INC'
       INCLUDE 'XWORKA.INC'
+c	  INCLUDE 'XUNITS.INC'
 C
       INCLUDE 'QSTORE.INC'
 C
@@ -2583,6 +2602,7 @@ C--CALCULATE THE DERIVATIVES FOR THIS COORD. W.R.T. THE GENERATED X, Y Z
 C--CALCULATE THE PARTIAL DERIVATIVE FOR THIS COORD
       STORE(JP+2)=STORE(JP+2)+E*(F*STORE(JV+9)+G*STORE(JV+11)
      2 +H*STORE(JV+13))
+c	  WRITE(NCWU,*)'ADXYZ ', I, ' ', STORE(JP+2), ' ', JP
       JP=ISTORE(JP)
 1000  CONTINUE
       RETURN
@@ -2744,9 +2764,9 @@ C
 C--SET THE REMAINDER OF THE HEADER BLOCK
       STORE(L22PD+3)=STORE(LCG+4)*STORE(LCG+4)
       J=JR+N12-1
-      DO 1000 I=JR,J
-      STORE(I)=0.
-1000  CONTINUE
+      DO I=JR,J
+        STORE(I)=0.
+	  END DO
       STORE(JN)=0.
       K=MCA
       N=NCA
@@ -2779,14 +2799,19 @@ C--FIND THE ADDRESS OF THE PARTIAL DERIVATIVE AND CHECK IF THE 'WEIGHT'
 C  IS EQUAL TO 1.0
 1400  CONTINUE
       I=ISTORE(M12A)
-      IF(ISTORE(L12A+1)-1)1500,1500,1450  !TODO - check this logic (weight could be > 1.0).
+      IF(ISTORE(L12A+1)-1)1500,1500,1450  
 C--NON-UNIT 'WEIGHT'
 1450  CONTINUE
+c      WRITE(NCWU,*)'Str PDQ1: ',' i:',I,' m:',M,' ',STORE(M+2),' w:',
+c     1 STORE(M12A+1),' s(I):',STORE(I),' ++ ',STORE(M+2)*STORE(M12A+1)
       STORE(I)=STORE(I)+STORE(M+2)*STORE(M12A+1)
+c      WRITE(NCWU,*)'After:    ',' i:',I,' m:',M,' ',STORE(M+2),' w:',
+c     1 STORE(M12A+1),' s(I):',STORE(I),' ++ ',STORE(M+2)*STORE(M12A+1)
       GOTO 1550
 C--UNIT 'WEIGHT'
 1500  CONTINUE
       STORE(I)=STORE(I)+STORE(M+2)
+c      WRITE(NCWU,*)'Str PDQW: ',' ',I,' ',M,' ',STORE(M+2),' ',STORE(I)
 C--PICK UP THE NEXT PART FOR THIS ATOM IN LIST 12
 1550  CONTINUE
       L12A=ISTORE(L12A)
@@ -2806,18 +2831,20 @@ C--COMPRESS THE QUEUE AND OUTPUT IT TO THE DISC
       N22PD=4
       J=L22PD+N22PD
       K=JR
-      DO 1850 L=1,N12
+c      WRITE(NCWU,*) 'PDQAddress: ',J,' ',K 
+      DO L=1,N12
+c	     WRITE(NCWU,*) 'PD: ',L,' ',K,' ',STORE(K),N22PD
 C--CHECK IF THE CONTRIBUTION FOR THIS PARAMETER IS ZERO
-      IF(STORE(K))1750,1800,1750
+c        IF(STORE(K))1750,1800,1750
+         IF ( ABS(STORE(K)) .GT. VALUSQ ) THEN
 C--ADD IT TO THE QUEUE
-1750  CONTINUE
-      ISTORE(J)=L
-      STORE(J+1)=STORE(K)
-      J=J+MD22PD
-      N22PD=N22PD+MD22PD
-1800  CONTINUE
-      K=K+1
-1850  CONTINUE
+            ISTORE(J)=L
+            STORE(J+1)=STORE(K)
+            J=J+MD22PD
+            N22PD=N22PD+MD22PD
+	     END IF
+         K=K+1
+	  END DO
       ISTORE(L22PD)=N22PD
       K=J-MD22PD
       J=L22PD+4
@@ -2975,7 +3002,8 @@ c      write(ncwu,'(a,3g15.3)')'c&d ', c,d, store(l16+2)
         STORE(L11P+29)=STORE(L11P+29)+STORE(L16+2)*C
 
         IF (MATLAB.GT.0) WRITE(NCFPU2,'(G16.8)') D
-
+c		IF (MATLAB.GT.0) WRITE(NCWU,'(A,G16.8)')'Hello ',store(l11P+27)
+		
 C--PASS THROUGH THE MATRIX
         M11=L11
         DO I=L12B,M12B,MD12B                 !PROCESS BLOCK BY BLOCK
