@@ -1,0 +1,1508 @@
+#TITLE SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                                                                                                                                                                                      
+#LIST 1                                                                                                                                                                                                                                                         
+#LIST 20                                                                                                                                                                                                                                                        
+#LIST 30                                                                                                                                                                                                                                                        
+#LIST 1                                                                                                                                                                                                                                                         
+#LIST 29                                                                                                                                                                                                                                                        
+#LIST 2                                                                                                                                                                                                                                                         
+# THE SPACE GROUP IS P321.                                                                                                                                                                                                                                      
+#LIST 3                                                                                                                                                                                                                                                         
+#LIST 4                                                                                                                                                                                                                                                         
+#LIST 5                                                                                                                                                                                                                                                         
+#EDIT                                                                                                                                                                                                                                                           
+Bonds: Update required - There is no list 41
+#LIST 13                                                                                                                                                                                                                                                        
+ The following atom(s) will be changed                                                                                                                                                                                                                          
+         Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part                                                                                                                                                                             
+                                   Uiso  Size D/100 A/100                                                                                                                                                                                                       
+  SI   1 1.00 0.000 0.000 0.000 0 0.016 0.016 0.024 0.00 0.00 0.01     0.000      0                                                                                                                                                                             
+  SI   2 1.00 0.333 0.667 0.506 0 0.014 0.014 0.016 0.00 0.00 0.01     0.000      0                                                                                                                                                                             
+  NA   1 1.00 0.379 0.379 0.000 0 0.030 0.030 0.016 0.00 0.00 0.01     0.000      0                                                                                                                                                                             
+  NA   2 1.00 0.714 0.714 0.500 0 0.020 0.020 0.032 0.00 0.00 0.01     0.000      0                                                                                                                                                                             
+   F   1 1.00 0.087-0.092 0.810 0 0.046 0.034 0.039-0.01 0.01 0.03     0.000      0                                                                                                                                                                             
+   F   2 1.00 0.444-0.401 0.701 0 0.020 0.024 0.029 0.02 0.01 0.02     0.000      0                                                                                                                                                                             
+   F   3 1.00 0.230-0.260 0.310 0 0.024 0.032 0.029 0.00-0.01 0.02     0.000      0                                                                                                                                                                             
+ List   5 now contains      7 atom(s)
+#LIST 6                                                                                                                                                                                                                                                         
+#LIST 28                                                                                                                                                                                                                                                        
+#LIST 6                                                                                                                                                                                                                                                         
+ The updated reflections are now on UNIT 53
+
+
+
+     270 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
+Upating List 13 for twinned data                                                                                                                                                                                                                                
+#LIST 25                                                                                                                                                                                                                                                        
+#SORT                                                                                                                                                                                                                                                           
+#REORDER                                                                                                                                                                                                                                                        
+ After   1 pass     270 reflection(s) have been sorted
+ The updated reflections are now on UNIT 52
+#LIST 12                                                                                                                                                                                                                                                        
+ The updated reflections are now on UNIT 53
+#SFLS                                                                                                                                                                                                                                                           
+#CLEAR 16                                                                                                                                                                                                                                                       
+#LIST  16                                                                                                                                                                                                                                                       
+#CLEAR 17                                                                                                                                                                                                                                                       
+#LIST  17                                                                                                                                                                                                                                                       
+#LIST 23                                                                                                                                                                                                                                                        
+#LIST 26                                                                                                                                                                                                                                                        
+#WEIGHT                                                                                                                                                                                                                                                         
+                     LIST 4 weighting type is NORMAL
+#SFLS                                                                                                                                                                                                                                                           
+#SPEC  NO  NO                                                                                                                                                                                                                                                   
+#SCALE      1                                                                                                                                                                                                                                                   
+#CYCLENDS                                                                                                                                                                                                                                                       
+ Initialising Special positions
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+ Structure factor least squares      calculation number     1
+           Bad agreements 
+
+    h    k    l      Fo        Fc 
+
+    0.   1.   0.    18.69     0.93
+    2.   0.   0.    31.05     2.01
+    0.   2.   0.    30.15     2.01
+    3.   0.   0.   163.82    18.12
+    0.   3.   0.   164.18    18.12
+    4.   0.   0.    82.00     8.51
+    0.   4.   0.    82.00     8.51
+    5.   0.   0.    80.83     6.67
+    0.   5.   0.    81.19     6.67
+    6.   0.   0.   139.65    13.17
+    0.   6.   0.   140.37    13.17
+    7.   0.   0.    90.19     8.12
+    0.   7.   0.    89.83     8.12
+    8.   0.   0.    84.24     8.18
+    0.   8.   0.    84.78     8.18
+    9.   0.   0.    38.48     4.39
+    0.   9.   0.    39.91     4.39
+    1.   1.   0.   476.00    45.55
+    2.   1.   0.   164.00    17.15
+    1.   2.   0.   164.00    17.15
+    3.   1.   0.   133.37    13.39
+    1.   3.   0.   132.65    13.39
+    4.   1.   0.    29.32     2.78
+    1.   4.   0.    27.54     2.78
+
+ And so on ------------
+
+
+                              ***
+                             ***
+ R-value    Weighted R      ************              ************
+                           *************  HERE IT IS  ************
+  90.07       90.02         ************              ************
+                             ***
+                              ***
+
+ Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
+
+    39403.8         3912.3         35492.1                                   On scale of /FC/
+
+    39403.8         3912.3         35492.1           0.76409635E+07          On scale of /FO/
+
+ New scale factor (G) is   10.00779,     270 reflections used in refinement
+
+ Structure factor least squares calculation    1  ends  5
+SumFo/SumFc= 10.072   SumFoFc/SumFc^2= 10.008   SumwFoFc/SumwFc^2= 10.008                                                                                                                                                                                       
+LS-scale= 10.008   Wilson Scale=  0.000                                                                                                                                                                                                                         
+<Fo>-<Fc> =    0.092    100*(<Fo>-<Fc>)/<Fo> =    0.634                                                                                                                                                                                                         
+#SPEC LIS  NO                                                                                                                                                                                                                                                   
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
+#REFINE     1                                                                                                                                                                                                                                                   
+#LIST 22                                                                                                                                                                                                                                                        
+ Initialising Special positions
+  Atom SI     1,  Multiplicity =  1,  Number of positions =  6 Occ = 0.1667
+     *      *      *      U[11]     U[11]     U[33]     *         *      1/2U[11]
+  Atom SI     2,  Multiplicity =  2,  Number of positions =  6 Occ = 0.3333
+     *      *      z      U[11]     U[11]     U[33]     *         *      1/2U[11]
+  Atom NA     1,  Multiplicity =  3,  Number of positions =  6 Occ = 0.5000
+     x      x      *      U[11]     U[11]     U[33]     U[23] -   U[23]     U[12]
+  Atom NA     2,  Multiplicity =  3,  Number of positions =  6 Occ = 0.5000
+     x      x      *      U[11]     U[11]     U[33]     U[23] -   U[23]     U[12]
+ Parameters SI     1    U[11] and U[22] related by  restraint                                                                                                                                                                                                   
+ Parameters SI     1    U[11] and U[12] related by  restraint                                                                                                                                                                                                   
+ Parameters SI     2    U[11] and U[22] related by  restraint                                                                                                                                                                                                   
+ Parameters SI     2    U[11] and U[12] related by  restraint                                                                                                                                                                                                   
+ Parameters NA     1    x     and y     related by  restraint                                                                                                                                                                                                   
+ Parameters NA     1    U[11] and U[22] related by  restraint                                                                                                                                                                                                   
+ Parameters NA     1    U[23] and U[13] related by  restraint                                                                                                                                                                                                   
+ Parameters NA     2    x     and y     related by  restraint                                                                                                                                                                                                   
+ Parameters NA     2    U[11] and U[22] related by  restraint                                                                                                                                                                                                   
+ Parameters NA     2    U[23] and U[13] related by  restraint                                                                                                                                                                                                   
+Refining    44 parameters in    1 block :     1094 elements in the LS matrix.
+ Space required on DISK is    3 records,     9  Blocks,     5 Kbytes. 
+    10 Symmetry restraints written to LIST 17
+#LIST 17                                                                                                                                                                                                                                                        
+#REFINE     1                                                                                                                                                                                                                                                   
+#DORESTRAIN                                                                                                                                                                                                                                                     
+ Initialising Special positions
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+ Structure factor least squares      calculation number     2
+           Bad agreements 
+
+    h    k    l      Fo        Fc 
+
+
+                              ***
+                             ***
+ R-value    Weighted R      ************              ************
+                           *************  HERE IT IS  ************
+   3.91        3.82         ************              ************
+                             ***
+                              ***
+
+ Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
+
+     3937.3         3912.3           154.1                                   On scale of /FC/
+
+    39403.8        39153.9          1541.7           0.13735651E+05          On scale of /FO/
+
+ New scale factor (G) is   10.00779,     270 reflections used in refinement
+
+ Structure factor least squares calculation    2  ends  6
+SumFo/SumFc= 10.072   SumFoFc/SumFc^2= 10.008   SumwFoFc/SumwFc^2= 10.008                                                                                                                                                                                       
+LS-scale= 10.008   Wilson Scale=  0.000                                                                                                                                                                                                                         
+<Fo>-<Fc> =    0.092    100*(<Fo>-<Fc>)/<Fo> =    0.634                                                                                                                                                                                                         
+#LIST 26                                                                                                                                                                                                                                                        
+#DORESTRAIN                                                                                                                                                                                                                                                     
+#INVERT  CHOL                                                                                                                                                                                                                                                   
+#NEWSHIFTS                                                                                                                                                                                                                                                      
+#INVERT  CHOL                                                                                                                                                                                                                                                   
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+ Matrix inversion and calculation of the shifts for S.F.L.S. cycle number     2
+
+ The SHIFT RATIO is the shift calculated for this cycle
+ divided by the corresponding shift for the last cycle.
+ Parameters for which the shift ratio exceeds  3.00 (SRATIO)
+            and/or the shift-over-esd exceeds  1.00 (S/ESD)
+            and/or there is a relatively large shift.
+ Parameters marked COMPOSITE contain derivatives from other physical parameters
+
+
+ Block   1
+        Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
+
+ S/ESD     1           1          -0.09446         0.00      0.04851      -1.94736                          SCALE   
+ S/ESD     2           2          -0.00209         0.00      0.00138      -1.51762        SI     1 U[11]   
+                                                                                                            Composite
+
+                                                                      Composite
+
+                                                                                                            Composite
+
+                                                                      Composite
+
+ S/ESD     4           4           0.00105         0.00      0.00098       1.07230        SI     2 Z       
+ S/ESD     7           7           0.00117         0.00      0.00052       2.22676        NA     1 X       
+                                                                                                            Composite
+
+                                                                      Composite
+
+ S/ESD     8           8          -0.00543         0.00      0.00172      -3.15650        NA     1 U[11]   
+                                                                                                            Composite
+
+                                                                      Composite
+
+ S/ESD    12          12           0.00084         0.00      0.00046       1.82200        NA     2 X       
+                                                                                                            Composite
+
+                                                                      Composite
+
+ S/ESD    13          13           0.00306         0.00      0.00136       2.25001        NA     2 U[11]   
+                                                                                                            Composite
+
+                                                                      Composite
+
+ S/ESD    14          14          -0.00465         0.00      0.00257      -1.80939        NA     2 U[33]   
+ S/ESD    15          15          -0.00251         0.00      0.00204      -1.22860        NA     2 U[23]   
+                                                                                                            Composite
+
+                                                                      Composite
+
+ S/ESD    16          16           0.00511         0.00      0.00167       3.06202        NA     2 U[12]   
+ S/ESD    17          17          -0.00203         0.00      0.00103      -1.96672        F      1 X       
+ S/ESD    18          18          -0.00103         0.00      0.00100      -1.03389        F      1 Y       
+ S/ESD    19          19          -0.00147         0.00      0.00099      -1.47732        F      1 Z       
+ S/ESD    20          20          -0.00536         0.00      0.00322      -1.66477        F      1 U[11]   
+ S/ESD    21          21           0.00500         0.00      0.00309       1.61666        F      1 U[22]   
+ S/ESD    22          22           0.00229         0.00      0.00213       1.07327        F      1 U[33]   
+ S/ESD    31          31          -0.00330         0.00      0.00205      -1.60743        F      2 U[33]   
+ S/ESD    32          32          -0.00414         0.00      0.00252      -1.64246        F      2 U[23]   
+ S/ESD    33          33          -0.00247         0.00      0.00234      -1.05470        F      2 U[13]   
+ S/ESD    35          35          -0.00183         0.00      0.00087      -2.09583        F      3 X       
+ S/ESD    37          37           0.00344         0.00      0.00115       2.98822        F      3 Z       
+ S/ESD    38          38           0.00597         0.00      0.00296       2.01772        F      3 U[11]   
+ S/ESD    40          40          -0.00253         0.00      0.00179      -1.40861        F      3 U[33]   
+ S/ESD    42          42          -0.00844         0.00      0.00315      -2.67753        F      3 U[13]   
+ S/ESD    43          43           0.00472         0.00      0.00278       1.69456        F      3 U[12]   
+ S/ESD    44          44          -0.01753         0.00      0.00849      -2.06409                          ELEMENT   1
+ S/ESD    44          44          -0.01753         0.00      0.00849      -2.06409                          ELEMENT   2
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =        103.6212
+                                                for          44 parameters
+                                 The rms (shift/su)  =       1.5346098
+                              The mean abs(shift/su) =       1.2809528
+ The largest (shift/esd) =  3.156498, for Parameter    8, NA1U[11]
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           3.91           100.    
+All cycle   Rw                   0.00           3.82           100.    
+All cycle   shift/esd           0.300E-01       1.53          0.100E+05
+All cycle   Min function         0.00          0.137E+05      0.100E+16
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+ Statistics for    44 least squares parameters, with   226 degrees of freedom
+ Number of observations               270                 0               270
+ Minimisation function          0.1373565E+05     0.0000000E+00     0.1373565E+05
+ Hamilton weighted R-value           3.817             0.000             3.817
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+
+ Calculated shifts
+
+             Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
+
+
+ Mean       -0.05600  0.00000  0.00000 -0.00042 -0.00059  0.00088 -0.00085  0.00196 -0.00138 -0.00167 -0.00372  0.00162
+                                       -0.00376 -0.00524  0.00446
+
+ R.M.S.      0.06794  0.00000  0.00000  0.00138  0.00068  0.00196  0.00397  0.00319  0.00275  0.00257  0.00508  0.00323
+                                        0.01226  0.00600  0.00988
+
+ RMS sh/esd  2.00657  0.00000  0.00000  1.82758  0.73296  1.77120  1.87594  1.02394  1.20923  1.02238  1.66187  1.62365
+
+
+ Maximum     0.09446  0.00000  0.00000  0.00203  0.00103  0.00344  0.00597  0.00500  0.00465  0.00414  0.00844  0.00511
+                                        0.01796  0.00916  0.01734
+
+ Reversals     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00
+
+
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is   0.00 for all parameters.
+
+
+ Shift
+ factors     1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+             1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+#SOLVE                                                                                                                                                                                                                                                          
+ Initialising Special positions
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+ Generation and output of the new parameter list
+
+ Format :      New coordinate  
+               Applied shift
+               Calculated E.S.D.
+               E.S.D. in angstrom
+
+
+
+  6  Overall parameter(s)
+
+    SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
+
+    9.91333  0.05000  0.05000  1.00000  0.00000    0.00000E+00
+   -0.09446  0.00000  0.00000  0.00000  0.00000    0.00000E+00
+    0.04851  0.00000  0.00000  0.00000  0.00000    0.00000E+00
+
+
+
+  2  ELEMENT  Scale Factors
+
+
+      1        2
+
+    0.57247  0.42753
+   -0.01753  0.01753
+    0.00849  0.00849
+
+
+
+     7  atom(s)
+
+    TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
+
+     SI         1.   1.00000  0.00000  0.00000  0.00000  0.00000  0.01438  0.01438  0.02142  0.00000  0.00000  0.00719
+                     0.00000           0.00000  0.00000  0.00000 -0.00209 -0.00209 -0.00266  0.00000  0.00000 -0.00105
+                     0.00000           0.00000  0.00000  0.00000  0.00138  0.00138  0.00294  0.00000  0.00000  0.00069
+                                       0.00000  0.00000  0.00000
+
+     SI         2.   1.00000  0.00000  0.33333  0.66667  0.50725  0.01354  0.01354  0.01771  0.00000  0.00000  0.00677
+                     0.00000           0.00000  0.00000  0.00105 -0.00040 -0.00040  0.00123  0.00000  0.00000 -0.00020
+                     0.00000           0.00000  0.00000  0.00098  0.00090  0.00090  0.00191  0.00000  0.00000  0.00045
+                                       0.00000  0.00000  0.00492
+
+     NA         1.   1.00000  0.00000  0.38017  0.38017  0.00000  0.02498  0.02498  0.01642 -0.00187  0.00187  0.00945
+                     0.00000           0.00117  0.00117  0.00000 -0.00543 -0.00543 -0.00006 -0.00060  0.00060 -0.00196
+                     0.00000           0.00052  0.00052  0.00000  0.00172  0.00172  0.00183  0.00173  0.00173  0.00204
+                                       0.00464  0.00464  0.00000
+
+     NA         2.   1.00000  0.00000  0.71514  0.71514  0.50000  0.02334  0.02334  0.02703 -0.00124  0.00124  0.01398
+                     0.00000           0.00084  0.00084  0.00000  0.00306  0.00306 -0.00465 -0.00251  0.00251  0.00511
+                     0.00000           0.00046  0.00046  0.00000  0.00136  0.00136  0.00257  0.00204  0.00204  0.00167
+                                       0.00407  0.00407  0.00000
+
+     F          1.   1.00000  0.00000  0.08497 -0.09283  0.80843  0.04027  0.03922  0.04158 -0.00353  0.01116  0.02652
+                     0.00000          -0.00203 -0.00103 -0.00147 -0.00536  0.00500  0.00229  0.00154 -0.00025 -0.00009
+                     0.00000           0.00103  0.00100  0.00099  0.00322  0.00309  0.00213  0.00433  0.00404  0.00217
+                                       0.00913  0.00886  0.00501
+
+     F          2.   1.00000  0.00000  0.44393 -0.40110  0.70122  0.01862  0.02614  0.02585  0.01234  0.00387  0.01552
+                     0.00000          -0.00027 -0.00050  0.00052 -0.00166  0.00206 -0.00330 -0.00414 -0.00247  0.00031
+                     0.00000           0.00068  0.00073  0.00097  0.00324  0.00327  0.00205  0.00252  0.00234  0.00297
+                                       0.00601  0.00648  0.00489
+
+     F          3.   1.00000  0.00000  0.22807 -0.26014  0.31324  0.03005  0.03050  0.02663 -0.00516 -0.01351  0.02119
+                     0.00000          -0.00183 -0.00024  0.00344  0.00597 -0.00119 -0.00253 -0.00262 -0.00844  0.00472
+                     0.00000           0.00087  0.00088  0.00115  0.00296  0.00323  0.00179  0.00298  0.00315  0.00278
+                                       0.00772  0.00779  0.00580
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
+#CYCLENDS                                                                                                                                                                                                                                                       
+#SPEC  NO  NO                                                                                                                                                                                                                                                   
+#CALCULAT   1                                                                                                                                                                                                                                                   
+#CYCLENDS                                                                                                                                                                                                                                                       
+ Initialising Special positions
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+ Structure factor least squares      calculation number     3
+           Bad agreements 
+
+    h    k    l      Fo        Fc 
+
+    0.   1.   0.     1.89     1.26
+    9.   0.   0.     3.88     4.43
+    4.   1.   0.     2.96     2.52
+    6.   4.   0.     1.55     1.88
+    0.   7.   1.     3.03     3.40
+    6.   3.   1.     4.05     4.66
+    0.   0.   2.    10.49     8.64
+    2.   6.   2.     5.04     6.41
+    4.   4.   2.     4.44     5.64
+    7.   0.   3.     5.33     5.96
+    3.   3.   3.     0.00     1.00
+    4.   4.   3.     4.14     2.78
+    5.   4.   3.     5.61     4.81
+    0.   3.   5.     5.74     5.04
+    3.   1.   5.     5.84     5.05
+    2.   2.   5.     5.35     6.21
+
+
+
+ Target Weighted Residual =  5.39                                                                                                                                                                                                                               
+   h   k  l     Fo      Fc  wDel Fo/Fc     h   k  l     Fo      Fc  wDel Fo/Fc                                                                                                                                                                                  
+   1   1   0   48.0   45.3  27.29 1.06     0   0   2   10.5    8.6  18.33 1.21                                                                                                                                                                                  
+   0   2   1   36.8   38.6  17.54 0.95     3   0   1   68.5   66.9  15.78 1.02                                                                                                                                                                                  
+   2   3   1   30.9   32.4  14.26 0.96     2   6   2    5.0    6.4  13.62 0.79                                                                                                                                                                                  
+   4   4   3    4.1    2.8  13.41 1.49     0   3   1   69.3   68.0  12.96 1.02                                                                                                                                                                                  
+   3   0   0   16.5   17.8  12.74 0.93     0   3   0   16.6   17.8  12.38 0.93                                                                                                                                                                                  
+   4   4   2    4.4    5.6  11.95 0.79     0   2   5   13.7   14.9  11.57 0.92                                                                                                                                                                                  
+   2   0   1   37.2   38.3  11.53 0.97     2   2   0   25.4   24.3  11.37 1.05                                                                                                                                                                                  
+   3   0   4   34.2   33.2  10.18 1.03     3   6   2   10.5    9.5  10.14 1.11                                                                                                                                                                                  
+   1   2   1   17.2   18.2  10.05 0.94     3   0   3   22.6   23.6   9.91 0.96                                                                                                                                                                                  
+   0   4   4   16.9   17.9   9.91 0.94     3   3   3    0.0    1.0   9.89 0.00                                                                                                                                                                                  
+   2   2   1   25.4   24.4   9.86 1.04     0   3   3   19.6   20.5   9.45 0.95                                                                                                                                                                                  
+   3   2   1   32.3   33.2   9.42 0.97     0   5   3   28.5   27.6   9.35 1.03                                                                                                                                                                                  
+   1   7   1   16.5   17.4   9.00 0.95     0   1   1   34.7   35.6   8.79 0.98                                                                                                                                                                                  
+   2   2   5    5.3    6.2   8.56 0.86     5   1   3   17.9   17.0   8.19 1.05                                                                                                                                                                                  
+   0   2   2   14.5   15.3   8.16 0.95     5   4   2    9.2   10.0   8.03 0.92                                                                                                                                                                                  
+
+                              ***
+                             ***
+ R-value    Weighted R      ************              ************
+                           *************  HERE IT IS  ************
+   2.74        2.88         ************              ************
+                             ***
+                              ***
+
+ Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
+
+     3974.8         3985.5           108.8                                   On scale of /FC/
+
+    39403.8        39509.9          1078.9           0.78467476E+04          On scale of /FO/
+
+ New scale factor (G) is    9.91333,     270 reflections used in refinement
+
+ Structure factor least squares calculation    3  ends  7
+
+
+
+      270 reflections   R  2.74% Rw  2.88% with I/u(I) from List 28                                                                                                                                                                                             
+      270 reflections   R  2.74% Rw  2.88% with I/u(I) > -10.0                                                                                                                                                                                                  
+        0 reflections   R  0.00% Rw  0.00% with I/u(I) >   2.0                                                                                                                                                                                                  
+SumFo/SumFc=  9.887   SumFoFc/SumFc^2=  9.903   SumwFoFc/SumwFc^2=  9.903                                                                                                                                                                                       
+LS-scale=  9.913   Wilson Scale=  0.000                                                                                                                                                                                                                         
+<Fo>-<Fc> =   -0.040    100*(<Fo>-<Fc>)/<Fo> =   -0.269                                                                                                                                                                                                         
+#DISTANCES                                                                                                                                                                                                                                                      
+#LIST 31                                                                                                                                                                                                                                                        
+#DISTANCES                                                                                                                                                                                                                                                      
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+ Distances and angles  -  with standard deviations estimated from the full variance-covariance matrix
+ Tolerance in determining contacts = .20000    
+        Minimum resolved distance  = .15000E-03
+
+ Distances about atom  SI     1.          X =  0.00000     Y =  0.00000     Z =  0.00000
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       F         1.      1   1    0    0   -1      1.671  0.005
+       F         1.      2   1    0    0   -1      1.671  0.005
+       F         1.      3   1    0    0   -1      1.671  0.005
+       F         1.      4   1    0    0    1      1.671  0.005
+       F         1.      5   1    0    0    1      1.671  0.005
+       F         1.      6   1    0    0    1      1.671  0.005
+
+
+ Angles about atom  SI     1.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   F         1.      1   1    0    0   -1
+   2   F         1.      2   1    0    0   -1      89.99  0.27
+   3   F         1.      3   1    0    0   -1      89.99  0.27   89.99  0.27
+   4   F         1.      4   1    0    0    1     177.61  0.57   91.72  0.51   88.35  0.46
+   5   F         1.      5   1    0    0    1      88.35  0.46  177.61  0.57   91.72  0.51   89.99  0.27
+   6   F         1.      6   1    0    0    1      91.72  0.51   88.35  0.46  177.61  0.57   89.99  0.27   89.99  0.27
+
+  KEY                                                 1             2             3             4             5
+
+ Distances about atom  SI     2.          X =  0.33333     Y =  0.66667     Z =  0.50725
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       F         2.      1   1    0    1    0      1.692  0.005
+       F         2.      2   1    0    0    0      1.692  0.005
+       F         2.      3   1    1    1    0      1.692  0.005
+       F         3.      1   1    0    1    0      1.688  0.006
+       F         3.      2   1    0    0    0      1.688  0.006
+       F         3.      3   1    1    1    0      1.688  0.006
+
+
+ Angles about atom  SI     2.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   F         2.      1   1    0    1    0
+   2   F         2.      2   1    0    0    0      89.99  0.28
+   3   F         2.      3   1    1    1    0      89.99  0.28   89.99  0.28
+   4   F         3.      1   1    0    1    0     178.39  0.37   88.96  0.29   91.23  0.30
+   5   F         3.      2   1    0    0    0      91.23  0.30  178.39  0.37   88.96  0.29   89.84  0.33
+   6   F         3.      3   1    1    1    0      88.96  0.29   91.23  0.30  178.39  0.37   89.84  0.33   89.84  0.33
+
+  KEY                                                 1             2             3             4             5
+
+ Distances about atom  NA     1.          X =  0.38017     Y =  0.38017     Z =  0.00000
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       F         1.      2   1    0    0   -1      2.462  0.008
+       F         1.      6   1    0    0    1      2.462  0.008
+       F         2.      1   1    0    1   -1      2.290  0.005
+       F         2.      4   1    1    0    1      2.290  0.005
+       F         3.      2   1    0    0    0      2.357  0.006
+       F         3.      6   1    0    0    0      2.357  0.006
+
+
+ Angles about atom  NA     1.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   F         1.      2   1    0    0   -1
+   2   F         1.      6   1    0    0    1      56.47  0.26
+   3   F         2.      1   1    0    1   -1      94.95  0.18  151.22  0.24
+   4   F         2.      4   1    1    0    1     151.22  0.24   94.95  0.18  113.76  0.33
+   5   F         3.      2   1    0    0    0      92.64  0.29   85.08  0.24   93.84  0.16   87.57  0.19
+   6   F         3.      6   1    0    0    0      85.08  0.24   92.64  0.29   87.57  0.19   93.84  0.16  177.42  0.36
+
+  KEY                                                 1             2             3             4             5
+
+ Distances about atom  NA     2.          X =  0.71514     Y =  0.71514     Z =  0.50000
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       F         1.      3   1    1    1    0      2.184  0.007
+       F         1.      5   1    1    1    1      2.184  0.007
+       F         2.      1   1    0    1    0      2.321  0.006
+       F         2.      4   1    1    0    1      2.321  0.006
+       F         3.      3   1    1    1    0      2.300  0.006
+       F         3.      5   1    1    1    1      2.300  0.006
+
+
+ Angles about atom  NA     2.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   F         1.      3   1    1    1    0
+   2   F         1.      5   1    1    1    1     103.00  0.35
+   3   F         2.      1   1    0    1    0      89.00  0.21  159.74  0.22
+   4   F         2.      4   1    1    0    1     159.74  0.22   89.00  0.21   84.63  0.31
+   5   F         3.      3   1    1    1    0     100.59  0.30   99.65  0.27   61.67  0.16   93.28  0.23
+   6   F         3.      5   1    1    1    1      99.65  0.27  100.59  0.30   93.28  0.23   61.67  0.16  147.21  0.37
+
+  KEY                                                 1             2             3             4             5
+
+ Distances about atom  F      1.          X =  0.08497     Y = -0.09283     Z =  0.80843
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       F         1.      2   1    0    0    0      2.364  0.010
+       F         1.      3   1    0    0    0      2.364  0.010
+       F         1.      5   1    0    0    2      2.329  0.012
+       F         1.      6   1    0    0    2      2.399  0.012
+
+
+ Angles about atom  F      1.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   SI        1.      1   1    0    0    1
+   2   NA        1.      3   1    0    0    1     107.59  0.29
+   3   NA        2.      2   1    1    0    0     134.86  0.41  116.07  0.25
+   4   F         1.      2   1    0    0    0      45.00  0.13  152.56  0.25   90.63  0.38
+   5   F         1.      3   1    0    0    0      45.00  0.13  103.53  0.46  127.88  0.19   60.00  0.00
+   6   F         1.      5   1    0    0    2      45.83  0.23   61.77  0.13  169.29  0.54   90.82  0.19   61.48  0.40
+   7   F         1.      6   1    0    0    2      44.14  0.25  102.49  0.32  112.26  0.39   58.56  0.37   89.13  0.21
+
+  KEY                                                 1             2             3             4             5
+
+
+ Continuation
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   6   F         1.      5   1    0    0    2
+   7   F         1.      6   1    0    0    2      59.96  0.31
+
+  KEY                                                 6
+
+ Distances about atom  F      2.          X =  0.44393     Y = -0.40110     Z =  0.70122
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       F         2.      2   1    0   -1    0      2.393  0.007
+       F         2.      3   1    1    0    0      2.393  0.007
+       F         3.      2   1    0   -1    0      2.416  0.008
+       F         3.      3   1    1    0    0      2.369  0.007
+
+
+ Angles about atom  F      2.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   SI        2.      1   1    0   -1    0
+   2   NA        1.      1   1    0   -1    1     137.57  0.31
+   3   NA        2.      1   1    0   -1    0     104.18  0.24  115.16  0.18
+   4   F         2.      2   1    0   -1    0      45.01  0.14  133.36  0.14  101.32  0.32
+   5   F         2.      3   1    1    0    0      45.01  0.14   94.25  0.28  149.14  0.17   60.00  0.00
+   6   F         3.      2   1    0   -1    0      44.32  0.22  110.93  0.31   99.48  0.22   89.32  0.21   59.02  0.25
+   7   F         3.      3   1    1    0    0      45.45  0.22  164.88  0.29   58.73  0.17   60.98  0.25   90.45  0.20
+
+  KEY                                                 1             2             3             4             5
+
+
+ Continuation
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   6   F         3.      2   1    0   -1    0
+   7   F         3.      3   1    1    0    0      59.77  0.28
+
+  KEY                                                 6
+
+ Distances about atom  F      3.          X =  0.22807     Y = -0.26014     Z =  0.31324
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       F         3.      2   1    0   -1    0      2.384  0.011
+       F         3.      3   1    1    0    0      2.384  0.011
+
+
+ Angles about atom  F      3.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   SI        2.      1   1    0   -1    0
+   2   NA        1.      3   1    0    0    0     136.71  0.37
+   3   NA        2.      2   1    1    0    0     105.18  0.30  115.76  0.28
+   4   F         2.      2   1    0   -1    0      45.59  0.22  165.98  0.34   59.60  0.17
+   5   F         2.      3   1    1    0    0      44.45  0.21  110.93  0.32  101.24  0.23   60.01  0.21
+   6   F         3.      2   1    0   -1    0      45.08  0.17   93.11  0.33  150.26  0.25   90.66  0.21   59.13  0.26
+   7   F         3.      3   1    1    0    0      45.08  0.17  131.96  0.18  101.02  0.41   61.10  0.27   89.52  0.20
+
+  KEY                                                 1             2             3             4             5
+
+
+ Continuation
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   6   F         3.      2   1    0   -1    0
+   7   F         3.      3   1    1    0    0      60.00  0.00
+
+  KEY                                                 6
+# SEARCH FOR AN EMPIRICAL WEIGHTING SCHEME USING UNIT WEIGHTS                                                                                                                                                                                                   
+#                                                                                                                                                                                                                                                               
+#LIST 4                                                                                                                                                                                                                                                         
+#ANALYSE                                                                                                                                                                                                                                                        
+#WEIGHT                                                                                                                                                                                                                                                         
+                     LIST 4 weighting type is NORMAL
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+ Chebyshev weighting scheme for   2  terms
+
+ Maximum /FO/    =     0.76E+03           Estimated variance =    1822.3        
+         /Fo/ weight =   0.00
+
+
+ Terms       Coefficients           E.S.D.'S    Ratios
+
+
+   1            68.62699             8.28636      8.28
+   2            64.03772            12.02146      5.33
+
+
+ Correlation matrix
+
+ Block    1
+
+     1    1.000
+     2    0.896  1.000
+
+             1      2
+
+
+
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+
+
+
+ Plot of estimated delta**2 against /FO/   
+
+
+         /FO/     Delta**2
+
+   0.4774E+00     0.47E+01 I--
+   0.1909E+01     0.49E+01 I--
+   0.4296E+01     0.53E+01 I--
+   0.7638E+01     0.59E+01 I--
+   0.1193E+02     0.66E+01 I---
+   0.1718E+02     0.75E+01 I---
+   0.2339E+02     0.85E+01 I----
+   0.3055E+02     0.97E+01 I----
+   0.3867E+02     0.11E+02 I-----
+   0.4773E+02     0.13E+02 I-----
+   0.5776E+02     0.14E+02 I------
+   0.6874E+02     0.16E+02 I-------
+   0.8067E+02     0.18E+02 I--------
+   0.9356E+02     0.20E+02 I---------
+   0.1074E+03     0.23E+02 I----------
+   0.1222E+03     0.25E+02 I-----------
+   0.1380E+03     0.28E+02 I------------
+   0.1547E+03     0.31E+02 I-------------
+   0.1723E+03     0.33E+02 I--------------
+   0.1909E+03     0.37E+02 I---------------
+   0.2105E+03     0.40E+02 I-----------------
+   0.2310E+03     0.43E+02 I------------------
+   0.2525E+03     0.47E+02 I--------------------
+   0.2750E+03     0.51E+02 I---------------------
+   0.2983E+03     0.55E+02 I-----------------------
+   0.3227E+03     0.59E+02 I-------------------------
+   0.3480E+03     0.63E+02 I---------------------------
+   0.3742E+03     0.67E+02 I----------------------------
+   0.4015E+03     0.72E+02 I------------------------------
+   0.4296E+03     0.77E+02 I--------------------------------
+   0.4587E+03     0.82E+02 I----------------------------------
+   0.4888E+03     0.87E+02 I-------------------------------------
+   0.5198E+03     0.92E+02 I---------------------------------------
+   0.5518E+03     0.97E+02 I-----------------------------------------
+   0.5848E+03     0.10E+03 I-------------------------------------------
+   0.6186E+03     0.11E+03 I----------------------------------------------
+   0.6535E+03     0.11E+03 I------------------------------------------------
+   0.6893E+03     0.12E+03 I---------------------------------------------------
+   0.7260E+03     0.13E+03 I-----------------------------------------------------
+   0.7638E+03     0.13E+03 I--------------------------------------------------------
+
+
+
+#ANALYSE                                                                                                                                                                                                                                                        
+#LIST 4                                                                                                                                                                                                                                                         
+
+ Slope, intercept and Cc of plot = -0.182E-02  1.41    -0.885E-01                                                                                                                                                                                               
+Slope=       -0.002 Intercept =       1.409 C-Coef=      -0.089                                                                                                                                                                                                 
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+                                                                                                                                                                                                                                                                
+ Agreement analysis on scale of /FO/                                                                                                                                                                                                                            
+ Scale factor  =   9.91333                                                                                                                                                                                                                                      
+
+
+ Weighting scheme type   11
+
+ With parameter(s) :    0.686270E+02   0.640377E+02
+ Agreement analysis on /FC/
+
+
+     /FO/ RANGE  No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
+
+          0.00                                                                                                . 
+                        0                                                                                     .
+          7.64                                                                                                . 
+                        3        12.82        11.6      0.6338E+02      0.1104E+02    60.96   59.15           . *    
+         17.18                                                                                                . 
+                        6        26.94        24.1      0.3597E+02      0.3310E+01    14.89   20.13           .*     
+         30.55                                                                                                . 
+                       23        41.30        41.2      0.1314E+02      0.1090E+01     7.41    8.56           *      
+         47.73                                                                                                . 
+                       35        57.35        57.7      0.2185E+02      0.1632E+01     5.78    8.39           *      
+         68.74                                                                                                . 
+                       32        81.99        82.2      0.2161E+02      0.1096E+01     4.12    5.47           *      
+         93.56                                                                                                . 
+                       45       105.86       105.3      0.1439E+02      0.6410E+00     2.85    3.57           *      
+        122.20                                                                                                . 
+                       34       138.16       139.0      0.1703E+02      0.6200E+00     2.34    3.00           *      
+        154.66                                                                                                . 
+                       30       168.76       171.6      0.3839E+02      0.1179E+01     3.09    3.69           *      
+        190.94                                                                                                . 
+                       18       206.62       208.9      0.1689E+02      0.4488E+00     1.57    2.03          *.      
+        231.04                                                                                                . 
+                       21       252.41       252.6      0.3148E+02      0.6811E+00     1.81    2.24           *      
+        274.95                                                                                                . 
+                        4       299.16       299.0      0.7264E+02      0.1302E+01     2.45    2.82           *      
+        322.69                                                                                                . 
+                        6       338.44       340.3      0.4918E+02      0.8087E+00     1.73    2.08           *      
+        374.24                                                                                                . 
+                        5       390.34       393.7      0.1020E+03      0.1518E+01     2.11    2.64           *      
+        429.62                                                                                                . 
+                        3       476.00       467.8      0.2597E+03      0.3076E+01     2.46    3.39           .*     
+        488.81                                                                                                . 
+                        0                                                                                     .
+        551.82                                                                                                . 
+                        1       610.00       606.5      0.1219E+02      0.1140E+00     0.57    0.57        *  .      
+        618.65                                                                                                . 
+                        2       682.86       668.5      0.2085E+03      0.1753E+01     2.10    2.12           *      
+        689.29                                                                                                . 
+                        1       732.29       734.1      0.3188E+01      0.2503E-01     0.24    0.24       *   .      
+        763.76                                                                                                . 
+                        1       763.76       769.3      0.3117E+02      0.2350E+00     0.73    0.73         * .      
+        842.05                                                                                                .
+                                                                                                              .
+     TOTALS           270     39403.77     39509.9      0.2906E+02      0.1143E+01     2.74    3.92     .  .  *  .  .
+                                                                                                       -2 -1  0  1  2
+
+
+
+ Agreement analysis on [sin(theta)/lambda]sq
+
+
+  SINTH/L RANGE  No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
+
+      0.00000                                                                                                 . 
+                       18       212.55       213.8      0.1262E+03      0.3347E+01     4.26    5.42           .*     
+      0.04000                                                                                                 . 
+                       21       255.94       254.4      0.4233E+02      0.8235E+00     1.98    2.44           *      
+      0.08000                                                                                                 . 
+                       28       240.16       240.7      0.2227E+02      0.5228E+00     1.51    2.01          *.      
+      0.12000                                                                                                 . 
+                       28       155.94       158.2      0.1904E+02      0.5780E+00     2.28    2.70           *      
+      0.16000                                                                                                 . 
+                       33       156.49       156.9      0.1930E+02      0.5801E+00     2.15    2.69           *      
+      0.20000                                                                                                 . 
+                       30       134.50       135.7      0.1877E+02      0.1317E+01     2.70    4.41           *      
+      0.24000                                                                                                 . 
+                       44        99.52       101.1      0.2258E+02      0.1307E+01     3.44    5.27           *      
+      0.28000                                                                                                 . 
+                       39        90.32        89.1      0.2245E+02      0.1424E+01     4.05    5.84           *      
+      0.32000                                                                                                 . 
+                       29        69.36        68.1      0.1589E+02      0.9876E+00     4.71    5.72           *      
+      0.36000                                                                                                 .
+                                                                                                              .
+     TOTALS           270     39403.77     39509.9      0.2906E+02      0.1143E+01     2.74    3.92     .  .  *  .  .
+                                                                                                       -2 -1  0  1  2
+#ANALYSE                                                                                                                                                                                                                                                        
+#WEIGHT                                                                                                                                                                                                                                                         
+                     LIST 4 weighting type is NORMAL
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+ Chebyshev weighting scheme for   3  terms
+
+ Maximum /FO/    =     0.76E+03           Estimated variance =    1827.9        
+         /Fo/ weight =   0.00
+
+
+ Terms       Coefficients           E.S.D.'S    Ratios
+
+
+   1            71.39519            10.46660      6.82
+   2            68.18150            15.36571      4.44
+   3             4.18169             9.63460      0.43
+
+
+ Correlation matrix
+
+ Block    1
+
+     1    1.000
+     2    0.935  1.000
+     3    0.609  0.621  1.000
+
+             1      2      3
+
+
+
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+
+
+
+ Plot of estimated delta**2 against /FO/   
+
+
+         /FO/     Delta**2
+
+   0.4774E+00     0.75E+01 I---
+   0.1909E+01     0.77E+01 I---
+   0.4296E+01     0.80E+01 I---
+   0.7638E+01     0.84E+01 I---
+   0.1193E+02     0.90E+01 I----
+   0.1718E+02     0.97E+01 I----
+   0.2339E+02     0.11E+02 I----
+   0.3055E+02     0.12E+02 I-----
+   0.3867E+02     0.13E+02 I-----
+   0.4773E+02     0.14E+02 I-----
+   0.5776E+02     0.15E+02 I------
+   0.6874E+02     0.17E+02 I-------
+   0.8067E+02     0.19E+02 I-------
+   0.9356E+02     0.21E+02 I--------
+   0.1074E+03     0.23E+02 I---------
+   0.1222E+03     0.25E+02 I----------
+   0.1380E+03     0.27E+02 I-----------
+   0.1547E+03     0.30E+02 I------------
+   0.1723E+03     0.32E+02 I-------------
+   0.1909E+03     0.35E+02 I--------------
+   0.2105E+03     0.38E+02 I---------------
+   0.2310E+03     0.42E+02 I----------------
+   0.2525E+03     0.45E+02 I------------------
+   0.2750E+03     0.49E+02 I-------------------
+   0.2983E+03     0.53E+02 I---------------------
+   0.3227E+03     0.57E+02 I----------------------
+   0.3480E+03     0.61E+02 I------------------------
+   0.3742E+03     0.66E+02 I--------------------------
+   0.4015E+03     0.71E+02 I----------------------------
+   0.4296E+03     0.76E+02 I------------------------------
+   0.4587E+03     0.81E+02 I--------------------------------
+   0.4888E+03     0.87E+02 I----------------------------------
+   0.5198E+03     0.93E+02 I------------------------------------
+   0.5518E+03     0.99E+02 I---------------------------------------
+   0.5848E+03     0.11E+03 I-----------------------------------------
+   0.6186E+03     0.11E+03 I--------------------------------------------
+   0.6535E+03     0.12E+03 I-----------------------------------------------
+   0.6893E+03     0.13E+03 I--------------------------------------------------
+   0.7260E+03     0.14E+03 I-----------------------------------------------------
+   0.7638E+03     0.14E+03 I--------------------------------------------------------
+
+
+
+#ANALYSE                                                                                                                                                                                                                                                        
+#SFLS                                                                                                                                                                                                                                                           
+
+ Slope, intercept and Cc of plot = -0.110E-02  1.24    -0.624E-01                                                                                                                                                                                               
+Slope=       -0.001 Intercept =       1.235 C-Coef=      -0.062                                                                                                                                                                                                 
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+                                                                                                                                                                                                                                                                
+ Agreement analysis on scale of /FO/                                                                                                                                                                                                                            
+ Scale factor  =   9.91333                                                                                                                                                                                                                                      
+
+
+ Weighting scheme type   11
+
+ With parameter(s) :    0.713952E+02   0.681815E+02   0.418169E+01
+ Agreement analysis on /FC/
+
+
+     /FO/ RANGE  No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
+
+          0.00                                                                                                . 
+                        0                                                                                     .
+          7.64                                                                                                . 
+                        3        12.82        11.6      0.6338E+02      0.7480E+01    60.96   55.11           . *    
+         17.18                                                                                                . 
+                        6        26.94        24.1      0.3597E+02      0.2862E+01    14.89   20.46           .*     
+         30.55                                                                                                . 
+                       23        41.30        41.2      0.1314E+02      0.9708E+00     7.41    8.59           *      
+         47.73                                                                                                . 
+                       35        57.35        57.7      0.2185E+02      0.1492E+01     5.78    8.33           *      
+         68.74                                                                                                . 
+                       32        81.99        82.2      0.2161E+02      0.1077E+01     4.12    5.49           *      
+         93.56                                                                                                . 
+                       45       105.86       105.3      0.1439E+02      0.6419E+00     2.85    3.57           *      
+        122.20                                                                                                . 
+                       34       138.16       139.0      0.1703E+02      0.6342E+00     2.34    3.00           *      
+        154.66                                                                                                . 
+                       30       168.76       171.6      0.3839E+02      0.1220E+01     3.09    3.69           *      
+        190.94                                                                                                . 
+                       18       206.62       208.9      0.1689E+02      0.4668E+00     1.57    2.03          *.      
+        231.04                                                                                                . 
+                       21       252.41       252.6      0.3148E+02      0.7091E+00     1.81    2.24           *      
+        274.95                                                                                                . 
+                        4       299.16       299.0      0.7264E+02      0.1348E+01     2.45    2.82           *      
+        322.69                                                                                                . 
+                        6       338.44       340.3      0.4918E+02      0.8333E+00     1.73    2.08           *      
+        374.24                                                                                                . 
+                        5       390.34       393.7      0.1020E+03      0.1552E+01     2.11    2.65           *      
+        429.62                                                                                                . 
+                        3       476.00       467.8      0.2597E+03      0.3072E+01     2.46    3.39           .*     
+        488.81                                                                                                . 
+                        0                                                                                     .
+        551.82                                                                                                . 
+                        1       610.00       606.5      0.1219E+02      0.1098E+00     0.57    0.57         * .      
+        618.65                                                                                                . 
+                        2       682.86       668.5      0.2085E+03      0.1655E+01     2.10    2.12           *      
+        689.29                                                                                                . 
+                        1       732.29       734.1      0.3188E+01      0.2330E-01     0.24    0.24       *   .      
+        763.76                                                                                                . 
+                        1       763.76       769.3      0.3117E+02      0.2168E+00     0.73    0.73         * .      
+        842.05                                                                                                .
+                                                                                                              .
+     TOTALS           270     39403.77     39509.9      0.2906E+02      0.1074E+01     2.74    3.79     .  .  *  .  .
+                                                                                                       -2 -1  0  1  2
+
+
+
+ Agreement analysis on [sin(theta)/lambda]sq
+
+
+  SINTH/L RANGE  No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
+
+      0.00000                                                                                                 . 
+                       18       212.55       213.8      0.1262E+03      0.3244E+01     4.26    5.29           .*     
+      0.04000                                                                                                 . 
+                       21       255.94       254.4      0.4233E+02      0.8175E+00     1.98    2.46           *      
+      0.08000                                                                                                 . 
+                       28       240.16       240.7      0.2227E+02      0.5215E+00     1.51    1.98           *      
+      0.12000                                                                                                 . 
+                       28       155.94       158.2      0.1904E+02      0.5933E+00     2.28    2.71           *      
+      0.16000                                                                                                 . 
+                       33       156.49       156.9      0.1930E+02      0.5838E+00     2.15    2.67           *      
+      0.20000                                                                                                 . 
+                       30       134.50       135.7      0.1877E+02      0.1042E+01     2.70    3.89           *      
+      0.24000                                                                                                 . 
+                       44        99.52       101.1      0.2258E+02      0.1229E+01     3.44    5.11           *      
+      0.28000                                                                                                 . 
+                       39        90.32        89.1      0.2245E+02      0.1331E+01     4.05    5.68           *      
+      0.32000                                                                                                 . 
+                       29        69.36        68.1      0.1589E+02      0.9205E+00     4.71    5.61           *      
+      0.36000                                                                                                 .
+                                                                                                              .
+     TOTALS           270     39403.77     39509.9      0.2906E+02      0.1074E+01     2.74    3.79     .  .  *  .  .
+                                                                                                       -2 -1  0  1  2
+#SPEC LIS  NO                                                                                                                                                                                                                                                   
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
+#REFINE     1                                                                                                                                                                                                                                                   
+#DORESTRAIN                                                                                                                                                                                                                                                     
+ Initialising Special positions
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+ Structure factor least squares      calculation number     4
+           Bad agreements 
+
+    h    k    l      Fo        Fc 
+
+    0.   1.   0.     1.89     1.26
+    9.   0.   0.     3.88     4.43
+    0.   9.   0.     4.03     4.43
+    4.   1.   0.     2.96     2.52
+    1.   4.   0.     2.78     2.52
+    6.   4.   0.     1.55     1.88
+    0.   7.   1.     3.03     3.40
+    6.   3.   1.     4.05     4.66
+    5.   5.   1.     4.24     4.64
+    0.   0.   2.    10.49     8.64
+    1.   0.   2.     4.49     4.89
+    0.   1.   2.     4.05     4.40
+    6.   2.   2.     6.04     6.73
+    2.   6.   2.     5.04     6.41
+    3.   6.   2.    10.50     9.48
+    4.   4.   2.     4.44     5.64
+    5.   4.   2.     9.20    10.01
+    7.   0.   3.     5.33     5.96
+    2.   5.   3.     4.51     4.05
+    3.   3.   3.     0.00     1.00
+    4.   4.   3.     4.14     2.78
+    5.   4.   3.     5.61     4.81
+    0.   2.   5.    13.72    14.89
+    3.   0.   5.     5.23     4.64
+
+ And so on ------------
+
+
+                              ***
+                             ***
+ R-value    Weighted R      ************              ************
+                           *************  HERE IT IS  ************
+   2.74        3.79         ************              ************
+                             ***
+                              ***
+
+ Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
+
+     3974.8         3985.5           108.8                                   On scale of /FC/
+
+    39403.8        39509.9          1078.9           0.29000952E+03          On scale of /FO/
+
+ New scale factor (G) is    9.91333,     270 reflections used in refinement
+
+ Structure factor least squares calculation    4  ends  6
+SumFo/SumFc=  9.887   SumFoFc/SumFc^2=  9.903   SumwFoFc/SumwFc^2=  9.887                                                                                                                                                                                       
+LS-scale=  9.913   Wilson Scale=  0.000                                                                                                                                                                                                                         
+<Fo>-<Fc> =   -0.040    100*(<Fo>-<Fc>)/<Fo> =   -0.269                                                                                                                                                                                                         
+#INVERT  CHOL                                                                                                                                                                                                                                                   
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+ Matrix inversion and calculation of the shifts for S.F.L.S. cycle number     4
+
+ The SHIFT RATIO is the shift calculated for this cycle
+ divided by the corresponding shift for the last cycle.
+ Parameters for which the shift ratio exceeds  3.00 (SRATIO)
+            and/or the shift-over-esd exceeds  1.00 (S/ESD)
+            and/or there is a relatively large shift.
+ Parameters marked COMPOSITE contain derivatives from other physical parameters
+
+
+ Block   1
+        Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
+
+ S/ESD     1           1          -0.06894         0.73      0.05170      -1.33347                          SCALE   
+ S/ESD     7           7           0.00054         0.46      0.00033       1.61519        NA     1 X       
+                                                                                                            Composite
+
+                                                                      Composite
+
+ SRATIO    9           9          -0.00044         7.69      0.00136      -0.32246        NA     1 U[33]   
+ S/ESD    13          13          -0.00116        -0.38      0.00099      -1.16922        NA     2 U[11]   
+                                                                                                            Composite
+
+                                                                      Composite
+
+ SRATIO   24          24           0.00190        -7.59      0.00285       0.66856        F      1 U[13]   
+ SRATIO   25          25          -0.00032         3.37      0.00151      -0.20895        F      1 U[12]   
+ S/ESD    29          29           0.00203        -1.22      0.00199       1.01732        F      2 U[11]   
+ SRATIO   34          34           0.00191         6.13      0.00202       0.94820        F      2 U[12]   
+ S/ESD    35          35          -0.00102         0.56      0.00063      -1.61740        F      3 X       
+ S/ESD    36          36          -0.00070         2.96      0.00056      -1.26526        F      3 Y       
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =         20.5760
+                                                for          44 parameters
+                                 The rms (shift/su)  =       0.6838395
+                              The mean abs(shift/su) =       0.5448979
+ The largest (shift/esd) =  1.617400, for Parameter   35, F3X
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           2.74           100.    
+All cycle   Rw                   0.00           3.79           100.    
+All cycle   shift/esd           0.300E-01      0.684          0.100E+05
+All cycle   Min function         0.00           290.          0.100E+16
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+ Statistics for    44 least squares parameters, with   226 degrees of freedom
+ Number of observations               270                 0               270
+ Minimisation function          0.2900095E+03     0.0000000E+00     0.2900095E+03
+ Hamilton weighted R-value           3.787             0.000             3.787
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+
+ Calculated shifts
+
+             Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
+
+
+ Mean       -0.03463  0.00000  0.00000 -0.00013 -0.00021  0.00006  0.00026  0.00043 -0.00059  0.00034  0.00096  0.00022
+                                       -0.00115 -0.00190  0.00029
+
+ R.M.S.      0.04875  0.00000  0.00000  0.00055  0.00051  0.00024  0.00093  0.00108  0.00081  0.00086  0.00117  0.00108
+                                        0.00489  0.00453  0.00121
+
+ RMS sh/esd  0.94350  0.00000  0.00000  1.06596  0.92467  0.33106  0.67139  0.47013  0.57082  0.47372  0.45026  0.67547
+
+
+ Maximum     0.06894  0.00000  0.00000  0.00102  0.00070  0.00040  0.00203  0.00181  0.00116  0.00134  0.00190  0.00191
+                                        0.00908  0.00622  0.00201
+
+ Reversals     0.00     0.00     0.00    20.00    33.33    25.00    71.43    33.33    57.14    40.00   100.00    60.00
+
+
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  47.73 for all parameters.
+
+
+ Shift
+ factors     1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+             1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+#SOLVE                                                                                                                                                                                                                                                          
+ Initialising Special positions
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+ Generation and output of the new parameter list
+
+ Format :      New coordinate  
+               Applied shift
+               Calculated E.S.D.
+               E.S.D. in angstrom
+
+
+
+  6  Overall parameter(s)
+
+    SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
+
+    9.84439  0.05000  0.05000  1.00000  0.00000    0.00000E+00
+   -0.06894  0.00000  0.00000  0.00000  0.00000    0.00000E+00
+    0.05170  0.00000  0.00000  0.00000  0.00000    0.00000E+00
+
+
+
+  2  ELEMENT  Scale Factors
+
+
+      1        2
+
+    0.57215  0.42785
+   -0.00032  0.00032
+    0.00682  0.00682
+
+
+
+     7  atom(s)
+
+    TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
+
+     SI         1.   1.00000  0.00000  0.00000  0.00000  0.00000  0.01471  0.01471  0.02164  0.00000  0.00000  0.00736
+                     0.00000           0.00000  0.00000  0.00000  0.00033  0.00033  0.00023  0.00000  0.00000  0.00017
+                     0.00000           0.00000  0.00000  0.00000  0.00091  0.00091  0.00197  0.00000  0.00000  0.00046
+                                       0.00000  0.00000  0.00000
+
+     SI         2.   1.00000  0.00000  0.33333  0.66667  0.50709  0.01315  0.01315  0.01669  0.00000  0.00000  0.00657
+                     0.00000           0.00000  0.00000 -0.00016 -0.00039 -0.00039 -0.00102  0.00000  0.00000 -0.00020
+                     0.00000           0.00000  0.00000  0.00072  0.00064  0.00064  0.00132  0.00000  0.00000  0.00032
+                                       0.00000  0.00000  0.00360
+
+     NA         1.   1.00000  0.00000  0.38071  0.38071  0.00000  0.02547  0.02547  0.01598 -0.00077  0.00077  0.01043
+                     0.00000           0.00054  0.00054  0.00000  0.00048  0.00048 -0.00044  0.00109 -0.00109  0.00098
+                     0.00000           0.00033  0.00033  0.00000  0.00106  0.00106  0.00136  0.00129  0.00129  0.00122
+                                       0.00296  0.00296  0.00000
+
+     NA         2.   1.00000  0.00000  0.71515  0.71515  0.50000  0.02217  0.02217  0.02720 -0.00151  0.00151  0.01306
+                     0.00000           0.00001  0.00001  0.00000 -0.00116 -0.00116  0.00016 -0.00027  0.00027 -0.00092
+                     0.00000           0.00031  0.00031  0.00000  0.00099  0.00099  0.00175  0.00147  0.00147  0.00118
+                                       0.00276  0.00276  0.00000
+
+     F          1.   1.00000  0.00000  0.08459 -0.09318  0.80827  0.04060  0.03913  0.04051 -0.00219  0.01306  0.02621
+                     0.00000          -0.00038 -0.00035 -0.00016  0.00034 -0.00009 -0.00107  0.00134  0.00190 -0.00032
+                     0.00000           0.00072  0.00070  0.00085  0.00199  0.00231  0.00177  0.00338  0.00285  0.00151
+                                       0.00642  0.00618  0.00431
+
+     F          2.   1.00000  0.00000  0.44413 -0.40069  0.70162  0.02064  0.02795  0.02469  0.01159  0.00441  0.01744
+                     0.00000           0.00020  0.00041  0.00040  0.00203  0.00181 -0.00116 -0.00075  0.00055  0.00191
+                     0.00000           0.00046  0.00049  0.00070  0.00199  0.00229  0.00139  0.00171  0.00156  0.00202
+                                       0.00410  0.00430  0.00351
+
+     F          3.   1.00000  0.00000  0.22705 -0.26084  0.31339  0.03026  0.03006  0.02576 -0.00488 -0.01308  0.02063
+                     0.00000          -0.00102 -0.00070  0.00015  0.00021 -0.00044 -0.00087  0.00027  0.00043 -0.00057
+                     0.00000           0.00063  0.00056  0.00090  0.00205  0.00222  0.00123  0.00195  0.00218  0.00198
+                                       0.00561  0.00492  0.00454
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
+#CYCLENDS                                                                                                                                                                                                                                                       
+#SPEC LIS  NO                                                                                                                                                                                                                                                   
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
+#REFINE     1                                                                                                                                                                                                                                                   
+#DORESTRAIN                                                                                                                                                                                                                                                     
+ Initialising Special positions
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+ Structure factor least squares      calculation number     5
+           Bad agreements 
+
+    h    k    l      Fo        Fc 
+
+    0.   1.   0.     1.90     1.27
+    9.   0.   0.     3.91     4.37
+    4.   1.   0.     2.98     2.42
+    1.   4.   0.     2.80     2.42
+    6.   4.   0.     1.56     1.72
+    6.   3.   1.     4.08     4.77
+    3.   7.   1.     3.56     3.22
+    0.   0.   2.    10.56     8.94
+    6.   2.   2.     6.09     6.83
+    2.   6.   2.     5.07     6.45
+    3.   6.   2.    10.58     9.67
+    4.   4.   2.     4.47     5.56
+    5.   4.   2.     9.27    10.12
+    7.   0.   3.     5.37     5.92
+    2.   5.   3.     4.54     3.93
+    3.   3.   3.     0.00     0.53
+    4.   4.   3.     4.16     3.27
+    5.   4.   3.     5.65     5.00
+    0.   2.   5.    13.81    15.07
+    3.   0.   5.     5.27     4.63
+    0.   3.   5.     5.78     4.99
+    3.   1.   5.     5.88     5.23
+    4.   1.   5.     5.60     6.16
+    2.   2.   5.     5.38     6.21
+
+                              ***
+                             ***
+ R-value    Weighted R      ************              ************
+                           *************  HERE IT IS  ************
+   2.76        3.62         ************              ************
+                             ***
+                              ***
+
+ Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
+
+     4002.7         3998.2           110.3                                   On scale of /FC/
+
+    39403.8        39360.0          1085.8           0.26511627E+03          On scale of /FO/
+
+ New scale factor (G) is    9.84439,     270 reflections used in refinement
+
+ Structure factor least squares calculation    5  ends  6
+SumFo/SumFc=  9.855   SumFoFc/SumFc^2=  9.887   SumwFoFc/SumwFc^2=  9.863                                                                                                                                                                                       
+LS-scale=  9.844   Wilson Scale=  0.000                                                                                                                                                                                                                         
+<Fo>-<Fc> =    0.016    100*(<Fo>-<Fc>)/<Fo> =    0.111                                                                                                                                                                                                         
+#INVERT  CHOL                                                                                                                                                                                                                                                   
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+ Matrix inversion and calculation of the shifts for S.F.L.S. cycle number     5
+
+ The SHIFT RATIO is the shift calculated for this cycle
+ divided by the corresponding shift for the last cycle.
+ Parameters for which the shift ratio exceeds  3.00 (SRATIO)
+            and/or the shift-over-esd exceeds  1.00 (S/ESD)
+            and/or there is a relatively large shift.
+ Parameters marked COMPOSITE contain derivatives from other physical parameters
+
+
+ Block   1
+        Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
+
+ SRATIO   21          21           0.00074        -8.22      0.00225       0.32887        F      1 U[22]   
+
+   Sum of the squares of the ratio (Shift/e.s.d.) =          0.5674
+                                                for          44 parameters
+                                 The rms (shift/su)  =       0.1135611
+                              The mean abs(shift/su) =       0.0850731
+ The largest (shift/esd) =  0.328866, for Parameter   21, F1U[22]
+
+                                Min          Actual           Max
+All cycle   R-factor             0.00           2.76           100.    
+All cycle   Rw                   0.00           3.62           100.    
+All cycle   shift/esd           0.300E-01      0.114          0.100E+05
+All cycle   Min function         0.00           265.          0.100E+16
+Inter cycle R-factor            -5.00         -0.175E-01       100.    
+Inter cycle Rw                  -5.00          0.166           100.    
+Inter cycle shift/esd           -10.0          0.570          0.100E+05
+Inter cycle Min function         0.00           24.9          0.100E+16
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+ Statistics for    44 least squares parameters, with   226 degrees of freedom
+ Number of observations               270                 0               270
+ Minimisation function          0.2651163E+03     0.0000000E+00     0.2651163E+03
+ Hamilton weighted R-value           3.621             0.000             3.621
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+
+ Calculated shifts
+
+             Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
+
+
+ Mean       -0.00004  0.00000  0.00000  0.00002  0.00000 -0.00003 -0.00009  0.00025  0.00001  0.00031 -0.00004 -0.00001
+                                        0.00018 -0.00001 -0.00015
+
+ R.M.S.      0.00005  0.00000  0.00000  0.00005  0.00005  0.00003  0.00013  0.00043  0.00008  0.00050  0.00021  0.00020
+                                        0.00046  0.00046  0.00016
+
+ RMS sh/esd  0.00266  0.00000  0.00000  0.11048  0.10478  0.04301  0.07696  0.19048  0.05663  0.18273  0.09884  0.13930
+
+
+ Maximum     0.00006  0.00000  0.00000  0.00007  0.00007  0.00004  0.00023  0.00074  0.00016  0.00103  0.00025  0.00037
+                                        0.00064  0.00065  0.00022
+
+ Reversals     0.00     0.00     0.00    80.00   100.00    50.00    57.14   100.00    57.14    20.00    66.67    60.00
+
+
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  59.09 for all parameters.
+
+
+ Shift
+ factors     1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+             1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+#SOLVE                                                                                                                                                                                                                                                          
+ Initialising Special positions
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+ Generation and output of the new parameter list
+
+ Format :      New coordinate  
+               Applied shift
+               Calculated E.S.D.
+               E.S.D. in angstrom
+
+
+
+  6  Overall parameter(s)
+
+    SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
+
+    9.84432  0.05000  0.05000  1.00000  0.00000    0.00000E+00
+   -0.00006  0.00000  0.00000  0.00000  0.00000    0.00000E+00
+    0.04935  0.00000  0.00000  0.00000  0.00000    0.00000E+00
+
+
+
+  2  ELEMENT  Scale Factors
+
+
+      1        2
+
+    0.57213  0.42787
+   -0.00002  0.00002
+    0.00652  0.00652
+
+
+
+     7  atom(s)
+
+    TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
+
+     SI         1.   1.00000  0.00000  0.00000  0.00000  0.00000  0.01473  0.01473  0.02152  0.00000  0.00000  0.00736
+                     0.00000           0.00000  0.00000  0.00000  0.00002  0.00002 -0.00013  0.00000  0.00000  0.00001
+                     0.00000           0.00000  0.00000  0.00000  0.00088  0.00088  0.00190  0.00000  0.00000  0.00044
+                                       0.00000  0.00000  0.00000
+
+     SI         2.   1.00000  0.00000  0.33333  0.66667  0.50705  0.01313  0.01313  0.01685  0.00000  0.00000  0.00657
+                     0.00000           0.00000  0.00000 -0.00004 -0.00002 -0.00002  0.00016  0.00000  0.00000 -0.00001
+                     0.00000           0.00000  0.00000  0.00069  0.00061  0.00061  0.00126  0.00000  0.00000  0.00030
+                                       0.00000  0.00000  0.00346
+
+     NA         1.   1.00000  0.00000  0.38065  0.38065  0.00000  0.02535  0.02535  0.01600 -0.00059  0.00059  0.01040
+                     0.00000          -0.00005 -0.00005  0.00000 -0.00011 -0.00011  0.00001  0.00019 -0.00019 -0.00003
+                     0.00000           0.00032  0.00032  0.00000  0.00103  0.00103  0.00129  0.00125  0.00125  0.00117
+                                       0.00287  0.00287  0.00000
+
+     NA         2.   1.00000  0.00000  0.71518  0.71518  0.50000  0.02213  0.02213  0.02722 -0.00165  0.00165  0.01288
+                     0.00000           0.00003  0.00003  0.00000 -0.00004 -0.00004  0.00002 -0.00015  0.00015 -0.00018
+                     0.00000           0.00030  0.00030  0.00000  0.00094  0.00094  0.00168  0.00141  0.00141  0.00111
+                                       0.00266  0.00266  0.00000
+
+     F          1.   1.00000  0.00000  0.08466 -0.09316  0.80827  0.04037  0.03987  0.04057 -0.00117  0.01331  0.02658
+                     0.00000           0.00007  0.00002 -0.00001 -0.00023  0.00074  0.00006  0.00103  0.00025  0.00037
+                     0.00000           0.00070  0.00068  0.00082  0.00194  0.00225  0.00169  0.00330  0.00276  0.00148
+                                       0.00620  0.00602  0.00414
+
+     F          2.   1.00000  0.00000  0.44411 -0.40077  0.70159  0.02058  0.02791  0.02466  0.01181  0.00425  0.01731
+                     0.00000          -0.00001 -0.00007 -0.00003 -0.00007 -0.00004 -0.00003  0.00023 -0.00017 -0.00012
+                     0.00000           0.00046  0.00048  0.00067  0.00198  0.00229  0.00135  0.00168  0.00153  0.00200
+                                       0.00406  0.00421  0.00339
+
+     F          3.   1.00000  0.00000  0.22712 -0.26079  0.31335  0.03005  0.03010  0.02574 -0.00462 -0.01329  0.02053
+                     0.00000           0.00007  0.00005 -0.00004 -0.00021  0.00004 -0.00002  0.00026 -0.00021 -0.00009
+                     0.00000           0.00061  0.00053  0.00085  0.00195  0.00217  0.00117  0.00188  0.00211  0.00192
+                                       0.00539  0.00473  0.00429
+Mean C-C su =   0.0000                                                                                                                                                                                                                                          
+#CYCLENDS                                                                                                                                                                                                                                                       
+#FINI                                                                                                                                                                                                                                                           
+
+
+          : Job ends ok       with     0 warnings and     0 errors

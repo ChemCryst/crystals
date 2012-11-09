@@ -1,0 +1,628 @@
+data_global 
+_audit_creation_date        "20  -  -  "
+_audit_creation_method CRYSTALS
+
+_oxford_structure_analysis_title  'Cyclo in P 21 21 21'
+_chemical_name_systematic         ?
+_chemical_melting_point           ?
+
+#looking for refcif 
+ 
+ 
+# Check this file using the IUCr facility at: 
+# http://checkcif.iucr.org/ 
+ 
+# The content below is held in the file 'script/refcif.dat'. This is a text 
+# file which you may edit to reflect local conditions. 
+# Items which need looking at are represented by a '?'. 
+# Items for which there are choices are prefixed with 'choose from'. 
+ 
+_publ_contact_letter 
+; 
+ Please consider this CIF submission for 
+ publication as a Short Format Paper in Acta 
+ Crystallographica E. 
+; 
+_publ_contact_author_name         'Anthony Other' 
+_publ_contact_author_address 
+; 
+ Chemical Crystallography Laboratory, 
+ Department of Chemistry, 
+ University of Nowhere, 
+ Nowhere, NO1 4T, UK. 
+; 
+ 
+_publ_contact_author_phone        '+44 1865 000000' 
+_publ_contact_author_fax          '+44 1865 000000' 
+_publ_contact_author_email        'a.n.other@chem.no.ac.uk' 
+_publ_requested_journal           'Section E' 
+_publ_requested_category          EO # choose from: FI FM FO CI CM CO AD 
+_publ_requested_coeditor_name     'Prof William Clegg' 
+ 
+_publ_section_title 
+# Title of paper - generally just the systematic or trivial name 
+; ? 
+; 
+ 
+# The loop structure below should contain the names and addresses of all 
+# authors, in the required order of publication. Repeat as necessary. 
+loop_ 
+ _publ_author_name 
+ _publ_author_address 
+ _publ_author_footnote 
+ 'Other, Anthony N.' # Author 1 
+; 
+ ? # Address for author 1 
+; 
+; 
+ ? # Footnote for author 1 
+; 
+ 'Else, S. O.' # Author 2 
+; 
+ ? # Address 2 
+; 
+; 
+ ? # Footnote 2 
+; 
+ 
+ 
+_publ_section_abstract 
+# Text of the abstract 
+# (a) The Abstract must be self-contained and comprehensible 
+# without the rest of the paper. This means no references 
+# to atom names or to compound numbers; compounds must be 
+# identified as the title compound, or by name or by some other 
+# means such as derivatives of each other (e.g. "the 
+# corresponding ketone"). 
+# (b) The chemical formula of "the title compound" must be given. 
+# (c) Any crystallographic molecular symmetry should be 
+# mentioned, and also the presence of more than one molecule 
+# in the asymmetric unit (i.e. anything other than Z'=1). 
+; 
+? 
+; 
+ 
+_publ_section_related_literature  # Not in version 2.3.1 
+############################################################### 
+# Essential references (e.g. to the origin of the material studied, related 
+# structural studies, and to information supporting the reported structure) 
+# should be cited in this section, with appropriate very brief explanatory 
+# text, for example `The synthesis of the complex is described by Jones 
+# (2001). The anhydrous complex has essentially the same coordination 
+# geometry (Smith, 2003).' In addition, all references included in the 
+# supplementary materials, but not elsewhere in the published article, 
+# should be given here. The simple text `For related literature, see:...' 
+# may be used, but further details should be provided in the Comment 
+# section, which forms part of the supplementary material. 
+############################################################### 
+; 
+? 
+; 
+ 
+_publ_section_comment 
+# Text of the paper 
+# Note that atoms are referenced as N2, not N(2) or N~2~ 
+# If text containing () occur within (), the outer ones should be [] 
+# Figures should be referenced as Fig. 
+; 
+? 
+; 
+_publ_section_acknowledgements    # Acknowledgments 
+; 
+? 
+; 
+_publ_section_figure_captions 
+# Captions to figures - Start each caption on a new line after a blank line 
+; 
+Fig. 1. 
+The title compound with displacement ellipsoids drawn at the 50% 
+probability level. H atoms are shown as spheres of 
+arbitary radius. 
+ 
+; 
+ 
+ 
+_publ_section_exptl_refinement 
+# Some potentially useful phrases are donated by Bill Clegg: 
+; 
+In the absence of significant anomalous scattering, Friedel pairs were 
+merged. 
+ 
+The absolute configuration was arbitrarily assigned. 
+ 
+The relatively large ratio of minimum to maximum corrections applied 
+in the multiscan process (1:nnn) reflect changes in the illuminated 
+volume of the crystal. 
+ 
+Changes in illuminated volume were kept to a minimum, and were 
+taken into account (G\"orbitz, 1999) by the multi-scan inter-frame 
+scaling (DENZO/SCALEPACK, Otwinowski & Minor, 1997). 
+ 
+ 
+G\"orbitz, C. H. (1999). Acta Cryst. B55, 1090-1098. 
+ 
+ 
+ 
+ 
+The H atoms were all located in a difference map, but those 
+attached to carbon atoms were repositioned geometrically. 
+The H atoms were initially refined with soft restraints on the 
+bond lengths and angles to regularise their geometry 
+(C---H in the range 0.93--0.98, 
+N---H in the range 0.86--0.89 
+N---H to 0.86 
+O---H = 0.82 
+\%A) 
+and 
+U~iso~(H) (in the range 1.2-1.5 times U~eq~ of the parent atom), 
+after which the positions were refined with riding constraints 
+(Cooper et al, 2010). 
+ 
+Cooper, R. I., Thompson, A. L. & Watkin, D. J. (2010). J. Appl. Cryst. 
+43, 1100-1107. 
+ 
+; 
+ 
+_publ_section_exptl_prep 
+# Brief details or a reference. Include solvent if known 
+; 
+? 
+; 
+ 
+# Hand-made tables can be put in the cif. The number of columns 
+# is set in the loop header. 
+# The contants of each column can either be a piece of text 
+# without any spaces (eg a number) or other text enclosed in " " 
+# Remove the leading # in the following example 
+ 
+#geom_extra_table_head_A 
+#; 
+#Table 2. 
+#Molecular parameters deviating most from MOGUL averages 
+#; 
+# 
+#loop_ 
+#_geom_extra_tableA_col_1 
+#_geom_extra_tableA_col_2 
+#_geom_extra_tableA_col_3 
+#_geom_extra_tableA_col_4 
+# 
+#Parameter "Observed Value" "MOGUL Value" "MOGUL e.s.d" 
+#N5-C6-C4 129 124 "7 (\%)" 
+#C3-O10-C2 105 109 "2 (\%)" 
+#C6-O7 1.25 1.22 ".02 (\%A)" 
+# 
+ 
+data_1 
+ 
+_exptl_special_details 
+; 
+ The crystal was 
+placed in the cold stream of an Oxford 
+Cryosystems open-flow nitrogen cryostat (Cosier & 
+Glazer, 1986) with a nominal stability of 0.1K. 
+ 
+Cosier, J. & Glazer, A.M., 1986. J. Appl. Cryst. 105-107. 
+; 
+_refine_special_details 
+; 
+? 
+; 
+#--------------------------------------------------------------- 
+# _oxford_ data items, April 2010: 
+# There is some uncertainty about the correct way of forming local data 
+# names, e.g. 
+ 
+# _atom_site_special_shape_oxford 
+# or 
+# _oxford_atom_site_special_shape 
+ 
+# see: 
+# http://www.iucr.org/resources/cif/spec/version1.1/semantics#namespace 
+ 
+# A reserved prefix, e.g. foo, must be used in the following way 
+# " If the data file contains items defined in a DDL1 dictionary, the 
+# local data names assigned under the reserved prefix must contain it as 
+# their first component, e.g. _foo_atom_site_my_item. " 
+ 
+# However, this seems to say the opposite: 
+# http://www.iucr.org/__data/iucr/cif/standard/cifstd8.html 
+ 
+# According to advice from the IUCr, CRYSTALS is correct 
+#--------------------------------------------------------------- 
+# End of 'script/refcif.dat' 
+#end of refcif 
+_cell_length_a                    4.9250(10)
+_cell_length_b                    11.0350(10)
+_cell_length_c                    15.3220(10)
+_cell_angle_alpha                 90
+_cell_angle_beta                  90
+_cell_angle_gamma                 90
+_cell_volume                      832.71(19)
+ 
+_symmetry_cell_setting            'orthorhombic' 
+_symmetry_space_group_name_H-M    'P 21 21 21 ' 
+_symmetry_space_group_name_Hall   ? 
+loop_
+ _symmetry_equiv_pos_as_xyz
+ 'x,y,z'
+ 'x+1/2,-y+1/2,-z'
+ '-x,y+1/2,-z+1/2'
+ '-x+1/2,-y,z+1/2'
+
+loop_
+_atom_type_symbol
+_atom_type_scat_dispersion_real
+_atom_type_scat_dispersion_imag
+_atom_type_scat_Cromer_Mann_a1
+_atom_type_scat_Cromer_Mann_b1
+_atom_type_scat_Cromer_Mann_a2
+_atom_type_scat_Cromer_Mann_b2
+_atom_type_scat_Cromer_Mann_a3
+_atom_type_scat_Cromer_Mann_b3
+_atom_type_scat_Cromer_Mann_a4
+_atom_type_scat_Cromer_Mann_b4
+_atom_type_scat_Cromer_Mann_c
+_atom_type_scat_source  
+ C       0.0033   0.0016   2.3100  20.8439   1.0200  10.2075   1.5886   0.5687
+   0.8650  51.6512   0.2156 'International Tables Vol C 4.2.6.8 and 6.1.1.4'
+ H       0.0000   0.0000   0.4930  10.5109   0.3229  26.1257   0.1402   3.1424
+   0.0408  57.7998   0.0030 'International Tables Vol C 4.2.6.8 and 6.1.1.4'
+ N       0.0061   0.0033  12.2126   0.0057   3.1322   9.8933   2.0125  28.9975
+   1.1663   0.5826 -11.5290 'International Tables Vol C 4.2.6.8 and 6.1.1.4'
+ O       0.0106   0.0060   3.0485  13.2771   2.2868   5.7011   1.5463   0.3239
+   0.8670  32.9089   0.2508 'International Tables Vol C 4.2.6.8 and 6.1.1.4'
+ 
+ 
+_cell_formula_units_Z                    4
+
+# Given Formula = C28 H44 N4 O12 
+# Dc =      5.01 Fooo =    336.00 Mu =     14.73 M =    628.02
+# Found Formula = C7 H11 N1 O3 
+# Dc =      1.25 FOOO =    336.00 Mu =      3.68 M =    157.00
+
+_chemical_formula_sum             'C7 H11 N1 O3'
+_chemical_formula_moiety          'C7 H11 N1 O3'
+_chemical_compound_source                ?
+_chemical_formula_weight            157.00
+ 
+ 
+_cell_measurement_reflns_used            0
+_cell_measurement_theta_min              0
+_cell_measurement_theta_max              0
+_cell_measurement_temperature          293
+ 
+_exptl_crystal_description        '?' 
+_exptl_crystal_colour             '?' 
+_exptl_crystal_size_min           ? 
+_exptl_crystal_size_mid           ? 
+_exptl_crystal_size_max           ? 
+ 
+_exptl_crystal_density_diffrn     1.252 
+_exptl_crystal_density_meas       ? 
+_exptl_crystal_density_method     'not measured' 
+# Non-dispersive F(000): 
+_exptl_crystal_F_000              336 
+_exptl_absorpt_coefficient_mu     0.368 
+ 
+# Sheldrick geometric approximatio 1.00 1.00 
+_exptl_absorpt_correction_type    none 
+_diffrn_measurement_device_type   'Unknown' 
+_diffrn_measurement_device        'Serial' 
+_diffrn_radiation_monochromator   'graphite' 
+_diffrn_radiation_type            'Mo K\a'
+_diffrn_radiation_wavelength           0.71073
+_diffrn_measurement_method        \w/2\q 
+ 
+# If a reference occurs more than once, delete the author 
+# and date from subsequent references. 
+_computing_data_collection        'USER DEFINED DATA COLLECTION' 
+_computing_cell_refinement        'USER DEFINED CELL REFINEMENT' 
+_computing_data_reduction         'USER DEFINED DATA REDUCTION' 
+_computing_structure_solution     'USER DEFINED STRUCTURE SOLUTION' 
+_computing_structure_refinement   'CRYSTALS (Betteridge et al., 2003)' 
+_computing_publication_material   'CRYSTALS (Betteridge et al., 2003)' 
+_computing_molecular_graphics     'CAMERON (Watkin et al., 1996)' 
+ 
+_diffrn_standards_interval_time   . 
+_diffrn_standards_interval_count  . 
+_diffrn_standards_number          0 
+_diffrn_standards_decay_%         ? 
+ 
+_diffrn_ambient_temperature        293
+_diffrn_reflns_number             1849 
+_reflns_number_total              1133 
+_diffrn_reflns_av_R_equivalents   0.018 
+# Number of reflections without Friedels Law is 0 
+# Number of reflections with Friedels Law is 1133 
+# Theoretical number of reflections is about 1905 
+ 
+ 
+_diffrn_reflns_theta_min          3.237 
+_diffrn_reflns_theta_max          27.459 
+_diffrn_measured_fraction_theta_max 0.990 
+ 
+_diffrn_reflns_theta_full         26.361 
+_diffrn_measured_fraction_theta_full 0.990 
+ 
+ 
+_diffrn_reflns_limit_h_min        -6 
+_diffrn_reflns_limit_h_max        6 
+_diffrn_reflns_limit_k_min        -14 
+_diffrn_reflns_limit_k_max        14 
+_diffrn_reflns_limit_l_min        -19 
+_diffrn_reflns_limit_l_max        19 
+_reflns_limit_h_min               0 
+_reflns_limit_h_max               6 
+_reflns_limit_k_min               0 
+_reflns_limit_k_max               14 
+_reflns_limit_l_min               0 
+_reflns_limit_l_max               19 
+ 
+_oxford_diffrn_Wilson_B_factor    0.00 
+_oxford_diffrn_Wilson_scale       0.00 
+ 
+_atom_sites_solution_primary      Other  #heavy,direct,difmap,geom
+# _atom_sites_solution_secondary  difmap
+_atom_sites_solution_hydrogens    difmap
+ 
+_refine_diff_density_min          -0.38 
+_refine_diff_density_max          0.42 
+ 
+ 
+# The current dictionary definitions do not cover the 
+# situation where the reflections used for refinement were 
+# selected by a user-defined sigma threshold 
+ 
+ 
+# The values actually used during refinement 
+_oxford_reflns_threshold_expression_ref     I>-10.0\s(I)
+_refine_ls_number_reflns          1133 
+_refine_ls_number_restraints      0 
+_refine_ls_number_parameters      55 
+_oxford_refine_ls_R_factor_ref    0.0886 
+_refine_ls_wR_factor_ref          0.2182 
+_refine_ls_goodness_of_fit_ref    1.6777 
+_refine_ls_shift/su_max           0.00003
+_refine_ls_shift/su_mean          0.00000
+ 
+ 
+# The values computed with all filters except I/sigma 
+_oxford_reflns_number_all         1133 
+_refine_ls_R_factor_all           0.0886 
+_refine_ls_wR_factor_all          0.2182 
+ 
+# The values computed with a 2 sigma cutoff - a la SHELX 
+_reflns_threshold_expression      I>2.0\s(I)
+_reflns_number_gt                 1018 
+_refine_ls_R_factor_gt            0.0794 
+_refine_ls_wR_factor_gt           0.1986 
+ 
+# choose from: rm (reference molecule of known chirality), 
+# ad (anomolous dispersion - Flack), rmad (rm and ad), 
+# syn (from synthesis), unk (unknown) or . (not applicable). 
+_chemical_absolute_configuration  'unk' 
+ 
+ 
+_refine_ls_structure_factor_coef  Fsqd 
+_refine_ls_matrix_type            full
+_refine_ls_hydrogen_treatment     noref          #undef, noref, refall,
+                                                 # refxyz, refU, constr or mixed
+ 
+# WARNING. The IUCr will not accept Unit Weights 
+_refine_ls_weighting_scheme       calc 
+_refine_ls_weighting_details 
+;
+ Method= Quasi-Unit weights 
+ W = 1.0 or 1./2F 
+;
+# Insert your own references if required - in alphabetical order 
+_publ_section_references 
+; 
+User-defined structure solution reference 
+ 
+User-defined data collection reference 
+ 
+User defined data reduction 
+ 
+User defined cell refinement 
+ 
+Betteridge, P.W., Carruthers, J.R., Cooper, R.I., 
+Prout, K. & Watkin, D.J. (2003). J. Appl. Cryst. 36, 1487. 
+ 
+Watkin, D.J., Prout, C.K. & Pearce, L.J. (1996). CAMERON, Chemical 
+Crystallography Laboratory, Oxford, UK. 
+; 
+
+# Uequiv = arithmetic mean of Ui i.e. Ueqiv = (U1+U2+U3)/3
+
+# Replace last . with number of unfound hydrogen atoms attached to an atom.
+
+# ..._refinement_flags_... 
+# . no refinement constraints           S special position constraint on site
+# G rigid group refinement of site      R riding atom
+# D distance or angle restraint on site T thermal displacement constraints
+# U Uiso or Uij restraint (rigid bond)  P partial occupancy constraint
+
+
+loop_
+_atom_site_label
+_atom_site_type_symbol
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_U_iso_or_equiv
+_atom_site_occupancy
+_atom_site_adp_type
+_atom_site_refinement_flags_posn
+_atom_site_refinement_flags_adp
+_atom_site_refinement_flags_occupancy
+_atom_site_disorder_assembly
+_atom_site_disorder_group
+_atom_site_attached_hydrogens
+C1 C 0.8970(13) 0.0468(5) 0.1908(4) 0.0307(13) 1.0000 Uiso . . . . . . 
+C2 C 0.7657(14) 0.1321(5) 0.1279(4) 0.0327(12) 1.0000 Uiso . . . . . . 
+O3 O 0.7714(11) 0.2468(3) 0.1552(3) 0.0407 1.0000 Uani . . . . . . 
+C4 C 0.6426(17) 0.3315(6) 0.0971(5) 0.0498(17) 1.0000 Uiso . . . . . . 
+O5 O 0.6658(12) 0.1005(4) 0.0597(3) 0.0479 1.0000 Uani . . . . . . 
+N6 N 0.9614(11) 0.0914(4) 0.2765(3) 0.0300(11) 1.0000 Uiso . . . . . . 
+C7 C 0.7647(13) 0.1167(5) 0.3350(4) 0.0299 1.0000 Uani . . . . . . 
+O8 O 0.5235(10) 0.1078(4) 0.3167(3) 0.0400(11) 1.0000 Uiso . . . . . . 
+C9 C 0.8585(15) 0.1530(6) 0.4235(4) 0.0379 1.0000 Uani . . . . . . 
+C10 C 0.8309(15) -0.0878(5) 0.1806(5) 0.0405 1.0000 Uani . . . . . . 
+C11 C 1.0997(15) -0.0424(7) 0.1522(5) 0.0501 1.0000 Uani . . . . . . 
+H41 H 0.6546 0.4120 0.1194 0.0691 1.0000 Uiso . . . . . . 
+H42 H 0.7250 0.3291 0.0409 0.0691 1.0000 Uiso . . . . . . 
+H43 H 0.4540 0.3112 0.0908 0.0691 1.0000 Uiso . . . . . . 
+H91 H 0.7084 0.1694 0.4609 0.0486 1.0000 Uiso . . . . . . 
+H92 H 0.9658 0.0898 0.4497 0.0486 1.0000 Uiso . . . . . . 
+H93 H 0.9695 0.2244 0.4204 0.0486 1.0000 Uiso . . . . . . 
+H101 H 0.8162 -0.1395 0.2317 0.0517 1.0000 Uiso . . . . . . 
+H102 H 0.6994 -0.1150 0.1393 0.0517 1.0000 Uiso . . . . . . 
+H111 H 1.2600 -0.0671 0.1838 0.0601 1.0000 Uiso . . . . . . 
+H112 H 1.1433 -0.0425 0.0914 0.0601 1.0000 Uiso . . . . . . 
+H1 H 0.8606 0.6111 0.2067 0.0500 1.0000 Uiso . . . . . . 
+loop_
+_atom_site_aniso_label
+_atom_site_aniso_U_11
+_atom_site_aniso_U_22
+_atom_site_aniso_U_33
+_atom_site_aniso_U_23
+_atom_site_aniso_U_13
+_atom_site_aniso_U_12
+O3 0.059(3) 0.0269(18) 0.036(2) -0.0027(17) -0.009(2) 0.002(2) 
+O5 0.072(4) 0.038(2) 0.034(2) -0.0071(19) -0.011(2) 0.001(3) 
+C7 0.0295 0.0263 0.034(3) 0.0034 0.0007 -0.0022 
+C9 0.043(3) 0.0406 0.0305 0.0017 -0.0017 -0.0034 
+C10 0.0418 0.027(3) 0.0530 -0.0045 0.0033 0.0041 
+C11 0.0388 0.0483 0.0633 -0.016(3) 0.0057 0.0079 
+
+_refine_ls_extinction_coef 616.071 
+_refine_ls_extinction_method 
+    'Larson (1970), Equation 22'
+_oxford_refine_ls_scale 1.58(3) 
+loop_
+ _geom_bond_atom_site_label_1
+ _geom_bond_site_symmetry_1
+ _geom_bond_atom_site_label_2
+ _geom_bond_site_symmetry_2
+ _geom_bond_distance
+ _geom_bond_publ_flag
+C1 . C2 . 1.495(8)    yes
+C1 . N6 . 1.439(7)    yes
+C1 . C10 . 1.528(8)    yes
+C1 . C11 . 1.521(9)    yes
+C2 . O3 . 1.333(7)    yes
+C2 . O5 . 1.206(7)    yes
+O3 . C4 . 1.438(8)    yes
+C4 . H41 . 0.955    no
+C4 . H42 . 0.953    no
+C4 . H43 . 0.960    no
+N6 . H1 3_745 0.939    no
+N6 . C7 . 1.349(8)    yes
+C7 . O8 . 1.224(8)    yes
+C7 . C9 . 1.488(8)    yes
+C9 . H91 . 0.952    no
+C9 . H92 . 0.962    no
+C9 . H93 . 0.960    no
+C10 . C11 . 1.481(10)    yes
+C10 . H101 . 0.972    no
+C10 . H102 . 0.953    no
+C11 . H111 . 0.965    no
+C11 . H112 . 0.956    no
+loop_
+ _geom_angle_atom_site_label_1
+ _geom_angle_site_symmetry_1
+ _geom_angle_atom_site_label_2
+ _geom_angle_site_symmetry_2
+ _geom_angle_atom_site_label_3
+ _geom_angle_site_symmetry_3
+ _geom_angle
+ _geom_angle_publ_flag
+C2 . C1 . N6 . 117.9(5)    yes
+C2 . C1 . C10 . 117.0(5)    yes
+N6 . C1 . C10 . 118.2(5)    yes
+C2 . C1 . C11 . 116.2(5)    yes
+N6 . C1 . C11 . 115.6(5)    yes
+C10 . C1 . C11 . 58.1(4)    yes
+C1 . C2 . O3 . 112.7(5)    yes
+C1 . C2 . O5 . 123.6(5)    yes
+O3 . C2 . O5 . 123.7(6)    yes
+C2 . O3 . C4 . 114.4(5)    yes
+O3 . C4 . H41 . 110.9    no
+O3 . C4 . H42 . 110.7    no
+H41 . C4 . H42 . 108.9    no
+O3 . C4 . H43 . 109.7    no
+H41 . C4 . H43 . 108.2    no
+H42 . C4 . H43 . 108.4    no
+C1 . N6 . H1 3_745 122.4    no
+C1 . N6 . C7 . 121.2(5)    yes
+H1 3_745 N6 . C7 . 116.2    no
+N6 . C7 . O8 . 121.9(6)    yes
+N6 . C7 . C9 . 116.0(6)    yes
+O8 . C7 . C9 . 122.1(6)    yes
+C7 . C9 . H91 . 111.0    no
+C7 . C9 . H92 . 110.8    no
+H91 . C9 . H92 . 108.3    no
+C7 . C9 . H93 . 110.6    no
+H91 . C9 . H93 . 108.4    no
+H92 . C9 . H93 . 107.6    no
+C1 . C10 . C11 . 60.7(4)    yes
+C1 . C10 . H101 . 120.3    no
+C11 . C10 . H101 . 120.2    no
+C1 . C10 . H102 . 121.2    no
+C11 . C10 . H102 . 121.2    no
+H101 . C10 . H102 . 107.4    no
+C1 . C11 . C10 . 61.2(4)    yes
+C1 . C11 . H111 . 121.7    no
+C10 . C11 . H111 . 119.2    no
+C1 . C11 . H112 . 121.8    no
+C10 . C11 . H112 . 119.1    no
+H111 . C11 . H112 . 107.7    no
+loop_
+ _geom_hbond_atom_site_label_D
+ _geom_hbond_site_symmetry_D
+ _geom_hbond_atom_site_label_H
+ _geom_hbond_site_symmetry_H
+ _geom_hbond_atom_site_label_A
+ _geom_hbond_site_symmetry_A
+ _geom_hbond_angle_DHA
+ _geom_hbond_distance_DH
+ _geom_hbond_distance_HA
+ _geom_hbond_distance_DA
+ _geom_hbond_publ_flag
+C4 . H41 . O8 3_655 155.9(5) 0.955 2.529 3.423(9)    yes
+N6 3_755 H1 . O8 3_655 164.5(3) 0.939 1.926 2.842(9)    yes
+
+
+_iucr_refine_instructions_details_constraints
+;
+#
+# Punched on          at         
+#
+#LIST     12                                                                    
+BLOCK SCALE 
+CONTINUE C(1,X'S,U[ISO]) 
+CONTINUE C(2,X'S,U[ISO]) 
+CONTINUE O(3,X'S,U'S) 
+CONTINUE C(4,X'S,U[ISO]) 
+CONTINUE O(5,X'S,U'S) 
+CONTINUE N(6,X'S,U[ISO]) 
+CONTINUE C(7,X'S,U[33]) 
+CONTINUE O(8,X'S,U[ISO]) 
+CONTINUE C(9,X'S,U[11]) 
+CONTINUE C(10,X'S,U[22]) 
+CONTINUE C(11,X'S,U[23]) 
+END                                                                             
+;
+
+
+_iucr_refine_instructions_details_restraints
+;
+#
+# Punched on          at         
+#
+#LIST     16                                                                    
+NO 
+END                                                                             
+;

@@ -26,7 +26,7 @@ use Env qw(CRYUSEFILE CRYSDIR COMPCODE CROUTPUT);
 $CRYSHOME = $CRYSDIR;
 $CRYSHOME =~ s/.*,//g;                 # Remove owt before comma, repeatedly.
 $CRYSEXE = $CRYSHOME . "crystals";    # Append exe name
-$CRYSDEXE = $CRYSHOME . "crystalsd";  # Append debug exe name
+#$CRYSEXE = $CRYSHOME . "crystalsd";  # Append debug exe name
 $exitcode=0;
 
 print (" using $CRYSEXE \n");
