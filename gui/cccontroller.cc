@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.127  2012/09/12 15:06:51  rich
+// Fix line on wx version.
+//
 // Revision 1.126  2012/09/12 13:29:33  rich
 // Better SYSOPENFILE syntax:
 // SYSOPENFILE [ 'wildcard' 'description' 'wildcard2' 'description' ]
@@ -3420,7 +3423,7 @@ extern "C" {
 //   delete [] tempstr;
 //    tempstr = NULL;
 
-  (CcController::theController)->AddInterfaceCommand( "Launching: " + line );
+//  (CcController::theController)->AddInterfaceCommand( "Launching: " + line );
 
     bRedir = false;
     bool bWait = false;
