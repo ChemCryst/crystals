@@ -195,6 +195,7 @@
 ^^??      P2 TEXT                                                               
 %         GET SILENT REAL ' ' ' '                                               
 %         SEND                                                                  
+^^CO      DISPOSE ADDH                                                          
 %         CLEAR                                                                 
 %         INSERT 'SERIAL '                                                      
 %         STORE FORMAT /(I5)/ LENGTH 5 INTEGER NSER                             
@@ -233,7 +234,6 @@
 %           SEND                                                                
 %           COPY 'END'                                                          
 %         END IF                                                                
-^^CO      DISPOSE ADDH                                                          
 %         FINISH                                                                
 %       END BLOCK                                                               
 %       BLOCK       %BACK BBB%                                                  
