@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.196  2012/11/02 10:30:17  djw
+C Weight the Dobs/Dcalc plot with 1/sigmasq and convert gradient to pseudo-Flack and esd.
+C
 C Revision 1.195  2012/09/21 14:01:50  djw
 C High-light warning that absolute configuration is not determined
 C
@@ -2447,7 +2450,7 @@ C--CALCULATE THE E.S.D.'S AND STORE THEM IN BPD
 C
       JP = 1
       IF ( IPESD .NE. 0 ) THEN
-        CALL XPESD ( 2, JP)
+        CALL XPESD ( 1, JP)
       ELSE
         CALL XZEROF (BPD, 11)
       END IF
@@ -2680,6 +2683,8 @@ C      ISTART             START ADDRESS IN RECORD FOR FIRST VARIABLE
 C                        1 FOR OVERALL
 C                       -1 FOR ATOMS (ITEMS -1 AND 0 ARE TYPE AND SERIAL
 C
+C  JS  SET ON ENTRY FOR WORK SPACE
+c
       INCLUDE 'TSSCHR.INC'
       INCLUDE 'ISTORE.INC'
 C
@@ -2700,14 +2705,16 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
-      JP = ISTART
+    
       CALL XZEROF (BPD, 11)
       L12A = ISTORE(M12+1)
       IF (L12A .GT. 0) THEN
         MD12A=ISTORE(L12A+1)
         JU=ISTORE(L12A+2)
         JV=ISTORE(L12A+3)
-        JT=ISTORE(L12A+4)
+        JT=ISTORE(L12A+4)         !Number unrefined at start of record
+cdjw JAN 2013. offset needed when SCALE not refined
+        JP = ISTART + JT
 C--SEARCH FOR THE CONTRIBUTIONS TO EACH PARAMETER IN TURN
         DO JW=JU,JV,MD12A
           IF(ISTORE(JW))1800,1800,1200
