@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotScatter is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.28  2012/01/04 14:32:06  rich
+// Bigger, rounder, circles in plots.
+//
 // Revision 1.27  2011/09/21 09:31:13  rich
 // Draw circles instead of ellipses.
 //
@@ -309,6 +312,8 @@ void CcPlotScatter::DrawView(bool print)
                         attachedPlot->SetColour(255,255,255);
             attachedPlot->DrawRect(m_XGapLeft, m_YGapTop, 2400-m_XGapRight, 2400-m_YGapBottom, true);
         }
+        // call the axis drawing code
+        m_Axes.DrawAxes(attachedPlot);      
 
         // now loop through the data items, drawing each one
         // if there are 'm_Next' data items, each will use 2200/m_Next as an offset
@@ -399,8 +404,6 @@ void CcPlotScatter::DrawView(bool print)
                 }
             }
         }
-        // call the axis drawing code
-        m_Axes.DrawAxes(attachedPlot);      
 
         // display all the above
         attachedPlot->Display();
