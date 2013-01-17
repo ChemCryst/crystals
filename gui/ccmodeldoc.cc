@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.50  2012/05/11 10:13:31  rich
+// Various patches to wxWidget version to catch up to MFc version.
+//
 // Revision 1.49  2012/03/23 15:57:43  rich
 // Intel support.
 //
@@ -583,7 +586,7 @@ bool CcModelDoc::RenderModel( CcModelStyle * style )
 
    int nRes = (int) ( 5000.0 / mAtomList.size() );
    nRes = CRMIN ( 15, nRes );
-   nRes = CRMAX ( 4,  nRes );
+   nRes = CRMAX ( 15,  nRes ); //Was 4. Not needed?
    style->normal_res = nRes;
 
    retval |= RenderBonds(style,false);
