@@ -200,7 +200,7 @@ void CcModelBond::Render(CcModelStyle *style, bool feedback)
 
    int detail = style->normal_res;
 
-   GLUquadricObj* cylinder;
+//   GLUquadricObj* cylinder;
 
    GLfloat Surface1[] = { (float)m_r/255.0f,(float)m_g/255.0f,(float)m_b/255.0f, 1.0f };
    GLfloat Surface2[] = { (float)m_r/255.0f,(float)m_g/255.0f,(float)m_b/255.0f, 1.0f };
