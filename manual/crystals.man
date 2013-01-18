@@ -1011,7 +1011,7 @@ Lists marked * cannot be directly input by the User
 #     5    The model parameters (section #RLIST05#)
 #     6    Reflection data (section #RLIST06#)
 #     7    Reflection data not used for refinement (section #RLIST07#)
-#     9*   ESDs of model parameters (section #RESD#)
+#     9*   ESDs of model parameters (section #RLIST9#)
 #    10    Peak coordinates from Fourier (section #RLIST10#)
 #    11    Least squares matrix (section #RLIST11#)
 #    12    Refinement directives (section #RLIST12#)
