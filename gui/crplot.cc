@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 23:20
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.16  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.1.1.1  2004/12/13 11:16:18  rich
 //   New CRYSTALS repository
 //
@@ -201,12 +205,14 @@ CcParse CrPlot::ParseInput( deque<string> & tokenList )
 
             case kTPlotSave:
             {
-                tokenList.pop_front();  // "PLOTSAVE"
+                tokenList.pop_front();  // "SAVE"
                 int w = atoi( tokenList.front().c_str() );
                 tokenList.pop_front();
                 int h = atoi( tokenList.front().c_str() );
                 tokenList.pop_front();
-                ((CxPlot*)ptr_to_cxObject)->MakeMetaFile(w,h);
+                string name = string(tokenList.front());
+                tokenList.pop_front();
+                ((CxPlot*)ptr_to_cxObject)->MakeMetaFile(w,h,name);
                 break;
             }
       case kTDefinePopupMenu:

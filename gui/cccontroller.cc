@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.128  2012/11/09 15:07:17  rich
+// Remove debug print
+//
 // Revision 1.127  2012/09/12 15:06:51  rich
 // Fix line on wx version.
 //
@@ -2636,10 +2639,7 @@ string CcController::SaveFileDialog(const string &defaultName,
                               cwd,
                               initName,
                               extension,
-                              wxFD_OVERWRITE_PROMPT );
-
-
-
+                              wxFD_SAVE|wxFD_OVERWRITE_PROMPT );
 
 
     if (fileDialog.ShowModal() == wxID_OK )

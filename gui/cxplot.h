@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:09
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.22  2012/05/11 11:00:18  rich
+//   Double thickness axes for wx version. Fix build bug.
+//
 //   Revision 1.21  2012/05/11 10:13:31  rich
 //   Various patches to wxWidget version to catch up to MFc version.
 //
@@ -215,7 +218,7 @@ class CxPlot : public BASEPlot
         void CreateKey(int numser, string* names, int** col);
         void CreateKeyWindow(int x, int y);
         void FlipGraph(bool flipped);
-        void MakeMetaFile(int w, int h);
+        void MakeMetaFile(int w, int h, string s);
         void PrintPicture();
 
         CcRect m_client;
@@ -259,6 +262,7 @@ private:
         wxColour mfgcolour;
         wxBitmap *m_oldMemDCBitmap, *m_newMemDCBitmap;
         wxMemoryDC *m_memDC;
+//        wxDC *m_memDC;
 //        wxPen      * m_pen;
         wxBrush    * m_brush;
 

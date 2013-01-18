@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.38  2012/05/11 11:00:18  rich
+//   Double thickness axes for wx version. Fix build bug.
+//
 //   Revision 1.37  2012/05/11 10:13:31  rich
 //   Various patches to wxWidget version to catch up to MFc version.
 //
@@ -301,7 +304,7 @@ CcPoint CxPlot::DeviceToLogical(int x, int y)
      CcRect       windowext( m_client.mTop, m_client.mLeft, m_client.mBottom, m_client.mRight);
 #endif
 #ifdef __BOTHWX__
-     wxRect wwindowext = GetRect();
+     wxRect wwindowext = m_memDC->GetSize();// GetRect();
      CcRect windowext( wwindowext.y, wwindowext.x, wwindowext.GetBottom(), wwindowext.GetRight());
 #endif
 
@@ -1105,19 +1108,55 @@ void CxPlot::DeleteKey()
 void CxPlot::PrintPicture() 
 {
 }
-void CxPlot::MakeMetaFile(int w, int h)
+void CxPlot::MakeMetaFile(int w, int h, string s)
 {
+    wxString cwd = wxGetCwd();
+
+    ::wxInitAllImageHandlers();
+
+    string defName = s;
+    defName += string(".png");
+    string extension = "*.png";
+    string description = "Portable Network Graphics (*.png)";
+
+    string result = CcController::theController->SaveFileDialog( defName, extension, description);
+
+    if ( ! ( result == "CANCEL" ) )
+    {
+      wxBitmap tempBitmap(w,h);
+      wxMemoryDC dc;
+      dc.SelectObject(tempBitmap);
+
+      CcRect backup_m_client = m_client;
+      m_client.Set(0, 0, h, w);
+
+      wxMemoryDC* temp = m_memDC;
+      m_memDC = &dc;
+
+      Clear();
+
+      ((CrPlot*)ptr_to_crObject)->ReDrawView(false);
+
+      m_memDC = temp;
+      m_client = backup_m_client;
+
+      tempBitmap.SaveFile(result, wxBITMAP_TYPE_PNG);
+    }
+    wxSetWorkingDirectory(cwd);
+    return;
+
 }
 #endif
 
 #ifdef __CR_WIN__
 // create a wmf of the graph
-void CxPlot::MakeMetaFile(int w, int h)
+void CxPlot::MakeMetaFile(int w, int h, string s)
 {
     CDC * backup_memDC = m_memDC;
     CcRect backup_m_client = m_client;
 
-    string defName = "plot1.emf";
+    string defName = s;
+    defName += string("plot1.emf");
     string extension = "*.emf";
     string description = "Windows Enhanced MetaFile (*.emf)";
     string result = CcController::theController->SaveFileDialog(defName, extension, description);

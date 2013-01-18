@@ -12,20 +12,30 @@
 ^^WI  {                                                                         
 ^^WI   @ 1,1 TABCTRL _MAINTABS                                                  
 ^^WI   {                                                                        
-^^WI    TAB _TAB1 'Residual' GRID _MAINTG2 NROWS=3 NCOLS=3                      
+^^WI    TAB _TAB1 'Residual' GRID _MAINTG2 NROWS=5 NCOLS=3                      
 ^^WI    {                                                                       
 ^^WI          @ 2,2 RESIZE _XARSZ2 HORIZONTAL                                   
 ^^WI          {                                                                 
-^^WI            ITEM GRID GRAPH NROWS=1 NCOLS=1                                 
+^^WI            ITEM GRID GRAPH NROWS=2 NCOLS=1                                 
 ^^WI            {                                                               
 ^^WI              @ 1,1 PLOTWINDOW _VFO NROWS=20 NCOLS=48                       
+^^WI              @ 2,1 GRID RB NROWS=1 NCOLS=2
+^^WI              {
+^^WI                 @ 1,1 STRETCH VB HORIZONTAL
+^^WI                 @ 1,2 BUTTON SAVEVFO 'Save Image'
+^^WI              }                                                               
 ^^WI            }                                                               
-^^WI            ITEM GRID GRAPH NROWS=1 NCOLS=1                                 
+^^WI            ITEM GRID GRAPH NROWS=2 NCOLS=1                                 
 ^^WI            {                                                               
 ^^WI              @ 1,1 PLOTWINDOW _VSINT NROWS=20 NCOLS=64                     
+^^WI              @ 2,1 GRID RB NROWS=1 NCOLS=2
+^^WI              {
+^^WI                 @ 1,1 STRETCH VB HORIZONTAL
+^^WI                 @ 1,2 BUTTON SAVEVSINT 'Save Image'
+^^WI              }                                                               
 ^^WI            }                                                               
-^^WI          }                                                                 
-^^WI    }                                                                       
+^^WI          }
+^^WI    }
 ^^WI    TAB _TAB2 'Residual by class/parity' GRID _MAINTG2 NROWS=3 NCOLS=3      
 ^^WI    {                                                                       
 ^^WI          @ 2,2 RESIZE _XARSZ3 HORIZONTAL                                   
@@ -122,11 +132,17 @@
 %    FINISH                                                                     
 % END IF                                                                        
 % LOOP                                                                          
-%   VERIFY CLOSE HELP                                                           
+%   VERIFY CLOSE SAVEVSINT SAVEVFO HELP                                                           
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                
 %   CASE VALUE                                                                  
 %     BLOCK  %CLOSE%                                                            
 %        EVALUATE LOOPEND = LOOPCOUNTER                                         
+%     END BLOCK                                                                 
+%     BLOCK  %SAVEVSINT%
+^^CO SET _VSINT SAVE 800 600 agreement_angle
+%     END BLOCK
+%     BLOCK  %SAVEVFO%
+^^CO SET _VFO SAVE 800 600 agreement_f
 %     END BLOCK                                                                 
 %     BLOCK  %HELP%                                                             
 %        COPY '#SCRIPT XHELP1'                                                  

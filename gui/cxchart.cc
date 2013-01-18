@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.32  2012/03/26 11:39:24  rich
+//   Improved line drawing in Cameron for wx version.
+//
 //   Revision 1.31  2005/05/05 12:25:32  rich
 //   Fixed polygon selection in Cameron for wxWidget platforms (Linux, Mac, Windows(WXS)).
 //
@@ -1145,6 +1148,37 @@ void CxChart::OnKeyDown( wxKeyEvent & event )
 #ifdef __BOTHWX__
 void CxChart::MakeMetaFile(int w, int h, bool enhanced)
 {
+    wxString cwd = wxGetCwd();
+
+    ::wxInitAllImageHandlers();
+
+    string defName = "cam_pic1.png";
+    string extension = "*.png";
+    string description = "Portable Network Graphics (*.png)";
+
+    string result = CcController::theController->SaveFileDialog( defName, extension, description);
+
+    if ( ! ( result == "CANCEL" ) )
+    {
+      wxBitmap tempBitmap(w,h);
+      wxMemoryDC dc;
+      dc.SelectObject(tempBitmap);
+
+      CcRect backup_m_client = m_client;
+      m_client.Set(0, 0, h, w);
+
+      wxDC* temp = memDC;
+      memDC = &dc;
+
+      ((CrChart*)ptr_to_crObject)->ReDrawView();
+
+      memDC = temp;
+      m_client = backup_m_client;
+
+      tempBitmap.SaveFile(result, wxBITMAP_TYPE_PNG);
+    }
+    wxSetWorkingDirectory(cwd);
+    return;
 }
 
 #include <wx/dcprint.h>
