@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2012/10/18 12:04:11  djw
+C Code from cif2cry merged with difin/datain.  Hundreds of changes.  cif2cry may become obsolete once debugged
+C
 C Revision 1.21  2012/08/30 10:12:17  djw
 C Tidy up screen output so that items missing from cif are more evident
 C
@@ -84,6 +87,7 @@ c #include "ciftbx.sys"
       REAL HMIN,HMAX,KMIN,KMAX,LMIN,LMAX
 
       DATA alpha    /'abcdefghijklmnopqrstuvwxyz'/
+      DATA sigalp /0.0/,sigbet /0.0/, siggam /0.0/
 C 
       PARAMETER   (DTR=3.14159/180.)
       EQUIVALENCE (RES,IRES)
