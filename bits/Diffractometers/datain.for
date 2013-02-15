@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2013/01/20 21:39:30  rich
+C Initialise s.u. variables for cell, otherwise NaN values can occur.
+C
 C Revision 1.22  2012/10/18 12:04:11  djw
 C Code from cif2cry merged with difin/datain.  Hundreds of changes.  cif2cry may become obsolete once debugged
 C
@@ -581,7 +584,6 @@ c
       endif      
 c
 C 
-305   CONTINUE
       atn = 0.
       atx = 0.
       F1=NUMB_('_exptl_absorpt_correction_T_min',adum,DUM)
@@ -597,7 +599,6 @@ C
          write(ntext,'(A)') 'Absorption Correction Found'
       endif
 C
-320   continue
 C
 C....... Extract space group notation (expected char string)
       CSPACE = '?'
@@ -608,13 +609,13 @@ C....... Extract space group notation (expected char string)
        if(f1) FSG=CHAR_('_space_group_name_H-M_alt',NAME)
       endif
 c
-      if(f1)then
        IF (.NOT.(FSG)) THEN
          write(6,'(/a/)') 'No spacegroup found'
          write(ntext,'(/a/)') 'No spacegroup found'
          CSPACE = '?'
          GO TO 1050
        END IF
+      if(fsg)then
        CSPACE=NAME(1:LONG_)
        write(6,'(//a,a/)')'Space group  from cif= ',NAME(1:LONG_)
        write(ntext,'(//a,a/)')'Space group  from cif= ',NAME(1:LONG_)
