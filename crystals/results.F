@@ -1785,7 +1785,7 @@ C Check if riding H ESD to be omitted
 C
           LOJ = J+6
           J=J+NXF
-c          WRITE(133,*)NXF
+c          WRITE(123,*)NXF
           CALL SNUM(STORE(MP),BPD(MPD),NXD,NOP,J,LINEA)
           IF (IPCHCO .EQ. 3) THEN  
 #if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
@@ -2454,7 +2454,6 @@ C
       ELSE
         CALL XZEROF (BPD, 11)
       END IF
-
 C
 C--CLEAR THE OUTPUT BUFFER
       CALL XMVSPD(IB,LINEA(1),118)
@@ -2705,7 +2704,6 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
-    
       CALL XZEROF (BPD, 11)
       L12A = ISTORE(M12+1)
       IF (L12A .GT. 0) THEN
@@ -3766,22 +3764,20 @@ c note that Flack's spread sheet uses z rather than f at theta=0
         sumz = sumz + table(j,1)*table(j,4)*table(j,4)
       enddo
 c
-c      write(ncwu,'(6f12.4)') table
-c      write(ncwu,'(//3f12.4//)') sumy, sumx, sumz
 chi * 10^4
       chi=20000. * sqrt(sumy)/(sumx+sumz)
       A(11) = CHI
       A(12) = SUMY
-      write(cmon,'(/)')
-      CALL XPRVDU(NCVDU, 1,0)
       WRITE ( CMON, '(1x,A,F8.1,3x,A,F10.4)') 
-     1 'Friedif = ',chi,'Estimated Friedel difference = ',sqrt(sumy)
+     1 ' Friedif = ',chi,'Estimated Friedel difference = ',sqrt(sumy)
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0)  then
-       WRITE(NCWU,'(//A)') CMON(1)(:)
-       WRITE(NCWU,'(A)') 
+       WRITE(NCWU,'(A)') CMON(1)(:)
+       WRITE(NCWU,'(A//)') 
      1 ' f computed from scattering factors, including f-prime'
       ENDIF
+      write(cmon,'(//)')
+      call xprvdu(ncvdu,2,0)
       deallocate (table)
       deallocate (type)
       RETURN
@@ -7086,7 +7082,7 @@ C----- PRINT OUT THE USED-REFERENCES
       END
 c
 CODE FOR TONSPK
-      SUBROUTINE TONSPK (IPLOT,CRITER,ITYP06,IPUNCH)
+      SUBROUTINE TONSPK (IPLOT,CRITER,ITYP06,IPUNCH,FILTER)
 C 
 C     TON SPEK'S ENANTIOPOLE
 C March 2008
@@ -7095,23 +7091,30 @@ C Requires the user to set up a LIST 7 with the Friedel flag
 C set in the JCODE field.
 C This can be done with the script COPY67
 C 
-C      iplot   Fo/Fc or NPP
-C      Criter  default 999.
-C      ipunch  no/yes/rest  0/1/2
+C      iplot   plot type - None, Do/Dm, Qo/Qm, Ro/Dm 2Ao-Do or NPP
+C      Criter  default 99999.
+C      ipunch  no/table/restraint/graph  0/1/2/3
+C      FILTER(4) - see FILTERS below  
 c      thresh  in code 0.5
 c      thresh2 in code 3.0
 C 
+      PARAMETER (NFAILN=6)
+      DIMENSION IFAILN(NFAILN)
+      CHARACTER*32 CFAILN(NFAILN)
+      DIMENSION FILTER(4)
       PARAMETER (NPLT=7)
       DIMENSION IFOPLT(2*NPLT+1), IFCPLT(2*NPLT+1)
       DIMENSION DATC(401)
       DIMENSION TEMP(2)
       DIMENSION APROP(12)
       DIMENSION HFLACK(8)
+      dimension  root(2), xcoord(2), ycoord(2), grad(2)
       CHARACTER*1 CSIGN
       CHARACTER*80 LINE
       CHARACTER*40 FORM
       CHARACTER*36 HKLLAB
       CHARACTER*3 CTYPE(2)
+      CHARACTER*48 CPLOT
 C 
       INCLUDE 'ISTORE.INC'
 C 
@@ -7142,22 +7145,28 @@ C
       DATA LISTS(1)/5/,LISTS(2)/6/,LISTS(3)/28/,LISTS(4)/30/,LISTS(5)/1/
       DATA LISTS(6)/2/,LISTS(7)/23/
       DATA CTYPE(1)/'Fo '/,CTYPE(2)/'Fsq'/
+      DATA CFAILN(1)/'/Do/ > Criterion * /Dm/' /
+      DATA CFAILN(2)/ 'Ao >< Am +/- (Filter_1*sig+Dm/2)' /
+      DATA CFAILN(3)/ 'Ao,Am < zero' /
+      DATA CFAILN(4)/ 'Ao >< Am +/- Filter_2%' /
+      DATA CFAILN(5)/ 'Am < Filter_3 * sigma' /
+      DATA CFAILN(6)/ 'Dm < Filter_4 * sigma' /
 C 
 C      set packing constants
       PARAMETER (NPAK=256)
       PARAMETER (NN2=NPAK/2)
       PARAMETER (THRESH=.5)
+      PARAMETER (THRESH2 = 3.)
+
       IERROR=1
 C 
       CALL XRSL
       CALL XCSAE
 c zero the R factor accumulators
       CALL XZEROF (HFLACK,8)
-C----- sort out plot level
-      IF (IPLOT.EQ.0) LEVEL=0
-      IF (IPLOT.EQ.1) LEVEL=4
-      IF (IPLOT.EQ.2) LEVEL=5
+c
 C--FIND OUT IF LISTS EXIST
+
       IERROR=1
       DO 300 N=1,NLISTS
          LSTNUM=LISTS(N)
@@ -7200,9 +7209,30 @@ Cdjwsep07 check the type of reflections
 C 
 C----- OUTPUT A TITLE, FIRST 20 CHARACTERS ONLY
 C      WRITE(NCFPU1,1320) (KTITL(I),I=1,20)
+c
+c
+      IF  (IPLOT.EQ.1) THEN
+         WRITE (cplot,'(a)') ' Do vs Dm scatterplot'
+      ELSE IF (IPLOT.EQ.2) THEN
+         WRITE (cplot,'(a)') ' Qo vs Qm scatterplot'
+      ELSE IF (IPLOT.EQ.3) THEN 
+         WRITE (cplot,'(a)') ' Ro vs Dm scatterplot'
+      ELSE IF (IPLOT.EQ.4) THEN 
+         WRITE (cplot,'(a)') ' Flack 2AoDo scatterplot'
+      ELSE
+         WRITE (cplot,'(a)')
+     1   ' Default DO vs Dm scatterplot not displayed'
+      END IF
+c
+      if(ipunch.eq.3) write(ncpu,'(a)') cplot
+c
 C 
       SCALE=STORE(L5O)
       SCALE=1./(SCALE*SCALE)
+c
+cdjwnov12
+c      fmax=store(l6dtl+5*md6dtl+1)
+c
 C----- MULTIPLIER TO CORRECT Fc FOR FLACK PARAMETER VALUE
       PREFLACK=1.-2.*STORE(L30GE+6)
 C- COMPUTE Friedif and <D^2>
@@ -7216,22 +7246,34 @@ c      write(123,1)
 C 
 C 
 C------ SET UP PLOT OUTPUT
-C       Fo vs Fc scatter
       MAX11=ISIZ11
-      IF (LEVEL.EQ.4) THEN
-         WRITE (CMON,'(A,/,A,/,A)') 
-     1 '^^PL PLOTDATA _FOFC SCATTER ATTACH _VFOFC',
-     2 '^^PL XAXIS TITLE Delta(Fc^2)/s NSERIES=1 LENGTH=2000',
-     3 '^^PL YAXIS TITLE Delta(Fo^2)/s SERIES 1 TYPE SCATTER'
-         CALL XPRVDU (NCVDU,3,0)
-      END IF
-C       Normal probability plot
-      IF (LEVEL.EQ.5) THEN
-         WRITE (CMON,'(A,/,A,/,A)') 
-     1 '^^PL PLOTDATA _NORMPP SCATTER ATTACH _VNORMPP',
-     2 '^^PL XAXIS TITLE ''Expected (Z-score)'' NSERIES=1 LENGTH=2000',
-     3 '^^PL YAXIS TITLE ''Residual'' SERIES 1 TYPE SCATTER'
-         CALL XPRVDU (NCVDU,3,0)
+      IF  (IPLOT.EQ.1) THEN
+C       Do vs Dm scatter
+         WRITE (CMON,'(A,/,A,/,A,/A,/A)') 
+     1 '^^PL PLOTDATA _FOFC SCATTER ATTACH _VFOFC KEY',
+     2 '^^PL XAXIS TITLE Dm NSERIES=1 LENGTH=2000',
+     3 '^^PL YAXIS TITLE Do',
+     4 '^^PL SERIES 1 SERIESNAME ''Do'' TYPE SCATTER'
+         CALL XPRVDU (NCVDU,4,0)
+
+      ELSE IF (IPLOT.EQ.2) THEN
+C       Qo vs Qm scatter
+         WRITE (CMON,'(A,/,A,/,A,/A,/A)') 
+     1 '^^PL PLOTDATA _FOFC SCATTER ATTACH _VFOFC KEY',
+     2 '^^PL XAXIS TITLE Qm NSERIES=1 LENGTH=2000',
+     3 '^^PL YAXIS TITLE Qo',
+     4 '^^PL SERIES 1 SERIESNAME ''Qo'' TYPE SCATTER'
+         CALL XPRVDU (NCVDU,4,0)
+
+      ELSE IF (IPLOT.EQ.3) THEN
+C       Ro vs Dm scatter
+         WRITE (CMON,'(A,/,A,/,A,/A,/A)') 
+     1 '^^PL PLOTDATA _FOFC SCATTER ATTACH _VFOFC KEY',
+     2 '^^PL XAXIS TITLE Dm NSERIES=1 LENGTH=2000',
+     3 '^^PL YAXIS TITLE Ro',
+     4 '^^PL SERIES 1 SERIESNAME ''Ro'' TYPE SCATTER'
+         CALL XPRVDU (NCVDU,4,0)
+
       END IF
 C 
 CC----- initialise tons accumulators etc
@@ -7247,7 +7289,11 @@ C NPP ACCUMULATORS AND POINTERS
       WTOP=0.0
       WBOT=0.0
       SIGTOP=0.0
-      N6ACC=0
+      n6acc = 0
+      l6acc = 1
+      m6acc = l6acc
+c     signa:noise indices Do, Dm, sigma, Ao, Am
+      md6acc = 7
 C 
 C ACCUMULATORS FOR RESTRAINT R-FACTOR AND AVERAGES
       FLRNUM=0.
@@ -7256,10 +7302,24 @@ C ACCUMULATORS FOR RESTRAINT R-FACTOR AND AVERAGES
       RESTDEN=0.
 C 
 C      plus and minus sums
+      NPP=0
+      NPM=0
+      NMM=0
+      NMP=0
+      XPP=0.
+      XPM=0.
+      XMM=0.
+      XMP=0.
+      YPP=0.
+      YPM=0.
+      YMM=0.
+      YMP=0.
       NPFO=0
       NNFO=0
       FOMAX=0.
       FCMAX=0.
+      DOMAX = 0.
+      DCMAX = 0.
       STNFOM=0.
       STNFCM=0.
       FCMIN=1000000.
@@ -7270,6 +7330,8 @@ C      plus and minus sums
       NPFC=0
       NNFC=0
 C----- totals for slope and intercept
+      xmax=0.
+      ymax=0.
       SS=0.
       SX=0.
       SY=0.
@@ -7284,6 +7346,10 @@ C
       FSXX=0.
       FSYY=0.
       FSXY=0.
+C
+      i = LINFIT(1,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,nitem,
+     1  root, xcoord, ycoord, grad)
+
 C----- restraint counter
       NREST=0
       SPFC=0.
@@ -7308,21 +7374,21 @@ C
 C 
       IF (IPUNCH.EQ.1) THEN
          WRITE (NCPU,350)
-350      FORMAT (3X,'H',3X,'K',3X,'L',11X,'Fo+',7X,'Sig',7X,'Fc+',7X,
-     1   'Fo-',7X,'Sig',7X,'Fc-',X,'    Do   ',2X,'   Dc    ',4X,
-     2   ' Ao ',5X,' Ac ',5X,'Sig(Do)',2X,'Dc(n)')
+350      FORMAT (3X,'H',3X,'K',3X,'L',11X,'Io+',7X,'Sig',7X,'Ic+',7X,
+     1   'Io-',7X,'Sig',7X,'Ic-',X,'    Do   ',2X,'   Dm    ',4X,
+     2   ' Ao ',5X,' Am ',5X,'Sig(Do)')
       ELSE IF (IPUNCH.EQ.2) THEN
-         thresh2 = 3.
-         WRITE (NCPU,'(a,f8.2,a)') 
-     1   'REM Restraint created if abs(Do-Dc) <',thresh2,
-     2   ' sigma(Ao)'
          WRITE (NCPU,'(A,F9.4,A,F9.4)') 'REM Flack parameter = ', 
      1   STORE(L30GE+6), ' Pre-flack =', preflack
          WRITE (NCPU,400)
-400      FORMAT ('REM '5X,'Delata Fo',12X,'Sigma',33X,'Delta Fc'24X,
-     1   'h  k  l     DFo-Dfc/sig')
+400      FORMAT ('REM '5X,'Delata Io',12X,'Sigma',33X,'Delta Ic'24X,
+     1   'h  k  l     DIo-DIc/sig')
+      else if (ipunch .eq. 3) then
+         write(ncpu,'(a)') ' Graph points, Do, Dm, x, y, weight'
       END IF
 C 
+C     EXCLUDED REFLECTION CATEGORIES
+      CALL XZEROF (IFAILN, nfailn)
       IN=0
       NREFIN=0
       LFRIED=0
@@ -7400,80 +7466,62 @@ C
 COMPARE PACKED INDICES
       IF (H1.EQ.H2) THEN
          MFRIED=MFRIED+1
-         FOKD=FOK1-FOK2
-         FCKD=FCK1-FCK2
-         FOKS=0.5*(FOK1+FOK2)
-         FCKS=0.5*(FCK1+FCK2)
-         FOMAX=MAX(FOMAX,FOKD)
-         FCMAX=MAX(FCMAX,FCKD)
-         FCMIN=MIN(FCMIN,FCKD)
+         FokD=FOK1-FOK2
+         FckD=FCK1-FCK2
+         FokS=0.5*(FOK1+FOK2)
+         FckS=0.5*(FCK1+FCK2)
+         Qo = FokD/FokS
+         Qc = FckD/FckS
+         FOMAX=MAX(FOMAX,FokD)
+         FCMAX=MAX(FCMAX,FckD)
+         FCMIN=MIN(FCMIN,FckD)
          VAM = SIG1*SIG1+SIG2*SIG2
-         SIGM=SQRT(VAM)
-         SIGD=1.41*SIGM
+         SIGMAD=SQRT(VAM)
+         SIGMAS = 0.5*SIGMAD
+         SIGMAQ =SQRT((Fok1*sig2)*(Fok1*sig2) + (Fok2*sig1)*(Fok2*sig1))
+         SIGMAQ = SIGMAQ*2./((2.*fOKs)*(2.*fOKs))
+
+c      write(123,'(3(3f12.3,4x))')
+c     1 Fokd, fckd, sigmad,
+c     2 foks, fcks, sigmas, 
+c     3 Qo, Qc, SIGMAQ
+
 C ZH = SIGNAL:NOISE
-         ZH=(FCKD-FOKD)/SIGM
-         QH=(-FCKD-FOKD)/SIGM
+         ZH=(FckD-FokD)/SIGMAD
+         QH=(-FckD-FokD)/SIGMAD
 C SIGNAL:NOISE FOR DELTA FO AND FC
-         STNFO=FOKD/SIGM
-         STNFC=FCKD/SIGM
+         STNFO=FokD/SIGMAD
+         STNFC=FckD/SIGMAD
          STNFOM=MAX(STNFOM, STNFO)
          STNFCM=MAX(STNFCM, STNFC)
 C 
+c  Data for R factors.
 C  Accumulate info to RA
-         HFLACK(1) = HFLACK(1) + ABS(FOKS-FCKS)
-         HFLACK(2) = HFLACK(2) + ABS(FOKS)
+         HFLACK(1) = HFLACK(1) + ABS(FokS-FckS)
+         HFLACK(2) = HFLACK(2) + ABS(FokS)
 C  Accumulate info to RD
-         HFLACK(3) = HFLACK(3) + ABS(FOKD-FCKD)
-         HFLACK(4) = HFLACK(4) + ABS(FOKD)
+         HFLACK(3) = HFLACK(3) + ABS(FokD-FckD)
+         HFLACK(4) = HFLACK(4) + ABS(FokD)
 C  Accumulate info to RA2
-         HFLACK(5) = HFLACK(5) + (FOKS-FCKS)*(FOKS-FCKS)/vam
-         HFLACK(6) = HFLACK(6) + FOKS*FOKS/vam
+         HFLACK(5) = HFLACK(5) + (FokS-FckS)*(FokS-FckS)/vam
+         HFLACK(6) = HFLACK(6) + FokS*FokS/vam
 C  Accumulate info to RD2
-         HFLACK(7) = HFLACK(7) + (FOKD-FCKD)*(FOKD-FCKD)/vam
-         HFLACK(8) = HFLACK(8) + FOKD*FOKD/vam
+         HFLACK(7) = HFLACK(7) + (FokD-FckD)*(FokD-FckD)/vam
+         HFLACK(8) = HFLACK(8) + FokD*FokD/vam
 c
-         FLRNUM=FLRNUM+ABS(FOKD-PREFLACK*FCKD)
-         FLRDEN=FLRDEN+ABS(FOKD)
+         FLRNUM=FLRNUM+ABS(FokD-PREFLACK*FckD)
+         FLRDEN=FLRDEN+ABS(FokD)
 C 
          IF (IPUNCH.EQ.1) THEN
-Cdjwdec09 - add noise to Fc
-C          anoise = xrand(1.,1)
-C         anoise = sign(1.,anoise)*sqrt(abs(anoise))*sigm
-C          fckn = fckd + anoise
-Cdjwdec09
             ITEMP=NINT(FRIED1)
             JTEMP=NINT(FRIED2)
             IF (ITEMP.LT.0) ITEMP=10+ITEMP
             IF (JTEMP.LT.0) JTEMP=10+JTEMP
             WRITE (NCPU,'(3i4,2i2, 6f10.2, 5f10.2, 5f10.4)') I,J,K,
-     1       ITEMP,JTEMP,FOK1,SIG1,FCK1,FOK2,SIG2,FCK2,FOKD,FCKD,FOKS,
-     2       FCKS,SIGM
+     1       ITEMP,JTEMP,FOK1,SIG1,FCK1,FOK2,SIG2,FCK2,FokD,FckD,FokS,
+     2       FckS,SIGMAD
 C 
-         ELSE IF (IPUNCH.EQ.2) THEN
-C----- multiplier to correct Fc for flack parameter value
-C assigned above      PREFLACK = 1. - 2.* STORE(L30GE+6)
-C 
-Cdjwjul09  Watch out for small/negative average Fo & Fc
-            IF ((FOKS.GE.THRESH*SIGM).AND.(FCKS.GE.THRESH*SIGM)) THEN
-             IF (ABS(FOKD-FCKD) .le. thresh2 * sigm) THEN
-               IF (FCKD.LT.ZERO) THEN
-                  CSIGN='-'
-               ELSE
-                  CSIGN='+'
-               END IF
-               ALT=sigm
-               WRITE (NCPU,550)
-     1         fokd,  alt , CSIGN, abs(fckd),
-     3         i,j,k,abs(fokd-fckd)/sigm, (fokd-preflack*fckd)/fckd
-550            FORMAT ('restrain ',F9.2,', ',F14.4,' = ',A,
-     1         ' ( 1. - ( 2. * enantio ) ) * ',F9.2,20X,3I5,2F9.3)
-               NREST=NREST+1
-               RESTNUM=RESTNUM+ABS(FOKD-PREFLACK*FCKD)
-               RESTDEN=RESTDEN+ABS(FOKD)
-             END IF
-            END IF
          END IF
-C 
 C 
          NFO=NINT(STNFO)+NPLT+1
          NFO=MAX(NFO,1)
@@ -7485,9 +7533,58 @@ C
          IFCPLT(NFC)=IFCPLT(NFC)+1
 C 
 c
-c reject reflections where Dobs are CRITER greater than Dcalc
+c FILTERS
+c accept reflections where:
+c 1      /Do/ < CRITER * /Dm/
+c 2      Fo <> Am+/-(Dm/2+filter(1)*sigma)
+c 3      FoS and Fcs > zero
+c 4      FoS < FcS+/- FILTER(2)%
+c 5      Fcs > FILTER(3)*sigmas
+c 6      FcD > FILTER(4)*sigmad
 c
-         if (abs(fokd).lt.criter*abs(fckd)) then
+c         FckS is average of Fc 
+c         FckD is difference of Fc
+         ifail = 0
+c 1
+         if (abs(FokD).ge.criter*abs(FckD)) then
+            ifail=ifail+1
+            ifailn(1)=ifailn(1) + 1
+         endif
+c 2
+         fcmx = max(fck1,fck2)
+         fcmn = min(fck1,fck2)
+         if ((fok1.lt. (fcmn-filter(1)*sigmad)) .or.
+     1       (fok1.gt. (fcmx+filter(1)*sigmad)) .or.
+     2       (fok2.lt. (fcmn-filter(1)*sigmad)) .or.
+     1       (fok2.gt. (fcmx+filter(1)*sigmad))) then
+            ifail=ifail+1
+            ifailn(2)=ifailn(2) + 1
+         endif
+c 3
+         if ((FokS.lt.zero).or.(fcks.lt.zero)) then
+            ifail=ifail+1
+            ifailn(3)=ifailn(3) + 1
+         endif
+
+         tempfilter= 0.1*filter(2)
+c 4
+         if ((FokS/FckS.gt. 1.+tempfilter)
+     1   .or.(FokS/Fcks.lt. 1.0-tempfilter)) then
+            ifail=ifail+1
+            ifailn(4)=ifailn(4) + 1
+         endif
+c 5
+         if (fcks.lt. filter(3)*sigmas) then
+            ifail=ifail+1
+            ifailn(5)=ifailn(5) + 1
+         endif
+c 6
+         if (abs(fckd) .lt. (filter(4)*sigmad)) then
+            ifail=ifail+1
+            ifailn(6)=ifailn(6) + 1
+         endif
+
+         if (ifail .eq.0) then
 C Store current HKL:
 	   IH2 = STORE(M6)
 	   IK2 = STORE(M6+1)
@@ -7507,101 +7604,184 @@ C Restore original indices:
 	   STORE(M6+1) = IK2 
 	   STORE(M6+2) = IL2
 C Done.	
-            IF (LEVEL.EQ.4) THEN
-C----- Fo/Fc plot
-               WRITE (HKLLAB,'(5(I4,A),I4)') NINT(STORE(M6)),',',
-     1            NINT(STORE(M6+1)),',',NINT(STORE(M6+2)),' vs ',
-     2            IH3,',',IK3,',',IL3
-               CALL XCREMS (HKLLAB, HKLLAB,IHKLLEN)
-               WRITE (CMON,'(3A,2(1X,F12.2))') 
-c     1 '^^PL LABEL ''', HKLLAB(1:IHKLLEN),''' DATA ',FCKD,FOKD
-cdjwoct01 - scale by sigma
-     1 '^^PL LABEL ''', HKLLAB(1:IHKLLEN),''' DATA ',stnfc,stnfo
-               CALL XPRVDU (NCVDU,1,0)
-            END IF
+c
+C   STORE MAX Do AND Dc FOR FLACK PLOT
+           DOMAX = MAX (DOMAX, abs(FOKD))
+           DCMAX = MAX (DCMAX, abs(FCKD))
+c
 C STORE SIGNA:NOISE FOR NORMAL PROBABILITY PLOT
 C If you have more than 8.8 million reflections you might be in trouble.
-            N6ACC=N6ACC+1
-            IF (N6ACC.LE.MAX11/2) THEN
+           N6ACC=N6ACC+1
+           IF (N6ACC.LE.MAX11/md6acc) THEN
 C      Format:   [WDEL,INDICES]
-               STR11(N6ACC*2-1)=ZH
-               STR11(N6ACC*2)=STORE(M6)+STORE(M6+1)*256.+STORE(M6+2)*
+               STR11(M6ACC)=ZH
+               STR11(M6ACC+1)=STORE(M6)+STORE(M6+1)*256.+STORE(M6+2)*
      1          65536.
-            END IF
+               m6acc = m6acc + md6acc
+               str11(m6acc+2) =  fokd
+               str11(m6acc+3) =  fckd
+               str11(m6acc+4) =  sigmad
+               str11(m6acc+5) =  foks
+               str11(m6acc+6) =  fcks
+           END IF
 C 
 C COLLECT TOTALS & PROBABILITY DISTRIBUTION DATA FOR FLEQ (SFLEQ)
 c
-            NFRIED=NFRIED+1
+           NFRIED=NFRIED+1
 C DATC is x(gamma), YK is gamma
-            DO 600 J=1,NSTP_401
+           DO 600 J=1,NSTP_401
                YK=(J-NSPT_201)*STEP
-               DATC(J)=DATC(J)-(((YK*FCKD-FOKD)/SIGM)**2)/2
-600         CONTINUE
-            RCT=RCT+FOKD*FCKD/SIGM
-            RCN=RCN+FCKD**2/SIGM
+               DATC(J)=DATC(J)-(((YK*FckD-FokD)/SIGMAD)**2)/2
+600        CONTINUE
+           RCT=RCT+FokD*FckD/SIGMAD
+           RCN=RCN+FckD**2/SIGMAD
+CDJWnOV-12
+C SORT INTO QUADRANTS
+           IF (FokD .GT. 0.0) THEN
+                  IF(FckD .GT. 0.0) THEN
+                        NPP = NPP + 1
+                        XPP = XPP + FckD
+                        YPP = YPP + FokD
+                  ELSE
+                        NMP = NMP + 1
+                        XMP = XMP + FckD
+                        YMP = YMP + FokD
+                  ENDIF
+           ELSE
+                  IF(FckD .GT. 0.0) THEN
+                        NPM = NPM + 1
+                        XPM = XPM + FckD
+                        YPM = YPM + FokD
+                  ELSE
+                        NMM = NMM + 1
+                        XMM = XMM + FckD
+                        YMM = YMM + FokD
+                  ENDIF
+           ENDIF
 Cdjwsep08
-            IF (FOKD.GE.0) THEN
+           IF (FokD.GE.0) THEN
                NPFO=NPFO+1
-               SPFO=SPFO+FOKD
-               SPFOSQ=SPFOSQ+FOKD*FOKD
-            ELSE
+               SPFO=SPFO+FokD
+               SPFOSQ=SPFOSQ+FokD*FokD
+           ELSE
                NNFO=NNFO+1
-               SNFO=SNFO+FOKD
-               SNFOSQ=SNFOSQ+FOKD*FOKD
-            END IF
+               SNFO=SNFO+FokD
+               SNFOSQ=SNFOSQ+FokD*FokD
+           END IF
 C 
-            IF (FCKD.GE.0) THEN
+           IF (FckD.GE.0) THEN
                NPFC=NPFC+1
-               SPFC=SPFC+FCKD
-               SPFCSQ=SPFCSQ+FCKD*FCKD
-            ELSE
+               SPFC=SPFC+FckD
+               SPFCSQ=SPFCSQ+FckD*FckD
+           ELSE
                NNFC=NNFC+1
-               SNFC=SNFC+FCKD
-               SNFCSQ=SNFCSQ+FCKD*FCKD
-            END IF
+               SNFC=SNFC+FckD
+               SNFCSQ=SNFCSQ+FckD*FckD
+           END IF
 C 
-            IF (FOKD*FCKD.GT.0.0) THEN
+           IF (FokD*FckD.GT.0.0) THEN
 C  same sign
                NPLS=NPLS+1
-            ELSE
+           ELSE
 C  opposite sign
                NMIN=NMIN+1
-            END IF
-C -- RC 310811 -- Comment out next four lines - variables not used (or inited).
-c            IF (ABS(FOKD).LT.3.*ABS(FCKD)) THEN
-c               XMAX=MAX(XMAX,ABS(FCKD))
-c               YMAX=MAX(YMAX,ABS(FOKD))
-c            END IF
-            IF (FCKD.NE.0.0) THEN
-               RATIO=FOKD/FCKD
-C -- RC 310811 -- Comment out next four lines - variables not used (or inited).
-c               RATIO1=ABS(FCKD)/(FCK1+FCK2)
-c               DCDOS=(FCKD-FOKD)/SIGM
-c               DDP=MAX(DDP,DCDOS)
-c               DDM=MIN(DDM,DCDOS)
-               IF (SIGM.GT.0.0) THEN
-                  WGHT=ABS(FCKD)/SIGM
+           END IF
+           IF (FckD.NE.0.0) THEN
+               RATIO=FokD/FckD
+               IF (SIGMAD.GT.0.0) THEN
+                  WGHT=ABS(FckD)/SIGMAD
                   SUM=SUM+WGHT*RATIO
                   SUMW=SUMW+WGHT
                END IF
-            END IF
+           END IF
 C 
 C 
-C      totals for Fo/Fc plot
-c         WT = 1.
-          if(fcks .ge. 3.*sigm) then
-           NFOFC =NFOFC + 1
-           WT = 1./(SIGM*SIGM)
-           FSS=FSS+WT
-           FSX=FSX+FCKD*WT
-           FSY=FSY+FOKD*WT
-           FSXX=FSXX+FCKD*FCKD*WT
-           FSYY=FSYY+FOKD*FOKD*WT
-           FSXY=FSXY+FOKD*FCKD*WT
-          endif
+C         totals for Fo/Fc plot 
+c          FckS is average of Fc 
+c          FckD is difference of Fc
 c
-         END IF
-C        FOR NEXT REFLECTION(1)
+c---- corrected for current Flack value
+           fcprime = preflack * fckd
+c
+c---- default is to accumulate for a difference calculation
+           wt = 1./(sigmad*sigmad)
+           xaxis = fCKd
+           yaxis = fOKd
+c
+           if (iplot.eq.2) then
+c            quotient plot
+             wt = 1. / (sigmaq*sigmaq)
+             xaxis = fckd/fcks
+             yaxis = fokd/foks
+           endif
+c other plots done in second pass later
+           xmax=max(xmax,abs(xaxis))
+           ymax=max(ymax,abs(yaxis))
+           nfofc = nfofc + 1
+           if (iplot.eq.3) then
+c Plot Do/Dm but compute slope of (Do-Dc) for use during
+c plot of (Do-Dc) in second pass
+c note that IPLOT 3 is just a linear transformation of IPLOT 1
+c so gives the same Flack parameter and esd.
+             wt = 1./(sigmad*sigmad)
+             xaxis = Fckd
+             yaxis = fckd-fokd
+           endif
+c
+           itemp = 
+     1 LINFIT(2,XAXIS,YAXIS,wt,a,sa,b,sb,t,tsq,r,rsq,nitem,
+     1  root, xcoord, ycoord, grad)
+c
+           IF (IPUNCH.EQ.2) THEN
+C----- multiplier to correct Fc for flack parameter value
+C assigned above      PREFLACK = 1. - 2.* STORE(L30GE+6)
+C 
+Cdjwjul09  Watch out for small/negative average Fo & Fc
+            IF ((FokS.GE.THRESH*SIGMAS).AND.(FckS.GE.THRESH*SIGMAS))THEN
+             IF (ABS(FokD-FckD) .le. thresh2 * sigmad) THEN
+               IF (FckD.LT.ZERO) THEN
+                  CSIGN='-'
+               ELSE
+                  CSIGN='+'
+               END IF
+               ALT=sigmad
+               WRITE (NCPU,550)
+     1         FokD,  alt , CSIGN, abs(FckD),
+     3         i,j,k,abs(FokD-FckD)/sigmad, (FokD-preflack*FckD)/FckD
+550            FORMAT ('restrain ',F9.2,', ',F14.4,' = ',A,
+     1         ' ( 1. - ( 2. * enantio ) ) * ',F9.2,20X,3I5,2F9.3)
+               NREST=NREST+1
+               RESTNUM=RESTNUM+ABS(FokD-PREFLACK*FckD)
+               RESTDEN=RESTDEN+ABS(FokD)
+             END IF
+            END IF
+           END IF
+
+           if(ipunch.eq.3) write(ncpu,'(5f14.4)') 
+     1     fokd, fckd, xaxis, yaxis, wt
+c
+           if ((IPLOT.eq.1).or.(IPLOT.EQ.2)) then
+c----- Scatter plot 
+               write (hkllab,'(3(i4,a))') nint(store(m6)),',',
+     1            nint(store(m6+1)),',',nint(store(m6+2))
+               call xcrems (hkllab, hkllab,ihkllen)
+            if((xaxis.gt.9999990.).or.(yaxis.gt.9999990.)) then
+c              number too big for plot
+               if(issprt.eq.0) write(ncwu,'(a,a,2(1x,f14.4))') 
+     1           'Overflow ', hkllab(1:ihkllen), xaxis, yaxis
+            else   
+               write (cmon,'(3a,2(1x,f12.4))') 
+     1         '^^PL LABEL ''', hkllab(1:ihkllen), 
+     2         ''' DATA ',xaxis,yaxis
+               call xprvdu (ncvdu,1,0)
+            endif
+           end if
+         else            ! ifail test
+c           failing reflections
+c             write(123,'(i4,2(3f12.2,3x))')
+c     1      ifail,fok1,fck1,sig1,fok2,fck2,sig2
+         end if          !end ifail test
+C        GET NEXT REFLECTION(1)
          GO TO 450
 C 
       ELSE
@@ -7633,28 +7813,9 @@ C---- END OF REFLECTIONS
 c     last unpaired reflection
       lfried=lfried+1
 650   CONTINUE
-C---- SPLIT UNPAIRD INTO REAL UNPAIRED AND CENTRIC
-C 
-c      LFRIED=LFRIED-NCENTRIC
-      IF (LEVEL.EQ.4) THEN
-C Also add A SERIES FOR STRAIGHT LINE (y=x) .
-CDJWOCT10 - USE SIGNAL:NOISE
-C         WRITE (CMON,'(A/ (2(A,2F10.2)) )') 
-C     1 '^^PL ADDSERIES ''Fo=Fc'' TYPE LINE',
-C     2 '^^PL DATA ', -FCMAX,-FCMAX,' DATA ',FCMAX,FCMAX
-         WRITE (CMON,'(A/ (2(A,2(1X,F12.2))) )') 
-     1 '^^PL ADDSERIES ''Fo=Fc'' TYPE LINE',
-     2 '^^PL DATA ', -STNFCM,-STNFCM,' DATA ',STNFCM,STNFCM
-         CALL XPRVDU (NCVDU,2,0)
-C -- FINISH THE GRAPH DEFINITION
-            WRITE (CMON,'(A,/,A)') 
-     1      '^^PL SHOW',
-     2      '^^CR'
-            CALL XPRVDU (NCVDU,2,0)
-      END IF
-C 
 C---- all refelctions processed.
-C 
+C---- SPLIT UNPAIRD INTO REAL UNPAIRED AND CENTRIC
+c      LFRIED=LFRIED-NCENTRIC
       IF (IPUNCH.EQ.2) THEN
          WRITE (CMON,'(a,i8,a)') 'REM ',NREST,' restraints written out'
          CALL XPRVDU (NCVDU,2,0)
@@ -7669,23 +7830,26 @@ C
          ENDIF
       END IF
 c
+c
+c
+c
       WRITE (CMON,'(10(a,i7))') ' No of Reflections processed =',
-     1NREFIN
+     1  NREFIN
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)') CMON(1)(:)
 C 
       WRITE (CMON,'(10(a,2x,i7))') ' No of Friedel Pairs found =',
-     1MFRIED,' No of Friedel Pairs used  =',NFRIED
+     1  MFRIED,' No of Friedel Pairs used  =',NFRIED
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
 C 
       WRITE (CMON,'(10(a,i7))') ' No of Unpaired Reflections  =',
-     1LFRIED
+     1  LFRIED
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
 C 
       WRITE (CMON,'(10(a,i7))') ' No of Centric Reflections   =',
-     1NCENTRIC
+     1  NCENTRIC
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
 C 
@@ -7698,147 +7862,494 @@ C
      1' Hooft parameter obtained with Flack x set to zero'
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
+c
+c      now Howards goodies
+          if(issprt.eq.0) then
+            write(ncwu,'(a)')
+     1  '   RA   RD    wRA2  wRD2   Friedif  Flack esd'
+            write(ncwu,2500) 
+     1      100.*HFLACK(1)/HFLACK(2),          
+     1      100.*HFLACK(3)/HFLACK(4),          
+     1      100.*SQRT(HFLACK(5)/HFLACK(6)),          
+     1      100.*SQRT(HFLACK(7)/HFLACK(8)),          
+     2      FRIEDIF, STORE(L30GE+6), STORE(L30GE+7)
+2500        FORMAT(4F6.1,2X, F8.2, 2F6.2/)
+          endif
 C 
       WRITE (CMON,'(/)')
       CALL XPRVDU (NCVDU,1,0)
-      WRITE (CMON,'(1x,A,f10.2,a)') 
-     1'Reflections only used if /Fo+ - Fo-/ <',CRITER,
-     2' * /Fc+ - Fc-/'
+c
+      WRITE (cmon,'(a)') cplot
+      call xprvdu(ncvdu,1,0)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(//a/)') cmon(1)
+c
+      write(cmon,'(a/a,f10.2,4(2x,a,i1,A,f6.2) )')
+     1 ' Reflection Filters',
+     2 ' Criterion',criter,('filter_',i,'=',filter(i),i=1,4)
+         call xprvdu (ncvdu,2,0)
+         if (issprt.eq.0) write (ncwu,'(/A)') cmon(1)(:),cmon(2)(:)
+c
+      WRITE (CMON,'(a,a,i8,a)') ' Accumulating ',
+     1'scatterplot for',NFOFC,' reflections'
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') CMON(1)(:)
-C 
 c
       if (mfried .gt. 0) then
-      WRITE (CMON,'(/a,f10.2)') 
-     1 ' Current Do-Dc R-factor (%)=',100.*FLRNUM/FLRDEN
+      WRITE (CMON,'(a,f10.2/)') 
+     1 ' Current Do-Dm R-factor(%) for these reflections =',
+     2 100.*FLRNUM/FLRDEN
       CALL XPRVDU (NCVDU,2,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') CMON(2)(:)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a/)') CMON(1)(:)
       endif
-
 C 
-C-----
+C 
+      call outcol(3)
+c
 C      find slope and intercept of FO/fc plot
-C      determinant
-      WRITE (CMON,'(/a,a,i8,a)') ' Plotting ',
-     1'(Fo+ - Fo-)/s vs (Fc+ - Fc-)/s for',NFOFC,' reflections'
-      CALL XPRVDU (NCVDU,2,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') CMON(2)(:)
-C 
-      DETER=FSS*FSXX-FSX*FSX
-      WRITE (CMON,'(a,9x,2f12.3)') 
-     1 ' Gradient for zero intercept =',FSXY/FSXX
-      CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:)
-C 
-      IF (DETER.NE.0.) THEN
-         CUTTER=(FSXX*FSY-FSX*FSXY)/DETER
-         SLOPE=(FSS*FSXY-FSX*FSY)/DETER
-         sigcut=sqrt(fsxx/deter)
-         sigslop=sqrt(fss/deter)
-         DENOM=(FSS*FSXX-FSX*FSX)*(FSS*FSYY-FSY*FSY)
-         IF (DENOM.GT.0.) THEN
-            DENOM=SQRT(DENOM)
-            CORREL=(FSS*FSXY-FSX*FSY)/DENOM
-            WRITE (CMON,700) SLOPE,CUTTER,CORREL
-700         FORMAT (' Slope, intercept and Cc (R) of Fo/Fc Plot =',
-     1       F7.3,F7.3,F7.3)
-            CALL XPRVDU (NCVDU,1,0)
-            IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:)
-            write(cmon,701) sigslop, sigcut
-701         format(37x, 'Sigma =', f7.3,f7.3)
-            call xprvdu (ncvdu,1,0)
-            if (issprt.eq.0) write (ncwu,'(A)') cmon(1)(:)
-            pseudof = 0.5*(1.-slope)
-            pseudos = 0.5*sigslop
-            write(cmon,702)pseudof, pseudos
-702         format(30x,'Pseudo-Flack =', 2f7.3)
-            call xprvdu (ncvdu,1,0)
-            if (issprt.eq.0) write (ncwu,'(A)') cmon(1)(:)
-         ELSE
-            WRITE (CMON,750)
-750         FORMAT (' Correlation coefficient cannot be computed')
-            CALL XPRVDU (NCVDU,1,0)
-            IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') CMON(1)(:)
-            WRITE (CMON,800) SLOPE,CUTTER
-800         FORMAT (' Slope and intercept of Fo/Fc',' Plot =',F7.3,F10.
-     1       2,F10.5)
-            CALL XPRVDU (NCVDU,1,0)
-            IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:)
-         END IF
+      IDJW = LINFIT
+     1 (3,X,Y,WT,YCUT,SIGCUT,SLOPE,SIGSLOP,T,TSQ,CORREL,COOD,NFOFC,
+     1  root, xcoord, ycoord, grad)
+
+      IF (IDJW .GE. 0) THEN
+        WRITE (CMON,700) CORREL, cood,SLOPE,SIGSLOP
+700     FORMAT (/ 
+     1  ' Correlation coeff and r^2 of Scatter Plot =',
+     1  F7.3,F7.3,/27x,
+     2  '   Slope, sigma =', F7.3, f7.3)
+        CALL XPRVDU (NCVDU,3,0)
+        IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
+     1  ,cmon(2)(:nctrim(cmon(2))),cmon(3)(:nctrim(cmon(3)))
+        WRITE(CMON,701) YCUT, SIGCUT
+701     FORMAT(26X, 'Intercept, sigma =', F7.3,F7.3)
+        CALL XPRVDU (NCVDU,1,0)
+        IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
+        if (iplot .eq. 3) then
+          PSEUDOF = 0.5*(SLOPE)
+          PSEUDOS = 0.5*SIGSLOP
+        else
+          PSEUDOF = 0.5*(1.-SLOPE)
+          PSEUDOS = 0.5*SIGSLOP
+        endif
+        WRITE(CMON,702)PSEUDOF, PSEUDOS
+702     FORMAT(19X,'  Post-Refinement Flack =', 2F7.3)
+c        CALL XPRVDU (NCVDU,1,0)
+        IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
+
+      ELSE IF(IDJW.EQ.-1) THEN
+
+        WRITE(CMON,*)'Line fitting failed'
+        CALL XPRVDU (NCVDU,1,0)
+        IF (ISSPRT.EQ.0) WRITE(NCWU,'(a)')CMON(1)(:nctrim(cmon(1)))
+        WRITE (CMON,*) ' Slope and Intercept cannot be computed'
+        CALL XPRVDU (NCVDU,1,0)
+        IF (ISSPRT.EQ.0) WRITE(NCWU,'(/a)')CMON(1)(:nctrim(cmon(1)))
+
       ELSE
-         WRITE (CMON,850)
-850      FORMAT ('Slope and Intercept cannot be computed')
-         CALL XPRVDU (NCVDU,1,0)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') CMON(1)(:)
-      END IF
+
+        WRITE (CMON,*) ' Correlation Coefficient cannot be computed'
+        CALL XPRVDU (NCVDU,1,0)
+        IF (ISSPRT.EQ.0) WRITE(NCWU,'(/a)')CMON(1)(:nctrim(cmon(1)))
+
+      ENDIF      
+      call outcol(1)
+      if((iplot.eq.1).or.(iplot.eq.2)) then
+       if (cood .le. 0.5) then 
+              write(cmon,'(a,f5.2,a,i4,a,a)')
+     1'{I The Coefficient of determination (r^2) of',cood,
+     2' means that only',nint(cood*100.),
+     3'% of the'
+            call xprvdu (ncvdu,1,0)
+            if (issprt.eq.0) write (ncwu,'(A)') cmon(1)(3:)
+            write(cmon,'(A,A)')
+     1'{I observed differences are related to the calculated',
+     2 ' differences'
+          call xprvdu (ncvdu,1,0)
+          if (issprt.eq.0)write(ncwu,'(A)')cmon(1)(3:nctrim(cmon(1)))
+       endif
+      endif
+C 
+      if(iplot.eq.3) then 
+c----- check for large noise:sigmal
+          alpha = grad(1)
+          beta = rtd*atan(slope)
+          gamma = (alpha-beta)
+          if(gamma.lt.   0.0) gamma = gamma+180.
+          if(gamma.gt. 180.0) gamma = gamma-180.
+          if(gamma.gt.  90.0) gamma = gamma-180.
+          if((gamma.gt.80.).and.(gamma.lt.-80.)) then
+            write(cmon,'(/a,f7.2 )')
+     1'{I The Principal Component points in the noise direction, ',
+     2 grad(1)
+            call xprvdu (ncvdu,2,0)
+            if (issprt.eq.0) write (ncwu,'(/A)') cmon(2)(3:)
+           endif
+      endif
+C 
+      djw1=min(xmax,ymax)
+      phi = atan2(ymax,xmax)
+c        a line calculated from the coefficients.
+
+         theta = atan2(slope,1.)
+         if(theta .gt. phi) then
+            djw2 = ymax/tan(theta)
+            djw3 = ymax
+         else if(theta .le. -phi) then
+            djw2 = ymax/tan(theta)
+            djw3 = ymax
+         else
+            djw2 = xmax
+            djw3 = xmax*tan(theta)
+         endif
+      IF ((IPLOT.eq.1).or.(IPLOT.EQ.2)) THEN
+         WRITE (CMON,'(A/ (2(A,2(1X,F12.2))) )') 
+     1 '^^PL ADDSERIES ''Best Line'' TYPE LINE',
+     2 '^^PL DATA ', -djw2,-djw3+ycut,' DATA ',djw2,djw3+ycut
+         CALL XPRVDU (NCVDU,2,0)
+c
+C       Also add a series for unit slope (y=x) 
+       djwx = 0.8*djw1
+         WRITE (CMON,'(A/(2(A,2(1X,F12.3))) )') 
+     1 '^^PL ADDSERIES ''Unit Slope'' TYPE LINE',
+     2 '^^PL DATA ', -djwx,-djwx,' DATA ',djwx,djwx
+       CALL XPRVDU (NCVDU,2,0)
+c
+c       plot principal axes
+
+       theta = grad(2)*dtr
+       if(theta .gt. phi) then
+            djw2 = ymax/tan(theta)
+            djw3 = ymax
+       else if(theta .le. -phi) then
+            djw2 = ymax/tan(theta)
+            djw3 = ymax
+       else
+            djw2 = xmax
+            djw3 = xmax*tan(theta)
+       endif
+
+       WRITE (CMON,'(A/ (2(A,2(1X,F12.2))) )') 
+     1 '^^PL ADDSERIES ''Minor'' TYPE LINE',
+     2 '^^PL DATA ', -djw2,-djw3,' DATA ',djw2,djw3
+       CALL XPRVDU (NCVDU,2,0)
+
+       theta = grad(1)*dtr
+       if(theta .gt. phi) then
+            djw2 = ymax/tan(theta)
+            djw3 = ymax
+       else if(theta .le. -phi) then
+            djw2 = ymax/tan(theta)
+            djw3 = ymax
+       else
+            djw2 = xmax
+            djw3 = xmax*tan(theta)
+       endif
+       WRITE (CMON,'(A/ (2(A,2(1X,F12.2))) )') 
+     1 '^^PL ADDSERIES ''Major'' TYPE LINE',
+     2 '^^PL DATA ', -djw2,-djw3,' DATA ',djw2,djw3
+       CALL XPRVDU (NCVDU,2,0)
+c
+C -- FINISH THE GRAPH DEFINITION
+       WRITE (CMON,'(A,/,A)') 
+     1      '^^PL SHOW',
+     2      '^^CR'
+       CALL XPRVDU (NCVDU,2,0)
+      endif
+C 
 C 
 C 
       IF (NFRIED.GT.0) THEN
-C----- SHOW NORMAL PROBABILITY PLOT
+C  SECOND PASS (THROUGH SELECTED STORED REFLECTIONS)
+C
+       DMAX = MAX(DOMAX,DCMAX)
 C 
-         IF (N6ACC.GT.MAX11/2) THEN
-            WRITE (CMON,'(A,I8)') '{E Too many reflections: ',N6ACC
+       IF (N6ACC.GT.MAX11/md6acc) THEN
+            WRITE (CMON,'(A,I8)') 
+     1     '{E Too many reflections for memory: ',N6ACC
             CALL XPRVDU (NCVDU,1,0)
-            N6ACC=MAX11/2
-         END IF
-         WRITE (CMON,'(/A,6x,I7,A)') 
-     1   ' Computing normal probability plot for',N6ACC,' reflections.'
-         CALL XPRVDU (NCVDU,2,0)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') CMON(2)(:)
+            N6ACC=MAX11/md6acc
+       END IF
+       write(cmon,'(//)')
+       call xprvdu (ncvdu,2,0)
+       WRITE (CMON,'(/A,6x,I7,A)') 
+     1 ' Computations continued with ',N6ACC,' reflections.'
+       CALL XPRVDU (NCVDU,2,0)
+       IF (ISSPRT.EQ.0) WRITE(NCWU,'(/a)')CMON(2)(:nctrim(cmon(2)))
+c
+      
+      if(iplot.eq.3) then
+         xmax = 0.
+         ymax = 0.
+         m6acc = l6acc
+         do 880 i=1,n6acc
+C        Unpack HKL
+          D=FLOAT(NINT(STR11(m6acc+1)/256.))
+          MH=STR11(m6acc+1)-D*256.
+          ML=FLOAT(NINT(D/256.))
+          MK=D-ML*256.
+c
+          xaxis = str11(m6acc+3)
+c          yaxis = (slope*str11(m6acc+3)+ycut) - str11(m6acc+2)
+          yaxis = ((1.-2.*pseudof)*str11(m6acc+3)) - str11(m6acc+2)
+          xmax=max(xmax,abs(xaxis))
+          ymax=max(ymax,abs(yaxis))
+          write (hkllab,'(2(i4,a),i4)') mh,',',
+     1     mk,',',ml
+          call xcrems (hkllab, hkllab,ihkllen)
+          if((xaxis.gt.9999990.).or.(yaxis.gt.9999990.)) then
+c           number too big for plot
+             if(issprt.eq.0) write(ncwu,'(a,a,2(1x,f14.4))') 
+     1           'Overflow ', hkllab(1:ihkllen), xaxis, yaxis
+          else   
+               write (cmon,'(3a,2(1x,f12.4))') 
+     1         '^^PL LABEL ''', hkllab(1:ihkllen), 
+     2         ''' DATA ',xaxis,yaxis
+               call xprvdu (ncvdu,1,0)
+          endif
+c         
+          m6acc = m6acc + md6acc
+880      continue
+c
+         djw1=min(xmax,ymax)
+         phi = atan2(ymax,xmax)
+c        a line calculated from the coefficients.
+c        Do not try this if the structure probably needs inverting
+         if(slope .lt. 1.) then
+          theta = atan2(slope,1.)
+          if(theta .gt. phi) then
+            djw2 = ymax/tan(theta)
+            djw3 = ymax
+          else if(theta .le. -phi) then
+            djw2 = ymax/tan(theta)
+            djw3 = ymax
+          else
+            djw2 = xmax
+            djw3 = xmax*tan(theta)
+          endif
+          WRITE (CMON,'(A/ (2(A,2(1X,F12.2))) )') 
+     1 '^^PL ADDSERIES ''Best Line'' TYPE LINE',
+     2 '^^PL DATA ', -djw2,-djw3+ycut,' DATA ',djw2,djw3+ycut
+          CALL XPRVDU (NCVDU,2,0)
+
+C        Dummy very short line to keep colours in synch
+          djwx = .01*djw1
+
+          WRITE (CMON,'(A/(2(A,2(1X,F12.3))) )') 
+     1 '^^PL ADDSERIES ''Unit Slope'' TYPE LINE',
+     2 '^^PL DATA ', -djwx,-djwx,' DATA ',djwx,djwx
+          CALL XPRVDU (NCVDU,2,0)
+
+c         Minor Axis
+          theta = grad(2)*dtr
+          if(theta .gt. phi) then
+            djw2 = ymax/tan(theta)
+            djw3 = ymax
+          else if(theta .le. -phi) then
+            djw2 = ymax/tan(theta)
+            djw3 = ymax
+          else
+            djw2 = xmax
+            djw3 = xmax*tan(theta)
+          endif
+
+c  cannot do this if the structure is inverted because the 
+c  ellipsoid will be at tan-1(2.), not zero
+          WRITE (CMON,'(A/ (2(A,2(1X,F12.2))) )') 
+     1 '^^PL ADDSERIES ''Minor'' TYPE LINE',
+     2 '^^PL DATA ', -djw2,-djw3,' DATA ',djw2,djw3
+          CALL XPRVDU (NCVDU,2,0)
+
+c         Major Axis
+          theta = grad(1)*dtr
+          if(theta .gt. phi) then
+            djw2 = ymax/tan(theta)
+            djw3 = ymax
+          else if(theta .le. -phi) then
+            djw2 = ymax/tan(theta)
+            djw3 = ymax
+          else
+            djw2 = xmax
+            djw3 = xmax*tan(theta)
+          endif
+c as above
+          WRITE (CMON,'(A/ (2(A,2(1X,F12.2))) )') 
+c     1 '^^PL ADDSERIES ''Major'' TYPE LINE',
+c     2 '^^PL DATA ', -djw2,-djw3,' DATA ',djw2,djw3
+          CALL XPRVDU (NCVDU,2,0)
+         endif
+
+c -- finish the graph definition
+         write (cmon,'(a,/,a)') 
+     1  '^^PL SHOW',
+     2  '^^CR'
+         call xprvdu (ncvdu,2,0)
+      endif
+c
+       if(iplot.eq.4) then
+c----- SET UP FLACK Do/2Ao SCATERPLOT AND LOOK FOR OUTLIERS
+C       Flack Am-Dm scatter
+         WRITE (CMON,'(A,/,A,/,A,/A,/A)') 
+     1 '^^PL PLOTDATA _FOFC SCATTER ATTACH _VFOFC KEY',
+     2 '^^PL XAXIS TITLE 2Am&Dm NSERIES=1 LENGTH=2000',
+     3 '^^PL YAXIS TITLE 2Ao&Do',
+     4 '^^PL SERIES 1 SERIESNAME ''2Ao'' TYPE SCATTER'
+         CALL XPRVDU (NCVDU,4,0)
+c
+         m6acc = l6acc
+         do 890 i=1,n6acc
+C        Unpack HKL
+          D=FLOAT(NINT(STR11(m6acc+1)/256.))
+          MH=STR11(m6acc+1)-D*256.
+          ML=FLOAT(NINT(D/256.))
+          MK=D-ML*256.
+c
+          if((2.*str11(m6acc+5).le.dmax).and.   
+     1    (2.*str11(m6acc+5).le.dmax)) then
+           xaxis = 2.*str11(m6acc+6)
+           yaxis = 2.*str11(m6acc+5)
+           write (hkllab,'(2(i4,a),i4)') mh,',',
+     1     mk,',',ml
+           call xcrems (hkllab, hkllab,ihkllen)
+           if((xaxis.gt.9999990.).or.(yaxis.gt.9999990.)) then
+c           number too big for plot
+             if(issprt.eq.0) write(ncwu,'(a,a,2(1x,f14.4))') 
+     1           'Overflow ', hkllab(1:ihkllen), xaxis, yaxis
+           else   
+               write (cmon,'(3a,2(1x,f12.4))') 
+     1         '^^PL LABEL ''', hkllab(1:ihkllen), 
+     2         ''' DATA ',xaxis,yaxis
+               call xprvdu (ncvdu,1,0)
+           endif
+          endif
+          m6acc = m6acc + md6acc
+890      continue
+c
+c we have to go round again for the dO dm bit
+C
+         WRITE (CMON,'(A)') 
+     4 '^^PL ADDSERIES  Do TYPE SCATTER'
+         CALL XPRVDU (NCVDU,1,0)
+        m6acc = l6acc
+        do 891 i=1,n6acc
+C        Unpack HKL
+         D=FLOAT(NINT(STR11(m6acc+1)/256.))
+         MH=STR11(m6acc+1)-D*256.
+         ML=FLOAT(NINT(D/256.))
+         MK=D-ML*256.
+               xaxis = str11(m6acc+3)
+               yaxis = str11(m6acc+2)
+               write (hkllab,'(2(i4,a),i4)') mh,',',
+     1            mk,',',ml
+               call xcrems (hkllab, hkllab,ihkllen)
+             if((xaxis.gt.9999990.).or.(yaxis.gt.9999990.)) then
+c              number too big for plot
+               if(issprt.eq.0) write(ncwu,'(a,a,2(1x,f14.4))') 
+     1           'Overflow ', hkllab(1:ihkllen), xaxis, yaxis
+             else   
+               write (cmon,'(3a,2(1x,f12.4))') 
+     1         '^^PL LABEL ''', hkllab(1:ihkllen), 
+     2         ''' DATA ',xaxis,yaxis
+               call xprvdu (ncvdu,1,0)
+             endif
+         m6acc = m6acc + md6acc
+891     continue
+c -- finish the graph definition
+        write (cmon,'(a,/,a)') 
+     1  '^^PL SHOW',
+     2  '^^CR'
+        call xprvdu (ncvdu,2,0)
+       endif
+C
+C----- COMPUTE NORMAL PROBABILITY PLOT
+         write(cmon,'(/a)')' Normal Probability Plot'
+         call xprvdu(ncvdu,2,0)
+         if(issprt.eq.0) write(ncwu,'(/a)')cmon(2)(:nctrim(cmon(2)))
+c
+            IF (IPLOT.EQ.5) THEN
+C       Normal probability plot
+             WRITE (CMON,'(A,/,A,/,A)') 
+     1 '^^PL PLOTDATA _NORMPP SCATTER ATTACH _VNORMPP',
+     2 '^^PL XAXIS TITLE ''Expected (Z-score)'' NSERIES=1 LENGTH=2000',
+     3 '^^PL YAXIS TITLE Residual SERIES 1 TYPE SCATTER'
+             CALL XPRVDU (NCVDU,3,0)
+            ENDIF
 C Sort the sqrt(W)*(Fo2-Fc2) into ascending order.
-         CALL XSHELQ (STR11,2,1,N6ACC,N6ACC*2,TEMP)
+         CALL XSHELQ (STR11,md6acc,1,N6ACC,N6ACC*md6acc,TEMP)
+         noutl = 0
+         m6acc = l6acc
          DO 900 I=1,N6ACC
-            PC=(I-0.5)/FLOAT(N6ACC)
-            A=SQRT(-2.*LOG(.5-ABS(PC-.5)))
-            B=0.27061*A+2.30753
-            C=A*(A*.04481+.99229)+1
-            Z=A-B/C
-			
-C Unpack HKL
-            D=FLOAT(NINT(STR11(I*2)/256.))
-            MH=STR11(I*2)-D*256.
-            ML=FLOAT(NINT(D/256.))
-            MK=D-ML*256.
-            IF (I.LE.N6ACC/2) Z=-Z
+C
+           if(iplot.ne.3) then
+            dest = slope * str11(m6acc+3) + ycut
+            rest = str11(m6acc+2)-dest 
+            ston = abs(rest)/str11(m6acc+4)
+            if (ston .gt. 6.) then
+             if(issprt.eq.0) then
+               if(noutl .eq. 0) then
+                write(ncwu,'(A/4x,a,7x,a,8x,a,7x,a,2x,a,4x,a,3x,a )')
+     1         ' Outliers with residual > 6 sigma',
+     2         'Indices', 'Dm', 'Do', 'Dest', '/Do-Dest/', 'sigma',
+     3         'Delta/sigma' 
+               endif
+               write(ncwu,'(3i4, 6f10.3)') 
+     1        mh, mk, ml, str11(m6acc+3), str11(m6acc+2), dest, 
+     1        rest, str11(m6acc+4), ston
+              endif
+             noutl = noutl+1
+            endif
+           endif
+C
+           PC=(I-0.5)/FLOAT(N6ACC)
+           A=SQRT(-2.*LOG(.5-ABS(PC-.5)))
+           B=0.27061*A+2.30753
+           C=A*(A*.04481+.99229)+1
+           Z=A-B/C
+C        Unpack HKL
+           D=FLOAT(NINT(STR11(m6acc+1)/256.))
+           MH=STR11(m6acc+1)-D*256.
+           ML=FLOAT(NINT(D/256.))
+           MK=D-ML*256.
+           IF (I.LE.N6ACC/2) Z=-Z
+           IF ( I .EQ. CEILING(N6ACC*0.1) )  z10 = z
+           IF ( I .EQ. CEILING(N6ACC*0.9) )  z90 = z
+           SS=SS+1.
+           SX=SX+Z
+           SY=SY+STR11(m6acc)
+           SXX=SXX+Z*Z
+           SYY=SYY+STR11(m6acc)*STR11(m6acc)
+           SXY=SXY+STR11(m6acc)*Z
 C 
-			IF ( I .EQ. CEILING(N6ACC*0.1) ) THEN
-              WRITE (CMON,'(23x,A,F10.3)') 'Z at 10th centile: ', Z
-              CALL XPRVDU (NCVDU,1,0)
-			END IF
-			IF ( I .EQ. CEILING(N6ACC*0.9) ) THEN
-              WRITE (CMON,'(23x,A,F10.3)') 'Z at 90th centile: ', Z
-              CALL XPRVDU (NCVDU,1,0)
-			END IF
-			   
-			
-            SS=SS+1.
-            SX=SX+Z
-            SY=SY+STR11(I*2-1)
-            SXX=SXX+Z*Z
-            SYY=SYY+STR11(I*2-1)*STR11(I*2-1)
-            SXY=SXY+STR11(I*2-1)*Z
-C 
-            IF (LEVEL.EQ.5) THEN
+
 C Generate Friedel opposite for current HKL:
-			   STORE(M6)   = -MH
-			   STORE(M6+1) = -MK
-			   STORE(M6+2) = -ML
+           STORE(M6+1) = -MK
+           STORE(M6+2) = -ML
 C Work out canonicalized HKL for the Friedel Opposite
-			   CALL KSYSAB(1)
+           CALL KSYSAB(1)
 C Done.	
+           IF (IPLOT.EQ.5) THEN
               WRITE (HKLLAB,'(5(I4,A),I4)') MH,',',MK,',',ML,' vs ',
      1		      NINT(STORE(M6)),',',
      1            NINT(STORE(M6+1)),',',NINT(STORE(M6+2))
                CALL XCREMS (HKLLAB, HKLLAB,IHKLLEN)
                WRITE (CMON,'(3A,2F11.3)') 
-     1 '^^PL LABEL ''', HKLLAB(1:IHKLLEN),''' DATA ',Z,STR11(I*2-1)
+     1 '^^PL LABEL ''', HKLLAB(1:IHKLLEN),''' DATA ',Z,STR11(m6acc)
                CALL XPRVDU (NCVDU,1,0)
-            END IF
-C        END DO
+           END IF
+           m6acc = m6acc + md6acc
 900      CONTINUE
-C-----
+         if(iplot.ne.3) then
+          write(cmon,'(18x,i6,a)') noutl,' outliers at 6 sigma'
+          call xprvdu(ncvdu,1,0)
+          if(issprt.eq.0)write(ncwu,'(/a/)')cmon(1)(:nctrim(cmon(1)))
+         endif
+C
+         WRITE (CMON,'(23x,A,F10.3)') 'Z at 10th centile: ', Z10
+         CALL XPRVDU (NCVDU,1,0)
+         if(issprt.eq.0)write(ncwu,'(/a)')cmon(1)(:nctrim(cmon(1)))
+         WRITE (CMON,'(23x,A,F10.3)') 'Z at 90th centile: ', Z90
+         CALL XPRVDU (NCVDU,1,0)
+         if(issprt.eq.0)write(ncwu,'(a/)')cmon(1)(:nctrim(cmon(1)))
 C -- FINISH THE GRAPH DEFINITION
-         IF (LEVEL.EQ.5) THEN
+         IF (IPLOT.EQ.5) THEN
             WRITE (CMON,'(A,/,A)') 
      1      '^^PL SHOW',
      2      '^^CR'
@@ -7852,14 +8363,14 @@ C      determinant
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:)
          DETER=SS*SXX-SX*SX
          IF (DETER.NE.0.) THEN
-            CUTTER=(SXX*SY-SX*SXY)/DETER
+            ycut=(SXX*SY-SX*SXY)/DETER
             SLOPE=(SS*SXY-SX*SY)/DETER
             YSLOPE=SLOPE
             DENOM=(SS*SXX-SX*SX)*(SS*SYY-SY*SY)
             IF (DENOM.GT.0.) THEN
                DENOM=SQRT(DENOM)
                CORREL=(SS*SXY-SX*SY)/DENOM
-               WRITE (CMON,950) SLOPE,CUTTER,CORREL
+               WRITE (CMON,950) SLOPE,ycut,CORREL
 950            FORMAT (' Slope, intercept and Cc (R) of NPP Plot ='
      1         ,F7.3,F7.3,F7.3)
                CALL XPRVDU (NCVDU,1,0)
@@ -7869,7 +8380,7 @@ C      determinant
 1000           FORMAT (' Correlation coefficient cannot be computed')
                CALL XPRVDU (NCVDU,1,0)
                IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') CMON(1)(:)
-               WRITE (CMON,1050) SLOPE,CUTTER
+               WRITE (CMON,1050) SLOPE,ycut
 1050           FORMAT (' Slope and intercept of NPP',' Plot =',F7.3,
      1         F10.2,F10.5)
                CALL XPRVDU (NCVDU,1,0)
@@ -7882,8 +8393,8 @@ C      determinant
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') CMON(1)(:)
          END IF
 C 
-         IF ((SLOPE.GT.1.1).OR.(SLOPE.LT.0.9).OR.(CUTTER.LT.-.05).OR.
-     1    (CUTTER.GT..05)) THEN
+         IF ((SLOPE.GT.1.1).OR.(SLOPE.LT.0.9).OR.(ycut.LT.-.05).OR.
+     1    (ycut.GT..05)) THEN
             WRITE (CMON,'(a,a)') ' The slope should be unity and the',
      1      ' intercept zero'
             CALL XPRVDU (NCVDU,1,0)
@@ -7931,7 +8442,7 @@ C  Tons-Hooft Parameters
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
 c
-         WRITE (CMON,'(/1x,a,f10.2,a  )') 
+         WRITE (CMON,'(/1x,a,f10.2,5x,a)') 
      1   'Friedif = ',FRIEDIF,' Acta A63, (2007), 257-265'
          CALL XPRVDU (NCVDU,2,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') CMON(2)(:)
@@ -7942,26 +8453,72 @@ C
          CALL XPRVDU (NCVDU,2,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a,/a)') CMON(1)(:),CMON(2)(:)
 C 
+         IF (ISSPRT.EQ.0) THEN
+                  WRITE(NCWU,'(//A/)')'Reflection Distributions' 
+            WRITE (NCWU,'(a/a/4x,a//)') 'I means Fsquared',
+     1     'deltaI = I(+) - I(-)','Do = Io(+) - Io(-)'
+            WRITE (NCWU,1400)
+1400        FORMAT (10X,'Number +ve',3X,'mean(deltaI)',3X,'rms(deltaI)',
+     1       3X,'Number -ve',3X,'mean(deltaI)',3X,'rms(deltaI)')
+            WRITE (NCWU,1450)
+1450        FORMAT ('For Io')
+            WRITE (NCWU,1500) NPFO,SPFO/FLOAT(NPFO),SQRT(SPFOSQ/
+     1       FLOAT(NPFO)),NNFO,SNFO/FLOAT(NNFO),SQRT(SNFOSQ/FLOAT(NNFO))
+1500        FORMAT (10X,I6,3X,F12.4,3X,F12.4,7X,I6,3X,F12.4,2X,F12.4)
+C 
+            WRITE (NCWU,1550)
+1550        FORMAT ('For Ic')
+            WRITE (NCWU,1500) NPFC,SPFC/FLOAT(NPFC),SQRT(SPFCSQ/
+     1       FLOAT(NPFC)),NNFC,SNFC/FLOAT(NNFC),SQRT(SNFCSQ/FLOAT(NNFC))
+
+            WRITE(NCWU,'(//A)') 
+     1      'Quadrant averages: N, Mean(Do), Mean(Dm)'
+            WRITE(NCWU,'(/5x,i5,2f9.2,a4,5x,i5,2f9.2 )') 
+     1      nmp,ymp/nmp,xmp/nmp, '|', npp,ypp/npp,xpp/npp
+            write(ncwu,'(4x,a,a,a)')
+     1      '---------------------------', '|',
+     2      '----------------------------'
+            WRITE(NCWU,'(5x,i5,2f9.2,a4,5x,i5,2f9.2 )')
+     1       nmm,ymm/nmm,xmm/nmm, '|', npm,ypm/npm,xpm/npm
+
+            WRITE (NCWU,1600)
+1600        FORMAT (//'No of reflections for which delta(Io)',
+     1      ' has same sign as delta(Ic)')
+            WRITE (NCWU,1650)
+1650        FORMAT ('Same sign',3X,'Opposite sign')
+            WRITE (NCWU,1700) NPLS,NMIN
+1700        FORMAT (I8,6X,I8)
+            WRITE (NCWU,'(//A)') ' Distribution of Delta(I)/n<I>'
+            WRITE (NCWU,'(a,15I6)') 'Delta Io',IFOPLT
+            WRITE (NCWU,'(a,15I6)') 'Delta Ic',IFCPLT
+            WRITE (NCWU,'(a,15I6)') '    n   ',
+     1      (KDJW,KDJW=-NPLT,NPLT,1)
+         END IF
+C 
 C 
          WRITE (CMON,'(/)')
          CALL XPRVDU (NCVDU,1,0)
          call outcol(3)
-         WRITE (CMON,'(a,2f10.4)')  
+         WRITE (CMON,'(6x,a,2f10.4)')  
      1   ' Flack Parameter & su',STORE(L30GE+6),STORE(L30GE+7)
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A,a)') CMON(1)(:50),'@'
          WRITE(CMON,'(A,2F10.4)') 
-     1   '    Pseudo-Flack & su', pseudof,pseudos
+     1   ' Post-Refinement Flack & su', pseudof,pseudos
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,a)') CMON(1)(:50),'!'
-         WRITE (CMON,'(a,2f10.4)')  
+         WRITE (CMON,'(6x,a,2f10.4)')  
      1   ' Hooft Parameter & su',TONY,TONSY
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,a)') CMON(1)(:50),'$'
          call outcol(1)
 
-         IF (ISSPRT.EQ.0) WRITE (ncwu,'(a,4f10.4)')
-     1  '           Ton G & su',XG,XGS
+
+c-testing
+c      write(123,'(i3, f8.0, 4f6.2, a,3(2f7.3,4x) )') 
+c     1 iplot, criter, filter, ':::',
+c     1 store(l30ge+6),store(l30ge+7), pseudof,pseudos, TONY,TONSY
+
          if (issprt .eq.0) then
 1310        format(/3(/a,a))
             write(ncwu,1310)
@@ -7986,41 +8543,7 @@ C
          XPLLL=DATC(NSPP_241)-DATCM
          XMNLL=DATC(NSPM_161)-DATCM
 C 
-C 
-C 
-         IF (ISSPRT.EQ.0) THEN
-C 
-            WRITE (NCWU,1350)
-1350        FORMAT ('deltaF = F^2(+) - F^2(-)')
-            WRITE (NCWU,1400)
-1400        FORMAT (10X,'Number +ve',3X,'mean(deltaF)',3X,'rms(deltaF)',
-     1       3X,'Number -ve',3X,'mean(deltaF)',3X,'rms(deltaF)')
-            WRITE (NCWU,1450)
-1450        FORMAT ('For Fo')
-            WRITE (NCWU,1500) NPFO,SPFO/FLOAT(NPFO),SQRT(SPFOSQ/
-     1       FLOAT(NPFO)),NNFO,SNFO/FLOAT(NNFO),SQRT(SNFOSQ/FLOAT(NNFO))
-1500        FORMAT (10X,I6,3X,F12.4,3X,F12.4,7X,I6,3X,F12.4,2X,F12.4)
-C 
-            WRITE (NCWU,1550)
-1550        FORMAT ('For Fc')
-            WRITE (NCWU,1500) NPFC,SPFC/FLOAT(NPFC),SQRT(SPFCSQ/
-     1       FLOAT(NPFC)),NNFC,SNFC/FLOAT(NNFC),SQRT(SNFCSQ/FLOAT(NNFC))
-            WRITE (NCWU,1600)
-1600        FORMAT (//'No of reflections for which delta(Fo)',
-     1      ' has same sign as delta(Fc)')
-            WRITE (NCWU,1650)
-1650        FORMAT ('Same sign',3X,'Opposite sign')
-            WRITE (NCWU,1700) NPLS,NMIN
-1700        FORMAT (I8,6X,I8)
-            WRITE (NCWU,'(//A)') ' Distribution of Delta(F^2)/n<F^2>'
-            WRITE (NCWU,'(a,15I6)') 'Delta Fo^2',IFOPLT
-            WRITE (NCWU,'(a,15I6)') 'Delta Fc^2',IFCPLT
-            WRITE (NCWU,'(a,15I6)') '    n     ',
-     1      (KDJW,KDJW=-NPLT,NPLT,1)
-         END IF
-C 
-C 
-         WRITE (CMON,'(//14x,a)') 'Probabilities'
+         WRITE (CMON,'(14x,a)') 'Probabilities'
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
          WRITE (CMON,'(/)')
@@ -8061,11 +8584,16 @@ C CALCULATE P2(0)
          ELSE
             XPLL2=-1.0
          END IF
+c
+         write(cmon,'(a)') ' Hooft probability analysis'
+         call xprvdu (ncvdu,1,0)
+         if (issprt.eq.0) write (ncwu,'(A)') cmon(1)
 C P2(True)
          WRITE (CMON,'(a,a)') 
      1   ' For an enantiopure material,',' there are 2 choices, P2'
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+C
          IF (XPLL2.GT.0.001) THEN
             WRITE (FORM,1750) XPLL2,XPLL2
 1750        FORMAT (X,F9.4,3X,'i.e. ',E12.6)
@@ -8076,7 +8604,7 @@ C P2(True)
             WRITE (FORM,1750) XPLL2,XPLL2
          END IF
          WRITE (LINE,1850) FORM
-1850     FORMAT ('P2(correct) ',A)
+1850     FORMAT (' P2(correct) ',A)
          WRITE (CMON,1900) LINE
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,1900) LINE
@@ -8103,7 +8631,7 @@ C P3(True)
                WRITE (FORM,1750) XPLLL,XPLLL
             END IF
             WRITE (LINE,1950) FORM
-1950        FORMAT ('P3(correct) ',A)
+1950        FORMAT (' P3(correct) ',A)
             WRITE (CMON,1900) LINE
             CALL XPRVDU (NCVDU,1,0)
             IF (ISSPRT.EQ.0) WRITE (NCWU,1900) LINE
@@ -8116,7 +8644,7 @@ C P3(Twin)
                WRITE (FORM,1750) XTWLL,XTWLL
             END IF
             WRITE (LINE,2000) FORM
-2000        FORMAT ('P3(rac-twin)',A)
+2000        FORMAT (' P3(rac-twin)',A)
             WRITE (CMON,1900) LINE
             CALL XPRVDU (NCVDU,1,0)
             IF (ISSPRT.EQ.0) WRITE (NCWU,1900) LINE
@@ -8129,12 +8657,12 @@ C P3(False)
                WRITE (FORM,1750) XMNLL,XMNLL
             END IF
             WRITE (LINE,2050) FORM
-2050        FORMAT ('P3(inverse) ',A)
+2050        FORMAT (' P3(inverse) ',A)
             WRITE (CMON,1900) LINE
             CALL XPRVDU (NCVDU,1,0)
             IF (ISSPRT.EQ.0) WRITE (NCWU,1900) LINE
             WRITE (LINE,2100) XG
-2100        FORMAT ('G            ',F9.4)
+2100        FORMAT (' G           ',F9.4)
             IF (ISSPRT.EQ.0) WRITE (NCWU,1900) LINE
             YUNK=SQRT(XG2/XG0)
             IF (YUNK.GT.0.0001) THEN
@@ -8144,10 +8672,10 @@ C P3(False)
                WRITE (FORM,1750) YUNK,YUNK
             END IF
             WRITE (LINE,2200) FORM
-2200        FORMAT ('G S.U.       ',A)
+2200        FORMAT (' G S.U.      ',A)
             IF (ISSPRT.EQ.0) WRITE (NCWU,1900) LINE
             WRITE (LINE,2250) TONY
-2250        FORMAT ('FLEQ        ',F9.4)
+2250        FORMAT ('FLEQ         ',F9.4)
             IF (ISSPRT.EQ.0) WRITE (NCWU,1900) LINE
             IF (TONSY.GT.0.001) THEN
                WRITE (FORM,1750) TONSY,TONSY
@@ -8155,7 +8683,7 @@ C P3(False)
                WRITE (FORM,1750) TONSY,TONSY
             END IF
             WRITE (LINE,2300) FORM
-2300        FORMAT ('FLEQ S.U.   ',A)
+2300        FORMAT (' FLEQ S.U.  ',A)
             IF (ISSPRT.EQ.0) WRITE (NCWU,1900) LINE
             WRITE (CMON,'(/)')
             CALL XPRVDU (NCVDU,1,0)
@@ -8163,35 +8691,30 @@ C P3(False)
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
          ELSE
-            WRITE (CMON,'(a//)')'Data do not resolve the P3 hypothesis'
+            WRITE (CMON,'(a//)')
+     1    ' Data do not resolve the P3 hypothesis'
             CALL XPRVDU (NCVDU,2,0)
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(A//)') CMON(1)(:)
          END IF
+         if (issprt .eq. 0) then
+            write(ncwu,'(/A,A/)')' Excluded reflections',
+     1      ' - A reflection may fail more than one test'
+            do i=1,nfailn
+             write(ncwu,'(1X,a32,2X,i5)') CFAILN(I),ifailn(i)
+            enddo
+         endif
 c
-c      now Howards goodies
-            write(ncawu,2051)
-     1 '   RA   RD    wRA2  wRD2   Friedif  Flack esd',
-     2 '    Hooft  esd    Total  Pairs  Unpaired Centric'
-2051  format(a,a)
-         write(ncawu,2500) 
-     1      100.*HFLACK(1)/HFLACK(2),          
-     1      100.*HFLACK(3)/HFLACK(4),          
-     1      100.*SQRT(HFLACK(5)/HFLACK(6)),          
-     1      100.*SQRT(HFLACK(7)/HFLACK(8)),          
-     2      FRIEDIF, STORE(L30GE+6), STORE(L30GE+7),TONY, TONSY,
-     3      NREFIN, MFRIED, LFRIED, NCENTRIC
-2500        FORMAT(4F6.1,2X, F8.2, 2F6.2, 2X, 2F6.2, 4I7)
       ELSE
          WRITE (CMON,'(/)')
          CALL XPRVDU (NCVDU,1,0)
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
-         WRITE (CMON,'(10(a,i7))') 'No of Reflections processed =',
-     1    NREFIN,'        No of Friedel Pairs =',NFRIED
+         WRITE (CMON,'(10(a,i7))') ' No of Reflections processed =',
+     1    NREFIN,'         No of Friedel Pairs =',NFRIED
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)') CMON(1)(:)
-         WRITE (CMON,'(a)') 'No Friedel Pairs found'
+         WRITE (CMON,'(a)') ' No Friedel Pairs found'
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
          GO TO 2350
@@ -8811,3 +9334,241 @@ C----- CLOSE THE 'CIF' OUTPUT FILE
       END IF
       RETURN
       END
+c
+CODE FOR LINFIT
+	function LINFIT(mode,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,mitem,
+     1  root, xcoord, ycoord, grad)
+c least squares best line, based on Wolfram
+c  http://mathworld.wolfram.com/LeastSquaresFitting.html
+c  y = a + bx
+c
+c verified against Watts & Halliwell, Essential Environmental
+c Science, Routledge, 1996.
+c
+      save ss,sx,sxx,sy,syy,sxy,nitem
+      dimension  root(2), xcoord(2), ycoord(2), grad(2)
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCONST.INC'
+c
+      root(1) = 0.
+      root(2) = 0.
+      grad(1) = 0.
+      grad(2) = 0.
+c
+      if(mode.eq.1) then
+	ss = 0.
+	sx = 0.
+	sxx = 0.
+	sy = 0.
+	syy = 0.
+	sxy = 0.
+        nitem=0
+        xmax = 0.
+        ymax = 0.
+
+      else if (mode.eq.2) then	
+        nitem=nitem+1
+	ss = ss+wt
+	sx = sx + x*wt
+	sxx = sxx + x*x*wt
+	sy = sy + y*wt
+	syy = syy + y*y*wt
+	sxy = sxy + x*y*wt
+        xmax = max(xmax, x*wt)
+        ymax = max(ymax, y*wt)
+
+
+      else
+        mitem = nitem
+        LINFIT = +1
+c
+c        WRITE (*,'(a,9x,2f12.3)') 
+c     2 ' Gradient for zero intercept =',SXY/SXX
+c        WRITE (11,'(a,9x,2f12.3)') 
+c     2 ' Gradient for zero intercept =',SXY/SXX
+c
+	denom = ss*sxx - sx*sx
+        if(abs(denom) .gt. zero) then
+            a = (sy*sxx - sx*sxy)/denom
+            b = (ss*sxy - sx*sy)/denom
+
+c based on Wolfram world but including weights (derived by DJW so 
+c beware)
+            sqs = ((syy*sxx)-(sxy*sxy))/ ((mitem-2)*sxx)
+            sa = (sx*sx)/(mitem*mitem*sxx) +(1./float(mitem))
+            sa = sa * sqs
+            if (sa .ge. 0.0) then
+                  sa = sqrt(sa)
+            else
+                  write(ncwu,*) 'Sa negative', sa
+                  sa = -999.
+            endif
+            sb = (((syy*sxx)-(sxy*sxy))/((mitem-2)*sxx*sxx))
+            if (sb .ge. 0.0) then
+                  sb = sqrt(sb)
+            else
+                  write(ncwu,*) 'Sb negative', sb
+                  sb = -999.
+            endif
+c            write(ncwu,'(2(a,4f10.3))') ' Gradient and esd', b, sb
+c      1      ' Intercept and su', a, sa
+c
+        else
+            write(ncwu,*)'Denominator 1 in linfit = ', denom
+            write(*,*)'Denominator 1 in linfit = ', denom
+            LINFIT = -1
+        endif
+
+c r   = r in Watts & Halliwell, page 111
+c rsq = r-sq in Excel,  & W&H, page 112
+c t   = t in Watts & Halliwell page 113
+c tsq = F-test in Excel
+
+        denom=(ss*sxx-sx*sx)*(ss*syy-sy*sy)
+        if(denom .gt. 0.0) then
+                  r    =  (ss*sxy-sx*sy)/sqrt(denom)
+                  rsq  = r * r
+                  if ((ss .ge. 2.).and.(1. .ge. rsq)) then
+                        t   =  r*sqrt(ss-2.)/sqrt(1.-rsq)
+                        tsq =  rsq*(ss-2.)/(1.-rsq)
+                  else
+                        t = -999.
+                        tsq = -999.
+                  endif
+         else
+            write(ncwu,*)'Denominator 2 in linfit = ', denom
+            write(*,*)'Denominator 2 in linfit = ', denom
+                  LINFIT = -2
+         endif
+500     format (A,t40,2f11.3,4x,i7)
+501     format (A,t40,2f11.7,4x,i7)
+        ax = max(xmax,ymax)
+        if (issprt .eq. 0) THEN
+          if (ax .ge. .001) then
+          write(NCWU,500) 
+     1 'Weighted averages of x and y', sx/mitem, sy/mitem, mitem
+           write(NCWU,500) 'Weighted RMS',
+     1  sqrt(sxx/mitem), sqrt(syy/mitem)
+           write(NCWU,500) 'Weighted Maxima  ', xmax, ymax
+          else
+           write(NCWU,501) 
+     1 'Weighted averages of x and y', sx/mitem, sy/mitem, mitem
+           write(NCWU,501) 'Weighted RMS',
+     1  sqrt(sxx/mitem), sqrt(syy/mitem)
+           write(NCWU,501) 'Weighted Maxima  ', xmax, ymax
+          endif
+        endif
+c
+c      this call assumes that the original coordinates were 
+c      centred on 0,0
+c
+        call EIGEN2(sxx,sxy,syy,XCOORD,YCOORD,ROOT,GRAD)
+
+          write(cmon(1)(:),602)
+600       format(a,t40,f11.0,3f11.3)
+601       format(a,t40,f11.8,3f11.3)
+602       format('Principal Componenet Analysis')
+          if (root(1) .ge. 0.001) then
+            write(cmon(2)(:),600)'Major root,Components,angle',
+     1      root(1), xcoord(1), ycoord(1), grad(1)
+            write(cmon(3)(:),600)'Minor root,Components,angle',
+     1      root(2), xcoord(2), ycoord(2), grad(2)
+          else
+            write(cmon(2)(:),601)'Major root,Components,angle',
+     1      root(1), xcoord(1), ycoord(1), grad(1)
+            write(cmon(3)(:),601)'Minor root,Components,angle',
+     1      root(2), xcoord(2), ycoord(2), grad(2)
+          endif      
+        call xprvdu(ncvdu,3,0)
+        if (issprt .eq. 0) THEN
+          write(ncwu,'(/a/a/a)')cmon(1)(:),cmon(2)(:),cmon(3)(:)
+        endif
+      endif
+      return
+      end
+c
+CODE FOR EIGEN2
+      SUBROUTINE EIGEN2(A,B,D,X,Y,ROOT,GRAD)
+c get eigen info for a symmetric 2x2 matrix
+C      a = a11
+c      b = a12 = a21
+c      d = a22
+c
+      dimension x(2), y(2), root(2), grad(2)
+c
+c check for diagonal matrix
+      if (abs(b) .le. .000001) then
+        if(a.gt.d) then
+          root(1) = a
+          x(1) = 1.
+          y(1) = 0.
+          root(2) = d
+          x(2) = 0.
+          y(2) = -1.
+          grad(1) = 0
+          grad(2) = 1000000
+        else
+          root(1) = d
+          x(1) = 0.
+          y(1) = 1.
+          root(2) = a
+          x(2) = -1.
+          y(2) = 0.
+          grad(1) = 1000000
+          grad(2) = 0
+        endif
+      goto 100
+      endif
+
+      term =((a-d)*(a-d)+4.*b*b)
+      term = sqrt(term)
+
+      root(1) = ((a+d)+term)/2.
+      root(2) = ((a+d)-term)/2.
+
+      if(abs(b).ge.abs(root(1)-d)) then
+        grad(1) = (root(1)-a)/b
+      else
+        grad(1) = b/(root(1)-d)
+      endif
+
+      if(abs(b).ge.abs(root(2)-d)) then
+        grad(2) = (root(2)-a)/b
+      else
+        grad(2) = b/(root(2)-d)
+      endif
+
+      if(abs(b) .gt. abs(root(1)-d)) then
+       side = sqrt(b*b+(root(1)-a)*(root(1)-a))
+       x(1) = b / side
+       y(1) = (root(1)-a) / side
+      else
+       side = sqrt(b*b+(root(1)-d)*(root(1)-d))
+       x(1) = (root(1)-d) / side
+       y(1) = b / side
+      endif
+
+      if(abs(b) .gt. abs(root(2)-d)) then
+       side = sqrt(b*b+(root(2)-a)*(root(2)-a))
+       x(2) = b / side
+       y(2) = (root(2)-a) / side
+      else
+       side = sqrt(b*b+(root(2)-d)*(root(2)-d))
+       x(2) = (root(2)-d) / side
+       y(2) = b / side
+      endif
+
+      grad(1) = 180. *atan2((root(1)-a),b)/3.14159
+      grad(2) = 180. *atan2((root(2)-a),b)/3.14159
+c
+      if(grad(1).gt.135.) grad(1)=grad(1)-180.
+      if(grad(1).lt. -45.) grad(1)=grad(1)+180.
+c
+      if(grad(2).gt. 45.) grad(2)=grad(2)-180.
+      if(grad(2).lt.-135.) grad(2)=grad(2)+180.
+
+100   continue
+      return
+      end

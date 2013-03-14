@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2012/07/11 13:43:25  djw
+C Add command QCKCIF to create a minimal cif for Mercury
+C
 C Revision 1.15  2009/01/21 17:03:24  djw
 C Add keyword to enable output of Friedel pairs
 C
@@ -144,7 +147,8 @@ CODE FOR XTHX
 c
 CODE FOR xton
       SUBROUTINE xton
-      PARAMETER (NPROCS=4)
+      DIMENSION FILTER(4)
+      PARAMETER (NPROCS=8)
       DIMENSION IPROCS(NPROCS), PROCS(NPROCS)
       EQUIVALENCE (PROCS(1),IPROCS(1))
       CALL XCSAE
@@ -153,7 +157,8 @@ CODE FOR xton
       KTYP06 = IPROCS(2)
       IPLOT = IPROCS(3)
       IPUNCH = IPROCS(4)
-      IF (I.GE.0) CALL TONSPK(IPLOT,CRITER,KTYP06,IPUNCH)
+      CALL XMOVE(PROCS(5), FILTER(1),4)
+      IF (I.GE.0) CALL TONSPK(IPLOT,CRITER,KTYP06,IPUNCH, FILTER)
       RETURN
       END
 c
