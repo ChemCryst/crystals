@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.198  2013/03/14 15:54:55  djw
+C Much extended absolute configuration analysis, including the Parsons Quotient test.  More reflection filters added to #TON
+C
 C Revision 1.196  2012/11/02 10:30:17  djw
 C Weight the Dobs/Dcalc plot with 1/sigmasq and convert gradient to pseudo-Flack and esd.
 C
@@ -7273,7 +7276,6 @@ C       Ro vs Dm scatter
      3 '^^PL YAXIS TITLE Ro',
      4 '^^PL SERIES 1 SERIESNAME ''Ro'' TYPE SCATTER'
          CALL XPRVDU (NCVDU,4,0)
-
       END IF
 C 
 CC----- initialise tons accumulators etc
@@ -7923,13 +7925,12 @@ C      find slope and intercept of FO/fc plot
 701     FORMAT(26X, 'Intercept, sigma =', F7.3,F7.3)
         CALL XPRVDU (NCVDU,1,0)
         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
-        if (iplot .eq. 3) then
+        if (iplot.eq.3) then
           PSEUDOF = 0.5*(SLOPE)
-          PSEUDOS = 0.5*SIGSLOP
         else
           PSEUDOF = 0.5*(1.-SLOPE)
-          PSEUDOS = 0.5*SIGSLOP
         endif
+        PSEUDOS = 0.5*SIGSLOP
         WRITE(CMON,702)PSEUDOF, PSEUDOS
 702     FORMAT(19X,'  Post-Refinement Flack =', 2F7.3)
 c        CALL XPRVDU (NCVDU,1,0)
@@ -8503,8 +8504,13 @@ C
      1   ' Flack Parameter & su',STORE(L30GE+6),STORE(L30GE+7)
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A,a)') CMON(1)(:50),'@'
-         WRITE(CMON,'(A,2F10.4)') 
-     1   ' Post-Refinement Flack & su', pseudof,pseudos
+         if(iplot.eq.2) then
+           WRITE(CMON,'(A,2F10.4)') 
+     1     '        Quotient Flack & su', pseudof,pseudos
+         else
+           WRITE(CMON,'(A,2F10.4)') 
+     1     '      Difference Flack & su', pseudof,pseudos
+         endif
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,a)') CMON(1)(:50),'!'
          WRITE (CMON,'(6x,a,2f10.4)')  
@@ -9402,22 +9408,22 @@ c beware)
             if (sa .ge. 0.0) then
                   sa = sqrt(sa)
             else
-                  write(ncwu,*) 'Sa negative', sa
+c                  write(ncwu,*) 'Sa negative', sa
                   sa = -999.
             endif
             sb = (((syy*sxx)-(sxy*sxy))/((mitem-2)*sxx*sxx))
             if (sb .ge. 0.0) then
                   sb = sqrt(sb)
             else
-                  write(ncwu,*) 'Sb negative', sb
+c                  write(ncwu,*) 'Sb negative', sb
                   sb = -999.
             endif
 c            write(ncwu,'(2(a,4f10.3))') ' Gradient and esd', b, sb
 c      1      ' Intercept and su', a, sa
 c
         else
-            write(ncwu,*)'Denominator 1 in linfit = ', denom
-            write(*,*)'Denominator 1 in linfit = ', denom
+           if (issprt .eq. 0) 
+     1      write(ncwu,*)'Denominator 1 in linfit = ', denom
             LINFIT = -1
         endif
 
@@ -9438,8 +9444,8 @@ c tsq = F-test in Excel
                         tsq = -999.
                   endif
          else
-            write(ncwu,*)'Denominator 2 in linfit = ', denom
-            write(*,*)'Denominator 2 in linfit = ', denom
+           if (issprt .eq. 0) 
+     1       write(ncwu,*)'Denominator 2 in linfit = ', denom
                   LINFIT = -2
          endif
 500     format (A,t40,2f11.3,4x,i7)
@@ -9448,15 +9454,15 @@ c tsq = F-test in Excel
         if (issprt .eq. 0) THEN
           if (ax .ge. .001) then
           write(NCWU,500) 
-     1 'Weighted averages of x and y', sx/mitem, sy/mitem, mitem
+     1 'Weighted averages of x and y', sx/ss, sy/ss, mitem
            write(NCWU,500) 'Weighted RMS',
      1  sqrt(sxx/mitem), sqrt(syy/mitem)
            write(NCWU,500) 'Weighted Maxima  ', xmax, ymax
           else
            write(NCWU,501) 
      1 'Weighted averages of x and y', sx/mitem, sy/mitem, mitem
-           write(NCWU,501) 'Weighted RMS',
-     1  sqrt(sxx/mitem), sqrt(syy/mitem)
+c           write(NCWU,501) 'Weighted RMS',
+c     1  sqrt(sxx/mitem), sqrt(syy/mitem)
            write(NCWU,501) 'Weighted Maxima  ', xmax, ymax
           endif
         endif
