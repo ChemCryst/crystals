@@ -1,5 +1,6 @@
 %SCRIPT XFRESH6
 % VARIABLE INTEGER FTYPE
+% VARIABLE REAL SIGMACUT
 %%
 %         IF ( EXISTS 23 .NE. 1 ) THEN                                          
 {I Structure Factor control list (LIST 23)  is missing                          
@@ -21,14 +22,21 @@ List 23 already in place.
 %          IF FTYPE .NE. 0 THEN                                                  
 {I For F refinement, a default I/u(I) minimum of 3.0 is recommended.            
 %            INSERT 'RATIO=3.0 '                                                 
+%            EVALUATE SIGMACUT = 3.0
 %          ELSE
 {I For F^2 refinement, a default I/u(I) minimum of -3.0 is recommended.            
 %            INSERT 'RATIO=-3.0 '                                                 
+%            EVALUATE SIGMACUT = - 3.0
 %          END IF                                                                
 {I A default sin(theta)/lambda minimum of 0.01 is recommended.                  
 %          INSERT 'SINT=0.01'                                                    
 %          SEND                                                                  
 %          COPY 'END'                                                            
+%          COPY '#GENERALEDIT 30'                                                     
+%          COPY 'LOCATE RECORDTYPE=103'                                               
+%          COPY 'TRANSFER TO OFFSET = 3 FROM SIGMACUT'                                
+%          COPY 'WRITE OVERWRITE=OVERWRITE'                                           
+%          COPY 'END'                                                                 
 %         END IF
 %%                                                                              
 {I Set suitable starting weights

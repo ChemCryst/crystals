@@ -1,6 +1,8 @@
 % SCRIPT XSET28
 % VARIABLE INTEGER FTYPE
-%%  SET TO Fsq BY DEFAULT (-1 = F in LIST 23)
+% VARIABLE REAL SIGMACUT
+%%
+%%  SETS TO Fsq BY DEFAULT (-1 = F in LIST 23)
 %   EVALUATE FTYPE = 0
 %   IF ( EXISTS ( 23 ) .EQ. 1 ) THEN
 %%   LIST 23 EXISTS - FIND REFINEMENT TYPE                                         
@@ -20,14 +22,21 @@
 %    INSERT 'MINIMA '                                                           
 %    IF ( FTYPE .eq. 0 ) THEN                                                       
 {I For F refinement, a default I/u(I) minimum of 3.0 is recommended.            
-%      INSERT 'RATIO=3.0 '                                                      
+%      INSERT 'RATIO=3.0 '
+%      EVALUATE SIGMACUT = 3.0
 %    ELSE                                                                       
 {I For FSQ refinement, a default I/u(I) minimum of -3.0 is recommended.         
-%      INSERT 'RATIO=-3.0 '                                                     
+%      INSERT 'RATIO=-3.0 '
+%      EVALUATE SIGMACUT = - 3.0
 %    END IF                                                                     
 {I A default sin(theta)/lambda minimum of 0.01 is recommended.                  
 %    INSERT 'SINT=0.01 '                                                        
 %    SEND                                                                       
+%    COPY 'END'                                                                 
+%    COPY '#GENERALEDIT 30'                                                     
+%    COPY 'LOCATE RECORDTYPE=103'                                               
+%    COPY 'TRANSFER TO OFFSET = 3 FROM SIGMACUT'                                
+%    COPY 'WRITE OVERWRITE=OVERWRITE'                                           
 %    COPY 'END'                                                                 
 %   ELSE
 {I Leaving LIST 28 (filters) unchanged
