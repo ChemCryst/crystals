@@ -1,6 +1,6 @@
 %SCRIPT XSIR92IN                                                                
 % VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                         
-% VARIABLE LOGICAL ANSWER                                                       
+% VARIABLE LOGICAL ANSWER XRETXX
 %%                                                                              
 %% Get the results back...                                                      
 %%                                                                              
@@ -23,7 +23,9 @@
 %%  CENTRE STRUCTURE IN CELL                                                    
 %       COPY '#SCRIPT XCENTRE' 
 %       COPY '#SCRIPT XRETYPE'                                                 
-%       COPY '#SCRIPT XRENUMB'                                                  
+%       IF ( .NOT. XRETXX ) THEN
+%         COPY '#SCRIPT XRENUMB'
+%       END IF
 %      END BLOCK                                                                
 %%                                                                              
 %%                                                                              
