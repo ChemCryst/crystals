@@ -139,13 +139,13 @@
 %%
 %%
 %%
-^^WI WINDOW XRADIO 'Process results' MODAL                               
+^^WI WINDOW XRADIO 'Import results' MODAL                               
 ^^WI COMMIT='RF_BOK' CANCEL='RF_BXX'                                            
 ^^WI GRID MAIN NROWS=4 NCOLS=7                                                  
 ^^WI {                                                                          
-^^WI  @ 2,2 GRID L NROWS=6 NCOLS=1                                              
+^^WI  @ 2,2 GRID L NROWS=1 NCOLS=1                                              
 ^^WI  {                                                                         
-^^WI   @ 5,1 GRID AC NROWS=1 NCOLS=3 OUTLINE='Results'                           
+^^WI   @ 1,1 GRID AC NROWS=1 NCOLS=3 OUTLINE='Results'                           
 ^^WI    {                                                                       
 ^^WI     @ 1,1 RADIOBUTTON IUSEA 'Use the structure'                                        
 ^^WI            STATE=ON                                                       
