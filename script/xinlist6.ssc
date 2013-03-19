@@ -149,7 +149,48 @@
 %  END IF                                                                       
 %%                                                                              
 %% Gather information before acting.                                            
+%%
+%  VARIABLE INTEGER FRIEDELF 
+%  VARIABLE REAL FCENTRO  
+%% get wavelength and Zmaz
+%  VARIABLE REAL WORK1 WAVE ZMAX 
+%  COPY '#SCRIPT XGETWZ'
+%  IF ( EXISTS 2 .NE. 1 ) THEN                                                   
+{I **** No symmetry (list 2) present.                                           
+{R             I could have done with that information to                       
+{R             recommend what to do with the Friedel pairs.                     
 %%                                                                              
+%  ELSE                                                                          
+%   COPY '#GENERALEDIT 2'                                                       
+%   COPY 'LOCATE RECORDTYPE=101'                                                
+%   COPY 'TRANSFER FROM OFFSET=0 TO FCENTRO'                                    
+%   COPY 'END'                                                                  
+%  END IF                                                                        
+%%                                                                              
+%%                                                                              
+%  EVALUATE FRIEDELF = - 1                                                       
+%%                                                                              
+%%                                                                              
+%  IF ( EXISTS ( 13 ) .NE. 1 ) THEN                                          
+%       COPY '#LIST 13'                                                         
+%       COPY 'END'                                                              
+%  END IF                                                                    
+%%
+%  IF ( FCENTRO .GT. 0.9 ) THEN                                                  
+                                                                                
+{I Centro-symmetric space-group.                                                
+{R * Friedel Pairs will be merged.                                              
+
+%   EVALUATE FRIEDELF = 0                                                       
+%   COPY '#GENERALEDIT 13'                                                      
+%   COPY 'LOCATE RECORDTYPE=101'                                                
+%   COPY 'TRANSFER TO OFFSET=0 FROM FRIEDELF'                                   
+%   COPY 'WRITE'                                                                
+%   COPY 'END'                                                                  
+%  END IF                                                                        
+%%
+%  COPY '#SCRIPT XSET28'
+%%
 ^^WI WINDOW XINLIST6 'Input reflection data' MODAL                              
 ^^WI        COMMIT='BOK' CANCEL='BXX'                                           
 ^^WI GRID GRIDM NROWS=2 NCOLS=1                                                 
@@ -164,25 +205,25 @@
   "' CHARS=48 INFORM=NO INPUT " TO DISPLAY                                                        
 ^^WI     @ 1,3 BUTTON BROWSE 'Browse...'                                        
 ^^WI    }                                                                       
-^^WI    @ 4,2 GRID GD NROWS=4 NCOLS=1 OUTLINE='Data type'                       
+^^WI    @ 4,2 GRID GD NROWS=3 NCOLS=1 OUTLINE='Data type'                       
 ^^WI    {                                                                       
 ^^WI     @ 1,1 GRID GT NROWS=1 NCOLS=4                                          
 ^^WI     {                                                                      
 ^^WI      @ 1,1 ICON IM INFO                                                    
-^^WI      @ 1,4 GRID GT NROWS=3 NCOLS=1                                         
+^^WI      @ 1,4 GRID GT NROWS=2 NCOLS=1                                         
 ^^WI      {                                                                     
 ^^WI @ 1,1 STATIC G 'Please give the type of the data in the file above.'       
-^^WI @ 2,1 STATIC G 'This is NOT related to whether you want to refine'         
-^^WI @ 3,1 STATIC G 'against F or F squared! Files usually contain F-squared.'  
+^^WI @ 2,1 STATIC G 'Files usually contain F-squared values.'  
 ^^WI      }                                                                     
 ^^WI     }                                                                      
-^^WI     @ 3,1 GRID GT NROWS=1 NCOLS=5                                          
+^^WI     @ 3,1 GRID GT NROWS=1 NCOLS=7                                          
 ^^WI     {                                                                      
 ^^WI      @ 1,1 RADIOBUTTON RFS1 'F' IGNORE                                     
 ^^WI      @ 1,3 RADIOBUTTON RFS2 'F-squared' STATE=ON IGNORE                    
-^^WI      @ 1,5 RADIOBUTTON RFS3 'I' IGNORE                                     
+^^WI      @ 1,5 RADIOBUTTON RFS3 'I' IGNORE
+^^WI      @ 1,6 STRETCH ACROS HORIZONTAL                                           
+^^WI      @ 1,7 CHECKBOX CS 'Data contains sigmas' STATE=ON INFORM=NO            
 ^^WI     }                                                                      
-^^WI     @ 4,1 CHECKBOX CS 'Data contains sigmas' STATE=ON INFORM=NO            
 ^^WI    }                                                                       
 ^^WI    @ 6,2 GRID GD NROWS=3 NCOLS=2 OUTLINE='Format'                          
 ^^WI    {                                                                       
@@ -194,7 +235,57 @@
 ^^WI     @ 3,2 EDITBOX L6FORM ' (3F4.0, 2F8.0) ' CHARS=24                       
 ^^WI                                        DISABLED=YES                        
 ^^WI    }                                                                       
-^^WI   }                                                                        
+^^WI    @ 8,2 GRID GD NROWS=10 NCOLS=1 OUTLINE='Merge'
+^^WI    {                                                                       
+^^WI      @ 1,1 CHECKBOX CBMERGE 'Merge symmetry equivalent reflections'        
+^^WI      STATE=ON 
+^^WI      @ 4,1 STATIC MF1
+^^WI 'It is important not to merge Friedel pairs: (a) when determining the'
+^^WI      @ 5,1 STATIC MF1
+^^WI 'absolute structure parameter; (b) for structures with strong anomolous'
+^^WI      @ 6,1 STATIC MF1
+^^WI 'scatterers, since pairs are not equivalent in these cases.'
+%%
+% IF ( FRIEDELF .GE. 0 )  THEN
+%%                                                                              
+^^WI      @ 2,1 CHECKBOX MFO 'Merge Friedel pairs' STATE=ON                             
+^^WI @ 7,1 STATIC MF2
+^^WI 'This structure is centrosymmetric - Friedel pairs should be merged.'
+%%                                                                              
+% ELSE IF ( ZMAX .GT. 29.0 )  THEN                                                   
+%%                                                                              
+^^WI      @ 2,1 CHECKBOX MFO 'Merge Friedel pairs' STATE=OFF
+^^WI      @ 7,1 STATIC MF2
+^^WI 'This structure has atoms heavier than Silicon, so the Friedel pairs'
+^^WI      @ 8,1 STATIC MF2
+^^WI 'should NOT be merged. However to determine the absolute structure you'
+^^WI @ 9,1 STATIC MF2
+^^WI 'must have observed a sufficient number of Friedel pairs, e.g. > 50%.'
+%%                                                                              
+% ELSE IF ( WAVE .GT. 1.5 ) THEN                                                
+%%                                                                              
+^^WI      @ 2,1 CHECKBOX MFO 'Merge Friedel pairs' STATE=OFF
+^^WI      @ 7,1 STATIC MF2
+^^WI 'This is a light-atom structure so the anomalous differences will be'
+^^WI      @ 8,1 STATIC MF2
+^^WI 'small. As you have used Cu radiation, you may be able to determine'
+^^WI      @ 9,1 STATIC MF2
+^^WI 'the absolute structure if you have collected sufficient Friedel pairs.'
+%%                                                                              
+% ELSE                                                                          
+%%                                                                              
+^^WI      @ 2,1 CHECKBOX MFO 'Merge Friedel pairs' STATE=ON                     
+^^WI      @ 7,1 STATIC MF2
+^^WI 'However, this is a light-atom structure so the anomalous differences'
+^^WI      @ 8,1 STATIC MF2
+^^WI 'will be small. As you have used Mo radiation, you will not be able to'
+^^WI @ 9,1 STATIC MF2
+^^WI 'to determine the absolute structure, except in exceptional cases. You'
+^^WI      @ 10,1 STATIC MF2 'should merge the Friedel pairs.'   
+%%                                                                              
+% END IF                                                                        
+^^WI    }
+^^WI   }
 ^^WI   TAB IN6TAB1 'Transform' GRID XIN6A NROWS=5 NCOLS=3                        
 ^^WI   {                                                                        
 ^^WI    @ 2,2 GRID GAB NROWS=2 NCOLS=1 OUTLINE ='Transform'                     
@@ -267,9 +358,10 @@
 %% "RDF1" - free format is selected. (DISable L6FORM)                           
 %% "RDF2" - shelx format is selected.(DISable L6FORM)                           
 %% "RDF3" - other format is selected.(ENable L6FORM)                            
+%% "CBMERGE" - enable or disable MFO (Friedel merge checkbox) 
 %%                                                                              
 % LOOP                                                                          
-%   VERIFY L6FILE BOK BXX BROWSE HELP1 RDF1 RDF2 RDF3                           
+%   VERIFY L6FILE BOK BXX BROWSE HELP1 RDF1 RDF2 RDF3 CBMERGE
 %   GET SILENT NOSTORE FINAL ABBREVIATED 'Opt' ' '                              
 %   CASE VALUE                                                                  
 %     BLOCK                         %L6FILE%                                    
@@ -418,7 +510,26 @@
 %             GET SILENT REAL ' ' '1.0'                                         
 %             QUEUE SEND                                                        
 %           END IF                                                              
-%         END BLOCK                                                             
+%         END BLOCK
+%% Check Fridel and merge options
+^^??      CBMERGE STATE
+%         VERIFY OFF ON                                                             
+%         GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                              
+%         CASE VALUE                                                                
+%              EVALUATE XQMERGE = FALSE                                                 
+%              EVALUATE XQMERGE = TRUE                                                  
+%         END CASE                                                                  
+^^??      MFO STATE                                                                 
+%         VERIFY OFF ON                                                             
+%         GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                              
+%         EVALUATE FRIEDELF = VALUE - 2                                             
+%%                                                                              
+%         COPY '#GENERALEDIT 13'                                                    
+%         COPY 'LOCATE RECORDTYPE=101'                                              
+%         COPY 'TRANSFER TO OFFSET=0 FROM FRIEDELF'                                 
+%         COPY 'WRITE'                                                              
+%         COPY 'END'                                                                
+
 ^^WI      DISPOSE XINLIST6                                                      
 ^^CR                                                                            
 %         COPY '#HKLI'                                                          
@@ -430,7 +541,8 @@
 %           COPY '#LP'                                                          
 %           COPY 'END'                                                          
 %         END IF                                                                
-%         COPY '#SCRIPT XFRIEDEL'                                               
+%
+%% COPY '#SCRIPT XFRIEDEL'
 %         MESSAGE USER1 ' Error during reflection processing'                   
 %         ON ERROR TERMINATE USER1                                              
 {S * Removing systematically absent reflections                                 
@@ -511,11 +623,25 @@ e.g. a file processed by RC93 will contain intensities.
 ^^WI SET L6FORM DISABLED=NO                                                     
 ^^CR                                                                            
 %     END BLOCK                                                                 
+%     BLOCK                         %CBMERGE% 
+%   VERIFY OFF ON                                                               
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'ON'                               
+%   IF VALUE .EQ. 1 THEN                                                        
+{I Merge set off                                                                
+%%^^CO SET MFO DISABLED=YES 
+%   ELSE                                                                        
+{I Merge set on                                                                 
+%%^^CO SET MFO DISABLED=NO
+%   END IF                                                                      
+%     END BLOCK
 %   END CASE                                                                    
 % END LOOP                                                                      
 %END SCRIPT                                                                     
 %%                                                                              
 %% $Log: not supported by cvs2svn $
+%% Revision 1.37  2012/05/03 15:39:49  rich
+%% Don't apply a null matrix to reflection input.
+%%
 %% Revision 1.36  2012/03/23 14:05:06  rich
 %% Detect transformation matrix on HKLF 4 line in .INS files and apply automatically when reading HKL.
 %%

@@ -52,22 +52,22 @@
 ^^WI   }                                                                        
 ^^WI   @ 3,2 GRID FRIED NROWS=14 NCOLS=1 OUTLINE='Friedel Pairs (hkl,-h-k-l)'   
 ^^WI   {                                                                        
-^^WI      @ 5,1 STATIC MF1 'It is important not to invoke Friedels Law:'        
+^^WI      @ 5,1 STATIC MF1 'It is important not to merge Friedel pairs:'        
 ^^WI  @ 6,1 STATIC MF1 'a) when determining the absolute structure parameter.'  
 ^^WI  @ 7,1 STATIC MF1 'b) for structures with strong anomolous scatterers,'    
-^^WI  @ 8,1 STATIC MF1 '   since pairs are not equivalent in these cases.'      
+^^WI  @ 8,1 STATIC MF1 'since pairs are not equivalent in these cases.'      
 %% 
 % IF ( FRIEDELF .GE. 0 )  THEN                                                   
 %%                                                                              
-^^WI      @ 2,1 RADIOBUTTON MFO 'Use Friedels Law' STATE=ON                             
-^^WI      @ 3,1 RADIOBUTTON KUN 'Do not use Friedels Law'               
+^^WI      @ 2,1 RADIOBUTTON MFO 'Merge Friedel pairs' STATE=ON                             
+^^WI      @ 3,1 RADIOBUTTON KUN 'Do not merge Friedel pairs' 
 ^^WI @ 10,1 STATIC MF2 'This structure is centrosymmetric'      
 ^^WI @ 11,1 STATIC MF2 'Friedel pairs should generally be merged'   
 %%                                                                              
 % ELSE IF ( ZMAX .GT. 29.0 )  THEN                                                   
 %%                                                                              
-^^WI      @ 2,1 RADIOBUTTON MFO 'Use Friedels Law'                              
-^^WI      @ 3,1 RADIOBUTTON KUN 'Do not use Friedels Law' STATE=ON              
+^^WI      @ 2,1 RADIOBUTTON MFO 'Merge Friedel pairs'                              
+^^WI      @ 3,1 RADIOBUTTON KUN 'Do not merge Friedel pairs' STATE=ON              
 ^^WI @ 10,1 STATIC MF2 'This structure has atoms heavier than Silicon, so'      
 ^^WI @ 11,1 STATIC MF2 'in the opinion of the IUCr, the Friedel pairs should'   
 ^^WI      @ 12,1 STATIC MF2 'NOT be merged. However to determine the absolute'  
@@ -76,8 +76,8 @@
 %%                                                                              
 % ELSE IF ( WAVE .GT. 1.5 ) THEN                                                
 %%                                                                              
-^^WI      @ 2,1 RADIOBUTTON MFO 'Use Friedels Law'                    
-^^WI      @ 3,1 RADIOBUTTON KUN 'Do not use Friedels Law'  STATE=ON                        
+^^WI      @ 2,1 RADIOBUTTON MFO 'Merge Friedel pairs'                    
+^^WI      @ 3,1 RADIOBUTTON KUN 'Do not merge Friedel pairs'  STATE=ON                        
 ^^WI      @ 10,1 STATIC MF2 'However, this is a light-atom structure so the'    
 ^^WI      @ 11,1 STATIC MF2 'anomalous differences will be small. As you have'  
 ^^WI      @ 12,1 STATIC MF2 'used Cu radiation, you may be able to determine'   
@@ -86,8 +86,8 @@
 %%                                                                              
 % ELSE                                                                          
 %%                                                                              
-^^WI      @ 2,1 RADIOBUTTON MFO 'Use Friedels Law' STATE=ON                     
-^^WI      @ 3,1 RADIOBUTTON KUN 'Do not use Friedels Law'                       
+^^WI      @ 2,1 RADIOBUTTON MFO 'Merge Friedel pairs' STATE=ON                     
+^^WI      @ 3,1 RADIOBUTTON KUN 'Do not merge Friedel pairs'                       
 ^^WI      @ 10,1 STATIC MF2 'However, this is a light-atom structure so the'    
 ^^WI      @ 11,1 STATIC MF2 'anomalous differences will be small. As you have'  
 ^^WI @ 12,1 STATIC MF2 'used Mo radiation, you will not be able to determine'   
