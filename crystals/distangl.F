@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.108  2012/07/11 13:49:08  djw
+C Include the use of the RESIDUE flag when deciding if a bond is inter/intra when the flag is not zero
+C
 C Revision 1.107  2012/03/23 13:48:47  rich
 C Avoid double UpdateL41 message. Set uninit variable.
 C
@@ -791,17 +794,24 @@ C------ LOAD LIST 5/10
         IULN = KTYP05 (IULN)
         CALL XLDR05 (IULN)
         IF (IERFLG .LT. 0) GOTO 9900
+
+C----- ALLOCATE DUPLICATE BUFFER
+        MDDUPV = 1
+        NDUPV = N5
+        I=NDUPV*MDDUPV
+        LDUPV = KSTALL (I)
+        CALL XFILL ( 0, ISTORE(LDUPV) , I )
 C----- ALLOCATE A RADIUS VECTOR
         MDFNVC = 1
         NFNVC = N5
-        I=N5*MDFNVC
+        I=NFNVC*MDFNVC
         LFNVC = KSTALL (I)
         CALL XZEROF ( ISTORE(LFNVC) , I )
         IDEFFN = 0
 C----- ALLOCATE A FUNCTION VECTOR
         MDATVC = 3
         NATVC = N5
-        I=N5*MDATVC
+        I=NATVC*MDATVC
         LATVC = KSTALL (I)
         CALL XZEROF ( ISTORE(LATVC) , I ) !Include all by default.
 C----- LOAD L41 in case anyone might want it. (KDIST4, for example)
@@ -1346,9 +1356,6 @@ C --             **** MAIN DISTANCE / ANGLES LOOP ****
 C----- SAVE THE NEXT FREE ADDRESS
       NFLBAS = NFL
 
-
-
-
       MAINLOOP: DO I=1,N5
 
         IF ( I .GT. 1 ) THEN 
@@ -1523,36 +1530,77 @@ C Check if the H is riding, or the esd happens to be zero.
 C----- INITIALIZE BUFFER
          IJX=IJW
       IF (IPUNCH .EQ. 3) THEN
+
+C - This code only allows bonded atoms to appear once across whole output
+C - avoid riding a bridging H twice.
+
+           NREJ = 0
+           LV = NFLBAS
+C JS is (now) location of start of last atom in stack
+           DO M =  NFLBAS, JS, NW
+
+C Is atom already riding?
+              ILD = LDUPV+(ISTORE(M)-L5)/MD5
+              ISTORE(ILD) = ISTORE(ILD)+1
+
+c              write(ncwu,*) 'bonded atom ',
+c     c         ISTORE(ISTORE(M)),NINT(STORE(ISTORE(M)+1)),
+c     c           M, (ISTORE(M)-L5)/MD5,
+c     c           ISTORE(ILD)
+
+
+              IF ( ISTORE(ILD) .GT. 1) THEN
+                  NREJ = NREJ + 1
+                  CYCLE
+              ENDIF
+              IF (LV .NE. M) THEN
+C-----          SHUFFLE ITEMS UP IF ADDRESSES DIFFERENT
+                CALL XMOVE (STORE(M), STORE(LV), NW)
+              ENDIF
+              LV = LV + NW
+           END DO
+c          write(ncwu,*) 'nrej ', nrej
+
+           JS = JS - NREJ*NW !Shorten stack if atoms were rejected.
+           K = K - NREJ      !Reduce number of finds.
+
+
 cdjwsep06 get serial numbers to find unique H atoms
 c
-           j  = 1+(js-nflbas)/nw
-           if (j .gt. 3) then
-            WRITE(NCPU,2184) STORE(M5P), NINT(STORE(M5P+1)),J
+           nbon  = 1+(js-nflbas)/nw
+           if (nbon .gt. 3) then
+            WRITE(NCPU,2184) STORE(M5P), NINT(STORE(M5P+1)),nbon
 2184       format('REM too many H atoms on ' a4,'(',i4,'), -',i2)
            endif
 cdjwmay09
-          if (j .eq. 3) then
+
+c - NB when called from xwrite5 with SYMM=NONE, this code is redundant:
+
+          if (nbon .eq. 3) then
            j1 = nint(store(istore(nflbas)+1))
            j2 = nint(store(istore(nflbas+nw)+1))
            j3 = nint(store(istore(nflbas+2*nw)+1))
            if ((j3 .eq. j2) .or. (j3 .eq. j1))     then
 c           discard last
-            j = j-1
+            nbon = nbon-1
             js = js-nw
            else if (j1 .eq. j2) then
 c           discard first
-            j = j-1
+            nbon = nbon-1
             nflbas = nflbas+nw
            endif
           endif
-          if(j .eq. 2) then
+
+          if(nbon .eq. 2) then
            j1 = nint(store(istore(nflbas)+1))
            j2 = nint(store(istore(nflbas+nw)+1))
            if (j2 .eq. j1) then
-            j = j-1
+            nbon = nbon-1
             js = js-nw
            endif
           endif
+
+
 C----- SCRIPT READABLE RIDE LINES
 2185      FORMAT( 'RIDE ',50(A4,'(',I4,',X''S)',1X) )
           WRITE(NCPU,2185) STORE(M5P), NINT(STORE(M5P+1)),
