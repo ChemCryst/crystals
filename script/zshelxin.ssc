@@ -41,7 +41,7 @@
 % LOOP                                                                          
 %   ON ERROR TERMINATE                                                          
 %   ON END TERMINATE                                                            
-%   EXTRACT NEXT                                                                
+%   EXTRACT SHRIEK                                                                
 %   CLEAR                                                                       
 %   EXTRACT TRANSFER COMMAND                                                    
 %%   EXECUTE SEND                                                               
@@ -66,9 +66,10 @@
 %% Check for the first 20 SHELX commands.                                       
 %%                                                                              
 %   IF LNOTAT .EQ. FALSE THEN                                                   
-%     VERIFY TITL CELL ZERR LATT SYMM SFAC UNIT -                               
-             TEMP DELU SIZE OMIT EXTI MERG MOVE -                               
-             ANIS AFIX HFIX FRAG FEND EQIV                                      
+%     VERIFY ABIN  ACTA  AFIX  ANIS  ANSC  -
+            ANSR  BASF  BIND  BLOC  L.S.  -
+            BOND  BUMP  CELL  CGLS  CHIV  -
+            CONF  CONN  DAMP  DANG  DEFS  
 %     LOOP 20 TIMES                                                             
 %       IF ( KEYWORD LOOPCOUNTER ) .EQ. CLINE THEN                              
 %          EVALUATE LNOTAT = TRUE                                               
@@ -85,9 +86,10 @@
 %%                                                                              
 %% Check for the second 20 SHELX commands.                                      
 %%                                                                              
-%     VERIFY CONN PART BIND FREE DFIX SAME FLAT -                               
-             ISOR L.S. BLOC DAMP WGHT FVAR BOND -                               
-             CONF MPLA LIST FMAP GRID PLAN                                      
+%     VERIFY DELU  DFIX  DISP  EADP  END  -
+            EQIV  EXTI  EXYZ  FEND  FLAT  -
+            FMAP  FRAG  FREE  FVAR  GRID  -
+            HFIX  HKLF  HTAB  ISOR  LATT  
 %     LOOP 20 TIMES                                                             
 %       IF ( KEYWORD LOOPCOUNTER ) .EQ. CLINE THEN                              
 %          EVALUATE LNOTAT = TRUE                                               
@@ -104,9 +106,10 @@
 %% Check for the third 20 SHELX commands.                                       
 %%                                                                              
 %   IF LNOTAT .EQ. FALSE THEN                                                   
-%     VERIFY MOLE ACTA END  DISP LAUE REM  MORE -                               
-             TIME SHEL BASF TWIN SWAT SPEC RESI -                               
-             RTAB EXYZ EADP BUMP SADI CHIV                                      
+%     VERIFY LAUE  LIST  MERG  MORE  MOVE  -
+            MPLA  NCSY  NEUT  OMIT  PART  -
+            RESI  PLAN  PRIG  REM   RESI  -
+            RIGU  RTAB  SADI  SAME  SFAC  
 %     LOOP 20 TIMES                                                             
 %       IF ( KEYWORD LOOPCOUNTER ) .EQ. CLINE THEN                              
 %          EVALUATE LNOTAT = TRUE                                               
@@ -120,12 +123,18 @@
 %     END LOOP                                                                  
 %   END IF                                                                      
 %%                                                                              
-%% Check for the last 7 SHELX commands. Add more commands here                  
-%% if you discover any that are missing.                                        
+%% Check for the last 18 SHELX commands. 
+%% and 9 SHELXS commands (27 IN TOTAL)
+%% Add more commands here if you discover any that are missing.                                        
 %%                                                                              
 %   IF LNOTAT .EQ. FALSE THEN                                                   
-%     VERIFY SIMU DEFS SUMP CGLS SLIM WPDB HTAB TREF                            
-%     LOOP 8 TIMES                                                              
+%     VERIFY  SHEL  SIMU  SIZE  SPEC  STIR  -
+            SUMP  SUMP  SWAT  SYMM  TEMP  -
+            TITL  TWIN  TWST  UNIT  WGHT  -
+            WIGL  WPDB  XNPD  ZERR -  
+            PSEE  PHAS  MOLE  SLIM  SPIN  -
+            TEXP  TIME  TREF  SUBS  
+%     LOOP 27 TIMES                                                              
 %       IF ( KEYWORD LOOPCOUNTER ) .EQ. CLINE THEN                              
 %          EVALUATE LNOTAT = TRUE                                               
 %          EVALUATE LOOPEND = LOOPCOUNTER                                       
