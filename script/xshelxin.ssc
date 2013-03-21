@@ -125,7 +125,7 @@
 %         LOOP                                                                  
 %           ON ERROR TERMINATE                                                  
 %           ON END TERMINATE                                                    
-%           EXTRACT NEXT                                                        
+%           EXTRACT SHRIEK                                                        
 %           CLEAR                                                               
 %%           EXTRACT TRANSFER COMMAND                                           
 %%           EXECUTE SEND                                                       
@@ -166,7 +166,7 @@
 %         LOOP                                                                  
 %           ON ERROR TERMINATE                                                  
 %           ON END TERMINATE                                                    
-%           EXTRACT NEXT                                                        
+%           EXTRACT SHRIEK                                                        
 %           CLEAR                                                               
 %%           EXTRACT TRANSFER COMMAND                                           
 %%           EXECUTE SEND                                                       
@@ -247,7 +247,7 @@
 %         LOOP                                                                  
 %           ON ERROR TERMINATE                                                  
 %           ON END TERMINATE                                                    
-%           EXTRACT NEXT                                                        
+%           EXTRACT SHRIEK                                                        
 %           CLEAR                                                               
 %%           EXTRACT TRANSFER COMMAND                                           
 %%           EXECUTE SEND                                                       
@@ -268,7 +268,7 @@
 %              EVALUATE SPACEREAD = ' '                                         
 %              LOOP                                                             
 %                GET NOSTORE NOPROMPT KEYWORD ' ' '_NOMORE_'                    
-%                IF CVALUE .EQ. '_NOMORE_' THEN                                 
+%                IF CVALUE .EQ. '_NOMORE_'  THEN                                 
 %                  EVALUATE LOOPEND = LOOPCOUNTER                               
 %                ELSE IF SPACETEXT THEN                                         
 %                  EVALUATE SPACEREAD = SPACEREAD // CVALUE // ' '              
@@ -316,7 +316,7 @@
 %         LOOP                                                                  
 %           ON ERROR TERMINATE                                                  
 %           ON END TERMINATE                                                    
-%           EXTRACT NEXT                                                        
+%           EXTRACT SHRIEK                                                        
 %           CLEAR                                                               
 %%           EXTRACT TRANSFER COMMAND                                           
 %%           EXECUTE SEND                                                       
@@ -326,7 +326,7 @@
 %           IF CVALUE .EQ. 'SFAC' THEN                                          
 {R SFAC card found.                                                             
 %% First token is always an element.                                            
-%             GET NOSTORE KEYWORD ' ' ' '                                       
+%             GET NOSTORE KEYWORD ' ' ' ' 
 %             EVALUATE CSFAC = CSFAC // ' ' // CVALUE                           
 %% Second token may be a number or an element or nothing.                       
 %             GET NOSTORE NOREMOVE KEYWORD ' ' '0'                              
