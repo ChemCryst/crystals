@@ -595,7 +595,7 @@ C4 . H41 . O8 3_655 155.9(5) 0.955 2.529 3.423(9)    yes
 N6 3_755 H1 . O8 3_655 164.5(3) 0.939 1.926 2.842(9)    yes
 
 
-_iucr_refine_instructions_details_constraints
+_iucr_refine_instructions_details
 ;
 #
 # Punched on          at         
@@ -614,11 +614,6 @@ CONTINUE C(9,X'S,U[11])
 CONTINUE C(10,X'S,U[22]) 
 CONTINUE C(11,X'S,U[23]) 
 END                                                                             
-;
-
-
-_iucr_refine_instructions_details_restraints
-;
 #
 # Punched on          at         
 #
