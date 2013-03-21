@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.29  2012/04/13 07:56:54  djw
+C Correst cif restraint/constraint data name from instruction to instructions
+C
 C Revision 1.28  2011/03/21 13:57:21  rich
 C Update files to work with gfortran compiler.
 C
@@ -885,7 +888,7 @@ C--AND NOW RETURN
         if (nodev .eq. ncpu) then
             CALL XPCHUS(ncpu)
         else
-            write(nodev,'(a)')';'
+           if (iuln.eq.16)    write(nodev,'(a)')';'
 c-          close cif chanel
            CALL XRDOPN(7, KDEV , CSSCIF, LSSCIF)
         endif
@@ -902,9 +905,7 @@ C -       PREAPRE TO APPEND CIF OUTPUT ON FRN1
       IF ( ITYPE .EQ. 1) then
             if (nodev .ne.ncpu) then
                   if (iuln.eq.12) write(nodev,'(//a/a)')
-     1  '_iucr_refine_instructions_details_constraints',';'
-                  if (iuln.eq.16) write(nodev,'(//a/a)')
-     1  '_iucr_refine_instructions_details_restraints',';'
+     1  '_iucr_refine_instructions_details',';'
             endif
             CALL XPCHLH ( IULN, nodev)
       endif
