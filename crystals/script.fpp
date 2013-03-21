@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.73  2012/03/23 13:51:32  rich
+C Intel support.
+C
 C Revision 1.72  2012/01/04 14:31:25  rich
 C Fix some uninitialized variables, and output format mistakes.
 C
@@ -2239,7 +2242,7 @@ C            <ANY>       RETURN VALUE TO BE ASSIGNED TO 'KSCPRC'
 C
 C
 C -- DEFINE SUBCOMMANDS FOR 'EXTRACT'
-      PARAMETER ( LOPR = 8 , NOPR = 5 )
+      PARAMETER ( LOPR = 8 , NOPR = 6 )
       CHARACTER*(LOPR) COPER(NOPR)
 C
 C -- DEFINE KEYWORDS FOR 'EXTRACT FIND'
@@ -2269,7 +2272,8 @@ C
       SAVE CINPBF
       SAVE LENGTH
 C
-      DATA COPER / 'TRANSFER' , 'REWIND' , 'CLOSE' , 'NEXT' , 'FIND' /
+      DATA COPER / 'TRANSFER', 'REWIND', 'CLOSE', 'NEXT', 'FIND',
+     1             'SHRIEK' /
       DATA CFIND / 'STRING' , 'BUFFER' /
       DATA CTRANS / 'COMMAND' , 'INPUT' /
 C
@@ -2334,6 +2338,21 @@ C
         ISTAT = KRDLIN ( NCEXTR , CINPBF , LENGTH )
         IF ( ISTAT .LT. 0 ) GO TO 8910
         IF ( ISTAT .EQ. 0 ) GO TO 8920
+C
+      ELSE IF ( ITYPE .EQ. 6 ) THEN
+C
+C -- 'SHRIEK'
+C
+C -- READ NEXT RECORD UP TO '!'
+C
+        ISTAT = KRDLIN ( NCEXTR , CINPBF , LENGTH )
+        IF ( ISTAT .LT. 0 ) GO TO 8910
+        IF ( ISTAT .EQ. 0 ) GO TO 8920
+        IDJW = INDEX(CINPBF,'!')
+        IF (IDJW .GT. 0) THEN
+            LENGTH=IDJW-1
+            CINPBF(IDJW:) = ' '
+        ENDIF
 C
       ELSE IF ( ITYPE .EQ. 5 ) THEN
 C
