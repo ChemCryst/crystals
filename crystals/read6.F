@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.37  2012/09/19 09:28:14  djw
+C Add a comment explaining why L30DR+0/2/4 are not updated because we do not know if the
+C instrument software has merged the data of not, with or without Friedles Law
+C
 C Revision 1.36  2011/09/05 07:54:49  djw
 C Output message in RED with line number if errors in reflection file
 C
@@ -346,6 +350,7 @@ C  READ BACK AND STORED ON THE DISC.
 C
 C--
       CHARACTER*80 CFORM
+      CHARACTER*132 CBTEST
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM06.INC'
       INCLUDE 'ICOM6A.INC'
@@ -946,7 +951,13 @@ C--CHECK FOR BLANK ENTRY
       DO 3000 I=L6IB,M6IB
          IF (NINT(STORE(I))) 3050,3000,3050
 3000  CONTINUE
-      GO TO 2950
+c RIC13 Stop on 0 0 0 0.0 0.0
+C Check if it was 0 0 0 0... or blank.
+      BACKSPACE IUNIT
+      READ (IUNIT,'(A)') CBTEST
+      IF ( CBTEST .EQ. ' ' ) GOTO 2950 ! It was just a blank line.
+      GO TO 5000 ! It was a load of zeroes.
+C     GO TO 2950
 C--CHECK FOR THE END OF THE REFLECTIONS
 3050  CONTINUE
       IF (STORE(L6IB)+511.) 5000,4100,4100
