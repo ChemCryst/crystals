@@ -477,7 +477,7 @@
 %            BLOCK                                                              
 %%                                                                              
 %% Put crystallographic occupancy into 'SPARE' (offset 13)                      
-%%                                                                              
+%%            
 %             COPY '#SPEC TEST PARAMETER .01'                                   
 %             COPY 'END'                                                        
 %%                                                                              
@@ -494,8 +494,12 @@
 %%                                                                              
 %              IF ( SPECOCC .LE. 0.0 ) THEN                                     
 %                EVALUATE SPECOCC = 1.0                                         
-%              END IF                                                           
-%              EVALUATE CRYOCC = SXOCC / SPECOCC                                
+%              END IF
+%              if sxocc .le. 0. then
+%                  evaluate cryocc = 1.
+%              else                                                           
+%                  EVALUATE CRYOCC = SXOCC / SPECOCC                                
+%              end if                                                           
 %              COPY 'TRANSFER TO OFFSET=2 FROM CRYOCC'                          
 %              COPY 'NEXT'                                                      
 %             END LOOP                                                          
