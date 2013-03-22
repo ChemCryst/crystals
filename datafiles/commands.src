@@ -4365,7 +4365,7 @@ TONSPEK            1    1
     .FILTER1            5    0    1    0    0 20.
     .FILTER2            6    0    1    0    0 20.
     .FILTER3            7    0    1    0    0 2.
-    .FILTER4            7    0    1    0    0 0.1
+    .FILTER4            8    0    1    0    0 0.1
 BENFORD            1    1
    8    4096 CRYSTALSPUBLISH
     6       
