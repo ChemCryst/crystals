@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.199  2013/03/15 16:52:07  djw
+C Improve some formatting
+C
 C Revision 1.198  2013/03/14 15:54:55  djw
 C Much extended absolute configuration analysis, including the Parsons Quotient test.  More reflection filters added to #TON
 C
@@ -7472,8 +7475,8 @@ COMPARE PACKED INDICES
          FckD=FCK1-FCK2
          FokS=0.5*(FOK1+FOK2)
          FckS=0.5*(FCK1+FCK2)
-         Qo = FokD/FokS
-         Qc = FckD/FckS
+         Qo = FokD/(2.*FokS)
+         Qc = FckD/(2.*FckS)
          FOMAX=MAX(FOMAX,FokD)
          FCMAX=MAX(FCMAX,FckD)
          FCMIN=MIN(FCMIN,FckD)
@@ -7713,8 +7716,8 @@ c
            if (iplot.eq.2) then
 c            quotient plot
              wt = 1. / (sigmaq*sigmaq)
-             xaxis = fckd/fcks
-             yaxis = fokd/foks
+             xaxis = Qc
+             yaxis = Qo
            endif
 c other plots done in second pass later
            xmax=max(xmax,abs(xaxis))
@@ -7772,7 +7775,7 @@ c              number too big for plot
                if(issprt.eq.0) write(ncwu,'(a,a,2(1x,f14.4))') 
      1           'Overflow ', hkllab(1:ihkllen), xaxis, yaxis
             else   
-               write (cmon,'(3a,2(1x,f12.4))') 
+               write (cmon,'(3a,2(1x,f14.4))') 
      1         '^^PL LABEL ''', hkllab(1:ihkllen), 
      2         ''' DATA ',xaxis,yaxis
                call xprvdu (ncvdu,1,0)
