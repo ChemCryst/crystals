@@ -210,125 +210,11 @@
 %       EVALUATE CPUNCH = 'GRAPH'                                                      
 %     END IF                                                                    
 ^^CO DISPOSE XHOOFT                                                             
-%%                                                                              
-%% Create special LIST 7 with F+ and F- in adjacent slots                       
-%  BLOCK                                                                        
-%    IF ( EXISTS 6 .NE. 1 ) THEN                                                
-{E **** FATAL: There are no reflections to work with                            
-%      FINISH                                                                   
-%    END IF                                                                     
-%  END BLOCK                                                                    
-%  IF ( EXISTS 7 .EQ. 1 ) THEN                                                  
-%    COPY '#DISK'                                                               
-%    COPY 'DELETE 7'                                                            
-%    COPY 'END'                                                                 
-%  END IF                                                                       
-%COPY '#SCRIPT copy67'                                                          
-%  BLOCK                                                                        
-%    IF ( EXISTS 7 .NE. 1 ) THEN                                                
-{E **** FATAL: The reflection convertion failed                                 
-%      FINISH                                                                   
-%    END IF                                                                     
-%  END BLOCK                                                                    
-%copy '#disk'                                                                   
-%copy 'retain 5'                                                                
-%copy 'end'                                                                     
-%copy '#generaledit 5'                                                          
-%copy 'getserial l5ser'                                                         
-%copy 'end'                                                                     
-% if l5ser .lt. 0 then                                                          
-%  evaluate l5ser = - l5ser                                                     
-% end if                                                                        
-%copy '#edit'                                                                   
-%copy 'change enantio 0'                                                        
-%copy 'end'                                                                     
-%copy '#sfls in=7'                                                              
-%copy 'calc'                                                                    
-%copy 'end'                                                                     
+%%                 
+%    copy '#script tonswork'
 %%
-%copy '#generaledit 5'                                                          
-%copy 'getserial l5new'                                                         
-%copy 'end'                                                                     
-%%
-%copy '#disk'                                                                   
-%clear                                                                          
-%insert 'reset 5 '                                                              
-%store integer l5ser                                                            
-%send                                                                           
-%%
-%clear                                                                          
-%insert 'delete 5 '                                                              
-%store integer l5new                                                            
-%send                                                                           
-%%
-%copy 'retain 5 action=no'                                                      
-%copy 'end'                                                                     
-%copy '#syst in=7 fried=yes'                                                    
-%copy 'end'                                                                     
-%copy '#sort in=7'                                                              
-%copy 'end'                                                                     
-%copy '#purge  list=7'                                                          
-%copy 'end'                                                                     
-%%        
-%%
-%% open the restraint file if required
-% IF IPUNCH = 2 THEN                                                                   
-%   COPY '#RELEASE PUNCH flack-restraint.pch'                                          
-% END IF
-%%
-%
-% IF IPLOT .EQ. 0 THEN                                                          
-%   TRANSFER '#TON CRITER= ' // CHARACTER ( CRITER ) //   -
-' PUNCH= ' //   CPUNCH   TO CRYSTALS
-%   TRANSFER 'CONT '  //   -
-' FILTER1= '  // CHARACTER ( FILTER1 ) // -
-' FILTER2= '  // CHARACTER ( FILTER2 ) // -
-' FILTER3= '  // CHARACTER ( FILTER3 ) // -
-' FILTER4= '  // CHARACTER ( FILTER4 )  - 
-TO CRYSTALS       
-%   TRANSFER "END" TO CRYSTALS                                                  
-%       IF IPUNCH = 2 THEN                                                                   
-%         COPY '#RELEASE PUNCH bfile.pch'                                          
-%       END IF
+% IF IPLOT .EQ. 0 THEN                                                     
 %    FINISH
-%%
-% ELSE IF IPLOT .EQ. 5 THEN
-^^WI WINDOW xnormpp 'Normal probabability plot' KEEP SIZE MODAL                 
-^^WI COMMIT='NPP_BOK' CANCEL='NPP_BOK'                                          
-^^WI GRID MAIN NROWS=2 NCOLS=1                                                  
-^^WI {                                                                          
-^^WI  @ 1,1 GRID PRIME NROWS=7 NCOLS=3                                          
-^^WI  {                                                                         
-^^WI   @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                               
-^^WI   {                                                                        
-^^WI    @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                         
-^^WI    {                                                                       
-^^WI     @ 1,1 STATIC XFW1                                                      
-^^WI "The resudual is plotted against the 'normal score' - the "                
-^^WI     @ 2,1 STATIC XFW2                                                      
-^^WI 'expected distribution of errors based on the normal pdf. It should be'    
-^^WI     @ 3,1 STATIC XFW3                                                      
-^^WI 'linear and pass through the origin if the weights are good.'  
-^^WI    }                                                                       
-^^WI    @ 1,1 ICON IM INFO                                                      
-^^WI   }                                                                        
-^^WI   @ 4,2 PLOTWINDOW _VNORMPP NROWS=20 NCOLS=64                              
-^^WI     DEFINEPOPUPMENU POPUP 'Selection'
-^^WI       ITEM _SDELA '&Omit _L' 'OMIT_N_L'
-^^WI     ENDDEFINEMENU
-^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=3                                          
-^^WI   {     
-^^WI    @ 1,1 BUTTON NPP_BOK 'Close' DEFAULT
-^^WI    @ 1,3 BUTTON NORMPP 'Save image'                                    
-^^WI   }
-^^WI  }                                                                         
-^^WI  @ 2,1 PROGRESS _FOFCPR 'Please wait'                                      
-^^WI }                                                                          
-^^WI SHOW                                                                       
-^^CR                                                                            
-^^CO SENDPROGRESSTO _FOFCPR                                                     
-%%                                                                              
-%%
 % ELSE IF IPLOT .EQ. 1 THEN                                                     
 ^^WI WINDOW xnormpp 'Do vs Dm plot' KEEP SIZE MODAL                             
 ^^WI COMMIT='NPP_BOK' CANCEL='NPP_BOK'                                          
@@ -480,10 +366,50 @@ TO CRYSTALS
 ^^WI SHOW                                                                       
 ^^CR                                                                            
 ^^CO SENDPROGRESSTO _FOFCPR                                                     
+%%
+%%
+% ELSE IF IPLOT .EQ. 5 THEN
+^^WI WINDOW xnormpp 'Normal probabability plot' KEEP SIZE MODAL                 
+^^WI COMMIT='NPP_BOK' CANCEL='NPP_BOK'                                          
+^^WI GRID MAIN NROWS=2 NCOLS=1                                                  
+^^WI {                                                                          
+^^WI  @ 1,1 GRID PRIME NROWS=7 NCOLS=3                                          
+^^WI  {                                                                         
+^^WI   @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                               
+^^WI   {                                                                        
+^^WI    @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                         
+^^WI    {                                                                       
+^^WI     @ 1,1 STATIC XFW1                                                      
+^^WI "The resudual is plotted against the 'normal score' - the "                
+^^WI     @ 2,1 STATIC XFW2                                                      
+^^WI 'expected distribution of errors based on the normal pdf. It should be'    
+^^WI     @ 3,1 STATIC XFW3                                                      
+^^WI 'linear and pass through the origin if the weights are good.'  
+^^WI    }                                                                       
+^^WI    @ 1,1 ICON IM INFO                                                      
+^^WI   }                                                                        
+^^WI   @ 4,2 PLOTWINDOW _VNORMPP NROWS=20 NCOLS=64                              
+^^WI     DEFINEPOPUPMENU POPUP 'Selection'
+^^WI       ITEM _SDELA '&Omit _L' 'OMIT_N_L'
+^^WI     ENDDEFINEMENU
+^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=3                                          
+^^WI   {     
+^^WI    @ 1,1 BUTTON NPP_BOK 'Close' DEFAULT
+^^WI    @ 1,3 BUTTON NORMPP 'Save image'                                    
+^^WI   }
+^^WI  }                                                                         
+^^WI  @ 2,1 PROGRESS _FOFCPR 'Please wait'                                      
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+^^CO SENDPROGRESSTO _FOFCPR                                                     
+%%                                                                              
+%%
 % END IF                                                                    
 % VARIABLE LOGICAL REPLOT
 % EVALUATE REPLOT = TRUE
-% LOOP                                                                         
+% LOOP             
+% show loopcounter                                                            
 %%
 %  IF REPLOT THEN
 %  IF IPLOT .EQ. 5 THEN
@@ -529,11 +455,10 @@ TO CRYSTALS
 %  END IF
 %  TRANSFER "END" TO CRYSTALS                                                    
 %  EVALUATE REPLOT = FALSE
-%%
 %  END IF            %%ENDIF REPLOT
 %%
 %  VERIFY NPP_BOK OMIT NORMPP DODM QOQM RODM FLDM
-%  GET SILENT NOSTORE FINAL ABBREVIATED '?' 'EXT_BOK'                         
+%  GET SILENT NOSTORE FINAL ABBREVIATED '?' 'NPP_BOK'                         
 %  IF VALUE .EQ. 1 THEN                                                       
 ^^CO    DISPOSE xnormpp                                                         
 %       IF IPUNCH = 2 THEN                                                                   
@@ -586,13 +511,13 @@ TO CRYSTALS
 %  ELSE IF VALUE .EQ. 3 THEN
 ^^CO SET _VNORMPP SAVE 1200 1200 npp-   
 %  ELSE IF VALUE .EQ. 4 THEN
-^^CO SET _VFOFC SAVE 1200 1200 dodm   
+^^CO SET _VFOFC SAVE 1200 1200 dodm-   
 %  ELSE IF VALUE .EQ. 5 THEN
-^^CO SET _VFOFC SAVE 1200 1200 qoqm   
+^^CO SET _VFOFC SAVE 1200 1200 qoqm-   
 %  ELSE IF VALUE .EQ. 6 THEN
-^^CO SET _VFOFC SAVE 1200 1200 rodm 
+^^CO SET _VFOFC SAVE 1200 1200 rodm- 
 %  ELSE IF VALUE .EQ. 7 THEN
-^^CO SET _VFOFC SAVE 1200 1200 fldm   
+^^CO SET _VFOFC SAVE 1200 1200 fldm-   
 %  END IF                                                                     
 % END LOOP                                                                     
 %%          

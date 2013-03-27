@@ -1,0 +1,113 @@
+%SCRIPT TONWORK
+%%                                                                   
+%% Create a LIST 7 from 6, gather together FRIEDEL pairs                                                                              
+%%                                                                              
+%  VARIABLE LOGICAL SERR                                                        
+%  VARIABLE REAL CRITER FILTER1 FILTER2 FILTER3 FILTER4
+%  if criter .le. 0. then
+%  EVALUATE CRITER = 99999.
+%  end if
+%  if filter1 .le. 0. then
+%  EVALUATE FILTER1 = 20.                                                      
+%  end if
+%  if filter2 .le. 0. then
+%  EVALUATE FILTER2 = 20.                                                      
+%  end if
+%  if filter3 .le. 0. then
+%  EVALUATE FILTER3 = 2. 
+%  end if
+%  if filter4 .le. 0. then
+%  EVALUATE FILTER4 = 0.1                                                     
+%  end if
+%  VARIABLE INTEGER IPLOT IPUNCH L5SER L5NEW 
+%  VARIABLE CHARACTER CPLOT CPUNCH                                                
+%  if iplot .le. 0 then
+%  EVALUATE CPLOT = 'NO'                                                           
+%  end if
+%  if ipunch .le. 0 then
+%  EVALUATE CPUNCH = 'NO'
+%  end if                                                           
+%%                                                                              
+%% Create special LIST 7 with F+ and F- in adjacent slots                       
+%  BLOCK                                                                        
+%    IF ( EXISTS 6 .NE. 1 ) THEN                                                
+{E **** FATAL: There are no reflections to work with                            
+%      FINISH                                                                   
+%    END IF                                                                     
+%  END BLOCK                                                                    
+%  IF ( EXISTS 7 .EQ. 1 ) THEN                                                  
+%    COPY '#DISK'                                                               
+%    COPY 'DELETE 7'                                                            
+%    COPY 'END'                                                                 
+%  END IF                                                                       
+%COPY '#SCRIPT copy67'                                                          
+%  BLOCK                                                                        
+%    IF ( EXISTS 7 .NE. 1 ) THEN                                                
+{E **** FATAL: The reflection convertion failed                                 
+%      FINISH                                                                   
+%    END IF                                                                     
+%  END BLOCK                                                                    
+%copy '#disk'                                                                   
+%copy 'retain 5'                                                                
+%copy 'end'                                                                     
+%copy '#generaledit 5'                                                          
+%copy 'getserial l5ser'                                                         
+%copy 'end'                                                                     
+% if l5ser .lt. 0 then                                                          
+%  evaluate l5ser = - l5ser                                                     
+% end if                                                                        
+%copy '#edit'                                                                   
+%copy 'change enantio 0'                                                        
+%copy 'end'                                                                     
+%copy '#sfls in=7'                                                              
+%copy 'calc'                                                                    
+%copy 'end'                                                                     
+%%
+%copy '#generaledit 5'                                                          
+%copy 'getserial l5new'                                                         
+%copy 'end'                                                                     
+%%
+%copy '#disk'                                                                   
+%clear                                                                          
+%insert 'reset 5 '                                                              
+%store integer l5ser                                                            
+%send                                                                           
+%%
+%clear                                                                          
+%insert 'delete 5 '                                                              
+%store integer l5new                                                            
+%send                                                                           
+%%
+%copy 'retain 5 action=no'                                                      
+%copy 'end'                                                                     
+%copy '#syst in=7 fried=yes'                                                    
+%copy 'end'                                                                     
+%copy '#sort in=7'                                                              
+%copy 'end'                                                                     
+%copy '#purge  list=7'                                                          
+%copy 'end'                                                                     
+%%        
+%%
+%% open the restraint file if required
+% IF IPUNCH = 2 THEN                                                                   
+%   COPY '#RELEASE PUNCH flack-restraint.pch'                                          
+% END IF
+%%
+%
+% IF IPLOT .EQ. 0 THEN                                                          
+%   TRANSFER '#TON CRITER= ' // CHARACTER ( CRITER ) //   -
+' PUNCH= ' //   CPUNCH   TO CRYSTALS
+%   TRANSFER 'CONT '  //   -
+' FILTER1= '  // CHARACTER ( FILTER1 ) // -
+' FILTER2= '  // CHARACTER ( FILTER2 ) // -
+' FILTER3= '  // CHARACTER ( FILTER3 ) // -
+' FILTER4= '  // CHARACTER ( FILTER4 )  - 
+TO CRYSTALS       
+%   TRANSFER "END" TO CRYSTALS                                                  
+%       IF IPUNCH = 2 THEN                                                                   
+%         COPY '#RELEASE PUNCH bfile.pch'                                          
+%       END IF
+%    FINISH
+%%          
+% END IF
+% END SCRIPT
