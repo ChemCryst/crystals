@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.200  2013/03/22 13:10:44  djw
+C Re-define quotient to bring into line with Simon's paper
+C
 C Revision 1.199  2013/03/15 16:52:07  djw
 C Improve some formatting
 C
@@ -7161,8 +7164,10 @@ C
 C      set packing constants
       PARAMETER (NPAK=256)
       PARAMETER (NN2=NPAK/2)
-      PARAMETER (THRESH=.5)
-      PARAMETER (THRESH2 = 3.)
+c  Thresholding removed. Filters should do the work more
+c  flexibly.
+c      PARAMETER (THRESH=.5)
+c      PARAMETER (THRESH2 = 3.)
 
       IERROR=1
 C 
@@ -7571,7 +7576,7 @@ c 3
             ifailn(3)=ifailn(3) + 1
          endif
 
-         tempfilter= 0.1*filter(2)
+         tempfilter= 0.01*filter(2)
 c 4
          if ((FokS/FckS.gt. 1.+tempfilter)
      1   .or.(FokS/Fcks.lt. 1.0-tempfilter)) then
@@ -7740,10 +7745,9 @@ c
            IF (IPUNCH.EQ.2) THEN
 C----- multiplier to correct Fc for flack parameter value
 C assigned above      PREFLACK = 1. - 2.* STORE(L30GE+6)
-C 
 Cdjwjul09  Watch out for small/negative average Fo & Fc
-            IF ((FokS.GE.THRESH*SIGMAS).AND.(FckS.GE.THRESH*SIGMAS))THEN
-             IF (ABS(FokD-FckD) .le. thresh2 * sigmad) THEN
+c            IF ((FokS.GE.THRESH*SIGMAS).AND.(FckS.GE.THRESH*SIGMAS))THEN
+c             IF (ABS(FokD-FckD) .le. thresh2 * sigmad) THEN
                IF (FckD.LT.ZERO) THEN
                   CSIGN='-'
                ELSE
@@ -7752,14 +7756,15 @@ Cdjwjul09  Watch out for small/negative average Fo & Fc
                ALT=sigmad
                WRITE (NCPU,550)
      1         FokD,  alt , CSIGN, abs(FckD),
-     3         i,j,k,abs(FokD-FckD)/sigmad, (FokD-preflack*FckD)/FckD
+     2         ih2,ik2,il2,abs(FokD-FckD)/sigmad, 
+     3         (FokD-preflack*FckD)/FckD
 550            FORMAT ('restrain ',F9.2,', ',F14.4,' = ',A,
      1         ' ( 1. - ( 2. * enantio ) ) * ',F9.2,20X,3I5,2F9.3)
                NREST=NREST+1
                RESTNUM=RESTNUM+ABS(FokD-PREFLACK*FckD)
                RESTDEN=RESTDEN+ABS(FokD)
-             END IF
-            END IF
+c             END IF
+c            END IF
            END IF
 
            if(ipunch.eq.3) write(ncpu,'(5f14.4)') 
@@ -7781,11 +7786,11 @@ c              number too big for plot
                call xprvdu (ncvdu,1,0)
             endif
            end if
-         else            ! ifail test
+         else                                    ! ifail test
 c           failing reflections
 c             write(123,'(i4,2(3f12.2,3x))')
 c     1      ifail,fok1,fck1,sig1,fok2,fck2,sig2
-         end if          !end ifail test
+         end if                                  !end ifail test
 C        GET NEXT REFLECTION(1)
          GO TO 450
 C 
@@ -7822,15 +7827,15 @@ C---- all refelctions processed.
 C---- SPLIT UNPAIRD INTO REAL UNPAIRED AND CENTRIC
 c      LFRIED=LFRIED-NCENTRIC
       IF (IPUNCH.EQ.2) THEN
-         WRITE (CMON,'(a,i8,a)') 'REM ',NREST,' restraints written out'
-         CALL XPRVDU (NCVDU,2,0)
-         WRITE (NCPU,'(A)') CMON(1)(:)
+         WRITE (CMON,'(i8,a)') NREST,' restraints written out'
+         CALL XPRVDU (NCVDU,1,0)
+         WRITE (NCPU,'(A,A)') 'REM ', CMON(1)(:)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') CMON(1)(:)
          IF(NREST .GT.0) THEN
-          WRITE (CMON,'(a,f10.2)') 'REM  restraints R-factor(%) = ',
+          WRITE (CMON,'(a,f10.2)') ' Restraints R-factor(%) = ',
      1    100.0*restnum/restden
-          CALL XPRVDU (NCVDU,2,0)
-          WRITE (NCPU,'(A)') CMON(1)(:)
+          CALL XPRVDU (NCVDU,1,0)
+          WRITE (NCPU,'(A,A)') 'REM ', CMON(1)(:)
           IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') CMON(1)(:)
          ENDIF
       END IF
@@ -7907,15 +7912,16 @@ c
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a/)') CMON(1)(:)
       endif
 C 
-C 
-      call outcol(3)
+C check we have accepted some pairs
+      IF (NFRIED.GT.0) THEN
+       call outcol(3)
 c
 C      find slope and intercept of FO/fc plot
-      IDJW = LINFIT
+       IDJW = LINFIT
      1 (3,X,Y,WT,YCUT,SIGCUT,SLOPE,SIGSLOP,T,TSQ,CORREL,COOD,NFOFC,
      1  root, xcoord, ycoord, grad)
 
-      IF (IDJW .GE. 0) THEN
+       IF (IDJW .GE. 0) THEN
         WRITE (CMON,700) CORREL, cood,SLOPE,SIGSLOP
 700     FORMAT (/ 
      1  ' Correlation coeff and r^2 of Scatter Plot =',
@@ -7939,7 +7945,7 @@ C      find slope and intercept of FO/fc plot
 c        CALL XPRVDU (NCVDU,1,0)
         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
 
-      ELSE IF(IDJW.EQ.-1) THEN
+       ELSE IF(IDJW.EQ.-1) THEN
 
         WRITE(CMON,*)'Line fitting failed'
         CALL XPRVDU (NCVDU,1,0)
@@ -7948,16 +7954,16 @@ c        CALL XPRVDU (NCVDU,1,0)
         CALL XPRVDU (NCVDU,1,0)
         IF (ISSPRT.EQ.0) WRITE(NCWU,'(/a)')CMON(1)(:nctrim(cmon(1)))
 
-      ELSE
+       ELSE
 
         WRITE (CMON,*) ' Correlation Coefficient cannot be computed'
         CALL XPRVDU (NCVDU,1,0)
         IF (ISSPRT.EQ.0) WRITE(NCWU,'(/a)')CMON(1)(:nctrim(cmon(1)))
 
-      ENDIF      
-      call outcol(1)
-      if((iplot.eq.1).or.(iplot.eq.2)) then
-       if (cood .le. 0.5) then 
+       ENDIF      
+       call outcol(1)
+       if((iplot.eq.1).or.(iplot.eq.2)) then
+        if (cood .le. 0.5) then 
               write(cmon,'(a,f5.2,a,i4,a,a)')
      1'{I The Coefficient of determination (r^2) of',cood,
      2' means that only',nint(cood*100.),
@@ -7969,10 +7975,10 @@ c        CALL XPRVDU (NCVDU,1,0)
      2 ' differences'
           call xprvdu (ncvdu,1,0)
           if (issprt.eq.0)write(ncwu,'(A)')cmon(1)(3:nctrim(cmon(1)))
+        endif
        endif
-      endif
 C 
-      if(iplot.eq.3) then 
+       if(iplot.eq.3) then 
 c----- check for large noise:sigmal
           alpha = grad(1)
           beta = rtd*atan(slope)
@@ -7987,81 +7993,80 @@ c----- check for large noise:sigmal
             call xprvdu (ncvdu,2,0)
             if (issprt.eq.0) write (ncwu,'(/A)') cmon(2)(3:)
            endif
-      endif
+       endif
 C 
-      djw1=min(xmax,ymax)
-      phi = atan2(ymax,xmax)
+       djw1=min(xmax,ymax)
+       phi = atan2(ymax,xmax)
 c        a line calculated from the coefficients.
 
-         theta = atan2(slope,1.)
-         if(theta .gt. phi) then
+       theta = atan2(slope,1.)
+       if(theta .gt. phi) then
             djw2 = ymax/tan(theta)
             djw3 = ymax
-         else if(theta .le. -phi) then
+       else if(theta .le. -phi) then
             djw2 = ymax/tan(theta)
             djw3 = ymax
-         else
+       else
             djw2 = xmax
             djw3 = xmax*tan(theta)
-         endif
-      IF ((IPLOT.eq.1).or.(IPLOT.EQ.2)) THEN
+       endif
+       IF ((IPLOT.eq.1).or.(IPLOT.EQ.2)) THEN
          WRITE (CMON,'(A/ (2(A,2(1X,F12.2))) )') 
      1 '^^PL ADDSERIES ''Best Line'' TYPE LINE',
      2 '^^PL DATA ', -djw2,-djw3+ycut,' DATA ',djw2,djw3+ycut
-         CALL XPRVDU (NCVDU,2,0)
+        CALL XPRVDU (NCVDU,2,0)
 c
 C       Also add a series for unit slope (y=x) 
-       djwx = 0.8*djw1
+        djwx = 0.8*djw1
          WRITE (CMON,'(A/(2(A,2(1X,F12.3))) )') 
      1 '^^PL ADDSERIES ''Unit Slope'' TYPE LINE',
      2 '^^PL DATA ', -djwx,-djwx,' DATA ',djwx,djwx
-       CALL XPRVDU (NCVDU,2,0)
+        CALL XPRVDU (NCVDU,2,0)
 c
 c       plot principal axes
 
-       theta = grad(2)*dtr
-       if(theta .gt. phi) then
+        theta = grad(2)*dtr
+        if(theta .gt. phi) then
             djw2 = ymax/tan(theta)
             djw3 = ymax
-       else if(theta .le. -phi) then
+        else if(theta .le. -phi) then
             djw2 = ymax/tan(theta)
             djw3 = ymax
-       else
+        else
             djw2 = xmax
             djw3 = xmax*tan(theta)
-       endif
+        endif
 
-       WRITE (CMON,'(A/ (2(A,2(1X,F12.2))) )') 
+        WRITE (CMON,'(A/ (2(A,2(1X,F12.2))) )') 
      1 '^^PL ADDSERIES ''Minor'' TYPE LINE',
      2 '^^PL DATA ', -djw2,-djw3,' DATA ',djw2,djw3
-       CALL XPRVDU (NCVDU,2,0)
+        CALL XPRVDU (NCVDU,2,0)
 
-       theta = grad(1)*dtr
-       if(theta .gt. phi) then
+        theta = grad(1)*dtr
+        if(theta .gt. phi) then
             djw2 = ymax/tan(theta)
             djw3 = ymax
-       else if(theta .le. -phi) then
+        else if(theta .le. -phi) then
             djw2 = ymax/tan(theta)
             djw3 = ymax
-       else
+        else
             djw2 = xmax
             djw3 = xmax*tan(theta)
-       endif
-       WRITE (CMON,'(A/ (2(A,2(1X,F12.2))) )') 
+        endif
+        WRITE (CMON,'(A/ (2(A,2(1X,F12.2))) )') 
      1 '^^PL ADDSERIES ''Major'' TYPE LINE',
      2 '^^PL DATA ', -djw2,-djw3,' DATA ',djw2,djw3
-       CALL XPRVDU (NCVDU,2,0)
+        CALL XPRVDU (NCVDU,2,0)
 c
 C -- FINISH THE GRAPH DEFINITION
-       WRITE (CMON,'(A,/,A)') 
+        WRITE (CMON,'(A,/,A)') 
      1      '^^PL SHOW',
      2      '^^CR'
-       CALL XPRVDU (NCVDU,2,0)
-      endif
+        CALL XPRVDU (NCVDU,2,0)
+       ENDIF                          ! end of iplot=1 or 2
 C 
 C 
 C 
-      IF (NFRIED.GT.0) THEN
 C  SECOND PASS (THROUGH SELECTED STORED REFLECTIONS)
 C
        DMAX = MAX(DOMAX,DCMAX)
@@ -8080,7 +8085,7 @@ C
        IF (ISSPRT.EQ.0) WRITE(NCWU,'(/a)')CMON(2)(:nctrim(cmon(2)))
 c
       
-      if(iplot.eq.3) then
+       if(iplot.eq.3) then
          xmax = 0.
          ymax = 0.
          m6acc = l6acc
@@ -8186,7 +8191,7 @@ c -- finish the graph definition
      1  '^^PL SHOW',
      2  '^^CR'
          call xprvdu (ncvdu,2,0)
-      endif
+       endif
 c
        if(iplot.eq.4) then
 c----- SET UP FLACK Do/2Ao SCATERPLOT AND LOOK FOR OUTLIERS
@@ -8684,7 +8689,7 @@ C P3(False)
 2200        FORMAT (' G S.U.      ',A)
             IF (ISSPRT.EQ.0) WRITE (NCWU,1900) LINE
             WRITE (LINE,2250) TONY
-2250        FORMAT ('FLEQ         ',F9.4)
+2250        FORMAT (' FLEQ        ',F9.4)
             IF (ISSPRT.EQ.0) WRITE (NCWU,1900) LINE
             IF (TONSY.GT.0.001) THEN
                WRITE (FORM,1750) TONSY,TONSY
@@ -8705,13 +8710,6 @@ C P3(False)
             CALL XPRVDU (NCVDU,2,0)
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(A//)') CMON(1)(:)
          END IF
-         if (issprt .eq. 0) then
-            write(ncwu,'(/A,A/)')' Excluded reflections',
-     1      ' - A reflection may fail more than one test'
-            do i=1,nfailn
-             write(ncwu,'(1X,a32,2X,i5)') CFAILN(I),ifailn(i)
-            enddo
-         endif
 c
       ELSE
          WRITE (CMON,'(/)')
@@ -8726,14 +8724,19 @@ c
          WRITE (CMON,'(a)') ' No Friedel Pairs found'
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
-         GO TO 2350
-      END IF
-C 
-      RETURN
-C 
-2350  CONTINUE
+2350     CONTINUE
 C -- ERRORS DETECTED
-      CALL XERHND (IERWRN)
+         CALL XERHND (IERWRN)
+      END IF
+C
+2355  CONTINUE
+      IF (ISSPRT .EQ. 0) THEN
+            write(ncwu,'(/A,A/)')' Excluded reflections',
+     1      ' - A reflection may fail more than one test'
+            do i=1,nfailn
+             write(ncwu,'(1X,a32,2X,i5)') CFAILN(I),ifailn(i)
+            enddo
+      ENDIF
       RETURN
       END
 CDEC09
@@ -9393,11 +9396,6 @@ c
         mitem = nitem
         LINFIT = +1
 c
-c        WRITE (*,'(a,9x,2f12.3)') 
-c     2 ' Gradient for zero intercept =',SXY/SXX
-c        WRITE (11,'(a,9x,2f12.3)') 
-c     2 ' Gradient for zero intercept =',SXY/SXX
-c
 	denom = ss*sxx - sx*sx
         if(abs(denom) .gt. zero) then
             a = (sy*sxx - sx*sxy)/denom
@@ -9470,6 +9468,7 @@ c     1  sqrt(sxx/mitem), sqrt(syy/mitem)
           endif
         endif
 c
+c
 c      this call assumes that the original coordinates were 
 c      centred on 0,0
 c
@@ -9478,22 +9477,34 @@ c
           write(cmon(1)(:),602)
 600       format(a,t40,f11.0,3f11.3)
 601       format(a,t40,f11.8,3f11.3)
-602       format('Principal Componenet Analysis')
+602       format(' Principal Componenet Analysis')
           if (root(1) .ge. 0.001) then
-            write(cmon(2)(:),600)'Major root,Components,angle',
+            write(cmon(2)(:),600)' Major root,Components,angle',
      1      root(1), xcoord(1), ycoord(1), grad(1)
-            write(cmon(3)(:),600)'Minor root,Components,angle',
+            write(cmon(3)(:),600)' Minor root,Components,angle',
      1      root(2), xcoord(2), ycoord(2), grad(2)
           else
-            write(cmon(2)(:),601)'Major root,Components,angle',
+            write(cmon(2)(:),601)' Major root,Components,angle',
      1      root(1), xcoord(1), ycoord(1), grad(1)
-            write(cmon(3)(:),601)'Minor root,Components,angle',
+            write(cmon(3)(:),601)' Minor root,Components,angle',
      1      root(2), xcoord(2), ycoord(2), grad(2)
           endif      
         call xprvdu(ncvdu,3,0)
         if (issprt .eq. 0) THEN
           write(ncwu,'(/a/a/a)')cmon(1)(:),cmon(2)(:),cmon(3)(:)
         endif
+c
+c compute gradient for zero intercept. A non-zero intercept
+c is indicative that there is something not normal with the
+c refinement.
+c
+        WRITE (cmon,'(/a,9x,2f12.3)') 
+     2 ' Gradient for zero intercept =',SXY/SXX
+        call xprvdu(ncvdu,2,0)
+        if (issprt .eq. 0) 
+     c   WRITE (ncwu,'(/a,9x,2f12.3)') 
+     2   ' Gradient for zero intercept =',SXY/SXX
+c
       endif
       return
       end
