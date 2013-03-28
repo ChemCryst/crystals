@@ -1,5 +1,8 @@
 
 c $Log: not supported by cvs2svn $
+c Revision 1.71  2013/03/28 12:27:23  djw
+c Increase field width for torsion angle differences
+c
 c Revision 1.70  2012/07/12 08:38:20  rich
 c Ensure min/max values are initialised for torsion angle calc.
 c
@@ -3105,7 +3108,7 @@ c
      1   17X,'Old U[ij]',23X,'Old Principal Axes',3X,
      1   'Uprime',3x,'Ugeom'/
      2   44X,'New U[ij]',23X,'New Principal Axes',/
-     3   37x,'deltas',2X,'U[ij]',26X,'Principal Axes', 
+     3   'deltas',39X,'U[ij]',26X,'Principal Axes', 
      1   /)
         ENDIF
        ENDIF
@@ -3570,7 +3573,7 @@ CDJW OCT2010
         CALL XCRAS(COLD,LOS)
         CALL XCRAS(CNEW,LNS)
         IF (ISSPRT .EQ. 0) THEN
-          WRITE(NCWU,'(A,2X,A,4x,2F8.3,f9.4)')
+          WRITE(NCWU,'(A,2X,A,4x,3F8.3)')
      1     COLD(1:36), CNEW(1:36), T1,T2,TP
         ENDIF
 
