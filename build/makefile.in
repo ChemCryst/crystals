@@ -90,7 +90,7 @@ else
 endif
 
 
-obj/%.o : %.fpp
+obj/%.o : %.F
 	$(F77) -c $(F77FLAGS) $(OPT) -o $@ $<
 
 obj/%.o: %.cpp

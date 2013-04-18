@@ -7,12 +7,12 @@ WEBCTRLDIR = ../webconnect
 
 VPATH = $(CAMDIR) $(CRYSDIR) $(GUIDIR) $(WEBCTRLDIR)
 
-CAMFILES = $(notdir $(wildcard $(CAMDIR)/*.fpp))
-CRYFILES = $(notdir $(wildcard $(CRYSDIR)/*.fpp))
+CAMFILES = $(notdir $(wildcard $(CAMDIR)/*.F))
+CRYFILES = $(notdir $(wildcard $(CRYSDIR)/*.F))
 GUIFILES = $(notdir $(wildcard $(GUIDIR)/*.cc))
 WEBFILES = $(notdir $(wildcard $(WEBCTRLDIR)/*.cpp))
 
-FOBJ     = $(patsubst %.o, obj/%.o, $(notdir $(CAMFILES:.fpp=.o) $(CRYFILES:.fpp=.o)) lapack.o)
+FOBJ     = $(patsubst %.o, obj/%.o, $(notdir $(CAMFILES:.F=.o) $(CRYFILES:.F=.o)) lapack.o)
 ifneq ($(COMPCODE),LIN)
  ifneq ($(COMPCODE),DVF)
   COBJ     = $(patsubst %.o, obj/%.o, $(notdir $(GUIFILES:.cc=.o)))

@@ -64,7 +64,7 @@
 :tryWithoutExtensions
 @
 @rem CRYSTALS FORTRAN FILES
-@if not exist ..\crystals\%FILESTEM%.fpp goto tryCPP
+@if not exist ..\crystals\%FILESTEM%.F goto tryCPP
 @set SRCDIR=..\crystals
 @set JUMPBACK=tryCPP
 @set FILEFOUND=OK
@@ -88,7 +88,7 @@
 @
 :tryCamFPP
 @rem CAMSRC FORTRAN FILES
-@if not exist ..\cameron\%FILESTEM%.fpp goto tryCryF
+@if not exist ..\cameron\%FILESTEM%.F goto tryCryF
 @set SRCDIR=..\cameron
 @set JUMPBACK=tryCryF
 @set FILEFOUND=OK
@@ -154,7 +154,7 @@
 :fcomp
 @echo building %FILESTEM%.obj
 @if exist %FILESTEM%.obj del %FILESTEM%.obj
-@if  not "%FILESTEM%" == "lapack" set FSRC= %SRCDIR%\%FILESTEM%.fpp
+@if  not "%FILESTEM%" == "lapack" set FSRC= %SRCDIR%\%FILESTEM%.F
 @if      "%FILESTEM%" == "lapack" set FSRC= %SRCDIR%\%FILESTEM%.f
 @if  not "%FILESTEM%" == "lapack" set FOPTIONS=%FDEF% %FWIN% %FOPTS%
 @if      "%FILESTEM%" == "lapack" set FOPTIONS=%FDEF% %FWIN% %FNOOPT%
