@@ -34,7 +34,7 @@ goto ALLDVF
 @
 @set F77=ifort
 @set FDEF=%FDEF%
-@set FOPTS=/fpp /I..\crystals /MD /O2 /nolink
+@set FOPTS=/fpp /I..\crystals /MD /O2 /Qvec /QaxSSE2 /nolink
 @set FNOOPT=/fpp /I..\crystals /MD /O0 /nolink
 @set FWIN=/winapp
 @set FOUT=/object:obj\
