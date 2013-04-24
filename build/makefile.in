@@ -75,7 +75,7 @@ else
     CC = gcc
     LD = gfortran
     F77 = gfortran
-    F77FLAGS = -std=legacy -fno-automatic -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_
+    F77FLAGS = -std=legacy -ftree-vectorize -msse2 -fno-automatic -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_
     OPT = -O2
 
     INSTALL=/bin/install
