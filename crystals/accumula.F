@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2005/05/12 13:38:26  stefan
+C 1. Improved the code for the accumalation of the LHS and should run correctly
+C
 C Revision 1.7  2005/03/08 12:50:48  stefan
 C 1. Rewrote the accumalation routine for the LHS but also rewrote it for the param_list method so that it now handles a blocked normal matrix.
 C Needs more testing but to the best of my knowledge works perfectly.
@@ -53,23 +56,27 @@ CODE FOR ADLHSBLOCK
        subroutine ADLHSBLOCK(DERIVS, NDERIV, MATBLOCK, BLOCKSIZE, 
      1 BLOCKdimension)
        implicit none
-		integer BLOCKSIZE			! Size of the current block
-		integer NDERIV				! Size of the derivative matrix
-		real DERIVS(NDERIV)         ! Matrix of from the appropriate point on wards
-		real MATBLOCK(BLOCKSIZE)    ! Normal matrix block
-		integer   BLOCKdimension, i ! Size of the dimension of the blcok
-		real   CONST				! Constent term
-		
-		integer   ROW, COLUMN		! Counters
-		
-		I = 1
-		do ROW=1, BLOCKdimension	! Loop over all the rows of the block
-			CONST = DERIVS(ROW)	    ! Get the constent term
-			do COLUMN = ROW, BLOCKdimension
-				MATBLOCK(I) = MATBLOCK(I) + CONST*DERIVS(COLUMN)  ! Sum on the next term.
-				I = I + 1                                         ! Move to the next possion in the matrix
-			end do
-		end do
+       integer, intent(in) :: BLOCKSIZE           ! Size of the current block
+       integer, intent(in) :: NDERIV              ! Size of the derivative matrix
+       real, dimension(NDERIV), intent(in) :: DERIVS        ! Matrix of from the appropriate point on wards
+       real, dimension(BLOCKSIZE), intent(inout) :: MATBLOCK    ! Normal matrix block
+       integer, intent(in) ::   BLOCKdimension
+       integer i, j ! Size of the dimension of the block
+       integer   ROW       ! Counters
+        
+       do ROW=1, BLOCKdimension    ! Loop over all the rows of the block
+            ! calculation of the two indices
+            ! the serie for i is 1 1+blockdimension 1+blockdimension-1 1+2*blockdimension-3 1+3*blockdimension-6 ...
+            ! given blockdimension=10:
+            !     1 11 20 28 35 41 ...
+            ! U(n+1) = U(n) + blockdimension - n (n = row -1)
+            ! => U(n) = 0.5 n (2blockdimension - n + 1)
+            i = ((row-1)*(2*blockdimension-row+2))/2+1
+            j = i + blockdimension - row
+            
+            MATBLOCK(i:j) = MATBLOCK(i:j)+DERIVS(ROW)*
+     1          derivs(row:BLOCKdimension)
+       end do
        end
 
        subroutine PARM_PAIRS_XLHS (DERIVS, NDERIV, AMAT11, NMAT11,
