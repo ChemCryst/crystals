@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.201  2013/03/27 11:53:28  djw
+C Remove hard coded thresholding - FILTERS are more flexible.
+C Reinstate gradient of Do/Dm plot on Howards advice.
+C
 C Revision 1.200  2013/03/22 13:10:44  djw
 C Re-define quotient to bring into line with Simon's paper
 C
@@ -5022,12 +5026,21 @@ C----- VALUE AND ESD
 
          VOL = V(CIFA,CIFB,CIFC,CIFAL,CIFBE,CIFGA)
 
-         CU=SQRT((VOL-V(CIFA+ESD(1),CIFB,CIFC,CIFAL,CIFBE,CIFGA))**2
-     1        + (VOL-V(CIFA,CIFB+ESD(2),CIFC,CIFAL,CIFBE,CIFGA))**2
-     2        + (VOL-V(CIFA,CIFB,CIFC+ESD(3),CIFAL,CIFBE,CIFGA))**2
-     3        + (VOL-V(CIFA,CIFB,CIFC,CIFAL+ESD(4)*DTR,CIFBE,CIFGA))**2
-     4        + (VOL-V(CIFA,CIFB,CIFC,CIFAL,CIFBE+ESD(5)*DTR,CIFGA))**2
-     5        + (VOL-V(CIFA,CIFB,CIFC,CIFAL,CIFBE,CIFGA+ESD(6)*DTR))**2)
+c         CU=SQRT((VOL-V(CIFA+ESD(1),CIFB,CIFC,CIFAL,CIFBE,CIFGA))**2
+c     1        + (VOL-V(CIFA,CIFB+ESD(2),CIFC,CIFAL,CIFBE,CIFGA))**2
+c     2        + (VOL-V(CIFA,CIFB,CIFC+ESD(3),CIFAL,CIFBE,CIFGA))**2
+c     3        + (VOL-V(CIFA,CIFB,CIFC,CIFAL+ESD(4)*DTR,CIFBE,CIFGA))**2
+c     4        + (VOL-V(CIFA,CIFB,CIFC,CIFAL,CIFBE+ESD(5)*DTR,CIFGA))**2
+c     5        + (VOL-V(CIFA,CIFB,CIFC,CIFAL,CIFBE,CIFGA+ESD(6)*DTR))**2)
+	 
+         CU=SQRT( (VOL**2) * 
+     1   	((ESD(1)/CIFA)**2 + (ESD(2)/CIFB)**2 + (ESD(3)/CIFC))**2 +
+     2 (CIFA*CIFB*CIFC/(VOL**2)) * (
+     3  (SIN(CIFAL) *(COS(CIFAL) -COS(CIFBE)*COS(CIFGA)) *ESD(4))**2 +
+     4  (SIN(CIFBE) *(COS(CIFBE) -COS(CIFAL)*COS(CIFGA)) *ESD(5))**2 +
+     5  (SIN(CIFGA) *(COS(CIFGA) -COS(CIFAL)*COS(CIFBE)) *ESD(6))**2 
+     6                             ) 
+     7         )
 
          CALL XFILL (IB,IVEC,16)
          CALL SNUM (VOL,CU,-2,0,12,IVEC)
