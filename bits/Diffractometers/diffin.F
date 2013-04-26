@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2012/10/18 12:04:11  djw
+C Code from cif2cry merged with difin/datain.  Hundreds of changes.  cif2cry may become obsolete once debugged
+C
 C Revision 1.11  2012/07/12 08:56:10  rich
 C Move loop start to avoid resetting user input.
 C
@@ -509,7 +512,7 @@ C=======================================================================
       character*(*)  CARG
 C--
       optlen=132
-      carg1 = ' '
+      carg = ' '
 #if defined(_DVF_) || defined (_DIGITALF77_)   || defined (_GID_)
       CALL GetArg(N,carg,optlen)
 #elif defined(_DOS_) 
