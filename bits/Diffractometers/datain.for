@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2013/02/15 14:48:56  djw
+C Move an IF statement
+C
 C Revision 1.23  2013/01/20 21:39:30  rich
 C Initialise s.u. variables for cell, otherwise NaN values can occur.
 C
@@ -940,7 +943,7 @@ C
 C
 5678  CONTINUE
 C
-      IF (FINFO .EQ. .FALSE.) THEN
+      IF (.NOT. FINFO) THEN
             WRITE(NTEXT,'(A)') 'No data found in cif'
             goto 1050
       ENDIF
