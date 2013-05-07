@@ -5,10 +5,10 @@ all : crysexe data scripts bits documentation
 	@echo .
 	@echo .
 	@echo .     To test this build of CRYSTALS: 
-	@echo .       export CRYSDIR=$(CURDIR)/
+        @echo ".       export CRYSDIR=$(CURDIR)/"
 	@echo .     and then start CRYSTALS from a command prompt:
-	@echo .       $(CURDIR)/crystalsÂ$(SUFFIX)
-	@echo .
+        @echo ".       $(CURDIR)/crystals$(SUFFIX)"
+        @echo .
 	@echo .     To make an installer:
 	@echo .       $(MAKE) dist
 	@echo .     and to run the install:
@@ -25,7 +25,7 @@ all : crysexe data scripts bits documentation
 	@echo .     To create an Mac OS Application:
 	@echo .        $(MAKE) app-package
 	@echo .     To run crystals:
-	@echo .	    Double click on Crystals application in $(CURDIR)
+        @echo ".     Double click on Crystals application in $(CURDIR)"
 endif
 	@echo .
 
