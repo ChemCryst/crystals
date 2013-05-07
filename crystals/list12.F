@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2012/08/29 10:30:21  djw
+C Add missing parameter name to special position restraint/constraint listing output
+C
 C Revision 1.22  2012/01/04 14:31:25  rich
 C Fix some uninitialized variables, and output format mistakes.
 C
@@ -2928,6 +2931,7 @@ C
       INCLUDE 'XOPVAL.INC'
 C
       INCLUDE 'QSTORE.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C
       DATA COVER  / '   SCALE' , ' DU[ISO]' , ' OU[ISO]' ,
@@ -3137,6 +3141,9 @@ C -- INCREMENT TO THE NEXT ATOM
 C
 C
 9000  CONTINUE
+      WRITE ( CMON,"(A,A)") "List 22 has been written into the file ",
+     1 "'bfile.lis'"
+      CALL XPRVDU(NCVDU, 1,0)
 C
 C -- END OF ROUTINE
 C
