@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.109  2013/03/21 10:26:57  rich
+C When outputing lists of RIDE instructions don't duplicate atoms.
+C
 C Revision 1.108  2012/07/11 13:49:08  djw
 C Include the use of the RESIDUE flag when deciding if a bond is inter/intra when the flag is not zero
 C
@@ -4341,9 +4344,8 @@ c          CALL XPRVDU(NCVDU,1,0)
               STORE(JS+10)=E
               STORE(JS+11)=F
               ISTORE(JS+12)=M12
-CNANCY              IF (JT .EQ. 14) STORE(JS+13) = BOND
-              STORE(JS+13) = BOND
-              ISTORE(JS+15) = ISTORE(M5+16)  ! RESIDUE
+              IF (JT .GE. 14) STORE(JS+13) = BOND
+              IF (JT .GE. 16) ISTORE(JS+15) = ISTORE(M5+16)  ! RESIDUE
               JS=JS+JT
 C When JFNVC .EQ. NOWT then only find one contact at a time. (Voids only?)
               IF ( JFNVC .EQ. NOWT ) GOTO 2800
