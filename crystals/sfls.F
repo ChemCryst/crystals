@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.81  2012/08/24 16:19:32  djw
+C Lowest value of Umin was incorrectly initialised. No effect on test decks
+C
 C Revision 1.80  2012/03/20 10:28:25  rich
 C Update L30 with L28 ratio value during SFLS.
 C
@@ -1620,17 +1623,6 @@ C----- INITIALISE THE SORT BUFFER
       CALL SRTDWN(LSORT,MSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR,
      1   0, DEF)
       JSORT = 5
-C----- A BUFFER FOR ONE ENANTIOMER SENSITIVE REFLECTION
-      LTEMPE = NFL
-      NTEMPE = 7
-      NFL = KCHNFL(NTEMPE)
-C----- INITIALISE THE ENANTIOMER BUFFER
-      JENAN = -6
-      MDENAN = NTEMPE
-      NENAN = 30
-      CALL SRTDWN(LENAN,MENAN,MDENAN,NENAN, JENAN, LTEMPE, XVALUE,
-     1   0, DEF2)
-      JENAN = 6
 
 
       IF (ISTORE(M33CD+12).NE.0) THEN    ! Leverage calc.
@@ -2341,28 +2333,6 @@ C--STORE THE SCALE AND PRINT IT
       END IF
       IF ( SFLS_TYPE .NE. SFLS_REFINE ) LJX = LJX + 1
       IF ( SFLS_TYPE .NE. SFLS_SCALE ) LJX = LJX + 2
-C----- ENATIOMER SENSITIVE REFLECTIONS
-      IF (IENPRT .GE. 0) THEN
-6110      FORMAT(I6,
-     1    ' enantiomer sensitive reflections.',
-     2    ' Rt = 100x abs(F+ - F-)/<F+,F-> ')
-          WRITE ( CMON, 6110) IENPRT
-          CALL XPRVDU(NCVDU, 1,0)
-          IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') CMON(1)(:)
-          WRITE(CMON,6111)
-6111      FORMAT
-     1    (2('   h   k   l    F+     Fo     F-     Rt  '))
-          CALL XPRVDU(NCVDU, 1,0)
-          IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') CMON(1)(:)
-          DO MENAN = LENAN, LENAN+(NENAN-1)*MDENAN, 2*MDENAN
-          WRITE ( CMON,'(3I4, 3F7.2, F6.2,2X,3I4, 3F7.2, F6.2)')
-     1     ( (NINT(STORE(IXAP)), IXAP=JXAP, JXAP+2),
-     2     (STORE(IXAP), IXAP= JXAP+3,JXAP+5), STORE(JXAP+6),
-     3     JXAP= MENAN, MENAN+MDENAN, MDENAN)
-          CALL XPRVDU(NCVDU, 1,0)
-          IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') CMON(1)(:)
-          END DO
-      ENDIF
 
       IF (ILEVPR .GT. 0) THEN
 6112      FORMAT(I6,' low leverage reflections.')
@@ -3786,18 +3756,6 @@ C--COMPUTE /FC/ AND THE PHASE FOR THE GIVEN ENANTIOMER
         BCN = BCN+BCI-BC*FRIED
         FNSQ = ACN*ACN + BCN*BCN
         FN = SQRT (FNSQ)
-C----- LARGE ENANTIOMER DIFFERENCES
-        DENAN = 200. * ABS(FN-FP)/(FN+FP)
-        IF (DENAN .GT. XVALUE) THEN
-          CALL XMOVE(STORE(M6), STORE(LTEMPE), 3)  ! H,K,L,F+,FO,F-,R
-          STORE(LTEMPE+3) = FP
-          STORE(LTEMPE+4) = FO * SCALEK
-          STORE(LTEMPE+5) = FN
-          STORE(LTEMPE+6) = DENAN
-          CALL SRTDWN(LENAN,MENAN,MDENAN,NENAN, JENAN, LTEMPE, 
-     1    XVALUE,0, DEF2)
-          IENPRT = IENPRT +1
-        ENDIF
 
         FESQ = FCSQ*CENANT + FNSQ*ENANT   ! THE TOTAL EQUIVALENT INTENSITY
         IF (FESQ .LE. 0.0) THEN
