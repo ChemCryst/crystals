@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2013/05/07 16:26:25  pascal
+C Added user indication for print 22 output
+C
 C Revision 1.23  2012/08/29 10:30:21  djw
 C Add missing parameter name to special position restraint/constraint listing output
 C
@@ -3140,10 +3143,10 @@ C -- INCREMENT TO THE NEXT ATOM
       IF ( M12 .GT. 0 ) GO TO 1250
 C
 C
-9000  CONTINUE
-      WRITE ( CMON,"(A,A)") "List 22 has been written into the file ",
-     1 "'bfile.lis'"
+      WRITE ( CMON,"(A,A)") "List 22 has been written into the ",
+     1 "most recent 'bfile#??.lis' file"
       CALL XPRVDU(NCVDU, 1,0)
+9000  CONTINUE
 C
 C -- END OF ROUTINE
 C
