@@ -5,6 +5,12 @@
 
 use Env qw(CRYUSEFILE CRYSDIR COMPCODE CROUTPUT);
 
+my $windows=($^O=~/Win/)?1:0;# Are we running on windows?
+
+my $diff = "diff";
+if ( $windows ) {
+   $diff = "fc";
+}
 
 @files = glob("*.tst");                # List of files to run tests with.
 
@@ -128,7 +134,7 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
             print("Removing bfiles (use '-l' to leave in place)\n");
 	    cleanUp(@cleanup);
 	}
-        print `fc $CROUTPUT $COMPCODE.org/$CROUTPUT`;
+        print `$diff $CROUTPUT $COMPCODE.org/$CROUTPUT`;
         
         print "$?";
         if ( "$?" != "0" ) {
