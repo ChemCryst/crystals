@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2013/04/26 16:05:32  pascal
+C Fixed fatal error on gfortran
+C
 C Revision 1.24  2013/02/15 14:48:56  djw
 C Move an IF statement
 C
@@ -612,12 +615,12 @@ C....... Extract space group notation (expected char string)
        if(f1) FSG=CHAR_('_space_group_name_H-M_alt',NAME)
       endif
 c
-       IF (.NOT.(FSG)) THEN
+      IF (.NOT.(FSG)) THEN
          write(6,'(/a/)') 'No spacegroup found'
          write(ntext,'(/a/)') 'No spacegroup found'
          CSPACE = '?'
-         GO TO 1050
-       END IF
+cdjwmay13         GO TO 1050
+      END IF
       if(fsg)then
        CSPACE=NAME(1:LONG_)
        write(6,'(//a,a/)')'Space group  from cif= ',NAME(1:LONG_)
@@ -663,8 +666,9 @@ c Kccd SG is only Point Group
 C
 c
 c----------------------------------------------------------------
-
-      if ((nref .gt. 1).and.(idiff.ne.5).and. (.not.fsg) ) then
+c----- Dont demand a SG in an fcf file
+      if ((nref .gt. 1).and.(idiff.ne.5).and. (.not.fsg)  
+     1 .and. (.not. fcf) )then
 C----- reflections all read - check space group with Nonius code
        write(6,'(a)') 'Space Group Code provided by Enraf-Nonius'
        if (.not. fsg) then
