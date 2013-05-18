@@ -1,6 +1,8 @@
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
+Bonds: Update required - There is no list 41
+  Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
 
@@ -20,7 +22,7 @@
 
           Type      Serial    Occ       U[Iso]      X         Y         Z     
 
-           H          6.0    1.00000   1.00000   0.55454   0.82231   0.20706
+           H          6.0    1.00000   1.00000   0.55454   0.82231   0.20707
 
 
  Hydrogen atom(s) calculated for the phenyl   group :
@@ -70,7 +72,7 @@
 
           Type      Serial    Occ       U[Iso]      X         Y         Z     
 
-           H         20.0    1.00000   1.00000   0.34434   0.50591   0.31321
+           H         20.0    1.00000   1.00000   0.34473   0.52414   0.30102
 
 
  Hydrogen atom(s) calculated for the C(sp2)H1 group :
@@ -79,6 +81,8 @@
 
            H         21.0    1.00000   1.00000   0.60495   0.67432   0.06393
  List now contains    39 atoms
+Bonds: Update required - List5 length change
+  Disc file on unit   1 extended by     1 records 
  Summary of contents of list  5 - Parameters
  There are no layer, element, or batch scales                                                                                                                                                                                                                   
  There are no special overall parameters                                                                                                                                                                                                                        
@@ -92,7 +96,7 @@
    N   1 1.00 0.553 0.592 0.138 0 0.051 0.054 0.058-0.02-0.01-0.03     0.000   0                                                                                                                                                                                
    C   1 1.00 0.543 0.724 0.198 0 0.054 0.059 0.066-0.02-0.01-0.03     0.000   0                                                                                                                                                                                
    S   1 1.00 0.468 0.457 0.260 0 0.047 0.041 0.054-0.01-0.02-0.02     0.000   0                                                                                                                                                                                
-   H  20 1.00 0.344 0.506 0.313 1 0.060 0.000 0.000 0.00 0.00 0.00     0.000   0                                                                                                                                                                                
+   H  20 1.00 0.345 0.524 0.301 1 0.060 0.000 0.000 0.00 0.00 0.00     0.000   0                                                                                                                                                                                
    H  18 1.00 0.495 0.718 0.132 1 0.060 0.000 0.000 0.00 0.00 0.00     0.000   0                                                                                                                                                                                
    H  19 1.00 0.647 0.566 0.040 1 0.060 0.000 0.000 0.00 0.00 0.00     0.000   0                                                                                                                                                                                
    H   6 1.00 0.555 0.822 0.207 1 0.072 0.000 0.000 0.00 0.00 0.00     0.000   0                                                                                                                                                                                
@@ -132,6 +136,8 @@
     C   4      C   5      C   6      C   7      C   8      C   9      C  10
     C  11      C  12      C  13      C  14
  List   5 now contains     18 atom(s)
+  Disc file on unit   1 extended by     1 records 
+Bonds: Update required - List5 length change
            Per-hydrogenation of Carbon atoms
   Disc file on unit   1 extended by     1 records 
   Disc file on unit   1 extended by     1 records 
@@ -217,11 +223,12 @@
            H        142.0    1.00000   1.00000  -0.28436   1.01688   0.46476
            H        143.0    1.00000   1.00000  -0.32115   0.85652   0.59875
  List now contains    32 atoms
- Physical reads         75 Physical writes        108 Cache hits       2097
- Cache hit distribution     1439     132     105      11      57      25
- Cache hit distribution       15      16      42      63      33      23
- Cache hit distribution       11      29      16      16      29       3
- Cache hit distribution        6       6       9       7       1       3
+Bonds: Update required - List5 length change
+ Physical reads         93 Physical writes        166 Cache hits       4029
+ Cache hit distribution     3104     210     118      46      64      45
+ Cache hit distribution       27      37      41      87      13      34
+ Cache hit distribution       22      29      34      26      26      17
+ Cache hit distribution       14      11      19       1       2       2
 
 
           : Job ends ok       with     0 warnings and     0 errors

@@ -1,5 +1,15 @@
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
+#TITLE ABSTEST                                                                                                                                                                                                                                                  
+#LIST 1                                                                                                                                                                                                                                                         
+#LIST 20                                                                                                                                                                                                                                                        
+#LIST 30                                                                                                                                                                                                                                                        
+#LIST 1                                                                                                                                                                                                                                                         
+#LIST 2                                                                                                                                                                                                                                                         
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+# CAD4 KAPPA GEOMETRY - THIS IS THE 'REAL' TEST                                                                                                                                                                                                                 
+#LIST 13                                                                                                                                                                                                                                                        
 
  Initial azimuth =   0.00
 
@@ -11,7 +21,8 @@
                        -0.0987    0.0287   -0.1015
 
                         0.0247    0.1329   -0.0339
-  Disc file on unit   1 extended by     1 records 
+#HKLI                                                                                                                                                                                                                                                           
+# READ SETTINGS FROM INPUT STRAEM - IMPORTANT FOR LAST REFLECTIONS                                                                                                                                                                                              
 
 
 
@@ -40,7 +51,7 @@
      -4.000    -2.000    -1.000 11217.000   100.000     0.213     0.213     3.730    -0.482     2.401
       2.401     0.000     0.000     0.000     0.000     0.000     0.000     0.178    78.692   101.663
       1.000     3.000     2.000 11999.000   100.000     0.211     0.212     2.495     2.045     1.318
-      1.318     0.000     0.000     0.000     0.000     0.000     0.000     0.170   130.004   213.422
+      1.318     0.000     0.000     0.000     0.000     0.000     0.000     0.170   130.003   213.422
       1.000     1.000    -1.000 13356.000   100.000     0.069     0.069     1.765    -0.557     2.157
       2.157     0.000     0.000     0.000     0.000     0.000     0.000     0.013    35.705    36.625
       1.000     1.000    -1.000 23639.000   100.000     0.069     0.195     1.719    -1.265     1.034
@@ -55,6 +66,12 @@
  Maximum correction to I is    4.33                                                                                                                                                                                                                             
  Minimum correction to I is    1.03                                                                                                                                                                                                                             
  The setting angles stored in list 6 are now for a  'Rollett' machine.                                                                                                                                                                                          
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+# USE Y290  EULARIAN ANGLES - THE ANGLES DO NOT COME FROM THE DATA                                                                                                                                                                                              
+#LIST 13                                                                                                                                                                                                                                                        
  Rotation matrix
 
                        -0.9783    0.1757   -0.1097
@@ -71,7 +88,8 @@
                        -0.0204   -0.1058    0.0641
 
                         0.0053    0.1133    0.0832
-  Disc file on unit   1 extended by     1 records 
+#HKLI                                                                                                                                                                                                                                                           
+# CALCULATESETTINGS FROM MATRIX - INVALID FOR LAST REFLECTIONS                                                                                                                                                                                                  
 
 
 
@@ -115,6 +133,12 @@
  Maximum correction to I is    2.40                                                                                                                                                                                                                             
  Minimum correction to I is    1.23                                                                                                                                                                                                                             
  The setting angles stored in list 6 are now for a  'Rollett' machine.                                                                                                                                                                                          
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#LIST 13                                                                                                                                                                                                                                                        
+# CAD4 EULARIAN ANGLES - REFLECTION 1 1 1 WILL HAVE INCORRECT RESULTS                                                                                                                                                                                           
 
  Initial azimuth =   0.00
 
@@ -126,7 +150,8 @@
                        -0.0987    0.0287   -0.1015
 
                         0.0247    0.1329   -0.0339
-  Disc file on unit   1 extended by     1 records 
+#HKLI                                                                                                                                                                                                                                                           
+# CALCULATESETTINGS FROM MATRIX - INVALID FOR LAST REFLECTIONS                                                                                                                                                                                                  
 
 
 
@@ -170,6 +195,13 @@
  Maximum correction to I is    2.40                                                                                                                                                                                                                             
  Minimum correction to I is    1.32                                                                                                                                                                                                                             
  The setting angles stored in list 6 are now for a  'Rollett' machine.                                                                                                                                                                                          
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+# TEST ROD   CORRECTION                                                                                                                                                                                                                                         
+#LIST 13                                                                                                                                                                                                                                                        
 
  Initial azimuth =   0.00
 
@@ -181,7 +213,8 @@
                        -0.0987    0.0287   -0.1015
 
                         0.0247    0.1329   -0.0339
-  Disc file on unit   1 extended by     1 records 
+#HKLI                                                                                                                                                                                                                                                           
+# READ SETTINGS FROM INPUT STRAEM - IMPORTANT FOR LAST REFLECTIONS                                                                                                                                                                                              
 
 
 
@@ -218,6 +251,8 @@
  Maximum correction to I is    1.34                                                                                                                                                                                                                             
  Minimum correction to I is    1.30                                                                                                                                                                                                                             
  The setting angles stored in list 6 are now for a  'Rollett' machine.                                                                                                                                                                                          
+#LIST 13                                                                                                                                                                                                                                                        
+# TEST PLATE CORRECTION                                                                                                                                                                                                                                         
 
  Initial azimuth =   0.00
 
@@ -229,7 +264,8 @@
                        -0.0987    0.0287   -0.1015
 
                         0.0247    0.1329   -0.0339
-  Disc file on unit   1 extended by     1 records 
+#HKLI                                                                                                                                                                                                                                                           
+# READ SETTINGS FROM INPUT STRAEM - IMPORTANT FOR LAST REFLECTIONS                                                                                                                                                                                              
 
 
 
@@ -268,6 +304,7 @@
  Maximum correction to I is    4.00                                                                                                                                                                                                                             
  Minimum correction to I is    1.44                                                                                                                                                                                                                             
  The setting angles stored in list 6 are now for a  'Rollett' machine.                                                                                                                                                                                          
+#LIST 13                                                                                                                                                                                                                                                        
 
 
  Orientation matrix
@@ -277,7 +314,8 @@
                        -0.0987    0.0287   -0.1015
 
                         0.0247    0.1329   -0.0339
-  Disc file on unit   1 extended by     1 records 
+#HKLI                                                                                                                                                                                                                                                           
+# READ SETTINGS FROM INPUT STRAEM - IMPORTANT FOR LAST REFLECTIONS                                                                                                                                                                                              
 
 
 
@@ -306,7 +344,7 @@
      -4.000    -2.000    -1.000 11217.000   100.000     0.213     0.213     3.730    -0.482     2.401
       2.401     0.000     0.000     0.000     0.000     0.000     0.000     0.178    78.692   101.663
       1.000     3.000     2.000 11999.000   100.000     0.211     0.212     2.495     2.045     1.318
-      1.318     0.000     0.000     0.000     0.000     0.000     0.000     0.170   130.004   213.422
+      1.318     0.000     0.000     0.000     0.000     0.000     0.000     0.170   130.003   213.422
       1.000     1.000    -1.000 13356.000   100.000     0.069     0.069     1.765    -0.557     2.157
       2.157     0.000     0.000     0.000     0.000     0.000     0.000     0.013    35.705    36.625
       1.000     1.000    -1.000 23639.000   100.000     0.069     0.195     1.719    -1.265     1.034
@@ -321,11 +359,7 @@
  Maximum correction to I is    4.33                                                                                                                                                                                                                             
  Minimum correction to I is    1.03                                                                                                                                                                                                                             
  The setting angles stored in list 6 are now for a  'Rollett' machine.                                                                                                                                                                                          
- Physical reads        160 Physical writes        360 Cache hits       5410
- Cache hit distribution     4013     321     168     111      92      15
- Cache hit distribution       88       6      19      49     151      17
- Cache hit distribution       68      16      25      72      63      31
- Cache hit distribution        2      20      26      17      20       0
+#FINISH                                                                                                                                                                                                                                                         
 
 
           : Job ends ok       with     0 warnings and     0 errors

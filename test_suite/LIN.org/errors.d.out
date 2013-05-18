@@ -48,8 +48,8 @@
 
 
           1.000000    0.316226    0.120026
-          0.316226    1.000000   -0.204012
-          0.120026   -0.204012    1.000000
+          0.316226    1.000000   -0.204013
+          0.120026   -0.204013    1.000000
 
 
 
@@ -95,13 +95,13 @@
  Record  108    LGRP    6  NGRP      1   ANISOTROPIC TEMPERATURE FACTOR COEFFICIENTS                                     
 
 
-            -0.683243      -0.557167      -0.342629      -0.873846      -0.967676      -1.233986
+            -0.683243      -0.557167      -0.342629      -0.873845      -0.967676      -1.233986
 
 
  Record  109    LGRP    3  NGRP      1   CONSTANTS TO CONVERT AN ATOM FROM ISO TO ANISO                                  
 
 
-            -0.204012       0.120026       0.316226
+            -0.204013       0.120026       0.316226
 
 
 
@@ -1011,11 +1011,11 @@ REAL
 
 
 
- Physical reads         93 Physical writes        210 Cache hits       5884
- Cache hit distribution     3496     334     279      61     216     192
- Cache hit distribution       82      30      90     206     174     261
- Cache hit distribution      126     146      52      39      47      22
- Cache hit distribution       11      10       8       0       1       1
+ Physical reads         93 Physical writes        210 Cache hits       8252
+ Cache hit distribution     5759     368     269      86     199     193
+ Cache hit distribution       84      34      42     188     197     181
+ Cache hit distribution      157     205      59      50      88      40
+ Cache hit distribution       18      14      19       1       0       1
 
 
           : Job ends ok       with     0 warnings and     9 errors

@@ -1,5 +1,12 @@
-  Disc file on unit   1 extended by     1 records 
-  Disc file on unit   1 extended by     1 records 
+#TITLE TEST LIST INPUT                                                                                                                                                                                                                                          
+# THE \SIMULATE IS TO PERMIT CONTINUATION AFTER ERRORS IN BATCHMODE                                                                                                                                                                                             
+#SIMULATE                                                                                                                                                                                                                                                       
+#LIST TYPE= 1                                                                                                                                                                                                                                                   
+#LIST 20                                                                                                                                                                                                                                                        
+#LIST 30                                                                                                                                                                                                                                                        
+#LIST TYPE= 1                                                                                                                                                                                                                                                   
+#PRINT 1                                                                                                                                                                                                                                                        
+#LIST 1                                                                                                                                                                                                                                                         
 
 
  TEST LIST INPUT                                                                      Date              Time          
@@ -95,7 +102,7 @@
  Record  108    LGRP    6  NGRP      1   ANISOTROPIC TEMPERATURE FACTOR COEFFICIENTS                                     
 
 
-            -0.683243      -0.557167      -0.342629      -0.873846      -0.967676      -1.233986
+            -0.683243      -0.557167      -0.342629      -0.873845      -0.967676      -1.233986
 
 
  Record  109    LGRP    3  NGRP      1   CONSTANTS TO CONVERT AN ATOM FROM ISO TO ANISO                                  
@@ -105,6 +112,8 @@
 
 
 
+#PRINT 1                                                                                                                                                                                                                                                        
+#LIST 1                                                                                                                                                                                                                                                         
 
 
  TEST LIST INPUT                                                                      Date              Time          
@@ -212,6 +221,7 @@
 
  The following character string does not uniquely define one  DIRECTIVE  : 
 RE
+#LIST 1                                                                                                                                                                                                                                                         
  A directive has been omitted leaving the parameters below undefined
  Directive : REAL        
  Parameter   1  has no default value and has been omitted
@@ -221,6 +231,7 @@ RE
  Parameter   3  has no default value and has been omitted
  Parameter keyword : C           
 
+#LIST 1                                                                                                                                                                                                                                                         
  A directive has been omitted leaving the parameters below undefined
  Directive : REAL        
  Parameter   1  has no default value and has been omitted
@@ -231,6 +242,7 @@ RE
  Parameter keyword : C           
 
  The user directive has been omitted or does not begin in column one
+#LIST 1                                                                                                                                                                                                                                                         
  A directive has been omitted leaving the parameters below undefined
  Directive : REAL        
  Parameter   1  has no default value and has been omitted
@@ -241,6 +253,7 @@ RE
  Parameter keyword : C           
 
  The directive on the last card is illegal with this '#Instruction'
+#LIST 1                                                                                                                                                                                                                                                         
  A directive has been omitted leaving the parameters below undefined
  Directive : REAL        
  Parameter   1  has no default value and has been omitted
@@ -252,8 +265,11 @@ RE
 
  The directive above may not follow a card containing the directive : 
 REAL        
+#LIST 1                                                                                                                                                                                                                                                         
  The last directive has appeared too many times,
  or should not have appeared at all
+#LIST 1                                                                                                                                                                                                                                                         
+#LIST 1                                                                                                                                                                                                                                                         
  A directive has been omitted leaving the parameters below undefined
  Directive : REAL        
  Parameter   1  has no default value and has been omitted
@@ -265,7 +281,9 @@ REAL
 
  Parameter     1  has appeared too many times
  Parameter keyword : A           
-  Disc file on unit   1 extended by     1 records 
+#LIST 2                                                                                                                                                                                                                                                         
+#PRINT 2                                                                                                                                                                                                                                                        
+#LIST 2                                                                                                                                                                                                                                                         
 
 
  TEST LIST INPUT                                                                      Date              Time          
@@ -373,7 +391,9 @@ REAL
 
  CRYSTALS -- ERROR
 
-  Disc file on unit   1 extended by     1 records 
+#LIST 2                                                                                                                                                                                                                                                         
+#PRINT 2                                                                                                                                                                                                                                                        
+#LIST 4                                                                                                                                                                                                                                                         
 
 
  TEST LIST INPUT                                                                      Date              Time          
@@ -545,12 +565,14 @@ REAL
 
 
 
+#PRINT 4                                                                                                                                                                                                                                                        
+#LIST 4                                                                                                                                                                                                                                                         
 
 
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     4     serial number        1     Address     4205     Length      48     Created on      
+ Print list type     4     serial number        1     Address     4205     Length      49     Created on      
 
 
  Record  101    LGRP   15  NGRP      1   PARAMETERS THAT ARE USED TO COMPUTE THE WEIGHT FOR A GIVEN REFLECTION           
@@ -570,21 +592,23 @@ REAL
         5              3              0              0
 
 
- Record  103    LGRP    5  NGRP      1   REAL PARAMETERS REQUIRED TO DEFINE THE WEIGHTING SCHEME TO BE USED              
+ Record  103    LGRP    6  NGRP      1   REAL PARAMETERS REQUIRED TO DEFINE THE WEIGHTING SCHEME TO BE USED              
 
 
-    WEIGHT         MAXIMUM        TOLER          DS1            DS2         
+    WEIGHT         MAXIMUM        TOLER          DS1            DS2            QUASI       
 
-   2.0000     10000.0000         6.0000         1.0000         1.0000
+   2.0000     10000.0000         6.0000         1.0000         1.0000         0.2500
 
 
 
+#PRINT 4                                                                                                                                                                                                                                                        
+#LIST 4                                                                                                                                                                                                                                                         
 
 
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     4     serial number        2     Address     4253     Length      36     Created on      
+ Print list type     4     serial number        2     Address     4254     Length      37     Created on      
 
 
  Record  101    LGRP    3  NGRP      1   PARAMETERS THAT ARE USED TO COMPUTE THE WEIGHT FOR A GIVEN REFLECTION           
@@ -603,12 +627,12 @@ REAL
         6              3              0              0
 
 
- Record  103    LGRP    5  NGRP      1   REAL PARAMETERS REQUIRED TO DEFINE THE WEIGHTING SCHEME TO BE USED              
+ Record  103    LGRP    6  NGRP      1   REAL PARAMETERS REQUIRED TO DEFINE THE WEIGHTING SCHEME TO BE USED              
 
 
-    WEIGHT         MAXIMUM        TOLER          DS1            DS2         
+    WEIGHT         MAXIMUM        TOLER          DS1            DS2            QUASI       
 
-   2.0000     10000.0000         6.0000         1.0000         1.0000
+   2.0000     10000.0000         6.0000         1.0000         1.0000         0.2500
 
 
 
@@ -618,6 +642,7 @@ REAL
 
  CRYSTALS -- ERROR
 
+#LIST 2                                                                                                                                                                                                                                                         
  A directive has been omitted leaving the parameters below undefined
  Directive : CELL        
  Parameter   1  has no default value and has been omitted
@@ -628,12 +653,15 @@ REAL
 
  CRYSTALS -- ERROR
 
+#LIST 3                                                                                                                                                                                                                                                         
+#PRINT 3                                                                                                                                                                                                                                                        
+#LIST 5                                                                                                                                                                                                                                                         
 
 
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     3     serial number        1     Address     4289     Length      66     Created on      
+ Print list type     3     serial number        1     Address     4291     Length      72     Created on      
 
 
  Record  101    LGRP   12  NGRP      3   THE ATOMIC SCATTERING FACTORS IN EXPONENTIAL FORMAT                             
@@ -642,25 +670,33 @@ REAL
  TYPE        F'          F''         A(1)        B(1)        A(2)        B(2)        A(3)        B(3)        A(4)        
                                      B(4)        C           
 
- C          0.000       0.000       1.00000     2.00000     3.00000     4.00000     5.00000     6.00000     7.00000
+
+
+ C        0.00000     0.00000       1.00000     2.00000     3.00000     4.00000     5.00000     6.00000     7.00000
                                     8.00000     9.00000
- P          0.120       0.460      10.00000    11.00000    12.00000    13.00000    14.00000    15.00000    16.00000
+
+
+ P        0.12000     0.46000      10.00000    11.00000    12.00000    13.00000    14.00000    15.00000    16.00000
                                    17.00000    18.00000
- MO         3.600      -4.000     110.00000   111.00000   112.00000   113.00000   114.00000   115.00000   116.00000
+
+
+ MO       3.60000    -4.00000     110.00000   111.00000   112.00000   113.00000   114.00000   115.00000   116.00000
                                   117.00000   118.00000
 
 
- Record  102    LGRP    1  NGRP      3
+
+ Record  102    LGRP    2  NGRP      3
 
 
 
- Record  103    LGRP    1  NGRP      3
+ Record  103    LGRP    2  NGRP      3
 
 
 
 
  Unknown parameter keyword : 
  U[ISO]
+#PRINT 5                                                                                                                                                                                                                                                        
  CRYSTALS command input error 
 
  CRYSTALS -- ERROR
@@ -669,6 +705,7 @@ REAL
 
  CRYSTALS -- ERROR
 
+#LIST 5                                                                                                                                                                                                                                                         
  No list of type        5 stored
 
  CRYSTALS -- ERROR
@@ -677,12 +714,14 @@ REAL
 
 
 
+#PRINT 5                                                                                                                                                                                                                                                        
+#LIST TYPE= 1                                                                                                                                                                                                                                                   
 
 
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     5     serial number        1     Address     4355     Length      83     Created on      
+ Print list type     5     serial number        1     Address     4363     Length      83     Created on      
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -752,7 +791,8 @@ REAL
 
 
 
-  Disc file on unit   1 extended by     1 records 
+#LIST 2                                                                                                                                                                                                                                                         
+#LIST 13                                                                                                                                                                                                                                                        
  Absorption correction -- Internal consistency check failed
 
  CRYSTALS -- PROGRAMMING ERROR
@@ -776,12 +816,14 @@ REAL
                         0.0000    0.0000    0.0000
 
                         0.0000    0.0000    0.0000
+#PRINT 13                                                                                                                                                                                                                                                       
+#LIST 14                                                                                                                                                                                                                                                        
 
 
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    13     serial number        1     Address     4777     Length     155     Created on      
+ Print list type    13     serial number        1     Address     4785     Length     155     Created on      
 
 
  Record  101    LGRP    3  NGRP      1   DATA PERTAINING TO THE CRYSTALS ITSELF (-1 FOR NO, 0 FOR YES)                   
@@ -864,12 +906,14 @@ REAL
 
 
 
+#PRINT 14                                                                                                                                                                                                                                                       
+#LIST 23                                                                                                                                                                                                                                                        
 
 
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    14     serial number        1     Address     4932     Length      72     Created on      
+ Print list type    14     serial number        1     Address     4940     Length      72     Created on      
 
 
  Record  102    LGRP    3  NGRP      1   ORIENTATION PARAMETERS FOR THE MAP CALCULATION AND PRINTING                     
@@ -905,12 +949,14 @@ REAL
 
 
 
+#PRINT 23                                                                                                                                                                                                                                                       
+#LIST 25                                                                                                                                                                                                                                                        
 
 
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    23     serial number        1     Address     5004     Length      76     Created on      
+ Print list type    23     serial number        1     Address     5012     Length      76     Created on      
 
 
  Record  101    LGRP    7  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
@@ -956,13 +1002,14 @@ REAL
 
 
 
-  Disc file on unit   1 extended by     1 records 
+#PRINT 25                                                                                                                                                                                                                                                       
+#LIST 28                                                                                                                                                                                                                                                        
 
 
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    25     serial number        1     Address     5080     Length      52     Created on      
+ Print list type    25     serial number        1     Address     5088     Length      52     Created on      
 
 
  Record  101    LGRP    9  NGRP      2   THE MATRICES THAT TRANSFORM THE STANDARD INDICES INTO EACH ELEMENT              
@@ -1003,6 +1050,7 @@ REAL
 
  CRYSTALS -- ERROR
 
+#PRINT 28                                                                                                                                                                                                                                                       
  No list of type       28 stored
 
  CRYSTALS -- ERROR
@@ -1011,11 +1059,7 @@ REAL
 
 
 
- Physical reads         93 Physical writes        210 Cache hits       5884
- Cache hit distribution     3496     334     279      61     216     192
- Cache hit distribution       82      30      90     206     174     261
- Cache hit distribution      126     146      52      39      47      22
- Cache hit distribution       11      10       8       0       1       1
+#FINISH                                                                                                                                                                                                                                                         
 
 
           : Job ends ok       with     0 warnings and     9 errors
