@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.106  2012/09/17 12:24:53  rich
+C DPROD subroutine name clashes with intrinsic function. Renamed DVPROD.
+C
 C Revision 1.105  2012/09/10 16:06:17  djw
 C Increase format statement foe weight vs Sigma plot
 C
@@ -3652,20 +3655,26 @@ C -- SCAN LIST 6 FOR REFLECTIONS
       nmax=min(90,nmax)
       nmax=max(1,nmax)
       IF (IPLOT2 .EQ. 1) THEN
-        WRITE(CMON,'(A,5(/A),/a,i2,a)')
+c        WRITE(CMON,'(A,10(/A))')
+        WRITE(CMON,'(A,3(/A),/a,i6,a,5(/a))')
      1  '^^PL PLOTDATA _SIGRES SCATTER ATTACH _VSIGRES KEY',
-     1  '^^PL XAXIS TITLE ''(sin(theta)/lambda)**2'' NSERIES=4',
-     1  '^^PL LENGTH=25 YAXIS TITLE ''Frequency''',
-     1  '^^PL SERIES 1 SERIESNAME ''I/sigma(I)<3.0'' TYPE LINE ',
-     1  '^^PL SERIES 2 SERIESNAME ''I/sigma(I)<10.0'' TYPE LINE ',
-     1  '^^PL SERIES 3 SERIESNAME ''I/sigma(I)>10.0'' TYPE LINE ',
-     1  '^^PL SERIES 4 SERIESNAME ''', nmax,'*<I/sigma>'' TYPE LINE '
-        CALL XPRVDU(NCVDU, 7,0)
+     2  '^^PL XAXIS TITLE ''(sin(theta)/lambda)**2'' NSERIES=4',
+     3  '^^PL LENGTH=25',
+     4  '^^PL YAXIS TITLE ''Frequency''',
+     5  '^^PL YAXISRIGHT ZOOM 0 ',nint(smax),
+     5  ' TITLE ''Average(I/sigmaI)''',
+     6  '^^PL SERIES 1 SERIESNAME ''I/sigma(I)<3.0'' TYPE LINE ',
+     7  '^^PL SERIES 2 SERIESNAME ''I/sigma(I)<10.0'' TYPE LINE ',
+     8  '^^PL SERIES 3 SERIESNAME ''I/sigma(I)>10.0'' TYPE LINE ',
+     9  '^^PL SERIES 4 SERIESNAME ''<I/sigma>'' TYPE LINE ',
+     1  '^^PL USERIGHTAXIS'
+
+        CALL XPRVDU(NCVDU, 10,0)
 
         DO I = 1,25
           WRITE(CMON,'(A,4(F7.3,1X,I8,1X))')
      1     '^^PL DATA ',((I*0.4/25.0),LSIGS(I,J),J=1,3),
-     2     (I*0.4/25.0),nint(nmax*sios(I))
+     2     (I*0.4/25.0),nint(sios(I))
           CALL XPRVDU(NCVDU, 1,0)
         END DO
  
