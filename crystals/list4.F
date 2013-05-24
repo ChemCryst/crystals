@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.72  2012/06/07 11:59:32  djw
+C Add note about possible causes of P(2) being large (Twinning)
+C
 C Revision 1.71  2011/12/16 15:46:11  djw
 C Try to fix SHELX weighting when the Fc are not set.  The new SCRIPT XWTINI should prevent this ever being needed in SCRIPT mode
 C
@@ -2839,8 +2842,9 @@ cdjwjul09
 4910  FORMAT ( 1X , '  Range  Number  <FO>     <FC>    ' ,
 c     2 ' <delsq>  <wdelsq>  R    RW Log<wdelsq>' )
      2  ' <delsq>  <wdelsq>  R        <Fo-Fc>' )
-4920  FORMAT(1H ,F7.0,   I6,2F9.0,2E10.2,2F5.0,13A1)
+4920  FORMAT(1H ,F7.1,   I6,2F9.0,2E10.2,2F5.0,13A1)
 4921  FORMAT(' Totals ' ,I6,2F9.0,2E10.2,2F5.0,F11.3)
+4922  FORMAT(1H ,F7.1,I6,2F9.0,2E10.2,2F5.0,F11.3)
       L=IGEN
       AC=0.
       NZ=0
@@ -2907,7 +2911,6 @@ cdjwfeb11
      2 (STORE(K+2),K=L+2,M) , store(l+2)-store(l+3)
       CALL XPRVDU(NCVDU, 1,0)
       ENDIF
-4922   format(1h ,f7.0,i6,2f9.0,2e10.2,2f5.0,F11.3)
 CDJWJUL09
       IF (STORE(L+2) .GE. 10.*STORE(L+3)) THEN
             FOVSFC = 1000.
@@ -2915,7 +2918,7 @@ CDJWJUL09
             fovsfc = 100. * (store(l+2)/store(l+3))
       endif
       IF ( PLFOR .EQ. 1 ) THEN
-        WRITE(CMON,'(A,F7.0,A,2(1X,F21.7),I8,1x,f21.7)')
+        WRITE(CMON,'(A,F7.1,A,2(1X,F21.7),I8,1x,f21.7)')
      1    '^^PL SET _FO LABEL ',
      1    ACI,' DATA ',STORE(L+4),STORE(L+5),ISTORE(L+1)
      2    ,fovsfc
