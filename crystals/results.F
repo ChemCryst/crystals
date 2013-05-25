@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.202  2013/04/25 14:49:19  rich
+C Update cell esd calc (in CIF) to use equation from Giacovazzo p123.
+C
 C Revision 1.201  2013/03/27 11:53:28  djw
 C Remove hard coded thresholding - FILTERS are more flexible.
 C Reinstate gradient of Do/Dm plot on Howards advice.
@@ -3392,7 +3395,7 @@ C----- LOOK FOR '(' OR '.' TO POSITION RESULT IN FIELD
       IF (IP .EQ. 0) IP=INDEX(CTEMP,'.')
       IP = N-IP
 C      WRITE(*,'(A,2I6)') 'J,IP= ',J,IP
-      READ(CTEMP(1:N),'(32A1)') (IVET(II+IP),II=J-N,J)        
+      READ(CTEMP(1:N),'(32A1)') (IVET(II+IP),II=J-N,J-1)        
 C
       END
 C
