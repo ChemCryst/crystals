@@ -269,7 +269,9 @@
 %              LOOP                                                             
 %                GET NOSTORE NOPROMPT KEYWORD ' ' '_NOMORE_'                    
 %                IF CVALUE .EQ. '_NOMORE_'  THEN                                 
-%                  EVALUATE LOOPEND = LOOPCOUNTER                               
+%                  EVALUATE LOOPEND = LOOPCOUNTER  
+%                ELSE IF ( CVALUE STARTSWITH '#' ) THEN
+%                  EVALUATE LOOPEND = LOOPCOUNTER  
 %                ELSE IF SPACETEXT THEN                                         
 %                  EVALUATE SPACEREAD = SPACEREAD // CVALUE // ' '              
 %                END IF                                                         
