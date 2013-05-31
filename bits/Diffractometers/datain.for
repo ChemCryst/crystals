@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.26  2013/05/17 15:37:19  djw
+C Dont demand a space group loop in an fcf file
+C
 C Revision 1.25  2013/04/26 16:05:32  pascal
 C Fixed fatal error on gfortran
 C
@@ -812,8 +815,7 @@ C . If uppercase, make lowercase.
         if (label(nsite,1)(j+1:j+1) == ' '.or.
      *      label(nsite,1)(j+1:j+1) == '_' ) exit
       enddo       
-
-
+c
 C RIC03 - Removed duplicate label detection code. Use #EDIT 
 C instead. (See later)
 
@@ -824,7 +826,7 @@ C........Store serial number:
         label(nsite,3)=label(nsite,1)(iellen+1:j)
       else 
         label(nsite,3)=buffer(iellen+1:j)
-        write(6, '(a,2x,a,2x,a,2x,a3,a)') 'atom name',
+      write(6, '(a,2x,a,2x,a,2x,a3,a)') 'atom name',
      *          label(nsite,1), 'changed to',
      *            label(nsite,2), label(nsite,3) 
 
@@ -833,7 +835,7 @@ C........Store serial number:
      *            label(nsite,2), label(nsite,3) 
 
       endif
-
+c
       f2 = numb_('_atom_site_fract_x',  xf(nsite), sx)
       f2 = numb_('_atom_site_fract_y',  yf(nsite), sy).AND.(f2)
       f2 = numb_('_atom_site_fract_z',  zf(nsite), sz).AND.(f2)
@@ -863,12 +865,13 @@ C........Store serial number:
        if ( .not. f2 ) then
           iasmbly=0
        else
+         if ( name(1:1) .eq. '.' ) name(1:1) = '0' 
          if ( name(1:1) .eq. ' ' ) name(1:1) = '1' 
          do i = 1,LEN_TRIM(name)    !ABCD -> 1234 etc.
            do j = 1,nodchr
              if ( ( name(i:i) .eq. charcCase(j:j) ) .or.
      *           ( name(i:i) .eq. charc(j:j)     ) ) then
-               k = min(j,9)
+               k = min(j,10)
                name(i:i) = numer(k:k)
              end if
            end do
@@ -878,6 +881,7 @@ C........Store serial number:
       else
         iasmbly = nint(assmbly)
       endif
+c
 c
       f2 = numb_('_atom_site_disorder_group', group, dum)
       if(.not. f2) then
