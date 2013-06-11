@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.129  2013/01/18 15:13:41  rich
+// Allow saving of files from scatter and histogram plots.
+// Implement saving of files in Cameron on wxWidgets platform. (Saves PNG instead of WMF).
+//
 // Revision 1.128  2012/11/09 15:07:17  rich
 // Remove debug print
 //
@@ -602,6 +606,9 @@
 
 #ifdef __BOTHWX__
   #include <wx/app.h>
+#endif
+
+#ifndef __BOTHWX__
   #include <tchar.h>
 #endif
 
@@ -916,14 +923,13 @@ CcController::CcController( const string & directory, const string & dscfile )
       string dsctemp = "CRDSC=" + dscfile;
       string::size_type qp = dsctemp.find_last_of('\"');
       if ( qp != string::npos ) dsctemp.erase(qp,1);
-#ifdef __CR_WIN__
+#ifdef __BOTHWIN__
       _putenv( dsctemp.c_str() );
-#endif
-#ifdef __BOTHWX__
+#else
       char * env = new char[dsctemp.size()+1];
       strcpy(env, dsctemp.c_str());
       stringlist.push_back(env);
-      _putenv( env );
+      putenv( env );
 #endif
 //For info, put DSC name in the title bar.
       Tokenize("^^CO SET _MAIN TEXT 'Crystals - " + dscfile + "'");
@@ -974,14 +980,16 @@ CcController::CcController( const string & directory, const string & dscfile )
 
     if ( envv == NULL )
     {
-#ifdef __CR_WIN__
+#ifdef __BOTHWIN__
        _putenv( "CRDSC=crfilev2.dsc" );
-#endif
-#ifdef __BOTHWX__
+#else
 //       _setenv("CRDSC", "crfilev2.dsc", 1);
        string p = "CRDSC=crfilev2.dsc";
-       stringset.insert(p);
-       _putenv( p.c_str() );
+       char * env = new char[p.size()+1];
+       strcpy(env, p.c_str());
+       stringlist.push_back(env);
+       putenv( env );
+       
 //       envv = getenv( "CRDSC" );
 #endif
        Tokenize("^^CO SET _MAIN TEXT 'Crystals - crfilev2.dsc'");
@@ -1511,14 +1519,13 @@ bool CcController::ParseInput( deque<string> & tokenList )
                               tokenList.pop_front();    // remove that token
                               string newdsc = "CRDSC=" + tokenList.front();
                               tokenList.pop_front();    // remove that token
-#ifdef __CR_WIN__
+#ifdef __BOTHWIN__
                               _putenv( (LPCTSTR) newdsc.c_str() );
-#endif
-#ifdef __BOTHWX__
+#else
                              char * env = new char[newdsc.size()+1];
                              strcpy(env, newdsc.c_str());
                              stringlist.push_back(env);
-                             _putenv( env );
+                             putenv( env );
 #endif
                         }
                         break;
@@ -2794,8 +2801,12 @@ void CcController::ChangeDir (string newDir)
 
 #endif
 #ifdef __BOTHWX__
+#ifdef __BOTHWIN__
       _chdir ( newDir.c_str());
+#else      
+      chdir ( newDir.c_str());
       std::cerr << "\n\n\nChanged directory to: " << newDir << "\n\n\n";
+#endif
 #endif
 }
 
@@ -3406,13 +3417,18 @@ extern "C" {
 
 
 #else
+
+#ifdef __BOTHWIN__    
     size_t origsize = strlen(theLine) + 1;
     const size_t newsize = 263;
     size_t convertedChars = 0;
     _TCHAR tempstr[newsize];
     mbstowcs_s(&convertedChars, tempstr, origsize, theLine, _TRUNCATE);
-
     wstring line = wstring(tempstr);
+#else
+    tstring line = tstring(theLine);
+#endif    
+
 #endif
 	
 
@@ -3482,7 +3498,7 @@ extern "C" {
 //        LOGERR(restLine);
 
         tstring totalcl = firstTok;
-        totalcl += _T(" ");
+        totalcl += " ";
         totalcl += restLine;
 //        LOGERR(totalcl);
 

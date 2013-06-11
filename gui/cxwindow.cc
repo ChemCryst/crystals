@@ -9,6 +9,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.47  2012/05/03 16:00:10  rich
+//   Oops.
+//
 //   Revision 1.46  2012/05/03 15:41:08  rich
 //   Mostly commented out debugging for future reference. Trying to track down flicker on dialog closure. May now be fixed...
 //
@@ -169,9 +172,10 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
   #endif
 
   #ifdef __BOTHWX__
+      wxString a = wxT("Window");
       theWindow->mParentWnd = (wxWindow*) parentWindow;
       theWindow->Create( 
-        theWindow->mParentWnd, -1, "Window",
+        theWindow->mParentWnd, -1, a,
         wxPoint(0, 0), wxSize(-1,-1),
         wxSYSTEM_MENU |         
         ((attributes & kSize) ? wxDEFAULT_FRAME_STYLE   : wxDEFAULT_DIALOG_STYLE|wxFRAME_NO_TASKBAR) |
@@ -272,7 +276,7 @@ void CxWindow::CxPreDestroy()
 CxWindow::~CxWindow()
 {
 #ifdef __BOTHWX__
-    m_mgr.UnInit();
+    //m_mgr.UnInit();
 #endif
     mWindowCount--;
     if ( !m_PreDestroyed ) {
@@ -284,21 +288,21 @@ CxWindow::~CxWindow()
 
 #ifdef __BOTHWX__
 void CxWindow::SetIsFrame() {
-	m_mgr.SetManagedWindow(this);
+	//m_mgr.SetManagedWindow(this);
 }
 void CxWindow::AddPane(wxWindow* pane, unsigned int position, wxString text) {
-	m_mgr.AddPane(pane, position, text);
-	m_mgr.Update();
+//	m_mgr.AddPane(pane, position, text);
+//	m_mgr.Update();
 //	m_mgr.GetPane(pane).Float();
 //	m_mgr.Update();
 }
 
 void CxWindow::SetPaneMin(wxWindow* pane, int w, int h) {
-	wxAuiPaneInfo &pi = m_mgr.GetPane(pane);
-	if (pi.IsOk()) {
-		pi.MinSize(w,h);
-	}
-	m_mgr.Update();
+//	wxAuiPaneInfo &pi = m_mgr.GetPane(pane);
+//	if (pi.IsOk()) {
+//		pi.MinSize(w,h);
+//	}
+//	m_mgr.Update();
 }
 #endif
 

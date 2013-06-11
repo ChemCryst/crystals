@@ -92,7 +92,7 @@ CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 #endif
 #ifdef __BOTHWX__
 
-  int args[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 32, 0};
+  int args[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, 0};
   CxModel *theModel = new CxModel((wxWindow*)guiParent, args);
   theModel->ptr_to_crObject = container;
   theModel->Show();
@@ -113,8 +113,9 @@ CxModel::CxModel(wxWindow *parent, int * args): wxGLCanvas(parent, wxID_ANY, arg
     m_NotSetupYet = true;
     m_MouseCaught = false;
 // This is for the PaintBannerInstead() function.
-    wxBitmap newbit(wxBITMAP(IDB_SPLASH));
-    m_bitmap = newbit;
+    wxBitmap newbit = wxBitmap(wxBITMAP(IDB_SPLASH));
+//    m_bitmap = newbit;
+    m_bitmap = newbit.GetSubBitmap(wxRect(0, 0, newbit.GetWidth(), newbit.GetHeight()));
     m_bitmapok = m_bitmap.Ok();
 #endif
 #ifdef __CR_WIN__

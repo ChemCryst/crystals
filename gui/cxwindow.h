@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.24  2012/05/03 15:41:08  rich
+//   Mostly commented out debugging for future reference. Trying to track down flicker on dialog closure. May now be fixed...
+//
 //   Revision 1.23  2012/03/26 11:38:37  rich
 //   Deprecated crweb control for now.
 //
@@ -90,7 +93,7 @@
 #include <wx/settings.h>
 #include <wx/menu.h>
 #include <wx/menuitem.h>
-#include <wx/aui/aui.h>
+//#include <wx/aui/aui.h>
 #define BASEWINDOW wxFrame
 #endif
 
@@ -197,7 +200,7 @@ class CxWindow : public BASEWINDOW
 
  protected:
     wxWindow* mParentWnd;
-     wxAuiManager m_mgr;
+//     wxAuiManager m_mgr;
      wxWindowDisabler *m_wxWinDisabler;
 	 public:
 	 	  void AddPane(wxWindow* pane, unsigned int position, wxString text);

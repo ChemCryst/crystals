@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.66  2012/10/19 12:45:13  djw
+C Make Script not found message less frightening
+C
 C Revision 1.65  2012/03/23 13:51:32  rich
 C Intel support.
 C
@@ -4322,7 +4325,7 @@ C--ADD ONTO THE OTHER REQUESTS THAT ARE WAITING
 1100  FORMAT ( 1X )
 
 1150  CONTINUE
-      ENDFILE ( NUSRQ )
+c      ENDFILE ( NUSRQ )
       NREC=NREC+1
 C--OUTPUT THE INSTRUCTION
 1200  CONTINUE
