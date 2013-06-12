@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.131  2013/06/12 11:31:36  rich
+// Correct putenv for intel platform.
+//
 // Revision 1.130  2013/06/11 12:30:39  pascal
 // Linux changes
 //
@@ -3421,9 +3424,7 @@ extern "C" {
 //  (CcController::theController)->AddInterfaceCommand( "theLine: " + tstring(theLine) );
 
 
-#else
-
-#ifdef __BOTHWIN__    
+#elif defined(__BOTHWIN__)
     size_t origsize = strlen(theLine) + 1;
     const size_t newsize = 263;
     size_t convertedChars = 0;
@@ -3434,7 +3435,6 @@ extern "C" {
     tstring line = tstring(theLine);
 #endif    
 
-#endif
 	
 
     tstring::size_type strim = line.find_last_not_of(' '); //Remove trailing spaces
@@ -3503,7 +3503,11 @@ extern "C" {
 //        LOGERR(restLine);
 
         tstring totalcl = firstTok;
+#ifdef __BOTHWIN__
+        totalcl += _T(" ");
+#else
         totalcl += " ";
+#endif
         totalcl += restLine;
 //        LOGERR(totalcl);
 
