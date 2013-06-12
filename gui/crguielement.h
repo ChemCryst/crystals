@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:19 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.13  2013/06/11 12:30:39  pascal
+//   Linux changes
+//
 //   Revision 1.12  2005/01/23 10:20:24  rich
 //   Reinstate CVS log history for C++ files and header files. Recent changes
 //   are lost from the log, but not from the files!
@@ -72,8 +75,8 @@ class   CrGUIElement
 //Overridden function can then be called using a pointer to the base class.
     virtual void SendCommand(const string & theText, bool jumpQueue=false);
     virtual void FocusToInput(char theChar);
-    virtual void SysKeyUp ( uint nChar );
-    virtual void SysKey ( uint nChar );
+    virtual void SysKeyUp ( UINT nChar );
+    virtual void SysKey ( UINT nChar );
     virtual int GetIdealWidth();
     virtual int GetIdealHeight();
     virtual CrGUIElement *  FindObject( const string & Name );
