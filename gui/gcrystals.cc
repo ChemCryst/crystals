@@ -358,7 +358,7 @@ using namespace std;
 
     for ( int i = 1; i < argc; i++ )
     {
-      tstring command = tstring(argv[i]);
+      string command = argv[i];
       if ( command == "/d" )
       {
         if ( i + 2 >= argc )
@@ -367,13 +367,13 @@ using namespace std;
         }
         else
         {
-          tstring envvar = tstring(argv[i+1]);
+          string envvar = argv[i+1];
           envvar += "=";
           envvar += argv[i+2];
           char * env = new char[envvar.size()+1];
           strcpy(env, envvar.c_str());
           stringlist.push_back(env);
-#if defined (__WXMSW__)
+#if defined (__BOTHWIN__)
           _putenv( env );
 #else
           putenv( env );
@@ -383,7 +383,7 @@ using namespace std;
       }
       else
       {
-        tstring command = tstring(argv[i]);
+        string command = argv[i];
         if ( command.length() > 0 )
         {
 // we need a directory name. Look for last slash
