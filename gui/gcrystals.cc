@@ -358,7 +358,7 @@ using namespace std;
 
     for ( int i = 1; i < argc; i++ )
     {
-      string command = argv[i];
+      string command = string(argv[i]);
       if ( command == "/d" )
       {
         if ( i + 2 >= argc )
@@ -367,7 +367,7 @@ using namespace std;
         }
         else
         {
-          string envvar = argv[i+1];
+          string envvar = string(argv[i+1]);
           envvar += "=";
           envvar += argv[i+2];
           char * env = new char[envvar.size()+1];
@@ -383,7 +383,7 @@ using namespace std;
       }
       else
       {
-        string command = argv[i];
+        string command = string(argv[i]);
         if ( command.length() > 0 )
         {
 // we need a directory name. Look for last slash
