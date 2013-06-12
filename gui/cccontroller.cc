@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.130  2013/06/11 12:30:39  pascal
+// Linux changes
+//
 // Revision 1.129  2013/01/18 15:13:41  rich
 // Allow saving of files from scatter and histogram plots.
 // Implement saving of files in Cameron on wxWidgets platform. (Saves PNG instead of WMF).
@@ -1519,8 +1522,10 @@ bool CcController::ParseInput( deque<string> & tokenList )
                               tokenList.pop_front();    // remove that token
                               string newdsc = "CRDSC=" + tokenList.front();
                               tokenList.pop_front();    // remove that token
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
                               _putenv( (LPCTSTR) newdsc.c_str() );
+#elif defined(__BOTHWIN__)
+                              _putenv( newdsc.c_str() );
 #else
                              char * env = new char[newdsc.size()+1];
                              strcpy(env, newdsc.c_str());
