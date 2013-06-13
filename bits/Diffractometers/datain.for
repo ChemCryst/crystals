@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2013/05/31 10:24:33  djw
+C Handle case where assembly flac is '.'
+C
 C Revision 1.26  2013/05/17 15:37:19  djw
 C Dont demand a space group loop in an fcf file
 C
@@ -789,10 +792,10 @@ C . If uppercase, make lowercase.
       else if (iellen == 1) then
         label(nsite,2)=label(nsite,1)(1:iellen)
       endif
-        
+c
       iserialflag=0
       buffer = ' '
-
+c
       do j=iellen+1,iellen+6
         buffer(j:j)=label(nsite,1)(j:j)
 
@@ -820,18 +823,16 @@ C RIC03 - Removed duplicate label detection code. Use #EDIT
 C instead. (See later)
 
 C-------------------------------
-
 C........Store serial number:
       If (iserialflag==0) then
         label(nsite,3)=label(nsite,1)(iellen+1:j)
       else 
         label(nsite,3)=buffer(iellen+1:j)
-      write(6, '(a,2x,a,2x,a,2x,a3,a)') 'atom name',
-     *          label(nsite,1), 'changed to',
+      write(6, '(a,2x,a,2x,a,2x,a3,a)') ' atom name ',
+     *          label(nsite,1), ' changed to ',
      *            label(nsite,2), label(nsite,3) 
-
-        write(ntext, '(a,2x,a,2x,a,2x,a3,a)') 'atom name',
-     *          label(nsite,1), 'changed to',
+        write(ntext, '(a,2x,a,2x,a,2x,a3,a)') ' atom name ',
+     *          label(nsite,1), ' changed to ',
      *            label(nsite,2), label(nsite,3) 
 
       endif
@@ -858,13 +859,13 @@ c
       else if (name .eq. 'Uiso') then
         iflag(nsite) = 1
       endif
+c
 
-      f2 = numb_('_atom_site_disorder_assembly', assmbly, dum)
-      if (.not. f2) then
-       f2 = char_('_atom_site_disorder_assembly', name)
-       if ( .not. f2 ) then
+c ASSEMBLY
+      f2 = char_('_atom_site_disorder_assembly', name)
+      if ( .not. f2 ) then
           iasmbly=0
-       else
+      else
          if ( name(1:1) .eq. '.' ) name(1:1) = '0' 
          if ( name(1:1) .eq. ' ' ) name(1:1) = '1' 
          do i = 1,LEN_TRIM(name)    !ABCD -> 1234 etc.
@@ -877,40 +878,23 @@ c
            end do
          end do
          read ( name(1:3),'(I3)') iasmbly
-       end if
-      else
-        iasmbly = nint(assmbly)
-      endif
+      end if
 c
 c
-      f2 = numb_('_atom_site_disorder_group', group, dum)
-      if(.not. f2) then
-       f2 = char_('_atom_site_disorder_group', name)
-       if ( .not. f2 ) then
+c GROUP
+      f3 = numb_('_atom_site_disorder_group', adjw,bdjw)
+       if ( .not. f3 ) then
           igroup(nsite)=iasmbly * 1000
        else
-         if ( name(1:1) .eq. ' ' ) name(1:1) = '1' 
-         do i = 1,LEN_TRIM(name)    !ABCD -> 1234 etc.
-           do j = 1,nodchr
-             if ( ( name(i:i) .eq. charcCase(j:j) ) .or.
-     *           ( name(i:i) .eq. charc(j:j)     ) ) then
-               k = min(j,9)
-               name(i:i) = numer(k:k)
-             end if
-           end do
-         end do
-         read ( name(1:4),'(I4)') igroup(nsite)
+         igroup(nsite) = nint(adjw)
          igroup(nsite)=sign(abs(igroup(nsite))
      1  +iasmbly*1000,igroup(nsite))
        end if
-      else
-         igroup(nsite)=nint(group)
-         igroup(nsite)=sign(abs(igroup(nsite))
-     1  +iasmbly*1000,igroup(nsite))
-      endif
 C........Check if there are more atoms in the loop to get.
       if(loop_) goto 240
 241   continue
+
+
 
 C....... Read the Uij loop and store in the site list
       do i=1,nsite
