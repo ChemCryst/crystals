@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.53  2012/10/25 13:32:10  djw
+C Change format and add text to output from each cycle to help clarify why refinement is terminating.
+C
 C Revision 1.52  2012/08/29 13:25:13  djw
 C Old test for number of observations actually used number of degrees of freedom. Fixed
 C
@@ -2849,10 +2852,8 @@ c        Overall parameters
       CALL XPRVDU(NCVDU, 4,0)
       CALL OUTCOL(1)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
-      WRITE(NCPU,'(A)') CMON(1)
       RETURN
       END
-c^^
 C
 C
 CODE FOR XAPSCL
