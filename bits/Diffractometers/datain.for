@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2013/06/13 09:39:32  djw
+C Group flag is defined sa a signed number, not a charater
+C
 C Revision 1.27  2013/05/31 10:24:33  djw
 C Handle case where assembly flac is '.'
 C
@@ -634,9 +637,9 @@ cdjwmay13         GO TO 1050
        call xcrems(name, cspace,lspace)
        i = index(cspace(1:lspace),' ')
        if ((i .le. 0) .or. (cspace(2:2) .ne. ' ' ))then
-          write(6,'(a)') 
+          write(6,'(/a/)') 
      1 'CRYSTALS needs spaces in symbol - Int Tab G pp 256'
-          write(ntext,'(a)') 
+          write(ntext,'(/a/)') 
      1 'CRYSTALS needs spaces in symbol - Int Tab G pp 256'
           fsg = .false.
        endif
@@ -884,12 +887,23 @@ c
 c GROUP
       f3 = numb_('_atom_site_disorder_group', adjw,bdjw)
        if ( .not. f3 ) then
-          igroup(nsite)=iasmbly * 1000
+c      if the group is not set, zero the assembly for compatibility 
+c      with SHELX
+c          igroup(nsite)=iasmbly * 1000
+          igroup(nsite)=0
        else
+        if(nint(adjw).eq.0) then
+c      if the group is zero (i.e. '.'), zero the assembly for 
+c       compatibility with SHELX
+         igroup(nsite) = 0
+        else
          igroup(nsite) = nint(adjw)
          igroup(nsite)=sign(abs(igroup(nsite))
-     1  +iasmbly*1000,igroup(nsite))
+     1   +iasmbly*1000,igroup(nsite))
+        endif
        end if
+
+
 C........Check if there are more atoms in the loop to get.
       if(loop_) goto 240
 241   continue
