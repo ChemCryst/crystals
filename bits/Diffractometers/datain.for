@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.29  2013/06/14 14:01:45  djw
+C For compatibility between Markus's code and SHELX convnetion, set  PART to zero if the group is unset (i.e. '.' or 0)
+C
 C Revision 1.28  2013/06/13 09:39:32  djw
 C Group flag is defined sa a signed number, not a charater
 C
@@ -556,13 +559,13 @@ C
          MAXK=MAX(MAXK,IK)
          MAXL=MAX(MAXL,IL)
 C
-        if (( rf .lt. 100000 ).and.( rc .lt. 100000 )) then
+        if (( rf .lt. 99999. ).and.( rc .lt. 99999. )) then
           write ( noutr, '(3I4,3F8.2)' )ih,ik,il,rf,rs
      1                                  ,rc
-        else if (( rf .lt. 1000000 ).and.( rc .lt. 1000000 )) then
+        else if (( rf .lt. 999999. ).and.( rc .lt. 999999. )) then
           write ( noutr, '(3I4,3F8.1)' )ih,ik,il,rf,rs
      1                                  ,rc
-        else if (( rf .lt. 10000000 ).and.( rc .lt. 10000000 )) then
+        else if (( rf .lt. 9999999. ).and.( rc .lt. 9999999. )) then
           write ( noutr, '(3I4,3F8.0)' )ih,ik,il,rf,rs
      1                                  ,rc
         else
