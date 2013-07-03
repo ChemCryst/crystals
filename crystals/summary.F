@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.107  2013/05/24 09:47:05  djw
+C Modify sigma vs resolution graph (Tabbed Initial) to use rightaxes for the average(I)/sigma(I) - may be easier to understand.
+C
 C Revision 1.106  2012/09/17 12:24:53  rich
 C DPROD subroutine name clashes with intrinsic function. Renamed DVPROD.
 C
@@ -3592,7 +3595,7 @@ C -- SCAN LIST 6 FOR REFLECTIONS
 
       NTOT = 0
       NALLOW = 0
-      nmax=0
+c      nmax=0
 
 
 
@@ -3621,7 +3624,7 @@ C -- SCAN LIST 6 FOR REFLECTIONS
          MSIG = MAX ( 1,MSIG )
          MSIG = MIN ( 25,MSIG )
          LSIGS(MSIG,JSIGS) = LSIGS(MSIG,JSIGS) + 1
-         nmax=max(nmax,LSIGS(MSIG,JSIGS))
+c         nmax=max(nmax,LSIGS(MSIG,JSIGS))
          sios(msig)=sios(msig)+signoi
          nios(msig)=nios(msig)+1
         endif
@@ -3651,9 +3654,9 @@ C -- SCAN LIST 6 FOR REFLECTIONS
       enddo
       call outcol(1)
 
-      nmax=10*nint(float(nmax)/(10.*smax))
-      nmax=min(90,nmax)
-      nmax=max(1,nmax)
+c      nmax=10*nint(float(nmax)/(10.*smax))
+c      nmax=min(90,nmax)
+c      nmax=max(1,nmax)
       IF (IPLOT2 .EQ. 1) THEN
 c        WRITE(CMON,'(A,10(/A))')
         WRITE(CMON,'(A,3(/A),/a,i6,a,5(/a))')
