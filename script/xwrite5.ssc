@@ -14,7 +14,7 @@
 %  VARIABLE INTEGER REFLAG INBLOCK IEXTIN N5 ICHK I5 PART RESI
 %  VARIABLE INTEGER HMODE ISER CURMODE
 %  VARIABLE LOGICAL DOWRITE OVERRIDE STUCK TWINNED STICKY
-%  VARIABLE LOGICAL DOREFINE HRIDE HREST DOFOUR
+%  VARIABLE LOGICAL DOREFINE HRIDE HREST DOFOUR DREST
 %  VARIABLE CHARACTER CTYPE CTYPE2 KEYBREAK
 %  VARIABLE REAL SERIAL HFIRST CENTRO WORK1 SERIAL2 RN5
 %  EVALUATE TWINNED = FALSE
@@ -132,7 +132,7 @@
 ^^WI COMMIT='W5_BOK' CANCEL='W5_BXX'
 ^^WI GRID MAIN NROWS=3 NCOLS=5
 ^^WI {
-^^WI  @ 2,2 GRID L NROWS=6 NCOLS=1
+^^WI  @ 2,2 GRID L NROWS=7 NCOLS=1
 ^^WI  {
 %     IF SETADP .EQ. 0 THEN
 ^^WI   @ 1,1 CHECKBOX XR_GO '&Setup refinement only, do not refine.'
@@ -148,31 +148,42 @@
 ^^WI   @ 5,1 CHECKBOX OVRD '&Override sticky settings for atoms' STATE=OFF
 ^^WI   }
 % IF ( HFIRST .GE. 0.0 ) THEN
-^^WI   @ 3,1 GRID HR NROWS=5 NCOLS=1 OUTLINE='Hydrogens'
+^^WI   @ 3,1 GRID HR NROWS=3 NCOLS=1 OUTLINE='Hydrogen restraints'
 ^^WI   {
-^^WI     @ 1,1 RADIOBUTTON HFIX  '&Fix H atoms'
+^^WI    @ 1,1 RADIOBUTTON DREST '&Restrain H positions for O-H and N-H bonds'
+% IF HRESTF .EQ. 0 THEN
+^^WI           STATE=ON
+% END IF
+^^WI    @ 2,1 RADIOBUTTON HREST '&Restrain H positions for all-H bonds' 
+% IF HRESTF .EQ. 1 THEN
+^^WI           STATE=ON
+% END IF
+^^WI    @ 3,1 RADIOBUTTON NHREST '&No restraints' 
+% IF HRESTF .EQ. 2 THEN
+^^WI           STATE=ON
+% END IF
+^^WI   }
+^^WI   @ 4,1 GRID HR NROWS=4 NCOLS=1 OUTLINE='Remaining hydrogens'
+^^WI   {
+^^WI     @ 1,1 RADIOBUTTON HFIX  '&Fix (do not refine)'
 % IF HRTYP .LE. 0 THEN
 ^^WI           STATE=ON
 % END IF
-^^WI     @ 2,1 RADIOBUTTON HRIDE 'Ride &H atoms'
+^^WI     @ 2,1 RADIOBUTTON HRIDE 'Ri&de'
 % IF HRTYP .EQ. 3 .OR. HRTYP .EQ. 10 THEN
 ^^WI           STATE=ON
 % END IF
-^^WI    @ 5,1 CHECKBOX HREST '&Treat H as above, except restrain H-C,N,O bonds'
-% IF HRESTF .NE. 0 THEN
-^^WI           STATE=ON
-% END IF
-^^WI     @ 3,1 RADIOBUTTON HREFN '&Refine H atom positions'
+^^WI     @ 3,1 RADIOBUTTON HREFN '&Refine positions'
 % IF HRTYP .EQ. 1 THEN
 ^^WI           STATE=ON
 % END IF
-^^WI     @ 4,1 RADIOBUTTON HREFUI 'Refine H atom posn and &Uiso'
+^^WI     @ 4,1 RADIOBUTTON HREFUI 'Refine positions and &Uiso'
 % IF HRTYP .EQ. 2 THEN
 ^^WI           STATE=ON
 % END IF
 ^^WI   }
 % END IF
-^^WI   @ 4,1 GRID XP NROWS=3 NCOLS=1 OUTLINE='Other parameters'
+^^WI   @ 5,1 GRID XP NROWS=3 NCOLS=1 OUTLINE='Other parameters'
 ^^WI   {
 ^^WI    @ 1,1 CHECKBOX FLACK 'Flack parameter' STATE=OFF
 % IF ( CENTRO .GT. 0.9 ) THEN
@@ -188,7 +199,7 @@
 ^^WI   }
 %% Edit Markus 3
 % IF ASSEFOUND THEN
-^^WI   @ 5,1 GRID AR NROWS=1 NCOLS=1 OUTLINE='Disorder assemblies'
+^^WI   @ 6,1 GRID AR NROWS=1 NCOLS=1 OUTLINE='Disorder assemblies'
 ^^WI   {
 ^^WI    @ 1,1 CHECKBOX ARSOF 
 ^^WI    '&Refine site occupancy factors of assemblies keeping the sum at 1'
@@ -198,7 +209,7 @@
 ^^WI   }
 % END IF
 %% End edit
-^^WI   @ 6,1 GRID RN NROWS=2 NCOLS=1
+^^WI   @ 7,1 GRID RN NROWS=2 NCOLS=1
 ^^WI   {
 ^^WI    @ 1,1 CHECKBOX ALTER
 ^^WI      'Advanced: Edit directives or restraints before proceeding'
@@ -248,12 +259,16 @@
 %%
 %% Get OK and Cancel button press:
 %%
-%  VERIFY W5_BOK W5_BXX
+% LOOP
+%  VERIFY W5_BXX W5_BOK 
 %  GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'W5_BOK'
-%  IF VALUE .EQ. 2 THEN
+%%
+%  CASE VALUE
+%  BLOCK
 ^^CO DISPOSE XRSETUP
 %    FINISH
-%  END IF
+%  END BLOCK
+%  BLOCK
 %%
 %% Retrieve info from the dialog:
 %%
@@ -309,13 +324,21 @@
 %    EVALUATE HMODE = 2
 %  END IF
 %  EVALUATE HREST = FALSE
-%  EVALUATE HRESTF = 0
+%  EVALUATE HRESTF = 2
 ^^?? HREST STATE
 %  VERIFY ON OFF
 %  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %  IF ( VALUE .EQ. 1 ) THEN
 %    EVALUATE HREST = TRUE
 %    EVALUATE HRESTF = 1
+%  END IF
+^^?? DREST STATE
+%  VERIFY ON OFF
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  IF ( VALUE .EQ. 1 ) THEN
+%    EVALUATE HREST = TRUE
+%    EVALUATE DREST = TRUE
+%    EVALUATE HRESTF = 0
 %  END IF
 %%
 % END IF
@@ -449,6 +472,10 @@
 %    END IF
 %  END IF
 %%
+%  EVALUATE LOOPEND = LOOPCOUNTER
+%  END BLOCK
+%  END CASE
+% END LOOP
 %%
 ^^CO DISPOSE XRSETUP
 %%
@@ -602,6 +629,7 @@
 %%
 %  IF ( HREST ) THEN
  Working out H restraints
+%% Put a CONTINUATION list of all sticky H atoms into someh.12
 %     COPY '#RELEASE SCPQ someh.12'
 %     QUEUE REWIND
 %     COPY '#GENERALEDIT 5'
@@ -644,7 +672,11 @@
 %     COPY '#DISTANCES'
 %     COPY 'OUTPUT MON=OFF PUNCH=H-REST'
 %     COPY 'SELECT SYMMETRY=NONE RANGE=L41'
-%     COPY 'exclude'
+%% Maybe here limit pivots to ALL, or just O and N.
+%     IF ( DREST ) THEN
+%       COPY 'PIVOT O N'
+%     END IF
+%     COPY 'notbonded'
 %     COPY '#use someh.12'
 %     COPY 'END'
 %     COPY '#RELEASE PUNCH bfile.pch'
@@ -709,13 +741,52 @@
 %  COPY '#SCRIPT ZADDLI16'
 %%
 %  IF ( HRIDE ) THEN
+ Working out RIDES
+%     EVALUATE HRIDE = FALSE
+%     QUEUE REWIND
+%     COPY '#GENERALEDIT 5'
+%     COPY 'LOCATE RECORDTYPE=101'
+%     COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%     LOOP
+%       ON EDITERROR TERMINATE
+%       COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
+%       COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
+%       COPY 'TRANSFER FROM OFFSET=15 TO REFLAG'
+%       IF REFLAG .LT. 0 THEN
+%         EVALUATE REFLAG = - REFLAG
+%       END IF
+%       EVALUATE REFLAG = ( REFLAG IAND 255 )
+%       IF ( CTYPE .EQ. 'H' ) .AND. ( REFLAG .EQ. 10 ) THEN
+%         EVALUATE HRIDE = TRUE
+%         CLEAR
+%         INSERT 'CONT H('
+%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
+%         INSERT ')'
+%%         OUTPUT
+%         QUEUE SEND
+%       ELSE IF ( CTYPE .EQ. 'D' ) .AND. ( REFLAG .EQ. 10 ) THEN
+%         EVALUATE HRIDE = TRUE
+%         CLEAR
+%         INSERT 'CONT D('
+%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
+%         INSERT ')'
+%%         OUTPUT
+%         QUEUE SEND
+%       END IF
+%       COPY 'NEXT'
+%     END LOOP
+%     COPY 'END'
+%  END IF
+%% If HRIDE is still set, we found some atoms to ride.
+%  IF ( HRIDE ) THEN
  Calculating RIDES.
 %     COPY '#RELEASE PUNCH ridedat.12'
 %     COPY '#DISTANCES'
-%     COPY 'OUT MON=OFF PUNCH=SCRIPT'
-%     COPY 'SELECT SYMM=NONE RANGE=L41'
+%     COPY 'OUTPUT MON=OFF PUNCH=SCRIPT'
+%     COPY 'SELECT SYMMETRY=NONE  RANGE=L41'
 %     COPY 'NOTPIVOT H D'
-%     COPY 'BONDED H D'
+%     COPY 'BONDED'
+%     QUEUE PROCESS
 %     COPY 'END'
 %     COPY '#RELEASE PUNCH bfile.pch'
 %  END IF
