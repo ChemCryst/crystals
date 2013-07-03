@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.110  2013/05/09 11:24:37  rich
+C Fix bounds overrun in distangl when called from Fourier routines (shorter stack).
+C
 C Revision 1.109  2013/03/21 10:26:57  rich
 C When outputing lists of RIDE instructions don't duplicate atoms.
 C
@@ -1746,6 +1749,17 @@ C
             ENDIF
 C----- N-H 
            ELSE IF ((ISTORE(M5P) .EQ. KAZOT) .AND. (NHY .GE. 1)) THEN
+C----- WRITE THE HYDROGEN ATOMS TO THE SCRIPT DATA FILE
+            do idjw=1,khy
+               if (ihy(idjw) .eq. 1) then
+                write(cline,'(a,a,a,a,a,a )') 
+     2          cbonda(idjw)
+                j = index(cline,')')
+                write(cline(j:),'(a)') ,',x''s)'
+                call xcrems( cline, cline, nch)
+                write(ncque,'(a)') cline(1:nch)
+               endif
+            END DO
             IF (KHY .GE. 4) THEN
 C---- 4 OR MORE BONDS
              WRITE(NCPU,'(A,I6)')
@@ -1808,6 +1822,17 @@ C 3H, 1NOT-H
             ENDIF
 C----- O-H
            ELSE IF ((ISTORE(M5P) .EQ. KOXY) .AND. (NHY .GE. 1)) THEN
+C----- WRITE THE HYDROGEN ATOMS TO THE SCRIPT DATA FILE
+            do idjw=1,khy
+               if (ihy(idjw) .eq. 1) then
+                write(cline,'(a,a,a,a,a,a )') 
+     2          cbonda(idjw)
+                j = index(cline,')')
+                write(cline(j:),'(a)') ,',x''s)'
+                call xcrems( cline, cline, nch)
+                write(ncque,'(a)') cline(1:nch)
+               endif
+            END DO
             WRITE(NCPU,'(A)') 'REM       H ON O-HETRO ATOM'
             UEQUIV = UEQUIV * 1.25
             CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.82)
