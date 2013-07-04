@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.108  2013/07/03 09:27:15  rich
+C Comment nmax (unused).
+C
 C Revision 1.107  2013/05/24 09:47:05  djw
 C Modify sigma vs resolution graph (Tabbed Initial) to use rightaxes for the average(I)/sigma(I) - may be easier to understand.
 C
@@ -1004,7 +1007,7 @@ C
      6 '1/[P(1) + FO + P(2)*FO^2^ + . . + P(NP)*FO^NP^]' ,
      7 '(Data with the key SQRTW in list 6)' ,
      8 '1/(Data with the key SIGMA(/FO/) in list 6)' ,
-     9 '1.0 or 1./2F' ,
+     9 '1.0 or 1./4Fsq' ,
      + '1.0/[A[0]*T[0]''(X)+A[1]*T[1]''(X) ... +A[NP-1]*T[NP-1]''(X)]',
      1 '[SIN(theta)/lambda]^P(1)^' ,
      2 '[weight] * exp[8*(p(1)/p(2))*(pi*s)^2^]' ,
