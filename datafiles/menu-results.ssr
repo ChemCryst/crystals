@@ -19,12 +19,14 @@
 ^^WI               ENABLEIF='L1 L2 L5' DISABLEIF='IN'                           
 ^^WI   ITEM AWEB 'Checkcif on the &web'                                         
 ^^WI '$ http://checkcif.iucr.org'                                                
-^^WI   ITEM CWEB 'Alternative(1) Checkcif including fcf'
+^^WI   ITEM EWEB 'Alternative(1) &Checkcif for Acta'                                        
+^^WI '$ http://journals.iucr.org/services/cif/checking/checkform.html'
+^^WI   ITEM CWEB 'Alternative(2) Checkcif including fcf'
 ^^WI '$ http://journals.iucr.org/services/cif/checking/checkcifhkl.html'                                                
-^^WI   ITEM FWEB 'Alternative(2) Full &Checkcif on the web'                                        
-^^WI '$ http://journals.iucr.org/services/cif/checking/checkfull.html'
-^^WI   ITEM DWEB 'Alternative(3) &Checkcif on the web'                                        
-^^WI '$ http://journals.iucr.org/services/cif/checking/checkbasic.html'                                                
+^^WI   ITEM DWEB 'Alternative(3) Basic Checkcif on the web'                                        
+^^WI '$ http://journals.iucr.org/services/cif/checking/checkbasic.html'
+^^WI   ITEM FWEB 'Alternative(4) Full Checkcif on the web'                                        
+^^WI '$ http://journals.iucr.org/services/cif/checking/checkfull.html'                                                
 ^^WI     ITEM P '&Checkcif in platon' '#SCRIPT PLATONC' DISABLEIF='IN'          
 ^^WI     ITEM HLPB 'PLATON Help'                                                         
 ^^WI     '#SPAWN CRYSDIR:manual/analyse/platon.html' DISABLEIF='IN'             
@@ -40,4 +42,5 @@
 ^^WI        '$"crysdir:manual/analyse/analysis.html"'                  
 ^^WI  ENDMENU                                                                   
 %%SSR END
+
 
