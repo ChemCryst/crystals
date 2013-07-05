@@ -2067,7 +2067,7 @@ ELEMENTS
          3    2    2    
     .TYPE               0   -1    1    0    0
     .RADIUS             0    0    1    0    0 0.0
-    .MAXBONDS           0    0    1    0    0 0.0
+    .MAXBONDS           0    0    1    0    0 12.0
    4.PAIR               5  -12    0    0    5  -12  103    9   40
          1    1    1    1    1    1    0    0    0    0
 PAIRS OF ELEMENTS
@@ -4144,7 +4144,7 @@ BONDING            6    0
          3    2    2    
     .TYPE              21    0    1    0    0 0
     .RADIUS            22    0    1    0    0 0.0
-    .MAXBONDS          23    0    1    0    0 0.0
+    .MAXBONDS          23    0    1    0    0 12.0
    3.PAIR               5 9999    0    0
          3    3    2    2    2
     .TYPE1             21    0    1    0    0 0
