@@ -409,7 +409,7 @@ _refine_ls_matrix_type            full
 _refine_ls_hydrogen_treatment     noref          #undef, noref, refall,
                                                  # refxyz, refU, constr or mixed
  
-# WARNING. The IUCr will not accept pure Unit Weights for F-squared refinements 
+# WARNING. The IUCr will not accept Unit Weights 
 _refine_ls_weighting_scheme       calc 
 _refine_ls_weighting_details 
 ;
