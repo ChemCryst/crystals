@@ -188,6 +188,7 @@
 %      END IF                                                                   
 %   END IF                                                                      
 % END LOOP                                                                      
+% GET NOSTORE NOPROMPT TEXT NULLSTRING ' '             
 % IF LFIRST .EQ. FALSE THEN                                                     
 %     COPY 'END'                                                                
 % END IF                                                                        
