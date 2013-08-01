@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.30  2013/06/21 13:07:03  djw
+C Modify output format limits in hkl file to conserve accuracy but avoid overflow
+C
 C Revision 1.29  2013/06/14 14:01:45  djw
 C For compatibility between Markus's code and SHELX convnetion, set  PART to zero if the group is unset (i.e. '.' or 0)
 C
@@ -896,17 +899,17 @@ c          igroup(nsite)=iasmbly * 1000
           igroup(nsite)=0
        else
         if(nint(adjw).eq.0) then
-c      if the group is zero (i.e. '.'), zero the assembly for 
-c       compatibility with SHELX
+c        if the group is zero (i.e. '.'), zero the assembly for 
+c        compatibility with SHELX
          igroup(nsite) = 0
         else
          igroup(nsite) = nint(adjw)
-         igroup(nsite)=sign(abs(igroup(nsite))
-     1   +iasmbly*1000,igroup(nsite))
         endif
        end if
-
-
+       igsign = sign(1,igroup(nsite))
+       igroup(nsite)=
+     1 (abs(igroup(nsite))+iasmbly*1000)*float(igsign)
+c
 C........Check if there are more atoms in the loop to get.
       if(loop_) goto 240
 241   continue
@@ -1181,7 +1184,7 @@ c #LIST 5
      *            (uij(i,j), j=2,6)  
           endif
           if ( igroup(i) .ne. 0 ) then
-            write(NOUTF,'(a,f11.6)') 'CON PART=', float(igroup(i))
+            write(NOUTF,'(a,i11)') 'CON PART=', igroup(i)
           end if
         end do
         write(NOUTF,'(a)') 'END'
