@@ -1011,7 +1011,7 @@ Lists marked * cannot be directly input by the User
 #     5    The model parameters (section #RLIST05#)
 #     6    Reflection data (section #RLIST06#)
 #     7    Reflection data not used for refinement (section #RLIST07#)
-#     9*   ESDs of model parameters (section #RESD#)
+#     9*   ESDs of model parameters (section #RLIST9#)
 #    10    Peak coordinates from Fourier (section #RLIST10#)
 #    11    Least squares matrix (section #RLIST11#)
 #    12    Refinement directives (section #RLIST12#)
@@ -9114,7 +9114,7 @@ default value is 4.0
  inversion. The default value is 0.0.
 #KFILTER#
  The inverse of eigen values below this threshold are set to 0.0 rather than
- 1./value. It filters out latent singularities. The default is 0.0
+ 1./value. It filters out latent singularities. The default is 0.00005
 #KDISCRIMINATOR#
  If the ratio of two adjacent eigenvalues in a ranked listing exceeds this
  value, the inverse of the smaller and all subsequent eigen values is set
