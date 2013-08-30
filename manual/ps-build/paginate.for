@@ -26,7 +26,7 @@ c----- count the file numbers
       WRITE (IUNIT6, '(A)') 'Please input the name of the output file'
       READ (IUNIT5, '(20A)') PFILE
       iplen = index (pfile, ' ')
-      OPEN (UNIT = IUNIT2, FILE = PFILE(1:iplen-1)//'.pst', 
+      OPEN (UNIT = IUNIT2, FILE = PFILE(1:iplen-1)//'.ps', 
      1 STATUS = 'UNKNOWN')
       OPEN (UNIT = IUNIT3, FILE = 'INDEX.TMP', STATUS = 'UNKNOWN')
 C NOW START TO READ THE FILE
@@ -196,7 +196,7 @@ c      write (chapn(1:1),'(i1)') ichapn
 c      else
       write (chapn(1:2),'(i2.2)') ichapn
 c      endif
-      write(cfile,'(a)') pfile(1:iplen-1)//chapn//'.pst'
+      write(cfile,'(a)') pfile(1:iplen-1)//chapn//'.ps'
       write(*,*)  cfile
       ichapn = ichapn + 1
       INQUIRE(IUNIT7, OPENED=LOPEN)
@@ -229,7 +229,9 @@ CODE FOR XTITLE
       SUBROUTINE XTITLE
       INCLUDE 'paginate.inc'
 c      CHARACTER * 8 CDATE, EDATE@
-      CHARACTER * 8 CDATE
+      dimension idate(3)
+c      CHARACTER * 8 CDATE
+      CHARACTER * 9 CDATE
       CHARACTER * 300 CL
       CHARACTER *80 CSAVE
       CSAVE = CINLIN
@@ -237,6 +239,7 @@ c      CHARACTER * 8 CDATE, EDATE@
 C -  -  -  -  -  get the date
 c      CDATE = EDATE@()
       CDATE = ' '
+      call date(cdate)
 C The title will be found after (2:2) and up to the # symbol.
       DO 50 I = 80, 3,  - 1
            IF (CINLIN(I:I).NE.' ') GO TO 100
@@ -250,8 +253,8 @@ C The title will be found after (2:2) and up to the # symbol.
                 CINLIN(J:J) = CINLIN(I:I)
 150        CONTINUE
            K = K + 15
-           CINLIN(3:10) = CDATE
-           CINLIN(11:17) = ' '
+           CINLIN(3:11) = CDATE
+           CINLIN(12:17) = ' '
       ENDIF
 C NOW WRITE OUT THE COMMANDS
 C CHECK FOR SPECIAL CHARACTERS
