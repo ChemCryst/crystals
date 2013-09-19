@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2011/05/13 11:16:51  djw
+C Calls to Kallow now return a key to the test which failed and a value to indicate if it was Max or Min. The argument of KALLOW must be a variable
+C
 C Revision 1.11  2008/04/29 15:31:30  djw
 C Correct some captions
 C
@@ -1820,7 +1823,8 @@ C
       WRITE(LP,1040)
 1040  FORMAT(/,' Coefficient shifts')
       WRITE(LP,1050)(ATB(I),I=1,NSHAPE)
-1050  FORMAT(1X,10F8.5)
+cRIC13:1050  FORMAT(1X,10F8.5)
+1050  FORMAT(8(1X,G9.2))
 C
 C Apply shifts to original defining variables
       DO 90 J=1,NSHAPE

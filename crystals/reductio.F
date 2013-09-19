@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.53  2012/10/25 11:19:45  djw
+C Only write histogram summary statistics for LIST 6 (not 7)
+C
 C Revision 1.52  2012/08/09 11:04:09  djw
 C A few more bins for the Histogram plotting
 C
@@ -1887,13 +1890,20 @@ C--WORK26 = 22 = SIGMA AVERAGE
 C--WORK27 = 23 = SIGMA W AV SQ
       WORK(27)=WORK(27)+WORK(5)*WORK(5)*STORE(KREF-1)
 C----- COMPUTE TOTALS FOR PARTIAL RINT
-      IF (STORE(JFO) .GE. 10. * STORE(JREF+12)) THEN
+C - Scale up to six digit integers before compare for robustness of binning.
+      IF (NINT(100000.*STORE(JFO)) .GE.
+     1    NINT(1000000.*STORE(JREF+12)))THEN
             IRINT = 1
-      ELSE IF (STORE(JFO) .GE. 2. * STORE(JREF+12)) THEN
+      ELSE IF (NINT(100000.*STORE(JFO)) .GE.
+     1         NINT(200000.*STORE(JREF+12))) THEN
             IRINT = 2
       ELSE
             IRINT = 3
       ENDIF
+c      WRITE(NCWU,'(I1,3(1X,F15.9))') IRINT, STORE(JFO), STORE(JREF+12),
+c     1  10. * STORE(JREF+12)
+c      WRITE(NCWU,'(I1,3(1X,Z0))') IRINT, STORE(JFO), STORE(JREF+12),
+c     1  10. * STORE(JREF+12)
       RINT(IRINT) = RINT(IRINT) + STORE(JFO)
       RINT(IRINT+3) = RINT(IRINT+3) + ABS(WORK(7))
 C----- COMPUTE TOTALS FOR FINER GRAINED RINT

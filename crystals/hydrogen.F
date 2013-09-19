@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.40  2011/04/18 11:26:57  rich
+C Reinstate ctemp
+C
 C Revision 1.39  2011/04/08 12:54:35  djw
 C Just add a few comments
 C
@@ -2975,7 +2978,8 @@ C--PRINT THE RESULT
 cdjwsep08
       JTEMP=JT+7
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)(STORE(I),I=JT,JTEMP)
-1000  FORMAT(11X,A4,F10.1,F11.5,F10.0,4F10.5)
+cRIC13:1000  FORMAT(11X,A4,F10.1,F11.5,F10.0,4F10.5)
+1000  FORMAT(11X,A4,F10.1,F11.5,F10.0,4F10.4)
       JT=JT+MD5
 C--UPDATE THE REMAINING POINTERS
       JS=JS+1

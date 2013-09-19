@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2012/11/09 15:05:00  rich
+C *** empty log message ***
+C
 C Revision 1.22  2012/08/29 09:53:57  djw
 C New format for listing Derivatives
 C Values of Uij taken directly from input rather than be computed from derived parameters
@@ -2868,8 +2871,10 @@ C--DERIVATIVES FOUND  -  CHECK IF THEY ARE TO BE PRINTED
       WRITE(NCWU,2150)ISTORE(L22PD),STORE(L22PD+1),STORE(L22PD+2),
      2 STORE(L22PD+3),(ISTORE(I),STORE(I+1),I=J,K,MD22PD)
       ENDIF
-2150  FORMAT(16H Derivative(s) :/I10,/,3(10X,E20.10)/
-     2 (4(I10,E20.10)))
+cRIC13:2150  FORMAT(16H Derivative(s) :/I10,/,3(10X,E20.10)/
+cRIC13:     2 (4(I10,E20.10)))
+2150  FORMAT(16H Derivative(s) :/I10,/,3(10X,E20.4)/
+     2 (4(I10,E20.4)))
 C--OUTPUT THE QUEUE TO THE DISC
 2200  CONTINUE
       CALL XUPF(M22PD, ISTORE(L22PD), N22PD)

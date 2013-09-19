@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2012/09/17 12:24:53  rich
+C DPROD subroutine name clashes with intrinsic function. Renamed DVPROD.
+C
 C Revision 1.8  2012/03/23 13:53:43  rich
 C Get atom details for second atom.
 C
@@ -358,7 +361,7 @@ C
       JDJW = IOUT
       DO 1700 KDJW = 1,NWP
          WRITE (NCWU,'(/)')
-         WRITE (NCWU,'(9G12.4)') (STORE(IDJW),IDJW = JDJW,JDJW+NWP-1)
+         WRITE (NCWU,'(9G12.3)') (STORE(IDJW),IDJW = JDJW,JDJW+NWP-1)
          JDJW = JDJW+NWP
 1700  CONTINUE
 c

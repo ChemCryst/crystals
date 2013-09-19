@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.38  2012/09/17 12:24:53  rich
+C DPROD subroutine name clashes with intrinsic function. Renamed DVPROD.
+C
 C Revision 1.37  2012/03/16 15:51:42  rich
 C Bugfix.
 C
@@ -2961,7 +2964,7 @@ C--PRINT THE RESULTS
       IF (ISSPRT .EQ. 0)
      1 WRITE(NCWU,1500)STORE(M5),STORE(M5+1),(APD(J),J=1,3),
      2 STORE(M5+13), CFOUND(1:N)
-1500  FORMAT ( 1X,A4,F8.0,1X,3F10.5,1X,F10.1,2X,A )
+1500  FORMAT ( 1X,A4,F8.0,1X,3F10.4,1X,F10.1,2X,A )
       IF (IPKMON .GT. 0) THEN
       WRITE ( CMON ,1501)STORE(M5),STORE(M5+1),STORE(M5+13),
      1 (APD(J),J=1,3), CFOUND(1:N)

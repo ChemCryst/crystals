@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2012/07/12 08:42:23  rich
+C Allow FoSq-FcSq-Patterson maps.
+C
 C Revision 1.24  2011/03/21 13:57:22  rich
 C Update files to work with gfortran compiler.
 C
@@ -163,7 +166,7 @@ C--SET UP A FEW CONSTANTS FOR THE MAP
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1350)W
       ENDIF
-1350  FORMAT(///,' Scale factor',E20.10)
+1350  FORMAT(///,' Scale factor',E20.3)
 C--CHECK THAT THERE ARE SOME REFLECTIONS
       IF(ND)1400,1400,1500
 1400  CONTINUE

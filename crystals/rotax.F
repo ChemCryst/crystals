@@ -227,7 +227,7 @@ C -- PRINT THE R VALUE ETC.
      1                    (NINT(STORE(MSORT+IXAP)),     IXAP=0,2),
      3 (                        STORE(MSORT+IXAP) ,     IXAP=3,6)
         CALL XPRVDU(NCVDU, 1,0)
-        WRITE ( NCWU , '(3I4,F11.3,1X,3(F11.1,1X))' ) 
+        WRITE ( NCWU , '(3I4,F11.2,1X,3(F11.1,1X))' ) 
      1                    (NINT(STORE(MSORT+IXAP)),     IXAP=0,2),
      3 (                        STORE(MSORT+IXAP) ,     IXAP=3,6)
         DISAG(1,HK)=STORE(MSORT)

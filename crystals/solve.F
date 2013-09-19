@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.54  2013/06/13 11:04:20  djw
+C remove an historical debugging print to the punch file
+C
 C Revision 1.53  2012/10/25 13:32:10  djw
 C Change format and add text to output from each cycle to help clarify why refinement is terminating.
 C
@@ -827,7 +830,8 @@ c save sum of squares
       IF (ISSPRT .EQ. 0) WRITE(NCWU,3550) F, nint(store(l11p+23))
 c
 3550  FORMAT(/ 
-     1 '   Sum of the squares of the ratio (Shift/e.s.d.) =',F16.4,
+cRIC13:     1 '   Sum of the squares of the ratio (Shift/e.s.d.) =',F16.4,
+     1 '   Sum of the squares of the ratio (Shift/e.s.d.) =',F16.0,
      2  / 48x, 'for ',6x,  I5,' parameters')
 C
 C----- TIDY UP PARAMETER NAME
@@ -842,11 +846,14 @@ C----- STORE MAXIMUM SHIFT/ESD
 CDJW0202      STORE(M33V+3) = ABS(SMAX)
 
       IF (ISSPRT .EQ. 0) WRITE( NCWU,3556) RMSS,absfm 
-3556  FORMAT(29X,'    The rms (shift/su)  =', F16.7/
-     1 29x,      ' The mean abs(shift/su) =', F16.7)
+CRIC13:3556  FORMAT(29X,'    The rms (shift/su)  =', F16.7/
+CRIC13:     1 29x,      ' The mean abs(shift/su) =', F16.7)
+3556  FORMAT(29X,'    The rms (shift/su)  =', F16.3/
+     1 29x,      ' The mean abs(shift/su) =', F16.3)
 
       IF (ISSPRT .EQ. 0) WRITE(NCWU,3557) SMAX, JSAVE, CSAVE(1:LENNAM)
-3557  FORMAT(' The largest (shift/esd) =',F10.6,
+CRIC13:3557  FORMAT(' The largest (shift/esd) =',F10.6,
+3557  FORMAT(' The largest (shift/esd) =',F10.2,
      1 ', for Parameter ', I4,', ', A/)
 
 
@@ -920,7 +927,7 @@ C--CHECK THE CONDITIONS THAT MUST BE MET BY ALL CYCLES
       DO 4050 I=1,JF
 C--CHECK THE MINIMUM VALUE
       IF ( ISSPRT.EQ. 0)
-     1  write(ncwu,'(a,a,3g15.3e2)') 'All cycle   ',clst23(i),
+     1  write(ncwu,'(a,a,3g15.2e2)') 'All cycle   ',clst23(i),
      1  store(m23ac),store(je+1),store(m23ac+1)
       if (store(je+1) .lt. store(m23ac)) goto 4300
 C--CHECK THE MAXIMUM VALUE
@@ -943,7 +950,7 @@ C--LOOP OVER EACH
       DO 4250 J = 1, JF
       A=STORE(JH+1)-STORE(JE+1)
       IF ( ISSPRT .EQ. 0 ) 
-     1  write(ncwu,'(a,a,3g15.3e2)') 'Inter cycle ',clst23(j),
+     1  write(ncwu,'(a,a,3g15.2e2)') 'Inter cycle ',clst23(j),
      1  store(m23ic),a,store(m23ic+1)
 C--CHECK THE MIMIMUM
       if (a .lt. store(m23ic)) goto 4300
@@ -1025,7 +1032,8 @@ C
 4450  FORMAT( ' Statistics for',I6,' least squares parameters,',
      1 ' with',I6,' degrees of freedom',
      3 /' Number of observations',3I18,
-     4 /' Minimisation function',E23.7,2E18.7
+cRIC13:     4 /' Minimisation function',E23.7,2E18.7
+     4 /' Minimisation function',E23.3,2E18.3
      5 /' Hamilton weighted R-value',F16.3,2F18.3)
 C
       IF ( K .GT. 0 ) THEN   ! Only useful if there are restraints.
@@ -1172,19 +1180,24 @@ c
       WRITE(NCWU,4651)STORE(JC+2),(STORE(I+2),I=JE,JC+13*MW,MW),
      2 (A1(I),I=1,3),
      3 STORE(JC+3),(STORE(I+3),I=JE,JC+13*MW,MW),(A1(I),I=4,6)
-4651  FORMAT(' Mean      ',12F9.5
-     5 /           38X,3F9.5
-     6 //' R.M.S.    ',12F9.5
-     7 /           38X,3F9.5)
+cRIC13:4651  FORMAT(' Mean      ',12F9.5
+4651  FORMAT(' Mean      ',F9.2,11F9.4
+     5 /           38X,3F9.4
+cRIC13:     6 //' R.M.S.    ',12F9.5
+     6 //' R.M.S.    ',F9.2,11F9.4
+     7 /           38X,3F9.4)
 c
       WRITE(NCWU,4653) STORE(JC+6),(STORE(I+6),I=JE,JC+13*MW,MW)
-4653  FORMAT(/' RMS sh/esd',12F9.5,
-     1 /           38X,3F9.5)
+cRIC13:4653  FORMAT(/' RMS sh/esd',12F9.5,
+cRIC13@     1 /           38X,3F9.5)
+4653  FORMAT(/' RMS sh/esd',12F9.2,
+     1 /           38X,3F9.3)
 c
       WRITE(NCWU,4660) STORE(JC+5),(STORE(I+5),I=JE,JC+13*MW,MW),
      1 (B1(I),I=1,3)
-4660  FORMAT(/' Maximum   ',12F9.5,
-     1 /           38X,3F9.5)
+cRIC13:4660  FORMAT(/' Maximum   ',12F9.5,
+4660  FORMAT(/' Maximum   ',F9.2,11F9.4,
+     1 /           38X,3F9.4)
       ENDIF
 C--CHECK IF WE MUST PRINT THE SIGN CHANGE INFORMATION
       IF(M24)4800,4800,4700
@@ -2092,7 +2105,7 @@ c  polarity and Flack
             case(26)
 c  Extinction
 c aug07
-      write(ncwu,'(4f10.5)')bdjw,cdjw,djwsin,a
+cric      write(ncwu,'(4f10.5)')bdjw,cdjw,djwsin,a
              if (cdjw .ge. zero) then
               if (bdjw .ge. 0.2*cdjw) then
                   store(jo)=djwsin*0.2*cdjw
@@ -2131,7 +2144,8 @@ C--PRINT FOR OVERALL PARAMETERS
       WRITE(CTEXT,'(2A4,I1)') (KVP(JRR,JS),JRR=1,2)
        WRITE(NCWU,2750)FLAG,JT,JX,STORE(JO),C,A,S,(KVP(JRR,JS),JRR=1,2)
       ENDIF
-2750  FORMAT(1X,A6,I5,I12,F18.5,F13.2,F13.5,F14.5,26X,2A4,I3)
+CRIC13:2750  FORMAT(1X,A6,I5,I12,F18.5,F13.2,F13.5,F14.5,26X,2A4,I3)
+2750  FORMAT(1X,A6,I5,I12,F18.3,E13.1,E13.3,F14.2,26X,2A4,I3)
       GOTO 3300
 C
 C--CHECK IF THIS A SCALE OR GENERAL PARAMETER
@@ -2172,7 +2186,8 @@ C-C-C-DISTINCTION BETWEEN ANISO'S AND ISO/SPECIAL'S FOR PRINT
 C             WRITE(NCWU,3050)FLAG,JT,JX,STORE(JO),C,A,S,STORE(M5),
 C     2       STORE(M5+1),(ICOORD(JRR,JS),JRR=1,NWKA)
             ENDIF
-3050  FORMAT(1X,A6,I5,I12,F18.5,F13.2,F13.5,F14.5,8X,A4,I4,1X,3A4)
+cRIC13:3050  FORMAT(1X,A6,I5,I12,F18.5,F13.2,F13.5,F14.4,8X,A4,I4,1X,3A4)
+3050  FORMAT(1X,A6,I5,I12,F18.4,E13.1,E13.3,F14.2,8X,A4,I4,1X,3A4)
       ELSE IF (IHIT .GE. 2) THEN
             IF ((ISSPRT .EQ. 0) .AND. (IPRINT .EQ. 1)) WRITE(NCWU,3051)
             IF (ITYPE .EQ. 1) WRITE(NCWU,3091)
@@ -2515,7 +2530,8 @@ C<DJWSEP96
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1500)(STORE(I),I=L5O,J)
       ENDIF
-1500  FORMAT(2X,5F9.5,E15.5,3X,6F9.5)
+cRIC13:1500  FORMAT(2X,5F9.5,E15.5,3X,6F9.5)
+1500  FORMAT(2X,5F9.3,E15.4,3X,6F9.4)
 C--CHECK IF ALL THE INFORMATION IS TO BE PRINTED
       IF(IPRINT)1700,1550,1700
 C--PRINT THE E.S.D.'S AND SHIFTS
@@ -2541,7 +2557,8 @@ c
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1650)B
       ENDIF
-1650  FORMAT(/,' Correction to isotropic temperature factor = ',F9.5)
+cRIC13:1650  FORMAT(/,' Correction to isotropic temperature factor = ',F9.5)
+1650  FORMAT(/,' Correction to isotropic temperature factor = ',F9.4)
       GOTO 1900
 1700  CONTINUE
 C--CHECK ON THE OVERALL TEMPERATURE FACTOR
@@ -2676,7 +2693,7 @@ C       MD5A=M5+6
 C       N5A=5
         N5A=6
         IF (ISSPRT .EQ. 0) WRITE(NCWU,2400)(STORE(J),J=M5,MD5A)
-2400    FORMAT(/5X,A4,F9.0,1X,11F9.5)
+2400    FORMAT(/5X,A4,F9.0,1X,11F9.4)
 C--CHECK IF THE E.S.D.'S ETC. ARE TO BE PRINTED
         IF(IPRINT)2850,2450,2850
 C--PRINT THE SHIFTS AND E.S.D.'S
@@ -2686,7 +2703,7 @@ C         WRITE(NCWU,2500)(APD(J),J=1,N5A)
           WRITE(NCWU,2500)(APD(1)),(APD(J),J=3,N5A)
 C        ENDIF
 C2500   FORMAT(19X,11F9.5)
-2500    FORMAT(19X,F9.5,9X,9F9.5)
+2500    FORMAT(19X,F9.4,9X,9F9.4)
 C        IF (ISSPRT .EQ. 0) THEN
 C         WRITE(NCWU,2500)(BPD(J),J=1,N5A)
           WRITE(NCWU,2500)(BPD(1)),(BPD(J),J=3,N5A)
@@ -2697,7 +2714,7 @@ C-C-C-SPHERE- PRINT
         MD5A=M5+8
         N5A=7
         IF (ISSPRT .EQ. 0) WRITE(NCWU,2515)(STORE(J),J=M5,MD5A)
-2515    FORMAT(/5X,A4,F9.0,1X,11F9.5)
+2515    FORMAT(/5X,A4,F9.0,1X,11F9.4)
 C--CHECK IF THE E.S.D.'S ETC. ARE TO BE PRINTED
         IF(IPRINT)2850,2520,2850
 C--PRINT THE SHIFTS AND E.S.D.'S
@@ -2705,7 +2722,7 @@ C--PRINT THE SHIFTS AND E.S.D.'S
         IF (ISSPRT .EQ. 0) THEN
             WRITE(NCWU,2525)(APD(1)),(APD(J),J=3,N5A)
             WRITE(NCWU,2525)(BPD(1)),(BPD(J),J=3,N5A)
-2525    FORMAT(19X,F9.5,9X,9F9.5)
+2525    FORMAT(19X,F9.4,9X,9F9.4)
         END IF
         GOTO 2750
 C-C-C-LINE/RING- PRINT
@@ -2713,7 +2730,7 @@ C-C-C-LINE/RING- PRINT
         MD5A=M5+10
         N5A=9
         IF (ISSPRT .EQ. 0) WRITE(NCWU,2535)(STORE(J),J=M5,MD5A) 
-2535    FORMAT(/5X,A4,F9.0,1X,11F9.5)
+2535    FORMAT(/5X,A4,F9.0,1X,11F9.4)
 C--CHECK IF THE E.S.D.'S ETC. ARE TO BE PRINTED
         IF(IPRINT)2850,2540,2850
 C--PRINT THE SHIFTS AND E.S.D.'S
@@ -2721,7 +2738,7 @@ C--PRINT THE SHIFTS AND E.S.D.'S
         IF (ISSPRT .EQ. 0) THEN 
             WRITE(NCWU,2545)(APD(1)),(APD(J),J=3,N5A)
             WRITE(NCWU,2545)(BPD(1)),(BPD(J),J=3,N5A)
-2545    FORMAT(19X,F9.5,9X,9F9.5)
+2545    FORMAT(19X,F9.4,9X,9F9.4)
         END IF
         GOTO 2750
 C--ANISO- PRINT
@@ -2734,8 +2751,8 @@ CDJW0102      MD5A=M5+13
 C         WRITE(NCWU,2600)(STORE(J),J=M5,MD5A),(STORE(J+2),J=MD5A,N5A)
           WRITE(NCWU,2600)(STORE(J),J=M5,MD5A)
         ENDIF
-C2600   FORMAT(/5X,A4,F9.0,1X,F9.5,9X,10F9.5)
-2600    FORMAT(/5X,A4,F9.0,1X,11F9.5)
+C2600   FORMAT(/5X,A4,F9.0,1X,F9.4,9X,10F9.4)
+2600    FORMAT(/5X,A4,F9.0,1X,11F9.4)
 C--CHECK IF THE E.S.D.'S ARE TO BE PRINTED
         IF(IPRINT)2850,2650,2850
 2650    CONTINUE
@@ -2749,7 +2766,7 @@ C-C-C-NKA IS 22 NOW INSTEAD OF 20
 CDJW0102      WRITE(NCWU,2700)APD(1),(APD(J-2),J=5,NKA-6)
          WRITE(NCWU,2700)APD(1),(APD(J),J=3,NKAV)
         ENDIF
-2700    FORMAT(19X,F9.5,9X,10F9.5)
+2700    FORMAT(19X,F9.4,9X,10F9.4)
         IF (ISSPRT .EQ. 0) THEN
 C         WRITE(NCWU,2700)BPD(1),(BPD(J-2),J=5,NKA)
 C         WRITE(NCWU,2700)BPD(1),(BPD(J-2),J=5,NKA-4)
@@ -2767,7 +2784,7 @@ CAPR07
          NESDC=NESDC+3
         ENDIF
         IF (ISSPRT .EQ. 0) WRITE(NCWU,2800)(BPD(J),J=3,5)
-2800    FORMAT(37X,3F9.5)
+2800    FORMAT(37X,3F9.4)
 C--UPDATE FOR THE NEXT ATOM
 2850    CONTINUE
         M12=ISTORE(M12)
@@ -2837,13 +2854,13 @@ C
      1 'Extinction'/
       A=SIGN(1.,UPDATE)
       if (js2 .le. 13 ) then
-        WRITE ( CMON,'(A, A4,I4,1x,A6,3(2x,a,F10.5))') 
+        WRITE ( CMON,'(A, A4,I4,1x,A6,3(2x,a,F10.4))') 
      1 'Resetting shift for ',
      2  idjw,NINT(SERIAL),ctype(js2-2),'Shift= ', A*OLD, 'Esd= ',esd,
      3  'New shift= ',UPDATE
       else
 c        Overall parameters
-        WRITE ( CMON,'(A, A,3(2x,a,F10.5))') 
+        WRITE ( CMON,'(A, A,3(2x,a,F10.2))') 
      1  'Resetting shift for ',covera(js2-20),
      1  'Shift= ', A*OLD, 'Esd= ',esd,
      2  'New shift= ',UPDATE
@@ -2955,7 +2972,8 @@ C--PRINT THE RESULTS
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1750)(STORE(I),I=M5A,NE)
       ENDIF
-1750  FORMAT(/2X,11F9.5)
+cRIC13:1750  FORMAT(/2X,11F9.5)
+1750  FORMAT(/2X,11F9.3)
 C--CHECK IF THE E.S.D.'S ETC. ARE TO BE PRINTED
       IF(IPRINT)1900,1800,1900
 C--PRINT THE SHIFTS AND E.S.D.'S
@@ -2966,7 +2984,8 @@ C--PRINT THE SHIFTS AND E.S.D.'S
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1850)(BPD(I),I=1,NC)
       ENDIF
-1850  FORMAT(2X,11F9.5)
+cRIC13:1850  FORMAT(2X,11F9.5)
+1850  FORMAT(2X,11F9.3)
 C--UPDATE FOR THE NEXT ROW
 1900  CONTINUE
       MD5A=MD5A-NC

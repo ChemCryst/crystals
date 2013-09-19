@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.73  2013/05/24 13:24:59  djw
+C Increase number of decimal places in Fo afreement analysis so that weak bins can be identified in weak data
+C
 C Revision 1.72  2012/06/07 11:59:32  djw
 C Add note about possible causes of P(2) being large (Twinning)
 C
@@ -590,7 +593,7 @@ C
              END DO
              SXA = SXA + (REAL(KBESA)*SXAG)
              SXB = SXB + (REAL(KBESB)*SXBG)
-             WRITE(CMON,'(/A,2F10.4,A)')' Best fit this cycle: ',
+             WRITE(CMON,'(/A,2F10.3,A)')' Best fit this cycle: ',
      1       SXA,SXB, ' .0 .0 .0 .333'
              CALL XPRVDU(NCVDU,2,0)
              IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1),cmon(2)
@@ -618,7 +621,7 @@ C
 
              SGOF = SQRT(MAX(.001,WDTO / (REAL (N6ACC) - RPARS )))
              WDTO = WDTO / REAL ( N6ACC )
-             WRITE ( CMON, '(2(A,F10.4),/)')
+             WRITE ( CMON, '(2(A,F10.3),/)')
      1        '           <wdelsq> : ', WDTO,
      2        '          S : ', SGOF
              CALL XPRVDU(NCVDU,2,0)
@@ -1263,7 +1266,7 @@ C-- RESTORE 'E' (AS F!)
               D=DD/C                  ! NOT SINGULAR  -  COMPUTE THE RATIO
             END IF
             IF (ISSPRT .EQ. 0) WRITE(NCWU,6000)L,DD,C,D
-6000        FORMAT(I4,2F20.5,F10.2)
+6000        FORMAT(I4,2F20.2,F10.2)
             NQ=NQ+1
             NP=NP+MD4-L+1
           END DO        !END PRINT RES
@@ -2112,7 +2115,7 @@ C----- THE AXIS NAMES
       DATA CH /'h','k','l'/
 C--FORMAT WHEN THERE ARE SOME REFLECTIONS
       DATA CFY /6*'    ','I9,F','13.2',',F12',
-     2'.1,2','E16.','4,F9','.2,F','8.2,','5X,1','3A1)'/
+     2'.1,2','E16.','3,F9','.2,F','8.2,','5X,1','3A1)'/
 C--FORMAT WHEN THERE ARE NO REFLECTIONS
       DATA CFN/6*'    ','I9, ','85X,','A1) ',7*'    '/
 C--FORMAT FOR THE LAYER SCALING ENTRIES

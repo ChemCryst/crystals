@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.82  2013/05/10 14:07:52  djw
+C Remove code sorting and saving enentiomer sensitive reflections.  This is now all handled in the Analyse Absolute
+C structure script.  Although computation is not changed, there are tiny effects in the nth decimal place
+C
 C Revision 1.81  2012/08/24 16:19:32  djw
 C Lowest value of Umin was incorrectly initialised. No effect on test decks
 C
@@ -1240,7 +1244,8 @@ cdjwsep09
         if(issprt.eq.0) write(ncwu, '(a)') cmon(1)(:),cmon(2)(:)
         call outcol(1)
         delfofc = (foav-fcav*scale)
-        write(cmon,'(a,f8.3,4x,a,f8.3)')'<Fo>-<Fc> = ', 
+cRIC13:        write(cmon,'(a,f8.3,4x,a,f8.3)')'<Fo>-<Fc> = ', 
+        write(cmon,'(a,f8.3,4x,a,f8.2)')'<Fo>-<Fc> = ', 
      1  delfofc/scale, 
      2  '100*(<Fo>-<Fc>)/<Fo> = ',100.*delfofc/foav
         call xprvdu(NCVDU,1,0)
@@ -1812,6 +1817,11 @@ C       CHECK IF THIS IS TWINNED CALCULATION
         IF(.NOT.TWINNED)THEN   ! NOT TWINNED
           NL=0
           CALL XSFLSX
+
+c          IF (IBADR .LT. 25) THEN
+c            WRITE(NCWU,'(6G15.8)') (STORE(JREF_STACK_PTR+II),II=11,16)
+c          ENDIF
+
           JREF_STACK_PTR=ISTORE(JREF_STACK_START)
           CALL XAB2FC  ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
           CALL XACRT(4)  ! ACCUMULATE THE /FO/ TOTALS
@@ -1925,7 +1935,6 @@ C--COMPUTE THE TOTALS AGAINST /FC/ FOR THIS ELEMENT
             LJV=M5ES+ISTORE(JREF_STACK_PTR+8)
             FCEXT=FCEXT
      1       +STORE(LJU)*STORE(JREF_STACK_PTR+6)*STORE(JREF_STACK_PTR+6)
-
             IF(NF.GE.0) THEN  ! CHECK IF WE MUST PRINT THIS CONTRIBUTOR
               IF(NM.GT.1)THEN  ! CHECK IF THERE IS MORE THAN ONE CONTRIBUTOR
                 IF(NQ.EQ.NM)THEN  ! CHECK IF THIS IS THE FIRST CONTRIBUTOR
@@ -2115,6 +2124,7 @@ c
      1          WRITE(NCWU,4652)STORE(M6),STORE(M6+1),
      2                          STORE(M6+2),UJ,FCEXT
 4652            FORMAT(1X,3F5.0,2F9.2)
+c        WRITE(NCWU,'(Z0,F15.6)')FCEXT,FCEXT
             ELSE IF (IBADR .EQ. 25) THEN
               IF (ISSPRT .EQ. 0) WRITE(NCWU,4653)
 4653          FORMAT(/' And so on ------------'/)
@@ -2380,7 +2390,8 @@ C Only print disagreeable reflections during calc.
 11      FORMAT(2('   h   k  l     Fo      Fc  wDel Fo/Fc','  '))
         DO MSORT = LSORT, LSORT+(NSORT-1)*MDSORT, 2*MDSORT
           WRITE ( CMON ,
-     *     '(3I4, 2F7.1, F7.2, F5.2,2X,3I4, 2F7.1, F7.2, F5.2)')
+cRIC13:     *     '(3I4, 2F7.1, F7.2, F5.2,2X,3I4, 2F7.1, F7.2, F5.2)')
+     *     '(3I4, 2F7.1, F6.1, F6.2,2X,3I4, 2F7.1, F6.1, F6.2)')
      1     ( (NINT(STORE(IXAP)), IXAP=JXAP, JXAP+2),
      2     (STORE(IXAP), IXAP= JXAP+3,JXAP+6),
      3     JXAP= MSORT, MSORT+MDSORT, MDSORT)
@@ -2395,15 +2406,18 @@ C
      2  12('*'),14X,12('*')/27X,13('*'),2X,'HERE IT IS',2X,12('*')/
      3  F7.2,F12.2,9X,12('*'),14X,12('*')/29X,3('*')/30X,3('*')//
      4  ' Sum of /FO/    Sum of /FC/    Sum of /Delta/',
-     5  '    Minimization function',//F11.1,F15.1,F16.1,34X,
+cRIC13:     5  '    Minimization function',//F11.1,F15.1,F16.1,34X,
+     5  '    Minimization function',//F11.0,F15.0,F16.0,34X,
      6  ' On scale of /FC/')
         WRITE(NCWU,5950)FOT,FCT,DFT,AMINF
-5950    FORMAT(/F11.1,F15.1,F16.1,E25.8,9X,' On scale of /FO/')
+CRIC13:5950    FORMAT(/F11.1,F15.1,F16.1,E25.8,9X,' On scale of /FO/')
+5950    FORMAT(/F11.0,F15.0,F16.0,E25.4,9X,' On scale of /FO/')
         WRITE(NCWU,6150) STORE(L5O), NT
         WRITE(NCWU,6250)JI,LJX
       ENDIF
 C
-6150  FORMAT(/,' New scale factor (G) is ',F10.5,
+CRIC13:6150  FORMAT(/,' New scale factor (G) is ',F10.5,
+6150  FORMAT(/,' New scale factor (G) is ',F10.3,
      1 ',  ',I6,' reflections used in refinement')
 6250  FORMAT(/,' Structure factor least squares calculation',I5,
      2 '  ends',I3)
@@ -3306,6 +3320,13 @@ c  st  the value of sin(theta)/lambda for the calculation
 c  l3tr and l3ti the real and imaginary components of the scattering factor
 c
       CALL XSCATT(ST)  ! CALCULATE THE FORM FACTORS
+c      WRITE(NCWU,'(A,F16.9,1x,Z0)')'ST:',ST,ST
+c      WRITE(NCWU,'(A,4(Z0,1X,F20.16,1X))')'COS consts:',C0,C0,C1,C1,
+c     1            C2,C2,C3,C3
+c      WRITE(NCWU,'(A,4(Z0,1X,F20.16,1X))')'SIN consts:',S0,S0,S1,S1,
+c     1            S2,S2,S3,S3
+
+  
 c
 c compute the ratio of imaginary to real form (scattering) factors
 c This will be a computational convenience later
@@ -3322,6 +3343,7 @@ c
       DO LJZ=1,N3
 c        STORE(M3TR)=STORE(M3TR+nint(store(m6+13))-1)*G2
 c        STORE(M3TI)=STORE(M3TI+nint(store(m6+13))-1)*G2
+c        WRITE(NCWU,'(A,F16.9,1x,Z0)')'M3TR1:',STORE(M3TR),STORE(M3TR)
         STORE(M3TR)=STORE(M3TR)*G2
         STORE(M3TI)=STORE(M3TI)*G2
         IF(STORE(M3TR).LE.ZERO)THEN  ! REAL PART IS ZERO  
@@ -3329,6 +3351,7 @@ c        STORE(M3TI)=STORE(M3TI+nint(store(m6+13))-1)*G2
         ELSE   ! REAL PART IS OKAY
           STORE(M3TI)=STORE(M3TI)/STORE(M3TR)
         END IF
+c        WRITE(NCWU,'(A,F16.9,1x,Z0)')'M3TR2:',STORE(M3TR),STORE(M3TR)
         M3TR=M3TR+MD3TR  ! UPDATE THE POINTERS
         M3TI=M3TI+MD3TI
       END DO
@@ -3376,7 +3399,11 @@ c
 c focc   formfactor * site occ * chemical occ * difabs corection
 c modify focc for other fc corrections 
 c
+
+
         FOCC = STORE(M3TR) * STORE(M5A+2) * STORE(M5A+13) 
+
+c        WRITE(NCWU,'(A,Z0,1X,F15.6)')'FOCC: ',FOCC,FOCC
 
         FLAG=STORE(M5A+3)   ! PICK UP THE TYPE OF THIS ATOM
         IF(NINT(FLAG) .EQ. 1) THEN  ! CHECK THE TEMPERAURE TYPE FOR THIS ATOM
@@ -3387,6 +3414,7 @@ c T = exp(Uiso *TC)
 c
           T=EXP(STORE(M5A+7)*TC)  
           TFOCC=T*FOCC
+c        WRITE(NCWU,'(A,Z0,1X,F15.6)')'TFOCC:',TFOCC,TFOCC
         END IF
 c
 c L2T is address of symmetry transformed index
@@ -3435,44 +3463,46 @@ C--CALCULATE THE SIN/COS TERMS   (NB This is a Chebychev approximation - v. fast
 c  dd = 1.0/twopi
 c  a = h'.x + h.t
 c
-          A=A*DD
-          A=4.*(A-FLOAT(INT(A)))
-          IF(A .EQ. 0) THEN
-            S=0.
-            C=1.
-            GOTO 8850
-          ELSE IF ( A .LT. 0 ) THEN
-            A=A+4.
-          END IF
-          S=1.
-
-          IF(A.EQ.2.)THEN
-            S=0.
-            C=-1.
-            GOTO 8850
-          ELSE IF ( A .GT. 2 ) THEN 
-            S=-1.
-            A=A-2.
-          END IF
-          C=S
-
-          IF(A.EQ.1.)THEN 
-            C=0.
-            GOTO 8850
-          ELSE IF ( A .GT. 1 ) THEN
-            C=-C
-            A=2.-A
-          END IF
-          B=A*A
+          c = cos(a)
+          s = sin(a)
+c          A=A*DD
+c          A=4.*(A-FLOAT(INT(A)))
+c          IF(A .EQ. 0) THEN
+c            S=0.
+c            C=1.
+c            GOTO 8850
+c          ELSE IF ( A .LT. 0 ) THEN
+c            A=A+4.
+c          END IF
+c          S=1.
 c
-c c = Cos(h'x+ht)
-          C=C*(C0+B*(C1+B*(C2+B*C3)))
+c          IF(A.EQ.2.)THEN
+c            S=0.
+c            C=-1.
+c            GOTO 8850
+c          ELSE IF ( A .GT. 2 ) THEN 
+c            S=-1.
+c            A=A-2.
+c          END IF
+c          C=S
 c
-c Test if  centro with no refinement  -  only cos terms needed
+c          IF(A.EQ.1.)THEN 
+c            C=0.
+c            GOTO 8850
+c          ELSE IF ( A .GT. 1 ) THEN
+c            C=-C
+c            A=2.-A
+c          END IF
+c          B=A*A
+cc
+cc c = Cos(h'x+ht)
+c          C=C*(C0+B*(C1+B*(C2+B*C3)))
+cc
+cc Test if  centro with no refinement  -  only cos terms needed
           IF(COS_ONLY) GOTO 8900
-c
+cc
 c s = Sin(h'x+ht)
-          S=S*A*(S0+B*(S1+B*(S2+B*S3)))
+c          S=S*A*(S0+B*(S1+B*(S2+B*S3)))
 c
 8850      CONTINUE
 C--CALCULATE THE B CONTRIBUTION
@@ -3483,6 +3513,10 @@ C--CALCULATE THE A CONTRIBUTION
 8900      CONTINUE
           AP=C*TFOCC
           AT=AT+AP
+c          WRITE(NCWU,'(A,Z0,1X,F15.6)')'AT:',AT,AT
+c          WRITE(NCWU,'(A,Z0,1X,F15.6)')'BT:',BT,BT
+c         WRITE(NCWU,'(A,2(1X,Z0,1X,F20.16))')'SIN:',S,S, aaas, aaas
+c         WRITE(NCWU,'(A,2(1X,Z0,1X,F20.16))')'COS:',C,C, aaac, aaac
 
 C--CHECK IF ANY REFINEMENT IS BEING DONE
           IF(ATOM_REFINE)THEN
@@ -3673,6 +3707,12 @@ C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR U[ISO]
       STORE(NI+15)=BC
       STORE(NI+16)=BCI
 
+c      WRITE(NCWU,'(A,Z0,1X,F15.6)')'AC: ',AC,AC
+c      WRITE(NCWU,'(A,Z0,1X,F15.6)')'ACI:',ACI,ACI
+c      WRITE(NCWU,'(A,Z0,1X,F15.6)')'BC: ',BC,BC
+c      WRITE(NCWU,'(A,Z0,1X,F15.6)')'BCI:',BCI,BC
+
+	  
       M2I=L2I
       LJU=ISTORE(NI+9)  ! STORE THE EQUIVALENT INDICES AND THE PHASE SHIFT
       LJV=ISTORE(NI+10)
