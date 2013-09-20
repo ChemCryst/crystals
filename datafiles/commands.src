@@ -417,7 +417,7 @@ OUTPUT DISK BUFFER, AND POINTERS TO CONTROL WRITING TO THE DISK
   11.XREFLECTIONS       0    0    0    0  -19    0 -104   13    6
          1    1    0    0    1    1    0    0    0    0
 DATA RECORD THAT CONTAINS THE REFLECTION DATA ON THE DISK
-(1H ,8E15.6/(1H ,15X,7E15.6))
+(1H ,8E15.5/(1H ,15X,7E15.5))
   12.XDATA-BLOCK        4    0    0    0    4    1  106   21    6
          1    1    1    1    1    1    0    0    0    0
 DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS
@@ -1274,7 +1274,7 @@ LIST 24            3    0
          1    1    1    1    1    1    0    0    0    0
 THE CALCULATED AND APPLIED SHIFT FACTORS
 (1H ,8(3X,12A1))
-(1H ,F10.5,7F15.5)
+(1H ,F10.3,7F15.3)
          2    2
     .CALCULATED         0    0    1    0    0 0.0
     .APPLIED            0    0    1    0    0 0.0
