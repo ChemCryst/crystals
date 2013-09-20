@@ -1453,9 +1453,9 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-    767592.        763378.          28582.                                   On scale of /FC/
+    767592.        763379.          28582.                                   On scale of /FC/
 
-    697942.        694111.          25988.               0.1360E+06          On scale of /FO/
+    697942.        694111.          25989.               0.1360E+06          On scale of /FO/
 
  New scale factor (G) is      0.909,   12575 reflections used in refinement
 
@@ -1854,10 +1854,10 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for   206 least squares parameters, with 12585 degrees of freedom
- Number of observations             12575               216             12791
+ Statistics for   206 least squares parameters, with 12584 degrees of freedom
+ Number of observations             12575               215             12790
  Minimisation function              0.136E+06         0.131E+06         0.267E+06
- Hamilton weighted R-value           4.959            15.995             6.647
+ Hamilton weighted R-value           4.959            16.079             6.650
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -1876,7 +1876,7 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
  R.M.S.         0.00   0.0000   0.0006   0.0018   0.0003   0.0005   0.0059   0.0038   0.0117   0.0051   0.0055   0.0035
                                          0.0257   0.0040   0.0097
 
- RMS sh/esd     3.48     0.00     0.47     0.46     0.54     0.44     0.74     0.66     0.75     0.56     0.45     0.42
+ RMS sh/esd     3.48     0.00     0.47     0.46     0.54     0.44     0.74     0.66     0.75     0.56     0.45     0.41
 
 
  Maximum        0.00   0.0000   0.0010   0.0078   0.0005   0.0023   0.0210   0.0088   0.0432   0.0111   0.0191   0.0119
@@ -2065,7 +2065,7 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
      C        132.    1.0000   1.0000   0.5397   0.4316   0.3541   0.0423
                       0.0000            0.0000   0.0001  -0.0002  -0.0007
                       0.0000            0.0004   0.0004   0.0003   0.0010
-                                        0.0063   0.0063   0.0061
+                                        0.0063   0.0064   0.0061
 
      C        133.    1.0000   1.0000   0.5624   0.4270   0.4219   0.0533
                       0.0000            0.0000   0.0002  -0.0002  -0.0007
@@ -2359,7 +2359,7 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
 
      H          1.    1.0000   1.0000   0.2125   0.3982   0.3752   0.0510
                       0.0000           -0.0012   0.0004  -0.0023  -0.0007
-                      0.0000            0.0084   0.0079   0.0068   0.0338
+                      0.0000            0.0084   0.0079   0.0068   0.0339
                                         0.1220   0.1238   0.1286
 
      H        116.    1.0000   1.0000   0.5136   0.4125   0.1146   0.0741
@@ -2740,9 +2740,9 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-    767592.        763378.          28582.                                   On scale of /FC/
+    767592.        763379.          28582.                                   On scale of /FC/
 
-    697942.        694111.          25988.               0.1360E+06          On scale of /FO/
+    697942.        694111.          25989.               0.1360E+06          On scale of /FO/
 
  New scale factor (G) is      0.909,   12575 reflections used in refinement
 
@@ -2787,10 +2787,10 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for     6 least squares parameters, with 12785 degrees of freedom
- Number of observations             12575               216             12791
+ Statistics for     6 least squares parameters, with 12783 degrees of freedom
+ Number of observations             12575               214             12789
  Minimisation function              0.136E+06         0.129E+06         0.265E+06
- Hamilton weighted R-value           4.959            15.995             6.626
+ Hamilton weighted R-value           4.959            16.163             6.631
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -2898,7 +2898,7 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
      F          2.    1.0000   0.0000   0.5156  -0.1467   0.2046   0.1369   0.2200   0.1491  -0.0725  -0.0769   0.0132
                       0.0000            0.0000   0.0000   0.0001   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                       0.0000            0.0001   0.0001   0.0001   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
-                                        0.0014   0.0013   0.0026
+                                        0.0015   0.0013   0.0026
 
      F          3.    1.0000   0.0000   0.6773  -0.1916   0.1590   0.1627   0.1581   0.1029  -0.0540  -0.0024  -0.0092
                       0.0000            0.0000   0.0000   0.0001   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
@@ -3375,9 +3375,9 @@ Refining   261 parameters in    1 block :    34729 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-    767592.        763378.          28582.                                   On scale of /FC/
+    767592.        763379.          28582.                                   On scale of /FC/
 
-    697942.        694111.          25988.               0.1360E+06          On scale of /FO/
+    697942.        694111.          25989.               0.1360E+06          On scale of /FO/
 
  New scale factor (G) is      0.909,   12575 reflections used in refinement
 
@@ -4677,9 +4677,9 @@ Mean C-C su =   0.0121
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-    767592.        763378.          28582.                                   On scale of /FC/
+    767592.        763379.          28582.                                   On scale of /FC/
 
-    697942.        694111.          25988.               0.1360E+06          On scale of /FO/
+    697942.        694111.          25989.               0.1360E+06          On scale of /FO/
 
  New scale factor (G) is      0.909,   12575 reflections used in refinement
 
@@ -4694,11 +4694,11 @@ SumFo/SumFc=  0.914   SumFoFc/SumFc^2=  0.913   SumwFoFc/SumwFc^2=  0.913
 LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.335    100*(<Fo>-<Fc>)/<Fo> =     0.55                                                                                                                                                                                                         
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads      11966 Physical writes      10102 Cache hits     208023
- Cache hit distribution   188941   13267    2055     484     465     375
- Cache hit distribution      196     218     223     226     160     161
- Cache hit distribution      192     102     197      93     194     137
- Cache hit distribution       55      51      48      38      91      54
+ Physical reads      11964 Physical writes      10101 Cache hits     208023
+ Cache hit distribution   188941   13268    2054     484     465     375
+ Cache hit distribution      196     219     223     225     160     161
+ Cache hit distribution      192     102     197      93     194     139
+ Cache hit distribution       53      51      47      39      91      54
 
 
           : Job ends ok       with     0 warnings and     0 errors
