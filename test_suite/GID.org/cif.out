@@ -497,7 +497,7 @@ C9 0.043(3) 0.0406 0.0305 0.0017 -0.0017 -0.0034
 C10 0.0418 0.027(3) 0.0530 -0.0045 0.0033 0.0041 
 C11 0.0388 0.0483 0.0633 -0.016(3) 0.0057 0.0079 
 
-_refine_ls_extinction_coef 616.072 
+_refine_ls_extinction_coef 616.078 
 _refine_ls_extinction_method 
     'Larson (1970), Equation 22'
 _oxford_refine_ls_scale 1.58(3) 
