@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.83  2013/09/19 21:35:39  rich
+C Change precision of listing output where not important to reduce differences across platforms.
+C Important changes - SFLS now uses builtin cos() and sin() functions rather than Chebyshev
+C approximations.
+C
 C Revision 1.82  2013/05/10 14:07:52  djw
 C Remove code sorting and saving enentiomer sensitive reflections.  This is now all handled in the Analyse Absolute
 C structure script.  Although computation is not changed, there are tiny effects in the nth decimal place
@@ -927,7 +932,7 @@ C              NRESULTS = param_list_make(istore(IRESULTS), N11, JR,
 C     1              JQ)
                NRESULTS = param_list_make(IRESULTS, JR, 
      1              JQ)
-            print *, N11, NRESULTS
+c            print *, N11, NRESULTS
 C Allocate the rest of the memory we have already used. this is horrible but there
 C isn't any other way to do it unless I create a chain(linked list)
 C               inewresult = KSTALL(NRESULT) 
@@ -1611,6 +1616,13 @@ C
       CHARACTER*15 HKLLAB
 C
 C
+      real, dimension(:,:), allocatable :: designmatrix
+      real, dimension(:,:), allocatable :: normalmatrix!, ref
+      real, dimension(:,:), allocatable :: temp, tau
+      integer, dimension(:), allocatable :: JPVT
+      real, dimension(:), allocatable :: work
+      integer designindex
+
 
       CALL CPU_TIME ( time_begin )
 
@@ -1739,6 +1751,12 @@ C--CHECK IF A PRINT IS REQUIRED
 
       NO=JO
       NP=JP
+      allocate(designmatrix(JP-JO+1,20000000/(JP-JO+1)))
+      allocate(normalmatrix(JP-JO+1,JP-JO+1))
+      !allocate(ref(JP-JO+1,JP-JO+1))
+      normalmatrix=0.0
+      !ref=0.0
+      designindex=0
 
       DO WHILE (.TRUE.)  ! START OF THE LOOP OVER REFLECTIONS
 
@@ -1817,11 +1835,6 @@ C       CHECK IF THIS IS TWINNED CALCULATION
         IF(.NOT.TWINNED)THEN   ! NOT TWINNED
           NL=0
           CALL XSFLSX
-
-c          IF (IBADR .LT. 25) THEN
-c            WRITE(NCWU,'(6G15.8)') (STORE(JREF_STACK_PTR+II),II=11,16)
-c          ENDIF
-
           JREF_STACK_PTR=ISTORE(JREF_STACK_START)
           CALL XAB2FC  ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
           CALL XACRT(4)  ! ACCUMULATE THE /FO/ TOTALS
@@ -1935,6 +1948,7 @@ C--COMPUTE THE TOTALS AGAINST /FC/ FOR THIS ELEMENT
             LJV=M5ES+ISTORE(JREF_STACK_PTR+8)
             FCEXT=FCEXT
      1       +STORE(LJU)*STORE(JREF_STACK_PTR+6)*STORE(JREF_STACK_PTR+6)
+
             IF(NF.GE.0) THEN  ! CHECK IF WE MUST PRINT THIS CONTRIBUTOR
               IF(NM.GT.1)THEN  ! CHECK IF THERE IS MORE THAN ONE CONTRIBUTOR
                 IF(NQ.EQ.NM)THEN  ! CHECK IF THIS IS THE FIRST CONTRIBUTOR
@@ -2124,7 +2138,6 @@ c
      1          WRITE(NCWU,4652)STORE(M6),STORE(M6+1),
      2                          STORE(M6+2),UJ,FCEXT
 4652            FORMAT(1X,3F5.0,2F9.2)
-c        WRITE(NCWU,'(Z0,F15.6)')FCEXT,FCEXT
             ELSE IF (IBADR .EQ. 25) THEN
               IF (ISSPRT .EQ. 0) WRITE(NCWU,4653)
 4653          FORMAT(/' And so on ------------'/)
@@ -2223,8 +2236,21 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
      1             N11, iresults, nresults, 
      2             STORE(L12B), N12B*MD12B, MD12B)
                else
-                  CALL XADLHS( STORE(JO), JP-JO+1, STR11(L11), N11,
-     1                 STORE(L12B), N12B*MD12B, MD12B )
+                  ! Store a chunk of the design matrix
+                  ! When the chunk is full, accumulate the normal matrix
+                  designindex=designindex+1
+                  if(designindex>ubound(designmatrix,2)) then
+                      ! accumulate normal matrix
+                      call SSYRK('L','N',JP-JO+1,ubound(designmatrix,2),
+     1                    1.0, designmatrix,
+     2                    JP-JO+1,1.0,normalmatrix,JP-JO+1)
+                      ! reset index for the chunk array
+                      designindex=1
+                  end if
+                  designmatrix(:,designindex) = STORE(JO:JP)
+                  
+c                  CALL XADLHS( STORE(JO), JP-JO+1, STR11(L11), N11,
+c     1                 STORE(L12B), N12B*MD12B, MD12B )
                end if
             ELSE                    ! No accumulation, compute leverages, Pii.
                if (ISTORE(M33CD+13).EQ.0) THEN
@@ -2289,6 +2315,80 @@ C----    H,K,L,SNTHL,LEV,
 
       END DO  ! END OF REFLECTION LOOP
 
+      IF(SFLS_TYPE .EQ. SFLS_REFINE)THEN    ! NO REFINEMENT
+          IF(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
+            IF (ISTORE(M33CD+12).EQ.0) THEN    ! Just a normal accumulation.
+              if (ISTORE(M33CD+13).NE.0) THEN
+      ! process the remaining chunk of design matrix
+                 if(designindex>1) then
+          ! Accumulate the normal matrix
+                   call SSYRK('L','N',JP-JO+1,designindex,1.0,
+     1              designmatrix(:,1:designindex),
+     2             JP-JO+1,1.0,normalmatrix,JP-JO+1)
+                 end if
+      
+      !sum1=0.0
+      !do i=1,JP-JO+1
+      !      j = ((i-1)*(2*(JP-JO+1)-i+2))/2
+      !      k = j + JP-JO+1 - i
+      !      sum1=sum1+sum(STR11(L11+j:L11+k)-normalmatrix(i:JP-JO+1,i))
+      !end do
+      !print *, "diff between Pascal and crystals ", sum1
+      !print *, ""
+ 
+      ! Pack normal matrix back into original crystals storage
+      
+                 IBL = 1                  ! Parameter # at start of current block
+                 IBS = L11                ! Packed storage address.
+
+                 DO MB = 1, N12B*MD12B, MD12B      
+                   MNR  = ISTORE(L12B+MB)  ! Dimension of this block
+                   MSTR = (MNR*(MNR+1))/2 ! Storage space for this block    
+                   do i=1,MNR
+                     j = ((i-1)*(2*(MNR)-i+2))/2
+                     k = j + MNR - i
+                     STR11(IBS+j:IBS+k)
+     1                =normalmatrix(i+IBL-1:IBL-1+MNR,IBL+i-1)
+
+c E.g. two blocks of 2 - normalmatrix is 4x4, output is 2 upper triangles of side 2.
+c Initially IBL is 1, IBS is L11.
+c       MNR is 2
+c       MSTR is 3
+c       i: 1->2
+c          j = 0;  k = 2-1 = 1
+c          str11(L11:L11+1) = norm(1:2, 1)
+c          j = 2;  k = 2 + 2 - 2 = 2
+c          str11(L11+2:L11+2) = norm(2:2, 2)
+c       IBL = 3
+c       IBS = L11+3
+c       MNR is 2
+c       MSTR is 3
+c       i = 1->2
+c          j = 0;  k = 1
+c          str11(L11+3:L11+4) = norm(3:4, 3)
+c          j = 2; k = 2
+c          str11(L11+5:L11+5) = norm(4:4, 4)
+c Looks OK.
+                    
+                   end do
+        
+                   IBS = IBS + MSTR       ! Increment the storage pointer
+                   IBL = IBL + MNR        ! Increment the derivative pointer
+                 END DO
+
+              END IF
+            END IF
+          END IF
+      END IF
+c      do i=1,JP-JO+1
+c            j = ((i-1)*(2*(JP-JO+1)-i+2))/2
+c            k = j + JP-JO+1 - i
+c            STR11(L11+j:L11+k)=normalmatrix(i:JP-JO+1,i)
+c      end do
+      
+      
+      deallocate(designmatrix)
+      deallocate(normalmatrix)      
 
 
 C--END OF THE REFLECTIONS  -  PRINT THE R-VALUES ETC.
@@ -3399,11 +3499,7 @@ c
 c focc   formfactor * site occ * chemical occ * difabs corection
 c modify focc for other fc corrections 
 c
-
-
         FOCC = STORE(M3TR) * STORE(M5A+2) * STORE(M5A+13) 
-
-c        WRITE(NCWU,'(A,Z0,1X,F15.6)')'FOCC: ',FOCC,FOCC
 
         FLAG=STORE(M5A+3)   ! PICK UP THE TYPE OF THIS ATOM
         IF(NINT(FLAG) .EQ. 1) THEN  ! CHECK THE TEMPERAURE TYPE FOR THIS ATOM
@@ -3414,7 +3510,6 @@ c T = exp(Uiso *TC)
 c
           T=EXP(STORE(M5A+7)*TC)  
           TFOCC=T*FOCC
-c        WRITE(NCWU,'(A,Z0,1X,F15.6)')'TFOCC:',TFOCC,TFOCC
         END IF
 c
 c L2T is address of symmetry transformed index
