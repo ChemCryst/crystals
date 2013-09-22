@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.75  2013/09/19 21:35:39  rich
+C Change precision of listing output where not important to reduce differences across platforms.
+C Important changes - SFLS now uses builtin cos() and sin() functions rather than Chebyshev
+C approximations.
+C
 C Revision 1.74  2013/03/21 15:42:56  djw
 C Add new TRANSFER directive 'SHRIEK' to suppress  a ! and all following characters on the input line. Used
 C to process SHELX comments in xshelxinand zshelxin
@@ -3746,15 +3751,11 @@ C Remove any initial spaces.
       CALL XCREMS( CWORK1, CWORK1, LEN1)
       LEN1 = MAX ( LEN1, 1 )
 
-      WRITE(NCWU,'(i3,A)') 1, CWORK1
-
 C (1) Second character must be a space:
       IF ( CWORK1(2:2) .NE. ' ' ) CWORK1(2:) = ' ' // CWORK1(2:)
 
 C (2) Any opening brackets must be removed.
 C (3) Any closing brackets become spaces, unless followed by '/'
-
-      WRITE(NCWU,'(i3,A)') 2, CWORK1
 
       IED=1
       DO IES = 1,LEN(CWORK1)
