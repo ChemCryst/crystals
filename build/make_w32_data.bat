@@ -11,6 +11,7 @@
 
 @echo Copying precompiled stuff
 echo CVS > cvs.txt
+echo .svn >> cvs.txt
 xcopy ..\precomp\all . /S  /F /Y /EXCLUDE:cvs.txt 
 xcopy ..\precomp\%COMPCODE% . /S  /F /Y /EXCLUDE:cvs.txt
 if "%COMPCODE%" == "GID" goto win32 
