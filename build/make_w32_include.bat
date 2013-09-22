@@ -13,18 +13,22 @@ goto ALLDVF
 @
 @rem 
 :INW
-@if "%CRDEBUG%" == "TRUE"     set LIBS=/LIBPATH:%WXWIN%\lib\vc90_dll\ wxbase29ud.lib wxmsw29ud_core.lib wxmsw29ud_aui.lib wxzlibd.lib  wxjpegd.lib  wxtiffd.lib  wxpngd.lib  wxmsw29ud_gl.lib  shell32.lib user32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
-@if not "%CRDEBUG%" == "TRUE" set LIBS=/LIBPATH:%WXWIN%\lib\vc90_dll\ wxbase29u.lib wxmsw29u_core.lib wxmsw29u_aui.lib wxzlib.lib  wxjpeg.lib  wxtiff.lib  wxpng.lib  wxmsw29u_gl.lib  user32.lib shell32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
+@if "%CRDEBUG%" == "TRUE"     set LIBS=/LIBPATH:%WXWIN%\lib\vc90_dll wxbase29ud.lib wxmsw29ud_core.lib wxmsw29ud_aui.lib wxzlibd.lib  wxjpegd.lib  wxtiffd.lib  wxpngd.lib  wxmsw29ud_gl.lib  shell32.lib user32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
+@if not "%CRDEBUG%" == "TRUE" set LIBS=/link /subsystem:windows -libpath:%WXWIN%\lib\vc90_dll wxbase29u.lib wxmsw29u_core.lib wxmsw29u_aui.lib wxzlib.lib  wxjpeg.lib  wxtiff.lib  wxpng.lib  wxmsw29u_gl.lib  user32.lib shell32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
 @set LIBS=%LIBS% rc.res
 @if "%CRDEBUG%" == "TRUE"     @set CDEF=/D"__WXINT__" /D"_GNUF77_" /I%WXWIN%\include /I%WXWIN%\lib\vc90_dll\mswud /D"WXUSINGDLL"
 @if not "%CRDEBUG%" == "TRUE" @set CDEF=/D"__WXINT__" /D"_GNUF77_" /I%WXWIN%\include /I%WXWIN%\lib\vc90_dll\mswu  /D"WXUSINGDLL"
 @set FDEF=/define:_%COMPCODE%_ /define:_INTELF77_
-@set LD=xilink
-@set OUT=/OUT:
-@set OPT=/OPT:REF
-@set LIBS=%LIBS% opengl32.lib glu32.lib
-@set LDEBUG=/DEBUG /debugtype:cv /pdb:none /incremental:no
+@rem @set LD=xilink
+@set LD=ifort
+@set OUT=-out:
+@set OPT=/O2
+@rem @set OPT=/Zi
+@set LIBS=%LIBS% opengl32.lib glu32.lib   mkl_intel_c.lib mkl_sequential.lib  mkl_core.lib
+@set LDEBUG=/Zi
+@rem /debugtype:cv /pdb:none /incremental:no
 @set LDCFLAGS=/SUBSYSTEM:console
+@set LDFLAGS= /Qmkl
 @
 @set CC=cl
 @set CDEF=%CDEF% /D"WIN32" /D"_WINDOWS" /D"_UNICODE"  /D__WXMSW__ /D_CRT_SECURE_NO_WARNINGS
