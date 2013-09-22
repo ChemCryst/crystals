@@ -21,6 +21,7 @@
 @set SRCDIR=..\crystals
 @set JUMPBACK=endofloop
 @set FILEFOUND=OK
+@if "%~x1" == ".f90" goto f90comp
 @goto fcomp
 @
 :tryCPPwithExt
@@ -88,20 +89,12 @@
 @
 :tryCamFPP
 @rem CAMSRC FORTRAN FILES
-@if not exist ..\cameron\%FILESTEM%.F goto tryCryF
+@if not exist ..\cameron\%FILESTEM%.F goto tryScripts
 @set SRCDIR=..\cameron
-@set JUMPBACK=tryCryF
-@set FILEFOUND=OK
-@goto fcomp
-@
-@
-:tryCryF
-@rem CRYSTALS FORTRAN FILES
-@if not exist ..\crystals\%FILESTEM%.f goto tryScripts
-@set SRCDIR=..\crystals
 @set JUMPBACK=tryScripts
 @set FILEFOUND=OK
 @goto fcomp
+@
 @
 @
 :tryScripts
@@ -161,6 +154,16 @@
 @if "%CRDEBUG%" == "TRUE" set FOPTIONS=%FDEF% %FWIN% %FDEBUG%
 %F77% %FSRC% %FOUT%%FILESTEM%.obj %FOPTIONS%  2> obj\output || ( make_err.bat FPP_RELEASE_COMPILE %FSRC% obj\output )
 @goto %JUMPBACK%
+
+:f90comp
+@echo building %FILESTEM%.obj from f90
+@if exist %FILESTEM%.obj del %FILESTEM%.obj
+@set FSRC= %SRCDIR%\%FILESTEM%.f90
+@set FOPTIONS=%FDEF% %FWIN% %FOPTS%
+@if "%CRDEBUG%" == "TRUE" set FOPTIONS=%FDEF% %FWIN% %FDEBUG%
+%F77% %FSRC% %FOUT%%FILESTEM%.obj %FOPTIONS%  2> obj\output || ( make_err.bat FPP_RELEASE_COMPILE %FSRC% obj\output )
+@goto %JUMPBACK%
+
 
 :scomp
 @if not exist ..\script\%FILESTEM%.ssc @goto dcomp
