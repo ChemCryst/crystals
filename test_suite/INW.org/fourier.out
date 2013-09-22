@@ -1990,7 +1990,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  QN        1.     0.6875    0.1111    0.0625      -15.3  Hole        
  The new list  10 contains    12 atoms
  The minimum and maximum map densities are  -1.53      1.22    electrons /A^3                                                                                                                                                                                   
-                  The deepest hole is at    0.688   0.111   0.062                                                                                                                                                                                               
+                  The deepest hole is at    0.688   0.111   0.063                                                                                                                                                                                               
  Mean electron density at original atomic sites is    -0.11
                       with an R.M.S. deviation of      0.61
 #PRINT 10                                                                                                                                                                                                                                                       
