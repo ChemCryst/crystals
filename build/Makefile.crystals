@@ -9,10 +9,11 @@ VPATH = $(CAMDIR) $(CRYSDIR) $(GUIDIR) $(WEBCTRLDIR)
 
 CAMFILES = $(notdir $(wildcard $(CAMDIR)/*.F))
 CRYFILES = $(notdir $(wildcard $(CRYSDIR)/*.F))
+CRYFILES90 = $(notdir $(wildcard $(CRYSDIR)/*.f90))
 GUIFILES = $(notdir $(wildcard $(GUIDIR)/*.cc))
 WEBFILES = $(notdir $(wildcard $(WEBCTRLDIR)/*.cpp))
 
-FOBJ     = $(patsubst %.o, obj/%.o, $(notdir $(CAMFILES:.F=.o) $(CRYFILES:.F=.o)) lapack.o)
+FOBJ     =  $(patsubst %.o, obj/%.o,  $(notdir $(CAMFILES:.F=.o) $(CRYFILES:.F=.o) $(CRYFILES90:.f90=.o)) )
 ifneq ($(COMPCODE),LIN)
  ifneq ($(COMPCODE),DVF)
   COBJ     = $(patsubst %.o, obj/%.o, $(notdir $(GUIFILES:.cc=.o)))
@@ -35,10 +36,6 @@ crystals$(SUFFIX) : $(FOBJ) $(COBJ)
 obj/resource.o : ../gui/wx.rc
 	windres -o $@ -i $< --include-dir=../gui --include-dir `wx-config --prefix`/include
 
-
-# This lapack module contains routines for compting machine precision, and must be compiled without optimisation.
-obj/lapack.o : lapack.f
-	$(F77) -c $(F77FLAGS) -x f77-cpp-input -O0 -o $@ $<
 
 obj :
 	mkdir obj

@@ -62,7 +62,7 @@ else
 
   else
    ifeq ($(COMPCODE),LIN)
-    GUIFLAGS = -fno-inline -fexceptions
+    GUIFLAGS = -fno-inline -fexceptions -pthread 
     GUILIBRARIES =
     CLFLAGS =
     CLLIBRARIES = 
@@ -76,7 +76,8 @@ else
     LD = gfortran
     F77 = gfortran
     F77FLAGS = -std=legacy -ftree-vectorize -msse2 -fno-automatic -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_
-    OPT = -O2
+    F90FLAGS = -ftree-vectorize -msse2  -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_
+    OPT =  libopenblas.a -ggdb -O2 -ffast-math
 
     INSTALL=/bin/install
 
@@ -89,6 +90,8 @@ else
  endif
 endif
 
+obj/%.o : %.f90
+	$(F77) -c $(F90FLAGS) $(OPT) -o $@ $<
 
 obj/%.o : %.F
 	$(F77) -c $(F77FLAGS) $(OPT) -o $@ $<
