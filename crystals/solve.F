@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.62  2013/09/23 09:56:50  rich
+C Extra lapack dependecies (2) for non-intels
+C
 C Revision 1.61  2013/09/23 09:45:59  rich
 C Extra lapack dependecies for non-intels
 C
@@ -23215,6 +23218,2138 @@ c
 *     End of STPSV .
 *
       END
+
+
+      SUBROUTINE SSPMV(UPLO,N,ALPHA,AP,X,INCX,BETA,Y,INCY)
+*     .. Scalar Arguments ..
+      REAL ALPHA,BETA
+      INTEGER INCX,INCY,N
+      CHARACTER UPLO
+*     ..
+*     .. Array Arguments ..
+      REAL AP(*),X(*),Y(*)
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SSPMV  performs the matrix-vector operation
+*
+*     y := alpha*A*x + beta*y,
+*
+*  where alpha and beta are scalars, x and y are n element vectors and
+*  A is an n by n symmetric matrix, supplied in packed form.
+*
+*  Arguments
+*  ==========
+*
+*  UPLO   - CHARACTER*1.
+*           On entry, UPLO specifies whether the upper or lower
+*           triangular part of the matrix A is supplied in the packed
+*           array AP as follows:
+*
+*              UPLO = 'U' or 'u'   The upper triangular part of A is
+*                                  supplied in AP.
+*
+*              UPLO = 'L' or 'l'   The lower triangular part of A is
+*                                  supplied in AP.
+*
+*           Unchanged on exit.
+*
+*  N      - INTEGER.
+*           On entry, N specifies the order of the matrix A.
+*           N must be at least zero.
+*           Unchanged on exit.
+*
+*  ALPHA  - REAL            .
+*           On entry, ALPHA specifies the scalar alpha.
+*           Unchanged on exit.
+*
+*  AP     - REAL             array of DIMENSION at least
+*           ( ( n*( n + 1 ) )/2 ).
+*           Before entry with UPLO = 'U' or 'u', the array AP must
+*           contain the upper triangular part of the symmetric matrix
+*           packed sequentially, column by column, so that AP( 1 )
+*           contains a( 1, 1 ), AP( 2 ) and AP( 3 ) contain a( 1, 2 )
+*           and a( 2, 2 ) respectively, and so on.
+*           Before entry with UPLO = 'L' or 'l', the array AP must
+*           contain the lower triangular part of the symmetric matrix
+*           packed sequentially, column by column, so that AP( 1 )
+*           contains a( 1, 1 ), AP( 2 ) and AP( 3 ) contain a( 2, 1 )
+*           and a( 3, 1 ) respectively, and so on.
+*           Unchanged on exit.
+*
+*  X      - REAL             array of dimension at least
+*           ( 1 + ( n - 1 )*abs( INCX ) ).
+*           Before entry, the incremented array X must contain the n
+*           element vector x.
+*           Unchanged on exit.
+*
+*  INCX   - INTEGER.
+*           On entry, INCX specifies the increment for the elements of
+*           X. INCX must not be zero.
+*           Unchanged on exit.
+*
+*  BETA   - REAL            .
+*           On entry, BETA specifies the scalar beta. When BETA is
+*           supplied as zero then Y need not be set on input.
+*           Unchanged on exit.
+*
+*  Y      - REAL             array of dimension at least
+*           ( 1 + ( n - 1 )*abs( INCY ) ).
+*           Before entry, the incremented array Y must contain the n
+*           element vector y. On exit, Y is overwritten by the updated
+*           vector y.
+*
+*  INCY   - INTEGER.
+*           On entry, INCY specifies the increment for the elements of
+*           Y. INCY must not be zero.
+*           Unchanged on exit.
+*
+*
+*  Level 2 Blas routine.
+*
+*  -- Written on 22-October-1986.
+*     Jack Dongarra, Argonne National Lab.
+*     Jeremy Du Croz, Nag Central Office.
+*     Sven Hammarling, Nag Central Office.
+*     Richard Hanson, Sandia National Labs.
+*
+*
+*     .. Parameters ..
+      REAL ONE,ZERO
+      PARAMETER (ONE=1.0E+0,ZERO=0.0E+0)
+*     ..
+*     .. Local Scalars ..
+      REAL TEMP1,TEMP2
+      INTEGER I,INFO,IX,IY,J,JX,JY,K,KK,KX,KY
+*     ..
+*     .. External Functions ..
+      LOGICAL LSAME
+      EXTERNAL LSAME
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL XERBLA
+*     ..
+*
+*     Test the input parameters.
+*
+      INFO = 0
+      IF (.NOT.LSAME(UPLO,'U') .AND. .NOT.LSAME(UPLO,'L')) THEN
+          INFO = 1
+      ELSE IF (N.LT.0) THEN
+          INFO = 2
+      ELSE IF (INCX.EQ.0) THEN
+          INFO = 6
+      ELSE IF (INCY.EQ.0) THEN
+          INFO = 9
+      END IF
+      IF (INFO.NE.0) THEN
+          CALL XERBLA('SSPMV ',INFO)
+          RETURN
+      END IF
+*
+*     Quick return if possible.
+*
+      IF ((N.EQ.0) .OR. ((ALPHA.EQ.ZERO).AND. (BETA.EQ.ONE))) RETURN
+*
+*     Set up the start points in  X  and  Y.
+*
+      IF (INCX.GT.0) THEN
+          KX = 1
+      ELSE
+          KX = 1 - (N-1)*INCX
+      END IF
+      IF (INCY.GT.0) THEN
+          KY = 1
+      ELSE
+          KY = 1 - (N-1)*INCY
+      END IF
+*
+*     Start the operations. In this version the elements of the array AP
+*     are accessed sequentially with one pass through AP.
+*
+*     First form  y := beta*y.
+*
+      IF (BETA.NE.ONE) THEN
+          IF (INCY.EQ.1) THEN
+              IF (BETA.EQ.ZERO) THEN
+                  DO 10 I = 1,N
+                      Y(I) = ZERO
+   10             CONTINUE
+              ELSE
+                  DO 20 I = 1,N
+                      Y(I) = BETA*Y(I)
+   20             CONTINUE
+              END IF
+          ELSE
+              IY = KY
+              IF (BETA.EQ.ZERO) THEN
+                  DO 30 I = 1,N
+                      Y(IY) = ZERO
+                      IY = IY + INCY
+   30             CONTINUE
+              ELSE
+                  DO 40 I = 1,N
+                      Y(IY) = BETA*Y(IY)
+                      IY = IY + INCY
+   40             CONTINUE
+              END IF
+          END IF
+      END IF
+      IF (ALPHA.EQ.ZERO) RETURN
+      KK = 1
+      IF (LSAME(UPLO,'U')) THEN
+*
+*        Form  y  when AP contains the upper triangle.
+*
+          IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN
+              DO 60 J = 1,N
+                  TEMP1 = ALPHA*X(J)
+                  TEMP2 = ZERO
+                  K = KK
+                  DO 50 I = 1,J - 1
+                      Y(I) = Y(I) + TEMP1*AP(K)
+                      TEMP2 = TEMP2 + AP(K)*X(I)
+                      K = K + 1
+   50             CONTINUE
+                  Y(J) = Y(J) + TEMP1*AP(KK+J-1) + ALPHA*TEMP2
+                  KK = KK + J
+   60         CONTINUE
+          ELSE
+              JX = KX
+              JY = KY
+              DO 80 J = 1,N
+                  TEMP1 = ALPHA*X(JX)
+                  TEMP2 = ZERO
+                  IX = KX
+                  IY = KY
+                  DO 70 K = KK,KK + J - 2
+                      Y(IY) = Y(IY) + TEMP1*AP(K)
+                      TEMP2 = TEMP2 + AP(K)*X(IX)
+                      IX = IX + INCX
+                      IY = IY + INCY
+   70             CONTINUE
+                  Y(JY) = Y(JY) + TEMP1*AP(KK+J-1) + ALPHA*TEMP2
+                  JX = JX + INCX
+                  JY = JY + INCY
+                  KK = KK + J
+   80         CONTINUE
+          END IF
+      ELSE
+*
+*        Form  y  when AP contains the lower triangle.
+*
+          IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN
+              DO 100 J = 1,N
+                  TEMP1 = ALPHA*X(J)
+                  TEMP2 = ZERO
+                  Y(J) = Y(J) + TEMP1*AP(KK)
+                  K = KK + 1
+                  DO 90 I = J + 1,N
+                      Y(I) = Y(I) + TEMP1*AP(K)
+                      TEMP2 = TEMP2 + AP(K)*X(I)
+                      K = K + 1
+   90             CONTINUE
+                  Y(J) = Y(J) + ALPHA*TEMP2
+                  KK = KK + (N-J+1)
+  100         CONTINUE
+          ELSE
+              JX = KX
+              JY = KY
+              DO 120 J = 1,N
+                  TEMP1 = ALPHA*X(JX)
+                  TEMP2 = ZERO
+                  Y(JY) = Y(JY) + TEMP1*AP(KK)
+                  IX = JX
+                  IY = JY
+                  DO 110 K = KK + 1,KK + N - J
+                      IX = IX + INCX
+                      IY = IY + INCY
+                      Y(IY) = Y(IY) + TEMP1*AP(K)
+                      TEMP2 = TEMP2 + AP(K)*X(IX)
+  110             CONTINUE
+                  Y(JY) = Y(JY) + ALPHA*TEMP2
+                  JX = JX + INCX
+                  JY = JY + INCY
+                  KK = KK + (N-J+1)
+  120         CONTINUE
+          END IF
+      END IF
+*
+      RETURN
+*
+*     End of SSPMV .
+*
+      END
+
+
+
+      SUBROUTINE SSPR2(UPLO,N,ALPHA,X,INCX,Y,INCY,AP)
+*     .. Scalar Arguments ..
+      REAL ALPHA
+      INTEGER INCX,INCY,N
+      CHARACTER UPLO
+*     ..
+*     .. Array Arguments ..
+      REAL AP(*),X(*),Y(*)
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SSPR2  performs the symmetric rank 2 operation
+*
+*     A := alpha*x*y' + alpha*y*x' + A,
+*
+*  where alpha is a scalar, x and y are n element vectors and A is an
+*  n by n symmetric matrix, supplied in packed form.
+*
+*  Arguments
+*  ==========
+*
+*  UPLO   - CHARACTER*1.
+*           On entry, UPLO specifies whether the upper or lower
+*           triangular part of the matrix A is supplied in the packed
+*           array AP as follows:
+*
+*              UPLO = 'U' or 'u'   The upper triangular part of A is
+*                                  supplied in AP.
+*
+*              UPLO = 'L' or 'l'   The lower triangular part of A is
+*                                  supplied in AP.
+*
+*           Unchanged on exit.
+*
+*  N      - INTEGER.
+*           On entry, N specifies the order of the matrix A.
+*           N must be at least zero.
+*           Unchanged on exit.
+*
+*  ALPHA  - REAL            .
+*           On entry, ALPHA specifies the scalar alpha.
+*           Unchanged on exit.
+*
+*  X      - REAL             array of dimension at least
+*           ( 1 + ( n - 1 )*abs( INCX ) ).
+*           Before entry, the incremented array X must contain the n
+*           element vector x.
+*           Unchanged on exit.
+*
+*  INCX   - INTEGER.
+*           On entry, INCX specifies the increment for the elements of
+*           X. INCX must not be zero.
+*           Unchanged on exit.
+*
+*  Y      - REAL             array of dimension at least
+*           ( 1 + ( n - 1 )*abs( INCY ) ).
+*           Before entry, the incremented array Y must contain the n
+*           element vector y.
+*           Unchanged on exit.
+*
+*  INCY   - INTEGER.
+*           On entry, INCY specifies the increment for the elements of
+*           Y. INCY must not be zero.
+*           Unchanged on exit.
+*
+*  AP     - REAL             array of DIMENSION at least
+*           ( ( n*( n + 1 ) )/2 ).
+*           Before entry with  UPLO = 'U' or 'u', the array AP must
+*           contain the upper triangular part of the symmetric matrix
+*           packed sequentially, column by column, so that AP( 1 )
+*           contains a( 1, 1 ), AP( 2 ) and AP( 3 ) contain a( 1, 2 )
+*           and a( 2, 2 ) respectively, and so on. On exit, the array
+*           AP is overwritten by the upper triangular part of the
+*           updated matrix.
+*           Before entry with UPLO = 'L' or 'l', the array AP must
+*           contain the lower triangular part of the symmetric matrix
+*           packed sequentially, column by column, so that AP( 1 )
+*           contains a( 1, 1 ), AP( 2 ) and AP( 3 ) contain a( 2, 1 )
+*           and a( 3, 1 ) respectively, and so on. On exit, the array
+*           AP is overwritten by the lower triangular part of the
+*           updated matrix.
+*
+*
+*  Level 2 Blas routine.
+*
+*  -- Written on 22-October-1986.
+*     Jack Dongarra, Argonne National Lab.
+*     Jeremy Du Croz, Nag Central Office.
+*     Sven Hammarling, Nag Central Office.
+*     Richard Hanson, Sandia National Labs.
+*
+*
+*     .. Parameters ..
+      REAL ZERO
+      PARAMETER (ZERO=0.0E+0)
+*     ..
+*     .. Local Scalars ..
+      REAL TEMP1,TEMP2
+      INTEGER I,INFO,IX,IY,J,JX,JY,K,KK,KX,KY
+*     ..
+*     .. External Functions ..
+      LOGICAL LSAME
+      EXTERNAL LSAME
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL XERBLA
+*     ..
+*
+*     Test the input parameters.
+*
+      INFO = 0
+      IF (.NOT.LSAME(UPLO,'U') .AND. .NOT.LSAME(UPLO,'L')) THEN
+          INFO = 1
+      ELSE IF (N.LT.0) THEN
+          INFO = 2
+      ELSE IF (INCX.EQ.0) THEN
+          INFO = 5
+      ELSE IF (INCY.EQ.0) THEN
+          INFO = 7
+      END IF
+      IF (INFO.NE.0) THEN
+          CALL XERBLA('SSPR2 ',INFO)
+          RETURN
+      END IF
+*
+*     Quick return if possible.
+*
+      IF ((N.EQ.0) .OR. (ALPHA.EQ.ZERO)) RETURN
+*
+*     Set up the start points in X and Y if the increments are not both
+*     unity.
+*
+      IF ((INCX.NE.1) .OR. (INCY.NE.1)) THEN
+          IF (INCX.GT.0) THEN
+              KX = 1
+          ELSE
+              KX = 1 - (N-1)*INCX
+          END IF
+          IF (INCY.GT.0) THEN
+              KY = 1
+          ELSE
+              KY = 1 - (N-1)*INCY
+          END IF
+          JX = KX
+          JY = KY
+      END IF
+*
+*     Start the operations. In this version the elements of the array AP
+*     are accessed sequentially with one pass through AP.
+*
+      KK = 1
+      IF (LSAME(UPLO,'U')) THEN
+*
+*        Form  A  when upper triangle is stored in AP.
+*
+          IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN
+              DO 20 J = 1,N
+                  IF ((X(J).NE.ZERO) .OR. (Y(J).NE.ZERO)) THEN
+                      TEMP1 = ALPHA*Y(J)
+                      TEMP2 = ALPHA*X(J)
+                      K = KK
+                      DO 10 I = 1,J
+                          AP(K) = AP(K) + X(I)*TEMP1 + Y(I)*TEMP2
+                          K = K + 1
+   10                 CONTINUE
+                  END IF
+                  KK = KK + J
+   20         CONTINUE
+          ELSE
+              DO 40 J = 1,N
+                  IF ((X(JX).NE.ZERO) .OR. (Y(JY).NE.ZERO)) THEN
+                      TEMP1 = ALPHA*Y(JY)
+                      TEMP2 = ALPHA*X(JX)
+                      IX = KX
+                      IY = KY
+                      DO 30 K = KK,KK + J - 1
+                          AP(K) = AP(K) + X(IX)*TEMP1 + Y(IY)*TEMP2
+                          IX = IX + INCX
+                          IY = IY + INCY
+   30                 CONTINUE
+                  END IF
+                  JX = JX + INCX
+                  JY = JY + INCY
+                  KK = KK + J
+   40         CONTINUE
+          END IF
+      ELSE
+*
+*        Form  A  when lower triangle is stored in AP.
+*
+          IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN
+              DO 60 J = 1,N
+                  IF ((X(J).NE.ZERO) .OR. (Y(J).NE.ZERO)) THEN
+                      TEMP1 = ALPHA*Y(J)
+                      TEMP2 = ALPHA*X(J)
+                      K = KK
+                      DO 50 I = J,N
+                          AP(K) = AP(K) + X(I)*TEMP1 + Y(I)*TEMP2
+                          K = K + 1
+   50                 CONTINUE
+                  END IF
+                  KK = KK + N - J + 1
+   60         CONTINUE
+          ELSE
+              DO 80 J = 1,N
+                  IF ((X(JX).NE.ZERO) .OR. (Y(JY).NE.ZERO)) THEN
+                      TEMP1 = ALPHA*Y(JY)
+                      TEMP2 = ALPHA*X(JX)
+                      IX = JX
+                      IY = JY
+                      DO 70 K = KK,KK + N - J
+                          AP(K) = AP(K) + X(IX)*TEMP1 + Y(IY)*TEMP2
+                          IX = IX + INCX
+                          IY = IY + INCY
+   70                 CONTINUE
+                  END IF
+                  JX = JX + INCX
+                  JY = JY + INCY
+                  KK = KK + N - J + 1
+   80         CONTINUE
+          END IF
+      END IF
+*
+      RETURN
+*
+*     End of SSPR2 .
+*
+      END
+
+
+
+      SUBROUTINE SLAED0( ICOMPQ, QSIZ, N, D, E, Q, LDQ, QSTORE, LDQS,
+     $                   WORK, IWORK, INFO )
+*
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     .. Scalar Arguments ..
+      INTEGER            ICOMPQ, INFO, LDQ, LDQS, N, QSIZ
+*     ..
+*     .. Array Arguments ..
+      INTEGER            IWORK( * )
+      REAL               D( * ), E( * ), Q( LDQ, * ), QSTORE( LDQS, * ),
+     $                   WORK( * )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SLAED0 computes all eigenvalues and corresponding eigenvectors of a
+*  symmetric tridiagonal matrix using the divide and conquer method.
+*
+*  Arguments
+*  =========
+*
+*  ICOMPQ  (input) INTEGER
+*          = 0:  Compute eigenvalues only.
+*          = 1:  Compute eigenvectors of original dense symmetric matrix
+*                also.  On entry, Q contains the orthogonal matrix used
+*                to reduce the original matrix to tridiagonal form.
+*          = 2:  Compute eigenvalues and eigenvectors of tridiagonal
+*                matrix.
+*
+*  QSIZ   (input) INTEGER
+*         The dimension of the orthogonal matrix used to reduce
+*         the full matrix to tridiagonal form.  QSIZ >= N if ICOMPQ = 1.
+*
+*  N      (input) INTEGER
+*         The dimension of the symmetric tridiagonal matrix.  N >= 0.
+*
+*  D      (input/output) REAL array, dimension (N)
+*         On entry, the main diagonal of the tridiagonal matrix.
+*         On exit, its eigenvalues.
+*
+*  E      (input) REAL array, dimension (N-1)
+*         The off-diagonal elements of the tridiagonal matrix.
+*         On exit, E has been destroyed.
+*
+*  Q      (input/output) REAL array, dimension (LDQ, N)
+*         On entry, Q must contain an N-by-N orthogonal matrix.
+*         If ICOMPQ = 0    Q is not referenced.
+*         If ICOMPQ = 1    On entry, Q is a subset of the columns of the
+*                          orthogonal matrix used to reduce the full
+*                          matrix to tridiagonal form corresponding to
+*                          the subset of the full matrix which is being
+*                          decomposed at this time.
+*         If ICOMPQ = 2    On entry, Q will be the identity matrix.
+*                          On exit, Q contains the eigenvectors of the
+*                          tridiagonal matrix.
+*
+*  LDQ    (input) INTEGER
+*         The leading dimension of the array Q.  If eigenvectors are
+*         desired, then  LDQ >= max(1,N).  In any case,  LDQ >= 1.
+*
+*  QSTORE (workspace) REAL array, dimension (LDQS, N)
+*         Referenced only when ICOMPQ = 1.  Used to store parts of
+*         the eigenvector matrix when the updating matrix multiplies
+*         take place.
+*
+*  LDQS   (input) INTEGER
+*         The leading dimension of the array QSTORE.  If ICOMPQ = 1,
+*         then  LDQS >= max(1,N).  In any case,  LDQS >= 1.
+*
+*  WORK   (workspace) REAL array,
+*         If ICOMPQ = 0 or 1, the dimension of WORK must be at least
+*                     1 + 3*N + 2*N*lg N + 2*N**2
+*                     ( lg( N ) = smallest integer k
+*                                 such that 2^k >= N )
+*         If ICOMPQ = 2, the dimension of WORK must be at least
+*                     4*N + N**2.
+*
+*  IWORK  (workspace) INTEGER array,
+*         If ICOMPQ = 0 or 1, the dimension of IWORK must be at least
+*                        6 + 6*N + 5*N*lg N.
+*                        ( lg( N ) = smallest integer k
+*                                    such that 2^k >= N )
+*         If ICOMPQ = 2, the dimension of IWORK must be at least
+*                        3 + 5*N.
+*
+*  INFO   (output) INTEGER
+*          = 0:  successful exit.
+*          < 0:  if INFO = -i, the i-th argument had an illegal value.
+*          > 0:  The algorithm failed to compute an eigenvalue while
+*                working on the submatrix lying in rows and columns
+*                INFO/(N+1) through mod(INFO,N+1).
+*
+*  Further Details
+*  ===============
+*
+*  Based on contributions by
+*     Jeff Rutter, Computer Science Division, University of California
+*     at Berkeley, USA
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL               ZERO, ONE, TWO
+      PARAMETER          ( ZERO = 0.E0, ONE = 1.E0, TWO = 2.E0 )
+*     ..
+*     .. Local Scalars ..
+      INTEGER            CURLVL, CURPRB, CURR, I, IGIVCL, IGIVNM,
+     $                   IGIVPT, INDXQ, IPERM, IPRMPT, IQ, IQPTR, IWREM,
+     $                   J, K, LGN, MATSIZ, MSD2, SMLSIZ, SMM1, SPM1,
+     $                   SPM2, SUBMAT, SUBPBS, TLVLS
+      REAL               TEMP
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SCOPY, SGEMM, SLACPY, SLAED1, SLAED7, SSTEQR,
+     $                   XERBLA
+*     ..
+*     .. External Functions ..
+      INTEGER            ILAENV
+      EXTERNAL           ILAENV
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          ABS, INT, LOG, MAX, REAL
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input parameters.
+*
+      INFO = 0
+*
+      IF( ICOMPQ.LT.0 .OR. ICOMPQ.GT.2 ) THEN
+         INFO = -1
+      ELSE IF( ( ICOMPQ.EQ.1 ) .AND. ( QSIZ.LT.MAX( 0, N ) ) ) THEN
+         INFO = -2
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -3
+      ELSE IF( LDQ.LT.MAX( 1, N ) ) THEN
+         INFO = -7
+      ELSE IF( LDQS.LT.MAX( 1, N ) ) THEN
+         INFO = -9
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SLAED0', -INFO )
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      IF( N.EQ.0 )
+     $   RETURN
+*
+      SMLSIZ = ILAENV( 9, 'SLAED0', ' ', 0, 0, 0, 0 )
+*
+*     Determine the size and placement of the submatrices, and save in
+*     the leading elements of IWORK.
+*
+      IWORK( 1 ) = N
+      SUBPBS = 1
+      TLVLS = 0
+   10 CONTINUE
+      IF( IWORK( SUBPBS ).GT.SMLSIZ ) THEN
+         DO 20 J = SUBPBS, 1, -1
+            IWORK( 2*J ) = ( IWORK( J )+1 ) / 2
+            IWORK( 2*J-1 ) = IWORK( J ) / 2
+   20    CONTINUE
+         TLVLS = TLVLS + 1
+         SUBPBS = 2*SUBPBS
+         GO TO 10
+      END IF
+      DO 30 J = 2, SUBPBS
+         IWORK( J ) = IWORK( J ) + IWORK( J-1 )
+   30 CONTINUE
+*
+*     Divide the matrix into SUBPBS submatrices of size at most SMLSIZ+1
+*     using rank-1 modifications (cuts).
+*
+      SPM1 = SUBPBS - 1
+      DO 40 I = 1, SPM1
+         SUBMAT = IWORK( I ) + 1
+         SMM1 = SUBMAT - 1
+         D( SMM1 ) = D( SMM1 ) - ABS( E( SMM1 ) )
+         D( SUBMAT ) = D( SUBMAT ) - ABS( E( SMM1 ) )
+   40 CONTINUE
+*
+      INDXQ = 4*N + 3
+      IF( ICOMPQ.NE.2 ) THEN
+*
+*        Set up workspaces for eigenvalues only/accumulate new vectors
+*        routine
+*
+         TEMP = LOG( REAL( N ) ) / LOG( TWO )
+         LGN = INT( TEMP )
+         IF( 2**LGN.LT.N )
+     $      LGN = LGN + 1
+         IF( 2**LGN.LT.N )
+     $      LGN = LGN + 1
+         IPRMPT = INDXQ + N + 1
+         IPERM = IPRMPT + N*LGN
+         IQPTR = IPERM + N*LGN
+         IGIVPT = IQPTR + N + 2
+         IGIVCL = IGIVPT + N*LGN
+*
+         IGIVNM = 1
+         IQ = IGIVNM + 2*N*LGN
+         IWREM = IQ + N**2 + 1
+*
+*        Initialize pointers
+*
+         DO 50 I = 0, SUBPBS
+            IWORK( IPRMPT+I ) = 1
+            IWORK( IGIVPT+I ) = 1
+   50    CONTINUE
+         IWORK( IQPTR ) = 1
+      END IF
+*
+*     Solve each submatrix eigenproblem at the bottom of the divide and
+*     conquer tree.
+*
+      CURR = 0
+      DO 70 I = 0, SPM1
+         IF( I.EQ.0 ) THEN
+            SUBMAT = 1
+            MATSIZ = IWORK( 1 )
+         ELSE
+            SUBMAT = IWORK( I ) + 1
+            MATSIZ = IWORK( I+1 ) - IWORK( I )
+         END IF
+         IF( ICOMPQ.EQ.2 ) THEN
+            CALL SSTEQR( 'I', MATSIZ, D( SUBMAT ), E( SUBMAT ),
+     $                   Q( SUBMAT, SUBMAT ), LDQ, WORK, INFO )
+            IF( INFO.NE.0 )
+     $         GO TO 130
+         ELSE
+            CALL SSTEQR( 'I', MATSIZ, D( SUBMAT ), E( SUBMAT ),
+     $                   WORK( IQ-1+IWORK( IQPTR+CURR ) ), MATSIZ, WORK,
+     $                   INFO )
+            IF( INFO.NE.0 )
+     $         GO TO 130
+            IF( ICOMPQ.EQ.1 ) THEN
+               CALL SGEMM( 'N', 'N', QSIZ, MATSIZ, MATSIZ, ONE,
+     $                     Q( 1, SUBMAT ), LDQ, WORK( IQ-1+IWORK( IQPTR+
+     $                     CURR ) ), MATSIZ, ZERO, QSTORE( 1, SUBMAT ),
+     $                     LDQS )
+            END IF
+            IWORK( IQPTR+CURR+1 ) = IWORK( IQPTR+CURR ) + MATSIZ**2
+            CURR = CURR + 1
+         END IF
+         K = 1
+         DO 60 J = SUBMAT, IWORK( I+1 )
+            IWORK( INDXQ+J ) = K
+            K = K + 1
+   60    CONTINUE
+   70 CONTINUE
+*
+*     Successively merge eigensystems of adjacent submatrices
+*     into eigensystem for the corresponding larger matrix.
+*
+*     while ( SUBPBS > 1 )
+*
+      CURLVL = 1
+   80 CONTINUE
+      IF( SUBPBS.GT.1 ) THEN
+         SPM2 = SUBPBS - 2
+         DO 90 I = 0, SPM2, 2
+            IF( I.EQ.0 ) THEN
+               SUBMAT = 1
+               MATSIZ = IWORK( 2 )
+               MSD2 = IWORK( 1 )
+               CURPRB = 0
+            ELSE
+               SUBMAT = IWORK( I ) + 1
+               MATSIZ = IWORK( I+2 ) - IWORK( I )
+               MSD2 = MATSIZ / 2
+               CURPRB = CURPRB + 1
+            END IF
+*
+*     Merge lower order eigensystems (of size MSD2 and MATSIZ - MSD2)
+*     into an eigensystem of size MATSIZ.
+*     SLAED1 is used only for the full eigensystem of a tridiagonal
+*     matrix.
+*     SLAED7 handles the cases in which eigenvalues only or eigenvalues
+*     and eigenvectors of a full symmetric matrix (which was reduced to
+*     tridiagonal form) are desired.
+*
+            IF( ICOMPQ.EQ.2 ) THEN
+               CALL SLAED1( MATSIZ, D( SUBMAT ), Q( SUBMAT, SUBMAT ),
+     $                      LDQ, IWORK( INDXQ+SUBMAT ),
+     $                      E( SUBMAT+MSD2-1 ), MSD2, WORK,
+     $                      IWORK( SUBPBS+1 ), INFO )
+            ELSE
+               CALL SLAED7( ICOMPQ, MATSIZ, QSIZ, TLVLS, CURLVL, CURPRB,
+     $                      D( SUBMAT ), QSTORE( 1, SUBMAT ), LDQS,
+     $                      IWORK( INDXQ+SUBMAT ), E( SUBMAT+MSD2-1 ),
+     $                      MSD2, WORK( IQ ), IWORK( IQPTR ),
+     $                      IWORK( IPRMPT ), IWORK( IPERM ),
+     $                      IWORK( IGIVPT ), IWORK( IGIVCL ),
+     $                      WORK( IGIVNM ), WORK( IWREM ),
+     $                      IWORK( SUBPBS+1 ), INFO )
+            END IF
+            IF( INFO.NE.0 )
+     $         GO TO 130
+            IWORK( I / 2+1 ) = IWORK( I+2 )
+   90    CONTINUE
+         SUBPBS = SUBPBS / 2
+         CURLVL = CURLVL + 1
+         GO TO 80
+      END IF
+*
+*     end while
+*
+*     Re-merge the eigenvalues/vectors which were deflated at the final
+*     merge step.
+*
+      IF( ICOMPQ.EQ.1 ) THEN
+         DO 100 I = 1, N
+            J = IWORK( INDXQ+I )
+            WORK( I ) = D( J )
+            CALL SCOPY( QSIZ, QSTORE( 1, J ), 1, Q( 1, I ), 1 )
+  100    CONTINUE
+         CALL SCOPY( N, WORK, 1, D, 1 )
+      ELSE IF( ICOMPQ.EQ.2 ) THEN
+         DO 110 I = 1, N
+            J = IWORK( INDXQ+I )
+            WORK( I ) = D( J )
+            CALL SCOPY( N, Q( 1, J ), 1, WORK( N*I+1 ), 1 )
+  110    CONTINUE
+         CALL SCOPY( N, WORK, 1, D, 1 )
+         CALL SLACPY( 'A', N, N, WORK( N+1 ), N, Q, LDQ )
+      ELSE
+         DO 120 I = 1, N
+            J = IWORK( INDXQ+I )
+            WORK( I ) = D( J )
+  120    CONTINUE
+         CALL SCOPY( N, WORK, 1, D, 1 )
+      END IF
+      GO TO 140
+*
+  130 CONTINUE
+      INFO = SUBMAT*( N+1 ) + SUBMAT + MATSIZ - 1
+*
+  140 CONTINUE
+      RETURN
+*
+*     End of SLAED0
+*
+      END
+
+
+
+      SUBROUTINE SLAED1( N, D, Q, LDQ, INDXQ, RHO, CUTPNT, WORK, IWORK,
+     $                   INFO )
+*
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     .. Scalar Arguments ..
+      INTEGER            CUTPNT, INFO, LDQ, N
+      REAL               RHO
+*     ..
+*     .. Array Arguments ..
+      INTEGER            INDXQ( * ), IWORK( * )
+      REAL               D( * ), Q( LDQ, * ), WORK( * )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SLAED1 computes the updated eigensystem of a diagonal
+*  matrix after modification by a rank-one symmetric matrix.  This
+*  routine is used only for the eigenproblem which requires all
+*  eigenvalues and eigenvectors of a tridiagonal matrix.  SLAED7 handles
+*  the case in which eigenvalues only or eigenvalues and eigenvectors
+*  of a full symmetric matrix (which was reduced to tridiagonal form)
+*  are desired.
+*
+*    T = Q(in) ( D(in) + RHO * Z*Z' ) Q'(in) = Q(out) * D(out) * Q'(out)
+*
+*     where Z = Q'u, u is a vector of length N with ones in the
+*     CUTPNT and CUTPNT + 1 th elements and zeros elsewhere.
+*
+*     The eigenvectors of the original matrix are stored in Q, and the
+*     eigenvalues are in D.  The algorithm consists of three stages:
+*
+*        The first stage consists of deflating the size of the problem
+*        when there are multiple eigenvalues or if there is a zero in
+*        the Z vector.  For each such occurence the dimension of the
+*        secular equation problem is reduced by one.  This stage is
+*        performed by the routine SLAED2.
+*
+*        The second stage consists of calculating the updated
+*        eigenvalues. This is done by finding the roots of the secular
+*        equation via the routine SLAED4 (as called by SLAED3).
+*        This routine also calculates the eigenvectors of the current
+*        problem.
+*
+*        The final stage consists of computing the updated eigenvectors
+*        directly using the updated eigenvalues.  The eigenvectors for
+*        the current problem are multiplied with the eigenvectors from
+*        the overall problem.
+*
+*  Arguments
+*  =========
+*
+*  N      (input) INTEGER
+*         The dimension of the symmetric tridiagonal matrix.  N >= 0.
+*
+*  D      (input/output) REAL array, dimension (N)
+*         On entry, the eigenvalues of the rank-1-perturbed matrix.
+*         On exit, the eigenvalues of the repaired matrix.
+*
+*  Q      (input/output) REAL array, dimension (LDQ,N)
+*         On entry, the eigenvectors of the rank-1-perturbed matrix.
+*         On exit, the eigenvectors of the repaired tridiagonal matrix.
+*
+*  LDQ    (input) INTEGER
+*         The leading dimension of the array Q.  LDQ >= max(1,N).
+*
+*  INDXQ  (input/output) INTEGER array, dimension (N)
+*         On entry, the permutation which separately sorts the two
+*         subproblems in D into ascending order.
+*         On exit, the permutation which will reintegrate the
+*         subproblems back into sorted order,
+*         i.e. D( INDXQ( I = 1, N ) ) will be in ascending order.
+*
+*  RHO    (input) REAL
+*         The subdiagonal entry used to create the rank-1 modification.
+*
+*  CUTPNT (input) INTEGER
+*         The location of the last eigenvalue in the leading sub-matrix.
+*         min(1,N) <= CUTPNT <= N/2.
+*
+*  WORK   (workspace) REAL array, dimension (4*N + N**2)
+*
+*  IWORK  (workspace) INTEGER array, dimension (4*N)
+*
+*  INFO   (output) INTEGER
+*          = 0:  successful exit.
+*          < 0:  if INFO = -i, the i-th argument had an illegal value.
+*          > 0:  if INFO = 1, an eigenvalue did not converge
+*
+*  Further Details
+*  ===============
+*
+*  Based on contributions by
+*     Jeff Rutter, Computer Science Division, University of California
+*     at Berkeley, USA
+*  Modified by Francoise Tisseur, University of Tennessee.
+*
+*  =====================================================================
+*
+*     .. Local Scalars ..
+      INTEGER            COLTYP, CPP1, I, IDLMDA, INDX, INDXC, INDXP,
+     $                   IQ2, IS, IW, IZ, K, N1, N2
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SCOPY, SLAED2, SLAED3, SLAMRG, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          MAX, MIN
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input parameters.
+*
+      INFO = 0
+*
+      IF( N.LT.0 ) THEN
+         INFO = -1
+      ELSE IF( LDQ.LT.MAX( 1, N ) ) THEN
+         INFO = -4
+      ELSE IF( MIN( 1, N / 2 ).GT.CUTPNT .OR. ( N / 2 ).LT.CUTPNT ) THEN
+         INFO = -7
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SLAED1', -INFO )
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      IF( N.EQ.0 )
+     $   RETURN
+*
+*     The following values are integer pointers which indicate
+*     the portion of the workspace
+*     used by a particular array in SLAED2 and SLAED3.
+*
+      IZ = 1
+      IDLMDA = IZ + N
+      IW = IDLMDA + N
+      IQ2 = IW + N
+*
+      INDX = 1
+      INDXC = INDX + N
+      COLTYP = INDXC + N
+      INDXP = COLTYP + N
+*
+*
+*     Form the z-vector which consists of the last row of Q_1 and the
+*     first row of Q_2.
+*
+      CALL SCOPY( CUTPNT, Q( CUTPNT, 1 ), LDQ, WORK( IZ ), 1 )
+      CPP1 = CUTPNT + 1
+      CALL SCOPY( N-CUTPNT, Q( CPP1, CPP1 ), LDQ, WORK( IZ+CUTPNT ), 1 )
+*
+*     Deflate eigenvalues.
+*
+      CALL SLAED2( K, N, CUTPNT, D, Q, LDQ, INDXQ, RHO, WORK( IZ ),
+     $             WORK( IDLMDA ), WORK( IW ), WORK( IQ2 ),
+     $             IWORK( INDX ), IWORK( INDXC ), IWORK( INDXP ),
+     $             IWORK( COLTYP ), INFO )
+*
+      IF( INFO.NE.0 )
+     $   GO TO 20
+*
+*     Solve Secular Equation.
+*
+      IF( K.NE.0 ) THEN
+         IS = ( IWORK( COLTYP )+IWORK( COLTYP+1 ) )*CUTPNT +
+     $        ( IWORK( COLTYP+1 )+IWORK( COLTYP+2 ) )*( N-CUTPNT ) + IQ2
+         CALL SLAED3( K, N, CUTPNT, D, Q, LDQ, RHO, WORK( IDLMDA ),
+     $                WORK( IQ2 ), IWORK( INDXC ), IWORK( COLTYP ),
+     $                WORK( IW ), WORK( IS ), INFO )
+         IF( INFO.NE.0 )
+     $      GO TO 20
+*
+*     Prepare the INDXQ sorting permutation.
+*
+         N1 = K
+         N2 = N - K
+         CALL SLAMRG( N1, N2, D, 1, -1, INDXQ )
+      ELSE
+         DO 10 I = 1, N
+            INDXQ( I ) = I
+   10    CONTINUE
+      END IF
+*
+   20 CONTINUE
+      RETURN
+*
+*     End of SLAED1
+*
+      END
+
+
+
+      SUBROUTINE SLAED7( ICOMPQ, N, QSIZ, TLVLS, CURLVL, CURPBM, D, Q,
+     $                   LDQ, INDXQ, RHO, CUTPNT, QSTORE, QPTR, PRMPTR,
+     $                   PERM, GIVPTR, GIVCOL, GIVNUM, WORK, IWORK,
+     $                   INFO )
+*
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     .. Scalar Arguments ..
+      INTEGER            CURLVL, CURPBM, CUTPNT, ICOMPQ, INFO, LDQ, N,
+     $                   QSIZ, TLVLS
+      REAL               RHO
+*     ..
+*     .. Array Arguments ..
+      INTEGER            GIVCOL( 2, * ), GIVPTR( * ), INDXQ( * ),
+     $                   IWORK( * ), PERM( * ), PRMPTR( * ), QPTR( * )
+      REAL               D( * ), GIVNUM( 2, * ), Q( LDQ, * ),
+     $                   QSTORE( * ), WORK( * )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SLAED7 computes the updated eigensystem of a diagonal
+*  matrix after modification by a rank-one symmetric matrix. This
+*  routine is used only for the eigenproblem which requires all
+*  eigenvalues and optionally eigenvectors of a dense symmetric matrix
+*  that has been reduced to tridiagonal form.  SLAED1 handles
+*  the case in which all eigenvalues and eigenvectors of a symmetric
+*  tridiagonal matrix are desired.
+*
+*    T = Q(in) ( D(in) + RHO * Z*Z' ) Q'(in) = Q(out) * D(out) * Q'(out)
+*
+*     where Z = Q'u, u is a vector of length N with ones in the
+*     CUTPNT and CUTPNT + 1 th elements and zeros elsewhere.
+*
+*     The eigenvectors of the original matrix are stored in Q, and the
+*     eigenvalues are in D.  The algorithm consists of three stages:
+*
+*        The first stage consists of deflating the size of the problem
+*        when there are multiple eigenvalues or if there is a zero in
+*        the Z vector.  For each such occurence the dimension of the
+*        secular equation problem is reduced by one.  This stage is
+*        performed by the routine SLAED8.
+*
+*        The second stage consists of calculating the updated
+*        eigenvalues. This is done by finding the roots of the secular
+*        equation via the routine SLAED4 (as called by SLAED9).
+*        This routine also calculates the eigenvectors of the current
+*        problem.
+*
+*        The final stage consists of computing the updated eigenvectors
+*        directly using the updated eigenvalues.  The eigenvectors for
+*        the current problem are multiplied with the eigenvectors from
+*        the overall problem.
+*
+*  Arguments
+*  =========
+*
+*  ICOMPQ  (input) INTEGER
+*          = 0:  Compute eigenvalues only.
+*          = 1:  Compute eigenvectors of original dense symmetric matrix
+*                also.  On entry, Q contains the orthogonal matrix used
+*                to reduce the original matrix to tridiagonal form.
+*
+*  N      (input) INTEGER
+*         The dimension of the symmetric tridiagonal matrix.  N >= 0.
+*
+*  QSIZ   (input) INTEGER
+*         The dimension of the orthogonal matrix used to reduce
+*         the full matrix to tridiagonal form.  QSIZ >= N if ICOMPQ = 1.
+*
+*  TLVLS  (input) INTEGER
+*         The total number of merging levels in the overall divide and
+*         conquer tree.
+*
+*  CURLVL (input) INTEGER
+*         The current level in the overall merge routine,
+*         0 <= CURLVL <= TLVLS.
+*
+*  CURPBM (input) INTEGER
+*         The current problem in the current level in the overall
+*         merge routine (counting from upper left to lower right).
+*
+*  D      (input/output) REAL array, dimension (N)
+*         On entry, the eigenvalues of the rank-1-perturbed matrix.
+*         On exit, the eigenvalues of the repaired matrix.
+*
+*  Q      (input/output) REAL array, dimension (LDQ, N)
+*         On entry, the eigenvectors of the rank-1-perturbed matrix.
+*         On exit, the eigenvectors of the repaired tridiagonal matrix.
+*
+*  LDQ    (input) INTEGER
+*         The leading dimension of the array Q.  LDQ >= max(1,N).
+*
+*  INDXQ  (output) INTEGER array, dimension (N)
+*         The permutation which will reintegrate the subproblem just
+*         solved back into sorted order, i.e., D( INDXQ( I = 1, N ) )
+*         will be in ascending order.
+*
+*  RHO    (input) REAL
+*         The subdiagonal element used to create the rank-1
+*         modification.
+*
+*  CUTPNT (input) INTEGER
+*         Contains the location of the last eigenvalue in the leading
+*         sub-matrix.  min(1,N) <= CUTPNT <= N.
+*
+*  QSTORE (input/output) REAL array, dimension (N**2+1)
+*         Stores eigenvectors of submatrices encountered during
+*         divide and conquer, packed together. QPTR points to
+*         beginning of the submatrices.
+*
+*  QPTR   (input/output) INTEGER array, dimension (N+2)
+*         List of indices pointing to beginning of submatrices stored
+*         in QSTORE. The submatrices are numbered starting at the
+*         bottom left of the divide and conquer tree, from left to
+*         right and bottom to top.
+*
+*  PRMPTR (input) INTEGER array, dimension (N lg N)
+*         Contains a list of pointers which indicate where in PERM a
+*         level's permutation is stored.  PRMPTR(i+1) - PRMPTR(i)
+*         indicates the size of the permutation and also the size of
+*         the full, non-deflated problem.
+*
+*  PERM   (input) INTEGER array, dimension (N lg N)
+*         Contains the permutations (from deflation and sorting) to be
+*         applied to each eigenblock.
+*
+*  GIVPTR (input) INTEGER array, dimension (N lg N)
+*         Contains a list of pointers which indicate where in GIVCOL a
+*         level's Givens rotations are stored.  GIVPTR(i+1) - GIVPTR(i)
+*         indicates the number of Givens rotations.
+*
+*  GIVCOL (input) INTEGER array, dimension (2, N lg N)
+*         Each pair of numbers indicates a pair of columns to take place
+*         in a Givens rotation.
+*
+*  GIVNUM (input) REAL array, dimension (2, N lg N)
+*         Each number indicates the S value to be used in the
+*         corresponding Givens rotation.
+*
+*  WORK   (workspace) REAL array, dimension (3*N+QSIZ*N)
+*
+*  IWORK  (workspace) INTEGER array, dimension (4*N)
+*
+*  INFO   (output) INTEGER
+*          = 0:  successful exit.
+*          < 0:  if INFO = -i, the i-th argument had an illegal value.
+*          > 0:  if INFO = 1, an eigenvalue did not converge
+*
+*  Further Details
+*  ===============
+*
+*  Based on contributions by
+*     Jeff Rutter, Computer Science Division, University of California
+*     at Berkeley, USA
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL               ONE, ZERO
+      PARAMETER          ( ONE = 1.0E0, ZERO = 0.0E0 )
+*     ..
+*     .. Local Scalars ..
+      INTEGER            COLTYP, CURR, I, IDLMDA, INDX, INDXC, INDXP,
+     $                   IQ2, IS, IW, IZ, K, LDQ2, N1, N2, PTR
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SGEMM, SLAED8, SLAED9, SLAEDA, SLAMRG, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          MAX, MIN
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input parameters.
+*
+      INFO = 0
+*
+      IF( ICOMPQ.LT.0 .OR. ICOMPQ.GT.1 ) THEN
+         INFO = -1
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -2
+      ELSE IF( ICOMPQ.EQ.1 .AND. QSIZ.LT.N ) THEN
+         INFO = -4
+      ELSE IF( LDQ.LT.MAX( 1, N ) ) THEN
+         INFO = -9
+      ELSE IF( MIN( 1, N ).GT.CUTPNT .OR. N.LT.CUTPNT ) THEN
+         INFO = -12
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SLAED7', -INFO )
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      IF( N.EQ.0 )
+     $   RETURN
+*
+*     The following values are for bookkeeping purposes only.  They are
+*     integer pointers which indicate the portion of the workspace
+*     used by a particular array in SLAED8 and SLAED9.
+*
+      IF( ICOMPQ.EQ.1 ) THEN
+         LDQ2 = QSIZ
+      ELSE
+         LDQ2 = N
+      END IF
+*
+      IZ = 1
+      IDLMDA = IZ + N
+      IW = IDLMDA + N
+      IQ2 = IW + N
+      IS = IQ2 + N*LDQ2
+*
+      INDX = 1
+      INDXC = INDX + N
+      COLTYP = INDXC + N
+      INDXP = COLTYP + N
+*
+*     Form the z-vector which consists of the last row of Q_1 and the
+*     first row of Q_2.
+*
+      PTR = 1 + 2**TLVLS
+      DO 10 I = 1, CURLVL - 1
+         PTR = PTR + 2**( TLVLS-I )
+   10 CONTINUE
+      CURR = PTR + CURPBM
+      CALL SLAEDA( N, TLVLS, CURLVL, CURPBM, PRMPTR, PERM, GIVPTR,
+     $             GIVCOL, GIVNUM, QSTORE, QPTR, WORK( IZ ),
+     $             WORK( IZ+N ), INFO )
+*
+*     When solving the final problem, we no longer need the stored data,
+*     so we will overwrite the data from this level onto the previously
+*     used storage space.
+*
+      IF( CURLVL.EQ.TLVLS ) THEN
+         QPTR( CURR ) = 1
+         PRMPTR( CURR ) = 1
+         GIVPTR( CURR ) = 1
+      END IF
+*
+*     Sort and Deflate eigenvalues.
+*
+      CALL SLAED8( ICOMPQ, K, N, QSIZ, D, Q, LDQ, INDXQ, RHO, CUTPNT,
+     $             WORK( IZ ), WORK( IDLMDA ), WORK( IQ2 ), LDQ2,
+     $             WORK( IW ), PERM( PRMPTR( CURR ) ), GIVPTR( CURR+1 ),
+     $             GIVCOL( 1, GIVPTR( CURR ) ),
+     $             GIVNUM( 1, GIVPTR( CURR ) ), IWORK( INDXP ),
+     $             IWORK( INDX ), INFO )
+      PRMPTR( CURR+1 ) = PRMPTR( CURR ) + N
+      GIVPTR( CURR+1 ) = GIVPTR( CURR+1 ) + GIVPTR( CURR )
+*
+*     Solve Secular Equation.
+*
+      IF( K.NE.0 ) THEN
+         CALL SLAED9( K, 1, K, N, D, WORK( IS ), K, RHO, WORK( IDLMDA ),
+     $                WORK( IW ), QSTORE( QPTR( CURR ) ), K, INFO )
+         IF( INFO.NE.0 )
+     $      GO TO 30
+         IF( ICOMPQ.EQ.1 ) THEN
+            CALL SGEMM( 'N', 'N', QSIZ, K, K, ONE, WORK( IQ2 ), LDQ2,
+     $                  QSTORE( QPTR( CURR ) ), K, ZERO, Q, LDQ )
+         END IF
+         QPTR( CURR+1 ) = QPTR( CURR ) + K**2
+*
+*     Prepare the INDXQ sorting permutation.
+*
+         N1 = K
+         N2 = N - K
+         CALL SLAMRG( N1, N2, D, 1, -1, INDXQ )
+      ELSE
+         QPTR( CURR+1 ) = QPTR( CURR )
+         DO 20 I = 1, N
+            INDXQ( I ) = I
+   20    CONTINUE
+      END IF
+*
+   30 CONTINUE
+      RETURN
+*
+*     End of SLAED7
+*
+      END
+
+
+
+      SUBROUTINE SLACPY( UPLO, M, N, A, LDA, B, LDB )
+*
+*  -- LAPACK auxiliary routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     .. Scalar Arguments ..
+      CHARACTER          UPLO
+      INTEGER            LDA, LDB, M, N
+*     ..
+*     .. Array Arguments ..
+      REAL               A( LDA, * ), B( LDB, * )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SLACPY copies all or part of a two-dimensional matrix A to another
+*  matrix B.
+*
+*  Arguments
+*  =========
+*
+*  UPLO    (input) CHARACTER*1
+*          Specifies the part of the matrix A to be copied to B.
+*          = 'U':      Upper triangular part
+*          = 'L':      Lower triangular part
+*          Otherwise:  All of the matrix A
+*
+*  M       (input) INTEGER
+*          The number of rows of the matrix A.  M >= 0.
+*
+*  N       (input) INTEGER
+*          The number of columns of the matrix A.  N >= 0.
+*
+*  A       (input) REAL array, dimension (LDA,N)
+*          The m by n matrix A.  If UPLO = 'U', only the upper triangle
+*          or trapezoid is accessed; if UPLO = 'L', only the lower
+*          triangle or trapezoid is accessed.
+*
+*  LDA     (input) INTEGER
+*          The leading dimension of the array A.  LDA >= max(1,M).
+*
+*  B       (output) REAL array, dimension (LDB,N)
+*          On exit, B = A in the locations specified by UPLO.
+*
+*  LDB     (input) INTEGER
+*          The leading dimension of the array B.  LDB >= max(1,M).
+*
+*  =====================================================================
+*
+*     .. Local Scalars ..
+      INTEGER            I, J
+*     ..
+*     .. External Functions ..
+      LOGICAL            LSAME
+      EXTERNAL           LSAME
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          MIN
+*     ..
+*     .. Executable Statements ..
+*
+      IF( LSAME( UPLO, 'U' ) ) THEN
+         DO 20 J = 1, N
+            DO 10 I = 1, MIN( J, M )
+               B( I, J ) = A( I, J )
+   10       CONTINUE
+   20    CONTINUE
+      ELSE IF( LSAME( UPLO, 'L' ) ) THEN
+         DO 40 J = 1, N
+            DO 30 I = J, M
+               B( I, J ) = A( I, J )
+   30       CONTINUE
+   40    CONTINUE
+      ELSE
+         DO 60 J = 1, N
+            DO 50 I = 1, M
+               B( I, J ) = A( I, J )
+   50       CONTINUE
+   60    CONTINUE
+      END IF
+      RETURN
+*
+*     End of SLACPY
+*
+      END
+
+
+
+      SUBROUTINE SLAED2( K, N, N1, D, Q, LDQ, INDXQ, RHO, Z, DLAMDA, W,
+     $                   Q2, INDX, INDXC, INDXP, COLTYP, INFO )
+*
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     .. Scalar Arguments ..
+      INTEGER            INFO, K, LDQ, N, N1
+      REAL               RHO
+*     ..
+*     .. Array Arguments ..
+      INTEGER            COLTYP( * ), INDX( * ), INDXC( * ), INDXP( * ),
+     $                   INDXQ( * )
+      REAL               D( * ), DLAMDA( * ), Q( LDQ, * ), Q2( * ),
+     $                   W( * ), Z( * )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SLAED2 merges the two sets of eigenvalues together into a single
+*  sorted set.  Then it tries to deflate the size of the problem.
+*  There are two ways in which deflation can occur:  when two or more
+*  eigenvalues are close together or if there is a tiny entry in the
+*  Z vector.  For each such occurrence the order of the related secular
+*  equation problem is reduced by one.
+*
+*  Arguments
+*  =========
+*
+*  K      (output) INTEGER
+*         The number of non-deflated eigenvalues, and the order of the
+*         related secular equation. 0 <= K <=N.
+*
+*  N      (input) INTEGER
+*         The dimension of the symmetric tridiagonal matrix.  N >= 0.
+*
+*  N1     (input) INTEGER
+*         The location of the last eigenvalue in the leading sub-matrix.
+*         min(1,N) <= N1 <= N/2.
+*
+*  D      (input/output) REAL array, dimension (N)
+*         On entry, D contains the eigenvalues of the two submatrices to
+*         be combined.
+*         On exit, D contains the trailing (N-K) updated eigenvalues
+*         (those which were deflated) sorted into increasing order.
+*
+*  Q      (input/output) REAL array, dimension (LDQ, N)
+*         On entry, Q contains the eigenvectors of two submatrices in
+*         the two square blocks with corners at (1,1), (N1,N1)
+*         and (N1+1, N1+1), (N,N).
+*         On exit, Q contains the trailing (N-K) updated eigenvectors
+*         (those which were deflated) in its last N-K columns.
+*
+*  LDQ    (input) INTEGER
+*         The leading dimension of the array Q.  LDQ >= max(1,N).
+*
+*  INDXQ  (input/output) INTEGER array, dimension (N)
+*         The permutation which separately sorts the two sub-problems
+*         in D into ascending order.  Note that elements in the second
+*         half of this permutation must first have N1 added to their
+*         values. Destroyed on exit.
+*
+*  RHO    (input/output) REAL
+*         On entry, the off-diagonal element associated with the rank-1
+*         cut which originally split the two submatrices which are now
+*         being recombined.
+*         On exit, RHO has been modified to the value required by
+*         SLAED3.
+*
+*  Z      (input) REAL array, dimension (N)
+*         On entry, Z contains the updating vector (the last
+*         row of the first sub-eigenvector matrix and the first row of
+*         the second sub-eigenvector matrix).
+*         On exit, the contents of Z have been destroyed by the updating
+*         process.
+*
+*  DLAMDA (output) REAL array, dimension (N)
+*         A copy of the first K eigenvalues which will be used by
+*         SLAED3 to form the secular equation.
+*
+*  W      (output) REAL array, dimension (N)
+*         The first k values of the final deflation-altered z-vector
+*         which will be passed to SLAED3.
+*
+*  Q2     (output) REAL array, dimension (N1**2+(N-N1)**2)
+*         A copy of the first K eigenvectors which will be used by
+*         SLAED3 in a matrix multiply (SGEMM) to solve for the new
+*         eigenvectors.
+*
+*  INDX   (workspace) INTEGER array, dimension (N)
+*         The permutation used to sort the contents of DLAMDA into
+*         ascending order.
+*
+*  INDXC  (output) INTEGER array, dimension (N)
+*         The permutation used to arrange the columns of the deflated
+*         Q matrix into three groups:  the first group contains non-zero
+*         elements only at and above N1, the second contains
+*         non-zero elements only below N1, and the third is dense.
+*
+*  INDXP  (workspace) INTEGER array, dimension (N)
+*         The permutation used to place deflated values of D at the end
+*         of the array.  INDXP(1:K) points to the nondeflated D-values
+*         and INDXP(K+1:N) points to the deflated eigenvalues.
+*
+*  COLTYP (workspace/output) INTEGER array, dimension (N)
+*         During execution, a label which will indicate which of the
+*         following types a column in the Q2 matrix is:
+*         1 : non-zero in the upper half only;
+*         2 : dense;
+*         3 : non-zero in the lower half only;
+*         4 : deflated.
+*         On exit, COLTYP(i) is the number of columns of type i,
+*         for i=1 to 4 only.
+*
+*  INFO   (output) INTEGER
+*          = 0:  successful exit.
+*          < 0:  if INFO = -i, the i-th argument had an illegal value.
+*
+*  Further Details
+*  ===============
+*
+*  Based on contributions by
+*     Jeff Rutter, Computer Science Division, University of California
+*     at Berkeley, USA
+*  Modified by Francoise Tisseur, University of Tennessee.
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL               MONE, ZERO, ONE, TWO, EIGHT
+      PARAMETER          ( MONE = -1.0E0, ZERO = 0.0E0, ONE = 1.0E0,
+     $                   TWO = 2.0E0, EIGHT = 8.0E0 )
+*     ..
+*     .. Local Arrays ..
+      INTEGER            CTOT( 4 ), PSM( 4 )
+*     ..
+*     .. Local Scalars ..
+      INTEGER            CT, I, IMAX, IQ1, IQ2, J, JMAX, JS, K2, N1P1,
+     $                   N2, NJ, PJ
+      REAL               C, EPS, S, T, TAU, TOL
+*     ..
+*     .. External Functions ..
+      INTEGER            ISAMAX
+      REAL               SLAMCH, SLAPY2
+      EXTERNAL           ISAMAX, SLAMCH, SLAPY2
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SCOPY, SLACPY, SLAMRG, SROT, SSCAL, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          ABS, MAX, MIN, SQRT
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input parameters.
+*
+      INFO = 0
+*
+      IF( N.LT.0 ) THEN
+         INFO = -2
+      ELSE IF( LDQ.LT.MAX( 1, N ) ) THEN
+         INFO = -6
+      ELSE IF( MIN( 1, ( N / 2 ) ).GT.N1 .OR. ( N / 2 ).LT.N1 ) THEN
+         INFO = -3
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SLAED2', -INFO )
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      IF( N.EQ.0 )
+     $   RETURN
+*
+      N2 = N - N1
+      N1P1 = N1 + 1
+*
+      IF( RHO.LT.ZERO ) THEN
+         CALL SSCAL( N2, MONE, Z( N1P1 ), 1 )
+      END IF
+*
+*     Normalize z so that norm(z) = 1.  Since z is the concatenation of
+*     two normalized vectors, norm2(z) = sqrt(2).
+*
+      T = ONE / SQRT( TWO )
+      CALL SSCAL( N, T, Z, 1 )
+*
+*     RHO = ABS( norm(z)**2 * RHO )
+*
+      RHO = ABS( TWO*RHO )
+*
+*     Sort the eigenvalues into increasing order
+*
+      DO 10 I = N1P1, N
+         INDXQ( I ) = INDXQ( I ) + N1
+   10 CONTINUE
+*
+*     re-integrate the deflated parts from the last pass
+*
+      DO 20 I = 1, N
+         DLAMDA( I ) = D( INDXQ( I ) )
+   20 CONTINUE
+      CALL SLAMRG( N1, N2, DLAMDA, 1, 1, INDXC )
+      DO 30 I = 1, N
+         INDX( I ) = INDXQ( INDXC( I ) )
+   30 CONTINUE
+*
+*     Calculate the allowable deflation tolerance
+*
+      IMAX = ISAMAX( N, Z, 1 )
+      JMAX = ISAMAX( N, D, 1 )
+      EPS = SLAMCH( 'Epsilon' )
+      TOL = EIGHT*EPS*MAX( ABS( D( JMAX ) ), ABS( Z( IMAX ) ) )
+*
+*     If the rank-1 modifier is small enough, no more needs to be done
+*     except to reorganize Q so that its columns correspond with the
+*     elements in D.
+*
+      IF( RHO*ABS( Z( IMAX ) ).LE.TOL ) THEN
+         K = 0
+         IQ2 = 1
+         DO 40 J = 1, N
+            I = INDX( J )
+            CALL SCOPY( N, Q( 1, I ), 1, Q2( IQ2 ), 1 )
+            DLAMDA( J ) = D( I )
+            IQ2 = IQ2 + N
+   40    CONTINUE
+         CALL SLACPY( 'A', N, N, Q2, N, Q, LDQ )
+         CALL SCOPY( N, DLAMDA, 1, D, 1 )
+         GO TO 190
+      END IF
+*
+*     If there are multiple eigenvalues then the problem deflates.  Here
+*     the number of equal eigenvalues are found.  As each equal
+*     eigenvalue is found, an elementary reflector is computed to rotate
+*     the corresponding eigensubspace so that the corresponding
+*     components of Z are zero in this new basis.
+*
+      DO 50 I = 1, N1
+         COLTYP( I ) = 1
+   50 CONTINUE
+      DO 60 I = N1P1, N
+         COLTYP( I ) = 3
+   60 CONTINUE
+*
+*
+      K = 0
+      K2 = N + 1
+      DO 70 J = 1, N
+         NJ = INDX( J )
+         IF( RHO*ABS( Z( NJ ) ).LE.TOL ) THEN
+*
+*           Deflate due to small z component.
+*
+            K2 = K2 - 1
+            COLTYP( NJ ) = 4
+            INDXP( K2 ) = NJ
+            IF( J.EQ.N )
+     $         GO TO 100
+         ELSE
+            PJ = NJ
+            GO TO 80
+         END IF
+   70 CONTINUE
+   80 CONTINUE
+      J = J + 1
+      NJ = INDX( J )
+      IF( J.GT.N )
+     $   GO TO 100
+      IF( RHO*ABS( Z( NJ ) ).LE.TOL ) THEN
+*
+*        Deflate due to small z component.
+*
+         K2 = K2 - 1
+         COLTYP( NJ ) = 4
+         INDXP( K2 ) = NJ
+      ELSE
+*
+*        Check if eigenvalues are close enough to allow deflation.
+*
+         S = Z( PJ )
+         C = Z( NJ )
+*
+*        Find sqrt(a**2+b**2) without overflow or
+*        destructive underflow.
+*
+         TAU = SLAPY2( C, S )
+         T = D( NJ ) - D( PJ )
+         C = C / TAU
+         S = -S / TAU
+         IF( ABS( T*C*S ).LE.TOL ) THEN
+*
+*           Deflation is possible.
+*
+            Z( NJ ) = TAU
+            Z( PJ ) = ZERO
+            IF( COLTYP( NJ ).NE.COLTYP( PJ ) )
+     $         COLTYP( NJ ) = 2
+            COLTYP( PJ ) = 4
+            CALL SROT( N, Q( 1, PJ ), 1, Q( 1, NJ ), 1, C, S )
+            T = D( PJ )*C**2 + D( NJ )*S**2
+            D( NJ ) = D( PJ )*S**2 + D( NJ )*C**2
+            D( PJ ) = T
+            K2 = K2 - 1
+            I = 1
+   90       CONTINUE
+            IF( K2+I.LE.N ) THEN
+               IF( D( PJ ).LT.D( INDXP( K2+I ) ) ) THEN
+                  INDXP( K2+I-1 ) = INDXP( K2+I )
+                  INDXP( K2+I ) = PJ
+                  I = I + 1
+                  GO TO 90
+               ELSE
+                  INDXP( K2+I-1 ) = PJ
+               END IF
+            ELSE
+               INDXP( K2+I-1 ) = PJ
+            END IF
+            PJ = NJ
+         ELSE
+            K = K + 1
+            DLAMDA( K ) = D( PJ )
+            W( K ) = Z( PJ )
+            INDXP( K ) = PJ
+            PJ = NJ
+         END IF
+      END IF
+      GO TO 80
+  100 CONTINUE
+*
+*     Record the last eigenvalue.
+*
+      K = K + 1
+      DLAMDA( K ) = D( PJ )
+      W( K ) = Z( PJ )
+      INDXP( K ) = PJ
+*
+*     Count up the total number of the various types of columns, then
+*     form a permutation which positions the four column types into
+*     four uniform groups (although one or more of these groups may be
+*     empty).
+*
+      DO 110 J = 1, 4
+         CTOT( J ) = 0
+  110 CONTINUE
+      DO 120 J = 1, N
+         CT = COLTYP( J )
+         CTOT( CT ) = CTOT( CT ) + 1
+  120 CONTINUE
+*
+*     PSM(*) = Position in SubMatrix (of types 1 through 4)
+*
+      PSM( 1 ) = 1
+      PSM( 2 ) = 1 + CTOT( 1 )
+      PSM( 3 ) = PSM( 2 ) + CTOT( 2 )
+      PSM( 4 ) = PSM( 3 ) + CTOT( 3 )
+      K = N - CTOT( 4 )
+*
+*     Fill out the INDXC array so that the permutation which it induces
+*     will place all type-1 columns first, all type-2 columns next,
+*     then all type-3's, and finally all type-4's.
+*
+      DO 130 J = 1, N
+         JS = INDXP( J )
+         CT = COLTYP( JS )
+         INDX( PSM( CT ) ) = JS
+         INDXC( PSM( CT ) ) = J
+         PSM( CT ) = PSM( CT ) + 1
+  130 CONTINUE
+*
+*     Sort the eigenvalues and corresponding eigenvectors into DLAMDA
+*     and Q2 respectively.  The eigenvalues/vectors which were not
+*     deflated go into the first K slots of DLAMDA and Q2 respectively,
+*     while those which were deflated go into the last N - K slots.
+*
+      I = 1
+      IQ1 = 1
+      IQ2 = 1 + ( CTOT( 1 )+CTOT( 2 ) )*N1
+      DO 140 J = 1, CTOT( 1 )
+         JS = INDX( I )
+         CALL SCOPY( N1, Q( 1, JS ), 1, Q2( IQ1 ), 1 )
+         Z( I ) = D( JS )
+         I = I + 1
+         IQ1 = IQ1 + N1
+  140 CONTINUE
+*
+      DO 150 J = 1, CTOT( 2 )
+         JS = INDX( I )
+         CALL SCOPY( N1, Q( 1, JS ), 1, Q2( IQ1 ), 1 )
+         CALL SCOPY( N2, Q( N1+1, JS ), 1, Q2( IQ2 ), 1 )
+         Z( I ) = D( JS )
+         I = I + 1
+         IQ1 = IQ1 + N1
+         IQ2 = IQ2 + N2
+  150 CONTINUE
+*
+      DO 160 J = 1, CTOT( 3 )
+         JS = INDX( I )
+         CALL SCOPY( N2, Q( N1+1, JS ), 1, Q2( IQ2 ), 1 )
+         Z( I ) = D( JS )
+         I = I + 1
+         IQ2 = IQ2 + N2
+  160 CONTINUE
+*
+      IQ1 = IQ2
+      DO 170 J = 1, CTOT( 4 )
+         JS = INDX( I )
+         CALL SCOPY( N, Q( 1, JS ), 1, Q2( IQ2 ), 1 )
+         IQ2 = IQ2 + N
+         Z( I ) = D( JS )
+         I = I + 1
+  170 CONTINUE
+*
+*     The deflated eigenvalues and their corresponding vectors go back
+*     into the last N - K slots of D and Q respectively.
+*
+      CALL SLACPY( 'A', N, CTOT( 4 ), Q2( IQ1 ), N, Q( 1, K+1 ), LDQ )
+      CALL SCOPY( N-K, Z( K+1 ), 1, D( K+1 ), 1 )
+*
+*     Copy CTOT into COLTYP for referencing in SLAED3.
+*
+      DO 180 J = 1, 4
+         COLTYP( J ) = CTOT( J )
+  180 CONTINUE
+*
+  190 CONTINUE
+      RETURN
+*
+*     End of SLAED2
+*
+      END
+
+
+
+      SUBROUTINE SLAED3( K, N, N1, D, Q, LDQ, RHO, DLAMDA, Q2, INDX,
+     $                   CTOT, W, S, INFO )
+*
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     .. Scalar Arguments ..
+      INTEGER            INFO, K, LDQ, N, N1
+      REAL               RHO
+*     ..
+*     .. Array Arguments ..
+      INTEGER            CTOT( * ), INDX( * )
+      REAL               D( * ), DLAMDA( * ), Q( LDQ, * ), Q2( * ),
+     $                   S( * ), W( * )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SLAED3 finds the roots of the secular equation, as defined by the
+*  values in D, W, and RHO, between 1 and K.  It makes the
+*  appropriate calls to SLAED4 and then updates the eigenvectors by
+*  multiplying the matrix of eigenvectors of the pair of eigensystems
+*  being combined by the matrix of eigenvectors of the K-by-K system
+*  which is solved here.
+*
+*  This code makes very mild assumptions about floating point
+*  arithmetic. It will work on machines with a guard digit in
+*  add/subtract, or on those binary machines without guard digits
+*  which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or Cray-2.
+*  It could conceivably fail on hexadecimal or decimal machines
+*  without guard digits, but we know of none.
+*
+*  Arguments
+*  =========
+*
+*  K       (input) INTEGER
+*          The number of terms in the rational function to be solved by
+*          SLAED4.  K >= 0.
+*
+*  N       (input) INTEGER
+*          The number of rows and columns in the Q matrix.
+*          N >= K (deflation may result in N>K).
+*
+*  N1      (input) INTEGER
+*          The location of the last eigenvalue in the leading submatrix.
+*          min(1,N) <= N1 <= N/2.
+*
+*  D       (output) REAL array, dimension (N)
+*          D(I) contains the updated eigenvalues for
+*          1 <= I <= K.
+*
+*  Q       (output) REAL array, dimension (LDQ,N)
+*          Initially the first K columns are used as workspace.
+*          On output the columns 1 to K contain
+*          the updated eigenvectors.
+*
+*  LDQ     (input) INTEGER
+*          The leading dimension of the array Q.  LDQ >= max(1,N).
+*
+*  RHO     (input) REAL
+*          The value of the parameter in the rank one update equation.
+*          RHO >= 0 required.
+*
+*  DLAMDA  (input/output) REAL array, dimension (K)
+*          The first K elements of this array contain the old roots
+*          of the deflated updating problem.  These are the poles
+*          of the secular equation. May be changed on output by
+*          having lowest order bit set to zero on Cray X-MP, Cray Y-MP,
+*          Cray-2, or Cray C-90, as described above.
+*
+*  Q2      (input) REAL array, dimension (LDQ2, N)
+*          The first K columns of this matrix contain the non-deflated
+*          eigenvectors for the split problem.
+*
+*  INDX    (input) INTEGER array, dimension (N)
+*          The permutation used to arrange the columns of the deflated
+*          Q matrix into three groups (see SLAED2).
+*          The rows of the eigenvectors found by SLAED4 must be likewise
+*          permuted before the matrix multiply can take place.
+*
+*  CTOT    (input) INTEGER array, dimension (4)
+*          A count of the total number of the various types of columns
+*          in Q, as described in INDX.  The fourth column type is any
+*          column which has been deflated.
+*
+*  W       (input/output) REAL array, dimension (K)
+*          The first K elements of this array contain the components
+*          of the deflation-adjusted updating vector. Destroyed on
+*          output.
+*
+*  S       (workspace) REAL array, dimension (N1 + 1)*K
+*          Will contain the eigenvectors of the repaired matrix which
+*          will be multiplied by the previously accumulated eigenvectors
+*          to update the system.
+*
+*  LDS     (input) INTEGER
+*          The leading dimension of S.  LDS >= max(1,K).
+*
+*  INFO    (output) INTEGER
+*          = 0:  successful exit.
+*          < 0:  if INFO = -i, the i-th argument had an illegal value.
+*          > 0:  if INFO = 1, an eigenvalue did not converge
+*
+*  Further Details
+*  ===============
+*
+*  Based on contributions by
+*     Jeff Rutter, Computer Science Division, University of California
+*     at Berkeley, USA
+*  Modified by Francoise Tisseur, University of Tennessee.
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL               ONE, ZERO
+      PARAMETER          ( ONE = 1.0E0, ZERO = 0.0E0 )
+*     ..
+*     .. Local Scalars ..
+      INTEGER            I, II, IQ2, J, N12, N2, N23
+      REAL               TEMP
+*     ..
+*     .. External Functions ..
+      REAL               SLAMC3, SNRM2
+      EXTERNAL           SLAMC3, SNRM2
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SCOPY, SGEMM, SLACPY, SLAED4, SLASET, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          MAX, SIGN, SQRT
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input parameters.
+*
+      INFO = 0
+*
+      IF( K.LT.0 ) THEN
+         INFO = -1
+      ELSE IF( N.LT.K ) THEN
+         INFO = -2
+      ELSE IF( LDQ.LT.MAX( 1, N ) ) THEN
+         INFO = -6
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SLAED3', -INFO )
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      IF( K.EQ.0 )
+     $   RETURN
+*
+*     Modify values DLAMDA(i) to make sure all DLAMDA(i)-DLAMDA(j) can
+*     be computed with high relative accuracy (barring over/underflow).
+*     This is a problem on machines without a guard digit in
+*     add/subtract (Cray XMP, Cray YMP, Cray C 90 and Cray 2).
+*     The following code replaces DLAMDA(I) by 2*DLAMDA(I)-DLAMDA(I),
+*     which on any of these machines zeros out the bottommost
+*     bit of DLAMDA(I) if it is 1; this makes the subsequent
+*     subtractions DLAMDA(I)-DLAMDA(J) unproblematic when cancellation
+*     occurs. On binary machines with a guard digit (almost all
+*     machines) it does not change DLAMDA(I) at all. On hexadecimal
+*     and decimal machines with a guard digit, it slightly
+*     changes the bottommost bits of DLAMDA(I). It does not account
+*     for hexadecimal or decimal machines without guard digits
+*     (we know of none). We use a subroutine call to compute
+*     2*DLAMBDA(I) to prevent optimizing compilers from eliminating
+*     this code.
+*
+      DO 10 I = 1, K
+         DLAMDA( I ) = SLAMC3( DLAMDA( I ), DLAMDA( I ) ) - DLAMDA( I )
+   10 CONTINUE
+*
+      DO 20 J = 1, K
+         CALL SLAED4( K, J, DLAMDA, W, Q( 1, J ), RHO, D( J ), INFO )
+*
+*        If the zero finder fails, the computation is terminated.
+*
+         IF( INFO.NE.0 )
+     $      GO TO 120
+   20 CONTINUE
+*
+      IF( K.EQ.1 )
+     $   GO TO 110
+      IF( K.EQ.2 ) THEN
+         DO 30 J = 1, K
+            W( 1 ) = Q( 1, J )
+            W( 2 ) = Q( 2, J )
+            II = INDX( 1 )
+            Q( 1, J ) = W( II )
+            II = INDX( 2 )
+            Q( 2, J ) = W( II )
+   30    CONTINUE
+         GO TO 110
+      END IF
+*
+*     Compute updated W.
+*
+      CALL SCOPY( K, W, 1, S, 1 )
+*
+*     Initialize W(I) = Q(I,I)
+*
+      CALL SCOPY( K, Q, LDQ+1, W, 1 )
+      DO 60 J = 1, K
+         DO 40 I = 1, J - 1
+            W( I ) = W( I )*( Q( I, J ) / ( DLAMDA( I )-DLAMDA( J ) ) )
+   40    CONTINUE
+         DO 50 I = J + 1, K
+            W( I ) = W( I )*( Q( I, J ) / ( DLAMDA( I )-DLAMDA( J ) ) )
+   50    CONTINUE
+   60 CONTINUE
+      DO 70 I = 1, K
+         W( I ) = SIGN( SQRT( -W( I ) ), S( I ) )
+   70 CONTINUE
+*
+*     Compute eigenvectors of the modified rank-1 modification.
+*
+      DO 100 J = 1, K
+         DO 80 I = 1, K
+            S( I ) = W( I ) / Q( I, J )
+   80    CONTINUE
+         TEMP = SNRM2( K, S, 1 )
+         DO 90 I = 1, K
+            II = INDX( I )
+            Q( I, J ) = S( II ) / TEMP
+   90    CONTINUE
+  100 CONTINUE
+*
+*     Compute the updated eigenvectors.
+*
+  110 CONTINUE
+*
+      N2 = N - N1
+      N12 = CTOT( 1 ) + CTOT( 2 )
+      N23 = CTOT( 2 ) + CTOT( 3 )
+*
+      CALL SLACPY( 'A', N23, K, Q( CTOT( 1 )+1, 1 ), LDQ, S, N23 )
+      IQ2 = N1*N12 + 1
+      IF( N23.NE.0 ) THEN
+         CALL SGEMM( 'N', 'N', N2, K, N23, ONE, Q2( IQ2 ), N2, S, N23,
+     $               ZERO, Q( N1+1, 1 ), LDQ )
+      ELSE
+         CALL SLASET( 'A', N2, K, ZERO, ZERO, Q( N1+1, 1 ), LDQ )
+      END IF
+*
+      CALL SLACPY( 'A', N12, K, Q, LDQ, S, N12 )
+      IF( N12.NE.0 ) THEN
+         CALL SGEMM( 'N', 'N', N1, K, N12, ONE, Q2, N1, S, N12, ZERO, Q,
+     $               LDQ )
+      ELSE
+         CALL SLASET( 'A', N1, K, ZERO, ZERO, Q( 1, 1 ), LDQ )
+      END IF
+*
+*
+  120 CONTINUE
+      RETURN
+*
+*     End of SLAED3
+*
+      END
+
 
 
 	  
