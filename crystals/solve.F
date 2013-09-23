@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.63  2013/09/23 10:16:05  rich
+C Extra lapack dependecies (3) for non-intels
+C
 C Revision 1.62  2013/09/23 09:56:50  rich
 C Extra lapack dependecies (2) for non-intels
 C
@@ -25350,6 +25353,2359 @@ c
 *
       END
 
+
+
+      SUBROUTINE SLAMRG( N1, N2, A, STRD1, STRD2, INDEX )
+*
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     .. Scalar Arguments ..
+      INTEGER            N1, N2, STRD1, STRD2
+*     ..
+*     .. Array Arguments ..
+      INTEGER            INDEX( * )
+      REAL               A( * )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SLAMRG will create a permutation list which will merge the elements
+*  of A (which is composed of two independently sorted sets) into a
+*  single set which is sorted in ascending order.
+*
+*  Arguments
+*  =========
+*
+*  N1     (input) INTEGER
+*  N2     (input) INTEGER
+*         These arguements contain the respective lengths of the two
+*         sorted lists to be merged.
+*
+*  A      (input) REAL array, dimension (N1+N2)
+*         The first N1 elements of A contain a list of numbers which
+*         are sorted in either ascending or descending order.  Likewise
+*         for the final N2 elements.
+*
+*  STRD1  (input) INTEGER
+*  STRD2  (input) INTEGER
+*         These are the strides to be taken through the array A.
+*         Allowable strides are 1 and -1.  They indicate whether a
+*         subset of A is sorted in ascending (STRDx = 1) or descending
+*         (STRDx = -1) order.
+*
+*  INDEX  (output) INTEGER array, dimension (N1+N2)
+*         On exit this array will contain a permutation such that
+*         if B( I ) = A( INDEX( I ) ) for I=1,N1+N2, then B will be
+*         sorted in ascending order.
+*
+*  =====================================================================
+*
+*     .. Local Scalars ..
+      INTEGER            I, IND1, IND2, N1SV, N2SV
+*     ..
+*     .. Executable Statements ..
+*
+      N1SV = N1
+      N2SV = N2
+      IF( STRD1.GT.0 ) THEN
+         IND1 = 1
+      ELSE
+         IND1 = N1
+      END IF
+      IF( STRD2.GT.0 ) THEN
+         IND2 = 1 + N1
+      ELSE
+         IND2 = N1 + N2
+      END IF
+      I = 1
+*     while ( (N1SV > 0) & (N2SV > 0) )
+   10 CONTINUE
+      IF( N1SV.GT.0 .AND. N2SV.GT.0 ) THEN
+         IF( A( IND1 ).LE.A( IND2 ) ) THEN
+            INDEX( I ) = IND1
+            I = I + 1
+            IND1 = IND1 + STRD1
+            N1SV = N1SV - 1
+         ELSE
+            INDEX( I ) = IND2
+            I = I + 1
+            IND2 = IND2 + STRD2
+            N2SV = N2SV - 1
+         END IF
+         GO TO 10
+      END IF
+*     end while
+      IF( N1SV.EQ.0 ) THEN
+         DO 20 N1SV = 1, N2SV
+            INDEX( I ) = IND2
+            I = I + 1
+            IND2 = IND2 + STRD2
+   20    CONTINUE
+      ELSE
+*     N2SV .EQ. 0
+         DO 30 N2SV = 1, N1SV
+            INDEX( I ) = IND1
+            I = I + 1
+            IND1 = IND1 + STRD1
+   30    CONTINUE
+      END IF
+*
+      RETURN
+*
+*     End of SLAMRG
+*
+      END
+
+
+
+      SUBROUTINE SLAEDA( N, TLVLS, CURLVL, CURPBM, PRMPTR, PERM, GIVPTR,
+     $                   GIVCOL, GIVNUM, Q, QPTR, Z, ZTEMP, INFO )
+*
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     .. Scalar Arguments ..
+      INTEGER            CURLVL, CURPBM, INFO, N, TLVLS
+*     ..
+*     .. Array Arguments ..
+      INTEGER            GIVCOL( 2, * ), GIVPTR( * ), PERM( * ),
+     $                   PRMPTR( * ), QPTR( * )
+      REAL               GIVNUM( 2, * ), Q( * ), Z( * ), ZTEMP( * )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SLAEDA computes the Z vector corresponding to the merge step in the
+*  CURLVLth step of the merge process with TLVLS steps for the CURPBMth
+*  problem.
+*
+*  Arguments
+*  =========
+*
+*  N      (input) INTEGER
+*         The dimension of the symmetric tridiagonal matrix.  N >= 0.
+*
+*  TLVLS  (input) INTEGER
+*         The total number of merging levels in the overall divide and
+*         conquer tree.
+*
+*  CURLVL (input) INTEGER
+*         The current level in the overall merge routine,
+*         0 <= curlvl <= tlvls.
+*
+*  CURPBM (input) INTEGER
+*         The current problem in the current level in the overall
+*         merge routine (counting from upper left to lower right).
+*
+*  PRMPTR (input) INTEGER array, dimension (N lg N)
+*         Contains a list of pointers which indicate where in PERM a
+*         level's permutation is stored.  PRMPTR(i+1) - PRMPTR(i)
+*         indicates the size of the permutation and incidentally the
+*         size of the full, non-deflated problem.
+*
+*  PERM   (input) INTEGER array, dimension (N lg N)
+*         Contains the permutations (from deflation and sorting) to be
+*         applied to each eigenblock.
+*
+*  GIVPTR (input) INTEGER array, dimension (N lg N)
+*         Contains a list of pointers which indicate where in GIVCOL a
+*         level's Givens rotations are stored.  GIVPTR(i+1) - GIVPTR(i)
+*         indicates the number of Givens rotations.
+*
+*  GIVCOL (input) INTEGER array, dimension (2, N lg N)
+*         Each pair of numbers indicates a pair of columns to take place
+*         in a Givens rotation.
+*
+*  GIVNUM (input) REAL array, dimension (2, N lg N)
+*         Each number indicates the S value to be used in the
+*         corresponding Givens rotation.
+*
+*  Q      (input) REAL array, dimension (N**2)
+*         Contains the square eigenblocks from previous levels, the
+*         starting positions for blocks are given by QPTR.
+*
+*  QPTR   (input) INTEGER array, dimension (N+2)
+*         Contains a list of pointers which indicate where in Q an
+*         eigenblock is stored.  SQRT( QPTR(i+1) - QPTR(i) ) indicates
+*         the size of the block.
+*
+*  Z      (output) REAL array, dimension (N)
+*         On output this vector contains the updating vector (the last
+*         row of the first sub-eigenvector matrix and the first row of
+*         the second sub-eigenvector matrix).
+*
+*  ZTEMP  (workspace) REAL array, dimension (N)
+*
+*  INFO   (output) INTEGER
+*          = 0:  successful exit.
+*          < 0:  if INFO = -i, the i-th argument had an illegal value.
+*
+*  Further Details
+*  ===============
+*
+*  Based on contributions by
+*     Jeff Rutter, Computer Science Division, University of California
+*     at Berkeley, USA
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL               ZERO, HALF, ONE
+      PARAMETER          ( ZERO = 0.0E0, HALF = 0.5E0, ONE = 1.0E0 )
+*     ..
+*     .. Local Scalars ..
+      INTEGER            BSIZ1, BSIZ2, CURR, I, K, MID, PSIZ1, PSIZ2,
+     $                   PTR, ZPTR1
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SCOPY, SGEMV, SROT, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          INT, REAL, SQRT
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input parameters.
+*
+      INFO = 0
+*
+      IF( N.LT.0 ) THEN
+         INFO = -1
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SLAEDA', -INFO )
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      IF( N.EQ.0 )
+     $   RETURN
+*
+*     Determine location of first number in second half.
+*
+      MID = N / 2 + 1
+*
+*     Gather last/first rows of appropriate eigenblocks into center of Z
+*
+      PTR = 1
+*
+*     Determine location of lowest level subproblem in the full storage
+*     scheme
+*
+      CURR = PTR + CURPBM*2**CURLVL + 2**( CURLVL-1 ) - 1
+*
+*     Determine size of these matrices.  We add HALF to the value of
+*     the SQRT in case the machine underestimates one of these square
+*     roots.
+*
+      BSIZ1 = INT( HALF+SQRT( REAL( QPTR( CURR+1 )-QPTR( CURR ) ) ) )
+      BSIZ2 = INT( HALF+SQRT( REAL( QPTR( CURR+2 )-QPTR( CURR+1 ) ) ) )
+      DO 10 K = 1, MID - BSIZ1 - 1
+         Z( K ) = ZERO
+   10 CONTINUE
+      CALL SCOPY( BSIZ1, Q( QPTR( CURR )+BSIZ1-1 ), BSIZ1,
+     $            Z( MID-BSIZ1 ), 1 )
+      CALL SCOPY( BSIZ2, Q( QPTR( CURR+1 ) ), BSIZ2, Z( MID ), 1 )
+      DO 20 K = MID + BSIZ2, N
+         Z( K ) = ZERO
+   20 CONTINUE
+*
+*     Loop thru remaining levels 1 -> CURLVL applying the Givens
+*     rotations and permutation and then multiplying the center matrices
+*     against the current Z.
+*
+      PTR = 2**TLVLS + 1
+      DO 70 K = 1, CURLVL - 1
+         CURR = PTR + CURPBM*2**( CURLVL-K ) + 2**( CURLVL-K-1 ) - 1
+         PSIZ1 = PRMPTR( CURR+1 ) - PRMPTR( CURR )
+         PSIZ2 = PRMPTR( CURR+2 ) - PRMPTR( CURR+1 )
+         ZPTR1 = MID - PSIZ1
+*
+*       Apply Givens at CURR and CURR+1
+*
+         DO 30 I = GIVPTR( CURR ), GIVPTR( CURR+1 ) - 1
+            CALL SROT( 1, Z( ZPTR1+GIVCOL( 1, I )-1 ), 1,
+     $                 Z( ZPTR1+GIVCOL( 2, I )-1 ), 1, GIVNUM( 1, I ),
+     $                 GIVNUM( 2, I ) )
+   30    CONTINUE
+         DO 40 I = GIVPTR( CURR+1 ), GIVPTR( CURR+2 ) - 1
+            CALL SROT( 1, Z( MID-1+GIVCOL( 1, I ) ), 1,
+     $                 Z( MID-1+GIVCOL( 2, I ) ), 1, GIVNUM( 1, I ),
+     $                 GIVNUM( 2, I ) )
+   40    CONTINUE
+         PSIZ1 = PRMPTR( CURR+1 ) - PRMPTR( CURR )
+         PSIZ2 = PRMPTR( CURR+2 ) - PRMPTR( CURR+1 )
+         DO 50 I = 0, PSIZ1 - 1
+            ZTEMP( I+1 ) = Z( ZPTR1+PERM( PRMPTR( CURR )+I )-1 )
+   50    CONTINUE
+         DO 60 I = 0, PSIZ2 - 1
+            ZTEMP( PSIZ1+I+1 ) = Z( MID+PERM( PRMPTR( CURR+1 )+I )-1 )
+   60    CONTINUE
+*
+*        Multiply Blocks at CURR and CURR+1
+*
+*        Determine size of these matrices.  We add HALF to the value of
+*        the SQRT in case the machine underestimates one of these
+*        square roots.
+*
+         BSIZ1 = INT( HALF+SQRT( REAL( QPTR( CURR+1 )-QPTR( CURR ) ) ) )
+         BSIZ2 = INT( HALF+SQRT( REAL( QPTR( CURR+2 )-QPTR( CURR+
+     $           1 ) ) ) )
+         IF( BSIZ1.GT.0 ) THEN
+            CALL SGEMV( 'T', BSIZ1, BSIZ1, ONE, Q( QPTR( CURR ) ),
+     $                  BSIZ1, ZTEMP( 1 ), 1, ZERO, Z( ZPTR1 ), 1 )
+         END IF
+         CALL SCOPY( PSIZ1-BSIZ1, ZTEMP( BSIZ1+1 ), 1, Z( ZPTR1+BSIZ1 ),
+     $               1 )
+         IF( BSIZ2.GT.0 ) THEN
+            CALL SGEMV( 'T', BSIZ2, BSIZ2, ONE, Q( QPTR( CURR+1 ) ),
+     $                  BSIZ2, ZTEMP( PSIZ1+1 ), 1, ZERO, Z( MID ), 1 )
+         END IF
+         CALL SCOPY( PSIZ2-BSIZ2, ZTEMP( PSIZ1+BSIZ2+1 ), 1,
+     $               Z( MID+BSIZ2 ), 1 )
+*
+         PTR = PTR + 2**( TLVLS-K )
+   70 CONTINUE
+*
+      RETURN
+*
+*     End of SLAEDA
+*
+      END
+
+
+
+      SUBROUTINE SLAED8( ICOMPQ, K, N, QSIZ, D, Q, LDQ, INDXQ, RHO,
+     $                   CUTPNT, Z, DLAMDA, Q2, LDQ2, W, PERM, GIVPTR,
+     $                   GIVCOL, GIVNUM, INDXP, INDX, INFO )
+*
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     .. Scalar Arguments ..
+      INTEGER            CUTPNT, GIVPTR, ICOMPQ, INFO, K, LDQ, LDQ2, N,
+     $                   QSIZ
+      REAL               RHO
+*     ..
+*     .. Array Arguments ..
+      INTEGER            GIVCOL( 2, * ), INDX( * ), INDXP( * ),
+     $                   INDXQ( * ), PERM( * )
+      REAL               D( * ), DLAMDA( * ), GIVNUM( 2, * ),
+     $                   Q( LDQ, * ), Q2( LDQ2, * ), W( * ), Z( * )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SLAED8 merges the two sets of eigenvalues together into a single
+*  sorted set.  Then it tries to deflate the size of the problem.
+*  There are two ways in which deflation can occur:  when two or more
+*  eigenvalues are close together or if there is a tiny element in the
+*  Z vector.  For each such occurrence the order of the related secular
+*  equation problem is reduced by one.
+*
+*  Arguments
+*  =========
+*
+*  ICOMPQ  (input) INTEGER
+*          = 0:  Compute eigenvalues only.
+*          = 1:  Compute eigenvectors of original dense symmetric matrix
+*                also.  On entry, Q contains the orthogonal matrix used
+*                to reduce the original matrix to tridiagonal form.
+*
+*  K      (output) INTEGER
+*         The number of non-deflated eigenvalues, and the order of the
+*         related secular equation.
+*
+*  N      (input) INTEGER
+*         The dimension of the symmetric tridiagonal matrix.  N >= 0.
+*
+*  QSIZ   (input) INTEGER
+*         The dimension of the orthogonal matrix used to reduce
+*         the full matrix to tridiagonal form.  QSIZ >= N if ICOMPQ = 1.
+*
+*  D      (input/output) REAL array, dimension (N)
+*         On entry, the eigenvalues of the two submatrices to be
+*         combined.  On exit, the trailing (N-K) updated eigenvalues
+*         (those which were deflated) sorted into increasing order.
+*
+*  Q      (input/output) REAL array, dimension (LDQ,N)
+*         If ICOMPQ = 0, Q is not referenced.  Otherwise,
+*         on entry, Q contains the eigenvectors of the partially solved
+*         system which has been previously updated in matrix
+*         multiplies with other partially solved eigensystems.
+*         On exit, Q contains the trailing (N-K) updated eigenvectors
+*         (those which were deflated) in its last N-K columns.
+*
+*  LDQ    (input) INTEGER
+*         The leading dimension of the array Q.  LDQ >= max(1,N).
+*
+*  INDXQ  (input) INTEGER array, dimension (N)
+*         The permutation which separately sorts the two sub-problems
+*         in D into ascending order.  Note that elements in the second
+*         half of this permutation must first have CUTPNT added to
+*         their values in order to be accurate.
+*
+*  RHO    (input/output) REAL
+*         On entry, the off-diagonal element associated with the rank-1
+*         cut which originally split the two submatrices which are now
+*         being recombined.
+*         On exit, RHO has been modified to the value required by
+*         SLAED3.
+*
+*  CUTPNT (input) INTEGER
+*         The location of the last eigenvalue in the leading
+*         sub-matrix.  min(1,N) <= CUTPNT <= N.
+*
+*  Z      (input) REAL array, dimension (N)
+*         On entry, Z contains the updating vector (the last row of
+*         the first sub-eigenvector matrix and the first row of the
+*         second sub-eigenvector matrix).
+*         On exit, the contents of Z are destroyed by the updating
+*         process.
+*
+*  DLAMDA (output) REAL array, dimension (N)
+*         A copy of the first K eigenvalues which will be used by
+*         SLAED3 to form the secular equation.
+*
+*  Q2     (output) REAL array, dimension (LDQ2,N)
+*         If ICOMPQ = 0, Q2 is not referenced.  Otherwise,
+*         a copy of the first K eigenvectors which will be used by
+*         SLAED7 in a matrix multiply (SGEMM) to update the new
+*         eigenvectors.
+*
+*  LDQ2   (input) INTEGER
+*         The leading dimension of the array Q2.  LDQ2 >= max(1,N).
+*
+*  W      (output) REAL array, dimension (N)
+*         The first k values of the final deflation-altered z-vector and
+*         will be passed to SLAED3.
+*
+*  PERM   (output) INTEGER array, dimension (N)
+*         The permutations (from deflation and sorting) to be applied
+*         to each eigenblock.
+*
+*  GIVPTR (output) INTEGER
+*         The number of Givens rotations which took place in this
+*         subproblem.
+*
+*  GIVCOL (output) INTEGER array, dimension (2, N)
+*         Each pair of numbers indicates a pair of columns to take place
+*         in a Givens rotation.
+*
+*  GIVNUM (output) REAL array, dimension (2, N)
+*         Each number indicates the S value to be used in the
+*         corresponding Givens rotation.
+*
+*  INDXP  (workspace) INTEGER array, dimension (N)
+*         The permutation used to place deflated values of D at the end
+*         of the array.  INDXP(1:K) points to the nondeflated D-values
+*         and INDXP(K+1:N) points to the deflated eigenvalues.
+*
+*  INDX   (workspace) INTEGER array, dimension (N)
+*         The permutation used to sort the contents of D into ascending
+*         order.
+*
+*  INFO   (output) INTEGER
+*          = 0:  successful exit.
+*          < 0:  if INFO = -i, the i-th argument had an illegal value.
+*
+*  Further Details
+*  ===============
+*
+*  Based on contributions by
+*     Jeff Rutter, Computer Science Division, University of California
+*     at Berkeley, USA
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL               MONE, ZERO, ONE, TWO, EIGHT
+      PARAMETER          ( MONE = -1.0E0, ZERO = 0.0E0, ONE = 1.0E0,
+     $                   TWO = 2.0E0, EIGHT = 8.0E0 )
+*     ..
+*     .. Local Scalars ..
+*
+      INTEGER            I, IMAX, J, JLAM, JMAX, JP, K2, N1, N1P1, N2
+      REAL               C, EPS, S, T, TAU, TOL
+*     ..
+*     .. External Functions ..
+      INTEGER            ISAMAX
+      REAL               SLAMCH, SLAPY2
+      EXTERNAL           ISAMAX, SLAMCH, SLAPY2
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SCOPY, SLACPY, SLAMRG, SROT, SSCAL, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          ABS, MAX, MIN, SQRT
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input parameters.
+*
+      INFO = 0
+*
+      IF( ICOMPQ.LT.0 .OR. ICOMPQ.GT.1 ) THEN
+         INFO = -1
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -3
+      ELSE IF( ICOMPQ.EQ.1 .AND. QSIZ.LT.N ) THEN
+         INFO = -4
+      ELSE IF( LDQ.LT.MAX( 1, N ) ) THEN
+         INFO = -7
+      ELSE IF( CUTPNT.LT.MIN( 1, N ) .OR. CUTPNT.GT.N ) THEN
+         INFO = -10
+      ELSE IF( LDQ2.LT.MAX( 1, N ) ) THEN
+         INFO = -14
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SLAED8', -INFO )
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      IF( N.EQ.0 )
+     $   RETURN
+*
+      N1 = CUTPNT
+      N2 = N - N1
+      N1P1 = N1 + 1
+*
+      IF( RHO.LT.ZERO ) THEN
+         CALL SSCAL( N2, MONE, Z( N1P1 ), 1 )
+      END IF
+*
+*     Normalize z so that norm(z) = 1
+*
+      T = ONE / SQRT( TWO )
+      DO 10 J = 1, N
+         INDX( J ) = J
+   10 CONTINUE
+      CALL SSCAL( N, T, Z, 1 )
+      RHO = ABS( TWO*RHO )
+*
+*     Sort the eigenvalues into increasing order
+*
+      DO 20 I = CUTPNT + 1, N
+         INDXQ( I ) = INDXQ( I ) + CUTPNT
+   20 CONTINUE
+      DO 30 I = 1, N
+         DLAMDA( I ) = D( INDXQ( I ) )
+         W( I ) = Z( INDXQ( I ) )
+   30 CONTINUE
+      I = 1
+      J = CUTPNT + 1
+      CALL SLAMRG( N1, N2, DLAMDA, 1, 1, INDX )
+      DO 40 I = 1, N
+         D( I ) = DLAMDA( INDX( I ) )
+         Z( I ) = W( INDX( I ) )
+   40 CONTINUE
+*
+*     Calculate the allowable deflation tolerence
+*
+      IMAX = ISAMAX( N, Z, 1 )
+      JMAX = ISAMAX( N, D, 1 )
+      EPS = SLAMCH( 'Epsilon' )
+      TOL = EIGHT*EPS*ABS( D( JMAX ) )
+*
+*     If the rank-1 modifier is small enough, no more needs to be done
+*     except to reorganize Q so that its columns correspond with the
+*     elements in D.
+*
+      IF( RHO*ABS( Z( IMAX ) ).LE.TOL ) THEN
+         K = 0
+         IF( ICOMPQ.EQ.0 ) THEN
+            DO 50 J = 1, N
+               PERM( J ) = INDXQ( INDX( J ) )
+   50       CONTINUE
+         ELSE
+            DO 60 J = 1, N
+               PERM( J ) = INDXQ( INDX( J ) )
+               CALL SCOPY( QSIZ, Q( 1, PERM( J ) ), 1, Q2( 1, J ), 1 )
+   60       CONTINUE
+            CALL SLACPY( 'A', QSIZ, N, Q2( 1, 1 ), LDQ2, Q( 1, 1 ),
+     $                   LDQ )
+         END IF
+         RETURN
+      END IF
+*
+*     If there are multiple eigenvalues then the problem deflates.  Here
+*     the number of equal eigenvalues are found.  As each equal
+*     eigenvalue is found, an elementary reflector is computed to rotate
+*     the corresponding eigensubspace so that the corresponding
+*     components of Z are zero in this new basis.
+*
+      K = 0
+      GIVPTR = 0
+      K2 = N + 1
+      DO 70 J = 1, N
+         IF( RHO*ABS( Z( J ) ).LE.TOL ) THEN
+*
+*           Deflate due to small z component.
+*
+            K2 = K2 - 1
+            INDXP( K2 ) = J
+            IF( J.EQ.N )
+     $         GO TO 110
+         ELSE
+            JLAM = J
+            GO TO 80
+         END IF
+   70 CONTINUE
+   80 CONTINUE
+      J = J + 1
+      IF( J.GT.N )
+     $   GO TO 100
+      IF( RHO*ABS( Z( J ) ).LE.TOL ) THEN
+*
+*        Deflate due to small z component.
+*
+         K2 = K2 - 1
+         INDXP( K2 ) = J
+      ELSE
+*
+*        Check if eigenvalues are close enough to allow deflation.
+*
+         S = Z( JLAM )
+         C = Z( J )
+*
+*        Find sqrt(a**2+b**2) without overflow or
+*        destructive underflow.
+*
+         TAU = SLAPY2( C, S )
+         T = D( J ) - D( JLAM )
+         C = C / TAU
+         S = -S / TAU
+         IF( ABS( T*C*S ).LE.TOL ) THEN
+*
+*           Deflation is possible.
+*
+            Z( J ) = TAU
+            Z( JLAM ) = ZERO
+*
+*           Record the appropriate Givens rotation
+*
+            GIVPTR = GIVPTR + 1
+            GIVCOL( 1, GIVPTR ) = INDXQ( INDX( JLAM ) )
+            GIVCOL( 2, GIVPTR ) = INDXQ( INDX( J ) )
+            GIVNUM( 1, GIVPTR ) = C
+            GIVNUM( 2, GIVPTR ) = S
+            IF( ICOMPQ.EQ.1 ) THEN
+               CALL SROT( QSIZ, Q( 1, INDXQ( INDX( JLAM ) ) ), 1,
+     $                    Q( 1, INDXQ( INDX( J ) ) ), 1, C, S )
+            END IF
+            T = D( JLAM )*C*C + D( J )*S*S
+            D( J ) = D( JLAM )*S*S + D( J )*C*C
+            D( JLAM ) = T
+            K2 = K2 - 1
+            I = 1
+   90       CONTINUE
+            IF( K2+I.LE.N ) THEN
+               IF( D( JLAM ).LT.D( INDXP( K2+I ) ) ) THEN
+                  INDXP( K2+I-1 ) = INDXP( K2+I )
+                  INDXP( K2+I ) = JLAM
+                  I = I + 1
+                  GO TO 90
+               ELSE
+                  INDXP( K2+I-1 ) = JLAM
+               END IF
+            ELSE
+               INDXP( K2+I-1 ) = JLAM
+            END IF
+            JLAM = J
+         ELSE
+            K = K + 1
+            W( K ) = Z( JLAM )
+            DLAMDA( K ) = D( JLAM )
+            INDXP( K ) = JLAM
+            JLAM = J
+         END IF
+      END IF
+      GO TO 80
+  100 CONTINUE
+*
+*     Record the last eigenvalue.
+*
+      K = K + 1
+      W( K ) = Z( JLAM )
+      DLAMDA( K ) = D( JLAM )
+      INDXP( K ) = JLAM
+*
+  110 CONTINUE
+*
+*     Sort the eigenvalues and corresponding eigenvectors into DLAMDA
+*     and Q2 respectively.  The eigenvalues/vectors which were not
+*     deflated go into the first K slots of DLAMDA and Q2 respectively,
+*     while those which were deflated go into the last N - K slots.
+*
+      IF( ICOMPQ.EQ.0 ) THEN
+         DO 120 J = 1, N
+            JP = INDXP( J )
+            DLAMDA( J ) = D( JP )
+            PERM( J ) = INDXQ( INDX( JP ) )
+  120    CONTINUE
+      ELSE
+         DO 130 J = 1, N
+            JP = INDXP( J )
+            DLAMDA( J ) = D( JP )
+            PERM( J ) = INDXQ( INDX( JP ) )
+            CALL SCOPY( QSIZ, Q( 1, PERM( J ) ), 1, Q2( 1, J ), 1 )
+  130    CONTINUE
+      END IF
+*
+*     The deflated eigenvalues and their corresponding vectors go back
+*     into the last N - K slots of D and Q respectively.
+*
+      IF( K.LT.N ) THEN
+         IF( ICOMPQ.EQ.0 ) THEN
+            CALL SCOPY( N-K, DLAMDA( K+1 ), 1, D( K+1 ), 1 )
+         ELSE
+            CALL SCOPY( N-K, DLAMDA( K+1 ), 1, D( K+1 ), 1 )
+            CALL SLACPY( 'A', QSIZ, N-K, Q2( 1, K+1 ), LDQ2,
+     $                   Q( 1, K+1 ), LDQ )
+         END IF
+      END IF
+*
+      RETURN
+*
+*     End of SLAED8
+*
+      END
+
+
+
+      SUBROUTINE SLAED9( K, KSTART, KSTOP, N, D, Q, LDQ, RHO, DLAMDA, W,
+     $                   S, LDS, INFO )
+*
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     .. Scalar Arguments ..
+      INTEGER            INFO, K, KSTART, KSTOP, LDQ, LDS, N
+      REAL               RHO
+*     ..
+*     .. Array Arguments ..
+      REAL               D( * ), DLAMDA( * ), Q( LDQ, * ), S( LDS, * ),
+     $                   W( * )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SLAED9 finds the roots of the secular equation, as defined by the
+*  values in D, Z, and RHO, between KSTART and KSTOP.  It makes the
+*  appropriate calls to SLAED4 and then stores the new matrix of
+*  eigenvectors for use in calculating the next level of Z vectors.
+*
+*  Arguments
+*  =========
+*
+*  K       (input) INTEGER
+*          The number of terms in the rational function to be solved by
+*          SLAED4.  K >= 0.
+*
+*  KSTART  (input) INTEGER
+*  KSTOP   (input) INTEGER
+*          The updated eigenvalues Lambda(I), KSTART <= I <= KSTOP
+*          are to be computed.  1 <= KSTART <= KSTOP <= K.
+*
+*  N       (input) INTEGER
+*          The number of rows and columns in the Q matrix.
+*          N >= K (delation may result in N > K).
+*
+*  D       (output) REAL array, dimension (N)
+*          D(I) contains the updated eigenvalues
+*          for KSTART <= I <= KSTOP.
+*
+*  Q       (workspace) REAL array, dimension (LDQ,N)
+*
+*  LDQ     (input) INTEGER
+*          The leading dimension of the array Q.  LDQ >= max( 1, N ).
+*
+*  RHO     (input) REAL
+*          The value of the parameter in the rank one update equation.
+*          RHO >= 0 required.
+*
+*  DLAMDA  (input) REAL array, dimension (K)
+*          The first K elements of this array contain the old roots
+*          of the deflated updating problem.  These are the poles
+*          of the secular equation.
+*
+*  W       (input) REAL array, dimension (K)
+*          The first K elements of this array contain the components
+*          of the deflation-adjusted updating vector.
+*
+*  S       (output) REAL array, dimension (LDS, K)
+*          Will contain the eigenvectors of the repaired matrix which
+*          will be stored for subsequent Z vector calculation and
+*          multiplied by the previously accumulated eigenvectors
+*          to update the system.
+*
+*  LDS     (input) INTEGER
+*          The leading dimension of S.  LDS >= max( 1, K ).
+*
+*  INFO    (output) INTEGER
+*          = 0:  successful exit.
+*          < 0:  if INFO = -i, the i-th argument had an illegal value.
+*          > 0:  if INFO = 1, an eigenvalue did not converge
+*
+*  Further Details
+*  ===============
+*
+*  Based on contributions by
+*     Jeff Rutter, Computer Science Division, University of California
+*     at Berkeley, USA
+*
+*  =====================================================================
+*
+*     .. Local Scalars ..
+      INTEGER            I, J
+      REAL               TEMP
+*     ..
+*     .. External Functions ..
+      REAL               SLAMC3, SNRM2
+      EXTERNAL           SLAMC3, SNRM2
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SCOPY, SLAED4, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          MAX, SIGN, SQRT
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input parameters.
+*
+      INFO = 0
+*
+      IF( K.LT.0 ) THEN
+         INFO = -1
+      ELSE IF( KSTART.LT.1 .OR. KSTART.GT.MAX( 1, K ) ) THEN
+         INFO = -2
+      ELSE IF( MAX( 1, KSTOP ).LT.KSTART .OR. KSTOP.GT.MAX( 1, K ) )
+     $          THEN
+         INFO = -3
+      ELSE IF( N.LT.K ) THEN
+         INFO = -4
+      ELSE IF( LDQ.LT.MAX( 1, K ) ) THEN
+         INFO = -7
+      ELSE IF( LDS.LT.MAX( 1, K ) ) THEN
+         INFO = -12
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SLAED9', -INFO )
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      IF( K.EQ.0 )
+     $   RETURN
+*
+*     Modify values DLAMDA(i) to make sure all DLAMDA(i)-DLAMDA(j) can
+*     be computed with high relative accuracy (barring over/underflow).
+*     This is a problem on machines without a guard digit in
+*     add/subtract (Cray XMP, Cray YMP, Cray C 90 and Cray 2).
+*     The following code replaces DLAMDA(I) by 2*DLAMDA(I)-DLAMDA(I),
+*     which on any of these machines zeros out the bottommost
+*     bit of DLAMDA(I) if it is 1; this makes the subsequent
+*     subtractions DLAMDA(I)-DLAMDA(J) unproblematic when cancellation
+*     occurs. On binary machines with a guard digit (almost all
+*     machines) it does not change DLAMDA(I) at all. On hexadecimal
+*     and decimal machines with a guard digit, it slightly
+*     changes the bottommost bits of DLAMDA(I). It does not account
+*     for hexadecimal or decimal machines without guard digits
+*     (we know of none). We use a subroutine call to compute
+*     2*DLAMBDA(I) to prevent optimizing compilers from eliminating
+*     this code.
+*
+      DO 10 I = 1, N
+         DLAMDA( I ) = SLAMC3( DLAMDA( I ), DLAMDA( I ) ) - DLAMDA( I )
+   10 CONTINUE
+*
+      DO 20 J = KSTART, KSTOP
+         CALL SLAED4( K, J, DLAMDA, W, Q( 1, J ), RHO, D( J ), INFO )
+*
+*        If the zero finder fails, the computation is terminated.
+*
+         IF( INFO.NE.0 )
+     $      GO TO 120
+   20 CONTINUE
+*
+      IF( K.EQ.1 .OR. K.EQ.2 ) THEN
+         DO 40 I = 1, K
+            DO 30 J = 1, K
+               S( J, I ) = Q( J, I )
+   30       CONTINUE
+   40    CONTINUE
+         GO TO 120
+      END IF
+*
+*     Compute updated W.
+*
+      CALL SCOPY( K, W, 1, S, 1 )
+*
+*     Initialize W(I) = Q(I,I)
+*
+      CALL SCOPY( K, Q, LDQ+1, W, 1 )
+      DO 70 J = 1, K
+         DO 50 I = 1, J - 1
+            W( I ) = W( I )*( Q( I, J ) / ( DLAMDA( I )-DLAMDA( J ) ) )
+   50    CONTINUE
+         DO 60 I = J + 1, K
+            W( I ) = W( I )*( Q( I, J ) / ( DLAMDA( I )-DLAMDA( J ) ) )
+   60    CONTINUE
+   70 CONTINUE
+      DO 80 I = 1, K
+         W( I ) = SIGN( SQRT( -W( I ) ), S( I, 1 ) )
+   80 CONTINUE
+*
+*     Compute eigenvectors of the modified rank-1 modification.
+*
+      DO 110 J = 1, K
+         DO 90 I = 1, K
+            Q( I, J ) = W( I ) / Q( I, J )
+   90    CONTINUE
+         TEMP = SNRM2( K, Q( 1, J ), 1 )
+         DO 100 I = 1, K
+            S( I, J ) = Q( I, J ) / TEMP
+  100    CONTINUE
+  110 CONTINUE
+*
+  120 CONTINUE
+      RETURN
+*
+*     End of SLAED9
+*
+      END
+
+
+
+      INTEGER FUNCTION ISAMAX(N,SX,INCX)
+*     .. Scalar Arguments ..
+      INTEGER INCX,N
+*     ..
+*     .. Array Arguments ..
+      REAL SX(*)
+*     ..
+*
+*  Purpose
+*  =======
+*
+*     finds the index of element having max. absolute value.
+*     jack dongarra, linpack, 3/11/78.
+*     modified 3/93 to return if incx .le. 0.
+*     modified 12/3/93, array(1) declarations changed to array(*)
+*
+*
+*     .. Local Scalars ..
+      REAL SMAX
+      INTEGER I,IX
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC ABS
+*     ..
+      ISAMAX = 0
+      IF (N.LT.1 .OR. INCX.LE.0) RETURN
+      ISAMAX = 1
+      IF (N.EQ.1) RETURN
+      IF (INCX.EQ.1) GO TO 20
+*
+*        code for increment not equal to 1
+*
+      IX = 1
+      SMAX = ABS(SX(1))
+      IX = IX + INCX
+      DO 10 I = 2,N
+          IF (ABS(SX(IX)).LE.SMAX) GO TO 5
+          ISAMAX = I
+          SMAX = ABS(SX(IX))
+    5     IX = IX + INCX
+   10 CONTINUE
+      RETURN
+*
+*        code for increment equal to 1
+*
+   20 SMAX = ABS(SX(1))
+      DO 30 I = 2,N
+          IF (ABS(SX(I)).LE.SMAX) GO TO 30
+          ISAMAX = I
+          SMAX = ABS(SX(I))
+   30 CONTINUE
+      RETURN
+      END
+
+
+
+      SUBROUTINE SROT(N,SX,INCX,SY,INCY,C,S)
+*     .. Scalar Arguments ..
+      REAL C,S
+      INTEGER INCX,INCY,N
+*     ..
+*     .. Array Arguments ..
+      REAL SX(*),SY(*)
+*     ..
+*
+*  Purpose
+*  =======
+*
+*     applies a plane rotation.
+*
+*  Further Details
+*  ===============
+*
+*     jack dongarra, linpack, 3/11/78.
+*     modified 12/3/93, array(1) declarations changed to array(*)
+*
+*
+
+*     .. Local Scalars ..
+      REAL STEMP
+      INTEGER I,IX,IY
+*     ..
+      IF (N.LE.0) RETURN
+      IF (INCX.EQ.1 .AND. INCY.EQ.1) GO TO 20
+*
+*       code for unequal increments or equal increments not equal
+*         to 1
+*
+      IX = 1
+      IY = 1
+      IF (INCX.LT.0) IX = (-N+1)*INCX + 1
+      IF (INCY.LT.0) IY = (-N+1)*INCY + 1
+      DO 10 I = 1,N
+          STEMP = C*SX(IX) + S*SY(IY)
+          SY(IY) = C*SY(IY) - S*SX(IX)
+          SX(IX) = STEMP
+          IX = IX + INCX
+          IY = IY + INCY
+   10 CONTINUE
+      RETURN
+*
+*       code for both increments equal to 1
+*
+   20 DO 30 I = 1,N
+          STEMP = C*SX(I) + S*SY(I)
+          SY(I) = C*SY(I) - S*SX(I)
+          SX(I) = STEMP
+   30 CONTINUE
+      RETURN
+      END
+
+
+
+      SUBROUTINE SLAED4( N, I, D, Z, DELTA, RHO, DLAM, INFO )
+*
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     .. Scalar Arguments ..
+      INTEGER            I, INFO, N
+      REAL               DLAM, RHO
+*     ..
+*     .. Array Arguments ..
+      REAL               D( * ), DELTA( * ), Z( * )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  This subroutine computes the I-th updated eigenvalue of a symmetric
+*  rank-one modification to a diagonal matrix whose elements are
+*  given in the array d, and that
+*
+*             D(i) < D(j)  for  i < j
+*
+*  and that RHO > 0.  This is arranged by the calling routine, and is
+*  no loss in generality.  The rank-one modified system is thus
+*
+*             diag( D )  +  RHO *  Z * Z_transpose.
+*
+*  where we assume the Euclidean norm of Z is 1.
+*
+*  The method consists of approximating the rational functions in the
+*  secular equation by simpler interpolating rational functions.
+*
+*  Arguments
+*  =========
+*
+*  N      (input) INTEGER
+*         The length of all arrays.
+*
+*  I      (input) INTEGER
+*         The index of the eigenvalue to be computed.  1 <= I <= N.
+*
+*  D      (input) REAL array, dimension (N)
+*         The original eigenvalues.  It is assumed that they are in
+*         order, D(I) < D(J)  for I < J.
+*
+*  Z      (input) REAL array, dimension (N)
+*         The components of the updating vector.
+*
+*  DELTA  (output) REAL array, dimension (N)
+*         If N .GT. 2, DELTA contains (D(j) - lambda_I) in its  j-th
+*         component.  If N = 1, then DELTA(1) = 1. If N = 2, see SLAED5
+*         for detail. The vector DELTA contains the information necessary
+*         to construct the eigenvectors by SLAED3 and SLAED9.
+*
+*  RHO    (input) REAL
+*         The scalar in the symmetric updating formula.
+*
+*  DLAM   (output) REAL
+*         The computed lambda_I, the I-th updated eigenvalue.
+*
+*  INFO   (output) INTEGER
+*         = 0:  successful exit
+*         > 0:  if INFO = 1, the updating process failed.
+*
+*  Internal Parameters
+*  ===================
+*
+*  Logical variable ORGATI (origin-at-i?) is used for distinguishing
+*  whether D(i) or D(i+1) is treated as the origin.
+*
+*            ORGATI = .true.    origin at i
+*            ORGATI = .false.   origin at i+1
+*
+*   Logical variable SWTCH3 (switch-for-3-poles?) is for noting
+*   if we are working with THREE poles!
+*
+*   MAXIT is the maximum number of iterations allowed for each
+*   eigenvalue.
+*
+*  Further Details
+*  ===============
+*
+*  Based on contributions by
+*     Ren-Cang Li, Computer Science Division, University of California
+*     at Berkeley, USA
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      INTEGER            MAXIT
+      PARAMETER          ( MAXIT = 30 )
+      REAL               ZERO, ONE, TWO, THREE, FOUR, EIGHT, TEN
+      PARAMETER          ( ZERO = 0.0E0, ONE = 1.0E0, TWO = 2.0E0,
+     $                   THREE = 3.0E0, FOUR = 4.0E0, EIGHT = 8.0E0,
+     $                   TEN = 10.0E0 )
+*     ..
+*     .. Local Scalars ..
+      LOGICAL            ORGATI, SWTCH, SWTCH3
+      INTEGER            II, IIM1, IIP1, IP1, ITER, J, NITER
+      REAL               A, B, C, DEL, DLTLB, DLTUB, DPHI, DPSI, DW,
+     $                   EPS, ERRETM, ETA, MIDPT, PHI, PREW, PSI,
+     $                   RHOINV, TAU, TEMP, TEMP1, W
+*     ..
+*     .. Local Arrays ..
+      REAL               ZZ( 3 )
+*     ..
+*     .. External Functions ..
+      REAL               SLAMCH
+      EXTERNAL           SLAMCH
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SLAED5, SLAED6
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          ABS, MAX, MIN, SQRT
+*     ..
+*     .. Executable Statements ..
+*
+*     Since this routine is called in an inner loop, we do no argument
+*     checking.
+*
+*     Quick return for N=1 and 2.
+*
+      INFO = 0
+      IF( N.EQ.1 ) THEN
+*
+*         Presumably, I=1 upon entry
+*
+         DLAM = D( 1 ) + RHO*Z( 1 )*Z( 1 )
+         DELTA( 1 ) = ONE
+         RETURN
+      END IF
+      IF( N.EQ.2 ) THEN
+         CALL SLAED5( I, D, Z, DELTA, RHO, DLAM )
+         RETURN
+      END IF
+*
+*     Compute machine epsilon
+*
+      EPS = SLAMCH( 'Epsilon' )
+      RHOINV = ONE / RHO
+*
+*     The case I = N
+*
+      IF( I.EQ.N ) THEN
+*
+*        Initialize some basic variables
+*
+         II = N - 1
+         NITER = 1
+*
+*        Calculate initial guess
+*
+         MIDPT = RHO / TWO
+*
+*        If ||Z||_2 is not one, then TEMP should be set to
+*        RHO * ||Z||_2^2 / TWO
+*
+         DO 10 J = 1, N
+            DELTA( J ) = ( D( J )-D( I ) ) - MIDPT
+   10    CONTINUE
+*
+         PSI = ZERO
+         DO 20 J = 1, N - 2
+            PSI = PSI + Z( J )*Z( J ) / DELTA( J )
+   20    CONTINUE
+*
+         C = RHOINV + PSI
+         W = C + Z( II )*Z( II ) / DELTA( II ) +
+     $       Z( N )*Z( N ) / DELTA( N )
+*
+         IF( W.LE.ZERO ) THEN
+            TEMP = Z( N-1 )*Z( N-1 ) / ( D( N )-D( N-1 )+RHO ) +
+     $             Z( N )*Z( N ) / RHO
+            IF( C.LE.TEMP ) THEN
+               TAU = RHO
+            ELSE
+               DEL = D( N ) - D( N-1 )
+               A = -C*DEL + Z( N-1 )*Z( N-1 ) + Z( N )*Z( N )
+               B = Z( N )*Z( N )*DEL
+               IF( A.LT.ZERO ) THEN
+                  TAU = TWO*B / ( SQRT( A*A+FOUR*B*C )-A )
+               ELSE
+                  TAU = ( A+SQRT( A*A+FOUR*B*C ) ) / ( TWO*C )
+               END IF
+            END IF
+*
+*           It can be proved that
+*               D(N)+RHO/2 <= LAMBDA(N) < D(N)+TAU <= D(N)+RHO
+*
+            DLTLB = MIDPT
+            DLTUB = RHO
+         ELSE
+            DEL = D( N ) - D( N-1 )
+            A = -C*DEL + Z( N-1 )*Z( N-1 ) + Z( N )*Z( N )
+            B = Z( N )*Z( N )*DEL
+            IF( A.LT.ZERO ) THEN
+               TAU = TWO*B / ( SQRT( A*A+FOUR*B*C )-A )
+            ELSE
+               TAU = ( A+SQRT( A*A+FOUR*B*C ) ) / ( TWO*C )
+            END IF
+*
+*           It can be proved that
+*               D(N) < D(N)+TAU < LAMBDA(N) < D(N)+RHO/2
+*
+            DLTLB = ZERO
+            DLTUB = MIDPT
+         END IF
+*
+         DO 30 J = 1, N
+            DELTA( J ) = ( D( J )-D( I ) ) - TAU
+   30    CONTINUE
+*
+*        Evaluate PSI and the derivative DPSI
+*
+         DPSI = ZERO
+         PSI = ZERO
+         ERRETM = ZERO
+         DO 40 J = 1, II
+            TEMP = Z( J ) / DELTA( J )
+            PSI = PSI + Z( J )*TEMP
+            DPSI = DPSI + TEMP*TEMP
+            ERRETM = ERRETM + PSI
+   40    CONTINUE
+         ERRETM = ABS( ERRETM )
+*
+*        Evaluate PHI and the derivative DPHI
+*
+         TEMP = Z( N ) / DELTA( N )
+         PHI = Z( N )*TEMP
+         DPHI = TEMP*TEMP
+         ERRETM = EIGHT*( -PHI-PSI ) + ERRETM - PHI + RHOINV +
+     $            ABS( TAU )*( DPSI+DPHI )
+*
+         W = RHOINV + PHI + PSI
+*
+*        Test for convergence
+*
+         IF( ABS( W ).LE.EPS*ERRETM ) THEN
+            DLAM = D( I ) + TAU
+            GO TO 250
+         END IF
+*
+         IF( W.LE.ZERO ) THEN
+            DLTLB = MAX( DLTLB, TAU )
+         ELSE
+            DLTUB = MIN( DLTUB, TAU )
+         END IF
+*
+*        Calculate the new step
+*
+         NITER = NITER + 1
+         C = W - DELTA( N-1 )*DPSI - DELTA( N )*DPHI
+         A = ( DELTA( N-1 )+DELTA( N ) )*W -
+     $       DELTA( N-1 )*DELTA( N )*( DPSI+DPHI )
+         B = DELTA( N-1 )*DELTA( N )*W
+         IF( C.LT.ZERO )
+     $      C = ABS( C )
+         IF( C.EQ.ZERO ) THEN
+*          ETA = B/A
+*           ETA = RHO - TAU
+            ETA = DLTUB - TAU
+         ELSE IF( A.GE.ZERO ) THEN
+            ETA = ( A+SQRT( ABS( A*A-FOUR*B*C ) ) ) / ( TWO*C )
+         ELSE
+            ETA = TWO*B / ( A-SQRT( ABS( A*A-FOUR*B*C ) ) )
+         END IF
+*
+*        Note, eta should be positive if w is negative, and
+*        eta should be negative otherwise. However,
+*        if for some reason caused by roundoff, eta*w > 0,
+*        we simply use one Newton step instead. This way
+*        will guarantee eta*w < 0.
+*
+         IF( W*ETA.GT.ZERO )
+     $      ETA = -W / ( DPSI+DPHI )
+         TEMP = TAU + ETA
+         IF( TEMP.GT.DLTUB .OR. TEMP.LT.DLTLB ) THEN
+            IF( W.LT.ZERO ) THEN
+               ETA = ( DLTUB-TAU ) / TWO
+            ELSE
+               ETA = ( DLTLB-TAU ) / TWO
+            END IF
+         END IF
+         DO 50 J = 1, N
+            DELTA( J ) = DELTA( J ) - ETA
+   50    CONTINUE
+*
+         TAU = TAU + ETA
+*
+*        Evaluate PSI and the derivative DPSI
+*
+         DPSI = ZERO
+         PSI = ZERO
+         ERRETM = ZERO
+         DO 60 J = 1, II
+            TEMP = Z( J ) / DELTA( J )
+            PSI = PSI + Z( J )*TEMP
+            DPSI = DPSI + TEMP*TEMP
+            ERRETM = ERRETM + PSI
+   60    CONTINUE
+         ERRETM = ABS( ERRETM )
+*
+*        Evaluate PHI and the derivative DPHI
+*
+         TEMP = Z( N ) / DELTA( N )
+         PHI = Z( N )*TEMP
+         DPHI = TEMP*TEMP
+         ERRETM = EIGHT*( -PHI-PSI ) + ERRETM - PHI + RHOINV +
+     $            ABS( TAU )*( DPSI+DPHI )
+*
+         W = RHOINV + PHI + PSI
+*
+*        Main loop to update the values of the array   DELTA
+*
+         ITER = NITER + 1
+*
+         DO 90 NITER = ITER, MAXIT
+*
+*           Test for convergence
+*
+            IF( ABS( W ).LE.EPS*ERRETM ) THEN
+               DLAM = D( I ) + TAU
+               GO TO 250
+            END IF
+*
+            IF( W.LE.ZERO ) THEN
+               DLTLB = MAX( DLTLB, TAU )
+            ELSE
+               DLTUB = MIN( DLTUB, TAU )
+            END IF
+*
+*           Calculate the new step
+*
+            C = W - DELTA( N-1 )*DPSI - DELTA( N )*DPHI
+            A = ( DELTA( N-1 )+DELTA( N ) )*W -
+     $          DELTA( N-1 )*DELTA( N )*( DPSI+DPHI )
+            B = DELTA( N-1 )*DELTA( N )*W
+            IF( A.GE.ZERO ) THEN
+               ETA = ( A+SQRT( ABS( A*A-FOUR*B*C ) ) ) / ( TWO*C )
+            ELSE
+               ETA = TWO*B / ( A-SQRT( ABS( A*A-FOUR*B*C ) ) )
+            END IF
+*
+*           Note, eta should be positive if w is negative, and
+*           eta should be negative otherwise. However,
+*           if for some reason caused by roundoff, eta*w > 0,
+*           we simply use one Newton step instead. This way
+*           will guarantee eta*w < 0.
+*
+            IF( W*ETA.GT.ZERO )
+     $         ETA = -W / ( DPSI+DPHI )
+            TEMP = TAU + ETA
+            IF( TEMP.GT.DLTUB .OR. TEMP.LT.DLTLB ) THEN
+               IF( W.LT.ZERO ) THEN
+                  ETA = ( DLTUB-TAU ) / TWO
+               ELSE
+                  ETA = ( DLTLB-TAU ) / TWO
+               END IF
+            END IF
+            DO 70 J = 1, N
+               DELTA( J ) = DELTA( J ) - ETA
+   70       CONTINUE
+*
+            TAU = TAU + ETA
+*
+*           Evaluate PSI and the derivative DPSI
+*
+            DPSI = ZERO
+            PSI = ZERO
+            ERRETM = ZERO
+            DO 80 J = 1, II
+               TEMP = Z( J ) / DELTA( J )
+               PSI = PSI + Z( J )*TEMP
+               DPSI = DPSI + TEMP*TEMP
+               ERRETM = ERRETM + PSI
+   80       CONTINUE
+            ERRETM = ABS( ERRETM )
+*
+*           Evaluate PHI and the derivative DPHI
+*
+            TEMP = Z( N ) / DELTA( N )
+            PHI = Z( N )*TEMP
+            DPHI = TEMP*TEMP
+            ERRETM = EIGHT*( -PHI-PSI ) + ERRETM - PHI + RHOINV +
+     $               ABS( TAU )*( DPSI+DPHI )
+*
+            W = RHOINV + PHI + PSI
+   90    CONTINUE
+*
+*        Return with INFO = 1, NITER = MAXIT and not converged
+*
+         INFO = 1
+         DLAM = D( I ) + TAU
+         GO TO 250
+*
+*        End for the case I = N
+*
+      ELSE
+*
+*        The case for I < N
+*
+         NITER = 1
+         IP1 = I + 1
+*
+*        Calculate initial guess
+*
+         DEL = D( IP1 ) - D( I )
+         MIDPT = DEL / TWO
+         DO 100 J = 1, N
+            DELTA( J ) = ( D( J )-D( I ) ) - MIDPT
+  100    CONTINUE
+*
+         PSI = ZERO
+         DO 110 J = 1, I - 1
+            PSI = PSI + Z( J )*Z( J ) / DELTA( J )
+  110    CONTINUE
+*
+         PHI = ZERO
+         DO 120 J = N, I + 2, -1
+            PHI = PHI + Z( J )*Z( J ) / DELTA( J )
+  120    CONTINUE
+         C = RHOINV + PSI + PHI
+         W = C + Z( I )*Z( I ) / DELTA( I ) +
+     $       Z( IP1 )*Z( IP1 ) / DELTA( IP1 )
+*
+         IF( W.GT.ZERO ) THEN
+*
+*           d(i)< the ith eigenvalue < (d(i)+d(i+1))/2
+*
+*           We choose d(i) as origin.
+*
+            ORGATI = .TRUE.
+            A = C*DEL + Z( I )*Z( I ) + Z( IP1 )*Z( IP1 )
+            B = Z( I )*Z( I )*DEL
+            IF( A.GT.ZERO ) THEN
+               TAU = TWO*B / ( A+SQRT( ABS( A*A-FOUR*B*C ) ) )
+            ELSE
+               TAU = ( A-SQRT( ABS( A*A-FOUR*B*C ) ) ) / ( TWO*C )
+            END IF
+            DLTLB = ZERO
+            DLTUB = MIDPT
+         ELSE
+*
+*           (d(i)+d(i+1))/2 <= the ith eigenvalue < d(i+1)
+*
+*           We choose d(i+1) as origin.
+*
+            ORGATI = .FALSE.
+            A = C*DEL - Z( I )*Z( I ) - Z( IP1 )*Z( IP1 )
+            B = Z( IP1 )*Z( IP1 )*DEL
+            IF( A.LT.ZERO ) THEN
+               TAU = TWO*B / ( A-SQRT( ABS( A*A+FOUR*B*C ) ) )
+            ELSE
+               TAU = -( A+SQRT( ABS( A*A+FOUR*B*C ) ) ) / ( TWO*C )
+            END IF
+            DLTLB = -MIDPT
+            DLTUB = ZERO
+         END IF
+*
+         IF( ORGATI ) THEN
+            DO 130 J = 1, N
+               DELTA( J ) = ( D( J )-D( I ) ) - TAU
+  130       CONTINUE
+         ELSE
+            DO 140 J = 1, N
+               DELTA( J ) = ( D( J )-D( IP1 ) ) - TAU
+  140       CONTINUE
+         END IF
+         IF( ORGATI ) THEN
+            II = I
+         ELSE
+            II = I + 1
+         END IF
+         IIM1 = II - 1
+         IIP1 = II + 1
+*
+*        Evaluate PSI and the derivative DPSI
+*
+         DPSI = ZERO
+         PSI = ZERO
+         ERRETM = ZERO
+         DO 150 J = 1, IIM1
+            TEMP = Z( J ) / DELTA( J )
+            PSI = PSI + Z( J )*TEMP
+            DPSI = DPSI + TEMP*TEMP
+            ERRETM = ERRETM + PSI
+  150    CONTINUE
+         ERRETM = ABS( ERRETM )
+*
+*        Evaluate PHI and the derivative DPHI
+*
+         DPHI = ZERO
+         PHI = ZERO
+         DO 160 J = N, IIP1, -1
+            TEMP = Z( J ) / DELTA( J )
+            PHI = PHI + Z( J )*TEMP
+            DPHI = DPHI + TEMP*TEMP
+            ERRETM = ERRETM + PHI
+  160    CONTINUE
+*
+         W = RHOINV + PHI + PSI
+*
+*        W is the value of the secular function with
+*        its ii-th element removed.
+*
+         SWTCH3 = .FALSE.
+         IF( ORGATI ) THEN
+            IF( W.LT.ZERO )
+     $         SWTCH3 = .TRUE.
+         ELSE
+            IF( W.GT.ZERO )
+     $         SWTCH3 = .TRUE.
+         END IF
+         IF( II.EQ.1 .OR. II.EQ.N )
+     $      SWTCH3 = .FALSE.
+*
+         TEMP = Z( II ) / DELTA( II )
+         DW = DPSI + DPHI + TEMP*TEMP
+         TEMP = Z( II )*TEMP
+         W = W + TEMP
+         ERRETM = EIGHT*( PHI-PSI ) + ERRETM + TWO*RHOINV +
+     $            THREE*ABS( TEMP ) + ABS( TAU )*DW
+*
+*        Test for convergence
+*
+         IF( ABS( W ).LE.EPS*ERRETM ) THEN
+            IF( ORGATI ) THEN
+               DLAM = D( I ) + TAU
+            ELSE
+               DLAM = D( IP1 ) + TAU
+            END IF
+            GO TO 250
+         END IF
+*
+         IF( W.LE.ZERO ) THEN
+            DLTLB = MAX( DLTLB, TAU )
+         ELSE
+            DLTUB = MIN( DLTUB, TAU )
+         END IF
+*
+*        Calculate the new step
+*
+         NITER = NITER + 1
+         IF( .NOT.SWTCH3 ) THEN
+            IF( ORGATI ) THEN
+               C = W - DELTA( IP1 )*DW - ( D( I )-D( IP1 ) )*
+     $             ( Z( I ) / DELTA( I ) )**2
+            ELSE
+               C = W - DELTA( I )*DW - ( D( IP1 )-D( I ) )*
+     $             ( Z( IP1 ) / DELTA( IP1 ) )**2
+            END IF
+            A = ( DELTA( I )+DELTA( IP1 ) )*W -
+     $          DELTA( I )*DELTA( IP1 )*DW
+            B = DELTA( I )*DELTA( IP1 )*W
+            IF( C.EQ.ZERO ) THEN
+               IF( A.EQ.ZERO ) THEN
+                  IF( ORGATI ) THEN
+                     A = Z( I )*Z( I ) + DELTA( IP1 )*DELTA( IP1 )*
+     $                   ( DPSI+DPHI )
+                  ELSE
+                     A = Z( IP1 )*Z( IP1 ) + DELTA( I )*DELTA( I )*
+     $                   ( DPSI+DPHI )
+                  END IF
+               END IF
+               ETA = B / A
+            ELSE IF( A.LE.ZERO ) THEN
+               ETA = ( A-SQRT( ABS( A*A-FOUR*B*C ) ) ) / ( TWO*C )
+            ELSE
+               ETA = TWO*B / ( A+SQRT( ABS( A*A-FOUR*B*C ) ) )
+            END IF
+         ELSE
+*
+*           Interpolation using THREE most relevant poles
+*
+            TEMP = RHOINV + PSI + PHI
+            IF( ORGATI ) THEN
+               TEMP1 = Z( IIM1 ) / DELTA( IIM1 )
+               TEMP1 = TEMP1*TEMP1
+               C = TEMP - DELTA( IIP1 )*( DPSI+DPHI ) -
+     $             ( D( IIM1 )-D( IIP1 ) )*TEMP1
+               ZZ( 1 ) = Z( IIM1 )*Z( IIM1 )
+               ZZ( 3 ) = DELTA( IIP1 )*DELTA( IIP1 )*
+     $                   ( ( DPSI-TEMP1 )+DPHI )
+            ELSE
+               TEMP1 = Z( IIP1 ) / DELTA( IIP1 )
+               TEMP1 = TEMP1*TEMP1
+               C = TEMP - DELTA( IIM1 )*( DPSI+DPHI ) -
+     $             ( D( IIP1 )-D( IIM1 ) )*TEMP1
+               ZZ( 1 ) = DELTA( IIM1 )*DELTA( IIM1 )*
+     $                   ( DPSI+( DPHI-TEMP1 ) )
+               ZZ( 3 ) = Z( IIP1 )*Z( IIP1 )
+            END IF
+            ZZ( 2 ) = Z( II )*Z( II )
+            CALL SLAED6( NITER, ORGATI, C, DELTA( IIM1 ), ZZ, W, ETA,
+     $                   INFO )
+            IF( INFO.NE.0 )
+     $         GO TO 250
+         END IF
+*
+*        Note, eta should be positive if w is negative, and
+*        eta should be negative otherwise. However,
+*        if for some reason caused by roundoff, eta*w > 0,
+*        we simply use one Newton step instead. This way
+*        will guarantee eta*w < 0.
+*
+         IF( W*ETA.GE.ZERO )
+     $      ETA = -W / DW
+         TEMP = TAU + ETA
+         IF( TEMP.GT.DLTUB .OR. TEMP.LT.DLTLB ) THEN
+            IF( W.LT.ZERO ) THEN
+               ETA = ( DLTUB-TAU ) / TWO
+            ELSE
+               ETA = ( DLTLB-TAU ) / TWO
+            END IF
+         END IF
+*
+         PREW = W
+*
+         DO 180 J = 1, N
+            DELTA( J ) = DELTA( J ) - ETA
+  180    CONTINUE
+*
+*        Evaluate PSI and the derivative DPSI
+*
+         DPSI = ZERO
+         PSI = ZERO
+         ERRETM = ZERO
+         DO 190 J = 1, IIM1
+            TEMP = Z( J ) / DELTA( J )
+            PSI = PSI + Z( J )*TEMP
+            DPSI = DPSI + TEMP*TEMP
+            ERRETM = ERRETM + PSI
+  190    CONTINUE
+         ERRETM = ABS( ERRETM )
+*
+*        Evaluate PHI and the derivative DPHI
+*
+         DPHI = ZERO
+         PHI = ZERO
+         DO 200 J = N, IIP1, -1
+            TEMP = Z( J ) / DELTA( J )
+            PHI = PHI + Z( J )*TEMP
+            DPHI = DPHI + TEMP*TEMP
+            ERRETM = ERRETM + PHI
+  200    CONTINUE
+*
+         TEMP = Z( II ) / DELTA( II )
+         DW = DPSI + DPHI + TEMP*TEMP
+         TEMP = Z( II )*TEMP
+         W = RHOINV + PHI + PSI + TEMP
+         ERRETM = EIGHT*( PHI-PSI ) + ERRETM + TWO*RHOINV +
+     $            THREE*ABS( TEMP ) + ABS( TAU+ETA )*DW
+*
+         SWTCH = .FALSE.
+         IF( ORGATI ) THEN
+            IF( -W.GT.ABS( PREW ) / TEN )
+     $         SWTCH = .TRUE.
+         ELSE
+            IF( W.GT.ABS( PREW ) / TEN )
+     $         SWTCH = .TRUE.
+         END IF
+*
+         TAU = TAU + ETA
+*
+*        Main loop to update the values of the array   DELTA
+*
+         ITER = NITER + 1
+*
+         DO 240 NITER = ITER, MAXIT
+*
+*           Test for convergence
+*
+            IF( ABS( W ).LE.EPS*ERRETM ) THEN
+               IF( ORGATI ) THEN
+                  DLAM = D( I ) + TAU
+               ELSE
+                  DLAM = D( IP1 ) + TAU
+               END IF
+               GO TO 250
+            END IF
+*
+            IF( W.LE.ZERO ) THEN
+               DLTLB = MAX( DLTLB, TAU )
+            ELSE
+               DLTUB = MIN( DLTUB, TAU )
+            END IF
+*
+*           Calculate the new step
+*
+            IF( .NOT.SWTCH3 ) THEN
+               IF( .NOT.SWTCH ) THEN
+                  IF( ORGATI ) THEN
+                     C = W - DELTA( IP1 )*DW -
+     $                   ( D( I )-D( IP1 ) )*( Z( I ) / DELTA( I ) )**2
+                  ELSE
+                     C = W - DELTA( I )*DW - ( D( IP1 )-D( I ) )*
+     $                   ( Z( IP1 ) / DELTA( IP1 ) )**2
+                  END IF
+               ELSE
+                  TEMP = Z( II ) / DELTA( II )
+                  IF( ORGATI ) THEN
+                     DPSI = DPSI + TEMP*TEMP
+                  ELSE
+                     DPHI = DPHI + TEMP*TEMP
+                  END IF
+                  C = W - DELTA( I )*DPSI - DELTA( IP1 )*DPHI
+               END IF
+               A = ( DELTA( I )+DELTA( IP1 ) )*W -
+     $             DELTA( I )*DELTA( IP1 )*DW
+               B = DELTA( I )*DELTA( IP1 )*W
+               IF( C.EQ.ZERO ) THEN
+                  IF( A.EQ.ZERO ) THEN
+                     IF( .NOT.SWTCH ) THEN
+                        IF( ORGATI ) THEN
+                           A = Z( I )*Z( I ) + DELTA( IP1 )*
+     $                         DELTA( IP1 )*( DPSI+DPHI )
+                        ELSE
+                           A = Z( IP1 )*Z( IP1 ) +
+     $                         DELTA( I )*DELTA( I )*( DPSI+DPHI )
+                        END IF
+                     ELSE
+                        A = DELTA( I )*DELTA( I )*DPSI +
+     $                      DELTA( IP1 )*DELTA( IP1 )*DPHI
+                     END IF
+                  END IF
+                  ETA = B / A
+               ELSE IF( A.LE.ZERO ) THEN
+                  ETA = ( A-SQRT( ABS( A*A-FOUR*B*C ) ) ) / ( TWO*C )
+               ELSE
+                  ETA = TWO*B / ( A+SQRT( ABS( A*A-FOUR*B*C ) ) )
+               END IF
+            ELSE
+*
+*              Interpolation using THREE most relevant poles
+*
+               TEMP = RHOINV + PSI + PHI
+               IF( SWTCH ) THEN
+                  C = TEMP - DELTA( IIM1 )*DPSI - DELTA( IIP1 )*DPHI
+                  ZZ( 1 ) = DELTA( IIM1 )*DELTA( IIM1 )*DPSI
+                  ZZ( 3 ) = DELTA( IIP1 )*DELTA( IIP1 )*DPHI
+               ELSE
+                  IF( ORGATI ) THEN
+                     TEMP1 = Z( IIM1 ) / DELTA( IIM1 )
+                     TEMP1 = TEMP1*TEMP1
+                     C = TEMP - DELTA( IIP1 )*( DPSI+DPHI ) -
+     $                   ( D( IIM1 )-D( IIP1 ) )*TEMP1
+                     ZZ( 1 ) = Z( IIM1 )*Z( IIM1 )
+                     ZZ( 3 ) = DELTA( IIP1 )*DELTA( IIP1 )*
+     $                         ( ( DPSI-TEMP1 )+DPHI )
+                  ELSE
+                     TEMP1 = Z( IIP1 ) / DELTA( IIP1 )
+                     TEMP1 = TEMP1*TEMP1
+                     C = TEMP - DELTA( IIM1 )*( DPSI+DPHI ) -
+     $                   ( D( IIP1 )-D( IIM1 ) )*TEMP1
+                     ZZ( 1 ) = DELTA( IIM1 )*DELTA( IIM1 )*
+     $                         ( DPSI+( DPHI-TEMP1 ) )
+                     ZZ( 3 ) = Z( IIP1 )*Z( IIP1 )
+                  END IF
+               END IF
+               CALL SLAED6( NITER, ORGATI, C, DELTA( IIM1 ), ZZ, W, ETA,
+     $                      INFO )
+               IF( INFO.NE.0 )
+     $            GO TO 250
+            END IF
+*
+*           Note, eta should be positive if w is negative, and
+*           eta should be negative otherwise. However,
+*           if for some reason caused by roundoff, eta*w > 0,
+*           we simply use one Newton step instead. This way
+*           will guarantee eta*w < 0.
+*
+            IF( W*ETA.GE.ZERO )
+     $         ETA = -W / DW
+            TEMP = TAU + ETA
+            IF( TEMP.GT.DLTUB .OR. TEMP.LT.DLTLB ) THEN
+               IF( W.LT.ZERO ) THEN
+                  ETA = ( DLTUB-TAU ) / TWO
+               ELSE
+                  ETA = ( DLTLB-TAU ) / TWO
+               END IF
+            END IF
+*
+            DO 210 J = 1, N
+               DELTA( J ) = DELTA( J ) - ETA
+  210       CONTINUE
+*
+            TAU = TAU + ETA
+            PREW = W
+*
+*           Evaluate PSI and the derivative DPSI
+*
+            DPSI = ZERO
+            PSI = ZERO
+            ERRETM = ZERO
+            DO 220 J = 1, IIM1
+               TEMP = Z( J ) / DELTA( J )
+               PSI = PSI + Z( J )*TEMP
+               DPSI = DPSI + TEMP*TEMP
+               ERRETM = ERRETM + PSI
+  220       CONTINUE
+            ERRETM = ABS( ERRETM )
+*
+*           Evaluate PHI and the derivative DPHI
+*
+            DPHI = ZERO
+            PHI = ZERO
+            DO 230 J = N, IIP1, -1
+               TEMP = Z( J ) / DELTA( J )
+               PHI = PHI + Z( J )*TEMP
+               DPHI = DPHI + TEMP*TEMP
+               ERRETM = ERRETM + PHI
+  230       CONTINUE
+*
+            TEMP = Z( II ) / DELTA( II )
+            DW = DPSI + DPHI + TEMP*TEMP
+            TEMP = Z( II )*TEMP
+            W = RHOINV + PHI + PSI + TEMP
+            ERRETM = EIGHT*( PHI-PSI ) + ERRETM + TWO*RHOINV +
+     $               THREE*ABS( TEMP ) + ABS( TAU )*DW
+            IF( W*PREW.GT.ZERO .AND. ABS( W ).GT.ABS( PREW ) / TEN )
+     $         SWTCH = .NOT.SWTCH
+*
+  240    CONTINUE
+*
+*        Return with INFO = 1, NITER = MAXIT and not converged
+*
+         INFO = 1
+         IF( ORGATI ) THEN
+            DLAM = D( I ) + TAU
+         ELSE
+            DLAM = D( IP1 ) + TAU
+         END IF
+*
+      END IF
+*
+  250 CONTINUE
+*
+      RETURN
+*
+*     End of SLAED4
+*
+      END
+
+
+
+
+      SUBROUTINE SLAED5( I, D, Z, DELTA, RHO, DLAM )
+*
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     .. Scalar Arguments ..
+      INTEGER            I
+      REAL               DLAM, RHO
+*     ..
+*     .. Array Arguments ..
+      REAL               D( 2 ), DELTA( 2 ), Z( 2 )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  This subroutine computes the I-th eigenvalue of a symmetric rank-one
+*  modification of a 2-by-2 diagonal matrix
+*
+*             diag( D )  +  RHO *  Z * transpose(Z) .
+*
+*  The diagonal elements in the array D are assumed to satisfy
+*
+*             D(i) < D(j)  for  i < j .
+*
+*  We also assume RHO > 0 and that the Euclidean norm of the vector
+*  Z is one.
+*
+*  Arguments
+*  =========
+*
+*  I      (input) INTEGER
+*         The index of the eigenvalue to be computed.  I = 1 or I = 2.
+*
+*  D      (input) REAL array, dimension (2)
+*         The original eigenvalues.  We assume D(1) < D(2).
+*
+*  Z      (input) REAL array, dimension (2)
+*         The components of the updating vector.
+*
+*  DELTA  (output) REAL array, dimension (2)
+*         The vector DELTA contains the information necessary
+*         to construct the eigenvectors.
+*
+*  RHO    (input) REAL
+*         The scalar in the symmetric updating formula.
+*
+*  DLAM   (output) REAL
+*         The computed lambda_I, the I-th updated eigenvalue.
+*
+*  Further Details
+*  ===============
+*
+*  Based on contributions by
+*     Ren-Cang Li, Computer Science Division, University of California
+*     at Berkeley, USA
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL               ZERO, ONE, TWO, FOUR
+      PARAMETER          ( ZERO = 0.0E0, ONE = 1.0E0, TWO = 2.0E0,
+     $                   FOUR = 4.0E0 )
+*     ..
+*     .. Local Scalars ..
+      REAL               B, C, DEL, TAU, TEMP, W
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          ABS, SQRT
+*     ..
+*     .. Executable Statements ..
+*
+      DEL = D( 2 ) - D( 1 )
+      IF( I.EQ.1 ) THEN
+         W = ONE + TWO*RHO*( Z( 2 )*Z( 2 )-Z( 1 )*Z( 1 ) ) / DEL
+         IF( W.GT.ZERO ) THEN
+            B = DEL + RHO*( Z( 1 )*Z( 1 )+Z( 2 )*Z( 2 ) )
+            C = RHO*Z( 1 )*Z( 1 )*DEL
+*
+*           B > ZERO, always
+*
+            TAU = TWO*C / ( B+SQRT( ABS( B*B-FOUR*C ) ) )
+            DLAM = D( 1 ) + TAU
+            DELTA( 1 ) = -Z( 1 ) / TAU
+            DELTA( 2 ) = Z( 2 ) / ( DEL-TAU )
+         ELSE
+            B = -DEL + RHO*( Z( 1 )*Z( 1 )+Z( 2 )*Z( 2 ) )
+            C = RHO*Z( 2 )*Z( 2 )*DEL
+            IF( B.GT.ZERO ) THEN
+               TAU = -TWO*C / ( B+SQRT( B*B+FOUR*C ) )
+            ELSE
+               TAU = ( B-SQRT( B*B+FOUR*C ) ) / TWO
+            END IF
+            DLAM = D( 2 ) + TAU
+            DELTA( 1 ) = -Z( 1 ) / ( DEL+TAU )
+            DELTA( 2 ) = -Z( 2 ) / TAU
+         END IF
+         TEMP = SQRT( DELTA( 1 )*DELTA( 1 )+DELTA( 2 )*DELTA( 2 ) )
+         DELTA( 1 ) = DELTA( 1 ) / TEMP
+         DELTA( 2 ) = DELTA( 2 ) / TEMP
+      ELSE
+*
+*     Now I=2
+*
+         B = -DEL + RHO*( Z( 1 )*Z( 1 )+Z( 2 )*Z( 2 ) )
+         C = RHO*Z( 2 )*Z( 2 )*DEL
+         IF( B.GT.ZERO ) THEN
+            TAU = ( B+SQRT( B*B+FOUR*C ) ) / TWO
+         ELSE
+            TAU = TWO*C / ( -B+SQRT( B*B+FOUR*C ) )
+         END IF
+         DLAM = D( 2 ) + TAU
+         DELTA( 1 ) = -Z( 1 ) / ( DEL+TAU )
+         DELTA( 2 ) = -Z( 2 ) / TAU
+         TEMP = SQRT( DELTA( 1 )*DELTA( 1 )+DELTA( 2 )*DELTA( 2 ) )
+         DELTA( 1 ) = DELTA( 1 ) / TEMP
+         DELTA( 2 ) = DELTA( 2 ) / TEMP
+      END IF
+      RETURN
+*
+*     End OF SLAED5
+*
+      END
+
+
+
+      SUBROUTINE SLAED6( KNITER, ORGATI, RHO, D, Z, FINIT, TAU, INFO )
+*
+*  -- LAPACK routine (version 3.1.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     February 2007
+*
+*     .. Scalar Arguments ..
+      LOGICAL            ORGATI
+      INTEGER            INFO, KNITER
+      REAL               FINIT, RHO, TAU
+*     ..
+*     .. Array Arguments ..
+      REAL               D( 3 ), Z( 3 )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SLAED6 computes the positive or negative root (closest to the origin)
+*  of
+*                   z(1)        z(2)        z(3)
+*  f(x) =   rho + --------- + ---------- + ---------
+*                  d(1)-x      d(2)-x      d(3)-x
+*
+*  It is assumed that
+*
+*        if ORGATI = .true. the root is between d(2) and d(3);
+*        otherwise it is between d(1) and d(2)
+*
+*  This routine will be called by SLAED4 when necessary. In most cases,
+*  the root sought is the smallest in magnitude, though it might not be
+*  in some extremely rare situations.
+*
+*  Arguments
+*  =========
+*
+*  KNITER       (input) INTEGER
+*               Refer to SLAED4 for its significance.
+*
+*  ORGATI       (input) LOGICAL
+*               If ORGATI is true, the needed root is between d(2) and
+*               d(3); otherwise it is between d(1) and d(2).  See
+*               SLAED4 for further details.
+*
+*  RHO          (input) REAL            
+*               Refer to the equation f(x) above.
+*
+*  D            (input) REAL array, dimension (3)
+*               D satisfies d(1) < d(2) < d(3).
+*
+*  Z            (input) REAL array, dimension (3)
+*               Each of the elements in z must be positive.
+*
+*  FINIT        (input) REAL            
+*               The value of f at 0. It is more accurate than the one
+*               evaluated inside this routine (if someone wants to do
+*               so).
+*
+*  TAU          (output) REAL            
+*               The root of the equation f(x).
+*
+*  INFO         (output) INTEGER
+*               = 0: successful exit
+*               > 0: if INFO = 1, failure to converge
+*
+*  Further Details
+*  ===============
+*
+*  30/06/99: Based on contributions by
+*     Ren-Cang Li, Computer Science Division, University of California
+*     at Berkeley, USA
+*
+*  10/02/03: This version has a few statements commented out for thread safety
+*     (machine parameters are computed on each entry). SJH.
+*
+*  05/10/06: Modified from a new version of Ren-Cang Li, use
+*     Gragg-Thornton-Warner cubic convergent scheme for better stability.
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      INTEGER            MAXIT
+      PARAMETER          ( MAXIT = 40 )
+      REAL               ZERO, ONE, TWO, THREE, FOUR, EIGHT
+      PARAMETER          ( ZERO = 0.0E0, ONE = 1.0E0, TWO = 2.0E0,
+     $                   THREE = 3.0E0, FOUR = 4.0E0, EIGHT = 8.0E0 )
+*     ..
+*     .. External Functions ..
+      REAL               SLAMCH
+      EXTERNAL           SLAMCH
+*     ..
+*     .. Local Arrays ..
+      REAL               DSCALE( 3 ), ZSCALE( 3 )
+*     ..
+*     .. Local Scalars ..
+      LOGICAL            SCALE
+      INTEGER            I, ITER, NITER
+      REAL               A, B, BASE, C, DDF, DF, EPS, ERRETM, ETA, F,
+     $                   FC, SCLFAC, SCLINV, SMALL1, SMALL2, SMINV1,
+     $                   SMINV2, TEMP, TEMP1, TEMP2, TEMP3, TEMP4, 
+     $                   LBD, UBD
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          ABS, INT, LOG, MAX, MIN, SQRT
+*     ..
+*     .. Executable Statements ..
+*
+      INFO = 0
+*
+      IF( ORGATI ) THEN
+         LBD = D(2)
+         UBD = D(3)
+      ELSE
+         LBD = D(1)
+         UBD = D(2)
+      END IF
+      IF( FINIT .LT. ZERO )THEN
+         LBD = ZERO
+      ELSE
+         UBD = ZERO 
+      END IF
+*
+      NITER = 1
+      TAU = ZERO
+      IF( KNITER.EQ.2 ) THEN
+         IF( ORGATI ) THEN
+            TEMP = ( D( 3 )-D( 2 ) ) / TWO
+            C = RHO + Z( 1 ) / ( ( D( 1 )-D( 2 ) )-TEMP )
+            A = C*( D( 2 )+D( 3 ) ) + Z( 2 ) + Z( 3 )
+            B = C*D( 2 )*D( 3 ) + Z( 2 )*D( 3 ) + Z( 3 )*D( 2 )
+         ELSE
+            TEMP = ( D( 1 )-D( 2 ) ) / TWO
+            C = RHO + Z( 3 ) / ( ( D( 3 )-D( 2 ) )-TEMP )
+            A = C*( D( 1 )+D( 2 ) ) + Z( 1 ) + Z( 2 )
+            B = C*D( 1 )*D( 2 ) + Z( 1 )*D( 2 ) + Z( 2 )*D( 1 )
+         END IF
+         TEMP = MAX( ABS( A ), ABS( B ), ABS( C ) )
+         A = A / TEMP
+         B = B / TEMP
+         C = C / TEMP
+         IF( C.EQ.ZERO ) THEN
+            TAU = B / A
+         ELSE IF( A.LE.ZERO ) THEN
+            TAU = ( A-SQRT( ABS( A*A-FOUR*B*C ) ) ) / ( TWO*C )
+         ELSE
+            TAU = TWO*B / ( A+SQRT( ABS( A*A-FOUR*B*C ) ) )
+         END IF
+         IF( TAU .LT. LBD .OR. TAU .GT. UBD )
+     $      TAU = ( LBD+UBD )/TWO
+         IF( D(1).EQ.TAU .OR. D(2).EQ.TAU .OR. D(3).EQ.TAU ) THEN
+            TAU = ZERO
+         ELSE
+            TEMP = FINIT + TAU*Z(1)/( D(1)*( D( 1 )-TAU ) ) +
+     $                     TAU*Z(2)/( D(2)*( D( 2 )-TAU ) ) +
+     $                     TAU*Z(3)/( D(3)*( D( 3 )-TAU ) )
+            IF( TEMP .LE. ZERO )THEN
+               LBD = TAU
+            ELSE
+               UBD = TAU
+            END IF
+            IF( ABS( FINIT ).LE.ABS( TEMP ) )
+     $         TAU = ZERO
+         END IF
+      END IF
+*
+*     get machine parameters for possible scaling to avoid overflow
+*
+*     modified by Sven: parameters SMALL1, SMINV1, SMALL2,
+*     SMINV2, EPS are not SAVEd anymore between one call to the
+*     others but recomputed at each call
+*
+      EPS = SLAMCH( 'Epsilon' )
+      BASE = SLAMCH( 'Base' )
+      SMALL1 = BASE**( INT( LOG( SLAMCH( 'SafMin' ) ) / LOG( BASE ) /
+     $         THREE ) )
+      SMINV1 = ONE / SMALL1
+      SMALL2 = SMALL1*SMALL1
+      SMINV2 = SMINV1*SMINV1
+*
+*     Determine if scaling of inputs necessary to avoid overflow
+*     when computing 1/TEMP**3
+*
+      IF( ORGATI ) THEN
+         TEMP = MIN( ABS( D( 2 )-TAU ), ABS( D( 3 )-TAU ) )
+      ELSE
+         TEMP = MIN( ABS( D( 1 )-TAU ), ABS( D( 2 )-TAU ) )
+      END IF
+      SCALE = .FALSE.
+      IF( TEMP.LE.SMALL1 ) THEN
+         SCALE = .TRUE.
+         IF( TEMP.LE.SMALL2 ) THEN
+*
+*        Scale up by power of radix nearest 1/SAFMIN**(2/3)
+*
+            SCLFAC = SMINV2
+            SCLINV = SMALL2
+         ELSE
+*
+*        Scale up by power of radix nearest 1/SAFMIN**(1/3)
+*
+            SCLFAC = SMINV1
+            SCLINV = SMALL1
+         END IF
+*
+*        Scaling up safe because D, Z, TAU scaled elsewhere to be O(1)
+*
+         DO 10 I = 1, 3
+            DSCALE( I ) = D( I )*SCLFAC
+            ZSCALE( I ) = Z( I )*SCLFAC
+   10    CONTINUE
+         TAU = TAU*SCLFAC
+         LBD = LBD*SCLFAC
+         UBD = UBD*SCLFAC
+      ELSE
+*
+*        Copy D and Z to DSCALE and ZSCALE
+*
+         DO 20 I = 1, 3
+            DSCALE( I ) = D( I )
+            ZSCALE( I ) = Z( I )
+   20    CONTINUE
+      END IF
+*
+      FC = ZERO
+      DF = ZERO
+      DDF = ZERO
+      DO 30 I = 1, 3
+         TEMP = ONE / ( DSCALE( I )-TAU )
+         TEMP1 = ZSCALE( I )*TEMP
+         TEMP2 = TEMP1*TEMP
+         TEMP3 = TEMP2*TEMP
+         FC = FC + TEMP1 / DSCALE( I )
+         DF = DF + TEMP2
+         DDF = DDF + TEMP3
+   30 CONTINUE
+      F = FINIT + TAU*FC
+*
+      IF( ABS( F ).LE.ZERO )
+     $   GO TO 60
+      IF( F .LE. ZERO )THEN
+         LBD = TAU
+      ELSE
+         UBD = TAU
+      END IF
+*
+*        Iteration begins -- Use Gragg-Thornton-Warner cubic convergent
+*                            scheme
+*
+*     It is not hard to see that
+*
+*           1) Iterations will go up monotonically
+*              if FINIT < 0;
+*
+*           2) Iterations will go down monotonically
+*              if FINIT > 0.
+*
+      ITER = NITER + 1
+*
+      DO 50 NITER = ITER, MAXIT
+*
+         IF( ORGATI ) THEN
+            TEMP1 = DSCALE( 2 ) - TAU
+            TEMP2 = DSCALE( 3 ) - TAU
+         ELSE
+            TEMP1 = DSCALE( 1 ) - TAU
+            TEMP2 = DSCALE( 2 ) - TAU
+         END IF
+         A = ( TEMP1+TEMP2 )*F - TEMP1*TEMP2*DF
+         B = TEMP1*TEMP2*F
+         C = F - ( TEMP1+TEMP2 )*DF + TEMP1*TEMP2*DDF
+         TEMP = MAX( ABS( A ), ABS( B ), ABS( C ) )
+         A = A / TEMP
+         B = B / TEMP
+         C = C / TEMP
+         IF( C.EQ.ZERO ) THEN
+            ETA = B / A
+         ELSE IF( A.LE.ZERO ) THEN
+            ETA = ( A-SQRT( ABS( A*A-FOUR*B*C ) ) ) / ( TWO*C )
+         ELSE
+            ETA = TWO*B / ( A+SQRT( ABS( A*A-FOUR*B*C ) ) )
+         END IF
+         IF( F*ETA.GE.ZERO ) THEN
+            ETA = -F / DF
+         END IF
+*
+         TAU = TAU + ETA
+         IF( TAU .LT. LBD .OR. TAU .GT. UBD )
+     $      TAU = ( LBD + UBD )/TWO 
+*
+         FC = ZERO
+         ERRETM = ZERO
+         DF = ZERO
+         DDF = ZERO
+         DO 40 I = 1, 3
+            TEMP = ONE / ( DSCALE( I )-TAU )
+            TEMP1 = ZSCALE( I )*TEMP
+            TEMP2 = TEMP1*TEMP
+            TEMP3 = TEMP2*TEMP
+            TEMP4 = TEMP1 / DSCALE( I )
+            FC = FC + TEMP4
+            ERRETM = ERRETM + ABS( TEMP4 )
+            DF = DF + TEMP2
+            DDF = DDF + TEMP3
+   40    CONTINUE
+         F = FINIT + TAU*FC
+         ERRETM = EIGHT*( ABS( FINIT )+ABS( TAU )*ERRETM ) +
+     $            ABS( TAU )*DF
+         IF( ABS( F ).LE.EPS*ERRETM )
+     $      GO TO 60
+         IF( F .LE. ZERO )THEN
+            LBD = TAU
+         ELSE
+            UBD = TAU
+         END IF
+   50 CONTINUE
+      INFO = 1
+   60 CONTINUE
+*
+*     Undo scaling
+*
+      IF( SCALE )
+     $   TAU = TAU*SCLINV
+      RETURN
+*
+*     End of SLAED6
+*
+      END
 
 
 	  
