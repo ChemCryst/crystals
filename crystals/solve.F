@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.57  2013/09/23 07:54:04  rich
+C Leave in lapack routines for non-intel compiler versions for now
+C
 C Revision 1.56  2013/09/22 21:43:39  rich
 C Improved accumulation.
 C
@@ -3250,7 +3253,7 @@ C     THE LETTER.
       END IF
 *
       RETURN
-C     END 
+     END 
 C     LOGICAL FUNCTION LSAME(CA,CB)
 C     TEST IF TWO CHARACTERS ARE ESSENTIALLY THE SAME.
 C     THE CHARACTER CB IS ONE OF THE FORTRAN SET. 
