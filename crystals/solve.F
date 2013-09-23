@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.61  2013/09/23 09:45:59  rich
+C Extra lapack dependecies for non-intels
+C
 C Revision 1.60  2013/09/23 08:12:00  rich
 C Duplicated function
 C
@@ -21146,6 +21149,2073 @@ c
 *     End of SSYRK .
 *
       END
+
+
+      REAL             FUNCTION SLANSP( NORM, UPLO, N, AP, WORK )
+*
+*  -- LAPACK auxiliary routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     .. Scalar Arguments ..
+      CHARACTER          NORM, UPLO
+      INTEGER            N
+*     ..
+*     .. Array Arguments ..
+      REAL               AP( * ), WORK( * )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SLANSP  returns the value of the one norm,  or the Frobenius norm, or
+*  the  infinity norm,  or the  element of  largest absolute value  of a
+*  real symmetric matrix A,  supplied in packed form.
+*
+*  Description
+*  ===========
+*
+*  SLANSP returns the value
+*
+*     SLANSP = ( max(abs(A(i,j))), NORM = 'M' or 'm'
+*              (
+*              ( norm1(A),         NORM = '1', 'O' or 'o'
+*              (
+*              ( normI(A),         NORM = 'I' or 'i'
+*              (
+*              ( normF(A),         NORM = 'F', 'f', 'E' or 'e'
+*
+*  where  norm1  denotes the  one norm of a matrix (maximum column sum),
+*  normI  denotes the  infinity norm  of a matrix  (maximum row sum) and
+*  normF  denotes the  Frobenius norm of a matrix (square root of sum of
+*  squares).  Note that  max(abs(A(i,j)))  is not a consistent matrix norm.
+*
+*  Arguments
+*  =========
+*
+*  NORM    (input) CHARACTER*1
+*          Specifies the value to be returned in SLANSP as described
+*          above.
+*
+*  UPLO    (input) CHARACTER*1
+*          Specifies whether the upper or lower triangular part of the
+*          symmetric matrix A is supplied.
+*          = 'U':  Upper triangular part of A is supplied
+*          = 'L':  Lower triangular part of A is supplied
+*
+*  N       (input) INTEGER
+*          The order of the matrix A.  N >= 0.  When N = 0, SLANSP is
+*          set to zero.
+*
+*  AP      (input) REAL array, dimension (N*(N+1)/2)
+*          The upper or lower triangle of the symmetric matrix A, packed
+*          columnwise in a linear array.  The j-th column of A is stored
+*          in the array AP as follows:
+*          if UPLO = 'U', AP(i + (j-1)*j/2) = A(i,j) for 1<=i<=j;
+*          if UPLO = 'L', AP(i + (j-1)*(2n-j)/2) = A(i,j) for j<=i<=n.
+*
+*  WORK    (workspace) REAL array, dimension (MAX(1,LWORK)),
+*          where LWORK >= N when NORM = 'I' or '1' or 'O'; otherwise,
+*          WORK is not referenced.
+*
+* =====================================================================
+*
+*     .. Parameters ..
+      REAL               ONE, ZERO
+      PARAMETER          ( ONE = 1.0E+0, ZERO = 0.0E+0 )
+*     ..
+*     .. Local Scalars ..
+      INTEGER            I, J, K
+      REAL               ABSA, SCALE, SUM, VALUE
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SLASSQ
+*     ..
+*     .. External Functions ..
+      LOGICAL            LSAME
+      EXTERNAL           LSAME
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          ABS, MAX, SQRT
+*     ..
+*     .. Executable Statements ..
+*
+      IF( N.EQ.0 ) THEN
+         VALUE = ZERO
+      ELSE IF( LSAME( NORM, 'M' ) ) THEN
+*
+*        Find max(abs(A(i,j))).
+*
+         VALUE = ZERO
+         IF( LSAME( UPLO, 'U' ) ) THEN
+            K = 1
+            DO 20 J = 1, N
+               DO 10 I = K, K + J - 1
+                  VALUE = MAX( VALUE, ABS( AP( I ) ) )
+   10          CONTINUE
+               K = K + J
+   20       CONTINUE
+         ELSE
+            K = 1
+            DO 40 J = 1, N
+               DO 30 I = K, K + N - J
+                  VALUE = MAX( VALUE, ABS( AP( I ) ) )
+   30          CONTINUE
+               K = K + N - J + 1
+   40       CONTINUE
+         END IF
+      ELSE IF( ( LSAME( NORM, 'I' ) ) .OR. ( LSAME( NORM, 'O' ) ) .OR.
+     $         ( NORM.EQ.'1' ) ) THEN
+*
+*        Find normI(A) ( = norm1(A), since A is symmetric).
+*
+         VALUE = ZERO
+         K = 1
+         IF( LSAME( UPLO, 'U' ) ) THEN
+            DO 60 J = 1, N
+               SUM = ZERO
+               DO 50 I = 1, J - 1
+                  ABSA = ABS( AP( K ) )
+                  SUM = SUM + ABSA
+                  WORK( I ) = WORK( I ) + ABSA
+                  K = K + 1
+   50          CONTINUE
+               WORK( J ) = SUM + ABS( AP( K ) )
+               K = K + 1
+   60       CONTINUE
+            DO 70 I = 1, N
+               VALUE = MAX( VALUE, WORK( I ) )
+   70       CONTINUE
+         ELSE
+            DO 80 I = 1, N
+               WORK( I ) = ZERO
+   80       CONTINUE
+            DO 100 J = 1, N
+               SUM = WORK( J ) + ABS( AP( K ) )
+               K = K + 1
+               DO 90 I = J + 1, N
+                  ABSA = ABS( AP( K ) )
+                  SUM = SUM + ABSA
+                  WORK( I ) = WORK( I ) + ABSA
+                  K = K + 1
+   90          CONTINUE
+               VALUE = MAX( VALUE, SUM )
+  100       CONTINUE
+         END IF
+      ELSE IF( ( LSAME( NORM, 'F' ) ) .OR. ( LSAME( NORM, 'E' ) ) ) THEN
+*
+*        Find normF(A).
+*
+         SCALE = ZERO
+         SUM = ONE
+         K = 2
+         IF( LSAME( UPLO, 'U' ) ) THEN
+            DO 110 J = 2, N
+               CALL SLASSQ( J-1, AP( K ), 1, SCALE, SUM )
+               K = K + J
+  110       CONTINUE
+         ELSE
+            DO 120 J = 1, N - 1
+               CALL SLASSQ( N-J, AP( K ), 1, SCALE, SUM )
+               K = K + N - J + 1
+  120       CONTINUE
+         END IF
+         SUM = 2*SUM
+         K = 1
+         DO 130 I = 1, N
+            IF( AP( K ).NE.ZERO ) THEN
+               ABSA = ABS( AP( K ) )
+               IF( SCALE.LT.ABSA ) THEN
+                  SUM = ONE + SUM*( SCALE / ABSA )**2
+                  SCALE = ABSA
+               ELSE
+                  SUM = SUM + ( ABSA / SCALE )**2
+               END IF
+            END IF
+            IF( LSAME( UPLO, 'U' ) ) THEN
+               K = K + I + 1
+            ELSE
+               K = K + N - I + 1
+            END IF
+  130    CONTINUE
+         VALUE = SCALE*SQRT( SUM )
+      END IF
+*
+      SLANSP = VALUE
+      RETURN
+*
+*     End of SLANSP
+*
+      END
+
+
+
+      SUBROUTINE SSPTRD( UPLO, N, AP, D, E, TAU, INFO )
+*
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     .. Scalar Arguments ..
+      CHARACTER          UPLO
+      INTEGER            INFO, N
+*     ..
+*     .. Array Arguments ..
+      REAL               AP( * ), D( * ), E( * ), TAU( * )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SSPTRD reduces a real symmetric matrix A stored in packed form to
+*  symmetric tridiagonal form T by an orthogonal similarity
+*  transformation: Q**T * A * Q = T.
+*
+*  Arguments
+*  =========
+*
+*  UPLO    (input) CHARACTER*1
+*          = 'U':  Upper triangle of A is stored;
+*          = 'L':  Lower triangle of A is stored.
+*
+*  N       (input) INTEGER
+*          The order of the matrix A.  N >= 0.
+*
+*  AP      (input/output) REAL array, dimension (N*(N+1)/2)
+*          On entry, the upper or lower triangle of the symmetric matrix
+*          A, packed columnwise in a linear array.  The j-th column of A
+*          is stored in the array AP as follows:
+*          if UPLO = 'U', AP(i + (j-1)*j/2) = A(i,j) for 1<=i<=j;
+*          if UPLO = 'L', AP(i + (j-1)*(2*n-j)/2) = A(i,j) for j<=i<=n.
+*          On exit, if UPLO = 'U', the diagonal and first superdiagonal
+*          of A are overwritten by the corresponding elements of the
+*          tridiagonal matrix T, and the elements above the first
+*          superdiagonal, with the array TAU, represent the orthogonal
+*          matrix Q as a product of elementary reflectors; if UPLO
+*          = 'L', the diagonal and first subdiagonal of A are over-
+*          written by the corresponding elements of the tridiagonal
+*          matrix T, and the elements below the first subdiagonal, with
+*          the array TAU, represent the orthogonal matrix Q as a product
+*          of elementary reflectors. See Further Details.
+*
+*  D       (output) REAL array, dimension (N)
+*          The diagonal elements of the tridiagonal matrix T:
+*          D(i) = A(i,i).
+*
+*  E       (output) REAL array, dimension (N-1)
+*          The off-diagonal elements of the tridiagonal matrix T:
+*          E(i) = A(i,i+1) if UPLO = 'U', E(i) = A(i+1,i) if UPLO = 'L'.
+*
+*  TAU     (output) REAL array, dimension (N-1)
+*          The scalar factors of the elementary reflectors (see Further
+*          Details).
+*
+*  INFO    (output) INTEGER
+*          = 0:  successful exit
+*          < 0:  if INFO = -i, the i-th argument had an illegal value
+*
+*  Further Details
+*  ===============
+*
+*  If UPLO = 'U', the matrix Q is represented as a product of elementary
+*  reflectors
+*
+*     Q = H(n-1) . . . H(2) H(1).
+*
+*  Each H(i) has the form
+*
+*     H(i) = I - tau * v * v'
+*
+*  where tau is a real scalar, and v is a real vector with
+*  v(i+1:n) = 0 and v(i) = 1; v(1:i-1) is stored on exit in AP,
+*  overwriting A(1:i-1,i+1), and tau is stored in TAU(i).
+*
+*  If UPLO = 'L', the matrix Q is represented as a product of elementary
+*  reflectors
+*
+*     Q = H(1) H(2) . . . H(n-1).
+*
+*  Each H(i) has the form
+*
+*     H(i) = I - tau * v * v'
+*
+*  where tau is a real scalar, and v is a real vector with
+*  v(1:i) = 0 and v(i+1) = 1; v(i+2:n) is stored on exit in AP,
+*  overwriting A(i+2:n,i), and tau is stored in TAU(i).
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL               ONE, ZERO, HALF
+      PARAMETER          ( ONE = 1.0, ZERO = 0.0, HALF = 1.0 / 2.0 )
+*     ..
+*     .. Local Scalars ..
+      LOGICAL            UPPER
+      INTEGER            I, I1, I1I1, II
+      REAL               ALPHA, TAUI
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SAXPY, SLARFG, SSPMV, SSPR2, XERBLA
+*     ..
+*     .. External Functions ..
+      LOGICAL            LSAME
+      REAL               SDOT
+      EXTERNAL           LSAME, SDOT
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input parameters
+*
+      INFO = 0
+      UPPER = LSAME( UPLO, 'U' )
+      IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
+         INFO = -1
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -2
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SSPTRD', -INFO )
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      IF( N.LE.0 )
+     $   RETURN
+*
+      IF( UPPER ) THEN
+*
+*        Reduce the upper triangle of A.
+*        I1 is the index in AP of A(1,I+1).
+*
+         I1 = N*( N-1 ) / 2 + 1
+         DO 10 I = N - 1, 1, -1
+*
+*           Generate elementary reflector H(i) = I - tau * v * v'
+*           to annihilate A(1:i-1,i+1)
+*
+            CALL SLARFG( I, AP( I1+I-1 ), AP( I1 ), 1, TAUI )
+            E( I ) = AP( I1+I-1 )
+*
+            IF( TAUI.NE.ZERO ) THEN
+*
+*              Apply H(i) from both sides to A(1:i,1:i)
+*
+               AP( I1+I-1 ) = ONE
+*
+*              Compute  y := tau * A * v  storing y in TAU(1:i)
+*
+               CALL SSPMV( UPLO, I, TAUI, AP, AP( I1 ), 1, ZERO, TAU,
+     $                     1 )
+*
+*              Compute  w := y - 1/2 * tau * (y'*v) * v
+*
+               ALPHA = -HALF*TAUI*SDOT( I, TAU, 1, AP( I1 ), 1 )
+               CALL SAXPY( I, ALPHA, AP( I1 ), 1, TAU, 1 )
+*
+*              Apply the transformation as a rank-2 update:
+*                 A := A - v * w' - w * v'
+*
+               CALL SSPR2( UPLO, I, -ONE, AP( I1 ), 1, TAU, 1, AP )
+*
+               AP( I1+I-1 ) = E( I )
+            END IF
+            D( I+1 ) = AP( I1+I )
+            TAU( I ) = TAUI
+            I1 = I1 - I
+   10    CONTINUE
+         D( 1 ) = AP( 1 )
+      ELSE
+*
+*        Reduce the lower triangle of A. II is the index in AP of
+*        A(i,i) and I1I1 is the index of A(i+1,i+1).
+*
+         II = 1
+         DO 20 I = 1, N - 1
+            I1I1 = II + N - I + 1
+*
+*           Generate elementary reflector H(i) = I - tau * v * v'
+*           to annihilate A(i+2:n,i)
+*
+            CALL SLARFG( N-I, AP( II+1 ), AP( II+2 ), 1, TAUI )
+            E( I ) = AP( II+1 )
+*
+            IF( TAUI.NE.ZERO ) THEN
+*
+*              Apply H(i) from both sides to A(i+1:n,i+1:n)
+*
+               AP( II+1 ) = ONE
+*
+*              Compute  y := tau * A * v  storing y in TAU(i:n-1)
+*
+               CALL SSPMV( UPLO, N-I, TAUI, AP( I1I1 ), AP( II+1 ), 1,
+     $                     ZERO, TAU( I ), 1 )
+*
+*              Compute  w := y - 1/2 * tau * (y'*v) * v
+*
+               ALPHA = -HALF*TAUI*SDOT( N-I, TAU( I ), 1, AP( II+1 ),
+     $                 1 )
+               CALL SAXPY( N-I, ALPHA, AP( II+1 ), 1, TAU( I ), 1 )
+*
+*              Apply the transformation as a rank-2 update:
+*                 A := A - v * w' - w * v'
+*
+               CALL SSPR2( UPLO, N-I, -ONE, AP( II+1 ), 1, TAU( I ), 1,
+     $                     AP( I1I1 ) )
+*
+               AP( II+1 ) = E( I )
+            END IF
+            D( I ) = AP( II )
+            TAU( I ) = TAUI
+            II = I1I1
+   20    CONTINUE
+         D( N ) = AP( II )
+      END IF
+*
+      RETURN
+*
+*     End of SSPTRD
+*
+      END
+
+
+
+      SUBROUTINE SSTEDC( COMPZ, N, D, E, Z, LDZ, WORK, LWORK, IWORK,
+     $                   LIWORK, INFO )
+*
+*  -- LAPACK driver routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     .. Scalar Arguments ..
+      CHARACTER          COMPZ
+      INTEGER            INFO, LDZ, LIWORK, LWORK, N
+*     ..
+*     .. Array Arguments ..
+      INTEGER            IWORK( * )
+      REAL               D( * ), E( * ), WORK( * ), Z( LDZ, * )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SSTEDC computes all eigenvalues and, optionally, eigenvectors of a
+*  symmetric tridiagonal matrix using the divide and conquer method.
+*  The eigenvectors of a full or band real symmetric matrix can also be
+*  found if SSYTRD or SSPTRD or SSBTRD has been used to reduce this
+*  matrix to tridiagonal form.
+*
+*  This code makes very mild assumptions about floating point
+*  arithmetic. It will work on machines with a guard digit in
+*  add/subtract, or on those binary machines without guard digits
+*  which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or Cray-2.
+*  It could conceivably fail on hexadecimal or decimal machines
+*  without guard digits, but we know of none.  See SLAED3 for details.
+*
+*  Arguments
+*  =========
+*
+*  COMPZ   (input) CHARACTER*1
+*          = 'N':  Compute eigenvalues only.
+*          = 'I':  Compute eigenvectors of tridiagonal matrix also.
+*          = 'V':  Compute eigenvectors of original dense symmetric
+*                  matrix also.  On entry, Z contains the orthogonal
+*                  matrix used to reduce the original matrix to
+*                  tridiagonal form.
+*
+*  N       (input) INTEGER
+*          The dimension of the symmetric tridiagonal matrix.  N >= 0.
+*
+*  D       (input/output) REAL array, dimension (N)
+*          On entry, the diagonal elements of the tridiagonal matrix.
+*          On exit, if INFO = 0, the eigenvalues in ascending order.
+*
+*  E       (input/output) REAL array, dimension (N-1)
+*          On entry, the subdiagonal elements of the tridiagonal matrix.
+*          On exit, E has been destroyed.
+*
+*  Z       (input/output) REAL array, dimension (LDZ,N)
+*          On entry, if COMPZ = 'V', then Z contains the orthogonal
+*          matrix used in the reduction to tridiagonal form.
+*          On exit, if INFO = 0, then if COMPZ = 'V', Z contains the
+*          orthonormal eigenvectors of the original symmetric matrix,
+*          and if COMPZ = 'I', Z contains the orthonormal eigenvectors
+*          of the symmetric tridiagonal matrix.
+*          If  COMPZ = 'N', then Z is not referenced.
+*
+*  LDZ     (input) INTEGER
+*          The leading dimension of the array Z.  LDZ >= 1.
+*          If eigenvectors are desired, then LDZ >= max(1,N).
+*
+*  WORK    (workspace/output) REAL array, dimension (MAX(1,LWORK))
+*          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
+*
+*  LWORK   (input) INTEGER
+*          The dimension of the array WORK.
+*          If COMPZ = 'N' or N <= 1 then LWORK must be at least 1.
+*          If COMPZ = 'V' and N > 1 then LWORK must be at least
+*                         ( 1 + 3*N + 2*N*lg N + 3*N**2 ),
+*                         where lg( N ) = smallest integer k such
+*                         that 2**k >= N.
+*          If COMPZ = 'I' and N > 1 then LWORK must be at least
+*                         ( 1 + 4*N + N**2 ).
+*          Note that for COMPZ = 'I' or 'V', then if N is less than or
+*          equal to the minimum divide size, usually 25, then LWORK need
+*          only be max(1,2*(N-1)).
+*
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
+*
+*  IWORK   (workspace/output) INTEGER array, dimension (MAX(1,LIWORK))
+*          On exit, if INFO = 0, IWORK(1) returns the optimal LIWORK.
+*
+*  LIWORK  (input) INTEGER
+*          The dimension of the array IWORK.
+*          If COMPZ = 'N' or N <= 1 then LIWORK must be at least 1.
+*          If COMPZ = 'V' and N > 1 then LIWORK must be at least
+*                         ( 6 + 6*N + 5*N*lg N ).
+*          If COMPZ = 'I' and N > 1 then LIWORK must be at least
+*                         ( 3 + 5*N ).
+*          Note that for COMPZ = 'I' or 'V', then if N is less than or
+*          equal to the minimum divide size, usually 25, then LIWORK
+*          need only be 1.
+*
+*          If LIWORK = -1, then a workspace query is assumed; the
+*          routine only calculates the optimal size of the IWORK array,
+*          returns this value as the first entry of the IWORK array, and
+*          no error message related to LIWORK is issued by XERBLA.
+*
+*  INFO    (output) INTEGER
+*          = 0:  successful exit.
+*          < 0:  if INFO = -i, the i-th argument had an illegal value.
+*          > 0:  The algorithm failed to compute an eigenvalue while
+*                working on the submatrix lying in rows and columns
+*                INFO/(N+1) through mod(INFO,N+1).
+*
+*  Further Details
+*  ===============
+*
+*  Based on contributions by
+*     Jeff Rutter, Computer Science Division, University of California
+*     at Berkeley, USA
+*  Modified by Francoise Tisseur, University of Tennessee.
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL               ZERO, ONE, TWO
+      PARAMETER          ( ZERO = 0.0E0, ONE = 1.0E0, TWO = 2.0E0 )
+*     ..
+*     .. Local Scalars ..
+      LOGICAL            LQUERY
+      INTEGER            FINISH, I, ICOMPZ, II, J, K, LGN, LIWMIN,
+     $                   LWMIN, M, SMLSIZ, START, STOREZ, STRTRW
+      REAL               EPS, ORGNRM, P, TINY
+*     ..
+*     .. External Functions ..
+      LOGICAL            LSAME
+      INTEGER            ILAENV
+      REAL               SLAMCH, SLANST
+      EXTERNAL           ILAENV, LSAME, SLAMCH, SLANST
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SGEMM, SLACPY, SLAED0, SLASCL, SLASET, SLASRT,
+     $                   SSTEQR, SSTERF, SSWAP, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          ABS, INT, LOG, MAX, MOD, REAL, SQRT
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input parameters.
+*
+      INFO = 0
+      LQUERY = ( LWORK.EQ.-1 .OR. LIWORK.EQ.-1 )
+*
+      IF( LSAME( COMPZ, 'N' ) ) THEN
+         ICOMPZ = 0
+      ELSE IF( LSAME( COMPZ, 'V' ) ) THEN
+         ICOMPZ = 1
+      ELSE IF( LSAME( COMPZ, 'I' ) ) THEN
+         ICOMPZ = 2
+      ELSE
+         ICOMPZ = -1
+      END IF
+      IF( ICOMPZ.LT.0 ) THEN
+         INFO = -1
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -2
+      ELSE IF( ( LDZ.LT.1 ) .OR.
+     $         ( ICOMPZ.GT.0 .AND. LDZ.LT.MAX( 1, N ) ) ) THEN
+         INFO = -6
+      END IF
+*
+      IF( INFO.EQ.0 ) THEN
+*
+*        Compute the workspace requirements
+*
+         SMLSIZ = ILAENV( 9, 'SSTEDC', ' ', 0, 0, 0, 0 )
+         IF( N.LE.1 .OR. ICOMPZ.EQ.0 ) THEN
+            LIWMIN = 1
+            LWMIN = 1
+         ELSE IF( N.LE.SMLSIZ ) THEN
+            LIWMIN = 1
+            LWMIN = 2*( N - 1 )
+         ELSE
+            LGN = INT( LOG( REAL( N ) )/LOG( TWO ) )
+            IF( 2**LGN.LT.N )
+     $         LGN = LGN + 1
+            IF( 2**LGN.LT.N )
+     $         LGN = LGN + 1
+            IF( ICOMPZ.EQ.1 ) THEN
+               LWMIN = 1 + 3*N + 2*N*LGN + 3*N**2
+               LIWMIN = 6 + 6*N + 5*N*LGN
+            ELSE IF( ICOMPZ.EQ.2 ) THEN
+               LWMIN = 1 + 4*N + N**2
+               LIWMIN = 3 + 5*N
+            END IF
+         END IF
+         WORK( 1 ) = LWMIN
+         IWORK( 1 ) = LIWMIN
+*
+         IF( LWORK.LT.LWMIN .AND. .NOT. LQUERY ) THEN
+            INFO = -8
+         ELSE IF( LIWORK.LT.LIWMIN .AND. .NOT. LQUERY ) THEN
+            INFO = -10
+         END IF
+      END IF
+*
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SSTEDC', -INFO )
+         RETURN
+      ELSE IF (LQUERY) THEN
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      IF( N.EQ.0 )
+     $   RETURN
+      IF( N.EQ.1 ) THEN
+         IF( ICOMPZ.NE.0 )
+     $      Z( 1, 1 ) = ONE
+         RETURN
+      END IF
+*
+*     If the following conditional clause is removed, then the routine
+*     will use the Divide and Conquer routine to compute only the
+*     eigenvalues, which requires (3N + 3N**2) real workspace and
+*     (2 + 5N + 2N lg(N)) integer workspace.
+*     Since on many architectures SSTERF is much faster than any other
+*     algorithm for finding eigenvalues only, it is used here
+*     as the default. If the conditional clause is removed, then
+*     information on the size of workspace needs to be changed.
+*
+*     If COMPZ = 'N', use SSTERF to compute the eigenvalues.
+*
+      IF( ICOMPZ.EQ.0 ) THEN
+         CALL SSTERF( N, D, E, INFO )
+         GO TO 50
+      END IF
+*
+*     If N is smaller than the minimum divide size (SMLSIZ+1), then
+*     solve the problem with another solver.
+*
+      IF( N.LE.SMLSIZ ) THEN
+*
+         CALL SSTEQR( COMPZ, N, D, E, Z, LDZ, WORK, INFO )
+*
+      ELSE
+*
+*        If COMPZ = 'V', the Z matrix must be stored elsewhere for later
+*        use.
+*
+         IF( ICOMPZ.EQ.1 ) THEN
+            STOREZ = 1 + N*N
+         ELSE
+            STOREZ = 1
+         END IF
+*
+         IF( ICOMPZ.EQ.2 ) THEN
+            CALL SLASET( 'Full', N, N, ZERO, ONE, Z, LDZ )
+         END IF
+*
+*        Scale.
+*
+         ORGNRM = SLANST( 'M', N, D, E )
+         IF( ORGNRM.EQ.ZERO )
+     $      GO TO 50
+*
+         EPS = SLAMCH( 'Epsilon' )
+*
+         START = 1
+*
+*        while ( START <= N )
+*
+   10    CONTINUE
+         IF( START.LE.N ) THEN
+*
+*           Let FINISH be the position of the next subdiagonal entry
+*           such that E( FINISH ) <= TINY or FINISH = N if no such
+*           subdiagonal exists.  The matrix identified by the elements
+*           between START and FINISH constitutes an independent
+*           sub-problem.
+*
+            FINISH = START
+   20       CONTINUE
+            IF( FINISH.LT.N ) THEN
+               TINY = EPS*SQRT( ABS( D( FINISH ) ) )*
+     $                    SQRT( ABS( D( FINISH+1 ) ) )
+               IF( ABS( E( FINISH ) ).GT.TINY ) THEN
+                  FINISH = FINISH + 1
+                  GO TO 20
+               END IF
+            END IF
+*
+*           (Sub) Problem determined.  Compute its size and solve it.
+*
+            M = FINISH - START + 1
+            IF( M.EQ.1 ) THEN
+               START = FINISH + 1
+               GO TO 10
+            END IF
+            IF( M.GT.SMLSIZ ) THEN
+*
+*              Scale.
+*
+               ORGNRM = SLANST( 'M', M, D( START ), E( START ) )
+               CALL SLASCL( 'G', 0, 0, ORGNRM, ONE, M, 1, D( START ), M,
+     $                      INFO )
+               CALL SLASCL( 'G', 0, 0, ORGNRM, ONE, M-1, 1, E( START ),
+     $                      M-1, INFO )
+*
+               IF( ICOMPZ.EQ.1 ) THEN
+                  STRTRW = 1
+               ELSE
+                  STRTRW = START
+               END IF
+               CALL SLAED0( ICOMPZ, N, M, D( START ), E( START ),
+     $                      Z( STRTRW, START ), LDZ, WORK( 1 ), N,
+     $                      WORK( STOREZ ), IWORK, INFO )
+               IF( INFO.NE.0 ) THEN
+                  INFO = ( INFO / ( M+1 )+START-1 )*( N+1 ) +
+     $                   MOD( INFO, ( M+1 ) ) + START - 1
+                  GO TO 50
+               END IF
+*
+*              Scale back.
+*
+               CALL SLASCL( 'G', 0, 0, ONE, ORGNRM, M, 1, D( START ), M,
+     $                      INFO )
+*
+            ELSE
+               IF( ICOMPZ.EQ.1 ) THEN
+*
+*                 Since QR won't update a Z matrix which is larger than
+*                 the length of D, we must solve the sub-problem in a
+*                 workspace and then multiply back into Z.
+*
+                  CALL SSTEQR( 'I', M, D( START ), E( START ), WORK, M,
+     $                         WORK( M*M+1 ), INFO )
+                  CALL SLACPY( 'A', N, M, Z( 1, START ), LDZ,
+     $                         WORK( STOREZ ), N )
+                  CALL SGEMM( 'N', 'N', N, M, M, ONE,
+     $                        WORK( STOREZ ), N, WORK, M, ZERO,
+     $                        Z( 1, START ), LDZ )
+               ELSE IF( ICOMPZ.EQ.2 ) THEN
+                  CALL SSTEQR( 'I', M, D( START ), E( START ),
+     $                         Z( START, START ), LDZ, WORK, INFO )
+               ELSE
+                  CALL SSTERF( M, D( START ), E( START ), INFO )
+               END IF
+               IF( INFO.NE.0 ) THEN
+                  INFO = START*( N+1 ) + FINISH
+                  GO TO 50
+               END IF
+            END IF
+*
+            START = FINISH + 1
+            GO TO 10
+         END IF
+*
+*        endwhile
+*
+*        If the problem split any number of times, then the eigenvalues
+*        will not be properly ordered.  Here we permute the eigenvalues
+*        (and the associated eigenvectors) into ascending order.
+*
+         IF( M.NE.N ) THEN
+            IF( ICOMPZ.EQ.0 ) THEN
+*
+*              Use Quick Sort
+*
+               CALL SLASRT( 'I', N, D, INFO )
+*
+            ELSE
+*
+*              Use Selection Sort to minimize swaps of eigenvectors
+*
+               DO 40 II = 2, N
+                  I = II - 1
+                  K = I
+                  P = D( I )
+                  DO 30 J = II, N
+                     IF( D( J ).LT.P ) THEN
+                        K = J
+                        P = D( J )
+                     END IF
+   30             CONTINUE
+                  IF( K.NE.I ) THEN
+                     D( K ) = D( I )
+                     D( I ) = P
+                     CALL SSWAP( N, Z( 1, I ), 1, Z( 1, K ), 1 )
+                  END IF
+   40          CONTINUE
+            END IF
+         END IF
+      END IF
+*
+   50 CONTINUE
+      WORK( 1 ) = LWMIN
+      IWORK( 1 ) = LIWMIN
+*
+      RETURN
+*
+*     End of SSTEDC
+*
+      END
+
+
+
+      SUBROUTINE SOPMTR( SIDE, UPLO, TRANS, M, N, AP, TAU, C, LDC, WORK,
+     $                   INFO )
+*
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     .. Scalar Arguments ..
+      CHARACTER          SIDE, TRANS, UPLO
+      INTEGER            INFO, LDC, M, N
+*     ..
+*     .. Array Arguments ..
+      REAL               AP( * ), C( LDC, * ), TAU( * ), WORK( * )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SOPMTR overwrites the general real M-by-N matrix C with
+*
+*                  SIDE = 'L'     SIDE = 'R'
+*  TRANS = 'N':      Q * C          C * Q
+*  TRANS = 'T':      Q**T * C       C * Q**T
+*
+*  where Q is a real orthogonal matrix of order nq, with nq = m if
+*  SIDE = 'L' and nq = n if SIDE = 'R'. Q is defined as the product of
+*  nq-1 elementary reflectors, as returned by SSPTRD using packed
+*  storage:
+*
+*  if UPLO = 'U', Q = H(nq-1) . . . H(2) H(1);
+*
+*  if UPLO = 'L', Q = H(1) H(2) . . . H(nq-1).
+*
+*  Arguments
+*  =========
+*
+*  SIDE    (input) CHARACTER*1
+*          = 'L': apply Q or Q**T from the Left;
+*          = 'R': apply Q or Q**T from the Right.
+*
+*  UPLO    (input) CHARACTER*1
+*          = 'U': Upper triangular packed storage used in previous
+*                 call to SSPTRD;
+*          = 'L': Lower triangular packed storage used in previous
+*                 call to SSPTRD.
+*
+*  TRANS   (input) CHARACTER*1
+*          = 'N':  No transpose, apply Q;
+*          = 'T':  Transpose, apply Q**T.
+*
+*  M       (input) INTEGER
+*          The number of rows of the matrix C. M >= 0.
+*
+*  N       (input) INTEGER
+*          The number of columns of the matrix C. N >= 0.
+*
+*  AP      (input) REAL array, dimension
+*                               (M*(M+1)/2) if SIDE = 'L'
+*                               (N*(N+1)/2) if SIDE = 'R'
+*          The vectors which define the elementary reflectors, as
+*          returned by SSPTRD.  AP is modified by the routine but
+*          restored on exit.
+*
+*  TAU     (input) REAL array, dimension (M-1) if SIDE = 'L'
+*                                     or (N-1) if SIDE = 'R'
+*          TAU(i) must contain the scalar factor of the elementary
+*          reflector H(i), as returned by SSPTRD.
+*
+*  C       (input/output) REAL array, dimension (LDC,N)
+*          On entry, the M-by-N matrix C.
+*          On exit, C is overwritten by Q*C or Q**T*C or C*Q**T or C*Q.
+*
+*  LDC     (input) INTEGER
+*          The leading dimension of the array C. LDC >= max(1,M).
+*
+*  WORK    (workspace) REAL array, dimension
+*                                   (N) if SIDE = 'L'
+*                                   (M) if SIDE = 'R'
+*
+*  INFO    (output) INTEGER
+*          = 0:  successful exit
+*          < 0:  if INFO = -i, the i-th argument had an illegal value
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL               ONE
+      PARAMETER          ( ONE = 1.0E+0 )
+*     ..
+*     .. Local Scalars ..
+      LOGICAL            FORWRD, LEFT, NOTRAN, UPPER
+      INTEGER            I, I1, I2, I3, IC, II, JC, MI, NI, NQ
+      REAL               AII
+*     ..
+*     .. External Functions ..
+      LOGICAL            LSAME
+      EXTERNAL           LSAME
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SLARF, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          MAX
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input arguments
+*
+      INFO = 0
+      LEFT = LSAME( SIDE, 'L' )
+      NOTRAN = LSAME( TRANS, 'N' )
+      UPPER = LSAME( UPLO, 'U' )
+*
+*     NQ is the order of Q
+*
+      IF( LEFT ) THEN
+         NQ = M
+      ELSE
+         NQ = N
+      END IF
+      IF( .NOT.LEFT .AND. .NOT.LSAME( SIDE, 'R' ) ) THEN
+         INFO = -1
+      ELSE IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
+         INFO = -2
+      ELSE IF( .NOT.NOTRAN .AND. .NOT.LSAME( TRANS, 'T' ) ) THEN
+         INFO = -3
+      ELSE IF( M.LT.0 ) THEN
+         INFO = -4
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -5
+      ELSE IF( LDC.LT.MAX( 1, M ) ) THEN
+         INFO = -9
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SOPMTR', -INFO )
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      IF( M.EQ.0 .OR. N.EQ.0 )
+     $   RETURN
+*
+      IF( UPPER ) THEN
+*
+*        Q was determined by a call to SSPTRD with UPLO = 'U'
+*
+         FORWRD = ( LEFT .AND. NOTRAN ) .OR.
+     $            ( .NOT.LEFT .AND. .NOT.NOTRAN )
+*
+         IF( FORWRD ) THEN
+            I1 = 1
+            I2 = NQ - 1
+            I3 = 1
+            II = 2
+         ELSE
+            I1 = NQ - 1
+            I2 = 1
+            I3 = -1
+            II = NQ*( NQ+1 ) / 2 - 1
+         END IF
+*
+         IF( LEFT ) THEN
+            NI = N
+         ELSE
+            MI = M
+         END IF
+*
+         DO 10 I = I1, I2, I3
+            IF( LEFT ) THEN
+*
+*              H(i) is applied to C(1:i,1:n)
+*
+               MI = I
+            ELSE
+*
+*              H(i) is applied to C(1:m,1:i)
+*
+               NI = I
+            END IF
+*
+*           Apply H(i)
+*
+            AII = AP( II )
+            AP( II ) = ONE
+            CALL SLARF( SIDE, MI, NI, AP( II-I+1 ), 1, TAU( I ), C, LDC,
+     $                  WORK )
+            AP( II ) = AII
+*
+            IF( FORWRD ) THEN
+               II = II + I + 2
+            ELSE
+               II = II - I - 1
+            END IF
+   10    CONTINUE
+      ELSE
+*
+*        Q was determined by a call to SSPTRD with UPLO = 'L'.
+*
+         FORWRD = ( LEFT .AND. .NOT.NOTRAN ) .OR.
+     $            ( .NOT.LEFT .AND. NOTRAN )
+*
+         IF( FORWRD ) THEN
+            I1 = 1
+            I2 = NQ - 1
+            I3 = 1
+            II = 2
+         ELSE
+            I1 = NQ - 1
+            I2 = 1
+            I3 = -1
+            II = NQ*( NQ+1 ) / 2 - 1
+         END IF
+*
+         IF( LEFT ) THEN
+            NI = N
+            JC = 1
+         ELSE
+            MI = M
+            IC = 1
+         END IF
+*
+         DO 20 I = I1, I2, I3
+            AII = AP( II )
+            AP( II ) = ONE
+            IF( LEFT ) THEN
+*
+*              H(i) is applied to C(i+1:m,1:n)
+*
+               MI = M - I
+               IC = I + 1
+            ELSE
+*
+*              H(i) is applied to C(1:m,i+1:n)
+*
+               NI = N - I
+               JC = I + 1
+            END IF
+*
+*           Apply H(i)
+*
+            CALL SLARF( SIDE, MI, NI, AP( II ), 1, TAU( I ),
+     $                  C( IC, JC ), LDC, WORK )
+            AP( II ) = AII
+*
+            IF( FORWRD ) THEN
+               II = II + NQ - I + 1
+            ELSE
+               II = II - NQ + I - 2
+            END IF
+   20    CONTINUE
+      END IF
+      RETURN
+*
+*     End of SOPMTR
+*
+      END
+
+
+
+      SUBROUTINE STPTRI( UPLO, DIAG, N, AP, INFO )
+*
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     .. Scalar Arguments ..
+      CHARACTER          DIAG, UPLO
+      INTEGER            INFO, N
+*     ..
+*     .. Array Arguments ..
+      REAL               AP( * )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  STPTRI computes the inverse of a real upper or lower triangular
+*  matrix A stored in packed format.
+*
+*  Arguments
+*  =========
+*
+*  UPLO    (input) CHARACTER*1
+*          = 'U':  A is upper triangular;
+*          = 'L':  A is lower triangular.
+*
+*  DIAG    (input) CHARACTER*1
+*          = 'N':  A is non-unit triangular;
+*          = 'U':  A is unit triangular.
+*
+*  N       (input) INTEGER
+*          The order of the matrix A.  N >= 0.
+*
+*  AP      (input/output) REAL array, dimension (N*(N+1)/2)
+*          On entry, the upper or lower triangular matrix A, stored
+*          columnwise in a linear array.  The j-th column of A is stored
+*          in the array AP as follows:
+*          if UPLO = 'U', AP(i + (j-1)*j/2) = A(i,j) for 1<=i<=j;
+*          if UPLO = 'L', AP(i + (j-1)*((2*n-j)/2) = A(i,j) for j<=i<=n.
+*          See below for further details.
+*          On exit, the (triangular) inverse of the original matrix, in
+*          the same packed storage format.
+*
+*  INFO    (output) INTEGER
+*          = 0:  successful exit
+*          < 0:  if INFO = -i, the i-th argument had an illegal value
+*          > 0:  if INFO = i, A(i,i) is exactly zero.  The triangular
+*                matrix is singular and its inverse can not be computed.
+*
+*  Further Details
+*  ===============
+*
+*  A triangular matrix A can be transferred to packed storage using one
+*  of the following program segments:
+*
+*  UPLO = 'U':                      UPLO = 'L':
+*
+*        JC = 1                           JC = 1
+*        DO 2 J = 1, N                    DO 2 J = 1, N
+*           DO 1 I = 1, J                    DO 1 I = J, N
+*              AP(JC+I-1) = A(I,J)              AP(JC+I-J) = A(I,J)
+*      1    CONTINUE                    1    CONTINUE
+*           JC = JC + J                      JC = JC + N - J + 1
+*      2 CONTINUE                       2 CONTINUE
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL               ONE, ZERO
+      PARAMETER          ( ONE = 1.0E+0, ZERO = 0.0E+0 )
+*     ..
+*     .. Local Scalars ..
+      LOGICAL            NOUNIT, UPPER
+      INTEGER            J, JC, JCLAST, JJ
+      REAL               AJJ
+*     ..
+*     .. External Functions ..
+      LOGICAL            LSAME
+      EXTERNAL           LSAME
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SSCAL, STPMV, XERBLA
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input parameters.
+*
+      INFO = 0
+      UPPER = LSAME( UPLO, 'U' )
+      NOUNIT = LSAME( DIAG, 'N' )
+      IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
+         INFO = -1
+      ELSE IF( .NOT.NOUNIT .AND. .NOT.LSAME( DIAG, 'U' ) ) THEN
+         INFO = -2
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -3
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'STPTRI', -INFO )
+         RETURN
+      END IF
+*
+*     Check for singularity if non-unit.
+*
+      IF( NOUNIT ) THEN
+         IF( UPPER ) THEN
+            JJ = 0
+            DO 10 INFO = 1, N
+               JJ = JJ + INFO
+               IF( AP( JJ ).EQ.ZERO )
+     $            RETURN
+   10       CONTINUE
+         ELSE
+            JJ = 1
+            DO 20 INFO = 1, N
+               IF( AP( JJ ).EQ.ZERO )
+     $            RETURN
+               JJ = JJ + N - INFO + 1
+   20       CONTINUE
+         END IF
+         INFO = 0
+      END IF
+*
+      IF( UPPER ) THEN
+*
+*        Compute inverse of upper triangular matrix.
+*
+         JC = 1
+         DO 30 J = 1, N
+            IF( NOUNIT ) THEN
+               AP( JC+J-1 ) = ONE / AP( JC+J-1 )
+               AJJ = -AP( JC+J-1 )
+            ELSE
+               AJJ = -ONE
+            END IF
+*
+*           Compute elements 1:j-1 of j-th column.
+*
+            CALL STPMV( 'Upper', 'No transpose', DIAG, J-1, AP,
+     $                  AP( JC ), 1 )
+            CALL SSCAL( J-1, AJJ, AP( JC ), 1 )
+            JC = JC + J
+   30    CONTINUE
+*
+      ELSE
+*
+*        Compute inverse of lower triangular matrix.
+*
+         JC = N*( N+1 ) / 2
+         DO 40 J = N, 1, -1
+            IF( NOUNIT ) THEN
+               AP( JC ) = ONE / AP( JC )
+               AJJ = -AP( JC )
+            ELSE
+               AJJ = -ONE
+            END IF
+            IF( J.LT.N ) THEN
+*
+*              Compute elements j+1:n of j-th column.
+*
+               CALL STPMV( 'Lower', 'No transpose', DIAG, N-J,
+     $                     AP( JCLAST ), AP( JC+1 ), 1 )
+               CALL SSCAL( N-J, AJJ, AP( JC+1 ), 1 )
+            END IF
+            JCLAST = JC
+            JC = JC - N + J - 2
+   40    CONTINUE
+      END IF
+*
+      RETURN
+*
+*     End of STPTRI
+*
+      END
+
+
+
+      SUBROUTINE SSPR(UPLO,N,ALPHA,X,INCX,AP)
+*     .. Scalar Arguments ..
+      REAL ALPHA
+      INTEGER INCX,N
+      CHARACTER UPLO
+*     ..
+*     .. Array Arguments ..
+      REAL AP(*),X(*)
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SSPR    performs the symmetric rank 1 operation
+*
+*     A := alpha*x*x' + A,
+*
+*  where alpha is a real scalar, x is an n element vector and A is an
+*  n by n symmetric matrix, supplied in packed form.
+*
+*  Arguments
+*  ==========
+*
+*  UPLO   - CHARACTER*1.
+*           On entry, UPLO specifies whether the upper or lower
+*           triangular part of the matrix A is supplied in the packed
+*           array AP as follows:
+*
+*              UPLO = 'U' or 'u'   The upper triangular part of A is
+*                                  supplied in AP.
+*
+*              UPLO = 'L' or 'l'   The lower triangular part of A is
+*                                  supplied in AP.
+*
+*           Unchanged on exit.
+*
+*  N      - INTEGER.
+*           On entry, N specifies the order of the matrix A.
+*           N must be at least zero.
+*           Unchanged on exit.
+*
+*  ALPHA  - REAL            .
+*           On entry, ALPHA specifies the scalar alpha.
+*           Unchanged on exit.
+*
+*  X      - REAL             array of dimension at least
+*           ( 1 + ( n - 1 )*abs( INCX ) ).
+*           Before entry, the incremented array X must contain the n
+*           element vector x.
+*           Unchanged on exit.
+*
+*  INCX   - INTEGER.
+*           On entry, INCX specifies the increment for the elements of
+*           X. INCX must not be zero.
+*           Unchanged on exit.
+*
+*  AP     - REAL             array of DIMENSION at least
+*           ( ( n*( n + 1 ) )/2 ).
+*           Before entry with  UPLO = 'U' or 'u', the array AP must
+*           contain the upper triangular part of the symmetric matrix
+*           packed sequentially, column by column, so that AP( 1 )
+*           contains a( 1, 1 ), AP( 2 ) and AP( 3 ) contain a( 1, 2 )
+*           and a( 2, 2 ) respectively, and so on. On exit, the array
+*           AP is overwritten by the upper triangular part of the
+*           updated matrix.
+*           Before entry with UPLO = 'L' or 'l', the array AP must
+*           contain the lower triangular part of the symmetric matrix
+*           packed sequentially, column by column, so that AP( 1 )
+*           contains a( 1, 1 ), AP( 2 ) and AP( 3 ) contain a( 2, 1 )
+*           and a( 3, 1 ) respectively, and so on. On exit, the array
+*           AP is overwritten by the lower triangular part of the
+*           updated matrix.
+*
+*
+*  Level 2 Blas routine.
+*
+*  -- Written on 22-October-1986.
+*     Jack Dongarra, Argonne National Lab.
+*     Jeremy Du Croz, Nag Central Office.
+*     Sven Hammarling, Nag Central Office.
+*     Richard Hanson, Sandia National Labs.
+*
+*
+*     .. Parameters ..
+      REAL ZERO
+      PARAMETER (ZERO=0.0E+0)
+*     ..
+*     .. Local Scalars ..
+      REAL TEMP
+      INTEGER I,INFO,IX,J,JX,K,KK,KX
+*     ..
+*     .. External Functions ..
+      LOGICAL LSAME
+      EXTERNAL LSAME
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL XERBLA
+*     ..
+*
+*     Test the input parameters.
+*
+      INFO = 0
+      IF (.NOT.LSAME(UPLO,'U') .AND. .NOT.LSAME(UPLO,'L')) THEN
+          INFO = 1
+      ELSE IF (N.LT.0) THEN
+          INFO = 2
+      ELSE IF (INCX.EQ.0) THEN
+          INFO = 5
+      END IF
+      IF (INFO.NE.0) THEN
+          CALL XERBLA('SSPR  ',INFO)
+          RETURN
+      END IF
+*
+*     Quick return if possible.
+*
+      IF ((N.EQ.0) .OR. (ALPHA.EQ.ZERO)) RETURN
+*
+*     Set the start point in X if the increment is not unity.
+*
+      IF (INCX.LE.0) THEN
+          KX = 1 - (N-1)*INCX
+      ELSE IF (INCX.NE.1) THEN
+          KX = 1
+      END IF
+*
+*     Start the operations. In this version the elements of the array AP
+*     are accessed sequentially with one pass through AP.
+*
+      KK = 1
+      IF (LSAME(UPLO,'U')) THEN
+*
+*        Form  A  when upper triangle is stored in AP.
+*
+          IF (INCX.EQ.1) THEN
+              DO 20 J = 1,N
+                  IF (X(J).NE.ZERO) THEN
+                      TEMP = ALPHA*X(J)
+                      K = KK
+                      DO 10 I = 1,J
+                          AP(K) = AP(K) + X(I)*TEMP
+                          K = K + 1
+   10                 CONTINUE
+                  END IF
+                  KK = KK + J
+   20         CONTINUE
+          ELSE
+              JX = KX
+              DO 40 J = 1,N
+                  IF (X(JX).NE.ZERO) THEN
+                      TEMP = ALPHA*X(JX)
+                      IX = KX
+                      DO 30 K = KK,KK + J - 1
+                          AP(K) = AP(K) + X(IX)*TEMP
+                          IX = IX + INCX
+   30                 CONTINUE
+                  END IF
+                  JX = JX + INCX
+                  KK = KK + J
+   40         CONTINUE
+          END IF
+      ELSE
+*
+*        Form  A  when lower triangle is stored in AP.
+*
+          IF (INCX.EQ.1) THEN
+              DO 60 J = 1,N
+                  IF (X(J).NE.ZERO) THEN
+                      TEMP = ALPHA*X(J)
+                      K = KK
+                      DO 50 I = J,N
+                          AP(K) = AP(K) + X(I)*TEMP
+                          K = K + 1
+   50                 CONTINUE
+                  END IF
+                  KK = KK + N - J + 1
+   60         CONTINUE
+          ELSE
+              JX = KX
+              DO 80 J = 1,N
+                  IF (X(JX).NE.ZERO) THEN
+                      TEMP = ALPHA*X(JX)
+                      IX = JX
+                      DO 70 K = KK,KK + N - J
+                          AP(K) = AP(K) + X(IX)*TEMP
+                          IX = IX + INCX
+   70                 CONTINUE
+                  END IF
+                  JX = JX + INCX
+                  KK = KK + N - J + 1
+   80         CONTINUE
+          END IF
+      END IF
+*
+      RETURN
+*
+*     End of SSPR  .
+*
+      END
+
+
+
+      SUBROUTINE STPMV(UPLO,TRANS,DIAG,N,AP,X,INCX)
+*     .. Scalar Arguments ..
+      INTEGER INCX,N
+      CHARACTER DIAG,TRANS,UPLO
+*     ..
+*     .. Array Arguments ..
+      REAL AP(*),X(*)
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  STPMV  performs one of the matrix-vector operations
+*
+*     x := A*x,   or   x := A'*x,
+*
+*  where x is an n element vector and  A is an n by n unit, or non-unit,
+*  upper or lower triangular matrix, supplied in packed form.
+*
+*  Arguments
+*  ==========
+*
+*  UPLO   - CHARACTER*1.
+*           On entry, UPLO specifies whether the matrix is an upper or
+*           lower triangular matrix as follows:
+*
+*              UPLO = 'U' or 'u'   A is an upper triangular matrix.
+*
+*              UPLO = 'L' or 'l'   A is a lower triangular matrix.
+*
+*           Unchanged on exit.
+*
+*  TRANS  - CHARACTER*1.
+*           On entry, TRANS specifies the operation to be performed as
+*           follows:
+*
+*              TRANS = 'N' or 'n'   x := A*x.
+*
+*              TRANS = 'T' or 't'   x := A'*x.
+*
+*              TRANS = 'C' or 'c'   x := A'*x.
+*
+*           Unchanged on exit.
+*
+*  DIAG   - CHARACTER*1.
+*           On entry, DIAG specifies whether or not A is unit
+*           triangular as follows:
+*
+*              DIAG = 'U' or 'u'   A is assumed to be unit triangular.
+*
+*              DIAG = 'N' or 'n'   A is not assumed to be unit
+*                                  triangular.
+*
+*           Unchanged on exit.
+*
+*  N      - INTEGER.
+*           On entry, N specifies the order of the matrix A.
+*           N must be at least zero.
+*           Unchanged on exit.
+*
+*  AP     - REAL             array of DIMENSION at least
+*           ( ( n*( n + 1 ) )/2 ).
+*           Before entry with  UPLO = 'U' or 'u', the array AP must
+*           contain the upper triangular matrix packed sequentially,
+*           column by column, so that AP( 1 ) contains a( 1, 1 ),
+*           AP( 2 ) and AP( 3 ) contain a( 1, 2 ) and a( 2, 2 )
+*           respectively, and so on.
+*           Before entry with UPLO = 'L' or 'l', the array AP must
+*           contain the lower triangular matrix packed sequentially,
+*           column by column, so that AP( 1 ) contains a( 1, 1 ),
+*           AP( 2 ) and AP( 3 ) contain a( 2, 1 ) and a( 3, 1 )
+*           respectively, and so on.
+*           Note that when  DIAG = 'U' or 'u', the diagonal elements of
+*           A are not referenced, but are assumed to be unity.
+*           Unchanged on exit.
+*
+*  X      - REAL             array of dimension at least
+*           ( 1 + ( n - 1 )*abs( INCX ) ).
+*           Before entry, the incremented array X must contain the n
+*           element vector x. On exit, X is overwritten with the
+*           tranformed vector x.
+*
+*  INCX   - INTEGER.
+*           On entry, INCX specifies the increment for the elements of
+*           X. INCX must not be zero.
+*           Unchanged on exit.
+*
+*
+*  Level 2 Blas routine.
+*
+*  -- Written on 22-October-1986.
+*     Jack Dongarra, Argonne National Lab.
+*     Jeremy Du Croz, Nag Central Office.
+*     Sven Hammarling, Nag Central Office.
+*     Richard Hanson, Sandia National Labs.
+*
+*
+*     .. Parameters ..
+      REAL ZERO
+      PARAMETER (ZERO=0.0E+0)
+*     ..
+*     .. Local Scalars ..
+      REAL TEMP
+      INTEGER I,INFO,IX,J,JX,K,KK,KX
+      LOGICAL NOUNIT
+*     ..
+*     .. External Functions ..
+      LOGICAL LSAME
+      EXTERNAL LSAME
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL XERBLA
+*     ..
+*
+*     Test the input parameters.
+*
+      INFO = 0
+      IF (.NOT.LSAME(UPLO,'U') .AND. .NOT.LSAME(UPLO,'L')) THEN
+          INFO = 1
+      ELSE IF (.NOT.LSAME(TRANS,'N') .AND. .NOT.LSAME(TRANS,'T') .AND.
+     +         .NOT.LSAME(TRANS,'C')) THEN
+          INFO = 2
+      ELSE IF (.NOT.LSAME(DIAG,'U') .AND. .NOT.LSAME(DIAG,'N')) THEN
+          INFO = 3
+      ELSE IF (N.LT.0) THEN
+          INFO = 4
+      ELSE IF (INCX.EQ.0) THEN
+          INFO = 7
+      END IF
+      IF (INFO.NE.0) THEN
+          CALL XERBLA('STPMV ',INFO)
+          RETURN
+      END IF
+*
+*     Quick return if possible.
+*
+      IF (N.EQ.0) RETURN
+*
+      NOUNIT = LSAME(DIAG,'N')
+*
+*     Set up the start point in X if the increment is not unity. This
+*     will be  ( N - 1 )*INCX  too small for descending loops.
+*
+      IF (INCX.LE.0) THEN
+          KX = 1 - (N-1)*INCX
+      ELSE IF (INCX.NE.1) THEN
+          KX = 1
+      END IF
+*
+*     Start the operations. In this version the elements of AP are
+*     accessed sequentially with one pass through AP.
+*
+      IF (LSAME(TRANS,'N')) THEN
+*
+*        Form  x:= A*x.
+*
+          IF (LSAME(UPLO,'U')) THEN
+              KK = 1
+              IF (INCX.EQ.1) THEN
+                  DO 20 J = 1,N
+                      IF (X(J).NE.ZERO) THEN
+                          TEMP = X(J)
+                          K = KK
+                          DO 10 I = 1,J - 1
+                              X(I) = X(I) + TEMP*AP(K)
+                              K = K + 1
+   10                     CONTINUE
+                          IF (NOUNIT) X(J) = X(J)*AP(KK+J-1)
+                      END IF
+                      KK = KK + J
+   20             CONTINUE
+              ELSE
+                  JX = KX
+                  DO 40 J = 1,N
+                      IF (X(JX).NE.ZERO) THEN
+                          TEMP = X(JX)
+                          IX = KX
+                          DO 30 K = KK,KK + J - 2
+                              X(IX) = X(IX) + TEMP*AP(K)
+                              IX = IX + INCX
+   30                     CONTINUE
+                          IF (NOUNIT) X(JX) = X(JX)*AP(KK+J-1)
+                      END IF
+                      JX = JX + INCX
+                      KK = KK + J
+   40             CONTINUE
+              END IF
+          ELSE
+              KK = (N* (N+1))/2
+              IF (INCX.EQ.1) THEN
+                  DO 60 J = N,1,-1
+                      IF (X(J).NE.ZERO) THEN
+                          TEMP = X(J)
+                          K = KK
+                          DO 50 I = N,J + 1,-1
+                              X(I) = X(I) + TEMP*AP(K)
+                              K = K - 1
+   50                     CONTINUE
+                          IF (NOUNIT) X(J) = X(J)*AP(KK-N+J)
+                      END IF
+                      KK = KK - (N-J+1)
+   60             CONTINUE
+              ELSE
+                  KX = KX + (N-1)*INCX
+                  JX = KX
+                  DO 80 J = N,1,-1
+                      IF (X(JX).NE.ZERO) THEN
+                          TEMP = X(JX)
+                          IX = KX
+                          DO 70 K = KK,KK - (N- (J+1)),-1
+                              X(IX) = X(IX) + TEMP*AP(K)
+                              IX = IX - INCX
+   70                     CONTINUE
+                          IF (NOUNIT) X(JX) = X(JX)*AP(KK-N+J)
+                      END IF
+                      JX = JX - INCX
+                      KK = KK - (N-J+1)
+   80             CONTINUE
+              END IF
+          END IF
+      ELSE
+*
+*        Form  x := A'*x.
+*
+          IF (LSAME(UPLO,'U')) THEN
+              KK = (N* (N+1))/2
+              IF (INCX.EQ.1) THEN
+                  DO 100 J = N,1,-1
+                      TEMP = X(J)
+                      IF (NOUNIT) TEMP = TEMP*AP(KK)
+                      K = KK - 1
+                      DO 90 I = J - 1,1,-1
+                          TEMP = TEMP + AP(K)*X(I)
+                          K = K - 1
+   90                 CONTINUE
+                      X(J) = TEMP
+                      KK = KK - J
+  100             CONTINUE
+              ELSE
+                  JX = KX + (N-1)*INCX
+                  DO 120 J = N,1,-1
+                      TEMP = X(JX)
+                      IX = JX
+                      IF (NOUNIT) TEMP = TEMP*AP(KK)
+                      DO 110 K = KK - 1,KK - J + 1,-1
+                          IX = IX - INCX
+                          TEMP = TEMP + AP(K)*X(IX)
+  110                 CONTINUE
+                      X(JX) = TEMP
+                      JX = JX - INCX
+                      KK = KK - J
+  120             CONTINUE
+              END IF
+          ELSE
+              KK = 1
+              IF (INCX.EQ.1) THEN
+                  DO 140 J = 1,N
+                      TEMP = X(J)
+                      IF (NOUNIT) TEMP = TEMP*AP(KK)
+                      K = KK + 1
+                      DO 130 I = J + 1,N
+                          TEMP = TEMP + AP(K)*X(I)
+                          K = K + 1
+  130                 CONTINUE
+                      X(J) = TEMP
+                      KK = KK + (N-J+1)
+  140             CONTINUE
+              ELSE
+                  JX = KX
+                  DO 160 J = 1,N
+                      TEMP = X(JX)
+                      IX = JX
+                      IF (NOUNIT) TEMP = TEMP*AP(KK)
+                      DO 150 K = KK + 1,KK + N - J
+                          IX = IX + INCX
+                          TEMP = TEMP + AP(K)*X(IX)
+  150                 CONTINUE
+                      X(JX) = TEMP
+                      JX = JX + INCX
+                      KK = KK + (N-J+1)
+  160             CONTINUE
+              END IF
+          END IF
+      END IF
+*
+      RETURN
+*
+*     End of STPMV .
+*
+      END
+
+
+
+      SUBROUTINE STPSV(UPLO,TRANS,DIAG,N,AP,X,INCX)
+*     .. Scalar Arguments ..
+      INTEGER INCX,N
+      CHARACTER DIAG,TRANS,UPLO
+*     ..
+*     .. Array Arguments ..
+      REAL AP(*),X(*)
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  STPSV  solves one of the systems of equations
+*
+*     A*x = b,   or   A'*x = b,
+*
+*  where b and x are n element vectors and A is an n by n unit, or
+*  non-unit, upper or lower triangular matrix, supplied in packed form.
+*
+*  No test for singularity or near-singularity is included in this
+*  routine. Such tests must be performed before calling this routine.
+*
+*  Arguments
+*  ==========
+*
+*  UPLO   - CHARACTER*1.
+*           On entry, UPLO specifies whether the matrix is an upper or
+*           lower triangular matrix as follows:
+*
+*              UPLO = 'U' or 'u'   A is an upper triangular matrix.
+*
+*              UPLO = 'L' or 'l'   A is a lower triangular matrix.
+*
+*           Unchanged on exit.
+*
+*  TRANS  - CHARACTER*1.
+*           On entry, TRANS specifies the equations to be solved as
+*           follows:
+*
+*              TRANS = 'N' or 'n'   A*x = b.
+*
+*              TRANS = 'T' or 't'   A'*x = b.
+*
+*              TRANS = 'C' or 'c'   A'*x = b.
+*
+*           Unchanged on exit.
+*
+*  DIAG   - CHARACTER*1.
+*           On entry, DIAG specifies whether or not A is unit
+*           triangular as follows:
+*
+*              DIAG = 'U' or 'u'   A is assumed to be unit triangular.
+*
+*              DIAG = 'N' or 'n'   A is not assumed to be unit
+*                                  triangular.
+*
+*           Unchanged on exit.
+*
+*  N      - INTEGER.
+*           On entry, N specifies the order of the matrix A.
+*           N must be at least zero.
+*           Unchanged on exit.
+*
+*  AP     - REAL             array of DIMENSION at least
+*           ( ( n*( n + 1 ) )/2 ).
+*           Before entry with  UPLO = 'U' or 'u', the array AP must
+*           contain the upper triangular matrix packed sequentially,
+*           column by column, so that AP( 1 ) contains a( 1, 1 ),
+*           AP( 2 ) and AP( 3 ) contain a( 1, 2 ) and a( 2, 2 )
+*           respectively, and so on.
+*           Before entry with UPLO = 'L' or 'l', the array AP must
+*           contain the lower triangular matrix packed sequentially,
+*           column by column, so that AP( 1 ) contains a( 1, 1 ),
+*           AP( 2 ) and AP( 3 ) contain a( 2, 1 ) and a( 3, 1 )
+*           respectively, and so on.
+*           Note that when  DIAG = 'U' or 'u', the diagonal elements of
+*           A are not referenced, but are assumed to be unity.
+*           Unchanged on exit.
+*
+*  X      - REAL             array of dimension at least
+*           ( 1 + ( n - 1 )*abs( INCX ) ).
+*           Before entry, the incremented array X must contain the n
+*           element right-hand side vector b. On exit, X is overwritten
+*           with the solution vector x.
+*
+*  INCX   - INTEGER.
+*           On entry, INCX specifies the increment for the elements of
+*           X. INCX must not be zero.
+*           Unchanged on exit.
+*
+*
+*  Level 2 Blas routine.
+*
+*  -- Written on 22-October-1986.
+*     Jack Dongarra, Argonne National Lab.
+*     Jeremy Du Croz, Nag Central Office.
+*     Sven Hammarling, Nag Central Office.
+*     Richard Hanson, Sandia National Labs.
+*
+*
+*     .. Parameters ..
+      REAL ZERO
+      PARAMETER (ZERO=0.0E+0)
+*     ..
+*     .. Local Scalars ..
+      REAL TEMP
+      INTEGER I,INFO,IX,J,JX,K,KK,KX
+      LOGICAL NOUNIT
+*     ..
+*     .. External Functions ..
+      LOGICAL LSAME
+      EXTERNAL LSAME
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL XERBLA
+*     ..
+*
+*     Test the input parameters.
+*
+      INFO = 0
+      IF (.NOT.LSAME(UPLO,'U') .AND. .NOT.LSAME(UPLO,'L')) THEN
+          INFO = 1
+      ELSE IF (.NOT.LSAME(TRANS,'N') .AND. .NOT.LSAME(TRANS,'T') .AND.
+     +         .NOT.LSAME(TRANS,'C')) THEN
+          INFO = 2
+      ELSE IF (.NOT.LSAME(DIAG,'U') .AND. .NOT.LSAME(DIAG,'N')) THEN
+          INFO = 3
+      ELSE IF (N.LT.0) THEN
+          INFO = 4
+      ELSE IF (INCX.EQ.0) THEN
+          INFO = 7
+      END IF
+      IF (INFO.NE.0) THEN
+          CALL XERBLA('STPSV ',INFO)
+          RETURN
+      END IF
+*
+*     Quick return if possible.
+*
+      IF (N.EQ.0) RETURN
+*
+      NOUNIT = LSAME(DIAG,'N')
+*
+*     Set up the start point in X if the increment is not unity. This
+*     will be  ( N - 1 )*INCX  too small for descending loops.
+*
+      IF (INCX.LE.0) THEN
+          KX = 1 - (N-1)*INCX
+      ELSE IF (INCX.NE.1) THEN
+          KX = 1
+      END IF
+*
+*     Start the operations. In this version the elements of AP are
+*     accessed sequentially with one pass through AP.
+*
+      IF (LSAME(TRANS,'N')) THEN
+*
+*        Form  x := inv( A )*x.
+*
+          IF (LSAME(UPLO,'U')) THEN
+              KK = (N* (N+1))/2
+              IF (INCX.EQ.1) THEN
+                  DO 20 J = N,1,-1
+                      IF (X(J).NE.ZERO) THEN
+                          IF (NOUNIT) X(J) = X(J)/AP(KK)
+                          TEMP = X(J)
+                          K = KK - 1
+                          DO 10 I = J - 1,1,-1
+                              X(I) = X(I) - TEMP*AP(K)
+                              K = K - 1
+   10                     CONTINUE
+                      END IF
+                      KK = KK - J
+   20             CONTINUE
+              ELSE
+                  JX = KX + (N-1)*INCX
+                  DO 40 J = N,1,-1
+                      IF (X(JX).NE.ZERO) THEN
+                          IF (NOUNIT) X(JX) = X(JX)/AP(KK)
+                          TEMP = X(JX)
+                          IX = JX
+                          DO 30 K = KK - 1,KK - J + 1,-1
+                              IX = IX - INCX
+                              X(IX) = X(IX) - TEMP*AP(K)
+   30                     CONTINUE
+                      END IF
+                      JX = JX - INCX
+                      KK = KK - J
+   40             CONTINUE
+              END IF
+          ELSE
+              KK = 1
+              IF (INCX.EQ.1) THEN
+                  DO 60 J = 1,N
+                      IF (X(J).NE.ZERO) THEN
+                          IF (NOUNIT) X(J) = X(J)/AP(KK)
+                          TEMP = X(J)
+                          K = KK + 1
+                          DO 50 I = J + 1,N
+                              X(I) = X(I) - TEMP*AP(K)
+                              K = K + 1
+   50                     CONTINUE
+                      END IF
+                      KK = KK + (N-J+1)
+   60             CONTINUE
+              ELSE
+                  JX = KX
+                  DO 80 J = 1,N
+                      IF (X(JX).NE.ZERO) THEN
+                          IF (NOUNIT) X(JX) = X(JX)/AP(KK)
+                          TEMP = X(JX)
+                          IX = JX
+                          DO 70 K = KK + 1,KK + N - J
+                              IX = IX + INCX
+                              X(IX) = X(IX) - TEMP*AP(K)
+   70                     CONTINUE
+                      END IF
+                      JX = JX + INCX
+                      KK = KK + (N-J+1)
+   80             CONTINUE
+              END IF
+          END IF
+      ELSE
+*
+*        Form  x := inv( A' )*x.
+*
+          IF (LSAME(UPLO,'U')) THEN
+              KK = 1
+              IF (INCX.EQ.1) THEN
+                  DO 100 J = 1,N
+                      TEMP = X(J)
+                      K = KK
+                      DO 90 I = 1,J - 1
+                          TEMP = TEMP - AP(K)*X(I)
+                          K = K + 1
+   90                 CONTINUE
+                      IF (NOUNIT) TEMP = TEMP/AP(KK+J-1)
+                      X(J) = TEMP
+                      KK = KK + J
+  100             CONTINUE
+              ELSE
+                  JX = KX
+                  DO 120 J = 1,N
+                      TEMP = X(JX)
+                      IX = KX
+                      DO 110 K = KK,KK + J - 2
+                          TEMP = TEMP - AP(K)*X(IX)
+                          IX = IX + INCX
+  110                 CONTINUE
+                      IF (NOUNIT) TEMP = TEMP/AP(KK+J-1)
+                      X(JX) = TEMP
+                      JX = JX + INCX
+                      KK = KK + J
+  120             CONTINUE
+              END IF
+          ELSE
+              KK = (N* (N+1))/2
+              IF (INCX.EQ.1) THEN
+                  DO 140 J = N,1,-1
+                      TEMP = X(J)
+                      K = KK
+                      DO 130 I = N,J + 1,-1
+                          TEMP = TEMP - AP(K)*X(I)
+                          K = K - 1
+  130                 CONTINUE
+                      IF (NOUNIT) TEMP = TEMP/AP(KK-N+J)
+                      X(J) = TEMP
+                      KK = KK - (N-J+1)
+  140             CONTINUE
+              ELSE
+                  KX = KX + (N-1)*INCX
+                  JX = KX
+                  DO 160 J = N,1,-1
+                      TEMP = X(JX)
+                      IX = KX
+                      DO 150 K = KK,KK - (N- (J+1)),-1
+                          TEMP = TEMP - AP(K)*X(IX)
+                          IX = IX - INCX
+  150                 CONTINUE
+                      IF (NOUNIT) TEMP = TEMP/AP(KK-N+J)
+                      X(JX) = TEMP
+                      JX = JX - INCX
+                      KK = KK - (N-J+1)
+  160             CONTINUE
+              END IF
+          END IF
+      END IF
+*
+      RETURN
+*
+*     End of STPSV .
+*
+      END
+
 
 	  
 #endif
