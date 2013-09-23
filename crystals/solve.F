@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.60  2013/09/23 08:12:00  rich
+C Duplicated function
+C
 C Revision 1.59  2013/09/23 08:05:50  rich
 C Misplaced END
 C
@@ -20283,6 +20286,868 @@ c
 *     End of DSYTRD
 *
       END 
+
+      SUBROUTINE SSPEVD( JOBZ, UPLO, N, AP, W, Z, LDZ, WORK, LWORK,
+     $                   IWORK, LIWORK, INFO )
+*
+*  -- LAPACK driver routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     .. Scalar Arguments ..
+      CHARACTER          JOBZ, UPLO
+      INTEGER            INFO, LDZ, LIWORK, LWORK, N
+*     ..
+*     .. Array Arguments ..
+      INTEGER            IWORK( * )
+      REAL               AP( * ), W( * ), WORK( * ), Z( LDZ, * )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SSPEVD computes all the eigenvalues and, optionally, eigenvectors
+*  of a real symmetric matrix A in packed storage. If eigenvectors are
+*  desired, it uses a divide and conquer algorithm.
+*
+*  The divide and conquer algorithm makes very mild assumptions about
+*  floating point arithmetic. It will work on machines with a guard
+*  digit in add/subtract, or on those binary machines without guard
+*  digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
+*  Cray-2. It could conceivably fail on hexadecimal or decimal machines
+*  without guard digits, but we know of none.
+*
+*  Arguments
+*  =========
+*
+*  JOBZ    (input) CHARACTER*1
+*          = 'N':  Compute eigenvalues only;
+*          = 'V':  Compute eigenvalues and eigenvectors.
+*
+*  UPLO    (input) CHARACTER*1
+*          = 'U':  Upper triangle of A is stored;
+*          = 'L':  Lower triangle of A is stored.
+*
+*  N       (input) INTEGER
+*          The order of the matrix A.  N >= 0.
+*
+*  AP      (input/output) REAL array, dimension (N*(N+1)/2)
+*          On entry, the upper or lower triangle of the symmetric matrix
+*          A, packed columnwise in a linear array.  The j-th column of A
+*          is stored in the array AP as follows:
+*          if UPLO = 'U', AP(i + (j-1)*j/2) = A(i,j) for 1<=i<=j;
+*          if UPLO = 'L', AP(i + (j-1)*(2*n-j)/2) = A(i,j) for j<=i<=n.
+*
+*          On exit, AP is overwritten by values generated during the
+*          reduction to tridiagonal form.  If UPLO = 'U', the diagonal
+*          and first superdiagonal of the tridiagonal matrix T overwrite
+*          the corresponding elements of A, and if UPLO = 'L', the
+*          diagonal and first subdiagonal of T overwrite the
+*          corresponding elements of A.
+*
+*  W       (output) REAL array, dimension (N)
+*          If INFO = 0, the eigenvalues in ascending order.
+*
+*  Z       (output) REAL array, dimension (LDZ, N)
+*          If JOBZ = 'V', then if INFO = 0, Z contains the orthonormal
+*          eigenvectors of the matrix A, with the i-th column of Z
+*          holding the eigenvector associated with W(i).
+*          If JOBZ = 'N', then Z is not referenced.
+*
+*  LDZ     (input) INTEGER
+*          The leading dimension of the array Z.  LDZ >= 1, and if
+*          JOBZ = 'V', LDZ >= max(1,N).
+*
+*  WORK    (workspace/output) REAL array, dimension (MAX(1,LWORK))
+*          On exit, if INFO = 0, WORK(1) returns the required LWORK.
+*
+*  LWORK   (input) INTEGER
+*          The dimension of the array WORK.
+*          If N <= 1,               LWORK must be at least 1.
+*          If JOBZ = 'N' and N > 1, LWORK must be at least 2*N.
+*          If JOBZ = 'V' and N > 1, LWORK must be at least
+*                                                 1 + 6*N + N**2.
+*
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the required sizes of the WORK and IWORK
+*          arrays, returns these values as the first entries of the WORK
+*          and IWORK arrays, and no error message related to LWORK or
+*          LIWORK is issued by XERBLA.
+*
+*  IWORK   (workspace/output) INTEGER array, dimension (MAX(1,LIWORK))
+*          On exit, if INFO = 0, IWORK(1) returns the required LIWORK.
+*
+*  LIWORK  (input) INTEGER
+*          The dimension of the array IWORK.
+*          If JOBZ  = 'N' or N <= 1, LIWORK must be at least 1.
+*          If JOBZ  = 'V' and N > 1, LIWORK must be at least 3 + 5*N.
+*
+*          If LIWORK = -1, then a workspace query is assumed; the
+*          routine only calculates the required sizes of the WORK and
+*          IWORK arrays, returns these values as the first entries of
+*          the WORK and IWORK arrays, and no error message related to
+*          LWORK or LIWORK is issued by XERBLA.
+*
+*  INFO    (output) INTEGER
+*          = 0:  successful exit
+*          < 0:  if INFO = -i, the i-th argument had an illegal value.
+*          > 0:  if INFO = i, the algorithm failed to converge; i
+*                off-diagonal elements of an intermediate tridiagonal
+*                form did not converge to zero.
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL               ZERO, ONE
+      PARAMETER          ( ZERO = 0.0E+0, ONE = 1.0E+0 )
+*     ..
+*     .. Local Scalars ..
+      LOGICAL            LQUERY, WANTZ
+      INTEGER            IINFO, INDE, INDTAU, INDWRK, ISCALE, LIWMIN,
+     $                   LLWORK, LWMIN
+      REAL               ANRM, BIGNUM, EPS, RMAX, RMIN, SAFMIN, SIGMA,
+     $                   SMLNUM
+*     ..
+*     .. External Functions ..
+      LOGICAL            LSAME
+      REAL               SLAMCH, SLANSP
+      EXTERNAL           LSAME, SLAMCH, SLANSP
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SOPMTR, SSCAL, SSPTRD, SSTEDC, SSTERF, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          SQRT
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input parameters.
+*
+      WANTZ = LSAME( JOBZ, 'V' )
+      LQUERY = ( LWORK.EQ.-1 .OR. LIWORK.EQ.-1 )
+*
+      INFO = 0
+      IF( .NOT.( WANTZ .OR. LSAME( JOBZ, 'N' ) ) ) THEN
+         INFO = -1
+      ELSE IF( .NOT.( LSAME( UPLO, 'U' ) .OR. LSAME( UPLO, 'L' ) ) )
+     $          THEN
+         INFO = -2
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -3
+      ELSE IF( LDZ.LT.1 .OR. ( WANTZ .AND. LDZ.LT.N ) ) THEN
+         INFO = -7
+      END IF
+*
+      IF( INFO.EQ.0 ) THEN
+         IF( N.LE.1 ) THEN
+            LIWMIN = 1
+            LWMIN = 1
+         ELSE
+            IF( WANTZ ) THEN
+               LIWMIN = 3 + 5*N
+               LWMIN = 1 + 6*N + N**2
+            ELSE
+               LIWMIN = 1
+               LWMIN = 2*N
+            END IF
+         END IF
+         IWORK( 1 ) = LIWMIN
+         WORK( 1 ) = LWMIN
+*
+         IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
+            INFO = -9
+         ELSE IF( LIWORK.LT.LIWMIN .AND. .NOT.LQUERY ) THEN
+            INFO = -11
+         END IF
+      END IF
+*
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SSPEVD', -INFO )
+         RETURN
+      ELSE IF( LQUERY ) THEN
+         RETURN 
+      END IF
+*
+*     Quick return if possible
+*
+      IF( N.EQ.0 )
+     $   RETURN 
+*
+      IF( N.EQ.1 ) THEN
+         W( 1 ) = AP( 1 )
+         IF( WANTZ )
+     $      Z( 1, 1 ) = ONE
+         RETURN 
+      END IF
+*
+*     Get machine constants.
+*
+      SAFMIN = SLAMCH( 'Safe minimum' )
+      EPS = SLAMCH( 'Precision' )
+      SMLNUM = SAFMIN / EPS
+      BIGNUM = ONE / SMLNUM
+      RMIN = SQRT( SMLNUM )
+      RMAX = SQRT( BIGNUM )
+*
+*     Scale matrix to allowable range, if necessary.
+*
+      ANRM = SLANSP( 'M', UPLO, N, AP, WORK )
+      ISCALE = 0
+      IF( ANRM.GT.ZERO .AND. ANRM.LT.RMIN ) THEN
+         ISCALE = 1
+         SIGMA = RMIN / ANRM
+      ELSE IF( ANRM.GT.RMAX ) THEN
+         ISCALE = 1
+         SIGMA = RMAX / ANRM
+      END IF
+      IF( ISCALE.EQ.1 ) THEN
+         CALL SSCAL( ( N*( N+1 ) ) / 2, SIGMA, AP, 1 )
+      END IF
+*
+*     Call SSPTRD to reduce symmetric packed matrix to tridiagonal form.
+*
+      INDE = 1
+      INDTAU = INDE + N
+      CALL SSPTRD( UPLO, N, AP, W, WORK( INDE ), WORK( INDTAU ), IINFO )
+*
+*     For eigenvalues only, call SSTERF.  For eigenvectors, first call
+*     SSTEDC to generate the eigenvector matrix, WORK(INDWRK), of the
+*     tridiagonal matrix, then call SOPMTR to multiply it by the
+*     Householder transformations represented in AP.
+*
+      IF( .NOT.WANTZ ) THEN
+         CALL SSTERF( N, W, WORK( INDE ), INFO )
+      ELSE
+         INDWRK = INDTAU + N
+         LLWORK = LWORK - INDWRK + 1
+         CALL SSTEDC( 'I', N, W, WORK( INDE ), Z, LDZ, WORK( INDWRK ),
+     $                LLWORK, IWORK, LIWORK, INFO )
+         CALL SOPMTR( 'L', UPLO, 'N', N, N, AP, WORK( INDTAU ), Z, LDZ,
+     $                WORK( INDWRK ), IINFO )
+      END IF
+*
+*     If matrix was scaled, then rescale eigenvalues appropriately.
+*
+      IF( ISCALE.EQ.1 )
+     $   CALL SSCAL( N, ONE / SIGMA, W, 1 )
+*
+      WORK( 1 ) = LWMIN
+      IWORK( 1 ) = LIWMIN
+      RETURN
+*
+*     End of SSPEVD
+*
+      END
+
+
+      SUBROUTINE SPPTRI( UPLO, N, AP, INFO )
+*
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     .. Scalar Arguments ..
+      CHARACTER          UPLO
+      INTEGER            INFO, N
+*     ..
+*     .. Array Arguments ..
+      REAL               AP( * )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SPPTRI computes the inverse of a real symmetric positive definite
+*  matrix A using the Cholesky factorization A = U**T*U or A = L*L**T
+*  computed by SPPTRF.
+*
+*  Arguments
+*  =========
+*
+*  UPLO    (input) CHARACTER*1
+*          = 'U':  Upper triangular factor is stored in AP;
+*          = 'L':  Lower triangular factor is stored in AP.
+*
+*  N       (input) INTEGER
+*          The order of the matrix A.  N >= 0.
+*
+*  AP      (input/output) REAL array, dimension (N*(N+1)/2)
+*          On entry, the triangular factor U or L from the Cholesky
+*          factorization A = U**T*U or A = L*L**T, packed columnwise as
+*          a linear array.  The j-th column of U or L is stored in the
+*          array AP as follows:
+*          if UPLO = 'U', AP(i + (j-1)*j/2) = U(i,j) for 1<=i<=j;
+*          if UPLO = 'L', AP(i + (j-1)*(2n-j)/2) = L(i,j) for j<=i<=n.
+*
+*          On exit, the upper or lower triangle of the (symmetric)
+*          inverse of A, overwriting the input factor U or L.
+*
+*  INFO    (output) INTEGER
+*          = 0:  successful exit
+*          < 0:  if INFO = -i, the i-th argument had an illegal value
+*          > 0:  if INFO = i, the (i,i) element of the factor U or L is
+*                zero, and the inverse could not be computed.
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL               ONE
+      PARAMETER          ( ONE = 1.0E+0 )
+*     ..
+*     .. Local Scalars ..
+      LOGICAL            UPPER
+      INTEGER            J, JC, JJ, JJN
+      REAL               AJJ
+*     ..
+*     .. External Functions ..
+      LOGICAL            LSAME
+      REAL               SDOT
+      EXTERNAL           LSAME, SDOT
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SSCAL, SSPR, STPMV, STPTRI, XERBLA
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input parameters.
+*
+      INFO = 0
+      UPPER = LSAME( UPLO, 'U' )
+      IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
+         INFO = -1
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -2
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SPPTRI', -INFO )
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      IF( N.EQ.0 )
+     $   RETURN
+*
+*     Invert the triangular Cholesky factor U or L.
+*
+      CALL STPTRI( UPLO, 'Non-unit', N, AP, INFO )
+      IF( INFO.GT.0 )
+     $   RETURN
+*
+      IF( UPPER ) THEN
+*
+*        Compute the product inv(U) * inv(U)'.
+*
+         JJ = 0
+         DO 10 J = 1, N
+            JC = JJ + 1
+            JJ = JJ + J
+            IF( J.GT.1 )
+     $         CALL SSPR( 'Upper', J-1, ONE, AP( JC ), 1, AP )
+            AJJ = AP( JJ )
+            CALL SSCAL( J, AJJ, AP( JC ), 1 )
+   10    CONTINUE
+*
+      ELSE
+*
+*        Compute the product inv(L)' * inv(L).
+*
+         JJ = 1
+         DO 20 J = 1, N
+            JJN = JJ + N - J + 1
+            AP( JJ ) = SDOT( N-J+1, AP( JJ ), 1, AP( JJ ), 1 )
+            IF( J.LT.N )
+     $         CALL STPMV( 'Lower', 'Transpose', 'Non-unit', N-J,
+     $                     AP( JJN ), AP( JJ+1 ), 1 )
+            JJ = JJN
+   20    CONTINUE
+      END IF
+*
+      RETURN
+*
+*     End of SPPTRI
+*
+      END
+
+
+
+      SUBROUTINE SPPTRF( UPLO, N, AP, INFO )
+*
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     .. Scalar Arguments ..
+      CHARACTER          UPLO
+      INTEGER            INFO, N
+*     ..
+*     .. Array Arguments ..
+      REAL               AP( * )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SPPTRF computes the Cholesky factorization of a real symmetric
+*  positive definite matrix A stored in packed format.
+*
+*  The factorization has the form
+*     A = U**T * U,  if UPLO = 'U', or
+*     A = L  * L**T,  if UPLO = 'L',
+*  where U is an upper triangular matrix and L is lower triangular.
+*
+*  Arguments
+*  =========
+*
+*  UPLO    (input) CHARACTER*1
+*          = 'U':  Upper triangle of A is stored;
+*          = 'L':  Lower triangle of A is stored.
+*
+*  N       (input) INTEGER
+*          The order of the matrix A.  N >= 0.
+*
+*  AP      (input/output) REAL array, dimension (N*(N+1)/2)
+*          On entry, the upper or lower triangle of the symmetric matrix
+*          A, packed columnwise in a linear array.  The j-th column of A
+*          is stored in the array AP as follows:
+*          if UPLO = 'U', AP(i + (j-1)*j/2) = A(i,j) for 1<=i<=j;
+*          if UPLO = 'L', AP(i + (j-1)*(2n-j)/2) = A(i,j) for j<=i<=n.
+*          See below for further details.
+*
+*          On exit, if INFO = 0, the triangular factor U or L from the
+*          Cholesky factorization A = U**T*U or A = L*L**T, in the same
+*          storage format as A.
+*
+*  INFO    (output) INTEGER
+*          = 0:  successful exit
+*          < 0:  if INFO = -i, the i-th argument had an illegal value
+*          > 0:  if INFO = i, the leading minor of order i is not
+*                positive definite, and the factorization could not be
+*                completed.
+*
+*  Further Details
+*  ======= =======
+*
+*  The packed storage scheme is illustrated by the following example
+*  when N = 4, UPLO = 'U':
+*
+*  Two-dimensional storage of the symmetric matrix A:
+*
+*     a11 a12 a13 a14
+*         a22 a23 a24
+*             a33 a34     (aij = aji)
+*                 a44
+*
+*  Packed storage of the upper triangle of A:
+*
+*  AP = [ a11, a12, a22, a13, a23, a33, a14, a24, a34, a44 ]
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL               ONE, ZERO
+      PARAMETER          ( ONE = 1.0E+0, ZERO = 0.0E+0 )
+*     ..
+*     .. Local Scalars ..
+      LOGICAL            UPPER
+      INTEGER            J, JC, JJ
+      REAL               AJJ
+*     ..
+*     .. External Functions ..
+      LOGICAL            LSAME
+      REAL               SDOT
+      EXTERNAL           LSAME, SDOT
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SSCAL, SSPR, STPSV, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          SQRT
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input parameters.
+*
+      INFO = 0
+      UPPER = LSAME( UPLO, 'U' )
+      IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
+         INFO = -1
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -2
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SPPTRF', -INFO )
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      IF( N.EQ.0 )
+     $   RETURN
+*
+      IF( UPPER ) THEN
+*
+*        Compute the Cholesky factorization A = U'*U.
+*
+         JJ = 0
+         DO 10 J = 1, N
+            JC = JJ + 1
+            JJ = JJ + J
+*
+*           Compute elements 1:J-1 of column J.
+*
+            IF( J.GT.1 )
+     $         CALL STPSV( 'Upper', 'Transpose', 'Non-unit', J-1, AP,
+     $                     AP( JC ), 1 )
+*
+*           Compute U(J,J) and test for non-positive-definiteness.
+*
+            AJJ = AP( JJ ) - SDOT( J-1, AP( JC ), 1, AP( JC ), 1 )
+            IF( AJJ.LE.ZERO ) THEN
+               AP( JJ ) = AJJ
+               GO TO 30
+            END IF
+            AP( JJ ) = SQRT( AJJ )
+   10    CONTINUE
+      ELSE
+*
+*        Compute the Cholesky factorization A = L*L'.
+*
+         JJ = 1
+         DO 20 J = 1, N
+*
+*           Compute L(J,J) and test for non-positive-definiteness.
+*
+            AJJ = AP( JJ )
+            IF( AJJ.LE.ZERO ) THEN
+               AP( JJ ) = AJJ
+               GO TO 30
+            END IF
+            AJJ = SQRT( AJJ )
+            AP( JJ ) = AJJ
+*
+*           Compute elements J+1:N of column J and update the trailing
+*           submatrix.
+*
+            IF( J.LT.N ) THEN
+               CALL SSCAL( N-J, ONE / AJJ, AP( JJ+1 ), 1 )
+               CALL SSPR( 'Lower', N-J, -ONE, AP( JJ+1 ), 1,
+     $                    AP( JJ+N-J+1 ) )
+               JJ = JJ + N - J + 1
+            END IF
+   20    CONTINUE
+      END IF
+      GO TO 40
+*
+   30 CONTINUE
+      INFO = J
+*
+   40 CONTINUE
+      RETURN
+*
+*     End of SPPTRF
+*
+      END
+
+
+
+      SUBROUTINE SSYRK(UPLO,TRANS,N,K,ALPHA,A,LDA,BETA,C,LDC)
+*     .. Scalar Arguments ..
+      REAL ALPHA,BETA
+      INTEGER K,LDA,LDC,N
+      CHARACTER TRANS,UPLO
+*     ..
+*     .. Array Arguments ..
+      REAL A(LDA,*),C(LDC,*)
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SSYRK  performs one of the symmetric rank k operations
+*
+*     C := alpha*A*A' + beta*C,
+*
+*  or
+*
+*     C := alpha*A'*A + beta*C,
+*
+*  where  alpha and beta  are scalars, C is an  n by n  symmetric matrix
+*  and  A  is an  n by k  matrix in the first case and a  k by n  matrix
+*  in the second case.
+*
+*  Arguments
+*  ==========
+*
+*  UPLO   - CHARACTER*1.
+*           On  entry,   UPLO  specifies  whether  the  upper  or  lower
+*           triangular  part  of the  array  C  is to be  referenced  as
+*           follows:
+*
+*              UPLO = 'U' or 'u'   Only the  upper triangular part of  C
+*                                  is to be referenced.
+*
+*              UPLO = 'L' or 'l'   Only the  lower triangular part of  C
+*                                  is to be referenced.
+*
+*           Unchanged on exit.
+*
+*  TRANS  - CHARACTER*1.
+*           On entry,  TRANS  specifies the operation to be performed as
+*           follows:
+*
+*              TRANS = 'N' or 'n'   C := alpha*A*A' + beta*C.
+*
+*              TRANS = 'T' or 't'   C := alpha*A'*A + beta*C.
+*
+*              TRANS = 'C' or 'c'   C := alpha*A'*A + beta*C.
+*
+*           Unchanged on exit.
+*
+*  N      - INTEGER.
+*           On entry,  N specifies the order of the matrix C.  N must be
+*           at least zero.
+*           Unchanged on exit.
+*
+*  K      - INTEGER.
+*           On entry with  TRANS = 'N' or 'n',  K  specifies  the number
+*           of  columns   of  the   matrix   A,   and  on   entry   with
+*           TRANS = 'T' or 't' or 'C' or 'c',  K  specifies  the  number
+*           of rows of the matrix  A.  K must be at least zero.
+*           Unchanged on exit.
+*
+*  ALPHA  - REAL            .
+*           On entry, ALPHA specifies the scalar alpha.
+*           Unchanged on exit.
+*
+*  A      - REAL             array of DIMENSION ( LDA, ka ), where ka is
+*           k  when  TRANS = 'N' or 'n',  and is  n  otherwise.
+*           Before entry with  TRANS = 'N' or 'n',  the  leading  n by k
+*           part of the array  A  must contain the matrix  A,  otherwise
+*           the leading  k by n  part of the array  A  must contain  the
+*           matrix A.
+*           Unchanged on exit.
+*
+*  LDA    - INTEGER.
+*           On entry, LDA specifies the first dimension of A as declared
+*           in  the  calling  (sub)  program.   When  TRANS = 'N' or 'n'
+*           then  LDA must be at least  max( 1, n ), otherwise  LDA must
+*           be at least  max( 1, k ).
+*           Unchanged on exit.
+*
+*  BETA   - REAL            .
+*           On entry, BETA specifies the scalar beta.
+*           Unchanged on exit.
+*
+*  C      - REAL             array of DIMENSION ( LDC, n ).
+*           Before entry  with  UPLO = 'U' or 'u',  the leading  n by n
+*           upper triangular part of the array C must contain the upper
+*           triangular part  of the  symmetric matrix  and the strictly
+*           lower triangular part of C is not referenced.  On exit, the
+*           upper triangular part of the array  C is overwritten by the
+*           upper triangular part of the updated matrix.
+*           Before entry  with  UPLO = 'L' or 'l',  the leading  n by n
+*           lower triangular part of the array C must contain the lower
+*           triangular part  of the  symmetric matrix  and the strictly
+*           upper triangular part of C is not referenced.  On exit, the
+*           lower triangular part of the array  C is overwritten by the
+*           lower triangular part of the updated matrix.
+*
+*  LDC    - INTEGER.
+*           On entry, LDC specifies the first dimension of C as declared
+*           in  the  calling  (sub)  program.   LDC  must  be  at  least
+*           max( 1, n ).
+*           Unchanged on exit.
+*
+*
+*  Level 3 Blas routine.
+*
+*  -- Written on 8-February-1989.
+*     Jack Dongarra, Argonne National Laboratory.
+*     Iain Duff, AERE Harwell.
+*     Jeremy Du Croz, Numerical Algorithms Group Ltd.
+*     Sven Hammarling, Numerical Algorithms Group Ltd.
+*
+*
+*     .. External Functions ..
+      LOGICAL LSAME
+      EXTERNAL LSAME
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC MAX
+*     ..
+*     .. Local Scalars ..
+      REAL TEMP
+      INTEGER I,INFO,J,L,NROWA
+      LOGICAL UPPER
+*     ..
+*     .. Parameters ..
+      REAL ONE,ZERO
+      PARAMETER (ONE=1.0E+0,ZERO=0.0E+0)
+*     ..
+*
+*     Test the input parameters.
+*
+      IF (LSAME(TRANS,'N')) THEN
+          NROWA = N
+      ELSE
+          NROWA = K
+      END IF
+      UPPER = LSAME(UPLO,'U')
+*
+      INFO = 0
+      IF ((.NOT.UPPER) .AND. (.NOT.LSAME(UPLO,'L'))) THEN
+          INFO = 1
+      ELSE IF ((.NOT.LSAME(TRANS,'N')) .AND.
+     +         (.NOT.LSAME(TRANS,'T')) .AND.
+     +         (.NOT.LSAME(TRANS,'C'))) THEN
+          INFO = 2
+      ELSE IF (N.LT.0) THEN
+          INFO = 3
+      ELSE IF (K.LT.0) THEN
+          INFO = 4
+      ELSE IF (LDA.LT.MAX(1,NROWA)) THEN
+          INFO = 7
+      ELSE IF (LDC.LT.MAX(1,N)) THEN
+          INFO = 10
+      END IF
+      IF (INFO.NE.0) THEN
+          CALL XERBLA('SSYRK ',INFO)
+          RETURN
+      END IF
+*
+*     Quick return if possible.
+*
+      IF ((N.EQ.0) .OR. (((ALPHA.EQ.ZERO).OR.
+     +    (K.EQ.0)).AND. (BETA.EQ.ONE))) RETURN
+*
+*     And when  alpha.eq.zero.
+*
+      IF (ALPHA.EQ.ZERO) THEN
+          IF (UPPER) THEN
+              IF (BETA.EQ.ZERO) THEN
+                  DO 20 J = 1,N
+                      DO 10 I = 1,J
+                          C(I,J) = ZERO
+   10                 CONTINUE
+   20             CONTINUE
+              ELSE
+                  DO 40 J = 1,N
+                      DO 30 I = 1,J
+                          C(I,J) = BETA*C(I,J)
+   30                 CONTINUE
+   40             CONTINUE
+              END IF
+          ELSE
+              IF (BETA.EQ.ZERO) THEN
+                  DO 60 J = 1,N
+                      DO 50 I = J,N
+                          C(I,J) = ZERO
+   50                 CONTINUE
+   60             CONTINUE
+              ELSE
+                  DO 80 J = 1,N
+                      DO 70 I = J,N
+                          C(I,J) = BETA*C(I,J)
+   70                 CONTINUE
+   80             CONTINUE
+              END IF
+          END IF
+          RETURN
+      END IF
+*
+*     Start the operations.
+*
+      IF (LSAME(TRANS,'N')) THEN
+*
+*        Form  C := alpha*A*A' + beta*C.
+*
+          IF (UPPER) THEN
+              DO 130 J = 1,N
+                  IF (BETA.EQ.ZERO) THEN
+                      DO 90 I = 1,J
+                          C(I,J) = ZERO
+   90                 CONTINUE
+                  ELSE IF (BETA.NE.ONE) THEN
+                      DO 100 I = 1,J
+                          C(I,J) = BETA*C(I,J)
+  100                 CONTINUE
+                  END IF
+                  DO 120 L = 1,K
+                      IF (A(J,L).NE.ZERO) THEN
+                          TEMP = ALPHA*A(J,L)
+                          DO 110 I = 1,J
+                              C(I,J) = C(I,J) + TEMP*A(I,L)
+  110                     CONTINUE
+                      END IF
+  120             CONTINUE
+  130         CONTINUE
+          ELSE
+              DO 180 J = 1,N
+                  IF (BETA.EQ.ZERO) THEN
+                      DO 140 I = J,N
+                          C(I,J) = ZERO
+  140                 CONTINUE
+                  ELSE IF (BETA.NE.ONE) THEN
+                      DO 150 I = J,N
+                          C(I,J) = BETA*C(I,J)
+  150                 CONTINUE
+                  END IF
+                  DO 170 L = 1,K
+                      IF (A(J,L).NE.ZERO) THEN
+                          TEMP = ALPHA*A(J,L)
+                          DO 160 I = J,N
+                              C(I,J) = C(I,J) + TEMP*A(I,L)
+  160                     CONTINUE
+                      END IF
+  170             CONTINUE
+  180         CONTINUE
+          END IF
+      ELSE
+*
+*        Form  C := alpha*A'*A + beta*C.
+*
+          IF (UPPER) THEN
+              DO 210 J = 1,N
+                  DO 200 I = 1,J
+                      TEMP = ZERO
+                      DO 190 L = 1,K
+                          TEMP = TEMP + A(L,I)*A(L,J)
+  190                 CONTINUE
+                      IF (BETA.EQ.ZERO) THEN
+                          C(I,J) = ALPHA*TEMP
+                      ELSE
+                          C(I,J) = ALPHA*TEMP + BETA*C(I,J)
+                      END IF
+  200             CONTINUE
+  210         CONTINUE
+          ELSE
+              DO 240 J = 1,N
+                  DO 230 I = J,N
+                      TEMP = ZERO
+                      DO 220 L = 1,K
+                          TEMP = TEMP + A(L,I)*A(L,J)
+  220                 CONTINUE
+                      IF (BETA.EQ.ZERO) THEN
+                          C(I,J) = ALPHA*TEMP
+                      ELSE
+                          C(I,J) = ALPHA*TEMP + BETA*C(I,J)
+                      END IF
+  230             CONTINUE
+  240         CONTINUE
+          END IF
+      END IF
+*
+      RETURN
+*
+*     End of SSYRK .
+*
+      END
+
+	  
 #endif
 Code for open_normalfile
 C --- Subroutine for opening a new file for outputing the normal matrix into.
