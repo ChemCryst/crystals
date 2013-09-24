@@ -1880,7 +1880,7 @@ All cycle   R-factor              0.0            13.           0.10E+03
 All cycle   Rw                    0.0            12.           0.10E+03
 All cycle   shift/esd            0.30E-01       0.15           0.10E+05
 All cycle   Min function          0.0           0.40E+04       0.10E+16
-Inter cycle R-factor             -5.0           0.60E-03       0.10E+03
+Inter cycle R-factor             -5.0           0.61E-03       0.10E+03
 Inter cycle Rw                   -5.0           0.21E-02       0.10E+03
 Inter cycle shift/esd            -10.          -0.44E-01       0.10E+05
 Inter cycle Min function          0.0            1.4           0.10E+16
@@ -6352,7 +6352,7 @@ Mean C-C su =   0.0032
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-     67973.         66110.           8688.                                   On scale of /FC/
+     67973.         66109.           8688.                                   On scale of /FC/
 
      19829.         19285.           2535.               0.4063E+04          On scale of /FO/
 
@@ -8786,7 +8786,7 @@ LS-scale=  0.312   Wilson Scale=  0.000
  Q         7.     0.9942    0.1656    0.2164       10.2  Poor Shape  
  Q         8.     0.3692    0.9071   -0.0004       10.1  Poor Shape  
  Q         9.     0.9238    0.9515    0.1411       10.0  Poor Shape  
- Q        10.     0.0054    0.8956    0.2396        9.7  Poor Shape  
+ Q        10.     0.4946    0.3956    0.2604        9.7  Poor Shape  
  Q        11.     0.5417    0.1967    0.0336        9.6  Poor Shape  
  Q        12.     0.4988    0.2298    0.1114        9.5  Poor Shape  
  Q        13.     0.0417    0.9821    0.0457        9.2  Poor Shape  
@@ -11481,7 +11481,7 @@ LS-scale=  0.293   Wilson Scale=  0.000
    Sum of the squares of the ratio (Shift/e.s.d.) =              3.
                                                 for          53 parameters
                                  The rms (shift/su)  =           0.233
-                              The mean abs(shift/su) =           0.189
+                              The mean abs(shift/su) =           0.190
  The largest (shift/esd) =      0.62, for Parameter   48, H82U[11]
 
                                 Min          Actual           Max
@@ -13303,7 +13303,7 @@ LS-scale=  0.311   Wilson Scale=  0.000
  H        93.     0.4944    0.7073   -0.0043        4.3   
  H        70.     0.6186    0.1145    0.1983       -4.5   
  Q         1.     0.4596    0.1052    0.1429       23.7  Poor Shape  
- Q         2.     0.7433    0.6275    0.2464       19.9  Poor Shape  
+ Q         2.     0.7567    0.1275    0.2536       19.9  Poor Shape  
  Q         3.     0.6967    0.0625    0.1768       15.8  Poor Shape  
  Q         4.     0.7042    0.0679    0.1232       12.7  Poor Shape  
  Q         5.     0.6242    0.0969    0.0043       11.0  Poor Shape  
@@ -15299,7 +15299,7 @@ LS-scale=  0.288   Wilson Scale=  0.000
  S/ESD    25          25           -0.0079     -0.1E+01    0.133E-02         -5.95        C      4 U[ISO]  
  S/ESD    26          26           -0.0027      0.1E+01    0.896E-03         -2.97        C      5 X       
  S/ESD    27          27           -0.0036      0.7E+00    0.471E-03         -7.58        C      5 Y       
- S/ESD    28          28           -0.0050      0.8E+00    0.794E-03         -6.24        C      5 Z       
+ S/ESD    28          28           -0.0050      0.8E+00    0.794E-03         -6.23        C      5 Z       
  S/ESD    29          29           -0.0068     -0.1E+02    0.127E-02         -5.31        C      5 U[ISO]  
  S/ESD    30          30            0.0060      0.8E+00    0.924E-03          6.53        C      6 X       
  S/ESD    31          31           -0.0032      0.9E+00    0.486E-03         -6.66        C      6 Y       
@@ -15941,7 +15941,7 @@ Inter cycle Min function          0.0           0.12E+04       0.10E+16
  Statistics for    53 least squares parameters, with  2494 degrees of freedom
  Number of observations              2547                 0              2547
  Minimisation function              0.297E+04         0.000E+00         0.297E+04
- Hamilton weighted R-value          21.577             0.000            21.577
+ Hamilton weighted R-value          21.576             0.000            21.576
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 

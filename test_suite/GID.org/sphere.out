@@ -1784,10 +1784,10 @@ All cycle   shift/esd            0.30E-01       0.31E-02       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals     0.00     0.00     0.00     0.00   100.00   100.00    33.33   100.00   100.00     0.00     0.00     0.00
+ Reversals     0.00     0.00     0.00     0.00   100.00   100.00    33.33   100.00   100.00     0.00   100.00     0.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  50.00 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  56.25 for all parameters.
 
 
  Shift
@@ -6990,7 +6990,7 @@ LS-scale=  0.478   Wilson Scale=  0.000
  S/ESD    10          10           -0.0043      0.1E+01    0.262E-02         -1.65        O      1 U[22]   
  S/ESD    12          12           -0.0034      0.6E+00    0.223E-02         -1.51        O      1 U[23]   
  LARGE    15          15           -1.7610     -0.6E+01    0.384E+00         -4.58        C      1 U[ISO]  
- LARGE    16          16            3.4844      0.4E+02    0.663E+00          5.26        C      1 SIZE    
+ LARGE    16          16            3.4845      0.4E+02    0.663E+00          5.26        C      1 SIZE    
 
    Sum of the squares of the ratio (Shift/e.s.d.) =             59.
                                                 for          16 parameters
@@ -7098,9 +7098,9 @@ Inter cycle Min function          0.0           0.58E+03       0.10E+16
                       0.0000            0.0007   0.0007   0.0007   0.0026   0.0026   0.0026   0.0022   0.0021   0.0022
                                         0.0061   0.0060   0.0059
 
-     C          1.    5.0000   2.0000   0.5000   0.5000   0.5000  -1.3279   4.1882
-                      0.0000            0.0000   0.0000   0.0000  -1.7610   3.4844
-                      0.0000            0.0000   0.0000   0.0000   0.3843   0.6626
+     C          1.    5.0000   2.0000   0.5000   0.5000   0.5000  -1.3279   4.1883
+                      0.0000            0.0000   0.0000   0.0000  -1.7610   3.4845
+                      0.0000            0.0000   0.0000   0.0000   0.3843   0.6627
                                         0.0000   0.0000   0.0000
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
  The following atoms should be carefully examined 
@@ -7111,7 +7111,7 @@ Mean C-C su =   0.0000
 #DORESTRAIN                                                                                                                                                                                                                                                     
  Atom C       1 has U-iso too small,  -1.3279                                                                                                                                                                                                                   
       1 temperature factors less than the lowest allowed value of    0.00000
-  The minimum value  was   -1.32791
+  The minimum value  was   -1.32795
  Initialising Special positions
 
 
@@ -7137,7 +7137,7 @@ Mean C-C su =   0.0000
     7.   7.  10.    10.07    13.14
     5.   8.  10.    13.80    17.67
     6.   8.  10.    14.00    18.79
-    3.   9.  10.    20.25    23.55
+    3.   9.  10.    20.25    23.54
     4.   9.  10.    10.59    15.33
     0.  10.  10.    14.65    17.17
     3.   5.  11.     8.72    10.40
@@ -7189,7 +7189,7 @@ LS-scale=  0.475   Wilson Scale=  0.000
 
  SRATIO    9           9            0.0002      0.1E+02    0.258E-02          0.07        O      1 U[11]   
  LARGE    15          15            0.0579     -0.3E-01    0.197E-01          2.94        C      1 U[ISO]  
- LARGE    16          16           -0.1471     -0.4E-01    0.690E-01         -2.13        C      1 SIZE    
+ LARGE    16          16           -0.1470     -0.4E-01    0.690E-01         -2.13        C      1 SIZE    
 
    Sum of the squares of the ratio (Shift/e.s.d.) =             14.
                                                 for          16 parameters
@@ -7203,7 +7203,7 @@ All cycle   Rw                    0.0            11.           0.10E+03
 All cycle   shift/esd            0.30E-01       0.93           0.10E+05
 All cycle   Min function          0.0           0.37E+03       0.10E+16
 Inter cycle R-factor             -5.0           0.80E-01       0.10E+03
-Inter cycle Rw                   -5.0          -0.64E-01       0.10E+03
+Inter cycle Rw                   -5.0          -0.65E-01       0.10E+03
 Inter cycle shift/esd            -10.           0.99           0.10E+05
 Inter cycle Min function          0.0           -4.4           0.10E+16
  Forced termination after this cycle:  Relative change condition on Min function                                                                                                                                                                                
@@ -7298,8 +7298,8 @@ Inter cycle Min function          0.0           -4.4           0.10E+16
                       0.0000            0.0007   0.0006   0.0007   0.0026   0.0024   0.0026   0.0021   0.0021   0.0021
                                         0.0060   0.0056   0.0058
 
-     C          1.    5.0000   2.0000   0.5000   0.5000   0.5000   0.0580   4.0412
-                      0.0000            0.0000   0.0000   0.0000   0.0579  -0.1471
+     C          1.    5.0000   2.0000   0.5000   0.5000   0.5000   0.0580   4.0413
+                      0.0000            0.0000   0.0000   0.0000   0.0579  -0.1470
                       0.0000            0.0000   0.0000   0.0000   0.0197   0.0690
                                         0.0000   0.0000   0.0000
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
@@ -7340,8 +7340,8 @@ Mean C-C su =   0.0000
     3.   8.  11.    19.60    23.05
     3.   6.  12.     9.59    11.19
     2.   7.  12.     7.81    10.37
-    3.   7.  12.    17.07    20.27
-    0.   5.  13.    15.68    18.74
+    3.   7.  12.    17.07    20.28
+    0.   5.  13.    15.69    18.74
 
                               ***
                              ***
@@ -7394,7 +7394,7 @@ LS-scale=  0.475   Wilson Scale=  0.000
                                                                       Composite
 
  SRATIO   13          13           -0.0003     -0.1E+03    0.204E-02         -0.15        O      1 U[13]   
- LARGE    16          16           -0.4095      0.3E+01    0.147E+00         -2.79        C      1 SIZE    
+ LARGE    16          16           -0.4096      0.3E+01    0.147E+00         -2.79        C      1 SIZE    
 
    Sum of the squares of the ratio (Shift/e.s.d.) =             10.
                                                 for          16 parameters
@@ -7498,9 +7498,9 @@ All cycle   Min function          0.0           0.35E+03       0.10E+16
                       0.0000            0.0007   0.0006   0.0006   0.0025   0.0024   0.0025   0.0021   0.0020   0.0021
                                         0.0059   0.0056   0.0057
 
-     C          1.    5.0000   2.0000   0.5000   0.5000   0.5000   0.0726   3.6317
-                      0.0000            0.0000   0.0000   0.0000   0.0146  -0.4095
-                      0.0000            0.0000   0.0000   0.0000   0.0681   0.1467
+     C          1.    5.0000   2.0000   0.5000   0.5000   0.5000   0.0727   3.6316
+                      0.0000            0.0000   0.0000   0.0000   0.0147  -0.4096
+                      0.0000            0.0000   0.0000   0.0000   0.0682   0.1467
                                         0.0000   0.0000   0.0000
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
@@ -7581,12 +7581,12 @@ LS-scale=  0.477   Wilson Scale=  0.000
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
  SRATIO   10          10           -0.0001     -0.4E+02    0.235E-02         -0.04        O      1 U[22]   
- LARGE    15          15           -0.0582     -0.4E+01    0.793E-01         -0.73        C      1 U[ISO]  
- LARGE    16          16            0.1877     -0.5E+00    0.124E+00          1.52        C      1 SIZE    
+ LARGE    15          15           -0.0585     -0.4E+01    0.794E-01         -0.74        C      1 U[ISO]  
+ LARGE    16          16            0.1879     -0.5E+00    0.124E+00          1.52        C      1 SIZE    
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              3.
                                                 for          16 parameters
-                                 The rms (shift/su)  =           0.439
+                                 The rms (shift/su)  =           0.440
                               The mean abs(shift/su) =           0.232
  The largest (shift/esd) =      1.52, for Parameter   16, C1U[22]
 
@@ -7690,9 +7690,9 @@ Inter cycle Min function          0.0            5.2           0.10E+16
                       0.0000            0.0007   0.0006   0.0006   0.0025   0.0023   0.0024   0.0020   0.0020   0.0020
                                         0.0058   0.0055   0.0056
 
-     C          1.    5.0000   2.0000   0.5000   0.5000   0.5000   0.0144   3.8194
-                      0.0000            0.0000   0.0000   0.0000  -0.0582   0.1877
-                      0.0000            0.0000   0.0000   0.0000   0.0793   0.1235
+     C          1.    5.0000   2.0000   0.5000   0.5000   0.5000   0.0142   3.8195
+                      0.0000            0.0000   0.0000   0.0000  -0.0585   0.1879
+                      0.0000            0.0000   0.0000   0.0000   0.0794   0.1236
                                         0.0000   0.0000   0.0000
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
@@ -7712,7 +7712,7 @@ Mean C-C su =   0.0000
     h    k    l      Fo        Fc 
 
     0.   3.   4.     5.67     4.86
-    0.   1.   5.    55.15    44.94
+    0.   1.   5.    55.15    44.93
     2.   3.   6.     3.42     2.21
     4.   7.   8.     4.38     3.42
     1.   5.   9.     3.38     2.55
@@ -7724,16 +7724,16 @@ Mean C-C su =   0.0000
     5.   6.  10.     4.45     5.58
     7.   7.  10.    10.04    13.21
     5.   8.  10.    13.77    17.43
-    6.   8.  10.    13.97    18.37
+    6.   8.  10.    13.97    18.36
     3.   9.  10.    20.21    23.48
     4.   9.  10.    10.57    15.05
-    0.  10.  10.    14.62    16.52
+    0.  10.  10.    14.62    16.51
     3.   5.  11.     8.70    10.16
     4.   7.  11.    15.91    18.03
     3.   8.  11.    19.53    22.92
     3.   6.  12.     9.55    11.10
     2.   7.  12.     7.78    10.28
-    3.   7.  12.    17.00    20.06
+    3.   7.  12.    17.00    20.05
     0.   5.  13.    15.62    18.64
 
                               ***
@@ -7774,14 +7774,14 @@ LS-scale=  0.476   Wilson Scale=  0.000
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          16 parameters
-                                 The rms (shift/su)  =           0.049
+                                 The rms (shift/su)  =           0.048
                               The mean abs(shift/su) =           0.038
- The largest (shift/esd) =      0.11, for Parameter   15, C1U[11]
+ The largest (shift/esd) =      0.10, for Parameter   15, C1U[11]
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            4.3           0.10E+03
 All cycle   Rw                    0.0            11.           0.10E+03
-All cycle   shift/esd            0.30E-01       0.49E-01       0.10E+05
+All cycle   shift/esd            0.30E-01       0.48E-01       0.10E+05
 All cycle   Min function          0.0           0.34E+03       0.10E+16
 Inter cycle R-factor             -5.0           0.32E-01       0.10E+03
 Inter cycle Rw                   -5.0           0.69E-01       0.10E+03
@@ -7878,9 +7878,9 @@ Inter cycle Min function          0.0            4.5           0.10E+16
                       0.0000            0.0007   0.0006   0.0006   0.0025   0.0023   0.0024   0.0020   0.0020   0.0020
                                         0.0058   0.0054   0.0054
 
-     C          1.    5.0000   2.0000   0.5000   0.5000   0.5000   0.0114   3.8124
-                      0.0000            0.0000   0.0000   0.0000  -0.0030  -0.0070
-                      0.0000            0.0000   0.0000   0.0000   0.0281   0.0753
+     C          1.    5.0000   2.0000   0.5000   0.5000   0.5000   0.0114   3.8127
+                      0.0000            0.0000   0.0000   0.0000  -0.0028  -0.0068
+                      0.0000            0.0000   0.0000   0.0000   0.0280   0.0750
                                         0.0000   0.0000   0.0000
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
@@ -7910,7 +7910,7 @@ Mean C-C su =   0.0000
     0.   0.  10.    14.46    10.52
     3.   6.  10.     4.35     3.43
     5.   6.  10.     4.45     5.59
-    7.   7.  10.    10.05    13.21
+    7.   7.  10.    10.05    13.22
     5.   8.  10.    13.78    17.44
     6.   8.  10.    13.98    18.37
     3.   9.  10.    20.22    23.47
@@ -7962,14 +7962,14 @@ LS-scale=  0.476   Wilson Scale=  0.000
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          16 parameters
-                                 The rms (shift/su)  =           0.021
+                                 The rms (shift/su)  =           0.020
                               The mean abs(shift/su) =           0.011
  The largest (shift/esd) =      0.06, for Parameter   16, C1U[22]
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            4.3           0.10E+03
 All cycle   Rw                    0.0            11.           0.10E+03
-All cycle   shift/esd            0.30E-01       0.21E-01       0.10E+05
+All cycle   shift/esd            0.30E-01       0.20E-01       0.10E+05
  Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
@@ -8063,7 +8063,7 @@ All cycle   shift/esd            0.30E-01       0.21E-01       0.10E+05
                                         0.0058   0.0054   0.0054
 
      C          1.    5.0000   2.0000   0.5000   0.5000   0.5000   0.0127   3.8169
-                      0.0000            0.0000   0.0000   0.0000   0.0013   0.0044
+                      0.0000            0.0000   0.0000   0.0000   0.0012   0.0042
                       0.0000            0.0000   0.0000   0.0000   0.0259   0.0710
                                         0.0000   0.0000   0.0000
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
