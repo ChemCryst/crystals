@@ -14,7 +14,7 @@ CRYFILES90 = mrgrnk.o solve_helper.o
 GUIFILES = $(notdir $(wildcard $(GUIDIR)/*.cc))
 WEBFILES = $(notdir $(wildcard $(WEBCTRLDIR)/*.cpp))
 
-FOBJ     =  $(patsubst %.o, obj/%.o,  $(notdir $(CAMFILES:.F=.o) $(CRYFILES90:.f90=.o) $(CRYFILES:.F=.o) ) )
+FOBJ     =  $(patsubst %.o, obj/%.o,  $(notdir $(CAMFILES:.F=.o) $(CRYFILES90:.f90=.o) $(CRYFILES:.F=.o)) lapack.o )
 ifneq ($(COMPCODE),LIN)
  ifneq ($(COMPCODE),DVF)
   COBJ     = $(patsubst %.o, obj/%.o, $(notdir $(GUIFILES:.cc=.o)))
@@ -37,6 +37,8 @@ crystals$(SUFFIX) : $(FOBJ) $(COBJ)
 obj/resource.o : ../gui/wx.rc
 	windres -o $@ -i $< --include-dir=../gui --include-dir `wx-config --prefix`/include
 
+obj/lapack.o : lapack.f
+	$(F77) -c $(F77FLAGS) -x f77-cpp-input -O0 -o $@ $<
 
 obj :
 	mkdir obj
