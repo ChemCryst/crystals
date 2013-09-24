@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.84  2013/09/22 21:43:39  rich
+C Improved accumulation.
+C
 C Revision 1.83  2013/09/19 21:35:39  rich
 C Change precision of listing output where not important to reduce differences across platforms.
 C Important changes - SFLS now uses builtin cos() and sin() functions rather than Chebyshev
@@ -1751,7 +1754,11 @@ C--CHECK IF A PRINT IS REQUIRED
 
       NO=JO
       NP=JP
-      allocate(designmatrix(JP-JO+1,20000000/(JP-JO+1)))
+#if defined (_GID_) || defined (_DVF_) || defined (_WXS_)  ! Stack is not so big with Digital compiler...
+      allocate(designmatrix(JP-JO+1,20000/(JP-JO+1)))
+#else
+      allocate(designmatrix(JP-JO+1,20000000/(JP-JO+1))) 
+#endif
       allocate(normalmatrix(JP-JO+1,JP-JO+1))
       !allocate(ref(JP-JO+1,JP-JO+1))
       normalmatrix=0.0
@@ -2322,6 +2329,7 @@ C----    H,K,L,SNTHL,LEV,
       ! process the remaining chunk of design matrix
                  if(designindex>1) then
           ! Accumulate the normal matrix
+c            write(123,*) designindex, jp-jo+1
                    call SSYRK('L','N',JP-JO+1,designindex,1.0,
      1              designmatrix(:,1:designindex),
      2             JP-JO+1,1.0,normalmatrix,JP-JO+1)
