@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.85  2013/09/24 08:38:58  rich
+C The digital compiler can't handle big F90 allocation of memory (gives a stack overflow). Reduced size of SFLS accumulation buffer for this platform.
+C
 C Revision 1.84  2013/09/22 21:43:39  rich
 C Improved accumulation.
 C
@@ -1754,7 +1757,8 @@ C--CHECK IF A PRINT IS REQUIRED
 
       NO=JO
       NP=JP
-#if defined (_GID_) || defined (_DVF_) || defined (_WXS_)  ! Stack is not so big with Digital compiler...
+! Stack is not so big with Digital compiler...
+#if defined (_GID_) || defined (_DVF_) || defined (_WXS_)  
       allocate(designmatrix(JP-JO+1,20000/(JP-JO+1)))
 #else
       allocate(designmatrix(JP-JO+1,20000000/(JP-JO+1))) 
@@ -2327,7 +2331,7 @@ C----    H,K,L,SNTHL,LEV,
             IF (ISTORE(M33CD+12).EQ.0) THEN    ! Just a normal accumulation.
               if (ISTORE(M33CD+13).NE.0) THEN
       ! process the remaining chunk of design matrix
-                 if(designindex>1) then
+                 if(designindex>0) then
           ! Accumulate the normal matrix
 c            write(123,*) designindex, jp-jo+1
                    call SSYRK('L','N',JP-JO+1,designindex,1.0,
