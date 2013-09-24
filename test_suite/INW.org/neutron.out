@@ -1880,7 +1880,7 @@ All cycle   R-factor              0.0            13.           0.10E+03
 All cycle   Rw                    0.0            12.           0.10E+03
 All cycle   shift/esd            0.30E-01       0.15           0.10E+05
 All cycle   Min function          0.0           0.40E+04       0.10E+16
-Inter cycle R-factor             -5.0           0.60E-03       0.10E+03
+Inter cycle R-factor             -5.0           0.59E-03       0.10E+03
 Inter cycle Rw                   -5.0           0.21E-02       0.10E+03
 Inter cycle shift/esd            -10.          -0.44E-01       0.10E+05
 Inter cycle Min function          0.0            1.4           0.10E+16
@@ -3695,7 +3695,7 @@ LS-scale=  0.312   Wilson Scale=  0.000
  H        93.     0.4944    0.7073   -0.0043        3.0   
  H        70.     0.6186    0.1145    0.1983       -4.3   
  Q         1.     0.4588    0.1048    0.1439       25.3  Poor Shape  
- Q         2.     0.7579    0.1269    0.2554       18.8  Poor Shape  
+ Q         2.     0.7421    0.6269    0.2446       18.8  Poor Shape  
  Q         3.     0.6958    0.0610    0.1775       15.1  Poor Shape  
  Q         4.     0.7938    0.6446    0.2075       15.0  Poor Shape  
  Q         5.     0.7054    0.0671    0.1204       11.4  Poor Shape  
@@ -3703,7 +3703,7 @@ LS-scale=  0.312   Wilson Scale=  0.000
  Q         7.     0.9942    0.1660    0.2164       10.2  Poor Shape  
  Q         8.     0.3704    0.9071   -0.0018       10.1  Poor Shape  
  Q         9.     0.5417    0.1973    0.0339        9.8  Poor Shape  
- Q        10.     0.0071    0.8956    0.2379        9.8  Poor Shape  
+ Q        10.     0.4929    0.3956    0.2621        9.8  Poor Shape  
  Q        11.     0.4967    0.2298    0.1121        9.8  Poor Shape  
  Q        12.     0.9242    0.9517    0.1407        9.5  Poor Shape  
  Q        13.     0.0413    0.9819    0.0450        9.4  Poor Shape  
@@ -4027,7 +4027,7 @@ Bonds: Update required - List5 length change
 
   KEY                                                1       2
 
- Distances about atom  Q      2.          X =  0.24208     Y = -0.12687     Z =  0.74464
+ Distances about atom  Q      2.          X =  0.24208     Y = -0.12688     Z =  0.74464
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -6092,7 +6092,7 @@ LS-scale=  0.291   Wilson Scale=  0.000
  S/ESD    25          25           -0.0013      0.4E+00    0.533E-03         -2.36        C      4 U[ISO]  
  S/ESD    26          26           -0.0008      0.2E+00    0.431E-03         -1.88        C      5 X       
  S/ESD    28          28            0.0019      0.3E+00    0.374E-03          5.12        C      5 Z       
- S/ESD    29          29           -0.0029      0.8E+00    0.578E-03         -5.09        C      5 U[ISO]  
+ S/ESD    29          29           -0.0029      0.8E+00    0.578E-03         -5.10        C      5 U[ISO]  
  S/ESD    30          30           -0.0011      0.1E+00    0.424E-03         -2.56        C      6 X       
  S/ESD    31          31           -0.0006      0.2E+00    0.213E-03         -2.96        C      6 Y       
  S/ESD    33          33           -0.0035      0.4E+00    0.567E-03         -6.18        C      6 U[ISO]  
@@ -8694,7 +8694,7 @@ Mean C-C su =   0.0019
   -9   3   2   13.2    3.8   2.9  3.50    -4  16   2   11.5    2.2   2.9  5.26                                                                                                                                                                                  
    6   9   4    0.0    9.3   2.9  0.00     3   7   8   10.0    0.7   2.9 13.91                                                                                                                                                                                  
    3   5   0   12.0    2.7   2.9  4.40    -3   4   9    0.0    9.2   2.9  0.00                                                                                                                                                                                  
-  -8   4   8    9.4    0.2   2.8 40.41     2  18   2    0.0    8.9   2.8  0.00                                                                                                                                                                                  
+  -8   4   8    9.4    0.2   2.8 40.40     2  18   2    0.0    8.9   2.8  0.00                                                                                                                                                                                  
 
                               ***
                              ***
@@ -8778,7 +8778,7 @@ LS-scale=  0.312   Wilson Scale=  0.000
  H        93.     0.4944    0.7073   -0.0043        3.0   
  H        70.     0.6186    0.1145    0.1983       -4.3   
  Q         1.     0.4592    0.1048    0.1436       25.0  Poor Shape  
- Q         2.     0.7588    0.1269    0.2546       18.7  Poor Shape  
+ Q         2.     0.7413    0.6269    0.2454       18.7  Poor Shape  
  Q         3.     0.7946    0.6446    0.2075       15.1  Poor Shape  
  Q         4.     0.6950    0.0610    0.1789       15.1  Poor Shape  
  Q         5.     0.7054    0.0671    0.1182       11.9  Poor Shape  
@@ -9113,7 +9113,7 @@ Bonds: Update required - List5 length change
 
   KEY                                                1
 
- Distances about atom  Q      2.          X =  0.24125     Y = -0.12687     Z =  0.74536
+ Distances about atom  Q      2.          X =  0.24125     Y = -0.12688     Z =  0.74536
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -13308,7 +13308,7 @@ LS-scale=  0.311   Wilson Scale=  0.000
  Q         4.     0.7042    0.0679    0.1232       12.7  Poor Shape  
  Q         5.     0.6242    0.0969    0.0043       11.0  Poor Shape  
  Q         6.     0.0400    0.7717    0.2382       10.2  Poor Shape  
- Q         7.     0.9942    0.1673    0.2204        9.5  Poor Shape  
+ Q         7.    -0.0058    0.1673    0.2204        9.5  Poor Shape  
  Q         8.     0.8658    0.8706    0.0039        9.4  Poor Shape  
  Q         9.     0.9563    0.1223    0.0996        9.3  Poor Shape  
  Q        10.     0.5292    0.2004    0.0396        9.2  Poor Shape  
@@ -13651,7 +13651,7 @@ Bonds: Update required - List5 length change
 
   KEY                                                1
 
- Distances about atom  Q      7.          X =  0.99417     Y =  0.16729     Z =  0.22036
+ Distances about atom  Q      7.          X = -0.00583     Y =  0.16729     Z =  0.22036
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -13685,7 +13685,7 @@ Bonds: Update required - List5 length change
 
   KEY                                                1
 
- Distances about atom  Q      9.          X =  0.95625     Y =  0.12229     Z =  0.09964
+ Distances about atom  Q      9.          X = -0.04375     Y =  0.12229     Z =  0.09964
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -13729,7 +13729,7 @@ Bonds: Update required - List5 length change
 
   KEY                                                1
 
- Distances about atom  Q     13.          X =  0.84542     Y =  0.16938     Z =  0.03464
+ Distances about atom  Q     13.          X = -0.15458     Y =  0.16938     Z =  0.03464
 
 
  Angles about atom  Q     13.
@@ -13875,7 +13875,7 @@ Resetting shift for Extinction  Shift=       5.14  Esd=       0.26  New shift=  
 
    Sum of the squares of the ratio (Shift/e.s.d.) =            382.
                                                 for         144 parameters
-                                 The rms (shift/su)  =           1.628
+                                 The rms (shift/su)  =           1.629
                               The mean abs(shift/su) =           0.168
  The largest (shift/esd) =     19.53, for Parameter    2, EXTPARAM
 
@@ -16507,7 +16507,7 @@ Resetting shift for Extinction  Shift=       5.30  Esd=       0.34  New shift=  
  S/ESD    78          78            0.0059      0.0E+00    0.110E-02          5.36        C      7 U[11]   
  S/ESD    80          80           -0.0060      0.0E+00    0.116E-02         -5.15        C      7 U[33]   
  S/ESD    81          81            0.0064      0.0E+00    0.956E-03          6.72        C      7 U[23]   
- S/ESD    82          82           -0.0027      0.0E+00    0.903E-03         -2.95        C      7 U[13]   
+ S/ESD    82          82           -0.0027      0.0E+00    0.902E-03         -2.95        C      7 U[13]   
  S/ESD    83          83            0.0025      0.0E+00    0.922E-03          2.72        C      7 U[12]   
  S/ESD    86          86            0.0005      0.0E+00    0.323E-03          1.45        C      8 Z       
  S/ESD    87          87            0.0025      0.0E+00    0.107E-02          2.36        C      8 U[11]   

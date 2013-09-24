@@ -29859,7 +29859,7 @@ LS-scale=  1.664   Wilson Scale=  0.000
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
  S/ESD     1           1             0.069      0.4E+00    0.176E-01          3.94                          SCALE   
-Resetting shift for Extinction  Shift=     856.40  Esd=     102.48  New shift=     131.01                                                                                                                                                                       
+Resetting shift for Extinction  Shift=     856.39  Esd=     102.48  New shift=     131.01                                                                                                                                                                       
  LARGE     2           2           131.009      0.1E+01    0.102E+03          8.36                          EXTPARAM
  S/ESD    15          15            0.0052      0.2E+00    0.390E-02          1.35        O      3 U[11]   
  S/ESD    16          16            0.0028     -0.4E+00    0.242E-02          1.15        O      3 U[22]   
@@ -41082,7 +41082,7 @@ Mean C-C su =   0.0000
  
     3 *   6  -6   6  16   3  -8   0   7  10  12   6   1   8  15   7  -3  -2   2  12  22  12 *   3
  
-    4 *   7   1   7  16  13   2   0  -2  -2   5  11   9   3   0  -1  -1  -2  -6   0   8   0 *   4
+    4 *   7   1   7  16  13   2   0  -2  -2   5  11   9   3   0   0  -1  -2  -6   0   8   0 *   4
  
     5 *  -3   0  -3   4  15  10   1  -1  -1   3   7  11   6   2   4   3  -4 -12 -14 -11 -14 *   5
  
@@ -41264,7 +41264,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   -1, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41301,7 +41301,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =    0, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41338,7 +41338,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =    1, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41375,7 +41375,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =    2, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41412,7 +41412,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =    3, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41449,7 +41449,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =    4, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41486,7 +41486,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =    5, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41523,7 +41523,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =    6, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41560,7 +41560,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =    7, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41597,7 +41597,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =    8, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41634,7 +41634,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =    9, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41665,14 +41665,14 @@ Mean C-C su =   0.0000
       *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
  
- Malformed peak at    0.32578   0.46770   0.16340
+ Malformed peak at    0.32578   0.46770   0.16339
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
  X Down,  Y Across,  Section at Z =   10, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41709,7 +41709,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   11, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41740,14 +41740,14 @@ Mean C-C su =   0.0000
       *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
  
- Malformed peak at    0.17681   0.53628   0.07863
+ Malformed peak at    0.17704   0.53605   0.07893
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
  X Down,  Y Across,  Section at Z =   12, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41784,7 +41784,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   13, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41821,7 +41821,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   14, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41845,7 +41845,7 @@ Mean C-C su =   0.0000
  
     7 * -52 -46 -52 -44 -36 -36 -32 -24   9   7 -15  22  46  53  64  47  40  49  83 114  83 *   7
  
-    8 * -30 -10 -30 -43 -32 -17  -7  -6   6 -13 -26  28  48  36  45  45  56  78 127 166 127 *   8
+    8 * -30 -10 -30 -43 -32 -17  -7  -6   6 -13 -26  28  48  36  45  45  56  78 127 167 127 *   8
  
     9 * -52 -46 -52 -44 -36 -36 -32 -24   9   7 -15  22  46  53  64  47  40  49  83 114  83 *   9
  
@@ -41858,7 +41858,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   15, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41895,7 +41895,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   16, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41932,7 +41932,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   17, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41969,7 +41969,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   18, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -42006,7 +42006,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   19, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -42043,7 +42043,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   20, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -42081,7 +42081,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   21, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -42118,7 +42118,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   22, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -42155,7 +42155,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   23, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -42192,7 +42192,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   24, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -42229,7 +42229,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   25, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.825     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.826     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -42273,7 +42273,7 @@ Mean C-C su =   0.0000
 
  Results of the peak search and contents of the new list  10
 
- Map scale factor =    326.825     Minimum peak height =       50.0     Maximum number of peaks allowed =    21
+ Map scale factor =    326.826     Minimum peak height =       50.0     Maximum number of peaks allowed =    21
 
  Type   Serial    X         Y         Z           Height
 

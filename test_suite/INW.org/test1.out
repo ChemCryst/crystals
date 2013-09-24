@@ -2381,7 +2381,7 @@ LS-scale=  1.664   Wilson Scale=  0.000
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
  S/ESD     1           1             0.069      0.4E+00    0.176E-01          3.94                          SCALE   
-Resetting shift for Extinction  Shift=     856.40  Esd=     102.48  New shift=     131.01                                                                                                                                                                       
+Resetting shift for Extinction  Shift=     856.39  Esd=     102.48  New shift=     131.01                                                                                                                                                                       
  LARGE     2           2           131.009      0.1E+01    0.102E+03          8.36                          EXTPARAM
  S/ESD    15          15            0.0052      0.2E+00    0.390E-02          1.35        O      3 U[11]   
  S/ESD    16          16            0.0028     -0.4E+00    0.242E-02          1.15        O      3 U[22]   
@@ -8897,7 +8897,7 @@ All cycle   Rw                    0.0            35.           0.10E+03
 All cycle   shift/esd            0.30E-01       0.56E-01       0.10E+05
 All cycle   Min function          0.0           0.77E+04       0.10E+16
 Inter cycle R-factor             -5.0           0.19           0.10E+03
-Inter cycle Rw                   -5.0           0.12           0.10E+03
+Inter cycle Rw                   -5.0           0.11           0.10E+03
 Inter cycle shift/esd            -10.           0.33           0.10E+05
 Inter cycle Min function          0.0            51.           0.10E+16
 
@@ -9352,7 +9352,7 @@ LS-scale=  1.418   Wilson Scale=  0.000
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
  LARGE     1           1             0.562      0.0E+00    0.455E-01         12.34                          SCALE   
- LARGE     2           2           563.376      0.0E+00    0.285E+02         19.74                          EXTPARAM
+ LARGE     2           2           563.374      0.0E+00    0.285E+02         19.74                          EXTPARAM
  S/ESD     4           4            0.0114      0.0E+00    0.445E-02          2.57        C      1 U[22]   
  S/ESD     5           5            0.0060      0.0E+00    0.448E-02          1.33        C      1 U[33]   
  S/ESD     9           9            0.0073      0.0E+00    0.472E-02          1.55        C      2 U[11]   
@@ -9432,7 +9432,7 @@ All cycle   Min function          0.0           0.77E+04       0.10E+16
  RMS sh/esd    16.46     0.00     0.00     0.00     0.00     0.00     3.35     1.88     2.24     1.48     1.09     0.96
 
 
- Maximum      563.38   0.0000   0.0000   0.0000   0.0000   0.0000   0.0334   0.0143   0.0173   0.0158   0.0107   0.0113
+ Maximum      563.37   0.0000   0.0000   0.0000   0.0000   0.0000   0.0334   0.0143   0.0173   0.0158   0.0107   0.0113
                                          0.0000   0.0000   0.0000
 
  Reversals     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00
@@ -13226,7 +13226,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-      7567.          7483.            777.                                   On scale of /FC/
+      7566.          7483.            777.                                   On scale of /FC/
 
      12019.         11888.           1234.               0.4613E+04          On scale of /FO/
 
