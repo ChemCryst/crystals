@@ -10,7 +10,7 @@
 MODIFY EXTINCTION=YES ANOM=NO
 MINIMISE F-SQ=NO
 END
-\USE shapering.ref
+\USE sphere.ref
 
 #                                         NOFSQ, ANOM
 \use sphere.in
@@ -18,7 +18,7 @@ END
 MODIFY EXTINCTION=YES ANOM=YES
 MINIMISE F-SQ=NO
 END
-\USE shapering.ref
+\USE sphere.ref
 
 #                                         FSQ, NOANOM
 \use sphere.in
@@ -26,7 +26,7 @@ END
 MODIFY EXTINCTION=YES ANOM=NO
 MINIMISE F-SQ=YES
 END
-\USE shapering.ref
+\USE sphere.ref
 
 #                                         FSQ, ANOM
 \use sphere.in
@@ -34,5 +34,5 @@ END
 MODIFY EXTINCTION=YES ANOM=YES
 MINIMISE F-SQ=YES
 END
-\USE shapering.ref
+\USE sphere.ref
 \FINI
