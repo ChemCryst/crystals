@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.86  2013/09/24 08:52:29  rich
+C Change test for unaccumulated matrix elements
+C Change syntax of #if - possible intel parse error.
+C
 C Revision 1.85  2013/09/24 08:38:58  rich
 C The digital compiler can't handle big F90 allocation of memory (gives a stack overflow). Reduced size of SFLS accumulation buffer for this platform.
 C
@@ -1757,17 +1761,14 @@ C--CHECK IF A PRINT IS REQUIRED
 
       NO=JO
       NP=JP
-! Stack is not so big with Digital compiler...
-#if defined (_GID_) || defined (_DVF_) || defined (_WXS_)  
-      allocate(designmatrix(JP-JO+1,20000/(JP-JO+1)))
-#else
-      allocate(designmatrix(JP-JO+1,20000000/(JP-JO+1))) 
-#endif
       allocate(normalmatrix(JP-JO+1,JP-JO+1))
       !allocate(ref(JP-JO+1,JP-JO+1))
       normalmatrix=0.0
       !ref=0.0
       designindex=0
+      ! size of the design matrix chunk to be tuned (PP)
+      allocate(designmatrix(JP-JO+1,20000000/(JP-JO+1)))
+      designmatrix=0.0
 
       DO WHILE (.TRUE.)  ! START OF THE LOOP OVER REFLECTIONS
 
@@ -2257,6 +2258,7 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
      2                    JP-JO+1,1.0,normalmatrix,JP-JO+1)
                       ! reset index for the chunk array
                       designindex=1
+                      designmatrix=0.0
                   end if
                   designmatrix(:,designindex) = STORE(JO:JP)
                   
@@ -2330,26 +2332,16 @@ C----    H,K,L,SNTHL,LEV,
           IF(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
             IF (ISTORE(M33CD+12).EQ.0) THEN    ! Just a normal accumulation.
               if (ISTORE(M33CD+13).NE.0) THEN
-      ! process the remaining chunk of design matrix
+                 ! process the remaining chunk of design matrix
                  if(designindex>0) then
-          ! Accumulate the normal matrix
-c            write(123,*) designindex, jp-jo+1
+                   ! Accumulate the normal matrix
                    call SSYRK('L','N',JP-JO+1,designindex,1.0,
-     1              designmatrix(:,1:designindex),
+     1              designmatrix,
      2             JP-JO+1,1.0,normalmatrix,JP-JO+1)
                  end if
       
-      !sum1=0.0
-      !do i=1,JP-JO+1
-      !      j = ((i-1)*(2*(JP-JO+1)-i+2))/2
-      !      k = j + JP-JO+1 - i
-      !      sum1=sum1+sum(STR11(L11+j:L11+k)-normalmatrix(i:JP-JO+1,i))
-      !end do
-      !print *, "diff between Pascal and crystals ", sum1
-      !print *, ""
  
-      ! Pack normal matrix back into original crystals storage
-      
+                 ! Pack normal matrix back into original crystals storage     
                  IBL = 1                  ! Parameter # at start of current block
                  IBS = L11                ! Packed storage address.
 
