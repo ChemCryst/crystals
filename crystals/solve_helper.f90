@@ -159,64 +159,80 @@ deallocate(preconditioner)
 
 end subroutine
 
+subroutine cholesky_inversion(nmatrix, nmsize)
+implicit none
+!> On input symmetric real matrix stored in packed format (lower triangle)
+!! aij is stored in AP( i+(2n-j)(j-1)/2) for j <= i.
+!! On output the inverse of the matrix is return
+real, dimension(nmsize*(nmsize+1)/2), intent(inout) :: nmatrix
+!> Leading dimension of the matrix nmatrix
+integer, intent(in) :: nmsize
+
+real, dimension(:), allocatable :: preconditioner
+integer i, j, k, info
+real, dimension(:,:), allocatable :: unpacked
+
+!integer :: starttime
+!integer, dimension(8) :: measuredtime
+
+! preconditioning using diagonal terms
+! Allocate diagonal vector
+allocate(preconditioner(nmsize))
+do i=1,nmsize
+    j = ((i-1)*(2*(nmsize)-i+2))/2
+    if(nmatrix(1+j)/=0.0) then
+        preconditioner(i)=nmatrix(1+j)
+    else
+        preconditioner(i)=1.0
+    end if
+end do      
+preconditioner = 1.0/sqrt(preconditioner) 
+
+! Applying C N C
+! N: normal matrix
+! C: diagonal matrix with elements from the N diagonal
+do i=1,nmsize
+    j = ((i-1)*(2*(nmsize)-i+2))/2
+    k = j + nmsize - i
+    nmatrix(1+j:1+k)=preconditioner(i)*preconditioner(i:nmsize)*nmatrix(1+j:1+k)
+end do              
+
+! unpacking normal matrix
+! not necessary but unpacked data operations are better
+! optimised in lapack
+! unpacking + invert + packing is faster
+allocate(unpacked(nmsize, nmsize))
+do i=1, nmsize
+    j = ((i-1)*(2*(nmsize)-i+2))/2
+    k = j + nmsize - i
+    unpacked(i:nmsize, i)=nmatrix(1+j:1+k)
+    unpacked(i, i:nmsize)=nmatrix(1+j:1+k)
+end do
+
+!call date_and_time(VALUES=measuredtime)
+!starttime=((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)
+call SPOTRF( 'L', nmsize, unpacked, nmsize, INFO )
+!call date_and_time(VALUES=measuredtime)
+!print *, 'PP* ****** U factor ok? ', info, &
+!&       ((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)-starttime, 'ms'
+
+!call date_and_time(VALUES=measuredtime)
+!starttime=((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)
+call SPOTRI( 'L', nmsize, unpacked, nmsize, INFO )
+!call date_and_time(VALUES=measuredtime)
+!print *, 'PP* ***** single Inverse ok? ', info  , &
+!&       ((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)-starttime, 'ms'
+
+! Pack normal matrix back into original crystals storage
+! plus preconditioning
+do i=1,nmsize
+    j = ((i-1)*(2*nmsize-i+2))/2
+    k = j + nmsize - i
+    nmatrix(1+j:1+k)=preconditioner(i)*preconditioner(i:nmsize)*unpacked(i:nmsize,i)
+end do    
+            
+deallocate(preconditioner)
+
+end subroutine
 
 end module
-
-
-
-
-
-         
-! Moon rose pseudo inversion based on SVD decomposition
-! unused code
-!               allocate(input(JY,JY))
-!              do i=1,JY
-!                    j = ((i-1)*(2*JY-i+2))/2
-!                    k = j + JY - i
-!                    input(i:JY,i)=STR11(L11C+j:L11C+k)
-!                    input(i,i:JY)=STR11(L11C+j:L11C+k)
-!              end do
-      
-!               allocate(svdS(JY))
-!               allocate(svdU(JY, JY))
-!               allocate(svdVT(JY, JY))
-!               allocate(work(100000))
-!               call SGESVD( 'A', 'A', JY, JY, input, JY, 
-!     1             svdS, svdU, JY, svdVT, JY,
-!     2             WORK, 100000, INFO )
-!               deallocate(work)
-!               print *, 'SVD ', info
-      
-!               ! singular values cutoff
-!               rcutoff = max(rcond, epsilon(1.0))*svdS(1)
-!               print *, 'cut off', rcutoff, 'max singular', svdS(1)
-!               print *, 'smallest singular values', svdS(JY:JY-3:-1)
-                     
-!               input=0.0
-!               do i=1,JY
-!                   if(svdS(i)>rcutoff) then
-!                       input(i,i)=1.0/svdS(i)
-!                   else
-!                       print *, 'Value', svdS(i), 'removed'
-!                       do j=i+1,JY
-!                           print *, 'Value', svdS(j), 'removed'
-!                       end do
-!                       exit
-!                   end if
-!               end do
-!               print *, 'new condition number ', svdS(1)/svdS(i-1)
-!               allocate(moonrose(JY,JY))
-!               moonrose = matmul(transpose(svdVT), matmul(input, 
-!     1              transpose(svdU)))
-
-!c               ! Pack normal matrix back into original crystals storage
-!c               do i=1,JY
-!c                    j = ((i-1)*(2*JY-i+2))/2
-!c                    k = j + JY - i
-!c                    STR11(L11C+j:L11C+k)=moonrose(i:JY,i)
-!c               end do             
-!c               deallocate(moonrose)
-!c               deallocate(svdS)
-!c               deallocate(svdU)
-!c               deallocate(svdVT)
-!c               deallocate(input)
