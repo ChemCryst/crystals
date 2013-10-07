@@ -28,6 +28,8 @@ logical truncated
 integer :: starttime
 integer, dimension(8) :: measuredtime
 integer i, j, k, info
+real, dimension(1) :: lwork
+integer, dimension(1) :: liwork
 
 ! preconditioning using diagonal terms
 ! Allocate diagonal vector
@@ -51,31 +53,34 @@ do i=1,nmsize
     nmatrix(1+j:1+k)=preconditioner(i)*preconditioner(i:nmsize)*nmatrix(1+j:1+k)
 end do              
        
+! unpacking normal matrix
+! not necessary but unpacked data operations are better
+! optimised in lapack
+! unpacking + invert + packing is faster
+allocate(eigvectors(nmsize, nmsize))
+do i=1, nmsize
+    j = ((i-1)*(2*(nmsize)-i+2))/2
+    k = j + nmsize - i
+    eigvectors(i:nmsize, i)=nmatrix(1+j:1+k)
+    eigvectors(i, i:nmsize)=nmatrix(1+j:1+k)
+end do
 
 ! eigen value filtering
 allocate(eigvalues(nmsize))
-allocate(eigvectors(nmsize, nmsize))
-allocate(work(1 + 6*nmsize + nmsize**2))
-allocate(iwork(3 + 5*nmsize))
-call date_and_time(VALUES=measuredtime)
-starttime=((measuredtime(5)*3600+measuredtime(6)*60)+ &
-    measuredtime(7))+measuredtime(8)/1000.0
-!print *, 'PP* start eigen decomposition'
-!call flush
-call SSPEVD( 'V', 'L', nmsize, &
-!    nmatrix(1:1+nmsize*(nmsize+1)/2-1), &
-    nmatrix, &
-    eigvalues, eigvectors, nmsize, WORK, 1+6*nmsize+nmsize**2, &
-    IWORK, 3+5*nmsize, INFO )  
+!call date_and_time(VALUES=measuredtime)
+!starttime=((measuredtime(5)*3600+measuredtime(6)*60)+ &
+!    measuredtime(7))+measuredtime(8)/1000.0
+! query buffer size
+call ssyevd ('V', 'L', nmsize, eigvectors, nmsize, eigvalues, &
+    lwork, -1, liwork, -1, info)
+allocate(work(nint(lwork(1))))
+allocate(iwork(liwork(1)))
 
-
-!               call SSPEV( 'V', 'L', JY,
-!                  STR11(L11C:L11C+JY*(JY+1)/2-1),
-!                  svdS, svdVT, JY, WORK(1:3*JY),
-!                  INFO )
+call ssyevd ('V', 'L', nmsize, eigvectors, nmsize, eigvalues, &
+    work, nint(lwork(1)), iwork, liwork(1), info)
 
 !print *, 'PP* eigen value info (SSPEVD)', info
-call date_and_time(VALUES=measuredtime)
+!call date_and_time(VALUES=measuredtime)
 !print *, 'PP* eigen decomp done in (s): ', &
 !    ((measuredtime(5)*3600+measuredtime(6)*60)+ &
 !    measuredtime(7))+measuredtime(8)/1000.0-starttime

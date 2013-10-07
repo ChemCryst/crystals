@@ -28024,3 +28024,1936 @@ c
       RETURN
       END
 
+*> \brief <b> SSYEVD computes the eigenvalues and, optionally, the left and/or right eigenvectors for SY matrices</b>
+*
+*  =========== DOCUMENTATION ===========
+*
+* Online html documentation available at 
+*            http://www.netlib.org/lapack/explore-html/ 
+*
+*> \htmlonly
+*> Download SSYEVD + dependencies 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssyevd.f"> 
+*> [TGZ]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssyevd.f"> 
+*> [ZIP]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssyevd.f"> 
+*> [TXT]</a>
+*> \endhtmlonly 
+*
+*  Definition:
+*  ===========
+*
+*       SUBROUTINE SSYEVD( JOBZ, UPLO, N, A, LDA, W, WORK, LWORK, IWORK,
+*                          LIWORK, INFO )
+* 
+*       .. Scalar Arguments ..
+*       CHARACTER          JOBZ, UPLO
+*       INTEGER            INFO, LDA, LIWORK, LWORK, N
+*       ..
+*       .. Array Arguments ..
+*       INTEGER            IWORK( * )
+*       REAL               A( LDA, * ), W( * ), WORK( * )
+*       ..
+*  
+*
+*> \par Purpose:
+*  =============
+*>
+*> \verbatim
+*>
+*> SSYEVD computes all eigenvalues and, optionally, eigenvectors of a
+*> real symmetric matrix A. If eigenvectors are desired, it uses a
+*> divide and conquer algorithm.
+*>
+*> The divide and conquer algorithm makes very mild assumptions about
+*> floating point arithmetic. It will work on machines with a guard
+*> digit in add/subtract, or on those binary machines without guard
+*> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
+*> Cray-2. It could conceivably fail on hexadecimal or decimal machines
+*> without guard digits, but we know of none.
+*>
+*> Because of large use of BLAS of level 3, SSYEVD needs N**2 more
+*> workspace than SSYEVX.
+*> \endverbatim
+*
+*  Arguments:
+*  ==========
+*
+*> \param[in] JOBZ
+*> \verbatim
+*>          JOBZ is CHARACTER*1
+*>          = 'N':  Compute eigenvalues only;
+*>          = 'V':  Compute eigenvalues and eigenvectors.
+*> \endverbatim
+*>
+*> \param[in] UPLO
+*> \verbatim
+*>          UPLO is CHARACTER*1
+*>          = 'U':  Upper triangle of A is stored;
+*>          = 'L':  Lower triangle of A is stored.
+*> \endverbatim
+*>
+*> \param[in] N
+*> \verbatim
+*>          N is INTEGER
+*>          The order of the matrix A.  N >= 0.
+*> \endverbatim
+*>
+*> \param[in,out] A
+*> \verbatim
+*>          A is REAL array, dimension (LDA, N)
+*>          On entry, the symmetric matrix A.  If UPLO = 'U', the
+*>          leading N-by-N upper triangular part of A contains the
+*>          upper triangular part of the matrix A.  If UPLO = 'L',
+*>          the leading N-by-N lower triangular part of A contains
+*>          the lower triangular part of the matrix A.
+*>          On exit, if JOBZ = 'V', then if INFO = 0, A contains the
+*>          orthonormal eigenvectors of the matrix A.
+*>          If JOBZ = 'N', then on exit the lower triangle (if UPLO='L')
+*>          or the upper triangle (if UPLO='U') of A, including the
+*>          diagonal, is destroyed.
+*> \endverbatim
+*>
+*> \param[in] LDA
+*> \verbatim
+*>          LDA is INTEGER
+*>          The leading dimension of the array A.  LDA >= max(1,N).
+*> \endverbatim
+*>
+*> \param[out] W
+*> \verbatim
+*>          W is REAL array, dimension (N)
+*>          If INFO = 0, the eigenvalues in ascending order.
+*> \endverbatim
+*>
+*> \param[out] WORK
+*> \verbatim
+*>          WORK is REAL array,
+*>                                         dimension (LWORK)
+*>          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
+*> \endverbatim
+*>
+*> \param[in] LWORK
+*> \verbatim
+*>          LWORK is INTEGER
+*>          The dimension of the array WORK.
+*>          If N <= 1,               LWORK must be at least 1.
+*>          If JOBZ = 'N' and N > 1, LWORK must be at least 2*N+1.
+*>          If JOBZ = 'V' and N > 1, LWORK must be at least 
+*>                                                1 + 6*N + 2*N**2.
+*>
+*>          If LWORK = -1, then a workspace query is assumed; the routine
+*>          only calculates the optimal sizes of the WORK and IWORK
+*>          arrays, returns these values as the first entries of the WORK
+*>          and IWORK arrays, and no error message related to LWORK or
+*>          LIWORK is issued by XERBLA.
+*> \endverbatim
+*>
+*> \param[out] IWORK
+*> \verbatim
+*>          IWORK is INTEGER array, dimension (MAX(1,LIWORK))
+*>          On exit, if INFO = 0, IWORK(1) returns the optimal LIWORK.
+*> \endverbatim
+*>
+*> \param[in] LIWORK
+*> \verbatim
+*>          LIWORK is INTEGER
+*>          The dimension of the array IWORK.
+*>          If N <= 1,                LIWORK must be at least 1.
+*>          If JOBZ  = 'N' and N > 1, LIWORK must be at least 1.
+*>          If JOBZ  = 'V' and N > 1, LIWORK must be at least 3 + 5*N.
+*>
+*>          If LIWORK = -1, then a workspace query is assumed; the
+*>          routine only calculates the optimal sizes of the WORK and
+*>          IWORK arrays, returns these values as the first entries of
+*>          the WORK and IWORK arrays, and no error message related to
+*>          LWORK or LIWORK is issued by XERBLA.
+*> \endverbatim
+*>
+*> \param[out] INFO
+*> \verbatim
+*>          INFO is INTEGER
+*>          = 0:  successful exit
+*>          < 0:  if INFO = -i, the i-th argument had an illegal value
+*>          > 0:  if INFO = i and JOBZ = 'N', then the algorithm failed
+*>                to converge; i off-diagonal elements of an intermediate
+*>                tridiagonal form did not converge to zero;
+*>                if INFO = i and JOBZ = 'V', then the algorithm failed
+*>                to compute an eigenvalue while working on the submatrix
+*>                lying in rows and columns INFO/(N+1) through
+*>                mod(INFO,N+1).
+*> \endverbatim
+*
+*  Authors:
+*  ========
+*
+*> \author Univ. of Tennessee 
+*> \author Univ. of California Berkeley 
+*> \author Univ. of Colorado Denver 
+*> \author NAG Ltd. 
+*
+*> \date November 2011
+*
+*> \ingroup realSYeigen
+*
+*> \par Contributors:
+*  ==================
+*>
+*> Jeff Rutter, Computer Science Division, University of California
+*> at Berkeley, USA \n
+*>  Modified by Francoise Tisseur, University of Tennessee \n
+*>  Modified description of INFO. Sven, 16 Feb 05. \n
+*>
+*  =====================================================================
+      SUBROUTINE SSYEVD( JOBZ, UPLO, N, A, LDA, W, WORK, LWORK, IWORK,
+     $                   LIWORK, INFO )
+*
+*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK is a software package provided by Univ. of Tennessee,    --
+*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+*     November 2011
+*
+*     .. Scalar Arguments ..
+      CHARACTER          JOBZ, UPLO
+      INTEGER            INFO, LDA, LIWORK, LWORK, N
+*     ..
+*     .. Array Arguments ..
+      INTEGER            IWORK( * )
+      REAL               A( LDA, * ), W( * ), WORK( * )
+*     ..
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL               ZERO, ONE
+      PARAMETER          ( ZERO = 0.0E+0, ONE = 1.0E+0 )
+*     ..
+*     .. Local Scalars ..
+*
+      LOGICAL            LOWER, LQUERY, WANTZ
+      INTEGER            IINFO, INDE, INDTAU, INDWK2, INDWRK, ISCALE,
+     $                   LIOPT, LIWMIN, LLWORK, LLWRK2, LOPT, LWMIN
+      REAL               ANRM, BIGNUM, EPS, RMAX, RMIN, SAFMIN, SIGMA,
+     $                   SMLNUM
+*     ..
+*     .. External Functions ..
+      LOGICAL            LSAME
+      INTEGER            ILAENV
+      REAL               SLAMCH, SLANSY
+      EXTERNAL           ILAENV, LSAME, SLAMCH, SLANSY
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SLACPY, SLASCL, SORMTR, SSCAL, SSTEDC, SSTERF,
+     $                   SSYTRD, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          MAX, SQRT
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input parameters.
+*
+      WANTZ = LSAME( JOBZ, 'V' )
+      LOWER = LSAME( UPLO, 'L' )
+      LQUERY = ( LWORK.EQ.-1 .OR. LIWORK.EQ.-1 )
+*
+      INFO = 0
+      IF( .NOT.( WANTZ .OR. LSAME( JOBZ, 'N' ) ) ) THEN
+         INFO = -1
+      ELSE IF( .NOT.( LOWER .OR. LSAME( UPLO, 'U' ) ) ) THEN
+         INFO = -2
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -3
+      ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
+         INFO = -5
+      END IF
+*
+      IF( INFO.EQ.0 ) THEN
+         IF( N.LE.1 ) THEN
+            LIWMIN = 1
+            LWMIN = 1
+            LOPT = LWMIN
+            LIOPT = LIWMIN
+         ELSE
+            IF( WANTZ ) THEN
+               LIWMIN = 3 + 5*N
+               LWMIN = 1 + 6*N + 2*N**2
+            ELSE
+               LIWMIN = 1
+               LWMIN = 2*N + 1
+            END IF
+            LOPT = MAX( LWMIN, 2*N +
+     $                  ILAENV( 1, 'SSYTRD', UPLO, N, -1, -1, -1 ) )
+            LIOPT = LIWMIN
+         END IF
+         WORK( 1 ) = LOPT
+         IWORK( 1 ) = LIOPT
+*
+         IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
+            INFO = -8
+         ELSE IF( LIWORK.LT.LIWMIN .AND. .NOT.LQUERY ) THEN
+            INFO = -10
+         END IF
+      END IF
+*
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SSYEVD', -INFO )
+         RETURN
+      ELSE IF( LQUERY ) THEN
+         RETURN 
+      END IF
+*
+*     Quick return if possible
+*
+      IF( N.EQ.0 )
+     $   RETURN
+*
+      IF( N.EQ.1 ) THEN
+         W( 1 ) = A( 1, 1 )
+         IF( WANTZ )
+     $      A( 1, 1 ) = ONE
+         RETURN 
+      END IF
+*
+*     Get machine constants.
+*
+      SAFMIN = SLAMCH( 'Safe minimum' )
+      EPS = SLAMCH( 'Precision' )
+      SMLNUM = SAFMIN / EPS
+      BIGNUM = ONE / SMLNUM
+      RMIN = SQRT( SMLNUM )
+      RMAX = SQRT( BIGNUM )
+*
+*     Scale matrix to allowable range, if necessary.
+*
+      ANRM = SLANSY( 'M', UPLO, N, A, LDA, WORK )
+      ISCALE = 0
+      IF( ANRM.GT.ZERO .AND. ANRM.LT.RMIN ) THEN
+         ISCALE = 1
+         SIGMA = RMIN / ANRM
+      ELSE IF( ANRM.GT.RMAX ) THEN
+         ISCALE = 1
+         SIGMA = RMAX / ANRM
+      END IF
+      IF( ISCALE.EQ.1 )
+     $   CALL SLASCL( UPLO, 0, 0, ONE, SIGMA, N, N, A, LDA, INFO )
+*
+*     Call SSYTRD to reduce symmetric matrix to tridiagonal form.
+*
+      INDE = 1
+      INDTAU = INDE + N
+      INDWRK = INDTAU + N
+      LLWORK = LWORK - INDWRK + 1
+      INDWK2 = INDWRK + N*N
+      LLWRK2 = LWORK - INDWK2 + 1
+*
+      CALL SSYTRD( UPLO, N, A, LDA, W, WORK( INDE ), WORK( INDTAU ),
+     $             WORK( INDWRK ), LLWORK, IINFO )
+*
+*     For eigenvalues only, call SSTERF.  For eigenvectors, first call
+*     SSTEDC to generate the eigenvector matrix, WORK(INDWRK), of the
+*     tridiagonal matrix, then call SORMTR to multiply it by the
+*     Householder transformations stored in A.
+*
+      IF( .NOT.WANTZ ) THEN
+         CALL SSTERF( N, W, WORK( INDE ), INFO )
+      ELSE
+         CALL SSTEDC( 'I', N, W, WORK( INDE ), WORK( INDWRK ), N,
+     $                WORK( INDWK2 ), LLWRK2, IWORK, LIWORK, INFO )
+         CALL SORMTR( 'L', UPLO, 'N', N, N, A, LDA, WORK( INDTAU ),
+     $                WORK( INDWRK ), N, WORK( INDWK2 ), LLWRK2, IINFO )
+         CALL SLACPY( 'A', N, N, WORK( INDWRK ), N, A, LDA )
+      END IF
+*
+*     If matrix was scaled, then rescale eigenvalues appropriately.
+*
+      IF( ISCALE.EQ.1 )
+     $   CALL SSCAL( N, ONE / SIGMA, W, 1 )
+*
+      WORK( 1 ) = LOPT
+      IWORK( 1 ) = LIOPT
+*
+      RETURN
+*
+*     End of SSYEVD
+*
+      END
+
+*> \brief \b SORMTR
+*
+*  =========== DOCUMENTATION ===========
+*
+* Online html documentation available at 
+*            http://www.netlib.org/lapack/explore-html/ 
+*
+*> \htmlonly
+*> Download SORMTR + dependencies 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sormtr.f"> 
+*> [TGZ]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sormtr.f"> 
+*> [ZIP]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sormtr.f"> 
+*> [TXT]</a>
+*> \endhtmlonly 
+*
+*  Definition:
+*  ===========
+*
+*       SUBROUTINE SORMTR( SIDE, UPLO, TRANS, M, N, A, LDA, TAU, C, LDC,
+*                          WORK, LWORK, INFO )
+* 
+*       .. Scalar Arguments ..
+*       CHARACTER          SIDE, TRANS, UPLO
+*       INTEGER            INFO, LDA, LDC, LWORK, M, N
+*       ..
+*       .. Array Arguments ..
+*       REAL               A( LDA, * ), C( LDC, * ), TAU( * ),
+*      $                   WORK( * )
+*       ..
+*  
+*
+*> \par Purpose:
+*  =============
+*>
+*> \verbatim
+*>
+*> SORMTR overwrites the general real M-by-N matrix C with
+*>
+*>                 SIDE = 'L'     SIDE = 'R'
+*> TRANS = 'N':      Q * C          C * Q
+*> TRANS = 'T':      Q**T * C       C * Q**T
+*>
+*> where Q is a real orthogonal matrix of order nq, with nq = m if
+*> SIDE = 'L' and nq = n if SIDE = 'R'. Q is defined as the product of
+*> nq-1 elementary reflectors, as returned by SSYTRD:
+*>
+*> if UPLO = 'U', Q = H(nq-1) . . . H(2) H(1);
+*>
+*> if UPLO = 'L', Q = H(1) H(2) . . . H(nq-1).
+*> \endverbatim
+*
+*  Arguments:
+*  ==========
+*
+*> \param[in] SIDE
+*> \verbatim
+*>          SIDE is CHARACTER*1
+*>          = 'L': apply Q or Q**T from the Left;
+*>          = 'R': apply Q or Q**T from the Right.
+*> \endverbatim
+*>
+*> \param[in] UPLO
+*> \verbatim
+*>          UPLO is CHARACTER*1
+*>          = 'U': Upper triangle of A contains elementary reflectors
+*>                 from SSYTRD;
+*>          = 'L': Lower triangle of A contains elementary reflectors
+*>                 from SSYTRD.
+*> \endverbatim
+*>
+*> \param[in] TRANS
+*> \verbatim
+*>          TRANS is CHARACTER*1
+*>          = 'N':  No transpose, apply Q;
+*>          = 'T':  Transpose, apply Q**T.
+*> \endverbatim
+*>
+*> \param[in] M
+*> \verbatim
+*>          M is INTEGER
+*>          The number of rows of the matrix C. M >= 0.
+*> \endverbatim
+*>
+*> \param[in] N
+*> \verbatim
+*>          N is INTEGER
+*>          The number of columns of the matrix C. N >= 0.
+*> \endverbatim
+*>
+*> \param[in] A
+*> \verbatim
+*>          A is REAL array, dimension
+*>                               (LDA,M) if SIDE = 'L'
+*>                               (LDA,N) if SIDE = 'R'
+*>          The vectors which define the elementary reflectors, as
+*>          returned by SSYTRD.
+*> \endverbatim
+*>
+*> \param[in] LDA
+*> \verbatim
+*>          LDA is INTEGER
+*>          The leading dimension of the array A.
+*>          LDA >= max(1,M) if SIDE = 'L'; LDA >= max(1,N) if SIDE = 'R'.
+*> \endverbatim
+*>
+*> \param[in] TAU
+*> \verbatim
+*>          TAU is REAL array, dimension
+*>                               (M-1) if SIDE = 'L'
+*>                               (N-1) if SIDE = 'R'
+*>          TAU(i) must contain the scalar factor of the elementary
+*>          reflector H(i), as returned by SSYTRD.
+*> \endverbatim
+*>
+*> \param[in,out] C
+*> \verbatim
+*>          C is REAL array, dimension (LDC,N)
+*>          On entry, the M-by-N matrix C.
+*>          On exit, C is overwritten by Q*C or Q**T*C or C*Q**T or C*Q.
+*> \endverbatim
+*>
+*> \param[in] LDC
+*> \verbatim
+*>          LDC is INTEGER
+*>          The leading dimension of the array C. LDC >= max(1,M).
+*> \endverbatim
+*>
+*> \param[out] WORK
+*> \verbatim
+*>          WORK is REAL array, dimension (MAX(1,LWORK))
+*>          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
+*> \endverbatim
+*>
+*> \param[in] LWORK
+*> \verbatim
+*>          LWORK is INTEGER
+*>          The dimension of the array WORK.
+*>          If SIDE = 'L', LWORK >= max(1,N);
+*>          if SIDE = 'R', LWORK >= max(1,M).
+*>          For optimum performance LWORK >= N*NB if SIDE = 'L', and
+*>          LWORK >= M*NB if SIDE = 'R', where NB is the optimal
+*>          blocksize.
+*>
+*>          If LWORK = -1, then a workspace query is assumed; the routine
+*>          only calculates the optimal size of the WORK array, returns
+*>          this value as the first entry of the WORK array, and no error
+*>          message related to LWORK is issued by XERBLA.
+*> \endverbatim
+*>
+*> \param[out] INFO
+*> \verbatim
+*>          INFO is INTEGER
+*>          = 0:  successful exit
+*>          < 0:  if INFO = -i, the i-th argument had an illegal value
+*> \endverbatim
+*
+*  Authors:
+*  ========
+*
+*> \author Univ. of Tennessee 
+*> \author Univ. of California Berkeley 
+*> \author Univ. of Colorado Denver 
+*> \author NAG Ltd. 
+*
+*> \date November 2011
+*
+*> \ingroup realOTHERcomputational
+*
+*  =====================================================================
+      SUBROUTINE SORMTR( SIDE, UPLO, TRANS, M, N, A, LDA, TAU, C, LDC,
+     $                   WORK, LWORK, INFO )
+*
+*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK is a software package provided by Univ. of Tennessee,    --
+*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+*     November 2011
+*
+*     .. Scalar Arguments ..
+      CHARACTER          SIDE, TRANS, UPLO
+      INTEGER            INFO, LDA, LDC, LWORK, M, N
+*     ..
+*     .. Array Arguments ..
+      REAL               A( LDA, * ), C( LDC, * ), TAU( * ),
+     $                   WORK( * )
+*     ..
+*
+*  =====================================================================
+*
+*     .. Local Scalars ..
+      LOGICAL            LEFT, LQUERY, UPPER
+      INTEGER            I1, I2, IINFO, LWKOPT, MI, NI, NB, NQ, NW
+*     ..
+*     .. External Functions ..
+      LOGICAL            LSAME
+      INTEGER            ILAENV
+      EXTERNAL           ILAENV, LSAME
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SORMQL, SORMQR, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          MAX
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input arguments
+*
+      INFO = 0
+      LEFT = LSAME( SIDE, 'L' )
+      UPPER = LSAME( UPLO, 'U' )
+      LQUERY = ( LWORK.EQ.-1 )
+*
+*     NQ is the order of Q and NW is the minimum dimension of WORK
+*
+      IF( LEFT ) THEN
+         NQ = M
+         NW = N
+      ELSE
+         NQ = N
+         NW = M
+      END IF
+      IF( .NOT.LEFT .AND. .NOT.LSAME( SIDE, 'R' ) ) THEN
+         INFO = -1
+      ELSE IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
+         INFO = -2
+      ELSE IF( .NOT.LSAME( TRANS, 'N' ) .AND. .NOT.LSAME( TRANS, 'T' ) )
+     $          THEN
+         INFO = -3
+      ELSE IF( M.LT.0 ) THEN
+         INFO = -4
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -5
+      ELSE IF( LDA.LT.MAX( 1, NQ ) ) THEN
+         INFO = -7
+      ELSE IF( LDC.LT.MAX( 1, M ) ) THEN
+         INFO = -10
+      ELSE IF( LWORK.LT.MAX( 1, NW ) .AND. .NOT.LQUERY ) THEN
+         INFO = -12
+      END IF
+*
+      IF( INFO.EQ.0 ) THEN
+         IF( UPPER ) THEN
+            IF( LEFT ) THEN
+               NB = ILAENV( 1, 'SORMQL', SIDE // TRANS, M-1, N, M-1,
+     $                      -1 )
+            ELSE
+               NB = ILAENV( 1, 'SORMQL', SIDE // TRANS, M, N-1, N-1,
+     $                      -1 )
+            END IF
+         ELSE
+            IF( LEFT ) THEN
+               NB = ILAENV( 1, 'SORMQR', SIDE // TRANS, M-1, N, M-1,
+     $                      -1 )
+            ELSE
+               NB = ILAENV( 1, 'SORMQR', SIDE // TRANS, M, N-1, N-1,
+     $                      -1 )
+            END IF
+         END IF
+         LWKOPT = MAX( 1, NW )*NB
+         WORK( 1 ) = LWKOPT
+      END IF
+*
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SORMTR', -INFO )
+         RETURN
+      ELSE IF( LQUERY ) THEN
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      IF( M.EQ.0 .OR. N.EQ.0 .OR. NQ.EQ.1 ) THEN
+         WORK( 1 ) = 1
+         RETURN
+      END IF
+*
+      IF( LEFT ) THEN
+         MI = M - 1
+         NI = N
+      ELSE
+         MI = M
+         NI = N - 1
+      END IF
+*
+      IF( UPPER ) THEN
+*
+*        Q was determined by a call to SSYTRD with UPLO = 'U'
+*
+         CALL SORMQL( SIDE, TRANS, MI, NI, NQ-1, A( 1, 2 ), LDA, TAU, C,
+     $                LDC, WORK, LWORK, IINFO )
+      ELSE
+*
+*        Q was determined by a call to SSYTRD with UPLO = 'L'
+*
+         IF( LEFT ) THEN
+            I1 = 2
+            I2 = 1
+         ELSE
+            I1 = 1
+            I2 = 2
+         END IF
+         CALL SORMQR( SIDE, TRANS, MI, NI, NQ-1, A( 2, 1 ), LDA, TAU,
+     $                C( I1, I2 ), LDC, WORK, LWORK, IINFO )
+      END IF
+      WORK( 1 ) = LWKOPT
+      RETURN
+*
+*     End of SORMTR
+*
+      END
+
+*> \brief \b SORMQL
+*
+*  =========== DOCUMENTATION ===========
+*
+* Online html documentation available at 
+*            http://www.netlib.org/lapack/explore-html/ 
+*
+*> \htmlonly
+*> Download SORMQL + dependencies 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sormql.f"> 
+*> [TGZ]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sormql.f"> 
+*> [ZIP]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sormql.f"> 
+*> [TXT]</a>
+*> \endhtmlonly 
+*
+*  Definition:
+*  ===========
+*
+*       SUBROUTINE SORMQL( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
+*                          WORK, LWORK, INFO )
+* 
+*       .. Scalar Arguments ..
+*       CHARACTER          SIDE, TRANS
+*       INTEGER            INFO, K, LDA, LDC, LWORK, M, N
+*       ..
+*       .. Array Arguments ..
+*       REAL               A( LDA, * ), C( LDC, * ), TAU( * ),
+*      $                   WORK( * )
+*       ..
+*  
+*
+*> \par Purpose:
+*  =============
+*>
+*> \verbatim
+*>
+*> SORMQL overwrites the general real M-by-N matrix C with
+*>
+*>                 SIDE = 'L'     SIDE = 'R'
+*> TRANS = 'N':      Q * C          C * Q
+*> TRANS = 'T':      Q**T * C       C * Q**T
+*>
+*> where Q is a real orthogonal matrix defined as the product of k
+*> elementary reflectors
+*>
+*>       Q = H(k) . . . H(2) H(1)
+*>
+*> as returned by SGEQLF. Q is of order M if SIDE = 'L' and of order N
+*> if SIDE = 'R'.
+*> \endverbatim
+*
+*  Arguments:
+*  ==========
+*
+*> \param[in] SIDE
+*> \verbatim
+*>          SIDE is CHARACTER*1
+*>          = 'L': apply Q or Q**T from the Left;
+*>          = 'R': apply Q or Q**T from the Right.
+*> \endverbatim
+*>
+*> \param[in] TRANS
+*> \verbatim
+*>          TRANS is CHARACTER*1
+*>          = 'N':  No transpose, apply Q;
+*>          = 'T':  Transpose, apply Q**T.
+*> \endverbatim
+*>
+*> \param[in] M
+*> \verbatim
+*>          M is INTEGER
+*>          The number of rows of the matrix C. M >= 0.
+*> \endverbatim
+*>
+*> \param[in] N
+*> \verbatim
+*>          N is INTEGER
+*>          The number of columns of the matrix C. N >= 0.
+*> \endverbatim
+*>
+*> \param[in] K
+*> \verbatim
+*>          K is INTEGER
+*>          The number of elementary reflectors whose product defines
+*>          the matrix Q.
+*>          If SIDE = 'L', M >= K >= 0;
+*>          if SIDE = 'R', N >= K >= 0.
+*> \endverbatim
+*>
+*> \param[in] A
+*> \verbatim
+*>          A is REAL array, dimension (LDA,K)
+*>          The i-th column must contain the vector which defines the
+*>          elementary reflector H(i), for i = 1,2,...,k, as returned by
+*>          SGEQLF in the last k columns of its array argument A.
+*> \endverbatim
+*>
+*> \param[in] LDA
+*> \verbatim
+*>          LDA is INTEGER
+*>          The leading dimension of the array A.
+*>          If SIDE = 'L', LDA >= max(1,M);
+*>          if SIDE = 'R', LDA >= max(1,N).
+*> \endverbatim
+*>
+*> \param[in] TAU
+*> \verbatim
+*>          TAU is REAL array, dimension (K)
+*>          TAU(i) must contain the scalar factor of the elementary
+*>          reflector H(i), as returned by SGEQLF.
+*> \endverbatim
+*>
+*> \param[in,out] C
+*> \verbatim
+*>          C is REAL array, dimension (LDC,N)
+*>          On entry, the M-by-N matrix C.
+*>          On exit, C is overwritten by Q*C or Q**T*C or C*Q**T or C*Q.
+*> \endverbatim
+*>
+*> \param[in] LDC
+*> \verbatim
+*>          LDC is INTEGER
+*>          The leading dimension of the array C. LDC >= max(1,M).
+*> \endverbatim
+*>
+*> \param[out] WORK
+*> \verbatim
+*>          WORK is REAL array, dimension (MAX(1,LWORK))
+*>          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
+*> \endverbatim
+*>
+*> \param[in] LWORK
+*> \verbatim
+*>          LWORK is INTEGER
+*>          The dimension of the array WORK.
+*>          If SIDE = 'L', LWORK >= max(1,N);
+*>          if SIDE = 'R', LWORK >= max(1,M).
+*>          For optimum performance LWORK >= N*NB if SIDE = 'L', and
+*>          LWORK >= M*NB if SIDE = 'R', where NB is the optimal
+*>          blocksize.
+*>
+*>          If LWORK = -1, then a workspace query is assumed; the routine
+*>          only calculates the optimal size of the WORK array, returns
+*>          this value as the first entry of the WORK array, and no error
+*>          message related to LWORK is issued by XERBLA.
+*> \endverbatim
+*>
+*> \param[out] INFO
+*> \verbatim
+*>          INFO is INTEGER
+*>          = 0:  successful exit
+*>          < 0:  if INFO = -i, the i-th argument had an illegal value
+*> \endverbatim
+*
+*  Authors:
+*  ========
+*
+*> \author Univ. of Tennessee 
+*> \author Univ. of California Berkeley 
+*> \author Univ. of Colorado Denver 
+*> \author NAG Ltd. 
+*
+*> \date November 2011
+*
+*> \ingroup realOTHERcomputational
+*
+*  =====================================================================
+      SUBROUTINE SORMQL( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
+     $                   WORK, LWORK, INFO )
+*
+*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK is a software package provided by Univ. of Tennessee,    --
+*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+*     November 2011
+*
+*     .. Scalar Arguments ..
+      CHARACTER          SIDE, TRANS
+      INTEGER            INFO, K, LDA, LDC, LWORK, M, N
+*     ..
+*     .. Array Arguments ..
+      REAL               A( LDA, * ), C( LDC, * ), TAU( * ),
+     $                   WORK( * )
+*     ..
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      INTEGER            NBMAX, LDT
+      PARAMETER          ( NBMAX = 64, LDT = NBMAX+1 )
+*     ..
+*     .. Local Scalars ..
+      LOGICAL            LEFT, LQUERY, NOTRAN
+      INTEGER            I, I1, I2, I3, IB, IINFO, IWS, LDWORK, LWKOPT,
+     $                   MI, NB, NBMIN, NI, NQ, NW
+*     ..
+*     .. Local Arrays ..
+      REAL               T( LDT, NBMAX )
+*     ..
+*     .. External Functions ..
+      LOGICAL            LSAME
+      INTEGER            ILAENV
+      EXTERNAL           LSAME, ILAENV
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SLARFB, SLARFT, SORM2L, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          MAX, MIN
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input arguments
+*
+      INFO = 0
+      LEFT = LSAME( SIDE, 'L' )
+      NOTRAN = LSAME( TRANS, 'N' )
+      LQUERY = ( LWORK.EQ.-1 )
+*
+*     NQ is the order of Q and NW is the minimum dimension of WORK
+*
+      IF( LEFT ) THEN
+         NQ = M
+         NW = MAX( 1, N )
+      ELSE
+         NQ = N
+         NW = MAX( 1, M )
+      END IF
+      IF( .NOT.LEFT .AND. .NOT.LSAME( SIDE, 'R' ) ) THEN
+         INFO = -1
+      ELSE IF( .NOT.NOTRAN .AND. .NOT.LSAME( TRANS, 'T' ) ) THEN
+         INFO = -2
+      ELSE IF( M.LT.0 ) THEN
+         INFO = -3
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -4
+      ELSE IF( K.LT.0 .OR. K.GT.NQ ) THEN
+         INFO = -5
+      ELSE IF( LDA.LT.MAX( 1, NQ ) ) THEN
+         INFO = -7
+      ELSE IF( LDC.LT.MAX( 1, M ) ) THEN
+         INFO = -10
+      END IF
+*
+      IF( INFO.EQ.0 ) THEN
+         IF( M.EQ.0 .OR. N.EQ.0 ) THEN
+            LWKOPT = 1
+         ELSE
+*
+*           Determine the block size.  NB may be at most NBMAX, where
+*           NBMAX is used to define the local array T.
+*
+*
+            NB = MIN( NBMAX, ILAENV( 1, 'SORMQL', SIDE // TRANS, M, N,
+     $                               K, -1 ) )
+            LWKOPT = NW*NB
+         END IF
+         WORK( 1 ) = LWKOPT
+*
+         IF( LWORK.LT.NW .AND. .NOT.LQUERY ) THEN
+            INFO = -12
+         END IF
+      END IF
+*
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SORMQL', -INFO )
+         RETURN
+      ELSE IF( LQUERY ) THEN
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      IF( M.EQ.0 .OR. N.EQ.0 ) THEN
+         RETURN
+      END IF
+*
+      NBMIN = 2
+      LDWORK = NW
+      IF( NB.GT.1 .AND. NB.LT.K ) THEN
+         IWS = NW*NB
+         IF( LWORK.LT.IWS ) THEN
+            NB = LWORK / LDWORK
+            NBMIN = MAX( 2, ILAENV( 2, 'SORMQL', SIDE // TRANS, M, N, K,
+     $              -1 ) )
+         END IF
+      ELSE
+         IWS = NW
+      END IF
+*
+      IF( NB.LT.NBMIN .OR. NB.GE.K ) THEN
+*
+*        Use unblocked code
+*
+         CALL SORM2L( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC, WORK,
+     $                IINFO )
+      ELSE
+*
+*        Use blocked code
+*
+         IF( ( LEFT .AND. NOTRAN ) .OR.
+     $       ( .NOT.LEFT .AND. .NOT.NOTRAN ) ) THEN
+            I1 = 1
+            I2 = K
+            I3 = NB
+         ELSE
+            I1 = ( ( K-1 ) / NB )*NB + 1
+            I2 = 1
+            I3 = -NB
+         END IF
+*
+         IF( LEFT ) THEN
+            NI = N
+         ELSE
+            MI = M
+         END IF
+*
+         DO 10 I = I1, I2, I3
+            IB = MIN( NB, K-I+1 )
+*
+*           Form the triangular factor of the block reflector
+*           H = H(i+ib-1) . . . H(i+1) H(i)
+*
+            CALL SLARFT( 'Backward', 'Columnwise', NQ-K+I+IB-1, IB,
+     $                   A( 1, I ), LDA, TAU( I ), T, LDT )
+            IF( LEFT ) THEN
+*
+*              H or H**T is applied to C(1:m-k+i+ib-1,1:n)
+*
+               MI = M - K + I + IB - 1
+            ELSE
+*
+*              H or H**T is applied to C(1:m,1:n-k+i+ib-1)
+*
+               NI = N - K + I + IB - 1
+            END IF
+*
+*           Apply H or H**T
+*
+            CALL SLARFB( SIDE, TRANS, 'Backward', 'Columnwise', MI, NI,
+     $                   IB, A( 1, I ), LDA, T, LDT, C, LDC, WORK,
+     $                   LDWORK )
+   10    CONTINUE
+      END IF
+      WORK( 1 ) = LWKOPT
+      RETURN
+*
+*     End of SORMQL
+*
+      END
+
+*> \brief \b SORMQR
+*
+*  =========== DOCUMENTATION ===========
+*
+* Online html documentation available at 
+*            http://www.netlib.org/lapack/explore-html/ 
+*
+*> \htmlonly
+*> Download SORMQR + dependencies 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sormqr.f"> 
+*> [TGZ]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sormqr.f"> 
+*> [ZIP]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sormqr.f"> 
+*> [TXT]</a>
+*> \endhtmlonly 
+*
+*  Definition:
+*  ===========
+*
+*       SUBROUTINE SORMQR( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
+*                          WORK, LWORK, INFO )
+* 
+*       .. Scalar Arguments ..
+*       CHARACTER          SIDE, TRANS
+*       INTEGER            INFO, K, LDA, LDC, LWORK, M, N
+*       ..
+*       .. Array Arguments ..
+*       REAL               A( LDA, * ), C( LDC, * ), TAU( * ),
+*      $                   WORK( * )
+*       ..
+*  
+*
+*> \par Purpose:
+*  =============
+*>
+*> \verbatim
+*>
+*> SORMQR overwrites the general real M-by-N matrix C with
+*>
+*>                 SIDE = 'L'     SIDE = 'R'
+*> TRANS = 'N':      Q * C          C * Q
+*> TRANS = 'T':      Q**T * C       C * Q**T
+*>
+*> where Q is a real orthogonal matrix defined as the product of k
+*> elementary reflectors
+*>
+*>       Q = H(1) H(2) . . . H(k)
+*>
+*> as returned by SGEQRF. Q is of order M if SIDE = 'L' and of order N
+*> if SIDE = 'R'.
+*> \endverbatim
+*
+*  Arguments:
+*  ==========
+*
+*> \param[in] SIDE
+*> \verbatim
+*>          SIDE is CHARACTER*1
+*>          = 'L': apply Q or Q**T from the Left;
+*>          = 'R': apply Q or Q**T from the Right.
+*> \endverbatim
+*>
+*> \param[in] TRANS
+*> \verbatim
+*>          TRANS is CHARACTER*1
+*>          = 'N':  No transpose, apply Q;
+*>          = 'T':  Transpose, apply Q**T.
+*> \endverbatim
+*>
+*> \param[in] M
+*> \verbatim
+*>          M is INTEGER
+*>          The number of rows of the matrix C. M >= 0.
+*> \endverbatim
+*>
+*> \param[in] N
+*> \verbatim
+*>          N is INTEGER
+*>          The number of columns of the matrix C. N >= 0.
+*> \endverbatim
+*>
+*> \param[in] K
+*> \verbatim
+*>          K is INTEGER
+*>          The number of elementary reflectors whose product defines
+*>          the matrix Q.
+*>          If SIDE = 'L', M >= K >= 0;
+*>          if SIDE = 'R', N >= K >= 0.
+*> \endverbatim
+*>
+*> \param[in] A
+*> \verbatim
+*>          A is REAL array, dimension (LDA,K)
+*>          The i-th column must contain the vector which defines the
+*>          elementary reflector H(i), for i = 1,2,...,k, as returned by
+*>          SGEQRF in the first k columns of its array argument A.
+*> \endverbatim
+*>
+*> \param[in] LDA
+*> \verbatim
+*>          LDA is INTEGER
+*>          The leading dimension of the array A.
+*>          If SIDE = 'L', LDA >= max(1,M);
+*>          if SIDE = 'R', LDA >= max(1,N).
+*> \endverbatim
+*>
+*> \param[in] TAU
+*> \verbatim
+*>          TAU is REAL array, dimension (K)
+*>          TAU(i) must contain the scalar factor of the elementary
+*>          reflector H(i), as returned by SGEQRF.
+*> \endverbatim
+*>
+*> \param[in,out] C
+*> \verbatim
+*>          C is REAL array, dimension (LDC,N)
+*>          On entry, the M-by-N matrix C.
+*>          On exit, C is overwritten by Q*C or Q**T*C or C*Q**T or C*Q.
+*> \endverbatim
+*>
+*> \param[in] LDC
+*> \verbatim
+*>          LDC is INTEGER
+*>          The leading dimension of the array C. LDC >= max(1,M).
+*> \endverbatim
+*>
+*> \param[out] WORK
+*> \verbatim
+*>          WORK is REAL array, dimension (MAX(1,LWORK))
+*>          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
+*> \endverbatim
+*>
+*> \param[in] LWORK
+*> \verbatim
+*>          LWORK is INTEGER
+*>          The dimension of the array WORK.
+*>          If SIDE = 'L', LWORK >= max(1,N);
+*>          if SIDE = 'R', LWORK >= max(1,M).
+*>          For optimum performance LWORK >= N*NB if SIDE = 'L', and
+*>          LWORK >= M*NB if SIDE = 'R', where NB is the optimal
+*>          blocksize.
+*>
+*>          If LWORK = -1, then a workspace query is assumed; the routine
+*>          only calculates the optimal size of the WORK array, returns
+*>          this value as the first entry of the WORK array, and no error
+*>          message related to LWORK is issued by XERBLA.
+*> \endverbatim
+*>
+*> \param[out] INFO
+*> \verbatim
+*>          INFO is INTEGER
+*>          = 0:  successful exit
+*>          < 0:  if INFO = -i, the i-th argument had an illegal value
+*> \endverbatim
+*
+*  Authors:
+*  ========
+*
+*> \author Univ. of Tennessee 
+*> \author Univ. of California Berkeley 
+*> \author Univ. of Colorado Denver 
+*> \author NAG Ltd. 
+*
+*> \date November 2011
+*
+*> \ingroup realOTHERcomputational
+*
+*  =====================================================================
+      SUBROUTINE SORMQR( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
+     $                   WORK, LWORK, INFO )
+*
+*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK is a software package provided by Univ. of Tennessee,    --
+*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+*     November 2011
+*
+*     .. Scalar Arguments ..
+      CHARACTER          SIDE, TRANS
+      INTEGER            INFO, K, LDA, LDC, LWORK, M, N
+*     ..
+*     .. Array Arguments ..
+      REAL               A( LDA, * ), C( LDC, * ), TAU( * ),
+     $                   WORK( * )
+*     ..
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      INTEGER            NBMAX, LDT
+      PARAMETER          ( NBMAX = 64, LDT = NBMAX+1 )
+*     ..
+*     .. Local Scalars ..
+      LOGICAL            LEFT, LQUERY, NOTRAN
+      INTEGER            I, I1, I2, I3, IB, IC, IINFO, IWS, JC, LDWORK,
+     $                   LWKOPT, MI, NB, NBMIN, NI, NQ, NW
+*     ..
+*     .. Local Arrays ..
+      REAL               T( LDT, NBMAX )
+*     ..
+*     .. External Functions ..
+      LOGICAL            LSAME
+      INTEGER            ILAENV
+      EXTERNAL           LSAME, ILAENV
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SLARFB, SLARFT, SORM2R, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          MAX, MIN
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input arguments
+*
+      INFO = 0
+      LEFT = LSAME( SIDE, 'L' )
+      NOTRAN = LSAME( TRANS, 'N' )
+      LQUERY = ( LWORK.EQ.-1 )
+*
+*     NQ is the order of Q and NW is the minimum dimension of WORK
+*
+      IF( LEFT ) THEN
+         NQ = M
+         NW = N
+      ELSE
+         NQ = N
+         NW = M
+      END IF
+      IF( .NOT.LEFT .AND. .NOT.LSAME( SIDE, 'R' ) ) THEN
+         INFO = -1
+      ELSE IF( .NOT.NOTRAN .AND. .NOT.LSAME( TRANS, 'T' ) ) THEN
+         INFO = -2
+      ELSE IF( M.LT.0 ) THEN
+         INFO = -3
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -4
+      ELSE IF( K.LT.0 .OR. K.GT.NQ ) THEN
+         INFO = -5
+      ELSE IF( LDA.LT.MAX( 1, NQ ) ) THEN
+         INFO = -7
+      ELSE IF( LDC.LT.MAX( 1, M ) ) THEN
+         INFO = -10
+      ELSE IF( LWORK.LT.MAX( 1, NW ) .AND. .NOT.LQUERY ) THEN
+         INFO = -12
+      END IF
+*
+      IF( INFO.EQ.0 ) THEN
+*
+*        Determine the block size.  NB may be at most NBMAX, where NBMAX
+*        is used to define the local array T.
+*
+         NB = MIN( NBMAX, ILAENV( 1, 'SORMQR', SIDE // TRANS, M, N, K,
+     $        -1 ) )
+         LWKOPT = MAX( 1, NW )*NB
+         WORK( 1 ) = LWKOPT
+      END IF
+*
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SORMQR', -INFO )
+         RETURN
+      ELSE IF( LQUERY ) THEN
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      IF( M.EQ.0 .OR. N.EQ.0 .OR. K.EQ.0 ) THEN
+         WORK( 1 ) = 1
+         RETURN
+      END IF
+*
+      NBMIN = 2
+      LDWORK = NW
+      IF( NB.GT.1 .AND. NB.LT.K ) THEN
+         IWS = NW*NB
+         IF( LWORK.LT.IWS ) THEN
+            NB = LWORK / LDWORK
+            NBMIN = MAX( 2, ILAENV( 2, 'SORMQR', SIDE // TRANS, M, N, K,
+     $              -1 ) )
+         END IF
+      ELSE
+         IWS = NW
+      END IF
+*
+      IF( NB.LT.NBMIN .OR. NB.GE.K ) THEN
+*
+*        Use unblocked code
+*
+         CALL SORM2R( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC, WORK,
+     $                IINFO )
+      ELSE
+*
+*        Use blocked code
+*
+         IF( ( LEFT .AND. .NOT.NOTRAN ) .OR.
+     $       ( .NOT.LEFT .AND. NOTRAN ) ) THEN
+            I1 = 1
+            I2 = K
+            I3 = NB
+         ELSE
+            I1 = ( ( K-1 ) / NB )*NB + 1
+            I2 = 1
+            I3 = -NB
+         END IF
+*
+         IF( LEFT ) THEN
+            NI = N
+            JC = 1
+         ELSE
+            MI = M
+            IC = 1
+         END IF
+*
+         DO 10 I = I1, I2, I3
+            IB = MIN( NB, K-I+1 )
+*
+*           Form the triangular factor of the block reflector
+*           H = H(i) H(i+1) . . . H(i+ib-1)
+*
+            CALL SLARFT( 'Forward', 'Columnwise', NQ-I+1, IB, A( I, I ),
+     $                   LDA, TAU( I ), T, LDT )
+            IF( LEFT ) THEN
+*
+*              H or H**T is applied to C(i:m,1:n)
+*
+               MI = M - I + 1
+               IC = I
+            ELSE
+*
+*              H or H**T is applied to C(1:m,i:n)
+*
+               NI = N - I + 1
+               JC = I
+            END IF
+*
+*           Apply H or H**T
+*
+            CALL SLARFB( SIDE, TRANS, 'Forward', 'Columnwise', MI, NI,
+     $                   IB, A( I, I ), LDA, T, LDT, C( IC, JC ), LDC,
+     $                   WORK, LDWORK )
+   10    CONTINUE
+      END IF
+      WORK( 1 ) = LWKOPT
+      RETURN
+*
+*     End of SORMQR
+*
+      END
+
+*> \brief \b SORM2L multiplies a general matrix by the orthogonal matrix from a QL factorization determined by sgeqlf (unblocked algorithm).
+*
+*  =========== DOCUMENTATION ===========
+*
+* Online html documentation available at 
+*            http://www.netlib.org/lapack/explore-html/ 
+*
+*> \htmlonly
+*> Download SORM2L + dependencies 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sorm2l.f"> 
+*> [TGZ]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sorm2l.f"> 
+*> [ZIP]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sorm2l.f"> 
+*> [TXT]</a>
+*> \endhtmlonly 
+*
+*  Definition:
+*  ===========
+*
+*       SUBROUTINE SORM2L( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
+*                          WORK, INFO )
+* 
+*       .. Scalar Arguments ..
+*       CHARACTER          SIDE, TRANS
+*       INTEGER            INFO, K, LDA, LDC, M, N
+*       ..
+*       .. Array Arguments ..
+*       REAL               A( LDA, * ), C( LDC, * ), TAU( * ), WORK( * )
+*       ..
+*  
+*
+*> \par Purpose:
+*  =============
+*>
+*> \verbatim
+*>
+*> SORM2L overwrites the general real m by n matrix C with
+*>
+*>       Q * C  if SIDE = 'L' and TRANS = 'N', or
+*>
+*>       Q**T * C  if SIDE = 'L' and TRANS = 'T', or
+*>
+*>       C * Q  if SIDE = 'R' and TRANS = 'N', or
+*>
+*>       C * Q**T if SIDE = 'R' and TRANS = 'T',
+*>
+*> where Q is a real orthogonal matrix defined as the product of k
+*> elementary reflectors
+*>
+*>       Q = H(k) . . . H(2) H(1)
+*>
+*> as returned by SGEQLF. Q is of order m if SIDE = 'L' and of order n
+*> if SIDE = 'R'.
+*> \endverbatim
+*
+*  Arguments:
+*  ==========
+*
+*> \param[in] SIDE
+*> \verbatim
+*>          SIDE is CHARACTER*1
+*>          = 'L': apply Q or Q**T from the Left
+*>          = 'R': apply Q or Q**T from the Right
+*> \endverbatim
+*>
+*> \param[in] TRANS
+*> \verbatim
+*>          TRANS is CHARACTER*1
+*>          = 'N': apply Q  (No transpose)
+*>          = 'T': apply Q**T (Transpose)
+*> \endverbatim
+*>
+*> \param[in] M
+*> \verbatim
+*>          M is INTEGER
+*>          The number of rows of the matrix C. M >= 0.
+*> \endverbatim
+*>
+*> \param[in] N
+*> \verbatim
+*>          N is INTEGER
+*>          The number of columns of the matrix C. N >= 0.
+*> \endverbatim
+*>
+*> \param[in] K
+*> \verbatim
+*>          K is INTEGER
+*>          The number of elementary reflectors whose product defines
+*>          the matrix Q.
+*>          If SIDE = 'L', M >= K >= 0;
+*>          if SIDE = 'R', N >= K >= 0.
+*> \endverbatim
+*>
+*> \param[in] A
+*> \verbatim
+*>          A is REAL array, dimension (LDA,K)
+*>          The i-th column must contain the vector which defines the
+*>          elementary reflector H(i), for i = 1,2,...,k, as returned by
+*>          SGEQLF in the last k columns of its array argument A.
+*>          A is modified by the routine but restored on exit.
+*> \endverbatim
+*>
+*> \param[in] LDA
+*> \verbatim
+*>          LDA is INTEGER
+*>          The leading dimension of the array A.
+*>          If SIDE = 'L', LDA >= max(1,M);
+*>          if SIDE = 'R', LDA >= max(1,N).
+*> \endverbatim
+*>
+*> \param[in] TAU
+*> \verbatim
+*>          TAU is REAL array, dimension (K)
+*>          TAU(i) must contain the scalar factor of the elementary
+*>          reflector H(i), as returned by SGEQLF.
+*> \endverbatim
+*>
+*> \param[in,out] C
+*> \verbatim
+*>          C is REAL array, dimension (LDC,N)
+*>          On entry, the m by n matrix C.
+*>          On exit, C is overwritten by Q*C or Q**T*C or C*Q**T or C*Q.
+*> \endverbatim
+*>
+*> \param[in] LDC
+*> \verbatim
+*>          LDC is INTEGER
+*>          The leading dimension of the array C. LDC >= max(1,M).
+*> \endverbatim
+*>
+*> \param[out] WORK
+*> \verbatim
+*>          WORK is REAL array, dimension
+*>                                   (N) if SIDE = 'L',
+*>                                   (M) if SIDE = 'R'
+*> \endverbatim
+*>
+*> \param[out] INFO
+*> \verbatim
+*>          INFO is INTEGER
+*>          = 0: successful exit
+*>          < 0: if INFO = -i, the i-th argument had an illegal value
+*> \endverbatim
+*
+*  Authors:
+*  ========
+*
+*> \author Univ. of Tennessee 
+*> \author Univ. of California Berkeley 
+*> \author Univ. of Colorado Denver 
+*> \author NAG Ltd. 
+*
+*> \date September 2012
+*
+*> \ingroup realOTHERcomputational
+*
+*  =====================================================================
+      SUBROUTINE SORM2L( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
+     $                   WORK, INFO )
+*
+*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK is a software package provided by Univ. of Tennessee,    --
+*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+*     September 2012
+*
+*     .. Scalar Arguments ..
+      CHARACTER          SIDE, TRANS
+      INTEGER            INFO, K, LDA, LDC, M, N
+*     ..
+*     .. Array Arguments ..
+      REAL               A( LDA, * ), C( LDC, * ), TAU( * ), WORK( * )
+*     ..
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL               ONE
+      PARAMETER          ( ONE = 1.0E+0 )
+*     ..
+*     .. Local Scalars ..
+      LOGICAL            LEFT, NOTRAN
+      INTEGER            I, I1, I2, I3, MI, NI, NQ
+      REAL               AII
+*     ..
+*     .. External Functions ..
+      LOGICAL            LSAME
+      EXTERNAL           LSAME
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SLARF, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          MAX
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input arguments
+*
+      INFO = 0
+      LEFT = LSAME( SIDE, 'L' )
+      NOTRAN = LSAME( TRANS, 'N' )
+*
+*     NQ is the order of Q
+*
+      IF( LEFT ) THEN
+         NQ = M
+      ELSE
+         NQ = N
+      END IF
+      IF( .NOT.LEFT .AND. .NOT.LSAME( SIDE, 'R' ) ) THEN
+         INFO = -1
+      ELSE IF( .NOT.NOTRAN .AND. .NOT.LSAME( TRANS, 'T' ) ) THEN
+         INFO = -2
+      ELSE IF( M.LT.0 ) THEN
+         INFO = -3
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -4
+      ELSE IF( K.LT.0 .OR. K.GT.NQ ) THEN
+         INFO = -5
+      ELSE IF( LDA.LT.MAX( 1, NQ ) ) THEN
+         INFO = -7
+      ELSE IF( LDC.LT.MAX( 1, M ) ) THEN
+         INFO = -10
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SORM2L', -INFO )
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      IF( M.EQ.0 .OR. N.EQ.0 .OR. K.EQ.0 )
+     $   RETURN
+*
+      IF( ( LEFT .AND. NOTRAN ) .OR. ( .NOT.LEFT .AND. .NOT.NOTRAN ) )
+     $     THEN
+         I1 = 1
+         I2 = K
+         I3 = 1
+      ELSE
+         I1 = K
+         I2 = 1
+         I3 = -1
+      END IF
+*
+      IF( LEFT ) THEN
+         NI = N
+      ELSE
+         MI = M
+      END IF
+*
+      DO 10 I = I1, I2, I3
+         IF( LEFT ) THEN
+*
+*           H(i) is applied to C(1:m-k+i,1:n)
+*
+            MI = M - K + I
+         ELSE
+*
+*           H(i) is applied to C(1:m,1:n-k+i)
+*
+            NI = N - K + I
+         END IF
+*
+*        Apply H(i)
+*
+         AII = A( NQ-K+I, I )
+         A( NQ-K+I, I ) = ONE
+         CALL SLARF( SIDE, MI, NI, A( 1, I ), 1, TAU( I ), C, LDC,
+     $               WORK )
+         A( NQ-K+I, I ) = AII
+   10 CONTINUE
+      RETURN
+*
+*     End of SORM2L
+*
+      END
+
+*> \brief \b SORM2R multiplies a general matrix by the orthogonal matrix from a QR factorization determined by sgeqrf (unblocked algorithm).
+*
+*  =========== DOCUMENTATION ===========
+*
+* Online html documentation available at 
+*            http://www.netlib.org/lapack/explore-html/ 
+*
+*> \htmlonly
+*> Download SORM2R + dependencies 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sorm2r.f"> 
+*> [TGZ]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sorm2r.f"> 
+*> [ZIP]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sorm2r.f"> 
+*> [TXT]</a>
+*> \endhtmlonly 
+*
+*  Definition:
+*  ===========
+*
+*       SUBROUTINE SORM2R( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
+*                          WORK, INFO )
+* 
+*       .. Scalar Arguments ..
+*       CHARACTER          SIDE, TRANS
+*       INTEGER            INFO, K, LDA, LDC, M, N
+*       ..
+*       .. Array Arguments ..
+*       REAL               A( LDA, * ), C( LDC, * ), TAU( * ), WORK( * )
+*       ..
+*  
+*
+*> \par Purpose:
+*  =============
+*>
+*> \verbatim
+*>
+*> SORM2R overwrites the general real m by n matrix C with
+*>
+*>       Q * C  if SIDE = 'L' and TRANS = 'N', or
+*>
+*>       Q**T* C  if SIDE = 'L' and TRANS = 'T', or
+*>
+*>       C * Q  if SIDE = 'R' and TRANS = 'N', or
+*>
+*>       C * Q**T if SIDE = 'R' and TRANS = 'T',
+*>
+*> where Q is a real orthogonal matrix defined as the product of k
+*> elementary reflectors
+*>
+*>       Q = H(1) H(2) . . . H(k)
+*>
+*> as returned by SGEQRF. Q is of order m if SIDE = 'L' and of order n
+*> if SIDE = 'R'.
+*> \endverbatim
+*
+*  Arguments:
+*  ==========
+*
+*> \param[in] SIDE
+*> \verbatim
+*>          SIDE is CHARACTER*1
+*>          = 'L': apply Q or Q**T from the Left
+*>          = 'R': apply Q or Q**T from the Right
+*> \endverbatim
+*>
+*> \param[in] TRANS
+*> \verbatim
+*>          TRANS is CHARACTER*1
+*>          = 'N': apply Q  (No transpose)
+*>          = 'T': apply Q**T (Transpose)
+*> \endverbatim
+*>
+*> \param[in] M
+*> \verbatim
+*>          M is INTEGER
+*>          The number of rows of the matrix C. M >= 0.
+*> \endverbatim
+*>
+*> \param[in] N
+*> \verbatim
+*>          N is INTEGER
+*>          The number of columns of the matrix C. N >= 0.
+*> \endverbatim
+*>
+*> \param[in] K
+*> \verbatim
+*>          K is INTEGER
+*>          The number of elementary reflectors whose product defines
+*>          the matrix Q.
+*>          If SIDE = 'L', M >= K >= 0;
+*>          if SIDE = 'R', N >= K >= 0.
+*> \endverbatim
+*>
+*> \param[in] A
+*> \verbatim
+*>          A is REAL array, dimension (LDA,K)
+*>          The i-th column must contain the vector which defines the
+*>          elementary reflector H(i), for i = 1,2,...,k, as returned by
+*>          SGEQRF in the first k columns of its array argument A.
+*>          A is modified by the routine but restored on exit.
+*> \endverbatim
+*>
+*> \param[in] LDA
+*> \verbatim
+*>          LDA is INTEGER
+*>          The leading dimension of the array A.
+*>          If SIDE = 'L', LDA >= max(1,M);
+*>          if SIDE = 'R', LDA >= max(1,N).
+*> \endverbatim
+*>
+*> \param[in] TAU
+*> \verbatim
+*>          TAU is REAL array, dimension (K)
+*>          TAU(i) must contain the scalar factor of the elementary
+*>          reflector H(i), as returned by SGEQRF.
+*> \endverbatim
+*>
+*> \param[in,out] C
+*> \verbatim
+*>          C is REAL array, dimension (LDC,N)
+*>          On entry, the m by n matrix C.
+*>          On exit, C is overwritten by Q*C or Q**T*C or C*Q**T or C*Q.
+*> \endverbatim
+*>
+*> \param[in] LDC
+*> \verbatim
+*>          LDC is INTEGER
+*>          The leading dimension of the array C. LDC >= max(1,M).
+*> \endverbatim
+*>
+*> \param[out] WORK
+*> \verbatim
+*>          WORK is REAL array, dimension
+*>                                   (N) if SIDE = 'L',
+*>                                   (M) if SIDE = 'R'
+*> \endverbatim
+*>
+*> \param[out] INFO
+*> \verbatim
+*>          INFO is INTEGER
+*>          = 0: successful exit
+*>          < 0: if INFO = -i, the i-th argument had an illegal value
+*> \endverbatim
+*
+*  Authors:
+*  ========
+*
+*> \author Univ. of Tennessee 
+*> \author Univ. of California Berkeley 
+*> \author Univ. of Colorado Denver 
+*> \author NAG Ltd. 
+*
+*> \date September 2012
+*
+*> \ingroup realOTHERcomputational
+*
+*  =====================================================================
+      SUBROUTINE SORM2R( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
+     $                   WORK, INFO )
+*
+*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK is a software package provided by Univ. of Tennessee,    --
+*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+*     September 2012
+*
+*     .. Scalar Arguments ..
+      CHARACTER          SIDE, TRANS
+      INTEGER            INFO, K, LDA, LDC, M, N
+*     ..
+*     .. Array Arguments ..
+      REAL               A( LDA, * ), C( LDC, * ), TAU( * ), WORK( * )
+*     ..
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL               ONE
+      PARAMETER          ( ONE = 1.0E+0 )
+*     ..
+*     .. Local Scalars ..
+      LOGICAL            LEFT, NOTRAN
+      INTEGER            I, I1, I2, I3, IC, JC, MI, NI, NQ
+      REAL               AII
+*     ..
+*     .. External Functions ..
+      LOGICAL            LSAME
+      EXTERNAL           LSAME
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SLARF, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          MAX
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input arguments
+*
+      INFO = 0
+      LEFT = LSAME( SIDE, 'L' )
+      NOTRAN = LSAME( TRANS, 'N' )
+*
+*     NQ is the order of Q
+*
+      IF( LEFT ) THEN
+         NQ = M
+      ELSE
+         NQ = N
+      END IF
+      IF( .NOT.LEFT .AND. .NOT.LSAME( SIDE, 'R' ) ) THEN
+         INFO = -1
+      ELSE IF( .NOT.NOTRAN .AND. .NOT.LSAME( TRANS, 'T' ) ) THEN
+         INFO = -2
+      ELSE IF( M.LT.0 ) THEN
+         INFO = -3
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -4
+      ELSE IF( K.LT.0 .OR. K.GT.NQ ) THEN
+         INFO = -5
+      ELSE IF( LDA.LT.MAX( 1, NQ ) ) THEN
+         INFO = -7
+      ELSE IF( LDC.LT.MAX( 1, M ) ) THEN
+         INFO = -10
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SORM2R', -INFO )
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      IF( M.EQ.0 .OR. N.EQ.0 .OR. K.EQ.0 )
+     $   RETURN
+*
+      IF( ( LEFT .AND. .NOT.NOTRAN ) .OR. ( .NOT.LEFT .AND. NOTRAN ) )
+     $     THEN
+         I1 = 1
+         I2 = K
+         I3 = 1
+      ELSE
+         I1 = K
+         I2 = 1
+         I3 = -1
+      END IF
+*
+      IF( LEFT ) THEN
+         NI = N
+         JC = 1
+      ELSE
+         MI = M
+         IC = 1
+      END IF
+*
+      DO 10 I = I1, I2, I3
+         IF( LEFT ) THEN
+*
+*           H(i) is applied to C(i:m,1:n)
+*
+            MI = M - I + 1
+            IC = I
+         ELSE
+*
+*           H(i) is applied to C(1:m,i:n)
+*
+            NI = N - I + 1
+            JC = I
+         END IF
+*
+*        Apply H(i)
+*
+         AII = A( I, I )
+         A( I, I ) = ONE
+         CALL SLARF( SIDE, MI, NI, A( I, I ), 1, TAU( I ), C( IC, JC ),
+     $               LDC, WORK )
+         A( I, I ) = AII
+   10 CONTINUE
+      RETURN
+*
+*     End of SORM2R
+*
+      END
+
