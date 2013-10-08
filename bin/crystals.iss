@@ -1,11 +1,24 @@
 
+#if "INW" == GetEnv('COMPCODE')
+  #define crysOS 'windows-intel'
+#elif "GID" == GetEnv('COMPCODE')
+  #define crysOS 'windows-digital'
+#else
+  #define crysOS 'unknown'
+#endif
+
+#define crysDATE GetDateTimeString('yyyymmdd','-','')
+#define crysVDATE GetDateTimeString('mmm yyyy','','')
+
 [Setup]
 ;
 ;Adjust the program names and version here as appropriate:
 ;
-AppVerName=CRYSTALS 14.52 (Sept 2012)
+AppVerName=CRYSTALS 14.52 ({#crysVDATE})
 AppVersion=14.52
-OutputBaseFilename=crystals-a1452-Sep12-setup
+;OutputBaseFilename=crystals-a1452-Sep12-setup
+OutputBaseFilename=crystals-{#crysOS}-a1452-{#crysDATE}-setup
+
 
 AppName=CRYSTALS
 OutputDir=..\installer
