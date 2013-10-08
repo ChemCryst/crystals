@@ -1,13 +1,13 @@
 
 #if "INW" == GetEnv('COMPCODE')
-  #define crysOS 'windows-intel'
+  #define crysOS 'win-int'
 #elif "GID" == GetEnv('COMPCODE')
-  #define crysOS 'windows-digital'
+  #define crysOS 'win-dvf'
 #else
   #define crysOS 'unknown'
 #endif
 
-#define crysDATE GetDateTimeString('yyyymmdd','-','')
+#define crysDATE GetDateTimeString('mmmyy','','')
 #define crysVDATE GetDateTimeString('mmm yyyy','','')
 
 [Setup]
