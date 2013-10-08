@@ -31,6 +31,10 @@
 @goto exit
 
 :dist
+@if not %INNOSETUP% == "" goto dist2
+@set INNOSETUP=c:\progra~1\innose~1
+
+:dist2
 @call make_w32_crystals.bat tidy
 @call make_w32_data.bat tidy
 @call make_w32_script.bat tidy
@@ -41,7 +45,7 @@
 @mkdir ..\installer
 @cd ..\installer
 @echo Running the setup compiler...
-c:\progra~1\innose~1\iscc.exe ../bin/crystals.iss
+%INNOSETUP%\iscc.exe ../bin/crystals.iss
 @echo Setup.exe will be in the ..\installer folder if it
 @echo was successful.
 @echo If unsuccessful take out the ECHO OFF statement from the batch file
