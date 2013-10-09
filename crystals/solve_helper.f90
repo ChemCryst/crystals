@@ -166,12 +166,12 @@ end subroutine
 
 subroutine cholesky_inversion(nmatrix, nmsize, info)
 implicit none
+!> Leading dimension of the matrix nmatrix
+integer, intent(in) :: nmsize
 !> On input symmetric real matrix stored in packed format (lower triangle)
 !! aij is stored in AP( i+(2n-j)(j-1)/2) for j <= i.
 !! On output the inverse of the matrix is return
 real, dimension(nmsize*(nmsize+1)/2), intent(inout) :: nmatrix
-!> Leading dimension of the matrix nmatrix
-integer, intent(in) :: nmsize
 !> Status of the calculation. =0 if success
 integer, intent(out) :: info
 
