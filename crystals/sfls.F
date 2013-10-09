@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.88  2013/10/09 17:10:50  pascal
+C Rough optimisation of the design matrix chunk
+C
 C Revision 1.87  2013/10/07 13:53:27  pascal
 C Fixed copyin/copyout resulting in a too big stack allocatation
 C
@@ -462,7 +465,8 @@ C--SAVE THE LIST TYPE INDICATOR
 
 
 1105  CONTINUE
-      CALL XZEROF(IWORKA(1),17)
+      !CALL XZEROF(IWORKA(1),17)
+      IWORKA(1:17)=0.0
       GOTO(1200,1250,1300,1350,4550,4600,1150),NUM
 1150  CALL GUEXIT(54)
 
@@ -481,7 +485,8 @@ C--'#CALCULATE' HAS BEEN GIVEN
 1300  CONTINUE
 
       SFLS_TYPE = SFLS_CALC
-      CALL XZEROF(RALL(1),12)
+      !CALL XZEROF(RALL(1),12)
+      RALL(1:12)=0.0
       GOTO 1400
 C
 C--'#CYCLENDS' INSTRUCTION
@@ -3493,8 +3498,10 @@ C
         ATOM_REFINE = .FALSE. 
 
         IF(SFLS_TYPE .EQ. SFLS_REFINE) THEN   ! CHECK IF REFINEMENT IS BEING DONE
-          CALL XZEROF ( ALPD(1),11 )  ! CLEAR PARTIAL DERIVATIVE STACKS
-          CALL XZEROF ( BLPD(1),11 )
+          !CALL XZEROF ( ALPD(1),11 )  ! CLEAR PARTIAL DERIVATIVE STACKS
+          ALPD(1:11)=0.0
+          !CALL XZEROF ( BLPD(1),11 )
+          BLPD(1:11)=0.0
           L12A=ISTORE(M12+1)
           IF ( L12A .GE.0 ) ATOM_REFINE = .TRUE.  ! Set if any params of this atom are being refined
           M12=ISTORE(M12)
