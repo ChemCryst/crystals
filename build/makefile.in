@@ -32,8 +32,9 @@ else
     CC = gcc
     LD = gfortran
     F77 = gfortran
-    F77FLAGS = -std=legacy -fno-automatic -fno-sign-zero -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_ 
-    OPT = -ggdb -fno-sign-zero
+    F77FLAGS = -std=legacy -ffast-math -ftree-vectorize -msse2 -ffast-math -fno-automatic -fno-sign-zero -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_ 
+    F90FLAGS = -fno-sign-zero -ffast-math -ftree-vectorize -msse2 -ffast-math -I../crystals/ 
+    OPT = -g -O2
 
     INSTALL=/usr/bin/install
 
