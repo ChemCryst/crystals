@@ -31,7 +31,7 @@
 @goto exit
 
 :dist
-@if not %INNOSETUP% == "" goto dist2
+@if not "%~INNOSETUP%" == "" goto dist2
 @set INNOSETUP=c:\progra~1\innose~1
 
 :dist2
