@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.65  2013/10/07 15:27:50  pascal
+C add dedicated subroutine for cholesky + preconditioning, move lapack functions to lapack.f
+C
 C Revision 1.64  2013/09/23 10:26:22  rich
 C Extra lapack dependecies (4) for non-intels
 C
@@ -309,6 +312,7 @@ C
       DATA IVERSN /410/
       
       real, dimension(:), allocatable :: ref
+      real, dimension(:,:), allocatable :: check, unpacked
 
       
 C
@@ -626,15 +630,16 @@ CDJW-OCT-05
       IF (JP .GT. 0 ) THEN
 C----- CHOOSE INVERTOR
             IF (METHOD .LE. 0) THEN   !Cholesky
-c               !allocate(ref(JY*(JY+1)/2))
-c               !ref=STR11(L11C:L11C+JY*(JY+1)/2-1)               
+c                allocate(ref(JY*(JY+1)/2))
+c                ref=STR11(L11C:L11C+JY*(JY+1)/2-1)
 c               call eigen_inversion(STR11(L11C:L11C+JY*(JY+1)/2-1),
 c     1              JY, 100.0)
 c               !deallocate(ref)
 
 c Cholesky inversion + preconditioning
                call cholesky_inversion(
-     1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY)
+     1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
+c                print *, STR11(L11C:L11C+5)
 
 c - original cholesky               
                !print *, '****** origin', STR11(L11C:L11C+4)
@@ -645,11 +650,30 @@ c               print *, 'start xchols'
 c               call flush
 c               STR11(L11C:L11C+JY*(JY+1)/2-1)=ref
 c               CALL XCHOLS(JY, L11C, KO)
+c                print *, STR11(L11C:L11C+5)
 c               call date_and_time(VALUES=measuredtime)
 c               print *, 'xchols done in (s): ', 
 c     1             ((measuredtime(5)*3600+measuredtime(6)*60)+
 c     2             measuredtime(7))+measuredtime(8)/1000.0-starttime
 c               call flush
+
+c                allocate(unpacked(JY,JY))
+c                allocate(check(JY,JY))
+c                do i=1, JY
+c                    j = ((i-1)*(2*(JY)-i+2))/2
+c                    k = j + JY - i
+c                    unpacked(i:JY, i)=STR11(L11C+j:L11C+k)
+c                    unpacked(i, i:JY)=STR11(L11C+j:L11C+k)
+c                    check(i:JY, i)=ref(1+j:1+k)
+c                    check(i, i:JY)=ref(1+j:1+k)
+c                end do
+c                check=matmul(check, unpacked)
+c                do i=1,min(15,JY)
+c                    write(*, '(15(F5.2,1X))') check(1:min(15,JY),i)
+c                end do
+c                deallocate(unpacked)
+c                deallocate(check)
+c                deallocate(ref)
                
 c               print *, '****** ref', STR11(L11C:L11C+4)
                

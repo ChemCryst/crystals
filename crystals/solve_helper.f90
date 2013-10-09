@@ -164,21 +164,28 @@ deallocate(preconditioner)
 
 end subroutine
 
-subroutine cholesky_inversion(nmatrix, nmsize)
+subroutine cholesky_inversion(nmatrix, nmsize, info)
 implicit none
-!> Leading dimension of the matrix nmatrix
-integer, intent(in) :: nmsize
 !> On input symmetric real matrix stored in packed format (lower triangle)
 !! aij is stored in AP( i+(2n-j)(j-1)/2) for j <= i.
 !! On output the inverse of the matrix is return
 real, dimension(nmsize*(nmsize+1)/2), intent(inout) :: nmatrix
+!> Leading dimension of the matrix nmatrix
+integer, intent(in) :: nmsize
+!> Status of the calculation. =0 if success
+integer, intent(out) :: info
 
 real, dimension(:), allocatable :: preconditioner
-integer i, j, k, info
+integer i, j, k
 real, dimension(:,:), allocatable :: unpacked
 
-!integer :: starttime
-!integer, dimension(8) :: measuredtime
+real sumc
+real, dimension(:), allocatable :: diag
+
+integer :: starttime
+integer, dimension(8) :: measuredtime
+
+info=0
 
 ! preconditioning using diagonal terms
 ! Allocate diagonal vector
@@ -202,39 +209,85 @@ do i=1,nmsize
     nmatrix(1+j:1+k)=preconditioner(i)*preconditioner(i:nmsize)*nmatrix(1+j:1+k)
 end do              
 
-! unpacking normal matrix
-! not necessary but unpacked data operations are better
-! optimised in lapack
-! unpacking + invert + packing is faster
+! unpacking lower triangle for memory efficiency
 allocate(unpacked(nmsize, nmsize))
 do i=1, nmsize
     j = ((i-1)*(2*(nmsize)-i+2))/2
     k = j + nmsize - i
     unpacked(i:nmsize, i)=nmatrix(1+j:1+k)
-    unpacked(i, i:nmsize)=nmatrix(1+j:1+k)
+    unpacked(i, i+1:nmsize)=nmatrix(1+j+1:1+k)
 end do
 
 !call date_and_time(VALUES=measuredtime)
 !starttime=((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)
-call SPOTRF( 'L', nmsize, unpacked, nmsize, INFO )
+
+! Cholesky decomposition
+! result is upper triangular
+! inverse of the diagonal elements in diag
+allocate(diag(nmsize))
+do  i=1,nmsize
+    do  j=i,nmsize
+        sumc=unpacked(j,i)
+        sumc=sumc-sum(unpacked(1:i-1,i)*unpacked(1:i-1,j))
+        if(i.eq.j)then
+            if(sumc.le.epsilon(0.)) then
+                diag(i)=0.0
+                info=-1
+            end if
+            diag(i)=1.0/sqrt(sumc)
+        else
+            unpacked(i,j)=sumc*diag(i)
+        endif
+    enddo 
+enddo 
+
 !call date_and_time(VALUES=measuredtime)
 !print *, 'PP* ****** U factor ok? ', info, &
 !&       ((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)-starttime, 'ms'
 
 !call date_and_time(VALUES=measuredtime)
 !starttime=((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)
-call SPOTRI( 'L', nmsize, unpacked, nmsize, INFO )
+
+! Inversion of a lower triamgle matrix
+! diagonal elements in diagonal
+! for efficiency both lower and upper part are used
+! zeroing lower triangle and copying upper part into lower part
+do i=1, nmsize
+    unpacked(i+1:nmsize, i)=0.0
+end do
+unpacked=unpacked+transpose(unpacked)
+do i=1,nmsize
+    unpacked(i,i)=diag(i)
+    do j=i+1,nmsize
+        unpacked(j,i)=-sum(unpacked(i:j-1,j)*unpacked(i:j-1,i))*diag(j)
+    enddo 
+enddo 
+deallocate(diag)
+
+! Formation of the invert of the normal matrix
+call STRMM('L','L','T','N',nmsize,nmsize,1.0,unpacked,nmsize,unpacked,nmsize)
+
 !call date_and_time(VALUES=measuredtime)
 !print *, 'PP* ***** single Inverse ok? ', info  , &
 !&       ((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)-starttime, 'ms'
 
 ! Pack normal matrix back into original crystals storage
-! plus preconditioning
 do i=1,nmsize
     j = ((i-1)*(2*nmsize-i+2))/2
     k = j + nmsize - i
-    nmatrix(1+j:1+k)=preconditioner(i)*preconditioner(i:nmsize)*unpacked(i:nmsize,i)
+    nmatrix(1+j:1+k)=unpacked(i:nmsize,i)
 end do    
+
+! revert pre conditioning                   
+! Applying C (C N C)^-1 C to get N^-1
+! N: normal matrix
+! C: diagonal matrix with elements from the N diagonal
+do i=1,nmsize
+    j = ((i-1)*(2*(nmsize)-i+2))/2
+    k = j + nmsize - i
+    nmatrix(1+j:1+k)=preconditioner(i)*preconditioner(i:nmsize)* &
+        nmatrix(1+j:1+k)
+end do  
             
 deallocate(preconditioner)
 
