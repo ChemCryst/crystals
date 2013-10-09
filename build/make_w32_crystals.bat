@@ -26,6 +26,8 @@
 @if "%COMPCODE%" == "INW" rc /fo rc.res %CDEF% ..\gui\wx.rc
 @rem  --include-dir c:\wxWidgets-2.8.11\include
 
+@if "%COMPCODE%" == "INW" copy %WXWIN%\lib\vc_dll\wxbase29u.dll %WXWIN%\lib\vc_dll\wxmsw29u_core.dll %WXWIN%\lib\vc_dll\wxmsw29u_aui.dll %WXWIN%\lib\vc_dll\wxzlib.dll  %WXWIN%\lib\vc_dll\wxjpeg.dll  %WXWIN%\lib\vc_dll\wxtiff.dll  %WXWIN%\lib\vc_dll\wxpng.dll  %WXWIN%\lib\vc_dll\wxmsw29u_gl.dll .
+
 @if "%CRDEBUG%" == "TRUE"  goto debug
 :link
 @echo %LD% %OPT% %LDFLAGS% obj\*.obj %LIBS% %OUT%crystals.exe
