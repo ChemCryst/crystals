@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.87  2013/10/07 13:53:27  pascal
+C Fixed copyin/copyout resulting in a too big stack allocatation
+C
 C Revision 1.86  2013/09/24 08:52:29  rich
 C Change test for unaccumulated matrix elements
 C Change syntax of #if - possible intel parse error.
@@ -1767,7 +1770,7 @@ C--CHECK IF A PRINT IS REQUIRED
       !ref=0.0
       designindex=0
       ! size of the design matrix chunk to be tuned (PP)
-      allocate(designmatrix(JP-JO+1,20000000/(JP-JO+1)))
+      allocate(designmatrix(JP-JO+1,1000))
       designmatrix=0.0
 
       DO WHILE (.TRUE.)  ! START OF THE LOOP OVER REFLECTIONS
