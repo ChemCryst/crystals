@@ -26,7 +26,7 @@
 @if "%COMPCODE%" == "INW" rc /fo rc.res %CDEF% ..\gui\wx.rc
 @rem  --include-dir c:\wxWidgets-2.8.11\include
 
-@if "%COMPCODE%" == "INW" copy %WXWIN%\lib\vc90_dll\wxbase29u.dll %WXWIN%\lib\vc90_dll\wxmsw29u_core.dll %WXWIN%\lib\vc90_dll\wxmsw29u_aui.dll %WXWIN%\lib\vc90_dll\wxzlib.dll  %WXWIN%\lib\vc90_dll\wxjpeg.dll  %WXWIN%\lib\vc90_dll\wxtiff.dll  %WXWIN%\lib\vc90_dll\wxpng.dll  %WXWIN%\lib\vc90_dll\wxmsw29u_gl.dll .
+@if "%COMPCODE%" == "INW" copy %WXWIN%\lib\vc90_dll\wxbase294u_vc90.dll %WXWIN%\lib\vc90_dll\wxmsw294u_core_vc90.dll %WXWIN%\lib\vc90_dll\wxmsw294u_gl_vc90.dll .
 
 @if "%CRDEBUG%" == "TRUE"  goto debug
 :link
