@@ -45,7 +45,7 @@
 @mkdir ..\installer
 @cd ..\installer
 @echo Running the setup compiler...
-%INNOSETUP%\iscc.exe ../bin/crystals.iss
+"%INNOSETUP%"\iscc.exe ../bin/crystals.iss
 @echo Setup.exe will be in the ..\installer folder if it
 @echo was successful.
 @echo If unsuccessful take out the ECHO OFF statement from the batch file
