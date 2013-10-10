@@ -26,8 +26,12 @@
 @if "%COMPCODE%" == "INW" rc /fo rc.res %CDEF% ..\gui\wx.rc
 @rem  --include-dir c:\wxWidgets-2.8.11\include
 
-@if "%COMPCODE%" == "INW" echo copy %WXWIN%\lib\vc90_dll\wxbase294u_vc90.dll %WXWIN%\lib\vc90_dll\wxmsw294u_core_vc90.dll %WXWIN%\lib\vc90_dll\wxmsw294u_gl_vc90.dll
-@if "%COMPCODE%" == "INW" copy %WXWIN%\lib\vc90_dll\wxbase294u_vc90.dll %WXWIN%\lib\vc90_dll\wxmsw294u_core_vc90.dll %WXWIN%\lib\vc90_dll\wxmsw294u_gl_vc90.dll
+@if "%COMPCODE%" == "INW" echo copy %WXWIN%\lib\vc90_dll\wxbase294u_vc90.dll
+@if "%COMPCODE%" == "INW" copy %WXWIN%\lib\vc90_dll\wxbase294u_vc90.dll
+@if "%COMPCODE%" == "INW" echo copy %WXWIN%\lib\vc90_dll\wxmsw294u_core_vc90.dll
+@if "%COMPCODE%" == "INW" copy %WXWIN%\lib\vc90_dll\wxmsw294u_core_vc90.dll
+@if "%COMPCODE%" == "INW" echo copy %WXWIN%\lib\vc90_dll\wxmsw294u_gl_vc90.dll
+@if "%COMPCODE%" == "INW" copy %WXWIN%\lib\vc90_dll\wxmsw294u_gl_vc90.dll
 
 @if "%CRDEBUG%" == "TRUE"  goto debug
 :link
