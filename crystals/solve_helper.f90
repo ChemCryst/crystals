@@ -242,20 +242,20 @@ do  i=1,nmsize
 enddo 
 
 !call date_and_time(VALUES=measuredtime)
-!print *, 'PP* ****** U factor ok? ', info, &
+!print *, 'PP* ****** cholesky decomposition ', info, &
 !&       ((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)-starttime, 'ms'
 
 !call date_and_time(VALUES=measuredtime)
 !starttime=((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)
 
-! Inversion of a lower triamgle matrix
+! Inversion of a lower triangle matrix
 ! diagonal elements in diagonal
 ! for efficiency both lower and upper part are used
 ! zeroing lower triangle and copying upper part into lower part
 do i=1, nmsize
-    unpacked(i+1:nmsize, i)=0.0
+    unpacked(i+1:nmsize, i)=unpacked(i,i+1:nmsize)
 end do
-unpacked=unpacked+transpose(unpacked)
+
 do i=1,nmsize
     unpacked(i,i)=diag(i)
     do j=i+1,nmsize
@@ -264,11 +264,105 @@ do i=1,nmsize
 enddo 
 deallocate(diag)
 
+!call date_and_time(VALUES=measuredtime)
+!print *, 'PP* ***** Triangle inverse ', info  , &
+!&       ((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)-starttime, 'ms'
+
 ! Formation of the invert of the normal matrix
 call STRMM('L','L','T','N',nmsize,nmsize,1.0,unpacked,nmsize,unpacked,nmsize)
 
+! Pack normal matrix back into original crystals storage
+do i=1,nmsize
+    j = ((i-1)*(2*nmsize-i+2))/2
+    k = j + nmsize - i
+    nmatrix(1+j:1+k)=unpacked(i:nmsize,i)
+end do    
+
+! revert pre conditioning                   
+! Applying C (C N C)^-1 C to get N^-1
+! N: normal matrix
+! C: diagonal matrix with elements from the N diagonal
+do i=1,nmsize
+    j = ((i-1)*(2*(nmsize)-i+2))/2
+    k = j + nmsize - i
+    nmatrix(1+j:1+k)=preconditioner(i)*preconditioner(i:nmsize)* &
+        nmatrix(1+j:1+k)
+end do  
+            
+deallocate(preconditioner)
+
+end subroutine
+
+subroutine LDLT_inversion(nmatrix, nmsize, info)
+implicit none
+!> Leading dimension of the matrix nmatrix
+integer, intent(in) :: nmsize
+!> On input symmetric real matrix stored in packed format (lower triangle)
+!! aij is stored in AP( i+(2n-j)(j-1)/2) for j <= i.
+!! On output the inverse of the matrix is return
+real, dimension(nmsize*(nmsize+1)/2), intent(inout) :: nmatrix
+!> Status of the calculation. =0 if success
+integer, intent(out) :: info
+
+real, dimension(:), allocatable :: preconditioner
+integer i, j, k, lwork 
+real, dimension(:,:), allocatable :: unpacked
+
+real, dimension(:), allocatable :: work
+integer, dimension(:), allocatable :: ipiv
+integer, external :: ILAENV
+
+integer :: starttime
+integer, dimension(8) :: measuredtime
+
+info=0
+
+! preconditioning using diagonal terms
+! Allocate diagonal vector
+allocate(preconditioner(nmsize))
+do i=1,nmsize
+    j = ((i-1)*(2*(nmsize)-i+2))/2
+    if(nmatrix(1+j)/=0.0) then
+        preconditioner(i)=nmatrix(1+j)
+    else
+        preconditioner(i)=1.0
+    end if
+end do      
+preconditioner = 1.0/sqrt(preconditioner) 
+
+! Applying C N C
+! N: normal matrix
+! C: diagonal matrix with elements from the N diagonal
+do i=1,nmsize
+    j = ((i-1)*(2*(nmsize)-i+2))/2
+    k = j + nmsize - i
+    nmatrix(1+j:1+k)=preconditioner(i)*preconditioner(i:nmsize)*nmatrix(1+j:1+k)
+end do              
+
+! unpacking lower triangle for memory efficiency
+allocate(unpacked(nmsize, nmsize))
+do i=1, nmsize
+    j = ((i-1)*(2*(nmsize)-i+2))/2
+    k = j + nmsize - i
+    unpacked(i:nmsize, i)=nmatrix(1+j:1+k)
+    unpacked(i, i+1:nmsize)=nmatrix(1+j+1:1+k)
+end do
+
 !call date_and_time(VALUES=measuredtime)
-!print *, 'PP* ***** single Inverse ok? ', info  , &
+!starttime=((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)
+
+allocate(ipiv(nmsize))
+lwork = ILAENV( 1, 'SSYTRF', 'L', nmsize, nmsize)
+allocate(work(nmsize*lwork))
+call SSYTRF( 'L', nmsize, unpacked, nmsize, IPIV, WORK, nmsize*lwork, INFO )
+deallocate(work)
+allocate(work(nmsize))
+call SSYTRI( 'L', nmsize, unpacked, nmsize, IPIV, WORK, INFO )
+deallocate(ipiv)
+deallocate(work)
+
+!call date_and_time(VALUES=measuredtime)
+!print *, 'PP* ***** LDL ', info  , &
 !&       ((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)-starttime, 'ms'
 
 ! Pack normal matrix back into original crystals storage
@@ -292,5 +386,6 @@ end do
 deallocate(preconditioner)
 
 end subroutine
+
 
 end module

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.66  2013/10/09 13:56:18  pascal
+C new algorithm for cholesky inversion, more stable
+C
 C Revision 1.65  2013/10/07 15:27:50  pascal
 C add dedicated subroutine for cholesky + preconditioning, move lapack functions to lapack.f
 C
@@ -636,8 +639,8 @@ c               call eigen_inversion(STR11(L11C:L11C+JY*(JY+1)/2-1),
 c     1              JY, 100.0)
 c               !deallocate(ref)
 
-c Cholesky inversion + preconditioning
-               call cholesky_inversion(
+c L D L^T inversion + preconditioning
+               call LDLT_inversion(
      1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
 c                print *, STR11(L11C:L11C+5)
 
