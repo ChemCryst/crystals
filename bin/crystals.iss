@@ -81,7 +81,7 @@ Filename: wincrys.ini; Section: Latest; Key: Strdir; String: "{app}\demo\demo"; 
 
 [Run]
 #if "INW" == GetEnv('COMPCODE')
-Filename: "msiexec.exe"; Parameters: "/i ""{app}\w_fcompxe_redist_ia32_2011.3.175.msi"" /S /V/qn"; StatusMsg: "Installing Intel DLL Libraries";
+Filename: "msiexec.exe"; Parameters: "/i ""{app}\w_fcompxe_redist_ia32_2011.3.175.msi"" /qn"; StatusMsg: "Installing Intel DLL Libraries";
 #endif
 
 
