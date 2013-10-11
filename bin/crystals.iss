@@ -79,6 +79,12 @@ Filename: wincrys.ini; Section: Setup; Key: Location; String: "{app}"; Flags: un
 Filename: wincrys.ini; Section: Setup; Key: Crysdir; String: "{app}\user\,{app}\"; Flags: uninsdeleteentry
 Filename: wincrys.ini; Section: Latest; Key: Strdir; String: "{app}\demo\demo"; Flags: uninsdeleteentry
 
+[Run]
+#if "INW" == GetEnv('COMPCODE')
+Filename: "{app}\w_fcompxe_redist_ia32_2011.3.175.msi"; Parameters: "/S /V/qn"; StatusMsg: "Installing Intel DLL Libraries";
+#endif
+
+
 [Registry]
 Root: HKLM; Subkey: "Software\Chem Cryst"; Flags: uninsdeletekeyifempty
 Root: HKLM; Subkey: "Software\Chem Cryst\Crystals"; Flags: uninsdeletekey
