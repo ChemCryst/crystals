@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.90  2013/10/10 13:07:58  pascal
+C exp, sin and cos replaced by fast purec functions
+C
 C Revision 1.87  2013/10/07 13:53:27  pascal
 C Fixed copyin/copyout resulting in a too big stack allocatation
 C
@@ -1327,6 +1330,7 @@ C -- NOTHING TO REFINE
 C
 CODE FOR XSFLSC
       SUBROUTINE XSFLSC ( DERIVS, NDERIV, IRESULTS, NRESULTS)
+!$    use OMP_LIB
       DIMENSION DERIVS(NDERIV)
       DIMENSION IRESULTS(NRESULTS)  !Parameter list if there is one
 C--MAIN STRUCTURE FACTOR CALCULATION ROUTINE
@@ -1631,9 +1635,17 @@ C
       CHARACTER*15 HKLLAB
 C
 C
+      integer :: starttime
+      integer, dimension(8) :: measuredtime
+
       real, dimension(:,:), allocatable :: designmatrix
-      real, dimension(:,:), allocatable :: normalmatrix!, ref
-      integer designindex
+      real, dimension(:,:,:), allocatable :: normalmatrix!, ref
+      ! tid is the number of threads
+      integer :: designindex, tid
+      integer, parameter :: designchunk=2000
+      tid=1
+!$    tid =  omp_get_max_threads() 
+      tid=max(tid, 4)
 
       CALL CPU_TIME ( time_begin )
 
@@ -1762,14 +1774,18 @@ C--CHECK IF A PRINT IS REQUIRED
 
       NO=JO
       NP=JP
-      allocate(normalmatrix(JP-JO+1,JP-JO+1))
+      allocate(normalmatrix(JP-JO+1,JP-JO+1, tid))
       !allocate(ref(JP-JO+1,JP-JO+1))
       normalmatrix=0.0
       !ref=0.0
       designindex=0
       ! size of the design matrix chunk to be tuned (PP)
-      allocate(designmatrix(JP-JO+1,1000))
+      allocate(designmatrix(JP-JO+1,designchunk*tid))
       designmatrix=0.0
+
+      call date_and_time(VALUES=measuredtime)
+      starttime=((measuredtime(5)*3600+measuredtime(6)*60)+
+     1  measuredtime(7))*1000+measuredtime(8)
 
       DO WHILE (.TRUE.)  ! START OF THE LOOP OVER REFLECTIONS
 
@@ -2254,9 +2270,21 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
                   designindex=designindex+1
                   if(designindex>ubound(designmatrix,2)) then
                       ! accumulate normal matrix
-                      call SSYRK('L','N',JP-JO+1,ubound(designmatrix,2),
-     1                    1.0, designmatrix,
-     2                    JP-JO+1,1.0,normalmatrix,JP-JO+1)
+
+!$OMP PARALLEL default(none) 
+!$OMP& shared(designmatrix, JP, JO, normalmatrix, tid) 
+
+!$OMP DO schedule(static)
+                      do i=1, tid
+                          ! passing first element as array to avoid temporary copy
+                          call SSYRK('L','N',JP-JO+1,designchunk,
+     1                      1.0, 
+     2                      designmatrix(1,designchunk*(i-1)+1),
+     3                      JP-JO+1,1.0,normalmatrix(1,1,i),JP-JO+1)
+                      end do
+!$OMP END DO
+!$OMP END PARALLEL
+
                       ! reset index for the chunk array
                       designindex=1
                       designmatrix=0.0
@@ -2336,10 +2364,25 @@ C----    H,K,L,SNTHL,LEV,
                  ! process the remaining chunk of design matrix
                  if(designindex>0) then
                    ! Accumulate the normal matrix
-                   call SSYRK('L','N',JP-JO+1,designindex,1.0,
-     1              designmatrix,
-     2             JP-JO+1,1.0,normalmatrix,JP-JO+1)
+
+!$OMP PARALLEL default(none) 
+!$OMP& shared(designmatrix, JP, JO, normalmatrix, tid) 
+
+!$OMP DO schedule(static)
+                      do i=1, tid
+                          call SSYRK('L','N',JP-JO+1,designchunk,
+     1                      1.0, 
+     2                      designmatrix(1,designchunk*(i-1)+1),
+     3                      JP-JO+1,1.0,normalmatrix(1,1,i),JP-JO+1)
+                      end do
+!$OMP END DO
+!$OMP END PARALLEL
+
                  end if
+                 do i=2, tid
+                    normalmatrix(:,:,1)=normalmatrix(:,:,1)
+     1                  +normalmatrix(:,:,i)
+                 end do
       
  
                  ! Pack normal matrix back into original crystals storage     
@@ -2353,7 +2396,7 @@ C----    H,K,L,SNTHL,LEV,
                      j = ((i-1)*(2*(MNR)-i+2))/2
                      k = j + MNR - i
                      STR11(IBS+j:IBS+k)
-     1                =normalmatrix(i+IBL-1:IBL-1+MNR,IBL+i-1)
+     1                =normalmatrix(i+IBL-1:IBL-1+MNR,IBL+i-1,1)
 
 c E.g. two blocks of 2 - normalmatrix is 4x4, output is 2 upper triangles of side 2.
 c Initially IBL is 1, IBS is L11.
@@ -2391,6 +2434,12 @@ c            k = j + JP-JO+1 - i
 c            STR11(L11+j:L11+k)=normalmatrix(i:JP-JO+1,i)
 c      end do
       
+
+      call date_and_time(VALUES=measuredtime)
+      print *, 'Cycle time (s): ',
+     1  ((measuredtime(5)*3600+measuredtime(6)*60)+
+     2  measuredtime(7))*1000+measuredtime(8)-starttime
+
       
       deallocate(designmatrix)
       deallocate(normalmatrix)      
