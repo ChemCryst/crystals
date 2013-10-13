@@ -66,9 +66,9 @@ do i=1, nmsize
     eigvectors(i, i:nmsize)=nmatrix(1+j:1+k)
 end do
 
-open(666, file='matrix', form="unformatted",access="stream")
-write(666) eigvectors
-close(666)
+!open(666, file='matrix', form="unformatted",access="stream")
+!write(666) eigvectors
+!close(666)
 
 ! eigen value filtering
 allocate(eigvalues(nmsize))
