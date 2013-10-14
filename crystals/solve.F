@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.67  2013/10/11 16:21:13  pascal
+C new LDLT inversion
+C
 C Revision 1.66  2013/10/09 13:56:18  pascal
 C new algorithm for cholesky inversion, more stable
 C
@@ -706,7 +709,7 @@ c
 c
 c
                call eigen_inversion(STR11(L11C:L11C+JY*(JY+1)/2-1),
-     1              JY, 100.0, nrej, cond, fcond)
+     1              JY, 1e-2, nrej, cond, fcond)
 
                if ( nrej .gt. 0 ) THEN
                   WRITE ( CMON, '(A,I8,A)') '{E ', nrej, 
