@@ -22,6 +22,7 @@
 @set JUMPBACK=endofloop
 @set FILEFOUND=OK
 @if "%~x1" == ".f90" goto f90comp
+@if "%~x1" == ".F90" goto f90comp
 @goto fcomp
 @
 :tryCPPwithExt
