@@ -19,7 +19,7 @@
 @FOR %%I IN ( ..\crystals\*.F ) DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
 @FOR %%I IN ( ..\cameron\*.F ) DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
 @FOR %%I IN ( ..\gui\*.cc )      DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
-@call buildfile.bat lapack
+@if not "%COMPCODE%" == "INW" @call buildfile.bat lapack
 
 @if "%COMPCODE%" == "GID" rc /d__CR_WIN__ /fo script1.res ..\gui\script1.rc
 @if "%COMPCODE%" == "WXS" rc /fo rc.o ..\gui\wx.rc
