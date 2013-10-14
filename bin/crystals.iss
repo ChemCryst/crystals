@@ -7,6 +7,10 @@
   #define crysOS 'unknown'
 #endif
 
+#if "TRUE" == GetEnv('CROPENMP')
+  #define crysOS 'win-int-openmp'
+#endif
+
 #define crysDATE GetDateTimeString('mmmyy','','')
 #define crysVDATE GetDateTimeString('mmm yyyy','','')
 
