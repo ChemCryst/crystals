@@ -18,6 +18,8 @@ goto ALLDVF
 @set LIBS=%LIBS% rc.res
 @if "%CRDEBUG%" == "TRUE"     @set CDEF=/D"__WXINT__" /D"_GNUF77_" /I%WXWIN%\include /I%WXWIN%\lib\vc90_dll\mswud /D"WXUSINGDLL"
 @if not "%CRDEBUG%" == "TRUE" @set CDEF=/D"__WXINT__" /D"_GNUF77_" /I%WXWIN%\include /I%WXWIN%\lib\vc90_dll\mswu  /D"WXUSINGDLL"
+@if "%CROPENMP%" == "TRUE" @set COPENMP=/Qopenmp
+@if not "%CROPENMP%" == "TRUE" @set COPENMP=
 @set FDEF=/define:_%COMPCODE%_ /define:_INTELF77_
 @rem @set LD=xilink
 @set LD=ifort
@@ -28,17 +30,17 @@ goto ALLDVF
 @set LDEBUG=/Zi
 @rem /debugtype:cv /pdb:none /incremental:no
 @set LDCFLAGS=/SUBSYSTEM:console
-@set LDFLAGS= /Qmkl
+@set LDFLAGS= /Qmkl %COPENMP%
 @
 @set CC=cl
 @set CDEF=%CDEF% /D"WIN32" /D"_WINDOWS" /D"_UNICODE"  /D__WXMSW__ /D_CRT_SECURE_NO_WARNINGS
-@set COPTS=/EHs  /W3 /nologo /c /TP /I..\gui /O2 /D"NDEBUG" /MD
+@set COPTS=/EHs  /W3 /nologo /c /TP /I..\gui /O2 /D"NDEBUG" /MD 
 @set CDEBUG=/EHs /W3 /nologo /c /TP /I..\gui /Od /D"DEBUG" /RTC1 /MDd /Z7  
 @set COUT=/Foobj\
 @
 @set F77=ifort
 @set FDEF=%FDEF%
-@set FOPTS=/fpp /I..\crystals /MD /O2 /Qvec /QaxSSE2 /nolink
+@set FOPTS=/fpp /I..\crystals /MD /O2 /Qvec /QaxSSE2 /nolink %COPENMP%
 @set FNOOPT=/fpp /I..\crystals /MD /O0 /nolink
 @set FWIN=/winapp
 @set FOUT=/object:obj\
