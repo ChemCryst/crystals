@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.91  2013/10/11 16:21:58  pascal
+C openmp threads for the accumulation using serial blas functions
+C
 C Revision 1.90  2013/10/10 13:07:58  pascal
 C exp, sin and cos replaced by fast purec functions
 C
@@ -1635,8 +1638,10 @@ C
       CHARACTER*15 HKLLAB
 C
 C
+#if defined(_GIL_) || defined(_LIN_)
       integer :: starttime
       integer, dimension(8) :: measuredtime
+#endif
 
       real, dimension(:,:), allocatable :: designmatrix
       real, dimension(:,:,:), allocatable :: normalmatrix!, ref
@@ -1783,9 +1788,11 @@ C--CHECK IF A PRINT IS REQUIRED
       allocate(designmatrix(JP-JO+1,designchunk*tid))
       designmatrix=0.0
 
+#if defined(_GIL_) || defined(_LIN_)
       call date_and_time(VALUES=measuredtime)
       starttime=((measuredtime(5)*3600+measuredtime(6)*60)+
      1  measuredtime(7))*1000+measuredtime(8)
+#endif
 
       DO WHILE (.TRUE.)  ! START OF THE LOOP OVER REFLECTIONS
 
@@ -2435,11 +2442,12 @@ c            STR11(L11+j:L11+k)=normalmatrix(i:JP-JO+1,i)
 c      end do
       
 
+#if defined(_GIL_) || defined(_LIN_)
       call date_and_time(VALUES=measuredtime)
-      print *, 'Cycle time (s): ',
+      print *, 'Formation of the normal matrix time (ms): ',
      1  ((measuredtime(5)*3600+measuredtime(6)*60)+
      2  measuredtime(7))*1000+measuredtime(8)-starttime
-
+#endif
       
       deallocate(designmatrix)
       deallocate(normalmatrix)      
