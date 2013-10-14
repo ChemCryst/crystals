@@ -10,6 +10,7 @@
 @if exist link.lis del link.lis
 @if exist dlink.lis del dlink.lis
 @if not exist obj mkdir obj
+@if "%COMPCODE%" == "INW" del crystals\lapack.f
 @set FOPTIONS=%FDEF% %FWIN% %FOPTS%
 @set COPTIONS=%CDEF% %COPTS%
 @if "%CRDEBUG%" == "TRUE" if not exist dobj mkdir dobj
