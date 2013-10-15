@@ -1648,9 +1648,28 @@ C
       ! tid is the number of threads
       integer :: designindex, tid
       integer, parameter :: designchunk=2000
+      character(len=4) :: buffer
+
+c     Working out the number of threadings available
+c     Using at most 6 of them
+c     each thread has a chunk of reflections and a normal matrix
       tid=1
 !$    tid =  omp_get_max_threads() 
-      tid=max(tid, 4)
+
+c     To be replaced by GET_ENVIRONMENT_VARIABLE f2003 feature
+c     getenv is a deprecated extension      
+      CALL GETENV('OMP_NUM_THREADS', buffer) 
+      if(buffer/='    ') then
+          read(buffer, '(I4)') i
+          if(i>0) then
+              tid=i
+          end if
+      end if
+      tid=min(tid, 6)
+
+#if defined(_GIL_) || defined(_LIN_)
+      print *, 'Number of threads used around SSYRK: ', tid
+#endif
 
       CALL CPU_TIME ( time_begin )
 
@@ -2371,26 +2390,28 @@ C----    H,K,L,SNTHL,LEV,
                  ! process the remaining chunk of design matrix
                  if(designindex>0) then
                    ! Accumulate the normal matrix
-
 !$OMP PARALLEL default(none) 
 !$OMP& shared(designmatrix, JP, JO, normalmatrix, tid) 
 
 !$OMP DO schedule(static)
-                      do i=1, tid
-                          call SSYRK('L','N',JP-JO+1,designchunk,
-     1                      1.0, 
-     2                      designmatrix(1,designchunk*(i-1)+1),
-     3                      JP-JO+1,1.0,normalmatrix(1,1,i),JP-JO+1)
-                      end do
+                do i=1, tid
+                     call SSYRK('L','N',JP-JO+1,designchunk,
+     1                   1.0, 
+     2                   designmatrix(1,designchunk*(i-1)+1),
+     3                   JP-JO+1,1.0,normalmatrix(1,1,i),JP-JO+1)
+                 end do
 !$OMP END DO
 !$OMP END PARALLEL
-
                  end if
-                 do i=2, tid
-                    normalmatrix(:,:,1)=normalmatrix(:,:,1)
-     1                  +normalmatrix(:,:,i)
+
+c Only vectorized with gfortran 4.8 not 4.4
+                 do i=1, ubound(normalmatrix,2)
+                     do j=2, ubound(normalmatrix,3)
+                            normalmatrix(:,i,1)=normalmatrix(:,i,1)
+     1                          +normalmatrix(:,i,j)
+                      end do
                  end do
-      
+
  
                  ! Pack normal matrix back into original crystals storage     
                  IBL = 1                  ! Parameter # at start of current block
